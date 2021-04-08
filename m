@@ -2,254 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287863590AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 01:55:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BB033590B3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 01:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhDHXza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 19:55:30 -0400
-Received: from mga14.intel.com ([192.55.52.115]:34926 "EHLO mga14.intel.com"
+        id S233044AbhDHXzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 19:55:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232793AbhDHXz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 19:55:28 -0400
-IronPort-SDR: KEWaAB0GmM7vNylbo/br9PPIda3QfacKedHZQYRslHotw6hhK1IYzG9m5xq62XKcAvK5whJvXC
- rx6XQSoFKwkQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="193200581"
-X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
-   d="scan'208";a="193200581"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 16:55:16 -0700
-IronPort-SDR: dWeUxI4PQ1JhdmQBBS0D3A6xdXxkDuwvlgVSVWIi9F4npFHnmxfCx3+yVA6lcsjItT0+wwTYoj
- 5hQuvm75kpXw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,207,1613462400"; 
-   d="scan'208";a="598967699"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 08 Apr 2021 16:55:14 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lUeUT-000FrP-J6; Thu, 08 Apr 2021 23:55:13 +0000
-Date:   Fri, 09 Apr 2021 07:54:30 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 3e7bbe15ed84e3baa7dfab3aebed3a06fd39b806
-Message-ID: <606f97b6.JorBcso/pPIFH+GF%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S233009AbhDHXzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 19:55:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1018861151;
+        Thu,  8 Apr 2021 23:55:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617926130;
+        bh=SUv1EmiHLV/4OjfzTusbiqGWcCkMUz2DyvyUUnJ+SZ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AiXVaVzfdo5Rr24r5RglJ24YvxSbVdSR9sUJMKrZNgIS5DA9xS7v9lUeDGp6SeG1P
+         y4SWJnCy2xrKfe8M0sEyjIAgPZePczJVNorjOkijUz9h9FahY7iwPtcq5y8EWiJFlX
+         DxHh/zmIhOd/GEfvrvvrfBu826zfgbBVRQAnlYDNZQD4M8zsGmJg00LKQiUyTWpahR
+         q8oqYve83TKwtCYjHXIqxOJ2/VZFW2vswrEF3aSYC/nQLCCkLuw943eo28Bpp0BbuN
+         zAy/6ORAIDY1L8DctfUMkLWcIa8AX7RtusWbAMPl0pXlIAb10NS/UnIbFbwY6E7fsQ
+         2aX2RrxjLEToA==
+Date:   Thu, 8 Apr 2021 16:55:28 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chris von Recklinghausen <crecklin@redhat.com>
+Cc:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
+        decui@microsoft.com, linux-pm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+Message-ID: <YG+X8M6JfLY4cqmD@sol.localdomain>
+References: <20210408131506.17941-1-crecklin@redhat.com>
+ <YG8hgzBPQAvov9Vz@sol.localdomain>
+ <f01021a0-2edd-da43-5f04-043b4f42be8b@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <f01021a0-2edd-da43-5f04-043b4f42be8b@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: 3e7bbe15ed84e3baa7dfab3aebed3a06fd39b806  x86/msr: Make locally used functions static
+On Thu, Apr 08, 2021 at 11:53:59AM -0400, Chris von Recklinghausen wrote:
+> On 4/8/21 11:30 AM, Eric Biggers wrote:
+> > On Thu, Apr 08, 2021 at 09:15:06AM -0400, Chris von Recklinghausen wrote:
+> > > Suspend fails on a system in fips mode because md5 is used for the e820
+> > > integrity check and is not available. Use crc32 instead.
+> > > 
+> > > This patch changes the integrity check algorithm from md5 to
+> > > crc32. This integrity check is used only to verify accidental
+> > > corruption of the hybernation data and is not intended as a
+> > > cryptographic integrity check.
+> > > Md5 is overkill in this case and also disabled in FIPS mode because it
+> > > is known to be broken for cryptographic purposes.
+> > > 
+> > > Fixes: 62a03defeabd ("PM / hibernate: Verify the consistent of e820 memory map
+> > >         by md5 digest")
+> > > 
+> > > Tested-by: Dexuan Cui <decui@microsoft.com>
+> > > Reviewed-by: Dexuan Cui <decui@microsoft.com>
+> > > Signed-off-by: Chris von Recklinghausen <crecklin@redhat.com>
+> > > ---
+> > > v1 -> v2
+> > >     bump up RESTORE_MAGIC
+> > > v2 -> v3
+> > >     move embelishment from cover letter to commit comments (no code change)
+> > > v3 -> v4
+> > >     add note to comments that md5 isn't used for encryption here.
+> > > v4 -> v5
+> > >     reword comment per Simo's suggestion
+> > > 
+> > >   arch/x86/power/hibernate.c | 35 +++++++++++++++++++----------------
+> > >   1 file changed, 19 insertions(+), 16 deletions(-)
+> > > 
+> > > diff --git a/arch/x86/power/hibernate.c b/arch/x86/power/hibernate.c
+> > > index cd3914fc9f3d..b56172553275 100644
+> > > --- a/arch/x86/power/hibernate.c
+> > > +++ b/arch/x86/power/hibernate.c
+> > > @@ -55,31 +55,31 @@ int pfn_is_nosave(unsigned long pfn)
+> > >   }
+> > > -#define MD5_DIGEST_SIZE 16
+> > > +#define CRC32_DIGEST_SIZE 16
+> > >   struct restore_data_record {
+> > >   	unsigned long jump_address;
+> > >   	unsigned long jump_address_phys;
+> > >   	unsigned long cr3;
+> > >   	unsigned long magic;
+> > > -	u8 e820_digest[MD5_DIGEST_SIZE];
+> > > +	u8 e820_digest[CRC32_DIGEST_SIZE];
+> > >   };
+> > > -#if IS_BUILTIN(CONFIG_CRYPTO_MD5)
+> > > +#if IS_BUILTIN(CONFIG_CRYPTO_CRC32)
+> > Should CONFIG_CRYPTO_CRC32 be getting selected from somewhere?
+> 
+> 
+> Yes, presumably from the same source that sets CONFIG_CRYPTO_MD5. Also
+> presumably there's value to not forcing the check if the config value is not
+> set.
 
-elapsed time: 735m
+I wouldn't be so sure about that.  It might just be a bug that CONFIG_CRYPTO_MD5
+wasn't being selected.  Where is it documented that the user needed to set
+CONFIG_CRYPTO_MD5=y if they wanted the hibernation image checksumming to work?
 
-configs tested: 192
-configs skipped: 85
+> > 
+> > If that is too hard because it would pull in too much of the crypto API, maybe
+> > using the library interface to CRC-32 (lib/crc32.c) would be a better fit?
+> 
+> 
+> Based on my statement above, the intent is to provide a simple drop in
+> replacement for md5 so that users of FIPS mode can suspend/resume without
+> any errors.
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+It's possible that most people have CONFIG_CRYPTO_MD5 enabled for some unrelated
+reason so the hibernation image checksumming works by chance.
+CONFIG_CRYPTO_CRC32 is a different option so the same is not necessarily true.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-mips                         rt305x_defconfig
-um                                allnoconfig
-sh                          urquell_defconfig
-sh                            titan_defconfig
-arm                             ezx_defconfig
-arm                        oxnas_v6_defconfig
-mips                        maltaup_defconfig
-mips                         mpc30x_defconfig
-arm                        cerfcube_defconfig
-xtensa                  cadence_csp_defconfig
-m68k                             allyesconfig
-powerpc                     akebono_defconfig
-arm                     eseries_pxa_defconfig
-arm                            pleb_defconfig
-m68k                         amcore_defconfig
-sparc                       sparc32_defconfig
-powerpc                     ppa8548_defconfig
-m68k                         apollo_defconfig
-sh                          r7785rp_defconfig
-powerpc                      pmac32_defconfig
-openrisc                 simple_smp_defconfig
-mips                       lemote2f_defconfig
-powerpc                      mgcoge_defconfig
-powerpc                 linkstation_defconfig
-sh                            migor_defconfig
-sh                               j2_defconfig
-i386                                defconfig
-powerpc                      ppc40x_defconfig
-powerpc                     tqm8548_defconfig
-m68k                        m5407c3_defconfig
-arm                            lart_defconfig
-arm                           spitz_defconfig
-arm                         palmz72_defconfig
-arm                         lpc32xx_defconfig
-ia64                             alldefconfig
-powerpc                 mpc832x_mds_defconfig
-powerpc                      ppc6xx_defconfig
-sh                   sh7770_generic_defconfig
-sh                           sh2007_defconfig
-mips                           ip28_defconfig
-sh                          r7780mp_defconfig
-m68k                        mvme16x_defconfig
-arm                        multi_v5_defconfig
-powerpc                     kmeter1_defconfig
-arc                     nsimosci_hs_defconfig
-arm                        clps711x_defconfig
-xtensa                    xip_kc705_defconfig
-m68k                       bvme6000_defconfig
-h8300                            alldefconfig
-powerpc                    socrates_defconfig
-sh                            shmin_defconfig
-mips                           gcw0_defconfig
-arm                          moxart_defconfig
-m68k                       m5475evb_defconfig
-s390                             allyesconfig
-arm                           viper_defconfig
-powerpc                      ppc64e_defconfig
-mips                          rb532_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                       maple_defconfig
-powerpc64                           defconfig
-mips                     cu1000-neo_defconfig
-sh                   secureedge5410_defconfig
-arm                         nhk8815_defconfig
-sh                          landisk_defconfig
-powerpc                      arches_defconfig
-parisc                           allyesconfig
-riscv                               defconfig
-sh                           se7343_defconfig
-sh                        sh7785lcr_defconfig
-sh                          rsk7201_defconfig
-m68k                          hp300_defconfig
-s390                          debug_defconfig
-sh                 kfr2r09-romimage_defconfig
-arm                             mxs_defconfig
-mips                          malta_defconfig
-arm                           u8500_defconfig
-openrisc                         alldefconfig
-mips                           ip27_defconfig
-arm                         s3c6400_defconfig
-arm                         orion5x_defconfig
-arm                          pxa3xx_defconfig
-um                           x86_64_defconfig
-powerpc                           allnoconfig
-sh                   sh7724_generic_defconfig
-sh                          rsk7269_defconfig
-mips                        bcm47xx_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                            zeus_defconfig
-arm                      footbridge_defconfig
-powerpc                        warp_defconfig
-mips                           ip22_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-arm64                            alldefconfig
-powerpc                     mpc5200_defconfig
-powerpc                      ep88xc_defconfig
-m68k                          amiga_defconfig
-arm                  colibri_pxa270_defconfig
-powerpc                    mvme5100_defconfig
-mips                    maltaup_xpa_defconfig
-arm                        trizeps4_defconfig
-arm                            xcep_defconfig
-ia64                            zx1_defconfig
-sh                  sh7785lcr_32bit_defconfig
-powerpc                      pasemi_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                          ep93xx_defconfig
-powerpc                     mpc83xx_defconfig
-arm                            dove_defconfig
-powerpc                 mpc85xx_cds_defconfig
-arc                    vdk_hs38_smp_defconfig
-mips                           ip32_defconfig
-arm                        realview_defconfig
-x86_64                           alldefconfig
-arm                        mvebu_v7_defconfig
-arm                          collie_defconfig
-powerpc                         ps3_defconfig
-arm                          gemini_defconfig
-arm                          iop32x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210408
-x86_64               randconfig-a005-20210408
-x86_64               randconfig-a003-20210408
-x86_64               randconfig-a001-20210408
-x86_64               randconfig-a002-20210408
-x86_64               randconfig-a006-20210408
-i386                 randconfig-a006-20210408
-i386                 randconfig-a003-20210408
-i386                 randconfig-a001-20210408
-i386                 randconfig-a004-20210408
-i386                 randconfig-a005-20210408
-i386                 randconfig-a002-20210408
-i386                 randconfig-a014-20210408
-i386                 randconfig-a016-20210408
-i386                 randconfig-a011-20210408
-i386                 randconfig-a012-20210408
-i386                 randconfig-a013-20210408
-i386                 randconfig-a015-20210408
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+However, note that CONFIG_HIBERNATION already selects CONFIG_CRC32 (the library
+interface to CRC-32) but not CONFIG_CRYPTO_CRC32 (shash interface to CRC-32).
 
-clang tested configs:
-x86_64               randconfig-a014-20210408
-x86_64               randconfig-a015-20210408
-x86_64               randconfig-a012-20210408
-x86_64               randconfig-a011-20210408
-x86_64               randconfig-a013-20210408
-x86_64               randconfig-a016-20210408
+So, if this code just used the library interface crc32_le(), it will always be
+available and the IS_BUILTIN() checks can be removed...
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+- Eric
