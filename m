@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613AE357BEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DAF357BED
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbhDHFnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 01:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
+        id S229784AbhDHFoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 01:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhDHFnJ (ORCPT
+        with ESMTP id S229506AbhDHFoP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 01:43:09 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5BDC061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 22:42:57 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id c6so789036lji.8
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 22:42:57 -0700 (PDT)
+        Thu, 8 Apr 2021 01:44:15 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B086FC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 22:44:03 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id y2so443184plg.5
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 22:44:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WAbHD5FLaaImjGxxXZNniR8HkY+ORAvhOIs7PHZqNLk=;
-        b=Cw5mlMMpJ+/GY97BE2TxX6SQyUpuRnqetJyQSONYQsvtcWHLoLF7tEkT1vp2Pwm9mu
-         Rv87xjwrYSK9LA7H+VWDMNhQ+Jk2SXT+zb+WSc3QzWehwvBulvKlhxuVuoLFGYKWsWRL
-         V47Y6hhSYPfHOvWJ+HheFQ7T4crHxnsCaBUGl+O6xbdpK59UDkpIMh1b0IhtUP0MWNoY
-         GwdXcVB1yN+/IMXgfrhIRKTCNVFEBW4KB4KWwWoiYGaeHs+PT+Tqm22dDK3alz95A1c0
-         6WrHo3NHVjAleRbFeit5b3NgBP0UFcRXObCBBgoJqj2fuAEzoQQE2p4UXuw3XLJfrMus
-         nT/A==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=EkHfFpR6mRQDl4oJirm0PloxNhQZM6zzTuwn8wuG5RI=;
+        b=DmcgUUF53Mo/CbIv2slW80r0AyvtxHvESwkRQ0QMYy6OfKSdNVCL44gVHeYTqxDQka
+         /9Ji1qVyonRP1tqUnl4rIje/mA0m5g6AB+4iD5jksRUZMezKWFh/m7lIreI8+aXlnFNi
+         wZXjp5VtKmqvMyZTtWPbvmtykyCJEV4i4KOIU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WAbHD5FLaaImjGxxXZNniR8HkY+ORAvhOIs7PHZqNLk=;
-        b=l2HxECXoAjDa0YtAfhYYdQI5BqIUJeuWsgIy047XJiVKH3DWiF2HRvFpfFZvHLMq6x
-         eAKAPfMNeg+Dp75Zgh4HN3bbIe1h2eqcJkN/2id9UGweLqPk38Sqoa0c95/anzRh5zJ8
-         5NxwpLD4O0cYa8VQ1XCHjdYZiw2C7i6y3FJcUYrhFR4B322dIwzA0Q0wsLml7oBkwC09
-         RQMfaiVbRSgA0Ot57RO+oNbIrWzs0K62tcWjfBicOXY9uGGhNF9xkkpbQY6Aohnr2Zfo
-         4sv4I//f3cwte1GAeHEeObPST1FJBJwXb+f061s5nxyURx+i735pqrrDXxr+Rh+mKwxM
-         IcpQ==
-X-Gm-Message-State: AOAM532rdn8NiV1FIlLuQWEu8xta7QZRQ8MvKNquygzsVPTOJmNL6aox
-        DQB39TsrPAHTEIYhpi43roDS2BSv1hDwsfpmGkM=
-X-Google-Smtp-Source: ABdhPJw5egDHQEVfBkzJoq+dVf4KUFxlnAe9nJsBc3TAki5FfDnDXQP3ZaUZBqoeiMyDQWIdBA1gG14xEbf++TwrRDA=
-X-Received: by 2002:a2e:5747:: with SMTP id r7mr4423864ljd.227.1617860575808;
- Wed, 07 Apr 2021 22:42:55 -0700 (PDT)
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=EkHfFpR6mRQDl4oJirm0PloxNhQZM6zzTuwn8wuG5RI=;
+        b=f2UwWJF9ptH+IPJSCxivp/VMr/Et/3FuvL+Dt2kTTDWJF7mplxGC2VBJQdM9mdzzH4
+         Vplq9dPP7/LGC+pgfM6U+xGC7a3415gnxFX2J6NTw/2K9QnjRNu254GJhlbD55d8G+d5
+         VrND78cFLEQN+AAcF0eVAT/5agWcGnL27BryodSXTLAs2Lgbq1Ece+VvwC9JxFivoSrM
+         0wcmYqPuN6p+pMacxvLfwtL7A1GJPuWQ/nAVTHvNZRlui/9hYTUiEx8EOJXEveUDmW8p
+         0v8kskDvKzsBR4MrTqwD11vYLjeapgAnFW6qRR19WtcXaHsVwQUidfhDsvmbdLIts5CH
+         RtEg==
+X-Gm-Message-State: AOAM533+A/n8S7URgilkxZIAxExiFaH3a/6i/LgyKd+5b/zPcybF4IUr
+        5eD/KBsCFgduUvKGEZMnsfD/eQ==
+X-Google-Smtp-Source: ABdhPJytOBgMko8ppqBDmO+OJyRqUooVvL47gBLUIkf+JBVRoWYtngCTQ1JtJhTLs/6gGMICWNqKHA==
+X-Received: by 2002:a17:90a:e50d:: with SMTP id t13mr5111783pjy.160.1617860643252;
+        Wed, 07 Apr 2021 22:44:03 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:e193:83c5:6e95:43de])
+        by smtp.gmail.com with ESMTPSA id n21sm813679pjo.25.2021.04.07.22.44.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 22:44:02 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-References: <20210330052154.26861-1-xuewen.yan94@gmail.com>
- <YGLzQAvVqlrKb8AB@google.com> <34ce11ad-9c20-7ba7-90d8-4830725bf38a@arm.com>
- <CAB8ipk9JATYxJBnpVFfH_XHLqh=yHesbo73wx=Mm7t8mSqW_Gg@mail.gmail.com> <1ebddd33-4666-1e6e-7788-a3fe28c9e99c@arm.com>
-In-Reply-To: <1ebddd33-4666-1e6e-7788-a3fe28c9e99c@arm.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Thu, 8 Apr 2021 13:41:47 +0800
-Message-ID: <CAB8ipk9+fdGMY6cYoHnicPUOdd+meJo+EaGaaVZTgoxQ84+Wiw@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: use signed long when compute energy delta in eas
-To:     Pierre <pierre.gondois@arm.com>
-Cc:     Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YG22znIOouERDND0@alley>
+References: <20210331030520.3816265-1-swboyd@chromium.org> <20210331030520.3816265-4-swboyd@chromium.org> <YG22znIOouERDND0@alley>
+Subject: Re: [PATCH v3 03/12] dump_stack: Add vmlinux build ID to stack traces
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ryan Y <xuewyan@foxmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>
+To:     Petr Mladek <pmladek@suse.com>
+Date:   Wed, 07 Apr 2021 22:44:01 -0700
+Message-ID: <161786064151.3790633.17528429348664284217@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Quoting Petr Mladek (2021-04-07 06:42:38)
+>=20
+> I think that you need to use something like:
+>=20
+> #ifdef CONFIG_STACKTRACE_BUILD_ID
+> #define BUILD_ID_FTM " %20phN"
+> #define BUILD_ID_VAL vmlinux_build_id
+> #else
+> #define BUILD_ID_FTM "%s"
+> #define BUILD_ID_VAL ""
+> #endif
+>=20
+>         printk("%sCPU: %d PID: %d Comm: %.20s %s%s %s %.*s" BUILD_ID_FTM =
+"\n",
+>                log_lvl, raw_smp_processor_id(), current->pid, current->co=
+mm,
+>                kexec_crash_loaded() ? "Kdump: loaded " : "",
+>                print_tainted(),
+>                init_utsname()->release,
+>                (int)strcspn(init_utsname()->version, " "),
+>                init_utsname()->version,
+>                BUILD_ID_VAL);
+>=20
 
-On Wed, Apr 7, 2021 at 10:11 PM Pierre <pierre.gondois@arm.com> wrote:
->
-> Hi,
-> > I test the patch, but the overflow still exists.
-> > In the "sched/fair: Use pd_cache to speed up find_energy_efficient_cpu()"
-> > I wonder why recompute the cpu util when cpu==dst_cpu in compute_energy(),
-> > when the dst_cpu's util change, it also would cause the overflow.
->
-> The patches aim to cache the energy values for the CPUs whose
-> utilization is not modified (so we don't have to compute it multiple
-> times). The values cached are the 'base values' of the CPUs, i.e. when
-> the task is not placed on the CPU. When (cpu==dst_cpu) in
-> compute_energy(), it means the energy values need to be updated instead
-> of using the cached ones.
->
-well, is it better to use the task_util(p) + cache values ? but in
-this case, the cache
-values may need more parameters.
-
-> You are right, there is still a possibility to have a negative delta
-> with the patches at:
-> https://gitlab.arm.com/linux-arm/linux-power/-/commits/eas/next/integration-20210129
-> Adding a check before subtracting the values, and bailing out in such
-> case would avoid this, such as at:
-> https://gitlab.arm.com/linux-arm/linux-pg/-/commits/feec_bail_out/
->
-In your patch, you bail out the case by "go to fail", that means you
-don't use eas in such
-case. However, in the actual scene, the case often occurr when select
-cpu for small task.
-As a result, the small task would not select cpu according to the eas,
-it may affect
-power consumption?
-
-> I think a similar modification should be done in your patch. Even though
-> this is a good idea to group the calls to compute_energy() to reduce the
-> chances of having updates of utilization values in between the
-> compute_energy() calls,
-> there is still a chance to have updates. I think it happened when I
-> applied your patch.
->
-> About changing the delta(s) from 'unsigned long' to 'long', I am not
-> sure of the meaning of having a negative delta. I thing it would be
-> better to check and fail before it happens instead.
->
-> Regards
->
+Thanks. I didn't see this warning but I see it now after compiling
+again. Not sure how I missed this one. I've rolled in this fix as well.
