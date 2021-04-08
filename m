@@ -2,114 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F68C358BF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A462358BFA
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbhDHSNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 14:13:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232281AbhDHSNJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:13:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B6D3610C8;
-        Thu,  8 Apr 2021 18:12:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617905577;
-        bh=srcP1POWJBP8EPl3rQLISqPDTr2hkWQ0RrdqLHmlAUk=;
+        id S232764AbhDHSOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 14:14:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231716AbhDHSOX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 14:14:23 -0400
+Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE6EEC061760;
+        Thu,  8 Apr 2021 11:14:11 -0700 (PDT)
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id A092AC725C7;
+        Thu,  8 Apr 2021 20:14:09 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1617905649;
+        bh=bqq+6Ua6gjCE1d4qctGpoLs9LGXr1awDHysmE+XtkwE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UJKA4y4ZjWUD7wjS+Ek2nii2ja6PIv6PzC+WASHTZRtqgAMksAdSQSe6eKSarpcGY
-         9LI6D0pLiLGBxs0z3IinkULJjYQQngN9JIkIfPsUFrbBbMDapPYLCQGagxz19h+O0n
-         DVwq0LXM+NFP5+2L/+OW53kXDv4dbubAIwIEHFRA=
-Date:   Thu, 8 Apr 2021 20:12:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     masahiroy@kernel.org, linux-kernel@vger.kernel.org,
-        maennich@google.com, gprocida@google.com, kernel-team@android.com
-Subject: Re: [PATCH] export: Make CRCs robust to symbol trimming
-Message-ID: <YG9Hp9NLACw57vu/@kroah.com>
-References: <20210408180105.2496212-1-qperret@google.com>
+        b=1G+vlnAkRYmKGPKs3Spm9nAkUs7fBssKaYLh8Lr2hfgtHkh0iz9LB3aKBtsWtkbMO
+         IKbZg4JguOYSnDK0xR8FDTqEBfA25zTaghX0Sr9AVqtJ3ao5bolI905JBKp9IxNXQx
+         XCClDPIAgXdKSoZ1qbB4Y8aZ1dV56c4Bm4j/it80=
+Date:   Thu, 8 Apr 2021 20:14:08 +0200
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7 5/8] pwm: core: Support new PWM_STAGGERING_ALLOWED flag
+Message-ID: <YG9H8D5YW0KEtaoG@workstation.tuxnet>
+References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
+ <20210406164140.81423-5-clemens.gruber@pqgruber.com>
+ <20210407054658.qdsjkstqwynxeuxj@pengutronix.de>
+ <YG4UNoBCQJkEEfwi@workstation.tuxnet>
+ <20210407213403.h6n6l2t7vqoalceu@pengutronix.de>
+ <YG78IHIMGtl8Pokp@orome.fritz.box>
+ <YG8miEOZXsH0NTcA@workstation.tuxnet>
+ <20210408173637.w26njwystfuyrgan@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210408180105.2496212-1-qperret@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210408173637.w26njwystfuyrgan@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 06:01:05PM +0000, Quentin Perret wrote:
-> The CRC calculation done by genksyms is triggered when the parser hits
-> EXPORT_SYMBOL*() macros. At this point, genksyms recursively expands the
-> types, and uses that as the input for the CRC calculation. In the case
-> of forward-declared structs, the type expands to 'UNKNOWN'. Next, the
-> result of the expansion of each type is cached, and is re-used when/if
-> the same type is seen again for another exported symbol in the file.
+On Thu, Apr 08, 2021 at 07:36:37PM +0200, Uwe Kleine-König wrote:
+> On Thu, Apr 08, 2021 at 05:51:36PM +0200, Clemens Gruber wrote:
+> > On Thu, Apr 08, 2021 at 02:50:40PM +0200, Thierry Reding wrote:
+> > > Yes, I think that's basically what this is saying. I think we're perhaps
+> > > getting hung up on the terminology here. PWM_STAGGERING_ALLOWED gives
+> > > the impression that we're dealing with some provider-specific feature,
+> > > whereas what we really want to express is that the PWM doesn't care
+> > > exactly when the active cycle starts and based on that a provider that
+> > > can support it may optimize the EMI behavior.
+> > > 
+> > > Maybe we can find a better name for this? Ultimately what this means is
+> > > that the consumer is primarily interested in the power output of the PWM
+> > > rather than the exact shape of the signal. So perhaps something like
+> > > PWM_USAGE_POWER would be more appropriate.
+> > 
+> > Yes, although it would then no longer be obvious that this feature leads
+> > to improved EMI behavior, as long as we mention that in the docs, I
+> > think it's a good idea
+> > 
+> > Maybe document it as follows?
+> > PWM_USAGE_POWER - Allow the driver to delay the start of the cycle
+> > for EMI improvements, as long as the power output stays the same
 > 
-> Unfortunately, this can cause CRC 'stability' issues when a struct
-> definition becomes visible in the middle of a C file. For example, let's
-> assume code with the following pattern:
-> 
->     struct foo;
-> 
->     int bar(struct foo *arg)
->     {
-> 	/* Do work ... */
->     }
->     EXPORT_SYMBOL_GPL(bar);
-> 
->     /* This contains struct foo's definition */
->     #include "foo.h"
-> 
->     int baz(struct foo *arg)
->     {
-> 	/* Do more work ... */
->     }
->     EXPORT_SYMBOL_GPL(baz);
-> 
-> Here, baz's CRC will be computed using the expansion of struct foo that
-> was cached after bar's CRC calculation ('UNKOWN' here). But if
-> EXPORT_SYMBOL_GPL(bar) is removed from the file (because of e.g. symbol
-> trimming using CONFIG_TRIM_UNUSED_KSYMS), struct foo will be expanded
-> late, during baz's CRC calculation, which now has visibility over the
-> full struct definition, hence resulting in a different CRC for baz.
-> 
-> This can cause annoying issues for distro kernel (such as the Android
-> Generic Kernel Image) which use CONFIG_UNUSED_KSYMS_WHITELIST. Indeed,
-> as per the above, adding a symbol to the whitelist can change the CRC of
-> symbols that are already kept exported. As such, modules built against a
-> kernel with a trimmed ABI may not load against the same kernel built
-> with an extended whitelist, even though they are still strictly binary
-> compatible. While rebuilding the modules would obviously solve the
-> issue, I believe this classifies as an odd genksyms corner case, and it
-> gets in the way of kernel updates in the GKI context.
-> 
-> To work around the issue, make sure to keep issuing the
-> __GENKSYMS_EXPORT_SYMBOL macros for all trimmed symbols, hence making
-> the genksyms parsing insensitive to symbol trimming.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  include/linux/export.h | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/include/linux/export.h b/include/linux/export.h
-> index 6271a5d9c988..27d848712b90 100644
-> --- a/include/linux/export.h
-> +++ b/include/linux/export.h
-> @@ -140,7 +140,12 @@ struct kernel_symbol {
->  #define ___cond_export_sym(sym, sec, ns, enabled)			\
->  	__cond_export_sym_##enabled(sym, sec, ns)
->  #define __cond_export_sym_1(sym, sec, ns) ___EXPORT_SYMBOL(sym, sec, ns)
-> +
-> +#ifdef __GENKSYMS__
-> +#define __cond_export_sym_0(sym, sec, ns) __GENKSYMS_EXPORT_SYMBOL(sym)
-> +#else
->  #define __cond_export_sym_0(sym, sec, ns) /* nothing */
-> +#endif
->  
->  #else
->  
+> I don't like both names, because for someone who is only halfway into
+> PWM stuff it is not understandable. Maybe ALLOW_PHASE_SHIFT?
 
-Anything to help make these symbol values more "stable" is good, they
-drive me crazy...
+Sounds good to me.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> When a consumer is only interested in the power output than
+> 
+> 	.period = 20
+> 	.duty_cycle = 5
+> 
+> would also be an allowed response for the request
+> 
+> 	.period = 200
+> 	.duty_cycle = 50
+> 
+> and this is not what is in the focus here.
+
+Right.
+
+If Thierry agrees, I can spin up a new revision.
+
+Maybe we can get it into 5.13 after all.
+
+Thanks,
+Clemens
