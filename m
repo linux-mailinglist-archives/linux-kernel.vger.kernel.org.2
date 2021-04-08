@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E85BD357E70
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3764357E79
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhDHIw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:52:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48050 "EHLO mail.kernel.org"
+        id S230328AbhDHIxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:53:52 -0400
+Received: from m12-11.163.com ([220.181.12.11]:47130 "EHLO m12-11.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229600AbhDHIwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:52:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A4176113A;
-        Thu,  8 Apr 2021 08:52:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617871963;
-        bh=MYMnMOl8XRwaeMn7oYUI3S8PUiMUgCGtoY6/t9GkuTo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QGuE1cVGIsBT4Fp8CzAnU4HchMwCsBjgEi9big/zO4pAlexrojWJv/0ByiXDQ64QP
-         erRqAaCNyPip776bwthQZP0pg0N5WEiBF8snNJxLvAcOUk5ljKaehmN0tgEx20ykM8
-         EhLwSEytbLydUvoced/8Qd47ENJ3/PIrF8jd24oUi0sPyajO3gCj+7jOg30JOWb+y1
-         5b/8zoiAG4LlqdD/7wHC75ARUxogcJCxM87HPcqcKIpfjAcow/jOxI05tHe/rkLG8L
-         LwnpVYd/lq2y3S6MXNYh+/Ld4W8bSilRP6XRB97FGx2G+TSzcFGFkQHmvW33vR91sZ
-         WSzVJOOAQK6iA==
-Date:   Thu, 8 Apr 2021 11:52:40 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-sgx@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] x86/sgx: Add sgx_nr_{all, free}_pages to the
- debugfs
-Message-ID: <YG7EWDXmwC9ai38k@kernel.org>
-References: <20210405232653.33680-1-jarkko@kernel.org>
- <20210405232653.33680-2-jarkko@kernel.org>
- <20210407155636.GG25319@zn.tnic>
- <YG3ZJyMB+S5LcUso@kernel.org>
- <20210407161533.GJ25319@zn.tnic>
+        id S229588AbhDHIxu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:53:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=1mKvG
+        +tRl+t/mX5hfyIaRT0s5yn0eepwWjouyHlWMEY=; b=ZYMIUoPVtPj5zvFM6NGdK
+        9zDAXmtUynYfz3wD7nP6QcmLa1D9/czosj+4anU2KZMH541sDv6tVoV69shxg/1y
+        Dlh9B8mBEX8iPhy8KfPURKRwPxsuo/BfzCVca24auIB5k810lC0NO2v3VOEfsPd1
+        +Yzt2dtKGmDzTnsMfhbbRE=
+Received: from localhost.localdomain (unknown [113.98.63.214])
+        by smtp7 (Coremail) with SMTP id C8CowADn0oprxG5gHVXFWA--.2954S2;
+        Thu, 08 Apr 2021 16:53:00 +0800 (CST)
+From:   Carlis <llyz108@163.com>
+To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Xuezhi Zhang <zhangxuezhi1@yulong.com>
+Subject: [PATCH v2] drm/panel: panel-dsi-cm: convert sysfs snprintf to sysfs_emit
+Date:   Thu,  8 Apr 2021 08:52:57 +0000
+Message-Id: <20210408085257.2396-1-llyz108@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407161533.GJ25319@zn.tnic>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8CowADn0oprxG5gHVXFWA--.2954S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7GrW3Xry3Gw1xCF47Zry3CFg_yoW8JF45pF
+        47G347ZrW8JFyqyFW5CFZ2vFyrZ3WIqFWxKa4kGanxuF4DAF48AF9rAFW7Kr15Jr1xC34a
+        gF4DKrW5uay8Ar7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jHrWrUUUUU=
+X-Originating-IP: [113.98.63.214]
+X-CM-SenderInfo: xoo16iiqy6il2tof0z/1tbi6xZuhVXlvmLpagABs4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 06:15:33PM +0200, Borislav Petkov wrote:
-> On Wed, Apr 07, 2021 at 07:09:11PM +0300, Jarkko Sakkinen wrote:
-> > I left out "epc" because they are already prefixed with "sgx_".
-> 
-> Are there any other "page" types which are going to be figurating in
-> some pseudofs or is "sgx" == "epc" in this case?
-> 
-> > debugfs was my first shot, but for sure these could be sysfs.
-> 
-> Ok, let's keep it in debugfs for now, it can always be made an ABI later
-> and moved to sysfs. But pls document what those are and what they do and
-> that when in debugfs, there are no guarantees that these interfaces will
-> be there in the future.
+From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
 
-I think these attributes are quite useful information to have available so
-I'd go actually doing sysfs attributes and create
-Documentation/ABI/stable/sysfs-driver-sgx to document them.
+Fix the following coccicheck warning:
+drivers/gpu/drm//panel/panel-dsi-cm.c:271:8-16: 
+WARNING: use scnprintf or sprintf
+drivers/gpu/drm//panel/panel-dsi-cm.c:251:8-16: 
+WARNING: use scnprintf or sprintf
 
-Given that they would go then to the sysfs directory of the driver, then
-probably the legit names for the attributes ought to be:
+Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+---
+v2: change snprint to snprintf in subject.
+---
+ drivers/gpu/drm/panel/panel-dsi-cm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-- nr_all_epc_pages
-- nr_free_epc_pages
+diff --git a/drivers/gpu/drm/panel/panel-dsi-cm.c b/drivers/gpu/drm/panel/panel-dsi-cm.c
+index 5fbfb71ca3d9..a8efb06cca64 100644
+--- a/drivers/gpu/drm/panel/panel-dsi-cm.c
++++ b/drivers/gpu/drm/panel/panel-dsi-cm.c
+@@ -248,7 +248,7 @@ static ssize_t num_dsi_errors_show(struct device *dev,
+ 	if (r)
+ 		return r;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", errors);
++	return sysfs_emit(buf, "%d\n", errors);
+ }
+ 
+ static ssize_t hw_revision_show(struct device *dev,
+@@ -268,7 +268,7 @@ static ssize_t hw_revision_show(struct device *dev,
+ 	if (r)
+ 		return r;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02x.%02x.%02x\n", id1, id2, id3);
++	return sysfs_emit(buf, "%02x.%02x.%02x\n", id1, id2, id3);
+ }
+ 
+ static DEVICE_ATTR_RO(num_dsi_errors);
+-- 
+2.25.1
 
-What do you think?
-
-PS. One useful case that I forgot to mention is that I use these to give
-idea what I gave EPC size in the BIOS. Now my EPC is set to 32 MB, and
-these report 20 MB of EPC pages. It's because other metadata (e.g. EPCM
-containing page attributes) is also stored in this area.
-
-/Jarkko
