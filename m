@@ -2,172 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4517D357FF8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56998357FFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:54:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhDHJxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:53:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57910 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhDHJxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:53:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2692BB02C;
-        Thu,  8 Apr 2021 09:52:56 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 11:52:51 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        shy828301@gmail.com, weixugc@google.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com
-Subject: Re: [PATCH 03/10] mm/migrate: update node demotion order during on
- hotplug events
-Message-ID: <YG7Sc3i54IV6KyPn@localhost.localdomain>
-References: <20210401183216.443C4443@viggo.jf.intel.com>
- <20210401183221.977831DE@viggo.jf.intel.com>
+        id S231226AbhDHJyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229686AbhDHJyu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 05:54:50 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302F6C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 02:54:40 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id l123so1406252pfl.8
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 02:54:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F06Z1RXUI5OZQHllx6yIelYubQ59fvVFVd2c1q8aYFo=;
+        b=lFey3WOVaEoUGK+gffnBEpyZ85Q8vR72KNL7iQWslR0Dsuw+Qfd9pWdCFEMJN0S2Lf
+         lDfiSrMZ0bvyr9HpQ1mdr0wOzq6x7HAf4Ltx7i6kZuMn22oHwfvSly1Sw5P23rSLVzCc
+         Eiij/wKY6lESQsif5OiYrqsXIGqyONMMct5mk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=F06Z1RXUI5OZQHllx6yIelYubQ59fvVFVd2c1q8aYFo=;
+        b=d17UVVhP8DZvaQxmtEXZ5Rt5B4jPzSs+jaRAL9gAb6eqAZfJpbByCIKac6Mmo879KG
+         O3sGxxBHZEdqZLUCNb/zgdp/Sb8lTO14CZIBFSVTJU0j+C6YxsODveltH3I7c9wuA0XR
+         y3yliPcbeCaGVI0qq81Mo1J7Di50VBR5FWc9jBDvHcLDclGRA/TDYh7Z1qO5pZ3uiJ9V
+         D8RDxWLMIMGlauuTjw4PeWMU/Ar3QCYjjQA7pwxgCzF70OlgcZQexb5NTaObmrfbXjg6
+         Nyc4OV5w8cbk/lV0XzW/1sV9fv7zuxXUqQ1T+84a08vrKqMU+GUCGj+ztnQ8WwOT45ih
+         eFZA==
+X-Gm-Message-State: AOAM532qVj2QJo24vb6IXM2nyb8HKIa5co9r/mmjlF1RDsxIrnuSygUy
+        jX4YqaVi5FeneKpizasqErwtIw==
+X-Google-Smtp-Source: ABdhPJxqkTB+8ooQy09dyBF9z9TbQVzPFo13ucXTs4ZmBx6F2XZyy5mEcW4yJMjsd5Y9vdSh3MDdMA==
+X-Received: by 2002:a63:f056:: with SMTP id s22mr7279239pgj.369.1617875679652;
+        Thu, 08 Apr 2021 02:54:39 -0700 (PDT)
+Received: from localhost ([2401:fa00:8f:203:25d8:8458:73e8:75ac])
+        by smtp.gmail.com with UTF8SMTPSA id js16sm7528068pjb.21.2021.04.08.02.54.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 02:54:39 -0700 (PDT)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        David Stevens <stevensd@chromium.org>
+Subject: [PATCH v3] drm/syncobj: use newly allocated stub fences
+Date:   Thu,  8 Apr 2021 18:54:28 +0900
+Message-Id: <20210408095428.3983055-1-stevensd@google.com>
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401183221.977831DE@viggo.jf.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 11:32:21AM -0700, Dave Hansen wrote:
-> 
-> From: Dave Hansen <dave.hansen@linux.intel.com>
-> 
-> Reclaim-based migration is attempting to optimize data placement in
-> memory based on the system topology.  If the system changes, so must
-> the migration ordering.
-> 
-> The implementation is conceptually simple and entirely unoptimized.
-> On any memory or CPU hotplug events, assume that a node was added or
-> removed and recalculate all migration targets.  This ensures that the
-> node_demotion[] array is always ready to be used in case the new
-> reclaim mode is enabled.
-> 
-> This recalculation is far from optimal, most glaringly that it does
-> not even attempt to figure out the hotplug event would have some
-> *actual* effect on the demotion order.  But, given the expected
-> paucity of hotplug events, this should be fine.
-> 
-> === What does RCU provide? ===
-> 
-> Imaginge a simple loop which walks down the demotion path looking
-> for the last node:
-> 
->         terminal_node = start_node;
->         while (node_demotion[terminal_node] != NUMA_NO_NODE) {
->                 terminal_node = node_demotion[terminal_node];
->         }
-> 
-> The initial values are:
-> 
->         node_demotion[0] = 1;
->         node_demotion[1] = NUMA_NO_NODE;
-> 
-> and are updated to:
-> 
->         node_demotion[0] = NUMA_NO_NODE;
->         node_demotion[1] = 0;
-> 
-> What guarantees that the loop did not observe:
-> 
->         node_demotion[0] = 1;
->         node_demotion[1] = 0;
-> 
-> and would loop forever?
-> 
-> With RCU, a rcu_read_lock/unlock() can be placed around the
-> loop.  Since the write side does a synchronize_rcu(), the loop
-> that observed the old contents is known to be complete after the
-> synchronize_rcu() has completed.
-> 
-> RCU, combined with disable_all_migrate_targets(), ensures that
-> the old migration state is not visible by the time
-> __set_migration_target_nodes() is called.
-> 
-> === What does READ_ONCE() provide? ===
-> 
-> READ_ONCE() forbids the compiler from merging or reordering
-> successive reads of node_demotion[].  This ensures that any
-> updates are *eventually* observed.
-> 
-> Consider the above loop again.  The compiler could theoretically
-> read the entirety of node_demotion[] into local storage
-> (registers) and never go back to memory, and *permanently*
-> observe bad values for node_demotion[].
-> 
-> Note: RCU does not provide any universal compiler-ordering
-> guarantees:
-> 
-> 	https://lore.kernel.org/lkml/20150921204327.GH4029@linux.vnet.ibm.com/
-> 
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: osalvador <osalvador@suse.de>
-> 
+From: David Stevens <stevensd@chromium.org>
 
-...
-  
-> +#if defined(CONFIG_MEMORY_HOTPLUG)
+Allocate a new private stub fence in drm_syncobj_assign_null_handle,
+instead of using a static stub fence.
 
-I am not really into PMEM, and I ignore whether we need
-CONFIG_MEMORY_HOTPLUG in order to have such memory on the system.
-If so, the following can be partly ignored.
+When userspace creates a fence with DRM_SYNCOBJ_CREATE_SIGNALED or when
+userspace signals a fence via DRM_IOCTL_SYNCOBJ_SIGNAL, the timestamp
+obtained when the fence is exported and queried with SYNC_IOC_FILE_INFO
+should match when the fence's status was changed from the perspective of
+userspace, which is during the respective ioctl.
 
-I think that you either want to check CONFIG_MEMORY_HOTPLUG +
-CONFIG_CPU_HOTPLUG, or just do not put it under any conf dependency.
+When a static stub fence started being used in by these ioctls, this
+behavior changed. Instead, the timestamp returned by SYNC_IOC_FILE_INFO
+became the first time anything used the static stub fence, which has no
+meaning to userspace.
 
-The thing is that migrate_on_reclaim_init() will only be called if
-we have CONFIG_MEMORY_HOTPLUG, and when we do not have that (but we do have
-CONFIG_CPU_HOTPLUG) the calls to set_migration_target_nodes() wont't be
-made when the system brings up the CPUs during the boot phase,
-which means node_demotion[] list won't be initialized.
+Signed-off-by: David Stevens <stevensd@chromium.org>
+---
+v2 -> v3:
+ - reuse the static stub spinlock
+v1 -> v2:
+ - checkpatch style fixes
 
-But this brings me to the next point.
+ drivers/dma-buf/dma-fence.c   | 27 ++++++++++++++++++++++++++-
+ drivers/gpu/drm/drm_syncobj.c | 25 +++++++++++++++++++------
+ include/linux/dma-fence.h     |  1 +
+ 3 files changed, 46 insertions(+), 7 deletions(-)
 
-From a conceptual point of view, I think you want to build the
-node_demotion[] list, being orthogonal to it whether we support CPU Or
-MEMORY hotplug.
-
-Now, in case we support CPU or MEMORY hotplug, we do want to be able to re-build
-the list for .e.g: in case NUMA nodes become cpu-less or memory-less.
-
-On x86_64, CPU_HOTPLUG is enabled by default if SMP, the same for
-MEMORY_HOTPLUG, but I am not sure about other archs.
-Can we have !CPU_HOTPLUG && MEMORY_HOTPLUG, !MEMORY_HOTPLUG &&
-CPU_HOTPLUG? I do now really know, but I think you should be careful
-about that.
-
-If this was my call, I would:
-
-- Do not place the burden to initialize node_demotion[] list in CPU
-  hotplug boot phase (or if so, be carefull because if I disable
-  MEMORY_HOTPLUG, I end up with no demotion_list[])
-- Diferentiate between migration_{online,offline}_cpu and
-  migrate_on_reclaim_callback() and place them under their respective
-  configs-dependency.
-
-But I might be missing some details so I might be off somewhere.
-
-Another thing that caught my eye is that we are calling
-set_migration_target_nodes() for every CPU the system brings up at boot
-phase. I know systems with *lots* of CPUs.
-I am not sure whether we have a mechanism to delay that until all CPUs
-that are meant to be online are online? (after boot?)
-That's probably happening in wonderland, but was just speaking out loud.
-
-(Of course the same happen with memory_hotplug acpi operations.
-All it takes is some qemu-handling)
-
+diff --git a/drivers/dma-buf/dma-fence.c b/drivers/dma-buf/dma-fence.c
+index d64fc03929be..ce0f5eff575d 100644
+--- a/drivers/dma-buf/dma-fence.c
++++ b/drivers/dma-buf/dma-fence.c
+@@ -123,7 +123,9 @@ static const struct dma_fence_ops dma_fence_stub_ops = {
+ /**
+  * dma_fence_get_stub - return a signaled fence
+  *
+- * Return a stub fence which is already signaled.
++ * Return a stub fence which is already signaled. The fence's
++ * timestamp corresponds to the first time after boot this
++ * function is called.
+  */
+ struct dma_fence *dma_fence_get_stub(void)
+ {
+@@ -141,6 +143,29 @@ struct dma_fence *dma_fence_get_stub(void)
+ }
+ EXPORT_SYMBOL(dma_fence_get_stub);
+ 
++/**
++ * dma_fence_allocate_private_stub - return a private, signaled fence
++ *
++ * Return a newly allocated and signaled stub fence.
++ */
++struct dma_fence *dma_fence_allocate_private_stub(void)
++{
++	struct dma_fence *fence;
++
++	fence = kzalloc(sizeof(*fence), GFP_KERNEL);
++	if (fence == NULL)
++		return ERR_PTR(-ENOMEM);
++
++	dma_fence_init(fence,
++		       &dma_fence_stub_ops,
++		       &dma_fence_stub_lock,
++		       0, 0);
++	dma_fence_signal(fence);
++
++	return fence;
++}
++EXPORT_SYMBOL(dma_fence_allocate_private_stub);
++
+ /**
+  * dma_fence_context_alloc - allocate an array of fence contexts
+  * @num: amount of contexts to allocate
+diff --git a/drivers/gpu/drm/drm_syncobj.c b/drivers/gpu/drm/drm_syncobj.c
+index 349146049849..a54aa850d143 100644
+--- a/drivers/gpu/drm/drm_syncobj.c
++++ b/drivers/gpu/drm/drm_syncobj.c
+@@ -350,12 +350,16 @@ EXPORT_SYMBOL(drm_syncobj_replace_fence);
+  *
+  * Assign a already signaled stub fence to the sync object.
+  */
+-static void drm_syncobj_assign_null_handle(struct drm_syncobj *syncobj)
++static int drm_syncobj_assign_null_handle(struct drm_syncobj *syncobj)
+ {
+-	struct dma_fence *fence = dma_fence_get_stub();
++	struct dma_fence *fence = dma_fence_allocate_private_stub();
++
++	if (IS_ERR(fence))
++		return PTR_ERR(fence);
+ 
+ 	drm_syncobj_replace_fence(syncobj, fence);
+ 	dma_fence_put(fence);
++	return 0;
+ }
+ 
+ /* 5s default for wait submission */
+@@ -469,6 +473,7 @@ EXPORT_SYMBOL(drm_syncobj_free);
+ int drm_syncobj_create(struct drm_syncobj **out_syncobj, uint32_t flags,
+ 		       struct dma_fence *fence)
+ {
++	int ret;
+ 	struct drm_syncobj *syncobj;
+ 
+ 	syncobj = kzalloc(sizeof(struct drm_syncobj), GFP_KERNEL);
+@@ -479,8 +484,13 @@ int drm_syncobj_create(struct drm_syncobj **out_syncobj, uint32_t flags,
+ 	INIT_LIST_HEAD(&syncobj->cb_list);
+ 	spin_lock_init(&syncobj->lock);
+ 
+-	if (flags & DRM_SYNCOBJ_CREATE_SIGNALED)
+-		drm_syncobj_assign_null_handle(syncobj);
++	if (flags & DRM_SYNCOBJ_CREATE_SIGNALED) {
++		ret = drm_syncobj_assign_null_handle(syncobj);
++		if (ret < 0) {
++			drm_syncobj_put(syncobj);
++			return ret;
++		}
++	}
+ 
+ 	if (fence)
+ 		drm_syncobj_replace_fence(syncobj, fence);
+@@ -1322,8 +1332,11 @@ drm_syncobj_signal_ioctl(struct drm_device *dev, void *data,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	for (i = 0; i < args->count_handles; i++)
+-		drm_syncobj_assign_null_handle(syncobjs[i]);
++	for (i = 0; i < args->count_handles; i++) {
++		ret = drm_syncobj_assign_null_handle(syncobjs[i]);
++		if (ret < 0)
++			break;
++	}
+ 
+ 	drm_syncobj_array_free(syncobjs, args->count_handles);
+ 
+diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+index 9f12efaaa93a..6ffb4b2c6371 100644
+--- a/include/linux/dma-fence.h
++++ b/include/linux/dma-fence.h
+@@ -587,6 +587,7 @@ static inline signed long dma_fence_wait(struct dma_fence *fence, bool intr)
+ }
+ 
+ struct dma_fence *dma_fence_get_stub(void);
++struct dma_fence *dma_fence_allocate_private_stub(void);
+ u64 dma_fence_context_alloc(unsigned num);
+ 
+ #define DMA_FENCE_TRACE(f, fmt, args...) \
 -- 
-Oscar Salvador
-SUSE L3
+2.31.0.208.g409f899ff0-goog
+
