@@ -2,171 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB62358D47
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48210358D54
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhDHTKe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Apr 2021 15:10:34 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:50728 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232969AbhDHTKd (ORCPT
+        id S232403AbhDHTPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 15:15:42 -0400
+Received: from ex13-edg-ou-002.vmware.com ([208.91.0.190]:48756 "EHLO
+        EX13-EDG-OU-002.vmware.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231451AbhDHTPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 15:10:33 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id 4F58F1F46053
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     Shreeya Patel <shreeya.patel@collabora.com>
-Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
-        chao@kernel.org, ebiggers@google.com, drosen@google.com,
-        ebiggers@kernel.org, yuchao0@huawei.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
-        andre.almeida@collabora.com
-Subject: Re: [PATCH v7 4/4] fs: unicode: Add utf8 module and a unicode layer
-Organization: Collabora
-References: <20210407144845.53266-1-shreeya.patel@collabora.com>
-        <20210407144845.53266-5-shreeya.patel@collabora.com>
-Date:   Thu, 08 Apr 2021 15:10:16 -0400
-In-Reply-To: <20210407144845.53266-5-shreeya.patel@collabora.com> (Shreeya
-        Patel's message of "Wed, 7 Apr 2021 20:18:45 +0530")
-Message-ID: <875z0wvbhj.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Thu, 8 Apr 2021 15:15:41 -0400
+Received: from sc9-mailhost2.vmware.com (10.113.161.72) by
+ EX13-EDG-OU-002.vmware.com (10.113.208.156) with Microsoft SMTP Server id
+ 15.0.1156.6; Thu, 8 Apr 2021 12:15:26 -0700
+Received: from vertex.vmware.com (unknown [10.16.120.5])
+        by sc9-mailhost2.vmware.com (Postfix) with ESMTP id B9945211E8;
+        Thu,  8 Apr 2021 12:15:29 -0700 (PDT)
+From:   Zack Rusin <zackr@vmware.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas_os@shipmail.org>,
+        <linux-mm@kvack.org>
+Subject: [PATCH] mm/mapping_dirty_helpers: Guard hugepage pud's usage
+Date:   Thu, 8 Apr 2021 15:15:29 -0400
+Message-ID: <20210408191529.677958-1-zackr@vmware.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Received-SPF: None (EX13-EDG-OU-002.vmware.com: zackr@vmware.com does not
+ designate permitted sender hosts)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shreeya Patel <shreeya.patel@collabora.com> writes:
+Lets make sure we don't use pud hugepage helpers on architectures
+which do not support it. This fixes the code on arm64.
 
-> utf8data.h_shipped has a large database table which is an auto-generated
-> decodification trie for the unicode normalization functions.
-> It is not necessary to load this large table in the kernel if no
-> filesystem is using it, hence make UTF-8 encoding loadable by converting
-> it into a module.
->
-> Modify the file called unicode-core which will act as a layer for
-> unicode subsystem. It will load the UTF-8 module and access it's functions
-> whenever any filesystem that needs unicode is mounted.
-> Currently, only UTF-8 encoding is supported but if any other encodings
-> are supported in future then the layer file would be responsible for
-> loading the desired encoding module.
->
-> Also, indirect calls using function pointers are slow, use static calls to
-> avoid overhead caused in case of repeated indirect calls. Static calls
-> improves the performance by directly calling the functions as opposed to
-> indirect calls.
->
-> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
-> ---
-> Changes in v7
->   - Update the help text in Kconfig
->   - Handle the unicode_load_static_call function failure by decrementing
->     the reference.
->   - Correct the code for handling built-in utf8 option as well.
->   - Correct the synchronization for accessing utf8mod.
->   - Make changes to unicode_unload() for handling the situation where
->     utf8mod != NULL and um == NULL.
->
-> Changes in v6
->   - Add spinlock to protect utf8mod and avoid NULL pointer
->     dereference.
->   - Change the static call function names for being consistent with
->     kernel coding style.
->   - Merge the unicode_load_module function with unicode_load as it is
->     not really needed to have a separate function.
->   - Use try_then_module_get instead of module_get to avoid loading the
->     module even when it is already loaded.
->   - Improve the commit message.
->
-> Changes in v5
->   - Rename global variables and default static call functions for better
->     understanding
->   - Make only config UNICODE_UTF8 visible and config UNICODE to be always
->     enabled provided UNICODE_UTF8 is enabled.  
->   - Improve the documentation for Kconfig
->   - Improve the commit message.
->  
-> Changes in v4
->   - Return error from the static calls instead of doing nothing and
->     succeeding even without loading the module.
->   - Remove the complete usage of utf8_ops and use static calls at all
->     places.
->   - Restore the static calls to default values when module is unloaded.
->   - Decrement the reference of module after calling the unload function.
->   - Remove spinlock as there will be no race conditions after removing
->     utf8_ops.
->
-> Changes in v3
->   - Add a patch which checks if utf8 is loaded before calling utf8_unload()
->     in ext4 and f2fs filesystems
->   - Return error if strscpy() returns value < 0
->   - Correct the conditions to prevent NULL pointer dereference while
->     accessing functions via utf8_ops variable.
->   - Add spinlock to avoid race conditions.
->   - Use static_call() for preventing speculative execution attacks.
->
-> Changes in v2
->   - Remove the duplicate file from the last patch.
->   - Make the wrapper functions inline.
->   - Remove msleep and use try_module_get() and module_put()
->     for ensuring that module is loaded correctly and also
->     doesn't get unloaded while in use.
->   - Resolve the warning reported by kernel test robot.
->   - Resolve all the checkpatch.pl warnings.
->
->  fs/unicode/Kconfig        |  26 +++-
->  fs/unicode/Makefile       |   5 +-
->  fs/unicode/unicode-core.c | 297 ++++++++++++++------------------------
->  fs/unicode/unicode-utf8.c | 264 +++++++++++++++++++++++++++++++++
->  include/linux/unicode.h   |  96 ++++++++++--
->  5 files changed, 483 insertions(+), 205 deletions(-)
->  create mode 100644 fs/unicode/unicode-utf8.c
->
-> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
-> index 2c27b9a5cd6c..0c69800a2a37 100644
-> --- a/fs/unicode/Kconfig
-> +++ b/fs/unicode/Kconfig
-> @@ -2,13 +2,31 @@
->  #
->  # UTF-8 normalization
->  #
-> +# CONFIG_UNICODE will be automatically enabled if CONFIG_UNICODE_UTF8
-> +# is enabled. This config option adds the unicode subsystem layer which loads
-> +# the UTF-8 module whenever any filesystem needs it.
->  config UNICODE
-> -	bool "UTF-8 normalization and casefolding support"
-> +	bool
-> +
-> +config UNICODE_UTF8
-> +	tristate "UTF-8 module"
+Signed-off-by: Zack Rusin <zackr@vmware.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Thomas Hellström (Intel) <thomas_os@shipmail.org>
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/mapping_dirty_helpers.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-"UTF-8 module" is the text that will appear in menuconfig and other
-configuration utilities.  This string not very helpful to describe what
-this code is about or why it is different from NLS_utf8.  People come to
-this option looking for the case-insensitive feature in ext4, so I'd
-prefer to keep the mention to 'casefolding'. or even improve the
-original a bit to say:
-
-tristate: "UTF-8 support for native Case-Insensitive filesystems"
-
-Other than these and what Eric mentioned, the code looks good to me.  I
-gave this series a try and it seems to work fine.
-
-It does raise a new warning, though
-
-/home/krisman/src/linux/fs/unicode/unicode-core.c: In function ‘unicode_load’:
-/home/krisman/src/linux/include/linux/kmod.h:28:8: warning: the omitted middle operand in ‘?:’ will always be ‘true’, suggest explicit middle operand [-Wparentheses]
-   28 |  ((x) ?: (__request_module(true, mod), (x)))
-      |        ^
-/home/krisman/src/linux/fs/unicode/unicode-core.c:123:7: note: in expansion of macro ‘try_then_request_module’
-  123 |  if (!try_then_request_module(utf8mod_get(), "utf8")) {
-
-But in this specific case, i think gcc is just being silly. What would
-be the right way to avoid it?
-
+diff --git a/mm/mapping_dirty_helpers.c b/mm/mapping_dirty_helpers.c
+index b59054ef2e10..b890854ec761 100644
+--- a/mm/mapping_dirty_helpers.c
++++ b/mm/mapping_dirty_helpers.c
+@@ -165,10 +165,12 @@ static int wp_clean_pud_entry(pud_t *pud, unsigned long addr, unsigned long end,
+ 		return 0;
+ 	}
+ 
++#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+ 	/* Huge pud */
+ 	walk->action = ACTION_CONTINUE;
+ 	if (pud_trans_huge(pudval) || pud_devmap(pudval))
+ 		WARN_ON(pud_write(pudval) || pud_dirty(pudval));
++#endif
+ 
+ 	return 0;
+ }
 -- 
-Gabriel Krisman Bertazi
+2.27.0
+
