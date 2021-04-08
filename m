@@ -2,84 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55FE357C34
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:14:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED38357C42
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhDHGOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:14:23 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:49476 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229552AbhDHGOW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:14:22 -0400
-X-UUID: c9a6fe7c5d9e47ef80b6c11c7ee23e54-20210408
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=Iqf9QrO8MkLePhv/L1kye+La4KwF/Sa5szZLfVp1vXE=;
-        b=uGrvtnauESL2DpUU+LgMHmqNVvwxI7irXCMz56ZHlZaAQdjmzv6iVWhoKWkHUkrYVakMPQdRLJ97ycgVHthbObDIFZAqodj9QLsEm1GWklSt4vTLsRVvuk/Y1mVmLwJkH4w0k7Mg0t/u+5YbTluR1so90+g2ELBdILbpJKFRGxc=;
-X-UUID: c9a6fe7c5d9e47ef80b6c11c7ee23e54-20210408
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <nina-cm.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 428261006; Thu, 08 Apr 2021 14:14:10 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 8 Apr 2021 14:14:09 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 8 Apr 2021 14:14:09 +0800
-Message-ID: <1617862449.8874.16.camel@mtksdccf07>
-Subject: Re: [PATCH v2 6/6] soc: mediatek: devapc: support mt8192
-From:   Nina Wu <nina-cm.wu@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Neal Liu <neal.liu@mediatek.com>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <Jackson-kt.Chang@mediatek.com>
-Date:   Thu, 8 Apr 2021 14:14:09 +0800
-In-Reply-To: <f52189e3-26b2-fd44-7059-f3bf0f79fbae@gmail.com>
-References: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
-         <1617259087-5502-6-git-send-email-nina-cm.wu@mediatek.com>
-         <f52189e3-26b2-fd44-7059-f3bf0f79fbae@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S229817AbhDHGQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:16:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229506AbhDHGQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 02:16:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 607ED6113E;
+        Thu,  8 Apr 2021 06:16:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617862569;
+        bh=USnkVxDQRrxu4qDsMgGinsxsKYzl9bMPrFjvuUl3TGg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mH4+/i7+M/oGewHr7GPLh6g9nKk+i5PrJHX1T7CFUrpJiktIx93A7icZZL26vHeXy
+         2z71d98G1GZVRTxBOXVEhocaA60BFGBZYJltX8imVVXrLVUetIilhWP6/w748XbkI+
+         l05j1IWPXZL/p4UDOdBRlrrEDU7skpzXz4pRr574=
+Date:   Thu, 8 Apr 2021 08:16:06 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
+        dhowells@redhat.com, hch@infradead.org, mbenes@suse.com,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
+        axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <YG6fpgmYSg/PwOrU@kroah.com>
+References: <YErOkGrvtQODXtB0@google.com>
+ <20210312183238.GW4332@42.do-not-panic.com>
+ <YEvA1dzDsFOuKdZ/@google.com>
+ <20210319190924.GK4332@42.do-not-panic.com>
+ <YFjHvUolScp3btJ9@google.com>
+ <20210322204156.GM4332@42.do-not-panic.com>
+ <YFkWMZ0m9nKCT69T@google.com>
+ <20210401235925.GR4332@42.do-not-panic.com>
+ <YGbNpLKXfWpy0ZZa@kroah.com>
+ <87blap4kum.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87blap4kum.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIE1hdHRoaWFzDQoNCk9uIFR1ZSwgMjAyMS0wNC0wNiBhdCAxNTo1NSArMDIwMCwgTWF0dGhp
-YXMgQnJ1Z2dlciB3cm90ZToNCj4gDQo+IE9uIDAxLzA0LzIwMjEgMDg6MzgsIE5pbmEgV3Ugd3Jv
-dGU6DQo+ID4gRnJvbTogTmluYSBXdSA8TmluYS1DTS5XdUBtZWRpYXRlay5jb20+DQo+ID4gDQo+
-ID4gQWRkIGNvbXBhdGlibGUgdG8gc3VwcG9ydCBtdDgxOTIuDQo+ID4gDQo+ID4gU2lnbmVkLW9m
-Zi1ieTogTmluYSBXdSA8TmluYS1DTS5XdUBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+IA0KPiAN
-Cj4gTG9va3MgZ29vZCwgSSdkIGxpa2UgdG8gc2VlIERUUyBmb3IgdGhpcyBhcyB3ZWxsLCBhbHRo
-b3VnaCBJIHVuZGVyc3RhbmQgaXQNCj4gZGVwZW5kcyBvbiB0aGUgY2xvY2sgcGF0Y2ggc2VyaWVz
-LiBQbGVhc2Ugbm90ZSBzbyBpbiBlaXRoZXIgYmVsb3cgdGhlICctLS0nIG9yDQo+IGluIGEgY292
-ZXIgbGV0dGVyLg0KPiANCj4gUmVnYXJkcywNCj4gTWF0dGhpYXMNCj4gDQoNCkkgd2lsbCBhZGQg
-ZGV2YXBjIG5vZGVzIGluIERUUyBpbiB0aGUgbmV4dCB2ZXJzaW9uLg0KDQpUaGFua3MNCg0KPiAN
-Cj4gPiAgZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWRldmFwYy5jIHwgMTUgKysrKysrKysrKysr
-KysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlm
-ZiAtLWdpdCBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1kZXZhcGMuYyBiL2RyaXZlcnMvc29j
-L21lZGlhdGVrL210ay1kZXZhcGMuYw0KPiA+IGluZGV4IGFmNTVjMDEuLmE1YzE1YjUgMTAwNjQ0
-DQo+ID4gLS0tIGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWRldmFwYy5jDQo+ID4gKysrIGIv
-ZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWRldmFwYy5jDQo+ID4gQEAgLTI1MSwxMSArMjUxLDI2
-IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2RldmFwY19kYXRhIGRldmFwY19tdDY3NzkgPSB7
-DQo+ID4gIAkudmlvX3NoaWZ0X2Nvbl9vZmZzZXQgPSAweEYyMCwNCj4gPiAgfTsNCj4gPiAgDQo+
-ID4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX2RldmFwY19kYXRhIGRldmFwY19tdDgxOTIgPSB7
-DQo+ID4gKwkudmlvX21hc2tfb2Zmc2V0ID0gMHgwLA0KPiA+ICsJLnZpb19zdGFfb2Zmc2V0ID0g
-MHg0MDAsDQo+ID4gKwkudmlvX2RiZzBfb2Zmc2V0ID0gMHg5MDAsDQo+ID4gKwkudmlvX2RiZzFf
-b2Zmc2V0ID0gMHg5MDQsDQo+ID4gKwkudmlvX2RiZzJfb2Zmc2V0ID0gMHg5MDgsDQo+ID4gKwku
-YXBjX2Nvbl9vZmZzZXQgPSAweEYwMCwNCj4gPiArCS52aW9fc2hpZnRfc3RhX29mZnNldCA9IDB4
-RjIwLA0KPiA+ICsJLnZpb19zaGlmdF9zZWxfb2Zmc2V0ID0gMHhGMzAsDQo+ID4gKwkudmlvX3No
-aWZ0X2Nvbl9vZmZzZXQgPSAweEYxMCwNCj4gPiArfTsNCj4gPiArDQo+ID4gIHN0YXRpYyBjb25z
-dCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a19kZXZhcGNfZHRfbWF0Y2hbXSA9IHsNCj4gPiAgCXsN
-Cj4gPiAgCQkuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktZGV2YXBjIiwNCj4gPiAgCQku
-ZGF0YSA9ICZkZXZhcGNfbXQ2Nzc5LA0KPiA+ICAJfSwgew0KPiA+ICsJCS5jb21wYXRpYmxlID0g
-Im1lZGlhdGVrLG10ODE5Mi1kZXZhcGMiLA0KPiA+ICsJCS5kYXRhID0gJmRldmFwY19tdDgxOTIs
-DQo+ID4gKwl9LCB7DQo+ID4gIAl9LA0KPiA+ICB9Ow0KPiA+ICANCj4gPiANCg0K
+On Thu, Apr 08, 2021 at 03:37:53AM +0200, Thomas Gleixner wrote:
+> Greg,
+> 
+> On Fri, Apr 02 2021 at 09:54, Greg KH wrote:
+> > On Thu, Apr 01, 2021 at 11:59:25PM +0000, Luis Chamberlain wrote:
+> >> As for the syfs deadlock possible with drivers, this fixes it in a generic way:
+> >> 
+> >> commit fac43d8025727a74f80a183cc5eb74ed902a5d14
+> >> Author: Luis Chamberlain <mcgrof@kernel.org>
+> >> Date:   Sat Mar 27 14:58:15 2021 +0000
+> >> 
+> >>     sysfs: add optional module_owner to attribute
+> >>     
+> >>     This is needed as otherwise the owner of the attribute
+> >>     or group read/store might have a shared lock used on driver removal,
+> >>     and deadlock if we race with driver removal.
+> >>     
+> >>     Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> >
+> > No, please no.  Module removal is a "best effort", if the system dies
+> > when it happens, that's on you.  I am not willing to expend extra energy
+> > and maintance of core things like sysfs for stuff like this that does
+> > not matter in any system other than a developer's box.
+> >
+> > Lock data, not code please.  Trying to tie data structure's lifespans
+> > to the lifespan of code is a tangled mess, and one that I do not want to
+> > add to in any form.
+> >
+> > sorry,
+> 
+> Sorry, but you are fundamentaly off track here. This has absolutely
+> nothing to do with module removal.
+> 
+> The point is that module removal is the reverse operation of module
+> insertion. So far so good.
+> 
+> But module insertion can fail. So if you have nested functionalities
+> which hang off or are enabled by moduled insertion then any fail in that
+> sequence has to be able to roll back and clean up properly no matter
+> what.
+> 
+> Which it turn makes modules removal a reverse operation of module
+> insertion.
+> 
+> If you think otherwise, then please provide a proper plan how nested
+> operations like sysfs - not to talk about more complex things like multi
+> instance discovery which can happen inside a module insertion sequence
+> can be properly rolled back.
+> 
+> Just declaring that rmmod is evil does not cut it. rmmod is the least of
+> the problems. If that fails, then a lot of rollback, failure handling
+> mechanisms are missing in the setup path already.
+> 
+> Anything which cannot cleanly rollback no matter whether the fail or
+> rollback request happens at insertion time or later is broken by design.
+> 
+> So either you declare module removal as disfunctional or you stop making
+> up semantically ill defined and therefore useless claims about it.
+> 
+> Your argument in:
+> 
+>  https://lore.kernel.org/linux-block/YGbNpLKXfWpy0ZZa@kroah.com/
+> 
+>  "Lock data, not code please.  Trying to tie data structure's lifespans
+>   to the lifespan of code is a tangled mess, and one that I do not want to
+>   add to in any form"
+> 
+> is just useless blurb because the fundamental purpose of discovery code
+> is to create the data structures which are tied to the code which is
+> associated to it.
+> 
+> Please stop this 'module removal' is not supported nonsense unless you
+> can prove a complete indepenence of module init/discovery code to
+> subsequent discovered entities depending on it.
 
+Ok, but to be fair, trying to add the crazy hacks that were being
+proposed to sysfs for something that is obviously not a code path that
+can be taken by a normal user or operation is just not going to fly.
+
+Removing a module from a system has always been "let's try it and see!"
+type of operation for a very long time.  While we try our best, doing
+horrible hacks for this rare type of thing are generally not considered
+a good idea which is why I said that.
+
+thanks,
+
+greg k-h
