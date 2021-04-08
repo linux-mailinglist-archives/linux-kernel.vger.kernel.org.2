@@ -2,61 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A48E4358320
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:18:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0E4358322
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231624AbhDHMSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:18:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39554 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231557AbhDHMSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:18:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 53178B114;
-        Thu,  8 Apr 2021 12:18:24 +0000 (UTC)
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v7 8/8] arm64/Kconfig: Introduce ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
-Date:   Thu,  8 Apr 2021 14:18:04 +0200
-Message-Id: <20210408121804.10440-9-osalvador@suse.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210408121804.10440-1-osalvador@suse.de>
-References: <20210408121804.10440-1-osalvador@suse.de>
+        id S231426AbhDHMSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:18:55 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16047 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231246AbhDHMSv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 08:18:51 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGKwl59vBzNty8;
+        Thu,  8 Apr 2021 20:15:51 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.131) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 20:18:29 +0800
+Subject: Re: [PATCH v1 1/2] scsi: pm8001: clean up for white space
+To:     Bart Van Assche <bvanassche@acm.org>, <jinpu.wang@cloud.ionos.com>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <1617354522-17113-1-git-send-email-luojiaxing@huawei.com>
+ <1617354522-17113-2-git-send-email-luojiaxing@huawei.com>
+ <7f8aef00-07bc-6b63-19a1-85a8153387cd@acm.org>
+ <3dd042b3-eb86-f0aa-5542-3f763f6830e0@huawei.com>
+ <e3532ffe-f750-5c95-7f8f-aafc86b094ca@acm.org>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <a7902d13-5863-df55-6ec1-e881df41d4a8@huawei.com>
+Date:   Thu, 8 Apr 2021 20:18:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
+In-Reply-To: <e3532ffe-f750-5c95-7f8f-aafc86b094ca@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable arm64 platform to use the MHP_MEMMAP_ON_MEMORY feature.
 
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
-Reviewed-by: David Hildenbrand <david@redhat.com>
----
- arch/arm64/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+On 2021/4/8 5:56, Bart Van Assche wrote:
+> On 4/5/21 11:39 PM, luojiaxing wrote:
+>>
+>> On 2021/4/3 0:01, Bart Van Assche wrote:
+>>> On 4/2/21 2:08 AM, Luo Jiaxing wrote:
+>>>>   #define AAP1_MEMMAP(r, c) \
+>>>> -    (*(u32 *)((u8*)pm8001_ha->memoryMap.region[AAP1].virt_ptr + 
+>>>> (r) * 32 \
+>>>> +    (*(u32 *)((u8 *)pm8001_ha->memoryMap.region[AAP1].virt_ptr + 
+>>>> (r) * 32 \
+>>>>       + (c)))
+>>> Since this macro is being modified, please convert it into an inline
+>>> function such that the type of the arguments can be verified by the
+>>> compiler.
+>>
+>> Sure, but still keep the function name as AAP1_MEMMAP?
+>
+> The coding style requires lower case names for functions so the 
+> function name probably should be converted to lower case.
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 5656e7aacd69..0e23acd173f0 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -309,6 +309,9 @@ config ARCH_ENABLE_MEMORY_HOTPLUG
- config ARCH_ENABLE_MEMORY_HOTREMOVE
- 	def_bool y
- 
-+config ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
-+	def_bool y
-+
- config SMP
- 	def_bool y
- 
--- 
-2.16.3
+
+Sure, and sorry to post v2 before you reply, you can ignore it and 
+directly check v3.
+
+
+Thanks
+
+Jiaxing
+
+
+>
+> Thanks,
+>
+> Bart.
+>
+> .
+>
 
