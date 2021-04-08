@@ -2,133 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79E0358BD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:59:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 817C2358BD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbhDHR7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:59:51 -0400
-Received: from mail-oi1-f180.google.com ([209.85.167.180]:37567 "EHLO
-        mail-oi1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhDHR7t (ORCPT
+        id S232727AbhDHSAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 14:00:12 -0400
+Received: from saphodev.broadcom.com ([192.19.232.172]:45896 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231676AbhDHSAL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:59:49 -0400
-Received: by mail-oi1-f180.google.com with SMTP id k25so3086249oic.4;
-        Thu, 08 Apr 2021 10:59:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ax3ABmQpuWlTEUM4I+bnWh/ue2r9VyNMX16GZ55B25k=;
-        b=opAZ6TLrYpnSvSawO7UNq0D0i6tGu9WTxQJ0CZ6u89/FnUmfRgiEAXYoGkA5yubn4s
-         yXH4BNH2Jj5YBZ6gTHmVWGyfngBHbvb0nunb1ikIq7imMQicyL1Xkgm4ymf5VygwyRSm
-         +zur+LH7jAdOxBQ6tA8QTUfQhjjY8mM7UIRAwglEaRhND4TYOE/eJdATKvFe5mRFN4zn
-         8/CyaubdfRqYRgW+5fxfVOwHVhKgwMilF8VVI1k5VivLrYqVnlJJEwA9lMVYW1umyM8w
-         aDwKoC7B48iEs0JuafplxSxF1UoCQ1mg/W5Sar9bBBlZEiCz1fPMjiJJ5jB40OL7HVBE
-         muXw==
-X-Gm-Message-State: AOAM5301mJKmDPjARF00deVw+viS1Kumh5WUEGX2MA88LHiURydmZnD/
-        OrNAb78wtR9yHzVwx6KeE7OsSRCrzIZcvLB8pX8=
-X-Google-Smtp-Source: ABdhPJwUtkkrpSPv+VoY0saC9mw4IuWibMv4PWM7IxUrA5g3CzTGF3ir/gABhN80eWU6JzFakFJnNLNDUf/+cZPpohk=
-X-Received: by 2002:aca:5fc3:: with SMTP id t186mr6880729oib.69.1617904778140;
- Thu, 08 Apr 2021 10:59:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210407213048.940498-1-nathan@kernel.org>
-In-Reply-To: <20210407213048.940498-1-nathan@kernel.org>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Apr 2021 19:59:27 +0200
-Message-ID: <CAJZ5v0iKYN-tM=3JXTPxXFMsyK8X1_yEHSwmtK+xsAmZ-8D=Pg@mail.gmail.com>
-Subject: Re: [PATCH] ACPI / CPPC: Replace cppc_attr with kobj_attribute
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 8 Apr 2021 14:00:11 -0400
+Received: from lbrmn-lnxub113.ric.broadcom.net (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 51E807DA6;
+        Thu,  8 Apr 2021 10:59:58 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 51E807DA6
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1617904799;
+        bh=uwkHFhiBA2U8qW7q38E/cHJRJKngyCGEFl2zH23ECf4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ChSYc/X132iiE3npAticRo9dlpun05u6/1CSprcVHi3Ha0htJgTC6IHyp5DnlvSfD
+         8fwMu/JhlYEXVhCMhK4ak2ZcrfT9ovUeLnTgTdlD0Ug7FK2islQ9uzJYA4QE7cYLM6
+         ryVyc+F5DhtUnJDSnQaAPn0e1GA4YIhCVtTxfa5U=
+From:   Scott Branden <scott.branden@broadcom.com>
+To:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>,
+        Scott Branden <scott.branden@broadcom.com>
+Subject: [PATCH] mmc: add quirk to disable eMMC cache for Micron eMMC v5.0 cards
+Date:   Thu,  8 Apr 2021 10:59:51 -0700
+Message-Id: <20210408175951.22450-1-scott.branden@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 11:32 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> All of the CPPC sysfs show functions are called via indirect call in
-> kobj_attr_show(), where they should be of type
->
-> ssize_t (*show)(struct kobject *kobj, struct kobj_attribute *attr, char *buf);
->
-> because that is the type of the ->show() member in
-> 'struct kobj_attribute' but they are actually of type
->
-> ssize_t (*show)(struct kobject *kobj, struct attribute *attr, char *buf);
->
-> because of the ->show() member in 'struct cppc_attr', resulting in a
-> Control Flow Integrity violation [1].
->
-> $ cat /sys/devices/system/cpu/cpu0/acpi_cppc/highest_perf
-> 3400
->
-> $ dmesg | grep "CFI failure"
-> [  175.970559] CFI failure (target: show_highest_perf+0x0/0x8):
->
-> As far as I can tell, the only different between 'struct cppc_attr' and
-> 'struct kobj_attribute' aside from the type of the attr parameter is the
-> type of the count parameter in the ->store() member (ssize_t vs.
-> size_t), which does not actually matter because all of these nodes are
-> read-only.
->
-> Eliminate 'struct cppc_attr' in favor of 'struct kobj_attribute' to fix
-> the violation.
->
-> [1]: https://lore.kernel.org/r/20210401233216.2540591-1-samitolvanen@google.com/
->
-> Fixes: 158c998ea44b ("ACPI / CPPC: add sysfs support to compute delivered performance")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1343
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->  drivers/acpi/cppc_acpi.c | 14 +++-----------
->  1 file changed, 3 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/acpi/cppc_acpi.c b/drivers/acpi/cppc_acpi.c
-> index 69057fcd2c04..a5e6fd0bafa1 100644
-> --- a/drivers/acpi/cppc_acpi.c
-> +++ b/drivers/acpi/cppc_acpi.c
-> @@ -119,23 +119,15 @@ static DEFINE_PER_CPU(struct cpc_desc *, cpc_desc_ptr);
->   */
->  #define NUM_RETRIES 500ULL
->
-> -struct cppc_attr {
-> -       struct attribute attr;
-> -       ssize_t (*show)(struct kobject *kobj,
-> -                       struct attribute *attr, char *buf);
-> -       ssize_t (*store)(struct kobject *kobj,
-> -                       struct attribute *attr, const char *c, ssize_t count);
-> -};
-> -
->  #define define_one_cppc_ro(_name)              \
-> -static struct cppc_attr _name =                        \
-> +static struct kobj_attribute _name =           \
->  __ATTR(_name, 0444, show_##_name, NULL)
->
->  #define to_cpc_desc(a) container_of(a, struct cpc_desc, kobj)
->
->  #define show_cppc_data(access_fn, struct_name, member_name)            \
->         static ssize_t show_##member_name(struct kobject *kobj,         \
-> -                                       struct attribute *attr, char *buf) \
-> +                               struct kobj_attribute *attr, char *buf) \
->         {                                                               \
->                 struct cpc_desc *cpc_ptr = to_cpc_desc(kobj);           \
->                 struct struct_name st_name = {0};                       \
-> @@ -161,7 +153,7 @@ show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, reference_perf);
->  show_cppc_data(cppc_get_perf_ctrs, cppc_perf_fb_ctrs, wraparound_time);
->
->  static ssize_t show_feedback_ctrs(struct kobject *kobj,
-> -               struct attribute *attr, char *buf)
-> +               struct kobj_attribute *attr, char *buf)
->  {
->         struct cpc_desc *cpc_ptr = to_cpc_desc(kobj);
->         struct cppc_perf_fb_ctrs fb_ctrs = {0};
->
-> base-commit: 454859c552da78b0f587205d308401922b56863e
-> --
+From: Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>
 
-Applied as 5.13 material, thanks!
+In certain rare combination of operations, Micron eMMC v5.0 cards
+may experience data errors if internal cache is enabled.
+This may lead to eMMC related data errors.
+Introduce a quirk to disable cache on these eMMC cards.
+
+Signed-off-by: Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+---
+ drivers/mmc/core/card.h   | 5 +++++
+ drivers/mmc/core/mmc.c    | 4 ++--
+ drivers/mmc/core/quirks.h | 8 ++++++++
+ include/linux/mmc/card.h  | 1 +
+ 4 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
+index 7bd392d55cfa..22cea63ac359 100644
+--- a/drivers/mmc/core/card.h
++++ b/drivers/mmc/core/card.h
+@@ -222,4 +222,9 @@ static inline int mmc_card_broken_hpi(const struct mmc_card *c)
+ 	return c->quirks & MMC_QUIRK_BROKEN_HPI;
+ }
+ 
++static inline int mmc_card_broken_cache(const struct mmc_card *c)
++{
++	return c->quirks & MMC_QUIRK_BROKEN_CACHE;
++}
++
+ #endif
+diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
+index 8741271d3971..cd83b7f0e59c 100644
+--- a/drivers/mmc/core/mmc.c
++++ b/drivers/mmc/core/mmc.c
+@@ -1820,12 +1820,12 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
+ 	 * sudden power failure tests. Let's extend the timeout to a minimum of
+ 	 * DEFAULT_CACHE_EN_TIMEOUT_MS and do it for all cards.
+ 	 */
+-	if (card->ext_csd.cache_size > 0) {
++	if (!mmc_card_broken_cache(card) && card->ext_csd.cache_size > 0) {
+ 		unsigned int timeout_ms = MIN_CACHE_EN_TIMEOUT_MS;
+ 
+ 		timeout_ms = max(card->ext_csd.generic_cmd6_time, timeout_ms);
+ 		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
+-				EXT_CSD_CACHE_CTRL, 1, timeout_ms);
++				 EXT_CSD_CACHE_CTRL, 1, timeout_ms);
+ 		if (err && err != -EBADMSG)
+ 			goto free_card;
+ 
+diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
+index d68e6e513a4f..23972d87c82a 100644
+--- a/drivers/mmc/core/quirks.h
++++ b/drivers/mmc/core/quirks.h
+@@ -116,6 +116,14 @@ static const struct mmc_fixup __maybe_unused mmc_ext_csd_fixups[] = {
+ 	MMC_FIXUP_EXT_CSD_REV(CID_NAME_ANY, CID_MANFID_NUMONYX,
+ 			      0x014e, add_quirk, MMC_QUIRK_BROKEN_HPI, 6),
+ 
++	/*
++	 * In certain rare combination of operations, Micron eMMC v5.0 cards
++	 * may experience data errors if internal cache is enabled.
++	 * Disabling cache for these cards eliminates the issue.
++	 */
++	MMC_FIXUP_EXT_CSD_REV(CID_NAME_ANY, CID_MANFID_MICRON,
++			      0x014e, add_quirk, MMC_QUIRK_BROKEN_CACHE, 7),
++
+ 	END_FIXUP
+ };
+ 
+diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+index f9ad35dd6012..22f256a4e54e 100644
+--- a/include/linux/mmc/card.h
++++ b/include/linux/mmc/card.h
+@@ -270,6 +270,7 @@ struct mmc_card {
+ #define MMC_QUIRK_BROKEN_IRQ_POLLING	(1<<11)	/* Polling SDIO_CCCR_INTx could create a fake interrupt */
+ #define MMC_QUIRK_TRIM_BROKEN	(1<<12)		/* Skip trim */
+ #define MMC_QUIRK_BROKEN_HPI	(1<<13)		/* Disable broken HPI support */
++#define MMC_QUIRK_BROKEN_CACHE	(1<<14)		/* Disable broken cache */
+ 
+ 	bool			reenable_cmdq;	/* Re-enable Command Queue */
+ 
+-- 
+2.17.1
+
