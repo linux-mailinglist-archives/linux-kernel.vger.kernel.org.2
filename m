@@ -2,248 +2,371 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C956C357BCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0250357BCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhDHFXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 01:23:00 -0400
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:36723 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhDHFW5 (ORCPT
+        id S229711AbhDHFYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 01:24:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhDHFYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 01:22:57 -0400
-Received: by mail-lf1-f54.google.com with SMTP id n138so1858402lfa.3;
-        Wed, 07 Apr 2021 22:22:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
-         :in-reply-to:references:mime-version:date:user-agent
-         :content-transfer-encoding;
-        bh=LwIkpBbg+hs9AAsq9S1MhcrqF1ZjzaswrunzqqDZ5p0=;
-        b=P1jZjeRqJDxuBN7lLfuo1UTNV7H03Q4eMGIVyLlgmD9+jXUleIzY28de6CwpVMw/3e
-         FSIMOhaub/SZEIFfnr8oO/2rB+/ee83TYdLAMr5DotOObkXjBWaICv35TwmlQEjXX9LB
-         36H0uLfMsxf41sJb2ZNk0DSDpirMvaqec9hAwoRIOPLhKZ6Y2cPGoDkCKMBWPJF3hu7A
-         UyT5g06mX1pHZOg9HTZaZUL0t2lRwkt6Mv79DJ706wiMiYJop7XOYrN84/PxKNPv+sjR
-         P+MzaWTEUa96niixOAfTz1yRARorBeYTQG6ZFSJBPxranbE/E0xprSbTa0uuZQzModHx
-         Ae7w==
-X-Gm-Message-State: AOAM531E/jVy4JpPRcmE+dhKrA1S+mlbuNFcddO7HgehncqgMQYQe4c0
-        BUclFnF+OEU5QN6e1Z38jyw=
-X-Google-Smtp-Source: ABdhPJyIg/bNU1H+W555nMnakz7CQrknh2ELCBr8mh+3eYxc2AoRqYtNnUjOFLTOeaucA6LvXb88dQ==
-X-Received: by 2002:a05:6512:3249:: with SMTP id c9mr4990577lfr.5.1617859364958;
-        Wed, 07 Apr 2021 22:22:44 -0700 (PDT)
-Received: from dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
-        by smtp.gmail.com with ESMTPSA id x5sm2709152ljd.128.2021.04.07.22.22.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 22:22:44 -0700 (PDT)
-Message-ID: <7ac9ab85553a5988e4a4db76d66261d01e865d31.camel@fi.rohmeurope.com>
-Subject: Re: [PATCH v6 3/8] regulator: IRQ based event/error notification
- helpers
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Reply-To: matti.vaittinen@fi.rohmeurope.com
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        linux-arm-msm@vger.kernel.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-In-Reply-To: <CAHp75VcHeiQgvZ5e+Dz+gpKghCo5RSTQLsyHGGSgdVQbVu2t+g@mail.gmail.com>
-References: <cover.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
-         <0862bbb6813891594f56700808d08160b6635bf4.1617789229.git.matti.vaittinen@fi.rohmeurope.com>
-         <CAHp75VcHeiQgvZ5e+Dz+gpKghCo5RSTQLsyHGGSgdVQbVu2t+g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 8 Apr 2021 01:24:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89F5FC061760
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 22:24:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=mV9+VvLdUIRw1Snl9/obQu2+Xv6DCsYwlWAVEBnHork=; b=GDhrnVq9zK+eMPIYf3a1Vk4gFb
+        81AAMLbUew2ohttbLycI0YuySviwa2P4AvpXsPTL9DqEWyMHOhnqunMprL4gLP4xm1ReKi2h/00Nx
+        YS8uTzvDSVSTNaY0x0Tjn6AtcX9idWsP6WLa408XB93F3Aaz8XviZJc7V9UOawzaH7vONETVWav3P
+        oeba+HHdPgtiWHu03yz5JEMq52WBTyV3NnGaj87R3FkQcxjpDomqHSt/ALusTogIg9kagIeGl16GQ
+        ydE9P7/JkK7xU53NZRZzuI33ePEGAGb/IFKOQ8pbDfGrKZc/oIKnlvEbEjLpVDlSoeToS5K0IHd3z
+        nTRIertA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUN8q-00FcgR-Tt; Thu, 08 Apr 2021 05:23:55 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [RFC PATCH] Add split_lock
+Date:   Thu,  8 Apr 2021 06:23:38 +0100
+Message-Id: <20210408052338.3722069-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Date:   Thu, 08 Apr 2021 08:22:37 +0300
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Andy, All.
+bit_spinlocks are horrible on RT because there's absolutely nowhere
+to put the mutex to sleep on.  They also do not participate in lockdep
+because there's nowhere to put the map.
 
-On Wed, 2021-04-07 at 16:21 +0300, Andy Shevchenko wrote:
-> On Wed, Apr 7, 2021 at 1:04 PM Matti Vaittinen
-> <matti.vaittinen@fi.rohmeurope.com> wrote:
-> > Provide helper function for IC's implementing regulator
-> > notifications
-> > when an IRQ fires. The helper also works for IRQs which can not be
-> > acked.
-> > Helper can be set to disable the IRQ at handler and then re-
-> > enabling it
-> > on delayed work later. The helper also adds
-> > regulator_get_error_flags()
-> > errors in cache for the duration of IRQ disabling.
-> 
-> Thanks for an update, my comments below. After addressing them, feel
-> free to add
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> > 
-> >  static int _regulator_get_error_flags(struct regulator_dev *rdev,
-> >                                         unsigned int *flags)
-> >  {
-> > -       int ret;
-> > +       int ret, tmpret;
-> > 
-> >         regulator_lock(rdev);
-> > 
-> > +       ret = rdev_get_cached_err_flags(rdev);
-> > +
-> >         /* sanity check */
-> > -       if (!rdev->desc->ops->get_error_flags) {
-> > +       if (rdev->desc->ops->get_error_flags) {
-> > +               tmpret = rdev->desc->ops->get_error_flags(rdev,
-> > flags);
-> > +               if (tmpret > 0)
-> > +                       ret |= tmpret;
-> 
-> Oh, I don't like this. Easy fix is to rename ret (okay, it's been
-> used
-> elsewhere, so adding then) to something meaningful, like error_flags,
-> then you can easily understand that value should be positive and
-> error
-> codes are negative.
+Most (all?) bit spinlocks are actually a split lock; logically they
+could be treated as a single spinlock, but for performance, we want to
+split the lock over many objects.  Introduce the split_lock as somewhere
+to store the lockdep map and as somewhere that the RT kernel can put
+a mutex.  It may also let us store a ticket lock for better performance
+on non-RT kernels in the future, but I have left the current cpu_relax()
+implementation intact for now.
 
-No wonder if this looks hairy. I think I have got this plain wrong. The
-rdev_get_cached_err_flags() is not updating the flags. Looks like just
-plain mistake from my side. I think I've mixed the returning flags via
-parameter and return value. This must be fixed. Well spotted.
+The API change breaks all users except for the two which have been
+converted.  This is an RFC, and I'm willing to fix all the rest.
 
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/dcache.c                  | 25 ++++++++++----------
+ include/linux/bit_spinlock.h | 36 ++++++++++++++---------------
+ include/linux/list_bl.h      |  9 ++++----
+ include/linux/split_lock.h   | 45 ++++++++++++++++++++++++++++++++++++
+ mm/slub.c                    |  6 +++--
+ 5 files changed, 84 insertions(+), 37 deletions(-)
+ create mode 100644 include/linux/split_lock.h
 
-> + */
-> > +void *devm_regulator_irq_helper(struct device *dev,
-> > +                               const struct regulator_irq_desc *d,
-> > int irq,
-> > +                               int irq_flags, int common_errs,
-> > +                               int *per_rdev_errs,
-> > +                               struct regulator_dev **rdev, int
-> > rdev_amount)
-> 
-> I didn't get why you need the ** pointer instead of plain pointer.
-
-We have an array of pointers. And we give a pointer to the first
-pointer. Maybe it's the lack of coffee but I don't see why a single
-pointer would be correct? rdev structures are not in contagious memory,
-pointers to rdevs are. So we need address of first pointer, right?
-+#include <linux/device.h>
-
-
-> > +#include <linux/err.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/of_irq.h>
-> 
-> Not sure how this header is used. I haven't found any direct users of
-> it. Perhaps you wanted interrupt.h?
-
-Thanks. I think this specific header may be a leftover from first draft
-where I thought I'll use named IRQs. The header was for
- of_irq_get_byname(). That ended up as a mess for everything else but
-platform devices :) I'll check the headers, thanks.
-
-> > +#include <linux/regmap.h>
-> > +#include <linux/slab.h>
-> > +#include <linux/spinlock.h>
-> 
-> + Blank line? I would separate group of generic headers with
-> particular to the subsystem
-
-I don't see this being used in regulator subsystem - and to tell the
-truth, I don't really see the value.
-
-> > +#include <linux/regulator/driver.h>
-
-...
-
-> > +
-> > +reread:
-> > +       if (d->fatal_cnt && h->retry_cnt > d->fatal_cnt) {
-> > +               if (d->die)
-> > +                       ret = d->die(rid);
-> > +               else
-> > +                       die_loudly("Regulator HW failure? - no IC
-> > recovery");
-> > +
-> > +               /*
-> > +                * If the 'last resort' IC recovery failed we will
-> > have
-> > +                * nothing else left to do...
-> > +                */
-> > +               if (ret)
-> > +                       die_loudly("Regulator HW failure? - IC
-> > recovery failed");
-> 
-> Looking at the above code this will be executed if and only if
-> d->die() is defined, correct?
-> In that case, why not
-> 
-> if (d->die) {
->   ret = ...
->   if (ret)
->    rdev_die_loudly(...);
-> } else
->    rdev_die_loudly(...);
-> 
-> ?
-
-I think this should simply be:
-
-if (!d->die)
-	die_loudly("Regulator HW failure? - no IC recovery");
-
-ret = d->die(rdev);
-if (ret)
-	die_loudly(...);
-
-...
-
-> > +static void init_rdev_errors(struct regulator_irq *h)
-> > +{
-> > +       int i;
-> > +
-> > +       for (i = 0; i < h->rdata.num_states; i++) {
-> > +               if (h->rdata.states[i].possible_errs)
-> > +                       /* Can we trust writing this boolean is
-> > atomic? */
-> 
-> No. boolean is a compiler / platform specific and it may potentially
-> be written in a non-atomic way.
-
-Hmm.. I don't think this really is a problem here. We only use the
-use_cached_err for true/false evaluation - and if error getting api is
-called after the boolean is changed - then cached error is used, if
-before, then it is not used. Even if the value of the boolean was read
-in the middle of writing it, it will still evaluate either true or
-false - there is no 'maybe' state :)
-
-My point, I guess we can do the change without locking here. Please
-correct me if I am wrong. I'll just drop this comment.
-
-> 
-> re-enable / reenable
-> 
-> > + *             added to status. If that is the case it may be
-> > desirable to
-> > + *             return REGULATOR_ERROR_CLEARED and not
-> > REGULATOR_ERROR_ON to
-> > + *             allow IRQ fire again and to generate notifications
-> > also for
-> > + *             the new issues.
-> > + *
-> > + * This structure is passed to map_event and renable for reporting
-> > regulator
-> 
-> Ditto.
-
-the "renable" is referring to the callback function pointer which is
-named "renable".
-
-
-Best Regards
--- Matti Vaittinen
+diff --git a/fs/dcache.c b/fs/dcache.c
+index 7d24ff7eb206..a3861d330001 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -96,6 +96,7 @@ EXPORT_SYMBOL(slash_name);
+ 
+ static unsigned int d_hash_shift __read_mostly;
+ 
++static DEFINE_SPLIT_LOCK(d_hash_lock);
+ static struct hlist_bl_head *dentry_hashtable __read_mostly;
+ 
+ static inline struct hlist_bl_head *d_hash(unsigned int hash)
+@@ -469,9 +470,9 @@ static void ___d_drop(struct dentry *dentry)
+ 	else
+ 		b = d_hash(dentry->d_name.hash);
+ 
+-	hlist_bl_lock(b);
++	hlist_bl_lock(b, &d_hash_lock);
+ 	__hlist_bl_del(&dentry->d_hash);
+-	hlist_bl_unlock(b);
++	hlist_bl_unlock(b, &d_hash_lock);
+ }
+ 
+ void __d_drop(struct dentry *dentry)
+@@ -2074,9 +2075,9 @@ static struct dentry *__d_instantiate_anon(struct dentry *dentry,
+ 	__d_set_inode_and_type(dentry, inode, add_flags);
+ 	hlist_add_head(&dentry->d_u.d_alias, &inode->i_dentry);
+ 	if (!disconnected) {
+-		hlist_bl_lock(&dentry->d_sb->s_roots);
++		hlist_bl_lock(&dentry->d_sb->s_roots, &d_hash_lock);
+ 		hlist_bl_add_head(&dentry->d_hash, &dentry->d_sb->s_roots);
+-		hlist_bl_unlock(&dentry->d_sb->s_roots);
++		hlist_bl_unlock(&dentry->d_sb->s_roots, &d_hash_lock);
+ 	}
+ 	spin_unlock(&dentry->d_lock);
+ 	spin_unlock(&inode->i_lock);
+@@ -2513,9 +2514,9 @@ static void __d_rehash(struct dentry *entry)
+ {
+ 	struct hlist_bl_head *b = d_hash(entry->d_name.hash);
+ 
+-	hlist_bl_lock(b);
++	hlist_bl_lock(b, &d_hash_lock);
+ 	hlist_bl_add_head_rcu(&entry->d_hash, b);
+-	hlist_bl_unlock(b);
++	hlist_bl_unlock(b, &d_hash_lock);
+ }
+ 
+ /**
+@@ -2606,9 +2607,9 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
+ 		goto retry;
+ 	}
+ 
+-	hlist_bl_lock(b);
++	hlist_bl_lock(b, &d_hash_lock);
+ 	if (unlikely(READ_ONCE(parent->d_inode->i_dir_seq) != seq)) {
+-		hlist_bl_unlock(b);
++		hlist_bl_unlock(b, &d_hash_lock);
+ 		rcu_read_unlock();
+ 		goto retry;
+ 	}
+@@ -2626,7 +2627,7 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
+ 			continue;
+ 		if (!d_same_name(dentry, parent, name))
+ 			continue;
+-		hlist_bl_unlock(b);
++		hlist_bl_unlock(b, &d_hash_lock);
+ 		/* now we can try to grab a reference */
+ 		if (!lockref_get_not_dead(&dentry->d_lockref)) {
+ 			rcu_read_unlock();
+@@ -2664,7 +2665,7 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
+ 	new->d_flags |= DCACHE_PAR_LOOKUP;
+ 	new->d_wait = wq;
+ 	hlist_bl_add_head_rcu(&new->d_u.d_in_lookup_hash, b);
+-	hlist_bl_unlock(b);
++	hlist_bl_unlock(b, &d_hash_lock);
+ 	return new;
+ mismatch:
+ 	spin_unlock(&dentry->d_lock);
+@@ -2677,12 +2678,12 @@ void __d_lookup_done(struct dentry *dentry)
+ {
+ 	struct hlist_bl_head *b = in_lookup_hash(dentry->d_parent,
+ 						 dentry->d_name.hash);
+-	hlist_bl_lock(b);
++	hlist_bl_lock(b, &d_hash_lock);
+ 	dentry->d_flags &= ~DCACHE_PAR_LOOKUP;
+ 	__hlist_bl_del(&dentry->d_u.d_in_lookup_hash);
+ 	wake_up_all(dentry->d_wait);
+ 	dentry->d_wait = NULL;
+-	hlist_bl_unlock(b);
++	hlist_bl_unlock(b, &d_hash_lock);
+ 	INIT_HLIST_NODE(&dentry->d_u.d_alias);
+ 	INIT_LIST_HEAD(&dentry->d_lru);
+ }
+diff --git a/include/linux/bit_spinlock.h b/include/linux/bit_spinlock.h
+index bbc4730a6505..641623d471b0 100644
+--- a/include/linux/bit_spinlock.h
++++ b/include/linux/bit_spinlock.h
+@@ -2,6 +2,7 @@
+ #ifndef __LINUX_BIT_SPINLOCK_H
+ #define __LINUX_BIT_SPINLOCK_H
+ 
++#include <linux/split_lock.h>
+ #include <linux/kernel.h>
+ #include <linux/preempt.h>
+ #include <linux/atomic.h>
+@@ -13,32 +14,23 @@
+  * Don't use this unless you really need to: spin_lock() and spin_unlock()
+  * are significantly faster.
+  */
+-static inline void bit_spin_lock(int bitnum, unsigned long *addr)
++static inline void bit_spin_lock(int bitnum, unsigned long *addr,
++		struct split_lock *lock)
+ {
+-	/*
+-	 * Assuming the lock is uncontended, this never enters
+-	 * the body of the outer loop. If it is contended, then
+-	 * within the inner loop a non-atomic test is used to
+-	 * busywait with less bus contention for a good time to
+-	 * attempt to acquire the lock bit.
+-	 */
+ 	preempt_disable();
+ #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+-	while (unlikely(test_and_set_bit_lock(bitnum, addr))) {
+-		preempt_enable();
+-		do {
+-			cpu_relax();
+-		} while (test_bit(bitnum, addr));
+-		preempt_disable();
+-	}
++	while (unlikely(test_and_set_bit_lock(bitnum, addr)))
++		split_lock_spin(lock, bitnum, addr);
+ #endif
++	spin_acquire(&lock->dep_map, 0, 0, _RET_IP_);
+ 	__acquire(bitlock);
+ }
+ 
+ /*
+  * Return true if it was acquired
+  */
+-static inline int bit_spin_trylock(int bitnum, unsigned long *addr)
++static inline int bit_spin_trylock(int bitnum, unsigned long *addr,
++		struct split_lock *lock)
+ {
+ 	preempt_disable();
+ #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+@@ -47,6 +39,7 @@ static inline int bit_spin_trylock(int bitnum, unsigned long *addr)
+ 		return 0;
+ 	}
+ #endif
++	spin_acquire(&lock->dep_map, 0, 1, _RET_IP_);
+ 	__acquire(bitlock);
+ 	return 1;
+ }
+@@ -54,13 +47,16 @@ static inline int bit_spin_trylock(int bitnum, unsigned long *addr)
+ /*
+  *  bit-based spin_unlock()
+  */
+-static inline void bit_spin_unlock(int bitnum, unsigned long *addr)
++static inline void bit_spin_unlock(int bitnum, unsigned long *addr,
++		struct split_lock *lock)
+ {
+ #ifdef CONFIG_DEBUG_SPINLOCK
+ 	BUG_ON(!test_bit(bitnum, addr));
+ #endif
++	spin_release(&lock->dep_map, _RET_IP_);
+ #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+ 	clear_bit_unlock(bitnum, addr);
++	split_lock_unlock(lock, bitnum, addr);
+ #endif
+ 	preempt_enable();
+ 	__release(bitlock);
+@@ -71,13 +67,16 @@ static inline void bit_spin_unlock(int bitnum, unsigned long *addr)
+  *  non-atomic version, which can be used eg. if the bit lock itself is
+  *  protecting the rest of the flags in the word.
+  */
+-static inline void __bit_spin_unlock(int bitnum, unsigned long *addr)
++static inline void __bit_spin_unlock(int bitnum, unsigned long *addr,
++		struct split_lock *lock)
+ {
+ #ifdef CONFIG_DEBUG_SPINLOCK
+ 	BUG_ON(!test_bit(bitnum, addr));
+ #endif
++	spin_release(&lock->dep_map, _RET_IP_);
+ #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+ 	__clear_bit_unlock(bitnum, addr);
++	split_lock_unlock(lock, bitnum, addr);
+ #endif
+ 	preempt_enable();
+ 	__release(bitlock);
+@@ -98,4 +97,3 @@ static inline int bit_spin_is_locked(int bitnum, unsigned long *addr)
+ }
+ 
+ #endif /* __LINUX_BIT_SPINLOCK_H */
+-
+diff --git a/include/linux/list_bl.h b/include/linux/list_bl.h
+index ae1b541446c9..e6c57c670358 100644
+--- a/include/linux/list_bl.h
++++ b/include/linux/list_bl.h
+@@ -143,14 +143,15 @@ static inline void hlist_bl_del_init(struct hlist_bl_node *n)
+ 	}
+ }
+ 
+-static inline void hlist_bl_lock(struct hlist_bl_head *b)
++static inline void hlist_bl_lock(struct hlist_bl_head *b, struct split_lock *sl)
+ {
+-	bit_spin_lock(0, (unsigned long *)b);
++	bit_spin_lock(0, (unsigned long *)b, sl);
+ }
+ 
+-static inline void hlist_bl_unlock(struct hlist_bl_head *b)
++static inline void hlist_bl_unlock(struct hlist_bl_head *b,
++		struct split_lock *sl)
+ {
+-	__bit_spin_unlock(0, (unsigned long *)b);
++	__bit_spin_unlock(0, (unsigned long *)b, sl);
+ }
+ 
+ static inline bool hlist_bl_is_locked(struct hlist_bl_head *b)
+diff --git a/include/linux/split_lock.h b/include/linux/split_lock.h
+new file mode 100644
+index 000000000000..d9c7816fb73c
+--- /dev/null
++++ b/include/linux/split_lock.h
+@@ -0,0 +1,45 @@
++#ifndef _LINUX_SPLIT_LOCK_H
++#define _LINUX_SPLIT_LOCK_H
++
++#include <linux/lockdep_types.h>
++
++struct split_lock {
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++	struct lockdep_map dep_map;
++#endif
++};
++
++#ifdef CONFIG_DEBUG_LOCK_ALLOC
++#define SPLIT_DEP_MAP_INIT(lockname)					\
++	.dep_map = {							\
++		.name = #lockname,					\
++		.wait_type_inner = LD_WAIT_SPIN,			\
++	}
++#else
++#define SPLIT_DEP_MAP_INIT(lockname)
++#endif
++
++#define DEFINE_SPLIT_LOCK(name)						\
++struct split_lock name = {						\
++	SPLIT_DEP_MAP_INIT(name)					\
++};
++
++/*
++ * This is only called if we're contended.  We use a non-atomic test
++ * to reduce contention on the cacheline while we wait.
++ */
++static inline void split_lock_spin(struct split_lock *lock, int bitnum,
++		unsigned long *addr)
++{
++	preempt_enable();
++	do {
++		cpu_relax();
++	} while (test_bit(bitnum, addr));
++	preempt_disable();
++}
++
++static inline void split_lock_unlock(struct split_lock *lock, int bitnum,
++		unsigned long *addr)
++{
++}
++#endif /* _LINUX_SPLIT_LOCK_H */
+diff --git a/mm/slub.c b/mm/slub.c
+index 9c0e26ddf300..eb7c22fbc8fc 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -346,19 +346,21 @@ static inline unsigned int oo_objects(struct kmem_cache_order_objects x)
+ 	return x.x & OO_MASK;
+ }
+ 
++static DEFINE_SPLIT_LOCK(slab_split_lock);
++
+ /*
+  * Per slab locking using the pagelock
+  */
+ static __always_inline void slab_lock(struct page *page)
+ {
+ 	VM_BUG_ON_PAGE(PageTail(page), page);
+-	bit_spin_lock(PG_locked, &page->flags);
++	bit_spin_lock(PG_locked, &page->flags, &slab_split_lock);
+ }
+ 
+ static __always_inline void slab_unlock(struct page *page)
+ {
+ 	VM_BUG_ON_PAGE(PageTail(page), page);
+-	__bit_spin_unlock(PG_locked, &page->flags);
++	__bit_spin_unlock(PG_locked, &page->flags, &slab_split_lock);
+ }
+ 
+ /* Interrupts must be disabled (for the fallback code to work right) */
+-- 
+2.30.2
 
