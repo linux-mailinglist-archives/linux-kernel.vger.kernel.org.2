@@ -2,68 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41963357FF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CA7357FF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhDHJwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:52:36 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15182 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhDHJwd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:52:33 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGGgy3HgTzpVM3;
-        Thu,  8 Apr 2021 17:49:34 +0800 (CST)
-Received: from Ubuntu1804.huawei.com (10.67.174.169) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 17:52:13 +0800
-From:   Zhao Xuehui <zhaoxuehui1@huawei.com>
-To:     <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <x86@kernel.org>, <hpa@zytor.com>, <linux-kernel@vger.kernel.org>
-CC:     <yangjihong1@huawei.com>, <zhangjinhao2@huawei.com>,
-        <zhaoxuehui1@huawei.com>
-Subject: [PATCH -next] x86, msr: Make symbol 'msr_read' and 'msr_write' static
-Date:   Thu, 8 Apr 2021 17:52:18 +0800
-Message-ID: <20210408095218.152264-1-zhaoxuehui1@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S231392AbhDHJws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:52:48 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53936 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230351AbhDHJwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 05:52:47 -0400
+Received: from zn.tnic (p200300ec2f095000c11580856fe05acf.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:5000:c115:8085:6fe0:5acf])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BAD521EC04AD;
+        Thu,  8 Apr 2021 11:52:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617875555;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Z1sdOTVzGcgzlBOFqani/UNpSK+Merm6hbxo6XIHoVM=;
+        b=qS1+yuAPGSm16cn8yg2PvuG2My9jMZaPmlj6amHud2tby9gRr+NJQpTqWcEAsfdaMtFEx/
+        0KfpUGOqCixocwu6CybMMhZYqZP+fEqhTNs77ShAU+tb37rVDA1W2lAaJGh/GGzPtcN/vq
+        AdTsMmKrfKss7Ca5bDn0p/F9AFIzWFE=
+Date:   Thu, 8 Apr 2021 11:52:35 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFCv1 2/7] x86/kvm: Introduce KVM memory protection feature
+Message-ID: <20210408095235.GH10192@zn.tnic>
+References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+ <20210402152645.26680-3-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.174.169]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210402152645.26680-3-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The symbol 'msr_read' and 'msr_write' are not used outside of msr.c, so this
-commit marks them static.
+On Fri, Apr 02, 2021 at 06:26:40PM +0300, Kirill A. Shutemov wrote:
+> Provide basic helpers, KVM_FEATURE, CPUID flag and a hypercall.
+> 
+> Host side doesn't provide the feature yet, so it is a dead code for now.
+> 
+> Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> ---
+>  arch/x86/include/asm/cpufeatures.h   |  1 +
+>  arch/x86/include/asm/kvm_para.h      |  5 +++++
+>  arch/x86/include/uapi/asm/kvm_para.h |  3 ++-
+>  arch/x86/kernel/kvm.c                | 18 ++++++++++++++++++
+>  include/uapi/linux/kvm_para.h        |  3 ++-
+>  5 files changed, 28 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+> index 84b887825f12..5b6f23e6edc4 100644
+> --- a/arch/x86/include/asm/cpufeatures.h
+> +++ b/arch/x86/include/asm/cpufeatures.h
+> @@ -238,6 +238,7 @@
+>  #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
+>  #define X86_FEATURE_SEV_ES		( 8*32+20) /* AMD Secure Encrypted Virtualization - Encrypted State */
+>  #define X86_FEATURE_VM_PAGE_FLUSH	( 8*32+21) /* "" VM Page Flush MSR is supported */
+> +#define X86_FEATURE_KVM_MEM_PROTECTED	( 8*32+22) /* KVM memory protection extenstion */
+										    ^^^^^^^^^^
+What's that feature bit for?
 
-Signed-off-by: Zhao Xuehui <zhaoxuehui1@huawei.com>
----
- arch/x86/lib/msr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Also, use a spellchecker pls: "extenstion".
 
-diff --git a/arch/x86/lib/msr.c b/arch/x86/lib/msr.c
-index 3bd905e10ee2..b09cd2ad426c 100644
---- a/arch/x86/lib/msr.c
-+++ b/arch/x86/lib/msr.c
-@@ -36,7 +36,7 @@ EXPORT_SYMBOL(msrs_free);
-  * argument @m.
-  *
-  */
--int msr_read(u32 msr, struct msr *m)
-+static int msr_read(u32 msr, struct msr *m)
- {
- 	int err;
- 	u64 val;
-@@ -54,7 +54,7 @@ int msr_read(u32 msr, struct msr *m)
-  * @msr: MSR to write
-  * @m: value to write
-  */
--int msr_write(u32 msr, struct msr *m)
-+static int msr_write(u32 msr, struct msr *m)
- {
- 	return wrmsrl_safe(msr, m->q);
- }
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
