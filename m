@@ -2,173 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A759B358D2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:01:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0CA358D3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232992AbhDHTBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 15:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbhDHTBt (ORCPT
+        id S233022AbhDHTFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 15:05:49 -0400
+Received: from mx0b-002c1b01.pphosted.com ([148.163.155.12]:5792 "EHLO
+        mx0b-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232885AbhDHTFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 15:01:49 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62BACC061760;
-        Thu,  8 Apr 2021 12:01:36 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so1758715wmi.3;
-        Thu, 08 Apr 2021 12:01:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NnWJUfUTIh3u8nCF0Cg0RNwJAmxoBSfV+wR+N8grRfo=;
-        b=gTNG+oUxfB1lBWblc+1iGXKmk8VmCmuOH+3Uo0cG6t+Heun3HuPfTvlLfpDxo8XOMa
-         E4qsgUxu1LqcuAL22yyGc6CDeVxiIwkIyomG7tDCHUMMTMiOel94LNcT80UV2OtRI4n/
-         WZJ3jItW/sJeFyif+4E6M0Ww3H4eLNUoBRtEx3n97YMTfcDvCdpOW0IBPhLZh4RTm46K
-         tJErmbrFJYa4ucx8cvpO7BszlaKED375GDf47CycUqDAh0Rt+3iCl87wtynxBZtlJQBs
-         lcpd58IuxGefRbnhsxUSdusaGabeOfFipuqM+3+YwHaal3LKCqBQ3Z5SXhFMoYBD09Uz
-         8ZtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NnWJUfUTIh3u8nCF0Cg0RNwJAmxoBSfV+wR+N8grRfo=;
-        b=jzw+glJtrfv0ulLaiVWZyIulIAXujSyHc2oCcagsJo7zbigJIdO2W0m1ZZ4CbVktMt
-         Gxrwc4+UuOJQQm2QsjQzTWsljyf6ptoo+rytTi8lv4LCQgHtwQWkxSHjE+5Nc/kY6+SB
-         vFPyzqo8SD1a+ZX7lg9BowB8Lx3yZFYKD3K+SQSgDvqX2PnIuQIwOUbMm4d9N8ybLkl2
-         73GlrM9fCSHe7dcbRjgkn/B4Gjse7X7PEtFqIntKa0PGt+H6oHaneMowS50RlyJPAWmS
-         IM8BfxJT+0AGqzvMDZ6CALpyPhu2N4GJjnrOpBbLW+h5LU+Z6a6BmT9OTyX4taz+PHkx
-         l/yg==
-X-Gm-Message-State: AOAM533oz2DE/2ABSlBh905IQHYJh6PRzqa2HkvkAPLc+QcHdJ4TJiSx
-        mJFYC5a6MYtrlSUmcxA2Nm78dztYsZD8QUaNUdE=
-X-Google-Smtp-Source: ABdhPJxzohFyh4w2rfcJerLxwyjcjUnXYdLKatqyj01doNPYuzMekUXFYWQWCFIER5N1pkvQFTNp+IWSSEXSPFTXttQ=
-X-Received: by 2002:a7b:c012:: with SMTP id c18mr8141515wmb.94.1617908494935;
- Thu, 08 Apr 2021 12:01:34 -0700 (PDT)
+        Thu, 8 Apr 2021 15:05:46 -0400
+Received: from pps.filterd (m0127844.ppops.net [127.0.0.1])
+        by mx0b-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 138IvAi2025080;
+        Thu, 8 Apr 2021 12:05:30 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=proofpoint20171006;
+ bh=wCnXi61wHuPeyuDAnn8oxwcq4+aq7oglKjm+LC30Cvs=;
+ b=A2j3/99wnMWo4IQay73fUmJgqXG/QpEr8VocT40Kz0KEkYihwWWUyTwA5hXfh8EiiIk1
+ NlhAsEAIt5Y4ad4fz3oMzguK6oEOIfXkSrpzkFXYdqsCRKQ5z2OKETw2iNvdt4Lh+RXK
+ YwwCQDa65zA4zI13r3SXTvBBuSIUXOUKSSIaE71EFzRmESs8VM7WxNeqVyqUWh/cmkdq
+ +FAKryXXkAEUAwDyQ9UGqJgDBy0DFaofFhbC6NtTo22GdRoPZMncud4fNesDlhY45TZD
+ esyWezffaFT2qrEpM2y4wOH6Ho5YeE7vZRQ+w1nNdko6tw96acfs06bHuUMEcM6M/yw1 jA== 
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2049.outbound.protection.outlook.com [104.47.66.49])
+        by mx0b-002c1b01.pphosted.com with ESMTP id 37t17hh1w6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Apr 2021 12:05:30 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U+4uYqzG3RXhm38SJn6K4EGM3EmbS/Kw8wdWD2nNFpa7LmRGsEK2+varcPFptJmGmJjRRzRsBP16YbhWctzuqG/4bX4b/yAYVJtYP+EGL/5QefpOXZZispScrQvWDL/NWzC8Z7KJZOF0SQ2NeZKnDl5Iur2JVvOll9SLoj5BqaG8hyU2z3zDzG9VLJ/5ViwOA9JatevYvwu1Y6cx+lxoiMFUEimdWrqpFdPtK0stkXBL3jHBo/vhPlRXlf/7kGNr0Utf0cczSSCLd+2P+CCdDnmNr9qnjb0AVoKSHr6A/Aon6wgdugVNijIg3md7wxcFNAjEsqlfZHBpPk3eDYx6dA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wCnXi61wHuPeyuDAnn8oxwcq4+aq7oglKjm+LC30Cvs=;
+ b=dsMRpBJFzVOHMo3YkZNqXK14PM5ZVqZcJkik+gyhwQAT6yObwsj0IOgDgnhprlBHYknQethEdwd+QrFhE5szq+nJ0pHL/tNJB5w6aa4wiwDwNBAk1pVvN5dIZQdzsxyfsbcumjGYoTVUoZJV1oTRHYSXxOonaJ9l4WbBUBWzoXy87FXLnPcRtNj975fBKYiheft+u15fvxz6/e79GSPbunaeihideGPplR0z2K50OCS6ywyZvZ8mfJx7NmUmHdz5xBMAlndTqawqxyuBlcqxhXuX5C3xrUz2tNBu3ZzVVHIEeFI4LDCR6E6IAg5lBirw06M2WVAYTqTW4PsB0a0ydw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
+ dkim=pass header.d=nutanix.com; arc=none
+Received: from SN6PR02MB4543.namprd02.prod.outlook.com (2603:10b6:805:b1::24)
+ by SN6PR02MB5567.namprd02.prod.outlook.com (2603:10b6:805:e5::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Thu, 8 Apr
+ 2021 19:05:28 +0000
+Received: from SN6PR02MB4543.namprd02.prod.outlook.com
+ ([fe80::7139:d6a4:cf94:c4b1]) by SN6PR02MB4543.namprd02.prod.outlook.com
+ ([fe80::7139:d6a4:cf94:c4b1%4]) with mapi id 15.20.3999.034; Thu, 8 Apr 2021
+ 19:05:28 +0000
+From:   Raphael Norwitz <raphael.norwitz@nutanix.com>
+To:     "bhelgaas@google.com" <bhelgaas@google.com>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        Alay Shah <alay.shah@nutanix.com>,
+        Suresh Gumpula <suresh.gumpula@nutanix.com>
+Subject: [PATCH] PCI: Delay after FLR of Intel DC P4510 NVMe
+Thread-Topic: [PATCH] PCI: Delay after FLR of Intel DC P4510 NVMe
+Thread-Index: AQHXLKojWkVUrTJNYkajdTXZJRXXcQ==
+Date:   Thu, 8 Apr 2021 19:05:27 +0000
+Message-ID: <20210408190521.16897-1-raphael.norwitz@nutanix.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: git-send-email 2.20.1
+authentication-results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=nutanix.com;
+x-originating-ip: [24.94.68.249]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9b3897b7-189d-4657-9dc7-08d8fac145db
+x-ms-traffictypediagnostic: SN6PR02MB5567:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR02MB5567A7641DEFBA2BCE6C27F6EA749@SN6PR02MB5567.namprd02.prod.outlook.com>
+x-proofpoint-crosstenant: true
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 52gfK3mOVWxEwidrvirRg8y/7x+KodMvTFK8WCXMVwTXUBxwHgcKGB9+YzmG82jaFJiVHcZZ7FqXk8ziXnM1bdkafuNJdDjl+QXLuJIV6MS6bUUUBGoejVeOYZ1ng1ktzL0uKeBDBDXWh7AlyTB+DBy/8F6sxUhsv2BAdMhEJRCgop/wLqGgHIcMBugN2ep1AP1vkkociNtLnQkl86d9rUyApQvIsBKO8RxjM7AYvgcxYHHDqloB9HIvAPJttK8yhkYmyWCfpuU2rAp6qU2yPs6diHlJLgZvZxGwVdM618E1M7bDyiEoqCdpiiE1MDJQtLv7iFA3QhFl0JaAnRQnxRRhsl4jl6mRD0GmuzDMwC8LyO3fpqXRvNUo7QAlbtLtiQwq3e7Gjdq86pWbhvAd4zPE7VO2QnhcI/P+mR4DaHTB4mlNzdO6VAE171c1m4SlVf69+07VkBFjxzG+DR8JNKtxwGPELVKVfAsrW/Tme+jxJ3C8MN1SqwkUoTmGKifSoG4YqL96rBkHO1GNpEX0k0KKw/Sz88AvJhUXvxkz5tG7P1oWpL7/vWexxVXHbqot8hCFRfj3Bah2saZ/DXBoh7f3jG7mNiQ6P5gdAORJM7FOWZJEsp0YRDHXukGrtD5x7lSgXZ7OHMl2fWY+xJ9QyIOitfyula9ltoTUGhcqfVU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR02MB4543.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(366004)(346002)(396003)(2616005)(91956017)(66446008)(64756008)(6916009)(36756003)(186003)(4326008)(316002)(2906002)(66476007)(6512007)(6486002)(38100700001)(83380400001)(4744005)(8676002)(107886003)(5660300002)(76116006)(66946007)(1076003)(66556008)(478600001)(86362001)(8936002)(71200400001)(6506007)(26005)(54906003)(44832011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?aTNy/vpeJkxLCyczEnh1beynZ7+vu5aO0Hn9tBOTJXoLMNgpv6Z/YSXRPw?=
+ =?iso-8859-1?Q?9FWGHqvHUtJY7gxuuEos6+ao0cpomU64Kqy165iZtmGJq/PGdEjgyDQSuu?=
+ =?iso-8859-1?Q?fPqFhmn9T3XvQ8j5rAQLe5HNlUq6vQoqiuOg9K79XSthjZLsPGPc+JgFVW?=
+ =?iso-8859-1?Q?cXKrOGOVCL6ITZ1DagHJFux4d9bbX7aq7Hal62mdLkI1OIU9bbTL6lvnWp?=
+ =?iso-8859-1?Q?wZoOocm8STrPr7CrU35irJbRDXFs2NHgDKtfr6KymkgIvVdKAx0LzxVQWp?=
+ =?iso-8859-1?Q?vinL8IK17BDv2bLX+Car2Fr+B6lNBlR3YUFog7S5UXn6utx5xt+iWK360n?=
+ =?iso-8859-1?Q?OodbjxyzJr5/5yIa1HG3wzM8MkqfF2i99QU455r/UtPLoaslxMPEcsXiXw?=
+ =?iso-8859-1?Q?Os9HexmNF4YifFGfJXiEYlYnnsCuj//bsq1j13cllkVg1ZooUAkninaXN9?=
+ =?iso-8859-1?Q?pvHZO7XF2rzzhIbArYyJUN9QruX7yDThFKy0b5VNAxS+Mr3eztf4cz/yvP?=
+ =?iso-8859-1?Q?BmxMrEEiyBwpRC++eqwix1CnJGSD0hC10RnQpz+3WrEbdMVOjivB5dq2K3?=
+ =?iso-8859-1?Q?p8AAFFqsF+42EG8LO+txVAog0RuNvP/VlT6L/7uRfvWE8ZRpTHefawH3Kt?=
+ =?iso-8859-1?Q?7PX549OnteUn+EsOQMVlH8VO0Q9/3lFt+l3EqZtDsjOZ8VOTXledOeEt/3?=
+ =?iso-8859-1?Q?NTVDBqTxGT2LR/GjLNZl1IbYPKWKPLhvJmw/ZEi3brOguWIDQj4jjTSg83?=
+ =?iso-8859-1?Q?QlFlHOEfEYSHPw0O8g1RqV8MTTxZ6ioeiSmyEFv4yddHrJ/LjTTamUI/Jg?=
+ =?iso-8859-1?Q?lDcRZYRtAEAK0eeQ5BIfM5CqaKbhfOvCzj/nQN5xDb3qICp8vrthTZqEgE?=
+ =?iso-8859-1?Q?Lv2GrcK+6IvhzmlFxvryDJthdE8y87TwzgvWDrcXVX2zco0FvBafd0v/Nn?=
+ =?iso-8859-1?Q?ygOkD58AQUHYltUWG83ZIiBGMedyC5T3r3EGqL82GYf+2h+22FNn26aRQT?=
+ =?iso-8859-1?Q?T+giYmLuO0OhsA2iX2ZWHWd/ekFyPRvA41kYp90vWR1ygiEp0e44G3EzrV?=
+ =?iso-8859-1?Q?Bz2VrA3Hw69+a/a6yTo1z3zP2XjbAp7W9Mh2qnqWRTPUGzP09W7qJEgas6?=
+ =?iso-8859-1?Q?svlVpgtob07agNCFvEIJV76RXKEw4gKP/sbFvv1pevZXKGFbVLnEyrgCVB?=
+ =?iso-8859-1?Q?judrr9sJghzxfaBvL6VwgYmUz7klgQHfY+GxUOVCgmL0MRgon0b1LSVmJc?=
+ =?iso-8859-1?Q?u6O95P1aa6iVTjjFE0KVZbxocGAGjjo9mmqB1MIhQJnlHQYrrdYy0x7kI9?=
+ =?iso-8859-1?Q?NINYzQMD+k9qTnTnqhXsTbcYEkTUV8sy+6Xuat5Em1MEgh4Y64k5pQHsCR?=
+ =?iso-8859-1?Q?3/+HPhFCgb?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210406214726.131534-1-marijn.suijten@somainline.org>
- <20210406214726.131534-2-marijn.suijten@somainline.org> <6413863d04df9743e2d7e81beff5c3e8@codeaurora.org>
- <04860f05-f79f-de0b-13d1-aba85065b4da@somainline.org>
-In-Reply-To: <04860f05-f79f-de0b-13d1-aba85065b4da@somainline.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 8 Apr 2021 12:05:02 -0700
-Message-ID: <CAF6AEGuoLgBSZOou1TSb-d2o6tHS-L-E7AQLS5RM4aOogvRG7Q@mail.gmail.com>
-Subject: Re: [Freedreno] [PATCH 1/3] drm/msm/mdp5: Configure PP_SYNC_HEIGHT to
- double the vtotal
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        phone-devel@vger.kernel.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: nutanix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4543.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9b3897b7-189d-4657-9dc7-08d8fac145db
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2021 19:05:27.6710
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: bb047546-786f-4de1-bd75-24e5b6f79043
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ZR+oc2YGgVCN1Ia5X5/omNXpOf4Y3bYhhTdLoIU0e9Sl7XmNbtvQFTBfOSIWZmHQ33Ia3Qv/bO1m2Ep6kSyXleAKzuZB+DSd/pSKRjkxHes=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5567
+X-Proofpoint-GUID: sBWyXq9eqW-dfFmHWD2qxSItfmyDF9sB
+X-Proofpoint-ORIG-GUID: sBWyXq9eqW-dfFmHWD2qxSItfmyDF9sB
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-08_04:2021-04-08,2021-04-08 signatures=0
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 12:11 PM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@somainline.org> wrote:
->
-> Il 07/04/21 20:19, abhinavk@codeaurora.org ha scritto:
-> > Hi Marijn
-> >
-> > On 2021-04-06 14:47, Marijn Suijten wrote:
-> >> Leaving this at a close-to-maximum register value 0xFFF0 means it takes
-> >> very long for the MDSS to generate a software vsync interrupt when the
-> >> hardware TE interrupt doesn't arrive.  Configuring this to double the
-> >> vtotal (like some downstream kernels) leads to a frame to take at most
-> >> twice before the vsync signal, until hardware TE comes up.
-> >>
-> >> In this case the hardware interrupt responsible for providing this
-> >> signal - "disp-te" gpio - is not hooked up to the mdp5 vsync/pp logic at
-> >> all.  This solves severe panel update issues observed on at least the
-> >> Xperia Loire and Tone series, until said gpio is properly hooked up to
-> >> an irq.
-> >
-> > The reason the CONFIG_HEIGHT was at such a high value is to make sure that
-> > we always get the TE only from the panel vsync and not false positives
-> > coming
-> > from the tear check logic itself.
-> >
-> > When you say that disp-te gpio is not hooked up, is it something
-> > incorrect with
-> > the schematic OR panel is not generating the TE correctly?
-> >
->
-> Sometimes, some panels aren't getting correctly configured by the
-> OEM/ODM in the first place: especially when porting devices from
-> downstream to upstream, developers often get in a situation in which
-> their TE line is either misconfigured or the DriverIC is not configured
-> to raise V-Sync interrupts.
-> Please remember: some DDICs need a "commands sequence" to enable
-> generating the TE interrupts, sometimes this is not standard, and
-> sometimes OEMs/ODMs are not even doing that in their downstream code
-> (but instead they work around it in creative ways "for reasons", even
-> though their DDIC supports indeed sending TE events).
->
-> This mostly happens when bringing up devices that have autorefresh
-> enabled from the bootloader (when the bootloader sets up the splash
-> screen) by using simple-panel as a (hopefully) temporary solution to get
-> through the initial stages of porting.
->
-> We are not trying to cover cases related to incorrect schematics or
-> hardware mistakes here, as the fix for that - as you know - is to just
-> fix your hardware.
-> What we're trying to do here is to stop freezes and, in some cases,
-> lockups, other than false positives making the developer go offroad when
-> the platform shows that something is wrong during early porting.
->
-> Also, sometimes, some DDICs will not generate TE interrupts when
-> expected... in these cases we get a PP timeout and a MDP5 recovery: this
-> is totally avoidable if we rely on the 2*vtotal, as we wouldn't get
-> through the very time consuming task of recovering the entire MDP.
->
-> Of course, if something is wrong in the MDP and the block really needs
-> recovery, this "trick" won't save anyone and the recovery will anyway be
-> triggered, as the PP-done will anyway timeout.
+Like the Intel DC P3700 NVMe, the Intel P4510 NVMe exhibits a timeout
+failure when the driver tries to interact with the device to soon after
+an FLR. The same reset quirk the P3700 uses also resolves the failure
+for the P4510, so this change introduces the same reset quirk for the
+P4510.
 
-So, is this (mostly) a workaround due to TE not wired up?  In which
-case I think it is ok, but maybe should have a comment about the
-interaction with TE?
+Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Alay Shah <alay.shah@nutanix.com>
+Signed-off-by: Suresh Gumpula <suresh.gumpula@nutanix.com>
+Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+---
+ drivers/pci/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Currently I have this patch in msm-next-staging but I guess we need to
-decide in the next day or so whether to drop it or smash in a comment?
-
-BR,
--R
-
-> >>
-> >> Suggested-by: AngeloGioacchino Del Regno
-> >> <angelogioacchino.delregno@somainline.org>
-> >> Signed-off-by: Marijn Suijten <marijn.suijten@somainline.org>
-> >> Reviewed-by: AngeloGioacchino Del Regno
-> >> <angelogioacchino.delregno@somainline.org>
-> >> ---
-> >>  drivers/gpu/drm/msm/disp/mdp5/mdp5_cmd_encoder.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/msm/disp/mdp5/mdp5_cmd_encoder.c
-> >> b/drivers/gpu/drm/msm/disp/mdp5/mdp5_cmd_encoder.c
-> >> index ff2c1d583c79..2d5ac03dbc17 100644
-> >> --- a/drivers/gpu/drm/msm/disp/mdp5/mdp5_cmd_encoder.c
-> >> +++ b/drivers/gpu/drm/msm/disp/mdp5/mdp5_cmd_encoder.c
-> >> @@ -51,7 +51,7 @@ static int pingpong_tearcheck_setup(struct
-> >> drm_encoder *encoder,
-> >>
-> >>      mdp5_write(mdp5_kms, REG_MDP5_PP_SYNC_CONFIG_VSYNC(pp_id), cfg);
-> >>      mdp5_write(mdp5_kms,
-> >> -        REG_MDP5_PP_SYNC_CONFIG_HEIGHT(pp_id), 0xfff0);
-> >> +        REG_MDP5_PP_SYNC_CONFIG_HEIGHT(pp_id), (2 * mode->vtotal));
-> >>      mdp5_write(mdp5_kms,
-> >>          REG_MDP5_PP_VSYNC_INIT_VAL(pp_id), mode->vdisplay);
-> >>      mdp5_write(mdp5_kms, REG_MDP5_PP_RD_PTR_IRQ(pp_id),
-> >> mode->vdisplay + 1);
->
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index 653660e3ba9e..5a8c059b848d 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3922,6 +3922,7 @@ static const struct pci_dev_reset_methods pci_dev_res=
+et_methods[] =3D {
+ 		reset_ivb_igd },
+ 	{ PCI_VENDOR_ID_SAMSUNG, 0xa804, nvme_disable_and_flr },
+ 	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
++	{ PCI_VENDOR_ID_INTEL, 0x0a54, delay_250ms_after_flr },
+ 	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
+ 		reset_chelsio_generic_dev },
+ 	{ 0 }
+--=20
+2.20.1
