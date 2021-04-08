@@ -2,76 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA94358AFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:10:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB93358B03
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232738AbhDHRKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:10:43 -0400
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:35378 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232733AbhDHRKb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:10:31 -0400
-Received: by mail-oi1-f176.google.com with SMTP id x2so2924521oiv.2;
-        Thu, 08 Apr 2021 10:10:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MXeneS4Vm02HCmXz91kKGlV2Pqy/N/GNJfg+AxZBAHE=;
-        b=RYPxumAf6cf7yy1Tkj/NfwdzLGDTd72BiGrDNrcHhhxf1XIiW3aqeKZtxxZZfxOFVx
-         CAnmQWkQwXmHvA5+GlCYCHWINBYxb56gP4werVJxcrcjlpniWjBc/P7q77BE/heWSYuI
-         96D3c1AnMCJE3grvPPCYlINa2oYrSHoGCOfdcNZamJaQdFeP9rBa2pPy3KU0+Jxm8mrn
-         B32m4MuY7FwG25q60j+tUD0zQbA4v+BemdbmCgaj4lmYp0cWqYl1o9GHYmbvAmltzTdC
-         ZSwOac1v9mTt4Cp+tmzgdiNvj4lRTMy0tXLuAoVUCwj+yqULpgBPzmnBCr4rn24Tw7cH
-         +7TQ==
-X-Gm-Message-State: AOAM532wGc0VIPKESzNTwzCCLI9Lma9pcwbTH33ds/WgoKAXAO5n2miQ
-        xzfUON9WEL7vWi2JWu1b5pHWM5InbOHCFpsI+n0=
-X-Google-Smtp-Source: ABdhPJyHJ1ur7FDHpcs0/qsYhAL+F/SFsFucAeoUmeEwMNoj+kzTbjN1rWNzyyHmRG1sJhIIrQaubOIbN9aAqttSDlI=
-X-Received: by 2002:aca:5fc3:: with SMTP id t186mr6705265oib.69.1617901819073;
- Thu, 08 Apr 2021 10:10:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210330063923.2269702-1-wanjiabing@vivo.com>
-In-Reply-To: <20210330063923.2269702-1-wanjiabing@vivo.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Apr 2021 19:10:08 +0200
-Message-ID: <CAJZ5v0huxxwVjbOo0wicMRQkx2vfj1Z6=B7OHTbuKFC2bazxDA@mail.gmail.com>
-Subject: Re: [PATCH] linux/intel_rapl.h: Modify struct declaration
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kael_w@yeah.net
-Content-Type: text/plain; charset="UTF-8"
+        id S232546AbhDHRLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:11:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:55060 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232208AbhDHRLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 13:11:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4C2AE11B3;
+        Thu,  8 Apr 2021 10:10:55 -0700 (PDT)
+Received: from e120877-lin.cambridge.arm.com (e120877-lin.cambridge.arm.com [10.1.194.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EEBB63F792;
+        Thu,  8 Apr 2021 10:10:53 -0700 (PDT)
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        vincent.guittot@linaro.org, qperret@google.com
+Cc:     linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        lukasz.luba@arm.com, dietmar.eggemann@arm.com,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH] PM / EM: Inefficient OPPs detection
+Date:   Thu,  8 Apr 2021 18:10:28 +0100
+Message-Id: <1617901829-381963-1-git-send-email-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 8:40 AM Wan Jiabing <wanjiabing@vivo.com> wrote:
->
-> struct rapl_package is declared twice. One has been declared
-> at 80th line.
-> By reviewing the code, it should declare struct rapl_domain
-> rather than rapl_package. Modify it.
->
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  include/linux/intel_rapl.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/intel_rapl.h b/include/linux/intel_rapl.h
-> index 50b8398ffd21..93780834fc8f 100644
-> --- a/include/linux/intel_rapl.h
-> +++ b/include/linux/intel_rapl.h
-> @@ -33,7 +33,7 @@ enum rapl_domain_reg_id {
->         RAPL_DOMAIN_REG_MAX,
->  };
->
-> -struct rapl_package;
-> +struct rapl_domain;
->
->  enum rapl_primitives {
->         ENERGY_COUNTER,
-> --
+We (Power team in Arm) are working with an experimental kernel for the
+Google's Pixel4 to evaluate and improve the current mainline performance
+and energy consumption on a real life device with Android.
 
-Applied as 5.13 material with edited subject and changelog, thanks!
+The SD855 SoC found in this phone has several OPPs that are inefficient.
+I.e. despite a lower frequency, they have a greater cost. (That cost being
+fmax * OPP power / OPP freq). This issue is twofold. First of course,
+running a specific workload at an inefficient OPP is counterproductive
+since it wastes wasting energy. But also, inefficient OPPs make a
+performance domain less appealing for task placement than it really is.
+
+We evaluated the change presented here by running 30 iterations of Android
+PCMark "Work 2.0 Performance". While we did not see any statistically
+significant performance impact, this change allowed to drastically improve
+the idle time residency.
+
+
+                           |   Running   |  WFI [1]  |    Idle   |
+   ------------------------+-------------+-----------+-----------+
+   Little cluster (4 CPUs) |    -0.35%   |   +0.35%  |   +0.79%  |
+   ------------------------+-------------+-----------+-----------+
+   Medium cluster (3 CPUs) |    -6.3%    |    -18%   |    +12%   |
+   ------------------------+-------------+-----------+-----------+
+   Big cluster    (1 CPU)  |    -6.4%    |    -6.5%  |    +2.8%  |
+   ------------------------+-------------+-----------+-----------+
+
+On the SD855, the inefficient OPPs are found on the little cluster. By
+removing them from the Energy Model, we make the most efficient CPUs more
+appealing for task placement, helping to reduce the running time for the
+medium and big CPUs. Increasing idle time is crucial for this platform due
+to the substantial energy cost differences among the clusters. Also,
+despite not appearing in the statistics (the idle driver used here doesn't
+report it), we can speculate that we also improve the cluster idle time.
+
+
+[1] WFI: Wait for interrupt.
+
+
+Vincent Donnefort (1):
+  PM / EM: Inefficient OPPs detection
+
+ include/linux/energy_model.h     | 131 ++++++++++++++++++++++++++++++++++++---
+ kernel/power/energy_model.c      | 126 +++++++++++++++++++++++++++++++------
+ kernel/sched/cpufreq_schedutil.c |   4 ++
+ 3 files changed, 234 insertions(+), 27 deletions(-)
+
+-- 
+2.7.4
+
