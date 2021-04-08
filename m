@@ -2,64 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41BBF357CE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D96B5357CE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhDHHAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:00:51 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16402 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhDHHAs (ORCPT
+        id S229732AbhDHHCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 03:02:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhDHHCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:00:48 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FGBtx2XnlzkjCs;
-        Thu,  8 Apr 2021 14:58:49 +0800 (CST)
-Received: from vm-Yoda-Ubuntu1804.huawei.com (10.67.174.59) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 15:00:29 +0800
-From:   Xu Yihang <xuyihang@huawei.com>
-To:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <harshadshirwadkar@gmail.com>, <linux-ext4@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <xuyihang@huawei.com>
-Subject: [PATCH -next] ext4: fix error return code in ext4_fc_perform_commit()
-Date:   Thu, 8 Apr 2021 15:00:33 +0800
-Message-ID: <20210408070033.123047-1-xuyihang@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 8 Apr 2021 03:02:01 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E558C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 00:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yigVIYNf+QxM3+FQnoth4sQU6ysRJxJ2nW9krzP8uKU=; b=Vs29Zq9ztaGpw8OiiKN2slj82M
+        +JN+z4M9osXi5B0CyEgfUywtwbrWvGV8V3QAyF1L3J3N9X5c1vNPCttMvhwv92nWMHU3TiD03ZAnO
+        vfLVzd7g5QV/j0wbR8/dqN+NNcEcimmXsz++tRazB4/tlgv+xlhUs41HrAGXqqaOjsOQboGEdbJMv
+        OcqyPjvx2hipsOeZBDIfgsniGCEFbw8GHNRm+Un4zpJdudnUPpcfKg7rWH8M77TlBrYTJTlbBUdH4
+        1Cj05Wuzs/IkfF/G1t57Oz02AIGpG9FAjBVFr3IZN4W3/hHT9Hb7PEIa+rgaXWHkoZm8LAu3ttPX1
+        2eAD0efw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUOeU-00FjCz-6U; Thu, 08 Apr 2021 07:00:32 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EBB1B3003E3;
+        Thu,  8 Apr 2021 09:00:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D17522BC07BA7; Thu,  8 Apr 2021 09:00:26 +0200 (CEST)
+Date:   Thu, 8 Apr 2021 09:00:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Rik van Riel <riel@surriel.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Rom Lemarchand <romlem@google.com>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH 24/37] mm: implement speculative handling in
+ __do_fault()
+Message-ID: <YG6qCtRcz2ESUiFy@hirez.programming.kicks-ass.net>
+References: <20210407014502.24091-1-michel@lespinasse.org>
+ <20210407014502.24091-25-michel@lespinasse.org>
+ <YG3EYjVDrZ54QCLq@hirez.programming.kicks-ass.net>
+ <20210407212027.GE25738@lespinasse.org>
+ <20210407212712.GH2531743@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.59]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407212712.GH2531743@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of if not ext4_fc_add_tlv branch, an error return code is missing.
+On Wed, Apr 07, 2021 at 10:27:12PM +0100, Matthew Wilcox wrote:
+> Doing I/O without any lock held already works; it just uses the file
+> refcount.  It would be better to use a vma refcount, as I already said.
 
-Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Xu Yihang <xuyihang@huawei.com>
----
- fs/ext4/fast_commit.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+The original workload that I developed SPF for (waaaay back when) was
+prefaulting a single huge vma. Using a vma refcount was a total loss
+because it resulted in the same cacheline contention that down_read()
+was having.
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 7541d0b5d706..312273ed8a9f 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1088,8 +1088,10 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 		head.fc_tid = cpu_to_le32(
- 			sbi->s_journal->j_running_transaction->t_tid);
- 		if (!ext4_fc_add_tlv(sb, EXT4_FC_TAG_HEAD, sizeof(head),
--			(u8 *)&head, &crc))
-+			(u8 *)&head, &crc)) {
-+			ret = -ENOSPC;
- 			goto out;
-+		}
- 	}
- 
- 	spin_lock(&sbi->s_fc_lock);
--- 
-2.17.1
-
+As such, I'm always incredibly sad to see mention of vma refcounts.
+They're fundamentally not solving the problem :/
