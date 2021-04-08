@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8401A357BC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:21:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF46A357BC6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbhDHFVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 01:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
+        id S229750AbhDHFVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 01:21:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbhDHFV3 (ORCPT
+        with ESMTP id S229506AbhDHFVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 01:21:29 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2374C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 22:21:18 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id u17so868941ejk.2
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 22:21:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nGWRQqNs4FsH45AetKkDEjtm5WFfnPk7zZ0gqFXvhh8=;
-        b=Uw0wyDlDkX20XvZ04T5dHZqo5VGShg0gXBPk8VWktFBqbuh8MEOldhu336XT0Jj8qe
-         erW3R8ZVjiVRhajwAiA8SXe+QHfkmsEskKtMV5Ic9ct0qKcfMb0IeGPhFJYoA9qG4PNE
-         sFn+c5OONjJuFXY4MEBgDV47slIgQAmqs+Zm/rOlq9/jl4eVtNaCBs5pdB44UiyFa/ur
-         48mdaV9f84mfoqmEh37U7uo9aLuBzCzGcoDWMs1H2rYV7dVFf9A7lD4Y1vMrSAc4fzfR
-         SOdpisPlDqANC9kxZPy69cDbpdlDm6FPgMVva5v2Rv4QpKGq8YzBBKotytK4HauPnjDf
-         bKtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nGWRQqNs4FsH45AetKkDEjtm5WFfnPk7zZ0gqFXvhh8=;
-        b=X+9e4QkKm0OuPluaWYiWl3Ocbk0L0PiMRUBGqJRhMWCdMtENtnplinXy8LnK0wZq9A
-         zmnAngF0DJ9JedDVhVieDhsgu2CmpJDwnMVXyWsKSi6tTiw8q1kHDjUArbOzA5/zGlQj
-         tPPpqZ2/L1cCUOaAfksHMTQ+OAsYiGWgM8HqKhwZvEgEjLmHTyMR/oAp51mzI7NRdj+m
-         tt2GzVbpid1kn4dd357OTViIArze+BODhD/P5MIeThHGcE2Vjhi78QxAKYLIaPdeV546
-         DXD4pXOrYdGB9WN/mJMIWVvQ8hH/iJzDgtjt5PxrrEAXVkVTfbSmgbBBWwDwjVLeh2vC
-         tk2A==
-X-Gm-Message-State: AOAM533i2waiq7oOioNFqy3ayAQMc5jRjKuuNlpmDQzKmia1EUDljOzm
-        +yNhlOAX08NdGBqQGG9mvga8ERaXdZmNRXF6dqR20w==
-X-Google-Smtp-Source: ABdhPJwuJvePArsi0X3BVbiNySrXNJpCSX0975uBH+S9j2G7lCMCRLzU27dIjhNhw3Kxzuk9GAjVnHp7xGCcEBJ+Kfo=
-X-Received: by 2002:a17:906:8242:: with SMTP id f2mr7851357ejx.478.1617859277448;
- Wed, 07 Apr 2021 22:21:17 -0700 (PDT)
+        Thu, 8 Apr 2021 01:21:37 -0400
+Received: from plekste.mt.lv (bute.mt.lv [IPv6:2a02:610:7501:2000::195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48E52C061760;
+        Wed,  7 Apr 2021 22:21:26 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=bute.mt.lv)
+        by plekste.mt.lv with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <gatis@mikrotik.com>)
+        id 1lUN6W-0003fP-72; Thu, 08 Apr 2021 08:21:20 +0300
 MIME-Version: 1.0
-References: <20210407135840.494747-1-colin.king@canonical.com> <yq1blaq9fyx.fsf@ca-mkp.ca.oracle.com>
-In-Reply-To: <yq1blaq9fyx.fsf@ca-mkp.ca.oracle.com>
-From:   Jinpu Wang <jinpu.wang@ionos.com>
-Date:   Thu, 8 Apr 2021 07:21:06 +0200
-Message-ID: <CAMGffEmFxJduY71sGzXNMoQzq0PZT1dtELfviZf9CZdkRj=nNQ@mail.gmail.com>
-Subject: Re: [PATCH][next] scsi: pm80xx: Fix potential infinite loop
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        Jack Wang <jinpu.wang@cloud.ionos.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        Viswas G <Viswas.G@microchip.com>,
-        Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Thu, 08 Apr 2021 08:21:20 +0300
+From:   Gatis Peisenieks <gatis@mikrotik.com>
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     chris.snook@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        hkallweit1@gmail.com, jesse.brandeburg@intel.com,
+        dchickles@marvell.com, tully@mikrotik.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net v4] atl1c: move tx cleanup processing out of interrupt
+In-Reply-To: <7c5dad3e-950d-8ec9-8b9d-bbce41fafaa4@gmail.com>
+References: <c8327d4bb516dd4741878c64fa6485cd@mikrotik.com>
+ <7c5dad3e-950d-8ec9-8b9d-bbce41fafaa4@gmail.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <5bd5e1b9c1fdf8c9a43a0d018a005eab@mikrotik.com>
+X-Sender: gatis@mikrotik.com
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 7:18 PM Martin K. Petersen
-<martin.petersen@oracle.com> wrote:
->
->
-> Hi Colin!
->
-> > The for-loop iterates with a u8 loop counter i and compares this with
-> > the loop upper limit of pm8001_ha->max_q_num which is a u32 type.
-> > There is a potential infinite loop if pm8001_ha->max_q_num is larger
-> > than the u8 loop counter. Fix this by making the loop counter the same
-> > type as pm8001_ha->max_q_num.
->
-> No particular objections to the patch for future-proofing. However, as
-> far as I can tell max_q_num is capped at 64 (PM8001_MAX_MSIX_VEC).
-Exactly.
->
-> --
-> Martin K. Petersen      Oracle Linux Engineering
+On 2021-04-07 19:55, Eric Dumazet wrote:
+> On 4/6/21 4:49 PM, Gatis Peisenieks wrote:
+>> Tx queue cleanup happens in interrupt handler on same core as rx queue
+>> processing. Both can take considerable amount of processing in high
+>> packet-per-second scenarios.
+>> 
+>> Sending big amounts of packets can stall the rx processing which is 
+>> unfair
+>> and also can lead to out-of-memory condition since __dev_kfree_skb_irq
+>> queues the skbs for later kfree in softirq which is not allowed to 
+>> happen
+>> with heavy load in interrupt handler.
+>> 
+> 
+> [ ... ]
+> 
+>> diff --git a/net/core/dev.c b/net/core/dev.c
+>> index 0f72ff5d34ba..489ac60b530c 100644
+>> --- a/net/core/dev.c
+>> +++ b/net/core/dev.c
+>> @@ -6789,6 +6789,7 @@ int dev_set_threaded(struct net_device *dev, 
+>> bool threaded)
+>> 
+>>      return err;
+>>  }
+>> +EXPORT_SYMBOL(dev_set_threaded);
+>> 
+>>  void netif_napi_add(struct net_device *dev, struct napi_struct *napi,
+>>              int (*poll)(struct napi_struct *, int), int weight)
+> 
+> This has already been done in net-next
+> 
+> Please base your patch on top of net-next, this can not be backported 
+> to old
+> versions anyway, without some amount of pain.
+
+Thank you Eric, for heads up, the v5 patch sent for net-next in response 
+to
+David Miller comment already does that.
