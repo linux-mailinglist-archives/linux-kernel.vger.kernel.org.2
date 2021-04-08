@@ -2,137 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD97358063
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC4535806B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhDHKO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 06:14:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54218 "EHLO mx2.suse.de"
+        id S229895AbhDHKRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 06:17:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229600AbhDHKOw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 06:14:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 67F82AF9E;
-        Thu,  8 Apr 2021 10:14:40 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 12:14:37 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        yang.shi@linux.alibaba.com, shy828301@gmail.com,
-        weixugc@google.com, ying.huang@intel.com, dan.j.williams@intel.com,
-        david@redhat.com
-Subject: Re: [PATCH 04/10] mm/migrate: make migrate_pages() return
- nr_succeeded
-Message-ID: <YG7XjTG9tiK29y1j@localhost.localdomain>
-References: <20210401183216.443C4443@viggo.jf.intel.com>
- <20210401183223.80F1E291@viggo.jf.intel.com>
+        id S229686AbhDHKRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 06:17:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B02961168;
+        Thu,  8 Apr 2021 10:17:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617877031;
+        bh=ivICCofV+HelFF0TfxwG+thYyuD+sKqQrEHToDgsMAA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UNNx+EGN0stAmujBkpKG7B+a3LZ9QOfURYpggW8gdYq7xt5P1gLMLgwM1dC5MpZ1P
+         X7O4uDbSKKlPnIU+8/Y6gRxg4fPUuzhIsu8w6Fwb8B4xVKXHz8CvWH4QrtvBFITSEV
+         Sxnv93leCr2IDHcwq6kptb/L86gB1Q+cqPtKBLHQ//heoRdly7V3dD/x0CXRA503pn
+         1M5OyO5KbAozxLmR9Dpq5Oefs1XuUJn5xBFlPTXTgFi1TPnK0/r/Y/ZRa7Exep2Gdn
+         1zCmFnWIMn66t09SBdrHP7u2VGOwHIiutu2GPaNpPda2430uojqFF+YO6UXZrmbRAJ
+         /5bajopeTFScQ==
+Date:   Thu, 8 Apr 2021 13:16:59 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Joel Stanley <joel@jms.id.au>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Collingbourne <pcc@google.com>,
+        linux-aspeed@lists.ozlabs.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        etnaviv@lists.freedesktop.org, linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] drivers: don't select DMA_CMA or CMA
+Message-ID: <YG7YGxN83VxtKAeo@kernel.org>
+References: <20210408100523.63356-1-david@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401183223.80F1E291@viggo.jf.intel.com>
+In-Reply-To: <20210408100523.63356-1-david@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 11:32:23AM -0700, Dave Hansen wrote:
+On Thu, Apr 08, 2021 at 12:05:21PM +0200, David Hildenbrand wrote:
+> Trying to set CONFIG_CMA=y with CONFIG_DMA_CMA=n revealed that we have
+> three drivers that select these options. Random drivers should not
+> override user settings of such core knobs. Let's use "imply DMA_CMA"
+> instead, such that user configuration and dependencies are respected.
 > 
-> From: Yang Shi <yang.shi@linux.alibaba.com>
+> v1 -> v2:
+> - Fix DRM_CMA -> DMA_CMA
 > 
-> The migrate_pages() returns the number of pages that were not migrated,
-> or an error code.  When returning an error code, there is no way to know
-> how many pages were migrated or not migrated.
+> Cc: Joel Stanley <joel@jms.id.au>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Andrew Jeffery <andrew@aj.id.au>
+> Cc: Lucas Stach <l.stach@pengutronix.de>
+> Cc: Russell King <linux+etnaviv@armlinux.org.uk>
+> Cc: Christian Gmeiner <christian.gmeiner@gmail.com>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Michal Simek <michal.simek@xilinx.com>
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Peter Collingbourne <pcc@google.com>
+> Cc: linux-aspeed@lists.ozlabs.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: etnaviv@lists.freedesktop.org
+> Cc: linux-fbdev@vger.kernel.org
 > 
-> In the following patch, migrate_pages() is used to demote pages to PMEM
-> node, we need account how many pages are reclaimed (demoted) since page
-> reclaim behavior depends on this.  Add *nr_succeeded parameter to make
-> migrate_pages() return how many pages are demoted successfully for all
-> cases.
+> David Hildenbrand (2):
+>   drivers/video/fbdev: don't select DMA_CMA
+>   drivers/gpu/drm: don't select DMA_CMA or CMA from aspeed or etnaviv
 > 
-> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: osalvador <osalvador@suse.de>
+>  drivers/gpu/drm/aspeed/Kconfig  | 3 +--
+>  drivers/gpu/drm/etnaviv/Kconfig | 3 +--
+>  drivers/video/fbdev/Kconfig     | 2 +-
+>  3 files changed, 3 insertions(+), 5 deletions(-)
+
+Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+
+> -- 
+> 2.30.2
 > 
-
-...
->  int migrate_pages(struct list_head *from, new_page_t get_new_page,
->  		free_page_t put_new_page, unsigned long private,
-> -		enum migrate_mode mode, int reason)
-> +		enum migrate_mode mode, int reason, unsigned int *nr_succeeded)
->  {
->  	int retry = 1;
->  	int thp_retry = 1;
->  	int nr_failed = 0;
-> -	int nr_succeeded = 0;
->  	int nr_thp_succeeded = 0;
->  	int nr_thp_failed = 0;
->  	int nr_thp_split = 0;
-> @@ -1611,10 +1611,10 @@ retry:
->  			case MIGRATEPAGE_SUCCESS:
->  				if (is_thp) {
->  					nr_thp_succeeded++;
-> -					nr_succeeded += nr_subpages;
-> +					*nr_succeeded += nr_subpages;
->  					break;
->  				}
-> -				nr_succeeded++;
-> +				(*nr_succeeded)++;
->  				break;
->  			default:
->  				/*
-> @@ -1643,12 +1643,12 @@ out:
->  	 */
->  	list_splice(&ret_pages, from);
->  
-> -	count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
-> +	count_vm_events(PGMIGRATE_SUCCESS, *nr_succeeded);
->  	count_vm_events(PGMIGRATE_FAIL, nr_failed);
->  	count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
->  	count_vm_events(THP_MIGRATION_FAIL, nr_thp_failed);
->  	count_vm_events(THP_MIGRATION_SPLIT, nr_thp_split);
-> -	trace_mm_migrate_pages(nr_succeeded, nr_failed, nr_thp_succeeded,
-> +	trace_mm_migrate_pages(*nr_succeeded, nr_failed, nr_thp_succeeded,
->  			       nr_thp_failed, nr_thp_split, mode, reason);
-
-It seems that reclaiming is the only user who cared about how many pages
-could we migrated, could not do the following instead:
-
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 695a594e5860..d4170b7ea2fe 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1503,7 +1503,7 @@ static inline int try_split_thp(struct page *page, struct page **page2,
-  */
- int migrate_pages(struct list_head *from, new_page_t get_new_page,
-                free_page_t put_new_page, unsigned long private,
--               enum migrate_mode mode, int reason)
-+               enum migrate_mode mode, int reason, unsigned int *ret_succeeded)
- {
-        int retry = 1;
-        int thp_retry = 1;
-@@ -1654,6 +1654,9 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
-        if (!swapwrite)
-                current->flags &= ~PF_SWAPWRITE;
-
-+       if (ret_succedded)
-+               *ret_succedded = nr_succedded;
-+
-        return rc;
- }
-
- And pass only a valid pointer from demote_page_list() and NULL from all
- the others?
- I was just wondered after all those "unsigned int nr_succedded" in all
- other functions.
- This would also solve the "be careful to initialize nr_succedded"
- problem?
-
 
 -- 
-Oscar Salvador
-SUSE L3
+Sincerely yours,
+Mike.
