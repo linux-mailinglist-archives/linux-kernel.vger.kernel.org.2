@@ -2,99 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC0B357BA1
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 06:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C09357BA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 07:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229628AbhDHE6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 00:58:10 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:21060 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229559AbhDHE6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 00:58:04 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FG8CN0Vj9zB09ZH;
-        Thu,  8 Apr 2021 06:57:52 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id so05TY0S2tCo; Thu,  8 Apr 2021 06:57:51 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FG8CM6cxdzB09ZG;
-        Thu,  8 Apr 2021 06:57:51 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AEC0D8B7C0;
-        Thu,  8 Apr 2021 06:57:52 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id FszZmx3-x-gr; Thu,  8 Apr 2021 06:57:52 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 212808B75F;
-        Thu,  8 Apr 2021 06:57:52 +0200 (CEST)
-Subject: Re: [PATCH-next] powerpc/interrupt: Remove duplicate header file
-To:     johnny.chenyi@huawei.com, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, npiggin@gmail.com,
-        aneesh.kumar@linux.ibm.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        yuehaibing@huawei.com, heying24@huawei.com
-References: <20210408035644.2417002-1-johnny.chenyi@huawei.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <c42ebf38-c7ea-68bc-01ca-8352581bc33d@csgroup.eu>
-Date:   Thu, 8 Apr 2021 06:57:50 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S229606AbhDHFAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 01:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229512AbhDHFAf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 01:00:35 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C304C061761
+        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 22:00:24 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id h25so533566pgm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 22:00:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yAhu6CqdAQ+BdgBQcTHerGRp4ijsbWysCLX6FzCbuNw=;
+        b=ADhdKz4Sx9y75de5EanjHhDJY5wMx53a0RBpg55jv4x21G0Bt/bR3dpLd2DEUyprKN
+         aZTY3tjatR+vD34kAUTWc6yMHUc39U9snLdbdNI/3JtD+Z9ZET5Fd7TK+FvfWZuMbqm9
+         dp4d2H6TcXRdMqXoBY9SeW4EJDR6lFDEnS1ls=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yAhu6CqdAQ+BdgBQcTHerGRp4ijsbWysCLX6FzCbuNw=;
+        b=LVKulHduInJtA1Fsl+0ahtfMR/x05gIqVeRGsB49Sk1xQZBjrkUaxHmn25eohrQZ3u
+         4fBVfmYDlsJ7f0GI/qro84+H7nZkSDBpUgz0/neLSF+Z9uAT04tnWRbv4nd7i9H2afIU
+         N6M6q8o6z2GkcG9vmEIdJ4+gm2erY6SDuYQx+d6Gcc6f5M8/MtBfcxQJRUXcvPr2u9hN
+         Fe7ARpJHn6iSSkIcd6pbo1jUgVgC8ssctDMupNyZoOznW43qdn1Xj1UTJpQucTqD7UfC
+         Kt6zuCCFAxJ8U1VXMkN7suwZ/Cm/tZyUY42CwMUyg/XULrXXAPL+3S+1OtgyXybbndYP
+         4o/w==
+X-Gm-Message-State: AOAM531peOc/hCy9o9efhDcbJZ5acTB4EYp+2B0531ToaX9q8KTkeWkx
+        Lo8F2LE3ld6MC7QjI0+s7Z756Q==
+X-Google-Smtp-Source: ABdhPJz087ziF9CITNv68k2QMOx7nCzUgfYsJUromTlsf7o5zATa6GEr68p54yhZQi867KciJ0i4+g==
+X-Received: by 2002:a65:5c88:: with SMTP id a8mr6238482pgt.130.1617858024006;
+        Wed, 07 Apr 2021 22:00:24 -0700 (PDT)
+Received: from localhost ([2401:fa00:8f:203:25d8:8458:73e8:75ac])
+        by smtp.gmail.com with UTF8SMTPSA id w67sm23753647pgb.87.2021.04.07.22.00.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 22:00:23 -0700 (PDT)
+From:   David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To:     =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        David Stevens <stevensd@chromium.org>
+Subject: [PATCH] Revert "drm/syncobj: use dma_fence_get_stub"
+Date:   Thu,  8 Apr 2021 13:59:26 +0900
+Message-Id: <20210408045926.3202160-1-stevensd@google.com>
+X-Mailer: git-send-email 2.31.0.208.g409f899ff0-goog
 MIME-Version: 1.0
-In-Reply-To: <20210408035644.2417002-1-johnny.chenyi@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: David Stevens <stevensd@chromium.org>
 
+This reverts commit 86bbd89d5da66fe760049ad3f04adc407ec0c4d6.
 
-Le 08/04/2021 à 05:56, johnny.chenyi@huawei.com a écrit :
-> From: Chen Yi <johnny.chenyi@huawei.com>
-> 
-> Delete one of the header files <asm/interrupt.h> that are included
-> twice.
+Using the singleton stub fence in drm_syncobj_assign_null_handle means
+that all syncobjs created in an already signaled state or any syncobjs
+signaled by userspace will reference the singleton fence when exported
+to a sync_file. If those sync_files are queried with SYNC_IOC_FILE_INFO,
+then the timestamp_ns value returned will correspond to whenever the
+singleton stub fence was first initialized. This can break the ability
+of userspace to use timestamps of these fences, as the singleton stub
+fence's timestamp bears no relationship to any meaningful event.
 
-Guys, we have been flooded with such tiny patches over the last weeks, some changes being sent 
-several times by different people.
+Signed-off-by: David Stevens <stevensd@chromium.org>
+---
+ drivers/gpu/drm/drm_syncobj.c | 58 ++++++++++++++++++++++++++---------
+ 1 file changed, 44 insertions(+), 14 deletions(-)
 
-That one is included in 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20210323062916.295346-1-wanjiabing@vivo.com/
+diff --git a/drivers/gpu/drm/drm_syncobj.c b/drivers/gpu/drm/drm_syncobj.c
+index 349146049849..7cc11f1a83f4 100644
+--- a/drivers/gpu/drm/drm_syncobj.c
++++ b/drivers/gpu/drm/drm_syncobj.c
+@@ -211,6 +211,21 @@ struct syncobj_wait_entry {
+ static void syncobj_wait_syncobj_func(struct drm_syncobj *syncobj,
+ 				      struct syncobj_wait_entry *wait);
+ 
++struct drm_syncobj_stub_fence {
++	struct dma_fence base;
++	spinlock_t lock;
++};
++
++static const char *drm_syncobj_stub_fence_get_name(struct dma_fence *fence)
++{
++	return "syncobjstub";
++}
++
++static const struct dma_fence_ops drm_syncobj_stub_fence_ops = {
++	.get_driver_name = drm_syncobj_stub_fence_get_name,
++	.get_timeline_name = drm_syncobj_stub_fence_get_name,
++};
++
+ /**
+  * drm_syncobj_find - lookup and reference a sync object.
+  * @file_private: drm file private pointer
+@@ -344,18 +359,24 @@ void drm_syncobj_replace_fence(struct drm_syncobj *syncobj,
+ }
+ EXPORT_SYMBOL(drm_syncobj_replace_fence);
+ 
+-/**
+- * drm_syncobj_assign_null_handle - assign a stub fence to the sync object
+- * @syncobj: sync object to assign the fence on
+- *
+- * Assign a already signaled stub fence to the sync object.
+- */
+-static void drm_syncobj_assign_null_handle(struct drm_syncobj *syncobj)
++static int drm_syncobj_assign_null_handle(struct drm_syncobj *syncobj)
+ {
+-	struct dma_fence *fence = dma_fence_get_stub();
++	struct drm_syncobj_stub_fence *fence;
+ 
+-	drm_syncobj_replace_fence(syncobj, fence);
+-	dma_fence_put(fence);
++	fence = kzalloc(sizeof(*fence), GFP_KERNEL);
++	if (fence == NULL)
++		return -ENOMEM;
++
++	spin_lock_init(&fence->lock);
++	dma_fence_init(&fence->base, &drm_syncobj_stub_fence_ops,
++		       &fence->lock, 0, 0);
++	dma_fence_signal(&fence->base);
++
++	drm_syncobj_replace_fence(syncobj, &fence->base);
++
++	dma_fence_put(&fence->base);
++
++	return 0;
+ }
+ 
+ /* 5s default for wait submission */
+@@ -469,6 +490,7 @@ EXPORT_SYMBOL(drm_syncobj_free);
+ int drm_syncobj_create(struct drm_syncobj **out_syncobj, uint32_t flags,
+ 		       struct dma_fence *fence)
+ {
++	int ret;
+ 	struct drm_syncobj *syncobj;
+ 
+ 	syncobj = kzalloc(sizeof(struct drm_syncobj), GFP_KERNEL);
+@@ -479,8 +501,13 @@ int drm_syncobj_create(struct drm_syncobj **out_syncobj, uint32_t flags,
+ 	INIT_LIST_HEAD(&syncobj->cb_list);
+ 	spin_lock_init(&syncobj->lock);
+ 
+-	if (flags & DRM_SYNCOBJ_CREATE_SIGNALED)
+-		drm_syncobj_assign_null_handle(syncobj);
++	if (flags & DRM_SYNCOBJ_CREATE_SIGNALED) {
++		ret = drm_syncobj_assign_null_handle(syncobj);
++		if (ret < 0) {
++			drm_syncobj_put(syncobj);
++			return ret;
++		}
++	}
+ 
+ 	if (fence)
+ 		drm_syncobj_replace_fence(syncobj, fence);
+@@ -1322,8 +1349,11 @@ drm_syncobj_signal_ioctl(struct drm_device *dev, void *data,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	for (i = 0; i < args->count_handles; i++)
+-		drm_syncobj_assign_null_handle(syncobjs[i]);
++	for (i = 0; i < args->count_handles; i++) {
++		ret = drm_syncobj_assign_null_handle(syncobjs[i]);
++		if (ret < 0)
++			break;
++	}
+ 
+ 	drm_syncobj_array_free(syncobjs, args->count_handles);
+ 
+-- 
+2.31.0.208.g409f899ff0-goog
 
-And was already submitted a few hours earlier by someone else: 
-https://patchwork.ozlabs.org/project/linuxppc-dev/patch/1616464656-59372-1-git-send-email-zhouchuangao@vivo.com/
-
-Could you work all together and cook an overall patch including all duplicate removal from 
-arch/powerpc/ files ?
-
-Best way would be I think to file an issue at https://github.com/linuxppc/issues/issues , then you 
-do a complete analysis and list in the issue all places to be modified, then once the analysis is 
-complete you send a full single patch.
-
-Thanks
-Christophe
-
-> 
-> Signed-off-by: Chen Yi <johnny.chenyi@huawei.com>
-> ---
->   arch/powerpc/kernel/interrupt.c | 1 -
->   1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-> index c4dd4b8f9cfa..f64ace0208b7 100644
-> --- a/arch/powerpc/kernel/interrupt.c
-> +++ b/arch/powerpc/kernel/interrupt.c
-> @@ -7,7 +7,6 @@
->   #include <asm/asm-prototypes.h>
->   #include <asm/kup.h>
->   #include <asm/cputime.h>
-> -#include <asm/interrupt.h>
->   #include <asm/hw_irq.h>
->   #include <asm/interrupt.h>
->   #include <asm/kprobes.h>
-> 
