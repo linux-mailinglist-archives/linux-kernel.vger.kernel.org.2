@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12778357D38
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9795B357D3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 09:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhDHHUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 03:20:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbhDHHUR (ORCPT
+        id S230435AbhDHHU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 03:20:26 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15177 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230402AbhDHHUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 03:20:17 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB83C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 00:20:05 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id n8so2303745lfh.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 00:20:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WlfKPAVS7s8q2gU837mzcoVOQnjvsEoF10bHzfLXmJI=;
-        b=eOLrgTB7YGCxrq2IJntsH0BiX0my6ojbHNgaKR1WLjXrtRQqRgl7AxFIO7ljS/XJsc
-         qDGjixKpbSUb01qme7Vuj6+B0Wt/X/97C0BWeVwkY6keatJtXskQDFpfOF+OC10k7c77
-         IV8aII8UvUta4yAhawJCYVgrwDEq0JdFzd/KgmJ62ntqi6kGEc1IGBdzVbJG6EqXhMjL
-         yf+t9OEIttseT7VqfjidrgcZgeAnb+P4XWwhXQRHQUpjT78v3q+LH9zKETFp4l5oPT7z
-         ct/T+vx8OsmzJuuVl+QAHrSibAMVWeCltBdCnIrPD59vcQSEC7QyD6CnmF5YCOMGu/A1
-         boDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WlfKPAVS7s8q2gU837mzcoVOQnjvsEoF10bHzfLXmJI=;
-        b=ECINRwDUhJB5YILqgDxYh26BPgypKMFcMiWrvL5KdG5HpkeHrumW8nmTLluls3sdv7
-         uGZULCRqYTxh7AyiJD0ZlZG3U7kkZaYKjlqRUaLDyDEnQxrLMJxyLZJMC7pEw4PENldG
-         t6eXuKAk+2vrresSp8JV9Qmj1Ugn38TcBGBA455csAjC+ELzAHYV0d/ZitLpXBL8b4Dm
-         Jk4S8/YBcQBetjGEmCrvmsaDKUlSTkRsjKlyCwIt39aP08WXqlkW9Dy5FrlnMmVmXkI7
-         nRyat5Q+d56nHiXF/+Ha04RZTssbUa3ab+B7HSyaryHY8pgHbGrIpSWvbSqBG6lAPZ/C
-         w7hQ==
-X-Gm-Message-State: AOAM530SZ9mO+75q77Kd6ndfBlUmwEKTeyweDDUfzQNphwPLGX6nsxP7
-        bjvd4w2AA0AjBtzkdTIV9aw7tumKrj6ytywz98i+ojYKHMF/FA==
-X-Google-Smtp-Source: ABdhPJwUEMQdSsTxINxDceo8FqB3wCgw7y0bCNTtLfBWCoOlVcvIuy+iIW9x2E2dlo8fmxCrN/0WCtgHovBessU+sDk=
-X-Received: by 2002:a05:6512:243:: with SMTP id b3mr5381799lfo.529.1617866404340;
- Thu, 08 Apr 2021 00:20:04 -0700 (PDT)
+        Thu, 8 Apr 2021 03:20:23 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGCJN74QYzpVX5;
+        Thu,  8 Apr 2021 15:17:24 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 15:20:06 +0800
+Subject: Re: [PATCH] USB:ehci:fix ehci hardware problem
+To:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <stern@rowland.harvard.edu>, <liudongdong3@huawei.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kong.kongxinwei@hisilicon.com>, <yisen.zhuang@huawei.com>
+References: <1617865425-28782-1-git-send-email-liulongfang@huawei.com>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <177a1fbd-b6f0-2e67-2e5a-5b05d2015b3a@huawei.com>
+Date:   Thu, 8 Apr 2021 15:19:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20210322033846.39882-1-ran.wang_1@nxp.com> <AM6PR04MB54134144991AB746382FCC0BF1769@AM6PR04MB5413.eurprd04.prod.outlook.com>
-In-Reply-To: <AM6PR04MB54134144991AB746382FCC0BF1769@AM6PR04MB5413.eurprd04.prod.outlook.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 8 Apr 2021 09:19:53 +0200
-Message-ID: <CACRpkdbh_kn9SjjSqS32m5VNy5k=j6eLCVJDJxmiWVQnYC0ZJA@mail.gmail.com>
-Subject: Re: [PATCH v4] gpio: mpc8xxx: Add ACPI support
-To:     Ran Wang <ran.wang_1@nxp.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michael Walle <michael@walle.cc>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1617865425-28782-1-git-send-email-liulongfang@huawei.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 3:49 AM Ran Wang <ran.wang_1@nxp.com> wrote:
-
-> Could this version be accepted, or any comment/suggestion?
-
-Andy says yes, then it is a yes :)
-FWIW
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+On 2021/4/8 15:03, Longfang Liu wrote:
+> When rebooting the EHCI driver, ehci_shutdown() will be called.
+> if the sbrn flag is 0, ehci_shutdown() will return directly.
+> 
+> Our EHCI hardware does not define the SBRN register, which cause
+> its value to default to 0. The sbrn flag being 0 will cause the
+> EHCI interrupt signal to not be turned off after reboot. An interrupt
+> that is not closed will cause an exception to the device sharing
+> the interrupt.
+> 
+> Currently, our hardware has this problem. We hope to solve this
+> problem by skipping reading the sbrn register value. On the next
+> generation of hardware, we will define this SBRN register in accordance
+> with the controller standard.
+> 
+> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> ---
+>  drivers/usb/host/ehci-pci.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/usb/host/ehci-pci.c b/drivers/usb/host/ehci-pci.c
+> index 3c3820a..5dc6821 100644
+> --- a/drivers/usb/host/ehci-pci.c
+> +++ b/drivers/usb/host/ehci-pci.c
+> @@ -291,6 +291,8 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
+>  	if (pdev->vendor == PCI_VENDOR_ID_STMICRO
+>  	    && pdev->device == PCI_DEVICE_ID_STMICRO_USB_HOST)
+>  		;	/* ConneXT has no sbrn register */
+> +	else if (pdev->vendor == PCI_VENDOR_ID_HUAWEI)
+> +		;	/* sbrn register is undefined */
+>  	else
+>  		pci_read_config_byte(pdev, 0x60, &ehci->sbrn);
+>  
+> 
+Sorry, please ignore this patch, I will resend it.
+Thanks.
+Longfang.
