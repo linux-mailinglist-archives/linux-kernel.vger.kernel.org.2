@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264EC358481
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BE8358487
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhDHNUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:20:15 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:35578 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhDHNUN (ORCPT
+        id S231446AbhDHNWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:22:05 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15627 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229741AbhDHNWD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:20:13 -0400
-Received: from [192.168.86.30] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 45C8720B5680;
-        Thu,  8 Apr 2021 06:20:00 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 45C8720B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1617888002;
-        bh=m4XVZsDylx1Y5K0Go69fD64RY1hsejCeHkGzzgzsFQ8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=LxpyCra7ur90dkmIxfrLR6kFWFtxsclh3w9C7DtEWzagA0pdp4wmQsLNRecBCONHf
-         TmbUldMBJ4X9b0OxUbx0paIrizUrm6IGc+z3fxJpApYT+h5j4LKyQTrsMEC41A/Klm
-         Rm6A5P1g3JyBkAUAO43YXF/2xlQeyVNXOkieP0S8=
-Subject: Re: [PATCH 5/7] KVM: SVM: hyper-v: Remote TLB flush for SVM
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Lan Tianyu <Tianyu.Lan@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-References: <cover.1617804573.git.viremana@linux.microsoft.com>
- <1c754fe1ad8ae797b4045903dab51ab45dd37755.1617804573.git.viremana@linux.microsoft.com>
- <87ft01ausu.fsf@vitty.brq.redhat.com>
-From:   Vineeth Pillai <viremana@linux.microsoft.com>
-Message-ID: <b3eba256-fb3f-abda-cd83-df0c8f773314@linux.microsoft.com>
-Date:   Thu, 8 Apr 2021 09:19:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 8 Apr 2021 09:22:03 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGMKg1dGvzpW0F;
+        Thu,  8 Apr 2021 21:19:03 +0800 (CST)
+Received: from huawei.com (10.67.174.37) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
+ 21:21:46 +0800
+From:   Chen Hui <clare.chenhui@huawei.com>
+To:     <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
+        <airlied@linux.ie>, <daniel@ffwll.ch>, <matthias.bgg@gmail.com>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] drm/mediatek: Remove redundant dev_err calls
+Date:   Thu, 8 Apr 2021 21:21:50 +0800
+Message-ID: <20210408132150.200583-1-clare.chenhui@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <87ft01ausu.fsf@vitty.brq.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.37]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+There is a error message within devm_ioremap_resource
+already, so remove the dev_err calls to avoid redundant
+error messages.
 
-On 4/8/21 7:18 AM, Vitaly Kuznetsov wrote:
->
->>   	enable_gif(svm);
->> @@ -3967,6 +3999,9 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, unsigned long root,
->>   		svm->vmcb->control.nested_cr3 = cr3;
->>   		vmcb_mark_dirty(svm->vmcb, VMCB_NPT);
->>   
->> +		if (kvm_x86_ops.tlb_remote_flush)
->> +			kvm_update_arch_tdp_pointer(vcpu->kvm, vcpu, cr3);
->> +
-> VMX has "#if IS_ENABLED(CONFIG_HYPERV)" around this, should we add it
-> here too?
-Agreed. Will fix.
+Signed-off-by: Chen Hui <clare.chenhui@huawei.com>
+---
+ drivers/gpu/drm/mediatek/mtk_disp_color.c | 4 +---
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c | 4 +---
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-Thanks,
-Vineeth
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_color.c b/drivers/gpu/drm/mediatek/mtk_disp_color.c
+index 63f411ab393b..d9b6f3b100dc 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_color.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_color.c
+@@ -112,10 +112,8 @@ static int mtk_disp_color_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	priv->regs = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(priv->regs)) {
+-		dev_err(dev, "failed to ioremap color\n");
++	if (IS_ERR(priv->regs))
+ 		return PTR_ERR(priv->regs);
+-	}
+ #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+ 	ret = cmdq_dev_get_client_reg(dev, &priv->cmdq_reg, 0);
+ 	if (ret)
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+index 3ebf91e0ab41..ad5df3f9d477 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+@@ -146,10 +146,8 @@ static int mtk_disp_gamma_probe(struct platform_device *pdev)
+ 
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	priv->regs = devm_ioremap_resource(dev, res);
+-	if (IS_ERR(priv->regs)) {
+-		dev_err(dev, "failed to ioremap gamma\n");
++	if (IS_ERR(priv->regs))
+ 		return PTR_ERR(priv->regs);
+-	}
+ 
+ #if IS_REACHABLE(CONFIG_MTK_CMDQ)
+ 	ret = cmdq_dev_get_client_reg(dev, &priv->cmdq_reg, 0);
+-- 
+2.17.1
 
