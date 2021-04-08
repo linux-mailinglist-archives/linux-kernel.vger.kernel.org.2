@@ -2,297 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A622358715
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5116D358717
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:23:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbhDHOWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:22:21 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:40326 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231742AbhDHOWT (ORCPT
+        id S231887AbhDHOXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:23:08 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:27316 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231709AbhDHOXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:22:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1617891726;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zrKe4oO83MQnVExP9l3JAk4JLhB4lt95A8UP19h4rPA=;
-        b=n20lFx/7P5p9tryj5NxxgCV2GGSlDqj/wZ0YgpGbTFDcvJ3g/JNWPBj8omfL0fy2vp5uEl
-        PPqOhD+3GH/rrKHEWnUE+lxom/HqhqT+OuBsiyZqNfEABzLxJelKciB2a6JE05Uf6YKXfr
-        0fXhzPIeGiyPRjc4qv7QIJPTKPbir70=
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com
- (mail-db8eur05lp2109.outbound.protection.outlook.com [104.47.17.109])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-38-2u-o-mmrOG-ighrimt-FsQ-1; Thu, 08 Apr 2021 16:21:59 +0200
-X-MC-Unique: 2u-o-mmrOG-ighrimt-FsQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XdY27VV4KwFMi3lB+GvWkwLJNgUsQhffySfwZINGZ+zSMY3cWLZpi/+MoQUn4Np9gIWsYfGsMrL/uG+8xPwO2P6vh8WeNYDBreXj5GyfuOGoARNf44oCNtn6TAQJSAAGU6k0xFGVOoDflcNzbm39yPA/1HUiengL4Hy3zhakqcUCQoCD3L6Si+qAHXWZCDME35++eRUqZgyE4sU9xCqDXwFcVhn4l/pi8jtfa7stE3UhDpQSoV3mj9int+apUdEJ+jcQKQFTu8UBbe4+thdmw3M0gO5RzxoC9NRR4MHckMaSgIrzdcvZ8V2yTbsd3oywXFgxSgZCYGQt5mnhbWih3g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ezfDBMHHkqGCzOPwEJavtpJ+Mqy2QLVv1dKnlC40Y4k=;
- b=NPqloG47bSSdkV4sA8PXCjXAxkamJavQd5/lnMCyW4+nX9hLNYooXgo9z2PJWPd76rzuaM23ByiJktpiOnCA+zaYx8piG/JjGpPdg9IQ3U003zfK37s7l/KUAO7vNQnIvrkwrnkb7hn8PRi37NiTKgeM0PfrCXRmCwpvaPS42y0MVIsz/cbSRBusQLW1Iw/78TixmsPTQP1SdAlnkVG5jEXx05byEEv/Ur920kQVVYnDtmD8TBD9JVg05DiXAF8MxuqRUN9ad5sIqOJ9HC40u+a1hlpe+w751E0Q+AIoznoRf5UsAo4y95/4WjXvOSPoYVzl3e+T2wLrCfTTl4z1xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM0PR04MB5650.eurprd04.prod.outlook.com (2603:10a6:208:128::18)
- by AM0PR04MB7058.eurprd04.prod.outlook.com (2603:10a6:208:195::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Thu, 8 Apr
- 2021 14:21:57 +0000
-Received: from AM0PR04MB5650.eurprd04.prod.outlook.com
- ([fe80::756a:86b8:8283:733d]) by AM0PR04MB5650.eurprd04.prod.outlook.com
- ([fe80::756a:86b8:8283:733d%6]) with mapi id 15.20.3999.032; Thu, 8 Apr 2021
- 14:21:57 +0000
-Subject: Re: [PATCH 01/18] X.509: Parse RSASSA-PSS style certificates
-To:     hongbo li <herbert.tencent@gmail.com>
-CC:     linux-crypto@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210330202829.4825-1-varad.gautam@suse.com>
- <20210330202829.4825-2-varad.gautam@suse.com>
- <CABpmuw+ht5BmNtqN+pJt7A0ZHp7JJArZtj51hkhBc96L8iwvwg@mail.gmail.com>
- <29804310-e75b-80fb-81a3-0823b06827ea@suse.com>
- <CABpmuw+br=4N7OV8KXR7iZosGj7SVKMS=DV_-axgMgsh-+189A@mail.gmail.com>
-From:   Varad Gautam <varad.gautam@suse.com>
-Message-ID: <f8b437e5-56de-2b45-b835-bdf0ee1968c0@suse.com>
-Date:   Thu, 8 Apr 2021 16:21:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <CABpmuw+br=4N7OV8KXR7iZosGj7SVKMS=DV_-axgMgsh-+189A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [95.90.93.216]
-X-ClientProxiedBy: ZR0P278CA0090.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:22::23) To AM0PR04MB5650.eurprd04.prod.outlook.com
- (2603:10a6:208:128::18)
+        Thu, 8 Apr 2021 10:23:06 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AXllXU6kugPaQibWh+GwMNWJkANPpDfIK3DAb?=
+ =?us-ascii?q?vn1ZSRFFG/GwvcaogfgdyFvImC8cMUtLpfmsMLSNKEmzybdb+o8UVI3IYCDDtH?=
+ =?us-ascii?q?GzJI9vqavuqgeOJwTb9upQkZhtaLJ/DtqYNzVHpP336gW5DNosqePvmJyAv/vU?=
+ =?us-ascii?q?zHtmUGhRB51I0gERMGemO3wzYAFHAJYjfaD92vZ6?=
+X-IronPort-AV: E=Sophos;i="5.82,206,1613430000"; 
+   d="scan'208";a="502235539"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 16:22:54 +0200
+Date:   Thu, 8 Apr 2021 16:22:54 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+cc:     Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH v3] staging: rtl8723bs: Remove camelcase
+ in several files
+In-Reply-To: <20210408131641.31113-1-fmdefrancesco@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2104081622310.11533@hadrien>
+References: <20210408131641.31113-1-fmdefrancesco@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.77.67] (95.90.93.216) by ZR0P278CA0090.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:22::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Thu, 8 Apr 2021 14:21:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e6d30571-dee1-4e7d-fe5c-08d8fa99aad7
-X-MS-TrafficTypeDiagnostic: AM0PR04MB7058:
-X-Microsoft-Antispam-PRVS: <AM0PR04MB7058408E864338E5E5609E7CE0749@AM0PR04MB7058.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HrHgF9RBsNUZfykVOyje5qHvFXYvriSFe3pmn5ZyxrmtJurhxvFHDcpMNvRwSkt5uRo/AbHm7kPHR/sArLwzWZqWspXOG+HlqjLKzmgH8VXkpP/ljrZ8lLlmgbvXTuolDyvq98nbuXak3ARtc3Fr5294+siagrOcJqFvAJfdcOyfrPrM5ja3Sv01KuiOXNs9EPCj0rT01saToW6r55ce8SykcHq1cArXTMn2itoCM+Lw5nEZQNI3seOQngzL6B2eFIVlrDlldauNfxITMllw+vy5D7ZJ5Dsnr9rK1UK1QiPMHj+nzbky7ULn8DTqKSStNaj1UwZDbtcAWJEUQPx1J80nghff26+YuA7AS6AZ78D+g+WzMjEQmAB24WH+yKKnAZpRUUk6wHJtnLUW6oYZkZW01VuNB2bu6XTV8FUWxwcVf5jab+GKJ2q9DSj5E3lEfWuMzlCxnaZlcx45whXxI2DLTVN1wFXC+sLQeEWDNy88D+99VD7vBIOug7a4vfVuHlecYmb/8q+6n/Bb54EwTuJz0JyDhJyaHRRKc7Q+T0uCYtnE/BgT34d3vtahWjtjjGTp372sJAXGjQ7m86acXkDt8w3KzgpI5TaAP2b38NBOV7tH2jh2030+sCZl4zcPEQkEOOxq+QuwCQ5vaQYfTy1udSnkzjBHhW+iQUL64h/c1/kytvbbUcrVL8IhiX9IJG+kUDB2iCijRCYX/6ZqoRi3r4fJOA1tYYshmr/LkCBrg9z+sHtZLxDYLZpo7AzL5AvP1sKSh8EreCMvYP8bqPA+kvJgBKgjgaHEcC6S+Xv3pucYG7chpCp52mQ2qTXY
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5650.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(346002)(39860400002)(136003)(396003)(956004)(31686004)(5660300002)(316002)(53546011)(2906002)(44832011)(2616005)(36756003)(4326008)(52116002)(31696002)(8676002)(6486002)(966005)(66556008)(38350700001)(66476007)(66946007)(86362001)(478600001)(83380400001)(54906003)(66574015)(186003)(8936002)(38100700001)(26005)(6916009)(16576012)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?rpJwZ9FdBpPPmwvVAGutLKgf1+0+stTSMuAAO9XjIqujhyZXNwazCasTjci5?=
- =?us-ascii?Q?qsymGf2anzBhWPFAk9cBYwjtS/U5zd0jjoIWkGNDGQu79eBfO+kSxTu7Xc2h?=
- =?us-ascii?Q?CH2Zgpzxeu0NBXtCOLcNCvWwzgEUjpwKQnwKL6AiFDmoD1VY4dQMpEjNJH0G?=
- =?us-ascii?Q?t2xNhOCzMVxrRW2rjOL2XEwBpCjcDE+VTN82zHvYOSiD0OYbFeKD6GxxGr20?=
- =?us-ascii?Q?UIJL2C+MCZDPi4Ht6pZX9suEAO8PB1g4zfqzS66RnFkwykwA5iDQlrGrpAr4?=
- =?us-ascii?Q?GMiUnse+jUOhQBybzBxAfm8hi8Yq2b7tjwPuN0zkr/bbi+ogU+kli2CT3BkT?=
- =?us-ascii?Q?3zJ1A/i44KmLy3OfnpqImuVLUyc19pxi3gBXkaI+J8FqlpYZzEQr13SyJnPT?=
- =?us-ascii?Q?9XqY8rXAs7Pqrjj3patv1ivNghJwMvfAS1AnGfSVoyam2edJPU9kv9q05WRv?=
- =?us-ascii?Q?H+FhYhm+xdn9OP69MqhcHo013i0enC8gxN6SOisA5zKwEcAsRH6QAEm//nR6?=
- =?us-ascii?Q?zwm2xPaKWAEQG6Nn9bl4Nc4G/yBR0UxIRFWZp5O9katxE0m3xJGBrRtEFnSD?=
- =?us-ascii?Q?uSbutnTXC/klDCaTw888csv43wmHU3UV55GA+G4dNkkknw7aNTAM05mUiHy2?=
- =?us-ascii?Q?V2Oj1ttNCOpJs9SQdWSzIqV96o7yNwzOOHtV9nYNog3vs0JuBb21+0jr7W94?=
- =?us-ascii?Q?vXx55SFt7SJlI4Otgc5Nsxv8UBqxnWYR+Y/l6uRDofa7Jy+I9g+l9jJXW3lc?=
- =?us-ascii?Q?DGpX4+ZwySct4l9WZ9GrknGUUQCpMyT6ugmLe3j1RipyKgUsGjaYkmqEdjPk?=
- =?us-ascii?Q?YDbNSfYT1V4XmOu0Kv60eBeJV1Tx8vQEOSXbJnat9oyW1e+cipstfXE0JrqW?=
- =?us-ascii?Q?d2afHu5LTFeLzwkORFRkoTn43ZvfSmtw0s1HjI/l/6/egiXVk/j8cCVMUg2e?=
- =?us-ascii?Q?AMfZbKvcH2yHwZ4hWiWiLiobNY9RlHELdEDjNwvG3LX8BDuXHCzGAFpI7Ipn?=
- =?us-ascii?Q?p01MnD5Pg1NmgmcVZuFf7hsjU7+8OEph7dMLge/j/ipycoGtAN3Lxac4kaLk?=
- =?us-ascii?Q?y3k/YvTRf5hTVvZ9os6NZBRh/bUhH6ktAikUJLSjFEt+s8ajdSjHecqdx36d?=
- =?us-ascii?Q?lTllvFiwnULgDYDBI6X2kgVIcc/ExUlhKSMVBO9bXrdSi3mLGW7+YmkSmPSM?=
- =?us-ascii?Q?lEQmIW+ha3ouV7dm1aAawbyg98jWu2y6HzuQPPQ3xU8T1I1sd8sih6QTxM6N?=
- =?us-ascii?Q?dP/JTki0AcvfOtV3Iv35vzkSwQuRfRRIqD+MdG6YbJcU1a82oNRF5hIsNzBL?=
- =?us-ascii?Q?4bbpd4sXpcUpxWkGjBuJOmPg?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6d30571-dee1-4e7d-fe5c-08d8fa99aad7
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5650.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2021 14:21:57.7206
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IfeZDrBOz0nGQjhlxoD8ZyM6bpy2tgk0NsA8xhtOh9Yh5cRjHhbYxGnMjrFN9Adkk6SQ9l3uynjbLh4QDyGryw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7058
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/21 4:29 AM, hongbo li wrote:
-> Hi Varad,
->=20
-> Varad Gautam <varad.gautam@suse.com <mailto:varad.gautam@suse.com>> =E4=
-=BA=8E2021=E5=B9=B44=E6=9C=888=E6=97=A5=E5=91=A8=E5=9B=9B =E4=B8=8A=E5=8D=
-=885:20=E5=86=99=E9=81=93=EF=BC=9A
->>
->> Hi Hongbo,
->>
->> On 4/7/21 10:27 AM, hongbo li wrote:
->> > Hello Varad=EF=BC=8C
->> >
->> > I also made an implementation of rsa pss: "[PATCH v3 0/4] crypto: add
->> > rsa pss support for x509".
->> > I notice your patches and did some review, =C2=A0find the following
->> > differences between our patches:
->> > 1. You rework the rsa pad framework. This is reasonable.
->> > 2. You did some changes on the keyctl and asymmetric struct. I don't
->> > see the reason.
->> > =C2=A0 =C2=A0 Because for x509 layer, it only need to know the hash pa=
-ram, and
->> > could ignore other params(salt len, mgfhash).
->> > =C2=A0 =C2=A0 Let rsa-pss itself parse the pss related params. So it s=
-eems we
->> > don't need to change asymmetric's
->> > =C2=A0 =C2=A0 common struct.
->>
->> A signature might be generated with a different set of params than those
->> used for signing the x509 certificate that wraps the corresponding pubke=
-y.
->> In this case, using the params that came in when the pubkey was loaded,
->> instead of params for the actual signature would be incorrect. I see
->> struct public_key_signature as the right place to store such state,
->> regardless of where the signature came from (detached or selfsigned).
->>
->=20
-> As what the comments in x509_note_params() =C2=A0say:
-> In crypto/asymmetric_keys/x509.asn1, AlgorithmIdentifier is used three ti=
-mes :
-> 1. The signature AlgorithmIdentifier in TBSCertificate.
-> 2. The algorithm in SubjectPublicKeyInfo
-> 3. The signatureAlgorithm after tbsCertificate.
-> When the pubkey was loaded, it is the third one. According to rfc5280 [1]=
-,
-> the third has the same value as the first one.=C2=A0 Your patch use the f=
-irst, and I
-> use the third, I think both are fine.
->=20
 
-Consider the following to illustrate my point:
 
-# Generate a key pair:
-slen=3D20
-mgfhash=3Dsha384
-openssl req -x509 -newkey rsa:4096 -nodes -keyout private.pem -out pss-0.de=
-r \
-    -days 100 -outform der -config x509.genkey -sha384 -sigopt rsa_padding_=
-mode:pss \
-    -sigopt rsa_pss_saltlen:$slen -sigopt rsa_mgf1_md:$mgfhash
+On Thu, 8 Apr 2021, Fabio M. De Francesco wrote:
 
-openssl x509 -in pss-0.der -inform der -pubkey -noout > public.pem
+> Remove camelcase in bFwCurrentInPSMode, a variable used by code
+> of several subdirectories/files of the driver. Issue detected by
+> checkpatch.pl.
 
-# Sign some data:
-echo data > data.txt
-slen=3D30
-mgfhash=3Dsha256
-openssl dgst -sha384 -sign private.pem -sigopt rsa_padding_mode:pss \
-    -sigopt rsa_pss_saltlen:$slen -sigopt rsa_mgf1_md:$mgfhash \
-    -out sig.bin data.txt
+It could be reasonable to mention the removal of b in the log message.
 
-sig.bin has a different slen and mgfhash vs the signature stored in pss-0.d=
-er.
-Since psspad_set_pub_key() here [1] will unpack the params that correspond =
-to
-pss-0.der, verifying sig.bin (eg via keyctl pkey_verify) would fail.
+julia
 
->> For the same reason, I also prefer the parsing machinery for signature
->> params be kept in x509_cert_parser instead of unpacking a buffer in the
->> PSS akcipher's set_pub_key implementation [1]. Going that way, we also e=
-nd
->> up parsing these params twice, since x509 needs to unpack the hash
->> algorithm in a pss-specific way anyway.
->>
->=20
-> Yes, my patch needs to parse the params twice, my=C2=A0purpose is to make=
- small
-> change to x509 layer.
->=20
->> For the IMA usecase, since x509_key_preparse() would have already filled
->> in the params in public_key_signature, asymmetric_verify should be able
->> to find and set these from key->payload before calling verify_signature(=
-).
->>
->> > 3. Why reject the cert whose MGF is different from the hash function
->> > used for signature generation?
->> > =C2=A0 =C2=A0My implementation could support different hashes, so don'=
-t get your point.
->>
->> The verify operation (psspad_verify_complete [3]) in theory supports it,
->> which I've tested against such certificates crafted via openssl.
->>
->> I chose to reject such certificates early on during x509 parsing since,
->> - these are not a common occurence in practice, and
->> - testing (besides via openssl) without a set of reference vectors to ha=
-rden
->> =C2=A0 the verification against seemed insufficient.
->>
->> I've had some more test runs complete in the meantime, and I'll drop tha=
-t
->> check in the next round.
->>
->> > 4. I add a test vector and a patch to support using rsa-pss for iam.
->> > 5. Other implementation difference, i.e. the mgf and verify functions.
->> >
->> > Maybe we could merge our patches, what's your opinion?
->> >
->>
->> Sounds good. I'll send out a v2 soon, and if you agree, the test vector =
-[4]
->> and IMA [5] can go on top of it?
->=20
-> Sure, Thank you.
-
-I've posted a v2 at [2].
-
-[1] https://patchwork.kernel.org/project/linux-crypto/patch/1617802906-3051=
-3-3-git-send-email-herbert.tencent@gmail.com/
-[2] https://lkml.org/lkml/2021/4/8/775
-
-Regards,
-Varad
-
->>
->> [1] https://patchwork.kernel.org/project/linux-crypto/patch/1617802906-3=
-0513-3-git-send-email-herbert.tencent@gmail.com/ <https://patchwork.kernel.=
-org/project/linux-crypto/patch/1617802906-30513-3-git-send-email-herbert.te=
-ncent@gmail.com/>
->> [2] https://patchwork.kernel.org/project/linux-crypto/patch/1617802906-3=
-0513-5-git-send-email-herbert.tencent@gmail.com/ <https://patchwork.kernel.=
-org/project/linux-crypto/patch/1617802906-30513-5-git-send-email-herbert.te=
-ncent@gmail.com/>
->> [3] https://patchwork.kernel.org/project/linux-crypto/patch/202103302028=
-29.4825-2-varad.gautam@suse.com/ <https://patchwork.kernel.org/project/linu=
-x-crypto/patch/20210330202829.4825-2-varad.gautam@suse.com/>
->> [4] https://patchwork.kernel.org/project/linux-crypto/patch/1617802906-3=
-0513-4-git-send-email-herbert.tencent@gmail.com/ <https://patchwork.kernel.=
-org/project/linux-crypto/patch/1617802906-30513-4-git-send-email-herbert.te=
-ncent@gmail.com/>
->>
->> Regards,
->> Varad
->>
->> > Best regards
->> >
->=20
-> [1] https://tools.ietf.org/html/rfc5280#section-4.1.1.2 <https://tools.ie=
-tf.org/html/rfc5280#section-4.1.1.2>
->=20
-> Best Regards
-> Hongbo
->=20
-
---=20
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 N=C3=BCrnberg
-Germany
-
-HRB 36809, AG N=C3=BCrnberg
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
+>
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
+>
+> Changes from v2: Discard v2 because it is a diff against v1 instead of a
+> replacement for v1.
+> Changes from v1: Rewrite comment for the purpose of specifying which
+> variable changes. Shorten its name by removing two unnecessary
+> characters (b_).
+>
+>  drivers/staging/rtl8723bs/core/rtw_cmd.c       |  2 +-
+>  drivers/staging/rtl8723bs/core/rtw_mlme.c      |  2 +-
+>  drivers/staging/rtl8723bs/core/rtw_pwrctrl.c   | 18 +++++++++---------
+>  drivers/staging/rtl8723bs/hal/hal_intf.c       |  2 +-
+>  drivers/staging/rtl8723bs/hal/rtl8723b_dm.c    |  6 +++---
+>  .../staging/rtl8723bs/hal/rtl8723b_hal_init.c  |  2 +-
+>  drivers/staging/rtl8723bs/hal/sdio_ops.c       | 14 +++++++-------
+>  .../staging/rtl8723bs/include/rtw_pwrctrl.h    |  2 +-
+>  8 files changed, 24 insertions(+), 24 deletions(-)
+>
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> index baf8b1e0f43c..a08f22b53592 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+> @@ -1510,7 +1510,7 @@ static void rtw_lps_change_dtim_hdl(struct adapter *padapter, u8 dtim)
+>  	if (pwrpriv->dtim != dtim)
+>  		pwrpriv->dtim = dtim;
+>
+> -	if ((pwrpriv->bFwCurrentInPSMode == true) && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
+> +	if ((pwrpriv->b_fw_current_in_ps_mode == true) && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
+>  		u8 ps_mode = pwrpriv->pwr_mode;
+>
+>  		rtw_hal_set_hwreg(padapter, HW_VAR_H2C_FW_PWRMODE, (u8 *)(&ps_mode));
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> index a7e40aaae2d9..51cea6cf46e7 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
+> @@ -1684,7 +1684,7 @@ void rtw_dynamic_check_timer_handler(struct adapter *adapter)
+>  	if (adapter->net_closed)
+>  		return;
+>
+> -	if ((adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
+> +	if ((adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
+>  		&& !(hal_btcoex_IsBtControlLps(adapter))
+>  		) {
+>  		u8 bEnterPS;
+> diff --git a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
+> index f7465cf90c46..21e7a847866f 100644
+> --- a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
+> +++ b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
+> @@ -365,7 +365,7 @@ void rtw_set_ps_mode(struct adapter *padapter, u8 ps_mode, u8 smart_ps, u8 bcn_a
+>  			rtw_set_rpwm(padapter, PS_STATE_S4);
+>
+>  			rtw_hal_set_hwreg(padapter, HW_VAR_H2C_FW_PWRMODE, (u8 *)(&ps_mode));
+> -			pwrpriv->bFwCurrentInPSMode = false;
+> +			pwrpriv->b_fw_current_in_ps_mode = false;
+>
+>  			hal_btcoex_LpsNotify(padapter, ps_mode);
+>  		}
+> @@ -377,7 +377,7 @@ void rtw_set_ps_mode(struct adapter *padapter, u8 ps_mode, u8 smart_ps, u8 bcn_a
+>
+>  			hal_btcoex_LpsNotify(padapter, ps_mode);
+>
+> -			pwrpriv->bFwCurrentInPSMode = true;
+> +			pwrpriv->b_fw_current_in_ps_mode = true;
+>  			pwrpriv->pwr_mode = ps_mode;
+>  			pwrpriv->smart_ps = smart_ps;
+>  			pwrpriv->bcn_ant_mode = bcn_ant_mode;
+> @@ -734,7 +734,7 @@ s32 rtw_register_task_alive(struct adapter *padapter, u32 task)
+>
+>  	register_task_alive(pwrctrl, task);
+>
+> -	if (pwrctrl->bFwCurrentInPSMode) {
+> +	if (pwrctrl->b_fw_current_in_ps_mode) {
+>  		if (pwrctrl->cpwm < pslv) {
+>  			if (pwrctrl->cpwm < PS_STATE_S2)
+>  				res = _FAIL;
+> @@ -782,7 +782,7 @@ void rtw_unregister_task_alive(struct adapter *padapter, u32 task)
+>
+>  	unregister_task_alive(pwrctrl, task);
+>
+> -	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->bFwCurrentInPSMode) {
+> +	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->b_fw_current_in_ps_mode) {
+>  		if (pwrctrl->cpwm > pslv)
+>  			if ((pslv >= PS_STATE_S2) || (pwrctrl->alives == 0))
+>  				rtw_set_rpwm(padapter, pslv);
+> @@ -819,7 +819,7 @@ s32 rtw_register_tx_alive(struct adapter *padapter)
+>
+>  	register_task_alive(pwrctrl, XMIT_ALIVE);
+>
+> -	if (pwrctrl->bFwCurrentInPSMode) {
+> +	if (pwrctrl->b_fw_current_in_ps_mode) {
+>  		if (pwrctrl->cpwm < pslv) {
+>  			if (pwrctrl->cpwm < PS_STATE_S2)
+>  				res = _FAIL;
+> @@ -864,7 +864,7 @@ s32 rtw_register_cmd_alive(struct adapter *padapter)
+>
+>  	register_task_alive(pwrctrl, CMD_ALIVE);
+>
+> -	if (pwrctrl->bFwCurrentInPSMode) {
+> +	if (pwrctrl->b_fw_current_in_ps_mode) {
+>  		if (pwrctrl->cpwm < pslv) {
+>  			if (pwrctrl->cpwm < PS_STATE_S2)
+>  				res = _FAIL;
+> @@ -909,7 +909,7 @@ void rtw_unregister_tx_alive(struct adapter *padapter)
+>
+>  	unregister_task_alive(pwrctrl, XMIT_ALIVE);
+>
+> -	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->bFwCurrentInPSMode) {
+> +	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->b_fw_current_in_ps_mode) {
+>  		if (pwrctrl->cpwm > pslv)
+>  			if ((pslv >= PS_STATE_S2) || (pwrctrl->alives == 0))
+>  				rtw_set_rpwm(padapter, pslv);
+> @@ -945,7 +945,7 @@ void rtw_unregister_cmd_alive(struct adapter *padapter)
+>
+>  	unregister_task_alive(pwrctrl, CMD_ALIVE);
+>
+> -	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->bFwCurrentInPSMode) {
+> +	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->b_fw_current_in_ps_mode) {
+>  		if (pwrctrl->cpwm > pslv) {
+>  			if ((pslv >= PS_STATE_S2) || (pwrctrl->alives == 0))
+>  				rtw_set_rpwm(padapter, pslv);
+> @@ -978,7 +978,7 @@ void rtw_init_pwrctrl_priv(struct adapter *padapter)
+>  	pwrctrlpriv->power_mgnt = padapter->registrypriv.power_mgnt;/*  PS_MODE_MIN; */
+>  	pwrctrlpriv->bLeisurePs = pwrctrlpriv->power_mgnt != PS_MODE_ACTIVE;
+>
+> -	pwrctrlpriv->bFwCurrentInPSMode = false;
+> +	pwrctrlpriv->b_fw_current_in_ps_mode = false;
+>
+>  	pwrctrlpriv->rpwm = 0;
+>  	pwrctrlpriv->cpwm = PS_STATE_S4;
+> diff --git a/drivers/staging/rtl8723bs/hal/hal_intf.c b/drivers/staging/rtl8723bs/hal/hal_intf.c
+> index bc9ae2088754..a73c2f76628d 100644
+> --- a/drivers/staging/rtl8723bs/hal/hal_intf.c
+> +++ b/drivers/staging/rtl8723bs/hal/hal_intf.c
+> @@ -348,7 +348,7 @@ void rtw_hal_dm_watchdog(struct adapter *padapter)
+>
+>  void rtw_hal_dm_watchdog_in_lps(struct adapter *padapter)
+>  {
+> -	if (adapter_to_pwrctl(padapter)->bFwCurrentInPSMode == true) {
+> +	if (adapter_to_pwrctl(padapter)->b_fw_current_in_ps_mode == true) {
+>  		if (padapter->HalFunc.hal_dm_watchdog_in_lps)
+>  			padapter->HalFunc.hal_dm_watchdog_in_lps(padapter); /* this function caller is in interrupt context */
+>  	}
+> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c b/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c
+> index c2e9e4a0be22..265db187b8d5 100644
+> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c
+> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c
+> @@ -141,7 +141,7 @@ void rtl8723b_InitHalDm(struct adapter *Adapter)
+>
+>  void rtl8723b_HalDmWatchDog(struct adapter *Adapter)
+>  {
+> -	bool bFwCurrentInPSMode = false;
+> +	bool b_fw_current_in_ps_mode = false;
+>  	bool bFwPSAwake = true;
+>  	u8 hw_init_completed = false;
+>  	struct hal_com_data *pHalData = GET_HAL_DATA(Adapter);
+> @@ -151,12 +151,12 @@ void rtl8723b_HalDmWatchDog(struct adapter *Adapter)
+>  	if (hw_init_completed == false)
+>  		goto skip_dm;
+>
+> -	bFwCurrentInPSMode = adapter_to_pwrctl(Adapter)->bFwCurrentInPSMode;
+> +	b_fw_current_in_ps_mode = adapter_to_pwrctl(Adapter)->b_fw_current_in_ps_mode;
+>  	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&bFwPSAwake));
+>
+>  	if (
+>  		(hw_init_completed == true) &&
+> -		((!bFwCurrentInPSMode) && bFwPSAwake)
+> +		((!b_fw_current_in_ps_mode) && bFwPSAwake)
+>  	) {
+>  		/*  */
+>  		/*  Calculate Tx/Rx statistics. */
+> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> index e31ad3feed62..7ebc438870fd 100644
+> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+> @@ -430,7 +430,7 @@ void rtl8723b_InitializeFirmwareVars(struct adapter *padapter)
+>  	struct hal_com_data *pHalData = GET_HAL_DATA(padapter);
+>
+>  	/*  Init Fw LPS related. */
+> -	adapter_to_pwrctl(padapter)->bFwCurrentInPSMode = false;
+> +	adapter_to_pwrctl(padapter)->b_fw_current_in_ps_mode = false;
+>
+>  	/* Init H2C cmd. */
+>  	rtw_write8(padapter, REG_HMETFR, 0x0f);
+> diff --git a/drivers/staging/rtl8723bs/hal/sdio_ops.c b/drivers/staging/rtl8723bs/hal/sdio_ops.c
+> index af7f846f90fe..c78a6724fc1c 100644
+> --- a/drivers/staging/rtl8723bs/hal/sdio_ops.c
+> +++ b/drivers/staging/rtl8723bs/hal/sdio_ops.c
+> @@ -173,7 +173,7 @@ static u32 sdio_read32(struct intf_hdl *intfhdl, u32 addr)
+>  	if (
+>  		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
+>  		(!mac_pwr_ctrl_on) ||
+> -		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
+> +		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
+>  	) {
+>  		err = sd_cmd52_read(intfhdl, ftaddr, 4, (u8 *)&le_tmp);
+>  #ifdef SDIO_DEBUG_IO
+> @@ -230,7 +230,7 @@ static s32 sdio_readN(struct intf_hdl *intfhdl, u32 addr, u32 cnt, u8 *buf)
+>  	if (
+>  		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
+>  		(!mac_pwr_ctrl_on) ||
+> -		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
+> +		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
+>  	)
+>  		return sd_cmd52_read(intfhdl, ftaddr, cnt, buf);
+>
+> @@ -297,7 +297,7 @@ static s32 sdio_write32(struct intf_hdl *intfhdl, u32 addr, u32 val)
+>  	if (
+>  		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
+>  		(!mac_pwr_ctrl_on) ||
+> -		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
+> +		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
+>  	) {
+>  		le_tmp = cpu_to_le32(val);
+>
+> @@ -334,7 +334,7 @@ static s32 sdio_writeN(struct intf_hdl *intfhdl, u32 addr, u32 cnt, u8 *buf)
+>  	if (
+>  		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
+>  		(!mac_pwr_ctrl_on) ||
+> -		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
+> +		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
+>  	)
+>  		return sd_cmd52_write(intfhdl, ftaddr, cnt, buf);
+>
+> @@ -565,7 +565,7 @@ s32 sdio_local_read(
+>  	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
+>  	if (
+>  		(!mac_pwr_ctrl_on) ||
+> -		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
+> +		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
+>  	)
+>  		return sd_cmd52_read(intfhdl, addr, cnt, buf);
+>
+> @@ -611,7 +611,7 @@ s32 sdio_local_write(
+>  	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
+>  	if (
+>  		(!mac_pwr_ctrl_on) ||
+> -		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
+> +		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
+>  	)
+>  		return sd_cmd52_write(intfhdl, addr, cnt, buf);
+>
+> @@ -660,7 +660,7 @@ static u32 sdio_local_cmd53_read4byte(struct adapter *adapter, u32 addr)
+>
+>  	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
+>  	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
+> -	if (!mac_pwr_ctrl_on || adapter_to_pwrctl(adapter)->bFwCurrentInPSMode) {
+> +	if (!mac_pwr_ctrl_on || adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode) {
+>  		sd_cmd52_read(intfhdl, addr, 4, (u8 *)&le_tmp);
+>  		val = le32_to_cpu(le_tmp);
+>  	} else {
+> diff --git a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> index 2e739a17dd95..fcb06a95fdf6 100644
+> --- a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> +++ b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> @@ -203,7 +203,7 @@ struct pwrctrl_priv {
+>  	u8 LpsIdleCount;
+>  	u8 power_mgnt;
+>  	u8 org_power_mgnt;
+> -	u8 bFwCurrentInPSMode;
+> +	u8 b_fw_current_in_ps_mode;
+>  	unsigned long	DelayLPSLastTimeStamp;
+>  	s32		pnp_current_pwr_state;
+>  	u8 pnp_bstop_trx;
+> --
+> 2.30.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210408131641.31113-1-fmdefrancesco%40gmail.com.
+>
