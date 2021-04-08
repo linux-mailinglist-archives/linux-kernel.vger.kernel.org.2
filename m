@@ -2,195 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE6D358423
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DC4358429
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231549AbhDHNF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:05:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33426 "EHLO
+        id S231563AbhDHNHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhDHNFx (ORCPT
+        with ESMTP id S229964AbhDHNHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:05:53 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599B9C061760;
-        Thu,  8 Apr 2021 06:05:41 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id v6so1666595ejo.6;
-        Thu, 08 Apr 2021 06:05:41 -0700 (PDT)
+        Thu, 8 Apr 2021 09:07:41 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15BACC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 06:07:30 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id bx20so1163827edb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 06:07:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HZmtC6Rmr7madlGC7eFgIOwR9CPFzJsFk7LRy9mqEPo=;
-        b=AfBnmCh6WrhyMdLuhcMN+Ue+1u09BK+hyny0dqjsmyZ0wQze0EMP+mex3hznJBGwnD
-         Q8NXF7NvFDXS05atzZstPnwi5OA9UumubIS5LFgDCB90y2I9Xr23xleN2B+8hiRAmFXl
-         p2nO6TGb+8MQrd9M3jBFhpIwxTiXZTXqlY2q0RyO3JOm6tI0NIx806JsGzR3f5UDwkDT
-         kOPgT6cOA2OInBrlzFhaWIrQ9LuC2APc+MuzeyTPzWv1eRhzd5RiWmdBzjWWDfY9y24+
-         VnaD+Kgr5gWmK5Nlf8vi+8/c+6H6CSOP+9qG7TQ4OtljYw2wUW3u4rD9s8GHMX8TL4l0
-         S4ew==
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+0gU83cShqlQConhKOM4Ex5L3h1kuIZnR2A8PS7YAjw=;
+        b=W2ZY4TjDQ/KtojsYbcMYMwbQWyL90bjncs5LjTx1sUzWDUlOTvYHrPJLTvJI5CIV2A
+         lEsG5TeLGCb85REsCqy5hBHBCwlmKMv34bqHBrMAnE8yXAWgA+LftKAJgP7nJ7lVln73
+         q+BmXeFUuO/zGBZn7szIoCjsESGGv4nnPEd5+J9PE9UGYx+FwxC0EbasOMYsyVwFwLMj
+         xZ8hC/46EEOrybCZQJAbXO+T9d8UmXmZboKBv3HFKRXpKN5j+2+DkyPmXA4Q3sG0MAdw
+         jFm4g2PCLEaKGF69wye+PB8C837sDMS6Sfh7z6Ro3KqGeneZmczljfjRi6/zNjpjTOO9
+         vDPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HZmtC6Rmr7madlGC7eFgIOwR9CPFzJsFk7LRy9mqEPo=;
-        b=JS0T3lg9IE4M49ry+y6HLW0sknHDhnbprCx/8dzySfEwxec15TMhiZh9Oam4PodQQg
-         3E3ow3XsLL9dkhVQtCbnOVMaPV0axSTqAgpYYggcQ7ek8e/6X43K+hgYl9SxDdPFLZRV
-         myQwDbSS+Wcj+IzVuLTmoFxIURNeCz0CgEyyNCNjC2OcYEYr6URCmyQRyZv2rxmutQl8
-         SrRw5XKl2vfi7yqAZEkO1iWs0vHVxQaqabIdELJbdigsEZytOGPFFDxNWHchQLfaCbsE
-         QJCFdNWmsJI3DcvZdqMhB5QoGKzbGsjNFSy9tbqa6kkLV9DWCdq5f3mfBV0THQJC+Rky
-         839w==
-X-Gm-Message-State: AOAM533YI2rVTlzbAHcPD+IPB0KQ4/KF8aIroiKP4gloBjkvZzYJ33rw
-        NeHNapU48UrplSJ0/rp74GvHRmictO8=
-X-Google-Smtp-Source: ABdhPJw9dCJJ6hkJC05NvNrFvPddtvcMj/iiwniR/S7Ju9XwBtcQ5KWxBIM3e+dCMogyojBUzDcW+w==
-X-Received: by 2002:a17:906:2307:: with SMTP id l7mr10450940eja.27.1617887140042;
-        Thu, 08 Apr 2021 06:05:40 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id w6sm14019831eje.107.2021.04.08.06.05.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 06:05:37 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 15:06:12 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>, axboe@kernel.dk,
-        jonathanh@nvidia.com, robh+dt@kernel.org, pchandru@nvidia.com,
-        devicetree@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/3] ata: ahci_tegra: Add AHCI support for Tegra186
-Message-ID: <YG7/xPVoA4gPrMBf@orome.fritz.box>
-References: <1617758731-12380-1-git-send-email-skomatineni@nvidia.com>
- <1617758731-12380-4-git-send-email-skomatineni@nvidia.com>
- <594c622e-4505-3448-1c7b-eae8f36cbad8@gmail.com>
- <49eba27e-18fa-b682-1385-2930dfff28ac@nvidia.com>
- <01fd01ab-f4e7-57ee-2ad7-2aabaeb92a0e@nvidia.com>
- <2ef2a124-9e4b-bc02-3830-8ef077638ced@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+0gU83cShqlQConhKOM4Ex5L3h1kuIZnR2A8PS7YAjw=;
+        b=f4JoSeEjHMlvjdNX+upVXKbPI6SG45ZgPtyPTCi78srH1E7WIWy/MBzq+/HS5bH893
+         t2Pl3O3x6MyjgZa7pg9YViIY9s4d3i4hm92Rt96YZ64+IChVI3SPJFbJUISMV2gFXFNh
+         9T7ML2GwTt2X030KFWs8roY2guaE7TS2b294rUdMkjxvq8ZjINls1R8Y7fQHQ8/YFR5p
+         7WECcD/1eJZBkOScfc4VCpqi26npYvYN7SDEKzv6hJQHpDBPaW7qYTKM0QumhZwzWcQM
+         d54oqo4e2rP2+kMYTTuP/HchZay+bEjxpNpx+Yga7YEEdHH6dqes316JVCOFgjkEodsG
+         GYEA==
+X-Gm-Message-State: AOAM533vABE00pAXVdcgxwLKv8tt3cPYbjTzRJ6R2x4QgfqK15UNplzM
+        SZxDdZvefbusFKOLdPq4igr1570CPXzczMig/i3Y5Q==
+X-Google-Smtp-Source: ABdhPJz4dp2sEvphjCjt0YUqk4SoYRgO7T0b1xr0h7FgCEYdazaOBskXe/q0XgYCGLHkzm0gA2kmmg5jCLYI49/Tr5c=
+X-Received: by 2002:aa7:c481:: with SMTP id m1mr11452660edq.186.1617887248853;
+ Thu, 08 Apr 2021 06:07:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="dUTOrUhVWpEd1PiU"
-Content-Disposition: inline
-In-Reply-To: <2ef2a124-9e4b-bc02-3830-8ef077638ced@gmail.com>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+References: <20210408093354.509810-1-gi-oh.kim@ionos.com> <CAMGffEkApJiMwdLF75c_539jKLkSPtVqNTFY2byR0Fe5XoiNzw@mail.gmail.com>
+In-Reply-To: <CAMGffEkApJiMwdLF75c_539jKLkSPtVqNTFY2byR0Fe5XoiNzw@mail.gmail.com>
+From:   Gioh Kim <gi-oh.kim@ionos.com>
+Date:   Thu, 8 Apr 2021 15:06:53 +0200
+Message-ID: <CAJX1YtbVMMppbsqJ+fWECxzagnUEGdWT0DmQ+iaQY+SBL=E_jQ@mail.gmail.com>
+Subject: Re: [PATCH v3] lib/string: Introduce sysfs_streqcase
+To:     Jinpu Wang <jinpu.wang@ionos.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        laniel_francis@privacyrequired.com,
+        Kees Cook <keescook@chromium.org>, dja@axtens.net,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Haris Iqbal <haris.iqbal@ionos.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jinpu,
 
---dUTOrUhVWpEd1PiU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I removed #ifdef CONFIG_SYSFS ~ #endif.
+Could you please review again?
 
-On Thu, Apr 08, 2021 at 02:25:19AM +0300, Dmitry Osipenko wrote:
-> 08.04.2021 02:00, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >=20
-> > On 4/7/21 3:57 PM, Sowjanya Komatineni wrote:
-> >>
-> >> On 4/7/21 2:36 PM, Dmitry Osipenko wrote:
-> >>> 07.04.2021 04:25, Sowjanya Komatineni =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>> +=C2=A0=C2=A0=C2=A0 if (!tegra->pdev->dev.pm_domain) {
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D tegra_powergate_=
-sequence_power_up(TEGRA_POWERGATE_SATA,
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 tegra->sata_clk,
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 tegra->sata_rst);
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-goto disable_regulators;
-> >>>> +=C2=A0=C2=A0=C2=A0 }
-> >>> Hi,
-> >>>
-> >>> Why you haven't added condition for tegra_powergate_power_off()? I th=
-ink
-> >>> it should break GENPD and legacy PD API isn't not supported by T186
-> >>> at all.
-> >>>
-> >>> I'm also not sure whether the power up/down sequence is correct using
-> >>> GENPD.
-> >>>
-> >>> Moreover the driver doesn't support runtime PM, so GENPD should be
-> >>> always off?
-> >>
-> >> This driver already using legacy PD API's so thought its supported and
-> >> added power domain device check during powergate_sequence_power_up and
-> >> yes same should apply for powergate_power_off as well. But if legacy
-> >> PD is not supported by T186 then not sure why original driver even
-> >> using these API's.
-> >>
-> >>
-> > Sorry just took a look and driver supports T210 and prior tegra as well.
-> > T210 and prior supports legacy PD and this check is applicable for
-> > those. So we should add power domain device check for power off as well.
->=20
-> You could fix it with a follow up patch. Please try to test that
-> power-off works properly, at least try to unload the driver module and
-> re-load it.
-
-Agreed, this should have the same check as above for
-tegra_powergate_power_off(). It currently works fine because on Tegra186
-tegra_powergate_power_off() (and all the other legacy APIs for that
-matter) will abort early since no power gates are implemented. The AHCI
-driver doesn't check for errors, so this will just fail silently. It's
-better to be symmetric, though, and add the check in both paths.
-
-> > But for T186, we should have GENPD working once we add runtime PM
-> > support to driver.
-> >=20
-> > Preetham/Thierry, Can you confirm where SATA is un powergated prior to
-> > kernel?
-> >=20
-> >=20
-> >> But as RPM is not implemented yet for this driver, GENPD will be OFF
-> >> but SATA is not in power-gate by the time kernel starts and
-> >> functionally works.
-> >>
-> >> But with RPM implementation, I guess we can do proper power gate on/of=
-f.
-> >>
->=20
-> I now recalled that GENPD turns ON all domains by default and then turns
-> them OFF only when driver entered into the RPM-suspended state. This
-> means that AHCI GENPD should be always-ON for T186, which should be okay
-> if this doesn't break power sequences.
-
-Yeah, the generic PM domain will just stay enabled after probe and until
-remove. This does not impact the power sequences because they have to be
-completely implemented in the power domains code anyway. With the legacy
-API we used to need more rigorous sequences in the individual drivers,
-but with generic PM domains none of that should be necessary, though it
-also doesn't hurt, so some of the unnecessary clock enablement code is
-kept for simplicity.
-
-To be honest, I'm not sure if it's worth adding runtime PM support for
-this driver. If this top-level layer has a way of getting notification
-when no device was detected, then it might make some sense to turn off
-the power domain and the regulators again, but I'm not sure if that's
-the case. tegra_ahci_host_stop() seems like it might be usable for that
-so yeah, that might work. We currently do turn off the powergate in that
-case, so extending that power optimization to Tegra186 using runtime PM
-makes sense.
-
-Thierry
-
---dUTOrUhVWpEd1PiU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBu/8IACgkQ3SOs138+
-s6FRzw/+Ilb7WlyutjGr1ASDrEiyNdCvPf3vGY36hyI1cOMw8eexfUupqxrVVA/w
-AMIG58I9Wa2kku7uCr2Kji8JpWMLsggUTuE0RDaDAZmEzpEoKUSo7hVxvu9SQAk+
-FR0RXQfBICotlh/0LfA9osXVfStqS6U2W72F5ipqiUSv1xnAy3fMmvUpay5rt6Gq
-Izk5b3SHXglsC0kJr0jeE6+AqJmcofI7EJgoAR0EgCJqxvTjyDKXYlpkqaFefERX
-1RTdH2+dyvEWN79m9ug4C+qOw/w8VKFVfuaRuX/YoKONl+iVN8uxgcc95Bjlz62x
-wTiP+S5pS2fVks0aOsw0dpsYAPbUvLuG9MPmcu4yaXl7nbx1zL41Jk8P0cwPXpfQ
-xvERn+FXU4jqOG72Rw7h8Dhb1Ul4P5rBahMQDDozHNuPLRIZePY9E8caL5WBxDif
-6nVAiiVway7m+SacUxOtEYi2WBkrPSn/dxKtPUdkQzgSi5KkEJZczVSHNWtYMXRJ
-3VxxVz3NYgaIcQfw1kN1HNnZ1gI7kzfV0K/LviUAEotI4Eh7Vz/3d0kbqKvcn+nn
-Tt6gPgHd43UXKTKPfbJ4zwLK9v4lF+kS7o26zVn75WHND9YFLRKrPwx4bdPCZwGi
-/Xtcy4h0t3iOAaaq2EpxYlZ4yPiHVmVtZBMMNSX/FOKmrJee9hA=
-=OKXJ
------END PGP SIGNATURE-----
-
---dUTOrUhVWpEd1PiU--
+On Thu, Apr 8, 2021 at 12:50 PM Jinpu Wang <jinpu.wang@ionos.com> wrote:
+>
+> On Thu, Apr 8, 2021 at 11:34 AM Gioh Kim <gi-oh.kim@ionos.com> wrote:
+> >
+> > As the name shows, it checks if strings are equal in case insensitive
+> > manner.
+> >
+> > For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
+> > strncasecmp to check that the input via sysfs is "mi". But it would
+> > work even-if the input is "min-wrongcommand".
+> >
+> > I found some more cases using strncasecmp to check the entire string
+> > such as rtrs-clt-sysfs.c does. drivers/pnp/interface.c checks
+> > "disable" command with strncasecmp but it would also work if the
+> > command is "disable-wrong".
+> >
+> > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+> It looks good to me.
+> Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
+> > ---
+> >  include/linux/string.h |  1 +
+> >  lib/string.c           | 38 ++++++++++++++++++++++++++++++--------
+> >  2 files changed, 31 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/include/linux/string.h b/include/linux/string.h
+> > index 4fcfb56abcf5..36d00ff8013e 100644
+> > --- a/include/linux/string.h
+> > +++ b/include/linux/string.h
+> > @@ -184,6 +184,7 @@ extern char **argv_split(gfp_t gfp, const char *str, int *argcp);
+> >  extern void argv_free(char **argv);
+> >
+> >  extern bool sysfs_streq(const char *s1, const char *s2);
+> > +extern bool sysfs_streqcase(const char *s1, const char *s2);
+> >  extern int kstrtobool(const char *s, bool *res);
+> >  static inline int strtobool(const char *s, bool *res)
+> >  {
+> > diff --git a/lib/string.c b/lib/string.c
+> > index 7548eb715ddb..cb53845cc4ac 100644
+> > --- a/lib/string.c
+> > +++ b/lib/string.c
+> > @@ -687,6 +687,18 @@ char *strsep(char **s, const char *ct)
+> >  EXPORT_SYMBOL(strsep);
+> >  #endif
+> >
+> > +#ifdef CONFIG_SYSFS
+> > +static inline bool __streq_terminal(const char *s1, const char *s2)
+> > +{
+> > +       if (*s1 == *s2)
+> > +               return true;
+> > +       if (!*s1 && *s2 == '\n' && !s2[1])
+> > +               return true;
+> > +       if (*s1 == '\n' && !s1[1] && !*s2)
+> > +               return true;
+> > +       return false;
+> > +}
+> > +
+> >  /**
+> >   * sysfs_streq - return true if strings are equal, modulo trailing newline
+> >   * @s1: one string
+> > @@ -703,17 +715,27 @@ bool sysfs_streq(const char *s1, const char *s2)
+> >                 s1++;
+> >                 s2++;
+> >         }
+> > -
+> > -       if (*s1 == *s2)
+> > -               return true;
+> > -       if (!*s1 && *s2 == '\n' && !s2[1])
+> > -               return true;
+> > -       if (*s1 == '\n' && !s1[1] && !*s2)
+> > -               return true;
+> > -       return false;
+> > +       return __streq_terminal(s1, s2);
+> >  }
+> >  EXPORT_SYMBOL(sysfs_streq);
+> >
+> > +/**
+> > + * sysfs_streqcase - same to sysfs_streq and case insensitive
+> > + * @s1: one string
+> > + * @s2: another string
+> > + *
+> > + */
+> > +bool sysfs_streqcase(const char *s1, const char *s2)
+> > +{
+> > +       while (*s1 && tolower(*s1) == tolower(*s2)) {
+> > +               s1++;
+> > +               s2++;
+> > +       }
+> > +       return __streq_terminal(s1, s2);
+> > +}
+> > +EXPORT_SYMBOL(sysfs_streqcase);
+> > +#endif
+> > +
+> >  /**
+> >   * match_string - matches given string in an array
+> >   * @array:     array of strings
+> > --
+> > 2.25.1
+> >
