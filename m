@@ -2,87 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C08E3587C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6563587C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:06:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232043AbhDHPFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:05:02 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:35665 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232052AbhDHPEz (ORCPT
+        id S232070AbhDHPGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:06:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58486 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231848AbhDHPGP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:04:55 -0400
-Received: by mail-ot1-f50.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so2605891oto.2;
-        Thu, 08 Apr 2021 08:04:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Lz31zLZWAqCN/8o9830TFwS7tMhL2r4G2foyIgDy9Rc=;
-        b=s51zz718Tpw6xGEVsvnqShsrDQAT/aNhIATHfXKIPXWwnFq2RPFXPJq1iqy7WHUPAb
-         7Hgkjnd2xSMybuvEEb3rPS6sPSQJB3RuzB7QGdSjsX00xoR3LdtR+sWedGBZff/8IFHT
-         s5vaatg0Gh1KX4/ovBu8lnjdm42FlQDF9JZbfKa9PqFUQ6in5VLL6rbDPw0cJvjSkwiP
-         ZG+gvhuAECIsh5NxnD0IaNo0ZKksxHNsd+LwKzhFnb0xQ5qkb0JeQQahHEAhq0JPMjj9
-         oDlg+d79btAftHGKJ34ZjCyte5yhku8BsR7kM4e24FtdkaMpOYSb0WcrUcw3F5OL9Jk6
-         KZAw==
-X-Gm-Message-State: AOAM530zahIRutyGUO2vJd8EUP8Z/l3hJRK61P5OCoA0b7hF5nZKQfkF
-        hAqv/yD9iDoQWvlKCSRBOeo5LbW7iP6dF4SW280=
-X-Google-Smtp-Source: ABdhPJz3KoxJanp0wZDxXk9EhO+2ND46HZ78Kw+J9fAjM5vdN7PwyWK8BDOj8yCHhbpr2450dX7BejS8n5of3oHlIZo=
-X-Received: by 2002:a9d:4811:: with SMTP id c17mr8269736otf.206.1617894282947;
- Thu, 08 Apr 2021 08:04:42 -0700 (PDT)
+        Thu, 8 Apr 2021 11:06:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617894364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=E0p3yL+ASSb4kIMFODsQ6OMg+WKi8voPSOQ8W8M/8ng=;
+        b=QbyAKFNfbF1BV/+pYhkvKO0PS60SJjePP4xf528CEDXgb1Ivi9scQZnvbr/GJjP6nBfriY
+        aFQWy4PN40lA4Rs3tOmRi42n97399T/CxzXZZet8kZIssEjVRxGYmcdX24VrmSWkaI/Yhc
+        qzRcOE8EHuC41C74bj7tZvo6sIANK7A=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-571-IwbuC1WfO5CGdjKUhQ1UIg-1; Thu, 08 Apr 2021 11:06:02 -0400
+X-MC-Unique: IwbuC1WfO5CGdjKUhQ1UIg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75E4D6D581;
+        Thu,  8 Apr 2021 15:05:59 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DFA2819C66;
+        Thu,  8 Apr 2021 15:05:55 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210408141516.11369-19-varad.gautam@suse.com>
+References: <20210408141516.11369-19-varad.gautam@suse.com> <20210408141516.11369-1-varad.gautam@suse.com>
+To:     Varad Gautam <varad.gautam@suse.com>
+Cc:     dhowells@redhat.com, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net, vt@altlinux.org,
+        tianjia.zhang@linux.alibaba.com, keyrings@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jarkko@kernel.org,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org (open list:SECURITY SUBSYSTEM)
+Subject: Re: [PATCH v2 18/18] keyctl_pkey: Add pkey parameters slen and mgfhash for PSS
 MIME-Version: 1.0
-References: <20210329151207.36619-1-andriy.shevchenko@linux.intel.com>
- <YGRXmOMfCTxy31Rj@kuha.fi.intel.com> <CAJZ5v0jJCYD9+j57-CL-OqiZKL7bBQ7NetcewE_37wODOG_Jkg@mail.gmail.com>
- <YG8YSPHMBbBJadvp@smile.fi.intel.com>
-In-Reply-To: <YG8YSPHMBbBJadvp@smile.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Apr 2021 17:04:32 +0200
-Message-ID: <CAJZ5v0j0XpD6mbaCxAjBARsiScSG2T0v_2m8NdrnoQVmsqDDXQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] software node: Free resources explicitly when
- swnode_register() fails
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <12845.1617894354.1@warthog.procyon.org.uk>
+Date:   Thu, 08 Apr 2021 16:05:55 +0100
+Message-ID: <12846.1617894355@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 4:50 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Apr 08, 2021 at 04:15:37PM +0200, Rafael J. Wysocki wrote:
-> > On Wed, Mar 31, 2021 at 1:06 PM Heikki Krogerus
-> > <heikki.krogerus@linux.intel.com> wrote:
-> > >
-> > > On Mon, Mar 29, 2021 at 06:12:02PM +0300, Andy Shevchenko wrote:
-> > > > Currently we have a slightly twisted logic in swnode_register().
-> > > > It frees resources that it doesn't allocate on error path and
-> > > > in once case it relies on the ->release() implementation.
-> > > >
-> > > > Untwist the logic by freeing resources explicitly when swnode_register()
-> > > > fails. Currently it happens only in fwnode_create_software_node().
-> > > >
-> > > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > >
-> > > It all looks OK to me. FWIW, for the whole series:
-> > >
-> > > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> >
-> > Whole series applied (with some minor changelog edits) as 5.13 material, thanks!
->
-> It seems Greg applied it already. Was it dropped there?
+Varad Gautam <varad.gautam@suse.com> wrote:
 
-Did he?
+> +	Opt_slen,		/* "slen=<salt-length>" eg. "slen=32" */
 
-OK, so please let me know if it's still there in the Greg's tree.
+"slen" seems a bit unobvious.  Maybe "saltlen=..."?
+
+David
+
