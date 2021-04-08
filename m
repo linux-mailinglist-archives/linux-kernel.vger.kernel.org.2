@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D8A357DBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF7F357DC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:04:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbhDHIBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:01:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59724 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229517AbhDHIBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:01:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D30C61130;
-        Thu,  8 Apr 2021 08:01:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617868888;
-        bh=eqLdGS2wSVG1c6ZY6RuWyIqkPV3l6BBB7ZLZz/COD7w=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=Tb2jWvIqK20mZpYJsyNx5WmeD7J8YojTitKZNvW3PotaRfZj20JEz665J/h2Hud+9
-         MdEA12IQkVSTWPuNkP2qUWoecPpnozrEaGJgtDERKXCHtRykuDFGDmkePQvUTr7mx6
-         FzIKzM1VSdJGUkQ5apkKXK9JcqCMK2L2fm3obEAK25AFS537jEzqr3qgY6EXPcS7Qq
-         qvUjAJpfvaUdpzo6HEN5e/cfgdDflCfpFSI5Sx8molu/ctGVVztVZL67QeJI+kHg2K
-         nOwqM4Ym4h5FUxVCqmcTSx7Nrht8r7R35Al6UV1S/9Qs9BGUKBA+X8TOIYqimnKxsW
-         R6zCzwN7NKCvQ==
-Date:   Thu, 8 Apr 2021 10:01:23 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Minchan Kim <minchan@kernel.org>, keescook@chromium.org,
-        dhowells@redhat.com, hch@infradead.org, mbenes@suse.com,
-        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com,
-        axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiri Kosina <jikos@jikos.cz>
-Subject: Re: [PATCH 1/2] zram: fix crashes due to use of cpu hotplug
- multistate
-In-Reply-To: <YG6fpgmYSg/PwOrU@kroah.com>
-Message-ID: <nycvar.YFH.7.76.2104080957580.18270@cbobk.fhfr.pm>
-References: <YErOkGrvtQODXtB0@google.com> <20210312183238.GW4332@42.do-not-panic.com> <YEvA1dzDsFOuKdZ/@google.com> <20210319190924.GK4332@42.do-not-panic.com> <YFjHvUolScp3btJ9@google.com> <20210322204156.GM4332@42.do-not-panic.com> <YFkWMZ0m9nKCT69T@google.com>
- <20210401235925.GR4332@42.do-not-panic.com> <YGbNpLKXfWpy0ZZa@kroah.com> <87blap4kum.ffs@nanos.tec.linutronix.de> <YG6fpgmYSg/PwOrU@kroah.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S229661AbhDHIEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:04:11 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15967 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229600AbhDHIEE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:04:04 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGDHR1mXZzyNhH;
+        Thu,  8 Apr 2021 16:01:39 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.175) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 16:03:43 +0800
+From:   Lu Jialin <lujialin4@huawei.com>
+To:     Zefan Li <lizefan.x@bytedance.com>, Tejun Heo <tj@kernel.org>,
+        "Johannes Weiner" <hannes@cmpxchg.org>
+CC:     Lu Jialin <lujialin4@huawei.com>,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH -next] cgroup/cpuset: fix typos in comments
+Date:   Thu, 8 Apr 2021 16:03:46 +0800
+Message-ID: <20210408080346.166046-1-lujialin4@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Apr 2021, Greg KH wrote:
+Change hierachy to hierarchy and unrechable to unreachable,
+no functionality changed.
 
-> Removing a module from a system has always been "let's try it and see!"
-> type of operation for a very long time.  
+Signed-off-by: Lu Jialin <lujialin4@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Which part of it?
-
-If there is a driver/subsystem code that can't handle the reverse 
-operation to modprobe, it clearly can't handle error handling during 
-modprobe (which, one would hope, is supported), and should be fixed.
-
-If there is a particular issue in kernel dynamic linker that causes crash 
-on module removal, we'd better off fixing it. Is there one such that makes 
-you claim module removal unsupported?
-
-Thanks,
-
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 5258b68153e0..a945504c0ae7 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -585,7 +585,7 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
+ 
+ 	par = parent_cs(cur);
+ 
+-	/* On legacy hiearchy, we must be a subset of our parent cpuset. */
++	/* On legacy hierarchy, we must be a subset of our parent cpuset. */
+ 	ret = -EACCES;
+ 	if (!is_in_v2_mode() && !is_cpuset_subset(trial, par))
+ 		goto out;
+@@ -1726,7 +1726,7 @@ static void update_tasks_nodemask(struct cpuset *cs)
+  * When configured nodemask is changed, the effective nodemasks of this cpuset
+  * and all its descendants need to be updated.
+  *
+- * On legacy hiearchy, effective_mems will be the same with mems_allowed.
++ * On legacy hierarchy, effective_mems will be the same with mems_allowed.
+  *
+  * Called with cpuset_mutex held
+  */
+@@ -2500,7 +2500,7 @@ static s64 cpuset_read_s64(struct cgroup_subsys_state *css, struct cftype *cft)
+ 		BUG();
+ 	}
+ 
+-	/* Unrechable but makes gcc happy */
++	/* Unreachable but makes gcc happy */
+ 	return 0;
+ }
+ 
 -- 
-Jiri Kosina
-SUSE Labs
+2.17.1
 
