@@ -2,120 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A41358C00
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:16:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33374358C07
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232797AbhDHSQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 14:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232784AbhDHSQr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:16:47 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103D3C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 11:16:36 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id u4so3413694ljo.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 11:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ulq9+7/XzXeIzl2nqk2FucNx47514zVp74Usoc4uijU=;
-        b=n03iRr7PyYy/ltF+F7MAU2MwXmetlwnMRzBIbneniJ7KBCTR1YJz/QbbybCY7EiZsp
-         AlTVLhaNugXDa92+QUMJoCAz3NgH6GKAlxOZrtUrCqsHfumf3yELWegEhuOJel4cO1fJ
-         1sH9bYjbDmhPfK8p6sB8y2jEJikuCt2ZchEc7FtGYSdcDsLi6K/VC/nPI5t7qcJeXyZb
-         6r6z7Yxv7+W6OG72m/WU7jXP7lRLQ7AUrs6YAwE2NNYYRjODtRqm63gd0+nFPLxHpXA/
-         +PWOxAP1/Eh5bV1Ex8cxEI2bTsP4WSrK7eTdQW7VzOpS0PqkEUhWXiKg2UXmP/6gKmZy
-         gtxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ulq9+7/XzXeIzl2nqk2FucNx47514zVp74Usoc4uijU=;
-        b=ZJ8S73UOMW/bNsBa9klOqLRW/DaN/ankCm7WhjuYKsVIM7QfHbNob4JwyJodrFpaHl
-         602NdaGGGH5dkFdCHjt2eFm3wZo1iImoL6s6IJ9Ur2HU4o+jJBKH1QCob/HlZhbfOZIv
-         QsSqKsI1P0E+/I17ulnNqvn2rcPLy67d8r/fackzBAiODd7RDxHFg5vQv2S5Rxt55J1z
-         mAAYJ/tPmObt6ie+9xqE3uCBvHG3S73uHeUFiWr4hlIJBC6zVQT7V/9wWKp4Ehvh4tGH
-         Lz8k0dRwybC53V/9rbNQAT0EuFd9vD7AdST3aV6LPMT5kSrvdocN0KXwpo4FX5ejz5+J
-         6kRg==
-X-Gm-Message-State: AOAM532js7fllonfxvI4v9Rq8WfZVFKNM6esTYfBvSC0FO9gFL+HWGVP
-        hnrlpaTw4nYWIPywBQgUCUNP7JMIDpoMeYR7zYEJyA==
-X-Google-Smtp-Source: ABdhPJz/82lmQ5KDJrRejwphkj7Y29xUiYux6fI78IyO18ae23oEBWKZtKJGBSXKioR6JNire5M+u+6lLCJLkJIUzHw=
-X-Received: by 2002:a2e:b88d:: with SMTP id r13mr6873579ljp.479.1617905794291;
- Thu, 08 Apr 2021 11:16:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210408130605.541796-1-gi-oh.kim@ionos.com> <CAMGffEkPRJ1vBi7+bbejS+Acttt269DjW9M6P8n=5xVZ50aGXg@mail.gmail.com>
- <CAJX1Yta1nd-xMwzsFvk50RzWY_6CMbgfE-LH-SCQvPGdxDJ8pQ@mail.gmail.com>
-In-Reply-To: <CAJX1Yta1nd-xMwzsFvk50RzWY_6CMbgfE-LH-SCQvPGdxDJ8pQ@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 8 Apr 2021 11:16:23 -0700
-Message-ID: <CAKwvOdk1OsTH0O7zB+ffWzZnwVNVKeoLD4NvTYETztPYyhW4Eg@mail.gmail.com>
-Subject: Re: [PATCH v4] lib/string: Introduce sysfs_streqcase
-To:     Gioh Kim <gi-oh.kim@ionos.com>
-Cc:     Jinpu Wang <jinpu.wang@ionos.com>,
-        open list <linux-kernel@vger.kernel.org>,
+        id S232806AbhDHSRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 14:17:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37720 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231676AbhDHSRl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 14:17:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 31D01B178;
+        Thu,  8 Apr 2021 18:17:29 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 20:17:26 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>, weixugc@google.com,
+        Huang Ying <ying.huang@intel.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        laniel_francis@privacyrequired.com,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Haris Iqbal <haris.iqbal@ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH 04/10] mm/migrate: make migrate_pages() return
+ nr_succeeded
+Message-ID: <YG9IthpDC/lri4Qh@localhost.localdomain>
+References: <20210401183216.443C4443@viggo.jf.intel.com>
+ <20210401183223.80F1E291@viggo.jf.intel.com>
+ <YG7XjTG9tiK29y1j@localhost.localdomain>
+ <CAHbLzkqoaSnuBJMAe_heQt01FuPWODYQHJ955gaJNNojwbUjrw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkqoaSnuBJMAe_heQt01FuPWODYQHJ955gaJNNojwbUjrw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 7:52 AM Gioh Kim <gi-oh.kim@ionos.com> wrote:
->
-> On Thu, Apr 8, 2021 at 3:14 PM Jinpu Wang <jinpu.wang@ionos.com> wrote:
-> >
-> > On Thu, Apr 8, 2021 at 3:06 PM Gioh Kim <gi-oh.kim@ionos.com> wrote:
-> > >
-> > > As the name shows, it checks if strings are equal in case insensitive
-> > > manner.
-> > >
-> > > For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
-> > > strncasecmp to check that the input via sysfs is "mi". But it would
-> > > work even-if the input is "min-wrongcommand".
-> > >
-> > > I found some more cases using strncasecmp to check the entire string
-> > > such as rtrs-clt-sysfs.c does. drivers/pnp/interface.c checks
-> > > "disable" command with strncasecmp but it would also work if the
-> > > command is "disable-wrong".
-> > >
-> > > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+On Thu, Apr 08, 2021 at 10:26:54AM -0700, Yang Shi wrote:
+ 
+> Thanks, Oscar. Yes, kind of. But we have to remember to initialize
+> "nr_succedded" pointer properly for every migrate_pages() callsite,
+> right? And it doesn't prevent from returning wrong value if
+> migrate_pages() is called multiple times by one caller although there
+> might be not such case (calls migrate_pages() multiple times and care
+> about nr_succeded) for now.
 
-v4 LGTM, thanks.
+Hi Yang,
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+I might be missing something but AFAICS you only need to initialize
+nr_succeded pointer where it matters.
+The local nr_succeeded in migrate_pages() doesn't go, and so it gets
+initialized every time you call in it to 0.
+And if you pass a valid pointer, *ret_succeeded == nr_succedeed.
 
-> > you should add the
-> > Reported-by: kernel test robot <lkp@intel.com>
-> > > ---
-> > you can add the changelog here after the ---
-> > v4->v3:  removed #ifdef CONFIG_SYSFS ~ #endif.
-> >
-> > The string comparison doesn't depends on CONFIG_SYSFS at all.
-> >
-> > It looks good to me.
-> > Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
-> >
-> >
->
-> Yes, I got two build error reports for v3.
-> Should I send v5 including "Reported-by: kernel test robot <lkp@intel.com>" tag?
+I am talking about this (not even compile-tested):
 
-I don't think that's necessary.  I would use that tag if I was fixing
-an issue reported by the bot; but v4 is basically the same as v2 in
-regards to the issue 0day bot reported with v3. v3 just demonstrates
-that there are drivers with possibly incorrect Kconfig dependencies
-(missing a dependency on SYSFS perhaps). So the underlying problem was
-not reported by 0day bot; 0day bot just helped avoid issues from v3.
+diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+index 3a389633b68f..fd661cb2ce13 100644
+--- a/include/linux/migrate.h
++++ b/include/linux/migrate.h
+@@ -40,7 +40,8 @@ extern int migrate_page(struct address_space *mapping,
+ 			struct page *newpage, struct page *page,
+ 			enum migrate_mode mode);
+ extern int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
+-		unsigned long private, enum migrate_mode mode, int reason);
++		unsigned long private, enum migrate_mode mode, int reason,
++		unsigned int *ret_succeeded);
+ extern struct page *alloc_migration_target(struct page *page, unsigned long private);
+ extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
+ extern void putback_movable_page(struct page *page);
+@@ -58,7 +59,7 @@ extern int migrate_page_move_mapping(struct address_space *mapping,
+ static inline void putback_movable_pages(struct list_head *l) {}
+ static inline int migrate_pages(struct list_head *l, new_page_t new,
+ 		free_page_t free, unsigned long private, enum migrate_mode mode,
+-		int reason)
++		int reason, unsigned int *ret_succeeded)
+ 	{ return -ENOSYS; }
+ static inline struct page *alloc_migration_target(struct page *page,
+ 		unsigned long private)
+diff --git a/mm/compaction.c b/mm/compaction.c
+index e04f4476e68e..7238e8faff04 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2364,7 +2364,7 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
 
-Fixing the Kconfig dependencies would be nice to have, but not a
-requirement IMO to this feature/functionality.
+ 		err = migrate_pages(&cc->migratepages, compaction_alloc,
+ 				compaction_free, (unsigned long)cc, cc->mode,
+-				MR_COMPACTION);
++				MR_COMPACTION, NULL);
+
+ 		trace_mm_compaction_migratepages(cc->nr_migratepages, err,
+ 							&cc->migratepages);
+diff --git a/mm/gup.c b/mm/gup.c
+index e40579624f10..b70d463aa1fc 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1606,7 +1606,7 @@ static long check_and_migrate_cma_pages(struct mm_struct *mm,
+ 				put_page(pages[i]);
+
+ 		if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
+-			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
++			(unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE, NULL)) {
+ 			/*
+ 			 * some of the pages failed migration. Do get_user_pages
+ 			 * without migration.
+diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+index 24210c9bd843..a17e0f039076 100644
+--- a/mm/memory-failure.c
++++ b/mm/memory-failure.c
+@@ -1852,7 +1852,8 @@ static int __soft_offline_page(struct page *page)
+
+ 	if (isolate_page(hpage, &pagelist)) {
+ 		ret = migrate_pages(&pagelist, alloc_migration_target, NULL,
+-			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_FAILURE);
++			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_FAILURE,
++			NULL);
+ 		if (!ret) {
+ 			bool release = !huge;
+
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 0cdbbfbc5757..28496376de94 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -1466,7 +1466,8 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
+ 		if (nodes_empty(nmask))
+ 			node_set(mtc.nid, nmask);
+ 		ret = migrate_pages(&source, alloc_migration_target, NULL,
+-			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
++			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG,
++			NULL);
+ 		if (ret) {
+ 			list_for_each_entry(page, &source, lru) {
+ 				pr_warn("migrating pfn %lx failed ret:%d ",
+diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+index ab51132547b8..df260ed12102 100644
+--- a/mm/mempolicy.c
++++ b/mm/mempolicy.c
+@@ -1103,7 +1103,8 @@ static int migrate_to_node(struct mm_struct *mm, int source, int dest,
+
+ 	if (!list_empty(&pagelist)) {
+ 		err = migrate_pages(&pagelist, alloc_migration_target, NULL,
+-				(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL);
++				(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL,
++				NULL);
+ 		if (err)
+ 			putback_movable_pages(&pagelist);
+ 	}
+@@ -1355,7 +1356,8 @@ static long do_mbind(unsigned long start, unsigned long len,
+ 		if (!list_empty(&pagelist)) {
+ 			WARN_ON_ONCE(flags & MPOL_MF_LAZY);
+ 			nr_failed = migrate_pages(&pagelist, new_page, NULL,
+-				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND);
++				start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND,
++				NULL);
+ 			if (nr_failed)
+ 				putback_movable_pages(&pagelist);
+ 		}
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 695a594e5860..087ed407b3ce 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1493,6 +1493,9 @@ static inline int try_split_thp(struct page *page, struct page **page2,
+  * @mode:		The migration mode that specifies the constraints for
+  *			page migration, if any.
+  * @reason:		The reason for page migration.
++ * @ret_succeeded:	A pointer to place the value of the number of pages
++ *                      migrated successfully. The caller must pass a valid pointer
++ *                      if they care about it.
+  *
+  * The function returns after 10 attempts or if no pages are movable any more
+  * because the list has become empty or no retryable pages exist any more.
+@@ -1503,7 +1506,7 @@ static inline int try_split_thp(struct page *page, struct page **page2,
+  */
+ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 		free_page_t put_new_page, unsigned long private,
+-		enum migrate_mode mode, int reason)
++		enum migrate_mode mode, int reason, unsigned int *ret_succeeded)
+ {
+ 	int retry = 1;
+ 	int thp_retry = 1;
+@@ -1654,6 +1657,9 @@ int migrate_pages(struct list_head *from, new_page_t get_new_page,
+ 	if (!swapwrite)
+ 		current->flags &= ~PF_SWAPWRITE;
+
++	if (ret_succeeded)
++		*ret_succeeded = nr_succeeded;
++
+ 	return rc;
+ }
+
+@@ -1723,7 +1729,8 @@ static int do_move_pages_to_node(struct mm_struct *mm,
+ 	};
+
+ 	err = migrate_pages(pagelist, alloc_migration_target, NULL,
+-			(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL);
++			(unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL,
++			NULL);
+ 	if (err)
+ 		putback_movable_pages(pagelist);
+ 	return err;
+@@ -2230,7 +2237,7 @@ int migrate_misplaced_page(struct page *page, struct vm_area_struct *vma,
+ 	list_add(&page->lru, &migratepages);
+ 	nr_remaining = migrate_pages(&migratepages, alloc_misplaced_dst_page,
+ 				     NULL, node, MIGRATE_ASYNC,
+-				     MR_NUMA_MISPLACED);
++				     MR_NUMA_MISPLACED, NULL);
+ 	if (nr_remaining) {
+ 		if (!list_empty(&migratepages)) {
+ 			list_del(&page->lru);
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 46f3d594369d..0c1bbadd5ca3 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -8490,7 +8490,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+ 		cc->nr_migratepages -= nr_reclaimed;
+
+ 		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
+-				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
++				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE,
++				NULL);
+ 	}
+ 	if (ret < 0) {
+ 		putback_movable_pages(&cc->migratepages);
+
+
+As I said I might be missing a point here, but I cannot see the problem
+you describe here.
+
 
 -- 
-Thanks,
-~Nick Desaulniers
+Oscar Salvador
+SUSE L3
