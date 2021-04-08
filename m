@@ -2,177 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED059358D89
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6653358D8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232790AbhDHTg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 15:36:59 -0400
-Received: from mail-dm6nam08on2119.outbound.protection.outlook.com ([40.107.102.119]:13377
-        "EHLO NAM04-DM6-obe.outbound.protection.outlook.com"
+        id S232202AbhDHTk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 15:40:57 -0400
+Received: from mail-eopbgr1400119.outbound.protection.outlook.com ([40.107.140.119]:2848
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232287AbhDHTg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 15:36:57 -0400
+        id S231451AbhDHTky (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 15:40:54 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aaeAKYjtROuKzcDFLYrE56h32bfWZn+FmnD2+lOiGfRAynnv41pyQOytiCDiv2jMxBfGfCxn4ociILy+JFQcpUqicErpSysPysaZL/N0t2Vf/qKEs2dHW0aeynzAH2L7ZesG9ck2fSeNuobcPQ8l25fDLWwJi0i55x1cjDtqs6zrQuHUuYeclgu8Auofbg0AKtQpMJS1fFIz2TvtE3FRrIwrSHC5cQbrmR3Ec7yEaNC87zpa+EGvKp7vihTBqLrb1FhFt7ZjNtMxTsBv/TOdU0cvosBiBInZhRtgEieMf7DCkmwfdjPQMxoxJJnaDZT7TuTR/Ld0VhzqxfYzVsidAg==
+ b=IcLijXxGl6Asa2mbxLLYqsub0yvyIDweJVxcIaaQp3y+xZ/aMOUi5Qn+AD/ipzotep8s/U+QvSXb8MzdScM3g4XGtrmOGfunX8425rzeLekFh7HESkgC5BrKqky0Ldp09tKZ0pXWZCYlUnRlzrVA3dJ+SNBdgmtOi74nNita9e8pdp9Cj96wMQieH+O8i0RP9+GV7HaxMF2YMXNJ4OO8j1A0mCaHzI/8iE2Cm14VsXvNzprMY5ET+OwT1tpAC/ifXyTqJtFSh9PcXqK+PS0kwccwUW2fwrFMZe4CEqIkBgfUN3qtYOOwPY6VSZZlN+w2HP2VjCYzfEZcbh+2ywPJlA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fVN4LHXhs34gYXyZLXXYtKAGfZZ9YhONaDM2NVVb4bE=;
- b=ZeaH3V/LQicaMokyM2I/7VXa+JM5XsVbQXXMlmkm7ggFAvKO0babwzre0IVbzQulmhB8ClTmbzxCMFkrvb+3lTh7FWl3i5tuTaiXFw+NQRliWhO/b0YaVcz6opnPO/l+VG/ui3l03qCL0cAZAV7vet4d4fTE513cc8bftgfRLd3Zkrq+0yxZdGLZWSz98gRnhC0YyH/aXFLYWJsFcQNCBYiAR8as0vKsbqN+OiGsSwLBVWZfWXbtutpPU6ludYaPOx3tWi8ZYBRrc1qjV1PYAvG98O+KgYyUyE4vD4wAerInn0PMlh8lNUf1QPefzE8/BhYAUqJ89w5vPtcMRRBnSQ==
+ bh=BdZ9/q1IVgOhxeQ1wHjERbBsZ8ziE2Dsbk6v/bE3oBQ=;
+ b=FDqfnGglIlDqtmlUewqVwIPscLAIJBt1Dxw9bFhYfYPxo/MmNHH6/bVGjXDxP2JiaKG1jJSLBhJWzmba3U0AarIf6J4qAdQ40Cnxm7Wt1jx6cviS3a6dMqmsnVtD/HnVy0X5w1QvcyoMsjwrTf9Si6Cdi/hdnFJSuf8JLULIeNXSI1HDvjukkmMvjQOO+CkGQVgSchD6rj034y1XmjYWGz7si1P4zQrG5oxRfrEf0yOMGJ9m1xg1ISU6CWmIhetKVTugiaLjTAZwaT75cv1u4ooG6+0AlCJSe6jRMSBEfTHG8OvpSgutzP4UDiZ5UCMdqdolvP1IUlPz7rBQ+5wdnQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fVN4LHXhs34gYXyZLXXYtKAGfZZ9YhONaDM2NVVb4bE=;
- b=AGEfSbdFLorn59Ew0HH7qHfYJ+aWyyc7rVdMAakfNKVJNRAW52asisnXh9VTKKYGnvwRgPp+ANLJXPVHTQSXrEVDZuGD3KwPy+g9Z2/TWqSM2LzSAoQfzgUNKQkevYMLrEaUcz4CaelD76m7If32sLtKPrtu+Op3KsZD7jgUUQw=
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- (2603:10b6:302:10::24) by MWHPR21MB0511.namprd21.prod.outlook.com
- (2603:10b6:300:df::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.4; Thu, 8 Apr
- 2021 19:36:43 +0000
-Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
- ([fe80::5548:cbd8:43cd:aa3d%6]) with mapi id 15.20.4042.006; Thu, 8 Apr 2021
- 19:36:43 +0000
-From:   Dexuan Cui <decui@microsoft.com>
-To:     Stephen Hemminger <stephen@networkplumber.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-CC:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Wei Liu <liuwe@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "bernd@petrovitsch.priv.at" <bernd@petrovitsch.priv.at>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: RE: [PATCH v2 net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Thread-Topic: [PATCH v2 net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Thread-Index: AQHXLJNvWwTaiq/N6kmoh2zI81GxFKqq1e8AgAAs1JA=
-Date:   Thu, 8 Apr 2021 19:36:43 +0000
-Message-ID: <MW2PR2101MB089287F1085679E5FDABFC18BF749@MW2PR2101MB0892.namprd21.prod.outlook.com>
-References: <20210408091543.22369-1-decui@microsoft.com>
-        <a44419b3-8ae9-ae42-f1fc-24e308499263@infradead.org>
- <20210408095222.058022d0@hermes.local>
-In-Reply-To: <20210408095222.058022d0@hermes.local>
-Accept-Language: en-US
+ bh=BdZ9/q1IVgOhxeQ1wHjERbBsZ8ziE2Dsbk6v/bE3oBQ=;
+ b=ErQmCxZDZDyLJ7Diypm064PQOrrIQtSSv2+O5SNq4JAGXkamDA9MRuCVCUL+GB95hDrtHAU1rmFs89OgGByynFJgMeawQ+nWsby7vCT59TA9g0rgUsiwc8ZxSiWpAP5UMHX0GvLKL/lgJrBLqoo1ykI78FZ4P62Nvj0//dv/OiE=
+Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com (2603:1096:604:7a::23)
+ by OSAPR01MB2194.jpnprd01.prod.outlook.com (2603:1096:603:15::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16; Thu, 8 Apr
+ 2021 19:40:39 +0000
+Received: from OSBPR01MB4773.jpnprd01.prod.outlook.com
+ ([fe80::f04d:9261:4793:3433]) by OSBPR01MB4773.jpnprd01.prod.outlook.com
+ ([fe80::f04d:9261:4793:3433%7]) with mapi id 15.20.3999.032; Thu, 8 Apr 2021
+ 19:40:39 +0000
+From:   Min Li <min.li.xe@renesas.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Thread-Topic: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Thread-Index: AQHXK9TmRDzfnJqVl0Sq9GK4xidseaqpU/GAgAAY4uCAALnLgIAA31gw
+Date:   Thu, 8 Apr 2021 19:40:39 +0000
+Message-ID: <OSBPR01MB4773506891BDB365B7A338C6BA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+References: <1617816815-3785-1-git-send-email-min.li.xe@renesas.com>
+ <1617816815-3785-2-git-send-email-min.li.xe@renesas.com>
+ <YG3vu9XQ94w5dlbp@kroah.com>
+ <OSBPR01MB47733C009A6B6F2F697E12ACBA759@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <YG6gdRiEkiYxKKm9@kroah.com>
+In-Reply-To: <YG6gdRiEkiYxKKm9@kroah.com>
+Accept-Language: en-CA, en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b8b8998d-5903-4369-9444-9f4367fe035c;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-08T19:32:48Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: networkplumber.org; dkim=none (message not signed)
- header.d=none;networkplumber.org; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [2601:600:8b00:6b90:adc1:3ae7:8580:9c8a]
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=renesas.com;
+x-originating-ip: [72.140.114.230]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 22241e18-012b-482d-4584-08d8fac5a3d6
-x-ms-traffictypediagnostic: MWHPR21MB0511:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR21MB05111E2FE53375B7ACF592ABBF749@MWHPR21MB0511.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-ms-office365-filtering-correlation-id: fb842013-b6d4-4b1e-0885-08d8fac63078
+x-ms-traffictypediagnostic: OSAPR01MB2194:
+x-microsoft-antispam-prvs: <OSAPR01MB2194DAC3D98555BF7B127D3CBA749@OSAPR01MB2194.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: c/stn26cWrCcMWoVTapnPMNv+o6B+6KYFa7B12rdz+wP0nR7I4iAOqWdutSKFEJWlEp0fn5fB8PSaWLES3YVKSE8Y2SQoGJkT6mvH/Ryc+WIkBRDOTLXyX+tVk+0O1jSVbrqfQX0zDoNxig9MwQ4CRybD0rj0cxE6+mFmhcA+ZIj1mYUFGHwE97A76R6MvmC22z1bNHzpNDNQqOCtFqXEGy03PSoTlJM8C9yptcFg/n1DwltGbk5q/wl5aP1jBZlyyJtojPFOenwt5xa3s1jWyoAQREGPbn8ZQ7KETCGqPfS8VfizFiFvdD1Bf5BsulzkhkuxaDPJba+y+zJ8LP2Bk4ysuIUmhBegunDa3xtpdeinxELTWO4w0uQx0Q2GyWuGtmyOZvkz+jDcLvzd52FtoOXbAgdse9+PdLVVQ8usMGrCBZZiH5xW6Qg2lunbH8Ia3H1T/vPVxXwpPiwAkCtr8XmCRf42QZ0skqsLwthSzJGRmi1GiP+ffv7J/wUnieB2S0KMMaycSLrJOGpR0Wq3JL1eNm1GvDg/y7Yds5X9l+h4LMjvKp568BOrnznW6YAQlxxlxibGqvgm8hhTunxncZk0ycag2T66/IvqnL1uqObNpfcEHCVPQXd9izaNEQcaDqt/HeSAa3QLdH5lZBm+oBabrC0LYWU6TBRB6e2Fbs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(366004)(39860400002)(396003)(47530400004)(8990500004)(83380400001)(7416002)(10290500003)(8676002)(478600001)(186003)(4326008)(55016002)(33656002)(38100700001)(8936002)(2906002)(76116006)(64756008)(66446008)(66946007)(66556008)(66476007)(5660300002)(9686003)(86362001)(52536014)(54906003)(82960400001)(110136005)(82950400001)(316002)(71200400001)(6506007)(7696005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?JP0enpZpnfOz0h0E0L7lS5b5EFanrgqgCrKtovLggfhSECbRwUxrrzAhtXwI?=
- =?us-ascii?Q?xbKHbFUe+orZ0LYLlN/vBAuICX52jB7yI9gUJohB8flrJ6Rs0CoJI6nd+HI3?=
- =?us-ascii?Q?x20dVXtC5e751LFDLDuyEqf+HPLj9w/vO7uOdFyvUCO1A+gxlLhSKw8AO+Se?=
- =?us-ascii?Q?CJOq4WyYhBJuY9VyIF4NO6z005iCvp8xDFcNORnMizLaxjRPwe4i1wbvhoZx?=
- =?us-ascii?Q?l9UshUhACuIJkcqYMcOKY12d55UBVKmx3K+Wx9eRY47D9rfBTOiYspyD2DvY?=
- =?us-ascii?Q?/hJ+CCKO1nY5ybBx+d6wvhgqADRTFJT20FcVOLCw591ZedJjGLLhwuGymqjV?=
- =?us-ascii?Q?IuUaqFzIYzL0OnVfn57AwP1O/rHnm3+iWTkGJEhpDbYyNytuUaSudLmeDzc7?=
- =?us-ascii?Q?S44HVrWfXKsVP3b+vPB9oE7PrYxx4nxQ+wSJlVKmhliBUktyJrlD5G5PasAR?=
- =?us-ascii?Q?HckcD/ElYb56V2fW16eOGjHa7GEhOmTMGB/sBKH+EWFdEU4GjXYcoPM82q3v?=
- =?us-ascii?Q?m1kvL2p/y/TUE6SdhLDRprk3+AAQkMfNpmZmS4fsI8Uow/uGmy76YiDpoArv?=
- =?us-ascii?Q?j5vEqLg6h0a7gAu4kRYWWBBPOaLKogN9hR+sCPuLW1NCXog8AMlVmUqgdNZB?=
- =?us-ascii?Q?peEoZ1Di2PMqcq7iuXV893WlcgDNhQb7yqyopqeo1Q9MoloiFMGQiA8alSe1?=
- =?us-ascii?Q?Z0zeRGjKVh2DLJSOXjVr9n/Yb05jtqIQCIdS7Ujh1VvpN5eKpAeyh1DhAkGm?=
- =?us-ascii?Q?ePDoQxSQgKLwM2Ym76Ag+bprVWc7xSfcYrKXYWUcvSa4h5jQDCpUTd5YrZUb?=
- =?us-ascii?Q?FGabT2TQuYDx2oSImmQONhZE8u6c1S0pGyuFX0qA94tDeDbC4bHIGYe+WbIX?=
- =?us-ascii?Q?JnJoPhj/3vIvJ0QATn+k3dMAYBIMr6WN8mM/QODULzrGuNjr2RGffDXLJNg4?=
- =?us-ascii?Q?0k+5UfoqLIGP1lcNuD+ipmAm6bBeLaCjyekiHimY5t+MvzZBrDMRw4+sBeTP?=
- =?us-ascii?Q?Zzh7nzAK7V/rvitzYCmqBoXFj/zNcnHyvJPWp1WF5z4X8sUuViLAZhn2yKuo?=
- =?us-ascii?Q?DL2j/LkOmkYZ2WM8JnU9k2XW+lGeqID75V8xBa6Az36f/h9yXTB9DB6LAcYd?=
- =?us-ascii?Q?d+TWgfOstT8vovlAq+ewB+PzyfZA7yjKzQO6LCIBF2F+8W3EfzwApSVan9KV?=
- =?us-ascii?Q?9vd84aXetNVKKnFiukJCO9Wx3rbOrFAVmeBfy1e9J3lj7UdxVgb9kKy1mF7o?=
- =?us-ascii?Q?erZkCxhvuuZQMsOnaXni0gMrp4O2QByc//eLjJHHr0PXG/rr0yGGhIKb9vrX?=
- =?us-ascii?Q?Xvg17HYw1N+VcX0k6f1zWIPXSiWL+HvOpM9MYnQMWg03Hr2wovknnKNDyMWc?=
- =?us-ascii?Q?FEEw+QirL/tQEm97eexa7VQdj99K?=
+x-microsoft-antispam-message-info: jQT0WZuZOErVqjpiJE1RRI7m/aS8IMwOnh3X1y12XCgiyakiwbrjHDwsCVAH9OzrnWK5xosZ+evfUbuYfI6mbuk4LAZlCRz3OVEJ+K40CTBSmsdANd6qI2JBUfoz9+eBiI7369eld+RhmveU0O6rhgxVPIMxVqsk6MPYyDv5V/XfIFRipLRVJzVddN8YUU3iwaWjFwWLcss49rSsmrZO9rjmK+JF6nZj75zn5xonkt7yOiDA/uH2lhaz3j5KO9JUxwNQo9eglL4OGqOxDdqpxo65odBNxtqGYiA389sKC2RwHZ1ffLS/F/wE2eDuxM9BiTrlKTvlgP4iMsRV0XJH+N5kS7/NylW/mrsN2Cg2hZyxA5o6RccjSv83ZEa6+4pxj11oOENBq1jv2Eu4MF3kkU5hBDlYa+ujn30FKTeZ7bwOUiAWyzt9b/qaKYg2G0f7WYeTGDCt0FnDVs7We/RQFvyEvs4RalskdL6WnF+PDZnbUuQFr8rvUaJeajo2GCjykfZVhqBBGm0ntU/mMXqEm8suNyKfMiG0PxjM9jHx/Wl38mwQ9hVihbBD/F7/mOtGArRBDxsIjQMtg2BjFl1BRzmX++Nb4GJvnBRhoMmp23pjwvForlyTzdNkqnUqQV+T3+ElpB2o7/g7vpIYpdqkO2dNOjiutnTYgJRhR3R/t40=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4773.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(396003)(376002)(346002)(366004)(9686003)(54906003)(6916009)(316002)(6506007)(55016002)(478600001)(7696005)(4326008)(2906002)(66446008)(66556008)(66476007)(64756008)(66946007)(33656002)(76116006)(38100700001)(8676002)(186003)(52536014)(26005)(8936002)(86362001)(4744005)(71200400001)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Pj35IWtG54vhukKpr7JZExte+l07JtLR3sqZs7BXCUC3Bp/Dy1fRIGCQwGzw?=
+ =?us-ascii?Q?6dBJULVY8uU8lbLzz6Dcvzhf4FrXWVaR8i+CXAULvAzdQ3fsu7qtjSzSLUvL?=
+ =?us-ascii?Q?4yAmBSJ1GxtLH4HwI6EvzowLxDrqF3JmV8fN6SHh9IkMm1WICPcpZ04yPiEK?=
+ =?us-ascii?Q?mOImD3qbCGa2ux3TXlgxJ+ys/AGDq+uuXtsc2p1cp/AeAT0vqxiKInrIph8e?=
+ =?us-ascii?Q?iOS+oAWvIpGuXTMzxVXtS5fh0YT9nyzLdnWXSl/t8ihnocBFnH10Nm3Oj6fu?=
+ =?us-ascii?Q?IexbVgzNg3EcFC7MzJt+rKEnylsJ/W/j/+YsenuCG5WZdTl1dky0yjfRflXx?=
+ =?us-ascii?Q?3WjSV9+DA7zUECO7VHiQq1fK+IscD4nJYIoq95+rZx8Pw4ncaX1T0/xEMh50?=
+ =?us-ascii?Q?5i4Kp4/vrkOh6K1Zy2kHIuLWfkMs8g7RNeDn67F6DckmD0W2jH2oZIsilGdT?=
+ =?us-ascii?Q?gNmXeiibrUCON+GC4D+sR5aJKjC45FEmgnRKWpbsclz54F5jRwqbfbnZ0Dhi?=
+ =?us-ascii?Q?jFNf568ZoJUCfwfkbTRfM7HKLORMr10P/7j+6kAO9vnvxHofAqkBKSgFZZB4?=
+ =?us-ascii?Q?yBxrprWeZB+MNLstZrnvQms8q+KE+ZHlyGNZX3dRUhsFG1WsBoJh9Z5UaSfg?=
+ =?us-ascii?Q?fUE8b5R6k1hCWn6BW8/qTzB6IYEmTplRBi/OnEeP9FJAakcDA7QcMni/RS+i?=
+ =?us-ascii?Q?HJAmKUEMxyKPnv0CPSytzqwCFmeF9e7za5XX03XuZpRbYqgJSUsAYAUYxreW?=
+ =?us-ascii?Q?0vFMiqF/ZYtDiuXwRO1WpnJyvP/V8eVUwtbT5LrMQCrXnIADtDIGL+m0pJyY?=
+ =?us-ascii?Q?FQp7jrHOF+3yhw/XBF+EtYrLC5UPzug2BQqMB7KSi3AIDlREq158YZpcnr6u?=
+ =?us-ascii?Q?MDaUMLdpanqxuQQ3680n79hm5H+uu9ACPuLT1RO2lFGBqqe2NUTRO6P+7mgZ?=
+ =?us-ascii?Q?BhU3sEFdeX21iB626Vnd3aW/0YDEIk1fjKav3JSD4pXxrOw2ATjwcenYjU9w?=
+ =?us-ascii?Q?lzIsSqO0n8oAJQj12g0HL3nQVT9UxhEYI/dcBFFFqFp2hMH5XPGatxYV124s?=
+ =?us-ascii?Q?VRq9nFW++9p+ZEFX7HYwQ3ri4LRx4ELM/muyCkNYSI/qaARb5PeSBtJ4NC9o?=
+ =?us-ascii?Q?YZbLI6it/RCgLpSO8fX/NeqIxS3uwuSAFFf2X1dYr05vBO8ENa3pJJHxl4DZ?=
+ =?us-ascii?Q?pRdDfykQ/33yXwORjM04ApeTjGepNKMcZIu2WB42I6k5a5tpifEdqXuJPxIt?=
+ =?us-ascii?Q?FiVLYIOYDkHPdNq2YVsPvdtGURMVLt3EiK7zyo8q2WBeoZtKkxNyQXCTiIF2?=
+ =?us-ascii?Q?CYtB84GtaFJTW+zsYrDBO9Cl?=
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
+X-OriginatorOrg: renesas.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 22241e18-012b-482d-4584-08d8fac5a3d6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2021 19:36:43.6065
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4773.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb842013-b6d4-4b1e-0885-08d8fac63078
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Apr 2021 19:40:39.5287
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: H6i1nLpwTwGwHUNuQm+I8aB8ABmeS/CJ6JBCAgZLHGwy2pJRe+6WrWdVDs2LrsLr9iqTRxtwS/R8n2jfkrAdZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0511
+X-MS-Exchange-CrossTenant-userprincipalname: NT36dchdxD2LCtXk4dseen0jrtqs/ia1/mFDT/+aEqBB1uI8VqjW3sniAUeyfM3AwqkPt44ZHNK1fiQPjwbQhw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB2194
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Stephen Hemminger <stephen@networkplumber.org>
-> Sent: Thursday, April 8, 2021 9:52 AM
+>=20
+> Please provide some sort of documentation and at the least, a pointer to =
+the
+> software that uses this so that we can see how it all ties together.
+>=20
+Hi Greg, I will withdraw this review for misc and focus on MFD part review =
+for now. I will re-submit the misc review after mfd change is in.
 
-Thanks all for your input! We'll make the below changes as suggested:
+Thanks
 
-Microsoft Azure Network Device =3D=3D> Microsoft Network Devices
-Drop the default m
-validated =3D=3D> supported
-
-We'll also fix some warnings reported by "kernel test robot".
-
-Will post v3 later today.
-
-Thanks,
-Dexuan
-
-diff --git a/drivers/net/ethernet/microsoft/Kconfig b/drivers/net/ethernet/=
-microsoft/Kconfig
-index 12ef6b581566..e1ac0a5d808d 100644
---- a/drivers/net/ethernet/microsoft/Kconfig
-+++ b/drivers/net/ethernet/microsoft/Kconfig
-@@ -3,26 +3,25 @@
- #
-=20
- config NET_VENDOR_MICROSOFT
--	bool "Microsoft Azure Network Device"
-+	bool "Microsoft Network Devices"
- 	default y
- 	help
- 	  If you have a network (Ethernet) device belonging to this class, say Y.
-=20
- 	  Note that the answer to this question doesn't directly affect the
- 	  kernel: saying N will just cause the configurator to skip the
--	  question about Microsoft Azure network device. If you say Y, you
--	  will be asked for your specific device in the following question.
-+	  question about Microsoft network devices. If you say Y, you will be
-+	  asked for your specific device in the following question.
-=20
- if NET_VENDOR_MICROSOFT
-=20
- config MICROSOFT_MANA
- 	tristate "Microsoft Azure Network Adapter (MANA) support"
--	default m
- 	depends on PCI_MSI && X86_64
- 	select PCI_HYPERV
- 	help
- 	  This driver supports Microsoft Azure Network Adapter (MANA).
--	  So far, the driver is only validated on X86_64.
-+	  So far, the driver is only supported on X86_64.
-=20
- 	  To compile this driver as a module, choose M here.
- 	  The module will be called mana.
+Min
