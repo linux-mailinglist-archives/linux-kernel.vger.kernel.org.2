@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A99E35846D
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F27935846B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231700AbhDHNQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:16:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36550 "EHLO mail.kernel.org"
+        id S231644AbhDHNQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:16:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231255AbhDHNQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:16:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B06F461153;
+        id S229751AbhDHNQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 09:16:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE33D61151;
         Thu,  8 Apr 2021 13:16:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1617887776;
-        bh=d3QIU2csiNcJOLhdhvMefuw6/6a+Kk8J/zx9o70Jpps=;
+        bh=lsyrtIigVOizPgWs0iXL/uoRm3JMsiE4v9eha+Vtaso=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uh8hPpWVU5FMBgvNilxKuYOwn9YjfqX36+j/9INbaLI/SFniaEjUPvTSrDSkK0jsw
-         0AvOzuI3LpG+S/7BIqkjUk54KQVts84ymLFz1xx7WbAl118XMuByWMXb/sA9bG6QIr
-         A/5hCFZw3sxdlyg87QbCW6jvYuzcztYI1U9onCfqcUAXytL3EF/e1A2mlIHBywVulQ
-         XJnpqOvT7M6LQpxGQT9P714cWxD2ncacZLCd6ASSkB8M/2E8bt3G9d4veSRKPNfCIz
-         qB3J1YKvbnqj91qkaQ+BAsIEHuqpmEAVpXleYlOJybzM8yi8aQMNtFwLJNJXJPLi0S
-         oRKh1qYVG+jXQ==
+        b=sIEUOX6tYD1uHeDGUt5yR1yqDaPUfMgG2QasCOv6bqRctObhLFub0pbPmrhRSHiZc
+         tB+IeRhuRY6SE0k5TtOfDIFPOudIkUG8pJ3QmQsrfMMpNJ+Nbi7DRQqctZ9JVXagfO
+         5CA3OBk4jVawnz8vZEvpMN1WD/+zBg96BQaD16TXjPJ2kzme6ZD4JBctoI+i1MDRH0
+         Y3OH3GgV1lwWeUcw3/eqKmQNVokv1Y0NpqWqNVbr3myELCebVmxqkr58azI4NS/rPo
+         IJJCq8zC/u6C5FP8WfCjUKalmQV8tQysVqMApYzXATsrd1mKnpC0FyOPTVic/tIqYu
+         R0wJnI3ETE4yw==
 Received: from johan by xi.lan with local (Exim 4.93.0.4)
         (envelope-from <johan@kernel.org>)
-        id 1lUUW4-0007Hi-FQ; Thu, 08 Apr 2021 15:16:12 +0200
+        id 1lUUW4-0007Hk-Ht; Thu, 08 Apr 2021 15:16:12 +0200
 From:   Johan Hovold <johan@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Oliver Neukum <oneukum@suse.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Anthony Mallet <anthony.mallet@laas.fr>, stable@vger.kernel.org
-Subject: [PATCH v2 1/3] Revert "USB: cdc-acm: fix rounding error in TIOCSSERIAL"
-Date:   Thu,  8 Apr 2021 15:16:00 +0200
-Message-Id: <20210408131602.27956-2-johan@kernel.org>
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH v2 2/3] USB: cdc-acm: fix unprivileged TIOCCSERIAL
+Date:   Thu,  8 Apr 2021 15:16:01 +0200
+Message-Id: <20210408131602.27956-3-johan@kernel.org>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210408131602.27956-1-johan@kernel.org>
 References: <20210408131602.27956-1-johan@kernel.org>
@@ -43,65 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit b401f8c4f492cbf74f3f59c9141e5be3071071bb.
+TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
+serial devices is only useful for setting the close_delay and
+closing_wait parameters.
 
-The offending commit claimed that trying to set the values reported back
-by TIOCGSERIAL as a regular user could result in an -EPERM error when HZ
-is 250, but that was never the case.
+A non-privileged user has only ever been able to set the since long
+deprecated ASYNC_SPD flags and trying to change any other *supported*
+feature should result in -EPERM being returned. Setting the current
+values for any supported features should return success.
 
-With HZ=250, the default 0.5 second value of close_delay is converted to
-125 jiffies when set and is converted back to 50 centiseconds by
-TIOCGSERIAL as expected (not 12 cs as was claimed, even if that was the
-case before an earlier fix).
+Fix the cdc-acm implementation which instead indicated that the
+TIOCSSERIAL ioctl was not even implemented when a non-privileged user
+set the current values.
 
-Comparing the internal current and new jiffies values is just fine to
-determine if the value is about to change so drop the bogus workaround
-(which was also backported to stable).
-
-For completeness: With different default values for these parameters or
-with a HZ value not divisible by two, the lack of rounding when setting
-the default values in tty_port_init() could result in an -EPERM being
-returned, but this is hardly something we need to worry about.
-
-Cc: Anthony Mallet <anthony.mallet@laas.fr>
-Cc: stable@vger.kernel.org
+Fixes: ba2d8ce9db0a ("cdc-acm: implement TIOCSSERIAL to avoid blocking close(2)")
 Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- drivers/usb/class/cdc-acm.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ drivers/usb/class/cdc-acm.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 3fda1ec961d7..96e221803fa6 100644
+index 96e221803fa6..43e31dad4831 100644
 --- a/drivers/usb/class/cdc-acm.c
 +++ b/drivers/usb/class/cdc-acm.c
-@@ -942,7 +942,6 @@ static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
- {
- 	struct acm *acm = tty->driver_data;
- 	unsigned int closing_wait, close_delay;
--	unsigned int old_closing_wait, old_close_delay;
- 	int retval = 0;
- 
- 	close_delay = msecs_to_jiffies(ss->close_delay * 10);
-@@ -950,17 +949,11 @@ static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
- 			ASYNC_CLOSING_WAIT_NONE :
- 			msecs_to_jiffies(ss->closing_wait * 10);
- 
--	/* we must redo the rounding here, so that the values match */
--	old_close_delay	= jiffies_to_msecs(acm->port.close_delay) / 10;
--	old_closing_wait = acm->port.closing_wait == ASYNC_CLOSING_WAIT_NONE ?
--				ASYNC_CLOSING_WAIT_NONE :
--				jiffies_to_msecs(acm->port.closing_wait) / 10;
--
- 	mutex_lock(&acm->port.mutex);
- 
- 	if (!capable(CAP_SYS_ADMIN)) {
--		if ((ss->close_delay != old_close_delay) ||
--		    (ss->closing_wait != old_closing_wait))
-+		if ((close_delay != acm->port.close_delay) ||
-+		    (closing_wait != acm->port.closing_wait))
+@@ -955,8 +955,6 @@ static int set_serial_info(struct tty_struct *tty, struct serial_struct *ss)
+ 		if ((close_delay != acm->port.close_delay) ||
+ 		    (closing_wait != acm->port.closing_wait))
  			retval = -EPERM;
- 		else
- 			retval = -EOPNOTSUPP;
+-		else
+-			retval = -EOPNOTSUPP;
+ 	} else {
+ 		acm->port.close_delay  = close_delay;
+ 		acm->port.closing_wait = closing_wait;
 -- 
 2.26.3
 
