@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2163584A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA5C3584A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhDHN0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:26:46 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15628 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbhDHN03 (ORCPT
+        id S229837AbhDHN0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:26:54 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:36432 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231630AbhDHN0n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:26:29 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGMQp1WjJzpWXF;
-        Thu,  8 Apr 2021 21:23:30 +0800 (CST)
-Received: from [10.174.179.129] (10.174.179.129) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 8 Apr 2021 21:26:10 +0800
-Subject: Re: [PATCH 3/3] mtd: phram: Fix error return code in phram_setup()
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     <joern@lazybastard.org>, <richard@nod.at>, <vigneshr@ti.com>,
-        <matthias.bgg@gmail.com>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <yi.zhang@huawei.com>
-References: <20210408111514.1011020-1-yukuai3@huawei.com>
- <20210408111514.1011020-4-yukuai3@huawei.com> <20210408144610.0c0686ae@xps13>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <cc02de9c-6315-3fa6-4b0a-4287b2713484@huawei.com>
-Date:   Thu, 8 Apr 2021 21:26:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 8 Apr 2021 09:26:43 -0400
+Received: from [192.168.86.30] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2CB1520B5680;
+        Thu,  8 Apr 2021 06:26:30 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2CB1520B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1617888392;
+        bh=wa/VfR5dOq9tsZ2NtAO+T057gx0rVmV0HzZysz7VXi8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=TW7JW8Wyus+vBCg0hJy+26qz6yQC5fsyw16IF5PLU6shEx2Nohc/PGyE/34NIUqzS
+         CD7igVEMeyaA+xC82MpP/0cYC0klCU9B7pOqV1ZlDHIwmAsTbw39gwn/Ie3n7T7AtW
+         yBmL0yX0TnGMoyIeR0jv2EVlXRkaHdSZ6Pp9qhWo=
+Subject: Re: [PATCH 1/7] hyperv: Detect Nested virtualization support for SVM
+To:     Sean Christopherson <seanjc@google.com>,
+        Michael Kelley <mikelley@microsoft.com>
+Cc:     Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        vkuznets <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        KY Srinivasan <kys@microsoft.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+References: <cover.1617804573.git.viremana@linux.microsoft.com>
+ <e14dac75ff1088b2c4bea361954b37e414edd03c.1617804573.git.viremana@linux.microsoft.com>
+ <MWHPR21MB159327E855DAC5BEE4B8A38DD7759@MWHPR21MB1593.namprd21.prod.outlook.com>
+ <YG42zNYA9uCC25In@google.com>
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+Message-ID: <a548e5c9-e579-6b82-88ea-e90a3378a74e@linux.microsoft.com>
+Date:   Thu, 8 Apr 2021 09:26:28 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210408144610.0c0686ae@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.129]
-X-CFilter-Loop: Reflected
+In-Reply-To: <YG42zNYA9uCC25In@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/04/08 20:46, Miquel Raynal wrote:
-> Hi Yu,
-> 
-> Yu Kuai <yukuai3@huawei.com> wrote on Thu, 8 Apr 2021 19:15:14 +0800:
-> 
->> Fix to return a negative error code from the error handling
->> case instead of 0, as done elsewhere in this function.
->>
->> Reported-by: Hulk Robot <hulkci@huawei.com>
->> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
->> ---
->>   drivers/mtd/devices/phram.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
->> index 5b04ae6c3057..6ed6c51fac69 100644
->> --- a/drivers/mtd/devices/phram.c
->> +++ b/drivers/mtd/devices/phram.c
->> @@ -270,6 +270,7 @@ static int phram_setup(const char *val)
->>   	if (len == 0 || erasesize == 0 || erasesize > len
->>   	    || erasesize > UINT_MAX || rem) {
->>   		parse_err("illegal erasesize or len\n");
->> +		ret = -EINVAL;
->>   		goto error;
->>   	}
->>   
-> 
-> It looks like you're doing the opposite of what you say.
-> 
-Hi,
 
-sorry about that, I misunderstood 'fix to'.
+On 4/7/21 6:48 PM, Sean Christopherson wrote:
+> On Wed, Apr 07, 2021, Michael Kelley wrote:
+>>
+>>> +		pr_info("Hyper-V nested_features: 0x%x\n",
+>> Nit:  Most other similar lines put the colon in a different place:
+>>
+>> 		pr_info("Hyper-V: nested features 0x%x\n",
+>>
+>> One of these days, I'm going to fix the ones that don't follow this
+>> pattern. :-)
+> Any reason not to use pr_fmt?
+Yes, that would be the best way to go. As Michael suggested,
+it would be better to fix the whole file as a cleanup patch.
+I shall fix this one to conform to the previous style and use
+pr_fmt as a separate fixup patch.
 
-Thanks
-Yu Kuai
-> Thanks,
-> Miquèl
-> .
-> 
+Thanks,
+Vineeth
+
