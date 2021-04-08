@@ -2,66 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5534D357FEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3D79357FF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhDHJvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:51:44 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:59022 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229686AbhDHJvm (ORCPT
+        id S231334AbhDHJv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:51:56 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:2708 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229686AbhDHJvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:51:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UUsn2It_1617875480;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUsn2It_1617875480)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 08 Apr 2021 17:51:30 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] staging: ks7010: remove useless variable
-Date:   Thu,  8 Apr 2021 17:51:19 +0800
-Message-Id: <1617875479-58849-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Thu, 8 Apr 2021 05:51:54 -0400
+X-UUID: 3d628607a0c742699c5e430d67f2cf3d-20210408
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=DhXrt3L4CKxUl57HEQInxirgPEfKt48YlqcSx9oo5a8=;
+        b=TH4uvBxi42WGWVOPlxcK2pS/M8nrP96H81le+D77xFD24qDp31B04ONqs76H7nBxmhsi/un1VJfO5XsaRI0l9kUW6g33TfucN02FH+EaM595wAAMDncR0XDfZZEc5YKJzYGqhop1O6RsAtUgf1s51rsSRivpXL2aV1kLDQRz6fk=;
+X-UUID: 3d628607a0c742699c5e430d67f2cf3d-20210408
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1541904808; Thu, 08 Apr 2021 17:51:39 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 8 Apr
+ 2021 17:51:36 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 8 Apr 2021 17:51:35 +0800
+Message-ID: <1617875495.12105.10.camel@mhfsdcap03>
+Subject: Re: [PATCH 4/6] usb: xhci-mtk: add support runtime PM
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Ikjoon Jang <ikjn@chromium.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
+        Tony Lindgren <tony@atomide.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        "Nicolas Boichat" <drinkcat@chromium.org>
+Date:   Thu, 8 Apr 2021 17:51:35 +0800
+In-Reply-To: <1617874514-12282-4-git-send-email-chunfeng.yun@mediatek.com>
+References: <1617874514-12282-1-git-send-email-chunfeng.yun@mediatek.com>
+         <1617874514-12282-4-git-send-email-chunfeng.yun@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: E15A2741E4BB7D8CC38E834F7543B5CB54B1540CBD14BBD60B90D85081593F412000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
-
-drivers/staging/ks7010/ks_hostif.c:929:19: warning: variable ‘noise’ set
-but not used [-Wunused-but-set-variable].
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/staging/ks7010/ks_hostif.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/staging/ks7010/ks_hostif.c b/drivers/staging/ks7010/ks_hostif.c
-index 8bc3b7d..499161d 100644
---- a/drivers/staging/ks7010/ks_hostif.c
-+++ b/drivers/staging/ks7010/ks_hostif.c
-@@ -926,14 +926,13 @@ void hostif_bss_scan_confirm(struct ks_wlan_private *priv)
- void hostif_phy_information_confirm(struct ks_wlan_private *priv)
- {
- 	struct iw_statistics *wstats = &priv->wstats;
--	u8 rssi, signal, noise;
-+	u8 rssi, signal;
- 	u8 link_speed;
- 	u32 transmitted_frame_count, received_fragment_count;
- 	u32 failed_count, fcs_error_count;
- 
- 	rssi = get_byte(priv);
- 	signal = get_byte(priv);
--	noise = get_byte(priv);
- 	link_speed = get_byte(priv);
- 	transmitted_frame_count = get_dword(priv);
- 	received_fragment_count = get_dword(priv);
--- 
-1.8.3.1
+SGkgSWtqb29uLA0KDQpPbiBUaHUsIDIwMjEtMDQtMDggYXQgMTc6MzUgKzA4MDAsIENodW5mZW5n
+IFl1biB3cm90ZToNCj4gQSBkZWRpY2F0ZWQgd2FrZXVwIGlycSB3aWxsIGJlIHVzZWQgdG8gaGFu
+ZGxlIHJ1bnRpbWUgc3VzcGVuZC9yZXN1bWUsDQo+IHdlIHVzZSBkZXZfcG1fc2V0X2RlZGljYXRl
+ZF93YWtlX2lycSBBUEkgdG8gdGFrZSBjYXJlIG9mIHJlcXVlc3RpbmcNCj4gYW5kIGF0dGFjaGlu
+ZyB3YWtldXAgaXJxLCB0aGVuIHRoZSBzdXNwZW5kL3Jlc3VtZSBmcmFtZXdvcmsgd2lsbCBoZWxw
+DQo+IHRvIGVuYWJsZS9kaXNhYmxlIHdha2V1cCBpcnEuDQo+IA0KPiBUaGUgcnVudGltZSBQTSBp
+cyBkZWZhdWx0IG9mZiBzaW5jZSBzb21lIHBsYXRmb3JtcyBtYXkgbm90IHN1cHBvcnQgaXQuDQo+
+IHVzZXJzIGNhbiBlbmFibGUgaXQgdmlhIHBvd2VyL2NvbnRyb2wgKHNldCAiYXV0byIpIGluIHN5
+c2ZzLg0KPiANCj4gU2lnbmVkLW9mZi1ieTogQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55dW5AbWVk
+aWF0ZWsuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvdXNiL2hvc3QveGhjaS1tdGsuYyB8IDE0MCAr
+KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrLS0tLS0NCj4gIDEgZmlsZSBjaGFuZ2VkLCAx
+MjQgaW5zZXJ0aW9ucygrKSwgMTYgZGVsZXRpb25zKC0pDQoNClBsZWFzZSBoZWxwIHRvIHRlc3Qg
+dGhlIHNlcmllcyBvbiBtdDgxOTIgY2hyb21lYm9vaywgdGhhbmtzIGEgbG90DQoNCg==
 
