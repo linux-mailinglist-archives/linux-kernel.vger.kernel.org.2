@@ -2,78 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC765357953
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 03:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85B435795B
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 03:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230143AbhDHBJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 21:09:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229937AbhDHBJt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 21:09:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19AE16113A;
-        Thu,  8 Apr 2021 01:09:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617844179;
-        bh=f/xx+JASbd9ZTZFHDhgzyPHyCRkJ2KLQ0QZAD9UJK0I=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=YdL/cbZe3Q+0BzvpVCZX+E2SWw5m+0YzggStnEkEWU+gb/4Md9vaL705I42JJNYVh
-         /M0rK5h8Tw63R/4w3AS1zIvIQjQ7bV8KYBSWJQKHCTOOfN2R1uLwJcqLoU59lMewr2
-         CSsky2x/UYBtKZXzDECzTJbru9MjXLyfv+QtoKYzJGiTBh+wZoFi7+CLU/SR9pZJ5i
-         lH9OuX9BT0/1TjQBAHzgmlzd8/HcPgVIdPkhkEDh4mdawmuqrRU1seCgYHGiC0iFJw
-         1m9RotrR+ggjiHwolVVYzEKg9Tgm17er0gxw7cVqRHLxqvvMIprRRPnHnKxGagHPln
-         sbQdizP1tEFCw==
-Content-Type: text/plain; charset="utf-8"
+        id S230350AbhDHBLd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 21:11:33 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16069 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhDHBLc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 21:11:32 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FG37T11DQz1BGP3;
+        Thu,  8 Apr 2021 09:09:09 +0800 (CST)
+Received: from [10.174.179.129] (10.174.179.129) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 09:11:12 +0800
+Subject: Re: [PATCH] powerpc: Make some symbols static
+To:     kernel test robot <lkp@intel.com>, <mpe@ellerman.id.au>
+CC:     <kbuild-all@lists.01.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20210407125942.4140430-1-yukuai3@huawei.com>
+ <202104080005.BEYb9xKK-lkp@intel.com>
+From:   "yukuai (C)" <yukuai3@huawei.com>
+Message-ID: <4deb323a-ce00-b463-9b06-5cb5be0795fa@huawei.com>
+Date:   Thu, 8 Apr 2021 09:11:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210406153131.601701-1-quanyang.wang@windriver.com>
-References: <20210406153131.601701-1-quanyang.wang@windriver.com>
-Subject: Re: [V3][PATCH] clk: zynqmp: pll: add set_pll_mode to check condition in zynqmp_pll_enable
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Rajan Vaja <rajan.vaja@xilinx.com>,
-        Jolly Shah <jolly.shah@xilinx.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        quanyang.wang@windriver.com
-Date:   Wed, 07 Apr 2021 18:09:37 -0700
-Message-ID: <161784417793.3790633.1172679818900674783@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <202104080005.BEYb9xKK-lkp@intel.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.129]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting quanyang.wang@windriver.com (2021-04-06 08:31:31)
-> From: Quanyang Wang <quanyang.wang@windriver.com>
->=20
-> If there is a IOCTL_SET_PLL_FRAC_MODE request sent to ATF ever,
-> we shouldn't skip invoking PM_CLOCK_ENABLE fn even though this
-> pll has been enabled. In ATF implementation, it will only assign
-> the mode to the variable (struct pm_pll *)pll->mode when handling
-> IOCTL_SET_PLL_FRAC_MODE call. Invoking PM_CLOCK_ENABLE can force
-> ATF send request to PWU to set the pll mode to PLL's register.
->=20
-> There is a scenario that happens in enabling VPLL_INT(clk_id:96):
-> 1) VPLL_INT has been enabled during booting.
-> 2) A driver calls clk_set_rate and according to the rate, the VPLL_INT
->    should be set to FRAC mode. Then zynqmp_pll_set_mode is called
->    to pass IOCTL_SET_PLL_FRAC_MODE to ATF. Note that at this point
->    ATF just stores the mode to a variable.
-> 3) This driver calls clk_prepare_enable and zynqmp_pll_enable is
->    called to try to enable VPLL_INT pll. Because of 1), the function
->    zynqmp_pll_enable just returns without doing anything after checking
->    that this pll has been enabled.
->=20
-> In the scenario above, the pll mode of VPLL_INT will never be set
-> successfully. So adding set_pll_mode to check condition to fix it.
->=20
-> Fixes: 3fde0e16d016 ("drivers: clk: Add ZynqMP clock driver")
-> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
-> Tested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> ---
+On 2021/04/08 0:57, kernel test robot wrote:
+> Hi Yu,
+> 
+> Thank you for the patch! Yet something to improve:
+> 
+> [auto build test ERROR on powerpc/next]
+> [also build test ERROR on v5.12-rc6 next-20210407]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/Yu-Kuai/powerpc-Make-some-symbols-static/20210407-205258
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git next
+> config: powerpc64-defconfig (attached as .config)
+> compiler: powerpc64-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>          chmod +x ~/bin/make.cross
+>          # https://github.com/0day-ci/linux/commit/7c0f3f68006b9b42ce944b02a2059128cc5826ec
+>          git remote add linux-review https://github.com/0day-ci/linux
+>          git fetch --no-tags linux-review Yu-Kuai/powerpc-Make-some-symbols-static/20210407-205258
+>          git checkout 7c0f3f68006b9b42ce944b02a2059128cc5826ec
+>          # save the attached .config to linux build tree
+>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc64
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>>> arch/powerpc/kernel/btext.c:49:12: error: 'force_printk_to_btext' defined but not used [-Werror=unused-variable]
+>        49 | static int force_printk_to_btext;
+>           |            ^~~~~~~~~~~~~~~~~~~~~
+>     cc1: all warnings being treated as errors
+> 
+> 
+> vim +/force_printk_to_btext +49 arch/powerpc/kernel/btext.c
+> 
+>      47	
+>      48	static int boot_text_mapped __force_data;
+>    > 49	static int force_printk_to_btext;
+>      50	
 
-Applied to clk-next
+Will remove this variable in another patch.
+
+Thanks
+Yu Kuai
+> 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
