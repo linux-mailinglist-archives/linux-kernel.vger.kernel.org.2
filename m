@@ -2,160 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42ACC358400
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9523583FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbhDHM7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231534AbhDHM7g (ORCPT
+        id S231567AbhDHM7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:59:39 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16050 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231451AbhDHM7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:59:36 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AB92C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 05:59:24 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id e14so2851543ejz.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 05:59:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bXaNApsUJBQRijtom4CaAhgB0kqvpHWQ8lB5126OVbU=;
-        b=GqDXqGZU3WOMP1JWd2baxuE3IyzrOvNzhGrIswRLTHGuF9mrtmJwVpIrBpcgr7FlcN
-         WEcSKNIIFX/CsruJLWPGL2QL7ImMGOnkcsp4u/azNm0XV4gUEXVOaiUWAJdALRQxfC/e
-         EBl1xxE1z3cTgnbymFn8WDpltPG/z1561B8cpvBdOK2NrfwBWW86pRBXFqXGMUUZEfsF
-         8NCZsV7VxOUJR/cqDBjxlkxe+o5yjfu0cflXxhoV5dOUDikes/YYz9H0NNJf5yThfhQx
-         9EbztooxPKJYpQmslI9JtPWXV8AMOJpwrD+Aq24gNXE2nQsLfZ2Eoaj5iHTaz1dnA8kC
-         XhxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bXaNApsUJBQRijtom4CaAhgB0kqvpHWQ8lB5126OVbU=;
-        b=q7zBr7NFtq0GzNC0p5JUue4U9l9Cau3uA/1bFlYSyfyBkUJc0wiAYoPPRVgJ7Z/dK3
-         U8k+BSZTHhnxnzroXLcmUQNRzXLl1+q3W1i5SdcWRqGNGvA9wCvnOJTsUv5/1pET/fvG
-         mQ2zIacFDE2FMFWGIhmKTM/6G8NThpi91Y/tD84x+kow5ahOM3x9amW1LYN/5/gPnA5G
-         bwhJJoF9u02nY++m17LblHf6Ohh6nliZBqjdikggtThBvjktgrFkOn/gMDszFIrLGpB1
-         D6djSuDqC4IIHHSaOdgS3Acp8QeRq35JEwlZmHJG+20qdZx4UIlOWhmgM9EEOojNqw7z
-         RpSA==
-X-Gm-Message-State: AOAM533lUvCO/cxtnbKzhmWJM0zWlofE+ooqaPoO60va9pWGz7cNDdt3
-        pnvby/WPLucuJS3FKO+hlrapHfaR91k6tAeMP4khvg==
-X-Google-Smtp-Source: ABdhPJzT52+7fhpzyGdEPpFOaQHm0H5K5N9slJdZWOCE0StJyTV8DY7tAOulhTQU/LlU+EEkYf+hetlLkRsAW1D8TBw=
-X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr10011936ejc.133.1617886762806;
- Thu, 08 Apr 2021 05:59:22 -0700 (PDT)
+        Thu, 8 Apr 2021 08:59:35 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGLqj71yTzPnhZ;
+        Thu,  8 Apr 2021 20:56:33 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.174) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 8 Apr 2021 20:59:10 +0800
+From:   Li Huafei <lihuafei1@huawei.com>
+To:     <orsonzhai@gmail.com>, <zhang.lyra@gmail.com>, <wsa@kernel.org>,
+        <zhengdejin5@gmail.com>, <linhua.xu@unisoc.com>,
+        <andriy.shevchenko@linux.intel.com>
+CC:     <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yangjihong1@huawei.com>, <zhangjinhao2@huawei.com>,
+        <--lihuafei1@huawei.com>
+Subject: [PATCH -next] i2c: sprd: Fix PM reference leak in sprd_i2c_master_xfer()
+Date:   Thu, 8 Apr 2021 20:59:15 +0800
+Message-ID: <20210408125915.137089-1-lihuafei1@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <CA+G9fYsiRYaE+y44ApDkvPvbDCdiJ+nnCMhiiaPVsg6p8m4+1Q@mail.gmail.com>
- <CAHp75VdJ7kGXN6sk8HTeSfAKQtHDGSmtdVPn7CSkK5=yfDizuA@mail.gmail.com>
- <CA+G9fYuG12WaC6QAdx1k80v8-As7a7oVVkhaUDxqgV=BaunfxQ@mail.gmail.com> <CAHp75Vf1S5Ra4fdkV=faw4tCXbeNiifC3y8MF0_bCqHGfDBLsQ@mail.gmail.com>
-In-Reply-To: <CAHp75Vf1S5Ra4fdkV=faw4tCXbeNiifC3y8MF0_bCqHGfDBLsQ@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 8 Apr 2021 18:29:11 +0530
-Message-ID: <CA+G9fYuYC3QK2Zi8pbud0ebai4d4YgB0A4DXg5XWaE1pLWP5tw@mail.gmail.com>
-Subject: Re: [next] [arm64] [gpio] BUG: key has not been registered! DEBUG_LOCKS_WARN_ON:
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Colin King <colin.king@canonical.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Apr 2021 at 15:17, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
->
-> On Thu, Apr 8, 2021 at 11:33 AM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> > On Thu, 8 Apr 2021 at 04:21, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > On Thu, Apr 8, 2021 at 12:38 AM Naresh Kamboju
-> > > <naresh.kamboju@linaro.org> wrote:
-> > > >
-> > > > While running kselftest recently added gpio gpio-sim.sh test case the following
-> > > > warning was triggered on Linux next tag 20210330 tag running on arm64 juno
-> > > > and hikey devices.
-> > > >
-> > > > GOOD: next-20210326
-> > > > BAD: next-20210330
-> > > >
-> > > > This is still happening today on Linux next tag 20210407.
-> > >
-> > > Can you add the following
-> > >
-> > >   sysfs_attr_init(attrs[i]);
-> > >
-> > > to the end of the loop in gpio_sim_setup_sysfs()?
-> >
-> > Do you mean like this,
-> >
-> > diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-> > index ea17289a869c..5fe67ccf45f7 100644
-> > --- a/drivers/gpio/gpio-sim.c
-> > +++ b/drivers/gpio/gpio-sim.c
-> > @@ -296,6 +296,7 @@ static int gpio_sim_setup_sysfs(struct gpio_sim_chip *chip)
-> >                 dev_attr->store = gpio_sim_sysfs_line_store;
-> >
-> >                 attrs[i] = &dev_attr->attr;
-> > +               sysfs_attr_init(attrs[i]);
-> >         }
-> >
-> >         chip->attr_group.name = "line-ctrl";
->
-> Precisely.
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here. Fix
+it by replacing it with pm_runtime_resume_and_get to keep usage counter
+balanced.
 
-As per your suggestions the above line added and build tested
-the reported issue is fixed now.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Li Huafei <lihuafei1@huawei.com>
+---
+ drivers/i2c/busses/i2c-sprd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
+index 2917fecf6c80..8ead7e021008 100644
+--- a/drivers/i2c/busses/i2c-sprd.c
++++ b/drivers/i2c/busses/i2c-sprd.c
+@@ -290,7 +290,7 @@ static int sprd_i2c_master_xfer(struct i2c_adapter *i2c_adap,
+ 	struct sprd_i2c *i2c_dev = i2c_adap->algo_data;
+ 	int im, ret;
+ 
+-	ret = pm_runtime_get_sync(i2c_dev->dev);
++	ret = pm_runtime_resume_and_get(i2c_dev->dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -576,7 +576,7 @@ static int sprd_i2c_remove(struct platform_device *pdev)
+ 	struct sprd_i2c *i2c_dev = platform_get_drvdata(pdev);
+ 	int ret;
+ 
+-	ret = pm_runtime_get_sync(i2c_dev->dev);
++	ret = pm_runtime_resume_and_get(i2c_dev->dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-- 
+2.17.1
 
->
-> > > If it fixes an issue I'll send a formal patch.
-> >
-> > I will build and test this and report here.
-
-OTOH,
-LKFT builds kernel and rootfs on host and runs tests on various target
-devices. While doing this process "make install" is not installing required
-test files like gpio-mockup-cdev and gpio-line-name.
-
-# ./gpio-mockup.sh: line 106: ./gpio-mockup-cdev: No such file or directory
-# ./gpio-sim.sh: line 100: ./gpio-line-name: No such file or directory
-
-Test run log:
-------------------
-# selftests: gpio: gpio-mockup.sh
-# 1.  Module load tests
-# 1.1.  dynamic allocation of gpio
-# ./gpio-mockup.sh: line 106: ./gpio-mockup-cdev: No such file or directory
-# test failed: line value is 127 when 1 was expected
-# GPIO gpio-mockup test FAIL
-not ok 1 selftests: gpio: gpio-mockup.sh # exit=1
-# selftests: gpio: gpio-sim.sh
-# 1. chip_name and dev_name attributes
-# 1.1. Chip name is communicated to user
-# 1.2. chip_name returns 'none' if the chip is still pending
-# 1.3. Device name is communicated to user
-# 1.4. dev_name returns 'none' if chip is still pending
-# 2. Creating simulated chips
-# 2.1. Default number of lines is 1
-# 2.2. Number of lines can be specified
-# 2.3. Label can be set
-# 2.4. Label can be left empty
-# 2.5. Line names can be configured
-# ./gpio-sim.sh: line 100: ./gpio-line-name: No such file or directory
-# line name is incorrect
-# GPIO gpio-sim test FAIL
-not ok 2 selftests: gpio: gpio-sim.sh # exit=1
-
-- Naresh
