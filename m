@@ -2,98 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63046358785
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:52:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80DD5358787
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:53:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhDHOwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:52:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbhDHOwu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:52:50 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1FAC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 07:52:39 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id r9so3555404ejj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 07:52:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XKUnZqQO4ivizG+/bI3cfBd3j61a2uPrSNbS6BoWcw4=;
-        b=WvsKI3bAiKzr4yA6PIJ+J4WQc05EROY+gken2DjzjtPfp7OIgsFCW1g/kYFsyZTfoY
-         EQ7gjwhNWVJjN3L2KN3WKPNbKzgt/Tc4R3llPOO8z1we5eM8EHMbm0ChcvsZFFimcDtY
-         dAAFhJoAyg9Hm/WFaMCv3rbkA1Aq16SRmw3gBD9iOTUtyrhyfiDWm+Pk8YLw4Hf+P102
-         389CGKMF88Rd3q/aWHxwE3lOTE4JhCiRNV5HTpzG4LngCB+dmjkdi7yfBYxWbRpYmPNy
-         3/JYZIeuXsN3zFDHNlMRERXGHAshUJFWwBSmZYOeNH5oeRYTguhUDfnzwB6OKJuNNaO/
-         0ZTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XKUnZqQO4ivizG+/bI3cfBd3j61a2uPrSNbS6BoWcw4=;
-        b=NnS4E23BUZ3ArlmOaiBLueWG8uwL4JodoexT/OKtLUB7nnzWUDq/y9sms8/eLZg335
-         W/uXdkyxRAm4lVkVrar71Da/vevO5DSUO6uS+6vk3mFiKiezPW3K6oFM4AP72gZh1FMO
-         XJ7dInfcwFOQpYrr9XWCCC4B5SrO+rZfPtibj9cSIIhiF4Iwa8owD4QhqzyreBUo7853
-         VZztRbKusTYmwS75zZXNx81FoVHIDLlvVGVaS7FraQdnpdqpqg7lT/mwqOInLaOqOdPu
-         3Jb3p7S6vEjhByJMckmXH7u0EzH2TUh22LI/6kaOTF8HPvE2Y6vUnzhcfYXT1Z6eEmOP
-         DcLA==
-X-Gm-Message-State: AOAM530Ix4+SXG6KGBztJYlIleH/dQicJYD0XbHV4V4bDx8Xjx31ZSXR
-        SyiJ+/AO+7joTDJ88QdC8q+8NzWUbd+HJc/E7BHg1A==
-X-Google-Smtp-Source: ABdhPJxb06i4f0DsYyOhGPqYUfA4C2NwI787MAcpv9SKq0DSvo1yuf3f+4KyaYvOxyjv2LApEQZd2400W5PfRPMhDY8=
-X-Received: by 2002:a17:906:341a:: with SMTP id c26mr629983ejb.238.1617893558158;
- Thu, 08 Apr 2021 07:52:38 -0700 (PDT)
+        id S231855AbhDHOxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:53:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231370AbhDHOxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 10:53:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6338E60C3D;
+        Thu,  8 Apr 2021 14:53:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617893591;
+        bh=A+lmlSJytki0D83VoLSeoFC03SWEPdUvUSWJ5JtB45U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2TIRy1gbUSU7f3p68CkHaxNOPMpAUoJMuXbCCmiJLRk9j1JccDzKo4kn6M8svC8Zo
+         seYqfzQLZvAFG+0zgH9k26cqummWkXKwgqYAoba25gyptkCKS1Wn0QTTHfh3HhduRa
+         iEwyhZE8+4ZeiVJbd78icMHauOkEyuBO4WehA2Lo=
+Date:   Thu, 8 Apr 2021 16:53:08 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Longfang Liu <liulongfang@huawei.com>
+Cc:     mathias.nyman@intel.com, stern@rowland.harvard.edu,
+        liudongdong3@huawei.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kong.kongxinwei@hisilicon.com,
+        yisen.zhuang@huawei.com
+Subject: Re: [PATCH v2 1/2] USB:ehci:Add a whitelist for EHCI controllers
+Message-ID: <YG8Y1HexwyN2Wk03@kroah.com>
+References: <1617889760-17733-1-git-send-email-liulongfang@huawei.com>
+ <1617889760-17733-2-git-send-email-liulongfang@huawei.com>
 MIME-Version: 1.0
-References: <20210408130605.541796-1-gi-oh.kim@ionos.com> <CAMGffEkPRJ1vBi7+bbejS+Acttt269DjW9M6P8n=5xVZ50aGXg@mail.gmail.com>
-In-Reply-To: <CAMGffEkPRJ1vBi7+bbejS+Acttt269DjW9M6P8n=5xVZ50aGXg@mail.gmail.com>
-From:   Gioh Kim <gi-oh.kim@ionos.com>
-Date:   Thu, 8 Apr 2021 16:52:02 +0200
-Message-ID: <CAJX1Yta1nd-xMwzsFvk50RzWY_6CMbgfE-LH-SCQvPGdxDJ8pQ@mail.gmail.com>
-Subject: Re: [PATCH v4] lib/string: Introduce sysfs_streqcase
-To:     Jinpu Wang <jinpu.wang@ionos.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        laniel_francis@privacyrequired.com,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Haris Iqbal <haris.iqbal@ionos.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617889760-17733-2-git-send-email-liulongfang@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 3:14 PM Jinpu Wang <jinpu.wang@ionos.com> wrote:
->
-> On Thu, Apr 8, 2021 at 3:06 PM Gioh Kim <gi-oh.kim@ionos.com> wrote:
-> >
-> > As the name shows, it checks if strings are equal in case insensitive
-> > manner.
-> >
-> > For example, drivers/infiniband/ulp/rtrs/rtrs-clt-sysfs.c uses
-> > strncasecmp to check that the input via sysfs is "mi". But it would
-> > work even-if the input is "min-wrongcommand".
-> >
-> > I found some more cases using strncasecmp to check the entire string
-> > such as rtrs-clt-sysfs.c does. drivers/pnp/interface.c checks
-> > "disable" command with strncasecmp but it would also work if the
-> > command is "disable-wrong".
-> >
-> > Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-> you should add the
-> Reported-by: kernel test robot <lkp@intel.com>
-> > ---
-> you can add the changelog here after the ---
-> v4->v3:  removed #ifdef CONFIG_SYSFS ~ #endif.
->
-> The string comparison doesn't depends on CONFIG_SYSFS at all.
->
-> It looks good to me.
-> Reviewed-by: Jack Wang <jinpu.wang@ionos.com>
->
->
+On Thu, Apr 08, 2021 at 09:49:19PM +0800, Longfang Liu wrote:
+> Some types of EHCI controllers do not have SBRN registers.
+> By comparing the white list, the operation of reading the SBRN
+> registers is skipped.
+> 
+> Subsequent EHCI controller types without SBRN registers can be
+> directly added to the white list.
+> 
+> The current patch does not affect the drive function.
+> 
+> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> ---
+>  drivers/usb/host/ehci-pci.c | 28 ++++++++++++++++++++++++----
+>  1 file changed, 24 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/usb/host/ehci-pci.c b/drivers/usb/host/ehci-pci.c
+> index 3c3820a..534e906 100644
+> --- a/drivers/usb/host/ehci-pci.c
+> +++ b/drivers/usb/host/ehci-pci.c
+> @@ -47,6 +47,29 @@ static inline bool is_bypassed_id(struct pci_dev *pdev)
+>  	return !!pci_match_id(bypass_pci_id_table, pdev);
+>  }
+>  
+> +static const struct usb_nosbrn_whitelist_entry {
 
-Yes, I got two build error reports for v3.
-Should I send v5 including "Reported-by: kernel test robot <lkp@intel.com>" tag?
+Again, please do not use the term "whitelist", it is vague and you can
+pick a better term for this.
+
+How about:
+	struct ehci_nosbrn;
+
+thanks,
+
+greg k-h
