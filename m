@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63378358EB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A76358EB5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232384AbhDHUtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 16:49:53 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:37427 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231897AbhDHUtw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 16:49:52 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id CEA125C011A;
-        Thu,  8 Apr 2021 16:49:39 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Thu, 08 Apr 2021 16:49:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=MQtSHPJqtnoPnzsLmLnzXyuX+LY
-        DZOGWduO0MWZnQ4w=; b=V0/BROVaZviWOXWayii4M2rCj+aWENTi/HG+cw32BK6
-        JwhVkZg2PDP75XW8rAo4GS1xZQZ2ILRd2l4ZimrvbLdGYbv7IBIqsn/+paoScYUG
-        QwhDVizRXDtp0qp8MNmLjSmqdq8BgOwXeHbrM5ZARicn8lvD2Mr1pUkvlH1eI/p8
-        WQLiLuzD66Crf5G/8F2h86YpLZ3KDJi7uZyldlvPb754gQozWoKp8a1ihrPC5qYS
-        KpqpSoFUTxkxY5sPylqoIMRnordMt8jczn6Ci9kFJbwMOpMp+Blh+UzjvOlVCkZP
-        vMERXaRuzac1ndSim1CPUVvwG1btvbTxGq4GXHR0g7g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=MQtSHP
-        JqtnoPnzsLmLnzXyuX+LYDZOGWduO0MWZnQ4w=; b=BL1kxNiYfljceJuJ5rR2GA
-        21qCSxk5t0DAhehulEWmXzDETz/h5OX//HNTnOdDXwsvTacRu49pWW53U6vLPyx+
-        kdm15sbFdteNVvZnUzlp/YlauBg8pDZ2+WSfxQmFdOVK/0Ne/LOm1BY8zjw6kFIF
-        XJF/+2vF0ZQLSeKW1T9a0VizAP/RmVqAJ7cXdx+RSOlKQnzNirp/1rNGIJgE9ZWR
-        t77Ehod/E5YrDajk2Sxe+jvEJWnqZRAvXj8s6/N28UEyuEc246JuL6ELoyCMiRO+
-        h7sxP2a/X2dJLPQdumIhEaIX6KfAcsWrQ8bbCziVGQ7aSOuYH08TdSvQ4XbUUxKA
-        ==
-X-ME-Sender: <xms:Y2xvYJRA8C-R_T2zMFhSdB-ii3EdQo_bbU9-UyexhSQew2JLnXC2cA>
-    <xme:Y2xvYCyTtmvQEAmnEsyKPZhIl_L73u651BvpndHMwvxKUmYNGMMRzGdwrllMlOZMY
-    4osvWdl-Wi8eQuOQg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudejledgudehhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdejtddmnecujfgurhepfffhvffukfhfgggtuggjsehttdertddt
-    tddvnecuhfhrohhmpeffrghnihgvlhcuighuuceougiguhesugiguhhuuhdrgiihiieqne
-    cuggftrfgrthhtvghrnhepueduvdejfefflefgueevheefgeefteefteeuudduhfduhfeh
-    veelteevudelheejnecukfhppeduieefrdduudegrddufedvrddunecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiih
-    ii
-X-ME-Proxy: <xmx:Y2xvYO2J5rCQ6QmqQS_fKv_kxSIDpHKVSVcAed8aeP4bD7yXtKKq0g>
-    <xmx:Y2xvYBAUc2M6Tg2Bizo_JMFUldfxGze3X63Bkts1o5aVintRH8-kLg>
-    <xmx:Y2xvYCivCVfyDh0l05GYqefJjfYGOLxLEReAOm9Ct23Eoqvwqn4Edg>
-    <xmx:Y2xvYNXy_nr7lHZRpZ8hObQOVGL_oIF324qBSoPgXUTt2I-_anLi4g>
-Received: from dlxu-fedora-R90QNFJV (unknown [163.114.132.1])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 0BD031080063;
-        Thu,  8 Apr 2021 16:49:36 -0400 (EDT)
-Date:   Thu, 8 Apr 2021 13:49:35 -0700
-From:   Daniel Xu <dxu@dxuuu.xyz>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     bpf@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, jolsa@kernel.org, hannes@cmpxchg.org,
-        yhs@fb.com
-Subject: Re: [RFC bpf-next 1/1] bpf: Introduce iter_pagecache
-Message-ID: <20210408204935.4itnxm4ekdv7zlrw@dlxu-fedora-R90QNFJV>
-References: <cover.1617831474.git.dxu@dxuuu.xyz>
- <22bededbd502e0df45326a54b3056941de65a101.1617831474.git.dxu@dxuuu.xyz>
- <YG8zMV59hSzpCHSn@zeniv-ca.linux.org.uk>
+        id S232298AbhDHUtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 16:49:42 -0400
+Received: from mail-dm6nam12on2074.outbound.protection.outlook.com ([40.107.243.74]:30717
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231676AbhDHUtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 16:49:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lf/LnonOlbv6SqYWsG8Yr8xIdH5dy3OsI+moUlJ1pzy9e4eT015cWCL5OCMGp/fGut7W2FBdtQia987zA1Rd2OBlnpc7E9JW/TUHpNqcNNF0kEnxpStZlkIcjiFy9kSLbHvHvkiI7uf7sSHTrGxP9BdvUqyUSwknPmTnXdE9dJnOOGpfpegwcjgYETjv5WzyGIC2fR+ayaN5JwuLtcgHcSZ0WuVxGkInMrJz6UOCA/EpveGSf9/KXHpj7LbBTSdUcvkOps5f96bfQE7TxhgIP/+sxxhyMDb9v+fjNFJz9LUK8iWEdPZqoIpDPKjXvAqLNanRivXCCkyvtgrYfDxkww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=54z1sS9fYpgkNbmAMIkRQvr2EXQ1k193OM4qvoH7/tg=;
+ b=Bm3yf600Up83jmmWQcnGWK52PTUIxD1e2DbKh03jncp9XJZPvNjjnSw3/JUtO1wLJNCSJETujpQOWxrqwAorINwZhCsZh/ilduHjDgOrKg1x+4XUppd7O8D13vJms3X70Faw26JhryhOAcCbYscLhkGYvqK4ZpVg07IoqtyZeZEe8CMPUwzJlwSt/+o59cJeE0C+6a1snYThUnw2QNH5sT/AzRRHGTWIkxeTCm42hFws9OvaH7h+WHlUai912UF16fkTX1Nzy21ihef6YkOBaMqOIIA3YMzaZtCJ/5/zHyuEiRg+jaSS3td3PmWK/ruoMhYxO5lM1YyZZW+RdKkExA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=54z1sS9fYpgkNbmAMIkRQvr2EXQ1k193OM4qvoH7/tg=;
+ b=Doilw5fjtwgOBGuv31CTTmH4Vo9u90sPRXsD59E6wLPmSeYkhsTrJdBT27cCfSfA5TRQxJuSSkqhj0hSZ+7e/eYV5A8q8kcxLEB0VPmyEbymtcFM+nURGSSsmcnC7H0rB53O9zDuxP6yELe37duOACyS4XGk2N9RvtEjf5kyi4fGwzW1b4A/u1IBO4ErX7GHAiSsUUWqfOV8LwiRcdoZuF1B4EnbphP0oSk8mPHFGLMWFSkGWP4ZA7SFfBVeLojaUS4TYxw5RL/m9FwEqDTI0FIgXHKYMVd2fi0VTdutUCBCBO7/RpL/uXvmy7J/k1vh6VBTdymc1dpYSo6aKpWe4A==
+Received: from CO2PR04CA0145.namprd04.prod.outlook.com (2603:10b6:104::23) by
+ CH2PR12MB3878.namprd12.prod.outlook.com (2603:10b6:610:2a::21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3999.29; Thu, 8 Apr 2021 20:49:27 +0000
+Received: from CO1NAM11FT012.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:104:0:cafe::61) by CO2PR04CA0145.outlook.office365.com
+ (2603:10b6:104::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend
+ Transport; Thu, 8 Apr 2021 20:49:27 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT012.mail.protection.outlook.com (10.13.175.192) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4020.17 via Frontend Transport; Thu, 8 Apr 2021 20:49:27 +0000
+Received: from [10.2.165.36] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 8 Apr
+ 2021 20:49:26 +0000
+Subject: Re: [PATCH v1] ata: ahci_tegra: call tegra_powergate_power_off only
+ when PM domain is not present
+To:     Dmitry Osipenko <digetx@gmail.com>, <axboe@kernel.dk>,
+        <thierry.reding@gmail.com>
+CC:     <jonathanh@nvidia.com>, <linux-ide@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <1617900043-10506-1-git-send-email-skomatineni@nvidia.com>
+ <1617900043-10506-2-git-send-email-skomatineni@nvidia.com>
+ <32ff84ba-60a7-e498-d656-bcd29d23fb02@gmail.com>
+From:   Sowjanya Komatineni <skomatineni@nvidia.com>
+Message-ID: <b9f1a8dc-cf46-e501-606e-ce95f32b12d7@nvidia.com>
+Date:   Thu, 8 Apr 2021 13:49:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YG8zMV59hSzpCHSn@zeniv-ca.linux.org.uk>
+In-Reply-To: <32ff84ba-60a7-e498-d656-bcd29d23fb02@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 927407c6-ae15-4c65-3b20-08d8facfcca2
+X-MS-TrafficTypeDiagnostic: CH2PR12MB3878:
+X-Microsoft-Antispam-PRVS: <CH2PR12MB3878EAFDF8786ED131761176C2749@CH2PR12MB3878.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RcVg4wgsQWVisUSzLpyaEQJJKp05icl3HZdfb9akPz+keOeDHpuL3704wdgFPIT7p4FvhDJzPWA/YyIwxoj2pDyQACauLY1qv9by1cT6fJMq8GkMN59x1vtq/mHK31JCcmW2R4H8Mijb8EIHdTKBacoDv4vrT5MowqeDpbUR5cUpLNX4V8e8AvlvNseU9Jddo14xpQ/6RoMwUAj0soj3yFTFmK6btA3/FQy9cYChA0IujdOeMkTYiIllHfAJw8T+0ps7zvR8GuKzWU6AxkfCjfZPUVi7Qk9OlUon5QOPPLCsupYOUttg5YqYu6CtJ0QGAuML7RbKUXfl141JYz5Fv+tlx49mV2ZMF38T3dDt/U1eDcqMS97QgkqZ6ELxQH3kktt8I7otQh2xKehYT6jOyNXYd/vbFO7bun5Nvy+OBq8AhDWUoVYG0u6JhBkpc70yd6t9bpH6wJzNNqHpPT5GrwbjdWqy1+ZbjK/7jAfsgJmVYtp/toxJAwB46bgcLVhklnxpD4NT+vcC8i2J84+og4KV3CvC7gZn72BofeRnFA4CbJTOk8fU+6OWi19g3jthsdX7KdjfeBeEdcJsbTtCr+Kf6/tXtBzEOeRUD9aRHXrNNR5yShemVzlshjoOK3SGS1gu8+41KJ2cOP6WcPzO/tMFnlkTmBhFSqay0Ffn3iZ+QSNwakjwwhatjpon4qpX5iVl8E31pOytJDKhF/VNmR2opBsl9jcafjbJ7RdwcZHXg/9wE7dQec8YKldUNabSwc6zUfrRRRCjy+Qu/l3W9Q==
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(136003)(39860400002)(36840700001)(46966006)(2616005)(6666004)(426003)(336012)(31696002)(26005)(86362001)(36860700001)(8676002)(82310400003)(82740400003)(7636003)(16576012)(70206006)(70586007)(5660300002)(36756003)(2906002)(36906005)(16526019)(83380400001)(316002)(110136005)(186003)(356005)(54906003)(47076005)(966005)(4326008)(53546011)(31686004)(478600001)(8936002)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2021 20:49:27.0324
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 927407c6-ae15-4c65-3b20-08d8facfcca2
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT012.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB3878
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 04:45:37PM +0000, Al Viro wrote:
-> On Wed, Apr 07, 2021 at 02:46:11PM -0700, Daniel Xu wrote:
-> 
-> > +static void fini_seq_pagecache(void *priv_data)
-> > +{
-> > +	struct bpf_iter_seq_pagecache_info *info = priv_data;
-> > +	struct radix_tree_iter iter;
-> > +	struct super_block *sb;
-> > +	void **slot;
-> > +
-> > +	radix_tree_for_each_slot(slot, &info->superblocks, &iter, 0) {
-> > +		sb = (struct super_block *)iter.index;
-> > +		atomic_dec(&sb->s_active);
-> > +		radix_tree_delete(&info->superblocks, iter.index);
-> > +	}
-> 
-> ... and if in the meanwhile all other contributors to ->s_active have
-> gone away, that will result in...?
 
-Ah right, sorry. Nobody will clean up the super_block.
-
-> IOW, NAK.  The objects you are playing with have non-trivial lifecycle
-> and poking into the guts of data structures without bothering to
-> understand it is not a good idea.
-> 
-> Rule of the thumb: if your code ends up using fields that are otherwise
-> handled by a small part of codebase, the odds are that you need to be
-> bloody careful.  In particular, ->ns_lock has 3 users - all in
-> fs/namespace.c.  ->list/->mnt_list: all users in fs/namespace.c and
-> fs/pnode.c.  ->s_active: majority in fs/super.c, with several outliers
-> in filesystems and safety of those is not trivial.
-> 
-> Any time you see that kind of pattern, you are risking to reprise
-> a scene from The Modern Times - the one with Charlie taking a trip
-> through the guts of machinery.
-
-I'll take a closer look at the lifetime semantics.
-
-Hopefully the overall goal of the patch is ok. Happy to iterate on the
-implementation details until it's correct.
-
-Thanks,
-Daniel
+On 4/8/21 12:58 PM, Dmitry Osipenko wrote:
+> 08.04.2021 19:40, Sowjanya Komatineni пишет:
+>> This patch adds a check on present of PM domain and calls legacy power
+>> domain API tegra_powergate_power_off() only when PM domain is not present.
+>>
+>> This is a follow-up patch to Tegra186 AHCI support patch series
+>> https://lore.kernel.org/patchwork/cover/1408752/
+>>
+>> Signed-off-by: Sowjanya Komatineni <skomatineni@nvidia.com>
+>>
+>> ---
+>>   drivers/ata/ahci_tegra.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
+>> index 56612af..bd484dd 100644
+>> --- a/drivers/ata/ahci_tegra.c
+>> +++ b/drivers/ata/ahci_tegra.c
+>> @@ -287,7 +287,8 @@ static void tegra_ahci_power_off(struct ahci_host_priv *hpriv)
+>>   	reset_control_assert(tegra->sata_cold_rst);
+>>   
+>>   	clk_disable_unprepare(tegra->sata_clk);
+>> -	tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
+>> +	if (!tegra->pdev->dev.pm_domain)
+>> +		tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
+>>   
+>>   	regulator_bulk_disable(tegra->soc->num_supplies, tegra->supplies);
+>>   }
+>>
+> There are two instances of tegra_powergate_power_off() in the driver.
+Thanks Dmitry. Sorry missed it. Will fix
