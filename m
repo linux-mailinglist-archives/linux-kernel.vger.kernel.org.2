@@ -2,125 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2754A358B85
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 846FD358B87
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhDHRiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:38:15 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:63519 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhDHRiN (ORCPT
+        id S232648AbhDHRil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:38:41 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:42935 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232608AbhDHRik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:38:13 -0400
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210408173800euoutp020d2e9b6ff37d7cff20862e6ddeb80dc5~z8qS4x9fR1912219122euoutp02d
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 17:38:00 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210408173800euoutp020d2e9b6ff37d7cff20862e6ddeb80dc5~z8qS4x9fR1912219122euoutp02d
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617903480;
-        bh=vquHiqaALnuuLU6zMICX31IWiyI0/05OP6X0GBydTlk=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=MGRAtYVW0j6/0X2mW/xxeM4RIR6MMKiroE+yiHCeDWYb+MxPJJiVcPpvfGAblgUAZ
-         FFZHDkuekUr95yLEWVcvUEfAlvX7hU0IBBCXVpCXQpvOLGugHUi8mTMq0lFxAyS9Yc
-         7wWHiNy1RAjRfkK0UPiCRR7yf0f4UzjLpS8xm7QU=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210408173759eucas1p247ccd7fcfbd34e45ed128b7e9404c239~z8qSJCIYW2437624376eucas1p25;
-        Thu,  8 Apr 2021 17:37:59 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id BF.33.09444.77F3F606; Thu,  8
-        Apr 2021 18:37:59 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210408173758eucas1p135532a2db61e8b5ad8467a7d6b6343aa~z8qRfokOn0576305763eucas1p1K;
-        Thu,  8 Apr 2021 17:37:58 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210408173758eusmtrp15df24cb7c6e7a26fb3cdd59c52de7d33~z8qRe6BWe0555405554eusmtrp1_;
-        Thu,  8 Apr 2021 17:37:58 +0000 (GMT)
-X-AuditID: cbfec7f4-dd5ff700000024e4-b7-606f3f77c881
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id FC.39.08696.67F3F606; Thu,  8
-        Apr 2021 18:37:58 +0100 (BST)
-Received: from [106.210.134.141] (unknown [106.210.134.141]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210408173758eusmtip227bbb5404894f496ec51c839c46bd187~z8qQwcq6v1122911229eusmtip2L;
-        Thu,  8 Apr 2021 17:37:58 +0000 (GMT)
-Subject: Re: [PATCH -next] clk: samsung: Remove redundant dev_err calls
-To:     Chen Hui <clare.chenhui@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, mturquette@baylibre.com, cw00.choi@samsung.com,
-        tomasz.figa@gmail.com
-From:   Sylwester Nawrocki <s.nawrocki@samsung.com>
-Message-ID: <e8ac725b-b1f5-1631-53bb-fcd0e6c44a96@samsung.com>
-Date:   Thu, 8 Apr 2021 19:37:57 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.9.0
+        Thu, 8 Apr 2021 13:38:40 -0400
+Received: by mail-ot1-f41.google.com with SMTP id c24-20020a9d6c980000b02902662e210895so3068472otr.9;
+        Thu, 08 Apr 2021 10:38:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Za9qZOBqeZjEVPtGBzrMmWv0sOzk51r1HTrllhzYbGw=;
+        b=L/JwskOV2izykcNblXCzZd7JdzP4XpWuVDRPN6SP2WDqisj4l1+7DtOFOHraCYDU0/
+         wdGj2uNacdf4nzktw3pMXE/qFrXWM7NsJMoIgIdnsYEKbl4z8rfiri1bSSk6BqDg3lpQ
+         nNvexyP5UmsSKS4L7UUAy1AOiLZh9RkE3yJqWkqDLrPb/AOSMI2kRwfmExFlKHjNtvFN
+         a6yQvFA+tNJIfAD3I8sLYJlIux1mCWXCvasTXdq4HEo1LxE/ZnNoL0E/hMNZLK9Gbtj9
+         zZ23eDaih1MVDHSVT0SIaIndgMoIkl6oqOwuGlC7+PXDD3gQDtQpqPqwRmiW+qDRGkfK
+         lolg==
+X-Gm-Message-State: AOAM530cR8B/Ml9cBlB19sO59dHE+jtAIdbxsIEfZlPQQC83zgPKHoFk
+        vwZT4Rx74fTBrqBGpvJWGu+wCZ1FDMCvkeTpCr4=
+X-Google-Smtp-Source: ABdhPJxBGTYcthKOaAtKuFJMdn8SXlw+UK31dWkh1xU1S1ueVyyO7YwBB9iKE7hevaG/VAiDY25GWJih4RcFtBjz6do=
+X-Received: by 2002:a9d:4811:: with SMTP id c17mr8952295otf.206.1617903508550;
+ Thu, 08 Apr 2021 10:38:28 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <38c703df-2bfc-6492-ab2f-344ffc2647a1@canonical.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFKsWRmVeSWpSXmKPExsWy7djP87rl9vkJBgsfy1mcaDvEaHH9y3NW
-        i41vfzBZbHp8jdXiY889VovLu+awWcw4v4/J4uIpV4t/1zayWKza9YfRgcvj/Y1Wdo9ZDb1s
-        Hjtn3WX3aDnyltVj06pONo/NS+o9+rasYvT4vEkugCOKyyYlNSezLLVI3y6BK+Pv1n2MBRtZ
-        Kg4ffcLWwHiduYuRk0NCwETi54nFbF2MXBxCAisYJQ7uXMoE4XxhlNh3+z47hPOZUWLGrWZ2
-        mJYNLXOhWpYzSkza1Q3lfGSU+Lz7IBtIlbCAu8SDtx0sILaIQJLEp91vwRYyCzxmlFhyQRDE
-        ZhMwlOg92scIYvMK2ElMuP8NrJ5FQEVi7sSNYHFRoN6lj/5B1QhKnJz5BKyGU8BRYvr6+6wQ
-        M8Ulbj2ZzwRhy0tsfzuHGeQgCYFuTonJTxqgznaReHe+EeprYYlXx7dAxWUkTk/uYYFoaGaU
-        6Nl9mx3CmcAocf/4AkaIKmuJO+d+Ab3GAbRCU2L9Ln0QUwLoissPxSBMPokbbwUhbuCTmLRt
-        OjNEmFeio00IYoaKxO9V05kgbCmJ7if/WSYwKs1C8tksJN/MQvLNLIS1CxhZVjGKp5YW56an
-        FhvlpZbrFSfmFpfmpesl5+duYgQmr9P/jn/Zwbj81Ue9Q4xMHIyHGCU4mJVEeHf0ZicI8aYk
-        VlalFuXHF5XmpBYfYpTmYFES503asiZeSCA9sSQ1OzW1ILUIJsvEwSnVwOT157p5w+3i3KfM
-        kyLDPtkv8sntbp+1sLrc+fQMaaZa9dpJGtmfzhw/Lcep93/Bwaf2T5WevZs+K+++leaEnG+z
-        DKetf2KRw/Bh9ipfObP8DNG7lziWZviVxpYv4L2yYWFhx95eZRXundlF0tv2vW/dx80YuFDE
-        6tvKkw0lWy46r7l0/+iyg7FsQqufS6/R0DSK81z1f01G99YiB7blPNweF70j9FdovFwoqjNj
-        r/wxp/L6N4GtSx/W6xquj+F4YCx/tNCVW2GtyrldPu0XLl8xZpBM9rgzyUOk3Z1dasWe/fdy
-        7zxv9wsyv9a7Y8H8nT9C2L/8K/nx+OtetmlrSoUN01srZ13Ruvzs5ITLid+UWIozEg21mIuK
-        EwEuDvLJzQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLIsWRmVeSWpSXmKPExsVy+t/xe7pl9vkJBpeO6FucaDvEaHH9y3NW
-        i41vfzBZbHp8jdXiY889VovLu+awWcw4v4/J4uIpV4t/1zayWKza9YfRgcvj/Y1Wdo9ZDb1s
-        Hjtn3WX3aDnyltVj06pONo/NS+o9+rasYvT4vEkugCNKz6Yov7QkVSEjv7jEVina0MJIz9DS
-        Qs/IxFLP0Ng81srIVEnfziYlNSezLLVI3y5BL+Pv1n2MBRtZKg4ffcLWwHiduYuRk0NCwERi
-        Q8tcti5GLg4hgaWMEtc+vgByOIASUhLzW5QgaoQl/lzrgqp5zyhx/+R0NpCEsIC7xIO3HSwg
-        tohAksT0ZdPZQYqYBR4zSjQePsUM0XGSUeLG/FlMIFVsAoYSvUf7GEFsXgE7iQn3v4F1swio
-        SMyduBEsLgo0qW33THaIGkGJkzOfgNVwCjhKTF9/nxXEZhZQl/gz7xIzhC0ucevJfCYIW15i
-        +9s5zBMYhWYhaZ+FpGUWkpZZSFoWMLKsYhRJLS3OTc8tNtIrTswtLs1L10vOz93ECIzXbcd+
-        btnBuPLVR71DjEwcjIcYJTiYlUR4d/RmJwjxpiRWVqUW5ccXleakFh9iNAX6ZyKzlGhyPjBh
-        5JXEG5oZmBqamFkamFqaGSuJ85ocWRMvJJCeWJKanZpakFoE08fEwSnVwOQUy108VzP+RU+C
-        z9QE8w2GHjtZXpzbvev6i792SsnNl1ZFXM9sdXbbuibD1Lv7vJrgbqFbp7T1GDNmKgd9q06K
-        Md7o96Jh72vL+8UHj2luWLB43wa39deFVBeHrWheeCq1vqq2NuXwkwm1d53zI03mZsztc68W
-        qnpzTeHHKc3Cd0Zb1z4vq1Q7vrKk+9mrbRzTX307tPHNvO/XN1nziE8rnOCiu7P+ctfLWWe1
-        Y4tv2qsW1/4U6/h4qd7+t/Y7nnWtr3J2Ms0pfCt2Sm737adBedzdCQqTkzL5vij8nabuvvlN
-        n63plvQTMbpTtrk+3h9ptnfi2gnlS9sDeZy3X7pr9ElX93TW9ilPkr5WKX9XYinOSDTUYi4q
-        TgQAWqjXzWADAAA=
-X-CMS-MailID: 20210408173758eucas1p135532a2db61e8b5ad8467a7d6b6343aa
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210408162200eucas1p2054f6241f2bad360e52ec09dd112583d
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210408162200eucas1p2054f6241f2bad360e52ec09dd112583d
-References: <20210408134856.207305-1-clare.chenhui@huawei.com>
-        <CGME20210408162200eucas1p2054f6241f2bad360e52ec09dd112583d@eucas1p2.samsung.com>
-        <38c703df-2bfc-6492-ab2f-344ffc2647a1@canonical.com>
+References: <20210408081444.167868-1-lujialin4@huawei.com>
+In-Reply-To: <20210408081444.167868-1-lujialin4@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 8 Apr 2021 19:38:17 +0200
+Message-ID: <CAJZ5v0h9MXxNE+TjKAet+7vT2LDYG=h80wd1_5Q5=h6daDmPRA@mail.gmail.com>
+Subject: Re: [PATCH -next] PM: fix typos in comments
+To:     Lu Jialin <lujialin4@huawei.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.04.2021 18:21, Krzysztof Kozlowski wrote:
-> On 08/04/2021 15:48, Chen Hui wrote:
->> There is error message within devm_ioremap_resource
->> already, so remove the dev_err calls to avoid redundant
->> error messages.
->>
->> Signed-off-by: Chen Hui <clare.chenhui@huawei.com>
->> ---
->>  drivers/clk/samsung/clk-exynos4412-isp.c | 4 +---
->>  drivers/clk/samsung/clk-s5pv210-audss.c  | 4 +---
->>  2 files changed, 2 insertions(+), 6 deletions(-)
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+On Thu, Apr 8, 2021 at 10:14 AM Lu Jialin <lujialin4@huawei.com> wrote:
+>
+> Change occured to occurred in kernel/power/autosleep.c.
+> Change consiting to consisting in kernel/power/snapshot.c.
+> Change avaiable to available in kernel/power/swap.c.
+> No functionality changed.
+>
+> Signed-off-by: Lu Jialin <lujialin4@huawei.com>
+> ---
+>  kernel/power/autosleep.c | 2 +-
+>  kernel/power/snapshot.c  | 2 +-
+>  kernel/power/swap.c      | 2 +-
+>  3 files changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/kernel/power/autosleep.c b/kernel/power/autosleep.c
+> index 9af5a50d3489..b29c8aca7486 100644
+> --- a/kernel/power/autosleep.c
+> +++ b/kernel/power/autosleep.c
+> @@ -54,7 +54,7 @@ static void try_to_suspend(struct work_struct *work)
+>                 goto out;
+>
+>         /*
+> -        * If the wakeup occured for an unknown reason, wait to prevent the
+> +        * If the wakeup occurred for an unknown reason, wait to prevent the
+>          * system from trying to suspend and waking up in a tight loop.
+>          */
+>         if (final_count == initial_count)
+> diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
+> index 64b7aab9aee4..27cb4e7086b7 100644
+> --- a/kernel/power/snapshot.c
+> +++ b/kernel/power/snapshot.c
+> @@ -329,7 +329,7 @@ static void *chain_alloc(struct chain_allocator *ca, unsigned int size)
+>  /**
+>   * Data types related to memory bitmaps.
+>   *
+> - * Memory bitmap is a structure consiting of many linked lists of
+> + * Memory bitmap is a structure consisting of many linked lists of
+>   * objects.  The main list's elements are of type struct zone_bitmap
+>   * and each of them corresonds to one zone.  For each zone bitmap
+>   * object there is a list of objects of type struct bm_block that
+> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+> index 72e33054a2e1..bea3cb8afa11 100644
+> --- a/kernel/power/swap.c
+> +++ b/kernel/power/swap.c
+> @@ -884,7 +884,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
+>   *     enough_swap - Make sure we have enough swap to save the image.
+>   *
+>   *     Returns TRUE or FALSE after checking the total amount of swap
+> - *     space avaiable from the resume partition.
+> + *     space available from the resume partition.
+>   */
+>
+>  static int enough_swap(unsigned int nr_pages)
+> --
 
-Thank you, patch applied.
+Applied as 5.13 material, thanks!
