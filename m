@@ -2,248 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C36E358758
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF04535875C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbhDHOoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:44:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbhDHOoL (ORCPT
+        id S231824AbhDHOol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:44:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51236 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231720AbhDHOok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:44:11 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C480C061760;
-        Thu,  8 Apr 2021 07:44:00 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id u8so1539570qtq.12;
-        Thu, 08 Apr 2021 07:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pfprswARZ4odhvhZpzsdc6CTE0mR3gUSzWfF2cwF86E=;
-        b=asM+pgqko9tpznmMELqwovipzQFNaj7aH+HFclpVxRgbqgmxlK/HrYGKAZbT38RZ8z
-         oKzFMYcooI/4jfil/BYH6SM9FsIYpgNY+3CBHn02hPKMBnB+wi8E+eBrQ0XoQZKqQEL4
-         lBDia8TepvMEu6/cT14OqCJ/i00mcH25BsB3wn4WoRQCy9rH5/DG4S/luQXNz59PZ4wl
-         E5D7VP5/6eW/Y0TeOQpj02v4HPOM4M7ys97o0Dcwa0eS4CNJg+riUeCDOySoEr8IuwfQ
-         Y6PAgySABtHiClaROSkGikAQM3pNPE8L/1osWNNov6AQddy/FGem8hpTnEz3fX+whGBD
-         pwbQ==
+        Thu, 8 Apr 2021 10:44:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617893068;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ND/bD1NdJfIUtWvmn9cztv2pnJuFNG076aZGLQ1xAK8=;
+        b=Ii/AjKf9yBMDismGoddyK7vnW4lyRU0GI5+IWE28oDomAIHjQJL/jkc1p0s0PeUYhafunl
+        1XUj3WCXe9KGZckfc71ZnBPnZtW4s/iV0pLyfs24QsVP+ptbq+6wCK+BUktgi/M2X67HxD
+        RGBMohf6mEdyIWXAW0ugTypzgAcCHjo=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-357-o-uY3chuPeO0-mHsEFd2lw-1; Thu, 08 Apr 2021 10:44:26 -0400
+X-MC-Unique: o-uY3chuPeO0-mHsEFd2lw-1
+Received: by mail-wr1-f71.google.com with SMTP id o2so1081329wrm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 07:44:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pfprswARZ4odhvhZpzsdc6CTE0mR3gUSzWfF2cwF86E=;
-        b=GqWQMSNTxm7MfrVSmBG4mhPQpjRcTflBVVtGTKqzYXOFoeuBF527KLJjyHU9iztlzg
-         Z8E8yrMQdBqYFkjBXENSmUmXXD+ZF0S239COmwDi/oQzFFmjsT1P4mx4Je5PqxuWdJ/N
-         SnyraJs8KcZQqwFSHp3U3ATIDdALblYP4QiQKEK+F7BlXv8+y+WhX0BH/kKZHo5N+qx9
-         9NgviBuxWTzl2vM9/b83SrIb2knu2ozjf94u+B6vMZkdqGSa3cvZIU1Q5AbQyDnxtS+K
-         AFZbRBWj2Z3z/UubvOHuKYM8kEU07vAnEFht/w3FqxS6fMSmGXktcJ3THHSMua0UYnz2
-         gobw==
-X-Gm-Message-State: AOAM533M+5XNo6mCsPuF3JEtI80CTFhCQEGh/QqgN0cBbq9fYXLWnkLi
-        B/cRQOJbSOR89knUgOtCVsjogAZ+AcI=
-X-Google-Smtp-Source: ABdhPJza2ucik6D5XR3OZO2ZbJEwv1c/FBW0Z/ZlD0TwjVUbHv8TEjRcVqNsvBpN50u0Vm869NiBEA==
-X-Received: by 2002:ac8:5ed2:: with SMTP id s18mr2194566qtx.260.1617893039598;
-        Thu, 08 Apr 2021 07:43:59 -0700 (PDT)
-Received: from localhost.localdomain (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id z6sm1004761qkc.73.2021.04.08.07.43.58
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=ND/bD1NdJfIUtWvmn9cztv2pnJuFNG076aZGLQ1xAK8=;
+        b=VsfU5Z7vwIh+7X+4LobiinU/IAQaqRSVN1b5HUUd5ZPAlDN+ynTkTrFSy1bJqzhImV
+         P0gSkk0qEb/XTx/K1AVTN30EJiY6WooKFRwVnORUdlE0LwD8JKrE8Ri/jZiwVJWgmXaC
+         V1dWRNI87u8b2xqrOxGi8zzRDJkeIx20Mrah7bHqqw2VmuCxqLtzlOqOBFSCLG6SuLas
+         cEYdwUNS8qJmoe/59CIzkUjnMcR7v4cNngGZifWiLqfvPs+IzXyVNYbFOEG6rYEHSdeJ
+         3mrmfnMSbX5uqYRVQvvd64G1pm2zwzRu0JBZO87sANL3Z5Mlk9HUPQA+HjEsWmRZxDZB
+         hcIQ==
+X-Gm-Message-State: AOAM530QqAlu2EH8A9wrtUqRwoJUeqmYC/vzl3J7TWwIdqd75+Pawxw3
+        oVMTH3fyDrIyRxlmWxhHPYeS60xRTp3t5O9mLvXtc1fK6GFg0kChAtGLljBrPPWVbmHA9hNm/Of
+        g1FPQcZICgSc0iY0UlZ0EHeZ+
+X-Received: by 2002:adf:83e3:: with SMTP id 90mr11839843wre.153.1617893065314;
+        Thu, 08 Apr 2021 07:44:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyTH+kdqLFdolRPxnu0qsP1VMV2il2nyLsAe0ntsvnHjriOiow9QvQwik3um6iZMqwUrlPMpQ==
+X-Received: by 2002:adf:83e3:: with SMTP id 90mr11839814wre.153.1617893065111;
+        Thu, 08 Apr 2021 07:44:25 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id c2sm14162512wmr.22.2021.04.08.07.44.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 07:43:58 -0700 (PDT)
-From:   frowand.list@gmail.com
-To:     Rob Herring <robh+dt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/1] of: unittest: overlay: ensure proper alignment of copied FDT
-Date:   Thu,  8 Apr 2021 09:43:49 -0500
-Message-Id: <20210408144349.2215143-1-frowand.list@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 08 Apr 2021 07:44:24 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Siddharth Chandrasekaran <sidcha@amazon.de>
+Cc:     Alexander Graf <graf@amazon.com>,
+        Evgeny Iakovlev <eyakovl@amazon.de>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH 4/4] KVM: hyper-v: Advertise support for fast XMM
+ hypercalls
+In-Reply-To: <20210408142053.GA10636@u366d62d47e3651.ant.amazon.com>
+References: <20210407211954.32755-1-sidcha@amazon.de>
+ <20210407211954.32755-5-sidcha@amazon.de>
+ <87blap7zha.fsf@vitty.brq.redhat.com>
+ <20210408142053.GA10636@u366d62d47e3651.ant.amazon.com>
+Date:   Thu, 08 Apr 2021 16:44:23 +0200
+Message-ID: <8735w096pk.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Frank Rowand <frank.rowand@sony.com>
+Siddharth Chandrasekaran <sidcha@amazon.de> writes:
 
-The Devicetree standard specifies an 8 byte alignment of the FDT.
-Code in libfdt expects this alignment for an FDT image in memory.
-kmemdup() returns 4 byte alignment on openrisc.  Replace kmemdup()
-with kmalloc(), align pointer, memcpy() to get proper alignment.
+> On Thu, Apr 08, 2021 at 02:05:53PM +0200, Vitaly Kuznetsov wrote:
+>> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
+>>
+>> > Now that all extant hypercalls that can use XMM registers (based on
+>> > spec) for input/outputs are patched to support them, we can start
+>> > advertising this feature to guests.
+>> >
+>> > Cc: Alexander Graf <graf@amazon.com>
+>> > Cc: Evgeny Iakovlev <eyakovl@amazon.de>
+>> > Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+>> > ---
+>> >  arch/x86/include/asm/hyperv-tlfs.h | 4 ++--
+>> >  arch/x86/kvm/hyperv.c              | 1 +
+>> >  2 files changed, 3 insertions(+), 2 deletions(-)
+>> >
+>> > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
+>> > index e6cd3fee562b..1f160ef60509 100644
+>> > --- a/arch/x86/include/asm/hyperv-tlfs.h
+>> > +++ b/arch/x86/include/asm/hyperv-tlfs.h
+>> > @@ -49,10 +49,10 @@
+>> >  /* Support for physical CPU dynamic partitioning events is available*/
+>> >  #define HV_X64_CPU_DYNAMIC_PARTITIONING_AVAILABLE    BIT(3)
+>> >  /*
+>> > - * Support for passing hypercall input parameter block via XMM
+>> > + * Support for passing hypercall input and output parameter block via XMM
+>> >   * registers is available
+>> >   */
+>> > -#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4)
+>> > +#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4) | BIT(15)
+>>
+>> TLFS 6.0b states that there are two distinct bits for input and output:
+>>
+>> CPUID Leaf 0x40000003.EDX:
+>> Bit 4: support for passing hypercall input via XMM registers is available.
+>> Bit 15: support for returning hypercall output via XMM registers is available.
+>>
+>> and HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE is not currently used
+>> anywhere, I'd suggest we just rename
+>>
+>> HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE to HV_X64_HYPERCALL_XMM_INPUT_AVAILABLE
+>> and add HV_X64_HYPERCALL_XMM_OUTPUT_AVAILABLE (bit 15).
+>
+> That is how I had it initially; but then noticed that we would never
+> need to use either of them separately. So it seemed like a reasonable
+> abstraction to put them together.
+>
 
-The 4 byte alignment exposed a related bug which triggered a crash
-on openrisc with:
-commit 79edff12060f ("scripts/dtc: Update to upstream version v1.6.0-51-g183df9e9c2b9")
-as reported in:
-https://lore.kernel.org/lkml/20210327224116.69309-1-linux@roeck-us.net/
+Actually, we may. In theory, KVM userspace may decide to expose just
+one of these two to the guest as it is not obliged to copy everything
+from KVM_GET_SUPPORTED_HV_CPUID so we will need separate
+guest_cpuid_has() checks.
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Frank Rowand <frank.rowand@sony.com>
+(This reminds me of something I didn't see in your series:
+we need to check that XMM hypercall parameters support was actually
+exposed to the guest as it is illegal for a guest to use it otherwise --
+and we will likely need two checks, for input and output).
 
----
+Also, (and that's what triggered my comment) all other HV_ACCESS_* in
+kvm_get_hv_cpuid() are single bits so my first impression was that you
+forgot one bit, but then I saw that you combined them together.
 
-Please review carefully, I am not yet fully awake...
-
-changes since version 1:
-  - use pointer from kmalloc() for kfree() instead of using pointer that
-    has been modified for FDT alignment
-
- drivers/of/of_private.h |  2 ++
- drivers/of/overlay.c    | 28 +++++++++++++++++-----------
- drivers/of/unittest.c   | 12 +++++++++---
- 3 files changed, 28 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-index d9e6a324de0a..d717efbd637d 100644
---- a/drivers/of/of_private.h
-+++ b/drivers/of/of_private.h
-@@ -8,6 +8,8 @@
-  * Copyright (C) 1996-2005 Paul Mackerras.
-  */
- 
-+#define FDT_ALIGN_SIZE 8
-+
- /**
-  * struct alias_prop - Alias property in 'aliases' node
-  * @link:	List node to link the structure in aliases_lookup list
-diff --git a/drivers/of/overlay.c b/drivers/of/overlay.c
-index 50bbe0edf538..e0397d70d531 100644
---- a/drivers/of/overlay.c
-+++ b/drivers/of/overlay.c
-@@ -57,7 +57,7 @@ struct fragment {
-  * struct overlay_changeset
-  * @id:			changeset identifier
-  * @ovcs_list:		list on which we are located
-- * @fdt:		FDT that was unflattened to create @overlay_tree
-+ * @fdt:		base of memory allocated to hold aligned FDT that was unflattened to create @overlay_tree
-  * @overlay_tree:	expanded device tree that contains the fragment nodes
-  * @count:		count of fragment structures
-  * @fragments:		fragment nodes in the overlay expanded device tree
-@@ -719,8 +719,8 @@ static struct device_node *find_target(struct device_node *info_node)
- /**
-  * init_overlay_changeset() - initialize overlay changeset from overlay tree
-  * @ovcs:	Overlay changeset to build
-- * @fdt:	the FDT that was unflattened to create @tree
-- * @tree:	Contains all the overlay fragments and overlay fixup nodes
-+ * @fdt:	base of memory allocated to hold aligned FDT that was unflattened to create @tree
-+ * @tree:	Contains the overlay fragments and overlay fixup nodes
-  *
-  * Initialize @ovcs.  Populate @ovcs->fragments with node information from
-  * the top level of @tree.  The relevant top level nodes are the fragment
-@@ -873,7 +873,8 @@ static void free_overlay_changeset(struct overlay_changeset *ovcs)
-  * internal documentation
-  *
-  * of_overlay_apply() - Create and apply an overlay changeset
-- * @fdt:	the FDT that was unflattened to create @tree
-+ * @fdt_align:	the FDT that was unflattened to create @tree, aligned
-+ * @fdt:	base of memory allocated to hold *@fdt_align
-  * @tree:	Expanded overlay device tree
-  * @ovcs_id:	Pointer to overlay changeset id
-  *
-@@ -912,8 +913,8 @@ static void free_overlay_changeset(struct overlay_changeset *ovcs)
-  * id is returned to *ovcs_id.
-  */
- 
--static int of_overlay_apply(const void *fdt, struct device_node *tree,
--		int *ovcs_id)
-+static int of_overlay_apply(const void *fdt_align, const void *fdt,
-+		struct device_node *tree, int *ovcs_id)
- {
- 	struct overlay_changeset *ovcs;
- 	int ret = 0, ret_revert, ret_tmp;
-@@ -953,7 +954,7 @@ static int of_overlay_apply(const void *fdt, struct device_node *tree,
- 	/*
- 	 * after overlay_notify(), ovcs->overlay_tree related pointers may have
- 	 * leaked to drivers, so can not kfree() tree, aka ovcs->overlay_tree;
--	 * and can not free fdt, aka ovcs->fdt
-+	 * and can not free memory containing aligned fdt, aka ovcs->fdt
- 	 */
- 	ret = overlay_notify(ovcs, OF_OVERLAY_PRE_APPLY);
- 	if (ret) {
-@@ -1014,7 +1015,8 @@ static int of_overlay_apply(const void *fdt, struct device_node *tree,
- int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
- 			 int *ovcs_id)
- {
--	const void *new_fdt;
-+	void *new_fdt;
-+	void *new_fdt_align;
- 	int ret;
- 	u32 size;
- 	struct device_node *overlay_root;
-@@ -1036,18 +1038,22 @@ int of_overlay_fdt_apply(const void *overlay_fdt, u32 overlay_fdt_size,
- 	 * Must create permanent copy of FDT because of_fdt_unflatten_tree()
- 	 * will create pointers to the passed in FDT in the unflattened tree.
- 	 */
--	new_fdt = kmemdup(overlay_fdt, size, GFP_KERNEL);
-+	size += FDT_ALIGN_SIZE;
-+	new_fdt = kmalloc(size, GFP_KERNEL);
- 	if (!new_fdt)
- 		return -ENOMEM;
- 
--	of_fdt_unflatten_tree(new_fdt, NULL, &overlay_root);
-+	new_fdt_align = PTR_ALIGN(new_fdt, FDT_ALIGN_SIZE);
-+	memcpy(new_fdt_align, overlay_fdt, size);
-+
-+	of_fdt_unflatten_tree(new_fdt_align, NULL, &overlay_root);
- 	if (!overlay_root) {
- 		pr_err("unable to unflatten overlay_fdt\n");
- 		ret = -EINVAL;
- 		goto out_free_new_fdt;
- 	}
- 
--	ret = of_overlay_apply(new_fdt, overlay_root, ovcs_id);
-+	ret = of_overlay_apply(new_fdt_align, new_fdt, overlay_root, ovcs_id);
- 	if (ret < 0) {
- 		/*
- 		 * new_fdt and overlay_root now belong to the overlay
-diff --git a/drivers/of/unittest.c b/drivers/of/unittest.c
-index eb100627c186..29081a8b32e6 100644
---- a/drivers/of/unittest.c
-+++ b/drivers/of/unittest.c
-@@ -22,6 +22,7 @@
- #include <linux/slab.h>
- #include <linux/device.h>
- #include <linux/platform_device.h>
-+#include <linux/kernel.h>
- 
- #include <linux/i2c.h>
- #include <linux/i2c-mux.h>
-@@ -1408,6 +1409,7 @@ static void attach_node_and_children(struct device_node *np)
- static int __init unittest_data_add(void)
- {
- 	void *unittest_data;
-+	void *unittest_data_align;
- 	struct device_node *unittest_data_node, *np;
- 	/*
- 	 * __dtb_testcases_begin[] and __dtb_testcases_end[] are magically
-@@ -1415,7 +1417,7 @@ static int __init unittest_data_add(void)
- 	 */
- 	extern uint8_t __dtb_testcases_begin[];
- 	extern uint8_t __dtb_testcases_end[];
--	const int size = __dtb_testcases_end - __dtb_testcases_begin;
-+	u32 size = __dtb_testcases_end - __dtb_testcases_begin;
- 	int rc;
- 
- 	if (!size) {
-@@ -1425,11 +1427,15 @@ static int __init unittest_data_add(void)
- 	}
- 
- 	/* creating copy */
--	unittest_data = kmemdup(__dtb_testcases_begin, size, GFP_KERNEL);
-+	size += FDT_ALIGN_SIZE;
-+	unittest_data = kmalloc(size, GFP_KERNEL);
- 	if (!unittest_data)
- 		return -ENOMEM;
- 
--	of_fdt_unflatten_tree(unittest_data, NULL, &unittest_data_node);
-+	unittest_data_align = PTR_ALIGN(unittest_data, FDT_ALIGN_SIZE);
-+	memcpy(unittest_data_align, __dtb_testcases_begin, size);
-+
-+	of_fdt_unflatten_tree(unittest_data_align, NULL, &unittest_data_node);
- 	if (!unittest_data_node) {
- 		pr_warn("%s: No tree to attach; not running tests\n", __func__);
- 		kfree(unittest_data);
 -- 
-Frank Rowand <frank.rowand@sony.com>
+Vitaly
 
