@@ -2,73 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B738358507
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A9A358509
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231738AbhDHNoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:44:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230467AbhDHNoD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:44:03 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2B0C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 06:43:49 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id d13so4107460lfg.7
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 06:43:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nd4MS/2X/IdRu/IPJEY7GmmOKW9PjkQK5am7Q8bLstI=;
-        b=hD8KAQHdn5unol9mIEukltB0Fz0T3qQQS2GZ1hEXbDV+LUdIomndFB8jDC+/8r5lsf
-         Zuap4QsWc1i4BK0nV76woFFpjpqd78ay7JVuJE7lRA5+35oX3JTgPwkEsw52eqNDq+Js
-         5/H5iVyHA5mFpNATM0UjymDtqiGtC0PoWZcHa3SZblgizwLkDZi80MQVS+U5ITAfwY/I
-         RxrQHVfGoTFjaWzb+27JUUk9VYyRvsXYcDeuMUUWeKDbqNwM9M1Wo1dWew9qOvQb6Ww+
-         zQrZDd9dGfAdGdRTD0k2W6XIjAC/I2SvGAVsnkPq0/YgTNviQ6MVih9Lzi1pAalLAwQf
-         a5BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nd4MS/2X/IdRu/IPJEY7GmmOKW9PjkQK5am7Q8bLstI=;
-        b=OuYkbM9iVXgaxUr+xPeynJDT/yVSmu8zTnQYYQZbb9o4mnaOhIQKQD4wsKnY3fDOiL
-         KsS/2gy2arItUsmMvyNxhwZIxUebJSfLaoW0CG+UoY/pMzmx7Tt4xTz237pA3bbg1XGW
-         iYGD2o3ZKINDha+DaLn3jN+LyPmjkwxYUkP9JIaPRwBrM9/BGc/8qsqSa+6/EN6li3Ib
-         /x0V5BMNFaMY+5tF3xfIxHEf9uMxMaAs4EY77AWBvAA4534YywPWnUjkD+XyFrMbd5xs
-         weiYE+0rJ33YcHv4Ug3OD+2WS+msI+MaZyb4WpmVmBCzqJxBK7SHMvmvtkAgoEhJ7Bth
-         NInQ==
-X-Gm-Message-State: AOAM531c2LOSAXS+XZ1K3n6HKwVOqLNUFYJMnFDzfoJ2/CJN3DUTpEsl
-        46qSDU5eCuJbakZ40vMMdIMpQXNMUgaALZnfBLS20w==
-X-Google-Smtp-Source: ABdhPJymnbt4FfiI9iPC+BINQwSJEhxevKghWv8S1VlDu3pJBTF5MsChnMg8U1zsHNd7he3i/ZkOw0THQ/rxhuG91CA=
-X-Received: by 2002:ac2:4d95:: with SMTP id g21mr6715385lfe.29.1617889427809;
- Thu, 08 Apr 2021 06:43:47 -0700 (PDT)
+        id S231747AbhDHNoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:44:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230467AbhDHNoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 09:44:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29FAF61041;
+        Thu,  8 Apr 2021 13:44:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617889445;
+        bh=+0nlg2lxYHP/+WmaERtnHRADuls/CQxYMRQaiEsLuyg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=srsGv4QDJ2YXtQ3dk+ip8ynfU9TQwj+XOJO0yeP1q/LRRrCala/MD5cB0so0Dzit5
+         GwDZ8HxCNp7deVknSUTaAw6CEeR47cirXBLZ9xM3SUwoNi4hvAG/K3o5hntkoic/UH
+         mfFlGsnPmaL33yk12y6Ecbu6luRfD0CS2kPX7exYxogrR6ob5CO4KZOCSwYXxAeTMC
+         DvtAo+aWbwRfmJByuWya175fC5dTY/agHSNyTTZCg87JLWUj/r6Ku6v/gCvF6DGakR
+         /P8JxrWlRNAI4q4lzmeRJIR6etcUMlpNQrYtpi3jvbycoDqqzee+6uNImojZBJ1mDb
+         tv7hgzrr2IZ/g==
+Date:   Thu, 8 Apr 2021 14:43:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Clark Wang <xiaoning.wang@nxp.com>
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: imx: add a check for speed_hz before calculating
+ the clock
+Message-ID: <20210408134347.GE4516@sirena.org.uk>
+References: <20210408103347.244313-1-xiaoning.wang@nxp.com>
+ <20210408103347.244313-2-xiaoning.wang@nxp.com>
 MIME-Version: 1.0
-References: <20210322104310.863029-1-jay.xu@rock-chips.com>
-In-Reply-To: <20210322104310.863029-1-jay.xu@rock-chips.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 8 Apr 2021 15:43:36 +0200
-Message-ID: <CACRpkdZWH9Mitp8+SMSCW7kGy5Uz=govbh6=c8gqzL2u6FR-Ew@mail.gmail.com>
-Subject: Re: [PATCH 0/3] gpio-rockchip driver
-To:     Jianqun Xu <jay.xu@rock-chips.com>
-Cc:     Tao Huang <huangtao@rock-chips.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3O1VwFp74L81IIeR"
+Content-Disposition: inline
+In-Reply-To: <20210408103347.244313-2-xiaoning.wang@nxp.com>
+X-Cookie: Editing is a rewording activity.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 22, 2021 at 11:43 AM Jianqun Xu <jay.xu@rock-chips.com> wrote:
 
-> Separate gpio driver from pinctrl driver.
+--3O1VwFp74L81IIeR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I tried to apply this too, but it fails, can you rebase on the pinctrl "devel"
-branch (I suppose the RK3568 driver got in the way).
+On Thu, Apr 08, 2021 at 06:33:47PM +0800, Clark Wang wrote:
+> When some drivers use spi to send data, spi_transfer->speed_hz is
+> not assigned. If spidev->max_speed_hz is not assigned as well, it
+> will cause an error in configuring the clock.
 
-Yours,
-Linus Walleij
+> Add a check for these two values before configuring the clock. An
+> error will be returned when they are not assigned.
+
+For the case where the transfer speed is not set __spi_validate() will
+take the controller's maximum speed so the controller should just be
+able to unconditionally use the transfer's speed.  Your issue is
+therefore that the controllers are sometimes not setting a maximum
+speed which this doesn't seem to fix AFAICT?  I'd expect the driver to
+be able to work one out based on the input clock.
+
+>  struct spi_imx_devtype_data {
+>  	void (*intctrl)(struct spi_imx_data *, int);
+>  	int (*prepare_message)(struct spi_imx_data *, struct spi_message *);
+> -	int (*prepare_transfer)(struct spi_imx_data *, struct spi_device *,
+> -				struct spi_transfer *);
+> +	int (*prepare_transfer)(struct spi_imx_data *, struct spi_device *);
+>  	void (*trigger)(struct spi_imx_data *);
+>  	int (*rx_available)(struct spi_imx_data *);
+>  	void (*reset)(struct spi_imx_data *);
+
+This seems to be a fairly big and surprising refactoring for the
+described change.  It's quite hard to tie the change to the changelog.
+
+--3O1VwFp74L81IIeR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBvCJIACgkQJNaLcl1U
+h9CADAf/XsYEv65PROf5zL0d1q8Q96nubfrHJIDDSDpsrbRMWbKAwEGxTBGWBT2F
+3+xODJnXIhu/V5sXJ/dkh8Q8nfNaxdY/aRQE6lkX29Iu6midNb1gG2xb6M/D4ztz
+KfaCiJpVwjs5iHpo6rLMwo/oAi7bFCfw2UFFSVbP4VZVkTqvZNJJL/RtSN2czbJa
+69FAma1YVxRQF37b2WDFN18gm7XYyyF6WXU/f2qNRerh8qm6LfupTqKljtpsuzf8
+AO6ottepa2ttjKxtb6/cHuLLHWym0ip0Rq1KGj5Jtcrkma/H/zH1859VJaicXKW9
+1g0Si9UTTT1LjADlzAz4YhhjsRdEKg==
+=kJw/
+-----END PGP SIGNATURE-----
+
+--3O1VwFp74L81IIeR--
