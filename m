@@ -2,79 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8DC358440
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49AD358495
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 15:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbhDHNM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 09:12:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229741AbhDHNM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 09:12:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4745061164;
-        Thu,  8 Apr 2021 13:12:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617887535;
-        bh=UkxxqNBKlJ55P8VMwpXP5sFNvpwUPW3grgDAns1lO+g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WT3GUcizBOlv68oy+sFxNpCQJMxP770siIVhSiAa3PcSwRRCCt5UYCA+kqinyniyL
-         8dfoHqwNkzOAI0FWD23WqA5u2Oii5zAAKh0egy/xjx2RG9qd3PgdoSCRhaE6UXrO6u
-         TQg1/ArMGf7gTMoyXGa/LITy+gYNmv9gUOASkGboVdnaP7dL6KI6jCmIpY31Q0AbVD
-         OpiPkBO5Gkd1GP4FFr5BxTCBC7wnMkiFBHRX0nyFThv6j51E+x4mPkXno6jIKlwnIn
-         0qJUOWTar82hUo1BOwgoyqIdIA6fCsng39Mhf4yBaE2FjES5bIMwnxUeGCDgfv+Dq+
-         kX6yqUDjCxhWQ==
-Date:   Thu, 8 Apr 2021 14:11:57 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "William A. Kennington III" <wak@google.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joel Stanley <joel@jms.id.au>
-Subject: Re: [PATCH] spi: Fix use-after-free with devm_spi_alloc_*
-Message-ID: <20210408131157.GD4516@sirena.org.uk>
-References: <20210407095527.2771582-1-wak@google.com>
+        id S231527AbhDHNZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 09:25:26 -0400
+Received: from eu-shark1.inbox.eu ([195.216.236.81]:52834 "EHLO
+        eu-shark1.inbox.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhDHNZZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 09:25:25 -0400
+Received: from eu-shark1.inbox.eu (localhost [127.0.0.1])
+        by eu-shark1-out.inbox.eu (Postfix) with ESMTP id F11186C01C6B;
+        Thu,  8 Apr 2021 16:25:11 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=inbox.eu; s=20140211;
+        t=1617888312; bh=O2I5sRbsIGV6O7BRd81yBLGFZqvG4P4JnLPd6Ijeamg=;
+        h=References:From:To:Cc:Subject:Date:In-reply-to;
+        b=WkugiplNaH4XCk6aVA2NznlBO0dCN+YN9BvN6Gu6tVb82IwiLGdY52NbzbrWikL7Z
+         nCn0ilSVtp6zVFqvcs6Hpt8z2FH1YBq0Fi9rCyXinFjhMesdZt48iFUC7pZlU+qFmu
+         /88sp16IKcOmTz+87ZCDc01atwu64Y7Q2CCLpEBc=
+Received: from localhost (localhost [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id E1F6B6C01C68;
+        Thu,  8 Apr 2021 16:25:11 +0300 (EEST)
+Received: from eu-shark1.inbox.eu ([127.0.0.1])
+        by localhost (eu-shark1.inbox.eu [127.0.0.1]) (spamfilter, port 35)
+        with ESMTP id cWmb_CTFk_k9; Thu,  8 Apr 2021 16:25:11 +0300 (EEST)
+Received: from mail.inbox.eu (eu-pop1 [127.0.0.1])
+        by eu-shark1-in.inbox.eu (Postfix) with ESMTP id 571956C019FD;
+        Thu,  8 Apr 2021 16:25:11 +0300 (EEST)
+Received: from nas (unknown [45.87.95.33])
+        (Authenticated sender: l@damenly.su)
+        by mail.inbox.eu (Postfix) with ESMTPA id 4E5D91BE2271;
+        Thu,  8 Apr 2021 16:25:02 +0300 (EEST)
+References: <20210408120432.1063608-1-ruansy.fnst@fujitsu.com>
+ <20210408120432.1063608-8-ruansy.fnst@fujitsu.com>
+User-agent: mu4e 1.5.8; emacs 27.2
+From:   Su Yue <l@damenly.su>
+To:     Shiyang Ruan <ruansy.fnst@fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-fsdevel@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        willy@infradead.org, jack@suse.cz, viro@zeniv.linux.org.uk,
+        linux-btrfs@vger.kernel.org, david@fromorbit.com, hch@lst.de,
+        rgoldwyn@suse.de
+Subject: Re: [PATCH v4 7/7] fs/xfs: Add dedupe support for fsdax
+Date:   Thu, 08 Apr 2021 21:12:00 +0800
+Message-ID: <czv4syut.fsf@damenly.su>
+In-reply-to: <20210408120432.1063608-8-ruansy.fnst@fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="oj4kGyHlBMXGt3Le"
-Content-Disposition: inline
-In-Reply-To: <20210407095527.2771582-1-wak@google.com>
-X-Cookie: Editing is a rewording activity.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; format=flowed
+X-Virus-Scanned: OK
+X-ESPOL: 6N1mlY5SaUCpygHhXxmqCAcxrytLVO7k/+GmqX1UmH7kOSmad00TUxOr7h97Nxyk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---oj4kGyHlBMXGt3Le
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Thu 08 Apr 2021 at 20:04, Shiyang Ruan 
+<ruansy.fnst@fujitsu.com> wrote:
 
-On Wed, Apr 07, 2021 at 02:55:27AM -0700, William A. Kennington III wrote:
+> Add xfs_break_two_dax_layouts() to break layout for tow dax 
+> files.  Then
+> call compare range function only when files are both DAX or not.
+>
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@fujitsu.com>
+>
+Not family with xfs code but reading code make my sleep better :)
+See bellow.
 
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 660 at lib/refcount.c:28 refcount_warn_saturate+0x108/0x174
-> [<b0396f04>] (refcount_warn_saturate) from [<b03c56a4>] (kobject_put+0x90/0x98)
-> [<b03c5614>] (kobject_put) from [<b0447b4c>] (put_device+0x20/0x24)
->  r4:b6700140
+> ---
+>  fs/xfs/xfs_file.c    | 20 ++++++++++++++++++++
+>  fs/xfs/xfs_inode.c   |  8 +++++++-
+>  fs/xfs/xfs_inode.h   |  1 +
+>  fs/xfs/xfs_reflink.c |  5 +++--
+>  4 files changed, 31 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> index 5795d5d6f869..1fd457167c12 100644
+> --- a/fs/xfs/xfs_file.c
+> +++ b/fs/xfs/xfs_file.c
+> @@ -842,6 +842,26 @@ xfs_break_dax_layouts(
+>  			0, 0, xfs_wait_dax_page(inode));
+>  }
+>
+> +int
+> +xfs_break_two_dax_layouts(
+> +	struct inode		*src,
+> +	struct inode		*dest)
+> +{
+> +	int			error;
+> +	bool			retry = false;
+> +
+> +retry:
+>
+'retry = false;' ? since xfs_break_dax_layouts() won't
+set retry to false if there is no busy page in inode->i_mapping.
+Dead loop will happen if retry is true once.
 
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative (it often is
-for search engines if nothing else) then it's usually better to pull out
-the relevant sections.
+> +	error = xfs_break_dax_layouts(src, &retry);
+> +	if (error || retry)
+> +		goto retry;
+> +
+> +	error = xfs_break_dax_layouts(dest, &retry);
+> +	if (error || retry)
+> +		goto retry;
+> +
+> +	return error;
+> +}
+> +
+>  int
+>  xfs_break_layouts(
+>  	struct inode		*inode,
+> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> index f93370bd7b1e..c01786917eef 100644
+> --- a/fs/xfs/xfs_inode.c
+> +++ b/fs/xfs/xfs_inode.c
+> @@ -3713,8 +3713,10 @@ xfs_ilock2_io_mmap(
+>  	struct xfs_inode	*ip2)
+>  {
+>  	int			ret;
+> +	struct inode		*inode1 = VFS_I(ip1);
+> +	struct inode		*inode2 = VFS_I(ip2);
+>
+> -	ret = xfs_iolock_two_inodes_and_break_layout(VFS_I(ip1), 
+> VFS_I(ip2));
+> +	ret = xfs_iolock_two_inodes_and_break_layout(inode1, inode2);
+>  	if (ret)
+>  		return ret;
+>  	if (ip1 == ip2)
+> @@ -3722,6 +3724,10 @@ xfs_ilock2_io_mmap(
+>  	else
+>  		xfs_lock_two_inodes(ip1, XFS_MMAPLOCK_EXCL,
+>  				    ip2, XFS_MMAPLOCK_EXCL);
+> +
+> +	if (IS_DAX(inode1) && IS_DAX(inode2))
+> +		ret = xfs_break_two_dax_layouts(inode1, inode2);
+> +
+ret is ignored here.
 
---oj4kGyHlBMXGt3Le
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBvAR0ACgkQJNaLcl1U
-h9DWxQf9FuZoEVNDQAMRserLJRVhn6/DB//c7KRBHDyxactPwrQJIEenVgurmpUs
-KhSp0yV0H4AuM71aorlegp0JlDX54jLmkvTm7FiM17/qA26eOlVQOZeRiJiP7eb2
-5gD/gumnUIHJZ/HMxP1WmFmxULLAChdlBrHw8Jje70JdageWSBVunvKhc8QqiKXb
-of6WO8XWjKH43Cc9yVxTFFNi1XoPy6TktCq6sMNaISoQ3dgNrXhsetEPCLquFopj
-BOw2ogS9fg7PJ7Y+QCgh5f/rnUQZvXSsCoL7XMki4bsOcWUdt9oUpRfiqnFG0H0L
-HZhG4AVVwDUh4lq89ljAXqjcAlD2wg==
-=sWeT
------END PGP SIGNATURE-----
-
---oj4kGyHlBMXGt3Le--
+--
+Su
+>  	return 0;
+>  }
+>
+> diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
+> index 88ee4c3930ae..5ef21924dddc 100644
+> --- a/fs/xfs/xfs_inode.h
+> +++ b/fs/xfs/xfs_inode.h
+> @@ -435,6 +435,7 @@ enum xfs_prealloc_flags {
+>
+>  int	xfs_update_prealloc_flags(struct xfs_inode *ip,
+>  				  enum xfs_prealloc_flags flags);
+> +int	xfs_break_two_dax_layouts(struct inode *inode1, struct 
+> inode *inode2);
+>  int	xfs_break_layouts(struct inode *inode, uint *iolock,
+>  		enum layout_break_reason reason);
+>
+> diff --git a/fs/xfs/xfs_reflink.c b/fs/xfs/xfs_reflink.c
+> index a4cd6e8a7aa0..4426bcc8a985 100644
+> --- a/fs/xfs/xfs_reflink.c
+> +++ b/fs/xfs/xfs_reflink.c
+> @@ -29,6 +29,7 @@
+>  #include "xfs_iomap.h"
+>  #include "xfs_sb.h"
+>  #include "xfs_ag_resv.h"
+> +#include <linux/dax.h>
+>
+>  /*
+>   * Copy on Write of Shared Blocks
+> @@ -1324,8 +1325,8 @@ xfs_reflink_remap_prep(
+>  	if (XFS_IS_REALTIME_INODE(src) || XFS_IS_REALTIME_INODE(dest))
+>  		goto out_unlock;
+>
+> -	/* Don't share DAX file data for now. */
+> -	if (IS_DAX(inode_in) || IS_DAX(inode_out))
+> +	/* Don't share DAX file data with non-DAX file. */
+> +	if (IS_DAX(inode_in) != IS_DAX(inode_out))
+>  		goto out_unlock;
+>
+>  	if (!IS_DAX(inode_in))
