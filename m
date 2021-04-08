@@ -2,140 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FCF23580A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470A53580A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 12:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230331AbhDHKal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 06:30:41 -0400
-Received: from mailout1.w1.samsung.com ([210.118.77.11]:63652 "EHLO
-        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229517AbhDHKad (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 06:30:33 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20210408103018euoutp01a984dae75132eb7085cecd0d86068109~z203mru251230512305euoutp01k
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 10:30:18 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20210408103018euoutp01a984dae75132eb7085cecd0d86068109~z203mru251230512305euoutp01k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1617877818;
-        bh=Wawn+jC2hksX05vj35MLNFZB6CXJZrElC2FBihBKOn8=;
-        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-        b=fyrUi767TI4Mowsd+xLtllYPf2aUy/qeNm84o7xfa05Qt4kGv8jCidXv2ovVWo4ap
-         6/kL63gBi40DcZjKzmjMVynFBNn9VGCmiJkjDnRWqXlRa4lDolsn1BJL9Z+H6n5Rnw
-         x9WQpCKa5J5m7Ja2HCcgXlDUTV97+iHK9FXgygSY=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210408103018eucas1p18da90f664d02ec502f772b58be72301d~z203V62j82828328283eucas1p1f;
-        Thu,  8 Apr 2021 10:30:18 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 54.21.09452.A3BDE606; Thu,  8
-        Apr 2021 11:30:18 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210408103018eucas1p2a390b6a21fb277c4657878967566df4a~z2027OUvj1880618806eucas1p2O;
-        Thu,  8 Apr 2021 10:30:18 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210408103018eusmtrp1968fb8fa4294c2f9691810c512417f03~z2026lXIX2517025170eusmtrp1F;
-        Thu,  8 Apr 2021 10:30:18 +0000 (GMT)
-X-AuditID: cbfec7f2-a9fff700000024ec-6a-606edb3aa99f
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms2.samsung.com (EUCPMTA) with SMTP id 47.80.08696.93BDE606; Thu,  8
-        Apr 2021 11:30:17 +0100 (BST)
-Received: from CAMSVWEXC01.scsc.local (unknown [106.1.227.71]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210408103017eusmtip25d2c6e428d220e29e75ea26af5b9f138~z202yd2tR0680506805eusmtip2b;
-        Thu,  8 Apr 2021 10:30:17 +0000 (GMT)
-Received: from localhost (106.210.248.142) by CAMSVWEXC01.scsc.local
-        (2002:6a01:e347::6a01:e347) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-        Thu, 8 Apr 2021 11:30:17 +0100
-Date:   Thu, 8 Apr 2021 12:30:16 +0200
-From:   Javier =?utf-8?B?R29uesOhbGV6?= <javier.gonz@samsung.com>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Keith Busch <kbusch@kernel.org>,
-        Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>,
-        <linux-kernel@vger.kernel.org>, <linux-nvme@lists.infradead.org>,
-        <Chaitanya.Kulkarni@wdc.com>
-Subject: Re: [PATCH 1/1] nvme-pci: add the DISABLE_WRITE_ZEROES quirk for a
- Samsung PM1725a
-Message-ID: <20210408103016.5girhv5ctkucovmd@mpHalley.local>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Disposition: inline
+        id S230326AbhDHKdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 06:33:42 -0400
+Received: from mail-vi1eur05on2068.outbound.protection.outlook.com ([40.107.21.68]:18746
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229686AbhDHKdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 06:33:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WRPQJ0QQmtOCnBCgjXfVRzIp0kFbnOg0Tj2ZhapedsmW6e5aGAU8WwlyHojXX8LUbHEQPYOIsgxGzciF5tERK+esR8I9rAMr27pppmcvF8IIu1YDGOQAOvtf79I3p/VflzmOGMqW68IiyKGv9k8A7iMBN2TI3I5YDoz/C4WTlRsfVr78RyE00MFpByHIONOmCPgCoYnvo+MxQH9Yv0PW5UrzCGSuFpUiiQq8on+Z7hkY6iKFivlD+CCIIfcgVVH4WLIZQgw9zQ1gYdjcHkv4bBdpXzSq2iLLQCaXLi9ZTmYV3JJwKde9VoYsREeM6Sg6KrW+RDLeJLNF9Woo9pIr/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Txps5nmahOf5u3Q+w3JoCQTJBfXxPeXGk2BSAcV8q2I=;
+ b=HVF/QFJl0OmnDAcRw6aD0D/kBPGwDFlYPVm2R1NnepZzejzj/fSUWkqYEyDbumIrfRBOseNtQDLbtPGwvulSqPU5HwyXwI48U7S9hlqmI97X5ku6IgKddrEe4hFOD0iBAAA8LVn12+l3DDJSgTY/w3kUDyTWUgQMdQNVXfw/Ocz4V8PxQEqbG2+bqtY0vqpwjRCijjMKQVy2szgVzL2dekW1Dt+8afPQGONvr/VU6cYZE6EJIYXfk3jlv7YrsVx9AY0tdME7tz4wLT+vW/PgYSNvFj4WR62Cxo7Ws7cFQKYCof+3YXU267u47vWi+giENaac99AJQyFjPkGYUp+Hag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Txps5nmahOf5u3Q+w3JoCQTJBfXxPeXGk2BSAcV8q2I=;
+ b=jsU5Z37veOr6QHPRhKTR630tUo+ALGONWhumWJkimZWuWlwR4pAANQ9jRAduQlgnqq4+PHtzxKc2M9Nz44SCstFiNMBeQUTczH04LNtWG11WQbpqPHRbQRDbmr3BYxnxlIy6H8iH2ADUsY9q+fYg5jwYIobGWB3M6mrNZTSTHD8=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB5623.eurprd04.prod.outlook.com (2603:10a6:20b:a9::13)
+ by AM6PR04MB4982.eurprd04.prod.outlook.com (2603:10a6:20b:5::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.28; Thu, 8 Apr
+ 2021 10:32:51 +0000
+Received: from AM6PR04MB5623.eurprd04.prod.outlook.com
+ ([fe80::5cd9:3da7:144f:36f9]) by AM6PR04MB5623.eurprd04.prod.outlook.com
+ ([fe80::5cd9:3da7:144f:36f9%3]) with mapi id 15.20.3999.035; Thu, 8 Apr 2021
+ 10:32:50 +0000
+From:   Clark Wang <xiaoning.wang@nxp.com>
+To:     broonie@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] spi: imx: add 16/32 bits per word support for slave mode
+Date:   Thu,  8 Apr 2021 18:33:46 +0800
+Message-Id: <20210408103347.244313-1-xiaoning.wang@nxp.com>
+X-Mailer: git-send-email 2.25.1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210323124322.qchyk7boyzklwv3v@mpHalley.local>
-X-Originating-IP: [106.210.248.142]
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-        CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprNKsWRmVeSWpSXmKPExsWy7djPc7pWt/MSDN7Pl7aYdfs1i8XdN+9Z
-        LFauPspkMenQNUaLy7vmsFnMX/aU3YHNY9OqTjaPzUvqPXbfbGDz+LxJzqP9QDeTx6uL69kD
-        2KK4bFJSczLLUov07RK4Mm5emcZe8Jy94l/LN6YGxpVsXYwcHBICJhLrHtd2MXJyCAmsYJRY
-        ddegi5ELyP7CKNHdcJIRwvnMKDH33GU2kCqQhvNz/zJDJJYzSsx6d4wJrurw2q9QzhZGiWfX
-        LjKBtLAIqEi0XjrFCGKzCdhLXFp2ixnEFhFQknj66izYDmaBbYwSTw68ZQdJCAvESvyYeoIV
-        xOYVsJE4+msiM4QtKHFy5hMWEJtZwEqi80MTK8gTzALSEsv/cUCE5SWat85mBglzCthK3P9S
-        AfGmssTy6b4QD9RKrD12hh1kq4TADw6Jll/tLBAJF4m1B46xQtjCEq+Ob2GHsGUkTk/uYYFo
-        aGaUOLPmCjOE08Mo8WfSCkaIDdYSfWdyIBocJbaemQcNXz6JG28FIU7jk5i0bTozRJhXoqNN
-        aAKjyiwkf81C8tcshL9mIflrASPLKkbx1NLi3PTUYsO81HK94sTc4tK8dL3k/NxNjMD0c/rf
-        8U87GOe++qh3iJGJg/EQowQHs5II747e7AQh3pTEyqrUovz4otKc1OJDjNIcLErivKtmr4kX
-        EkhPLEnNTk0tSC2CyTJxcEo1MHUrZB3gnbBGt/zmgd8bZwizXz3FJPyKoSdI/Y3/8iidTzdX
-        n2apSshfPvvK5jP+n/f/5p639kfr+ffW3/IVHSwCrHboBzDMmHKp27X4vPHsKS6femZrlBZZ
-        mmsckTq5SCyHOfDwHMvF2d9Win1UXLpq/sYzKt6GnZU+Ie8frjwVKMQXJlNTKtD38riEY8dZ
-        e836p8/ffDtm9OCpYf7xgFffBesiexy4Ns89v1FCKuBDzpL/U5fWvpRTu/HnprBQfXiiUznf
-        cuEd1zfOvrVu6e9Z7+8H6+d8LP6sdp2769xsBSnHFgOGTpU/li7mL04EMXya7d0+N+fk16de
-        MadD2pS6pj543OnbzH1R/s4ajbNKLMUZiYZazEXFiQCc4vSxrgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCIsWRmVeSWpSXmKPExsVy+t/xe7qWt/MSDI7vsbGYdfs1i8XdN+9Z
-        LFauPspkMenQNUaLy7vmsFnMX/aU3YHNY9OqTjaPzUvqPXbfbGDz+LxJzqP9QDeTx6uL69kD
-        2KL0bIryS0tSFTLyi0tslaINLYz0DC0t9IxMLPUMjc1jrYxMlfTtbFJSczLLUov07RL0Mm5e
-        mcZe8Jy94l/LN6YGxpVsXYycHBICJhLn5/5l7mLk4hASWMoo8WDyWlaIhIzEpysf2SFsYYk/
-        17rAGoQEPjJK3F6VAWFvYZSYPzEGxGYRUJFovXSKEcRmE7CXuLTsFjOILSKgJPH01VlGkAXM
-        AtsYJZ4ceAs2VFggVuLH1BNgy3gFbCSO/poIdcVRZom7Kw8wQSQEJU7OfMICYjMLWEjMnH8e
-        aBIHkC0tsfwfB0RYXqJ562xmkDCngK3E/S8VIKaEgLLE8um+EOfXSry6v5txAqPILCQzZyGZ
-        OQth5iwkMxcwsqxiFEktLc5Nzy020itOzC0uzUvXS87P3cQIjM5tx35u2cG48tVHvUOMTByM
-        hxglOJiVRHh39GYnCPGmJFZWpRblxxeV5qQWH2I0BYbQRGYp0eR8YHrIK4k3NDMwNTQxszQw
-        tTQzVhLnNTmyJl5IID2xJDU7NbUgtQimj4mDU6qBqeXZpYW6qht2VUlkv6hmvzJVTCq96EDu
-        n77IF6cemP+WaDEX2umeHvbU5q+HhuEngSntW+9cypXcXnT1Z+rL3N4O8YrIF6IzhY+1enQw
-        KeQcfCt0QEMiOGKuzBLVP7sVzm91P+nnVdtp/v+AdfP8r+/VLK79vvCxX19PRf2gZ6+xXtac
-        vqYt39xTNE5tLuk3kNpQHbhSNPV3efVk/5cHt9pP+2m06Gf+kmk3A6bveDb5mOV7/jZZ5jWd
-        tz4HuWZE3b3z/Z3UyeWbd7KpCrJ3//LeqLHkUapD9n4ulfNyFycfn764I+ipt2XtmZUfL1w9
-        mrzolMSyCVPaV5uqrDja4La9qDrqCfPuGTe5/jzLd1NiKc5INNRiLipOBABtl10FVwMAAA==
-X-CMS-MailID: 20210408103018eucas1p2a390b6a21fb277c4657878967566df4a
-X-Msg-Generator: CA
-X-RootMTR: 20210323083750eucas1p14d21230ac758194d854ca336caf7f3f2
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210323083750eucas1p14d21230ac758194d854ca336caf7f3f2
-References: <1615377076-3251-1-git-send-email-dmtrmonakhov@yandex-team.ru>
-        <20210310132156.GA12145@lst.de> <20210310134110.GA13063@lst.de>
-        <20210310200030.GA3377333@dhcp-10-100-145-180.wdc.com>
-        <20210311104712.GA16218@lst.de>
-        <CGME20210323083750eucas1p14d21230ac758194d854ca336caf7f3f2@eucas1p1.samsung.com>
-        <20210323083749.r272grolxozf3w2f@mpHalley.local>
-        <20210323123121.GA31105@lst.de>
-        <20210323124322.qchyk7boyzklwv3v@mpHalley.local>
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: HK2PR0401CA0017.apcprd04.prod.outlook.com
+ (2603:1096:202:2::27) To AM6PR04MB5623.eurprd04.prod.outlook.com
+ (2603:10a6:20b:a9::13)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by HK2PR0401CA0017.apcprd04.prod.outlook.com (2603:1096:202:2::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Thu, 8 Apr 2021 10:32:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e73e417b-5481-4f46-94e1-08d8fa79a853
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4982:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <AM6PR04MB4982BC7D60B0E4218D250B7DF3749@AM6PR04MB4982.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vR4+QQZ8cLXzqy+LGk02phLk0DY102yAEybP144AnB8XjMSEIQIaBToUfphohUt++XdmWIYVPpg3JPycrBknGEKiYpryDf1DAYmmqXtdLByP5+bWtsuM0KTdv5nYtvHHBBVsWAgUVlxtrZyA4eG7uO1MuLENw/i8RL7Oln3xZ666crQzhNeaVpm48++ACUKvNDvtacbputgfLLP4tfSyyVK27Q8YkGYxAPvE9wYKA84VlQ8i+FvQzpsyCXCmParkHaeo0u5Z24u5fHBiOwVpCM4MwU/TLpAH7WZYnndzZu1tApIIg894rUjUTvkvILQ8pXfagbjVCt7WxFkh4iJVSmU7GqvuwlzAiRJrObaZB5WhhXUzCs2VjkW6LUykw2RnDGpSRWA5KSnOps8HsfoSrajXBCZiC94hz71SqDd8sj0N9M1Nen6Ulsy1haDWbdDJyGiJuADck9EgrBps0w2FkGBVKJkJpFI7E5YYwiMLnvEWHza5dsqM+MjvbuTe37i562aLezTxfqf6shWTEwRhltM+OxSo7SpdhwZtyZjINd/OzEg2lQJYNfhnbejm1ffhuTT7vxcD8dKrSh8NSR9Knqk7oZZXhEcRA7FeYEuanjgNjTScGkTBBVJ0VqIE9fxSNDt9m5Key7MZ6lD6kSJAaXlT3fG2m5Htc4WEu39JATgV5Vlh2oYCR+BRRefEVrS3B4tv8Av9mvUGUlFH5bOakw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5623.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(39850400004)(396003)(6486002)(66556008)(38350700001)(66476007)(16526019)(86362001)(956004)(2616005)(66946007)(4326008)(8676002)(36756003)(5660300002)(6506007)(38100700001)(52116002)(26005)(69590400012)(2906002)(8936002)(83380400001)(6512007)(316002)(478600001)(1076003)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?F8NWHqYAdzMRoVlRR0hlMU7qbHBFmleui1IxaX0/OqVyRvUMMxurq/O/xb+n?=
+ =?us-ascii?Q?7pYXKCij2NKjD10PisIXIxKp+czk5NUPwRXzYFIeUuxkmtrS9nOF9jeCWVI0?=
+ =?us-ascii?Q?6ehr7Kk4rqhnpGkxc2Vgy6Qh+aH9B/J3eXO++S1/Khv3hZ4nyJOPxmyoy0mM?=
+ =?us-ascii?Q?3DtoOMb2GWtSXMRBOhHyRaNh8UFalomEIkF4rKPAMDZu0bIFwX3LcaKr94ak?=
+ =?us-ascii?Q?ze8dwCmTPwbiia0cneKpTnDLeUw/WCpnzA1ySWoulAvY/mjKH9mDcEaKb5Xw?=
+ =?us-ascii?Q?aznIHfqXPCFqkERy2KkShqGb6+OSiT+ZkMgsLh5q+vEf0666m/WV08YsOMr8?=
+ =?us-ascii?Q?xPys5qAGmqIfoHJb1dM+Bq7uPnzJG4DvPZQ7N1iZPmyOePoBg/5mkCm/StoF?=
+ =?us-ascii?Q?V/BGRc3Bil4VhKER9RKz/Ce8X4eOUBE8VklcIQWjm8KusfdjasZxp9P9w97k?=
+ =?us-ascii?Q?x/SXzPjZ5q9BmlQuOYYa7rWPybHkl3c26lxbtG47y2t+lam0epaahfHnCdId?=
+ =?us-ascii?Q?Pob70/Cwoujo56G7acRkakx45k0he8CPrZsz8j4wAEkyYy9znnHjMkiycI+m?=
+ =?us-ascii?Q?yomsLJRgMLxXhDrCpeoPs63QddvRAvLRiXRXnuEvlqcAvodRzQq7XLvw3KOz?=
+ =?us-ascii?Q?/A2LTvXBlNUEy0ouz2GkUUc4CZNxOnkf9Rdzs5B2VzDLAaiXTF/2kHtpHAea?=
+ =?us-ascii?Q?igX3IuStHV6JIQ5VuosWc6cX3y8sghVpu2g1wvV7ZEE7Ok//96dNVVolV5KC?=
+ =?us-ascii?Q?qDYQMcY7wyVAvRGmQVeEHEBmQTULiKFAy1WdjDbV8fbVjTnc+PnQyJAVa3Bd?=
+ =?us-ascii?Q?v8K+AC1EA71jNTGKGIw6rqIqQtvA51gFq+YdLWhNu8HGkvWPbizW3jIQjESW?=
+ =?us-ascii?Q?rS7AabjEOIu52oumcMLROkR3PJ5bqBm6vnfiv2j50row8cARf95Kouqk29nq?=
+ =?us-ascii?Q?b/VWui/1cCCuyQDMfuqm3zkbN+9zMPbKYB4+mxlxUtwSfwVPiLLaN4AY9J9D?=
+ =?us-ascii?Q?bcS/e2rCkseWRqg0e8rKuVb7QjZDt+S3krYWQo9ml1MjBkUA8zE0ew3jSZM8?=
+ =?us-ascii?Q?q7OJQdJmRskPzL8/G62w62us9ZCW97vgvskuyrqqZtfStudFdNEu2UAZi5E3?=
+ =?us-ascii?Q?bxphWfYy5Nxmo1+EOtS3Lx/QsjpJnNQYACaKhuwxZHMalBFPrOmW6K3Azy0e?=
+ =?us-ascii?Q?cAGYSw2sWkSlfLlwt9JeraEJOGHbWq/67GG7pMJySnYanS0UP8AnESvzqMmO?=
+ =?us-ascii?Q?d4p9Fv78D25ZQOBGdjY0vDNZs6PR8Uu5njI1nffv3prm78DK3WZ8Z6rmMfr4?=
+ =?us-ascii?Q?x7k3zX1YM0Q+/RwTlyTjQHiF?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e73e417b-5481-4f46-94e1-08d8fa79a853
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5623.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2021 10:32:49.9119
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VAWQ2KFVkrIKZNSN+hVn/Lzc38YtHF5tCREBIbEMOBDtTXGX7DQh2ou45mf3/SIf6rV1sbOwLfYa3+nbXnaQsA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4982
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.03.2021 13:43, Javier González wrote:
->On 23.03.2021 13:31, Christoph Hellwig wrote:
->>On Tue, Mar 23, 2021 at 09:37:49AM +0100, Javier González wrote:
->>>Quick question. It seems like the current quirk simply disables
->>>write-zeroes. Would you be open for a quirk that aligns with MDTS for
->>>models that implemented it this way before TP4040?
->>
->>Aligning to MDTS is our current behavior, although all kernels up to
->>5.11 had a bug in the calculation.
->
->I see. Let me check internally and see what's going on with
->write-zeroes on this model.
+Enable 16/32 bits per word support for spi-imx slave mode.
+It only support 8 bits per word in slave mode before.
 
-We still need to confirm, but it seems like MDTS for write-zeroes is
-reported wrong in the FW that Dmitry is using. We can at least reproduce
-it.
+Signed-off-by: Clark Wang <xiaoning.wang@nxp.com>
+Reviewed-by: Haibo Chen <haibo.chen@nxp.com>
+---
+ drivers/spi/spi-imx.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Would it be a possibility to add quirk infrastructure to hardcode MDTS
-for FW versions prior TP4040?
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index 4fe767acaca7..24ba7ab1b05d 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -386,7 +386,12 @@ static void spi_imx_buf_tx_swap(struct spi_imx_data *spi_imx)
+ 
+ static void mx53_ecspi_rx_slave(struct spi_imx_data *spi_imx)
+ {
+-	u32 val = be32_to_cpu(readl(spi_imx->base + MXC_CSPIRXDATA));
++	u32 val = readl(spi_imx->base + MXC_CSPIRXDATA);
++
++	if (spi_imx->bits_per_word <= 8)
++		val = be32_to_cpu(val);
++	else if (spi_imx->bits_per_word <= 16)
++		val = (val << 16) | (val >> 16);
+ 
+ 	if (spi_imx->rx_buf) {
+ 		int n_bytes = spi_imx->slave_burst % sizeof(val);
+@@ -415,7 +420,11 @@ static void mx53_ecspi_tx_slave(struct spi_imx_data *spi_imx)
+ 	if (spi_imx->tx_buf) {
+ 		memcpy(((u8 *)&val) + sizeof(val) - n_bytes,
+ 		       spi_imx->tx_buf, n_bytes);
+-		val = cpu_to_be32(val);
++		if (spi_imx->bits_per_word <= 8)
++			val = cpu_to_be32(val);
++		else if (spi_imx->bits_per_word <= 16)
++			val = (val << 16) | (val >> 16);
++
+ 		spi_imx->tx_buf += n_bytes;
+ 	}
+ 
+-- 
+2.25.1
 
-Another possibility is to add quirks to the TP4040 support patches to
-enable this - it might also help reduce the list of models currently
-blacklisted for write-zeroes.
