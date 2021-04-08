@@ -2,110 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381DC358B0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA189358B0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232455AbhDHRMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:12:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231715AbhDHRMa (ORCPT
+        id S232525AbhDHRNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:13:41 -0400
+Received: from mail-oi1-f172.google.com ([209.85.167.172]:33647 "EHLO
+        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231480AbhDHRNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:12:30 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD98BC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 10:12:17 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so1768099pjv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 10:12:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NbF124KRasDzZQm0mjKapmMYmH1JJyipVNq4bCxuJZo=;
-        b=xyQOevybRhccvFEmSeWlIHeszjmibVH6JCYi/z24DTj6q+C/KOG7t6hK4XsyQ+utBI
-         17XOgIX5ycSJUn8MjsweS81ajtsgR4Xr5W18dueJPi4g1gGhDmFLfJ8tmUE0vq3Ty9qf
-         5UOTiVgEbVZiMeurt/x67xw2eTcw/HRcyWK5Ufa4TWzYRWx22vNIuUbzz+L3m17AF1ZV
-         VnFKs5cyLl8nYxZk7wVNTisXi5ZTFQZYKlra8KHrH6IDU+6oFxFkU6b+mlUJK4DeDJJ3
-         25KhsMUmWxHdQ7u/7gIXHkrVh2SU+MA4bmUGdYDNxZBesiThTURpBtnL6mX+8/n22qG7
-         4xpQ==
+        Thu, 8 Apr 2021 13:13:40 -0400
+Received: by mail-oi1-f172.google.com with SMTP id w70so2974869oie.0;
+        Thu, 08 Apr 2021 10:13:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NbF124KRasDzZQm0mjKapmMYmH1JJyipVNq4bCxuJZo=;
-        b=rMcLHxbfPg6XI/rayFAAScCFAA0NzooxJZ5S5oOruaNWJ+puxhv4Y+FLRMjcu+me55
-         gGvJemi9uZDmWtbDUxJH6SXFw43UBrfyGss82GNwQ4rByRVXLTFrXVV5ASAcsIRqZ2zJ
-         iHwZszLWt/2OA4GCFa/hNx+mtCO3iLoLWKUHnteoLFNqo8K1g7Ihiul9NCCoXOTbb16t
-         VXIU/i3wdjxQfRqBLvuqzm/7d07h3BuIve+K1SKef+s1YIulNLqRjEKbZyDAPC5/sWq3
-         y5+Kfi0Hb3IDNk315XzWYGzDErl861Yd8wtcSOBwaZRGsS20rz2LS2Pn2cmh+tJGTRvg
-         gQQA==
-X-Gm-Message-State: AOAM532c8MzbecT2DVE/O3eUaT/U4Ccc7S3ZUfulBfOusi0IZCiozRwL
-        ocajgTTXd+7NdExIdrdee6Xq
-X-Google-Smtp-Source: ABdhPJya7nSzcUaXFinDbTdfWS0l9ypjD89LH9KIQB6IAMzmSAES0j+15MK1y2AhdTPBU1Lo9xUPeA==
-X-Received: by 2002:a17:902:9f8f:b029:e9:944d:ea99 with SMTP id g15-20020a1709029f8fb02900e9944dea99mr3427565plq.45.1617901937299;
-        Thu, 08 Apr 2021 10:12:17 -0700 (PDT)
-Received: from localhost.localdomain ([103.77.37.191])
-        by smtp.gmail.com with ESMTPSA id 205sm52749pfc.201.2021.04.08.10.12.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 10:12:16 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     bjorn.andersson@linaro.org
-Cc:     ohad@wizery.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] remoteproc: qcom: pas: Add modem support for SDX55
-Date:   Thu,  8 Apr 2021 22:42:11 +0530
-Message-Id: <20210408171211.92141-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AFgF1kQL+q/ICXZmpkMf3biqXaU/I9rOmpQAkp2V9y8=;
+        b=c9O0zlIiW66gahrajgbqilSRk7W3ry+q7nCD4zNtidekWPeWvHWsEyS0SnpWOCSrnP
+         GNCsjO/UeDXre6bmNuBBhFw3yYuWc64ipzN8EikDDrRKcKI+UeZKppcf5fAOJVh3JiWh
+         vyn9Fg0c4T9m3T7m7Qf262sLZZ8OJRwwRX9iWYuYe848JAlQZZv6kPmL9PgwyprDPJUs
+         bQecpydonyFWIb1l9IPJhUSv8VFWAS9dh/1RJjs8aLPaKrEUgbq0cDp+PKwQh5zNC/FP
+         QNBK6uXOnAE2ImIDDnRYZ5czT/ZIs1avvYxXnCD1KbVraWO1daBzmEUVChPZBIJn+K82
+         CjRQ==
+X-Gm-Message-State: AOAM533LLv1PF+2EhYieo0uSgL2KJZ7W9Yv3AZwktNfOfAH1F4LId9/u
+        wdaPD8Xrdwp3nB1An0k1Bmpml/tChG9Yp9zXeHw=
+X-Google-Smtp-Source: ABdhPJwrsHJCAJIQUvh2BBOfjhYFxJumtJtJJwU+szEyLnTBHtExkqFR+4sgQyPJaEQJ8b0DT3CJC/ZDZVen5bCat48=
+X-Received: by 2002:aca:5fc3:: with SMTP id t186mr6717583oib.69.1617902008463;
+ Thu, 08 Apr 2021 10:13:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210401141537.21288-1-yuehaibing@huawei.com>
+In-Reply-To: <20210401141537.21288-1-yuehaibing@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 8 Apr 2021 19:13:17 +0200
+Message-ID: <CAJZ5v0j45q0hs28x1h-+AP1QHAu9Toa8dogmMGZRVgk-_-NMTg@mail.gmail.com>
+Subject: Re: [PATCH -next] freezer: Remove unused inline function try_to_freeze_nowarn()
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        zhe.he@windriver.com, Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add remoteproc support for Hexagon modem found on the Qualcomm SDX55
-platform.
+On Thu, Apr 1, 2021 at 7:58 PM YueHaibing <yuehaibing@huawei.com> wrote:
+>
+> There is no caller in tree, so can remove it.
+>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  include/linux/freezer.h | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/include/linux/freezer.h b/include/linux/freezer.h
+> index 27828145ca09..0621c5f86c39 100644
+> --- a/include/linux/freezer.h
+> +++ b/include/linux/freezer.h
+> @@ -279,7 +279,6 @@ static inline int freeze_kernel_threads(void) { return -ENOSYS; }
+>  static inline void thaw_processes(void) {}
+>  static inline void thaw_kernel_threads(void) {}
+>
+> -static inline bool try_to_freeze_nowarn(void) { return false; }
+>  static inline bool try_to_freeze(void) { return false; }
+>
+>  static inline void freezer_do_not_count(void) {}
+> --
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/remoteproc/qcom_q6v5_pas.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
-index e635454d6170..292141877260 100644
---- a/drivers/remoteproc/qcom_q6v5_pas.c
-+++ b/drivers/remoteproc/qcom_q6v5_pas.c
-@@ -785,6 +785,22 @@ static const struct adsp_data wcss_resource_init = {
- 	.ssctl_id = 0x12,
- };
- 
-+static const struct adsp_data sdx55_mpss_resource = {
-+	.crash_reason_smem = 421,
-+	.firmware_name = "modem.mdt",
-+	.pas_id = 4,
-+	.has_aggre2_clk = false,
-+	.auto_boot = true,
-+	.proxy_pd_names = (char*[]){
-+		"cx",
-+		"mss",
-+		NULL
-+	},
-+	.ssr_name = "mpss",
-+	.sysmon_name = "modem",
-+	.ssctl_id = 0x22,
-+};
-+
- static const struct of_device_id adsp_of_match[] = {
- 	{ .compatible = "qcom,msm8974-adsp-pil", .data = &adsp_resource_init},
- 	{ .compatible = "qcom,msm8996-adsp-pil", .data = &adsp_resource_init},
-@@ -797,6 +813,7 @@ static const struct of_device_id adsp_of_match[] = {
- 	{ .compatible = "qcom,sc7180-mpss-pas", .data = &mpss_resource_init},
- 	{ .compatible = "qcom,sdm845-adsp-pas", .data = &adsp_resource_init},
- 	{ .compatible = "qcom,sdm845-cdsp-pas", .data = &cdsp_resource_init},
-+	{ .compatible = "qcom,sdx55-mpss-pas", .data = &sdx55_mpss_resource},
- 	{ .compatible = "qcom,sm8150-adsp-pas", .data = &sm8150_adsp_resource},
- 	{ .compatible = "qcom,sm8150-cdsp-pas", .data = &sm8150_cdsp_resource},
- 	{ .compatible = "qcom,sm8150-mpss-pas", .data = &mpss_resource_init},
--- 
-2.25.1
-
+Applied as 5.13 material, thanks!
