@@ -2,130 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84606358B9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6663358B9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232524AbhDHRoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:44:25 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:41529 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231566AbhDHRoY (ORCPT
+        id S232606AbhDHRpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:45:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46607 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231716AbhDHRpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:44:24 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id EFC15C0003;
-        Thu,  8 Apr 2021 17:44:10 +0000 (UTC)
-Date:   Thu, 8 Apr 2021 19:44:10 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc:     Claudiu Beznea - M18063 <Claudiu.Beznea@microchip.com>,
-        Ludovic Desroches - M43218 <Ludovic.Desroches@microchip.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Eugen Hristev - M18282 <Eugen.Hristev@microchip.com>
-Subject: Re: [PATCH 22/24] ARM: at91: sama7: introduce sama7 SoC family
-Message-ID: <YG9A6gRAZTbUVb8+@piout.net>
-References: <20210331105908.23027-1-claudiu.beznea@microchip.com>
- <20210331105908.23027-23-claudiu.beznea@microchip.com>
- <YGSc1L8yW0KniOsx@piout.net>
- <a908274a-c4d2-faab-54a4-31fd0ffeab7e@microchip.com>
- <21bd4417-a754-8ee6-370e-4fb4e0f1fef9@microchip.com>
- <51dbcf0b-4ee6-10c9-9598-a451cca16905@microchip.com>
+        Thu, 8 Apr 2021 13:45:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617903930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qaldQ34QiZ3fYC/5jSRzjV1lYgZBFeP+Ygyt9qxwRfM=;
+        b=B87ZkRF1KRK/8p6Q5Bau31AjNPkCLRlKXpofpt1WN797AIDG8pH59tiVi3EtOE9a3GmsGa
+        C35du51TFbtIBdFBxpoREWsg6Hhj8S8mqBW22G6ojqLBIoUhRpu6Jsy+n++1oFJKQlDUhr
+        av46wP7YYnqIZnKVohCtIiL/V2vBr58=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-79-wEBkN1aUOv-7UK9JT3sgOg-1; Thu, 08 Apr 2021 13:45:26 -0400
+X-MC-Unique: wEBkN1aUOv-7UK9JT3sgOg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 013DA368C3;
+        Thu,  8 Apr 2021 17:45:25 +0000 (UTC)
+Received: from krava (unknown [10.40.192.110])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4B55618B4B;
+        Thu,  8 Apr 2021 17:45:23 +0000 (UTC)
+Date:   Thu, 8 Apr 2021 19:45:22 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Song Liu <song@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "jolsa@kernel.org" <jolsa@kernel.org>
+Subject: Re: [PATCH v2 3/3] perf-stat: introduce config
+ stat.bpf-counter-events
+Message-ID: <YG9BMss16qFOjhos@krava>
+References: <20210407003601.619158-1-song@kernel.org>
+ <20210407003601.619158-4-song@kernel.org>
+ <YG7tU/mVxQZLNCYL@krava>
+ <FA667178-09F3-48C5-891C-9E44744276C0@fb.com>
+ <YG87VLdSrhG0xSDj@krava>
+ <0106D99A-5CBB-4CC4-B6F5-1B795E9B8274@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <51dbcf0b-4ee6-10c9-9598-a451cca16905@microchip.com>
+In-Reply-To: <0106D99A-5CBB-4CC4-B6F5-1B795E9B8274@fb.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/04/2021 17:24:39+0200, Nicolas Ferre wrote:
-> On 01/04/2021 at 12:24, Claudiu Beznea - M18063 wrote:
-> > On 01.04.2021 12:38, Claudiu Beznea - M18063 wrote:
-> > > On 31.03.2021 19:01, Alexandre Belloni wrote:
-> > > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> > > > 
-> > > > On 31/03/2021 13:59:06+0300, Claudiu Beznea wrote:
-> > > > > From: Eugen Hristev <eugen.hristev@microchip.com>
-> > > > > 
-> > > > > Introduce new family of SoCs, sama7, and first SoC, sama7g5.
-> > > > > 
-> > > > > Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> > > > > Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
-> > > > > ---
-> > > > >   arch/arm/mach-at91/Makefile |  1 +
-> > > > >   arch/arm/mach-at91/sama7.c  | 48 +++++++++++++++++++++++++++++++++++++
-> > > > >   2 files changed, 49 insertions(+)
-> > > > >   create mode 100644 arch/arm/mach-at91/sama7.c
-> > > > > 
-> > > > > diff --git a/arch/arm/mach-at91/Makefile b/arch/arm/mach-at91/Makefile
-> > > > > index f565490f1b70..6cc6624cddac 100644
-> > > > > --- a/arch/arm/mach-at91/Makefile
-> > > > > +++ b/arch/arm/mach-at91/Makefile
-> > > > > @@ -9,6 +9,7 @@ obj-$(CONFIG_SOC_AT91SAM9)    += at91sam9.o
-> > > > >   obj-$(CONFIG_SOC_SAM9X60)    += sam9x60.o
-> > > > >   obj-$(CONFIG_SOC_SAMA5)              += sama5.o
-> > > > >   obj-$(CONFIG_SOC_SAMV7)              += samv7.o
-> > > > > +obj-$(CONFIG_SOC_SAMA7)              += sama7.o
-> > > > > 
-> > > > >   # Power Management
-> > > > >   obj-$(CONFIG_ATMEL_PM)               += pm.o pm_suspend.o
-> > > > > diff --git a/arch/arm/mach-at91/sama7.c b/arch/arm/mach-at91/sama7.c
-> > > > > new file mode 100644
-> > > > > index 000000000000..e04cadb569ad
-> > > > > --- /dev/null
-> > > > > +++ b/arch/arm/mach-at91/sama7.c
-> > > > > @@ -0,0 +1,48 @@
-> > > > > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > > > > +/*
-> > > > > + * Setup code for SAMA7
-> > > > > + *
-> > > > > + * Copyright (C) 2021 Microchip Technology, Inc. and its subsidiaries
-> > > > > + *
-> > > > > + */
-> > > > > +
-> > > > > +#include <linux/of.h>
-> > > > > +#include <linux/of_platform.h>
-> > > > > +
-> > > > > +#include <asm/mach/arch.h>
-> > > > > +#include <asm/system_misc.h>
-> > > > > +
-> > > > > +#include "generic.h"
-> > > > > +
-> > > > > +static void __init sama7_common_init(void)
-> > > > > +{
-> > > > > +     of_platform_default_populate(NULL, NULL, NULL);
-> > > > 
-> > > > Is this necessary? This is left as a workaround for the old SoCs using
-> > > > pinctrl-at91. I guess this will be using pio4 so this has to be removed.
-> > > 
-> > > OK, I'll have a look. BTW, SAMA5D2 which is also using PIO4 calls
-> > > of_platform_default_populate(NULL, NULL, NULL);
+On Thu, Apr 08, 2021 at 05:28:10PM +0000, Song Liu wrote:
+> 
+> 
+> > On Apr 8, 2021, at 10:20 AM, Jiri Olsa <jolsa@redhat.com> wrote:
 > > 
-> > Without this call the PM code (arch/arm/mach-at/pm.c) is not able to locate
-> > proper DT nodes:
+> > On Thu, Apr 08, 2021 at 04:39:33PM +0000, Song Liu wrote:
+> >> 
+> >> 
+> >>> On Apr 8, 2021, at 4:47 AM, Jiri Olsa <jolsa@redhat.com> wrote:
+> >>> 
+> >>> On Tue, Apr 06, 2021 at 05:36:01PM -0700, Song Liu wrote:
+> >>>> Currently, to use BPF to aggregate perf event counters, the user uses
+> >>>> --bpf-counters option. Enable "use bpf by default" events with a config
+> >>>> option, stat.bpf-counter-events. This is limited to hardware events in
+> >>>> evsel__hw_names.
+> >>>> 
+> >>>> This also enables mixed BPF event and regular event in the same sesssion.
+> >>>> For example:
+> >>>> 
+> >>>>  perf config stat.bpf-counter-events=instructions
+> >>>>  perf stat -e instructions,cs
+> >>>> 
+> >>> 
+> >>> so if we are mixing events now, how about uing modifier for bpf counters,
+> >>> instead of configuring .perfconfig list we could use:
+> >>> 
+> >>> perf stat -e instructions:b,cs
+> >>> 
+> >>> thoughts?
+> >>> 
+> >>> the change below adds 'b' modifier and sets 'evsel::bpf_counter',
+> >>> feel free to use it
+> >> 
+> >> I think we will need both 'b' modifier and .perfconfig configuration. 
+> >> For systems with BPF-managed perf events running in the background, 
 > > 
-> > [    0.194615] at91_pm_backup_init: failed to find securam device!
-> > [    0.201393] at91_pm_sram_init: failed to find sram device!
-> > [    0.207449] AT91: PM not supported, due to no SRAM allocated
+> > hum, I'm not sure I understand what that means.. you mean there
+> > are tools that run perf stat so you don't want to change them?
 > 
-> Okay, so we can't afford removing these calls to sama5d2 and upcoming
-> sama7g5 right now.
+> We have tools that do perf_event_open(). I will change them to use 
+> BPF managed perf events for "cycles" and "instructions". Since these 
+> tools are running 24/7, perf-stat on the system should use BPF managed
+> "cycles" and "instructions" by default. 
+
+well if you are already changing the tools why not change them to add
+modifier.. but I don't mind adding that .perfconfig stuff if you need
+that
+
 > 
-> Is it a common pattern to have to reach DT content in the early stages that
-> explicit call to of_platform_default_populate() tries to solve?
+> > 
+> >> .perfconfig makes sure perf-stat sessions will share PMCs with these 
+> >> background monitoring tools. 'b' modifier, on the other hand, is useful
+> >> when the user knows there is opportunity to share the PMCs. 
+> >> 
+> >> Does this make sense? 
+> > 
+> > if there's reason for that then sure.. but let's not limit that just
+> > on HARDWARE events only.. there are RAW events with the same demand
+> > for this feature.. why don't we let user define any event for this?
 > 
+> I haven't found a good way to config RAW events. I guess RAW events 
+> could use 'b' modifier? 
 
-That's fine, I didn't remember about that one, we can keep the call.
+any event uing the pmu notation like cpu/instructions/
 
+we can allow any event to be BPF-managed, right? IIUC we don't care,
+the code will work with any event
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+jirka
+
