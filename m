@@ -2,134 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8348E358D41
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB62358D47
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 21:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233029AbhDHTHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 15:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232804AbhDHTHM (ORCPT
+        id S233017AbhDHTKe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 8 Apr 2021 15:10:34 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:50728 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232969AbhDHTKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 15:07:12 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F7E2C061760;
-        Thu,  8 Apr 2021 12:07:00 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id x15so3270195wrq.3;
-        Thu, 08 Apr 2021 12:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Exzdpqp3JyGRVNvIfqFzNBMPcWfx1NoduJ3Nxq4TiKA=;
-        b=B/K3c2tQI7mxtYTE4VufIi2709olz3kY8axk8bJVSHRylEznUptfvtxBbOKsI8u9sa
-         0RqfyEUV99O6qoZ8KqF/nXLjRJXnIametrn5c8+qA99hiaLT8Ukj+W4VVGtAS7s0/Rdh
-         iEZx8l2pD5AqQWbBA+3skkmPYPLOZH8oWD0PucofNk7RIfp6TGRA6rF4a0ETjSZzcFgg
-         TqNmQpkEsWvDUiMopAyHCHsobG/DYmHgd8hCg39lzO0R71KxtSALLjevESgp6FwVyPa8
-         W2zgTo1lCkSSYTzoOreAHCHXWQFFdHkjEXbEgENUm67KgAFXlLKmsajgTAl++0CZPUD9
-         s37Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Exzdpqp3JyGRVNvIfqFzNBMPcWfx1NoduJ3Nxq4TiKA=;
-        b=gAOY5xXn+xhOpeuK8CL+SSxSwMZLttblw7GJfPtzgq8Up0sUL10jx7+CG9jyIO//Cj
-         L9wPSvdefyAJw0XynjELdIrsQ9TQZVcVhvg40B4d9Zm4ZHu7iabXR/lz/HNjvGSW7Jak
-         +PV5nfyhpjZUtqtlhex7nnLn1xM0WqgWk0Y/TkTCUgYZWFrJC+f/GuPHtlRqjWEXmx4H
-         5ZINrIC9kHBzhlt5iwPePRO8aH0v8/sYdCwzgYcMDpzC9BZ9Pagv2nnMSzWyd0rhlwOS
-         ci5u3Ec5FNf1zXYdtsVpxvLmn/+e3mLYU0Je+9j7/H/PF2Zh2VLHAbjvLccWQnSSYL3+
-         7FTw==
-X-Gm-Message-State: AOAM530kQHEsGv4wID7P3Cdci+X5hnR+yCUYqCr9T4pd1BQG0ZVVrG3A
-        51B+4zcfE3sMnyj5foSQF1SSdRsa2vNV0g==
-X-Google-Smtp-Source: ABdhPJyiZDI4fHPPI7J6KQ6/9rzw3IvPYZnqX1CEWjf75QBxuJPoW4x1744ktBMFBuj+EiHLpZGevw==
-X-Received: by 2002:a5d:6852:: with SMTP id o18mr13842852wrw.173.1617908818720;
-        Thu, 08 Apr 2021 12:06:58 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f38:4600:6dfe:cdb3:c4f9:2744? (p200300ea8f3846006dfecdb3c4f92744.dip0.t-ipconnect.de. [2003:ea:8f38:4600:6dfe:cdb3:c4f9:2744])
-        by smtp.googlemail.com with ESMTPSA id c18sm300097wrp.33.2021.04.08.12.06.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 12:06:58 -0700 (PDT)
-To:     Sven Van Asbroeck <thesven73@gmail.com>
-Cc:     George McCollister <george.mccollister@gmail.com>,
-        Bryan Whitehead <bryan.whitehead@microchip.com>,
-        David S Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210408172353.21143-1-TheSven73@gmail.com>
- <CAFSKS=O4Yp6gknSyo1TtTO3KJ+FwC6wOAfNkbBaNtL0RLGGsxw@mail.gmail.com>
- <CAGngYiVg+XXScqTyUQP-H=dvLq84y31uATy4DDzzBvF1OWxm5g@mail.gmail.com>
- <CAFSKS=P3Skh4ddB0K_wUxVtQ5K9RtGgSYo1U070TP9TYrBerDQ@mail.gmail.com>
- <820ed30b-90f4-2cba-7197-6c6136d2e04e@gmail.com>
- <CAGngYiU=v16Z3NHC0FyxcZqEJejKz5wn2hjLubQZKJKHg_qYhw@mail.gmail.com>
- <CAGngYiXH8WsK347ekOZau+oLtKa4RFF8RCc5dAoSsKFvZAFbTw@mail.gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH net v1] Revert "lan743x: trim all 4 bytes of the FCS; not
- just 2"
-Message-ID: <da81fa46-fbbd-7694-6212-d7eb2c03ac94@gmail.com>
-Date:   Thu, 8 Apr 2021 21:06:53 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 8 Apr 2021 15:10:33 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id 4F58F1F46053
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Shreeya Patel <shreeya.patel@collabora.com>
+Cc:     tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+        chao@kernel.org, ebiggers@google.com, drosen@google.com,
+        ebiggers@kernel.org, yuchao0@huawei.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-fsdevel@vger.kernel.org, kernel@collabora.com,
+        andre.almeida@collabora.com
+Subject: Re: [PATCH v7 4/4] fs: unicode: Add utf8 module and a unicode layer
+Organization: Collabora
+References: <20210407144845.53266-1-shreeya.patel@collabora.com>
+        <20210407144845.53266-5-shreeya.patel@collabora.com>
+Date:   Thu, 08 Apr 2021 15:10:16 -0400
+In-Reply-To: <20210407144845.53266-5-shreeya.patel@collabora.com> (Shreeya
+        Patel's message of "Wed, 7 Apr 2021 20:18:45 +0530")
+Message-ID: <875z0wvbhj.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <CAGngYiXH8WsK347ekOZau+oLtKa4RFF8RCc5dAoSsKFvZAFbTw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.04.2021 20:35, Sven Van Asbroeck wrote:
-> Hi George,
-> 
-> On Thu, Apr 8, 2021 at 2:26 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
->>
->> George, I will send a patch for you to try shortly. Except if you're
->> already ahead :)
-> 
-> Would this work for you? It does for me.
-> 
-> diff --git a/drivers/net/ethernet/microchip/lan743x_main.c
-> b/drivers/net/ethernet/microchip/lan743x_main.c
-> index dbdfabff3b00..7b6794aa8ea9 100644
-> --- a/drivers/net/ethernet/microchip/lan743x_main.c
-> +++ b/drivers/net/ethernet/microchip/lan743x_main.c
-> @@ -885,8 +885,8 @@ static int lan743x_mac_set_mtu(struct
-> lan743x_adapter *adapter, int new_mtu)
->         }
-> 
->         mac_rx &= ~(MAC_RX_MAX_SIZE_MASK_);
-> -       mac_rx |= (((new_mtu + ETH_HLEN + 4) << MAC_RX_MAX_SIZE_SHIFT_) &
-> -                 MAC_RX_MAX_SIZE_MASK_);
-> +       mac_rx |= (((new_mtu + ETH_HLEN + ETH_FCS_LEN)
-> +                 << MAC_RX_MAX_SIZE_SHIFT_) & MAC_RX_MAX_SIZE_MASK_);
->         lan743x_csr_write(adapter, MAC_RX, mac_rx);
-> 
->         if (enabled) {
-> @@ -1944,7 +1944,7 @@ static int lan743x_rx_init_ring_element(struct
-> lan743x_rx *rx, int index)
->         struct sk_buff *skb;
->         dma_addr_t dma_ptr;
-> 
-> -       buffer_length = netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING;
-> +       buffer_length = netdev->mtu + ETH_HLEN + ETH_FCS_LEN + RX_HEAD_PADDING;
-> 
+Shreeya Patel <shreeya.patel@collabora.com> writes:
 
-A completely unrelated question:
-How about VLAN packets with a 802.1Q tag? Should VLAN_ETH_HLEN be used?
+> utf8data.h_shipped has a large database table which is an auto-generated
+> decodification trie for the unicode normalization functions.
+> It is not necessary to load this large table in the kernel if no
+> filesystem is using it, hence make UTF-8 encoding loadable by converting
+> it into a module.
+>
+> Modify the file called unicode-core which will act as a layer for
+> unicode subsystem. It will load the UTF-8 module and access it's functions
+> whenever any filesystem that needs unicode is mounted.
+> Currently, only UTF-8 encoding is supported but if any other encodings
+> are supported in future then the layer file would be responsible for
+> loading the desired encoding module.
+>
+> Also, indirect calls using function pointers are slow, use static calls to
+> avoid overhead caused in case of repeated indirect calls. Static calls
+> improves the performance by directly calling the functions as opposed to
+> indirect calls.
+>
+> Signed-off-by: Shreeya Patel <shreeya.patel@collabora.com>
+> ---
+> Changes in v7
+>   - Update the help text in Kconfig
+>   - Handle the unicode_load_static_call function failure by decrementing
+>     the reference.
+>   - Correct the code for handling built-in utf8 option as well.
+>   - Correct the synchronization for accessing utf8mod.
+>   - Make changes to unicode_unload() for handling the situation where
+>     utf8mod != NULL and um == NULL.
+>
+> Changes in v6
+>   - Add spinlock to protect utf8mod and avoid NULL pointer
+>     dereference.
+>   - Change the static call function names for being consistent with
+>     kernel coding style.
+>   - Merge the unicode_load_module function with unicode_load as it is
+>     not really needed to have a separate function.
+>   - Use try_then_module_get instead of module_get to avoid loading the
+>     module even when it is already loaded.
+>   - Improve the commit message.
+>
+> Changes in v5
+>   - Rename global variables and default static call functions for better
+>     understanding
+>   - Make only config UNICODE_UTF8 visible and config UNICODE to be always
+>     enabled provided UNICODE_UTF8 is enabled.  
+>   - Improve the documentation for Kconfig
+>   - Improve the commit message.
+>  
+> Changes in v4
+>   - Return error from the static calls instead of doing nothing and
+>     succeeding even without loading the module.
+>   - Remove the complete usage of utf8_ops and use static calls at all
+>     places.
+>   - Restore the static calls to default values when module is unloaded.
+>   - Decrement the reference of module after calling the unload function.
+>   - Remove spinlock as there will be no race conditions after removing
+>     utf8_ops.
+>
+> Changes in v3
+>   - Add a patch which checks if utf8 is loaded before calling utf8_unload()
+>     in ext4 and f2fs filesystems
+>   - Return error if strscpy() returns value < 0
+>   - Correct the conditions to prevent NULL pointer dereference while
+>     accessing functions via utf8_ops variable.
+>   - Add spinlock to avoid race conditions.
+>   - Use static_call() for preventing speculative execution attacks.
+>
+> Changes in v2
+>   - Remove the duplicate file from the last patch.
+>   - Make the wrapper functions inline.
+>   - Remove msleep and use try_module_get() and module_put()
+>     for ensuring that module is loaded correctly and also
+>     doesn't get unloaded while in use.
+>   - Resolve the warning reported by kernel test robot.
+>   - Resolve all the checkpatch.pl warnings.
+>
+>  fs/unicode/Kconfig        |  26 +++-
+>  fs/unicode/Makefile       |   5 +-
+>  fs/unicode/unicode-core.c | 297 ++++++++++++++------------------------
+>  fs/unicode/unicode-utf8.c | 264 +++++++++++++++++++++++++++++++++
+>  include/linux/unicode.h   |  96 ++++++++++--
+>  5 files changed, 483 insertions(+), 205 deletions(-)
+>  create mode 100644 fs/unicode/unicode-utf8.c
+>
+> diff --git a/fs/unicode/Kconfig b/fs/unicode/Kconfig
+> index 2c27b9a5cd6c..0c69800a2a37 100644
+> --- a/fs/unicode/Kconfig
+> +++ b/fs/unicode/Kconfig
+> @@ -2,13 +2,31 @@
+>  #
+>  # UTF-8 normalization
+>  #
+> +# CONFIG_UNICODE will be automatically enabled if CONFIG_UNICODE_UTF8
+> +# is enabled. This config option adds the unicode subsystem layer which loads
+> +# the UTF-8 module whenever any filesystem needs it.
+>  config UNICODE
+> -	bool "UTF-8 normalization and casefolding support"
+> +	bool
+> +
+> +config UNICODE_UTF8
+> +	tristate "UTF-8 module"
 
+"UTF-8 module" is the text that will appear in menuconfig and other
+configuration utilities.  This string not very helpful to describe what
+this code is about or why it is different from NLS_utf8.  People come to
+this option looking for the case-insensitive feature in ext4, so I'd
+prefer to keep the mention to 'casefolding'. or even improve the
+original a bit to say:
 
->         descriptor = &rx->ring_cpu_ptr[index];
->         buffer_info = &rx->buffer_info[index];
-> @@ -2040,7 +2040,7 @@ lan743x_rx_trim_skb(struct sk_buff *skb, int frame_length)
->                 dev_kfree_skb_irq(skb);
->                 return NULL;
->         }
-> -       frame_length = max_t(int, 0, frame_length - RX_HEAD_PADDING - 2);
-> +       frame_length = max_t(int, 0, frame_length - ETH_FCS_LEN);
->         if (skb->len > frame_length) {
->                 skb->tail -= skb->len - frame_length;
->                 skb->len = frame_length;
-> 
+tristate: "UTF-8 support for native Case-Insensitive filesystems"
 
+Other than these and what Eric mentioned, the code looks good to me.  I
+gave this series a try and it seems to work fine.
+
+It does raise a new warning, though
+
+/home/krisman/src/linux/fs/unicode/unicode-core.c: In function ‘unicode_load’:
+/home/krisman/src/linux/include/linux/kmod.h:28:8: warning: the omitted middle operand in ‘?:’ will always be ‘true’, suggest explicit middle operand [-Wparentheses]
+   28 |  ((x) ?: (__request_module(true, mod), (x)))
+      |        ^
+/home/krisman/src/linux/fs/unicode/unicode-core.c:123:7: note: in expansion of macro ‘try_then_request_module’
+  123 |  if (!try_then_request_module(utf8mod_get(), "utf8")) {
+
+But in this specific case, i think gcc is just being silly. What would
+be the right way to avoid it?
+
+-- 
+Gabriel Krisman Bertazi
