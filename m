@@ -2,135 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B906E357DE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B264357DE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 10:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbhDHIPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 04:15:03 -0400
-Received: from mga11.intel.com ([192.55.52.93]:58267 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhDHIPD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 04:15:03 -0400
-IronPort-SDR: F2Aw8UckAUdvEIjlLV9a9ptijGXVFmrrIl9QaYO1S8mRdLu+jsk6voffgUJmANZd8qj+U4SXzR
- WTarAffj8R0w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="190282272"
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="190282272"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 01:14:51 -0700
-IronPort-SDR: u17QK3dbYDdv3YD21AwbvsHt3moRZAX13IaPNQsH177xWjg8kKQ/3GzoduKaGyAfWBNKdS12K0
- HN7gy1CSOiBQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
-   d="scan'208";a="519762410"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 08 Apr 2021 01:14:47 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 08 Apr 2021 11:14:47 +0300
-Date:   Thu, 8 Apr 2021 11:14:47 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Kyle Tso <kyletso@google.com>
-Subject: Re: [PATCH v2 5/6] usb: typec: tcpm: Allow slow charging loops to
- comply to pSnkStby
-Message-ID: <YG67d/YOuoBwK+bF@kuha.fi.intel.com>
-References: <20210407200723.1914388-1-badhri@google.com>
- <20210407200723.1914388-5-badhri@google.com>
+        id S230024AbhDHIPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 04:15:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40094 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229623AbhDHIPf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 04:15:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617869724;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ECoTbH7o9LRUh51pR4p9sKZq3aoS5gstK1YCFgpfQSc=;
+        b=fwezxu74Mk5h7YQpEtAe6wF053DmMIjuWY9a94+HtfkCJMEoKUygrkeOAUUN89GV+hepcV
+        8T3owIiqxCS+MGv4Zqi0JX/isdxYXaP9p3F86hPPE7DhyNgVcEPQA+A0Er3PH0E5HY2mCE
+        eXJS18nZL5qUetN9cQY6V5Xn+JVfeFE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-569-r6TW6rfhMb-g20OZRi1JLA-1; Thu, 08 Apr 2021 04:15:19 -0400
+X-MC-Unique: r6TW6rfhMb-g20OZRi1JLA-1
+Received: by mail-ed1-f70.google.com with SMTP id w8so654915edx.0
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 01:15:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ECoTbH7o9LRUh51pR4p9sKZq3aoS5gstK1YCFgpfQSc=;
+        b=C8iyT6DwS0V+yY9FNAZpk5rwSY0A4OgQ73GIdaASOI47PlgOdJpEjtNQF6vtCi3hBY
+         K5ksqZXWfs3yukfrGN2jcJQaXq21k+lLuONykymjFWlN+7ZRbAXcnjQbqiT4m3DTl8rz
+         CSgPq4l/HvVoxbn745af4PMBzb7Jn7PedMbk/uEttFnTpObfz/zz8aswiFCGL4/yQtNG
+         6bmTMoIfdwwpzdaqldqQYfqWD/FJlmqfI5bYSUaXO/I49wvIvh4ZCqCO81KnuS2x1k6X
+         JRn/h23DiYLFDin4jx9H10d+tuNmTUGFDJUtD4sjvYP/t5/DC1+nB1Gf4vyUdCYhBoA/
+         0A0g==
+X-Gm-Message-State: AOAM531OkT7CZABj5sQg/E+TUIFUkq9gdAWBLc0T+lluakXl4Mh7V8EA
+        OU7hHdnhPutkmPj7noTQ9hgIYhPAeZviHkxZZTWh8xqDWVEX77mkpej+uwagvBpZZRbgSsrJISu
+        cqI4G+JnCHyTBZ5xuzyY6v1qj
+X-Received: by 2002:a17:906:3952:: with SMTP id g18mr8795302eje.104.1617869718243;
+        Thu, 08 Apr 2021 01:15:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxhyXYMZinDvRVyw5WxA8BlhYx5A8sIWRaAJtUqZGlQ+jt2l1v6VE6WZQNkXJPDdHi4P725KQ==
+X-Received: by 2002:a17:906:3952:: with SMTP id g18mr8795285eje.104.1617869718100;
+        Thu, 08 Apr 2021 01:15:18 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id mj3sm5262774ejb.3.2021.04.08.01.15.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 01:15:17 -0700 (PDT)
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        vkuznets@redhat.com, dwmw@amazon.co.uk
+References: <20210330165958.3094759-1-pbonzini@redhat.com>
+ <20210330165958.3094759-2-pbonzini@redhat.com>
+ <20210407174021.GA30046@fuller.cnet>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 1/2] KVM: x86: reduce pvclock_gtod_sync_lock critical
+ sections
+Message-ID: <51cae826-8973-5113-7e12-8163eab36cb7@redhat.com>
+Date:   Thu, 8 Apr 2021 10:15:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407200723.1914388-5-badhri@google.com>
+In-Reply-To: <20210407174021.GA30046@fuller.cnet>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:07:22PM -0700, Badhri Jagan Sridharan wrote:
-> When a PD charger advertising Rp-3.0 is connected to a sink port, the
-> sink port current limit would 3A, during SNK_DISCOVERY, till power
-> negotiation starts. Once the negotiation starts the power limit needs
-> to drop down to pSnkStby(500mA @ 5V) and to negotiated current limit
-> once the explicit contract is in place. Not all charging loops can ramp
-> up to 3A and drop down to 500mA within tSnkStdby which is 15ms. The port
-> partner might hard reset if tSnkStdby is not met.
-> 
-> To solve this problem, this patch introduces slow-charger-loop which
-> when set makes the port request PD_P_SNK_STDBY_MW upon entering
-> SNK_DISCOVERY(instead of 3A or the 1.5A during SNK_DISCOVERY) and the
-> actual currrent limit after RX of PD_CTRL_PSRDY for PD link or during
-> SNK_READY for non-pd link.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 770b2edd9a04..b5bed6866a2b 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -459,6 +459,12 @@ struct tcpm_port {
->  	/* Auto vbus discharge status */
->  	bool auto_vbus_discharge_enabled;
->  
-> +	/*
-> +	 * When set, port requests PD_P_SNK_STDBY_MW upon entering SNK_DISCOVERY and
-> +	 * the actual currrent limit after RX of PD_CTRL_PSRDY for PD link,
-> +	 * SNK_READY for non-pd link.
-> +	 */
-> +	bool slow_charger_loop;
->  #ifdef CONFIG_DEBUG_FS
->  	struct dentry *dentry;
->  	struct mutex logbuffer_lock;	/* log buffer access lock */
-> @@ -4047,9 +4053,12 @@ static void run_state_machine(struct tcpm_port *port)
->  		break;
->  	case SNK_DISCOVERY:
->  		if (port->vbus_present) {
-> -			tcpm_set_current_limit(port,
-> -					       tcpm_get_current_limit(port),
-> -					       5000);
-> +			u32 current_lim = (!port->slow_charger_loop ||
-> +					   (tcpm_get_current_limit(port) <=
-> +					    PD_P_SNK_STDBY_MW / 5)) ?
-> +				tcpm_get_current_limit(port) :
-> +				PD_P_SNK_STDBY_MW / 5;
+On 07/04/21 19:40, Marcelo Tosatti wrote:
+>> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+>> index fe806e894212..0a83eff40b43 100644
+>> --- a/arch/x86/kvm/x86.c
+>> +++ b/arch/x86/kvm/x86.c
+>> @@ -2562,10 +2562,12 @@ static void kvm_gen_update_masterclock(struct kvm *kvm)
+>>   
+>>   	kvm_hv_invalidate_tsc_page(kvm);
+>>   
+>> -	spin_lock(&ka->pvclock_gtod_sync_lock);
+>>   	kvm_make_mclock_inprogress_request(kvm);
+>> +
+> Might be good to serialize against two kvm_gen_update_masterclock
+> callers? Otherwise one caller could clear KVM_REQ_MCLOCK_INPROGRESS,
+> while the other is still at pvclock_update_vm_gtod_copy().
 
-Here the use of the ternary operator is not appropriate. Please try to
-clean that up somehow. Maybe something like this would be better?
+Makes sense, but this stuff has always seemed unnecessarily complicated 
+to me.
 
-                        u32 current_lim = tcpm_get_current_limit(port);
+KVM_REQ_MCLOCK_INPROGRESS is only needed to kick running vCPUs out of 
+the execution loop; clearing it in kvm_gen_update_masterclock is 
+unnecessary, because KVM_REQ_CLOCK_UPDATE takes pvclock_gtod_sync_lock 
+too and thus will already wait for pvclock_update_vm_gtod_copy to end.
 
-			if (port->slow_charger_loop || (current_lim < PD_P_SNK_STDBY_MW / 5))
-				current_lim = PD_P_SNK_STDBY_MW / 5;
+I think it's possible to use a seqcount in KVM_REQ_CLOCK_UPDATE instead 
+of KVM_REQ_MCLOCK_INPROGRESS.  Both cause the vCPUs to spin. I'll take a 
+look.
 
-> +			tcpm_set_current_limit(port, current_lim, 5000);
->  			tcpm_set_charge(port, true);
->  			tcpm_set_state(port, SNK_WAIT_CAPABILITIES, 0);
->  			break;
-> @@ -4161,6 +4170,8 @@ static void run_state_machine(struct tcpm_port *port)
->  			port->pwr_opmode = TYPEC_PWR_MODE_PD;
->  		}
->  
-> +		if (!port->pd_capable && port->slow_charger_loop)
-> +			tcpm_set_current_limit(port, tcpm_get_current_limit(port), 5000);
->  		tcpm_swap_complete(port, 0);
->  		tcpm_typec_connect(port);
->  		mod_enable_frs_delayed_work(port, 0);
-> @@ -5763,6 +5774,7 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
->  	port->typec_caps.type = ret;
->  	port->port_type = port->typec_caps.type;
->  
-> +	port->slow_charger_loop = fwnode_property_read_bool(fwnode, "slow-charger-loop");
->  	if (port->port_type == TYPEC_PORT_SNK)
->  		goto sink;
->  
-> -- 
-> 2.31.1.295.g9ea45b61b8-goog
+Paolo
 
-thanks,
-
--- 
-heikki
