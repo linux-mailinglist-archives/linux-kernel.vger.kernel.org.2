@@ -2,126 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E70FE358B91
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D184358B92
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 19:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232537AbhDHRli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 13:41:38 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:38693 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbhDHRld (ORCPT
+        id S232578AbhDHRlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 13:41:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232202AbhDHRlv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 13:41:33 -0400
-Received: by mail-oi1-f181.google.com with SMTP id 25so1533671oiy.5;
-        Thu, 08 Apr 2021 10:41:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MxPv9rGDLS4kNaUwF1zjTD50xd/6Z8XGBbW4dmhPKD8=;
-        b=A2lp3oM0ItWq0xqfVnnJ3qVaiuOO3KsJ94X+E1AqzUrxBH2KeRrfGIxLILWRiuXIJv
-         ZjNkaAtXAnZ31OcKco2QcSOMQ57i87H0SlKSeVPyMRKdvkGfyQ9Av/vc57KHDHfIUvaZ
-         sKh0tG7XXhSdtAe5CEl3fj/jkgyOTz5XaX1QuOaWljBtXt/TDCH8gSDW6zVkiNOHY52a
-         cvW/Jg4xTcREQcda3OuZlTzOekZTMk3n7LLJnVEzIlJNSRE1dAdMYPn/w4syyK3DrtZ/
-         t+M218Ihp4d6s/pnuU/UuXJLtUhsK2dpD3Smv65BYbTmSXTUk4Pf6p+SW6CtZcmqkML+
-         qU6g==
-X-Gm-Message-State: AOAM5313SyItVaHcVZmvPqqnJoNik09lQ95dqpaVLoTurNQCm0Drw/Pg
-        pU6RHC/mwiNFTdFYm1FrfhEaDQYjpWt3wRdbvhs=
-X-Google-Smtp-Source: ABdhPJzwd+elJ0tSpUAZ/bAgTRpxq7RiABgs8Q08DleA2nKQdp22al42iOL7Z8aA5oAFMXMC6gZjSOTm29nDYVKPpLc=
-X-Received: by 2002:aca:5fc3:: with SMTP id t186mr6817482oib.69.1617903681158;
- Thu, 08 Apr 2021 10:41:21 -0700 (PDT)
+        Thu, 8 Apr 2021 13:41:51 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7EEC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 10:41:39 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 8C2A752B9;
+        Thu,  8 Apr 2021 17:41:39 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 8C2A752B9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1617903699; bh=+UZJeapSw6RbnfzFuHAaOLfr2SkD2daYHCQEMl3vFTQ=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=iOGSTk8x0e40stKHIy9yWOjRboH+cW/Y473ASTl+jM0zSU/AlpG93NunRk+vsF0Rj
+         PomY0fptUU2mW7OgRkaLoUJ58eb0DKYo+ybJ38MRTcP5eGyJF56MvbwrsP64JOX9TU
+         ZrMY3WCsZZ/L7pfLLon2tl9gemONlIVaVSjtVC5vIY34BMgX/4pJqMM37N60G7csIE
+         G7WkUds9ZL7WbRmG/os6x3zhnNUWL8EbrkFYRdppQMOc3JuvVADIXAcZux7JahxiIt
+         +sbJUZsgrc8KOKZwMcWTiROJJgfdAoMzeEN6k4fFwE0Bm0kdu89qAZ9KHvA0bxBhUQ
+         KUYgqOvj0t0+Q==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Masanari Iida <standby24x7@gmail.com>,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Cc:     Masanari Iida <standby24x7@gmail.com>
+Subject: Re: [PATCH] tools: Fix a typo in kernel-chktaint
+In-Reply-To: <20210402070514.336376-1-standby24x7@gmail.com>
+References: <20210402070514.336376-1-standby24x7@gmail.com>
+Date:   Thu, 08 Apr 2021 11:41:39 -0600
+Message-ID: <871rbkznak.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <1617874514-12282-1-git-send-email-chunfeng.yun@mediatek.com>
-In-Reply-To: <1617874514-12282-1-git-send-email-chunfeng.yun@mediatek.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 8 Apr 2021 19:41:10 +0200
-Message-ID: <CAJZ5v0gGntbfnvAP5A491_hUh-JUuqZjZRdPPLwWJjnZRtemcQ@mail.gmail.com>
-Subject: Re: [PATCH 1/6] PM: runtime: enable wake irq after runtime_suspend
- hook called
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        "open list:ULTRA-WIDEBAND (UWB) SUBSYSTEM:" 
-        <linux-usb@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Tianping Fang <tianping.fang@mediatek.com>,
-        Eddie Hung <eddie.hung@mediatek.com>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 11:35 AM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
->
-> When the dedicated wake irq is level trigger, enable it before
-> calling runtime_suspend, will trigger an interrupt.
->
-> e.g.
-> for a low level trigger type, it's low level at running time (0),
-> and becomes high level when enters suspend (runtime_suspend (1) is
-> called), a wakeup signal at (2) make it become low level, wake irq
-> will be triggered.
->
->                 ------------------
->                |           ^     ^|
-> ----------------           |     | --------------
->  |<---(0)--->|<--(1)--|   (3)   (2)    (4)
->
-> if we enable the wake irq before calling runtime_suspend during (0),
-> an interrupt will arise, it causes resume immediately;
+Masanari Iida <standby24x7@gmail.com> writes:
 
-But that's necessary to avoid missing a wakeup interrupt, isn't it?
-
-> enable wake irq after calling runtime_suspend, e.g. at (3) or (4),
-> will works.
+> This patch fixes a spelling typo in kernel-chktaint
 >
-> This patch seems no side effect on edge trigger wake irq.
->
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> Signed-off-by: Masanari Iida <standby24x7@gmail.com>
 > ---
->  drivers/base/power/runtime.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
+>  tools/debugging/kernel-chktaint | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> index a46a7e30881b..796739a015a5 100644
-> --- a/drivers/base/power/runtime.c
-> +++ b/drivers/base/power/runtime.c
-> @@ -619,12 +619,12 @@ static int rpm_suspend(struct device *dev, int rpmflags)
->         __update_runtime_status(dev, RPM_SUSPENDING);
->
->         callback = RPM_GET_CALLBACK(dev, runtime_suspend);
-> -
-> -       dev_pm_enable_wake_irq_check(dev, true);
->         retval = rpm_callback(callback, dev);
->         if (retval)
->                 goto fail;
->
-> +       dev_pm_enable_wake_irq_check(dev, true);
-> +
->   no_callback:
->         __update_runtime_status(dev, RPM_SUSPENDED);
->         pm_runtime_deactivate_timer(dev);
-> @@ -659,7 +659,6 @@ static int rpm_suspend(struct device *dev, int rpmflags)
->         return retval;
->
->   fail:
-> -       dev_pm_disable_wake_irq_check(dev);
->         __update_runtime_status(dev, RPM_ACTIVE);
->         dev->power.deferred_resume = false;
->         wake_up_all(&dev->power.wait_queue);
-> --
-> 2.18.0
->
+> diff --git a/tools/debugging/kernel-chktaint b/tools/debugging/kernel-chktaint
+> index 607b2b280945..719f18b1edf0 100755
+> --- a/tools/debugging/kernel-chktaint
+> +++ b/tools/debugging/kernel-chktaint
+> @@ -25,7 +25,7 @@ if [ "$1"x != "x" ]; then
+>  	elif  [ $1 -ge 0 ] 2>/dev/null ; then
+>  		taint=$1
+>  	else
+> -		echo "Error: Parameter '$1' not a positive interger. Aborting." >&2
+> +		echo "Error: Parameter '$1' not a positive integer. Aborting." >&2
+>  		exit 1
+
+Applied, thanks.
+
+jon
