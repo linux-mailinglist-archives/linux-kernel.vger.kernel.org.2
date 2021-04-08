@@ -2,126 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3BC0357CDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 361CB357CE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:59:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhDHG7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:59:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhDHG7A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:59:00 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59315C061760
-        for <linux-kernel@vger.kernel.org>; Wed,  7 Apr 2021 23:58:50 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id d10so714723pgf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 07 Apr 2021 23:58:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=oftc1NSPwAHvdGkidhPdTmw2wlPlHS0GdWjKuKCXC58=;
-        b=ZsOQLsQNhdyHGUnmS050o9RG9ou/KNrJPLWbyrkksp51cC7gTikSO8oTEum8aHZ+hz
-         /k1f0tdgSNz3mThsz63L1UYRTBGEY10JFWV/eWIpNLFhkluaUU1HlCS32P0/yeHNzTZ6
-         n4w2HVOQpL2wnVnSaa3iR1GvZ5xnIcbNf/Sm4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=oftc1NSPwAHvdGkidhPdTmw2wlPlHS0GdWjKuKCXC58=;
-        b=UKv0UeiiAKjUKdb0RIv7jLW7KVpiuDMTwcQCFLCbNyvI/Hf3WzHOU33spXQBLGTMah
-         W5rUD0gyLXwWkvtX1LSWGuG3MY94e/DBrbo7KnclQpDtReWtcPhAkRJiKjkqVY9ON77v
-         gg1xkpiF8qZ0TdBSnRvOozz9zZS4U5yuAS/xfgNv3dVVBJ7kvHqxkXXCV54R39C1/8Cr
-         Dmkmewj4h/aopEi8LKhcp/thvmcSkiXHwp+hH0b85FGhKNlDDmlg+aw59LLpc5a+MFZN
-         OhrPQ/0vCkLOVZdtxEseh3P7MqLNs+gnxcHGzUNBZKriKgWMN3uo4hOhJicLnAXKeBba
-         nQhQ==
-X-Gm-Message-State: AOAM533sHN5YUf7akSPQqonbjIpwlpAvpOabM3O2TqrLG157hS6zjhua
-        0scasNdT/ChMGTZ8Gh676rvnaw==
-X-Google-Smtp-Source: ABdhPJylI6CdFLUZkvObjJY6nD/2IdUH2xfQzI1KLNxMcZnhKfi+N71OuSOsvHMV/Yp+a3jyeRUSzA==
-X-Received: by 2002:a62:d15e:0:b029:218:4f9:d8ee with SMTP id t30-20020a62d15e0000b029021804f9d8eemr6096757pfl.28.1617865129856;
-        Wed, 07 Apr 2021 23:58:49 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:e193:83c5:6e95:43de])
-        by smtp.gmail.com with ESMTPSA id fs9sm7048656pjb.40.2021.04.07.23.58.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Apr 2021 23:58:49 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S229864AbhDHG7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:59:20 -0400
+Received: from mga11.intel.com ([192.55.52.93]:52426 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229510AbhDHG7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 02:59:18 -0400
+IronPort-SDR: 1/b7Y6CI+6SqRUoOTbAV1wVKig6wOyMfnzOPxwx2/qEYTazwgCzZ2dsN1BJOnq/JCJOHrOJlYg
+ mpBEhFEsrgvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="190270564"
+X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
+   d="scan'208";a="190270564"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2021 23:59:08 -0700
+IronPort-SDR: kj9Tb6QhZy1SLWJoET68SwIQYUsaaPxM7j3wGY800bsiYkpacLXgUQDFk+Dn2iGTF8neownuk/
+ pGeiw/3uxOYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,205,1613462400"; 
+   d="scan'208";a="519736795"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 07 Apr 2021 23:59:05 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 08 Apr 2021 09:59:04 +0300
+Date:   Thu, 8 Apr 2021 09:59:04 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Badhri Jagan Sridharan <badhri@google.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Kyle Tso <kyletso@google.com>
+Subject: Re: [PATCH v2 2/6] usb: typec: tcpm: Address incorrect values of
+ tcpm psy for pps supply
+Message-ID: <YG6puFHNyeZJ8Aad@kuha.fi.intel.com>
+References: <20210407200723.1914388-1-badhri@google.com>
+ <20210407200723.1914388-2-badhri@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YG3J03GY+QqtKMlu@alley>
-References: <20210331030520.3816265-1-swboyd@chromium.org> <20210331030520.3816265-5-swboyd@chromium.org> <YG3J03GY+QqtKMlu@alley>
-Subject: Re: [PATCH v3 04/12] module: Add printk format to add module build ID to stacktraces
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-To:     Petr Mladek <pmladek@suse.com>
-Date:   Wed, 07 Apr 2021 23:58:47 -0700
-Message-ID: <161786512790.3790633.16827318365663068135@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407200723.1914388-2-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Petr Mladek (2021-04-07 08:03:47)
-> On Tue 2021-03-30 20:05:12, Stephen Boyd wrote:
-> > Let's make kernel stacktraces easier to identify by including the build
-> > ID[1] of a module if the stacktrace is printing a symbol from a module.
-> > This makes it simpler for developers to locate a kernel module's full
-> > debuginfo for a particular stacktrace. Combined with
-> > scripts/decode_stracktrace.sh, a developer can download the matching
-> > debuginfo from a debuginfod[2] server and find the exact file and line
-> > number for the functions plus offsets in a stacktrace that match the
-> > module. This is especially useful for pstore crash debugging where the
-> > kernel crashes are recorded in something like console-ramoops and the
-> > recovery kernel/modules are different or the debuginfo doesn't exist on
-> > the device due to space concerns (the debuginfo can be too large for
-> > space limited devices).
-> >=20
-> > @@ -359,15 +369,17 @@ int lookup_symbol_attrs(unsigned long addr, unsig=
-ned long *size,
-> > =20
-> >  /* Look up a kernel symbol and return it in a text buffer. */
-> >  static int __sprint_symbol(char *buffer, unsigned long address,
-> > -                        int symbol_offset, int add_offset)
-> > +                        int symbol_offset, int add_offset, int add_bui=
-ldid)
-> >  {
-> >       char *modname;
-> > +     const unsigned char *buildid;
-> >       const char *name;
-> >       unsigned long offset, size;
-> >       int len;
-> > =20
-> >       address +=3D symbol_offset;
-> > -     name =3D kallsyms_lookup(address, &size, &offset, &modname, buffe=
-r);
-> > +     name =3D kallsyms_lookup_buildid(address, &size, &offset, &modnam=
-e, &buildid,
-> > +                                    buffer);
-> >       if (!name)
-> >               return sprintf(buffer, "0x%lx", address - symbol_offset);
-> > =20
-> > @@ -379,8 +391,12 @@ static int __sprint_symbol(char *buffer, unsigned =
-long address,
-> >       if (add_offset)
-> >               len +=3D sprintf(buffer + len, "+%#lx/%#lx", offset, size=
-);
->=20
-> Please add something like:
->=20
->         /* Keep BUILD_ID_SIZE_MAX in sync with the below used %20phN */
->         BUILD_BUG_ON(BUILD_ID_SIZE_MAX !=3D 20)
->=20
+On Wed, Apr 07, 2021 at 01:07:19PM -0700, Badhri Jagan Sridharan wrote:
+> tcpm_pd_select_pps_apdo overwrites port->pps_data.min_volt,
+> port->pps_data.max_volt, port->pps_data.max_curr even before
+> port partner accepts the requests. This leaves incorrect values
+> in current_limit and supply_voltage that get exported by
+> "tcpm-source-psy-". Solving this problem by caching the request
+> values in req_min_volt, req_max_volt, req_max_curr, req_out_volt,
+> req_op_curr. min_volt, max_volt, max_curr gets updated once the
+> partner accepts the request. current_limit, supply_voltage gets updated
+> once local port's tcpm enters SNK_TRANSITION_SINK when the accepted
+> current_limit and supply_voltage is enforced.
+> 
+> Fixes: f2a8aa053c176 ("typec: tcpm: Represent source supply through power_supply")
+> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 
-Done. Hopefully the "GNU" string check also fixes this module problem
-you're seeing.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+> Changes since V1:
+> * Moved to kerneldoc header as suggested by Greg KH.
+> * Added reviewed by tags.
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 88 +++++++++++++++++++++--------------
+>  1 file changed, 53 insertions(+), 35 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 4ea4b30ae885..b4a40099d7e9 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -268,12 +268,27 @@ struct pd_mode_data {
+>  	struct typec_altmode_desc altmode_desc[ALTMODE_DISCOVERY_MAX];
+>  };
+>  
+> +/*
+> + * @min_volt: Actual min voltage at the local port
+> + * @req_min_volt: Requested min voltage to the port partner
+> + * @max_volt: Actual max voltage at the local port
+> + * @req_max_volt: Requested max voltage to the port partner
+> + * @max_curr: Actual max current at the local port
+> + * @req_max_curr: Requested max current of the port partner
+> + * @req_out_volt: Requested output voltage to the port partner
+> + * @req_op_curr: Requested operating current to the port partner
+> + * @supported: Parter has atleast one APDO hence supports PPS
+> + * @active: PPS mode is active
+> + */
+>  struct pd_pps_data {
+>  	u32 min_volt;
+> +	u32 req_min_volt;
+>  	u32 max_volt;
+> +	u32 req_max_volt;
+>  	u32 max_curr;
+> -	u32 out_volt;
+> -	u32 op_curr;
+> +	u32 req_max_curr;
+> +	u32 req_out_volt;
+> +	u32 req_op_curr;
+>  	bool supported;
+>  	bool active;
+>  };
+> @@ -2498,8 +2513,8 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+>  			break;
+>  		case SNK_NEGOTIATE_PPS_CAPABILITIES:
+>  			/* Revert data back from any requested PPS updates */
+> -			port->pps_data.out_volt = port->supply_voltage;
+> -			port->pps_data.op_curr = port->current_limit;
+> +			port->pps_data.req_out_volt = port->supply_voltage;
+> +			port->pps_data.req_op_curr = port->current_limit;
+>  			port->pps_status = (type == PD_CTRL_WAIT ?
+>  					    -EAGAIN : -EOPNOTSUPP);
+>  
+> @@ -2548,8 +2563,11 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+>  			break;
+>  		case SNK_NEGOTIATE_PPS_CAPABILITIES:
+>  			port->pps_data.active = true;
+> -			port->req_supply_voltage = port->pps_data.out_volt;
+> -			port->req_current_limit = port->pps_data.op_curr;
+> +			port->pps_data.min_volt = port->pps_data.req_min_volt;
+> +			port->pps_data.max_volt = port->pps_data.req_max_volt;
+> +			port->pps_data.max_curr = port->pps_data.req_max_curr;
+> +			port->req_supply_voltage = port->pps_data.req_out_volt;
+> +			port->req_current_limit = port->pps_data.req_op_curr;
+>  			tcpm_set_state(port, SNK_TRANSITION_SINK, 0);
+>  			break;
+>  		case SOFT_RESET_SEND:
+> @@ -3108,16 +3126,16 @@ static unsigned int tcpm_pd_select_pps_apdo(struct tcpm_port *port)
+>  		src = port->source_caps[src_pdo];
+>  		snk = port->snk_pdo[snk_pdo];
+>  
+> -		port->pps_data.min_volt = max(pdo_pps_apdo_min_voltage(src),
+> -					      pdo_pps_apdo_min_voltage(snk));
+> -		port->pps_data.max_volt = min(pdo_pps_apdo_max_voltage(src),
+> -					      pdo_pps_apdo_max_voltage(snk));
+> -		port->pps_data.max_curr = min_pps_apdo_current(src, snk);
+> -		port->pps_data.out_volt = min(port->pps_data.max_volt,
+> -					      max(port->pps_data.min_volt,
+> -						  port->pps_data.out_volt));
+> -		port->pps_data.op_curr = min(port->pps_data.max_curr,
+> -					     port->pps_data.op_curr);
+> +		port->pps_data.req_min_volt = max(pdo_pps_apdo_min_voltage(src),
+> +						  pdo_pps_apdo_min_voltage(snk));
+> +		port->pps_data.req_max_volt = min(pdo_pps_apdo_max_voltage(src),
+> +						  pdo_pps_apdo_max_voltage(snk));
+> +		port->pps_data.req_max_curr = min_pps_apdo_current(src, snk);
+> +		port->pps_data.req_out_volt = min(port->pps_data.max_volt,
+> +						  max(port->pps_data.min_volt,
+> +						      port->pps_data.req_out_volt));
+> +		port->pps_data.req_op_curr = min(port->pps_data.max_curr,
+> +						 port->pps_data.req_op_curr);
+>  		power_supply_changed(port->psy);
+>  	}
+>  
+> @@ -3245,10 +3263,10 @@ static int tcpm_pd_build_pps_request(struct tcpm_port *port, u32 *rdo)
+>  			tcpm_log(port, "Invalid APDO selected!");
+>  			return -EINVAL;
+>  		}
+> -		max_mv = port->pps_data.max_volt;
+> -		max_ma = port->pps_data.max_curr;
+> -		out_mv = port->pps_data.out_volt;
+> -		op_ma = port->pps_data.op_curr;
+> +		max_mv = port->pps_data.req_max_volt;
+> +		max_ma = port->pps_data.req_max_curr;
+> +		out_mv = port->pps_data.req_out_volt;
+> +		op_ma = port->pps_data.req_op_curr;
+>  		break;
+>  	default:
+>  		tcpm_log(port, "Invalid PDO selected!");
+> @@ -3295,8 +3313,8 @@ static int tcpm_pd_build_pps_request(struct tcpm_port *port, u32 *rdo)
+>  	tcpm_log(port, "Requesting APDO %d: %u mV, %u mA",
+>  		 src_pdo_index, out_mv, op_ma);
+>  
+> -	port->pps_data.op_curr = op_ma;
+> -	port->pps_data.out_volt = out_mv;
+> +	port->pps_data.req_op_curr = op_ma;
+> +	port->pps_data.req_out_volt = out_mv;
+>  
+>  	return 0;
+>  }
+> @@ -5429,7 +5447,7 @@ static int tcpm_try_role(struct typec_port *p, int role)
+>  	return ret;
+>  }
+>  
+> -static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 op_curr)
+> +static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 req_op_curr)
+>  {
+>  	unsigned int target_mw;
+>  	int ret;
+> @@ -5447,12 +5465,12 @@ static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 op_curr)
+>  		goto port_unlock;
+>  	}
+>  
+> -	if (op_curr > port->pps_data.max_curr) {
+> +	if (req_op_curr > port->pps_data.max_curr) {
+>  		ret = -EINVAL;
+>  		goto port_unlock;
+>  	}
+>  
+> -	target_mw = (op_curr * port->pps_data.out_volt) / 1000;
+> +	target_mw = (req_op_curr * port->supply_voltage) / 1000;
+>  	if (target_mw < port->operating_snk_mw) {
+>  		ret = -EINVAL;
+>  		goto port_unlock;
+> @@ -5466,10 +5484,10 @@ static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 op_curr)
+>  	}
+>  
+>  	/* Round down operating current to align with PPS valid steps */
+> -	op_curr = op_curr - (op_curr % RDO_PROG_CURR_MA_STEP);
+> +	req_op_curr = req_op_curr - (req_op_curr % RDO_PROG_CURR_MA_STEP);
+>  
+>  	reinit_completion(&port->pps_complete);
+> -	port->pps_data.op_curr = op_curr;
+> +	port->pps_data.req_op_curr = req_op_curr;
+>  	port->pps_status = 0;
+>  	port->pps_pending = true;
+>  	mutex_unlock(&port->lock);
+> @@ -5490,7 +5508,7 @@ static int tcpm_pps_set_op_curr(struct tcpm_port *port, u16 op_curr)
+>  	return ret;
+>  }
+>  
+> -static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 out_volt)
+> +static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 req_out_volt)
+>  {
+>  	unsigned int target_mw;
+>  	int ret;
+> @@ -5508,13 +5526,13 @@ static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 out_volt)
+>  		goto port_unlock;
+>  	}
+>  
+> -	if (out_volt < port->pps_data.min_volt ||
+> -	    out_volt > port->pps_data.max_volt) {
+> +	if (req_out_volt < port->pps_data.min_volt ||
+> +	    req_out_volt > port->pps_data.max_volt) {
+>  		ret = -EINVAL;
+>  		goto port_unlock;
+>  	}
+>  
+> -	target_mw = (port->pps_data.op_curr * out_volt) / 1000;
+> +	target_mw = (port->current_limit * req_out_volt) / 1000;
+>  	if (target_mw < port->operating_snk_mw) {
+>  		ret = -EINVAL;
+>  		goto port_unlock;
+> @@ -5528,10 +5546,10 @@ static int tcpm_pps_set_out_volt(struct tcpm_port *port, u16 out_volt)
+>  	}
+>  
+>  	/* Round down output voltage to align with PPS valid steps */
+> -	out_volt = out_volt - (out_volt % RDO_PROG_VOLT_MV_STEP);
+> +	req_out_volt = req_out_volt - (req_out_volt % RDO_PROG_VOLT_MV_STEP);
+>  
+>  	reinit_completion(&port->pps_complete);
+> -	port->pps_data.out_volt = out_volt;
+> +	port->pps_data.req_out_volt = req_out_volt;
+>  	port->pps_status = 0;
+>  	port->pps_pending = true;
+>  	mutex_unlock(&port->lock);
+> @@ -5589,8 +5607,8 @@ static int tcpm_pps_activate(struct tcpm_port *port, bool activate)
+>  
+>  	/* Trigger PPS request or move back to standard PDO contract */
+>  	if (activate) {
+> -		port->pps_data.out_volt = port->supply_voltage;
+> -		port->pps_data.op_curr = port->current_limit;
+> +		port->pps_data.req_out_volt = port->supply_voltage;
+> +		port->pps_data.req_op_curr = port->current_limit;
+>  	}
+>  	mutex_unlock(&port->lock);
+>  
+> -- 
+> 2.31.1.295.g9ea45b61b8-goog
+
+-- 
+heikki
