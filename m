@@ -2,71 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E92357C6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47F61357C71
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 08:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbhDHGT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 02:19:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230418AbhDHGTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 02:19:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C98026113E;
-        Thu,  8 Apr 2021 06:19:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617862776;
-        bh=iqSCp7HTQcNYcIH9yAGkaZpmwBCAxBBfN48dZyIRzbo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FwGee+n+6Mn9jwCGSymw8awX1e/sDKzbNlpfMomrFqMNMvzqPNgf0OrxNZ3gez8hi
-         h6rGetOpMR5k9cUxtRKJ1QKYeDs+Q0wfyIlAZlSfxiGb70hFMz5M8eIbNI7oAHnDI7
-         sB2Y2u1JLCAaCUF2I+4YeOb5DW9ri2MKXE+ZY8GI=
-Date:   Thu, 8 Apr 2021 08:19:33 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
-        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next v2 2/2] misc: Add Renesas Synchronization
- Management Unit (SMU) support
-Message-ID: <YG6gdRiEkiYxKKm9@kroah.com>
-References: <1617816815-3785-1-git-send-email-min.li.xe@renesas.com>
- <1617816815-3785-2-git-send-email-min.li.xe@renesas.com>
- <YG3vu9XQ94w5dlbp@kroah.com>
- <OSBPR01MB47733C009A6B6F2F697E12ACBA759@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+        id S231159AbhDHGUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 02:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230494AbhDHGT7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 02:19:59 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CA9CC061762;
+        Wed,  7 Apr 2021 23:19:48 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id y2so481874plg.5;
+        Wed, 07 Apr 2021 23:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WFFNFOpwVuH8/pfFMqaU4Cf5qZprikHgWYb4USi58AA=;
+        b=FVReBkjifAWSA0xTNCAZWrTpul/QNCp417AZ8fRIG02vf/J5+ubD7WQRjTfwTuwKUL
+         VnfI7+MxQH1ItMPbBbIxi9blSCpMDgN77jn45YIGlUcqN5YF3MGu7XluxPty0IyU6H2Y
+         giYfW1Vzm2juIQiJbduFn/bC0AczJWWlMA1egMcJzR8bJvTSGPmfyZbEA0iSegyz6Oje
+         GwgIESb3xEvC8d8xgHfTUn8RfmvJs7vZAm3paQk8WTh+lMepkI7pWY0hWFBBbv6ZLrgi
+         n0A67bJoXRJKruYW4aKwpWLkrjJOwz8Mme5rzXXAbpqKyDqVueOuN1NlQSbdXU8Iuxch
+         lL7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WFFNFOpwVuH8/pfFMqaU4Cf5qZprikHgWYb4USi58AA=;
+        b=UwXWfq1tzaC6H4fJKKHUUZ+4OkCK4Hq7uiNjBi/ytAIlEXoMX4UnIFRwddKEf2WF/o
+         3tciEg3mPLhG12SrbuJuV+jODKLvg93XmvCKnfs30iZNQwgLGzbJGArrrPpS7+Iney5s
+         xbYeTpbg/hNOOLH1OtyCGYCu8ApLSaVh+CsSUPIH0mzK+VgcahJogZp9r+oBJ2kbS8Ad
+         ZZman0vYHm7pii1X+XRuNMqLBHh/NUHg9tZVf3b3axzl8VYs+0Vck/F7c6KiVfC8CZW8
+         0eecanSujdf8pV0/YdsGFmMu9SoXcn4GNAcl2Gh2lLu7KMqb+S90oTalMYuxtW6OcGQL
+         Ykag==
+X-Gm-Message-State: AOAM531/vUjTTmjLdXZrG+a1RosNczOd6jlu4NPD3X8qPM371A7nDo0c
+        +XjoIa36V3ZQqvoT5lT6gGQ=
+X-Google-Smtp-Source: ABdhPJyKqB6G6yzkYGBbD7nPFnPkxB6wqyM1476hWi48mt6FunuuEts9dzN3/hbZ/gd9lgI0DsfZDA==
+X-Received: by 2002:a17:90b:3909:: with SMTP id ob9mr6971096pjb.181.1617862787473;
+        Wed, 07 Apr 2021 23:19:47 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:488:412e:a196:e28b])
+        by smtp.gmail.com with ESMTPSA id a65sm24128914pfb.116.2021.04.07.23.19.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Apr 2021 23:19:46 -0700 (PDT)
+Date:   Wed, 7 Apr 2021 23:19:44 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Fuqian Huang <huangfq.daxian@gmail.com>,
+        Benson Leung <bleung@chromium.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Lee Jones <lee.jones@linaro.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: cyapa - Fix rumtime PM imbalance on error
+Message-ID: <YG6ggJyKT/eIlEGk@google.com>
+References: <20210407040740.20257-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <OSBPR01MB47733C009A6B6F2F697E12ACBA759@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+In-Reply-To: <20210407040740.20257-1-dinghao.liu@zju.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 07:43:44PM +0000, Min Li wrote:
-> > 
-> > Why do you need 4 files here?  Can't you do this all in one?  There's no need
-> > for such a small driver to be split up, that just causes added complexity and
-> > makes things harder to review and understand.
-> > 
+Hi Dinghao,
+
+On Wed, Apr 07, 2021 at 12:07:38PM +0800, Dinghao Liu wrote:
+> When mutex_lock_interruptible() fails, a pairing PM usage
+> counter decrement is needed to keep the counter balanced.
+
+Thank you for the patch.
+
 > 
-> We will add more functions and boards down the road. So the abstraction here is for future consideration  
-
-Do not add additional complexity today for stuff that you do not need
-today.  Add it when you need it.
-
-> > >  include/uapi/linux/rsmu.h |  64 +++++++++++
-> > 
-> > Where are you documenting these new custom ioctls?  And why do you even
-> > need them?
-> > 
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  drivers/input/mouse/cyapa.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> Other than comments in the header itself, no additional documenting. Do you know if Linux has specific place to document custom ioctls? 
-> Renesas software needs to access these ioctls to provide GNSS assisted partial timing support. More specifically, RSMU_GET_STATE would tell us if a specific DPLL
-> is locked to GNSS and RSMU_GET_FFO would tell us how much of frequency offset for the DPLL to lock to the GNSS.
+> diff --git a/drivers/input/mouse/cyapa.c b/drivers/input/mouse/cyapa.c
+> index 77cc653edca2..e411ab45a218 100644
+> --- a/drivers/input/mouse/cyapa.c
+> +++ b/drivers/input/mouse/cyapa.c
+> @@ -904,8 +904,10 @@ static ssize_t cyapa_update_rt_suspend_scanrate(struct device *dev,
+>  	pm_runtime_get_sync(dev);
+>  
+>  	error = mutex_lock_interruptible(&cyapa->state_sync_lock);
+> -	if (error)
+> +	if (error) {
+> +		pm_runtime_put_noidle(dev);
 
-Please provide some sort of documentation and at the least, a pointer to
-the software that uses this so that we can see how it all ties together.
+Why "noidle" and not pm_runtime_put_sync_autosuspend() like we do in
+case of normal flow?
 
-thanks,
+>  		return error;
+> +	}
+>  
+>  	cyapa->runtime_suspend_sleep_time = min_t(u16, time, 1000);
+>  	cyapa->runtime_suspend_power_mode =
+> -- 
+> 2.17.1
+> 
 
-greg k-h
+Thanks.
+
+-- 
+Dmitry
