@@ -2,400 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CFE35862A
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08AD358639
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:10:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbhDHOKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:10:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25564 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231921AbhDHOIO (ORCPT
+        id S232290AbhDHOKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:10:39 -0400
+Received: from pv50p00im-zteg10021301.me.com ([17.58.6.46]:40827 "EHLO
+        pv50p00im-zteg10021301.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232034AbhDHOIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:08:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617890882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RFxCwc93hqxCSg4NVAXBYUHy9PVAgXXu0KsTYNfrqRY=;
-        b=HYbrlwznnwFgm1fhzlYNlKMr/vnZhSkDYbzwj8hfNLvsDWJ2fRiGliA9bbV/xuiU2Xt/va
-        ivcGgX0civ4Ovr7rUOOoAA53XQmwoR7SdJcB3F/d8qnWheYWxxbOcR6hdaeeiP25i8ombk
-        5eeJHAPS/lyHbqrMwfbK2L3KCmCpjXQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-143-VR5VAd6qM3aCnPNj98M9kQ-1; Thu, 08 Apr 2021 10:07:59 -0400
-X-MC-Unique: VR5VAd6qM3aCnPNj98M9kQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ACEE51006C81;
-        Thu,  8 Apr 2021 14:07:57 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3CF3F1000358;
-        Thu,  8 Apr 2021 14:07:51 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v6 18/30] afs: Pass page into dirty region helpers to provide
- THP size
-From:   David Howells <dhowells@redhat.com>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-afs@lists.infradead.org, linux-cachefs@redhat.com,
-        dhowells@redhat.com,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Date:   Thu, 08 Apr 2021 15:07:50 +0100
-Message-ID: <161789087043.6155.16922142208140170528.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
-References: <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Thu, 8 Apr 2021 10:08:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1617890902; bh=DZjE3KIUVZVTadiOzsjJeWUw7xNBozll/tHn05Sogao=;
+        h=From:To:Subject:Date:Message-Id;
+        b=GgNsgtwey5kLHFAiqNE/aOznyKyhg/pTfGX7hnb0gO3fVc6NkEbxca8tWxJ932Cee
+         jOd7ykF+Bf3r3c2V/ScBR6kEdawMEZdGH0KcDPQseZh/+oa3hs/SJqggqKLRHNdJQJ
+         HbEIqPybW8YE/Ho1uOAcsI5zMD93ABTVYVrxpHqwBBcdqlbG1Oc923W9/d1D53+Ls1
+         IxmNzmtglsAwRHPuDcBFyCInxy92N6IiN9VKZBObJ0OIy0QbJrPyyZ0yrzngT2Ezlx
+         eJbA6F85VRrMzLBou15R1vBw0mK6UqcDIsWCuUOtQO3FGGrU05Yzm/CnQvNCg5ca+o
+         v4tyWdEMmbK5w==
+Received: from localhost.localdomain (unknown [120.245.2.39])
+        by pv50p00im-zteg10021301.me.com (Postfix) with ESMTPSA id 756AFCC0626;
+        Thu,  8 Apr 2021 14:08:04 +0000 (UTC)
+From:   Xiongwei Song <sxwjean@me.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        oleg@redhat.com, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        aneesh.kumar@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        mikey@neuling.org, haren@linux.ibm.com, akpm@linux-foundation.org,
+        rppt@kernel.org, jniethe5@gmail.com, atrajeev@linux.vnet.ibm.com,
+        maddy@linux.ibm.com, peterz@infradead.org, kjain@linux.ibm.com,
+        kan.liang@linux.intel.com, aik@ozlabs.ru, alistair@popple.id.au,
+        pmladek@suse.com, john.ogness@linutronix.de
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Xiongwei Song <sxwjean@gmail.com>
+Subject: [PATCH v3] powerpc/traps: Enhance readability for trap types
+Date:   Thu,  8 Apr 2021 22:07:50 +0800
+Message-Id: <20210408140750.26832-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.17.1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-08_03:2021-04-08,2021-04-08 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2104080100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pass a pointer to the page being accessed into the dirty region helpers so
-that the size of the page can be determined in case it's a transparent huge
-page.
+From: Xiongwei Song <sxwjean@gmail.com>
 
-This also required the page to be passed into the afs_page_dirty trace
-point - so there's no need to specifically pass in the index or private
-data as these can be retrieved directly from the page struct.
+Create a new header named traps.h, define macros to list ppc interrupt
+types in traps.h, replace the reference of the trap hex values with these
+macros.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: linux-cachefs@redhat.com
-cc: linux-fsdevel@vger.kernel.org
-Link: https://lore.kernel.org/r/160588527183.3465195.16107942526481976308.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161118144921.1232039.11377711180492625929.stgit@warthog.procyon.org.uk/ # rfc
-Link: https://lore.kernel.org/r/161161040747.2537118.11435394902674511430.stgit@warthog.procyon.org.uk/ # v2
-Link: https://lore.kernel.org/r/161340404553.1303470.11414163641767769882.stgit@warthog.procyon.org.uk/ # v3
-Link: https://lore.kernel.org/r/161539548385.286939.8864598314493255313.stgit@warthog.procyon.org.uk/ # v4
-Link: https://lore.kernel.org/r/161653804285.2770958.3497360004849598038.stgit@warthog.procyon.org.uk/ # v5
+Referred the hex number in arch/powerpc/kernel/exceptions-64e.S,
+arch/powerpc/kernel/exceptions-64s.S and
+arch/powerpc/include/asm/kvm_asm.h.
+
+v2-v3:
+Correct the prefix of trap macros with INTERRUPT_, the previous prefix
+is TRAP_, which is not precise. This is suggested by Segher Boessenkool
+and Nicholas Piggin.
+
+v1-v2:
+Define more trap macros to replace more trap hexs in code, not just for
+the __show_regs function. This is suggested by Christophe Leroy.
+
+Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
 ---
+ arch/powerpc/include/asm/interrupt.h  |  9 +++++---
+ arch/powerpc/include/asm/ptrace.h     |  3 ++-
+ arch/powerpc/include/asm/traps.h      | 32 +++++++++++++++++++++++++++
+ arch/powerpc/kernel/interrupt.c       |  3 ++-
+ arch/powerpc/kernel/process.c         |  5 ++++-
+ arch/powerpc/mm/book3s64/hash_utils.c |  5 +++--
+ arch/powerpc/mm/fault.c               | 21 +++++++++++-------
+ arch/powerpc/perf/core-book3s.c       |  5 +++--
+ arch/powerpc/xmon/xmon.c              | 16 +++++++++++---
+ 9 files changed, 78 insertions(+), 21 deletions(-)
+ create mode 100644 arch/powerpc/include/asm/traps.h
 
- fs/afs/file.c              |   20 +++++++--------
- fs/afs/internal.h          |   16 ++++++------
- fs/afs/write.c             |   60 ++++++++++++++++++--------------------------
- include/trace/events/afs.h |   23 ++++++++++-------
- 4 files changed, 55 insertions(+), 64 deletions(-)
-
-diff --git a/fs/afs/file.c b/fs/afs/file.c
-index 314f6a9517c7..f1bae0b0a9c0 100644
---- a/fs/afs/file.c
-+++ b/fs/afs/file.c
-@@ -514,8 +514,8 @@ static void afs_invalidate_dirty(struct page *page, unsigned int offset,
- 		return;
+diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
+index 7c633896d758..5ce9898bc9a6 100644
+--- a/arch/powerpc/include/asm/interrupt.h
++++ b/arch/powerpc/include/asm/interrupt.h
+@@ -8,6 +8,7 @@
+ #include <asm/ftrace.h>
+ #include <asm/kprobes.h>
+ #include <asm/runlatch.h>
++#include <asm/traps.h>
  
- 	/* We may need to shorten the dirty region */
--	f = afs_page_dirty_from(priv);
--	t = afs_page_dirty_to(priv);
-+	f = afs_page_dirty_from(page, priv);
-+	t = afs_page_dirty_to(page, priv);
+ struct interrupt_state {
+ #ifdef CONFIG_PPC_BOOK3E_64
+@@ -59,7 +60,7 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs, struct interrup
+ 		 * CT_WARN_ON comes here via program_check_exception,
+ 		 * so avoid recursion.
+ 		 */
+-		if (TRAP(regs) != 0x700)
++		if (TRAP(regs) != INTERRUPT_PROGRAM)
+ 			CT_WARN_ON(ct_state() != CONTEXT_KERNEL);
+ 	}
+ #endif
+@@ -156,7 +157,8 @@ static inline void interrupt_nmi_enter_prepare(struct pt_regs *regs, struct inte
+ 	/* Don't do any per-CPU operations until interrupt state is fixed */
+ #endif
+ 	/* Allow DEC and PMI to be traced when they are soft-NMI */
+-	if (TRAP(regs) != 0x900 && TRAP(regs) != 0xf00 && TRAP(regs) != 0x260) {
++	if (TRAP(regs) != INTERRUPT_DECREMENTER &&
++	    TRAP(regs) != INTERRUPT_PERFMON) {
+ 		state->ftrace_enabled = this_cpu_get_ftrace_enabled();
+ 		this_cpu_set_ftrace_enabled(0);
+ 	}
+@@ -180,7 +182,8 @@ static inline void interrupt_nmi_exit_prepare(struct pt_regs *regs, struct inter
+ 		nmi_exit();
  
- 	if (t <= offset || f >= end)
- 		return; /* Doesn't overlap */
-@@ -533,17 +533,17 @@ static void afs_invalidate_dirty(struct page *page, unsigned int offset,
- 	if (f == t)
- 		goto undirty;
+ #ifdef CONFIG_PPC64
+-	if (TRAP(regs) != 0x900 && TRAP(regs) != 0xf00 && TRAP(regs) != 0x260)
++	if (TRAP(regs) != INTERRUPT_DECREMENTER &&
++	    TRAP(regs) != INTERRUPT_PERFMON)
+ 		this_cpu_set_ftrace_enabled(state->ftrace_enabled);
  
--	priv = afs_page_dirty(f, t);
-+	priv = afs_page_dirty(page, f, t);
- 	set_page_private(page, priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("trunc"), page->index, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("trunc"), page);
- 	return;
+ #ifdef CONFIG_PPC_BOOK3S_64
+diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
+index f10498e1b3f6..7a17e0365d43 100644
+--- a/arch/powerpc/include/asm/ptrace.h
++++ b/arch/powerpc/include/asm/ptrace.h
+@@ -21,6 +21,7 @@
  
- undirty:
--	trace_afs_page_dirty(vnode, tracepoint_string("undirty"), page->index, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("undirty"), page);
- 	clear_page_dirty_for_io(page);
- full_invalidate:
--	priv = (unsigned long)detach_page_private(page);
--	trace_afs_page_dirty(vnode, tracepoint_string("inval"), page->index, priv);
-+	detach_page_private(page);
-+	trace_afs_page_dirty(vnode, tracepoint_string("inval"), page);
+ #include <uapi/asm/ptrace.h>
+ #include <asm/asm-const.h>
++#include <asm/traps.h>
+ 
+ #ifndef __ASSEMBLY__
+ struct pt_regs
+@@ -237,7 +238,7 @@ static inline bool trap_is_unsupported_scv(struct pt_regs *regs)
+ 
+ static inline bool trap_is_syscall(struct pt_regs *regs)
+ {
+-	return (trap_is_scv(regs) || TRAP(regs) == 0xc00);
++	return (trap_is_scv(regs) || TRAP(regs) == INTERRUPT_SYSCALL);
+ }
+ 
+ static inline bool trap_norestart(struct pt_regs *regs)
+diff --git a/arch/powerpc/include/asm/traps.h b/arch/powerpc/include/asm/traps.h
+new file mode 100644
+index 000000000000..cb416a17097c
+--- /dev/null
++++ b/arch/powerpc/include/asm/traps.h
+@@ -0,0 +1,32 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_PPC_TRAPS_H
++#define _ASM_PPC_TRAPS_H
++
++#if defined(CONFIG_BOOKE) || defined(CONFIG_4xx)
++#define INTERRUPT_MACHINE_CHECK   0x000
++#define INTERRUPT_CRITICAL_INPUT  0x100
++#define INTERRUPT_ALTIVEC_UNAVAIL 0x200
++#define INTERRUPT_PERFMON         0x260
++#define INTERRUPT_DOORBELL        0x280
++#define INTERRUPT_DEBUG           0xd00
++#elif defined(CONFIG_PPC_BOOK3S)
++#define INTERRUPT_SYSTEM_RESET    0x100
++#define INTERRUPT_MACHINE_CHECK   0x200
++#define INTERRUPT_DATA_SEGMENT    0x380
++#define INTERRUPT_INST_SEGMENT    0x480
++#define INTERRUPT_DOORBELL        0xa00
++#define INTERRUPT_TRACE           0xd00
++#define INTERRUPT_H_DATA_STORAGE  0xe00
++#define INTERRUPT_PERFMON         0xf00
++#define INTERRUPT_H_FAC_UNAVAIL   0xf80
++#endif
++
++#define INTERRUPT_DATA_STORAGE    0x300
++#define INTERRUPT_INST_STORAGE    0x400
++#define INTERRUPT_ALIGNMENT       0x600
++#define INTERRUPT_PROGRAM         0x700
++#define INTERRUPT_FP_UNAVAIL      0x800
++#define INTERRUPT_DECREMENTER     0x900
++#define INTERRUPT_SYSCALL         0xc00
++
++#endif /* _ASM_PPC_TRAPS_H */
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index c4dd4b8f9cfa..72689f7ca7c8 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -19,6 +19,7 @@
+ #include <asm/syscall.h>
+ #include <asm/time.h>
+ #include <asm/unistd.h>
++#include <asm/traps.h>
+ 
+ #if defined(CONFIG_PPC_ADV_DEBUG_REGS) && defined(CONFIG_PPC32)
+ unsigned long global_dbcr0[NR_CPUS];
+@@ -456,7 +457,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
+ 	 * CT_WARN_ON comes here via program_check_exception,
+ 	 * so avoid recursion.
+ 	 */
+-	if (TRAP(regs) != 0x700)
++	if (TRAP(regs) != INTERRUPT_PROGRAM)
+ 		CT_WARN_ON(ct_state() == CONTEXT_USER);
+ 
+ 	kuap = kuap_get_and_assert_locked();
+diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
+index b966c8e0cead..92cd49427b2f 100644
+--- a/arch/powerpc/kernel/process.c
++++ b/arch/powerpc/kernel/process.c
+@@ -64,6 +64,7 @@
+ #include <asm/asm-prototypes.h>
+ #include <asm/stacktrace.h>
+ #include <asm/hw_breakpoint.h>
++#include <asm/traps.h>
+ 
+ #include <linux/kprobes.h>
+ #include <linux/kdebug.h>
+@@ -1469,7 +1470,9 @@ static void __show_regs(struct pt_regs *regs)
+ 	trap = TRAP(regs);
+ 	if (!trap_is_syscall(regs) && cpu_has_feature(CPU_FTR_CFAR))
+ 		pr_cont("CFAR: "REG" ", regs->orig_gpr3);
+-	if (trap == 0x200 || trap == 0x300 || trap == 0x600) {
++	if (trap == INTERRUPT_MACHINE_CHECK ||
++	    trap == INTERRUPT_DATA_STORAGE ||
++	    trap == INTERRUPT_ALIGNMENT) {
+ 		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
+ 			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->dsisr);
+ 		else
+diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
+index 7719995323c3..2bf06e01b309 100644
+--- a/arch/powerpc/mm/book3s64/hash_utils.c
++++ b/arch/powerpc/mm/book3s64/hash_utils.c
+@@ -64,6 +64,7 @@
+ #include <asm/pte-walk.h>
+ #include <asm/asm-prototypes.h>
+ #include <asm/ultravisor.h>
++#include <asm/traps.h>
+ 
+ #include <mm/mmu_decl.h>
+ 
+@@ -1145,7 +1146,7 @@ unsigned int hash_page_do_lazy_icache(unsigned int pp, pte_t pte, int trap)
+ 
+ 	/* page is dirty */
+ 	if (!test_bit(PG_dcache_clean, &page->flags) && !PageReserved(page)) {
+-		if (trap == 0x400) {
++		if (trap == INTERRUPT_INST_STORAGE) {
+ 			flush_dcache_icache_page(page);
+ 			set_bit(PG_dcache_clean, &page->flags);
+ 		} else
+@@ -1545,7 +1546,7 @@ DEFINE_INTERRUPT_HANDLER_RET(__do_hash_fault)
+ 	if (user_mode(regs) || (region_id == USER_REGION_ID))
+ 		access &= ~_PAGE_PRIVILEGED;
+ 
+-	if (TRAP(regs) == 0x400)
++	if (TRAP(regs) == INTERRUPT_INST_STORAGE)
+ 		access |= _PAGE_EXEC;
+ 
+ 	err = hash_page_mm(mm, ea, access, TRAP(regs), flags);
+diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+index 0c0b1c2cfb49..641b3feef7ee 100644
+--- a/arch/powerpc/mm/fault.c
++++ b/arch/powerpc/mm/fault.c
+@@ -44,6 +44,7 @@
+ #include <asm/debug.h>
+ #include <asm/kup.h>
+ #include <asm/inst.h>
++#include <asm/traps.h>
+ 
+ 
+ /*
+@@ -197,7 +198,7 @@ static int mm_fault_error(struct pt_regs *regs, unsigned long addr,
+ static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
+ 			     unsigned long address, bool is_write)
+ {
+-	int is_exec = TRAP(regs) == 0x400;
++	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
+ 
+ 	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
+ 	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
+@@ -391,7 +392,7 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
+ 	struct vm_area_struct * vma;
+ 	struct mm_struct *mm = current->mm;
+ 	unsigned int flags = FAULT_FLAG_DEFAULT;
+- 	int is_exec = TRAP(regs) == 0x400;
++	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
+ 	int is_user = user_mode(regs);
+ 	int is_write = page_fault_is_write(error_code);
+ 	vm_fault_t fault, major = 0;
+@@ -588,20 +589,24 @@ void __bad_page_fault(struct pt_regs *regs, int sig)
+ 	/* kernel has accessed a bad area */
+ 
+ 	switch (TRAP(regs)) {
+-	case 0x300:
+-	case 0x380:
+-	case 0xe00:
++	case INTERRUPT_DATA_STORAGE:
++#ifdef CONFIG_PPC_BOOK3S
++	case INTERRUPT_DATA_SEGMENT:
++	case INTERRUPT_H_DATA_STORAGE:
++#endif
+ 		pr_alert("BUG: %s on %s at 0x%08lx\n",
+ 			 regs->dar < PAGE_SIZE ? "Kernel NULL pointer dereference" :
+ 			 "Unable to handle kernel data access",
+ 			 is_write ? "write" : "read", regs->dar);
+ 		break;
+-	case 0x400:
+-	case 0x480:
++	case INTERRUPT_INST_STORAGE:
++#ifdef CONFIG_PPC_BOOK3S
++	case INTERRUPT_INST_SEGMENT:
++#endif
+ 		pr_alert("BUG: Unable to handle kernel instruction fetch%s",
+ 			 regs->nip < PAGE_SIZE ? " (NULL pointer?)\n" : "\n");
+ 		break;
+-	case 0x600:
++	case INTERRUPT_ALIGNMENT:
+ 		pr_alert("BUG: Unable to handle kernel unaligned access at 0x%08lx\n",
+ 			 regs->dar);
+ 		break;
+diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
+index 766f064f00fb..6e34f5bba232 100644
+--- a/arch/powerpc/perf/core-book3s.c
++++ b/arch/powerpc/perf/core-book3s.c
+@@ -17,6 +17,7 @@
+ #include <asm/firmware.h>
+ #include <asm/ptrace.h>
+ #include <asm/code-patching.h>
++#include <asm/traps.h>
+ 
+ #ifdef CONFIG_PPC64
+ #include "internal.h"
+@@ -168,7 +169,7 @@ static bool regs_use_siar(struct pt_regs *regs)
+ 	 * they have not been setup using perf_read_regs() and so regs->result
+ 	 * is something random.
+ 	 */
+-	return ((TRAP(regs) == 0xf00) && regs->result);
++	return ((TRAP(regs) == INTERRUPT_PERFMON) && regs->result);
  }
  
  /*
-@@ -571,7 +571,6 @@ static void afs_invalidatepage(struct page *page, unsigned int offset,
- static int afs_releasepage(struct page *page, gfp_t gfp_flags)
- {
- 	struct afs_vnode *vnode = AFS_FS_I(page->mapping->host);
--	unsigned long priv;
- 
- 	_enter("{{%llx:%llu}[%lu],%lx},%x",
- 	       vnode->fid.vid, vnode->fid.vnode, page->index, page->flags,
-@@ -580,9 +579,8 @@ static int afs_releasepage(struct page *page, gfp_t gfp_flags)
- 	/* deny if page is being written to the cache and the caller hasn't
- 	 * elected to wait */
- 	if (PagePrivate(page)) {
--		priv = (unsigned long)detach_page_private(page);
--		trace_afs_page_dirty(vnode, tracepoint_string("rel"),
--				     page->index, priv);
-+		detach_page_private(page);
-+		trace_afs_page_dirty(vnode, tracepoint_string("rel"), page);
- 	}
- 
- 	/* indicate that the page can be released */
-diff --git a/fs/afs/internal.h b/fs/afs/internal.h
-index 1627b1872812..fd437d4722b5 100644
---- a/fs/afs/internal.h
-+++ b/fs/afs/internal.h
-@@ -875,31 +875,31 @@ struct afs_vnode_cache_aux {
- #define __AFS_PAGE_PRIV_MMAPPED	0x8000UL
- #endif
- 
--static inline unsigned int afs_page_dirty_resolution(void)
-+static inline unsigned int afs_page_dirty_resolution(struct page *page)
- {
--	int shift = PAGE_SHIFT - (__AFS_PAGE_PRIV_SHIFT - 1);
-+	int shift = thp_order(page) + PAGE_SHIFT - (__AFS_PAGE_PRIV_SHIFT - 1);
- 	return (shift > 0) ? shift : 0;
- }
- 
--static inline size_t afs_page_dirty_from(unsigned long priv)
-+static inline size_t afs_page_dirty_from(struct page *page, unsigned long priv)
- {
- 	unsigned long x = priv & __AFS_PAGE_PRIV_MASK;
- 
- 	/* The lower bound is inclusive */
--	return x << afs_page_dirty_resolution();
-+	return x << afs_page_dirty_resolution(page);
- }
- 
--static inline size_t afs_page_dirty_to(unsigned long priv)
-+static inline size_t afs_page_dirty_to(struct page *page, unsigned long priv)
- {
- 	unsigned long x = (priv >> __AFS_PAGE_PRIV_SHIFT) & __AFS_PAGE_PRIV_MASK;
- 
- 	/* The upper bound is immediately beyond the region */
--	return (x + 1) << afs_page_dirty_resolution();
-+	return (x + 1) << afs_page_dirty_resolution(page);
- }
- 
--static inline unsigned long afs_page_dirty(size_t from, size_t to)
-+static inline unsigned long afs_page_dirty(struct page *page, size_t from, size_t to)
- {
--	unsigned int res = afs_page_dirty_resolution();
-+	unsigned int res = afs_page_dirty_resolution(page);
- 	from >>= res;
- 	to = (to - 1) >> res;
- 	return (to << __AFS_PAGE_PRIV_SHIFT) | from;
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 901bd2ee2dd0..babc84dd9719 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -112,15 +112,14 @@ int afs_write_begin(struct file *file, struct address_space *mapping,
- 	t = f = 0;
- 	if (PagePrivate(page)) {
- 		priv = page_private(page);
--		f = afs_page_dirty_from(priv);
--		t = afs_page_dirty_to(priv);
-+		f = afs_page_dirty_from(page, priv);
-+		t = afs_page_dirty_to(page, priv);
- 		ASSERTCMP(f, <=, t);
- 	}
- 
- 	if (f != t) {
- 		if (PageWriteback(page)) {
--			trace_afs_page_dirty(vnode, tracepoint_string("alrdy"),
--					     page->index, priv);
-+			trace_afs_page_dirty(vnode, tracepoint_string("alrdy"), page);
- 			goto flush_conflicting_write;
- 		}
- 		/* If the file is being filled locally, allow inter-write
-@@ -204,21 +203,19 @@ int afs_write_end(struct file *file, struct address_space *mapping,
- 
- 	if (PagePrivate(page)) {
- 		priv = page_private(page);
--		f = afs_page_dirty_from(priv);
--		t = afs_page_dirty_to(priv);
-+		f = afs_page_dirty_from(page, priv);
-+		t = afs_page_dirty_to(page, priv);
- 		if (from < f)
- 			f = from;
- 		if (to > t)
- 			t = to;
--		priv = afs_page_dirty(f, t);
-+		priv = afs_page_dirty(page, f, t);
- 		set_page_private(page, priv);
--		trace_afs_page_dirty(vnode, tracepoint_string("dirty+"),
--				     page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("dirty+"), page);
- 	} else {
--		priv = afs_page_dirty(from, to);
-+		priv = afs_page_dirty(page, from, to);
- 		attach_page_private(page, (void *)priv);
--		trace_afs_page_dirty(vnode, tracepoint_string("dirty"),
--				     page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("dirty"), page);
- 	}
- 
- 	set_page_dirty(page);
-@@ -321,7 +318,6 @@ static void afs_pages_written_back(struct afs_vnode *vnode,
- 				   pgoff_t first, pgoff_t last)
- {
- 	struct pagevec pv;
--	unsigned long priv;
- 	unsigned count, loop;
- 
- 	_enter("{%llx:%llu},{%lx-%lx}",
-@@ -340,9 +336,9 @@ static void afs_pages_written_back(struct afs_vnode *vnode,
- 		ASSERTCMP(pv.nr, ==, count);
- 
- 		for (loop = 0; loop < count; loop++) {
--			priv = (unsigned long)detach_page_private(pv.pages[loop]);
-+			detach_page_private(pv.pages[loop]);
- 			trace_afs_page_dirty(vnode, tracepoint_string("clear"),
--					     pv.pages[loop]->index, priv);
-+					     pv.pages[loop]);
- 			end_page_writeback(pv.pages[loop]);
- 		}
- 		first += count;
-@@ -516,15 +512,13 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
+@@ -347,7 +348,7 @@ static inline void perf_read_regs(struct pt_regs *regs)
+ 	 * hypervisor samples as well as samples in the kernel with
+ 	 * interrupts off hence the userspace check.
  	 */
- 	start = primary_page->index;
- 	priv = page_private(primary_page);
--	offset = afs_page_dirty_from(priv);
--	to = afs_page_dirty_to(priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("store"),
--			     primary_page->index, priv);
-+	offset = afs_page_dirty_from(primary_page, priv);
-+	to = afs_page_dirty_to(primary_page, priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("store"), primary_page);
+-	if (TRAP(regs) != 0xf00)
++	if (TRAP(regs) != INTERRUPT_PERFMON)
+ 		use_siar = 0;
+ 	else if ((ppmu->flags & PPMU_NO_SIAR))
+ 		use_siar = 0;
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index bf7d69625a2e..2a4f99e64bf3 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -54,6 +54,7 @@
+ #include <asm/code-patching.h>
+ #include <asm/sections.h>
+ #include <asm/inst.h>
++#include <asm/traps.h>
  
- 	WARN_ON(offset == to);
- 	if (offset == to)
--		trace_afs_page_dirty(vnode, tracepoint_string("WARN"),
--				     primary_page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("WARN"), primary_page);
+ #ifdef CONFIG_PPC64
+ #include <asm/hvcall.h>
+@@ -1769,7 +1770,12 @@ static void excprint(struct pt_regs *fp)
+ 	printf("    sp: %lx\n", fp->gpr[1]);
+ 	printf("   msr: %lx\n", fp->msr);
  
- 	if (start >= final_page ||
- 	    (to < PAGE_SIZE && !test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags)))
-@@ -562,8 +556,8 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 			}
- 
- 			priv = page_private(page);
--			f = afs_page_dirty_from(priv);
--			t = afs_page_dirty_to(priv);
-+			f = afs_page_dirty_from(page, priv);
-+			t = afs_page_dirty_to(page, priv);
- 			if (f != 0 &&
- 			    !test_bit(AFS_VNODE_NEW_CONTENT, &vnode->flags)) {
- 				unlock_page(page);
-@@ -571,8 +565,7 @@ static int afs_write_back_from_locked_page(struct address_space *mapping,
- 			}
- 			to = t;
- 
--			trace_afs_page_dirty(vnode, tracepoint_string("store+"),
--					     page->index, priv);
-+			trace_afs_page_dirty(vnode, tracepoint_string("store+"), page);
- 
- 			if (!clear_page_dirty_for_io(page))
- 				BUG();
-@@ -860,14 +853,13 @@ vm_fault_t afs_page_mkwrite(struct vm_fault *vmf)
- 	 */
- 	wait_on_page_writeback(vmf->page);
- 
--	priv = afs_page_dirty(0, PAGE_SIZE);
-+	priv = afs_page_dirty(vmf->page, 0, PAGE_SIZE);
- 	priv = afs_page_dirty_mmapped(priv);
--	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"),
--			     vmf->page->index, priv);
- 	if (PagePrivate(vmf->page))
- 		set_page_private(vmf->page, priv);
- 	else
- 		attach_page_private(vmf->page, (void *)priv);
-+	trace_afs_page_dirty(vnode, tracepoint_string("mkwrite"), vmf->page);
- 	file_update_time(file);
- 
- 	sb_end_pagefault(inode->i_sb);
-@@ -920,17 +912,15 @@ int afs_launder_page(struct page *page)
- 		f = 0;
- 		t = PAGE_SIZE;
- 		if (PagePrivate(page)) {
--			f = afs_page_dirty_from(priv);
--			t = afs_page_dirty_to(priv);
-+			f = afs_page_dirty_from(page, priv);
-+			t = afs_page_dirty_to(page, priv);
- 		}
- 
--		trace_afs_page_dirty(vnode, tracepoint_string("launder"),
--				     page->index, priv);
-+		trace_afs_page_dirty(vnode, tracepoint_string("launder"), page);
- 		ret = afs_store_data(mapping, page->index, page->index, t, f, true);
+-	if (trap == 0x300 || trap == 0x380 || trap == 0x600 || trap == 0x200) {
++	if (trap == INTERRUPT_DATA_STORAGE ||
++#ifdef CONFIG_PPC_BOOK3S
++	    trap == INTERRUPT_DATA_SEGMENT ||
++#endif
++	    trap == INTERRUPT_ALIGNMENT ||
++	    trap == INTERRUPT_MACHINE_CHECK) {
+ 		printf("   dar: %lx\n", fp->dar);
+ 		if (trap != 0x380)
+ 			printf(" dsisr: %lx\n", fp->dsisr);
+@@ -1785,7 +1791,7 @@ static void excprint(struct pt_regs *fp)
+ 		       current->pid, current->comm);
  	}
  
--	priv = (unsigned long)detach_page_private(page);
--	trace_afs_page_dirty(vnode, tracepoint_string("laundered"),
--			     page->index, priv);
-+	detach_page_private(page);
-+	trace_afs_page_dirty(vnode, tracepoint_string("laundered"), page);
- 	return ret;
+-	if (trap == 0x700)
++	if (trap == INTERRUPT_PROGRAM)
+ 		print_bug_trap(fp);
+ 
+ 	printf(linux_banner);
+@@ -1846,7 +1852,11 @@ static void prregs(struct pt_regs *fp)
+ 	printf("ctr = "REG"   xer = "REG"   trap = %4lx\n",
+ 	       fp->ctr, fp->xer, fp->trap);
+ 	trap = TRAP(fp);
+-	if (trap == 0x300 || trap == 0x380 || trap == 0x600)
++	if (trap == INTERRUPT_DATA_STORAGE ||
++#ifdef CONFIG_PPC_BOOK3S
++	    trap == INTERRUPT_DATA_SEGMENT ||
++#endif
++	    trap == INTERRUPT_ALIGNMENT)
+ 		printf("dar = "REG"   dsisr = %.8lx\n", fp->dar, fp->dsisr);
  }
-diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
-index 4a5cc8c64be3..9203cf6a8c53 100644
---- a/include/trace/events/afs.h
-+++ b/include/trace/events/afs.h
-@@ -969,30 +969,33 @@ TRACE_EVENT(afs_dir_check_failed,
- 	    );
  
- TRACE_EVENT(afs_page_dirty,
--	    TP_PROTO(struct afs_vnode *vnode, const char *where,
--		     pgoff_t page, unsigned long priv),
-+	    TP_PROTO(struct afs_vnode *vnode, const char *where, struct page *page),
- 
--	    TP_ARGS(vnode, where, page, priv),
-+	    TP_ARGS(vnode, where, page),
- 
- 	    TP_STRUCT__entry(
- 		    __field(struct afs_vnode *,		vnode		)
- 		    __field(const char *,		where		)
- 		    __field(pgoff_t,			page		)
--		    __field(unsigned long,		priv		)
-+		    __field(unsigned long,		from		)
-+		    __field(unsigned long,		to		)
- 			     ),
- 
- 	    TP_fast_assign(
- 		    __entry->vnode = vnode;
- 		    __entry->where = where;
--		    __entry->page = page;
--		    __entry->priv = priv;
-+		    __entry->page = page->index;
-+		    __entry->from = afs_page_dirty_from(page, page->private);
-+		    __entry->to = afs_page_dirty_to(page, page->private);
-+		    __entry->to |= (afs_is_page_dirty_mmapped(page->private) ?
-+				    (1UL << (BITS_PER_LONG - 1)) : 0);
- 			   ),
- 
--	    TP_printk("vn=%p %lx %s %zx-%zx%s",
-+	    TP_printk("vn=%p %lx %s %lx-%lx%s",
- 		      __entry->vnode, __entry->page, __entry->where,
--		      afs_page_dirty_from(__entry->priv),
--		      afs_page_dirty_to(__entry->priv),
--		      afs_is_page_dirty_mmapped(__entry->priv) ? " M" : "")
-+		      __entry->from,
-+		      __entry->to & ~(1UL << (BITS_PER_LONG - 1)),
-+		      __entry->to & (1UL << (BITS_PER_LONG - 1)) ? " M" : "")
- 	    );
- 
- TRACE_EVENT(afs_call_state,
-
+-- 
+2.17.1
 
