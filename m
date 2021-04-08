@@ -2,216 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6A93583C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C413583B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 14:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhDHMwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 08:52:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231691AbhDHMwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 08:52:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A85DC61132;
-        Thu,  8 Apr 2021 12:51:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617886317;
-        bh=irMJyin2pC6eZ/wh8AcJyr9OaXTShfUN3UnfBb0Bcgo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i5YVa2yJ33IT59X5VaTjFqMHSxgW1aBmd9eYXh79WffPo6KjMOd1hrfBFCHCA0rZg
-         0nxMiv+yT0DoUQokaCp+x/CpaHL53ARb/qsc3dXjIsyuRohBB4TqRSzDlR7YULc1f+
-         hq/5kTp0yHvLuDioWuOmcm0XgnioYP6BdQUIeLoA=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH 13/13] tty: clean include/linux/tty.h up
-Date:   Thu,  8 Apr 2021 14:51:34 +0200
-Message-Id: <20210408125134.3016837-14-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210408125134.3016837-1-gregkh@linuxfoundation.org>
-References: <20210408125134.3016837-1-gregkh@linuxfoundation.org>
+        id S231603AbhDHMvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 08:51:52 -0400
+Received: from rcdn-iport-6.cisco.com ([173.37.86.77]:37157 "EHLO
+        rcdn-iport-6.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231586AbhDHMvt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 08:51:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=8804; q=dns/txt; s=iport;
+  t=1617886297; x=1619095897;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=d3w+xnsiCJEwuqqkc2Scl5nBM60qkUsDZzpS++O3N+g=;
+  b=JXfR/QSisyr/X6Z/95d08jOuRZ0cuCHsPEFp6aKFNijKqnLXMIjaWg9Q
+   5Han94XJ+BFxVM/FOOoYlL8TCGAKteM/3wzwWJQZORpw9C57doElPbhVz
+   gzt8Au6USetMXhluQbgdCDBb+gvCK86t93QHIOrNf7ZDcPpB60ioZz6wu
+   Y=;
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A5wBG66Bd/bvrYAzlHek055DYdL4zR+YMi2?=
+ =?us-ascii?q?QD/UZ3VBBTb4ikjMiohvsWzlvZjzwWVXEml7m7Scu9aF7V6JId2+csFJi4Wg?=
+ =?us-ascii?q?2OggaVBaVDyaen/DH6AS358YdmpMRdWoxzEsf5A1Q/rcuS2miFOu0tytWG76?=
+ =?us-ascii?q?yk7N22pxwGcShRd6pi4w1lYzz1LmRKQmB9aaYRJd657spDqyHIQxQqR/X+IG?=
+ =?us-ascii?q?UZVO7eoNCOs5TqbXc9dnoawTjLqy+047jnFBXd5DMiandkxLcv9nWtqX2d2p?=
+ =?us-ascii?q?me?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BfAwDQ+25g/4gNJK1aHgEBCxIMggc?=
+ =?us-ascii?q?Lgit3VgE5MZYVmmyBfAsBAQENAQEgFAQBAYZJAiU0CQ4CAwEBDAEBBQEBAQI?=
+ =?us-ascii?q?BBgRxE4VQDYZyCwF0XzISgnEBgweqeoF2M4EBiCOBRIE5iGV0g3QnHIFJQoE?=
+ =?us-ascii?q?Tg2CKOQSCNRJTKBMBExCBKIEZnl2cKYMViWOTCg8jg02BPok6hhKQGpUVnjM?=
+ =?us-ascii?q?gVIQCAgQGBQIWgVQ6gVkzGggbFYMkCUcZDo4rFoM1hwqECCEDLwI2AgYKAQE?=
+ =?us-ascii?q?DCY0RAQE?=
+X-IronPort-AV: E=Sophos;i="5.82,206,1613433600"; 
+   d="scan'208";a="883645339"
+Received: from alln-core-3.cisco.com ([173.36.13.136])
+  by rcdn-iport-6.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 08 Apr 2021 12:51:36 +0000
+Received: from sjc-ads-9103.cisco.com (sjc-ads-9103.cisco.com [10.30.208.113])
+        by alln-core-3.cisco.com (8.15.2/8.15.2) with ESMTPS id 138CpZo2028456
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 8 Apr 2021 12:51:36 GMT
+Received: by sjc-ads-9103.cisco.com (Postfix, from userid 487941)
+        id 99AA7CC1251; Thu,  8 Apr 2021 05:51:35 -0700 (PDT)
+From:   Denys Zagorui <dzagorui@cisco.com>
+To:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org
+Subject: [PATCH v3] perf: build reproducibility improvements
+Date:   Thu,  8 Apr 2021 05:51:35 -0700
+Message-Id: <20210408125135.8445-1-dzagorui@cisco.com>
+X-Mailer: git-send-email 2.26.2.Cisco
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Outbound-SMTP-Client: 10.30.208.113, sjc-ads-9103.cisco.com
+X-Outbound-Node: alln-core-3.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a lot of tty-core-only functions that are listed in
-include/linux/tty.h.  Move them to drivers/tty/tty.h so that no one else
-can accidentally call them or think that they are public functions.
+This patch helps to make perf build more reproducible
 
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+It seems there is some need to have an ability to invoke
+perf from build directory without installation
+(84cfac7f05e1: perf tools: Set and pass DOCDIR to builtin-report.c)
+DOCDIR contains an absolute path to kernel source directory.
+This path can be read from .config-detected that is stored in the
+same dir as perf executable.
+
+There is also python binding test where PYTHONPATH is used to store
+absolute path to python/perf.so library. This path can be
+also determined in runtime.
+
+bison stores full paths in generated files. This can be
+remapped by using --file-prefix-map option that is available
+starting from version 3.7.1.
+
+Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
 ---
- drivers/tty/n_gsm.c  |  1 +
- drivers/tty/n_hdlc.c |  1 +
- drivers/tty/tty.h    | 37 +++++++++++++++++++++++++++++++++++++
- include/linux/tty.h  | 34 ----------------------------------
- 4 files changed, 39 insertions(+), 34 deletions(-)
+ tools/perf/Build              |  1 -
+ tools/perf/Makefile.config    |  9 +++++
+ tools/perf/builtin-report.c   | 13 +++++++-
+ tools/perf/tests/Build        |  2 +-
+ tools/perf/tests/python-use.c | 14 +++++++-
+ tools/perf/util/Build         |  6 ++--
+ tools/perf/util/util.c        | 62 +++++++++++++++++++++++++++++++++++
+ tools/perf/util/util.h        |  5 +++
+ 8 files changed, 105 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 51dafc06f541..6114980c832d 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -50,6 +50,7 @@
- #include <linux/netdevice.h>
- #include <linux/etherdevice.h>
- #include <linux/gsmmux.h>
-+#include "tty.h"
+diff --git a/tools/perf/Build b/tools/perf/Build
+index db61dbe2b543..56d0189f1029 100644
+--- a/tools/perf/Build
++++ b/tools/perf/Build
+@@ -45,7 +45,6 @@ CFLAGS_perf.o              += -DPERF_HTML_PATH="BUILD_STR($(htmldir_SQ))"	\
+ 			      -DPREFIX="BUILD_STR($(prefix_SQ))"
+ CFLAGS_builtin-trace.o	   += -DSTRACE_GROUPS_DIR="BUILD_STR($(STRACE_GROUPS_DIR_SQ))"
+ CFLAGS_builtin-report.o	   += -DTIPDIR="BUILD_STR($(tipdir_SQ))"
+-CFLAGS_builtin-report.o	   += -DDOCDIR="BUILD_STR($(srcdir_SQ)/Documentation)"
  
- static int debug;
- module_param(debug, int, 0600);
-diff --git a/drivers/tty/n_hdlc.c b/drivers/tty/n_hdlc.c
-index 1363e659dc1d..e64ab74c9a2c 100644
---- a/drivers/tty/n_hdlc.c
-+++ b/drivers/tty/n_hdlc.c
-@@ -100,6 +100,7 @@
+ perf-y += util/
+ perf-y += arch/
+diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+index d8e59d31399a..2035bae6d5c5 100644
+--- a/tools/perf/Makefile.config
++++ b/tools/perf/Makefile.config
+@@ -195,6 +195,12 @@ ifeq ($(call get-executable,$(BISON)),)
+   dummy := $(error Error: $(BISON) is missing on this system, please install it)
+ endif
  
- #include <asm/termios.h>
- #include <linux/uaccess.h>
-+#include "tty.h"
++ifneq ($(OUTPUT),)
++  ifeq ($(shell expr $(shell $(BISON) --version | grep bison | sed -e 's/.\+ \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 371), 1)
++    BISON_FILE_PREFIX_MAP := --file-prefix-map=$(OUTPUT)=
++  endif
++endif
++
+ # Treat warnings as errors unless directed not to
+ ifneq ($(WERROR),0)
+   CORE_CFLAGS += -Werror
+@@ -1208,3 +1214,6 @@ $(call detected_var,LIBDIR)
+ $(call detected_var,GTK_CFLAGS)
+ $(call detected_var,PERL_EMBED_CCOPTS)
+ $(call detected_var,PYTHON_EMBED_CCOPTS)
++ifneq ($(BISON_FILE_PREFIX_MAP),)
++$(call detected_var,BISON_FILE_PREFIX_MAP)
++endif
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index 2a845d6cac09..33f7ac6ed6ce 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -610,12 +610,23 @@ static int report__browse_hists(struct report *rep)
+ 	struct perf_session *session = rep->session;
+ 	struct evlist *evlist = session->evlist;
+ 	const char *help = perf_tip(system_path(TIPDIR));
++	char *exec_path = NULL;
++	char *docdir = NULL;
  
- /*
-  * Buffers for individual HDLC frames
-diff --git a/drivers/tty/tty.h b/drivers/tty/tty.h
-index b0d78bfdbd8c..caaf97ba5267 100644
---- a/drivers/tty/tty.h
-+++ b/drivers/tty/tty.h
-@@ -47,6 +47,43 @@ static inline void tty_set_flow_change(struct tty_struct *tty, int val)
- int tty_ldisc_lock(struct tty_struct *tty, unsigned long timeout);
- void tty_ldisc_unlock(struct tty_struct *tty);
+ 	if (help == NULL) {
+ 		/* fallback for people who don't install perf ;-) */
+-		help = perf_tip(DOCDIR);
++		exec_path = perf_exe_path();
++		if (exec_path == NULL || perf_src_doc(exec_path, &docdir))
++			docdir = NULL;
++
++		if (docdir != NULL)
++			help = perf_tip(docdir);
++
+ 		if (help == NULL)
+ 			help = "Cannot load tips.txt file, please install perf!";
++
++		free(exec_path);
++		free(docdir);
+ 	}
  
-+int __tty_check_change(struct tty_struct *tty, int sig);
-+int tty_check_change(struct tty_struct *tty);
-+void __stop_tty(struct tty_struct *tty);
-+void __start_tty(struct tty_struct *tty);
-+void tty_vhangup_session(struct tty_struct *tty);
-+void tty_open_proc_set_tty(struct file *filp, struct tty_struct *tty);
-+int tty_signal_session_leader(struct tty_struct *tty, int exit_session);
-+void session_clear_tty(struct pid *session);
-+void tty_buffer_free_all(struct tty_port *port);
-+void tty_buffer_flush(struct tty_struct *tty, struct tty_ldisc *ld);
-+void tty_buffer_init(struct tty_port *port);
-+void tty_buffer_set_lock_subclass(struct tty_port *port);
-+bool tty_buffer_restart_work(struct tty_port *port);
-+bool tty_buffer_cancel_work(struct tty_port *port);
-+void tty_buffer_flush_work(struct tty_port *port);
-+speed_t tty_termios_input_baud_rate(struct ktermios *termios);
-+void tty_ldisc_hangup(struct tty_struct *tty, bool reset);
-+int tty_ldisc_reinit(struct tty_struct *tty, int disc);
-+long tty_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
-+long tty_jobctrl_ioctl(struct tty_struct *tty, struct tty_struct *real_tty,
-+		       struct file *file, unsigned int cmd, unsigned long arg);
-+void tty_default_fops(struct file_operations *fops);
-+struct tty_struct *alloc_tty_struct(struct tty_driver *driver, int idx);
-+int tty_alloc_file(struct file *file);
-+void tty_add_file(struct tty_struct *tty, struct file *file);
-+void tty_free_file(struct file *file);
-+int tty_release(struct inode *inode, struct file *filp);
+ 	switch (use_browser) {
+diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+index 650aec19d490..a20098dcdbc4 100644
+--- a/tools/perf/tests/Build
++++ b/tools/perf/tests/Build
+@@ -98,5 +98,5 @@ perf-$(CONFIG_DWARF_UNWIND) += dwarf-unwind.o
+ endif
+ 
+ CFLAGS_attr.o         += -DBINDIR="BUILD_STR($(bindir_SQ))" -DPYTHON="BUILD_STR($(PYTHON_WORD))"
+-CFLAGS_python-use.o   += -DPYTHONPATH="BUILD_STR($(OUTPUT)python)" -DPYTHON="BUILD_STR($(PYTHON_WORD))"
++CFLAGS_python-use.o   += -DPYTHON="BUILD_STR($(PYTHON_WORD))"
+ CFLAGS_dwarf-unwind.o += -fno-optimize-sibling-calls
+diff --git a/tools/perf/tests/python-use.c b/tools/perf/tests/python-use.c
+index 98c6d474aa6f..930aa4c6264e 100644
+--- a/tools/perf/tests/python-use.c
++++ b/tools/perf/tests/python-use.c
+@@ -8,16 +8,28 @@
+ #include <linux/compiler.h>
+ #include "tests.h"
+ #include "util/debug.h"
++#include "util/util.h"
+ 
+ int test__python_use(struct test *test __maybe_unused, int subtest __maybe_unused)
+ {
+ 	char *cmd;
+ 	int ret;
++	char *exec_path;
++	char *pythonpath;
 +
-+#define tty_is_writelocked(tty)  (mutex_is_locked(&tty->atomic_write_lock))
++	exec_path = perf_exe_path();
++	if (exec_path == NULL)
++		return -1;
 +
-+int tty_ldisc_setup(struct tty_struct *tty, struct tty_struct *o_tty);
-+void tty_ldisc_release(struct tty_struct *tty);
-+int __must_check tty_ldisc_init(struct tty_struct *tty);
-+void tty_ldisc_deinit(struct tty_struct *tty);
-+
-+void tty_sysctl_init(void);
-+
- /* tty_audit.c */
- #ifdef CONFIG_AUDIT
- void tty_audit_add_data(struct tty_struct *tty, const void *data, size_t size);
-diff --git a/include/linux/tty.h b/include/linux/tty.h
-index 143f393dca3b..1611214c8457 100644
---- a/include/linux/tty.h
-+++ b/include/linux/tty.h
-@@ -431,11 +431,7 @@ static inline struct tty_struct *tty_kref_get(struct tty_struct *tty)
++	if (asprintf(&pythonpath, "%spython", exec_path) < 0)
++		return -1;
+ 
+ 	if (asprintf(&cmd, "echo \"import sys ; sys.path.append('%s'); import perf\" | %s %s",
+-		     PYTHONPATH, PYTHON, verbose > 0 ? "" : "2> /dev/null") < 0)
++		     pythonpath, PYTHON, verbose > 0 ? "" : "2> /dev/null") < 0)
+ 		return -1;
+ 
++	free(exec_path);
++	free(pythonpath);
+ 	pr_debug("python usage test: \"%s\"\n", cmd);
+ 	ret = system(cmd) ? -1 : 0;
+ 	free(cmd);
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index e3e12f9d4733..33476b1d28d5 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -204,7 +204,7 @@ $(OUTPUT)util/parse-events-flex.c $(OUTPUT)util/parse-events-flex.h: util/parse-
+ 
+ $(OUTPUT)util/parse-events-bison.c $(OUTPUT)util/parse-events-bison.h: util/parse-events.y
+ 	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
++	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
+ 		-o $(OUTPUT)util/parse-events-bison.c -p parse_events_
+ 
+ $(OUTPUT)util/expr-flex.c $(OUTPUT)util/expr-flex.h: util/expr.l $(OUTPUT)util/expr-bison.c
+@@ -214,7 +214,7 @@ $(OUTPUT)util/expr-flex.c $(OUTPUT)util/expr-flex.h: util/expr.l $(OUTPUT)util/e
+ 
+ $(OUTPUT)util/expr-bison.c $(OUTPUT)util/expr-bison.h: util/expr.y
+ 	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
++	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
+ 		-o $(OUTPUT)util/expr-bison.c -p expr_
+ 
+ $(OUTPUT)util/pmu-flex.c $(OUTPUT)util/pmu-flex.h: util/pmu.l $(OUTPUT)util/pmu-bison.c
+@@ -224,7 +224,7 @@ $(OUTPUT)util/pmu-flex.c $(OUTPUT)util/pmu-flex.h: util/pmu.l $(OUTPUT)util/pmu-
+ 
+ $(OUTPUT)util/pmu-bison.c $(OUTPUT)util/pmu-bison.h: util/pmu.y
+ 	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) \
++	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) $(BISON_FILE_PREFIX_MAP) \
+ 		-o $(OUTPUT)util/pmu-bison.c -p perf_pmu_
+ 
+ FLEX_GE_26 := $(shell expr $(shell $(FLEX) --version | sed -e  's/flex \([0-9]\+\).\([0-9]\+\)/\1\2/g') \>\= 26)
+diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
+index 37a9492edb3e..f5408520a3b5 100644
+--- a/tools/perf/util/util.c
++++ b/tools/perf/util/util.c
+@@ -416,3 +416,65 @@ char *perf_exe(char *buf, int len)
+ 	}
+ 	return strcpy(buf, "perf");
  }
++
++char *perf_exe_path(void)
++{
++	int i;
++	char *buf;
++
++	buf = malloc(PATH_MAX);
++	buf = perf_exe(buf, PATH_MAX);
++
++	for (i = strlen(buf) - 1; i != 0 && buf[i] != '/'; i--)
++		;
++
++	if (!i) {
++		free(buf);
++		return NULL;
++	}
++
++	buf[i + 1] = 0;
++
++	return buf;
++}
++
++int perf_src_doc(const char *exec_path, char **strp)
++{
++	FILE *file;
++	char *line = NULL;
++	size_t line_len = 0;
++	ssize_t nread;
++	int ret = -1;
++	char *config_detected = NULL;
++	static const char srcdir[] = "srcdir_SQ";
++
++	if (asprintf(&config_detected, "%s.config-detected", exec_path) < 0)
++		return -1;
++
++	file = fopen(config_detected, "r");
++	if (!file)
++		goto out;
++
++	while (!feof(file)) {
++		nread = getline(&line, &line_len, file);
++		if (nread < 0)
++			break;
++
++		if (!strncmp(line, srcdir, sizeof(srcdir) - 1)) {
++
++			if (line[nread - 1] == '\n')
++				line[nread - 1] = 0;
++
++			if (asprintf(strp, "%s/Documentation", &line[sizeof(srcdir)]) != -1)
++				ret = 0;
++
++			break;
++		}
++	}
++
++	fclose(file);
++out:
++	free(line);
++	free(config_detected);
++	return ret;
++}
+diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
+index ad737052e597..e480df3f5993 100644
+--- a/tools/perf/util/util.h
++++ b/tools/perf/util/util.h
+@@ -51,6 +51,11 @@ void perf_set_singlethreaded(void);
+ void perf_set_multithreaded(void);
  
- extern void tty_wait_until_sent(struct tty_struct *tty, long timeout);
--extern int __tty_check_change(struct tty_struct *tty, int sig);
--extern int tty_check_change(struct tty_struct *tty);
--extern void __stop_tty(struct tty_struct *tty);
- extern void stop_tty(struct tty_struct *tty);
--extern void __start_tty(struct tty_struct *tty);
- extern void start_tty(struct tty_struct *tty);
- extern int tty_register_driver(struct tty_driver *driver);
- extern int tty_unregister_driver(struct tty_driver *driver);
-@@ -462,23 +458,11 @@ extern int tty_get_icount(struct tty_struct *tty,
- extern int is_current_pgrp_orphaned(void);
- extern void tty_hangup(struct tty_struct *tty);
- extern void tty_vhangup(struct tty_struct *tty);
--extern void tty_vhangup_session(struct tty_struct *tty);
- extern int tty_hung_up_p(struct file *filp);
- extern void do_SAK(struct tty_struct *tty);
- extern void __do_SAK(struct tty_struct *tty);
--extern void tty_open_proc_set_tty(struct file *filp, struct tty_struct *tty);
--extern int tty_signal_session_leader(struct tty_struct *tty, int exit_session);
--extern void session_clear_tty(struct pid *session);
- extern void no_tty(void);
--extern void tty_buffer_free_all(struct tty_port *port);
--extern void tty_buffer_flush(struct tty_struct *tty, struct tty_ldisc *ld);
--extern void tty_buffer_init(struct tty_port *port);
--extern void tty_buffer_set_lock_subclass(struct tty_port *port);
--extern bool tty_buffer_restart_work(struct tty_port *port);
--extern bool tty_buffer_cancel_work(struct tty_port *port);
--extern void tty_buffer_flush_work(struct tty_port *port);
- extern speed_t tty_termios_baud_rate(struct ktermios *termios);
--extern speed_t tty_termios_input_baud_rate(struct ktermios *termios);
- extern void tty_termios_encode_baud_rate(struct ktermios *termios,
- 						speed_t ibaud, speed_t obaud);
- extern void tty_encode_baud_rate(struct tty_struct *tty,
-@@ -506,27 +490,16 @@ extern int tty_set_termios(struct tty_struct *tty, struct ktermios *kt);
- extern struct tty_ldisc *tty_ldisc_ref(struct tty_struct *);
- extern void tty_ldisc_deref(struct tty_ldisc *);
- extern struct tty_ldisc *tty_ldisc_ref_wait(struct tty_struct *);
--extern void tty_ldisc_hangup(struct tty_struct *tty, bool reset);
--extern int tty_ldisc_reinit(struct tty_struct *tty, int disc);
- extern const struct seq_operations tty_ldiscs_seq_ops;
+ char *perf_exe(char *buf, int len);
++/* perf_exe_path return malloc'd string and perf_src_doc allocate
++ * memory for strp, caller must free it
++ */
++char *perf_exe_path(void);
++int perf_src_doc(const char *exe_path, char **strp);
  
- extern void tty_wakeup(struct tty_struct *tty);
- extern void tty_ldisc_flush(struct tty_struct *tty);
- 
--extern long tty_ioctl(struct file *file, unsigned int cmd, unsigned long arg);
- extern int tty_mode_ioctl(struct tty_struct *tty, struct file *file,
- 			unsigned int cmd, unsigned long arg);
--extern long tty_jobctrl_ioctl(struct tty_struct *tty, struct tty_struct *real_tty,
--			      struct file *file, unsigned int cmd, unsigned long arg);
- extern int tty_perform_flush(struct tty_struct *tty, unsigned long arg);
--extern void tty_default_fops(struct file_operations *fops);
--extern struct tty_struct *alloc_tty_struct(struct tty_driver *driver, int idx);
--extern int tty_alloc_file(struct file *file);
--extern void tty_add_file(struct tty_struct *tty, struct file *file);
--extern void tty_free_file(struct file *file);
- extern struct tty_struct *tty_init_dev(struct tty_driver *driver, int idx);
- extern void tty_release_struct(struct tty_struct *tty, int idx);
--extern int tty_release(struct inode *inode, struct file *filp);
- extern void tty_init_termios(struct tty_struct *tty);
- extern void tty_save_termios(struct tty_struct *tty);
- extern int tty_standard_install(struct tty_driver *driver,
-@@ -534,8 +507,6 @@ extern int tty_standard_install(struct tty_driver *driver,
- 
- extern struct mutex tty_mutex;
- 
--#define tty_is_writelocked(tty)  (mutex_is_locked(&tty->atomic_write_lock))
--
- extern void tty_port_init(struct tty_port *port);
- extern void tty_port_link_device(struct tty_port *port,
- 		struct tty_driver *driver, unsigned index);
-@@ -655,13 +626,8 @@ static inline int tty_port_users(struct tty_port *port)
- extern int tty_register_ldisc(int disc, struct tty_ldisc_ops *new_ldisc);
- extern int tty_unregister_ldisc(int disc);
- extern int tty_set_ldisc(struct tty_struct *tty, int disc);
--extern int tty_ldisc_setup(struct tty_struct *tty, struct tty_struct *o_tty);
--extern void tty_ldisc_release(struct tty_struct *tty);
--extern int __must_check tty_ldisc_init(struct tty_struct *tty);
--extern void tty_ldisc_deinit(struct tty_struct *tty);
- extern int tty_ldisc_receive_buf(struct tty_ldisc *ld, const unsigned char *p,
- 				 char *f, int count);
--extern void tty_sysctl_init(void);
- 
- /* n_tty.c */
- extern void n_tty_inherit_ops(struct tty_ldisc_ops *ops);
+ #ifndef O_CLOEXEC
+ #ifdef __sparc__
 -- 
-2.31.1
+2.26.2.Cisco
 
