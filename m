@@ -2,439 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59978358CFC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E10358D03
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 20:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232954AbhDHSxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 14:53:22 -0400
-Received: from mail-pg1-f174.google.com ([209.85.215.174]:41684 "EHLO
-        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbhDHSxU (ORCPT
+        id S232923AbhDHS4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 14:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231676AbhDHS4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 14:53:20 -0400
-Received: by mail-pg1-f174.google.com with SMTP id f29so2043818pgm.8;
-        Thu, 08 Apr 2021 11:53:09 -0700 (PDT)
+        Thu, 8 Apr 2021 14:56:34 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B023C061760;
+        Thu,  8 Apr 2021 11:56:23 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso1911149pjb.3;
+        Thu, 08 Apr 2021 11:56:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IexjwBFUHeHNYiYxUhNPM2AzfjEbH0Hum3i/l7HbIAo=;
+        b=mPhDzdxKQHYvRyEAUvmiPOfCp+vgeyoP4BgErKeoyQAd46sX2YgRNheIVRe3Z8J6wh
+         mqW72o2DVBXNptZZ2O6nZ58ypaSFxVxxFFfNPz4xfeN6pqRdndidLPpflBMgNp4BEwb6
+         e06/LxILWaBHoUwfHDwTG/pSte0AelCRm3AhUI1DqHutreRor8VLCkBUDRvMkyw7Apm6
+         8q3BQGDfUd89BLOK6R4OHHrBZiRsT9ma9FL6xHAHOlLMp4yoGZckgm5OmtuxKExY6b1S
+         h2i50oa3AeLzeO3u+Gj0QUZbPQXMPvDb0pLChuWIBeDJosvFYCZ/rNnicsMzvzcUL0FS
+         QoRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=h49KcBd5xHhKT6A+MHvhKtJ6y1rV0GAACbv3hOLpipg=;
-        b=IcjgX/JjFa3Xva2CGdyM6qYxCNj/g7a6b2O1w920voEMn7PgdKJt710anCve1ss2Qr
-         sym3s+TxJ6xug/CxCe5K5GgZj48m69XIf8/1kQ11XUuGnM6L1ispC6dO8P0R7eLnFTbs
-         ePZX56MSvsYwfl+w5DEg9q1mGd0tp9hKHdsUFWOsxg+ZSOgwu2rL5ZW0eJyLiAxm4Tvu
-         Y6cyWMKpe2Vct+G5xE6s6y8A9GEpUCy4t2fQ/jdT6RNfs4b5kdogBVu6KZgdxlUaXvYT
-         M1jQZ00TVkfxadGcYS1EWoN/b9YHuJ3diM1goHRoQx7moCD5YNhCEcXJdUdFnf7rOoX0
-         R4Lg==
-X-Gm-Message-State: AOAM531J+TNO4lBmOdBVezyQWJGj0IJcj17REd0XKGlUj6e5AN0l8jO/
-        S6DG95D77Mcw31GkgmNe5e0=
-X-Google-Smtp-Source: ABdhPJzBe01GxB/GWlJFtZWCiM+i1cMOBBsP48lhU5f8tagsfcedli8OKNojSTz16WBxdZ00iBRbUw==
-X-Received: by 2002:a63:4c5d:: with SMTP id m29mr9081742pgl.366.1617907988613;
-        Thu, 08 Apr 2021 11:53:08 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id x18sm201791pfu.32.2021.04.08.11.53.07
+        bh=IexjwBFUHeHNYiYxUhNPM2AzfjEbH0Hum3i/l7HbIAo=;
+        b=XNIsTbEFhZqh2S/D88vXxQlIuwLPoCme3mUCLalH8fGpltPSN5Q6X531wY+x451fod
+         R8nx+Ppo0ask5OnPFRaPsMcT9ltKMsLilNiGu0HUnAWFrjoByCwPHIEJGndyC0i7+sHI
+         DW0W8I17PHJnW/fKRwy9UkxC8Ku00Yg1MSwwo8B0fMKgrPERjAKZR1cNckG7s1Cd/eYu
+         V7kjVvabcSYLwNeQrrpEft052BPAsLTdF2RI+Ng4XiA9j8mQTUcv+TDjLTI+7bt924Bk
+         uLzO4Dw00iF3ETz/CF1APgMYPGy/7ZYnl/bZs8U95n0fIllFNygxrX44DXuooZB13I1e
+         3ZYA==
+X-Gm-Message-State: AOAM533KwsxtfCmF9U04Cbx/QAIO89dKIdWD1dZ5VHzK3QSQO2/PouE/
+        Z0GJfo6OSqGqvW+h1kDrC60=
+X-Google-Smtp-Source: ABdhPJyb53zIKdPFu1C1EK8w0rYzGNzJsdT+WLA7sk56quBiVuqrDeAGUW/Z9x4iWhVXTKB1kY5Ujw==
+X-Received: by 2002:a17:90b:4a8a:: with SMTP id lp10mr9061898pjb.27.1617908182755;
+        Thu, 08 Apr 2021 11:56:22 -0700 (PDT)
+Received: from nuc10 (104.36.148.139.aurocloud.com. [104.36.148.139])
+        by smtp.gmail.com with ESMTPSA id 7sm195496pfv.97.2021.04.08.11.56.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 11:53:07 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 11:53:06 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     "Xu, Yilun" <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        "matthew.gerlach@linux.intel.com" <matthew.gerlach@linux.intel.com>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "russell.h.weight@linux.intel.com" <russell.h.weight@linux.intel.com>
-Subject: Re: [PATCH 2/3] fpga: dfl: Add DFL bus driver for Altera SPI Master
-Message-ID: <YG9REtNPi4e2hyJK@epycbox.lan>
-References: <20210405235301.187542-1-matthew.gerlach@linux.intel.com>
- <20210405235301.187542-3-matthew.gerlach@linux.intel.com>
- <YGuvFYvJTMPPm2Jy@epycbox.lan>
- <alpine.DEB.2.22.394.2104060847030.208844@rhweight-WRK1>
- <YGyQdN9uS/niyFDP@epycbox.lan>
- <DM6PR11MB3819E0FC4F735C72746CE54785749@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20210408081152.GA2713@yilunxu-OptiPlex-7050>
- <DM6PR11MB3819317A55FD7798E778EC4D85749@DM6PR11MB3819.namprd11.prod.outlook.com>
+        Thu, 08 Apr 2021 11:56:22 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 11:56:15 -0700
+From:   Rustam Kovhaev <rkovhaev@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        syzbot <syzbot+f3694595248708227d35@syzkaller.appspotmail.com>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: memory leak in bpf
+Message-ID: <YG9Rz4R5bx+FnkaF@nuc10>
+References: <000000000000911d3905b459824c@google.com>
+ <000000000000e56a2605b616b2d9@google.com>
+ <YD0UjWjQmYgY4Qgh@nuc10>
+ <CACT4Y+YQzTkk=UPNH5g96e+yPYyaPBemmhqXz5oaWEvW9xb-rQ@mail.gmail.com>
+ <YD1RE3O4FBkKK32l@nuc10>
+ <CACT4Y+bvWyipjZ6P6gkno0ZHRWPJ-HFGiT3yECqQU37a0E_tgQ@mail.gmail.com>
+ <YG4/PEhZ9CnKo1K3@nuc10>
+ <CAEf4BzbB3r2pOeKBQe2F08g5ojj0RaEHHeg5L6=MVMYy-J5baA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DM6PR11MB3819317A55FD7798E778EC4D85749@DM6PR11MB3819.namprd11.prod.outlook.com>
+In-Reply-To: <CAEf4BzbB3r2pOeKBQe2F08g5ojj0RaEHHeg5L6=MVMYy-J5baA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 09:20:19AM +0000, Wu, Hao wrote:
-> > On Thu, Apr 08, 2021 at 03:30:15PM +0800, Wu, Hao wrote:
-> > > > > On Mon, 5 Apr 2021, Moritz Fischer wrote:
-> > > > >
-> > > > > > Hi Matthew,
+On Wed, Apr 07, 2021 at 04:35:34PM -0700, Andrii Nakryiko wrote:
+> On Wed, Apr 7, 2021 at 4:24 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> >
+> > On Mon, Mar 01, 2021 at 09:43:00PM +0100, Dmitry Vyukov wrote:
+> > > On Mon, Mar 1, 2021 at 9:39 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
+> > > >
+> > > > On Mon, Mar 01, 2021 at 08:05:42PM +0100, Dmitry Vyukov wrote:
+> > > > > On Mon, Mar 1, 2021 at 5:21 PM Rustam Kovhaev <rkovhaev@gmail.com> wrote:
 > > > > > >
-> > > > > > On Mon, Apr 05, 2021 at 04:53:00PM -0700,
-> > > > matthew.gerlach@linux.intel.com wrote:
-> > > > > > > From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+> > > > > > On Wed, Dec 09, 2020 at 10:58:10PM -0800, syzbot wrote:
+> > > > > > > syzbot has found a reproducer for the following issue on:
 > > > > > > >
-> > > > > > > This patch adds DFL bus driver for the Altera SPI Master
-> > > > > > > controller.  The SPI master is connected to an Intel SPI Slave to
-> > > > > > > Avalon Master Bridge, inside an Intel MAX10 BMC Chip.
+> > > > > > > HEAD commit:    a68a0262 mm/madvise: remove racy mm ownership check
+> > > > > > > git tree:       upstream
+> > > > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=11facf17500000
+> > > > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=4305fa9ea70c7a9f
+> > > > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=f3694595248708227d35
+> > > > > > > compiler:       gcc (GCC) 10.1.0-syz 20200507
+> > > > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159a9613500000
+> > > > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11bf7123500000
 > > > > > > >
-> > > > > > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > > > > > ---
-> > > > > > >  drivers/fpga/Kconfig          |   9 ++
-> > > > > > >  drivers/fpga/Makefile         |   1 +
-> > > > > > >  drivers/fpga/dfl-spi-altera.c | 221
-> > > > ++++++++++++++++++++++++++++++++++++++++++
-> > > > > > >  3 files changed, 231 insertions(+)
-> > > > > > >  create mode 100644 drivers/fpga/dfl-spi-altera.c
+> > > > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > > > > Reported-by: syzbot+f3694595248708227d35@syzkaller.appspotmail.com
 > > > > > > >
-> > > > > > > diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> > > > > > > index d591dd9..0a86994 100644
-> > > > > > > --- a/drivers/fpga/Kconfig
-> > > > > > > +++ b/drivers/fpga/Kconfig
-> > > > > > > @@ -210,6 +210,15 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
-> > > > > > >    the card. It also instantiates the SPI master (spi-altera) for
-> > > > > > >    the card's BMC (Board Management Controller).
+> > > > > > > Debian GNU/Linux 9 syzkaller ttyS0
+> > > > > > > Warning: Permanently added '10.128.0.9' (ECDSA) to the list of known hosts.
+> > > > > > > executing program
+> > > > > > > executing program
+> > > > > > > executing program
+> > > > > > > BUG: memory leak
+> > > > > > > unreferenced object 0xffff88810efccc80 (size 64):
+> > > > > > >   comm "syz-executor334", pid 8460, jiffies 4294945724 (age 13.850s)
+> > > > > > >   hex dump (first 32 bytes):
+> > > > > > >     c0 cb 14 04 00 ea ff ff c0 c2 11 04 00 ea ff ff  ................
+> > > > > > >     c0 56 3f 04 00 ea ff ff 40 18 38 04 00 ea ff ff  .V?.....@.8.....
+> > > > > > >   backtrace:
+> > > > > > >     [<0000000036ae98a7>] kmalloc_node include/linux/slab.h:575 [inline]
+> > > > > > >     [<0000000036ae98a7>] bpf_ringbuf_area_alloc kernel/bpf/ringbuf.c:94 [inline]
+> > > > > > >     [<0000000036ae98a7>] bpf_ringbuf_alloc kernel/bpf/ringbuf.c:135 [inline]
+> > > > > > >     [<0000000036ae98a7>] ringbuf_map_alloc kernel/bpf/ringbuf.c:183 [inline]
+> > > > > > >     [<0000000036ae98a7>] ringbuf_map_alloc+0x1be/0x410 kernel/bpf/ringbuf.c:150
+> > > > > > >     [<00000000d2cb93ae>] find_and_alloc_map kernel/bpf/syscall.c:122 [inline]
+> > > > > > >     [<00000000d2cb93ae>] map_create kernel/bpf/syscall.c:825 [inline]
+> > > > > > >     [<00000000d2cb93ae>] __do_sys_bpf+0x7d0/0x30a0 kernel/bpf/syscall.c:4381
+> > > > > > >     [<000000008feaf393>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> > > > > > >     [<00000000e1f53cfd>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > > > > > > >
-> > > > > > > +config FPGA_DFL_SPI_ALTERA
-> > > > > > > +tristate "FPGA DFL Altera SPI Master Driver"
-> > > > > > > +depends on FPGA_DFL
-> > > > > > > +select REGMAP
-> > > > > > > +help
-> > > > > > > +  This is a DFL bus driver for the Altera SPI master controller.
-> > > > > > > +  The SPI master is connected to a SPI slave to Avalon Master
-> > > > > > > +  bridge in a Intel MAX BMC.
-> > > > > > > +
-> > > > > > >  config FPGA_DFL_PCI
-> > > > > > >  tristate "FPGA DFL PCIe Device Driver"
-> > > > > > >  depends on PCI && FPGA_DFL
-> > > > > > > diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-> > > > > > > index 18dc9885..58a42ad 100644
-> > > > > > > --- a/drivers/fpga/Makefile
-> > > > > > > +++ b/drivers/fpga/Makefile
-> > > > > > > @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-
-> > > > afu-dma-region.o
-> > > > > > >  dfl-afu-objs += dfl-afu-error.o
 > > > > > > >
-> > > > > > >  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)+= dfl-n3000-
-> > > > nios.o
-> > > > > > > +obj-$(CONFIG_FPGA_DFL_SPI_ALTERA)+= dfl-spi-altera.o
-> > > > > > >
-> > > > > > >  # Drivers for FPGAs which implement DFL
-> > > > > > >  obj-$(CONFIG_FPGA_DFL_PCI)+= dfl-pci.o
-> > > > > > > diff --git a/drivers/fpga/dfl-spi-altera.c b/drivers/fpga/dfl-spi-altera.c
-> > > > > > > new file mode 100644
-> > > > > > > index 0000000..9bec25fd
-> > > > > > > --- /dev/null
-> > > > > > > +++ b/drivers/fpga/dfl-spi-altera.c
-> > > > > > > @@ -0,0 +1,221 @@
-> > > > > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > > > > +/*
-> > > > > > > + * DFL bus driver for Altera SPI Master
-> > > > > > > + *
-> > > > > > > + * Copyright (C) 2020 Intel Corporation, Inc.
-> > > > > > > + *
-> > > > > > > + * Authors:
-> > > > > > > + *   Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > > > > > + */
-> > > > > > > +
-> > > > > > > +#include <linux/types.h>
-> > > > > > > +#include <linux/kernel.h>
-> > > > > > > +#include <linux/module.h>
-> > > > > > > +#include <linux/stddef.h>
-> > > > > > > +#include <linux/errno.h>
-> > > > > > > +#include <linux/platform_device.h>
-> > > > > > > +#include <linux/io.h>
-> > > > > > > +#include <linux/bitfield.h>
-> > > > > > > +#include <linux/io-64-nonatomic-lo-hi.h>
-> > > > > > > +#include <linux/regmap.h>
-> > > > > > > +#include <linux/spi/spi.h>
-> > > > > > > +#include <linux/spi/altera.h>
-> > > > > > > +#include <linux/dfl.h>
-> > > > > > > +
-> > > > > > > +struct dfl_altera_spi {
-> > > > > > > +void __iomem *base;
-> > > > > > > +struct regmap *regmap;
-> > > > > > > +struct device *dev;
-> > > > > > > +struct platform_device *altr_spi;
-> > > > > > > +};
-> > > > > > > +
-> > > > > > > +#define SPI_CORE_PARAMETER      0x8
-> > > > > > > +#define SHIFT_MODE              BIT_ULL(1)
-> > > > > > > +#define SHIFT_MODE_MSB          0
-> > > > > > > +#define SHIFT_MODE_LSB          1
-> > > > > > > +#define DATA_WIDTH              GENMASK_ULL(7, 2)
-> > > > > > > +#define NUM_CHIPSELECT          GENMASK_ULL(13, 8)
-> > > > > > > +#define CLK_POLARITY            BIT_ULL(14)
-> > > > > > > +#define CLK_PHASE               BIT_ULL(15)
-> > > > > > > +#define PERIPHERAL_ID           GENMASK_ULL(47, 32)
-> > > > > > > +#define SPI_CLK                 GENMASK_ULL(31, 22)
-> > > > > > > +#define SPI_INDIRECT_ACC_OFST   0x10
-> > > > > > > +
-> > > > > > > +#define INDIRECT_ADDR           (SPI_INDIRECT_ACC_OFST+0x0)
-> > > > > > > +#define INDIRECT_WR             BIT_ULL(8)
-> > > > > > > +#define INDIRECT_RD             BIT_ULL(9)
-> > > > > > > +#define INDIRECT_RD_DATA        (SPI_INDIRECT_ACC_OFST+0x8)
-> > > > > > > +#define INDIRECT_DATA_MASK      GENMASK_ULL(31, 0)
-> > > > > > > +#define INDIRECT_DEBUG          BIT_ULL(32)
-> > > > > > > +#define INDIRECT_WR_DATA        (SPI_INDIRECT_ACC_OFST+0x10)
-> > > > > > > +#define INDIRECT_TIMEOUT        10000
-> > > > > > > +
-> > > > > > > +static int indirect_bus_reg_read(void *context, unsigned int reg,
-> > > > > > > + unsigned int *val)
-> > > > > > > +{
-> > > > > > > +struct dfl_altera_spi *aspi = context;
-> > > > > > > +void __iomem *base = aspi->base;
-> > > > > > > +int loops;
-> > > > > > > +u64 v;
-> > > > > > > +
-> > > > > > > +writeq((reg >> 2) | INDIRECT_RD, base + INDIRECT_ADDR);
-> > > > > > > +
-> > > > > > > +loops = 0;
-> > > > > > > +while ((readq(base + INDIRECT_ADDR) & INDIRECT_RD) &&
-> > > > > > > +       (loops++ < INDIRECT_TIMEOUT))
-> > > > > > > +cpu_relax();
-> > > > > > > +
-> > > > > > > +if (loops >= INDIRECT_TIMEOUT) {
-> > > > > > > +pr_err("%s timed out %d\n", __func__, loops);
-> > > > > > > +return -ETIME;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +v = readq(base + INDIRECT_RD_DATA);
-> > > > > > > +
-> > > > > > > +*val = v & INDIRECT_DATA_MASK;
-> > > > > > > +
-> > > > > > > +return 0;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static int indirect_bus_reg_write(void *context, unsigned int reg,
-> > > > > > > +  unsigned int val)
-> > > > > > > +{
-> > > > > > > +struct dfl_altera_spi *aspi = context;
-> > > > > > > +void __iomem *base = aspi->base;
-> > > > > > > +int loops;
-> > > > > > > +
-> > > > > > > +writeq(val, base + INDIRECT_WR_DATA);
-> > > > > > > +writeq((reg >> 2) | INDIRECT_WR, base + INDIRECT_ADDR);
-> > > > > > > +
-> > > > > > > +loops = 0;
-> > > > > > > +while ((readq(base + INDIRECT_ADDR) & INDIRECT_WR) &&
-> > > > > > > +       (loops++ < INDIRECT_TIMEOUT))
-> > > > > > > +cpu_relax();
-> > > > > > > +
-> > > > > > > +if (loops >= INDIRECT_TIMEOUT) {
-> > > > > > > +pr_err("%s timed out %d\n", __func__, loops);
-> > > > > > > +return -ETIME;
-> > > > > > > +}
-> > > > > > > +return 0;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static const struct regmap_config indirect_regbus_cfg = {
-> > > > > > > +.reg_bits = 32,
-> > > > > > > +.reg_stride = 4,
-> > > > > > > +.val_bits = 32,
-> > > > > > > +.fast_io = true,
-> > > > > > > +
-> > > > > > > +.reg_write = indirect_bus_reg_write,
-> > > > > > > +.reg_read = indirect_bus_reg_read,
-> > > > > > > +};
-> > > > > > > +
-> > > > > > > +static struct spi_board_info m10_bmc_info = {
-> > > > > > > +.modalias = "m10-d5005",
-> > > > > > > +.max_speed_hz = 12500000,
-> > > > > > > +.bus_num = 0,
-> > > > > > > +.chip_select = 0,
-> > > > > > > +};
-> > > > > > > +
-> > > > > > > +static struct platform_device *create_cntrl(struct device *dev,
-> > > > > > > +    void __iomem *base,
-> > > > > > > +    struct spi_board_info *m10_info)
-> > > > > > > +{
-> > > > > > > +struct altera_spi_platform_data pdata;
-> > > > > > > +struct platform_device_info pdevinfo;
-> > > > > > > +u64 v;
-> > > > > > > +
-> > > > > > > +v = readq(base + SPI_CORE_PARAMETER);
-> > > > > > > +
-> > > > > > > +memset(&pdata, 0, sizeof(pdata));
-> > > > > > > +pdata.mode_bits = SPI_CS_HIGH;
-> > > > > > > +if (FIELD_GET(CLK_POLARITY, v))
-> > > > > > > +pdata.mode_bits |= SPI_CPOL;
-> > > > > > > +if (FIELD_GET(CLK_PHASE, v))
-> > > > > > > +pdata.mode_bits |= SPI_CPHA;
-> > > > > > > +
-> > > > > > > +pdata.num_chipselect = FIELD_GET(NUM_CHIPSELECT, v);
-> > > > > > > +pdata.bits_per_word_mask =
-> > > > > > > +SPI_BPW_RANGE_MASK(1, FIELD_GET(DATA_WIDTH, v));
-> > > > > > > +
-> > > > > > > +pdata.num_devices = 1;
-> > > > > > > +pdata.devices = m10_info;
-> > > > > > > +
-> > > > > > > +dev_dbg(dev, "%s cs %u bpm 0x%x mode 0x%x\n", __func__,
-> > > > > > > +pdata.num_chipselect, pdata.bits_per_word_mask,
-> > > > > > > +pdata.mode_bits);
-> > > > > > > +
-> > > > > > > +memset(&pdevinfo, 0, sizeof(pdevinfo));
-> > > > > > > +
-> > > > > > > +pdevinfo.name = "subdev_spi_altera";
-> > > > > > > +pdevinfo.id = PLATFORM_DEVID_AUTO;
-> > > > > > > +pdevinfo.parent = dev;
-> > > > > > > +pdevinfo.data = &pdata;
-> > > > > > > +pdevinfo.size_data = sizeof(pdata);
-> > > > > > > +
-> > > > > > > +return platform_device_register_full(&pdevinfo);
 > > > > > >
-> > > > > > Should this be a SPI driver? I think looking at the UIO case we had
-> > > > > > decided against this pattern?
-> > > > >
-> > > > > This driver is similar in function to drivers/fpga/dfl-n3000-nios.c which
-> > > > > uses this design pattern.  Is it okay to keep this design pattern for
-> > > > > consistency?
-> > > > >
-> > > > >
+> > > > > > i am pretty sure that this one is a false positive
+> > > > > > the problem with reproducer is that it does not terminate all of the
+> > > > > > child processes that it spawns
 > > > > > >
-> > > > > > > +}
-> > > > > > > +static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
-> > > > > > > +{
-> > > > > > > +struct device *dev = &dfl_dev->dev;
-> > > > > > > +struct dfl_altera_spi *aspi;
-> > > > > > > +
-> > > > > > > +aspi = devm_kzalloc(dev, sizeof(*aspi), GFP_KERNEL);
-> > > > > > > +
-> > > > > > > +if (!aspi)
-> > > > > > > +return -ENOMEM;
-> > > > > > > +
-> > > > > > > +dev_set_drvdata(dev, aspi);
-> > > > > > > +
-> > > > > > > +aspi->dev = dev;
-> > > > > > > +
-> > > > > > > +aspi->base = devm_ioremap_resource(dev, &dfl_dev->mmio_res);
-> > > > > > > +
-> > > > > > > +if (IS_ERR(aspi->base)) {
-> > > > > > > +dev_err(dev, "%s get mem resource fail!\n", __func__);
-> > > > > > > +return PTR_ERR(aspi->base);
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +aspi->regmap = devm_regmap_init(dev, NULL, aspi,
-> > > > &indirect_regbus_cfg);
-> > > > > > > +if (IS_ERR(aspi->regmap))
-> > > > > > > +return PTR_ERR(aspi->regmap);
-> > > > > > > +
-> > > > > > > +aspi->altr_spi = create_cntrl(dev, aspi->base, &m10_bmc_info);
-> > > > > > > +
-> > > > > > > +if (IS_ERR(aspi->altr_spi)) {
-> > > > > > > +dev_err(dev, "%s failed to create spi platform driver\n",
-> > > > > > > +__func__);
-> > > > > > > +return PTR_ERR(aspi->base);
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +return 0;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static void dfl_spi_altera_remove(struct dfl_device *dfl_dev)
-> > > > > > > +{
-> > > > > > > +struct dfl_altera_spi *aspi = dev_get_drvdata(&dfl_dev->dev);
-> > > > > > > +
-> > > > > > > +platform_device_unregister(aspi->altr_spi);
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +#define FME_FEATURE_ID_MAX10_SPI        0xe
-> > > > > > > +
-> > > > > > > +static const struct dfl_device_id dfl_spi_altera_ids[] = {
-> > > > > > > +{ FME_ID, FME_FEATURE_ID_MAX10_SPI },
-> > > > > > > +{ }
-> > > > > > > +};
+> > > > > > i confirmed that it is a false positive by tracing __fput() and
+> > > > > > bpf_map_release(), i ran reproducer, got kmemleak report, then i
+> > > > > > manually killed those running leftover processes from reproducer and
+> > > > > > then both functions were executed and memory was freed
 > > > > > >
-> > > > > > Maybe you can extend the Altera SPI driver with this part?
+> > > > > > i am marking this one as:
+> > > > > > #syz invalid
 > > > > >
-> > > > > The file, drivers/spi/spi-altera.c, already has platform MODULE_ related
-> > > > > code.  Wouldn't moving this code to that file produce conflicts?
+> > > > > Hi Rustam,
+> > > > >
+> > > > > Thanks for looking into this.
+> > > > >
+> > > > > I wonder how/where are these objects referenced? If they are not
+> > > > > leaked and referenced somewhere, KMEMLEAK should not report them as
+> > > > > leaks.
+> > > > > So even if this is a false positive for BPF, this is a true positive
+> > > > > bug and something to fix for KMEMLEAK ;)
+> > > > > And syzbot will probably re-create this bug report soon as this still
+> > > > > happens and is not a one-off thing.
 > > > >
-> > > > I've seen other drivers support multiple busses, so it should be
-> > > > possible, there might be nuances I'm missing in my brief look at this,
-> > > > though.
-> > > >
-> > > > I think one of them would be MODULE_DEVICE_TABLE(platform, ...)
-> > > > and the other one MODULE_DEVICE_TABLE(dfl, ...)
-> > > >
-> > > > See drivers/i2c/busses/i2c-designware-platdrv.c for an example (though
-> > > > they might be guarding against what you describe with CONFIG_OF vs
-> > > > CONFIG_ACPI)
-> > > >
-> > > > If that doesn't work we could split it up into
-> > > >
-> > > > altera-spi-plat.c and altera-spi-dfl.c and altera-spi-core.c
-> > > > or something of that sort?
-> > > >
-> > > > My point being, now that we have a bus, let's use it and develop drivers
-> > > > according to the Linux device model where possible :)
+> > > > hi Dmitry, i haven't thought of it this way, but i guess you are right,
+> > > > it is a kmemleak bug, ideally kmemleak should be aware that there are
+> > > > still running processes holding references to bpf fd/anonymous inodes
+> > > > which in their turn hold references to allocated bpf maps
 > > >
-> > > Agree. This does make sense from my side too. DFL core provides the
-> > mechanism
-> > > to enumerate different IPs on FPGA, but each function driver needs to go to
-> > > related subsystem for review.  : )
-> > >
-> > > I understand that for FPGA case, it may have some additional logics for specific
-> > > purposes based on common altera spi master IP, then additional code for
-> > 
-> > I'm wondering if the additional logics are extensions for common spi-altera. Like
-> > the
-> > SPI_CORE_PARAMETER register, it is not within the register space of
-> > spi-altera,
-> > 
-> > 
-> >   |   |      +-------------+
-> >   |DFL|------| +--------+  |
-> >   |BUS|      | |SPI CORE|  |
-> >   |   |      | |PARAM   |  |
-> >   |   |      | +--------+  |
-> >   |   |      |             |
-> >   |   |      | +--------+  |   +-------+
-> >              | |Indirect|  |   |spi    |
-> >              | |access  +--+---|altera |
-> >              | |master  |  |   +-------+
-> >              | +--------+  |
-> >              +-------------+
-> > > a specific product still can be put into altera-spi-xxxx.c or altera-spi-dfl-xxxx.c
-> > 
-> > So is it proper we integrate this feature into spi-altera? Previously
-> > we have merged the dfl-n3000-nios, its spi part is very similar as
-> > this driver. The dfl-n3000-nios make the spi-altera as a sub device.
-> > Could we borrow the idea, or could we just integrate this driver in
-> > dfl-n3000-nios?
+> > > KMEMLEAK scans whole memory, so if there are pointers to the object
+> > > anywhere in memory, KMEMLEAK should not report them as leaked. Running
+> > > processes have no direct effect on KMEMLEAK logic.
+> > > So the question is: where are these pointers to these objects? If we
+> > > answer this, we can check how/why KMEMLEAK misses them. Are they
+> > > mangled in some way?
+> > thank you for your comments, they make sense, and indeed, the pointer
+> > gets vmaped.
+> > i should have looked into this sooner, becaused syzbot did trigger the
+> > issue again, and Andrii had to look into the same bug, sorry about that.
 > 
-> Looks like those are enhancements of the IP. They can be applied even
-> other buses are used, not only for DFL, like PCI device or platform device,
-> right? then why not put related code together with the original IP?
-
-Do you maybe need to extend struct dfl_device to have multiple mmio_res,
-then?
-
-Can DFL describe such a scenario?
-
-That seems the logical step to support what's been drawn up there?
-
+> No worries! I actually forgot about this thread :) Let's leave the
+> link to my today's investigation ([0]) just for completeness.
 > 
-> The reason I suggested that function drivers which use DFL bus, still need
-> to go to related subsystem, because we know DFL quite well but may
-> not be the experts for every subsystem (e.g. SPI), and every IPs (e.g. 
-> Altera SPI Master). Altera SPI Master driver maintainer could give more
-> valuable suggestions on your question if this feature can be integrated
-> into spi-altera or not. : )
+>   [0] https://lore.kernel.org/bpf/CAEf4BzYk+dqs+jwu6VKXP-RttcTEGFe+ySTGWT9CRNkagDiJVA@mail.gmail.com/
 > 
-> Hao
+> > if i am understanding this correctly here is what the fix should be:
+> > ---
+> >  kernel/bpf/ringbuf.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/kernel/bpf/ringbuf.c b/kernel/bpf/ringbuf.c
+> > index f25b719ac786..30400e74abe2 100644
+> > --- a/kernel/bpf/ringbuf.c
+> > +++ b/kernel/bpf/ringbuf.c
+> > @@ -8,6 +8,7 @@
+> >  #include <linux/vmalloc.h>
+> >  #include <linux/wait.h>
+> >  #include <linux/poll.h>
+> > +#include <linux/kmemleak.h>
+> >  #include <uapi/linux/btf.h>
+> >
+> >  #define RINGBUF_CREATE_FLAG_MASK (BPF_F_NUMA_NODE)
+> > @@ -105,6 +106,7 @@ static struct bpf_ringbuf *bpf_ringbuf_area_alloc(size_t data_sz, int numa_node)
+> >         rb = vmap(pages, nr_meta_pages + 2 * nr_data_pages,
+> >                   VM_ALLOC | VM_USERMAP, PAGE_KERNEL);
+> >         if (rb) {
+> > +               kmemleak_not_leak((void *) pages);
 > 
-> > 
-> > Thanks,
-> > Yilun
-> > 
-> > >
-> > > Thanks
-> > > Hao
-> > >
-> > > >
-> > > > Cheers,
-> > > > Moritz
-
-Cheers,
-Moritz
+> If that makes kmemleak happy, I have no problems with this. But maybe
+> leave some comment explaining why this is needed at all?
+> 
+> And for my understanding, how vmap changes anything? Those pages are
+> still referenced from rb, which is referenced from some struct file in
+> the system. Sorry if that's a naive question.
+> 
+valid question, it does look like kmemleak should be scanning
+vmalloc()/vmap() memory, i will research this further
