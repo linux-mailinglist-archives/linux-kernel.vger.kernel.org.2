@@ -2,281 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C9CF359003
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81BDF359005
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 00:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbhDHWxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 18:53:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49592 "EHLO
+        id S232684AbhDHWx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 18:53:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232643AbhDHWxF (ORCPT
+        with ESMTP id S232643AbhDHWxY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 18:53:05 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7663CC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 15:52:53 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id b17so3190632ilh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 15:52:53 -0700 (PDT)
+        Thu, 8 Apr 2021 18:53:24 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C6BC061760;
+        Thu,  8 Apr 2021 15:53:12 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id z10so4033918qkz.13;
+        Thu, 08 Apr 2021 15:53:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EQ3h5xe8+jzukdzUQlxZOE8rskbjPlCZ9sPf83nXZbY=;
-        b=MksMSZzbF0wh0wGQauFOyixOl0KDvpK82upbH62f/+ZzgHeGh5TON4vIVc6EIDrIC1
-         t8Y0dOJItALo2y2BKuAzhj6rufQi50ZiFkfErR+80UiqMdrZL3CN7bgKCL1RkRrtm+zc
-         NC3PQH902awbjcNgZkezBJz0gpziuWp2xqXXE=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/Q6ViLCHPm36Ds023XtZI8X+biRfAfx253hJcmCLWz0=;
+        b=U9+zy44FLk8TENK38IgPCc2RK3Di7tBkNjAD3qTNYnIL8DR0EFnfbMuLLZQTq/6Gk8
+         MYY3il8gKOGIJ6tB9hbcZv+ixeVCP9QF71gWLbJMwHHGwOD2qnkPpzQdO1D3vwac4q6+
+         LhpIxtppOSWcIY/81scF9aCuOTcoOBTHeePYBAE8809+2itKHqzf+nKk2Bj2e2wriqfl
+         utGAw8pSXXnpkjxL/IoDeKcUreedg6fcJnHGBUTwjx4NzPAOlsKdWP8Yao4LaZLl2Jwo
+         cT+KyMj/YDCJtE4ItSAcUBxZgZ8DfD13SHM/JwtyUj+2t62/5cCoJmZQwJ0IjGXzaxii
+         BvpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EQ3h5xe8+jzukdzUQlxZOE8rskbjPlCZ9sPf83nXZbY=;
-        b=UzhBmCA5rqENcBw7/z8PvIk9Ff0PtIRXSBedwvgLGdA+ssfgG/sX6eUQ5YN/gfxld4
-         5AQ8AQQaoYR55fWsiiG4hWieZq6Kx5wP2FG3mTR2S7wHIWtBribhy7iLD7lXZR4VTHsT
-         4mw4NlM3ka4LroingQQaC9xduPtiEVRSahF5Cyyufgt5+wptKdhvwf7uWEQDCvYbZICl
-         A2RAK3SdWtVon2NEFFOc5gnjIdWfHm4jixPBaqGIkMAjvd3O6/gxDVz3FW9A6e64MWTc
-         PRIOR4sRlbPbNpUmrZKqf39EeSnc7Z3hw480gNpjzwDJqKmnY/a+sBZT63oKx80Y32H3
-         acxQ==
-X-Gm-Message-State: AOAM530pEbJc4B6JSyjM1/hQG+hwALYKxNifkr3lU6A0jpZKyXMppfnp
-        HomEm0YgevV2OKxIqeKaf8vLa+UiyNQJPadnsHEJ+w==
-X-Google-Smtp-Source: ABdhPJxTy9YlfM8nAj2pVgKVh4ITSdl1VcxrEFOjdhkWmnModLyGTvOJQ5oOrg8tgGSHztvBAmNYdZ1QqWOdZ+6YneQ=
-X-Received: by 2002:a05:6e02:5a2:: with SMTP id k2mr9099221ils.177.1617922372817;
- Thu, 08 Apr 2021 15:52:52 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/Q6ViLCHPm36Ds023XtZI8X+biRfAfx253hJcmCLWz0=;
+        b=b0svh+RdqAQj7elTN8PchpuEGsAc25nQ9P+wGOiZsNF4RDw0LcjXi8CTDwwPVTC22o
+         NYSc+Yk/mr87r8IUGBvXhVb3ZM5IpCEodprwNRdJEth5M8BWhNrhOirzXoS3J/3O+RZB
+         7tcojGfvSrETL/6PLwJxRQKuOA2eWM3GNL9h/zBQ46NfUZ3NeR/VC4Qw8U+HthXHhWPv
+         1OaFP3oATkjvSzJeQKHPp8G5ogeNs+QTHfK+82yu8PnuKMBksNypFBJuXpTB3N+pcC6H
+         exAVR9n92nR5paURFr3wmqBxQA/Qg+44JQtDNs1IVzPCF8vaqD8QH4C0hIOu3iRD4+ZB
+         ZuwA==
+X-Gm-Message-State: AOAM531Lan8z4kysWwJ0qMmS6yvecB829NfMx+XTfiw4/Damh6Mc/Led
+        kyq0tUR1beUgnq4qlTQY6cA=
+X-Google-Smtp-Source: ABdhPJySPompxVrcysWJRaIa7S5JTwdagzcLG4VVIhmGjp9CiFS5EqY03e5TVi9GeqNKC7B/INPcuw==
+X-Received: by 2002:a37:44e:: with SMTP id 75mr10866732qke.150.1617922391980;
+        Thu, 08 Apr 2021 15:53:11 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id n1sm643776qtp.76.2021.04.08.15.53.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 15:53:11 -0700 (PDT)
+Subject: Re: [PATCH v4 1/1] of: unittest: overlay: ensure proper alignment of
+ copied FDT
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210408204508.2276230-1-frowand.list@gmail.com>
+ <CAL_Jsq+Os6O6CpRYurmf_4-Xnzgpkd1jbDbnp0en1TPbZXTf7w@mail.gmail.com>
+ <b73965c7-e975-6c48-3367-411f6c754181@roeck-us.net>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <c625202a-0530-adbd-d4f8-0935d3ed37e2@gmail.com>
+Date:   Thu, 8 Apr 2021 17:53:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210324022211.1718762-1-revest@chromium.org> <20210324022211.1718762-2-revest@chromium.org>
- <CAEf4BzZP6uK_ZcKJZsESWrMHG5kEG_swRYJwqsaiD95CEOdJ5g@mail.gmail.com>
- <CAEf4BzYVTHm5Zrr7RPoRB7EL9nsE5kUzciHEv5fPipbMoEtQxA@mail.gmail.com>
- <CABRcYmJpRyqbeZmMT=SxAg95p8ndtEbTR9EUWK0CfSNhSF3egw@mail.gmail.com> <CAEf4BzZVEGM4esi-Rz67_xX_RTDrgxViy0gHfpeauECR5bmRNA@mail.gmail.com>
-In-Reply-To: <CAEf4BzZVEGM4esi-Rz67_xX_RTDrgxViy0gHfpeauECR5bmRNA@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Fri, 9 Apr 2021 00:52:42 +0200
-Message-ID: <CABRcYm+QsJA_aN9dDaVByL_h72YF_3Z4hEVgJ6vfkLkfjUSz_Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/6] bpf: Factorize bpf_trace_printk and bpf_seq_printf
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b73965c7-e975-6c48-3367-411f6c754181@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 11:54 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
-> On Tue, Apr 6, 2021 at 8:35 AM Florent Revest <revest@chromium.org> wrote:
-> > On Fri, Mar 26, 2021 at 11:51 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > > On Fri, Mar 26, 2021 at 2:53 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > > On Tue, Mar 23, 2021 at 7:23 PM Florent Revest <revest@chromium.org> wrote:
-> > > > > +/* Horrid workaround for getting va_list handling working with different
-> > > > > + * argument type combinations generically for 32 and 64 bit archs.
-> > > > > + */
-> > > > > +#define BPF_CAST_FMT_ARG(arg_nb, args, mod)                            \
-> > > > > +       ((mod[arg_nb] == BPF_PRINTF_LONG_LONG ||                        \
-> > > > > +        (mod[arg_nb] == BPF_PRINTF_LONG && __BITS_PER_LONG == 64))     \
-> > > > > +         ? args[arg_nb]                                                \
-> > > > > +         : ((mod[arg_nb] == BPF_PRINTF_LONG ||                         \
-> > > > > +            (mod[arg_nb] == BPF_PRINTF_INT && __BITS_PER_LONG == 32))  \
-> > > >
-> > > > is this right? INT is always 32-bit, it's only LONG that differs.
-> > > > Shouldn't the rule be
-> > > >
-> > > > (LONG_LONG || LONG && __BITS_PER_LONG) -> (__u64)args[args_nb]
-> > > > (INT || LONG && __BITS_PER_LONG == 32) -> (__u32)args[args_nb]
-> > > >
-> > > > Does (long) cast do anything fancy when casting from u64? Sorry, maybe
-> > > > I'm confused.
-> >
-> > To be honest, I am also confused by that logic... :p My patch tries to
-> > conserve exactly the same logic as "88a5c690b6 bpf: fix
-> > bpf_trace_printk on 32 bit archs" because I was also afraid of missing
-> > something and could not test it on 32 bit arches. From that commit
-> > description, it is unclear to me what "u32 and long are passed
-> > differently to u64, since the result of C conditional operators
-> > follows the "usual arithmetic conversions" rules" means. Maybe Daniel
-> > can comment on this ?
->
-> Yeah, no idea. Seems like the code above should work fine for 32 and
-> 64 bitness and both little- and big-endianness.
+On 4/8/21 4:54 PM, Guenter Roeck wrote:
+> On 4/8/21 2:28 PM, Rob Herring wrote:
+>>
+>> Applying now so this gets into linux-next this week.
+>>
+> The patch doesn't apply on top of today's -next; it conflicts
+> with "of: properly check for error returned by fdt_get_name()".
+> 
+> I reverted that patch and applied this one, and the DT unittests
+> run with it on openrisc. I do get a single test failure, but I that
+> is a different problem (possibly with the test case itself).
+> 
+> ### dt-test ### FAIL of_unittest_dma_ranges_one():923 of_dma_get_range: wrong DMA addr 0x00000000
+> 	(expecting 100000000) on node /testcase-data/address-tests/bus@80000000/device@1000
 
-Yeah, looks good to me as well. I'll use it in v3.
+That is a known regression on the target that I use for testing (and
+has been since 5.10-rc1) - the 8074 dragonboard, arm 32.  No
+one else has reported it on the list, so even though I want to debug
+and fix it "promptly", other tasks have had higher priority.  In my
+notes I list two suspect commits:
 
-> > > > > +int bpf_printf_preamble(char *fmt, u32 fmt_size, const u64 *raw_args,
-> > > > > +                       u64 *final_args, enum bpf_printf_mod_type *mod,
-> > > > > +                       u32 num_args)
-> > > > > +{
-> > > > > +       struct bpf_printf_buf *bufs = this_cpu_ptr(&bpf_printf_buf);
-> > > > > +       int err, i, fmt_cnt = 0, copy_size, used;
-> > > > > +       char *unsafe_ptr = NULL, *tmp_buf = NULL;
-> > > > > +       bool prepare_args = final_args && mod;
-> > > >
-> > > > probably better to enforce that both or none are specified, otherwise
-> > > > return error
-> >
-> > Fair :)
-> >
-> > > it's actually three of them: raw_args, mod, and num_args, right? All
-> > > three are either NULL or non-NULL.
-> >
-> > It is a bit tricky to see from that patch but in "3/6 bpf: Add a
-> > bpf_snprintf helper" the verifier code calls this function with
-> > num_args != 0 to check whether the number of arguments is correct
-> > without actually converting anything.
-> >
-> > Also when the helper gets called, raw_args can come from the BPF
-> > program and be NULL but in that case we will also have num_args = 0
-> > guaranteed by the helper so the loop will bail out if it encounters a
-> > format specifier.
->
-> ok, but at least final_args and mod are locked together, so should be
-> enforced to be either null or not, right?
+  e0d072782c73 dma-mapping: introduce DMA range map, supplanting dma_pfn_offset
+  0a0f0d8be76d dma-mapping: split <linux/dma-mapping.h>
 
-Yes :) will do.
+I think that was purely based on looking at the list of commits that
+may have touched OF dma.  I have not done a bisect.
 
-> > > > > +       enum bpf_printf_mod_type current_mod;
-> > > > > +       size_t tmp_buf_len;
-> > > > > +       u64 current_arg;
-> > > > > +       char fmt_ptype;
-> > > > > +
-> > > > > +       for (i = 0; i < fmt_size && fmt[i] != '\0'; i++) {
-> > > >
-> > > > Can we say that if the last character is not '\0' then it's a bad
-> > > > format string and return -EINVAL? And if \0 is inside the format
-> > > > string, then it's also a bad format string? I wonder what others think
-> > > > about this?... I think sanity should prevail.
-> >
-> > Overall, there are two situations:
-> > - bpf_seq_printf, bpf_trace_printk: we have a pointer and size but we
-> > are not guaranteed zero-termination
-> > - bpf_snprintf: we have a pointer, no size but it's guaranteed to be
-> > zero-terminated (by ARG_PTR_TO_CONST_STR)
-> >
-> > Currently, in the bpf_snprintf helper, I set fmt_size to UINT_MAX and
-> > the terminating condition will be fmt[i] == '\0'.
-> > As you pointed out a bit further, I got a bit carried away with the
-> > refactoring and dropped the zero-termination checks for the existing
-> > helpers !
-> >
-> > So I see two possibilities:
-> > - either we check fmt[last] == '\0', add a bail out condition in the
-> > loop if we encounter another `\0` and set fmt_size to sprintf(fmt) in
-> > the bpf_snprintf verifier and helper code.
-> > - or we unconditionally call strnlen(fmt, fmt_size) in
-> > bpf_printf_preamble. If no 0 is found, we return an error, if there is
-> > one we treat it as the NULL terminating character.
->
-> I was thinking about the second one. It is clearly acceptable on BPF
-> verifier side, though one might argue that we are doing extra work on
-> the BPF helper side. I don't think it matters in practice, so I'll be
-> fine with that, if that makes code cleaner and simpler.
+One specific report of not seeing the FAIL was Vireshk on 5.11-rc6 with
+a Hikey board.
 
-I also prefer that option, yes.
+> 
+> Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-> > > > > +               if ((!isprint(fmt[i]) && !isspace(fmt[i])) ||
-> > > > > +                   !isascii(fmt[i])) {
-> > > >
-> > > > && always binds tighter than ||, so you can omit extra (). I'd put
-> > > > this on a single line as well, but that's a total nit.
-> >
-> > Neat! :)
->
-> I just got a compilation warning in a similar situation yesterday when
-> I dropped unnecessary parentheses, so some versions of compilers might
-> think it is not a good practice. Just keep that in mind. I don't think
-> I care enough.
+Thanks for testing!
 
-Yes, I noticed the same compilation warning and it bothers me. I'll
-keep the parentheses but make it one line.
+> 
+> Guenter
+> 
 
-> > > > > +               while (fmt[i] == '0' || fmt[i] == '+'  || fmt[i] == '-' ||
-> > > > > +                      fmt[i] == ' ')
-> > > > > +                       i++;
-> > > > > +               if (fmt[i] >= '1' && fmt[i] <= '9') {
-> > > > >                         i++;
-> > > >
-> > > > Are we worried about integer overflow here? %123123123123123d
-> > > > hopefully won't crash anything, right?
-> >
-> > I expect that this should be handled gracefully by the subsequent call
-> > to snprintf(). Our parsing logic does not guarantee that the format
-> > string is 100% legit but it guarantees that it's safe to call
-> > vsnprintf with arguments coming from BPF. If the output buffer is too
-> > small to hold the output, the output will be truncated.
-> >
-> > Note that this is already how bpf_seq_printf already works.
->
-> Ok, but let's not hope and add the test for this.
-
-Ok
-
-> > > > > -               } else if (fmt[i] == 'p') {
-> > > > > -                       mod[fmt_cnt]++;
-> > > > > -                       if ((fmt[i + 1] == 'k' ||
-> > > > > -                            fmt[i + 1] == 'u') &&
-> > > > > +                       while (fmt[i] >= '0' && fmt[i] <= '9')
-> > > > > +                               i++;
-> > > >
-> > > > whoa, fmt_size shouldn't be ignored
-> >
-> > Oh no, I'll attach the stone of shame! It all made sense with
-> > bpf_snprintf() in mind because, there, we are guaranteed to have a
-> > NULL terminated string already but in an excess of refactoring
-> > enthusiasm I dropped the zero-termination check for the other helpers.
-> >
-> > But if we implement either of the options discussed above, then we do
-> > not need to constantly check fmt_size.
->
-> let's see when we get to the next version ;) I don't remember code
-> enough by now, but I'll keep that in mind for the next revision
-> anyways
-
-Sure, I'll send v3 asap.
-
-> > > > >                                 fmt_ptype = fmt[i + 1];
-> > > > >                                 i += 2;
-> > > > >                                 goto fmt_str;
-> > > > >                         }
-> > > > >
-> > > > > -                       if (fmt[i + 1] == 'B') {
-> > > > > -                               i++;
-> > > > > +                       if (fmt[i + 1] == 0 || isspace(fmt[i + 1]) ||
-> > > > > +                           ispunct(fmt[i + 1]) || fmt[i + 1] == 'K' ||
-> > > > > +                           fmt[i + 1] == 'x' || fmt[i + 1] == 'B' ||
-> > > > > +                           fmt[i + 1] == 's' || fmt[i + 1] == 'S') {
-> > > > > +                               /* just kernel pointers */
-> > > > > +                               if (prepare_args)
-> > > > > +                                       current_arg = raw_args[fmt_cnt];
-> > > >
-> > > > fmt_cnt is not the best name, imo. arg_cnt makes more sense
-> >
-> > Mh, we already have "num_args" that can make it confusing. The way I see it:
-> > - the number of format specifiers is the number of %d %s... in the format string
-> > - the number of arguments is the number of values given in the raw_args array.
-> >
->
-> Well, if you read "fmt_cnt" as "number of formatters" then yeah, I
-> suppose it's fine. Never mind. Just fmt_cnt and fmt_size refers to
-> slightly different "fmt"s, which confused me for a bit, but that's ok.
-> You use different naming conventions, which is inconsistent, so maybe
-> adjust that for purists (i.e., if you have num_args, then you should
-> have num_fmts; or, alternatively, arg_cnt and fmt_cnt). But I'm just
-> nitpicking, obviously.
-
-I agree, I'll see if I can clean this up a bit.
-
-> > > > > +       if (data_len & 7 || data_len > MAX_SEQ_PRINTF_VARARGS * 8 ||
-> > > > > +           (data_len && !data))
-> > > >
-> > > > data && !data_len is also an error, no?
-> >
-> > Isn't that checked by the verifier ?
->
-> data_len is ARG_CONST_SIZE_OR_ZERO, so data_len == 0 is allowed by
-> verifier. But it's probably no harm either to allow data != NULL and
-> data_len = 0. Might simplify some more dynamic use of snprintf(),
-> actually.
-
-Agree
