@@ -2,122 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832D23589B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB56F3589B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 18:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232228AbhDHQ0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 12:26:05 -0400
-Received: from foss.arm.com ([217.140.110.172]:53540 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231655AbhDHQ0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 12:26:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 57886D6E;
-        Thu,  8 Apr 2021 09:25:49 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AFD6C3F73D;
-        Thu,  8 Apr 2021 09:25:46 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 17:25:39 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     paul.walmsley@sifive.com, hes@sifive.com, erik.danie@sifive.com,
-        zong.li@sifive.com, bhelgaas@google.com, robh+dt@kernel.org,
-        aou@eecs.berkeley.edu, mturquette@baylibre.com, sboyd@kernel.org,
-        p.zabel@pengutronix.de, alex.dewar90@gmail.com,
-        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
-        vidyas@nvidia.com, jh80.chung@samsung.com,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, helgaas@kernel.org
-Subject: Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver
- support
-Message-ID: <20210408162539.GA32036@lpieralisi>
-References: <20210406092634.50465-1-greentime.hu@sifive.com>
+        id S232011AbhDHQ0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 12:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49852 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231655AbhDHQ0c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 12:26:32 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CEB4C061760;
+        Thu,  8 Apr 2021 09:26:21 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id r22so3134075edq.9;
+        Thu, 08 Apr 2021 09:26:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8IaLjrWkR8bfcD0W5aRTsRX04L0DnyWWgAUCzh/xr3c=;
+        b=c6dCsRj4+S3nE85vU8h8EVBRobqSInRsQA3+y08UQKxDWvGZbZlcmGk9/UskzBiRGY
+         ENxUeZefFk5NePZOxbIIIdZPKrej4ZX2PkmJgJbVa5oXcpqWAXMik78zNT9I28bGzv8z
+         WhyD+x08ph91LZb4TwBfYOrNp1aWJcCwgH/tRtntkitvkhtnB6RhUPFquqqm6R23rLw+
+         PNYruyBIpF94o49y6yuwtfL8jw71PPoYkg9KWQS32zmcMeCFiORh1yzpE/tJi1m2a9sV
+         ofvCTwN5dtjFDRnDof3loqZWuecyJYMTVKQAagN0Y0SHbcQiLqTGG5RLH1ZPG0In5qmL
+         UGpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8IaLjrWkR8bfcD0W5aRTsRX04L0DnyWWgAUCzh/xr3c=;
+        b=pPlq7OtyQg5L3CGgW5F29avA0geu78P4vNYeSX5sSCtBVQs2DXVX6ucUjLf9oGAzgU
+         Rw0GGI59gqdRym+KCXveaIIeIcBXLAmQUKn0ERkS61TSuySlNI1pp35utmUymAXWHYUg
+         FpwZEWM4vZeT2LvpajFmcwlT2XKduGt4QRHGjXkGA5ZNum5YD9xlPKTPUNyfsj0k5h/Z
+         4rN3HZgsr1Zt4HHflnRGUXWF9WD1dke4MbM6KYNC+SsfMApxyg/05HTSokOPA0szisUZ
+         sl1KIT9Nd9h6Os//aEFB/SCCWHwY5lMv9TD1C9wd2H2EgVC0k/fJgv7Vu+9uuJTEYUuK
+         7JrA==
+X-Gm-Message-State: AOAM531BT+rCSVQSKwJJ7ypuRoM8jodYxANtPYX4mxDegy2OtE+8Gdql
+        tdvI8SBU4oXqsXCKovp3E8oWaWm4C0ZD+HqmJtdETVJYBHI=
+X-Google-Smtp-Source: ABdhPJz322TTHQ4zinTcTaWSZd3uuSY+sR93BmbZpLGUSSD8n3zvGrcQ+hcOu/bp39rXEWXaOQNVcG90SZJm+ixb/QI=
+X-Received: by 2002:a05:6402:5205:: with SMTP id s5mr9619573edd.65.1617899179793;
+ Thu, 08 Apr 2021 09:26:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406092634.50465-1-greentime.hu@sifive.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210408070033.123047-1-xuyihang@huawei.com>
+In-Reply-To: <20210408070033.123047-1-xuyihang@huawei.com>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Thu, 8 Apr 2021 09:26:08 -0700
+Message-ID: <CAD+ocbzHq0rsLvYjtN7YtSPdhTBbs+nJ2RsCR64W-8+WFGWRmQ@mail.gmail.com>
+Subject: Re: [PATCH -next] ext4: fix error return code in ext4_fc_perform_commit()
+To:     Xu Yihang <xuyihang@huawei.com>
+Cc:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 05:26:28PM +0800, Greentime Hu wrote:
-> This patchset includes SiFive FU740 PCIe host controller driver. We also
-> add pcie_aux clock and pcie_power_on_reset controller to prci driver for
-> PCIe driver to use it.
-> 
-> This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon R5
-> 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based on
-> v5.11 Linux kernel.
-> 
-> Changes in v5:
->  - Fix typo in comments
->  - Keep comments style consistent
->  - Refine some error handling codes
->  - Remove unneeded header file including
->  - Merge fu740_pcie_ltssm_enable implementation to fu740_pcie_start_link
-> 
-> Changes in v4:
->  - Fix Wunused-but-set-variable warning in prci driver
-> 
-> Changes in v3:
->  - Remove items that has been defined
->  - Refine format of sifive,fu740-pcie.yaml
->  - Replace perstn-gpios with the common one
->  - Change DBI mapping space to 2GB from 4GB
->  - Refine drivers/reset/Kconfig
-> 
-> Changes in v2:
->  - Refine codes based on reviewers' feedback
->  - Remove define and use the common one
->  - Replace __raw_writel with writel_relaxed
->  - Split fu740_phyregreadwrite to write function
->  - Use readl_poll_timeout in stead of while loop checking
->  - Use dwc common codes
->  - Use gpio descriptors and the gpiod_* api.
->  - Replace devm_ioremap_resource with devm_platform_ioremap_resource_byname
->  - Replace devm_reset_control_get with devm_reset_control_get_exclusive
->  - Add more comments for delay and sleep
->  - Remove "phy ? x : y" expressions
->  - Refine code logic to remove possible infinite loop
->  - Replace magic number with meaningful define
->  - Remove fu740_pcie_pm_ops
->  - Use builtin_platform_driver
-> 
-> Greentime Hu (5):
->   clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
->   clk: sifive: Use reset-simple in prci driver for PCIe driver
->   MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
->   dt-bindings: PCI: Add SiFive FU740 PCIe host controller
->   riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
-> 
-> Paul Walmsley (1):
->   PCI: fu740: Add SiFive FU740 PCIe host controller driver
+Thanks, this looks good.
 
-I can pull the patches above into the PCI tree (but will drop patch 6 -
-dts changes), is it OK for you ? Please let me know how you would like
-to upstream it.
+Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-Lorenzo
-
->  .../bindings/pci/sifive,fu740-pcie.yaml       | 113 +++++++
->  MAINTAINERS                                   |   8 +
->  arch/riscv/boot/dts/sifive/fu740-c000.dtsi    |  33 ++
->  drivers/clk/sifive/Kconfig                    |   2 +
->  drivers/clk/sifive/fu740-prci.c               |  11 +
->  drivers/clk/sifive/fu740-prci.h               |   2 +-
->  drivers/clk/sifive/sifive-prci.c              |  54 +++
->  drivers/clk/sifive/sifive-prci.h              |  13 +
->  drivers/pci/controller/dwc/Kconfig            |   9 +
->  drivers/pci/controller/dwc/Makefile           |   1 +
->  drivers/pci/controller/dwc/pcie-fu740.c       | 308 ++++++++++++++++++
->  drivers/reset/Kconfig                         |   1 +
->  include/dt-bindings/clock/sifive-fu740-prci.h |   1 +
->  13 files changed, 555 insertions(+), 1 deletion(-)
->  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
->  create mode 100644 drivers/pci/controller/dwc/pcie-fu740.c
-> 
-> -- 
-> 2.30.2
-> 
+On Thu, Apr 8, 2021 at 12:00 AM Xu Yihang <xuyihang@huawei.com> wrote:
+>
+> In case of if not ext4_fc_add_tlv branch, an error return code is missing.
+>
+> Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Xu Yihang <xuyihang@huawei.com>
+> ---
+>  fs/ext4/fast_commit.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index 7541d0b5d706..312273ed8a9f 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> @@ -1088,8 +1088,10 @@ static int ext4_fc_perform_commit(journal_t *journal)
+>                 head.fc_tid = cpu_to_le32(
+>                         sbi->s_journal->j_running_transaction->t_tid);
+>                 if (!ext4_fc_add_tlv(sb, EXT4_FC_TAG_HEAD, sizeof(head),
+> -                       (u8 *)&head, &crc))
+> +                       (u8 *)&head, &crc)) {
+> +                       ret = -ENOSPC;
+>                         goto out;
+> +               }
+>         }
+>
+>         spin_lock(&sbi->s_fc_lock);
+> --
+> 2.17.1
+>
