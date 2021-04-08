@@ -2,109 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2DE4358E97
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CBA358E9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 22:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232438AbhDHUjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 16:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48894 "EHLO
+        id S232429AbhDHUk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 16:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbhDHUjX (ORCPT
+        with ESMTP id S231906AbhDHUkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 16:39:23 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1FBC061760;
-        Thu,  8 Apr 2021 13:39:12 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id d5-20020a17090a2a45b029014d934553c4so2862725pjg.1;
-        Thu, 08 Apr 2021 13:39:12 -0700 (PDT)
+        Thu, 8 Apr 2021 16:40:21 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FDAAC061760;
+        Thu,  8 Apr 2021 13:40:09 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id x4so4008310edd.2;
+        Thu, 08 Apr 2021 13:40:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/L7A3l46tNABUmGq61qq6UpeuB+FYzbiNc0Yan16neA=;
-        b=EwDXlZrtDBcn1kmjhbjlnompQxgc+bbs+bYgDfMiDzrFJ94mKNOX1TEvsKhTafxSQ7
-         gi11uKhdIR2lqzhqyvJkFrEMnPLLFipZ18nx+Tx5WpFSTf1+kaADZaB3uqtiyCgXFdwE
-         pAh2IEO1qgBCdb1UVuKMoiaNRvNxfLg0zP2XBosCWQInzx+ANb9KYuTiiDwU7uYsU7Fo
-         TPNLCYmUekzGGFkcoq64rT8xDGowGdzRm/Ei6+6PACZE4N3QC9v4xZkSOlqTb1y2OVce
-         eb92xWSEAbwd524KsdZX8+XCFaY+dP0iP7rlDB+fsYZFwj2b3NO03i8rAWzD+KkGiCMI
-         G4Lg==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Cdnz5MS52djhpwbbkLCsPHwd/MEWr4tBT7iNzH5Z8TU=;
+        b=UQ1Szyiw0zN99Cb0U3iJfFF1fmoF05UMQdTU631crr73g/tROQxrTQEcC0RhTB6uRa
+         8alpIEX1ZJEL14WlVVnH93048ryQPOYL21KlXpUV9tDNuLdN1TpIGIjrEuTCOmsTR5G6
+         9iyx2rg+RwVxabamLFt3PTTY34DJubbAVWNquJW6OR9Mj9OlJrTc+1dv9rgpfiSQA094
+         zeT3U2/qIWyVKgeMQt95eEa2ByoC/fgSpu1+WxVt0onI0TmE9TMdorH5AXm9iwwZdi5f
+         6BWSlq7sH/ZvNqMph496kFPAopuCzD4hRBX/Nq0dHl+Mz9yVsbWFCZElpJnZ8h0zxxgE
+         NcqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/L7A3l46tNABUmGq61qq6UpeuB+FYzbiNc0Yan16neA=;
-        b=kEEJDZcwKXoXnioXJfni1fxmkbW0oAdG0d+VoGynGp5rEfughBUoak2hgeceq4YkR0
-         COw/Y0ixAdPS2keTQTP13ad2dXwvRUdEKkxFyHUUWwTpxbHdF9DbS2dUogRVoKHWYNxT
-         dPz7T/49zMQVslD2htOw818dq+qNdVl2qjqTFbllC0q2yNusMa6Sqk3Q63O8cHtKzkTz
-         1Q6YwePnxzXtQMZxZG2U3V2GAAYgFAj9MpSQksZoMCx4J7TpsX2oYJbHSJl2g3TJ+1g7
-         mVA1b+aK7vzCh0zVky4oxOU5GVD1oLvAoHQm3zE6jBAUJNjKkdEM4jGM9HyBdAJhF8/8
-         JN8Q==
-X-Gm-Message-State: AOAM532aQS+K9w60YdifFuPMqHsLXeauC/s2zWGM+VOnSQyOdrjnbpcA
-        c1Jnyf81SbI4m068OkJZE5c=
-X-Google-Smtp-Source: ABdhPJw0TdUMwYSHaKKvvRCxUme6TrxQBpONY4bga2EFyFtosnFHSNkJ+jdNS5lpJvYQFyORFbgOQA==
-X-Received: by 2002:a17:902:6946:b029:e9:4dcc:9966 with SMTP id k6-20020a1709026946b02900e94dcc9966mr9601041plt.6.1617914351540;
-        Thu, 08 Apr 2021 13:39:11 -0700 (PDT)
-Received: from kali ([152.57.11.236])
-        by smtp.gmail.com with ESMTPSA id t10sm259255pjy.16.2021.04.08.13.39.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 13:39:11 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 02:09:03 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     clabbe@baylibre.com, mchehab@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Subject: [PATCH 2/2] media: zoran: replace bit shifts by BIT() macro
-Message-ID: <ac8ec2b70ac2cc7c541c05a1d9a8db1fe79df793.1617912177.git.mitaliborkar810@gmail.com>
-References: <cover.1617912177.git.mitaliborkar810@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Cdnz5MS52djhpwbbkLCsPHwd/MEWr4tBT7iNzH5Z8TU=;
+        b=TEOWMvuxr4fAl1SScF9HqPOM2SeYEptq+sIXZpS6dCGSxQPGiAGQdnPgR2Ikfp9bmm
+         LH9Z+LDF2sdJUzkqCkXkgh/eSe3xUFyiwzIDeizfsZ4FqvqWVoISkbb7QDUTr/jP4R99
+         3+nTx5UETUNsnOVMqupI0PPhI4O1SUhfJ4AIYhJNk2ehK4x/NrWDPSyDXCqDJH79P19Q
+         WobYFLlqE0VR7Bn1gpxmSlFzcVR11vAMJrXCFqhqcb5aIHMeA5uF4E3+fdaA0JGM6C1K
+         BIRo6rM/DeEqpEj5EpHG0Bduv3ZzAsHFDHwiqYUBbc4x8xaU9CAn4M/5T9/VxWmuI5Ig
+         eaaw==
+X-Gm-Message-State: AOAM532WiX1TuXk2epImNnhfCfwHMSd5HxDkUR9cb4bjbMNNtxjffQuc
+        LHWhMIUg94rdJBVVPEPTdUJX6Zyvoi2XH+l9Mow=
+X-Google-Smtp-Source: ABdhPJzVf196FdKT3Xhp5a/Pki2NE6SMHEglXfT94rbLCW/KYq8U4vKXaSmXj4/enbczwHdEjvvGLcaCiBMypQx44Yo=
+X-Received: by 2002:a05:6402:13ce:: with SMTP id a14mr14124148edx.365.1617914408152;
+ Thu, 08 Apr 2021 13:40:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617912177.git.mitaliborkar810@gmail.com>
+References: <20210106135540.48420-1-martin.blumenstingl@googlemail.com> <20210323113559.GE29286@e121166-lin.cambridge.arm.com>
+In-Reply-To: <20210323113559.GE29286@e121166-lin.cambridge.arm.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Thu, 8 Apr 2021 22:39:57 +0200
+Message-ID: <CAFBinCBaa_uGBg8x=nPTs6sYNqv_OCU2PgCaUKLQGNSN+Up99A@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc/intel-gw: Fix enabling the legacy PCI interrupt lines
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        rtanwar@maxlinear.com
+Cc:     Dilip Kota <eswara.kota@linux.intel.com>, robh@kernel.org,
+        linux-pci@vger.kernel.org, bhelgaas@google.com,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added #include <linux/bitops.h> and replaced bit shifts by BIT() macro.
-This BIT() macro from linux/bitops.h is used to define ZR36057_VFESPFR_* bitmasks.
-Use of macro is better and neater. It maintains consistency.
-Reported by checkpatch.
+Hi Lorenzo,
 
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
----
- drivers/staging/media/zoran/zr36057.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+On Tue, Mar 23, 2021 at 12:36 PM Lorenzo Pieralisi
+<lorenzo.pieralisi@arm.com> wrote:
+>
+> On Wed, Jan 06, 2021 at 02:55:40PM +0100, Martin Blumenstingl wrote:
+> > The legacy PCI interrupt lines need to be enabled using PCIE_APP_IRNEN
+> > bits 13 (INTA), 14 (INTB), 15 (INTC) and 16 (INTD). The old code however
+> > was taking (for example) "13" as raw value instead of taking BIT(13).
+> > Define the legacy PCI interrupt bits using the BIT() macro and then use
+> > these in PCIE_APP_IRN_INT.
+> >
+> > Fixes: ed22aaaede44 ("PCI: dwc: intel: PCIe RC controller driver")
+> > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> > ---
+> >  drivers/pci/controller/dwc/pcie-intel-gw.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/pci/controller/dwc/pcie-intel-gw.c b/drivers/pci/controller/dwc/pcie-intel-gw.c
+> > index 0cedd1f95f37..ae96bfbb6c83 100644
+> > --- a/drivers/pci/controller/dwc/pcie-intel-gw.c
+> > +++ b/drivers/pci/controller/dwc/pcie-intel-gw.c
+> > @@ -39,6 +39,10 @@
+> >  #define PCIE_APP_IRN_PM_TO_ACK               BIT(9)
+> >  #define PCIE_APP_IRN_LINK_AUTO_BW_STAT       BIT(11)
+> >  #define PCIE_APP_IRN_BW_MGT          BIT(12)
+> > +#define PCIE_APP_IRN_INTA            BIT(13)
+> > +#define PCIE_APP_IRN_INTB            BIT(14)
+> > +#define PCIE_APP_IRN_INTC            BIT(15)
+> > +#define PCIE_APP_IRN_INTD            BIT(16)
+> >  #define PCIE_APP_IRN_MSG_LTR         BIT(18)
+> >  #define PCIE_APP_IRN_SYS_ERR_RC              BIT(29)
+> >  #define PCIE_APP_INTX_OFST           12
+> > @@ -48,10 +52,8 @@
+> >       PCIE_APP_IRN_RX_VDM_MSG | PCIE_APP_IRN_SYS_ERR_RC | \
+> >       PCIE_APP_IRN_PM_TO_ACK | PCIE_APP_IRN_MSG_LTR | \
+> >       PCIE_APP_IRN_BW_MGT | PCIE_APP_IRN_LINK_AUTO_BW_STAT | \
+> > -     (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTA) | \
+> > -     (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTB) | \
+> > -     (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTC) | \
+> > -     (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTD))
+> > +     PCIE_APP_IRN_INTA | PCIE_APP_IRN_INTB | \
+> > +     PCIE_APP_IRN_INTC | PCIE_APP_IRN_INTD)
+> >
+> >  #define BUS_IATU_OFFSET                      SZ_256M
+> >  #define RESET_INTERVAL_MS            100
+>
+> This looks like a significant bug - which in turn raises the question
+> on how well this driver has been tested.
+to give them the benefit of doubt: maybe only MSIs were tested
 
-diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-index a2a75fd9f535..93075459f910 100644
---- a/drivers/staging/media/zoran/zr36057.h
-+++ b/drivers/staging/media/zoran/zr36057.h
-@@ -8,6 +8,8 @@
- #ifndef _ZR36057_H_
- #define _ZR36057_H_
- 
-+#include <linux/bitops.h>
-+
- /* Zoran ZR36057 registers */
- 
- #define ZR36057_VFEHCR          0x000	/* Video Front End, Horizontal Configuration Register */
-@@ -31,12 +33,12 @@
- #define ZR36057_VFESPFR_VER_DCM          8
- #define ZR36057_VFESPFR_DISP_MODE        6
- #define ZR36057_VFESPFR_YUV422          (0 << 3)
--#define ZR36057_VFESPFR_RGB888          (1 << 3)
-+#define ZR36057_VFESPFR_RGB888          BIT(3)
- #define ZR36057_VFESPFR_RGB565          (2 << 3)
- #define ZR36057_VFESPFR_RGB555          (3 << 3)
--#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
--#define ZR36057_VFESPFR_PACK24          (1 << 1)
--#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
-+#define ZR36057_VFESPFR_ERR_DIF          BIT(2)
-+#define ZR36057_VFESPFR_PACK24          BIT(1)
-+#define ZR36057_VFESPFR_LITTLE_ENDIAN    BIT(0)
- 
- #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
- 
--- 
-2.30.2
+> Dilip, can you review and ACK asap please ?
+From "Re: MaxLinear, please maintain your drivers was Re: [PATCH]
+leds: lgm: fix gpiolib dependency" [0]:
+> Please send any Lightning Mountain SoC related issues email to Rahul
+> Tanwar (rtanwar@maxlinear.com) and I will ensure that I address the
+> issues in a timely manner.
+so I added rtanwar@maxlinear.com to this email
 
+
+Best regards,
+Martin
+
+
+[0] https://lkml.org/lkml/2021/3/16/282
