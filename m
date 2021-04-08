@@ -2,154 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2874C358815
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:20:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BAFE35883A
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 17:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhDHPU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 11:20:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbhDHPU1 (ORCPT
+        id S232211AbhDHPY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 11:24:26 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:41070 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231931AbhDHPYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 11:20:27 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB17FC061760;
-        Thu,  8 Apr 2021 08:20:15 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id y20-20020a1c4b140000b029011f294095d3so3144650wma.3;
-        Thu, 08 Apr 2021 08:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=v7qcvuTJQnTWwOB3Ha6/Syy7/aYA0Qf/BL1AwDzfuGU=;
-        b=e3ZNlpbpavIjcSN8dIxYOE/rXgDXvsXGNe5Ir4myMhVg15nZr9dHEFBzEJZ1RIJEHH
-         lFss/0FwJk6YqrYFGwcOwy4wxTXLv5vNP4drLHjRpIEj5c92ZGLzcM/1oJC8Bx2/ctsG
-         rxzJ05izioG/KGa1Ww9FJ4SyhfnA3BUCjaQoW6xHxdRDUq1Cfqihsu41kzj1x3DpZxB/
-         yVS6yKPyHbUKfUguXhrbdNChUuaTIm8RhsDhMO0YQ2KkmueNSFLJ7ukwaxtOLTg4tily
-         /W3vhMYNxmLGBpqInhUPtsU9kvqLmvBW3tARkD4gSP8nzP2i5ZNb79cE+dg0nwu5e0ZA
-         m0cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=v7qcvuTJQnTWwOB3Ha6/Syy7/aYA0Qf/BL1AwDzfuGU=;
-        b=eNCFR/m5av5nG1NlN6Rxf07KFIxAZvbX7SzlUFTair6Oq9DGTLbNzQyhsx4Fr5IvJU
-         r5L4JzSryNoajG3cpb4MiYW97rt4Bl/oDWfU/SlTSgpE831Q1uRzISYvZ6V/v5mpBWs7
-         e2jDSS9j97VXLcnsFCuXI8o4abOF1IPTAsRMZuyLkoSqUCj69JxeVB2OZY639liIwVhf
-         KktRE2IcQHRJuM1Flz+ohhPkbzotP0L+onyf7N8SIbiqEfaxlqqesqd6BcphaaSbvKvq
-         Hi7mp0NANJjSDwRDUjsgz9qP+xrMEQqhoRe39BEtcvF8/sINTT6KirntsR3TV5A1s5VU
-         wz9g==
-X-Gm-Message-State: AOAM530wkEd0GajQ+NrDdXGvMaoSlvKJtJrUsh5xnp/wAMuQ4PLM6S54
-        ZTTvqk6OBeS17lEDKy1BzQLaZd3uEp7aPdOaD68=
-X-Google-Smtp-Source: ABdhPJwnEZiOVu05xL4G7IVf4f04NXBPNtQO9QG4ZKDgpvpOib9wUr5K++bP76nBv0xlgyUACj0JeK94OKvdYJeiSJA=
-X-Received: by 2002:a05:600c:4fd0:: with SMTP id o16mr9194147wmq.123.1617895214533;
- Thu, 08 Apr 2021 08:20:14 -0700 (PDT)
+        Thu, 8 Apr 2021 11:24:21 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 138FAKNY049513;
+        Thu, 8 Apr 2021 11:24:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=nMgDagvUiQ4G3wBqYsuuu5noca3UTFZwGZRQb1V8X4I=;
+ b=Koc5kRX2UglPYyOhvxgHVQqtgVM4ZqjX2vbtcedtn+8Yx4Tf+Ta5BFjtcoEfvx+uPrWv
+ 86eY9tCEoD1HBtnketjElHoVMf0uLFL6Gj2FA/67ujktDLHeHmpA+/b3dPGqdwdPEOFn
+ Tem5yvuXBvnDyW5rFfSnmDWW3FpWI6GsiIo4MTSpoWPJGsgqbbbusI8G0aTzTusvef/q
+ IywKiq9dGW874+GaNFskDCFwhPkjqzA2I3GifgpY/n4x8rfI65bButlG0a8wNcE3ky36
+ X9MbWTgS1pJ0x2ONxBT5sSXRIVGSNlYhZXFkxkWlXhhDswLIFRTvaBFoX2MeHLb4ASZ0 wA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37t3g9hwtj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Apr 2021 11:24:09 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 138FAdIq050716;
+        Thu, 8 Apr 2021 11:24:08 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37t3g9hwsw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Apr 2021 11:24:08 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 138FNSuV008846;
+        Thu, 8 Apr 2021 15:24:07 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma01dal.us.ibm.com with ESMTP id 37rvs1h6dg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Apr 2021 15:24:07 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 138FO62P26345862
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 8 Apr 2021 15:24:06 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3FC94112064;
+        Thu,  8 Apr 2021 15:24:06 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 31284112063;
+        Thu,  8 Apr 2021 15:24:06 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.47.158.152])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu,  8 Apr 2021 15:24:06 +0000 (GMT)
+From:   Stefan Berger <stefanb@linux.ibm.com>
+To:     keyrings@vger.kernel.org, dhowells@redhat.com, zohar@linux.ibm.com,
+        jarkko@kernel.org
+Cc:     nayna@linux.ibm.com, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v2 0/2] Add support for ECDSA-signed kernel modules
+Date:   Thu,  8 Apr 2021 11:24:01 -0400
+Message-Id: <20210408152403.1189121-1-stefanb@linux.ibm.com>
+X-Mailer: git-send-email 2.30.2
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: CCSQ8LB3uydsbfcLNY6ddgo2avTSmbcT
+X-Proofpoint-GUID: GgEhysX5mCA_ltCM-oRlTcssmMFjBcps
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210405174532.1441497-1-robdclark@gmail.com> <YG7l0LwVQ2s4Y0Sa@phenom.ffwll.local>
-In-Reply-To: <YG7l0LwVQ2s4Y0Sa@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 8 Apr 2021 08:23:42 -0700
-Message-ID: <CAF6AEGsH2gbKv-Q04gRbjz=ue1TF7S_6DXa06bvYPcmYvG684w@mail.gmail.com>
-Subject: Re: [PATCH 0/8] drm/msm: Swappable GEM objects
-To:     Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-08_03:2021-04-08,2021-04-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 suspectscore=0 spamscore=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 adultscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104080104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 4:15 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Mon, Apr 05, 2021 at 10:45:23AM -0700, Rob Clark wrote:
-> > From: Rob Clark <robdclark@chromium.org>
-> >
-> > One would normally hope not to be under enough memory pressure to need
-> > to swap GEM objects to disk backed swap.  But memory backed zram swap
-> > (as enabled on chromebooks, for example) can actually be quite fast
-> > and useful on devices with less RAM.  On a 4GB device, opening up ~4
-> > memory intensive web pages (in separate windows rather than tabs, to try
-> > and prevent tab discard), I see ~500MB worth of GEM objects, of which
-> > maybe only 10% are active at any time, and with unpin/evict enabled,
-> > only about half resident (which is a number that gets much lower if you
-> > simulate extreme memory pressure).  Assuming a 2:1 compression ratio (I
-> > see a bit higher in practice, but cannot isolate swapped out GEM pages
-> > vs other), that is like having an extra 100+MB of RAM, or more under
-> > higher memory pressure.
-> >
-> > Rob Clark (8):
-> >   drm/msm: ratelimit GEM related WARN_ON()s
-> >   drm/msm: Reorganize msm_gem_shrinker_scan()
-> >   drm/msm: Clear msm_obj->sgt in put_pages()
-> >   drm/msm: Split iova purge and close
-> >   drm/msm: Add $debugfs/gem stats on resident objects
-> >   drm/msm: Track potentially evictable objects
-> >   drm/msm: Small msm_gem_purge() fix
-> >   drm/msm: Support evicting GEM objects to swap
->
-> Given how much entertainement shrinkers are, should we aim for more common
-> code here?
->
-> Christian has tons of fun with adding something like this for ttm (well
-> different shades of grey). i915 is going to adopt ttm, at least for
-> discrete.
->
-> The locking is also an utter pain, and msm seems to still live a lot in
-> its own land here. I think as much as possible a standard approach here
-> would be really good, ideally maybe as building blocks shared between ttm
-> and gem-shmem drivers ...
+This series adds support for ECDSA-signed kernel modules. It also
+attempts to address a kbuild issue where a developer created an ECDSA
+key for signing kernel modules and then builds an older version of the
+kernel, when bisecting the kernel for example, that does not support
+ECDSA keys.
 
-I don't disagree.. but also replacing the engines on an airplane
-mid-flight isn't a great option either.. ;-)
+The first patch addresses the kbuild issue of needing to delete that
+ECDSA key if it is in certs/signing_key.pem and trigger the creation
+of an RSA key. However, for this to work this patch would have to be
+backported to previous versions of the kernel but would also only work
+for the developer if he/she used a stable version of the kernel to which
+this patch was applied. So whether this patch actually achieves the
+wanted effect is not always guaranteed.
 
-The hard part (esp. wrt to locking) is tracking the state of a given
-bo.. ie. is it active, active+purgable, inactive+purgable,
-inactive+unpinnable, etc.  Currently the shmem helpers don't really
-provide anything here.  If they did, I suppose they could provide some
-shrinker helpers as well.  Unfortunately these days I barely have
-enough time for drm/msm, let alone bolting this onto the shmem
-helpers.  I would recommend that if someone wanted to do this, that
-they look at recent drm/msm shrinker patches that I've sent (ie. make
-shrinker->count() lockless, and drop the locks in shrinker->scan()
-body.. when the system is under heavy memory pressure, you start
-getting shrinker called from all the threads so contention for mm_lock
-can be a really bad problem)
+The 2nd patch adds the support for the ECSDA-signed kernel modules.
 
-(Well, the other potential problem is that drm/msm has a lot of
-different possible iommu pairings across the generations, so there is
-some potential here to uncover exciting new bugs.. the locking at
-least is the same for all the generations and pretty easy to test with
-and without lockdep with some tests that push essentially all memory
-into swap)
+This patch depends on the ECDSA support series currently queued here:
+https://git.kernel.org/pub/scm/linux/kernel/git/herbert/cryptodev-2.6.git/log/?h=ecc
 
-BR,
--R
+  Stefan
 
-> -Daniel
->
-> >
-> >  drivers/gpu/drm/msm/msm_drv.c          |   2 +-
-> >  drivers/gpu/drm/msm/msm_drv.h          |  13 ++-
-> >  drivers/gpu/drm/msm/msm_gem.c          | 155 +++++++++++++++++--------
-> >  drivers/gpu/drm/msm/msm_gem.h          |  68 +++++++++--
-> >  drivers/gpu/drm/msm/msm_gem_shrinker.c | 129 ++++++++++++--------
-> >  drivers/gpu/drm/msm/msm_gpu_trace.h    |  13 +++
-> >  6 files changed, 272 insertions(+), 108 deletions(-)
-> >
-> > --
-> > 2.30.2
-> >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+v2:
+  - Adjustment to ECDSA key detector string in 2/2
+  - Rephrased cover letter and patch descriptions with Mimi
+
+
+Stefan Berger (2):
+  certs: Trigger creation of RSA module signing key if it's not an RSA
+    key
+  certs: Add support for using elliptic curve keys for signing modules
+
+ certs/Kconfig                         | 25 +++++++++++++++++++++++++
+ certs/Makefile                        | 14 ++++++++++++++
+ crypto/asymmetric_keys/pkcs7_parser.c |  4 ++++
+ 3 files changed, 43 insertions(+)
+
+-- 
+2.29.2
+
