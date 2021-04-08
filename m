@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6B5357F34
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A414D357F37
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231157AbhDHJcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:32:18 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15180 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhDHJcQ (ORCPT
+        id S231217AbhDHJce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhDHJcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:32:16 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGGDY5xHjzpWWB;
-        Thu,  8 Apr 2021 17:29:17 +0800 (CST)
-Received: from huawei.com (10.175.104.57) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Thu, 8 Apr 2021
- 17:31:54 +0800
-From:   Peng Wu <wupeng58@huawei.com>
-To:     <wupeng58@huawei.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] sched/topology: Make some symbols static
-Date:   Thu, 8 Apr 2021 17:31:46 +0800
-Message-ID: <1617874306-24418-1-git-send-email-wupeng58@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 8 Apr 2021 05:32:33 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C617C061760;
+        Thu,  8 Apr 2021 02:32:20 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f095000c11580856fe05acf.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:5000:c115:8085:6fe0:5acf])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 63CF91EC0118;
+        Thu,  8 Apr 2021 11:32:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617874339;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=O06nRah4ZIJi4In/g3Icyh+CYI/e0j/pdllfHt+zpfI=;
+        b=PAOEZW+UT1pScXssN01RW8g9qzJQMB5ipYabAbw7xObIB4MtdkClfTJbK5yqCBkGnlPWI6
+        pw4oqulMgyId05wiINv3gg1oB1B7dgfbIpytMGnuXTZ2A3E73zNVy0lciPJu6Fz9oRU7rr
+        le059h678t06sYqhT3RytOSWLFAN9vw=
+Date:   Thu, 8 Apr 2021 11:32:23 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] x86/sgx: Add sgx_nr_{all, free}_pages to the
+ debugfs
+Message-ID: <20210408093223.GG10192@zn.tnic>
+References: <20210405232653.33680-1-jarkko@kernel.org>
+ <20210405232653.33680-2-jarkko@kernel.org>
+ <20210407155636.GG25319@zn.tnic>
+ <YG3ZJyMB+S5LcUso@kernel.org>
+ <20210407161533.GJ25319@zn.tnic>
+ <YG7EWDXmwC9ai38k@kernel.org>
+ <YG7JMc6b+HZIZqxM@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.175.104.57]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YG7JMc6b+HZIZqxM@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sparse tool complains as follows:
+On Thu, Apr 08, 2021 at 12:13:21PM +0300, Jarkko Sakkinen wrote:
+> Actually I think read-only sysctl attributes would be a better idea.
 
-kernel/sched/topology.c:211:1: warning:
- symbol 'sched_energy_mutex' was not declared. Should it be static?
-kernel/sched/topology.c:212:6: warning:
- symbol 'sched_energy_update' was not declared. Should it be static?
+I still think debugfs is the right *start* for this: you play with them,
+see what makes sense and what not, tweak them, etc, and then you cast
+them in stone.
 
-This symbol is not used outside of topology.c, so this
-commit marks it static.
+Not cast them in stone and see if anyone is even interested. So pls keep
+them in debugfs for now - you can always do whatever, later, when it
+turns out that those are useful.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Peng Wu <wupeng58@huawei.com>
----
- kernel/sched/topology.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thx.
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index d1aec244c027..25c3f88d43cd 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -208,8 +208,8 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
- #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
- DEFINE_STATIC_KEY_FALSE(sched_energy_present);
- unsigned int sysctl_sched_energy_aware = 1;
--DEFINE_MUTEX(sched_energy_mutex);
--bool sched_energy_update;
-+static DEFINE_MUTEX(sched_energy_mutex);
-+static bool sched_energy_update;
- 
- void rebuild_sched_domains_energy(void)
- {
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
