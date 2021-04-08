@@ -2,222 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278163579FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 04:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F4B3579E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 03:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231190AbhDHCAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 7 Apr 2021 22:00:05 -0400
-Received: from mail-eopbgr140053.outbound.protection.outlook.com ([40.107.14.53]:16101
-        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231133AbhDHB77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 7 Apr 2021 21:59:59 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=g+L3xi6c6zHXIZtq9NQklB8+WlP8+HTcFrjHkD191NlDtqeaugxx0MCeOB96p17n8D3D1lcYZwxvDS214TwezNWUSBzP/aDyIvDP5N9hk3Udj3dxGgnuSD39eNg4kt1AOKweJyl1fcgDTugi7lzaVdaE4IhqQRxMN/rm7/Gw8GUO6ROdPdXTmQJj18k+9SnRHI8PJsPDIXTRnYt4PHtUJkMM81yvg3vR4bKjQDSZlghmf7FoZQZMX68jr8EehsMjl6GF2OA5xrxPN1y4c0kHi+pDgjAIcPd5Erp+CuJjMVek8sBrVHt9fGScCQcawVYzZiwuiKYnfHk8Clcs1kEHmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qusxCsXs3I5Z0PqUbPNaGiJihqojpiGAZRdBw6OAFX4=;
- b=K8a6x9GYdgcwuJtisbzlFpi+6fXzZC1T7e54M+C2g8/mP0mhopthaJiqohxc9oMviX8ZDqdNi9d7gi1H8xfdJc+Kw8IyE+Xew3ebKUspN5SUEQRkoTcFsu91ekJ2VyLL3OYQrkLrGona1fsfIOow6xwORUkd9fBD+mqdhUYn/aVlklhSHGQHCODPML4ltMSEHxvpcY6HET8QFCX2EoKRhFXJt7pX9dMN47s7V3ss/pGdZX0u5Um0g1L5PzRqXlpsAEt1vRr4MKpbGaO0MakpTtorv+0pRIy8vWu2VMtsTDlrPCYhjGRm0Rk/pRYardHrg8HU7oMgmcSYioImGgdNXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qusxCsXs3I5Z0PqUbPNaGiJihqojpiGAZRdBw6OAFX4=;
- b=DjBnzIrD9jPXBlWy1ryO0DbG/jLniZvT285XARy0OUzPq00yK3sVjKmLYV+eNkB7FdsoKhG1NiY9a9lQtUMvt3EnqsROxkY/E4rLnkqL1BbmLhcfKPs0RJPBqy+Jg9o0SrIKpbTIxKJWyuLjPAU5aAHj3j31ntshhiU87HrvTwU=
-Authentication-Results: wizery.com; dkim=none (message not signed)
- header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB9PR04MB8140.eurprd04.prod.outlook.com (2603:10a6:10:249::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Thu, 8 Apr
- 2021 01:59:42 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c57a:6964:f72c:21cf]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c57a:6964:f72c:21cf%11]) with mapi id 15.20.3999.032; Thu, 8 Apr 2021
- 01:59:41 +0000
-From:   peng.fan@oss.nxp.com
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, o.rempel@pengutronix.de
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V3 4/4] remoteproc: imx_rproc: support remote cores booted before Linux Kernel
-Date:   Thu,  8 Apr 2021 09:44:49 +0800
-Message-Id: <1617846289-13496-5-git-send-email-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617846289-13496-1-git-send-email-peng.fan@oss.nxp.com>
-References: <1617846289-13496-1-git-send-email-peng.fan@oss.nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HK2PR02CA0219.apcprd02.prod.outlook.com
- (2603:1096:201:20::31) To DB6PR0402MB2760.eurprd04.prod.outlook.com
- (2603:10a6:4:a1::14)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by HK2PR02CA0219.apcprd02.prod.outlook.com (2603:1096:201:20::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4020.17 via Frontend Transport; Thu, 8 Apr 2021 01:59:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 99d6bd1b-c1d2-45fd-0bfa-08d8fa31f964
-X-MS-TrafficTypeDiagnostic: DB9PR04MB8140:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB9PR04MB81403EB2D6C4C4D631ABBBC2C9749@DB9PR04MB8140.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: m8iyl+utLrQsebwBe2b0114s3EzPZIj+PGKDdNw/Jtmb5Np8HqKZIjnrw131OlM3/RjLFwxdISasfq6zXrb4lkE56ixBgrRz2PKZCkFs7Ahc2+BXsneLFyamrdSjHbEQJAMOGDKrfNX7Vbm0wuc+3FB4NDijXNqin0Wj82wtz4zsSOmIPN5CbymM6k75/V5r2VZLj88RI8paNc85KiFqzzJoWe5usidJ/6b4d5bexrUnUC0rcc9lH0ek/Ljeab5BsFp99kaCw+Zx/uNKsCiS4UaIYmIyEhCzjbe9vnKhB1UjQKdlxGxi06zGcQZspZujeq2vy3Bg6pwBHYV0AgJyDk+F71WkBhO9N8YSlloFpylRua1rm49kQ8YkcPr/k9T6G5iLR9iq7UJGkxXXG4r128q9AQaF0jyvd03Rc+zqRJepiMS9EJRVY+O4jPRsZk6vdLrJTadREWAFF6TiZqmKn3HEb5CRyNDrnAT18vUrJniUwB9070+gCJjDqCqtbmM2Y3NA8m09Th+6khXSUShttxk6iyZcwaVGEjWyyu/ClB+4/4HYb30Ie9AoP0P7NPCfhRSz0XaGNvflOcQgpJ4sY88a7JlZBo6/pW+8HFRLngwrWmZs3hbP/E4JG0BcaMRGi7x0lk5i4CFEEPAnNZhPs0KWZKbcDNrylYnwswn4ZLje+yYpasxhiZQUY5k/KTOaazZz3OJAj7NW4Ewy6bi2TmU3cLTYSQm5LHLeE/FZr+0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(376002)(39860400002)(136003)(956004)(2616005)(4326008)(83380400001)(8936002)(86362001)(6486002)(316002)(38350700001)(5660300002)(66946007)(52116002)(6666004)(8676002)(6506007)(9686003)(478600001)(26005)(7416002)(186003)(38100700001)(16526019)(6512007)(66476007)(66556008)(2906002)(69590400012);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?L7FBPpbeMcUdXjeyC6aH67OIHbFTkgR2GCWZZ0J0lkYUuWGUD9uLVLapnxUj?=
- =?us-ascii?Q?TQlOYwvgBUJUVhDoiEOKY371A3aml1Z+ZiLFF40JR4ta2vcHbLlCnjEqUcAY?=
- =?us-ascii?Q?9v6GtTI1lBtECA/ubE3Uvju4b9a0W48kg95pNgRRbBeDCNDWoDVWW7fBAiw0?=
- =?us-ascii?Q?U4A6Hl6wxjWAZV2QbImsRH4db4RNICE+/d5quLA0xFd3okICg7K7jihTDndz?=
- =?us-ascii?Q?yBFzkm/A7BCRARY6LA0UJK9F3UFEpbJYONTOZBxbJpFe8WOezPC1ZdBOM7ZA?=
- =?us-ascii?Q?U/hJbN61vjVzBshciXW46RiQKNqBwQFBbB1JyQyofKiDH/5N3cq6/vbJgru4?=
- =?us-ascii?Q?TJjkp4sVCq/7jnzdhd5u4XpRSkUOzSr8UfwsnFTnqGiyPNMfiOVdy54+C9as?=
- =?us-ascii?Q?TtVGRuSHAME9+eVIaUllrPP+tOCzjQ7anknHcZoXLMni5BBX4IwWGLWdIJh4?=
- =?us-ascii?Q?ETKnG+oVUl7PG43X9e2WgxoT3T2mzgg2afxFImgU6JnJKcHGAB4zX2RpdfkI?=
- =?us-ascii?Q?1er6PVVAELgB4tLIH/oLh9NKg8CBrs1Sa5FOlycGrtKkGODwkjqv2P2GGuKW?=
- =?us-ascii?Q?7PfHFAGMIc2yRHiFTyEmFZv9H4ULD+PJZl/6LTG3jji+ewQhqrVtHHBkfwYF?=
- =?us-ascii?Q?LQ7qkw3UY/HtLw4G4OuC1sDg+bZ5nhZm1NoguqecIhMjZlm+s9Guf2HP9fgz?=
- =?us-ascii?Q?XJ4HSqhemSKBmx5JzFl92umYjbkfefB1Is0h5NoGrcPbOL7lbx2l2bKc9SG2?=
- =?us-ascii?Q?6yosIe0BY/l6K4m6h0jOMIovzn1PmhrhVz80fgvYt7SUMSpG/XT3D795KPOs?=
- =?us-ascii?Q?WgL7DRk2g03gh5hb1UKjq8RylX3PAM4pYtA8CUzAClYzTeaBnGIevMLr0FeJ?=
- =?us-ascii?Q?7hOlrG2ayZdku3TIqSjJlZ1nqIpRJkMFx4j2TLT2My1BwNktbL6b49t3ilJn?=
- =?us-ascii?Q?Ofq81vqRMwXXwh3FOU2s8q0RQY+iHGX29Hv2culQa6QrjImZxJQvveJn7i3M?=
- =?us-ascii?Q?M0yZXbO7pyrSdIb+gogivihP6j6Umv11UhFgWqTxGxnwTr2id1KPsLVijtOE?=
- =?us-ascii?Q?/zW45LTmbQAQRsO6gDN82pDrHoNFT3qL3WQ5Oz9pyeM0wbpVHRjr3cFyrwm5?=
- =?us-ascii?Q?DbWiNUs70yMdg8H0GWWcMK5oYaR51uF79CD1GNGq5OflB6cIpy2Ag6Dvsu7N?=
- =?us-ascii?Q?1WQeDQdGu+h9SyozyFMgEArGu/L9PnwoD0AoaVx6gz/j0nzCCqVvxG7fGJ9H?=
- =?us-ascii?Q?nSDS/4VKrE2r4fT6AJbOMQpRzFsqp7qevs4/iDQtLC2A+IBxUtDrcYTv7ql5?=
- =?us-ascii?Q?J5j4hb2g+X2bRd1L2Chi+RHGHDfWkk0A6WjC4sgGH07Euw=3D=3D?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99d6bd1b-c1d2-45fd-0bfa-08d8fa31f964
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Apr 2021 01:59:41.9109
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qaf2SM6Jj4elG9MtiDliUrGQNe5KIxLfH/fQNN3cEeECH3neLUmL6Pzv+BCJUsHdfZY295Bmw1uylgczEDVUZA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR04MB8140
+        id S230196AbhDHBud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 7 Apr 2021 21:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhDHBu1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 7 Apr 2021 21:50:27 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C921C061760;
+        Wed,  7 Apr 2021 18:50:17 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id y5so683447qkl.9;
+        Wed, 07 Apr 2021 18:50:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
+         :from:to:references:in-reply-to;
+        bh=mMhxbB0zqHG5YU1pZTAAX3hVmpGb5cQ4fHjP3KzZthQ=;
+        b=QPrEzU8sAygM5cwmENm34A2L3XVE53Ze6nVd2eYnd6KIGKg8AWz3k5PNnFtrilVEXX
+         wgaqkxVTcH9p93o8O3lgyeOHeXQB8XPorZExdV9H4PzqjLEO/ysOcYmu7n2xtyoiZ7Hn
+         lP0E80tx91xON/MH9M+z1km/Sbd722K9SGERcL2hlznvp3GmUYLdKZUWUwTLISZukgFQ
+         VwhtYf9v+BzW0dBQyQ0BtEP9MXIHFS+PWflFbyZDM5KuiJZcnsCllHuQ48o/sTA4UnOu
+         WcuwWi9VQJafhdaRjujIFxA38cvqA+RKvzBBuYpaSUrHcG+cBbD9GeA0kOUE+GwhMB+t
+         bMWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:cc:subject:from:to:references:in-reply-to;
+        bh=mMhxbB0zqHG5YU1pZTAAX3hVmpGb5cQ4fHjP3KzZthQ=;
+        b=evUx6xecgoStHU0vMMBUkbLqNBQzmF3//c0Y2vY0jU7IUZxMKLCAVY+VQxf3R6coAR
+         s+eZA5TMilekz/At4Vt8sqJ1nM7hcPLYalVgMkd/duDbDLgS4F0BlhL5AMlH3FDkRcN0
+         sy7BOZRP3MU7++00apykB3QH+zgIhj09O2A16MJ7QXPeg7wS9A1bGoneRzIaaiGrWUT2
+         xWB5T61vgqYY/8VNnY6v6H+ofSCLurpfSYasRbvp+FwK06TRTpxri74VckoH+6DIR2kT
+         6itqfKjR5ilDf/GjogvjEda3szJJ3HWw9wAS0y1iawzdf7Uz4mAmKx8frSXmNcQUrUGN
+         sOTQ==
+X-Gm-Message-State: AOAM533QG9adUMWNlzGoOQND5uRnFPrBDmfb1uq1v/n3BZfpOQq7K1bs
+        hUR8Q7SVhh9ieSPvKro6ZSm1/ktADHZyPBMh
+X-Google-Smtp-Source: ABdhPJwTVQg1PoTmTSngwfPxVba1R0vKewmtNNIIFfa3tXDiD7qXpPv49hyGOpBl7FLd8+UfUW4YXg==
+X-Received: by 2002:a37:d82:: with SMTP id 124mr6094473qkn.311.1617846616630;
+        Wed, 07 Apr 2021 18:50:16 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id m16sm19473506qkm.100.2021.04.07.18.50.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Apr 2021 18:50:16 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 07 Apr 2021 21:50:15 -0400
+Message-Id: <CAHYREM5SP01.DM67S1LUC3NY@shaak>
+Cc:     <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
+        <kbuild-all@lists.01.org>
+Subject: Re: [PATCH] clk: fix for_each_child.cocci warnings
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Stephen Boyd" <sboyd@kernel.org>,
+        "Julia Lawall" <julia.lawall@inria.fr>, <mturquette@baylibre.com>
+References: <alpine.DEB.2.22.394.2104072100410.11549@hadrien>
+ <161784187378.3790633.2593540922159647609@swboyd.mtv.corp.google.com>
+In-Reply-To: <161784187378.3790633.2593540922159647609@swboyd.mtv.corp.google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+Hi Stephen,
 
- - When remote cores are kicked before Linux Kernel, we are not able
-   to get resource table from the firmware elf file, so we need to add
-   rsc_table to hold the resource table published by remote cores and
-   imx_rproc_get_loaded_rsc_table is to get the resource table.
- - Per remoteproc framework, add attach hook for processor in a detached
-   state.
- - Add imx_rproc_detect_mode to detect remote cores' working mode to
-   set the state which is required by remoteproc framework.
+On Wed Apr 7, 2021 at 8:31 PM EDT, Stephen Boyd wrote:
+> Quoting Julia Lawall (2021-04-07 12:02:32)
+> > From: kernel test robot <lkp@intel.com>
+> >=20
+> > For_each_child_of_node should have of_node_put() before goto.
+> >=20
+> > Generated by: scripts/coccinelle/iterators/for_each_child.cocci
+> >=20
+> > CC: Liam Beguin <lvb@xiphos.com>
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: kernel test robot <lkp@intel.com>
+> > Signed-off-by: Julia Lawall <julia.lawall@inria.fr>
+> > ---
+>
+> Is this a fix for a patch on the list?
+>
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
----
- drivers/remoteproc/imx_rproc.c | 45 ++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+This is a fix for a patch[1] I sent yesterday.
+I'll apply and resend.
 
-diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-index 7cd09971d1a4..d6338872c6db 100644
---- a/drivers/remoteproc/imx_rproc.c
-+++ b/drivers/remoteproc/imx_rproc.c
-@@ -95,6 +95,7 @@ struct imx_rproc {
- 	struct mbox_chan		*rx_ch;
- 	struct work_struct		rproc_work;
- 	struct workqueue_struct		*workqueue;
-+	void __iomem			*rsc_table;
- };
- 
- static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
-@@ -395,8 +396,26 @@ static void imx_rproc_kick(struct rproc *rproc, int vqid)
- 			__func__, vqid, err);
- }
- 
-+static int imx_rproc_attach(struct rproc *rproc)
-+{
-+	return 0;
-+}
-+
-+static struct resource_table *imx_rproc_get_loaded_rsc_table(struct rproc *rproc, size_t *table_sz)
-+{
-+	struct imx_rproc *priv = rproc->priv;
-+
-+	/* The resource table has already been mapped in imx_rproc_addr_init */
-+	if (!priv->rsc_table)
-+		return NULL;
-+
-+	*table_sz = SZ_1K;
-+	return (struct resource_table *)priv->rsc_table;
-+}
-+
- static const struct rproc_ops imx_rproc_ops = {
- 	.prepare	= imx_rproc_prepare,
-+	.attach		= imx_rproc_attach,
- 	.start		= imx_rproc_start,
- 	.stop		= imx_rproc_stop,
- 	.kick		= imx_rproc_kick,
-@@ -404,6 +423,7 @@ static const struct rproc_ops imx_rproc_ops = {
- 	.load		= rproc_elf_load_segments,
- 	.parse_fw	= imx_rproc_parse_fw,
- 	.find_loaded_rsc_table = rproc_elf_find_loaded_rsc_table,
-+	.get_loaded_rsc_table = imx_rproc_get_loaded_rsc_table,
- 	.sanity_check	= rproc_elf_sanity_check,
- 	.get_boot_addr	= rproc_elf_get_boot_addr,
- };
-@@ -470,6 +490,8 @@ static int imx_rproc_addr_init(struct imx_rproc *priv,
- 		}
- 		priv->mem[b].sys_addr = res.start;
- 		priv->mem[b].size = resource_size(&res);
-+		if (!strcmp(node->name, "rsc_table"))
-+			priv->rsc_table = priv->mem[b].cpu_addr;
- 		b++;
- 	}
- 
-@@ -536,6 +558,25 @@ static void imx_rproc_free_mbox(struct rproc *rproc)
- 	mbox_free_channel(priv->rx_ch);
- }
- 
-+static int imx_rproc_detect_mode(struct imx_rproc *priv)
-+{
-+	const struct imx_rproc_dcfg *dcfg = priv->dcfg;
-+	struct device *dev = priv->dev;
-+	int ret;
-+	u32 val;
-+
-+	ret = regmap_read(priv->regmap, dcfg->src_reg, &val);
-+	if (ret) {
-+		dev_err(dev, "Failed to read src\n");
-+		return ret;
-+	}
-+
-+	if (!(val & dcfg->src_stop))
-+		priv->rproc->state = RPROC_DETACHED;
-+
-+	return 0;
-+}
-+
- static int imx_rproc_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -590,6 +631,10 @@ static int imx_rproc_probe(struct platform_device *pdev)
- 		goto err_put_mbox;
- 	}
- 
-+	ret = imx_rproc_detect_mode(priv);
-+	if (ret)
-+		goto err_put_mbox;
-+
- 	priv->clk = devm_clk_get(dev, NULL);
- 	if (IS_ERR(priv->clk)) {
- 		dev_err(dev, "Failed to get clock\n");
--- 
-2.30.0
+Thanks,
+Liam
+
+[1] https://patchwork.kernel.org/project/linux-clk/patch/20210407005330.289=
+0430-2-liambeguin@gmail.com/
+
+> >=20
+> > url:    https://github.com/0day-ci/linux/commits/Liam-Beguin/add-suppor=
+t-for-the-lmk04832/20210407-085408
+> > base:   f40ddce88593482919761f74910f42f4b84c004b
+> > :::::: branch date: 9 hours ago
+> > :::::: commit date: 9 hours ago
+> >=20
+> >  clk-lmk04832.c |    1 +
+> >  1 file changed, 1 insertion(+)
+> >=20
+> > --- a/drivers/clk/clk-lmk04832.c
+> > +++ b/drivers/clk/clk-lmk04832.c
+> > @@ -1159,6 +1159,7 @@ static int lmk04832_probe(struct spi_dev
+> >                 if (ret) {
+> >                         dev_err(lmk->dev, "missing reg property in chil=
+d: %s\n",
+> >                                 child->full_name);
+> > +                       of_node_put(child);
+> >                         goto err_disable_oscin;
+> >                 }
+> >
 
