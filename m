@@ -2,135 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF841357F70
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:37:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96FFD357F75
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 11:37:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhDHJhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 05:37:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbhDHJhq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 05:37:46 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D37DC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 02:37:35 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id p19so869177wmq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 02:37:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=W/yHsDt8vP0u2gfAgM+TLjsXBjDf3kcjStZ5TkuBO04=;
-        b=L5BRsWJ8dydkBP9Vi3TF7ADyA4Q5GaNirzWF94eqpg+JL306eqT94na2clpu3nDELP
-         dMAUkP34cNKUubQsnzzBBJumO4zcJGAIfpj1grXxgQ2yhbG3monwA+u5fya1ii40SmGn
-         uvAWVf2oQg1pX4OpfR97WCcf31mQtF2h1bItuDvOJMwp+9YtuW4mtreSNi9FGNsIofm+
-         ua2fL0BRhP0XS5ofnTIxaJffPESnYgmxaDLwoXDKxIflWeQJwndYp52a0kZ9Qeh/hmre
-         7ZTLGWwwViwBS+UTUcH7N0rwucQn3bwcuWYusqgoEZMOTJjo/wgxp7GTAipXRVmo/K9m
-         2INg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W/yHsDt8vP0u2gfAgM+TLjsXBjDf3kcjStZ5TkuBO04=;
-        b=j9J3szegb7OAtFjSPrcwqeKz5aQNZqda3/60Cc9zJI0mZQWs+LVhPp+LpyO2IPx2j0
-         A10NCNMw3mW56W08RI+4aERRkx8lpVEpmYEIMIAMdz6BKMM61MGcNZTFynnvMBd3OiqL
-         V1eD1JxcBet1j44W70F6ukUB01+vJhUpFXQSdzR5hxE1ptnfzyqqdQVnBYYVIYoBOTY8
-         kEOJZsezrRQ3ShYCTJBKG10WnC7o2ZPmuBrAEeC3hqk0Fxr50kS/ZPFXXAftfbIIkj84
-         bQvi1US83af6HQe70n8+AJCHnZNlPy3ZhnrR3alAO6axTVtWEJt3guGXdj7XTRGOESop
-         YwMg==
-X-Gm-Message-State: AOAM5331r1uA5KlSkLuTiQhy/ASF+3kklSaxGya2/GXTBNwIlN8t1B43
-        BNNW5orIjCAzYP2WDy/PMY0JyOefIhKE+w==
-X-Google-Smtp-Source: ABdhPJzJL3dixxN/yLW8668xthwKI1Qe27J5sx/WY544bIVjXbdwnVBFT5n3x6q0eGEHleVFu9k3cQ==
-X-Received: by 2002:a7b:c047:: with SMTP id u7mr7488121wmc.98.1617874653812;
-        Thu, 08 Apr 2021 02:37:33 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id a15sm45246768wrr.53.2021.04.08.02.37.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 02:37:33 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 11:37:15 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "Wu, Hao" <hao.wu@intel.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <YG7Oyyju/2J6KMf+@myrica>
-References: <20210329163147.GG2356281@nvidia.com>
- <MWHPR11MB188639EE54B48B0E1321C8198C7D9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210330132830.GO2356281@nvidia.com>
- <MWHPR11MB1886CAD48AFC156BFC7C1D398C7A9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210405234230.GF7405@nvidia.com>
- <fa57bde5-472f-6e66-3521-bfac7d6e4f8d@redhat.com>
- <20210406124251.GO7405@nvidia.com>
- <MWHPR11MB1886A7E4C6F3E3A81240517B8C759@MWHPR11MB1886.namprd11.prod.outlook.com>
- <YG39ZtnTuyn5uBOa@myrica>
- <20210407193654.GG282464@nvidia.com>
+        id S231283AbhDHJiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 05:38:01 -0400
+Received: from mga03.intel.com ([134.134.136.65]:32279 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229640AbhDHJiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 05:38:00 -0400
+IronPort-SDR: PHOHjWaTwQxnYoNMfngO473e1wU5NJYAOYjE9cxopWxg+Wbxjiv/be5oKrour3Vsnkg2eLG8S8
+ w6lS3Z14qjNw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9947"; a="193543909"
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="193543909"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 02:37:48 -0700
+IronPort-SDR: BFpXzI0RXUfZATcKxM7hFx64JBR7Vk2GquUS4EhpRUOdB/vQoJXx3E7ConT8Lwt/z83n9oxCQn
+ yC8CBijdMkrw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,206,1613462400"; 
+   d="scan'208";a="458753841"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by orsmga001.jf.intel.com with ESMTP; 08 Apr 2021 02:37:42 -0700
+Subject: Re: [PATCH v16 1/2] scsi: ufs: Enable power management for wlun
+To:     Asutosh Das <asutoshd@codeaurora.org>, cang@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Pedro Sousa <pedrom.sousa@synopsys.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Bean Huo <beanhuo@micron.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Yue Hu <huyue2@yulong.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/SAMSUNG S3C, S5P AND EXYNOS ARM ARCHITECTURES" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>
+References: <cover.1617818557.git.asutoshd@codeaurora.org>
+ <7be92c0bc3e5f07d5e17bd3b78c01496686ef31e.1617818557.git.asutoshd@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <d30c2dc2-6334-1515-b548-a898939ec9ee@intel.com>
+Date:   Thu, 8 Apr 2021 12:38:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407193654.GG282464@nvidia.com>
+In-Reply-To: <7be92c0bc3e5f07d5e17bd3b78c01496686ef31e.1617818557.git.asutoshd@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 04:36:54PM -0300, Jason Gunthorpe wrote:
-> On Wed, Apr 07, 2021 at 08:43:50PM +0200, Jean-Philippe Brucker wrote:
+On 7/04/21 9:08 pm, Asutosh Das wrote:
+> During runtime-suspend of ufs host, the scsi devices are
+> already suspended and so are the queues associated with them.
+> But the ufs host sends SSU (START_STOP_UNIT) to wlun
+> during its runtime-suspend.
+> During the process blk_queue_enter checks if the queue is not in
+> suspended state. If so, it waits for the queue to resume, and never
+> comes out of it.
+> The commit
+> (d55d15a33: scsi: block: Do not accept any requests while suspended)
+> adds the check if the queue is in suspended state in blk_queue_enter().
 > 
-> > * Get a container handle out of /dev/ioasid (or /dev/iommu, really.)
-> >   No operation available since we don't know what the device and IOMMU
-> >   capabilities are.
-> >
-> > * Attach the handle to a VF. With VFIO that would be
-> >   VFIO_GROUP_SET_CONTAINER. That causes the kernel to associate an IOMMU
-> >   with the handle, and decide which operations are available.
+> Call trace:
+>  __switch_to+0x174/0x2c4
+>  __schedule+0x478/0x764
+>  schedule+0x9c/0xe0
+>  blk_queue_enter+0x158/0x228
+>  blk_mq_alloc_request+0x40/0xa4
+>  blk_get_request+0x2c/0x70
+>  __scsi_execute+0x60/0x1c4
+>  ufshcd_set_dev_pwr_mode+0x124/0x1e4
+>  ufshcd_suspend+0x208/0x83c
+>  ufshcd_runtime_suspend+0x40/0x154
+>  ufshcd_pltfrm_runtime_suspend+0x14/0x20
+>  pm_generic_runtime_suspend+0x28/0x3c
+>  __rpm_callback+0x80/0x2a4
+>  rpm_suspend+0x308/0x614
+>  rpm_idle+0x158/0x228
+>  pm_runtime_work+0x84/0xac
+>  process_one_work+0x1f0/0x470
+>  worker_thread+0x26c/0x4c8
+>  kthread+0x13c/0x320
+>  ret_from_fork+0x10/0x18
 > 
-> Right, this is basically the point, - the VFIO container (/dev/vfio)
-> and the /dev/ioasid we are talking about have a core of
-> similarity. ioasid is the generalized, modernized, and cross-subsystem
-> version of the same idea. Instead of calling it "vfio container" we
-> call it something that evokes the idea of controlling the iommu.
+> Fix this by registering ufs device wlun as a scsi driver and
+> registering it for block runtime-pm. Also make this as a
+> supplier for all other luns. That way, this device wlun
+> suspends after all the consumers and resumes after
+> hba resumes.
 > 
-> The issue is to seperate /dev/vfio generic functionality from vfio and
-> share it with every subsystem.
-> 
-> It may be that /dev/vfio and /dev/ioasid end up sharing a lot of code,
-> with a different IOCTL interface around it. The vfio_iommu_driver_ops
-> is not particularly VFIOy.
-> 
-> Creating /dev/ioasid may primarily start as a code reorganization
-> exercise.
-> 
-> > * With a map/unmap vIOMMU (or shadow mappings), a single translation level
-> >   is supported. With a nesting vIOMMU, we're populating the level-2
-> >   translation (some day maybe by binding the KVM page tables, but
-> >   currently with map/unmap ioctl).
-> > 
-> >   Single-level translation needs single VF per container. 
-> 
-> Really? Why?
+> Co-developed-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> ---
 
-The vIOMMU is started in bypass, so the device can do DMA to the GPA space
-until the guest configures the vIOMMU, at which point each VF is either
-kept in bypass or gets new DMA mappings, which requires the host to tear
-down the bypass mappings and set up the guest mappings on a per-VF basis
-(I'm not considering nesting translation in the host kernel for this,
-because it's not supported by all pIOMMUs and is expensive in terms of TLB
-and pinned memory). So keeping a single VF per container is simpler, but
-there are certainly other programming models possible.
+<SNIP>
 
-Thanks,
-Jean
+> +#ifdef CONFIG_PM_SLEEP
+> +static int ufshcd_wl_poweroff(struct device *dev)
+> +{
+> +	struct ufs_hba *hba = dev_get_drvdata(dev);
 
+Should be:
+
+	struct scsi_device *sdev = to_scsi_device(dev);
+	struct ufs_hba *hba = shost_priv(sdev->host);
+
+> +
+> +	__ufshcd_wl_suspend(hba, UFS_SHUTDOWN_PM);
+> +	return 0;
+> +}
+> +#endif
