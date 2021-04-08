@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB80358725
-	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4979F358729
+	for <lists+linux-kernel@lfdr.de>; Thu,  8 Apr 2021 16:29:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhDHO3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 10:29:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231659AbhDHO3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 10:29:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D91EE6113D;
-        Thu,  8 Apr 2021 14:28:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617892130;
-        bh=2FuIUpNq5FIFplx4EeFCO4ieAf4OaROCW1udvxA38HM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=q4+2HCpcV+rS5tQbc0ehHIFcU43mYM92ygvDGNdO61ec7U7uxl6z/g5VUuCahu1d7
-         tclDT/WHqPdalS2H/kvCw59rIEj1o0/NyKCgLxrewa2mIEtUgBjdtsKK2x81FzjliN
-         uw+jo1d/K4o/DLj5Xy+jU/mH+yercmiEO/1QVp6bBQaQnRHe+J7+YaOT0+95DCEF+J
-         cASgDaHb2prTzoCruYIXU+2JIyHemzG79APBJ3AyPtiBdDo1GAWEuaaV3V/Ci1JOum
-         qSBa6ANdwyb4B26pLZ/tFa1b2RZBtpfnmixCCsdP9XolNJxUCMuBNpZeja4RZb/2Cn
-         Zh+P3eorDIV0Q==
-Received: by mail-ed1-f53.google.com with SMTP id f8so2657838edd.11;
-        Thu, 08 Apr 2021 07:28:49 -0700 (PDT)
-X-Gm-Message-State: AOAM532z3GWc8H9CFlDJGH3d7jyujc0DqC59rp/ImRAtx8Cvm6NAG0jB
-        ooKDuKv1w3VGCXYww3Xikj0LyN33OXpSa/Dwyw==
-X-Google-Smtp-Source: ABdhPJz4i8EdGJ6gG+z3e0xfEVwHZQEAJpCAY2QsFcp9e1muisyWgXQMDwqQbL0LT7UVpYYGYEQjULRMZIZcSo7sitA=
-X-Received: by 2002:a50:fd12:: with SMTP id i18mr6127269eds.137.1617892128439;
- Thu, 08 Apr 2021 07:28:48 -0700 (PDT)
+        id S231917AbhDHO3R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 10:29:17 -0400
+Received: from mail-oo1-f49.google.com ([209.85.161.49]:33555 "EHLO
+        mail-oo1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231659AbhDHO3O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 10:29:14 -0400
+Received: by mail-oo1-f49.google.com with SMTP id i25-20020a4aa1190000b02901bbd9429832so559749ool.0;
+        Thu, 08 Apr 2021 07:29:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H04usHloaVg6tf6A8ybuI1YTbDpURH0NcMFvOKIlRQU=;
+        b=oX3m8+x+oj3Dr2nMmjzQu02VqXj03kfelebUinN9mBHLAgqXYJF6fZXQUNL0YJjO+x
+         PHkjtcoO9yzmCbaIiDy9YTD1S9t6sSfKtWZ+qf6ncnz+wHJTsx/C1WGvXff7jpJ6MfTw
+         0Zbbbxu7LbxJzn3PKTbdCbYNqkfUSmVLIBsBOlGPDTx1sVdRbii7pfYk82EzKGKA+eDG
+         gtsnIhhKKd8bduzYfnY4J086Negt0ZaG/k5Hjmc048n6mdBIAMLCldk98UtnlgkL0POX
+         Eg7Qwr8RDEbWI5njTQubc6Lc1rIov7um6A2ozML2hrv0Y8t5RlbF5ojCGwG7iKOJkhMc
+         uNtA==
+X-Gm-Message-State: AOAM530ofJQ8rmwhWVTmb52gSrvzLSli9thS/0d4gm6u3hdPbCzMyI8w
+        npmmk99F1+YTaMKcWf4MeeAMTmZLnw8IMtstK5A=
+X-Google-Smtp-Source: ABdhPJyX+7fnmLnCETM7MrmUY9bylTJxEFAdLApno+5ZbW7NFaljU1VN6MCtAKB8dVUH1FdOzdvfB7Y43869vOkk1+Y=
+X-Received: by 2002:a4a:d48b:: with SMTP id o11mr7726147oos.2.1617892142020;
+ Thu, 08 Apr 2021 07:29:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <1615447798-6959-1-git-send-email-skakit@codeaurora.org>
- <1615447798-6959-3-git-send-email-skakit@codeaurora.org> <YEpNV55KR2nlAXMP@builder.lan>
- <86f8d5dbdb8d5d6627b9deece1978d07@codeaurora.org> <20210408023656.GM904837@yoga>
-In-Reply-To: <20210408023656.GM904837@yoga>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 8 Apr 2021 09:28:36 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqJXaeuWPDAH30p_DKqkLm+tru8N8kqsgLaT1Y6pr6k-Lw@mail.gmail.com>
-Message-ID: <CAL_JsqJXaeuWPDAH30p_DKqkLm+tru8N8kqsgLaT1Y6pr6k-Lw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt-bindings: mfd: Convert pm8xxx bindings to yaml
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     satya priya <skakit@codeaurora.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Gross <agross@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Kiran Gunda <kgunda@codeaurora.org>
+References: <1616846904-25719-1-git-send-email-tanxiaofei@huawei.com>
+In-Reply-To: <1616846904-25719-1-git-send-email-tanxiaofei@huawei.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 8 Apr 2021 16:28:51 +0200
+Message-ID: <CAJZ5v0jNktGd+dPZG-1ui3qZt9GZH5AbTae9uQBQCWYMj-y+VA@mail.gmail.com>
+Subject: Re: [PATCH v3 00/12] acpi: fix some coding style issues
+To:     Xiaofei Tan <tanxiaofei@huawei.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>, linuxarm@openeuler.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 9:37 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+On Sat, Mar 27, 2021 at 1:11 PM Xiaofei Tan <tanxiaofei@huawei.com> wrote:
 >
-> On Wed 07 Apr 10:37 CDT 2021, skakit@codeaurora.org wrote:
+> Fix some coding style issues reported by checkpatch.pl.
+> Only cleanup and no function changes.
 >
-> > Hi Bjorn,
-> >
-> > On 2021-03-11 22:33, Bjorn Andersson wrote:
-> > > On Thu 11 Mar 01:29 CST 2021, satya priya wrote:
-> [..]
-> > > > +patternProperties:
-> > > > +  "rtc@[0-9a-f]+$":
-> > >
-> > > Can we somehow link this to individual binding docs instead of listing
-> > > all the possible functions here?
-> > >
-> >
-> > you mean we should split this into two:
-> > qcom-pm8xxx.yaml and qcom-pm8xxx-rtc.yaml
-> > Please correct me if wrong.
-> >
+> Differences from v2 to v3:
+> - Remove the modifications that may cause function change.
 >
-> Right, I'm worried that it will be quite hard to maintain this document
-> once we start adding all the various pmic blocks to it. So if we somehow
-> can maintain a series of qcom-pm8xxx-<func>.yaml and just ref them into
-> the main PMIC definition.
+> Differences from v1 to v2:
+> - Add subsystem and module name in the name of patch 05/15.
+> - Change to use more proper module name for some patch names.
 >
-> @Rob, can you give us some guidance on how to structure this binding,
-> with the various PMICs described will have some defined subset of a
-> larger set of hardware blocks that's often shared between versions?
+> Xiaofei Tan (12):
+>   ACPI: APD: fix a block comment align issue
+>   ACPI: processor: fix some coding style issues
+>   ACPI: ipmi: remove useless return statement for void function
+>   ACPI: LPSS: add a missed blank line after declarations
+>   ACPI: acpi_pad: add a missed blank line after declarations
+>   ACPI: battery: fix some coding style issues
+>   ACPI: button: fix some coding style issues
+>   ACPI: CPPC: fix some coding style issues
+>   ACPI: custom_method: fix a coding style issue
+>   ACPI: PM: add a missed blank line after declarations
+>   ACPI: sysfs: fix some coding style issues
+>   ACPI: dock: fix some coding style issues
 
-How you suggest is good. The only other thing is just 1 complete
-example rather than a bunch of <func> fragments.
-
-Rob
+All applied as 5.13 material, thanks!
