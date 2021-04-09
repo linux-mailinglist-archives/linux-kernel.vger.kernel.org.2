@@ -2,114 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D01635A0A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985B435A0A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbhDIOFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:05:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
+        id S233693AbhDIOF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:05:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232855AbhDIOFB (ORCPT
+        with ESMTP id S232855AbhDIOFz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:05:01 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF8EDC061760;
-        Fri,  9 Apr 2021 07:04:47 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id d11so1865503wro.13;
-        Fri, 09 Apr 2021 07:04:47 -0700 (PDT)
+        Fri, 9 Apr 2021 10:05:55 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FA2C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 07:05:42 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id s16-20020a0568301490b02901b83efc84a0so5738708otq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 07:05:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=A5LE/nloZgweDANjgJoolUS7WHVqsJjergOyixsI/cI=;
-        b=eHDuuA1jsvsnNbIzLoDqBKfJnpBEczt/OAI62ifJP1GZx/ffAQva9aILVjToc6Q7Kw
-         isK3Z+23X3F0aEZC8OMhr+FKGPv9z7FoyEcnRnN6ZEHCE6T+3mBXI4c9jhLyNh0zIVEc
-         QCPZyrBlwZhmnsJY724Lr7LIwUBGmnGRoaMwpp47LY+dBwWtulNkNh4295BU9mbXz0G+
-         VWsR37+FccsY285RsKGer8QUFi9wPMqdQ67Q3Z8isgrq3BgQj0HG5UFa16ftnWzZ7FtX
-         /YJCdv/XtFwlabT/wM71Y6C+3Yh0cqhWroA0ZimFvOcyXY+ElEZ10nohyMd1VkaoxEJm
-         e9zA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tkIKUPMXO+QFdcCr0Cncn7e2Yy8AxmvNLCntyfLt084=;
+        b=TIG+FUkQld559rmVCY0gEmtzETrq3k+5Ylcqd7GIIfLK9Ip3FjUGkvtA+dxerhbAAO
+         Jqk6Wj5bNXAgQgMbiRXNhY5I4gt79cYFiVwrypICkhrHHrSoAPgzFuU22zNzLMmYRf4A
+         MLX1+KJhzuhFGRD//sPRJkRKPMmWAgpg0AKu8+C8C7kwV95gK4rLXJ5h9MabOpeQZMZ8
+         hddTLBdgNNVZ7TZZSBt1mRFJjcXNVAiBTDdl/L/seez8aqgmOT0wC1ki5uBM/6B3O7dN
+         oqZtTmbx8OqBo/JY4TfCrsuKdJHlksUms52o56s3F+2llimohgxTAYlBFGcaW1kDv847
+         k2ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=A5LE/nloZgweDANjgJoolUS7WHVqsJjergOyixsI/cI=;
-        b=PlWayA77Zp/ATlKAeM8SzzTg9qraEeUgqgeuO1WvBdGs8SIvKCqydrH0nKWD4pqQNY
-         mYCxtcjE1OeMr41KKEV84oGdlQl5HcRythBy9PdquAUNOoavCHmrVa5ZVjR3JCRfOBcE
-         61cUPG25mEZErPxS3SCwQ0cBdb2yXwf0TA1bVbwXplXNAkqlpo2lbK51C0SpWE89m3nL
-         hCOpbE7q0p45uFTXSzsK2MmkYfPB/s0RRiiNlwPX22nLfBTeT+B2vsbY2LQSzfV6MTKn
-         9+p6X1OK5yw2t7+blokvpfce8W0UoUj5KrrvWdQqcFdfZdWKZ1Quqrfhfr2I/eBYQ4na
-         6X+g==
-X-Gm-Message-State: AOAM533ibhxOulGP32jg6AeBiFlEssArE2tSB+aCzZU1boKARp/zKaGj
-        OYnFFA6aMYA/fw9TO41JlKoo3o6N5GEBAg==
-X-Google-Smtp-Source: ABdhPJwcmlSrUaYfMLzkXKWp9KmiEB81whxFSpWovAVAGzDVLAu4+hzxt1MgdE1Jm9UeNJIkydxRxw==
-X-Received: by 2002:a5d:6d48:: with SMTP id k8mr18070980wri.93.1617977086441;
-        Fri, 09 Apr 2021 07:04:46 -0700 (PDT)
-Received: from 192.168.10.5 ([39.46.65.172])
-        by smtp.gmail.com with ESMTPSA id z15sm4951029wrw.38.2021.04.09.07.04.44
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tkIKUPMXO+QFdcCr0Cncn7e2Yy8AxmvNLCntyfLt084=;
+        b=TNbDD/JHeEXCZyLQWOx3o8B/Kd0EndBM6hJvxwOs4O6gBeEiVJWvACHMZz6JJhwUzH
+         KjmeRMwpCDQP9POy800+aAXfcvIaWHwcDhVaZ99X3NoFdNycae90sltG2hHRftRgmbN9
+         0yMnrJq/lPMvRFhtkiamk1DfINlCtjnsyLZsUfRf8GnAXE02XwkRON4YGJ9R9FRK04Th
+         x24vZ+iBTDHuHux4EFx1LGPi31XEGySiBmYJ/onyj6JPBsv9O8XHcGUMfZ9klpWvmIgF
+         dKDzcMGYehPQaFIBytzjgc4vax8Z2hA/sxBWGVn3u/QZvbg8DsWV0lqaRa6N2SxC7D2V
+         G7wQ==
+X-Gm-Message-State: AOAM532sNXrfnXbHhUmL7WfOi5DE0eOZHf8pW4O+47PVTNkZN9g+4y0e
+        9Si87hOYO95nzDGtgVTlqWkKaw==
+X-Google-Smtp-Source: ABdhPJyyOvm8nKA3I+vGRXHpCRU4PrLjeFgjhOdcnffp6Bp98FLYmIvZHl7Ompcu1vNUIEp1WMPhhA==
+X-Received: by 2002:a05:6830:118f:: with SMTP id u15mr12135569otq.43.1617977141902;
+        Fri, 09 Apr 2021 07:05:41 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id x2sm617721ote.47.2021.04.09.07.05.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 07:04:46 -0700 (PDT)
-Message-ID: <772123d6be10ec8d299a605029ef95003a1513ec.camel@gmail.com>
-Subject: Re: New Defects reported by Coverity Scan for linux-next weekly scan
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     scan-admin@coverity.com, colin.king@canonical.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     musamaanjum@gmail.com
-Date:   Fri, 09 Apr 2021 19:04:41 +0500
-In-Reply-To: <606f39c2c377f_1aed562adb26462f5449492@prd-scan-dashboard-0.mail>
-References: <606f39c2c377f_1aed562adb26462f5449492@prd-scan-dashboard-0.mail>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Fri, 09 Apr 2021 07:05:41 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 09:05:39 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Andy Gross <agross@kernel.org>, Felipe Balbi <balbi@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-usb@vger.kernel.org, Serge Semin <fancer.lancer@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v8 6/7] usb: dwc3: qcom: Detect DWC3 DT-nodes
+ using compatible string
+Message-ID: <YHBfM1/ag5fR3Oyi@builder.lan>
+References: <20210409113029.7144-1-Sergey.Semin@baikalelectronics.ru>
+ <20210409113029.7144-7-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409113029.7144-7-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-04-08 at 17:13 +0000, scan-admin@coverity.com wrote:
-> ** CID 1503714:    (DEADCODE)
-> /drivers/staging/rtl8723bs/os_dep/ioctl_linux.c: 367 in wpa_set_auth_algs()
-> /drivers/staging/rtl8723bs/os_dep/ioctl_linux.c: 357 in wpa_set_auth_algs()
+On Fri 09 Apr 06:30 CDT 2021, Serge Semin wrote:
+
+> In accordance with the USB HCD/DRD schema all the USB controllers are
+> supposed to have DT-nodes named with prefix "^usb(@.*)?". Since the
+> existing DT-nodes will be renamed in a subsequent patch let's fix the DWC3
+> Qcom-specific code to detect the DWC3 sub-node just by checking its
+> compatible string to match the "snps,dwc3". The semantic of the code
+> won't change seeing all the DWC USB3 nodes are supposed to have the
+> compatible property with any of those strings set.
 > 
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 > 
-> ________________________________________________________________________________________________________
-> *** CID 1503714:    (DEADCODE)
-> /drivers/staging/rtl8723bs/os_dep/ioctl_linux.c: 367 in wpa_set_auth_algs()
-> 361     		padapter->securitypriv.ndisencryptstatus = Ndis802_11Encryption1Enabled;
-> 362     
-> 363     		padapter->securitypriv.ndisauthtype = Ndis802_11AuthModeShared;
-> 364     		padapter->securitypriv.dot11AuthAlgrthm = dot11AuthAlgrthm_Shared;
-> 365     	} else if (value & WLAN_AUTH_OPEN) {
-> 366     		/* padapter->securitypriv.ndisencryptstatus = Ndis802_11EncryptionDisabled; */
-> > > >     CID 1503714:    (DEADCODE)
-> > > >     Execution cannot reach this statement: "if (padapter->securitypriv....".
-> 367     		if (padapter->securitypriv.ndisauthtype < Ndis802_11AuthModeWPAPSK) {
-> 368     			padapter->securitypriv.ndisauthtype = Ndis802_11AuthModeOpen;
-> 369     			padapter->securitypriv.dot11AuthAlgrthm = dot11AuthAlgrthm_Open;
-> 370     		}
-> 371     	} else {
-> 372     		ret = -EINVAL;
-> /drivers/staging/rtl8723bs/os_dep/ioctl_linux.c: 357 in wpa_set_auth_algs()
-> 351     static int wpa_set_auth_algs(struct net_device *dev, u32 value)
-> 352     {
-> 353     	struct adapter *padapter = rtw_netdev_priv(dev);
-> 354     	int ret = 0;
-> 355     
-> 356     	if ((value & WLAN_AUTH_SHARED_KEY) && (value & WLAN_AUTH_OPEN)) {
-
-The value of WLAN_AUTH_OPEN macro is 0 and it is being treated as if
-is a bit number. Two conditions in this function never execute. It
-seems like a crucial bug. Anyone looking into it?
-
-> > > >     CID 1503714:    (DEADCODE)
-> > > >     Execution cannot reach this statement: "padapter->securitypriv.ndis...".
-> 357     		padapter->securitypriv.ndisencryptstatus = Ndis802_11Encryption1Enabled;
-> 358     		padapter->securitypriv.ndisauthtype = Ndis802_11AuthModeAutoSwitch;
-> 359     		padapter->securitypriv.dot11AuthAlgrthm = dot11AuthAlgrthm_Auto;
-> 360     	} else if (value & WLAN_AUTH_SHARED_KEY)	{
-> 361     		padapter->securitypriv.ndisencryptstatus = Ndis802_11Encryption1Enabled;
-> 362     
+> ---
 > 
-> ** CID 1487894:  Null pointer dereferences  (FORWARD_NULL)
-> /net/ipv6/route.c: 5209 in ip6_route_multipath_add()
-
-
+> Changelog v7:
+> - Replace "of_get_child_by_name(np, "usb") ?: of_get_child_by_name(np, "dwc3");"
+>   pattern with using of_get_compatible_child() method.
+> - Discard Bjorn Andersson Reviewed-by tag since the patch content
+>   has been changed.
+> ---
+>  drivers/usb/dwc3/dwc3-qcom.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index fcaf04483ad0..617a1be88371 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -644,7 +644,7 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+>  	struct device		*dev = &pdev->dev;
+>  	int			ret;
+>  
+> -	dwc3_np = of_get_child_by_name(np, "dwc3");
+> +	dwc3_np = of_get_compatible_child(np, "snps,dwc3");
+>  	if (!dwc3_np) {
+>  		dev_err(dev, "failed to find dwc3 core child\n");
+>  		return -ENODEV;
+> -- 
+> 2.30.1
+> 
