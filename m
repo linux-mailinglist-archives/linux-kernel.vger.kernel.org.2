@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B48535923F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99711359240
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhDICy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 22:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45214 "EHLO
+        id S233003AbhDICzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 22:55:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232616AbhDICy0 (ORCPT
+        with ESMTP id S232831AbhDICy7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 22:54:26 -0400
+        Thu, 8 Apr 2021 22:54:59 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8BC2C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 19:54:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63465C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 19:54:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=beEidYj5HqBklT5YHQ/YB4yuKaRShJ1XHQtoMRZj1F4=; b=CN+EZ4LRo5Nxaqn38JyCdT9ozs
-        rGd04D1G81D4d3jIrfJfaZfH2gFTq57n/eqAGXuCjjwr1XDYloERAj0VD0Uliv6qrA1JXK2vMxJ5W
-        S0riWzjTmNOqSZcD4FbDeZOXPnGAlBabRPiMWvSR0FsdwtPbbLcOowjLwVDo9W0QoT4jutioqkjkq
-        K4rnvtfsN4ZGninMRgusJi6F7nngcWOjC4vECikqwiTKZmFIWIrf05AC9LtO3GMh6jBpBWM9+TRId
-        U2LhIb6J60s3VH0zGqAXLRHEXkYhb3/fs7zd68kBPJyG5JFVdAPEHv6S+j4HxT7xpFPaPmu1y50QV
-        buNigAOg==;
+        bh=+30ewFdNzqjAsHucIGBTD78Q8j4ynPy1ksGc7GxIwlc=; b=KimaRN12o3OpK/UWzLpc8rpv3t
+        xWILfxbR/fEq5PH6kb95hH5kZx1CS+HvZ9ijoYCBScMtReG+hHgtYyVZ1hz0TyZwjBSn1sqhy6E5k
+        Reb1maLgYAJDETFzWMB0/nCaKC3isCQDIgUXu6bV1ZJlueZb3w+Jq46Qgso6LIEgqHdQdFPb2/6bK
+        uNDkgMYn0skx6Gk2jrv+E8acoq7V2wXMRO+LTM0srC8R3JrC3+QDFV28Uim+NJT8S61GQUxLueujO
+        jraJtIxHrrKfyB54NB+C5kf5PoO02yfJZF1lw7PJFm0V6tt9Bq94+qJEXnCSMjTbkJxlp+crJYYQ/
+        iSsz9IFQ==;
 Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUhGG-00HGL9-8p; Fri, 09 Apr 2021 02:52:50 +0000
+        id 1lUhGW-00HGM9-Gn; Fri, 09 Apr 2021 02:53:12 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     neilb@suse.de, peterz@infradead.org, mingo@redhat.com,
         will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
         tglx@linutronix.de, bigeasy@linutronix.de
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 02/17] locking: Add split_lock
-Date:   Fri,  9 Apr 2021 03:51:16 +0100
-Message-Id: <20210409025131.4114078-3-willy@infradead.org>
+Subject: [PATCH 03/17] bit_spinlock: Prepare for split_locks
+Date:   Fri,  9 Apr 2021 03:51:17 +0100
+Message-Id: <20210409025131.4114078-4-willy@infradead.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210409025131.4114078-1-willy@infradead.org>
 References: <20210409025131.4114078-1-willy@infradead.org>
@@ -45,59 +45,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bitlocks do not currently participate in lockdep.  Conceptually, a
-bit_spinlock is a split lock, eg across each bucket in a hash table.
-The struct split_lock gives us somewhere to record the lockdep_map.
+Make bit_spin_lock() and variants variadic to help with the transition.
+The split_lock parameter will become mandatory at the end of the series.
+Also add bit_spin_lock_nested() and bit_spin_unlock_assign() which will
+both be used by the rhashtable code later.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- include/linux/split_lock.h | 37 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
- create mode 100644 include/linux/split_lock.h
+ include/linux/bit_spinlock.h | 43 ++++++++++++++++++++++++++++++++----
+ 1 file changed, 39 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/split_lock.h b/include/linux/split_lock.h
-new file mode 100644
-index 000000000000..8d64cfa0bbad
---- /dev/null
-+++ b/include/linux/split_lock.h
-@@ -0,0 +1,37 @@
-+#ifndef _LINUX_SPLIT_LOCK_H
-+#define _LINUX_SPLIT_LOCK_H
-+
-+#include <linux/lockdep_types.h>
-+
-+struct split_lock {
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+	struct lockdep_map dep_map;
-+#endif
-+};
-+
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+#define SPLIT_DEP_MAP_INIT(lockname)					\
-+	.dep_map = {							\
-+		.name = #lockname,					\
-+		.wait_type_inner = LD_WAIT_SPIN,			\
+diff --git a/include/linux/bit_spinlock.h b/include/linux/bit_spinlock.h
+index bbc4730a6505..6c5bbb55b334 100644
+--- a/include/linux/bit_spinlock.h
++++ b/include/linux/bit_spinlock.h
+@@ -6,6 +6,7 @@
+ #include <linux/preempt.h>
+ #include <linux/atomic.h>
+ #include <linux/bug.h>
++#include <linux/split_lock.h>
+ 
+ /*
+  *  bit-based spin_lock()
+@@ -13,7 +14,8 @@
+  * Don't use this unless you really need to: spin_lock() and spin_unlock()
+  * are significantly faster.
+  */
+-static inline void bit_spin_lock(int bitnum, unsigned long *addr)
++static inline void bit_spin_lock_nested(int bitnum, unsigned long *addr,
++		struct split_lock *lock, unsigned int subclass)
+ {
+ 	/*
+ 	 * Assuming the lock is uncontended, this never enters
+@@ -35,10 +37,27 @@ static inline void bit_spin_lock(int bitnum, unsigned long *addr)
+ 	__acquire(bitlock);
+ }
+ 
++static inline void bit_spin_lock(int bitnum, unsigned long *addr,
++		...)
++{
++	preempt_disable();
++#if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
++	while (unlikely(test_and_set_bit_lock(bitnum, addr))) {
++		preempt_enable();
++		do {
++			cpu_relax();
++		} while (test_bit(bitnum, addr));
++		preempt_disable();
 +	}
-+#else
-+#define SPLIT_DEP_MAP_INIT(lockname)
 +#endif
++	__acquire(bitlock);
++}
 +
-+#define DEFINE_SPLIT_LOCK(name)						\
-+struct split_lock name = {						\
-+	SPLIT_DEP_MAP_INIT(name)					\
-+};
+ /*
+  * Return true if it was acquired
+  */
+-static inline int bit_spin_trylock(int bitnum, unsigned long *addr)
++static inline int bit_spin_trylock(int bitnum, unsigned long *addr,
++		...)
+ {
+ 	preempt_disable();
+ #if defined(CONFIG_SMP) || defined(CONFIG_DEBUG_SPINLOCK)
+@@ -54,7 +73,8 @@ static inline int bit_spin_trylock(int bitnum, unsigned long *addr)
+ /*
+  *  bit-based spin_unlock()
+  */
+-static inline void bit_spin_unlock(int bitnum, unsigned long *addr)
++static inline void bit_spin_unlock(int bitnum, unsigned long *addr,
++		...)
+ {
+ #ifdef CONFIG_DEBUG_SPINLOCK
+ 	BUG_ON(!test_bit(bitnum, addr));
+@@ -71,7 +91,8 @@ static inline void bit_spin_unlock(int bitnum, unsigned long *addr)
+  *  non-atomic version, which can be used eg. if the bit lock itself is
+  *  protecting the rest of the flags in the word.
+  */
+-static inline void __bit_spin_unlock(int bitnum, unsigned long *addr)
++static inline void __bit_spin_unlock(int bitnum, unsigned long *addr,
++		...)
+ {
+ #ifdef CONFIG_DEBUG_SPINLOCK
+ 	BUG_ON(!test_bit(bitnum, addr));
+@@ -83,6 +104,20 @@ static inline void __bit_spin_unlock(int bitnum, unsigned long *addr)
+ 	__release(bitlock);
+ }
+ 
++/**
++ * bit_spin_unlock_assign - Unlock a bitlock by assignment of new value.
++ * @addr: Address to assign the value to.
++ * @val: New value to assign.
++ * @lock: Split lock that this bitlock is part of.
++ */
++static inline void bit_spin_unlock_assign(unsigned long *addr,
++		unsigned long val, struct split_lock *lock)
++{
++	smp_store_release(addr, val);
++	preempt_enable();
++	__release(bitlock);
++}
 +
-+#ifdef CONFIG_DEBUG_LOCK_ALLOC
-+#define split_lock_init(_lock) do {					\
-+	static struct lock_class_key __key;				\
-+	lockdep_init_map_wait(&(_lock)->dep_map, #_lock, &__key, 0,	\
-+				LD_WAIT_SPIN);				\
-+} while (0)
-+#else
-+static inline void split_lock_init(struct split_lock *sl) { }
-+#endif
-+
-+#endif /* _LINUX_SPLIT_LOCK_H */
+ /*
+  * Return true if the lock is held.
+  */
 -- 
 2.30.2
 
