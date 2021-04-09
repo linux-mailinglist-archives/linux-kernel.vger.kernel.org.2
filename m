@@ -2,133 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBED359F3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AA10359F41
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233755AbhDIMs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:48:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37322 "EHLO mx2.suse.de"
+        id S233617AbhDIMuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:50:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231756AbhDIMs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:48:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617972493; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/cklqRtaAoBxj6T8zaOYaeYthIiew+7URzqJWSDV+A4=;
-        b=nH5uQ/hzVZLcswwNjsuRUB8vnnaKjiKfQtjZmowow1wDF0qUEGQCeCAR60WiOWkCTvKm+n
-        4v2khlPRms4RgZrOmITu1wvBJGjG/gAETYXCvKez8A9Hpip+O40YRbRoFBFiLY0yCMJWQs
-        HrwzP2axM2tCz+jYqaZ8ocm//DUGev0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3916DAFD8;
-        Fri,  9 Apr 2021 12:48:13 +0000 (UTC)
-Date:   Fri, 9 Apr 2021 14:48:12 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH] mm/memory_hotplug: Make unpopulated zones PCP structures
- unreachable during hot remove
-Message-ID: <YHBNDEAw1OqIWwb5@dhcp22.suse.cz>
-References: <20210409120957.GM3697@techsingularity.net>
- <YHBL0e8s+EesIyDl@dhcp22.suse.cz>
+        id S232615AbhDIMun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 08:50:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EF7B610E7;
+        Fri,  9 Apr 2021 12:50:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617972629;
+        bh=xOv9lDYpXnZrbDx22drj6l3V079be0RY5uWmz/x8Omo=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=nYQoktx1Hw++eqQAEwuE5agG02f4hIlyUxtmzq7LHVktqATWAdrBozN4IQdaGSX+D
+         J8mJvIZEK9dabu84AdviUCW31LYy+n8pT19Jds6ye/WtMWpQU565T1KzJZw5SSUsZn
+         Flt54zseUo4YmryLOFv2Gd+9jm/ZD2qxLI4c8Rbd3F1iMOjS56KbtR0aXDkj4SpbZf
+         2CgF7LbnWRa6hnvArq6x0RLJBKEO1fK+0PhjFKcbEXbTGzTQOPk7y+hFgBPC/do319
+         P1LFviTvZzR7JqFHYLDmS5O8RYimxG8wExqLLrLPnNUzK2F/fEI9+svS6s4QZqil/0
+         7SD685UmArSeg==
+Message-ID: <e3830bc562d86e7d82542a3ee3d6ce66c901fda0.camel@kernel.org>
+Subject: Re: [v2] ceph: support getting ceph.dir.rsnaps vxattr
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Yanhu Cao <gmayyyha@gmail.com>
+Cc:     idryomov@gmail.com, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 09 Apr 2021 08:50:28 -0400
+In-Reply-To: <20200828012844.18937-1-gmayyyha@gmail.com>
+References: <20200828012844.18937-1-gmayyyha@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHBL0e8s+EesIyDl@dhcp22.suse.cz>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09-04-21 14:42:58, Michal Hocko wrote:
-> On Fri 09-04-21 13:09:57, Mel Gorman wrote:
-> > zone_pcp_reset allegedly protects against a race with drain_pages
-> > using local_irq_save but this is bogus. local_irq_save only operates
-> > on the local CPU. If memory hotplug is running on CPU A and drain_pages
-> > is running on CPU B, disabling IRQs on CPU A does not affect CPU B and
-> > offers no protection.
+On Fri, 2020-08-28 at 09:28 +0800, Yanhu Cao wrote:
+> It's easy to know how many snapshots have been created.
 > 
-> Yes, the synchronization aspect is bogus indeed.
+> Link: https://tracker.ceph.com/issues/47168
+> Signed-off-by: Yanhu Cao <gmayyyha@gmail.com>
+> ---
+>  fs/ceph/inode.c      | 1 +
+>  fs/ceph/mds_client.c | 9 ++++++++-
+>  fs/ceph/mds_client.h | 1 +
+>  fs/ceph/super.h      | 2 +-
+>  fs/ceph/xattr.c      | 7 +++++++
+>  5 files changed, 18 insertions(+), 2 deletions(-)
 > 
-> > This patch reorders memory hotremove such that the PCP structures
-> > relevant to the zone are no longer reachable by the time the structures
-> > are freed.  With this reordering, no protection is required to prevent
-> > a use-after-free and the IRQs can be left enabled. zone_pcp_reset is
-> > renamed to zone_pcp_destroy to make it clear that the per-cpu structures
-> > are deleted when the function returns.
-> 
-> Wouldn't it be much easier to simply not destroy/reset pcp of an empty
-> zone at all? The whole point of this exercise seems to be described in
-> 340175b7d14d5. setup_zone_pageset can check for an already allocated pcp
-> and simply reinitialize it. 
+> diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
+> index 357c937699d5..650cad4b3ecb 100644
+> --- a/fs/ceph/inode.c
+> +++ b/fs/ceph/inode.c
+> @@ -891,6 +891,7 @@ int ceph_fill_inode(struct inode *inode, struct page *locked_page,
+>  			ci->i_rfiles = le64_to_cpu(info->rfiles);
+>  			ci->i_rsubdirs = le64_to_cpu(info->rsubdirs);
+>  			ci->i_dir_pin = iinfo->dir_pin;
+> +			ci->i_rsnaps = iinfo->rsnaps;
+>  			ceph_decode_timespec64(&ci->i_rctime, &info->rctime);
+>  		}
+>  	}
+> diff --git a/fs/ceph/mds_client.c b/fs/ceph/mds_client.c
+> index 4a26862d7667..3466845c0179 100644
+> --- a/fs/ceph/mds_client.c
+> +++ b/fs/ceph/mds_client.c
+> @@ -176,6 +176,13 @@ static int parse_reply_info_in(void **p, void *end,
+>  			memset(&info->snap_btime, 0, sizeof(info->snap_btime));
+>  		}
+>  
+> +		/* snapshot count, remains zero for v<=3 */
+> +		if (struct_v >= 4) {
+> +			ceph_decode_64_safe(p, end, info->rsnaps, bad);
+> +		} else {
+> +			info->rsnaps = 0;
+> +		}
+> +
+>  		*p = end;
+>  	} else {
+>  		if (features & CEPH_FEATURE_MDS_INLINE_DATA) {
+> @@ -214,7 +221,7 @@ static int parse_reply_info_in(void **p, void *end,
+>  		}
+>  
+>  		info->dir_pin = -ENODATA;
+> -		/* info->snap_btime remains zero */
+> +		/* info->snap_btime and info->rsnaps remain zero */
+>  	}
+>  	return 0;
+>  bad:
+> diff --git a/fs/ceph/mds_client.h b/fs/ceph/mds_client.h
+> index bc9e95937d7c..76f2ed1a7cbf 100644
+> --- a/fs/ceph/mds_client.h
+> +++ b/fs/ceph/mds_client.h
+> @@ -88,6 +88,7 @@ struct ceph_mds_reply_info_in {
+>  	s32 dir_pin;
+>  	struct ceph_timespec btime;
+>  	struct ceph_timespec snap_btime;
+> +	u64 rsnaps;
+>  	u64 change_attr;
+>  };
+>  
+> diff --git a/fs/ceph/super.h b/fs/ceph/super.h
+> index 4c3c964b1c54..eb108b69da71 100644
+> --- a/fs/ceph/super.h
+> +++ b/fs/ceph/super.h
+> @@ -332,7 +332,7 @@ struct ceph_inode_info {
+>  
+>  	/* for dirs */
+>  	struct timespec64 i_rctime;
+> -	u64 i_rbytes, i_rfiles, i_rsubdirs;
+> +	u64 i_rbytes, i_rfiles, i_rsubdirs, i_rsnaps;
+>  	u64 i_files, i_subdirs;
+>  
+>  	/* quotas */
+> diff --git a/fs/ceph/xattr.c b/fs/ceph/xattr.c
+> index 3a733ac33d9b..c7d8ecc3d04b 100644
+> --- a/fs/ceph/xattr.c
+> +++ b/fs/ceph/xattr.c
+> @@ -231,6 +231,12 @@ static ssize_t ceph_vxattrcb_dir_rsubdirs(struct ceph_inode_info *ci, char *val,
+>  	return ceph_fmt_xattr(val, size, "%lld", ci->i_rsubdirs);
+>  }
+>  
+> +static ssize_t ceph_vxattrcb_dir_rsnaps(struct ceph_inode_info *ci, char *val,
+> +					  size_t size)
+> +{
+> +	return ceph_fmt_xattr(val, size, "%lld", ci->i_rsnaps);
+> +}
+> +
+>  static ssize_t ceph_vxattrcb_dir_rbytes(struct ceph_inode_info *ci, char *val,
+>  					size_t size)
+>  {
+> @@ -352,6 +358,7 @@ static struct ceph_vxattr ceph_dir_vxattrs[] = {
+>  	XATTR_RSTAT_FIELD(dir, rentries),
+>  	XATTR_RSTAT_FIELD(dir, rfiles),
+>  	XATTR_RSTAT_FIELD(dir, rsubdirs),
+> +	XATTR_RSTAT_FIELD(dir, rsnaps),
+>  	XATTR_RSTAT_FIELD(dir, rbytes),
+>  	XATTR_RSTAT_FIELD(dir, rctime),
+>  	{
 
-I meant this
+Sorry we missed this one Yanhu. In the future, please put [PATCH] in the
+subject line in some fashion and we may spot it more easily.
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 754026a9164d..7169342f5474 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1810,7 +1818,6 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
- 	init_per_zone_wmark_min();
- 
- 	if (!populated_zone(zone)) {
--		zone_pcp_reset(zone);
- 		build_all_zonelists(NULL);
- 	} else
- 		zone_pcp_update(zone);
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index e6a602e82860..b0fdda77e570 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6496,7 +6496,13 @@ void __meminit setup_zone_pageset(struct zone *zone)
- 	struct per_cpu_pageset *p;
- 	int cpu;
- 
--	zone->pageset = alloc_percpu(struct per_cpu_pageset);
-+	/*
-+	 * zone could have gone completely offline during memory hotplug
-+	 * when the pgdat is left behind for simplicity. On a next onlining
-+	 * we do not need to reallocate pcp state.
-+	 */
-+	if (!zone->pageset)
-+		zone->pageset = alloc_percpu(struct per_cpu_pageset);
- 	for_each_possible_cpu(cpu) {
- 		p = per_cpu_ptr(zone->pageset, cpu);
- 		pageset_init(p);
-@@ -8803,25 +8809,6 @@ void zone_pcp_enable(struct zone *zone)
- 	mutex_unlock(&pcp_batch_high_lock);
- }
- 
--void zone_pcp_reset(struct zone *zone)
--{
--	unsigned long flags;
--	int cpu;
--	struct per_cpu_pageset *pset;
--
--	/* avoid races with drain_pages()  */
--	local_irq_save(flags);
--	if (zone->pageset != &boot_pageset) {
--		for_each_online_cpu(cpu) {
--			pset = per_cpu_ptr(zone->pageset, cpu);
--			drain_zonestat(zone, pset);
--		}
--		free_percpu(zone->pageset);
--		zone->pageset = &boot_pageset;
--	}
--	local_irq_restore(flags);
--}
--
- #ifdef CONFIG_MEMORY_HOTREMOVE
- /*
-  * All pages in the range must be in a single zone, must not contain holes,
+This looks fine to me -- merged into ceph-client/testing branch, though
+I did revise the changelog to be a bit more descriptive. Tell me if you
+think it needs changes.
+
+Thanks!
 -- 
-Michal Hocko
-SUSE Labs
+Jeff Layton <jlayton@kernel.org>
+
