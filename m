@@ -2,126 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B1D359C2D
+	by mail.lfdr.de (Postfix) with ESMTP id BAD91359C2E
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:34:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233043AbhDIKeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:34:36 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:41042 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233505AbhDIKeM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:34:12 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 306A41C0B78; Fri,  9 Apr 2021 12:33:56 +0200 (CEST)
-Date:   Fri, 9 Apr 2021 12:33:55 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Pavel Andrianov <andrianov@ispras.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: Re: [PATCH 5.10 06/41] net: pxa168_eth: Fix a potential data race in
- pxa168_eth_remove
-Message-ID: <20210409103355.GA10988@amd>
-References: <20210409095304.818847860@linuxfoundation.org>
- <20210409095305.022244081@linuxfoundation.org>
+        id S233175AbhDIKej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:34:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:47800 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233745AbhDIKe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:34:29 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B1AD1FB;
+        Fri,  9 Apr 2021 03:34:15 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74EAF3F73D;
+        Fri,  9 Apr 2021 03:34:14 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: Re: [RFC PATCH 01/10] genirq: Add chip flag to denote automatic IRQ (un)masking
+In-Reply-To: <20210409101725.00007271@Huawei.com>
+References: <20210408154326.3988781-1-valentin.schneider@arm.com> <20210408154326.3988781-2-valentin.schneider@arm.com> <20210409101725.00007271@Huawei.com>
+Date:   Fri, 09 Apr 2021 11:34:07 +0100
+Message-ID: <875z0voig0.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="ZGiS0Q5IWpPtfppv"
-Content-Disposition: inline
-In-Reply-To: <20210409095305.022244081@linuxfoundation.org>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jonathan,
 
---ZGiS0Q5IWpPtfppv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks for taking a peek :)
 
-Hi!
+On 09/04/21 10:17, Jonathan Cameron wrote:
+> On Thu, 8 Apr 2021 16:43:17 +0100
+> Valentin Schneider <valentin.schneider@arm.com> wrote:
+>> diff --git a/include/linux/irq.h b/include/linux/irq.h
+>> index bee82809107c..580b1b6b1799 100644
+>> --- a/include/linux/irq.h
+>> +++ b/include/linux/irq.h
+>> @@ -219,6 +219,8 @@ struct irq_data {
+>>   *				  irq_chip::irq_set_affinity() when deactivated.
+>>   * IRQD_IRQ_ENABLED_ON_SUSPEND	- Interrupt is enabled on suspend by irq pm if
+>>   *				  irqchip have flag IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND set.
+>> + * IRQD_IRQ_FLOW_MASKED         - Interrupt is masked by ACK. Only EOI can
+>> + *                                clear this.
+>
+> Nitpick of the day : Seems text above is using tabs for white space blocks
+> whereas you have used spaces. Make it consistent.
+> It's not consistent in the file so I guess you could clean that up, or
+> just go with making it consistent in this block.
+>
 
-> [ Upstream commit 0571a753cb07982cc82f4a5115e0b321da89e1f3 ]
->=20
-> pxa168_eth_remove() firstly calls unregister_netdev(),
-> then cancels a timeout work. unregister_netdev() shuts down a device
-> interface and removes it from the kernel tables. If the timeout occurs
-> in parallel, the timeout work (pxa168_eth_tx_timeout_task) performs stop
-> and open of the device. It may lead to an inconsistent state and memory
-> leaks.
-
-AFAICT the timeout work does a lot of processing, including
-pxa168_eth_open(), pxa168_init_phy() and phy_connect_direct(). We
-probably don't want that to run with clock being disabled and DMA
-being unmapped.
-
-We certainly don't want phy_disconnect() being undone by
-phy_connect_direct() running in the workqueue.
-
-IOW this patch is not enough to fix the bugs, and at least fix below
-is needed to get something reasonable.
-
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-
-Best regards,
-								Pavel
-
-> +++ b/drivers/net/ethernet/marvell/pxa168_eth.c
-> @@ -1544,8 +1544,8 @@ static int pxa168_eth_remove(struct platform_device=
- *pdev)
->  	clk_disable_unprepare(pep->clk);
->  	mdiobus_unregister(pep->smi_bus);
->  	mdiobus_free(pep->smi_bus);
-> -	unregister_netdev(dev);
->  	cancel_work_sync(&pep->tx_timeout_task);
-> +	unregister_netdev(dev);
->  	free_netdev(dev);
->  	return 0;
->  }
-
-diff --git a/drivers/net/ethernet/marvell/pxa168_eth.c b/drivers/net/ethern=
-et/marvell/pxa168_eth.c
-index d1e4d42e497d..432be22a51be 100644
---- a/drivers/net/ethernet/marvell/pxa168_eth.c
-+++ b/drivers/net/ethernet/marvell/pxa168_eth.c
-@@ -1532,7 +1532,8 @@ static int pxa168_eth_remove(struct platform_device *=
-pdev)
- {
- 	struct net_device *dev =3D platform_get_drvdata(pdev);
- 	struct pxa168_eth_private *pep =3D netdev_priv(dev);
--
-+=09
-+	cancel_work_sync(&pep->tx_timeout_task);
- 	if (pep->htpr) {
- 		dma_free_coherent(pep->dev->dev.parent, HASH_ADDR_TABLE_SIZE,
- 				  pep->htpr, pep->htpr_dma);
-@@ -1545,7 +1546,6 @@ static int pxa168_eth_remove(struct platform_device *=
-pdev)
- 	mdiobus_unregister(pep->smi_bus);
- 	mdiobus_free(pep->smi_bus);
- 	unregister_netdev(dev);
--	cancel_work_sync(&pep->tx_timeout_task);
- 	free_netdev(dev);
- 	return 0;
- }
-
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-
---ZGiS0Q5IWpPtfppv
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmBwLZMACgkQMOfwapXb+vKHeACcDyESzRhB6oVMJt2LOPVZC3oH
-FZkAoK/uKgltga666cAWkBuOBlLkeNuf
-=62ZG
------END PGP SIGNATURE-----
-
---ZGiS0Q5IWpPtfppv--
+I usually let my editor take the wheel when it comes to whitespace vs tabs,
+but it does look like it's not aligned with the rest here.
