@@ -2,241 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9933594BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC5F3594C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbhDIFgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:36:09 -0400
-Received: from mail-mw2nam10on2118.outbound.protection.outlook.com ([40.107.94.118]:37409
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233455AbhDIFf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:35:57 -0400
+        id S233304AbhDIFj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:39:27 -0400
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:1978 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233282AbhDIFjV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 01:39:21 -0400
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+        by mx0b-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1395Zcne013343;
+        Thu, 8 Apr 2021 22:38:39 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=proofpoint;
+ bh=L0KvZBRLxFRLslZaffXIa15K98XhvoreYRzt3SkpK58=;
+ b=MEgmmE94lTQFqX7Eoy+0adW95SgF+w4OemyFrcfHUgn0Bdq7KxNTItr9UCq3TJXSaX59
+ gwgfvOruoKLpfG5XwOEIpniNp/5BUTHh6/Fsmq+Bp0FWzJHxju9ab0OSX5L7VoVQCUTm
+ PUopFmzY9qh6jENqCXlo7/XlU5RL98K+oJ2NzZsQ9XoIQI3kAYsOnY7KDFlvHlxm2Tla
+ NlEdnBUoQJOTJoFlZblIad1ZGpUkwTWQJpZDkuHeRMxKil2oA/8lmWPWB2O33Jd4QMGn
+ VQ535a5z6gB/eV0YAS8HeLE+aQIizjQZCvdXZGKZAMjbvKQtIdf4TvPPblnd+H+UYSZq Jw== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 37rvb4ttvm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 08 Apr 2021 22:38:38 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mbJLBIr8vwfQgf0sSZGm4WNBe5lbEIztLZ7LmIRFoSk7JujyKxQd8kU5zliJx9AYaPf9/vMYZKp/xNjyQdVaelP7jRDdn/ASkYQsp9cSEBHUpoyZ6WvQQ6uWj89SzU3eXzCKxoE60DItHX/pIRFnRBA6qOXCxmKZRzq04Dg1REEz91hwjKnI6ZX9AwlCmxGKf47FuTV7v9zfZFDb2TH83JcWQZOLcsqDse5k9Ngwm2C6uaveTbnCRBJOym1EbQWcbuwsjqA5QXVIjy6nWWmPvLUwshA8+yJf8w+f/Lib0cP0hXoORhbXtamxmc9iB7U2RVpc8fJjhG6PY20TsQtTJw==
+ b=SX/gps9xPdmeQ7aeNKC1XfVqZcagJyuHlkDkeJTzFyIoDFIepbe9a50i8CyTVhanEoiEi/Lg/UJQM1lRVzAdNt8vJUaVyVcuxtzkkKJIZGSvx+8CtNx/7mx2R9wFyCmcx/J3MN93y2Dy/piF+AiMrO95clkM9ITEHnhOu8+tmYjVf/iqGo/Qn1D0LCn3WudtuAIxn43VHE+w7kifqmozFmH61Rbco6KQ54U8SqXlP4YK151EaZ3Gcit+lwBiWWsP3ZrUBEf72QGfLKatpR1lu+sbQ6j6g6txqzyD5kyxj44lULmz+v1S4aLWJSJncd/i3jjj38zjsMOtzHB/spsqOA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d196IQimGvo54x1HxYSeRfx060vkZGWuf+GZc0JnAQ8=;
- b=nziG3bYUQpT+jiNfrWAif/kzN6UkARtCjegaxuftMIUQqP6sNT1+2/m9vmW4K+E1K7P2tzIXvUnqR51EUuL5S1m9KhKm0TvQSgNwGZdieKSvTzAn/b9Wfdt57QGtDh1gVoQMFP23S/3gROgW32aTBVH3bfgttvtWvDT/1VBHHUqA0laCixfWmXf7+8pW9w80y9nrQHIkTd9WJSQ5mAQYr5IF1fOUDdbaS1uN5BoHoFXSMCEqTkr78lqW12kKXRPPto7gW1bXNhNXWsMU9zkjLeg0NPZ8gJNwEgmSKDcd+g5M0Tr8UQBSQ98EC6TN7tA2FOWgTipnP3b9aYxYoBaylw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ bh=L0KvZBRLxFRLslZaffXIa15K98XhvoreYRzt3SkpK58=;
+ b=LtSHsj+zdb5IpGr2+uTRYUL2wcXq0vBBzqWEB7y8LsOgMNYgu4FboHGEg1wcRyGLiTeoNkDNe04uimYAIaNlJSgCKiiQDfkO0afvhJ/F1jWA7deeBuwR7ltlWRt3ZBXu7L+GMyiok7McanQVrxmMZGUBh3eIL7sDqe54akp02WiFYiwIYLmxSE0+cdrlE0cmDugUh2dF1MGX0q19QFHIpvElw/X2NTTqijqK+hfPEznK7cOZfssOTXrq6J2hnZBMWW+qaTC51wYnqPtIzZaQZDrqs+aCe0cyhGZfWZpxhntU+12RtksC7ySsTzF3W7jklYRQk+00a8cKz90KPwEIyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 199.43.4.23) smtp.rcpttodomain=google.com smtp.mailfrom=cadence.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d196IQimGvo54x1HxYSeRfx060vkZGWuf+GZc0JnAQ8=;
- b=hWtTdgSnwiqXZVm2RrQKyXp/ruNLVX2Sns7eVmiAmLf7aQzsjP/7in5hNhQb0TRVPtaruuhk5zPbv+JwzJFD81UKvxer2QaJeIonH9p5eNBULxZAyZBVMuwoyVk0bNFOFhcNMAl1GDKzBjiTLng2vsO6JPtJf0QVnCEGfXfampM=
-Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
- header.d=none;driverdev.osuosl.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BYAPR04MB3928.namprd04.prod.outlook.com (2603:10b6:a02:aa::26) with
+ bh=L0KvZBRLxFRLslZaffXIa15K98XhvoreYRzt3SkpK58=;
+ b=kcuV0tYhvtCy/7llJRQZlTxHshn8uUp44WQoH5+gqUruAIxmN4VoYIXqteZzFPh0dJI3cRZR4Jgt/v/24zPq6UPmd289k0HD/Su4IPEntrxyeTlZGUiiktWwwfclU4clhOchuyH3cJmdN2Q+55UfYZMUaUT/+G6Us2uQNGRIO04=
+Received: from BN0PR02CA0043.namprd02.prod.outlook.com (2603:10b6:408:e5::18)
+ by DM5PR0701MB3637.namprd07.prod.outlook.com (2603:10b6:4:7d::38) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Fri, 9 Apr
- 2021 05:35:41 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::8d56:f2c5:7beb:2bf3]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::8d56:f2c5:7beb:2bf3%7]) with mapi id 15.20.4020.018; Fri, 9 Apr 2021
- 05:35:41 +0000
-Date:   Fri, 9 Apr 2021 13:35:32 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Robert Foss <robert.foss@linaro.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        Bernie Liang <bliang@analogixsemi.com>,
-        Zhen Li <zhenli@analogixsemi.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH 1/1] drm/bridge: anx7625: send DPCD command to downstream
-Message-ID: <18ec1a440eb71e4f91c0932cd0fadddd2e9a4c0f.1617937551.git.xji@analogixsemi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Originating-IP: [60.251.58.79]
-X-ClientProxiedBy: HK2PR02CA0201.apcprd02.prod.outlook.com
- (2603:1096:201:20::13) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3977.33; Fri, 9 Apr
+ 2021 05:38:36 +0000
+Received: from BN8NAM12FT068.eop-nam12.prod.protection.outlook.com
+ (2603:10b6:408:e5:cafe::b9) by BN0PR02CA0043.outlook.office365.com
+ (2603:10b6:408:e5::18) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend
+ Transport; Fri, 9 Apr 2021 05:38:36 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 199.43.4.23)
+ smtp.mailfrom=cadence.com; google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=pass action=none header.from=cadence.com;
+Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
+ 199.43.4.23 as permitted sender) receiver=protection.outlook.com;
+ client-ip=199.43.4.23; helo=rmmaillnx1.cadence.com;
+Received: from rmmaillnx1.cadence.com (199.43.4.23) by
+ BN8NAM12FT068.mail.protection.outlook.com (10.13.182.160) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4042.6 via Frontend Transport; Fri, 9 Apr 2021 05:38:36 +0000
+Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
+        by rmmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 1395cYkF030194
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 9 Apr 2021 01:38:35 -0400
+X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
+Received: from maileu3.global.cadence.com (10.160.88.99) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 9 Apr 2021 07:38:34 +0200
+Received: from vleu-orange.cadence.com (10.160.88.83) by
+ maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Fri, 9 Apr 2021 07:38:34 +0200
+Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
+        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 1395cYGU029570;
+        Fri, 9 Apr 2021 07:38:34 +0200
+Received: (from nadeem@localhost)
+        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 1395cYnB029569;
+        Fri, 9 Apr 2021 07:38:34 +0200
+From:   Nadeem Athani <nadeem@cadence.com>
+To:     <tjoseph@cadence.com>, <lorenzo.pieralisi@arm.com>,
+        <robh@kernel.org>, <bhelgaas@google.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kishon@ti.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-omap@vger.kernel.org>
+CC:     <nadeem@cadence.com>, <mparab@cadence.com>, <sjakhade@cadence.com>,
+        <pthombar@cadence.com>
+Subject: [PATCH] PCI: cadence: LTSSM Detect Quiet state minimum delay setting.
+Date:   Fri, 9 Apr 2021 07:38:32 +0200
+Message-ID: <20210409053832.29512-1-nadeem@cadence.com>
+X-Mailer: git-send-email 2.15.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK2PR02CA0201.apcprd02.prod.outlook.com (2603:1096:201:20::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Fri, 9 Apr 2021 05:35:40 +0000
+Content-Type: text/plain
+X-OrganizationHeadersPreserved: maileu3.global.cadence.com
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2df1cc92-17de-425f-ef25-08d8fb194fc8
-X-MS-TrafficTypeDiagnostic: BYAPR04MB3928:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR04MB3928EF88C9114F4E6596C451C7739@BYAPR04MB3928.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:254;
+X-MS-Office365-Filtering-Correlation-Id: 5eb969d9-4af8-44fd-09f3-08d8fb19b8e5
+X-MS-TrafficTypeDiagnostic: DM5PR0701MB3637:
+X-Microsoft-Antispam-PRVS: <DM5PR0701MB3637C0ACEC3BA151B8295E3AD8739@DM5PR0701MB3637.namprd07.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2089;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: qpbGogYtteLYPWbdd0KCvTGsmkSejHWmjotXR3sXXwcgvMzbKB3Wa6j+oaqwW9SnZ65L6+aQFU7+2kz9SUjek7eVdvag139H30eXKQpDADtFIJsOIzKq3E6N6sFpIDc2KMnsoxq/8y82eqKPYtOAQUN1FatwoPLRhz76/hn4ow+j2fqhyXGgWkZttbaqEi8r/b3vu5+kDSr5YFrRmks9kfXUfhNYxZsSJo49u/kD+XP2OX1eNq/n6+qd5qts3xBSK2pQaej9u0SkbzyrP5PLWY0EisGa6P6n0GrqmshqWJ63qhJIV02KLsp67nNSmnZ9z72bWp1aWpNFfKIknYL/OhG+N8cBmfndMzlBLSHx1ByQTVfFCx6CE8BR85bNOU9/OxBKB8utt1Pei4dIC4b6lXncQRJLOVlFbzp7VK/c+DcVHvf5Jsb1kGkCIPZSKc8RSyIt5th6dD86wtNMNS5rXCw5eP/iuCbEnpwb7c1MRLD7hjgYE6mWAvvVL4YbSDj9qUWD1/hLQv1faQ7vWoUCPsCqbE9m8chhwawWoS46e0PYWIANwMjEDyybXzXsXxoVa2+vOzC0LnVoyxy6NYi6pwus0wpF8B879hUj9x6EXodb3SLjApF2/wqTUH53owO/32HoRW0xIYlbdZJ2wGBALsx6ntx51V/zf1tuhYwVkTXknsLjW9tEYbtj2cveGY/L
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39840400004)(346002)(396003)(366004)(376002)(6486002)(478600001)(36756003)(2616005)(86362001)(38350700001)(83380400001)(956004)(54906003)(66556008)(66476007)(186003)(110136005)(16526019)(55236004)(8676002)(66946007)(38100700001)(52116002)(8936002)(6496006)(7416002)(5660300002)(4326008)(316002)(2906002)(26005)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xQiXC9gJV/NQSKkNBDwcz9O9Evd5ln8aSnBbw2LLBh5H4fm7SoPD1u+WBNvy?=
- =?us-ascii?Q?LDwtAemihbzYFPeoq1y6WgnIXI5Io+NgWUyYt0LYHzksVmxSqw/+SPXy7DZF?=
- =?us-ascii?Q?q0eUSz4NKSAaGLj2PjspfdAVO3lginaeZRf9WEKz9611fPahrqNDRvzl7Ug/?=
- =?us-ascii?Q?ACkCH66dXault3svtxg5RWz+DXgmc2R+uZRxbY1q93Z4rJIA3TBol26F8ZqB?=
- =?us-ascii?Q?YWIoBHPdyx8H5tPmYHvjmJzVRmq+AdM4BYyh77Iw0YtFDuNdZERnDruqJC1H?=
- =?us-ascii?Q?MtNHaMKVinVhbIhgvktOum3L8rsig3TMiNC2bago+fZo2mEdzB2rcfKrmpij?=
- =?us-ascii?Q?KoPGHBMy4QsW7697r/QqehuelNWi/2tjpIDnqwYtNTboo1rLmPahVNLcZDK1?=
- =?us-ascii?Q?WK4EwHh8uaFhpYBUF4IogFTFVwec2b02EYcPTRAn+QC9GmByAIyQwLhokiLI?=
- =?us-ascii?Q?fL+X0kRKNy1P1rO4jEOUtfgt/7iZqjzkQPllu21Ek1KEBlbCzE0/ytdeuijj?=
- =?us-ascii?Q?cWQfBSzO+XH4ZE2JwfsTqzwbn6sssNx6i7kPY7YvoHzIdMGdTHQlU18E++0K?=
- =?us-ascii?Q?e8y2AYY+h1d2bmwmJA2FWCEyJOm23gOfrDmAwU3iP/zwpLSNM9bMmdSo9Gak?=
- =?us-ascii?Q?BkNhPWArRuuljZX5UjBbohYxge3xWIKyZUUv/zOv7z8Cf1P2FTOq3D90S5WO?=
- =?us-ascii?Q?UfgFXqLJDo5C+Fs33KA2na/YNrIXCGWLLttJsfGY5+KUK3HGW0yjXeFZENa3?=
- =?us-ascii?Q?7A7N8eNN01XYF95ohARIu8QFpz/WB74BdzXK9ai4ilt5a8xB3g9Lt65PWq9C?=
- =?us-ascii?Q?DLtXmwlUMxiBiE2Dcg44bZGEuqlNr/DmL2AmFuK5cjU4L3w4T6OjI8nl5aD4?=
- =?us-ascii?Q?xKkyGHeQPOIpKKfV8B6c9LjTLrASXdlIhzConLSGpqEz/vRfYu2gefnwgPh6?=
- =?us-ascii?Q?9aPPKdljri9yLi3kLTZizJT2wo+smBPeTweLs14UdoQ//Rn882G0De5tHmf1?=
- =?us-ascii?Q?QIbkaxexNfNUAiJiT2KjgiBVw05Sn4FLMOfyOwNaSH6ckMUb79dyC1i2MhnL?=
- =?us-ascii?Q?cogwr79fWc1PF+C6T323pHyfpVJVo3csA5ZfmMn6HCu/QEjzEdLJBgFtdjw6?=
- =?us-ascii?Q?IWMo/dIADEAg17zT3LC6vNO1/LcqpRSVdVP9PgP9NjHJxQ7vyMUSxe7abWKc?=
- =?us-ascii?Q?yQtl/fQBiQ3Kb5/o9+0yP1ADQuZeFORLbWwEMhouVhp1wgjF2KnwC1mObxzj?=
- =?us-ascii?Q?e0P7fWfdXxeIo8C9YA7eX0TeQVTgGV2z9sM1TnM2Q6jub1cWgAVDDh1U9i1y?=
- =?us-ascii?Q?FBb5NtUtlhElukTRxF5oPTLX?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2df1cc92-17de-425f-ef25-08d8fb194fc8
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 05:35:40.6796
+X-Microsoft-Antispam-Message-Info: cwl6Fdi5JnPRwRcx/L+0oau9G9DV31yruYvXzDJQqnyO1P2jEUzp1nAa3WEJ193czWpgHYMblr1lFtr8IxZSh7PCnnHzBnHBNbDg+wHonmcf6XiH3LTG5WBhzQnE6gL+8WQ7vqu9jwGs8tWg5Q/6Pl3jkeYAhCn2+uIjk9UiPmMUeadzwlbJHTxd3UOIiSQpiG4C0QnT3Ux+x4kx6hXuAZz37l2MRsMp5XYzGxBaHaSys1cT93A3bphaeE8QzM32sWwulILvG+Mo1D8XjtqxMjxTWQk00PuEiJz8IIP68IPoandw6g2dLv/Z6s7sdZ0BO1fQkbx+U4nJYR245n4kQ8o3HAacx+7Hbw03WeXsnHznKkwMI5XVi2i6dRpfWYKFuqibf7meHaMWXsk5hRBoSuUfNcJ7z1pjL+9/990sKbmt/sL+wkzoB+74thhni66wnBoR4pC8JY3LRB/ERsbhWKRJp4C4/6gd1b9HQG83H0v8LF+cmp4vebMn4R/8ncFJpoyZNz38dLR1PJHlSZCdawCHvmaATipHBKck1zl1FGNFCGwXedvYkNjJs6B9jgg3tI8YTFaG/T1AFvm6CDDAjZ8K6ahguQu8F82xVigeCNEoayDHdvIEDCFVgHo9UpM8qUV0+UcixN8QK7qeoBKIKnugZ3g3Sv3bz9pZyJasXRVrYACstOEJV9wyxtC4GVo6Qs29DNNH3XsmcQla111gcnxdHAYzDuZoUN2ynyHQe7g=
+X-Forefront-Antispam-Report: CIP:199.43.4.23;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:rmmaillnx1.cadence.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(136003)(39860400002)(36092001)(36840700001)(46966006)(82310400003)(356005)(82740400003)(110136005)(70586007)(478600001)(2906002)(316002)(2616005)(86362001)(36860700001)(81166007)(54906003)(26005)(4326008)(8676002)(36906005)(42186006)(107886003)(336012)(8936002)(186003)(5660300002)(83380400001)(36756003)(47076005)(426003)(70206006)(1076003)(2101003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 05:38:36.7437
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PhaIDDgxSGxTR2hQ6JQ2uCaJ44l8L8H2V3mCJIVQUBOsyTS/2kdpXDY9l/WXYsYPUkyjdLbG7Qy169OoHtj/vg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3928
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5eb969d9-4af8-44fd-09f3-08d8fb19b8e5
+X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[199.43.4.23];Helo=[rmmaillnx1.cadence.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT068.eop-nam12.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR0701MB3637
+X-Proofpoint-ORIG-GUID: zM8DN_eXVmqD1N9ngvK5bMTycTjear3X
+X-Proofpoint-GUID: zM8DN_eXVmqD1N9ngvK5bMTycTjear3X
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-09_03:2021-04-08,2021-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 bulkscore=0
+ malwarescore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0
+ mlxlogscore=999 clxscore=1011 suspectscore=0 spamscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104090041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Send DPCD command to downstream before anx7625 power down,
-tell downstream into standby mode.
+Adding a quirk flag "quirk_detect_quiet_flag" to program the minimum time
+that LTSSM waits on entering Detect.Quiet state.
+Setting this to 2ms for TI j721e SOC as a workaround to resolve a bug in
+IP.
+In future revisions this setting will not be required.
 
-Signed-off-by: Xin Ji <xji@analogixsemi.com>
+As per PCIe specification, all Receivers must meet the Z-RX-DC
+specification for 2.5 GT/s within 1ms of entering Detect.Quiet LTSSM
+substate. The LTSSM must stay in this substate until the ZRXDC
+specification for 2.5 GT/s is met.
+
+00 : 0us minimum wait time in Detect.Quiet state.
+01 : 100us minimum wait time in Detect.Quiet state.
+10 : 1ms minimum wait time in Detect.Quiet state.
+11 : 2ms minimum wait time in Detect.Quiet state.
+
+Signed-off-by: Nadeem Athani <nadeem@cadence.com>
 ---
- drivers/gpu/drm/bridge/analogix/anx7625.c | 75 +++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
+ drivers/pci/controller/cadence/pci-j721e.c         |  6 ++++++
+ drivers/pci/controller/cadence/pcie-cadence-ep.c   | 21 +++++++++++++++++++++
+ drivers/pci/controller/cadence/pcie-cadence-host.c | 21 +++++++++++++++++++++
+ drivers/pci/controller/cadence/pcie-cadence.h      | 12 ++++++++++++
+ 4 files changed, 60 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 65cc05982f82..53d2f0d0ee30 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -124,6 +124,23 @@ static int anx7625_reg_write(struct anx7625_data *ctx,
- 	return ret;
+diff --git a/drivers/pci/controller/cadence/pci-j721e.c b/drivers/pci/controller/cadence/pci-j721e.c
+index 35e61048e133..40ebe698e179 100644
+--- a/drivers/pci/controller/cadence/pci-j721e.c
++++ b/drivers/pci/controller/cadence/pci-j721e.c
+@@ -67,6 +67,7 @@ enum j721e_pcie_mode {
+ struct j721e_pcie_data {
+ 	enum j721e_pcie_mode	mode;
+ 	bool quirk_retrain_flag;
++	bool quirk_detect_quiet_flag;
+ };
+ 
+ static inline u32 j721e_pcie_user_readl(struct j721e_pcie *pcie, u32 offset)
+@@ -284,10 +285,12 @@ static struct pci_ops cdns_ti_pcie_host_ops = {
+ static const struct j721e_pcie_data j721e_pcie_rc_data = {
+ 	.mode = PCI_MODE_RC,
+ 	.quirk_retrain_flag = true,
++	.quirk_detect_quiet_flag = true,
+ };
+ 
+ static const struct j721e_pcie_data j721e_pcie_ep_data = {
+ 	.mode = PCI_MODE_EP,
++	.quirk_detect_quiet_flag = true,
+ };
+ 
+ static const struct of_device_id of_j721e_pcie_match[] = {
+@@ -394,6 +397,7 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+ 		bridge->ops = &cdns_ti_pcie_host_ops;
+ 		rc = pci_host_bridge_priv(bridge);
+ 		rc->quirk_retrain_flag = data->quirk_retrain_flag;
++		rc->quirk_detect_quiet_flag = data->quirk_detect_quiet_flag;
+ 
+ 		cdns_pcie = &rc->pcie;
+ 		cdns_pcie->dev = dev;
+@@ -460,6 +464,8 @@ static int j721e_pcie_probe(struct platform_device *pdev)
+ 			goto err_get_sync;
+ 		}
+ 
++		ep->quirk_detect_quiet_flag = data->quirk_detect_quiet_flag;
++
+ 		cdns_pcie = &ep->pcie;
+ 		cdns_pcie->dev = dev;
+ 		cdns_pcie->ops = &j721e_pcie_ops;
+diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+index 897cdde02bd8..245771f03c21 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
++++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+@@ -552,6 +552,23 @@ static const struct pci_epc_ops cdns_pcie_epc_ops = {
+ 	.get_features	= cdns_pcie_ep_get_features,
+ };
+ 
++static void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie_ep *ep)
++{
++	struct cdns_pcie *pcie = &ep->pcie;
++	u32 delay = 0x3;
++	u32 ltssm_control_cap;
++
++	/*
++	 * Set the LTSSM Detect Quiet state min. delay to 2ms.
++	 */
++
++	ltssm_control_cap = cdns_pcie_readl(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP);
++	ltssm_control_cap = ((ltssm_control_cap &
++			    ~CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK) |
++			    CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay));
++
++	cdns_pcie_writel(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP, ltssm_control_cap);
++}
+ 
+ int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
+ {
+@@ -623,6 +640,10 @@ int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
+ 	ep->irq_pci_addr = CDNS_PCIE_EP_IRQ_PCI_ADDR_NONE;
+ 	/* Reserve region 0 for IRQs */
+ 	set_bit(0, &ep->ob_region_map);
++
++	if (ep->quirk_detect_quiet_flag)
++		cdns_pcie_detect_quiet_min_delay_set(ep);
++
+ 	spin_lock_init(&ep->lock);
+ 
+ 	return 0;
+diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
+index 73dcf8cf98fb..0ed2bfac4855 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence-host.c
++++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+@@ -461,6 +461,24 @@ static int cdns_pcie_host_init(struct device *dev,
+ 	return cdns_pcie_host_init_address_translation(rc);
  }
  
-+static int anx7625_reg_block_write(struct anx7625_data *ctx,
-+				   struct i2c_client *client,
-+				   u8 reg_addr, u8 len, u8 *buf)
++static void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie_rc *rc)
 +{
-+	int ret;
-+	struct device *dev = &client->dev;
++	struct cdns_pcie *pcie = &rc->pcie;
++	u32 delay = 0x3;
++	u32 ltssm_control_cap;
 +
-+	i2c_access_workaround(ctx, client);
++	/*
++	 * Set the LTSSM Detect Quiet state min. delay to 2ms.
++	 */
 +
-+	ret = i2c_smbus_write_i2c_block_data(client, reg_addr, len, buf);
-+	if (ret < 0)
-+		DRM_DEV_ERROR(dev, "write i2c block failed id=%x\n:%x",
-+			      client->addr, reg_addr);
++	ltssm_control_cap = cdns_pcie_readl(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP);
++	ltssm_control_cap = ((ltssm_control_cap &
++			    ~CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK) |
++			    CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay));
 +
-+	return ret;
++	cdns_pcie_writel(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP, ltssm_control_cap);
 +}
 +
- static int anx7625_write_or(struct anx7625_data *ctx,
- 			    struct i2c_client *client,
- 			    u8 offset, u8 mask)
-@@ -195,6 +212,55 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
- 	return val;
- }
- 
-+static int anx7625_aux_dpcd_write(struct anx7625_data *ctx,
-+				  u8 addrh, u8 addrm, u8 addrl,
-+				  u8 len, u8 *buf)
-+{
-+	struct device *dev = &ctx->client->dev;
-+	int ret;
-+	u8 cmd;
-+
-+	if (len > MAX_DPCD_BUFFER_SIZE) {
-+		DRM_DEV_ERROR(dev, "exceed aux buffer len.\n");
-+		return -EINVAL;
-+	}
-+
-+	cmd = ((len - 1) << 4) | 0x08;
-+
-+	/* Set command and length */
-+	ret = anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-+				AP_AUX_COMMAND, cmd);
-+
-+	/* Set aux access address */
-+	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-+				 AP_AUX_ADDR_7_0, addrl);
-+	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-+				 AP_AUX_ADDR_15_8, addrm);
-+	ret |= anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
-+				 AP_AUX_ADDR_19_16, addrh);
-+
-+	/* Set write data */
-+	ret |= anx7625_reg_block_write(ctx, ctx->i2c.rx_p0_client,
-+				       AP_AUX_BUFF_START, len, buf);
-+	/* Enable aux access */
-+	ret |= anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
-+				AP_AUX_CTRL_STATUS, AP_AUX_CTRL_OP_EN);
-+	if (ret < 0) {
-+		DRM_DEV_ERROR(dev, "cannot access aux related register.\n");
-+		return -EIO;
-+	}
-+
-+	usleep_range(2000, 2100);
-+
-+	ret = wait_aux_op_finish(ctx);
-+	if (ret) {
-+		DRM_DEV_ERROR(dev, "aux IO error: wait aux op finish.\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int anx7625_video_mute_control(struct anx7625_data *ctx,
- 				      u8 status)
+ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
  {
-@@ -617,6 +683,7 @@ static void anx7625_dp_stop(struct anx7625_data *ctx)
- {
- 	struct device *dev = &ctx->client->dev;
- 	int ret;
-+	u8 data;
+ 	struct device *dev = rc->pcie.dev;
+@@ -497,6 +515,9 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+ 		return PTR_ERR(rc->cfg_base);
+ 	rc->cfg_res = res;
  
- 	DRM_DEV_DEBUG_DRIVER(dev, "stop dp output\n");
- 
-@@ -628,8 +695,16 @@ static void anx7625_dp_stop(struct anx7625_data *ctx)
- 	ret |= anx7625_write_and(ctx, ctx->i2c.tx_p2_client, 0x08, 0x7f);
- 
- 	ret |= anx7625_video_mute_control(ctx, 1);
++	if (rc->quirk_detect_quiet_flag)
++		cdns_pcie_detect_quiet_min_delay_set(rc);
 +
-+	DRM_DEV_DEBUG_DRIVER(dev, "notify downstream enter into standby\n");
-+
-+	/* Downstream monitor enter into standby mode */
-+	data = 2;
-+	ret |= anx7625_aux_dpcd_write(ctx, 0x00, 0x06, 0x00, 1, &data);
- 	if (ret < 0)
- 		DRM_DEV_ERROR(dev, "IO error : mute video fail\n");
-+
-+	return;
- }
+ 	ret = cdns_pcie_start_link(pcie);
+ 	if (ret) {
+ 		dev_err(dev, "Failed to start link\n");
+diff --git a/drivers/pci/controller/cadence/pcie-cadence.h b/drivers/pci/controller/cadence/pcie-cadence.h
+index 254d2570f8c9..d074475fe887 100644
+--- a/drivers/pci/controller/cadence/pcie-cadence.h
++++ b/drivers/pci/controller/cadence/pcie-cadence.h
+@@ -189,6 +189,14 @@
+ /* AXI link down register */
+ #define CDNS_PCIE_AT_LINKDOWN (CDNS_PCIE_AT_BASE + 0x0824)
  
- static int sp_tx_rst_aux(struct anx7625_data *ctx)
++/* LTSSM Capabilities register */
++#define CDNS_PCIE_LTSSM_CONTROL_CAP             (CDNS_PCIE_LM_BASE + 0x0054)
++#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK  GENMASK(2, 1)
++#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT 1
++#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay) \
++	 (((delay) << CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT) & \
++	 CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK)
++
+ enum cdns_pcie_rp_bar {
+ 	RP_BAR_UNDEFINED = -1,
+ 	RP_BAR0,
+@@ -292,6 +300,7 @@ struct cdns_pcie {
+  * @avail_ib_bar: Satus of RP_BAR0, RP_BAR1 and	RP_NO_BAR if it's free or
+  *                available
+  * @quirk_retrain_flag: Retrain link as quirk for PCIe Gen2
++ * @quirk_detect_quiet_flag: LTSSM Detect Quiet min delay set as quirk
+  */
+ struct cdns_pcie_rc {
+ 	struct cdns_pcie	pcie;
+@@ -301,6 +310,7 @@ struct cdns_pcie_rc {
+ 	u32			device_id;
+ 	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
+ 	bool                    quirk_retrain_flag;
++	bool			quirk_detect_quiet_flag;
+ };
+ 
+ /**
+@@ -331,6 +341,7 @@ struct cdns_pcie_epf {
+  *        registers fields (RMW) accessible by both remote RC and EP to
+  *        minimize time between read and write
+  * @epf: Structure to hold info about endpoint function
++ * @quirk_detect_quiet_flag: LTSSM Detect Quiet min delay set as quirk
+  */
+ struct cdns_pcie_ep {
+ 	struct cdns_pcie	pcie;
+@@ -345,6 +356,7 @@ struct cdns_pcie_ep {
+ 	/* protect writing to PCI_STATUS while raising legacy interrupts */
+ 	spinlock_t		lock;
+ 	struct cdns_pcie_epf	*epf;
++	bool                    quirk_detect_quiet_flag;
+ };
+ 
+ 
 -- 
-2.25.1
+2.15.0
 
