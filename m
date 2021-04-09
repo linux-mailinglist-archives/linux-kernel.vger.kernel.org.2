@@ -2,53 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257BA35A58F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6865C35A593
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234639AbhDISPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:15:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35284 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234601AbhDISPk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:15:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C30736100B;
-        Fri,  9 Apr 2021 18:15:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617992126;
-        bh=fQ2JN9dNxhKXdKovF2jMBNkmKRO7y4Cs/zqv1a8yX2I=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=hd3UIy8gNPv/EEgiIEnFhsQaQ2m3pwWZH9HvWfRdvJjeCYra6dhr1lmrYgHLzS/TZ
-         LhhPS4ssNi2JY7c5N3f3gvqvuA3ZkHPD9VI4rAeMSZ47poj1+oGlKLo6D/wuwSSRt1
-         GFFNvUtyk5zlsheEH1x48O3xACUxIpIOwwy57r8GgJmHBDMlNjsUEQKBQsqIyaaKnN
-         O9PXD4rzR6+qb+guImpX8fWRHN5bDjGRvWtXWdMOCJTb1OeSIgrCHYkZCL7PTPHLem
-         oepQwGLdNyBTtvln+lcObEAyync0Iu9iMPjg/n39+HRI11jNqSDMk4ns3WX1nqg3yA
-         pawXa7N0Hkrxg==
-Content-Type: text/plain; charset="utf-8"
+        id S234665AbhDISP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234499AbhDISPx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 14:15:53 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5EBC061761;
+        Fri,  9 Apr 2021 11:15:40 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso3607220pjh.2;
+        Fri, 09 Apr 2021 11:15:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DYxEv2edvVGxPPjEUP725MmjjlKkdNTOJ7fvlokNStM=;
+        b=tmXHHxq7vMShPokEpmEl304lYv7J3PZaz4WfLlAYfLlONRQhSgpPdqh2PvzCribrFU
+         PRn/u4qZi60lwhudS4+18MdP/rbDs+/pPY1wVrkywEC/GuRUBuDahz4MVqG658r5aEDX
+         XwdI8v6N3PNPTX2YSiGvibIJehIxGFR2McWnNdHee6BjtNYb1HY5zok7Qog7bNLUO35f
+         E22pLWlszkWWZlo4W7s6ukHJy1HAIgn9+C/H2Xvpd7od8MMPWf5Og19VOlH9kv4chZLj
+         D7j3jONS7/Z8vUbUb4KqQ9wG1wq08vX6uTlMKqGdJaPC9EjDa3s3jAB+LkraqQll5fCf
+         OiCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DYxEv2edvVGxPPjEUP725MmjjlKkdNTOJ7fvlokNStM=;
+        b=bMVxl6Oczu64LcEvkr/oscbSmScAj3qle6BYxtBFOUo87LK88v70i5/1EFz4KqfmWE
+         X6KrhSm7A4Za+lh2e5RKsPK5Qae9nWFIa75f8Ql41HrWGITpocY1PFSVQOJeW7/xR06g
+         JpzE2QQvdVI7PTi+48S5YeWtNWrDgb33BzoIVZJ3c0n0SvJ463DqRSWLw1LeRiPHEdVf
+         XvS8yoGws9ktDqaBUyg2ZL+Pxw4zRnnv835USWt6NdLLj++vIzXFJgJDzbOzYyDw+5R8
+         4j75daak3cOiEDhdZUm/ueOrf0qwtVn8zMmmGPkPBqeewTsEDxeCawpfSYKtEJzAUzD7
+         KDyA==
+X-Gm-Message-State: AOAM530l+DSr1b696XjgOcNJzaDsHsjd0M9EeYQX7rG4t2IBvFFLI5M8
+        VNz4D54zMEY9x0sMNhx7AjpKWVFqQ+0=
+X-Google-Smtp-Source: ABdhPJx2czWkNSKPRVNvEyTDZcRg2m4YyTrBVmC2IHGHtMMQWur+dgMVt72IUbECDllx73FDBDyg/Q==
+X-Received: by 2002:a17:90a:7c4b:: with SMTP id e11mr14768195pjl.151.1617992139825;
+        Fri, 09 Apr 2021 11:15:39 -0700 (PDT)
+Received: from [10.230.2.159] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id s9sm2717856pfc.192.2021.04.09.11.15.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 11:15:39 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] drivers: net: dsa: qca8k: add support for multiple
+ cpu port
+To:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210406045041.16283-1-ansuelsmth@gmail.com>
+ <20210406045041.16283-2-ansuelsmth@gmail.com> <YGz/nu117LDEhsou@lunn.ch>
+ <YGvumGtEJYYvTlc9@Ansuel-xps.localdomain>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <b8182434-b7b0-ef59-ef15-f84687df94df@gmail.com>
+Date:   Fri, 9 Apr 2021 11:15:37 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210309052226.29531-3-sergio.paracuellos@gmail.com>
-References: <20210309052226.29531-1-sergio.paracuellos@gmail.com> <20210309052226.29531-3-sergio.paracuellos@gmail.com>
-Subject: Re: [PATCH v11 2/6] dt: bindings: add mt7621-sysc device tree binding documentation
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
-        gregkh@linuxfoundation.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        devel@driverdev.osuosl.org, neil@brown.name,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Fri, 09 Apr 2021 11:15:25 -0700
-Message-ID: <161799212554.3790633.13295684894366579803@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <YGvumGtEJYYvTlc9@Ansuel-xps.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sergio Paracuellos (2021-03-08 21:22:22)
-> Adds device tree binding documentation for clocks in the
-> MT7621 SOC.
->=20
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> ---
 
-Applied to clk-next
+
+On 4/5/2021 10:16 PM, Ansuel Smith wrote:
+> On Wed, Apr 07, 2021 at 02:41:02AM +0200, Andrew Lunn wrote:
+>> On Tue, Apr 06, 2021 at 06:50:40AM +0200, Ansuel Smith wrote:
+>>> qca8k 83xx switch have 2 cpu ports. Rework the driver to support
+>>> multiple cpu port. All ports can access both cpu ports by default as
+>>> they support the same features.
+>>
+>> Do you have more information about how this actually works. How does
+>> the switch decide which port to use when sending a frame towards the
+>> CPU? Is there some sort of load balancing?
+>>
+>> How does Linux decide which CPU port to use towards the switch?
+>>
+>>     Andrew
+> 
+> I could be very wrong, but in the current dsa code, only the very first
+> cpu port is used and linux use only that to send data.
+
+That is correct, the first CPU port that is detected by the parsing
+logic gets used.
+
+> In theory the switch send the frame to both CPU, I'm currently testing a
+> multi-cpu patch for dsa and I can confirm that with the proposed code
+> the packets are transmitted correctly and the 2 cpu ports are used.
+> (The original code has one cpu dedicated to LAN ports and one cpu
+> dedicated to the unique WAN port.) Anyway in the current implementation
+> nothing will change. DSA code still supports one cpu and this change
+> would only allow packet to be received and trasmitted from the second
+> cpu.
+
+That use case seems to be the most common which makes sense since it
+allows for true Gigabit routing between WAN and LAN by utilizing both
+CPUs's Ethernet controllers.
+
+How do you currently assign a port of a switch with a particular CPU
+port this is presumably done through a separate patch that you have not
+submitted?
+-- 
+Florian
