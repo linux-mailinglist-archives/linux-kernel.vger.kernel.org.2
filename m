@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F166A35A2FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1EA35A305
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234123AbhDIQXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:23:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59734 "EHLO mail.kernel.org"
+        id S234143AbhDIQXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:23:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233864AbhDIQXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:23:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CE8C6105A;
-        Fri,  9 Apr 2021 16:23:17 +0000 (UTC)
+        id S234120AbhDIQXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:23:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D4535610A7;
+        Fri,  9 Apr 2021 16:23:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617985397;
-        bh=AtMxuAc0rwMUJsKBsJmtUeCRyl8bAabZIwT9Uehu7Bc=;
+        s=k20201202; t=1617985406;
+        bh=pa2AjAoluq/aoXrCWtDRuMHjAZVPUHpKBrOfayVzouk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LIMfGDncmDxz4CzhaLYP43ccv+bf8F20uwitMuVe1kIpdOtT3mHlkgMqReY0G55SW
-         wRBQXDInzUSPqQkzTecUsTnlr9TTA8L+wJVasrdTGJv5+LonihTyx+p8lQ5N2Bvk+v
-         H6rFjlNsXq72HKwOylEX4lX//0JemTP0pV2Tu+iBxzJieoCR8mQiu+dg3B0//XmJqF
-         VslgB9AndrumMls3xqyZVx6FqWyOjhLiYQ23kXoX3pecDxlQSeSjwJYNiA976+Jid5
-         UHH7oceyclz7ip9K0pG8+0C0AidLFKcwwLtlvDX7y5h/Wl1kNm8/cIqFeTFt6++YtA
-         0aOL1p2WGriyQ==
+        b=G5NVjfM2LsLT8CzeBbO8qfTYWmQaOFItqCV2INyJHkuY4FjxWAkTwUhmdPz9mjFDM
+         YfVVLnSyLKHe/PAAYNlIYGpN42tI+DdfBGtT5ytbGwcdApaFDo6zrDKb1scU26B3Bp
+         7y0+wAKLYaHs0J5JbMBISRzus9W3U+RgWkrDJnoLodNPtAeJLugxe59UVEjzAmslD7
+         JqUnm0L/T7geeHUTZ0+tMXlrdXoP+7VglLuAcy9p2gaB7houOqnPe7OnQtakjiJgrt
+         ppn8/l3MDmdOcPrqLnnzNcgsYmgY5l9uVRZCr49k/1odFReqegaueEiM/oTTNMrDV5
+         6yj72O+Qz2MoA==
 From:   Mark Brown <broonie@kernel.org>
-To:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
-        colin.king@canonical.com, dan.carpenter@oracle.com
-Subject: Re: [PATCH] spi: orion: set devdata properly as it is being used later
-Date:   Fri,  9 Apr 2021 17:22:39 +0100
-Message-Id: <161798356987.48466.7574385472200837460.b4-ty@kernel.org>
+To:     s.hauer@pengutronix.de, Clark Wang <xiaoning.wang@nxp.com>,
+        shawnguo@kernel.org, festevam@gmail.com
+Cc:     Mark Brown <broonie@kernel.org>, linux-imx@nxp.com,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de
+Subject: Re: [PATCH] spi: imx: add a check for speed_hz before calculating the clock
+Date:   Fri,  9 Apr 2021 17:22:42 +0100
+Message-Id: <161798356988.48466.14829479576984252197.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210408195718.GA3075166@LEGION>
-References: <20210408195718.GA3075166@LEGION>
+In-Reply-To: <20210408103347.244313-2-xiaoning.wang@nxp.com>
+References: <20210408103347.244313-1-xiaoning.wang@nxp.com> <20210408103347.244313-2-xiaoning.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,10 +42,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Apr 2021 00:57:18 +0500, Muhammad Usama Anjum wrote:
-> If device_get_match_data returns NULL, devdata isn't being updated
-> properly. It is being used later in the function. Both devdata and
-> spi->devdata should be updated to avoid NULL pointer dereference.
+On Thu, 8 Apr 2021 18:33:47 +0800, Clark Wang wrote:
+> When some drivers use spi to send data, spi_transfer->speed_hz is
+> not assigned. If spidev->max_speed_hz is not assigned as well, it
+> will cause an error in configuring the clock.
+> Add a check for these two values before configuring the clock. An
+> error will be returned when they are not assigned.
 
 Applied to
 
@@ -54,8 +55,8 @@ Applied to
 
 Thanks!
 
-[1/1] spi: orion: set devdata properly as it is being used later
-      commit: e980048263ba72dcdbbf45d59e84c02001340f75
+[1/1] spi: imx: add a check for speed_hz before calculating the clock
+      commit: 4df2f5e1372e9eec8f9e1b4a3025b9be23487d36
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
