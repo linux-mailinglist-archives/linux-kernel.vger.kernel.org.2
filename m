@@ -2,96 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A9C35A493
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93B6E35A494
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234071AbhDIRYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:24:03 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:52840 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbhDIRYC (ORCPT
+        id S234179AbhDIRYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:24:17 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:32565
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232642AbhDIRYP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:24:02 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 2863C20B491D;
-        Fri,  9 Apr 2021 10:23:48 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2863C20B491D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1617989028;
-        bh=qvStcHhWNQyPu4lxLei70jzOhwMqE5A023taZCYpoDo=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=T4ImmqdXLAGJIvFYxTu6SgsdlwBWas9eh+eh3cLJxK21QXqL/KbwsO5vwym7fg+FF
-         Ws95uagmaWDAPdWI2ljUAGgx1vmeWWoSOgCBwK3fSRGXJEmfBmGruOmpNqf8ohL+CM
-         RWNNgL9fBV9bvzRuRlmRcZuSJf9I+JGpYtr5TMLw=
-Subject: Re: [RFC PATCH v2 3/4] arm64: Detect FTRACE cases that make the stack
- trace unreliable
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
- <20210405204313.21346-1-madvenka@linux.microsoft.com>
- <20210405204313.21346-4-madvenka@linux.microsoft.com>
- <20210409122701.GB51636@C02TD0UTHF1T.local>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <c57de436-7943-175f-29b2-ed7ebcdc0837@linux.microsoft.com>
-Date:   Fri, 9 Apr 2021 12:23:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 9 Apr 2021 13:24:15 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A0/2Gc6BBUteEyBzlHelN55DYdL4zR+YMi2QD?=
+ =?us-ascii?q?/UZ3VBBTb4ikh9mj9c5rsSPcpT4NVBgb8uyoF7KHRRrnn6JdwY5UBru6WRmjhW?=
+ =?us-ascii?q?3AFuBfxK/D5xGlJCHk7O5a0s5bAs1DIfn9F0Jzg8q/wCTQKbYd6eKK+qypmuvS?=
+ =?us-ascii?q?pk0FJT1CUK1u4xx0DQyWCCRNNWp7LKAkH5mR7NcvnVSdUEkQB/7WOlA4ReTZ4/?=
+ =?us-ascii?q?XEmJX6CCR2ZSIP2U2+yQml77P3CHGjsys2WTkn+9gfzVQ=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,210,1613430000"; 
+   d="scan'208";a="378242715"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 19:24:00 +0200
+Date:   Fri, 9 Apr 2021 19:24:00 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+cc:     Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8723bs: Change the type
+ and use of a variable
+In-Reply-To: <2106328.ujm4fZfeqs@localhost.localdomain>
+Message-ID: <alpine.DEB.2.22.394.2104091923280.17316@hadrien>
+References: <20210408111942.19411-1-fmdefrancesco@gmail.com> <YHBg1Sy2509vBtrA@kroah.com> <2106328.ujm4fZfeqs@localhost.localdomain>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20210409122701.GB51636@C02TD0UTHF1T.local>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
->> Also, the Function Graph Tracer modifies the return address of a traced
->> function to a return trampoline to gather tracing data on function return.
->> Stack traces taken from that trampoline and functions it calls are
->> unreliable as the original return address may not be available in
->> that context. Mark the stack trace unreliable accordingly.
->>
->> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
->> ---
->>  arch/arm64/kernel/entry-ftrace.S | 12 +++++++
->>  arch/arm64/kernel/stacktrace.c   | 61 ++++++++++++++++++++++++++++++++
->>  2 files changed, 73 insertions(+)
->>
->> diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
->> index b3e4f9a088b1..1f0714a50c71 100644
->> --- a/arch/arm64/kernel/entry-ftrace.S
->> +++ b/arch/arm64/kernel/entry-ftrace.S
->> @@ -86,6 +86,18 @@ SYM_CODE_START(ftrace_caller)
->>  	b	ftrace_common
->>  SYM_CODE_END(ftrace_caller)
->>  
->> +/*
->> + * A stack trace taken from anywhere in the FTRACE trampoline code should be
->> + * considered unreliable as a tracer function (patched at ftrace_call) could
->> + * potentially set pt_regs->pc and redirect execution to a function different
->> + * than the traced function. E.g., livepatch.
-> 
-> IIUC the issue here that we have two copies of the pc: one in the regs,
-> and one in a frame record, and so after the update to the regs, the
-> frame record is stale.
-> 
-> This is something that we could fix by having
-> ftrace_instruction_pointer_set() set both.
-> 
 
-Yes. I will look at this.
+On Fri, 9 Apr 2021, Fabio M. De Francesco wrote:
 
-> However, as noted elsewhere there are other issues which mean we'd still
-> need special unwinding code for this.
-> 
+> On Friday, April 9, 2021 4:12:37 PM CEST Greg KH wrote:
+> > On Thu, Apr 08, 2021 at 01:19:42PM +0200, Fabio M. De Francesco wrote:
+> > > Change the type of fw_current_in_ps_mode from u8 to bool, because
+> > > it is used everywhere as a bool and, accordingly, it should be
+> > > declared as a bool. Shorten the controlling
+> > > expression of an 'if' statement.
+> > >
+> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > ---
+> > >
+> > >  drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
+> > >  drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
+> > >  2 files changed, 2 insertions(+), 2 deletions(-)
+> >
+> > I now have 3 patches, I think, for this same driver, from you, and I
+> > have no idea what order they should be applied in.
+> >
+> > So I'm going to drop them all.  Can you please resend me a patch series,
+> > with all of the outstanding patches sent to me from you that I have not
+> > applied yet, so that I know which ones to look at and what order to
+> > apply them in?
+> >
+> I just sent in the series of patches you requested. Hope the work is as you
+> expected.
 
-The only other cases we have discussed are EL1 exceptions in the ftrace code
-and the return trampoline for function graph tracing. Is there any other case?
+If you make multiple patches that touch the same files they have to be in
+a series.
 
-Thanks.
-
-Madhavan
+julia
