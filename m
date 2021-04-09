@@ -2,95 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C49359652
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE19359654
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:27:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhDIH1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:27:07 -0400
-Received: from lb2-smtp-cloud8.xs4all.net ([194.109.24.25]:40293 "EHLO
-        lb2-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229621AbhDIH1G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:27:06 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id UlXUlYlbJgIC3UlXYlBMSQ; Fri, 09 Apr 2021 09:26:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1617953212; bh=CAEIwKj3X76oz7KxEQomi77buHSBZk7Ze/1D90Ei9e8=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=n/a/t+7B5rmX7paTuiC16pUydqp1HEhmpUQRg2gG/3yZz/jKlf5eIur6ZME4hYVdG
-         xk7M6vxSahTZm56g3KTavl1sgIpGJ7CpPbQr1m+XoXNHy5vx/sY/dFygidfX/cHfAv
-         KKtD0ehym1BN5BvrkrjbvJSl486lb7Q9r8/5Fh/Loa/mBlzHJdgZjUlJqQGF++aWTa
-         /Xyfrzot9+7Xwz0Tx+3ZIceb3Bhxd7g/Dm/ciL3yGazLnX0MIdSFKHTULuJ4uKhmZ4
-         uKvtaIYWVlmjCGnvAp894DlT4gjgOuVAVBN+JHfKZYeU2gO0nrUPq3w+MjZY8gt3a5
-         +lKIvyqkeVPgA==
-Subject: Re: [PATCH] staging: media: zoran: reduce length of a line
-To:     Mitali Borkar <mitaliborkar810@gmail.com>, clabbe@baylibre.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-References: <YG9zvMnYlZVbJhQn@kali>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <003b2d17-2fe4-c3f3-6b1e-60d0301a1413@xs4all.nl>
-Date:   Fri, 9 Apr 2021 09:26:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        id S231759AbhDIH1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:27:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231566AbhDIH1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 03:27:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A58666113A;
+        Fri,  9 Apr 2021 07:26:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617953215;
+        bh=FpOhUzebZHLl4BVsDjbXQWdDJKUcWbUviGbqaC2DkIU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=jJZLDQGkVSA0ZywDxttY4mEK+yppwZ+O4JEFM1ve6oL0Vh2xsVlnVE/8V2lGd9SL4
+         QCbIY37WwwEcjWPkGIc2/ARXNvpQmrZl/7F1RLWhwKHeV3R3SmeP5dKI1wz5pqj/3/
+         6ZPikJJpZshH1MzugvU/0hwR+EhVATj9dZAPpn0COCGSebRKBxxZmo1w4bHh8Rewx1
+         dtUMPPjQBZa59a4DJM1WwxHDIrgWpKJMCrcD4BbdhiztmuSVMPtm8ps/swf27A4nev
+         e4UAkWGxQGf4ZW++krti8/hB7W3q3VxlEkYmmENVsWyDzwCHjHIs5i5x5lff6MX7u4
+         t5ZqmdCT+zVoQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2] clk: socfpga: fix iomem pointer cast on 64-bit
+Date:   Fri,  9 Apr 2021 09:26:50 +0200
+Message-Id: <161795309623.1751103.16552528876108968953.b4-ty@arndb.de>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210314110709.32599-1-krzysztof.kozlowski@canonical.com>
+References: <20210314110709.32599-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-In-Reply-To: <YG9zvMnYlZVbJhQn@kali>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfFJJJBK955hvzlpccXP9vNThirZiryIss2Ro6C/Jnh15Fz9TQVqW45+Le3jHQFhuV2ph0EZwwhhVlvEDAkehFBJ7WcHYzetIPV/E2JMgh5PDMxefQBxK
- PB1bQae+4seIWsEbB1QHg9qnTHGJnjx6Rki8XVoUD8ICtAh29P2AGe25RJkPcW5eRU9U1GjhQN9YNujxstMAp84N82ntXyoJbofV89iLnu5x8mqPInTKIe5s
- dhJm3TxD40CK9dR6zGMKtxq2xgmnEh6hgHJbPm7gCasQqP3NtHvPEm4F/LUSWu4HZRWf+T5JO4FJSJv3J3UMPyI5pfQCzGMMnF9l8iDPft7YfKA44MdMMoOD
- ngD6uX/kQeuokaHt1T5s94F6agR57Yz9aaQ6l3mFYy5CpL3vc2koXy87GpTr9P/pw7/qHzYClX7LwDdy3Aq5Ep8Xd2FV1LXid5IXtcxtjsNyBwhcZ1BzBKPZ
- k/i2AcVIpuohFBqaynIhfE2uXdxVyxErgCo4lQ==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mitali,
+From: Arnd Bergmann <arnd@arndb.de>
 
-Something to improve:
-
-On 08/04/2021 23:21, Mitali Borkar wrote:
-> Reduced length of a line which exceed the 100 columns limit by splitting
-> the line into two statements and commenting it with '*'
-> Reported by checkpatch.
+On Sun, 14 Mar 2021 12:07:09 +0100, Krzysztof Kozlowski wrote:
+> Pointers should be cast with uintptr_t instead of integer.  This fixes
+> warning when compile testing on ARM64:
 > 
-> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> ---
->  drivers/staging/media/zoran/zr36060.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/zoran/zr36060.c b/drivers/staging/media/zoran/zr36060.c
-> index 4f9eb9ff2c42..035634fc1c6d 100644
-> --- a/drivers/staging/media/zoran/zr36060.c
-> +++ b/drivers/staging/media/zoran/zr36060.c
-> @@ -249,7 +249,9 @@ static const char zr36060_ta[8] = { 0, 1, 1, 0, 0, 0, 0, 0 };	//table idx's AC
->  static const char zr36060_decimation_h[8] = { 2, 1, 1, 0, 0, 0, 0, 0 };
->  static const char zr36060_decimation_v[8] = { 1, 1, 1, 0, 0, 0, 0, 0 };
->  
-> -/* SOF (start of frame) segment depends on width, height and sampling ratio of each color component */
-> +/* SOF (start of frame) segment depends on width,
-> + * height and sampling ratio of each color component
-> + */
+>   drivers/clk/socfpga/clk-gate.c: In function ‘socfpga_clk_recalc_rate’:
+>   drivers/clk/socfpga/clk-gate.c:102:7: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
 
-See the coding style guidelines: the preferred style for long comments is:
+I decided to pull that into the arm/drivers branch as well, to avoid the
+build regression. Since the same fix is in the clk tree, there will now
+be a duplicated commit in the git history, but I prefer that over introducing
+warnings.
 
-/*
- * text
- * text
- */
+[1/1] clk: socfpga: fix iomem pointer cast on 64-bit
+      commit: 36841008059caec9667459a7e126efac6379676b
 
-Regards,
-
-	Hans
-
->  static int zr36060_set_sof(struct zr36060 *ptr)
->  {
->  	char sof_data[34];	// max. size of register set
-> 
-
+       Arnd
