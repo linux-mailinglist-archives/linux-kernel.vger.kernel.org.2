@@ -2,81 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 097F635A4E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF2135A4F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:49:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234353AbhDIRrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:47:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43792 "EHLO
+        id S234384AbhDIRtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:49:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234332AbhDIRrt (ORCPT
+        with ESMTP id S234250AbhDIRtt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:47:49 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6697C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:47:35 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id m3so7523612edv.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:47:35 -0700 (PDT)
+        Fri, 9 Apr 2021 13:49:49 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05225C061761;
+        Fri,  9 Apr 2021 10:49:36 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id 12so6443925wrz.7;
+        Fri, 09 Apr 2021 10:49:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h/DYqeYDZ2tv0pjw6nXCAivxGZElUhydHkSur0hy0Lg=;
-        b=fL07bRo1AlQ8538F3YddizvSL3vRN8cISsYffz2e1gqSDx1yzzsRFb9f/s6uye9b7J
-         kZ8zK1UPnRR86nK2lEJVUTVrBxgvNbP0hXJlljYXsdobPKNmOkrk1NKCkObxp7uvr4GS
-         NcRPN/YenqQPGgm25FJbGyQ6Nq7TAoaCLj2D/jnvpVdIbwzRnMd7CobpdcF+6wIhwCnA
-         LFpDOPrdcc8p8ajBEUAU6G40hEBpWU3cEzBPeFC+INBPt+hps6TQOfD0hP35fPgNWZXx
-         6ikddwhaV0DyWVQH83zWH19++Qt2/wafurQRsn/7JEonLEZtgde5JPwHgvir8Dg0q0NP
-         G6Nw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NmhossM91o0deosjNdHtzDbsO2au6Ve08hKTaoPGrX4=;
+        b=YQooyeLGEMkNlVisNZPXjsUhktiowyuG01NbtLEr0Y1P2U7QFSdbvRTjnCxmn/BGXi
+         CDkjrY1y+YC7HcXIUDk/s5nipkQCrpibhFNALZmsBe8ezMRdsK6dM0Hz13VnraO4aicj
+         +5a9h0H9d0z8czd2neBN5figqRntNNx9H+MYSXCVzTru4gIViWcgej/7mp0HcF2wv16Y
+         uuvCnhm5GKj3pchqQY3OpFXd/yo7j0jaYh38t+ytY94V/4v1zWsTDLAO9LoLT6j8p0Cb
+         luJVOFdj1fSDyFs2uyCY1Uy7MBz+7bVIm38J0EI/zcT4rojktoLdcgGz6hf69awdDJSu
+         PPng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h/DYqeYDZ2tv0pjw6nXCAivxGZElUhydHkSur0hy0Lg=;
-        b=FA58LMBqZ8m+AumzrSUqQpkd2OCL66wkUZI2OCmhWVb5Qi7w6/04R8WxuRuePnJSLe
-         9WOrYrzLCQ+kVlmtsUOfZj+0xpvWMZJETO6nmQd0SryZRvM92xusLyqaWxcJZhnabFQ/
-         W7FLElrMi5fJ9ZuGqi2/nsVkLfki38aE2rKQErYdWLSA2ZePb+xp3frWBKnu4lbD3VfB
-         CCCXHkn+VlouYYmOv+Xb77J9e6r5Wf7QDjGHwke3jaQULEwJecf6RqvAlpzoUp2UYO+A
-         +jW7squKnrsxVDo2sfIv06r1WQE9ULUcWYSyeEmKa+4JPIwj2aNWt28qjfFdu6Uw0eyV
-         7wzg==
-X-Gm-Message-State: AOAM533caAiK3m5LWQmpiZks3cPQwGAbc7flnLAdjlDmiRANTkc6rAnW
-        3OaufmyvX1JEViXiM4TbCw0mav97yP29r/XWuryzmw==
-X-Google-Smtp-Source: ABdhPJw5dTKISltAAxoV0GJqKF6gZNwGP+zQpFKqQsBOiL2hemXFTwP8DvauaaAu4KsetLu5EdkVn0Rk8ibopUKjMJE=
-X-Received: by 2002:a50:c3c2:: with SMTP id i2mr18734759edf.23.1617990454256;
- Fri, 09 Apr 2021 10:47:34 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NmhossM91o0deosjNdHtzDbsO2au6Ve08hKTaoPGrX4=;
+        b=AoBJHRhz6o9H+HmNxq8Rm7piMIkf1ux2aLZzbmfgwuoTZz+cjHI62EsypSMkoTVniK
+         GpXKd2hRhMXwqEl3QEpg3EEP08AgJ47uVeV4V5kvHJ4247ExFYSKtKPqwqgBg/+UUINE
+         wY8k5Xv2Hw3WjY0grIaUFiJiDShnzLan86LRkMRqRq8JT+7mMQ0t3qkAPfzI8wZ/MrPU
+         2JfBLG8O8KB18tWQWTfO2qlEMH/lcBj1NDWxcz2WOVeYpdJ78sXwPpAACxd4VU86t7HZ
+         cdpc7yUJCUhPF/ReXGvUHO7VJdxWffKJamK4STgCQtub6Ln7Bcte25u78cTH205oIhfL
+         VY8w==
+X-Gm-Message-State: AOAM533B83SjjVZgjMkozcxN882ynFlDODncykH4r5+FbcyFG1AZ0yrK
+        IVZGp6T/KJSVQid8H1U2duI=
+X-Google-Smtp-Source: ABdhPJy1pceaoMln6zJkD9oPosLisfEHfjiJCbsP8hBT77aYWz3jjegImt/RZE7pKzLYpEruzJBAtg==
+X-Received: by 2002:adf:cf0f:: with SMTP id o15mr18467100wrj.91.1617990574787;
+        Fri, 09 Apr 2021 10:49:34 -0700 (PDT)
+Received: from centos83.localdomain (80-42-79-215.dynamic.dsl.as9105.com. [80.42.79.215])
+        by smtp.gmail.com with ESMTPSA id y4sm5010278wmc.2.2021.04.09.10.49.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 10:49:34 -0700 (PDT)
+From:   Andriy Tkachuk <andriy.tkachuk@gmail.com>
+X-Google-Original-From: Andriy Tkachuk <andriy.tkachuk@seagate.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Andriy Tkachuk <andriy.tkachuk@seagate.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] xattr: simplify logic at xattr_resolve_name()
+Date:   Fri,  9 Apr 2021 18:48:36 +0100
+Message-Id: <20210409174836.23694-1-andriy.tkachuk@seagate.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <CA+G9fYu60T=vymv7gA0eaopfNDWXAVT9WRS11Rrk1OfTkrCevw@mail.gmail.com>
- <PSAP153MB042218315B664B15A59A80B094739@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
-In-Reply-To: <PSAP153MB042218315B664B15A59A80B094739@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 9 Apr 2021 23:17:22 +0530
-Message-ID: <CA+G9fYvcSK-Z7+VrRbHp7ADDDgw2tWWaqTfQMyC2dxuOYGLz6A@mail.gmail.com>
-Subject: Re: [EXTERNAL] [next] ERROR: modpost: "dns_query" [fs/cifs/cifs.ko] undefined
-To:     Shyam Prasad <Shyam.Prasad@microsoft.com>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
-        Maciek Borzecki <maciek.borzecki@gmail.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Steven French <Steven.French@microsoft.com>, pc <pc@cjr.nz>,
-        Pavel Shilovskiy <pshilov@microsoft.com>,
-        Steve French <sfrench@samba.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Apr 2021 at 21:49, Shyam Prasad <Shyam.Prasad@microsoft.com> wrote:
->
-> Hi Naresh,
->
-> AFAIK, this has been fixed in an updated patch last evening. Can you please check if you're still seeing it?
+The negative case check logic with XOR operation between the
+two variables with negated values is really hard to comprehend.
+Change it to positive case check with == instead of XOR.
 
-Please share the fix commit and subject here.
+Signed-off-by: Andriy Tkachuk <andriy.tkachuk@seagate.com>
+---
+ fs/xattr.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-FYI,
-This build error is still on today's Linux next tag 20210409.
+diff --git a/fs/xattr.c b/fs/xattr.c
+index b3444e06cd..531562535d 100644
+--- a/fs/xattr.c
++++ b/fs/xattr.c
+@@ -66,13 +66,13 @@ xattr_resolve_name(struct inode *inode, const char **name)
+ 
+ 		n = strcmp_prefix(*name, xattr_prefix(handler));
+ 		if (n) {
+-			if (!handler->prefix ^ !*n) {
+-				if (*n)
+-					continue;
+-				return ERR_PTR(-EINVAL);
++			if (!handler->prefix == !*n) {
++				*name = n;
++				return handler;
+ 			}
+-			*name = n;
+-			return handler;
++			if (*n)
++				continue;
++			return ERR_PTR(-EINVAL);
+ 		}
+ 	}
+ 	return ERR_PTR(-EOPNOTSUPP);
+-- 
+2.27.0
 
-
-- Naresh
