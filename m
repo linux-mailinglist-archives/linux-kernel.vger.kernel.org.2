@@ -2,142 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5473597A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9F73597AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232819AbhDIIWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:22:31 -0400
-Received: from relay03.th.seeweb.it ([5.144.164.164]:56683 "EHLO
-        relay03.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232579AbhDIIWY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:22:24 -0400
-Received: from [10.0.20.3] (94-209-165-62.cable.dynamic.v4.ziggo.nl [94.209.165.62])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 441D91FAF2;
-        Fri,  9 Apr 2021 10:22:06 +0200 (CEST)
-Subject: Re: [Freedreno] [PATCH 1/3] drm/msm/mdp5: Configure PP_SYNC_HEIGHT to
- double the vtotal
-To:     Abhinav Kumar <abhinavk@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     phone-devel@vger.kernel.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
-References: <20210406214726.131534-1-marijn.suijten@somainline.org>
- <20210406214726.131534-2-marijn.suijten@somainline.org>
- <6413863d04df9743e2d7e81beff5c3e8@codeaurora.org>
- <04860f05-f79f-de0b-13d1-aba85065b4da@somainline.org>
- <CAF6AEGuoLgBSZOou1TSb-d2o6tHS-L-E7AQLS5RM4aOogvRG7Q@mail.gmail.com>
- <CAK7fi1aUXy2i8zY0Cb5Svq0s1H9cSAvY4hq+BsiWgdphwm-ebA@mail.gmail.com>
- <CAF6AEGuSav210dMHa3+f-7W1Kgyjam7K7HhWFO4aXWbdjvPTLw@mail.gmail.com>
-From:   Marijn Suijten <marijn.suijten@somainline.org>
-Message-ID: <408460b9-e150-c971-663f-5fa0bd40b873@somainline.org>
-Date:   Fri, 9 Apr 2021 10:22:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <CAF6AEGuSav210dMHa3+f-7W1Kgyjam7K7HhWFO4aXWbdjvPTLw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S231895AbhDIIXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:23:10 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:5298 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229846AbhDIIXI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:23:08 -0400
+Received: from localhost.localdomain (unknown [222.205.72.8])
+        by mail-app3 (Coremail) with SMTP id cC_KCgB3X77CDnBgNXvxAA--.16685S4;
+        Fri, 09 Apr 2021 16:22:30 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Rui Miguel Silva <rmfrfs@gmail.com>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] media: imx: imx7-mipi-csis: Fix runtime PM imbalance in mipi_csis_s_stream
+Date:   Fri,  9 Apr 2021 16:22:25 +0800
+Message-Id: <20210409082225.22461-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cC_KCgB3X77CDnBgNXvxAA--.16685S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GF1UXFW8AryfAr4xGr43trb_yoWkurb_Gr
+        1kKr9rXr1qyrWfW3WIkr45ZryIqFWIqa18Xr1vvFZIk3yDAF95Xr4vvr1kAw45GF42yF9r
+        Gw4kJF9xurn7GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb-kFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE
+        14v_GFyl42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026x
+        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
+        JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
+        1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_
+        Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
+        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjNJ55UUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgkKBlZdtTUlDwACsk
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Abhinav, Angelo, Rob,
+When v4l2_subdev_call() fails, a pairing PM usage counter
+decrement is needed to keep the counter balanced. It's the
+same for the following error paths in case 'enable' is on.
 
-On 4/9/21 2:08 AM, Rob Clark wrote:
-> On Thu, Apr 8, 2021 at 4:16 PM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@somainline.org> wrote:
->>
->>
->> Il gio 8 apr 2021, 21:05 Rob Clark <robdclark@gmail.com> ha scritto:
->>>
->>> On Wed, Apr 7, 2021 at 12:11 PM AngeloGioacchino Del Regno
->>> <angelogioacchino.delregno@somainline.org> wrote:
->>>>
->>>> Il 07/04/21 20:19, abhinavk@codeaurora.org ha scritto:
->>>>> Hi Marijn
->>>>>
->>>>> On 2021-04-06 14:47, Marijn Suijten wrote:
->>>>>> Leaving this at a close-to-maximum register value 0xFFF0 means it takes
->>>>>> very long for the MDSS to generate a software vsync interrupt when the
->>>>>> hardware TE interrupt doesn't arrive.  Configuring this to double the
->>>>>> vtotal (like some downstream kernels) leads to a frame to take at most
->>>>>> twice before the vsync signal, until hardware TE comes up.
->>>>>>
->>>>>> In this case the hardware interrupt responsible for providing this
->>>>>> signal - "disp-te" gpio - is not hooked up to the mdp5 vsync/pp logic at
->>>>>> all.  This solves severe panel update issues observed on at least the
->>>>>> Xperia Loire and Tone series, until said gpio is properly hooked up to
->>>>>> an irq.
->>>>>
->>>>> The reason the CONFIG_HEIGHT was at such a high value is to make sure that
->>>>> we always get the TE only from the panel vsync and not false positives
->>>>> coming
->>>>> from the tear check logic itself.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
+Changelog:
 
-Correct, most CAF kernels mention such behaviour in comments, with
-fallbacks to vtotal*2 for safety or vtotal when an emulated panel does
-not support hardware TE at all.  We don't seem to (need to) support the 
-latter case but one might at some point want to configure the tearcheck 
-logic to emit a signal for every frame, by means of a DT property or 
-automatically when disp-te is not defined.
+v2: - Use pm_runtime_put() to balance the refcount.
+---
+ drivers/staging/media/imx/imx7-mipi-csis.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
->>>>>
->>>>> When you say that disp-te gpio is not hooked up, is it something
->>>>> incorrect with
->>>>> the schematic OR panel is not generating the TE correctly?
->>>>>
+diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/staging/media/imx/imx7-mipi-csis.c
+index a01a7364b4b9..6f3e8a15e7c4 100644
+--- a/drivers/staging/media/imx/imx7-mipi-csis.c
++++ b/drivers/staging/media/imx/imx7-mipi-csis.c
+@@ -628,7 +628,7 @@ static int mipi_csis_s_stream(struct v4l2_subdev *mipi_sd, int enable)
+ 		}
+ 		ret = v4l2_subdev_call(state->src_sd, core, s_power, 1);
+ 		if (ret < 0)
+-			return ret;
++			goto pm_put;
+ 	}
+ 
+ 	mutex_lock(&state->lock);
+@@ -657,7 +657,8 @@ static int mipi_csis_s_stream(struct v4l2_subdev *mipi_sd, int enable)
+ 
+ unlock:
+ 	mutex_unlock(&state->lock);
+-	if (!enable)
++pm_put:
++	if (!enable || (ret < 0))
+ 		pm_runtime_put(&state->pdev->dev);
+ 
+ 	return ret;
+-- 
+2.17.1
 
-
-The GPIO is currently not used at all by this kernel driver besides a
-call to devm_gpiod_get_optional.  As mentioned in the cover letter we
-have patches in progress to hook up this interrupt line to the pp_done
-infrastructure and complete vsync requests that way instead of waiting
-for this "simulated" interrupt from the MDP.
-
->>> Currently I have this patch in msm-next-staging but I guess we need to
->>> decide in the next day or so whether to drop it or smash in a comment?
->>
->> Marijn, can you please urgently throw a comment in, reminding that these timers are interacting with TE and send a fast V2?
-> 
-> Or just reply on list w/ a comment to smash in, if that is easier
-
-How about a comment along the lines of:
-
-Tearcheck emits a blanking signal every vclks_line * vtotal * 2 ticks on 
-the vsync_clk equating to roughly half the desired panel refresh rate. 
-This is only necessary as stability fallback if interrupts from the 
-panel arrive too late or not at all, but is currently used by default 
-because these panel interrupts are not wired up yet.
-
-I'd place this comment right above REG_MDP5_PP_SYNC_CONFIG_VSYNC, and 
-perhaps add a newline after REG_MDP5_PP_SYNC_CONFIG_HEIGHT to make it 
-clear this applies to those two registers specifically.  We can also 
-involve MDP5_PP_SYNC_CONFIG_VSYNC_COUNT(vclks_line) in the mix.
-
-Then, when the panel TE is wired up we can be smarter about the 
-situation and print warnings when the user has disp-te hooked up but is 
-receiving interrupts from the MDSS block instead of the panel directly 
-(except if incidentally).  This likely means that SET_TEAR_ON was not 
-sent to the panel or the GPIO is wrong.  In that sense this patch 
-(together with x100 removal) is concealing configuration mistakes, but 
-we might also revert back to 0xfff0 if the GPIO is specified in DT and 
-accept the timeout+recovery which did not seem to hamper devices on 
-downstream kernels anyway.
-
-- Marijn
