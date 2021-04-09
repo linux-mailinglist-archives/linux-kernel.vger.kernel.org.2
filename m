@@ -2,331 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA725359646
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565B835964A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhDIHXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:23:08 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:42920 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229703AbhDIHXH (ORCPT
+        id S231497AbhDIHXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:23:53 -0400
+Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:34093 "EHLO
+        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229703AbhDIHXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:23:07 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3ABebeBKjLRUq69PwDjYoUiRY9I3BQXnsji2hD?=
- =?us-ascii?q?6mlwRA09T+WzkceykPMHkSLugDEKV3063fyGMq+MQXTTnKQFg7U5F7GkQQXgpS?=
- =?us-ascii?q?+UPJhvhLGSpwHINg/f0qpm1alme7VjE9GYNzNHpOvz/QXQKadH/PCp/Kykju/V?=
- =?us-ascii?q?zTNMYGhRBp1IwBx+Dm+gc3FeYQldGN4EE4CB7dBMvDqqdR0sAfiTIlkgc6z9q8?=
- =?us-ascii?q?bQlJTgCCR2YiIPzAWVlzun5PrbHnGjsCs2aD9Ezbc8/WWtqWWQ2oyZv+i/2lvA?=
- =?us-ascii?q?0Qboj6h+osfryddIGaW3+68oAwjr4zzDWK1RH4ePuz04u4iUmTUXueiJvBc6It?=
- =?us-ascii?q?h67jf0Q0ndm3fQ5zU=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,208,1613430000"; 
-   d="scan'208";a="502348588"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 09:22:54 +0200
-Date:   Fri, 9 Apr 2021 09:22:54 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-cc:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH v5] staging: rtl8723bs: Remove camelcase
- in several files
-In-Reply-To: <20210409063458.7961-1-fmdefrancesco@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2104090922210.4597@hadrien>
-References: <20210409063458.7961-1-fmdefrancesco@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 9 Apr 2021 03:23:52 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id UlUBlYkTxgIC3UlUFlBLws; Fri, 09 Apr 2021 09:23:38 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1617953018; bh=APMETB3zEpAOU0Fhyt/OJ+787Q+BXlzWzrvJwZIggc4=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=N5ap1onb6j7+Tx4jnvefbPQ4XZO6dcDfKA6Kg3aiUFMbmUlU2XJCkUVxI7fG5tuz7
+         MjAjKLL65r0ZN0B+Mak7LFOGTExr7X4jjBtWTt2dUH78W8dslnG8cj3uC26Qc7VYDz
+         GDodWjMGFW3bwUaKQByvTw+3ITI5zY8EqJxubjt8a+8IvPVYhC7lE5GddyhmoS4qzU
+         /NrJyLrt0xDftUF2zVYym3QgG4KSUAhyRQXvcDE89cNYtWocCacZb7HmwrbBcEMqu6
+         q+ykCImDfWJywMRmofDN/dYV1VJxQK+nqvXSDhq3IdEB7Jc9KBGyGrvSFw08t5IsgE
+         +L3cIngH8UolQ==
+Subject: Re: [PATCH 1/2] media: zoran: add spaces around '<<'
+To:     Mitali Borkar <mitaliborkar810@gmail.com>, clabbe@baylibre.com,
+        mchehab@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+References: <cover.1617912177.git.mitaliborkar810@gmail.com>
+ <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <f196d8ff-e8bf-360e-ee7b-cd2dcafd9742@xs4all.nl>
+Date:   Fri, 9 Apr 2021 09:23:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfFSut/hMT23athPR8Gw35GGx/7yXe9fJ57927job9mtszK0c4rZKiinzjFbtd3e44QBA4nA09Oqpr1SAofOFrNl4o1NKVo4d+FgCAMkv5hY4BZO8Pkkz
+ epx9AWKyNxlz0P/GzrQx5c5roQHyX8uHpC2D3x2C+UiSELaiP26oprS2JTs4qKKLmiAlieX/A5XELkDe8tIXflQvKj8c/zJZnAMja4qRkVo1EZs4jEuHsg6r
+ OW4abAbqpNqN9Yg5Yjw+BzhX7p3ZV3eGxRG+e18+zqAsGK+t0CdJONWL0em9CVMOPSiZCNx3zfto1Kn+/gYzaWNnrq7o/Vm8TVdq1mEtXd4kVVdKAVcXEX6M
+ T9Liy9eCfmp2QB3s3FTzYGUbiquD/4wFhMpSIdCevvEm13DgXndvgbghO4lpFAz1jEyoJqQb62UUpamtKhL+qM/Vy+V4Jeb99pNhsBf70uBVp9fDyXs4CYpM
+ Dt+v5t40l6tIuvVDgOiVv2E7/r87EaRZg+bn6g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mitali,
 
-
-On Fri, 9 Apr 2021, Fabio M. De Francesco wrote:
-
-> Remove camelcase in bFwCurrentInPSMode, a variable used by code
-> of several subdirectories/files of the driver. Issue detected by
-> checkpatch.pl. Delete the unnecessary "b" (that stands for "byte") from
-> the beginning of the name.
-
-Isn't this still against your previous patch?  I see b_ on the removed
-lines.
-
-julia
-
->
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+On 08/04/2021 22:38, Mitali Borkar wrote:
+> Added spaces around '<<' operator to improve readability and meet linux
+> kernel coding style.
+> Reported by checkpatch
+> 
+> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
 > ---
->
-> Changes from v4: Mention the removal of the initial "b" in log message.
-> Changes from v3: Fix errors in the format of the patch.
-> Changes from v2: Remove unnecessary comment. Shortened a function name.
-> Changes from v1: No changes to the code but only to the subject for the
-> purpose to differentiate this patch because other removes of camelcase
-> have been made in other files of the same directory.
->
->  drivers/staging/rtl8723bs/core/rtw_cmd.c       |  2 +-
->  drivers/staging/rtl8723bs/core/rtw_mlme.c      |  2 +-
->  drivers/staging/rtl8723bs/core/rtw_pwrctrl.c   | 18 +++++++++---------
->  drivers/staging/rtl8723bs/hal/hal_intf.c       |  2 +-
->  drivers/staging/rtl8723bs/hal/rtl8723b_dm.c    |  6 +++---
->  .../staging/rtl8723bs/hal/rtl8723b_hal_init.c  |  2 +-
->  drivers/staging/rtl8723bs/hal/sdio_ops.c       | 14 +++++++-------
->  .../staging/rtl8723bs/include/rtw_pwrctrl.h    |  2 +-
->  8 files changed, 24 insertions(+), 24 deletions(-)
->
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> index a08f22b53592..feb53b8c0ff2 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> @@ -1510,7 +1510,7 @@ static void rtw_lps_change_dtim_hdl(struct adapter *padapter, u8 dtim)
->  	if (pwrpriv->dtim != dtim)
->  		pwrpriv->dtim = dtim;
->
-> -	if ((pwrpriv->b_fw_current_in_ps_mode == true) && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
-> +	if ((pwrpriv->fw_current_in_ps_mode == true) && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
->  		u8 ps_mode = pwrpriv->pwr_mode;
->
->  		rtw_hal_set_hwreg(padapter, HW_VAR_H2C_FW_PWRMODE, (u8 *)(&ps_mode));
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-> index 51cea6cf46e7..895997868c81 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-> @@ -1684,7 +1684,7 @@ void rtw_dynamic_check_timer_handler(struct adapter *adapter)
->  	if (adapter->net_closed)
->  		return;
->
-> -	if ((adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
-> +	if ((adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
->  		&& !(hal_btcoex_IsBtControlLps(adapter))
->  		) {
->  		u8 bEnterPS;
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-> index 21e7a847866f..481e2ad60853 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-> @@ -365,7 +365,7 @@ void rtw_set_ps_mode(struct adapter *padapter, u8 ps_mode, u8 smart_ps, u8 bcn_a
->  			rtw_set_rpwm(padapter, PS_STATE_S4);
->
->  			rtw_hal_set_hwreg(padapter, HW_VAR_H2C_FW_PWRMODE, (u8 *)(&ps_mode));
-> -			pwrpriv->b_fw_current_in_ps_mode = false;
-> +			pwrpriv->fw_current_in_ps_mode = false;
->
->  			hal_btcoex_LpsNotify(padapter, ps_mode);
->  		}
-> @@ -377,7 +377,7 @@ void rtw_set_ps_mode(struct adapter *padapter, u8 ps_mode, u8 smart_ps, u8 bcn_a
->
->  			hal_btcoex_LpsNotify(padapter, ps_mode);
->
-> -			pwrpriv->b_fw_current_in_ps_mode = true;
-> +			pwrpriv->fw_current_in_ps_mode = true;
->  			pwrpriv->pwr_mode = ps_mode;
->  			pwrpriv->smart_ps = smart_ps;
->  			pwrpriv->bcn_ant_mode = bcn_ant_mode;
-> @@ -734,7 +734,7 @@ s32 rtw_register_task_alive(struct adapter *padapter, u32 task)
->
->  	register_task_alive(pwrctrl, task);
->
-> -	if (pwrctrl->b_fw_current_in_ps_mode) {
-> +	if (pwrctrl->fw_current_in_ps_mode) {
->  		if (pwrctrl->cpwm < pslv) {
->  			if (pwrctrl->cpwm < PS_STATE_S2)
->  				res = _FAIL;
-> @@ -782,7 +782,7 @@ void rtw_unregister_task_alive(struct adapter *padapter, u32 task)
->
->  	unregister_task_alive(pwrctrl, task);
->
-> -	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->b_fw_current_in_ps_mode) {
-> +	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->fw_current_in_ps_mode) {
->  		if (pwrctrl->cpwm > pslv)
->  			if ((pslv >= PS_STATE_S2) || (pwrctrl->alives == 0))
->  				rtw_set_rpwm(padapter, pslv);
-> @@ -819,7 +819,7 @@ s32 rtw_register_tx_alive(struct adapter *padapter)
->
->  	register_task_alive(pwrctrl, XMIT_ALIVE);
->
-> -	if (pwrctrl->b_fw_current_in_ps_mode) {
-> +	if (pwrctrl->fw_current_in_ps_mode) {
->  		if (pwrctrl->cpwm < pslv) {
->  			if (pwrctrl->cpwm < PS_STATE_S2)
->  				res = _FAIL;
-> @@ -864,7 +864,7 @@ s32 rtw_register_cmd_alive(struct adapter *padapter)
->
->  	register_task_alive(pwrctrl, CMD_ALIVE);
->
-> -	if (pwrctrl->b_fw_current_in_ps_mode) {
-> +	if (pwrctrl->fw_current_in_ps_mode) {
->  		if (pwrctrl->cpwm < pslv) {
->  			if (pwrctrl->cpwm < PS_STATE_S2)
->  				res = _FAIL;
-> @@ -909,7 +909,7 @@ void rtw_unregister_tx_alive(struct adapter *padapter)
->
->  	unregister_task_alive(pwrctrl, XMIT_ALIVE);
->
-> -	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->b_fw_current_in_ps_mode) {
-> +	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->fw_current_in_ps_mode) {
->  		if (pwrctrl->cpwm > pslv)
->  			if ((pslv >= PS_STATE_S2) || (pwrctrl->alives == 0))
->  				rtw_set_rpwm(padapter, pslv);
-> @@ -945,7 +945,7 @@ void rtw_unregister_cmd_alive(struct adapter *padapter)
->
->  	unregister_task_alive(pwrctrl, CMD_ALIVE);
->
-> -	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->b_fw_current_in_ps_mode) {
-> +	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->fw_current_in_ps_mode) {
->  		if (pwrctrl->cpwm > pslv) {
->  			if ((pslv >= PS_STATE_S2) || (pwrctrl->alives == 0))
->  				rtw_set_rpwm(padapter, pslv);
-> @@ -978,7 +978,7 @@ void rtw_init_pwrctrl_priv(struct adapter *padapter)
->  	pwrctrlpriv->power_mgnt = padapter->registrypriv.power_mgnt;/*  PS_MODE_MIN; */
->  	pwrctrlpriv->bLeisurePs = pwrctrlpriv->power_mgnt != PS_MODE_ACTIVE;
->
-> -	pwrctrlpriv->b_fw_current_in_ps_mode = false;
-> +	pwrctrlpriv->fw_current_in_ps_mode = false;
->
->  	pwrctrlpriv->rpwm = 0;
->  	pwrctrlpriv->cpwm = PS_STATE_S4;
-> diff --git a/drivers/staging/rtl8723bs/hal/hal_intf.c b/drivers/staging/rtl8723bs/hal/hal_intf.c
-> index a73c2f76628d..96fe172ced8d 100644
-> --- a/drivers/staging/rtl8723bs/hal/hal_intf.c
-> +++ b/drivers/staging/rtl8723bs/hal/hal_intf.c
-> @@ -348,7 +348,7 @@ void rtw_hal_dm_watchdog(struct adapter *padapter)
->
->  void rtw_hal_dm_watchdog_in_lps(struct adapter *padapter)
->  {
-> -	if (adapter_to_pwrctl(padapter)->b_fw_current_in_ps_mode == true) {
-> +	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode == true) {
->  		if (padapter->HalFunc.hal_dm_watchdog_in_lps)
->  			padapter->HalFunc.hal_dm_watchdog_in_lps(padapter); /* this function caller is in interrupt context */
->  	}
-> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c b/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c
-> index 265db187b8d5..23be025ceb5b 100644
-> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c
-> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c
-> @@ -141,7 +141,7 @@ void rtl8723b_InitHalDm(struct adapter *Adapter)
->
->  void rtl8723b_HalDmWatchDog(struct adapter *Adapter)
->  {
-> -	bool b_fw_current_in_ps_mode = false;
-> +	bool fw_current_in_ps_mode = false;
->  	bool bFwPSAwake = true;
->  	u8 hw_init_completed = false;
->  	struct hal_com_data *pHalData = GET_HAL_DATA(Adapter);
-> @@ -151,12 +151,12 @@ void rtl8723b_HalDmWatchDog(struct adapter *Adapter)
->  	if (hw_init_completed == false)
->  		goto skip_dm;
->
-> -	b_fw_current_in_ps_mode = adapter_to_pwrctl(Adapter)->b_fw_current_in_ps_mode;
-> +	fw_current_in_ps_mode = adapter_to_pwrctl(Adapter)->fw_current_in_ps_mode;
->  	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&bFwPSAwake));
->
->  	if (
->  		(hw_init_completed == true) &&
-> -		((!b_fw_current_in_ps_mode) && bFwPSAwake)
-> +		((!fw_current_in_ps_mode) && bFwPSAwake)
->  	) {
->  		/*  */
->  		/*  Calculate Tx/Rx statistics. */
-> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> index 7ebc438870fd..1ab0c9e8760b 100644
-> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> @@ -430,7 +430,7 @@ void rtl8723b_InitializeFirmwareVars(struct adapter *padapter)
->  	struct hal_com_data *pHalData = GET_HAL_DATA(padapter);
->
->  	/*  Init Fw LPS related. */
-> -	adapter_to_pwrctl(padapter)->b_fw_current_in_ps_mode = false;
-> +	adapter_to_pwrctl(padapter)->fw_current_in_ps_mode = false;
->
->  	/* Init H2C cmd. */
->  	rtw_write8(padapter, REG_HMETFR, 0x0f);
-> diff --git a/drivers/staging/rtl8723bs/hal/sdio_ops.c b/drivers/staging/rtl8723bs/hal/sdio_ops.c
-> index c78a6724fc1c..abe8f2f8f452 100644
-> --- a/drivers/staging/rtl8723bs/hal/sdio_ops.c
-> +++ b/drivers/staging/rtl8723bs/hal/sdio_ops.c
-> @@ -173,7 +173,7 @@ static u32 sdio_read32(struct intf_hdl *intfhdl, u32 addr)
->  	if (
->  		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
->  		(!mac_pwr_ctrl_on) ||
-> -		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
-> +		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
->  	) {
->  		err = sd_cmd52_read(intfhdl, ftaddr, 4, (u8 *)&le_tmp);
->  #ifdef SDIO_DEBUG_IO
-> @@ -230,7 +230,7 @@ static s32 sdio_readN(struct intf_hdl *intfhdl, u32 addr, u32 cnt, u8 *buf)
->  	if (
->  		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
->  		(!mac_pwr_ctrl_on) ||
-> -		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
-> +		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
->  	)
->  		return sd_cmd52_read(intfhdl, ftaddr, cnt, buf);
->
-> @@ -297,7 +297,7 @@ static s32 sdio_write32(struct intf_hdl *intfhdl, u32 addr, u32 val)
->  	if (
->  		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
->  		(!mac_pwr_ctrl_on) ||
-> -		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
-> +		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
->  	) {
->  		le_tmp = cpu_to_le32(val);
->
-> @@ -334,7 +334,7 @@ static s32 sdio_writeN(struct intf_hdl *intfhdl, u32 addr, u32 cnt, u8 *buf)
->  	if (
->  		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
->  		(!mac_pwr_ctrl_on) ||
-> -		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
-> +		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
->  	)
->  		return sd_cmd52_write(intfhdl, ftaddr, cnt, buf);
->
-> @@ -565,7 +565,7 @@ s32 sdio_local_read(
->  	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
->  	if (
->  		(!mac_pwr_ctrl_on) ||
-> -		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
-> +		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
->  	)
->  		return sd_cmd52_read(intfhdl, addr, cnt, buf);
->
-> @@ -611,7 +611,7 @@ s32 sdio_local_write(
->  	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
->  	if (
->  		(!mac_pwr_ctrl_on) ||
-> -		(adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode)
-> +		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
->  	)
->  		return sd_cmd52_write(intfhdl, addr, cnt, buf);
->
-> @@ -660,7 +660,7 @@ static u32 sdio_local_cmd53_read4byte(struct adapter *adapter, u32 addr)
->
->  	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
->  	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
-> -	if (!mac_pwr_ctrl_on || adapter_to_pwrctl(adapter)->b_fw_current_in_ps_mode) {
-> +	if (!mac_pwr_ctrl_on || adapter_to_pwrctl(adapter)->fw_current_in_ps_mode) {
->  		sd_cmd52_read(intfhdl, addr, 4, (u8 *)&le_tmp);
->  		val = le32_to_cpu(le_tmp);
->  	} else {
-> diff --git a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-> index fcb06a95fdf6..5450d20b44a6 100644
-> --- a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-> +++ b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-> @@ -203,7 +203,7 @@ struct pwrctrl_priv {
->  	u8 LpsIdleCount;
->  	u8 power_mgnt;
->  	u8 org_power_mgnt;
-> -	u8 b_fw_current_in_ps_mode;
-> +	u8 fw_current_in_ps_mode;
->  	unsigned long	DelayLPSLastTimeStamp;
->  	s32		pnp_current_pwr_state;
->  	u8 pnp_bstop_trx;
-> --
-> 2.31.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210409063458.7961-1-fmdefrancesco%40gmail.com.
->
+>  drivers/staging/media/zoran/zr36057.h | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
+> index 71b651add35a..a2a75fd9f535 100644
+> --- a/drivers/staging/media/zoran/zr36057.h
+> +++ b/drivers/staging/media/zoran/zr36057.h
+> @@ -30,13 +30,13 @@
+>  #define ZR36057_VFESPFR_HOR_DCM          14
+>  #define ZR36057_VFESPFR_VER_DCM          8
+>  #define ZR36057_VFESPFR_DISP_MODE        6
+> -#define ZR36057_VFESPFR_YUV422          (0<<3)
+> -#define ZR36057_VFESPFR_RGB888          (1<<3)
+> -#define ZR36057_VFESPFR_RGB565          (2<<3)
+> -#define ZR36057_VFESPFR_RGB555          (3<<3)
+> -#define ZR36057_VFESPFR_ERR_DIF          (1<<2)
+> -#define ZR36057_VFESPFR_PACK24          (1<<1)
+> -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1<<0)
+> +#define ZR36057_VFESPFR_YUV422          (0 << 3)
+> +#define ZR36057_VFESPFR_RGB888          (1 << 3)
+> +#define ZR36057_VFESPFR_RGB565          (2 << 3)
+> +#define ZR36057_VFESPFR_RGB555          (3 << 3)
+> +#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
+> +#define ZR36057_VFESPFR_PACK24          (1 << 1)
+> +#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
+>  
+>  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
+>  
+> 
+
+I looked at that header and it is very messy.
+
+Can you make two new patches? The first aligns every nicely, e.g. this:
+
+#define ZR36057_VFEHCR          0x000   /* Video Front End, Horizontal Configuration Register */
+#define ZR36057_VFEHCR_HS_POL             BIT(30)
+#define ZR36057_VFEHCR_H_START           10
+#define ZR36057_VFEHCR_H_END            0
+#define ZR36057_VFEHCR_HMASK            0x3ff
+
+should become:
+
+/* Video Front End, Horizontal Configuration Register */
+#define ZR36057_VFEHCR			0x000
+#define ZR36057_VFEHCR_HS_POL		BIT(30)
+#define ZR36057_VFEHCR_H_START		10
+#define ZR36057_VFEHCR_H_END		0
+#define ZR36057_VFEHCR_HMASK		0x3ff
+
+Same for all the other register blocks. Use tabs to do the alignment
+instead of spaces, as is currently the case.
+
+The second patch can replace the (0<<3) etc. to BIT(0).
+
+That would be a nice cleanup of this rather messy header.
+
+Thanks!
+
+	Hans
