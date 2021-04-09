@@ -2,80 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 545DD35A830
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F254C35A831
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbhDIUz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:55:58 -0400
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:38876 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234278AbhDIUz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:55:56 -0400
-Received: by mail-ej1-f41.google.com with SMTP id r12so10710722ejr.5;
-        Fri, 09 Apr 2021 13:55:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6269CFEcO294v7exi47GLnYJ4w/SXpoLX7EH0IrfMXg=;
-        b=UbrfMgP8uF59OblaqqhqB7XmhIo5yfVh9fr1UBXE+4jDPUIfi7SnMrsEPhaXld87Ds
-         KihSi+fuzN5JVdwQNaP372w5aEjFdHPSdzJeFbWuNbhZKmJkMJ2jfQpUb9TH7SOrpQgG
-         gntMmyBu8RfXqrMru0HNCMlRkygoOka8QK9B2mUtAm2PMArtoM5cxxMxcF60nHZlbRR4
-         NlkHmCkZ7vQpSgaQmb9d1R+9tdOP/WI/Hb8eZUK3uHP+Yvr6IoFaVMnCfQqTKRqpsuAu
-         hQTlEhciIBwBHuyyTE8p5N6ZzilHHVjgtXdtXN2EgrCjYWLmyuyoel2S3kHIAf7v43uF
-         kSsQ==
-X-Gm-Message-State: AOAM530eerdaWTOWp0DQ7w6L+4/QXtq6Y1qK4Syds3wq7Vh7n37orkHX
-        Sa47WY+ctjI8hffm6lpDE463JsPW0SJaBYik1KY=
-X-Google-Smtp-Source: ABdhPJwXzE1P09vuf4uHOZgcOVQmGC/sR9VCWa3xvIkBzLtB6ZptwLRWU6jAe3sPnSByf6nG5X9sVE7VQUX0uxjWpeY=
-X-Received: by 2002:a17:906:dfcc:: with SMTP id jt12mr17795157ejc.31.1618001741712;
- Fri, 09 Apr 2021 13:55:41 -0700 (PDT)
+        id S234463AbhDIU5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:57:36 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:53868 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234278AbhDIU5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 16:57:35 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 6D2FC1A5347;
+        Fri,  9 Apr 2021 22:57:20 +0200 (CEST)
+Received: from smtp.na-rdc02.nxp.com (usphx01srsp001v.us-phx01.nxp.com [134.27.49.11])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 335131A5340;
+        Fri,  9 Apr 2021 22:57:20 +0200 (CEST)
+Received: from right.am.freescale.net (right.am.freescale.net [10.81.116.142])
+        by usphx01srsp001v.us-phx01.nxp.com (Postfix) with ESMTP id 73E1940A63;
+        Fri,  9 Apr 2021 13:57:19 -0700 (MST)
+From:   Li Yang <leoyang.li@nxp.com>
+To:     arm@kernel.org, soc@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        shawnguo@kernel.org
+Subject: [GIT PULL] soc/fsl drivers changes for next(v5.13)
+Date:   Fri,  9 Apr 2021 15:57:19 -0500
+Message-Id: <20210409205719.27927-1-leoyang.li@nxp.com>
+X-Mailer: git-send-email 2.25.1.377.g2d2118b
 MIME-Version: 1.0
-References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
- <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net> <CAJvTdK=Lqbzy6bs8qiE8MZ5LSzyZJ-FMUTcNPD4MxYJGEMBW3g@mail.gmail.com>
- <20210331225226.GC11673@zn.tnic>
-In-Reply-To: <20210331225226.GC11673@zn.tnic>
-From:   Len Brown <lenb@kernel.org>
-Date:   Fri, 9 Apr 2021 16:55:30 -0400
-Message-ID: <CAJvTdKm_sa869Xn-GVFPnka_B+-otf1FwoMtA-8PAYOaN99BnA@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 31, 2021 at 6:54 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, Mar 31, 2021 at 06:28:27PM -0400, Len Brown wrote:
-> > dynamic XCR0 breaks the installed base, I thought we had established
-> > that.
->
-> We should do a clear cut and have legacy stuff which has its legacy
-> expectations on the XSTATE layout and not touch those at all.
->
-> And then all new apps which will use these new APIs can go and request
-> whatever fancy new state constellations we support. Including how they
-> want their signals handled, etc.
->
-> Fat states like avx512, amx etc will be off by default and apps
-> explicitly requesting those, can get them.
->
-> That's it.
+Hi soc maintainers,
 
-100% agreement from me!  (does anybody disagree?)
+Please merge the following new changes for soc/fsl drivers.
 
-thanks,
-Len Brown, Intel Open Source Technology Center
+Regards,
+Leo
+
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/leo/linux.git tags/soc-fsl-next-v5.13
+
+for you to fetch changes up to 242b0b398ccd34f73772120bd27a87a1bf00e30b:
+
+  soc: fsl: enable acpi support in RCPM driver (2021-04-08 16:34:15 -0500)
+
+----------------------------------------------------------------
+NXP/FSL SoC driver updates for v5.13
+
+- Add ACPI support for RCPM driver
+- Use generic io{read,write} for QE drivers after performance optimized
+  for PowerPC
+- Fix QBMAN probe to cleanup HW states correctly for kexec
+- Various cleanup and style fix for QBMAN/QE/GUTS drivers
+
+----------------------------------------------------------------
+Aditya Srivastava (1):
+      soc: fsl: guts: fix comment syntax in file
+
+Christophe Leroy (3):
+      soc: fsl: qe: replace qe_io{read,write}* wrappers by generic io{read,write}*
+      tty: serial: ucc_uart: replace qe_io{read,write}* wrappers by generic io{read,write}*
+      Revert "soc: fsl: qe: introduce qe_io{read,write}* wrappers"
+
+Peng Ma (1):
+      soc: fsl: enable acpi support in RCPM driver
+
+Roy Pledge (1):
+      soc: fsl: qbman: Ensure device cleanup is run for kexec
+
+Yang Li (1):
+      soc: fsl: guts: remove unneeded semicolon
+
+Zheng Yongjun (2):
+      soc: fsl: qbman: Delete useless kfree code
+      soc: fsl: qe: Use DEFINE_SPINLOCK() for spinlock
+
+ drivers/soc/fsl/guts.c              |   2 +-
+ drivers/soc/fsl/qbman/bman.c        |   1 -
+ drivers/soc/fsl/qbman/bman_portal.c |   3 +-
+ drivers/soc/fsl/qbman/qman_portal.c |   3 +-
+ drivers/soc/fsl/qe/gpio.c           |  20 +++---
+ drivers/soc/fsl/qe/qe.c             |  24 +++----
+ drivers/soc/fsl/qe/qe_common.c      |   3 +-
+ drivers/soc/fsl/qe/qe_ic.c          |   4 +-
+ drivers/soc/fsl/qe/qe_io.c          |  36 +++++------
+ drivers/soc/fsl/qe/ucc_fast.c       |  68 ++++++++++----------
+ drivers/soc/fsl/qe/ucc_slow.c       |  42 ++++++------
+ drivers/soc/fsl/rcpm.c              |  24 ++++++-
+ drivers/tty/serial/ucc_uart.c       | 124 ++++++++++++++++++------------------
+ include/linux/fsl/guts.h            |   4 +-
+ include/soc/fsl/qe/qe.h             |  34 +++-------
+ 15 files changed, 198 insertions(+), 194 deletions(-)
