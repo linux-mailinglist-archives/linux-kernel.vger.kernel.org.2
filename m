@@ -2,173 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323C5359D54
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:28:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C30FE359D77
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhDIL2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:28:40 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38654 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233637AbhDIL2i (ORCPT
+        id S233633AbhDILbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:31:17 -0400
+Received: from mail.baikalelectronics.com ([87.245.175.226]:49444 "EHLO
+        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232855AbhDILaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:28:38 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 139B2wOr136552;
-        Fri, 9 Apr 2021 07:28:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=M/X1HLUVPC662H2WuDNli3rRjLixND6jpXMQ3SGmGp8=;
- b=BXc7y9ZVoZHAmor1znE3WgDW0bMu9cE21EI0bNH8n4fcQprrAPQ8e4kE3RYzP7wUrozL
- 6vYgpfSSgXVcbPLxlorv07djcg3cvYfVQuKBf+4OyNaFAuXhD4Ktl1PKXR7dD5Rt0yfG
- XTu5yfQE3H964drTHT5nuWcqZMmLkQ/IM6M8+SQS8jAodlhjlHA+laiwA4AIL0XXyMWl
- beTY7s34A38TJ5flG9TrGE4m9ObPs4rKlyvaqN1IisxX9ur1tsc+2DGQCVK497QL846v
- pcpcQfbVdpyUKRBxCq8KcyIPSuY3vmL1PNprG+kHpK6C5+5rk54djGP0z2b6tg5iNDiy XQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvpw9j4t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 07:28:15 -0400
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 139B3G3B137592;
-        Fri, 9 Apr 2021 07:28:15 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvpw9j42-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 07:28:14 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 139BRuxu001975;
-        Fri, 9 Apr 2021 11:28:12 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 37rvc1h9qx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 11:28:12 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 139BRnJR33620438
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Apr 2021 11:27:49 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 493A8A4054;
-        Fri,  9 Apr 2021 11:28:10 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E5531A405C;
-        Fri,  9 Apr 2021 11:28:09 +0000 (GMT)
-Received: from localhost (unknown [9.85.70.102])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri,  9 Apr 2021 11:28:09 +0000 (GMT)
-Date:   Fri, 9 Apr 2021 16:58:09 +0530
-From:   riteshh <riteshh@linux.ibm.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Wen Yang <wenyang@linux.alibaba.com>, adilger@dilger.ca,
-        tytso@mit.edu, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, baoyou.xie@alibaba-inc.com
-Subject: Re: [PATCH] ext4: add a configurable parameter to prevent endless
- loop in ext4_mb_discard_group_p
-Message-ID: <20210409112809.n4d6kar62zwzr6af@riteshh-domain>
-References: <f16d7afa-3799-f523-3c19-9ceb9427ff6e@linux.alibaba.com>
- <20210409054733.avv3ofqpka4m6xe5@riteshh-domain>
- <20210409101811.GB20833@quack2.suse.cz>
+        Fri, 9 Apr 2021 07:30:52 -0400
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Alexey Brodkin <abrodkin@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        <linux-usb@vger.kernel.org>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Khuong Dinh <khuong@os.amperecomputing.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linuxppc-dev@lists.ozlabs.org>,
+        <linux-snps-arc@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH RESEND v8 0/7] dt-bindings: usb: Harmonize xHCI/EHCI/OHCI/DWC3 nodes name
+Date:   Fri, 9 Apr 2021 14:30:21 +0300
+Message-ID: <20210409113029.7144-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409101811.GB20833@quack2.suse.cz>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: w-WGFj3QsyYxPskAxtbyvTE61KTHvx3Q
-X-Proofpoint-GUID: Iu6q2NcVvLi76SvglBLqgskT11yqGUxo
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-09_05:2021-04-09,2021-04-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 clxscore=1015
- priorityscore=1501 malwarescore=0 mlxlogscore=999 spamscore=0 mlxscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104090081
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/04/09 12:18PM, Jan Kara wrote:
-> On Fri 09-04-21 11:17:33, riteshh wrote:
-> > On 21/04/09 02:50AM, Wen Yang wrote:
-> > > > On Apr 7, 2021, at 5:16 AM, riteshh <riteshh@linux.ibm.com> wrote:
-> > > >>
-> > > >> On 21/04/07 03:01PM, Wen Yang wrote:
-> > > >>> From: Wen Yang <simon.wy@alibaba-inc.com>
-> > > >>>
-> > > >>> The kworker has occupied 100% of the CPU for several days:
-> > > >>> PID USER  PR  NI VIRT RES SHR S  %CPU  %MEM TIME+  COMMAND
-> > > >>> 68086 root 20 0  0    0   0   R  100.0 0.0  9718:18 kworker/u64:11
-> > > >>>
-> > > >>> And the stack obtained through sysrq is as follows:
-> > > >>> [20613144.850426] task: ffff8800b5e08000 task.stack: ffffc9001342c000
-> > > >>> [20613144.850438] Call Trace:
-> > > >>> [20613144.850439] [<ffffffffa0244209>]ext4_mb_new_blocks+0x429/0x550
-> > > [ext4]
-> > > >>> [20613144.850439]  [<ffffffffa02389ae>] ext4_ext_map_blocks+0xb5e/0xf30
-> > > [ext4]
-> > > >>> [20613144.850441]  [<ffffffffa0204b52>] ext4_map_blocks+0x172/0x620
-> > > [ext4]
-> > > >>> [20613144.850442]  [<ffffffffa0208675>] ext4_writepages+0x7e5/0xf00
-> > > [ext4]
-> > > >>> [20613144.850443]  [<ffffffff811c487e>] do_writepages+0x1e/0x30
-> > > >>> [20613144.850444]  [<ffffffff81280265>]
-> > > __writeback_single_inode+0x45/0x320
-> > > >>> [20613144.850444]  [<ffffffff81280ab2>] writeback_sb_inodes+0x272/0x600
-> > > >>> [20613144.850445]  [<ffffffff81280ed2>] __writeback_inodes_wb+0x92/0xc0
-> > > >>> [20613144.850445]  [<ffffffff81281238>] wb_writeback+0x268/0x300
-> > > >>> [20613144.850446]  [<ffffffff812819f4>] wb_workfn+0xb4/0x380
-> > > >>> [20613144.850447]  [<ffffffff810a5dc9>] process_one_work+0x189/0x420
-> > > >>> [20613144.850447]  [<ffffffff810a60ae>] worker_thread+0x4e/0x4b0
-> > > >>>
-> > > >>> The cpu resources of the cloud server are precious, and the server
-> > > >>> cannot be restarted after running for a long time, so a configuration
-> > > >>> parameter is added to prevent this endless loop.
-> > > >>
-> > > >> Strange, if there is a endless loop here. Then I would definitely see
-> > > >> if there is any accounting problem in pa->pa_count. Otherwise busy=1
-> > > >> should not be set everytime. ext4_mb_show_pa() function may help debug
-> > > this.
-> > > >>
-> > > >> If yes, then that means there always exists either a file preallocation
-> > > >> or a group preallocation. Maybe it is possible, in some use case.
-> > > >> Others may know of such use case, if any.
-> > >
-> > > > If this code is broken, then it doesn't make sense to me that we would
-> > > > leave it in the "run forever" state after the patch, and require a sysfs
-> > > > tunable to be set to have a properly working system?
-> > >
-> > > > Is there anything particularly strange about the workload/system that
-> > > > might cause this?  Filesystem is very full, memory is very low, etc?
-> > >
-> > > Hi Ritesh and Andreas,
-> > >
-> > > Thank you for your reply. Since there is still a faulty machine, we have
-> > > analyzed it again and found it is indeed a very special case:
-> > >
-> > >
-> > > crash> struct ext4_group_info ffff8813bb5f72d0
-> > > struct ext4_group_info {
-> > >   bb_state = 0,
-> > >   bb_free_root = {
-> > >     rb_node = 0x0
-> > >   },
-> > >   bb_first_free = 1681,
-> > >   bb_free = 0,
-> >
-> > Not related to this issue, but above two variables values doesn't looks
-> > consistent.
-> >
-> > >   bb_fragments = 0,
-> > >   bb_largest_free_order = -1,
-> > >   bb_prealloc_list = {
-> > >     next = 0xffff880268291d78,
-> > >     prev = 0xffff880268291d78     ---> *** The list is empty
-> > >   },
-> >
-> > Ok. So when you collected the dump this list was empty.
->
-> No, it is not empty. It has a single element. Note that the structure is at
-> ffff8813bb5f72d0 so the pointers would have to be like ffff8813bb5f7xxx.
+As the subject states this series is an attempt to harmonize the xHCI,
+EHCI, OHCI and DWC USB3 DT nodes with the DT schema introduced in the
+framework of the patchset [1].
 
-Errr, yes right. So the list is not empty.
-But I guess the other arguments discussed in that mail should still be valid.
+Firstly as Krzysztof suggested we've deprecated a support of DWC USB3
+controllers with "synopsys,"-vendor prefix compatible string in favor of
+the ones with valid "snps,"-prefix. It's done in all the DTS files,
+which have been unfortunate to define such nodes.
 
--ritesh
+Secondly we suggest to fix the snps,quirk-frame-length-adjustment property
+declaration in the Amlogic meson-g12-common.dtsi DTS file, since it has
+been erroneously declared as boolean while having uint32 type. Neil said
+it was ok to init that property with 0x20 value.
+
+Thirdly the main part of the patchset concern fixing the xHCI, EHCI/OHCI
+and DWC USB3 DT nodes name as in accordance with their DT schema the
+corresponding node name is suppose to comply with the Generic USB HCD DT
+schema, which requires the USB nodes to have the name acceptable by the
+regexp: "^usb(@.*)?". Such requirement had been applicable even before we
+introduced the new DT schema in [1], but as we can see it hasn't been
+strictly implemented for a lot the DTS files. Since DT schema is now
+available the automated DTS validation shall make sure that the rule isn't
+violated.
+
+Note most of these patches have been a part of the last three patches of
+[1]. But since there is no way to have them merged in in a combined
+manner, I had to move them to the dedicated series and split them up so to
+be accepted by the corresponding subsystem maintainers one-by-one.
+
+[1] Link: https://lore.kernel.org/linux-usb/20201014101402.18271-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v1:
+- As Krzysztof suggested I've created a script which checked whether the
+  node names had been also updated in all the depended dts files. As a
+  result I found two more files which should have been also modified:
+  arch/arc/boot/dts/{axc003.dtsi,axc003_idu.dtsi}
+- Correct the USB DWC3 nodes name found in
+  arch/arm64/boot/dts/apm/{apm-storm.dtsi,apm-shadowcat.dtsi} too.
+
+Link: https://lore.kernel.org/linux-usb/20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru
+Changelog v2:
+- Drop the patch:
+  [PATCH 01/29] usb: dwc3: Discard synopsys,dwc3 compatibility string
+  and get back the one which marks the "synopsys,dwc3" compatible string
+  as deprecated into the DT schema related series.
+- Drop the patches:
+  [PATCH 03/29] arm: dts: am437x: Correct DWC USB3 compatible string
+  [PATCH 04/29] arm: dts: exynos: Correct DWC USB3 compatible string
+  [PATCH 07/29] arm: dts: bcm53x: Harmonize EHCI/OHCI DT nodes name
+  [PATCH 08/29] arm: dts: stm32: Harmonize EHCI/OHCI DT nodes name
+  [PATCH 16/29] arm: dts: bcm5301x: Harmonize xHCI DT nodes name
+  [PATCH 19/29] arm: dts: exynos: Harmonize DWC USB3 DT nodes name
+  [PATCH 21/29] arm: dts: ls1021a: Harmonize DWC USB3 DT nodes name
+  [PATCH 22/29] arm: dts: omap5: Harmonize DWC USB3 DT nodes name
+  [PATCH 24/29] arm64: dts: allwinner: h6: Harmonize DWC USB3 DT nodes name
+  [PATCH 26/29] arm64: dts: exynos: Harmonize DWC USB3 DT nodes name
+  [PATCH 27/29] arm64: dts: layerscape: Harmonize DWC USB3 DT nodes name
+  since they have been applied to the corresponding maintainers repos.
+- Fix drivers/usb/dwc3/dwc3-qcom.c to be looking for the "usb@"-prefixed
+  sub-node and falling back to the "dwc3@"-prefixed one on failure.
+
+Link: https://lore.kernel.org/linux-usb/20201111091552.15593-1-Sergey.Semin@baikalelectronics.ru
+Changelog v3:
+- Drop the patches:
+  [PATCH v2 04/18] arm: dts: hisi-x5hd2: Harmonize EHCI/OHCI DT nodes name
+  [PATCH v2 06/18] arm64: dts: hisi: Harmonize EHCI/OHCI DT nodes name
+  [PATCH v2 07/18] mips: dts: jz47x: Harmonize EHCI/OHCI DT nodes name
+  [PATCH v2 08/18] mips: dts: sead3: Harmonize EHCI/OHCI DT nodes name
+  [PATCH v2 09/18] mips: dts: ralink: mt7628a: Harmonize EHCI/OHCI DT nodes name
+  [PATCH v2 11/18] arm64: dts: marvell: cp11x: Harmonize xHCI DT nodes name
+  [PATCH v2 12/18] arm: dts: marvell: armada-375: Harmonize DWC USB3 DT nodes name
+  [PATCH v2 16/18] arm64: dts: hi3660: Harmonize DWC USB3 DT nodes name
+  since they have been applied to the corresponding maintainers repos.
+
+Link: https://lore.kernel.org/linux-usb/20201205155621.3045-1-Sergey.Semin@baikalelectronics.ru
+Changelog v4:
+- Just resend.
+
+Link: https://lore.kernel.org/linux-usb/20201210091756.18057-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v5:
+- Drop the patch:
+  [PATCH v4 02/10] arm64: dts: amlogic: meson-g12: Set FL-adj property value
+  since it has been applied to the corresponding maintainers repos.
+- Get back the patch:
+  [PATCH 21/29] arm: dts: ls1021a: Harmonize DWC USB3 DT nodes name
+  as it has been missing in the kernel 5.11-rc7
+- Rebase onto the kernel 5.11-rc7.
+
+Link: https://lore.kernel.org/lkml/20210208135154.6645-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v6:
+- Just resend and add linux-usb.vger.kernel.org to the list of Ccecipients.
+
+Link: https://lore.kernel.org/linux-usb/20210210172850.20849-1-Sergey.Semin@baikalelectronics.ru
+Link: https://lore.kernel.org/linux-usb/20210212205521.14280-1-Sergey.Semin@baikalelectronics.ru
+Changelog v7:
+- Replace "of_get_child_by_name(np, "usb") ?: of_get_child_by_name(np, "dwc3");"
+  pattern with using of_get_compatible_child() method in the Qcom DWC3 driver.
+- Drop the patches:
+  [PATCH v6 01/10] arm: dts: ls1021a: Harmonize DWC USB3 DT nodes name
+  [PATCH v6 02/10] arm: dts: keystone: Correct DWC USB3 compatible string
+  [PATCH v6 06/10] arm: dts: keystone: Harmonize DWC USB3 DT nodes name
+  since they have been applied to the corresponding maintainers repos.
+- Cleanup the list of recipients.
+- Rebase onto kernel 5.12-rc4.
+
+Link: https://lore.kernel.org/lkml/20210324204836.29668-1-Sergey.Semin@baikalelectronics.ru/
+Changelog v8:
+- Just resend.
+
+Cc: Khuong Dinh <khuong@os.amperecomputing.com>
+Cc: Patrice Chotard <patrice.chotard@st.com>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-snps-arc@lists.infradead.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+Serge Semin (7):
+  arc: dts: Harmonize EHCI/OHCI DT nodes name
+  arm: dts: lpc18xx: Harmonize EHCI/OHCI DT nodes name
+  powerpc: dts: akebono: Harmonize EHCI/OHCI DT nodes name
+  arm: dts: stih407-family: Harmonize DWC USB3 DT nodes name
+  arm64: dts: apm: Harmonize DWC USB3 DT nodes name
+  usb: dwc3: qcom: Detect DWC3 DT-nodes using compatible string
+  arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
+
+ arch/arc/boot/dts/axc003.dtsi                | 4 ++--
+ arch/arc/boot/dts/axc003_idu.dtsi            | 4 ++--
+ arch/arc/boot/dts/axs10x_mb.dtsi             | 4 ++--
+ arch/arc/boot/dts/hsdk.dts                   | 4 ++--
+ arch/arc/boot/dts/vdk_axs10x_mb.dtsi         | 2 +-
+ arch/arm/boot/dts/lpc18xx.dtsi               | 4 ++--
+ arch/arm/boot/dts/stih407-family.dtsi        | 2 +-
+ arch/arm64/boot/dts/apm/apm-shadowcat.dtsi   | 4 ++--
+ arch/arm64/boot/dts/apm/apm-storm.dtsi       | 6 +++---
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 4 ++--
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi        | 4 ++--
+ arch/arm64/boot/dts/qcom/msm8996.dtsi        | 4 ++--
+ arch/arm64/boot/dts/qcom/msm8998.dtsi        | 2 +-
+ arch/arm64/boot/dts/qcom/qcs404-evb.dtsi     | 2 +-
+ arch/arm64/boot/dts/qcom/qcs404.dtsi         | 4 ++--
+ arch/arm64/boot/dts/qcom/sc7180.dtsi         | 2 +-
+ arch/arm64/boot/dts/qcom/sdm845.dtsi         | 4 ++--
+ arch/arm64/boot/dts/qcom/sm8150.dtsi         | 2 +-
+ arch/powerpc/boot/dts/akebono.dts            | 6 +++---
+ drivers/usb/dwc3/dwc3-qcom.c                 | 2 +-
+ 20 files changed, 35 insertions(+), 35 deletions(-)
+
+-- 
+2.30.1
 
