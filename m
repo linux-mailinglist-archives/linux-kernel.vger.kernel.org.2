@@ -2,160 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA64235981F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68DC7359822
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbhDIIly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231280AbhDIIlx (ORCPT
+        id S231940AbhDIIm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:42:29 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:32900 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229846AbhDIIm2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:41:53 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15F1C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:41:39 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id e14so7363808ejz.11
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=47rSkhialHM2SkOAJW3qv6IE9Jj4qc4uz5x78cVMkkI=;
-        b=UpChw+vWblnIE1lRR76D+GWDGGELmj/FSXOCCx3QtalAp1qiPp9/WSUfWlcde2VhEM
-         BbzMqh8sdrsX/S7MMqA4N88ZNKuqSXt3qRn3Ep3WYbEJJ3ZVtpg9U+f9UxD3ETtgy0tx
-         NRPEx6lR6T/p4Gm1QWgxA6O2FV/bs4eu5FjAA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=47rSkhialHM2SkOAJW3qv6IE9Jj4qc4uz5x78cVMkkI=;
-        b=lM3K0awO6wEWY6KXnN5kIaeJn/4WpRtgmNLG08ImrAVPf9fwiZ5PnLxAlukz40ZF5l
-         V3tqj97fQp32dEqt0AezcxWgKKIXhvrJhFKk9nw3SvREL6XR0IzvSTIQbTXq+hQesMf9
-         QNh2Hg0rEwXK8HysR3zbdRdqmhxrVtVPhplFbEA4BqUBf6Z4+ap8XV2bGDe5dzpb7Bk2
-         +NuJ9NGxwpjPjZbwxoQRz8pYbZHOtNXMIvPXfiJ3JhNIEEtNtR1Jh6cuYLmDH8wcbDs2
-         7agQjLomjDNguMQDdyfalcSzPWZqK07QNDKebmYg5tb9wBWRC27sym+xTUbXytJd4hel
-         05jA==
-X-Gm-Message-State: AOAM531tfhhJQLjAoTvVKpmHhDIdvyH6B6fKIubnQun9YbWulaij8oJt
-        JVzV6uo1EkpvKDatnnV1gey+kQ==
-X-Google-Smtp-Source: ABdhPJylEnif/EoElZIuUbdw1UtT4BapfgR1YicH6LguGq7heSEtik7LMA6t5yhUJSCidE958p6BHw==
-X-Received: by 2002:a17:906:b296:: with SMTP id q22mr15004950ejz.161.1617957698361;
-        Fri, 09 Apr 2021 01:41:38 -0700 (PDT)
-Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id sd21sm865758ejb.98.2021.04.09.01.41.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 01:41:38 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>
-Cc:     Ricardo Ribalda <ribalda@chromium.org>, stable@vger.kernel.org
-Subject: [PATCH] media: staging/intel-ipu3: Fix race condition during set_fmt
-Date:   Fri,  9 Apr 2021 10:41:35 +0200
-Message-Id: <20210409084135.384287-1-ribalda@chromium.org>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+        Fri, 9 Apr 2021 04:42:28 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lUmiV-0007hC-2B; Fri, 09 Apr 2021 08:42:15 +0000
+Subject: Re: [PATCH] clk: uniphier: Fix potential infinite loop
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210407152457.497346-1-colin.king@canonical.com>
+ <CAK7LNAT+JTg5QYYbYqCm+m11X7CF_ZWyYRA4eAtqeTEuHRqoyw@mail.gmail.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <fa2328c5-e082-0bb7-0e87-741a4c698123@canonical.com>
+Date:   Fri, 9 Apr 2021 09:42:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNAT+JTg5QYYbYqCm+m11X7CF_ZWyYRA4eAtqeTEuHRqoyw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not modify imgu_pipe->nodes[inode].vdev_fmt.fmt.pix_mp, until the
-format has been correctly validated.
-
-Otherwise, even if we use a backup variable, there is a period of time
-where imgu_pipe->nodes[inode].vdev_fmt.fmt.pix_mp might have an invalid
-value that can be used by other functions.
-
-Cc: stable@vger.kernel.org
-Fixes: ad91849996f9 ("media: staging/intel-ipu3: Fix set_fmt error handling")
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
----
- drivers/staging/media/ipu3/ipu3-v4l2.c | 30 ++++++++++++--------------
- 1 file changed, 14 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/staging/media/ipu3/ipu3-v4l2.c b/drivers/staging/media/ipu3/ipu3-v4l2.c
-index 9e8980b34547..6d9c49b39531 100644
---- a/drivers/staging/media/ipu3/ipu3-v4l2.c
-+++ b/drivers/staging/media/ipu3/ipu3-v4l2.c
-@@ -669,7 +669,6 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
- 	struct imgu_css_pipe *css_pipe = &imgu->css.pipes[pipe];
- 	struct imgu_media_pipe *imgu_pipe = &imgu->imgu_pipe[pipe];
- 	struct imgu_v4l2_subdev *imgu_sd = &imgu_pipe->imgu_sd;
--	struct v4l2_pix_format_mplane fmt_backup;
- 
- 	dev_dbg(dev, "set fmt node [%u][%u](try = %u)", pipe, node, try);
- 
-@@ -687,6 +686,7 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
- 
- 	dev_dbg(dev, "IPU3 pipe %u pipe_id = %u", pipe, css_pipe->pipe_id);
- 
-+	css_q = imgu_node_to_queue(node);
- 	for (i = 0; i < IPU3_CSS_QUEUES; i++) {
- 		unsigned int inode = imgu_map_node(imgu, i);
- 
-@@ -701,6 +701,11 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
- 			continue;
- 		}
- 
-+		if (i == css_q) {
-+			fmts[i] = &f->fmt.pix_mp;
-+			continue;
-+		}
-+
- 		if (try) {
- 			fmts[i] = kmemdup(&imgu_pipe->nodes[inode].vdev_fmt.fmt.pix_mp,
- 					  sizeof(struct v4l2_pix_format_mplane),
-@@ -729,39 +734,32 @@ static int imgu_fmt(struct imgu_device *imgu, unsigned int pipe, int node,
- 		rects[IPU3_CSS_RECT_GDC]->height = pad_fmt.height;
- 	}
- 
--	/*
--	 * imgu doesn't set the node to the value given by user
--	 * before we return success from this function, so set it here.
--	 */
--	css_q = imgu_node_to_queue(node);
- 	if (!fmts[css_q]) {
- 		ret = -EINVAL;
- 		goto out;
- 	}
--	fmt_backup = *fmts[css_q];
--	*fmts[css_q] = f->fmt.pix_mp;
- 
- 	if (try)
- 		ret = imgu_css_fmt_try(&imgu->css, fmts, rects, pipe);
- 	else
- 		ret = imgu_css_fmt_set(&imgu->css, fmts, rects, pipe);
- 
--	if (try || ret < 0)
--		*fmts[css_q] = fmt_backup;
--
- 	/* ret is the binary number in the firmware blob */
- 	if (ret < 0)
- 		goto out;
- 
--	if (try)
--		f->fmt.pix_mp = *fmts[css_q];
--	else
--		f->fmt = imgu_pipe->nodes[node].vdev_fmt.fmt;
-+	/*
-+	 * imgu doesn't set the node to the value given by user
-+	 * before we return success from this function, so set it here.
-+	 */
-+	if (!try)
-+		imgu_pipe->nodes[node].vdev_fmt.fmt.pix_mp = f->fmt.pix_mp;
- 
- out:
- 	if (try) {
- 		for (i = 0; i < IPU3_CSS_QUEUES; i++)
--			kfree(fmts[i]);
-+			if (i != css_q)
-+				kfree(fmts[i]);
- 	}
- 
- 	return ret;
--- 
-2.31.1.295.g9ea45b61b8-goog
-
+On 09/04/2021 07:46, Masahiro Yamada wrote:
+> On Thu, Apr 8, 2021 at 12:25 AM Colin King <colin.king@canonical.com> wrote:
+>>
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The for-loop iterates with a u8 loop counter i and compares this
+>> with the loop upper limit of num_parents that is an int type.
+>> There is a potential infinite loop if num_parents is larger than
+>> the u8 loop counter. Fix this by making the loop counter the same
+>> type as num_parents.
+>>
+>> Addresses-Coverity: ("Infinite loop")
+>> Fixes: 734d82f4a678 ("clk: uniphier: add core support code for UniPhier clock driver")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/clk/uniphier/clk-uniphier-mux.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/clk/uniphier/clk-uniphier-mux.c b/drivers/clk/uniphier/clk-uniphier-mux.c
+>> index 462c84321b2d..ce219e0d2a85 100644
+>> --- a/drivers/clk/uniphier/clk-uniphier-mux.c
+>> +++ b/drivers/clk/uniphier/clk-uniphier-mux.c
+>> @@ -34,7 +34,7 @@ static u8 uniphier_clk_mux_get_parent(struct clk_hw *hw)
+>>         int num_parents = clk_hw_get_num_parents(hw);
+>>         int ret;
+>>         unsigned int val;
+>> -       u8 i;
+>> +       int i;
+>>
+>>         ret = regmap_read(mux->regmap, mux->reg, &val);
+>>         if (ret)
+>> --
+>> 2.30.2
+>>
+> 
+> clk_hw_get_num_parents() returns 'unsigned int', so
+> I think 'num_parents' should also have been 'unsigned int'.
+> 
+> Maybe, the loop counter 'i' also should be 'unsigned int' then?
+> 
+> 
+Good point. I'll send a V2.
