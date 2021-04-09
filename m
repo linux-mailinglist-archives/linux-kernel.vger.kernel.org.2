@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE18035A2EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B4935A2F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233395AbhDIQWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbhDIQWa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:22:30 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67674C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 09:22:17 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id q26so6370269qkm.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:22:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LPSR+SFooTaPgtBFedHf7Y31wtqhJOh5AqAapK2wyzs=;
-        b=Q056bBDn7nbWunIqwgtUvNhy/EQyhNM6musYnQj7QpKC9MnxsY0qm7rHMSKR3wlLwF
-         VxsdZFCvdQ9fTWUyEUR3SjENQ7y9DL/o82sAd385sro4Quk8mw1CAvc0/6fv8gxLtS0V
-         aFyhjYa2+fANtrshg5ulm/gR2QV3RzKaIacy+FqTT4M0KLq1n7wV1C1NBytz8vbgByn0
-         Tt7V/5Cvn3y/72itgyTGQBE4y/pAbCz3FKu5UtR+jbAUJmOLxCvEfrYtw9bfL9LkP1EH
-         yPVhSTzhuDRTzpD/R+B2Wj1/C276yeop31/JV2jlLQv7n/jN/tTxIOgIKA5zpI9MOXgC
-         P8ZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LPSR+SFooTaPgtBFedHf7Y31wtqhJOh5AqAapK2wyzs=;
-        b=UdkQl6XB2Xglr+L13NHnz8wc4FltxGUrRvdHMQ3UiVW/pDQ59r0w6gQKwccZXbMtv+
-         rzrwccn3n+oGB/6zolGfL25ejYowDmexngBQAzHm7qVaQHlvpA5BRfvzs6hQwTX16p1G
-         dzR3PL7JYjPsgJ7dyGOg6H2IXh8bvPrverwtraGhM30dMaOiNyELfpuw0eL5VL6ssnP7
-         cgX3b6Zzqlzpot+MLlR7y1BMmTlsiwUuxvgbkJc89WS0Udnmd5hF/YZZtEeVjARfewOA
-         o7MJOJRswB++DJfK/5fcG7cNfY+d7xZItQ4uAnvdun3VYSRrIDmCVGwRH/CL+PxG97fi
-         AJxg==
-X-Gm-Message-State: AOAM530ATE/fUYX4a3igSZk8Tsfk0e0RZ8Eu8N3OBc+mu8CI8B1SQ8y4
-        8GROTJsatD/nIX/N4sNsjTQ=
-X-Google-Smtp-Source: ABdhPJyV0BE86hD+1Lz1UISNzlxC1GNIuBKcE2RdCuH2q3ucvcY4bff6RxkyRVea7Of5FCyOz2hY0Q==
-X-Received: by 2002:a37:6288:: with SMTP id w130mr6932186qkb.70.1617985336747;
-        Fri, 09 Apr 2021 09:22:16 -0700 (PDT)
-Received: from localhost.localdomain ([192.141.93.162])
-        by smtp.gmail.com with ESMTPSA id f13sm2205268qtg.2.2021.04.09.09.22.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 09:22:16 -0700 (PDT)
-From:   Gonzalo Matias Juarez Tello <gmjuareztello@gmail.com>
-To:     linux-mm@kvack.org
-Cc:     Gonzalo Matias Juarez Tello <gmjuareztello@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm/mmap.c: logic of find_vma_intersection repeated in __do_munmap
-Date:   Fri,  9 Apr 2021 13:21:26 -0300
-Message-Id: <20210409162129.18313-1-gmjuareztello@gmail.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S233784AbhDIQWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:22:49 -0400
+Received: from mx.socionext.com ([202.248.49.38]:3595 "EHLO mx.socionext.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233657AbhDIQWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:22:44 -0400
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 10 Apr 2021 01:22:27 +0900
+Received: from mail.mfilter.local (m-filter-1 [10.213.24.61])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id 03E6B2059035;
+        Sat, 10 Apr 2021 01:22:28 +0900 (JST)
+Received: from 172.31.9.51 (172.31.9.51) by m-FILTER with ESMTP; Sat, 10 Apr 2021 01:22:27 +0900
+Received: from plum.e01.socionext.com (unknown [10.213.132.32])
+        by kinkan2.css.socionext.com (Postfix) with ESMTP id 8D282B1D40;
+        Sat, 10 Apr 2021 01:22:27 +0900 (JST)
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+To:     Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Subject: [PATCH v10 0/3] PCI: uniphier: Add PME/AER support for UniPhier PCIe host controller
+Date:   Sat, 10 Apr 2021 01:22:15 +0900
+Message-Id: <1617985338-19648-1-git-send-email-hayashi.kunihiko@socionext.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Logic of find_vma_intersection() (which is an inline fc) is
-repeated in __do_munmap().
-Besides, prev is assigned a value before checking vma->vm_start >= end
-which might end up on a return statement making that assignment useless.
+This adds a new function called by MSI handler in DesignWare PCIe framework,
+that invokes PME and AER funcions to detect the factor from SoC-dependent
+registers.
 
-Calling find_vma_intersection() checks that condition and returns NULL if
-no vma is found, hence only the !vma check is needed in __do_munmap().
+Changes since v9:
+- Fix the description of pcie_prot_service_get_irq()
 
-Signed-off-by: Gonzalo Matias Juarez Tello <gmjuareztello@gmail.com>
----
- mm/mmap.c | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+Changes since v8:
+- Add uniphier_pcie_host_init_complete() that finds PME/AER vIRQ number
+  after calling dw_pcie_host_init()
+- Add conditions to depend on CONFIG_PCIE_PME and CONFIG_PCIEAER instead
+  of CONFIG_PCIEPORTBUS
+- Add Acked-by: line to portdrv patch
 
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 3f287599a7a3..59ceaa474a00 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -2822,16 +2822,11 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
- 	 */
- 	arch_unmap(mm, start, end);
- 
--	/* Find the first overlapping VMA */
--	vma = find_vma(mm, start);
-+	/* Find the first overlapping VMA where start < vma->vm_end */
-+	vma = find_vma_intersection(mm, start, end);
- 	if (!vma)
- 		return 0;
- 	prev = vma->vm_prev;
--	/* we have  start < vma->vm_end  */
--
--	/* if it doesn't overlap, we have nothing.. */
--	if (vma->vm_start >= end)
--		return 0;
- 
- 	/*
- 	 * If we need to split any vma, do it now to save pain later.
+Changes since v7:
+- Add Reviewed-by: line to 1st and 3rd patches
+
+Changes since v6:
+- Separate patches for iATU and phy error from this series
+- Add Reviewed-by: line to dwc patch
+
+Changes since v5:
+- Add pcie_port_service_get_irq() function to pcie/portdrv
+- Call pcie_port_service_get_irq() to get vIRQ interrupt number for PME/AER
+- Rebase to the latest linux-next branch,
+  and remove devm_platform_ioremap_resource_byname() replacement patch
+
+Changes since v4:
+- Add Acked-by: line to dwc patch
+
+Changes since v3:
+- Move msi_host_isr() call into dw_handle_msi_irq()
+- Move uniphier_pcie_misc_isr() call into the guard of chained_irq
+- Use a bool argument is_msi instead of pci_msi_enabled()
+- Consolidate handler calls for the same interrupt
+- Fix typos in commit messages
+
+Changes since v2:
+- Avoid printing phy error message in case of EPROBE_DEFER
+- Fix iATU register mapping method
+- dt-bindings: Add Acked-by: line
+- Fix typos in commit messages
+- Use devm_platform_ioremap_resource_byname()
+
+Changes since v1:
+- Add check if struct resource is NULL
+- Fix warning in the type of dev_err() argument
+
+Kunihiko Hayashi (3):
+  PCI: portdrv: Add pcie_port_service_get_irq() function
+  PCI: dwc: Add msi_host_isr() callback
+  PCI: uniphier: Add misc interrupt handler to invoke PME and AER
+
+ drivers/pci/controller/dwc/pcie-designware-host.c |   3 +
+ drivers/pci/controller/dwc/pcie-designware.h      |   1 +
+ drivers/pci/controller/dwc/pcie-uniphier.c        | 101 +++++++++++++++++++---
+ drivers/pci/pcie/portdrv.h                        |   1 +
+ drivers/pci/pcie/portdrv_core.c                   |  16 ++++
+ 5 files changed, 110 insertions(+), 12 deletions(-)
+
 -- 
-2.31.1
+2.7.4
 
