@@ -2,95 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325F135A5B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:25:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008E635A5B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234450AbhDISZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:25:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbhDISZt (ORCPT
+        id S234483AbhDISZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:25:56 -0400
+Received: from mail-oo1-f48.google.com ([209.85.161.48]:46978 "EHLO
+        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233332AbhDISZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:25:49 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BBEC061762;
-        Fri,  9 Apr 2021 11:25:35 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id d12so6655315oiw.12;
-        Fri, 09 Apr 2021 11:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XUwBZUIdBCe74mKRCTmXiOFT82hGtbwtAggnZMTDalU=;
-        b=QdE5rJL/Do6zGFoWPgKbYf6N+crihJyOfs67So29daQxVGUXrWLWdb0u0ZeYPbFxiN
-         En8k5O17/O7V8BsQH767ggdzxXa8qp1mAbZxXK/S0vfIYSxtaqVML+xLp/Fo8LCnMv7I
-         pihEgXn0Dv36IzeGtI7+wulpUWoQCNGhFYMXn8ZRw4zfoRnAg/Jyend9YuUqiB9AS9kl
-         8SuYXBp6buUwNuqHIjd1LiGLh1nBVaJWBs2G6sMb9HoqLpYSXdVP/wcITuPs0zHmHjkj
-         V6wH/gGNx9f+JtdQYLls/avqr9ZlOvvpxPr3XU8gEKgbsfsQRR8YY/K2sdQrHhewXek9
-         RHVA==
+        Fri, 9 Apr 2021 14:25:54 -0400
+Received: by mail-oo1-f48.google.com with SMTP id 125-20020a4a1a830000b02901b6a144a417so1532946oof.13;
+        Fri, 09 Apr 2021 11:25:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XUwBZUIdBCe74mKRCTmXiOFT82hGtbwtAggnZMTDalU=;
-        b=TfdetAtwtE+1hZx+EKJcQlmc7Gj7nwYxz5M22Dh2+oWEMWfaMIgCjNiMF/mBqN7gWt
-         n8oHgYcXMqoO59Lx94qArpNsqsTMlmXt7IKqR/egndWZFfgsGfRMdpaS6K3nyXAXyp7a
-         482D1gjIiW9Xu1L233toMTieXfqhv6nRdveslzrynd1h/FB9Zb4HoYZGaC9oAtV1pq7W
-         PfzfgwWMhngyOkANuE8n8xZURZuu3q26o7E05Skows/aQor2VDpIAtMc8YkuLJOSMdY1
-         R+Su2oc844D/a3fV2g6rADM/n9cQosmYpsw40nejUc9FfTBqe9xfA/WIQ8qDhYmlT47Q
-         3BfA==
-X-Gm-Message-State: AOAM5324zsTsv/8sqIxSnfalFuVzB8HN3zmyo9hO8KBhUWONnL9E06dq
-        GF2JgeR08N04H6pI8ODjmiTQdGJpdWP9cVRYcYpaPMdvBFE=
-X-Google-Smtp-Source: ABdhPJx50B8qHN4UZH288IFG4pkAfPqaqPbgFC6d5jfFePzNb9mE5m9W1WnXUOJzVv4Uqo/2CVF79jwdI+G8Z7h579U=
-X-Received: by 2002:aca:534c:: with SMTP id h73mr68804oib.158.1617992735402;
- Fri, 09 Apr 2021 11:25:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ap1xXHQrgNoanoCkiwbFpBXllDQp2mXH4gtHCARaL4U=;
+        b=FvaArclFUnqD7AINfSxyM9bySIlnNlMmzn32B7ao3xMpGWUqNoAgmy0ZPg246F9tXj
+         nIavdILCMiFWe20qjp0yhMZuSCTudGZSqQz6nDmNIalb8CGfNpo6pgb4S7yCr8F3J71p
+         N4cR1+lFYIxWIrahyq8aVdQDYkJ5ou/7DB0yaNvwUYL01txebWAGXZenHvDbJSLkp8hX
+         3xI6j4n0TMo4hQ5EZCDTQnihtCkXmmWe6R9/Y3CjAgXjMQ/7gzfceg0XLeYUaqgb+lzL
+         2KD3Cc/puCCpsGeE5so8jZeNHqPfy1b6TFAxjtbMR92juVwRhKXG9FBxpHUXdFtivz+z
+         c6hA==
+X-Gm-Message-State: AOAM533sXdmbinD1YGDBMEXfbW0klamgBbTGicTiQB9AknRPbXEEbdGx
+        zX9jl/JCWwmqLO7XPLtFBg==
+X-Google-Smtp-Source: ABdhPJweHT9wHvpbXVWmGxFX9Ck28qRM1eahscjqOn+iYGqcvUYN7gC7q4C72Axnzp84rzKTMQTdEQ==
+X-Received: by 2002:a05:6820:60e:: with SMTP id e14mr12869794oow.67.1617992740263;
+        Fri, 09 Apr 2021 11:25:40 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 88sm745559ota.11.2021.04.09.11.25.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 11:25:39 -0700 (PDT)
+Received: (nullmailer pid 3916170 invoked by uid 1000);
+        Fri, 09 Apr 2021 18:25:38 -0000
+Date:   Fri, 9 Apr 2021 13:25:38 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Flora Fu <flora.fu@mediatek.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>,
+        Chiawen Lee <chiawen.lee@mediatek.com>,
+        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH 4/8] dt-bindings: arm: mediatek: Add new document
+ bindings for APU
+Message-ID: <20210409182538.GA3913794@robh.at.kernel.org>
+References: <1617766086-5502-1-git-send-email-flora.fu@mediatek.com>
+ <1617766086-5502-5-git-send-email-flora.fu@mediatek.com>
 MIME-Version: 1.0
-References: <20210309052226.29531-1-sergio.paracuellos@gmail.com>
- <CAMhs-H_zBqe_+dKV4KT3QyOaONErmnCKME4-7ey2CnWJfUVseg@mail.gmail.com> <161799224004.3790633.10957084716451758402@swboyd.mtv.corp.google.com>
-In-Reply-To: <161799224004.3790633.10957084716451758402@swboyd.mtv.corp.google.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Fri, 9 Apr 2021 20:25:24 +0200
-Message-ID: <CAMhs-H98xzfK4W9KGSKR0QPtm42_K6Y5PzWiA3c-Pugau7oxyQ@mail.gmail.com>
-Subject: Re: [PATCH v11 0/6] MIPS: ralink: add CPU clock detection and clock
- driver for MT7621
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        COMMON CLK FRAMEWORK <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
-        <devicetree@vger.kernel.org>, open list:MIPS
-        <linux-mips@vger.kernel.org>, open list:STAGING SUBSYSTEM
-        <devel@driverdev.osuosl.org>, NeilBrown <neil@brown.name>, linux-kernel" 
-        <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617766086-5502-5-git-send-email-flora.fu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+On Wed, Apr 07, 2021 at 11:28:02AM +0800, Flora Fu wrote:
+> Document the apusys bindings.
+> 
+> Signed-off-by: Flora Fu <flora.fu@mediatek.com>
+> ---
+>  .../arm/mediatek/mediatek,apusys.yaml         | 56 +++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
+> new file mode 100644
+> index 000000000000..dc04a46f1bad
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
+> @@ -0,0 +1,56 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,apusys.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MediaTek APUSYS Controller
+> +
+> +maintainers:
+> +  - Flora Fu <flora.fu@mediatek.com>
+> +
+> +description:
+> +  The Mediatek apusys controller provides functional configurations and clocks
+> +  to the system.
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - mediatek,mt8192-apu_mbox
+> +          - mediatek,mt8192-apu_conn
+> +          - mediatek,mt8192-apu_vcore
 
-On Fri, Apr 9, 2021 at 8:17 PM Stephen Boyd <sboyd@kernel.org> wrote:
->
-> Quoting Sergio Paracuellos (2021-03-23 01:13:22)
-> > On Tue, Mar 9, 2021 at 6:22 AM Sergio Paracuellos
-> > <sergio.paracuellos@gmail.com> wrote:
-> > >
-> > > Changes in v11:
-> > >  - Collect Rob's Reviewed-by in bindings documentation patch.
-> > >  - Fix MAINTAINERS patch using file 'mediatek,mt7621-sysc.yaml'
-> > >    for documentation bindings.
-> >
-> > Something still missing or something that is needed to be fixed to get
-> > this series applied through your tree?
-> >
-> > Thanks in advance for your time.
-> >
->
-> Sorry I missed this series. I thought it was going through another tree.
-> It can merge through clk tree. Just a few nits on the clk driver patch
-> but otherwise I've merged the first two patches. If you resend in the
-> next few days it would be great. Thanks.
+s/_/-/
 
-I will hopefully do during this weekend. Since you already merge the
-first two patches, the remaining four should be sent as v12, right?
+> +      - const: syscon
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#clock-cells':
+> +    const: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    apu_mbox: apu_mbox@19000000 {
+
+mailbox@...? Is this a mailbox provider?
+
+> +        compatible = "mediatek,mt8192-apu_mbox", "syscon";
+> +        reg = <0x19000000 0x1000>;
+> +    };
+> +
+> +  - |
+> +    apu_conn: apu_conn@19020000 {
+> +        compatible = "mediatek,mt8192-apu_conn", "syscon";
+> +        reg = <0x19020000 0x1000>;
+> +        #clock-cells = <1>;
+> +    };
+> +
+> +  - |
+> +    apu_vcore: apu_vcore@19029000 {
+> +        compatible = "mediatek,mt8192-apu_vcore", "syscon";
+> +        reg = <0x19029000 0x1000>;
+> +        #clock-cells = <1>;
+> +    };
+> -- 
+> 2.18.0
+> 
