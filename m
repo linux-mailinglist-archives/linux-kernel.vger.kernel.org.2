@@ -2,110 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A06D3590D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 02:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 335643590D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 02:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233026AbhDIATg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 20:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40146 "EHLO
+        id S233072AbhDIAUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 20:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDIATf (ORCPT
+        with ESMTP id S232426AbhDIAUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 20:19:35 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F87C061760;
-        Thu,  8 Apr 2021 17:19:22 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id b4so6893647lfi.6;
-        Thu, 08 Apr 2021 17:19:22 -0700 (PDT)
+        Thu, 8 Apr 2021 20:20:41 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD4D5C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 17:20:28 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id n8so6945076lfh.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 17:20:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0HUbUfwF1GD6jHQI39o5Gguska1AcCknFJCxAkrKEFI=;
-        b=PYLLgXwSLFzdxpo7XlNcHo2sUNYz5BiicXISITBvdFckFdmsRNzsM8O4aO5ezy9CKm
-         xTVauxmg0CiBDMUxjQV0TbVp23eCJUk1Yg7KQxkc4dpGb5MFWxZqmfVvutm1d3gsDlHP
-         ktJc8eHAALm4QAkQkVRjjvaTmN2xXF4UjVT4WAJgHkou8oszAiX8Ba1vYEVkakMw6wG2
-         Uc/PuntOYTu2xk+rge+6YxSvHhMFnE/SMPbf+5B0A+hR4Vc09fD/IQkcSHKCvh9I0ov4
-         0HlnhoQEZlil6qFwNMeXXlMDuDNiJ2XaUOe3L5xo8OnFOf+nLQg06rDsO5sITBBCmzsg
-         T+zw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kcYroiRC9yMubNZI5GRBrJxPUSJ6ME/aidZpzxmOBVY=;
+        b=ShiEwGTowQ5E4ABewWxRYzqflRv1TBXapdNidkbXgngl5KQwDCrge+cM4X6Mga4Gi2
+         VW26FIxsXxm4NSxUgucY+ElaWlbqkxk6QOUzqdQ8KSshFbcfaSpRL5LApYwcbFqhelPz
+         QiUfJNM56NDSQfbJE12h2SnnZlhoKGPw4Vrzxt3DxqqJqtXvj4RUZBPzL/s0Kcv/bzzk
+         BacbyVTngTTQF7XzaGrJo4CLJeQ5WWCbKUP2b1124M5nhM/s8TlGRIUDOir0ewzQJXtm
+         ZROx8y1RRm2avyt0DfYLOP0ZiqpH6NlgDuecrlAlbuhDq5vy6ynsevymZ+9HBTlWwxR+
+         bsSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0HUbUfwF1GD6jHQI39o5Gguska1AcCknFJCxAkrKEFI=;
-        b=LBUtk1S+BSK3sgcQqXIQrGy6b/3SpMdDNKaervu5s3h8MYPvURJ6tpgrdtog+9shiT
-         eYK8l1nDKaJPuQ7t7iBZAZ3qieapi/ckc47mjGpSVn55YqftLEF28I7Y6n0aJyaaKEgv
-         +hIL3+NlBYUmY34/xwvodop8ZWOkPYypnPBQs89ksGgxDgKoF2M8OA2JhQW9eYDyJj6P
-         LY22TqI5qZ7e9FBiqyM4OB9aY4EOd8GKHqEvJ3AQVOYt6YqIhc7hyZZUtf2u9NHkBdHl
-         klUUAW7c6FxrfcbDuapm9ede+IMR+AIdKI1PTRENzVVeeNuNrBnIs31L9gxK4gEhXwa+
-         kxXg==
-X-Gm-Message-State: AOAM532+gcurVVf/nMkAVB5dgk+n8ri3zmB3BlCNetRsZ3ajc32BMHGS
-        ljGeKI1dhYYw/F3/OAo80/5L21JE91Q=
-X-Google-Smtp-Source: ABdhPJxYaR9exT6hkhu9x7zkbtQIn1ii0FCi0b8pz7mpADBkwOQCHIxfNwJUTueQdC+GgbRKf6gIWQ==
-X-Received: by 2002:a05:6512:c27:: with SMTP id z39mr8669631lfu.244.1617927561147;
-        Thu, 08 Apr 2021 17:19:21 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
-        by smtp.googlemail.com with ESMTPSA id u19sm91738lfq.252.2021.04.08.17.19.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 17:19:20 -0700 (PDT)
-Subject: Re: [PATCH v2] ata: ahci_tegra: call tegra_powergate_power_off only
- when PM domain is not present
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>, axboe@kernel.dk,
-        thierry.reding@gmail.com
-Cc:     jonathanh@nvidia.com, linux-ide@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1617915315-13639-1-git-send-email-skomatineni@nvidia.com>
- <1617915315-13639-2-git-send-email-skomatineni@nvidia.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <f1c7a30b-7a29-2913-1ef5-f25eec8fb4ba@gmail.com>
-Date:   Fri, 9 Apr 2021 03:19:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kcYroiRC9yMubNZI5GRBrJxPUSJ6ME/aidZpzxmOBVY=;
+        b=e395+zoEyxQ7EtlHJ6z9jJcpthpIhidCp9rAQx0+guDZ095Q5JO4XmFwYzzQrxHX5w
+         H9jUjH40RT4PolQqxcBRatzJggmU1MdTfHwuRw1ccwaJo5yXKvf0vAuNrdtryaIAfTSP
+         ldvjyDfhilcnRC/ifLPNNQU4rfCwEnFVX63idwCVXJasRWdnchaHkbYieCVPocTjLQH+
+         tVHrT78ja1h4QzUjMEIZFA/2WvM9qm1JY1alnvbJnvFUxuqBvzThl/p83Aq+mpVW4yUo
+         0uAJDZ5rGfgjmb940IVizRHEWojUvskCPBnlD/yyt5zfXAuN3H/mDAZwSRugJW0dw5Vk
+         NboA==
+X-Gm-Message-State: AOAM532zVgYCRGPWDA2mBT4LafCQO3UKNL5HsrVaQVXA0sac/fJeQfMM
+        udnJr9zlfm6dVJyGLepmQFn7qvvyhj4PPDOi5YmR5w==
+X-Google-Smtp-Source: ABdhPJxFOEWl77857t3e4LL6FuJ04RG1YL1faLdAIBlMPJD9Mz0gSlXYRJcY3na27GM7eCcDN0SSHX2EloCY94FEWzs=
+X-Received: by 2002:a05:6512:985:: with SMTP id w5mr8308276lft.122.1617927626865;
+ Thu, 08 Apr 2021 17:20:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617915315-13639-2-git-send-email-skomatineni@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210408125429.199592-1-zhaoxuehui1@huawei.com>
+In-Reply-To: <20210408125429.199592-1-zhaoxuehui1@huawei.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 8 Apr 2021 17:20:15 -0700
+Message-ID: <CAKwvOd=4ebTNPMOD5K_tUDOY6jx-VT29kUNv=d8ZLxG+1bv6=w@mail.gmail.com>
+Subject: Re: [PATCH -next] lib: zstd: Make symbol 'HUF_compressWeights_wksp' static
+To:     Zhao Xuehui <zhaoxuehui1@huawei.com>,
+        Nick Terrell <terrelln@fb.com>
+Cc:     "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, yangjihong1@huawei.com,
+        zhangjinhao2@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-08.04.2021 23:55, Sowjanya Komatineni пишет:
-> This patch adds check to call legacy power domain API
-> tegra_powergate_power_off() only when PM domain is not present.
-> 
-> This is a follow-up patch to Tegra186 AHCI support patch series.
+On Thu, Apr 8, 2021 at 5:55 AM Zhao Xuehui <zhaoxuehui1@huawei.com> wrote:
+>
+> The symbol 'HUF_compressWeights_wksp' is not used outside of
+> huf_compress.c, so this commit marks it static.
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Quite a few other functions are declared in a header, but I don't see
+any existing callers in tree.  I wonder if the maintainer could
+consider cleaning these up so that we don't retain them in binaries
+without dead code elimination enabled, or if there's a need to keep
+this code in line with an external upstream codebase?
+
+>
+> Signed-off-by: Zhao Xuehui <zhaoxuehui1@huawei.com>
 > ---
->  drivers/ata/ahci_tegra.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
-> index 56612af..4fb94db 100644
-> --- a/drivers/ata/ahci_tegra.c
-> +++ b/drivers/ata/ahci_tegra.c
-> @@ -268,7 +268,8 @@ static int tegra_ahci_power_on(struct ahci_host_priv *hpriv)
->  disable_power:
->  	clk_disable_unprepare(tegra->sata_clk);
->  
-> -	tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
-> +	if (!tegra->pdev->dev.pm_domain)
-> +		tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
->  
->  disable_regulators:
->  	regulator_bulk_disable(tegra->soc->num_supplies, tegra->supplies);
-> @@ -287,7 +288,8 @@ static void tegra_ahci_power_off(struct ahci_host_priv *hpriv)
->  	reset_control_assert(tegra->sata_cold_rst);
->  
->  	clk_disable_unprepare(tegra->sata_clk);
-> -	tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
-> +	if (!tegra->pdev->dev.pm_domain)
-> +		tegra_powergate_power_off(TEGRA_POWERGATE_SATA);
->  
->  	regulator_bulk_disable(tegra->soc->num_supplies, tegra->supplies);
->  }
-> 
+>  lib/zstd/huf_compress.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/lib/zstd/huf_compress.c b/lib/zstd/huf_compress.c
+> index fd32838c185f..1e5e001c3d41 100644
+> --- a/lib/zstd/huf_compress.c
+> +++ b/lib/zstd/huf_compress.c
+> @@ -79,7 +79,8 @@ unsigned HUF_optimalTableLog(unsigned maxTableLog, size_t srcSize, unsigned maxS
+>   * Note : all elements within weightTable are supposed to be <= HUF_TABLELOG_MAX.
+>   */
+>  #define MAX_FSE_TABLELOG_FOR_HUFF_HEADER 6
+> -size_t HUF_compressWeights_wksp(void *dst, size_t dstSize, const void *weightTable, size_t wtSize, void *workspace, size_t workspaceSize)
+> +static size_t HUF_compressWeights_wksp(void *dst, size_t dstSize, const void *weightTable,
+> +                                      size_t wtSize, void *workspace, size_t workspaceSize)
+>  {
+>         BYTE *const ostart = (BYTE *)dst;
+>         BYTE *op = ostart;
+>
 
-Looks good, thank you.
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+-- 
+Thanks,
+~Nick Desaulniers
