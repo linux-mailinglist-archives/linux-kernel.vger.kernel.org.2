@@ -2,104 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF863592B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F7D3592BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhDIDMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
+        id S233186AbhDIDNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:13:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232858AbhDIDMe (ORCPT
+        with ESMTP id S232858AbhDIDNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:12:34 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DD5C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:12:22 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id g15so3307175pfq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 20:12:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=98rLvZCmnQ/zeXNU0bVp1eGzsTNFjth6OQkgD5+zTmc=;
-        b=QC7uiE5g3WqVuzOP3qDsLFIeonLQW1s63M1BMhEBg7i4VdbDgmqxKAv2nHXkDqqSrm
-         jR9J8IV2vWtwI9N+rW4OUTVI/k5tZJH0ydjt/IWoT21JKiXAQXYC6hI7mOssoloIHGdW
-         yYg7aNNaqV4ONGdbtilHlk0VGcpH/r6bnDpfM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=98rLvZCmnQ/zeXNU0bVp1eGzsTNFjth6OQkgD5+zTmc=;
-        b=VkDY64ZcB2bnPeigfzbl2axHUr7cOiosnzyPT4GPk5Ledv7qNDEJi9wS57emKShVdt
-         RLqcznMP31chZRDzu4LN2AJjxee5g0//oekqYaj4QnAPFVmCelAmylGlb5H7JYDa3OqK
-         wayrSKoRpAmqWs1faAiFFdy1011PXg2uBbht8ZZ9GQhqYZdXYVlh9F3QVckckbhD7gxk
-         MecHMCpzyCL0ABICIBf8NTYKeA3+e0W5ovoFmFYxbI3hKZnWfrfeH1u64tYTvKknffc7
-         pUT1UE2V0EbspnH9xXy+IFdgmai9dHJ/ijhdmmFb385HZUrueJqpSmWF1n3dP3EFSgpv
-         Twnw==
-X-Gm-Message-State: AOAM532rs2Z5AshmM1vkr9cAPIfcogUwqHAN7RBaLv4X0qu35EiVEg4S
-        I9o35/PO/sz/ozOb+XyEeYQDCw==
-X-Google-Smtp-Source: ABdhPJz+J00qa6z+jE+gcgcSORj/Wu/iET67E1kp3PW4H6L7XI74dOeTF7MO4INTtfo9n3zhpIWwpw==
-X-Received: by 2002:aa7:9533:0:b029:241:9d92:92e1 with SMTP id c19-20020aa795330000b02902419d9292e1mr10590961pfp.14.1617937941935;
-        Thu, 08 Apr 2021 20:12:21 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b7sm684889pfd.55.2021.04.08.20.12.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 20:12:21 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 20:12:20 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Helge Deller <deller@gmx.de>, Ingo Molnar <mingo@redhat.com>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nick Hu <nickhu@andestech.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Rich Felker <dalias@libc.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>, x86@kernel.org
-Subject: Re: [PATCH 00/20] kbuild: unify the install.sh script usage
-Message-ID: <202104082011.AEC1B6CEB@keescook>
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+        Thu, 8 Apr 2021 23:13:14 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B47C061760;
+        Thu,  8 Apr 2021 20:13:02 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGjqr14Qqz9sW1;
+        Fri,  9 Apr 2021 13:12:55 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617937978;
+        bh=//XF3pf9c64cU+t13IzrOTUQCue+ZS7pXjZN4nupHbg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=qax6trgBiOYRcsSNdKFHnpVvqoT/99lvSUdSLgtPjyygpFrMlOQ0RXCE3HVNTXY07
+         04A7GqcMIbkDTCphq4BUSlczeW9m3EC4WTJV8C7JljzT47U7MQhfbKo8QuEKzmivnw
+         Z0LMeywwlwFQs7QBaWFEAVj8i9HaP9RhNmW9k8Y+jlt72qttQI7wCYhjL0bgEjHofo
+         K/aglLFfHlsrbmnpHSztligf5yRSZMblS8dLF2TN6/enfrio1sseSl/yKvEIEn4DZp
+         lxcOJdfdaBMmjSbr+6rIoIoxqdBTSxTt+t9wY2WZKMidYXcl8M4ze11jYgLbR5hnHM
+         aAEkwWBtmXs7w==
+Date:   Fri, 9 Apr 2021 13:12:53 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>
+Subject: linux-next: manual merge of the drm tree with the drm-misc-fixes
+ tree
+Message-ID: <20210409131253.1a67eae2@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+Content-Type: multipart/signed; boundary="Sig_/.3TCEW2K/ucdGcZbZyQjv9B";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 07:33:59AM +0200, Greg Kroah-Hartman wrote:
-> Almost every architecture has copied the "install.sh" script that
-> originally came with i386, and modified it in very tiny ways.  This
-> patch series unifies all of these scripts into one single script to
-> allow people to understand how to correctly install a kernel, and fixes
-> up some issues regarding trying to install a kernel to a path with
-> spaces in it.
+--Sig_/.3TCEW2K/ucdGcZbZyQjv9B
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Yay consolidation! Thanks for digging into this.
+Hi all,
 
-I sent Reviewed-by:s for a bunch of these, and agree with the things
-Masahiro has suggested with regard to quoting, etc. I look forward to
-v2.
+Today's linux-next merge of the drm tree got a conflict in:
 
--Kees
+  drivers/gpu/drm/vc4/vc4_plane.c
 
--- 
-Kees Cook
+between commit:
+
+  35d65ab3fdba ("drm/vc4: plane: Remove redundant assignment")
+
+from the drm-misc-fixes tree and commit:
+
+  5ddb0bd4ddc3 ("drm/atomic: Pass the full state to planes async atomic che=
+ck and update")
+
+from the drm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/vc4/vc4_plane.c
+index 1e9c84cf614a,c76e73a452e0..000000000000
+--- a/drivers/gpu/drm/vc4/vc4_plane.c
++++ b/drivers/gpu/drm/vc4/vc4_plane.c
+@@@ -1133,31 -1135,34 +1135,33 @@@ void vc4_plane_async_set_fb(struct drm_
+  }
+ =20
+  static void vc4_plane_atomic_async_update(struct drm_plane *plane,
+- 					  struct drm_plane_state *state)
++ 					  struct drm_atomic_state *state)
+  {
++ 	struct drm_plane_state *new_plane_state =3D drm_atomic_get_new_plane_sta=
+te(state,
++ 										 plane);
+  	struct vc4_plane_state *vc4_state, *new_vc4_state;
+ =20
+- 	swap(plane->state->fb, state->fb);
+- 	plane->state->crtc_x =3D state->crtc_x;
+- 	plane->state->crtc_y =3D state->crtc_y;
+- 	plane->state->crtc_w =3D state->crtc_w;
+- 	plane->state->crtc_h =3D state->crtc_h;
+- 	plane->state->src_x =3D state->src_x;
+- 	plane->state->src_y =3D state->src_y;
+- 	plane->state->src_w =3D state->src_w;
+- 	plane->state->src_h =3D state->src_h;
+- 	plane->state->alpha =3D state->alpha;
+- 	plane->state->pixel_blend_mode =3D state->pixel_blend_mode;
+- 	plane->state->rotation =3D state->rotation;
+- 	plane->state->zpos =3D state->zpos;
+- 	plane->state->normalized_zpos =3D state->normalized_zpos;
+- 	plane->state->color_encoding =3D state->color_encoding;
+- 	plane->state->color_range =3D state->color_range;
+- 	plane->state->src =3D state->src;
+- 	plane->state->dst =3D state->dst;
+- 	plane->state->visible =3D state->visible;
+-=20
+- 	new_vc4_state =3D to_vc4_plane_state(state);
++ 	swap(plane->state->fb, new_plane_state->fb);
++ 	plane->state->crtc_x =3D new_plane_state->crtc_x;
++ 	plane->state->crtc_y =3D new_plane_state->crtc_y;
++ 	plane->state->crtc_w =3D new_plane_state->crtc_w;
++ 	plane->state->crtc_h =3D new_plane_state->crtc_h;
++ 	plane->state->src_x =3D new_plane_state->src_x;
++ 	plane->state->src_y =3D new_plane_state->src_y;
++ 	plane->state->src_w =3D new_plane_state->src_w;
++ 	plane->state->src_h =3D new_plane_state->src_h;
+ -	plane->state->src_h =3D new_plane_state->src_h;
++ 	plane->state->alpha =3D new_plane_state->alpha;
++ 	plane->state->pixel_blend_mode =3D new_plane_state->pixel_blend_mode;
++ 	plane->state->rotation =3D new_plane_state->rotation;
++ 	plane->state->zpos =3D new_plane_state->zpos;
++ 	plane->state->normalized_zpos =3D new_plane_state->normalized_zpos;
++ 	plane->state->color_encoding =3D new_plane_state->color_encoding;
++ 	plane->state->color_range =3D new_plane_state->color_range;
++ 	plane->state->src =3D new_plane_state->src;
++ 	plane->state->dst =3D new_plane_state->dst;
++ 	plane->state->visible =3D new_plane_state->visible;
++=20
++ 	new_vc4_state =3D to_vc4_plane_state(new_plane_state);
+  	vc4_state =3D to_vc4_plane_state(plane->state);
+ =20
+  	vc4_state->crtc_x =3D new_vc4_state->crtc_x;
+
+--Sig_/.3TCEW2K/ucdGcZbZyQjv9B
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBvxjUACgkQAVBC80lX
+0GxIuwf+MLYE674mIMmHxJJji/55gWYtGGX/V3SrSewLyeKvHLfDuQlPItFchsX1
+3Pz68dEgLmoWKU4VMulSbKduwWdP2SBPTT8CuKu9hXGjLj/CaVW9cG0CN6FFi55g
+GQEnlmYDcvLjvVyMmi/Tva+TJ1ck9HRWzfiuSxeo9uDp4qsmSnl04DgKcfovOoy6
+PY4kFCQ7d6QqF4Fnw5RQClDB8Lzf8SV0geat+Hvv9O9R244jLstLNx7rqLuNyd2S
+bzyIMwugX/Oiu274Cxgf9W7aIeYSDrrdVwQ1HNTZErscCjoWjoKE/aFaCOnNKQ2r
+y+SB5knEJv0xAg4gxS2Zxtzb+6SwSw==
+=ya55
+-----END PGP SIGNATURE-----
+
+--Sig_/.3TCEW2K/ucdGcZbZyQjv9B--
