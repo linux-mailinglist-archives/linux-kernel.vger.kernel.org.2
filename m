@@ -2,132 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91CB53594E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787753594EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhDIFn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:43:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhDIFnz (ORCPT
+        id S233269AbhDIFo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:44:59 -0400
+Received: from mx0b-00268f01.pphosted.com ([148.163.159.192]:22200 "EHLO
+        mx0b-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229846AbhDIFo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:43:55 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2099EC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 22:43:43 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id z9so3796620ilb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:43:43 -0700 (PDT)
+        Fri, 9 Apr 2021 01:44:57 -0400
+Received: from pps.filterd (m0105197.ppops.net [127.0.0.1])
+        by mx0a-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1395YSwg029717;
+        Fri, 9 Apr 2021 05:44:07 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
+        by mx0a-00268f01.pphosted.com with ESMTP id 37te7hgc8j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 05:44:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AuOjN/9plRuRaCzgUYOtwNaDp16UeVw/S2blBFp9NN1gOL4AC0YzNrjJERVbi5X412mfA8oFAG1GQbuXqEwExhLRaARL8hYYHOkU6zr2zDqblcjhEqGFhdQ33a0hFt8iyvBPuxAMRP1fqCMdf2AeUveVq0XIz8arlAYCaIs/JaGo5Uemeyrattu7HMkgqp45v36XX1AkPYYSpQ42G0kbSdNXGbKFVsmTE4HUFBhvHFG2IOzvUtEr9vpAcxBwIc+DdMRWE75keHsBqqBJ/XO8hXCllbF+BQli7X7PICIctVVasYoehBVl81lssAL2nCQLYfNCBqhHqvbSM21TdkdQkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SIQJGANvy4aZLxZ5KNDklXmbuGvzLCo1wnvU/7xr2dE=;
+ b=d4FMwswr52TImkgMd9SKNR4RZ4VWqLVCrZAwEzq4zeb9twC8wQU22sSbQ4iOBXqTcyCWbJ43BMps3MaX0V8zQhScsLWb/QYTs6yUwnmQd2pc7VagHFMEfnS9lHJdYk0GsYhavi2b7r6YNsqE2782sYhyqEaK8s1NTRiRGye2pZKXaLzQ5wfiOBfPlgGiEa0Ydf+z836REbswbYOcHKuJY1tN3mf9c9KFeBZ13hTjUgHvcFWbWZlpCGDyOvC2Z9q7hhOSzOxZ/Mn0EZMrpe96jfFXlp1T2cnRKQMV7MkISpuAeXWTyAPcmmCsuiqH7xD3K/XbJ3fFEweANEqXyqK3gg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
+ dkim=pass header.d=equinix.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QdyZIH69QZLX+qD184zaI/95rRxErKOr+ptyeL501Dg=;
-        b=IFJpyGI29VNx2ZZT/zab37cZtLh7k2KFjyFBZ5nh9pV4MAsPibOAKyTfUPEZlriKdL
-         VI5krZLxUhCox6dw1qR1p5Q8QKLhl562H8UiAb05GzVeC4UwHhixz8F20z1uqTduV8W3
-         +woVCatxn6E+YIhmgt1O5Jzy7b0DHlo3YDmTBRlCP5DkwDSQhZPXtHDPmQmXYjlTzyMV
-         O+l0MtYLM0zbKnhGXq1NSOOUOTIbSA1kY7/UsDMNSL/hxH6bAgnsxJwmGjdmCJ+JCY5l
-         C+0zRd0FCX3jRBOZDytVWzbUyqqnNEsX8f6vZr/CRP0PgXaAv2rpehSqT7hJMrhG3tNQ
-         AIDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QdyZIH69QZLX+qD184zaI/95rRxErKOr+ptyeL501Dg=;
-        b=SjnaWL94NRauByh2h7r5+1rrVi073LA4z4FyncW4etiOZDXWZkxsC41Xj1lN0B6VKc
-         mGzbx7QiKY1cKStoRFaqoonH4oRxKIThwrpPUzYc6ZSpYx/cspssGeTKzY0ZoB5xqXl4
-         /J8VecIrxSwjjA8wNETgj6Uq5Ox0AiAdyY7PVQ/Jisvj44PLCc4zt+QClC0+AcvYz3SK
-         U3hTSPztXCuRlCEblrfovcZNfYeUovAq8PGDRjejPLyr92ag02/JttqqgdMts+mMkDHj
-         PXzLRfNQvxtpKsRcZk6OLb51AKDwUo0svVMspp5ngK6ELfbHiRJnjrI2PfzlSTsHIPod
-         awpw==
-X-Gm-Message-State: AOAM530ZES61iK6kFTekKK7DPIeK8i5+kdDL2ooJR4PoGO11XBAXnaXA
-        Amy2UurB7+SH9KMIohGyTqHyI+WS1bUFtn9QcQSmTzTG2Cv4sw==
-X-Google-Smtp-Source: ABdhPJwBLNzQvO+jGFN3ALoPBxIkWt9qei6kpyabY/dUNKkbBbeBR/YLrbhcC2j5a34lmYBlAKiZE2VL3kI1LJWpJXY=
-X-Received: by 2002:a05:6e02:1a43:: with SMTP id u3mr10086739ilv.292.1617947022330;
- Thu, 08 Apr 2021 22:43:42 -0700 (PDT)
+ d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SIQJGANvy4aZLxZ5KNDklXmbuGvzLCo1wnvU/7xr2dE=;
+ b=Nxh2oAgfqn7tOD8zWL5BIeUyY0iHLcQkOrSQ4WyVYXmmo6ikvrIZKQF75aZBUsWJ5svBK0a/ozl7uDV4RgLAk9l7O2l3U6DNPJRICSGRGpH5CBcADF0/EdZbN7vJE41z1Ss9WEBfciLJLBc9J9QhvHDxEIGk09CwOqzpFWpFdLk=
+Received: from DM5PR04MB0762.namprd04.prod.outlook.com (2603:10b6:3:f3::13) by
+ DM6PR04MB6732.namprd04.prod.outlook.com (2603:10b6:5:1::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4020.18; Fri, 9 Apr 2021 05:44:05 +0000
+Received: from DM5PR04MB0762.namprd04.prod.outlook.com
+ ([fe80::4c98:aeb:87a8:13ad]) by DM5PR04MB0762.namprd04.prod.outlook.com
+ ([fe80::4c98:aeb:87a8:13ad%5]) with mapi id 15.20.4020.017; Fri, 9 Apr 2021
+ 05:44:05 +0000
+From:   Zev Weiss <zweiss@equinix.com>
+To:     Andrew Jeffery <andrew@aj.id.au>, "g@packtop" <g@packtop>
+CC:     "openipmi-developer@lists.sourceforge.net" 
+        <openipmi-developer@lists.sourceforge.net>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        Corey Minyard <minyard@acm.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tali Perry <tali.perry1@gmail.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Benjamin Fair <benjaminfair@google.com>
+Subject: Re: [PATCH v2 17/21] dt-bindings: ipmi: Convert ASPEED KCS binding to
+ schema
+Thread-Topic: [PATCH v2 17/21] dt-bindings: ipmi: Convert ASPEED KCS binding
+ to schema
+Thread-Index: AQHXLQNa/Br1rKNdC02YFyK1SqJv1A==
+Date:   Fri, 9 Apr 2021 05:44:05 +0000
+Message-ID: <YG/ppKEAs5EBUao3@packtop>
+References: <20210319062752.145730-1-andrew@aj.id.au>
+ <20210319062752.145730-17-andrew@aj.id.au> <YG/i9lSxxCMIzkRs@packtop>
+ <29937129-3a17-4a32-a723-191b693a1e0c@www.fastmail.com>
+In-Reply-To: <29937129-3a17-4a32-a723-191b693a1e0c@www.fastmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aj.id.au; dkim=none (message not signed)
+ header.d=none;aj.id.au; dmarc=none action=none header.from=equinix.com;
+x-originating-ip: [24.181.166.149]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 20461bc9-7cd8-4969-cb83-08d8fb1a7cee
+x-ms-traffictypediagnostic: DM6PR04MB6732:
+x-microsoft-antispam-prvs: <DM6PR04MB673265AFBAF17D6F269F1FCAC3739@DM6PR04MB6732.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nD5Yqz2Jv4QCnHHufvgqrdV3qbWiuF6OuH/MLEeS9rZ3yxpUOZRcGnAOtNtXVM1zWutR4ixWOcbCAR3AKn+eYle6FjnBXx+PrHd0TRzcaBVbH6eZ0G18smhXbi2l/b1YouWT5cgNaBA1iD3CNA+5nxYX1WAnuV+KDpujkRUIy170maNfs5Q8clM/UyOAeFbuh24KQ/xqWQBnp+WrdNun6PPFPuyHbhjCugBsvCiZqzlFoPqh+yFJ6DRmPkKDRaCPcLAwLbOooT/qSunFgulqFKng6TgPF68Mq4kjdoWTV+z5YZ8a9IW+5ZMubNxNx5us6aweAA3+FaDlh0Aq66dboSjgZ4NR6AovaNZKdCRt4OoO0R7w4MPx6wj5F6tEVHRjq1sJZm7VF52lQEoqoIJuJouPpKoRlGDX8lhvdZn/1mSTNDwnIfR5W094g2PkKK28MxZlOfR5FFZINLgRvZDOzpchFVSv0XlDSACs6qYDva5vXlwDFs+oMiKaW9IhHZp+5fK8kkE/KjWHS2BiZ9cH4fcTY1PFPU1hFNqF5kZ0kf35ZZ/z+FMBo7RyfXJkWn0fakhBXA44MFKkfWDyVN/M5YQk6p1f4lgoNaCt+91HYrUospMpMePHEWMVCLSsSMhW7u2eSWx/RjdQV0OvGRJ/z+n6Mr+4tmQgApE7tQbjNJ4+j/r5FUaDZ5TRXgV1Z1/XlAHN86t6FO63lqKuWI3erdLUtxIo+irp5flIb8Uny6c9DCU00BbgFLFT1zWRY5kd
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0762.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(396003)(346002)(376002)(366004)(39860400002)(316002)(5660300002)(6512007)(9686003)(33716001)(8676002)(2906002)(54906003)(7416002)(83380400001)(186003)(6506007)(6486002)(66946007)(71200400001)(966005)(64756008)(66446008)(76116006)(66556008)(4326008)(66476007)(478600001)(26005)(8936002)(86362001)(38100700001)(781001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XGVZg1HuZOGjbNGv+oet3F4awmZ+3+9hwWgG5OeSBDePcFfCoMMNAFh3rgC4?=
+ =?us-ascii?Q?U6Oe7xZ/L86SwW14hQg4WbvwnfXidscPZoa/YpC7xjyHhrpVWl1aUqStokQy?=
+ =?us-ascii?Q?Pea7UApk1TAREq/uOvF2o8ppTVyLYP5PDrojDC1r3qeHry3N2qY3K1PWF725?=
+ =?us-ascii?Q?+P/KnqccllciUeeS1hkyxUne5nGtAlceyUlUOE7cvsI7G97BG+fJ3z5wjk3D?=
+ =?us-ascii?Q?VaspV+sQJC+pwWfL8H9C5yuBUz+U1ARmk/QpC6Af1CYW6K/pFX5vL6GEgpgE?=
+ =?us-ascii?Q?Dpv+3wGRU+7q93OYDvKrWTAQnU81gWiScNyVSmMsJdGSjhCAUN+HlE4oDS9g?=
+ =?us-ascii?Q?vP8Q2u4A1w2M1IPFSRioH2Nmw0+lmnHVAL6FlJ10Nm6z0c5Slwpc86NF+FVM?=
+ =?us-ascii?Q?8vQR+40wb/FcSoYuhZX8dy6dxTl5yea2hhqaya6DeUMeDEYcLHZqvWqE2DYR?=
+ =?us-ascii?Q?/u4S8EOTBmb273qcCGpJhROsWdIVU77To3xvoFyPVJZGXtQUuLUfgabDQGLD?=
+ =?us-ascii?Q?zPB2JrMAwYNdIZ9tVKxBd58OziMCq7EiTsT246tdhhZHrA7UMPIVWVxDb7U+?=
+ =?us-ascii?Q?ccZJdHpiLuKdg9R2mONi/VXimi6SJ4tFoy804TjTah8W8qkDy2FNxiV/4OHj?=
+ =?us-ascii?Q?OMaL90jOyVaJiniTSNHzqcAF3cpp30mjQCggDoU6N0j4e3FhtVUuyQfW7kdG?=
+ =?us-ascii?Q?UyO0HlV2kQM69wvFxVW/aWa3zI1U79hDv1aPCYH4FCKmSCtvhSi8mdlosHWw?=
+ =?us-ascii?Q?dy3xh94ecezKm/x+zvV1zAdnitg1oQtjZlFl0yn4uDQCPsQQYaPsRAuCdFyb?=
+ =?us-ascii?Q?5ZNfBiGbikri/ao+OlYc00EcRElGi2V0pUt5sNeWIDW9NQS1uD4LCPxPFyea?=
+ =?us-ascii?Q?kwdsHaH8WRjZPoLn4ZCOZPw4E5eOGfAulX8/EhEfyQTkytTLhV+b6BhAGx0T?=
+ =?us-ascii?Q?aKMCws0IhJ1nvyZo2fHaPzfO09EGalPKkUs/6NInNFu+QqDLCwiymo0pk75f?=
+ =?us-ascii?Q?l5lvn17jzhSBHzVcHRvoh9trVd4du0NCiXluuE7z/49W9MTuwT55YQ9/kvCm?=
+ =?us-ascii?Q?6ltQvstxK8ELTVk++JbeIcSH4wgjnCvrUFJdxPxxgWN23sNHUuc7oSnrCr3e?=
+ =?us-ascii?Q?QafVuNOgHyNtNMHZELHjfB/tavyVOJCzP9hkj9jZSuBGDof1ZdpVpdZc9TGy?=
+ =?us-ascii?Q?Hd5iIVwl4CsaQzNxWoU1WiWbaUOFEV5u9w8WpWXhHczfBG1TOlR0Qg5Jsfwj?=
+ =?us-ascii?Q?MRhnRbZsV1+A1C/qDTNji0+iEE6FdpEmCc/CY3GRg/mhHs7Yc+Frvc6Hq6ms?=
+ =?us-ascii?Q?c3PpOzyNorN4DtW+21ZR5BUZDXwQUVRboDv3r0bYEFvxMg=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <77BE7DEF9A057B4DBE4D8C530A1CA337@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183223.80F1E291@viggo.jf.intel.com>
- <YG7XjTG9tiK29y1j@localhost.localdomain> <CAHbLzkqoaSnuBJMAe_heQt01FuPWODYQHJ955gaJNNojwbUjrw@mail.gmail.com>
- <YG9IthpDC/lri4Qh@localhost.localdomain> <CAHbLzkqt0_xM=rAaNiSwKn=kY=wmWiFe3N+CEuqH_ryU-o1ysQ@mail.gmail.com>
- <YG/g49rCrId0ALra@localhost.localdomain>
-In-Reply-To: <YG/g49rCrId0ALra@localhost.localdomain>
-From:   Wei Xu <weixugc@google.com>
-Date:   Thu, 8 Apr 2021 22:43:31 -0700
-Message-ID: <CAAPL-u_7UWmAPpRvZJQ=FGMU=OTV+n5evzb-kjU1uCS9OpzwRg@mail.gmail.com>
-Subject: Re: [PATCH 04/10] mm/migrate: make migrate_pages() return nr_succeeded
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Yang Shi <shy828301@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: equinix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0762.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20461bc9-7cd8-4969-cb83-08d8fb1a7cee
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 05:44:05.5411
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1BCRykd6pM/ZR8J37PivPkfRTakGZtLSzune5RQlOjoqj5F6f8PcWoQKlDnySgSvpbqrBTbQPXErFlNNhWmRcA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6732
+X-Proofpoint-GUID: s0GzvA1EYCqkjICThSiOpMr6MmETEOq4
+X-Proofpoint-ORIG-GUID: s0GzvA1EYCqkjICThSiOpMr6MmETEOq4
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-09_03:2021-04-08,2021-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ spamscore=0 mlxscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1015 bulkscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104090041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I agree that it is a good further improvement to make nr_succeeded an optional
-output argument of migrate_pages() given that most callers don't need it.  IMHO,
-the most important thing in this matter is to ensure that nr_succeeded only
-returns (when its return value is needed) the successfully migrated
-pages in this
-round and doesn't accumulate.  This is addressed by both proposals.
+On Fri, Apr 09, 2021 at 12:33:10AM CDT, Andrew Jeffery wrote:
+>
+>
+>On Fri, 9 Apr 2021, at 14:45, Zev Weiss wrote:
+>> On Fri, Mar 19, 2021 at 01:27:48AM CDT, Andrew Jeffery wrote:
+>> >Given the deprecated binding, improve the ability to detect issues in
+>> >the platform devicetrees. Further, a subsequent patch will introduce a
+>> >new interrupts property for specifying SerIRQ behaviour, so convert
+>> >before we do any further additions.
+>> >
+>> >Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+>> >---
+>> > .../bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml | 92 +++++++++++++++++++
+>> > .../bindings/ipmi/aspeed-kcs-bmc.txt          | 33 -------
+>> > 2 files changed, 92 insertions(+), 33 deletions(-)
+>> > create mode 100644 Documentation/devicetree/bindings/ipmi/aspeed,ast24=
+00-kcs-bmc.yaml
+>> > delete mode 100644 Documentation/devicetree/bindings/ipmi/aspeed-kcs-b=
+mc.txt
+>> >
+>> >diff --git a/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-=
+bmc.yaml b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.ya=
+ml
+>> >new file mode 100644
+>> >index 000000000000..697ca575454f
+>> >--- /dev/null
+>> >+++ b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yam=
+l
+>> >@@ -0,0 +1,92 @@
+>> >+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> >+%YAML 1.2
+>> >+---
+>> >+$id: http://devicetree.org/schemas/ipmi/aspeed,ast2400-kcs-bmc.yaml
+>> >+$schema: http://devicetree.org/meta-schemas/core.yaml
+>> >+
+>> >+title: ASPEED BMC KCS Devices
+>> >+
+>> >+maintainers:
+>> >+  - Andrew Jeffery <andrew@aj.id.au>
+>> >+
+>> >+description: |
+>> >+  The Aspeed BMC SoCs typically use the Keyboard-Controller-Style (KCS=
+)
+>> >+  interfaces on the LPC bus for in-band IPMI communication with their =
+host.
+>> >+
+>> >+properties:
+>> >+  compatible:
+>> >+    oneOf:
+>> >+      - description: Channel ID derived from reg
+>> >+        items:
+>> >+          enum:
+>> >+            - aspeed,ast2400-kcs-bmc-v2
+>> >+            - aspeed,ast2500-kcs-bmc-v2
+>> >+            - aspeed,ast2600-kcs-bmc
+>>
+>> Should this have a "-v2" suffix?
+>
+>Well, that was kind of a matter of perspective. The 2600 compatible was
+>added after we'd done the v2 of the binding for the 2400 and 2500 so it
+>never needed correcting. But it is a case of "don't use the deprecated
+>properties with the 2600 compatible".
+>
+>I don't think a change is necessary?
+>
 
-On Thu, Apr 8, 2021 at 10:06 PM Oscar Salvador <osalvador@suse.de> wrote:
->
-> On Thu, Apr 08, 2021 at 01:40:33PM -0700, Yang Shi wrote:
-> > Thanks a lot for the example code. You didn't miss anything. At first
-> > glance, I thought your suggestion seemed neater. Actually I
-> > misunderstood what Dave said about "That could really have caused some
-> > interesting problems." with multiple calls to migrate_pages(). I was
-> > thinking about:
-> >
-> > unsigned long foo()
-> > {
-> >     unsigned long *ret_succeeded;
-> >
-> >     migrate_pages(..., ret_succeeded);
-> >
-> >     migrate_pages(..., ret_succeeded);
-> >
-> >     return *ret_succeeded;
-> > }
->
-> But that would not be a problem as well. I mean I am not sure what is
-> foo() supposed to do.
-> I assume is supposed to return the *total* number of pages that were
-> migrated?
->
-> Then could do something like:
->
->  unsigned long foo()
->  {
->      unsigned long ret_succeeded;
->      unsigned long total_succeeded = 0;
->
->      migrate_pages(..., &ret_succeeded);
->      total_succeeded += ret_succeeded;
->
->      migrate_pages(..., &ret_succeeded);
->      total_succeeded += ret_succeeded;
->
->      return *total_succeeded;
->  }
->
->  But AFAICS, you would have to do that with Wei Xu's version and with
->  mine, no difference there.
->
-> IIUC, Dave's concern was that nr_succeeded was only set to 0 at the beginning
-> of the function, and never reset back, which means, we would carry the
-> sum of previous nr_succeeded instead of the nr_succeeded in that round.
-> That would be misleading for e.g: reclaim in case we were to call
-> migrate_pages() several times, as instead of a delta value, nr_succeeded
-> would accumulate.
->
-> But that won't happen neither with Wei Xu's version nor with mine.
->
-> --
-> Oscar Salvador
-> SUSE L3
+It just looked inconsistent with the corresponding string in the
+ast_kcs_bmc_match[] table; perhaps that should be changed instead then?
+
+
+Zev
