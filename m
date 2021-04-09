@@ -2,107 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1F035A035
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292DC35A039
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233719AbhDINnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:43:40 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:37086 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233051AbhDINnb (ORCPT
+        id S233806AbhDINo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232615AbhDINoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:43:31 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 86B221F467A1
-Received: by earth.universe (Postfix, from userid 1000)
-        id 613083C0C96; Fri,  9 Apr 2021 15:43:15 +0200 (CEST)
-Date:   Fri, 9 Apr 2021 15:43:15 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>
-Subject: Re: [PATCHv2 35/38] dt-bindings: power: supply: ab8500: Convert to
- DT schema format
-Message-ID: <20210409134315.tjgd7nvpo4tru2oo@earth.universe>
-References: <20210317134904.80737-1-sebastian.reichel@collabora.com>
- <20210317134904.80737-36-sebastian.reichel@collabora.com>
- <CACRpkdZerDHY0EsZxqadbbWaCCjw7nkOE8VOGPhoL-Rjwp4Bhg@mail.gmail.com>
+        Fri, 9 Apr 2021 09:44:25 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F036C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 06:44:12 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id k25so5959905iob.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 06:44:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dKNxnFnDqht8/+oHY0ADhH/7JS7Dn6qjf7CJC2LmBq8=;
+        b=gsMQK52zs364Cj0XsjgrJO84M/sRi65VAzzWLdQYxlKcNZQAAZzcsyT7B9UpP+QkZX
+         0vWxuEK34aPUWCH9i+LGFn39xiP7OC22Io2heYmepQ1aojosF+k3cpmZrUkrooxEyDv9
+         OjDzY2Ellot5CcX8xk6cQMTPDvChGr9+CGfjLNtTbD5P40w7DltUHp6Qo8OUkFXVWs5i
+         bW1Ybh3odHg1uBDC8NQohJSLbZR1SYL731R9y1PR85Ae0OLKQ3x/zyoiakt1sKjCEL/5
+         Mfsxa4e7vqKcN8euT/lMCt/PRer/bGJrI3EdH47UoRsMXD1MOov6vlYYEWWTaBLqF4EF
+         HaPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dKNxnFnDqht8/+oHY0ADhH/7JS7Dn6qjf7CJC2LmBq8=;
+        b=TB0jjx6WNvzWlLuXIzxyqAJ2m4Yb3KExf8OSNjw3bV/Q8mjBwjjdMi+21W/YAYJomp
+         oseOSQuTAafMqVB0+HZYvNZ9bl6qhhObpqmwdaePpo9lLZ96LCicUSvV5S/jiCX1f1xY
+         xyBSuHEcXrPcQaq/E5m3MW5GDY5Jh1vVluJ2IKNt4MdODEUymD8LCrosu4pQeH0wA/Qf
+         E9aFYBKEWZUpZYZy9QL5EGYilc8u24LNSAfiOriolx/yr7mrMJyeJ5LOSu025hc22jKa
+         gdIl6xcWlTFS4CEuyQWTmCzvLlOPmJuDYgdqRHQh30x+JSB5FcQM1etYQAJCUukpAidg
+         RwjA==
+X-Gm-Message-State: AOAM532oVQAL07JbJZ2EH2mBJSD8P56/mfbMOxt4FXIm9y5JQoRdwb2O
+        YTqtX7YtLI4/txkEayPp7gtjMQ==
+X-Google-Smtp-Source: ABdhPJypk5ROJa4u/Up63hr16bgFgFFvx1vaDxfvQRO75vqG85ZSYxWW31XgYUSQ3HMnu6+40JP1Cw==
+X-Received: by 2002:a5e:de0d:: with SMTP id e13mr11446604iok.208.1617975851998;
+        Fri, 09 Apr 2021 06:44:11 -0700 (PDT)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id e6sm1303691iom.2.2021.04.09.06.44.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 06:44:11 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     bjorn.andersson@linaro.org, agross@kernel.org, sboyd@kernel.org,
+        mturquette@baylibre.com, manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] clk: qcom: rpmh: add support for SDX55 rpmh IPA clock
+Date:   Fri,  9 Apr 2021 08:44:07 -0500
+Message-Id: <20210409134407.841137-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6ohqhuaygyq2szeg"
-Content-Disposition: inline
-In-Reply-To: <CACRpkdZerDHY0EsZxqadbbWaCCjw7nkOE8VOGPhoL-Rjwp4Bhg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The IPA core clock is required for SDX55.  Define it.
 
---6ohqhuaygyq2szeg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/clk/qcom/clk-rpmh.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Hi Linus,
+diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
+index c623ce9004063..552d1cbfea4c0 100644
+--- a/drivers/clk/qcom/clk-rpmh.c
++++ b/drivers/clk/qcom/clk-rpmh.c
+@@ -380,6 +380,7 @@ static const struct clk_rpmh_desc clk_rpmh_sdm845 = {
+ DEFINE_CLK_RPMH_VRM(sdx55, rf_clk1, rf_clk1_ao, "rfclkd1", 1);
+ DEFINE_CLK_RPMH_VRM(sdx55, rf_clk2, rf_clk2_ao, "rfclkd2", 1);
+ DEFINE_CLK_RPMH_BCM(sdx55, qpic_clk, "QP0");
++DEFINE_CLK_RPMH_BCM(sdx55, ipa, "IP0");
+ 
+ static struct clk_hw *sdx55_rpmh_clocks[] = {
+ 	[RPMH_CXO_CLK]		= &sdm845_bi_tcxo.hw,
+@@ -389,6 +390,7 @@ static struct clk_hw *sdx55_rpmh_clocks[] = {
+ 	[RPMH_RF_CLK2]		= &sdx55_rf_clk2.hw,
+ 	[RPMH_RF_CLK2_A]	= &sdx55_rf_clk2_ao.hw,
+ 	[RPMH_QPIC_CLK]		= &sdx55_qpic_clk.hw,
++	[RPMH_IPA_CLK]		= &sdx55_ipa.hw,
+ };
+ 
+ static const struct clk_rpmh_desc clk_rpmh_sdx55 = {
+-- 
+2.27.0
 
-On Fri, Apr 09, 2021 at 01:28:05AM +0200, Linus Walleij wrote:
-> On Wed, Mar 17, 2021 at 2:51 PM Sebastian Reichel
-> <sebastian.reichel@collabora.com> wrote:
->=20
-> > Convert the binding to DT schema format.
-> >
-> > Note: The battery node does not have a compatible value and needs
-> > to be described from the binding file for the PMIC. That has not
-> > yet been converted, so I kept the information in plaintext for now.
-> >
-> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
->=20
-> Thanks for doing this Sebastian:
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Thanks (I already merged this, though).
-
-> Long term I want to get rid of the "charging algorithm" device node,
-> as can be easily seen that is not a real hardware device but just
-> some mockery to get a platform device up and probed. It is actually
-> a library. But for now we need to keep it around.
-
-Yes, the ab8500 charging algorithm obviously does not describe
-hardware and should go away, just as charger-manager driver.
-Optimally power-supply would provide a framework for this.
-
-The battery node on the other hand does describe hardware (the raw
-battery cells) and we have a common binding for this nowadays:
-
-Documentation/devicetree/bindings/power/supply/battery.yaml
-
-(At the moment it has neither properties for the chemistry nor
-for temperature sensor position)
-
--- Sebastian
-
---6ohqhuaygyq2szeg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBwWeoACgkQ2O7X88g7
-+pryfBAAlLZTxzPZTIprclehAIr7GtqVvIw4jYjbGiwvJHAUaNLHhI47YFtEajlh
-7ArUmph2VE3VtQcCUgDti/xcJLKWQQX8WsB11K4DjnAFgX5uZwcXmTmHxUhB2WS0
-4Eloa35jMNdQZEsMM8vNroVTy71XQtxmPJZqBTjSsfpP6SPNoEZwhusF7j9E+Y51
-eYLnDnXrs9Pof+WW9bkVR0Ub5WB9CU6rDYq1DzfZ46rtZu29Fj63bhj+A1OXJonO
-fNtuSMMzM/aBkZeXA1n5Gp4B4c61IHNfjSiJYJD/QdQK0CaaGQOyLMb1bn6BfYG/
-HZJx8/n7VbnrIa+W8Meb1lgXqVZ1p3cLcHn2apWTdo5XfzVrJEKHogBFINFRZhFu
-UIsNHMUP4mLJUj8R0SM5SBCKKjV/+hvyO9tMQ1cpktJkdBD4vIohcEh8B9JWtVqv
-hK4iVugySBaaNENIu9KQMMK4Y+2tTBUsO2qrkenq8CvzLbARWKTJJ/bj8WFZys+K
-KNmaQIPIEnC16QIQukTY0RtwWFtZf9s2C5ukAskm0t91AAwlqNfeF6i5YM+RrIEg
-3gBiJHK87nwRXu5JvxFAiVKu39+etfahVxLP30xzcazxtweB/5c4vxjwo8xyacgN
-iVeM+YEseTkGipuiLGVBRQmA7jyuCng0zltG/C2eIgGs1cxNCKo=
-=6v6Y
------END PGP SIGNATURE-----
-
---6ohqhuaygyq2szeg--
