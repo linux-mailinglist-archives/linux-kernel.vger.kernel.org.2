@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEFE35A551
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4E335A553
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhDISKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:10:10 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:44672 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbhDISKI (ORCPT
+        id S234455AbhDISKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:10:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233332AbhDISKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:10:08 -0400
-Received: by mail-oi1-f173.google.com with SMTP id a8so6631156oic.11;
-        Fri, 09 Apr 2021 11:09:54 -0700 (PDT)
+        Fri, 9 Apr 2021 14:10:21 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2670EC061761;
+        Fri,  9 Apr 2021 11:10:08 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id l76so4517263pga.6;
+        Fri, 09 Apr 2021 11:10:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=tbJlZpWRjDeZI4enqunevdZyznCdZANpEDZIY7Yi9+E=;
+        b=OA9t5Wgr30FA6MFWcJ7nTMzsiOyOnYavKWcyo7jeu7G9BeWv3QS/Kl8gb0zO+0paVV
+         NHJU9GQwT8JlmFVzBikZWpa6HtsU+6ib4wPevWbbrnFrDQQvszLU3ODTqQXo+vdmpJo6
+         cY8ZY8kgTSC15+NHVpZw3COUT29fHtlwMo3nWztbQiVtjMTy4aIHx6HD877C2fsEycP7
+         jhjfmoSEm06KpyTXzCWtfm1jezyqPNl1MgMYtsybub+7pgbdZg4eBwytvueVhdEU73nP
+         2u4fXxeO7PMLrtcqnTnhcxvpAux+CTr2LotS4EJZgw1yLRuJry8iRkEVlBOrTzsz5SEJ
+         2oXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fCVQeOozXnmqOmzdZZPptmZjBT4ig9JKwPIdux6ewHA=;
-        b=M0IJBe1NSMjweiuOGxl2iX0CZp/JAZq3jo+b9RnEBcsxUsQTv8LpgJ/2XDKhsua2E8
-         +DGl2yMV3mRvvXsrA7f8M/0swJjRiFjRjcyjYVjKNBQgw2T1+rzRBtdN5zdCIMhie3Jn
-         INLX30fhjCCqZV19Za3dTAa61cYJeiYTYXmHahue9Zg8r8EOqC4puKI22Z47XKfMkSJJ
-         DKG43YTRTClltd6hM+B7/hDz/4H4zLbNSNFQib9V2GREu7J5ioBIXOi4d0hcguIGVPLw
-         EqjsufeUb2ndqHjy7aKhGzDKXezUpdPSxLpDjY49jLLDhnDl5q/TrL2zRVVKhclDYV4P
-         a7kA==
-X-Gm-Message-State: AOAM530SOhlim0QrUwW3gsmM0D9R77D2ubs5bJFEBS+4kYfV4OJbrN64
-        ir7gxoMn1pIsyta389c4Yg==
-X-Google-Smtp-Source: ABdhPJxlkqQLFI9GS+qKWcK5PFzpk2KHZgmVCIWpe09a7zrV4vqhg64yNKJOaDodgq1VnWReAPY2yA==
-X-Received: by 2002:aca:1803:: with SMTP id h3mr10921965oih.65.1617991794638;
-        Fri, 09 Apr 2021 11:09:54 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 64sm639617oob.12.2021.04.09.11.09.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:09:54 -0700 (PDT)
-Received: (nullmailer pid 3895463 invoked by uid 1000);
-        Fri, 09 Apr 2021 18:09:52 -0000
-Date:   Fri, 9 Apr 2021 13:09:52 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Flora Fu <flora.fu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-clk@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Chiawen Lee <chiawen.lee@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tbJlZpWRjDeZI4enqunevdZyznCdZANpEDZIY7Yi9+E=;
+        b=k+AXS7IJBG+1wDPBMBvz9goQZebbJjMLh2a3rz1fwgj5SyIzcQtBgjHzqm9LxdaEME
+         xN6Dyv22AdXFwR1zRv7eNZ/iZs1/jzXV1+//oPIrGT3mshpkLYEuacZJ9EAhpBPqK6g4
+         6OISzuhcd/GwPUGr0cZ5c68nZGGEKsVkMFugL98HUAG1QjEkqBT/T9V1EcgthQsypt8P
+         MEV7u6MZv5leP7PkpnoNVzS+2sYLHMMkkEocuysRsrTlki5/DLshDXpoDq1bo1NmlPi8
+         tPaCeQInu20dPz2iIV9mLxP0HsuVoKidO40xGALpDJodGULdIDtC9gmXe9XlbzL7qISQ
+         6n+A==
+X-Gm-Message-State: AOAM531kX+/CmTuOnKp/UFYY9QfV2Xd9wqlRfPLfFhF9rCWFWZDZ8LVV
+        iFJD9HqP8cbgW0a9/i4PsCJDBHRX0L4=
+X-Google-Smtp-Source: ABdhPJxCLgIVCvukjmR+5lWm+dnIC1KwXpSXANY826s/K6QI6An7cAHT0zXaazUPRDwEPdFux0aYQQ==
+X-Received: by 2002:aa7:92cb:0:b029:1f1:542f:2b2b with SMTP id k11-20020aa792cb0000b02901f1542f2b2bmr13189833pfa.31.1617991807241;
+        Fri, 09 Apr 2021 11:10:07 -0700 (PDT)
+Received: from [10.230.2.159] ([192.19.228.250])
+        by smtp.gmail.com with ESMTPSA id q3sm3093248pgb.80.2021.04.09.11.10.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 11:10:06 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/41] 5.10.29-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/8] dt-bindings: clock: Add MT8192 APU clock bindings
-Message-ID: <20210409180952.GA3895409@robh.at.kernel.org>
-References: <1617766086-5502-1-git-send-email-flora.fu@mediatek.com>
- <1617766086-5502-2-git-send-email-flora.fu@mediatek.com>
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210409095304.818847860@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <80994039-bc7f-fc11-ebe5-ad70e62fa39e@gmail.com>
+Date:   Fri, 9 Apr 2021 11:10:03 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617766086-5502-2-git-send-email-flora.fu@mediatek.com>
+In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 07 Apr 2021 11:27:59 +0800, Flora Fu wrote:
-> Add clock bindings for APU on MT8192.
-> 
-> Signed-off-by: Flora Fu <flora.fu@mediatek.com>
-> ---
->  include/dt-bindings/clock/mt8192-clk.h | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+On 4/9/2021 2:53 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.29 release.
+> There are 41 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.29-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+
+On ARCH_BRCMSTB, using 32-bit and 64-bit kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
