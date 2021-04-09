@@ -2,77 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6C24359E26
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34E0359E16
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233637AbhDIMBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:01:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22174 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232804AbhDIMBD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:01:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617969650;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WpLBLcM5HPbHBdhYvmuIcG5jaKMHS2dswa4uwPfKors=;
-        b=hGS3U0c4in2GhHGb8yh1ZnSPvu7Obyk4taWt6yMxc+UfclrgGzDpAFmCLTGD6KBNOBmEIE
-        EBk+Ra912nZ2TH6A7b60yIKZlm97HKDBnZou2KNbOK33Iy2YpeDf3on6YI6+sfd4WnOJ3o
-        wEDwITQosUmzDgajClmlvRHNx1JvAEA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-531-VXpQijEJOlSLOJb_BO2ZXA-1; Fri, 09 Apr 2021 08:00:46 -0400
-X-MC-Unique: VXpQijEJOlSLOJb_BO2ZXA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 845A55B38D;
-        Fri,  9 Apr 2021 12:00:44 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C29B160622;
-        Fri,  9 Apr 2021 12:00:41 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210409111636.GR2531743@casper.infradead.org>
-References: <20210409111636.GR2531743@casper.infradead.org> <CAHk-=wi_XrtTanTwoKs0jwnjhSvwpMYVDJ477VtjvvTXRjm5wQ@mail.gmail.com> <161796595714.350846.1547688999823745763.stgit@warthog.procyon.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, jlayton@kernel.org, hch@lst.de,
-        linux-cachefs@redhat.com, v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/3] mm: Return bool from pagebit test functions
+        id S233842AbhDIL6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:58:16 -0400
+Received: from mga11.intel.com ([192.55.52.93]:4320 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233838AbhDIL6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 07:58:14 -0400
+IronPort-SDR: TZb+Kap/wx8uKo/oSuzcd6f/iOUDge2G6JCfLOovsGnfaioHTyg36q1b4QJikgfb7wgUAxfln7
+ qHThbYdkxYXw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="190546815"
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="190546815"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 04:58:01 -0700
+IronPort-SDR: sExNdMNJgxTZOJB478Bjt/IzpOobnLLdAjfirJrL7gvmBwfQWc9rBSgrWDPGNM0aZfXT/A3tWh
+ /OssJJVFcpRw==
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="613694408"
+Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 04:57:59 -0700
+Date:   Fri, 9 Apr 2021 20:01:57 +0800
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH] cpufreq: intel_pstate: Simplify
+ intel_pstate_update_perf_limits()
+Message-ID: <20210409120157.GA229488@chenyu-desktop>
+References: <5450142.DvuYhMxLoT@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <453416.1617969640.1@warthog.procyon.org.uk>
-Date:   Fri, 09 Apr 2021 13:00:40 +0100
-Message-ID: <453417.1617969640@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5450142.DvuYhMxLoT@kreacher>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> wrote:
-
-> On Fri, Apr 09, 2021 at 11:59:17AM +0100, David Howells wrote:
-> > Make functions that test page bits return a bool, not an int.  This means
-> > that the value is definitely 0 or 1 if they're used in arithmetic, rather
-> > than rely on test_bit() and friends to return this (though they probably
-> > should).
+On Wed, Apr 07, 2021 at 04:21:55PM +0200, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> iirc i looked at doing this as part of the folio work, and it ended up
-> increasing the size of the kernel.  Did you run bloat-o-meter on the
-> result of doing this?
+> Because pstate.max_freq is always equal to the product of
+> pstate.max_pstate and pstate.scaling and, analogously,
+> pstate.turbo_freq is always equal to the product of
+> pstate.turbo_pstate and pstate.scaling, the result of the
+> max_policy_perf computation in intel_pstate_update_perf_limits() is
+> always equal to the quotient of policy_max and pstate.scaling,
+> regardless of whether or not turbo is disabled.  Analogously, the
+> result of min_policy_perf in intel_pstate_update_perf_limits() is
+> always equal to the quotient of policy_min and pstate.scaling.
+> 
+> Accordingly, intel_pstate_update_perf_limits() need not check
+> whether or not turbo is enabled at all and in order to compute
+> max_policy_perf and min_policy_perf it can always divide policy_max
+> and policy_min, respectively, by pstate.scaling.  Make it do so.
+> 
+> While at it, move the definition and initialization of the
+> turbo_max local variable to the code branch using it.
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Hmmm.  With my usual monolithic x86_64 kernel, it makes vmlinux text section
-100 bytes larger (19392347 rather than 19392247).  I can look into why.
-
-David
-
+Tested-by: Chen Yu <yu.c.chen@intel.com>
