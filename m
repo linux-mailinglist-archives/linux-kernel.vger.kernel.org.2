@@ -2,106 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E69E359EF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8441359EF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233591AbhDIMkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60912 "EHLO
+        id S233548AbhDIMl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233108AbhDIMk2 (ORCPT
+        with ESMTP id S232690AbhDIMly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:40:28 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A0CC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 05:40:14 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id mh7so8397123ejb.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 05:40:14 -0700 (PDT)
+        Fri, 9 Apr 2021 08:41:54 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641B9C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 05:41:41 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id m3so6398798edv.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 05:41:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=o2hUyBNJx1Jb8VgZ6GiR+mEMvZYh2PnrFc9dZsVatss=;
-        b=o97L5+nXsRkEGqo/gschV+ZNhsHbj613yxVG0O7vPFD8m44gdvr+SrDg7Cm6dWPWdL
-         QDiJbhb0Vuxcvv1zXc1zp5dKji5NzqnUzHODogk8gZrnuu1tos+pQ7Nd04Ag6ZMByFeY
-         GWFXJZrwwGgvq9jfADV9CAxKOSzUYiWFG+ghzrxS5gCA7wxzpJvt/AV/bigmy8iFv9nH
-         ZLNOrmqTc/gsTvoSZFed1kq4OISMoZJQZDB0/Aamk0jZ4bxMpHPzXj/xTfvGhWZqX64u
-         +CTUXEQrDcsseQLRUC/LctDc9DXcJxT1b+Km6RJtcMiheSLDQ5fuBGLA2zsMAUAjoZzr
-         KFhw==
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Cr3MWabTM6V/ksBGwd1Fv/a5RR46Fk3oRrRz+yH2SMQ=;
+        b=Cd/f22QQeG5V/FE31NylqMaOxmaMe6m6j8l2PNSbNeXvmC8LGV5fpui1/zTzqpqWKb
+         OlMBrFiyh/N3pMoW3wuMG011svsJzoNzGfuR5avxBEzSL84Y5ihzhug9irmOJxoUQ0uq
+         F7lZqFAyeXSFCvPL9iK+lnaXFiYmhWilzAQWDKPHkE2uKmqnF9vqETWnjO6CxBFBsFhf
+         YZKHNha8xZrAHim3akBMZKnW4X4INl0Ams2Ie5Mh7qIWPu6uIlrWyx74Do1hU5Ue6b1e
+         cCJ2Og0Uo/N9cHUR1dpzZM2NEHN1GOT3KoxQxXNfEa9DCGtefM3mz4Ge7nqd/bEyRRZq
+         NQOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=o2hUyBNJx1Jb8VgZ6GiR+mEMvZYh2PnrFc9dZsVatss=;
-        b=BNuxwsthhyHst0jPz/krfNZCQyi7jUcN4373Fglr05v/8I/2Xb8H1NXmteCgzRfyJT
-         MnL10s33l/qZE979/BQ87H/VHDICDYYCs9MPaQuAZFr1aj1UHJRmQUNMeVr1nYSKArkx
-         ebcLjYgym+jtVxYsHWFVbWY1m08rfoqq93M/nzQwyjLz8OaZM6GgEv4Z/gqloaMHw8V0
-         SpqZiMMPwUIObmzyUbAQSztGVJw+GoCJEHSnfqNGZFgxP63xLy68WZosANo1OXmqUGgz
-         878VvX1cOiyLXyc9ZXUgH+cyvl6hfjtmMt6eprosGj/vJR0sFemGHKdxbDCw9iA66vfZ
-         +kxw==
-X-Gm-Message-State: AOAM532QW+wNGeDYxPct0FR2nCwdfivbbgSI/ti1yPtucVqACB8LHVw/
-        wcFalYvCRibhLgS1Oq8A3Y9zN8NnhLdhhw==
-X-Google-Smtp-Source: ABdhPJySvH9U/9b1caQCa4KS+OHt8wFa30UCV2Q//AIy+i7A5VcqT0/PNz+HzLMlO7JuejUzyw01SQ==
-X-Received: by 2002:a17:906:eb49:: with SMTP id mc9mr6583329ejb.67.1617972013081;
-        Fri, 09 Apr 2021 05:40:13 -0700 (PDT)
-Received: from agape ([151.43.204.41])
-        by smtp.gmail.com with ESMTPSA id jo12sm1169167ejb.52.2021.04.09.05.40.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 05:40:12 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 3/3] staging: rtl8723bs: remove MSG_8192C macro definitions
-Date:   Fri,  9 Apr 2021 14:40:03 +0200
-Message-Id: <97f38f269e8dabb3dd7464d49022a62cd9773657.1617971593.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1617971592.git.fabioaiuto83@gmail.com>
-References: <cover.1617971592.git.fabioaiuto83@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Cr3MWabTM6V/ksBGwd1Fv/a5RR46Fk3oRrRz+yH2SMQ=;
+        b=a5O1rSr3x9Bl6ZC/g4rlxfUypdf9Pz+58jO5On23i7gq8LPKbG1dKoRpLQlfaPXqqq
+         0mBfPmF8kbs0cm/y26PcnxmuUElJ2RRy6hXfndFvqYHFs/LkTJ7MBwRcEAErofUZgO5p
+         73VDl3MdPBm9LozFJTgGnxXpkt03q53wUg5QI95h+BqIPek0F7ePKEwSjfJpf7I1TV4D
+         ZsZhquJSrjItNXNahPeOf1l8Cbo+NnWMe78T7PcZDd/vU8Qp/0/HzPMV6JxAxgQkmFpF
+         A1Ao39o1oY6PextjApiQ1ef2/Hpe8DO1FKsgv4wEl5pI5PfnxOAErkhvr7XZZs+1GV2k
+         UQdw==
+X-Gm-Message-State: AOAM531UzzoxlSzcWtT4HIm+wAdpe0QgQj+PMrXOwu90gbx3K0otzRCL
+        +vbiIiYu4csrysA4bnbDDQO+tRmGcCWu6eogxIIWTw==
+X-Google-Smtp-Source: ABdhPJzl79i7iMaiAodbMaScK8s3swtu232FR+p+Bi/JsO87cIpvlPk6WnxxJMCos0YG9754L3CdcY+XFTjvLyluqpM=
+X-Received: by 2002:a05:6402:42d3:: with SMTP id i19mr17274011edc.220.1617972100093;
+ Fri, 09 Apr 2021 05:41:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210408130605.541796-1-gi-oh.kim@ionos.com> <20210408220502.8126bc2f278b5199707ec122@linux-foundation.org>
+ <CAHp75VcjNWycV-SLUzzfgtMp8BzXUiUAoz_BYr4+nCazAzsrqw@mail.gmail.com>
+In-Reply-To: <CAHp75VcjNWycV-SLUzzfgtMp8BzXUiUAoz_BYr4+nCazAzsrqw@mail.gmail.com>
+From:   Gioh Kim <gi-oh.kim@ionos.com>
+Date:   Fri, 9 Apr 2021 14:41:04 +0200
+Message-ID: <CAJX1YtZtXoLmbwvAk40CHZ0_LtE__+SvvyWYYvcJaHAeDH4Chg@mail.gmail.com>
+Subject: Re: [PATCH v4] lib/string: Introduce sysfs_streqcase
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        "dan.j.williams@intel.com" <dan.j.williams@intel.com>,
+        "laniel_francis@privacyrequired.com" 
+        <laniel_francis@privacyrequired.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "dja@axtens.net" <dja@axtens.net>,
+        "haris.iqbal@ionos.com" <haris.iqbal@ionos.com>,
+        "jinpu.wang@ionos.com" <jinpu.wang@ionos.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove obsolete MSG_8192C macro definitions.
+On Fri, Apr 9, 2021 at 9:11 AM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+>
+>
+> On Friday, April 9, 2021, Andrew Morton <akpm@linux-foundation.org> wrote=
+:
+>>
+>> On Thu,  8 Apr 2021 15:06:05 +0200 Gioh Kim <gi-oh.kim@ionos.com> wrote:
+>>
+>> > As the name shows, it checks if strings are equal in case insensitive
+>> > manner.
+>>
+>> Peh.  Who would die if we simply made sysfs_streq() case-insensitive?
+>
+>
+> I think it will be a disaster. Like we have with case-insensitive file sy=
+stems. Famous Mac case that most of the soft stop working when they actuall=
+y moved to the right direction, I.e. case-sensitive. Personally I=E2=80=99m=
+ against such change.
 
-MSG_8192C is a private trace mechanism macro and is deactivated.
-(i.e. the default behaviour is _do nothing_)
-The only way to activate it is to manually define a debug
-symbol.
+Hi Andy,
 
-So just remove it.
+I am sorry but I am a little bit confused because I don't have any
+experience with case-insensitive file systems.
+I think the case-insensitive file system does not care if sysfs_streq
+is changed to case-insensitive.
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/include/rtw_debug.h | 6 ------
- 1 file changed, 6 deletions(-)
+For example, if the case-insensitive file system would accept the "OFF" com=
+mand,
+the user can pass either of "off" and "OFF" and both will work with
+case-insensitive strfs_streq.
 
-diff --git a/drivers/staging/rtl8723bs/include/rtw_debug.h b/drivers/staging/rtl8723bs/include/rtw_debug.h
-index 4c159c1a0747..65e1d9bd7099 100644
---- a/drivers/staging/rtl8723bs/include/rtw_debug.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_debug.h
-@@ -131,7 +131,6 @@
- 	#define	_MODULE_DEFINE_	_module_efuse_
- #endif
- 
--#define MSG_8192C(x, ...) do {} while (0)
- #define DBG_8192C(x, ...) do {} while (0)
- #define DBG_871X_LEVEL(x, ...) do {} while (0)
- 
-@@ -196,11 +195,6 @@
- 
- #ifdef DEBUG
- #if	defined(_dbgdump)
--	#undef MSG_8192C
--	#define MSG_8192C(...)     do {\
--		_dbgdump(DRIVER_PREFIX __VA_ARGS__);\
--	} while (0)
--
- 	#undef DBG_8192C
- 	#define DBG_8192C(...)     do {\
- 		_dbgdump(DRIVER_PREFIX __VA_ARGS__);\
--- 
-2.20.1
+On the contrary, I think the case-sensitive file system would not like
+it if sysfs_streq is made case-insensitive.
 
+Could you please inform me what I am missing?
+
+>
+>
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
