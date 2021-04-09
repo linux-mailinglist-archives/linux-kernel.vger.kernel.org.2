@@ -2,124 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70F34359EE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92988359EEE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233538AbhDIMgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:36:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
+        id S232087AbhDIMkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:40:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhDIMgS (ORCPT
+        with ESMTP id S231127AbhDIMkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:36:18 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799F6C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 05:36:05 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id r20so6273232ljk.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 05:36:05 -0700 (PDT)
+        Fri, 9 Apr 2021 08:40:21 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63865C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 05:40:08 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id bx20so5225855edb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 05:40:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tg6sgY5o6KJ5S57CRLT5oBYc675XGvjvO0a75IDhy4M=;
-        b=tD/+WsHQQWYusIiNpWcK7bwWVSNKlMLnyRF8CoJ3CZhMIHxMdvtXVATkH2bY6CsvV6
-         4EeqLJcMu8Lx6dXjIGijM9Z71Ysw7FoPhIt4pVwzFK6l7vQQG0p8gmVQcZtmvl5D6mmc
-         vnQ4vXPZDk4T7ERYAIs5HJIK9/rMwsb/PGlIkgHlPxrLJNQV9qOSD2eFT+qGhgN9rW/v
-         i+5TnZ7zezyrlf0LjEA3nkURPCbcKV3D0THgJHWfMYiU94A6/Dnr2CLqYXHUaZSeUV9C
-         jYnvEDTnSyDvM2CCXvtBaB8N7OxfbX9Umv48J+Clvg4cWNbqEuv5MYIvFfkzoLNaHZdC
-         sk4w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0qM2/IEN+AkA2uS3y4nQykwtyhpicukZG09T/lUhejA=;
+        b=EFvfa7U5cFR3alwiybhEPjfgtDFCgIClKD+30qf2LTaGFVrBfvylJStcoAaPeoBtku
+         nc8dLfRXwVWTO0eFAdK1UUSKfzUDAqwksimAweIKd3CM5jwWqcWv100XdddfaImxITKA
+         ETYc7CrGxUsyfMk/chA99zG8gzjsWAGMOcDvjyaHybaNFuI/MeGc7KEbyhNHQUW7258W
+         1zCcSrzt6bwC/L4+KzlfNnyABANhSBbESOdFdeHdUSNxq5X5HCidp64cyNrRQpdXX1oI
+         m150sU+GnM7iI5J0EZORZRBN5eCw8D+Cnojztv3ktoAMjjnLAJhpWrZkXTCzxMNANVx5
+         THrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tg6sgY5o6KJ5S57CRLT5oBYc675XGvjvO0a75IDhy4M=;
-        b=seg8k9c34nzpQ/al98QuR6AQMgMKmx7hmAW3S2OEAq5Nnw3W3Jpnx4oVwdBw1/epXh
-         /djRlEMaXaBQQ/wFAzNH7woKIQjJnUjAl0Q8gHNaryTpEh40g9HUY9Le+ItSzOsqBzta
-         tz1sBR5NliboiovGLeeP2CoT5ZYgO6OTXt5NQmZ4c3sCiT7OZpYoexWVXBgUlDSrnnEM
-         NwM7DQvdwYkCjfcfHc2t7mqoA/uJZhdfsVVxsVR2Hk5XyeQlZCczxjxonHPUZEJshUKt
-         XRRarVn9iCA1dbg0h34UAB71WBaZfLDd7JS6+3JrQEVyvCbt5gyobr4wokvZvd37bmga
-         2otA==
-X-Gm-Message-State: AOAM532b25ioXRfpXFbFw6F0QT2Jm3juLv5/JTONma4oxKxip9wT8dtN
-        WoXm1ds3TBERMelfj3+a4DQT3czrO5hCye2zh7jn3CZOTDsWLwUA
-X-Google-Smtp-Source: ABdhPJxh1RNVQiQp5bCHRakekzyhAZR4aqS7papfBzgGL0DdgK61i7YYHDZZLT+jLT3UuH+d/zlCtwSkkzSHByUlUhw=
-X-Received: by 2002:a2e:1649:: with SMTP id 9mr9682701ljw.74.1617971763963;
- Fri, 09 Apr 2021 05:36:03 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0qM2/IEN+AkA2uS3y4nQykwtyhpicukZG09T/lUhejA=;
+        b=SH1r9zusTVu5jJ0KXyOb8CV4sieByLueee1UlO0uvI+o+npWv3dVU8wNEwR7KjUil8
+         RLdQk+rZBErwXDfW9BPNquVb3mQBqGd5To5Idn343pt1pFz8kfu9fh/cuJ77P52/r+rY
+         V79/VU32muXQItsYDgeSIjIRomZcJnY0hXbvyqb1XmV09yVw4UgKQE1yBv2PDOMYG6kS
+         TZSF+xM0g+pf6JLIQLdKSz2vbvcYFweG08nyAC0p3LBQoAfRSwnAYKeUihmnMrOKi2zc
+         +o7ajrcpKgpK8+wJL7lV15q9PqiXG+Qp7zoqnsp/U3HM67bXd/0xsTIb94Tw22lGoSFc
+         ctPw==
+X-Gm-Message-State: AOAM533TL5GsjzrGYJ3mcKvJcSL71Xaq/1o/AZXqCl7TJfTOGB4r0kw4
+        FuTM8noi+v2XLwuFa+4p5BW1wgXd0wJOXA==
+X-Google-Smtp-Source: ABdhPJxTaBjOSB9vWQ1708QBNB4+vYEGBm6HcYGzW0A2a2nN/Nr6T0GnQ44DX8tgMokH+QXEdGFg3Q==
+X-Received: by 2002:a50:e607:: with SMTP id y7mr17608650edm.18.1617972007229;
+        Fri, 09 Apr 2021 05:40:07 -0700 (PDT)
+Received: from agape ([151.43.204.41])
+        by smtp.gmail.com with ESMTPSA id f10sm1349546edd.29.2021.04.09.05.40.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 05:40:06 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Fabio Aiuto <fabioaiuto83@gmail.com>
+Subject: [PATCH 0/3] staging: rtl8723bs: remove MGS_8192C trace logs
+Date:   Fri,  9 Apr 2021 14:40:00 +0200
+Message-Id: <cover.1617971592.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210409112035.27221-1-david@redhat.com>
-In-Reply-To: <20210409112035.27221-1-david@redhat.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 9 Apr 2021 14:35:52 +0200
-Message-ID: <CACRpkdb_eQrcCFV9Q9uho8E6HO4X0dRJp1qAdJBcT82=sZ1v7A@mail.gmail.com>
-Subject: Re: [PATCH v3] drivers: introduce and use WANT_DMA_CMA for soft
- dependencies on DMA_CMA
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Eric Anholt <eric@anholt.net>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Suman Anna <s-anna@ti.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        linux-mips@vger.kernel.org,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 1:20 PM David Hildenbrand <david@redhat.com> wrote:
+This patchset removes the tracing private macro MSG_8192C.
 
-> Random drivers should not override a user configuration of core knobs
-> (e.g., CONFIG_DMA_CMA=n). Applicable drivers would like to use DMA_CMA,
-> which depends on CMA, if possible; however, these drivers also have to
-> tolerate if DMA_CMA is not available/functioning, for example, if no CMA
-> area for DMA_CMA use has been setup via "cma=X". In the worst case, the
-> driver cannot do it's job properly in some configurations.
+This macro belongs to a redundant driver specific tracing
+macro family.
 
-Looks good to me. At least a lot better than what we have.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Moreover the default behaviour is _do nothing_ as to
+activate it, it's necessary to hardcode a DEBUG symbol
+definition.
 
-> Let's see if this approach is better for soft dependencies (and if we
-> actually have some hard dependencies in there). This is the follow-up
-> of
->   https://lkml.kernel.org/r/20210408092011.52763-1-david@redhat.com
->   https://lkml.kernel.org/r/20210408100523.63356-1-david@redhat.com
+Fabio Aiuto (3):
+  staging: rtl8723bs: remove all MSG_8192C logs
+  staging: rtl8723bs: remove commented out MSG_8192C log
+  staging: rtl8723bs: remove MSG_8192C macro definitions
 
-You can just add these to the commit message with Link:
-when applying so people can easily find the discussion from the
-commit.
+ drivers/staging/rtl8723bs/hal/odm.c               | 3 ---
+ drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 4 ----
+ drivers/staging/rtl8723bs/hal/sdio_halinit.c      | 4 ----
+ drivers/staging/rtl8723bs/include/rtw_debug.h     | 6 ------
+ 4 files changed, 17 deletions(-)
 
-> I was wondering if it would make sense in some drivers to warn if either
-> CONFIG_DMA_CMA is not available or if DRM_CMA has not been configured
-> properly - just to give people a heads up that something might more likely
-> go wrong; that would, however, be future work.
+-- 
+2.20.1
 
-I think the frameworks  (DRM_*_CMA_HELPER)
-should pr_info something about it so the individual drivers
-don't have to sanity check their entire world.
-
-Yours,
-Linus Walleij
