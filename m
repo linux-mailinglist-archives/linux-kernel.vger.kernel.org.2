@@ -2,156 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA741359BC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3400359BC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233544AbhDIKQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:16:33 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:53964 "EHLO
-        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234104AbhDIKLr (ORCPT
+        id S233456AbhDIKQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234013AbhDIKNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:11:47 -0400
-Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 139ABX3q022004
-        for <linux-kernel@vger.kernel.org>; Fri, 9 Apr 2021 13:11:33 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
-        q=dns/txt; i=@ics.forth.gr; t=1617963088; x=1620555088;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=QFV5gLACFlf4gevkP93SS+cgfDbAfoayGgtdPXRAXUE=;
-        b=GzrHi45RpDzuDPwwWgvAMn9JV4upmtq6ntwEaN+FRE8uvHx93Qu6lIU7fMqGgIA9
-        TmKBInCvcL0jMpsh3wRT3bmxNTp3/zqjSAdqCzFano6bssRQXdwV+Ad+ijkES0my
-        bMDnPagm/ZvSK2LmaawDCdRQB+PtC8ZL/wbEHlk1froJchVShdMwJKAZFKwDd9Y+
-        XmW3oVS8uZe+vKgRQm9CNmRzJrTENTTHjcAghnpCYQIAyJxDitH3RH1DUOPKmBeE
-        oeFVg8QKcIQJHYHhiAxeiFitbHqpjp4+VWG1m0yknzMAZYGKoWZATJrdKmgL0oea
-        S6Wt5CXgpDt3E0P7TC4F4Q==;
-X-AuditID: 8b5b014d-a70347000000209f-39-6070284fe5d0
-Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id AA.10.08351.F4820706; Fri,  9 Apr 2021 13:11:28 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+        Fri, 9 Apr 2021 06:13:55 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B677EC0613DC
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 03:12:07 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id b9so5084234wrs.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 03:12:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qUEnxg1OMOOSur94A9aN7FlFsVHuAQgGH0u9Ma67aXY=;
+        b=libOP/UUaphY8XlEKHcmzyTKJOCF1p/aoHsSQX/kwn4Z4H5pndIo31iu9Inqw2j95q
+         FvxzDAvcH+hgrXdcKOik/rcQZAG9Kq1WkmID0h2Y4V6HBHHse5x1WrnoZEhb0Lgk0GZS
+         GzUmyK5Lqj9UyNNCJ0beE1wHgj9m/bEpXMXHQmcgqX8oQRegUGyZOUZhs2HwNGRg8pgS
+         U/4M8v4TcPmJ6+9CgqvzXL2onF1p1buuRocfbYkKABJBZHVZYPo5yRWrzuFqmgu0cBg3
+         H1nnzuz9fcYeT56jP44hc7YROrpRWrcIfXmThnTTY2LLLaqkf8ATriKtnzruPIJK7Yx8
+         pL8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qUEnxg1OMOOSur94A9aN7FlFsVHuAQgGH0u9Ma67aXY=;
+        b=J11EX7pBNyYvamDlH/DviTDdvlzWLHRQ+zo++6F6eORqn5eCNstp17vDEluVGsDNHs
+         BaI/KDA3dZK2C7QVlrYqV5sgXqpJAJb/TlgAamGsqXLS4oioD+rSGL1lJmnJwTBgRf1T
+         KOmM5OTLrDg3i2+m/eKq6mUWJwiLfFlxXuDxlwfETu+lawElJZPm1gftgw/kfoNcrVlq
+         FphwBaj0cvxyyTbmdhTXDYpU9f0AkSA8sNDq5nui/hzcG+NGf/cOChIPdkBljCUjO5m/
+         /LZopC83TTm9hZOM5Z+0f+AY6Aql3CAJgrRmHWOWX1q7IczO2ludTEKAqzGIB3LyE5Ia
+         P4GA==
+X-Gm-Message-State: AOAM5317adern+Yk7cKZUo8Tksa3I1xcjNhYUv/8juOlOzqMJ508Mswb
+        J+6SZ0ETX4O7a1rJUMCS5tB+mQ==
+X-Google-Smtp-Source: ABdhPJwCQh2lHhwl3BW2JH3jGbEZvdjBGs8b9p0Ock98TtAcZGIfIX/AnZHQdwZwdsF0ZSztRjf2dw==
+X-Received: by 2002:a5d:66c8:: with SMTP id k8mr16924599wrw.240.1617963126420;
+        Fri, 09 Apr 2021 03:12:06 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id n4sm2902160wmq.40.2021.04.09.03.12.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 03:12:05 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 12:11:47 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org
+Subject: Re: [PATCH 2/2] iommu/sva: Remove mm parameter from SVA bind API
+Message-ID: <YHAoY9+w2ebYZ7VV@myrica>
+References: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1617901736-24788-2-git-send-email-jacob.jun.pan@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Fri, 09 Apr 2021 13:11:27 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Nick Kossifidis <mick@ics.forth.gr>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/5] RISC-V: Improve init_resources
-Organization: FORTH
-In-Reply-To: <CAMuHMdWnRFuzSzSMCgBtNwxtq+itQ+iuX+i7nu5RD1E1W1FW-g@mail.gmail.com>
-References: <20210405085712.1953848-1-mick@ics.forth.gr>
- <20210405085712.1953848-4-mick@ics.forth.gr>
- <CAMuHMdWi+wo0+PCR6B1wyXVesG-kL9NQt8XFBuWhZ3SdVUaLZg@mail.gmail.com>
- <5a09d1f0ded4581c9e7458f546db9329@mailhost.ics.forth.gr>
- <CAMuHMdWnRFuzSzSMCgBtNwxtq+itQ+iuX+i7nu5RD1E1W1FW-g@mail.gmail.com>
-Message-ID: <f17d8d4de8f11b9a914e1b413460a756@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.16
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMLMWRmVeSWpSXmKPExsXSHT1dWTdAoyDB4N8KFotnt/YyWVzeNYfN
-        YtvnFjaL5nfn2C1eXu5htmibxe/A5vHm5UsWj4ebLjF5HDrcweixeUm9x6Xm6+wenzfJBbBF
-        cdmkpOZklqUW6dslcGX8797HVnBQuuLagWXMDYxLRbsYOTkkBEwkDjfeZu9i5OIQEjjKKLFw
-        XxsTRMJUYvbeTkYQm1dAUOLkzCcsIDazgIXE1Cv7GSFseYnmrbOZQWwWAVWJpjPzwGrYBDQl
-        5l86CGRzcIgI6ErM+ckEMp9ZoJNJ4sf6TWC9wgJWEhNm/gPbxS8gLPHp7kVWEJtTIFDi1+vl
-        zBAHbWCS+Lq7ix3iCBeJ2X2vmSGOU5H48PsBO8gCUSB781ylCYyCs5CcOgvJqbOQnLqAkXkV
-        o0BimbFeZnKxXlp+UUmGXnrRJkZwuDP67mC8vfmt3iFGJg7GQ4wSHMxKIrzNzfkJQrwpiZVV
-        qUX58UWlOanFhxilOViUxHl59SbECwmkJ5akZqemFqQWwWSZODilGpgsatO4Z/iysCnmZdfL
-        rxI1OKO4escvqfyrhvMUjZjE/qccV48vCzh+oeXvi4XNLWaCO73PZ5qnrcw0mcAd6Mb0/s7C
-        Hw89ZR71PVgTwrE1/L9j3N4zpg/nnjl0+Y7w/6pyi2lxbx2FL1yY9+T9J6bNPuxGZfFmu8wn
-        B6zaxM714mSkgsSKHdG5KTsvX9pX+f6Xi3vSqtsTNi6oXt7xIGifzYXJzLPCzHz2h9Qc13Kx
-        C/kZrxG5ZB7T5Dm/xXLe5l24Jvroz+PfRg9eiEcE5HjsKA96zHO2Te7ypxknGX8IJs6blGPY
-        VbK68nTZ1jupwoXHfva+dVLbcvU1r/b0pdN2qp59YBIV8eMzz7u4k5z/lFiKMxINtZiLihMB
-        71MmyeYCAAA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617901736-24788-2-git-send-email-jacob.jun.pan@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Στις 2021-04-06 11:22, Geert Uytterhoeven έγραψε:
-> Hi Nick,
-> 
-> On Tue, Apr 6, 2021 at 10:11 AM Nick Kossifidis <mick@ics.forth.gr> 
-> wrote:
->> Hello Geert,
->> Στις 2021-04-06 10:19, Geert Uytterhoeven έγραψε:
->> > On Mon, Apr 5, 2021 at 10:57 AM Nick Kossifidis <mick@ics.forth.gr>
->> > wrote:
->> >> * Kernel region is always present and we know where it is, no
->> >> need to look for it inside the loop, just ignore it like the
->> >> rest of the reserved regions within system's memory.
->> >>
->> >> * Don't call memblock_free inside the loop, if called it'll split
->> >> the region of pre-allocated resources in two parts, messing things
->> >> up, just re-use the previous pre-allocated resource and free any
->> >> unused resources after both loops finish.
->> >>
->> >> * memblock_alloc may add a region when called, so increase the
->> >> number of pre-allocated regions by one to be on the safe side
->> >> (reported and patched by Geert Uytterhoeven)
->> >>
->> >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
->> >
->> > Where does this SoB come from?
->> >
->> >> Signed-off-by: Nick Kossifidis <mick@ics.forth.gr>
->> >
->> >> --- a/arch/riscv/kernel/setup.c
->> >> +++ b/arch/riscv/kernel/setup.c
->> >
->> >> @@ -129,53 +139,42 @@ static void __init init_resources(void)
->> >>         struct resource *res = NULL;
->> >>         struct resource *mem_res = NULL;
->> >>         size_t mem_res_sz = 0;
->> >> -       int ret = 0, i = 0;
->> >> -
->> >> -       code_res.start = __pa_symbol(_text);
->> >> -       code_res.end = __pa_symbol(_etext) - 1;
->> >> -       code_res.flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
->> >> -
->> >> -       rodata_res.start = __pa_symbol(__start_rodata);
->> >> -       rodata_res.end = __pa_symbol(__end_rodata) - 1;
->> >> -       rodata_res.flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
->> >> -
->> >> -       data_res.start = __pa_symbol(_data);
->> >> -       data_res.end = __pa_symbol(_edata) - 1;
->> >> -       data_res.flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
->> >> +       int num_resources = 0, res_idx = 0;
->> >> +       int ret = 0;
->> >>
->> >> -       bss_res.start = __pa_symbol(__bss_start);
->> >> -       bss_res.end = __pa_symbol(__bss_stop) - 1;
->> >> -       bss_res.flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
->> >> +       /* + 1 as memblock_alloc() might increase
->> >> memblock.reserved.cnt */
->> >> +       num_resources = memblock.memory.cnt + memblock.reserved.cnt +
->> >> 1;
->> >> +       res_idx = num_resources - 1;
->> >>
->> >> -       mem_res_sz = (memblock.memory.cnt + memblock.reserved.cnt) *
->> >> sizeof(*mem_res);
->> >
->> > Oh, you incorporated my commit ce989f1472ae350e ("RISC-V: Fix
->> > out-of-bounds
->> > accesses in init_resources()") (from v5.12-rc4) into your patch.
->> > Why? This means your patch does not apply against upstream.
->> >
->> 
->> Sorry if this looks awkward, I'm under the impression that new 
->> features
->> go on for-next instead of fixes and your patch hasn't been merged on
->> for-next yet. I thought it would be cleaner to have one patch to merge
->> for init_resources instead of two, and simpler for people to test the
->> series. I can rebase this on top of fixes if that works better for you
->> or Palmer.
-> 
-> Ideally the fixes branch is part of the next branch.  That also helps
-> to avoid other people having to fix conflicts when merging both.
-> 
+On Thu, Apr 08, 2021 at 10:08:56AM -0700, Jacob Pan wrote:
+> diff --git a/drivers/iommu/iommu-sva-lib.c b/drivers/iommu/iommu-sva-lib.c
+> index bd41405..bd99f6b 100644
+> --- a/drivers/iommu/iommu-sva-lib.c
+> +++ b/drivers/iommu/iommu-sva-lib.c
+> @@ -12,27 +12,33 @@ static DECLARE_IOASID_SET(iommu_sva_pasid);
+>  
+>  /**
+>   * iommu_sva_alloc_pasid - Allocate a PASID for the mm
+> - * @mm: the mm
+>   * @min: minimum PASID value (inclusive)
+>   * @max: maximum PASID value (inclusive)
+>   *
+> - * Try to allocate a PASID for this mm, or take a reference to the existing one
+> - * provided it fits within the [@min, @max] range. On success the PASID is
+> - * available in mm->pasid, and must be released with iommu_sva_free_pasid().
+> + * Try to allocate a PASID for the current mm, or take a reference to the
+> + * existing one provided it fits within the [@min, @max] range. On success
+> + * the PASID is available in the current mm->pasid, and must be released with
+> + * iommu_sva_free_pasid().
+>   * @min must be greater than 0, because 0 indicates an unused mm->pasid.
+>   *
+>   * Returns 0 on success and < 0 on error.
+>   */
+> -int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t max)
+> +int iommu_sva_alloc_pasid(ioasid_t min, ioasid_t max)
+>  {
+>  	int ret = 0;
+>  	ioasid_t pasid;
+> +	struct mm_struct *mm;
+>  
+>  	if (min == INVALID_IOASID || max == INVALID_IOASID ||
+>  	    min == 0 || max < min)
+>  		return -EINVAL;
+>  
+>  	mutex_lock(&iommu_sva_lock);
+> +	mm = get_task_mm(current);
+> +	if (!mm) {
+> +		ret = -EINVAL;
+> +		goto out_unlock;
+> +	}
 
-OK I'll re-base this on top of fixes instead.
+I still think it would be more elegant to keep the choice of context in
+iommu_sva_bind_device() and pass it down to leaf functions such as
+iommu_sva_alloc_pasid(). The patch is trying to solve two separate
+problems:
+
+* We don't have a use-case for binding the mm of a remote process (and
+  it's supposedly difficult for device drivers to do it securely). So OK,
+  we remove the mm argument from iommu_sva_bind_device() and use the
+  current mm. But the IOMMU driver isn't going to do get_task_mm(current)
+  every time it needs the mm being bound, it will take it from
+  iommu_sva_bind_device(). Likewise iommu_sva_alloc_pasid() shouldn't need
+  to bother with get_task_mm().
+
+* cgroup accounting for IOASIDs needs to be on the current task. Removing
+  the mm parameter from iommu_sva_alloc_pasid() doesn't help with that.
+  Sure it indicates that iommu_sva_alloc_pasid() needs a specific task
+  context but that's only for cgroup purpose, and I'd rather pass the
+  cgroup down from iommu_sva_bind_device() anyway (but am fine with
+  keeping it within ioasid_alloc() for now). Plus it's an internal helper,
+  easy for us to check that the callers are doing the right thing.
+
+>  	if (mm->pasid) {
+>  		if (mm->pasid >= min && mm->pasid <= max)
+>  			ioasid_get(mm->pasid);
+> @@ -45,22 +51,32 @@ int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t max)
+>  		else
+>  			mm->pasid = pasid;
+>  	}
+> +	mmput(mm);
+> +out_unlock:
+>  	mutex_unlock(&iommu_sva_lock);
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(iommu_sva_alloc_pasid);
+>  
+>  /**
+> - * iommu_sva_free_pasid - Release the mm's PASID
+> + * iommu_sva_free_pasid - Release the current mm's PASID
+>   * @mm: the mm
+>   *
+>   * Drop one reference to a PASID allocated with iommu_sva_alloc_pasid()
+>   */
+> -void iommu_sva_free_pasid(struct mm_struct *mm)
+> +void iommu_sva_free_pasid(void)
+>  {
+> +	struct mm_struct *mm;
+> +
+>  	mutex_lock(&iommu_sva_lock);
+> +	mm = get_task_mm(current);
+> +	if (!mm)
+> +		goto out_unlock;
+> +
+
+More importantly, could we at least dissociate free_pasid() from the
+current process?  Otherwise drivers can't clean up from a workqueue (as
+amdkfd does) or from an rcu callback. Given that iommu_sva_unbind_device()
+takes the SVA handle owned by whomever did bind(), there shouldn't be any
+security issue. For the cgroup problem, ioasid.c could internally keep
+track of the cgroup used during allocation rather than assuming the
+context of ioasid_put() is the same as ioasid_get()
+
+>  	if (ioasid_put(mm->pasid))
+>  		mm->pasid = 0;
+> +	mmput(mm);
+> +out_unlock:
+>  	mutex_unlock(&iommu_sva_lock);
+>  }
+>  EXPORT_SYMBOL_GPL(iommu_sva_free_pasid);
+> diff --git a/drivers/iommu/iommu-sva-lib.h b/drivers/iommu/iommu-sva-lib.h
+> index b40990a..278b8b4 100644
+> --- a/drivers/iommu/iommu-sva-lib.h
+> +++ b/drivers/iommu/iommu-sva-lib.h
+> @@ -8,8 +8,8 @@
+>  #include <linux/ioasid.h>
+>  #include <linux/mm_types.h>
+>  
+> -int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t max);
+> -void iommu_sva_free_pasid(struct mm_struct *mm);
+> +int iommu_sva_alloc_pasid(ioasid_t min, ioasid_t max);
+> +void iommu_sva_free_pasid(void);
+>  struct mm_struct *iommu_sva_find(ioasid_t pasid);
+>  
+>  #endif /* _IOMMU_SVA_LIB_H */
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index bf0a20f..25840e6 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/property.h>
+>  #include <linux/fsl/mc.h>
+>  #include <linux/module.h>
+> +#include <linux/sched/mm.h>
+>  #include <trace/events/iommu.h>
+>  
+>  static struct kset *iommu_group_kset;
+> @@ -2959,9 +2960,8 @@ int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
+>  EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+>  
+>  /**
+> - * iommu_sva_bind_device() - Bind a process address space to a device
+> + * iommu_sva_bind_device() - Bind the current process address space to a device
+>   * @dev: the device
+> - * @mm: the mm to bind, caller must hold a reference to it
+>   * @flags: options for the bind operation
+>   *
+>   * Create a bond between device and address space, allowing the device to access
+
+There is another reference to @mm to remove in the function description
+
+> @@ -2975,9 +2975,10 @@ EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+>   * On error, returns an ERR_PTR value.
+>   */
+>  struct iommu_sva *
+> -iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
+> +iommu_sva_bind_device(struct device *dev, unsigned int flags)
+>  {
+>  	struct iommu_group *group;
+> +	struct mm_struct *mm = NULL;
+>  	struct iommu_sva *handle = ERR_PTR(-EINVAL);
+>  	const struct iommu_ops *ops = dev->bus->iommu_ops;
+>  
+> @@ -2989,8 +2990,11 @@ iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int fla
+>  		return ERR_PTR(-ENODEV);
+>  
+>  	/* Supervisor SVA does not need the current mm */
+> -	if ((flags & IOMMU_SVA_BIND_SUPERVISOR) && mm)
+> -		return ERR_PTR(-EINVAL);
+> +	if (!(flags & IOMMU_SVA_BIND_SUPERVISOR)) {
+> +		mm = get_task_mm(current);
+> +		if (!mm)
+> +			return ERR_PTR(-EINVAL);
+> +	}
+>  	/* Ensure device count and domain don't change while we're binding */
+>  	mutex_lock(&group->mutex);
+>  
+> @@ -3004,6 +3008,8 @@ iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int fla
+>  		goto out_unlock;
+>  
+>  	handle = ops->sva_bind(dev, mm, flags);
+> +	if (mm)
+> +		mmput(mm);
+>  out_unlock:
+>  	mutex_unlock(&group->mutex);
+>  	iommu_group_put(group);
+> diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+> index 27e0e04..da4401a 100644
+> --- a/drivers/misc/uacce/uacce.c
+> +++ b/drivers/misc/uacce/uacce.c
+> @@ -99,7 +99,7 @@ static int uacce_bind_queue(struct uacce_device *uacce, struct uacce_queue *q)
+>  	if (!(uacce->flags & UACCE_DEV_SVA))
+>  		return 0;
+>  
+> -	handle = iommu_sva_bind_device(uacce->parent, current->mm, 0);
+> +	handle = iommu_sva_bind_device(uacce->parent, 0);
+>  	if (IS_ERR(handle))
+>  		return PTR_ERR(handle);
+>  
+> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> index a3fbaa2..cf752f3 100644
+> --- a/include/linux/iommu.h
+> +++ b/include/linux/iommu.h
+> @@ -231,8 +231,8 @@ struct iommu_iotlb_gather {
+>   * @dev_feat_enabled: check enabled feature
+>   * @aux_attach/detach_dev: aux-domain specific attach/detach entries.
+>   * @aux_get_pasid: get the pasid given an aux-domain
+> - * @sva_bind: Bind process address space to device
+> - * @sva_unbind: Unbind process address space from device
+> + * @sva_bind: Bind the current process address space to device
+> + * @sva_unbind: Unbind the current process address space from device
+
+These don't need changing since we're still passing the mm down to the
+drivers
+
+Thanks,
+Jean
+
+>   * @sva_get_pasid: Get PASID associated to a SVA handle
+>   * @page_response: handle page request response
+>   * @cache_invalidate: invalidate translation caches
+> @@ -652,7 +652,6 @@ void iommu_aux_detach_device(struct iommu_domain *domain, struct device *dev);
+>  int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev);
+>  
+>  struct iommu_sva *iommu_sva_bind_device(struct device *dev,
+> -					struct mm_struct *mm,
+>  					unsigned int flags);
+>  void iommu_sva_unbind_device(struct iommu_sva *handle);
+>  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
+> @@ -1028,7 +1027,7 @@ iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
+>  }
+>  
+>  static inline struct iommu_sva *
+> -iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
+> +iommu_sva_bind_device(struct device *dev, unsigned int flags)
+>  {
+>  	return NULL;
+>  }
+> -- 
+> 2.7.4
+> 
