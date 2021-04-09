@@ -2,605 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9172935A4BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:36:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2938035A4C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234319AbhDIRhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41354 "EHLO
+        id S234323AbhDIRjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:39:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234169AbhDIRhC (ORCPT
+        with ESMTP id S232855AbhDIRjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:37:02 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5580FC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:36:49 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id z22-20020a17090a0156b029014d4056663fso3578031pje.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:36:49 -0700 (PDT)
+        Fri, 9 Apr 2021 13:39:45 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5AA0C061761;
+        Fri,  9 Apr 2021 10:39:30 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id z10so6592634qkz.13;
+        Fri, 09 Apr 2021 10:39:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mJaagzwmcPBEqhRDdpSKhyBO2gPryJhAKnh/lrCyZxs=;
-        b=oTY2mTtLdLMpPirGdjcfRUbrfGUFUrbhcql99bh3xgY/vOztynS6H0LvmdPvVNZ1Si
-         69cMQKvFoiWRxGroCpClnx/aRaUdUJGwusmQiwubVHx9sp6h4iBh1G9/+Nmf47BxiZbu
-         08i5xIpZKsjQMwpGt9Uhoc3nD2PtAtdc1Fu9QwAw52zLm5qJ1Sw5c5UxNeAt+yiJlvsw
-         ZUW2cJB6/rcWIwwd5Ci+DG5OUmKtHEwwU5sMpS1O1LeeSOnOiwllYehXkB1lmPaQRVxK
-         QzNU/7xFX81uz2RwIjqURHodMWs8IuhuSqQdn3I1OHM51vRQqVzqglhlysPqIoBGg+Z1
-         /kNg==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=OnTY5y3eYrrxwZB5KHZ1/v8b3bP4FnskuWxwou/nbxo=;
+        b=U02vN17LFVbz6VVjKj4k5ibo/v6+znUxgRqNthWqDOuDYzXxS95p+//dfeu/U7KsKC
+         9IY8rwNe+zcGDRVKBQBeTKViJwoPVOUq1TwLfSNgetjXlDCexI+B/Bu9rnO+z43wPU/s
+         pmJPdZqNOzmgjnEa+TbhH6doW0Gts3kj3gDhk4K6B9PserHZzObCWBMVg3KcFaDZh5tn
+         cc9fJ4/YE+Xzg819a/Oq9gLuBxvXAK7cyMi0pDlnfUGsloL046s9GZxwtOC8bg+rfoi2
+         yuGa2qSbLyV37Q6EgSVeV0TH/3zb6nEejBipCTaYIpL+b+9wT21hGDs1gpU5jkFHi+WZ
+         KNsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mJaagzwmcPBEqhRDdpSKhyBO2gPryJhAKnh/lrCyZxs=;
-        b=OsMSK+NVL6f2IAoJlBgg/MW7FPnyDbAabdOeBp4yVnydDPadxDS6HJhDctcQlHyi6K
-         qD5WPHkPE2L+dJMBpE1O7M20wL79NPDFhqis09wqj2aJO6WFcMfOfFa3F9XNgBr84cml
-         VWlDy4r2RmzDqOeBOhb1AELxJIflgyHYg3zl/xQvjBTC/ckE8Ss16083RVNUVI9qTnUb
-         Ctu9PyeQsa/ktdc8GfSeCdfVWiWbt3ycZuwwf9rNGkPwwGlIipb/yueP4Si+C0tJOZwg
-         X8p8Gyz1xXAgAM/gTMN9VCqIfQeFniD+yZjrLHMXkmkXMWnenDxsDO5pd/e2gNl2XZ+V
-         w7rA==
-X-Gm-Message-State: AOAM5332G3PS0eFUgTjMo3VS/6fnbwpNjkk5UsAT8nrejxeGfpAZOGzx
-        8b0UfK34zzviSajTCi3EhtslCA==
-X-Google-Smtp-Source: ABdhPJwBPaZ8iD2lW0roe1xGd9Srni2ldWafkaOXXwSKYry/1Wue2o1pffghu7WP3sLSvaWPPqTZ5A==
-X-Received: by 2002:a17:902:720b:b029:e9:abcc:e60a with SMTP id ba11-20020a170902720bb02900e9abcce60amr4625255plb.20.1617989808648;
-        Fri, 09 Apr 2021 10:36:48 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id y2sm3091156pgp.2.2021.04.09.10.36.47
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=OnTY5y3eYrrxwZB5KHZ1/v8b3bP4FnskuWxwou/nbxo=;
+        b=PIMV6BpcZWE0ewEePScwrAi53k9BVvW3mKlpnfUr7k53MO5kpBRRAEoMjZvgdAruxj
+         2Kw7Q2IWfdf8pdt0h5MkdZ+5/xBeFKzERyb8m0gA1iC/LFcN7bFTQe+rd/OmzxDTlnwG
+         zg9fihaF28TsrHoqrf9l9/IqpByZ8fX/JCYyxOLqnZjV12fM1qf5MKI/Yi+wHarGeCCn
+         bHo7gjUIKDhKIA3ZEbtN2uUSa2AvQjT6qqq8E9WETIjpJt+0c+GZnVjvpVOXkOg12Yy1
+         jFbBChLvLkudw0lLgwGstOu9QjXEItWmQSjr4FuuygrAl7awlYzLN64wZ7iMj/jHjHsx
+         NYSg==
+X-Gm-Message-State: AOAM532x9CgRBUmKeQhEj28DKxeLnJIU6tbk08NCyRorXb5B63kz56/M
+        RE91nGr/cspUd6iTfDDdB5E=
+X-Google-Smtp-Source: ABdhPJzHp/04iiHQ8Rj4I128arYBCkvpCenM43Sv0oanC1BAM6zCtKOWdD++rOrgke6oySyv/y7Rrw==
+X-Received: by 2002:a05:620a:144d:: with SMTP id i13mr15368868qkl.263.1617989970116;
+        Fri, 09 Apr 2021 10:39:30 -0700 (PDT)
+Received: from [192.168.100.7] ([177.220.174.147])
+        by smtp.gmail.com with ESMTPSA id g17sm2189015qts.93.2021.04.09.10.39.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 10:36:48 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 11:36:46 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 2/7] rpmsg: Move the rpmsg control device from rpmsg_char
- to rpmsg_ctrl
-Message-ID: <20210409173646.GA489094@xps15>
-References: <20210323122737.23035-1-arnaud.pouliquen@foss.st.com>
- <20210323122737.23035-3-arnaud.pouliquen@foss.st.com>
+        Fri, 09 Apr 2021 10:39:29 -0700 (PDT)
+Message-ID: <380b24cec19eb4fb765b8a136d8525eec030c1ba.camel@gmail.com>
+Subject: Re: [Outreachy kernel][PATCH] staging: media: hantro: Rewrite macro
+ function in lower case
+From:   ascordeiro <alinesantanacordeiro@gmail.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Date:   Fri, 09 Apr 2021 14:39:26 -0300
+In-Reply-To: <alpine.DEB.2.22.394.2104091924510.17316@hadrien>
+References: <20210409135404.GA26172@focaruja>
+          <9c09806cce4c7e5c5f0dc03e8c502cf29716f00f.camel@collabora.com>
+         <138794d79c42510d9b6ae744df20216904773032.camel@gmail.com>
+         <alpine.DEB.2.22.394.2104091924510.17316@hadrien>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 (by Flathub.org) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323122737.23035-3-arnaud.pouliquen@foss.st.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:27:32PM +0100, Arnaud Pouliquen wrote:
-> Create the rpmsg_ctrl.c module and move the code related to the
-> rpmsg_ctrldev device in this new module.
+Em sex, 2021-04-09 às 19:25 +0200, Julia Lawall escreveu:
 > 
-> Add the dependency between rpmsg_char and rpmsg_ctrl in the
-> kconfig file.
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
-> update from [1]:
-> - keep rpmsg_ctrldev prefix (no more functions and structures renaming),
->
-
-That is much better
- 
-> [1]: https://patchwork.kernel.org/project/linux-remoteproc/patch/20210219111501.14261-7-arnaud.pouliquen@foss.st.com/
-> ---
->  drivers/rpmsg/Kconfig      |   9 ++
->  drivers/rpmsg/Makefile     |   1 +
->  drivers/rpmsg/rpmsg_char.c | 177 +---------------------------
->  drivers/rpmsg/rpmsg_ctrl.c | 233 +++++++++++++++++++++++++++++++++++++
->  4 files changed, 244 insertions(+), 176 deletions(-)
->  create mode 100644 drivers/rpmsg/rpmsg_ctrl.c
+> On Fri, 9 Apr 2021, ascordeiro wrote:
 > 
-> diff --git a/drivers/rpmsg/Kconfig b/drivers/rpmsg/Kconfig
-> index 0b4407abdf13..d822ec9ec692 100644
-> --- a/drivers/rpmsg/Kconfig
-> +++ b/drivers/rpmsg/Kconfig
-> @@ -10,11 +10,20 @@ config RPMSG_CHAR
->  	tristate "RPMSG device interface"
->  	depends on RPMSG
->  	depends on NET
-> +	select RPMSG_CTRL
->  	help
->  	  Say Y here to export rpmsg endpoints as device files, usually found
->  	  in /dev. They make it possible for user-space programs to send and
->  	  receive rpmsg packets.
->  
-> +config RPMSG_CTRL
-> +	tristate "RPMSG control interface"
-> +	depends on RPMSG
-> +	help
-> +	  Say Y here to enable the support of the /dev/rpmsg_ctrlX API. This API
-> +	  allows user-space programs to create endpoints with specific service name,
-> +	  source and destination addresses.
-> +
->  config RPMSG_NS
->  	tristate "RPMSG name service announcement"
->  	depends on RPMSG
-> diff --git a/drivers/rpmsg/Makefile b/drivers/rpmsg/Makefile
-> index 8d452656f0ee..58e3b382e316 100644
-> --- a/drivers/rpmsg/Makefile
-> +++ b/drivers/rpmsg/Makefile
-> @@ -1,6 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-$(CONFIG_RPMSG)		+= rpmsg_core.o
->  obj-$(CONFIG_RPMSG_CHAR)	+= rpmsg_char.o
-> +obj-$(CONFIG_RPMSG_CTRL)	+= rpmsg_ctrl.o
->  obj-$(CONFIG_RPMSG_NS)		+= rpmsg_ns.o
->  obj-$(CONFIG_RPMSG_MTK_SCP)	+= mtk_rpmsg.o
->  qcom_glink-objs			:= qcom_glink_native.o qcom_glink_ssr.o
-> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> index b9df8dc4365f..5d4a768002ce 100644
-> --- a/drivers/rpmsg/rpmsg_char.c
-> +++ b/drivers/rpmsg/rpmsg_char.c
-> @@ -29,30 +29,13 @@
->  #define RPMSG_DEV_MAX	(MINORMASK + 1)
->
-
-That define is also present in rpmsg_ctrl.c.  As such I would move it to
-rpmsg_char.h.
-  
->  static dev_t rpmsg_major;
-> -static struct class *rpmsg_class;
->  
-> -static DEFINE_IDA(rpmsg_ctrl_ida);
->  static DEFINE_IDA(rpmsg_ept_ida);
->  static DEFINE_IDA(rpmsg_minor_ida);
->  
->  #define dev_to_eptdev(dev) container_of(dev, struct rpmsg_eptdev, dev)
->  #define cdev_to_eptdev(i_cdev) container_of(i_cdev, struct rpmsg_eptdev, cdev)
->  
-> -#define dev_to_ctrldev(dev) container_of(dev, struct rpmsg_ctrldev, dev)
-> -#define cdev_to_ctrldev(i_cdev) container_of(i_cdev, struct rpmsg_ctrldev, cdev)
-> -
-> -/**
-> - * struct rpmsg_ctrldev - control device for instantiating endpoint devices
-> - * @rpdev:	underlaying rpmsg device
-> - * @cdev:	cdev for the ctrl device
-> - * @dev:	device for the ctrl device
-> - */
-> -struct rpmsg_ctrldev {
-> -	struct rpmsg_device *rpdev;
-> -	struct cdev cdev;
-> -	struct device dev;
-> -};
-> -
->  /**
->   * struct rpmsg_eptdev - endpoint device context
->   * @dev:	endpoint device
-> @@ -409,169 +392,13 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->  }
->  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
->  
-> -static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
-> -{
-> -	struct rpmsg_ctrldev *ctrldev = cdev_to_ctrldev(inode->i_cdev);
-> -
-> -	get_device(&ctrldev->dev);
-> -	filp->private_data = ctrldev;
-> -
-> -	return 0;
-> -}
-> -
-> -static int rpmsg_ctrldev_release(struct inode *inode, struct file *filp)
-> -{
-> -	struct rpmsg_ctrldev *ctrldev = cdev_to_ctrldev(inode->i_cdev);
-> -
-> -	put_device(&ctrldev->dev);
-> -
-> -	return 0;
-> -}
-> -
-> -static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
-> -				unsigned long arg)
-> -{
-> -	struct rpmsg_ctrldev *ctrldev = fp->private_data;
-> -	void __user *argp = (void __user *)arg;
-> -	struct rpmsg_endpoint_info eptinfo;
-> -	struct rpmsg_channel_info chinfo;
-> -
-> -	if (cmd != RPMSG_CREATE_EPT_IOCTL)
-> -		return -EINVAL;
-> -
-> -	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
-> -		return -EFAULT;
-> -
-> -	memcpy(chinfo.name, eptinfo.name, RPMSG_NAME_SIZE);
-> -	chinfo.name[RPMSG_NAME_SIZE-1] = '\0';
-> -	chinfo.src = eptinfo.src;
-> -	chinfo.dst = eptinfo.dst;
-> -
-> -	return rpmsg_chrdev_create_eptdev(ctrldev->rpdev, &ctrldev->dev, chinfo, rpmsg_class);
-> -};
-> -
-> -static const struct file_operations rpmsg_ctrldev_fops = {
-> -	.owner = THIS_MODULE,
-> -	.open = rpmsg_ctrldev_open,
-> -	.release = rpmsg_ctrldev_release,
-> -	.unlocked_ioctl = rpmsg_ctrldev_ioctl,
-> -	.compat_ioctl = compat_ptr_ioctl,
-> -};
-> -
-> -static void rpmsg_ctrldev_release_device(struct device *dev)
-> -{
-> -	struct rpmsg_ctrldev *ctrldev = dev_to_ctrldev(dev);
-> -
-> -	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
-> -	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
-> -	cdev_del(&ctrldev->cdev);
-> -	kfree(ctrldev);
-> -}
-> -
-> -static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
-> -{
-> -	struct rpmsg_ctrldev *ctrldev;
-> -	struct device *dev;
-> -	int ret;
-> -
-> -	ctrldev = kzalloc(sizeof(*ctrldev), GFP_KERNEL);
-> -	if (!ctrldev)
-> -		return -ENOMEM;
-> -
-> -	ctrldev->rpdev = rpdev;
-> -
-> -	dev = &ctrldev->dev;
-> -	device_initialize(dev);
-> -	dev->parent = &rpdev->dev;
-> -	dev->class = rpmsg_class;
-> -
-> -	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
-> -	ctrldev->cdev.owner = THIS_MODULE;
-> -
-> -	ret = ida_simple_get(&rpmsg_minor_ida, 0, RPMSG_DEV_MAX, GFP_KERNEL);
-> -	if (ret < 0)
-> -		goto free_ctrldev;
-> -	dev->devt = MKDEV(MAJOR(rpmsg_major), ret);
-> -
-> -	ret = ida_simple_get(&rpmsg_ctrl_ida, 0, 0, GFP_KERNEL);
-> -	if (ret < 0)
-> -		goto free_minor_ida;
-> -	dev->id = ret;
-> -	dev_set_name(&ctrldev->dev, "rpmsg_ctrl%d", ret);
-> -
-> -	ret = cdev_add(&ctrldev->cdev, dev->devt, 1);
-> -	if (ret)
-> -		goto free_ctrl_ida;
-> -
-> -	/* We can now rely on the release function for cleanup */
-> -	dev->release = rpmsg_ctrldev_release_device;
-> -
-> -	ret = device_add(dev);
-> -	if (ret) {
-> -		dev_err(&rpdev->dev, "device_add failed: %d\n", ret);
-> -		put_device(dev);
-> -	}
-> -
-> -	dev_set_drvdata(&rpdev->dev, ctrldev);
-> -
-> -	return ret;
-> -
-> -free_ctrl_ida:
-> -	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
-> -free_minor_ida:
-> -	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
-> -free_ctrldev:
-> -	put_device(dev);
-> -	kfree(ctrldev);
-> -
-> -	return ret;
-> -}
-> -
-> -static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
-> -{
-> -	struct rpmsg_ctrldev *ctrldev = dev_get_drvdata(&rpdev->dev);
-> -	int ret;
-> -
-> -	/* Destroy all endpoints */
-> -	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_chrdev_destroy_eptdev);
-> -	if (ret)
-> -		dev_warn(&rpdev->dev, "failed to nuke endpoints: %d\n", ret);
-> -
-> -	device_del(&ctrldev->dev);
-> -	put_device(&ctrldev->dev);
-> -}
-> -
-> -static struct rpmsg_driver rpmsg_chrdev_driver = {
-> -	.probe = rpmsg_chrdev_probe,
-> -	.remove = rpmsg_chrdev_remove,
-> -	.drv = {
-> -		.name = "rpmsg_chrdev",
-> -	},
-> -};
-> -
->  static int rpmsg_chrdev_init(void)
->  {
->  	int ret;
->  
->  	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg");
-
-To avoid any confusion I would put "rpmsg_char"... And I don't think it changes
-anything for users.
-
-> -	if (ret < 0) {
-> +	if (ret < 0)
->  		pr_err("rpmsg: failed to allocate char dev region\n");
-> -		return ret;
-> -	}
-> -
-> -	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
-> -	if (IS_ERR(rpmsg_class)) {
-> -		pr_err("failed to create rpmsg class\n");
-> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> -		return PTR_ERR(rpmsg_class);
-> -	}
-> -
-> -	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
-> -	if (ret < 0) {
-> -		pr_err("rpmsgchr: failed to register rpmsg driver\n");
-> -		class_destroy(rpmsg_class);
-> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> -	}
->  
->  	return ret;
->  }
-> @@ -579,8 +406,6 @@ postcore_initcall(rpmsg_chrdev_init);
->  
->  static void rpmsg_chrdev_exit(void)
->  {
-> -	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
-> -	class_destroy(rpmsg_class);
->  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->  }
->  module_exit(rpmsg_chrdev_exit);
-> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-> new file mode 100644
-> index 000000000000..e203ecc18120
-> --- /dev/null
-> +++ b/drivers/rpmsg/rpmsg_ctrl.c
-> @@ -0,0 +1,233 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2021, STMicroelectronics
-> + * Copyright (c) 2016, Linaro Ltd.
-> + * Copyright (c) 2012, Michal Simek <monstr@monstr.eu>
-> + * Copyright (c) 2012, PetaLogix
-> + * Copyright (c) 2011, Texas Instruments, Inc.
-> + * Copyright (c) 2011, Google, Inc.
-> + *
-> + * Based on rpmsg performance statistics driver by Michal Simek, which in turn
-> + * was based on TI & Google OMX rpmsg driver.
-> + */
-> +#include <linux/cdev.h>
-> +#include <linux/device.h>
-> +#include <linux/fs.h>
-> +#include <linux/idr.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +#include <linux/rpmsg.h>
-> +#include <linux/slab.h>
-> +#include <uapi/linux/rpmsg.h>
-> +
-> +#include "rpmsg_char.h"
-> +#include "rpmsg_internal.h"
-> +
-> +#define RPMSG_DEV_MAX	(MINORMASK + 1)
-> +
-> +static dev_t rpmsg_major;
-> +struct class *rpmsg_class;
-> +
-> +static DEFINE_IDA(rpmsg_ctrl_ida);
-> +static DEFINE_IDA(rpmsg_minor_ida);
-> +
-> +#define dev_to_ctrldev(dev) container_of(dev, struct rpmsg_ctrldev, dev)
-> +#define cdev_to_ctrldev(i_cdev) container_of(i_cdev, struct rpmsg_ctrldev, cdev)
-> +
-> +/**
-> + * struct rpmsg_ctrldev - control device for instantiating endpoint devices
-> + * @rpdev:	underlaying rpmsg device
-> + * @cdev:	cdev for the ctrl device
-> + * @dev:	device for the ctrl device
-> + */
-> +struct rpmsg_ctrldev {
-> +	struct rpmsg_device *rpdev;
-> +	struct cdev cdev;
-> +	struct device dev;
-> +};
-> +
-> +static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
-> +{
-> +	struct rpmsg_ctrldev *ctrldev = cdev_to_ctrldev(inode->i_cdev);
-> +
-> +	get_device(&ctrldev->dev);
-> +	filp->private_data = ctrldev;
-> +
-> +	return 0;
-> +}
-> +
-> +static int rpmsg_ctrldev_release(struct inode *inode, struct file *filp)
-> +{
-> +	struct rpmsg_ctrldev *ctrldev = cdev_to_ctrldev(inode->i_cdev);
-> +
-> +	put_device(&ctrldev->dev);
-> +
-> +	return 0;
-> +}
-> +
-> +static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
-> +				unsigned long arg)
-> +{
-> +	struct rpmsg_ctrldev *ctrldev = fp->private_data;
-> +	void __user *argp = (void __user *)arg;
-> +	struct rpmsg_endpoint_info eptinfo;
-> +	struct rpmsg_channel_info chinfo;
-> +
-> +	if (cmd != RPMSG_CREATE_EPT_IOCTL)
-> +		return -EINVAL;
-> +
-> +	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
-> +		return -EFAULT;
-> +
-> +	memcpy(chinfo.name, eptinfo.name, RPMSG_NAME_SIZE);
-> +	chinfo.name[RPMSG_NAME_SIZE - 1] = '\0';
-> +	chinfo.src = eptinfo.src;
-> +	chinfo.dst = eptinfo.dst;
-> +
-> +	return rpmsg_chrdev_create_eptdev(ctrldev->rpdev, &ctrldev->dev, chinfo, rpmsg_class);
-> +};
-> +
-> +static const struct file_operations rpmsg_ctrldev_fops = {
-> +	.owner = THIS_MODULE,
-> +	.open = rpmsg_ctrldev_open,
-> +	.release = rpmsg_ctrldev_release,
-> +	.unlocked_ioctl = rpmsg_ctrldev_ioctl,
-> +	.compat_ioctl = compat_ptr_ioctl,
-> +};
-> +
-> +static void rpmsg_ctrldev_release_device(struct device *dev)
-> +{
-> +	struct rpmsg_ctrldev *ctrldev = dev_to_ctrldev(dev);
-> +
-> +	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
-> +	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
-> +	cdev_del(&ctrldev->cdev);
-> +	kfree(ctrldev);
-> +}
-> +
-> +static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
-> +{
-> +	struct rpmsg_ctrldev *ctrldev;
-> +	struct device *dev;
-> +	int ret;
-> +
-> +	ctrldev = kzalloc(sizeof(*ctrldev), GFP_KERNEL);
-> +	if (!ctrldev)
-> +		return -ENOMEM;
-> +
-> +	ctrldev->rpdev = rpdev;
-> +
-> +	dev = &ctrldev->dev;
-> +	device_initialize(dev);
-> +	dev->parent = &rpdev->dev;
-> +	dev->class = rpmsg_class;
-> +
-> +	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
-> +	ctrldev->cdev.owner = THIS_MODULE;
-> +
-> +	ret = ida_simple_get(&rpmsg_minor_ida, 0, RPMSG_DEV_MAX, GFP_KERNEL);
-> +	if (ret < 0)
-> +		goto free_ctrldev;
-> +	dev->devt = MKDEV(MAJOR(rpmsg_major), ret);
-> +
-> +	ret = ida_simple_get(&rpmsg_ctrl_ida, 0, 0, GFP_KERNEL);
-> +	if (ret < 0)
-> +		goto free_minor_ida;
-> +	dev->id = ret;
-> +	dev_set_name(&ctrldev->dev, "rpmsg_ctrl%d", ret);
-> +
-> +	ret = cdev_add(&ctrldev->cdev, dev->devt, 1);
-> +	if (ret)
-> +		goto free_ctrl_ida;
-> +
-> +	/* We can now rely on the release function for cleanup */
-> +	dev->release = rpmsg_ctrldev_release_device;
-> +
-> +	ret = device_add(dev);
-> +	if (ret) {
-> +		dev_err(&rpdev->dev, "device_add failed: %d\n", ret);
-> +		put_device(dev);
-> +	}
-> +
-> +	dev_set_drvdata(&rpdev->dev, ctrldev);
-> +
-> +	return ret;
-> +
-> +free_ctrl_ida:
-> +	ida_simple_remove(&rpmsg_ctrl_ida, dev->id);
-> +free_minor_ida:
-> +	ida_simple_remove(&rpmsg_minor_ida, MINOR(dev->devt));
-> +free_ctrldev:
-> +	put_device(dev);
-> +	kfree(ctrldev);
-> +
-> +	return ret;
-> +}
-> +
-> +static void rpmsg_ctrldev_remove(struct rpmsg_device *rpdev)
-> +{
-> +	struct rpmsg_ctrldev *ctrldev = dev_get_drvdata(&rpdev->dev);
-> +	int ret;
-> +
-> +	/* Destroy all endpoints */
-> +	ret = device_for_each_child(&ctrldev->dev, NULL, rpmsg_chrdev_destroy_eptdev);
-> +	if (ret)
-> +		dev_warn(&rpdev->dev, "failed to nuke endpoints: %d\n", ret);
-> +
-> +	device_del(&ctrldev->dev);
-> +	put_device(&ctrldev->dev);
-> +}
-> +
-> +static struct rpmsg_driver rpmsg_ctrldev_driver = {
-> +	.probe = rpmsg_ctrldev_probe,
-> +	.remove = rpmsg_ctrldev_remove,
-> +	.drv = {
-> +		.name = "rpmsg_ctrl",
-
-With this change rpmsg_chrdev_register_device() will fail to find a driver to
-work with, something that will break the Glink/SMD code if someone tries a
-bisect.  Things will work out just fine if you move this to patch 3.  
-
-> +	},
-> +};
-> +
-> +static int rpmsg_ctrldev_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg");
-
-And here I'd go with "rpmsg_ctrl".
-
-> +	if (ret < 0) {
-> +		pr_err("rpmsg: failed to allocate char dev region\n");
-> +		return ret;
-> +	}
-> +
-> +	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
-> +	if (IS_ERR(rpmsg_class)) {
-> +		pr_err("failed to create rpmsg class\n");
-> +		ret = PTR_ERR(rpmsg_class);
-> +		goto free_region;
-> +	}
-> +
-> +	ret = register_rpmsg_driver(&rpmsg_ctrldev_driver);
-> +	if (ret < 0) {
-> +		pr_err("rpmsg ctrl: failed to register rpmsg driver\n");
-> +		goto free_class;
-> +	}
-> +
-> +	return 0;
-> +
-> +free_class:
-> +	class_destroy(rpmsg_class);
-> +free_region:
-> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> +
-> +	return ret;
-> +}
-> +postcore_initcall(rpmsg_ctrldev_init);
-> +
-> +static void rpmsg_ctrldev_exit(void)
-> +{
-> +	unregister_rpmsg_driver(&rpmsg_ctrldev_driver);
-> +	class_destroy(rpmsg_class);
-> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> +}
-> +module_exit(rpmsg_ctrldev_exit);
-> +
-> +MODULE_DESCRIPTION("rpmsg control interface");
-> +MODULE_ALIAS("rpmsg:" KBUILD_MODNAME);
-> +MODULE_LICENSE("GPL v2");
-> -- 
-> 2.17.1
+> > Em sex, 2021-04-09 às 13:44 -0300, Ezequiel Garcia escreveu:
+> > > Hi Aline,
+> > 
+> > Hi Ezequiel,
+> > > 
+> > > On Fri, 2021-04-09 at 10:54 -0300, Aline Santana Cordeiro wrote:
+> > > > Rewrite macros resembling functions #define HANTRO_PP_REG_WRITE
+> > > > and #define HANTRO_PP_RED_WRITE_S in lower case, according with
+> > > > code style.
 > 
+> Maybe you can see if these macros can be converted to static inline
+> functions.  Macros don't provide any type checking.
+
+Okay! I'm going to check this option.
+
+Thank you for the advice!
+Aline
+> 
+
+> julia
+> 
+> > > > 
+> > > 
+> > > Where is this written in the Coding Style?
+> > 
+> > I found this in section 12, about Macros, Enums and RTL in both
+> > references:
+> > https://www.kernel.org/doc/html/latest/process/coding-style.html
+> > https://elixir.bootlin.com/linux/latest/source/Documentation/process/coding-style.rst
+> > > 
+> > > Thanks!
+> > > Ezequiel
+> > 
+> > Thank you!
+> > Aline
+> > > 
+> > > > Signed-off-by: Aline Santana Cordeiro <
+> > > > alinesantanacordeiro@gmail.com>
+> > > > ---
+> > > >  drivers/staging/media/hantro/hantro_postproc.c | 34
+> > > > +++++++++++++-
+> > > > ------------
+> > > >  1 file changed, 17 insertions(+), 17 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/staging/media/hantro/hantro_postproc.c
+> > > > b/drivers/staging/media/hantro/hantro_postproc.c
+> > > > index 6d2a8f2a..06279c0 100644
+> > > > --- a/drivers/staging/media/hantro/hantro_postproc.c
+> > > > +++ b/drivers/staging/media/hantro/hantro_postproc.c
+> > > > @@ -12,14 +12,14 @@
+> > > >  #include "hantro_hw.h"
+> > > >  #include "hantro_g1_regs.h"
+> > > >  
+> > > > -#define HANTRO_PP_REG_WRITE(vpu, reg_name, val) \
+> > > > +#define hantro_pp_reg_write(vpu, reg_name, val) \
+> > > >  { \
+> > > >         hantro_reg_write(vpu, \
+> > > >                          &(vpu)->variant->postproc_regs-
+> > > > >reg_name,
+> > > > \
+> > > >                          val); \
+> > > >  }
+> > > >  
+> > > > -#define HANTRO_PP_REG_WRITE_S(vpu, reg_name, val) \
+> > > > +#define hantro_pp_reg_write_s(vpu, reg_name, val) \
+> > > >  { \
+> > > >         hantro_reg_write_s(vpu, \
+> > > >                            &(vpu)->variant->postproc_regs-
+> > > > > reg_name, \
+> > > > @@ -61,7 +61,7 @@ void hantro_postproc_enable(struct hantro_ctx
+> > > > *ctx)
+> > > >                 return;
+> > > >  
+> > > >         /* Turn on pipeline mode. Must be done first. */
+> > > > -       HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x1);
+> > > > +       hantro_pp_reg_write_s(vpu, pipeline_en, 0x1);
+> > > >  
+> > > >         src_pp_fmt = VPU_PP_IN_NV12;
+> > > >  
+> > > > @@ -79,19 +79,19 @@ void hantro_postproc_enable(struct
+> > > > hantro_ctx
+> > > > *ctx)
+> > > >         dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
+> > > >         dst_dma = vb2_dma_contig_plane_dma_addr(&dst_buf-
+> > > > >vb2_buf,
+> > > > 0);
+> > > >  
+> > > > -       HANTRO_PP_REG_WRITE(vpu, clk_gate, 0x1);
+> > > > -       HANTRO_PP_REG_WRITE(vpu, out_endian, 0x1);
+> > > > -       HANTRO_PP_REG_WRITE(vpu, out_swap32, 0x1);
+> > > > -       HANTRO_PP_REG_WRITE(vpu, max_burst, 16);
+> > > > -       HANTRO_PP_REG_WRITE(vpu, out_luma_base, dst_dma);
+> > > > -       HANTRO_PP_REG_WRITE(vpu, input_width, MB_WIDTH(ctx-
+> > > > > dst_fmt.width));
+> > > > -       HANTRO_PP_REG_WRITE(vpu, input_height, MB_HEIGHT(ctx-
+> > > > > dst_fmt.height));
+> > > > -       HANTRO_PP_REG_WRITE(vpu, input_fmt, src_pp_fmt);
+> > > > -       HANTRO_PP_REG_WRITE(vpu, output_fmt, dst_pp_fmt);
+> > > > -       HANTRO_PP_REG_WRITE(vpu, output_width, ctx-
+> > > > >dst_fmt.width);
+> > > > -       HANTRO_PP_REG_WRITE(vpu, output_height, ctx-
+> > > > > dst_fmt.height);
+> > > > -       HANTRO_PP_REG_WRITE(vpu, orig_width, MB_WIDTH(ctx-
+> > > > > dst_fmt.width));
+> > > > -       HANTRO_PP_REG_WRITE(vpu, display_width, ctx-
+> > > > > dst_fmt.width);
+> > > > +       hantro_pp_reg_write(vpu, clk_gate, 0x1);
+> > > > +       hantro_pp_reg_write(vpu, out_endian, 0x1);
+> > > > +       hantro_pp_reg_write(vpu, out_swap32, 0x1);
+> > > > +       hantro_pp_reg_write(vpu, max_burst, 16);
+> > > > +       hantro_pp_reg_write(vpu, out_luma_base, dst_dma);
+> > > > +       hantro_pp_reg_write(vpu, input_width, MB_WIDTH(ctx-
+> > > > > dst_fmt.width));
+> > > > +       hantro_pp_reg_write(vpu, input_height, MB_HEIGHT(ctx-
+> > > > > dst_fmt.height));
+> > > > +       hantro_pp_reg_write(vpu, input_fmt, src_pp_fmt);
+> > > > +       hantro_pp_reg_write(vpu, output_fmt, dst_pp_fmt);
+> > > > +       hantro_pp_reg_write(vpu, output_width, ctx-
+> > > > >dst_fmt.width);
+> > > > +       hantro_pp_reg_write(vpu, output_height, ctx-
+> > > > > dst_fmt.height);
+> > > > +       hantro_pp_reg_write(vpu, orig_width, MB_WIDTH(ctx-
+> > > > > dst_fmt.width));
+> > > > +       hantro_pp_reg_write(vpu, display_width, ctx-
+> > > > > dst_fmt.width);
+> > > >  }
+> > > >  
+> > > >  void hantro_postproc_free(struct hantro_ctx *ctx)
+> > > > @@ -146,5 +146,5 @@ void hantro_postproc_disable(struct
+> > > > hantro_ctx
+> > > > *ctx)
+> > > >         if (!vpu->variant->postproc_regs)
+> > > >                 return;
+> > > >  
+> > > > -       HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x0);
+> > > > +       hantro_pp_reg_write_s(vpu, pipeline_en, 0x0);
+> > > >  }
+> > > 
+> > > 
+> > 
+> > 
+> > --
+> > You received this message because you are subscribed to the Google
+> > Groups "outreachy-kernel" group.
+> > To unsubscribe from this group and stop receiving emails from it,
+> > send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> > To view this discussion on the web visit  
+> > https://groups.google.com/d/msgid/outreachy-kernel/138794d79c42510d9b6ae744df20216904773032.camel%40gmail.com
+> > .
+
+
