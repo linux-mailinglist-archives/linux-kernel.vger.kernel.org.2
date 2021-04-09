@@ -2,125 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410E0359E1C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C24359E26
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232995AbhDIL70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:59:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhDIL7Z (ORCPT
+        id S233637AbhDIMBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:01:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22174 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232804AbhDIMBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:59:25 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A699C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 04:59:12 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id j4-20020a05600c4104b029010c62bc1e20so2837036wmi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 04:59:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1JxLGtNxnOp44Fk3GR4yu3/dSaD+2VjIuaHuj9l1KiQ=;
-        b=nMGELfkFKUlyq1MbWUKQSzrWlQcNqbav3ngNWkPz7v/ypHRgI5TAgc71uyUfqA6GYq
-         9t/E6YNdsgGllOqJl0WsUjFupq+dNbxdi67u5SrsmwTI3qaX2fgl6B8sgPfWF7kkR0vP
-         +cCQrsq4QL3e1bl8kIgc5P4rXKQwMrxNM/Jwpe9E+w3X6slHXBi9UP17swan1UcA/8Je
-         a9RCgH4JO8mVuQZctGq0Ft/ngtEfn9HLyUWrdp1OZiUSKRRR11gEKvfwKdCK6BaG96ZM
-         5sM8IbS4bNUcMtya/q05yRK3Q9CeXkMa6Dm732oluQ0UtsLSDBZUgUykMoHp8imSWGRc
-         sV9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1JxLGtNxnOp44Fk3GR4yu3/dSaD+2VjIuaHuj9l1KiQ=;
-        b=HCAerKDtNDulGiZTkOeTC1rPaPAnwlFEWbwlK4PGMOR5X1YdC2LUE5uoat+l53U+5Q
-         0MyapsAKWbVM2P+OTiaXUEWJ7jnNkiekLSvB6mQlUhK1TDlwOvaDHG8z2tZaq75uEHDN
-         7/RDUlrJ6cSg4ST5hWVz/KkCMm6rXa1tQ9z7SVo4kYmsEUYWD6yb8ydgWZyDbjC2u2V7
-         QlOJGkwj2c9Ava8RP4lKsdTQ/RcVt+ab2a8q3jz9svALXr3cOJwG3IY3vXsB9isWauEG
-         65/dFFVpKW5my9/cWfX+Cc+HRDMiYnNGABZg1foveM4RPN+s8fDoKXP2UGmgYxchM93N
-         5/aw==
-X-Gm-Message-State: AOAM532cMglQfAmK5lovuoouBhpH3UMk70q0UWqxhDx34UELUDiaAF2H
-        WXqywwmLFiUSP5y9ejjruw7yj6iOaHh1UzcZmCxlQ/xMjJXScQ==
-X-Google-Smtp-Source: ABdhPJw+h9YP0xI/t8HB8HQXIT3HtxhdzO19Cb0l3tmB5+0Y9WuDgFa5h1a3TR4Umpd2g2+C2cpqPS3XRZJ4xfEUxWo=
-X-Received: by 2002:a7b:c003:: with SMTP id c3mr13360369wmb.59.1617969550800;
- Fri, 09 Apr 2021 04:59:10 -0700 (PDT)
+        Fri, 9 Apr 2021 08:01:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617969650;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WpLBLcM5HPbHBdhYvmuIcG5jaKMHS2dswa4uwPfKors=;
+        b=hGS3U0c4in2GhHGb8yh1ZnSPvu7Obyk4taWt6yMxc+UfclrgGzDpAFmCLTGD6KBNOBmEIE
+        EBk+Ra912nZ2TH6A7b60yIKZlm97HKDBnZou2KNbOK33Iy2YpeDf3on6YI6+sfd4WnOJ3o
+        wEDwITQosUmzDgajClmlvRHNx1JvAEA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-531-VXpQijEJOlSLOJb_BO2ZXA-1; Fri, 09 Apr 2021 08:00:46 -0400
+X-MC-Unique: VXpQijEJOlSLOJb_BO2ZXA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 845A55B38D;
+        Fri,  9 Apr 2021 12:00:44 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C29B160622;
+        Fri,  9 Apr 2021 12:00:41 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210409111636.GR2531743@casper.infradead.org>
+References: <20210409111636.GR2531743@casper.infradead.org> <CAHk-=wi_XrtTanTwoKs0jwnjhSvwpMYVDJ477VtjvvTXRjm5wQ@mail.gmail.com> <161796595714.350846.1547688999823745763.stgit@warthog.procyon.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     dhowells@redhat.com, torvalds@linux-foundation.org,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, jlayton@kernel.org, hch@lst.de,
+        linux-cachefs@redhat.com, v9fs-developer@lists.sourceforge.net,
+        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
+        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/3] mm: Return bool from pagebit test functions
 MIME-Version: 1.0
-References: <1617957240-53633-1-git-send-email-tiantao6@hisilicon.com>
-In-Reply-To: <1617957240-53633-1-git-send-email-tiantao6@hisilicon.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Fri, 9 Apr 2021 07:58:59 -0400
-Message-ID: <CAGngYiVfattJKO7npMHTagxNfzU-B=rP3FoZ89_yzy-c=Zw2RQ@mail.gmail.com>
-Subject: Re: [PATCH] staging: fieldbus: simplify devm_anybuss_host_common_probe
-To:     Tian Tao <tiantao6@hisilicon.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <453416.1617969640.1@warthog.procyon.org.uk>
+Date:   Fri, 09 Apr 2021 13:00:40 +0100
+Message-ID: <453417.1617969640@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Tian, thank you for the contribution. See below.
+Matthew Wilcox <willy@infradead.org> wrote:
 
-On Fri, Apr 9, 2021 at 4:33 AM Tian Tao <tiantao6@hisilicon.com> wrote:
->
-> Use devm_add_action_or_reset() instead of devres_alloc() and
-> devres_add(), which works the same. This will simplify the
-> code. There is no functional changes.
->
-> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
-> ---
->  drivers/staging/fieldbus/anybuss/host.c | 20 ++++++++------------
->  1 file changed, 8 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/staging/fieldbus/anybuss/host.c b/drivers/staging/fieldbus/anybuss/host.c
-> index 549cb7d5..2924e68 100644
-> --- a/drivers/staging/fieldbus/anybuss/host.c
-> +++ b/drivers/staging/fieldbus/anybuss/host.c
-> @@ -1406,7 +1406,7 @@ void anybuss_host_common_remove(struct anybuss_host *host)
->  }
->  EXPORT_SYMBOL_GPL(anybuss_host_common_remove);
->
-> -static void host_release(struct device *dev, void *res)
-> +static void host_release(void *res)
->  {
->         struct anybuss_host **dr = res;
+> On Fri, Apr 09, 2021 at 11:59:17AM +0100, David Howells wrote:
+> > Make functions that test page bits return a bool, not an int.  This means
+> > that the value is definitely 0 or 1 if they're used in arithmetic, rather
+> > than rely on test_bit() and friends to return this (though they probably
+> > should).
+> 
+> iirc i looked at doing this as part of the folio work, and it ended up
+> increasing the size of the kernel.  Did you run bloat-o-meter on the
+> result of doing this?
 
-You're expecting a double pointer as the argument here...
+Hmmm.  With my usual monolithic x86_64 kernel, it makes vmlinux text section
+100 bytes larger (19392347 rather than 19392247).  I can look into why.
 
->
-> @@ -1417,21 +1417,17 @@ struct anybuss_host * __must_check
->  devm_anybuss_host_common_probe(struct device *dev,
->                                const struct anybuss_ops *ops)
->  {
-> -       struct anybuss_host **dr;
->         struct anybuss_host *host;
-> -
-> -       dr = devres_alloc(host_release, sizeof(struct anybuss_host *),
-> -                         GFP_KERNEL);
-> -       if (!dr)
-> -               return ERR_PTR(-ENOMEM);
-> +       int ret;
->
->         host = anybuss_host_common_probe(dev, ops);
-> -       if (IS_ERR(host)) {
-> -               devres_free(dr);
-> +       if (IS_ERR(host))
->                 return host;
-> -       }
-> -       *dr = host;
-> -       devres_add(dev, dr);
-> +
-> +       ret = devm_add_action_or_reset(dev, host_release, host);
+David
 
-... yet you pass in a single pointer here. Is that going to work?
-
-> +       if (ret)
-> +               return ERR_PTR(ret);
-> +
->         return host;
->  }
->  EXPORT_SYMBOL_GPL(devm_anybuss_host_common_probe);
-> --
-> 2.7.4
->
