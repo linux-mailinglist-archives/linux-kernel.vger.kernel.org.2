@@ -2,138 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B505359C1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6860359C23
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233417AbhDIKaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:30:08 -0400
-Received: from foss.arm.com ([217.140.110.172]:47724 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231402AbhDIKaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:30:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72E8F1FB;
-        Fri,  9 Apr 2021 03:29:53 -0700 (PDT)
-Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 397DB3F73D;
-        Fri,  9 Apr 2021 03:29:52 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 11:29:46 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Rahul Tanwar <rtanwar@maxlinear.com>
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Cheol Yong Kim <ckim@maxlinear.com>,
-        Qiming Wu <qwu@maxlinear.com>,
-        Lei Chuan Hua <lchuanhua@maxlinear.com>
-Subject: Re: [PATCH] PCI: dwc/intel-gw: Fix enabling the legacy PCI interrupt
- lines
-Message-ID: <20210409102946.GA14799@lpieralisi>
-References: <20210106135540.48420-1-martin.blumenstingl@googlemail.com>
- <20210323113559.GE29286@e121166-lin.cambridge.arm.com>
- <CAFBinCBaa_uGBg8x=nPTs6sYNqv_OCU2PgCaUKLQGNSN+Up99A@mail.gmail.com>
- <MN2PR19MB36934176A011B86624E1EA2BB1739@MN2PR19MB3693.namprd19.prod.outlook.com>
+        id S233413AbhDIKbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:31:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231402AbhDIKbc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:31:32 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93AC0C061760;
+        Fri,  9 Apr 2021 03:31:18 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id t14so4312753ilu.3;
+        Fri, 09 Apr 2021 03:31:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=gHv/U8gMzmWYmxPZpDQ1KtCKvLhvSOEVZdAJZtNMABQ=;
+        b=fPeGj6b7nLmrr4LUOwxg88E5nKlnRg7tiyI5gOnwi2Cmd3k9qK1O05HNpkhhH6sjfH
+         DUrKZXhiWyfar4DoINfTI0/KOSSU+JbXFh0OZ13C1dCBOZ5DoHACA2luK9b3WBq1asTq
+         mTX1hZ45xyGCFr0yz3kWz3wTYrrT8wfuJT+wqR1orUYYGpCiP4+AW7uDI1CUPNKOpR2k
+         7xxfs7jiz1PPNUO4y41x++ckLVz1cNSunnt3KWgE2r9P6FwTcZ07mTEeAxwcV1u9Ra8H
+         BEG7ia9/4DipN3VLP6gawzgMzeS9xzUPDAHzlAXfolmw0gwZrPSaa85N++AKlDwCenQK
+         gQTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=gHv/U8gMzmWYmxPZpDQ1KtCKvLhvSOEVZdAJZtNMABQ=;
+        b=fwH2sOpUxUOhcsmBx1UZA2TyGPzIOwVY5K2xyagI/7puwYu2ZclosmkqZU71xjtvjt
+         QvFfDlDeDgTyb3a3UzHbaOMKoPn3uCqE+G453oUf6PzvlA8WmOatXA8vSShLVdPVXxE7
+         m3XNyK/Jq3dNXJkbZX7M9Dzy3yGB2kD/9Z1j2MUCKXXEZToolLI+CXZHIWBDEk9pGZGb
+         htpVvwjeNCMjYBaTpVnXO7Sa5vjfNbwY1SONv2yLS+/qCJe+1eH+KU7UlnX1htkw6tWQ
+         uJ6NYQLD+Sp9xRGMkw3xE+8vpQn8ZKMLT4WY8xyPcrXORINqN6TGZyYmgY/4GvuFvsdU
+         HASw==
+X-Gm-Message-State: AOAM531qqAtLSIY0ni6qKZojiViuJZ+2UUfF0i7INL+j91lZyjWuKA9V
+        5tyOihc9xiGXPVOOWZrJI1qMAtp4aTbD3Cj89tFMIeKn1c3G7g==
+X-Google-Smtp-Source: ABdhPJz9qabirxbOvIvHiWUXG9wSJk26KAP2/XVHVEO2CKJtLPL2dEscGDaDJw+RIgNm9Y+EN8m+xcbZ/KA0QZ4UVVY=
+X-Received: by 2002:a05:6e02:dea:: with SMTP id m10mr3746322ilj.112.1617964277961;
+ Fri, 09 Apr 2021 03:31:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MN2PR19MB36934176A011B86624E1EA2BB1739@MN2PR19MB3693.namprd19.prod.outlook.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210407160927.222092-1-lucjan.lucjanov@gmail.com> <20210408210448.1850553-1-lucjan.lucjanov@gmail.com>
+In-Reply-To: <20210408210448.1850553-1-lucjan.lucjanov@gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 9 Apr 2021 12:30:56 +0200
+Message-ID: <CA+icZUVnrNJ2=LYF_mre6npUvGHP8xAxdAAipLN_sQEvsK0wmg@mail.gmail.com>
+Subject: Re: Subject: Re: [PATCH v3] kbuild: add support for zstd compressed modules
+To:     Piotr Gorski <lucjan.lucjanov@gmail.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        masahiroy@kernel.org, oleksandr@natalenko.name
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 10:17:12AM +0000, Rahul Tanwar wrote:
-> On 9/4/2021 4:40 am, Martin Blumenstingl wrote:
-> > This email was sent from outside of MaxLinear.
-> > 
-> > Hi Lorenzo,
-> > 
-> > On Tue, Mar 23, 2021 at 12:36 PM Lorenzo Pieralisi
-> > <lorenzo.pieralisi@arm.com> wrote:
-> >  >
-> >  > On Wed, Jan 06, 2021 at 02:55:40PM +0100, Martin Blumenstingl wrote:
-> >  > > The legacy PCI interrupt lines need to be enabled using PCIE_APP_IRNEN
-> >  > > bits 13 (INTA), 14 (INTB), 15 (INTC) and 16 (INTD). The old code 
-> > however
-> >  > > was taking (for example) "13" as raw value instead of taking BIT(13).
-> >  > > Define the legacy PCI interrupt bits using the BIT() macro and then use
-> >  > > these in PCIE_APP_IRN_INT.
-> >  > >
-> >  > > Fixes: ed22aaaede44 ("PCI: dwc: intel: PCIe RC controller driver")
-> >  > > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-> >  > > ---
-> >  > > drivers/pci/controller/dwc/pcie-intel-gw.c | 10 ++++++----
-> >  > > 1 file changed, 6 insertions(+), 4 deletions(-)
-> >  > >
-> >  > > diff --git a/drivers/pci/controller/dwc/pcie-intel-gw.c 
-> > b/drivers/pci/controller/dwc/pcie-intel-gw.c
-> >  > > index 0cedd1f95f37..ae96bfbb6c83 100644
-> >  > > --- a/drivers/pci/controller/dwc/pcie-intel-gw.c
-> >  > > +++ b/drivers/pci/controller/dwc/pcie-intel-gw.c
-> >  > > @@ -39,6 +39,10 @@
-> >  > > #define PCIE_APP_IRN_PM_TO_ACK BIT(9)
-> >  > > #define PCIE_APP_IRN_LINK_AUTO_BW_STAT BIT(11)
-> >  > > #define PCIE_APP_IRN_BW_MGT BIT(12)
-> >  > > +#define PCIE_APP_IRN_INTA BIT(13)
-> >  > > +#define PCIE_APP_IRN_INTB BIT(14)
-> >  > > +#define PCIE_APP_IRN_INTC BIT(15)
-> >  > > +#define PCIE_APP_IRN_INTD BIT(16)
-> >  > > #define PCIE_APP_IRN_MSG_LTR BIT(18)
-> >  > > #define PCIE_APP_IRN_SYS_ERR_RC BIT(29)
-> >  > > #define PCIE_APP_INTX_OFST 12
-> >  > > @@ -48,10 +52,8 @@
-> >  > > PCIE_APP_IRN_RX_VDM_MSG | PCIE_APP_IRN_SYS_ERR_RC | \
-> >  > > PCIE_APP_IRN_PM_TO_ACK | PCIE_APP_IRN_MSG_LTR | \
-> >  > > PCIE_APP_IRN_BW_MGT | PCIE_APP_IRN_LINK_AUTO_BW_STAT | \
-> >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTA) | \
-> >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTB) | \
-> >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTC) | \
-> >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTD))
-> >  > > + PCIE_APP_IRN_INTA | PCIE_APP_IRN_INTB | \
-> >  > > + PCIE_APP_IRN_INTC | PCIE_APP_IRN_INTD)
-> >  > >
-> >  > > #define BUS_IATU_OFFSET SZ_256M
-> >  > > #define RESET_INTERVAL_MS 100
-> >  >
-> >  > This looks like a significant bug - which in turn raises the question
-> >  > on how well this driver has been tested.
-> > to give them the benefit of doubt: maybe only MSIs were tested
-> > 
-> >  > Dilip, can you review and ACK asap please ?
-> >  From "Re: MaxLinear, please maintain your drivers was Re: [PATCH]
-> > leds: lgm: fix gpiolib dependency" [0]:
-> >  > Please send any Lightning Mountain SoC related issues email to Rahul
-> >  > Tanwar (rtanwar@maxlinear.com) and I will ensure that I address the
-> >  > issues in a timely manner.
-> > so I added rtanwar@maxlinear.com to this email
-> > 
-> > 
-> > Best regards,
-> > Martin
-> > 
-> > 
-> > [0] https://lkml.org/lkml/2021/3/16/282 
-> > <https://lkml.org/lkml/2021/3/16/282>
-> 
-> 
-> Dilip has left the org. So not sure how exactly he tested it (maybe only 
-> MSIs). But i have confirmed it to be a bug. Thanks Martin for fixing it.
+On Thu, Apr 8, 2021 at 11:05 PM Piotr Gorski <lucjan.lucjanov@gmail.com> wr=
+ote:
+>
+> No, the --rm option is essential. xz and gzip have the --rm option built =
+in as opposed to zstd, which is why I used it. I've been using zstd module =
+compression since last december (although I set a different compression lev=
+el on mine) and everything works fine. Oleksandr also tested it at his plac=
+e and didn't report any objections.
 
-Can you take on maintainership for this driver please ?
+[ CC me I am not subscribed to linux-kbuild or linux-kernel ]
+[ CC Nick ]
 
-If yes please send a MAINTAINERS file patch.
+Unfortunately, I do not find my initial posting which has all information.
+I add the link to the thread on linux-kbuild ML.
 
-Thanks,
-Lorenzo
+So, I gave you as much information as I have (linux-config, make-line
+etc.) and you write "everything works fine"?
+What do you mean by "everything" - different compressors and none?
+Is that working "fine"?
 
-> Acked-by: Rahul Tanwar <rtanwar@maxlinear.com>
-> 
-> Regards,
-> Rahul
-> 
-> 
-> 
-> 
-> 
+What build environment do you use?
+Here: Debian/testing AMD64.
+
+Did you try with...
+
+CONFIG_DEBUG_INFO=3Dy
+CONFIG_DEBUG_INFO_DWARF5=3Dy
+CONFIG_MODULE_COMPRESS_ZSTD=3Dy
+
+...Kconfigs enabled?
+
+As said I use builddeb from scripts directory to generate my Debian package=
+s.
+Any chance you can test with builddeb?
+
+I have enabled Clang-LTO Kconfig.
+Tried with Clang-LTO Kconfig?
+
+This worked *before* and *after*...
+
+kbuild: add support for zstd compressed modules
+kbuild: remove CONFIG_MODULE_COMPRESS (CC Nick as he is listed as a
+reviewer here)
+
+... not within my build-environment.
+For me this is a *regression*.
+
+- Sedat -
+
+[1] https://marc.info/?t=3D161790914600002&r=3D1&w=3D2
