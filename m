@@ -2,136 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5B21359517
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5A835951A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233282AbhDIGCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:02:52 -0400
-Received: from ned.t-8ch.de ([212.47.237.191]:34170 "EHLO ned.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233244AbhDIGCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:02:50 -0400
-Date:   Fri, 9 Apr 2021 08:02:28 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1617948149;
-        bh=FHpOq7QS5QYAWuDQCp+yK31YAWp1DRpKH+1+t7s003I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FayLsPnKzAtX8Vx8EDISy/FpK1sMI/VA6cDo4MvXv0VIG2TxMvDiinOilY2L6UnnN
-         f9twWpEZtdV1fx22PYZAY+KbFjCy0LR3LHowFB0GxB8GIP9BKCqQQckPXgjd73A2tm
-         KU3GWPNrbOOdx2072zUqCKeqWoRQwEqkpQ2SvUYY=
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        platform-driver-x86@vger.kernel.org,
-        Mark Gross <mgross@linux.intel.com>,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>
-Subject: Re: [PATCH v2] platform/x86: add Gigabyte WMI temperature driver
-Message-ID: <c55b1f8e-24b9-4574-8668-aed64832242b@t-8ch.de>
-References: <N6sOrC__lJeA1mtEKUtB18DPy9hp5bSjL9rq1TfOXiRE7IAO5aih5oyPEpq-vyqdZZsF4W8FIe-9GWB15lO-3fQlqjWQrMTlTJvqLBBGYOQ=@protonmail.com>
- <20210405204810.339763-1-linux@weissschuh.net>
- <44fbb57c-88ee-62f0-c72c-507cad17eb7d@redhat.com>
- <123d021b-b86b-4356-b234-fb46fa260193@t-8ch.de>
- <6993d257-fdc1-2be6-555d-86c6b8c9d18d@redhat.com>
- <d6cc98f4-1be2-f8bf-0426-58e324fc495b@roeck-us.net>
+        id S233278AbhDIGEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:04:40 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:54320 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233234AbhDIGEj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 02:04:39 -0400
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 13963hg8017956;
+        Fri, 9 Apr 2021 15:03:43 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 13963hg8017956
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617948223;
+        bh=9v7EZ1Jf0k26fNaOMZcOQXGoA0rc+Pc1mW+lsvNVu34=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HXv1sNVOAAA2QM+yx4wsoeuSWbjAtwLUcUdtkddp0NOGd7o02TmljfC9J48vZQWyl
+         Zimh8p9CbHpHBE6lCDg47pAA9RUVyt6QvTVAYsUODRaN+D6q4LQwpCsZCAehRNC35a
+         ZfyaUZmdtYN928r0m2oaFB4ANXqX8R2851VUUnGc7RDHH9kGEYQ8bTw+6ov3mr/kzX
+         Xfttg2rfdp1WBngPKcPvqD7jToDrrz2vxjhjfjC3ZQfwAqE6SpukufzO3pu7N7fAIC
+         5uvd6ExdHwzmmOhYZKuAXzHIJVI0llsGDoKeU93ArkKomjDkMDH9zTAUBwlbGJMYLw
+         szntkQgYr6Pbw==
+X-Nifty-SrcIP: [209.85.214.182]
+Received: by mail-pl1-f182.google.com with SMTP id t7so2217525plg.9;
+        Thu, 08 Apr 2021 23:03:43 -0700 (PDT)
+X-Gm-Message-State: AOAM531yrdTU7qyoA/9QRj+mIKAVvbxP+ZXeowdv/AxwdWo5emHza2Gh
+        yebLRZ7b0KDu84j7fdWm9HDnz3n63oiVGLTASUM=
+X-Google-Smtp-Source: ABdhPJyF8hHwl2VmFGtFb8Bcx8rM4wWzrQp4VEECFSvH/FeYpAzZCQ9P0PMIefMKQu01W8PnpjITnaROe/fEGByubWw=
+X-Received: by 2002:a17:902:b589:b029:e6:2875:aa4c with SMTP id
+ a9-20020a170902b589b02900e62875aa4cmr11412019pls.71.1617948222723; Thu, 08
+ Apr 2021 23:03:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d6cc98f4-1be2-f8bf-0426-58e324fc495b@roeck-us.net>
-Jabber-ID: thomas@t-8ch.de
-X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
-X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
-X-PGP-Key: https://t-8ch.de/pubkey.asc
-X-PGP-Key-Fingerprint: 187EF7CE
+References: <170e086a5fa076869e7b37de8eea850fa7c39118.1615354376.git.viresh.kumar@linaro.org>
+ <CAK7LNASACr5EaG9j5c-eD3bYxKgrisb60Z3Qy7UsyS-i9YjORg@mail.gmail.com>
+ <20210312044712.srmqfuie7fae55pb@vireshk-i7> <17c65559-865f-f742-660f-0ab30ed45d90@gmail.com>
+ <4d9bee7a-416e-50a1-65a5-0674ae83d42e@gmail.com> <20210312071325.zosmlttse4ym7sit@vireshk-i7>
+ <6f093bb1-1a80-a906-fb4c-3f6fdeed4838@gmail.com> <9068520f-76d6-ec94-716c-02383422ac85@gmail.com>
+ <20210315064051.otcjt3x6vkfdrio6@vireshk-i7> <CAK7LNASHHNmZJ4FXz4Q5-UMEbSSyb_aG+kmfhJQZtCgkSZ_GAQ@mail.gmail.com>
+ <YE/bzbU4jbgd6uNW@pendragon.ideasonboard.com> <e08f4006-af23-6c58-8557-263901193229@gmail.com>
+ <CAMuHMdWCUQRwUy3s_ApH8Pzafdvh61VRNkMcbZ0OnGcqtJxdkw@mail.gmail.com>
+In-Reply-To: <CAMuHMdWCUQRwUy3s_ApH8Pzafdvh61VRNkMcbZ0OnGcqtJxdkw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 9 Apr 2021 15:03:05 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASwMrWC2GWUVv-WEDVBvi4tJXM2ko++UXBEzsskAP_Uqw@mail.gmail.com>
+Message-ID: <CAK7LNASwMrWC2GWUVv-WEDVBvi4tJXM2ko++UXBEzsskAP_Uqw@mail.gmail.com>
+Subject: Re: [PATCH V11 3/5] kbuild: Allow .dtso format for overlay source files
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Do, 2021-04-08T08:00-0700, Guenter Roeck wrote:
-> On 4/8/21 2:36 AM, Hans de Goede wrote:
-> > On 4/7/21 9:43 PM, Thomas Weißschuh wrote:
-> >> On Mi, 2021-04-07T17:54+0200, Hans de Goede wrote:
-> > Jean, Guenter,
-> > 
-> > Thomas has been working on a WMI driver to expose various motherboard
-> > temperatures on a gigabyte board where the IO-addresses for the it87 chip
-> > are reserved by ACPI. We are discussing how best to deal with this, there
-> > are some ACPI methods to directly access the super-IO registers (with locking
-> > to protect against other ACPI accesses). This reminded me of an idea I had
-> > a while ago to solve a similar issue with an other superIO chip, abstract
-> > the superIO register access-es using some reg_ops struct and allow an ACPI/WMI
-> > driver to provide alternative reg_ops:
-> > https://bugzilla.kernel.org/show_bug.cgi?id=204807#c47
-> > 
-> > Do you think this is a good idea (or a bad one)? And would something like that
-> > be acceptable to you ?
-> > 
-> 
-> The upstream it87 driver is severely out of date. I had an out-of-tree driver
-> with various improvements which I didn't upstream, first because no one was willing
-> to review changes and then because it had deviated too much. I pulled it from
-> public view because I got pounded for not upstreaming it, because people started
-> demanding support (not asking, demanding) for it, and because Gigabyte stopped
-> providing datasheets for the more recent ITE chips and it became effectively
-> unmaintainable.
-> 
-> Some ITE chips have issues which can cause system hangs if accessed directly.
-> I put some work to remedy that into the non-upstream driver, but that was all
-> just guesswork. Gigabyte knows about the problem (or so I was told from someone
-> who has an NDA with them), but I didn't get them or ITE to even acknowledge it
-> to me. I even had a support case open with Gigabyte for a while, but all I could
-> get out of them is that they don't support Linux and what I would have to reproduce
-> the problem with Windows for them to provide assistance (even though, again,
-> they knew about it).
-> 
-> As for using ACPI locks or WMI to ensure that ACPI leaves the chip alone while
-> the driver accesses chips directly: That is an option, but it has (at least)
-> two problems.
-> 
-> First, ACPI access methods are not well documented or standardized. I had tried
-> to find useful means to do that some time ago, but I gave up because each board
-> (even from the same vendor) handles locking and accesses differently. We would
-> end up with lots of board specific code. Coincidentally, that was for ASUS boards
-> and the nct6775 driver.
+On Tue, Mar 16, 2021 at 5:01 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Frank,
+>
+> On Tue, Mar 16, 2021 at 6:39 AM Frank Rowand <frowand.list@gmail.com> wrote:
+> > On 3/15/21 5:12 PM, Laurent Pinchart wrote:
+> > > On Tue, Mar 16, 2021 at 02:43:45AM +0900, Masahiro Yamada wrote:
+> > >> But how can we fix drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a779*.dts
+> > >> if these are doing bad things.
+> > >> They seem to be overlay files even though the file name suffix is .dts
+> > >
+> > > That is correct, they are overlays. I have no issue with those files
+> > > being renamed to .dtso if that can help (but I haven't checked if that
+> > > would have any adverse effect on the R-Car DU driver).
+> >
+> > As Laurent replied, yes these are overlays.  They were grandfathered in
+> > as a deprecated use of overlays.
+> >
+> > > These files are there to ensure backward compatibility with older DT
+> > > bindings. The change was made 3 years ago and I wouldn't object to
+> > > dropping this completely, but I understand I may not be the most
+> > > cautious person when it comes to ensuring DT backward compatibility :-)
+> >
+> > My memory is that the goal was to eventually remove these overlays
+> > at some point in the future.  If everyone agrees that today is the
+> > proper time, it would be helpful to go ahead and remove these .dts
+> > files and the code that uses them.
+>
+> Given [1][2][3] were merged in v4.17, and [4] was merged in v4.20, and
+> all were backported to the old v4.14-based R-Car BSP v3.8.0, I think
+> it's safe to assume all users have the DTS updates, so the backward
+> compatibility mode can be removed?
+>
+> > >> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7791.dts
+> > >> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7795.dts
+> > >> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7796.dts
+> > >> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7793.dts
+> > >> drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7790.dts
+>
+> [1] 15a1ff30d8f9bd83 ("ARM: dts: r8a7790: Convert to new LVDS DT bindings")
+> [2] e5c3f4707f3956a2 ("ARM: dts: r8a7791: Convert to new LVDS DT bindings")
+> [3] edb0c3affe5214a2 ("ARM: dts: r8a7793: Convert to new LVDS DT bindings")
+> [4] 58e8ed2ee9abe718 ("arm64: dts: renesas: Convert to new LVDS DT bindings")
 
-At least for all the Gigabyte ACPI tables I have looked at all access is done
-via two-byte "OperationRegion" over the Index/Data addresses, a "Field" with
-two entries for these and an "IndexField" that is actually used to perform the
-accesses.
-As the IndexField is synchronized via "Lock" it should take a lock on the
-OperationRegion itself.
 
-So I think we should be technically fine with validating these assumption and
-then also taking locks on the OperationRegion.
+Can we remove all of drivers/gpu/drm/rcar-du/*.dts ?
 
-If it is reasonable to do so is another question.
+I see some more under drivers/staging/.
 
-> Second, access through ACPI is only one of the issues. Turns out there are two
-> ITE chips on many of the Gigabyte boards nowadays, and the two chips talk to each
-> other using I2C. My out-of-tree driver tried to remedy that by blocking those
-> accesses while the driver used the chip, but, again, without Gigabyte / ITE
-> support this was never a perfect solution, and there was always the risk that
-> the board ended up hanging because that access was blocked for too long.
-> Recent ITE chips solve that problem by providing memory mapped access to the
-> chip registers, but that is only useful if one has a datasheet.
 
-Are both of these chips available at the two well-known registers 0x2e and
-0x4e?
+masahiro@grover:~/ref/linux-next$ find  drivers  -name  '*.dts'  |
+grep -v drivers/of/unittest-data
+drivers/staging/pi433/Documentation/devicetree/pi433-overlay.dts
+drivers/staging/mt7621-dts/gbpc2.dts
+drivers/staging/mt7621-dts/gbpc1.dts
+drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7791.dts
+drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7795.dts
+drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7796.dts
+drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7793.dts
+drivers/gpu/drm/rcar-du/rcar_du_of_lvds_r8a7790.dts
 
-Would this too-long blocking also occur when only accessing single registers
-for read-only access?
-Any write access would probably have to be blocked anyways.
 
-> Overall, I don't think it makes much sense trying to make significant changes
-> to the it87 driver without pulling in all the changes I had made, and without
-> finding a better fix for the cross-chip access problems. I for sure won't have
-> time for that (and getting hwmon patches reviewed is still very much an issue).
-> 
-> Having said that, I am of course open to adding WMI/ACPI drivers for the various
-> boards. Good luck getting support from Gigabyte, though. Or from ASUS, for that
-> matter.
 
-Thomas
+
+
+
+
+Best Regards
+
+Masahiro Yamada
