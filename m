@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED907359C18
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1514359C1B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231772AbhDIK2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:28:52 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49584 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233316AbhDIK1o (ORCPT
+        id S233504AbhDIK3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:29:47 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40030 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232469AbhDIK3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:27:44 -0400
-Date:   Fri, 09 Apr 2021 10:27:30 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617964051;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Hui8eVUUAjuio9SpIiuANTI/YnV8VTgVEfBanqp/vE=;
-        b=Bcp5ZbAB7Mbr6rW4IvqoklRxpD4Blsof/GywcwL5gBMHshALers41bE349GxHJmG6qXDVv
-        gbLn6EliPc0HXtG+2z7HYpHt01SlbJJhs7E3oEJp2/cHdasRQj0ZYdRAu2/RvOBNb3qbkC
-        MIqu/sMP26wTiec/JjtCU2de+N21lzrPvi2XqWqcoKMKD3RVzTx3XN3P9CkzDdZ+hO32GC
-        detjb51dUi6rCgKudkty182vpKXz02iW3kT40pLhd8ZG8AoE+lqp9mPvOxf36tipovVxgL
-        +nxIhZKouAlA8UdcnWsONaBglIGz49iqvOcnlvCCoK/KX8w2HovlfspextG1/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617964051;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Hui8eVUUAjuio9SpIiuANTI/YnV8VTgVEfBanqp/vE=;
-        b=Cv1kH1vie0w/yEhbwiPGNQi03na5kg/OqmnTJTfqrG4MReViFBUjDR6li90BaRelr3zTW2
-        QJks8USrUM1cFeCQ==
-From:   tip-bot2 for Niklas =?utf-8?q?S=C3=B6derlund?= 
-        <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] dt-bindings: timer: renesas,tmu: Document missing
- Gen3 SoCs
-Cc:     niklas.soderlund+renesas@ragnatech.se,
-        Rob Herring <robh@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210211143102.350719-1-niklas.soderlund+renesas@ragnatech.se>
-References: <20210211143102.350719-1-niklas.soderlund+renesas@ragnatech.se>
+        Fri, 9 Apr 2021 06:29:40 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lUoOC-0000EC-Kv; Fri, 09 Apr 2021 10:29:24 +0000
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: cnic: issue with double assignment to
+ ictx->xstorm_st_context.common.flags
+To:     Vladislav Zolotarov <vladz@broadcom.com>,
+        Michael Chan <mchan@broadcom.com>,
+        Bhanu Prakash Gollapudi <bprakash@broadcom.com>,
+        Eilon Greenstein <eilong@broadcom.com>
+Cc:     "David S. Miller" <davem@conan.davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Saurav Kashyap <skashyap@marvell.com>,
+        Javed Hasan <jhasan@marvell.com>,
+        GR-QLogic-Storage-Upstream@marvell.com,
+        Nilesh Javali <njavali@marvell.com>,
+        Manish Rangankar <mrangankar@marvell.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <45fd66c6-764b-bc0d-7ff9-920db399f11b@canonical.com>
+Date:   Fri, 9 Apr 2021 11:29:24 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Message-ID: <161796405053.29796.11150931297237061814.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+Hi,
 
-Commit-ID:     c4d814416fe3f5eb27438209a83582d7508ba80a
-Gitweb:        https://git.kernel.org/tip/c4d814416fe3f5eb27438209a83582d7508=
-ba80a
-Author:        Niklas S=C3=B6derlund <niklas.soderlund+renesas@ragnatech.se>
-AuthorDate:    Thu, 11 Feb 2021 15:31:02 +01:00
-Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Thu, 08 Apr 2021 13:23:21 +02:00
+Analysis of linux with Coverity has detected an issue with the
+assignment of ictx->xstorm_st_context.common.fla in
+drivers/net/ethernet/broadcom/cnic.c in function cnic_setup_bnx2x_ctx.
 
-dt-bindings: timer: renesas,tmu: Document missing Gen3 SoCs
+This was introduced a while back with the following commit:
 
-Add missing bindings for Gen3 SoCs.
+commit 619c5cb6885b936c44ae1422ef805b69c6291485
+Author: Vlad Zolotarov <vladz@broadcom.com>
+Date:   Tue Jun 14 14:33:44 2011 +0300
 
-Signed-off-by: Niklas S=C3=B6derlund <niklas.soderlund+renesas@ragnatech.se>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210211143102.350719-1-niklas.soderlund+rene=
-sas@ragnatech.se
----
- Documentation/devicetree/bindings/timer/renesas,tmu.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+    New 7.0 FW: bnx2x, cnic, bnx2i, bnx2fc
 
-diff --git a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml b/Docum=
-entation/devicetree/bindings/timer/renesas,tmu.yaml
-index c541887..f0f0f12 100644
---- a/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
-+++ b/Documentation/devicetree/bindings/timer/renesas,tmu.yaml
-@@ -28,8 +28,14 @@ properties:
-           - renesas,tmu-r8a774e1 # RZ/G2H
-           - renesas,tmu-r8a7778  # R-Car M1A
-           - renesas,tmu-r8a7779  # R-Car H1
-+          - renesas,tmu-r8a7795  # R-Car H3
-+          - renesas,tmu-r8a7796  # R-Car M3-W
-+          - renesas,tmu-r8a77961 # R-Car M3-W+
-+          - renesas,tmu-r8a77965 # R-Car M3-N
-           - renesas,tmu-r8a77970 # R-Car V3M
-           - renesas,tmu-r8a77980 # R-Car V3H
-+          - renesas,tmu-r8a77990 # R-Car E3
-+          - renesas,tmu-r8a77995 # R-Car D3
-       - const: renesas,tmu
-=20
-   reg:
+The static analysis is as follows:
+
+1761        ictx->xstorm_st_context.common.flags =
+
+Unused value (UNUSED_VALUE)assigned_value: Assigning value 1 to
+ictx->xstorm_st_context.common.flags here, but that stored value is
+overwritten before it can be used.
+
+1762                1 <<
+XSTORM_COMMON_CONTEXT_SECTION_PHYSQ_INITIALIZED_SHIFT;
+1763        ictx->xstorm_st_context.common.flags =
+
+    value_overwrite: Overwriting previous write to
+ictx->xstorm_st_context.common.flags with value from port << 1.
+
+1764                port << XSTORM_COMMON_CONTEXT_SECTION_PBF_PORT_SHIFT;
+1765
+1766        ictx->tstorm_st_context.iscsi.hdr_bytes_2_fetch =
+ISCSI_HEADER_SIZE;
+
+The re-assignment of ictx->xstorm_st_context.common.flags in line 1763
+is overwriting the value assigned on line 1761.  Should the = operator
+on the re-assignment be an |= operator instead?
+
+Colin
