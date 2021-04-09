@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E724C3597CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B3B3597C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbhDIIZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231621AbhDIIZv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:25:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C61C061760;
-        Fri,  9 Apr 2021 01:25:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=202l/8ec2GuA0yYlL8VYlkW1ikC/xFbRwp677ztTmrI=; b=vu0yr3dinpWHKRiVN6tLRNy8Wr
-        e1KRO0UidkfKw1AL875vbYnBHFXCCDgU5flhr/lNEKtITFJ2CHja61VS3EtWNp1f8R94VbSBPO/Z6
-        tijZcjtdRXmjKBQQemlMfaWCZDwsftTPXsvGrXZPTfFg09UxjtDPuENVT9Nn8Ez0sJuh3O25AXzR8
-        Ow4soMPjO19XZAKJwaJNbgPx64GvExgNthSBEopQqVd1VSHsQ/JUKiAG0iYdB1pB/HS/bPSlM8mbj
-        N0M7e3lSv8tpoa6YNwA8xlD3QP3JUFeIw+bHZM4Z0gj8UIkZpPkeNgWnpU+xX3eSjuYDIT9C9phBV
-        pxFYZMVg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUmRF-00034F-US; Fri, 09 Apr 2021 08:24:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 145F730001B;
-        Fri,  9 Apr 2021 10:24:25 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EDC032C232894; Fri,  9 Apr 2021 10:24:24 +0200 (CEST)
-Date:   Fri, 9 Apr 2021 10:24:24 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH 02/11] mm/page_alloc: Convert per-cpu list protection to
- local_lock
-Message-ID: <YHAPOKPTgJcLuDJl@hirez.programming.kicks-ass.net>
-References: <20210407202423.16022-1-mgorman@techsingularity.net>
- <20210407202423.16022-3-mgorman@techsingularity.net>
- <YG7gV7yAEEjOcQZY@hirez.programming.kicks-ass.net>
- <20210408174244.GG3697@techsingularity.net>
- <YG/2scd9ADdrIyCM@hirez.programming.kicks-ass.net>
- <20210409075939.GJ3697@techsingularity.net>
+        id S232373AbhDIIZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:25:12 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:5652 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231370AbhDIIZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:25:11 -0400
+Received: by ajax-webmail-mail-app3 (Coremail) ; Fri, 9 Apr 2021 16:24:52
+ +0800 (GMT+08:00)
+X-Originating-IP: [222.205.72.8]
+Date:   Fri, 9 Apr 2021 16:24:52 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Jon Hunter" <jonathanh@nvidia.com>
+Cc:     kjlu@umn.edu, "Laxman Dewangan" <ldewangan@nvidia.com>,
+        "Vinod Koul" <vkoul@kernel.org>,
+        "Thierry Reding" <thierry.reding@gmail.com>,
+        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] dmaengine: tegra20: Fix runtime PM imbalance in
+ tegra_dma_issue_pending
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <5699d0e9-968c-c8b0-3b0b-0416b5b48aa0@nvidia.com>
+References: <20210408071158.12565-1-dinghao.liu@zju.edu.cn>
+ <5699d0e9-968c-c8b0-3b0b-0416b5b48aa0@nvidia.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409075939.GJ3697@techsingularity.net>
+Message-ID: <7c55cf68.45570.178b5bbe111.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cC_KCgC3nyJUD3BgqX_xAA--.30209W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgkKBlZdtTUlDwAEsi
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 08:59:39AM +0100, Mel Gorman wrote:
-> In the end I just gave up and kept it simple as there is no benefit to
-> !PREEMPT_RT which just disables IRQs. Maybe it'll be worth considering when
-> PREEMPT_RT is upstream and can be enabled. The series was functionally
-> tested on the PREEMPT_RT tree by reverting the page_alloc.c patch and
-> applies this series and all of its prerequisites on top.
-
-Right, I see the problem. Fair enough; perhaps ammend the changelog to
-include some of that so that we can 'remember' in a few months why the
-code is 'funneh'.
+PiBPbiAwOC8wNC8yMDIxIDA4OjExLCBEaW5naGFvIExpdSB3cm90ZToKPiA+IHBtX3J1bnRpbWVf
+Z2V0X3N5bmMoKSB3aWxsIGluY3JlYXNlIHRoZSBydW10aW1lIFBNIGNvdW50ZXIKPiA+IGV2ZW4g
+aXQgcmV0dXJucyBhbiBlcnJvci4gVGh1cyBhIHBhaXJpbmcgZGVjcmVtZW50IGlzIG5lZWRlZAo+
+ID4gdG8gcHJldmVudCByZWZjb3VudCBsZWFrLiBGaXggdGhpcyBieSByZXBsYWNpbmcgdGhpcyBB
+UEkgd2l0aAo+ID4gcG1fcnVudGltZV9yZXN1bWVfYW5kX2dldCgpLCB3aGljaCB3aWxsIG5vdCBj
+aGFuZ2UgdGhlIHJ1bnRpbWUKPiA+IFBNIGNvdW50ZXIgb24gZXJyb3IuCj4gPiAKPiA+IFNpZ25l
+ZC1vZmYtYnk6IERpbmdoYW8gTGl1IDxkaW5naGFvLmxpdUB6anUuZWR1LmNuPgo+ID4gLS0tCj4g
+PiAgZHJpdmVycy9kbWEvdGVncmEyMC1hcGItZG1hLmMgfCAyICstCj4gPiAgMSBmaWxlIGNoYW5n
+ZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL2RtYS90ZWdyYTIwLWFwYi1kbWEuYyBiL2RyaXZlcnMvZG1hL3RlZ3JhMjAtYXBiLWRt
+YS5jCj4gPiBpbmRleCA3MTgyN2Q5YjBhYTEuLjczMTc4YWZhZjRjMiAxMDA2NDQKPiA+IC0tLSBh
+L2RyaXZlcnMvZG1hL3RlZ3JhMjAtYXBiLWRtYS5jCj4gPiArKysgYi9kcml2ZXJzL2RtYS90ZWdy
+YTIwLWFwYi1kbWEuYwo+ID4gQEAgLTcyMyw3ICs3MjMsNyBAQCBzdGF0aWMgdm9pZCB0ZWdyYV9k
+bWFfaXNzdWVfcGVuZGluZyhzdHJ1Y3QgZG1hX2NoYW4gKmRjKQo+ID4gIAkJZ290byBlbmQ7Cj4g
+PiAgCX0KPiA+ICAJaWYgKCF0ZGMtPmJ1c3kpIHsKPiA+IC0JCWVyciA9IHBtX3J1bnRpbWVfZ2V0
+X3N5bmModGRjLT50ZG1hLT5kZXYpOwo+ID4gKwkJZXJyID0gcG1fcnVudGltZV9yZXN1bWVfYW5k
+X2dldCh0ZGMtPnRkbWEtPmRldik7Cj4gPiAgCQlpZiAoZXJyIDwgMCkgewo+ID4gIAkJCWRldl9l
+cnIodGRjMmRldih0ZGMpLCAiRmFpbGVkIHRvIGVuYWJsZSBETUFcbiIpOwo+ID4gIAkJCWdvdG8g
+ZW5kOwo+ID4gCj4gCj4gCj4gVGhhbmtzISBMb29rcyBsaWtlIHRoZXJlIGFyZSB0d28gaW5zdGFu
+Y2VzIG9mIHRoaXMgdGhhdCBuZWVkIGZpeGluZy4KPiAKClRoYW5rcyBmb3IgcG9pbnRpbmcgb3V0
+IHRoaXMhIEkgd2lsbCBmaXggdGhpcyBhbmQgc2VuZCBhIG5ldyBwYXRjaCBzb29uLgoKUmVnYXJk
+cywKRGluZ2hhbw==
