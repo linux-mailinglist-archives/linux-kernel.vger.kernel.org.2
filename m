@@ -2,130 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F3935A2EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE18035A2EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233983AbhDIQUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:20:35 -0400
-Received: from mail-co1nam11on2095.outbound.protection.outlook.com ([40.107.220.95]:43361
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233527AbhDIQUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:20:34 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jpQldijyGSazgSIVNLdK6r2j7XOz6tR2F2YSIkiOMaTlx0mLghiTcSqeLyxKGfWW8QZ8PEBg6qE5fjHT7xhelrW7W61S/SdLnGz1HAQ3+d2J5t61XdkjAp98FqXpZRLsRvGnRNkipwPQKzCGqJ/OXnn/J84ppTrnulyRGZk18xW+GZJPnM7yx/QVqGtaMaBzbjo2tFbTnRuHadYV8PyIl4bOC5SuPTCezFHXkZSNIvdl3FLtH7ClUab0ciGROMfEANIOjKhOLWRBE2b+199EJ06op7Ve7gsUstwSr6tcsCrLZm6zxry7Fq4p47HWf7pDeX3dERrMtOHZg9YRn0gwHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+4JT0PemIlNe+GjK3siapLgy9b3TD+tu1Rrty6G5Xs=;
- b=cNPMarIGHG+y2nJZOIyruuBgrkZUWYDi8MwkZ6YGkIj36ZuicKM392q0ktIqbaQwIBeqaTi8FI81wirFa45uvR8VVWfB369+VSBe8f+g+HydD5yel6+W7iL9KBlk0CXxBaFYHFM4UAyS93kjB9iRqS2LAwB/gruiX/8ZRBL6cRQl7nsOPf89QpkG8OY8LMCwvsFxOys4EJjac2QpvAOGhfBC3gR+eb+nnt5KK/hyb/rWw4iMkkm4mWROwLy1EP5LMerQsiaiQ8E5IuzPzA/y/9Ar6jlxLsKRIF02TDMcNLFbrlXj7Y7yAVtwuDROxqtsr1Cxp33Z3PwhlMgJmLEuDg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+4JT0PemIlNe+GjK3siapLgy9b3TD+tu1Rrty6G5Xs=;
- b=IzLMbLJNG+uviviPL2IO41BRudHCMWSJBUy3OlW0yQymiD8+dkiho1su68iEktszk6UzVOuC2GbIFNwyfyH9PQLHhIzvmZcSlxiRBpDk0S3cSc3Vg/w4VycVTNCJ+ax1pznYOtDEhY/wsJHoTsnwNhZmAtaeXkPy4Z8YreQdDSR6jWA5cVKl9/UJctWfWo4YNUQCYdjZngT1wHMCf5uxVLaRZw3z8Fhb1xrt+d3DPP1yCwJRtE4bYxfJ6ei3V5C7y6LFq8QVYp0jSMWfsc2+mcN0MbvztqTTHxeMcjTFt6J9dykynvSASIPZv8FEis8DFyF/AHTdWXaCSA3iT6lzsw==
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=cornelisnetworks.com;
-Received: from PH0PR01MB6439.prod.exchangelabs.com (2603:10b6:510:d::22) by
- PH0PR01MB6745.prod.exchangelabs.com (2603:10b6:510:96::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4020.21; Fri, 9 Apr 2021 16:20:19 +0000
-Received: from PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::75a5:79c6:dd14:3860]) by PH0PR01MB6439.prod.exchangelabs.com
- ([fe80::75a5:79c6:dd14:3860%5]) with mapi id 15.20.3999.032; Fri, 9 Apr 2021
- 16:20:19 +0000
-Subject: Re: linux-next: Signed-off-by missing for commit in the rdma tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Doug Ledford <dledford@redhat.com>,
-        Jason Gunthorpe <jgg@mellanox.com>
-Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210409080055.421f0dee@canb.auug.org.au>
-From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Message-ID: <95642f46-f23f-3aa6-7614-a8f4a7109fc4@cornelisnetworks.com>
-Date:   Fri, 9 Apr 2021 12:20:09 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-In-Reply-To: <20210409080055.421f0dee@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [24.154.216.5]
-X-ClientProxiedBy: BL0PR02CA0094.namprd02.prod.outlook.com
- (2603:10b6:208:51::35) To PH0PR01MB6439.prod.exchangelabs.com
- (2603:10b6:510:d::22)
+        id S233395AbhDIQWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232395AbhDIQWa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:22:30 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67674C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 09:22:17 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id q26so6370269qkm.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:22:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LPSR+SFooTaPgtBFedHf7Y31wtqhJOh5AqAapK2wyzs=;
+        b=Q056bBDn7nbWunIqwgtUvNhy/EQyhNM6musYnQj7QpKC9MnxsY0qm7rHMSKR3wlLwF
+         VxsdZFCvdQ9fTWUyEUR3SjENQ7y9DL/o82sAd385sro4Quk8mw1CAvc0/6fv8gxLtS0V
+         aFyhjYa2+fANtrshg5ulm/gR2QV3RzKaIacy+FqTT4M0KLq1n7wV1C1NBytz8vbgByn0
+         Tt7V/5Cvn3y/72itgyTGQBE4y/pAbCz3FKu5UtR+jbAUJmOLxCvEfrYtw9bfL9LkP1EH
+         yPVhSTzhuDRTzpD/R+B2Wj1/C276yeop31/JV2jlLQv7n/jN/tTxIOgIKA5zpI9MOXgC
+         P8ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LPSR+SFooTaPgtBFedHf7Y31wtqhJOh5AqAapK2wyzs=;
+        b=UdkQl6XB2Xglr+L13NHnz8wc4FltxGUrRvdHMQ3UiVW/pDQ59r0w6gQKwccZXbMtv+
+         rzrwccn3n+oGB/6zolGfL25ejYowDmexngBQAzHm7qVaQHlvpA5BRfvzs6hQwTX16p1G
+         dzR3PL7JYjPsgJ7dyGOg6H2IXh8bvPrverwtraGhM30dMaOiNyELfpuw0eL5VL6ssnP7
+         cgX3b6Zzqlzpot+MLlR7y1BMmTlsiwUuxvgbkJc89WS0Udnmd5hF/YZZtEeVjARfewOA
+         o7MJOJRswB++DJfK/5fcG7cNfY+d7xZItQ4uAnvdun3VYSRrIDmCVGwRH/CL+PxG97fi
+         AJxg==
+X-Gm-Message-State: AOAM530ATE/fUYX4a3igSZk8Tsfk0e0RZ8Eu8N3OBc+mu8CI8B1SQ8y4
+        8GROTJsatD/nIX/N4sNsjTQ=
+X-Google-Smtp-Source: ABdhPJyV0BE86hD+1Lz1UISNzlxC1GNIuBKcE2RdCuH2q3ucvcY4bff6RxkyRVea7Of5FCyOz2hY0Q==
+X-Received: by 2002:a37:6288:: with SMTP id w130mr6932186qkb.70.1617985336747;
+        Fri, 09 Apr 2021 09:22:16 -0700 (PDT)
+Received: from localhost.localdomain ([192.141.93.162])
+        by smtp.gmail.com with ESMTPSA id f13sm2205268qtg.2.2021.04.09.09.22.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 09:22:16 -0700 (PDT)
+From:   Gonzalo Matias Juarez Tello <gmjuareztello@gmail.com>
+To:     linux-mm@kvack.org
+Cc:     Gonzalo Matias Juarez Tello <gmjuareztello@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/mmap.c: logic of find_vma_intersection repeated in __do_munmap
+Date:   Fri,  9 Apr 2021 13:21:26 -0300
+Message-Id: <20210409162129.18313-1-gmjuareztello@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.40.159] (24.154.216.5) by BL0PR02CA0094.namprd02.prod.outlook.com (2603:10b6:208:51::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Fri, 9 Apr 2021 16:20:18 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b54d5f0d-76f3-4ee8-7830-08d8fb735e23
-X-MS-TrafficTypeDiagnostic: PH0PR01MB6745:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR01MB6745BC9288BE45062A96DA44F4739@PH0PR01MB6745.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1091;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PHaIW1KJOXnX39sD+zlM8ttSICI3NqOlzRfL4i0lDJtO1cWrFr/3F77zjrGLmzLlr2Y2OCwTlF7otvLJYyfnYb8Vuzu3kY3dLqNyq9ExH5J5RWQ10+lH+wSbvqaRUe2pYwFuRIB93Sjfase08EhYaGN+TSxEYOT56HeeD1TDi2FlFetX6Ywt+JUi6mJ817bk9W16ZNN43ba6KY/fyCcq22TVMCmWF7Km4XPDgxUAPjPljH2w9l+Tk1G/mI9lZOBNLuNzhYrWFgmr5zsyqGY46GsQzOOBBeaJHuv02TIzn9vZDs8PzePUi2bv+wtTilkbyK6xf0ChrzPMhA75sMJFzssfQvSKlrO61DyEUJ5VrricOJHCfXBVfVm9hWgHQVtzEDL/3raPsDoD2jzrTgA0415n85aK46h2K7BoQB40e4A0FgXwry5XX4hssN+21UIDRQxexJ6E2tB2LMnAUKVRVns/JPMYoao7B1eKbXPKzUzGIDMUlC6V9eCQItjmH/cNTLZS6CGjW6hT00hqeqFZXufawPOKoWFPz2hjL5Hf5Yuac/OSY4oTjV45TvX300kd2CwzXp3TTFhT0HQ1bn7cqz/g5xKGmWMJiFlRkoVnkrj9hw6ItuayYanL+WsATYjEvHTL9G8D249y+VX5adO+K0gLJNC40McnScf/opNjuQ6vRRPGbc2f5E4BG7xxa0eerqTS1abjena1rKjTlX3re1iIzZQ/821xJlYa0lUEHfc7ATWIIGjsXyD02zm3phMD/SJsCvQt+uxRPXaqpi6xN3ivPNM8uhPzntBNrRhkzt4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB6439.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(8936002)(6486002)(38100700001)(110136005)(16576012)(54906003)(16526019)(53546011)(38350700001)(8676002)(4744005)(2906002)(26005)(52116002)(186003)(44832011)(6666004)(5660300002)(2616005)(956004)(86362001)(83380400001)(34490700003)(66946007)(36756003)(4326008)(31696002)(31686004)(66556008)(508600001)(66476007)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?o1SbXXxkcm0JEA8hxzvJgXw2q8Yz36iWkzbxQtwjSmQId4iafWIbdGPT?=
- =?Windows-1252?Q?Gegx2q3CeMxkIwoxAkgeVhoEEIO6/bvAkQeJJgngmi1tiDJbNSZSUn+h?=
- =?Windows-1252?Q?6DsrGrxAH+PQT9BGz2whAQ4jPYVkZNc13UJ0m43kEHEcA3iThh3JNX5y?=
- =?Windows-1252?Q?O9Z3qagUHhCBfs1yqFZBKrbC8j4BCOMTaCMcg/6C0e7MglEHBYOyvllq?=
- =?Windows-1252?Q?3lUia2ln934AfFNkpn0e4JB1nQeqZNyqO2zbUHpoOwiIoXvc7iaT1pEA?=
- =?Windows-1252?Q?SRA/M7qfZEI1hukneDdqom6aymbjLAGAYlOWmYKOU9dKGjGri0IW8VPn?=
- =?Windows-1252?Q?ULkWIecytvrx+I2lHrc3d6hDmwq4XJU18/ED6fvdtSi3Y8shw3TXrh4G?=
- =?Windows-1252?Q?bKnY0nij0VGKPcrYdD3Xyv8NxdgoNREDgz/ibY3cEI2y5JKII/0tQP5m?=
- =?Windows-1252?Q?IRPz2HJVqKlpqUdP2apqbzlLR8gSKskwAGp7i6eK++4z/ydD0fnfSYpc?=
- =?Windows-1252?Q?39UsbbQe+bbLGBqYcY1y5BAyRXvseKk2VGqKH3yLiQnEdvAYSU9pGcS2?=
- =?Windows-1252?Q?6z7hqaYkRtCq1NuE8auakHqEQ3DXrJwnXu4TQQ2uHMmZuHdjKIlixtg7?=
- =?Windows-1252?Q?flaXud+x0KhbB7YqulqynCvd0B60//1NGLY9vXWKtmxHlbx12PBrhRq+?=
- =?Windows-1252?Q?QX9q8u6E7XLET6HHW50/TEaoKtlOPi/0wF3xe2fC8UNJ4OmWKLdhGxL+?=
- =?Windows-1252?Q?MDsqkm2RRdBHpJvVqXM4PGSez5ajMuUgbxUhzTzRdHgPxBlUmIqL4Jad?=
- =?Windows-1252?Q?tpS+oWfqVJwj32PF/43YFqZ//iTBUNXrpwCzJ2LS43iNungdeqGiKBqW?=
- =?Windows-1252?Q?DbOwnQ33eWiuS8M+2XtW1x6zL+A+pIN6FIfp2a1F33NW9CwB5Idd+jet?=
- =?Windows-1252?Q?NHGUN9FkvviP0pEpHLgiOTJuBcOj8mZq3ZY5ZneRqUqze/UZlG4kTMKz?=
- =?Windows-1252?Q?5c+fOh2y+KIpLxsxfiOd/E6RjeQYpq00yIsjGmCpnMgRUIRwAZV0MFpN?=
- =?Windows-1252?Q?1T6+Gusx4S6VkDzXRTrXjUqpBiQI2665b0Vz4F9lb2kFR1XMoZ4g32u/?=
- =?Windows-1252?Q?3k8rKuImk6AW0sswR00JN1yIOkqbfGTL51nG9dfuue703leGUGd7WTyZ?=
- =?Windows-1252?Q?k913dIoiN9m2wOyfiIez66eYzr8F9aw6ymgXnqcbNqM25gIP4tPVDfSu?=
- =?Windows-1252?Q?EnXzayrzu9PBikgoVp5l9OtBjU1jaieiQp9kKHzR2TEVg9eg56N53m7n?=
- =?Windows-1252?Q?G1mkYQTx+hTTv7v7yn5jjlxepTuOH/SAiN1bkrBXFgvgIkYsP3sxSUPJ?=
- =?Windows-1252?Q?ztmMnLUp9gSyu/xnRRGo+aqsK5/+EBUc7FYx/OiMWAYK/muHvCLo7hOa?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b54d5f0d-76f3-4ee8-7830-08d8fb735e23
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB6439.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 16:20:19.3761
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YGoy8FkHU3bsB6pp6X5dj5d5r8dwowqBWSDaXgS/oAd+IEQX9hKBJF5jXF/dFaZcvEY41ZH0Fu3LCGwSRXiJlYNuMPz3sTuyVEHIch72zvGp5kVRb4hgdu11bE1o+3U5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR01MB6745
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/2021 6:00 PM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Commit
-> 
->    042a00f93aad ("IB/{ipoib,hfi1}: Add a timeout handler for rdma_netdev")
-> 
-> is missing a Signed-off-by from its author.
+Logic of find_vma_intersection() (which is an inline fc) is
+repeated in __do_munmap().
+Besides, prev is assigned a value before checking vma->vm_start >= end
+which might end up on a return statement making that assignment useless.
 
-Doh! That's my fault. I must have fat fingered the delete button instead 
-of editing the line when I was converting our email addresses to the new 
-name.
+Calling find_vma_intersection() checks that condition and returns NULL if
+no vma is found, hence only the !vma check is needed in __do_munmap().
 
-Jason do you want a v2 of the patch?
+Signed-off-by: Gonzalo Matias Juarez Tello <gmjuareztello@gmail.com>
+---
+ mm/mmap.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
--Denny
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 3f287599a7a3..59ceaa474a00 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2822,16 +2822,11 @@ int __do_munmap(struct mm_struct *mm, unsigned long start, size_t len,
+ 	 */
+ 	arch_unmap(mm, start, end);
+ 
+-	/* Find the first overlapping VMA */
+-	vma = find_vma(mm, start);
++	/* Find the first overlapping VMA where start < vma->vm_end */
++	vma = find_vma_intersection(mm, start, end);
+ 	if (!vma)
+ 		return 0;
+ 	prev = vma->vm_prev;
+-	/* we have  start < vma->vm_end  */
+-
+-	/* if it doesn't overlap, we have nothing.. */
+-	if (vma->vm_start >= end)
+-		return 0;
+ 
+ 	/*
+ 	 * If we need to split any vma, do it now to save pain later.
+-- 
+2.31.1
 
