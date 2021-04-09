@@ -2,48 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90834359A75
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CD6359A9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233715AbhDIJ66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:58:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45536 "EHLO mail.kernel.org"
+        id S233770AbhDIKAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:00:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232897AbhDIJ5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:57:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8F13611C0;
-        Fri,  9 Apr 2021 09:56:58 +0000 (UTC)
+        id S233678AbhDIJ6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:58:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D86B6120F;
+        Fri,  9 Apr 2021 09:57:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962219;
-        bh=CC4AGHOsqlVAg4Qj3WyLqdMSYYCTPYqIbvo/AV/DhQo=;
+        s=korg; t=1617962263;
+        bh=zBxvGtJmvHoaAo7R7ymWv4eLPi0x11uTP1qOZ1aLXFw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LW4soUlwKgQnjxDU41pPH41lUunHDP58wSg36IddKAtplIbvnX9Xq4u+qXTWdi9yf
-         M1O2XzNJLWZtJt3yVLjU1FJvQ+nwwgsP1VQ7xR/yyPu7QTAsv5msLLiApU3lUmWSgr
-         +F+keaEfEPQnaaA3Zh40cHWXjU2TuYWX5h11G/lQ=
+        b=G/GE1EIPyNa1Nj8X2baobjGQtIhWYTjZX0um8TyrOR1kwulq01taxJ0WUb11egSHq
+         BJpbWggAxu4VdwObAxeyg7yfXGFuqUdmZpeIGNq/llDHPVaGpXl2MFMZSfZnX8+d0+
+         KFyMHhRCynhcapqEN3EIoX4IWxRxsgC6i8dGnIms=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        KP Singh <kpsingh@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 18/18] init/Kconfig: make COMPILE_TEST depend on HAS_IOMEM
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 16/23] ia64: fix format strings for err_inject
 Date:   Fri,  9 Apr 2021 11:53:46 +0200
-Message-Id: <20210409095302.124053288@linuxfoundation.org>
+Message-Id: <20210409095303.410914832@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095301.525783608@linuxfoundation.org>
-References: <20210409095301.525783608@linuxfoundation.org>
+In-Reply-To: <20210409095302.894568462@linuxfoundation.org>
+References: <20210409095302.894568462@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,60 +41,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Sergei Trofimovich <slyfox@gentoo.org>
 
-commit ea29b20a828511de3348334e529a3d046a180416 upstream.
+[ Upstream commit 95d44a470a6814207d52dd6312203b0f4ef12710 ]
 
-I read the commit log of the following two:
+Fix warning with %lx / u64 mismatch:
 
-- bc083a64b6c0 ("init/Kconfig: make COMPILE_TEST depend on !UML")
-- 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390")
+  arch/ia64/kernel/err_inject.c: In function 'show_resources':
+  arch/ia64/kernel/err_inject.c:62:22: warning:
+    format '%lx' expects argument of type 'long unsigned int',
+    but argument 3 has type 'u64' {aka 'long long unsigned int'}
+     62 |  return sprintf(buf, "%lx", name[cpu]);   \
+        |                      ^~~~~~~
 
-Both are talking about HAS_IOMEM dependency missing in many drivers.
-
-So, 'depends on HAS_IOMEM' seems the direct, sensible solution to me.
-
-This does not change the behavior of UML. UML still cannot enable
-COMPILE_TEST because it does not provide HAS_IOMEM.
-
-The current dependency for S390 is too strong. Under the condition of
-CONFIG_PCI=y, S390 provides HAS_IOMEM, hence can enable COMPILE_TEST.
-
-I also removed the meaningless 'default n'.
-
-Link: https://lkml.kernel.org/r/20210224140809.1067582-1-masahiroy@kernel.org
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Arnd Bergmann <arnd@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: KP Singh <kpsingh@google.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Terrell <terrelln@fb.com>
-Cc: Quentin Perret <qperret@google.com>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Link: https://lkml.kernel.org/r/20210313104312.1548232-1-slyfox@gentoo.org
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- init/Kconfig |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/ia64/kernel/err_inject.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -66,8 +66,7 @@ config INIT_ENV_ARG_LIMIT
+diff --git a/arch/ia64/kernel/err_inject.c b/arch/ia64/kernel/err_inject.c
+index 8b5b8e6bc9d9..dd5bfed52031 100644
+--- a/arch/ia64/kernel/err_inject.c
++++ b/arch/ia64/kernel/err_inject.c
+@@ -59,7 +59,7 @@ show_##name(struct device *dev, struct device_attribute *attr,	\
+ 		char *buf)						\
+ {									\
+ 	u32 cpu=dev->id;						\
+-	return sprintf(buf, "%lx\n", name[cpu]);			\
++	return sprintf(buf, "%llx\n", name[cpu]);			\
+ }
  
- config COMPILE_TEST
- 	bool "Compile also drivers which will not load"
--	depends on !UML && !S390
--	default n
-+	depends on HAS_IOMEM
- 	help
- 	  Some drivers can be compiled on a different platform than they are
- 	  intended to be run on. Despite they cannot be loaded there (or even
+ #define store(name)							\
+@@ -86,9 +86,9 @@ store_call_start(struct device *dev, struct device_attribute *attr,
+ 
+ #ifdef ERR_INJ_DEBUG
+ 	printk(KERN_DEBUG "pal_mc_err_inject for cpu%d:\n", cpu);
+-	printk(KERN_DEBUG "err_type_info=%lx,\n", err_type_info[cpu]);
+-	printk(KERN_DEBUG "err_struct_info=%lx,\n", err_struct_info[cpu]);
+-	printk(KERN_DEBUG "err_data_buffer=%lx, %lx, %lx.\n",
++	printk(KERN_DEBUG "err_type_info=%llx,\n", err_type_info[cpu]);
++	printk(KERN_DEBUG "err_struct_info=%llx,\n", err_struct_info[cpu]);
++	printk(KERN_DEBUG "err_data_buffer=%llx, %llx, %llx.\n",
+ 			  err_data_buffer[cpu].data1,
+ 			  err_data_buffer[cpu].data2,
+ 			  err_data_buffer[cpu].data3);
+@@ -117,8 +117,8 @@ store_call_start(struct device *dev, struct device_attribute *attr,
+ 
+ #ifdef ERR_INJ_DEBUG
+ 	printk(KERN_DEBUG "Returns: status=%d,\n", (int)status[cpu]);
+-	printk(KERN_DEBUG "capabilities=%lx,\n", capabilities[cpu]);
+-	printk(KERN_DEBUG "resources=%lx\n", resources[cpu]);
++	printk(KERN_DEBUG "capabilities=%llx,\n", capabilities[cpu]);
++	printk(KERN_DEBUG "resources=%llx\n", resources[cpu]);
+ #endif
+ 	return size;
+ }
+@@ -131,7 +131,7 @@ show_virtual_to_phys(struct device *dev, struct device_attribute *attr,
+ 			char *buf)
+ {
+ 	unsigned int cpu=dev->id;
+-	return sprintf(buf, "%lx\n", phys_addr[cpu]);
++	return sprintf(buf, "%llx\n", phys_addr[cpu]);
+ }
+ 
+ static ssize_t
+@@ -145,7 +145,7 @@ store_virtual_to_phys(struct device *dev, struct device_attribute *attr,
+ 	ret = get_user_pages_fast(virt_addr, 1, FOLL_WRITE, NULL);
+ 	if (ret<=0) {
+ #ifdef ERR_INJ_DEBUG
+-		printk("Virtual address %lx is not existing.\n",virt_addr);
++		printk("Virtual address %llx is not existing.\n", virt_addr);
+ #endif
+ 		return -EINVAL;
+ 	}
+@@ -163,7 +163,7 @@ show_err_data_buffer(struct device *dev,
+ {
+ 	unsigned int cpu=dev->id;
+ 
+-	return sprintf(buf, "%lx, %lx, %lx\n",
++	return sprintf(buf, "%llx, %llx, %llx\n",
+ 			err_data_buffer[cpu].data1,
+ 			err_data_buffer[cpu].data2,
+ 			err_data_buffer[cpu].data3);
+@@ -178,13 +178,13 @@ store_err_data_buffer(struct device *dev,
+ 	int ret;
+ 
+ #ifdef ERR_INJ_DEBUG
+-	printk("write err_data_buffer=[%lx,%lx,%lx] on cpu%d\n",
++	printk("write err_data_buffer=[%llx,%llx,%llx] on cpu%d\n",
+ 		 err_data_buffer[cpu].data1,
+ 		 err_data_buffer[cpu].data2,
+ 		 err_data_buffer[cpu].data3,
+ 		 cpu);
+ #endif
+-	ret=sscanf(buf, "%lx, %lx, %lx",
++	ret = sscanf(buf, "%llx, %llx, %llx",
+ 			&err_data_buffer[cpu].data1,
+ 			&err_data_buffer[cpu].data2,
+ 			&err_data_buffer[cpu].data3);
+-- 
+2.30.2
+
 
 
