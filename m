@@ -2,135 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E74359A61
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E87359A3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:56:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233356AbhDIJ6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:58:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45002 "EHLO mail.kernel.org"
+        id S233748AbhDIJ5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:57:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233285AbhDIJ4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:56:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0A9F611BE;
-        Fri,  9 Apr 2021 09:56:31 +0000 (UTC)
+        id S233601AbhDIJ4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:56:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C8D5611C9;
+        Fri,  9 Apr 2021 09:55:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962192;
-        bh=aKcFGglahUqnzO72BRM18Ck3Tou7QLF36XNEMwWXDkQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=u63BvOOdwEorzBnrSNu/ZVhqwaGJJfS5RS6s5cIl8O6+STr85uwkc5SPmgtr0ZTNu
-         HGqb3suOFAKnwan/+hvovFTiF0nnb2QmAH+lKaUxXtN9xKA0nL+L0Qp/vMyJl0ZX5t
-         5pD+WGD7kD2F5jjoiWxVZqecHPUBe/6m5tGI8r9I=
+        s=korg; t=1617962154;
+        bh=j8uFOhWIUF3bpqAaK7bGyp7zctFQyfxCHHhw5Q/uQNc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Rgb3xpBEbbcdsGXw/qh3NrdWyWOvOhkxtnAd2Epi23JiF2+07vqOpEm9zsltcQBM7
+         nGOWgftOnYlN2VJ/Wf4vDGQMUYJF0wQHWtpio4iXSROP2CSlJEV7ZF0X1tqpi0Y9Jo
+         ppPdADxQXi7JBPP9ar8K9Ben7ByzFONR0d+cY/Qo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 4.14 00/14] 4.14.230-rc1 review
-Date:   Fri,  9 Apr 2021 11:53:25 +0200
-Message-Id: <20210409095300.391558233@linuxfoundation.org>
+        stable@vger.kernel.org, Mans Rullgard <mans@mansr.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 01/14] ARM: dts: am33xx: add aliases for mmc interfaces
+Date:   Fri,  9 Apr 2021 11:53:26 +0200
+Message-Id: <20210409095300.440130774@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
+In-Reply-To: <20210409095300.391558233@linuxfoundation.org>
+References: <20210409095300.391558233@linuxfoundation.org>
 User-Agent: quilt/0.66
 X-stable: review
 X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.230-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.14.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.14.230-rc1
-X-KernelTest-Deadline: 2021-04-11T09:53+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.14.230 release.
-There are 14 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Mans Rullgard <mans@mansr.com>
 
-Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 9bbce32a20d6a72c767a7f85fd6127babd1410ac ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.230-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
-and the diffstat can be found below.
+Without DT aliases, the numbering of mmc interfaces is unpredictable.
+Adding them makes it possible to refer to devices consistently.  The
+popular suggestion to use UUIDs obviously doesn't work with a blank
+device fresh from the factory.
 
-thanks,
+See commit fa2d0aa96941 ("mmc: core: Allow setting slot index via
+device tree alias") for more discussion.
 
-greg k-h
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/boot/dts/am33xx.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
--------------
-Pseudo-Shortlog of commits:
+diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
+index e58fab8aec5d..8923273a2f73 100644
+--- a/arch/arm/boot/dts/am33xx.dtsi
++++ b/arch/arm/boot/dts/am33xx.dtsi
+@@ -38,6 +38,9 @@ aliases {
+ 		ethernet1 = &cpsw_emac1;
+ 		spi0 = &spi0;
+ 		spi1 = &spi1;
++		mmc0 = &mmc1;
++		mmc1 = &mmc2;
++		mmc2 = &mmc3;
+ 	};
+ 
+ 	cpus {
+-- 
+2.30.2
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.14.230-rc1
-
-Masahiro Yamada <masahiroy@kernel.org>
-    init/Kconfig: make COMPILE_TEST depend on HAS_IOMEM
-
-Heiko Carstens <hca@linux.ibm.com>
-    init/Kconfig: make COMPILE_TEST depend on !S390
-
-Piotr Krysiuk <piotras@gmail.com>
-    bpf, x86: Validate computation of branch displacements for x86-64
-
-Vincent Whitchurch <vincent.whitchurch@axis.com>
-    cifs: Silently ignore unknown oplock break handle
-
-Ronnie Sahlberg <lsahlber@redhat.com>
-    cifs: revalidate mapping when we open files for SMB1 POSIX
-
-Sergei Trofimovich <slyfox@gentoo.org>
-    ia64: mca: allocate early mca with GFP_ATOMIC
-
-Martin Wilck <mwilck@suse.com>
-    scsi: target: pscsi: Clean up after failure in pscsi_map_sg()
-
-Arnd Bergmann <arnd@arndb.de>
-    x86/build: Turn off -fcf-protection for realmode targets
-
-Esteve Varela Colominas <esteve.varela@gmail.com>
-    platform/x86: thinkpad_acpi: Allow the FnLock LED to change state
-
-Rob Clark <robdclark@chromium.org>
-    drm/msm: Ratelimit invalid-fence message
-
-Karthikeyan Kathirvel <kathirve@codeaurora.org>
-    mac80211: choose first enabled channel for monitor
-
-Tong Zhang <ztong0001@gmail.com>
-    mISDN: fix crash in fritzpci
-
-Pavel Andrianov <andrianov@ispras.ru>
-    net: pxa168_eth: Fix a potential data race in pxa168_eth_remove
-
-Mans Rullgard <mans@mansr.com>
-    ARM: dts: am33xx: add aliases for mmc interfaces
-
-
--------------
-
-Diffstat:
-
- Makefile                                  |  4 ++--
- arch/arm/boot/dts/am33xx.dtsi             |  3 +++
- arch/ia64/kernel/mca.c                    |  2 +-
- arch/x86/Makefile                         |  2 +-
- arch/x86/net/bpf_jit_comp.c               | 11 ++++++++++-
- drivers/gpu/drm/msm/msm_fence.c           |  2 +-
- drivers/isdn/hardware/mISDN/mISDNipac.c   |  2 +-
- drivers/net/ethernet/marvell/pxa168_eth.c |  2 +-
- drivers/platform/x86/thinkpad_acpi.c      |  8 +++++++-
- drivers/target/target_core_pscsi.c        |  8 ++++++++
- fs/cifs/file.c                            |  1 +
- fs/cifs/smb2misc.c                        |  4 ++--
- init/Kconfig                              |  3 +--
- net/mac80211/main.c                       | 13 ++++++++++++-
- 14 files changed, 51 insertions(+), 14 deletions(-)
 
 
