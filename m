@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D60AA3591A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:48:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E542F3591A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233158AbhDIBsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 21:48:08 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49416 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232426AbhDIBsG (ORCPT
+        id S233200AbhDIBsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 21:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhDIBsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:48:06 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1391lj2Y011058
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 8 Apr 2021 21:47:45 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 375E115C3B12; Thu,  8 Apr 2021 21:47:45 -0400 (EDT)
-Date:   Thu, 8 Apr 2021 21:47:45 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     yebin <yebin10@huawei.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Fix bug on in ext4_es_cache_extent as
- ext4_split_extent_at failed
-Message-ID: <YG+yQfmMMKw3dKl0@mit.edu>
-References: <20210325022925.1769056-1-yebin10@huawei.com>
- <YGvWwx/+HMdWMJwT@mit.edu>
- <606D0DE5.8070002@huawei.com>
+        Thu, 8 Apr 2021 21:48:40 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35939C061760;
+        Thu,  8 Apr 2021 18:48:28 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id r8so7085828lfp.10;
+        Thu, 08 Apr 2021 18:48:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=6NgfgA0s6MnBhC/H7IGMsvIcqRpCu3I9s/mh+o4Drj0=;
+        b=tHrgO2/8ybnJ+o1Gqs6ygkjQfj37V9yixDpht/Ts3/v7tjPIQgxd0Nn0JkkTPcXRJm
+         tzgmhNfuUyOB1N5ShOgOmhX0i1a8ZU7ukw0Qe4csS6VsUWvmfN8YIXgOoeQFtiZtyRs9
+         rifGvUyOQXjKQU/9tD99pjiMngB6VvQyhWmlsFz1I1cWrQ4p1O98i7zDnlAasEnxo226
+         zqRKGuUexj5J9/ZY+ZW+zc1D7MZpZVuQrMsnye/KVQrXheucuYBwd/JSLKnyjq5vIQ7B
+         IZPnbvsc42fec2xlhM9RwxXhT5tinmdxXYS5oZwnYvtB7PuKgVJVHgcve55FduMpFz7g
+         Y+3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=6NgfgA0s6MnBhC/H7IGMsvIcqRpCu3I9s/mh+o4Drj0=;
+        b=a5BUvVsSY6DYU9Bf3+YORgwbf3PS950zCYDVZSo1MsJAD6XzsFo1RK8h+VPKe3WNDs
+         6JL1OSvgaxntbqJXecSc6NrUxkaMfeftyiVjx76jUXZOGcYvb246QRvXjYHRU6XFYDY1
+         g2wRIZOQfnU3jjZ7PTDZL1PsEfz7fqZI8BRbTz4o7T8W4igfe5IQVTU7weNuNCUaPYGi
+         mHj2HJHYYeJOvUYHV6CJqNRNEg5T15o3F+PEupB6VyDERw0Pm9zicYY5szpmuu/x7PQg
+         3k0c1GZM+rgc3ClRKYp737u2a09aztJI0YwbWYvtGdeYUW/RseV2MTTImrYnbDOGimIa
+         qB3Q==
+X-Gm-Message-State: AOAM531zLDQDaOdS+GGFXCJJOhvNnMZyD8dzo8NId1KfvbX+egomxmyi
+        y9pkWWCWvetebef4/CzeicHwymXpUzQgapVIGCrJU9WURm3u2w==
+X-Google-Smtp-Source: ABdhPJzL8DeK8OBPYhib6hxQbq6JW02KcvjegbpLKhnUwB0uxSd6hfpXxpJ+LRkx974hjYZDKCGuN5Cj9J30rvCWtB8=
+X-Received: by 2002:ac2:4148:: with SMTP id c8mr8094436lfi.307.1617932906642;
+ Thu, 08 Apr 2021 18:48:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <606D0DE5.8070002@huawei.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 8 Apr 2021 20:48:16 -0500
+Message-ID: <CAH2r5mvZEvGskzcrcd=PbQ7zqAyH0=uDyvVG7vu9XEPM7qJLHA@mail.gmail.com>
+Subject: [GIT PULL] SMB3 Fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 09:41:57AM +0800, yebin wrote:
-> > > If call ext4_ext_insert_extent failed but new extent already inserted, we just
-> > > update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
-> > > cause bug on when cache extent.
-> > How did this happen in the first place?  It sounds like if the extent
-> > was already inserted, that would be casue there was an on-disk file
-> > system corruption, no?
-> > 
-> > In that case, shouldn't we call ext4_error() to declare the file
-> > system has an inconsistency, so it can be fixed by fsck?
-> We inject IO fault when runing  fsstress,  JBD detect IO error then trigger
-> JBD abort.  At the same time,
-> if ext4_ext_insert_extent already insert new exntent then call
-> ext4_ext_dirty to dirty metadata , but
-> JBD already aborted ,  ext4_ext_dirty will return error.
-> In ext4_ext_dirty function call  ext4_ext_check_inode check extent if ok, if
-> not, trigger BUG_ON and
-> also print extent detail information.
+Please pull the following changes since commit
+e49d033bddf5b565044e2abe4241353959bc9120:
 
-In this particular case, skipping the "ex->ee_len = orig_ex.ee_len"
-may avoid the BUG_ON.  But it's not clear that this is always the
-right thing to do.  The fundamental question is what should we do we
-run into an error while we are in the middle of making changes to
-on-disk and in-memory data structures?
+  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
 
-In the ideal world, we should undo the changes that we were in the
-middle of making before we return an error.  That way, the semantics
-are very clear; on success, the function has made the requested change
-to the file system.  If the function returns an error, then no changes
-should be made.
+are available in the Git repository at:
 
-That was the reasoning behind resetting ex->ee_len to orig_ex.ee_len
-in the fix_extent_len inside ext4_split_extent_at().  Unofrtunately,
-ext4_ext_insert_extent() does *not* always follow this convention, and
-that's because it would be extremely difficult for it to do so --- the
-mutations that it makes can be quite complex, including potentially
-increasing the height of the extent tree.
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.12-rc6-smb3
 
-However, I don't think your fix is by any means the ideal one, because
-the much more common way that ext4_ext_insert_extent() is when it
-needs to insert a new leaf node, or need to increase the height of the
-extent tree --- and in it returns an ENOSPC failure.  In that case, it
-won't have made any changes changes in the extent tree, and so having
-ext4_split_extent_at() undo the change to ex->ee_len is the right
-thing to do.
+for you to fetch changes up to 0fc9322ab5e1fe6910c9673e1a7ff29f7dd72611:
 
-Having blocks get leaked when there is an ENOSPC failure, requiring
-fsck to be run --- and without giving the user any warning that this
-has happened is *not* a good way to fail.  So I don't think the
-proposed patch is the right way to go.
+  cifs: escape spaces in share names (2021-04-07 21:30:27 -0500)
 
-A better way to go would be to teach ext4_ext_insert_extent() so if
-there is a late failure, that it unwinds the leaf node back to its
-original state (at least from a semantic value).  Since the extent
-leaf node could have been split, and/or adjacent extent entries may
-have been merged, what it would need to do is to remember the starting
-block number and length, and make whatever changes are necessaries to
-the extent entries in that leaf node corresponding to that starting
-block number and length.
+----------------------------------------------------------------
+3 cifs/smb3 fixes, 2 for stable, includes a reconnect fix (for case
+when server address changed) and fix for proper display of devnames
+(when have space or tab).
 
-If you don't want to do that, then a "do no harm" fix would be
-something like this:
+Test results: http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/550
+----------------------------------------------------------------
+Maciek Borzecki (1):
+      cifs: escape spaces in share names
 
-	...
-	} else if (err == -EROFS) {
-		return err;
-	} else if (err)
-		goto fix_extent_len;
+Shyam Prasad N (1):
+      cifs: On cifs_reconnect, resolve the hostname again.
 
-So in the journal abort case, when err is set to EROFS, we don't try
-to reset the length, since in theory the file system is read-only
-already anyway.  However, in the ENOSPC case, we won't end up silently
-leaking blocks that will be lost until the user somehow decides to run
-fsck.
+Wan Jiabing (1):
+      fs: cifs: Remove unnecessary struct declaration
 
-There are still times when this doesn't get things completely right
-(e.g., what if we get a late ENOMEM error versus an early ENOMEM
-failure), where the only real fix is to make ext4_ext_insert_extent()
-obey the convention that if it returns an error, it must not result in
-any user-visible state change.
+ fs/cifs/Kconfig    |  3 +--
+ fs/cifs/Makefile   |  5 +++--
+ fs/cifs/cifsfs.c   |  3 ++-
+ fs/cifs/cifsglob.h |  2 --
+ fs/cifs/connect.c  | 17 ++++++++++++++++-
+ 5 files changed, 22 insertions(+), 8 deletions(-)
 
-Cheers,
+-- 
+Thanks,
 
-						- Ted
+Steve
