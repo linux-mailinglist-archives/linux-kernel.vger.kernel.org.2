@@ -2,173 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A99435A4A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA15735A4FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232642AbhDIRaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:30:02 -0400
-Received: from mga06.intel.com ([134.134.136.31]:51551 "EHLO mga06.intel.com"
+        id S234382AbhDIRz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:55:26 -0400
+Received: from mailout08.rmx.de ([94.199.90.85]:54109 "EHLO mailout08.rmx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhDIRaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:30:01 -0400
-IronPort-SDR: W0wfnBFrXG5tVDWknGBa905mptxaKesffdUOP0KHBG/kgdVQ3BaEU4e7BDXCWm4sIEFr6wEYQq
- clHicCacTnfw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="255138394"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="255138394"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 10:29:47 -0700
-IronPort-SDR: hRAxO/mNHC/hOzyEkl8MDOadVgoElpYqv3lAU6zwmWoQBzBSaJ3pbC4J8aBi9J1l01XCpw2X59
- C3HAZxrJY87w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="520350495"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2021 10:29:41 -0700
-Subject: Re: [PATCH v17 1/2] scsi: ufs: Enable power management for wlun
-To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>,
-        daejun7.park@samsung.com,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Cc:     "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Yue Hu <huyue2@yulong.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1b3d53dad245a7166f3f67a4c65f3a731e6600b3.1617893198.git.asutoshd@codeaurora.org>
- <cover.1617893198.git.asutoshd@codeaurora.org>
- <CGME20210408145007epcas2p1accfbd653b2e1318b2722c1f5661c1e0@epcms2p1>
- <1891546521.01617937981650.JavaMail.epsvc@epcpadp4>
- <32b2327f-a34f-03ac-a110-e683ae416fdc@intel.com>
- <8e8bd375-ed27-d1aa-430d-4f1d3d00cb9a@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <d709ebda-77ac-d9e2-5875-7e5d607904ef@intel.com>
-Date:   Fri, 9 Apr 2021 20:30:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233332AbhDIRzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 13:55:24 -0400
+X-Greylist: delayed 1998 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 13:55:23 EDT
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout08.rmx.de (Postfix) with ESMTPS id 4FH4gM0ScjzMsfQ;
+        Fri,  9 Apr 2021 19:21:51 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4FH4gK18Kdz2xCK;
+        Fri,  9 Apr 2021 19:21:49 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.55.67) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 9 Apr
+ 2021 19:21:48 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>
+Subject: Re: [PATCH 0/3] nvmem: eeprom: add support for FRAM
+Date:   Fri, 9 Apr 2021 19:21:47 +0200
+Message-ID: <4311739.LvFx2qVVIh@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20210409154720.130902-1-jiri.prchal@aksignal.cz>
+References: <20210409154720.130902-1-jiri.prchal@aksignal.cz>
 MIME-Version: 1.0
-In-Reply-To: <8e8bd375-ed27-d1aa-430d-4f1d3d00cb9a@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.55.67]
+X-RMX-ID: 20210409-192149-YcHNxFStkyvC-0@out01.hq
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/04/21 8:15 pm, Asutosh Das (asd) wrote:
-> On 4/9/2021 3:07 AM, Adrian Hunter wrote:
->> On 9/04/21 5:27 am, Daejun Park wrote:
->>> Hi Asutosh Das,
->>>
->>>> During runtime-suspend of ufs host, the scsi devices are
->>>> already suspended and so are the queues associated with them.
->>>> But the ufs host sends SSU (START_STOP_UNIT) to wlun
->>>> during its runtime-suspend.
->>>> During the process blk_queue_enter checks if the queue is not in
->>>> suspended state. If so, it waits for the queue to resume, and never
->>>> comes out of it.
->>>> The commit
->>>> (d55d15a33: scsi: block: Do not accept any requests while suspended)
->>>> adds the check if the queue is in suspended state in blk_queue_enter().
->>>>
->>>> Call trace:
->>>> __switch_to+0x174/0x2c4
->>>> __schedule+0x478/0x764
->>>> schedule+0x9c/0xe0
->>>> blk_queue_enter+0x158/0x228
->>>> blk_mq_alloc_request+0x40/0xa4
->>>> blk_get_request+0x2c/0x70
->>>> __scsi_execute+0x60/0x1c4
->>>> ufshcd_set_dev_pwr_mode+0x124/0x1e4
->>>> ufshcd_suspend+0x208/0x83c
->>>> ufshcd_runtime_suspend+0x40/0x154
->>>> ufshcd_pltfrm_runtime_suspend+0x14/0x20
->>>> pm_generic_runtime_suspend+0x28/0x3c
->>>> __rpm_callback+0x80/0x2a4
->>>> rpm_suspend+0x308/0x614
->>>> rpm_idle+0x158/0x228
->>>> pm_runtime_work+0x84/0xac
->>>> process_one_work+0x1f0/0x470
->>>> worker_thread+0x26c/0x4c8
->>>> kthread+0x13c/0x320
->>>> ret_from_fork+0x10/0x18
->>>>
->>>> Fix this by registering ufs device wlun as a scsi driver and
->>>> registering it for block runtime-pm. Also make this as a
->>>> supplier for all other luns. That way, this device wlun
->>>> suspends after all the consumers and resumes after
->>>> hba resumes.
->>>>
->>>> Co-developed-by: Can Guo <cang@codeaurora.org>
->>>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->>>> ---
->>>> drivers/scsi/ufs/cdns-pltfrm.c     |   2 +
->>>> drivers/scsi/ufs/tc-dwc-g210-pci.c |   2 +
->>>> drivers/scsi/ufs/ufs-debugfs.c     |   6 +-
->>>> drivers/scsi/ufs/ufs-debugfs.h     |   2 +-
->>>> drivers/scsi/ufs/ufs-exynos.c      |   2 +
->>>> drivers/scsi/ufs/ufs-hisi.c        |   2 +
->>>> drivers/scsi/ufs/ufs-mediatek.c    |  12 +-
->>>> drivers/scsi/ufs/ufs-qcom.c        |   2 +
->>>> drivers/scsi/ufs/ufs_bsg.c         |   6 +-
->>>> drivers/scsi/ufs/ufshcd-pci.c      |  36 +--
->>>> drivers/scsi/ufs/ufshcd.c          | 642 ++++++++++++++++++++++++++-----------
->>>> drivers/scsi/ufs/ufshcd.h          |   6 +
->>>> include/trace/events/ufs.h         |  20 ++
->>>> 13 files changed, 509 insertions(+), 231 deletions(-)
->>>
->>> In this patch, you changed pm_runtime_{get, put}_sync to scsi_autopm_{get, put}_device.
->>> But, scsi_autopm_get_device() calls pm_runtime_put_sync() in case of error
->>> of pm_runtime_get_sync(). So, pm_runtime_put_sync() can be called twice if
->>> scsi_autopm_get_device has error.
->>
->> Also it might be tidy to make wrappers e.g.
->>
->> static inline int ufshcd_rpm_get_sync(struct ufs_hba *hba)
->> {
->>      return pm_runtime_get_sync(&hba->sdev_ufs_device->sdev_gendev);
->> }
->>     static inline int ufshcd_rpm_put(struct ufs_hba *hba)
->> {
->>      return pm_runtime_put(&hba->sdev_ufs_device->sdev_gendev);
->> }
->>
->> static inline int ufshcd_rpm_put_sync(struct ufs_hba *hba)
->> {
->>      return pm_runtime_put_sync(&hba->sdev_ufs_device->sdev_gendev);
->> }
->>
->> And also consider matching: e.g.
->>
->>     pm_runtime_put(hba->dev)    to    ufshcd_rpm_put(hba)
->>     pm_runtime_put_sync(hba->dev)    to    ufshcd_rpm_put_sync(hba)
->>
->>
->>
+Hi Jiri,
+
+I have two Fujitsu different FRAMs running with the stock at25 driver. I set
+the page size equal to the device size (as FRAMs have no pages).  
+
+Are you able to run your FRAM with the unmodified driver?
+
+I assume that getting the device geometry from the chip is vendor specific (in
+contrast to flash devices which have standard commands for this).  I suppose
+that there is no much value getting vendor specific information from a chip. If
+the drivers knows the vendor, it should also know the chip (e.g. from the dt).
+
+regards
+Christian
+
+On Friday, 9 April 2021, 17:47:17 CEST, Jiri Prchal wrote:
+> Adds sopport for Cypress FRAMs.
 > 
-> Ok, I'll push the changes shortly.
+> Jiri Prchal (3):
+>   nvmem: eeprom: at25: add support for FRAM
+>   nvmem: eeprom: at25: add support for FRAM
+>   nvmem: eeprom: add documentation for FRAM
+> 
+>  .../devicetree/bindings/eeprom/at25.yaml      |  12 +-
+>  drivers/misc/eeprom/Kconfig                   |   5 +-
+>  drivers/misc/eeprom/at25.c                    | 151 ++++++++++++++----
+>  drivers/nvmem/core.c                          |   4 +
+>  include/linux/nvmem-provider.h                |   1 +
+>  5 files changed, 139 insertions(+), 34 deletions(-)
+> 
 > 
 
-I think I will have some more comments, so you could wait if you want.
+
+
 
