@@ -2,85 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318963591C7
+	by mail.lfdr.de (Postfix) with ESMTP id 7D23E3591C8
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhDIB6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 21:58:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDIB6V (ORCPT
+        id S233156AbhDIB6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 21:58:54 -0400
+Received: from mail-m963.mail.126.com ([123.126.96.3]:44088 "EHLO
+        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhDIB6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:58:21 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF6FC061760;
-        Thu,  8 Apr 2021 18:58:09 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id n2so6139554ejy.7;
-        Thu, 08 Apr 2021 18:58:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K61jOSa+LKqRTwPuPI9a1IlNu4EbgF+ip5oLHXlETtQ=;
-        b=eruGQ/it3GG5I44DAyAo6XJkaDa6Ut0gNHHDz4rTVZy5K7kl8WdvuKSF6gBN1tM4mr
-         BXl+IIQ8qu1xgEZt7sjWxmFXXe0SBCOP7TowZOiKQ3eeIBslF/b9hXGVLHBY8lYBVEXG
-         o1MstPgsv9tKAQxW7vbzf/rI7ZJuQjGbtKoUafDC30RVSx1o0r7+v9XwIn2fC3OxXXyd
-         OoLnL4/MgESAfD6BUi1Y7l1fbwG3W/cILbrnQsiMK5E7AQNix0d8GUTrXIthzTr7uqAu
-         Lb+cYUEEw20c3goNxL/C4Vck1djZ76Pp7aZqEkneg2pMTmy70rukfdmGQVR+sh5efWpu
-         po9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K61jOSa+LKqRTwPuPI9a1IlNu4EbgF+ip5oLHXlETtQ=;
-        b=fKVtGn6YXoe0Jk1hN1TGe5iXt+RksJpzlvC9Xg/0vL8CQ67oIeoWNggcPzVRLdh0Mc
-         qxMERfkgizsKWZyGaSmWitNALf2hJ/SMMX6mab1+G1TlutDppA45Yqd3wsn1ysK7Wxnc
-         vWfW5fKnKFZZO0pds8cmAK3c6YmI/QITuu6XiH+WmloGCPMFLTCjAkmni9aMKx8vBzC/
-         R0K5Z4HbuYT3SkEqbrT5sXWBysPIl+UTsKkPKrIKUwkx6LNKc/6DSSxOjfb8F5mQre1y
-         NYHY7p0HmCyPWfQpm/RvZuLP/BAMxadEn/JwE+tsT4usR83/fWJJs4q7RYqJt9QygkSb
-         XO5w==
-X-Gm-Message-State: AOAM5337Db3Dq2KgTwVwXL2M5kIjCCRg8VbseIZb13a4LF3Z47qFcp5t
-        PaBJRfreu7UxtoaQhEmm1dnMdjGb+Rv7DFD0Ba8xqmLE5w==
-X-Google-Smtp-Source: ABdhPJxxQSQQWf6otGt9fgkLhV4fj15oMxyGLbp4P+heUpT6lWeYldfoQQQU9Mmznw6VptDllKiPpkIVJ5F0XYJkxUo=
-X-Received: by 2002:a17:906:8293:: with SMTP id h19mr3443534ejx.217.1617933488270;
- Thu, 08 Apr 2021 18:58:08 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210408075436.13829-1-lihaiwei.kernel@gmail.com> <YG8pwERmjxYQoquP@google.com>
-In-Reply-To: <YG8pwERmjxYQoquP@google.com>
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-Date:   Fri, 9 Apr 2021 09:57:57 +0800
-Message-ID: <CAB5KdObQ=HN2YBZCB2iV5U_uuOuwtgrX=CcApstwKwHeaRqy8w@mail.gmail.com>
-Subject: Re: [PATCH] KVM: vmx: add mismatched size in vmcs_check32
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Haiwei Li <lihaiwei@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 8 Apr 2021 21:58:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=6myTYJ/6oXihRxGonF
+        RwbGYMjlu+sduVYchFyN3kgEE=; b=lVV9+qH2cvtcwzftgpjy0OFDmU8X4IcPAV
+        jmiTDormglV8wUc5vMlkm298Kr2w8AUwd6BC3vvrRZWc62SQml5zxwbghLHDgvM5
+        I9Clx0AKwNOXQcjMWXD6hI0Kr8bcHeH/f3C4fW9kAWsK5aQLWKdqQvCl3EiaPWa6
+        cnOgjP66E=
+Received: from localhost.localdomain (unknown [116.162.2.189])
+        by smtp8 (Coremail) with SMTP id NORpCgCX06PFtG9gAtgdHQ--.10140S2;
+        Fri, 09 Apr 2021 09:58:31 +0800 (CST)
+From:   wangyingjie55@126.com
+To:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
+        dave.jiang@intel.com, ira.weiny@intel.com,
+        linux-nvdimm@lists.01.org
+Cc:     wangyingjie55@126.com, linux-kernel@vger.kernel.org
+Subject: [PATCH v1] libnvdimm, dax: Fix a missing check in nd_dax_probe()
+Date:   Thu,  8 Apr 2021 18:58:26 -0700
+Message-Id: <1617933506-13684-1-git-send-email-wangyingjie55@126.com>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: NORpCgCX06PFtG9gAtgdHQ--.10140S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtFykKr4rJFyxArykKFy5XFb_yoWfKFbEkF
+        y7Zr929Fy0krnayr42vr1fu34vyrn29r1kur4jgw13Ar4j9r13GrWkur9Ikrsagr4xZr1D
+        urnFqFnxuF15ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeVnQUUUUUU==
+X-Originating-IP: [116.162.2.189]
+X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiGAdvp1pEC2HqHgAAsX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 12:05 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Thu, Apr 08, 2021, lihaiwei.kernel@gmail.com wrote:
-> > From: Haiwei Li <lihaiwei@tencent.com>
-> >
-> > vmcs_check32 misses the check for 64-bit and 64-bit high.
->
-> Can you clarify in the changelog that, while it is architecturally legal to
-> access 64-bit and 64-bit high fields with a 32-bit read/write in 32-bit mode,
-> KVM should never do partial accesses to VMCS fields.  And/or note that the
-> 32-bit accesses are done in vmcs_{read,write}64() when necessary?  Hmm, maybe:
->
->   Add compile-time assertions in vmcs_check32() to disallow accesses to
->   64-bit and 64-bit high fields via vmcs_{read,write}32().  Upper level
->   KVM code should never do partial accesses to VMCS fields.  KVM handles
->   the split accesses automatically in vmcs_{read,write}64() when running
->   as a 32-bit kernel.
+From: Yingjie Wang <wangyingjie55@126.com>
 
-Good suggestion, thanks. I will send v2.
+In nd_dax_probe(), 'nd_dax' is allocated by nd_dax_alloc().
+nd_dax_alloc() may fail and return NULL, so we should better check
+it's return value to avoid a NULL pointer dereference
+a bit later in the code.
+
+Fixes: c5ed9268643c ("libnvdimm, dax: autodetect support")
+Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
+---
+ drivers/nvdimm/dax_devs.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/nvdimm/dax_devs.c b/drivers/nvdimm/dax_devs.c
+index 99965077bac4..b1426ac03f01 100644
+--- a/drivers/nvdimm/dax_devs.c
++++ b/drivers/nvdimm/dax_devs.c
+@@ -106,6 +106,8 @@ int nd_dax_probe(struct device *dev, struct nd_namespace_common *ndns)
+ 
+ 	nvdimm_bus_lock(&ndns->dev);
+ 	nd_dax = nd_dax_alloc(nd_region);
++	if (!nd_dax)
++		return -ENOMEM;
+ 	nd_pfn = &nd_dax->nd_pfn;
+ 	dax_dev = nd_pfn_devinit(nd_pfn, ndns);
+ 	nvdimm_bus_unlock(&ndns->dev);
+-- 
+2.7.4
+
