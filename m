@@ -2,104 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31CC35A669
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D9B35A661
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234810AbhDIS5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234666AbhDIS5v (ORCPT
+        id S234780AbhDIS4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:56:46 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:46604 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234613AbhDIS4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:57:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B46FC061763;
-        Fri,  9 Apr 2021 11:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ty1LGS3v38Chtaw1svPzlAmEjDpxvcnRksGoyQD0C+o=; b=dllxp3SIl7dJb2SWmtFHijzg05
-        BMWCiqHMAwP4HIGF0KTqW8xzuklitWYigJdw70af2VurVYfGvC7Oxm2N2raBt/q53boGyBc7YtFNr
-        8AJ3+yj8A3//tQz4Ef/5qaFW+VjQZcybr1RAOmVc/1cVU4jbdipfQjWS2Nok/eYyRSImo4LElQ4bV
-        yifBHCzF1ZT+TFNmmDcUT/sw8pPkUQneDX0gLUrNG9eFz1kwz87nDBEauMz2d2WnZVP4U6XR0pVf4
-        BnKVa8aQrBqviiX7uH2lUu0jO0ntht0Ii8YGU6z3b3t6GArBRGhx7VAjAYt90WlB/0VHg/tdBvekJ
-        JoY5ctFw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUwI9-000nMk-Lg; Fri, 09 Apr 2021 18:55:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6AD730001B;
-        Fri,  9 Apr 2021 20:55:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BEDE52C49B0B8; Fri,  9 Apr 2021 20:55:39 +0200 (CEST)
-Date:   Fri, 9 Apr 2021 20:55:39 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH 02/11] mm/page_alloc: Convert per-cpu list protection to
- local_lock
-Message-ID: <YHCjK8OOhmxTbKu0@hirez.programming.kicks-ass.net>
-References: <20210407202423.16022-1-mgorman@techsingularity.net>
- <20210407202423.16022-3-mgorman@techsingularity.net>
- <YG7gV7yAEEjOcQZY@hirez.programming.kicks-ass.net>
- <20210408174244.GG3697@techsingularity.net>
- <YG/2scd9ADdrIyCM@hirez.programming.kicks-ass.net>
- <20210409075939.GJ3697@techsingularity.net>
- <YHAPOKPTgJcLuDJl@hirez.programming.kicks-ass.net>
- <20210409133256.GN3697@techsingularity.net>
+        Fri, 9 Apr 2021 14:56:44 -0400
+Received: by mail-ot1-f43.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso4741208otb.13;
+        Fri, 09 Apr 2021 11:56:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6T+M3NoD5td0wQAw6hyiN+qgaPpFpsrDduJt8kVUpUk=;
+        b=HkJGmm+8qW7Tri5icmtL38gd2NbeznSSf+DWACrffA68w+V2I6YH4CJrfgxdtVwVT9
+         9r9OkMQ6VJtdjard5ClDQ/iU/M/EYVi6cjcdxOlc/IFSIC9cbRe/HCwEFGArpy1TKGaH
+         5X5bDn0YDgtA671L4wiqUbTFhdq9dXUxjLGxXdI9qw8O9eXc0JkdrLYuG3ipE2ZvLEjX
+         GezJ+SIIj6c3x+Fo2VlgjfqYjvqqclcXw/Wo3mwkn6DoavW7gT94+74qOpnx+MGeWEN+
+         lR3kM8y8bvVrcc9wUbCPnfBiVwy9gz7HJzz945q6UINE0+cmPplvBgL/W+7OMf0qoNd7
+         gitw==
+X-Gm-Message-State: AOAM531s19b5Vzz2f/rQqs7disOmdGPu/rH8dzBSNmISinnZzs7lqytV
+        lF4d43gVQo9Fywyspr1YDA==
+X-Google-Smtp-Source: ABdhPJw9x4V0s5tlyS/Oyje1TX6KemXPcS6jRpSbsNlcqRp+FtaeDsKA83P6Q80KHyff/p6UdbAazA==
+X-Received: by 2002:a9d:ec4:: with SMTP id 62mr13564169otj.277.1617994590117;
+        Fri, 09 Apr 2021 11:56:30 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w199sm671232oif.41.2021.04.09.11.56.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 11:56:29 -0700 (PDT)
+Received: (nullmailer pid 3958423 invoked by uid 1000);
+        Fri, 09 Apr 2021 18:56:27 -0000
+Date:   Fri, 9 Apr 2021 13:56:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Guru Das Srinagesh <gurus@codeaurora.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: mfd: pm8008: Add IRQ listing
+Message-ID: <20210409185627.GA3956543@robh.at.kernel.org>
+References: <cover.1617927259.git.gurus@codeaurora.org>
+ <2607ca31fce40ecdb1e8c96dac0fb688c26ad722.1617927259.git.gurus@codeaurora.org>
+ <20210409155519.GX904837@yoga>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210409133256.GN3697@techsingularity.net>
+In-Reply-To: <20210409155519.GX904837@yoga>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 02:32:56PM +0100, Mel Gorman wrote:
-> That said, there are some curious users already.
-> fs/squashfs/decompressor_multi_percpu.c looks like it always uses the
-> local_lock in CPU 0's per-cpu structure instead of stabilising a per-cpu
-> pointer. 
+On Fri, Apr 09, 2021 at 10:55:19AM -0500, Bjorn Andersson wrote:
+> On Thu 08 Apr 19:38 CDT 2021, Guru Das Srinagesh wrote:
+> 
+> > Add a header file listing all of the IRQs that Qualcomm Technologies,
+> > Inc. PM8008 supports. The constants defined in this file may be used in
+> > the client device tree node to specify interrupts.
+> > 
+> > Change-Id: I13fb096da54458f2882e8d853a3ad9c379e7d5a9
+> 
+> Please remember to drop the Change-Id when posting to the mailing lists.
+> 
+> 
+> We typically don't have defines for the IRQ numbers, but I don't mind.
 
-I'm not sure how you read that.
+But I do because then others will think it's a good idea.
 
-You're talking about this:
-
-  local_lock(&msblk->stream->lock);
-
-right? Note that msblk->stream is a per-cpu pointer, so
-&msblk->stream->lock is that same per-cpu pointer with an offset on.
-
-The whole think relies on:
-
-	&per_cpu_ptr(msblk->stream, cpu)->lock == per_cpu_ptr(&msblk->stream->lock, cpu)
-
-Which is true because the lhs:
-
-	(local_lock_t *)((msblk->stream + per_cpu_offset(cpu)) + offsetof(struct squashfs_stream, lock))
-
-and the rhs:
-
-	(local_lock_t *)((msblk->stream + offsetof(struct squashfs_stream, lock)) + per_cpu_offset(cpu))
-
-are identical, because addition is associative.
-
-> drivers/block/zram/zcomp.c appears to do the same although for
-> at least one of the zcomp_stream_get() callers, the CPU is pinned for
-> other reasons (bit spin lock held). I think it happens to work anyway
-> but it's weird and I'm not a fan.
-
-Same thing.
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> 
+> Regards,
+> Bjorn
+> 
+> > Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> > ---
+> >  include/dt-bindings/mfd/qcom-pm8008.h | 19 +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> >  create mode 100644 include/dt-bindings/mfd/qcom-pm8008.h
+> > 
+> > diff --git a/include/dt-bindings/mfd/qcom-pm8008.h b/include/dt-bindings/mfd/qcom-pm8008.h
+> > new file mode 100644
+> > index 0000000..eca9448
+> > --- /dev/null
+> > +++ b/include/dt-bindings/mfd/qcom-pm8008.h
+> > @@ -0,0 +1,19 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * Copyright (c) 2021 The Linux Foundation. All rights reserved.
+> > + */
+> > +
+> > +#ifndef __DT_BINDINGS_MFD_QCOM_PM8008_H
+> > +#define __DT_BINDINGS_MFD_QCOM_PM8008_H
+> > +
+> > +/* PM8008 IRQ numbers */
+> > +#define PM8008_IRQ_MISC_UVLO	0
+> > +#define PM8008_IRQ_MISC_OVLO	1
+> > +#define PM8008_IRQ_MISC_OTST2	2
+> > +#define PM8008_IRQ_MISC_OTST3	3
+> > +#define PM8008_IRQ_MISC_LDO_OCP	4
+> > +#define PM8008_IRQ_TEMP_ALARM	5
+> > +#define PM8008_IRQ_GPIO1	6
+> > +#define PM8008_IRQ_GPIO2	7
+> > +
+> > +#endif
+> > -- 
+> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > a Linux Foundation Collaborative Project
+> > 
