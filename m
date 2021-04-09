@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8953359AE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70FD6359B9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234178AbhDIKFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:05:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45430 "EHLO mail.kernel.org"
+        id S234444AbhDIKOg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:14:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233890AbhDIJ7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:59:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CA96611CA;
-        Fri,  9 Apr 2021 09:58:34 +0000 (UTC)
+        id S234207AbhDIKFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:05:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A5C261220;
+        Fri,  9 Apr 2021 10:01:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962315;
-        bh=92AuBmyyIh32FCb7AW4Ia2WAaBJt828hN833PaULxe4=;
+        s=korg; t=1617962498;
+        bh=2bBfFwl2STD3U2v71d89twdNtHHGFFxTU9BETJfBpso=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B4k3wWJELG+samW9501eAHtNAFxA98pPNMA2552L9FollMZ9ZR6ajx8Q3QzUgQDpR
-         QFw0OCYNNPuO8jUPmUQV1ZLhzFgvvySUWQqgx8Yww+8TcDZL7Ho51HhOhnzACGcmZe
-         MI4hPhxNhI16tZIkQL6gnSaau7EJaRq8F332amfc=
+        b=i65Fd4LtFqa0eIgNFZjpgJ7uU+xWghocc1HJrXoFmXsT42GUnIQwQK7v7a49nbON+
+         tFxfdpfra9YXWCLnH/E8cJo3NJ1q1Q9KJr6H+/hHon+nvF+AJn17K32QMl7PYH4xCC
+         GsmOj0bBiAKK/3Ef6E73Jh8/sSFrSofG7ZCOs3vI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, David Gow <davidgow@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 12/41] drm/msm/adreno: a5xx_power: Dont apply A540 lm_setup to other GPUs
+Subject: [PATCH 5.11 08/45] kunit: tool: Fix a python tuple typing error
 Date:   Fri,  9 Apr 2021 11:53:34 +0200
-Message-Id: <20210409095305.221785717@linuxfoundation.org>
+Message-Id: <20210409095305.656480586@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
-References: <20210409095304.818847860@linuxfoundation.org>
+In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
+References: <20210409095305.397149021@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,35 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konrad Dybcio <konrad.dybcio@somainline.org>
+From: David Gow <davidgow@google.com>
 
-[ Upstream commit 4a9d36b0610aa7034340e976652e5b43320dd7c5 ]
+[ Upstream commit 7421b1a4d10c633ca5f14c8236d3e2c1de07e52b ]
 
-While passing the A530-specific lm_setup func to A530 and A540
-to !A530 was fine back when only these two were supported, it
-certainly is not a good idea to send A540 specifics to smaller
-GPUs like A508 and friends.
+The first argument to namedtuple() should match the name of the type,
+which wasn't the case for KconfigEntryBase.
 
-Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Fixing this is enough to make mypy show no python typing errors again.
+
+Fixes 97752c39bd ("kunit: kunit_tool: Allow .kunitconfig to disable config items")
+Signed-off-by: David Gow <davidgow@google.com>
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
+Acked-by: Brendan Higgins <brendanhiggins@google.com>
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/adreno/a5xx_power.c | 2 +-
+ tools/testing/kunit/kunit_config.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a5xx_power.c b/drivers/gpu/drm/msm/adreno/a5xx_power.c
-index f176a6f3eff6..e58670a61df4 100644
---- a/drivers/gpu/drm/msm/adreno/a5xx_power.c
-+++ b/drivers/gpu/drm/msm/adreno/a5xx_power.c
-@@ -304,7 +304,7 @@ int a5xx_power_init(struct msm_gpu *gpu)
- 	/* Set up the limits management */
- 	if (adreno_is_a530(adreno_gpu))
- 		a530_lm_setup(gpu);
--	else
-+	else if (adreno_is_a540(adreno_gpu))
- 		a540_lm_setup(gpu);
+diff --git a/tools/testing/kunit/kunit_config.py b/tools/testing/kunit/kunit_config.py
+index bdd60230764b..27fe086d2d0d 100644
+--- a/tools/testing/kunit/kunit_config.py
++++ b/tools/testing/kunit/kunit_config.py
+@@ -13,7 +13,7 @@ from typing import List, Set
+ CONFIG_IS_NOT_SET_PATTERN = r'^# CONFIG_(\w+) is not set$'
+ CONFIG_PATTERN = r'^CONFIG_(\w+)=(\S+|".*")$'
  
- 	/* Set up SP/TP power collpase */
+-KconfigEntryBase = collections.namedtuple('KconfigEntry', ['name', 'value'])
++KconfigEntryBase = collections.namedtuple('KconfigEntryBase', ['name', 'value'])
+ 
+ class KconfigEntry(KconfigEntryBase):
+ 
 -- 
 2.30.2
 
