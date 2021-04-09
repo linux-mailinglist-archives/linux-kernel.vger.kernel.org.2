@@ -2,129 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6500F35A25B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F0D335A25E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233939AbhDIPxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233798AbhDIPxH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:53:07 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5530C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:52:54 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id x3so4482303ilg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:52:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6dw89kT43y0iwP7tVHfjK2c8fjHjZjh3ZGkx92mZsUo=;
-        b=vyy83tim/1kFkkganV1nCXVpFNQHJFLUyfRwJ8/rpvAk+qL1HauYxSlbaW6KEnyOUy
-         9i2twFrfFikR6jjUNqa1HauKGX/E2AZmHWwV/dPV9ujXy7Mv7QJTr4JkN+JZNMKr+mVH
-         i5AKTpPfTv2kGJrxj17Mt6MnI3dYHsqgy2PMrvuUrZvM6jp6mv12pDeiRQCnww/pMLhJ
-         aRanrjxtAm9HpI+7cN+8naBiv7W/Lxnq5Qc6LhKsAzttPZSsIL+FG34AKSEVTgAMdKUT
-         HsPGie6WCPHWg4pQaRcxlrHPzmdMWKhvfO/zY+zlzUBrQAa+nlfGE7YKL1cUdEChHHmX
-         uTBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6dw89kT43y0iwP7tVHfjK2c8fjHjZjh3ZGkx92mZsUo=;
-        b=sudTkHtzgHKyqBaBFzH/2qKWAJkcwdCjwMMw9r8y93VEXnX9vS6+cpbB3pp6SB5V/9
-         EuUIwiXCdg6fOa4g6DOhRzeuF9JQLVDdEdanY8dxTt0wdQtmtWD3B+1YcI0jTvZPUCbL
-         1Hn06hNttF8asMQ0P32AG6QwwByQQk2VckHmFDGwCBdZlwnvn7NJoQHZVbDHZSYlvxDO
-         2HkJWrfcxaCL18AmLss5aI9fwMZK5Uno6pS7cAq3YLaY9//Rlh/anRpnEzXNVIr/526t
-         DaDDCPO8OD5xwOoG/V+X080j9Jk1QW75b91xr9KIZqUdg8P3Lk24t0whl5z08rd+FxKv
-         yg7Q==
-X-Gm-Message-State: AOAM5329HQrl4q/3U6CR35ATmvXJj/vh9rGiv4MCUKRCSTFKM7Je++dX
-        mQPxRUNYFA27ZWQsefwx+B8v3A==
-X-Google-Smtp-Source: ABdhPJywblXbxYPq4FTyBC85fSG0JwH6jwcI++TM4tDh8Iua7oW7JZk9pNJoKN9w5XEONBK8Amv07g==
-X-Received: by 2002:a05:6e02:198f:: with SMTP id g15mr11783408ilf.200.1617983574302;
-        Fri, 09 Apr 2021 08:52:54 -0700 (PDT)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id k13sm1296725ilu.29.2021.04.09.08.52.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 08:52:53 -0700 (PDT)
-From:   Alex Elder <elder@linaro.org>
-To:     bjorn.andersson@linaro.org, agross@kernel.org, robh+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: qcom: sdx55: add IPA information
-Date:   Fri,  9 Apr 2021 10:52:51 -0500
-Message-Id: <20210409155251.955632-1-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        id S233953AbhDIPxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:53:10 -0400
+Received: from mga02.intel.com ([134.134.136.20]:55410 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233827AbhDIPxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 11:53:08 -0400
+IronPort-SDR: yS1abaxNnF0/+r+/CWsctDT5nvXqp4KZQt7jW6m2SsbzWgQ3KW6IVRcGpnRHFy08Dl4REqD38T
+ JjzGWz3U/bNA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="180917390"
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="180917390"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 08:52:54 -0700
+IronPort-SDR: ZexAgEz/BljwHFGPfWGCgKkgzwrs3QaaLNLbxrVoN9CoognrzT4tz/PFTlwdtm7Fo28lWJvetr
+ HFhg+y9x11CA==
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="520325087"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.27.140]) ([10.212.27.140])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 08:52:53 -0700
+Subject: Re: [PATCH v24 04/30] x86/cpufeatures: Introduce X86_FEATURE_CET and
+ setup functions
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
+ <20210401221104.31584-5-yu-cheng.yu@intel.com>
+ <20210409101214.GC15567@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <c7cb0ed6-2725-ba0d-093e-393eab9918b2@intel.com>
+Date:   Fri, 9 Apr 2021 08:52:52 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210409101214.GC15567@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add IPA-related nodes and definitions to "sdx55.dtsi".  The SMP2P
-nodes (ipa_smp2p_out and ipa_smp2p_in) are already present.
+On 4/9/2021 3:12 AM, Borislav Petkov wrote:
+> On Thu, Apr 01, 2021 at 03:10:38PM -0700, Yu-cheng Yu wrote:
+>> Introduce a software-defined X86_FEATURE_CET, which indicates either Shadow
+>> Stack or Indirect Branch Tracking (or both) is present.  Also introduce
+>> related cpu init/setup functions.
+>>
+>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+>> Cc: Kees Cook <keescook@chromium.org>
+>> ---
+>> v24:
+>> - Update #ifdef placement to reflect Kconfig changes of splitting shadow stack and ibt.
+>>
+>>   arch/x86/include/asm/cpufeatures.h          |  2 +-
+>>   arch/x86/include/asm/disabled-features.h    |  9 ++++++++-
+>>   arch/x86/include/uapi/asm/processor-flags.h |  2 ++
+>>   arch/x86/kernel/cpu/common.c                | 14 ++++++++++++++
+>>   arch/x86/kernel/cpu/intel.c                 |  3 +++
+>>   5 files changed, 28 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+>> index bf861fc89fef..d771e62677de 100644
+>> --- a/arch/x86/include/asm/cpufeatures.h
+>> +++ b/arch/x86/include/asm/cpufeatures.h
+>> @@ -108,7 +108,7 @@
+>>   #define X86_FEATURE_EXTD_APICID		( 3*32+26) /* Extended APICID (8 bits) */
+>>   #define X86_FEATURE_AMD_DCM		( 3*32+27) /* AMD multi-node processor */
+>>   #define X86_FEATURE_APERFMPERF		( 3*32+28) /* P-State hardware coordination feedback capability (APERF/MPERF MSRs) */
+>> -/* free					( 3*32+29) */
+>> +#define X86_FEATURE_CET			( 3*32+29) /* Control-flow enforcement */
+> 
+> Right, I know we talked about having this synthetic flag but now that we
+> are moving to CONFIG_X86_SHADOW_STACK and separate SHSTK and IBT feature
+> bits, that synthetic flag is not needed anymore.
+> 
+> For the cases where you wanna test whether any of the two are present,
+> we're probably better off adding a x86_cet_enabled() helper which tests
+> SHSTK and IBT bits.
+> 
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
-Note: This depends on this series posted by Mani Sadhasivam:
-  https://lore.kernel.org/linux-arm-msm/20210408170457.91409-1-manivannan.sadhasivam@linaro.org
+Recall we had complicated code for the XSAVES features detection in 
+xstate.c.  Dave Hansen proposed the solution and then the whole thing 
+becomes simple.  Because of this flag, even when only the shadow stack 
+is available, the code handles it nicely.
 
- arch/arm/boot/dts/qcom-sdx55.dtsi | 41 +++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+> I haven't gone through the whole thing yet but depending on the context
+> and the fact that AMD doesn't support IBT, that helper might need some
+> tweaking too. I'll see.
+> 
+>>   #define X86_FEATURE_NONSTOP_TSC_S3	( 3*32+30) /* TSC doesn't stop in S3 state */
+>>   #define X86_FEATURE_TSC_KNOWN_FREQ	( 3*32+31) /* TSC has known frequency */
+>>   
+>> diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
+>> index e5c6ed9373e8..018cd7acd3e9 100644
+>> --- a/arch/x86/include/asm/disabled-features.h
+>> +++ b/arch/x86/include/asm/disabled-features.h
+>> @@ -74,13 +74,20 @@
+>>   #define DISABLE_SHSTK	(1 << (X86_FEATURE_SHSTK & 31))
+>>   #endif
+>>   
+>> +#ifdef CONFIG_X86_CET
+> 
+> And you don't need that config item either - AFAICT, you can use
+> CONFIG_X86_SHADOW_STACK everywhere.
+> 
+> Which would simplify that config space.
 
-diff --git a/arch/arm/boot/dts/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom-sdx55.dtsi
-index e4180bbc46555..0dc515dc5750d 100644
---- a/arch/arm/boot/dts/qcom-sdx55.dtsi
-+++ b/arch/arm/boot/dts/qcom-sdx55.dtsi
-@@ -215,6 +215,47 @@ qpic_nand: nand@1b30000 {
- 			status = "disabled";
- 		};
- 
-+		ipa: ipa@1e40000 {
-+			compatible = "qcom,sdx55-ipa";
-+
-+			iommus = <&apps_smmu 0x5e0 0x0>,
-+				 <&apps_smmu 0x5e2 0x0>;
-+			reg = <0x1e40000 0x7000>,
-+			      <0x1e50000 0x4b20>,
-+			      <0x1e04000 0x2c000>;
-+			reg-names = "ipa-reg",
-+				    "ipa-shared",
-+				    "gsi";
-+
-+			interrupts-extended = <&intc GIC_SPI 241 IRQ_TYPE_EDGE_RISING>,
-+					      <&intc GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&ipa_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-+					      <&ipa_smp2p_in 1 IRQ_TYPE_EDGE_RISING>;
-+			interrupt-names = "ipa",
-+					  "gsi",
-+					  "ipa-clock-query",
-+					  "ipa-setup-ready";
-+
-+			clocks = <&rpmhcc RPMH_IPA_CLK>;
-+			clock-names = "core";
-+
-+			interconnects = <&system_noc MASTER_IPA &system_noc SLAVE_SNOC_MEM_NOC_GC>,
-+					<&mem_noc MASTER_SNOC_GC_MEM_NOC &mc_virt SLAVE_EBI_CH0>,
-+					<&system_noc MASTER_IPA &system_noc SLAVE_OCIMEM>,
-+					<&mem_noc MASTER_AMPSS_M0 &system_noc SLAVE_IPA_CFG>;
-+			interconnect-names = "memory-a",
-+					     "memory-b",
-+					     "imem",
-+					     "config";
-+
-+			qcom,smem-states = <&ipa_smp2p_out 0>,
-+					   <&ipa_smp2p_out 1>;
-+			qcom,smem-state-names = "ipa-clock-enabled-valid",
-+						"ipa-clock-enabled";
-+
-+			status = "disabled";
-+		};
-+
- 		tcsr_mutex: hwlock@1f40000 {
- 			compatible = "qcom,tcsr-mutex";
- 			reg = <0x01f40000 0x40000>;
--- 
-2.27.0
+Would this equal to only CONFIG_X86_CET (one Kconfig option)?  In fact, 
+when you proposed only CONFIG_X86_CET, things became much simpler.
+Practically, IBT is not much in terms of code size.  Since we have 
+already separated the two, why don't we leave it as-is.  When people 
+start using it more, there will be more feedback, and we can decide if 
+one Kconfig is better?
 
+Thanks,
+Yu-cheng
