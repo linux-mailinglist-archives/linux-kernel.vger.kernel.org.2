@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D26359A2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1180359A31
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233081AbhDIJ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:56:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43774 "EHLO mail.kernel.org"
+        id S233559AbhDIJ4l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:56:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233464AbhDIJzu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:55:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F1261181;
-        Fri,  9 Apr 2021 09:55:35 +0000 (UTC)
+        id S233467AbhDIJzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:55:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 959BD611C2;
+        Fri,  9 Apr 2021 09:55:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962136;
-        bh=Szysmpw0/D5Cn7QxAttk1NY23HJvZ75cKA4mT2mBYDE=;
+        s=korg; t=1617962139;
+        bh=Uqml/KA/LDaiQMffdH+X3U5y31CkFL+hRJwvfJ42j8I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BkuczEmI8rmusNxNeB3VlJ0tF109MBQouAaFumTcABlHNnZZyaz7O5M+EQnVGD8cE
-         JBV6IPoEmwnjGX8mkzSOennYLIAlip4dy5wCQSK1EcPnUqBPgdq1DNhqKggAjf9Bm0
-         KvuOyhe0mtcQI3akDOWRZBRr5X86HCLjWgmSFvDU=
+        b=M5fWQsg2ZUvxD7yTlNDabBH+q/C13lKg2JxyJZB6aEFtUvUvbpkNM4060Bv+24TxN
+         HV6Kp0ww+1Esk+ug+Zt/MA+pDXF4GRVXMd0RaRrdpCazZKKNNZwTRpoagt34x8MlIw
+         FHYqJNmHrcMRWrR93RL5EsVm6p5tXiRa0XC8MZpY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 04/13] drm/msm: Ratelimit invalid-fence message
-Date:   Fri,  9 Apr 2021 11:53:24 +0200
-Message-Id: <20210409095259.772069495@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 05/13] x86/build: Turn off -fcf-protection for realmode targets
+Date:   Fri,  9 Apr 2021 11:53:25 +0200
+Message-Id: <20210409095259.801666868@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210409095259.624577828@linuxfoundation.org>
 References: <20210409095259.624577828@linuxfoundation.org>
@@ -40,35 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 7ad48d27a2846bfda29214fb454d001c3e02b9e7 ]
+[ Upstream commit 9fcb51c14da2953de585c5c6e50697b8a6e91a7b ]
 
-We have seen a couple cases where low memory situations cause something
-bad to happen, followed by a flood of these messages obscuring the root
-cause.  Lets ratelimit the dmesg spam so that next time it happens we
-don't lose the kernel traces leading up to this.
+The new Ubuntu GCC packages turn on -fcf-protection globally,
+which causes a build failure in the x86 realmode code:
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+  cc1: error: ‘-fcf-protection’ is not compatible with this target
+
+Turn it off explicitly on compilers that understand this option.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20210323124846.1584944-1-arnd@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/msm_fence.c | 2 +-
+ arch/x86/Makefile | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_fence.c
-index a9b9b1c95a2e..9dbd17be51f7 100644
---- a/drivers/gpu/drm/msm/msm_fence.c
-+++ b/drivers/gpu/drm/msm/msm_fence.c
-@@ -56,7 +56,7 @@ int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
- 	int ret;
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 9f0099c46c88..9ebbd4892557 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -34,7 +34,7 @@ REALMODE_CFLAGS	:= $(M16_CFLAGS) -g -Os -D__KERNEL__ \
+ 		   -DDISABLE_BRANCH_PROFILING \
+ 		   -Wall -Wstrict-prototypes -march=i386 -mregparm=3 \
+ 		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
+-		   -mno-mmx -mno-sse
++		   -mno-mmx -mno-sse $(call cc-option,-fcf-protection=none)
  
- 	if (fence > fctx->last_fence) {
--		DRM_ERROR("%s: waiting on invalid fence: %u (of %u)\n",
-+		DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u (of %u)\n",
- 				fctx->name, fence, fctx->last_fence);
- 		return -EINVAL;
- 	}
+ REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -ffreestanding)
+ REALMODE_CFLAGS += $(call __cc-option, $(CC), $(REALMODE_CFLAGS), -fno-stack-protector)
 -- 
 2.30.2
 
