@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCEB35926A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599CB35926B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbhDIDDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:03:18 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15991 "EHLO
+        id S233205AbhDIDDU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:03:20 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15990 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233099AbhDIDDO (ORCPT
+        with ESMTP id S233103AbhDIDDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Apr 2021 23:03:14 -0400
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGjYr5BCLzyP3n;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGjYr5R5RzyP69;
         Fri,  9 Apr 2021 11:00:48 +0800 (CST)
 Received: from huawei.com (10.67.165.24) by DGGEMS411-HUB.china.huawei.com
  (10.3.19.211) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
@@ -24,9 +24,9 @@ To:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
 CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <liulongfang@huawei.com>, <kong.kongxinwei@hisilicon.com>,
         <yisen.zhuang@huawei.com>
-Subject: [PATCH v3 1/2] USB:ehci:Add a whitelist for EHCI controllers
-Date:   Fri, 9 Apr 2021 11:00:14 +0800
-Message-ID: <1617937215-39035-2-git-send-email-liulongfang@huawei.com>
+Subject: [PATCH v3 2/2] USB:ehci:fix Kunpeng920 ehci hardware problem
+Date:   Fri, 9 Apr 2021 11:00:15 +0800
+Message-ID: <1617937215-39035-3-git-send-email-liulongfang@huawei.com>
 X-Mailer: git-send-email 2.8.1
 In-Reply-To: <1617937215-39035-1-git-send-email-liulongfang@huawei.com>
 References: <1617937215-39035-1-git-send-email-liulongfang@huawei.com>
@@ -38,65 +38,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some types of EHCI controllers do not have SBRN registers.
-By comparing the white list, the operation of reading the SBRN
-registers is skipped.
+Kunpeng920's EHCI controller does not have SBRN register.
+Reading the SBRN register when the controller driver is
+initialized will get 0.
 
-Subsequent EHCI controller types without SBRN registers can be
-directly added to the white list.
+When rebooting the EHCI driver, ehci_shutdown() will be called.
+if the sbrn flag is 0, ehci_shutdown() will return directly.
+The sbrn flag being 0 will cause the EHCI interrupt signal to
+not be turned off after reboot. this interrupt that is not closed
+will cause an exception to the device sharing the interrupt.
 
-The current patch does not affect the drive function.
+Therefore, the EHCI controller of kunpeng920 needs to be added
+to the whitelist without SBRN register.
 
 Signed-off-by: Longfang Liu <liulongfang@huawei.com>
 ---
- drivers/usb/host/ehci-pci.c | 27 +++++++++++++++++++++++----
- 1 file changed, 23 insertions(+), 4 deletions(-)
+ drivers/usb/host/ehci-pci.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/usb/host/ehci-pci.c b/drivers/usb/host/ehci-pci.c
-index 3c3820a..f7f3156 100644
+index f7f3156..3690e62 100644
 --- a/drivers/usb/host/ehci-pci.c
 +++ b/drivers/usb/host/ehci-pci.c
-@@ -47,6 +47,28 @@ static inline bool is_bypassed_id(struct pci_dev *pdev)
- 	return !!pci_match_id(bypass_pci_id_table, pdev);
- }
+@@ -53,6 +53,8 @@ static const struct ehci_nosbrn {
+ } ehci_nosbrn_table[] = {
+ 	/* STMICRO ConneXT has no sbrn register */
+ 	{PCI_VENDOR_ID_STMICRO, PCI_DEVICE_ID_STMICRO_USB_HOST},
++	/* HUAWEI Kunpeng920 HiSilicon USB EHCI has no sbrn register */
++	{PCI_VENDOR_ID_HUAWEI, 0xa239},
+ 	{},
+ };
  
-+static const struct ehci_nosbrn {
-+	u16 vendor;
-+	u16 device;
-+} ehci_nosbrn_table[] = {
-+	/* STMICRO ConneXT has no sbrn register */
-+	{PCI_VENDOR_ID_STMICRO, PCI_DEVICE_ID_STMICRO_USB_HOST},
-+	{},
-+};
-+
-+static bool usb_forbid_sbrn_read(struct pci_dev *pdev)
-+{
-+	const struct ehci_nosbrn *entry;
-+
-+	for (entry = ehci_nosbrn_table; entry->vendor; entry++) {
-+		if (pdev->vendor == entry->vendor &&
-+		    pdev->device == entry->device)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- /*
-  * 0x84 is the offset of in/out threshold register,
-  * and it is the same offset as the register of 'hostpc'.
-@@ -288,10 +310,7 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
- 	}
- 
- 	/* Serial Bus Release Number is at PCI 0x60 offset */
--	if (pdev->vendor == PCI_VENDOR_ID_STMICRO
--	    && pdev->device == PCI_DEVICE_ID_STMICRO_USB_HOST)
--		;	/* ConneXT has no sbrn register */
--	else
-+	if (!usb_forbid_sbrn_read(pdev))
- 		pci_read_config_byte(pdev, 0x60, &ehci->sbrn);
- 
- 	/* Keep this around for a while just in case some EHCI
 -- 
 2.8.1
 
