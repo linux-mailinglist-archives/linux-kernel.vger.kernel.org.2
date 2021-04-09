@@ -2,92 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8012359589
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BEE43595B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:44:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233448AbhDIGcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:32:25 -0400
-Received: from mga12.intel.com ([192.55.52.136]:32002 "EHLO mga12.intel.com"
+        id S233429AbhDIGoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:44:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233320AbhDIGcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:32:14 -0400
-IronPort-SDR: DCeeddjYM1X2kOfRXFjEUcScS8qGYdhCo5spwBWKFz1ruRiRSp+MoxK0uv6iyMS09B6+elkdLS
- T25399qEMFag==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="173178639"
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="173178639"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 23:31:31 -0700
-IronPort-SDR: 5IMbA/ohDcPExA1V0Rw6TWGLA26spftBZOJSk/RoiqcDVZygJWHOeA/p9wVyO+Om/3ka6oK8wa
- cTf+nKq0ajUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="380538745"
-Received: from local-michael-cet-test.sh.intel.com ([10.239.159.166])
-  by orsmga003.jf.intel.com with ESMTP; 08 Apr 2021 23:31:30 -0700
-From:   Yang Weijiang <weijiang.yang@intel.com>
-To:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Yang Weijiang <weijiang.yang@intel.com>
-Subject: [PATCH v5 3/3] KVM: nVMX: Add CET entry/exit load bits to evmcs unsupported list
-Date:   Fri,  9 Apr 2021 14:43:45 +0800
-Message-Id: <20210409064345.31497-4-weijiang.yang@intel.com>
-X-Mailer: git-send-email 2.17.2
-In-Reply-To: <20210409064345.31497-1-weijiang.yang@intel.com>
-References: <20210409064345.31497-1-weijiang.yang@intel.com>
+        id S233296AbhDIGoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 02:44:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25587600D1;
+        Fri,  9 Apr 2021 06:44:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1617950643;
+        bh=V+LPiS0wXCRM9r81HlzxVPlmm7L5lizNQhFVG2u7um8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pzv2hpNuXzf7F2BF2g/8vlx74EDIbL7qL/ClY0Xvd4vd3JULuQgf4b+YJQdg7hSlD
+         ZGU4109EA9e2jqdJPwHBZquTapquati/4XiTBK075OuqzsAqVtAHfkfWF0iUBdhFZC
+         ignMUzPm3nLcLUuWtkvLes7qLJJK9N/o9mhke3AY=
+Date:   Fri, 9 Apr 2021 08:44:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     "derek.kiernan@xilinx.com" <derek.kiernan@xilinx.com>,
+        "dragan.cvetic@xilinx.com" <dragan.cvetic@xilinx.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v3 2/2] misc: Add Renesas Synchronization
+ Management Unit (SMU) support
+Message-ID: <YG/3sZZZbsqdzARx@kroah.com>
+References: <1617846650-10058-1-git-send-email-min.li.xe@renesas.com>
+ <1617846650-10058-2-git-send-email-min.li.xe@renesas.com>
+ <YG6hOuOO5EL9xTwH@kroah.com>
+ <OSBPR01MB4773182AF8FD263D65D52949BA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <YG9DPEyOIXqS2Vss@kroah.com>
+ <OSBPR01MB47730AA300DB8DBE08E74FEEBA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+ <YG9HDbMu3EbS3ekW@kroah.com>
+ <OSBPR01MB47730D5F401A895C84849CCDBA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OSBPR01MB47730D5F401A895C84849CCDBA749@OSBPR01MB4773.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nested guest doesn't support CET when KVM is running as an intermediate
-layer between two Hyper-Vs for now, so mask out related CET entry/exit
-load bits. Relevant enabling patches will be posted as a separate patch
-series.
+On Thu, Apr 08, 2021 at 06:59:19PM +0000, Min Li wrote:
+> > 
+> > But what does that have to do with the misc device?
+> > 
+> 
+> Hi Greg, MFD driver is the start of everything. Once MFD driver is loading, it will spawn 2 devices,  
+> one is for phc driver, which is under /driver/ptp and the other one is for this misc driver.  
+> Both PHC and misc drivers are operating on the same device. 
+> They are both calling exported functions from mfd drivers to access the device through i2c/spi 
+> and the register definitions are located in include/Linux/mfd/idt8a340_reg.h or idt82p33_reg.h
+> depending on which device was found by mfd driver through device tree node.
 
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Suggested-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
----
- arch/x86/kvm/vmx/evmcs.c | 4 ++--
- arch/x86/kvm/vmx/evmcs.h | 6 ++++--
- 2 files changed, 6 insertions(+), 4 deletions(-)
+I don't think it's a good idea to have the same defines with different
+values in different files, that's just a problem waiting to happen...
 
-diff --git a/arch/x86/kvm/vmx/evmcs.c b/arch/x86/kvm/vmx/evmcs.c
-index 41f24661af04..9f81db51fd8b 100644
---- a/arch/x86/kvm/vmx/evmcs.c
-+++ b/arch/x86/kvm/vmx/evmcs.c
-@@ -351,11 +351,11 @@ void nested_evmcs_filter_control_msr(u32 msr_index, u64 *pdata)
- 	switch (msr_index) {
- 	case MSR_IA32_VMX_EXIT_CTLS:
- 	case MSR_IA32_VMX_TRUE_EXIT_CTLS:
--		ctl_high &= ~VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL;
-+		ctl_high &= ~EVMCS1_UNSUPPORTED_VMEXIT_CTRL;
- 		break;
- 	case MSR_IA32_VMX_ENTRY_CTLS:
- 	case MSR_IA32_VMX_TRUE_ENTRY_CTLS:
--		ctl_high &= ~VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL;
-+		ctl_high &= ~EVMCS1_UNSUPPORTED_VMENTRY_CTRL;
- 		break;
- 	case MSR_IA32_VMX_PROCBASED_CTLS2:
- 		ctl_high &= ~SECONDARY_EXEC_VIRTUALIZE_APIC_ACCESSES;
-diff --git a/arch/x86/kvm/vmx/evmcs.h b/arch/x86/kvm/vmx/evmcs.h
-index bd41d9462355..25588694eb04 100644
---- a/arch/x86/kvm/vmx/evmcs.h
-+++ b/arch/x86/kvm/vmx/evmcs.h
-@@ -59,8 +59,10 @@ DECLARE_STATIC_KEY_FALSE(enable_evmcs);
- 	 SECONDARY_EXEC_SHADOW_VMCS |					\
- 	 SECONDARY_EXEC_TSC_SCALING |					\
- 	 SECONDARY_EXEC_PAUSE_LOOP_EXITING)
--#define EVMCS1_UNSUPPORTED_VMEXIT_CTRL (VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL)
--#define EVMCS1_UNSUPPORTED_VMENTRY_CTRL (VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL)
-+#define EVMCS1_UNSUPPORTED_VMEXIT_CTRL (VM_EXIT_LOAD_IA32_PERF_GLOBAL_CTRL | \
-+					VM_EXIT_LOAD_CET_STATE)
-+#define EVMCS1_UNSUPPORTED_VMENTRY_CTRL (VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL | \
-+					 VM_ENTRY_LOAD_CET_STATE)
- #define EVMCS1_UNSUPPORTED_VMFUNC (VMX_VMFUNC_EPTP_SWITCHING)
- 
- #if IS_ENABLED(CONFIG_HYPERV)
--- 
-2.26.2
+good luck!
 
+greg k-h
