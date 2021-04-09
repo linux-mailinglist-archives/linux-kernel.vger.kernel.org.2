@@ -2,111 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363E735A38A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3109635A396
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233892AbhDIQjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDIQjr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:39:47 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38999C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 09:39:34 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id z1so7288597edb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:39:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MeVCMSWpDbGHYzheWdu+Y717xanF98ksnqPfJAYkw1M=;
-        b=XPDFVuIxP0211a+q0DgzOzr7FRJbb7qGyrMux5F9IVWsm0zBRIB5GsMhp0ef5ACmfl
-         fbfLIDbngewfHiVw3tEUza5NDpDRw7XB/p5OO9ZrnO9I2M549MUxjWwI8wH+YFTbiXY5
-         AIxtid5ZQeU7iFjI70/WiIoaQHIxzrgqu2oP9DdnErUXTSQN2i3hUWqqrx2RqFQST4rq
-         hb83RLjbL4HYCiMVyWI1GJILnonyvuoAWMUAAJhDLQP+Ad5BsojszOZVZkhD6Mkf2IYv
-         8r99CSm6BBv7msF1uj9zEP7SHgpg0msw5uot1f3erCf13OIlcIg6y3HgEpsBzS/GlRiZ
-         32Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=MeVCMSWpDbGHYzheWdu+Y717xanF98ksnqPfJAYkw1M=;
-        b=c09mbWo/T/wU2KM9hH14rqSi1c/bdX6JU6OJ4lebXeW5dl/Glvk+eJmBMMlfpZDayp
-         It9R3MZ4tIJ/F/ikDLpGknqepNHWpsQKgeLE016U7R+vvbKLIJrfHeYWJvTBJ8qFXjey
-         912WXxK8VRim4GXYE8vivsAbu9BCDQ1kn+3qoizrTxMy2iPgQmJnr4OLnagD00mrWu7b
-         kotx1abuSs/jMKT04f6buiObUaRXFuNFQGDS3vuQK3ok2wzW0ikarCE5NVwsY8WDQfWR
-         DeUcB0WKdXRmyz8csMp+cNm/fX+FNle15zn6haXcgBSalBw48B1y5IqomYywOUQ45ywc
-         GdkA==
-X-Gm-Message-State: AOAM532zgzAGINrT3DgHmyMmGaNYdwYmL7q+3b/w7Vw9XQwini1Lkamq
-        W5NrrQKjzi+OzesheUyKrI4=
-X-Google-Smtp-Source: ABdhPJynu8aTlMARiTomzAzpoFC+mZi83vqf+MR6nXNS7W4lkctKXtEKEa3ahsE960GUsvT76fGbGA==
-X-Received: by 2002:aa7:ca04:: with SMTP id y4mr8266748eds.72.1617986373012;
-        Fri, 09 Apr 2021 09:39:33 -0700 (PDT)
-Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id q2sm1474051eje.24.2021.04.09.09.39.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 09:39:32 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [Outreachy kernel] [Resend Patch 0/3] staging: rtl8723bs: Patchset for rtl8723bs
-Date:   Fri, 09 Apr 2021 18:39:31 +0200
-Message-ID: <3311077.CXPNp9SFPB@localhost.localdomain>
+        id S234077AbhDIQlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:41:08 -0400
+Received: from mail-bn8nam11on2072.outbound.protection.outlook.com ([40.107.236.72]:35651
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229665AbhDIQlE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:41:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AH141uYNFbVqu93iW4emaPmLm5MEa3PUlzKuTZi4vaGNBDuNrUAlsFInF0TJXLh4uTpYas1VJuSPeoX9S7mnGnwex83v0AM9PFSRlO7O7XJYPssZjjKAsEAIqb8UL4umU4H3CN5nItmDvmvixUqpsnpDVwlvAQBw2jUHasbylXqqsS+n5IZZ9IhyT6H4ThhV9jxymKTvPIwjnbGddFeNu4eJIbx/9WjntdZKgzZAqbTtG4RPrhBeSfCYvIcuKopXxVUCn0spI9JYixETe82/cJcYzl1JlqRBzIph5uIAkuqylgo62QvTSQpZO4bIKQHH6XcPZzuLLex1lb2QZjE3aQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=89vZy/AAstIH758oNPjsVLf8WUKDU5Y/7tEJWneEiB0=;
+ b=VsPMYFrzEJThJ1H+5kOHWEGztl2ysiDNgLL9NNJU7sYO/tGPcKvf2fkCbz1umsJtNVzxxrkOyzoTzfbOmdScghQ5mGK9h0LrxG+d3OFOYXYI3STjB5zT4zxWyKaYU4xiz0/2QMcaHeV9hSLlvxLRI9jKFx5WBb3JgaexvqGxIbAwSxT+m/ZJ6oWOv4wFqOmwTTEWjJDTUC62yTZ0bxDeAStXkQOtdaZ3oeqbB0SwhSmT1zC0zNwNE9DsoPB+CNzrKXASTuN1ol/lbEc4IecZCbxFqHLXY8DrZWXwHnll82OlNJetygSgwOHiUHn6fOq1TgcvR3vfDSkc11LjcKT/ew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=89vZy/AAstIH758oNPjsVLf8WUKDU5Y/7tEJWneEiB0=;
+ b=jPCvT+4krAPzNBf7uSwWySHJp3KzPd6PhsXrRXoG2GIzTdPmWjdpphEgO7lpQk3HeSln909IE9wP0X38DqfGrdgNmSToD5khCk6hYezHMwAy4gZ1gnqQXCcWt34gLSHpVamRlY8UURQ06h1U0NNPJHZd+9L5Thz5j7IxAbmQ10r2TkQnN+T/81auxZhjmKmsuvsBON4aFSNTTS0/IKEfpiDk91FCL2KAKpX4hx2VUjelo+TDlkOZ06XF8pl4KIntWsswR0OVmvH0aRCOtizm9GEZ+bleXficiduqLbFgvzAoeWLoaURtG2hY8ufv7/S/6NBk2SrPGeo68o0idvTOGQ==
+Authentication-Results: talpey.com; dkim=none (message not signed)
+ header.d=none;talpey.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
+ by BYAPR12MB3094.namprd12.prod.outlook.com (2603:10b6:a03:db::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Fri, 9 Apr
+ 2021 16:40:49 +0000
+Received: from BY5PR12MB3827.namprd12.prod.outlook.com
+ ([fe80::4c46:77c0:7d7:7e43]) by BY5PR12MB3827.namprd12.prod.outlook.com
+ ([fe80::4c46:77c0:7d7:7e43%6]) with mapi id 15.20.4020.018; Fri, 9 Apr 2021
+ 16:40:48 +0000
+Date:   Fri, 9 Apr 2021 13:40:46 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tom Talpey <tom@talpey.com>
+Cc:     Chuck Lever III <chuck.lever@oracle.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+Message-ID: <20210409164046.GY7405@nvidia.com>
+References: <20210405052404.213889-1-leon@kernel.org>
+ <20210405134115.GA22346@lst.de>
+ <20210405200739.GB7405@nvidia.com>
+ <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
+ <20210406114952.GH7405@nvidia.com>
+ <aeb7334b-edc0-78c2-4adb-92d4a994210d@talpey.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aeb7334b-edc0-78c2-4adb-92d4a994210d@talpey.com>
+X-Originating-IP: [142.162.115.133]
+X-ClientProxiedBy: MN2PR20CA0033.namprd20.prod.outlook.com
+ (2603:10b6:208:e8::46) To BY5PR12MB3827.namprd12.prod.outlook.com
+ (2603:10b6:a03:1ab::16)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR20CA0033.namprd20.prod.outlook.com (2603:10b6:208:e8::46) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Fri, 9 Apr 2021 16:40:47 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lUuBa-003OOQ-3d; Fri, 09 Apr 2021 13:40:46 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 880a2ac7-7e2a-4846-1ed9-08d8fb763a77
+X-MS-TrafficTypeDiagnostic: BYAPR12MB3094:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR12MB30945C9F5AD4307F8DFF9CCEC2739@BYAPR12MB3094.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Mvvl+c/GHk5sTcz0XmSJ8e71www3v3K/c1kcII5PUnnmkjVPZQvIV4tHPo2CAeXArOd+qaaEMjVbSRp+f07yu5ae7YsLgNS52utDpPRjaKiswMi4GEKJt9BapErqca2tnGWWKOl72iPvSgPXXgcRFIKwa8oN0s3+cllp+6ycsuB1xNUE0srYVe0s65FLMsirxZ5qhBbc14uCYS+QGh2W/iv/L9tG66ADauLpRBPGSFbY6EgeWkJXnY6os/Vyhrk6XcHiG23K+we5ku1GZ/9fcF7w6zffxcIp/gyG3JoT2wZ+K6Vdo57nDkd8Z9x8iriMqTe/bX0CPYDz6kaBfsVtD17XG8HJM/FgzDMRqZX6DnLOOCRF8//qIG7jx785brG3BjMox9fsWjf2YXO8Z56np2aXbYH6VNS3nbVJ/svap0QY8M5llcgNLXdXAALxDgtNkwqq9F56f5RgGqNH784foYonlcq27/Cv+kF2tpQucCXbUujXXpxhiYrP6siKTncRgPZc5dV9V037kM51gMlI3HuahWjY3qJs5sjBgrHvMGHxXyjcUWqdJO5vejwq2HdG+0cwoZqSG3ljd84TS3qbQnbMj16yjrrpd1T2mTXr/z9yJ0D5dPoAua4f/EWM/JpawpH83gksG7RlBFSZh1IJTI0+3tetvrU98R3DNa4btmo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(366004)(346002)(376002)(396003)(86362001)(83380400001)(8676002)(66946007)(4326008)(7416002)(7406005)(6916009)(66556008)(66476007)(1076003)(38100700001)(9786002)(9746002)(4744005)(478600001)(186003)(426003)(54906003)(26005)(5660300002)(316002)(2616005)(36756003)(8936002)(33656002)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?uBU4O1NTO5ZUJTZIbHF8VCmm+OmenUl3LAC1u6odT9GeTD447WOloiGbx53w?=
+ =?us-ascii?Q?+iNmOEOQn0UaOpXVGdjH1/SIG84WiCzKKB+5P0gzqe1oUjW7PuwPm4DnHiO7?=
+ =?us-ascii?Q?LaH3yQUP2fWVog0A0b3LBfIHoV6rCcjr7FlXqoVxQC2r+FWEZJoWxqhk8n2S?=
+ =?us-ascii?Q?BDTp0U3Ps5AgcW2a9gXuKbma+q+cN40JYHmK6qDJq2TJj33nvKlCgwbx3/KN?=
+ =?us-ascii?Q?VTBduchvsbW9TGE6tpgpao56WQrg3HrOi8E2zC4DR3mtAoCP7Ic/qTzeV0+F?=
+ =?us-ascii?Q?zxr6qxR2/SbWRl2dsrFGSwixtPr9MOl6U7wTuiwBxLCBgnEar3axWpcMcgMZ?=
+ =?us-ascii?Q?BEDY1x/rXFBhKoyDH1BOHWrlZmNAkJYgWyJic7yRWcTgMJ4s3QTeNzh6DBfa?=
+ =?us-ascii?Q?w2d8BqNzGmz7wLsQS0Cwo43lKCvkazVGzHTxxuibmA5AYwJrxtTaoYsJwlst?=
+ =?us-ascii?Q?Sm+VHjIf20DLx454TraxPho/jpsIwoJECY/pyCP2dwTD5EbMfwQ7MX26lFKN?=
+ =?us-ascii?Q?irnruPvzzyeRxlyr1RkbCuS3rmNJERo39JuW81AqJQNBnPf9lt5tD7A09ydc?=
+ =?us-ascii?Q?P+FCSMJKxH/fBjn344eyhkhVb0ZJCjmaeoJSnYjxdaWy0K35ZqxE261WbirZ?=
+ =?us-ascii?Q?sXMPGtvPqigSjeolH796oCLYhDDiS8EpXyj582xBYnWWPe0FXqGiIS5jpwCF?=
+ =?us-ascii?Q?KkYipelLWiZXFli5Ai5E7H8WvBvVJnk9mMHBUFXtlNsMNdjy16WQnivoj6kL?=
+ =?us-ascii?Q?P+dF8QZD93i6Cbpwt+LrlMyN+tmudyYwOkHg0+13wN9XWGpLi7gRQO5IAM/a?=
+ =?us-ascii?Q?zwM9Cmy0xLfhoVt65r0vEEyz7Ppb6gSy7+f7zOEmZ0ko+XJNvgPB1oHRmAGu?=
+ =?us-ascii?Q?XYYpYRQBPyFWxLqeFX0r3sVBdTRxZ7rfjEWEVpHpu/iveMqbMG/QdiChX38v?=
+ =?us-ascii?Q?mjPZbv63xgb/ID60yhL4dX5vgUVPFmav0kwHX0Xda3le5gngCNv7qspkSuHh?=
+ =?us-ascii?Q?UbLtsb4289XOe6uWe/6JkLSm/eprNUqzgFA/FOY2LP/WOEW5u8ZGfzfvG0gK?=
+ =?us-ascii?Q?W7tl5EO24XnAFs7zsl1HnFM2Mnb21p9cd7d1JRtJtMQ4gYQoXB9r3cQ4w8NU?=
+ =?us-ascii?Q?Qv1wUxum+xeaf59hqqFtjmhigBDzfSpRmsJK1GMmog30h1jWiEvjDtGFz8GE?=
+ =?us-ascii?Q?BJ+XMGaOBNrnL4e6fOsvHWlskde3JORcBsS9xclw/IFqqdf2Aa7M/auEATF3?=
+ =?us-ascii?Q?urk+haB3kNyAH3ECOVSPPkYw6Ynm48Pw+MVteS3pjyKUJ72nwol+1+g4eS/u?=
+ =?us-ascii?Q?hnCgyxUey9t+IK87Le/8Udpc?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 880a2ac7-7e2a-4846-1ed9-08d8fb763a77
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3827.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 16:40:48.5269
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: peztA7mPp4ryhfSOW4eEXfga8Kl2DysvOmOkJdwMpXmU5fXAf9CmbHHcRFConrGQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series removes camelcase, changes the type and use of a 
-variable, and correct misspelled words.
+On Fri, Apr 09, 2021 at 10:26:21AM -0400, Tom Talpey wrote:
 
-Patch 1/3: staging: rtl8723bs: Remove camelcase in several files
+> My belief is that the biggest risk is from situations where completions
+> are batched, and therefore polling is used to detect them without
+> interrupts (which explicitly).
 
-drivers/staging/rtl8723bs/core/rtw_cmd.c       |  2 +-
-drivers/staging/rtl8723bs/core/rtw_mlme.c      |  2 +-
-drivers/staging/rtl8723bs/core/rtw_pwrctrl.c   | 18 +++++++++---------
-drivers/staging/rtl8723bs/hal/hal_intf.c       |  2 +-
-drivers/staging/rtl8723bs/hal/rtl8723b_dm.c    |  6 +++---
-.../staging/rtl8723bs/hal/rtl8723b_hal_init.c  |  2 +-
-drivers/staging/rtl8723bs/hal/sdio_ops.c       | 14 +++++++-------
-.../staging/rtl8723bs/include/rtw_pwrctrl.h    |  2 +-
-8 files changed, 24 insertions(+), 24 deletions(-)
+We don't do this in the kernel.
 
-Patch 2/3: staging: rtl8723bs: Change the type and use of a variable
+All kernel ULPs only read data after they observe the CQE. We do not
+have "last data polling" and our interrupt model does not support some
+hacky "interrupt means go and use the data" approach.
 
-drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
- drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ULPs have to be designed this way to use the DMA API properly.
+Fencing a DMA before it is completed by the HW will cause IOMMU
+errors.
 
-Patch 3/3: staging: rtl8723bs: include: Fix misspelled words in comments
+Userspace is a different story, but that will remain as-is with
+optional relaxed ordering.
 
-.../rtl8723bs/include/Hal8192CPhyReg.h        |  8 ++---
- .../staging/rtl8723bs/include/basic_types.h   |  2 +-
- drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
- drivers/staging/rtl8723bs/include/hal_com.h   |  2 +-
- .../staging/rtl8723bs/include/hal_com_reg.h   | 34 +++++++++----------
- drivers/staging/rtl8723bs/include/hal_data.h  |  2 +-
- .../staging/rtl8723bs/include/hal_pwr_seq.h   |  2 +-
- drivers/staging/rtl8723bs/include/rtw_cmd.h   |  6 ++--
- drivers/staging/rtl8723bs/include/rtw_mlme.h  | 18 +++++-----
- .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  2 +-
- drivers/staging/rtl8723bs/include/rtw_mp.h    |  2 +-
- .../staging/rtl8723bs/include/rtw_pwrctrl.h   |  2 +-
- drivers/staging/rtl8723bs/include/rtw_recv.h  |  4 +--
- drivers/staging/rtl8723bs/include/rtw_xmit.h  |  2 +-
- drivers/staging/rtl8723bs/include/sta_info.h  |  2 +-
- drivers/staging/rtl8723bs/include/wifi.h      |  2 +-
- 16 files changed, 46 insertions(+), 46 deletions(-)
-
-Fabio M. De Francesco
-
-
-
-
-
-
+Jason
