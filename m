@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11195359B8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:12:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F3E359B89
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234283AbhDIKNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:13:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49912 "EHLO mail.kernel.org"
+        id S234016AbhDIKMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:12:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234122AbhDIKEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:04:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE4AC6128E;
-        Fri,  9 Apr 2021 10:01:09 +0000 (UTC)
+        id S234123AbhDIKEp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:04:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8362F61244;
+        Fri,  9 Apr 2021 10:01:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962470;
-        bh=Vf/4atIVJIZu8M3poCXKaRHTSUmtfUTlzgP46VsUrEE=;
+        s=korg; t=1617962473;
+        bh=YrND4iheIlPi/ryUOniHLjmtXCRvRDJyRpjuwn0Ufso=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fBLAnXBXth7+iIqTpSe2yOqKU8yuIc+vTBRvYKyilJOIHp3F/JxDVWkfDGubuU+Ym
-         xkZFAA4//BHAQbWIzaK3datZkYxZpG8TOMqTFh+iSQDXpscUpGDvxfHlJOSdyX69UM
-         4cHEmB8y14nStNzRqoyE5td/J+DxuqoYj6fBbtWo=
+        b=x+0bAUIvusVTO3wJh33JVQWaO+cEqURE0jB0E4OqCK+/jEw0LOksmkxNPQzx4603O
+         oxc4M745E374Cpc8RrQg46/BScFr4HnENZGIITAQ5/v+Gn/KqPW8j8JqfQObx4Urqd
+         bNQCrGK9JzBikFjZZXftMCS+bWRPW8P4ZkO1c51s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yangbo Lu <yangbo.lu@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Lee Duncan <lduncan@suse.com>, Martin Wilck <mwilck@suse.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 27/45] ptp_qoriq: fix overflow in ptp_qoriq_adjfine() u64 calcalation
-Date:   Fri,  9 Apr 2021 11:53:53 +0200
-Message-Id: <20210409095306.292333665@linuxfoundation.org>
+Subject: [PATCH 5.11 28/45] scsi: target: pscsi: Clean up after failure in pscsi_map_sg()
+Date:   Fri,  9 Apr 2021 11:53:54 +0200
+Message-Id: <20210409095306.323414503@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
 References: <20210409095305.397149021@linuxfoundation.org>
@@ -40,52 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yangbo Lu <yangbo.lu@nxp.com>
+From: Martin Wilck <mwilck@suse.com>
 
-[ Upstream commit f51d7bf1dbe5522c51c93fe8faa5f4abbdf339cd ]
+[ Upstream commit 36fa766faa0c822c860e636fe82b1affcd022974 ]
 
-Current calculation for diff of TMR_ADD register value may have
-64-bit overflow in this code line, when long type scaled_ppm is
-large.
+If pscsi_map_sg() fails, make sure to drop references to already allocated
+bios.
 
-adj *= scaled_ppm;
-
-This patch is to resolve it by using mul_u64_u64_div_u64().
-
-Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20210323212431.15306-2-mwilck@suse.com
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ptp/ptp_qoriq.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/target/target_core_pscsi.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/ptp/ptp_qoriq.c b/drivers/ptp/ptp_qoriq.c
-index beb5f74944cd..08f4cf0ad9e3 100644
---- a/drivers/ptp/ptp_qoriq.c
-+++ b/drivers/ptp/ptp_qoriq.c
-@@ -189,15 +189,16 @@ int ptp_qoriq_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
- 	tmr_add = ptp_qoriq->tmr_add;
- 	adj = tmr_add;
- 
--	/* calculate diff as adj*(scaled_ppm/65536)/1000000
--	 * and round() to the nearest integer
-+	/*
-+	 * Calculate diff and round() to the nearest integer
-+	 *
-+	 * diff = adj * (ppb / 1000000000)
-+	 *      = adj * scaled_ppm / 65536000000
- 	 */
--	adj *= scaled_ppm;
--	diff = div_u64(adj, 8000000);
--	diff = (diff >> 13) + ((diff >> 12) & 1);
-+	diff = mul_u64_u64_div_u64(adj, scaled_ppm, 32768000000);
-+	diff = DIV64_U64_ROUND_UP(diff, 2);
- 
- 	tmr_add = neg_adj ? tmr_add - diff : tmr_add + diff;
--
- 	ptp_qoriq->write(&regs->ctrl_regs->tmr_add, tmr_add);
+diff --git a/drivers/target/target_core_pscsi.c b/drivers/target/target_core_pscsi.c
+index 7994f27e4527..0689d550c37a 100644
+--- a/drivers/target/target_core_pscsi.c
++++ b/drivers/target/target_core_pscsi.c
+@@ -939,6 +939,14 @@ pscsi_map_sg(struct se_cmd *cmd, struct scatterlist *sgl, u32 sgl_nents,
  
  	return 0;
+ fail:
++	if (bio)
++		bio_put(bio);
++	while (req->bio) {
++		bio = req->bio;
++		req->bio = bio->bi_next;
++		bio_put(bio);
++	}
++	req->biotail = NULL;
+ 	return TCM_LOGICAL_UNIT_COMMUNICATION_FAILURE;
+ }
+ 
 -- 
 2.30.2
 
