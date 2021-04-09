@@ -2,141 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A039435A3F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD3635A400
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234154AbhDIQuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:50:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhDIQuQ (ORCPT
+        id S234207AbhDIQux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:50:53 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:42123 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234195AbhDIQuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:50:16 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88D0FC061760;
-        Fri,  9 Apr 2021 09:50:03 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id s11so4628360pfm.1;
-        Fri, 09 Apr 2021 09:50:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EmjR3bywiH9JkVQf06ZFzqn9YgRCejJkL2Con+KKCbI=;
-        b=V8ABkSyfJ2sBz25TVDFwf7r0NU1SGiS4xpHo0k1zcRPlACTuYzm5bSux1xoXXB0PT0
-         BlDP29UjYU9zC5iCYd2UCUyS24OQGqdkXgu1vXaaU5brVf5v53gMRgaAk/9S2aKr8Bcs
-         /yqr7rtt/rsN9zmkcreV8LpTxyJmvmnc+msoyoXolsUjKq9lSGNgtns7eo30uHOWKR4V
-         2s5CRA2TDVfLHM3Bo7sdnyzlNPKg0UgZICdMZhQwqA/MepWMB6t3fGLUWtlZtmz0jqR9
-         Kq5IlBDVlzemXdAk3quZuHCO86yFmRhBH4kQf/nzagM4ZjbhDSN/p9WUvAgce9ryk0sg
-         rGcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EmjR3bywiH9JkVQf06ZFzqn9YgRCejJkL2Con+KKCbI=;
-        b=RCciFT9OQjxxmDcobRWa/j2MdNNyxqar9NVSdGHjlNZoiVBhgx5qmoD3u6kp2BOdsL
-         7DFmUUJc4WvNy0aU0mFwAd4+EwcBXsT8ZjqmRkiu9kTw0edYTZpufsCMNfbF5AIFTUVm
-         F6PBV+bcJaj1msD2z0nAvN9x79uM1PeLMEpe+xXQIjKWz/tQb9cJ1sCl2Bevwk3WdZ5D
-         nok5lG+lndxKHDeW4DDJP8BKmy/8efuLK5GyBPtpSyTA4eD+YguzLwdBinVbS2YiCu3o
-         MnJyxn0D/H9VTUSZm9vnmSWdx9OULb5mFsyVIZMfKsRFX0w3q/5HE+WsWyAngnAaMxBk
-         SbBA==
-X-Gm-Message-State: AOAM532rBBCEDbuUZJVYfSC5hWInI6692q94vg5NNEdsQoQp970x+2Tt
-        zr6LDSgEItetTwPTsesS47S7u1jYEwEpUqv6
-X-Google-Smtp-Source: ABdhPJz/kGjQCWC42Pk9J5e1J3e2HDye5UhxDnitPlRcxsr2UmlBHVGOW+4tDW35zoLvMSf7qoi0dQ==
-X-Received: by 2002:a63:f258:: with SMTP id d24mr13915247pgk.174.1617987003027;
-        Fri, 09 Apr 2021 09:50:03 -0700 (PDT)
-Received: from kali ([103.141.87.253])
-        by smtp.gmail.com with ESMTPSA id z192sm3108490pgz.94.2021.04.09.09.49.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 09:50:02 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 22:19:52 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     clabbe@baylibre.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [PATCH 1/2] media: zoran: add spaces around '<<'
-Message-ID: <YHCFsNZVGfjjyHDi@kali>
-References: <cover.1617912177.git.mitaliborkar810@gmail.com>
- <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com>
- <f196d8ff-e8bf-360e-ee7b-cd2dcafd9742@xs4all.nl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f196d8ff-e8bf-360e-ee7b-cd2dcafd9742@xs4all.nl>
+        Fri, 9 Apr 2021 12:50:50 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 1C619580820;
+        Fri,  9 Apr 2021 12:50:35 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute3.internal (MEProxy); Fri, 09 Apr 2021 12:50:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
+         h=mime-version:message-id:in-reply-to:references:date:from:to
+        :cc:subject:content-type; s=fm1; bh=/tRhd4nT96NN65qLLACQUONSZaU+
+        voT8hPuzE7VOEXA=; b=XP2D2yQFBRFN02eCaNV2a07K3M2o+2oBMkj1QyvJAra1
+        WrpX9oq0AK/fq4Eh/oOs0efnMlq3X0LCunwT0AlAF9fmTQAzWqG7dm0AFPtDhvPf
+        FWoHuCV7WOrQvanTfX+A4LuGv+Qi4Vv5q/H3hsHR2SrM3q+ANrix6HXA9g0J/A/8
+        OPYtttP5BO6ahW7+ajD2zn1HWE+2isEynKRm4Q58t+YXKK+ENr2RPziPcjieml1O
+        qX44MNnyWFJGYCEAF9pZI2CvgB/iJpuUfWLusFqHnC5FcDCwC14mboTkfJiZP2cB
+        ELHNOyN88GlLRpHiRupCN01Ssbh6yaeIEfZnei+ckA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=/tRhd4
+        nT96NN65qLLACQUONSZaU+voT8hPuzE7VOEXA=; b=fKdpTyCVED5ZL/nDo3qtjx
+        cxxnVfcDhmb5dsQx/UkmoK3kaD7OLAcaVeNzEj88nnpVmea/AXmGadD1XDO7XZUD
+        qORAlRfKF3QAdR0T0LPDHL19riADbdObzl1XCDCZ5gCjULuS2oji+40pmrGh1dUR
+        Zoi3ADyUc6ftO7HrkXZhn8+RXUeCLsZv6JK0qF1wwOO1KWQHSXIELMC1y0wz9V8j
+        5Inc41ppRlt8S4wXNk7fKogNC7O35vBrUzW85TuPdyO+PRS4GhGMu0Bkn95mXusr
+        fylOHcoeDt2H2HbGob54d3XUZi/w/URPxg4VAs7/xxMWw4U+yvOe3ug9Wc1moRzg
+        ==
+X-ME-Sender: <xms:2IVwYOOk5XRZ55prkxAaNTjwW9Vsk2tOF5KdDgthBhf1ZnoKPcaMeA>
+    <xme:2IVwYM9CJTuvJ9StwIc2smBzfOajvxjFtzfjhAT93DXCg_inWtq9GCJPgrGJJ5XKZ
+    Ju7K4aHwjztYpkwq0E>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekuddguddtkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfufhv
+    vghnucfrvghtvghrfdcuoehsvhgvnhesshhvvghnphgvthgvrhdruggvvheqnecuggftrf
+    grthhtvghrnhepvedvgeevuddvvedvgfelfeegiedvgeehieeutdelvedvieevveeljeef
+    vedtleehnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnhesshhvvghnphgvthgvrhdr
+    uggvvh
+X-ME-Proxy: <xmx:2IVwYFTEF7kV4WJeiCo771usTqOs9a9XFHC09UgIxex6EHSAh1YacQ>
+    <xmx:2IVwYOt71UPl6yW2GPFfcuYSDiDKCZaxyaT8ozF26nw2B0huJc_kQA>
+    <xmx:2IVwYGepIvLkYsmlUTQ7Z64EOiXYLfhhEndUOtAFe0nomUJsLZyskg>
+    <xmx:2oVwYC1_KexD6Azt8i1PxNbWuaQ7r6733tn-FOSsWvUjAhWbEORzUlU3PyQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id D740651C005F; Fri,  9 Apr 2021 12:50:32 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <10040e18-6e49-432b-b85c-bcc1345a5e18@www.fastmail.com>
+In-Reply-To: <20210407104209.GA15173@willie-the-truck>
+References: <20210328074009.95932-1-sven@svenpeter.dev>
+ <20210328074009.95932-4-sven@svenpeter.dev>
+ <20210407104209.GA15173@willie-the-truck>
+Date:   Fri, 09 Apr 2021 18:50:12 +0200
+From:   "Sven Peter" <sven@svenpeter.dev>
+To:     "Will Deacon" <will@kernel.org>
+Cc:     "Robin Murphy" <robin.murphy@arm.com>,
+        "Joerg Roedel" <joro@8bytes.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Arnd Bergmann" <arnd@kernel.org>, devicetree@vger.kernel.org,
+        "Hector Martin" <marcan@marcan.st>, linux-kernel@vger.kernel.org,
+        "Marc Zyngier" <maz@kernel.org>,
+        "Mohamed Mediouni" <mohamed.mediouni@caramail.com>,
+        "Stan Skowronek" <stan@corellium.com>,
+        linux-arm-kernel@lists.infradead.org,
+        "Mark Kettenis" <mark.kettenis@xs4all.nl>,
+        "Petr Mladek via iommu" <iommu@lists.linux-foundation.org>
+Subject: Re: [PATCH v2 3/3] iommu: dart: Add DART iommu driver
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 09:23:22AM +0200, Hans Verkuil wrote:
-> Hi Mitali,
-> 
-> On 08/04/2021 22:38, Mitali Borkar wrote:
-> > Added spaces around '<<' operator to improve readability and meet linux
-> > kernel coding style.
-> > Reported by checkpatch
+
+
+On Wed, Apr 7, 2021, at 12:42, Will Deacon wrote:
+> On Sun, Mar 28, 2021 at 09:40:09AM +0200, Sven Peter wrote:
+> > Apple's new SoCs use iommus for almost all peripherals. These Device
+> > Address Resolution Tables must be setup before these peripherals can
+> > act as DMA masters.
 > > 
-> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > Signed-off-by: Sven Peter <sven@svenpeter.dev>
 > > ---
-> >  drivers/staging/media/zoran/zr36057.h | 14 +++++++-------
-> >  1 file changed, 7 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> > index 71b651add35a..a2a75fd9f535 100644
-> > --- a/drivers/staging/media/zoran/zr36057.h
-> > +++ b/drivers/staging/media/zoran/zr36057.h
-> > @@ -30,13 +30,13 @@
-> >  #define ZR36057_VFESPFR_HOR_DCM          14
-> >  #define ZR36057_VFESPFR_VER_DCM          8
-> >  #define ZR36057_VFESPFR_DISP_MODE        6
-> > -#define ZR36057_VFESPFR_YUV422          (0<<3)
-> > -#define ZR36057_VFESPFR_RGB888          (1<<3)
-> > -#define ZR36057_VFESPFR_RGB565          (2<<3)
-> > -#define ZR36057_VFESPFR_RGB555          (3<<3)
-> > -#define ZR36057_VFESPFR_ERR_DIF          (1<<2)
-> > -#define ZR36057_VFESPFR_PACK24          (1<<1)
-> > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1<<0)
-> > +#define ZR36057_VFESPFR_YUV422          (0 << 3)
-> > +#define ZR36057_VFESPFR_RGB888          (1 << 3)
-> > +#define ZR36057_VFESPFR_RGB565          (2 << 3)
-> > +#define ZR36057_VFESPFR_RGB555          (3 << 3)
-> > +#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
-> > +#define ZR36057_VFESPFR_PACK24          (1 << 1)
-> > +#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
-> >  
-> >  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
-> >  
-> > 
+> >  MAINTAINERS                      |   1 +
+> >  drivers/iommu/Kconfig            |  14 +
+> >  drivers/iommu/Makefile           |   1 +
+> >  drivers/iommu/apple-dart-iommu.c | 858 +++++++++++++++++++++++++++++++
+> >  4 files changed, 874 insertions(+)
+> >  create mode 100644 drivers/iommu/apple-dart-iommu.c
 > 
-> I looked at that header and it is very messy.
+> [...]
 > 
-> Can you make two new patches? The first aligns every nicely, e.g. this:
+> > +/* must be called with held domain->lock */
+> > +static int apple_dart_attach_stream(struct apple_dart_domain *domain,
+> > +				    struct apple_dart *dart, u32 sid)
+> > +{
+> > +	unsigned long flags;
+> > +	struct apple_dart_stream *stream;
+> > +	struct io_pgtable_cfg *pgtbl_cfg;
+> > +	int ret;
+> > +
+> > +	list_for_each_entry(stream, &domain->streams, stream_head) {
+> > +		if (stream->dart == dart && stream->sid == sid) {
+> > +			stream->num_devices++;
+> > +			return 0;
+> > +		}
+> > +	}
+> > +
+> > +	spin_lock_irqsave(&dart->lock, flags);
+> > +
+> > +	if (WARN_ON(dart->used_sids & BIT(sid))) {
+> > +		ret = -EINVAL;
+> > +		goto error;
+> > +	}
+> > +
+> > +	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
+> > +	if (!stream) {
+> > +		ret = -ENOMEM;
+> > +		goto error;
+> > +	}
 > 
-> #define ZR36057_VFEHCR          0x000   /* Video Front End, Horizontal Configuration Register */
-> #define ZR36057_VFEHCR_HS_POL             BIT(30)
-> #define ZR36057_VFEHCR_H_START           10
-> #define ZR36057_VFEHCR_H_END            0
-> #define ZR36057_VFEHCR_HMASK            0x3ff
+> Just in case you missed it, a cocci bot noticed that you're using GFP_KERNEL
+> to allocate while holding a spinlock here:
 > 
-> should become:
+> https://lore.kernel.org/r/alpine.DEB.2.22.394.2104041724340.2958@hadrien
 > 
-> /* Video Front End, Horizontal Configuration Register */
-> #define ZR36057_VFEHCR			0x000
-> #define ZR36057_VFEHCR_HS_POL		BIT(30)
-> #define ZR36057_VFEHCR_H_START		10
-> #define ZR36057_VFEHCR_H_END		0
-> #define ZR36057_VFEHCR_HMASK		0x3ff
-> 
-> Same for all the other register blocks. Use tabs to do the alignment
-> instead of spaces, as is currently the case.
->
-> The second patch can replace the (0<<3) etc. to BIT(0).
->
-Then I guess only one new patch would be needed for proper alignment, am
-i right? I have to rename it as v2 or should send as a completely new
-patch?
-> That would be a nice cleanup of this rather messy header.
-> 
-> Thanks!
-> 
-> 	Hans
+
+Thanks for the reminder!
+I haven't replied yet because that one was found later when the bot picked up
+a (slightly earlier) version that Marc was using to bring up pcie I believe.
+I'll fix it for the next version.
+
+
+Sven
