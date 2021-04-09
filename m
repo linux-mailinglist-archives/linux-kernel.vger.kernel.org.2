@@ -2,95 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BAB835A896
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 00:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C3235A893
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 00:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234966AbhDIWE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 18:04:28 -0400
-Received: from mx.kolabnow.com ([95.128.36.40]:34494 "EHLO mx.kolabnow.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234932AbhDIWE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234884AbhDIWE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 9 Apr 2021 18:04:26 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by ext-mx-out003.mykolab.com (Postfix) with ESMTP id 4AF2D40B5D;
-        Sat, 10 Apr 2021 00:04:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kolabnow.com; h=
-        message-id:references:in-reply-to:subject:subject:from:from:date
-        :date:content-transfer-encoding:content-type:content-type
-        :mime-version:received:received:received; s=dkim20160331; t=
-        1618005849; x=1619820250; bh=FEZ8XfP/C/s3g8U/Ca+1kTURK7HIFQDsrey
-        PbmLxgvI=; b=KEvbED46Nzzg+zHqlRtDTjdqxabx8uUHB1oR4prVlCNid1pJZQ4
-        M3Q3nV8GVfxRdnPfqsnlrtpFvlKQ+Y2XWcuHJXcpb1srAAN/JpcTq1bRm0zLKFJC
-        ZggRnnnL6+NWHDG7o8b+xY9RqtwGrIl6XK+sZH3S70O8zZTO0Nkmq6vDGMOEdvAc
-        gn18yOHfF33gTfCmHrA5lGFz68ZW4PKqXP4NzawOcHEpdDsbFPSHm1O7UthKAFrS
-        ki0p6GmgH/608ut+QNnOphcaa0WWfGRLKcw+ks+193IqyIn3QrpiGYRmzT/bwsz4
-        TzhmqUvVWEsFyJCPdHA/biH1wTG9PbgB5oo2OLG/GNmqxFxhI0sgkHEWDjIYJ6hD
-        fu9gQLXIvTJwEVUgR/8prYsTbbnoGNE22GRHwbyBOCZjYMlnxzTLK6ztZ4BMwcUg
-        S3T0jG28kg5e/9Fis5N6yBC5ahFq0OIJuv32K/dHb4f832qCm9QkY8PzFb/rWg/u
-        fOMW0bAXxmA2+l9FPgtcFuBChCPDZmZcIllLWflfTyq5Q1NfcsxdS2l7EVg4CL0h
-        2rbDztY55nCeX8iChK5bOnMFXgX7UdM0ksKGT4Rn0AZDqUenyXayq6IVzO/e5L/5
-        EaKsDjyDa8amN3cyDqLMdlA3NltW2G3vtucsogxEazDcIhRGuZpYzAVc=
-X-Virus-Scanned: amavisd-new at mykolab.com
-X-Spam-Flag: NO
-X-Spam-Score: -1.9
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 tagged_above=-10 required=5
-        tests=[BAYES_00=-1.9] autolearn=ham autolearn_force=no
-Received: from mx.kolabnow.com ([127.0.0.1])
-        by localhost (ext-mx-out003.mykolab.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id yzb_qYtMbBFZ; Sat, 10 Apr 2021 00:04:09 +0200 (CEST)
-Received: from int-mx003.mykolab.com (unknown [10.9.13.3])
-        by ext-mx-out003.mykolab.com (Postfix) with ESMTPS id D5E1F403F1;
-        Sat, 10 Apr 2021 00:04:07 +0200 (CEST)
-Received: from int-subm002.mykolab.com (unknown [10.9.37.2])
-        by int-mx003.mykolab.com (Postfix) with ESMTPS id CA8D63162;
-        Sat, 10 Apr 2021 00:04:05 +0200 (CEST)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 10 Apr 2021 00:04:03 +0200
-From:   Federico Vaga <federico.vaga@vaga.pv.it>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Alex Shi <alexs@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thorsten Leemhuis <linux@leemhuis.info>,
-        Wu XiangCheng <bobwxc@email.cn>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 6/8] docs: replace transation references for
- reporting-bugs.rst
-In-Reply-To: <3c7eb94992f7d85d75c8faf82c6a4690b2666951.1617972339.git.mchehab+huawei@kernel.org>
-References: <cover.1617972339.git.mchehab+huawei@kernel.org>
- <3c7eb94992f7d85d75c8faf82c6a4690b2666951.1617972339.git.mchehab+huawei@kernel.org>
-Message-ID: <028fa780f186689cddfba701b87c4c87@vaga.pv.it>
-X-Sender: federico.vaga@vaga.pv.it
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234079AbhDIWEY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 18:04:24 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAA6C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 15:04:11 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id n5so1266157qkf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 15:04:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=fQE9PWS5vv/FTKpRLev+pHKn5IJsSHazWeniE3U08BM=;
+        b=qTykMhwSGh7Sgg9lCvvpa4skHVXY2XMmc+6hEaMAPb6weE+iiSX4uLz31Y3sNWUEbo
+         NyS4D9/GuCngK2YBTmvOaillXi/3YXjvv5oPsjvWiSNgPNUxRDfFVnLjA+Qf3ur1yPMV
+         avM30Zq5iWJFNg/qay3yn6XNyBTMT9Jq/8B5LZx6LSxLklc4ZEGMN3icEhYZoyEq7uB0
+         Seh1p/eSHmcS5iA9ad4EkZg5OqDceM+fn+FcKPBorfNGsOCimBOKCsY9DMG+wKyboEWH
+         QHEBcoCgB6JnoMK8cU4Exv9LojNGijJCO5rhqoP5yQHwySm7l4/gFZJDBIdSqAdCiJQt
+         P3xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=fQE9PWS5vv/FTKpRLev+pHKn5IJsSHazWeniE3U08BM=;
+        b=uLjtCJDDrypkitBUCIHcQQVvYfGg4U8nyPbUnM8caW0ImjDKqrNoDzbNK8Cv5+XqrD
+         YKm4cA14XlK+sun8p8ve5jdjvdDrYhM8+OPzyBOD1wkHbmoOH/2yy1csHxiNeBOFo0dD
+         wVrGJj3E9OZyXzPoEKdkSdCaeRZ3sj7KWHZHUiAmuqwyUDXSxEei0rtHZnzsRQZ5aQOb
+         ZN2v0KlCdH8pNfCXW87M0za5fYOFmx8bP0OaXLUlxDurNoxGlmA8jsv3QFVHAhEELJno
+         9sSaMJh0AAaDGEUcYNkFWmL4L71J3vCTFcpeyVkUVkL2eKf6HfG4ETgwSqiPp3hIJgPL
+         iQag==
+X-Gm-Message-State: AOAM5335alJZWd+poVop+XVRsY6HoLx+M7hgnn1b+2W2mlsRTw1CIOiG
+        j++7nYdOvvbjI5o7hm2clkvfRfsqQKun
+X-Google-Smtp-Source: ABdhPJwCK1Br/M9Rz5es79YqJJFGH7lvo8L4Z55POq0K9L7+Y25hlXweuY049BJ+XskGjOR54tUirubn6dXR
+X-Received: from yudiliu.mtv.corp.google.com ([2620:15c:202:201:bce3:ed34:c9ac:28c1])
+ (user=yudiliu job=sendgmr) by 2002:ad4:4f07:: with SMTP id
+ fb7mr13699212qvb.30.1618005850489; Fri, 09 Apr 2021 15:04:10 -0700 (PDT)
+Date:   Fri,  9 Apr 2021 15:04:06 -0700
+Message-Id: <20210409150356.v2.1.Id5ee0a2edda8f0902498aaeb1b6c78d062579b75@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: [PATCH v2] Bluetooth: Return whether a connection is outbound
+From:   Yu Liu <yudiliu@google.com>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        chromeos-bluetooth-upstreaming@chromium.org
+Cc:     Yu Liu <yudiliu@google.com>, Miao-chen Chou <mcchou@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-09 14:47, Mauro Carvalho Chehab wrote:
-> Changeset d2ce285378b0 ("docs: make reporting-issues.rst official and
-> delete reporting-bugs.rst")
-> dropped reporting-bugs.rst, in favor of reporting-issues.rst, but
-> translations still need to be updated, in order to point to the
-> new file.
-> 
-> Fixes: d2ce285378b0 ("docs: make reporting-issues.rst official and
-> delete reporting-bugs.rst")
-> Acked-by: Wu XiangCheng <bobwxc@email.cn>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/translations/it_IT/process/howto.rst            | 2 +-
+When an MGMT_EV_DEVICE_CONNECTED event is reported back to the user
+space we will set the flags to tell if the established connection is
+outbound or not. This is useful for the user space to log better metrics
+and error messages.
 
-Acked-by: Federico Vaga <federico.vaga@vaga.pv.it>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Reviewed-by: Alain Michaud <alainm@chromium.org>
+Signed-off-by: Yu Liu <yudiliu@google.com>
+---
 
->  Documentation/translations/ja_JP/howto.rst                    | 2 +-
->  Documentation/translations/zh_CN/SecurityBugs                 | 2 +-
->  .../translations/zh_CN/admin-guide/reporting-issues.rst       | 4 ++--
->  Documentation/translations/zh_CN/process/howto.rst            | 2 +-
->  5 files changed, 6 insertions(+), 6 deletions(-)
+Changes in v2:
+- Defined the bit as MGMT_DEV_FOUND_INITIATED_CONN
 
+Changes in v1:
+- Initial change
+
+ include/net/bluetooth/hci_core.h | 2 +-
+ include/net/bluetooth/mgmt.h     | 1 +
+ net/bluetooth/hci_event.c        | 8 ++++----
+ net/bluetooth/l2cap_core.c       | 2 +-
+ net/bluetooth/mgmt.c             | 6 +++++-
+ 5 files changed, 12 insertions(+), 7 deletions(-)
+
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index ca4ac6603b9a..d2876b758770 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -1756,7 +1756,7 @@ void __mgmt_power_off(struct hci_dev *hdev);
+ void mgmt_new_link_key(struct hci_dev *hdev, struct link_key *key,
+ 		       bool persistent);
+ void mgmt_device_connected(struct hci_dev *hdev, struct hci_conn *conn,
+-			   u32 flags, u8 *name, u8 name_len);
++			   u8 *name, u8 name_len);
+ void mgmt_device_disconnected(struct hci_dev *hdev, bdaddr_t *bdaddr,
+ 			      u8 link_type, u8 addr_type, u8 reason,
+ 			      bool mgmt_connected);
+diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
+index a7cffb069565..a03c62b1dc2f 100644
+--- a/include/net/bluetooth/mgmt.h
++++ b/include/net/bluetooth/mgmt.h
+@@ -939,6 +939,7 @@ struct mgmt_ev_auth_failed {
+ #define MGMT_DEV_FOUND_CONFIRM_NAME    0x01
+ #define MGMT_DEV_FOUND_LEGACY_PAIRING  0x02
+ #define MGMT_DEV_FOUND_NOT_CONNECTABLE 0x04
++#define MGMT_DEV_FOUND_INITIATED_CONN  0x08
+ 
+ #define MGMT_EV_DEVICE_FOUND		0x0012
+ struct mgmt_ev_device_found {
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 593eafa282e3..35b1adb2287c 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -2071,7 +2071,7 @@ static void hci_check_pending_name(struct hci_dev *hdev, struct hci_conn *conn,
+ 	if (conn &&
+ 	    (conn->state == BT_CONFIG || conn->state == BT_CONNECTED) &&
+ 	    !test_and_set_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags))
+-		mgmt_device_connected(hdev, conn, 0, name, name_len);
++		mgmt_device_connected(hdev, conn, name, name_len);
+ 
+ 	if (discov->state == DISCOVERY_STOPPED)
+ 		return;
+@@ -3258,7 +3258,7 @@ static void hci_remote_features_evt(struct hci_dev *hdev,
+ 		cp.pscan_rep_mode = 0x02;
+ 		hci_send_cmd(hdev, HCI_OP_REMOTE_NAME_REQ, sizeof(cp), &cp);
+ 	} else if (!test_and_set_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags))
+-		mgmt_device_connected(hdev, conn, 0, NULL, 0);
++		mgmt_device_connected(hdev, conn, NULL, 0);
+ 
+ 	if (!hci_outgoing_auth_needed(hdev, conn)) {
+ 		conn->state = BT_CONNECTED;
+@@ -4332,7 +4332,7 @@ static void hci_remote_ext_features_evt(struct hci_dev *hdev,
+ 		cp.pscan_rep_mode = 0x02;
+ 		hci_send_cmd(hdev, HCI_OP_REMOTE_NAME_REQ, sizeof(cp), &cp);
+ 	} else if (!test_and_set_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags))
+-		mgmt_device_connected(hdev, conn, 0, NULL, 0);
++		mgmt_device_connected(hdev, conn, NULL, 0);
+ 
+ 	if (!hci_outgoing_auth_needed(hdev, conn)) {
+ 		conn->state = BT_CONNECTED;
+@@ -5206,7 +5206,7 @@ static void le_conn_complete_evt(struct hci_dev *hdev, u8 status,
+ 	}
+ 
+ 	if (!test_and_set_bit(HCI_CONN_MGMT_CONNECTED, &conn->flags))
+-		mgmt_device_connected(hdev, conn, 0, NULL, 0);
++		mgmt_device_connected(hdev, conn, NULL, 0);
+ 
+ 	conn->sec_level = BT_SECURITY_LOW;
+ 	conn->handle = handle;
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index 140669456b6f..821d46ba6e74 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -4237,7 +4237,7 @@ static int l2cap_connect_req(struct l2cap_conn *conn,
+ 	hci_dev_lock(hdev);
+ 	if (hci_dev_test_flag(hdev, HCI_MGMT) &&
+ 	    !test_and_set_bit(HCI_CONN_MGMT_CONNECTED, &hcon->flags))
+-		mgmt_device_connected(hdev, hcon, 0, NULL, 0);
++		mgmt_device_connected(hdev, hcon, NULL, 0);
+ 	hci_dev_unlock(hdev);
+ 
+ 	l2cap_connect(conn, cmd, data, L2CAP_CONN_RSP, 0);
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index 09e099c419f2..c594e0c2dd23 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -8765,15 +8765,19 @@ void mgmt_new_conn_param(struct hci_dev *hdev, bdaddr_t *bdaddr,
+ }
+ 
+ void mgmt_device_connected(struct hci_dev *hdev, struct hci_conn *conn,
+-			   u32 flags, u8 *name, u8 name_len)
++			   u8 *name, u8 name_len)
+ {
+ 	char buf[512];
+ 	struct mgmt_ev_device_connected *ev = (void *) buf;
+ 	u16 eir_len = 0;
++	u32 flags = 0;
+ 
+ 	bacpy(&ev->addr.bdaddr, &conn->dst);
+ 	ev->addr.type = link_to_bdaddr(conn->type, conn->dst_type);
+ 
++	if (conn->out)
++		flags |= MGMT_DEV_FOUND_INITIATED_CONN;
++
+ 	ev->flags = __cpu_to_le32(flags);
+ 
+ 	/* We must ensure that the EIR Data fields are ordered and
 -- 
-Federico Vaga
+2.31.1.295.g9ea45b61b8-goog
+
