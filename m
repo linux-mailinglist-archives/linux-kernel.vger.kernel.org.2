@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DE735A7E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D3A135A7E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234227AbhDIUfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
+        id S234292AbhDIUfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233916AbhDIUfA (ORCPT
+        with ESMTP id S234240AbhDIUfB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:35:00 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06DDAC061762;
-        Fri,  9 Apr 2021 13:34:47 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id b17so4784447pgh.7;
-        Fri, 09 Apr 2021 13:34:47 -0700 (PDT)
+        Fri, 9 Apr 2021 16:35:01 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3070EC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 13:34:48 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id e34so1588834wmp.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 13:34:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sPQDU1XhodcCWmDECE96WdXEWbGwhAYthVhlKL8+9GA=;
-        b=o0zmPiKb3N822+O/M0LV1ig5ViiXafrGGHazaFuQHJvYUsHOjpP92O1CzqQEspaC39
-         c/hJK3Q2LPn+flNLET7aD/LeJUbLjtor8wDnk7O7bJMVZcyukgC1BOFg5LTnZmObYnys
-         jZ/TtRyoF5Yz2UljfYw6o0/eF2aQHjAJfrLL4yCNVSxHZNrrPGB92xms4pMNMbULJGsR
-         sBfnPJrlakkXT1z4W4lBCgmrJh/PKwZY8dAqhlcie8LUnFqDmG0RsRKAGJs3LKCGfftg
-         /paLNW8X5Anhl3U74DHideLuTWja9x+ANzg2fcUcGJy+y/M94aFcrablS4Tn+uZDI0hW
-         hwPw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GK004sInYOHhof1JjWwDmtxkvocHoAqUdiyoZCy6woQ=;
+        b=DsaK/ksXSYFy5TQESsIcYaDH1xnAyDRN/6IFq4K7Kvi3MFz/FW25kQ+/etDudYyrFE
+         w7/L2zWEGy1A5rYfMcGqIejCbPI4WHyBECY0DENOu0U2n6pLcDBQBFgwm7TD7raehWlr
+         GOifn2zCe2+B41LrA13oG1d87i1a+twTsbtS5V/f5ymXQ7whX9H0NDJu67P91uoNPVt0
+         Gw/HNy9InG5lDJeIPXfvWPQ3oX15SrYG7uOAohIDc2mLVPhS8oOWUSpkKNrZcnIGvybJ
+         EtZLi7wKsnKsTiVR6GCgKaGTINGG9CluyuKPIL891QC+0WjFd5Fjuvg5oSGR7b97bYNV
+         9zGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sPQDU1XhodcCWmDECE96WdXEWbGwhAYthVhlKL8+9GA=;
-        b=L0NbTNJTuucwsOUw+q06QUE+FfLI1QeQzY+qouF7mAkbGyBaTuFbL0v+3K3ZEmqqFv
-         4zgnYuEOwuNWfLibxvDSWTtAvDL2z5ssK5AaxY8sxfGwnYPs14L8kKXzob70E+Tr8ofx
-         WPdFEMVdsvmP1rao+94IuIqSgg/Flzqs8IsMSJhiJkTN/5Fuy2Z/+eJnnptWix8RiSqJ
-         7IF4nKPn/ONXFve+LD7tHYrIcwQ8NHZG6EBBBn9DXtVI182KklGUxi8hKur3zrQ3tMVc
-         izc0aRbz66sbH4HwoD5LjUM5rxgcJcLyo2zEI2YGnz/OWE9n7Zom+n7dbSXBd930PAAG
-         tSoQ==
-X-Gm-Message-State: AOAM531oPwf9TYeZ0u3lKYwAXWhxBLgicTAOwYTQDdlfZN4go2LQeWaP
-        Bf9KgvM4+SPJdsIgQtU0HF42XMBrRgw=
-X-Google-Smtp-Source: ABdhPJzXVX/2kGlxTXOv+YFBm2M0n/3LVjbGI2lZV+eXe6737jYUTiVBBQ/SYLM8dlhLR+tVVLY1Mw==
-X-Received: by 2002:a63:4c4:: with SMTP id 187mr15106872pge.187.1618000486263;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GK004sInYOHhof1JjWwDmtxkvocHoAqUdiyoZCy6woQ=;
+        b=jFXCb+A4/02sIHkmVSJB2LF25WNreqmUZ5m08yeqgOoiU40KBOc1KnKVpHcTsccs7d
+         yCAAyVN6uzZF1cE3dwhNeEU81FPM+IusTLR5/etkb/f47/Dc7due0BEXsnQWX7L26YS3
+         IqflwItcuUB8lb7hGgCtwiRAZGcUgrXy3Mf7LkqnNZGUnfOxs0xpx6Dqzi5EMDQF8rEI
+         RM8QMcqFzeST/PrvogYGMWx7rVYLoZaNetJxf3a3pxSdWvE5JEsxHXko9eE9o/m5M6kf
+         Syfh5nt4yA3PF6Fg3XG8CPE4ljS814VEsK3qRq8r0nsXA271/xrdKLG9OQucuaxmczXE
+         g/Mw==
+X-Gm-Message-State: AOAM5335lZYZ+6JCNq5mtKLJWwb3L2hNxKfEGwVOmoKSvpK547e06qrc
+        rJqlk8IRO88ahbKog6wrrZfILw==
+X-Google-Smtp-Source: ABdhPJzhzAmdoRgX7Z9FeNTyzivW1OfJZckdBKDyuHCQX1MVDLuIUgMajLC1PgBgHtUAqtYz7bb0qQ==
+X-Received: by 2002:a7b:c5d8:: with SMTP id n24mr15275493wmk.52.1618000486973;
         Fri, 09 Apr 2021 13:34:46 -0700 (PDT)
-Received: from [10.230.2.159] ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id l18sm3015291pjq.33.2021.04.09.13.34.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Apr 2021 13:34:45 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/13] 4.9.266-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210409095259.624577828@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <ac2133de-f528-b59d-3d74-31b0996df402@gmail.com>
-Date:   Fri, 9 Apr 2021 13:34:35 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+Received: from apalos.home (ppp-94-65-225-75.home.otenet.gr. [94.65.225.75])
+        by smtp.gmail.com with ESMTPSA id l13sm5511003wmj.3.2021.04.09.13.34.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 13:34:46 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 23:34:43 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH net-next v2 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <YHC6Y0jSte0fWygK@apalos.home>
+References: <20210402181733.32250-1-mcroce@linux.microsoft.com>
+ <20210402181733.32250-4-mcroce@linux.microsoft.com>
+ <20210409115648.169523fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <YHCknwlzJHPFXm2j@apalos.home>
+ <20210409122929.5c2793df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210409095259.624577828@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409122929.5c2793df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/9/2021 2:53 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.266 release.
-> There are 13 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Apr 09, 2021 at 12:29:29PM -0700, Jakub Kicinski wrote:
+> On Fri, 9 Apr 2021 22:01:51 +0300 Ilias Apalodimas wrote:
+> > On Fri, Apr 09, 2021 at 11:56:48AM -0700, Jakub Kicinski wrote:
+> > > On Fri,  2 Apr 2021 20:17:31 +0200 Matteo Croce wrote:  
+> > > > Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > > > Co-developed-by: Matteo Croce <mcroce@microsoft.com>
+> > > > Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>  
+> > > 
+> > > Checkpatch says we need sign-offs from all authors.
+> > > Especially you since you're posting.  
+> > 
+> > Yes it does, we forgot that.  Let me take a chance on this one. 
+> > The patch is changing the default skb return path and while we've done enough
+> > testing, I would really prefer this going in on a future -rc1 (assuming we even
+> > consider merging it), allowing enough time to have wider tests.
 > 
-> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.266-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Up to you guys. FWIW if you decide to try for 5.13 the missing signoffs
+> can be posted in replies, no need to repost.
+Thanks! but...
+I think I prefer another repost, including mm-people on the list as well (and
+fixing SoB's).
+I just noticed noone is cc'ed and patch [2/5] adds a line in mm_types.h
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
-
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+/Ilias
