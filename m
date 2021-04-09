@@ -2,144 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084D5359823
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDDB0359826
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhDIImp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:42:45 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16113 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbhDIImo (ORCPT
+        id S232021AbhDIInP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:43:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229673AbhDIInO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:42:44 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGs5Y3kT1z19KrK;
-        Fri,  9 Apr 2021 16:40:17 +0800 (CST)
-Received: from [10.174.179.9] (10.174.179.9) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 16:42:25 +0800
-Subject: Re: [PATCH 2/5] swap: fix do_swap_page() race with swapoff
-To:     Tim Chen <tim.c.chen@linux.intel.com>, <akpm@linux-foundation.org>
-CC:     <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
-        <vbabka@suse.cz>, <alex.shi@linux.alibaba.com>,
-        <willy@infradead.org>, <minchan@kernel.org>,
-        <richard.weiyang@gmail.com>, <ying.huang@intel.com>,
-        <hughd@google.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
- <20210408130820.48233-3-linmiaohe@huawei.com>
- <7684b3de-2824-9b1f-f033-d4bc14f9e195@linux.intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <50d34b02-c155-bad7-da1f-03807ad31275@huawei.com>
-Date:   Fri, 9 Apr 2021 16:42:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 9 Apr 2021 04:43:14 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56D7C061760;
+        Fri,  9 Apr 2021 01:43:01 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id j18so8485442lfg.5;
+        Fri, 09 Apr 2021 01:43:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=tVbQiCGoAumFz/ANTAd5bAwq76g2DUa9AH09IK05F58=;
+        b=T4zdaQh0FbPDXScDng3a+4QGjODZsa8K8Oeq5eWZsQPLuQguEeR2GTmvw23SH9gDsr
+         B7E2oakGIpfIUNrxozsAfr8Ljprd70jPTufvlWN9xD94dY8InQTrQcynhtC39DI7PI8E
+         b1OgR/YUpeXASZ/EneDIs8JhWY1Z89vP0rGoNzuc9TLVSKxqD3e2Y6O1R85gkpxe42XR
+         wZfKKqApBmP3MdKQOPqyijcrgqjrY7kGVOmYX6WPbz3+1W6DCH05MtcBLTQ2MqAW4DHl
+         YYFM1odNZNeVIpSVgK98NKnHcWILKif7u4WWZz+emx5558hgDZesaV+ZllwajvKrljCW
+         yKSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=tVbQiCGoAumFz/ANTAd5bAwq76g2DUa9AH09IK05F58=;
+        b=AKDcM1jbJae/AIrYFlXapB12P+s8TRVLFAgkcaqDgwDzLuq3+/UTKxd822so29dQH/
+         ix8pQznBlMCL4g12oQRiCyHHkPcgG+7dmnoUQAXJbPZSUlsqGGhQDT3U6xuLELp348Ha
+         c/hGByPwrL6Pp3s0BRKujEDsiEHDwig6+HbaRfAdo6bNsvlnJ844h/bso6AEYNWRizQ+
+         xO/Hmzs7rQuqdvbtnNec/TFOVs8DReSIViyGi6+QwV8GKaMibrqJjUQ5xk+aFYq6m2X8
+         OQJZMi13KJaXDTf+2c+yl6LzIpgSl1OaLcIG32XsjpfwiDTFgoQU0niRepE2/ZV1dG27
+         SLaA==
+X-Gm-Message-State: AOAM530kwho70l5JLwJfrv1bbjNlqDUhPEppeA81l4LdfE4mkEydDsT9
+        gDu4bgMsfeYHjpxHHMPP+Llr7LHASa4=
+X-Google-Smtp-Source: ABdhPJzpvR4y6canpCpm2ge2noKNVujShfe2KX5MgIvfxL7unuvX24jqm/EnaGR1KtEGFSqzJfkDDg==
+X-Received: by 2002:ac2:5de4:: with SMTP id z4mr9873109lfq.65.1617957780234;
+        Fri, 09 Apr 2021 01:43:00 -0700 (PDT)
+Received: from [192.168.1.100] ([178.176.79.13])
+        by smtp.gmail.com with ESMTPSA id c5sm200792lfk.141.2021.04.09.01.42.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 01:42:59 -0700 (PDT)
+Subject: Re: [PATCH] MIPS: octeon: Add __raw_copy_[from|to|in]_user symbols
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>
+References: <20210408214846.50758-1-tsbogend@alpha.franken.de>
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Organization: Brain-dead Software
+Message-ID: <1fa6ff61-25af-7d24-2d03-de03ec73e8f6@gmail.com>
+Date:   Fri, 9 Apr 2021 11:42:46 +0300
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <7684b3de-2824-9b1f-f033-d4bc14f9e195@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210408214846.50758-1-tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.9]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/9 5:34, Tim Chen wrote:
+Hello!
+
+On 09.04.2021 0:48, Thomas Bogendoerfer wrote:
+
+> Cavium Octeon has it's own memcpy implementation and also need the change
+
+    Its. :-)
+
+> done in commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs").
 > 
-> 
-> On 4/8/21 6:08 AM, Miaohe Lin wrote:
->> When I was investigating the swap code, I found the below possible race
->> window:
->>
->> CPU 1					CPU 2
->> -----					-----
->> do_swap_page
->>   synchronous swap_readpage
->>     alloc_page_vma
->> 					swapoff
->> 					  release swap_file, bdev, or ...
-> 
+> Fixes: 04324f44cb69 ("MIPS: Remove get_fs/set_fs")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+[...]
 
-Many thanks for quick review and reply!
-
-> Perhaps I'm missing something.  The release of swap_file, bdev etc
-> happens after we have cleared the SWP_VALID bit in si->flags in destroy_swap_extents
-> if I read the swapoff code correctly.
-Agree. Let's look this more close:
-CPU1								CPU2
------								-----
-swap_readpage
-  if (data_race(sis->flags & SWP_FS_OPS)) {
-								swapoff
-								  p->swap_file = NULL;
-    struct file *swap_file = sis->swap_file;
-    struct address_space *mapping = swap_file->f_mapping;[oops!]
-								  ...
-								  p->flags = 0;
-    ...
-
-Does this make sense for you?
-
-> >
->>       swap_readpage
->> 	check sis->flags is ok
->> 	  access swap_file, bdev...[oops!]
->> 					    si->flags = 0
-> 
-> This happens after we clear the si->flags
-> 					synchronize_rcu()
-> 					release swap_file, bdev, in destroy_swap_extents()
-> 
-> So I think if we have get_swap_device/put_swap_device in do_swap_page,
-> it should fix the race you've pointed out here.  
-> Then synchronize_rcu() will wait till we have completed do_swap_page and
-> call put_swap_device.
-
-Right, get_swap_device/put_swap_device could fix this race. __But__ rcu_read_lock()
-in get_swap_device() could disable preempt and do_swap_page() may take a really long
-time because it involves I/O. It may not be acceptable to disable preempt for such a
-long time. :(
-
-> 					
->>
->> Using current get/put_swap_device() to guard against concurrent swapoff for
->> swap_readpage() looks terrible because swap_readpage() may take really long
->> time. And this race may not be really pernicious because swapoff is usually
->> done when system shutdown only. To reduce the performance overhead on the
->> hot-path as much as possible, it appears we can use the percpu_ref to close
->> this race window(as suggested by Huang, Ying).
-> 
-> I think it is better to break this patch into two.
-> > One patch is to fix the race in do_swap_page and swapoff
-> by adding get_swap_device/put_swap_device in do_swap_page.
-> 
-> The second patch is to modify get_swap_device and put_swap_device
-> with percpu_ref. But swapoff is a relatively rare events.  
-
-Sounds reasonable. Will do it.
-
-> 
-> I am not sure making percpu_ref change for performance is really beneficial.
-> Did you encounter a real use case where you see a problem with swapoff?
-> The delay in swapoff is primarily in try_to_unuse to bring all
-> the swapped off pages back into memory.  Synchronizing with other
-> CPU for paging in probably is a small component in overall scheme
-> of things.
-> 
-
-I can't find a more simple and stable way to fix this potential and *theoretical* issue.
-This could happen in real word but the race window should be very small. While swapoff
-is usually done when system shutdown only, I'am not really sure if this effort is worth.
-
-But IMO, we should eliminate any potential trouble. :)
-
-> Thanks.
-> 
-
-Thanks again.
-
-> Tim
-> 
-> .
-> 
+MBR, Sergei
