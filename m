@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66510359B5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:10:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E31D359BB7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234116AbhDIKJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:09:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50814 "EHLO mail.kernel.org"
+        id S234144AbhDIKPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:15:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233426AbhDIKCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:02:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8622D6103E;
-        Fri,  9 Apr 2021 10:00:04 +0000 (UTC)
+        id S234362AbhDIKGF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:06:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AADC061369;
+        Fri,  9 Apr 2021 10:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962405;
-        bh=hmIcV6g2nTUsEzZimcA6GiCe/NcKeNtvL1AKwwHtmtQ=;
+        s=korg; t=1617962535;
+        bh=n/D+uSPOtVuPFDfGueMfpmRRlgfhZ9Gkc/IibuadkkY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=srIs3/jRd+AuSxZwCB58zqll7qTbqhYGTyGU10sRbO4rOPmJISUN4bsU89huJ71/7
-         Vuc0O79cAtzDjVXT8sLD8oSXSy0Z/pFpicbMGoPyk6fFkAXstLBa8FQpNAEtw6Z/j1
-         exaUbhZXobc0Vl0a+4nvvGnZuc1la3lSJqr3dKhQ=
+        b=edqSakcklOj5j1uJE1GJWOsa5AxMICFq+0S8W8/k91s3RfcQmxC2GDXn4FnpFe8au
+         GVyYaAYmwVo816sPYuAgLAvRQvGWWJfVhCuoo2uv/+s5dWGpJVlmefkjyee1MUWqSd
+         fETO5WbKQhs+m0lLI2SvhvyniNZVPJZ7kVZ/PQ5U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
+        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 37/41] tools/resolve_btfids: Add /libbpf to .gitignore
+Subject: [PATCH 5.11 33/45] cifs: revalidate mapping when we open files for SMB1 POSIX
 Date:   Fri,  9 Apr 2021 11:53:59 +0200
-Message-Id: <20210409095306.011497745@linuxfoundation.org>
+Message-Id: <20210409095306.487968096@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
-References: <20210409095304.818847860@linuxfoundation.org>
+In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
+References: <20210409095305.397149021@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,32 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stanislav Fomichev <sdf@google.com>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit 90a82b1fa40d0cee33d1c9306dc54412442d1e57 ]
+[ Upstream commit cee8f4f6fcabfdf229542926128e9874d19016d5 ]
 
-This is what I see after compiling the kernel:
+RHBZ: 1933527
 
- # bpf-next...bpf-next/master
- ?? tools/bpf/resolve_btfids/libbpf/
+Under SMB1 + POSIX, if an inode is reused on a server after we have read and
+cached a part of a file, when we then open the new file with the
+re-cycled inode there is a chance that we may serve the old data out of cache
+to the application.
+This only happens for SMB1 (deprecated) and when posix are used.
+The simplest solution to avoid this race is to force a revalidate
+on smb1-posix open.
 
-Fixes: fc6b48f692f8 ("tools/resolve_btfids: Build libbpf and libsubcmd in separate directories")
-Signed-off-by: Stanislav Fomichev <sdf@google.com>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/bpf/20210212010053.668700-1-sdf@google.com
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/bpf/resolve_btfids/.gitignore | 1 +
+ fs/cifs/file.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/tools/bpf/resolve_btfids/.gitignore b/tools/bpf/resolve_btfids/.gitignore
-index 25f308c933cc..16913fffc985 100644
---- a/tools/bpf/resolve_btfids/.gitignore
-+++ b/tools/bpf/resolve_btfids/.gitignore
-@@ -1,2 +1,3 @@
- /fixdep
- /resolve_btfids
-+/libbpf/
+diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+index 6d001905c8e5..eef4f22b5e78 100644
+--- a/fs/cifs/file.c
++++ b/fs/cifs/file.c
+@@ -165,6 +165,7 @@ int cifs_posix_open(char *full_path, struct inode **pinode,
+ 			goto posix_open_ret;
+ 		}
+ 	} else {
++		cifs_revalidate_mapping(*pinode);
+ 		cifs_fattr_to_inode(*pinode, &fattr);
+ 	}
+ 
 -- 
 2.30.2
 
