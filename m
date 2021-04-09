@@ -2,145 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8403C35973A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A692F35973C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232493AbhDIIKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:10:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
+        id S232400AbhDIILC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:11:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232452AbhDIIKR (ORCPT
+        with ESMTP id S229621AbhDIIKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:10:17 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D536C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:10:03 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id q26so4688781wrz.9
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:10:02 -0700 (PDT)
+        Fri, 9 Apr 2021 04:10:55 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B16AC061761
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:10:41 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id mh7so7227294ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KwLBWMBZRdz46SUCvmDH9Z5zZXCHk+G/HINFfQ17P4M=;
-        b=hNhtj/aNpiqdIzZxP30CSRrlHSEJ+O8XRNC6jWPo79WZV4eucvGfZoZkKIdlEF6Khu
-         N+SQeipigjG2DjlfUvoxpdaaHARK2jibT3Ojl+9fBLq90YpUiKiJZAFS1RkH4ZC07h/u
-         p+WxjHZXM1FPv+9AWnAjECvuHh4dW66akPp3V7i2jJAzYNGjBOq8m91JKig8nHsDClHA
-         wDszXITwkUa3he/ggRpNIGHI0P/qgrs0BYF4MpTe3Zf3zHBbK0XaSzRZw0rM1XdDtJmW
-         MPsTCb833ukTW1aPV15PJuTaQOEw00OlZeSqY3JBQ3ltR1bsHn5hpL+mZzdfzF3fyw65
-         Ebfg==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2YVthnjEf/a8GPOi8SrqVUE1vyVxElaU23WIQYqb2HU=;
+        b=x/0c8Ccil2LJsxXwwB+e/85lG9nnTuQYOdZBaDebs2t+KZEvYo3zVbxW0Za5jhnKVz
+         V/2deepKoQmyCQagA0AJK10gwd1SKf6D4A6wbwgpI+JX79sTWwUUwrqv6kI0hmDJnKHp
+         QEHB5r2Hdgb38sFvdFqEN5e8Bt3fHjdHCvA1IzLsuGt9VAJt86DVirgVrnoiOFVcvr8n
+         kn27zqdEU6T1DKivsyTDe8++WRNQiSLSBTvaWDAcS5fEY9pSCDwk/5IlM1PgFuYRX/SU
+         gqTQIVUzfdjSllccfCrAB+JeM0HefnzM0x1JbtV3CF0EHUVXUK9Nvm/ONXStmpOMgCbN
+         3NDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KwLBWMBZRdz46SUCvmDH9Z5zZXCHk+G/HINFfQ17P4M=;
-        b=APklUuCvpR5ak28KO9SUvljH7I89OQ0wE/1H6i58PjV4Zbv6TdOrMNZxOV3nFfyc1h
-         xMMrMkO2S/5snAN5lDn2R2+i1vZDglSV5Mcf2x16LxqtdadiweiDjx3TyOD67Gy4sC7n
-         cu63GoZKJhkxFdJmiH/JbfBsv4YFcwdLv/iIYLzWZ9m/y/uz64KvHmcGjU3cT4GdJ0fp
-         ZT4BLNo5FD/vm+kSEWUjWUneccRUfJzAa5Nl2Q/YmFTq/4+pea5I57QATodMCZTtrWCY
-         +tuRfsQXEZqARxGbxN7tgmRlQAZoCFWPaknweQC08jMBTdbGPDAwmBF0rQlPr85XLozg
-         CF2w==
-X-Gm-Message-State: AOAM531fo4FtgbL9Z9nL88LI4muFgI4r2pH2RDbU2+UJkGGdY/hIDm5D
-        cst7vp35tfOWo4PZbiJP2hYsDw==
-X-Google-Smtp-Source: ABdhPJy4XQCBVWHdPm5wWRMqkGkFiEZh0CiXWdXcPLlAZvt02L7wI+v/m2X3FQwQNaQuzsiZpcriMA==
-X-Received: by 2002:adf:dc4f:: with SMTP id m15mr16484222wrj.420.1617955801641;
-        Fri, 09 Apr 2021 01:10:01 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5d29:55c:ba8e:9bff? ([2a01:e34:ed2f:f020:5d29:55c:ba8e:9bff])
-        by smtp.googlemail.com with ESMTPSA id u9sm2677419wmc.38.2021.04.09.01.09.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Apr 2021 01:10:00 -0700 (PDT)
-Subject: Re: [v7,1/3] arm64: dts: mt8183: add thermal zone node
-To:     Michael Kao <michael.kao@mediatek.com>, fan.chen@mediatek.com,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        srv_heupstream@mediatek.com
-Cc:     Eduardo Valentin <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20210316070144.28440-1-michael.kao@mediatek.com>
- <20210316070144.28440-2-michael.kao@mediatek.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <f7003979-0210-882e-bb28-f24047e18061@linaro.org>
-Date:   Fri, 9 Apr 2021 10:09:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2YVthnjEf/a8GPOi8SrqVUE1vyVxElaU23WIQYqb2HU=;
+        b=EAwLxb719L0bJfLhjWOu0z2fMqtYm8Aph4GhE0HQOhdxGcfiS/sJDJAMzTtpt3MU44
+         ie/85wXjpY6VTQNrbeWvhC3TN4IjAoCQ9p+1pROZCXIpvBGajRfYNQdaeMH8WcRkrVi2
+         TMTtIACIOmiJQOSlVOtKAamiZm6fYPwhARNAEQZvGKwH+0HfwgrmzUpjasQxo5x+bNPn
+         nKoLTHczxrf6J9H39ZkJDK/eu0MnSxGF5B9D6NbwOnv7Lj2tharIZtyn9awwM0EwUKAw
+         i89pqKoWLKXkJnQsvh+6mBbxtzNIISbxkyM9I0ThTiH4b9Oh4Ez7AKwCXNvq/CHyphJ3
+         fIoQ==
+X-Gm-Message-State: AOAM533HIlgnqHLYsU32CFr0lE2FBbMV5s9FjOW/tjusYjsldv4FNfZ5
+        YHfg8wnI9Vn/A+N4Rlmu1KnRXfg2ANdRvWWtMSviXA==
+X-Google-Smtp-Source: ABdhPJysFMEKbL+MDsFNOhdnzV0UPwuitsyOKi5Mukeueoq/WaW9+ctP8vakiL7x3WUfqFtXHGc4rgybxJ1EMfkdkhc=
+X-Received: by 2002:a17:906:b20f:: with SMTP id p15mr11727815ejz.64.1617955840044;
+ Fri, 09 Apr 2021 01:10:40 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210316070144.28440-2-michael.kao@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210408155506.12636-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210408155506.12636-1-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 9 Apr 2021 10:10:29 +0200
+Message-ID: <CAMRc=MdPYxvwUtG2LhOkqGMj1fttnJ8jv+15GeoSqqkLKdmM8Q@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] gpio: sim: Initialize attribute allocated on the heap
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/03/2021 08:01, Michael Kao wrote:
-> From: "michael.kao" <michael.kao@mediatek.com>
-> 
-> Add thermal zone node to Mediatek MT8183 dts file.
-> 
-> Evaluate the thermal zone every 500ms while not cooling
-> and every 100ms when passive cooling is performed.
-> 
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+On Thu, Apr 8, 2021 at 6:24 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> The attributes on the heap must be initialized before use.
+> Neglecting that will produce an Oops in some configurations:
+>
+>   BUG: key ffff000800eba398 has not been registered!
+>
+> Initialize attribute allocated on the heap.
+>
+> Fixes: 3f0279eb9e37 ("gpio: sim: new testing module")
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 85 ++++++++++++++++++++++++
->  1 file changed, 85 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index 5b782a4769e7..d3550af06408 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -657,6 +657,87 @@
->  			status = "disabled";
->  		};
->  
-> +		thermal: thermal@1100b000 {
-> +			#thermal-sensor-cells = <1>;
-> +			compatible = "mediatek,mt8183-thermal";
-> +			reg = <0 0x1100b000 0 0x1000>;
-> +			clocks = <&infracfg CLK_INFRA_THERM>,
-> +				 <&infracfg CLK_INFRA_AUXADC>;
-> +			clock-names = "therm", "auxadc";
-> +			resets = <&infracfg  MT8183_INFRACFG_AO_THERM_SW_RST>;
-> +			interrupts = <0 76 IRQ_TYPE_LEVEL_LOW>;
-> +			mediatek,auxadc = <&auxadc>;
-> +			mediatek,apmixedsys = <&apmixedsys>;
-> +			nvmem-cells = <&thermal_calibration>;
-> +			nvmem-cell-names = "calibration-data";
-> +		};
-> +
-> +		thermal-zones {
-> +			cpu_thermal: cpu_thermal {
-> +				polling-delay-passive = <100>;
-> +				polling-delay = <500>;
-> +				thermal-sensors = <&thermal 0>;
-> +				sustainable-power = <5000>;
-> +			};
-> +
-> +			/* The tzts1 ~ tzts6 don't need to polling */
-> +			/* The tzts1 ~ tzts6 don't need to thermal throttle */
-> +
-> +			tzts1: tzts1 {
-> +				polling-delay-passive = <0>;
-> +				polling-delay = <0>;
-> +				thermal-sensors = <&thermal 1>;
-> +				sustainable-power = <5000>;
-> +				trips {};
-> +				cooling-maps {};
-> +			};
+>  drivers/gpio/gpio-sim.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
+> index ea17289a869c..92493b98c51b 100644
+> --- a/drivers/gpio/gpio-sim.c
+> +++ b/drivers/gpio/gpio-sim.c
+> @@ -284,6 +284,7 @@ static int gpio_sim_setup_sysfs(struct gpio_sim_chip *chip)
+>                 line_attr->offset = i;
+>
+>                 dev_attr = &line_attr->dev_attr;
+> +               sysfs_attr_init(&dev_attr->attr);
+>
+>                 dev_attr->attr.name = devm_kasprintf(dev, GFP_KERNEL,
+>                                                      "gpio%u", i);
+> --
+> 2.30.2
+>
 
-What is the point of defining the sustainable power with no cooling
-device associated ?
+So writing tests really serves a purpose, heh? :)
 
+Thanks for the patch and QA Andy and Naresh, patch applied.
 
-
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+Bartosz
