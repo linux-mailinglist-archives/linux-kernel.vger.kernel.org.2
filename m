@@ -2,113 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEEB43595EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E54343595F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhDIG7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
+        id S233498AbhDIG7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhDIG7D (ORCPT
+        with ESMTP id S233475AbhDIG7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:59:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C6AC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 23:58:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ob2ufrv9W9kaz7mrVWRRvsjATK5g5L7t7+n/YniHhkI=; b=M9SjYHx64+cTEDLVBs5X5mfnMw
-        tIK3La3wwbVC5Ug3Hd2H4qecpGSwCuxpcHFDDaeLpk2V3yTDZByZNPvt0zh+ivEMhflmIIHx8py9d
-        h4nfzrXSbBnOa5pAYeCyDhjgiPZahJdJutfMWblJo5CSqVv1iUYX1N+7td2m6aJ97w8ntP0S/Bn7G
-        Z9n6i/v/hTQtiy6d7OkMbY+D1HJhetLKt4y5Vqs0k3XDH7F6q8kGuC0ReSPRx1gGuAgso7TpxJwzU
-        4tryrY5wbr2CP82/hehiofazoFyPxnocMaCTx4s5B8WPZm5uGKssKLUi9XMZuiULbJTmH9yobjju3
-        Gj0/pGmg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUl5r-00HXSK-Fz; Fri, 09 Apr 2021 06:58:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 757AC30001B;
-        Fri,  9 Apr 2021 08:58:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 574B92040C569; Fri,  9 Apr 2021 08:58:14 +0200 (CEST)
-Date:   Fri, 9 Apr 2021 08:58:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-        ricardo.neri-calderon@linux.intel.com
-Subject: Re: [PATCH V5 16/25] perf/x86: Register hybrid PMUs
-Message-ID: <YG/7BgFaRC/Eos76@hirez.programming.kicks-ass.net>
-References: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
- <1617635467-181510-17-git-send-email-kan.liang@linux.intel.com>
+        Fri, 9 Apr 2021 02:59:52 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA1DC061761;
+        Thu,  8 Apr 2021 23:59:39 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id 7so4892544qka.7;
+        Thu, 08 Apr 2021 23:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C/tejr2/uh+1Wal7zJlIcpvUZ6IPZqdEqxDQqb4GHzw=;
+        b=jXmLVhTRBrg62WD2F55bliSUil4x0gPuiPNtILwoHQ6vYAEbN9tSmM23dhPceENmvI
+         BjLVbpES734MDk9s1iCOXZtbw61PTd6f9vMqgR//zgSxNhgL7bjKodpo6KoKyWnGv4XD
+         vkmd9rxBeDh9Xwd9ckvBBF+PrLc8vN4NzOAAU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C/tejr2/uh+1Wal7zJlIcpvUZ6IPZqdEqxDQqb4GHzw=;
+        b=oj6GZTEt0pQqbZ8I1a3YATEsX2FIsCDZjnVd+YcXKH8uj+hojm1GYfU926f6zKSGAP
+         6me4IXDm9KtS8MyZUz/IFoM4nnbbR3PivCz8jjDXC1Ura6zGdU8IWQxo8nbV12aoFaSX
+         IyvbRZuKTtSFJQSOkJdWYrZ9PeHWIMa+1GS7cjL6m6tLIT4uACmDviUegp8+0shFNF9z
+         bW8bDfeg9NYKqAJv0uIlKSgIpKaS5ERjVxrj7ztHoFRJt5eklpIGQgBrW4a30uL5Do78
+         r46xYbhvDTD9W0hfsiZ53fGUCuHxaAmudvw0iWxHcXrj9Ipv/8dh9stehVIzfrZ2cDTu
+         OxRA==
+X-Gm-Message-State: AOAM531BkdHWcBLdAXjxbDrS+uJZmnr0JkKjkYFsHwW+nbkVB/m8XXIY
+        Bqc+soWAdd+o95qZU7kkHEIrAWMRvyLJFPLiJIWQJ7/uWcA=
+X-Google-Smtp-Source: ABdhPJyKcADophW6MaZY/tX7xb0gci6Gx5eaJSC83xHh2wYAcw5xJt46Q2kU7TLL6HRIolVQhJheknr0u0VEqQTfO7s=
+X-Received: by 2002:a37:d202:: with SMTP id f2mr12568606qkj.273.1617951578539;
+ Thu, 08 Apr 2021 23:59:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617635467-181510-17-git-send-email-kan.liang@linux.intel.com>
+References: <20210407095527.2771582-1-wak@google.com>
+In-Reply-To: <20210407095527.2771582-1-wak@google.com>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 9 Apr 2021 06:59:26 +0000
+Message-ID: <CACPK8Xd8e3xmx=itKm8bg3oQsfWh0VhMpgyMbnOdB_4u0Z65aQ@mail.gmail.com>
+Subject: Re: [PATCH] spi: Fix use-after-free with devm_spi_alloc_*
+To:     "William A. Kennington III" <wak@google.com>
+Cc:     Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 08:10:58AM -0700, kan.liang@linux.intel.com wrote:
-> @@ -2089,9 +2119,46 @@ static int __init init_hw_perf_events(void)
->  	if (err)
->  		goto out1;
->  
-> -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
-> -	if (err)
-> -		goto out2;
-> +	if (!is_hybrid()) {
-> +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
-> +		if (err)
-> +			goto out2;
-> +	} else {
-> +		u8 cpu_type = get_this_hybrid_cpu_type();
-> +		struct x86_hybrid_pmu *hybrid_pmu;
-> +		bool registered = false;
-> +		int i;
-> +
-> +		if (!cpu_type && x86_pmu.get_hybrid_cpu_type)
-> +			cpu_type = x86_pmu.get_hybrid_cpu_type();
-> +
-> +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
-> +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
-> +
-> +			hybrid_pmu->pmu = pmu;
-> +			hybrid_pmu->pmu.type = -1;
-> +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
-> +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
-> +
-> +			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
-> +						(hybrid_pmu->cpu_type == hybrid_big) ? PERF_TYPE_RAW : -1);
-> +			if (err)
-> +				continue;
-> +
-> +			if (cpu_type == hybrid_pmu->cpu_type)
-> +				x86_pmu_update_cpu_context(&hybrid_pmu->pmu, raw_smp_processor_id());
-> +
-> +			registered = true;
-> +		}
-> +
-> +		if (!registered) {
-> +			pr_warn("Failed to register hybrid PMUs\n");
-> +			kfree(x86_pmu.hybrid_pmu);
-> +			x86_pmu.hybrid_pmu = NULL;
-> +			x86_pmu.num_hybrid_pmus = 0;
-> +			goto out2;
-> +		}
+On Wed, 7 Apr 2021 at 09:55, William A. Kennington III <wak@google.com> wrote:
+>
+> We can't rely on the contents of the devres list during
+> spi_unregister_controller(), as the list is already torn down at the
+> time we perform devres_find() for devm_spi_release_controller. This
+> causes devices registered with devm_spi_alloc_{master,slave}() to be
+> mistakenly identified as legacy, non-devm managed devices and have their
+> reference counters decremented below 0.
 
-I don't think this is quite right. registered will be true even if one
-fails, while I think you meant to only have it true when all (both)
-types registered correctly.
+Thanks for spending the time to track down the bug and sending a fix
+for it. I appreciate it!
 
-> +	}
->  
->  	return 0;
->  
+Reviewed-by: Joel Stnaley <joel@jms.id.au>
+
+Cheers,
+
+Joel
+
+>
+> ------------[ cut here ]------------
+> WARNING: CPU: 1 PID: 660 at lib/refcount.c:28 refcount_warn_saturate+0x108/0x174
+> [<b0396f04>] (refcount_warn_saturate) from [<b03c56a4>] (kobject_put+0x90/0x98)
+> [<b03c5614>] (kobject_put) from [<b0447b4c>] (put_device+0x20/0x24)
+>  r4:b6700140
+> [<b0447b2c>] (put_device) from [<b07515e8>] (devm_spi_release_controller+0x3c/0x40)
+> [<b07515ac>] (devm_spi_release_controller) from [<b045343c>] (release_nodes+0x84/0xc4)
+>  r5:b6700180 r4:b6700100
+> [<b04533b8>] (release_nodes) from [<b0454160>] (devres_release_all+0x5c/0x60)
+>  r8:b1638c54 r7:b117ad94 r6:b1638c10 r5:b117ad94 r4:b163dc10
+> [<b0454104>] (devres_release_all) from [<b044e41c>] (__device_release_driver+0x144/0x1ec)
+>  r5:b117ad94 r4:b163dc10
+> [<b044e2d8>] (__device_release_driver) from [<b044f70c>] (device_driver_detach+0x84/0xa0)
+>  r9:00000000 r8:00000000 r7:b117ad94 r6:b163dc54 r5:b1638c10 r4:b163dc10
+> [<b044f688>] (device_driver_detach) from [<b044d274>] (unbind_store+0xe4/0xf8)
+>
+> Instead, determine the devm allocation state as a flag on the
+> controller which is guaranteed to be stable during cleanup.
+>
+> Fixes: 5e844cc37a5c ("spi: Introduce device-managed SPI controller allocation")
+> Signed-off-by: William A. Kennington III <wak@google.com>
+> ---
+>  drivers/spi/spi.c       | 9 ++-------
+>  include/linux/spi/spi.h | 3 +++
+>  2 files changed, 5 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+> index b08efe88ccd6..904a353798b6 100644
+> --- a/drivers/spi/spi.c
+> +++ b/drivers/spi/spi.c
+> @@ -2496,6 +2496,7 @@ struct spi_controller *__devm_spi_alloc_controller(struct device *dev,
+>
+>         ctlr = __spi_alloc_controller(dev, size, slave);
+>         if (ctlr) {
+> +               ctlr->devm_allocated = true;
+>                 *ptr = ctlr;
+>                 devres_add(dev, ptr);
+>         } else {
+> @@ -2842,11 +2843,6 @@ int devm_spi_register_controller(struct device *dev,
+>  }
+>  EXPORT_SYMBOL_GPL(devm_spi_register_controller);
+>
+> -static int devm_spi_match_controller(struct device *dev, void *res, void *ctlr)
+> -{
+> -       return *(struct spi_controller **)res == ctlr;
+> -}
+> -
+>  static int __unregister(struct device *dev, void *null)
+>  {
+>         spi_unregister_device(to_spi_device(dev));
+> @@ -2893,8 +2889,7 @@ void spi_unregister_controller(struct spi_controller *ctlr)
+>         /* Release the last reference on the controller if its driver
+>          * has not yet been converted to devm_spi_alloc_master/slave().
+>          */
+> -       if (!devres_find(ctlr->dev.parent, devm_spi_release_controller,
+> -                        devm_spi_match_controller, ctlr))
+> +       if (!ctlr->devm_allocated)
+>                 put_device(&ctlr->dev);
+>
+>         /* free bus id */
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index 592897fa4f03..643139b1eafe 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -510,6 +510,9 @@ struct spi_controller {
+>
+>  #define SPI_MASTER_GPIO_SS             BIT(5)  /* GPIO CS must select slave */
+>
+> +       /* flag indicating this is a non-devres managed controller */
+> +       bool                    devm_allocated;
+> +
+>         /* flag indicating this is an SPI slave controller */
+>         bool                    slave;
+>
+> --
+> 2.31.0.208.g409f899ff0-goog
+>
