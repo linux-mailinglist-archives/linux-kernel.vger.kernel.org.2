@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CEE5359AE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CF65359AC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234155AbhDIKFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:05:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45450 "EHLO mail.kernel.org"
+        id S233644AbhDIKCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:02:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233887AbhDIJ7D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:59:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89BA46120A;
-        Fri,  9 Apr 2021 09:58:31 +0000 (UTC)
+        id S232990AbhDIJ61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:58:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00158611BF;
+        Fri,  9 Apr 2021 09:58:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962312;
-        bh=v4HVMH8P0XU+UNZSlncd7TW3fcqSlA++Hzi42gsu7PI=;
+        s=korg; t=1617962288;
+        bh=h7zk+jQc323KneHrpBxAOOGs0ESphvR3hizQ5+p77qQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2hp26nUQODsBqGJy/Me6zj/OnVw3Fc6OUff2P28oCkS0BsmZOZXkSq4bU1v+EOqwn
-         fSulZ4F98WZ/jXduVFJa6e51IbqUzaSBGI+R4TCHoNJYrvONFdn0MabmdGAHflFulG
-         Ppzi/GUtqLQoIztEE/Rx3/qwnE8WIjbrW6ca2kFU=
+        b=ZvDgQPVATo4awKWWL6CIEGYzpwbs1kMHz9bzGU7Fc7A8NsTdKhw2SW+974+7RtN8i
+         DJcPn0raLwDmaV4o8seuriaXLq0rsran5IRyV7tjFU89nvhNKYJJTt1+qeG80tKzsB
+         Pe0/IFIgXK98Jp24cPgmmK45rj2lemfnCAftPhOY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Yonghong Song <yhs@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 11/41] drm/msm/dsi_pll_7nm: Fix variable usage for pll_lockdet_rate
-Date:   Fri,  9 Apr 2021 11:53:33 +0200
-Message-Id: <20210409095305.190066803@linuxfoundation.org>
+Subject: [PATCH 5.4 04/23] bpf, x86: Use kvmalloc_array instead kmalloc_array in bpf_jit_comp
+Date:   Fri,  9 Apr 2021 11:53:34 +0200
+Message-Id: <20210409095303.036637946@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
-References: <20210409095304.818847860@linuxfoundation.org>
+In-Reply-To: <20210409095302.894568462@linuxfoundation.org>
+References: <20210409095302.894568462@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +41,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit 9daaf31307856defb1070685418ce5a484ecda3a ]
+[ Upstream commit de920fc64cbaa031f947e9be964bda05fd090380 ]
 
-The PLL_LOCKDET_RATE_1 was being programmed with a hardcoded value
-directly, but the same value was also being specified in the
-dsi_pll_regs struct pll_lockdet_rate variable: let's use it!
+x86 bpf_jit_comp.c used kmalloc_array to store jited addresses
+for each bpf insn. With a large bpf program, we have see the
+following allocation failures in our production server:
 
-Based on 362cadf34b9f ("drm/msm/dsi_pll_10nm: Fix variable usage for
-pll_lockdet_rate")
+    page allocation failure: order:5, mode:0x40cc0(GFP_KERNEL|__GFP_COMP),
+                             nodemask=(null),cpuset=/,mems_allowed=0"
+    Call Trace:
+    dump_stack+0x50/0x70
+    warn_alloc.cold.120+0x72/0xd2
+    ? __alloc_pages_direct_compact+0x157/0x160
+    __alloc_pages_slowpath+0xcdb/0xd00
+    ? get_page_from_freelist+0xe44/0x1600
+    ? vunmap_page_range+0x1ba/0x340
+    __alloc_pages_nodemask+0x2c9/0x320
+    kmalloc_order+0x18/0x80
+    kmalloc_order_trace+0x1d/0xa0
+    bpf_int_jit_compile+0x1e2/0x484
+    ? kmalloc_order_trace+0x1d/0xa0
+    bpf_prog_select_runtime+0xc3/0x150
+    bpf_prog_load+0x480/0x720
+    ? __mod_memcg_lruvec_state+0x21/0x100
+    __do_sys_bpf+0xc31/0x2040
+    ? close_pdeo+0x86/0xe0
+    do_syscall_64+0x42/0x110
+    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+    RIP: 0033:0x7f2f300f7fa9
+    Code: Bad RIP value.
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Dumped assembly:
+
+    ffffffff810b6d70 <bpf_int_jit_compile>:
+    ; {
+    ffffffff810b6d70: e8 eb a5 b4 00        callq   0xffffffff81c01360 <__fentry__>
+    ffffffff810b6d75: 41 57                 pushq   %r15
+    ...
+    ffffffff810b6f39: e9 72 fe ff ff        jmp     0xffffffff810b6db0 <bpf_int_jit_compile+0x40>
+    ;       addrs = kmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KERNEL);
+    ffffffff810b6f3e: 8b 45 0c              movl    12(%rbp), %eax
+    ;       return __kmalloc(bytes, flags);
+    ffffffff810b6f41: be c0 0c 00 00        movl    $3264, %esi
+    ;       addrs = kmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KERNEL);
+    ffffffff810b6f46: 8d 78 01              leal    1(%rax), %edi
+    ;       if (unlikely(check_mul_overflow(n, size, &bytes)))
+    ffffffff810b6f49: 48 c1 e7 02           shlq    $2, %rdi
+    ;       return __kmalloc(bytes, flags);
+    ffffffff810b6f4d: e8 8e 0c 1d 00        callq   0xffffffff81287be0 <__kmalloc>
+    ;       if (!addrs) {
+    ffffffff810b6f52: 48 85 c0              testq   %rax, %rax
+
+Change kmalloc_array() to kvmalloc_array() to avoid potential
+allocation error for big bpf programs.
+
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/20210309015647.3657852-1-yhs@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/net/bpf_jit_comp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-index c1f6708367ae..c1c41846b6b2 100644
---- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-+++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_7nm.c
-@@ -325,7 +325,7 @@ static void dsi_pll_commit(struct dsi_pll_7nm *pll)
- 	pll_write(base + REG_DSI_7nm_PHY_PLL_FRAC_DIV_START_LOW_1, reg->frac_div_start_low);
- 	pll_write(base + REG_DSI_7nm_PHY_PLL_FRAC_DIV_START_MID_1, reg->frac_div_start_mid);
- 	pll_write(base + REG_DSI_7nm_PHY_PLL_FRAC_DIV_START_HIGH_1, reg->frac_div_start_high);
--	pll_write(base + REG_DSI_7nm_PHY_PLL_PLL_LOCKDET_RATE_1, 0x40);
-+	pll_write(base + REG_DSI_7nm_PHY_PLL_PLL_LOCKDET_RATE_1, reg->pll_lockdet_rate);
- 	pll_write(base + REG_DSI_7nm_PHY_PLL_PLL_LOCK_DELAY, 0x06);
- 	pll_write(base + REG_DSI_7nm_PHY_PLL_CMODE_1, 0x10); /* TODO: 0x00 for CPHY */
- 	pll_write(base + REG_DSI_7nm_PHY_PLL_CLOCK_INVERTERS, reg->pll_clock_inverters);
+diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
+index 18936533666e..44c7d7aef8c1 100644
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1118,7 +1118,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 		extra_pass = true;
+ 		goto skip_init_addrs;
+ 	}
+-	addrs = kmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KERNEL);
++	addrs = kvmalloc_array(prog->len + 1, sizeof(*addrs), GFP_KERNEL);
+ 	if (!addrs) {
+ 		prog = orig_prog;
+ 		goto out_addrs;
+@@ -1195,7 +1195,7 @@ struct bpf_prog *bpf_int_jit_compile(struct bpf_prog *prog)
+ 		if (image)
+ 			bpf_prog_fill_jited_linfo(prog, addrs + 1);
+ out_addrs:
+-		kfree(addrs);
++		kvfree(addrs);
+ 		kfree(jit_data);
+ 		prog->aux->jit_data = NULL;
+ 	}
 -- 
 2.30.2
 
