@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1337D35A1B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C57DA35A1B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234094AbhDIPJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:09:29 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:40409 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S233878AbhDIPJZ (ORCPT
+        id S234106AbhDIPJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:09:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234096AbhDIPJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:09:25 -0400
-Received: (qmail 1334363 invoked by uid 1000); 9 Apr 2021 11:09:11 -0400
-Date:   Fri, 9 Apr 2021 11:09:11 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nishad Kamdar <nishadkamdar@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: Re: [RFC PATCH] usb: core: reduce power-on-good delay time of root
- hub
-Message-ID: <20210409150911.GC1333284@rowland.harvard.edu>
-References: <1617935947-24045-1-git-send-email-chunfeng.yun@mediatek.com>
+        Fri, 9 Apr 2021 11:09:46 -0400
+Received: from postout2.mail.lrz.de (postout2.mail.lrz.de [IPv6:2001:4ca0:0:103::81bb:ff8a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0B1C061760;
+        Fri,  9 Apr 2021 08:09:33 -0700 (PDT)
+Received: from lxmhs52.srv.lrz.de (localhost [127.0.0.1])
+        by postout2.mail.lrz.de (Postfix) with ESMTP id 4FH1kc4kkvzyZx;
+        Fri,  9 Apr 2021 17:09:28 +0200 (CEST)
+Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
+        reason="pass (just generated, assumed good)" header.d=tum.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
+        in-reply-to:content-disposition:content-type:content-type
+        :mime-version:references:message-id:subject:subject:from:from
+        :date:date:received:received; s=postout; t=1617980968; bh=NWqPCJ
+        5otCgmU2TaIjoNOEHXKuUYy2WtTu9XO4ohzvo=; b=KggAEOz1wXMOKPzEXY3Zgb
+        JLgMgHU8qeBbPr2FI6feWUErEx+yIDoQlQXiHr68I87L24RSwllJ9ptny/fuFdRS
+        F/EwRf8qloF5BnT9najABA/ADF+M193Xyr3nX84SqkNCmmnZwJrQPTE73jqtONpj
+        oI+JoA2N1O//PILNM5ikHP+toXGqNUn+0iVN3mjChgCCGiZ/RUuPjY3bDrq5TM+1
+        jwOSTUDS/CuhslPkd4ydDylpSWlFw3/u7zxOQ0hAzgxx2w0zUj5TytsETD0RxJZx
+        rAiXUE6FfHnlCJZU8SDbLAkzVYz6Z+rgM0/BNztD8sfqJqc7Ljef9Cnsu09REZAA
+        ==
+X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs52.srv.lrz.de
+X-Spam-Flag: NO
+X-Spam-Score: -2.876
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.876 tagged_above=-999 required=5
+        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, DMARC_ADKIM_RELAXED=0.001,
+        DMARC_ASPF_RELAXED=0.001, DMARC_POLICY_NONE=0.001,
+        LRZ_DMARC_FAIL=0.001, LRZ_DMARC_FAIL_NONE=0.001,
+        LRZ_DMARC_POLICY=0.001, LRZ_DMARC_TUM_FAIL=0.001,
+        LRZ_DMARC_TUM_REJECT=3.5, LRZ_DMARC_TUM_REJECT_PO=-3.5,
+        LRZ_ENVFROM_FROM_ALIGNED_STRICT=0.001, LRZ_ENVFROM_FROM_MATCH=0.001,
+        LRZ_ENVFROM_TUM_S=0.001, LRZ_FROM_HAS_A=0.001,
+        LRZ_FROM_HAS_AAAA=0.001, LRZ_FROM_HAS_MDOM=0.001,
+        LRZ_FROM_HAS_MX=0.001, LRZ_FROM_HOSTED_DOMAIN=0.001,
+        LRZ_FROM_NAME_IN_ADDR=0.001, LRZ_FROM_PHRASE=0.001,
+        LRZ_FROM_PRE_SUR_PHRASE=0.001, LRZ_FROM_TUM_S=0.001,
+        LRZ_HAS_IN_REPLY_TO=0.001, LRZ_HAS_SPF=0.001, LRZ_HAS_URL_HTTP=0.001,
+        LRZ_URL_HTTP_SINGLE=0.001, LRZ_URL_PLAIN_SINGLE=0.001]
+        autolearn=no autolearn_force=no
+Received: from postout2.mail.lrz.de ([127.0.0.1])
+        by lxmhs52.srv.lrz.de (lxmhs52.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
+        with LMTP id bUw474Xa325m; Fri,  9 Apr 2021 17:09:28 +0200 (CEST)
+Received: from endor.yaviniv (unknown [IPv6:2001:4ca0:0:f294:bce0:50e2:fadb:742a])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by postout2.mail.lrz.de (Postfix) with ESMTPSA id 4FH1kb69zvzyZW;
+        Fri,  9 Apr 2021 17:09:27 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 17:09:25 +0200
+From:   Andrei Rabusov <a.rabusov@tum.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/41] 5.10.29-rc1 review
+Message-ID: <YHBuJT2IQbVXeZx0@endor.yaviniv>
+References: <20210409095304.818847860@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1617935947-24045-1-git-send-email-chunfeng.yun@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 10:39:07AM +0800, Chunfeng Yun wrote:
-> Return the exactly delay time given by root hub descriptor,
-> this helps to reduce resume time etc.
+On Fri, Apr 09, 2021 at 11:53:22AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.29 release.
+> There are 41 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Due to the root hub descriptor is usually provided by the host
-> controller driver, if there is compatibility for a root hub,
-> we can fix it easily without affect other root hub
+> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.29-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+For my i686 with gcc 10.2 no regressions were found
+Selftest result [ok/not ok]: [1436/80]
 
-> ---
->  drivers/usb/core/hub.h | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/core/hub.h b/drivers/usb/core/hub.h
-> index 73f4482d833a..22ea1f4f2d66 100644
-> --- a/drivers/usb/core/hub.h
-> +++ b/drivers/usb/core/hub.h
-> @@ -148,8 +148,10 @@ static inline unsigned hub_power_on_good_delay(struct usb_hub *hub)
->  {
->  	unsigned delay = hub->descriptor->bPwrOn2PwrGood * 2;
->  
-> -	/* Wait at least 100 msec for power to become stable */
-> -	return max(delay, 100U);
-> +	if (!hub->hdev->parent)	/* root hub */
-> +		return delay;
-> +	else /* Wait at least 100 msec for power to become stable */
-> +		return max(delay, 100U);
->  }
->  
->  static inline int hub_port_debounce_be_connected(struct usb_hub *hub,
-> -- 
-> 2.18.0
-> 
+Tested-by: A. Rabusov <a.rabusov@tum.de>
