@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A40359A1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F24B0359A79
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233482AbhDIJ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:56:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43446 "EHLO mail.kernel.org"
+        id S233904AbhDIJ7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:59:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45652 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233527AbhDIJzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:55:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1845E6115B;
-        Fri,  9 Apr 2021 09:55:22 +0000 (UTC)
+        id S233533AbhDIJ5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:57:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 184F4611C2;
+        Fri,  9 Apr 2021 09:57:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962123;
-        bh=MTJHk6ahuEGox4z9zkGzrjsztitpvcgvjDXnoQWHf9Y=;
+        s=korg; t=1617962224;
+        bh=qycwxaWt4Ghm0SGjjl6Eb0J2087GMQuYj0+JzQ+GhRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MlzyO01/vm0cpqmdnnNDCEhnVt2PBrwXteiaCJb33h6S+UlZY2Zw3o55ws/PjzEQa
-         FiscNec4xGrv9cbkdmOMtyZCgDCzzwc5xsgRnBHDZpoohILwxcS91gOP2ztYvJMsJX
-         qpTuuQsSkTpayJqaA5tC8rZaaelpksq3+86pDjaQ=
+        b=QLSppnT1HXqiZC8faGgc9eyXLw6kMMzKNUl5ZnjYqI97p9nQhOLb+L2PXuu3X2D7I
+         U0yyenwCrO7VelmmWz+y0B0XpyxiYFiJWn9XX1KxwKV5KX+289MloV9MeDYBJRNSDa
+         GCpmFdlnOCdwjQZE8rDrx0FqAxa83oPm6aHNQRCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Shih-Yuan Lee (FourDollars)" <sylee@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 11/13] ALSA: hda/realtek - Fix pincfg for Dell XPS 13 9370
+        stable@vger.kernel.org, Alban Bedel <albeu@free.fr>,
+        Alexander Kobel <a-kobel@a-kobel.de>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 03/18] platform/x86: intel-hid: Support Lenovo ThinkPad X1 Tablet Gen 2
 Date:   Fri,  9 Apr 2021 11:53:31 +0200
-Message-Id: <20210409095259.997727415@linuxfoundation.org>
+Message-Id: <20210409095301.641317014@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095259.624577828@linuxfoundation.org>
-References: <20210409095259.624577828@linuxfoundation.org>
+In-Reply-To: <20210409095301.525783608@linuxfoundation.org>
+References: <20210409095301.525783608@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,61 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Shih-Yuan Lee (FourDollars)" <sylee@canonical.com>
+From: Alban Bedel <albeu@free.fr>
 
-commit 8df4b0031067758d8b0a3bfde7d35e980d0376d5 upstream
+[ Upstream commit 56678a5f44ef5f0ad9a67194bbee2280c6286534 ]
 
-The initial pin configs for Dell headset mode of ALC3271 has changed.
+Like a few other system the Lenovo ThinkPad X1 Tablet Gen 2 miss the
+HEBC method, which prevent the power button from working. Add a quirk
+to enable the button array on this system family and fix the power
+button.
 
-/sys/class/sound/hwC0D0/init_pin_configs: (BIOS 0.1.4)
-0x12 0xb7a60130
-0x13 0xb8a61140
-0x14 0x40000000
-0x16 0x411111f0
-0x17 0x90170110
-0x18 0x411111f0
-0x19 0x411111f0
-0x1a 0x411111f0
-0x1b 0x411111f0
-0x1d 0x4087992d
-0x1e 0x411111f0
-0x21 0x04211020
-
-has changed to ...
-
-/sys/class/sound/hwC0D0/init_pin_configs: (BIOS 0.2.0)
-0x12 0xb7a60130
-0x13 0x40000000
-0x14 0x411111f0
-0x16 0x411111f0
-0x17 0x90170110
-0x18 0x411111f0
-0x19 0x411111f0
-0x1a 0x411111f0
-0x1b 0x411111f0
-0x1d 0x4067992d
-0x1e 0x411111f0
-0x21 0x04211020
-
-Fixes: b4576de87243 ("ALSA: hda/realtek - Fix typo of pincfg for Dell quirk")
-Signed-off-by: Shih-Yuan Lee (FourDollars) <sylee@canonical.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Alban Bedel <albeu@free.fr>
+Tested-by: Alexander Kobel <a-kobel@a-kobel.de>
+Link: https://lore.kernel.org/r/20210222141559.3775-1-albeu@free.fr
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    1 -
- 1 file changed, 1 deletion(-)
+ drivers/platform/x86/intel-hid.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6285,7 +6285,6 @@ static const struct snd_hda_pin_quirk al
- 	SND_HDA_PIN_QUIRK(0x10ec0299, 0x1028, "Dell", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
- 		ALC225_STANDARD_PINS,
- 		{0x12, 0xb7a60130},
--		{0x13, 0xb8a61140},
- 		{0x17, 0x90170110}),
- 	{}
+diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
+index d7d69eadb9bb..fa3cda69cec9 100644
+--- a/drivers/platform/x86/intel-hid.c
++++ b/drivers/platform/x86/intel-hid.c
+@@ -94,6 +94,13 @@ static const struct dmi_system_id button_array_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "HP Spectre x2 Detachable"),
+ 		},
+ 	},
++	{
++		.ident = "Lenovo ThinkPad X1 Tablet Gen 2",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_FAMILY, "ThinkPad X1 Tablet Gen 2"),
++		},
++	},
+ 	{ }
  };
+ 
+-- 
+2.30.2
+
 
 
