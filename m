@@ -2,187 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3FF35A478
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F83735A474
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234247AbhDIRPz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:15:55 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:49551 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231946AbhDIRPy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:15:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617988541; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Q3jf/kUjs0jPspuB07nQ+W7pnLmva3qwq9uX7xtxT/c=; b=D804KUoMJJJ3Lfq97GEmFHWt4LDD5unj0v8ZvuPacXxTBzZ5rghl6LOxKKbV1xIXilbTg0dV
- VhViaEVe2bjwCA3QZzi2nPW6+AeMQt3wmL1dUQyNjloD819sr5+40g9vpbAwpNkHJmDDikby
- XRVu+nik6E4NgVBlDkqaXlOZerw=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60708bb59a9ff96d9576630e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Apr 2021 17:15:33
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 86A76C433CA; Fri,  9 Apr 2021 17:15:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.8.168] (cpe-70-95-149-85.san.res.rr.com [70.95.149.85])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8CE24C433CA;
-        Fri,  9 Apr 2021 17:15:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8CE24C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=asutoshd@codeaurora.org
-Subject: Re: [PATCH v17 1/2] scsi: ufs: Enable power management for wlun
-To:     Adrian Hunter <adrian.hunter@intel.com>, daejun7.park@samsung.com,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Cc:     "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Bean Huo <beanhuo@micron.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Yue Hu <huyue2@yulong.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Satya Tangirala <satyat@google.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <1b3d53dad245a7166f3f67a4c65f3a731e6600b3.1617893198.git.asutoshd@codeaurora.org>
- <cover.1617893198.git.asutoshd@codeaurora.org>
- <CGME20210408145007epcas2p1accfbd653b2e1318b2722c1f5661c1e0@epcms2p1>
- <1891546521.01617937981650.JavaMail.epsvc@epcpadp4>
- <32b2327f-a34f-03ac-a110-e683ae416fdc@intel.com>
-From:   "Asutosh Das (asd)" <asutoshd@codeaurora.org>
-Message-ID: <8e8bd375-ed27-d1aa-430d-4f1d3d00cb9a@codeaurora.org>
-Date:   Fri, 9 Apr 2021 10:15:29 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234243AbhDIROa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:14:30 -0400
+Received: from smtp-8fad.mail.infomaniak.ch ([83.166.143.173]:54843 "EHLO
+        smtp-8fad.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234177AbhDIROZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 13:14:25 -0400
+Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
+        by smtp-2-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FH4VT1gsRzMqjJ5;
+        Fri,  9 Apr 2021 19:14:09 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4FH4VN3Z5Yzlh8T2;
+        Fri,  9 Apr 2021 19:14:04 +0200 (CEST)
+Subject: Re: [PATCH v12 0/3] Add trusted_for(2) (was O_MAYEXEC)
+To:     bauen1 <j2468h@googlemail.com>
+Cc:     akpm@linux-foundation.org, arnd@arndb.de, casey@schaufler-ca.com,
+        christian.brauner@ubuntu.com, christian@python.org, corbet@lwn.net,
+        cyphar@cyphar.com, deven.desai@linux.microsoft.com,
+        dvyukov@google.com, ebiggers@kernel.org, ericchiang@google.com,
+        fweimer@redhat.com, geert@linux-m68k.org, jack@suse.cz,
+        jannh@google.com, jmorris@namei.org, keescook@chromium.org,
+        kernel-hardening@lists.openwall.com, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, luto@kernel.org,
+        madvenka@linux.microsoft.com, mjg59@google.com,
+        mszeredi@redhat.com, mtk.manpages@gmail.com,
+        nramas@linux.microsoft.com, philippe.trebuchet@ssi.gouv.fr,
+        scottsh@microsoft.com, sean.j.christopherson@intel.com,
+        sgrubb@redhat.com, shuah@kernel.org, steve.dower@python.org,
+        thibaut.sautereau@clip-os.org, vincent.strubel@ssi.gouv.fr,
+        viro@zeniv.linux.org.uk, willy@infradead.org, zohar@linux.ibm.com
+References: <20201203173118.379271-1-mic@digikod.net>
+ <d3b0da18-d0f6-3f72-d3ab-6cf19acae6eb@gmail.com>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <2a4cf50c-7e79-75d1-7907-8218e669f7fa@digikod.net>
+Date:   Fri, 9 Apr 2021 19:15:42 +0200
+User-Agent: 
 MIME-Version: 1.0
-In-Reply-To: <32b2327f-a34f-03ac-a110-e683ae416fdc@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <d3b0da18-d0f6-3f72-d3ab-6cf19acae6eb@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/2021 3:07 AM, Adrian Hunter wrote:
-> On 9/04/21 5:27 am, Daejun Park wrote:
->> Hi Asutosh Das,
->>
->>> During runtime-suspend of ufs host, the scsi devices are
->>> already suspended and so are the queues associated with them.
->>> But the ufs host sends SSU (START_STOP_UNIT) to wlun
->>> during its runtime-suspend.
->>> During the process blk_queue_enter checks if the queue is not in
->>> suspended state. If so, it waits for the queue to resume, and never
->>> comes out of it.
->>> The commit
->>> (d55d15a33: scsi: block: Do not accept any requests while suspended)
->>> adds the check if the queue is in suspended state in blk_queue_enter().
->>>
->>> Call trace:
->>> __switch_to+0x174/0x2c4
->>> __schedule+0x478/0x764
->>> schedule+0x9c/0xe0
->>> blk_queue_enter+0x158/0x228
->>> blk_mq_alloc_request+0x40/0xa4
->>> blk_get_request+0x2c/0x70
->>> __scsi_execute+0x60/0x1c4
->>> ufshcd_set_dev_pwr_mode+0x124/0x1e4
->>> ufshcd_suspend+0x208/0x83c
->>> ufshcd_runtime_suspend+0x40/0x154
->>> ufshcd_pltfrm_runtime_suspend+0x14/0x20
->>> pm_generic_runtime_suspend+0x28/0x3c
->>> __rpm_callback+0x80/0x2a4
->>> rpm_suspend+0x308/0x614
->>> rpm_idle+0x158/0x228
->>> pm_runtime_work+0x84/0xac
->>> process_one_work+0x1f0/0x470
->>> worker_thread+0x26c/0x4c8
->>> kthread+0x13c/0x320
->>> ret_from_fork+0x10/0x18
->>>
->>> Fix this by registering ufs device wlun as a scsi driver and
->>> registering it for block runtime-pm. Also make this as a
->>> supplier for all other luns. That way, this device wlun
->>> suspends after all the consumers and resumes after
->>> hba resumes.
->>>
->>> Co-developed-by: Can Guo <cang@codeaurora.org>
->>> Signed-off-by: Can Guo <cang@codeaurora.org>
->>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
->>> ---
->>> drivers/scsi/ufs/cdns-pltfrm.c     |   2 +
->>> drivers/scsi/ufs/tc-dwc-g210-pci.c |   2 +
->>> drivers/scsi/ufs/ufs-debugfs.c     |   6 +-
->>> drivers/scsi/ufs/ufs-debugfs.h     |   2 +-
->>> drivers/scsi/ufs/ufs-exynos.c      |   2 +
->>> drivers/scsi/ufs/ufs-hisi.c        |   2 +
->>> drivers/scsi/ufs/ufs-mediatek.c    |  12 +-
->>> drivers/scsi/ufs/ufs-qcom.c        |   2 +
->>> drivers/scsi/ufs/ufs_bsg.c         |   6 +-
->>> drivers/scsi/ufs/ufshcd-pci.c      |  36 +--
->>> drivers/scsi/ufs/ufshcd.c          | 642 ++++++++++++++++++++++++++-----------
->>> drivers/scsi/ufs/ufshcd.h          |   6 +
->>> include/trace/events/ufs.h         |  20 ++
->>> 13 files changed, 509 insertions(+), 231 deletions(-)
->>
->> In this patch, you changed pm_runtime_{get, put}_sync to scsi_autopm_{get, put}_device.
->> But, scsi_autopm_get_device() calls pm_runtime_put_sync() in case of error
->> of pm_runtime_get_sync(). So, pm_runtime_put_sync() can be called twice if
->> scsi_autopm_get_device has error.
-> 
-> Also it might be tidy to make wrappers e.g.
-> 
-> static inline int ufshcd_rpm_get_sync(struct ufs_hba *hba)
-> {
->      return pm_runtime_get_sync(&hba->sdev_ufs_device->sdev_gendev);
-> }
->     
-> static inline int ufshcd_rpm_put(struct ufs_hba *hba)
-> {
->      return pm_runtime_put(&hba->sdev_ufs_device->sdev_gendev);
-> }
-> 
-> static inline int ufshcd_rpm_put_sync(struct ufs_hba *hba)
-> {
->      return pm_runtime_put_sync(&hba->sdev_ufs_device->sdev_gendev);
-> }
-> 
-> And also consider matching: e.g.
-> 
-> 	pm_runtime_put(hba->dev)	to	ufshcd_rpm_put(hba)
-> 	pm_runtime_put_sync(hba->dev)	to	ufshcd_rpm_put_sync(hba)
-> 
-> 
-> 
+Hi,
 
-Ok, I'll push the changes shortly.
+There was no new reviews, probably because the FS maintainers were busy,
+and I was focused on Landlock (which is now in -next), but I plan to
+send a new patch series for trusted_for(2) soon.
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-Linux Foundation Collaborative Project
+Thanks for letting know your interest,
+ Mickaël
+
+
+On 09/04/2021 18:26, bauen1 wrote:
+> Hello,
+> 
+> As a user of SELinux I'm quite interested in the trusted_for / O_MAYEXEC changes in the kernel and userspace.
+> However the last activity on this patch seems to be this email from 2020-12-03 with no replies, so what is the status of this patchset or is there something that I'm missing ?
+> 
+> https://patchwork.kernel.org/project/linux-security-module/list/?series=395617
+> 
+> https://lore.kernel.org/linux-security-module/20201203173118.379271-1-mic@digikod.net/
+> 
+> 
