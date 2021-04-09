@@ -2,227 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C723597E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BEC3597DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhDIIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:31:30 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:27236 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229696AbhDIIbW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:31:22 -0400
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 1398UoLo028916;
-        Fri, 9 Apr 2021 17:30:50 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 1398UoLo028916
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617957050;
-        bh=4DPbQPolecYqkeipjN6IbicIpzKHyxoMtxzkJQlAg60=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RN8d0n4JT0CbY1XvacP2Pz5w6wYfOsaPLG0sQEFj0mWn1ScSj9Pdm3Fts7qKd7iZN
-         XuEufEBsANEa+OOifZ8lfRiifwxzVIZKTkmS8PClqVmnjW2/sA0kyhIrg15r3MZL+u
-         ePeuzUlv8iMyxClAjrqR4SX3XexWoJ840lOIpiVUiklewz+wnL77mmrmNUqn3Fytr8
-         RSOGgOIV5IaCFtyiC/Fxb58nJSykOFjqoEtS3b1RUvhpiQJSTznaKagUMK0I/1ytT+
-         6hHAI1vtLu/3EP0vfMSRRpnIIQQKi5tyLOy3AOGcUg2UPYnZmhLNp+m8s/ed5a+gmW
-         xwKkdTQTwgIKA==
-X-Nifty-SrcIP: [209.85.214.181]
-Received: by mail-pl1-f181.google.com with SMTP id g10so2382430plt.8;
-        Fri, 09 Apr 2021 01:30:50 -0700 (PDT)
-X-Gm-Message-State: AOAM533+RYVVoZ6onFvbpLLZPP1Uh9ihA86ltmps7++6zYwqptcdCqZo
-        n5LcRv8jWrdepgi3VpsoM4ZfdUz3zHYnQtPxh4Q=
-X-Google-Smtp-Source: ABdhPJzIwGaozIcdxNHN9CwdcUDqmLwmGw01l6ZjPQcbr8YMvuRLXUuw3qdNSOb1NufrTEdNtan6cQJejtOtx0xdBb8=
-X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr12726688pjb.87.1617957049393;
- Fri, 09 Apr 2021 01:30:49 -0700 (PDT)
+        id S231699AbhDIIax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:30:53 -0400
+Received: from mga04.intel.com ([192.55.52.120]:33479 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229696AbhDIIaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:30:46 -0400
+IronPort-SDR: vCmdpw6qkvdchWVgDxL27j1UYzpZJeFaOF2KG/b7nrqEdMw/DjvYOY5j6xBSlk1spC+lqz9pTU
+ aagJfMMKgdkg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="191567606"
+X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
+   d="scan'208";a="191567606"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 01:30:20 -0700
+IronPort-SDR: 4CBP2n1UCbEC7IphgTOX8DUauUMyRWtHmry8kTdOXTVsmp+gl8H8HheMpe6u6ma3gJ906fAXkm
+ 5opdCzW0kPrg==
+X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
+   d="scan'208";a="416174376"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 01:30:16 -0700
+Subject: Re: [PATCH v4 08/16] KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to
+ manage guest DS buffer
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        andi@firstfloor.org, kan.liang@linux.intel.com,
+        wei.w.wang@intel.com, Wanpeng Li <wanpengli@tencent.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        Andi Kleen <ak@linux.intel.com>,
+        Like Xu <like.xu@linux.intel.com>
+References: <20210329054137.120994-1-like.xu@linux.intel.com>
+ <20210329054137.120994-9-like.xu@linux.intel.com>
+ <YG3SPsiFJPeXQXhq@hirez.programming.kicks-ass.net>
+ <610bfd14-3250-0542-2d93-cbd15f2b4e16@intel.com>
+ <YG62VBBix2WVy3XA@hirez.programming.kicks-ass.net>
+ <8695f271-9da9-f16d-15f2-e2757186db65@intel.com>
+ <YHAJXh2AtSMcC5xf@hirez.programming.kicks-ass.net>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <9ec0e0ba-bef6-710e-1e9c-36beaedae16e@intel.com>
+Date:   Fri, 9 Apr 2021 16:30:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210408205858.51751-1-masahiroy@kernel.org> <20210408205858.51751-2-masahiroy@kernel.org>
- <YXEARQ.LGKNU44HTZP01@crapouillou.net>
-In-Reply-To: <YXEARQ.LGKNU44HTZP01@crapouillou.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 9 Apr 2021 17:30:12 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATzaKiUewn-ixnDEAWbfQUy8xZL4yjkR1BxrhV3G1=Zng@mail.gmail.com>
-Message-ID: <CAK7LNATzaKiUewn-ixnDEAWbfQUy8xZL4yjkR1BxrhV3G1=Zng@mail.gmail.com>
-Subject: Re: [PATCH 1/2] linux/kconfig.h: replace IF_ENABLED() with PTR_IF()
- in <linux/kernel.h>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YHAJXh2AtSMcC5xf@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 5:15 PM Paul Cercueil <paul@crapouillou.net> wrote:
+On 2021/4/9 15:59, Peter Zijlstra wrote:
+> On Fri, Apr 09, 2021 at 03:07:38PM +0800, Xu, Like wrote:
+>> Hi Peter,
+>>
+>> On 2021/4/8 15:52, Peter Zijlstra wrote:
+>>>> This is because in the early part of this function, we have operations:
+>>>>
+>>>>       if (x86_pmu.flags & PMU_FL_PEBS_ALL)
+>>>>           arr[0].guest &= ~cpuc->pebs_enabled;
+>>>>       else
+>>>>           arr[0].guest &= ~(cpuc->pebs_enabled & PEBS_COUNTER_MASK);
+>>>>
+>>>> and if guest has PEBS_ENABLED, we need these bits back for PEBS counters:
+>>>>
+>>>>       arr[0].guest |= arr[1].guest;
+>>> I don't think that's right, who's to say they were set in the first
+>>> place? The guest's GLOBAL_CTRL could have had the bits cleared at VMEXIT
+>>> time. You can't unconditionally add PEBS_ENABLED into GLOBAL_CTRL,
+>>> that's wrong.
+>> I can't keep up with you on this comment and would you explain more ?
+> Well, it could be I'm terminally confused on how virt works (I usually
+> am, it just doesn't make any sense ever).
+
+I may help you a little on this.
+
 >
-> Hi Masahiro,
+> On top of that this code doesn't have any comments to help.
+
+More comments will be added.
+
 >
-> Le ven. 9 avril 2021 =C3=A0 5:58, Masahiro Yamada <masahiroy@kernel.org> =
-a
-> =C3=A9crit :
-> > <linux/kconfig.h> is included from all the kernel-space source files,
-> > including C, assembly, linker scripts. It is intended to contain
-> > minimal
-> > set of macros to evaluate CONFIG options.
-> >
-> > IF_ENABLED() is an intruder here because (x ? y : z) is C code, which
-> > should not be included from assembly files or linker scripts.
-> >
-> > Also, <linux/kconfig.h> is no longer self-contained because NULL is
-> > defined in <linux/stddef.h>.
-> >
-> > Move IF_ENABLED() out to <linux/kernel.h> as PTR_IF().
-> >
-> > PTR_IF(IS_ENABLED(CONFIG_FOO), ...) is slightly longer than
-> > IF_ENABLED(CONFIG_FOO, ...), but it is not a big deal because
-> > sub-systems often define dedicated macros such as of_match_ptr(),
-> > pm_ptr() etc. for common use-cases.
+> So perf_guest_switch_msr has two msr values: guest and host.
 >
-> What's the idea behind changing IF_ENABLED() to PTR_IF()? You didn't
-> explain that. What's wrong with IF_ENABLED()?
-
-
-PTR_IF() is a more generalized variant, which I believe is
-a better fit in <linux/kernel.h>
-The first parameter does not need to be a CONFIG option,
-but any expression.
-
-
-
-
-
-
-
-> Cheers,
-> -Paul
+> In my naive understanding guest is the msr value the guest sees and host
+> is the value the host has. If it is not that, then the naming is just
+> misleading at best.
 >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> > ---
-> >
-> >  drivers/pinctrl/pinctrl-ingenic.c | 20 ++++++++++----------
-> >  include/linux/kconfig.h           |  6 ------
-> >  include/linux/kernel.h            |  2 ++
-> >  3 files changed, 12 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/drivers/pinctrl/pinctrl-ingenic.c
-> > b/drivers/pinctrl/pinctrl-ingenic.c
-> > index f2746125b077..b21e2ae4528d 100644
-> > --- a/drivers/pinctrl/pinctrl-ingenic.c
-> > +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> > @@ -2496,43 +2496,43 @@ static int __init
-> > ingenic_pinctrl_probe(struct platform_device *pdev)
-> >  static const struct of_device_id ingenic_pinctrl_of_match[] =3D {
-> >       {
-> >               .compatible =3D "ingenic,jz4740-pinctrl",
-> > -             .data =3D IF_ENABLED(CONFIG_MACH_JZ4740, &jz4740_chip_inf=
-o)
-> > +             .data =3D PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4740), &jz4740_=
-chip_info)
-> >       },
-> >       {
-> >               .compatible =3D "ingenic,jz4725b-pinctrl",
-> > -             .data =3D IF_ENABLED(CONFIG_MACH_JZ4725B, &jz4725b_chip_i=
-nfo)
-> > +             .data =3D PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4725B), &jz4725=
-b_chip_info)
-> >       },
-> >       {
-> >               .compatible =3D "ingenic,jz4760-pinctrl",
-> > -             .data =3D IF_ENABLED(CONFIG_MACH_JZ4760, &jz4760_chip_inf=
-o)
-> > +             .data =3D PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4760), &jz4760_=
-chip_info)
-> >       },
-> >       {
-> >               .compatible =3D "ingenic,jz4760b-pinctrl",
-> > -             .data =3D IF_ENABLED(CONFIG_MACH_JZ4760, &jz4760_chip_inf=
-o)
-> > +             .data =3D PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4760), &jz4760_=
-chip_info)
-> >       },
-> >       {
-> >               .compatible =3D "ingenic,jz4770-pinctrl",
-> > -             .data =3D IF_ENABLED(CONFIG_MACH_JZ4770, &jz4770_chip_inf=
-o)
-> > +             .data =3D PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4770), &jz4770_=
-chip_info)
-> >       },
-> >       {
-> >               .compatible =3D "ingenic,jz4780-pinctrl",
-> > -             .data =3D IF_ENABLED(CONFIG_MACH_JZ4780, &jz4780_chip_inf=
-o)
-> > +             .data =3D PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4780), &jz4780_=
-chip_info)
-> >       },
-> >       {
-> >               .compatible =3D "ingenic,x1000-pinctrl",
-> > -             .data =3D IF_ENABLED(CONFIG_MACH_X1000, &x1000_chip_info)
-> > +             .data =3D PTR_IF(IS_ENABLED(CONFIG_MACH_X1000), &x1000_ch=
-ip_info)
-> >       },
-> >       {
-> >               .compatible =3D "ingenic,x1000e-pinctrl",
-> > -             .data =3D IF_ENABLED(CONFIG_MACH_X1000, &x1000_chip_info)
-> > +             .data =3D PTR_IF(IS_ENABLED(CONFIG_MACH_X1000), &x1000_ch=
-ip_info)
-> >       },
-> >       {
-> >               .compatible =3D "ingenic,x1500-pinctrl",
-> > -             .data =3D IF_ENABLED(CONFIG_MACH_X1500, &x1500_chip_info)
-> > +             .data =3D PTR_IF(IS_ENABLED(CONFIG_MACH_X1500), &x1500_ch=
-ip_info)
-> >       },
-> >       {
-> >               .compatible =3D "ingenic,x1830-pinctrl",
-> > -             .data =3D IF_ENABLED(CONFIG_MACH_X1830, &x1830_chip_info)
-> > +             .data =3D PTR_IF(IS_ENABLED(CONFIG_MACH_X1830), &x1830_ch=
-ip_info)
-> >       },
-> >       { /* sentinel */ },
-> >  };
-> > diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
-> > index 24a59cb06963..cc8fa109cfa3 100644
-> > --- a/include/linux/kconfig.h
-> > +++ b/include/linux/kconfig.h
-> > @@ -70,10 +70,4 @@
-> >   */
-> >  #define IS_ENABLED(option) __or(IS_BUILTIN(option),
-> > IS_MODULE(option))
-> >
-> > -/*
-> > - * IF_ENABLED(CONFIG_FOO, ptr) evaluates to (ptr) if CONFIG_FOO is
-> > set to 'y'
-> > - * or 'm', NULL otherwise.
-> > - */
-> > -#define IF_ENABLED(option, ptr) (IS_ENABLED(option) ? (ptr) : NULL)
-> > -
-> >  #endif /* __LINUX_KCONFIG_H */
-> > diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> > index 5b7ed6dc99ac..8685ca4cf287 100644
-> > --- a/include/linux/kernel.h
-> > +++ b/include/linux/kernel.h
-> > @@ -38,6 +38,8 @@
-> >  #define PTR_ALIGN_DOWN(p, a) ((typeof(p))ALIGN_DOWN((unsigned
-> > long)(p), (a)))
-> >  #define IS_ALIGNED(x, a)             (((x) & ((typeof(x))(a) - 1)) =3D=
-=3D 0)
-> >
-> > +#define PTR_IF(cond, ptr)    ((cond) ? (ptr) : NULL)
-> > +
-> >  /* generic data direction definitions */
-> >  #define READ                 0
-> >  #define WRITE                        1
-> > --
-> > 2.27.0
-> >
->
->
+> But thinking more about it, if these are fully emulated MSRs (which I
+> think they are), then there might actually be 3 different values, not 2.
 
+You are right about 3 different values.
 
---=20
-Best Regards
-Masahiro Yamada
+>
+> We have the value the guest sees when it uses {RD,WR}MSR.
+> We have the value the hardware has when it runs a guest.
+> We have the value the hardware has when it doesn't run a guest.
+>
+> And somehow this code does something, but I can't for the life of me
+> figure out what and how.
+
+Just focus on the last two values and the enabling bits (on the GLOBAL_CTRL
+and PEBS_ENABLE) of "the value the hardware has when it runs a guest"
+are exclusive with "the value the hardware has when it doesn't run a guest."
+
+>> To address your previous comments, does the code below look good to you?
+>>
+>> static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr, void *data)
+>> {
+>>      struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>>      struct perf_guest_switch_msr *arr = cpuc->guest_switch_msrs;
+>>      struct debug_store *ds = __this_cpu_read(cpu_hw_events.ds);
+>>      struct kvm_pmu *pmu = (struct kvm_pmu *)data;
+>>      u64 pebs_mask = (x86_pmu.flags & PMU_FL_PEBS_ALL) ?
+>>              cpuc->pebs_enabled : (cpuc->pebs_enabled & PEBS_COUNTER_MASK);
+>>      int i = 0;
+>>
+>>      arr[i].msr = MSR_CORE_PERF_GLOBAL_CTRL;
+>>      arr[i].host = x86_pmu.intel_ctrl & ~cpuc->intel_ctrl_guest_mask;
+>>      arr[i].guest = x86_pmu.intel_ctrl & ~cpuc->intel_ctrl_host_mask;
+>>      arr[i].guest &= ~pebs_mask;
+>>
+>>      if (!x86_pmu.pebs)
+>>          goto out;
+>>
+>>      /*
+>>       * If PMU counter has PEBS enabled it is not enough to
+>>       * disable counter on a guest entry since PEBS memory
+>>       * write can overshoot guest entry and corrupt guest
+>>       * memory. Disabling PEBS solves the problem.
+>>       *
+>>       * Don't do this if the CPU already enforces it.
+>>       */
+>>      if (x86_pmu.pebs_no_isolation) {
+>>          i++;
+>>          arr[i].msr = MSR_IA32_PEBS_ENABLE;
+>>          arr[i].host = cpuc->pebs_enabled;
+>>          arr[i].guest = 0;
+>>          goto out;
+>>      }
+>>
+>>      if (!pmu || !x86_pmu.pebs_vmx)
+>>          goto out;
+>>
+>>      i++;
+>>      arr[i].msr = MSR_IA32_DS_AREA;
+>>      arr[i].host = (unsigned long)ds;
+>>      arr[i].guest = pmu->ds_area;
+>>
+>>      if (x86_pmu.intel_cap.pebs_baseline) {
+>>          i++;
+>>          arr[i].msr = MSR_PEBS_DATA_CFG;
+>>          arr[i].host = cpuc->pebs_data_cfg;
+>>          arr[i].guest = pmu->pebs_data_cfg;
+>>      }
+>>
+>>      i++;
+>>      arr[i].msr = MSR_IA32_PEBS_ENABLE;
+>>      arr[i].host = cpuc->pebs_enabled & ~cpuc->intel_ctrl_guest_mask;
+>>      arr[i].guest = pebs_mask & ~cpuc->intel_ctrl_host_mask;
+>>
+>>      if (arr[i].host) {
+>>          /* Disable guest PEBS if host PEBS is enabled. */
+>>          arr[i].guest = 0;
+>>      } else {
+>>          /* Disable guest PEBS for cross-mapped PEBS counters. */
+>>          arr[i].guest &= ~pmu->host_cross_mapped_mask;
+>>          arr[0].guest |= arr[i].guest;
+>>      }
+>>
+>> out:
+>>      *nr = ++i;
+>>      return arr;
+>> }
+> The ++ is in a weird location, if you place it after filling out an
+> entry it makes more sense I think. Something like:
+>
+> 	arr[i].msr = MSR_CORE_PERF_GLOBAL_CTRL;
+> 	arr[i].host = x86_pmu.intel_ctrl & ~cpuc->intel_ctrl_guest_mask;
+> 	arr[i].guest = x86_pmu.intel_ctrl & ~cpuc->intel_ctrl_host_mask;
+> 	arr[i].guest &= ~pebs_mask;
+> 	i++;
+>
+> or, perhaps even like:
+>
+> 	arr[i++] = (struct perf_guest_switch_msr){
+> 		.msr = MSR_CORE_PERF_GLOBAL_CTRL,
+> 		.host = x86_pmu.intel_ctrl & ~cpuc->intel_ctrl_guest_mask,
+> 		.guest = x86_pmu.intel_ctrl & (~cpuc->intel_ctrl_host_mask | ~pebs_mask),
+> 	};
+
+The later one looks good to me and I'll apply it.
+
+> But it doesn't address the fundamental confusion I seem to be having,
+> what actual msr value is what.
+
+VMX hardware has the capability to switch MSR values atomically：
+- for vm-entry instruction, it loads the value of arr[i].guest to arr[i].msr;
+- for vm-exit instruction, it loads the value of arr[i].host to arr[i].msr;
+
+The intel_guest_get_msrs() will populate arr[i].guest and arr[i].host values
+before each vm-entry and its caller does the optimization to skip the switch
+if arr[i].guest == arr[i].host.
+
+Just let me know if you have more questions,
+otherwise I assume we have reached an agreement on this part of code.
