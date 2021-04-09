@@ -2,177 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F14C35A93C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D54C35A94A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235161AbhDIX1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 19:27:09 -0400
-Received: from mga17.intel.com ([192.55.52.151]:65425 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234880AbhDIX1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 19:27:08 -0400
-IronPort-SDR: BMHMMRbCYigH1KDjKnmmKvDqz1JEva23+7VC728O6O3h2GZTE7NbqszfXi7OpmepWbRmh7S8V0
- Ke57gnrBMBZQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="173944581"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="173944581"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:26:54 -0700
-IronPort-SDR: xI7fWbzk+7AHdOiloNamNnAumWwQc+RJVrBcMtdpjnse13cIpgOsnTWs9LjI35Of840C0ng4+n
- zTSVlnJXxY5Q==
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="422931465"
-Received: from schen9-mobl.amr.corp.intel.com ([10.209.107.191])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:26:54 -0700
-Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
- memory
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
- <YGwlGrHtDJPQF7UG@dhcp22.suse.cz>
- <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
- <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
-Date:   Fri, 9 Apr 2021 16:26:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S235191AbhDIXgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 19:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235096AbhDIXgg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 19:36:36 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1799C061763
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 16:36:22 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id y1so8322303ljm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 16:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MQEhdxl+cSU7BC7XRTZDcCsNpOwQL3MJhJomrvmkJCY=;
+        b=naXn5kfXgRlukFVoSCe/aS9mSub16qMDDnXU0x9NB9VvBXEc/nCg53QsttbiYYoOdy
+         NvXp8jYd89b8HUaPN7fRNWO7pgHhHGs0K2z7HvJSpG4ldxCjcMZNSGLrjUXwkFVHREQu
+         EkdeDYJ7eqF5tFBnfniDsngW17bsbFPd/pBe5DFNZhQSWnOUt41ATFBagvjygDaOpiYo
+         62J7wMp79geIT6GRT+gjXifp+0VcR8gXSKkd4nk/0kY3pkxISXwVA86aOf+t+AdlrKRe
+         U7Y/TWL9S15pzXqvCbz7Fo4iNaFjd0uAUUBxFrQUZ7BwZ3283l1O3CNk3bQetk5ztkO4
+         RIrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MQEhdxl+cSU7BC7XRTZDcCsNpOwQL3MJhJomrvmkJCY=;
+        b=FJmjEG8wFMOtNoPUiZVGFuL1E6ob4uC3yOJqps+qquASCPVgYpWJ6MJtyglDelcOfc
+         M9t9RVut3YmRvsVXkzM2gUY5iXgx8KGIXArxvgg5ttBNcuGQZGzOKakD2K9bevRTdGao
+         pQ/ahxeo8fk4J1OTQxcriqVQ//VhauZMLk22t7CU8QkTF4NOG3Ao9E9puHxM6+250SFl
+         Xw7jUHFY8ioSbBnx82Tt2UyEFSIlSmBI3Ccb4gCukVfqRG8B/YSHCwfmB8WXkOzBXoLr
+         2VTZFViYEyAKtpiZmplr3pkaSmKJ0I3Jokzbz0wCtbuQVUHAPtl5OFqGSNKtUaN7Bthv
+         /0CA==
+X-Gm-Message-State: AOAM530UXxBO5Ef0kqBDFcEfMWSr1IXxUASIgQ79cKEjuxKW2zRKuKgL
+        FIAN2IUpKsWykQnNWo1sbzbxQgJaQGrc3p7jlrFIMA==
+X-Google-Smtp-Source: ABdhPJxPZM+yBj5h9pJP265DYko714wL+M/i9xL4wgwVQK69SoBcfbh2i4JxHFXtqH+bSlHJjvuHtaD+RYSUTCWwTuU=
+X-Received: by 2002:a2e:3603:: with SMTP id d3mr10563594lja.495.1618011380903;
+ Fri, 09 Apr 2021 16:36:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210409221155.1113205-1-nathan@kernel.org>
+In-Reply-To: <20210409221155.1113205-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 9 Apr 2021 16:36:09 -0700
+Message-ID: <CAKwvOdnTFXPy29L5JhcMBJAP4STfZUMn6739Mc4J_2Qwu3efBw@mail.gmail.com>
+Subject: Re: [PATCH] crypto: arm/curve25519 - Move '.fpu' after '.arch'
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "# 3.4.x" <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Jessica Clarke <jrtc27@jrtc27.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 9, 2021 at 3:12 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Debian's clang carries a patch that makes the default FPU mode
+> 'vfp3-d16' instead of 'neon' for 'armv7-a' to avoid generating NEON
+> instructions on hardware that does not support them:
+>
+> https://salsa.debian.org/pkg-llvm-team/llvm-toolchain/-/raw/5a61ca6f21b4ad8c6ac4970e5ea5a7b5b4486d22/debian/patches/clang-arm-default-vfp3-on-armv7a.patch
+> https://bugs.debian.org/841474
+> https://bugs.debian.org/842142
+> https://bugs.debian.org/914268
 
-On 4/8/21 4:52 AM, Michal Hocko wrote:
+Another good link would be the one from Jessica describing more
+precisely what the ARM targets for Debian are:
+https://wiki.debian.org/ArchitectureSpecificsMemo#armel
 
->> The top tier memory used is reported in
->>
->> memory.toptier_usage_in_bytes
->>
->> The amount of top tier memory usable by each cgroup without
->> triggering page reclaim is controlled by the
->>
->> memory.toptier_soft_limit_in_bytes 
-> 
+>
+> This results in the following build error when clang's integrated
+> assembler is used because the '.arch' directive overrides the '.fpu'
+> directive:
+>
+> arch/arm/crypto/curve25519-core.S:25:2: error: instruction requires: NEON
+>  vmov.i32 q0, #1
+>  ^
+> arch/arm/crypto/curve25519-core.S:26:2: error: instruction requires: NEON
+>  vshr.u64 q1, q0, #7
+>  ^
+> arch/arm/crypto/curve25519-core.S:27:2: error: instruction requires: NEON
+>  vshr.u64 q0, q0, #8
+>  ^
+> arch/arm/crypto/curve25519-core.S:28:2: error: instruction requires: NEON
+>  vmov.i32 d4, #19
+>  ^
+>
+> Shuffle the order of the '.arch' and '.fpu' directives so that the code
+> builds regardless of the default FPU mode. This has been tested against
+> both clang with and without Debian's patch and GCC.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: d8f1308a025f ("crypto: arm/curve25519 - wire up NEON implementation")
+> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/118
+> Reported-by: Arnd Bergmann <arnd@arndb.de>
+> Suggested-by: Arnd Bergmann <arnd@arndb.de>
+> Suggested-by: Jessica Clarke <jrtc27@jrtc27.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-Michal,
+Great work tracking down that Debian was carrying patches! Thank you!
+I've run this through the same 3 assemblers.
 
-Thanks for your comments.  I will like to take a step back and
-look at the eventual goal we envision: a mechanism to partition the 
-tiered memory between the cgroups. 
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
 
-A typical use case may be a system with two set of tasks.
-One set of task is very latency sensitive and we desire instantaneous
-response from them. Another set of tasks will be running batch jobs
-were latency and performance is not critical.   In this case,
-we want to carve out enough top tier memory such that the working set
-of the latency sensitive tasks can fit entirely in the top tier memory.
-The rest of the top tier memory can be assigned to the background tasks.  
+> ---
+>  arch/arm/crypto/curve25519-core.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/crypto/curve25519-core.S b/arch/arm/crypto/curve25519-core.S
+> index be18af52e7dc..b697fa5d059a 100644
+> --- a/arch/arm/crypto/curve25519-core.S
+> +++ b/arch/arm/crypto/curve25519-core.S
+> @@ -10,8 +10,8 @@
+>  #include <linux/linkage.h>
+>
+>  .text
+> -.fpu neon
+>  .arch armv7-a
+> +.fpu neon
+>  .align 4
+>
+>  ENTRY(curve25519_neon)
+>
+> base-commit: e49d033bddf5b565044e2abe4241353959bc9120
+> --
+> 2.31.1.189.g2e36527f23
+>
 
-To achieve such cgroup based tiered memory management, we probably want
-something like the following.
 
-For generalization let's say that there are N tiers of memory t_0, t_1 ... t_N-1,
-where tier t_0 sits at the top and demotes to the lower tier. 
-We envision for this top tier memory t0 the following knobs and counters 
-in the cgroup memory controller
-
-memory_t0.current 	Current usage of tier 0 memory by the cgroup.
-
-memory_t0.min		If tier 0 memory used by the cgroup falls below this low
-			boundary, the memory will not be subjected to demotion
-			to lower tiers to free up memory at tier 0.  
-
-memory_t0.low		Above this boundary, the tier 0 memory will be subjected
-			to demotion.  The demotion pressure will be proportional
-			to the overage.
-
-memory_t0.high		If tier 0 memory used by the cgroup exceeds this high
-			boundary, allocation of tier 0 memory by the cgroup will
-			be throttled. The tier 0 memory used by this cgroup
-			will also be subjected to heavy demotion.
-
-memory_t0.max		This will be a hard usage limit of tier 0 memory on the cgroup.
-
-If needed, memory_t[12...].current/min/low/high for additional tiers can be added.
-This follows closely with the design of the general memory controller interface.  
-
-Will such an interface looks sane and acceptable with everyone?
-
-The patch set I posted is meant to be a straw man cgroup v1 implementation
-and I readily admits that it falls short of the eventual functionality 
-we want to achieve.  It is meant to solicit feedback from everyone on how the tiered
-memory management should work.
-
-> Are you trying to say that soft limit acts as some sort of guarantee?
-
-No, the soft limit does not offers guarantee.  It will only serves to keep the usage
-of the top tier memory in the vicinity of the soft limits.
-
-> Does that mean that if the memcg is under memory pressure top tiear
-> memory is opted out from any reclaim if the usage is not in excess?
-
-In the prototype implementation, regular memory reclaim is still in effect
-if we are under heavy memory pressure. 
-
-> 
-> From you previous email it sounds more like the limit is evaluated on
-> the global memory pressure to balance specific memcgs which are in
-> excess when trying to reclaim/demote a toptier numa node.
-
-On a top tier node, if the free memory on the node falls below a percentage, then
-we will start to reclaim/demote from the node.
-
-> 
-> Soft limit reclaim has several problems. Those are historical and
-> therefore the behavior cannot be changed. E.g. go after the biggest
-> excessed memcg (with priority 0 - aka potential full LRU scan) and then
-> continue with a normal reclaim. This can be really disruptive to the top
-> user.
-
-Thanks for pointing out these problems with soft limit explicitly.
-
-> 
-> So you can likely define a more sane semantic. E.g. push back memcgs
-> proporitional to their excess but then we have two different soft limits
-> behavior which is bad as well. I am not really sure there is a sensible
-> way out by (ab)using soft limit here.
-> 
-> Also I am not really sure how this is going to be used in practice.
-> There is no soft limit by default. So opting in would effectivelly
-> discriminate those memcgs. There has been a similar problem with the
-> soft limit we have in general. Is this really what you are looing for?
-> What would be a typical usecase?
-
->> Want to make sure I understand what you mean by NUMA aware limits.
->> Yes, in the patch set, it does treat the NUMA nodes differently.
->> We are putting constraint on the "top tier" RAM nodes vs the lower
->> tier PMEM nodes.  Is this what you mean?
-> 
-> What I am trying to say (and I have brought that up when demotion has been
-> discussed at LSFMM) is that the implementation shouldn't be PMEM aware.
-> The specific technology shouldn't be imprinted into the interface.
-> Fundamentally you are trying to balance memory among NUMA nodes as we do
-> not have other abstraction to use. So rather than talking about top,
-> secondary, nth tier we have different NUMA nodes with different
-> characteristics and you want to express your "priorities" for them.
-
-With node priorities, how would the system reserve enough
-high performance memory for those performance critical task cgroup? 
-
-By priority, do you mean the order of allocation of nodes for a cgroup?
-Or you mean that all the similar performing memory node will be grouped in
-the same priority?
-
-Tim
+-- 
+Thanks,
+~Nick Desaulniers
