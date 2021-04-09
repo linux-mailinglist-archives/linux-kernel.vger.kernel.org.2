@@ -2,134 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914F435A656
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F31CC35A669
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234771AbhDISzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:55:37 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:61284 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234746AbhDISzd (ORCPT
+        id S234810AbhDIS5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:57:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234666AbhDIS5v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:55:33 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 139IWPIr024926;
-        Fri, 9 Apr 2021 14:55:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=25PuWItDWJshlEFpNgfjWsdNElevbU+n1ExVbrqD2fM=;
- b=ZtGk/AoZgJKU30a4XrTUJd+GPspQX++bjjmK/RaPyMARF1PrNPH3k4tJ0ma08Ou4gSaD
- +YUh9A5x6/Mgse2ENDFRWR8gqnyZ0y6K0IiW6B0QBd2THtSmXZxP4zTDxkpuc1Dhuzm+
- AvCx9h20BMcUcDRTT95xFad5bFvsp1xZ744xZ6aL+fGtOyCq9jk//s+XSMGjOeF2/jDF
- AQ8bxDY29B4m/d29yHmV82xPegxH8KEH29eG3RlU2nmxsyiMUNlraaE6UOnE1gtxJO5Z
- QF/hOly0PinomB35BBSaFd2ulgxuJD5FwXZuws05/WD439U6CIfo4wzoTHmWP69HAidB Vg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37tuwu90p8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 14:55:19 -0400
-Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 139IWiQI025410;
-        Fri, 9 Apr 2021 14:55:19 -0400
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37tuwu90nm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 14:55:18 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 139Im075006777;
-        Fri, 9 Apr 2021 18:55:17 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 37rvc1heh6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 18:55:16 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 139Isr7h25166120
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Apr 2021 18:54:53 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8732552051;
-        Fri,  9 Apr 2021 18:55:14 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.54.65])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id B58CC5204E;
-        Fri,  9 Apr 2021 18:55:12 +0000 (GMT)
-Message-ID: <cb640adf4fe93e054d7a8c148fea601048bfd562.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] integrity: Add declarations to init_once void
- arguments.
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Jiele Zhao <unclexiaole@gmail.com>
-Cc:     jmorris@namei.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
-Date:   Fri, 09 Apr 2021 14:55:11 -0400
-In-Reply-To: <20210407014438.39516-1-unclexiaole@gmail.com>
-References: <20210407014438.39516-1-unclexiaole@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LCl46-grENM0ezmZcNjvG7NwgbjigjgS
-X-Proofpoint-GUID: gVrNu-qGf7as0Oopr-ffI3Tah2YC0qq4
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 9 Apr 2021 14:57:51 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B46FC061763;
+        Fri,  9 Apr 2021 11:57:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ty1LGS3v38Chtaw1svPzlAmEjDpxvcnRksGoyQD0C+o=; b=dllxp3SIl7dJb2SWmtFHijzg05
+        BMWCiqHMAwP4HIGF0KTqW8xzuklitWYigJdw70af2VurVYfGvC7Oxm2N2raBt/q53boGyBc7YtFNr
+        8AJ3+yj8A3//tQz4Ef/5qaFW+VjQZcybr1RAOmVc/1cVU4jbdipfQjWS2Nok/eYyRSImo4LElQ4bV
+        yifBHCzF1ZT+TFNmmDcUT/sw8pPkUQneDX0gLUrNG9eFz1kwz87nDBEauMz2d2WnZVP4U6XR0pVf4
+        BnKVa8aQrBqviiX7uH2lUu0jO0ntht0Ii8YGU6z3b3t6GArBRGhx7VAjAYt90WlB/0VHg/tdBvekJ
+        JoY5ctFw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUwI9-000nMk-Lg; Fri, 09 Apr 2021 18:55:50 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6AD730001B;
+        Fri,  9 Apr 2021 20:55:39 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BEDE52C49B0B8; Fri,  9 Apr 2021 20:55:39 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 20:55:39 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: [PATCH 02/11] mm/page_alloc: Convert per-cpu list protection to
+ local_lock
+Message-ID: <YHCjK8OOhmxTbKu0@hirez.programming.kicks-ass.net>
+References: <20210407202423.16022-1-mgorman@techsingularity.net>
+ <20210407202423.16022-3-mgorman@techsingularity.net>
+ <YG7gV7yAEEjOcQZY@hirez.programming.kicks-ass.net>
+ <20210408174244.GG3697@techsingularity.net>
+ <YG/2scd9ADdrIyCM@hirez.programming.kicks-ass.net>
+ <20210409075939.GJ3697@techsingularity.net>
+ <YHAPOKPTgJcLuDJl@hirez.programming.kicks-ass.net>
+ <20210409133256.GN3697@techsingularity.net>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-09_07:2021-04-09,2021-04-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 malwarescore=0 spamscore=0 lowpriorityscore=0
- mlxlogscore=999 clxscore=1015 priorityscore=1501 adultscore=0 phishscore=0
- mlxscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104090133
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409133256.GN3697@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiele,
+On Fri, Apr 09, 2021 at 02:32:56PM +0100, Mel Gorman wrote:
+> That said, there are some curious users already.
+> fs/squashfs/decompressor_multi_percpu.c looks like it always uses the
+> local_lock in CPU 0's per-cpu structure instead of stabilising a per-cpu
+> pointer. 
 
-On Wed, 2021-04-07 at 01:44 +0000, Jiele Zhao wrote:
-> init_once is a callback to kmem_cache_create. The parameter
-> type of this function is void *, so it's better to give a
-> explicit cast here.
-> 
-> Signed-off-by: Jiele Zhao <unclexiaole@gmail.com>
-> ---
->  security/integrity/iint.c         | 2 +-
->  security/integrity/ima/ima_main.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> index 0ba01847e836..fca8a9409e4a 100644
-> --- a/security/integrity/iint.c
-> +++ b/security/integrity/iint.c
-> @@ -160,7 +160,7 @@ void integrity_inode_free(struct inode *inode)
->  
->  static void init_once(void *foo)
->  {
-> -	struct integrity_iint_cache *iint = foo;
-> +	struct integrity_iint_cache *iint = (struct integrity_iint_cache *) foo;
->  
->  	memset(iint, 0, sizeof(*iint));
->  	iint->ima_file_status = INTEGRITY_UNKNOWN;
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 9ef748ea829f..03bef720ab44 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -482,7 +482,7 @@ int ima_bprm_check(struct linux_binprm *bprm)
->  }
->  
->  /**
-> - * ima_path_check - based on policy, collect/store measurement.
-> + * ima_file_check - based on policy, collect/store measurement.
->   * @file: pointer to the file to be measured
->   * @mask: contains MAY_READ, MAY_WRITE, MAY_EXEC or MAY_APPEND
->   *
+I'm not sure how you read that.
 
-This change was already posted as "ima: Fix function name error in
-comment".  I've dropped this hunk.  In the future, please review your
-patch line by line before posting.
+You're talking about this:
 
-Applied to
-git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git 
-next-integrity
+  local_lock(&msblk->stream->lock);
 
-thanks,
+right? Note that msblk->stream is a per-cpu pointer, so
+&msblk->stream->lock is that same per-cpu pointer with an offset on.
 
-Mimi
+The whole think relies on:
 
+	&per_cpu_ptr(msblk->stream, cpu)->lock == per_cpu_ptr(&msblk->stream->lock, cpu)
+
+Which is true because the lhs:
+
+	(local_lock_t *)((msblk->stream + per_cpu_offset(cpu)) + offsetof(struct squashfs_stream, lock))
+
+and the rhs:
+
+	(local_lock_t *)((msblk->stream + offsetof(struct squashfs_stream, lock)) + per_cpu_offset(cpu))
+
+are identical, because addition is associative.
+
+> drivers/block/zram/zcomp.c appears to do the same although for
+> at least one of the zcomp_stream_get() callers, the CPU is pinned for
+> other reasons (bit spin lock held). I think it happens to work anyway
+> but it's weird and I'm not a fan.
+
+Same thing.
