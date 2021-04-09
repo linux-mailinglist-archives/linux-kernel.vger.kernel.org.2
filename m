@@ -2,93 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E81D735A5AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325F135A5B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234408AbhDISX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:23:56 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:42797 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbhDISXy (ORCPT
+        id S234450AbhDISZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:25:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233332AbhDISZt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:23:54 -0400
-Received: by mail-ot1-f53.google.com with SMTP id 101-20020a9d0d6e0000b02902816815ff62so697478oti.9;
-        Fri, 09 Apr 2021 11:23:40 -0700 (PDT)
+        Fri, 9 Apr 2021 14:25:49 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BBEC061762;
+        Fri,  9 Apr 2021 11:25:35 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id d12so6655315oiw.12;
+        Fri, 09 Apr 2021 11:25:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XUwBZUIdBCe74mKRCTmXiOFT82hGtbwtAggnZMTDalU=;
+        b=QdE5rJL/Do6zGFoWPgKbYf6N+crihJyOfs67So29daQxVGUXrWLWdb0u0ZeYPbFxiN
+         En8k5O17/O7V8BsQH767ggdzxXa8qp1mAbZxXK/S0vfIYSxtaqVML+xLp/Fo8LCnMv7I
+         pihEgXn0Dv36IzeGtI7+wulpUWoQCNGhFYMXn8ZRw4zfoRnAg/Jyend9YuUqiB9AS9kl
+         8SuYXBp6buUwNuqHIjd1LiGLh1nBVaJWBs2G6sMb9HoqLpYSXdVP/wcITuPs0zHmHjkj
+         V6wH/gGNx9f+JtdQYLls/avqr9ZlOvvpxPr3XU8gEKgbsfsQRR8YY/K2sdQrHhewXek9
+         RHVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d207QBVLXb7TnGS575+pzpbSUq1/8jioPIMHCrj9Isc=;
-        b=PHR6B/PVqyx0UMoN/lGgksvY2PUX0tQOrBV4jYqNuTqWGCb3p6YRB34jzbW83g7pis
-         R1LSPrfqWWyfx46b7ck4FvXBWWCr6MUdle7tdwl7Eu++OB85vPed2rvzJrHe0GJTfKhr
-         g/0pW4/muvwjGBae34r0te8b8TYXN+HnP8pGfM1j4zrieMmzStG6UDlbxcIJ0vOnJWIC
-         vR+P2DmL9apHv2gBvGbxAhN8SoGn6j4fWy3OgS5rcAGO0zqYB3VIBI8f1IQyzar8Uv8X
-         H+Fu2SWDPBW5O/Q8RXJztu1aKbagKVsE5FG+hDk5hHlatGA++UlAPRNBahg/XN6nE7UE
-         gM+g==
-X-Gm-Message-State: AOAM532LdEZ8R6XI0H401tShH7zl/Hx62HwWHYBIza9bVxWNoABiIagO
-        1iGygUqO+dQIhDUkLt/AiA==
-X-Google-Smtp-Source: ABdhPJzRgWnpxCjum+zOKwCCVU1QTor6U2aI8C2aYZTN61R1qG4ctru1jV7yiE5oulHX5NC/Kkzkhg==
-X-Received: by 2002:a05:6830:14d6:: with SMTP id t22mr146613otq.152.1617992620114;
-        Fri, 09 Apr 2021 11:23:40 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 128sm661264oog.37.2021.04.09.11.23.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:23:39 -0700 (PDT)
-Received: (nullmailer pid 3913489 invoked by uid 1000);
-        Fri, 09 Apr 2021 18:23:38 -0000
-Date:   Fri, 9 Apr 2021 13:23:38 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Flora Fu <flora.fu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>,
-        Chiawen Lee <chiawen.lee@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH 3/8] dt-bindings: apu: Add MT8192 APU power domain
-Message-ID: <20210409182338.GA3895583@robh.at.kernel.org>
-References: <1617766086-5502-1-git-send-email-flora.fu@mediatek.com>
- <1617766086-5502-4-git-send-email-flora.fu@mediatek.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XUwBZUIdBCe74mKRCTmXiOFT82hGtbwtAggnZMTDalU=;
+        b=TfdetAtwtE+1hZx+EKJcQlmc7Gj7nwYxz5M22Dh2+oWEMWfaMIgCjNiMF/mBqN7gWt
+         n8oHgYcXMqoO59Lx94qArpNsqsTMlmXt7IKqR/egndWZFfgsGfRMdpaS6K3nyXAXyp7a
+         482D1gjIiW9Xu1L233toMTieXfqhv6nRdveslzrynd1h/FB9Zb4HoYZGaC9oAtV1pq7W
+         PfzfgwWMhngyOkANuE8n8xZURZuu3q26o7E05Skows/aQor2VDpIAtMc8YkuLJOSMdY1
+         R+Su2oc844D/a3fV2g6rADM/n9cQosmYpsw40nejUc9FfTBqe9xfA/WIQ8qDhYmlT47Q
+         3BfA==
+X-Gm-Message-State: AOAM5324zsTsv/8sqIxSnfalFuVzB8HN3zmyo9hO8KBhUWONnL9E06dq
+        GF2JgeR08N04H6pI8ODjmiTQdGJpdWP9cVRYcYpaPMdvBFE=
+X-Google-Smtp-Source: ABdhPJx50B8qHN4UZH288IFG4pkAfPqaqPbgFC6d5jfFePzNb9mE5m9W1WnXUOJzVv4Uqo/2CVF79jwdI+G8Z7h579U=
+X-Received: by 2002:aca:534c:: with SMTP id h73mr68804oib.158.1617992735402;
+ Fri, 09 Apr 2021 11:25:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617766086-5502-4-git-send-email-flora.fu@mediatek.com>
+References: <20210309052226.29531-1-sergio.paracuellos@gmail.com>
+ <CAMhs-H_zBqe_+dKV4KT3QyOaONErmnCKME4-7ey2CnWJfUVseg@mail.gmail.com> <161799224004.3790633.10957084716451758402@swboyd.mtv.corp.google.com>
+In-Reply-To: <161799224004.3790633.10957084716451758402@swboyd.mtv.corp.google.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Fri, 9 Apr 2021 20:25:24 +0200
+Message-ID: <CAMhs-H98xzfK4W9KGSKR0QPtm42_K6Y5PzWiA3c-Pugau7oxyQ@mail.gmail.com>
+Subject: Re: [PATCH v11 0/6] MIPS: ralink: add CPU clock detection and clock
+ driver for MT7621
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        COMMON CLK FRAMEWORK <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
+        <devicetree@vger.kernel.org>, open list:MIPS
+        <linux-mips@vger.kernel.org>, open list:STAGING SUBSYSTEM
+        <devel@driverdev.osuosl.org>, NeilBrown <neil@brown.name>, linux-kernel" 
+        <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:28:01AM +0800, Flora Fu wrote:
-> Create MT8192 APU power domain bindings.
-> Add top power domain id.
-> 
-> Signed-off-by: Flora Fu <flora.fu@mediatek.com>
-> ---
->  include/dt-bindings/power/mt8192-apu-power.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->  create mode 100644 include/dt-bindings/power/mt8192-apu-power.h
-> 
-> diff --git a/include/dt-bindings/power/mt8192-apu-power.h b/include/dt-bindings/power/mt8192-apu-power.h
-> new file mode 100644
-> index 000000000000..b821bd4811a6
-> --- /dev/null
-> +++ b/include/dt-bindings/power/mt8192-apu-power.h
-> @@ -0,0 +1,11 @@
-> +/* SPDX-License-Identifier: GPL-2.0
-> + *
-> + * Copyright (c) 2021 MediaTek Inc.
-> + */
-> +
-> +#ifndef _DT_BINDINGS_POWER_MT8192_APU_POWER_H
-> +#define _DT_BINDINGS_POWER_MT8192_APU_POWER_H
-> +
-> +#define MT8192_POWER_DOMAIN_APUSYS_TOP	0
+Hi Stephen,
 
-Really, you don't know what the other power domains are? Please make 
-this as complete as possible. These headers create a merge mess.
+On Fri, Apr 9, 2021 at 8:17 PM Stephen Boyd <sboyd@kernel.org> wrote:
+>
+> Quoting Sergio Paracuellos (2021-03-23 01:13:22)
+> > On Tue, Mar 9, 2021 at 6:22 AM Sergio Paracuellos
+> > <sergio.paracuellos@gmail.com> wrote:
+> > >
+> > > Changes in v11:
+> > >  - Collect Rob's Reviewed-by in bindings documentation patch.
+> > >  - Fix MAINTAINERS patch using file 'mediatek,mt7621-sysc.yaml'
+> > >    for documentation bindings.
+> >
+> > Something still missing or something that is needed to be fixed to get
+> > this series applied through your tree?
+> >
+> > Thanks in advance for your time.
+> >
+>
+> Sorry I missed this series. I thought it was going through another tree.
+> It can merge through clk tree. Just a few nits on the clk driver patch
+> but otherwise I've merged the first two patches. If you resend in the
+> next few days it would be great. Thanks.
 
-Rob
+I will hopefully do during this weekend. Since you already merge the
+first two patches, the remaining four should be sent as v12, right?
