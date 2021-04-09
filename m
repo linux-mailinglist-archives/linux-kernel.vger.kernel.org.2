@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E056359A64
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 342AC359A38
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:56:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233807AbhDIJ6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:58:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44346 "EHLO mail.kernel.org"
+        id S233010AbhDIJ45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:56:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232910AbhDIJ4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:56:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DF02611CA;
-        Fri,  9 Apr 2021 09:56:34 +0000 (UTC)
+        id S233505AbhDIJ4D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:56:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 641866115B;
+        Fri,  9 Apr 2021 09:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962195;
-        bh=5u+mue5VQFpviWQ37hNU2Lu9CG2DpJwc+xL62v4k9nA=;
+        s=korg; t=1617962149;
+        bh=jX/uMPf9O5TqBbLReJpZMDzgWBSR4cg8pgu28NAtz/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r5gnp8vZO47kvJJY6bqMwM33FAQ/0n/Dp/oKpi266J7kOxZdTpp31tjCw4NI0T33m
-         EK6rL0n61vypx3J9j7olhRM41paNXvzKeqhdSwQI2Arvpp0ZYUnbrX+X+ua4C89dWT
-         8EBbqp3W9IAuU81r+umc5s7S9d7sUZ2qea8+u8EU=
+        b=Jrty2x33x99qJKjDdrVBwBu3hVsY1OPiK5NPBCwEsma+L3KaEo/bOyGWB3HqLYGa3
+         XmL9dpTpOtRjhyiDz7+VPa1Vr3xC1EQfDvG5cfX8CZKRjPoVgtI820JxF0xKDitQut
+         912TaBY5l2tiSfjcr9RxCjKfaFUFnpI3ei3YAVo0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mans Rullgard <mans@mansr.com>,
-        Tony Lindgren <tony@atomide.com>,
+        stable@vger.kernel.org,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Tom Talpey <tom@talpey.com>,
+        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 01/18] ARM: dts: am33xx: add aliases for mmc interfaces
+Subject: [PATCH 4.9 09/13] cifs: Silently ignore unknown oplock break handle
 Date:   Fri,  9 Apr 2021 11:53:29 +0200
-Message-Id: <20210409095301.574829255@linuxfoundation.org>
+Message-Id: <20210409095259.926118372@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095301.525783608@linuxfoundation.org>
-References: <20210409095301.525783608@linuxfoundation.org>
+In-Reply-To: <20210409095259.624577828@linuxfoundation.org>
+References: <20210409095259.624577828@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,41 +43,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mans Rullgard <mans@mansr.com>
+From: Vincent Whitchurch <vincent.whitchurch@axis.com>
 
-[ Upstream commit 9bbce32a20d6a72c767a7f85fd6127babd1410ac ]
+[ Upstream commit 219481a8f90ec3a5eed9638fb35609e4b1aeece7 ]
 
-Without DT aliases, the numbering of mmc interfaces is unpredictable.
-Adding them makes it possible to refer to devices consistently.  The
-popular suggestion to use UUIDs obviously doesn't work with a blank
-device fresh from the factory.
+Make SMB2 not print out an error when an oplock break is received for an
+unknown handle, similar to SMB1.  The debug message which is printed for
+these unknown handles may also be misleading, so fix that too.
 
-See commit fa2d0aa96941 ("mmc: core: Allow setting slot index via
-device tree alias") for more discussion.
+The SMB2 lease break path is not affected by this patch.
 
-Signed-off-by: Mans Rullgard <mans@mansr.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Without this, a program which writes to a file from one thread, and
+opens, reads, and writes the same file from another thread triggers the
+below errors several times a minute when run against a Samba server
+configured with "smb2 leases = no".
+
+ CIFS: VFS: \\192.168.0.1 No task to wake, unknown frame received! NumMids 2
+ 00000000: 424d53fe 00000040 00000000 00000012  .SMB@...........
+ 00000010: 00000001 00000000 ffffffff ffffffff  ................
+ 00000020: 00000000 00000000 00000000 00000000  ................
+ 00000030: 00000000 00000000 00000000 00000000  ................
+
+Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Reviewed-by: Tom Talpey <tom@talpey.com>
+Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/am33xx.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/cifs/smb2misc.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-index d3dd6a16e70a..e321acaf35d6 100644
---- a/arch/arm/boot/dts/am33xx.dtsi
-+++ b/arch/arm/boot/dts/am33xx.dtsi
-@@ -39,6 +39,9 @@ aliases {
- 		ethernet1 = &cpsw_emac1;
- 		spi0 = &spi0;
- 		spi1 = &spi1;
-+		mmc0 = &mmc1;
-+		mmc1 = &mmc2;
-+		mmc2 = &mmc3;
- 	};
+--- a/fs/cifs/smb2misc.c
++++ b/fs/cifs/smb2misc.c
+@@ -651,8 +651,8 @@ smb2_is_valid_oplock_break(char *buffer,
+ 		}
+ 	}
+ 	spin_unlock(&cifs_tcp_ses_lock);
+-	cifs_dbg(FYI, "Can not process oplock break for non-existent connection\n");
+-	return false;
++	cifs_dbg(FYI, "No file id matched, oplock break ignored\n");
++	return true;
+ }
  
- 	cpus {
--- 
-2.30.2
-
+ void
 
 
