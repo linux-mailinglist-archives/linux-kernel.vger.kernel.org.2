@@ -2,136 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD26C359724
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3FDE35972C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbhDIIH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:07:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39517 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232400AbhDIIHZ (ORCPT
+        id S232362AbhDIII3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhDIII2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:07:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617955632;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k2PTBL+nqzlKBelC7c/vISZYvaV01k6PixS2+D0BjW8=;
-        b=CMMX+WmY7vM5QTBIFlYb5sYY79hyIrbWGTwSUtru79EJbr6I+203cmAEUcoPaZSIh59TeC
-        GW/qkUP/aV3wT4eKvpM6GfQtV4i0Z2LFGp5YlzmHNKM/KHDzHyDaBln9RfohmQFygOKH6D
-        0hfEbg4m9f6zJLAv28F6IpHWk2Y/P5s=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-180-sYcaZKqyO02l33jnkyP5XA-1; Fri, 09 Apr 2021 04:07:10 -0400
-X-MC-Unique: sYcaZKqyO02l33jnkyP5XA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 748496D246;
-        Fri,  9 Apr 2021 08:07:08 +0000 (UTC)
-Received: from [10.36.115.11] (ovpn-115-11.ams2.redhat.com [10.36.115.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 701F75C1D5;
-        Fri,  9 Apr 2021 08:07:02 +0000 (UTC)
-Subject: Re: [PATCH v1 2/2] drivers/gpu/drm: don't select DMA_CMA or CMA from
- aspeed or etnaviv
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, Joel Stanley <joel@jms.id.au>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Peter Collingbourne <pcc@google.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>
-References: <20210408092011.52763-1-david@redhat.com>
- <20210408092011.52763-3-david@redhat.com>
- <CAK8P3a09LdJ-87ZrN28y=t8Sa0zL-3NOvEWhkStMY+2EbO7UAw@mail.gmail.com>
- <cd14d4b4-da82-b21c-2cd6-8e474d97b955@redhat.com>
- <CAK8P3a0Wg1mGZoBkD_RwMx-jzQNK2krrDxDQV5uhCHoyz-e=dw@mail.gmail.com>
- <7496ac87-9676-1b4e-3444-c2a662ec376b@redhat.com>
- <CAK8P3a1tVwkDbtvKi8atkrg1-CfoQHGrXLCzn_uo+=dfZJfdQA@mail.gmail.com>
- <3a2d64a7-8425-8daf-17ee-95b9f0c635f9@redhat.com>
- <CACRpkdYizKGhtYzE+22oZAduLNCOGP9Vbp=LQbXG1C-a+MyMcg@mail.gmail.com>
- <CAK8P3a2Wu7tT-YajfdXSSVvg5MYMEnEy3APJ83DcLeJdGkkSrQ@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <e6fa1b72-24ca-28bc-0115-7ceceb101e96@redhat.com>
-Date:   Fri, 9 Apr 2021 10:07:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 9 Apr 2021 04:08:28 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8C8C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:08:15 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id e12so4676406wro.11
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:08:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4n5XQyXIMcAvvSVHJa1+lHKqEgUtFQKp+M5Ydfb4ys4=;
+        b=PBaL3LS2SQBr213UpbZLcQZtzq8Tftnqxcf972qOnt5LcxDOzXyTUP4oKSW2ZS5/Vd
+         FP1LTP3r747Omm5WJgBItRP4SGiXHuPPovxyhQIKcRyh/azg5wC6tC3NmdUHtNIFjWfR
+         /c+crwDj4lx11ztCTwZ6v5qIRbyzblZUGR76rTxW5lvCggLHC38yKc9lzTubbRdV+rEr
+         3x1pGsyZe9omFLP2X4dBbpzV+uMYZgdKJoIU/im8w88aFlyHzl9r8K2GIjNtxIVLFMj4
+         JvQ191AvXnwi+/vhXtdnlXOwaKdGcBqLEow+QVLGlr34TIa2H/HuNu65/tO1/PuG/Qbp
+         IO1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4n5XQyXIMcAvvSVHJa1+lHKqEgUtFQKp+M5Ydfb4ys4=;
+        b=ehxp3EVEuw403t5DAhXsn7RFcpXvl1tJdjXZAXmIubtekfwVgQdbZf9B0wFUtKVSTW
+         Dpjdr8PpUbsNQKk/OOxQAsCf6pcrRcy2cDsPdxP6AqMuMfugU2EhUefgqqecac5/kfOH
+         yMdwZg0m61A3ZDlPxIUzCDXwQV3HqtZrg6flK4DZAlXEKhPPzg/9aTwjZZzIx0/DwDP8
+         kFfsJCh2fYH+DVvGLpGbb4K+0b2+1QMwUWmlpTeLc5ZW6qAFeDE1rTpbfp54GK7RPYkn
+         TyK7Ew6Tl7EoRKbd1jrMLfJ8kzp6lWiN1rGCHar2tUJO360vl7mjni0at2xHcROaamsm
+         p+xg==
+X-Gm-Message-State: AOAM530/4DpkbhhZP+86fYZshgTHhQRfeD6WPh7IE+0+urj6MzSye4Yl
+        V0ux+cQ0xTj3UX7Q5epHHIHqyQ==
+X-Google-Smtp-Source: ABdhPJxINGm2Cs/J55+AIsgzJGyjQFvX8rWJi0ktXHgRlfGG7RsZH/UItz3GB7TR9I/PNd+/Ulb7Vg==
+X-Received: by 2002:adf:9d48:: with SMTP id o8mr16279163wre.183.1617955694111;
+        Fri, 09 Apr 2021 01:08:14 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id z1sm3276489wrt.8.2021.04.09.01.08.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 01:08:13 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 08:08:11 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>, wanghaibin.wang@huawei.com,
+        zhukeqian1@huawei.com, yuzenghui@huawei.com
+Subject: Re: [PATCH v4 1/2] KVM: arm64: Move CMOs from user_mem_abort to the
+ fault handlers
+Message-ID: <YHALa38PPQBceqF9@google.com>
+References: <20210409033652.28316-1-wangyanan55@huawei.com>
+ <20210409033652.28316-2-wangyanan55@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a2Wu7tT-YajfdXSSVvg5MYMEnEy3APJ83DcLeJdGkkSrQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409033652.28316-2-wangyanan55@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08.04.21 15:19, Arnd Bergmann wrote:
-> On Thu, Apr 8, 2021 at 2:50 PM Linus Walleij <linus.walleij@linaro.org> wrote:
->>
->> On Thu, Apr 8, 2021 at 2:01 PM David Hildenbrand <david@redhat.com> wrote:
->>
->>>> This is something you could do using a hidden helper symbol like
->>>>
->>>> config DRMA_ASPEED_GFX
->>>>          bool "Aspeed display driver"
->>>>          select DRM_WANT_CMA
->>>>
->>>> config DRM_WANT_CMA
->>>>          bool
->>>>          help
->>>>             Select this from any driver that benefits from CMA being enabled
->>>>
->>>> config DMA_CMA
->>>>          bool "Use CMA helpers for DRM"
->>>>          default DRM_WANT_CMA
->>>>
->>>>            Arnd
->>>>
->>>
->>> That's precisely what I had first, with an additional "WANT_CMA" --  but
->>> looking at the number of such existing options (I was able to spot 1 !)
->>
->> If you do this it probably makes sense to fix a few other drivers
->> Kconfig in the process. It's not just a problem with your driver.
->> "my" drivers:
->>
->> drivers/gpu/drm/mcde/Kconfig
->> drivers/gpu/drm/pl111/Kconfig
->> drivers/gpu/drm/tve200/Kconfig
->>
->> certainly needs this as well, and pretty much anything that is
->> selecting DRM_KMS_CMA_HELPER or
->> DRM_GEM_CMA_HELPER "wants" DMA_CMA.
-> 
-> Are there any that don't select either of the helpers and
-> still want CMA? If not, it would be easy to just add
-> 
->     default  DRM_KMS_CMA_HELPER || DRM_GEM_CMA_HELPER
-> 
-> and skipt the extra symbol.
+Hi Yanan,
 
-That sounds like a reasonable thing to do. I'll look into that.
+On Friday 09 Apr 2021 at 11:36:51 (+0800), Yanan Wang wrote:
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> +static void stage2_invalidate_icache(void *addr, u64 size)
+> +{
+> +	if (icache_is_aliasing()) {
+> +		/* Flush any kind of VIPT icache */
+> +		__flush_icache_all();
+> +	} else if (is_kernel_in_hyp_mode() || !icache_is_vpipt()) {
+> +		/* PIPT or VPIPT at EL2 */
+> +		invalidate_icache_range((unsigned long)addr,
+> +					(unsigned long)addr + size);
+> +	}
+> +}
+> +
 
--- 
+I would recommend to try and rebase this patch on kvmarm/next because
+we've made a few changes in pgtable.c recently. It is now linked into
+the EL2 NVHE code which means there are constraints on what can be used
+from there -- you'll need a bit of extra work to make some of these
+functions available to EL2.
+
 Thanks,
-
-David / dhildenb
-
+Quentin
