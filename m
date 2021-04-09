@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D0735A406
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C150735A40B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234224AbhDIQwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:52:11 -0400
-Received: from ex13-edg-ou-001.vmware.com ([208.91.0.189]:3092 "EHLO
-        EX13-EDG-OU-001.vmware.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233038AbhDIQwI (ORCPT
+        id S234165AbhDIQxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233332AbhDIQxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:52:08 -0400
-Received: from sc9-mailhost3.vmware.com (10.113.161.73) by
- EX13-EDG-OU-001.vmware.com (10.113.208.155) with Microsoft SMTP Server id
- 15.0.1156.6; Fri, 9 Apr 2021 09:51:48 -0700
-Received: from vertex.localdomain (unknown [10.16.119.23])
-        by sc9-mailhost3.vmware.com (Postfix) with ESMTP id 4078520DB0;
-        Fri,  9 Apr 2021 09:51:52 -0700 (PDT)
-From:   Zack Rusin <zackr@vmware.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= <thomas_os@shipmail.org>,
-        <linux-mm@kvack.org>
-Subject: [PATCH v2] mm/mapping_dirty_helpers: Guard hugepage pud's usage
-Date:   Fri, 9 Apr 2021 12:51:51 -0400
-Message-ID: <20210409165151.694574-1-zackr@vmware.com>
-X-Mailer: git-send-email 2.27.0
+        Fri, 9 Apr 2021 12:53:19 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E5AC061760;
+        Fri,  9 Apr 2021 09:53:05 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0be10039b183a609a7c35d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:e100:39b1:83a6:9a7:c35d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A72A01EC04DA;
+        Fri,  9 Apr 2021 18:53:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617987182;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=qdhoxtp2hGKBHLadXtcjDz2Xk4ANRTM4V96sSJKs0Co=;
+        b=iOEa9+FKd6sLuv6pyKuvUjDiJ8WGjQcvG8KP/XP7G0xhZEynfEcEyidCPCCpxkOFqhQig0
+        Td+afS0yDyoCjXjTfNHdHCW+34HrRLiYLWbEVR71iDwkkSSTZB2PoYq0TwgkCKEgXxKP4F
+        nKES18Shk5z2cMnSUlza4lXbW/htbuM=
+Date:   Fri, 9 Apr 2021 18:53:02 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [RFC Part1 PATCH 11/13] x86/kernel: validate rom memory before
+ accessing when SEV-SNP is active
+Message-ID: <20210409165302.GF15567@zn.tnic>
+References: <20210324164424.28124-1-brijesh.singh@amd.com>
+ <20210324164424.28124-12-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Received-SPF: None (EX13-EDG-OU-001.vmware.com: zackr@vmware.com does not
- designate permitted sender hosts)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210324164424.28124-12-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mapping dirty helpers have, so far, been only used on X86, but
-a port of vmwgfx to ARM64 exposed a problem which results
-in a compilation error on ARM64 systems:
-mm/mapping_dirty_helpers.c: In function ‘wp_clean_pud_entry’:
-mm/mapping_dirty_helpers.c:172:32: error: implicit declaration of function ‘pud_dirty’; did you mean ‘pmd_dirty’? [-Werror=implicit-function-declaration]
+On Wed, Mar 24, 2021 at 11:44:22AM -0500, Brijesh Singh wrote:
+> +	/*
+> +	 * The ROM memory is not part of the E820 system RAM and is not prevalidated by the BIOS.
+> +	 * The kernel page table maps the ROM region as encrypted memory, the SEV-SNP requires
+> +	 * the all the encrypted memory must be validated before the access.
+> +	 */
+> +	if (sev_snp_active()) {
+> +		unsigned long n, paddr;
+> +
+> +		n = ((system_rom_resource.end + 1) - video_rom_resource.start) >> PAGE_SHIFT;
+> +		paddr = video_rom_resource.start;
+> +		early_snp_set_memory_private((unsigned long)__va(paddr), paddr, n);
+> +	}
 
-This is due to the fact that mapping_dirty_helpers code assumes
-that pud_dirty is always defined, which is not the case for
-architectures that don't define CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD.
+I don't like this sprinkling of SNP-special stuff that needs to be done,
+around the tree. Instead, pls define a function called
 
-ARM64 arch is a little inconsistent when it comes to PUD
-hugepage helpers, e.g. it defines pud_young but not pud_dirty
-but regardless of that the core kernel code shouldn't assume
-that any of the PUD hugepage helpers are available unless
-CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD is defined. This
-prevents compilation errors whenever one of the drivers
-is ported to new architectures.
+	snp_prep_memory(unsigned long pa, unsigned int num_pages, enum operation);
 
-Signed-off-by: Zack Rusin <zackr@vmware.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Hellström (Intel) <thomas_os@shipmail.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
----
- mm/mapping_dirty_helpers.c | 2 ++
- 1 file changed, 2 insertions(+)
+or so which does all the manipulation needed and the callsites only
+simply unconditionally call that function so that all detail is
+extracted and optimized away when not config-enabled.
 
-diff --git a/mm/mapping_dirty_helpers.c b/mm/mapping_dirty_helpers.c
-index b59054ef2e10..b890854ec761 100644
---- a/mm/mapping_dirty_helpers.c
-+++ b/mm/mapping_dirty_helpers.c
-@@ -165,10 +165,12 @@ static int wp_clean_pud_entry(pud_t *pud, unsigned long addr, unsigned long end,
- 		return 0;
- 	}
- 
-+#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
- 	/* Huge pud */
- 	walk->action = ACTION_CONTINUE;
- 	if (pud_trans_huge(pudval) || pud_devmap(pudval))
- 		WARN_ON(pud_write(pudval) || pud_dirty(pudval));
-+#endif
- 
- 	return 0;
- }
+Thx.
+
 -- 
-2.27.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
