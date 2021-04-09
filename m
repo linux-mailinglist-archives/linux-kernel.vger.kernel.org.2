@@ -2,246 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B264B35A4CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA03735A4CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234352AbhDIRka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:40:30 -0400
-Received: from mga09.intel.com ([134.134.136.24]:30397 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234333AbhDIRk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:40:26 -0400
-IronPort-SDR: RkFaa+GmRb5965WgEIE/ndJU6Gr7RTsezsYT9TSUFJ+v6hTBdh8q9hS7+xiEVRlBjO6B3Ftfpm
- 4VCarbSBOFGg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="193923591"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="193923591"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 10:40:09 -0700
-IronPort-SDR: n9DPyLYPo30Wx4Uks8qS93+odrWpeGzLbr6BLtXVZjVujA1i5+XObLj6Ddjfd2N2fhVX3O+l0U
- gAE6tWB4OA4g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="397559251"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 09 Apr 2021 10:40:08 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lUv71-000H7h-Nz; Fri, 09 Apr 2021 17:40:07 +0000
-Date:   Sat, 10 Apr 2021 01:39:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: [gustavoars-linux:testing/xfs-series] BUILD SUCCESS
- 387b2370698815b609f6e035e28a47980ee9b36d
-Message-ID: <60709159.OK4jmGqmURkYBtcI%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        id S234360AbhDIRlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:41:07 -0400
+Received: from mail-mw2nam08on2059.outbound.protection.outlook.com ([40.107.101.59]:27425
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234346AbhDIRlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 13:41:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n7dS/2j03n20hvbIKF2f7rhludYrv3ZM2Nrwsr0x6f3kgV6TxsgVSJh+NQRa6fT3gwX5LUfyqVETZbrhMrqF8xO6wcosG6vXUyyGM32w3ZJWJBEJxPn8N0LzgvjzCxmqAtFzg/hSP3fnYLJ4cemFjNz08BMvjqwfmrVWHuQBNDB6MWkvaArNUk4/1LALkxpJfIopbM2OqMMhcL6otyh1ZqOw0wm9NIA5lE/AF4GtDpUj3qoQaZ7LfRc0Gn2x7BucVsT0Y7cWM57YJdIs/BqkPs3Tn5x8qpFaVwuzIAlOq+UqWfxW5Hk3/D4S+Mz5qC6PAhQIPACn+tEBFgxDwyCBWg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qKYXTiMgg7OJdTOiMSf1OF5DzgxVUp1DzCffWVvS3JU=;
+ b=MPz7HEjh7QA0IIsQciYSp76k8bO1OMZA7dz3os5zdzq3NBbyzwvvbqRFHg2oRQ+6T3r3ZUGcsYqkNnbKslrElLUsWgFu6QPx1S9wYv3S4+5KcG7ZVqcujZEdkAX6n/FTSodrEqZww9xZy1CpJtnOLBBiH7ZvHczP9EuZhtuNEo7DIXLv/3h4X06eR2FSR0cl19HSeG4mFKviPUy/pRPdhzdxVycvQGDTJsgXP2hup4SDGSq0UzV+U1+MnzPIR6odrACiZqDRwZCnwdS01U8FmqEBqIeHOSVGZkqCoklYXXB1pJmJuT4zzOBbcKquK4NKMnkM2OsJGCWkzxeUefqYRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qKYXTiMgg7OJdTOiMSf1OF5DzgxVUp1DzCffWVvS3JU=;
+ b=YoHHA8lsStucWO814on4OJQ8GmaT0U8IHqOLVGkxVB97sRZ7COnzGazLNZ9n+30sytNysM5FhxA28tWfxcax15NuajF0OAmx0y87qXjV0x9glk9PKGsXEAw0hKwWR98Wa+CEHdGWd1Ms1HsYrgbjyagpGfLoDJxaUQKzdw3Qy5g=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=amd.com;
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+ by SA0PR12MB4413.namprd12.prod.outlook.com (2603:10b6:806:9e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.29; Fri, 9 Apr
+ 2021 17:40:49 +0000
+Received: from SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94]) by SN6PR12MB2718.namprd12.prod.outlook.com
+ ([fe80::9898:5b48:a062:db94%6]) with mapi id 15.20.4020.021; Fri, 9 Apr 2021
+ 17:40:49 +0000
+Cc:     brijesh.singh@amd.com, linux-kernel@vger.kernel.org,
+        x86@kernel.org, kvm@vger.kernel.org, ak@linux.intel.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [RFC Part1 PATCH 11/13] x86/kernel: validate rom memory before
+ accessing when SEV-SNP is active
+To:     Borislav Petkov <bp@alien8.de>
+References: <20210324164424.28124-1-brijesh.singh@amd.com>
+ <20210324164424.28124-12-brijesh.singh@amd.com>
+ <20210409165302.GF15567@zn.tnic>
+From:   Brijesh Singh <brijesh.singh@amd.com>
+Message-ID: <7881e369-bc5d-665c-2765-f5aca034cfd5@amd.com>
+Date:   Fri, 9 Apr 2021 12:40:46 -0500
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.9.0
+In-Reply-To: <20210409165302.GF15567@zn.tnic>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [70.112.153.56]
+X-ClientProxiedBy: SN6PR01CA0014.prod.exchangelabs.com (2603:10b6:805:b6::27)
+ To SN6PR12MB2718.namprd12.prod.outlook.com (2603:10b6:805:6f::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Brijeshs-MacBook-Pro.local (70.112.153.56) by SN6PR01CA0014.prod.exchangelabs.com (2603:10b6:805:b6::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Fri, 9 Apr 2021 17:40:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f24666b9-77be-4388-2fb6-08d8fb7e9cb7
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4413:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB44138B8E1D687F2C04552379E5739@SA0PR12MB4413.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 2NfryLeMAQLlmsdrMC0r7HgqPwNDHcsu06imKSqKbb8LMlLlKrw30Co9peeEvJQd27fPtHkcXK46JwE2C8TOYUXeD8YtklnHs2T+cKBck8VWPg/6zT9zK21FBi+A39P/Eun0hopX5eZ2VL7bx30H7ENB1Q2UFjgcRzSCrdQjnSXNRM/5No8Xu72bHdEYprtqzfT0GjBrf+UCAqVyF3QRUXfxWoYdZajPlhQr03dnhf3UDGcKLJltmn2nlcFl7eOy29OoYgL40mPEsXuazBiGZsIl1fzrhdkY8kghmvU/OaaiCXmy7/LVHzMw2xJ551wR/9piA6xfaQ+JJcTmlboQetAHZgtj3+EJxRrQlPTPpb9x7yW06WbiDdOSS4Gmsk6HJvo1z9L57Jm3q5m8IWNf1vw069DyHvLh6rKSMoOgemuui5yPcdRB9X3XTulSeWnGKSWhf3WN2cx2tucj7A5XKVjXu4L7BToA/EH+hDHdLW7RMaELfjY06Ru02WWBJdH5XWCFo18ySBEeT503TiY85v+TmC/OltjnkV1mUCC1xrPPTg9Pd/GC4cMEuJ4LdObsH4+b5jYpSedmSmV0eMHP54lZadVfrQ5vZmJt2Nupu21Ff6OlGw3ALOw5o30Y97/X4oyXYmB8VsC66GRLd99JwsiW+jluDJEl06ujLijV7OEuu0mAvKqvXjqCVHVUK2VXuvEA4rCHi826ZEprmwow1nzrbJHkJHL6D3mYQimGQOQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2718.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39860400002)(136003)(396003)(366004)(6506007)(31686004)(38100700001)(956004)(26005)(83380400001)(316002)(16526019)(8936002)(15650500001)(6512007)(7416002)(54906003)(66946007)(52116002)(44832011)(38350700001)(186003)(66476007)(2616005)(86362001)(2906002)(66556008)(31696002)(478600001)(53546011)(6916009)(4326008)(5660300002)(6486002)(8676002)(36756003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?T0dFTk1SVEFPWEdDZlhEb1FuaUltMXo3clBrS1FseG9VY0l4NFZpdzk0djNw?=
+ =?utf-8?B?UHljWnY3SVhNZU1TaEU1WDhVbXFLVXZHZEdML1pPVnRmUEhYTHhzcFd0R0VS?=
+ =?utf-8?B?NDl1bDVxWmhkVVdyNTJMUjNZZ2lhTzZXYkNraUlieSt5cWZPa0wwYUVVNEJX?=
+ =?utf-8?B?a1RKR25uUDFnTDRsOFBCaXg4ZVNwQ0FoN0d0VkxOaW5DOENSSkpTOHZsb3RK?=
+ =?utf-8?B?YmtCaXd1V2M2Y2doZjFBRGRrZlBVMHZFbjY4RSsvdEhhMFNEMDRZdkxtVzBq?=
+ =?utf-8?B?bHFDZ2VWNTkxS1JoRDdZL2FtdTBXYnB5MlVWT2RsY3AzZjN5RE1EZFBqYVc0?=
+ =?utf-8?B?bVJkWUl3b1BVTXljckE3aU5lQWxRbmp0SDgybnpBTC9SWnQ1K3NnTk9WdS9k?=
+ =?utf-8?B?OUNlaWgvNXBiRFc2alczZkdsdm5VZ0liV3RGT28wbnRGUUthQSsrWEpLQWtJ?=
+ =?utf-8?B?dTRhb3pzZVhQWDBKaW1HWGc0eGE3VVpWZDU0cjZJSy8rSFRNUk93RkF3amxz?=
+ =?utf-8?B?eVg2YWZwcjB5MmpJRXAzbnNZM1A5THlHUzMwTlFlaFBUdC90U1RTdkdTQ2Yw?=
+ =?utf-8?B?ck11K2t2SS9lM0hYejd5MWM0dG1KazR5amdKcFdhbDVVcFZjMUcvVDRXRjFl?=
+ =?utf-8?B?bzlmMWhJTUVhN0NkcEdmTmFWM2d5Q3ZMOXZUWEdHL0dmVjNKVGdoaVNPbkN0?=
+ =?utf-8?B?b08yVHFsdXFJQzB3NHordGYySFlVdkVSZXYrWDQ3ZlNBWEhIUVRiYUZWUUYx?=
+ =?utf-8?B?ci9kaHZQN2hTVkVqQlZKU2xpcDU5dStjSFFVaXlKTG5DM0JDUFdsTlpwN2Nk?=
+ =?utf-8?B?dWNFTE54cWlwdUZUaUs0cnVBWVZ5alVDWWZlVllnTlJ0WEdPOTByc0tZUTBO?=
+ =?utf-8?B?TmtmZjlTNWhpTVRVVGxmS2o0QXlZZmY5a2dwTC9zRS9seGh0SlFLUVM3OEtW?=
+ =?utf-8?B?NGpHWjFmNlhBOVlFSVd0WWlZM1dKeGtpZUx6VVBGdVhpWUNRdFMzUElkMkwx?=
+ =?utf-8?B?eDFkdHA4U3RMR0JLZlpCUmtxQVo5WE1BSHppcUtibjRYVVhiOS9JVFdkUlBF?=
+ =?utf-8?B?MG5kTmlhY0xyc0pTSnVPU1FNOTdhOFhzUXkrZXBOckhYcE5LZGEyUm9PVmNO?=
+ =?utf-8?B?UTBaUXJPcjRjQUd6eWpsVXZvOVBRS1pDM1RqUXVoVmdQa1dUangwVzUveWow?=
+ =?utf-8?B?WDdwT2lCMytqUTQ2dDVZeXUyNTRMTFQxM1I1MXltend6RFFNZHEvbjdJa1dj?=
+ =?utf-8?B?anUreTNJdTY1SU92NHVHaEZ3WmUyb3hSUWhHZFRYbFRJZjRUVTJuNzBwTm9Y?=
+ =?utf-8?B?NW1PUWpJTktISGtkOWRxV3h2T3A2UEpFL2EzSDlQcTlDYkpLOElmclUwS2Y3?=
+ =?utf-8?B?UWNZMzJSUWNNWXZPcldNbmFYSTJXUmJIa2JCbUUzZi80aUpsWVhlNkhPRS9w?=
+ =?utf-8?B?U1RSbElsMG9UNld4TU4rT1BCejhoUDJmM1JRWktHb3hidXZyQUc5bjhoakxo?=
+ =?utf-8?B?ZGwwRWlKSUY1TS9kQkZBTHk0RVpSVllwYVZoVlJEaFczVE9WZzZMS3pTWWxj?=
+ =?utf-8?B?YWxpQXQ0b05JcEx6QXhXalJNMmJPc3dNUjl0cWVnNXFWMVJTUW5vUklCMDBJ?=
+ =?utf-8?B?cndJQnY2RjdGbDNhM3BUcFFkcStuVTZMYnVsRG1vdFY2VmEvcE9Za2tvdmlZ?=
+ =?utf-8?B?enZYS3BsTjhPVzg3dUg5aUYybnJuNW5tSDlGM0w3U0FBWFdCTXBMR2ZjNHMy?=
+ =?utf-8?Q?mdmr+5RktCbJiICtQEiVqaBU/VayQHYr+e5KhoD?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f24666b9-77be-4388-2fb6-08d8fb7e9cb7
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2718.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 17:40:49.0245
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: jA5qCf9W0KFFCWlePmEwKvqm/vubXNQtZ13vJiHsm5j2ldpsU1aPmqbK4RmE+/LT1m4XqFcD3NzEWeSUwQOLng==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4413
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/xfs-series
-branch HEAD: 387b2370698815b609f6e035e28a47980ee9b36d  xfs: Replace one-element arrays with flexible-array members (test patch 1)
 
-elapsed time: 725m
+On 4/9/21 11:53 AM, Borislav Petkov wrote:
+> On Wed, Mar 24, 2021 at 11:44:22AM -0500, Brijesh Singh wrote:
+>> +	/*
+>> +	 * The ROM memory is not part of the E820 system RAM and is not prevalidated by the BIOS.
+>> +	 * The kernel page table maps the ROM region as encrypted memory, the SEV-SNP requires
+>> +	 * the all the encrypted memory must be validated before the access.
+>> +	 */
+>> +	if (sev_snp_active()) {
+>> +		unsigned long n, paddr;
+>> +
+>> +		n = ((system_rom_resource.end + 1) - video_rom_resource.start) >> PAGE_SHIFT;
+>> +		paddr = video_rom_resource.start;
+>> +		early_snp_set_memory_private((unsigned long)__va(paddr), paddr, n);
+>> +	}
+> I don't like this sprinkling of SNP-special stuff that needs to be done,
+> around the tree. Instead, pls define a function called
+>
+> 	snp_prep_memory(unsigned long pa, unsigned int num_pages, enum operation);
+>
+> or so which does all the manipulation needed and the callsites only
+> simply unconditionally call that function so that all detail is
+> extracted and optimized away when not config-enabled.
 
-configs tested: 184
-configs skipped: 4
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Sure, I will do this in the next rev.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-mips                malta_kvm_guest_defconfig
-sh                          landisk_defconfig
-arm                      tct_hammer_defconfig
-mips                     loongson1b_defconfig
-mips                         tb0226_defconfig
-openrisc                  or1klitex_defconfig
-xtensa                    xip_kc705_defconfig
-arm                            hisi_defconfig
-powerpc                      pmac32_defconfig
-arm                          lpd270_defconfig
-nios2                            alldefconfig
-m68k                         apollo_defconfig
-mips                        omega2p_defconfig
-mips                        nlm_xlr_defconfig
-powerpc                 mpc8315_rdb_defconfig
-mips                        workpad_defconfig
-sh                          rsk7203_defconfig
-arm                        spear6xx_defconfig
-sh                          sdk7786_defconfig
-arm                         lubbock_defconfig
-powerpc                          allmodconfig
-arm                       aspeed_g4_defconfig
-arm                       omap2plus_defconfig
-xtensa                generic_kc705_defconfig
-powerpc                      pcm030_defconfig
-arc                 nsimosci_hs_smp_defconfig
-xtensa                  nommu_kc705_defconfig
-nios2                               defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                   motionpro_defconfig
-sh                         ap325rxa_defconfig
-powerpc                      tqm8xx_defconfig
-openrisc                         alldefconfig
-arm                            mmp2_defconfig
-um                             i386_defconfig
-powerpc                    sam440ep_defconfig
-powerpc                    socrates_defconfig
-arm64                            alldefconfig
-powerpc                       ppc64_defconfig
-arm                          ixp4xx_defconfig
-mips                         cobalt_defconfig
-sh                           se7206_defconfig
-mips                      fuloong2e_defconfig
-arm                           sama5_defconfig
-mips                      maltasmvp_defconfig
-m68k                                defconfig
-sh                                  defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                            dove_defconfig
-arm                  colibri_pxa270_defconfig
-sh                           se7619_defconfig
-powerpc                      chrp32_defconfig
-arm                         socfpga_defconfig
-arm                            pleb_defconfig
-arm                            xcep_defconfig
-arm                          ep93xx_defconfig
-mips                            e55_defconfig
-arm                       imx_v4_v5_defconfig
-mips                           ip27_defconfig
-mips                         mpc30x_defconfig
-s390                                defconfig
-riscv                    nommu_k210_defconfig
-arc                            hsdk_defconfig
-riscv             nommu_k210_sdcard_defconfig
-arm                        multi_v5_defconfig
-h8300                               defconfig
-powerpc                         ps3_defconfig
-arm                         at91_dt_defconfig
-powerpc                      obs600_defconfig
-arm                        mini2440_defconfig
-microblaze                      mmu_defconfig
-powerpc                 mpc832x_rdb_defconfig
-sh                ecovec24-romimage_defconfig
-powerpc                     pseries_defconfig
-powerpc                     tqm8548_defconfig
-powerpc                  iss476-smp_defconfig
-mips                     cu1830-neo_defconfig
-arc                        nsim_700_defconfig
-arm                       netwinder_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                 mpc8540_ads_defconfig
-m68k                         amcore_defconfig
-microblaze                          defconfig
-sh                        sh7785lcr_defconfig
-ia64                             allyesconfig
-m68k                       m5208evb_defconfig
-openrisc                            defconfig
-ia64                          tiger_defconfig
-sh                   sh7770_generic_defconfig
-powerpc                 canyonlands_defconfig
-powerpc                    mvme5100_defconfig
-csky                                defconfig
-arm                        cerfcube_defconfig
-mips                      maltaaprp_defconfig
-sh                          urquell_defconfig
-arc                      axs103_smp_defconfig
-powerpc                     taishan_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                     ppa8548_defconfig
-mips                           xway_defconfig
-powerpc                       eiger_defconfig
-mips                       rbtx49xx_defconfig
-powerpc                     ksi8560_defconfig
-mips                           ip28_defconfig
-powerpc                    adder875_defconfig
-arm                         mv78xx0_defconfig
-arm                       multi_v4t_defconfig
-xtensa                  cadence_csp_defconfig
-powerpc64                           defconfig
-sh                          sdk7780_defconfig
-sh                   secureedge5410_defconfig
-arm                       versatile_defconfig
-arc                        nsimosci_defconfig
-ia64                                defconfig
-ia64                             allmodconfig
-m68k                             allmodconfig
-m68k                             allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-alpha                               defconfig
-alpha                            allyesconfig
-arc                                 defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-i386                 randconfig-a006-20210409
-i386                 randconfig-a003-20210409
-i386                 randconfig-a001-20210409
-i386                 randconfig-a004-20210409
-i386                 randconfig-a002-20210409
-i386                 randconfig-a005-20210409
-x86_64               randconfig-a014-20210409
-x86_64               randconfig-a015-20210409
-x86_64               randconfig-a012-20210409
-x86_64               randconfig-a011-20210409
-x86_64               randconfig-a013-20210409
-x86_64               randconfig-a016-20210409
-i386                 randconfig-a014-20210409
-i386                 randconfig-a011-20210409
-i386                 randconfig-a016-20210409
-i386                 randconfig-a012-20210409
-i386                 randconfig-a013-20210409
-i386                 randconfig-a015-20210409
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
 
-clang tested configs:
-x86_64               randconfig-a004-20210409
-x86_64               randconfig-a005-20210409
-x86_64               randconfig-a003-20210409
-x86_64               randconfig-a001-20210409
-x86_64               randconfig-a002-20210409
-x86_64               randconfig-a006-20210409
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> Thx.
+>
