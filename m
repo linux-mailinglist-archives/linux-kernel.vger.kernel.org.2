@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14403590ED
+	by mail.lfdr.de (Postfix) with ESMTP id 8575C3590EC
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 02:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbhDIAbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 20:31:35 -0400
-Received: from mga09.intel.com ([134.134.136.24]:24383 "EHLO mga09.intel.com"
+        id S233090AbhDIAbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 20:31:33 -0400
+Received: from mga14.intel.com ([192.55.52.115]:37864 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232488AbhDIAbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232967AbhDIAbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Apr 2021 20:31:32 -0400
-IronPort-SDR: pWcmsLKyEW1CHaW88RcctWtcSBL71aZTQvuNVtsURUpnSWKrby57yTlHaT7Qoqd/Cwwe8/qJew
- xBRvqLrkN03Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="193773503"
+IronPort-SDR: PYCeeFGL5V6TzF7Knabzdz8CLEbiaeXGX1KfFhHV0tTV/qlYff93E/PejS4fLV9ISEy8gok7Gf
+ lyaCyUFFCPKA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="193204768"
 X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="193773503"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 17:31:20 -0700
-IronPort-SDR: IuxkZg8gbRdjGgOs4CCwQjxu3rDkUK0YvwDyhtB1b8a/N2+B7d/PLmwB1DqO+SQG0ju5Fkf20s
- y0biYm797a1A==
+   d="scan'208";a="193204768"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 17:31:20 -0700
+IronPort-SDR: qMNrifIBkpk+Wl7JJ2E6o+ymAhrhU6r7zDVL3uS5VFCXjA7PtvZ3YhpufqBC0fHJjvylConsk4
+ HWzKaN2y73jg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="387590514"
+   d="scan'208";a="381916600"
 Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 08 Apr 2021 17:31:18 -0700
+  by orsmga006.jf.intel.com with ESMTP; 08 Apr 2021 17:31:18 -0700
 Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
         (envelope-from <lkp@intel.com>)
-        id 1lUf3O-000Ft3-5m; Fri, 09 Apr 2021 00:31:18 +0000
-Date:   Fri, 09 Apr 2021 08:30:31 +0800
+        id 1lUf3O-000FtK-AO; Fri, 09 Apr 2021 00:31:18 +0000
+Date:   Fri, 09 Apr 2021 08:30:36 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/entry] BUILD SUCCESS
- 70918779aec9bd01d16f4e6e800ffe423d196021
-Message-ID: <606fa027.1B03KSybCV6IZwQO%lkp@intel.com>
+Subject: [tip:x86/core] BUILD SUCCESS
+ 53375a5a218e7ea0ac18087946b5391f749b764f
+Message-ID: <606fa02c.7bqgMX08lFMDcHbS%lkp@intel.com>
 User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -43,13 +43,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/entry
-branch HEAD: 70918779aec9bd01d16f4e6e800ffe423d196021  arm64: entry: Enable random_kstack_offset support
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/core
+branch HEAD: 53375a5a218e7ea0ac18087946b5391f749b764f  x86/cpu: Resort and comment Intel models
 
 elapsed time: 720m
 
-configs tested: 200
-configs skipped: 3
+configs tested: 196
+configs skipped: 85
 
 The following configs have been built successfully.
 More configs may be tested in the coming days.
@@ -81,7 +81,6 @@ arm                            pleb_defconfig
 m68k                         amcore_defconfig
 sparc                       sparc32_defconfig
 powerpc                     ppa8548_defconfig
-mips                     loongson1b_defconfig
 x86_64                           alldefconfig
 mips                    maltaup_xpa_defconfig
 powerpc                           allnoconfig
@@ -126,6 +125,7 @@ m68k                                defconfig
 powerpc                    socrates_defconfig
 sh                            shmin_defconfig
 riscv                    nommu_k210_defconfig
+mips                     loongson1b_defconfig
 mips                  decstation_64_defconfig
 powerpc                      ppc64e_defconfig
 mips                          rb532_defconfig
@@ -139,9 +139,6 @@ sh                          landisk_defconfig
 powerpc                      arches_defconfig
 parisc                           allyesconfig
 riscv                               defconfig
-sh                           se7343_defconfig
-sh                        sh7785lcr_defconfig
-sh                          rsk7201_defconfig
 m68k                          hp300_defconfig
 s390                          debug_defconfig
 sh                 kfr2r09-romimage_defconfig
@@ -152,16 +149,13 @@ openrisc                         alldefconfig
 mips                           ip27_defconfig
 arm                         s3c6400_defconfig
 arm                         orion5x_defconfig
-um                           x86_64_defconfig
-arc                    vdk_hs38_smp_defconfig
-arm                          ixp4xx_defconfig
-sh                  sh7785lcr_32bit_defconfig
 sh                           se7206_defconfig
 nios2                            alldefconfig
 arc                        vdk_hs38_defconfig
 sh                          sdk7786_defconfig
 powerpc                     mpc83xx_defconfig
 arm                          pxa3xx_defconfig
+um                           x86_64_defconfig
 sh                   sh7724_generic_defconfig
 sh                          rsk7269_defconfig
 mips                        bcm47xx_defconfig
@@ -181,12 +175,14 @@ powerpc                    mvme5100_defconfig
 arm                        trizeps4_defconfig
 arm                            xcep_defconfig
 ia64                            zx1_defconfig
+sh                  sh7785lcr_32bit_defconfig
 powerpc                      pasemi_defconfig
 powerpc                 mpc832x_rdb_defconfig
 powerpc               mpc834x_itxgp_defconfig
 arm                          ep93xx_defconfig
 arm                            dove_defconfig
 powerpc                 mpc85xx_cds_defconfig
+arc                    vdk_hs38_smp_defconfig
 mips                           ip32_defconfig
 arm                        realview_defconfig
 arm                        mvebu_v7_defconfig
@@ -220,10 +216,10 @@ mips                             allyesconfig
 mips                             allmodconfig
 powerpc                          allyesconfig
 powerpc                          allmodconfig
+x86_64               randconfig-a004-20210408
 x86_64               randconfig-a005-20210408
 x86_64               randconfig-a003-20210408
 x86_64               randconfig-a001-20210408
-x86_64               randconfig-a004-20210408
 x86_64               randconfig-a002-20210408
 x86_64               randconfig-a006-20210408
 i386                 randconfig-a006-20210408
