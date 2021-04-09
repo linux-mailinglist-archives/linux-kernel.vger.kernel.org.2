@@ -2,139 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A2835994A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32C335994D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:35:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhDIJe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:34:57 -0400
-Received: from smtp.asem.it ([151.1.184.197]:60344 "EHLO smtp.asem.it"
+        id S232416AbhDIJfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:35:23 -0400
+Received: from mga18.intel.com ([134.134.136.126]:48868 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230181AbhDIJew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:34:52 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 8.0.0)
-        with ESMTP id 0f1f874f5440409cb4c03deac448506e.MSG
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 11:34:37 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 9 Apr
- 2021 11:34:35 +0200
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.2176.2 via Frontend
- Transport; Fri, 9 Apr 2021 11:34:35 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-CC:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH v1] watchdog: add new parameter to start the watchdog on module insertion
-Date:   Fri, 9 Apr 2021 11:34:34 +0200
-Message-ID: <20210409093434.2089459-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.25.1
+        id S231127AbhDIJfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:35:22 -0400
+IronPort-SDR: 5HJNt/p6ERzA1nXiZEH5FEsm/t0s7RUYW9TfE4EINLuEYZP6Jys9/4uQXD+lP2w8Gs2CrLFe/f
+ P82uhbO2evEg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="181261032"
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="181261032"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 02:35:09 -0700
+IronPort-SDR: Fw42pGcnaUcO+mqRGnPxwsl+pILV7+edI7hDYr2eg1Iyt+tjJ8waOtSH9+zYjMne7kG13BrW43
+ uKzK6PSAzvbg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="520224195"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 09 Apr 2021 02:35:07 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 09 Apr 2021 12:35:06 +0300
+Date:   Fri, 9 Apr 2021 12:35:06 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: tcpm: remove useless variable
+Message-ID: <YHAfyg8SVB9KPXwB@kuha.fi.intel.com>
+References: <1617960136-95131-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F16.60701FAC.0082,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1617960136-95131-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new parameter "start_enabled" starts the watchdog at the same time
-of the module insertion.
-This feature is very useful in embedded systems, to avoid cases where
-the system hangs before reaching userspace.
+On Fri, Apr 09, 2021 at 05:22:16PM +0800, Jiapeng Chong wrote:
+> Fix the following gcc warning:
+> 
+> drivers/usb/typec/tcpm/tcpm.c:2107:39: warning: ‘tcpm_altmode_ops’
+> defined but not used [-Wunused-const-variable=].
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 6 ------
+>  1 file changed, 6 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index ce7af39..4585785 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -2104,12 +2104,6 @@ static int tcpm_altmode_vdm(struct typec_altmode *altmode,
+>  	return 0;
+>  }
+>  
+> -static const struct typec_altmode_ops tcpm_altmode_ops = {
+> -	.enter = tcpm_altmode_enter,
+> -	.exit = tcpm_altmode_exit,
+> -	.vdm = tcpm_altmode_vdm,
+> -};
 
-This function can be also enabled in the kernel config, so can be
-used when the watchdog driver is build as built-in.
+You remove that but leave the functions. That should create even more
+warnings for you, because now there are no users for those functions.
 
-This parameter involves the "core" section of the watchdog driver;
-in this way it is common for all the watchdog hardware implementations.
+There is another, more complete patch for this, but I don't think we
+should take either of these now. We about to get a user for
+tcpm_altmode_ops.
 
-Note: to use only for watchdog drivers which doesn't support this
-      parameter by itself.
+Br,
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
----
- Documentation/watchdog/watchdog-parameters.rst |  5 +++++
- drivers/watchdog/Kconfig                       | 14 ++++++++++++++
- drivers/watchdog/watchdog_core.c               | 12 ++++++++++++
- 3 files changed, 31 insertions(+)
-
-diff --git a/Documentation/watchdog/watchdog-parameters.rst b/Documentation/watchdog/watchdog-parameters.rst
-index 223c99361a30..623fd064df91 100644
---- a/Documentation/watchdog/watchdog-parameters.rst
-+++ b/Documentation/watchdog/watchdog-parameters.rst
-@@ -21,6 +21,11 @@ watchdog core:
- 	timeout. Setting this to a non-zero value can be useful to ensure that
- 	either userspace comes up properly, or the board gets reset and allows
- 	fallback logic in the bootloader to try something else.
-+    start_enabled:
-+	Watchdog is started on module insertion. This option can be also
-+	selected by kernel config (default=kernel config parameter).
-+	Use only for watchdog drivers which doesn't support this parameter
-+	by itself.
- 
- -------------------------------------------------
- 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index 0470dc15c085..c2a668d6bbbc 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -47,6 +47,20 @@ config WATCHDOG_NOWAYOUT
- 	  get killed. If you say Y here, the watchdog cannot be stopped once
- 	  it has been started.
- 
-+config WATCHDOG_START_ENABLED
-+	bool "Start watchdog on module insertion"
-+	help
-+	  Say Y if you want to start the watchdog at the same time when the
-+	  driver is loaded.
-+	  This feature is very useful in embedded systems, to avoid cases where
-+	  the system could hang before reaching userspace.
-+	  This parameter involves the "core" section of the watchdog driver,
-+	  in this way it is common for all the watchdog hardware
-+	  implementations.
-+
-+	  Note: to use only for watchdog drivers which doesn't support this
-+	        parameter by itself.
-+
- config WATCHDOG_HANDLE_BOOT_ENABLED
- 	bool "Update boot-enabled watchdog until userspace takes over"
- 	default y
-diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
-index 5df0a22e2cb4..5052ae355219 100644
---- a/drivers/watchdog/watchdog_core.c
-+++ b/drivers/watchdog/watchdog_core.c
-@@ -43,6 +43,11 @@ static int stop_on_reboot = -1;
- module_param(stop_on_reboot, int, 0444);
- MODULE_PARM_DESC(stop_on_reboot, "Stop watchdogs on reboot (0=keep watching, 1=stop)");
- 
-+static bool start_enabled = IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED);
-+module_param(start_enabled, bool, 0444);
-+MODULE_PARM_DESC(start_enabled, "Start watchdog on module insertion (default="
-+	__MODULE_STRING(IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED)) ")");
-+
- /*
-  * Deferred Registration infrastructure.
-  *
-@@ -224,6 +229,13 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
- 	 * corrupted in a later stage then we expect a kernel panic!
- 	 */
- 
-+	/* If required, start the watchdog immediately */
-+	if (start_enabled) {
-+		set_bit(WDOG_HW_RUNNING, &wdd->status);
-+		wdd->ops->start(wdd);
-+		pr_info("Watchdog enabled\n");
-+	}
-+
- 	/* Use alias for watchdog id if possible */
- 	if (wdd->parent) {
- 		ret = of_alias_get_id(wdd->parent->of_node, "watchdog");
 -- 
-2.25.1
-
+heikki
