@@ -2,222 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6701435A26E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6CF235A272
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233752AbhDIP45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:56:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
+        id S233790AbhDIP53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbhDIP44 (ORCPT
+        with ESMTP id S233288AbhDIP51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:56:56 -0400
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8E4C061760;
-        Fri,  9 Apr 2021 08:56:43 -0700 (PDT)
-Received: by mail-oo1-xc2d.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso1441796ooq.6;
-        Fri, 09 Apr 2021 08:56:43 -0700 (PDT)
+        Fri, 9 Apr 2021 11:57:27 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAF4C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:57:13 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id f17so3387924lfu.7
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:57:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=zS4oOL5HKDn9FDzihO/lTrV8DNOB2FWtFwRfLW84+lc=;
-        b=IWHF1EDZ2QLXkKVqTO1X36F2AQAvhhQ7gxF8ExGQvugxEsH+sx38REIWFnjLPTIlwD
-         Qe0CKfy04fPJjAzDVhTdhX4wXo9w3CEf/s7vnJxCXUhEhEDnYooA+i8ltu7ia9XJA8oY
-         83syYVfr40Lj16+wAJZeM7CXnLPpTbFEdeQpPLy8xDk9Rf/5lqyfpFU+0lIOrx8C3SF0
-         SdbTBfdCz52LNe/Nsu/kz1kn5CSB4HdI2KtSuv/kfFmBYE+I9UqbakNvvnOwqYQMRCMd
-         agXUPyXQRg0cXJ4VyXKuNNJfpap99w1HRMvirU43FNhQ5TFSVaCD/5H39Cb5UnygbhnX
-         uPCw==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XsvaSY8zYN9q+b8PbsWtp1w+Khl2vjj666Eagwy6n5c=;
+        b=Sxywz2hcOMwDVDk2CRpRj35+nfOUayyt5AgurLU6/5LbZVVIrGm0OSEUetnqf8s+Xr
+         Ca3L5pd44k1WYJtzFaqb1ge5LmarpaDUj83GyGgHm1xh5gwqrIAqy0/csimThBS4XZKp
+         F90EiIohVQpSZ/n+/XVxCqqjsXRNzApETZu2jafVluNR5Toh2A4EiU+Cy3IjahBUR2KM
+         /rfpuVa/n9Zh2fkO1GBaDCNniGZj/oEm9Od19IKM2cQ3TIcXZ3/MV0RGluxxEd6Vl8dm
+         jBevVax0yxfRXa6E9Lxz5kQMBqE6l252/antXatpXEYgFPqzK22/wjgjhUmtKaffmm8B
+         jeVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=zS4oOL5HKDn9FDzihO/lTrV8DNOB2FWtFwRfLW84+lc=;
-        b=jFstaeIHSu5C4+wEZqpsoMqp4cOUfbGNoEBQDw0PfZhpVfFe5B7MNztelrFNHdC01D
-         jBZHKGS85mRsd+YGiHQAzslmMKSVgwHMZsg7hzH8oSJngkt1dGx9A9srxc/O4zouYlqN
-         S6nXUdpNXN8+vV/ln7G5Oj4BOLd19ki4Aq6q0BjumbtbxfbmQCzTvEHZYgbZD7q/Do9i
-         RfE4k+vCwJR/rH+87ptXov87Cbj+F8RZStH9MdLwTLHEpH6UTFJyBMPPpWHn2JZ6/A7D
-         q1Ca0m3eMzHRnfO6lkBXxYcUP77iennOwQGyeFFWj8NXC2fd3Tq8ZEPcaXXcbFe3r5gn
-         clyQ==
-X-Gm-Message-State: AOAM533g7t/qCTGlf/RBq0HNrUIRD4QYprFO0KQpAb10nlbIqKgSpKYm
-        zLB00ogCBhpZqHlkUH9Lb2Vycp0y/Uc=
-X-Google-Smtp-Source: ABdhPJySz1NAfHv3PIXFXvsVgn3JWmjNJv5JK7jE8Ok8+02GazxBMsXcAnGhSNkqNc1h1DUCqDJrQQ==
-X-Received: by 2002:a4a:d10f:: with SMTP id k15mr12474691oor.82.1617983802774;
-        Fri, 09 Apr 2021 08:56:42 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a7sm587160ooo.30.2021.04.09.08.56.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Apr 2021 08:56:41 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v1] watchdog: add new parameter to start the watchdog on
- module insertion
-To:     Flavio Suligoi <f.suligoi@asem.it>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210409093434.2089459-1-f.suligoi@asem.it>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <e44f3366-cb12-7d7c-fe77-20b5bfea620d@roeck-us.net>
-Date:   Fri, 9 Apr 2021 08:56:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XsvaSY8zYN9q+b8PbsWtp1w+Khl2vjj666Eagwy6n5c=;
+        b=qCYp4ZcFEu3p35yU+w3NJDLwmoDqLkBHhcpQIkFFDGJuszg6TaD+hJ94/GpTwKnz4/
+         coBO6ZAsqH85wreX0j9Z6ASmggdTimQGaD7vZZSYDTTRy9NWdh3+Irt2yeW/D+UG0gPi
+         ifEgoyL4VGcc6NNOY/Np6Xqju5SeIFTU7sXQjA0qDY9BrRady5ek+Ku5vTaCV+5q26Ya
+         GtF4+/9uwwN8L4jWiWz6aUeWo8SPSVqt3W8eYOBVhy1xZYLRbXNQVh5/WZ1KYNiaVKr+
+         T09CL4jyIneyX9e0WJMHBXJrEBzYmUgtovyOzqu3NCuGjZMFsP40EP2UjpOpHkvhy3H0
+         HOcA==
+X-Gm-Message-State: AOAM531H3AZ9GoeCLCRxMuMWiW+24GnIaQ2Ma0GSVr5W6Dpl+m6LWJTW
+        8jEG7/Z0Massd3qhSsTVY6KDyg==
+X-Google-Smtp-Source: ABdhPJx4167C4epw4GZ3O6x+I3bz4h7dUH3Dy06BAJVx7+AZjRBM6+oPCgBhDIGlc3OtAdyHcZZ4mw==
+X-Received: by 2002:a05:6512:33a8:: with SMTP id i8mr10617815lfg.375.1617983832458;
+        Fri, 09 Apr 2021 08:57:12 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id f15sm304423lfr.51.2021.04.09.08.57.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 08:57:11 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 586C5102498; Fri,  9 Apr 2021 18:57:11 +0300 (+03)
+Date:   Fri, 9 Apr 2021 18:57:11 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v24 22/30] x86/cet/shstk: Add user-mode shadow stack
+ support
+Message-ID: <20210409155711.kxf3fjc7csvqpl33@box.shutemov.name>
+References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
+ <20210401221104.31584-23-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210409093434.2089459-1-f.suligoi@asem.it>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401221104.31584-23-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/21 2:34 AM, Flavio Suligoi wrote:
-> The new parameter "start_enabled" starts the watchdog at the same time
-> of the module insertion.
-> This feature is very useful in embedded systems, to avoid cases where
-> the system hangs before reaching userspace.
+On Thu, Apr 01, 2021 at 03:10:56PM -0700, Yu-cheng Yu wrote:
+> Introduce basic shadow stack enabling/disabling/allocation routines.
+> A task's shadow stack is allocated from memory with VM_SHADOW_STACK flag
+> and has a fixed size of min(RLIMIT_STACK, 4GB).
 > 
-> This function can be also enabled in the kernel config, so can be
-> used when the watchdog driver is build as built-in.
-> 
-> This parameter involves the "core" section of the watchdog driver;
-> in this way it is common for all the watchdog hardware implementations.
-> 
-> Note: to use only for watchdog drivers which doesn't support this
->       parameter by itself.
-> 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Cc: Kees Cook <keescook@chromium.org>
 > ---
->  Documentation/watchdog/watchdog-parameters.rst |  5 +++++
->  drivers/watchdog/Kconfig                       | 14 ++++++++++++++
->  drivers/watchdog/watchdog_core.c               | 12 ++++++++++++
->  3 files changed, 31 insertions(+)
+> v24:
+> - Rename cet.c to shstk.c, update related areas accordingly.
 > 
-> diff --git a/Documentation/watchdog/watchdog-parameters.rst b/Documentation/watchdog/watchdog-parameters.rst
-> index 223c99361a30..623fd064df91 100644
-> --- a/Documentation/watchdog/watchdog-parameters.rst
-> +++ b/Documentation/watchdog/watchdog-parameters.rst
-> @@ -21,6 +21,11 @@ watchdog core:
->  	timeout. Setting this to a non-zero value can be useful to ensure that
->  	either userspace comes up properly, or the board gets reset and allows
->  	fallback logic in the bootloader to try something else.
-> +    start_enabled:
-> +	Watchdog is started on module insertion. This option can be also
-> +	selected by kernel config (default=kernel config parameter).
-> +	Use only for watchdog drivers which doesn't support this parameter
-> +	by itself.
-
-Why ?
-
+>  arch/x86/include/asm/cet.h       |  29 +++++++
+>  arch/x86/include/asm/processor.h |   5 ++
+>  arch/x86/kernel/Makefile         |   2 +
+>  arch/x86/kernel/shstk.c          | 128 +++++++++++++++++++++++++++++++
+>  4 files changed, 164 insertions(+)
+>  create mode 100644 arch/x86/include/asm/cet.h
+>  create mode 100644 arch/x86/kernel/shstk.c
+> 
+> diff --git a/arch/x86/include/asm/cet.h b/arch/x86/include/asm/cet.h
+> new file mode 100644
+> index 000000000000..aa85d599b184
+> --- /dev/null
+> +++ b/arch/x86/include/asm/cet.h
+> @@ -0,0 +1,29 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_X86_CET_H
+> +#define _ASM_X86_CET_H
+> +
+> +#ifndef __ASSEMBLY__
+> +#include <linux/types.h>
+> +
+> +struct task_struct;
+> +/*
+> + * Per-thread CET status
+> + */
+> +struct cet_status {
+> +	unsigned long	shstk_base;
+> +	unsigned long	shstk_size;
+> +};
+> +
+> +#ifdef CONFIG_X86_SHADOW_STACK
+> +int shstk_setup(void);
+> +void shstk_free(struct task_struct *p);
+> +void shstk_disable(void);
+> +#else
+> +static inline int shstk_setup(void) { return 0; }
+> +static inline void shstk_free(struct task_struct *p) {}
+> +static inline void shstk_disable(void) {}
+> +#endif
+> +
+> +#endif /* __ASSEMBLY__ */
+> +
+> +#endif /* _ASM_X86_CET_H */
+> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+> index f1b9ed5efaa9..a5d703fda74e 100644
+> --- a/arch/x86/include/asm/processor.h
+> +++ b/arch/x86/include/asm/processor.h
+> @@ -27,6 +27,7 @@ struct vm86;
+>  #include <asm/unwind_hints.h>
+>  #include <asm/vmxfeatures.h>
+>  #include <asm/vdso/processor.h>
+> +#include <asm/cet.h>
 >  
->  -------------------------------------------------
+>  #include <linux/personality.h>
+>  #include <linux/cache.h>
+> @@ -535,6 +536,10 @@ struct thread_struct {
 >  
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index 0470dc15c085..c2a668d6bbbc 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -47,6 +47,20 @@ config WATCHDOG_NOWAYOUT
->  	  get killed. If you say Y here, the watchdog cannot be stopped once
->  	  it has been started.
+>  	unsigned int		sig_on_uaccess_err:1;
 >  
-> +config WATCHDOG_START_ENABLED
-> +	bool "Start watchdog on module insertion"
-> +	help
-> +	  Say Y if you want to start the watchdog at the same time when the
-> +	  driver is loaded.
-> +	  This feature is very useful in embedded systems, to avoid cases where
-> +	  the system could hang before reaching userspace.
-> +	  This parameter involves the "core" section of the watchdog driver,
-> +	  in this way it is common for all the watchdog hardware
-> +	  implementations.
+> +#ifdef CONFIG_X86_CET
+> +	struct cet_status	cet;
+> +#endif
+> +
+>  	/* Floating point and extended processor state */
+>  	struct fpu		fpu;
+>  	/*
+> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
+> index 2ddf08351f0b..0f99b093f350 100644
+> --- a/arch/x86/kernel/Makefile
+> +++ b/arch/x86/kernel/Makefile
+> @@ -150,6 +150,8 @@ obj-$(CONFIG_UNWINDER_FRAME_POINTER)	+= unwind_frame.o
+>  obj-$(CONFIG_UNWINDER_GUESS)		+= unwind_guess.o
+>  
+>  obj-$(CONFIG_AMD_MEM_ENCRYPT)		+= sev-es.o
+> +obj-$(CONFIG_X86_SHADOW_STACK)		+= shstk.o
+> +
+>  ###
+>  # 64 bit specific files
+>  ifeq ($(CONFIG_X86_64),y)
+> diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+> new file mode 100644
+> index 000000000000..5406fdf6df3c
+> --- /dev/null
+> +++ b/arch/x86/kernel/shstk.c
+> @@ -0,0 +1,128 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * shstk.c - Intel shadow stack support
+> + *
+> + * Copyright (c) 2021, Intel Corporation.
+> + * Yu-cheng Yu <yu-cheng.yu@intel.com>
+> + */
+> +
+> +#include <linux/types.h>
+> +#include <linux/mm.h>
+> +#include <linux/mman.h>
+> +#include <linux/slab.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/sched/signal.h>
+> +#include <linux/compat.h>
+> +#include <linux/sizes.h>
+> +#include <linux/user.h>
+> +#include <asm/msr.h>
+> +#include <asm/fpu/internal.h>
+> +#include <asm/fpu/xstate.h>
+> +#include <asm/fpu/types.h>
+> +#include <asm/cet.h>
+> +
+> +static void start_update_msrs(void)
+> +{
+> +	fpregs_lock();
+> +	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+> +		__fpregs_load_activate();
+> +}
+> +
+> +static void end_update_msrs(void)
+> +{
+> +	fpregs_unlock();
+> +}
+> +
+> +static unsigned long alloc_shstk(unsigned long size, int flags)
+> +{
+> +	struct mm_struct *mm = current->mm;
+> +	unsigned long addr, populate;
+> +
+> +	/* VM_SHADOW_STACK requires MAP_ANONYMOUS, MAP_PRIVATE */
+> +	flags |= MAP_ANONYMOUS | MAP_PRIVATE;
 
-"This parameter applies to all watchdog drivers.". The rest is implementation
-detail and irrelevant here.
+Looks like all callers has flags == 0. Do I miss something.
 
 > +
-> +	  Note: to use only for watchdog drivers which doesn't support this
-> +	        parameter by itself.
+> +	mmap_write_lock(mm);
+> +	addr = do_mmap(NULL, 0, size, PROT_READ, flags, VM_SHADOW_STACK, 0,
+> +		       &populate, NULL);
+> +	mmap_write_unlock(mm);
 > +
+> +	if (populate)
+> +		mm_populate(addr, populate);
 
-This comment is quite useless in the Kconfig description. If enabled, it is enabled,
-period.
+If all callers pass down flags==0, populate will never happen.
 
->  config WATCHDOG_HANDLE_BOOT_ENABLED
->  	bool "Update boot-enabled watchdog until userspace takes over"
->  	default y
-> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
-> index 5df0a22e2cb4..5052ae355219 100644
-> --- a/drivers/watchdog/watchdog_core.c
-> +++ b/drivers/watchdog/watchdog_core.c
-> @@ -43,6 +43,11 @@ static int stop_on_reboot = -1;
->  module_param(stop_on_reboot, int, 0444);
->  MODULE_PARM_DESC(stop_on_reboot, "Stop watchdogs on reboot (0=keep watching, 1=stop)");
->  
-> +static bool start_enabled = IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED);
-> +module_param(start_enabled, bool, 0444);
-> +MODULE_PARM_DESC(start_enabled, "Start watchdog on module insertion (default="
-> +	__MODULE_STRING(IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED)) ")");
 > +
->  /*
->   * Deferred Registration infrastructure.
->   *
-> @@ -224,6 +229,13 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
->  	 * corrupted in a later stage then we expect a kernel panic!
->  	 */
->  
-> +	/* If required, start the watchdog immediately */
-> +	if (start_enabled) {
-> +		set_bit(WDOG_HW_RUNNING, &wdd->status);
-> +		wdd->ops->start(wdd);
-> +		pr_info("Watchdog enabled\n");
+> +	return addr;
+> +}
+> +
+> +int shstk_setup(void)
+> +{
+> +	unsigned long addr, size;
+> +	struct cet_status *cet = &current->thread.cet;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK))
+> +		return -EOPNOTSUPP;
+> +
+> +	size = round_up(min_t(unsigned long long, rlimit(RLIMIT_STACK), SZ_4G), PAGE_SIZE);
+> +	addr = alloc_shstk(size, 0);
+> +	if (IS_ERR_VALUE(addr))
+> +		return PTR_ERR((void *)addr);
+> +
+> +	cet->shstk_base = addr;
+> +	cet->shstk_size = size;
+> +
+> +	start_update_msrs();
+> +	wrmsrl(MSR_IA32_PL3_SSP, addr + size);
+> +	wrmsrl(MSR_IA32_U_CET, CET_SHSTK_EN);
+> +	end_update_msrs();
+> +	return 0;
+> +}
+> +
+> +void shstk_free(struct task_struct *tsk)
+> +{
+> +	struct cet_status *cet = &tsk->thread.cet;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK) ||
+> +	    !cet->shstk_size ||
+> +	    !cet->shstk_base)
+> +		return;
+> +
+> +	if (!tsk->mm)
+> +		return;
+> +
+> +	while (1) {
+> +		int r;
+> +
+> +		r = vm_munmap(cet->shstk_base, cet->shstk_size);
+> +
+> +		/*
+> +		 * vm_munmap() returns -EINTR when mmap_lock is held by
+> +		 * something else, and that lock should not be held for a
+> +		 * long time.  Retry it for the case.
+> +		 */
+
+Hm, no. -EINTR is not about the lock being held by somebody else. The task
+got a signal and need to return to userspace.
+
+I have not looked at the rest of the patches yet, but why do you need a
+special free path for shadow stack? Why the normal unmap route doesn't
+work for you?
+
+> +		if (r == -EINTR) {
+> +			cond_resched();
+> +			continue;
+> +		}
+> +		break;
 > +	}
 > +
->  	/* Use alias for watchdog id if possible */
->  	if (wdd->parent) {
->  		ret = of_alias_get_id(wdd->parent->of_node, "watchdog");
+> +	cet->shstk_base = 0;
+> +	cet->shstk_size = 0;
+> +}
+> +
+> +void shstk_disable(void)
+> +{
+> +	struct cet_status *cet = &current->thread.cet;
+> +	u64 msr_val;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK) ||
+> +	    !cet->shstk_size ||
+> +	    !cet->shstk_base)
+> +		return;
+> +
+> +	start_update_msrs();
+> +	rdmsrl(MSR_IA32_U_CET, msr_val);
+> +	wrmsrl(MSR_IA32_U_CET, msr_val & ~CET_SHSTK_EN);
+> +	wrmsrl(MSR_IA32_PL3_SSP, 0);
+> +	end_update_msrs();
+> +
+> +	shstk_free(current);
+> +}
+> -- 
+> 2.21.0
+> 
 > 
 
+-- 
+ Kirill A. Shutemov
