@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF813599D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 518443599DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:53:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232544AbhDIJw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhDIJw2 (ORCPT
+        id S232651AbhDIJxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:53:18 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16511 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhDIJxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:52:28 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9A1C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 02:52:15 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id z23so472839uan.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 02:52:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=Dr4e3IBFmscMSOGV9EPbvktg92JitTUrs1JLsCYxSYg=;
-        b=PO4cE7i2Gd2Y23zj2W7CuzxRnz4amckD5iFoe1Y27qKslnw++Oz2F+g1XEfJuwKfn8
-         uVpRmMaK+4wtg9GQ8HnTbkMQsjg4MFN6/r4WGW77qNauFBOvKA8ZD1EvvloiWOWbLEmJ
-         SW1xOFQev2RbuBEz/CgTKTTbEPaMNIPs3YHF9duM59qTMrVeVbG7J2ckcPjZh11Ece/b
-         14laRYazrqGcoc+MGYxh4+Rf3ZxheAKMr8izFULOaoOBGjKe99LbF8rZRO6BixbPzkmc
-         jUAOrNzQAtdm/Jix4XzpVGlrvINzd1RALuomSU/4MRfzoCnnezaKhAWiSzRCSDegAljv
-         tSFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=Dr4e3IBFmscMSOGV9EPbvktg92JitTUrs1JLsCYxSYg=;
-        b=VX3SdjCaOF+H9lXRctOWJEVP1ukk8HRwfjnj0HLo5FZp1itau+YEdyy/LCC0bjCuEW
-         tp9SDuGfa+uQmn2rRd3+FUfcEdTBo9FjtK9gGtnV+EPjBk8vhH75PupxOTU9/CMjS26w
-         K+3CJDnul5AJ/ZM9mR5XLAeC/R6FURUCVDNSR+LKw7eQsatsqbNKKAD7fr4AEKf8EEQA
-         I2id9JxR081dFP6DeEw/UlxyF+YaPLZgWZ6QqMFxX3omRSeLYhXWDF8IMFlAPRmoeCCa
-         TQ4Es3R5QdjcEUPWdb1ydbLu39ROmR6riwl090esU0bEh0CiFELy5AmdlVydHF0kE2ze
-         Yk+w==
-X-Gm-Message-State: AOAM530QS0sejkiUhn+zZo9RtSKk4Epn4I15KlHese4gFMMt0rF+71W3
-        +SwoXorpTgJaX3niVWJ3F1vuxvdv8W9BTZihmhk=
-X-Google-Smtp-Source: ABdhPJwYZ6pzwaLSrtH6XIBJrekpg9piamGbWAnvYXkkRO4CCQl7bxv4o2AYbrRHDBGUgLYvawrZKhd4THkBAIPWjz8=
-X-Received: by 2002:ab0:6397:: with SMTP id y23mr9421682uao.115.1617961934548;
- Fri, 09 Apr 2021 02:52:14 -0700 (PDT)
+        Fri, 9 Apr 2021 05:53:17 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGtfH4M5rzPnWd;
+        Fri,  9 Apr 2021 17:50:15 +0800 (CST)
+Received: from [10.174.178.48] (10.174.178.48) by smtp.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 17:52:56 +0800
+Subject: Re: [PATCH -next] [POWERPC] Rename get_property to of_get_property:
+ use DEFINE_SPINLOCK() for spinlock
+From:   "weiyongjun (A)" <weiyongjun1@huawei.com>
+To:     Ye Bin <yebin10@huawei.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+References: <20210409095148.2294319-1-yebin10@huawei.com>
+ <4b0b16f3-bb06-3a90-5148-ea8302bb3a58@huawei.com>
+Message-ID: <f63e20d1-7161-bb54-35cb-877ee747acaa@huawei.com>
+Date:   Fri, 9 Apr 2021 17:52:55 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Received: by 2002:a67:6646:0:0:0:0:0 with HTTP; Fri, 9 Apr 2021 02:52:14 -0700 (PDT)
-Reply-To: atmcarddelivery001@post.com
-From:   wisdom jude <wisdomjude391@gmail.com>
-Date:   Fri, 9 Apr 2021 09:52:14 +0000
-Message-ID: <CA+ehYhpQHu3uJ8UPhZg949xsuF_YUG6=vxThNq_4=i+71P=ERQ@mail.gmail.com>
-Subject: OK
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <4b0b16f3-bb06-3a90-5148-ea8302bb3a58@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.48]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hei kj=C3=A6re, fikk du e-posten jeg sendte deg forrige gang.
 
-hello dear, did you get the mail i sent you the previous time.
+Rename get_property to of_get_property: use DEFINE_SPINLOCK() for spinlock
+
+^^^^^^^^^
+
+Please fix the module name in the patch subject.
+
+
+> spinlock can be initialized automatically with DEFINE_SPINLOCK()
+>
+>> rather than explicitly calling spin_lock_init().
+>>
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>> ---
+>>   drivers/macintosh/via-pmu-led.c | 4 +---
+>>   1 file changed, 1 insertion(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/macintosh/via-pmu-led.c 
+>> b/drivers/macintosh/via-pmu-led.c
+>> index ae067ab2373d..2502119cff42 100644
+>> --- a/drivers/macintosh/via-pmu-led.c
+>> +++ b/drivers/macintosh/via-pmu-led.c
+>> @@ -27,7 +27,7 @@
+>>   #include <linux/pmu.h>
+>>   #include <asm/prom.h>
+>>   -static spinlock_t pmu_blink_lock;
+>> +static DEFINE_SPINLOCK(pmu_blink_lock);
+>>   static struct adb_request pmu_blink_req;
+>>   /* -1: no change, 0: request off, 1: request on */
+>>   static int requested_change;
+>> @@ -105,8 +105,6 @@ static int __init via_pmu_led_init(void)
+>>           return -ENODEV;
+>>       }
+>>       of_node_put(dt);
+>> -
+>> -    spin_lock_init(&pmu_blink_lock);
+>>       /* no outstanding req */
+>>       pmu_blink_req.complete = 1;
+>>       pmu_blink_req.done = pmu_req_done;
+>>
