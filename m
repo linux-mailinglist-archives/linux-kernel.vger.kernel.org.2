@@ -2,330 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FB3359E0A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4548359E02
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233857AbhDILz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:55:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:19034 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233853AbhDILz1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:55:27 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617969315; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=+HhEvnzAmSGpmlxq/r3isqHTHAYnMfCiYZCJJBu2IDg=; b=Rs76njuNcitrmQzacuymc8pkA7b3hN1PEPUmq6uEOVhQJdLKNEmVrg28/GQaeXJ1JHpWK/0m
- Faa/nBw6206eIQzPOBf43BOP6+JdR05e5PI03CVSiIGLHshwlC3gM+WxyQvlxSJKMNzm2c0z
- cKkVMc6bztTOynIfGoT98kupIN8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 607040909a9ff96d95609c48 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Apr 2021 11:54:56
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B144DC433ED; Fri,  9 Apr 2021 11:54:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8E55EC433CA;
-        Fri,  9 Apr 2021 11:54:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8E55EC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-From:   Taniya Das <tdas@codeaurora.org>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?q?Michael=20Turquette=20=C2=A0?= <mturquette@baylibre.com>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, robh@kernel.org, robh+dt@kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v1 2/2] clk: qcom: Add lpass clock controller driver for SC7280
-Date:   Fri,  9 Apr 2021 17:24:32 +0530
-Message-Id: <1617969272-10246-2-git-send-email-tdas@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617969272-10246-1-git-send-email-tdas@codeaurora.org>
-References: <1617969272-10246-1-git-send-email-tdas@codeaurora.org>
+        id S233631AbhDILzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhDILzA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 07:55:00 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BA4CC061760;
+        Fri,  9 Apr 2021 04:54:47 -0700 (PDT)
+Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=[192.168.66.200]); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1lUpio-0006lL-0V; Fri, 09 Apr 2021 13:54:46 +0200
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1617786974.git.linux@leemhuis.info>
+ <813fc7b082a4b47ec6d34542971e9bba74fd4a51.1617786974.git.linux@leemhuis.info>
+ <87im4wznrx.fsf@meer.lwn.net>
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+Subject: Re: [RFC PATCH v1 2/2] docs: reporting-issues: make everyone CC the
+ regressions list
+Message-ID: <0b0df0d0-b1fb-e6e9-8368-bbf1b59f887d@leemhuis.info>
+Date:   Fri, 9 Apr 2021 13:54:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <87im4wznrx.fsf@meer.lwn.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-BS
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1617969287;b9395910;
+X-HE-SMSGID: 1lUpio-0006lL-0V
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the lpass clock controller found on SC7280 based devices.
-This would allow lpass peripheral loader drivers to control the clocks to
-bring the subsystem out of reset.
+On 08.04.21 19:31, Jonathan Corbet wrote:
+> Thorsten Leemhuis <linux@leemhuis.info> writes:
+> 
+>> +In case you performed a successful bisection, use the title of the change that
+>> +introduced the regression as the second part of your subject. Make the report
+>> +also mention the commit id of the culprit. For tracking purposes, add a line
+>> +like the following that contains both pieces of information, but with the
+>> +commit id shortened to 12 characters::
+>> +
+>> +    #regzb introduced: 94a632d91ad1 ("usc: xhbi-foo: check bar_params earlier")
+>> +
+>> +In case of an unsuccessful bisection, make your report mention the latest tested
+>> +version that's working fine (say 5.7) and the oldest where the issue occurs (say
+>> +5.8-rc1). For tracking purposes add a line expressing it like this::
+>> +
+>> +    #regzb introduced: v5.7..v5.8-rc1
+> 
+> I kind of share Greg's concern that people aren't going to want to do
+> this; [...]
 
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
----
- drivers/clk/qcom/Kconfig          |   8 ++
- drivers/clk/qcom/Makefile         |   1 +
- drivers/clk/qcom/lpasscc-sc7280.c | 216 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 225 insertions(+)
- create mode 100644 drivers/clk/qcom/lpasscc-sc7280.c
+Yeah, I might have done a little too far and should have written it a
+bit more relaxed (like "if you want to help, add a tag like this...").
+Looking back at it I got a bit bold and went farther then initially
+planned due to the ```Make it clear that the list is only for
+regressions that people can describe some way, rather than some general
+"I have issues with xyz".``` from Linus here:
+https://lore.kernel.org/ksummit/CAHk-=wgiYqqLzsb9-UpfH+=ktk7ra-2fOsdc_ZJ7WF47wS73CA@mail.gmail.com/
 
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index 45646b8..caf986e 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -361,6 +361,14 @@ config SC_LPASS_CORECC_7180
- 	  Say Y if you want to use LPASS clocks and power domains of the LPASS
- 	  core clock controller.
+> [...]
+> Also, though, as I understand it the system that will interpret these
+> lines does not yet exist.  Experience tells me that, as this system
+> comes into existence, you will have a good chance of deciding that you
+> want the syntax to look different anyway.  So I would personally hold
+> off on telling people to include directives like this until you have
+> something that works with them.
+> 
+> But that's just me... if this is the way it's going to work then the
+> docs should of course reflect that.
 
-+config SC_LPASSCC_7280
-+	tristate "SC7280 Low Power Audio Subsystem (LPAAS) Clock Controller"
-+	select SC_GCC_7280
-+	help
-+	  Support for the LPASS clock controller on SC7280 devices.
-+	  Say Y if you want to use the LPASS branch clocks of the LPASS clock
-+	  controller to reset the LPASS subsystem.
-+
- config SC_GPUCC_7180
- 	tristate "SC7180 Graphics Clock Controller"
- 	select SC_GCC_7180
-diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-index c829131..6f0ab5f 100644
---- a/drivers/clk/qcom/Makefile
-+++ b/drivers/clk/qcom/Makefile
-@@ -61,6 +61,7 @@ obj-$(CONFIG_SC_GCC_7280) += gcc-sc7280.o
- obj-$(CONFIG_SC_GCC_8180X) += gcc-sc8180x.o
- obj-$(CONFIG_SC_GPUCC_7180) += gpucc-sc7180.o
- obj-$(CONFIG_SC_LPASS_CORECC_7180) += lpasscorecc-sc7180.o
-+obj-$(CONFIG_SC_LPASSCC_7280) += lpasscc-sc7280.o
- obj-$(CONFIG_SC_MSS_7180) += mss-sc7180.o
- obj-$(CONFIG_SC_VIDEOCC_7180) += videocc-sc7180.o
- obj-$(CONFIG_SDM_CAMCC_845) += camcc-sdm845.o
-diff --git a/drivers/clk/qcom/lpasscc-sc7280.c b/drivers/clk/qcom/lpasscc-sc7280.c
-new file mode 100644
-index 0000000..89f1ad6
---- /dev/null
-+++ b/drivers/clk/qcom/lpasscc-sc7280.c
-@@ -0,0 +1,216 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2021, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/platform_device.h>
-+#include <linux/pm_clock.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/module.h>
-+#include <linux/of_address.h>
-+#include <linux/regmap.h>
-+
-+#include <dt-bindings/clock/qcom,lpass-sc7280.h>
-+
-+#include "clk-regmap.h"
-+#include "clk-branch.h"
-+#include "common.h"
-+
-+static struct clk_branch lpass_q6ss_ahbm_clk = {
-+	.halt_reg = 0x1c,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x1c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "lpass_q6ss_ahbm_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch lpass_q6ss_ahbs_clk = {
-+	.halt_reg = 0x20,
-+	.halt_check = BRANCH_HALT_VOTED,
-+	.clkr = {
-+		.enable_reg = 0x20,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "lpass_q6ss_ahbs_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch lpass_top_cc_lpi_q6_axim_hs_clk = {
-+	.halt_reg = 0x0,
-+	.halt_check = BRANCH_HALT,
-+	.clkr = {
-+		.enable_reg = 0x0,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "lpass_top_cc_lpi_q6_axim_hs_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch lpass_qdsp6ss_core_clk = {
-+	.halt_reg = 0x20,
-+	/* CLK_OFF would not toggle until LPASS is out of reset */
-+	.halt_check = BRANCH_HALT_SKIP,
-+	.clkr = {
-+		.enable_reg = 0x20,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "lpass_qdsp6ss_core_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch lpass_qdsp6ss_xo_clk = {
-+	.halt_reg = 0x38,
-+	/* CLK_OFF would not toggle until LPASS is out of reset */
-+	.halt_check = BRANCH_HALT_SKIP,
-+	.clkr = {
-+		.enable_reg = 0x38,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "lpass_qdsp6ss_xo_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct clk_branch lpass_qdsp6ss_sleep_clk = {
-+	.halt_reg = 0x3c,
-+	/* CLK_OFF would not toggle until LPASS is out of reset */
-+	.halt_check = BRANCH_HALT_SKIP,
-+	.clkr = {
-+		.enable_reg = 0x3c,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "lpass_qdsp6ss_sleep_clk",
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static struct regmap_config lpass_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.fast_io	= true,
-+};
-+
-+static struct clk_regmap *lpass_cc_sc7280_clocks[] = {
-+	[LPASS_Q6SS_AHBM_CLK] = &lpass_q6ss_ahbm_clk.clkr,
-+	[LPASS_Q6SS_AHBS_CLK] = &lpass_q6ss_ahbs_clk.clkr,
-+};
-+
-+static const struct qcom_cc_desc lpass_cc_sc7280_desc = {
-+	.config = &lpass_regmap_config,
-+	.clks = lpass_cc_sc7280_clocks,
-+	.num_clks = ARRAY_SIZE(lpass_cc_sc7280_clocks),
-+};
-+
-+static struct clk_regmap *lpass_cc_top_sc7280_clocks[] = {
-+	[LPASS_TOP_CC_LPI_Q6_AXIM_HS_CLK] =
-+				&lpass_top_cc_lpi_q6_axim_hs_clk.clkr,
-+};
-+
-+static const struct qcom_cc_desc lpass_cc_top_sc7280_desc = {
-+	.config = &lpass_regmap_config,
-+	.clks = lpass_cc_top_sc7280_clocks,
-+	.num_clks = ARRAY_SIZE(lpass_cc_top_sc7280_clocks),
-+};
-+
-+static struct clk_regmap *lpass_qdsp6ss_sc7280_clocks[] = {
-+	[LPASS_QDSP6SS_XO_CLK] = &lpass_qdsp6ss_xo_clk.clkr,
-+	[LPASS_QDSP6SS_SLEEP_CLK] = &lpass_qdsp6ss_sleep_clk.clkr,
-+	[LPASS_QDSP6SS_CORE_CLK] = &lpass_qdsp6ss_core_clk.clkr,
-+};
-+
-+static const struct qcom_cc_desc lpass_qdsp6ss_sc7280_desc = {
-+	.config = &lpass_regmap_config,
-+	.clks = lpass_qdsp6ss_sc7280_clocks,
-+	.num_clks = ARRAY_SIZE(lpass_qdsp6ss_sc7280_clocks),
-+};
-+
-+static int lpass_cc_sc7280_probe(struct platform_device *pdev)
-+{
-+	const struct qcom_cc_desc *desc;
-+	int ret;
-+
-+	pm_runtime_enable(&pdev->dev);
-+	ret = pm_clk_create(&pdev->dev);
-+	if (ret)
-+		goto disable_pm_runtime;
-+
-+	ret = pm_clk_add(&pdev->dev, "iface");
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "failed to acquire iface clock\n");
-+		goto destroy_pm_clk;
-+	}
-+
-+	lpass_regmap_config.name = "qdsp6ss";
-+	desc = &lpass_qdsp6ss_sc7280_desc;
-+
-+	ret = qcom_cc_probe_by_index(pdev, 0, desc);
-+	if (ret)
-+		goto destroy_pm_clk;
-+
-+	lpass_regmap_config.name = "top_cc";
-+	desc = &lpass_cc_top_sc7280_desc;
-+
-+	ret = qcom_cc_probe_by_index(pdev, 1, desc);
-+	if (ret)
-+		goto destroy_pm_clk;
-+
-+	lpass_regmap_config.name = "cc";
-+	desc = &lpass_cc_sc7280_desc;
-+
-+	ret = qcom_cc_probe_by_index(pdev, 2, desc);
-+	if (ret)
-+		goto destroy_pm_clk;
-+
-+	return 0;
-+
-+destroy_pm_clk:
-+	pm_clk_destroy(&pdev->dev);
-+
-+disable_pm_runtime:
-+	pm_runtime_disable(&pdev->dev);
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id lpass_cc_sc7280_match_table[] = {
-+	{ .compatible = "qcom,sc7280-lpasscc" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, lpass_cc_sc7280_match_table);
-+
-+static struct platform_driver lpass_cc_sc7280_driver = {
-+	.probe		= lpass_cc_sc7280_probe,
-+	.driver		= {
-+		.name	= "sc7280-lpasscc",
-+		.of_match_table = lpass_cc_sc7280_match_table,
-+	},
-+};
-+
-+static int __init lpass_cc_sc7280_init(void)
-+{
-+	return platform_driver_register(&lpass_cc_sc7280_driver);
-+}
-+subsys_initcall(lpass_cc_sc7280_init);
-+
-+static void __exit lpass_cc_sc7280_exit(void)
-+{
-+	platform_driver_unregister(&lpass_cc_sc7280_driver);
-+}
-+module_exit(lpass_cc_sc7280_exit);
-+
-+MODULE_DESCRIPTION("QTI LPASS_CC SC7280 Driver");
-+MODULE_LICENSE("GPL v2");
---
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the  Linux Foundation.
+Yeah, but let's wait how things evolve before adding this then. :-D
 
+FWIW, just sent v2 with the problematic bits dropped and the MAINTAINERS
+entry Greg outlined.
+
+Ciao, Thorsten
