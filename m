@@ -2,74 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B150D359441
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12053359452
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhDIFDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:03:22 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15992 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhDIFDV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:03:21 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGmDQ16BmzyPBM;
-        Fri,  9 Apr 2021 13:00:54 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 13:03:02 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>
-CC:     <robert.foss@linaro.org>, <todor.too@gmail.com>,
-        <mchehab@kernel.org>
-Subject: [PATCH -next] media: camss: ispif: Remove redundant dev_err call in msm_ispif_subdev_init()
-Date:   Fri, 9 Apr 2021 13:06:33 +0800
-Message-ID: <20210409050633.671223-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S233297AbhDIFHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:07:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35732 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233187AbhDIFG7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 01:06:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B480BAEE5;
+        Fri,  9 Apr 2021 05:06:45 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 07:06:43 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>, weixugc@google.com,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH 04/10] mm/migrate: make migrate_pages() return
+ nr_succeeded
+Message-ID: <YG/g49rCrId0ALra@localhost.localdomain>
+References: <20210401183216.443C4443@viggo.jf.intel.com>
+ <20210401183223.80F1E291@viggo.jf.intel.com>
+ <YG7XjTG9tiK29y1j@localhost.localdomain>
+ <CAHbLzkqoaSnuBJMAe_heQt01FuPWODYQHJ955gaJNNojwbUjrw@mail.gmail.com>
+ <YG9IthpDC/lri4Qh@localhost.localdomain>
+ <CAHbLzkqt0_xM=rAaNiSwKn=kY=wmWiFe3N+CEuqH_ryU-o1ysQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHbLzkqt0_xM=rAaNiSwKn=kY=wmWiFe3N+CEuqH_ryU-o1ysQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is a error message within devm_ioremap_resource
-already, so remove the dev_err call to avoid redundant
-error message.
+On Thu, Apr 08, 2021 at 01:40:33PM -0700, Yang Shi wrote:
+> Thanks a lot for the example code. You didn't miss anything. At first
+> glance, I thought your suggestion seemed neater. Actually I
+> misunderstood what Dave said about "That could really have caused some
+> interesting problems." with multiple calls to migrate_pages(). I was
+> thinking about:
+> 
+> unsigned long foo()
+> {
+>     unsigned long *ret_succeeded;
+> 
+>     migrate_pages(..., ret_succeeded);
+> 
+>     migrate_pages(..., ret_succeeded);
+> 
+>     return *ret_succeeded;
+> }
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/media/platform/qcom/camss/camss-ispif.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+But that would not be a problem as well. I mean I am not sure what is
+foo() supposed to do.
+I assume is supposed to return the *total* number of pages that were
+migrated?
 
-diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
-index a30e453de162..37611c8861da 100644
---- a/drivers/media/platform/qcom/camss/camss-ispif.c
-+++ b/drivers/media/platform/qcom/camss/camss-ispif.c
-@@ -1145,17 +1145,13 @@ int msm_ispif_subdev_init(struct camss *camss,
- 
- 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res->reg[0]);
- 	ispif->base = devm_ioremap_resource(dev, r);
--	if (IS_ERR(ispif->base)) {
--		dev_err(dev, "could not map memory\n");
-+	if (IS_ERR(ispif->base))
- 		return PTR_ERR(ispif->base);
--	}
- 
- 	r = platform_get_resource_byname(pdev, IORESOURCE_MEM, res->reg[1]);
- 	ispif->base_clk_mux = devm_ioremap_resource(dev, r);
--	if (IS_ERR(ispif->base_clk_mux)) {
--		dev_err(dev, "could not map memory\n");
-+	if (IS_ERR(ispif->base_clk_mux))
- 		return PTR_ERR(ispif->base_clk_mux);
--	}
- 
- 	/* Interrupt */
- 
+Then could do something like:
+
+ unsigned long foo()
+ {
+     unsigned long ret_succeeded;
+     unsigned long total_succeeded = 0;
+
+     migrate_pages(..., &ret_succeeded);
+     total_succeeded += ret_succeeded;
+
+     migrate_pages(..., &ret_succeeded);
+     total_succeeded += ret_succeeded;
+
+     return *total_succeeded;
+ }
+
+ But AFAICS, you would have to do that with Wei Xu's version and with
+ mine, no difference there.
+
+IIUC, Dave's concern was that nr_succeeded was only set to 0 at the beginning
+of the function, and never reset back, which means, we would carry the
+sum of previous nr_succeeded instead of the nr_succeeded in that round.
+That would be misleading for e.g: reclaim in case we were to call
+migrate_pages() several times, as instead of a delta value, nr_succeeded
+would accumulate.
+
+But that won't happen neither with Wei Xu's version nor with mine. 
+
 -- 
-2.25.1
-
+Oscar Salvador
+SUSE L3
