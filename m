@@ -2,126 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF6735A7F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7419B35A7F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234209AbhDIUif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:38:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:59746 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229665AbhDIUie (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234277AbhDIUih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233995AbhDIUie (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Apr 2021 16:38:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A497B1FB;
-        Fri,  9 Apr 2021 13:38:15 -0700 (PDT)
-Received: from u200856.usa.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 569EF3F694;
-        Fri,  9 Apr 2021 13:38:15 -0700 (PDT)
-From:   Jeremy Linton <jeremy.linton@arm.com>
-To:     linux-usb@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        hminas@synopsys.com, Jeremy Linton <jeremy.linton@arm.com>
-Subject: [PATCH v2] usb: dwc2: Enable RPi in ACPI mode
-Date:   Fri,  9 Apr 2021 15:38:09 -0500
-Message-Id: <20210409203809.21940-1-jeremy.linton@arm.com>
-X-Mailer: git-send-email 2.26.2
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FB3C061763
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 13:38:21 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id e8so7241120iok.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 13:38:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TV9hYYa/SWm52PedD7fYlgzBW6+Sl+4bCCasfGQo52Y=;
+        b=fQAp1iZFETj/xcolcfvqGV6ZgFjnrjwnJE/wsWDQYIa56GpF61KqcpwSM7wJbPnxjr
+         kkj20pKf7RQSARQ7lnddClK4qXqCyV1SbNqhqfmLFShp4kwQjR51t9mZy1xK12lbl3bz
+         vtTdJ/AlULyzFuf7fpfjWOxrhTvgE4PnFDKOY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TV9hYYa/SWm52PedD7fYlgzBW6+Sl+4bCCasfGQo52Y=;
+        b=BU/khBSZC/k3Vh/A/SvdSfZ8bMWBymbimENMuP1beu0ukshmxRfxMk7xldsqnexCrb
+         X73iJXsr6sz+rIkA+CRGIEKxqowXYpPe3n53TlIpMxwtNznFgEwL3ofhgHkPfBsXbzMm
+         I6844iYgCCwoYnzIvgEW4jtUrPBE38Ru7orsQcye+ZFjZ8MCbXC9YA4poTahtNQi7tic
+         nloEtZly6e6zx+fznOeI0XeuMTho80Tt/hxvhRj3PK7skq5Kth3HIm0bzTr9yZhlVVZo
+         oDWQQO7vz7BgnsKqAN8226KkDLuljKc2783GiWVg7AlB/cUse82ZiRdVRTo+tWlkbFNe
+         aAUQ==
+X-Gm-Message-State: AOAM533io7VGr1csFfRf5XPxZ7tVIuAFi+wwBxiNySOEhxtYB1hmpIQ2
+        ruO3BnqU1hfIL1pYK3ALSmKLzQ==
+X-Google-Smtp-Source: ABdhPJzAa8XBmyvB/+xY7vHlEze44MyZA1300uEFpjGlD8E5uKr79OB0uhFeqhIKRLo5O/L/6OQexw==
+X-Received: by 2002:a6b:e20a:: with SMTP id z10mr12692988ioc.99.1618000700635;
+        Fri, 09 Apr 2021 13:38:20 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id x8sm1573950iov.7.2021.04.09.13.38.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 13:38:20 -0700 (PDT)
+Subject: Re: [PATCH 5.11 00/45] 5.11.13-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210409095305.397149021@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <be206414-473e-9501-ada3-aeab63fd26cb@linuxfoundation.org>
+Date:   Fri, 9 Apr 2021 14:38:19 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dwc2 driver has everything we need to run
-in ACPI mode except for the ACPI module device table
-boilerplate. With that added and identified as "BCM2848",
-an id in use by other OSs for this device, the dw2
-controller on the BCM2711 will work.
+On 4/9/21 3:53 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.11.13 release.
+> There are 45 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.13-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
----
- drivers/usb/dwc2/core.h     |  2 ++
- drivers/usb/dwc2/params.c   | 18 +++++++++++++++++-
- drivers/usb/dwc2/platform.c |  1 +
- 3 files changed, 20 insertions(+), 1 deletion(-)
+Compiled and booted on my test system. No dmesg regressions.
 
-diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
-index 7161344c6522..defc6034af49 100644
---- a/drivers/usb/dwc2/core.h
-+++ b/drivers/usb/dwc2/core.h
-@@ -38,6 +38,7 @@
- #ifndef __DWC2_CORE_H__
- #define __DWC2_CORE_H__
- 
-+#include <linux/acpi.h>
- #include <linux/phy/phy.h>
- #include <linux/regulator/consumer.h>
- #include <linux/usb/gadget.h>
-@@ -1339,6 +1340,7 @@ irqreturn_t dwc2_handle_common_intr(int irq, void *dev);
- 
- /* The device ID match table */
- extern const struct of_device_id dwc2_of_match_table[];
-+extern const struct acpi_device_id dwc2_acpi_match[];
- 
- int dwc2_lowlevel_hw_enable(struct dwc2_hsotg *hsotg);
- int dwc2_lowlevel_hw_disable(struct dwc2_hsotg *hsotg);
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index 92df3d620f7d..7a6089fa81e1 100644
---- a/drivers/usb/dwc2/params.c
-+++ b/drivers/usb/dwc2/params.c
-@@ -232,6 +232,12 @@ const struct of_device_id dwc2_of_match_table[] = {
- };
- MODULE_DEVICE_TABLE(of, dwc2_of_match_table);
- 
-+const struct acpi_device_id dwc2_acpi_match[] = {
-+	{ "BCM2848", (kernel_ulong_t)dwc2_set_bcm_params },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, dwc2_acpi_match);
-+
- static void dwc2_set_param_otg_cap(struct dwc2_hsotg *hsotg)
- {
- 	u8 val;
-@@ -866,10 +872,12 @@ int dwc2_get_hwparams(struct dwc2_hsotg *hsotg)
- 	return 0;
- }
- 
-+typedef void (*set_params_cb)(struct dwc2_hsotg *data);
-+
- int dwc2_init_params(struct dwc2_hsotg *hsotg)
- {
- 	const struct of_device_id *match;
--	void (*set_params)(struct dwc2_hsotg *data);
-+	set_params_cb set_params;
- 
- 	dwc2_set_default_params(hsotg);
- 	dwc2_get_device_properties(hsotg);
-@@ -878,6 +886,14 @@ int dwc2_init_params(struct dwc2_hsotg *hsotg)
- 	if (match && match->data) {
- 		set_params = match->data;
- 		set_params(hsotg);
-+	} else {
-+		const struct acpi_device_id *amatch;
-+
-+		amatch = acpi_match_device(dwc2_acpi_match, hsotg->dev);
-+		if (amatch && amatch->driver_data) {
-+			set_params = (set_params_cb)amatch->driver_data;
-+			set_params(hsotg);
-+		}
- 	}
- 
- 	dwc2_check_params(hsotg);
-diff --git a/drivers/usb/dwc2/platform.c b/drivers/usb/dwc2/platform.c
-index 5f18acac7406..53fc6bc3ed1a 100644
---- a/drivers/usb/dwc2/platform.c
-+++ b/drivers/usb/dwc2/platform.c
-@@ -734,6 +734,7 @@ static struct platform_driver dwc2_platform_driver = {
- 	.driver = {
- 		.name = dwc2_driver_name,
- 		.of_match_table = dwc2_of_match_table,
-+		.acpi_match_table = ACPI_PTR(dwc2_acpi_match),
- 		.pm = &dwc2_dev_pm_ops,
- 	},
- 	.probe = dwc2_driver_probe,
--- 
-2.29.2
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
+thanks,
+-- Shuah
