@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CDA135A100
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C5E35A107
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:28:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233820AbhDIO1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:27:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbhDIO07 (ORCPT
+        id S233830AbhDIO2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:28:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39434 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233569AbhDIO2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:26:59 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57DBCC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 07:26:46 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id y4so6116265ioy.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 07:26:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4ThxPDQhM4kEVDLwubZDAdURyhcYo7/BXJ9Qt3etGlA=;
-        b=GQ2HjbBqbU54oGdh+pNfj9lLnSjk3I2zlzKyK2fhwKEhXWgb0UpY0jg9qujwPGWZuf
-         EjSc4KSApOTWC0F9Xks4NITd1MCy2QEMFmso0aLUavxykJVoH8PrvnfRbpgn3OjTw2NT
-         07u7Wum1sRvT+v+eSonaywAuwfb9aOtHqaGJxJI2hEzWNSSRqpdP2L6SORSiSbBBrrcu
-         iONtHPHt+jwr9rRt5Udp/6RtKvA2igtxqtnZLCtN0nGXNEyMucH/CJNzlLsBpwPIqZLU
-         tktxjOBN1pX0QwqUvRF2QjLv7UO7KaWzISR+lAi4iEeDKP4+9WT82FT4ux/yFqRgDMv2
-         /tjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4ThxPDQhM4kEVDLwubZDAdURyhcYo7/BXJ9Qt3etGlA=;
-        b=R+MA8a9+/Q9cpU+j8whMNzqco5qMwW3X+jx5/DOGMcW8TWqTI2gJmXlMrkcVddGdiZ
-         J81EShmG18bBXaUCVnqZjU4/d3glccRqer2elUiBycui5m9igTVZYSAPHlcbdYAm18kH
-         ev0LslYQ5uVJUdOeSBHRGyzoE5pkbvemgTGQ3wm+SRzJpr45s9aWf0wdEqYdZ9jOtU8j
-         W2I+JEJ0HBFNKhXfcyUVShYEj/az4ZwumA7UU/BgreTAwWJU4ed8J+StX5SSzxI7ojQb
-         V0CEXthX5+x/NMAHatnOsIUTX4h6eHrHx8Qgy64DhGfgETeOYVAuKZR+i8tk1YZoDX7B
-         k0fw==
-X-Gm-Message-State: AOAM530bgtwmBJmKQGJtATtLHEbQuovIndMJfZaQ+/DK9CFGwwrkzq+0
-        AAMHygmpabN0Y85SYrGS1jLnbgj3S6dNQIk9KIyTDw==
-X-Google-Smtp-Source: ABdhPJx1yiAQTbQmfApjZVBT1ZKcxc0hOjVD/FrMOFRtbg2H9B7rCYKh67hBs4harU9XFVkYpm+aUoc1wsUryOBkcM8=
-X-Received: by 2002:a05:6638:338a:: with SMTP id h10mr14570283jav.129.1617978404469;
- Fri, 09 Apr 2021 07:26:44 -0700 (PDT)
+        Fri, 9 Apr 2021 10:28:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617978518;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2WeIsmkBPBWNxXOoVqWwCuAdvoknN3d8B+ES3b+K120=;
+        b=If3EVw61V37C+bSdB4gRB5XrYnDvQdeRTzRd/8FzFDqN3bvr24y9cwUp1KItMotJ/oMCMF
+        vz13eM0J9UUwIE+AXnWH2DzCR0r69G4Fza+at2RCtIzZ6IJHolfzf6rQt+V+DBcBI6lhzs
+        5N+Shf+XCSQJi6Dbj2tA+XsPN+Mnt48=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-266-7qX4dOamNAW1DdDOjY-5tg-1; Fri, 09 Apr 2021 10:28:34 -0400
+X-MC-Unique: 7qX4dOamNAW1DdDOjY-5tg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 38A1E106BB23;
+        Fri,  9 Apr 2021 14:28:33 +0000 (UTC)
+Received: from bfoster (ovpn-112-117.rdu2.redhat.com [10.10.112.117])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 672B46F965;
+        Fri,  9 Apr 2021 14:28:32 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 10:28:30 -0400
+From:   Brian Foster <bfoster@redhat.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        Dave Chinner <dchinner@redhat.com>,
+        Allison Collins <allison.henderson@oracle.com>,
+        Chandan Babu R <chandanrlinux@gmail.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] xfs: fix return of uninitialized value in variable error
+Message-ID: <YHBkjihVv4+7D62Q@bfoster>
+References: <20210409141834.667163-1-colin.king@canonical.com>
 MIME-Version: 1.0
-References: <20210404083354.23060-1-psampat@linux.ibm.com> <CAAYoRsWaAmyuJU4FCb7gtK0y-ZprdDVvp0vMpy=ZohzoC7YX1Q@mail.gmail.com>
- <0a4b32e0-426e-4886-ae37-6d0bdafdea7f@linux.ibm.com>
-In-Reply-To: <0a4b32e0-426e-4886-ae37-6d0bdafdea7f@linux.ibm.com>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Fri, 9 Apr 2021 07:26:38 -0700
-Message-ID: <CAAYoRsXqUpkVxDuRUoapBJ__EUPbMBSWJ7QigVcKbr6ApRxzbg@mail.gmail.com>
-Subject: Re: [RFC v3 0/2] CPU-Idle latency selftest framework
-To:     Pratik Sampat <psampat@linux.ibm.com>
-Cc:     rjw@rjwysocki.net, Daniel Lezcano <daniel.lezcano@linaro.org>,
-        shuah@kernel.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, pratik.r.sampat@gmail.com,
-        dsmythies <dsmythies@telus.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409141834.667163-1-colin.king@canonical.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 12:43 AM Pratik Sampat <psampat@linux.ibm.com> wrote:
-> On 09/04/21 10:53 am, Doug Smythies wrote:
-> > I tried V3 on a Intel i5-10600K processor with 6 cores and 12 CPUs.
-> > The core to cpu mappings are:
-> > core 0 has cpus 0 and 6
-> > core 1 has cpus 1 and 7
-> > core 2 has cpus 2 and 8
-> > core 3 has cpus 3 and 9
-> > core 4 has cpus 4 and 10
-> > core 5 has cpus 5 and 11
-> >
-> > By default, it will test CPUs 0,2,4,6,10 on cores 0,2,4,0,2,4.
-> > wouldn't it make more sense to test each core once?
->
-> Ideally it would be better to run on all the CPUs, however on larger systems
-> that I'm testing on with hundreds of cores and a high a thread count, the
-> execution time increases while not particularly bringing any additional
-> information to the table.
->
-> That is why it made sense only run on one of the threads of each core to make
-> the experiment faster while preserving accuracy.
->
-> To handle various thread topologies it maybe worthwhile if we parse
-> /sys/devices/system/cpu/cpuX/topology/thread_siblings_list for each core and
-> use this information to run only once per physical core, rather than
-> assuming the topology.
->
-> What are your thoughts on a mechanism like this?
+On Fri, Apr 09, 2021 at 03:18:34PM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> A previous commit removed a call to xfs_attr3_leaf_read that
+> assigned an error return code to variable error. We now have
+> a few early error return paths to label 'out' that return
+> error if error is set; however error now is uninitialized
+> so potentially garbage is being returned.  Fix this by setting
+> error to zero to restore the original behaviour where error
+> was zero at the label 'restart'.
+> 
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: 07120f1abdff ("xfs: Add xfs_has_attr and subroutines")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  fs/xfs/libxfs/xfs_attr.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/xfs/libxfs/xfs_attr.c b/fs/xfs/libxfs/xfs_attr.c
+> index 472b3039eabb..902e5f7e6642 100644
+> --- a/fs/xfs/libxfs/xfs_attr.c
+> +++ b/fs/xfs/libxfs/xfs_attr.c
+> @@ -928,6 +928,7 @@ xfs_attr_node_addname(
+>  	 * Search to see if name already exists, and get back a pointer
+>  	 * to where it should go.
+>  	 */
+> +	error = 0;
+>  	retval = xfs_attr_node_hasname(args, &state);
+>  	if (retval != -ENOATTR && retval != -EEXIST)
+>  		goto out;
 
-Yes, seems like a good solution.
+I think it would be nicer to initialize at the top of the function as
+opposed to try and "preserve" historical behavior, but that nit aside:
 
-... Doug
+Reviewed-by: Brian Foster <bfoster@redhat.com>
+
+> -- 
+> 2.30.2
+> 
+
