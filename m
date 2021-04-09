@@ -2,35 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68E7935932F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6140359333
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhDIDkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:40:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:40478 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233015AbhDIDkt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:40:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7192BD6E;
-        Thu,  8 Apr 2021 20:40:36 -0700 (PDT)
-Received: from [10.163.71.121] (unknown [10.163.71.121])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F3E883F792;
-        Thu,  8 Apr 2021 20:40:34 -0700 (PDT)
-Subject: Re: [PATCH -next v2 2/2] mm/debug_vm_pgtable: Remove redundant
- pfn_{pmd/pte}() and fix one comment mistake
-To:     Shixin Liu <liushixin2@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210406044900.2178705-1-liushixin2@huawei.com>
- <20210406044900.2178705-2-liushixin2@huawei.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <530ba8dc-c35d-7b64-91c5-041d2bac661d@arm.com>
-Date:   Fri, 9 Apr 2021 09:11:24 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233215AbhDIDnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232941AbhDIDno (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 23:43:44 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB5BC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:43:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=5kD0HUtQLBSTJmuDYboGV1rro1FgjGZFQ2RlCNvjwvI=; b=beO+98D7S/ngHF0nnJYLFgDAH9
+        EMbdBkHql2rUUSKZsdRCVYRFC6i1zs/yBP18RfEaegMlSAlHIeVzSAlW0AtYfEHg3zXpK64r5M0Vl
+        YHhMKVS8eKAEl+vDW3II0gS5pI0l3jC9qa3gY4L8RgzpcpBqfWTC5Aw9Lu4eVPldFa8oqZjuzoLqq
+        BQYJicvpKxbMxLr91rwjKsEv40QoV2Cia2tF0Sh+tMGC8VISxrX90lxEh0300z4v0eX+WcWQ2rpcK
+        ogAwEXYhPU8abw3GH5VTYHKnCOahsDrA3ZcBNQXf8p1fsRmrx9zlsMUByFc0xKehVvMgB24AQBMwp
+        xm9MF1oQ==;
+Received: from [2601:1c0:6280:3f0::e0e1]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUi35-009ti2-Ao; Fri, 09 Apr 2021 03:43:11 +0000
+Subject: Re: [PATCH 5/5] x86/speculation: Add PSF mitigation kernel parameters
+To:     Ramakrishna Saripalli <rsaripal@amd.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, Jonathan Corbet <corbet@lwn.net>
+References: <20210407125024.242491-1-rsaripal@amd.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <72b45d78-f66b-bd18-4931-04feb206cd79@infradead.org>
+Date:   Thu, 8 Apr 2021 20:43:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-In-Reply-To: <20210406044900.2178705-2-liushixin2@huawei.com>
+In-Reply-To: <20210407125024.242491-1-rsaripal@amd.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -38,88 +47,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 4/7/21 5:50 AM, Ramakrishna Saripalli wrote:
+> From: Ramakrishna Saripalli <rk.saripalli@amd.com>
+> 
+> PSF mitigation introduces new kernel parameters.
+> 
+> The kernel parameters for PSF mitigation are modeled
+> after spec_store_bypass_disable.
 
-On 4/6/21 10:19 AM, Shixin Liu wrote:
-> v1->v2:
-> Remove redundant pfn_pte() and fold two patch to one.
-
-Change log should always be after the '---' below the SOB statement for git
-am to ignore them. Please avoid adding them in the commit messages.
+Maybe too much copy-pasta. See below.
 
 > 
-> Remove redundant pfn_{pmd/pte}() and fix one comment mistake.
-> 
-> Signed-off-by: Shixin Liu <liushixin2@huawei.com>
+> Signed-off-by: Ramakrishna Saripalli<rk.saripalli@amd.com>
 > ---
->  mm/debug_vm_pgtable.c | 11 ++++++-----
->  1 file changed, 6 insertions(+), 5 deletions(-)
+>  .../admin-guide/kernel-parameters.txt         | 45 +++++++++++++++++++
+>  1 file changed, 45 insertions(+)
 > 
-> diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-> index d3cf178621d9..e2f35db8ba69 100644
-> --- a/mm/debug_vm_pgtable.c
-> +++ b/mm/debug_vm_pgtable.c
-> @@ -91,7 +91,7 @@ static void __init pte_advanced_tests(struct mm_struct *mm,
->  				      unsigned long pfn, unsigned long vaddr,
->  				      pgprot_t prot)
->  {
-> -	pte_t pte = pfn_pte(pfn, prot);
-> +	pte_t pte;
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 04545725f187..68dfde77a87d 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2876,6 +2876,7 @@
+>  					       nospectre_v2 [X86,PPC,S390,ARM64]
+>  					       spectre_v2_user=off [X86]
+>  					       spec_store_bypass_disable=off [X86,PPC]
+> +					       psfd=off [X86]
+>  					       ssbd=force-off [ARM64]
+>  					       l1tf=off [X86]
+>  					       mds=off [X86]
+> @@ -3243,6 +3244,8 @@
 >  
-
-Right.
-
->  	/*
->  	 * Architectures optimize set_pte_at by avoiding TLB flush.
-> @@ -185,7 +185,7 @@ static void __init pmd_advanced_tests(struct mm_struct *mm,
->  				      unsigned long pfn, unsigned long vaddr,
->  				      pgprot_t prot, pgtable_t pgtable)
->  {
-> -	pmd_t pmd = pfn_pmd(pfn, prot);
-> +	pmd_t pmd;
-
-
-Right.
-
+>  	nohugeiomap	[KNL,X86,PPC,ARM64] Disable kernel huge I/O mappings.
 >  
->  	if (!has_transparent_hugepage())
->  		return;
-> @@ -300,7 +300,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
->  				      unsigned long pfn, unsigned long vaddr,
->  				      pgprot_t prot)
->  {
-> -	pud_t pud = pfn_pud(pfn, prot);
-> +	pud_t pud;
+> +	nopsfd          [HW,X86] Disable mitigation for Predictive Store Forwarding.
+> +
+>  	nosmt		[KNL,S390] Disable symmetric multithreading (SMT).
+>  			Equivalent to smt=1.
 >  
->  	if (!has_transparent_hugepage())
->  		return;
-> @@ -309,6 +309,7 @@ static void __init pud_advanced_tests(struct mm_struct *mm,
->  	/* Align the address wrt HPAGE_PUD_SIZE */
->  	vaddr = (vaddr & HPAGE_PUD_MASK) + HPAGE_PUD_SIZE;
+> @@ -4002,6 +4005,48 @@
+>  			that).
+>  			Format: <bool>
 >  
-> +	pud = pfn_pud(pfn, prot);
+> +        psfd=		[HW,X86]
+> +                        Predictive Store Forwarding Disable control
+> +
+> +                        Certain AMD processors feature a new technology called Predictive
+> +                        Store Forwarding. This feature is designed to improve the
+> +                        performance of code execution by predicting dependencies
+> +                        between loads and stores.
+> +
+> +                        Modern processors implement techniques to optimize the
+> +                        execution of a load instruction to an address that was
+> +                        recently written by a store instruction.
+> +
+> +                        PSF expands on the above by speculating on the relationship
+> +                        between loads and stores without waiting for address
+> +                        calculation to complete. With PSF, CPU learns over time the
+> +                        relationship between loads and stores.
+> +
+> +                        Incorrect PSF predictions can occur for various reasons.
+> +                        Please see the AMD PSF whitepaper for more information.
+> +
+> +                        All AMD processors that implement PSF also provide ability
+> +                        to control mitigation of PSF.
+> +
+> +                        Following options are provided to control PSF mitigation.
+> +
+> +                        The options are:
+> +                        on      - Unconditionally disable Speculative Store Bypass
 
-Is this change intended to make pud_advanced_tests() similar other
-advanced tests ? Please update the commit message as well.
+			                                     PSF.
 
->  	set_pud_at(mm, vaddr, pudp, pud);
->  	pudp_set_wrprotect(mm, vaddr, pudp);
->  	pud = READ_ONCE(*pudp);
-> @@ -742,12 +743,12 @@ static void __init pmd_swap_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
->  	WARN_ON(!pmd_swp_soft_dirty(pmd_swp_mksoft_dirty(pmd)));
->  	WARN_ON(pmd_swp_soft_dirty(pmd_swp_clear_soft_dirty(pmd)));
->  }
-> -#else  /* !CONFIG_ARCH_HAS_PTE_DEVMAP */
-> +#else  /* !CONFIG_TRANSPARENT_HUGEPAGE */
->  static void __init pmd_soft_dirty_tests(unsigned long pfn, pgprot_t prot) { }
->  static void __init pmd_swap_soft_dirty_tests(unsigned long pfn, pgprot_t prot)
->  {
->  }
-> -#endif /* CONFIG_ARCH_HAS_PTE_DEVMAP */
-> +#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
->  
->  static void __init pte_swap_tests(unsigned long pfn, pgprot_t prot)
->  {
+> +                        off     - Unconditionally enable Speculative Store Bypass
+
+			                                    PSF.
+
+> +                        auto    - Kernel detects whether the CPU is vulnerable.
+> +                                  If the CPU is not vulnerable, off is selected.
+> +                                  If the CPU is vulnerable, default mitigation is
+> +                                  KConfig dependent.
+> +                        prctl   - Control Predictive Store Forwarding per thread
+> +                                  via prctl. Predictive Store Forwarding is enabled
+> +                                  per process by default. The state of the control
+> +                                  is inherited on fork.
+> +                        seccomp - Same as prctl above but all seccomp threads will
+> +                                  disable PSF unless they opt out.
+> +
+> +                        Default mitigations:
+> +                        [X86] If CONFIG_SECCOMP=y "seccomp" else "prctl"
+> +
+>  	psi=		[KNL] Enable or disable pressure stall information
+>  			tracking.
+>  			Format: <bool>
 > 
-With changes to the commit message as suggested earlier.
 
-Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+
+-- 
+~Randy
+
