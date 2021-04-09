@@ -2,107 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 381AB359D99
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C13359D7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233060AbhDILmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:42:12 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:33537 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbhDILmK (ORCPT
+        id S233653AbhDILcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:32:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhDILcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:42:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1617968517; x=1649504517;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=P53p+hsMUSce2BMB+00gNVpeoyJ5GCn012HCNuo4awY=;
-  b=hr7YgoFSYq3XD+lhnLLY0P/+qk+/ze3d60m2mrvvOz42ct9/6qHlrEXo
-   D8oN50Xd0CSRng+x599e5mCsmZCaMBylN+S85wRA8JgxQlBpyQil5ujaQ
-   8EbV+5iYvh0tjXDGIsUJKnCqpQFttyIgyuIjXlugul+WcFrTCNw0a/hx1
-   0fDCvGFu1Zcvg5Z21Kew0f65Y/kXp5OzF4MWzVVL3qgjhclF1wDDteqXW
-   I5br6EZBUL5wefY3IHMMFWVJSFeUig17H9eTJ3FhY6xpkCJGqZtl3eZoF
-   1TxVqDXM1V6j0Ryak1RHzpoa7Htyc9qVN4CNe07+VAuB04Hq2Vd0qCVai
-   Q==;
-IronPort-SDR: E7gi1DDaD241biSWBJ+QOKogbDATiCHAP6zYi8Qixz3Cg0GdQCS66cdLpsnGcUvy3rq0L79iKG
- iS/cKBEwvLnpFksWmLWzt0JHSa+YtMLW1jBFHpirotBwJnq88UYMSD/zbNhrVXQW7LwncFreBS
- pcUplTLuKrDendXe6Rsrh0PPlUmf8DhPBjxcPlDneYe/WiKZfg4mkaBowQ8yi5p+AVKr2YZpL3
- algUeXzb+DdxCNCraX4BOoNUUF2p8U8oeMaOU44r+ttQWIJe1UJUC+w6reRlJHuwT0m8xJIrUr
- 8uQ=
-X-IronPort-AV: E=Sophos;i="5.82,209,1613458800"; 
-   d="scan'208";a="122422120"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Apr 2021 04:41:57 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 9 Apr 2021 04:31:56 -0700
-Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Fri, 9 Apr 2021 04:31:51 -0700
-From:   Eugen Hristev <eugen.hristev@microchip.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <alexandre.belloni@bootlin.com>
-CC:     <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
-        <ludovic.desroches@microchip.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>
-Subject: [PATCH v2 2/2] ARM: at91: debug: add sama7g5 low level debug uart
-Date:   Fri, 9 Apr 2021 14:31:16 +0300
-Message-ID: <20210409113116.482199-2-eugen.hristev@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210409113116.482199-1-eugen.hristev@microchip.com>
-References: <20210409113116.482199-1-eugen.hristev@microchip.com>
+        Fri, 9 Apr 2021 07:32:14 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28CD2C061760;
+        Fri,  9 Apr 2021 04:32:01 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id e34so797997wmp.0;
+        Fri, 09 Apr 2021 04:32:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OEe6YFfe/Jx9/mKOq9o87zYJfICMbLoDqKrtcURwasI=;
+        b=Fh1lg/uRnalLCCr33soqPo1Q0j0NEuOetXw4MI3EsYdb3SzqSsJDbZY2la+9cmm5+Z
+         0lr7GuLSJNz/FdIXSa0GLxggvKPPJy4dIBIzESbAoQznwkIs0V1AGV7aZxHYdYKmF7zQ
+         4uPUQhlN5HdQcfI8dTcmNklqzyFjhQWR51LLj0FFaIAVcppbz8enltWhxVFWZ2rroyvv
+         LChvClJD8W/t7evnMeWUw0iZLLa+eF8WM936p5nUg9aTNVj7XUziKGV1dbh87s2VhMkk
+         XYRaiuFqS1GTvaw27dBSY7vul7ZY4Jmt9dV1jsya42FgMrJ8w4fHO7QX/i+/47FnIIOp
+         JHhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OEe6YFfe/Jx9/mKOq9o87zYJfICMbLoDqKrtcURwasI=;
+        b=GtgqLSPjQvZzjH/JgzR4Jo9xBDgtnr+RpDlW58t4mwtdB+tTXbFFFFkNeIlrDVz8Ic
+         cyaqJIjRU3r341xfqDhfrVFA5DHD7aM1J0JXwuuCCG54ETxStvH5I0vHchF5rd5jSUDw
+         M83f543r81F9+htR6dS38zluEe5BOdgOzPr+8CQshD0S8p39KEFh/UDdW6gI3Ng1GEbC
+         c+KmVjJoWFRLOI4YQOFO2LXLTKRTZQLJIPBpp73GRrfOTnQMb6b/6mrnvsK2nbGp3VMx
+         /G9+jNqfJW910yndpp2bUCltPI+OXsPXyuwEUnzjBZtncys4DdfdeiN5etEmwIcvJRFK
+         1bRg==
+X-Gm-Message-State: AOAM532AEb5m+cN8RdK8WuSIW4gDI1XfmH3RxPQa/bFIzR0kfcY447ny
+        ue7jJUSLC6SBMfQ+rAkrSLo=
+X-Google-Smtp-Source: ABdhPJyY4ZqOfyxwZZsVlKMEtJfWHAWIstLoj2pdQrewzW6QAaBGadqRekNu5NuxiFFGgpZG6hoGhg==
+X-Received: by 2002:a05:600c:1457:: with SMTP id h23mr13470302wmi.118.1617967919927;
+        Fri, 09 Apr 2021 04:31:59 -0700 (PDT)
+Received: from localhost (pd9e51abe.dip0.t-ipconnect.de. [217.229.26.190])
+        by smtp.gmail.com with ESMTPSA id w11sm3470311wmb.35.2021.04.09.04.31.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 04:31:58 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 13:32:34 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        jonathanh@nvidia.com
+Subject: Re: [PATCH -next] soc/tegra: fuse: add missing iounmap() on error in
+ tegra_init_fuse()
+Message-ID: <YHA7UtJ4o1BNHc1K@orome.fritz.box>
+References: <20210409044903.663632-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="JEhcvQN4vxPMMub6"
+Content-Disposition: inline
+In-Reply-To: <20210409044903.663632-1-yangyingliang@huawei.com>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add sama7g5 SoC debug uart on Flexcom3. This is the UART that the
-ROM bootloader uses.
 
-Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
----
- arch/arm/Kconfig.debug | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+--JEhcvQN4vxPMMub6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm/Kconfig.debug b/arch/arm/Kconfig.debug
-index 9e0b5e7f12af..7598624ce6dd 100644
---- a/arch/arm/Kconfig.debug
-+++ b/arch/arm/Kconfig.debug
-@@ -191,6 +191,14 @@ choice
- 		  their output to the USART1 port on SAMV7 based
- 		  machines.
- 
-+	config DEBUG_AT91_SAMA7G5_FLEXCOM3
-+		bool "Kernel low-level debugging on SAMA7G5 FLEXCOM3"
-+		select DEBUG_AT91_UART
-+		depends on SOC_SAMA7G5
-+		help
-+		  Say Y here if you want kernel low-level debugging support
-+		  on the FLEXCOM3 port of SAMA7G5.
-+
- 	config DEBUG_BCM2835
- 		bool "Kernel low-level debugging on BCM2835 PL011 UART"
- 		depends on ARCH_BCM2835 && ARCH_MULTI_V6
-@@ -1657,6 +1665,7 @@ config DEBUG_UART_PHYS
- 	default 0xd4017000 if DEBUG_MMP_UART2
- 	default 0xd4018000 if DEBUG_MMP_UART3
- 	default 0xe0000000 if DEBUG_SPEAR13XX
-+	default 0xe1824200 if DEBUG_AT91_SAMA7G5_FLEXCOM3
- 	default 0xe4007000 if DEBUG_HIP04_UART
- 	default 0xe6c40000 if DEBUG_RMOBILE_SCIFA0
- 	default 0xe6c50000 if DEBUG_RMOBILE_SCIFA1
-@@ -1718,6 +1727,7 @@ config DEBUG_UART_VIRT
- 	default 0xc8821000 if DEBUG_RV1108_UART1
- 	default 0xc8912000 if DEBUG_RV1108_UART0
- 	default 0xe0010fe0 if ARCH_RPC
-+	default 0xe0824200 if DEBUG_AT91_SAMA7G5_FLEXCOM3
- 	default 0xf0010000 if DEBUG_ASM9260_UART
- 	default 0xf0100000 if DEBUG_DIGICOLOR_UA0
- 	default 0xf01fb000 if DEBUG_NOMADIK_UART
--- 
-2.25.1
+On Fri, Apr 09, 2021 at 12:49:03PM +0800, Yang Yingliang wrote:
+> Add the missing iounmap() before return from tegra_init_fuse()
+> in the error handling case.
+>=20
+> Fixes: 9f94fadd75d3 ("soc/tegra: fuse: Register cell lookups for compatib=
+ility")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/soc/tegra/fuse/fuse-tegra.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/soc/tegra/fuse/fuse-tegra.c b/drivers/soc/tegra/fuse=
+/fuse-tegra.c
+> index 94b60a692b51..bc8d70e6a676 100644
+> --- a/drivers/soc/tegra/fuse/fuse-tegra.c
+> +++ b/drivers/soc/tegra/fuse/fuse-tegra.c
+> @@ -489,8 +489,10 @@ static int __init tegra_init_fuse(void)
+>  		size_t size =3D sizeof(*fuse->lookups) * fuse->soc->num_lookups;
+> =20
+>  		fuse->lookups =3D kmemdup(fuse->soc->lookups, size, GFP_KERNEL);
+> -		if (!fuse->lookups)
+> +		if (!fuse->lookups) {
+> +			iounmap(fuse->base);
+>  			return -ENOMEM;
+> +		}
+> =20
+>  		nvmem_add_cell_lookups(fuse->lookups, fuse->soc->num_lookups);
+>  	}
 
+I don't think that's a good idea. Given that this is an early_initcall,
+the failure doesn't actually prevent the driver from loading. There are
+other functions that rely on fuse->base staying around to access some of
+the registers in that I/O memory region.
+
+I suppose we could remove the -ENOMEM return there and instead just skip
+registering the nvmem cell lookups, perhaps that would make this less
+confusing.
+
+Thierry
+
+--JEhcvQN4vxPMMub6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBwO1IACgkQ3SOs138+
+s6HxyQ//fisnmhmU+khbPxMFa1WltzGymagZoEzPoW3Nctn24xJpXCcjPMTm13Jf
+z+Ftc6geKqMYBy7cNMcMx3Esq7eb/ioBxwbAPME5kwSe+/95YTjRl+0lgCcrhKAa
+xJPFrhXmlMlc/GOdgP4Ahjv7hI74lVm7QZ8zfBqaZm73+9QsyFE4muXjjzVgRWyf
+QSTKa9lZxk191b7HtzcMskfr4bakwJP5DTOr9FEv6gLxUkv5O13uJ2nd5XHbyi2+
+VKS+KUl+hf9VSXoDau3WflSzH5yR+aK9GQpiEORiynnB/gbSvg/qiY9IetfHYWxb
+EZcSNnr7WqB8skjDKsA8CwkTujCVUVSuFWj37Opm3U8pOwYnV2AAvNGklklrC+AK
+Be8jFh2UI3SXxQWWCMSPwp6OKnrvGcHyoXkEDhyRyFbT3+7T7TdUydXzJmnp/i61
+GUoh98YfAPLBh76tYp7NyuQWlzqZjNb9B4J6CRdlOZQY7kJT+0eOKFU/8a0vxP9U
+pF29vQBmU2bRx1vCso0PR4k1uzuhx6ppNGXnFT580oU8U5a9E1xdBJp94EtQKPIr
+FRWlpijEiH7LxvCccRRft5I9V/2dczSQuzsVNxSZxLLWrB6k70cE1BCmfcvh+K+c
+02l5Sf2AkMRWXkJ5RMMkuwT1B9SiO5S1736QKJ3Yxu+3dwSiILk=
+=wVmr
+-----END PGP SIGNATURE-----
+
+--JEhcvQN4vxPMMub6--
