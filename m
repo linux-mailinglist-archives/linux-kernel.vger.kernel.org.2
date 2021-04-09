@@ -2,229 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6657B359FC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D560359FC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbhDINYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:24:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:51460 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231127AbhDINYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:24:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31B231FB;
-        Fri,  9 Apr 2021 06:24:27 -0700 (PDT)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F5283F694;
-        Fri,  9 Apr 2021 06:24:26 -0700 (PDT)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH v3] arm64: mte: Move MTE TCF0 check in entry-common
-Date:   Fri,  9 Apr 2021 14:24:19 +0100
-Message-Id: <20210409132419.29965-1-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.30.2
+        id S233530AbhDIN1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:27:23 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39354 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231127AbhDIN1S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 09:27:18 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 139D2qk0146781;
+        Fri, 9 Apr 2021 09:27:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=XzuS5as5IWaueUcn3ofnkt2I+738FWP6ZUWEz2NtDkQ=;
+ b=tmJdmyHrn/LMuNYmiyOZaEQVe+rik34dC1Dda1/atF/GEcgfiXzc/V61NBF661hecK20
+ hVG3jq2zc2oZejmfYU/+HCuLTHUM9hN2pPvU0h1MkEVSFTsYkg/4jX8XlCBCnrHgbQuu
+ aRnce4N9SFxdgRw/EVsLc9lTJKxgUV8WxmZCQV5rD9p0tXNzr43qUft01sLndj/LsLbB
+ mTWDSrCV1XocX5vqtOhfm870WWcbHaWhS9FDkPcTpSeEH/uqMi+6ElSJF7qwpW9JXywV
+ v1cZEcUenDEH8BeECHDKr2lWMCFLrITVd2MgvryNb4E+gJmf5qFh+Crap2fPdPjHFU89 5Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37tpvwhu4n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 09:27:04 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 139D3KJN001972;
+        Fri, 9 Apr 2021 09:27:04 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37tpvwhu47-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 09:27:03 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 139DLnJR030812;
+        Fri, 9 Apr 2021 13:27:03 GMT
+Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
+        by ppma04dal.us.ibm.com with ESMTP id 37rvc4hq0x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 13:27:03 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 139DQxhK29032940
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 9 Apr 2021 13:26:59 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 76E6BC6061;
+        Fri,  9 Apr 2021 13:26:59 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 54801C6057;
+        Fri,  9 Apr 2021 13:26:57 +0000 (GMT)
+Received: from cpe-172-100-162-199.stny.res.rr.com (unknown [9.85.201.195])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri,  9 Apr 2021 13:26:57 +0000 (GMT)
+Subject: Re: [PATCH v15 00/13] s390/vfio-ap: dynamic configuration support
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, jjherne@linux.ibm.com, freude@linux.ibm.com,
+        borntraeger@de.ibm.com, cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com,
+        "Jason J . Herne" <jjherne@linux.ibm.com>
+References: <20210406153122.22874-1-akrowiak@linux.ibm.com>
+ <20210408223804.0ca5ba36.pasic@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <4c083431-bdba-15f8-bcbc-f80192cb02c8@linux.ibm.com>
+Date:   Fri, 9 Apr 2021 09:26:56 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210408223804.0ca5ba36.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: aL5dvifMWPhZQPeYaM8gu8t1dYwPY1as
+X-Proofpoint-ORIG-GUID: WGZW_BFRV22fYKWcat4rtAc1OpeCB_CP
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-09_05:2021-04-09,2021-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
+ suspectscore=0 impostorscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 phishscore=0 clxscore=1015 mlxlogscore=999
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104090096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The check_mte_async_tcf macro sets the TIF flag non-atomically. This can
-race with another CPU doing a set_tsk_thread_flag() and all the other flags
-can be lost in the process.
 
-Move the tcf0 check to enter_from_user_mode() and clear tcf0 in
-exit_to_user_mode() to address the problem.
 
-Note: Moving the check in entry-common allows to use set_thread_flag()
-which is safe.
+On 4/8/21 4:38 PM, Halil Pasic wrote:
+> On Tue,  6 Apr 2021 11:31:09 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+>
+>> Tony Krowiak (13):
+>>    s390/vfio-ap: fix circular lockdep when setting/clearing crypto masks
+> The subsequent patches, re introduce this circular locking dependency
+> problem. See my kernel messages for the details. The link we severe
+> in the above patch is re-introduced at several places. One of them is
+> assign_adapter_store().
 
-Fixes: 637ec831ea4f ("arm64: mte: Handle synchronous and asynchronous tag check faults")
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: stable@vger.kernel.org
-Reported-by: Will Deacon <will@kernel.org>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
----
- arch/arm64/include/asm/mte.h     |  9 +++++++++
- arch/arm64/kernel/entry-common.c |  6 ++++++
- arch/arm64/kernel/entry.S        | 34 --------------------------------
- arch/arm64/kernel/mte.c          | 33 +++++++++++++++++++++++++++++--
- 4 files changed, 46 insertions(+), 36 deletions(-)
+Like in the patch referenced above, the lockdep splat occurs when
+the APCB masks are set which requires acquisition of the kvm lock.
+Patch 08/13, allow hot plug/unplug of AP resources using mdev,
+introduces code that updates the APCB masks whenever an
+adapter, domain or control domain is assigned or unassigned
+as well as when a queue device is probed or removed.
+I think the solution from the patch above can be implemented
+here to resolve this problem.
 
-diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index 9b557a457f24..c7ab681a95c3 100644
---- a/arch/arm64/include/asm/mte.h
-+++ b/arch/arm64/include/asm/mte.h
-@@ -49,6 +49,9 @@ int mte_ptrace_copy_tags(struct task_struct *child, long request,
- 
- void mte_assign_mem_tag_range(void *addr, size_t size);
- 
-+void noinstr check_mte_async_tcf0(void);
-+void noinstr clear_mte_async_tcf0(void);
-+
- #else /* CONFIG_ARM64_MTE */
- 
- /* unused if !CONFIG_ARM64_MTE, silence the compiler */
-@@ -83,6 +86,12 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
- {
- 	return -EIO;
- }
-+static inline void check_mte_async_tcf0(void)
-+{
-+}
-+static inline void clear_mte_async_tcf0(void)
-+{
-+}
- 
- static inline void mte_assign_mem_tag_range(void *addr, size_t size)
- {
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 9d3588450473..837d3624a1d5 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
- 	CT_WARN_ON(ct_state() != CONTEXT_USER);
- 	user_exit_irqoff();
- 	trace_hardirqs_off_finish();
-+
-+	/* Check for asynchronous tag check faults in user space */
-+	check_mte_async_tcf0();
- }
- 
- asmlinkage void noinstr exit_to_user_mode(void)
- {
-+	/* Ignore asynchronous tag check faults in the uaccess routines */
-+	clear_mte_async_tcf0();
-+
- 	trace_hardirqs_on_prepare();
- 	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
- 	user_enter_irqoff();
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index a31a0a713c85..fb57df0d453f 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -34,15 +34,11 @@
-  * user and kernel mode.
-  */
- 	.macro user_exit_irqoff
--#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
- 	bl	enter_from_user_mode
--#endif
- 	.endm
- 
- 	.macro user_enter_irqoff
--#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
- 	bl	exit_to_user_mode
--#endif
- 	.endm
- 
- 	.macro	clear_gp_regs
-@@ -147,32 +143,6 @@ alternative_cb_end
- .L__asm_ssbd_skip\@:
- 	.endm
- 
--	/* Check for MTE asynchronous tag check faults */
--	.macro check_mte_async_tcf, flgs, tmp
--#ifdef CONFIG_ARM64_MTE
--alternative_if_not ARM64_MTE
--	b	1f
--alternative_else_nop_endif
--	mrs_s	\tmp, SYS_TFSRE0_EL1
--	tbz	\tmp, #SYS_TFSR_EL1_TF0_SHIFT, 1f
--	/* Asynchronous TCF occurred for TTBR0 access, set the TI flag */
--	orr	\flgs, \flgs, #_TIF_MTE_ASYNC_FAULT
--	str	\flgs, [tsk, #TSK_TI_FLAGS]
--	msr_s	SYS_TFSRE0_EL1, xzr
--1:
--#endif
--	.endm
--
--	/* Clear the MTE asynchronous tag check faults */
--	.macro clear_mte_async_tcf
--#ifdef CONFIG_ARM64_MTE
--alternative_if ARM64_MTE
--	dsb	ish
--	msr_s	SYS_TFSRE0_EL1, xzr
--alternative_else_nop_endif
--#endif
--	.endm
--
- 	.macro mte_set_gcr, tmp, tmp2
- #ifdef CONFIG_ARM64_MTE
- 	/*
-@@ -243,8 +213,6 @@ alternative_else_nop_endif
- 	ldr	x19, [tsk, #TSK_TI_FLAGS]
- 	disable_step_tsk x19, x20
- 
--	/* Check for asynchronous tag check faults in user space */
--	check_mte_async_tcf x19, x22
- 	apply_ssbd 1, x22, x23
- 
- 	ptrauth_keys_install_kernel tsk, x20, x22, x23
-@@ -775,8 +743,6 @@ SYM_CODE_START_LOCAL(ret_to_user)
- 	cbnz	x2, work_pending
- finish_ret_to_user:
- 	user_enter_irqoff
--	/* Ignore asynchronous tag check faults in the uaccess routines */
--	clear_mte_async_tcf
- 	enable_step_tsk x19, x2
- #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
- 	bl	stackleak_erase
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index b3c70a612c7a..84a942c25870 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -166,14 +166,43 @@ static void set_gcr_el1_excl(u64 excl)
- 	 */
- }
- 
--void flush_mte_state(void)
-+void noinstr check_mte_async_tcf0(void)
-+{
-+	u64 tcf0;
-+
-+	if (!system_supports_mte())
-+		return;
-+
-+	/*
-+	 * dsb(ish) is not required before the register read
-+	 * because the TFSRE0_EL1 is automatically synchronized
-+	 * by the hardware on exception entry as SCTLR_EL1.ITFSB
-+	 * is set.
-+	 */
-+	tcf0 = read_sysreg_s(SYS_TFSRE0_EL1);
-+
-+	if (tcf0 & SYS_TFSR_EL1_TF0)
-+		set_thread_flag(TIF_MTE_ASYNC_FAULT);
-+
-+	write_sysreg_s(0, SYS_TFSRE0_EL1);
-+}
-+
-+void noinstr clear_mte_async_tcf0(void)
- {
- 	if (!system_supports_mte())
- 		return;
- 
--	/* clear any pending asynchronous tag fault */
- 	dsb(ish);
- 	write_sysreg_s(0, SYS_TFSRE0_EL1);
-+}
-+
-+void flush_mte_state(void)
-+{
-+	if (!system_supports_mte())
-+		return;
-+
-+	/* clear any pending asynchronous tag fault */
-+	clear_mte_async_tcf0();
- 	clear_thread_flag(TIF_MTE_ASYNC_FAULT);
- 	/* disable tag checking */
- 	set_sctlr_el1_tcf0(SCTLR_EL1_TCF0_NONE);
--- 
-2.30.2
+>
+> Regards,
+> Halil
+>
+> [  +0.000236] vfio_ap matrix: MDEV: Registered
+> [  +0.037919] vfio_mdev 4f77ad87-1e62-4959-8b7a-c677c98d2194: Adding to iommu group 1
+> [  +0.000092] vfio_mdev 4f77ad87-1e62-4959-8b7a-c677c98d2194: MDEV: group_id = 1
+>
+> [Apr 8 22:31] ======================================================
+> [  +0.000002] WARNING: possible circular locking dependency detected
+> [  +0.000002] 5.12.0-rc6-00016-g5bea90816c56 #57 Not tainted
+> [  +0.000002] ------------------------------------------------------
+> [  +0.000002] CPU 1/KVM/6651 is trying to acquire lock:
+> [  +0.000002] 00000000cef9d508 (&matrix_dev->lock){+.+.}-{3:3}, at: handle_pqap+0x56/0x1c8 [vfio_ap]
+> [  +0.000011]
+>                but task is already holding lock:
+> [  +0.000001] 00000000d41f4308 (&vcpu->mutex){+.+.}-{3:3}, at: kvm_vcpu_ioctl+0x90/0x898 [kvm]
+> [  +0.000038]
+>                which lock already depends on the new lock.
+>
+> [  +0.000002]
+>                the existing dependency chain (in reverse order) is:
+> [  +0.000001]
+>                -> #2 (&vcpu->mutex){+.+.}-{3:3}:
+> [  +0.000004]        validate_chain+0x796/0xa20
+> [  +0.000006]        __lock_acquire+0x420/0x7c8
+> [  +0.000003]        lock_acquire.part.0+0xec/0x1e8
+> [  +0.000002]        lock_acquire+0xb8/0x208
+> [  +0.000002]        __mutex_lock+0xa2/0x928
+> [  +0.000005]        mutex_lock_nested+0x32/0x40
+> [  +0.000002]        kvm_s390_cpus_to_pv+0x4e/0xf8 [kvm]
+> [  +0.000019]        kvm_s390_handle_pv+0x1ce/0x6b0 [kvm]
+> [  +0.000018]        kvm_arch_vm_ioctl+0x3ec/0x550 [kvm]
+> [  +0.000019]        kvm_vm_ioctl+0x40e/0x4a8 [kvm]
+> [  +0.000018]        __s390x_sys_ioctl+0xc0/0x100
+> [  +0.000004]        do_syscall+0x7e/0xd0
+> [  +0.000043]        __do_syscall+0xc0/0xd8
+> [  +0.000004]        system_call+0x72/0x98
+> [  +0.000004]
+>                -> #1 (&kvm->lock){+.+.}-{3:3}:
+> [  +0.000004]        validate_chain+0x796/0xa20
+> [  +0.000002]        __lock_acquire+0x420/0x7c8
+> [  +0.000002]        lock_acquire.part.0+0xec/0x1e8
+> [  +0.000002]        lock_acquire+0xb8/0x208
+> [  +0.000003]        __mutex_lock+0xa2/0x928
+> [  +0.000002]        mutex_lock_nested+0x32/0x40
+> [  +0.000002]        kvm_arch_crypto_set_masks+0x4a/0x2b8 [kvm]
+> [  +0.000018]        vfio_ap_mdev_refresh_apcb+0xd0/0xe0 [vfio_ap]
+> [  +0.000003]        assign_adapter_store+0x1f2/0x240 [vfio_ap]
+> [  +0.000003]        kernfs_fop_write_iter+0x13e/0x1e0
+> [  +0.000003]        new_sync_write+0x10a/0x198
+> [  +0.000003]        vfs_write.part.0+0x196/0x290
+> [  +0.000002]        ksys_write+0x6c/0xf8
+> [  +0.000003]        do_syscall+0x7e/0xd0
+> [  +0.000002]        __do_syscall+0xc0/0xd8
+> [  +0.000003]        system_call+0x72/0x98
+> [  +0.000002]
+>                -> #0 (&matrix_dev->lock){+.+.}-{3:3}:
+> [  +0.000004]        check_noncircular+0x16e/0x190
+> [  +0.000002]        check_prev_add+0xec/0xf38
+> [  +0.000002]        validate_chain+0x796/0xa20
+> [  +0.000002]        __lock_acquire+0x420/0x7c8
+> [  +0.000002]        lock_acquire.part.0+0xec/0x1e8
+> [  +0.000002]        lock_acquire+0xb8/0x208
+> [  +0.000002]        __mutex_lock+0xa2/0x928
+> [  +0.000002]        mutex_lock_nested+0x32/0x40
+> [  +0.000003]        handle_pqap+0x56/0x1c8 [vfio_ap]
+> [  +0.000002]        handle_pqap+0xe2/0x1d8 [kvm]
+> [  +0.000019]        kvm_handle_sie_intercept+0x134/0x248 [kvm]
+> [  +0.000019]        vcpu_post_run+0x2b6/0x580 [kvm]
+> [  +0.000018]        __vcpu_run+0x27e/0x388 [kvm]
+> [  +0.000019]        kvm_arch_vcpu_ioctl_run+0x10a/0x278 [kvm]
+> [  +0.000018]        kvm_vcpu_ioctl+0x2cc/0x898 [kvm]
+> [  +0.000018]        __s390x_sys_ioctl+0xc0/0x100
+> [  +0.000003]        do_syscall+0x7e/0xd0
+> [  +0.000002]        __do_syscall+0xc0/0xd8
+> [  +0.000002]        system_call+0x72/0x98
+> [  +0.000003]
+>                other info that might help us debug this:
+>
+> [  +0.000001] Chain exists of:
+>                  &matrix_dev->lock --> &kvm->lock --> &vcpu->mutex
+>
+> [  +0.000005]  Possible unsafe locking scenario:
+>
+> [  +0.000001]        CPU0                    CPU1
+> [  +0.000001]        ----                    ----
+> [  +0.000002]   lock(&vcpu->mutex);
+> [  +0.000002]                                lock(&kvm->lock);
+> [  +0.000002]                                lock(&vcpu->mutex);
+> [  +0.000002]   lock(&matrix_dev->lock);
+> [  +0.000002]
+>                 *** DEADLOCK ***
+>
+> [  +0.000002] 2 locks held by CPU 1/KVM/6651:
+> [  +0.000002]  #0: 00000000d41f4308 (&vcpu->mutex){+.+.}-{3:3}, at: kvm_vcpu_ioctl+0x90/0x898 [kvm]
+> [  +0.000023]  #1: 00000000da2fc508 (&kvm->srcu){....}-{0:0}, at: __vcpu_run+0x1ec/0x388 [kvm]
+> [  +0.000021]
+>                stack backtrace:
+> [  +0.000002] CPU: 6 PID: 6651 Comm: CPU 1/KVM Not tainted 5.12.0-rc6-00016-g5bea90816c56 #57
+> [  +0.000004] Hardware name: IBM 8561 T01 701 (LPAR)
+> [  +0.000001] Call Trace:
+> [  +0.000002]  [<00000002010e7ef0>] show_stack+0x90/0xf8
+> [  +0.000007]  [<00000002010fb5b2>] dump_stack+0xba/0x108
+> [  +0.000002]  [<000000020053feb6>] check_noncircular+0x16e/0x190
+> [  +0.000003]  [<0000000200541424>] check_prev_add+0xec/0xf38
+> [  +0.000002]  [<0000000200542a06>] validate_chain+0x796/0xa20
+> [  +0.000003]  [<0000000200545430>] __lock_acquire+0x420/0x7c8
+> [  +0.000002]  [<00000002005441a4>] lock_acquire.part.0+0xec/0x1e8
+> [  +0.000002]  [<0000000200544358>] lock_acquire+0xb8/0x208
+> [  +0.000003]  [<000000020110aeea>] __mutex_lock+0xa2/0x928
+> [  +0.000002]  [<000000020110b7a2>] mutex_lock_nested+0x32/0x40
+> [  +0.000003]  [<000003ff8060fb5e>] handle_pqap+0x56/0x1c8 [vfio_ap]
+> [  +0.000003]  [<000003ff80597412>] handle_pqap+0xe2/0x1d8 [kvm]
+> [  +0.000018]  [<000003ff8058c924>] kvm_handle_sie_intercept+0x134/0x248 [kvm]
+> [  +0.000020]  [<000003ff80588e96>] vcpu_post_run+0x2b6/0x580 [kvm]
+> [  +0.000019]  [<000003ff805893de>] __vcpu_run+0x27e/0x388 [kvm]
+> [  +0.000018]  [<000003ff80589d0a>] kvm_arch_vcpu_ioctl_run+0x10a/0x278 [kvm]
+> [  +0.000019]  [<000003ff805704d4>] kvm_vcpu_ioctl+0x2cc/0x898 [kvm]
+> [  +0.000019]  [<0000000200801ee8>] __s390x_sys_ioctl+0xc0/0x100
+> [  +0.000003]  [<000000020046e7ae>] do_syscall+0x7e/0xd0
+> [  +0.000003]  [<00000002010ffc20>] __do_syscall+0xc0/0xd8
+> [  +0.000002]  [<0000000201110c42>] system_call+0x72/0x98
+> [  +0.000003] INFO: lockdep is turned off.
+> [  +6.846296] vfio_mdev 4f77ad87-1e62-4959-8b7a-c677c98d2194: Removing from iommu group 1
+> [  +0.000028] vfio_mdev 4f77ad87-1e62-4959-8b7a-c677c98d2194: MDEV: detaching iommu
+> [  +0.007677] vfio_ap matrix: MDEV: Unregistering
+>
+>
+>>    s390/vfio-ap: use new AP bus interface to search for queue devices
+>>    s390/vfio-ap: move probe and remove callbacks to vfio_ap_ops.c
+>>    s390/vfio-ap: manage link between queue struct and matrix mdev
+>>    s390/vfio-ap: introduce shadow APCB
+>>    s390/vfio-ap: refresh guest's APCB by filtering APQNs assigned to mdev
+>>    s390/vfio-ap: allow assignment of unavailable AP queues to mdev device
+>>    s390/vfio-ap: allow hot plug/unplug of AP resources using mdev device
+>>    s390/zcrypt: driver callback to indicate resource in use
+>>    s390/vfio-ap: implement in-use callback for vfio_ap driver
+>>    s390/vfio-ap: sysfs attribute to display the guest's matrix
+>>    s390/zcrypt: notify drivers on config changed and scan complete
+>>      callbacks
+>>    s390/vfio-ap: update docs to include dynamic config support
 
