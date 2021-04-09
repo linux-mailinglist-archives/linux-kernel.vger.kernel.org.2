@@ -2,316 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D5D35955A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87CAF35955D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233374AbhDIGXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:23:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33744 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229715AbhDIGXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:23:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B90B261057;
-        Fri,  9 Apr 2021 06:23:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1617949385;
-        bh=mJ2iIVENJVBOnN2uXfAcyB/K8aKm5K5QHhvwNyApuAU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=csPjYedzWhmuKBGMU155cpHTdZItXq65aNVGkrX9cDOfKgzfcWV1yVZ7+8tq01r+z
-         ODfCoIhkGumpTuUlBz+43/5MvpO/6M0D+77/eRG+VIJ27eTKjfLfS57BTaW5YITUdh
-         97swMkpU38QBpyu9C25OZZIPhXniOvfHNvdymBZE=
-Date:   Thu, 8 Apr 2021 23:23:03 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
-        <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        openipmi-developer@lists.sourceforge.net,
-        linux-remoteproc@vger.kernel.org,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Corey Minyard <minyard@acm.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>
-Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
-Message-Id: <20210408232303.453749e0e6fb0adfa8545440@linux-foundation.org>
-In-Reply-To: <CAHp75Ve+11u=dtNTO8BCohOJHGWSMJtb1nGCOrNde7bXaD4ehA@mail.gmail.com>
-References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
-        <202104061143.E11D2D0@keescook>
-        <CAHp75Ve+11u=dtNTO8BCohOJHGWSMJtb1nGCOrNde7bXaD4ehA@mail.gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233394AbhDIGX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:23:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233378AbhDIGX0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 02:23:26 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED56C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 23:23:13 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id 7so2239480plb.7
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 23:23:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=y7eM9NOxV0/YJgk1/+DqK+RAGiy7J8VSlaHOoYfGcZ0=;
+        b=xg1e2XKIJGCnu9rtT3vQ5jB8J47gAp+cBscH1HOv5eTTP1BtFeOJcrzQqSKQZko3Zt
+         1a1BkvQjmsGVUPKufSF9mVOi30trvnkjubP/h7LnZQZvpF3bs86nmmDhQS6j9WjzM4lH
+         diprXRbSl5n2iLYp+wFaEHHDAfYH2k3qG1+hor+iFtWHNKdbt91/0dkHb/KGw3kXyjz7
+         VVQxRzt6+cMQd0v6MG2MPT/kNA2Lm5wNl9owZI7YjPvhorRGAhAAeoaVpX10etZGsLjL
+         l0FKEQNjXheMWLj3h3fxm3fz64Devx/ZQLHvNcu3FmUa100ctkxJ01Tgy0Np6tRcc9Mq
+         YpHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=y7eM9NOxV0/YJgk1/+DqK+RAGiy7J8VSlaHOoYfGcZ0=;
+        b=tdADozN9wIwXs88V+x2f6eyO4p/jzMGmO7UnqpH5re7wZkzoAPjku2QMgwcM+wMwgr
+         zNl6X1Gh8rBQJR9Cvmhj26xR5TFODbZqlDIZMruOiQEJuwh6VqWxIfdlDYJCQOpmvgUr
+         mphL3A/Cuue+yvlsbLKl6tyJK7nFJrioAQrT2C92xab94MY++JR9k6TlM8/0EGOajena
+         b8CoHW0xK20xX0rrIthbv+HJmOB3MZCpHyEBIlZ/zKztiex2kIX4r4plB5lgvrrRtR8E
+         AfiHfxkD5VIpdbPStY4KorjCyiE/F5PNDN72XTG6kf2tBuZ1GEYllJ7DFqIi1GMLVUjm
+         CapA==
+X-Gm-Message-State: AOAM531UCXk8U4SGrUzJPTWqH25JwQt0e5ygHgz8ikYrpvhpHRe8O3+S
+        WxfVnr56gFD3Y0jCOfJ+g5Jk
+X-Google-Smtp-Source: ABdhPJwqcPnHiZfVT81sTN1xfVUQ5KL2PK9I3uMYKi0LR7nqL97u0wRp8MFM4ZN00uHgga7iSwz6WA==
+X-Received: by 2002:a17:90b:1490:: with SMTP id js16mr11908041pjb.131.1617949393034;
+        Thu, 08 Apr 2021 23:23:13 -0700 (PDT)
+Received: from work ([103.77.37.131])
+        by smtp.gmail.com with ESMTPSA id d24sm1090136pjw.37.2021.04.08.23.23.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 08 Apr 2021 23:23:12 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 11:53:08 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Chen Hui <clare.chenhui@huawei.com>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] clk: qcom: Add missing MODULE_DEVICE_TABLE
+Message-ID: <20210409062308.GB4376@work>
+References: <20210408135509.208921-1-clare.chenhui@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408135509.208921-1-clare.chenhui@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Apr 2021 11:46:37 +0300 Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-
-> On Wed, Apr 7, 2021 at 11:17 AM Kees Cook <keescook@chromium.org> wrote:
-> >
-> > On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
-> > > kernel.h is being used as a dump for all kinds of stuff for a long time.
-> > > Here is the attempt to start cleaning it up by splitting out panic and
-> > > oops helpers.
-> > >
-> > > At the same time convert users in header and lib folder to use new header.
-> > > Though for time being include new header back to kernel.h to avoid twisted
-> > > indirected includes for existing users.
-> > >
-> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> >
-> > I like it! Do you have a multi-arch CI to do allmodconfig builds to
-> > double-check this?
+On Thu, Apr 08, 2021 at 09:55:09PM +0800, Chen Hui wrote:
+> Add missing MODULE_DEVICE_TABLE entries to support module autoloading,
+> as these drivers can be compiled as external modules.
 > 
-> Unfortunately no, I rely on plenty of bots that are harvesting mailing lists.
+> Signed-off-by: Chen Hui <clare.chenhui@huawei.com>
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
+
+> ---
+>  drivers/clk/qcom/a53-pll.c      | 1 +
+>  drivers/clk/qcom/a7-pll.c       | 1 +
+>  drivers/clk/qcom/apss-ipq-pll.c | 1 +
+>  3 files changed, 3 insertions(+)
 > 
-> But I will appreciate it if somebody can run this through various build tests.
+> diff --git a/drivers/clk/qcom/a53-pll.c b/drivers/clk/qcom/a53-pll.c
+> index 45cfc57bff92..af6ac17c7dae 100644
+> --- a/drivers/clk/qcom/a53-pll.c
+> +++ b/drivers/clk/qcom/a53-pll.c
+> @@ -93,6 +93,7 @@ static const struct of_device_id qcom_a53pll_match_table[] = {
+>  	{ .compatible = "qcom,msm8916-a53pll" },
+>  	{ }
+>  };
+> +MODULE_DEVICE_TABLE(of, qcom_a53pll_match_table);
+>  
+>  static struct platform_driver qcom_a53pll_driver = {
+>  	.probe = qcom_a53pll_probe,
+> diff --git a/drivers/clk/qcom/a7-pll.c b/drivers/clk/qcom/a7-pll.c
+> index e171d3caf2cf..c4a53e5db229 100644
+> --- a/drivers/clk/qcom/a7-pll.c
+> +++ b/drivers/clk/qcom/a7-pll.c
+> @@ -86,6 +86,7 @@ static const struct of_device_id qcom_a7pll_match_table[] = {
+>  	{ .compatible = "qcom,sdx55-a7pll" },
+>  	{ }
+>  };
+> +MODULE_DEVICE_TABLE(of, qcom_a7pll_match_table);
+>  
+>  static struct platform_driver qcom_a7pll_driver = {
+>  	.probe = qcom_a7pll_probe,
+> diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
+> index 30be87fb222a..bef7899ad0d6 100644
+> --- a/drivers/clk/qcom/apss-ipq-pll.c
+> +++ b/drivers/clk/qcom/apss-ipq-pll.c
+> @@ -81,6 +81,7 @@ static const struct of_device_id apss_ipq_pll_match_table[] = {
+>  	{ .compatible = "qcom,ipq6018-a53pll" },
+>  	{ }
+>  };
+> +MODULE_DEVICE_TABLE(of, apss_ipq_pll_match_table);
+>  
+>  static struct platform_driver apss_ipq_pll_driver = {
+>  	.probe = apss_ipq_pll_probe,
+> -- 
+> 2.17.1
 > 
-
-um, did you try x86_64 allmodconfig?
-
-I'm up to
-kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix-fix.patch
-and counting.
-
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: kernelh-split-out-panic-and-oops-helpers-fix
-
-more files need panic_notifier.h
-
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- arch/x86/xen/enlighten.c        |    1 +
- drivers/video/fbdev/hyperv_fb.c |    1 +
- 2 files changed, 2 insertions(+)
-
---- a/arch/x86/xen/enlighten.c~kernelh-split-out-panic-and-oops-helpers-fix
-+++ a/arch/x86/xen/enlighten.c
-@@ -6,6 +6,7 @@
- #include <linux/cpu.h>
- #include <linux/kexec.h>
- #include <linux/slab.h>
-+#include <linux/panic_notifier.h>
- 
- #include <xen/xen.h>
- #include <xen/features.h>
---- a/drivers/video/fbdev/hyperv_fb.c~kernelh-split-out-panic-and-oops-helpers-fix
-+++ a/drivers/video/fbdev/hyperv_fb.c
-@@ -52,6 +52,7 @@
- #include <linux/completion.h>
- #include <linux/fb.h>
- #include <linux/pci.h>
-+#include <linux/panic_notifier.h>
- #include <linux/efi.h>
- #include <linux/console.h>
- 
-_
-
-
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix
-
-arch/x86/purgatory/purgatory.c needs kernel.h
-
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- arch/x86/purgatory/purgatory.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/arch/x86/purgatory/purgatory.c~kernelh-split-out-panic-and-oops-helpers-fix-fix
-+++ a/arch/x86/purgatory/purgatory.c
-@@ -8,6 +8,7 @@
-  *       Vivek Goyal <vgoyal@redhat.com>
-  */
- 
-+#include <linux/kernel.h>
- #include <linux/bug.h>
- #include <crypto/sha2.h>
- #include <asm/purgatory.h>
-_
-
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix-fix
-
-drivers/clk/analogbits/wrpll-cln28hpc.c needs minmax.h, math.h and limits.h
-
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- drivers/clk/analogbits/wrpll-cln28hpc.c |    4 ++++
- 1 file changed, 4 insertions(+)
-
---- a/drivers/clk/analogbits/wrpll-cln28hpc.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix
-+++ a/drivers/clk/analogbits/wrpll-cln28hpc.c
-@@ -25,6 +25,10 @@
- #include <linux/err.h>
- #include <linux/log2.h>
- #include <linux/math64.h>
-+#include <linux/minmax.h>
-+#include <linux/math.h>
-+#include <linux/limits.h>
-+
- #include <linux/clk/analogbits-wrpll-cln28hpc.h>
- 
- /* MIN_INPUT_FREQ: minimum input clock frequency, in Hz (Fref_min) */
-_
-
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix
-
-drivers/misc/pvpanic/pvpanic.c needs panic_notifier.h
-
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- drivers/misc/pvpanic/pvpanic.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/drivers/misc/pvpanic/pvpanic.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix
-+++ a/drivers/misc/pvpanic/pvpanic.c
-@@ -13,6 +13,7 @@
- #include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/panic_notifier.h>
- #include <linux/types.h>
- #include <linux/cdev.h>
- #include <linux/list.h>
-_
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix
-
-fix drivers/misc/pvpanic/pvpanic.c and drivers/net/ipa/ipa_smp2p.c
-
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- drivers/net/ipa/ipa_smp2p.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/drivers/net/ipa/ipa_smp2p.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix
-+++ a/drivers/net/ipa/ipa_smp2p.c
-@@ -8,6 +8,7 @@
- #include <linux/device.h>
- #include <linux/interrupt.h>
- #include <linux/notifier.h>
-+#include <linux/panic_notifier.h>
- #include <linux/soc/qcom/smem.h>
- #include <linux/soc/qcom/smem_state.h>
- 
-_
-
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix
-
-fix drivers/power/reset/ltc2952-poweroff.c and drivers/misc/bcm-vk/bcm_vk_dev.c
-
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- drivers/misc/bcm-vk/bcm_vk_dev.c       |    1 +
- drivers/power/reset/ltc2952-poweroff.c |    1 +
- 2 files changed, 2 insertions(+)
-
---- a/drivers/power/reset/ltc2952-poweroff.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix
-+++ a/drivers/power/reset/ltc2952-poweroff.c
-@@ -52,6 +52,7 @@
- #include <linux/slab.h>
- #include <linux/kmod.h>
- #include <linux/module.h>
-+#include <linux/panic_notifier.h>
- #include <linux/mod_devicetable.h>
- #include <linux/gpio/consumer.h>
- #include <linux/reboot.h>
---- a/drivers/misc/bcm-vk/bcm_vk_dev.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix
-+++ a/drivers/misc/bcm-vk/bcm_vk_dev.c
-@@ -9,6 +9,7 @@
- #include <linux/fs.h>
- #include <linux/idr.h>
- #include <linux/interrupt.h>
-+#include <linux/panic_notifier.h>
- #include <linux/kref.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-_
-
-From: Andrew Morton <akpm@linux-foundation.org>
-Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix-fix
-
-fix drivers/leds/trigger/ledtrig-panic.c and drivers/firmware/google/gsmi.c
-
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- drivers/firmware/google/gsmi.c       |    1 +
- drivers/leds/trigger/ledtrig-panic.c |    1 +
- 2 files changed, 2 insertions(+)
-
---- a/drivers/leds/trigger/ledtrig-panic.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix-fix
-+++ a/drivers/leds/trigger/ledtrig-panic.c
-@@ -8,6 +8,7 @@
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/notifier.h>
-+#include <linux/panic_notifier.h>
- #include <linux/leds.h>
- #include "../leds.h"
- 
---- a/drivers/firmware/google/gsmi.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix-fix
-+++ a/drivers/firmware/google/gsmi.c
-@@ -19,6 +19,7 @@
- #include <linux/dma-mapping.h>
- #include <linux/fs.h>
- #include <linux/slab.h>
-+#include <linux/panic_notifier.h>
- #include <linux/ioctl.h>
- #include <linux/acpi.h>
- #include <linux/io.h>
-_
-
-
-and.... drivers/leds/trigger/ledtrig-heartbeat.c as well.
-
-I'll drop it.
