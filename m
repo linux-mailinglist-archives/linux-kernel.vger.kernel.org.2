@@ -2,68 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4328235A0E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2B535A0E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:19:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233809AbhDIOSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:18:50 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48411 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhDIOSs (ORCPT
+        id S233601AbhDIOTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:19:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58788 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231402AbhDIOTT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:18:48 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lUrxy-0004mK-8f; Fri, 09 Apr 2021 14:18:34 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Brian Foster <bfoster@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Allison Collins <allison.henderson@oracle.com>,
-        Chandan Babu R <chandanrlinux@gmail.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] xfs: fix return of uninitialized value in variable error
-Date:   Fri,  9 Apr 2021 15:18:34 +0100
-Message-Id: <20210409141834.667163-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.30.2
+        Fri, 9 Apr 2021 10:19:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617977946;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=e3UH0r2xCKD4o2NrpBi1CrnYYl14AvSTiS+slBUMDUw=;
+        b=bE657FGVNDT1+JF79LvsfKshH+AWPFfNEJmbo5m6MNn+th+RjF8/0nq8JGPsD+KfNOx++9
+        Xx9x5b5pNOCv/LZXDeZW3T4pdeyqTWpXA7Vuw40eJT7cbZI+rs7hvu9ifXcnr4U5YK0K8r
+        7RHcwnPUBLzrsGWcLI8xuQNmLg5Uxz0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-Cv5cFVeBOO2Qwp9BMdJcpg-1; Fri, 09 Apr 2021 10:19:04 -0400
+X-MC-Unique: Cv5cFVeBOO2Qwp9BMdJcpg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 561CF81744F;
+        Fri,  9 Apr 2021 14:19:02 +0000 (UTC)
+Received: from [10.36.115.11] (ovpn-115-11.ams2.redhat.com [10.36.115.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 38AA16B8DD;
+        Fri,  9 Apr 2021 14:18:57 +0000 (UTC)
+Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+ <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
+ <5e934d94-414c-90de-c58e-34456e4ab1cf@redhat.com>
+ <20210409133347.r2uf3u5g55pp27xn@box>
+ <5ef83789-ffa5-debd-9ea2-50d831262237@redhat.com>
+ <20210409141211.wfbyzflj7ygtx7ex@box.shutemov.name>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <8a845f8e-295b-1445-382c-75277ade45ae@redhat.com>
+Date:   Fri, 9 Apr 2021 16:18:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210409141211.wfbyzflj7ygtx7ex@box.shutemov.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 09.04.21 16:12, Kirill A. Shutemov wrote:
+> On Fri, Apr 09, 2021 at 03:50:42PM +0200, David Hildenbrand wrote:
+>>>> 3. Allow selected users to still grab the pages (esp. KVM to fault them into
+>>>> the page tables).
+>>>
+>>> As long as fault leads to non-present PTEs we are fine. Usespace still may
+>>> want to mlock() some of guest memory. There's no reason to prevent this.
+>>
+>> I'm curious, even get_user_pages() will lead to a present PTE as is, no? So
+>> that will need modifications I assume. (although I think it fundamentally
+>> differs to the way get_user_pages() works - trigger a fault first, then
+>> lookup the PTE in the page tables).
+> 
+> For now, the patch has two step poisoning: first fault in, on the add to
+> shadow PTE -- poison. By the time VM has chance to use the page it's
+> poisoned and unmapped from the host userspace.
 
-A previous commit removed a call to xfs_attr3_leaf_read that
-assigned an error return code to variable error. We now have
-a few early error return paths to label 'out' that return
-error if error is set; however error now is uninitialized
-so potentially garbage is being returned.  Fix this by setting
-error to zero to restore the original behaviour where error
-was zero at the label 'restart'.
+IIRC, this then assumes that while a page is protected, it will remain 
+mapped into the NPT; because, there is no way to remap into NPT later 
+because the pages have already been poisoned.
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: 07120f1abdff ("xfs: Add xfs_has_attr and subroutines")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- fs/xfs/libxfs/xfs_attr.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/xfs/libxfs/xfs_attr.c b/fs/xfs/libxfs/xfs_attr.c
-index 472b3039eabb..902e5f7e6642 100644
---- a/fs/xfs/libxfs/xfs_attr.c
-+++ b/fs/xfs/libxfs/xfs_attr.c
-@@ -928,6 +928,7 @@ xfs_attr_node_addname(
- 	 * Search to see if name already exists, and get back a pointer
- 	 * to where it should go.
- 	 */
-+	error = 0;
- 	retval = xfs_attr_node_hasname(args, &state);
- 	if (retval != -ENOATTR && retval != -EEXIST)
- 		goto out;
 -- 
-2.30.2
+Thanks,
+
+David / dhildenb
 
