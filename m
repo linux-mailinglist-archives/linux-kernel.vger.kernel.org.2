@@ -2,217 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3760035A763
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:47:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8DA35A76C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235091AbhDITq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
+        id S234279AbhDITwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:52:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235080AbhDITqt (ORCPT
+        with ESMTP id S232855AbhDITwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:46:49 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37713C061763
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 12:46:34 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id l4so10397169ejc.10
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 12:46:34 -0700 (PDT)
+        Fri, 9 Apr 2021 15:52:10 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D008C061762;
+        Fri,  9 Apr 2021 12:51:57 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id e12so6699766wro.11;
+        Fri, 09 Apr 2021 12:51:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=00DmRMd0Ppqlj6NPfhWteKHJG+0eTjZ5Lw0FbYcqZWg=;
-        b=pkS00Iq/wQKviqbuLMLppilzSlzEv+HlJhPDmiQGmXLhAmWY7fWUlKUTxq95gNFJOA
-         xFW8exg0NiMjw1Ijes/kkILItqOPu+tXfyFZq3ybDuX9Z/VPooGL6zdMuziFlsNKGzNF
-         BpIuaNqOCv0/yNua9z/rDXFJeYk1Eh1Cf11G4ZjHuw63RBcAh46oDAuBJKBQICUPRzpM
-         1f8asSLlRuU/pgaLWVyWiXhmgVDeok31NkJDwCpJhbzOApexd+MYJl1ExMNQ2mZwJgzd
-         RRplEn7DplwyM5DW+zTey1KhDkrbcYRzRA/L+u5QUYDpK6NpXJSTMcM9PKjtGakdD6ie
-         wR7g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SS20cAEWlAaQg9dBPwSnBdv+rCvY+I61Ggv36SwWNX0=;
+        b=PMcyR7DeVzg6/1S3T8s6NxFAToxG48/w8SQIqKP8ckz22YhVOb336wibsxe15Zc/hD
+         be2lUQ4XPGbAwve50v/U/Es+A/mbeFT2q7n6Nw1BZ//lGzIKpzaKITpVVOuoCBXdtUCm
+         JtgCv93oqR54BSsjpOmXX+Rg1hN2DOfGSYHljrFljJ1f4H+0Ld4/7eJChV8LaHBrbwtp
+         ulzDMucoqe/VA1EeHbSRTFnVzhclR40fKehsnjWjEMtU6cAosIfwKW8xN6/l2b1H/rlV
+         8PxMgkVuumhXodcGTeY5KBBO33r8XPW7g0NHHf6OzkAXZlMQT/pLTxkGypQtdEGmEE96
+         gT+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=00DmRMd0Ppqlj6NPfhWteKHJG+0eTjZ5Lw0FbYcqZWg=;
-        b=UYyudUKSL9nWARX55206c+XIIGCrvgQoq7/wvbExLvHGoOMwDi40Jkhh0dqAZZRFIj
-         9GQ/fvhVN2dfKxSjvFJVgDsPMUz2uJYOglDsKrITNTETkVrfZzaN6AzjVmWy4tHW6KLC
-         ncNrK5pDr5NESM8H30WtFlGmKeiglD2NJQVDuDEpxL3zUc/jOhtRaH4BsCRy7yIzc88o
-         Mlkuczc3jphRtLkIxZ+DqgyEMDcmj+C2JptjIRh+EsPVBHWMj4Lke2CJTAYQAvYvLseW
-         TW6jaQUWThL/8EExU1UZpH68Wmzme1MkCHpNT8KxIiaLHLjWJcziRiuV97gkxPHrFsjg
-         4uWQ==
-X-Gm-Message-State: AOAM531NX3WXt6BO00lLpJtcTKjTm9UdzwTkGgVHz6rooXalzOL0DpSl
-        CBFgp7bG3aZkqSimwZwhzidCoRjlRRAiX9qO7q+KwPUXHu4=
-X-Google-Smtp-Source: ABdhPJw1QLWMZjdPXQ2gCQH271yG+cva4TDX/pYpqFbT7ICP3mLlVjj+P3dUxYswl1jiuS9nuJH2IAJK/Vm8NYqIScU=
-X-Received: by 2002:a17:906:9b15:: with SMTP id eo21mr1621220ejc.237.1617997592848;
- Fri, 09 Apr 2021 12:46:32 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SS20cAEWlAaQg9dBPwSnBdv+rCvY+I61Ggv36SwWNX0=;
+        b=EcnV+v4p5/DBipzbrDKLzDMvK5bBLDnZ1iPIAXJd69pT+KG+2rtmlZG0zMUCTJW3p+
+         pt7qgBpK1ctCMPF0OuEQEEWMsTLGiR5TTbOcFsWf+MBw4FcZGAWktN0HiCwxuZLfcV+6
+         Fvey9OjvS4yqp2ZiqMZQFVORaJrevBCsnKW74HIHzsUyqEw3nHBNl50gAFNDMo3q90bD
+         ZfOR7RBOpq1ywX20QVForWr4mxEgCaatxcYQkIJ92WFz7Svd/Qeg2xCNlKZiCNNs07LG
+         qPSogxgfcpcFmnAHHL4+sFUPtzmtU1kbxSqb4TAcs/r/h6yeXmTTpkRwycmHisWN05Sq
+         drYQ==
+X-Gm-Message-State: AOAM532SyjqfQy0Tromh/Z0uytZnJUZIBywDXO2CQVnVQysUZghtg8fq
+        xwKiIwlKeYlTkDb92NGjVcVEisD1TvwLBZjO
+X-Google-Smtp-Source: ABdhPJz0YWiv76Lr7yQB+caQH1qgt56Djnf8qHluO4sUrJ1NnNjSGLrBdmKUdxCWi1dI6iiyzDd7eA==
+X-Received: by 2002:adf:fa12:: with SMTP id m18mr19212635wrr.61.1617997915979;
+        Fri, 09 Apr 2021 12:51:55 -0700 (PDT)
+Received: from debian (host-84-13-30-150.opaltelecom.net. [84.13.30.150])
+        by smtp.gmail.com with ESMTPSA id h63sm5192125wmh.13.2021.04.09.12.51.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 12:51:55 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 20:51:54 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Piotr Krysiuk <piotras@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: Re: [PATCH 5.10 39/41] bpf, x86: Validate computation of branch
+ displacements for x86-32
+Message-ID: <YHCwWhGh7eoU8OdU@debian>
+References: <20210409095304.818847860@linuxfoundation.org>
+ <20210409095306.075652415@linuxfoundation.org>
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Sat, 10 Apr 2021 05:46:21 +1000
-Message-ID: <CAPM=9tzEK7pEZ54TMCMc0yLto5QhnBjGE0X6X6Ca+N9EAc+U=w@mail.gmail.com>
-Subject: [git pull] drm fixes for 5.12-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409095306.075652415@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Linus,
+Hi Greg,
 
-Was relatively quiet this week, but still a few pulls came in, pretty
-much small fixes across the board, a couple of regression fixes in the
-amdgpu/radeon code, msm has a few minor fixes across the board, a
-panel regression fix also.
+On Fri, Apr 09, 2021 at 11:54:01AM +0200, Greg Kroah-Hartman wrote:
+> From: Piotr Krysiuk <piotras@gmail.com>
+> 
+> commit 26f55a59dc65ff77cd1c4b37991e26497fc68049 upstream.
 
-I'm out all next week, so Daniel will do any last minute fixes for the
-final release, assuming things stick to schedule. I'll be back for the
-merge window but might towards the end of the first week before I get
-my MR lined up.
+I am not finding this in Linus's tree and even not seeing this change in
+master branch also. Am I missing something?
 
-Dave.
 
-drm-fixes-2021-04-10:
-drm fixes for 5.12-rc7
-
-amdgpu:
-- DCN3 fix
-- Fix CAC setting regression for TOPAZ
-- Fix ttm regression
-
-radeon:
-- Fix ttm regression
-
-msm:
-- a5xx/a6xx timestamp fix
-- microcode version check
-- fail path fix
-- block programming fix
-- error removal fix.
-
-i915:
-- Fix invalid access to ACPI _DSM objects
-
-xen:
-- Fix use-after-free in xen.
-- minor duplicate definition cleanup
-
-vc4:
-- Reduce fifo threshold on hvs4 to fix a fifo full error.
-- minor redundant assignment cleanup
-
-panel:
-- Disable TE support for Droid4 and N950.
-The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
-
-  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
-
-are available in the Git repository at:
-
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-10
-
-for you to fetch changes up to bd119f471299c8692a00b2f5e9bba8e3b81c3466:
-
-  Merge tag 'drm-intel-fixes-2021-04-09' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes (2021-04-10
-05:18:35 +1000)
-
-----------------------------------------------------------------
-drm fixes for 5.12-rc7
-
-amdgpu:
-- DCN3 fix
-- Fix CAC setting regression for TOPAZ
-- Fix ttm regression
-
-radeon:
-- Fix ttm regression
-
-msm:
-- a5xx/a6xx timestamp fix
-- microcode version check
-- fail path fix
-- block programming fix
-- error removal fix.
-
-i915:
-- Fix invalid access to ACPI _DSM objects
-
-xen:
-- Fix use-after-free in xen.
-- minor duplicate defintion cleanup
-
-vc4:
-- Reduce fifo threshold on hvs4 to fix a fifo full error.
-- minor redunantant assignment cleanup
-
-panel:
-- Disable TE support for Droid4 and N950.
-
-----------------------------------------------------------------
-Alex Deucher (1):
-      drm/amdgpu/smu7: fix CAC setting on TOPAZ
-
-Dave Airlie (4):
-      Merge tag 'amd-drm-fixes-5.12-2021-04-08' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-      Merge tag 'drm-msm-fixes-2021-04-02' of
-https://gitlab.freedesktop.org/drm/msm into drm-fixes
-      Merge tag 'drm-misc-fixes-2021-04-09' of
-git://anongit.freedesktop.org/drm/drm-misc into drm-fixes
-      Merge tag 'drm-intel-fixes-2021-04-09' of
-git://anongit.freedesktop.org/drm/drm-intel into drm-fixes
-
-Dmitry Baryshkov (1):
-      drm/msm: a6xx: fix version check for the A650 SQE microcode
-
-Dom Cobley (1):
-      drm/vc4: crtc: Reduce PV fifo threshold on hvs4
-
-John Stultz (1):
-      drm/msm: Fix removal of valid error case when checking speed_bin
-
-Kalyan Thota (1):
-      drm/msm/disp/dpu1: program 3d_merge only if block is attached
-
-Lv Yunlong (1):
-      gpu/xen: Fix a use after free in xen_drm_drv_init
-
-Maxime Ripard (1):
-      drm/vc4: plane: Remove redundant assignment
-
-Qingqing Zhuo (1):
-      drm/amd/display: Add missing mask for DCN3
-
-Rob Clark (1):
-      drm/msm: Fix a5xx/a6xx timestamps
-
-Sebastian Reichel (1):
-      drm/panel: panel-dsi-cm: disable TE for now
-
-Stephen Boyd (1):
-      drm/msm: Set drvdata to NULL when msm_drm_init() fails
-
-Takashi Iwai (1):
-      drm/i915: Fix invalid access to ACPI _DSM objects
-
-Wan Jiabing (1):
-      drivers: gpu: drm: xen_drm_front_drm_info is declared twice
-
-xinhui pan (2):
-      drm/amdgpu: Fix size overflow
-      drm/radeon: Fix size overflow
-
- drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c            |  2 +-
- drivers/gpu/drm/amd/display/dc/dcn30/dcn30_hubp.h  |  1 +
- .../gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c    |  3 ++-
- drivers/gpu/drm/i915/display/intel_acpi.c          | 22 ++++++++++++++++++++--
- drivers/gpu/drm/msm/adreno/a5xx_gpu.c              |  4 ++--
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c              | 18 ++++++++++++------
- drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c         |  4 +++-
- drivers/gpu/drm/msm/msm_drv.c                      |  1 +
- drivers/gpu/drm/panel/panel-dsi-cm.c               | 12 +++++++++---
- drivers/gpu/drm/radeon/radeon_ttm.c                |  4 ++--
- drivers/gpu/drm/vc4/vc4_crtc.c                     | 17 +++++++++++++++++
- drivers/gpu/drm/vc4/vc4_plane.c                    |  1 -
- drivers/gpu/drm/xen/xen_drm_front.c                |  6 ++++--
- drivers/gpu/drm/xen/xen_drm_front_conn.h           |  1 -
- 14 files changed, 74 insertions(+), 22 deletions(-)
+--
+Regards
+Sudip
