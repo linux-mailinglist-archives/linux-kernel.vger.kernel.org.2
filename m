@@ -2,173 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F064359FF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2F52359FFE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233735AbhDINg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:36:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbhDINg4 (ORCPT
+        id S233673AbhDINjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:39:15 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:22671 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232855AbhDINjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:36:56 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E10C061760;
-        Fri,  9 Apr 2021 06:36:43 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id r12so8725308ejr.5;
-        Fri, 09 Apr 2021 06:36:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ORK7Ni7rBYd2U9kNMSKdG31gNJoCS6P/+dcBmLvcUlw=;
-        b=I7PJzHdH08eGiCDK/m2dCKnNY1v6aBL/CnZw/3Y9DVcpdR2OSfhk/S3obkssrGppSB
-         SqRUC9f9ycTnDC0OmPUMtbQoKvDbt53k1z9v28KbD7dX6hOdDyOOT7X2QkZXm4cXYWjJ
-         uRPuAH6hoAdkQDHGzNwtzw19CmptPfWiHsVw3AVWwBRcPjE8PO49hQqhYHcHfhpijTru
-         H8AINAVDP8J1E4hSndmMApVgYD6gkD/AUJp3ud6NWqR203s+yLPtzuL/ctIgiBLBIPNC
-         m4caMD76ZSxfHqxgXHPz7y/GwjZTGgY++drXNGGGHp79ganJm4tMHqwtVdfKo61Gx5Y0
-         NSAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ORK7Ni7rBYd2U9kNMSKdG31gNJoCS6P/+dcBmLvcUlw=;
-        b=PUTvwkJsHVS9jBxbmufv31nOf7Iri3ro6InJR8mXIURqLCz0eHp4LfahaijaM1yBJ0
-         hUsqnR8ucb+n1Ew1LcyU985NoPmSNT39GJMEquHgnPXdDCTfe2UryQ+1xZUyU6Wpg12B
-         rUL4y4oqZqJK/GJYjdFLkxOtO9t5jacaxjTpFHCgBMWxMl4FEwXt3bot/8OGmS4g8Nsp
-         aBwcd4VDNEsqOGoyzeljaL2Md4xK2V+cIuEMcDAEwvxCgAi4jXsTEOMVwDCjijKaoD6K
-         VLocXLmG6lM0WobDkCE4l1lGB+OQRHHC+q7by0NC0URLi25NBhBUCs+RkreS6p6Zsx9D
-         G2Sg==
-X-Gm-Message-State: AOAM533WmTXAH9kCxdBYg/PQjqc0Xht72Q0vzA6xZSY8Cd5mhcdziD3+
-        DF4gzmNw9pFric30yiNBFkNdzTmb2XBhQJLbzYI=
-X-Google-Smtp-Source: ABdhPJwDt9k6K9SczK6O9QC1MnEEHxtcFSysDpQdAm6P8xxjcFFvuf43OpBKd+HlUTOo6uqDbTdWqz6Y8AmHb4/b4jw=
-X-Received: by 2002:a17:906:44b:: with SMTP id e11mr8419543eja.551.1617975402441;
- Fri, 09 Apr 2021 06:36:42 -0700 (PDT)
+        Fri, 9 Apr 2021 09:39:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617975541; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=nCLKJ3txbssGA/MS9THnoJcM1/EpV+VVOtQ0VWZ6Umc=;
+ b=AmcL94NG7Ck1xkGZlwlWfi/r3pf526qZKsLyVMdw1xxqxcRsva9Lqh4znvfyB/gDqYqekUOH
+ I9SSXN2h7DsoEsRjzPknCaC6p7hH7Gcs+mvoWQE9XwEZdza4TUtaNfFYVbFv/OMvLRLWYGkj
+ C52tz8yeAvioAStsGGO+xuTaEQY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 607058ec8807bcde1de095c8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Apr 2021 13:38:52
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3D8B1C43462; Fri,  9 Apr 2021 13:38:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 99624C43461;
+        Fri,  9 Apr 2021 13:38:51 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210407212122.626137-1-adrien.grassein@gmail.com>
- <542d469459083fa31e37ca7feb14480831a0445f.camel@pengutronix.de> <bc59b75b-d5b7-fe0f-6cba-d184cab204d3@oss.nxp.com>
-In-Reply-To: <bc59b75b-d5b7-fe0f-6cba-d184cab204d3@oss.nxp.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Fri, 9 Apr 2021 08:36:29 -0500
-Message-ID: <CAHCN7xK=mjvgrMGXfFwN6520rhtdZu9YRiSn6mi6-+9sVA-LWg@mail.gmail.com>
-Subject: Re: [PATCH v1 0/7] imx-gpcv2 improvements
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Adrien Grassein <adrien.grassein@gmail.com>,
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 09 Apr 2021 19:08:51 +0530
+From:   skakit@codeaurora.org
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Aisheng Dong <aisheng.dong@nxp.com>, qiangqing.zhang@nxp.com,
-        Alice Guo <alice.guo@nxp.com>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH V2 3/4] dt-bindings: power: reset: qcom-pon: Convert qcom
+ PON binding to yaml
+In-Reply-To: <20210409115748.xfxukqgoyvscgpln@earth.universe>
+References: <1617881469-31965-1-git-send-email-skakit@codeaurora.org>
+ <1617881469-31965-4-git-send-email-skakit@codeaurora.org>
+ <20210408130001.k3qbq3vvwkiyykzv@earth.universe>
+ <0cb9b3503000ac7206f4a3ef5fd16c17@codeaurora.org>
+ <20210409115748.xfxukqgoyvscgpln@earth.universe>
+Message-ID: <ad5d04c2a806213e9922834e996da15a@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 8:27 PM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
->
-> Hi Lucas,
->
-> On 2021/4/8 6:13, Lucas Stach wrote:
-> > Hi Adrien,
-> >
-> > I feel like I already mentioned to you some time ago that there is
-> > already a much more complete patch series to add this functionality on
-> > the list [1].
-> >
-> > If you want this functionality to go upstream, please help test and
-> > extend this patch series.
-> >
-> > Regards,
-> > Lucas
-> >
-> > [1] https://lore.kernel.org/linux-arm-kernel/20201105174434.1817539-1-l.stach@pengutronix.de/
->
-> Would you share what's the issue that block this going forward?
+On 2021-04-09 17:27, Sebastian Reichel wrote:
+> Hi,
+> 
+> On Fri, Apr 09, 2021 at 01:48:58PM +0530, skakit@codeaurora.org wrote:
+>>> Please do not drop the example :)
+>> 
+>> As per my understanding on Rob's comments [1] I have added one 
+>> complete
+>> example in qcom,pm8941-pwrkey.yaml (see patch 4/4) and dropped it 
+>> here.
+>> 
+>> [1] https://lore.kernel.org/patchwork/patch/1390062/#1588027
+> 
+> Ok, please add a note about this in the commit message.
+> Something like:
+> 
+> The example has been removed in favour of full example being
+> available in the qcom,pm8941-pwrkey binding.
+> 
 
-Peng,
+Okay.
 
-I know of a few.  One of them is mentioned in [1] above.  From what I
-can tell, the dt-bindings have halted being able to enable the GPU and
-USB power domains.  See [2] for some of that dialog.
-
-The second part that I am aware is the blk-ctl being dependent on the
-power domain and the power domain being dependent on the blk-ctl [3]
-There was some discussion of using syscon to let the power-domain
-finish coming up and then referencing the the power-domain from the
-blk-ctl, but there was some disagreement [4] on that approach
-
-I think Abel tried to create an IRC, but by the time I was able to
-join the IRC, there was no activity.
-
-[2] - https://lore.kernel.org/linux-arm-kernel/CAHCN7xLdkEd0G3fa9gAp-xvKZ-bYmvcyn-8OEbgNjBJyCCOs9g@mail.gmail.com/
-[3] - https://lkml.org/lkml/2020/11/9/17
-[4] - https://www.spinics.net/lists/arm-kernel/msg849032.html
-
->
 > Thanks,
-> Peng.
->
-> >
-> > Am Mittwoch, dem 07.04.2021 um 23:21 +0200 schrieb Adrien Grassein:
-> >> Hi,
-> >>
-> >> This patch set aims is to add the support of the i.MX8 MM power domains
-> >> on the mainline kernel.
-> >>
-> >> To achieve this, I do several patches
-> >>    - Check errors when reading or writing registers (concerns i.MX8M base
-> >>      implementation);
-> >>    - Fix power up/down sequence. Handshake was not checked and it was
-> >>      not called at the appropriate time (concerns i.MX8M base
-> >> implementaions);
-> >>    - Allow domains without power sequence control like the HSIOMIX of the
-> >>      i.MX8MM.
-> >>    - Add some i.MX8MM domains (HSIO and OTGS);
-> >>    - Introduce quirks. For example, i.MX8MM OTG domains should not be
-> >>      powered off (seen n the source code of th i.MX ATF). Quirks are
-> >> easily upgrable for other cases.
-> >>    - Finally I defined power domains into the imx8mm.dtb file.
-> >>
-> >> I know that this kind of patch is rejected by NXP ut the other way
-> >> (callin ATF directly) was also rejected.
-> >>
-> >> I also know that NXP is concerned abou adding hundred lines of codes for
-> >> each new SOC but it' the way it works on Linux. And the "added code"
-> >> mainly consist of adding structures, defines and generic methods for
-> >> regmap.
-> >>
-> >> If it's a real problem, maybe we can introduc a new "gpcv3" driver for
-> >> i.MX8MM, i.MX8MN and i.MX8MP.
-> >>
-> >> Thanks,
-> >>
-> >> Adrien Grassein (7):
-> >>    soc: imx: gpcv2: check for errors when r/w registers
-> >>    soc: imx: gpcv2: Fix power up/down sequence
-> >>    soc: imx: gpcv2: allow domains without power sequence control
-> >>    dt-bindings: power: fsl,imx-gpcv2: add definitions for i.MX8MM
-> >>    soc: imx: gpcv2: add HSIOMIX and USB domains for i.MX8MM
-> >>    soc: imx: gpcv2: add quirks to domains
-> >>    arm64: dts: imx8mm: add power-domains
-> >>
-> >>   .../bindings/power/fsl,imx-gpcv2.yaml         |   7 +-
-> >>   arch/arm64/boot/dts/freescale/imx8mm.dtsi     |  35 ++
-> >>   drivers/soc/imx/gpcv2.c                       | 336 ++++++++++++++----
-> >>   include/dt-bindings/power/imx8mm-power.h      |  21 ++
-> >>   4 files changed, 333 insertions(+), 66 deletions(-)
-> >>   create mode 100644 include/dt-bindings/power/imx8mm-power.h
-> >>
-> >
-> >
+> 
+> -- Sebastian
