@@ -2,173 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E86735A1EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:24:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E4535A1F0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233970AbhDIPYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:24:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33862 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233878AbhDIPYS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:24:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617981845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=In89GpsfQ7VIO/otNY/3WXw7OgFa4d39+gGb7ySmf9A=;
-        b=i55ZCoEJlx397njXgJP8ZDBB9dkd3KwswtZZ+Vq3KN92Qvy90dUHd8DPfge0npHTEpPorm
-        1H7LFG44X8kq1+gQ1jaO9lyXE2DU0Ff83uifcnbqCw72TnsmJGqq9u+8sMXEzoI2HwzaRa
-        nbMaY5XHzaKSYJPTMMqVacjGv3oea04=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-244-A9N9_hEqMLeMO0bmNz0_hA-1; Fri, 09 Apr 2021 11:24:01 -0400
-X-MC-Unique: A9N9_hEqMLeMO0bmNz0_hA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S233986AbhDIPYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:24:25 -0400
+Received: from mga04.intel.com ([192.55.52.120]:58661 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232990AbhDIPYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 11:24:24 -0400
+IronPort-SDR: s5xmFU35fj0vCrnV7gDGPMAGsXFo43O48J1GoDAF/eu47Bn64wYbHbWCD6Rxo2rKer1z+3VKYq
+ /NYjc8w3AtPg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="191633880"
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="191633880"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 08:24:11 -0700
+IronPort-SDR: 64FeR+A9AM7s7F/bpibesvL7muKJ/ITBdbZ+3A2KYTqrtierNopootqgzgU0AUk9wEwpV+c3pk
+ zoXUDCb0EhNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="613747171"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmsmga005.fm.intel.com with ESMTP; 09 Apr 2021 08:24:11 -0700
+Received: from [10.209.7.33] (kliang2-MOBL.ccr.corp.intel.com [10.209.7.33])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0F624E99C0;
-        Fri,  9 Apr 2021 15:24:00 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 81EA160BE5;
-        Fri,  9 Apr 2021 15:23:56 +0000 (UTC)
-Date:   Fri, 9 Apr 2021 11:23:55 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Hannes Reinecke <hare@suse.de>,
-        Alasdair Kergon <agk@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pavel.tide@veeam.com
-Subject: Re: [PATCH v8 0/4] block device interposer
-Message-ID: <20210409152355.GA15109@redhat.com>
-References: <1617968884-15149-1-git-send-email-sergei.shtepa@veeam.com>
+        by linux.intel.com (Postfix) with ESMTPS id 468D6580812;
+        Fri,  9 Apr 2021 08:24:09 -0700 (PDT)
+Subject: Re: [PATCH V5 21/25] perf: Introduce PERF_TYPE_HARDWARE_PMU and
+ PERF_TYPE_HW_CACHE_PMU
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+        ricardo.neri-calderon@linux.intel.com,
+        Mark Rutland <mark.rutland@arm.com>
+References: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
+ <1617635467-181510-22-git-send-email-kan.liang@linux.intel.com>
+ <YHActB+bkgBesWM3@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <11ed193e-75f9-c060-b757-350612b694aa@linux.intel.com>
+Date:   Fri, 9 Apr 2021 11:24:07 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617968884-15149-1-git-send-email-sergei.shtepa@veeam.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <YHActB+bkgBesWM3@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09 2021 at  7:48am -0400,
-Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
 
-> I think I'm ready to suggest the next version of block device interposer
-> (blk_interposer). It allows to redirect bio requests to other block
-> devices.
+
+On 4/9/2021 5:21 AM, Peter Zijlstra wrote:
+> On Mon, Apr 05, 2021 at 08:11:03AM -0700, kan.liang@linux.intel.com wrote:
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> Current Hardware events and Hardware cache events have special perf
+>> types, PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE. The two types don't
+>> pass the PMU type in the user interface. For a hybrid system, the perf
+>> subsystem doesn't know which PMU the events belong to. The first capable
+>> PMU will always be assigned to the events. The events never get a chance
+>> to run on the other capable PMUs.
+>>
+>> Add a PMU aware version PERF_TYPE_HARDWARE_PMU and
+>> PERF_TYPE_HW_CACHE_PMU. The PMU type ID is stored at attr.config[40:32].
+>> Support the new types for X86.
 > 
-> In this series of patches, I reviewed the process of attaching and
-> detaching device mapper via blk_interposer.
+> Obviously ARM would need the same, but also, I don't think I see the
+> need to introduce new types. AFAICT there is nothing that stops this
+> scheme from working for the existing types.
 > 
-> Now the dm-target is attached to the interposed block device when the
-> interposer dm-target is fully ready to accept requests, and the interposed
-> block device queue is locked, and the file system on it is frozen.
-> The detaching is also performed when the file system on the interposed
-> block device is in a frozen state, the queue is locked, and the interposer
-> dm-target is suspended.
+> Also, pmu type is 32bit, not 8bit.
 > 
-> To make it possible to lock the receipt of new bio requests without locking
-> the processing of bio requests that the interposer creates, I had to change
-> the submit_bio_noacct() function and add a lock. To minimize the impact of
-> locking, I chose percpu_rw_sem. I tried to do without a new lock, but I'm
-> afraid it's impossible.
+> So how about something like this?
 > 
-> Checking the operation of the interposer, I did not limit myself to
-> a simple dm-linear. When I experimented with dm-era, I noticed that it
-> accepts two block devices. Since Mike was against changing the logic in
-> the dm-targets itself to support the interrupter, I decided to add the
-> [interpose] option to the block device path.
-> 
->  echo "0 ${DEV_SZ} era ${META} [interpose]${DEV} ${BLK_SZ}" | \
->  	dmsetup create dm-era --interpose
-> 
-> I believe this option can replace the DM_INTERPOSE_FLAG flag. Of course,
-> we can assume that if the device cannot be opened with the FMODE_EXCL,
-> then it is considered an interposed device, but it seems to me that
-> algorithm is unsafe. I hope to get Mike's opinion on this.
-> 
-> I have successfully tried taking snapshots. But I ran into a problem
-> when I removed origin-target:
-> [   49.031156] ------------[ cut here ]------------
-> [   49.031180] kernel BUG at block/bio.c:1476!
-> [   49.031198] invalid opcode: 0000 [#1] SMP NOPTI
-> [   49.031213] CPU: 9 PID: 636 Comm: dmsetup Tainted: G            E     5.12.0-rc6-ip+ #52
-> [   49.031235] Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006
-> [   49.031257] RIP: 0010:bio_split+0x74/0x80
-> [   49.031273] Code: 89 c7 e8 5f 56 03 00 41 8b 74 24 28 48 89 ef e8 12 ea ff ff f6 45 15 01 74 08 66 41 81 4c 24 14 00 01 4c 89 e0 5b 5d 41 5c c3 <0f> 0b 0f 0b 0f 0b 45 31 e4 eb ed 90 0f 1f 44 00 00 39 77 28 76 05
-> [   49.031322] RSP: 0018:ffff9a6100993ab0 EFLAGS: 00010246
-> [   49.031337] RAX: 0000000000000008 RBX: 0000000000000000 RCX: ffff8e26938f96d8
-> [   49.031357] RDX: 0000000000000c00 RSI: 0000000000000000 RDI: ffff8e26937d1300
-> [   49.031375] RBP: ffff8e2692ddc000 R08: 0000000000000000 R09: 0000000000000000
-> [   49.031394] R10: ffff8e2692b1de00 R11: ffff8e2692b1de58 R12: ffff8e26937d1300
-> [   49.031413] R13: ffff8e2692ddcd18 R14: ffff8e2691d22140 R15: ffff8e26937d1300
-> [   49.031432] FS:  00007efffa6e7800(0000) GS:ffff8e269bc80000(0000) knlGS:0000000000000000
-> [   49.031453] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   49.031470] CR2: 00007efffa96cda0 CR3: 0000000114bd0000 CR4: 00000000000506e0
-> [   49.031490] Call Trace:
-> [   49.031501]  dm_submit_bio+0x383/0x500 [dm_mod]
-> [   49.031522]  submit_bio_noacct+0x370/0x770
-> [   49.031537]  submit_bh_wbc+0x160/0x190
-> [   49.031550]  __sync_dirty_buffer+0x65/0x130
-> [   49.031564]  ext4_commit_super+0xbc/0x120 [ext4]
-> [   49.031602]  ext4_freeze+0x54/0x80 [ext4]
-> [   49.031631]  freeze_super+0xc8/0x160
-> [   49.031643]  freeze_bdev+0xb2/0xc0
-> [   49.031654]  lock_bdev_fs+0x1c/0x30 [dm_mod]
-> [   49.031671]  __dm_suspend+0x2b9/0x3b0 [dm_mod]
-> [   49.032095]  dm_suspend+0xed/0x160 [dm_mod]
-> [   49.032496]  ? __find_device_hash_cell+0x5b/0x2a0 [dm_mod]
-> [   49.032897]  ? remove_all+0x30/0x30 [dm_mod]
-> [   49.033299]  dev_remove+0x4c/0x1c0 [dm_mod]
-> [   49.033679]  ctl_ioctl+0x1a5/0x470 [dm_mod]
-> [   49.034067]  dm_ctl_ioctl+0xa/0x10 [dm_mod]
-> [   49.034432]  __x64_sys_ioctl+0x83/0xb0
-> [   49.034785]  do_syscall_64+0x33/0x80
-> [   49.035139]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> When suspend is executed for origin-target before the interposer is
-> being detached, in the origin_map() function the value of the
-> o->split_binary variable is zero, since no snapshots were connected to it.
-> I think that if no snapshots are connected, then it does not make sense
-> to split the bio request into parts.
+> ---
+> diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+> index 3f7f89ea5e51..074c7687d466 100644
+> --- a/include/linux/perf_event.h
+> +++ b/include/linux/perf_event.h
+> @@ -260,15 +260,16 @@ struct perf_event;
+>   /**
+>    * pmu::capabilities flags
+>    */
+> -#define PERF_PMU_CAP_NO_INTERRUPT		0x01
+> -#define PERF_PMU_CAP_NO_NMI			0x02
+> -#define PERF_PMU_CAP_AUX_NO_SG			0x04
+> -#define PERF_PMU_CAP_EXTENDED_REGS		0x08
+> -#define PERF_PMU_CAP_EXCLUSIVE			0x10
+> -#define PERF_PMU_CAP_ITRACE			0x20
+> -#define PERF_PMU_CAP_HETEROGENEOUS_CPUS		0x40
+> -#define PERF_PMU_CAP_NO_EXCLUDE			0x80
+> -#define PERF_PMU_CAP_AUX_OUTPUT			0x100
+> +#define PERF_PMU_CAP_NO_INTERRUPT		0x0001
+> +#define PERF_PMU_CAP_NO_NMI			0x0002
+> +#define PERF_PMU_CAP_AUX_NO_SG			0x0004
+> +#define PERF_PMU_CAP_EXTENDED_REGS		0x0008
+> +#define PERF_PMU_CAP_EXCLUSIVE			0x0010
+> +#define PERF_PMU_CAP_ITRACE			0x0020
+> +#define PERF_PMU_CAP_HETEROGENEOUS_CPUS		0x0040
+> +#define PERF_PMU_CAP_NO_EXCLUDE			0x0080
+> +#define PERF_PMU_CAP_AUX_OUTPUT			0x0100
+> +#define PERF_PMU_CAP_EXTENDED_HW_TYPE		0x0200
+>   
+>   struct perf_output_handle;
+>   
+> diff --git a/kernel/events/core.c b/kernel/events/core.c
+> index f07943183041..910a0666ebfe 100644
+> --- a/kernel/events/core.c
+> +++ b/kernel/events/core.c
+> @@ -11113,14 +11113,21 @@ static struct pmu *perf_init_event(struct perf_event *event)
+>   	 * are often aliases for PERF_TYPE_RAW.
+>   	 */
+>   	type = event->attr.type;
+> -	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE)
+> -		type = PERF_TYPE_RAW;
+> +	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE) {
+> +		type = event->attr.config >> 32;
+> +		if (!type)
+> +			type = PERF_TYPE_RAW;
+> +	}
 
-The dm-snapshot code requires careful order of operations.  You say you
-removed the origin target.. please show exactly what you did.  Your 4th
-patch shouldn't be tied to this patchset. Can be dealt with
-independently.
+For the old tool, the default PMU will be the big core. I think it's OK 
+for X86.
 
-> Changes summary for this patchset v7:
->   * The attaching and detaching to interposed device moved to
->     __dm_suspend() and __dm_resume() functions.
+Since only the low 32 bit of event->attr.config contains the 'real' 
+config value, I think all the ARCHs will do event->attr.config &= 
+0xffffffff. Maybe we should move it to the generic code.
 
-Why? Those hooks are inherently more constrained.  And in the case of
-resume, failure is not an option.
++	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE) {
++		type = event->attr.config >> 32;
++		if (!type)
++			type = PERF_TYPE_RAW;
++		else
++			event->attr.config &= 0xffffffff;
 
->   * Redesigned th submit_bio_noacct() function and added a lock for the
->     block device interposer.
->   * Adds [interpose] option to block device patch in dm table.
+> >   again:
+>   	rcu_read_lock();
+>   	pmu = idr_find(&pmu_idr, type);
+>   	rcu_read_unlock();
+>   	if (pmu) {
+> +		if (event->attr.type != type && type != PERF_TYPE_RAW &&
+> +		    !(pmu->capabilities & PERF_PMU_CAP_EXTENDED_HW_TYPE))
+> +			goto fail;
+> +
+>   		ret = perf_try_init_event(pmu, event);
+>   		if (ret == -ENOENT && event->attr.type != type) {
+>   			type = event->attr.type;
 
-I'm struggling to see why you need "[interpose]" (never mind that this
-idea of device options is a new construct): what are the implications?
-Are you saying that a table will have N devices with only a subset that
-are interposed?
 
-Just feels very awkward but I'll try to keep an open mind until I can
-better understand.
+I don't think we want to go through all available PMUs again if users 
+already specify a PMU.
 
->   * Fix origin_map() then o->split_binary value is zero.
+I update the patch a little bit. (Not test yet. I will do some tests then.)
 
-Overall this effort, while appreciated in general, is getting more and
-more muddled -- you're having to sprinkle obscure code all over DM. And
-your patch headers are severely lacking for a v8 patch
-submission. Terse bullet points don't paint a very comprehensive
-picture. Please detail how a user is expected to drive this (either in
-patch headers and/or some Documentation file).
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 3158cbc..4f5f9a9 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2175,6 +2175,7 @@ static int __init init_hw_perf_events(void)
+  			hybrid_pmu->pmu.type = -1;
+  			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
+  			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
++			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_EXTENDED_HW_TYPE;
 
-Mike
+  			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
+  						(hybrid_pmu->cpu_type == hybrid_big) ? PERF_TYPE_RAW : -1);
+diff --git a/include/linux/perf_event.h b/include/linux/perf_event.h
+index b832e09..391bfb7 100644
+--- a/include/linux/perf_event.h
++++ b/include/linux/perf_event.h
+@@ -269,6 +269,7 @@ struct perf_event;
+  #define PERF_PMU_CAP_HETEROGENEOUS_CPUS		0x40
+  #define PERF_PMU_CAP_NO_EXCLUDE			0x80
+  #define PERF_PMU_CAP_AUX_OUTPUT			0x100
++#define	PERF_PMU_CAP_EXTENDED_HW_TYPE		0x200
 
+  struct perf_output_handle;
+
+diff --git a/include/uapi/linux/perf_event.h 
+b/include/uapi/linux/perf_event.h
+index ad15e40..7ec80ac9 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -38,6 +38,20 @@ enum perf_type_id {
+  };
+
+  /*
++ * attr.config layout for type PERF_TYPE_HARDWARE and PERF_TYPE_HW_CACHE
++ * PERF_TYPE_HARDWARE:			0xEE000000AA
++ *					AA: hardware event ID
++ *					EE: PMU type ID
++ * PERF_TYPE_HW_CACHE:			0xEE00DDCCBB
++ *					BB: hardware cache ID
++ *					CC: hardware cache op ID
++ *					DD: hardware cache op result ID
++ *					EE: PMU type ID
++ * If the PMU type ID is 0, the PERF_TYPE_RAW will be applied.
++ */
++#define	PERF_HW_EVENT_MASK		0xffffffff
++
++/*
+   * Generalized performance event event_id types, used by the
+   * attr.event_id parameter of the sys_perf_event_open()
+   * syscall:
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index f079431..9d9a792 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -11093,6 +11093,8 @@ static int perf_try_init_event(struct pmu *pmu, 
+struct perf_event *event)
+  	return ret;
+  }
+
++#define PERF_EXTENDED_HW_TYPE		(event->attr.config >> 32)
++
+  static struct pmu *perf_init_event(struct perf_event *event)
+  {
+  	int idx, type, ret;
+@@ -11113,16 +11115,25 @@ static struct pmu *perf_init_event(struct 
+perf_event *event)
+  	 * are often aliases for PERF_TYPE_RAW.
+  	 */
+  	type = event->attr.type;
+-	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE)
+-		type = PERF_TYPE_RAW;
++	if (type == PERF_TYPE_HARDWARE || type == PERF_TYPE_HW_CACHE) {
++		type = PERF_EXTENDED_HW_TYPE;
++		if (!type)
++			type = PERF_TYPE_RAW;
++		else
++			event->attr.config &= PERF_HW_EVENT_MASK;
++	}
+
+  again:
+  	rcu_read_lock();
+  	pmu = idr_find(&pmu_idr, type);
+  	rcu_read_unlock();
+  	if (pmu) {
++		if (event->attr.type != type && type != PERF_TYPE_RAW &&
++		    !(pmu->capabilities & PERF_PMU_CAP_EXTENDED_HW_TYPE))
++			goto fail;
++
+  		ret = perf_try_init_event(pmu, event);
+-		if (ret == -ENOENT && event->attr.type != type) {
++		if (ret == -ENOENT && event->attr.type != type && 
+!PERF_EXTENDED_HW_TYPE) {
+  			type = event->attr.type;
+  			goto again;
+  		}
+@@ -11143,6 +11154,7 @@ static struct pmu *perf_init_event(struct 
+perf_event *event)
+  			goto unlock;
+  		}
+  	}
++fail:
+  	pmu = ERR_PTR(-ENOENT);
+  unlock:
+  	srcu_read_unlock(&pmus_srcu, idx);
+
+Thanks,
+Kan
