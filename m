@@ -2,121 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACE435A818
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 938FB35A81D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234402AbhDIUpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:45:42 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:50440 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234160AbhDIUpk (ORCPT
+        id S234330AbhDIUu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229523AbhDIUu5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:45:40 -0400
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9E30220B3A35;
-        Fri,  9 Apr 2021 13:45:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9E30220B3A35
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1618001126;
-        bh=r62bA5UADAfV3PUb50DNBL+EdI9H0Y9m/LeRSQPN37o=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gknHwD8bVjVoNNLYAdx1i7pDOqiN6MsuTqwRo87oEXI7XYd3wAgwPW6k/IIuByexR
-         lsggOCYWhLn647Zy71681bwUD7s0Zl4UF2GDRM8cetZeGzndw+a+NeKZfhfyYTkXxs
-         P8vibQmKXdDSpEX3iHVNuQ0Xnf4CxLXiSyQdcMFY=
-Received: by mail-pj1-f41.google.com with SMTP id i4so3478263pjk.1;
-        Fri, 09 Apr 2021 13:45:26 -0700 (PDT)
-X-Gm-Message-State: AOAM531lnttjbADoNlkZAPQ8SOGwvZ55KCRcvaFrn4QH36zz7Y6foy2X
-        JxNlX1NHIyixUQH3Jl8jupFwk7PP3Hrd9dGFZ20=
-X-Google-Smtp-Source: ABdhPJzkmB5ORYLETXtC9kGJ4jTO5b5JIeNMXCsjJHAZk8CL0YDb+MtiL4lXw0I+hcGSuxPLQIZ35wauIxb/07yHS0U=
-X-Received: by 2002:a17:90b:295:: with SMTP id az21mr15536853pjb.11.1618001126225;
- Fri, 09 Apr 2021 13:45:26 -0700 (PDT)
+        Fri, 9 Apr 2021 16:50:57 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16943C061762;
+        Fri,  9 Apr 2021 13:50:37 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id ba6so8049663edb.1;
+        Fri, 09 Apr 2021 13:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dLgfKnerQa8S9kw5sUyqufs674F+LLwjy+/qpDVrtV4=;
+        b=eG7YO91jFuC/ubBB6P/KKDlp1/jANHGvhdE1wzKPGH887hr0qnx7DTEM+Nzlm7fRXX
+         yfGquzeL43SyeYSFkoFCWTlq4Arhr4oBhMQ7VmqVESTCliFXd3V3x0tK9+ft4EFKTVWL
+         GVgziuqt33WW6aH9R4IRpaviJ1JkPDbpTaRZC1Mb9+8pMredfwJQBbJbQAnkNXzrTIAR
+         fPagOrsF32qg17YyGcicIgblru/hfU1W5BkuDbFUiX/GJTn5Q6kw550M4GB2AHL2wAbt
+         xTgSdIV8f/nhzz3Tn001xKfLjaDrpbo7JLzyfQ6j4tccLZ3LwL7mcD+AJX56oKRyg488
+         gvxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dLgfKnerQa8S9kw5sUyqufs674F+LLwjy+/qpDVrtV4=;
+        b=klfEWEcmfOlGAo9aSCARYVv3f0MmS97AwOGoZcMbEw1JHn3e5wihI9STEnUCyIg9KT
+         GeJV3My54b+Y6cVKnAomdMSxMKMiWvEtU0NNrHdDVLHFwopierPUHS42wbCEg8ct/Jrm
+         GZh75mSiw5KJKbGBvMgw9xj15S9xB7z/REqe9aepxN/3DAqFdZO4PtgtvZmA68Ww+6Wy
+         xYSRC6+tF+DnKcOzyZKNy4kso48P/CRkxyQNtySBqvNP9QFl/x8Rqu50RlUCPP3Mxnbd
+         X0UiOLszpFIQRW8Ob6XjEr3DuTFMH2M2XFFjX4gFE5mzTYYw8cp5g7fVgXr/Cem+KsOA
+         V1+w==
+X-Gm-Message-State: AOAM530qoezwlr3VERG2MqRHwdaD+ZK/OUNoU5cRzYbWfW+MUkdLgehu
+        Rce2x7DtE6KKToBEB5ay1IMQAh4ZNZLSdwB5LLU=
+X-Google-Smtp-Source: ABdhPJxGrexh7XQIMbhChYUAHm6t79qHnHYnwzH77BTy3uzmqQaq5H/Byn0HzXRlRxjsz79n2AAvTcSjKFXy2Cy0jdE=
+X-Received: by 2002:a50:fd12:: with SMTP id i18mr13568238eds.137.1618001435663;
+ Fri, 09 Apr 2021 13:50:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210409180605.78599-1-mcroce@linux.microsoft.com>
- <20210409180605.78599-3-mcroce@linux.microsoft.com> <20210409115455.49e24450@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210409115455.49e24450@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 9 Apr 2021 22:44:50 +0200
-X-Gmail-Original-Message-ID: <CAFnufp0fGEBHnuerrMVLaGUgAP3NYpiEMyW3R-AwDeG=R0sgHQ@mail.gmail.com>
-Message-ID: <CAFnufp0fGEBHnuerrMVLaGUgAP3NYpiEMyW3R-AwDeG=R0sgHQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 2/3] net: use skb_for_each_frag() helper where possible
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Julia Lawall <julia.lawall@inria.fr>
+References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
+ <CALvZod7StYJCPnWRNLnYQV8S5CBLtE0w4r2rH-wZzNs9jGJSRg@mail.gmail.com>
+ <CAHbLzkrPD6s9vRy89cgQ36e+1cs6JbLqV84se7nnvP9MByizXA@mail.gmail.com> <87eefkxiys.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <87eefkxiys.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 9 Apr 2021 13:50:24 -0700
+Message-ID: <CAHbLzkotwwYkZHPRag4oEa3DT8yqd5m8hC_T0U-cJTz0=m0o_A@mail.gmail.com>
+Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered memory
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Feng Tang <feng.tang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 8:54 PM Jakub Kicinski <kuba@kernel.org> wrote:
+On Thu, Apr 8, 2021 at 7:58 PM Huang, Ying <ying.huang@intel.com> wrote:
 >
-> On Fri,  9 Apr 2021 20:06:04 +0200 Matteo Croce wrote:
-> > From: Matteo Croce <mcroce@microsoft.com>
+> Yang Shi <shy828301@gmail.com> writes:
+>
+> > On Thu, Apr 8, 2021 at 10:19 AM Shakeel Butt <shakeelb@google.com> wrote:
+> >>
+> >> Hi Tim,
+> >>
+> >> On Mon, Apr 5, 2021 at 11:08 AM Tim Chen <tim.c.chen@linux.intel.com> wrote:
+> >> >
+> >> > Traditionally, all memory is DRAM.  Some DRAM might be closer/faster than
+> >> > others NUMA wise, but a byte of media has about the same cost whether it
+> >> > is close or far.  But, with new memory tiers such as Persistent Memory
+> >> > (PMEM).  there is a choice between fast/expensive DRAM and slow/cheap
+> >> > PMEM.
+> >> >
+> >> > The fast/expensive memory lives in the top tier of the memory hierachy.
+> >> >
+> >> > Previously, the patchset
+> >> > [PATCH 00/10] [v7] Migrate Pages in lieu of discard
+> >> > https://lore.kernel.org/linux-mm/20210401183216.443C4443@viggo.jf.intel.com/
+> >> > provides a mechanism to demote cold pages from DRAM node into PMEM.
+> >> >
+> >> > And the patchset
+> >> > [PATCH 0/6] [RFC v6] NUMA balancing: optimize memory placement for memory tiering system
+> >> > https://lore.kernel.org/linux-mm/20210311081821.138467-1-ying.huang@intel.com/
+> >> > provides a mechanism to promote hot pages in PMEM to the DRAM node
+> >> > leveraging autonuma.
+> >> >
+> >> > The two patchsets together keep the hot pages in DRAM and colder pages
+> >> > in PMEM.
+> >>
+> >> Thanks for working on this as this is becoming more and more important
+> >> particularly in the data centers where memory is a big portion of the
+> >> cost.
+> >>
+> >> I see you have responded to Michal and I will add my more specific
+> >> response there. Here I wanted to give my high level concern regarding
+> >> using v1's soft limit like semantics for top tier memory.
+> >>
+> >> This patch series aims to distribute/partition top tier memory between
+> >> jobs of different priorities. We want high priority jobs to have
+> >> preferential access to the top tier memory and we don't want low
+> >> priority jobs to hog the top tier memory.
+> >>
+> >> Using v1's soft limit like behavior can potentially cause high
+> >> priority jobs to stall to make enough space on top tier memory on
+> >> their allocation path and I think this patchset is aiming to reduce
+> >> that impact by making kswapd do that work. However I think the more
+> >> concerning issue is the low priority job hogging the top tier memory.
+> >>
+> >> The possible ways the low priority job can hog the top tier memory are
+> >> by allocating non-movable memory or by mlocking the memory. (Oh there
+> >> is also pinning the memory but I don't know if there is a user api to
+> >> pin memory?) For the mlocked memory, you need to either modify the
+> >> reclaim code or use a different mechanism for demoting cold memory.
 > >
-> > use the new helper macro skb_for_each_frag() which allows to iterate
-> > through all the SKB fragments.
+> > Do you mean long term pin? RDMA should be able to simply pin the
+> > memory for weeks. A lot of transient pins come from Direct I/O. They
+> > should be less concerned.
 > >
-> > The patch was created with Coccinelle, this was the semantic patch:
+> > The low priority jobs should be able to be restricted by cpuset, for
+> > example, just keep them on second tier memory nodes. Then all the
+> > above problems are gone.
 >
-> Bunch of set but not used warnings here. Please make sure the code
-> builds cleanly allmodconfig, W=1 C=1 before posting.
+> To optimize the page placement of a process between DRAM and PMEM, we
+> want to place the hot pages in DRAM and the cold pages in PMEM.  But the
+> memory accessing pattern changes overtime, so we need to migrate pages
+> between DRAM and PMEM to adapt to the changing.
 >
+> To avoid the hot pages be pinned in PMEM always, one way is to online
+> the PMEM as movable zones.  If so, and if the low priority jobs are
+> restricted by cpuset to allocate from PMEM only, we may fail to run
+> quite some workloads as being discussed in the following threads,
+>
+> https://lore.kernel.org/linux-mm/1604470210-124827-1-git-send-email-feng.tang@intel.com/
 
-Will do.
+Thanks for sharing the thread. It seems the configuration of movable
+zone + node bind is not supported very well or need evolve to support
+new use cases.
 
-> What pops to mind (although quite nit picky) is the question if the
-> assembly changes much between driver which used to cache nr_frags and
-> now always going skb_shinfo(skb)->nr_frags? It's a relatively common
-> pattern.
+>
+> >>
+> >> Basically I am saying we should put the upfront control (limit) on the
+> >> usage of top tier memory by the jobs.
+> >
+> > This sounds similar to what I talked about in LSFMM 2019
+> > (https://lwn.net/Articles/787418/). We used to have some potential
+> > usecase which divides DRAM:PMEM ratio for different jobs or memcgs
+> > when I was with Alibaba.
+> >
+> > In the first place I thought about per NUMA node limit, but it was
+> > very hard to configure it correctly for users unless you know exactly
+> > about your memory usage and hot/cold memory distribution.
+> >
+> > I'm wondering, just off the top of my head, if we could extend the
+> > semantic of low and min limit. For example, just redefine low and min
+> > to "the limit on top tier memory". Then we could have low priority
+> > jobs have 0 low/min limit.
+>
+> Per my understanding, memory.low/min are for the memory protection
+> instead of the memory limiting.  memory.high is for the memory limiting.
 
-Since skb_shinfo() is a macro and skb_end_pointer() a static inline,
-it should be the same, but I was curious to check so, this is a diff
-between the following snippet before and afer the macro:
+Yes, it is not limit. I just misused the term, I actually do mean
+protection but typed "limit". Sorry for the confusion.
 
-int frags = skb_shinfo(skb)->nr_frags;
-int i;
-for (i = 0; i < frags; i++)
-    kfree(skb->frags[i]);
-
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
---- ins1.s 2021-04-09 22:35:59.384523865 +0200
-+++ ins2.s 2021-04-09 22:36:08.132594737 +0200
-@@ -1,26 +1,27 @@
- iter:
-         movsx   rax, DWORD PTR [rdi+16]
-         mov     rdx, QWORD PTR [rdi+8]
-         mov     eax, DWORD PTR [rdx+rax]
-         test    eax, eax
-         jle     .L6
-         push    rbp
--        sub     eax, 1
-+        mov     rbp, rdi
-         push    rbx
--        lea     rbp, [rdi+32+rax*8]
--        lea     rbx, [rdi+24]
-+        xor     ebx, ebx
-         sub     rsp, 8
- .L3:
--        mov     rdi, QWORD PTR [rbx]
--        add     rbx, 8
-+        mov     rdi, QWORD PTR [rbp+24+rbx*8]
-+        add     rbx, 1
-         call    kfree
--        cmp     rbx, rbp
--        jne     .L3
-+        movsx   rax, DWORD PTR [rbp+16]
-+        mov     rdx, QWORD PTR [rbp+8]
-+        cmp     DWORD PTR [rdx+rax], ebx
-+        jg      .L3
-         add     rsp, 8
-         xor     eax, eax
-         pop     rbx
-         pop     rbp
-         ret
- .L6:
-         xor     eax, eax
-         ret
-
--- 
-per aspera ad upstream
+>
+> Best Regards,
+> Huang, Ying
