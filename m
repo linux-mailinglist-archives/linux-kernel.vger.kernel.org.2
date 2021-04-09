@@ -2,170 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4E035A66F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0890335A673
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234834AbhDIS6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234703AbhDIS6d (ORCPT
+        id S234794AbhDIS7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:59:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48455 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234759AbhDIS7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:58:33 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4190C061763
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 11:58:20 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id t140so4594800pgb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 11:58:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qzPGYRIIgbwAx3GIWXZYzwGgFSrgnjtXWJk804zYlrk=;
-        b=R2zitmc2UyEV/XFPNt4ZmSNyBT88XlV5CyfSwFCKbaDvAMOKHhQmYhcmW8lpJ3DVT3
-         O3xwUFblk6wGJdP9AvbLAreJHXUBPiiKV+GpPPrDC6J5pe4D6+0XFpUbR9FRuvbpeoVf
-         d31nPgAzjXydWPbI/6YEgHQM9JSocQV3RK90CXUdO7ypRQeaboZBYagiFSBo+EYusG3N
-         0d82tK0bvRp31CvuDfLoVqCnkBvB9RlogDGlgnKphfFkXREFMGqR5bWYQs3ysQywimdD
-         yEVesZi3bfW44keuWvg4KLYJMfp2mEXxmGRAPK23mlTtNVbLKe/VjJpIQbFGD20E9McU
-         ezlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=qzPGYRIIgbwAx3GIWXZYzwGgFSrgnjtXWJk804zYlrk=;
-        b=GT3JyHssX5OAhKwmB2v453JfNNqWuR2HS7KPBzJhoMU8hYBJlndDn4lz12I9P0aL/c
-         GRF7Fr2HhBTSWkV/nuA/8JnH70qacweTmsqSseFyhgPwJvB5fSbAWjN/unGzPCLXikhJ
-         /upxU5NiXfUJESJQ3XU348bl7rHoaJdQ6VRaewtxGLgdOsARXe/E3IY1puaDp7uCfqYJ
-         tzN4p95y1f8RzOTw6GDtdaMjYOG0+kHCFXBTakmeVYggu7FsKrnm6r7rbERB4ln75iZU
-         WhrXrJ2/yj0hrrkngzLAHrZz7uMD267AkginFx03NO59xAwUMdFg0ScYvTIyrPpX7+TJ
-         mRfQ==
-X-Gm-Message-State: AOAM530nVr+qJzySRQlwFbU4Z2ahtngUqw9OhbanAorQswBkd2U/EFO5
-        LeaAf5Un8DjacLN6Ek0PzpVTJQ==
-X-Google-Smtp-Source: ABdhPJwKIOtldl7rBGs1NBZjyVCx0kPKACsREmjytSOckbEVS1OO/AnMx6b5G8xwh41jOKZDd2aUbA==
-X-Received: by 2002:a63:6744:: with SMTP id b65mr14411777pgc.314.1617994700058;
-        Fri, 09 Apr 2021 11:58:20 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id l18sm3602095pgh.70.2021.04.09.11.58.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:58:19 -0700 (PDT)
-Date:   Fri, 09 Apr 2021 11:58:19 -0700 (PDT)
-X-Google-Original-Date: Fri, 09 Apr 2021 11:58:17 PDT (-0700)
-Subject:     Re: [PATCH v16 00/17] KVM RISC-V Support
-In-Reply-To: <a49a7142-104e-fdaa-4a6a-619505695229@redhat.com>
-CC:     anup@brainfault.org, Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, graf@amazon.com,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     pbonzini@redhat.com
-Message-ID: <mhng-d64da1be-bacd-4885-aaf2-fea3c763418c@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
+        Fri, 9 Apr 2021 14:59:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617994776;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I6z5k9pvR2eM8TAQJhvmPMLc2M+kDJxe7m6egiFSE+Y=;
+        b=ByYf9gtdNNj92bTPnUnt5jBeA96mLz/v0DKnPlDCNvBd9DAaQLyKosJJRsx3Xa7LRKfN7l
+        3nOyUcMRbq7C7jGXRcJDEqdzXhMz+3PVtvuyivRniBg/b5R9vqUXFDyEojx3YYPO3PDTJW
+        lOBVPtg2CJX6V0vwPWzf3HxtFeHfx2I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-wr-qbaoQN4yd8r-ArWGbWg-1; Fri, 09 Apr 2021 14:59:33 -0400
+X-MC-Unique: wr-qbaoQN4yd8r-ArWGbWg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E39BB1922962;
+        Fri,  9 Apr 2021 18:59:31 +0000 (UTC)
+Received: from [10.36.115.11] (ovpn-115-11.ams2.redhat.com [10.36.115.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D975660C0F;
+        Fri,  9 Apr 2021 18:59:24 +0000 (UTC)
+Subject: Re: [PATCH 03/10] mm/migrate: update node demotion order during on
+ hotplug events
+To:     Oscar Salvador <osalvador@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        shy828301@gmail.com, weixugc@google.com, rientjes@google.com,
+        ying.huang@intel.com, dan.j.williams@intel.com
+References: <20210401183216.443C4443@viggo.jf.intel.com>
+ <20210401183221.977831DE@viggo.jf.intel.com>
+ <YG7Sc3i54IV6KyPn@localhost.localdomain> <20210409101400.GA32159@linux>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <fb51273c-12e5-f47f-064b-86f5b30b1072@redhat.com>
+Date:   Fri, 9 Apr 2021 20:59:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <20210409101400.GA32159@linux>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 31 Mar 2021 02:21:58 PDT (-0700), pbonzini@redhat.com wrote:
-> On 30/03/21 07:48, Anup Patel wrote:
->>
->> It seems Andrew does not want to freeze H-extension until we have virtualization
->> aware interrupt controller (such as RISC-V AIA specification) and IOMMU. Lot
->> of us feel that these things can be done independently because RISC-V
->> H-extension already has provisions for external interrupt controller with
->> virtualization support.
+On 09.04.21 12:14, Oscar Salvador wrote:
+> On Thu, Apr 08, 2021 at 11:52:51AM +0200, Oscar Salvador wrote:
+>> I am not really into PMEM, and I ignore whether we need
+>> CONFIG_MEMORY_HOTPLUG in order to have such memory on the system.
+>> If so, the following can be partly ignored.
+> 
+> Ok, I refreshed by memory with [1].
+>  From that, it seems that in order to use PMEM as RAM we need CONFIG_MEMORY_HOTPLUG.
+> But is that always the case? Can happen that in some scenario PMEM comes ready
+> to use and we do not need the hotplug trick?
 
-Sorry to hear that.  It's really gotten to a point where I'm just 
-embarrassed with how the RISC-V foundation is being run -- not sure if 
-these other ones bled into Linux land, but this is the third ISA 
-extension that's blown up over the last few weeks.  We had a lot of 
-discussion about this on the binutils/GCC side of things and I've 
-managed to convince myself that coupling the software stack to the 
-specification process isn't viable -- we made that decision under the 
-assumption that specifications would actually progress through the 
-process, but in practice that's just not happening.
+The only way to add more System RAM is via add_memory() and friends like 
+add_memory_driver_managed(). These all require CONFIG_MEMORY_HOTPLUG.
 
-My goal with the RISC-V stuff has always been getting us to a place 
-where we have real shipping products running a software stack that is as 
-close as possible to the upstream codebases.  I see that as the only way 
-to get the software stack to a point where it can be sustainably 
-maintained.  The "only frozen extensions" policy was meant to help this 
-by steering vendors towards a common base we could support, but in 
-practice it's just not working out.  The specification process is just 
-so unreliable that in practice everything that gets built ends up 
-relying on some non-standard behavior: whether it's a draft extension, 
-some vendor-specific extension, or just some implementation quirks.  
-There's always going to be some degree of that going on, but over the 
-last year or so we've just stopped progressing.
+Memory ballooning is a different case, but there we're only adjusting 
+the managed page counters.
 
-My worry with accepting the draft extensions is that we have no 
-guarantee of compatibility between various drafts, which makes 
-supporting multiple versions much more difficult.  I've always really 
-only been worried about supporting what gets implemented in a chip I can 
-actually run code on, as I can at least guarantee that doesn't change.  
-In practice that really has nothing to do with the specification freeze: 
-even ratified specifications change in ways that break compatibility so 
-we need to support multiple versions anyway.  That's why we've got 
-things like the K210 support (which doesn't quite follow the ratified 
-specs) and are going to take the errata stuff.  I hadn't been all that 
-worried about the H support because there was a plan to get is to 
-hardware, but with the change I'm not really sure how that's going to 
-happen.
+-- 
+Thanks,
 
-> Yes, frankly that's pretty ridiculous as it's perfectly possible to
-> emulate the interrupt controller in software (and an IOMMU is not needed
-> at all if you are okay with emulated or paravirtualized devices---which
-> is almost always the case except for partitioning hypervisors).
+David / dhildenb
 
-There's certainly some risk to freezing the H extension before we have 
-all flavors of systems up and running.  I spent a lot of time arguing 
-that case years ago before we started telling people that the H 
-extension just needed implementation, but that's not the decision we 
-made.  I don't really do RISC-V foundation stuff any more so I don't 
-know why this changed, but it's just too late.  It would be wonderful to 
-have an implementation of everything we need to build out one of these 
-complex systems, but I just just don't see how the current plan gets 
-there: that's a huge amount of work and I don't see why anyone would 
-commit to that when they can't count on it being supported when it's 
-released.
-
-There are clearly some systems that can be built with this as it stands.  
-They're not going to satisfy every use case, but at least we'll get 
-people to start seriously using the spec.  That's the only way I can see 
-to move forward with this.  It's pretty clear that sitting around and 
-waiting doesn't work, we've tried that.
-
-> Palmer, are you okay with merging RISC-V KVM?  Or should we place it in
-> drivers/staging/riscv/kvm?
-
-I'm certainly ready to drop my objections to merging the code based on 
-it targeting a draft extension, but at a bare minimum I want to get a 
-new policy in place that everyone can agree to for merging code.  I've 
-tried to draft up a new policy a handful of times this week, but I'm not 
-really quite sure how to go about this: ultimately trying to build 
-stable interfaces around an unstable ISA is just a losing battle.  I've 
-got a bunch of stuff going on right now, but I'll try to find some time 
-to actually sit down and finish one.
-
-I know it might seem odd to complain about how slowly things are going 
-and then throw up another roadblock, but I really do think this is a 
-very important thing to get right.  I'm just not sure how we're going to 
-get anywhere with RISC-V without someone providing stability, so I want 
-to make sure that whatever we do here can be done reliably.  If we don't 
-I'm worried the vendors are just going to go off and do their own 
-software stacks, which will make getting everyone back on the same page 
-very difficult.
-
-> Either way, the best way to do it would be like this:
->
-> 1) you apply patch 1 in a topic branch
->
-> 2) you merge the topic branch in the risc-v tree
->
-> 3) Anup merges the topic branch too and sends me a pull request.
->
-> Paolo
