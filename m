@@ -2,50 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693F8359446
+	by mail.lfdr.de (Postfix) with ESMTP id B466D359447
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbhDIFFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:05:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50134 "EHLO mail.kernel.org"
+        id S231642AbhDIFFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:05:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhDIFFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:05:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 325B061165;
-        Fri,  9 Apr 2021 05:04:47 +0000 (UTC)
+        id S231495AbhDIFFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 01:05:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B70CC610A2;
+        Fri,  9 Apr 2021 05:04:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1617944688;
-        bh=iBZJg2qunvF7v3TtboIlcuUe7mCGQTTjlXG5RowbNuM=;
+        s=korg; t=1617944693;
+        bh=7SOpsa0o4t1jaPRNexNfeE1nLPrakeTw29gTONj7AJ0=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=adLu+IYoQ7vk7/cFv+oy0OjM4dI0Fkt/4xsMjVGSoZD7vRwf/RColxjqeB9UXBB72
-         ubv+mWWeZjLsFl6JK0afRRIgsWPHCt9pvMARzw2h4oP/wuMRaOZF+8YhKYaMMmOBA4
-         evHoB2QvhdlSOcTjDfAu/EBIDzBiX1XH1PwY3oJM=
-Date:   Thu, 8 Apr 2021 22:04:40 -0700
+        b=FJ5fT3Q56hZnzLI8EgfR7InX0tVvMv4PMvTINhEZUDMfJQ+vqk4HTOZpqZ8xx2BDK
+         XsrgJDSQU/GpmstHL8p59p2Sf3PvhFAEufhRDWilOUOAYGYPhKFcuGnRvngb7Gm/eH
+         daUpKXDNjp+J79zfk2ZSBolDgIhCy3tBRYlvPI04=
+Date:   Thu, 8 Apr 2021 22:04:53 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Daniel Colascione <dancol@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH 0/9] userfaultfd: add minor fault handling for shmem
-Message-Id: <20210408220440.aab59f2f06beb840c22377b3@linux-foundation.org>
-In-Reply-To: <20210408234327.624367-1-axelrasmussen@google.com>
-References: <20210408234327.624367-1-axelrasmussen@google.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        <n-horiguchi@ah.jp.nec.com>, <hillf.zj@alibaba-inc.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH 4/4] mm/hugeltb: handle the error case in
+ hugetlb_fix_reserve_counts()
+Message-Id: <20210408220453.f95942bf20baadd8dbbc1488@linux-foundation.org>
+In-Reply-To: <fe37dcbd-5604-8b43-c184-b7d991b16de8@huawei.com>
+References: <20210402093249.25137-1-linmiaohe@huawei.com>
+        <20210402093249.25137-5-linmiaohe@huawei.com>
+        <a61335c2-c6ab-6169-012c-5b5d2d9499da@oracle.com>
+        <fe37dcbd-5604-8b43-c184-b7d991b16de8@huawei.com>
 X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -54,49 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  8 Apr 2021 16:43:18 -0700 Axel Rasmussen <axelrasmussen@google.com> wrote:
+On Fri, 9 Apr 2021 11:17:49 +0800 Miaohe Lin <linmiaohe@huawei.com> wrote:
 
-> The idea is that it will apply cleanly to akpm's tree, *replacing* the following
-> patches (i.e., drop these first, and then apply this series):
+> On 2021/4/9 7:25, Mike Kravetz wrote:
+> > On 4/2/21 2:32 AM, Miaohe Lin wrote:
+> >> A rare out of memory error would prevent removal of the reserve map region
+> >> for a page. hugetlb_fix_reserve_counts() handles this rare case to avoid
+> >> dangling with incorrect counts. Unfortunately, hugepage_subpool_get_pages
+> >> and hugetlb_acct_memory could possibly fail too. We should correctly handle
+> >> these cases.
+> > 
+> > Yes, this is a potential issue.
+> > 
+> > The 'good news' is that hugetlb_fix_reserve_counts() is unlikely to ever
+> > be called.  To do so would imply we could not allocate a region entry
+> > which is only 6 words in size.  We also keep a 'cache' of entries so we
+> > may not even need to allocate.
+> > 
+> > But, as mentioned it is a potential issue.
 > 
-> userfaultfd-support-minor-fault-handling-for-shmem.patch
-> userfaultfd-support-minor-fault-handling-for-shmem-fix.patch
-> userfaultfd-support-minor-fault-handling-for-shmem-fix-2.patch
-> userfaultfd-support-minor-fault-handling-for-shmem-fix-3.patch
-> userfaultfd-support-minor-fault-handling-for-shmem-fix-4.patch
-> userfaultfd-selftests-use-memfd_create-for-shmem-test-type.patch
-> userfaultfd-selftests-create-alias-mappings-in-the-shmem-test.patch
-> userfaultfd-selftests-reinitialize-test-context-in-each-test.patch
-> userfaultfd-selftests-exercise-minor-fault-handling-shmem-support.patch
+> Yes, a potential *theoretical* issue.
+> 
+> > 
+> >> Fixes: b5cec28d36f5 ("hugetlbfs: truncate_hugepages() takes a range of pages")
+> > 
+> > This is likely going to make this get picked by by stable releases.
+> > That is unfortunate as mentioned above this is mostly theoretical.
+> > 
+> 
+> I will drop this. This does not worth backport.
+> 
 
-Well.  the problem is,
-
-> +	if (area_alias == MAP_FAILED)
-> +		err("mmap of memfd alias failed");
-
-`err' doesn't exist until eleventy patches later, in Peter's
-"userfaultfd/selftests: unify error handling".  I got tired of (and
-lost confidence in) replacing "err(...)" with "fprintf(stderr, ...);
-exit(1)" everywhere then fixing up the fallout when Peter's patch came
-along.  Shudder.
-
-Sorry, all this material pretty clearly isn't going to make 5.12
-(potentially nine days hence), so I shall drop all the userfaultfd
-patches.  Let's take a fresh run at all of this after -rc1.
-
-
-I have tentatively retained the first series:
-
-userfaultfd-add-minor-fault-registration-mode.patch
-userfaultfd-add-minor-fault-registration-mode-fix.patch
-userfaultfd-disable-huge-pmd-sharing-for-minor-registered-vmas.patch
-userfaultfd-hugetlbfs-only-compile-uffd-helpers-if-config-enabled.patch
-userfaultfd-add-uffdio_continue-ioctl.patch
-userfaultfd-update-documentation-to-describe-minor-fault-handling.patch
-userfaultfd-selftests-add-test-exercising-minor-fault-handling.patch
-
-but I don't believe they have had much testing standalone, without the
-other userfaultfd patches present.  So I don't think it's smart to
-upstream these in this cycle.  Or I could drop them so you and Peter
-can have a clean shot at redoing the whole thing.  Please let me know.
+-stable have been asked not to backport MM patches unless MM patches
+include "cc:stable".  ie, no making our backporting decisions for us,
+please.
 
