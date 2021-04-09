@@ -2,100 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FEA35A2D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F26D35A2DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233441AbhDIQSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:18:14 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:45752 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDIQSM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:18:12 -0400
-Received: by mail-ot1-f42.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so1093820otf.12;
-        Fri, 09 Apr 2021 09:17:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nPXWno11S4Od5PcOam+OVspUYzqe84Gw2wWYNw5BBRg=;
-        b=UX84FOU8c8GPBpj8I1bQuuRNXDke0/2CP6WPDghc9G4JbdPkCxj4qy8w7q/a1U+zAL
-         qTNaKTLBO9JSx7Wb5tHUSVbfn358CNCNsFJgcv+VssYUVx+i/UJxWLy93uOWpOFEajx2
-         hkAzU+ZHRKrrS4GT8UXWcFscjP1tTBvZJV0e8150qG0QW1BeF4nJ84EoI9qEbq7fOpXD
-         qLqHZNRPCkYU7UKA4W6qYBSmRoPQgpHkPbNPwBnX1fVwdRPMQV/vR71YGnsMmI5QKIOr
-         Q0o+IIhbdQKus1nlnoLvrdkfOG4t5aQAb45+hQK3PHNfhhB+/lYIwyy03H6TsNnoCAcN
-         vFtQ==
-X-Gm-Message-State: AOAM5338abtcZcEH4ITVhbZxfdiMEjU5YtdA4mnX4lfqcWYv4uOTp7F4
-        uB7BvC5skPDR7Prs90uai/iG6H32iQ==
-X-Google-Smtp-Source: ABdhPJwf5uML2LSRjZqxpDpvqc9tar6P33ne+FS3tnIzgi6Q+uhrWPe9XI2nGzLTXRfg7kzTMa0uyg==
-X-Received: by 2002:a9d:7342:: with SMTP id l2mr5141154otk.175.1617985077974;
-        Fri, 09 Apr 2021 09:17:57 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id w1sm37517otq.75.2021.04.09.09.17.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 09:17:57 -0700 (PDT)
-Received: (nullmailer pid 3749394 invoked by uid 1000);
-        Fri, 09 Apr 2021 16:17:55 -0000
-Date:   Fri, 9 Apr 2021 11:17:55 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Erwan Le Ray <erwan.leray@foss.st.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Valentin Caron <valentin.caron@foss.st.com>
-Subject: Re: [PATCH 1/2] dt-bindings: serial: stm32: add fifo threshold
- configuration
-Message-ID: <20210409161755.GA3745930@robh.at.kernel.org>
-References: <20210406072122.27384-1-erwan.leray@foss.st.com>
- <20210406072122.27384-2-erwan.leray@foss.st.com>
+        id S233729AbhDIQTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:19:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:54542 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229665AbhDIQTG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:19:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E12B1FB;
+        Fri,  9 Apr 2021 09:18:53 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.28.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B8FD23F73D;
+        Fri,  9 Apr 2021 09:18:51 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 17:18:45 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v3] arm64: mte: Move MTE TCF0 check in entry-common
+Message-ID: <20210409161030.GA60611@C02TD0UTHF1T.local>
+References: <20210409132419.29965-1-vincenzo.frascino@arm.com>
+ <20210409143247.GA58461@C02TD0UTHF1T.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210406072122.27384-2-erwan.leray@foss.st.com>
+In-Reply-To: <20210409143247.GA58461@C02TD0UTHF1T.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 09:21:21AM +0200, Erwan Le Ray wrote:
-> Add two optional DT properties, to configure RX and TX fifo threshold:
-> - st,rx-fifo-threshold-bytes
-> - st,tx-fifo-threshold-bytes
+On Fri, Apr 09, 2021 at 03:32:47PM +0100, Mark Rutland wrote:
+> Hi Vincenzo,
 > 
-> This patch depends on patch ("dt-bindings: serial: Add rx-tx-swap to stm32-usart").
-> 
-> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
-> 
-> diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> index c69f8464cdf3..e163449bf39e 100644
-> --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
-> @@ -65,6 +65,22 @@ properties:
->    linux,rs485-enabled-at-boot-time: true
->    rs485-rx-during-tx: true
->  
-> +  st,rx-fifo-threshold-bytes:
-> +    description:
-> +      RX FIFO threshold configuration in bytes.
-> +      If value is set to 1, RX FIFO threshold is disabled.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [1, 2, 4, 8, 12, 14, 16]
-> +    default: 8
-> +
-> +  st,tx-fifo-threshold-bytes:
-> +    description:
-> +      TX FIFO threshold configuration in bytes.
-> +      If value is set to 1, TX FIFO threshold is disabled.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    enum: [1, 2, 4, 8, 12, 14, 16]
-> +    default: 8
+> On Fri, Apr 09, 2021 at 02:24:19PM +0100, Vincenzo Frascino wrote:
+> > The check_mte_async_tcf macro sets the TIF flag non-atomically. This can
+> > race with another CPU doing a set_tsk_thread_flag() and all the other flags
+> > can be lost in the process.
+> > 
+> > Move the tcf0 check to enter_from_user_mode() and clear tcf0 in
+> > exit_to_user_mode() to address the problem.
+> > 
+> > Note: Moving the check in entry-common allows to use set_thread_flag()
+> > which is safe.
 
-We already have 'tx-threshold' for 8250, so reuse that and add 
-'rx-threshold'.
+I've dug into this a bit more, and as set_thread_flag() calls some
+potentially-instrumented helpers I don't think this is safe after all
+(as e.g. those might cause an EL1 exception and clobber the ESR/FAR/etc
+before the EL0 exception handler reads it).
 
-Rob
+Making that watertight is pretty hairy, as we either need to open-code
+set_thread_flag() or go rework a load of core code. If we can use STSET
+in the entry asm that'd be simpler, otherwise we'll need something more
+involved.
+
+Thanks,
+Mark.
+
+> > 
+> > Fixes: 637ec831ea4f ("arm64: mte: Handle synchronous and asynchronous tag check faults")
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will@kernel.org>
+> > Cc: stable@vger.kernel.org
+> > Reported-by: Will Deacon <will@kernel.org>
+> > Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> > ---
+> >  arch/arm64/include/asm/mte.h     |  9 +++++++++
+> >  arch/arm64/kernel/entry-common.c |  6 ++++++
+> >  arch/arm64/kernel/entry.S        | 34 --------------------------------
+> >  arch/arm64/kernel/mte.c          | 33 +++++++++++++++++++++++++++++--
+> >  4 files changed, 46 insertions(+), 36 deletions(-)
+> > 
+> > diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> > index 9b557a457f24..c7ab681a95c3 100644
+> > --- a/arch/arm64/include/asm/mte.h
+> > +++ b/arch/arm64/include/asm/mte.h
+> > @@ -49,6 +49,9 @@ int mte_ptrace_copy_tags(struct task_struct *child, long request,
+> >  
+> >  void mte_assign_mem_tag_range(void *addr, size_t size);
+> >  
+> > +void noinstr check_mte_async_tcf0(void);
+> > +void noinstr clear_mte_async_tcf0(void);
+> 
+> Can we please put the implementations in the header so that they can be
+> inlined? Otherwise when the HW doesn't support MTE we'll always do a pointless
+> branch to the out-of-line implementation.
+> 
+> With that, we can mark them __always_inline to avoid weirdness with an inline
+> noinstr function.
+> 
+> Otherwise, this looks good to me.
+> 
+> Thanks,
+> Mark.
+> 
+> > +
+> >  #else /* CONFIG_ARM64_MTE */
+> >  
+> >  /* unused if !CONFIG_ARM64_MTE, silence the compiler */
+> > @@ -83,6 +86,12 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
+> >  {
+> >  	return -EIO;
+> >  }
+> > +static inline void check_mte_async_tcf0(void)
+> > +{
+> > +}
+> > +static inline void clear_mte_async_tcf0(void)
+> > +{
+> > +}
+> >  
+> >  static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+> >  {
+> > diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+> > index 9d3588450473..837d3624a1d5 100644
+> > --- a/arch/arm64/kernel/entry-common.c
+> > +++ b/arch/arm64/kernel/entry-common.c
+> > @@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
+> >  	CT_WARN_ON(ct_state() != CONTEXT_USER);
+> >  	user_exit_irqoff();
+> >  	trace_hardirqs_off_finish();
+> > +
+> > +	/* Check for asynchronous tag check faults in user space */
+> > +	check_mte_async_tcf0();
+> 
+> 
+> 
+> >  }
+> >  
+> >  asmlinkage void noinstr exit_to_user_mode(void)
+> >  {
+> > +	/* Ignore asynchronous tag check faults in the uaccess routines */
+> > +	clear_mte_async_tcf0();
+> > +
+> >  	trace_hardirqs_on_prepare();
+> >  	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
+> >  	user_enter_irqoff();
+> > diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+> > index a31a0a713c85..fb57df0d453f 100644
+> > --- a/arch/arm64/kernel/entry.S
+> > +++ b/arch/arm64/kernel/entry.S
+> > @@ -34,15 +34,11 @@
+> >   * user and kernel mode.
+> >   */
+> >  	.macro user_exit_irqoff
+> > -#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
+> >  	bl	enter_from_user_mode
+> > -#endif
+> >  	.endm
+> >  
+> >  	.macro user_enter_irqoff
+> > -#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
+> >  	bl	exit_to_user_mode
+> > -#endif
+> >  	.endm
+> >  
+> >  	.macro	clear_gp_regs
+> > @@ -147,32 +143,6 @@ alternative_cb_end
+> >  .L__asm_ssbd_skip\@:
+> >  	.endm
+> >  
+> > -	/* Check for MTE asynchronous tag check faults */
+> > -	.macro check_mte_async_tcf, flgs, tmp
+> > -#ifdef CONFIG_ARM64_MTE
+> > -alternative_if_not ARM64_MTE
+> > -	b	1f
+> > -alternative_else_nop_endif
+> > -	mrs_s	\tmp, SYS_TFSRE0_EL1
+> > -	tbz	\tmp, #SYS_TFSR_EL1_TF0_SHIFT, 1f
+> > -	/* Asynchronous TCF occurred for TTBR0 access, set the TI flag */
+> > -	orr	\flgs, \flgs, #_TIF_MTE_ASYNC_FAULT
+> > -	str	\flgs, [tsk, #TSK_TI_FLAGS]
+> > -	msr_s	SYS_TFSRE0_EL1, xzr
+> > -1:
+> > -#endif
+> > -	.endm
+> > -
+> > -	/* Clear the MTE asynchronous tag check faults */
+> > -	.macro clear_mte_async_tcf
+> > -#ifdef CONFIG_ARM64_MTE
+> > -alternative_if ARM64_MTE
+> > -	dsb	ish
+> > -	msr_s	SYS_TFSRE0_EL1, xzr
+> > -alternative_else_nop_endif
+> > -#endif
+> > -	.endm
+> > -
+> >  	.macro mte_set_gcr, tmp, tmp2
+> >  #ifdef CONFIG_ARM64_MTE
+> >  	/*
+> > @@ -243,8 +213,6 @@ alternative_else_nop_endif
+> >  	ldr	x19, [tsk, #TSK_TI_FLAGS]
+> >  	disable_step_tsk x19, x20
+> >  
+> > -	/* Check for asynchronous tag check faults in user space */
+> > -	check_mte_async_tcf x19, x22
+> >  	apply_ssbd 1, x22, x23
+> >  
+> >  	ptrauth_keys_install_kernel tsk, x20, x22, x23
+> > @@ -775,8 +743,6 @@ SYM_CODE_START_LOCAL(ret_to_user)
+> >  	cbnz	x2, work_pending
+> >  finish_ret_to_user:
+> >  	user_enter_irqoff
+> > -	/* Ignore asynchronous tag check faults in the uaccess routines */
+> > -	clear_mte_async_tcf
+> >  	enable_step_tsk x19, x2
+> >  #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
+> >  	bl	stackleak_erase
+> > diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> > index b3c70a612c7a..84a942c25870 100644
+> > --- a/arch/arm64/kernel/mte.c
+> > +++ b/arch/arm64/kernel/mte.c
+> > @@ -166,14 +166,43 @@ static void set_gcr_el1_excl(u64 excl)
+> >  	 */
+> >  }
+> >  
+> > -void flush_mte_state(void)
+> > +void noinstr check_mte_async_tcf0(void)
+> > +{
+> > +	u64 tcf0;
+> > +
+> > +	if (!system_supports_mte())
+> > +		return;
+> > +
+> > +	/*
+> > +	 * dsb(ish) is not required before the register read
+> > +	 * because the TFSRE0_EL1 is automatically synchronized
+> > +	 * by the hardware on exception entry as SCTLR_EL1.ITFSB
+> > +	 * is set.
+> > +	 */
+> > +	tcf0 = read_sysreg_s(SYS_TFSRE0_EL1);
+> > +
+> > +	if (tcf0 & SYS_TFSR_EL1_TF0)
+> > +		set_thread_flag(TIF_MTE_ASYNC_FAULT);
+> > +
+> > +	write_sysreg_s(0, SYS_TFSRE0_EL1);
+> > +}
+> > +
+> > +void noinstr clear_mte_async_tcf0(void)
+> >  {
+> >  	if (!system_supports_mte())
+> >  		return;
+> >  
+> > -	/* clear any pending asynchronous tag fault */
+> >  	dsb(ish);
+> >  	write_sysreg_s(0, SYS_TFSRE0_EL1);
+> > +}
+> > +
+> > +void flush_mte_state(void)
+> > +{
+> > +	if (!system_supports_mte())
+> > +		return;
+> > +
+> > +	/* clear any pending asynchronous tag fault */
+> > +	clear_mte_async_tcf0();
+> >  	clear_thread_flag(TIF_MTE_ASYNC_FAULT);
+> >  	/* disable tag checking */
+> >  	set_sctlr_el1_tcf0(SCTLR_EL1_TCF0_NONE);
+> > -- 
+> > 2.30.2
+> > 
