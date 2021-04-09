@@ -2,156 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C7D35A4FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAFE35A4FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:55:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234398AbhDIR4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:56:37 -0400
-Received: from smtp.uniroma2.it ([160.80.6.16]:33511 "EHLO smtp.uniroma2.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233332AbhDIR4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:56:34 -0400
-Received: from smtpauth-2019-1.uniroma2.it (smtpauth-2019-1.uniroma2.it [160.80.5.46])
-        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 139Htp74014136;
-        Fri, 9 Apr 2021 19:55:57 +0200
-Received: from lubuntu-18.04 (unknown [160.80.103.126])
-        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id A5D921200A8;
-        Fri,  9 Apr 2021 19:55:46 +0200 (CEST)
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
-        s=ed201904; t=1617990947; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pni0KvBbEd9KTaOWkuAW37WojjxsQ6NNGlUAutGZc7c=;
-        b=M9P7KmqNMt1w5lUBFckAsIZkfaw1R//JwL01Pn4CZ9d2516zOPULHUUPPxsZREVx8Fhpo4
-        LQoF1OYMSp0madDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
-        t=1617990947; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pni0KvBbEd9KTaOWkuAW37WojjxsQ6NNGlUAutGZc7c=;
-        b=FQJrs19RAr+0OSkd71Wqabf8tQmFALZZw7KuuQNayEem2TNWZ72ae/HyDvLLPmi7xR+bg4
-        f/7Z3OVsmkBwWSZ1xMIslhPx8RwCJcVdFKDVY87etuUkiDWv0JFjxK0mr7ODajWCm/bQW+
-        j8JdMNVZI8oKLN8qFR9tf835JAXUqV6wkMB3F7wdxItJWcLoUrPTbxzdhSZpKKZUmHVxbd
-        qPMSuYrsfP7P5qQqg2Uxf+tTpT+zIJGjft2YiOD4GuLd0QAAzqmSdF2bQjRaKxtnb0pcl2
-        UkMDUiZ/Tn7hp7xH8uURXYjVTVhmD9WQii9PbTgSSLcxg5KWjMTst56O5IdzkQ==
-Date:   Fri, 9 Apr 2021 19:55:46 +0200
-From:   Andrea Mayer <andrea.mayer@uniroma2.it>
-To:     David Ahern <dsahern@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org,
-        Stefano Salsano <stefano.salsano@uniroma2.it>,
-        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
-        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
-        Andrea Mayer <andrea.mayer@uniroma2.it>
-Subject: Re: [RFC net-next 1/1] seg6: add counters support for SRv6
- Behaviors
-Message-Id: <20210409195546.d528ca172b7360c9ac4d1dd3@uniroma2.it>
-In-Reply-To: <26222d31-2a27-c250-97e2-9220c098d836@gmail.com>
-References: <20210407180332.29775-1-andrea.mayer@uniroma2.it>
-        <20210407180332.29775-2-andrea.mayer@uniroma2.it>
-        <26222d31-2a27-c250-97e2-9220c098d836@gmail.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
-X-Virus-Status: Clean
+        id S234385AbhDIR4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:56:09 -0400
+Received: from mail-oi1-f178.google.com ([209.85.167.178]:42997 "EHLO
+        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233332AbhDIR4G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 13:56:06 -0400
+Received: by mail-oi1-f178.google.com with SMTP id n140so6581109oig.9;
+        Fri, 09 Apr 2021 10:55:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zqg2ntuQS/pbpLD9rz68eK+afesnc4sLjzCW0hn6Dis=;
+        b=RzTJcwoCalZUGZ7qk3y8E8yiN9cd7Gj8Xz8lnZUJaRXpCNakXx5/Ep0Mk/DEfYSZV6
+         fUMfKIgI31B3mxSTevCaavVtOztKkfCWSIpczOZte6COMXKEh3HOccASRcg5IEatk0Nd
+         Kn9BRYiV+Nz5rQ0LqOmP+JAOeAUNk8XcAmpltbnIECXfZzW+L8iZXjgBAwFdhca3wXrj
+         94ptcf5OrBevUHClf719WVzD+b3zviZk/xfq1DOQ5VzUHCu3QTsbdFWLot5Y+otHSvfU
+         QuvPjxnTqkzldiSCAz7pWDjddUhQXPhyRuXPRKGOD4EZtzPcv8CtP8tcch2K6VXkBuYR
+         BM3Q==
+X-Gm-Message-State: AOAM530HKE04fGEimv2epRtKSRTL+rlzcwSKuIF0JZ4MXH2ZtwRLW807
+        Z6/MYyj2js8aMb0hCeaVIA==
+X-Google-Smtp-Source: ABdhPJz/4Ts1DrnoKYDSpqBA4EDAwkmQl+k0y2knHSDgabWoxRV2WFwqJtmQTIhpRQM8x/yMKgFlig==
+X-Received: by 2002:a54:4703:: with SMTP id k3mr10658741oik.26.1617990952733;
+        Fri, 09 Apr 2021 10:55:52 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p22sm782536otf.25.2021.04.09.10.55.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 10:55:52 -0700 (PDT)
+Received: (nullmailer pid 3876842 invoked by uid 1000);
+        Fri, 09 Apr 2021 17:55:51 -0000
+Date:   Fri, 9 Apr 2021 12:55:51 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     heiko@sntech.de, thierry.reding@gmail.com,
+        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
+        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/2] dt-bindings: pwm: convert pwm-rockchip.txt to YAML
+Message-ID: <20210409175551.GA3769113@robh.at.kernel.org>
+References: <20210406155053.29101-1-jbx6244@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406155053.29101-1-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 7 Apr 2021 16:55:41 -0600
-David Ahern <dsahern@gmail.com> wrote:
-
-> On 4/7/21 12:03 PM, Andrea Mayer wrote:
-> > diff --git a/include/uapi/linux/seg6_local.h b/include/uapi/linux/seg6_local.h
-> > index 3b39ef1dbb46..ae5e3fd12b73 100644
-> > --- a/include/uapi/linux/seg6_local.h
-> > +++ b/include/uapi/linux/seg6_local.h
-> > @@ -27,6 +27,7 @@ enum {
-> >  	SEG6_LOCAL_OIF,
-> >  	SEG6_LOCAL_BPF,
-> >  	SEG6_LOCAL_VRFTABLE,
-> > +	SEG6_LOCAL_COUNTERS,
-> >  	__SEG6_LOCAL_MAX,
-> >  };
-> >  #define SEG6_LOCAL_MAX (__SEG6_LOCAL_MAX - 1)
-> > @@ -78,4 +79,11 @@ enum {
-> >  
-> >  #define SEG6_LOCAL_BPF_PROG_MAX (__SEG6_LOCAL_BPF_PROG_MAX - 1)
-> >  
-> > +/* SRv6 Behavior counters */
-> > +struct seg6_local_counters {
-> > +	__u64 rx_packets;
-> > +	__u64 rx_bytes;
-> > +	__u64 rx_errors;
-> > +};
-> > +
-> >  #endif
+On Tue, Apr 06, 2021 at 05:50:52PM +0200, Johan Jonker wrote:
+> Current dts files with 'pwm' nodes are manually verified.
+> In order to automate this process pwm-rockchip.txt
+> has to be converted to yaml.
 > 
-> It's highly likely that more stats would get added over time. It would
-> be good to document that here for interested parties and then make sure
-> iproute2 can handle different sized stats structs. e.g., commit support
-> to your repo, then add a new one (e.g, rx_drops) and verify the
-> combinations handle it. e.g., old kernel - new iproute2, new kernel -
-> old iproute, old - old and new-new.
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+>  .../devicetree/bindings/pwm/pwm-rockchip.txt       | 27 ---------
+>  .../devicetree/bindings/pwm/pwm-rockchip.yaml      | 66 ++++++++++++++++++++++
+>  2 files changed, 66 insertions(+), 27 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
+>  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
 > 
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-rockchip.txt b/Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
+> deleted file mode 100644
+> index f70956dea..000000000
+> --- a/Documentation/devicetree/bindings/pwm/pwm-rockchip.txt
+> +++ /dev/null
+> @@ -1,27 +0,0 @@
+> -Rockchip PWM controller
+> -
+> -Required properties:
+> - - compatible: should be "rockchip,<name>-pwm"
+> -   "rockchip,rk2928-pwm": found on RK29XX,RK3066 and RK3188 SoCs
+> -   "rockchip,rk3288-pwm": found on RK3288 SOC
+> -   "rockchip,rv1108-pwm", "rockchip,rk3288-pwm": found on RV1108 SoC
+> -   "rockchip,vop-pwm": found integrated in VOP on RK3288 SoC
+> - - reg: physical base address and length of the controller's registers
+> - - clocks: See ../clock/clock-bindings.txt
+> -   - For older hardware (rk2928, rk3066, rk3188, rk3228, rk3288, rk3399):
+> -     - There is one clock that's used both to derive the functional clock
+> -       for the device and as the bus clock.
+> -   - For newer hardware (rk3328 and future socs): specified by name
+> -     - "pwm": This is used to derive the functional clock.
+> -     - "pclk": This is the APB bus clock.
+> - - #pwm-cells: must be 2 (rk2928) or 3 (rk3288). See pwm.yaml in this directory
+> -   for a description of the cell format.
+> -
+> -Example:
+> -
+> -	pwm0: pwm@20030000 {
+> -		compatible = "rockchip,rk2928-pwm";
+> -		reg = <0x20030000 0x10>;
+> -		clocks = <&cru PCLK_PWM01>;
+> -		#pwm-cells = <2>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml b/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
+> new file mode 100644
+> index 000000000..cfd637d3e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
+> @@ -0,0 +1,66 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/pwm-rockchip.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Rockchip PWM controller
+> +
+> +maintainers:
+> +  - Heiko Stuebner <heiko@sntech.de>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: rockchip,rk2928-pwm
+> +      - const: rockchip,rk3288-pwm
+> +      - const: rockchip,vop-pwm
+> +      - items:
+> +          - enum:
+> +              - rockchip,rv1108-pwm
+> +          - const: rockchip,rk3288-pwm
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 2
+> +    description:
+> +      For older hardware (rk2928, rk3066, rk3188, rk3228, rk3288, rk3399)
+> +        There is one clock that is used both to derive the functional clock
+> +        for the device and as the bus clock.
+> +      For newer hardware (rk3328 and future SoCs) that is also specified
 
-Hi David,
-thanks for your review.
+Can you express this with a schema.
 
-I totally agree with you: we may want to add other counters in the future, even
-if they are not considered in RFC8986.
+> +      with clock names.
+> +        "pwm" is used to derive the functional clock for the device.
+> +        "pclk" is used as the APB bus clock.
 
-With that in mind, the shared struct seg6_local_counters is not the best way to
-go if we want to add other counters (because it will be difficult to manage
-different sized structures when considering different kernel/iproute2 versions).
+Let's not document the names twice.
 
-To make it easier adding new counters, instead of sharing the struct
-seg6_local_counters, I would use netlink nested attributes to exchange counters
-individually. In this way, only recognized (nested) attributes can be processed
-by both the kernel and iproute2.
-
-For example:
-
-enum {
-       SEG6_LOCAL_CNT_UNSPEC,
-       SEG6_LOCAL_CNT_PAD,             /* padding for 64 bits values */
-       SEG6_LOCAL_CNT_RX_PACKETS,
-       SEG6_LOCAL_CNT_RX_BYTES,
-       SEG6_LOCAL_CNT_RX_ERRORS,
-       __SEG6_LOCAL_CNT_MAX,
-};
-#define SEG6_LOCAL_CNT_MAX (__SEG6_LOCAL_CNT_MAX - 1)
-
-updating the policy for SEG6_LOCAL_COUNTERS to NLA_NESTED.
-
-Then, I create a new policy for counters which handles each supported
-counter separately.
-
-static const struct
-nla_policy seg6_local_counters_policy[SEG6_LOCAL_CNT_MAX + 1] = {
-       [SEG6_LOCAL_CNT_RX_PACKETS]     = { .type = NLA_U64 },
-       [SEG6_LOCAL_CNT_RX_BYTES]       = { .type = NLA_U64 },
-       [SEG6_LOCAL_CNT_RX_ERRORS]      = { .type = NLA_U64 },
-};
-
-At the end, I update the parse_nla_counters(), put_nla_counters(), etc
-according to the changes, i.e:
- - nla_parse_nested() in parse_nla_counters();
- - nla_nest_{start/end}() and for each supported counter nla_put_u64_64bit()
-   in put_nla_counters().
-
-On the iproute2 side, we have to update the code to reflect the changes
-discussed above. 
-
-I plan to issue an RFC v2 in a few days.
-
-Andrea
+> +
+> +  clock-names:
+> +    minItems: 1
+> +    items:
+> +      - const: pwm
+> +      - const: pclk
+> +
+> +  "#pwm-cells":
+> +    enum: [2, 3]
+> +    description:
+> +      Must be 2 (rk2928) or 3 (rk3288).
+> +      See pwm.yaml for a description of the cell format.
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - "#pwm-cells"
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/rk3188-cru-common.h>
+> +    pwm0: pwm@20030000 {
+> +      compatible = "rockchip,rk2928-pwm";
+> +      reg = <0x20030000 0x10>;
+> +      clocks = <&cru PCLK_PWM01>;
+> +      #pwm-cells = <2>;
+> +    };
+> -- 
+> 2.11.0
+> 
