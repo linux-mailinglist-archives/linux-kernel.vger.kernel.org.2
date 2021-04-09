@@ -2,245 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F074135A0F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A5E35A0F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233638AbhDIOXG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 9 Apr 2021 10:23:06 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:47805 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDIOXE (ORCPT
+        id S233688AbhDIOYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:24:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45146 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229665AbhDIOYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:23:04 -0400
-Received: from marcel-macbook.holtmann.net (p5b3d235a.dip0.t-ipconnect.de [91.61.35.90])
-        by mail.holtmann.org (Postfix) with ESMTPSA id D1920CECC3;
-        Fri,  9 Apr 2021 16:30:32 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v2] Bluetooth: hci_h5: btrtl: Add quirk for keep power in
- suspend/resume
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210316100657.16499-1-hildawu@realtek.com>
-Date:   Fri, 9 Apr 2021 16:22:48 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, tientzu@chromium.org,
-        max.chou@realtek.com, alex_lu@realsil.com.cn, kidman@realtek.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <BBA01EB8-970A-410B-93DA-0342F47A6186@holtmann.org>
-References: <20210316100657.16499-1-hildawu@realtek.com>
-To:     Hilda Wu <hildawu@realtek.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Fri, 9 Apr 2021 10:24:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617978248;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mWB8fVtvsr+ttGoY+PfMzLEn/1c7gqQBkhb46FX5nXY=;
+        b=bCGs5f/iAMX7YBY/GoETFODOg5ZCXu1SNrZpDPR/vd6+smaIPrQbUrpeIVgeFMoTPuQHX/
+        1qxItRzYAwtdboyIUcht194XqBYb+AuATKXzWuxZIuAcQ3rJ00booXpix0WSOfmPGwrOt/
+        it+hDCUzXBIPtkmNJ2Vn3RULUYt8ziw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-520-hGyyGkOOPFWQmHdgXIXzHg-1; Fri, 09 Apr 2021 10:24:07 -0400
+X-MC-Unique: hGyyGkOOPFWQmHdgXIXzHg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 423631020C22;
+        Fri,  9 Apr 2021 14:24:06 +0000 (UTC)
+Received: from x1.home.shazbot.org (ovpn-117-254.rdu2.redhat.com [10.10.117.254])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8324D19C66;
+        Fri,  9 Apr 2021 14:24:01 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 08:24:00 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Zengtao (B)" <prime.zeng@hisilicon.com>
+Cc:     "cohuck@redhat.com" <cohuck@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jgg@nvidia.com" <jgg@nvidia.com>,
+        "peterx@redhat.com" <peterx@redhat.com>
+Subject: Re: [PATCH v1 01/14] vfio: Create vfio_fs_type with inode per
+ device
+Message-ID: <20210409082400.1004fcef@x1.home.shazbot.org>
+In-Reply-To: <d9fdf4e8435244be826782daada0fd7b@hisilicon.com>
+References: <161523878883.3480.12103845207889888280.stgit@gimli.home>
+        <161524004828.3480.1817334832614722574.stgit@gimli.home>
+        <d9fdf4e8435244be826782daada0fd7b@hisilicon.com>
+Organization: Red Hat
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hilda,
+On Fri, 9 Apr 2021 04:54:23 +0000
+"Zengtao (B)" <prime.zeng@hisilicon.com> wrote:
 
-> RTL8822C devices support BT wakeup Host. Add a quirk for these specific
-> devices did not power off during suspend and resume.
-> By this change, if the Host support that received BT device signal then
-> it can be wakeup.
-> 
-> Signed-off-by: hildawu <hildawu@realtek.com>
-> ---
-> Changes in v2:
-> - Add missing struct member
-> - Modify title for fit length
-> ---
-> ---
-> drivers/bluetooth/btrtl.c   | 36 ------------------------------------
-> drivers/bluetooth/btrtl.h   | 36 ++++++++++++++++++++++++++++++++++++
-> drivers/bluetooth/hci_h5.c  | 35 ++++++++++++++++++++++++-----------
-> include/net/bluetooth/hci.h |  9 +++++++++
-> 4 files changed, 69 insertions(+), 47 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-> index e7fe5fb22753..94d1e7885aee 100644
-> --- a/drivers/bluetooth/btrtl.c
-> +++ b/drivers/bluetooth/btrtl.c
-> @@ -38,42 +38,6 @@
-> 	.hci_ver = (hciv), \
-> 	.hci_bus = (bus)
-> 
-> -enum btrtl_chip_id {
-> -	CHIP_ID_8723A,
-> -	CHIP_ID_8723B,
-> -	CHIP_ID_8821A,
-> -	CHIP_ID_8761A,
-> -	CHIP_ID_8822B = 8,
-> -	CHIP_ID_8723D,
-> -	CHIP_ID_8821C,
-> -	CHIP_ID_8822C = 13,
-> -	CHIP_ID_8761B,
-> -	CHIP_ID_8852A = 18,
-> -};
-> -
-> -struct id_table {
-> -	__u16 match_flags;
-> -	__u16 lmp_subver;
-> -	__u16 hci_rev;
-> -	__u8 hci_ver;
-> -	__u8 hci_bus;
-> -	bool config_needed;
-> -	bool has_rom_version;
-> -	char *fw_name;
-> -	char *cfg_name;
-> -};
-> -
-> -struct btrtl_device_info {
-> -	const struct id_table *ic_info;
-> -	u8 rom_version;
-> -	u8 *fw_data;
-> -	int fw_len;
-> -	u8 *cfg_data;
-> -	int cfg_len;
-> -	bool drop_fw;
-> -	int project_id;
-> -};
-> -
-> static const struct id_table ic_id_table[] = {
-> 	/* 8723A */
-> 	{ IC_INFO(RTL_ROM_LMP_8723A, 0xb, 0x6, HCI_USB),
-> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
-> index 2a582682136d..713768b38e21 100644
-> --- a/drivers/bluetooth/btrtl.h
-> +++ b/drivers/bluetooth/btrtl.h
-> @@ -12,6 +12,42 @@
-> #define rtl_dev_info(dev, fmt, ...) bt_dev_info(dev, "RTL: " fmt, ##__VA_ARGS__)
-> #define rtl_dev_dbg(dev, fmt, ...) bt_dev_dbg(dev, "RTL: " fmt, ##__VA_ARGS__)
-> 
-> +enum btrtl_chip_id {
-> +	CHIP_ID_8723A,
-> +	CHIP_ID_8723B,
-> +	CHIP_ID_8821A,
-> +	CHIP_ID_8761A,
-> +	CHIP_ID_8822B = 8,
-> +	CHIP_ID_8723D,
-> +	CHIP_ID_8821C,
-> +	CHIP_ID_8822C = 13,
-> +	CHIP_ID_8761B,
-> +	CHIP_ID_8852A = 18,
-> +};
-> +
-> +struct id_table {
-> +	__u16 match_flags;
-> +	__u16 lmp_subver;
-> +	__u16 hci_rev;
-> +	__u8 hci_ver;
-> +	__u8 hci_bus;
-> +	bool config_needed;
-> +	bool has_rom_version;
-> +	char *fw_name;
-> +	char *cfg_name;
-> +};
-> +
-> +struct btrtl_device_info {
-> +	const struct id_table *ic_info;
-> +	u8 rom_version;
-> +	u8 *fw_data;
-> +	int fw_len;
-> +	u8 *cfg_data;
-> +	int cfg_len;
-> +	bool drop_fw;
-> +	int project_id;
-> +};
-> +
-> struct btrtl_device_info;
+> > -----=E9=82=AE=E4=BB=B6=E5=8E=9F=E4=BB=B6-----
+> > =E5=8F=91=E4=BB=B6=E4=BA=BA: Alex Williamson [mailto:alex.williamson@re=
+dhat.com]
+> > =E5=8F=91=E9=80=81=E6=97=B6=E9=97=B4: 2021=E5=B9=B43=E6=9C=889=E6=97=A5=
+ 5:47
+> > =E6=94=B6=E4=BB=B6=E4=BA=BA: alex.williamson@redhat.com
+> > =E6=8A=84=E9=80=81: cohuck@redhat.com; kvm@vger.kernel.org;
+> > linux-kernel@vger.kernel.org; jgg@nvidia.com; peterx@redhat.com
+> > =E4=B8=BB=E9=A2=98: [PATCH v1 01/14] vfio: Create vfio_fs_type with ino=
+de per device
+> >=20
+> > By linking all the device fds we provide to userspace to an address spa=
+ce
+> > through a new pseudo fs, we can use tools like
+> > unmap_mapping_range() to zap all vmas associated with a device.
+> >=20
+> > Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > ---
+> >  drivers/vfio/vfio.c |   54
+> > +++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  1 file changed, 54 insertions(+)
+> >=20
+> > diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c index
+> > 38779e6fd80c..abdf8d52a911 100644
+> > --- a/drivers/vfio/vfio.c
+> > +++ b/drivers/vfio/vfio.c
+> > @@ -32,11 +32,18 @@
+> >  #include <linux/vfio.h>
+> >  #include <linux/wait.h>
+> >  #include <linux/sched/signal.h>
+> > +#include <linux/pseudo_fs.h>
+> > +#include <linux/mount.h> =20
+> Minor: keep the headers in alphabetical order.
 
-I rather not move around these things.
+They started out that way, but various tree-wide changes ignoring that,
+and likely oversights on my part as well, has left us with numerous
+breaks in that rule already.
 
-> struct rtl_download_cmd {
-> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
-> index 27e96681d583..1ca4ff89ea14 100644
-> --- a/drivers/bluetooth/hci_h5.c
-> +++ b/drivers/bluetooth/hci_h5.c
-> @@ -909,7 +909,15 @@ static int h5_btrtl_setup(struct h5 *h5)
-> 	/* Enable controller to do both LE scan and BR/EDR inquiry
-> 	 * simultaneously.
-> 	 */
-> -	set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
-> +	switch (btrtl_dev->project_id) {
-> +	case CHIP_ID_8822C:
-> +	case CHIP_ID_8852A:
-> +		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
-> +		set_bit(HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED, &h5->hu->hdev->quirks);
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> 
-> out_free:
-> 	btrtl_free(btrtl_dev);
-> @@ -945,8 +953,11 @@ static void h5_btrtl_close(struct h5 *h5)
-> static int h5_btrtl_suspend(struct h5 *h5)
-> {
-> 	serdev_device_set_flow_control(h5->hu->serdev, false);
-> -	gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
-> -	gpiod_set_value_cansleep(h5->enable_gpio, 0);
-> +
-> +	if (!test_bit(HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED, &h5->hu->hdev->quirks)) {
-> +		gpiod_set_value_cansleep(h5->device_wake_gpio, 0);
-> +		gpiod_set_value_cansleep(h5->enable_gpio, 0);
-> +	}
-> 	return 0;
-> }
-> 
-> @@ -972,17 +983,19 @@ static void h5_btrtl_reprobe_worker(struct work_struct *work)
-> 
-> static int h5_btrtl_resume(struct h5 *h5)
-> {
-> -	struct h5_btrtl_reprobe *reprobe;
-> +	if (!test_bit(HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED, &h5->hu->hdev->quirks)) {
-> +		struct h5_btrtl_reprobe *reprobe;
-> 
-> -	reprobe = kzalloc(sizeof(*reprobe), GFP_KERNEL);
-> -	if (!reprobe)
-> -		return -ENOMEM;
-> +		reprobe = kzalloc(sizeof(*reprobe), GFP_KERNEL);
-> +		if (!reprobe)
-> +			return -ENOMEM;
-> 
-> -	__module_get(THIS_MODULE);
-> +		__module_get(THIS_MODULE);
-> 
-> -	INIT_WORK(&reprobe->work, h5_btrtl_reprobe_worker);
-> -	reprobe->dev = get_device(&h5->hu->serdev->dev);
-> -	queue_work(system_long_wq, &reprobe->work);
-> +		INIT_WORK(&reprobe->work, h5_btrtl_reprobe_worker);
-> +		reprobe->dev = get_device(&h5->hu->serdev->dev);
-> +		queue_work(system_long_wq, &reprobe->work);
-> +	}
-> 	return 0;
-> }
-> 
-> diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-> index ea4ae551c426..1e4c2a97ab8d 100644
-> --- a/include/net/bluetooth/hci.h
-> +++ b/include/net/bluetooth/hci.h
-> @@ -246,6 +246,15 @@ enum {
-> 	 * HCI after resume.
-> 	 */
-> 	HCI_QUIRK_NO_SUSPEND_NOTIFIER,
-> +
-> +	/* When this quirk is set, the controller does not power off
-> +	 * during suspend and resume. This mechanism lets BT devices wake
-> +	 * the Host up if the Host and chips support.
-> +	 *
-> +	 * This quirk can be set before hci_register_dev is called or
-> +	 * during the hdev->setup vendor callback.
-> +	 */
-> +	HCI_QUIRK_DEVICES_WAKEUP_SUPPORTED,
-> };
+> >=20
+> >  #define DRIVER_VERSION	"0.3"
+> >  #define DRIVER_AUTHOR	"Alex Williamson <alex.williamson@redhat.com>"
+> >  #define DRIVER_DESC	"VFIO - User Level meta-driver"
+> >=20
+> > +#define VFIO_MAGIC 0x5646494f /* "VFIO" */ =20
+> Move to include/uapi/linux/magic.h ?=20
 
-Since this hci_uart specific, please don’t introduce another quirk and keep this internal.
+Hmm, yeah, I suppose it probably should go there.  Thanks.
 
-Regards
+FWIW, I'm still working on a next version of this series, currently
+struggling how to handle an arbitrary number of vmas per user DMA
+mapping.  Thanks,
 
-Marcel
+Alex
 
