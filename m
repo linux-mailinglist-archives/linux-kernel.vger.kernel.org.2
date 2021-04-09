@@ -2,72 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DEC359165
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEA2359167
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:24:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233185AbhDIBYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 21:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54166 "EHLO
+        id S233201AbhDIBY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 21:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDIBYv (ORCPT
+        with ESMTP id S232918AbhDIBYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:24:51 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AA83C061760;
+        Thu, 8 Apr 2021 21:24:52 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A75C061761;
         Thu,  8 Apr 2021 18:24:40 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUfsw-003sCi-JE; Fri, 09 Apr 2021 01:24:34 +0000
-Date:   Fri, 9 Apr 2021 01:24:34 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 01/30] iov_iter: Add ITER_XARRAY
-Message-ID: <YG+s0iw5o91KQIlW@zeniv-ca.linux.org.uk>
-References: <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
- <161789064740.6155.11932541175173658065.stgit@warthog.procyon.org.uk>
+Received: by mail-pg1-x534.google.com with SMTP id w10so2659480pgh.5;
+        Thu, 08 Apr 2021 18:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=V4nRcD3hjDMC12ZIm/yS1mQ2MbVA8+EsozsRdRPo14E=;
+        b=tWfnjXJPya1rmZ+p7F9B9NXxESBP/tTLqT7f3ci3KJSrT3qiHGZQTbTcRlDxdAttZ6
+         ZoDm1ITIuz+kNhXVhfjGzL9sIz8sinVu3FUh2unEpj0dc7d7J/iGEX3XMEggY9uE7Tju
+         itl2tjN8vjDLkd2iv95zHBNaVFmGxAzyBOb2bWqKKfxRKsNzfcplCfrglgxrdwdt+Q5G
+         y0cXCQUJxjlJsLytgK0EgaRJIbYmb3cCERnDOFB3v26QVScmuI12PlHO2xkghm9fVMQ3
+         GAmaAWWM4Hqtz+xuaVw6lMCZeyCwahZjxTJEryjZm1parWSFhcik5/UA6da8oaBX62ac
+         rSLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=V4nRcD3hjDMC12ZIm/yS1mQ2MbVA8+EsozsRdRPo14E=;
+        b=Kp7M3T4BGckASgQlCuVajAfwdNNDMQOaM/Cdz/nZMlLbWhuwBWsG4yWkE8iGvSDaVf
+         uUtW5iNyXFlm/iDa+n89i57jEm9PZv1GO9Pjp0kiiAkKRdmmjmqcCRfHw+8ClMDtQ/P0
+         SuIYvDR9Yxoh+Mb323WlX9XvSiWv9zV41fu61GgfyzHPwe4Tptl1hHUYsbdgGrXj75rx
+         yo/1s9TH6Y8qbEkG4oM/MI8dequsajmtht69K26JS5U0YpsbZI1h0NMx7cbCN5eweAy5
+         CcG14byeUY0w6GjZHfNKahm0xfMBAxz10N5s1FmZT8IV1jH/3l7tMXhJnJb34mWgbK2t
+         6p+Q==
+X-Gm-Message-State: AOAM530lb2Jnx+y4Br33TXKUnr01a9lAfQfgr7AK/nUbVp8JgGjn3liZ
+        95WQiYXynyx5Gg5RTMPtiNr707N1H54=
+X-Google-Smtp-Source: ABdhPJwL2S8E9hhU8fHuAfC+x1JSTWxST9gc2Z6els+66bOCXSS6DVLEDlQWuCZlVJR4ksCtqpd80w==
+X-Received: by 2002:a63:5f54:: with SMTP id t81mr10493972pgb.283.1617931479636;
+        Thu, 08 Apr 2021 18:24:39 -0700 (PDT)
+Received: from [10.43.90.134] ([103.114.158.1])
+        by smtp.gmail.com with ESMTPSA id fs9sm500411pjb.40.2021.04.08.18.24.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 18:24:39 -0700 (PDT)
+Subject: Re: [PATCH v2] integrity: Add declarations to init_once void
+ arguments.
+To:     zohar@linux.ibm.com
+Cc:     jmorris@namei.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
+References: <20210407014438.39516-1-unclexiaole@gmail.com>
+From:   Jiele Zhao <unclexiaole@gmail.com>
+Message-ID: <4a41b0e9-a1cd-deaf-8b22-a4ca33968496@gmail.com>
+Date:   Fri, 9 Apr 2021 09:24:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161789064740.6155.11932541175173658065.stgit@warthog.procyon.org.uk>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210407014438.39516-1-unclexiaole@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 03:04:07PM +0100, David Howells wrote:
-> Add an iterator, ITER_XARRAY, that walks through a set of pages attached to
-> an xarray, starting at a given page and offset and walking for the
-> specified amount of bytes.  The iterator supports transparent huge pages.
-> 
-> The iterate_xarray() macro calls the helper function with rcu_access()
-> helped.  I think that this is only a problem for iov_iter_for_each_range()
-> - and that returns an error for ITER_XARRAY (also, this function does not
-> appear to be called).
+Hi Mimi,
 
-Unused since lustre had gone away.
+And this is another patch that has been modified.
 
-> +#define iterate_all_kinds(i, n, v, I, B, K, X) {		\
-
-Do you have any users that would pass different B and X?
-
-> @@ -1440,7 +1665,7 @@ ssize_t iov_iter_get_pages_alloc(struct iov_iter *i,
->  		return v.bv_len;
->  	}),({
->  		return -EFAULT;
-> -	})
-> +	}), 0
-
-Correction - users that might get that flavour.  This one explicitly checks
-for xarray and doesn't get to iterate_... in that case.
+On 2021/4/7 9:44, Jiele Zhao wrote:
+> init_once is a callback to kmem_cache_create. The parameter
+> type of this function is void *, so it's better to give a
+> explicit cast here.
+>
+> Signed-off-by: Jiele Zhao <unclexiaole@gmail.com>
+> ---
+>   security/integrity/iint.c         | 2 +-
+>   security/integrity/ima/ima_main.c | 2 +-
+>   2 files changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+> index 0ba01847e836..fca8a9409e4a 100644
+> --- a/security/integrity/iint.c
+> +++ b/security/integrity/iint.c
+> @@ -160,7 +160,7 @@ void integrity_inode_free(struct inode *inode)
+>   
+>   static void init_once(void *foo)
+>   {
+> -	struct integrity_iint_cache *iint = foo;
+> +	struct integrity_iint_cache *iint = (struct integrity_iint_cache *) foo;
+>   
+>   	memset(iint, 0, sizeof(*iint));
+>   	iint->ima_file_status = INTEGRITY_UNKNOWN;
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 9ef748ea829f..03bef720ab44 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -482,7 +482,7 @@ int ima_bprm_check(struct linux_binprm *bprm)
+>   }
+>   
+>   /**
+> - * ima_path_check - based on policy, collect/store measurement.
+> + * ima_file_check - based on policy, collect/store measurement.
+>    * @file: pointer to the file to be measured
+>    * @mask: contains MAY_READ, MAY_WRITE, MAY_EXEC or MAY_APPEND
+>    *
