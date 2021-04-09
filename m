@@ -2,97 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA69935A387
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 363E735A38A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234124AbhDIQie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56750 "EHLO
+        id S233892AbhDIQjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234059AbhDIQic (ORCPT
+        with ESMTP id S229665AbhDIQjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:38:32 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D85C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 09:38:19 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id i190so4575448pfc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:38:19 -0700 (PDT)
+        Fri, 9 Apr 2021 12:39:47 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38999C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 09:39:34 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id z1so7288597edb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:39:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GEH6ahek62aXY8iXScAwAVfTv8FrDuewq6fR1FVMQO8=;
-        b=D1yFVy+LagHtHJAaz6Nq5mGOTpW/BL/vGsFvNliDBdxurJeU+SofsOb+XOkxPk1Dh9
-         1712P6c3SmC44mcGJbkLyxo5wsnRmaknoP2pjnNpIuCwxIr1BgeuztCuJjbl9XY8Cucb
-         m7gzrUJpyk5nT/GPS8zUf6cosW4htpylaC7gBi44deo4spgx+gVOROp1T+nEPQfKqQ/O
-         G714feR20gYAkRJm1CudfDNSs8GJGWXbaEFVIKNdmIxF3eHteEbFoVfjVzSpsvpEto17
-         s3mwusCkv2Z5N5ynVYNpFIKa+XvuJgSE6iah+KUijbagQTETG7lO3t73RwPJwAqcOgn/
-         HCSA==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MeVCMSWpDbGHYzheWdu+Y717xanF98ksnqPfJAYkw1M=;
+        b=XPDFVuIxP0211a+q0DgzOzr7FRJbb7qGyrMux5F9IVWsm0zBRIB5GsMhp0ef5ACmfl
+         fbfLIDbngewfHiVw3tEUza5NDpDRw7XB/p5OO9ZrnO9I2M549MUxjWwI8wH+YFTbiXY5
+         AIxtid5ZQeU7iFjI70/WiIoaQHIxzrgqu2oP9DdnErUXTSQN2i3hUWqqrx2RqFQST4rq
+         hb83RLjbL4HYCiMVyWI1GJILnonyvuoAWMUAAJhDLQP+Ad5BsojszOZVZkhD6Mkf2IYv
+         8r99CSm6BBv7msF1uj9zEP7SHgpg0msw5uot1f3erCf13OIlcIg6y3HgEpsBzS/GlRiZ
+         32Pw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GEH6ahek62aXY8iXScAwAVfTv8FrDuewq6fR1FVMQO8=;
-        b=gjTSF2d4aTZU/LXDrf2JPnbztSqySbFu+7/rrxIzOxvIx/LiHIDulyCYaGHmCsBkKn
-         vfEkCLQUFNHW/AmPvGEwofeiCP0NwcV47QIHa0bgkU96sAbyoXziFdlD8FG9mhoVusyY
-         aPd/V9J4MRxaOKwrbB8z7+ViAMyzfnE1Pf3vDAGxGfDvT+sCrykpUIObzz6RXeYzApF+
-         P5A6dLq8e2UTfB/cUK3KUco9MxosmTsWTAHnKXMZOFfFzJm74fr1x5Bfr8MdMOx7n2tG
-         1N5ZBFkS676aiI9+zEAMr9/AgqEcIyDjHq6/eb2B2XGRtRJ7MH1+uHRQA8eqAxRM8Atv
-         E/3w==
-X-Gm-Message-State: AOAM531cw/sHVE1N37T116toS7bhR9zRNoHbzCZMlutUppXricltFN0J
-        QoLS7EpGVCvCGf+HXh58ow1wZQ==
-X-Google-Smtp-Source: ABdhPJw3Z8mbp4u+laHeW2sw15LZTArD7zhNmsSeqYL4VWJv/2AfSosiUpL3ZHLJ/9aNLSdjAvDhuw==
-X-Received: by 2002:aa7:82ce:0:b029:242:deb4:9442 with SMTP id f14-20020aa782ce0000b0290242deb49442mr11941205pfn.73.1617986299273;
-        Fri, 09 Apr 2021 09:38:19 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id h1sm2598442pfc.122.2021.04.09.09.38.18
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MeVCMSWpDbGHYzheWdu+Y717xanF98ksnqPfJAYkw1M=;
+        b=c09mbWo/T/wU2KM9hH14rqSi1c/bdX6JU6OJ4lebXeW5dl/Glvk+eJmBMMlfpZDayp
+         It9R3MZ4tIJ/F/ikDLpGknqepNHWpsQKgeLE016U7R+vvbKLIJrfHeYWJvTBJ8qFXjey
+         912WXxK8VRim4GXYE8vivsAbu9BCDQ1kn+3qoizrTxMy2iPgQmJnr4OLnagD00mrWu7b
+         kotx1abuSs/jMKT04f6buiObUaRXFuNFQGDS3vuQK3ok2wzW0ikarCE5NVwsY8WDQfWR
+         DeUcB0WKdXRmyz8csMp+cNm/fX+FNle15zn6haXcgBSalBw48B1y5IqomYywOUQ45ywc
+         GdkA==
+X-Gm-Message-State: AOAM532zgzAGINrT3DgHmyMmGaNYdwYmL7q+3b/w7Vw9XQwini1Lkamq
+        W5NrrQKjzi+OzesheUyKrI4=
+X-Google-Smtp-Source: ABdhPJynu8aTlMARiTomzAzpoFC+mZi83vqf+MR6nXNS7W4lkctKXtEKEa3ahsE960GUsvT76fGbGA==
+X-Received: by 2002:aa7:ca04:: with SMTP id y4mr8266748eds.72.1617986373012;
+        Fri, 09 Apr 2021 09:39:33 -0700 (PDT)
+Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id q2sm1474051eje.24.2021.04.09.09.39.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 09:38:18 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 16:38:14 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v3] KVM: SVM: Make sure GHCB is mapped before updating
-Message-ID: <YHCC9h2huV/2eixO@google.com>
-References: <a5d3ebb600a91170fc88599d5a575452b3e31036.1617979121.git.thomas.lendacky@amd.com>
+        Fri, 09 Apr 2021 09:39:32 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [Outreachy kernel] [Resend Patch 0/3] staging: rtl8723bs: Patchset for rtl8723bs
+Date:   Fri, 09 Apr 2021 18:39:31 +0200
+Message-ID: <3311077.CXPNp9SFPB@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5d3ebb600a91170fc88599d5a575452b3e31036.1617979121.git.thomas.lendacky@amd.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021, Tom Lendacky wrote:
-> From: Tom Lendacky <thomas.lendacky@amd.com>
-> 
-> Access to the GHCB is mainly in the VMGEXIT path and it is known that the
-> GHCB will be mapped. But there are two paths where it is possible the GHCB
-> might not be mapped.
-> 
-> The sev_vcpu_deliver_sipi_vector() routine will update the GHCB to inform
-> the caller of the AP Reset Hold NAE event that a SIPI has been delivered.
-> However, if a SIPI is performed without a corresponding AP Reset Hold,
-> then the GHCB might not be mapped (depending on the previous VMEXIT),
-> which will result in a NULL pointer dereference.
-> 
-> The svm_complete_emulated_msr() routine will update the GHCB to inform
-> the caller of a RDMSR/WRMSR operation about any errors. While it is likely
-> that the GHCB will be mapped in this situation, add a safe guard
-> in this path to be certain a NULL pointer dereference is not encountered.
-> 
-> Fixes: f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under SEV-ES")
-> Fixes: 647daca25d24 ("KVM: SVM: Add support for booting APs in an SEV-ES guest")
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-> 
-> ---
+This patch series removes camelcase, changes the type and use of a 
+variable, and correct misspelled words.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+Patch 1/3: staging: rtl8723bs: Remove camelcase in several files
+
+drivers/staging/rtl8723bs/core/rtw_cmd.c       |  2 +-
+drivers/staging/rtl8723bs/core/rtw_mlme.c      |  2 +-
+drivers/staging/rtl8723bs/core/rtw_pwrctrl.c   | 18 +++++++++---------
+drivers/staging/rtl8723bs/hal/hal_intf.c       |  2 +-
+drivers/staging/rtl8723bs/hal/rtl8723b_dm.c    |  6 +++---
+.../staging/rtl8723bs/hal/rtl8723b_hal_init.c  |  2 +-
+drivers/staging/rtl8723bs/hal/sdio_ops.c       | 14 +++++++-------
+.../staging/rtl8723bs/include/rtw_pwrctrl.h    |  2 +-
+8 files changed, 24 insertions(+), 24 deletions(-)
+
+Patch 2/3: staging: rtl8723bs: Change the type and use of a variable
+
+drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
+ drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+Patch 3/3: staging: rtl8723bs: include: Fix misspelled words in comments
+
+.../rtl8723bs/include/Hal8192CPhyReg.h        |  8 ++---
+ .../staging/rtl8723bs/include/basic_types.h   |  2 +-
+ drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
+ drivers/staging/rtl8723bs/include/hal_com.h   |  2 +-
+ .../staging/rtl8723bs/include/hal_com_reg.h   | 34 +++++++++----------
+ drivers/staging/rtl8723bs/include/hal_data.h  |  2 +-
+ .../staging/rtl8723bs/include/hal_pwr_seq.h   |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_cmd.h   |  6 ++--
+ drivers/staging/rtl8723bs/include/rtw_mlme.h  | 18 +++++-----
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_mp.h    |  2 +-
+ .../staging/rtl8723bs/include/rtw_pwrctrl.h   |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_recv.h  |  4 +--
+ drivers/staging/rtl8723bs/include/rtw_xmit.h  |  2 +-
+ drivers/staging/rtl8723bs/include/sta_info.h  |  2 +-
+ drivers/staging/rtl8723bs/include/wifi.h      |  2 +-
+ 16 files changed, 46 insertions(+), 46 deletions(-)
+
+Fabio M. De Francesco
+
+
+
+
+
+
