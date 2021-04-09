@@ -2,126 +2,350 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370B535A881
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 23:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C76D835A865
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 23:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234861AbhDIVzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 17:55:50 -0400
-Received: from bosmailout10.eigbox.net ([66.96.187.10]:41007 "EHLO
-        bosmailout10.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234079AbhDIVzt (ORCPT
+        id S234581AbhDIVfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 17:35:41 -0400
+Received: from mo-csw1116.securemx.jp ([210.130.202.158]:47788 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233687AbhDIVfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 17:55:49 -0400
-X-Greylist: delayed 1801 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 17:55:49 EDT
-Received: from bosmailscan07.eigbox.net ([10.20.15.7])
-        by bosmailout10.eigbox.net with esmtp (Exim)
-        id 1lUydC-00031B-Hj
-        for linux-kernel@vger.kernel.org; Fri, 09 Apr 2021 17:25:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aroba00.com
-        ; s=dkim; h=Sender:Content-Transfer-Encoding:Content-Type:Message-ID:Reply-To
-        :Subject:To:From:Date:MIME-Version:Cc:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=j/2w54k6QiND+xCmDlhOZ4FhmnEVovmAfHp4mNSvZpw=; b=0Kst1XkNM6JTuMYYm0tzIVkVBw
-        wll2z7p4E99xwxVr4Fc5wPsAbm/dly4qv/ssMfPr6Yq/+GtYdlIeBTJDcd9VFrH6ouNLzDzZkkteT
-        7qC56GJZHsqIKvSPUiJdJYglV0ppN8w7fQ/nqnaQK5RzY7d760xRw2wpaMfqJRTskjMAuBdmVGL3B
-        qp9zitWE8YUGDMaKbUEoG2W8iU6jwaqSA7X6Iylx2V40JitBBOMQiAWgHoZlT8tZBTaeh6v4/Pz3h
-        uhs/G/Veqn5ST3HSLMfwFM6Aams5g8OEPUgAyxoXPvn19atUvWvRhkgODfzvvqqVmqhIIgUkNHj9d
-        +ZH95xoA==;
-Received: from [10.115.3.33] (helo=bosimpout13)
-        by bosmailscan07.eigbox.net with esmtp (Exim)
-        id 1lUydC-0001Gy-8O
-        for linux-kernel@vger.kernel.org; Fri, 09 Apr 2021 17:25:34 -0400
-Received: from boswebmail08.eigbox.net ([10.20.16.8])
-        by bosimpout13 with 
-        id qlR12400h0ASFPu01lRN59; Fri, 09 Apr 2021 17:25:34 -0400
-X-Authority-Analysis: v=2.3 cv=RNUo47q+ c=1 sm=1 tr=0
- a=nrbQDdKp8bIvKAbSIVj10Q==:117 a=quF6OkJX2JkgrmAOVFxFYg==:17
- a=ynNchLzGGVQA:10 a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=x7bEGLp0ZPQA:10
- a=aX4iDkUV3q0Z1BGtcMEA:9 a=EIYLPocOnPveAysI:21 a=zD1n7Qp9K8CShBJE:21
- a=CjuIK1q_8ugA:10 a=0SFVNkT-byZ66ebLn1w0:22
-Received: from [127.0.0.1] (helo=homestead)
-        by boswebmail08.eigbox.net with esmtp (Exim)
-        id 1lUycI-0006NG-6N; Fri, 09 Apr 2021 17:24:38 -0400
-Received: from [41.138.102.250]
- by emailmg.homestead.com
- with HTTP (HTTP/1.1 POST); Fri, 09 Apr 2021 17:24:38 -0400
+        Fri, 9 Apr 2021 17:35:39 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1116) id 139LYwRH008798; Sat, 10 Apr 2021 06:34:58 +0900
+X-Iguazu-Qid: 2wHHssSnbYbFdnoxPc
+X-Iguazu-QSIG: v=2; s=0; t=1618004098; q=2wHHssSnbYbFdnoxPc; m=D1xW780p6Id16TNwDIvBcVhNiqlRO90vFrM0M43hh+g=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1112) id 139LYv3Z027218
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 10 Apr 2021 06:34:57 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 2DC7E1000E5;
+        Sat, 10 Apr 2021 06:34:57 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 139LYuoA006484;
+        Sat, 10 Apr 2021 06:34:56 +0900
+Date:   Sat, 10 Apr 2021 06:34:55 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM
+ support
+X-TSB-HOP: ON
+Message-ID: <20210409213455.6f25m4jyttqn75hf@toshiba.co.jp>
+References: <20210409090709.1918021-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210409090709.1918021-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <YHBUjPjEpLYF/915@orome.fritz.box>
 MIME-Version: 1.0
-Date:   Fri, 09 Apr 2021 23:24:38 +0200
-From:   janete Moon <demo1@aroba00.com>
-To:     undisclosed-recipients:;
-Subject: an Orphan needs your help
-Reply-To: janete.moon20@gmail.com
-Mail-Reply-To: janete.moon20@gmail.com
-Message-ID: <687b33b1130021c621732725ec2ff2c0@aroba00.com>
-X-Sender: demo1@aroba00.com
-User-Agent: Roundcube Webmail/1.3.14
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-EN-AuthUser: demo1@aroba00.com
-Sender:  janete Moon <demo1@aroba00.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHBUjPjEpLYF/915@orome.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Thierry,
 
+Thanks for your review.
 
-Hello Friend,
+On Fri, Apr 09, 2021 at 03:20:12PM +0200, Thierry Reding wrote:
+> On Fri, Apr 09, 2021 at 06:07:09PM +0900, Nobuhiro Iwamatsu wrote:
+> > Add driver for the PWM controller on Toshiba Visconti ARM SoC.
+> > 
+> > Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> > ---
+> >  drivers/pwm/Kconfig        |   9 ++
+> >  drivers/pwm/Makefile       |   1 +
+> >  drivers/pwm/pwm-visconti.c | 193 +++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 203 insertions(+)
+> >  create mode 100644 drivers/pwm/pwm-visconti.c
+> 
+> Looks good, but I have a few minor comments, see below.
+> 
+> > diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> > index 9a4f66ae8070..8ae68d6203fb 100644
+> > --- a/drivers/pwm/Kconfig
+> > +++ b/drivers/pwm/Kconfig
+> > @@ -601,6 +601,15 @@ config PWM_TWL_LED
+> >  	  To compile this driver as a module, choose M here: the module
+> >  	  will be called pwm-twl-led.
+> >  
+> > +config PWM_VISCONTI
+> > +	tristate "Toshiba Visconti PWM support"
+> > +	depends on ARCH_VISCONTI || COMPILE_TEST
+> > +	help
+> > +	  PWM Subsystem driver support for Toshiba Visconti SoCs.
+> > +
+> > +	  To compile this driver as a module, choose M here: the module
+> > +	  will be called pwm-visconti.
+> > +
+> >  config PWM_VT8500
+> >  	tristate "vt8500 PWM support"
+> >  	depends on ARCH_VT8500 || COMPILE_TEST
+> > diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> > index 6374d3b1d6f3..d43b1e17e8e1 100644
+> > --- a/drivers/pwm/Makefile
+> > +++ b/drivers/pwm/Makefile
+> > @@ -56,4 +56,5 @@ obj-$(CONFIG_PWM_TIECAP)	+= pwm-tiecap.o
+> >  obj-$(CONFIG_PWM_TIEHRPWM)	+= pwm-tiehrpwm.o
+> >  obj-$(CONFIG_PWM_TWL)		+= pwm-twl.o
+> >  obj-$(CONFIG_PWM_TWL_LED)	+= pwm-twl-led.o
+> > +obj-$(CONFIG_PWM_VISCONTI)	+= pwm-visconti.o
+> >  obj-$(CONFIG_PWM_VT8500)	+= pwm-vt8500.o
+> > diff --git a/drivers/pwm/pwm-visconti.c b/drivers/pwm/pwm-visconti.c
+> > new file mode 100644
+> > index 000000000000..ff4a5f5b0009
+> > --- /dev/null
+> > +++ b/drivers/pwm/pwm-visconti.c
+> > @@ -0,0 +1,193 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * Toshiba Visconti pulse-width-modulation controller driver
+> > + *
+> > + * Copyright (c) 2020 TOSHIBA CORPORATION
+> > + * Copyright (c) 2020 Toshiba Electronic Devices & Storage Corporation
+> > + *
+> > + * Authors: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> > + *
+> > + */
+> > +
+> > +#include <linux/err.h>
+> > +#include <linux/io.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/pwm.h>
+> > +#include <linux/platform_device.h>
+> 
+> Should be sorted alphabetically.
+> 
 
-Greetings and thanks for your reply.
+I forgot it, I will fix.
 
-I am Janete moon but unfortunately, I 'm now an orphan,the only child 
-and
-Daughter of late Mr and Mrs Joseph moon, from Ivory Coast  Abidjan.
-I know it may have sounded very strange to you on why I contact you as
-you are a complete stranger to me and I must tell you this,
+> > +
+> > +#define PIPGM_PCSR(ch) (0x400 + 4 * (ch))
+> > +#define PIPGM_PDUT(ch) (0x420 + 4 * (ch))
+> > +#define PIPGM_PWMC(ch) (0x440 + 4 * (ch))
+> > +
+> > +#define PIPGM_PWMC_PWMACT		BIT(5)
+> > +#define PIPGM_PWMC_CLK_MASK		GENMASK(1, 0)
+> > +#define PIPGM_PWMC_POLARITY_MASK	GENMASK(5, 5)
+> > +
+> > +struct visconti_pwm_chip {
+> > +	struct pwm_chip chip;
+> > +	void __iomem *base;
+> > +};
+> > +
+> > +#define to_visconti_chip(chip) \
+> > +	container_of(chip, struct visconti_pwm_chip, chip)
+> 
+> I prefer these to be static inline functions because that tends to give
+> better error messages than macros. Also, that's what's primarily used in
+> the PWM drivers, even if there are a couple of outliers.
+> 
+> I'll go fix those up.
 
-It will be very difficult for me to get in touch with someone here
-who knows me because of the ugly circumstance that surrounds
-the demise of my lovely parents with whom my future ws looking
-very bright from all looks.
+I see. I will change to use static inline functions..
 
-My uncle conspired with my father's business rivals and poisoned my
-parents during a business lunch hour and their motive for eliminating
-them was to take over their businesses and inherit their wealth. In one 
-of
-their letter's that I stumbled into, they were asking my uncle to give
-them their own part of the deal so While reading that letter,
-I fainted and my uncle came in and caught me with the letter.
-I'm afraid that they might decide to kill me or poison me as they did
-to my parents in order to keep me silent for the evil they did to my
-beloved late parents. For safety, I decided to run away from the house.
-I'm now hiding in a neigbouring country called Burkina Faso.
+> 
+> > +
+> > +static int visconti_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> > +			      const struct pwm_state *state)
+> > +{
+> > +	struct visconti_pwm_chip *priv = to_visconti_chip(chip);
+> > +	u32 period, duty_cycle, pwmc0;
+> > +
+> > +	dev_dbg(chip->dev, "%s: ch = %d en = %d p = 0x%llx d = 0x%llx\n", __func__,
+> > +		pwm->hwpwm, state->enabled, state->period, state->duty_cycle);
+> 
+> Don't the trace points work for you?
 
-My purpose of contacting you is because I need to come to your country
-secretly so that my uncle will not know my where about. I got 
-information
-from my father before he died in the hospital about the secret fund
-(15.5 Million US Dollars only) he kept in a finance house here in
-Burkina Faso  West Africa.
+Yes, we can get this information by using the trace function. I will
+drop this.
 
-I have verified this with them before contacting you. I shall require 
-your help
-in transfering this money to your country for investment purpose like 
-buying of
-company shares,Real Estate Investment Trust funds,Jewels or Diamond,
-and to continue my studies from where I stopped as Immediately after the
-transfer I will come to live in your country.
+> 
+> > +
+> > +	/*
+> > +	 * pwmc is a 2-bit divider for the input clock running at 1 MHz.
+> > +	 * When the settings of the PWM are modified, the new values are shadowed in hardware until
+> > +	 * the period register (PCSR) is written and the currently running period is completed. This
+> > +	 * way the hardware switches atomically from the old setting to the new.
+> > +	 * Also, disabling the hardware completes the currently running period and keeps the output
+> > +	 * at low level at all times.
+> > +	 */
+> > +	if (!state->enabled) {
+> > +		writel(0, priv->base + PIPGM_PCSR(pwm->hwpwm));
+> > +		return 0;
+> > +	}
+> > +
+> > +	/*
+> > +	 * The biggest period the hardware can provide is
+> > +	 *	(0xffff << 3) * 1000 ns
+> > +	 * This value fits easily in an u32, so simplify the maths by
+> > +	 * capping the values to 32 bit integers.
+> > +	 */
+> > +	if (state->period > (0xffff << 3) * 1000)
+> > +		period = (0xffff << 3) * 1000;
+> > +	else
+> > +		period = state->period;
+> > +
+> > +	if (state->duty_cycle > period)
+> > +		duty_cycle = period;
+> > +	else
+> > +		duty_cycle = state->duty_cycle;
+> > +
+> > +	/*
+> > +	 * The input clock runs fixed at 1 MHz, so we have only
+> > +	 * microsecond resolution and so can divide by
+> > +	 * NSEC_PER_SEC / CLKFREQ = 1000 without loosing precision.
+> > +	 */
+> > +	period /= 1000;
+> > +	duty_cycle /= 1000;
+> > +
+> > +	if (!period)
+> > +		/* period too small */
+> > +		return -ERANGE;
+> 
+> Maybe braces around this so the two-line "block" doesn't look wrong,
+> even if it actually isn't. Or perhaps put the comment above the check
+> for the same effect.
 
-I will give you more information once I hear from you as I am in
-sincere desire of your humble assistance in this regard. Your
-suggestions and ideas will be highly welcomed and I am willing to
-offer you 15% of the total fund once it is transferred to your account
-.
+I see, it's readability.
 
-Now permit me to ask these few questions
+> 
+> Quite frankly, I'd just drop the comment because the code itself is
+> clear and the comment doesn't add anything.
 
-1. Can you honestly help me from your heart?
-2. Can I completely trust you?
+OK, I will drop this comment.
 
+> 
+> > +
+> > +	/*
+> > +	 * PWMC controls a divider that divides the input clk by a
+> > +	 * power of two between 1 and 8. As a smaller divider yields
+> > +	 * higher precision, pick the smallest possible one.
+> > +	 */
+> > +	if (period > 0xffff) {
+> > +		pwmc0 = ilog2(period >> 16);
+> > +		BUG_ON(pwmc0 > 3);
+> > +	} else
+> > +		pwmc0 = 0;
+> > +
+> > +	period >>= pwmc0;
+> > +	duty_cycle >>= pwmc0;
+> > +
+> > +	if (state->polarity == PWM_POLARITY_INVERSED)
+> > +		pwmc0 |= PIPGM_PWMC_PWMACT;
+> > +	writel(pwmc0, priv->base + PIPGM_PWMC(pwm->hwpwm));
+> > +	writel(duty_cycle, priv->base + PIPGM_PDUT(pwm->hwpwm));
+> > +	writel(period, priv->base + PIPGM_PCSR(pwm->hwpwm));
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void visconti_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
+> > +				   struct pwm_state *state)
+> > +{
+> > +	struct visconti_pwm_chip *priv = to_visconti_chip(chip);
+> > +	u32 period, duty, pwmc0, pwmc0_clk;
+> > +
+> > +	period = readl(priv->base + PIPGM_PCSR(pwm->hwpwm));
+> > +	if (period)
+> > +		state->enabled = true;
+> > +	else
+> > +		state->enabled = false;
+> > +
+> > +	duty = readl(priv->base + PIPGM_PDUT(pwm->hwpwm));
+> > +	pwmc0 = readl(priv->base + PIPGM_PWMC(pwm->hwpwm));
+> > +	pwmc0_clk = pwmc0 & PIPGM_PWMC_CLK_MASK;
+> > +
+> > +	state->period = (period << pwmc0_clk) * NSEC_PER_USEC;
+> > +	state->duty_cycle = (duty << pwmc0_clk) * NSEC_PER_USEC;
+> > +	if (pwmc0 & PIPGM_PWMC_POLARITY_MASK)
+> > +		state->polarity = PWM_POLARITY_INVERSED;
+> > +	else
+> > +		state->polarity = PWM_POLARITY_NORMAL;
+> > +}
+> > +
+> > +static const struct pwm_ops visconti_pwm_ops = {
+> > +	.apply = visconti_pwm_apply,
+> > +	.get_state = visconti_pwm_get_state,
+> > +	.owner = THIS_MODULE,
+> > +};
+> > +
+> > +static int visconti_pwm_probe(struct platform_device *pdev)
+> > +{
+> > +	struct device *dev = &pdev->dev;
+> > +	struct visconti_pwm_chip *priv;
+> > +	int ret;
+> > +
+> > +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> > +	if (!priv)
+> > +		return -ENOMEM;
+> > +
+> > +	priv->base = devm_platform_ioremap_resource(pdev, 0);
+> > +	if (IS_ERR(priv->base))
+> > +		return PTR_ERR(priv->base);
+> > +
+> > +	platform_set_drvdata(pdev, priv);
+> > +
+> > +	priv->chip.dev = dev;
+> > +	priv->chip.ops = &visconti_pwm_ops;
+> > +	priv->chip.base = -1;
+> 
+> There's no need for this anymore. The current PWM tree will always
+> assume base = -1.
 
-Thank you and God bless.
-Yours affectionately
-Miss. Janete moon.
+I see. I will drop this.
+
+> 
+> > +	priv->chip.npwm = 4;
+> > +
+> > +	ret = pwmchip_add(&priv->chip);
+> > +	if (ret < 0)
+> > +		return dev_err_probe(&pdev->dev, ret, "Cannot register visconti PWM\n");
+> > +
+> > +	dev_dbg(&pdev->dev, "visconti PWM registered\n");
+> 
+> Maybe not the best use of a debug message. There are better ways to
+> check if a device has successfully bound to a driver than relying on
+> debug messages.
+
+I will drop this line. it says there are better way to check, but what is it?
+
+> 
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int visconti_pwm_remove(struct platform_device *pdev)
+> > +{
+> > +	struct visconti_pwm_chip *priv = platform_get_drvdata(pdev);
+> > +
+> > +	return pwmchip_remove(&priv->chip);
+> 
+> I think Uwe would prefer this to be done separately because he's working
+> towards removing the return value from pwmchip_remove() and if we start
+> ignoring it in new drivers that will make life easier going forward.
+> 
+> So this should just be:
+> 
+> 	pwmchip_remove(&priv->chip);
+> 
+> 	return 0;
+
+I understand your suggestion.
+However, it looks like the pwmchip_remove() hasn't been updated yet.
+I will wait for the update of pwmchip_remove.
+
+> 
+> Thierry
+
+Best regards,
+  Nobuhiro
