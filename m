@@ -2,171 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E4E359260
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACE535926E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233171AbhDIDBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:01:48 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16058 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232933AbhDIDBr (ORCPT
+        id S233236AbhDIDDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233153AbhDIDDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:01:47 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGjWT681rzPpHV;
-        Fri,  9 Apr 2021 10:58:45 +0800 (CST)
-Received: from [10.174.179.9] (10.174.179.9) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 11:01:28 +0800
-Subject: Re: [PATCH 3/4] mm/hugeltb: fix potential wrong gbl_reserve value for
- hugetlb_acct_memory()
-To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
-CC:     <n-horiguchi@ah.jp.nec.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210402093249.25137-1-linmiaohe@huawei.com>
- <20210402093249.25137-4-linmiaohe@huawei.com>
- <20afccd5-2bc4-9db9-695e-dd6175b0b42b@oracle.com>
- <1311fcfe-bc5f-e878-3912-ca9a9e0eed90@huawei.com>
- <ecd3e4c9-1add-c304-5f26-7e34e5e6494c@oracle.com>
- <ddec1fba-25ea-ebb3-fb87-41671db5cb92@huawei.com>
- <0ebaa062-80e8-b380-c02e-7eb72e67f973@huawei.com>
- <90188b1a-a206-5586-2da9-683f7537f960@oracle.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <8dfe32a3-1789-6a40-b650-304c2cfb6531@huawei.com>
-Date:   Fri, 9 Apr 2021 11:01:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 8 Apr 2021 23:03:24 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 657A5C061761;
+        Thu,  8 Apr 2021 20:03:12 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id i25-20020a4aa1190000b02901bbd9429832so1026847ool.0;
+        Thu, 08 Apr 2021 20:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b5jzvm1TkxrqBLNEIG6q7Y2Z+t2I7/nQYypifdCCGdE=;
+        b=UVmuotY1CFUNf09XV4Nmp7kYFh4TOMlQCTIgOPJyMGaqQS8pl0i2scWwot7aJxWFu9
+         Y9QqvVTPRRZPbouThjWuSr33Sj0bIt2xecymayeMQY1m5y/29BNZJhFjwN+cU8GcCTOh
+         0xY++LPPH2T4bR785aA4fNLpL5gT/NqQnS603gVVKI0b2FzFhjq0HKhcLcsRnOLDEGTw
+         INcggpEdMu2BMlYF5mx/EuDFKy/I4dcZUhhxkmHJDOXCkFWJFqH5oAZmIdEGD2e+Nnx6
+         36SI+IyHrGlR0pGR26x+0OVzjbnIA86nXN3QvY/jjwwJo3aOxpvoIKmOXV/A0wcGZcUx
+         CsfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=b5jzvm1TkxrqBLNEIG6q7Y2Z+t2I7/nQYypifdCCGdE=;
+        b=a1ggJw7jkKTKQbRSWjzldzTyup6XbV40Z0hkSlWr3mRm5ueoVi2nAWWmpbTUaVSCrV
+         dzcXI8y8UQRNev3oroa/VyZSHph8n3hdTSkVuALu0y1+hOkmFvIFbrguVAJRXMbDaH10
+         YTlliDxmiSmRuP3EvhugZfS0V3I02apCRBbvVZWvaGnEv8P66I5lEgB/ReuXHLelmg4V
+         9cW/hobUlNQ5TxI9Db7owmb+2Kj26b5ivfoauf8g4Fzjaz72y8Ekdr2ZydnA75pryhTx
+         o3wF6rYpTflxRkzW3bR7u2/ZABFjZioxuu4nSA+By1BXtgU0mjzDWrco7fjtPpR9SdmB
+         0R9g==
+X-Gm-Message-State: AOAM530Ww5VLA/Wvo9jFdlLlCxBYNzO5/F7kiT/XksUnavopbJHHkECO
+        EQHhrf5okYp6Z9Ew68pgB3ZD7UTInO4k/eVuTGM=
+X-Google-Smtp-Source: ABdhPJyU3w7bOSbj802Bq0sGLVZBDN0iH4QBVraQl45rJJkyW7MD97IbKIFXV2CGqTEIhWjYZvyaifZ5L7sKCv/F63U=
+X-Received: by 2002:a4a:395d:: with SMTP id x29mr10171748oog.41.1617937391914;
+ Thu, 08 Apr 2021 20:03:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <90188b1a-a206-5586-2da9-683f7537f960@oracle.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.9]
-X-CFilter-Loop: Reflected
+References: <1617785588-18722-1-git-send-email-wanpengli@tencent.com> <YG9ln4d0tm4acVdG@google.com>
+In-Reply-To: <YG9ln4d0tm4acVdG@google.com>
+From:   Wanpeng Li <kernellwp@gmail.com>
+Date:   Fri, 9 Apr 2021 11:03:00 +0800
+Message-ID: <CANRm+Cx-tfomRgV-QbyfvZZ7g7HBskm+p97zifUS8C0bdZyR8w@mail.gmail.com>
+Subject: Re: [PATCH] x86/kvm: Don't alloc __pv_cpu_mask when !CONFIG_SMP
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/9 6:53, Mike Kravetz wrote:
-> On 4/7/21 8:26 PM, Miaohe Lin wrote:
->> On 2021/4/8 11:24, Miaohe Lin wrote:
->>> On 2021/4/8 4:53, Mike Kravetz wrote:
->>>> On 4/7/21 12:24 AM, Miaohe Lin wrote:
->>>>> Hi:
->>>>> On 2021/4/7 10:49, Mike Kravetz wrote:
->>>>>> On 4/2/21 2:32 AM, Miaohe Lin wrote:
->>>>>>> The resv_map could be NULL since this routine can be called in the evict
->>>>>>> inode path for all hugetlbfs inodes. So we could have chg = 0 and this
->>>>>>> would result in a negative value when chg - freed. This is unexpected for
->>>>>>> hugepage_subpool_put_pages() and hugetlb_acct_memory().
->>>>>>
->>>>>> I am not sure if this is possible.
->>>>>>
->>>>>> It is true that resv_map could be NULL.  However, I believe resv map
->>>>>> can only be NULL for inodes that are not regular or link inodes.  This
->>>>>> is the inode creation code in hugetlbfs_get_inode().
->>>>>>
->>>>>>        /*
->>>>>>          * Reserve maps are only needed for inodes that can have associated
->>>>>>          * page allocations.
->>>>>>          */
->>>>>>         if (S_ISREG(mode) || S_ISLNK(mode)) {
->>>>>>                 resv_map = resv_map_alloc();
->>>>>>                 if (!resv_map)
->>>>>>                         return NULL;
->>>>>>         }
->>>>>>
->>>>>
->>>>> Agree.
->>>>>
->>>>>> If resv_map is NULL, then no hugetlb pages can be allocated/associated
->>>>>> with the file.  As a result, remove_inode_hugepages will never find any
->>>>>> huge pages associated with the inode and the passed value 'freed' will
->>>>>> always be zero.
->>>>>>
->>>>>
->>>>> But I am confused now. AFAICS, remove_inode_hugepages() searches the address_space of
->>>>> the inode to remove the hugepages while does not care if inode has associated resv_map.
->>>>> How does it prevent hugetlb pages from being allocated/associated with the file if
->>>>> resv_map is NULL? Could you please explain this more?
->>>>>
->>>>
->>>> Recall that there are only two ways to get huge pages associated with
->>>> a hugetlbfs file: fallocate and mmap/write fault.  Directly writing to
->>>> hugetlbfs files is not supported.
->>>>
->>>> If you take a closer look at hugetlbfs_get_inode, it has that code to
->>>> allocate the resv map mentioned above as well as the following:
->>>>
->>>> 		switch (mode & S_IFMT) {
->>>> 		default:
->>>> 			init_special_inode(inode, mode, dev);
->>>> 			break;
->>>> 		case S_IFREG:
->>>> 			inode->i_op = &hugetlbfs_inode_operations;
->>>> 			inode->i_fop = &hugetlbfs_file_operations;
->>>> 			break;
->>>> 		case S_IFDIR:
->>>> 			inode->i_op = &hugetlbfs_dir_inode_operations;
->>>> 			inode->i_fop = &simple_dir_operations;
->>>>
->>>> 			/* directory inodes start off with i_nlink == 2 (for "." entry) */
->>>> 			inc_nlink(inode);
->>>> 			break;
->>>> 		case S_IFLNK:
->>>> 			inode->i_op = &page_symlink_inode_operations;
->>>> 			inode_nohighmem(inode);
->>>> 			break;
->>>> 		}
->>>>
->>>> Notice that only S_IFREG inodes will have i_fop == &hugetlbfs_file_operations.
->>>> hugetlbfs_file_operations contain the hugetlbfs specific mmap and fallocate
->>>> routines.  Hence, only files with S_IFREG inodes can potentially have
->>>> associated huge pages.  S_IFLNK inodes can as well via file linking.
->>>>
->>>> If an inode is not S_ISREG(mode) || S_ISLNK(mode), then it will not have
->>>> a resv_map.  In addition, it will not have hugetlbfs_file_operations and
->>>> can not have associated huge pages.
->>>>
->>>
->>> Many many thanks for detailed and patient explanation! :) I think I have got the idea!
->>>
->>>> I looked at this closely when adding commits
->>>> 58b6e5e8f1ad hugetlbfs: fix memory leak for resv_map
->>>> f27a5136f70a hugetlbfs: always use address space in inode for resv_map pointer
->>>>
->>>> I may not be remembering all of the details correctly.  Commit f27a5136f70a
->>>> added the comment that resv_map could be NULL to hugetlb_unreserve_pages.
->>>>
->>>
->>> Since we must have freed == 0 while chg == 0. Should we make this assumption explict
->>> by something like below?
->>>
->>> WARN_ON(chg < freed);
->>>
->>
->> Or just a comment to avoid confusion ?
->>
-> 
-> Yes, add a comment to hugetlb_unreserve_pages saying that !resv_map
-> implies freed == 0.
-> 
+On Fri, 9 Apr 2021 at 04:20, Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Wed, Apr 07, 2021, Wanpeng Li wrote:
+> > From: Wanpeng Li <wanpengli@tencent.com>
+> >
+> > Enable PV TLB shootdown when !CONFIG_SMP doesn't make sense. Let's move
+> > it inside CONFIG_SMP. In addition, we can avoid alloc __pv_cpu_mask when
+> > !CONFIG_SMP and get rid of 'alloc' variable in kvm_alloc_cpumask.
+>
+> ...
+>
+> > +static bool pv_tlb_flush_supported(void) { return false; }
+> > +static bool pv_ipi_supported(void) { return false; }
+> > +static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+> > +                     const struct flush_tlb_info *info) { }
+> > +static void kvm_setup_pv_ipi(void) { }
+>
+> If you shuffle things around a bit more, you can avoid these stubs, and hide the
+> definition of __pv_cpu_mask behind CONFIG_SMP, too.
 
-Sounds good!
+Thanks, I will move around.
 
-> It would also be helpful to check for (chg - freed) == 0 and skip the
-> calls to hugepage_subpool_put_pages() and hugetlb_acct_memory().  Both
-> of those routines may perform an unnecessary lock/unlock cycle in this
-> case.
-> 
-> A simple
-> 	if (chg == free)
-> 		return 0;
-> before the call to hugepage_subpool_put_pages would work.
-
-This may not be really helpful because hugepage_subpool_put_pages() and hugetlb_acct_memory()
-both would handle delta == 0 case without unnecessary lock/unlock cycle.
-Does this make sense for you? If so, I will prepare v2 with the changes to add a comment
-to hugetlb_unreserve_pages() __without__ the check for (chg - freed) == 0.
-
-Many thanks!
+    Wanpeng
