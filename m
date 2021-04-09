@@ -2,137 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BA1359251
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E79D3592BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhDIC7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 22:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232808AbhDIC7B (ORCPT
+        id S233220AbhDIDNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:13:19 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:56373 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233147AbhDIDNQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 22:59:01 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2A9C061760;
-        Thu,  8 Apr 2021 19:58:49 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id l4so6267131ejc.10;
-        Thu, 08 Apr 2021 19:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4pkGmtByhP2aITlEGQOOUqZPg4jAB0GZ7xHME3a0oG8=;
-        b=XYs+D88PW716AZsRNzTFVJE/vNwOFR5G9+5w5XxQ2KToz15ouNopihw8Db2upVuyIs
-         w66/4ue5dcecuWjFySN8Esz4VwhuHy1SngZ+59/fbNbTBQdsR6ZQ46q1cb5sxWis3/EV
-         4gfWP9noIWbh/Y9u+Ao+Lqs96DX9ojo7F0sUQ+tMhl2Xd6m/tq+9E4cp1bjLORcg1WeM
-         NUdcdVUQPlpl7fzZ4Vj/arg6lhMlgLPNoPd+GHROfDZRC/rgjLsuzrnb57pZpfGWK0R7
-         tggBoMn3dm5vJkLCKmsxIluTQOwkXMl7B3aHDD55DRf4NOJYZjENr8b6pro6t0d2RYXb
-         +Umg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4pkGmtByhP2aITlEGQOOUqZPg4jAB0GZ7xHME3a0oG8=;
-        b=kBPjzJmD+frhUNbV8crT9TsHIDi8r64S7xLrLNbxYjBdc7yX0X9pUEzMAk/mg9JsfN
-         4bAMerckuQSBoUxrz6gibvaioGbh8YPaQVrqVgEhYOSmS4/lkG5oWOvtciLdUUG6TRn9
-         6gOPROPqQr2bh3SeM7pjdQvN1YKuv5CcuScgWDeuCOWVTBMDE0jiilQnmbzjZ4pxasJ2
-         XFEfuLI4rLbp7yGBajxHiDvMMnjalZc+30swIggOmPC2j+jCJHUvSBluZKbqnyvYrLLe
-         FZMocXpWH1Wb9rxjHa6YXxDE44rX1EY+EKJuACqzevWnXjf1Xp5T2WmOPI7Gudgdv814
-         Z+vQ==
-X-Gm-Message-State: AOAM530ABW00xNbQ4yF8ClAicHzgDHGaVSFKxNr8nv/b5A2oslHi3nbf
-        MbBGSlBy3PAaXm2GNNZPm61BokXrv+jzTOhzqfw=
-X-Google-Smtp-Source: ABdhPJzJ0UMFIY53EPDqrsp+nc23um/q3LkzIXPtNrhndZCAylUcQNtkArw/PJ0FDp0N8zHHQkRGziTjfmQq2DG8K9Q=
-X-Received: by 2002:a17:906:f283:: with SMTP id gu3mr13849081ejb.91.1617937127899;
- Thu, 08 Apr 2021 19:58:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210408140824.62010-1-lujialin4@huawei.com> <20210409022519.176988-1-lujialin4@huawei.com>
-In-Reply-To: <20210409022519.176988-1-lujialin4@huawei.com>
-From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date:   Fri, 9 Apr 2021 11:58:36 +0900
-Message-ID: <CAKFNMom6T1vDoS+ojD9rKgMGThU9AVK1ZH+5zxREo8xc+cwvkQ@mail.gmail.com>
-Subject: Re: [PATCH v2 -next] nilfs2: Fix typos in comments
-To:     Lu Jialin <lujialin4@huawei.com>
-Cc:     James Morris <jamorris@linux.microsoft.com>,
-        Xiu Jianfeng <xiujianfeng@huawei.com>,
-        Xiang Yang <xiangyang3@huawei.com>,
-        Wang Weiyang <wangweiyang2@huawei.com>,
-        Cui GaoSheng <cuigaosheng1@huawei.com>,
-        Gong Ruiqi <gongruiqi1@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-nilfs <linux-nilfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 8 Apr 2021 23:13:16 -0400
+Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210409031302epoutp04e041373e7d4871aa77b1955e52a208f0~0EgXmxBUW0698806988epoutp04e
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 03:13:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210409031302epoutp04e041373e7d4871aa77b1955e52a208f0~0EgXmxBUW0698806988epoutp04e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1617937982;
+        bh=W56ar/RkCbAlY+agUi8Yd9X8F+LYYJguXbtIXgcqiOQ=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=lvHAhB/BpIhDUT8TU0bQMtmC2glwg547zywjiFMmBxt7zSbZEWfMSgxzfuiQ0STOv
+         uBCL/WfpDKgQrGkb0rVKtKiBkGkFdVtiPr2hA/sY9w1K+1WZpZDl1LJaPqzmgLr+Mj
+         BU7OGSEtDwJD3c9V5o2xsyUWlkHSoOwVO2V1A3gk=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas3p4.samsung.com (KnoxPortal) with ESMTP id
+        20210409031301epcas3p472d94ea873f2bd32cf6e09b8e8913909~0EgWzy-Xa3080730807epcas3p48;
+        Fri,  9 Apr 2021 03:13:01 +0000 (GMT)
+Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp4.localdomain
+        (Postfix) with ESMTP id 4FGjqx4pV3z4x9Q1; Fri,  9 Apr 2021 03:13:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: [PATCH v17 1/2] scsi: ufs: Enable power management for wlun
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "cang@codeaurora.org" <cang@codeaurora.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+CC:     Asutosh Das <asutoshd@codeaurora.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Pedro Sousa <pedrom.sousa@synopsys.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Bean Huo <beanhuo@micron.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Yue Hu <huyue2@yulong.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <1b3d53dad245a7166f3f67a4c65f3a731e6600b3.1617893198.git.asutoshd@codeaurora.org>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01617937981650.JavaMail.epsvc@epcpadp4>
+Date:   Fri, 09 Apr 2021 11:27:31 +0900
+X-CMS-MailID: 20210409022731epcms2p117b1a94665375910a2f9b6265acdb0fb
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210408145007epcas2p1accfbd653b2e1318b2722c1f5661c1e0
+References: <1b3d53dad245a7166f3f67a4c65f3a731e6600b3.1617893198.git.asutoshd@codeaurora.org>
+        <cover.1617893198.git.asutoshd@codeaurora.org>
+        <CGME20210408145007epcas2p1accfbd653b2e1318b2722c1f5661c1e0@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you.  Will apply this.
+Hi Asutosh Das,
 
-Ryusuke Konishi
+>During runtime-suspend of ufs host, the scsi devices are
+>already suspended and so are the queues associated with them.
+>But the ufs host sends SSU (START_STOP_UNIT) to wlun
+>during its runtime-suspend.
+>During the process blk_queue_enter checks if the queue is not in
+>suspended state. If so, it waits for the queue to resume, and never
+>comes out of it.
+>The commit
+>(d55d15a33: scsi: block: Do not accept any requests while suspended)
+>adds the check if the queue is in suspended state in blk_queue_enter().
+> 
+>Call trace:
+> __switch_to+0x174/0x2c4
+> __schedule+0x478/0x764
+> schedule+0x9c/0xe0
+> blk_queue_enter+0x158/0x228
+> blk_mq_alloc_request+0x40/0xa4
+> blk_get_request+0x2c/0x70
+> __scsi_execute+0x60/0x1c4
+> ufshcd_set_dev_pwr_mode+0x124/0x1e4
+> ufshcd_suspend+0x208/0x83c
+> ufshcd_runtime_suspend+0x40/0x154
+> ufshcd_pltfrm_runtime_suspend+0x14/0x20
+> pm_generic_runtime_suspend+0x28/0x3c
+> __rpm_callback+0x80/0x2a4
+> rpm_suspend+0x308/0x614
+> rpm_idle+0x158/0x228
+> pm_runtime_work+0x84/0xac
+> process_one_work+0x1f0/0x470
+> worker_thread+0x26c/0x4c8
+> kthread+0x13c/0x320
+> ret_from_fork+0x10/0x18
+> 
+>Fix this by registering ufs device wlun as a scsi driver and
+>registering it for block runtime-pm. Also make this as a
+>supplier for all other luns. That way, this device wlun
+>suspends after all the consumers and resumes after
+>hba resumes.
+> 
+>Co-developed-by: Can Guo <cang@codeaurora.org>
+>Signed-off-by: Can Guo <cang@codeaurora.org>
+>Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>---
+> drivers/scsi/ufs/cdns-pltfrm.c     |   2 +
+> drivers/scsi/ufs/tc-dwc-g210-pci.c |   2 +
+> drivers/scsi/ufs/ufs-debugfs.c     |   6 +-
+> drivers/scsi/ufs/ufs-debugfs.h     |   2 +-
+> drivers/scsi/ufs/ufs-exynos.c      |   2 +
+> drivers/scsi/ufs/ufs-hisi.c        |   2 +
+> drivers/scsi/ufs/ufs-mediatek.c    |  12 +-
+> drivers/scsi/ufs/ufs-qcom.c        |   2 +
+> drivers/scsi/ufs/ufs_bsg.c         |   6 +-
+> drivers/scsi/ufs/ufshcd-pci.c      |  36 +--
+> drivers/scsi/ufs/ufshcd.c          | 642 ++++++++++++++++++++++++++-----------
+> drivers/scsi/ufs/ufshcd.h          |   6 +
+> include/trace/events/ufs.h         |  20 ++
+> 13 files changed, 509 insertions(+), 231 deletions(-)
 
-On Fri, Apr 9, 2021 at 11:25 AM Lu Jialin <lujialin4@huawei.com> wrote:
->
-> numer -> number in fs/nilfs2/cpfile.c
-> Decription -> Description in fs/nilfs2/ioctl.c
-> isntance -> instance in fs/nilfs2/the_nilfs.c
->
-> Signed-off-by: Lu Jialin <lujialin4@huawei.com>
-> ---
-> v2:
-> Exclude two typo fixes of "retured -> returned", which has been fixed in
-> previous patch.
->  fs/nilfs2/cpfile.c    | 2 +-
->  fs/nilfs2/ioctl.c     | 4 ++--
->  fs/nilfs2/the_nilfs.c | 2 +-
->  3 files changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/fs/nilfs2/cpfile.c b/fs/nilfs2/cpfile.c
-> index 025fb082575a..ce144776b4ef 100644
-> --- a/fs/nilfs2/cpfile.c
-> +++ b/fs/nilfs2/cpfile.c
-> @@ -293,7 +293,7 @@ void nilfs_cpfile_put_checkpoint(struct inode *cpfile, __u64 cno,
->   * nilfs_cpfile_delete_checkpoints - delete checkpoints
->   * @cpfile: inode of checkpoint file
->   * @start: start checkpoint number
-> - * @end: end checkpoint numer
-> + * @end: end checkpoint number
->   *
->   * Description: nilfs_cpfile_delete_checkpoints() deletes the checkpoints in
->   * the period from @start to @end, excluding @end itself. The checkpoints
-> diff --git a/fs/nilfs2/ioctl.c b/fs/nilfs2/ioctl.c
-> index b053b40315bf..d1db73030085 100644
-> --- a/fs/nilfs2/ioctl.c
-> +++ b/fs/nilfs2/ioctl.c
-> @@ -1058,7 +1058,7 @@ static int nilfs_ioctl_resize(struct inode *inode, struct file *filp,
->   * @inode: inode object
->   * @argp: pointer on argument from userspace
->   *
-> - * Decription: nilfs_ioctl_trim_fs is the FITRIM ioctl handle function. It
-> + * Description: nilfs_ioctl_trim_fs is the FITRIM ioctl handle function. It
->   * checks the arguments from userspace and calls nilfs_sufile_trim_fs, which
->   * performs the actual trim operation.
->   *
-> @@ -1100,7 +1100,7 @@ static int nilfs_ioctl_trim_fs(struct inode *inode, void __user *argp)
->   * @inode: inode object
->   * @argp: pointer on argument from userspace
->   *
-> - * Decription: nilfs_ioctl_set_alloc_range() function defines lower limit
-> + * Description: nilfs_ioctl_set_alloc_range() function defines lower limit
->   * of segments in bytes and upper limit of segments in bytes.
->   * The NILFS_IOCTL_SET_ALLOC_RANGE is used by nilfs_resize utility.
->   *
-> diff --git a/fs/nilfs2/the_nilfs.c b/fs/nilfs2/the_nilfs.c
-> index 221a1cc597f0..8b7b01a380ce 100644
-> --- a/fs/nilfs2/the_nilfs.c
-> +++ b/fs/nilfs2/the_nilfs.c
-> @@ -195,7 +195,7 @@ static int nilfs_store_log_cursor(struct the_nilfs *nilfs,
->  /**
->   * load_nilfs - load and recover the nilfs
->   * @nilfs: the_nilfs structure to be released
-> - * @sb: super block isntance used to recover past segment
-> + * @sb: super block instance used to recover past segment
->   *
->   * load_nilfs() searches and load the latest super root,
->   * attaches the last segment, and does recovery if needed.
-> --
-> 2.17.1
->
+In this patch, you changed pm_runtime_{get, put}_sync to scsi_autopm_{get, put}_device.
+But, scsi_autopm_get_device() calls pm_runtime_put_sync() in case of error
+of pm_runtime_get_sync(). So, pm_runtime_put_sync() can be called twice if
+scsi_autopm_get_device has error.
+
+Thanks,
+Daejun
+
