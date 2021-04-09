@@ -2,74 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD11135A077
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:00:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D6935A094
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhDIOAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:00:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48630 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231127AbhDIOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:00:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B10A61105;
-        Fri,  9 Apr 2021 13:59:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617976788;
-        bh=aNHzWSjtlbHWhZmEp79W5Ym13lGIg/GnzFxAQTVFo5Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B2jVLsPHwCUjchkzZ9Egps92NCJbqFbcJYW+C3nEqt1Mey5b8+moq8iAysOu6fVUb
-         P0SnKqlVB3uCcnmAYHu2m5m2qxTW7wjqvm9QGody2/2ckbJiG/eF0DeECnfvUcV7pz
-         Kp7Lwkdt5fXLc/SGHpYeiUr4uIKo5WGdoB5ZGHWU6p5l1Rj5x6lM4RsFzO0HyCSIRy
-         ZcZlW1Qz4euMIod+47f5301aiuvx2JzEuiwJPelKPpaSatGlj+CJGF+LFVXnk6dF44
-         SPQk0HoY2t3gq4uRLWyPQMTjOb0fDTx41Cc5pt5/XIrzgVRoVI3pYeEFgSd3ks5uI+
-         EUNKMV0xjBPBQ==
-Date:   Fri, 9 Apr 2021 19:29:43 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Jarvis Jiang <jarvis.w.jiang@gmail.com>
-Cc:     hemantk@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, cchen50@lenovo.com,
-        mpearson@lenovo.com
-Subject: Re: [PATCH 2/2] bus: mhi: fix typo in comments for struct
- mhi_channel_config
-Message-ID: <20210409135943.GE31856@work>
-References: <20210408100220.3853-1-jarvis.w.jiang@gmail.com>
+        id S233900AbhDIOBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:01:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233824AbhDIOB1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 10:01:27 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C7AC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 07:01:13 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id c17so4310608pfn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 07:01:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6eCIOZtRskFd5iRZl3iLyX27/3QMWpN7siJJcos95N4=;
+        b=o3gxix8Uk8CY+/8UAMDuUSsRxf+63cR1Vmx6mChO/Mq3XMk8NtMKzJ2SXX12mcRn12
+         qjsSbp0a3jeZZCKplrzaN04O/ObIyn2LjGYbAIzg4bD8PMeXRT26lBN10ynxandU4xGe
+         hNFoX3qupZWBjNzF2oZdx4Gg7k2qLOQa4DomFGvz2reginXttxo8elg8uMbu37YmZCsM
+         T2+nj323H9lmUuJLEPs7xolii/0EeFnGD5vCQzYe+FfXXxtASu/N6ZqDgwiLpqTCwAnX
+         j6UG6apDPX/nAGshHbFFujCbt27HmzYsU38LiU6Pq5ZginzsKVW89M4CJX/Cz5SyiFVF
+         yKOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6eCIOZtRskFd5iRZl3iLyX27/3QMWpN7siJJcos95N4=;
+        b=bP343gJjMh9JCdd8p2PVoBdii9L3KSKHpa9+jeOs5ydArFaAZotTnSCb1rUHHubjwW
+         VmpQ5RXNSpj6ipksDR8NzB8zwoAfOob/U6oaYtGPZ5f2P2G2ET5zWvirGhZq2gfaM6Z3
+         Ly5si+9MRz8jXK3eqvssyHVBNVXpVtVlRheQOXfse6I6ThFF5eouOgHkO9SZJm4dhNfp
+         OUo7gruJxBuq5KY6F8cEwufFQH6DPPLTR6dE23KxBvZP2lWK/uKgGHo+Ykz5oCh145dy
+         AdSnz4nGCpb44GdtmnQDdcQz6ewEQ6Wi5vVsRMSvT/6LJGerBzCy0VyaBolhS1BoLZB2
+         uC1w==
+X-Gm-Message-State: AOAM533rLCOJBEg4yQB8YGp4WEk7WPRO+fwrwGCe8wrEWt11Ubp5V8zv
+        FZXe23IYrzHBCPXNIjrK2XqFsA435c3Aig==
+X-Google-Smtp-Source: ABdhPJy/2ByF3EcSkPJZxhmKSWKRQXNCBWC/tLgJexjTC89PuC14Kd11uQuIc0y8x2ivfSr+f94ZtQ==
+X-Received: by 2002:a63:cb44:: with SMTP id m4mr13402369pgi.4.1617976873031;
+        Fri, 09 Apr 2021 07:01:13 -0700 (PDT)
+Received: from [192.168.4.41] (cpe-72-132-29-68.dc.res.rr.com. [72.132.29.68])
+        by smtp.gmail.com with ESMTPSA id t184sm2862124pgt.32.2021.04.09.07.01.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 07:01:12 -0700 (PDT)
+Subject: Re: [PATCH v2] ata: ahci_tegra: call tegra_powergate_power_off only
+ when PM domain is not present
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        thierry.reding@gmail.com, digetx@gmail.com
+Cc:     jonathanh@nvidia.com, linux-ide@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1617915315-13639-1-git-send-email-skomatineni@nvidia.com>
+ <1617915315-13639-2-git-send-email-skomatineni@nvidia.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6dc52280-03fd-f9f9-5fab-6683dbcaf256@kernel.dk>
+Date:   Fri, 9 Apr 2021 08:01:10 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408100220.3853-1-jarvis.w.jiang@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1617915315-13639-2-git-send-email-skomatineni@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 03:02:20AM -0700, Jarvis Jiang wrote:
-> The word 'rung' is a typo in below comment, fix it.
-> * @event_ring: The event rung index that services this channel
-> 
-> Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
+On 4/8/21 2:55 PM, Sowjanya Komatineni wrote:
+> This patch adds check to call legacy power domain API
+> tegra_powergate_power_off() only when PM domain is not present.
 
-Applied to mhi-next!
+Applied, and added a Fixes line.
 
-Thanks,
-Mani
+-- 
+Jens Axboe
 
-> ---
->  include/linux/mhi.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index d095fba37d1e..944aa3aa3035 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -205,7 +205,7 @@ enum mhi_db_brst_mode {
->   * @num: The number assigned to this channel
->   * @num_elements: The number of elements that can be queued to this channel
->   * @local_elements: The local ring length of the channel
-> - * @event_ring: The event rung index that services this channel
-> + * @event_ring: The event ring index that services this channel
->   * @dir: Direction that data may flow on this channel
->   * @type: Channel type
->   * @ee_mask: Execution Environment mask for this channel
-> -- 
-> 2.25.1
-> 
