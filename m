@@ -2,142 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A591E3597EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2718B3597E7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229751AbhDIIdE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 9 Apr 2021 04:33:04 -0400
-Received: from p3plsmtpa08-05.prod.phx3.secureserver.net ([173.201.193.106]:60450
-        "EHLO p3plsmtpa08-05.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229846AbhDIIdD (ORCPT
+        id S230467AbhDIIb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:31:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54936 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229696AbhDIIbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:33:03 -0400
-X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 04:33:03 EDT
-Received: from mail-ua1-f43.google.com ([209.85.222.43])
-        by :SMTPAUTH: with ESMTPSA
-        id UmSJlmz76gBqPUmSJlVyXw; Fri, 09 Apr 2021 01:25:31 -0700
-X-CMAE-Analysis: v=2.4 cv=GpeHRm5C c=1 sm=1 tr=0 ts=60700f7b
- a=p3QOco+7hGoYrtPqiBtjvA==:117 a=IkcTkHD0fZMA:10 a=MKtGQD3n3ToA:10
- a=3YhXtTcJ-WEA:10 a=pFd2Zl5z2vwA:10 a=ZZnuYtJkoWoA:10 a=pGLkceISAAAA:8
- a=OLL_FvSJAAAA:8 a=4RBUngkUAAAA:8 a=1XWaLZrsAAAA:8 a=AFfvQUj85srtwFEc7eAA:9
- a=QEXdDO2ut3YA:10 a=cDyXFGGuxjcA:10 a=z54qQdpIc_cA:10 a=Wv7ntmRM1ZwA:10
- a=wqjlRBnl_XkA:10 a=bt_fcZFKdygA:10 a=oIrB72frpwYPwTMnlWqB:22
- a=_sbA2Q-Kp09kWB8D3iXc:22
-X-SECURESERVER-ACCT: vthakkar@vaishalithakkar.in
-Received: by mail-ua1-f43.google.com with SMTP id s2so1582243uap.1;
-        Fri, 09 Apr 2021 01:25:31 -0700 (PDT)
-X-Gm-Message-State: AOAM530BFnz7P314On7WBAYSipTwrMGhM9xTgsd73VedtFmMf6oG2+nI
-        GTbIfrGmwOF75IzF+GTyeExpsf7usG8/cQPA/tc=
-X-Google-Smtp-Source: ABdhPJyROeFMY/XO5ctTLI5Jn1Ao8OxqdGhQ7Q8oaXRUimPF9Nqz3PbviDZ1RbUpXtHuk0VguihwD7T9pLGGYqXwbMI=
-X-Received: by 2002:ab0:2819:: with SMTP id w25mr9917224uap.76.1617956730971;
- Fri, 09 Apr 2021 01:25:30 -0700 (PDT)
+        Fri, 9 Apr 2021 04:31:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617957093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ckiaDadLI3Q36uJmnyF8zVs1VJKNRCw3jjdFa+zQU9E=;
+        b=TctAKeQ/t0+lsb8rkozNL6dUeCzb9O7mtohz6Bs4NpEvi6F18vBNEYnLmRNmU/2BSHdzhp
+        FRMSbNItKVMTHGZjqDUirgIqy0+cwGew96bmcYB0evf/UMMwLaO/h5NuCBN+9ojgcBhB0y
+        W+P0pmkpMnVaLI3cWu2fclf9fqLjx7c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-130-ygGqiEGgNb-IGtXqc6wpjA-1; Fri, 09 Apr 2021 04:31:26 -0400
+X-MC-Unique: ygGqiEGgNb-IGtXqc6wpjA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8A3DB8189EE;
+        Fri,  9 Apr 2021 08:31:23 +0000 (UTC)
+Received: from [10.36.114.73] (ovpn-114-73.ams2.redhat.com [10.36.114.73])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0C8C019C71;
+        Fri,  9 Apr 2021 08:31:11 +0000 (UTC)
+Subject: Re: [PATCH v14 06/13] iommu/smmuv3: Allow stage 1 invalidation with
+ unmanaged ASIDs
+To:     Kunkun Jiang <jiangkunkun@huawei.com>, eric.auger.pro@gmail.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        maz@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        alex.williamson@redhat.com, tn@semihalf.com, zhukeqian1@huawei.com
+Cc:     jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
+        wangxingang5@huawei.com, jean-philippe@linaro.org,
+        zhangfei.gao@linaro.org, zhangfei.gao@gmail.com,
+        vivek.gautam@arm.com, shameerali.kolothum.thodi@huawei.com,
+        yuzenghui@huawei.com, nicoleotsuka@gmail.com,
+        lushenming@huawei.com, vsethi@nvidia.com,
+        wanghaibin.wang@huawei.com
+References: <20210223205634.604221-1-eric.auger@redhat.com>
+ <20210223205634.604221-7-eric.auger@redhat.com>
+ <901720e6-6ca5-eb9a-1f24-0ca479bcfecc@huawei.com>
+ <0246aec2-162d-0584-3ca4-b9c304ef3c8a@redhat.com>
+ <46f3760a-9ab5-1710-598e-38fbc1f5fb5c@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <2baf96db-d7fe-e341-1b40-fab2b4c9fd92@redhat.com>
+Date:   Fri, 9 Apr 2021 10:31:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <cover.1617890467.git.alinesantanacordeiro@gmail.com>
- <1e6d73432d60dfb8bb3f7f2bd6bf3084091a2a39.1617890467.git.alinesantanacordeiro@gmail.com>
- <d4000598fddcf45e578462aa04b556c0ca057091.camel@collabora.com> <6bba0e0a5768e902ffec4bda563d4ca810412f84.camel@gmail.com>
-In-Reply-To: <6bba0e0a5768e902ffec4bda563d4ca810412f84.camel@gmail.com>
-From:   Vaishali Thakkar <vthakkar@vaishalithakkar.in>
-Date:   Fri, 9 Apr 2021 10:25:19 +0200
-X-Gmail-Original-Message-ID: <CAK-LDb+L-hXpVgFpAz95921p6JOPZ8=BSYAiqjRpYv0oV=YK2A@mail.gmail.com>
-Message-ID: <CAK-LDb+L-hXpVgFpAz95921p6JOPZ8=BSYAiqjRpYv0oV=YK2A@mail.gmail.com>
-Subject: Re: [Outreachy kernel] Re: [PATCH 1/2 v2] staging: media: hantro:
- Align line break to the open parenthesis in file hantro_hw.h
-To:     ascordeiro <alinesantanacordeiro@gmail.com>
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Outreachy <outreachy-kernel@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-CMAE-Envelope: MS4xfGSwse0vGb1LgBE+bpFInUh21XFuuxYmOg10Oc+eJy2zkpIFv2OanA01BZJeuFscD207FoNYeYmKZyJwUnSFPImErR5zf9ibnl3n+z7A24bZ4KeudjK2
- M/WKV4RpwZQ8aEgjPDa69o/HzdPITfTkXyRRjV+DT45NO5aXQx7AMlkxZUFYiN2ubvETLNor0+ByMCU7jcerRYoaXjCwhjqt1z1Mk6RzdV19jW/iPGHS7/d1
- 92lcA+CPO65em2PJp/MyZ+Z6tAE1OMv/j3CR5y6YUdY=
+In-Reply-To: <46f3760a-9ab5-1710-598e-38fbc1f5fb5c@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 7:41 PM ascordeiro
-<alinesantanacordeiro@gmail.com> wrote:
->
-> Em qui, 2021-04-08 às 13:20 -0300, Ezequiel Garcia escreveu:
-> > Ola Aline,
-> Ola Ezequiel,
->
-> > Welcome to the kernel community. Hope you enjoy some of this
-> > Outreachy adventures.
-> Thank you!
->
-> > Normally, when you submit a v2, we want to know what changed
-> > between the first submission and v2.
-> >
-> > If you are subscribed to linux-media, you can read some
-> > of the series with a vN+1 and look how it's done. Examples:
-> >
-> > https://www.spinics.net/lists/linux-media/msg190043.html
-> >
-> > https://www.spinics.net/lists/linux-media/msg189923.html
-> >
-> > I'm sure your Outreachy mentors can tell you more.
-> Thank you for the examples, it won't happen again.
->
-> The reason for sending a v2 is that I sent my very first patchset
-> yesterday and I sent the cover-letter together, but (I think) I wasn't
-> supposed to, and as the patches weren't marked as [PATCH 1/2] and
-> [PATCH 2/2] in the email - since I commited all the files with the same
-> message - I tought it was wrong and sent again today.
->
-> However, I just realized that I've changed just the subject of the e-
-> mail, but I would've to change the commit message, right? And then, it
-> would be a second version, am I right?
+Hi Kunkun,
 
-Your next version should be v3 with information about changes since
-v1 under --- . If you send it with v2, it'll still be confusing for people
-because then they have to manually find out the difference between
-two different patchsets with the same subject line. :)
+On 4/9/21 6:48 AM, Kunkun Jiang wrote:
+> Hi Eric,
+> 
+> On 2021/4/8 20:30, Auger Eric wrote:
+>> Hi Kunkun,
+>>
+>> On 4/1/21 2:37 PM, Kunkun Jiang wrote:
+>>> Hi Eric,
+>>>
+>>> On 2021/2/24 4:56, Eric Auger wrote:
+>>>> With nested stage support, soon we will need to invalidate
+>>>> S1 contexts and ranges tagged with an unmanaged asid, this
+>>>> latter being managed by the guest. So let's introduce 2 helpers
+>>>> that allow to invalidate with externally managed ASIDs
+>>>>
+>>>> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+>>>>
+>>>> ---
+>>>>
+>>>> v13 -> v14
+>>>> - Actually send the NH_ASID command (reported by Xingang Wang)
+>>>> ---
+>>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 38
+>>>> ++++++++++++++++-----
+>>>>    1 file changed, 29 insertions(+), 9 deletions(-)
+>>>>
+>>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> index 5579ec4fccc8..4c19a1114de4 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> @@ -1843,9 +1843,9 @@ int arm_smmu_atc_inv_domain(struct
+>>>> arm_smmu_domain *smmu_domain, int ssid,
+>>>>    }
+>>>>      /* IO_PGTABLE API */
+>>>> -static void arm_smmu_tlb_inv_context(void *cookie)
+>>>> +static void __arm_smmu_tlb_inv_context(struct arm_smmu_domain
+>>>> *smmu_domain,
+>>>> +                       int ext_asid)
+>>>>    {
+>>>> -    struct arm_smmu_domain *smmu_domain = cookie;
+>>>>        struct arm_smmu_device *smmu = smmu_domain->smmu;
+>>>>        struct arm_smmu_cmdq_ent cmd;
+>>>>    @@ -1856,7 +1856,13 @@ static void arm_smmu_tlb_inv_context(void
+>>>> *cookie)
+>>>>         * insertion to guarantee those are observed before the TLBI.
+>>>> Do be
+>>>>         * careful, 007.
+>>>>         */
+>>>> -    if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+>>>> +    if (ext_asid >= 0) { /* guest stage 1 invalidation */
+>>>> +        cmd.opcode    = CMDQ_OP_TLBI_NH_ASID;
+>>>> +        cmd.tlbi.asid    = ext_asid;
+>>>> +        cmd.tlbi.vmid    = smmu_domain->s2_cfg.vmid;
+>>>> +        arm_smmu_cmdq_issue_cmd(smmu, &cmd);
+>>>> +        arm_smmu_cmdq_issue_sync(smmu);
+>>>> +    } else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+>>>>            arm_smmu_tlb_inv_asid(smmu, smmu_domain->s1_cfg.cd.asid);
+>>>>        } else {
+>>>>            cmd.opcode    = CMDQ_OP_TLBI_S12_VMALL;
+>>>> @@ -1867,6 +1873,13 @@ static void arm_smmu_tlb_inv_context(void
+>>>> *cookie)
+>>>>        arm_smmu_atc_inv_domain(smmu_domain, 0, 0, 0);
+>>>>    }
+>>>>    +static void arm_smmu_tlb_inv_context(void *cookie)
+>>>> +{
+>>>> +    struct arm_smmu_domain *smmu_domain = cookie;
+>>>> +
+>>>> +    __arm_smmu_tlb_inv_context(smmu_domain, -1);
+>>>> +}
+>>>> +
+>>>>    static void __arm_smmu_tlb_inv_range(struct arm_smmu_cmdq_ent *cmd,
+>>>>                         unsigned long iova, size_t size,
+>>>>                         size_t granule,
+>>>> @@ -1926,9 +1939,10 @@ static void __arm_smmu_tlb_inv_range(struct
+>>>> arm_smmu_cmdq_ent *cmd,
+>>>>        arm_smmu_cmdq_batch_submit(smmu, &cmds);
+>>>>    }
+>>>>    
+>>> Here is the part of code in __arm_smmu_tlb_inv_range():
+>>>>          if (smmu->features & ARM_SMMU_FEAT_RANGE_INV) {
+>>>>                  /* Get the leaf page size */
+>>>>                  tg = __ffs(smmu_domain->domain.pgsize_bitmap);
+>>>>
+>>>>                  /* Convert page size of 12,14,16 (log2) to 1,2,3 */
+>>>>                  cmd->tlbi.tg = (tg - 10) / 2;
+>>>>
+>>>>                  /* Determine what level the granule is at */
+>>>>                  cmd->tlbi.ttl = 4 - ((ilog2(granule) - 3) / (tg - 3));
+>>>>
+>>>>                  num_pages = size >> tg;
+>>>>          }
+>>> When pSMMU supports RIL, we get the leaf page size by
+>>> __ffs(smmu_domain->
+>>> domain.pgsize_bitmap). In nested mode, it is determined by host
+>>> PAGE_SIZE. If
+>>> the host kernel and guest kernel has different translation granule (e.g.
+>>> host 16K,
+>>> guest 4K), __arm_smmu_tlb_inv_range() will issue an incorrect tlbi
+>>> command.
+>>>
+>>> Do you have any idea about this issue?
+>> I think this is the same issue as the one reported by Chenxiang
+>>
+>> https://lore.kernel.org/lkml/15938ed5-2095-e903-a290-333c299015a2@hisilicon.com/
+>>
+>>
+>> In case RIL is not supported by the host, next version will use the
+>> smallest pSMMU supported page size, as done in __arm_smmu_tlb_inv_range
+>>
+>> Thanks
+>>
+>> Eric
+> I think they are different. In normal cases, when we want to invalidate the
+> cache of stage 1, we should use the granule size supported by vSMMU to
+> implement and issue an tlbi command if pSMMU supports RIL.
+> 
+> But in the current __arm_smmu_tlb_inv_range(), it always uses the granule
+> size supported by host.
+> (tg = __ffs(smmu_domain->domain.pgsize_bitmap);)
+> 
+> Let me explain more clearly.
+> Preconditions of this issue:
+> 1. pSMMU supports RIL
+> 2. host and guest use different translation granule (e.g. host 16K,
+> guest 4K)
+this is not clear to me. See below.
+> 
+> Guest wants to invalidate 4K, so info->granule_size = 4K.
+> In __arm_smmu_tlb_inv_range(),   if pSMMU supports RIL and host 16K,
+> tg = 14, tlbi.tg = 2, tlbi.ttl = 4, tlbi.scale = 0, tlbi.num = -1. It is
+> an incorrect
+> tlbi command.
 
-You can also check 'Revising your patches' section in the tutorial.
+If the guest uses 4K granule, this means the pSMMU also supports 4K
+granule. Otherwise the corresponding CD is invalid (TG0/TG1 field desc).
+So in that case isn't it valid to send a RIL invalidation with tg = 12,
+right?
 
-> Thank you in advance,
->
-> > On Thu, 2021-04-08 at 11:07 -0300, Aline Santana Cordeiro wrote:
-> > > Aligns line break with the remaining function arguments
-> > > to the open parenthesis. Issue found by checkpatch.
-> > >
-> > > Signed-off-by: Aline Santana Cordeiro <
-> > > alinesantanacordeiro@gmail.com>
-> > > ---
-> > >  drivers/staging/media/hantro/hantro_hw.h | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/staging/media/hantro/hantro_hw.h
-> > > b/drivers/staging/media/hantro/hantro_hw.h
-> > > index 34c9e46..a650b9c 100644
-> > > --- a/drivers/staging/media/hantro/hantro_hw.h
-> > > +++ b/drivers/staging/media/hantro/hantro_hw.h
-> > > @@ -207,7 +207,7 @@ hantro_h264_mv_size(unsigned int width,
-> > > unsigned int height)
-> > >  void hantro_g1_mpeg2_dec_run(struct hantro_ctx *ctx);
-> > >  void rk3399_vpu_mpeg2_dec_run(struct hantro_ctx *ctx);
-> > >  void hantro_mpeg2_dec_copy_qtable(u8 *qtable,
-> > > -       const struct v4l2_ctrl_mpeg2_quantization *ctrl);
-> > > +                                 const struct
-> > > v4l2_ctrl_mpeg2_quantization *ctrl);
-> > >  int hantro_mpeg2_dec_init(struct hantro_ctx *ctx);
-> > >  void hantro_mpeg2_dec_exit(struct hantro_ctx *ctx);
-> > >
-> >
-> >
->
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/6bba0e0a5768e902ffec4bda563d4ca810412f84.camel%40gmail.com.
+Making sure the guest uses a valid pSMMU supported granule is the QEMU
+job I think, this should be done at the init phase before hitting CD
+invalid errors for sure.
 
+Thanks
 
+Eric
 
--- 
-Vaishali
+> 
+> So it would be better to pass the leaf page size supported by vSMMU to
+> host.  Perhaps this issue and the one reported by Chenxiang can be solved
+> together.
+> 
+> Thanks,
+> Kunkun Jiang
+>>> Best Regards,
+>>> Kunkun Jiang
+>>>> -static void arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t
+>>>> size,
+>>>> -                      size_t granule, bool leaf,
+>>>> -                      struct arm_smmu_domain *smmu_domain)
+>>>> +static void
+>>>> +arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
+>>>> +                  size_t granule, bool leaf, int ext_asid,
+>>>> +                  struct arm_smmu_domain *smmu_domain)
+>>>>    {
+>>>>        struct arm_smmu_cmdq_ent cmd = {
+>>>>            .tlbi = {
+>>>> @@ -1936,7 +1950,12 @@ static void
+>>>> arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
+>>>>            },
+>>>>        };
+>>>>    -    if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+>>>> +    if (ext_asid >= 0) {  /* guest stage 1 invalidation */
+>>>> +        cmd.opcode    = smmu_domain->smmu->features &
+>>>> ARM_SMMU_FEAT_E2H ?
+>>>> +                  CMDQ_OP_TLBI_EL2_VA : CMDQ_OP_TLBI_NH_VA;
+>>>> +        cmd.tlbi.asid    = ext_asid;
+>>>> +        cmd.tlbi.vmid    = smmu_domain->s2_cfg.vmid;
+>>>> +    } else if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+>>>>            cmd.opcode    = smmu_domain->smmu->features &
+>>>> ARM_SMMU_FEAT_E2H ?
+>>>>                      CMDQ_OP_TLBI_EL2_VA : CMDQ_OP_TLBI_NH_VA;
+>>>>            cmd.tlbi.asid    = smmu_domain->s1_cfg.cd.asid;
+>>>> @@ -1944,6 +1963,7 @@ static void
+>>>> arm_smmu_tlb_inv_range_domain(unsigned long iova, size_t size,
+>>>>            cmd.opcode    = CMDQ_OP_TLBI_S2_IPA;
+>>>>            cmd.tlbi.vmid    = smmu_domain->s2_cfg.vmid;
+>>>>        }
+>>>> +
+>>>>        __arm_smmu_tlb_inv_range(&cmd, iova, size, granule,
+>>>> smmu_domain);
+>>>>          /*
+>>>> @@ -1982,7 +2002,7 @@ static void arm_smmu_tlb_inv_page_nosync(struct
+>>>> iommu_iotlb_gather *gather,
+>>>>    static void arm_smmu_tlb_inv_walk(unsigned long iova, size_t size,
+>>>>                      size_t granule, void *cookie)
+>>>>    {
+>>>> -    arm_smmu_tlb_inv_range_domain(iova, size, granule, false, cookie);
+>>>> +    arm_smmu_tlb_inv_range_domain(iova, size, granule, false, -1,
+>>>> cookie);
+>>>>    }
+>>>>      static const struct iommu_flush_ops arm_smmu_flush_ops = {
+>>>> @@ -2523,7 +2543,7 @@ static void arm_smmu_iotlb_sync(struct
+>>>> iommu_domain *domain,
+>>>>          arm_smmu_tlb_inv_range_domain(gather->start,
+>>>>                          gather->end - gather->start + 1,
+>>>> -                      gather->pgsize, true, smmu_domain);
+>>>> +                      gather->pgsize, true, -1, smmu_domain);
+>>>>    }
+>>>>      static phys_addr_t
+>>>
+>> .
+> 
+> 
+
