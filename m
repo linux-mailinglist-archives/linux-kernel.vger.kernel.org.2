@@ -2,56 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4A33597EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803A63597F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhDIIcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:32:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49856 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231765AbhDIIbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:31:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0A6FDAEFE;
-        Fri,  9 Apr 2021 08:31:35 +0000 (UTC)
-Date:   Fri, 9 Apr 2021 10:31:32 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Wei Xu <weixugc@google.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, shy828301@gmail.com,
-        Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>, ying.huang@intel.com,
-        Dan Williams <dan.j.williams@intel.com>, david@redhat.com
-Subject: Re: [PATCH 07/10] mm/vmscan: add helper for querying ability to age
- anonymous pages
-Message-ID: <20210409083132.GB31366@linux>
-References: <20210401183216.443C4443@viggo.jf.intel.com>
- <20210401183229.B2360AEA@viggo.jf.intel.com>
- <CAAPL-u-OgmT+R=txfO_rFaYLKC0UZ5xEmFOY3spVHEmk_r4iSQ@mail.gmail.com>
+        id S231675AbhDIIen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:34:43 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16112 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhDIIei (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:34:38 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGrwB3Wqzz1BGMs;
+        Fri,  9 Apr 2021 16:32:10 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 16:34:12 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <stern@rowland.harvard.edu>, <liudongdong3@huawei.com>
+CC:     <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <liulongfang@huawei.com>, <kong.kongxinwei@hisilicon.com>,
+        <yisen.zhuang@huawei.com>
+Subject: [PATCH v4] USB:ehci:fix Kunpeng920 ehci hardware problem
+Date:   Fri, 9 Apr 2021 16:31:38 +0800
+Message-ID: <1617957098-8375-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAAPL-u-OgmT+R=txfO_rFaYLKC0UZ5xEmFOY3spVHEmk_r4iSQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:40:13AM -0700, Wei Xu wrote:
-> anon_should_be_aged() doesn't really need "lruvec".  It essentially
-> answers whether the pages of the given node can be swapped or demoted.
-> So it would be clearer and less confusing if anon_should_be_aged()
-> takes "pgdat" instead of "lruvec" as the argument.  The call to
-> mem_cgroup_lruvec(NULL, pgdat) in age_active_anon() can then be removed
-> as well.
+Kunpeng920's EHCI controller does not have SBRN register.
+Reading the SBRN register when the controller driver is
+initialized will get 0.
 
-I tend to agree with this, and I would go one step further with the naming.
-For me, taking into account the nature of the function that tells us whether
-we have any means to age those pages, a better fit would be something like
-anon_can_be_aged(). IIUC, the "should age" part would be inactive_is_low().
+When rebooting the EHCI driver, ehci_shutdown() will be called.
+if the sbrn flag is 0, ehci_shutdown() will return directly.
+The sbrn flag being 0 will cause the EHCI interrupt signal to
+not be turned off after reboot. this interrupt that is not closed
+will cause an exception to the device sharing the interrupt.
 
+Therefore, the EHCI controller of Kunpeng920 needs to skip
+the read operation of the SBRN register.
 
+Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+---
+
+Changes in v4:
+	- Modify the code implementation.
+
+Changes in v3:
+	- Fix some code style issues.
+	- Update struct name.
+
+Changes in v2:
+	- Fix some code style issues.
+	- Update function name.
+
+ drivers/usb/host/ehci-pci.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/usb/host/ehci-pci.c b/drivers/usb/host/ehci-pci.c
+index 3c3820a..237a346 100644
+--- a/drivers/usb/host/ehci-pci.c
++++ b/drivers/usb/host/ehci-pci.c
+@@ -291,6 +291,9 @@ static int ehci_pci_setup(struct usb_hcd *hcd)
+ 	if (pdev->vendor == PCI_VENDOR_ID_STMICRO
+ 	    && pdev->device == PCI_DEVICE_ID_STMICRO_USB_HOST)
+ 		;	/* ConneXT has no sbrn register */
++	else if (pdev->vendor == PCI_VENDOR_ID_HUAWEI
++			 && pdev->device == 0xa239)
++		;	/* HUAWEI Kunpeng920 USB EHCI has no sbrn register */
+ 	else
+ 		pci_read_config_byte(pdev, 0x60, &ehci->sbrn);
+ 
 -- 
-Oscar Salvador
-SUSE L3
+2.8.1
+
