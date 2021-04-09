@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5990835938E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E3B135939B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:10:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhDIEIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 00:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33214 "EHLO
+        id S231377AbhDIEKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 00:10:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229450AbhDIEIH (ORCPT
+        with ESMTP id S229450AbhDIEKM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 00:08:07 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F94C061760;
-        Thu,  8 Apr 2021 21:07:55 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id 1so3307271qtb.0;
-        Thu, 08 Apr 2021 21:07:55 -0700 (PDT)
+        Fri, 9 Apr 2021 00:10:12 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1826BC061760;
+        Thu,  8 Apr 2021 21:10:00 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id w28so7547665lfn.2;
+        Thu, 08 Apr 2021 21:10:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6yyDCVy3mgN7UIfoc4Ica7qnzkHDt6TIUyqqtfM/zDo=;
-        b=etu1TFPpik1av1/qSzQkkOdpkLUwlHQfWIufkgDSas80OORkeuUMA2SfOv6IMJsDBj
-         D11FbakI/UtmiZUE3c2n6Y9I015razUdcPx+m/1QyUkoowcm1GLD4lgIiROIbQ+HVsbZ
-         gIoYRGTc22RZDxmJ9TBzF22uLhbjo15pMflAM=
+         :cc:content-transfer-encoding;
+        bh=jrdGfzw0sLrUe/7ljN5TaAvoWpq/FVRgXaiuOP0F+qw=;
+        b=BeKsYzEzoNKY7lToW6m6+vEexUtrGxIm5fBgoZh7/3PECzuJlRUtfssVfHMIoEPJ3/
+         4Po6jKgapuUxiSoDWQ1wDcd5nyluNhOyr2FGUe7RrKgVb/U3R9imrnWyI/TRWcHNbI1o
+         1C9Rd8Q18uRzGlgVBsdqD/Sc6zepIbBf5E1N4+euuLoogmPSF6qVPMeb75ZDQBhA37YH
+         h31k6F+Qa2h6yRX87wZh41iFw7tHVdqpJHj01KIb3CMsFwGYQyNoyKtyCdOWDbxz1wzp
+         NhJpWJK+OP3Ed3XPoYhADIHcAaHjsHH5BJioERkY2mASm+eW4vLm3ZHVqjPFYthvTKn1
+         BoBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6yyDCVy3mgN7UIfoc4Ica7qnzkHDt6TIUyqqtfM/zDo=;
-        b=AIzoyYvFi/WlMf8oPor1ZVR/9TNLzDboPwhf5TbDFKB+a/g1nUESUmlDE/Q34wd3CE
-         9+ZFLM2JzIV+qOXedVMX4iHjE2aC8uu7QTstnVa9EaxOO83zvy1ueUko59wwuGzdUmeE
-         OdoQ6Nbg7yajpssaVSc3HCbXqLiUziBpNkf5KusINutm/0Q/kusDf8hvHtl6bmK6xNLb
-         kkK0Qc1D2OJgNyMeZKYN7EDcfptAIPfGf7HSOEscgchz8VEvi/lbuRX85nliQ9CoqdjF
-         F1x8Vdm0bFl+D7sGmDyRYP5j81dgqcXsx66Uv/hsZ9ODBLkgcnjo4Jc6DC9xEnt2aPUV
-         BDMA==
-X-Gm-Message-State: AOAM532/E7v5PbbRtF7/VyXNbEudfqe1CIj1HJOsaNa/03w6rKi+rhvK
-        jNi44BmBKyt1R4k8+V8F76V7Uc3lDkrI1MzkEvc=
-X-Google-Smtp-Source: ABdhPJxL9rRQjeysZInGfbAHqF/7yTWuj4Sgw3/i2T+opVmkZocP5jOEO3AeeBapuqiz1ZJDZdAR+BRPln4hRFaqmtw=
-X-Received: by 2002:ac8:4d1b:: with SMTP id w27mr5588742qtv.363.1617941274284;
- Thu, 08 Apr 2021 21:07:54 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=jrdGfzw0sLrUe/7ljN5TaAvoWpq/FVRgXaiuOP0F+qw=;
+        b=c/GCkeBX/TQ4ITALrsP5x25CmyTk2Ss8kLKTWQUEi5CMoFurggN7tINM9gHS0hvyxy
+         yZdFXRtD2LDRqOJRX3fts5gwcWiao2mSh4EsXalSW84E8Ay3BaVt5ucOTQP/3tmNmTXx
+         Qk0Y8CuuhLjxKpZp7AY+Sjs9krEc/edJbnf2DSOd33P+nuuFG4ty3RrUiHdscbbWITEk
+         gFZGlkjlewQFsXBcA4JnPtSODy4cA/RScmqpzCs1ZgsKmWL6/GnUJv/7SA668am1TBTT
+         xMFPNJukvKyaj+mWEJjYqvSSRgEGpmZoj0sy44nf9nrvbzDjhtkDw/b+hfluDisbVls4
+         4FAA==
+X-Gm-Message-State: AOAM530/f7x1FxBLtIJM3CCzXreEW1M7pz9cSs4+EQZIa0svtAJPfyJ0
+        MQZDvwu35dn/9kBAfzrDMF71eU8l00DWj5qzIE4=
+X-Google-Smtp-Source: ABdhPJzzqaul7xF/ZUamoMPlogelnhKWk4VAgGT3Ym1rfjd0CvJGieCbIeSnpvX5PsPwSB+FNUzQ0fjjpnHHEy9Tras=
+X-Received: by 2002:a19:8c0a:: with SMTP id o10mr9056546lfd.175.1617941398568;
+ Thu, 08 Apr 2021 21:09:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210319061952.145040-1-andrew@aj.id.au> <2db77e16-3f44-4c02-a7ba-a4fac8141ae3@www.fastmail.com>
- <20210408121441.GG7166@minyard.net> <6ff29d26-543a-4790-abb4-ebaa3f8d0265@www.fastmail.com>
-In-Reply-To: <6ff29d26-543a-4790-abb4-ebaa3f8d0265@www.fastmail.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 9 Apr 2021 04:07:41 +0000
-Message-ID: <CACPK8Xc5HC7TZ6cUDH6+uHQO1LQCZE0YeENua1sE8nDXs0R2mg@mail.gmail.com>
-Subject: Re: [PATCH v2 00/21] ipmi: Allow raw access to KCS devices
-To:     Andrew Jeffery <andrew@aj.id.au>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Corey Minyard <minyard@acm.org>,
-        openipmi-developer@lists.sourceforge.net,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Benjamin Fair <benjaminfair@google.com>
+References: <1617870662-78127-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <1617870662-78127-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 8 Apr 2021 23:09:47 -0500
+Message-ID: <CAH2r5mtmeMpkp=vAZYws7c7O+bXo-0XCmLLtNPLUYqV3rByqpA@mail.gmail.com>
+Subject: Re: [PATCH] cifs: Remove useless variable
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     Steve French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Apr 2021 at 23:47, Andrew Jeffery <andrew@aj.id.au> wrote:
-> On Thu, 8 Apr 2021, at 21:44, Corey Minyard wrote:
-> > On Thu, Apr 08, 2021 at 10:27:46AM +0930, Andrew Jeffery wrote:
+merged into cifs-2.6.git for-next
 
-> > > > 1. It begins with patches 1-5 put together by Chia-Wei, which I've
-> > > > rebased on v5.12-rc2. These fix the ASPEED LPC bindings and other
-> > > > non-KCS LPC-related ASPEED device drivers in a way that enables the
-> > > > SerIRQ patches at the end of the series. With Joel's review I'm hoping
-> > > > these 5 can go through the aspeed tree, and that the rest can go through
-> > > > the IPMI tree.
-
-> > > >
-> > > > Please review!
-> > >
-> > > Unfortunately the cover letter got detached from the rest of the series.
-> > >
-> > > Any chance you can take a look at the patches?
-> >
-> > There were some minor concerns that were unanswered, and there really
-> > was no review by others for many of the patches.
+On Thu, Apr 8, 2021 at 3:33 AM Jiapeng Chong
+<jiapeng.chong@linux.alibaba.com> wrote:
 >
-> Right; I was planning to clean up the minor concerns once I'd received
-> some more feedback. I could have done a better job of communicating
-> that :)
+> Fix the following gcc warning:
+>
+> fs/cifs/cifsacl.c:1097:8: warning: variable =E2=80=98nmode=E2=80=99 set b=
+ut not used
+> [-Wunused-but-set-variable].
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  fs/cifs/cifsacl.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/fs/cifs/cifsacl.c b/fs/cifs/cifsacl.c
+> index d178cf8..fdb258a 100644
+> --- a/fs/cifs/cifsacl.c
+> +++ b/fs/cifs/cifsacl.c
+> @@ -1094,11 +1094,9 @@ static int set_chmod_dacl(struct cifs_acl *pdacl, =
+struct cifs_acl *pndacl,
+>         struct cifs_ace *pnntace =3D NULL;
+>         char *nacl_base =3D NULL;
+>         u32 num_aces =3D 0;
+> -       __u64 nmode;
+>         bool new_aces_set =3D false;
+>
+>         /* Assuming that pndacl and pnmode are never NULL */
+> -       nmode =3D *pnmode;
+>         nacl_base =3D (char *)pndacl;
+>         nsize =3D sizeof(struct cifs_acl);
+>
+> --
+> 1.8.3.1
+>
 
-I'll merge the first five through the aspeed tree this coming merge
-window. We have acks from the relevant maintainers.
 
-Arnd: would you prefer that this come as it's own pull request, or as
-part of the device tree branch?
+--=20
+Thanks,
 
-Andrew, Corey: once I've got my pull requests out I'll look at
-reviewing the rest of the series. Perhaps it would pay to re-send that
-hunk of patches Andrew with the nits fixed?
-
-Cheers,
-
-Joel
+Steve
