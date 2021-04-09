@@ -2,211 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BC1235937B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8F535937D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:59:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233180AbhDID6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:58:34 -0400
-Received: from mail-dm6nam10on2098.outbound.protection.outlook.com ([40.107.93.98]:4032
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232941AbhDID6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:58:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fIAPULx9F6z2J2/Ak6kxNhZszAvo+Zg9yN5TZLLF/AZt6uTgrlSos7Joa+qSGwzWN0jCkm5aVks1vgcNkPgPCIPIzInHNLIs0TDm9/IM/AH1KWEzfVvj2HJYy7aJCOmB5W72LA4lyyZP8DwOt1nr/AzBealrZyxCI5fjbkzydrMsmbVlZAR2/wKZMXZbNJ6toyY+5dDu1AwjUWHpTMCh72PQPza/5TrWJ/pvubvuKulkGIQcYmnRZvcvRiPse6O1v8Rzd45CVM5vToD3W9z01cA+kDpy8FNdJv6UPUj7GN5UxAPMMCb+mjkG6LDuZj4QagqK+e4YLrzHReCJj1+BDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a1CJLTivzUJdg5y0pAZKF6H0VJPzmOyk1dAxlnwqqvk=;
- b=NK5aUg9g9I1iljra8yMYME6qW8WJlc2eLPI9fYrqqpOBiRcXWLM5K2sFli5+9EvrfKFmVKFg7YAQtzJDGb6m6xkVUpSx3r+bMplsbgUf1Wfv9af5PXoJAQ5cBKHUDlNheUzj0JF5jWVHs+3tHxmRx9Wbts+m2+CA3g2MasQikALVTGZUY40boq2YVPJ1fCywtzktyfXGIqbB9y+sivjoEWL4TntbLFj/jY5+B0FgaqSH1qiTgrB9bCsmIVcCRpDkSmCo0w7DIam6ToMfIwGDu5tlD48zZW9zngG6UUpbYstWw4laPd9XuTnVwfrD/CpRZfT28vB2GAgFc9nl5CQSnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a1CJLTivzUJdg5y0pAZKF6H0VJPzmOyk1dAxlnwqqvk=;
- b=HSGwRMP3KlXP7sKMo3C7GmJU/gP6p4fX9PPdPKuVKD7FmZ2tSyJ+WUi7Vv1StSoiMj3E5soNs6AcJcKuJmoAcw/xFGLL7BGin8ni8hf+yj12bSXBUwgQ6tnN4HRrpzwIZqQofrvmkb75gD51HUwm4fbYRmBLh7t+b2xrkL8zMZg=
-Received: from BL0PR2101MB0930.namprd21.prod.outlook.com (52.132.20.146) by
- BL0PR2101MB1332.namprd21.prod.outlook.com (20.177.244.146) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4042.4; Fri, 9 Apr 2021 03:58:17 +0000
-Received: from BL0PR2101MB0930.namprd21.prod.outlook.com
- ([fe80::e015:f9cd:dece:f785]) by BL0PR2101MB0930.namprd21.prod.outlook.com
- ([fe80::e015:f9cd:dece:f785%3]) with mapi id 15.20.4042.006; Fri, 9 Apr 2021
- 03:58:17 +0000
-From:   Haiyang Zhang <haiyangz@microsoft.com>
-To:     David Miller <davem@davemloft.net>,
-        Dexuan Cui <decui@microsoft.com>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Wei Liu <liuwe@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "bernd@petrovitsch.priv.at" <bernd@petrovitsch.priv.at>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: RE: [PATCH v3 net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Thread-Topic: [PATCH v3 net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Thread-Index: AQHXLMrI7wVTXonSwkuA82YgYLN/76qrSScAgAAKxoCAAASdAIAANLMw
-Date:   Fri, 9 Apr 2021 03:58:17 +0000
-Message-ID: <BL0PR2101MB0930523DB18C6F1C1CA00A89CA739@BL0PR2101MB0930.namprd21.prod.outlook.com>
-References: <20210408225840.26304-1-decui@microsoft.com>
-        <20210408.164618.597563844564989065.davem@davemloft.net>
-        <MW2PR2101MB0892B82CBCF2450D4A82DD50BF739@MW2PR2101MB0892.namprd21.prod.outlook.com>
- <20210408.174122.1793350393067698495.davem@davemloft.net>
-In-Reply-To: <20210408.174122.1793350393067698495.davem@davemloft.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b3876ea6-8413-47d3-a6a4-0fb00574380d;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-09T03:49:59Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none
- header.from=microsoft.com;
-x-originating-ip: [75.100.88.238]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 4263779f-dc6d-43ed-32ce-08d8fb0bb4eb
-x-ms-traffictypediagnostic: BL0PR2101MB1332:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BL0PR2101MB13328C6772CCEDCF99F0BF5CCA739@BL0PR2101MB1332.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VY3wUsnYcraOMwRosLXAtP+FVTPpRI9ASy9iej4wBCSIqL5U/boygSnB5Wbp5B3MQ8+DrH8POjPzz2D2WBBqJYKLaV3M5TO5/b0R7lcjcAnaXKOfPUU3yygW4QBAfpFXyb1+2xO8Ah36bNmxdpTMrM8UJ9E8akg/9xEIIk5a8WtO2vdwC/Y9Uq9LDPKpyTe++9/1JmRjPOfiY6pSwsGnG1/fSseHHZgzXmepd1d3D0zqd0UWyapCY8iOqhxVpdUa6/y+O6sR0ZaVulGnmveb7XGGOz7PE6HUuVmMfaVhFCxs8JEiEKL6oc0SZN7bumQxJmMho/8KOqNXnYU3uVVcrUvzAe+1yZGxQ6Zj+al/Pjvdx3DB8hUHdPb5br6zmiba729WTIX0QlMIlHUUXwZmbrFi7y7KuNV2MuDK9Akun2jNVp8UN0lYilkpNjmndHSxvdmbr6nnfhUoJlNpyuzemM2w4yd9THMj93e/1UcX6uPwOIAYKMBqVWI4fDfn/wiLGbMXQXG5UrEHrKjFjt3BnAGXmQ4csviXUR0WVGbeIIV9n9DJpMxhQ5kw4pxBBsaPSfW5TPqbekuBLVJsCRLOZhwDaIX2OhDvHM54XCWOUdmquRiyrybBzovjE8hVa8Q3ppgBr0cIisz7gm5tXa+aNrtO1hBx1mFMNBLqZIdwYZDQcqyM1HOPoPKC71D+7IKN
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB0930.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(47530400004)(54906003)(53546011)(110136005)(186003)(7696005)(26005)(6506007)(2906002)(38100700001)(316002)(86362001)(8990500004)(82950400001)(82960400001)(52536014)(478600001)(83380400001)(64756008)(66946007)(66446008)(66556008)(66476007)(5660300002)(76116006)(4326008)(55016002)(8936002)(8676002)(71200400001)(6636002)(7416002)(9686003)(33656002)(10290500003)(21314003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?WqCjmg7wUeX4v/0BaFVobp4PsVih+BczbNPp8//Mm4J6LtawYOZxGk+R0XPk?=
- =?us-ascii?Q?Kg0P48/ZmpsB1hWyzbKOacRJ99gW9iL9kCzxmSC4E7lRdARRT05fPnI+iH6v?=
- =?us-ascii?Q?W4gAkpf+74ks/IxbDnk7gRjwGi4VuC7mzXlgYDcFVg9XnH7hrtCEZp8Vn5aq?=
- =?us-ascii?Q?n/uHnUw5ReL89vlGmfF0/GZG3dG057kM/RrOBuY/HvDYSHV/dlyd6DPYjyvc?=
- =?us-ascii?Q?pXAwyiPxwhidwXwGaji4Karz3845lptO2JBJoqT7P7iPkdxOalOFIpRoiJc3?=
- =?us-ascii?Q?cnR1wbDXXy4yba9EFEdq1kTZ5FwzVM9vYhdYcj5mfLGObJ9UtJrtCPO0Miaj?=
- =?us-ascii?Q?tuB3IHpOprGBpJC9aFQLJ/Tyjoz8MR0/PSCjjSS0osT1jX7TxlRqmakGCsg5?=
- =?us-ascii?Q?+ms6Xv6HQvDe05jJN4KuCCArzkESA7VGXeQidiHb+Nao56lt25OBkSzVF0Lf?=
- =?us-ascii?Q?y3RKcfKKLqqMkQH+s5+PeoH8BX05BaiDybTU+BG0Orwy4q3GlsAoTgxUuJOl?=
- =?us-ascii?Q?HJAa988QdPydmEaZo0Am2aQwAv4j3vrWqIv4RA9WYnWCzPEQ6aGtcrfoq1JW?=
- =?us-ascii?Q?PNTj+e5qAZKAg8/+prnfXpVf8dcl+xlJgaWHmpy3HfnMam3wE8QyrcDJRUfh?=
- =?us-ascii?Q?E9WW+f4eaFhT7bteNi0+BoefI1XPvij85QiWNX2H4TscnZdKrnS9X9BFfMUe?=
- =?us-ascii?Q?sjfcYayLt3EQTKxwE0mGZOARG8uSJDXwx6a6/4gy3c0qzo2NXLkydq70tUHN?=
- =?us-ascii?Q?Nj8xb5zLhdOdETxiRm4rqgVpvJpE8T5gno++EgvI3E5CK06fUeGH+oFCHsAX?=
- =?us-ascii?Q?j6jCSE1g4my1X5l4ZWiybXjd0A9qlahb7STXqBRBYXD3io8mPRIJ4tcch1hM?=
- =?us-ascii?Q?g572nQt9ahd+Pm+KfB4cklnNjzuVBKA9+BXMiNiADgKgJ0nzRmc6Itv7U4Uw?=
- =?us-ascii?Q?z9TeJW4SjExTXf94DaPuHOCO0vnPf0kMlnYrJz3+92u4C0nmAl/9dFaIKSN0?=
- =?us-ascii?Q?qzy1Mn5VLCTL4Olwj8T9UDAzdAwxid0W8PdIswzkNKG6Dob17zPTsDbnzZk8?=
- =?us-ascii?Q?Y1tXgiDymjnCDQj0uHSilnATIsp+X91cRAlpv2k+5gbAYj+0xctPmsch/l3L?=
- =?us-ascii?Q?hQOPIXTRR3PA4CzvnQl/L9L9BOOlrsb8CBY8WevpAeLx/k9XrRPbEB4Lx9vw?=
- =?us-ascii?Q?Gbe7Ms2ntgwOL7aMdt6Rr8ZUoiM3nkUb5iLBHHHGs/3Wcp+BHmcmbpfaPxo3?=
- =?us-ascii?Q?Rpfg94L4j53v6nXtOVZ20WIsKutuV4BE2vRq3xt7BEKeOShqI/e0cPs8e9Wn?=
- =?us-ascii?Q?J1FkTR/MgSjk+WhkO3yLL44V?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S233192AbhDID7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:59:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232662AbhDID7g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 23:59:36 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2E0C061760;
+        Thu,  8 Apr 2021 20:59:23 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id f12so3264295qtq.4;
+        Thu, 08 Apr 2021 20:59:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Z20sdUnyZzZOig2XtRkgruY6oFSC2WoIIhXStpsksq4=;
+        b=JL7cGwF9Amcsh9Eg2BR+Psbo7ObACT5lMqdA4c/UZqq0JGkxdLZbInZueVfsLlQn2K
+         830c08og0OxCo+EVVfLrPM8A+IJ5f1txjIWdBpi8qdm9tsHtRFBBlREJK+swIFpedyPu
+         mcvjTXgtEqyToMN865cFGPqecTCz6A+mz0T5tmH4U2RXbxh7oIOpdJKk621REdsiFhX0
+         MwYdkbtnIM0CBB2wbxo1SzLbez9RWM7kK2xZQke7ZIDz0XTXzHLmHYqqHAv0gv0GKHDg
+         7SM/nIRANvYpFtAWV82IKaZKu1cavnU+cJATf+8AmGqKrlKVWlNHJY73K4YavR4gDx8S
+         j2PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Z20sdUnyZzZOig2XtRkgruY6oFSC2WoIIhXStpsksq4=;
+        b=P3dITVcG8Z3usWhTOOfVWQLBhlDyykSCmzxVexzJ7ld4ydHWZSLT2mJvA6INe9XfFF
+         uVq5FgXY1aOeteK3u7aGjKk31x3MxwCjPSMCajVHQrT0msmzAn5rdc5re6LBs9ONhUAM
+         AgU/1iA57Ao/P0hlN72ZEj+FOdbIkxLVIyckdHei5s10P/WsZSW2KLQkFr9LVe87htPE
+         d13ILSScEfBcuBj7iCdXtvlez1p0EI9bBO3xJ0VPjK6s8vod7bvdebWP4xTIDOTdaamc
+         VGM4uMnNLkdkRm5v24kcDKHxZIxvVpPUdQTydL00/G42vRnUzVmPnCRd2A8nE793Dijj
+         H0og==
+X-Gm-Message-State: AOAM5334BgbYUTCFzKDk1KMxVI995Tq/NG20Fnz+VEC2dCP4QUCLJEqb
+        S7ldyTgg+qmpoUzQrCryRj8=
+X-Google-Smtp-Source: ABdhPJwdqUiReSPEqldRyhZJwGPCNrmosA9eez7Wxp6KYK3rzKbb4Z+bS/udP50cpstAuIWc74Zpdg==
+X-Received: by 2002:ac8:7747:: with SMTP id g7mr10695921qtu.144.1617940763166;
+        Thu, 08 Apr 2021 20:59:23 -0700 (PDT)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.ky.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id d10sm978923qko.70.2021.04.08.20.59.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 20:59:22 -0700 (PDT)
+Subject: Re: [PATCH v4 1/1] of: unittest: overlay: ensure proper alignment of
+ copied FDT
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        devicetree@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210408204508.2276230-1-frowand.list@gmail.com>
+ <CAL_Jsq+Os6O6CpRYurmf_4-Xnzgpkd1jbDbnp0en1TPbZXTf7w@mail.gmail.com>
+ <b73965c7-e975-6c48-3367-411f6c754181@roeck-us.net>
+ <c625202a-0530-adbd-d4f8-0935d3ed37e2@gmail.com>
+ <b081277a-763e-fdd4-43e3-483869a7e5c5@roeck-us.net>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <95d8ce8d-9210-bbda-4dd9-e98e860c35af@gmail.com>
+Date:   Thu, 8 Apr 2021 22:59:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB0930.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4263779f-dc6d-43ed-32ce-08d8fb0bb4eb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 03:58:17.0540
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7SE9lAOyaLoIfNjFe1ffS2VU4OKqAJK7sTe/eTOMn+kbwWF9wqKLWt7UIAvg2WnFPMVNl3IBlovImpHeLiriLA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1332
+In-Reply-To: <b081277a-763e-fdd4-43e3-483869a7e5c5@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 4/8/21 9:20 PM, Guenter Roeck wrote:
+> On 4/8/21 3:53 PM, Frank Rowand wrote:
+>> On 4/8/21 4:54 PM, Guenter Roeck wrote:
+>>> On 4/8/21 2:28 PM, Rob Herring wrote:
+>>>>
+>>>> Applying now so this gets into linux-next this week.
+>>>>
+>>> The patch doesn't apply on top of today's -next; it conflicts
+>>> with "of: properly check for error returned by fdt_get_name()".
+>>>
+>>> I reverted that patch and applied this one, and the DT unittests
+>>> run with it on openrisc. I do get a single test failure, but I that
+>>> is a different problem (possibly with the test case itself).
+>>>
+>>> ### dt-test ### FAIL of_unittest_dma_ranges_one():923 of_dma_get_range: wrong DMA addr 0x00000000
+>>> 	(expecting 100000000) on node /testcase-data/address-tests/bus@80000000/device@1000
+>>
+>> That is a known regression on the target that I use for testing (and
+>> has been since 5.10-rc1) - the 8074 dragonboard, arm 32.  No
+>> one else has reported it on the list, so even though I want to debug
+>> and fix it "promptly", other tasks have had higher priority.  In my
+>> notes I list two suspect commits:
+>>
+>>   e0d072782c73 dma-mapping: introduce DMA range map, supplanting dma_pfn_offset
+>>   0a0f0d8be76d dma-mapping: split <linux/dma-mapping.h>
+>>
+>> I think that was purely based on looking at the list of commits that
+>> may have touched OF dma.  I have not done a bisect.
+>>
+> 
+> Here you are:
+> 
+> # bad: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
+> # good: [bbf5c979011a099af5dc76498918ed7df445635b] Linux 5.9
+> git bisect start 'v5.10' 'v5.9'
+> # bad: [4d0e9df5e43dba52d38b251e3b909df8fa1110be] lib, uaccess: add failure injection to usercopy functions
+> git bisect bad 4d0e9df5e43dba52d38b251e3b909df8fa1110be
+> # good: [f888bdf9823c85fe945c4eb3ba353f749dec3856] Merge tag 'devicetree-for-5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux
+> git bisect good f888bdf9823c85fe945c4eb3ba353f749dec3856
+> # good: [640eee067d9aae0bb98d8706001976ff1affaf00] Merge tag 'drm-misc-next-fixes-2020-10-13' of git://anongit.freedesktop.org/drm/drm-misc into drm-next
+> git bisect good 640eee067d9aae0bb98d8706001976ff1affaf00
+> # good: [c6dbef7307629cce855aa6b482b60cbf7777ed88] Merge tag 'usb-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
+> git bisect good c6dbef7307629cce855aa6b482b60cbf7777ed88
+> # good: [ce1558c285f9ad04c03b46833a028230771cc0a7] ALSA: hda/hdmi: fix incorrect locking in hdmi_pcm_close
+> git bisect good ce1558c285f9ad04c03b46833a028230771cc0a7
+> # good: [c48b75b7271db23c1b2d1204d6e8496d91f27711] Merge tag 'sound-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
+> git bisect good c48b75b7271db23c1b2d1204d6e8496d91f27711
+> # bad: [0cd7d9795fa82226e7516d38b474bddae8b1ff26] Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching
+> git bisect bad 0cd7d9795fa82226e7516d38b474bddae8b1ff26
+> # good: [b1839e7c2a42ccd9a0587c0092e880c7a213ee2a] dmaengine: xilinx: dpdma: convert tasklets to use new tasklet_setup() API
+> git bisect good b1839e7c2a42ccd9a0587c0092e880c7a213ee2a
+> # bad: [0de327969b61a245e3a47b60009eae73fe513cef] cma: decrease CMA_ALIGNMENT lower limit to 2
+> git bisect bad 0de327969b61a245e3a47b60009eae73fe513cef
+> # good: [6eb0233ec2d0df288fe8515d5b0b2b15562e05bb] usb: don't inherity DMA properties for USB devices
+> git bisect good 6eb0233ec2d0df288fe8515d5b0b2b15562e05bb
+> # bad: [48d15814dd0fc429e3205b87f1af6cc472018478] lib82596: move DMA allocation into the callers of i82596_probe
+> git bisect bad 48d15814dd0fc429e3205b87f1af6cc472018478
+> # bad: [eba304c6861613a649ba46cfab835b1eddeacd8e] dma-mapping: better document dma_addr_t and DMA_MAPPING_ERROR
+> git bisect bad eba304c6861613a649ba46cfab835b1eddeacd8e
+> # bad: [b9bb694b9f62f4b31652223ed3ca38cf98bbb370] iommu/io-pgtable-arm: Clean up faulty sanity check
+> git bisect bad b9bb694b9f62f4b31652223ed3ca38cf98bbb370
+> # bad: [a97740f81874c8063c12c24f34d25f10c4f5e9aa] dma-debug: convert comma to semicolon
+> git bisect bad a97740f81874c8063c12c24f34d25f10c4f5e9aa
+> # bad: [e0d072782c734d27f5af062c62266f2598f68542] dma-mapping: introduce DMA range map, supplanting dma_pfn_offset
+> git bisect bad e0d072782c734d27f5af062c62266f2598f68542
+> # first bad commit: [e0d072782c734d27f5af062c62266f2598f68542] dma-mapping: introduce DMA range map, supplanting dma_pfn_offset
+> 
+> Guenter
+> 
 
-
-> -----Original Message-----
-> From: David Miller <davem@davemloft.net>
-> Sent: Thursday, April 8, 2021 8:41 PM
-> To: Dexuan Cui <decui@microsoft.com>
-> Cc: kuba@kernel.org; KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
-> <haiyangz@microsoft.com>; Stephen Hemminger
-> <sthemmin@microsoft.com>; wei.liu@kernel.org; Wei Liu
-> <liuwe@microsoft.com>; netdev@vger.kernel.org; leon@kernel.org;
-> andrew@lunn.ch; bernd@petrovitsch.priv.at; rdunlap@infradead.org; linux-
-> kernel@vger.kernel.org; linux-hyperv@vger.kernel.org
-> Subject: Re: [PATCH v3 net-next] net: mana: Add a driver for Microsoft Az=
-ure
-> Network Adapter (MANA)
->=20
-> From: Dexuan Cui <decui@microsoft.com>
-> Date: Fri, 9 Apr 2021 00:24:51 +0000
->=20
-> >> From: David Miller <davem@davemloft.net>
-> >> Sent: Thursday, April 8, 2021 4:46 PM
-> >> ...
-> >> > +struct gdma_msg_hdr {
-> >> > +	u32 hdr_type;
-> >> > +	u32 msg_type;
-> >> > +	u16 msg_version;
-> >> > +	u16 hwc_msg_id;
-> >> > +	u32 msg_size;
-> >> > +} __packed;
-> >> > +
-> >> > +struct gdma_dev_id {
-> >> > +	union {
-> >> > +		struct {
-> >> > +			u16 type;
-> >> > +			u16 instance;
-> >> > +		};
-> >> > +
-> >> > +		u32 as_uint32;
-> >> > +	};
-> >> > +} __packed;
-> >>
-> >> Please don't  use __packed unless absolutely necessary.  It generates
-> >> suboptimal code (byte at a time
-> >> accesses etc.) and for many of these you don't even need it.
-> >
-> > In the driver code, all the structs/unions marked by __packed are used =
-to
-> > talk with the hardware, so I think __packed is necessary here?
->=20
-> It actually isan't in many cases, check with and without the __packed
-> directive
-> and see if anything chasnges.
->=20
-> > Do you think if it's better if we remove all the __packed, and add
-> > static_assert(sizeof(struct XXX) =3D=3D YYY) instead? e.g.
-> >
-> > @@ -105,7 +105,8 @@ struct gdma_msg_hdr {
-> >         u16 msg_version;
-> >         u16 hwc_msg_id;
-> >         u32 msg_size;
-> > -} __packed;
-> > +};
-> > +static_assert(sizeof(struct gdma_msg_hdr) =3D=3D 16);
->=20
-> This won't make sure the structure member offsets are what you expect.
->=20
-> I think you'll have to go through the structures one-by-one by hand to
-> figure out which ones really require the __packed attribute and which do =
-not.
-
-For the structs containing variables with the same sizes, or already size a=
-ligned=20
-variables, we knew the __packed has no effect. And for these structs, it do=
-esn't=20
-cause performance impact either, correct?=20
-
-But in the future, if different sized variables are added, the __packed may=
-=20
-become necessary again. To prevent anyone accidently forget to add __packed=
-=20
-when adding new variables to these structs, can we keep the __packed for al=
-l=20
-messages going through the "wire"?
-
-Thanks,
-- Haiyang
-
+Thank you !!!!!!!!!!!!!!!!
 
