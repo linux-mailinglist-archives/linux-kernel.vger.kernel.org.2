@@ -2,250 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E63535A11B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CAA435A11C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233794AbhDIOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:33:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:52726 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231946AbhDIOdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:33:12 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C7351FB;
-        Fri,  9 Apr 2021 07:32:59 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.28.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5EEE33F694;
-        Fri,  9 Apr 2021 07:32:57 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 15:32:47 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH v3] arm64: mte: Move MTE TCF0 check in entry-common
-Message-ID: <20210409143247.GA58461@C02TD0UTHF1T.local>
-References: <20210409132419.29965-1-vincenzo.frascino@arm.com>
+        id S233796AbhDIOdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:33:37 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:56089 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231946AbhDIOdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 10:33:35 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 139EWmYC019758
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 9 Apr 2021 10:32:48 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 0A5C315C3B12; Fri,  9 Apr 2021 10:32:48 -0400 (EDT)
+Date:   Fri, 9 Apr 2021 10:32:47 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     neilb@suse.de, peterz@infradead.org, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        tglx@linutronix.de, bigeasy@linutronix.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/17] bit_spinlock: Prepare for split_locks
+Message-ID: <YHBlj3AjYbQHfsc0@mit.edu>
+References: <20210409025131.4114078-1-willy@infradead.org>
+ <20210409025131.4114078-4-willy@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210409132419.29965-1-vincenzo.frascino@arm.com>
+In-Reply-To: <20210409025131.4114078-4-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincenzo,
-
-On Fri, Apr 09, 2021 at 02:24:19PM +0100, Vincenzo Frascino wrote:
-> The check_mte_async_tcf macro sets the TIF flag non-atomically. This can
-> race with another CPU doing a set_tsk_thread_flag() and all the other flags
-> can be lost in the process.
+On Fri, Apr 09, 2021 at 03:51:17AM +0100, Matthew Wilcox (Oracle) wrote:
+> Make bit_spin_lock() and variants variadic to help with the transition.
+> The split_lock parameter will become mandatory at the end of the series.
+> Also add bit_spin_lock_nested() and bit_spin_unlock_assign() which will
+> both be used by the rhashtable code later.
 > 
-> Move the tcf0 check to enter_from_user_mode() and clear tcf0 in
-> exit_to_user_mode() to address the problem.
-> 
-> Note: Moving the check in entry-common allows to use set_thread_flag()
-> which is safe.
-> 
-> Fixes: 637ec831ea4f ("arm64: mte: Handle synchronous and asynchronous tag check faults")
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: stable@vger.kernel.org
-> Reported-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> ---
->  arch/arm64/include/asm/mte.h     |  9 +++++++++
->  arch/arm64/kernel/entry-common.c |  6 ++++++
->  arch/arm64/kernel/entry.S        | 34 --------------------------------
->  arch/arm64/kernel/mte.c          | 33 +++++++++++++++++++++++++++++--
->  4 files changed, 46 insertions(+), 36 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-> index 9b557a457f24..c7ab681a95c3 100644
-> --- a/arch/arm64/include/asm/mte.h
-> +++ b/arch/arm64/include/asm/mte.h
-> @@ -49,6 +49,9 @@ int mte_ptrace_copy_tags(struct task_struct *child, long request,
->  
->  void mte_assign_mem_tag_range(void *addr, size_t size);
->  
-> +void noinstr check_mte_async_tcf0(void);
-> +void noinstr clear_mte_async_tcf0(void);
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Can we please put the implementations in the header so that they can be
-inlined? Otherwise when the HW doesn't support MTE we'll always do a pointless
-branch to the out-of-line implementation.
+This changes the function signature for bit_spin_lock(), if I'm
+reading this correctly.  Hence, this is going to break git
+bisectability; was this patch series separated out for easy of review,
+and you were planning on collapsing things into a single patch to
+preserve bisectability?
 
-With that, we can mark them __always_inline to avoid weirdness with an inline
-noinstr function.
-
-Otherwise, this looks good to me.
-
-Thanks,
-Mark.
-
-> +
->  #else /* CONFIG_ARM64_MTE */
->  
->  /* unused if !CONFIG_ARM64_MTE, silence the compiler */
-> @@ -83,6 +86,12 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
->  {
->  	return -EIO;
->  }
-> +static inline void check_mte_async_tcf0(void)
-> +{
-> +}
-> +static inline void clear_mte_async_tcf0(void)
-> +{
-> +}
->  
->  static inline void mte_assign_mem_tag_range(void *addr, size_t size)
->  {
-> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-> index 9d3588450473..837d3624a1d5 100644
-> --- a/arch/arm64/kernel/entry-common.c
-> +++ b/arch/arm64/kernel/entry-common.c
-> @@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
->  	CT_WARN_ON(ct_state() != CONTEXT_USER);
->  	user_exit_irqoff();
->  	trace_hardirqs_off_finish();
-> +
-> +	/* Check for asynchronous tag check faults in user space */
-> +	check_mte_async_tcf0();
-
-
-
->  }
->  
->  asmlinkage void noinstr exit_to_user_mode(void)
->  {
-> +	/* Ignore asynchronous tag check faults in the uaccess routines */
-> +	clear_mte_async_tcf0();
-> +
->  	trace_hardirqs_on_prepare();
->  	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
->  	user_enter_irqoff();
-> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-> index a31a0a713c85..fb57df0d453f 100644
-> --- a/arch/arm64/kernel/entry.S
-> +++ b/arch/arm64/kernel/entry.S
-> @@ -34,15 +34,11 @@
->   * user and kernel mode.
->   */
->  	.macro user_exit_irqoff
-> -#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
->  	bl	enter_from_user_mode
-> -#endif
->  	.endm
->  
->  	.macro user_enter_irqoff
-> -#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
->  	bl	exit_to_user_mode
-> -#endif
->  	.endm
->  
->  	.macro	clear_gp_regs
-> @@ -147,32 +143,6 @@ alternative_cb_end
->  .L__asm_ssbd_skip\@:
->  	.endm
->  
-> -	/* Check for MTE asynchronous tag check faults */
-> -	.macro check_mte_async_tcf, flgs, tmp
-> -#ifdef CONFIG_ARM64_MTE
-> -alternative_if_not ARM64_MTE
-> -	b	1f
-> -alternative_else_nop_endif
-> -	mrs_s	\tmp, SYS_TFSRE0_EL1
-> -	tbz	\tmp, #SYS_TFSR_EL1_TF0_SHIFT, 1f
-> -	/* Asynchronous TCF occurred for TTBR0 access, set the TI flag */
-> -	orr	\flgs, \flgs, #_TIF_MTE_ASYNC_FAULT
-> -	str	\flgs, [tsk, #TSK_TI_FLAGS]
-> -	msr_s	SYS_TFSRE0_EL1, xzr
-> -1:
-> -#endif
-> -	.endm
-> -
-> -	/* Clear the MTE asynchronous tag check faults */
-> -	.macro clear_mte_async_tcf
-> -#ifdef CONFIG_ARM64_MTE
-> -alternative_if ARM64_MTE
-> -	dsb	ish
-> -	msr_s	SYS_TFSRE0_EL1, xzr
-> -alternative_else_nop_endif
-> -#endif
-> -	.endm
-> -
->  	.macro mte_set_gcr, tmp, tmp2
->  #ifdef CONFIG_ARM64_MTE
->  	/*
-> @@ -243,8 +213,6 @@ alternative_else_nop_endif
->  	ldr	x19, [tsk, #TSK_TI_FLAGS]
->  	disable_step_tsk x19, x20
->  
-> -	/* Check for asynchronous tag check faults in user space */
-> -	check_mte_async_tcf x19, x22
->  	apply_ssbd 1, x22, x23
->  
->  	ptrauth_keys_install_kernel tsk, x20, x22, x23
-> @@ -775,8 +743,6 @@ SYM_CODE_START_LOCAL(ret_to_user)
->  	cbnz	x2, work_pending
->  finish_ret_to_user:
->  	user_enter_irqoff
-> -	/* Ignore asynchronous tag check faults in the uaccess routines */
-> -	clear_mte_async_tcf
->  	enable_step_tsk x19, x2
->  #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
->  	bl	stackleak_erase
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index b3c70a612c7a..84a942c25870 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -166,14 +166,43 @@ static void set_gcr_el1_excl(u64 excl)
->  	 */
->  }
->  
-> -void flush_mte_state(void)
-> +void noinstr check_mte_async_tcf0(void)
-> +{
-> +	u64 tcf0;
-> +
-> +	if (!system_supports_mte())
-> +		return;
-> +
-> +	/*
-> +	 * dsb(ish) is not required before the register read
-> +	 * because the TFSRE0_EL1 is automatically synchronized
-> +	 * by the hardware on exception entry as SCTLR_EL1.ITFSB
-> +	 * is set.
-> +	 */
-> +	tcf0 = read_sysreg_s(SYS_TFSRE0_EL1);
-> +
-> +	if (tcf0 & SYS_TFSR_EL1_TF0)
-> +		set_thread_flag(TIF_MTE_ASYNC_FAULT);
-> +
-> +	write_sysreg_s(0, SYS_TFSRE0_EL1);
-> +}
-> +
-> +void noinstr clear_mte_async_tcf0(void)
->  {
->  	if (!system_supports_mte())
->  		return;
->  
-> -	/* clear any pending asynchronous tag fault */
->  	dsb(ish);
->  	write_sysreg_s(0, SYS_TFSRE0_EL1);
-> +}
-> +
-> +void flush_mte_state(void)
-> +{
-> +	if (!system_supports_mte())
-> +		return;
-> +
-> +	/* clear any pending asynchronous tag fault */
-> +	clear_mte_async_tcf0();
->  	clear_thread_flag(TIF_MTE_ASYNC_FAULT);
->  	/* disable tag checking */
->  	set_sctlr_el1_tcf0(SCTLR_EL1_TCF0_NONE);
-> -- 
-> 2.30.2
-> 
+					- Ted
