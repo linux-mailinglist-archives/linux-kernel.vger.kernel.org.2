@@ -2,110 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC0F1359C64
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A93DC359C68
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:55:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233597AbhDIKyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:54:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59252 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232087AbhDIKym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:54:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 875E9AF9E;
-        Fri,  9 Apr 2021 10:54:28 +0000 (UTC)
-Message-ID: <2dbb9e8c1f1e107712b05e36aa1b244329381425.camel@suse.de>
-Subject: Re: [PATCH 4/4] ARM: dts: Fix-up EMMC2 controller's frequency
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Alan Cooper <alcooperx@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     Stefan Wahren <stefan.wahren@i2se.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        linux-rpi-kernel@lists.infradead.org,
-        Florian Fainelli <f.fainelli@gmail.com>, phil@raspberrypi.com,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
+        id S233615AbhDIKza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:55:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49558 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232087AbhDIKz2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:55:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617965715;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iRvExO2u4w6AmWe5Y0tb/mvT3i84fkN17wDJxZJ/hLs=;
+        b=Ip3vCyi0qopT6pWKemIRJEmL3wLyYWEAPHo6rW0QZp1cOshj60vCAx765fdCow0SBjFyze
+        Zbn+9G/4XV/xqwD44mnyjuX1r19IeXxy3EJ+8x/Rravhf7yvzfBFpf/d9orN3AsSjsocLJ
+        XwV+E1AKMozSjOWtOpRt/WQQ5YuviYA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-320-NBpmevU0PbymDv5HEKTygA-1; Fri, 09 Apr 2021 06:55:12 -0400
+X-MC-Unique: NBpmevU0PbymDv5HEKTygA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A2BBD9126D;
+        Fri,  9 Apr 2021 10:55:11 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-112-70.ams2.redhat.com [10.36.112.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C1C5219C95;
+        Fri,  9 Apr 2021 10:55:09 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-toolchains@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 09 Apr 2021 12:54:26 +0200
-In-Reply-To: <CAOGqxeWzjn70A_gP4Eh_ZLW0H3KkE_wA7QzeGRqU1u7xtJr-+Q@mail.gmail.com>
-References: <20210322185816.27582-1-nsaenz@kernel.org>
-         <20210322185816.27582-5-nsaenz@kernel.org>
-         <401100ea-90ad-57b1-50da-967118a090da@i2se.com>
-         <78dec30c052e9bb76e52c38f3da5af371e5d65f5.camel@suse.de>
-         <2d2a2638-8213-5d6e-0a3a-927ed5bb2ed7@i2se.com>
-         <c7c8e20d3d11c7d6cd203797c5faffa8a4d202a6.camel@suse.de>
-         <CAOGqxeUxOA_s6=KUh_XWFtRF_EWZgQH_y2MEdxUeDQTYMeb+3A@mail.gmail.com>
-         <4d4e3de99dbee711cf47878bf98a7cc34c3f1e65.camel@suse.de>
-         <CAOGqxeWzjn70A_gP4Eh_ZLW0H3KkE_wA7QzeGRqU1u7xtJr-+Q@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-KxZS3sx9rZTVwyYp0yY2"
-User-Agent: Evolution 3.40.0 
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: Re: static_branch/jump_label vs branch merging
+References: <YG80wg/2iZjXfCDJ@hirez.programming.kicks-ass.net>
+        <CAMj1kXGngxH0VCHyREKeLau=159sRkWYKVZwOV84r6dvCqXcig@mail.gmail.com>
+Date:   Fri, 09 Apr 2021 12:55:18 +0200
+In-Reply-To: <CAMj1kXGngxH0VCHyREKeLau=159sRkWYKVZwOV84r6dvCqXcig@mail.gmail.com>
+        (Ard Biesheuvel's message of "Fri, 9 Apr 2021 11:57:22 +0200")
+Message-ID: <877dlbzq09.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+* Ard Biesheuvel:
 
---=-KxZS3sx9rZTVwyYp0yY2
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> Wouldn't that require the compiler to interpret the contents of the
+> asm() block?
 
-Hi again,
+Yes and no.  It would require proper toolchain support, so in this case
+a new ELF relocation type, with compiler, assembler, and linker support
+to generate those relocations and process them.  As far as I understand
+it, the kernel doesn't do things this way.
 
-On Wed, 2021-04-07 at 16:37 -0400, Alan Cooper wrote:
-> Nicolas,
->=20
-> I got a better description of the failure and it looks like the bus
-> clock needs to be limited to 300KHz for a 500MHz core clock.
-> What's happening is that an internal reset sequence is needed after a
-> command timeout and the reset signal needs to be asserted for at least
-> 2 ticks of the bus clock. This is done using a 12 bit counter clocked
-> by the core clock. That means a 500MHz core clock produces a 122KHz
-> reset signal which is too fast for 2 ticks of the 200KHz bus clock
-> (100KHz) but is okay for the 300KHz (150Khz) bus clock.
-
-Is there any value in implementing this in a generic way? That is, will a S=
-oC
-other than BCM2711 ever need this? Otherwise I can simply limit BCM2711's
-sdhci-iproc min clk frequency to 300KHz and call it a day.
-
-The alternative is something the likes of:
-
-	min_clk =3D clk_get_rate(core_bus) >> 11;
-
-But it involves updating the bindings and DT.
-
-Regards,
-Nicolas
-
-
-
-
---=-KxZS3sx9rZTVwyYp0yY2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAmBwMmIACgkQlfZmHno8
-x/7ntQgAiD7GcI2zPvYkkdlBBtohEpENZTydgEPLuTHhXzablbGyC/GT5EJ5Pr+K
-iXL1Qlv5xpovPxWIx5hGdFLY/RbFSI4s4C7f2HYoPgRwwwn5AuCmuVwcL+tKkJ6d
-sD1dmGUJo/uMQ/P3oT0G0Ea4yuz2LSIXeq/K8PEqWLEl+Aaw3ciINqYeUlWOuGcB
-jPTJlSOgYj5rzYAskiRKcTiUp1fVbe9hiMi5ppft4fnJ1nYIU6wQcDxCo1WUUDhe
-Op/DdFTTzW+JP3mSmtr/EzVp5ldrupNFTcOzQODhDb4lEsO/ALBMMiKKhAlJVh0j
-0NofzFbS3vtJ0ffpD7TnoQlkKSIE7g==
-=pOg3
------END PGP SIGNATURE-----
-
---=-KxZS3sx9rZTVwyYp0yY2--
+Thanks,
+Florian
 
