@@ -2,132 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0795359701
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EF9359705
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbhDIH75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:59:57 -0400
-Received: from outbound-smtp44.blacknight.com ([46.22.136.52]:57675 "EHLO
-        outbound-smtp44.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229621AbhDIH7z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:59:55 -0400
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp44.blacknight.com (Postfix) with ESMTPS id EDBD5F8058
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:59:41 +0100 (IST)
-Received: (qmail 3562 invoked from network); 9 Apr 2021 07:59:41 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Apr 2021 07:59:41 -0000
-Date:   Fri, 9 Apr 2021 08:59:39 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH 02/11] mm/page_alloc: Convert per-cpu list protection to
- local_lock
-Message-ID: <20210409075939.GJ3697@techsingularity.net>
-References: <20210407202423.16022-1-mgorman@techsingularity.net>
- <20210407202423.16022-3-mgorman@techsingularity.net>
- <YG7gV7yAEEjOcQZY@hirez.programming.kicks-ass.net>
- <20210408174244.GG3697@techsingularity.net>
- <YG/2scd9ADdrIyCM@hirez.programming.kicks-ass.net>
+        id S232018AbhDIIA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:00:26 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:62422 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229621AbhDIIAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:00:24 -0400
+Received: by ajax-webmail-mail-app3 (Coremail) ; Fri, 9 Apr 2021 15:59:53
+ +0800 (GMT+08:00)
+X-Originating-IP: [222.205.72.8]
+Date:   Fri, 9 Apr 2021 15:59:53 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   dinghao.liu@zju.edu.cn
+To:     "Rui Miguel Silva" <rmfrfs@gmail.com>
+Cc:     kjlu@umn.edu, "Steve Longerbeam" <slongerbeam@gmail.com>,
+        "Philipp Zabel" <p.zabel@pengutronix.de>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Shawn Guo" <shawnguo@kernel.org>,
+        "Sascha Hauer" <s.hauer@pengutronix.de>,
+        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
+        "Fabio Estevam" <festevam@gmail.com>,
+        "NXP Linux Team" <linux-imx@nxp.com>, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] media: imx: imx7-mipi-csis: Fix runtime PM
+ imbalance in mipi_csis_s_stream
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
+ Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
+In-Reply-To: <20210408135702.f7ikjvwirvtzsarv@arch-thunder.localdomain>
+References: <20210408090827.32612-1-dinghao.liu@zju.edu.cn>
+ <20210408135702.f7ikjvwirvtzsarv@arch-thunder.localdomain>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <YG/2scd9ADdrIyCM@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <5025467a.453b6.178b5a50321.Coremail.dinghao.liu@zju.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: cC_KCgC3nz55CXBgg0vxAA--.30249W
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgkKBlZdtTUlDwABsn
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 08:39:45AM +0200, Peter Zijlstra wrote:
-> On Thu, Apr 08, 2021 at 06:42:44PM +0100, Mel Gorman wrote:
-> > On Thu, Apr 08, 2021 at 12:52:07PM +0200, Peter Zijlstra wrote:
-> > > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > > > index a68bacddcae0..e9e60d1a85d4 100644
-> > > > --- a/mm/page_alloc.c
-> > > > +++ b/mm/page_alloc.c
-> > > > @@ -112,6 +112,13 @@ typedef int __bitwise fpi_t;
-> > > >  static DEFINE_MUTEX(pcp_batch_high_lock);
-> > > >  #define MIN_PERCPU_PAGELIST_FRACTION	(8)
-> > > >  
-> > > > +struct pagesets {
-> > > > +	local_lock_t lock;
-> > > > +};
-> > > > +static DEFINE_PER_CPU(struct pagesets, pagesets) = {
-> > > > +	.lock = INIT_LOCAL_LOCK(lock),
-> > > > +};
-> > > 
-> > > So why isn't the local_lock_t in struct per_cpu_pages ? That seems to be
-> > > the actual object that is protected by it and is already per-cpu.
-> > > 
-> > > Is that because you want to avoid the duplication across zones? Is that
-> > > worth the effort?
-> > 
-> > When I wrote the patch, the problem was that zone_pcp_reset freed the
-> > per_cpu_pages structure and it was "protected" by local_irq_save(). If
-> > that was converted to local_lock_irq then the structure containing the
-> > lock is freed before it is released which is obviously bad.
-> > 
-> > Much later when trying to make the allocator RT-safe in general, I realised
-> > that locking was broken and fixed it in patch 3 of this series. With that,
-> > the local_lock could potentially be embedded within per_cpu_pages safely
-> > at the end of this series.
-> 
-> Fair enough; I was just wondering why the obvious solution wasn't chosen
-> and neither changelog nor comment explain, so I had to ask :-)
-
-It's a fair question and it was my first approach before I hit problems.
-Thinking again this morning, I remembered that another problem I hit was
-patterns like this
-
-        local_lock_irqsave(&pagesets.lock, flags);
-        pcp = per_cpu_ptr(zone->per_cpu_pageset, cpu);
-
-turning into
-
-	cpu = get_cpu();
-        pcp = per_cpu_ptr(zone->per_cpu_pageset, cpu);
-        local_lock_irqsave(&pcp->lock, flags);
-
-That has its own problems if zone->lock was acquired within the
-local_lock_irqsave section (Section "spinlock_t and rwlock_t" in
-Documentation/locking/locktypes.rst) so it has to turn into
-
-	migrate_disable();
-	pcp = this_cpu_ptr(zone->per_cpu_pageset);
-        local_lock_irqsave(&pcp->lock, flags);
-
-I did not want to start adding migrate_disable() in multiple places like
-this because I'm guessing that new users of migrate_disable() need strong
-justification and adding such code in page_alloc.c might cause cargo-cult
-copy&paste in the future. Maybe it could be addressed with a helper like
-this_cpu_local_lock or this_cpu_local_lock_irq but that means in some
-cases that the PCP structure is looked up twice with patterns like this one
-
-        local_lock_irqsave(&pagesets.lock, flags);
-        free_unref_page_commit(page, pfn, migratetype);
-        local_unlock_irqrestore(&pagesets.lock, flags);
-
-To get around multiple lookups the helper becomes something that disables
-migration, looks up the PCP structure, locks it and returns it with
-pcp then passed around as appropriate. Not sure what I would call that
-helper :P
-
-In the end I just gave up and kept it simple as there is no benefit to
-!PREEMPT_RT which just disables IRQs. Maybe it'll be worth considering when
-PREEMPT_RT is upstream and can be enabled. The series was functionally
-tested on the PREEMPT_RT tree by reverting the page_alloc.c patch and
-applies this series and all of its prerequisites on top.
-
--- 
-Mel Gorman
-SUSE Labs
+PiBIaSBMaXUsCj4gVGhhbmtzIGZvciB5b3VyIHBhdGNoLgo+IAo+IE9uIFRodSwgQXByIDA4LCAy
+MDIxIGF0IDA1OjA4OjI3UE0gKzA4MDAsIERpbmdoYW8gTGl1IHdyb3RlOgo+ID4gV2hlbiB2NGwy
+X3N1YmRldl9jYWxsKCkgZmFpbHMsIGEgcGFpcmluZyBQTSB1c2FnZSBjb3VudGVyCj4gPiBkZWNy
+ZW1lbnQgaXMgbmVlZGVkIHRvIGtlZXAgdGhlIGNvdW50ZXIgYmFsYW5jZWQuIEl0J3MgdGhlCj4g
+PiBzYW1lIGZvciB0aGUgZm9sbG93aW5nIGVycm9yIHBhdGhzIGluIGNhc2UgJ2VuYWJsZScgaXMg
+b24uCj4gPiAKPiA+IFNpZ25lZC1vZmYtYnk6IERpbmdoYW8gTGl1IDxkaW5naGFvLmxpdUB6anUu
+ZWR1LmNuPgo+ID4gLS0tCj4gPiAgZHJpdmVycy9zdGFnaW5nL21lZGlhL2lteC9pbXg3LW1pcGkt
+Y3Npcy5jIHwgOSArKysrKysrLS0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCsp
+LCAyIGRlbGV0aW9ucygtKQo+ID4gCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zdGFnaW5nL21l
+ZGlhL2lteC9pbXg3LW1pcGktY3Npcy5jIGIvZHJpdmVycy9zdGFnaW5nL21lZGlhL2lteC9pbXg3
+LW1pcGktY3Npcy5jCj4gPiBpbmRleCBhMDFhNzM2NGI0YjkuLjJhM2ZmZjIzMWE0MCAxMDA2NDQK
+PiA+IC0tLSBhL2RyaXZlcnMvc3RhZ2luZy9tZWRpYS9pbXgvaW14Ny1taXBpLWNzaXMuYwo+ID4g
+KysrIGIvZHJpdmVycy9zdGFnaW5nL21lZGlhL2lteC9pbXg3LW1pcGktY3Npcy5jCj4gPiBAQCAt
+NjI3LDIxICs2MjcsMjYgQEAgc3RhdGljIGludCBtaXBpX2NzaXNfc19zdHJlYW0oc3RydWN0IHY0
+bDJfc3ViZGV2ICptaXBpX3NkLCBpbnQgZW5hYmxlKQo+ID4gIAkJCXJldHVybiByZXQ7Cj4gPiAg
+CQl9Cj4gPiAgCQlyZXQgPSB2NGwyX3N1YmRldl9jYWxsKHN0YXRlLT5zcmNfc2QsIGNvcmUsIHNf
+cG93ZXIsIDEpOwo+ID4gLQkJaWYgKHJldCA8IDApCj4gPiArCQlpZiAocmV0IDwgMCkgewo+ID4g
+KwkJCXBtX3J1bnRpbWVfcHV0X25vaWRsZSgmc3RhdGUtPnBkZXYtPmRldik7Cj4gCj4gSSB0aGlu
+ayBoZXJlIHdlIHNob3VsZCBnbyBjb21wbGV0ZWx5IHBtX3J1bnRpbWVfcHV0IHRvIGNhbGwgdGhl
+Cj4gbWlwaV9jc2lzX3BtX3N1c3BlbmQgZG93biB0aGUgbGluZSwgcmlnaHQ/Cj4gCj4gPiAgCQkJ
+cmV0dXJuIHJldDsKPiA+ICsJCX0KPiA+ICAJfQo+ID4gIAo+ID4gIAltdXRleF9sb2NrKCZzdGF0
+ZS0+bG9jayk7Cj4gPiAgCWlmIChlbmFibGUpIHsKPiA+ICAJCWlmIChzdGF0ZS0+ZmxhZ3MgJiBT
+VF9TVVNQRU5ERUQpIHsKPiA+ICAJCQlyZXQgPSAtRUJVU1k7Cj4gPiArCQkJcG1fcnVudGltZV9w
+dXRfbm9pZGxlKCZzdGF0ZS0+cGRldi0+ZGV2KTsKPiAKPiBzaW5jZSB3ZSBhcmUgaW4gU1RfU1VT
+UEVOREVEIHN0YXRlLCBmb3Igc3VyZSB0aGUgcG0gY291bnRlciB3YXMKPiBhbHJlYWR5IDAuCj4g
+Cj4gPiAgCQkJZ290byB1bmxvY2s7Cj4gPiAgCQl9Cj4gPiAgCj4gPiAgCQltaXBpX2NzaXNfc3Rh
+cnRfc3RyZWFtKHN0YXRlKTsKPiA+ICAJCXJldCA9IHY0bDJfc3ViZGV2X2NhbGwoc3RhdGUtPnNy
+Y19zZCwgdmlkZW8sIHNfc3RyZWFtLCAxKTsKPiA+IC0JCWlmIChyZXQgPCAwKQo+ID4gKwkJaWYg
+KHJldCA8IDApIHsKPiA+ICsJCQlwbV9ydW50aW1lX3B1dF9ub2lkbGUoJnN0YXRlLT5wZGV2LT5k
+ZXYpOwo+IAo+IGhlcmUgYWxzbyB3ZSBuZWVkIHRoZSBwbV9ydW50aW1lX3B1dCwgbWF5YmUganVz
+dCBjaGFuZ2luZyB0aGUgdW5sb2NrCj4gdGFnIGJlbGxvdyBmcm9tOgo+ICAgICBpZiAoIWVuYWJs
+ZSkKPiAgICAgICAgIHBtX3J1bnRpbWVfcHV0KCZzdGF0ZS0+cGRldi0+ZGV2KTsKPiAKPiB0byAK
+PiAgICAgaWYgKCFlbmFibGUgfHwgKHJldCA8IDApKQo+ICAgICAgICAgcG1fcnVudGltZV9wdXQo
+JnN0YXRlLT5wZGV2LT5kZXYpOwo+IAo+IHdpbGwgbm90IGh1cnQgdGhlIGZpcnN0IGNhc2UgYW5k
+IHdpbGwgY29tcGxldGUgdGhlIHN1c3BlbmQgcm91dGluZQo+IGFmdGVyd2FyZCBpbiB0aGUgc2Vj
+b25kIGNhc2UuCj4gCgpUaGlzIGlzIG11Y2ggY2xlYXJlciwgdGhhbmtzISBJIHdpbGwgZml4IHRo
+aXMgYW5kIHNlbmQgYSBuZXcgcGF0Y2ggc29vbi4KClJlZ2FyZHMsCkRpbmdoYW8=
