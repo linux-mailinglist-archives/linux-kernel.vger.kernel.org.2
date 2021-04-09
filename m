@@ -2,126 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3934035A04E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CD535A057
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbhDINul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:50:41 -0400
-Received: from mga17.intel.com ([192.55.52.151]:19276 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231402AbhDINui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:50:38 -0400
-IronPort-SDR: ymhl+F89EZZwD1+dO7g3L/JOX9sxAiuf2LHc1V15BnCXvK68yybvH2CRDCm68H+qWSBm4Fu6YL
- gWHrf0D6JpEQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="173847065"
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="173847065"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 06:50:23 -0700
-IronPort-SDR: AilOT59qBCKyedDDtArYIWIPeeZkMMwb+ewJF7dafOOjfJr/Y4ryBjv5Z3S9Ls7QUj7SpF9K+h
- 4k+aj1L3Tg+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="419536657"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga007.jf.intel.com with ESMTP; 09 Apr 2021 06:50:22 -0700
-Received: from [10.209.7.33] (kliang2-MOBL.ccr.corp.intel.com [10.209.7.33])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S233802AbhDINvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:51:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20639 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232286AbhDINvG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 09:51:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617976252;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1H7JWflEbUBrMm/ruOiyuJWmABK/tUM47hXSqXsjLEk=;
+        b=brHMTT98acAKkO742KGilxtJ2AEIVaUmd6u7cOcP9wHOw0ZAmbxm+vohuXqo4y8p3/0rjS
+        63gAWyQkTkADHbCjRX4oxKJXrMSskxL9mxYQFU/0c5D9s/9kdCfdkAtZLqhlwGLySlW5Dj
+        u1Pkr7MCwH24S7g7dElHZdVkeYrVCrk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-372--FpuoU--OZqC7O2CBWnmIw-1; Fri, 09 Apr 2021 09:50:49 -0400
+X-MC-Unique: -FpuoU--OZqC7O2CBWnmIw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 5DC85580812;
-        Fri,  9 Apr 2021 06:50:21 -0700 (PDT)
-Subject: Re: [PATCH V5 16/25] perf/x86: Register hybrid PMUs
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-        ricardo.neri-calderon@linux.intel.com
-References: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
- <1617635467-181510-17-git-send-email-kan.liang@linux.intel.com>
- <YG/7BgFaRC/Eos76@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <41c7b4ec-b742-2f7c-9991-7b23c9971dc6@linux.intel.com>
-Date:   Fri, 9 Apr 2021 09:50:20 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E4E281425A;
+        Fri,  9 Apr 2021 13:50:47 +0000 (UTC)
+Received: from [10.36.115.11] (ovpn-115-11.ams2.redhat.com [10.36.115.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5AA635D9E3;
+        Fri,  9 Apr 2021 13:50:43 +0000 (UTC)
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+ <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
+ <5e934d94-414c-90de-c58e-34456e4ab1cf@redhat.com>
+ <20210409133347.r2uf3u5g55pp27xn@box>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
+Message-ID: <5ef83789-ffa5-debd-9ea2-50d831262237@redhat.com>
+Date:   Fri, 9 Apr 2021 15:50:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YG/7BgFaRC/Eos76@hirez.programming.kicks-ass.net>
+In-Reply-To: <20210409133347.r2uf3u5g55pp27xn@box>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/9/2021 2:58 AM, Peter Zijlstra wrote:
-> On Mon, Apr 05, 2021 at 08:10:58AM -0700, kan.liang@linux.intel.com wrote:
->> @@ -2089,9 +2119,46 @@ static int __init init_hw_perf_events(void)
->>   	if (err)
->>   		goto out1;
->>   
->> -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
->> -	if (err)
->> -		goto out2;
->> +	if (!is_hybrid()) {
->> +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
->> +		if (err)
->> +			goto out2;
->> +	} else {
->> +		u8 cpu_type = get_this_hybrid_cpu_type();
->> +		struct x86_hybrid_pmu *hybrid_pmu;
->> +		bool registered = false;
->> +		int i;
->> +
->> +		if (!cpu_type && x86_pmu.get_hybrid_cpu_type)
->> +			cpu_type = x86_pmu.get_hybrid_cpu_type();
->> +
->> +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
->> +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
->> +
->> +			hybrid_pmu->pmu = pmu;
->> +			hybrid_pmu->pmu.type = -1;
->> +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
->> +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
->> +
->> +			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
->> +						(hybrid_pmu->cpu_type == hybrid_big) ? PERF_TYPE_RAW : -1);
->> +			if (err)
->> +				continue;
->> +
->> +			if (cpu_type == hybrid_pmu->cpu_type)
->> +				x86_pmu_update_cpu_context(&hybrid_pmu->pmu, raw_smp_processor_id());
->> +
->> +			registered = true;
->> +		}
->> +
->> +		if (!registered) {
->> +			pr_warn("Failed to register hybrid PMUs\n");
->> +			kfree(x86_pmu.hybrid_pmu);
->> +			x86_pmu.hybrid_pmu = NULL;
->> +			x86_pmu.num_hybrid_pmus = 0;
->> +			goto out2;
->> +		}
+>> It looks quite hacky (well, what did I expect from an RFC :) ) you can no
+>> longer distinguish actually poisoned pages from "temporarily poisoned"
+>> pages. FOLL_ALLOW_POISONED sounds especially nasty and dangerous -  "I want
+>> to read/write a poisoned page, trust me, I know what I am doing".
+>>
+>> Storing the state for each individual page initially sounded like the right
+>> thing to do, but I wonder if we couldn't handle this on a per-VMA level. You
+>> can just remember the handful of shared ranges internally like you do right
+>> now AFAIU.
 > 
-> I don't think this is quite right. registered will be true even if one
-> fails, while I think you meant to only have it true when all (both)
-> types registered correctly.
+> per-VMA would not fly for file-backed (e.g. tmpfs) memory. We may need to
+> combine PG_hwpoison with VMA flag. Maybe per-inode tracking would also be
+> required. Or per-memslot. I donno. Need more experiments.
 
-No, I mean that perf error out only when all types fail to be registered.
+Indeed.
 
-For the case (1 failure, 1 success), users can still access the 
-registered PMU.
-When a CPU belongs to the unregistered PMU online, a warning will be 
-displayed. Because in init_hybrid_pmu(), we will check the PMU type 
-before update the CPU mask.
+> 
+> Note, I use PG_hwpoison now, but if we find a show-stopper issue where we
+> would see confusion with a real poison, we can switch to new flags and
+> a new swap_type(). I have not seen a reason yet.
 
-         if (WARN_ON_ONCE(!pmu || (pmu->pmu.type == -1))) {
-                 cpuc->pmu = NULL;
-                 return false;
-         }
+I think we'll want a dedicate mechanism to cleanly mark pages as 
+"protected". Finding a page flag you can use will be the problematic 
+part, but should not be impossible if we have a good reason to do so 
+(even if it means making the feature mutually exclusive with other 
+features).
 
+> 
+>>  From what I get, you want a way to
+>>
+>> 1. Unmap pages from the user space page tables.
+> 
+> Plain unmap would not work for some use-cases. Some CSPs want to
+> preallocate memory in a specific way. It's a way to provide a fine-grained
+> NUMA policy.
+> 
+> The existing mapping has to be converted.
+> 
+>> 2. Disallow re-faulting of the protected pages into the page tables. On user
+>> space access, you want to deliver some signal (e.g., SIGBUS).
+> 
+> Note that userspace mapping is the only source of pfn's for VM's shadow
+> mapping. The fault should be allow, but lead to non-present PTE that still
+> encodes pfn.
 
+Makes sense, but I guess that's the part still to be implemented (see 
+next comment).
+
+> 
+>> 3. Allow selected users to still grab the pages (esp. KVM to fault them into
+>> the page tables).
+> 
+> As long as fault leads to non-present PTEs we are fine. Usespace still may
+> want to mlock() some of guest memory. There's no reason to prevent this.
+
+I'm curious, even get_user_pages() will lead to a present PTE as is, no? 
+So that will need modifications I assume. (although I think it 
+fundamentally differs to the way get_user_pages() works - trigger a 
+fault first, then lookup the PTE in the page tables).
+
+>> 4. Allow access to currently shared specific pages from user space.
+>>
+>> Right now, you achieve
+>>
+>> 1. Via try_to_unmap()
+>> 2. TestSetPageHWPoison
+>> 3. TBD (e.g., FOLL_ALLOW_POISONED)
+>> 4. ClearPageHWPoison()
+>>
+>>
+>> If we could bounce all writes to shared pages through the kernel, things
+>> could end up a little easier. Some very rough idea:
+>>
+>> We could let user space setup VM memory as
+>> mprotect(PROT_READ) (+ PROT_KERNEL_WRITE?), and after activating protected
+>> memory (I assume via a KVM ioctl), make sure the VMAs cannot be set to
+>> PROT_WRITE anymore. This would already properly unmap and deliver a SIGSEGV
+>> when trying to write from user space.
+>>
+>> You could then still access the pages, e.g., via FOLL_FORCE or a new fancy
+>> flag that allows to write with VM_MAYWRITE|VM_DENYUSERWRITE. This would
+>> allow an ioctl to write page content and to map the pages into NPTs.
+>>
+>> As an extension, we could think about (re?)mapping some shared pages
+>> read|write. The question is how to synchronize with user space.
+>>
+>> I have no idea how expensive would be bouncing writes (and reads?) through
+>> the kernel. Did you ever experiment with that/evaluate that?
+> 
+> It's going to be double bounce buffer: on the guest we force swiotlb to
+> make it go through shared region. I don't think it's a good idea.
+
+So if it's already slow, do we really care? ;)
+
+> 
+> There are a number of way to share a memory. It's going to be decided by
+> the way we get these pages unmapped in the first place.
+
+I agree that shared memory can be somewhat problematic and would require 
+tracking it per page.
+
+-- 
 Thanks,
-Kan
+
+David / dhildenb
+
