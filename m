@@ -2,176 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD60E359239
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6141A35923B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhDICv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 22:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44670 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232616AbhDICvz (ORCPT
+        id S232983AbhDICwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 22:52:22 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16057 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232839AbhDICwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 22:51:55 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E32C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 19:51:43 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id j1so1973730qvp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 19:51:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=Ti/qpIJK0JqvHL8TU/tnfoeQ9Y9IJU2p+9Y0hgWyYLA=;
-        b=dbL+4SuFGgzny/mPnRzaZ4dtQnvbr2GIofq9+J0p7ghVS5THzn0NrGyLRIsCM7ufDJ
-         ntYXe6wRo1Qo7BO5TUGo3Swq5JspriqnLFEbKz4EPWmhmvrnLS7Hytszw8i7A2Wo+YFZ
-         t43Iw1Qkun5eJ+ACmxXy3CoEA1Vr5ZjFXmMmFJGEM6BXfQWh3Uj23AOvh2iBmNItNO6s
-         npsCM/CANpewDB/Ck5yama6lTO8stoQpz4bsbc3gVOoOJ6X8ToRVbsQO6HHt4ewimNDY
-         NfRZpUtbPViUzQKO8bfhJDXM46PorufDiOlolfFB806LIh4XzXsDaw3/jRXedTS8hCrM
-         uUVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=Ti/qpIJK0JqvHL8TU/tnfoeQ9Y9IJU2p+9Y0hgWyYLA=;
-        b=GlrEDYLtOFdKCE7PjtxQh2UfC578XLdmusX1GbtFpertlSG7aw6LKdAnFAcv0rh8+Y
-         g9g+DAq+k2EuUhc3wd7JUmJJJj+WcotIcJUfKgCCLy8C75ot4Kqq9/Y5GgQJz2DGuxJR
-         ih/3Z17Yj8I14+fJm7OVWW1/KVQhLg/20FWSlwHTxtRskje4ckS66zfA5IqHeMajQnOu
-         B2S2DW2BLftFi0QpCI8R0OqHR9M1SJ20yu1VX7ODEIJScyoMpVtixc0jLEZhuh5wE3Uq
-         CPZ+IhgZJcqWp0PfNeVZZjmw336OeYi5rQKJEmQNjxQ1QyWXXx06E5iOjN+GO2Jf8lj+
-         INqA==
-X-Gm-Message-State: AOAM531VI//6YQi6F9F8C21XlL75f12SVUEXUzQuXpGdjWn8/EyEoZJL
-        ngneLttWj9oRDO0YA5OCfwQ=
-X-Google-Smtp-Source: ABdhPJzTi39fAOMh7hkNEfyra0UzEUiu3Dt6zJYz5i979zxCQHEcKh6pILhSu5DdXRy7mGBRLE9K0w==
-X-Received: by 2002:a0c:e84e:: with SMTP id l14mr12178774qvo.39.1617936702818;
-        Thu, 08 Apr 2021 19:51:42 -0700 (PDT)
-Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([2804:14c:482:7b04::1000])
-        by smtp.gmail.com with ESMTPSA id 26sm214093qtd.73.2021.04.08.19.51.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 19:51:42 -0700 (PDT)
-Message-ID: <e5c924479839815c025de29d650d82419b18c0dc.camel@gmail.com>
-Subject: Re: [PATCH 2/3] powerpc/mm/hash: Avoid multiple HPT resize-ups on
- memory hotplug
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Thu, 08 Apr 2021 23:51:36 -0300
-In-Reply-To: <YFhNd42RvobCV8tF@yekko.fritz.box>
-References: <20210312072940.598696-1-leobras.c@gmail.com>
-         <20210312072940.598696-3-leobras.c@gmail.com>
-         <YFhNd42RvobCV8tF@yekko.fritz.box>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Thu, 8 Apr 2021 22:52:18 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGjJW5XXHzPpHf;
+        Fri,  9 Apr 2021 10:49:15 +0800 (CST)
+Received: from [10.174.179.9] (10.174.179.9) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 10:52:02 +0800
+Subject: Re: [PATCH 2/4] mm/hugeltb: simplify the return code of
+ __vma_reservation_common()
+To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
+CC:     <n-horiguchi@ah.jp.nec.com>, <hillf.zj@alibaba-inc.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210402093249.25137-1-linmiaohe@huawei.com>
+ <20210402093249.25137-3-linmiaohe@huawei.com>
+ <e958d731-67d4-a56b-aa1d-a8054cf232f2@oracle.com>
+ <40114ff5-ba3d-ca66-3338-25db80a015da@huawei.com>
+ <aaea15d4-c8e0-ee37-8ceb-35326b7ad1ae@oracle.com>
+ <1926967f-3805-2baf-6b86-24039c6513ca@huawei.com>
+ <de625a4c-b5d2-696f-33c7-7876e0f81435@oracle.com>
+ <178a2b05-ab9b-3d38-36c5-3950a3859322@huawei.com>
+ <934938f6-5ef1-a9ba-ed26-e1b5b6c6f437@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <fbda4f72-5ef7-32b6-368f-210e6ed16334@huawei.com>
+Date:   Fri, 9 Apr 2021 10:52:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <934938f6-5ef1-a9ba-ed26-e1b5b6c6f437@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David, thanks for the feedback!
-
-On Mon, 2021-03-22 at 18:55 +1100, David Gibson wrote:
-> > +void hash_memory_batch_expand_prepare(unsigned long newsize)
-> > +{
-> > +	/*
-> > +	 * Resizing-up HPT should never fail, but there are some cases system starts with higher
-> > +	 * SHIFT than required, and we go through the funny case of resizing HPT down while
-> > +	 * adding memory
-> > +	 */
-> > +
-> > +	while (resize_hpt_for_hotplug(newsize, false) == -ENOSPC) {
-> > +		newsize *= 2;
-> > +		pr_warn("Hash collision while resizing HPT\n");
+On 2021/4/9 6:40, Mike Kravetz wrote:
+> On 4/7/21 7:44 PM, Miaohe Lin wrote:
+>> On 2021/4/8 5:23, Mike Kravetz wrote:
+>>> On 4/6/21 8:09 PM, Miaohe Lin wrote:
+>>>> On 2021/4/7 10:37, Mike Kravetz wrote:
+>>>>> On 4/6/21 7:05 PM, Miaohe Lin wrote:
+>>>>>> Hi:
+>>>>>> On 2021/4/7 8:53, Mike Kravetz wrote:
+>>>>>>> On 4/2/21 2:32 AM, Miaohe Lin wrote:
+>>>>>>>> It's guaranteed that the vma is associated with a resv_map, i.e. either
+>>>>>>>> VM_MAYSHARE or HPAGE_RESV_OWNER, when the code reaches here or we would
+>>>>>>>> have returned via !resv check above. So ret must be less than 0 in the
+>>>>>>>> 'else' case. Simplify the return code to make this clear.
+>>>>>>>
+>>>>>>> I believe we still neeed that ternary operator in the return statement.
+>>>>>>> Why?
+>>>>>>>
+>>>>>>> There are two basic types of mappings to be concerned with:
+>>>>>>> shared and private.
+>>>>>>> For private mappings, a task can 'own' the mapping as indicated by
+>>>>>>> HPAGE_RESV_OWNER.  Or, it may not own the mapping.  The most common way
+>>>>>>> to create a non-owner private mapping is to have a task with a private
+>>>>>>> mapping fork.  The parent process will have HPAGE_RESV_OWNER set, the
+>>>>>>> child process will not.  The idea is that since the child has a COW copy
+>>>>>>> of the mapping it should not consume reservations made by the parent.
+>>>>>>
+>>>>>> The child process will not have HPAGE_RESV_OWNER set because at fork time, we do:
+>>>>>> 		/*
+>>>>>> 		 * Clear hugetlb-related page reserves for children. This only
+>>>>>> 		 * affects MAP_PRIVATE mappings. Faults generated by the child
+>>>>>> 		 * are not guaranteed to succeed, even if read-only
+>>>>>> 		 */
+>>>>>> 		if (is_vm_hugetlb_page(tmp))
+>>>>>> 			reset_vma_resv_huge_pages(tmp);
+>>>>>> i.e. we have vma->vm_private_data = (void *)0; for child process and vma_resv_map() will
+>>>>>> return NULL in this case.
+>>>>>> Or am I missed something?
+>>>>>>
+>>>>>>> Only the parent (HPAGE_RESV_OWNER) is allowed to consume the
+>>>>>>> reservations.
+>>>>>>> Hope that makens sense?
+>>>>>>>
+>>>>>>>>
+>>>>>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>>>>>> ---
+>>>>>>>>  mm/hugetlb.c | 2 +-
+>>>>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>>
+>>>>>>>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>>>>>>>> index a03a50b7c410..b7864abded3d 100644
+>>>>>>>> --- a/mm/hugetlb.c
+>>>>>>>> +++ b/mm/hugetlb.c
+>>>>>>>> @@ -2183,7 +2183,7 @@ static long __vma_reservation_common(struct hstate *h,
+>>>>>>>>  			return 1;
+>>>>>>>>  	}
+>>>>>>>>  	else
+>>>>>>>
+>>>>>>> This else also handles the case !HPAGE_RESV_OWNER.  In this case, we
+>>>>>>
+>>>>>> IMO, for the case !HPAGE_RESV_OWNER, we won't reach here. What do you think?
+>>>>>>
+>>>>>
+>>>>> I think you are correct.
+>>>>>
+>>>>> However, if this is true we should be able to simply the code even
+>>>>> further.  There is no need to check for HPAGE_RESV_OWNER because we know
+>>>>> it must be set.  Correct?  If so, the code could look something like:
+>>>>>
+>>>>> 	if (vma->vm_flags & VM_MAYSHARE)
+>>>>> 		return ret;
+>>>>>
+>>>>> 	/* We know private mapping with HPAGE_RESV_OWNER */
+>>>>> 	 * ...						 *
+>>>>> 	 * Add that existing comment                     */
+>>>>>
+>>>>> 	if (ret > 0)
+>>>>> 		return 0;
+>>>>> 	if (ret == 0)
+>>>>> 		return 1;
+>>>>> 	return ret;
+>>>>>
+>>>>
+>>>> Many thanks for good suggestion! What do you mean is this ?
+>>>
+>>> I think the below changes would work fine.
+>>>
+>>> However, this patch/discussion has made me ask the question.  Do we need
+>>> the HPAGE_RESV_OWNER flag?  Is the followng true?
+>>> !(vm_flags & VM_MAYSHARE) && vma_resv_map()  ===> HPAGE_RESV_OWNER
+>>> !(vm_flags & VM_MAYSHARE) && !vma_resv_map() ===> !HPAGE_RESV_OWNER
+>>>
+>>
+>> I agree with you.
+>>
+>> HPAGE_RESV_OWNER is set in hugetlb_reserve_pages() and there's no way to clear it
+>> in the owner process. The child process can not inherit both HPAGE_RESV_OWNER and
+>> resv_map. So for !HPAGE_RESV_OWNER vma, it knows nothing about resv_map.
+>>
+>> IMO, in !(vm_flags & VM_MAYSHARE) case, we must have:
+>> 	!!vma_resv_map() == !!HPAGE_RESV_OWNER
+>>
+>>> I am not suggesting we eliminate the flag and make corresponding
+>>> changes.  Just curious if you believe we 'could' remove the flag and
+>>> depend on the above conditions.
+>>>
+>>> One reason for NOT removing the flag is that that flag itself and
+>>> supporting code and commnets help explain what happens with hugetlb
+>>> reserves for COW mappings.  That code is hard to understand and the
+>>> existing code and coments around HPAGE_RESV_OWNER help with
+>>> understanding.
+>>
+>> Agree. These codes took me several days to understand...
+>>
 > 
-> This unbounded increase in newsize makes me nervous - we should be
-> bounded by the current size of the HPT at least.  In practice we
-> should be fine, since the resize should always succeed by the time we
-> reach our current HPT size, but that's far from obvious from this
-> point in the code.
+> Please prepare v2 with the changes to remove the HPAGE_RESV_OWNER check
+> and move the large comment.
+> 
 
-Sure, I will add bounds in v2.
+Sure. Will do. Thanks.
 
 > 
-> And... you're doubling newsize which is a value which might not be a
-> power of 2.  I'm wondering if there's an edge case where this could
-> actually cause us to skip the current size and erroneously resize to
-> one bigger than we have currently.
-
-I also though that at the start, but it seems quite reliable.
-Before using this value, htab_shift_for_mem_size() will always round it
-to next power of 2. 
-Ex.
-Any value between 0b0101 and 0b1000 will be rounded to 0b1000 for shift
-calculation. If we multiply it by 2 (same as << 1), we have that
-anything between 0b01010 and 0b10000 will be rounded to 0b10000. 
-
-This works just fine as long as we are multiplying. 
-Division may have the behavior you expect, as 0b0101 >> 1 would become
-0b010 and skip a shift.
-	
-> > +void memory_batch_expand_prepare(unsigned long newsize)
+> I would prefer to leave other places that mention HPAGE_RESV_OWNER
+> unchanged.
 > 
-> This wrapper doesn't seem useful.
-
-Yeah, it does little, but I can't just jump into hash_* functions
-directly from hotplug-memory.c, without even knowing if it's using hash
-pagetables. (in case the suggestion would be test for disable_radix
-inside hash_memory_batch*)
-
+> Thanks,
 > 
-> > +{
-> > +	if (!radix_enabled())
-> > +		hash_memory_batch_expand_prepare(newsize);
-> > +}
-> >  #endif /* CONFIG_MEMORY_HOTPLUG */
-> >  
-> > 
-> > +	memory_batch_expand_prepare(memblock_phys_mem_size() +
-> > +				     drmem_info->n_lmbs * drmem_lmb_size());
-> 
-> This doesn't look right.  memory_add_by_index() is adding a *single*
-> LMB, I think using drmem_info->n_lmbs here means you're counting this
-> as adding again as much memory as you already have hotplugged.
-
-Yeah, my mistake. This makes sense.
-I will change it to something like 
-memblock_phys_mem_size() + drmem_lmb_size()
-
-> > 
-> > +	memory_batch_expand_prepare(memblock_phys_mem_size() + lmbs_to_add * drmem_lmb_size());
-> > +
-> >  	for_each_drmem_lmb_in_range(lmb, start_lmb, end_lmb) {
-> >  		if (lmb->flags & DRCONF_MEM_ASSIGNED)
-> >  			continue;
-> 
-> I don't see memory_batch_expand_prepare() suppressing any existing HPT
-> resizes.  Won't this just resize to the right size for the full add,
-> then resize several times again as we perform the add?  Or.. I guess
-> that will be suppressed by patch 1/3. 
-
-Correct.
-
->  That's seems kinda fragile, though.
-
-What do you mean by fragile here?
-What would you suggest doing different?
-
-Best regards,
-Leonardo Bras
 
