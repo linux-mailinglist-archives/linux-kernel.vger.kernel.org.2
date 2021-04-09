@@ -2,125 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC3A35A5E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF8335A5CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234532AbhDISf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
+        id S234440AbhDIScB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:32:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234049AbhDISfz (ORCPT
+        with ESMTP id S234313AbhDISb5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:35:55 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A87C061762;
-        Fri,  9 Apr 2021 11:35:42 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id g17so7382347ejp.8;
-        Fri, 09 Apr 2021 11:35:41 -0700 (PDT)
+        Fri, 9 Apr 2021 14:31:57 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F78C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 11:31:44 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id v70so6778564qkb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 11:31:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=wCzL0kRpul2aIZagRqoaFybMwk+kbvcnmS45HwsEuWI=;
-        b=DV1Xmm5Px/RNyljSLJjH5arF+1c/arFd/CaUqvTo5pPDVKKqG//3MpVcGbh61+cXPP
-         nHSBhUK37n24QFyLplMkMT67/QFUCe+2g/y566qSj/d7XhPhRLYmkT09FdCxv3EtnCku
-         pePPl7SE0pcfimaFI9IoDz66x2vddhHMK0BWYFpBOhFOHmgZToANfjt2TX4/kHYyXxrB
-         EqLy2nMoDQCf8fJGUmHTTf11+8pcUS3D5yninSFaNoO9TtdZ+7xKiC1RXRN4bed/XPJW
-         33lQUsxsrk/qi2ikf9wUE6vrm3+W9evEiJDDnIOfxOVeSpTvi91FT8aG4Mr3wJUrQUcl
-         j6Rg==
+        bh=EKQ+PAGgShMzePeTUtIKBivxK+r/dnGaqdyGytm2oWo=;
+        b=fCEschyGAMMn6VF4XHS2XGgUN9Ekoe7/0ZKT+fdRYNG7iwqBjCt2ZG5MVCQm2UpImR
+         pfQNJorBT9ui+crcKlywulA7fWeM4vq4q+AO/ZjSi27KoqxrN5PnfUypmrs9SV9ZHDHX
+         jcpSE8p93+s/UfWmuKIb/sQceslqTjla1XbJLG8Wvfzx1TvgnO8ZI2imcWGp3TOZTjra
+         FSrmmjhLDszTkpV71RNqsEaptogyES14WFo/IJ40KpsNYFItGKyuxbbC1Ib2CiKGgOqn
+         I1jZRD8UpUPNlquDvJ5it8pNSInv3pLslaHtP7fWLkvpnicHWZsagsIXQXRaK87JU+8N
+         UYaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=wCzL0kRpul2aIZagRqoaFybMwk+kbvcnmS45HwsEuWI=;
-        b=nfvqL2VoknT3WBqiRZyZ3YQqwJcIIEPWAWvLURugvxdpfc93fWZy7t87zyyg/1IwWH
-         F14Io2Ih/ffvbEINmYS5uFShoB7Pqi6sVhF52YEqIt2N+9h97gscvFK6UzKw1vgb+7kA
-         wZjNj66yEw7qmnK8eljGmkP4NR4vTE6kfl4Up5eKVNGF9/m44guuFVOW03LUs4QMGUg2
-         5xr0/NXi+wmOdXGg6Tk1jLW1MBp9M36G2OcNExl3+LSHtUSqM37nbYXfA8hNsjANiVqA
-         4n4hMPCiOyrtdN6LVAhSXAzse9BefpciOQ+10rbTXntOKmBNq95WoOPh7xZTFrWv6x8Q
-         QdJQ==
-X-Gm-Message-State: AOAM530RxzRy15NkYfOrRsGaLge26JzhVlTw/fzGT9fUCIlU6Q2YPA9w
-        ayQfSf99eHpP3T0nCGRdUyU=
-X-Google-Smtp-Source: ABdhPJxGvq1X7eRZmuwdi00jojf2a93AtAAyUZMzN/mIf+0TNZg6cEByhX5c+ossghWE34SgLjxSeA==
-X-Received: by 2002:a17:907:2069:: with SMTP id qp9mr17818476ejb.175.1617993340743;
-        Fri, 09 Apr 2021 11:35:40 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (host-79-34-220-97.business.telecomitalia.it. [79.34.220.97])
-        by smtp.gmail.com with ESMTPSA id w22sm1889362edl.92.2021.04.09.11.35.39
+        bh=EKQ+PAGgShMzePeTUtIKBivxK+r/dnGaqdyGytm2oWo=;
+        b=XO+n3Y9VkY87uX3FpXjggx5Gny12/MCElKOwf0lhnF50AmsAE+RWcJxP9fowzOZJLV
+         f7DQ9FYkFtpHa/MW/XTdHtLRU4A+ImUtYfhxoncTxBL5pPsPXVFGjYK8uXhMpk0ZLgGF
+         3dFqxC+LvHeXeaXi7hRUAUVGbb7oIQfXZkTMeKBxOVd0KKNWNoVp2p2ZeNyWc4F5b+H2
+         crawQfXQ1IQtDGT2T5rUUo5uLvO410MqJwoYNahd+Hx3j5jwvCCnoVra+Uw5TS/Pbl0k
+         fQ6Q2exQxCwUZEXdGi9XxTrk+pMzSpwqAqDSXcMqa5/j5qL1HVClJFtMtm3cDbf611ba
+         /Lng==
+X-Gm-Message-State: AOAM531zM+2N9khDK2oraFPLKQ8Xi+sdUyyw9ifTm+KCVSIwMNgGIXys
+        xM8gO7t1V26CBuua9+HRmdpaFg==
+X-Google-Smtp-Source: ABdhPJxMTMAOXo89w9z138HDZgi/fLJzWSprm2eXuSdZMKg1xOZTvnQCJpE9XfEYswibLPl3BEUsLg==
+X-Received: by 2002:a05:620a:10ba:: with SMTP id h26mr2158205qkk.155.1617993103749;
+        Fri, 09 Apr 2021 11:31:43 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id 79sm2411128qki.37.2021.04.09.11.31.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:35:40 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 12:25:29 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] drivers: net: dsa: qca8k: add support for
- multiple cpu port
-Message-ID: <YHArmTHe4k6/9yzy@Ansuel-xps.localdomain>
-References: <20210406045041.16283-1-ansuelsmth@gmail.com>
- <20210406045041.16283-2-ansuelsmth@gmail.com>
- <YGz/nu117LDEhsou@lunn.ch>
- <YGvumGtEJYYvTlc9@Ansuel-xps.localdomain>
- <b8182434-b7b0-ef59-ef15-f84687df94df@gmail.com>
+        Fri, 09 Apr 2021 11:31:43 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 14:31:42 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
+        bsingharora@gmail.com, shy828301@gmail.com,
+        alex.shi@linux.alibaba.com
+Subject: Re: [RFC PATCH v2 09/18] mm: vmscan: remove noinline_for_stack
+Message-ID: <YHCdjgaB8IjOMq4z@cmpxchg.org>
+References: <20210409122959.82264-1-songmuchun@bytedance.com>
+ <20210409122959.82264-10-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b8182434-b7b0-ef59-ef15-f84687df94df@gmail.com>
+In-Reply-To: <20210409122959.82264-10-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 11:15:37AM -0700, Florian Fainelli wrote:
+On Fri, Apr 09, 2021 at 08:29:50PM +0800, Muchun Song wrote:
+> The noinline_for_stack is introduced by commit 666356297ec4 ("vmscan:
+> set up pagevec as late as possible in shrink_inactive_list()"), its
+> purpose is to delay the allocation of pagevec as late as possible to
+> save stack memory. But the commit 2bcf88796381 ("mm: take pagevecs off
+> reclaim stack") replace pagevecs by lists of pages_to_free. So we do
+> not need noinline_for_stack, just remove it (let the compiler decide
+> whether to inline).
 > 
-> 
-> On 4/5/2021 10:16 PM, Ansuel Smith wrote:
-> > On Wed, Apr 07, 2021 at 02:41:02AM +0200, Andrew Lunn wrote:
-> >> On Tue, Apr 06, 2021 at 06:50:40AM +0200, Ansuel Smith wrote:
-> >>> qca8k 83xx switch have 2 cpu ports. Rework the driver to support
-> >>> multiple cpu port. All ports can access both cpu ports by default as
-> >>> they support the same features.
-> >>
-> >> Do you have more information about how this actually works. How does
-> >> the switch decide which port to use when sending a frame towards the
-> >> CPU? Is there some sort of load balancing?
-> >>
-> >> How does Linux decide which CPU port to use towards the switch?
-> >>
-> >>     Andrew
-> > 
-> > I could be very wrong, but in the current dsa code, only the very first
-> > cpu port is used and linux use only that to send data.
-> 
-> That is correct, the first CPU port that is detected by the parsing
-> logic gets used.
-> 
-> > In theory the switch send the frame to both CPU, I'm currently testing a
-> > multi-cpu patch for dsa and I can confirm that with the proposed code
-> > the packets are transmitted correctly and the 2 cpu ports are used.
-> > (The original code has one cpu dedicated to LAN ports and one cpu
-> > dedicated to the unique WAN port.) Anyway in the current implementation
-> > nothing will change. DSA code still supports one cpu and this change
-> > would only allow packet to be received and trasmitted from the second
-> > cpu.
-> 
-> That use case seems to be the most common which makes sense since it
-> allows for true Gigabit routing between WAN and LAN by utilizing both
-> CPUs's Ethernet controllers.
-> 
-> How do you currently assign a port of a switch with a particular CPU
-> port this is presumably done through a separate patch that you have not
-> submitted?
-> -- 
-> Florian
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-I reworked an old patch that added multi-cpu support to dsa.
-CPUs are assigned in a round-robin way and they can be set with an
-additional iproute command. (I read some of the comments in that RFC
-series and I'm planning to introduce some type of function where the
-switch driver can declare a preferred CPU port). Anyway this series is
-just to try to upstream the changes that doesn't require major revision,
-since they can be included even without the multi-cpu patch.
+Good catch.
 
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+Since this patch is somewhat independent of the rest of the series,
+you may want to put it in the very beginning, or even submit it
+separately, to keep the main series as compact as possible. Reviewers
+can be more hesitant to get involved with larger series ;)
