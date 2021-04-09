@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5296359A69
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB8CB359A8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233818AbhDIJ6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:58:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45194 "EHLO mail.kernel.org"
+        id S233966AbhDIJ7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:59:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233709AbhDIJ4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:56:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5D676120B;
-        Fri,  9 Apr 2021 09:56:39 +0000 (UTC)
+        id S233785AbhDIJ5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:57:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49E2A61209;
+        Fri,  9 Apr 2021 09:57:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962200;
-        bh=Cdhmk+TWp34jMVV0QmqyFlB7qlzhMAcygU/gCf3XKF4=;
+        s=korg; t=1617962247;
+        bh=4Ec/QfZsmhDmWj+2nCwATss9P+aU2FPa9MFw0FFo6WU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HhoiTFSRsmRnts5/H4exh6rrScdeKD/MCKHjMCzpmmJWBzrhhPJmfnsOaFXhVFIJl
-         KLpeDHa5NEkwFekGAnBVcAzaE5g8VqaUhe+RPumqIxUZm1PPt07QMoPufobf58eAc9
-         j4sgf8l8ddTW2w0wkNfYtz+SocQOXf8Xe1yjr1UY=
+        b=T6UkqvuKlsgC2LVO/46+1qTgfpO+uD0Xo2DzYE4bvLTODd+qJuTHdyLtMm/A1ph/B
+         Zzw2xgpqk65BZEmzIPb8kTQix4z5hFT+im6kE54xG3xSp1gPuTMe0Zp9GJCsJrKZ2J
+         Tq1Cu1pIGBKgCLHhRh3fsir3G+hhbY9PuzyAt/Bc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 11/18] ia64: mca: allocate early mca with GFP_ATOMIC
-Date:   Fri,  9 Apr 2021 11:53:39 +0200
-Message-Id: <20210409095301.896239528@linuxfoundation.org>
+Subject: [PATCH 5.4 10/23] drm/msm: Ratelimit invalid-fence message
+Date:   Fri,  9 Apr 2021 11:53:40 +0200
+Message-Id: <20210409095303.228694300@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095301.525783608@linuxfoundation.org>
-References: <20210409095301.525783608@linuxfoundation.org>
+In-Reply-To: <20210409095302.894568462@linuxfoundation.org>
+References: <20210409095302.894568462@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,59 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Trofimovich <slyfox@gentoo.org>
+From: Rob Clark <robdclark@chromium.org>
 
-[ Upstream commit f2a419cf495f95cac49ea289318b833477e1a0e2 ]
+[ Upstream commit 7ad48d27a2846bfda29214fb454d001c3e02b9e7 ]
 
-The sleep warning happens at early boot right at secondary CPU
-activation bootup:
+We have seen a couple cases where low memory situations cause something
+bad to happen, followed by a flood of these messages obscuring the root
+cause.  Lets ratelimit the dmesg spam so that next time it happens we
+don't lose the kernel traces leading up to this.
 
-    smp: Bringing up secondary CPUs ...
-    BUG: sleeping function called from invalid context at mm/page_alloc.c:4942
-    in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 0, name: swapper/1
-    CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.12.0-rc2-00007-g79e228d0b611-dirty #99
-    ..
-    Call Trace:
-      show_stack+0x90/0xc0
-      dump_stack+0x150/0x1c0
-      ___might_sleep+0x1c0/0x2a0
-      __might_sleep+0xa0/0x160
-      __alloc_pages_nodemask+0x1a0/0x600
-      alloc_page_interleave+0x30/0x1c0
-      alloc_pages_current+0x2c0/0x340
-      __get_free_pages+0x30/0xa0
-      ia64_mca_cpu_init+0x2d0/0x3a0
-      cpu_init+0x8b0/0x1440
-      start_secondary+0x60/0x700
-      start_ap+0x750/0x780
-    Fixed BSP b0 value from CPU 1
-
-As I understand interrupts are not enabled yet and system has a lot of
-memory.  There is little chance to sleep and switch to GFP_ATOMIC should
-be a no-op.
-
-Link: https://lkml.kernel.org/r/20210315085045.204414-1-slyfox@gentoo.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/ia64/kernel/mca.c | 2 +-
+ drivers/gpu/drm/msm/msm_fence.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/ia64/kernel/mca.c b/arch/ia64/kernel/mca.c
-index 6115464d5f03..d7400b2844f1 100644
---- a/arch/ia64/kernel/mca.c
-+++ b/arch/ia64/kernel/mca.c
-@@ -1860,7 +1860,7 @@ ia64_mca_cpu_init(void *cpu_data)
- 			data = mca_bootmem();
- 			first_time = 0;
- 		} else
--			data = (void *)__get_free_pages(GFP_KERNEL,
-+			data = (void *)__get_free_pages(GFP_ATOMIC,
- 							get_order(sz));
- 		if (!data)
- 			panic("Could not allocate MCA memory for cpu %d\n",
+diff --git a/drivers/gpu/drm/msm/msm_fence.c b/drivers/gpu/drm/msm/msm_fence.c
+index ad2703698b05..cd59a5918038 100644
+--- a/drivers/gpu/drm/msm/msm_fence.c
++++ b/drivers/gpu/drm/msm/msm_fence.c
+@@ -45,7 +45,7 @@ int msm_wait_fence(struct msm_fence_context *fctx, uint32_t fence,
+ 	int ret;
+ 
+ 	if (fence > fctx->last_fence) {
+-		DRM_ERROR("%s: waiting on invalid fence: %u (of %u)\n",
++		DRM_ERROR_RATELIMITED("%s: waiting on invalid fence: %u (of %u)\n",
+ 				fctx->name, fence, fctx->last_fence);
+ 		return -EINVAL;
+ 	}
 -- 
 2.30.2
 
