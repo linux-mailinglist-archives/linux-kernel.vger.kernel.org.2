@@ -2,163 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F7D3592BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5937F3592BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhDIDNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:13:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49490 "EHLO
+        id S233242AbhDIDN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:13:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232858AbhDIDNO (ORCPT
+        with ESMTP id S233234AbhDIDN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:13:14 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B47C061760;
-        Thu,  8 Apr 2021 20:13:02 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGjqr14Qqz9sW1;
-        Fri,  9 Apr 2021 13:12:55 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617937978;
-        bh=//XF3pf9c64cU+t13IzrOTUQCue+ZS7pXjZN4nupHbg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qax6trgBiOYRcsSNdKFHnpVvqoT/99lvSUdSLgtPjyygpFrMlOQ0RXCE3HVNTXY07
-         04A7GqcMIbkDTCphq4BUSlczeW9m3EC4WTJV8C7JljzT47U7MQhfbKo8QuEKzmivnw
-         Z0LMeywwlwFQs7QBaWFEAVj8i9HaP9RhNmW9k8Y+jlt72qttQI7wCYhjL0bgEjHofo
-         K/aglLFfHlsrbmnpHSztligf5yRSZMblS8dLF2TN6/enfrio1sseSl/yKvEIEn4DZp
-         lxcOJdfdaBMmjSbr+6rIoIoxqdBTSxTt+t9wY2WZKMidYXcl8M4ze11jYgLbR5hnHM
-         aAEkwWBtmXs7w==
-Date:   Fri, 9 Apr 2021 13:12:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>
-Subject: linux-next: manual merge of the drm tree with the drm-misc-fixes
- tree
-Message-ID: <20210409131253.1a67eae2@canb.auug.org.au>
+        Thu, 8 Apr 2021 23:13:28 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F4CC061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:13:10 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id s11so3306958pfm.1
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 20:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+DOjZGX/u6rbr2K2XlXD1oEUmYKSnesPXX/ShoCtN0M=;
+        b=NvIL21zOmeCCpYpUvhPnREkyrOsjc6hDE4wd7oEcgjEBnUjKXFuKhCvH3956iRzqDa
+         6jfYI7Ci7hhvI/TgSk3LDPqIO/ScZGcG1XJZrL3k24KXr8tihXsqm7PnHQZAceEXGvj/
+         ItQkL5tzl22HoBJu78izANiE0gu53bIOXuGSI0JSnU19pxMvnxhpMCTWMzI9co/PkbJ2
+         ohvt6wDatg/Py7H8bjjKeks9OEcVkw7pXd8wQIQ+PO1rRRFyR5o6zWPLOaefjZtrF4q6
+         DulaFT+yP3NRTKYNEEtWeQ6JkUd7ZhTOe3fQGxMp1uVO1z2svZ16gCVwIoJeL7yXFQZR
+         RfBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+DOjZGX/u6rbr2K2XlXD1oEUmYKSnesPXX/ShoCtN0M=;
+        b=ozonc6beiIkOz0mgbVTx2bSSyYBo2Src/CYBGXo87/Aa3dhQFugZ3z+1BekE9qCj7z
+         ezBQM9bpfjICN2k/Wu88JZfwxOTqfkiqPmh9hxSA8c6jRc6VjMK+Z+J5iuhsJ5XNYl51
+         d6FpqsUk7aIPiKbeo7I6CAW9wA0lcW3qeJVLw7EUskhgZZ5wQxIqo1tV1awN61HmbLcq
+         YliDEEM9bdpjf/9vTapK85mI5PMM0ya5dZqiyOn1z8rbnPRtynxZVe1+eNaKH4WEtRyP
+         ynCVcReCySsjwa+W7zidsW6jy9vnp9/5oLEkMlFsyr6THt9EHX35yFkd2S/InzBx5NJu
+         bEVw==
+X-Gm-Message-State: AOAM533chJFYnudBlcGYKAxSNMSiRHtc+hRw9j/s19pH5c9MH1EbCtwa
+        tJZri6lOO8NfkVBFgwYubro=
+X-Google-Smtp-Source: ABdhPJxRQVtg0/bwI9ZbPf1bAEwjzRMn66tsTWxNgC1iYvkUTAX9QtsvwyheLFsjw+xAuuDvJoMXNg==
+X-Received: by 2002:aa7:800c:0:b029:22d:3f81:553 with SMTP id j12-20020aa7800c0000b029022d3f810553mr10333434pfi.41.1617937990429;
+        Thu, 08 Apr 2021 20:13:10 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id b17sm664893pfv.187.2021.04.08.20.13.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 20:13:09 -0700 (PDT)
+Subject: Re: [PATCH v3] swiotlb: Make SWIOTLB_NO_FORCE perform no allocation
+To:     Christoph Hellwig <hch@lst.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "open list:SWIOTLB SUBSYSTEM" <iommu@lists.linux-foundation.org>
+References: <20210321033740.312500-1-f.fainelli@gmail.com>
+ <20210323015350.399493-1-f.fainelli@gmail.com> <20210324084250.GA4474@lst.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <2ad22811-24e8-0776-3e55-ea2a4ac55f55@gmail.com>
+Date:   Thu, 8 Apr 2021 20:13:07 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/.3TCEW2K/ucdGcZbZyQjv9B";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210324084250.GA4474@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/.3TCEW2K/ucdGcZbZyQjv9B
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the drm tree got a conflict in:
+On 3/24/2021 1:42 AM, Christoph Hellwig wrote:
+> On Mon, Mar 22, 2021 at 06:53:49PM -0700, Florian Fainelli wrote:
+>> When SWIOTLB_NO_FORCE is used, there should really be no allocations of
+>> default_nslabs to occur since we are not going to use those slabs. If a
+>> platform was somehow setting swiotlb_no_force and a later call to
+>> swiotlb_init() was to be made we would still be proceeding with
+>> allocating the default SWIOTLB size (64MB), whereas if swiotlb=noforce
+>> was set on the kernel command line we would have only allocated 2KB.
+>>
+>> This would be inconsistent and the point of initializing default_nslabs
+>> to 1, was intended to allocate the minimum amount of memory possible, so
+>> simply remove that minimal allocation period.
+>>
+>> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> 
+> Looks good,
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
 
-  drivers/gpu/drm/vc4/vc4_plane.c
-
-between commit:
-
-  35d65ab3fdba ("drm/vc4: plane: Remove redundant assignment")
-
-from the drm-misc-fixes tree and commit:
-
-  5ddb0bd4ddc3 ("drm/atomic: Pass the full state to planes async atomic che=
-ck and update")
-
-from the drm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/vc4/vc4_plane.c
-index 1e9c84cf614a,c76e73a452e0..000000000000
---- a/drivers/gpu/drm/vc4/vc4_plane.c
-+++ b/drivers/gpu/drm/vc4/vc4_plane.c
-@@@ -1133,31 -1135,34 +1135,33 @@@ void vc4_plane_async_set_fb(struct drm_
-  }
- =20
-  static void vc4_plane_atomic_async_update(struct drm_plane *plane,
-- 					  struct drm_plane_state *state)
-+ 					  struct drm_atomic_state *state)
-  {
-+ 	struct drm_plane_state *new_plane_state =3D drm_atomic_get_new_plane_sta=
-te(state,
-+ 										 plane);
-  	struct vc4_plane_state *vc4_state, *new_vc4_state;
- =20
-- 	swap(plane->state->fb, state->fb);
-- 	plane->state->crtc_x =3D state->crtc_x;
-- 	plane->state->crtc_y =3D state->crtc_y;
-- 	plane->state->crtc_w =3D state->crtc_w;
-- 	plane->state->crtc_h =3D state->crtc_h;
-- 	plane->state->src_x =3D state->src_x;
-- 	plane->state->src_y =3D state->src_y;
-- 	plane->state->src_w =3D state->src_w;
-- 	plane->state->src_h =3D state->src_h;
-- 	plane->state->alpha =3D state->alpha;
-- 	plane->state->pixel_blend_mode =3D state->pixel_blend_mode;
-- 	plane->state->rotation =3D state->rotation;
-- 	plane->state->zpos =3D state->zpos;
-- 	plane->state->normalized_zpos =3D state->normalized_zpos;
-- 	plane->state->color_encoding =3D state->color_encoding;
-- 	plane->state->color_range =3D state->color_range;
-- 	plane->state->src =3D state->src;
-- 	plane->state->dst =3D state->dst;
-- 	plane->state->visible =3D state->visible;
--=20
-- 	new_vc4_state =3D to_vc4_plane_state(state);
-+ 	swap(plane->state->fb, new_plane_state->fb);
-+ 	plane->state->crtc_x =3D new_plane_state->crtc_x;
-+ 	plane->state->crtc_y =3D new_plane_state->crtc_y;
-+ 	plane->state->crtc_w =3D new_plane_state->crtc_w;
-+ 	plane->state->crtc_h =3D new_plane_state->crtc_h;
-+ 	plane->state->src_x =3D new_plane_state->src_x;
-+ 	plane->state->src_y =3D new_plane_state->src_y;
-+ 	plane->state->src_w =3D new_plane_state->src_w;
-+ 	plane->state->src_h =3D new_plane_state->src_h;
- -	plane->state->src_h =3D new_plane_state->src_h;
-+ 	plane->state->alpha =3D new_plane_state->alpha;
-+ 	plane->state->pixel_blend_mode =3D new_plane_state->pixel_blend_mode;
-+ 	plane->state->rotation =3D new_plane_state->rotation;
-+ 	plane->state->zpos =3D new_plane_state->zpos;
-+ 	plane->state->normalized_zpos =3D new_plane_state->normalized_zpos;
-+ 	plane->state->color_encoding =3D new_plane_state->color_encoding;
-+ 	plane->state->color_range =3D new_plane_state->color_range;
-+ 	plane->state->src =3D new_plane_state->src;
-+ 	plane->state->dst =3D new_plane_state->dst;
-+ 	plane->state->visible =3D new_plane_state->visible;
-+=20
-+ 	new_vc4_state =3D to_vc4_plane_state(new_plane_state);
-  	vc4_state =3D to_vc4_plane_state(plane->state);
- =20
-  	vc4_state->crtc_x =3D new_vc4_state->crtc_x;
-
---Sig_/.3TCEW2K/ucdGcZbZyQjv9B
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBvxjUACgkQAVBC80lX
-0GxIuwf+MLYE674mIMmHxJJji/55gWYtGGX/V3SrSewLyeKvHLfDuQlPItFchsX1
-3Pz68dEgLmoWKU4VMulSbKduwWdP2SBPTT8CuKu9hXGjLj/CaVW9cG0CN6FFi55g
-GQEnlmYDcvLjvVyMmi/Tva+TJ1ck9HRWzfiuSxeo9uDp4qsmSnl04DgKcfovOoy6
-PY4kFCQ7d6QqF4Fnw5RQClDB8Lzf8SV0geat+Hvv9O9R244jLstLNx7rqLuNyd2S
-bzyIMwugX/Oiu274Cxgf9W7aIeYSDrrdVwQ1HNTZErscCjoWjoKE/aFaCOnNKQ2r
-y+SB5knEJv0xAg4gxS2Zxtzb+6SwSw==
-=ya55
------END PGP SIGNATURE-----
-
---Sig_/.3TCEW2K/ucdGcZbZyQjv9B--
+Thanks! Konrad, can you apply this patch to your for-linus-5.13 branch
+if you are also happy with it?
+-- 
+Florian
