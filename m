@@ -2,171 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FB2359636
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:18:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DF23595FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhDIHSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:18:11 -0400
-Received: from gateway36.websitewelcome.com ([192.185.195.25]:15451 "EHLO
-        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231402AbhDIHSK (ORCPT
+        id S233485AbhDIHCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:02:11 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16109 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233335AbhDIHCJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:18:10 -0400
-X-Greylist: delayed 1424 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 03:18:10 EDT
-Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
-        by gateway36.websitewelcome.com (Postfix) with ESMTP id AF57F401216BE
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:54:11 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id Ul1vlTqu7mJLsUl1vl0HZ5; Fri, 09 Apr 2021 01:54:11 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=yiQ8aK6h6sfF+o8lIOec/EO+BVR5kF4D01S8U9RA7EA=; b=xfBzGLbWBxviVD/fLlQKuAwIl/
-        fGSLudVZb/NT8G41TzsLdqyUStepndr8iYrahCxAtGQp0x0Po31GxraZsE8QmcHxCFVLjADW3Rag0
-        Uhe+HRdiMISH7ZZPscKO8sIBMXxWO+I3m9Jsc21QjsqNkwYOiE4OGaFhxNJkXoT5S7Q++NNM0ApDF
-        DcnlNKenEsmR+HVVBDwht/0BRDqa6LiOmTig0e7ycdlvE+koApqvD1+KzCyyUt8TIRMqMNRlwNfe+
-        QT4Ox53X+pyIo10Pf9O7AjnTH7IJI8KkioJpGv3pTo33ZS761dUlBLK8oQpYbhFcgPCOmeKI5xro5
-        CShyD6rw==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:35336 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1lUl1v-000PvB-CH; Fri, 09 Apr 2021 01:54:11 -0500
-Subject: Re: [PATCH v3][next] xfs: Replace one-element arrays with
- flexible-array members
-To:     "Darrick J. Wong" <djwong@kernel.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20210311042302.GA137676@embeddedor>
- <20210311044700.GU3419940@magnolia>
- <96be7032-a95c-e8d2-a7f8-64b96686ea42@embeddedor.com>
- <20210320201711.GY22100@magnolia>
- <d5a9046e-e204-c854-34fe-2a39e58faea4@embeddedor.com>
- <20210320214831.GA22100@magnolia>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <b9973292-efe6-5f95-a3a5-5d86e4081803@embeddedor.com>
-Date:   Fri, 9 Apr 2021 01:54:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 9 Apr 2021 03:02:09 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGpsW3GSXz1BGM9;
+        Fri,  9 Apr 2021 14:59:43 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.98) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 9 Apr 2021 15:01:46 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <mpe@ellerman.id.au>, <benh@kernel.crashing.org>,
+        <paulus@samba.org>, <jniethe5@gmail.com>, <alistair@popple.id.au>,
+        <ravi.bangoria@linux.ibm.com>, <pmladek@suse.com>,
+        <john.ogness@linutronix.de>, <npiggin@gmail.com>,
+        <christophe.leroy@csgroup.eu>, <rppt@kernel.org>,
+        <maddy@linux.ibm.com>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <pulehui@huawei.com>, <yangjihong1@huawei.com>,
+        <zhangjinhao2@huawei.com>
+Subject: [PATCH -next] powerpc/xmon: Make symbol 'spu_inst_dump' static
+Date:   Fri, 9 Apr 2021 15:01:51 +0800
+Message-ID: <20210409070151.163424-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <20210320214831.GA22100@magnolia>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1lUl1v-000PvB-CH
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:35336
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 5
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.98]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix sparse warning:
 
-Hi!
+arch/powerpc/xmon/xmon.c:4216:1: warning:
+ symbol 'spu_inst_dump' was not declared. Should it be static?
 
-I think I might have caught the issue:
+This symbol is not used outside of xmon.c, so make it static.
 
-diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-index e5e0713bebcd8..9231457371100 100644
---- a/fs/xfs/xfs_super.c
-+++ b/fs/xfs/xfs_super.c
-@@ -1937,17 +1937,17 @@ xfs_init_zones(void)
- 		goto out_destroy_trans_zone;
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
+---
+ arch/powerpc/xmon/xmon.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
- 	xfs_efd_zone = kmem_cache_create("xfs_efd_item",
--					(sizeof(struct xfs_efd_log_item) +
--					(XFS_EFD_MAX_FAST_EXTENTS - 1) *
--					sizeof(struct xfs_extent)),
--					0, 0, NULL);
-+					 struct_size((struct xfs_efd_log_item *)0,
-+					 efd_format.efd_extents,
-+					 XFS_EFD_MAX_FAST_EXTENTS),
-+					 0, 0, NULL);
- 	if (!xfs_efd_zone)
- 		goto out_destroy_buf_item_zone;
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index bf7d69625a2e..d4ae2a25781f 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -4212,8 +4212,7 @@ static void dump_spu_fields(struct spu *spu)
+ 	DUMP_FIELD(spu, "0x%p", pdata);
+ }
+ 
+-int
+-spu_inst_dump(unsigned long adr, long count, int praddr)
++static int spu_inst_dump(unsigned long adr, long count, int praddr)
+ {
+ 	return generic_inst_dump(adr, count, praddr, print_insn_spu);
+ }
+-- 
+2.17.1
 
- 	xfs_efi_zone = kmem_cache_create("xfs_efi_item",
--					 (sizeof(struct xfs_efi_log_item) +
--					 (XFS_EFI_MAX_FAST_EXTENTS - 1) *
--					 sizeof(struct xfs_extent)),
-+					 struct_size((struct xfs_efi_log_item *)0,
-+					 efi_format.efi_extents,
-+					 XFS_EFI_MAX_FAST_EXTENTS),
- 					 0, 0, NULL);
- 	if (!xfs_efi_zone)
- 		goto out_destroy_efd_zone;
-
-I'm currently testing the patch with the fix above:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?h=testing/xfs-fixed
-
---
-Gustavo
-
-On 3/20/21 16:48, Darrick J. Wong wrote:
-> On Sat, Mar 20, 2021 at 03:20:55PM -0500, Gustavo A. R. Silva wrote:
->>
->>
->> On 3/20/21 15:17, Darrick J. Wong wrote:
->>>>>> Below are the results of running xfstests for groups shutdown and log
->>>>>> with the following configuration in local.config:
->>>>>>
->>>>>> export TEST_DEV=/dev/sda3
->>>>>> export TEST_DIR=/mnt/test
->>>>>> export SCRATCH_DEV=/dev/sda4
->>>>>> export SCRATCH_MNT=/mnt/scratch
->>>>>>
->>>>>> The size for both partitions /dev/sda3 and /dev/sda4 is 25GB.
->>>>>
->>>>> Looks good to me, will toss it at my fstests cloud and see if anything
->>>>> shakes out.  Thanks for cleaning up this goofy thorn-pile!
->>>>
->>>> Great. It's been fun to work on this. :p
->>>
->>> Did you run the /entire/ fstests suite?  With this patch applied to
->>> 5.12-rc2, I keep seeing list corruption assertions about an hour into
->>
->> Nope; I run xfstests 'shutdown' and 'log' groups on 5.11.0, only.
->>
->> How do you run the entire fstests?
->> Could you give me some pointers?
-> 
-> ./check -g all
-> 
-> (instead of "./check -g shutdown")
-> 
->>> the test run, and usually on some test that heavily exercises allocating
->>> and deleting file extents.  I'll try to look at this patch more closely
->>> next week, but I figured I should let you know early, on the off chance
->>> something sticks out to you.
->>
->> OK. I'll go run my tests on 5.12-rc2.
->>
->> Should I run the entire xfstests, too?
-> 
-> Yes, please.
-> 
-> --D
-> 
->> Thanks
->> --
->> Gustavo
