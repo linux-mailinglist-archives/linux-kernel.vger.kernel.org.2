@@ -2,149 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED4A35A208
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5B935A20E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233528AbhDIPcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDIPcC (ORCPT
+        id S232615AbhDIPdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:33:07 -0400
+Received: from p3plsmtpa06-04.prod.phx3.secureserver.net ([173.201.192.105]:35230
+        "EHLO p3plsmtpa06-04.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229665AbhDIPdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:32:02 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B40C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:31:49 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id h19so10337075lfu.9
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=N/anldwvTE8JiwYoi+CFb0zDLJgVaul+of7NRgtf6uM=;
-        b=L/g+dUL3VxLisPEfWcvegwi75OSGO8+Y2ESkFHKHtdm/FJ3KwHf3WyBvNQuBQUe6rK
-         gmCszXDYq7J1ZtnXhsTfuZEwEIgDDO7ZIaqqN7x8SJZ+mKkxZV0a7YD856zUPVH4rC0f
-         ws0pP0X7wcOUy1pWWfUdYeSsuH0EG1b3K5SkFuD0SUcOXg3wOKJmopOi3jZqWAOVNeC7
-         3eJh1iLvmnlJPS6EDZe9uoFw8pCHYnYMAzmVg/ApXr/iLJJe0F6iS3GVGKtWo2i+PYEZ
-         vHuJ1D+eXoE46MtRGDezJVhqeUXXA/J/AuP4CvMG+vWWExbT8HwY/VYnAaqolfnmOInP
-         Bpow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=N/anldwvTE8JiwYoi+CFb0zDLJgVaul+of7NRgtf6uM=;
-        b=UazZgL30NtjQkS4OQDGuQYtcXHtgiMHisrVyIkZrR0vog1QTx/XsSO7I+/zZNgzvlH
-         k6e0E56/PVCy9B7FVe9ZKXk6Kzy2mnkyyR83PkzT1cCY8ETp88PIjJdrgQlolYA91mSX
-         14XVOjGlkQ/k2Xv5I1FC6ojpfGXnYSnKei4w4Dve8L7JpIRanRaioqKzz1VvgADFTB/a
-         Qip6wkZN/BjI5sCgfbbE/uU4JYa+AdO4se1sBv1yDE+STDInrvZolQwffYLU7F8KmSkd
-         y7N78uwPgm1S4HVRoSHuBJ2yRjBtTq2g+7rYE5RcR4cAhOFx9qTXRnXMw47k03BeZIYA
-         w2LQ==
-X-Gm-Message-State: AOAM531X8oQt7h/b4im0nV/23Y3CDbfNzm7NX2LZxdcPePDoZIiNFt7b
-        imoNcuLTEiM8YaYg9YAq02YvoQ==
-X-Google-Smtp-Source: ABdhPJwYX6z9aGP1PXbuviqGTBPyv46KjTBYphTybXFc7ge+WtCz+ZQSUUKUTI90Zz3uE7HXZu0jww==
-X-Received: by 2002:ac2:53af:: with SMTP id j15mr3242187lfh.74.1617982307528;
-        Fri, 09 Apr 2021 08:31:47 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id s23sm298175lfs.246.2021.04.09.08.31.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 08:31:47 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 98ED8102498; Fri,  9 Apr 2021 18:31:46 +0300 (+03)
-Date:   Fri, 9 Apr 2021 18:31:46 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v24 19/30] mm: Update can_follow_write_pte() for shadow
- stack
-Message-ID: <20210409153146.ib2xsn7n2q4ixpde@box.shutemov.name>
-References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
- <20210401221104.31584-20-yu-cheng.yu@intel.com>
+        Fri, 9 Apr 2021 11:33:06 -0400
+Received: from [192.168.0.116] ([71.184.94.153])
+        by :SMTPAUTH: with ESMTPSA
+        id Ut7hlRPfQe8QFUt7ilij9S; Fri, 09 Apr 2021 08:32:51 -0700
+X-CMAE-Analysis: v=2.4 cv=JLz+D+Gb c=1 sm=1 tr=0 ts=607073a3
+ a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
+ a=IkcTkHD0fZMA:10 a=SEc3moZ4AAAA:8 a=oSsZz9J6dYZdRk27ncsA:9 a=QEXdDO2ut3YA:10
+ a=5oRCH6oROnRZc2VpWJZ3:22
+X-SECURESERVER-ACCT: tom@talpey.com
+Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
+To:     Chuck Lever III <chuck.lever@oracle.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@lst.de>,
+        Leon Romanovsky <leon@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Adit Ranadive <aditr@vmware.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Devesh Sharma <devesh.sharma@broadcom.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
+        Karsten Graul <kgraul@linux.ibm.com>,
+        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>,
+        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
+        Michael Guralnik <michaelgur@nvidia.com>,
+        Michal Kalderon <mkalderon@marvell.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Selvin Xavier <selvin.xavier@broadcom.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
+        Steve French <sfrench@samba.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        VMware PV-Drivers <pv-drivers@vmware.com>,
+        Weihang Li <liweihang@huawei.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>
+References: <20210405052404.213889-1-leon@kernel.org>
+ <20210405134115.GA22346@lst.de> <20210405200739.GB7405@nvidia.com>
+ <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
+ <20210406114952.GH7405@nvidia.com>
+ <aeb7334b-edc0-78c2-4adb-92d4a994210d@talpey.com>
+ <8A5E83DF-5C08-49CE-8EE3-08DC63135735@oracle.com>
+From:   Tom Talpey <tom@talpey.com>
+Message-ID: <4b02d1b2-be0e-0d1d-7ac3-38d32e44e77e@talpey.com>
+Date:   Fri, 9 Apr 2021 11:32:41 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401221104.31584-20-yu-cheng.yu@intel.com>
+In-Reply-To: <8A5E83DF-5C08-49CE-8EE3-08DC63135735@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: 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
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 03:10:53PM -0700, Yu-cheng Yu wrote:
-> Can_follow_write_pte() ensures a read-only page is COWed by checking the
-> FOLL_COW flag, and uses pte_dirty() to validate the flag is still valid.
+On 4/9/2021 10:45 AM, Chuck Lever III wrote:
 > 
-> Like a writable data page, a shadow stack page is writable, and becomes
-> read-only during copy-on-write, but it is always dirty.  Thus, in the
-> can_follow_write_pte() check, it belongs to the writable page case and
-> should be excluded from the read-only page pte_dirty() check.  Apply
-> the same changes to can_follow_write_pmd().
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
-> Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> ---
-> v24:
-> - Change arch_shadow_stack_mapping() to is_shadow_stack_mapping().
+>> On Apr 9, 2021, at 10:26 AM, Tom Talpey <tom@talpey.com> wrote:
+>>
+>> On 4/6/2021 7:49 AM, Jason Gunthorpe wrote:
+>>> On Mon, Apr 05, 2021 at 11:42:31PM +0000, Chuck Lever III wrote:
+>>>   
+>>>> We need to get a better idea what correctness testing has been done,
+>>>> and whether positive correctness testing results can be replicated
+>>>> on a variety of platforms.
+>>> RO has been rolling out slowly on mlx5 over a few years and storage
+>>> ULPs are the last to change. eg the mlx5 ethernet driver has had RO
+>>> turned on for a long time, userspace HPC applications have been using
+>>> it for a while now too.
+>>
+>> I'd love to see RO be used more, it was always something the RDMA
+>> specs supported and carefully architected for. My only concern is
+>> that it's difficult to get right, especially when the platforms
+>> have been running strictly-ordered for so long. The ULPs need
+>> testing, and a lot of it.
+>>
+>>> We know there are platforms with broken RO implementations (like
+>>> Haswell) but the kernel is supposed to globally turn off RO on all
+>>> those cases. I'd be a bit surprised if we discover any more from this
+>>> series.
+>>> On the other hand there are platforms that get huge speed ups from
+>>> turning this on, AMD is one example, there are a bunch in the ARM
+>>> world too.
+>>
+>> My belief is that the biggest risk is from situations where completions
+>> are batched, and therefore polling is used to detect them without
+>> interrupts (which explicitly). The RO pipeline will completely reorder
+>> DMA writes, and consumers which infer ordering from memory contents may
+>> break. This can even apply within the provider code, which may attempt
+>> to poll WR and CQ structures, and be tripped up.
 > 
->  mm/gup.c         | 8 +++++---
->  mm/huge_memory.c | 8 +++++---
->  2 files changed, 10 insertions(+), 6 deletions(-)
+> You are referring specifically to RPC/RDMA depending on Receive
+> completions to guarantee that previous RDMA Writes have been
+> retired? Or is there a particular implementation practice in
+> the Linux RPC/RDMA code that worries you?
+
+Nothing in the RPC/RDMA code, which is IMO correct. The worry, which
+is hopefully unfounded, is that the RO pipeline might not have flushed
+when a completion is posted *after* posting an interrupt.
+
+Something like this...
+
+RDMA Write arrives
+	PCIe RO Write for data
+	PCIe RO Write for data
+	...
+RDMA Write arrives
+	PCIe RO Write for data
+	...
+RDMA Send arrives
+	PCIe RO Write for receive data
+	PCIe RO Write for receive descriptor
+	PCIe interrupt (flushes RO pipeline for all three ops above)
+
+RPC/RDMA polls CQ
+	Reaps receive completion
+
+RDMA Send arrives
+	PCIe RO Write for receive data
+	PCIe RO write for receive descriptor
+	Does *not* interrupt, since CQ not armed
+
+RPC/RDMA continues to poll CQ
+	Reaps receive completion
+	PCIe RO writes not yet flushed
+	Processes incomplete in-memory data
+	Bzzzt
+
+Hopefully, the adapter performs a PCIe flushing read, or something
+to avoid this when an interrupt is not generated. Alternatively, I'm
+overly paranoid.
+
+Tom.
+
+>> The Mellanox adapter, itself, historically has strict in-order DMA
+>> semantics, and while it's great to relax that, changing it by default
+>> for all consumers is something to consider very cautiously.
+>>
+>>> Still, obviously people should test on the platforms they have.
+>>
+>> Yes, and "test" be taken seriously with focus on ULP data integrity.
+>> Speedups will mean nothing if the data is ever damaged.
 > 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index e40579624f10..c313cc988865 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -356,10 +356,12 @@ static int follow_pfn_pte(struct vm_area_struct *vma, unsigned long address,
->   * FOLL_FORCE can write to even unwritable pte's, but only
->   * after we've gone through a COW cycle and they are dirty.
->   */
-> -static inline bool can_follow_write_pte(pte_t pte, unsigned int flags)
-> +static inline bool can_follow_write_pte(pte_t pte, unsigned int flags,
-> +					struct vm_area_struct *vma)
->  {
->  	return pte_write(pte) ||
-> -		((flags & FOLL_FORCE) && (flags & FOLL_COW) && pte_dirty(pte));
-> +		((flags & FOLL_FORCE) && (flags & FOLL_COW) && pte_dirty(pte) &&
-> +				  !is_shadow_stack_mapping(vma->vm_flags));
-
-It's getting too ugly. I think it deserve to be rewritten. What about:
-
-	if (pte_write(pte))
-		return true;
-	if ((flags & (FOLL_FORCE | FOLL_COW)) != (FOLL_FORCE | FOLL_COW))
-		return false;
-	if (!pte_dirty(pte))
-		return false;
-	if (is_shadow_stack_mapping(vma->vm_flags))
-		return false;
-	return true;
-
-?
-
--- 
- Kirill A. Shutemov
+> I agree that data integrity comes first.
+> 
+> Since I currently don't have facilities to test RO in my lab, the
+> community will have to agree on a set of tests and expected results
+> that specifically exercise the corner cases you are concerned about.
+> 
+> 
+> --
+> Chuck Lever
+> 
+> 
+> 
+> 
