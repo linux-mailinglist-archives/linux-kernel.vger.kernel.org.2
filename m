@@ -2,161 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 999FC3592FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCB1359306
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233213AbhDIDUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232858AbhDIDUb (ORCPT
+        id S233042AbhDIDbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:31:01 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:35415 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232918AbhDIDa7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:20:31 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0B8C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:20:18 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id d10so2823195pgf.12
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 20:20:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=OCOuP77KzsERfjtLD3+g0QTNYiI6uzbUte1pk8VLigc=;
-        b=fs6OIzMHI1Ukfun/q5z5kfC91OWHpE3PcQFCPRODEkoEe2j/xEt8Lplg7E+tcAaQ97
-         0q9SYV703eJz04xUzhlXRrvjdcKy1rgUVEd5C+nwUNq4HN6QVapc45uVFOQMiG5UtaR0
-         IpVgH0IQ0TtYgrnVa/m3OwpnwYk1FsC6uHBjE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=OCOuP77KzsERfjtLD3+g0QTNYiI6uzbUte1pk8VLigc=;
-        b=Hy5duUv5kELky4HvTtLDLlKWlWi0kNkUEXWagEpSubDajz6sJ0Wa9NsZACTSAMq2ob
-         y/zTmCVVeynCYclp4l/5ZiZj1A+J85Ljv8VNAPTDD3eZRt/S4TDbzEwbxWqYIIZbMije
-         3vOYmVaKx6drvOyBUcaL5HdLgLH35+JJMbIbemQhLodiq8uRasPi07yWNYS2dNEi14YX
-         CCtmaReFrHMsyadaU3khaeKX0WXswTBDU+Dq0YX+c1S0KxK7ywRMHe1Pvds8N2vhU7zP
-         1DkiN12VxyV55ARFKYuR8PsLMndKp8lelCXr1Xe2bm5gwBdLeLBlcmIvlkJKmyEIlSof
-         fMqQ==
-X-Gm-Message-State: AOAM532brxWaGjr020w8MhH7F5pAPQ8/gP7bmhMLn5d5/iQ7NaGkak28
-        Sj99xOEo3YEwV7L79QE0QraXRg==
-X-Google-Smtp-Source: ABdhPJzC0bLiabjaxIzlhcuh3ox2ZRB+HbY3l9M8hv1k1EI9wdS1NnBB85gLT5oog9ql76p4icDRyw==
-X-Received: by 2002:a63:9dcb:: with SMTP id i194mr10564176pgd.87.1617938417994;
-        Thu, 08 Apr 2021 20:20:17 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id j205sm683087pfd.214.2021.04.08.20.20.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 20:20:17 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 20:20:16 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 3/7] regulator: IRQ based event/error notification
- helpers
-Message-ID: <202104082015.4DADF9DC48@keescook>
-References: <cover.1617690965.git.matti.vaittinen@fi.rohmeurope.com>
- <2b87b4637fde2225006cc122bc855efca0dcd7f1.1617692184.git.matti.vaittinen@fi.rohmeurope.com>
- <CAHp75VeoTVNDemV0qRA4BTVqOVfyR9UKGWhHgfeat8zVVGcu_Q@mail.gmail.com>
- <55397166b1c4107efc2a013635f63af142d9b187.camel@fi.rohmeurope.com>
- <CAHp75VeK+Oq9inOLcSSsq+FjaaPC5D=EMt4vLf97uR1BmpW2Zw@mail.gmail.com>
- <42210c909c55f7672e4a4a9bfd34553a6f4c8146.camel@fi.rohmeurope.com>
- <CAHp75VeX8H5E6GfVHxgu_6R+zbvmFV8fT9tO-nsm1nB3N4NF_A@mail.gmail.com>
+        Thu, 8 Apr 2021 23:30:59 -0400
+X-UUID: a238bdf067184d069822ea732deda991-20210409
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=arJG16CDzyUkGqPEnWMf6l856hAp9u/dcfwy2lSC6GM=;
+        b=SMUC/7J8aha+qWUl9RrZg5RUZCEJYW+XYezJcjLY4J6bFmbwEHDwqzdPjZYRXDy163q1LAIuMuvRpaVtsb3WFAo0eFc7+BC4wcNrHSWsZrhWyZhkHEuwKOT7qLXjQaVQjt5rlq4JSNCItsO6XfBzsg2dGxN4CZtECA5p2GTu0bA=;
+X-UUID: a238bdf067184d069822ea732deda991-20210409
+Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
+        (envelope-from <nina-cm.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 820148550; Fri, 09 Apr 2021 11:30:32 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 9 Apr 2021 11:30:30 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 9 Apr 2021 11:30:29 +0800
+Message-ID: <1617939030.29552.2.camel@mtksdccf07>
+Subject: Re: [PATCH v2 1/6] dt-bindings: devapc: Update bindings
+From:   Nina Wu <nina-cm.wu@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Neal Liu <neal.liu@mediatek.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <Jackson-kt.Chang@mediatek.com>
+Date:   Fri, 9 Apr 2021 11:30:30 +0800
+In-Reply-To: <20210408204354.GA1926089@robh.at.kernel.org>
+References: <1617259087-5502-1-git-send-email-nina-cm.wu@mediatek.com>
+         <20210408204354.GA1926089@robh.at.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHp75VeX8H5E6GfVHxgu_6R+zbvmFV8fT9tO-nsm1nB3N4NF_A@mail.gmail.com>
+X-TM-SNTS-SMTP: 38F287E4ECC4047A38808EFB92A57C55DE4F89C14B2D8C99AB07417FB55904862000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 03:50:15PM +0300, Andy Shevchenko wrote:
-> On Wed, Apr 7, 2021 at 12:49 PM Vaittinen, Matti
-> <Matti.Vaittinen@fi.rohmeurope.com> wrote:
-> > On Wed, 2021-04-07 at 12:10 +0300, Andy Shevchenko wrote:
-> > > On Wed, Apr 7, 2021 at 8:02 AM Matti Vaittinen
-> > > <matti.vaittinen@fi.rohmeurope.com> wrote:
-> > > > On Wed, 2021-04-07 at 01:44 +0300, Andy Shevchenko wrote:
-> > > > > On Tuesday, April 6, 2021, Matti Vaittinen <
-> > > > > matti.vaittinen@fi.rohmeurope.com> wrote:
-> 
-> Kees, there are two non-security guys discussing potential security
-> matters. Perhaps you may shed a light on this and tell which of our
-> stuff is risky and which is not and your recommendations on it.
+SGksIFJvYg0KDQpPbiBUaHUsIDIwMjEtMDQtMDggYXQgMTU6NDMgLTA1MDAsIFJvYiBIZXJyaW5n
+IHdyb3RlOg0KPiBPbiBUaHUsIEFwciAwMSwgMjAyMSBhdCAwMjozODowMlBNICswODAwLCBOaW5h
+IFd1IHdyb3RlOg0KPiA+IEZyb206IE5pbmEgV3UgPE5pbmEtQ00uV3VAbWVkaWF0ZWsuY29tPg0K
+PiANCj4gRXZlcnkgY2hhbmdlIGlzIGFuICd1cGRhdGUnLiBQZXJoYXBzIG1lbnRpb24gbXQ4MTky
+IGluIHRoZSBzdWJqZWN0Lg0KPiANCg0KT0suDQpJIHdpbGwgdHJ5IHRvIG1ha2UgaXQgY2xlYXIg
+aW4gdGhlIG5leHQgdmVyc2lvbi4NCg0KPiA+IA0KPiA+IFRvIHN1cHBvcnQgbmV3ZXIgaGFyZHdh
+cmUgYXJjaGl0ZWN0dXJlIG9mIGRldmFwYywNCj4gPiB1cGRhdGUgZGV2aWNlIHRyZWUgYmluZGlu
+Z3MuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTmluYSBXdSA8TmluYS1DTS5XdUBtZWRpYXRl
+ay5jb20+DQo+ID4gLS0tDQo+ID4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9z
+b2MvbWVkaWF0ZWsvZGV2YXBjLnlhbWwgfCA4ICsrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
+LCA4IGluc2VydGlvbnMoKykNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3NvYy9tZWRpYXRlay9kZXZhcGMueWFtbCBiL0RvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb2MvbWVkaWF0ZWsvZGV2YXBjLnlhbWwNCj4gPiBpbmRl
+eCAzMWU0ZDNjLi40MmIyODRlIDEwMDY0NA0KPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNl
+dHJlZS9iaW5kaW5ncy9zb2MvbWVkaWF0ZWsvZGV2YXBjLnlhbWwNCj4gPiArKysgYi9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc29jL21lZGlhdGVrL2RldmFwYy55YW1sDQo+ID4g
+QEAgLTIwLDExICsyMCwxNyBAQCBwcm9wZXJ0aWVzOg0KPiA+ICAgIGNvbXBhdGlibGU6DQo+ID4g
+ICAgICBlbnVtOg0KPiA+ICAgICAgICAtIG1lZGlhdGVrLG10Njc3OS1kZXZhcGMNCj4gPiArICAg
+ICAgLSBtZWRpYXRlayxtdDgxOTItZGV2YXBjDQo+ID4gIA0KPiA+ICAgIHJlZzoNCj4gPiAgICAg
+IGRlc2NyaXB0aW9uOiBUaGUgYmFzZSBhZGRyZXNzIG9mIGRldmFwYyByZWdpc3RlciBiYW5rDQo+
+ID4gICAgICBtYXhJdGVtczogMQ0KPiA+ICANCj4gPiArICB2aW8taWR4LW51bToNCj4gDQo+IE5l
+ZWRzIGEgdmVuZG9yIHByZWZpeC4NCg0KT0suDQpJIHdpbGwgZml4IGl0IGluIHRoZSBuZXh0IHZl
+cnNpb24uDQoNClRoYW5rcy4NCg0KPiANCj4gPiArICAgIGRlc2NyaXB0aW9uOiBUaGUgbnVtYmVy
+IG9mIHRoZSBkZXZpY2VzIGNvbnRyb2xsZWQgYnkgZGV2YXBjDQo+ID4gKyAgICAkcmVmOiAvc2No
+ZW1hcy90eXBlcy55YW1sIy9kZWZpbml0aW9ucy91aW50MzINCj4gPiArICAgIG1heEl0ZW1zOiAx
+DQo+ID4gKw0KPiA+ICAgIGludGVycnVwdHM6DQo+ID4gICAgICBkZXNjcmlwdGlvbjogQSBzaW5n
+bGUgaW50ZXJydXB0IHNwZWNpZmllcg0KPiA+ICAgICAgbWF4SXRlbXM6IDENCj4gPiBAQCAtNDAs
+NiArNDYsNyBAQCBwcm9wZXJ0aWVzOg0KPiA+ICByZXF1aXJlZDoNCj4gPiAgICAtIGNvbXBhdGli
+bGUNCj4gPiAgICAtIHJlZw0KPiA+ICsgIC0gdmlvLWlkeC1udW0NCj4gPiAgICAtIGludGVycnVw
+dHMNCj4gPiAgICAtIGNsb2Nrcw0KPiA+ICAgIC0gY2xvY2stbmFtZXMNCj4gPiBAQCAtNTQsNiAr
+NjEsNyBAQCBleGFtcGxlczoNCj4gPiAgICAgIGRldmFwYzogZGV2YXBjQDEwMjA3MDAwIHsNCj4g
+PiAgICAgICAgY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktZGV2YXBjIjsNCj4gPiAgICAg
+ICAgcmVnID0gPDB4MTAyMDcwMDAgMHgxMDAwPjsNCj4gPiArICAgICAgdmlvLWlkeC1udW0gPSA8
+NTExPjsNCj4gPiAgICAgICAgaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE2OCBJUlFfVFlQRV9MRVZF
+TF9MT1c+Ow0KPiA+ICAgICAgICBjbG9ja3MgPSA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9ERVZJ
+Q0VfQVBDPjsNCj4gPiAgICAgICAgY2xvY2stbmFtZXMgPSAiZGV2YXBjLWluZnJhLWNsb2NrIjsN
+Cj4gPiAtLSANCj4gPiAyLjYuNA0KPiA+IA0KDQo=
 
-Hi!
-
-> > > > > > +       pr_emerg(msg);
-> > > > >
-> > > > > Oh là là, besides build bot complaints, this has serious security
-> > > > > implications. Never do like this.
-> > > >
-> > > > I'm not even trying to claim that was correct. And I did send a
-> > > > fixup -
-> > > > sorry for this. I don't intend to do this again.
-> > > >
-> > > > Now, when this is said - If you have a minute, please educate me.
-> > > > Assuming we know all the callers and that all the callers use this
-> > > > as
-> > > >
-> > > > die_loudly("foobarfoo\n");
-> > > > - what is the exploit mechanism?
-
-I may not be following the thread exactly, here, but normally the issue
-is just one of robustness and code maintainability. You can't be sure all
-future callers will always pass in a const string, so better to always do:
-
-	pr_whatever("%s\n", string_var);
-
-> > > Not a security guy, but my understanding is that this code may be
-> > > used
-> > > as a gadget in ROP technique of attacks.
-
-The primary concern is with giving an attacker control over a format
-string (which can be used to expose kernel memory). It used to be much
-more serious when the kernel still implemented %n, which would turn such
-things into a potential memory _overwrite_. We removed %n a long time
-ago now. :)
-
-> > Thanks Andy. It'd be interesting to learn more details as I am not a
-> > security expert either :)
-> >
-> > > In that case msg can be anything. On top of that, somebody may
-> > > mistakenly (inadvertently) put the code that allows user controller
-> > > input to go to this path.
-> >
-> > Yes. This is a good reason to not to do this - but I was interested in
-> > knowing if there is a potential risk even if:
-> >
-> > > > all the callers use this
-> > > > as
-> > > >
-> > > > die_loudly("foobarfoo\n");
-> 
-> I don't see direct issues, only indirect ones, for example, if by some
-> reason the memory of this message appears writable. So, whoever
-> controls the format string of printf() controls a lot. That's why it's
-> preferable to spell out exact intentions in the explicit format
-> string.
-
-Right.
-
-> > > > > > +       BUG();
-> > > > > > +}
-
-This, though, are you sure you want to use BUG()? Linus gets upset about
-such things:
-https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
-
--- 
-Kees Cook
