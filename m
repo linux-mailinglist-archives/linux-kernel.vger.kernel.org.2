@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A430359BBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1BE359BBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234288AbhDIKQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:16:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232395AbhDIKJU (ORCPT
+        id S234263AbhDIKQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:16:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46008 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233318AbhDIKI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:09:20 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25804C0613E9;
-        Fri,  9 Apr 2021 03:08:29 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id il9-20020a17090b1649b0290114bcb0d6c2so4760353pjb.0;
-        Fri, 09 Apr 2021 03:08:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n7cLDIdYcgU+mE5TUxJG9IpNvG+bT4Z9CaGQY0UABEM=;
-        b=eO1g9mHi9rw1lcqt+vPW/flltV4uWv6nPOUvg6TJmcq62yHCCkFDBynbBSmIKt5xGw
-         InHhSvkBgKbuJwxbpTuUBD1Ww8lI8Bvf/f6ACS9N9adDcmL0PEcll3eII8hZPIT4u2lM
-         SWcLBK+zHMg6Mm3NVjplADrMbDa9/lrQ2J4wdCkOnLkJMPnHhyVSieRV0I+fJWoRS1RP
-         Y5vVMC/7qOoINS0zffsOZVYo1QQAHciIJ2ny+AFQfIfrSePxjAHEA/VVX44MFXI5q/1K
-         gMzZFUDPpjn1J0pLfCK/7lgzSGgKG9hZRGddg2oBOEQNo67k0Nx9tYCs6g7S58KeFUS4
-         opiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n7cLDIdYcgU+mE5TUxJG9IpNvG+bT4Z9CaGQY0UABEM=;
-        b=t2mRTRMWlO8k2mDWFms2/YM80IhUPLZacYBWRPCXLsGjPBZ6Vg23Q/SwjDTlci1AFi
-         PkNaDXGOnfkKotsEeqikGMAmNS1JLHV7GXs/g6eiGbTVTFd2IJvkDRK8HjADAJTHKzMU
-         7tqihTY3duIphtD4P4DCJt0+GdeV0rEIOlqWqrpz6s7KF7nflVchCBQJQo6CTDUl/PKA
-         TgB8gIasVOck3Wac/uBUSqGFfJPevF2Zq01e3hxPS7XCqKpOp496rAjKocZuNlDxdAT7
-         QsnAfD2O4BmxqRCsBlHlAoMoHdecW2Nx3SH97949RdK+PwZW52fL8l/4flPX+g2bCz3B
-         beyQ==
-X-Gm-Message-State: AOAM531RsBTktQcKOQLG30Lw7vbyr9WqL7uCx3M/b95oSEo90iaZBULq
-        AAMAnJPBFuNxfxjehnusi0GVvyNxA3h3aAwOWCM=
-X-Google-Smtp-Source: ABdhPJwPyj4MH1bwqianuKmRYQPS7KJxJKjIvxVO1ksn9/Xhg021RDm2ZdHh3WSHu1AQEegl28yAOLheWOITv4WmkSw=
-X-Received: by 2002:a17:90a:28a1:: with SMTP id f30mr13337448pjd.198.1617962908715;
- Fri, 09 Apr 2021 03:08:28 -0700 (PDT)
+        Fri, 9 Apr 2021 06:08:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617962923;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oNMVN+ZpLxOlEBrMndSNgg2ueOW5AUOLMBDhmanRFKI=;
+        b=EOpafZs0sjzV4H25fYRBZMptjwvk5TgwxrzAOID/fQyePCn9dQ7xECr2NxGdE5/576Deo+
+        opRvNo2c/ArLRMCSrMzLVqXgU1+1r3aH95NAiMyjjmnRbQoykReDVMg+ej3Cv8LQn5ZAwg
+        BDkrnB3SUi1+bG7n9rNwUbLN379+Maw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-540-ZV6ab0s8PwejAxmhCgL-cQ-1; Fri, 09 Apr 2021 06:08:41 -0400
+X-MC-Unique: ZV6ab0s8PwejAxmhCgL-cQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CC11189C441;
+        Fri,  9 Apr 2021 10:08:40 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.195.207])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 1466218400;
+        Fri,  9 Apr 2021 10:08:38 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri,  9 Apr 2021 12:08:40 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 12:08:37 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Peter Zijlstra <peterz@infradead.org>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] block: Fix sys_ioprio_set(.which=IOPRIO_WHO_PGRP) task
+ iteration
+Message-ID: <20210409100836.GB10447@redhat.com>
+References: <YG7Q5C4Rb5dx5GFx@hirez.programming.kicks-ass.net>
+ <e8579a4e-2456-a89b-b750-892d265ba053@kernel.dk>
 MIME-Version: 1.0
-References: <CAJht_ENNvG=VrD_Z4w+G=4_TCD0Rv--CQAkFUrHWTh4Cz_NT2Q@mail.gmail.com>
- <20210409073046.GI3697@techsingularity.net> <CAJht_EPXS3wVoNyaD6edqLPKvDTG2vg4qxiGuWBgWpFsNhB-4g@mail.gmail.com>
- <20210409084436.GK3697@techsingularity.net> <CAJht_EPrdujG_0QHM1vc2yrgwwKMQiFzUAK2pgR4dS4z9-Xknw@mail.gmail.com>
- <20210409095808.GL3697@techsingularity.net>
-In-Reply-To: <20210409095808.GL3697@techsingularity.net>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Fri, 9 Apr 2021 03:08:17 -0700
-Message-ID: <CAJht_EOfz8EAVA67kOF6cQp6w_enP=hgje_bR4332M3254eS1g@mail.gmail.com>
-Subject: Re: Problem in pfmemalloc skb handling in net/core/dev.c
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Mel Gorman <mgorman@suse.de>, jslaby@suse.cz,
-        Neil Brown <neilb@suse.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mike Christie <michaelc@cs.wisc.edu>,
-        Eric B Munson <emunson@mgebm.net>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e8579a4e-2456-a89b-b750-892d265ba053@kernel.dk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 2:58 AM Mel Gorman <mgorman@techsingularity.net> wrote:
+On 04/08, Jens Axboe wrote:
 >
-> On Fri, Apr 09, 2021 at 02:14:12AM -0700, Xie He wrote:
+> On 4/8/21 3:46 AM, Peter Zijlstra wrote:
 > >
-> > Do you mean that at the time "sk_memalloc_socks()" changes from "true"
-> > to "false", there would be no in-flight skbs currently being received,
-> > and all network communications have been paused?
+> > do_each_pid_thread() { } while_each_pid_thread() is a double loop and
+> > thus break doesn't work as expected. Also, it should be used under
+> > tasklist_lock because otherwise we can race against change_pid() for
+> > PGID/SID.
 >
-> Not all network communication, but communication with swap devices
-> should have stopped once sk_memalloc_socks is false.
+> Applied, thanks.
 
-But all incoming network traffic can be allocated as pfmemalloc skbs,
-regardless whether or not it is related to swap devices. My protocols
-don't need and cannot handle pfmemalloc skbs, therefore I want to make
-sure my protocols never receive pfmemalloc skbs. The current code
-doesn't seem to guarantee this.
+Agreed, but can't resist. We can move the "out" label up and avoid the extra
+read_unlock(tasklist_lock). IOW, something like below on top of this patch.
+
+Quite possibly this won't change the generated code, gcc is smart enough, but
+this makes the code a bit more readable.
+
+Oleg.
+
+--- x/block/ioprio.c~	2021-04-09 12:00:28.066145563 +0200
++++ x/block/ioprio.c	2021-04-09 12:02:01.817849618 +0200
+@@ -123,11 +123,10 @@
+ 			read_lock(&tasklist_lock);
+ 			do_each_pid_thread(pgrp, PIDTYPE_PGID, p) {
+ 				ret = set_task_ioprio(p, ioprio);
+-				if (ret) {
+-					read_unlock(&tasklist_lock);
+-					goto out;
+-				}
++				if (ret)
++					goto out_pgrp;
+ 			} while_each_pid_thread(pgrp, PIDTYPE_PGID, p);
++out_pgrp:
+ 			read_unlock(&tasklist_lock);
+ 
+ 			break;
+@@ -159,7 +158,6 @@
+ 			ret = -EINVAL;
+ 	}
+ 
+-out:
+ 	rcu_read_unlock();
+ 	return ret;
+ }
+
