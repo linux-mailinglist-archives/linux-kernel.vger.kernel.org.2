@@ -2,193 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0FC35A761
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328DC35A746
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235082AbhDITqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:46:50 -0400
-Received: from mout.gmx.net ([212.227.17.20]:39269 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233883AbhDITql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:46:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617997367;
-        bh=iNspAAUXd0TGc9idWuqJezj9FgSbVIrdnHkC34OI6ys=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ldsXgBGJ3GSKvmbTxvP1itO26Qt3rKVAXa7HCeRwn7x6vvwIVyKAuuWMT/9Mbs/eq
-         eUjUvdYyHT2oPnald/g3Raad9aGgTRMlgrGQZ1cKX9WKZtuOkezCA/ZBkxeKHYWicC
-         dFguhZZAb4murEW3qrRROxlPjGsI5cEXZ4497eEg=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.20.60] ([92.116.181.63]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1My36N-1lmD5l41nT-00zVNp; Fri, 09
- Apr 2021 21:42:47 +0200
-Subject: Re: [PATCH v2 1/1] kernel.h: Split out panic and oops helpers
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Wei Liu <wei.liu@kernel.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        "Jason J. Herne" <jjherne@linux.ibm.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Joe Perches <joe@perches.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Olof Johansson <olof@lixom.net>,
-        Mihai Carabas <mihai.carabas@oracle.com>,
-        Wang Wenhu <wenhu.wang@vivo.com>,
-        Marek Czerski <ma.czerski@gmail.com>,
-        Hongbo Yao <yaohongbo@huawei.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Vineeth Vijayan <vneethv@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Alexander Egorenkov <egorenar@linux.ibm.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
-        openipmi-developer@lists.sourceforge.net,
-        linux-clk@vger.kernel.org, linux-edac@vger.kernel.org,
-        coresight@lists.linaro.org, linux-leds@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-staging@lists.linux.dev, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-arch@vger.kernel.org,
-        kexec@lists.infradead.org, rcu@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Corey Minyard <minyard@acm.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Pavel Machek <pavel@ucw.cz>, Alex Elder <elder@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Jens Frederich <jfrederich@gmail.com>,
-        Daniel Drake <dsd@laptop.org>,
-        Jon Nettleton <jon.nettleton@gmail.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <20210409100250.25922-1-andriy.shevchenko@linux.intel.com>
-From:   Helge Deller <deller@gmx.de>
-Message-ID: <cef5d4ba-9d91-7249-3ba4-c7f1c89ab119@gmx.de>
-Date:   Fri, 9 Apr 2021 21:41:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234311AbhDIToD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:44:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232855AbhDIToA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 15:44:00 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26E1C061762;
+        Fri,  9 Apr 2021 12:43:46 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id u21so10396318ejo.13;
+        Fri, 09 Apr 2021 12:43:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5UYa70dh30D9VBwtvT7OqpO7sw3vtfJKMvIiKRh6GeY=;
+        b=fkkfoPoRz8d83AokzQ7L6GTbjaKU/DhNM7q7RVEpqTsF1klo1m6lCvAwTolJSXWAbM
+         JIBjY40QgYqcJtcXxfejiZ9bkv+j/sEyxjpFch/MH6jDX2IGNJ4Yi35w8a1eyHKescx2
+         0TFIOqIqdwr+uKCrBH/P28A8cnv8GgvR7hj96mBL8BXcpfGgPtkR5sBg81vdSBGcfaN1
+         Xe/74i/JICYjlKWAAiBPCvpeYIZTtsnjjtBmLfcccUqAtIxFCtfTKi5i+mrIAEmxYrU4
+         TZHcnRvCkKUKGwIHina+mheILLHyyGDmukDdeKKHmPpWDCoxkfvPGKaMRavdq5w8XQYE
+         3pEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5UYa70dh30D9VBwtvT7OqpO7sw3vtfJKMvIiKRh6GeY=;
+        b=ID1e00AuAtK9DW71L3YxLtC9jhXawAUKOgNR1PWCyI/QzWr4o13dSrnxWMUlmjlHKv
+         /xo8I8AR4d5JPZw4lRSB/8dNCEciwGRCADWY4LfSM+GuzKs/kEmjXijBdUgm313bqWn8
+         tO0RNYZquPuDbcgle85Q7JA9aXcUrDiSqwvXsjG8GB64E5dYydXsGnzeLzBqlBtfygaX
+         eR3NNt0G/DSxtMIzGmgVeq1hlhZp55VrrMZaFTBY08tzrUWN1rD387YAV1qR1agMcrYY
+         SU37+LwWhzsW5ngjB+yc3Kz+nuDYShGVmOUXciJkrDBXNAhmDImV3UP3zo+9cVwWCkUw
+         R21g==
+X-Gm-Message-State: AOAM531ZvKvNCOvZTyknOelD04Z/OWcwTnMOCeL4Cqw/1uh5XtiJ6mw9
+        PLmcc029jrrnXxgiRA3U5Go1fAv3tL7p+T7kbjs=
+X-Google-Smtp-Source: ABdhPJwVOEIyaQjI4MXQ5Xe0/oNdshHtbZvqJV5v6rYd9A0WUvhzGw4rIa1yYreweKKm2yAIzl7WKxRs/bJRhOOzp1c=
+X-Received: by 2002:a17:906:3ce9:: with SMTP id d9mr347758ejh.172.1617997425581;
+ Fri, 09 Apr 2021 12:43:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210409100250.25922-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:A9ZHNG4WxpUBFm/OLrSjy4wmvepyAKfJ/9J0GMwZPVvou+WL0jt
- juhLu46u1kS+URbP+8+Pw+p7oQ3JpIMBAMo3AEr85dJ6auKoY3YWnT5NDC8TMlGFgRljwyK
- +Z8x/lMp3a1Sj6G+ejcETzf/1wuAwQ3HVr+B/sOgfO9g9aKIA+KstHHg98r0RbXaN5gO1f1
- c2FCqtclGkoW83386bLAQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:QTiAIr1d9DU=:ouDY+zoQbxd0AYwIoqdq7+
- aGg5cjuhFxN4dPlhbUVe4gHa8V6O/ob8/GYNsz48eMGoWdTSBWNdigEx/P3CeG5ajt1K/D1wj
- ZsuimGcNU/JIwDEC4hAa9wiKwplSRt9GyqnNpMymPpOincerI2QNIINtkESpmD/MQtIZKWIBd
- LzLZQt5g5JHyD7KSRX3CSO3kxsUbUK397UnmPrlbBzZiG2Ki8L87whx1HhStGiOawVNU3NX1U
- 1qJ/Q2KXhaSRyDrR5JobMbpVJ16dZyIPC+nB+S5uAuxAgE/sFmpim0FlFwngs3hHA1Ua7nKDx
- vaviKH0ZdVtdmwFCmPWXldfwgaGRXmcVHieN8y3Cf4AES1arvvUXfDdU8TlIFPlMWolAfy75b
- aF6Vq+x5W46hFMRh+gkaDVvXSN0IJLemCnzysIaYGHy5hfBua6u7o+npWjwJ1MLna90v6WJqp
- qtsmLRv7qq9JD3rE3mLnbgCeyikpDMiwYezxJc5y085Nda4MocVjIUyHwfrItCcTJy+6nK+32
- QtS5ysQPbZtg/0BLTkwmTgg1C9wyCqJwqSPkJHKs0fedY3Cg4AmlYSUFZ+l1+yWlahYNrwIjD
- 1LvXS6jFdPgrwM0Bw5zEn5iTaVsN3Dpg/BK7RBEnkSXG2EhjbG0P5JyU6ZQFlyoWZsOBl1Dnp
- 9RlHsz3O6/vJl501tNpFzFkE9v1fbjuJiCnsWIZVHwcbxwgsYWs1VvePFQoqRLQUoGWk7YlQ8
- Mycnfd16TOkM/BTklN35/8ZoVz9X6VjMTLQhDSDUL5LeX75GwKdRnpVjwg+mpqmINujIEDZVj
- bRIcfuM8kM4QXmEUEjmqZoVNDqdo0531mNm3kN19X3Wj5I9ywhlJarAEaPUOs1zKkdzPb4HdC
- +5ul9M6a4WBWbT5U1mKmQOeT0D6MCEGVKv+v/aWQ+A07Sxs9cad/sxt/XXniiusfDTtv1wpHL
- 48xz68wHDUi6JHhewqK39v9CUwOqs24U/FOrqR6QogsoMdeib8LB3HQXiJzJhPuxnfQKT5n0E
- 2KocVJOLOCpFD00uImKyPG4urooQInY0CgXuaTbgwb2QXtNz/HWsnU7bcGH95t//ETUS0YST/
- HIEC4Jt3JrZiU2K24JZ5uAUtc1tWcvMl+zNPO7uqbferwivk7BjAs0A1bkS3994pg0p9gu7e6
- IGlScHPk65VIaL0560ZSSQDJOn/n987RThMli+dnKucI6xieqz82byl0Okk5UU49D7L5Y=
+References: <20210408183828.1907807-1-martin.blumenstingl@googlemail.com>
+ <20210408183828.1907807-2-martin.blumenstingl@googlemail.com> <20210408224617.crnllsf7eedxr6cp@skbuf>
+In-Reply-To: <20210408224617.crnllsf7eedxr6cp@skbuf>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 9 Apr 2021 21:43:34 +0200
+Message-ID: <CAFBinCAACrUO+89TnPs=5hhkV_73N5hxz=18u9o-NERUC_wpGg@mail.gmail.com>
+Subject: Re: [PATCH net v2 1/2] net: dsa: lantiq_gswip: Don't use PHY auto polling
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Hauke Mehrtens <hauke@hauke-m.de>, andrew@lunn.ch,
+        f.fainelli@gmail.com, vivien.didelot@gmail.com,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/21 12:02 PM, Andy Shevchenko wrote:
-> kernel.h is being used as a dump for all kinds of stuff for a long time.
-> Here is the attempt to start cleaning it up by splitting out panic and
-> oops helpers.
->
-> There are several purposes of doing this:
-> - dropping dependency in bug.h
-> - dropping a loop by moving out panic_notifier.h
-> - unload kernel.h from something which has its own domain
->
-> At the same time convert users tree-wide to use new headers, although
-> for the time being include new header back to kernel.h to avoid twisted
-> indirected includes for existing users.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Acked-by: Mike Rapoport <rppt@linux.ibm.com>
-> Acked-by: Corey Minyard <cminyard@mvista.com>
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Kees Cook <keescook@chromium.org>
-> Acked-by: Wei Liu <wei.liu@kernel.org>
-> Acked-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Hello Vladimir,
 
-Acked-by: Helge Deller <deller@gmx.de> # parisc
+On Fri, Apr 9, 2021 at 12:46 AM Vladimir Oltean <olteanv@gmail.com> wrote:
+>
+> On Thu, Apr 08, 2021 at 08:38:27PM +0200, Martin Blumenstingl wrote:
+> > PHY auto polling on the GSWIP hardware can be used so link changes
+> > (speed, link up/down, etc.) can be detected automatically. Internally
+> > GSWIP reads the PHY's registers for this functionality. Based on this
+> > automatic detection GSWIP can also automatically re-configure it's port
+> > settings. Unfortunately this auto polling (and configuration) mechanism
+> > seems to cause various issues observed by different people on different
+> > devices:
+> > - FritzBox 7360v2: the two Gbit/s ports (connected to the two internal
+> >   PHY11G instances) are working fine but the two Fast Ethernet ports
+> >   (using an AR8030 RMII PHY) are completely dead (neither RX nor TX are
+> >   received). It turns out that the AR8030 PHY sets the BMSR_ESTATEN bit
+> >   as well as the ESTATUS_1000_TFULL and ESTATUS_1000_XFULL bits. This
+> >   makes the PHY auto polling state machine (rightfully?) think that the
+> >   established link speed (when the other side is Gbit/s capable) is
+> >   1Gbit/s.
+>
+> Why do you say "rightfully"? The PHY is gigabit capable, and it reports
+> that via the Extended Status register. This is one of the reasons why
+> the "advertising" and "supported" link modes are separate concepts,
+> because even though you support gigabit, you don't advertise it because
+> you are in RMII mode.
+according to the marketing materials of the AR8030 it is a "Ultra
+low-power single RMII Fast Ethernet PHY"
+based on that I am referring to this PHY as "not Gbit/s capable"
+(other PHYs from the AR803x series are Gbit/s capable though)
 
-Helge
+> How does turning off the auto polling feature help circumvent the
+> Atheros PHY reporting "issue"? Do we even know that is the problem, or
+> is it simply a guess on your part based on something that looked strange?
+I have a patch in my queue (which I'll send for the next -net-next
+cycle) which adds "ethtool -d" (.get_regs) support to the GSWIP
+driver.
+There are multiple status registers, one of them indicates that the
+link speed (as result of the auto polling mechanism) is 1Gbit/s
+
+[...]
+> > Switch to software based configuration instead of PHY auto polling (and
+> > letting the GSWIP hardware configure the ports automatically) for the
+> > following link parameters:
+> > - link up/down
+> > - link speed
+> > - full/half duplex
+> > - flow control (RX / TX pause)
+>
+> What does the auto polling feature consist of, exactly? Is there some
+> sort of microcontroller accessing the MDIO bus simultaneously with
+> Linux?
+I believe the answer is yes, but there's no clear description in the
+datasheet for a newer GSWIP revision [0]
+"Figure 8" on page 41 (or page 39 if you go by the numbers at the
+bottom of each page) has a description of the state machine logic.
+If I understood Hauke correct the "not fiber" part is only checked for
+newer GSWIP revisions
+
+Please note that the datasheet from [0] refers to part number GSW140
+which is a stand-alone IC.
+The GSWIP driver (currently) supports an older revision (at least two
+generations older) of GSWIP which is built into Lantiq xRX200 and
+xRX300 SoCs.
+
+
+Best regards,
+Martin
+
+
+[0] https://www.maxlinear.com/document/index?id=23266&languageid=1033&type=Datasheet&partnumber=GSW140&filename=617930_GSW140_DS_Rev1.7.pdf&part=GSW140
