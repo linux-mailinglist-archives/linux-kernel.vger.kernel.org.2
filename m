@@ -2,203 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6E635A565
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECEF35A568
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234655AbhDISLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:11:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31758 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234618AbhDISLc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:11:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617991878;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5d5CRe7IR0f5T94H4kpE1JA/jjTHWSiDJcptaMUWhGo=;
-        b=JzJuf/O6RGk4Weojx+P6Pa+Zl4UkJ/2k/DDZxL9kjVl735xk2kYZxX4weycgTUA7Z+Xr70
-        4pHy9cgJT0tAT++nJQ1DewRKfy+fyZV0lH2lYyioWSO4CRPTgGXJc8ZKcclnX2WBOsfIhW
-        OwNoX/8wvHg8QQLem9uCqqmYlHGtl5g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-335-b8GGSwwLNoyHcRe1YIYpDg-1; Fri, 09 Apr 2021 14:11:14 -0400
-X-MC-Unique: b8GGSwwLNoyHcRe1YIYpDg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 082B8801FCE;
-        Fri,  9 Apr 2021 18:11:13 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6E08160D79;
-        Fri,  9 Apr 2021 18:11:07 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [RFC PATCH 2/2] iov_iter: Drop the X argument from
- iterate_all_kinds() and use B instead
-From:   David Howells <dhowells@redhat.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     dhowells@redhat.com, willy@infradead.org, jlayton@kernel.org,
-        hch@lst.de, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-cachefs@redhat.com, v9fs-developer@lists.sourceforge.net,
-        linux-afs@lists.infradead.org, ceph-devel@vger.kernel.org,
-        linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 09 Apr 2021 19:11:06 +0100
-Message-ID: <161799186664.847742.14555840742293852768.stgit@warthog.procyon.org.uk>
-In-Reply-To: <YG+s0iw5o91KQIlW@zeniv-ca.linux.org.uk>
-References: <YG+s0iw5o91KQIlW@zeniv-ca.linux.org.uk>
-User-Agent: StGit/0.23
+        id S234649AbhDISM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:12:57 -0400
+Received: from mga12.intel.com ([192.55.52.136]:29971 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234497AbhDISMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 14:12:52 -0400
+IronPort-SDR: 1YrFJpJ8FXpIA10Ak59CwUVifdJUv9nQa7aringYjgGxosk1tOG5QrWsdNdD7Pp0a2FpsdJAxU
+ jYMbUjIeSriQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="173292329"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="173292329"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 11:12:38 -0700
+IronPort-SDR: gAdrWIUmR0Xde+gGZqzg1xIgAmJryEsKSYdWjKUCZW9+JbvajE6UNLEYut0PM/AQuG3M0GhMYY
+ 0X7wKkAdgkzg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="459320217"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by orsmga001.jf.intel.com with ESMTP; 09 Apr 2021 11:12:38 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 9 Apr 2021 11:12:37 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 9 Apr 2021 11:12:37 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Fri, 9 Apr 2021 11:12:37 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.48) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2106.2; Fri, 9 Apr 2021 11:12:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IZB7DU9LD61Vt1X3KQMScQ01GYc74Qmtahlvgogvo5nPC3D11fKqsTVBKgFMFRCJIQMpgYVw6pLRRT5L9AVh3rZ8NFQhYomCTKaJ0w8h64R87ZG1iXJPgvQ6i1jWTHm4h0C/mYjAHIOIpArQNzw2YuasfCQ33kbU8RuYF2puTaDpfKH6q/dmgVbnYBpRjNaZwmy0mvJdwxH2HkyeNPQ8qslBCODVMBexqTA7CPuACBhm8Jp9SDznaVsBjzKchxJP1qJ4LSRo2r9z2xJHdKygmDrAB/iep7Ig22It+8hJFBy1HlPdPq04KnSY5/wxjXai3v3CMV6kCRbTz0PIQwh7qA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MCjP+l3Am4wJgB+QIz4RpU4TJ6TtYB4+GjaUlogY/f0=;
+ b=dqhEDoEYjyempmjDhFqL5fBUicro9m2iBGUWRqhiGXJjnbku6YSnc1s8X0YRieV5mUFbpZKGtrET9QmqaX2XttLlTqa5lQQtgnfZ3KGp/uXX/8G+1qrIoJt+ppnQYNBkOIP+MJCuHi/gmLPc0rrav0OPRUVIc8NvNFCQhpIT8rmXbofnRhMFkvLfFjp6PWlrc6Sp4pLuNcKIw6pVXfUKRRGSHqn2uwuPj7lfUNgAX4bhwc9ma3/w7pHZTyltJCIhfY5waHJP4YYmgLR9CZcYHVzJV5tw3NCx6ZGTS3vGb+FIKwTm7YDWZxIYv4AwA5AehoaVBv5KiuurmadB76llWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MCjP+l3Am4wJgB+QIz4RpU4TJ6TtYB4+GjaUlogY/f0=;
+ b=kCml0/ofF3uB5Qxuzj/ajE9+FlUbwbu1yEpbe7f6U/xOJXpkStMMB6WExX5gM1unFU5qdSoh/YY1N8hqo5EuEiETMFImV2u7r8Dqgsu9hyAIp1Ne5qReeLDzCCyYZtB7i1V3r2Ug2mG2FAg6Wm+y4Xb2hhnPLem91G2GxNywWbE=
+Received: from DM6PR11MB4657.namprd11.prod.outlook.com (2603:10b6:5:2a6::7) by
+ DM5PR1101MB2203.namprd11.prod.outlook.com (2603:10b6:4:52::7) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4020.18; Fri, 9 Apr 2021 18:12:35 +0000
+Received: from DM6PR11MB4657.namprd11.prod.outlook.com
+ ([fe80::910e:145d:e2f8:ec57]) by DM6PR11MB4657.namprd11.prod.outlook.com
+ ([fe80::910e:145d:e2f8:ec57%6]) with mapi id 15.20.4020.020; Fri, 9 Apr 2021
+ 18:12:35 +0000
+From:   "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>
+To:     "xiao33522@qq.com" <xiao33522@qq.com>,
+        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
+CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        xiaolinkui <xiaolinkui@kylinos.cn>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>
+Subject: RE: [Intel-wired-lan] [PATCH] i40e: The state of phy may not be
+ correct during power-on
+Thread-Topic: [Intel-wired-lan] [PATCH] i40e: The state of phy may not be
+ correct during power-on
+Thread-Index: AQHXLUs+VWmh6nM5fUSVYn6hAWVkL6qsfJ4w
+Date:   Fri, 9 Apr 2021 18:12:35 +0000
+Message-ID: <DM6PR11MB4657EB5A8040E7D5A9CB155E9B739@DM6PR11MB4657.namprd11.prod.outlook.com>
+References: <tencent_A3F0B1FAA65495EB2220B5B72EB6E5AF1B07@qq.com>
+In-Reply-To: <tencent_A3F0B1FAA65495EB2220B5B72EB6E5AF1B07@qq.com>
+Accept-Language: pl-PL, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.6.0.76
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: qq.com; dkim=none (message not signed)
+ header.d=none;qq.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [83.20.25.208]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bc8dfb80-1918-4e66-3380-08d8fb830d3d
+x-ms-traffictypediagnostic: DM5PR1101MB2203:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR1101MB2203D39E6059FD9D39AC1CDB9B739@DM5PR1101MB2203.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 2zHUZnRfaYmaJXG3gqoNxfi8LRknrkYQIYVFODfyZqAYFhgm8iY+oEgyJnubObWY+xDr5lUWNBf4r8gCNUM2dk8AKi5LAs5/RaO8hBody2J+Dr62YUAWhP646uFJ+LwnoDOv3U3/RM+SVruGfugxfo1tGSlw5B/gsla7RTZ7KpK69YvzLue1/TSZxcjPgAcJl05hxXktfWH3+UWx06FpEXUP2MoY1ktK6r34oP6tvXbjw/Gi7+XJ6JLbR4SpxKHrMpTfgSKFXdfpuE6eCW2hEddcd30RyXDhvWf4ToEJljqG+BxMMZPDt4TNJoAfFka9wlW+kniJmQRIFpM6CcK+sXqHXij1fNjr5rcxpiTJTc4m0FmKTj+yuyjen7+bmDKx/Ue2BobKhdL6yQBiC3sO/4qc9pd1hUoJpHyfYlYTlxUXkvPmXTgPkpAhXZSNr8QbtsVwLg6EqiLx4pjdg5caojy3PyIEXksfgLZAbLOpaIaounROoMIZveN0KAmQcyJdJFjZvoW2u0uNUFJp/5jbqAG/mMGbXcxYbxe1nLt13xE5Spr9gDQWqa1yTQzSlDZf0xlA56BOn+amhfPRJ9Pzn/3PZQqFc7hgtcoJEYMsFJtMHArPdis897M4PsgCoXbOg4THuzDikA4UgtHEfv239kDndmNuyHr6hLswQMYPBpKayCqFnnBm85R9f4bhYOfDkkeq54Knl5YbCFnLfFe5qHo7C+7aqivtNTXhepQuO/ZvFtUDuPfE+rbvryNp5ruj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4657.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(39860400002)(346002)(136003)(26005)(2906002)(9686003)(66574015)(38100700001)(33656002)(8936002)(55016002)(86362001)(83380400001)(7696005)(71200400001)(8676002)(478600001)(66446008)(6636002)(316002)(4326008)(66556008)(66476007)(64756008)(5660300002)(76116006)(66946007)(110136005)(186003)(52536014)(6506007)(54906003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?iso-8859-2?Q?kEWKhYY4iPHAz+qGbYmSTnhtISELQtIPNXMAa86DftHgcv9YQLh5wAzulY?=
+ =?iso-8859-2?Q?d7zEfKzGrFJlEb+v6v3DJQVdPbe5MD8CwDKBSafOOl7YQ92eX0VPzGSrNy?=
+ =?iso-8859-2?Q?ZFHjY2XvwvnEsZrD1IT97HynabJTLNGgjCqsr9xd/eZ1LByb+is/sdFQA7?=
+ =?iso-8859-2?Q?I5B1GJsBrauVIHKBMYJE7ePV6E2q//DhxtlGYWCTb/B7pXv7LcRxQ+i2MG?=
+ =?iso-8859-2?Q?uRav0uiBvlZzVAW2gjXQfbFwB2FetTOiOX37iNoaICepFJmXmHduSvgFRp?=
+ =?iso-8859-2?Q?YSZJt6DRNOJMXn9EXhCvKRqyn/Rf+68Fo5ATe8FHcueO7D0IkEmcdKXtVv?=
+ =?iso-8859-2?Q?bYRxED/hT/f4spXOAQBS1dqopuEAxMAhN9WoWhPS5X0uL9sGZe2nmK/Hz2?=
+ =?iso-8859-2?Q?D9Q2Tge7kogAAklXJ5/YXeO7d47Sdibn3BuU0cA2SIwSQ5Y5g0BAp6ZIjZ?=
+ =?iso-8859-2?Q?7B5Tckljt6lGD/GSW+NWC3IpSeU8kPAftmZewNMxMHxERddiDQwlS5i7hf?=
+ =?iso-8859-2?Q?4wS6hOHvBiMmX/ThdPrKnbbP7rTx1/vDmhBQkjJ/ZCuxQfzkCzwjKX1d07?=
+ =?iso-8859-2?Q?6zC+rG0Vpn8cWYyevltSfcssQML6jo1C8n/MtbqZ3nLfnMiQsVwWR6dCe5?=
+ =?iso-8859-2?Q?+Url2gm3YGsEOnd04153nNnfDzJ7MQA7RTR0KCWbh8UMvQu5tIy5VrPTM5?=
+ =?iso-8859-2?Q?fdPltXiWQoR+qiqRw850WAavnqt14Ipmdy6B8uTFZ72tzjhFpRlGqeC0kZ?=
+ =?iso-8859-2?Q?KGSkE2bYvK70e9ij1I+VBDzqrqdrasSLIpCfZYQ64OcNQtSkLsksDWyO3t?=
+ =?iso-8859-2?Q?st7GRbrTTBkUYhiOA0Pk6vQ8Q7OwyOKMmanLZmw07EqdaD199v8syBvoDs?=
+ =?iso-8859-2?Q?Dml6LttSMpfIz0laCNXMrDLz3c6QElgJil8GDh3ECK1s5ra2fJ+IXTGjTf?=
+ =?iso-8859-2?Q?u4C8tG2jHbdqynlLUl0zXFZxewFpPFelT7d93ccOJevL7CUgxqRQ326dEk?=
+ =?iso-8859-2?Q?2CorNlhUGiP/7AlUGgTGDKP3qW5tewm82xOTnFebJW7nfa3VQV+bGRgQMt?=
+ =?iso-8859-2?Q?FHztxXglIho6frHV/SsT9T/8dU0Ixq6ExlDBlGzWrd+TF3X5/ZIQ3iOHOQ?=
+ =?iso-8859-2?Q?shJVYfpabJgLub02bl6Qjr637TQVYIlZ5oJeqj6ONEXaqOLJ/lDcVY1V8s?=
+ =?iso-8859-2?Q?OmeFNBm1lo5xL8KlLIPoZBm01rPwEAN4FygTzIgnP65Nr4R1S/6VLMgjkO?=
+ =?iso-8859-2?Q?qm0ZprfF+oiWEZppJhEkelRCJUvs3TSyTrhDBmr7rvnMKoyZn0IhNQDZLp?=
+ =?iso-8859-2?Q?wESqRBGCuezvVYb3qKiqDdeqYUEaHOvaGg2yGC5e/k06eNQ=3D?=
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4657.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc8dfb80-1918-4e66-3380-08d8fb830d3d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 18:12:35.2853
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: aAVhqgbumAuv4Io8F7QDexSTndSN63mR5a5MxXbHDJmp4plrxBzd8eprf7/NVkECZhsVZ73ZjE87AQt6NhuRtj0K07OwF0GUORjyA/LAzEI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2203
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the X argument from iterate_all_kinds() and use the B argument instead
-as it's always the same unless the ITER_XARRAY is handled specially.
+>-----Original Message-----
+>From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of xi=
+ao33522@qq.com
+>Sent: pi=B1tek, 9 kwietnia 2021 11:18
+>To: Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L <ant=
+hony.l.nguyen@intel.com>
+>Cc: netdev@vger.kernel.org; xiaolinkui <xiaolinkui@kylinos.cn>; linux-kern=
+el@vger.kernel.org; intel-wired-lan@lists.osuosl.org; kuba@kernel.org; dave=
+m@davemloft.net
+>Subject: [Intel-wired-lan] [PATCH] i40e: The state of phy may not be corre=
+ct during power-on
+>
+>From: xiaolinkui <xiaolinkui@kylinos.cn>
+>
+>Sometimes the power on state of the x710 network card indicator is not rig=
+ht, and the indicator shows orange. At this time, the network card speed is=
+ Gigabit.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+By "power on state" you mean that it happens after power-up of the server?
 
- lib/iov_iter.c |   42 ++++++++++++------------------------------
- 1 file changed, 12 insertions(+), 30 deletions(-)
+>
+>After entering the system, check the network card status through the ethto=
+ol command as follows:
+>
+>[root@localhost ~]# ethtool enp132s0f0
+>Settings for enp132s0f0:
+>	Supported ports: [ FIBRE ]
+>	Supported link modes:   1000baseX/Full
+>	                        10000baseSR/Full
+>	Supported pause frame use: Symmetric
+>	Supports auto-negotiation: Yes
+>	Supported FEC modes: Not reported
+>	Advertised link modes:  1000baseX/Full
+>	                        10000baseSR/Full
+>	Advertised pause frame use: No
+>	Advertised auto-negotiation: Yes
+>	Advertised FEC modes: Not reported
+>	Speed: 1000Mb/s
+>	Duplex: Full
+>	Port: FIBRE
+>	PHYAD: 0
+>	Transceiver: internal
+>	Auto-negotiation: off
+>	Supports Wake-on: d
+>	Wake-on: d
+>	Current message level: 0x00000007 (7)
+>			       drv probe link
+>	Link detected: yes
+>
+>We can see that the speed is 1000Mb/s.
+>
+>If you unplug and plug in the optical cable, it can be restored to 10g.
+>After this operation, the rate is as follows:
+>
+>[root@localhost ~]# ethtool enp132s0f0
+>Settings for enp132s0f0:
+>        Supported ports: [ FIBRE ]
+>        Supported link modes:   1000baseX/Full
+>                                10000baseSR/Full
+>        Supported pause frame use: Symmetric
+>        Supports auto-negotiation: Yes
+>        Supported FEC modes: Not reported
+>        Advertised link modes:  1000baseX/Full
+>                                10000baseSR/Full
+>        Advertised pause frame use: No
+>        Advertised auto-negotiation: Yes
+>        Advertised FEC modes: Not reported
+>        Speed: 10000Mb/s
+>        Duplex: Full
+>        Port: FIBRE
+>        PHYAD: 0
+>        Transceiver: internal
+>        Auto-negotiation: off
+>        Supports Wake-on: d
+>        Wake-on: d
+>        Current message level: 0x00000007 (7)
+>                               drv probe link
+>        Link detected: yes
+>
+>Calling i40e_aq_set_link_restart_an can also achieve this function.
+>So we need to do a reset operation for the network card when the network c=
+ard status is abnormal.
 
-diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-index 93e9838c128d..144abdac11db 100644
---- a/lib/iov_iter.c
-+++ b/lib/iov_iter.c
-@@ -79,8 +79,8 @@
- #define iterate_xarray(i, n, __v, skip, STEP) {		\
- 	struct page *head = NULL;				\
- 	size_t wanted = n, seg, offset;				\
--	loff_t start = i->xarray_start + skip;			\
--	pgoff_t index = start >> PAGE_SHIFT;			\
-+	loff_t xarray_start = i->xarray_start + skip;		\
-+	pgoff_t index = xarray_start >> PAGE_SHIFT;		\
- 	int j;							\
- 								\
- 	XA_STATE(xas, i->xarray, index);			\
-@@ -113,7 +113,7 @@
- 	n = wanted - n;						\
- }
- 
--#define iterate_all_kinds(i, n, v, I, B, K, X) {		\
-+#define iterate_all_kinds(i, n, v, I, B, K) {			\
- 	if (likely(n)) {					\
- 		size_t skip = i->iov_offset;			\
- 		if (unlikely(i->type & ITER_BVEC)) {		\
-@@ -127,7 +127,7 @@
- 		} else if (unlikely(i->type & ITER_DISCARD)) {	\
- 		} else if (unlikely(i->type & ITER_XARRAY)) {	\
- 			struct bio_vec v;			\
--			iterate_xarray(i, n, v, skip, (X));	\
-+			iterate_xarray(i, n, v, skip, (B));	\
- 		} else {					\
- 			const struct iovec *iov;		\
- 			struct iovec v;				\
-@@ -842,9 +842,7 @@ bool _copy_from_iter_full(void *addr, size_t bytes, struct iov_iter *i)
- 		0;}),
- 		memcpy_from_page((to += v.bv_len) - v.bv_len, v.bv_page,
- 				 v.bv_offset, v.bv_len),
--		memcpy((to += v.iov_len) - v.iov_len, v.iov_base, v.iov_len),
--		memcpy_from_page((to += v.bv_len) - v.bv_len, v.bv_page,
--				 v.bv_offset, v.bv_len)
-+		memcpy((to += v.iov_len) - v.iov_len, v.iov_base, v.iov_len)
- 	)
- 
- 	iov_iter_advance(i, bytes);
-@@ -927,9 +925,7 @@ bool _copy_from_iter_full_nocache(void *addr, size_t bytes, struct iov_iter *i)
- 		0;}),
- 		memcpy_from_page((to += v.bv_len) - v.bv_len, v.bv_page,
- 				 v.bv_offset, v.bv_len),
--		memcpy((to += v.iov_len) - v.iov_len, v.iov_base, v.iov_len),
--		memcpy_from_page((to += v.bv_len) - v.bv_len, v.bv_page,
--				 v.bv_offset, v.bv_len)
-+		memcpy((to += v.iov_len) - v.iov_len, v.iov_base, v.iov_len)
- 	)
- 
- 	iov_iter_advance(i, bytes);
-@@ -1058,9 +1054,7 @@ size_t iov_iter_copy_from_user_atomic(struct page *page,
- 		copyin((p += v.iov_len) - v.iov_len, v.iov_base, v.iov_len),
- 		memcpy_from_page((p += v.bv_len) - v.bv_len, v.bv_page,
- 				 v.bv_offset, v.bv_len),
--		memcpy((p += v.iov_len) - v.iov_len, v.iov_base, v.iov_len),
--		memcpy_from_page((p += v.bv_len) - v.bv_len, v.bv_page,
--				 v.bv_offset, v.bv_len)
-+		memcpy((p += v.iov_len) - v.iov_len, v.iov_base, v.iov_len)
- 	)
- 	kunmap_atomic(kaddr);
- 	return bytes;
-@@ -1349,8 +1343,7 @@ unsigned long iov_iter_alignment(const struct iov_iter *i)
- 	iterate_all_kinds(i, size, v,
- 		(res |= (unsigned long)v.iov_base | v.iov_len, 0),
- 		res |= v.bv_offset | v.bv_len,
--		res |= (unsigned long)v.iov_base | v.iov_len,
--		res |= v.bv_offset | v.bv_len
-+		res |= (unsigned long)v.iov_base | v.iov_len
- 	)
- 	return res;
- }
-@@ -1372,9 +1365,7 @@ unsigned long iov_iter_gap_alignment(const struct iov_iter *i)
- 		(res |= (!res ? 0 : (unsigned long)v.bv_offset) |
- 			(size != v.bv_len ? size : 0)),
- 		(res |= (!res ? 0 : (unsigned long)v.iov_base) |
--			(size != v.iov_len ? size : 0)),
--		(res |= (!res ? 0 : (unsigned long)v.bv_offset) |
--			(size != v.bv_len ? size : 0))
-+			(size != v.iov_len ? size : 0))
- 		);
- 	return res;
- }
-@@ -1530,8 +1521,7 @@ ssize_t iov_iter_get_pages(struct iov_iter *i,
- 		return v.bv_len;
- 	}),({
- 		return -EFAULT;
--	}),
--	0
-+	})
- 	)
- 	return 0;
- }
-@@ -1665,7 +1655,7 @@ ssize_t iov_iter_get_pages_alloc(struct iov_iter *i,
- 		return v.bv_len;
- 	}),({
- 		return -EFAULT;
--	}), 0
-+	})
- 	)
- 	return 0;
- }
-@@ -1751,13 +1741,6 @@ bool csum_and_copy_from_iter_full(void *addr, size_t bytes, __wsum *csum,
- 				      v.iov_base, v.iov_len,
- 				      sum, off);
- 		off += v.iov_len;
--	}), ({
--		char *p = kmap_atomic(v.bv_page);
--		sum = csum_and_memcpy((to += v.bv_len) - v.bv_len,
--				      p + v.bv_offset, v.bv_len,
--				      sum, off);
--		kunmap_atomic(p);
--		off += v.bv_len;
- 	})
- 	)
- 	*csum = sum;
-@@ -1892,8 +1875,7 @@ int iov_iter_npages(const struct iov_iter *i, int maxpages)
- 			- p / PAGE_SIZE;
- 		if (npages >= maxpages)
- 			return maxpages;
--	}),
--	0
-+	})
- 	)
- 	return npages;
- }
+Can't say much about the root cause of the issue right now,
+but I don't think it is good idea for the fix.
+This leads to braking existing link each time=20
+i40e_aq_get_link_info is called on 1 Gigabit PHY.
+For example 'ethtool -m <dev>' does that.
 
+Have you tried reloading the driver?
+Thanks!
 
+>
+>Signed-off-by: xiaolinkui <xiaolinkui@kylinos.cn>
+>---
+> drivers/net/ethernet/intel/i40e/i40e_common.c | 4 ++++
+> 1 file changed, 4 insertions(+)
+>
+>diff --git a/drivers/net/ethernet/intel/i40e/i40e_common.c b/drivers/net/e=
+thernet/intel/i40e/i40e_common.c
+>index ec19e18305ec..dde0224776ac 100644
+>--- a/drivers/net/ethernet/intel/i40e/i40e_common.c
+>+++ b/drivers/net/ethernet/intel/i40e/i40e_common.c
+>@@ -1866,6 +1866,10 @@ i40e_status i40e_aq_get_link_info(struct i40e_hw *h=
+w,
+> 	hw_link_info->max_frame_size =3D le16_to_cpu(resp->max_frame_size);
+> 	hw_link_info->pacing =3D resp->config & I40E_AQ_CONFIG_PACING_MASK;
+>=20
+>+	if (hw_link_info->phy_type =3D=3D I40E_PHY_TYPE_1000BASE_SX &&
+>+	    hw->mac.type =3D=3D I40E_MAC_XL710)
+>+		i40e_aq_set_link_restart_an(hw, true, NULL);
+>+
+> 	/* update fc info */
+> 	tx_pause =3D !!(resp->an_info & I40E_AQ_LINK_PAUSE_TX);
+> 	rx_pause =3D !!(resp->an_info & I40E_AQ_LINK_PAUSE_RX);
+>--
+>2.17.1
+>
+>_______________________________________________
+>Intel-wired-lan mailing list
+>Intel-wired-lan@osuosl.org
+>https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
+>
