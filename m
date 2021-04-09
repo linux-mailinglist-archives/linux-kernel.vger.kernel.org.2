@@ -2,145 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B72C35947F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:25:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D1735947B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231714AbhDIFYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49540 "EHLO
+        id S233187AbhDIFYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:24:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhDIFXr (ORCPT
+        with ESMTP id S231503AbhDIFYA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:23:47 -0400
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30EAC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 22:23:35 -0700 (PDT)
-Received: by mail-ua1-x92d.google.com with SMTP id h34so1461289uah.5
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:23:35 -0700 (PDT)
+        Fri, 9 Apr 2021 01:24:00 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7737AC061765
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 22:23:47 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id b17so3763995ilh.6
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:23:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=telus.net; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gTs7X0Kha8yyPPjoketYAk4TM4kCJYNv+QtbVLV11qw=;
-        b=JBxB536edN2icemaU8QdaNm6AYnLTCaemM3Ithzlz1Np8v6pO1wJVYu2ejP+rZfSsz
-         3qTVcd9dZRn1Feo6qXBUuDjeMAnnW2T0zl5u/1BBTcFJ+rKqnzY7gZyIabasGO0cSGPX
-         8205mExpo36r3SKCYZ/4AByGCO1VBW7dAvtH8=
+         :cc;
+        bh=iDvYE3lo6mdtPyL38hcLZsUZ7A2Go0Bp2cFLK0Yzql8=;
+        b=dTP+Zg0XNWCGh0/GeznXbP4zFivhq7Gf7UKRwBny6Ks7gGOxEJUkjX/tAK1GHpF/lD
+         BVJjrx35Dm4dp9fhkx6HX+2lviAu6doNehUEW5O979DMX+LYSk8z87+Y5uuAlWgfEHyX
+         FxuThKDDRnfO2+kgZpC1HF+Qm52L8DCzqf+hxPGjGc6329itw4PCSYYvp7M3iA/sFQbo
+         UvEJ5TxV9/+hAjN00n8LtzmGh6NWepMFCk+3VQ5cA0LVjM85fa5C00Jy9wLFEo75vIJU
+         sFP/HxH9ninIjQM203jbk0HfjhfVHnwJcrOPQT5RRkLj+iVQpz1uaJ4AOa0ybUuGSp5R
+         MyiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gTs7X0Kha8yyPPjoketYAk4TM4kCJYNv+QtbVLV11qw=;
-        b=dWNSX1ZlItZvZZAuvma+9yWm1RbJpQMJwnjOFRlag84qx5srLLM7LLTKtZsQhPriBh
-         AEkZF+UdiMxWXBMXa5rqiUes+e8sSXxOf4XEBTPItJN9RgwTMwInPNzQCxSFc1B0KUP+
-         qOSlJK2D/Mh6/8LTKgelVDBK4VfUQ2J5xSfsBSBB4TOL4Xk+uD9P5Ox/kTiPORDopTo1
-         aMNT9yFdK+NrJBeb3UBn88zEoCc98LI0vEMOBLnV5D/nxvnCYBrq7lEFDsvLQXZ4/iM0
-         9aYzcIMn8Qc5WLp6GRbHWyXvW903jTZVtwAoXYd7b+dpfUVPk5p91JyjYPPXUaV6KFIG
-         HzBA==
-X-Gm-Message-State: AOAM532dc1DxZ+GPGJ5bOyTqroUwXEHCT7MjWaOH4Ltm/8tr1JMRITph
-        ADOq5U1ZZLJ5qgtA7lfZzlTYAG5kRMbkspbxNu/tsw==
-X-Google-Smtp-Source: ABdhPJyiEqe2/5BdCT+RzysMIjR0yOEhjnFfYuWD4d3HBGwzC0gqP0VjxLNWerB7XM2SkAAm/TzcFU4LTi8Xfv/RYMA=
-X-Received: by 2002:ab0:7593:: with SMTP id q19mr9451736uap.74.1617945814814;
- Thu, 08 Apr 2021 22:23:34 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=iDvYE3lo6mdtPyL38hcLZsUZ7A2Go0Bp2cFLK0Yzql8=;
+        b=dHev0ul2HM0Hqo7/HYatIsdokfpPyL26tV+nq0E0Ixjou64q122v+rC7wMEgcBB1Hp
+         7b6Y2rFprmuPrz0n7MreG4LoqhBdoTC2IwwHs1ffsF6r3qIMb5pwqCP/lNSvO0XCKW1O
+         vFiiGf/4ycSPNPt3DponMbddQUTtWwWOWABoIa/sLMAMFJieUUgNk1GOa2xPODNaLkEh
+         bOjxrMqnZCMzN7cjAvPbn9WuKurxmuSslWsGNCYQxn04UMaWr7qP6uGWFmPyNkMgrSYc
+         azHPcB49k96mvIuf3AB+XPNeRgPGMul+t5D7jYeQmDiCSJx8+X9g6WBzeO5ePc1ASlFC
+         9cIQ==
+X-Gm-Message-State: AOAM533vjHFTmko4R2+0QIOLURDV5qjzkXnFrbksRQUOoEo8KWCu2mbg
+        JJs+qpI6/a7jfXHF/X0lvQ02/+IOqKHIi4VO8/Uwgw==
+X-Google-Smtp-Source: ABdhPJxTEr4WZEbUEtGTg0cnowxse6HWF8plMi3jVnhxNxBtxKg4fnIIej4/QL1DqlM5Z1owCB2Mz98wp+nr9un5HFs=
+X-Received: by 2002:a05:6e02:1a81:: with SMTP id k1mr41418ilv.18.1617945826941;
+ Thu, 08 Apr 2021 22:23:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210221195833.23828-1-lhenriques@suse.de> <20210222102456.6692-1-lhenriques@suse.de>
- <CAN-5tyELMY7b7CKO-+an47ydq8r_4+SOyhuvdH0qE0-JmdZ44Q@mail.gmail.com>
- <YDYpHccgM7agpdTQ@suse.de> <CANMq1KBgwEXFh8AxpPW2t1SA0NVsyR45m0paLEU4D4w80dc_fA@mail.gmail.com>
-In-Reply-To: <CANMq1KBgwEXFh8AxpPW2t1SA0NVsyR45m0paLEU4D4w80dc_fA@mail.gmail.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Fri, 9 Apr 2021 13:23:23 +0800
-Message-ID: <CANMq1KDTgnGtNxWj2XxAT3mdsNjc551uUCg6EWnh=Hd0KcVQKQ@mail.gmail.com>
-Subject: Re: [PATCH v8] vfs: fix copy_file_range regression in cross-fs copies
-To:     Luis Henriques <lhenriques@suse.de>
-Cc:     Olga Kornievskaia <aglo@umich.edu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>,
-        Steve French <sfrench@samba.org>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Ian Lance Taylor <iant@google.com>,
-        Luis Lozano <llozano@chromium.org>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Christoph Hellwig <hch@infradead.org>,
-        ceph-devel <ceph-devel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-nfs <linux-nfs@vger.kernel.org>
+References: <20210404083354.23060-1-psampat@linux.ibm.com>
+In-Reply-To: <20210404083354.23060-1-psampat@linux.ibm.com>
+From:   Doug Smythies <dsmythies@telus.net>
+Date:   Thu, 8 Apr 2021 22:23:38 -0700
+Message-ID: <CAAYoRsWaAmyuJU4FCb7gtK0y-ZprdDVvp0vMpy=ZohzoC7YX1Q@mail.gmail.com>
+Subject: Re: [RFC v3 0/2] CPU-Idle latency selftest framework
+To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
+Cc:     rjw@rjwysocki.net, Daniel Lezcano <daniel.lezcano@linaro.org>,
+        shuah@kernel.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, pratik.r.sampat@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Feb 24, 2021 at 6:44 PM Nicolas Boichat <drinkcat@chromium.org> wro=
-te:
->
-> On Wed, Feb 24, 2021 at 6:22 PM Luis Henriques <lhenriques@suse.de> wrote=
-:
-> >
-> > On Tue, Feb 23, 2021 at 08:00:54PM -0500, Olga Kornievskaia wrote:
-> > > On Mon, Feb 22, 2021 at 5:25 AM Luis Henriques <lhenriques@suse.de> w=
-rote:
-> > > >
-> > > > A regression has been reported by Nicolas Boichat, found while usin=
-g the
-> > > > copy_file_range syscall to copy a tracefs file.  Before commit
-> > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") =
-the
-> > > > kernel would return -EXDEV to userspace when trying to copy a file =
-across
-> > > > different filesystems.  After this commit, the syscall doesn't fail=
- anymore
-> > > > and instead returns zero (zero bytes copied), as this file's conten=
-t is
-> > > > generated on-the-fly and thus reports a size of zero.
-> > > >
-> > > > This patch restores some cross-filesystem copy restrictions that ex=
-isted
-> > > > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy a=
-cross
-> > > > devices").  Filesystems are still allowed to fall-back to the VFS
-> > > > generic_copy_file_range() implementation, but that has now to be do=
-ne
-> > > > explicitly.
-> > > >
-> > > > nfsd is also modified to fall-back into generic_copy_file_range() i=
-n case
-> > > > vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
-> > > >
-> > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across dev=
-ices")
-> > > > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-=
-1-drinkcat@chromium.org/
-> > > > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0x=
-x+BnvW=3DZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
-> > > > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7=
-cdc3ff707bc1efa17f5366057d60603c45f@changeid/
-> > > > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
-> > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
-> > >
-> > > I tested v8 and I believe it works for NFS.
-> >
-> > Thanks a lot for the testing.  And to everyone else for reviews,
-> > feedback,... and patience.
->
-> Thanks so much to you!!!
->
-> Works here, you can add my
-> Tested-by: Nicolas Boichat <drinkcat@chromium.org>
+Hi Pratik,
 
-What happened to this patch? It does not seem to have been picked up
-yet? Any reason why?
+I tried V3 on a Intel i5-10600K processor with 6 cores and 12 CPUs.
+The core to cpu mappings are:
+core 0 has cpus 0 and 6
+core 1 has cpus 1 and 7
+core 2 has cpus 2 and 8
+core 3 has cpus 3 and 9
+core 4 has cpus 4 and 10
+core 5 has cpus 5 and 11
 
-> >
-> > I'll now go look into the manpage and see what needs to be changed.
-> >
-> > Cheers,
-> > --
-> > Lu=C3=ADs
+By default, it will test CPUs 0,2,4,6,10 on cores 0,2,4,0,2,4.
+wouldn't it make more sense to test each core once?
+With the source CPU always 0, I think the results from the results
+from the destination CPUs 0 and 6, on core 0 bias the results, at
+least in the deeper idle states. They don't make much difference in
+the shallow states. Myself, I wouldn't include them in the results.
+Example, where I used the -v option for all CPUs:
+
+--IPI Latency Test---
+--Baseline IPI Latency measurement: CPU Busy--
+SRC_CPU   DEST_CPU IPI_Latency(ns)
+0            0          101
+0            1          790
+0            2          609
+0            3          595
+0            4          737
+0            5          759
+0            6          780
+0            7          741
+0            8          574
+0            9          681
+0           10          527
+0           11          552
+Baseline Avg IPI latency(ns): 620  <<<< suggest 656 here
+---Enabling state: 0---
+SRC_CPU   DEST_CPU IPI_Latency(ns)
+0            0           76
+0            1          471
+0            2          420
+0            3          462
+0            4          454
+0            5          468
+0            6          453
+0            7          473
+0            8          380
+0            9          483
+0           10          492
+0           11          454
+Expected IPI latency(ns): 0
+Observed Avg IPI latency(ns) - State 0: 423 <<<<< suggest 456 here
+---Enabling state: 1---
+SRC_CPU   DEST_CPU IPI_Latency(ns)
+0            0          112
+0            1          866
+0            2          663
+0            3          851
+0            4         1090
+0            5         1314
+0            6         1941
+0            7         1458
+0            8          687
+0            9          802
+0           10         1041
+0           11         1284
+Expected IPI latency(ns): 1000
+Observed Avg IPI latency(ns) - State 1: 1009 <<<< suggest 1006 here
+---Enabling state: 2---
+SRC_CPU   DEST_CPU IPI_Latency(ns)
+0            0           75
+0            1        16362
+0            2        16785
+0            3        19650
+0            4        17356
+0            5        17606
+0            6         2217
+0            7        17958
+0            8        17332
+0            9        16615
+0           10        17382
+0           11        17423
+Expected IPI latency(ns): 120000
+Observed Avg IPI latency(ns) - State 2: 14730 <<<< suggest 17447 here
+---Enabling state: 3---
+SRC_CPU   DEST_CPU IPI_Latency(ns)
+0            0          103
+0            1        17416
+0            2        17961
+0            3        16651
+0            4        17867
+0            5        17726
+0            6         2178
+0            7        16620
+0            8        20951
+0            9        16567
+0           10        17131
+0           11        17563
+Expected IPI latency(ns): 1034000
+Observed Avg IPI latency(ns) - State 3: 14894 <<<< suggest 17645 here
+
+Hope this helps.
+
+... Doug
