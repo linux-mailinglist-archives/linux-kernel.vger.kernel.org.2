@@ -2,145 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D05BE35A044
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D4135A047
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233550AbhDINs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:48:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60034 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231599AbhDINsz (ORCPT
+        id S233604AbhDINtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:49:32 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16559 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232884AbhDINt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:48:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617976122;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZneTleoditFJnDvsvcmD0oLbFf5R+kuV2tQYXKjo4DA=;
-        b=gL07CqQwyJe88ZFZ/xY7mxUUeHSeQh63i8Z4nutI8U5jiG2dif6QeUva0l1/P/I1Db4ae4
-        Awx5lbrv7oI58zCRNZPVxQ0cetSzUlossMwlQbejzuhqq7POqf1w5ls+N8BAn+hxwf0CW9
-        DazCfsQ+vrIpz1tTjH/Id8/0zHuqJwc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-roXGcz9xOZO0WnT8elFszQ-1; Fri, 09 Apr 2021 09:48:38 -0400
-X-MC-Unique: roXGcz9xOZO0WnT8elFszQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCEB18030BB;
-        Fri,  9 Apr 2021 13:48:36 +0000 (UTC)
-Received: from t14s.localdomain (ovpn-112-65.phx2.redhat.com [10.3.112.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EF19F1042A46;
-        Fri,  9 Apr 2021 13:48:33 +0000 (UTC)
-Message-ID: <3c062f70ffef2dcd48a661f7c8162fb8fbaf6869.camel@redhat.com>
-Subject: Re: static_branch/jump_label vs branch merging
-From:   David Malcolm <dmalcolm@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-toolchains@vger.kernel.org,
+        Fri, 9 Apr 2021 09:49:27 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGzvN6S9Rz1BGXx;
+        Fri,  9 Apr 2021 21:46:56 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 21:49:03 +0800
+Subject: Re: [PATCH v7 2/5] i2c: core: add api to provide frequency mode
+ strings
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>
+CC:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-Date:   Fri, 09 Apr 2021 09:48:33 -0400
-In-Reply-To: <YHBS70ZQ6gOpMk2K@hirez.programming.kicks-ass.net>
-References: <YG80wg/2iZjXfCDJ@hirez.programming.kicks-ass.net>
-         <CAMj1kXGngxH0VCHyREKeLau=159sRkWYKVZwOV84r6dvCqXcig@mail.gmail.com>
-         <YHA2jPIaj0p23mv8@hirez.programming.kicks-ass.net>
-         <5f78b7e2f9ae937271ef52ee9e999a91c2719da9.camel@redhat.com>
-         <YHBCoijoopbsDn29@hirez.programming.kicks-ass.net>
-         <YHBQPr8q0cx4iUfN@hirez.programming.kicks-ass.net>
-         <YHBS70ZQ6gOpMk2K@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
+        Dmitry Osipenko <digetx@gmail.com>,
+        "Thierry Reding" <treding@nvidia.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        John Garry <john.garry@huawei.com>,
+        "Mika Westerberg" <mika.westerberg@linux.intel.com>,
+        <prime.zeng@huawei.com>, Linuxarm <linuxarm@huawei.com>
+References: <1617880641-664-1-git-send-email-yangyicong@hisilicon.com>
+ <1617880641-664-3-git-send-email-yangyicong@hisilicon.com>
+ <20210408205551.GD1900@kunai> <YHAuIdwKMjZuDmXU@smile.fi.intel.com>
+ <20210409113722.GB879@ninjato>
+ <CAHp75VekZKo-45Pc7mp9Pfwzx=jS7L2SBhb564acWkuAo5cPAQ@mail.gmail.com>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <716b2bca-9d27-529e-93ab-3e6aa75bf948@hisilicon.com>
+Date:   Fri, 9 Apr 2021 21:49:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <CAHp75VekZKo-45Pc7mp9Pfwzx=jS7L2SBhb564acWkuAo5cPAQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-09 at 15:13 +0200, Peter Zijlstra wrote:
-> On Fri, Apr 09, 2021 at 03:01:50PM +0200, Peter Zijlstra wrote:
-> > On Fri, Apr 09, 2021 at 02:03:46PM +0200, Peter Zijlstra wrote:
-> > > On Fri, Apr 09, 2021 at 07:55:42AM -0400, David Malcolm wrote:
-> > 
-> > > > Sorry if this is a dumb question, but does the function
-> > > > attribute:
-> > > >   __attribute__ ((pure)) 
-> > > > help here?  It's meant to allow multiple calls to a predicate
-> > > > to be
-> > > > merged - though I'd be nervous of using it here, the predicate
-> > > > isn't
-> > > > 100% pure, since AIUI the whole point of what you've built is
-> > > > for
-> > > > predicates that very rarely change - but can change
-> > > > occasionally.
-> > > 
-> > > I actually tried that, but it doesn't seem to work. Given the
-> > > function
-> > > arguments are all compile time constants it should DTRT AFAICT,
-> > > but
-> > > alas.
-> > 
-> > FWIW, I tried the below patch and GCC-10.2.1 on current tip/master.
+
+
+On 2021/4/9 19:40, Andy Shevchenko wrote:
+> On Fri, Apr 9, 2021 at 2:37 PM Wolfram Sang <wsa@kernel.org> wrote:
+>>
+>>
+>>> Can we add this later if needed?
+>>> Because in such case additionally printing bus_freq_hz will be fine, no?
+>>
+>> Yes, we can do that.
+>>
+>>> But putting max to each frequency representation in the list of strings sounds
+>>> good to me.
+>>
+>> It is not important to me if we are going to change that later anyhow.
+>> I'll leave it to you guys.
 > 
-> I also just tried __attribute__((__const__)), which is stronger still
-> than __pure__ and that's also not working :/
-> 
-> I then also tried to replace the __buildin_types_compatible_p() magic
-> in
-> static_branch_unlikely() with _Generic(), but still no joy.
+> Thanks, I think the series is okay to go as is.
 > 
 
-[..snip...]
+sorry for the late reply. we can have this series applied if possible,
+or you may apply the changed patch below (please let me know if you
+want the whole series updated).
+I didn't realize this, sorry. our two users don't have this situation.
 
-You tried __pure on arch_static_branch; did you try it on
-static_branch_unlikely?
+thanks Wolfram and Andy!
 
-With the caveat that my knowledge of GCC's middle-end is mostly about
-implementing warnings, rather than optimization, I did some
-experimentation, with gcc trunk on x86_64 FWIW.
+Yicong.
 
-Given:
 
-int __attribute__((pure)) foo(void);
 
-int t(void)
-{
-  int a;
-  if (foo())
-    a++;
-  if (foo())
-    a++;
-  if (foo())
-    a++;
-  return a;
-}
+From 14da3be8d85536c16adbc4006fc12c6837ef7474 Mon Sep 17 00:00:00 2001
+From: Yicong Yang <yangyicong@hisilicon.com>
+Date: Sat, 27 Mar 2021 11:48:25 +0800
+Subject: [PATCH] i2c: core: add api to provide frequency mode strings
 
-At -O1 and above this is optimized to a single call to foo, returning 0
-or 3 accordingly.
+Some I2C drivers like Designware and HiSilicon will print the
+bus frequency mode information, so add a public one that everyone
+can make use of.
 
--fdump-tree-all shows that it's the "fre1" pass that eliminates the
-subsequent calls to foo, replacing them with reuses of the result of
-the first call.
+Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+ drivers/i2c/i2c-core-base.c | 19 +++++++++++++++++++
+ include/linux/i2c.h         |  3 +++
+ 2 files changed, 22 insertions(+)
 
-This is in gcc/tree-ssa-sccvn.c, a value-numbering pass.
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index de9402c..53836b5 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -76,6 +76,25 @@ void i2c_transfer_trace_unreg(void)
+ 	static_branch_dec(&i2c_trace_msg_key);
+ }
 
-I think you want to somehow "teach" the compiler that:
-  static_branch_unlikely(&sched_schedstats)
-is "pure-ish", that for some portion of the surrounding code that you
-want the result to be treated as pure - though I suspect compiler
-maintainers with more experience than me are thinking "but which
-portion? what is it safe to assume, and what will users be annoyed
-about if we optimize away? what if t itself is inlined somewhere?" and
-similar concerns.
++const char *i2c_freq_mode_string(u32 bus_freq_hz)
++{
++	if (bus_freq_hz <= I2C_MAX_STANDARD_MODE_FREQ)
++		return "Standard Mode (max 100 kHz)";
++	else if (bus_freq_hz <= I2C_MAX_FAST_MODE_FREQ)
++		return "Fast Mode (max 400 kHz)";
++	else if (bus_freq_hz <= I2C_MAX_FAST_MODE_PLUS_FREQ)
++		return "Fast Mode Plus (max 1.0 MHz)";
++	else if (bus_freq_hz <= I2C_MAX_TURBO_MODE_FREQ)
++		return "Turbo Mode (max 1.4 MHz)";
++	else if (bus_freq_hz <= I2C_MAX_HIGH_SPEED_MODE_FREQ)
++		return "High Speed Mode (max 3.4 MHz)";
++	else if (bus_freq_hz <= I2C_MAX_ULTRA_FAST_MODE_FREQ)
++		return "Ultra Fast Mode (max 5.0 MHz)";
++	else
++		return "Unknown Mode";
++}
++EXPORT_SYMBOL_GPL(i2c_freq_mode_string);
++
+ const struct i2c_device_id *i2c_match_id(const struct i2c_device_id *id,
+ 						const struct i2c_client *client)
+ {
+diff --git a/include/linux/i2c.h b/include/linux/i2c.h
+index 10bd0b0..0813be1 100644
+--- a/include/linux/i2c.h
++++ b/include/linux/i2c.h
+@@ -51,6 +51,9 @@ struct module;
+ struct property_entry;
 
-Or maybe the asm stmt itself could somehow be marked as pure??? (with
-similar concerns about semantics as above)
+ #if IS_ENABLED(CONFIG_I2C)
++/* Return the Frequency mode string based on the bus frequency */
++const char *i2c_freq_mode_string(u32 bus_freq_hz);
++
+ /*
+  * The master routines are the ones normally used to transmit data to devices
+  * on a bus (or read from them). Apart from two basic transfer functions to
+-- 
+2.8.1
 
-Hope this is constructive
-Dave
+
+
 
 
