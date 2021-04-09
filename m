@@ -2,108 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 692A8359319
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D575359326
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233162AbhDIDgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:36:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232941AbhDIDgf (ORCPT
+        id S233280AbhDIDiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:38:23 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:16854 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233180AbhDIDiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:36:35 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E08C061760;
-        Thu,  8 Apr 2021 20:36:22 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGkLr2qD6z9sW1;
-        Fri,  9 Apr 2021 13:36:20 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617939381;
-        bh=IwQxss0MPfAy2uX0dCdAtFxmafidWn5oWAKM3E+z3Ic=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Cbx0IJH1B3345SvFVnj0qL7KPAMaLiMOGlwUwwFkt2qwE90DW0vGtaQPkzRuyC/j2
-         OVr3ORFzm7SVqfA+is1IEi4TuiEtnqmsBGlpNG1nQuCDufDtJvt2K9NysoydwN0GFz
-         0/bhpxgzqYX+09CfeJZumGNe1y1J6JCBiBy66YDJif3H3uxGYlWyeJ3dhKi3Qean/V
-         KW52Frpm7wc4exN5vRLmq7sZpGxbdiXjbTzPDz5L0tzlCs8p1xprNDK+L2h5DiAZjP
-         dLWOVMfHKonSJJXudsxIQMut13qrSg488RP3wjchNR+nGw0PwhILsKNHJNlHx7rzO0
-         rxtPDUlnCK+mg==
-Date:   Fri, 9 Apr 2021 13:36:19 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Imre Deak <imre.deak@intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm tree
-Message-ID: <20210409133619.69c135ff@canb.auug.org.au>
+        Thu, 8 Apr 2021 23:38:11 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGkK515WQz9xgL;
+        Fri,  9 Apr 2021 11:34:49 +0800 (CST)
+Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 9 Apr 2021 11:36:54 +0800
+From:   Yanan Wang <wangyanan55@huawei.com>
+To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "Alexandru Elisei" <alexandru.elisei@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        <wanghaibin.wang@huawei.com>, <zhukeqian1@huawei.com>,
+        <yuzenghui@huawei.com>, Yanan Wang <wangyanan55@huawei.com>
+Subject: [PATCH v4 0/2] KVM: arm64: Improve efficiency of stage2 page table
+Date:   Fri, 9 Apr 2021 11:36:50 +0800
+Message-ID: <20210409033652.28316-1-wangyanan55@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/6fkHv07WnvS/lravUEQ/Ire";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.128]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/6fkHv07WnvS/lravUEQ/Ire
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Hi all,
+This series makes some efficiency improvement of stage2 page table code,
+and there are some test results to quantify the benefit of each patch.
 
-After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
-failed like this:
+Changelogs:
+v3->v4:
+- perform D-cache flush if we are not mapping device memory
+- rebased on top of mainline v5.12-rc6
+- v3: https://lore.kernel.org/lkml/20210326031654.3716-1-wangyanan55@huawei.com/
 
-drivers/gpu/drm/i915/display/intel_dp_link_training.c:43:13: error: redefin=
-ition of 'intel_dp_reset_lttpr_common_caps'
-   43 | static void intel_dp_reset_lttpr_common_caps(struct intel_dp *intel=
-_dp)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/i915/display/intel_dp_link_training.c:38:13: note: previous=
- definition of 'intel_dp_reset_lttpr_common_caps' was here
-   38 | static void intel_dp_reset_lttpr_common_caps(struct intel_dp *intel=
-_dp)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/i915/display/intel_dp_link_training.c:38:13: warning: 'inte=
-l_dp_reset_lttpr_common_caps' defined but not used [-Wunused-function]
+v2->v3:
+- drop patch #3 in v2
+- retest v3 based on v5.12-rc2
+- v2: https://lore.kernel.org/lkml/20210310094319.18760-1-wangyanan55@huawei.com/
 
-Caused by commit
+v1->v2:
+- rebased on top of mainline v5.12-rc2
+- also move CMOs of I-cache to the fault handlers
+- retest v2 based on v5.12-rc2
+- v1: https://lore.kernel.org/lkml/20210208112250.163568-1-wangyanan55@huawei.com/
 
-  9976ff61f045 ("Merge remote-tracking branch 'drm/drm-next'")
+About this v4 series:
+Patch #1:
+We currently uniformly permorm CMOs of D-cache and I-cache in function
+user_mem_abort before calling the fault handlers. If we get concurrent
+guest faults(e.g. translation faults, permission faults) or some really
+unnecessary guest faults caused by BBM, CMOs for the first vcpu are
+necessary while the others later are not.
 
-Because commit
+By moving CMOs to the fault handlers, we can easily identify conditions
+where they are really needed and avoid the unnecessary ones. As it's a
+time consuming process to perform CMOs especially when flushing a block
+range, so this solution reduces much load of kvm and improve efficiency
+of the page table code.
 
-  7dffbdedb96a ("drm/i915: Disable LTTPR support when the DPCD rev < 1.4")
+So let's move both clean of D-cache and invalidation of I-cache to the
+map path and move only invalidation of I-cache to the permission path.
+Since the original APIs for CMOs in mmu.c are only called in function
+user_mem_abort, we now also move them to pgtable.c.
 
-from Linus' tree and commit
+After this patch, in function stage2_map_walker_try_leaf (map path),
+we flush D-cache if we are not mapping device memory and invalidate
+I-cache if we are adding executable permission. And in the function
+stage2_attr_walker (permission path), we invalidate I-cache if we are
+adding executable permission. The logic is consistent with current
+code in user_mem_abort (without this patch).
 
-  264613b406eb ("drm/i915: Disable LTTPR support when the DPCD rev < 1.4")
+The following results represent the benefit of patch #1 alone, and they
+were tested by [1] (kvm/selftest) that I have posted recently.
+[1] https://lore.kernel.org/lkml/20210302125751.19080-1-wangyanan55@huawei.com/
 
-from the drm tree are the same patch, git added the funtion twice :-(
+When there are muitiple vcpus concurrently accessing the same memory region,
+we can test the execution time of KVM creating new mappings, updating the
+permissions of old mappings from RO to RW, and rebuilding the blocks after
+they have been split.
 
-I have applied a merge fix patch removing the second copy.
+hardware platform: HiSilicon Kunpeng920 Server
+host kernel: Linux mainline v5.12-rc2
 
---=20
-Cheers,
-Stephen Rothwell
+cmdline: ./kvm_page_table_test -m 4 -s anonymous -b 1G -v 80
+           (80 vcpus, 1G memory, page mappings(normal 4K))
+KVM_CREATE_MAPPINGS: before 104.35s -> after  90.42s  +13.35%
+KVM_UPDATE_MAPPINGS: before  78.64s -> after  75.45s  + 4.06%
 
---Sig_/6fkHv07WnvS/lravUEQ/Ire
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+cmdline: ./kvm_page_table_test -m 4 -s anonymous_thp -b 20G -v 40
+           (40 vcpus, 20G memory, block mappings(THP 2M))
+KVM_CREATE_MAPPINGS: before  15.66s -> after   6.92s  +55.80%
+KVM_UPDATE_MAPPINGS: before 178.80s -> after 123.35s  +31.00%
+KVM_REBUILD_BLOCKS:  before 187.34s -> after 131.76s  +30.65%
 
------BEGIN PGP SIGNATURE-----
+cmdline: ./kvm_page_table_test -m 4 -s anonymous_hugetlb_1gb -b 20G -v 40
+           (40 vcpus, 20G memory, block mappings(HUGETLB 1G))
+KVM_CREATE_MAPPINGS: before 104.54s -> after   3.70s  +96.46%
+KVM_UPDATE_MAPPINGS: before 174.20s -> after 115.94s  +33.44%
+KVM_REBUILD_BLOCKS:  before 103.95s -> after   2.96s  +97.15%
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBvy7MACgkQAVBC80lX
-0Gy5yAf/U42Uq/AB7igWzd8a6NJkb/jaBLQE0Ee2eptP56lOYXjo+dcpgzctYZg6
-vbNSzWBbCqfeBT4f/W5M/HTvJDs4f+/yKYrCR+T8iITMlDfSh/dDt+XqMTz4bt9A
-ZQKnnRnyvf+ZPFmtca33XXhGiQ1RquTBQuReeGLki0xPnq3ukhyxJdBHuKUYU+QN
-3X+cts3DRnzIAG9uqXpFpxuSPx65gl5tMvewM6X1OdQfYW4q7u8bMUNWUcqTiZsi
-VrLlqmR4JX+ZlQgM4kVaJFpkCmZAUF/X0lZp5+YAHd3fYnmb3Q+EUmUcnsyJ3TPT
-11n+haswRp7TtOzmxv4IvnqA92Ykew==
-=jTb1
------END PGP SIGNATURE-----
+Patch #2:
+A new method to distinguish cases of memcache allocations is introduced.
+By comparing fault_granule and vma_pagesize, cases that require allocations
+from memcache and cases that don't can be distinguished completely.
 
---Sig_/6fkHv07WnvS/lravUEQ/Ire--
+Yanan Wang (2):
+  KVM: arm64: Move CMOs from user_mem_abort to the fault handlers
+  KVM: arm64: Distinguish cases of memcache allocations completely
+
+ arch/arm64/include/asm/kvm_mmu.h | 31 ---------------
+ arch/arm64/kvm/hyp/pgtable.c     | 68 +++++++++++++++++++++++++-------
+ arch/arm64/kvm/mmu.c             | 48 ++++++++--------------
+ 3 files changed, 69 insertions(+), 78 deletions(-)
+
+-- 
+2.19.1
+
