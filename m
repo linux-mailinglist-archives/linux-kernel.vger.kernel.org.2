@@ -2,126 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EBB6359827
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C596535982D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:43:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232078AbhDIInb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:43:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbhDIIna (ORCPT
+        id S232236AbhDIInj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:43:39 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:14290 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232026AbhDIInh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:43:30 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E9AC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:43:16 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id a6so4784117wrw.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:43:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SxAVnkvMBucxc7nVmzkehM55ix3ppr1nutixxEdT8mc=;
-        b=hzi/nQIm8IbBk14mZiIsufRcM2Cw+6f99hud3p8ZpsCLObKl7z1S650qtmxg5CMtaD
-         RIJ9RjLF8E7L1KpF7o/zuDQmpn7JKmqEcVY8fYIbiGHqEeQfDKW1ZBx3l/ijasZ+aJ4x
-         b7Am0q/FC5+lKR4GLkRYGODR4ffE+C25mAOiBDtkerPcyM5yBctoW94hYBre/MJfelFz
-         UNlUxeKGJ8qtQwcaoofpFf5zZ2iWx0y9MOzAXUJhG6pMomlWGcKkXGYXHAASPDtCJeMd
-         M01f4oOBLkQX5TTVD+MmLwWEALjMO9ylf6sRR6ZLXO7BRvyH2YX6+PCmfXrsjF2zyLYI
-         rgfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SxAVnkvMBucxc7nVmzkehM55ix3ppr1nutixxEdT8mc=;
-        b=qdniQxLLrLjIH+sfvz5V6rh2WAFLwwtMWx52Xg0GHOGi7u2z8Ygu2BjUFMHrf8MQNv
-         9m/pgnQJd9e0RnclNefaEv+m+hGX51VXZ2Us9MqiJvryD8M0WoRz9ZXx18U8flpPb50U
-         lFvROfKlkZ5UMlqazYmcFNkljO99Pc8S6W3MwniamNU8qAC6yARsQUbfSQEEskSsaU2I
-         ynXDU7nqAkbmeyp9rVPxprZPfg4VV5ZJmJoXfSn5RqsMDvtKiOJ00MPjaJ60mc85XUiD
-         rhphyYxm9g+M6mnNdqZO8K4cOiZOJ3BLYLRanEB2pPm9O4LS36OOKuhlPu8xpuH235Ot
-         hwPA==
-X-Gm-Message-State: AOAM531AfAWkuomBwuCSnyk/DmV7bMe7g+5xJqHNQ3nq+3gVgvI6HoVy
-        G6T+R1sTh35Mb56h3VgCZ0R66Q==
-X-Google-Smtp-Source: ABdhPJyH5BhpUZCaFcVaAl1X3duZCpaxmI4fJOW8UUTkeb23ThLiMR1Qt0/IhBcS9m7rAYQjbh655A==
-X-Received: by 2002:a5d:5152:: with SMTP id u18mr15986534wrt.289.1617957795526;
-        Fri, 09 Apr 2021 01:43:15 -0700 (PDT)
-Received: from localhost.localdomain ([2a01:e0a:90c:e290:d6f1:3413:d06b:d6a2])
-        by smtp.gmail.com with ESMTPSA id w7sm3545504wro.43.2021.04.09.01.43.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 01:43:14 -0700 (PDT)
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de,
-        matthias.bgg@gmail.com
-Cc:     dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH] gpu/drm: mediatek: hdmi: check for valid modes on MT8167
-Date:   Fri,  9 Apr 2021 10:43:08 +0200
-Message-Id: <20210409084308.481185-1-narmstrong@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 9 Apr 2021 04:43:37 -0400
+X-UUID: faead521e2584fada37d7afbfb6406cf-20210409
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=LWR0YYJF62R73X/2PazKkQVUbwMvHOS/MQ9V7awNAws=;
+        b=B/IYe5BxeZB+RaN6vk7LP2paPDef9IxtAnnv/pGluFjyxDFjXjhwTu6ffQkZQ7k8XlcJYRQpTaoxn0OgmYYKiubmVARzjz70nq1FNxTl7Feww7ZmK1MyZyQ1q3J5aZ4AI8jR1p8xLG/OPSGSA5dBDF5E8ic4D9dJvuepBZbyd/M=;
+X-UUID: faead521e2584fada37d7afbfb6406cf-20210409
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 328637584; Fri, 09 Apr 2021 16:43:21 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N1.mediatek.inc
+ (172.27.4.69) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 9 Apr
+ 2021 16:43:19 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 9 Apr 2021 16:43:19 +0800
+Message-ID: <1617957799.12105.31.camel@mhfsdcap03>
+Subject: Re: [PATCH 1/6] PM: runtime: enable wake irq after runtime_suspend
+ hook called
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Ikjoon Jang <ikjn@chromium.org>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        <linux-usb@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, Tony Lindgren <tony@atomide.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Date:   Fri, 9 Apr 2021 16:43:19 +0800
+In-Reply-To: <CAATdQgCQ5Gm1CNEbVgLFiFcgDX0yP5G=48Fa29WYbpSuz25WXg@mail.gmail.com>
+References: <1617874514-12282-1-git-send-email-chunfeng.yun@mediatek.com>
+         <CAATdQgCQ5Gm1CNEbVgLFiFcgDX0yP5G=48Fa29WYbpSuz25WXg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-TM-SNTS-SMTP: 7CFDA8CB831F2DE86455E79C381B3FB824379DAED8D4FA5615EB49D1A8F27F8D2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On MT8167, only CEA modes and anything using a clock below 148500 is
-supported for HDMI. This change adds some checks to make sure the
-video format is OK for MT8167.
-
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
----
- drivers/gpu/drm/mediatek/mtk_hdmi.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-index 8ee55f9e2954..991e2e935b93 100644
---- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
-@@ -148,6 +148,8 @@ struct hdmi_audio_param {
- 
- struct mtk_hdmi_conf {
- 	bool tz_disabled;
-+	unsigned long max_mode_clock;
-+	bool cea_modes_only;
- };
- 
- struct mtk_hdmi {
-@@ -1259,6 +1261,13 @@ static int mtk_hdmi_conn_mode_valid(struct drm_connector *conn,
- 			return MODE_BAD;
- 	}
- 
-+	if (hdmi->conf->cea_modes_only && !drm_match_cea_mode(mode))
-+		return MODE_BAD;
-+
-+	if (hdmi->conf->max_mode_clock &&
-+	    mode->clock > hdmi->conf->max_mode_clock)
-+		return MODE_CLOCK_HIGH;
-+
- 	if (mode->clock < 27000)
- 		return MODE_CLOCK_LOW;
- 	if (mode->clock > 297000)
-@@ -1810,10 +1819,18 @@ static const struct mtk_hdmi_conf mtk_hdmi_conf_mt2701 = {
- 	.tz_disabled = true,
- };
- 
-+static const struct mtk_hdmi_conf mtk_hdmi_conf_mt8167 = {
-+	.max_mode_clock = 148500,
-+	.cea_modes_only = true,
-+};
-+
- static const struct of_device_id mtk_drm_hdmi_of_ids[] = {
- 	{ .compatible = "mediatek,mt2701-hdmi",
- 	  .data = &mtk_hdmi_conf_mt2701,
- 	},
-+	{ .compatible = "mediatek,mt8167-hdmi",
-+	  .data = &mtk_hdmi_conf_mt8167,
-+	},
- 	{ .compatible = "mediatek,mt8173-hdmi",
- 	},
- 	{}
--- 
-2.25.1
+T24gRnJpLCAyMDIxLTA0LTA5IGF0IDEzOjMyICswODAwLCBJa2pvb24gSmFuZyB3cm90ZToNCj4g
+SGkgQ2h1bmZlbmcsDQo+IA0KPiBPbiBUaHUsIEFwciA4LCAyMDIxIGF0IDU6MzUgUE0gQ2h1bmZl
+bmcgWXVuIDxjaHVuZmVuZy55dW5AbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPg0KPiA+IFdoZW4g
+dGhlIGRlZGljYXRlZCB3YWtlIGlycSBpcyBsZXZlbCB0cmlnZ2VyLCBlbmFibGUgaXQgYmVmb3Jl
+DQo+ID4gY2FsbGluZyBydW50aW1lX3N1c3BlbmQsIHdpbGwgdHJpZ2dlciBhbiBpbnRlcnJ1cHQu
+DQo+ID4NCj4gPiBlLmcuDQo+ID4gZm9yIGEgbG93IGxldmVsIHRyaWdnZXIgdHlwZSwgaXQncyBs
+b3cgbGV2ZWwgYXQgcnVubmluZyB0aW1lICgwKSwNCj4gPiBhbmQgYmVjb21lcyBoaWdoIGxldmVs
+IHdoZW4gZW50ZXJzIHN1c3BlbmQgKHJ1bnRpbWVfc3VzcGVuZCAoMSkgaXMNCj4gPiBjYWxsZWQp
+LCBhIHdha2V1cCBzaWduYWwgYXQgKDIpIG1ha2UgaXQgYmVjb21lIGxvdyBsZXZlbCwgd2FrZSBp
+cnENCj4gPiB3aWxsIGJlIHRyaWdnZXJlZC4NCj4gPg0KPiA+ICAgICAgICAgICAgICAgICAtLS0t
+LS0tLS0tLS0tLS0tLS0NCj4gPiAgICAgICAgICAgICAgICB8ICAgICAgICAgICBeICAgICBefA0K
+PiA+IC0tLS0tLS0tLS0tLS0tLS0gICAgICAgICAgIHwgICAgIHwgLS0tLS0tLS0tLS0tLS0NCj4g
+PiAgfDwtLS0oMCktLS0+fDwtLSgxKS0tfCAgICgzKSAgICgyKSAgICAoNCkNCj4gPg0KPiANCj4g
+Q2FuJ3Qgd2UganVzdCB1c2UgYSBmYWxsaW5nIGVkZ2UgdHlwZSBmb3IgdGhpcyBpcnEgbGluZT8N
+CkknbGwgdHJ5IGl0LCBidXQgdGhlIG9yaWdpbmFsIGNvZGUgc3RpbGwgZG9lc24ndCBwcm9jZXNz
+IGFib3ZlIG1lbnRpb25lZA0KY2FzZS4NCg0KPiANCj4gPiBpZiB3ZSBlbmFibGUgdGhlIHdha2Ug
+aXJxIGJlZm9yZSBjYWxsaW5nIHJ1bnRpbWVfc3VzcGVuZCBkdXJpbmcgKDApLA0KPiA+IGFuIGlu
+dGVycnVwdCB3aWxsIGFyaXNlLCBpdCBjYXVzZXMgcmVzdW1lIGltbWVkaWF0ZWx5Ow0KPiA+IGVu
+YWJsZSB3YWtlIGlycSBhZnRlciBjYWxsaW5nIHJ1bnRpbWVfc3VzcGVuZCwgZS5nLiBhdCAoMykg
+b3IgKDQpLA0KPiA+IHdpbGwgd29ya3MuDQo+ID4NCj4gPiBUaGlzIHBhdGNoIHNlZW1zIG5vIHNp
+ZGUgZWZmZWN0IG9uIGVkZ2UgdHJpZ2dlciB3YWtlIGlycS4NCj4gPg0KPiA+IFNpZ25lZC1vZmYt
+Ynk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4g
+PiAgZHJpdmVycy9iYXNlL3Bvd2VyL3J1bnRpbWUuYyB8IDUgKystLS0NCj4gPiAgMSBmaWxlIGNo
+YW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL2Jhc2UvcG93ZXIvcnVudGltZS5jIGIvZHJpdmVycy9iYXNlL3Bvd2VyL3J1
+bnRpbWUuYw0KPiA+IGluZGV4IGE0NmE3ZTMwODgxYi4uNzk2NzM5YTAxNWE1IDEwMDY0NA0KPiA+
+IC0tLSBhL2RyaXZlcnMvYmFzZS9wb3dlci9ydW50aW1lLmMNCj4gPiArKysgYi9kcml2ZXJzL2Jh
+c2UvcG93ZXIvcnVudGltZS5jDQo+ID4gQEAgLTYxOSwxMiArNjE5LDEyIEBAIHN0YXRpYyBpbnQg
+cnBtX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2LCBpbnQgcnBtZmxhZ3MpDQo+ID4gICAgICAg
+ICBfX3VwZGF0ZV9ydW50aW1lX3N0YXR1cyhkZXYsIFJQTV9TVVNQRU5ESU5HKTsNCj4gPg0KPiA+
+ICAgICAgICAgY2FsbGJhY2sgPSBSUE1fR0VUX0NBTExCQUNLKGRldiwgcnVudGltZV9zdXNwZW5k
+KTsNCj4gPiAtDQo+ID4gLSAgICAgICBkZXZfcG1fZW5hYmxlX3dha2VfaXJxX2NoZWNrKGRldiwg
+dHJ1ZSk7DQo+ID4gICAgICAgICByZXR2YWwgPSBycG1fY2FsbGJhY2soY2FsbGJhY2ssIGRldik7
+DQo+ID4gICAgICAgICBpZiAocmV0dmFsKQ0KPiA+ICAgICAgICAgICAgICAgICBnb3RvIGZhaWw7
+DQo+ID4NCj4gPiArICAgICAgIGRldl9wbV9lbmFibGVfd2FrZV9pcnFfY2hlY2soZGV2LCB0cnVl
+KTsNCj4gPiArDQo+ID4gICBub19jYWxsYmFjazoNCj4gPiAgICAgICAgIF9fdXBkYXRlX3J1bnRp
+bWVfc3RhdHVzKGRldiwgUlBNX1NVU1BFTkRFRCk7DQo+ID4gICAgICAgICBwbV9ydW50aW1lX2Rl
+YWN0aXZhdGVfdGltZXIoZGV2KTsNCj4gPiBAQCAtNjU5LDcgKzY1OSw2IEBAIHN0YXRpYyBpbnQg
+cnBtX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2LCBpbnQgcnBtZmxhZ3MpDQo+ID4gICAgICAg
+ICByZXR1cm4gcmV0dmFsOw0KPiA+DQo+ID4gICBmYWlsOg0KPiA+IC0gICAgICAgZGV2X3BtX2Rp
+c2FibGVfd2FrZV9pcnFfY2hlY2soZGV2KTsNCj4gPiAgICAgICAgIF9fdXBkYXRlX3J1bnRpbWVf
+c3RhdHVzKGRldiwgUlBNX0FDVElWRSk7DQo+ID4gICAgICAgICBkZXYtPnBvd2VyLmRlZmVycmVk
+X3Jlc3VtZSA9IGZhbHNlOw0KPiA+ICAgICAgICAgd2FrZV91cF9hbGwoJmRldi0+cG93ZXIud2Fp
+dF9xdWV1ZSk7DQo+ID4gLS0NCj4gPiAyLjE4LjANCj4gPg0KDQo=
 
