@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB3E359A8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A40359A1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:56:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233630AbhDIJ7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:59:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46030 "EHLO mail.kernel.org"
+        id S233482AbhDIJ4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:56:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233380AbhDIJ5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:57:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DDA476103E;
-        Fri,  9 Apr 2021 09:57:24 +0000 (UTC)
+        id S233527AbhDIJzg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:55:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1845E6115B;
+        Fri,  9 Apr 2021 09:55:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962245;
-        bh=rOZ9CQRHhljiSGN7CpM8eyMYPwcJ9P6ODZZHtp2HWvU=;
+        s=korg; t=1617962123;
+        bh=MTJHk6ahuEGox4z9zkGzrjsztitpvcgvjDXnoQWHf9Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p3fEn17O+P1DXApHEmQJCh3Ky1vIMNIALAsxrwawTXKGbpW7IecmtgQnlgfNDxoau
-         TehA+5kOU8kt7b0vaYmSSalZeM+Plx1SgrTOCBj91iJfnvlXmVzXuVynSvdq6UqpII
-         blozT3kWybX+ALLg56aSQx49jO+vGHGe2+MB+2Fk=
+        b=MlzyO01/vm0cpqmdnnNDCEhnVt2PBrwXteiaCJb33h6S+UlZY2Zw3o55ws/PjzEQa
+         FiscNec4xGrv9cbkdmOMtyZCgDCzzwc5xsgRnBHDZpoohILwxcS91gOP2ztYvJMsJX
+         qpTuuQsSkTpayJqaA5tC8rZaaelpksq3+86pDjaQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mans Rullgard <mans@mansr.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 01/23] ARM: dts: am33xx: add aliases for mmc interfaces
+        stable@vger.kernel.org,
+        "Shih-Yuan Lee (FourDollars)" <sylee@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: [PATCH 4.9 11/13] ALSA: hda/realtek - Fix pincfg for Dell XPS 13 9370
 Date:   Fri,  9 Apr 2021 11:53:31 +0200
-Message-Id: <20210409095302.942307930@linuxfoundation.org>
+Message-Id: <20210409095259.997727415@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095302.894568462@linuxfoundation.org>
-References: <20210409095302.894568462@linuxfoundation.org>
+In-Reply-To: <20210409095259.624577828@linuxfoundation.org>
+References: <20210409095259.624577828@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,41 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mans Rullgard <mans@mansr.com>
+From: "Shih-Yuan Lee (FourDollars)" <sylee@canonical.com>
 
-[ Upstream commit 9bbce32a20d6a72c767a7f85fd6127babd1410ac ]
+commit 8df4b0031067758d8b0a3bfde7d35e980d0376d5 upstream
 
-Without DT aliases, the numbering of mmc interfaces is unpredictable.
-Adding them makes it possible to refer to devices consistently.  The
-popular suggestion to use UUIDs obviously doesn't work with a blank
-device fresh from the factory.
+The initial pin configs for Dell headset mode of ALC3271 has changed.
 
-See commit fa2d0aa96941 ("mmc: core: Allow setting slot index via
-device tree alias") for more discussion.
+/sys/class/sound/hwC0D0/init_pin_configs: (BIOS 0.1.4)
+0x12 0xb7a60130
+0x13 0xb8a61140
+0x14 0x40000000
+0x16 0x411111f0
+0x17 0x90170110
+0x18 0x411111f0
+0x19 0x411111f0
+0x1a 0x411111f0
+0x1b 0x411111f0
+0x1d 0x4087992d
+0x1e 0x411111f0
+0x21 0x04211020
 
-Signed-off-by: Mans Rullgard <mans@mansr.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+has changed to ...
+
+/sys/class/sound/hwC0D0/init_pin_configs: (BIOS 0.2.0)
+0x12 0xb7a60130
+0x13 0x40000000
+0x14 0x411111f0
+0x16 0x411111f0
+0x17 0x90170110
+0x18 0x411111f0
+0x19 0x411111f0
+0x1a 0x411111f0
+0x1b 0x411111f0
+0x1d 0x4067992d
+0x1e 0x411111f0
+0x21 0x04211020
+
+Fixes: b4576de87243 ("ALSA: hda/realtek - Fix typo of pincfg for Dell quirk")
+Signed-off-by: Shih-Yuan Lee (FourDollars) <sylee@canonical.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arm/boot/dts/am33xx.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/hda/patch_realtek.c |    1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
-index fb6b8aa12cc5..77fa7c0f2104 100644
---- a/arch/arm/boot/dts/am33xx.dtsi
-+++ b/arch/arm/boot/dts/am33xx.dtsi
-@@ -40,6 +40,9 @@ aliases {
- 		ethernet1 = &cpsw_emac1;
- 		spi0 = &spi0;
- 		spi1 = &spi1;
-+		mmc0 = &mmc1;
-+		mmc1 = &mmc2;
-+		mmc2 = &mmc3;
- 	};
- 
- 	cpus {
--- 
-2.30.2
-
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6285,7 +6285,6 @@ static const struct snd_hda_pin_quirk al
+ 	SND_HDA_PIN_QUIRK(0x10ec0299, 0x1028, "Dell", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
+ 		ALC225_STANDARD_PINS,
+ 		{0x12, 0xb7a60130},
+-		{0x13, 0xb8a61140},
+ 		{0x17, 0x90170110}),
+ 	{}
+ };
 
 
