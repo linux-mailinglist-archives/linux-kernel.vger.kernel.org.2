@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F52359FFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D957B35A007
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233673AbhDINjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:39:15 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:22671 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232855AbhDINjN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:39:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617975541; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=nCLKJ3txbssGA/MS9THnoJcM1/EpV+VVOtQ0VWZ6Umc=;
- b=AmcL94NG7Ck1xkGZlwlWfi/r3pf526qZKsLyVMdw1xxqxcRsva9Lqh4znvfyB/gDqYqekUOH
- I9SSXN2h7DsoEsRjzPknCaC6p7hH7Gcs+mvoWQE9XwEZdza4TUtaNfFYVbFv/OMvLRLWYGkj
- C52tz8yeAvioAStsGGO+xuTaEQY=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 607058ec8807bcde1de095c8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Apr 2021 13:38:52
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3D8B1C43462; Fri,  9 Apr 2021 13:38:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 99624C43461;
-        Fri,  9 Apr 2021 13:38:51 +0000 (UTC)
+        id S233759AbhDINjm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 9 Apr 2021 09:39:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36172 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231638AbhDINjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 09:39:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9BEBBB0B7;
+        Fri,  9 Apr 2021 13:39:25 +0000 (UTC)
+Received: from localhost (orpheus.olymp [local])
+        by orpheus.olymp (OpenSMTPD) with ESMTPA id 56fed213;
+        Fri, 9 Apr 2021 14:39:21 +0100 (WEST)
+From:   Luis Henriques <lhenriques@suse.de>
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Olga Kornievskaia <aglo@umich.edu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH v8] vfs: fix copy_file_range regression in cross-fs copies
+References: <20210221195833.23828-1-lhenriques@suse.de>
+        <20210222102456.6692-1-lhenriques@suse.de>
+        <CAN-5tyELMY7b7CKO-+an47ydq8r_4+SOyhuvdH0qE0-JmdZ44Q@mail.gmail.com>
+        <YDYpHccgM7agpdTQ@suse.de>
+        <CANMq1KBgwEXFh8AxpPW2t1SA0NVsyR45m0paLEU4D4w80dc_fA@mail.gmail.com>
+        <CANMq1KDTgnGtNxWj2XxAT3mdsNjc551uUCg6EWnh=Hd0KcVQKQ@mail.gmail.com>
+Date:   Fri, 09 Apr 2021 14:39:20 +0100
+In-Reply-To: <CANMq1KDTgnGtNxWj2XxAT3mdsNjc551uUCg6EWnh=Hd0KcVQKQ@mail.gmail.com>
+        (Nicolas Boichat's message of "Fri, 9 Apr 2021 13:23:23 +0800")
+Message-ID: <8735vzfugn.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 09 Apr 2021 19:08:51 +0530
-From:   skakit@codeaurora.org
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH V2 3/4] dt-bindings: power: reset: qcom-pon: Convert qcom
- PON binding to yaml
-In-Reply-To: <20210409115748.xfxukqgoyvscgpln@earth.universe>
-References: <1617881469-31965-1-git-send-email-skakit@codeaurora.org>
- <1617881469-31965-4-git-send-email-skakit@codeaurora.org>
- <20210408130001.k3qbq3vvwkiyykzv@earth.universe>
- <0cb9b3503000ac7206f4a3ef5fd16c17@codeaurora.org>
- <20210409115748.xfxukqgoyvscgpln@earth.universe>
-Message-ID: <ad5d04c2a806213e9922834e996da15a@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-04-09 17:27, Sebastian Reichel wrote:
-> Hi,
-> 
-> On Fri, Apr 09, 2021 at 01:48:58PM +0530, skakit@codeaurora.org wrote:
->>> Please do not drop the example :)
->> 
->> As per my understanding on Rob's comments [1] I have added one 
->> complete
->> example in qcom,pm8941-pwrkey.yaml (see patch 4/4) and dropped it 
->> here.
->> 
->> [1] https://lore.kernel.org/patchwork/patch/1390062/#1588027
-> 
-> Ok, please add a note about this in the commit message.
-> Something like:
-> 
-> The example has been removed in favour of full example being
-> available in the qcom,pm8941-pwrkey binding.
-> 
+Nicolas Boichat <drinkcat@chromium.org> writes:
 
-Okay.
+> On Wed, Feb 24, 2021 at 6:44 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
+>>
+>> On Wed, Feb 24, 2021 at 6:22 PM Luis Henriques <lhenriques@suse.de> wrote:
+>> >
+>> > On Tue, Feb 23, 2021 at 08:00:54PM -0500, Olga Kornievskaia wrote:
+>> > > On Mon, Feb 22, 2021 at 5:25 AM Luis Henriques <lhenriques@suse.de> wrote:
+>> > > >
+>> > > > A regression has been reported by Nicolas Boichat, found while using the
+>> > > > copy_file_range syscall to copy a tracefs file.  Before commit
+>> > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+>> > > > kernel would return -EXDEV to userspace when trying to copy a file across
+>> > > > different filesystems.  After this commit, the syscall doesn't fail anymore
+>> > > > and instead returns zero (zero bytes copied), as this file's content is
+>> > > > generated on-the-fly and thus reports a size of zero.
+>> > > >
+>> > > > This patch restores some cross-filesystem copy restrictions that existed
+>> > > > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+>> > > > devices").  Filesystems are still allowed to fall-back to the VFS
+>> > > > generic_copy_file_range() implementation, but that has now to be done
+>> > > > explicitly.
+>> > > >
+>> > > > nfsd is also modified to fall-back into generic_copy_file_range() in case
+>> > > > vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+>> > > >
+>> > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+>> > > > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+>> > > > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+>> > > > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+>> > > > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+>> > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+>> > >
+>> > > I tested v8 and I believe it works for NFS.
+>> >
+>> > Thanks a lot for the testing.  And to everyone else for reviews,
+>> > feedback,... and patience.
+>>
+>> Thanks so much to you!!!
+>>
+>> Works here, you can add my
+>> Tested-by: Nicolas Boichat <drinkcat@chromium.org>
+>
+> What happened to this patch? It does not seem to have been picked up
+> yet? Any reason why?
 
-> Thanks,
-> 
-> -- Sebastian
+Hmm... good question.  I'm not actually sure who would be picking it.  Al,
+maybe...?
+
+Cheers,
+-- 
+Luis
+
+>
+>> >
+>> > I'll now go look into the manpage and see what needs to be changed.
+>> >
+>> > Cheers,
+>> > --
+>> > Luís
+
