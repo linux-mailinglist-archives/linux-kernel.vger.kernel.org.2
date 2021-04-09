@@ -2,120 +2,504 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5819435A276
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D307735A279
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233878AbhDIP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:58:33 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:50618 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233824AbhDIP6c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:58:32 -0400
-Received: by mail-io1-f71.google.com with SMTP id a1so4086325iow.17
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:58:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=GIohHUbCgzTSJND56+4iG4z/4sF+r+F4DISktHzbcmM=;
-        b=JeSV2cAcFWPK/mlxkSdrqo0Zm7qjNcu1C792b2FyG1SgIgBqQ0Eciba7n7ZiBOeWpn
-         c4B9DkU56AP9FdzNyAOhKUMPi4jIUWIyA/mV/0vmJ7FK1w/RxUkZKlFQbjRVdUPjKYRv
-         SkEYGkZsjDoHO1KtGq1OgDskBJxJvf51803pSCnjHRRSwrH9DLXHI3YE13o9p4b4vA0v
-         ITs1mguCRGIKV7m33iyGfW0R5VUwUk562DzoznofYTNHjuzo1TJJbaXt2Gzk0hApFsjR
-         GBL0NLuD8SlGyiSjDX4ih/Ra/8YaF0gGccz/MDYpXiJdSWzhILZ/49VhzT5SuddNJ0t8
-         6R0A==
-X-Gm-Message-State: AOAM532svqw28y9jlV0kNlIC1s8at4lqgsQKWSR6sEE3T1nttCDxG+zg
-        gflndpGxECke7GrvSePBWOi9yX4Yka1h6JeBgyBA7OTJ9X3J
-X-Google-Smtp-Source: ABdhPJyxdIgsSf4hTenIxLpv1fZfb7HUrW3oz28Sm+d+/95yeWOMDn0i9TZCsUY+Zn3rMDogMIDoQSkdZnbnMnTlE1azOLGlT98a
+        id S233895AbhDIP7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:59:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48256 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229665AbhDIP7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 11:59:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1B3B61177;
+        Fri,  9 Apr 2021 15:58:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617983929;
+        bh=boUQFp8BrP5adormbeyGrdToQnS2iV9bBtrffhE9cWg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Fab8lZuNy5F4YIYlursMfD3dxY6ylVb5oG+qgxXvPtN9RDB0aQV5yMn/tgUw4sd7v
+         uNHGJc2iMMKpfaO2VbdCOl6w9uFTGbYuU5IHBAol6CZIq1sBOqfFot+bMla9XvULIR
+         CgbWWB8q2EnY84fsXUEmoX2aPb38/a+uyP8PWpzoNGgusVBEhwZAyeYzYA7k24ULti
+         nR2ugmQ8Xk6fb5jWDnKkBy8Z9kx3pz4is/Yc4ncAWhNVO/IWuplXfRXxPZSRjGaSAV
+         7tq2kJyw5yyuDCXyjUBcKtVhybDnjOHX595lwyXSsGW8VBnUv68LXhzScdN1QhXEXH
+         j8sxQYtSAlwAg==
+Received: by mail-ed1-f47.google.com with SMTP id s15so7137567edd.4;
+        Fri, 09 Apr 2021 08:58:48 -0700 (PDT)
+X-Gm-Message-State: AOAM532J1810j0e+kLp2lUPlRQQ2OAPDXWhqhdcwSQdBCNVQS6TBp+ts
+        l9nM/QDVntrzyuGqtiCNunBDWYYMnGlyq+a7fg==
+X-Google-Smtp-Source: ABdhPJwP4FlWMM6Zfr313cW9Cfl6tJV14f9XLmY0h1Ka1cstG1KX4xZL1MgcU6M6qW/LVKG2nPiUqa3BIDhkYVlSR2s=
+X-Received: by 2002:a05:6402:5252:: with SMTP id t18mr18615073edd.258.1617983927008;
+ Fri, 09 Apr 2021 08:58:47 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:c549:: with SMTP id a9mr12177389ilj.300.1617983897560;
- Fri, 09 Apr 2021 08:58:17 -0700 (PDT)
-Date:   Fri, 09 Apr 2021 08:58:17 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000776f4105bf8c3bca@google.com>
-Subject: [syzbot] WARNING in ieee802154_del_device
-From:   syzbot <syzbot+bf8b5834b7ec229487ce@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
+References: <1615383186-18500-1-git-send-email-argus.lin@mediatek.com>
+ <1615383186-18500-2-git-send-email-argus.lin@mediatek.com> <CAL_JsqL-TvUZOZ8Eev5zrq2aA59SLLEMVV3Ypq-07bNccp=NRw@mail.gmail.com>
+In-Reply-To: <CAL_JsqL-TvUZOZ8Eev5zrq2aA59SLLEMVV3Ypq-07bNccp=NRw@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 9 Apr 2021 10:58:35 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+awH=L=qu4HqoL-arA8fsCuEkqf9oYsYnw6=3nq8XENw@mail.gmail.com>
+Message-ID: <CAL_Jsq+awH=L=qu4HqoL-arA8fsCuEkqf9oYsYnw6=3nq8XENw@mail.gmail.com>
+Subject: Re: [PATCH V2 1/2] dt-bindings: mediatek: mt6359: add ASoC mt6359
+ ASoC accdet jack document
+To:     Argus Lin <argus.lin@mediatek.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jack Yu <jack.yu@realtek.com>,
+        Shuming Fan <shumingf@realtek.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jiaxin Yu <jiaxin.yu@mediatek.com>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        "Shane.Chien" <shane.chien@mediatek.com>,
+        Chipeng Chang <chipeng.chang@mediatek.com>,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Mar 31, 2021 at 9:16 AM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Wed, Mar 10, 2021 at 7:33 AM Argus Lin <argus.lin@mediatek.com> wrote:
+> >
+> > This patch adds MediaTek MT6359 ASoC accdet jack document.
+>
+> Seems this never made it to the DT list so no checks ran. It's got all
+> sorts of errors:
 
-syzbot found the following issue on:
+Still broken in linux-next. Please revert if can't be bothered to fix it.
 
-HEAD commit:    08c27f33 batman-adv: initialize "struct batadv_tvlv_tt_vla..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=111688fcd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
-dashboard link: https://syzkaller.appspot.com/bug?extid=bf8b5834b7ec229487ce
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=176af0e2d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11fcb16ed00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bf8b5834b7ec229487ce@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(lock->magic != lock)
-WARNING: CPU: 0 PID: 8389 at kernel/locking/mutex.c:931 __mutex_lock_common kernel/locking/mutex.c:931 [inline]
-WARNING: CPU: 0 PID: 8389 at kernel/locking/mutex.c:931 __mutex_lock+0xc0b/0x1120 kernel/locking/mutex.c:1096
-Modules linked in:
-CPU: 1 PID: 8389 Comm: syz-executor116 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__mutex_lock_common kernel/locking/mutex.c:931 [inline]
-RIP: 0010:__mutex_lock+0xc0b/0x1120 kernel/locking/mutex.c:1096
-Code: 08 84 d2 0f 85 a3 04 00 00 8b 05 78 80 c0 04 85 c0 0f 85 12 f5 ff ff 48 c7 c6 20 8b 6b 89 48 c7 c7 e0 88 6b 89 e8 12 3d bd ff <0f> 0b e9 f8 f4 ff ff 65 48 8b 1c 25 00 f0 01 00 be 08 00 00 00 48
-RSP: 0018:ffffc90001aaf3d8 EFLAGS: 00010286
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801ac8d4c0 RSI: ffffffff815c4d15 RDI: fffff52000355e6d
-RBP: ffff888022324c90 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815bdaae R11: 0000000000000000 R12: 0000000000000000
-R13: dffffc0000000000 R14: ffffc90001aaf8b0 R15: 0000000000000000
-FS:  000000000082e300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000088 CR3: 0000000018643000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- ieee802154_del_device+0x3f/0x70 net/mac802154/cfg.c:412
- rdev_del_device net/ieee802154/rdev-ops.h:299 [inline]
- nl802154_del_llsec_dev+0x22f/0x310 net/ieee802154/nl802154.c:1767
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43fd19
-Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffcff3b4778 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 000000000043fd19
-RDX: 0000000000040000 RSI: 00000000200002c0 RDI: 0000000000000004
-RBP: 0000000000403780 R08: 0000000000000008 R09: 00000000004004a0
-R10: 0000000000000006 R11: 0000000000000246 R12: 0000000000403810
-R13: 0000000000000000 R14: 00000000004ad018 R15: 00000000004004a0
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,four-key-thr: 'oneOf' conditional failed, one must
+> be fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,four-key-thr: 'oneOf' conditional failed, one must
+> be fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,four-key-thr: 'oneOf' conditional failed, one must
+> be fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,accdet-name: 'oneOf' conditional failed, one must
+> be fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,accdet-name: 'oneOf' conditional failed, one must
+> be fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,accdet-name: 'oneOf' conditional failed, one must
+> be fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-use-ext-res: 'oneOf' conditional failed, one
+> must be fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-use-ext-res: 'oneOf' conditional failed, one
+> must be fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-use-ext-res: 'oneOf' conditional failed, one
+> must be fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,tri-key-cdd-thr: 'oneOf' conditional failed, one
+> must be fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,tri-key-cdd-thr: 'oneOf' conditional failed, one
+> must be fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,tri-key-cdd-thr: 'oneOf' conditional failed, one
+> must be fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,pwm-deb-setting: 'oneOf' conditional failed, one
+> must be fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,pwm-deb-setting: 'oneOf' conditional failed, one
+> must be fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,pwm-deb-setting: 'oneOf' conditional failed, one
+> must be fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-num: 'oneOf' conditional failed, one must be
+> fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-num: 'oneOf' conditional failed, one must be
+> fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-num: 'oneOf' conditional failed, one must be
+> fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,mic-vol: 'oneOf' conditional failed, one must be
+> fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,mic-vol: 'oneOf' conditional failed, one must be
+> fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,mic-vol: 'oneOf' conditional failed, one must be
+> fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-trig-mode: 'oneOf' conditional failed, one
+> must be fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-trig-mode: 'oneOf' conditional failed, one
+> must be fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-trig-mode: 'oneOf' conditional failed, one
+> must be fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,three-key-thr: 'oneOf' conditional failed, one
+> must be fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,three-key-thr: 'oneOf' conditional failed, one
+> must be fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,three-key-thr: 'oneOf' conditional failed, one
+> must be fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,key-mode: 'oneOf' conditional failed, one must be
+> fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,key-mode: 'oneOf' conditional failed, one must be
+> fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,key-mode: 'oneOf' conditional failed, one must be
+> fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-comp-vth: 'oneOf' conditional failed, one
+> must be fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-comp-vth: 'oneOf' conditional failed, one
+> must be fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-comp-vth: 'oneOf' conditional failed, one
+> must be fixed:
+>  '$ref' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-use-ap: 'oneOf' conditional failed, one must
+> be fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-use-ap: 'oneOf' conditional failed, one must
+> be fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-use-ap: 'oneOf' conditional failed, one must
+> be fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,mic-mode: 'oneOf' conditional failed, one must be
+> fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,mic-mode: 'oneOf' conditional failed, one must be
+> fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,mic-mode: 'oneOf' conditional failed, one must be
+> fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-detect-mode: 'oneOf' conditional failed, one
+> must be fixed:
+>  'type' is a required property
+>  Additional properties are not allowed ('maxItems' was unexpected)
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-detect-mode: 'oneOf' conditional failed, one
+> must be fixed:
+>  'enum' is a required property
+>  'const' is a required property
+> /builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml:
+> properties:mediatek,eint-detect-mode: 'oneOf' conditional failed, one
+> must be fixed:
+>  '$ref' is a required property
+>  'allOf' is a required property
+>
+>
+> > Signed-off-by: Argus Lin <argus.lin@mediatek.com>
+> > ---
+> >  .../bindings/sound/mt6359-accdet.yaml         | 164 ++++++++++++++++++
+> >  1 file changed, 164 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/sound/mt6359-accdet.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml b/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml
+> > new file mode 100644
+> > index 000000000000..7fb3e8dfb4c5
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/sound/mt6359-accdet.yaml
+> > @@ -0,0 +1,164 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/sound/mt6359-accdet.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Mediatek Technologies Inc. MT6359 ASoC accdet jack driver bindings
+> > +
+> > +maintainers:
+> > +  - Chipeng Chang <chipeng.chang@mediatek.com>
+> > +
+> > +description: |
+> > +  This binding describes the Mediatek Technologies MT6359 ASoC
+> > +  accdet jack driver.
+> > +
+> > +properties:
+> > +  mediatek,accdet-name:
+> > +    maxItems: 1
+> > +    description: named as "mt6359-accdet" jack.
+>
+> Sounds like a constraint. Why do you need this in DT if only 1 value?
+> And why expose an SoC specific name to userspace (I guess)?
+>
+> > +
+> > +  mediatek,mic-vol:
+> > +    maxItems: 1
+>
+> This is an array because 'maxItems' is for arrays? It needs a type
+> reference. Same problem throughout.
+>
+> > +    description: |
+> > +      accdet micbias1 voltage.
+> > +
+> > +      enum:
+>
+> The indentation is wrong here, so this is just part of 'description'.
+>
+> > +        - 0x00 # 1.7v - micbias1 volage is 1.7v.
+> > +        - 0x01 # 1.8v - micbias1 volage is 1.8v.
+> > +        - 0x02 # 1.9v - micbias1 volage is 1.9v.
+> > +        - 0x03 # 2.0v - micbias1 volage is 2.0v.
+> > +        - 0x04 # 2.1v - micbias1 volage is 2.1v.
+> > +        - 0x05 # 2.5v - micbias1 volage is 2.5v.
+> > +        - 0x06 # 2.6v - micbias1 volage is 2.6v.
+> > +        - 0x07 # 2.7v - micbias1 volage is 2.7v.
+> > +        - 0x08 # 2.8v - micbias1 volage is 2.8v.
+> > +        - 0x09 # 2.85v - micbias1 volage is 2.85v.
+> > +
+> > +  mediatek,mic-mode:
+> > +    maxItems: 1
+> > +    description: |
+> > +      value as 1, 2, 6 to indicate ACC/DCC mode. default is DCC mode 2.
+> > +
+> > +      enum:
+> > +        - 0x01 # ACC - ACC mode.
+> > +        - 0x02 # DCC - low cost without in bias.
+> > +        - 0x06 # DCC - low cost with in bias.
+> > +
+> > +  mediatek,pwm-deb-setting:
+> > +    maxItems: 15
+> > +    description: |
+> > +       headset-mode-setting : Indicates customized pwm, debounce setting
+> > +       accdet pwm_width, pwm_thresh, fall_delay, rise_delay
+> > +       debounce0, debounce1, debounce3, debounce4
+> > +       eint pwm_width, eint pwm_thresh
+> > +       eint deb(debounce0, debounce1, debounce2, debounce3), inv_debounce.
+>
+> This is a string?
+>
+> > +
+> > +  mediatek,eint-use-ap:
+> > +    maxItems: 1
+> > +    description: |
+> > +      indicates to use ap gpio.
+> > +
+> > +      enum:
+> > +        - 0x00 # MT6359 eint detection mode.
+> > +        - 0x01 # SoC GPIO detection mode.
+>
+> Would boolean work here?
+>
+> > +
+> > +  mediatek,eint-detect-mode:
+> > +    maxItems: 1
+> > +    description: |
+> > +      indicates to use ap gpio.
+> > +
+> > +      enum:
+> > +        - 0x00 # detection mode with higher detection power.
+> > +        - 0x01 # detection mode with lower detection power.
+> > +        - 0x02 # detection mode with sw moisture detection mode.
+> > +        - 0x03 # detection mode with hw moisture detection mode1.
+> > +        - 0x04 # detection mode with hw moisture detection mode2.
+> > +
+> > +  mediatek,eint-num:
+> > +    maxItems: 1
+> > +    description: |
+> > +      incicates pmic eint usage.
+> > +
+> > +      enum:
+> > +        - 0x0 # PMIC_EINT0 - use pmic eint0 to trigger plug interrupt.
+> > +        - 0x1 # PMIC_EINT1 - use pmic eint1 to trigger plug interrupt.
+> > +        - 0x2 # PMIC_BI_EINT - use pmic eint0/1 to trigger plug interrupt.
+> > +
+> > +  mediatek,eint-trig-mode:
+> > +    maxItems: 1
+> > +    description: |
+> > +      incicates pmic eint trigger mode.
+> > +
+> > +      enum:
+> > +        - 0x0 # PMIC_GPIO - use pmic gpio to detect plug status.
+> > +        - 0x1 # PMIC_INVERTER - use pmic inverter to detect plug status.
+>
+> Boolean instead?
+>
+> > +
+> > +  mediatek,eint-use-ext-res:
+> > +    maxItems: 1
+> > +    description: |
+> > +      select HP_EINT pull up resistance, default 0 use internal resistance.
+> > +
+> > +      enum:
+> > +        - 0x0 # use internal resistor.
+> > +        - 0x1 # use external resistor.
+>
+> Boolean?
+>
+> > +
+> > +  mediatek,eint-comp-vth:
+> > +    maxItems: 1
+> > +    description: |
+> > +      indicates comparator detection voltage.
+> > +
+> > +      enum:
+> > +        - 0x00 # 2.8v.
+> > +        - 0x01 # 2.4v.
+> > +        - 0x02 # 2.0v.
+> > +        - 0x03 # 0.7v.
+> > +
+> > +  mediatek,key-mode:
+> > +    maxItems: 1
+> > +    description: |
+> > +      incicates key mode type.
+> > +
+> > +      enum:
+> > +        - 0x0 # THREE_KEY - support 3-key key mode.
+> > +        - 0x1 # FOUR_KEY - support 4-key key mode.
+> > +        - 0x2 # TRI_KEY_CDD - support 3-key google CDD key mode.
+> > +
+> > +  mediatek,three-key-thr:
+> > +    maxItems: 4
+> > +    description: |
+> > +      3 key device detection threshold: 0--MD_MAX--UP_MAX--DW_MAX.
+> > +
+> > +  mediatek,tri-key-cdd-thr:
+> > +    maxItems: 4
+> > +    description: |
+> > +      3 key CDD device detection threshold: 0--MD_MAX--UP_MAX--DW_MAX.
+> > +
+> > +  mediatek,four-key-thr:
+> > +    maxItems: 4
+> > +    description: |
+> > +      4 key device detection threshold: 0--MD_MAX--VOICE_MAX--UP_MAX--DW_MAX.
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    accdet: accdet {
+>
+> Where does this node go? You've got no compatible, so it's a child of
+> something else?
+>
+> > +        mediatek,accdet-name = "mt6359-accdet";
+> > +        mediatek,mic-vol = <8>;
+> > +        mediatek,mic-mode = <2>;
+> > +        mediatek,pwm-deb-setting = <0x500 0x500 1 0x1f0
+> > +                                    0x800 0x800 0x20 0x44
+> > +                                    0x4 0x1
+> > +                                    0x5 0x3 0x3 0x5 0xe>;
+> > +        mediatek,eint-use-ap = <0>;
+> > +        mediatek,eint-detect-mode = <4>;
+> > +        mediatek,eint-num = <0>;
+> > +        mediatek,eint-trig-mode = <1>;
+> > +        mediatek,eint-use-ext-res = <0>;
+> > +        mediatek,eint-comp-vth = <2>;
+> > +        mediatek,key-mode = <0>;
+> > +        mediatek,three-key-thr = <0 80 220 400>;
+> > +        status = "okay";
+>
+> Don't show status in examples.
+>
+> > +    };
+> > +...
+>
+> > --
+> > 2.18.0
+> >
