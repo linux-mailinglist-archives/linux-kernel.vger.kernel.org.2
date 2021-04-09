@@ -2,110 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED2F359BA3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:15:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8922359BB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:16:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbhDIKPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:15:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234281AbhDIKFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:05:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82E4461357;
-        Fri,  9 Apr 2021 10:01:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962514;
-        bh=FlpH+W05A8Vjcjx7w8mxBJUXeQATYyjhgyjdJBbT/po=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bQ7+K2aPyfGBqWlbA7UrNibrd1GnEnpLafomOFkY+r90+dJF8egAS+3B1/8vyIDQW
-         dtDCh0md4YYfbQ/ISEhz+sMBwuWrybVvo+4m4Dzdq3R+FyMSkt7gz3nLKKPY6YdVUe
-         P7ot0gvhKumxOhUqbXR8a39jbvtME0fqgT3n8eFk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
+        id S234121AbhDIKP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:15:56 -0400
+Received: from mail-m121145.qiye.163.com ([115.236.121.145]:57540 "EHLO
+        mail-m121145.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234384AbhDIKGL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:06:11 -0400
+X-Greylist: delayed 593 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 06:06:10 EDT
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.250.176.229])
+        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 4634F8001A9;
+        Fri,  9 Apr 2021 17:56:01 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Wim Van Sebroeck <wim@linux-watchdog.org>,
         Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        KP Singh <kpsingh@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.11 45/45] init/Kconfig: make COMPILE_TEST depend on HAS_IOMEM
-Date:   Fri,  9 Apr 2021 11:54:11 +0200
-Message-Id: <20210409095306.868834192@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
-References: <20210409095305.397149021@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH] watchdog: mtk: support pre-timeout when the bark irq is available
+Date:   Fri,  9 Apr 2021 17:55:42 +0800
+Message-Id: <1617962142-28795-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ01CGFYeH0kaHktIGUMaGkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NDI6Nzo5ET8TFhoTCQIuKike
+        CE8KCRVVSlVKTUpMQk1JSk1KQ0NDVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5LVUpMTVVJSUJZV1kIAVlBT09LQjcG
+X-HM-Tid: 0a78b60f5596b03akuuu4634f8001a9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+Use the bark interrupt as the pretimeout notifier if available.
 
-commit ea29b20a828511de3348334e529a3d046a180416 upstream.
+By default, the pretimeout notification shall occur one second earlier
+than the timeout.
 
-I read the commit log of the following two:
-
-- bc083a64b6c0 ("init/Kconfig: make COMPILE_TEST depend on !UML")
-- 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390")
-
-Both are talking about HAS_IOMEM dependency missing in many drivers.
-
-So, 'depends on HAS_IOMEM' seems the direct, sensible solution to me.
-
-This does not change the behavior of UML. UML still cannot enable
-COMPILE_TEST because it does not provide HAS_IOMEM.
-
-The current dependency for S390 is too strong. Under the condition of
-CONFIG_PCI=y, S390 provides HAS_IOMEM, hence can enable COMPILE_TEST.
-
-I also removed the meaningless 'default n'.
-
-Link: https://lkml.kernel.org/r/20210224140809.1067582-1-masahiroy@kernel.org
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Arnd Bergmann <arnd@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: KP Singh <kpsingh@google.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Terrell <terrelln@fb.com>
-Cc: Quentin Perret <qperret@google.com>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Wang Qing <wangqing@vivo.com>
 ---
- init/Kconfig |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/watchdog/mtk_wdt.c | 47 +++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 44 insertions(+), 3 deletions(-)
 
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -113,8 +113,7 @@ config INIT_ENV_ARG_LIMIT
+diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+index 97ca993..8b919cc
+--- a/drivers/watchdog/mtk_wdt.c
++++ b/drivers/watchdog/mtk_wdt.c
+@@ -25,6 +25,7 @@
+ #include <linux/reset-controller.h>
+ #include <linux/types.h>
+ #include <linux/watchdog.h>
++#include <linux/interrupt.h>
  
- config COMPILE_TEST
- 	bool "Compile also drivers which will not load"
--	depends on !UML && !S390
--	default n
-+	depends on HAS_IOMEM
- 	help
- 	  Some drivers can be compiled on a different platform than they are
- 	  intended to be run on. Despite they cannot be loaded there (or even
-
+ #define WDT_MAX_TIMEOUT		31
+ #define WDT_MIN_TIMEOUT		1
+@@ -234,18 +235,35 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
+ 	void __iomem *wdt_base = mtk_wdt->wdt_base;
+ 	int ret;
+ 
+-	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout);
++	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout - wdt_dev->pretimeout);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	reg = ioread32(wdt_base + WDT_MODE);
+ 	reg &= ~(WDT_MODE_IRQ_EN | WDT_MODE_DUAL_EN);
++	if (wdt_dev->pretimeout)
++		reg |= WDT_MODE_IRQ_EN;
+ 	reg |= (WDT_MODE_EN | WDT_MODE_KEY);
+ 	iowrite32(reg, wdt_base + WDT_MODE);
+ 
+ 	return 0;
+ }
+ 
++static int mtk_wdt_set_pretimeout(struct watchdog_device *wdd,
++				   unsigned int timeout)
++{
++	wdd->pretimeout = timeout;
++	return mtk_wdt_start(wdd);
++}
++
++static irqreturn_t mtk_wdt_isr(int irq, void *arg)
++{
++	struct watchdog_device *wdd = arg;
++	watchdog_notify_pretimeout(wdd);
++
++	return IRQ_HANDLED;
++}
++
+ static const struct watchdog_info mtk_wdt_info = {
+ 	.identity	= DRV_NAME,
+ 	.options	= WDIOF_SETTIMEOUT |
+@@ -253,12 +271,21 @@ static const struct watchdog_info mtk_wdt_info = {
+ 			  WDIOF_MAGICCLOSE,
+ };
+ 
++static const struct watchdog_info mtk_wdt_pt_info = {
++	.identity	= DRV_NAME,
++	.options	= WDIOF_SETTIMEOUT |
++			  WDIOF_PRETIMEOUT |
++			  WDIOF_KEEPALIVEPING |
++			  WDIOF_MAGICCLOSE,
++};
++
+ static const struct watchdog_ops mtk_wdt_ops = {
+ 	.owner		= THIS_MODULE,
+ 	.start		= mtk_wdt_start,
+ 	.stop		= mtk_wdt_stop,
+ 	.ping		= mtk_wdt_ping,
+ 	.set_timeout	= mtk_wdt_set_timeout,
++	.set_pretimeout	= mtk_wdt_set_pretimeout,
+ 	.restart	= mtk_wdt_restart,
+ };
+ 
+@@ -267,7 +294,7 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+ 	struct device *dev = &pdev->dev;
+ 	struct mtk_wdt_dev *mtk_wdt;
+ 	const struct mtk_wdt_data *wdt_data;
+-	int err;
++	int err,irq;
+ 
+ 	mtk_wdt = devm_kzalloc(dev, sizeof(*mtk_wdt), GFP_KERNEL);
+ 	if (!mtk_wdt)
+@@ -279,7 +306,21 @@ static int mtk_wdt_probe(struct platform_device *pdev)
+ 	if (IS_ERR(mtk_wdt->wdt_base))
+ 		return PTR_ERR(mtk_wdt->wdt_base);
+ 
+-	mtk_wdt->wdt_dev.info = &mtk_wdt_info;
++	irq = platform_get_irq(pdev, 0);
++	if (irq > 0) {
++		err = devm_request_irq(&pdev->dev, irq, mtk_wdt_isr, 0, "wdt_bark", &mtk_wdt->wdt_dev);
++		if (err)
++			return err;
++
++		mtk_wdt->wdt_dev.info = &mtk_wdt_pt_info;
++		mtk_wdt->wdt_dev.pretimeout = 1;
++	} else {
++		if (irq == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++
++		mtk_wdt->wdt_dev.info = &mtk_wdt_info;
++	}
++
+ 	mtk_wdt->wdt_dev.ops = &mtk_wdt_ops;
+ 	mtk_wdt->wdt_dev.timeout = WDT_MAX_TIMEOUT;
+ 	mtk_wdt->wdt_dev.max_hw_heartbeat_ms = WDT_MAX_TIMEOUT * 1000;
+-- 
+2.7.4
 
