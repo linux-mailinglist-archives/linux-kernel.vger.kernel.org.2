@@ -2,146 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D68C3591EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD783591F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232810AbhDICXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 22:23:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
+        id S232851AbhDICZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 22:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232616AbhDICXp (ORCPT
+        with ESMTP id S232638AbhDICZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 22:23:45 -0400
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B957BC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 19:23:33 -0700 (PDT)
-Received: by mail-qv1-xf31.google.com with SMTP id o11so1946913qvh.11
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 19:23:33 -0700 (PDT)
+        Thu, 8 Apr 2021 22:25:28 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96B05C061760;
+        Thu,  8 Apr 2021 19:25:14 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id i4so2146698pjk.1;
+        Thu, 08 Apr 2021 19:25:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Dr8o5YF5yqQzC2Z1k+2QkLomm0GkPLRu2hgFbkn12/A=;
-        b=Ly6yeXcWyzUsF37vzaewuSXMHg8oxjVmIMpbnu20lmjf2vDNQwHhcJZLJIRDtMamKE
-         K5fqcZc3UR7MK8guEJoUxEN9fadEzvmO9H0JI8yTk84XkDtJa1wFiXpzUhpDYeSC7pWG
-         IGdQADOzMvd4hpC4Vbkauk7WodpWYq8eT35sLO68e1F1yv1/iQMjayD7vTvSa4cvS46W
-         zbd3tYCqDJk8QD7A2TCLlL1YKuLXSDp+KL83bqmsgMlpys3Yg+GzEwtVA2voaozzvJxO
-         luDpwa7GFR8AT+1Ojm/+exEFo+cV6z7jBOPvz/3DjHBm8n9reY1bscWa/dQqyBj60mvw
-         hlnw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mOZ83lWyBCeICtWu3/0oO47MuS4gfmvFARW76Re2qv0=;
+        b=pnksMaMbcw2Kq0VfamCd+NoAaO/msJ0ONuaV1DRYfmYaIxFlb9Ibt91G75cXrhGHnT
+         oh99VNTSluVMwcibbbsy0eSx08PUlHc2G9NyJReUrCKHZAfAJ2WLcXAiqM2Cc7Iwht4/
+         gcwmXs3iaSNBQRmUKQkRag7za8cHgINf07A7GYJ8ZWWtqTKKHZ29r5wy/rzfmcye/DQt
+         GmQBcwgJpTvqx0xLEh0IWvpFgnvKRHeQJdV3S/5m6Fnxzh4PBX89o/yUN/42lnJgf0mG
+         dRJzaaXjBgtTQKGyVeyK/pKEgKQ36d9BjVvGt/NJ2vTr2bycj0w0SVluU2W4S7D2lrud
+         bcEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Dr8o5YF5yqQzC2Z1k+2QkLomm0GkPLRu2hgFbkn12/A=;
-        b=tuha4ammAdJRXQ4EywVLQw1izvaHqY52Ow+B0so35gO3KGKfPbPf8fAF1ZBzjC/44i
-         koB+l8+T8I6DTr9BzF8g3QkZxNTrW31DpBs3LUUDmE9Qo5joixsX1LsJ7Jg4+UTOxYXC
-         ytl7EUCQd2cpfGE0Jsc8ylTblf6tg1HZrFkMdV6G7tq0JM5ESO6Lizd5DcDjY/2EPoPZ
-         UUHmcvFNX0sLBUseWbDoJrzMIioU10MjAoEpEcEMWs5oq68c98FVsEtnVM2Umzzo8urJ
-         UhuqmMNQdLKk3vAuWx1fR9io25O8CqI2TVJ4AAMRVQu2ezPcSor8DzXniq8nCfxCkDzi
-         SpuQ==
-X-Gm-Message-State: AOAM531npKv7hk7SyWfYF1a0dg/OA+OjytNPi3lylW5AEODlMql//e7U
-        zTugUqm8WonP0It5g+ONBgdcoQ3tYNrKeBo5HL1fyg==
-X-Google-Smtp-Source: ABdhPJxtimebsZ9qggqFtKnwApCerfHESWaJIl88HJu0Xf60B4QCcRWMzJJOSmFJIJ+fQt4BpDrO7Q3hF36KGFG+LhI=
-X-Received: by 2002:a05:6214:f0d:: with SMTP id gw13mr11984953qvb.33.1617935012958;
- Thu, 08 Apr 2021 19:23:32 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mOZ83lWyBCeICtWu3/0oO47MuS4gfmvFARW76Re2qv0=;
+        b=eX+CuzwXYN0NdLwLXBzt+1QfNzmj6rRjDPC7r/BwaoyavbNJO5SopUXutROaUpaPgU
+         VIP8gFkWVEbD2ltrk1mVN+sJXUz2N9cTonug84qaj56qxoeVQkME7M/AtmSGc7FuaJa8
+         wot8Su4POQX8cmAIqtrGYBWlk/IlRWYLW/7TM9u6btNqQOamG99UDkZSHaxUSoFgKD0X
+         qp3MDk8EgOvgxq16VTw8DWiwESZzjwOvncIapl+RTsHUdYjmfx8jO0XI2EGaN9pw4a5l
+         CG5p0Wpo89a+aOmAeQ1SExdiXA0qfQe7YGQLG5LBqmZGY2G5KoBTvQtY1CwlSFvzrgNY
+         hA5Q==
+X-Gm-Message-State: AOAM531i/eOB9FKk22f6OHJowONKoF7jltBExkp8K8tEUQFTuBfXgISu
+        VJSmkLORtESp792nAf+3Ukvsr/WPRQ==
+X-Google-Smtp-Source: ABdhPJxBqyPBV7mvWUarynkXmg0LYKsdjSQuLcC46ABbv+hpqtNFMZwBi9RUoevkzKAkBSzq7/URrQ==
+X-Received: by 2002:a17:902:b602:b029:e6:cabb:10b9 with SMTP id b2-20020a170902b602b02900e6cabb10b9mr10449221pls.47.1617935113792;
+        Thu, 08 Apr 2021 19:25:13 -0700 (PDT)
+Received: from localhost.localdomain ([203.205.141.39])
+        by smtp.gmail.com with ESMTPSA id r10sm608769pjf.5.2021.04.08.19.25.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 08 Apr 2021 19:25:13 -0700 (PDT)
+From:   lihaiwei.kernel@gmail.com
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        Haiwei Li <lihaiwei@tencent.com>
+Subject: [PATCH v2] KVM: vmx: add mismatched size assertions in vmcs_check32()
+Date:   Fri,  9 Apr 2021 10:24:56 +0800
+Message-Id: <20210409022456.23528-1-lihaiwei.kernel@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <20210406092634.50465-1-greentime.hu@sifive.com> <20210408162539.GA32036@lpieralisi>
-In-Reply-To: <20210408162539.GA32036@lpieralisi>
-From:   Greentime Hu <greentime.hu@sifive.com>
-Date:   Fri, 9 Apr 2021 10:23:21 +0800
-Message-ID: <CAHCEehK5vf5V_6McexFQPbcxGeC2SEb_3SXiGc2ASkcELe3fXg@mail.gmail.com>
-Subject: Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver support
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>, hes@sifive.com,
-        Erik Danie <erik.danie@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, robh+dt@kernel.org,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>, alex.dewar90@gmail.com,
-        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
-        vidyas@nvidia.com, jh80.chung@samsung.com,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-clk@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> =E6=96=BC 2021=E5=B9=B44=E6=
-=9C=889=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8812:25=E5=AF=AB=E9=81=
-=93=EF=BC=9A
->
-> On Tue, Apr 06, 2021 at 05:26:28PM +0800, Greentime Hu wrote:
-> > This patchset includes SiFive FU740 PCIe host controller driver. We als=
-o
-> > add pcie_aux clock and pcie_power_on_reset controller to prci driver fo=
-r
-> > PCIe driver to use it.
-> >
-> > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon =
-R5
-> > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based o=
-n
-> > v5.11 Linux kernel.
-> >
-> > Changes in v5:
-> >  - Fix typo in comments
-> >  - Keep comments style consistent
-> >  - Refine some error handling codes
-> >  - Remove unneeded header file including
-> >  - Merge fu740_pcie_ltssm_enable implementation to fu740_pcie_start_lin=
-k
-> >
-> > Changes in v4:
-> >  - Fix Wunused-but-set-variable warning in prci driver
-> >
-> > Changes in v3:
-> >  - Remove items that has been defined
-> >  - Refine format of sifive,fu740-pcie.yaml
-> >  - Replace perstn-gpios with the common one
-> >  - Change DBI mapping space to 2GB from 4GB
-> >  - Refine drivers/reset/Kconfig
-> >
-> > Changes in v2:
-> >  - Refine codes based on reviewers' feedback
-> >  - Remove define and use the common one
-> >  - Replace __raw_writel with writel_relaxed
-> >  - Split fu740_phyregreadwrite to write function
-> >  - Use readl_poll_timeout in stead of while loop checking
-> >  - Use dwc common codes
-> >  - Use gpio descriptors and the gpiod_* api.
-> >  - Replace devm_ioremap_resource with devm_platform_ioremap_resource_by=
-name
-> >  - Replace devm_reset_control_get with devm_reset_control_get_exclusive
-> >  - Add more comments for delay and sleep
-> >  - Remove "phy ? x : y" expressions
-> >  - Refine code logic to remove possible infinite loop
-> >  - Replace magic number with meaningful define
-> >  - Remove fu740_pcie_pm_ops
-> >  - Use builtin_platform_driver
-> >
-> > Greentime Hu (5):
-> >   clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
-> >   clk: sifive: Use reset-simple in prci driver for PCIe driver
-> >   MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
-> >   dt-bindings: PCI: Add SiFive FU740 PCIe host controller
-> >   riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
-> >
-> > Paul Walmsley (1):
-> >   PCI: fu740: Add SiFive FU740 PCIe host controller driver
->
-> I can pull the patches above into the PCI tree (but will drop patch 6 -
-> dts changes), is it OK for you ? Please let me know how you would like
-> to upstream it.
->
+From: Haiwei Li <lihaiwei@tencent.com>
 
-Hi Lorenzo,
+Add compile-time assertions in vmcs_check32() to disallow accesses to
+64-bit and 64-bit high fields via vmcs_{read,write}32().  Upper level KVM
+code should never do partial accesses to VMCS fields.  KVM handles the
+split accesses automatically in vmcs_{read,write}64() when running as a
+32-bit kernel.
 
-Thank you.
-I am ok with it. So I should ask Palmer to pick patch 6 dts changes to
-RISC-V tree?
+Reviewed-and-tested-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
+---
+v1 -> v2:
+* Improve the changelog 
+
+ arch/x86/kvm/vmx/vmx_ops.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/x86/kvm/vmx/vmx_ops.h b/arch/x86/kvm/vmx/vmx_ops.h
+index 692b0c3..164b64f 100644
+--- a/arch/x86/kvm/vmx/vmx_ops.h
++++ b/arch/x86/kvm/vmx/vmx_ops.h
+@@ -37,6 +37,10 @@ static __always_inline void vmcs_check32(unsigned long field)
+ {
+ 	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6000) == 0,
+ 			 "32-bit accessor invalid for 16-bit field");
++	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6001) == 0x2000,
++			 "32-bit accessor invalid for 64-bit field");
++	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6001) == 0x2001,
++			 "32-bit accessor invalid for 64-bit high field");
+ 	BUILD_BUG_ON_MSG(__builtin_constant_p(field) && ((field) & 0x6000) == 0x6000,
+ 			 "32-bit accessor invalid for natural width field");
+ }
+-- 
+1.8.3.1
+
