@@ -2,164 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CAD359493
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:32:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D9635949B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbhDIFct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233234AbhDIFcs (ORCPT
+        id S233255AbhDIFds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:33:48 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:37671 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229840AbhDIFdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:32:48 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C69CC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 22:32:36 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id z136so4678632iof.10
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:32:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AxWZg8GIxRLBho/ausojU/sJO0xe78oHCVyalpIaIOk=;
-        b=QOL4OZ1urFgNXve/8IvwqfMO5TWDKsDZuKsv0cLeHRxQyvM5/H4eSPB7H9TSVuZy6G
-         E5sXuqnmOKmTV+VYoFJgdQXPIp5RQuO8h8skw+Y1c2PelpZzGSwT71Uh+rp+v0MQcUbx
-         WwsdJ8csxIXJiCqm2kpIE+xTk/qQDgtrNVW4cWa5Yygf5dXW12/srme+G9amHoPUz8bL
-         czFasIpo//7/39H//fsS0emmjm1VRSD7684CUr5WdEjn/VEAvO1BA1OhAUxdZY69eldC
-         wbZFI19VWRNox6ayVJSN8RgRyO7NOCwctosx2swPNngNcQXwVQF1AeSKbPPea8hqvm97
-         mStw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AxWZg8GIxRLBho/ausojU/sJO0xe78oHCVyalpIaIOk=;
-        b=T3kKcSTbDUlvxk0lYKq0iiL/usxTD2dqFP9eK6dxIJ3nKffJXeTZr/AB4rZQqP3Tdd
-         hOHf0Y8VFQCrn3WRyGxBiFTb23W6sYDo3trlY/86r9SirO0pSS8r9uf5iU53VTaNmWZ0
-         UvJIsqsIbmYhey6+YRxFGiHYf6qKQitfNw1U/U1QJEdDYLH+swkh8rYlQkcSEIw5B6QC
-         5GXFF8F2f10Bk0u3dnyB1jPBvPJPBKu65zkT2kAZ7eahFR+ZK4IO08uv8zqFa+NgyaTM
-         TP6FKFNQbeVUIgFadbbGj0QenF+AV+s/XefjNJ8bZC0Q3MNsrLsWZujiGcKyzBEPsNHQ
-         NYuA==
-X-Gm-Message-State: AOAM533NJsqekO07PISnJYNpy/iCY1emvYcDholjR86BKgEqv25W7Lyd
-        vECzZqa71rGZg10wKpyh47UKjj8Xa+k2W6tePG/tRA==
-X-Google-Smtp-Source: ABdhPJweUM9c8DnJ7OuLnPeNxaLs4UVsS28KDeOhqoFpLF8v3R5OvLaSNa6cMuV1cBMLcryj+VtdUOzku111YltYcTI=
-X-Received: by 2002:a6b:661a:: with SMTP id a26mr9823930ioc.124.1617946355681;
- Thu, 08 Apr 2021 22:32:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183218.E7C9CE24@viggo.jf.intel.com>
-In-Reply-To: <20210401183218.E7C9CE24@viggo.jf.intel.com>
-From:   Wei Xu <weixugc@google.com>
-Date:   Thu, 8 Apr 2021 22:32:24 -0700
-Message-ID: <CAAPL-u-xGhqsr8WvX2TE+qA4t2Q6S93XaDTK82fUsOkhq7iUDg@mail.gmail.com>
-Subject: Re: [PATCH 01/10] mm/numa: node demotion data structure and lookup
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        shy828301@gmail.com, David Rientjes <rientjes@google.com>,
-        ying.huang@intel.com, Dan Williams <dan.j.williams@intel.com>,
-        david@redhat.com, osalvador@suse.de
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 9 Apr 2021 01:33:45 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D2E5C5803EA;
+        Fri,  9 Apr 2021 01:33:32 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Fri, 09 Apr 2021 01:33:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=6KsZEWbeiMrRF/Lxcx0y3lXRjdkXfUp
+        TzDsTGr+HZU4=; b=s7aTIHdPkWUUh50pfSfs9YrIamJKh1LwCTdl5ksQMzQC06W
+        EUdsfUV/ewk95//Jv4HuOkMH6DKQwTdKfwt43N2rRyyv/otaXCgjqriNAjr0oZU/
+        luVeRv3frbUuwUACxK1JGYFu7MH0kGfn99b8lBJ5UQvMeOW0FaYpbGtRLf35teSt
+        zEI4749bzFfvojnrKsZ6D/nzmfZWT9gP8dWOl7kHFELvpR38/e4O+3UQn2QPt3dW
+        bR3r0+b3vzmlNqXNmD5E8Mh+r+n4oZ+9zI7H5do98CqAw93mTh1vM2/GxkmTBp5e
+        sIA+VoXzUfbjG6f7IARyCiIvIC3+Yns+Ou0X8og==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=6KsZEW
+        beiMrRF/Lxcx0y3lXRjdkXfUpTzDsTGr+HZU4=; b=vVjXPiJfvj7jy5w9gnua2w
+        +cwGpZ82luDiAgmBszB9Z3ZlWAHaqeaIBMUjrXI9EMcSomQHDqw0vddA7kHlYB98
+        6qMjW+jm0ZTMInHw/5uKOkrJcUs58Dt27z2YlBx4sXyvLuy3UcfTK5AiNvd+V5C3
+        tBfc9/KnJEzRQa+sTJwqMvCjkU8b6JZVCqlwTDLHQUYKQ8Wpv73dg7NyG9dqWHfs
+        ubziUCqQmYrLh5hIXH7LJeOesWu6c2agu8lY3ZHcJpIOuavtym9pkt+kuDMlGtGE
+        1kOiadKVlYQGAxon/QHJ0ztKjTqy6yHJOA9i+LUbzPCrT5659Q2gCW+U0jLtBHnw
+        ==
+X-ME-Sender: <xms:K-dvYMWCw-GkUejkBXVxANm1D1ra_d_841lfbxXom5vnlQx9jHlSqQ>
+    <xme:K-dvYAnITXOpW2LILhj2vnv0Ib0SG9IUMHl8E3_3Y6FXZF8tPz3feM1SaqU9NMxi7
+    mPaHYMIhWihugK7hw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudektddgleehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefguedvfedvgffgudehjeegudefvedufefgveefudetffdvfeeigffg
+    jedvkeetnecuffhomhgrihhnpeguvghvihgtvghtrhgvvgdrohhrghenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurhgvfiesrghjrdhi
+    ugdrrghu
+X-ME-Proxy: <xmx:K-dvYAaagiduEK58TzVobAp1l4DaeIotxjjLKfobRejgiw3ukhaVlQ>
+    <xmx:K-dvYLVkaJ8gOLQMa4vRVpks2YCgFrQuBlUUVVgeK6aPOQjdjDkx6Q>
+    <xmx:K-dvYGlDDbOalalze6k3F3zSnWA2ULCrF0DWmztLDoCJxxZ1m5Yk2g>
+    <xmx:LOdvYA0u63MbxX8FXcxHeKOEZtskhce-Zm-LuDsJ4Tk9Cw8ujUDE8A>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id CC383A0007C; Fri,  9 Apr 2021 01:33:31 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <29937129-3a17-4a32-a723-191b693a1e0c@www.fastmail.com>
+In-Reply-To: <YG/i9lSxxCMIzkRs@packtop>
+References: <20210319062752.145730-1-andrew@aj.id.au>
+ <20210319062752.145730-17-andrew@aj.id.au> <YG/i9lSxxCMIzkRs@packtop>
+Date:   Fri, 09 Apr 2021 15:03:10 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Zev Weiss" <zweiss@equinix.com>
+Cc:     "openipmi-developer@lists.sourceforge.net" 
+        <openipmi-developer@lists.sourceforge.net>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "Corey Minyard" <minyard@acm.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Tomer Maimon" <tmaimon77@gmail.com>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "Avi Fishman" <avifishman70@gmail.com>,
+        "Patrick Venture" <venture@google.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Tali Perry" <tali.perry1@gmail.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lee Jones" <lee.jones@linaro.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "Benjamin Fair" <benjaminfair@google.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_17/21]_dt-bindings:_ipmi:_Convert_ASPEED_KCS_bin?=
+ =?UTF-8?Q?ding_to_schema?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It makes sense to start with a simple node tiering model like this
-change, which looks good to me.
 
-I do want to mention a likely usage scenario that motivates the need
-for a list of nodes as the demotion target of a source node.
 
-Access to a cross-socket DRAM node is still fast enough.  So to minimize
-memory stranding, job processes can be allowed to fall back to
-allocate pages from a remote DRAM node.
+On Fri, 9 Apr 2021, at 14:45, Zev Weiss wrote:
+> On Fri, Mar 19, 2021 at 01:27:48AM CDT, Andrew Jeffery wrote:
+> >Given the deprecated binding, improve the ability to detect issues in
+> >the platform devicetrees. Further, a subsequent patch will introduce a
+> >new interrupts property for specifying SerIRQ behaviour, so convert
+> >before we do any further additions.
+> >
+> >Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> >---
+> > .../bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml | 92 +++++++++++++++++++
+> > .../bindings/ipmi/aspeed-kcs-bmc.txt          | 33 -------
+> > 2 files changed, 92 insertions(+), 33 deletions(-)
+> > create mode 100644 Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
+> > delete mode 100644 Documentation/devicetree/bindings/ipmi/aspeed-kcs-bmc.txt
+> >
+> >diff --git a/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
+> >new file mode 100644
+> >index 000000000000..697ca575454f
+> >--- /dev/null
+> >+++ b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml
+> >@@ -0,0 +1,92 @@
+> >+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >+%YAML 1.2
+> >+---
+> >+$id: http://devicetree.org/schemas/ipmi/aspeed,ast2400-kcs-bmc.yaml
+> >+$schema: http://devicetree.org/meta-schemas/core.yaml
+> >+
+> >+title: ASPEED BMC KCS Devices
+> >+
+> >+maintainers:
+> >+  - Andrew Jeffery <andrew@aj.id.au>
+> >+
+> >+description: |
+> >+  The Aspeed BMC SoCs typically use the Keyboard-Controller-Style (KCS)
+> >+  interfaces on the LPC bus for in-band IPMI communication with their host.
+> >+
+> >+properties:
+> >+  compatible:
+> >+    oneOf:
+> >+      - description: Channel ID derived from reg
+> >+        items:
+> >+          enum:
+> >+            - aspeed,ast2400-kcs-bmc-v2
+> >+            - aspeed,ast2500-kcs-bmc-v2
+> >+            - aspeed,ast2600-kcs-bmc
+> 
+> Should this have a "-v2" suffix?
 
-But cross-socket access to PMEM nodes (the slower tier) can be slow,
-especially for random writes.  It is then desirable not to demote the
-pages of a process to a remote PMEM node, even when the pages are on
-a remote DRAM node, which has the remote PMEM node as its demotion
-target.  At the same time, it is also desirable to still be able to
-demote such pages when they become cold so that the more precious
-DRAM occupied by these pages can be used for more active data.
+Well, that was kind of a matter of perspective. The 2600 compatible was 
+added after we'd done the v2 of the binding for the 2400 and 2500 so it 
+never needed correcting. But it is a case of "don't use the deprecated 
+properties with the 2600 compatible".
 
-To support such use cases, we need to be able to specify a list of
-demotion target nodes for the remote DRAM node, which should include
-the PMEM node closer to the process.  Certainly, we will also need an
-ability to limit the demotion target nodes of a process (or a cgroup)
-to ensure that only local PMEM nodes are eligible as the actual
-demotion target.
+I don't think a change is necessary?
 
-Note that demoting a page to a remote PMEM node is more acceptable
-than a process accesses the same remote PMEM node because demotion
-is one-time, sequential access, and can also use non-temporal stores
-to reduce the access overheads and bypass caches.
+Cheers,
 
-Reviewed-by: Wei Xu <weixugc@google.com>
-
-On Thu, Apr 1, 2021 at 11:35 AM Dave Hansen <dave.hansen@linux.intel.com> wrote:
->
->
-> From: Dave Hansen <dave.hansen@linux.intel.com>
->
-> Prepare for the kernel to auto-migrate pages to other memory nodes
-> with a user defined node migration table. This allows creating single
-> migration target for each NUMA node to enable the kernel to do NUMA
-> page migrations instead of simply reclaiming colder pages. A node
-> with no target is a "terminal node", so reclaim acts normally there.
-> The migration target does not fundamentally _need_ to be a single node,
-> but this implementation starts there to limit complexity.
->
-> If you consider the migration path as a graph, cycles (loops) in the
-> graph are disallowed.  This avoids wasting resources by constantly
-> migrating (A->B, B->A, A->B ...).  The expectation is that cycles will
-> never be allowed.
->
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: osalvador <osalvador@suse.de>
->
-> --
->
-> changes since 20200122:
->  * Make node_demotion[] __read_mostly
->
-> changes in July 2020:
->  - Remove loop from next_demotion_node() and get_online_mems().
->    This means that the node returned by next_demotion_node()
->    might now be offline, but the worst case is that the
->    allocation fails.  That's fine since it is transient.
-> ---
->
->  b/mm/migrate.c |   17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
-> diff -puN mm/migrate.c~0006-node-Define-and-export-memory-migration-path mm/migrate.c
-> --- a/mm/migrate.c~0006-node-Define-and-export-memory-migration-path    2021-03-31 15:17:10.734000264 -0700
-> +++ b/mm/migrate.c      2021-03-31 15:17:10.742000264 -0700
-> @@ -1163,6 +1163,23 @@ out:
->         return rc;
->  }
->
-> +static int node_demotion[MAX_NUMNODES] __read_mostly =
-> +       {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
-> +
-> +/**
-> + * next_demotion_node() - Get the next node in the demotion path
-> + * @node: The starting node to lookup the next node
-> + *
-> + * @returns: node id for next memory node in the demotion path hierarchy
-> + * from @node; NUMA_NO_NODE if @node is terminal.  This does not keep
-> + * @node online or guarantee that it *continues* to be the next demotion
-> + * target.
-> + */
-> +int next_demotion_node(int node)
-> +{
-> +       return node_demotion[node];
-> +}
-> +
->  /*
->   * Obtain the lock on page, remove all ptes and migrate the page
->   * to the newly allocated page in newpage.
-> _
+Andrew
