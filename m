@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 235AC359B67
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09D8B359AEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:06:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhDIKK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:10:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51298 "EHLO mail.kernel.org"
+        id S233095AbhDIKHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:07:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233569AbhDIKDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:03:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E9F36115B;
-        Fri,  9 Apr 2021 10:00:22 +0000 (UTC)
+        id S233705AbhDIJ7R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:59:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 095C861207;
+        Fri,  9 Apr 2021 09:58:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962423;
-        bh=bJgG9no5xh/Cz0WtH7XO6q/37s45CFSv3lDISxUTGNg=;
+        s=korg; t=1617962320;
+        bh=9Qi3pQ2+QNaOBIwKPixpKhTUZGCIOx9GESj8uXGpRgg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rfyV7VrmFYWLLxVI2m6r3c0LICPUmQpoW+JyJ3+nODrSX1nJlFW8izFLAWyajfC1h
-         G9PRhzDGx21tlrFGmmUeeLVq8AE6aj19J5nkSdRIeR4P8qwxuBS5cT3KK1o8X77/nD
-         0F0w9ZDBy4TMUpnvNql0vICye/WPjmpu4U9Khc80=
+        b=zEUf8CQBIG2LS0kDY/A5sJi5XWxZRqx5aZUlOn0pUS8K4+oci3XVX0YXLI0lvalJV
+         +JQDd/bdmCnkfG16+AYlrdaMqIbOU3AIkDf05SIimGranmDtpRZoT3EwV4ZG18+wYa
+         LwBQXOPAdx2jgrkoD0LyoJkFSRQ1zthf+55+VIR8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Ludovic Senecaux <linuxludo@free.fr>,
+        Florian Westphal <fw@strlen.de>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 10/45] net: arcnet: com20020 fix error handling
+Subject: [PATCH 5.10 14/41] netfilter: conntrack: Fix gre tunneling over ipv6
 Date:   Fri,  9 Apr 2021 11:53:36 +0200
-Message-Id: <20210409095305.723972395@linuxfoundation.org>
+Message-Id: <20210409095305.294519518@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
-References: <20210409095305.397149021@linuxfoundation.org>
+In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
+References: <20210409095304.818847860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,133 +41,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhang <ztong0001@gmail.com>
+From: Ludovic Senecaux <linuxludo@free.fr>
 
-[ Upstream commit 6577b9a551aedb86bca6d4438c28386361845108 ]
+[ Upstream commit 8b2030b4305951f44afef80225f1475618e25a73 ]
 
-There are two issues when handling error case in com20020pci_probe()
+This fix permits gre connections to be tracked within ip6tables rules
 
-1. priv might be not initialized yet when calling com20020pci_remove()
-from com20020pci_probe(), since the priv is set at the very last but it
-can jump to error handling in the middle and priv remains NULL.
-2. memory leak - the net device is allocated in alloc_arcdev but not
-properly released if error happens in the middle of the big for loop
-
-[    1.529110] BUG: kernel NULL pointer dereference, address: 0000000000000008
-[    1.531447] RIP: 0010:com20020pci_remove+0x15/0x60 [com20020_pci]
-[    1.536805] Call Trace:
-[    1.536939]  com20020pci_probe+0x3f2/0x48c [com20020_pci]
-[    1.537226]  local_pci_probe+0x48/0x80
-[    1.539918]  com20020pci_init+0x3f/0x1000 [com20020_pci]
-
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Ludovic Senecaux <linuxludo@free.fr>
+Acked-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/arcnet/com20020-pci.c | 34 +++++++++++++++++--------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+ net/netfilter/nf_conntrack_proto_gre.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/arcnet/com20020-pci.c b/drivers/net/arcnet/com20020-pci.c
-index 8bdc44b7e09a..3c8f665c1558 100644
---- a/drivers/net/arcnet/com20020-pci.c
-+++ b/drivers/net/arcnet/com20020-pci.c
-@@ -127,6 +127,8 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 	int i, ioaddr, ret;
- 	struct resource *r;
- 
-+	ret = 0;
-+
- 	if (pci_enable_device(pdev))
- 		return -EIO;
- 
-@@ -139,6 +141,8 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 	priv->ci = ci;
- 	mm = &ci->misc_map;
- 
-+	pci_set_drvdata(pdev, priv);
-+
- 	INIT_LIST_HEAD(&priv->list_dev);
- 
- 	if (mm->size) {
-@@ -161,7 +165,7 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 		dev = alloc_arcdev(device);
- 		if (!dev) {
- 			ret = -ENOMEM;
--			goto out_port;
-+			break;
- 		}
- 		dev->dev_port = i;
- 
-@@ -178,7 +182,7 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 			pr_err("IO region %xh-%xh already allocated\n",
- 			       ioaddr, ioaddr + cm->size - 1);
- 			ret = -EBUSY;
--			goto out_port;
-+			goto err_free_arcdev;
- 		}
- 
- 		/* Dummy access after Reset
-@@ -216,18 +220,18 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 		if (arcnet_inb(ioaddr, COM20020_REG_R_STATUS) == 0xFF) {
- 			pr_err("IO address %Xh is empty!\n", ioaddr);
- 			ret = -EIO;
--			goto out_port;
-+			goto err_free_arcdev;
- 		}
- 		if (com20020_check(dev)) {
- 			ret = -EIO;
--			goto out_port;
-+			goto err_free_arcdev;
- 		}
- 
- 		card = devm_kzalloc(&pdev->dev, sizeof(struct com20020_dev),
- 				    GFP_KERNEL);
- 		if (!card) {
- 			ret = -ENOMEM;
--			goto out_port;
-+			goto err_free_arcdev;
- 		}
- 
- 		card->index = i;
-@@ -253,29 +257,29 @@ static int com20020pci_probe(struct pci_dev *pdev,
- 
- 		ret = devm_led_classdev_register(&pdev->dev, &card->tx_led);
- 		if (ret)
--			goto out_port;
-+			goto err_free_arcdev;
- 
- 		ret = devm_led_classdev_register(&pdev->dev, &card->recon_led);
- 		if (ret)
--			goto out_port;
-+			goto err_free_arcdev;
- 
- 		dev_set_drvdata(&dev->dev, card);
- 
- 		ret = com20020_found(dev, IRQF_SHARED);
- 		if (ret)
--			goto out_port;
-+			goto err_free_arcdev;
- 
- 		devm_arcnet_led_init(dev, dev->dev_id, i);
- 
- 		list_add(&card->list, &priv->list_dev);
--	}
-+		continue;
- 
--	pci_set_drvdata(pdev, priv);
+diff --git a/net/netfilter/nf_conntrack_proto_gre.c b/net/netfilter/nf_conntrack_proto_gre.c
+index 5b05487a60d2..db11e403d818 100644
+--- a/net/netfilter/nf_conntrack_proto_gre.c
++++ b/net/netfilter/nf_conntrack_proto_gre.c
+@@ -218,9 +218,6 @@ int nf_conntrack_gre_packet(struct nf_conn *ct,
+ 			    enum ip_conntrack_info ctinfo,
+ 			    const struct nf_hook_state *state)
+ {
+-	if (state->pf != NFPROTO_IPV4)
+-		return -NF_ACCEPT;
 -
--	return 0;
--
--out_port:
--	com20020pci_remove(pdev);
-+err_free_arcdev:
-+		free_arcdev(dev);
-+		break;
-+	}
-+	if (ret)
-+		com20020pci_remove(pdev);
- 	return ret;
- }
+ 	if (!nf_ct_is_confirmed(ct)) {
+ 		unsigned int *timeouts = nf_ct_timeout_lookup(ct);
  
 -- 
 2.30.2
