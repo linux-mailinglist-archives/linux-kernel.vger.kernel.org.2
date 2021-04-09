@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4316A3597D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B1A359792
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231779AbhDII2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:28:32 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:6228 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229846AbhDII2b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:28:31 -0400
-Received: from localhost.localdomain (unknown [222.205.72.8])
-        by mail-app3 (Coremail) with SMTP id cC_KCgBXj9QVEHBgnofxAA--.43349S4;
-        Fri, 09 Apr 2021 16:28:09 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] dmaengine: tegra20: Fix runtime PM imbalance on error
-Date:   Fri,  9 Apr 2021 16:28:05 +0800
-Message-Id: <20210409082805.23643-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgBXj9QVEHBgnofxAA--.43349S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFWUXF1ktFW5KF4DKFyUZFb_yoW8Gryfpa
-        1UXFyj93yvq3y3Ja1DCr47Zr98WFW3J3y7WrWrGasFvrsrXFyjvr18GFWIgF48ZF97Aa17
-        tan0q343AF1IgrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvF1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_
-        JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48J
-        MxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
-        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AK
-        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-        fU538nUUUUU
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgkKBlZdtTUlDwAFsj
+        id S232440AbhDIIUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:20:19 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:16866 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232313AbhDIIUO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:20:14 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FGrc46wPnzlWy1;
+        Fri,  9 Apr 2021 16:18:12 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 9 Apr 2021 16:19:53 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>, Bob Peterson <rpeterso@redhat.com>,
+        "Andreas Gruenbacher" <agruenba@redhat.com>
+CC:     <cluster-devel@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] gfs2: use kmem_cache_free() instead of kfree()
+Date:   Fri, 9 Apr 2021 08:29:57 +0000
+Message-ID: <20210409082957.2909213-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() will increase the runtime PM counter
-even it returns an error. Thus a pairing decrement is needed
-to prevent refcount leak. Fix this by replacing this API with
-pm_runtime_resume_and_get(), which will not change the runtime
-PM counter on error.
+memory allocated by kmem_cache_alloc() should be freed using
+kmem_cache_free(), not kfree().
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Fixes: 7d6eec37a105 ("gfs2: Allocate bufdata object before taking log lock")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
+ fs/gfs2/trans.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Changelog:
-
-v2: - Fix another similar case in tegra_dma_synchronize().
----
- drivers/dma/tegra20-apb-dma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/dma/tegra20-apb-dma.c b/drivers/dma/tegra20-apb-dma.c
-index 71827d9b0aa1..b7260749e8ee 100644
---- a/drivers/dma/tegra20-apb-dma.c
-+++ b/drivers/dma/tegra20-apb-dma.c
-@@ -723,7 +723,7 @@ static void tegra_dma_issue_pending(struct dma_chan *dc)
- 		goto end;
+diff --git a/fs/gfs2/trans.c b/fs/gfs2/trans.c
+index c50de22d7cbf..1b47d08ac4fb 100644
+--- a/fs/gfs2/trans.c
++++ b/fs/gfs2/trans.c
+@@ -206,7 +206,7 @@ void gfs2_trans_add_data(struct gfs2_glock *gl, struct buffer_head *bh)
  	}
- 	if (!tdc->busy) {
--		err = pm_runtime_get_sync(tdc->tdma->dev);
-+		err = pm_runtime_resume_and_get(tdc->tdma->dev);
- 		if (err < 0) {
- 			dev_err(tdc2dev(tdc), "Failed to enable DMA\n");
- 			goto end;
-@@ -818,7 +818,7 @@ static void tegra_dma_synchronize(struct dma_chan *dc)
- 	struct tegra_dma_channel *tdc = to_tegra_dma_chan(dc);
- 	int err;
- 
--	err = pm_runtime_get_sync(tdc->tdma->dev);
-+	err = pm_runtime_resume_and_get(tdc->tdma->dev);
- 	if (err < 0) {
- 		dev_err(tdc2dev(tdc), "Failed to synchronize DMA: %d\n", err);
- 		return;
--- 
-2.17.1
+ 	gfs2_log_lock(sdp);
+ 	if (bh->b_private) {
+-		kfree(bd);
++		kmem_cache_free(gfs2_bufdata_cachep, bd);
+ 		bd = bh->b_private;
+ 	} else {
+ 		bh->b_private = bd;
+@@ -246,12 +246,12 @@ void gfs2_trans_add_meta(struct gfs2_glock *gl, struct buffer_head *bh)
+ 	}
+ 	gfs2_log_lock(sdp);
+ 	if (bh->b_private) {
+-		kfree(bd);
++		kmem_cache_free(gfs2_bufdata_cachep, bd);
+ 		bd = bh->b_private;
+ 	} else {
+ 		lock_page(bh->b_page);
+ 		if (bh->b_private) {
+-			kfree(bd);
++			kmem_cache_free(gfs2_bufdata_cachep, bd);
+ 			bd = bh->b_private;
+ 		} else {
+ 			bh->b_private = bd;
 
