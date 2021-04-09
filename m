@@ -2,57 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E6B3595D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FBA93595E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:54:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhDIGwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:52:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233333AbhDIGwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:52:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06AAB610FC;
-        Fri,  9 Apr 2021 06:51:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1617951093;
-        bh=rpxdJ+VoQo4exBN4jPf+RLIrO1vUqpKfUs6VC0gjRv8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=d8hSSOgx1UTougP+ANtHxesbQOAwBtspUUXVyNAHSGCgx361cOHfHF+Hp6l5GSk5K
-         8vPc5JDAneVT29XdrYpmGwCyZza4pdb+eKcrizHfBMK1Uv1Rp7nuNwFgizsyXhlA6T
-         ydo/fTOE0h3ctovMUNK8ifP/uK6K+fA7ua07T604=
-Date:   Thu, 8 Apr 2021 23:51:32 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Gioh Kim <gi-oh.kim@ionos.com>, linux-kernel@vger.kernel.org,
-        ndesaulniers@google.com, dan.j.williams@intel.com,
-        laniel_francis@privacyrequired.com, keescook@chromium.org,
-        dja@axtens.net, haris.iqbal@ionos.com, jinpu.wang@ionos.com
-Subject: Re: [PATCH v4] lib/string: Introduce sysfs_streqcase
-Message-Id: <20210408235132.e62ace3277fd46f123f5ff1b@linux-foundation.org>
-In-Reply-To: <YG/315XLSIZG2bCU@kroah.com>
-References: <20210408130605.541796-1-gi-oh.kim@ionos.com>
-        <20210408220502.8126bc2f278b5199707ec122@linux-foundation.org>
-        <YG/315XLSIZG2bCU@kroah.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S233438AbhDIGyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:54:12 -0400
+Received: from www381.your-server.de ([78.46.137.84]:49900 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231540AbhDIGyL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 02:54:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=m0u4XcGvYFcZ1UHSFyyZX1Jfe2bc3nmFCI95VAmpg/Y=; b=bPnDJ71ykZh+qpXXKWPEWeesS0
+        WLPil5vj03znC6R7KltB9Ojr+UczWFOdzIROqQc8WS5uB12+c9ikHNFORL6OqH76eKH6TuwexOSKc
+        C5yK8f1B2L1A0/RUrUDAbtzM3qR9FDwaBzq+jHfbBkthk4vU9x3Z3rLmnyvfTUNLagIOGyz+nGe2T
+        DCihPb/6BMMzfMzj+hF43FEHelnphzri0INg9vQMwd0Y7yLjHURcAcal8U/aHQ8e+ULb9kYzFlKLf
+        xywpC+a2/gv4+PyYS9pIUOlpIVZLHrJV6pSffmOX/MMHiAajIttTp2d0sJ8oSNsyPpZdYZQYkQU05
+        2s9VAmYw==;
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1lUl1e-0001w4-R5; Fri, 09 Apr 2021 08:53:54 +0200
+Received: from [2001:a61:2bab:901:9e5c:8eff:fe01:8578]
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1lUl1e-0005l9-MY; Fri, 09 Apr 2021 08:53:54 +0200
+Subject: Re: [PATCH v4 2/2] iio: temperature: add driver support for ti tmp117
+To:     Puranjay Mohan <puranjay12@gmail.com>,
+        alexandru.ardelean@analog.com, jic23@kernel.org,
+        devicetree@vger.kernel.org, knaack.h@gmx.de,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andy.shevchenko@gmail.com
+References: <20210407182147.77221-1-puranjay12@gmail.com>
+ <20210407182147.77221-3-puranjay12@gmail.com>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <66a723ee-c04c-a70c-42d3-03f6ffed9733@metafoo.de>
+Date:   Fri, 9 Apr 2021 08:53:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210407182147.77221-3-puranjay12@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26134/Thu Apr  8 13:08:38 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Apr 2021 08:44:39 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On 4/7/21 8:21 PM, Puranjay Mohan wrote:
+> TMP117 is a Digital temperature sensor with integrated Non-Volatile memory.
+> Add support for tmp117 driver in iio subsystem.
+>
+> Datasheet: https://www.ti.com/lit/gpn/tmp117
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-> On Thu, Apr 08, 2021 at 10:05:02PM -0700, Andrew Morton wrote:
-> > On Thu,  8 Apr 2021 15:06:05 +0200 Gioh Kim <gi-oh.kim@ionos.com> wrote:
-> > 
-> > > As the name shows, it checks if strings are equal in case insensitive
-> > > manner.
-> > 
-> > Peh.  Who would die if we simply made sysfs_streq() case-insensitive?
-> 
-> I doubt anyone, let's do that instead.
+Looks good to me, thanks.
 
-There's a risk that people will write scripts/config/etc on a 5.13+
-kernel and then find that they malfunction on earlier kernels...
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
 
