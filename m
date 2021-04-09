@@ -2,74 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25FC635A7B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FBD35A7B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234211AbhDIUNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:13:32 -0400
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:11681 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234159AbhDIUNb (ORCPT
+        id S234235AbhDIUNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233713AbhDIUNr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:13:31 -0400
-Date:   Fri, 09 Apr 2021 20:13:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1617999196;
-        bh=EqzbmR+DJhqb9z9zKSGWyGT6bMFjSUyRnTL5U0wQp9E=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=EvtnezQZaulaWFJFWk6fCh3jklQ8Gbz7xTns7P5j1XDm5MXZf2it1XFBvFprcUEAB
-         NyHRsa/486AHbrzLBlU9bHfYmNwG3w6VXl0qp2+BtzhWeNa8b/wqI5FyqHxNEbdCOo
-         0A+a5e3hElFrUbBoLFzjDn0fPg2qTOexB2pd5MS+SqiJx78ON2dRJhB9akW1SjwDuX
-         /OYHmfahUKE3wPcFm0p8brzN8vRZNFtZHOyVoL5tJlu5W/d6L5izNWkPBKP6T5/YAj
-         D/EKjHFBgHUNCkPOxnDetQadoC5L2lE5BeoI3Xm4HU4QMAv+reiUBatnJb0n10TH6X
-         EN6juZP+jb4YQ==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Bryan Brattlof <hello@bryanbrattlof.com>
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH] staging: rtl8723bs: remove redundant initialization
-Message-ID: <20210409201235.407671-1-hello@bryanbrattlof.com>
+        Fri, 9 Apr 2021 16:13:47 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B2FEC061762;
+        Fri,  9 Apr 2021 13:13:34 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so6859668otk.5;
+        Fri, 09 Apr 2021 13:13:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mTfXj4pXrHkIi5SAJ4XM2fuUbjeXrw0C0nZgi5UUh1c=;
+        b=LzH9cDYA/iEDcproxGHdzZVIFd6TlBiYHX3VUFVam/Wb9/6C0TXG7Z0hMICKeKmkDw
+         dMRs4BlKKTTUa19yg0022cKqFBJoSfJ8FgK4DUfL4KdD+uboZ5hcxPfIcSGMosGpDCea
+         0F7CG3iR+cAhJESNi2sN4Uc1dQ7OodUieAh9OCIzGuvff4miTvhoAHks4LOHPpvMs4MV
+         xaang1DoVGHiA0n3bjEptjdwYJ4JNo7hVln/qUdA8JHUCQOsX0+FYz9u0Vluo/m4HOyq
+         v0tuZ9Y+wFN+usvJdvM5q2V4rq7b6IrVs83bbHHv8YhDJUjTO1Vnmjac6wl9nUBVp2vo
+         mxEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mTfXj4pXrHkIi5SAJ4XM2fuUbjeXrw0C0nZgi5UUh1c=;
+        b=G+SiDdG3Ux/ICt+C0EAWI+Stg30nFGUaLm28S8O/m4Nnt5PlUQKd1/5cSsZjyFBtm2
+         zQpgP8Yy7sI0PAWQO5dKBK/+UUarB5/EM9eOzxYoSPWWH++S9ns6jGR5ZgpmIr+FPbvl
+         nIb07YXcOt6XPfKlM5+ZP61qpxZBiGrZgJFYe9MM+8O7JHu6OdkbubRFNcXZCgnNDKzM
+         jhxcQONxofctIgvZflo4bmaJPERvaFyPzgCmdCLq6qHeQhadgawSWdLwMKB92n2udjlr
+         OhXTQXifrzrLfn9+dFqOzJBTEHj2FJaz8SZz9RDwjQ1QVec51BV3eKjKGwspouGNkI8Z
+         lvoA==
+X-Gm-Message-State: AOAM531r/CkqPVgsYU/OGa4JZ3XfikxAcMKD2MvGM5+GGQnrP7y6/2Tx
+        5sqjvRvNUn37M7TEllE1CHY=
+X-Google-Smtp-Source: ABdhPJw6ggpL/lLgROJYOk0bt0HVGNE96pb/3jmiz256IJ0YzAI1uIIqbtAsPwQ8JNuDVKwP/z9W0Q==
+X-Received: by 2002:a9d:4b8d:: with SMTP id k13mr13371392otf.354.1617999214023;
+        Fri, 09 Apr 2021 13:13:34 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id o23sm823990otp.45.2021.04.09.13.13.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 09 Apr 2021 13:13:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 9 Apr 2021 13:13:32 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/18] 4.19.186-rc1 review
+Message-ID: <20210409201332.GD227412@roeck-us.net>
+References: <20210409095301.525783608@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409095301.525783608@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variable ret is being initialized as 0 and is never used until
-it's updated by sdio_register_driver()
+On Fri, Apr 09, 2021 at 11:53:28AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.186 release.
+> There are 18 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
+> Anything received after that time might be too late.
+> 
 
-This removes the redundant initialization of ret
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 423 pass: 423 fail: 0
 
-Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
----
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging=
-/rtl8723bs/os_dep/sdio_intf.c
-index 5de4c70aab6a..9fd926e1698f 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-@@ -503,7 +503,7 @@ static int rtw_sdio_resume(struct device *dev)
-=20
- static int __init rtw_drv_entry(void)
- {
--=09int ret =3D 0;
-+=09int ret;
-=20
- =09DBG_871X_LEVEL(_drv_always_, "module init start\n");
- =09dump_drv_version(RTW_DBGDUMP);
---=20
-2.27.0
-
-
+Guenter
