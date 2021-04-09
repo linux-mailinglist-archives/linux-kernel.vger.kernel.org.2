@@ -2,179 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 261893594EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451963594E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233294AbhDIFqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:46:14 -0400
-Received: from mga01.intel.com ([192.55.52.88]:33250 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229715AbhDIFqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:46:12 -0400
-IronPort-SDR: emEOgVbXuIrqFAZA339IF7r1mlPeBqHI6tzzym1pQORjAm7qosLWDrX65TyQhrdHyI7obAkxUk
- ZdhPRhMj5K0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="214113707"
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="214113707"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 22:45:59 -0700
-IronPort-SDR: tRgmdXAFflQUnaoxZHEUfJuiUJuPFhsYTuqDfoDD7MbPvxJU8SqWiE31BL82Rdo6ZqiwVhoUVu
- CsvOHh1w/KoA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="450059140"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga002.fm.intel.com with ESMTP; 08 Apr 2021 22:45:56 -0700
-Date:   Fri, 9 Apr 2021 13:41:18 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        "matthew.gerlach@linux.intel.com" <matthew.gerlach@linux.intel.com>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "russell.h.weight@linux.intel.com" <russell.h.weight@linux.intel.com>
-Subject: Re: [PATCH 2/3] fpga: dfl: Add DFL bus driver for Altera SPI Master
-Message-ID: <20210409054118.GA7986@yilunxu-OptiPlex-7050>
-References: <20210405235301.187542-1-matthew.gerlach@linux.intel.com>
- <20210405235301.187542-3-matthew.gerlach@linux.intel.com>
- <YGuvFYvJTMPPm2Jy@epycbox.lan>
- <alpine.DEB.2.22.394.2104060847030.208844@rhweight-WRK1>
- <YGyQdN9uS/niyFDP@epycbox.lan>
- <DM6PR11MB3819E0FC4F735C72746CE54785749@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20210408081152.GA2713@yilunxu-OptiPlex-7050>
- <DM6PR11MB3819317A55FD7798E778EC4D85749@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20210409013730.GB2713@yilunxu-OptiPlex-7050>
- <DM6PR11MB381912BD810637E0CDA1885F85739@DM6PR11MB3819.namprd11.prod.outlook.com>
+        id S233339AbhDIFnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:43:41 -0400
+Received: from mail-il1-f199.google.com ([209.85.166.199]:52348 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233320AbhDIFnd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 01:43:33 -0400
+Received: by mail-il1-f199.google.com with SMTP id s20so387023ilj.19
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:43:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=/ly/4Xm6+8ivV15n83ADfbzIBp0b85vMIRQe3MQRl7o=;
+        b=sC2tGNmWLgksXqUoSYHfIGnmXv6tk68G7wx2rludcHlBmOhHjIWB/RH+KNzHxuT9kY
+         RhPwtf/Q1soa/+ulPPB+wrBCCAaFy7Mu2nTLpXDnaurPSOKYXBZR3DNGO1xguBmLgHJv
+         2rC/rB7gqpGoxvLK/KPVTA6wTPJ6kG/E/brr0M8FPlTQnHcJFFNBaH1Bg1C8oaMcXz5i
+         nv4KpteC7LSQkhtJKWARSOh5PYrknslhHui2f4CAv8Pn8Oy4p1tHqj2MiRKJRHC05+PY
+         oGVbA7OrQ9q7SCwbiXhwmPO2of0/iZjg0oM+6pVgGaSHLjX9qdHqOIQp2lbLoft35FhG
+         quWw==
+X-Gm-Message-State: AOAM531e+zn7pYrYXBvo6613GxQBJq1jMvedY1KQjQDDDVOnHkPB873M
+        8YX5DaQV9sITwf4kB0D3F4sqK0ulpfiBWMzwq3nmbKpiAvee
+X-Google-Smtp-Source: ABdhPJywPyJtv7ooSj0CpwoceEcAzw9/ul9ZWOBL7sVOq2HE4n9irT1sbN79NB+q7VJH7zzMLSUaeL88rbZqr05QNTyU8feZPKPv
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB381912BD810637E0CDA1885F85739@DM6PR11MB3819.namprd11.prod.outlook.com>
+X-Received: by 2002:a05:6638:3884:: with SMTP id b4mr12621744jav.18.1617946999193;
+ Thu, 08 Apr 2021 22:43:19 -0700 (PDT)
+Date:   Thu, 08 Apr 2021 22:43:19 -0700
+In-Reply-To: <0000000000002c2f5b05b732ce65@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000027071505bf83a4f3@google.com>
+Subject: Re: [syzbot] memory leak in ext4_multi_mount_protect
+From:   syzbot <syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, juan.carlos@b2bworthyleads.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 12:02:47PM +0800, Wu, Hao wrote:
-> > > > > > > > > +
-> > > > > > > > > +static void dfl_spi_altera_remove(struct dfl_device *dfl_dev)
-> > > > > > > > > +{
-> > > > > > > > > +struct dfl_altera_spi *aspi = dev_get_drvdata(&dfl_dev->dev);
-> > > > > > > > > +
-> > > > > > > > > +platform_device_unregister(aspi->altr_spi);
-> > > > > > > > > +}
-> > > > > > > > > +
-> > > > > > > > > +#define FME_FEATURE_ID_MAX10_SPI        0xe
-> > > > > > > > > +
-> > > > > > > > > +static const struct dfl_device_id dfl_spi_altera_ids[] = {
-> > > > > > > > > +{ FME_ID, FME_FEATURE_ID_MAX10_SPI },
-> > > > > > > > > +{ }
-> > > > > > > > > +};
-> > > > > > > >
-> > > > > > > > Maybe you can extend the Altera SPI driver with this part?
-> > > > > > >
-> > > > > > > The file, drivers/spi/spi-altera.c, already has platform MODULE_
-> > related
-> > > > > > > code.  Wouldn't moving this code to that file produce conflicts?
-> > > > > >
-> > > > > > I've seen other drivers support multiple busses, so it should be
-> > > > > > possible, there might be nuances I'm missing in my brief look at this,
-> > > > > > though.
-> > > > > >
-> > > > > > I think one of them would be MODULE_DEVICE_TABLE(platform, ...)
-> > > > > > and the other one MODULE_DEVICE_TABLE(dfl, ...)
-> > > > > >
-> > > > > > See drivers/i2c/busses/i2c-designware-platdrv.c for an example (though
-> > > > > > they might be guarding against what you describe with CONFIG_OF vs
-> > > > > > CONFIG_ACPI)
-> > > > > >
-> > > > > > If that doesn't work we could split it up into
-> > > > > >
-> > > > > > altera-spi-plat.c and altera-spi-dfl.c and altera-spi-core.c
-> > > > > > or something of that sort?
-> > > > > >
-> > > > > > My point being, now that we have a bus, let's use it and develop drivers
-> > > > > > according to the Linux device model where possible :)
-> > > > >
-> > > > > Agree. This does make sense from my side too. DFL core provides the
-> > > > mechanism
-> > > > > to enumerate different IPs on FPGA, but each function driver needs to go
-> > to
-> > > > > related subsystem for review.  : )
-> > > > >
-> > > > > I understand that for FPGA case, it may have some additional logics for
-> > specific
-> > > > > purposes based on common altera spi master IP, then additional code for
-> > > >
-> > > > I'm wondering if the additional logics are extensions for common spi-altera.
-> > Like
-> > > > the
-> > > > SPI_CORE_PARAMETER register, it is not within the register space of
-> > > > spi-altera,
-> > > >
-> > > >
-> > > >   |   |      +-------------+
-> > > >   |DFL|------| +--------+  |
-> > > >   |BUS|      | |SPI CORE|  |
-> > > >   |   |      | |PARAM   |  |
-> > > >   |   |      | +--------+  |
-> > > >   |   |      |             |
-> > > >   |   |      | +--------+  |   +-------+
-> > > >              | |Indirect|  |   |spi    |
-> > > >              | |access  +--+---|altera |
-> > > >              | |master  |  |   +-------+
-> > > >              | +--------+  |
-> > > >              +-------------+
-> > > > > a specific product still can be put into altera-spi-xxxx.c or altera-spi-dfl-
-> > xxxx.c
-> > > >
-> > > > So is it proper we integrate this feature into spi-altera? Previously
-> > > > we have merged the dfl-n3000-nios, its spi part is very similar as
-> > > > this driver. The dfl-n3000-nios make the spi-altera as a sub device.
-> > > > Could we borrow the idea, or could we just integrate this driver in
-> > > > dfl-n3000-nios?
-> > >
-> > > Looks like those are enhancements of the IP. They can be applied even
-> >
-> > I don't think the extra registers are the enhancement of the IP. They
-> > are not part of the IP because they are not within the IP's register
-> > space. They are like some external way of describing the IP like
-> > Devicetree or ACPI.
-> 
-> Why adding new registers can't be consider as enhancement, those
-> changes serve the original IP and make it better, right? small mmio
-> footprint and parameter registers?
-> 
-> >
-> > > other buses are used, not only for DFL, like PCI device or platform device,
-> > > right? then why not put related code together with the original IP?
-> >
-> > The code of devicetree or ACPI parsing are integrated in the IP drivers,
-> > but for this case, it may not be proper for now, cause this style is not
-> > formally introduced by any standard. IP specific parameters description
-> > are not within the scope of DFL now.
-> 
-> Not sure if I get your point, but it's possible that we add some enhancements
-> to one IP then driver could be simplified and doesn't need devicetree any more.
-> For sure, it's IP specific thing, not the scope of DFL.
-> 
-> Then things become this: extension to IP to allow this IP to be used without
-> device tree, so that this IP can be used in DFL or PCI or other buses without
-> device tree?
+syzbot has found a reproducer for the following issue on:
 
-It's good to extend an IP, but it needs a published SPEC and stable
-register interfaces. For now, the spi-altera driver conforms to the
-"SPI Core" chapter of the following spec:
+HEAD commit:    4fa56ad0 Merge tag 'for-linus' of git://git.kernel.org/pub..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12390a96d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b8dbd3c72fdc7777
+dashboard link: https://syzkaller.appspot.com/bug?extid=d9e482e303930fa4f6ff
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=109aaa7ed00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e77d16d00000
 
-https://www.intel.com/content/www/us/en/programmable/documentation/sfo1400787952932.html
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
 
-There is no info about the core parameter register and this specific
-indirect access bus. That's why I don't see these additional parts as
-the enhancements to spi-altera. This DFL feature is like a wrapper for
-the spi-altera sub device.
+executing program
+BUG: memory leak
+unreferenced object 0xffff888111edd780 (size 32):
+  comm "syz-executor633", pid 8448, jiffies 4294951405 (age 17.620s)
+  hex dump (first 32 bytes):
+    10 64 d1 0f 81 88 ff ff 00 10 7e 12 81 88 ff ff  .d........~.....
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff81744606>] kmalloc include/linux/slab.h:554 [inline]
+    [<ffffffff81744606>] ext4_multi_mount_protect+0x4a6/0x5d0 fs/ext4/mmp.c:367
+    [<ffffffff81783614>] ext4_fill_super+0x56a4/0x5b20 fs/ext4/super.c:4769
+    [<ffffffff8154ebf3>] mount_bdev+0x223/0x260 fs/super.c:1367
+    [<ffffffff815aee7b>] legacy_get_tree+0x2b/0x90 fs/fs_context.c:592
+    [<ffffffff8154c7e8>] vfs_get_tree+0x28/0x100 fs/super.c:1497
+    [<ffffffff8158c8ee>] do_new_mount fs/namespace.c:2903 [inline]
+    [<ffffffff8158c8ee>] path_mount+0xc3e/0x1120 fs/namespace.c:3233
+    [<ffffffff8158d51e>] do_mount fs/namespace.c:3246 [inline]
+    [<ffffffff8158d51e>] __do_sys_mount fs/namespace.c:3454 [inline]
+    [<ffffffff8158d51e>] __se_sys_mount fs/namespace.c:3431 [inline]
+    [<ffffffff8158d51e>] __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3431
+    [<ffffffff842ded2d>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Thanks
-Yilun
+
