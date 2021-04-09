@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A762735952A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:09:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FE9359530
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:11:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbhDIGJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:09:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230219AbhDIGJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:09:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B8C76113A;
-        Fri,  9 Apr 2021 06:09:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617948541;
-        bh=n/aP/TcQ/267gm09eQYkvPethiroHue0xczvg+6G3Zc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rO5ecE1g04K9xDFy5L/LGdHimUdczHwrglWJODNv17qHP7X9suZDf3/uKV1/+gmW5
-         xib9EmFsKorhPLw3Sxml7u2t5pHz1l2o8bciR3b+iFXHW6BQV6vH3IchB9a0RUj1UA
-         azcAJI5rVqaIouGFZhqEJaWqWg2G26Yx4rBR1LYo=
-Date:   Fri, 9 Apr 2021 08:08:58 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hang Lu <hangl@codeaurora.org>
-Cc:     tkjos@google.com, tkjos@android.com, maco@android.com,
-        arve@android.com, joel@joelfernandes.org, christian@brauner.io,
-        hridya@google.com, surenb@google.com, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] binder: tell userspace to dump current backtrace when
- detected oneway spamming
-Message-ID: <YG/veiWKkaJtEZkq@kroah.com>
-References: <CAHRSSEyTDZTWMrWe+H4awCOBrf+AZd-TEqi3gZONZxYYQSWB5Q@mail.gmail.com>
- <1617939657-14044-1-git-send-email-hangl@codeaurora.org>
+        id S233273AbhDIGLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:11:46 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:16427 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229715AbhDIGLp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 02:11:45 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FGnlq0VpZzlWvj;
+        Fri,  9 Apr 2021 14:09:43 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.149) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 9 Apr 2021 14:11:21 +0800
+From:   Ye Weihua <yeweihua4@huawei.com>
+To:     <l.stelmach@samsung.com>, <mpm@selenic.com>,
+        <herbert@gondor.apana.org.au>, <krzk@kernel.org>
+CC:     <linux-samsung-soc@vger.kernel.org>,
+        <linux-crypto@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <yangjihong1@huawei.com>,
+        <zhangjinhao2@huawei.com>
+Subject: [PATCH -next] hwrng: exynos - fix PM reference leak in exynos_trng_probe()
+Date:   Fri, 9 Apr 2021 14:11:25 +0800
+Message-ID: <20210409061125.214255-1-yeweihua4@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617939657-14044-1-git-send-email-hangl@codeaurora.org>
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.149]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 11:40:57AM +0800, Hang Lu wrote:
-> When async binder buffer got exhausted, some normal oneway transactions
-> will also be discarded and may cause system or application failures. By
-> that time, the binder debug information we dump may not be relevant to
-> the root cause. And this issue is difficult to debug if without the
-> backtrace of the thread sending spam.
-> 
-> This change will send BR_ONEWAY_SPAM_SUSPECT to userspace when oneway
-> spamming is detected, request to dump current backtrace. Oneway spamming
-> will be reported only once when exceeding the threshold (target process
-> dips below 80% of its oneway space, and current process is responsible for
-> either more than 50 transactions, or more than 50% of the oneway space).
-> And the detection will restart when the async buffer has returned to a
-> healthy state.
-> 
-> Signed-off-by: Hang Lu <hangl@codeaurora.org>
-> ---
-> v4: add missing BR_FROZEN_REPLY in binder_return_strings and change the size of binder_stats.br array
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here.
+Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
-Should the BR_FROZEN_REPLY string be a separate patch as it's a fix for
-the "binder frozen feature", not this new feature, right?  Or does this
-patch require that change and the frozen patch did not?
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ye Weihua <yeweihua4@huawei.com>
+---
+ drivers/char/hw_random/exynos-trng.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-thanks,
+diff --git a/drivers/char/hw_random/exynos-trng.c b/drivers/char/hw_random/exynos-trng.c
+index 8e1fe3f8dd2d..666246bc8cca 100644
+--- a/drivers/char/hw_random/exynos-trng.c
++++ b/drivers/char/hw_random/exynos-trng.c
+@@ -132,7 +132,7 @@ static int exynos_trng_probe(struct platform_device *pdev)
+ 		return PTR_ERR(trng->mem);
+ 
+ 	pm_runtime_enable(&pdev->dev);
+-	ret = pm_runtime_get_sync(&pdev->dev);
++	ret = pm_runtime_resume_and_get(&pdev->dev);
+ 	if (ret < 0) {
+ 		dev_err(&pdev->dev, "Could not get runtime PM.\n");
+ 		goto err_pm_get;
+-- 
+2.17.1
 
-greg k-h
