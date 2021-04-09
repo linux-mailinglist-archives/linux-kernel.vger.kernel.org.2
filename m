@@ -2,116 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A590359411
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6296359416
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbhDIEjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 00:39:49 -0400
-Received: from smtprelay0190.hostedemail.com ([216.40.44.190]:60014 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229846AbhDIEjr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 00:39:47 -0400
-Received: from omf14.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id A1F3A18221879;
-        Fri,  9 Apr 2021 04:39:34 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf14.hostedemail.com (Postfix) with ESMTPA id 3C37B268E45;
-        Fri,  9 Apr 2021 04:39:33 +0000 (UTC)
-Message-ID: <b66def9aa9bd7a8984dc00d277d2dfb118f6d477.camel@perches.com>
-Subject: Re: [PATCH v5 2/6] w1: ds2438: fixed if brackets coding style issue
-From:   Joe Perches <joe@perches.com>
-To:     Luiz Sampaio <sampaio.ime@gmail.com>, zbr@ioremap.net
-Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Date:   Thu, 08 Apr 2021 21:39:31 -0700
-In-Reply-To: <20210409030942.441830-3-sampaio.ime@gmail.com>
-References: <20210405105009.420924-1-sampaio.ime@gmail.com>
-         <20210409030942.441830-1-sampaio.ime@gmail.com>
-         <20210409030942.441830-3-sampaio.ime@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 3C37B268E45
-X-Spam-Status: No, score=1.60
-X-Stat-Signature: nud8sg9bh3879zaw4tr8y6xixwbmfho7
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/uwvjTT8jKiCt33j8es/sxZ2crVzP6XXQ=
-X-HE-Tag: 1617943173-62169
+        id S233210AbhDIEkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 00:40:24 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:50088 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231503AbhDIEkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 00:40:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1617943209; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=AfxvbqMHx3+3QG7Ar/bHDpYEdDPHiToorKK88hjnsDI=; b=btfLu9BusbHiWVDlSL8Fz09zIXCl7bk9HE8nnNn2snuU24iG9TP3aZ1Csvne6tLjIu7M+EJT
+ JZpAQ7GiE/CwAhPZxAogfqI3j8bSJMvwNshHkYUJWyO+fSc6R+QAYdH+9O4RVXQSWtWb7IzD
+ Yjk/QbfmEOk5tJymzUA2Ju+kfJQ=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 606fdaa82cc44d3aea05a3f3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Apr 2021 04:40:08
+ GMT
+Sender: deesin=qti.qualcomm.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 72FABC43462; Fri,  9 Apr 2021 04:40:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6D089C433CA;
+        Fri,  9 Apr 2021 04:40:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6D089C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=qti.qualcomm.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@qti.qualcomm.com
+From:   Deepak Kumar Singh <deesin@qti.qualcomm.com>
+To:     bjorn.andersson@linaro.org, clew@codeaurora.org,
+        sibis@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        Deepak Kumar Singh <deesin@qti.qualcomm.com>
+Subject: [PATCH V2 0/2] soc: qcom: aoss: Expose send for generic usecase
+Date:   Fri,  9 Apr 2021 10:09:46 +0530
+Message-Id: <1617943188-23278-1-git-send-email-deesin@qti.qualcomm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-04-09 at 00:09 -0300, Luiz Sampaio wrote:
-> Since there is only one statement inside the if clause, no brackets are
-> required.
-> 
-> Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
-> ---
->  drivers/w1/slaves/w1_ds2438.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
-> index 148921fb9702..56e53a748059 100644
-> --- a/drivers/w1/slaves/w1_ds2438.c
-> +++ b/drivers/w1/slaves/w1_ds2438.c
-> @@ -287,9 +287,9 @@ static ssize_t iad_read(struct file *filp, struct kobject *kobj,
->  	if (!buf)
->  		return -EINVAL;
->  
-> 
-> -	if (w1_ds2438_get_current(sl, &voltage) == 0) {
-> +	if (w1_ds2438_get_current(sl, &voltage) == 0)
->  		ret = snprintf(buf, count, "%i\n", voltage);
-> -	} else
-> +	else
->  		ret = -EIO;
->  
-> 
->  	return ret;
-> @@ -338,9 +338,9 @@ static ssize_t temperature_read(struct file *filp, struct kobject *kobj,
->  	if (!buf)
->  		return -EINVAL;
->  
-> 
-> -	if (w1_ds2438_get_temperature(sl, &temp) == 0) {
-> +	if (w1_ds2438_get_temperature(sl, &temp) == 0)
->  		ret = snprintf(buf, count, "%i\n", temp);
-> -	} else
-> +	else
->  		ret = -EIO;
->  
-> 
->  	return ret;
-> @@ -359,9 +359,9 @@ static ssize_t vad_read(struct file *filp, struct kobject *kobj,
->  	if (!buf)
->  		return -EINVAL;
->  
-> 
-> -	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VAD, &voltage) == 0) {
-> +	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VAD, &voltage) == 0)
->  		ret = snprintf(buf, count, "%u\n", voltage);
-> -	} else
-> +	else
->  		ret = -EIO;
->  
-> 
->  	return ret;
-> @@ -380,9 +380,9 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
->  	if (!buf)
->  		return -EINVAL;
->  
-> 
-> -	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VDD, &voltage) == 0) {
-> +	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VDD, &voltage) == 0)
->  		ret = snprintf(buf, count, "%u\n", voltage);
-> -	} else
-> +	else
->  		ret = -EIO;
->  
-> 
->  	return ret;
+Change from V1
+Addressesed all review comments in previous set.
 
+Deepak Kumar Singh (2):
+  soc: qcom: aoss: Expose send for generic usecase
+  soc: qcom: aoss: Add debugfs entry
+
+ drivers/soc/qcom/qcom_aoss.c       | 91 +++++++++++++++++++++++++++++++++++++-
+ include/linux/soc/qcom/qcom_aoss.h | 33 ++++++++++++++
+ 2 files changed, 123 insertions(+), 1 deletion(-)
+ create mode 100644 include/linux/soc/qcom/qcom_aoss.h
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
