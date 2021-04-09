@@ -2,270 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F26C35A246
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C4C135A24A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233799AbhDIPth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:49:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDIPtg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:49:36 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC6EC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:49:22 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so6129283oto.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:49:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EqS4x/8nPde7h4Zp3FMi4ziuMpkogzvhsdKDcJrUmtY=;
-        b=bZqdRC6HSjhMn/ei4MpP2ceGQc6M8X6Sp06NqZZxtxQ3Cf0kH7GHtoIuEx89ElC2bQ
-         zuaFeh0Jv0GgewWU2c2w61GCdBjywtymeTqj+l8CcWzt+RIIH5AKttPIw+6LOU1ihw7v
-         D9l1/Mo2jjKWZg0zdVkC87BCjxD6f3Qrr9QsK6S2PhabyjtKu+69tivwF3m948Q2lzEX
-         4vcpRRgv7qE9SzSQaTUCyeN4VkhCHzKY1KIkodGdHwPP2dPXtXq4u/Mn314jGvJGIqvB
-         VVlHPfDbvzFrOUAMyo07Mxr9k2m9Af/qR9/M25wuyi6tsCx+OlXfIGzlnLuNk8IhWjgW
-         Llug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EqS4x/8nPde7h4Zp3FMi4ziuMpkogzvhsdKDcJrUmtY=;
-        b=hQsKFAQ3ONJA9IO6VyTKqLc1jYAhbnR6iQ/8xUF6eXwFiPws4Ob0TKw7aKhLnjs+CD
-         C1l0TdjZM4lvs6d5JF56yZZ0/Kz+lU/nZbmKkIaBT722IqZXU57CIwHGmmwxnhetEkeg
-         I4Jkxfq0uwWSXsA85ZkAdo7yhDJTgVH9vV6dyAfLbmfRAIKHRdh8OMKpJq2zJBZD1PKl
-         jiGWR+/GnqooTmmKaGqTR124kT/hdSLkTomDTsGPzz2jjTCO6akNWuPPvk5/wVoYnsCP
-         vEmnYodfXnrraSxx6B9X7z4LYyftb+fov7IJO7IOC77uM+Yb4Z43wP/oC25dzRZEEjym
-         TQEA==
-X-Gm-Message-State: AOAM53047zDIJ57omIwJ/0n2h2VGYgmTLQck0VgA0nsJhljKkQ/XdkWI
-        prqH0uVofc+kdnQ+WDybCY3ozg==
-X-Google-Smtp-Source: ABdhPJxG2ny1GyN6RJALA65wkWapPDKT1+U/1TgktO5O3yu93NCyquEeEs+Cfdjtrr+WBUJ5NrgrIA==
-X-Received: by 2002:a05:6830:802:: with SMTP id r2mr12260255ots.110.1617983361678;
-        Fri, 09 Apr 2021 08:49:21 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 3sm668111otw.58.2021.04.09.08.49.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 08:49:21 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 10:49:19 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-rtc@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [PATCH V2 3/4] dt-bindings: mfd: Convert pm8xxx bindings to yaml
-Message-ID: <20210409154919.GV904837@yoga>
-References: <1617976766-7852-1-git-send-email-skakit@codeaurora.org>
- <1617976766-7852-4-git-send-email-skakit@codeaurora.org>
+        id S233440AbhDIPu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:50:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43648 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231402AbhDIPu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 11:50:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72AD761042;
+        Fri,  9 Apr 2021 15:50:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617983413;
+        bh=F6dOTV7avDP3ofhEidxw/zMb+uU/iXMccst0qahQ63I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Woj62dkcUIP3wY+pIKcBe1uBGMLn0sIwgolXQGxIUbaGctU2xtQ5PwZTIlJb/BhxZ
+         Xx/z5cVb8CMDt4E4PZNBKeGefVfpB4VETWkD9aAq6JBlS26ZIwYYjWvcajHNgIFuf7
+         y7owg/9f+Pr2ee/Wigw//NRldqPwu7OdVZg/YgZcuW350p7iAtzYbEL2SDLscNuOzm
+         JKgUBjG3dCSVA+8PkDhGkyaBHak8dgEX2hlu9dhjhxro6Y0j/sT/PXav/MXRtVPQ1W
+         TAg4n/cPUu5K/MNjznFD+2RbS6r1LJ+JR7rFZ4rEzZObYZR39f3V1koABucCz6v/2I
+         0AwX6kZzD2t0A==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lUtOc-0008Gq-3j; Fri, 09 Apr 2021 17:50:10 +0200
+Date:   Fri, 9 Apr 2021 17:50:10 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Pho Tran <photranvan0712@gmail.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Hung.Nguyen@silabs.com" <Hung.Nguyen@silabs.com>,
+        "Tung.Pham@silabs.com" <Tung.Pham@silabs.com>,
+        Pho Tran <pho.tran@silabs.com>
+Subject: Re: [PATCH v8] USB: serial: cp210x: Add support for GPIOs on CP2108
+Message-ID: <YHB3sma1onbZboGv@hovoldconsulting.com>
+References: <20210406101850.3111-1-photranvan0712@gmail.com>
+ <CAHp75Vf8jwhLkaHL2D6FvRJpmbBqpTzePpNqVAFVt8EhSCgxnw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1617976766-7852-4-git-send-email-skakit@codeaurora.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Vf8jwhLkaHL2D6FvRJpmbBqpTzePpNqVAFVt8EhSCgxnw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09 Apr 08:59 CDT 2021, satya priya wrote:
+On Wed, Apr 07, 2021 at 01:25:00AM +0300, Andy Shevchenko wrote:
+> On Tuesday, April 6, 2021, Pho Tran <photranvan0712@gmail.com> wrote:
 
-> Convert pm8xxx bindings from .txt to .yaml format. Also,
-> split this binding into two: parent binding(qcom-pm8xxx.yaml)
-> and child node RTC binding(qcom-pm8xxx-rtc.yaml).
-> 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
-> Changes in V2:
->  - As per Bjorn's comments, I've split this into two, one parent binding
->    and one child node rtc binding.
->  - Fixed bot errors and changed maintainer name.
-> 
->  .../devicetree/bindings/mfd/qcom-pm8xxx.txt        | 100 ---------------------
->  .../devicetree/bindings/mfd/qcom-pm8xxx.yaml       |  54 +++++++++++
->  2 files changed, 54 insertions(+), 100 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt
->  create mode 100644 Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt
-> deleted file mode 100644
-> index 07f4925..0000000
-> --- a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt
-> +++ /dev/null
-> @@ -1,100 +0,0 @@
-> -Qualcomm PM8xxx PMIC multi-function devices
-> -
-> -The PM8xxx family of Power Management ICs are used to provide regulated
-> -voltages and other various functionality to Qualcomm SoCs.
-> -
-> -= PROPERTIES
-> -
-> -- compatible:
-> -	Usage: required
-> -	Value type: <string>
-> -	Definition: must be one of:
-> -		    "qcom,pm8058"
-> -		    "qcom,pm8821"
-> -		    "qcom,pm8921"
-> -
-> -- #address-cells:
-> -	Usage: required
-> -	Value type: <u32>
-> -	Definition: must be 1
-> -
-> -- #size-cells:
-> -	Usage: required
-> -	Value type: <u32>
-> -	Definition: must be 0
-> -
-> -- interrupts:
-> -	Usage: required
-> -	Value type: <prop-encoded-array>
-> -	Definition: specifies the interrupt that indicates a subdevice
-> -		    has generated an interrupt (summary interrupt). The
-> -		    format of the specifier is defined by the binding document
-> -		    describing the node's interrupt parent.
-> -
-> -- #interrupt-cells:
-> -	Usage: required
-> -	Value type : <u32>
-> -	Definition: must be 2. Specifies the number of cells needed to encode
-> -		    an interrupt source. The 1st cell contains the interrupt
-> -		    number. The 2nd cell is the trigger type and level flags
-> -		    encoded as follows:
-> -
-> -			1 = low-to-high edge triggered
-> -			2 = high-to-low edge triggered
-> -			4 = active high level-sensitive
-> -			8 = active low level-sensitive
-> -
-> -- interrupt-controller:
-> -	Usage: required
-> -	Value type: <empty>
-> -	Definition: identifies this node as an interrupt controller
-> -
-> -= SUBCOMPONENTS
-> -
-> -The PMIC contains multiple independent functions, each described in a subnode.
-> -The below bindings specify the set of valid subnodes.
-> -
-> -== Real-Time Clock
-> -
-> -- compatible:
-> -	Usage: required
-> -	Value type: <string>
-> -	Definition: must be one of:
-> -		    "qcom,pm8058-rtc"
-> -		    "qcom,pm8921-rtc"
-> -		    "qcom,pm8941-rtc"
-> -		    "qcom,pm8018-rtc"
-> -		    "qcom,pmk8350-rtc"
-> -
-> -- reg:
-> -	Usage: required
-> -	Value type: <prop-encoded-array>
-> -	Definition: single entry specifying the base address of the RTC registers
-> -
-> -- interrupts:
-> -	Usage: required
-> -	Value type: <prop-encoded-array>
-> -	Definition: single entry specifying the RTC's alarm interrupt
-> -
-> -- allow-set-time:
-> -	Usage: optional
-> -	Value type: <empty>
-> -	Definition: indicates that the setting of RTC time is allowed by
-> -		    the host CPU
-> -
-> -= EXAMPLE
-> -
-> -	pmicintc: pmic@0 {
-> -		compatible = "qcom,pm8921";
-> -		interrupts = <104 8>;
-> -		#interrupt-cells = <2>;
-> -		interrupt-controller;
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -
-> -		rtc@11d {
-> -			compatible = "qcom,pm8921-rtc";
-> -			reg = <0x11d>;
-> -			interrupts = <0x27 0>;
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-> new file mode 100644
-> index 0000000..9065ec5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-> @@ -0,0 +1,54 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/mfd/qcom-pm8xxx.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm PM8xxx PMIC multi-function devices
-> +
-> +maintainers:
-> +  - Satya Priya <skakit@codeaurora.org>
-> +
-> +description: |
-> +  The PM8xxx family of Power Management ICs are used to provide regulated
-> +  voltages and other various functionality to Qualcomm SoCs.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,pm8058
-> +      - qcom,pm8821
-> +      - qcom,pm8921
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  '#interrupt-cells':
-> +    const: 2
-> +
-> +  interrupt-controller: true
-> +
-> +patternProperties:
-> +  "rtc@[0-9a-f]+$":
-> +    type: object
-> +    $ref: "../rtc/qcom-pm8xxx-rtc.yaml"
+> > Because CP2108 has 16 GPIO pins, the parameter passed by cp210x functions
+> > will be different from other CP210x devices. So need to check part number
+> > of the device to use correct data format  before sending commands to
+> > devices.
+> >
+> > Like CP2104, CP2108 have GPIO pins with configurable options. Therefore,
+> > should be mask all pins which are not in GPIO mode in cp2108_gpio_init()
+> > function.
 
-This doesn't exist, so patch 3 and 4 should come in opposite order...
+> This I didn’t get. If you are talking about usage pin as GPIO, perhaps you
+> should use valid_mask in GPIO chip structure. Otherwise you probably need
+> to implement a proper pinmux ops for this (and register a pin controller
+> which the code below also suggests).
 
-Apart from tat I think this looks good.
+Neither is needed here.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Using a valid mask is a new feature and isn't a prerequisite for adding
+support for the GPIOs on cp2108. I've been meaning to implement that
+since we started using it for ftdi_sio, and I'll be posting that
+shortly.
 
-Regards,
-Bjorn
+The cp2108 pin configuration can't be changed at runtime, but even if it
+was it's not clear what the pinctrl subsystem would buy us for a
+hotpluggable USB device currently (even if devicetree could be used for
+static topologies).
 
-> +
-> +required:
-> +  - compatible
-> +  - '#address-cells'
-> +  - '#size-cells'
-> +  - interrupts
-> +  - '#interrupt-cells'
-> +  - interrupt-controller
-> +
-> +additionalProperties: false
-> +...
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+I'll look at the rest of this thread and the latest version of this
+patch next week.
+
+Johan
