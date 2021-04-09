@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A251359B50
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A16AF359B4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233410AbhDIKJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:09:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45430 "EHLO mail.kernel.org"
+        id S233032AbhDIKIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:08:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233886AbhDIKA7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:00:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 03EF0611ED;
-        Fri,  9 Apr 2021 09:59:28 +0000 (UTC)
+        id S233883AbhDIKBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:01:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 843D96100B;
+        Fri,  9 Apr 2021 09:59:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962369;
-        bh=WoSd683097kphUU08w3/YRFgA6mE8zXqKnxl9kg38lY=;
+        s=korg; t=1617962372;
+        bh=468E9xolqwqaMx889QTebTC2v0UfCzdw38F83fOG2kE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wyYbOa7kQwYRZna9x1WTp0Z3Dd5/ze458Y1dSTFI4OgVgelZplh+oAcbs6QbQrozQ
-         2a6w2ISCP7WKpURUqtDs0MjCfSB8fmhUFY0z664sYKHS4ZeaiApZd2O2jsdybJMTkX
-         M1diN/Jmh1Z8ijEaclJvz5gHRa/OIHsMo+ZVKaiY=
+        b=gp5nJMOy92CaCRVer8DnBvruS6TDqfT6yl+xK8eBnWQOo7/JeQ+BeQ+WBXCsBvvoK
+         EBTKGQltFyMyEZJZqa/flb3DI42AJMKCDQpFVKDx0pyXsFz55YyhNhIEEu0ArxqABU
+         89KeKaNzz0YCYI3Z9bp9y/nvyGfmcvQk4rtJJa0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 30/41] io_uring: fix timeout cancel return code
-Date:   Fri,  9 Apr 2021 11:53:52 +0200
-Message-Id: <20210409095305.782146769@linuxfoundation.org>
+        stable@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 31/41] math: Export mul_u64_u64_div_u64
+Date:   Fri,  9 Apr 2021 11:53:53 +0200
+Message-Id: <20210409095305.811484624@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
 References: <20210409095304.818847860@linuxfoundation.org>
@@ -39,61 +39,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: David S. Miller <davem@davemloft.net>
 
-[ Upstream commit 1ee4160c73b2102a52bc97a4128a89c34821414f ]
+[ Upstream commit bf45947864764548697e7515fe693e10f173f312 ]
 
-When we cancel a timeout we should emit a sensible return code, like
--ECANCELED but not 0, otherwise it may trick users.
-
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Link: https://lore.kernel.org/r/7b0ad1065e3bd1994722702bd0ba9e7bc9b0683b.1616696997.git.asml.silence@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: f51d7bf1dbe5 ("ptp_qoriq: fix overflow in ptp_qoriq_adjfine() u64 calcalation")
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ lib/math/div64.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 4ccf99cb8cdc..0de27e75460d 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1489,7 +1489,7 @@ static void io_queue_async_work(struct io_kiocb *req)
- 		io_queue_linked_timeout(link);
+diff --git a/lib/math/div64.c b/lib/math/div64.c
+index 3952a07130d8..edd1090c9edb 100644
+--- a/lib/math/div64.c
++++ b/lib/math/div64.c
+@@ -230,4 +230,5 @@ u64 mul_u64_u64_div_u64(u64 a, u64 b, u64 c)
+ 
+ 	return res + div64_u64(a * b, c);
  }
- 
--static void io_kill_timeout(struct io_kiocb *req)
-+static void io_kill_timeout(struct io_kiocb *req, int status)
- {
- 	struct io_timeout_data *io = req->async_data;
- 	int ret;
-@@ -1499,7 +1499,7 @@ static void io_kill_timeout(struct io_kiocb *req)
- 		atomic_set(&req->ctx->cq_timeouts,
- 			atomic_read(&req->ctx->cq_timeouts) + 1);
- 		list_del_init(&req->timeout.list);
--		io_cqring_fill_event(req, 0);
-+		io_cqring_fill_event(req, status);
- 		io_put_req_deferred(req, 1);
- 	}
- }
-@@ -1516,7 +1516,7 @@ static bool io_kill_timeouts(struct io_ring_ctx *ctx, struct task_struct *tsk,
- 	spin_lock_irq(&ctx->completion_lock);
- 	list_for_each_entry_safe(req, tmp, &ctx->timeout_list, timeout.list) {
- 		if (io_match_task(req, tsk, files)) {
--			io_kill_timeout(req);
-+			io_kill_timeout(req, -ECANCELED);
- 			canceled++;
- 		}
- 	}
-@@ -1568,7 +1568,7 @@ static void io_flush_timeouts(struct io_ring_ctx *ctx)
- 			break;
- 
- 		list_del_init(&req->timeout.list);
--		io_kill_timeout(req);
-+		io_kill_timeout(req, 0);
- 	} while (!list_empty(&ctx->timeout_list));
- 
- 	ctx->cq_last_tm_flush = seq;
++EXPORT_SYMBOL(mul_u64_u64_div_u64);
+ #endif
 -- 
 2.30.2
 
