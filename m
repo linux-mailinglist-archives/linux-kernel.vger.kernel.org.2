@@ -2,88 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFF93597F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E73D3597F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbhDIIdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:33:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbhDIIds (ORCPT
+        id S232467AbhDIIeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:34:09 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5125 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232328AbhDIIeI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:33:48 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07562C061760;
-        Fri,  9 Apr 2021 01:33:36 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id g10so2385856plt.8;
-        Fri, 09 Apr 2021 01:33:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lhOBDBWPuZntGK3npBwjF9tJqRpBOuEpoer/aWNxmFg=;
-        b=Y09a2vq5mi2ZQYJlThD9RajGH/diYLOUtR9/xQX9U6SUCPqK/wxCnztrk1v1pVZc1D
-         hrywet7txJlRvP6lniJr6q0VCRHENY9oeNCzfGAq0RVJ1PCUsEDBCGOHmeJ4gCDjI11h
-         eXfZ5l7hBvmobuurXnmZjqRrz/ZF+JIgqYTlOWas12GjeWZ7hvM8eGGsHp4IMjkrHAFC
-         IAOYYBt9lZU+jPIe/Jvpo7voYvaOhCFE+OJjf9l7iryfgU2YhRKsA+IF56ObAE39MDxG
-         je+9ygXL7x7/8TxO4V/t292rOp9fcb+BIf/q+jpWftS6vD+R+hUWhh87hoBH2BXgdspD
-         y87g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lhOBDBWPuZntGK3npBwjF9tJqRpBOuEpoer/aWNxmFg=;
-        b=V0jZyZE+kQ7Bec6MVip/Su5NX/tZD9MCsR/R+zfLHj8lSSV1y55BYXkOSb8kN7Gnu8
-         El8syMBtpfk28+aQw+fbT53jdiDBuK0XEvEVxhSliZQGvxqpEPKDnY5tnvryTQnFXgjc
-         sbjPR2EogtmIf1/5tgd1R5js0MU9IvxfeLY14mXHDeFD7uUV+UumNI+OdW+xWpNumCII
-         IW6x6VNRG583E685KB4wu8aWjNXkR8/CX9og7uFRmyuB6padnNFD47cpjHbGcghiMDdT
-         KI0om5Wsp5ufSBP2Azy65Con/EEiqKqIOEiFN0Wsyn0xfd5XqLA1oFgExZm71eDgb86E
-         368g==
-X-Gm-Message-State: AOAM53096G4l6II+HtYZU87Nb2zw5dtzxHgsktF5lc8Yiy5GXx3AIWBZ
-        VlCsRoFbc/LGWDrkG+klxgHqZb4keKqV10zODkI=
-X-Google-Smtp-Source: ABdhPJwuS4ZAMtJki3YgrfFzzHATmAabvAjDG3npjiI+4IePakEZxXK4gGz2F4wPCcIpaZW74KcYH1nFgGDypD8zgNc=
-X-Received: by 2002:a17:903:22c7:b029:e6:faf5:eb3a with SMTP id
- y7-20020a17090322c7b02900e6faf5eb3amr11970063plg.23.1617957215608; Fri, 09
- Apr 2021 01:33:35 -0700 (PDT)
+        Fri, 9 Apr 2021 04:34:08 -0400
+Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FGrvq2VFYzYV47;
+        Fri,  9 Apr 2021 16:31:51 +0800 (CST)
+Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
+ DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 9 Apr 2021 16:33:53 +0800
+Received: from [10.174.187.161] (10.174.187.161) by
+ dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Fri, 9 Apr 2021 16:33:52 +0800
+Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
+ Lake Servers
+To:     "Xu, Like" <like.xu@intel.com>
+References: <20210329054137.120994-2-like.xu@linux.intel.com>
+ <606BD46F.7050903@huawei.com>
+ <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
+CC:     <andi@firstfloor.org>, "Fangyi (Eric)" <eric.fangyi@huawei.com>,
+        Xiexiangyou <xiexiangyou@huawei.com>,
+        <kan.liang@linux.intel.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <wei.w.wang@intel.com>,
+        <x86@kernel.org>
+From:   "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
+        <liuxiangdong5@huawei.com>
+Message-ID: <60701165.3060000@huawei.com>
+Date:   Fri, 9 Apr 2021 16:33:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 MIME-Version: 1.0
-References: <CAJht_ENNvG=VrD_Z4w+G=4_TCD0Rv--CQAkFUrHWTh4Cz_NT2Q@mail.gmail.com>
- <20210409073046.GI3697@techsingularity.net>
-In-Reply-To: <20210409073046.GI3697@techsingularity.net>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Fri, 9 Apr 2021 01:33:24 -0700
-Message-ID: <CAJht_EPXS3wVoNyaD6edqLPKvDTG2vg4qxiGuWBgWpFsNhB-4g@mail.gmail.com>
-Subject: Re: Problem in pfmemalloc skb handling in net/core/dev.c
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Mel Gorman <mgorman@suse.de>, jslaby@suse.cz,
-        Neil Brown <neilb@suse.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mike Christie <michaelc@cs.wisc.edu>,
-        Eric B Munson <emunson@mgebm.net>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.187.161]
+X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
+ dggpeml500013.china.huawei.com (7.185.36.41)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 12:30 AM Mel Gorman <mgorman@techsingularity.net> wrote:
+Do you have any comments or ideas about it ?
+
+https://lore.kernel.org/kvm/606E5EF6.2060402@huawei.com/
+
+
+On 2021/4/6 13:14, Xu, Like wrote:
+> Hi Xiangdong,
 >
-> Under what circumstances do you expect sk_memalloc_socks() to be false
-> and skb_pfmemalloc() to be true that would cause a problem?
+> On 2021/4/6 11:24, Liuxiangdong (Aven, Cloud Infrastructure Service 
+> Product Dept.) wrote:
+>> Hi，like.
+>> Some questions about this new pebs patches set：
+>> https://lore.kernel.org/kvm/20210329054137.120994-2-like.xu@linux.intel.com/ 
+>>
+>>
+>> The new hardware facility supporting guest PEBS is only available
+>> on Intel Ice Lake Server platforms for now.
+>
+> Yes, we have documented this "EPT-friendly PEBS" capability in the SDM
+> 18.3.10.1 Processor Event Based Sampling (PEBS) Facility
+>
+> And again, this patch set doesn't officially support guest PEBS on the 
+> Skylake.
+>
+>>
+>>
+>> AFAIK， Icelake supports adaptive PEBS and extended PEBS which 
+>> Skylake doesn't.
+>> But we can still use IA32_PEBS_ENABLE MSR to indicate general-purpose 
+>> counter in Skylake.
+>
+> For Skylake, only the PMC0-PMC3 are valid for PEBS and you may
+> mask the other unsupported bits in the pmu->pebs_enable_mask.
+>
+>> Is there anything else that only Icelake supports in this patches set?
+>
+> The PDIR counter on the Ice Lake is the fixed counter 0
+> while the PDIR counter on the Sky Lake is the gp counter 1.
+>
+> You may also expose x86_pmu.pebs_vmx for Skylake in the 1st patch.
+>
+>>
+>>
+>> Besides, we have tried this patches set in Icelake.  We can use 
+>> pebs(eg: "perf record -e cycles:pp")
+>> when guest is kernel-5.11, but can't when kernel-4.18.  Is there a 
+>> minimum guest kernel version requirement?
+>
+> The Ice Lake CPU model has been added since v5.4.
+>
+> You may double check whether the stable tree(s) code has
+> INTEL_FAM6_ICELAKE in the arch/x86/include/asm/intel-family.h.
+>
+>>
+>>
+>> Thanks,
+>> Xiangdong Liu
+>
 
-For example, if at the time the skb is allocated,
-"sk_memalloc_socks()" was true, then the skb might be allocated as a
-pfmemalloc skb. However, if after this skb is allocated and before
-this skb reaches "__netif_receive_skb", "sk_memalloc_socks()" has
-changed from "true" to "false", then "__netif_receive_skb" will see
-"sk_memalloc_socks()" being false and "skb_pfmemalloc(skb)" being
-true.
-
-This is a problem because this would cause a pfmemalloc skb to be
-delivered to "taps" and protocols that don't support pfmemalloc skbs.
