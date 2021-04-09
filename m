@@ -2,99 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2127E35A5EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BC4035A5EE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234555AbhDISiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:38:20 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:40926 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234133AbhDISiT (ORCPT
+        id S234428AbhDISkb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:40:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233332AbhDISka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:38:19 -0400
-Received: by mail-ot1-f41.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so6594326otb.7;
-        Fri, 09 Apr 2021 11:38:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6WpzY8UUDISV6xZLMz1SDYJJM0LsXpA8karXEZ8KMj0=;
-        b=P2dcIE36auEzIBkSi6i26yPJrvlZK5xe3m4miAEwjABYQT6RSTT/heV8WgCJlM2B29
-         hwgAR0azNawd7eMmrHqzEJdAHhPWa4HTVeniBISlwO7wDBSeZ5cAnJfQghkSdOLGCAkz
-         TnEnU9Ayqbbr3PuDW+HVkjyfWTXtXJivwNGmwPCH6vgg+sW01qa5jFyv/tQVA7A8VdRL
-         Xnk31If5fREcQx8WexatJ7A95030p+98wyT33yA0+mV+8nVIk9olr85be1fvBG58apB4
-         uqYeYdXjtLser+k32D8NCl/MGwsk2wxMQt5Q9jnvRPVFZVBTuhfyxg3MN4g+uQv+EkNm
-         X8Mg==
-X-Gm-Message-State: AOAM533U81V1IaQBd0IWwm+9dyQIt7ziBeo+WFEoXc+CTQLD+HjiUWvP
-        xZvusQmMPsZ23tU5JrBS+g==
-X-Google-Smtp-Source: ABdhPJzdAr1yBws4pgNus0fHyGlM0zYfP3P4oRkVJuCImaU+OqrhOPcN+nIjqkEmYCoKuO4hM0DnwQ==
-X-Received: by 2002:a9d:6c52:: with SMTP id g18mr12892485otq.29.1617993485451;
-        Fri, 09 Apr 2021 11:38:05 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m129sm663748oif.34.2021.04.09.11.38.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:38:04 -0700 (PDT)
-Received: (nullmailer pid 3932693 invoked by uid 1000);
-        Fri, 09 Apr 2021 18:38:03 -0000
-Date:   Fri, 9 Apr 2021 13:38:03 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Kyle Tso <kyletso@google.com>
-Subject: Re: [PATCH v2 6/6] Documentation: connector: Add slow-charger-loop
- definition
-Message-ID: <20210409183803.GA3928012@robh.at.kernel.org>
-References: <20210407200723.1914388-1-badhri@google.com>
- <20210407200723.1914388-6-badhri@google.com>
+        Fri, 9 Apr 2021 14:40:30 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958E9C061762;
+        Fri,  9 Apr 2021 11:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=vq2mKY4Er5jY56WUXtRXSXWKPyXxVb/r7fasw5y8Tf0=; b=aDsIQ4NwDHrs2jwstGFdoK1xvk
+        Pj/sX5d67r5oi5/YIVJnYjdPCUnFNvVQvOywgUXqD1ep9UpIMwNiokjke8uNQi9f74SWN29ihKrIf
+        eeQUdan+tABGvG3tK+Vamp8oYfZoCxJ8/OutF7EzUkSGp6b2udEbbvFyGqSTaVB9mhvcEu6Fuc5bJ
+        2Y+bgn/9guMe+08zhCZf1L7RvAmPfwTglIYLnOLbARBQm+biE80oNJFoPQOTe9z8zrReDpVyDteXj
+        IkM9aA7FZ1l4pzL1RoJaa9bmRgnQP6jNCKX8oNGWxEHiIgUoY5xBOEuAkl5bUBhjy2qEq4iPxeKdo
+        E9pzkZKQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUw2z-001MA7-OR; Fri, 09 Apr 2021 18:40:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8E20830001B;
+        Fri,  9 Apr 2021 20:40:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 56DCA2C49B089; Fri,  9 Apr 2021 20:40:00 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 20:40:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Malcolm <dmalcolm@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-toolchains@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: Re: static_branch/jump_label vs branch merging
+Message-ID: <YHCfgHwDtT7m4ffq@hirez.programming.kicks-ass.net>
+References: <YG80wg/2iZjXfCDJ@hirez.programming.kicks-ass.net>
+ <CAMj1kXGngxH0VCHyREKeLau=159sRkWYKVZwOV84r6dvCqXcig@mail.gmail.com>
+ <YHA2jPIaj0p23mv8@hirez.programming.kicks-ass.net>
+ <5f78b7e2f9ae937271ef52ee9e999a91c2719da9.camel@redhat.com>
+ <YHBCoijoopbsDn29@hirez.programming.kicks-ass.net>
+ <YHBQPr8q0cx4iUfN@hirez.programming.kicks-ass.net>
+ <YHBS70ZQ6gOpMk2K@hirez.programming.kicks-ass.net>
+ <3c062f70ffef2dcd48a661f7c8162fb8fbaf6869.camel@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407200723.1914388-6-badhri@google.com>
+In-Reply-To: <3c062f70ffef2dcd48a661f7c8162fb8fbaf6869.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 01:07:23PM -0700, Badhri Jagan Sridharan wrote:
-> To allow slow charger loops to comply to pSnkStby requirement,
-> this patch introduces slow-charger-loop which when set makes
-> the port request PD_P_SNK_STDBY_MW upon entering SNK_DISCOVERY
-> (instead of 3A or the 1.5A during SNK_DISCOVERY) and the actual
-> currrent limit after RX of PD_CTRL_PSRDY for PD link or during
-> SNK_READY for non-pd link.
+On Fri, Apr 09, 2021 at 09:48:33AM -0400, David Malcolm wrote:
+> You tried __pure on arch_static_branch; did you try it on
+> static_branch_unlikely?
 
-What are 'slow charger loops' and pSnkStby?
+static_branch_unlikely() is a CPP macro that expands to a statement
+expression, or as with the later patch, a _Generic(). I'm not sure how
+to apply the attribute to either of them since it is a function
+attribute.
 
-'dt-bindings: connector: ...' for the subject. Follow the pattern you 
-see with 'git log --oneline' for a directory.
+I was hoping the attribute would percolate through, so to speak.
 
+> With the caveat that my knowledge of GCC's middle-end is mostly about
+> implementing warnings, rather than optimization, I did some
+> experimentation, with gcc trunk on x86_64 FWIW.
 > 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
->  .../devicetree/bindings/connector/usb-connector.yaml       | 7 +++++++
->  1 file changed, 7 insertions(+)
+> Given:
 > 
-> diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> index b6daedd62516..09ad3ad983a6 100644
-> --- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> +++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
-> @@ -197,6 +197,13 @@ properties:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      enum: [1, 2, 3]
->  
-> +  slow-charger-loop:
-> +    description: Allows slow charging loops to comply to pSnkStby. When set makes
-> +      the port request pSnkStby(2.5W - 5V@500mA) upon entering SNK_DISCOVERY(instead
-> +      of 3A or the 1.5A during SNK_DISCOVERY) and the actual currrent limit after
-> +      reception of PS_Ready for PD link or during SNK_READY for non-pd link.
-> +    type: boolean
-> +
->  required:
->    - compatible
->  
-> -- 
-> 2.31.1.295.g9ea45b61b8-goog
+> int __attribute__((pure)) foo(void);
 > 
+> int t(void)
+> {
+>   int a;
+>   if (foo())
+>     a++;
+>   if (foo())
+>     a++;
+>   if (foo())
+>     a++;
+>   return a;
+> }
+> 
+> At -O1 and above this is optimized to a single call to foo, returning 0
+> or 3 accordingly.
+> 
+> -fdump-tree-all shows that it's the "fre1" pass that eliminates the
+> subsequent calls to foo, replacing them with reuses of the result of
+> the first call.
+> 
+> This is in gcc/tree-ssa-sccvn.c, a value-numbering pass.
+> 
+> I think you want to somehow "teach" the compiler that:
+>   static_branch_unlikely(&sched_schedstats)
+> is "pure-ish", that for some portion of the surrounding code that you
+> want the result to be treated as pure - though I suspect compiler
+> maintainers with more experience than me are thinking "but which
+> portion? what is it safe to assume, and what will users be annoyed
+> about if we optimize away? what if t itself is inlined somewhere?" and
+> similar concerns.
+
+Right, pure or even const. As to the scope, as wide as possible. It
+literally is a global constant, the value returned is the same
+everywhere.
+
+All we need GCC to do for the static_branch construct is to emit both
+branches; that is, it must not treat the result as a constant and elide
+the other branches. But it can consider consecutive calls (as far and
+wide as it wants) to return the same value.
+
+> Or maybe the asm stmt itself could somehow be marked as pure??? (with
+> similar concerns about semantics as above)
+
+Yeah, not sure, someone with more clue will have to inform us what, if
+anything more than marking it either pure or const is required. Perhaps
+that attribute is sufficient and the compiler just isn't optimizing for
+an unrelated reason.
+
+Regards,
+
+Peter
