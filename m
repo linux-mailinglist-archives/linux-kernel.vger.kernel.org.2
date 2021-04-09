@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B768359B8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B262359B55
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234266AbhDIKNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:13:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51352 "EHLO mail.kernel.org"
+        id S234590AbhDIKJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:09:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234147AbhDIKE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:04:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B726861182;
-        Fri,  9 Apr 2021 10:01:17 +0000 (UTC)
+        id S233552AbhDIKBq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:01:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F877611C2;
+        Fri,  9 Apr 2021 09:59:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962478;
-        bh=nASWuHlKD8CqwwcldSbXDzmniWIdhDF5v2rTX1UEUhU=;
+        s=korg; t=1617962394;
+        bh=uPkxKX2nfk6yX0mAQ0QklyFjQ73GJm7jFXLBziLAyyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eopk/kGStYe1bMxVcG9UGN8IpAZ3EITjz4GH/Bf/lfrHH3azMh29hIc3Z1pd45NXx
-         CloUJfS5De3Iid16XwOO7jtEtSsqU693jSXhmvZkzOronlmN6ceZ6AjJWcTWbDnIOA
-         T14+J7ijFW2MP8XgtXLtVe1vfH+hz1NUowZgFW2g=
+        b=yajfhgJHXgPI1TQKC1l9v+vEAAJXWIshw44VBMDQpJW1VyDKih7FwJ7uQIsk9TelH
+         HDamHLAot8Pdjl2LpE7FeBbzIykgsgzab3nQCCaFyDKi9ftPdgQimXr0+6urnMDmeu
+         2jtAqlkOZVUrBl3sB/pR6LnqAGSt407fpaCQC9FY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jordan Crouse <jcrouse@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Rob Clark <robdclark@chromium.org>,
+        stable@vger.kernel.org, Tong Zhang <ztong0001@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 03/45] drm/msm: a6xx: Make sure the SQE microcode is safe
-Date:   Fri,  9 Apr 2021 11:53:29 +0200
-Message-Id: <20210409095305.508979530@linuxfoundation.org>
+Subject: [PATCH 5.10 08/41] mISDN: fix crash in fritzpci
+Date:   Fri,  9 Apr 2021 11:53:30 +0200
+Message-Id: <20210409095305.088932908@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
-References: <20210409095305.397149021@linuxfoundation.org>
+In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
+References: <20210409095304.818847860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,129 +40,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jordan Crouse <jcrouse@codeaurora.org>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 8490f02a3ca45fd1bbcadc243b4db9b69d0e3450 ]
+[ Upstream commit a9f81244d2e33e6dfcef120fefd30c96b3f7cdb0 ]
 
-Most a6xx targets have security issues that were fixed with new versions
-of the microcode(s). Make sure that we are booting with a safe version of
-the microcode for the target and print a message and error if not.
+setup_fritz() in avmfritz.c might fail with -EIO and in this case the
+isac.type and isac.write_reg is not initialized and remains 0(NULL).
+A subsequent call to isac_release() will dereference isac->write_reg and
+crash.
 
-v2: Add more informative error messages and fix typos
+[    1.737444] BUG: kernel NULL pointer dereference, address: 0000000000000000
+[    1.737809] #PF: supervisor instruction fetch in kernel mode
+[    1.738106] #PF: error_code(0x0010) - not-present page
+[    1.738378] PGD 0 P4D 0
+[    1.738515] Oops: 0010 [#1] SMP NOPTI
+[    1.738711] CPU: 0 PID: 180 Comm: systemd-udevd Not tainted 5.12.0-rc2+ #78
+[    1.739077] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-48-gd9c812dda519-p
+rebuilt.qemu.org 04/01/2014
+[    1.739664] RIP: 0010:0x0
+[    1.739807] Code: Unable to access opcode bytes at RIP 0xffffffffffffffd6.
+[    1.740200] RSP: 0018:ffffc9000027ba10 EFLAGS: 00010202
+[    1.740478] RAX: 0000000000000000 RBX: ffff888102f41840 RCX: 0000000000000027
+[    1.740853] RDX: 00000000000000ff RSI: 0000000000000020 RDI: ffff888102f41800
+[    1.741226] RBP: ffffc9000027ba20 R08: ffff88817bc18440 R09: ffffc9000027b808
+[    1.741600] R10: 0000000000000001 R11: 0000000000000001 R12: ffff888102f41840
+[    1.741976] R13: 00000000fffffffb R14: ffff888102f41800 R15: ffff8881008b0000
+[    1.742351] FS:  00007fda3a38a8c0(0000) GS:ffff88817bc00000(0000) knlGS:0000000000000000
+[    1.742774] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    1.743076] CR2: ffffffffffffffd6 CR3: 00000001021ec000 CR4: 00000000000006f0
+[    1.743452] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    1.743828] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    1.744206] Call Trace:
+[    1.744339]  isac_release+0xcc/0xe0 [mISDNipac]
+[    1.744582]  fritzpci_probe.cold+0x282/0x739 [avmfritz]
+[    1.744861]  local_pci_probe+0x48/0x80
+[    1.745063]  pci_device_probe+0x10f/0x1c0
+[    1.745278]  really_probe+0xfb/0x420
+[    1.745471]  driver_probe_device+0xe9/0x160
+[    1.745693]  device_driver_attach+0x5d/0x70
+[    1.745917]  __driver_attach+0x8f/0x150
+[    1.746123]  ? device_driver_attach+0x70/0x70
+[    1.746354]  bus_for_each_dev+0x7e/0xc0
+[    1.746560]  driver_attach+0x1e/0x20
+[    1.746751]  bus_add_driver+0x152/0x1f0
+[    1.746957]  driver_register+0x74/0xd0
+[    1.747157]  ? 0xffffffffc00d8000
+[    1.747334]  __pci_register_driver+0x54/0x60
+[    1.747562]  AVM_init+0x36/0x1000 [avmfritz]
+[    1.747791]  do_one_initcall+0x48/0x1d0
+[    1.747997]  ? __cond_resched+0x19/0x30
+[    1.748206]  ? kmem_cache_alloc_trace+0x390/0x440
+[    1.748458]  ? do_init_module+0x28/0x250
+[    1.748669]  do_init_module+0x62/0x250
+[    1.748870]  load_module+0x23ee/0x26a0
+[    1.749073]  __do_sys_finit_module+0xc2/0x120
+[    1.749307]  ? __do_sys_finit_module+0xc2/0x120
+[    1.749549]  __x64_sys_finit_module+0x1a/0x20
+[    1.749782]  do_syscall_64+0x38/0x90
 
-Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
-Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
-Signed-off-by: Rob Clark <robdclark@chromium.org>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 77 ++++++++++++++++++++++-----
- 1 file changed, 64 insertions(+), 13 deletions(-)
+ drivers/isdn/hardware/mISDN/mISDNipac.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index 0366419d8bfe..e7a8442b59af 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -521,28 +521,73 @@ static int a6xx_cp_init(struct msm_gpu *gpu)
- 	return a6xx_idle(gpu, ring) ? 0 : -EINVAL;
- }
- 
--static void a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
-+/*
-+ * Check that the microcode version is new enough to include several key
-+ * security fixes. Return true if the ucode is safe.
-+ */
-+static bool a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
- 		struct drm_gem_object *obj)
+diff --git a/drivers/isdn/hardware/mISDN/mISDNipac.c b/drivers/isdn/hardware/mISDN/mISDNipac.c
+index ec475087fbf9..39f841b42488 100644
+--- a/drivers/isdn/hardware/mISDN/mISDNipac.c
++++ b/drivers/isdn/hardware/mISDN/mISDNipac.c
+@@ -694,7 +694,7 @@ isac_release(struct isac_hw *isac)
  {
-+	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
-+	struct msm_gpu *gpu = &adreno_gpu->base;
- 	u32 *buf = msm_gem_get_vaddr(obj);
-+	bool ret = false;
- 
- 	if (IS_ERR(buf))
--		return;
-+		return false;
- 
- 	/*
--	 * If the lowest nibble is 0xa that is an indication that this microcode
--	 * has been patched. The actual version is in dword [3] but we only care
--	 * about the patchlevel which is the lowest nibble of dword [3]
--	 *
--	 * Otherwise check that the firmware is greater than or equal to 1.90
--	 * which was the first version that had this fix built in
-+	 * Targets up to a640 (a618, a630 and a640) need to check for a
-+	 * microcode version that is patched to support the whereami opcode or
-+	 * one that is new enough to include it by default.
- 	 */
--	if (((buf[0] & 0xf) == 0xa) && (buf[2] & 0xf) >= 1)
--		a6xx_gpu->has_whereami = true;
--	else if ((buf[0] & 0xfff) > 0x190)
--		a6xx_gpu->has_whereami = true;
-+	if (adreno_is_a618(adreno_gpu) || adreno_is_a630(adreno_gpu) ||
-+		adreno_is_a640(adreno_gpu)) {
-+		/*
-+		 * If the lowest nibble is 0xa that is an indication that this
-+		 * microcode has been patched. The actual version is in dword
-+		 * [3] but we only care about the patchlevel which is the lowest
-+		 * nibble of dword [3]
-+		 *
-+		 * Otherwise check that the firmware is greater than or equal
-+		 * to 1.90 which was the first version that had this fix built
-+		 * in
-+		 */
-+		if ((((buf[0] & 0xf) == 0xa) && (buf[2] & 0xf) >= 1) ||
-+			(buf[0] & 0xfff) >= 0x190) {
-+			a6xx_gpu->has_whereami = true;
-+			ret = true;
-+			goto out;
-+		}
- 
-+		DRM_DEV_ERROR(&gpu->pdev->dev,
-+			"a630 SQE ucode is too old. Have version %x need at least %x\n",
-+			buf[0] & 0xfff, 0x190);
-+	}  else {
-+		/*
-+		 * a650 tier targets don't need whereami but still need to be
-+		 * equal to or newer than 1.95 for other security fixes
-+		 */
-+		if (adreno_is_a650(adreno_gpu)) {
-+			if ((buf[0] & 0xfff) >= 0x195) {
-+				ret = true;
-+				goto out;
-+			}
-+
-+			DRM_DEV_ERROR(&gpu->pdev->dev,
-+				"a650 SQE ucode is too old. Have version %x need at least %x\n",
-+				buf[0] & 0xfff, 0x195);
-+		}
-+
-+		/*
-+		 * When a660 is added those targets should return true here
-+		 * since those have all the critical security fixes built in
-+		 * from the start
-+		 */
-+	}
-+out:
- 	msm_gem_put_vaddr(obj);
-+	return ret;
- }
- 
- static int a6xx_ucode_init(struct msm_gpu *gpu)
-@@ -565,7 +610,13 @@ static int a6xx_ucode_init(struct msm_gpu *gpu)
- 		}
- 
- 		msm_gem_object_set_name(a6xx_gpu->sqe_bo, "sqefw");
--		a6xx_ucode_check_version(a6xx_gpu, a6xx_gpu->sqe_bo);
-+		if (!a6xx_ucode_check_version(a6xx_gpu, a6xx_gpu->sqe_bo)) {
-+			msm_gem_unpin_iova(a6xx_gpu->sqe_bo, gpu->aspace);
-+			drm_gem_object_put(a6xx_gpu->sqe_bo);
-+
-+			a6xx_gpu->sqe_bo = NULL;
-+			return -EPERM;
-+		}
- 	}
- 
- 	gpu_write64(gpu, REG_A6XX_CP_SQE_INSTR_BASE_LO,
+ 	if (isac->type & IPAC_TYPE_ISACX)
+ 		WriteISAC(isac, ISACX_MASK, 0xff);
+-	else
++	else if (isac->type != 0)
+ 		WriteISAC(isac, ISAC_MASK, 0xff);
+ 	if (isac->dch.timer.function != NULL) {
+ 		del_timer(&isac->dch.timer);
 -- 
 2.30.2
 
