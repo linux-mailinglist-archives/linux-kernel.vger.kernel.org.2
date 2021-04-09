@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED8F1359B46
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4584359B7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:12:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbhDIKIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:08:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44438 "EHLO mail.kernel.org"
+        id S234381AbhDIKL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:11:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233608AbhDIKA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:00:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A6C06121D;
-        Fri,  9 Apr 2021 09:59:18 +0000 (UTC)
+        id S234049AbhDIKEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:04:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2EB661207;
+        Fri,  9 Apr 2021 10:01:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962359;
-        bh=zBxvGtJmvHoaAo7R7ymWv4eLPi0x11uTP1qOZ1aLXFw=;
+        s=korg; t=1617962462;
+        bh=uhswwfjgQNA9mV8C+NtZaLC4WwSRw7Ksp8xEIYMKfBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QRNJrPXWm/KFpwHHzMOPX5vYF+TKhcCyp6M5sQgLHH9hMy5zKSuWKF/WMQ7XeuYFW
-         6KoaftRbXxkSDxl0khWvbOnFND9t/r/2w1izbvJAkOy4hNsEsUUGLzHwTj2dniT3y7
-         snukmivq/mpfXPpcle3rvRX7CWt5mysISzbVv8yw=
+        b=cimjm5IZUqfGiO7Hc3qcLstIRHGWpjHkRIXN8ly0a2j3Oc7D98e2ZAvOJaIUY0vNq
+         iXt2/YPLHsMI7tymYDdHeDNmM4QHr5uqaS24Lqp1c4hBApsm7zXL+vXpWgB9C82ikr
+         AAOtmjRYJNwi5dKKXTokAKftYGRJEj3lB4ZH8RMA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Chris Chiu <chris.chiu@canonical.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 27/41] ia64: fix format strings for err_inject
-Date:   Fri,  9 Apr 2021 11:53:49 +0200
-Message-Id: <20210409095305.691663467@linuxfoundation.org>
+Subject: [PATCH 5.11 24/45] block: clear GD_NEED_PART_SCAN later in bdev_disk_changed
+Date:   Fri,  9 Apr 2021 11:53:50 +0200
+Message-Id: <20210409095306.194485279@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
-References: <20210409095304.818847860@linuxfoundation.org>
+In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
+References: <20210409095305.397149021@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,108 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergei Trofimovich <slyfox@gentoo.org>
+From: Chris Chiu <chris.chiu@canonical.com>
 
-[ Upstream commit 95d44a470a6814207d52dd6312203b0f4ef12710 ]
+[ Upstream commit 5116784039f0421e9a619023cfba3e302c3d9adc ]
 
-Fix warning with %lx / u64 mismatch:
+The GD_NEED_PART_SCAN is set by bdev_check_media_change to initiate
+a partition scan while removing a block device. It should be cleared
+after blk_drop_paritions because blk_drop_paritions could return
+-EBUSY and then the consequence __blkdev_get has no chance to do
+delete_partition if GD_NEED_PART_SCAN already cleared.
 
-  arch/ia64/kernel/err_inject.c: In function 'show_resources':
-  arch/ia64/kernel/err_inject.c:62:22: warning:
-    format '%lx' expects argument of type 'long unsigned int',
-    but argument 3 has type 'u64' {aka 'long long unsigned int'}
-     62 |  return sprintf(buf, "%lx", name[cpu]);   \
-        |                      ^~~~~~~
+It causes some problems on some card readers. Ex. Realtek card
+reader 0bda:0328 and 0bda:0158. The device node of the partition
+will not disappear after the memory card removed. Thus the user
+applications can not update the device mapping correctly.
 
-Link: https://lkml.kernel.org/r/20210313104312.1548232-1-slyfox@gentoo.org
-Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1920874
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20210323085219.24428-1-chris.chiu@canonical.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/ia64/kernel/err_inject.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+ fs/block_dev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/ia64/kernel/err_inject.c b/arch/ia64/kernel/err_inject.c
-index 8b5b8e6bc9d9..dd5bfed52031 100644
---- a/arch/ia64/kernel/err_inject.c
-+++ b/arch/ia64/kernel/err_inject.c
-@@ -59,7 +59,7 @@ show_##name(struct device *dev, struct device_attribute *attr,	\
- 		char *buf)						\
- {									\
- 	u32 cpu=dev->id;						\
--	return sprintf(buf, "%lx\n", name[cpu]);			\
-+	return sprintf(buf, "%llx\n", name[cpu]);			\
- }
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index c33151020bcd..85500e2400cf 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -1240,13 +1240,13 @@ int bdev_disk_changed(struct block_device *bdev, bool invalidate)
  
- #define store(name)							\
-@@ -86,9 +86,9 @@ store_call_start(struct device *dev, struct device_attribute *attr,
+ 	lockdep_assert_held(&bdev->bd_mutex);
  
- #ifdef ERR_INJ_DEBUG
- 	printk(KERN_DEBUG "pal_mc_err_inject for cpu%d:\n", cpu);
--	printk(KERN_DEBUG "err_type_info=%lx,\n", err_type_info[cpu]);
--	printk(KERN_DEBUG "err_struct_info=%lx,\n", err_struct_info[cpu]);
--	printk(KERN_DEBUG "err_data_buffer=%lx, %lx, %lx.\n",
-+	printk(KERN_DEBUG "err_type_info=%llx,\n", err_type_info[cpu]);
-+	printk(KERN_DEBUG "err_struct_info=%llx,\n", err_struct_info[cpu]);
-+	printk(KERN_DEBUG "err_data_buffer=%llx, %llx, %llx.\n",
- 			  err_data_buffer[cpu].data1,
- 			  err_data_buffer[cpu].data2,
- 			  err_data_buffer[cpu].data3);
-@@ -117,8 +117,8 @@ store_call_start(struct device *dev, struct device_attribute *attr,
+-	clear_bit(GD_NEED_PART_SCAN, &bdev->bd_disk->state);
+-
+ rescan:
+ 	ret = blk_drop_partitions(bdev);
+ 	if (ret)
+ 		return ret;
  
- #ifdef ERR_INJ_DEBUG
- 	printk(KERN_DEBUG "Returns: status=%d,\n", (int)status[cpu]);
--	printk(KERN_DEBUG "capabilities=%lx,\n", capabilities[cpu]);
--	printk(KERN_DEBUG "resources=%lx\n", resources[cpu]);
-+	printk(KERN_DEBUG "capabilities=%llx,\n", capabilities[cpu]);
-+	printk(KERN_DEBUG "resources=%llx\n", resources[cpu]);
- #endif
- 	return size;
- }
-@@ -131,7 +131,7 @@ show_virtual_to_phys(struct device *dev, struct device_attribute *attr,
- 			char *buf)
- {
- 	unsigned int cpu=dev->id;
--	return sprintf(buf, "%lx\n", phys_addr[cpu]);
-+	return sprintf(buf, "%llx\n", phys_addr[cpu]);
- }
- 
- static ssize_t
-@@ -145,7 +145,7 @@ store_virtual_to_phys(struct device *dev, struct device_attribute *attr,
- 	ret = get_user_pages_fast(virt_addr, 1, FOLL_WRITE, NULL);
- 	if (ret<=0) {
- #ifdef ERR_INJ_DEBUG
--		printk("Virtual address %lx is not existing.\n",virt_addr);
-+		printk("Virtual address %llx is not existing.\n", virt_addr);
- #endif
- 		return -EINVAL;
- 	}
-@@ -163,7 +163,7 @@ show_err_data_buffer(struct device *dev,
- {
- 	unsigned int cpu=dev->id;
- 
--	return sprintf(buf, "%lx, %lx, %lx\n",
-+	return sprintf(buf, "%llx, %llx, %llx\n",
- 			err_data_buffer[cpu].data1,
- 			err_data_buffer[cpu].data2,
- 			err_data_buffer[cpu].data3);
-@@ -178,13 +178,13 @@ store_err_data_buffer(struct device *dev,
- 	int ret;
- 
- #ifdef ERR_INJ_DEBUG
--	printk("write err_data_buffer=[%lx,%lx,%lx] on cpu%d\n",
-+	printk("write err_data_buffer=[%llx,%llx,%llx] on cpu%d\n",
- 		 err_data_buffer[cpu].data1,
- 		 err_data_buffer[cpu].data2,
- 		 err_data_buffer[cpu].data3,
- 		 cpu);
- #endif
--	ret=sscanf(buf, "%lx, %lx, %lx",
-+	ret = sscanf(buf, "%llx, %llx, %llx",
- 			&err_data_buffer[cpu].data1,
- 			&err_data_buffer[cpu].data2,
- 			&err_data_buffer[cpu].data3);
++	clear_bit(GD_NEED_PART_SCAN, &disk->state);
++
+ 	/*
+ 	 * Historically we only set the capacity to zero for devices that
+ 	 * support partitions (independ of actually having partitions created).
 -- 
 2.30.2
 
