@@ -2,101 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C57DA35A1B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DF235A1BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234106AbhDIPJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37242 "EHLO
+        id S234098AbhDIPK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234096AbhDIPJq (ORCPT
+        with ESMTP id S234018AbhDIPKZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:09:46 -0400
-Received: from postout2.mail.lrz.de (postout2.mail.lrz.de [IPv6:2001:4ca0:0:103::81bb:ff8a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0B1C061760;
-        Fri,  9 Apr 2021 08:09:33 -0700 (PDT)
-Received: from lxmhs52.srv.lrz.de (localhost [127.0.0.1])
-        by postout2.mail.lrz.de (Postfix) with ESMTP id 4FH1kc4kkvzyZx;
-        Fri,  9 Apr 2021 17:09:28 +0200 (CEST)
-Authentication-Results: postout.lrz.de (amavisd-new); dkim=pass (2048-bit key)
-        reason="pass (just generated, assumed good)" header.d=tum.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tum.de; h=
-        in-reply-to:content-disposition:content-type:content-type
-        :mime-version:references:message-id:subject:subject:from:from
-        :date:date:received:received; s=postout; t=1617980968; bh=NWqPCJ
-        5otCgmU2TaIjoNOEHXKuUYy2WtTu9XO4ohzvo=; b=KggAEOz1wXMOKPzEXY3Zgb
-        JLgMgHU8qeBbPr2FI6feWUErEx+yIDoQlQXiHr68I87L24RSwllJ9ptny/fuFdRS
-        F/EwRf8qloF5BnT9najABA/ADF+M193Xyr3nX84SqkNCmmnZwJrQPTE73jqtONpj
-        oI+JoA2N1O//PILNM5ikHP+toXGqNUn+0iVN3mjChgCCGiZ/RUuPjY3bDrq5TM+1
-        jwOSTUDS/CuhslPkd4ydDylpSWlFw3/u7zxOQ0hAzgxx2w0zUj5TytsETD0RxJZx
-        rAiXUE6FfHnlCJZU8SDbLAkzVYz6Z+rgM0/BNztD8sfqJqc7Ljef9Cnsu09REZAA
-        ==
-X-Virus-Scanned: by amavisd-new at lrz.de in lxmhs52.srv.lrz.de
-X-Spam-Flag: NO
-X-Spam-Score: -2.876
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.876 tagged_above=-999 required=5
-        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, DMARC_ADKIM_RELAXED=0.001,
-        DMARC_ASPF_RELAXED=0.001, DMARC_POLICY_NONE=0.001,
-        LRZ_DMARC_FAIL=0.001, LRZ_DMARC_FAIL_NONE=0.001,
-        LRZ_DMARC_POLICY=0.001, LRZ_DMARC_TUM_FAIL=0.001,
-        LRZ_DMARC_TUM_REJECT=3.5, LRZ_DMARC_TUM_REJECT_PO=-3.5,
-        LRZ_ENVFROM_FROM_ALIGNED_STRICT=0.001, LRZ_ENVFROM_FROM_MATCH=0.001,
-        LRZ_ENVFROM_TUM_S=0.001, LRZ_FROM_HAS_A=0.001,
-        LRZ_FROM_HAS_AAAA=0.001, LRZ_FROM_HAS_MDOM=0.001,
-        LRZ_FROM_HAS_MX=0.001, LRZ_FROM_HOSTED_DOMAIN=0.001,
-        LRZ_FROM_NAME_IN_ADDR=0.001, LRZ_FROM_PHRASE=0.001,
-        LRZ_FROM_PRE_SUR_PHRASE=0.001, LRZ_FROM_TUM_S=0.001,
-        LRZ_HAS_IN_REPLY_TO=0.001, LRZ_HAS_SPF=0.001, LRZ_HAS_URL_HTTP=0.001,
-        LRZ_URL_HTTP_SINGLE=0.001, LRZ_URL_PLAIN_SINGLE=0.001]
-        autolearn=no autolearn_force=no
-Received: from postout2.mail.lrz.de ([127.0.0.1])
-        by lxmhs52.srv.lrz.de (lxmhs52.srv.lrz.de [127.0.0.1]) (amavisd-new, port 20024)
-        with LMTP id bUw474Xa325m; Fri,  9 Apr 2021 17:09:28 +0200 (CEST)
-Received: from endor.yaviniv (unknown [IPv6:2001:4ca0:0:f294:bce0:50e2:fadb:742a])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by postout2.mail.lrz.de (Postfix) with ESMTPSA id 4FH1kb69zvzyZW;
-        Fri,  9 Apr 2021 17:09:27 +0200 (CEST)
-Date:   Fri, 9 Apr 2021 17:09:25 +0200
-From:   Andrei Rabusov <a.rabusov@tum.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/41] 5.10.29-rc1 review
-Message-ID: <YHBuJT2IQbVXeZx0@endor.yaviniv>
-References: <20210409095304.818847860@linuxfoundation.org>
+        Fri, 9 Apr 2021 11:10:25 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C28B1C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:10:12 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x13so77757lfr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:10:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oNSz1PKdAWaiunWiDpAsiCtuqeEjXHTaoBPs5ItyWAE=;
+        b=XKiwHwPtFSLFPBXyqYnXuaUD1dPvj4to4yZrsJrQtYtCORZSRWomRGRsyp6QrTWq3N
+         Op15EMlzzkqIRyS7dLh9saOhJI/YyASpndMeeyM690qTfzyBLt3+5DW8GS82kh1JsIV9
+         qoxyEKTIjPAI7sKvTAdzbldOf9eTkdtOpDC49Fr3nohO8lyrTDzN52HI+UyK/isIoHQD
+         krmBwxpWV/paN7/vNjyiuRxLI5rLnt7d14vh/af0S5lGuwafS7l31B/DPptdtmGMvPGF
+         FP+T9W/h+g6AMg6EQuTv5xgVeNg0TcY5xyXbaGhbxeNS+k9ynwdA9aQ/nBvVwpB+57mv
+         aI5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oNSz1PKdAWaiunWiDpAsiCtuqeEjXHTaoBPs5ItyWAE=;
+        b=UgbSA5xX4hLAK5orORBDvw+XnQ81B/9TBIQ8wql9n9BuVztH1Ceu3ihQd1ndRfQPw1
+         ldmV3YgfQAhGbc/fQcVD3Kaxz2a0QRn8MNjyvKiTkIIbAzBJu7WFPdPXFx5ZGU/Z7Jyi
+         OPuavh0WqtHkvUooYkn4796Y4dqCJHaIgpNgXEpqlvAfpRRKavAsD8/I8j1RrbflU9rv
+         H6MA4sqraQVLJM6wnKwrIpvTMVy1fkckaZ2KhzyRIR0vupXAOPntHj2xbAB5qb45JIG8
+         Ho54w7to77b++WE6NaLr9YWGUymsL/TbCfAvHro8OgHvwaJIiCWoYQYjAeAaJLpfceNC
+         7s4w==
+X-Gm-Message-State: AOAM531JcluT/XKjYqn7R7PjXMdp8nzMPrQ87KPJtm1uhNOHtLjh4i3T
+        l25JiUB5pK5VqUboVImWZ70p4w==
+X-Google-Smtp-Source: ABdhPJxFPLoNZIJRxuni1QeLgtMxBbo+PHtbsv7xZ2SgQPNP9Hir3TR/PO/Q6Cm041srTrTXGzRpDA==
+X-Received: by 2002:ac2:5a4e:: with SMTP id r14mr1901328lfn.78.1617981011255;
+        Fri, 09 Apr 2021 08:10:11 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id g9sm295692lja.134.2021.04.09.08.10.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 08:10:10 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 18B58102498; Fri,  9 Apr 2021 18:10:10 +0300 (+03)
+Date:   Fri, 9 Apr 2021 18:10:10 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v24 13/30] mm: Introduce VM_SHADOW_STACK for shadow stack
+ memory
+Message-ID: <20210409151010.d6r3qazmuw53qnqu@box.shutemov.name>
+References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
+ <20210401221104.31584-14-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
+In-Reply-To: <20210401221104.31584-14-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 11:53:22AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.29 release.
-> There are 41 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Apr 01, 2021 at 03:10:47PM -0700, Yu-cheng Yu wrote:
+> A shadow stack PTE must be read-only and have _PAGE_DIRTY set.  However,
+> read-only and Dirty PTEs also exist for copy-on-write (COW) pages.  These
+> two cases are handled differently for page faults.  Introduce
+> VM_SHADOW_STACK to track shadow stack VMAs.
 > 
-> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.29-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Cc: Kees Cook <keescook@chromium.org>
 
-For my i686 with gcc 10.2 no regressions were found
-Selftest result [ok/not ok]: [1436/80]
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Tested-by: A. Rabusov <a.rabusov@tum.de>
+-- 
+ Kirill A. Shutemov
