@@ -2,206 +2,347 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC7935A522
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2A735A524
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234400AbhDIR7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:59:34 -0400
-Received: from mga09.intel.com ([134.134.136.24]:31862 "EHLO mga09.intel.com"
+        id S234332AbhDISBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:01:03 -0400
+Received: from mga02.intel.com ([134.134.136.20]:2114 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233896AbhDIR7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:59:32 -0400
-IronPort-SDR: 67m9HN9cWh9MdhTbFicKowlyvhO0KU3c79ZdYKSSXRJDnBOlmK5KEXa8paRVXFTAHuZqbMTGZN
- 20gCLWcVLNhg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="193926438"
+        id S233332AbhDISBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 14:01:02 -0400
+IronPort-SDR: dNx40MQFNOz/0kZHiKwEfuUWXpUh3oWyXswlpVWYpMfE79L7LwknVZrFHLcAOOwetnaDzzujQn
+ RL8c6wedh+dg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="180942777"
 X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="193926438"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 10:59:17 -0700
-IronPort-SDR: LaJXrXQbMJqTbvYgetW/DOsIe7SQ7rNaa2ybtpqxHyO/+v28pORM28CqLdmu4PxlPKEYbtLH1U
- S9TasmGuWYNA==
+   d="scan'208";a="180942777"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 11:00:49 -0700
+IronPort-SDR: J+zkHtPe2orqaaEnwRqKH/64CAh9vwyAvWXN9GT91BmMxgwONnY//an6VZUshWZZILgpM+mCp6
+ xr+ozroq2fYw==
 X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="422831148"
-Received: from schen9-mobl.amr.corp.intel.com ([10.209.107.191])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 10:59:17 -0700
-Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
- for NOHZ
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Dietmar Eggeman <dietmar.eggemann@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-References: <20210122154600.1722680-1-joel@joelfernandes.org>
- <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
- <YAsjOqmo7TEeXjoj@google.com>
- <CAKfTPtBWoRuwwkaqQKNgHTnQBE4fevyYqEoeGc5RpCsBbOS1sQ@mail.gmail.com>
- <YBG0W5PFGtGRCEuB@google.com>
- <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
- <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com>
- <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
- <20210129172727.GA30719@vingu-book>
- <274d8ae5-8f4d-7662-0e04-2fbc92b416fc@linux.intel.com>
- <20210324134437.GA17675@vingu-book>
- <efad4771-c9d1-5103-de9c-0ec5fa78ee24@linux.intel.com>
- <CAKfTPtDsya_zdUB1ARmoxQs5xWS8o-XrrzyNx5R1iSNrchUXtg@mail.gmail.com>
- <fc0efe4e-0a81-03b8-08cb-029468c57782@linux.intel.com>
- <CAKfTPtCKavGWja42NdTmb+95ppG-WxYzoTJMmtgkCQcA-btfBw@mail.gmail.com>
- <4aa674d9-db49-83d5-356f-a20f9e2a7935@linux.intel.com>
- <CAKfTPtDJaTr_HR2t=9CQ-9x6keu-qzx6okci92AdW5cJG8J9zg@mail.gmail.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <2d2294ce-f1d1-f827-754b-4541c1b43be8@linux.intel.com>
-Date:   Fri, 9 Apr 2021 10:59:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+   d="scan'208";a="459316292"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 11:00:49 -0700
+Date:   Fri, 9 Apr 2021 11:03:05 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 2/2] iommu/sva: Remove mm parameter from SVA bind API
+Message-ID: <20210409110305.6b0471d9@jacob-builder>
+In-Reply-To: <YHAoY9+w2ebYZ7VV@myrica>
+References: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1617901736-24788-2-git-send-email-jacob.jun.pan@linux.intel.com>
+        <YHAoY9+w2ebYZ7VV@myrica>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtDJaTr_HR2t=9CQ-9x6keu-qzx6okci92AdW5cJG8J9zg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jean-Philippe,
 
+On Fri, 9 Apr 2021 12:11:47 +0200, Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
 
-On 4/9/21 8:26 AM, Vincent Guittot wrote:
-
->>>>
->>>> I was expecting idle load balancer to be rate limited to 60 Hz, which
->>>
->>> Why 60Hz ?
->>>
->>
->> My thinking is we will trigger load balance only after rq->next_balance.
->>
->> void trigger_load_balance(struct rq *rq)
->> {
->>         /* Don't need to rebalance while attached to NULL domain */
->>         if (unlikely(on_null_domain(rq)))
->>                 return;
->>
->>         if (time_after_eq(jiffies, rq->next_balance))
->>                 raise_softirq(SCHED_SOFTIRQ);
->>
->>         nohz_balancer_kick(rq);
->> }
->>
->> And it seems like next_balance is set to be 60 Hz
->>
->> static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
->> {
->>         int continue_balancing = 1;
->>         int cpu = rq->cpu;
->>         int busy = idle != CPU_IDLE && !sched_idle_cpu(cpu);
->>         unsigned long interval;
->>         struct sched_domain *sd;
->>         /* Earliest time when we have to do rebalance again */
->>         unsigned long next_balance = jiffies + 60*HZ;
+> On Thu, Apr 08, 2021 at 10:08:56AM -0700, Jacob Pan wrote:
+> > diff --git a/drivers/iommu/iommu-sva-lib.c
+> > b/drivers/iommu/iommu-sva-lib.c index bd41405..bd99f6b 100644
+> > --- a/drivers/iommu/iommu-sva-lib.c
+> > +++ b/drivers/iommu/iommu-sva-lib.c
+> > @@ -12,27 +12,33 @@ static DECLARE_IOASID_SET(iommu_sva_pasid);
+> >  
+> >  /**
+> >   * iommu_sva_alloc_pasid - Allocate a PASID for the mm
+> > - * @mm: the mm
+> >   * @min: minimum PASID value (inclusive)
+> >   * @max: maximum PASID value (inclusive)
+> >   *
+> > - * Try to allocate a PASID for this mm, or take a reference to the
+> > existing one
+> > - * provided it fits within the [@min, @max] range. On success the
+> > PASID is
+> > - * available in mm->pasid, and must be released with
+> > iommu_sva_free_pasid().
+> > + * Try to allocate a PASID for the current mm, or take a reference to
+> > the
+> > + * existing one provided it fits within the [@min, @max] range. On
+> > success
+> > + * the PASID is available in the current mm->pasid, and must be
+> > released with
+> > + * iommu_sva_free_pasid().
+> >   * @min must be greater than 0, because 0 indicates an unused
+> > mm->pasid. *
+> >   * Returns 0 on success and < 0 on error.
+> >   */
+> > -int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t
+> > max) +int iommu_sva_alloc_pasid(ioasid_t min, ioasid_t max)
+> >  {
+> >  	int ret = 0;
+> >  	ioasid_t pasid;
+> > +	struct mm_struct *mm;
+> >  
+> >  	if (min == INVALID_IOASID || max == INVALID_IOASID ||
+> >  	    min == 0 || max < min)
+> >  		return -EINVAL;
+> >  
+> >  	mutex_lock(&iommu_sva_lock);
+> > +	mm = get_task_mm(current);
+> > +	if (!mm) {
+> > +		ret = -EINVAL;
+> > +		goto out_unlock;
+> > +	}  
 > 
-> This doesn't mean 60 Hz period but 60*HZ with HZ being the number of
-> jiffies per second. We init next_balance with now + 60 sec to make
-> sure it's far later than the next balance of the sched_domains
+> I still think it would be more elegant to keep the choice of context in
+> iommu_sva_bind_device() and pass it down to leaf functions such as
+> iommu_sva_alloc_pasid(). The patch is trying to solve two separate
+
+I agree if iommu_sva_alloc_pasid() is a leaf function, but it is a public
+function, e.g. called by smmu code:
+	/* Allocate a PASID for this mm if necessary */
+	ret = iommu_sva_alloc_pasid(1, (1U << master->ssid_bits) - 1);
+If we give mm as parameter, it will give callers the illusion that this
+mm doesn't have to be current->mm.
+
+Should we make it into a leaf function by splitting iommu_sva_alloc_pasid()
+into two parts?
+1. iommu_sva_assign_pasid() //a new leaf helper function does mm->pasid
+assignment
+2. ioasid_alloc()
+
+in iommu_sva_bind_device(), we do:
+1. handle = driver ops->sva_bind(dev, mm, flags);
+2. pasid = sva_get_pasid(handle);
+3. iommu_sva_assign_pasid(mm, pasid)
+
+In vendor driver sva_bind(), it just use ioasid_alloc directly with custom
+range. e.g. arm-smmu-v3-sva.c
+- ret = iommu_sva_alloc_pasid(1, (1U << master->ssid_bits) - 1);
++ ret = ioasid_alloc(&iommu_sva_pasid, 1, (1U << master->ssid_bits);
+                                   
+> problems:
 > 
-> Then, update_next_balance() keeps track of 1st balance to happen next time
+> * We don't have a use-case for binding the mm of a remote process (and
+>   it's supposedly difficult for device drivers to do it securely). So OK,
+>   we remove the mm argument from iommu_sva_bind_device() and use the
+>   current mm. But the IOMMU driver isn't going to do get_task_mm(current)
+>   every time it needs the mm being bound, it will take it from
+>   iommu_sva_bind_device(). Likewise iommu_sva_alloc_pasid() shouldn't need
+>   to bother with get_task_mm().
 > 
-
-Thanks for pointing out my misread of the code.  In this case the
-balance frequency should be lower than I thought as balance should be 60 sec
-apart in theory.  
-
->> Here's a snapshot of the trace. However I didn't have the current task in my trace.
->> You can tell the frequency that update_blocked_averages is called on
->> cpu 2 by the jiffies value.  They are quite close together (1 to 3 jiffies apart).
->> When I have a chance to get on the machine, I'll take another look
->> at the current task and whether we got to trigger_load_balance() from scheduler_tick().
->>
->>
->>      3.505 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb731
->>      4.505 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb732
->>      6.484 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb733
->>      6.506 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb734
->>      9.503 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb737
->>     11.504 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb739
->>     11.602 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb739
->>     11.624 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
->>     11.642 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
->>     11.645 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
->>     11.977 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
->>     12.003 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
->>     12.015 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
->>     12.043 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
->>     12.567 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73a
->>     13.856 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73b
->>     13.910 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
->>     14.003 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
->>     14.159 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
->>     14.203 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
->>     14.223 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
->>     14.301 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
->>     14.504 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73c
->>     14.637 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73c
->>     14.666 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
->>     15.059 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
->>     15.083 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
->>     15.100 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
->>     15.103 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
->>     15.150 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
->>     15.227 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
->>     15.248 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
->>     15.311 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
->>     15.503 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73d
->>     16.140 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73d
->>     16.185 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
->>     16.224 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
->>     16.340 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
->>     16.384 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
->>     16.503 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73e
->>     16.993 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73e
->>     17.504 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73f
->>     17.630 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73f
->>     17.830 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
->>     18.015 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
->>     18.031 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
->>     18.036 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
->>     18.040 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
->>     18.502 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb740
->>
+> * cgroup accounting for IOASIDs needs to be on the current task. Removing
+>   the mm parameter from iommu_sva_alloc_pasid() doesn't help with that.
+>   Sure it indicates that iommu_sva_alloc_pasid() needs a specific task
+>   context but that's only for cgroup purpose, and I'd rather pass the
+>   cgroup down from iommu_sva_bind_device() anyway (but am fine with
+>   keeping it within ioasid_alloc() for now). Plus it's an internal helper,
+>   easy for us to check that the callers are doing the right thing.
 > 
-> I don't know exactly what you track with "next_balance=" in
+With the above split, we really just have one allocation function:
+ioasid_alloc(), so it can manage current cgroup accounting within. Would
+this work?
 
-It is the rq->next_balance value as we enter the newidle_balance function.
-
-> probe:newidle_balance but it always starts with the same value
-> 0x1004fb76c in the future to finish with a value 0x1004fb731 in the
-> past. 
-
-This indeed is odd as the next_balance should move forward and not backward.
-
-> This would mean that a load balance is needed during the next
-> tick which explains why we can see then the
-> probe:update_blocked_averages for each tick.
-
-Will try to debug and find out why the next_balance has gone backwards
-next time I get access to the test system.
-
+> >  	if (mm->pasid) {
+> >  		if (mm->pasid >= min && mm->pasid <= max)
+> >  			ioasid_get(mm->pasid);
+> > @@ -45,22 +51,32 @@ int iommu_sva_alloc_pasid(struct mm_struct *mm,
+> > ioasid_t min, ioasid_t max) else
+> >  			mm->pasid = pasid;
+> >  	}
+> > +	mmput(mm);
+> > +out_unlock:
+> >  	mutex_unlock(&iommu_sva_lock);
+> >  	return ret;
+> >  }
+> >  EXPORT_SYMBOL_GPL(iommu_sva_alloc_pasid);
+> >  
+> >  /**
+> > - * iommu_sva_free_pasid - Release the mm's PASID
+> > + * iommu_sva_free_pasid - Release the current mm's PASID
+> >   * @mm: the mm
+> >   *
+> >   * Drop one reference to a PASID allocated with iommu_sva_alloc_pasid()
+> >   */
+> > -void iommu_sva_free_pasid(struct mm_struct *mm)
+> > +void iommu_sva_free_pasid(void)
+> >  {
+> > +	struct mm_struct *mm;
+> > +
+> >  	mutex_lock(&iommu_sva_lock);
+> > +	mm = get_task_mm(current);
+> > +	if (!mm)
+> > +		goto out_unlock;
+> > +  
 > 
-> Also could you check if the tick is stopped when idle. When the
-> predicted idle time is short and the next wake is expected to happen
-> before the next tick, the tick is not stopped.
+> More importantly, could we at least dissociate free_pasid() from the
+> current process?  Otherwise drivers can't clean up from a workqueue (as
+> amdkfd does) or from an rcu callback. Given that iommu_sva_unbind_device()
+> takes the SVA handle owned by whomever did bind(), there shouldn't be any
+> security issue. For the cgroup problem, ioasid.c could internally keep
+> track of the cgroup used during allocation rather than assuming the
+> context of ioasid_put() is the same as ioasid_get()
 > 
+Good point, you are right cgroup uncharge does not have to be on the
+current. I will keep the mm parameter here.
 
-Will do. 
+> >  	if (ioasid_put(mm->pasid))
+> >  		mm->pasid = 0;
+> > +	mmput(mm);
+> > +out_unlock:
+> >  	mutex_unlock(&iommu_sva_lock);
+> >  }
+> >  EXPORT_SYMBOL_GPL(iommu_sva_free_pasid);
+> > diff --git a/drivers/iommu/iommu-sva-lib.h
+> > b/drivers/iommu/iommu-sva-lib.h index b40990a..278b8b4 100644
+> > --- a/drivers/iommu/iommu-sva-lib.h
+> > +++ b/drivers/iommu/iommu-sva-lib.h
+> > @@ -8,8 +8,8 @@
+> >  #include <linux/ioasid.h>
+> >  #include <linux/mm_types.h>
+> >  
+> > -int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t
+> > max); -void iommu_sva_free_pasid(struct mm_struct *mm);
+> > +int iommu_sva_alloc_pasid(ioasid_t min, ioasid_t max);
+> > +void iommu_sva_free_pasid(void);
+> >  struct mm_struct *iommu_sva_find(ioasid_t pasid);
+> >  
+> >  #endif /* _IOMMU_SVA_LIB_H */
+> > diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> > index bf0a20f..25840e6 100644
+> > --- a/drivers/iommu/iommu.c
+> > +++ b/drivers/iommu/iommu.c
+> > @@ -23,6 +23,7 @@
+> >  #include <linux/property.h>
+> >  #include <linux/fsl/mc.h>
+> >  #include <linux/module.h>
+> > +#include <linux/sched/mm.h>
+> >  #include <trace/events/iommu.h>
+> >  
+> >  static struct kset *iommu_group_kset;
+> > @@ -2959,9 +2960,8 @@ int iommu_aux_get_pasid(struct iommu_domain
+> > *domain, struct device *dev) EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+> >  
+> >  /**
+> > - * iommu_sva_bind_device() - Bind a process address space to a device
+> > + * iommu_sva_bind_device() - Bind the current process address space to
+> > a device
+> >   * @dev: the device
+> > - * @mm: the mm to bind, caller must hold a reference to it
+> >   * @flags: options for the bind operation
+> >   *
+> >   * Create a bond between device and address space, allowing the device
+> > to access  
+> 
+> There is another reference to @mm to remove in the function description
+> 
+will do
 
-Tim
+> > @@ -2975,9 +2975,10 @@ EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+> >   * On error, returns an ERR_PTR value.
+> >   */
+> >  struct iommu_sva *
+> > -iommu_sva_bind_device(struct device *dev, struct mm_struct *mm,
+> > unsigned int flags) +iommu_sva_bind_device(struct device *dev, unsigned
+> > int flags) {
+> >  	struct iommu_group *group;
+> > +	struct mm_struct *mm = NULL;
+> >  	struct iommu_sva *handle = ERR_PTR(-EINVAL);
+> >  	const struct iommu_ops *ops = dev->bus->iommu_ops;
+> >  
+> > @@ -2989,8 +2990,11 @@ iommu_sva_bind_device(struct device *dev, struct
+> > mm_struct *mm, unsigned int fla return ERR_PTR(-ENODEV);
+> >  
+> >  	/* Supervisor SVA does not need the current mm */
+> > -	if ((flags & IOMMU_SVA_BIND_SUPERVISOR) && mm)
+> > -		return ERR_PTR(-EINVAL);
+> > +	if (!(flags & IOMMU_SVA_BIND_SUPERVISOR)) {
+> > +		mm = get_task_mm(current);
+> > +		if (!mm)
+> > +			return ERR_PTR(-EINVAL);
+> > +	}
+> >  	/* Ensure device count and domain don't change while we're
+> > binding */ mutex_lock(&group->mutex);
+> >  
+> > @@ -3004,6 +3008,8 @@ iommu_sva_bind_device(struct device *dev, struct
+> > mm_struct *mm, unsigned int fla goto out_unlock;
+> >  
+> >  	handle = ops->sva_bind(dev, mm, flags);
+> > +	if (mm)
+> > +		mmput(mm);
+> >  out_unlock:
+> >  	mutex_unlock(&group->mutex);
+> >  	iommu_group_put(group);
+> > diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+> > index 27e0e04..da4401a 100644
+> > --- a/drivers/misc/uacce/uacce.c
+> > +++ b/drivers/misc/uacce/uacce.c
+> > @@ -99,7 +99,7 @@ static int uacce_bind_queue(struct uacce_device
+> > *uacce, struct uacce_queue *q) if (!(uacce->flags & UACCE_DEV_SVA))
+> >  		return 0;
+> >  
+> > -	handle = iommu_sva_bind_device(uacce->parent, current->mm, 0);
+> > +	handle = iommu_sva_bind_device(uacce->parent, 0);
+> >  	if (IS_ERR(handle))
+> >  		return PTR_ERR(handle);
+> >  
+> > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> > index a3fbaa2..cf752f3 100644
+> > --- a/include/linux/iommu.h
+> > +++ b/include/linux/iommu.h
+> > @@ -231,8 +231,8 @@ struct iommu_iotlb_gather {
+> >   * @dev_feat_enabled: check enabled feature
+> >   * @aux_attach/detach_dev: aux-domain specific attach/detach entries.
+> >   * @aux_get_pasid: get the pasid given an aux-domain
+> > - * @sva_bind: Bind process address space to device
+> > - * @sva_unbind: Unbind process address space from device
+> > + * @sva_bind: Bind the current process address space to device
+> > + * @sva_unbind: Unbind the current process address space from device  
+> 
+> These don't need changing since we're still passing the mm down to the
+> drivers
+> 
+Right, I struggled between two options :)
+
+> Thanks,
+> Jean
+> 
+> >   * @sva_get_pasid: Get PASID associated to a SVA handle
+> >   * @page_response: handle page request response
+> >   * @cache_invalidate: invalidate translation caches
+> > @@ -652,7 +652,6 @@ void iommu_aux_detach_device(struct iommu_domain
+> > *domain, struct device *dev); int iommu_aux_get_pasid(struct
+> > iommu_domain *domain, struct device *dev); 
+> >  struct iommu_sva *iommu_sva_bind_device(struct device *dev,
+> > -					struct mm_struct *mm,
+> >  					unsigned int flags);
+> >  void iommu_sva_unbind_device(struct iommu_sva *handle);
+> >  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
+> > @@ -1028,7 +1027,7 @@ iommu_aux_get_pasid(struct iommu_domain *domain,
+> > struct device *dev) }
+> >  
+> >  static inline struct iommu_sva *
+> > -iommu_sva_bind_device(struct device *dev, struct mm_struct *mm,
+> > unsigned int flags) +iommu_sva_bind_device(struct device *dev, unsigned
+> > int flags) {
+> >  	return NULL;
+> >  }
+> > -- 
+> > 2.7.4
+> >   
+
+
+Thanks,
+
+Jacob
