@@ -2,325 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026E7359197
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60AC35917E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:33:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbhDIBnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 21:43:15 -0400
-Received: from mga11.intel.com ([192.55.52.93]:10333 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232996AbhDIBnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:43:09 -0400
-IronPort-SDR: enIOlNoHgu7y998llW/9VPTHOROe1KvQ10JHakPoZVrtH1gWR0GwFaAeHPoWprGSKsThGDKUNs
- 3VGK/8fl8Dfw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="190468013"
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="190468013"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 18:42:57 -0700
-IronPort-SDR: 3lDXwmXYCjj2EljmHwTMaldsmws/BE03eedaOEj0v0hE+wkZk9yJpoQFty4LSMAhuPRmAi0Svo
- IBmoDKMz8YtA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="459050874"
-Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
-  by orsmga001.jf.intel.com with ESMTP; 08 Apr 2021 18:42:57 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>
-Cc:     Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
-        zhangfei.gao@linaro.org, vkoul@kernel.org,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH 2/2] iommu/sva: Remove mm parameter from SVA bind API
-Date:   Thu,  8 Apr 2021 10:08:56 -0700
-Message-Id: <1617901736-24788-2-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S233165AbhDIBdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 21:33:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhDIBda (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 21:33:30 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDBCC061760;
+        Thu,  8 Apr 2021 18:33:18 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id bs7so1421545qvb.12;
+        Thu, 08 Apr 2021 18:33:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:content-transfer-encoding:date:message-id:cc:subject
+         :from:to:references:in-reply-to;
+        bh=0x31F7OmUBFv2aYY8WsZQcT9hzNkOdkXYNg1QmgSGvE=;
+        b=i4eL+Q+VFdbU3iQxDvDLjInsceCaAS6uM//NCNUrnwK5cAUkD08FcdgAl6DfzeesYE
+         LggS85W47OcBOeyDt5k/D9iABY7z+bvEI0UUIpfYSIqWHGJZcDgHzTHwAuGY0gDJoedR
+         /DEBoVC72AFjSOfp4/582Ocuz8nW5PmPGL1jnfFItADwzfDGWetlveU6vB1BrikX/ID9
+         5ynrshzIpyGlx1fmsKESDN6uvLdDU8uAjr8sQl1onwuVMWFif6NYlSnhKmCe+H5Z24be
+         YvehqU8D5QO9Ka5wfhvkqNic9sbMWNyTP2rrd5aQv/EsLBuIx67aqaTH0v0IjrK8pU+t
+         iwRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding:date
+         :message-id:cc:subject:from:to:references:in-reply-to;
+        bh=0x31F7OmUBFv2aYY8WsZQcT9hzNkOdkXYNg1QmgSGvE=;
+        b=RydjdiFoTa2KGkZi/79CiPbxl+tMZ6YCuczYtzGJDq6g3VhOMgw7iVb7809R/m0bkV
+         1sGuHBG5JcNPDhiWs6eGzFu+vcTERnfMFEp41fSW79sekH88pfM+NN4WOeLS+Pdykbxt
+         LizIlA0oNCS1nbh9A4HdwY4+nNI5u6Fi5n4o4Bu9v+Z9Rz0ziZQwGfsNDV+Z1vgYlh9V
+         r6Xt0a3F+MKRWghkwZHdDLwABGhZ32er25znZ/JJ8i324GjJCcaPrvuF/HhTaE3nr1+p
+         yZC5NyOeTvR3hLbm193u6lNr6wTGdVz9Q7yPMu3PPel6R0DrWAjoOGSC2SINASRtC9eg
+         8gtQ==
+X-Gm-Message-State: AOAM530shnqGTQ1i5+4KRogK1cYjwHftfXoB8qjdbGQU0pYNfm8ujosV
+        /lwzYHg4e94hSJTlcE34/hmQIOZgn+rf2ZLZ
+X-Google-Smtp-Source: ABdhPJyb9YinlcgHRHuOakC22o0kEi2cMq2JWsItuybyGVVWvuc1jE9IkoNAJIIs5A8fGSLp1PianA==
+X-Received: by 2002:a05:6214:c6c:: with SMTP id t12mr11537790qvj.17.1617931997237;
+        Thu, 08 Apr 2021 18:33:17 -0700 (PDT)
+Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
+        by smtp.gmail.com with ESMTPSA id c1sm906306qth.3.2021.04.08.18.33.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 18:33:16 -0700 (PDT)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu, 08 Apr 2021 21:33:15 -0400
+Message-Id: <CAIT0Y0W41EH.11ZSYT40VQAP6@shaak>
+Cc:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v4 3/3] dt-bindings: clock: add ti,lmk04832 bindings
+From:   "Liam Beguin" <liambeguin@gmail.com>
+To:     "Rob Herring" <robh@kernel.org>
+References: <20210407005330.2890430-1-liambeguin@gmail.com>
+ <20210407005330.2890430-4-liambeguin@gmail.com>
+ <20210408201333.GA1882021@robh.at.kernel.org>
+In-Reply-To: <20210408201333.GA1882021@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mm parameter in iommu_sva_bind_device() is intended for privileged
-process perform bind() on behalf of other processes. This use case has
-yet to be materialized, let alone potential security implications of
-adding kernel hooks without explicit user consent.
-In addition, with the agreement that IOASID allocation shall be subject
-cgroup limit. It will be inline with misc cgroup proposal if IOASID
-allocation as part of the SVA bind is limited to the current task.
+On Thu Apr 8, 2021 at 4:13 PM EDT, Rob Herring wrote:
+> On Tue, Apr 06, 2021 at 08:53:30PM -0400, Liam Beguin wrote:
+> > From: Liam Beguin <lvb@xiphos.com>
+> >=20
+> > Document devicetree bindings for Texas Instruments' LMK04832.
+> > The LMK04208 is a high performance clock conditioner with superior cloc=
+k
+> > jitter cleaning, generation, and distribution with JEDEC JESD204B
+> > support.
+> >=20
+> > Signed-off-by: Liam Beguin <lvb@xiphos.com>
+> > ---
+> >  .../bindings/clock/ti,lmk04832.yaml           | 209 ++++++++++++++++++
+> >  1 file changed, 209 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/clock/ti,lmk04832=
+.yaml
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml b=
+/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
+> > new file mode 100644
+> > index 000000000000..a9f8b9b720fc
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
+> > @@ -0,0 +1,209 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/clock/ti,lmk04832.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Clock bindings for the Texas Instruments LMK04832
+> > +
+> > +maintainers:
+> > +  - Liam Beguin <liambeguin@gmail.com>
+> > +
+> > +description: |
+> > +  Devicetree binding for the LMK04832, a clock conditioner with JEDEC =
+JESD204B
+> > +  support. The LMK04832 is pin compatible with the LMK0482x family.
+> > +
+> > +  Link to datasheet, https://www.ti.com/lit/ds/symlink/lmk04832.pdf
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - ti,lmk04832
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  '#address-cells':
+> > +    const: 1
+> > +
+> > +  '#size-cells':
+> > +    const: 0
+> > +
+> > +  '#clock-cells':
+> > +    const: 1
+> > +
+> > +  spi-max-frequency:
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    description:
+> > +      Maximum SPI clocking speed of the device in Hz.
+>
+> Already has a type and description, just need:
+>
+> spi-max-frequency: true
+>
+> (Or a range of values if you know the maximum).
+>
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: PLL2 reference clock.
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: oscin
+> > +
+> > +  reset-gpios:
+> > +    maxItems: 1
+> > +
+> > +  ti,spi-4wire-rdbk:
+> > +    description: |
+> > +      Select SPI 4wire readback pin configuration.
+> > +      Available readback pins are,
+> > +        CLKin_SEL0 0
+> > +        CLKin_SEL1 1
+> > +        RESET 2
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [0, 1, 2]
+> > +    default: 1
+> > +
+> > +  ti,vco-hz:
+> > +    description: Optional to set VCO frequency of the PLL in Hertz.
+> > +
+> > +  ti,sysref-ddly:
+> > +    description: SYSREF digital delay value.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    minimum: 8
+> > +    maximum: 8191
+> > +    default: 8
+> > +
+> > +  ti,sysref-mux:
+> > +    description: |
+> > +      SYSREF Mux configuration.
+> > +      Available options are,
+> > +        Normal SYNC 0
+> > +        Re-clocked 1
+> > +        SYSREF Pulser 2
+> > +        SYSREF Continuous 3
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [0, 1, 2, 3]
+> > +    default: 3
+> > +
+> > +  ti,sync-mode:
+> > +    description: SYNC pin configuration.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [0, 1, 2]
+> > +    default: 1
+> > +
+> > +  ti,sysref-pulse-count:
+> > +    description:
+> > +      Number of SYSREF pulses to send when SYSREF is not in continuous=
+ mode.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    enum: [1, 2, 4, 8]
+> > +    default: 4
+> > +
+> > +patternProperties:
+> > +  "@[0-9a-d]+$":
+> > +    type: object
+> > +    description:
+> > +      Child nodes used to configure output clocks.
+> > +
+> > +    properties:
+> > +      reg:
+> > +        description:
+> > +          clock output identifier.
+> > +        minimum: 0
+> > +        maximum: 13
+> > +
+> > +      ti,clkout-fmt:
+> > +        description:
+> > +          Clock output format.
+> > +          Available options are,
+> > +            Powerdown 0x00
+> > +            LVDS 0x01
+> > +            HSDS 6 mA 0x02
+> > +            HSDS 8 mA 0x03
+> > +            LVPECL 1600 mV 0x04
+> > +            LVPECL 2000 mV 0x05
+> > +            LCPECL 0x06
+> > +            CML 16 mA 0x07
+> > +            CML 24 mA 0x08
+> > +            CML 32 mA 0x09
+> > +            CMOS (Off/Inverted) 0x0a
+> > +            CMOS (Normal/Off) 0x0b
+> > +            CMOS (Inverted/Inverted) 0x0c
+> > +            CMOS (Inverted/Normal) 0x0d
+> > +            CMOS (Normal/Inverted) 0x0e
+> > +            CMOS (Normal/Normal) 0x0f
+> > +        $ref: /schemas/types.yaml#/definitions/uint32
+> > +        minimum: 0
+> > +        maximum: 15
+> > +
+> > +      ti,clkout-sysref:
+> > +        description:
+> > +          Select SYSREF clock path for output clock.
+> > +        type: boolean
+> > +
+> > +    required:
+> > +      - reg
+>
+> additionalProperties: false
+>
 
-Link: https://lore.kernel.org/linux-iommu/20210303160205.151d114e@jacob-builder/
-Link: https://lore.kernel.org/linux-iommu/YFhiMLR35WWMW%2FHu@myrica/
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/dma/idxd/cdev.c                         |  2 +-
- drivers/dma/idxd/init.c                         |  2 +-
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c |  6 ++---
- drivers/iommu/iommu-sva-lib.c                   | 30 +++++++++++++++++++------
- drivers/iommu/iommu-sva-lib.h                   |  4 ++--
- drivers/iommu/iommu.c                           | 16 ++++++++-----
- drivers/misc/uacce/uacce.c                      |  2 +-
- include/linux/iommu.h                           |  7 +++---
- 8 files changed, 45 insertions(+), 24 deletions(-)
+Apologies for double posting.
+I just realized this is for the child node. Will fix.
 
-diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
-index 21ec82b..8c3347c 100644
---- a/drivers/dma/idxd/cdev.c
-+++ b/drivers/dma/idxd/cdev.c
-@@ -103,7 +103,7 @@ static int idxd_cdev_open(struct inode *inode, struct file *filp)
- 	filp->private_data = ctx;
- 
- 	if (device_pasid_enabled(idxd)) {
--		sva = iommu_sva_bind_device(dev, current->mm, 0);
-+		sva = iommu_sva_bind_device(dev, 0);
- 		if (IS_ERR(sva)) {
- 			rc = PTR_ERR(sva);
- 			dev_err(dev, "pasid allocation failed: %d\n", rc);
-diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
-index cdc85f1..a583f79 100644
---- a/drivers/dma/idxd/init.c
-+++ b/drivers/dma/idxd/init.c
-@@ -306,7 +306,7 @@ static int idxd_enable_system_pasid(struct idxd_device *idxd)
- 
- 	flags = IOMMU_SVA_BIND_SUPERVISOR;
- 
--	sva = iommu_sva_bind_device(&idxd->pdev->dev, NULL, flags);
-+	sva = iommu_sva_bind_device(&idxd->pdev->dev, flags);
- 	if (IS_ERR(sva)) {
- 		dev_warn(&idxd->pdev->dev,
- 			 "iommu sva bind failed: %ld\n", PTR_ERR(sva));
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-index 23e287e..bdd5c79 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-@@ -329,7 +329,7 @@ __arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm)
- 		return ERR_PTR(-ENOMEM);
- 
- 	/* Allocate a PASID for this mm if necessary */
--	ret = iommu_sva_alloc_pasid(mm, 1, (1U << master->ssid_bits) - 1);
-+	ret = iommu_sva_alloc_pasid(1, (1U << master->ssid_bits) - 1);
- 	if (ret)
- 		goto err_free_bond;
- 
-@@ -347,7 +347,7 @@ __arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm)
- 	return &bond->sva;
- 
- err_free_pasid:
--	iommu_sva_free_pasid(mm);
-+	iommu_sva_free_pasid();
- err_free_bond:
- 	kfree(bond);
- 	return ERR_PTR(ret);
-@@ -377,7 +377,7 @@ void arm_smmu_sva_unbind(struct iommu_sva *handle)
- 	if (refcount_dec_and_test(&bond->refs)) {
- 		list_del(&bond->list);
- 		arm_smmu_mmu_notifier_put(bond->smmu_mn);
--		iommu_sva_free_pasid(bond->mm);
-+		iommu_sva_free_pasid();
- 		kfree(bond);
- 	}
- 	mutex_unlock(&sva_lock);
-diff --git a/drivers/iommu/iommu-sva-lib.c b/drivers/iommu/iommu-sva-lib.c
-index bd41405..bd99f6b 100644
---- a/drivers/iommu/iommu-sva-lib.c
-+++ b/drivers/iommu/iommu-sva-lib.c
-@@ -12,27 +12,33 @@ static DECLARE_IOASID_SET(iommu_sva_pasid);
- 
- /**
-  * iommu_sva_alloc_pasid - Allocate a PASID for the mm
-- * @mm: the mm
-  * @min: minimum PASID value (inclusive)
-  * @max: maximum PASID value (inclusive)
-  *
-- * Try to allocate a PASID for this mm, or take a reference to the existing one
-- * provided it fits within the [@min, @max] range. On success the PASID is
-- * available in mm->pasid, and must be released with iommu_sva_free_pasid().
-+ * Try to allocate a PASID for the current mm, or take a reference to the
-+ * existing one provided it fits within the [@min, @max] range. On success
-+ * the PASID is available in the current mm->pasid, and must be released with
-+ * iommu_sva_free_pasid().
-  * @min must be greater than 0, because 0 indicates an unused mm->pasid.
-  *
-  * Returns 0 on success and < 0 on error.
-  */
--int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t max)
-+int iommu_sva_alloc_pasid(ioasid_t min, ioasid_t max)
- {
- 	int ret = 0;
- 	ioasid_t pasid;
-+	struct mm_struct *mm;
- 
- 	if (min == INVALID_IOASID || max == INVALID_IOASID ||
- 	    min == 0 || max < min)
- 		return -EINVAL;
- 
- 	mutex_lock(&iommu_sva_lock);
-+	mm = get_task_mm(current);
-+	if (!mm) {
-+		ret = -EINVAL;
-+		goto out_unlock;
-+	}
- 	if (mm->pasid) {
- 		if (mm->pasid >= min && mm->pasid <= max)
- 			ioasid_get(mm->pasid);
-@@ -45,22 +51,32 @@ int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t max)
- 		else
- 			mm->pasid = pasid;
- 	}
-+	mmput(mm);
-+out_unlock:
- 	mutex_unlock(&iommu_sva_lock);
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(iommu_sva_alloc_pasid);
- 
- /**
-- * iommu_sva_free_pasid - Release the mm's PASID
-+ * iommu_sva_free_pasid - Release the current mm's PASID
-  * @mm: the mm
-  *
-  * Drop one reference to a PASID allocated with iommu_sva_alloc_pasid()
-  */
--void iommu_sva_free_pasid(struct mm_struct *mm)
-+void iommu_sva_free_pasid(void)
- {
-+	struct mm_struct *mm;
-+
- 	mutex_lock(&iommu_sva_lock);
-+	mm = get_task_mm(current);
-+	if (!mm)
-+		goto out_unlock;
-+
- 	if (ioasid_put(mm->pasid))
- 		mm->pasid = 0;
-+	mmput(mm);
-+out_unlock:
- 	mutex_unlock(&iommu_sva_lock);
- }
- EXPORT_SYMBOL_GPL(iommu_sva_free_pasid);
-diff --git a/drivers/iommu/iommu-sva-lib.h b/drivers/iommu/iommu-sva-lib.h
-index b40990a..278b8b4 100644
---- a/drivers/iommu/iommu-sva-lib.h
-+++ b/drivers/iommu/iommu-sva-lib.h
-@@ -8,8 +8,8 @@
- #include <linux/ioasid.h>
- #include <linux/mm_types.h>
- 
--int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t max);
--void iommu_sva_free_pasid(struct mm_struct *mm);
-+int iommu_sva_alloc_pasid(ioasid_t min, ioasid_t max);
-+void iommu_sva_free_pasid(void);
- struct mm_struct *iommu_sva_find(ioasid_t pasid);
- 
- #endif /* _IOMMU_SVA_LIB_H */
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index bf0a20f..25840e6 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -23,6 +23,7 @@
- #include <linux/property.h>
- #include <linux/fsl/mc.h>
- #include <linux/module.h>
-+#include <linux/sched/mm.h>
- #include <trace/events/iommu.h>
- 
- static struct kset *iommu_group_kset;
-@@ -2959,9 +2960,8 @@ int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
- EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
- 
- /**
-- * iommu_sva_bind_device() - Bind a process address space to a device
-+ * iommu_sva_bind_device() - Bind the current process address space to a device
-  * @dev: the device
-- * @mm: the mm to bind, caller must hold a reference to it
-  * @flags: options for the bind operation
-  *
-  * Create a bond between device and address space, allowing the device to access
-@@ -2975,9 +2975,10 @@ EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
-  * On error, returns an ERR_PTR value.
-  */
- struct iommu_sva *
--iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
-+iommu_sva_bind_device(struct device *dev, unsigned int flags)
- {
- 	struct iommu_group *group;
-+	struct mm_struct *mm = NULL;
- 	struct iommu_sva *handle = ERR_PTR(-EINVAL);
- 	const struct iommu_ops *ops = dev->bus->iommu_ops;
- 
-@@ -2989,8 +2990,11 @@ iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int fla
- 		return ERR_PTR(-ENODEV);
- 
- 	/* Supervisor SVA does not need the current mm */
--	if ((flags & IOMMU_SVA_BIND_SUPERVISOR) && mm)
--		return ERR_PTR(-EINVAL);
-+	if (!(flags & IOMMU_SVA_BIND_SUPERVISOR)) {
-+		mm = get_task_mm(current);
-+		if (!mm)
-+			return ERR_PTR(-EINVAL);
-+	}
- 	/* Ensure device count and domain don't change while we're binding */
- 	mutex_lock(&group->mutex);
- 
-@@ -3004,6 +3008,8 @@ iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int fla
- 		goto out_unlock;
- 
- 	handle = ops->sva_bind(dev, mm, flags);
-+	if (mm)
-+		mmput(mm);
- out_unlock:
- 	mutex_unlock(&group->mutex);
- 	iommu_group_put(group);
-diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-index 27e0e04..da4401a 100644
---- a/drivers/misc/uacce/uacce.c
-+++ b/drivers/misc/uacce/uacce.c
-@@ -99,7 +99,7 @@ static int uacce_bind_queue(struct uacce_device *uacce, struct uacce_queue *q)
- 	if (!(uacce->flags & UACCE_DEV_SVA))
- 		return 0;
- 
--	handle = iommu_sva_bind_device(uacce->parent, current->mm, 0);
-+	handle = iommu_sva_bind_device(uacce->parent, 0);
- 	if (IS_ERR(handle))
- 		return PTR_ERR(handle);
- 
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index a3fbaa2..cf752f3 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -231,8 +231,8 @@ struct iommu_iotlb_gather {
-  * @dev_feat_enabled: check enabled feature
-  * @aux_attach/detach_dev: aux-domain specific attach/detach entries.
-  * @aux_get_pasid: get the pasid given an aux-domain
-- * @sva_bind: Bind process address space to device
-- * @sva_unbind: Unbind process address space from device
-+ * @sva_bind: Bind the current process address space to device
-+ * @sva_unbind: Unbind the current process address space from device
-  * @sva_get_pasid: Get PASID associated to a SVA handle
-  * @page_response: handle page request response
-  * @cache_invalidate: invalidate translation caches
-@@ -652,7 +652,6 @@ void iommu_aux_detach_device(struct iommu_domain *domain, struct device *dev);
- int iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev);
- 
- struct iommu_sva *iommu_sva_bind_device(struct device *dev,
--					struct mm_struct *mm,
- 					unsigned int flags);
- void iommu_sva_unbind_device(struct iommu_sva *handle);
- u32 iommu_sva_get_pasid(struct iommu_sva *handle);
-@@ -1028,7 +1027,7 @@ iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
- }
- 
- static inline struct iommu_sva *
--iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, unsigned int flags)
-+iommu_sva_bind_device(struct device *dev, unsigned int flags)
- {
- 	return NULL;
- }
--- 
-2.7.4
+Thanks,
+Liam
+
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - '#clock-cells'
+> > +  - clocks
+> > +  - clock-names
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    clocks {
+> > +        lmk04832_oscin: oscin {
+> > +            compatible =3D "fixed-clock";
+> > +
+> > +            #clock-cells =3D <0>;
+> > +            clock-frequency =3D <122880000>;
+> > +            clock-output-names =3D "lmk04832-oscin";
+> > +        };
+> > +    };
+> > +
+> > +    spi0 {
+> > +        #address-cells =3D <1>;
+> > +        #size-cells =3D <0>;
+> > +
+> > +        lmk04832: clock-controller@0 {
+> > +            #address-cells =3D <1>;
+> > +            #size-cells =3D <0>;
+> > +
+> > +            reg =3D <0>;
+> > +
+> > +            compatible =3D "ti,lmk04832";
+> > +            spi-max-frequency =3D <781250>;
+> > +
+> > +            reset-gpios =3D <&gpio_lmk 0 0 0>;
+> > +
+> > +            #clock-cells =3D <1>;
+> > +            clocks =3D <&lmk04832_oscin>;
+> > +            clock-names =3D "oscin";
+> > +
+> > +            ti,spi-4wire-rdbk =3D <0>;
+> > +            ti,vco-hz =3D <2457600000>;
+> > +
+> > +            assigned-clocks =3D
+> > +                <&lmk04832 0>, <&lmk04832 1>,
+> > +                <&lmk04832 2>, <&lmk04832 3>,
+> > +                <&lmk04832 4>,
+> > +                <&lmk04832 6>, <&lmk04832 7>,
+> > +                <&lmk04832 10>, <&lmk04832 11>;
+> > +            assigned-clock-rates =3D
+> > +                <122880000>, <384000>,
+> > +                <122880000>, <384000>,
+> > +                <122880000>,
+> > +                <153600000>, <384000>,
+> > +                <614400000>, <384000>;
+> > +
+> > +            clkout0@0 {
+> > +                reg =3D <0>;
+> > +                ti,clkout-fmt =3D <0x01>; // LVDS
+> > +            };
+> > +
+> > +            clkout1@1 {
+> > +                reg =3D <1>;
+> > +                ti,clkout-fmt =3D <0x01>; // LVDS
+> > +                ti,clkout-sysref;
+> > +            };
+> > +        };
+> > +    };
+> > --=20
+> > 2.30.1.489.g328c10930387
+> >=20
 
