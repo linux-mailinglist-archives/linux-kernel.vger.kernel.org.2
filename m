@@ -2,62 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D763591CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9291E3591CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233067AbhDICAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 22:00:42 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16056 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDICAg (ORCPT
+        id S232700AbhDICAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 22:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232613AbhDICAu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 22:00:36 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGh8v3TwRzPpMK;
-        Fri,  9 Apr 2021 09:57:35 +0800 (CST)
-Received: from huawei.com (10.67.174.78) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 10:00:14 +0800
-From:   Chen Lifu <chenlifu@huawei.com>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     Chen Lifu <chenlifu@huawei.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] ASoC: sti: sti_uniperif: add missing MODULE_DEVICE_TABLE
-Date:   Fri, 9 Apr 2021 09:59:53 +0800
-Message-ID: <20210409015953.259688-1-chenlifu@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 8 Apr 2021 22:00:50 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7AA6C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 19:00:38 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id g10so1972171plt.8
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 19:00:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xZ6x2aQVIWwMevctTtGZBc8elzkGx/KYtUIAWrFujMY=;
+        b=VBcBwx1d8/LIY7spa9vMKapakzHIyEc8Dz6CKCBBQRGx2jPuKvjjCtpxASFU3JvRH3
+         hLNfZkRDVSfwi3CYZY3Eqy/15AMHonANTW9uIw+9JOX/abpMhdNm1R9SCcHXTYeCCLCt
+         tUsujjSNpQ5KBwKNGmUYppMci9lUUpm2Owd/cwkCbwA9QZ+w7QdG5cR6ZRLlgg6HPU1U
+         LEdM0sQCv9C5eC5nqAnu5rfCHE6KsdqDUnfjd23V//eScxkyzmwT81lL+0yL98XvVwts
+         ppKj3/4CH+x/GP14kT9xu0vBf+zmgTwEIGc3+eeIJOWm4Dl6W76fHkvbYBV9oWmU8T7s
+         3bXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xZ6x2aQVIWwMevctTtGZBc8elzkGx/KYtUIAWrFujMY=;
+        b=TqfucD66Utb+PvvdP/5FkWjp4O835BCxDBurKFL1h+EdG+uMDUb0JGoj5InwNcp1QS
+         bD6FS1P4jcnSH+krc1/q+uE2utkWnKjimNcEd7aYkf0TThTE96R7flZBo/NIWKS/gL90
+         d+RzPb5KS9ZGFThg8M4kBr03G9aktYGkgBpgLCWhnVK/zrvrw4P0IHsiwsYSQ7tdHDik
+         mV1QwHWge/3ZQs8bArkadHb9PYwch93YvObofuNKp1M8s+2nQxmsUodyhg6M1TeG9CYV
+         uAAW3Kltr7ltV9nS+t70YkAyhMzVCjcnwpaZVgTPXpUurxIzlhfk9cqRYFIZMkBnA0sF
+         cS1g==
+X-Gm-Message-State: AOAM532kAuxMtt25XeI5jbbcsRhAq2Juwmc6Kw/TQM8bCBVN9DN3ysip
+        aBbPpNEyYOp6Y4LgCbQzuZvhK8LpIfb3UM2xWA==
+X-Google-Smtp-Source: ABdhPJzE8q2IprKZjjU7srL216AAHSfzZb4OfkDMm3d5n6xVmslykoMKXOwEX9lw6NYQkwUi2anVRKeSJ+n2TG5gQBU=
+X-Received: by 2002:a17:902:9685:b029:e9:abc1:7226 with SMTP id
+ n5-20020a1709029685b02900e9abc17226mr1458772plp.64.1617933638544; Thu, 08 Apr
+ 2021 19:00:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.174.78]
-X-CFilter-Loop: Reflected
+References: <20210407021622.1417-1-hdanton@sina.com> <86499c86-d82c-aa18-5b74-053b0a55fd04@kernel.org>
+ <20210407082130.1586-1-hdanton@sina.com>
+In-Reply-To: <20210407082130.1586-1-hdanton@sina.com>
+From:   Hao Sun <sunhao.th@gmail.com>
+Date:   Fri, 9 Apr 2021 10:00:33 +0800
+Message-ID: <CACkBjsam5s2JBHo-0Vqen17REm6trJANMjA_WmAhPWAFJivWRQ@mail.gmail.com>
+Subject: Re: [PATCH] tty: n_gsm: check error while registering tty devices
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
+        Dmitry Vyukov <dvyukov@google.com>, jirislaby@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds missing MODULE_DEVICE_TABLE definition which generates
-correct modalias for automatic loading of this driver when it is built
-as an external module.
+> Can you share the info you know about the syzbot report?
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chen Lifu <chenlifu@huawei.com>
----
- sound/soc/sti/sti_uniperif.c | 1 +
- 1 file changed, 1 insertion(+)
+Sorry for the late reply, I don't know the REPORT information of
+syzbot because I haven't deployed it.
+The attached reproduction program was generated by syz-repro.
+As you can see from the repro.cprog, the bug occurred in the case of
+fault injection.
 
-diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-index 67315d9b352d..e3561f00ed40 100644
---- a/sound/soc/sti/sti_uniperif.c
-+++ b/sound/soc/sti/sti_uniperif.c
-@@ -97,6 +97,7 @@ static const struct of_device_id snd_soc_sti_match[] = {
- 	},
- 	{},
- };
-+MODULE_DEVICE_TABLE(of, snd_soc_sti_match);
- 
- int  sti_uniperiph_reset(struct uniperif *uni)
- {
+In repro.cprog, line 108-109:
+    inject_fault(81);
+    syscall(__NR_ioctl, r[0], 0x5423, 0x20000080ul);
 
+
+Hillf Danton <hdanton@sina.com> =E4=BA=8E2021=E5=B9=B44=E6=9C=887=E6=97=A5=
+=E5=91=A8=E4=B8=89 =E4=B8=8B=E5=8D=884:21=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Wed, 7 Apr 2021 07:37:53 Jiri Slaby wrote:
+> >
+> >Yes, the fix makes sense.
+>
+> Thanks for taking a look.
+>
+> >But could you elaborate in the commit log when this happens?
+> >I only wonder how real this is. I assume you inject faults to allocation=
+s?
+>
+> After looking at Hao's report [1] again, I think you are right as it was
+> reported by syzbot too. Can you share the info you know about the syzbot
+> report, Hao, something like the line below with the Reported-by prefix?
+>
+> (This is just an example     Reported-by: syzbot+b804f902bbb6bcf290cb@syz=
+kaller.appspotmail.com)
+>
+>
+> [1] https://lore.kernel.org/lkml/CACkBjsYEhOuQUd2qjobumByFtAXyyoGqXgM8gXY=
+ZHqsnV8dgUg@mail.gmail.com/
