@@ -2,155 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27FCD35941C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:42:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE208359413
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:40:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233250AbhDIElK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 00:41:10 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52569 "EHLO m43-7.mailgun.net"
+        id S231846AbhDIEkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 00:40:16 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:43199 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233234AbhDIElJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 00:41:09 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617943257; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=iCTtN8iyq6nzRdGmRlTCQ07XXrbR9HCHiASV/6UyLgA=; b=I8nzE78228NOJFi7RjcNaMkeG5X0KwE7S0nXJ5bxBIsQeSw/3n+iBUwKPj6qA9P2lulAX6Bt
- oLSL/mUYc57l9tK/PEKNXkKDk0B+uaHloGgmBK33ikuv3Kd2CC6exVbF/3n+S4PsF8iPZgsS
- aAVdGTek+O+6q9e6Ru6SSAskbS8=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 606fdad48807bcde1d83ba00 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Apr 2021 04:40:52
- GMT
-Sender: deesin=qti.qualcomm.com@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4BA97C43461; Fri,  9 Apr 2021 04:40:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S230375AbhDIEkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 00:40:14 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A1CC1C433C6;
-        Fri,  9 Apr 2021 04:40:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A1CC1C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=fail (p=none dis=none) header.from=qti.qualcomm.com
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@qti.qualcomm.com
-From:   Deepak Kumar Singh <deesin@qti.qualcomm.com>
-To:     bjorn.andersson@linaro.org, clew@codeaurora.org,
-        sibis@codeaurora.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@qti.qualcomm.com>,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH V2 2/2] soc: qcom: aoss: Add debugfs entry
-Date:   Fri,  9 Apr 2021 10:09:48 +0530
-Message-Id: <1617943188-23278-3-git-send-email-deesin@qti.qualcomm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1617943188-23278-1-git-send-email-deesin@qti.qualcomm.com>
-References: <1617943188-23278-1-git-send-email-deesin@qti.qualcomm.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGlmD2L50z9sWH;
+        Fri,  9 Apr 2021 14:39:55 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617943198;
+        bh=t+vdAvut94nV21OkGlsq38gpBXpVXVhVJI6Y8NGNC5Q=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=N6lmDJBLU5d+H2495lLQasKf2aqOMWv2O9hp8AiaaEeefi16Cdzw985HMJgVAnyw4
+         wRv+9yESeyy/l8kKuHVYpdsglb2P00mzMQ3pd2Rz3kOZUotkwL1FUbxxxyTA924AV7
+         QuvXnRz7r0u/4511TRGuiLZUQP+9qo1rVUaKmsxUeHlKIUu+4Bkad2WkDgYxqRinUk
+         9ahSgFKyuMyzhKrmEzKj4004AHn0voLMNWBQJ7Sd9aEJvAHXF92xyTMwAKyyQUap0L
+         lgDNjOkqy1rUiW0GDid+y/zuLkAdweDsJkLbxnu4BqKKCv+3RuDQpBre5Fuan4vq6Y
+         ei4FD4PDOTkWA==
+Date:   Fri, 9 Apr 2021 14:39:54 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>
+Cc:     James Morris <jamorris@linux.microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@linux.microsoft.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: linux-next: manual merge of the security tree with the ext3
+ tree
+Message-ID: <20210409143954.22329cfa@canb.auug.org.au>
+In-Reply-To: <20210319130551.76ce2b8f@canb.auug.org.au>
+References: <20210319130551.76ce2b8f@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/jIwcnALhWun5T_MjVd1jZXm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be useful to control the different power states of various
-parts of hardware for device testing. Add a debugfs node for qmp so
-messages can be sent to aoss for debugging and testing purposes.
+--Sig_/jIwcnALhWun5T_MjVd1jZXm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
----
- drivers/soc/qcom/qcom_aoss.c | 41 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
+Hi all,
 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index 0e397a7..6057bbe 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -4,6 +4,7 @@
-  */
- #include <dt-bindings/power/qcom-aoss-qmp.h>
- #include <linux/clk-provider.h>
-+#include <linux/debugfs.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mailbox_client.h>
-@@ -88,6 +89,9 @@ struct qmp {
- 	struct clk_hw qdss_clk;
- 	struct genpd_onecell_data pd_data;
- 	struct qmp_cooling_device *cooling_devs;
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	struct dentry *debugfs_file;
-+#endif /* CONFIG_DEBUG_FS */
- };
- 
- struct qmp_pd {
-@@ -560,6 +564,34 @@ void qmp_put(struct platform_device *pdev)
- }
- EXPORT_SYMBOL(qmp_put);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
-+			      size_t len, loff_t *pos)
-+{
-+	struct qmp *qmp = file->private_data;
-+	char buf[QMP_MSG_LEN] = {};
-+	int ret;
-+
-+	if (!len || len >= QMP_MSG_LEN)
-+		return -EINVAL;
-+
-+	ret  = copy_from_user(buf, userstr, len);
-+	if (ret) {
-+		dev_err(qmp->dev, "copy from user failed, ret:%d\n", ret);
-+		return -EFAULT;
-+	}
-+
-+	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
-+
-+	return ret ? ret : len;
-+}
-+
-+static const struct file_operations aoss_dbg_fops = {
-+	.open = simple_open,
-+	.write = aoss_dbg_write,
-+};
-+#endif /* CONFIG_DEBUG_FS */
-+
- static int qmp_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
-@@ -616,6 +648,11 @@ static int qmp_probe(struct platform_device *pdev)
- 
- 	atomic_set(&qmp->orphan, 0);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
-+						qmp, &aoss_dbg_fops);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	return 0;
- 
- err_remove_qdss_clk:
-@@ -632,6 +669,10 @@ static int qmp_remove(struct platform_device *pdev)
- {
- 	struct qmp *qmp = platform_get_drvdata(pdev);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	debugfs_remove(qmp->debugfs_file);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	qmp_qdss_clk_remove(qmp);
- 	qmp_pd_remove(qmp);
- 	qmp_cooling_devices_remove(qmp);
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+On Fri, 19 Mar 2021 13:05:51 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the security tree got conflicts in:
+>=20
+>   arch/alpha/kernel/syscalls/syscall.tbl
+>   arch/arm/tools/syscall.tbl
+>   arch/arm64/include/asm/unistd.h
+>   arch/arm64/include/asm/unistd32.h
+>   arch/ia64/kernel/syscalls/syscall.tbl
+>   arch/m68k/kernel/syscalls/syscall.tbl
+>   arch/microblaze/kernel/syscalls/syscall.tbl
+>   arch/mips/kernel/syscalls/syscall_n32.tbl
+>   arch/mips/kernel/syscalls/syscall_n64.tbl
+>   arch/mips/kernel/syscalls/syscall_o32.tbl
+>   arch/parisc/kernel/syscalls/syscall.tbl
+>   arch/powerpc/kernel/syscalls/syscall.tbl
+>   arch/s390/kernel/syscalls/syscall.tbl
+>   arch/sh/kernel/syscalls/syscall.tbl
+>   arch/sparc/kernel/syscalls/syscall.tbl
+>   arch/x86/entry/syscalls/syscall_32.tbl
+>   arch/x86/entry/syscalls/syscall_64.tbl
+>   arch/xtensa/kernel/syscalls/syscall.tbl
+>   include/uapi/asm-generic/unistd.h
+>=20
+> between commit:
+>=20
+>   fa8b90070a80 ("quota: wire up quotactl_path")
+>=20
+> from the ext3 tree and commit:
+>=20
+>   818946f8b806 ("arch: Wire up Landlock syscalls")
 
+This is now commit
+
+  9fbebb70210a ("arch: Wire up Landlock syscalls")
+
+> from the security tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+
+The resolution now looks like below (since the lanlock syscall number
+have been updated).
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/alpha/kernel/syscalls/syscall.tbl
+index c5f7e595adab,4240f21b10b3..000000000000
+--- a/arch/alpha/kernel/syscalls/syscall.tbl
++++ b/arch/alpha/kernel/syscalls/syscall.tbl
+@@@ -482,4 -482,6 +482,7 @@@
+  550	common	process_madvise			sys_process_madvise
+  551	common	epoll_pwait2			sys_epoll_pwait2
+  552	common	mount_setattr			sys_mount_setattr
+ +553	common	quotactl_path			sys_quotactl_path
++ 554	common	landlock_create_ruleset		sys_landlock_create_ruleset
++ 555	common	landlock_add_rule		sys_landlock_add_rule
++ 556	common	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/arm/tools/syscall.tbl
+index 90cbe207cf3e,161423a5d773..000000000000
+--- a/arch/arm/tools/syscall.tbl
++++ b/arch/arm/tools/syscall.tbl
+@@@ -456,4 -456,6 +456,7 @@@
+  440	common	process_madvise			sys_process_madvise
+  441	common	epoll_pwait2			sys_epoll_pwait2
+  442	common	mount_setattr			sys_mount_setattr
+ +443	common	quotactl_path			sys_quotactl_path
++ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	common	landlock_add_rule		sys_landlock_add_rule
++ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/arm64/include/asm/unistd.h
+index d1f7d35f986e,727bfc3be99b..000000000000
+--- a/arch/arm64/include/asm/unistd.h
++++ b/arch/arm64/include/asm/unistd.h
+diff --cc arch/arm64/include/asm/unistd32.h
+index 8361c5138e5f,fdfe06bae3fc..000000000000
+--- a/arch/arm64/include/asm/unistd32.h
++++ b/arch/arm64/include/asm/unistd32.h
+@@@ -893,8 -893,12 +893,14 @@@ __SYSCALL(__NR_process_madvise, sys_pro
+  __SYSCALL(__NR_epoll_pwait2, compat_sys_epoll_pwait2)
+  #define __NR_mount_setattr 442
+  __SYSCALL(__NR_mount_setattr, sys_mount_setattr)
+ +#define __NR_quotactl_path 443
+ +__SYSCALL(__NR_quotactl_path, sys_quotactl_path)
++ #define __NR_landlock_create_ruleset 444
++ __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
++ #define __NR_landlock_add_rule 445
++ __SYSCALL(__NR_landlock_add_rule, sys_landlock_add_rule)
++ #define __NR_landlock_restrict_self 446
++ __SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
+ =20
+  /*
+   * Please add new compat syscalls above this comment and update
+diff --cc arch/ia64/kernel/syscalls/syscall.tbl
+index c072cd459bb5,48dbbc95a01f..000000000000
+--- a/arch/ia64/kernel/syscalls/syscall.tbl
++++ b/arch/ia64/kernel/syscalls/syscall.tbl
+@@@ -363,4 -363,6 +363,7 @@@
+  440	common	process_madvise			sys_process_madvise
+  441	common	epoll_pwait2			sys_epoll_pwait2
+  442	common	mount_setattr			sys_mount_setattr
+ +443	common	quotactl_path			sys_quotactl_path
++ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	common	landlock_add_rule		sys_landlock_add_rule
++ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/m68k/kernel/syscalls/syscall.tbl
+index 5e9f81073ff4,595108bbbe42..000000000000
+--- a/arch/m68k/kernel/syscalls/syscall.tbl
++++ b/arch/m68k/kernel/syscalls/syscall.tbl
+@@@ -442,4 -442,6 +442,7 @@@
+  440	common	process_madvise			sys_process_madvise
+  441	common	epoll_pwait2			sys_epoll_pwait2
+  442	common	mount_setattr			sys_mount_setattr
+ +443	common	quotactl_path			sys_quotactl_path
++ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	common	landlock_add_rule		sys_landlock_add_rule
++ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/microblaze/kernel/syscalls/syscall.tbl
+index 8e74d690c64d,db23d65871f9..000000000000
+--- a/arch/microblaze/kernel/syscalls/syscall.tbl
++++ b/arch/microblaze/kernel/syscalls/syscall.tbl
+@@@ -448,4 -448,6 +448,7 @@@
+  440	common	process_madvise			sys_process_madvise
+  441	common	epoll_pwait2			sys_epoll_pwait2
+  442	common	mount_setattr			sys_mount_setattr
+ +443	common	quotactl_path			sys_quotactl_path
++ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	common	landlock_add_rule		sys_landlock_add_rule
++ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/mips/kernel/syscalls/syscall_n32.tbl
+index 6f397e56926f,5028839225fa..000000000000
+--- a/arch/mips/kernel/syscalls/syscall_n32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n32.tbl
+@@@ -381,4 -381,6 +381,7 @@@
+  440	n32	process_madvise			sys_process_madvise
+  441	n32	epoll_pwait2			compat_sys_epoll_pwait2
+  442	n32	mount_setattr			sys_mount_setattr
+ +443	n32	quotactl_path			sys_quotactl_path
++ 444	n32	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	n32	landlock_add_rule		sys_landlock_add_rule
++ 446	n32	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/mips/kernel/syscalls/syscall_n64.tbl
+index ab85a357c4fa,ec9c68b75e23..000000000000
+--- a/arch/mips/kernel/syscalls/syscall_n64.tbl
++++ b/arch/mips/kernel/syscalls/syscall_n64.tbl
+@@@ -357,4 -357,6 +357,7 @@@
+  440	n64	process_madvise			sys_process_madvise
+  441	n64	epoll_pwait2			sys_epoll_pwait2
+  442	n64	mount_setattr			sys_mount_setattr
+ +443	n64	quotactl_path			sys_quotactl_path
++ 444	n64	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	n64	landlock_add_rule		sys_landlock_add_rule
++ 446	n64	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/mips/kernel/syscalls/syscall_o32.tbl
+index 9c4cd2b40b38,24afd33e3e49..000000000000
+--- a/arch/mips/kernel/syscalls/syscall_o32.tbl
++++ b/arch/mips/kernel/syscalls/syscall_o32.tbl
+@@@ -430,4 -430,6 +430,7 @@@
+  440	o32	process_madvise			sys_process_madvise
+  441	o32	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
+  442	o32	mount_setattr			sys_mount_setattr
+ +443	o32	quotactl_path			sys_quotactl_path
++ 444	o32	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	o32	landlock_add_rule		sys_landlock_add_rule
++ 446	o32	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/parisc/kernel/syscalls/syscall.tbl
+index 80fba3f7d47b,8ddd0b82d767..000000000000
+--- a/arch/parisc/kernel/syscalls/syscall.tbl
++++ b/arch/parisc/kernel/syscalls/syscall.tbl
+@@@ -440,4 -440,6 +440,7 @@@
+  440	common	process_madvise			sys_process_madvise
+  441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
+  442	common	mount_setattr			sys_mount_setattr
+ +443	common	quotactl_path			sys_quotactl_path
++ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	common	landlock_add_rule		sys_landlock_add_rule
++ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/powerpc/kernel/syscalls/syscall.tbl
+index f66f9c9b9d6c,02150894b1cf..000000000000
+--- a/arch/powerpc/kernel/syscalls/syscall.tbl
++++ b/arch/powerpc/kernel/syscalls/syscall.tbl
+@@@ -522,4 -522,6 +522,7 @@@
+  440	common	process_madvise			sys_process_madvise
+  441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
+  442	common	mount_setattr			sys_mount_setattr
+ +443	common	quotactl_path			sys_quotactl_path
++ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	common	landlock_add_rule		sys_landlock_add_rule
++ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/s390/kernel/syscalls/syscall.tbl
+index a421905c36e8,331663efd3e7..000000000000
+--- a/arch/s390/kernel/syscalls/syscall.tbl
++++ b/arch/s390/kernel/syscalls/syscall.tbl
+@@@ -445,4 -445,6 +445,7 @@@
+  440  common	process_madvise		sys_process_madvise		sys_process_madvise
+  441  common	epoll_pwait2		sys_epoll_pwait2		compat_sys_epoll_pwait2
+  442  common	mount_setattr		sys_mount_setattr		sys_mount_setattr
+ +443  common	quotactl_path		sys_quotactl_path		sys_quotactl_path
++ 444  common	landlock_create_ruleset	sys_landlock_create_ruleset	sys_landl=
+ock_create_ruleset
++ 445  common	landlock_add_rule	sys_landlock_add_rule		sys_landlock_add_rule
++ 446  common	landlock_restrict_self	sys_landlock_restrict_self	sys_landloc=
+k_restrict_self
+diff --cc arch/sh/kernel/syscalls/syscall.tbl
+index f68517aaa4f1,6ada711f4b72..000000000000
+--- a/arch/sh/kernel/syscalls/syscall.tbl
++++ b/arch/sh/kernel/syscalls/syscall.tbl
+@@@ -445,4 -445,6 +445,7 @@@
+  440	common	process_madvise			sys_process_madvise
+  441	common	epoll_pwait2			sys_epoll_pwait2
+  442	common	mount_setattr			sys_mount_setattr
+ +443	common	quotactl_path			sys_quotactl_path
++ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	common	landlock_add_rule		sys_landlock_add_rule
++ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/sparc/kernel/syscalls/syscall.tbl
+index 3ee82321504d,1dbe3239a638..000000000000
+--- a/arch/sparc/kernel/syscalls/syscall.tbl
++++ b/arch/sparc/kernel/syscalls/syscall.tbl
+@@@ -488,4 -488,6 +488,7 @@@
+  440	common	process_madvise			sys_process_madvise
+  441	common	epoll_pwait2			sys_epoll_pwait2		compat_sys_epoll_pwait2
+  442	common	mount_setattr			sys_mount_setattr
+ +443	common	quotactl_path			sys_quotactl_path
++ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	common	landlock_add_rule		sys_landlock_add_rule
++ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc arch/x86/entry/syscalls/syscall_32.tbl
+index f52a443eede0,782c310de1da..000000000000
+--- a/arch/x86/entry/syscalls/syscall_32.tbl
++++ b/arch/x86/entry/syscalls/syscall_32.tbl
+@@@ -447,4 -447,6 +447,7 @@@
+  440	i386	process_madvise		sys_process_madvise
+  441	i386	epoll_pwait2		sys_epoll_pwait2		compat_sys_epoll_pwait2
+  442	i386	mount_setattr		sys_mount_setattr
+ +443	i386	quotactl_path		sys_quotactl_path
++ 444	i386	landlock_create_ruleset	sys_landlock_create_ruleset
++ 445	i386	landlock_add_rule	sys_landlock_add_rule
++ 446	i386	landlock_restrict_self	sys_landlock_restrict_self
+diff --cc arch/x86/entry/syscalls/syscall_64.tbl
+index 7eb007b8cab5,8604ee4bfff9..000000000000
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@@ -364,7 -364,9 +364,10 @@@
+  440	common	process_madvise		sys_process_madvise
+  441	common	epoll_pwait2		sys_epoll_pwait2
+  442	common	mount_setattr		sys_mount_setattr
+ +443	common	quotactl_path		sys_quotactl_path
++ 444	common	landlock_create_ruleset	sys_landlock_create_ruleset
++ 445	common	landlock_add_rule	sys_landlock_add_rule
++ 446	common	landlock_restrict_self	sys_landlock_restrict_self
+ =20
+  #
+  # Due to a historical design error, certain syscalls are numbered differe=
+ntly
+diff --cc arch/xtensa/kernel/syscalls/syscall.tbl
+index c71cc45633de,2fad056a32e8..000000000000
+--- a/arch/xtensa/kernel/syscalls/syscall.tbl
++++ b/arch/xtensa/kernel/syscalls/syscall.tbl
+@@@ -413,4 -413,6 +413,7 @@@
+  440	common	process_madvise			sys_process_madvise
+  441	common	epoll_pwait2			sys_epoll_pwait2
+  442	common	mount_setattr			sys_mount_setattr
+ +443	common	quotactl_path			sys_quotactl_path
++ 444	common	landlock_create_ruleset		sys_landlock_create_ruleset
++ 445	common	landlock_add_rule		sys_landlock_add_rule
++ 446	common	landlock_restrict_self		sys_landlock_restrict_self
+diff --cc include/uapi/asm-generic/unistd.h
+index 739c839d28fe,300608b05226..000000000000
+--- a/include/uapi/asm-generic/unistd.h
++++ b/include/uapi/asm-generic/unistd.h
+@@@ -863,11 -863,15 +863,17 @@@ __SYSCALL(__NR_process_madvise, sys_pro
+  __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
+  #define __NR_mount_setattr 442
+  __SYSCALL(__NR_mount_setattr, sys_mount_setattr)
+ +#define __NR_quotactl_path 443
+ +__SYSCALL(__NR_quotactl_path, sys_quotactl_path)
++ #define __NR_landlock_create_ruleset 444
++ __SYSCALL(__NR_landlock_create_ruleset, sys_landlock_create_ruleset)
++ #define __NR_landlock_add_rule 445
++ __SYSCALL(__NR_landlock_add_rule, sys_landlock_add_rule)
++ #define __NR_landlock_restrict_self 446
++ __SYSCALL(__NR_landlock_restrict_self, sys_landlock_restrict_self)
+ =20
+  #undef __NR_syscalls
+- #define __NR_syscalls 444
++ #define __NR_syscalls 447
+ =20
+  /*
+   * 32 bit systems traditionally used different
+
+--Sig_/jIwcnALhWun5T_MjVd1jZXm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBv2poACgkQAVBC80lX
+0GwtXAf/VxxBn+yxEso+1Ls1MBrUZ1oaHOnmzU1KGGWED5LkmWWBXQF7JujsLHmB
+IMZPFCpYoy+DzcS4zlS0D5PD6RNrbhWk6ES3uRlVBtHk0iPxCRMLHsxnArgc3QV6
+1WrI5pM69jNDCTggor6T1bC4vhkt8fUf8jp1BhSZM235mSmMj3oINWIL9oDp8Bbx
+wXhHjU6FAlXqfnmKt8bazCiSF0UPgx4cZwGlustgW9o6ZoPwA8xKIzrYzfM+v1nV
+Qsw+Q+L2BCEv+uK6tBDkj+qnkwE9WXOeuGhcHgQbUjlADcZfZPJ/WhBE7zgZWBwU
++5kK6J5sdxXTDDWt84CSV89dPWH0eA==
+=hIOZ
+-----END PGP SIGNATURE-----
+
+--Sig_/jIwcnALhWun5T_MjVd1jZXm--
