@@ -2,68 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B3B3597C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C153597CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbhDIIZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:25:12 -0400
-Received: from spam.zju.edu.cn ([61.164.42.155]:5652 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231370AbhDIIZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:25:11 -0400
-Received: by ajax-webmail-mail-app3 (Coremail) ; Fri, 9 Apr 2021 16:24:52
- +0800 (GMT+08:00)
-X-Originating-IP: [222.205.72.8]
-Date:   Fri, 9 Apr 2021 16:24:52 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Jon Hunter" <jonathanh@nvidia.com>
-Cc:     kjlu@umn.edu, "Laxman Dewangan" <ldewangan@nvidia.com>,
-        "Vinod Koul" <vkoul@kernel.org>,
-        "Thierry Reding" <thierry.reding@gmail.com>,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] dmaengine: tegra20: Fix runtime PM imbalance in
- tegra_dma_issue_pending
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
-In-Reply-To: <5699d0e9-968c-c8b0-3b0b-0416b5b48aa0@nvidia.com>
-References: <20210408071158.12565-1-dinghao.liu@zju.edu.cn>
- <5699d0e9-968c-c8b0-3b0b-0416b5b48aa0@nvidia.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S231543AbhDIIZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:25:42 -0400
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:60083 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229846AbhDIIZl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:25:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617956728; x=1649492728;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=4H3DCv2rJZGlo//cFsdwjkvun9rW0cNQWVYoSvplp70=;
+  b=dl22bEKehZUsbN1SdpITMjW0Nv9Z2/7deOrNoRMdr6OxRAqtHK86i+gN
+   QOntUUZbp5VyuFzi4fvGnFTQAkwaJmAtR+YIwxtiAvtRLO/jeaD9k4s/7
+   P4ol+XWv+anCLXzEsd5rdpyvj4F8t002O8YDcq/NvTN4J7JceGDii+A7l
+   1Wptt+/zVhon62IquoXL3ll7g0OaY9CrN7kCW4Xy5/BwyuERscYqGTEWr
+   4nm2mO4J4fV7a3O8KyPppoBsheJz4P7G05GY/sdeOrRlLnA3ynydeHMn/
+   /gbkVUlb2HiGCn+YUzaWpcg77PCtpYmRUfFOlfH+98Y6aaYYcCFi9bUKj
+   A==;
+IronPort-SDR: PNfEfxS9qld+x8sKLRIlorTtZz+P54O6boNjGQj/g9ARreK39HF0VOnhDFUCadbKm18EuCqsw6
+ mFyiOjTMlzxS7JrLVrKjba3ebGKz7K78TMAkgqYXmTtpEs8ISH97xDIfAc3lGxR/iEe6emT/Jw
+ w3stGybC2F82yzGikYl7ie2rEQbj0vejngE8McC+tU+bVL/abx1JiWAGRWMUHRO9zwUNjIeMZ2
+ YgwVEBviQ1kWksanIVYdWEx/cFaucWnPo9efK/rFDc2GRVDmQRNTv5+lf8+QyYI6GvlljBa1wC
+ 1fU=
+X-IronPort-AV: E=Sophos;i="5.82,208,1613458800"; 
+   d="scan'208";a="110235837"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Apr 2021 01:25:27 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 9 Apr 2021 01:25:27 -0700
+Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Fri, 9 Apr 2021 01:25:24 -0700
+From:   Tudor Ambarus <tudor.ambarus@microchip.com>
+To:     <ludovic.desroches@microchip.com>, <linus.walleij@linaro.org>,
+        <claudiu.beznea@microchip.com>
+CC:     <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>
+Subject: [PATCH] pinctrl: at91-pio4: Fix slew rate disablement
+Date:   Fri, 9 Apr 2021 11:25:22 +0300
+Message-ID: <20210409082522.625168-1-tudor.ambarus@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-ID: <7c55cf68.45570.178b5bbe111.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgC3nyJUD3BgqX_xAA--.30209W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgkKBlZdtTUlDwAEsi
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiAwOC8wNC8yMDIxIDA4OjExLCBEaW5naGFvIExpdSB3cm90ZToKPiA+IHBtX3J1bnRpbWVf
-Z2V0X3N5bmMoKSB3aWxsIGluY3JlYXNlIHRoZSBydW10aW1lIFBNIGNvdW50ZXIKPiA+IGV2ZW4g
-aXQgcmV0dXJucyBhbiBlcnJvci4gVGh1cyBhIHBhaXJpbmcgZGVjcmVtZW50IGlzIG5lZWRlZAo+
-ID4gdG8gcHJldmVudCByZWZjb3VudCBsZWFrLiBGaXggdGhpcyBieSByZXBsYWNpbmcgdGhpcyBB
-UEkgd2l0aAo+ID4gcG1fcnVudGltZV9yZXN1bWVfYW5kX2dldCgpLCB3aGljaCB3aWxsIG5vdCBj
-aGFuZ2UgdGhlIHJ1bnRpbWUKPiA+IFBNIGNvdW50ZXIgb24gZXJyb3IuCj4gPiAKPiA+IFNpZ25l
-ZC1vZmYtYnk6IERpbmdoYW8gTGl1IDxkaW5naGFvLmxpdUB6anUuZWR1LmNuPgo+ID4gLS0tCj4g
-PiAgZHJpdmVycy9kbWEvdGVncmEyMC1hcGItZG1hLmMgfCAyICstCj4gPiAgMSBmaWxlIGNoYW5n
-ZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL2RtYS90ZWdyYTIwLWFwYi1kbWEuYyBiL2RyaXZlcnMvZG1hL3RlZ3JhMjAtYXBiLWRt
-YS5jCj4gPiBpbmRleCA3MTgyN2Q5YjBhYTEuLjczMTc4YWZhZjRjMiAxMDA2NDQKPiA+IC0tLSBh
-L2RyaXZlcnMvZG1hL3RlZ3JhMjAtYXBiLWRtYS5jCj4gPiArKysgYi9kcml2ZXJzL2RtYS90ZWdy
-YTIwLWFwYi1kbWEuYwo+ID4gQEAgLTcyMyw3ICs3MjMsNyBAQCBzdGF0aWMgdm9pZCB0ZWdyYV9k
-bWFfaXNzdWVfcGVuZGluZyhzdHJ1Y3QgZG1hX2NoYW4gKmRjKQo+ID4gIAkJZ290byBlbmQ7Cj4g
-PiAgCX0KPiA+ICAJaWYgKCF0ZGMtPmJ1c3kpIHsKPiA+IC0JCWVyciA9IHBtX3J1bnRpbWVfZ2V0
-X3N5bmModGRjLT50ZG1hLT5kZXYpOwo+ID4gKwkJZXJyID0gcG1fcnVudGltZV9yZXN1bWVfYW5k
-X2dldCh0ZGMtPnRkbWEtPmRldik7Cj4gPiAgCQlpZiAoZXJyIDwgMCkgewo+ID4gIAkJCWRldl9l
-cnIodGRjMmRldih0ZGMpLCAiRmFpbGVkIHRvIGVuYWJsZSBETUFcbiIpOwo+ID4gIAkJCWdvdG8g
-ZW5kOwo+ID4gCj4gCj4gCj4gVGhhbmtzISBMb29rcyBsaWtlIHRoZXJlIGFyZSB0d28gaW5zdGFu
-Y2VzIG9mIHRoaXMgdGhhdCBuZWVkIGZpeGluZy4KPiAKClRoYW5rcyBmb3IgcG9pbnRpbmcgb3V0
-IHRoaXMhIEkgd2lsbCBmaXggdGhpcyBhbmQgc2VuZCBhIG5ldyBwYXRjaCBzb29uLgoKUmVnYXJk
-cywKRGluZ2hhbw==
+The slew rate was enabled by default for each configuration of the
+pin. In case the pin had more than one configuration, even if
+we set the slew rate as disabled in the device tree, the next pin
+configuration would set again the slew rate enabled by default,
+overwriting the slew rate disablement.
+Instead of enabling the slew rate by default for each pin configuration,
+enable the slew rate by default just once per pin, regardless of the
+number of configurations. This way the slew rate disablement will also
+work for cases where pins have multiple configurations.
+
+Fixes: 440b144978ba ("pinctrl: at91-pio4: add support for slew-rate")
+Signed-off-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+---
+ drivers/pinctrl/pinctrl-at91-pio4.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/pinctrl/pinctrl-at91-pio4.c b/drivers/pinctrl/pinctrl-at91-pio4.c
+index a5d328808e4c..4c01d8471ffa 100644
+--- a/drivers/pinctrl/pinctrl-at91-pio4.c
++++ b/drivers/pinctrl/pinctrl-at91-pio4.c
+@@ -801,6 +801,10 @@ static int atmel_conf_pin_config_group_set(struct pinctrl_dev *pctldev,
+ 
+ 	conf = atmel_pin_config_read(pctldev, pin_id);
+ 
++	/* Keep slew rate enabled by default. */
++	if (atmel_pioctrl->slew_rate_support)
++		conf |= ATMEL_PIO_SR_MASK;
++
+ 	for (i = 0; i < num_configs; i++) {
+ 		unsigned int param = pinconf_to_config_param(configs[i]);
+ 		unsigned int arg = pinconf_to_config_argument(configs[i]);
+@@ -808,10 +812,6 @@ static int atmel_conf_pin_config_group_set(struct pinctrl_dev *pctldev,
+ 		dev_dbg(pctldev->dev, "%s: pin=%u, config=0x%lx\n",
+ 			__func__, pin_id, configs[i]);
+ 
+-		/* Keep slew rate enabled by default. */
+-		if (atmel_pioctrl->slew_rate_support)
+-			conf |= ATMEL_PIO_SR_MASK;
+-
+ 		switch (param) {
+ 		case PIN_CONFIG_BIAS_DISABLE:
+ 			conf &= (~ATMEL_PIO_PUEN_MASK);
+-- 
+2.25.1
+
