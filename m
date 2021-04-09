@@ -2,108 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B0235A0BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 209F335A0BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233836AbhDIOK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:10:58 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49666 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232884AbhDIOK5 (ORCPT
+        id S233655AbhDIOL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:11:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36617 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232615AbhDIOL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:10:57 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 139E3fpi034753;
-        Fri, 9 Apr 2021 10:10:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=fN8GTHnYb6PRqQ8ffJiwICPF/MXTfgce0XDLBvAfLrY=;
- b=qTMmWpaGAV6p4XkfMNZbXLagL7zbtA4E/nApBkLo/R+FqXlOOUy306U0qnq3HpWHi3mY
- BF+yZVUbrarrXikNDZjDZYzut+1PE/cye7+x1Wv4acODPwde5pFfl0H2kGUQYntAEgnw
- zrIMC81Janjk9LdUU+u/t5n23mSLSXTM5/FSR17+uuH/KjFWCNnxPalY7aYfvapUFQaL
- DLL6sKD4/S8thET48PN+gY3421jY1SF60A2dzhMojx92il550BNcCwL32vzjZWK38sUj
- x2Qrxqf1ImMIn3RT2fVpeFlyyU7IcSarVkYpQcorkPbZCPOvsWLCf+sAuI4ECRfEePNi nA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37tr2ngtkh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 10:10:35 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 139E3npm035697;
-        Fri, 9 Apr 2021 10:10:35 -0400
-Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37tr2ngtj7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 10:10:34 -0400
-Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
-        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 139E36Fk005937;
-        Fri, 9 Apr 2021 14:10:32 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma01fra.de.ibm.com with ESMTP id 37rvmq9bkk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 14:10:32 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 139EA9Gx27525440
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 9 Apr 2021 14:10:09 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 41B5C11C052;
-        Fri,  9 Apr 2021 14:10:30 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00BBE11C05E;
-        Fri,  9 Apr 2021 14:10:29 +0000 (GMT)
-Received: from linux.ibm.com (unknown [9.145.82.136])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri,  9 Apr 2021 14:10:28 +0000 (GMT)
-Date:   Fri, 9 Apr 2021 17:10:26 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Alex Ghiti <alex@ghiti.fr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        Vitaly Wool <vitaly.wool@konsulko.com>
-Subject: Re: [PATCH v7] RISC-V: enable XIP
-Message-ID: <YHBgUs1JKvHWkG9F@linux.ibm.com>
-References: <20210409065115.11054-1-alex@ghiti.fr>
- <3500f3cb-b660-5bbc-ae8d-0c9770e4a573@ghiti.fr>
- <be575094-badf-bac7-1629-36808ca530cc@redhat.com>
- <c4e78916-7e4c-76db-47f6-4dda3f09c871@ghiti.fr>
- <d4d771a8-c731-acaf-b42d-44800c61f2e6@redhat.com>
+        Fri, 9 Apr 2021 10:11:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617977504;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=F65FN3bXG04vQx79zPSTnv758c5T+VchrylwBxQ1dLg=;
+        b=TBAYQswfUfQHb/CCXJnSPiu1tf10KnzX8WzLILq172WiBVokrrUcuE2JqwOe9dcR8XPItb
+        NpTS2ot8w0/0UgeEUb0TbkniB9iWg1I3wAebWX9rHzjHsr09Sb1+TlNXeOS+LxspVvAQL6
+        ySo49kuphN76QdxaIC7nrTfXS/WDPQk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-303-b399KCHfMOO1u26-_ry1-Q-1; Fri, 09 Apr 2021 10:11:42 -0400
+X-MC-Unique: b399KCHfMOO1u26-_ry1-Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C957884B9A1;
+        Fri,  9 Apr 2021 14:11:40 +0000 (UTC)
+Received: from krava (unknown [10.40.195.216])
+        by smtp.corp.redhat.com (Postfix) with SMTP id F29D119C66;
+        Fri,  9 Apr 2021 14:11:38 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 16:11:38 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Denys Zagorui <dzagorui@cisco.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org
+Subject: Re: [PATCH v3] perf: build reproducibility improvements
+Message-ID: <YHBgmopzUg4cMQhs@krava>
+References: <20210408125135.8445-1-dzagorui@cisco.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d4d771a8-c731-acaf-b42d-44800c61f2e6@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: QDSG-5_Koocokt--_7BVPuAJFHwl6ulJ
-X-Proofpoint-ORIG-GUID: sjncEtCvmTJ6p6qYWrqpBBcwCjEXFVaB
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-09_06:2021-04-09,2021-04-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=729
- spamscore=0 clxscore=1015 phishscore=0 impostorscore=0 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 suspectscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104090105
+In-Reply-To: <20210408125135.8445-1-dzagorui@cisco.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 02:07:24PM +0200, David Hildenbrand wrote:
-> On 09.04.21 13:39, Alex Ghiti wrote:
-> > Hi David,
+On Thu, Apr 08, 2021 at 05:51:35AM -0700, Denys Zagorui wrote:
+> This patch helps to make perf build more reproducible
 > 
-> I assume you still somehow create the direct mapping for the kernel, right?
-> So it's really some memory region with a direct mapping but without a memmap
-> (and right now, without a resource), correct?
+> It seems there is some need to have an ability to invoke
+> perf from build directory without installation
+> (84cfac7f05e1: perf tools: Set and pass DOCDIR to builtin-report.c)
+> DOCDIR contains an absolute path to kernel source directory.
+> This path can be read from .config-detected that is stored in the
+> same dir as perf executable.
+> 
+> There is also python binding test where PYTHONPATH is used to store
+> absolute path to python/perf.so library. This path can be
+> also determined in runtime.
+> 
+> bison stores full paths in generated files. This can be
+> remapped by using --file-prefix-map option that is available
+> starting from version 3.7.1.
+> 
+> Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
+> ---
+>  tools/perf/Build              |  1 -
+>  tools/perf/Makefile.config    |  9 +++++
+>  tools/perf/builtin-report.c   | 13 +++++++-
+>  tools/perf/tests/Build        |  2 +-
+>  tools/perf/tests/python-use.c | 14 +++++++-
+>  tools/perf/util/Build         |  6 ++--
+>  tools/perf/util/util.c        | 62 +++++++++++++++++++++++++++++++++++
+>  tools/perf/util/util.h        |  5 +++
+>  8 files changed, 105 insertions(+), 7 deletions(-)
+> 
+> diff --git a/tools/perf/Build b/tools/perf/Build
+> index db61dbe2b543..56d0189f1029 100644
+> --- a/tools/perf/Build
+> +++ b/tools/perf/Build
+> @@ -45,7 +45,6 @@ CFLAGS_perf.o              += -DPERF_HTML_PATH="BUILD_STR($(htmldir_SQ))"	\
+>  			      -DPREFIX="BUILD_STR($(prefix_SQ))"
+>  CFLAGS_builtin-trace.o	   += -DSTRACE_GROUPS_DIR="BUILD_STR($(STRACE_GROUPS_DIR_SQ))"
+>  CFLAGS_builtin-report.o	   += -DTIPDIR="BUILD_STR($(tipdir_SQ))"
+> -CFLAGS_builtin-report.o	   += -DDOCDIR="BUILD_STR($(srcdir_SQ)/Documentation)"
+>  
+>  perf-y += util/
+>  perf-y += arch/
+> diff --git a/tools/perf/Makefile.config b/tools/perf/Makefile.config
+> index d8e59d31399a..2035bae6d5c5 100644
+> --- a/tools/perf/Makefile.config
+> +++ b/tools/perf/Makefile.config
+> @@ -195,6 +195,12 @@ ifeq ($(call get-executable,$(BISON)),)
+>    dummy := $(error Error: $(BISON) is missing on this system, please install it)
+>  endif
+>  
+> +ifneq ($(OUTPUT),)
+> +  ifeq ($(shell expr $(shell $(BISON) --version | grep bison | sed -e 's/.\+ \([0-9]\+\).\([0-9]\+\).\([0-9]\+\)/\1\2\3/g') \>\= 371), 1)
+> +    BISON_FILE_PREFIX_MAP := --file-prefix-map=$(OUTPUT)=
+> +  endif
+> +endif
 
-XIP kernel text is not a region in memory to begin with ;-)
+please move all the flex, tips and python changes into separate patches
 
-It resides in a flash and it is executed directly from there without being
-relocated to RAM.
+SNIP
 
-That's why it does not need neither direct mapping, nor struct pages.
- 
--- 
-Sincerely yours,
-Mike.
+> index 98c6d474aa6f..930aa4c6264e 100644
+> --- a/tools/perf/tests/python-use.c
+> +++ b/tools/perf/tests/python-use.c
+> @@ -8,16 +8,28 @@
+>  #include <linux/compiler.h>
+>  #include "tests.h"
+>  #include "util/debug.h"
+> +#include "util/util.h"
+>  
+>  int test__python_use(struct test *test __maybe_unused, int subtest __maybe_unused)
+>  {
+>  	char *cmd;
+>  	int ret;
+> +	char *exec_path;
+> +	char *pythonpath;
+> +
+> +	exec_path = perf_exe_path();
+> +	if (exec_path == NULL)
+> +		return -1;
+> +
+> +	if (asprintf(&pythonpath, "%spython", exec_path) < 0)
+> +		return -1;
+
+please check if the pythonpath exists and don't use it if does not..
+with perf from rpm and python perf.so module the path is already there
+so we don't care
+
+SNIP
+
+> +
+> +int perf_src_doc(const char *exec_path, char **strp)
+> +{
+> +	FILE *file;
+> +	char *line = NULL;
+> +	size_t line_len = 0;
+> +	ssize_t nread;
+> +	int ret = -1;
+> +	char *config_detected = NULL;
+> +	static const char srcdir[] = "srcdir_SQ";
+> +
+> +	if (asprintf(&config_detected, "%s.config-detected", exec_path) < 0)
+> +		return -1;
+> +
+> +	file = fopen(config_detected, "r");
+> +	if (!file)
+> +		goto out;
+> +
+> +	while (!feof(file)) {
+> +		nread = getline(&line, &line_len, file);
+> +		if (nread < 0)
+> +			break;
+> +
+> +		if (!strncmp(line, srcdir, sizeof(srcdir) - 1)) {
+> +
+> +			if (line[nread - 1] == '\n')
+> +				line[nread - 1] = 0;
+> +
+> +			if (asprintf(strp, "%s/Documentation", &line[sizeof(srcdir)]) != -1)
+> +				ret = 0;
+> +
+> +			break;
+> +		}
+> +	}
+> +
+> +	fclose(file);
+> +out:
+> +	free(line);
+> +	free(config_detected);
+> +	return ret;
+> +}
+
+it's lot of tricky code because of one file, how about we compile
+tips.txt in perf binary directly? it might be even less code changes
+
+thanks,
+jirka
+
