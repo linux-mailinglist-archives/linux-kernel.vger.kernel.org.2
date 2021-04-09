@@ -2,166 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D1735947B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:23:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B758359484
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:25:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233187AbhDIFYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231503AbhDIFYA (ORCPT
+        id S233245AbhDIFYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:24:51 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:53447 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233253AbhDIFYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:24:00 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7737AC061765
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 22:23:47 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id b17so3763995ilh.6
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=telus.net; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iDvYE3lo6mdtPyL38hcLZsUZ7A2Go0Bp2cFLK0Yzql8=;
-        b=dTP+Zg0XNWCGh0/GeznXbP4zFivhq7Gf7UKRwBny6Ks7gGOxEJUkjX/tAK1GHpF/lD
-         BVJjrx35Dm4dp9fhkx6HX+2lviAu6doNehUEW5O979DMX+LYSk8z87+Y5uuAlWgfEHyX
-         FxuThKDDRnfO2+kgZpC1HF+Qm52L8DCzqf+hxPGjGc6329itw4PCSYYvp7M3iA/sFQbo
-         UvEJ5TxV9/+hAjN00n8LtzmGh6NWepMFCk+3VQ5cA0LVjM85fa5C00Jy9wLFEo75vIJU
-         sFP/HxH9ninIjQM203jbk0HfjhfVHnwJcrOPQT5RRkLj+iVQpz1uaJ4AOa0ybUuGSp5R
-         MyiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iDvYE3lo6mdtPyL38hcLZsUZ7A2Go0Bp2cFLK0Yzql8=;
-        b=dHev0ul2HM0Hqo7/HYatIsdokfpPyL26tV+nq0E0Ixjou64q122v+rC7wMEgcBB1Hp
-         7b6Y2rFprmuPrz0n7MreG4LoqhBdoTC2IwwHs1ffsF6r3qIMb5pwqCP/lNSvO0XCKW1O
-         vFiiGf/4ycSPNPt3DponMbddQUTtWwWOWABoIa/sLMAMFJieUUgNk1GOa2xPODNaLkEh
-         bOjxrMqnZCMzN7cjAvPbn9WuKurxmuSslWsGNCYQxn04UMaWr7qP6uGWFmPyNkMgrSYc
-         azHPcB49k96mvIuf3AB+XPNeRgPGMul+t5D7jYeQmDiCSJx8+X9g6WBzeO5ePc1ASlFC
-         9cIQ==
-X-Gm-Message-State: AOAM533vjHFTmko4R2+0QIOLURDV5qjzkXnFrbksRQUOoEo8KWCu2mbg
-        JJs+qpI6/a7jfXHF/X0lvQ02/+IOqKHIi4VO8/Uwgw==
-X-Google-Smtp-Source: ABdhPJxTEr4WZEbUEtGTg0cnowxse6HWF8plMi3jVnhxNxBtxKg4fnIIej4/QL1DqlM5Z1owCB2Mz98wp+nr9un5HFs=
-X-Received: by 2002:a05:6e02:1a81:: with SMTP id k1mr41418ilv.18.1617945826941;
- Thu, 08 Apr 2021 22:23:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210404083354.23060-1-psampat@linux.ibm.com>
-In-Reply-To: <20210404083354.23060-1-psampat@linux.ibm.com>
-From:   Doug Smythies <dsmythies@telus.net>
-Date:   Thu, 8 Apr 2021 22:23:38 -0700
-Message-ID: <CAAYoRsWaAmyuJU4FCb7gtK0y-ZprdDVvp0vMpy=ZohzoC7YX1Q@mail.gmail.com>
-Subject: Re: [RFC v3 0/2] CPU-Idle latency selftest framework
-To:     Pratik Rajesh Sampat <psampat@linux.ibm.com>
-Cc:     rjw@rjwysocki.net, Daniel Lezcano <daniel.lezcano@linaro.org>,
-        shuah@kernel.org, ego@linux.vnet.ibm.com, svaidy@linux.ibm.com,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, pratik.r.sampat@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 9 Apr 2021 01:24:47 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id A0960580747;
+        Fri,  9 Apr 2021 01:24:31 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Fri, 09 Apr 2021 01:24:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=Tsg8t/mJg/l7Xo3qIgT/COuJ+KimOhQ
+        l4GFUqpSEKJU=; b=aSXk2orPauSq4IpUw+9+U8Q+/ZS2pBnkJOqeVdwgpSBrKH4
+        rwavWdTu3RER4VS7ec2GKaKA3VBup6i5FRgceSmosDEpNhR3yKU3Q9k1Z77gwZMq
+        fMuDesrezZk0YDWrY7h5n2h24EtV5hXgtSNcriyPmIW5FXNfXAXnKbuKx6E3EmFi
+        j4y/y5m2pg4ITm7HkFDTZitQ0YJl3fwHl0fSsGao+U8lB2V3H/G/H9dZj+KD9ImQ
+        sV8T6R9FdYPLjzxVsFhD6AFW5Dd6144sISzIv3e7Auyv4KKMTc35BcPjLpP8ZIKo
+        9iwvRqIHFtjEXrFzmQjYRp7iSFMEc6i6bP25Dzw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=Tsg8t/
+        mJg/l7Xo3qIgT/COuJ+KimOhQl4GFUqpSEKJU=; b=LLq6rlxZTo+gKhwAqZOsyR
+        oCA7427BBoQgCiUa3Vhu8hbEm+n8C8IcPqTyFsBmg6dvtdlxGRSdn2l4YhGgpp2M
+        TEbAin9Abtfcf+PSvvcJTVuneaDzSRcDb2tZDKuY9bfMWflUgo+yoOv122yelZKe
+        YX6GCr7VdccJr2l1tBYQmTVqTHT0x3HDIIJl5r6p4RWqC+vmyZC45kuLYkQaLAf3
+        02wf4KYGtPtH9eNskdObT2YEGBzjiOiVeU9aWoSH3NkDT4DGxflX7E3ZsB0HGSzV
+        40qQpDIGnIQ6U+FZYs4zJEv/sjjAWo3NJbfmlJYhebddUB9/FVIXErgRhOzksX2Q
+        ==
+X-ME-Sender: <xms:DeVvYCwFb7EEdjbVyV8_qSuW2T-zLc_alCF2XdjjD1aVQ6-7v-G-bw>
+    <xme:DeVvYOTXcH-ajixVXiFwdSUnsvGkX7Z0IICsypUksj9EN2wT8niG2Guai-fx11Bab
+    rQsAD4Tm5NN-kpsCA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudektddgleefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhephefhfeekgfekudevheffheeihedujeefjeevjeefudfgfeeutdeuvdeh
+    hfevueffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:DeVvYEUck1pddY3R2NbSi-oYdazQXk0ZImdpcmIscJsJP402DUNc3w>
+    <xmx:DeVvYIhziOZvZecLSXydXe2nG7op-y_qEsHyO4oFUhPDHEjqHH0Syw>
+    <xmx:DeVvYEAliW1uFjF-Tk207fuTPbYMqRv_vfB04OVmG8dcEPq_4HcldA>
+    <xmx:D-VvYE1AxOQX27pz2YOcLMaHbrSy6fojo_ag6CmEfA9FsEwyl_7Xtg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7ADBDA0007C; Fri,  9 Apr 2021 01:24:29 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <a181f404-ea59-4956-abe3-60d0bee917d2@www.fastmail.com>
+In-Reply-To: <CACPK8Xdw3+2Rt=tQ-ciusyK=W6BaP_DR4FSFp0qDuPq5z8MPBQ@mail.gmail.com>
+References: <20210319062752.145730-1-andrew@aj.id.au>
+ <CACPK8Xdw3+2Rt=tQ-ciusyK=W6BaP_DR4FSFp0qDuPq5z8MPBQ@mail.gmail.com>
+Date:   Fri, 09 Apr 2021 14:54:08 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Joel Stanley" <joel@jms.id.au>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        "OpenBMC Maillist" <openbmc@lists.ozlabs.org>,
+        "Corey Minyard" <minyard@acm.org>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        "Tomer Maimon" <tmaimon77@gmail.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "Avi Fishman" <avifishman70@gmail.com>,
+        "Patrick Venture" <venture@google.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Tali Perry" <tali.perry1@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lee Jones" <lee.jones@linaro.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        "Benjamin Fair" <benjaminfair@google.com>,
+        "Rob Herring" <robh@kernel.org>
+Subject: Re: [PATCH v2 01/21] dt-bindings: aspeed-lpc: Remove LPC partitioning
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pratik,
 
-I tried V3 on a Intel i5-10600K processor with 6 cores and 12 CPUs.
-The core to cpu mappings are:
-core 0 has cpus 0 and 6
-core 1 has cpus 1 and 7
-core 2 has cpus 2 and 8
-core 3 has cpus 3 and 9
-core 4 has cpus 4 and 10
-core 5 has cpus 5 and 11
 
-By default, it will test CPUs 0,2,4,6,10 on cores 0,2,4,0,2,4.
-wouldn't it make more sense to test each core once?
-With the source CPU always 0, I think the results from the results
-from the destination CPUs 0 and 6, on core 0 bias the results, at
-least in the deeper idle states. They don't make much difference in
-the shallow states. Myself, I wouldn't include them in the results.
-Example, where I used the -v option for all CPUs:
+On Fri, 9 Apr 2021, at 12:48, Joel Stanley wrote:
+> On Fri, 19 Mar 2021 at 06:28, Andrew Jeffery <andrew@aj.id.au> wrote:
+> >
+> > From: "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+> >
+> > The LPC controller has no concept of the BMC and the Host partitions.
+> > This patch fixes the documentation by removing the description on LPC
+> > partitions. The register offsets illustrated in the DTS node examples
+> > are also fixed to adapt to the LPC DTS change.
+> 
+> Is this accurate:
+> 
+>  The node examples change their reg address to be an offset from the
+> LPC HC to be an offset from the base of the LPC region.
 
---IPI Latency Test---
---Baseline IPI Latency measurement: CPU Busy--
-SRC_CPU   DEST_CPU IPI_Latency(ns)
-0            0          101
-0            1          790
-0            2          609
-0            3          595
-0            4          737
-0            5          759
-0            6          780
-0            7          741
-0            8          574
-0            9          681
-0           10          527
-0           11          552
-Baseline Avg IPI latency(ns): 620  <<<< suggest 656 here
----Enabling state: 0---
-SRC_CPU   DEST_CPU IPI_Latency(ns)
-0            0           76
-0            1          471
-0            2          420
-0            3          462
-0            4          454
-0            5          468
-0            6          453
-0            7          473
-0            8          380
-0            9          483
-0           10          492
-0           11          454
-Expected IPI latency(ns): 0
-Observed Avg IPI latency(ns) - State 0: 423 <<<<< suggest 456 here
----Enabling state: 1---
-SRC_CPU   DEST_CPU IPI_Latency(ns)
-0            0          112
-0            1          866
-0            2          663
-0            3          851
-0            4         1090
-0            5         1314
-0            6         1941
-0            7         1458
-0            8          687
-0            9          802
-0           10         1041
-0           11         1284
-Expected IPI latency(ns): 1000
-Observed Avg IPI latency(ns) - State 1: 1009 <<<< suggest 1006 here
----Enabling state: 2---
-SRC_CPU   DEST_CPU IPI_Latency(ns)
-0            0           75
-0            1        16362
-0            2        16785
-0            3        19650
-0            4        17356
-0            5        17606
-0            6         2217
-0            7        17958
-0            8        17332
-0            9        16615
-0           10        17382
-0           11        17423
-Expected IPI latency(ns): 120000
-Observed Avg IPI latency(ns) - State 2: 14730 <<<< suggest 17447 here
----Enabling state: 3---
-SRC_CPU   DEST_CPU IPI_Latency(ns)
-0            0          103
-0            1        17416
-0            2        17961
-0            3        16651
-0            4        17867
-0            5        17726
-0            6         2178
-0            7        16620
-0            8        20951
-0            9        16567
-0           10        17131
-0           11        17563
-Expected IPI latency(ns): 1034000
-Observed Avg IPI latency(ns) - State 3: 14894 <<<< suggest 17645 here
+Everything becomes based from the start of the LPC region, yes.
 
-Hope this helps.
-
-... Doug
+Andrew
