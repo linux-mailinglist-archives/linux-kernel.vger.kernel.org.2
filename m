@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCA13599F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14EEC3599F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233087AbhDIJy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:54:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42360 "EHLO mail.kernel.org"
+        id S233018AbhDIJzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:55:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233008AbhDIJyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:54:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCEED61182;
-        Fri,  9 Apr 2021 09:54:38 +0000 (UTC)
+        id S233038AbhDIJyz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:54:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A2166120F;
+        Fri,  9 Apr 2021 09:54:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962079;
-        bh=rtQqADye2j3uJ6LFp6KqltEYymbd/4R/x1yJHqHTBQo=;
+        s=korg; t=1617962081;
+        bh=D75x1ghqG1HGfffoYSKUhIr5pvSRwt9OJxflPSfcZMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WZN7TpRZW3oPhbf7zW2ZUNr+k3ZlFvfg4ui7dB8PcWD8M1KuHD59MJShydYVTG6rS
-         pj2iWTujOppLldQHikzMaSBRRZcNOZod8vBe+IKnax7t1fsEv4qk/cIcxfQtNFjLQU
-         8/HtxPnSARvwLoazwKrjY3oSKzMZRM+SOoQuL7EQ=
+        b=PVY9S2CrtaSh2Yg59hPRdjeXonainR9apMbOWSYZ68b0YnL9/9S2weNPq7v4l25oc
+         UFolExit/oh1yUwvFwQMYHBFTmc0q6vPaCkzn19LExt2fjjfcAvN9hdHP6eqkIT+f2
+         y9BxhthFZEMTp4Mggfjz4Dkxn4kVyya88nTpTgFY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.4 15/20] mtd: rawnand: orion: Fix the probe error path
-Date:   Fri,  9 Apr 2021 11:53:21 +0200
-Message-Id: <20210409095300.442861650@linuxfoundation.org>
+Subject: [PATCH 4.4 16/20] mtd: rawnand: diskonchip: Fix the probe error path
+Date:   Fri,  9 Apr 2021 11:53:22 +0200
+Message-Id: <20210409095300.471567141@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210409095259.957388690@linuxfoundation.org>
 References: <20210409095259.957388690@linuxfoundation.org>
@@ -41,39 +41,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit be238fbf78e4c7c586dac235ab967d3e565a4d1a upstream
+commit c5be12e45940f1aa1b5dfa04db5d15ad24f7c896 upstream
 
-nand_release() is supposed be called after MTD device registration.
-Here, only nand_scan() happened, so use nand_cleanup() instead.
+Not sure nand_cleanup() is the right function to call here but in any
+case it is not nand_release(). Indeed, even a comment says that
+calling nand_release() is a bit of a hack as there is no MTD device to
+unregister. So switch to nand_cleanup() for now and drop this
+comment.
 
-There is no real Fixes tag applying here as the use of nand_release()
+There is no Fixes tag applying here as the use of nand_release()
 in this driver predates by far the introduction of nand_cleanup() in
 commit d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
 which makes this change possible. However, pointing this commit as the
-culprit for backporting purposes makes sense even if this commit is not
-introducing any bug.
+culprit for backporting purposes makes sense even if it did not intruce
+any bug.
 
 Fixes: d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-34-miquel.raynal@bootlin.com
+Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-13-miquel.raynal@bootlin.com
 [sudip: manual backport to old file]
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/mtd/nand/orion_nand.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/nand/diskonchip.c |    7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
---- a/drivers/mtd/nand/orion_nand.c
-+++ b/drivers/mtd/nand/orion_nand.c
-@@ -165,7 +165,7 @@ static int __init orion_nand_probe(struc
- 	ret = mtd_device_parse_register(mtd, NULL, &ppdata,
- 			board->parts, board->nr_parts);
- 	if (ret) {
--		nand_release(mtd);
-+		nand_cleanup(nc);
- 		goto no_dev;
- 	}
+--- a/drivers/mtd/nand/diskonchip.c
++++ b/drivers/mtd/nand/diskonchip.c
+@@ -1608,13 +1608,10 @@ static int __init doc_probe(unsigned lon
+ 		numchips = doc2001_init(mtd);
  
+ 	if ((ret = nand_scan(mtd, numchips)) || (ret = doc->late_init(mtd))) {
+-		/* DBB note: i believe nand_release is necessary here, as
++		/* DBB note: i believe nand_cleanup is necessary here, as
+ 		   buffers may have been allocated in nand_base.  Check with
+ 		   Thomas. FIX ME! */
+-		/* nand_release will call mtd_device_unregister, but we
+-		   haven't yet added it.  This is handled without incident by
+-		   mtd_device_unregister, as far as I can tell. */
+-		nand_release(mtd);
++		nand_cleanup(nand);
+ 		kfree(mtd);
+ 		goto fail;
+ 	}
 
 
