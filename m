@@ -2,272 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876C235A229
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AA535A230
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233803AbhDIPkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43886 "EHLO
+        id S233137AbhDIPnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233409AbhDIPkH (ORCPT
+        with ESMTP id S229665AbhDIPno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:40:07 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3A4C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:39:54 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso6084042otq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:39:54 -0700 (PDT)
+        Fri, 9 Apr 2021 11:43:44 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93222C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:43:30 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id g17so6601139ejp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:43:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wBXCbSaC1Hxateqn/Ch5WAilYWAoC2JMMq7UEAHR1do=;
-        b=y/XdHrgvkAtzZG4AEcQgWJ2CwiXYpD1fnlwtOQEyXqzYlSYIKrCJIeG80oC52ceTuo
-         GpKSfBehqO9Ca7EDiS0O8CtX8s7xVc8OFZ03vEPINOBcZXGnsMAjuXg5i3EUfpbcHTh8
-         WjEUBL/LpwQpBEPtUHss4TwrxwLjzYqEUn5MNg4p7+l3zGmSiFLHDHcO99yZofocZy3k
-         0K1i8EQ29byWJ885cgVddwi5H/epqwQLwISzLoft7HYuMzTVBZSrM+K6UPKnKWgOsi5e
-         1z4NW9Ly2Lfm9xmlqAEgjtHvhSqTUiUZZM+ndDY1j7/88xQf5FiVBTOi6blV4wDzxLch
-         /nIg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eOQBkcBExWdOzHh9ROtfbTcad8EXL0NpCgTPDC8YVU0=;
+        b=jHvR2b2XusmZqh290V+djJWa1Nxfumd3xyxS5ELiMJ/K0garq58cL8wPCxGzOxQc+1
+         f80QRSasdCvuaThHV6SywIF5ulzIzkl/PG83/Ev3BiezWm6AbIGBENwu3NKNJDAE55cb
+         d+cl55dvnuuraoikehq4GnljwZ8YGdtAIJLOU451Nelo/mmp1xs4konHZZC8T9wybYly
+         8W05xf7jteaDKqyX7+Xt3Bc9Wo2gm24tDPc1ZZjLc1sXhBP56RPcufLHhMY8THHGXvGl
+         YQYTkHBD0V2RGkYy28dzGrAu81XpAH7uAVE9GE++JahdYYj+0gD6jfehXgT4cn4KMp4x
+         HWBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wBXCbSaC1Hxateqn/Ch5WAilYWAoC2JMMq7UEAHR1do=;
-        b=UjhhMzlJNjWAV1y30R7+LPMjQeeaDq/O9btXN9es+yET4G5QpPV/alJc00inE5T3gT
-         UcOlxLAgrwVeYIRaGobStPS2KebNGoJVlG2QC7me//oangOdVOo7NHOiebWXJdsGC6jM
-         YJukp1ym8ByGUfP+UVZxaZz4x4DMNT59F6oDuQutBpBTgX1vRjUpR0D29J6ypuyNJ15y
-         jHj7/a2VM1TR1bQC4LsRVUhvjKn96Fy1/XylI6xSCwki6V8mMV7J5VEBxlwhieGaAJfg
-         0tKRo/6sSpxdSCjxxkHjbZrUWfLEa4oVfEBaf7xDjVXK1OMoUr8Hf1wKBcgo2A9L79dT
-         V46A==
-X-Gm-Message-State: AOAM531qCcFuX4aFx6hgIHoyHitaWjdarX06T0/f/so4wfpGGEGqE6+N
-        p1KDEMxtiOGeB0KauSnzA2hhBQ==
-X-Google-Smtp-Source: ABdhPJxW16/9QODLB8PSfvdHzKuZFOygXqK3suhuuOHQu2vj0b4/CucGEoBVjs8lW6qQh/bZy+rYEQ==
-X-Received: by 2002:a9d:4808:: with SMTP id c8mr12915189otf.181.1617982793540;
-        Fri, 09 Apr 2021 08:39:53 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id v1sm653560otk.67.2021.04.09.08.39.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 08:39:53 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 10:39:51 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc:     Andy Gross <agross@kernel.org>, Felipe Balbi <balbi@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-usb@vger.kernel.org, Serge Semin <fancer.lancer@gmail.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND v8 7/7] arm64: dts: qcom: Harmonize DWC USB3 DT
- nodes name
-Message-ID: <YHB1RxbkXYeLDiz5@builder.lan>
-References: <20210409113029.7144-1-Sergey.Semin@baikalelectronics.ru>
- <20210409113029.7144-8-Sergey.Semin@baikalelectronics.ru>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eOQBkcBExWdOzHh9ROtfbTcad8EXL0NpCgTPDC8YVU0=;
+        b=fBYQ52aL5P9gtd0uKzTesqrYrVsCDtwanW1FALDK++4ey8/qwE1dpzaPTtostfRBM2
+         qdjOmkrUWSDKOQRz49gnz7m7vPNdB45xW4omksD9PGbgfHT6rfvrrwc1bclGM44TcBKb
+         BnffndLAJEgrX1iYK3ziJ4PUQEM5W2OOGOJccq/N1uxu7l+B3EyDC9yh1fV2D4y2LjQX
+         JAwfaXF2KRf3NowbZFyP4Ml7QD88MKHv4T9rHazf+SR68HOGJyOISlITKJ6odKbrx455
+         j+nJ+bwo0Ji2B0T0DkjHlgc5Ad0QYTiMUBCuvh7CAr+8B9gUaSOamEnIXy9GP9FsDN9L
+         edIQ==
+X-Gm-Message-State: AOAM5323qZefSDNhHGREZdGGFb32YA7bj59VdZXMoUF7FTD0Ry+YtBEi
+        zYudFudTTYkPK8N4p9jU8ZL5O0a34EZtnZ3vheM=
+X-Google-Smtp-Source: ABdhPJxSRZFTfTZiEzUO2PcNytVm0YBqn2asyhjN/KVvOFgcYRdNlRK3rpo3nI4jFY4MyLWiNa/LP2FQSddharx7mAI=
+X-Received: by 2002:a17:906:4bce:: with SMTP id x14mr16335453ejv.383.1617983009301;
+ Fri, 09 Apr 2021 08:43:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409113029.7144-8-Sergey.Semin@baikalelectronics.ru>
+References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183223.80F1E291@viggo.jf.intel.com>
+ <YG7XjTG9tiK29y1j@localhost.localdomain> <CAHbLzkqoaSnuBJMAe_heQt01FuPWODYQHJ955gaJNNojwbUjrw@mail.gmail.com>
+ <YG9IthpDC/lri4Qh@localhost.localdomain> <CAHbLzkqt0_xM=rAaNiSwKn=kY=wmWiFe3N+CEuqH_ryU-o1ysQ@mail.gmail.com>
+ <YG/g49rCrId0ALra@localhost.localdomain>
+In-Reply-To: <YG/g49rCrId0ALra@localhost.localdomain>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 9 Apr 2021 08:43:17 -0700
+Message-ID: <CAHbLzkr0AWWNMJ6i1551m75YfsVwdYuhLbW8sZqW_M-iH8vpBw@mail.gmail.com>
+Subject: Re: [PATCH 04/10] mm/migrate: make migrate_pages() return nr_succeeded
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>, weixugc@google.com,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09 Apr 06:30 CDT 2021, Serge Semin wrote:
+On Thu, Apr 8, 2021 at 10:06 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Thu, Apr 08, 2021 at 01:40:33PM -0700, Yang Shi wrote:
+> > Thanks a lot for the example code. You didn't miss anything. At first
+> > glance, I thought your suggestion seemed neater. Actually I
+> > misunderstood what Dave said about "That could really have caused some
+> > interesting problems." with multiple calls to migrate_pages(). I was
+> > thinking about:
+> >
+> > unsigned long foo()
+> > {
+> >     unsigned long *ret_succeeded;
+> >
+> >     migrate_pages(..., ret_succeeded);
+> >
+> >     migrate_pages(..., ret_succeeded);
+> >
+> >     return *ret_succeeded;
+> > }
+>
+> But that would not be a problem as well. I mean I am not sure what is
+> foo() supposed to do.
+> I assume is supposed to return the *total* number of pages that were
+> migrated?
+>
+> Then could do something like:
+>
+>  unsigned long foo()
+>  {
+>      unsigned long ret_succeeded;
+>      unsigned long total_succeeded = 0;
+>
+>      migrate_pages(..., &ret_succeeded);
+>      total_succeeded += ret_succeeded;
+>
+>      migrate_pages(..., &ret_succeeded);
+>      total_succeeded += ret_succeeded;
+>
+>      return *total_succeeded;
+>  }
+>
+>  But AFAICS, you would have to do that with Wei Xu's version and with
+>  mine, no difference there.
 
-> In accordance with the DWC USB3 bindings the corresponding node
-> name is suppose to comply with the Generic USB HCD DT schema, which
-> requires the USB nodes to have the name acceptable by the regexp:
-> "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-> named.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+It is because nr_succeeded is reset for each migrate_pages() call.
 
-As mentioned previously, I would like to merge this through the qcom soc
-tree to avoid conflicts with other activities, but need the driver code
-(patch 6) to land first.
+You could do "*ret_succeeded += nr_succeeded" if we want an
+accumulated counter, then you don't have to add total_succeeded. And
+since nr_succeeded is reset for each migrate_pages() call, so both vm
+counter and trace point are happy.
 
-Regards,
-Bjorn
+>
+> IIUC, Dave's concern was that nr_succeeded was only set to 0 at the beginning
+> of the function, and never reset back, which means, we would carry the
+> sum of previous nr_succeeded instead of the nr_succeeded in that round.
+> That would be misleading for e.g: reclaim in case we were to call
+> migrate_pages() several times, as instead of a delta value, nr_succeeded
+> would accumulate.
 
-> ---
->  arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 4 ++--
->  arch/arm64/boot/dts/qcom/ipq8074.dtsi        | 4 ++--
->  arch/arm64/boot/dts/qcom/msm8996.dtsi        | 4 ++--
->  arch/arm64/boot/dts/qcom/msm8998.dtsi        | 2 +-
->  arch/arm64/boot/dts/qcom/qcs404-evb.dtsi     | 2 +-
->  arch/arm64/boot/dts/qcom/qcs404.dtsi         | 4 ++--
->  arch/arm64/boot/dts/qcom/sc7180.dtsi         | 2 +-
->  arch/arm64/boot/dts/qcom/sdm845.dtsi         | 4 ++--
->  arch/arm64/boot/dts/qcom/sm8150.dtsi         | 2 +-
->  9 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-> index defcbd15edf9..34e97da98270 100644
-> --- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-> @@ -1064,7 +1064,7 @@ &usb2 {
->  	status = "okay";
->  	extcon = <&usb2_id>;
->  
-> -	dwc3@7600000 {
-> +	usb@7600000 {
->  		extcon = <&usb2_id>;
->  		dr_mode = "otg";
->  		maximum-speed = "high-speed";
-> @@ -1075,7 +1075,7 @@ &usb3 {
->  	status = "okay";
->  	extcon = <&usb3_id>;
->  
-> -	dwc3@6a00000 {
-> +	usb@6a00000 {
->  		extcon = <&usb3_id>;
->  		dr_mode = "otg";
->  	};
-> diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> index a32e5e79ab0b..7df4eb710aae 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> @@ -427,7 +427,7 @@ usb_0: usb@8af8800 {
->  			resets = <&gcc GCC_USB0_BCR>;
->  			status = "disabled";
->  
-> -			dwc_0: dwc3@8a00000 {
-> +			dwc_0: usb@8a00000 {
->  				compatible = "snps,dwc3";
->  				reg = <0x8a00000 0xcd00>;
->  				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -468,7 +468,7 @@ usb_1: usb@8cf8800 {
->  			resets = <&gcc GCC_USB1_BCR>;
->  			status = "disabled";
->  
-> -			dwc_1: dwc3@8c00000 {
-> +			dwc_1: usb@8c00000 {
->  				compatible = "snps,dwc3";
->  				reg = <0x8c00000 0xcd00>;
->  				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> index ce430ba9c118..9eb31b3e6ee7 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-> @@ -1772,7 +1772,7 @@ usb3: usb@6af8800 {
->  			power-domains = <&gcc USB30_GDSC>;
->  			status = "disabled";
->  
-> -			dwc3@6a00000 {
-> +			usb@6a00000 {
->  				compatible = "snps,dwc3";
->  				reg = <0x06a00000 0xcc00>;
->  				interrupts = <0 131 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -1983,7 +1983,7 @@ usb2: usb@76f8800 {
->  			power-domains = <&gcc USB30_GDSC>;
->  			status = "disabled";
->  
-> -			dwc3@7600000 {
-> +			usb@7600000 {
->  				compatible = "snps,dwc3";
->  				reg = <0x07600000 0xcc00>;
->  				interrupts = <0 138 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-> index 1f2e93aa6553..9141c5d09b59 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-> @@ -1962,7 +1962,7 @@ usb3: usb@a8f8800 {
->  
->  			resets = <&gcc GCC_USB_30_BCR>;
->  
-> -			usb3_dwc3: dwc3@a800000 {
-> +			usb3_dwc3: usb@a800000 {
->  				compatible = "snps,dwc3";
->  				reg = <0x0a800000 0xcd00>;
->  				interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-> index a80c578484ba..f8a55307b855 100644
-> --- a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-> @@ -337,7 +337,7 @@ &usb2_phy_sec {
->  &usb3 {
->  	status = "okay";
->  
-> -	dwc3@7580000 {
-> +	usb@7580000 {
->  		dr_mode = "host";
->  	};
->  };
-> diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-> index 339790ba585d..9c4be020d568 100644
-> --- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-> @@ -544,7 +544,7 @@ usb3: usb@7678800 {
->  			assigned-clock-rates = <19200000>, <200000000>;
->  			status = "disabled";
->  
-> -			dwc3@7580000 {
-> +			usb@7580000 {
->  				compatible = "snps,dwc3";
->  				reg = <0x07580000 0xcd00>;
->  				interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -573,7 +573,7 @@ usb2: usb@79b8800 {
->  			assigned-clock-rates = <19200000>, <133333333>;
->  			status = "disabled";
->  
-> -			dwc3@78c0000 {
-> +			usb@78c0000 {
->  				compatible = "snps,dwc3";
->  				reg = <0x078c0000 0xcc00>;
->  				interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> index 1ea3344ab62c..8b83ffbb5b2a 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -2869,7 +2869,7 @@ usb_1: usb@a6f8800 {
->  					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3 0>;
->  			interconnect-names = "usb-ddr", "apps-usb";
->  
-> -			usb_1_dwc3: dwc3@a600000 {
-> +			usb_1_dwc3: usb@a600000 {
->  				compatible = "snps,dwc3";
->  				reg = <0 0x0a600000 0 0xe000>;
->  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> index 454f794af547..809be2c67d7a 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-> @@ -3769,7 +3769,7 @@ usb_1: usb@a6f8800 {
->  					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_0 0>;
->  			interconnect-names = "usb-ddr", "apps-usb";
->  
-> -			usb_1_dwc3: dwc3@a600000 {
-> +			usb_1_dwc3: usb@a600000 {
->  				compatible = "snps,dwc3";
->  				reg = <0 0x0a600000 0 0xcd00>;
->  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-> @@ -3817,7 +3817,7 @@ usb_2: usb@a8f8800 {
->  					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_1 0>;
->  			interconnect-names = "usb-ddr", "apps-usb";
->  
-> -			usb_2_dwc3: dwc3@a800000 {
-> +			usb_2_dwc3: usb@a800000 {
->  				compatible = "snps,dwc3";
->  				reg = <0 0x0a800000 0 0xcd00>;
->  				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
-> diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> index e5bb17bc2f46..e4c3edc13676 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-> @@ -1719,7 +1719,7 @@ usb_1: usb@a6f8800 {
->  
->  			resets = <&gcc GCC_USB30_PRIM_BCR>;
->  
-> -			usb_1_dwc3: dwc3@a600000 {
-> +			usb_1_dwc3: usb@a600000 {
->  				compatible = "snps,dwc3";
->  				reg = <0 0x0a600000 0 0xcd00>;
->  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-> -- 
-> 2.30.1
-> 
+I think the most straightforward concern is the vm counter and trace
+point in migrate_pages(), if migrate_pages() is called multiple times
+we may see messed up counters if nr_succeeded is not reset properly.
+Of course both your and Wei's suggestion solve this problem.
+
+But if we have usecase which returns nr_succeeded and call
+migrate_pages() multiple times, I think we do want to return
+accumulated value IMHO.
+
+>
+> But that won't happen neither with Wei Xu's version nor with mine.
+>
+> --
+> Oscar Salvador
+> SUSE L3
