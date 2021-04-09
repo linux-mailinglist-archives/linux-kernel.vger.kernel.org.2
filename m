@@ -2,215 +2,330 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 787753594EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:44:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6BD43594F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233269AbhDIFo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:44:59 -0400
-Received: from mx0b-00268f01.pphosted.com ([148.163.159.192]:22200 "EHLO
-        mx0b-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229846AbhDIFo5 (ORCPT
+        id S233315AbhDIFqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:46:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233244AbhDIFqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:44:57 -0400
-Received: from pps.filterd (m0105197.ppops.net [127.0.0.1])
-        by mx0a-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1395YSwg029717;
-        Fri, 9 Apr 2021 05:44:07 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2103.outbound.protection.outlook.com [104.47.55.103])
-        by mx0a-00268f01.pphosted.com with ESMTP id 37te7hgc8j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 05:44:07 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AuOjN/9plRuRaCzgUYOtwNaDp16UeVw/S2blBFp9NN1gOL4AC0YzNrjJERVbi5X412mfA8oFAG1GQbuXqEwExhLRaARL8hYYHOkU6zr2zDqblcjhEqGFhdQ33a0hFt8iyvBPuxAMRP1fqCMdf2AeUveVq0XIz8arlAYCaIs/JaGo5Uemeyrattu7HMkgqp45v36XX1AkPYYSpQ42G0kbSdNXGbKFVsmTE4HUFBhvHFG2IOzvUtEr9vpAcxBwIc+DdMRWE75keHsBqqBJ/XO8hXCllbF+BQli7X7PICIctVVasYoehBVl81lssAL2nCQLYfNCBqhHqvbSM21TdkdQkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SIQJGANvy4aZLxZ5KNDklXmbuGvzLCo1wnvU/7xr2dE=;
- b=d4FMwswr52TImkgMd9SKNR4RZ4VWqLVCrZAwEzq4zeb9twC8wQU22sSbQ4iOBXqTcyCWbJ43BMps3MaX0V8zQhScsLWb/QYTs6yUwnmQd2pc7VagHFMEfnS9lHJdYk0GsYhavi2b7r6YNsqE2782sYhyqEaK8s1NTRiRGye2pZKXaLzQ5wfiOBfPlgGiEa0Ydf+z836REbswbYOcHKuJY1tN3mf9c9KFeBZ13hTjUgHvcFWbWZlpCGDyOvC2Z9q7hhOSzOxZ/Mn0EZMrpe96jfFXlp1T2cnRKQMV7MkISpuAeXWTyAPcmmCsuiqH7xD3K/XbJ3fFEweANEqXyqK3gg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
- dkim=pass header.d=equinix.com; arc=none
+        Fri, 9 Apr 2021 01:46:13 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D36EC061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 22:46:01 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso2615668pjh.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:46:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SIQJGANvy4aZLxZ5KNDklXmbuGvzLCo1wnvU/7xr2dE=;
- b=Nxh2oAgfqn7tOD8zWL5BIeUyY0iHLcQkOrSQ4WyVYXmmo6ikvrIZKQF75aZBUsWJ5svBK0a/ozl7uDV4RgLAk9l7O2l3U6DNPJRICSGRGpH5CBcADF0/EdZbN7vJE41z1Ss9WEBfciLJLBc9J9QhvHDxEIGk09CwOqzpFWpFdLk=
-Received: from DM5PR04MB0762.namprd04.prod.outlook.com (2603:10b6:3:f3::13) by
- DM6PR04MB6732.namprd04.prod.outlook.com (2603:10b6:5:1::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4020.18; Fri, 9 Apr 2021 05:44:05 +0000
-Received: from DM5PR04MB0762.namprd04.prod.outlook.com
- ([fe80::4c98:aeb:87a8:13ad]) by DM5PR04MB0762.namprd04.prod.outlook.com
- ([fe80::4c98:aeb:87a8:13ad%5]) with mapi id 15.20.4020.017; Fri, 9 Apr 2021
- 05:44:05 +0000
-From:   Zev Weiss <zweiss@equinix.com>
-To:     Andrew Jeffery <andrew@aj.id.au>, "g@packtop" <g@packtop>
-CC:     "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        Corey Minyard <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tali Perry <tali.perry1@gmail.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Benjamin Fair <benjaminfair@google.com>
-Subject: Re: [PATCH v2 17/21] dt-bindings: ipmi: Convert ASPEED KCS binding to
- schema
-Thread-Topic: [PATCH v2 17/21] dt-bindings: ipmi: Convert ASPEED KCS binding
- to schema
-Thread-Index: AQHXLQNa/Br1rKNdC02YFyK1SqJv1A==
-Date:   Fri, 9 Apr 2021 05:44:05 +0000
-Message-ID: <YG/ppKEAs5EBUao3@packtop>
-References: <20210319062752.145730-1-andrew@aj.id.au>
- <20210319062752.145730-17-andrew@aj.id.au> <YG/i9lSxxCMIzkRs@packtop>
- <29937129-3a17-4a32-a723-191b693a1e0c@www.fastmail.com>
-In-Reply-To: <29937129-3a17-4a32-a723-191b693a1e0c@www.fastmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none header.from=equinix.com;
-x-originating-ip: [24.181.166.149]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 20461bc9-7cd8-4969-cb83-08d8fb1a7cee
-x-ms-traffictypediagnostic: DM6PR04MB6732:
-x-microsoft-antispam-prvs: <DM6PR04MB673265AFBAF17D6F269F1FCAC3739@DM6PR04MB6732.namprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nD5Yqz2Jv4QCnHHufvgqrdV3qbWiuF6OuH/MLEeS9rZ3yxpUOZRcGnAOtNtXVM1zWutR4ixWOcbCAR3AKn+eYle6FjnBXx+PrHd0TRzcaBVbH6eZ0G18smhXbi2l/b1YouWT5cgNaBA1iD3CNA+5nxYX1WAnuV+KDpujkRUIy170maNfs5Q8clM/UyOAeFbuh24KQ/xqWQBnp+WrdNun6PPFPuyHbhjCugBsvCiZqzlFoPqh+yFJ6DRmPkKDRaCPcLAwLbOooT/qSunFgulqFKng6TgPF68Mq4kjdoWTV+z5YZ8a9IW+5ZMubNxNx5us6aweAA3+FaDlh0Aq66dboSjgZ4NR6AovaNZKdCRt4OoO0R7w4MPx6wj5F6tEVHRjq1sJZm7VF52lQEoqoIJuJouPpKoRlGDX8lhvdZn/1mSTNDwnIfR5W094g2PkKK28MxZlOfR5FFZINLgRvZDOzpchFVSv0XlDSACs6qYDva5vXlwDFs+oMiKaW9IhHZp+5fK8kkE/KjWHS2BiZ9cH4fcTY1PFPU1hFNqF5kZ0kf35ZZ/z+FMBo7RyfXJkWn0fakhBXA44MFKkfWDyVN/M5YQk6p1f4lgoNaCt+91HYrUospMpMePHEWMVCLSsSMhW7u2eSWx/RjdQV0OvGRJ/z+n6Mr+4tmQgApE7tQbjNJ4+j/r5FUaDZ5TRXgV1Z1/XlAHN86t6FO63lqKuWI3erdLUtxIo+irp5flIb8Uny6c9DCU00BbgFLFT1zWRY5kd
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0762.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(136003)(396003)(346002)(376002)(366004)(39860400002)(316002)(5660300002)(6512007)(9686003)(33716001)(8676002)(2906002)(54906003)(7416002)(83380400001)(186003)(6506007)(6486002)(66946007)(71200400001)(966005)(64756008)(66446008)(76116006)(66556008)(4326008)(66476007)(478600001)(26005)(8936002)(86362001)(38100700001)(781001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?XGVZg1HuZOGjbNGv+oet3F4awmZ+3+9hwWgG5OeSBDePcFfCoMMNAFh3rgC4?=
- =?us-ascii?Q?U6Oe7xZ/L86SwW14hQg4WbvwnfXidscPZoa/YpC7xjyHhrpVWl1aUqStokQy?=
- =?us-ascii?Q?Pea7UApk1TAREq/uOvF2o8ppTVyLYP5PDrojDC1r3qeHry3N2qY3K1PWF725?=
- =?us-ascii?Q?+P/KnqccllciUeeS1hkyxUne5nGtAlceyUlUOE7cvsI7G97BG+fJ3z5wjk3D?=
- =?us-ascii?Q?VaspV+sQJC+pwWfL8H9C5yuBUz+U1ARmk/QpC6Af1CYW6K/pFX5vL6GEgpgE?=
- =?us-ascii?Q?Dpv+3wGRU+7q93OYDvKrWTAQnU81gWiScNyVSmMsJdGSjhCAUN+HlE4oDS9g?=
- =?us-ascii?Q?vP8Q2u4A1w2M1IPFSRioH2Nmw0+lmnHVAL6FlJ10Nm6z0c5Slwpc86NF+FVM?=
- =?us-ascii?Q?8vQR+40wb/FcSoYuhZX8dy6dxTl5yea2hhqaya6DeUMeDEYcLHZqvWqE2DYR?=
- =?us-ascii?Q?/u4S8EOTBmb273qcCGpJhROsWdIVU77To3xvoFyPVJZGXtQUuLUfgabDQGLD?=
- =?us-ascii?Q?zPB2JrMAwYNdIZ9tVKxBd58OziMCq7EiTsT246tdhhZHrA7UMPIVWVxDb7U+?=
- =?us-ascii?Q?ccZJdHpiLuKdg9R2mONi/VXimi6SJ4tFoy804TjTah8W8qkDy2FNxiV/4OHj?=
- =?us-ascii?Q?OMaL90jOyVaJiniTSNHzqcAF3cpp30mjQCggDoU6N0j4e3FhtVUuyQfW7kdG?=
- =?us-ascii?Q?UyO0HlV2kQM69wvFxVW/aWa3zI1U79hDv1aPCYH4FCKmSCtvhSi8mdlosHWw?=
- =?us-ascii?Q?dy3xh94ecezKm/x+zvV1zAdnitg1oQtjZlFl0yn4uDQCPsQQYaPsRAuCdFyb?=
- =?us-ascii?Q?5ZNfBiGbikri/ao+OlYc00EcRElGi2V0pUt5sNeWIDW9NQS1uD4LCPxPFyea?=
- =?us-ascii?Q?kwdsHaH8WRjZPoLn4ZCOZPw4E5eOGfAulX8/EhEfyQTkytTLhV+b6BhAGx0T?=
- =?us-ascii?Q?aKMCws0IhJ1nvyZo2fHaPzfO09EGalPKkUs/6NInNFu+QqDLCwiymo0pk75f?=
- =?us-ascii?Q?l5lvn17jzhSBHzVcHRvoh9trVd4du0NCiXluuE7z/49W9MTuwT55YQ9/kvCm?=
- =?us-ascii?Q?6ltQvstxK8ELTVk++JbeIcSH4wgjnCvrUFJdxPxxgWN23sNHUuc7oSnrCr3e?=
- =?us-ascii?Q?QafVuNOgHyNtNMHZELHjfB/tavyVOJCzP9hkj9jZSuBGDof1ZdpVpdZc9TGy?=
- =?us-ascii?Q?Hd5iIVwl4CsaQzNxWoU1WiWbaUOFEV5u9w8WpWXhHczfBG1TOlR0Qg5Jsfwj?=
- =?us-ascii?Q?MRhnRbZsV1+A1C/qDTNji0+iEE6FdpEmCc/CY3GRg/mhHs7Yc+Frvc6Hq6ms?=
- =?us-ascii?Q?c3PpOzyNorN4DtW+21ZR5BUZDXwQUVRboDv3r0bYEFvxMg=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <77BE7DEF9A057B4DBE4D8C530A1CA337@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H2Si95eKQhrR7n/j/IBv9ZL9cxhprUDJxtCOcoaz0jQ=;
+        b=nDz32K3Z3b7fps2KhwrHVhdh4eBSZIqqCqVK0JhF4SD9SqSEbZiz67e9eNFS1CQGnF
+         r7tOlhODpJ6+f5kV2KAzJK5BkOqWbDnlRxJFwoXRijDsnssQoKKQjFJQJW5Rj3Esufmj
+         v1jm+jkVG/HWrwACwv9Aj2/yOS2A+xY3cdt8w=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=H2Si95eKQhrR7n/j/IBv9ZL9cxhprUDJxtCOcoaz0jQ=;
+        b=hk6j6hqdPIqefQw0r9MQT9vRSE9UYomNUI5Xk/tq448iuI4CIwFEzaYKPO949l+hry
+         /zQyJaj4eVTLgtpWEGcMw9kmYBcvI4E/mZi/g0ei+89dys7JN1QhBJtefiBINV/95P2X
+         MO/AclKMxfOAhEJtErcXa5cUXc6VLNSk/tEmC8/OO1sS0KaoXCd/XtQTNe00QZNkRba/
+         aMNmoWbB61J1A36x3bln48sS+qhGplsrLP7nNjKM9fxr4Ls5NpZuguF54LvS5tEgnrtf
+         4KsZRqFWW4iEC2O6UfYIVd4mxj/Fo49eD45J2FIZcvNXIxqt/q9KbbjwJAxuKk6tPREE
+         wGjg==
+X-Gm-Message-State: AOAM5338+jEAAuuOIAGG81lOaxa72eGUvY1hMXtYuSYOGwLn+8FSi9iB
+        dN3GjqOnUGA0q4JTEUJkpqzFsz6gwPimWfych5/HiQ==
+X-Google-Smtp-Source: ABdhPJwuti4xXhGLwH+blQO9o5ETqQ7OMra31aIvEajUJHFA6H27vr+OtFnECwlPvx0BMNzXIVpGCGS+bcKXP8XLYbE=
+X-Received: by 2002:a17:90a:d3c8:: with SMTP id d8mr11868737pjw.144.1617947160596;
+ Thu, 08 Apr 2021 22:46:00 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: equinix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0762.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 20461bc9-7cd8-4969-cb83-08d8fb1a7cee
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 05:44:05.5411
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1BCRykd6pM/ZR8J37PivPkfRTakGZtLSzune5RQlOjoqj5F6f8PcWoQKlDnySgSvpbqrBTbQPXErFlNNhWmRcA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6732
-X-Proofpoint-GUID: s0GzvA1EYCqkjICThSiOpMr6MmETEOq4
-X-Proofpoint-ORIG-GUID: s0GzvA1EYCqkjICThSiOpMr6MmETEOq4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-09_03:2021-04-08,2021-04-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- spamscore=0 mlxscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
- malwarescore=0 clxscore=1015 bulkscore=0 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104090041
+References: <1617874514-12282-1-git-send-email-chunfeng.yun@mediatek.com> <1617874514-12282-4-git-send-email-chunfeng.yun@mediatek.com>
+In-Reply-To: <1617874514-12282-4-git-send-email-chunfeng.yun@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Fri, 9 Apr 2021 13:45:49 +0800
+Message-ID: <CAATdQgArnkdmbZefF4h7xp6=j-wHLgdQs1K0cDv06sP4eVdHmw@mail.gmail.com>
+Subject: Re: [PATCH 4/6] usb: xhci-mtk: add support runtime PM
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        linux-usb@vger.kernel.org,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-pm@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Eddie Hung <eddie.hung@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 12:33:10AM CDT, Andrew Jeffery wrote:
+On Thu, Apr 8, 2021 at 5:35 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
 >
+> A dedicated wakeup irq will be used to handle runtime suspend/resume,
+> we use dev_pm_set_dedicated_wake_irq API to take care of requesting
+> and attaching wakeup irq, then the suspend/resume framework will help
+> to enable/disable wakeup irq.
 >
->On Fri, 9 Apr 2021, at 14:45, Zev Weiss wrote:
->> On Fri, Mar 19, 2021 at 01:27:48AM CDT, Andrew Jeffery wrote:
->> >Given the deprecated binding, improve the ability to detect issues in
->> >the platform devicetrees. Further, a subsequent patch will introduce a
->> >new interrupts property for specifying SerIRQ behaviour, so convert
->> >before we do any further additions.
->> >
->> >Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
->> >---
->> > .../bindings/ipmi/aspeed,ast2400-kcs-bmc.yaml | 92 +++++++++++++++++++
->> > .../bindings/ipmi/aspeed-kcs-bmc.txt          | 33 -------
->> > 2 files changed, 92 insertions(+), 33 deletions(-)
->> > create mode 100644 Documentation/devicetree/bindings/ipmi/aspeed,ast24=
-00-kcs-bmc.yaml
->> > delete mode 100644 Documentation/devicetree/bindings/ipmi/aspeed-kcs-b=
-mc.txt
->> >
->> >diff --git a/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-=
-bmc.yaml b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.ya=
-ml
->> >new file mode 100644
->> >index 000000000000..697ca575454f
->> >--- /dev/null
->> >+++ b/Documentation/devicetree/bindings/ipmi/aspeed,ast2400-kcs-bmc.yam=
-l
->> >@@ -0,0 +1,92 @@
->> >+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> >+%YAML 1.2
->> >+---
->> >+$id: http://devicetree.org/schemas/ipmi/aspeed,ast2400-kcs-bmc.yaml
->> >+$schema: http://devicetree.org/meta-schemas/core.yaml
->> >+
->> >+title: ASPEED BMC KCS Devices
->> >+
->> >+maintainers:
->> >+  - Andrew Jeffery <andrew@aj.id.au>
->> >+
->> >+description: |
->> >+  The Aspeed BMC SoCs typically use the Keyboard-Controller-Style (KCS=
-)
->> >+  interfaces on the LPC bus for in-band IPMI communication with their =
-host.
->> >+
->> >+properties:
->> >+  compatible:
->> >+    oneOf:
->> >+      - description: Channel ID derived from reg
->> >+        items:
->> >+          enum:
->> >+            - aspeed,ast2400-kcs-bmc-v2
->> >+            - aspeed,ast2500-kcs-bmc-v2
->> >+            - aspeed,ast2600-kcs-bmc
->>
->> Should this have a "-v2" suffix?
+> The runtime PM is default off since some platforms may not support it.
+> users can enable it via power/control (set "auto") in sysfs.
 >
->Well, that was kind of a matter of perspective. The 2600 compatible was
->added after we'd done the v2 of the binding for the 2400 and 2500 so it
->never needed correcting. But it is a case of "don't use the deprecated
->properties with the 2600 compatible".
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> ---
+>  drivers/usb/host/xhci-mtk.c | 140 +++++++++++++++++++++++++++++++-----
+>  1 file changed, 124 insertions(+), 16 deletions(-)
 >
->I don't think a change is necessary?
+> diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
+> index a74764ab914a..30927f4064d4 100644
+> --- a/drivers/usb/host/xhci-mtk.c
+> +++ b/drivers/usb/host/xhci-mtk.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+> +#include <linux/pm_wakeirq.h>
+>  #include <linux/regmap.h>
+>  #include <linux/regulator/consumer.h>
 >
+> @@ -358,7 +359,6 @@ static int usb_wakeup_of_property_parse(struct xhci_hcd_mtk *mtk,
+>                         mtk->uwk_reg_base, mtk->uwk_vers);
+>
+>         return PTR_ERR_OR_ZERO(mtk->uwk);
+> -
+>  }
+>
+>  static void usb_wakeup_set(struct xhci_hcd_mtk *mtk, bool enable)
+> @@ -458,6 +458,7 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+>         struct resource *res;
+>         struct usb_hcd *hcd;
+>         int ret = -ENODEV;
+> +       int wakeup_irq;
+>         int irq;
+>
+>         if (usb_disabled())
+> @@ -485,6 +486,21 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+>         if (ret)
+>                 return ret;
+>
+> +       irq = platform_get_irq_byname_optional(pdev, "host");
+> +       if (irq < 0) {
+> +               if (irq == -EPROBE_DEFER)
+> +                       return irq;
+> +
+> +               /* for backward compatibility */
+> +               irq = platform_get_irq(pdev, 0);
+> +               if (irq < 0)
+> +                       return irq;
+> +       }
+> +
+> +       wakeup_irq = platform_get_irq_byname_optional(pdev, "wakeup");
+> +       if (wakeup_irq == -EPROBE_DEFER)
+> +               return wakeup_irq;
+> +
+>         mtk->lpm_support = of_property_read_bool(node, "usb3-lpm-capable");
+>         /* optional property, ignore the error if it does not exist */
+>         of_property_read_u32(node, "mediatek,u3p-dis-msk",
+> @@ -496,9 +512,11 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+>                 return ret;
+>         }
+>
+> +       pm_runtime_set_active(dev);
+> +       pm_runtime_use_autosuspend(dev);
+> +       pm_runtime_set_autosuspend_delay(dev, 4000);
+>         pm_runtime_enable(dev);
+>         pm_runtime_get_sync(dev);
+> -       device_enable_async_suspend(dev);
+>
+>         ret = xhci_mtk_ldos_enable(mtk);
+>         if (ret)
+> @@ -508,12 +526,6 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+>         if (ret)
+>                 goto disable_ldos;
+>
+> -       irq = platform_get_irq(pdev, 0);
+> -       if (irq < 0) {
+> -               ret = irq;
+> -               goto disable_clk;
+> -       }
+> -
+>         hcd = usb_create_hcd(driver, dev, dev_name(dev));
+>         if (!hcd) {
+>                 ret = -ENOMEM;
+> @@ -579,8 +591,26 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+>         if (ret)
+>                 goto dealloc_usb2_hcd;
+>
+> +       if (wakeup_irq > 0) {
+> +               ret = dev_pm_set_dedicated_wake_irq(dev, wakeup_irq);
+> +               if (ret) {
+> +                       dev_err(dev, "set wakeup irq %d failed\n", wakeup_irq);
+> +                       goto dealloc_usb3_hcd;
+> +               }
+> +               dev_info(dev, "wakeup irq %d\n", wakeup_irq);
+> +       }
+> +
+> +       device_enable_async_suspend(dev);
+> +       pm_runtime_mark_last_busy(dev);
+> +       pm_runtime_put_autosuspend(dev);
+> +       pm_runtime_forbid(dev);
+> +
+>         return 0;
+>
+> +dealloc_usb3_hcd:
+> +       usb_remove_hcd(xhci->shared_hcd);
+> +       xhci->shared_hcd = NULL;
+> +
+>  dealloc_usb2_hcd:
+>         usb_remove_hcd(hcd);
+>
+> @@ -601,25 +631,26 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+>         xhci_mtk_ldos_disable(mtk);
+>
+>  disable_pm:
+> -       pm_runtime_put_sync(dev);
+> +       pm_runtime_put_sync_autosuspend(dev);
+>         pm_runtime_disable(dev);
+>         return ret;
+>  }
+>
+> -static int xhci_mtk_remove(struct platform_device *dev)
+> +static int xhci_mtk_remove(struct platform_device *pdev)
+>  {
+> -       struct xhci_hcd_mtk *mtk = platform_get_drvdata(dev);
+> +       struct xhci_hcd_mtk *mtk = platform_get_drvdata(pdev);
+>         struct usb_hcd  *hcd = mtk->hcd;
+>         struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+>         struct usb_hcd  *shared_hcd = xhci->shared_hcd;
+> +       struct device *dev = &pdev->dev;
+>
+> -       pm_runtime_put_noidle(&dev->dev);
+> -       pm_runtime_disable(&dev->dev);
+> +       pm_runtime_get_sync(dev);
+> +       xhci->xhc_state |= XHCI_STATE_REMOVING;
+> +       dev_pm_clear_wake_irq(dev);
+> +       device_init_wakeup(dev, false);
+>
+>         usb_remove_hcd(shared_hcd);
+>         xhci->shared_hcd = NULL;
+> -       device_init_wakeup(&dev->dev, false);
+> -
+>         usb_remove_hcd(hcd);
+>         usb_put_hcd(shared_hcd);
+>         usb_put_hcd(hcd);
+> @@ -627,6 +658,10 @@ static int xhci_mtk_remove(struct platform_device *dev)
+>         xhci_mtk_clks_disable(mtk);
+>         xhci_mtk_ldos_disable(mtk);
+>
+> +       pm_runtime_disable(dev);
+> +       pm_runtime_put_noidle(dev);
+> +       pm_runtime_set_suspended(dev);
+> +
+>         return 0;
+>  }
+>
+> @@ -690,10 +725,83 @@ static int __maybe_unused xhci_mtk_resume(struct device *dev)
+>         return ret;
+>  }
+>
+> +static int check_rhub_status(struct xhci_hcd *xhci, struct xhci_hub *rhub)
+> +{
+> +       u32 suspended_ports;
+> +       u32 status;
+> +       int num_ports;
+> +       int i;
+> +
+> +       num_ports = rhub->num_ports;
+> +       suspended_ports = rhub->bus_state.suspended_ports;
+> +       for (i = 0; i < num_ports; i++) {
+> +               if (!(suspended_ports & BIT(i))) {
+> +                       status = readl(rhub->ports[i]->addr);
+> +                       if (status & PORT_CONNECT)
 
-It just looked inconsistent with the corresponding string in the
-ast_kcs_bmc_match[] table; perhaps that should be changed instead then?
+So this pm_runtime support is activated only when there's no devices
+connected at all?
+I think this will always return -EBUSY with my board having an on-board hub
+connected to both rhubs.
 
-
-Zev
+> +                               return -EBUSY;
+> +               }
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+> +/*
+> + * check the bus whether it could suspend or not
+> + * the bus will suspend if the downstream ports are already suspended,
+> + * or no devices connected.
+> + */
+> +static int check_bus_status(struct xhci_hcd *xhci)
+> +{
+> +       int ret;
+> +
+> +       ret = check_rhub_status(xhci, &xhci->usb3_rhub);
+> +       if (ret)
+> +               return ret;
+> +
+> +       return check_rhub_status(xhci, &xhci->usb2_rhub);
+> +}
+> +
+> +static int __maybe_unused xhci_mtk_runtime_suspend(struct device *dev)
+> +{
+> +       struct xhci_hcd_mtk  *mtk = dev_get_drvdata(dev);
+> +       struct xhci_hcd *xhci = hcd_to_xhci(mtk->hcd);
+> +       int ret = 0;
+> +
+> +       if (xhci->xhc_state)
+> +               return -ESHUTDOWN;
+> +
+> +       if (device_may_wakeup(dev)) {
+> +               ret = check_bus_status(xhci);
+> +               if (!ret)
+> +                       ret = xhci_mtk_suspend(dev);
+> +       }
+> +
+> +       /* -EBUSY: let PM automatically reschedule another autosuspend */
+> +       return ret ? -EBUSY : 0;
+> +}
+> +
+> +static int __maybe_unused xhci_mtk_runtime_resume(struct device *dev)
+> +{
+> +       struct xhci_hcd_mtk  *mtk = dev_get_drvdata(dev);
+> +       struct xhci_hcd *xhci = hcd_to_xhci(mtk->hcd);
+> +       int ret = 0;
+> +
+> +       if (xhci->xhc_state)
+> +               return -ESHUTDOWN;
+> +
+> +       if (device_may_wakeup(dev))
+> +               ret = xhci_mtk_resume(dev);
+> +
+> +       return ret;
+> +}
+> +
+>  static const struct dev_pm_ops xhci_mtk_pm_ops = {
+>         SET_SYSTEM_SLEEP_PM_OPS(xhci_mtk_suspend, xhci_mtk_resume)
+> +       SET_RUNTIME_PM_OPS(xhci_mtk_runtime_suspend,
+> +                          xhci_mtk_runtime_resume, NULL)
+>  };
+> -#define DEV_PM_OPS IS_ENABLED(CONFIG_PM) ? &xhci_mtk_pm_ops : NULL
+> +
+> +#define DEV_PM_OPS (IS_ENABLED(CONFIG_PM) ? &xhci_mtk_pm_ops : NULL)
+>
+>  static const struct of_device_id mtk_xhci_of_match[] = {
+>         { .compatible = "mediatek,mt8173-xhci"},
+> --
+> 2.18.0
+>
