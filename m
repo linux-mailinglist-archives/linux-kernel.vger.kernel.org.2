@@ -2,144 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008E635A5B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:25:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34BCA35A5B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234483AbhDISZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:25:56 -0400
-Received: from mail-oo1-f48.google.com ([209.85.161.48]:46978 "EHLO
-        mail-oo1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbhDISZy (ORCPT
+        id S234497AbhDIS01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:26:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233332AbhDIS00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:25:54 -0400
-Received: by mail-oo1-f48.google.com with SMTP id 125-20020a4a1a830000b02901b6a144a417so1532946oof.13;
-        Fri, 09 Apr 2021 11:25:40 -0700 (PDT)
+        Fri, 9 Apr 2021 14:26:26 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 956C6C061762;
+        Fri,  9 Apr 2021 11:26:13 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id q26so6775826qkm.6;
+        Fri, 09 Apr 2021 11:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=c+DbAEwm0zRiHXUbKphWseVw53MsK9wYkvb3a3fbewM=;
+        b=lXeEtyAca43iGOTwSlP0zw5k6vVxMpXPwmtkGVDHceQMVS6ieis3frq9h8IaSRBVi4
+         2fPmzKe50P9tL4LZA4G0mPxKCfeNvB5MVpF9N7e4csTMTMvKmEhlxYf+c+wSoSgtRaV/
+         b7jMt/2yBfclVcmch4A+aLHf/jvI/AkE581hPmZzCKOoipBUUeztXGF8eblCYRxeVIZ6
+         6yXk5qSSz5IIPw9uqF8XbCXiM1mmHVvzddUzAZU5mLgnhrB+DZWUVyj5ebVhi64mKm4F
+         PkvZp3sp1e5tIWUQyisrGsJYrt82lBJxkLF6XLr7bGqhmiq7nquccTCuzo7KNXkmQhrl
+         VLGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ap1xXHQrgNoanoCkiwbFpBXllDQp2mXH4gtHCARaL4U=;
-        b=FvaArclFUnqD7AINfSxyM9bySIlnNlMmzn32B7ao3xMpGWUqNoAgmy0ZPg246F9tXj
-         nIavdILCMiFWe20qjp0yhMZuSCTudGZSqQz6nDmNIalb8CGfNpo6pgb4S7yCr8F3J71p
-         N4cR1+lFYIxWIrahyq8aVdQDYkJ5ou/7DB0yaNvwUYL01txebWAGXZenHvDbJSLkp8hX
-         3xI6j4n0TMo4hQ5EZCDTQnihtCkXmmWe6R9/Y3CjAgXjMQ/7gzfceg0XLeYUaqgb+lzL
-         2KD3Cc/puCCpsGeE5so8jZeNHqPfy1b6TFAxjtbMR92juVwRhKXG9FBxpHUXdFtivz+z
-         c6hA==
-X-Gm-Message-State: AOAM533sXdmbinD1YGDBMEXfbW0klamgBbTGicTiQB9AknRPbXEEbdGx
-        zX9jl/JCWwmqLO7XPLtFBg==
-X-Google-Smtp-Source: ABdhPJweHT9wHvpbXVWmGxFX9Ck28qRM1eahscjqOn+iYGqcvUYN7gC7q4C72Axnzp84rzKTMQTdEQ==
-X-Received: by 2002:a05:6820:60e:: with SMTP id e14mr12869794oow.67.1617992740263;
-        Fri, 09 Apr 2021 11:25:40 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 88sm745559ota.11.2021.04.09.11.25.38
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=c+DbAEwm0zRiHXUbKphWseVw53MsK9wYkvb3a3fbewM=;
+        b=V7PYq8rGX52OQ6EVNXAW1rhR+cMOpl2gigRHziXMV4oyo27tV3EosMnpp5HMSh1xCR
+         aPQrdQYTKHMAav7Sd7xMAfDb1AdYBdEaAafCjozc3DNwIjkvCh1lRQQT+Hdn0oJr8PYE
+         nrg/zkoph4QyZVT0IHFyyVx+e1WlUPb/GT1/qynzSGAuSuHH7cfDiMtP+c0eoq3ubgfk
+         xie0nUTBoz6g6NdxzTFVgct/pP0nKV5LW+veMu4SSVaVz2Ego4EDd/joOgGiiZbxuqLA
+         7UicWMmLq11lr4Uaelp445k4gM4oTZarIhrNXi4KZ8x/p7wvhg2sFjkGkosZzx/tOLvI
+         KRRw==
+X-Gm-Message-State: AOAM530MmvdWeXTBkCCWL9lmZebsHIrgG52oB9kxB/y5eJxvTi473cZY
+        Ebd3xZzolS2NYw3xXiUfKtwsoll3uVZC9uaW
+X-Google-Smtp-Source: ABdhPJxbIXjazCV7IMjXK4LTzgF0mrELA4f2g4oXayX59ZrQRRbJ1g7LgpoLPbX74QMzNDLHlmM3oQ==
+X-Received: by 2002:a05:620a:13ac:: with SMTP id m12mr15181568qki.458.1617992772882;
+        Fri, 09 Apr 2021 11:26:12 -0700 (PDT)
+Received: from [192.168.100.7] ([177.220.174.147])
+        by smtp.gmail.com with ESMTPSA id d190sm1058319qkf.103.2021.04.09.11.26.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:25:39 -0700 (PDT)
-Received: (nullmailer pid 3916170 invoked by uid 1000);
-        Fri, 09 Apr 2021 18:25:38 -0000
-Date:   Fri, 9 Apr 2021 13:25:38 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Flora Fu <flora.fu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Pi-Cheng Chen <pi-cheng.chen@mediatek.com>,
-        Chiawen Lee <chiawen.lee@mediatek.com>,
-        Chun-Jie Chen <chun-jie.chen@mediatek.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH 4/8] dt-bindings: arm: mediatek: Add new document
- bindings for APU
-Message-ID: <20210409182538.GA3913794@robh.at.kernel.org>
-References: <1617766086-5502-1-git-send-email-flora.fu@mediatek.com>
- <1617766086-5502-5-git-send-email-flora.fu@mediatek.com>
+        Fri, 09 Apr 2021 11:26:12 -0700 (PDT)
+Message-ID: <aff7af9caab6fab8ec2c7ee0980669323b449aa9.camel@gmail.com>
+Subject: Re: [Outreachy kernel][PATCH] staging: media: hantro: Rewrite macro
+ function in lower case
+From:   ascordeiro <alinesantanacordeiro@gmail.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Julia Lawall <julia.lawall@inria.fr>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Date:   Fri, 09 Apr 2021 15:26:08 -0300
+In-Reply-To: <532a72f6fcb6f51451e12444413c0ad4441a679d.camel@collabora.com>
+References: <20210409135404.GA26172@focaruja>
+         <9c09806cce4c7e5c5f0dc03e8c502cf29716f00f.camel@collabora.com>
+         <138794d79c42510d9b6ae744df20216904773032.camel@gmail.com>
+         <alpine.DEB.2.22.394.2104091924510.17316@hadrien>
+         <532a72f6fcb6f51451e12444413c0ad4441a679d.camel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 (by Flathub.org) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617766086-5502-5-git-send-email-flora.fu@mediatek.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 11:28:02AM +0800, Flora Fu wrote:
-> Document the apusys bindings.
+Em sex, 2021-04-09 às 14:42 -0300, Ezequiel Garcia escreveu:
+> On Fri, 2021-04-09 at 19:25 +0200, Julia Lawall wrote:
+> > 
+> > 
+> > On Fri, 9 Apr 2021, ascordeiro wrote:
+> > 
+> > > Em sex, 2021-04-09 às 13:44 -0300, Ezequiel Garcia escreveu:
+> > > > Hi Aline,
+> > > 
+> > > Hi Ezequiel,
+> > > > 
+> > > > On Fri, 2021-04-09 at 10:54 -0300, Aline Santana Cordeiro
+> > > > wrote:
+> > > > > Rewrite macros resembling functions #define
+> > > > > HANTRO_PP_REG_WRITE
+> > > > > and #define HANTRO_PP_RED_WRITE_S in lower case, according
+> > > > > with
+> > > > > code style.
+> > 
+> > Maybe you can see if these macros can be converted to static inline
+> > functions.  Macros don't provide any type checking.
+> > 
 > 
-> Signed-off-by: Flora Fu <flora.fu@mediatek.com>
-> ---
->  .../arm/mediatek/mediatek,apusys.yaml         | 56 +++++++++++++++++++
->  1 file changed, 56 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
+> I'd like to leave these as they are for now, tbh ^_^
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml b/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
-> new file mode 100644
-> index 000000000000..dc04a46f1bad
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/arm/mediatek/mediatek,apusys.yaml
-> @@ -0,0 +1,56 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/arm/mediatek/mediatek,apusys.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek APUSYS Controller
-> +
-> +maintainers:
-> +  - Flora Fu <flora.fu@mediatek.com>
-> +
-> +description:
-> +  The Mediatek apusys controller provides functional configurations and clocks
-> +  to the system.
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - mediatek,mt8192-apu_mbox
-> +          - mediatek,mt8192-apu_conn
-> +          - mediatek,mt8192-apu_vcore
+> A more massive refactoring is needed in this driver,
+> but it needs proper testing and it's a more complex plan.
 
-s/_/-/
+Okay, thank you for your attention :)
 
-> +      - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    apu_mbox: apu_mbox@19000000 {
+Aline
 
-mailbox@...? Is this a mailbox provider?
-
-> +        compatible = "mediatek,mt8192-apu_mbox", "syscon";
-> +        reg = <0x19000000 0x1000>;
-> +    };
-> +
-> +  - |
-> +    apu_conn: apu_conn@19020000 {
-> +        compatible = "mediatek,mt8192-apu_conn", "syscon";
-> +        reg = <0x19020000 0x1000>;
-> +        #clock-cells = <1>;
-> +    };
-> +
-> +  - |
-> +    apu_vcore: apu_vcore@19029000 {
-> +        compatible = "mediatek,mt8192-apu_vcore", "syscon";
-> +        reg = <0x19029000 0x1000>;
-> +        #clock-cells = <1>;
-> +    };
-> -- 
-> 2.18.0
 > 
+> Thanks!
+> Ezequiel
+> 
+
+
