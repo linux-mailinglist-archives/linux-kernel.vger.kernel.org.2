@@ -2,429 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B299435A8AB
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 00:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A4B835A8AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 00:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234980AbhDIWPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 18:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234517AbhDIWP3 (ORCPT
+        id S235030AbhDIWQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 18:16:49 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:57382 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234517AbhDIWQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 18:15:29 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EC7C061762;
-        Fri,  9 Apr 2021 15:15:15 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id g10so3408593plt.8;
-        Fri, 09 Apr 2021 15:15:15 -0700 (PDT)
+        Fri, 9 Apr 2021 18:16:45 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 139M9CDp146909;
+        Fri, 9 Apr 2021 22:16:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=XyEcDl7LvQm05XDUZDT2gPg3QevePS027K9kaPrtcxE=;
+ b=xazXG4QzRiHejA8VSBu0zp25ZHt3+AGJIKs/JNt6VKNkLFhdJrNTgp/yZYI/0ekQzvZA
+ 8ulmp04jkmqfJmjBy6tkvujbwjX+GpmQJsxM+zfrnOQSGZoa2+33qQACSMhHj36c/0Ye
+ uFFM5muOt8kNig/IxlQ+KGUvSEdbo0RC56xTKg4kfXUeHRK315MvB3VA+hEiR2UYmdmZ
+ yEksSNLNquaxFE/NhRn7wdcHxmp21GJiKG8Xeyb2AIyzdZHp7uPqRkDUR1FwWbS99vQJ
+ 0vPxQtBrEN4rnxTz03b1APgBY3u4Vs//pXTGiIVYn6/svHuhPBclr+PeArS7V996ZFMv kg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 37rvawav07-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 09 Apr 2021 22:16:08 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 139MACDI127194;
+        Fri, 9 Apr 2021 22:16:07 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2047.outbound.protection.outlook.com [104.47.66.47])
+        by userp3030.oracle.com with ESMTP id 37rvbhj0fp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 09 Apr 2021 22:16:07 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jQgmbRTgCcKlBFHsF9ewKgJ3HlwImmyWY+xa0hR0Ur0N4hyPofg8RsMq8zyftre4bhZmx+FIT/n8T0ixapCY+myjVz/xemJsT2Vu5YLdbg5Rzaor8IVNhNtJf7S6jyFDj0dH1Bu45wFQYGp07252Eenea0gNsKYE2ajpE/frMNd6pX8rUtNrZ5nxN0kWEhuCmJAtLSIYGsjpjc1wxtEG8KZ02taXE8COep1qAG2LGlmIUWsquRz4lFBGNO9jahRpm65kBT8Gu86HrF9U75/5EnZFOk0DrzYwitHbcxm2FQzdngqBa6HQx8Fcb97TDQzoglhq45+SIjeemJZpw2GvgQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XyEcDl7LvQm05XDUZDT2gPg3QevePS027K9kaPrtcxE=;
+ b=k5DzuGjnV4XkzO/0+5yCjiKCo1UdUK14xubx5K6Q6IL9Q43Ln0PZ48m0ggezAoh9vY3PkKvky8cWeYWOHtQSgQBLgqXnHWOur7XbqtVz/OjRfnwpzbMhWNKDUhs1f0FKLS+kXGmHk3ka3jAqIDqqFXtXhyDhq/deTaIrMmytOtkL+UY7+wkNx8RvS2JpX5bAzz7xKtkAsqxXTl2v8Wzlmtf/7yHEqaNDqVD2BM37MSDZkF+fOQuBcpZ3CwgX3Wdgs9BNTQzuxxP/5wD6R3Aa5PXIyqwn4BLVWU0M+WRJvu1vjMhBop22h2Rcv15A5Bl4OAarlh6r7829uYeKhdzmdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ORmmZNYrozUgIOjVYWEJY0rIfU4KKHuMFNUcu4DTNWk=;
-        b=E0DdH7Cs3bNXaGFtUpLzusWHIneoEdcjp9aL3zzpLUYVH6/gAPpS9y8/cef8KyeWCg
-         ydGpBkWWguEQYA4AtnmgmCp1ZWUD5DfRI7MNt4IsjU5ZWVzHvTe9uu4QuzD6t5soe9Vy
-         THvjkYyfOmEDSQjdC2G7gkDaTgM9e5UGd1JwIZS+1jzEJQHh56k0UWaRlZ+ntHKcrcXo
-         10AVN7R+K1KEzNXVz/+SBP3nO2gDQ9e87c116cDMaP5dpX4ILIIYbx9CMNGq52RU7q4V
-         PVhAMvvl/QerlEzGwZC5FEuwJ5weMj4N4IIBwWNFUR6zIT2ugnVVP4XPhLH+aQ/MbIIT
-         8XhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ORmmZNYrozUgIOjVYWEJY0rIfU4KKHuMFNUcu4DTNWk=;
-        b=XpNiPI5HOiWk5OyVQ+4UDOq8vsU554Tr17OF0ZVkAzbNKRq0KOcVl+Cb+T734A02fF
-         S0i8cJr4OFLO2jRNO4jwenaz3ownd/kxIEHd31G/oaw9gDdtwI89QgyIlUN69PpfMzVO
-         DdzJIdYU9vw+tD7EDRWT4nk/wRHLGFfc6AK/SZn2b4sQ4WOnleo48RlVeBBtdVSG2CDV
-         Fql+IPyiYeggzQvvdqOje2Tcd3u0sMAtv89ax1cXNQMW/ML/SsH5WngPvSgZBfoz5kKZ
-         IqqeKz4S8KkRjvlTchGceutx/7Ihbep8BRTmiSoT3xpWZ6RfpqnRFgq3XfbWeprppwFJ
-         QC0Q==
-X-Gm-Message-State: AOAM533l/SxHInyktjZMWj80yerAW2YBS3Ln/erhZ9MR6ghxM+1Belpo
-        yad326RmZgLZab43yBnxdXquIDvedf+sQGqh
-X-Google-Smtp-Source: ABdhPJzcZpnhzlDgvdGtl1HBT2jZpyo4ct/ISSNvS9Vl1F3C+W2qcVMTP7tJk87edBrYwZQyAtAlMg==
-X-Received: by 2002:a17:902:904b:b029:e5:5cc5:877d with SMTP id w11-20020a170902904bb02900e55cc5877dmr15371136plz.50.1618006514971;
-        Fri, 09 Apr 2021 15:15:14 -0700 (PDT)
-Received: from kali ([103.141.87.254])
-        by smtp.gmail.com with ESMTPSA id g15sm3157198pjd.2.2021.04.09.15.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 15:15:14 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 03:45:09 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     clabbe@baylibre.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] [PATCH v2 2/2] staging: media: zoran: remove
- and add comments; align code
-Message-ID: <YHDR7VxighihfZd5@kali>
-References: <YHCgnP6Jr6TbjwUy@kali>
- <alpine.DEB.2.22.394.2104092209200.23056@hadrien>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XyEcDl7LvQm05XDUZDT2gPg3QevePS027K9kaPrtcxE=;
+ b=YvTorp+ceneOqb1+VFdWK7pVCZ73mw353RCvqw+CiyM+VN92lk/56jw4JdWDhzcmaC5kLdPQ7uKgkgCAuO937S+mbZmhNEBiSNWbmOgfzl0LDOriNktM/xoXQGarNt7yZoTpGiAB6kfUMfpN+ePhhTwM8cnvX1fE0BZ30Tl/Sxo=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=oracle.com;
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
+ by BYAPR10MB2456.namprd10.prod.outlook.com (2603:10b6:a02:b3::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Fri, 9 Apr
+ 2021 22:16:04 +0000
+Received: from BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
+ ([fe80::980e:61ba:57d2:47ee%7]) with mapi id 15.20.4020.018; Fri, 9 Apr 2021
+ 22:16:04 +0000
+Subject: Re: [PATCH 0/9] userfaultfd: add minor fault handling for shmem
+To:     Peter Xu <peterx@redhat.com>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Daniel Colascione <dancol@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+References: <20210408234327.624367-1-axelrasmussen@google.com>
+ <20210408220440.aab59f2f06beb840c22377b3@linux-foundation.org>
+ <CAJHvVcj84fcuh0vXtHdEPoV+DrFDSXjUg1fO+oLFCOaxWBH13w@mail.gmail.com>
+ <20210409211824.GH792100@xz-x1>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <ebbde306-0c72-f80f-05f7-0a88495f75b3@oracle.com>
+Date:   Fri, 9 Apr 2021 15:16:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <20210409211824.GH792100@xz-x1>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MW2PR2101CA0030.namprd21.prod.outlook.com
+ (2603:10b6:302:1::43) To BY5PR10MB4196.namprd10.prod.outlook.com
+ (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2104092209200.23056@hadrien>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MW2PR2101CA0030.namprd21.prod.outlook.com (2603:10b6:302:1::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.4 via Frontend Transport; Fri, 9 Apr 2021 22:16:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7e6888c7-9457-462f-cb4c-08d8fba510f9
+X-MS-TrafficTypeDiagnostic: BYAPR10MB2456:
+X-Microsoft-Antispam-PRVS: <BYAPR10MB2456E48330666DD905EAD3ABE2739@BYAPR10MB2456.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rIASORPJgVVvmimtp+Eon54pQEiwSAldMPW2dwNTZLT24SjuezIOf1HStvNIRPZqn7gpFERNlgShn21CaA0hEYm2Zb8VvlfCyCqeFbrLTRzerIPMyMkA5B44zUmEGH7Bmnu9Sg7zbDyX1mEvW/gZyJGosttlgWy/xa0YnwKsjKURAIp/jFBfgyah+jEkP2E/zP4lYHV1h1AgYxQVh6L/qB3xDenVIARkiDduV7Or5DlT8Ctp5GCu4eWgvLnRqe/QJgWz4iW3UzBz8JYf4MWd28N2MlVCpw/71AlTgzLHyc5H8d8Tl0/eKFKygOyqxaLo12wgqnp591Fb5bEDAAaKbYeoOYAmG8dXBEyhVOTn8cy484F7Kqc7Kdq/uQ9+AdyQpL1c7uhuSQSZoyGNeKe3JhlURkMJ0VufG3gxpgZdJr/5QqsY6CWSRyq0fvf4m/DJPTUKVnt/7hxoW9oM6Q5tlic3XQcoDa1y3fIIX3t2c5a2ud7LuwqH4qEaA6YlPZ8aj2nB+JpQ39nZByGiw6fm0wgSupowleFMFj0wAzdf8s9ILyi5IzOg+eum+xS/pPYtsgslH3iuwirPtAz2qD66ZOrXIfQHnlmCVZkcA0zV/HGVqc7xTkuXjKG0eAfLH8fg9+wWoMoLQ1/0rWnpwsbFPZB0n9FHekK8UL/3Bv3kGySNWWtObnzzi0OsWsSJPfICIrfM66dKQk7HQFSz8BPehmXt5vMe8AIMfavNbvGnah/pkY/WtIA2YO69uHHBcR8A
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(396003)(366004)(136003)(376002)(36756003)(26005)(83380400001)(66946007)(8676002)(16526019)(86362001)(478600001)(6486002)(186003)(54906003)(4326008)(8936002)(31696002)(110136005)(66556008)(5660300002)(2906002)(316002)(956004)(38100700001)(2616005)(52116002)(7416002)(38350700001)(31686004)(44832011)(16576012)(53546011)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?MEMrOEgwblhnT1NBa2UxMmRGdDhNOE52NkJqcGRJUFp6aVRHNWttdzlPdW1Y?=
+ =?utf-8?B?OVh2MEpZeUhJRG5wUGp2SDBHTkZQcGRvb3o5VS9EdmFLSDY1T3dmSVBxRWVD?=
+ =?utf-8?B?RjdnVVlpcExZMUFkUzhIbEIzcFJaWnFGWlFhcFdyaG5lMVdXaUErY3lQTHNB?=
+ =?utf-8?B?cEkrTEZYdTB4QkRrOXhmRHd1dlkzWHNsUmhSbXJrMnJBdkFqMXR5aXFONGxk?=
+ =?utf-8?B?QkJsNE1RcTgwNXRYSzBiU0JQMmlkUTZTNHE5UVNGZUxmRHRYRmY3ZlRDQWNB?=
+ =?utf-8?B?Z0txbERwS3pNRDZZYmF0Z1lGZHFYRmdYcTE2ZkJDMElCWTRzYmJ3a1NEcWQ1?=
+ =?utf-8?B?TVB1UFN6UStERGw3SUkzdWdGZGwvTnZjd1JPcmF2bm9vbTR6elZrZTQ0V3Q4?=
+ =?utf-8?B?SWIyK2xXRzRUREpNcURmL2hmbzRxd0VaanBCMWtJVDJZSk9hcStrK256ZlFC?=
+ =?utf-8?B?dFB1aTBzeFNSaHlZOFl5a0JPSzZuTitERmxEL3hQU3pVWjJ6MDF1bFlKUk93?=
+ =?utf-8?B?dnI2ZzRYb2QxTnRlU01oUzYwa3k4SW5PMlRTSFpkLzBkeDN1RHZZRGlydE1Z?=
+ =?utf-8?B?Rk5MVXBJRkNFMTV1Q2x3ZEZPaUY1bGV4aEpybGdMeFFNdWgwSmlKZVlhRlRF?=
+ =?utf-8?B?S3MvemJMYkJGbEE2ZlVPTld4dGVWTldIRnRpdFZFRFVhNDVROGw3Rk1XcnN2?=
+ =?utf-8?B?OGtjbUJ6VjlTVnFIQWs5YlI5dnVvZkRrcGJvWHYvajNQSUExNTRTeitvTVdO?=
+ =?utf-8?B?ckQxMWhiaHFpWlphNzg2S3UxQmVGa0tiSDd1ZU50eGdrT1dPbm5sM3E0NWF5?=
+ =?utf-8?B?SkI0TVZBdnRTdERyeFN2bXdqSVVlL2x0aE9WZlVlSTg5VnYwY0EwNTd4cnJp?=
+ =?utf-8?B?TUxsMlo1c051S3lmL1dxNTBOaklxY3NudzVwTEV4d1hMbUVTSmVEQUVnMlI3?=
+ =?utf-8?B?bEhWc2RiY05wTUxCdDV2enlrTjdmZFpyNzlUaFp4YUNJb2pRUkk2RzFDZmdO?=
+ =?utf-8?B?MEtYNVlvdzF6UGJtci91UjgzUDJkOTBOWVZTNGQ0TndpTlRxQ3lEakYzSnpD?=
+ =?utf-8?B?bUJsd0tOZ29tWHh6ak1jUDF2WmJOK3plWUk0b1pNTDBTbHZzNlJiRHJMQjZY?=
+ =?utf-8?B?d0FsUFlSVE91TTdHTEdFNlZ2enF6WFpOYUpmTHZXWDlVdU5IMW1UWVpyMmh3?=
+ =?utf-8?B?MUlnNURTWU5lU1NyUVc2UHptS0llNDJQdFZjaUxpSGtNWVdaOVM4RmNFL2RH?=
+ =?utf-8?B?VWVoaUZ3ZE95SFd4RFlnVVFlZmdZN2FrVEEvKzJxSDhxdzA1Tkhha3IvaTJN?=
+ =?utf-8?B?MDhHUUVkVzFTV2lPNHBNcklzZWxubkJSWXY5RG5hNkFlWUo2c3pzeWowSE9J?=
+ =?utf-8?B?U2VKR2l5R2dDN21pbEpKUlJ0dXp0a3pCUnVocFhlamtxTVBIQkhoelFIQ0J6?=
+ =?utf-8?B?aXYyMWdWMmdlMlN4Tnp4RjdPVDBEUHFISWp2QmZ6YndRUHo1Y1NvUWdNeDMv?=
+ =?utf-8?B?aVgwYTFKcDhWTm16OG1OQ0ZGcXg4TEYvb0lwejJGakVrQU1RZUZPN0phMmZk?=
+ =?utf-8?B?bGJHSDh6NlI3MTJpaTZPdjcrOGlGRnBsbXhSVWo1b1BtSjdHTWtJcmJodmJD?=
+ =?utf-8?B?c2VTVHkvWnl1anFGb1lVcjNoeVVjVFM4YTd1QmNkcEtvVVg4V2RuMTk4d1gz?=
+ =?utf-8?B?RktzWjZoSDlTeHVIb0FIN0UxRXdMd295VzhYSVlpaUVtZVRrWTFCZlFzTzRs?=
+ =?utf-8?Q?JrI0p+CsRH3msc2djUMrlwdFCQVJLmwMF9LjDKn?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7e6888c7-9457-462f-cb4c-08d8fba510f9
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 22:16:04.7330
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hhRNMHwtnMZ2T2reGxAE77W9d7vq0bYHauoUwSFSl26HZRa4zrliCGeXcmYG7b77DOhrJ4fX8hC/7Q4+c5FnCg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2456
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9949 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 phishscore=0 malwarescore=0 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104090161
+X-Proofpoint-ORIG-GUID: Knz_y7uSBNqA74bPX2lBTs8xQGZi47Qm
+X-Proofpoint-GUID: Knz_y7uSBNqA74bPX2lBTs8xQGZi47Qm
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9949 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
+ suspectscore=0 phishscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
+ mlxscore=0 bulkscore=0 impostorscore=0 adultscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104090161
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 10:12:12PM +0200, Julia Lawall wrote:
+On 4/9/21 2:18 PM, Peter Xu wrote:
+> On Fri, Apr 09, 2021 at 10:03:53AM -0700, Axel Rasmussen wrote:
+>> On Thu, Apr 8, 2021 at 10:04 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>>>
+>>> On Thu,  8 Apr 2021 16:43:18 -0700 Axel Rasmussen <axelrasmussen@google.com> wrote:
+>>>
+>>>> The idea is that it will apply cleanly to akpm's tree, *replacing* the following
+>>>> patches (i.e., drop these first, and then apply this series):
+>>>>
+>>>> userfaultfd-support-minor-fault-handling-for-shmem.patch
+>>>> userfaultfd-support-minor-fault-handling-for-shmem-fix.patch
+>>>> userfaultfd-support-minor-fault-handling-for-shmem-fix-2.patch
+>>>> userfaultfd-support-minor-fault-handling-for-shmem-fix-3.patch
+>>>> userfaultfd-support-minor-fault-handling-for-shmem-fix-4.patch
+>>>> userfaultfd-selftests-use-memfd_create-for-shmem-test-type.patch
+>>>> userfaultfd-selftests-create-alias-mappings-in-the-shmem-test.patch
+>>>> userfaultfd-selftests-reinitialize-test-context-in-each-test.patch
+>>>> userfaultfd-selftests-exercise-minor-fault-handling-shmem-support.patch
+>>>
+>>> Well.  the problem is,
+>>>
+>>>> +     if (area_alias == MAP_FAILED)
+>>>> +             err("mmap of memfd alias failed");
+>>>
+>>> `err' doesn't exist until eleventy patches later, in Peter's
+>>> "userfaultfd/selftests: unify error handling".  I got tired of (and
+>>> lost confidence in) replacing "err(...)" with "fprintf(stderr, ...);
+>>> exit(1)" everywhere then fixing up the fallout when Peter's patch came
+>>> along.  Shudder.
+>>
+>> Oof - sorry about that!
+>>
+>>>
+>>> Sorry, all this material pretty clearly isn't going to make 5.12
+>>> (potentially nine days hence), so I shall drop all the userfaultfd
+>>> patches.  Let's take a fresh run at all of this after -rc1.
+>>
+>> That's okay, my understanding was already that it certainly wouldn't
+>> be in the 5.12 release, but that we might be ready in time for 5.13.
+>>
+>>>
+>>>
+>>> I have tentatively retained the first series:
+>>>
+>>> userfaultfd-add-minor-fault-registration-mode.patch
+>>> userfaultfd-add-minor-fault-registration-mode-fix.patch
+>>> userfaultfd-disable-huge-pmd-sharing-for-minor-registered-vmas.patch
+>>> userfaultfd-hugetlbfs-only-compile-uffd-helpers-if-config-enabled.patch
+>>> userfaultfd-add-uffdio_continue-ioctl.patch
+>>> userfaultfd-update-documentation-to-describe-minor-fault-handling.patch
+>>> userfaultfd-selftests-add-test-exercising-minor-fault-handling.patch
+>>>
+>>> but I don't believe they have had much testing standalone, without the
+>>> other userfaultfd patches present.  So I don't think it's smart to
+>>> upstream these in this cycle.  Or I could drop them so you and Peter
+>>> can have a clean shot at redoing the whole thing.  Please let me know.
+>>
+>> From my perspective, both Peter's error handling and the hugetlbfs
+>> minor faulting patches are ready to go. (Peter's most importantly; we
+>> should establish that as a base, and put all the burden on resolving
+>> conflicts with it on us instead of you :).)
+>>
+>> My memory was that Peter's patch was applied before my shmem series,
+>> but it seems I was mistaken. So, maybe the best thing to do is to have
+>> Peter send a version of it based on your tree, without the shmem
+>> series? And then I'll resolve any conflicts in my tree?
+>>
+>> It's true that we haven't tested the hugetlbfs minor faults patch
+>> extensively *with the shmem one also applied*, but it has had more
+>> thorough review than the shmem one at this point (e.g. by Mike
+>> Kravetz), and they're rather separate code paths (I'd be surprised if
+>> one breaks the other).
 > 
-> 
-> On Sat, 10 Apr 2021, Mitali Borkar wrote:
-> 
-> > Removed comments from the same line and added them to new line above the
-> > blocks, aligned everything properly by using tabs to make code neater
-> > and improve readability.
-> >
-> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > ---
-> >  drivers/staging/media/zoran/zr36057.h | 293 ++++++++++++++------------
-> >  1 file changed, 162 insertions(+), 131 deletions(-)
-> >
-> > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> > index 93075459f910..198d344a8879 100644
-> > --- a/drivers/staging/media/zoran/zr36057.h
-> > +++ b/drivers/staging/media/zoran/zr36057.h
-> > @@ -12,145 +12,176 @@
-> >
-> >  /* Zoran ZR36057 registers */
-> >
-> > -#define ZR36057_VFEHCR          0x000	/* Video Front End, Horizontal Configuration Register */
-> > -#define ZR36057_VFEHCR_HS_POL             BIT(30)
-> > -#define ZR36057_VFEHCR_H_START           10
-> > +/* Video Front End, Horizontal Configuration Register */
-> > +#define ZR36057_VFEHCR			0x000
-> > +#define ZR36057_VFEHCR_HS_POL			BIT(30)
-> 
-> It looks like the alignment didn't work out here?  Check that the use of
-> tabs is the same as on the nearby lines.
->
-Do I need to align BIT(30), 10, 0x000 and rest in same column or should I
-align them separately?
+> Yes I think the hugetlb part should have got more review done.  IMHO it's a
+> matter of whether Mike would still like to do a more thorough review, or seems
+> okay to keep them.
 
-> > +#define ZR36057_VFEHCR_H_START		10
-> >  #define ZR36057_VFEHCR_H_END		0
-> >  #define ZR36057_VFEHCR_HMASK		0x3ff
-> >
-> > -#define ZR36057_VFEVCR          0x004	/* Video Front End, Vertical Configuration Register */
-> > -#define ZR36057_VFEVCR_VS_POL             BIT(30)
-> > -#define ZR36057_VFEVCR_V_START           10
-> > +/* Video Front End, Vertical Configuration Register */
-> > +#define ZR36057_VFEVCR			0x004
-> > +#define ZR36057_VFEVCR_VS_POL			BIT(30)
-> > +#define ZR36057_VFEVCR_V_START		10
-> >  #define ZR36057_VFEVCR_V_END		0
-> >  #define ZR36057_VFEVCR_VMASK		0x3ff
-> >
-> > -#define ZR36057_VFESPFR         0x008	/* Video Front End, Scaler and Pixel Format Register */
-> > -#define ZR36057_VFESPFR_EXT_FL            BIT(26)
-> > -#define ZR36057_VFESPFR_TOP_FIELD         BIT(25)
-> > -#define ZR36057_VFESPFR_VCLK_POL          BIT(24)
-> > -#define ZR36057_VFESPFR_H_FILTER         21
-> > -#define ZR36057_VFESPFR_HOR_DCM          14
-> > -#define ZR36057_VFESPFR_VER_DCM          8
-> > -#define ZR36057_VFESPFR_DISP_MODE        6
-> > -#define ZR36057_VFESPFR_YUV422          (0 << 3)
-> > -#define ZR36057_VFESPFR_RGB888          BIT(3)
-> > -#define ZR36057_VFESPFR_RGB565          (2 << 3)
-> > -#define ZR36057_VFESPFR_RGB555          (3 << 3)
-> > -#define ZR36057_VFESPFR_ERR_DIF          BIT(2)
-> > -#define ZR36057_VFESPFR_PACK24          BIT(1)
-> > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    BIT(0)
-> > -
-> > -#define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
-> > -
-> > -#define ZR36057_VDBR            0x010	/* Video Display "Bottom" Register */
-> > -
-> > -#define ZR36057_VSSFGR          0x014	/* Video Stride, Status, and Frame Grab Register */
-> > -#define ZR36057_VSSFGR_DISP_STRIDE       16
-> > -#define ZR36057_VSSFGR_VID_OVF            BIT(8)
-> > -#define ZR36057_VSSFGR_SNAP_SHOT          BIT(1)
-> > -#define ZR36057_VSSFGR_FRAME_GRAB         BIT(0)
-> > -
-> > -#define ZR36057_VDCR            0x018	/* Video Display Configuration Register */
-> > -#define ZR36057_VDCR_VID_EN               BIT(31)
-> > -#define ZR36057_VDCR_MIN_PIX             24
-> > -#define ZR36057_VDCR_TRITON              BIT(24)
-> > -#define ZR36057_VDCR_VID_WIN_HT           12
-> > -#define ZR36057_VDCR_VID_WIN_WID          0
-> > -
-> > -#define ZR36057_MMTR            0x01c	/* Masking Map "Top" Register */
-> > -
-> > -#define ZR36057_MMBR            0x020	/* Masking Map "Bottom" Register */
-> > -
-> > -#define ZR36057_OCR             0x024	/* Overlay Control Register */
-> > -#define ZR36057_OCR_OVL_ENABLE            BIT(15)
-> > -#define ZR36057_OCR_MASK_STRIDE          0
-> > -
-> > -#define ZR36057_SPGPPCR         0x028	/* System, PCI, and General Purpose Pins Control Register */
-> > -#define ZR36057_SPGPPCR_SOFT_RESET	 BIT(24)
-> > -
-> > -#define ZR36057_GPPGCR1         0x02c	/* General Purpose Pins and GuestBus Control Register (1) */
-> > -
-> > -#define ZR36057_MCSAR           0x030	/* MPEG Code Source Address Register */
-> > -
-> > -#define ZR36057_MCTCR           0x034	/* MPEG Code Transfer Control Register */
-> > -#define ZR36057_MCTCR_COD_TIME            BIT(30)
-> > -#define ZR36057_MCTCR_C_EMPTY             BIT(29)
-> > -#define ZR36057_MCTCR_C_FLUSH             BIT(28)
-> > +/* Video Front End, Scaler and Pixel Format Register */
-> > +#define ZR36057_VFESPFR			0x008
-> > +#define ZR36057_VFESPFR_EXT_FL			BIT(26)
-> > +#define ZR36057_VFESPFR_TOP_FIELD		BIT(25)
-> > +#define ZR36057_VFESPFR_VCLK_POL		BIT(24)
-> > +#define ZR36057_VFESPFR_H_FILTER	21
-> > +#define ZR36057_VFESPFR_HOR_DCM		14
-> > +#define ZR36057_VFESPFR_VER_DCM		8
-> > +#define ZR36057_VFESPFR_DISP_MODE	6
-> 
-> The above four lines also look odd.
-> 
-> > +#define ZR36057_VFESPFR_YUV422			(0 << 3)
-> > +#define ZR36057_VFESPFR_RGB888			BIT(3)
-> 
-> Was there really a BIT in the original code, or is this a patch against
-> your previous patch?
->
-No, I added BIT(3), originally it was (1<<3).
-
-> > +#define ZR36057_VFESPFR_RGB565			(2 << 3)
-> > +#define ZR36057_VFESPFR_RGB555			(3 << 3)
-> > +#define ZR36057_VFESPFR_ERR_DIF			BIT(2)
-> > +#define ZR36057_VFESPFR_PACK24			BIT(1)
-> > +#define ZR36057_VFESPFR_LITTLE_ENDIAN		BIT(0)
-> > +
-> > +/* Video Display "Top" Register */
-> > +#define ZR36057_VDTR			0x00c
-> > +
-> > +/* Video Display "Bottom" Register */
-> > +#define ZR36057_VDBR			0x010
-> > +
-> > +/* Video Stride, Status, and Frame Grab Register */
-> > +#define ZR36057_VSSFGR			0x014
-> > +#define ZR36057_VSSFGR_DISP_STRIDE	16
-> > +#define ZR36057_VSSFGR_VID_OVF			BIT(8)
-> > +#define ZR36057_VSSFGR_SNAP_SHOT		BIT(1)
-> > +#define ZR36057_VSSFGR_FRAME_GRAB		BIT(0)
-> > +
-> > +/* Video Display Configuration Register */
-> > +#define ZR36057_VDCR			0x018
-> > +#define ZR36057_VDCR_VID_EN			BIT(31)
-> > +#define ZR36057_VDCR_MIN_PIX		24
-> > +#define ZR36057_VDCR_TRITON			BIT(24)
-> > +#define ZR36057_VDCR_VID_WIN_HT		12
-> 
-> These don't look well aligned either.
-> 
-> Please check on the rest.
->
-Yes Ma'am, I am rechecking this.
-
-> julia
-> 
-> 
-> > +#define ZR36057_VDCR_VID_WIN_WID	0
-> > +
-> > +/* Masking Map "Top" Register */
-> > +#define ZR36057_MMTR			0x01c
-> > +
-> > +/* Masking Map "Bottom" Register */
-> > +#define ZR36057_MMBR			0x020
-> > +
-> > +/* Overlay Control Register */
-> > +#define ZR36057_OCR			0x024
-> > +#define ZR36057_OCR_OVL_ENABLE			BIT(15)
-> > +#define ZR36057_OCR_MASK_STRIDE		0
-> > +
-> > +/* System, PCI, and General Purpose Pins Control Register */
-> > +#define ZR36057_SPGPPCR			0x028
-> > +#define ZR36057_SPGPPCR_SOFT_RESET		BIT(24)
-> > +
-> > +/* General Purpose Pins and GuestBus Control Register (1) */
-> > +#define ZR36057_GPPGCR1			0x02c
-> > +
-> > +/* MPEG Code Source Address Register */
-> > +#define ZR36057_MCSAR			0x030
-> > +
-> > +/* MPEG Code Transfer Control Register */
-> > +#define ZR36057_MCTCR			0x034
-> > +#define ZR36057_MCTCR_COD_TIME			BIT(30)
-> > +#define ZR36057_MCTCR_C_EMPTY			BIT(29)
-> > +#define ZR36057_MCTCR_C_FLUSH			BIT(28)
-> >  #define ZR36057_MCTCR_COD_GUEST_ID	20
-> >  #define ZR36057_MCTCR_COD_GUEST_REG	16
-> >
-> > -#define ZR36057_MCMPR           0x038	/* MPEG Code Memory Pointer Register */
-> > -
-> > -#define ZR36057_ISR             0x03c	/* Interrupt Status Register */
-> > -#define ZR36057_ISR_GIRQ1                BIT(30)
-> > -#define ZR36057_ISR_GIRQ0                BIT(29)
-> > -#define ZR36057_ISR_COD_REP_IRQ            BIT(28)
-> > -#define ZR36057_ISR_JPEG_REP_IRQ           BIT(27)
-> > -
-> > -#define ZR36057_ICR             0x040	/* Interrupt Control Register */
-> > -#define ZR36057_ICR_GIRQ1                BIT(30)
-> > -#define ZR36057_ICR_GIRQ0                BIT(29)
-> > -#define ZR36057_ICR_COD_REP_IRQ            BIT(28)
-> > -#define ZR36057_ICR_JPEG_REP_IRQ           BIT(27)
-> > -#define ZR36057_ICR_INT_PIN_EN             BIT(24)
-> > -
-> > -#define ZR36057_I2CBR           0x044	/* I2C Bus Register */
-> > -#define ZR36057_I2CBR_SDA		 BIT(1)
-> > -#define ZR36057_I2CBR_SCL		 BIT(0)
-> > -
-> > -#define ZR36057_JMC             0x100	/* JPEG Mode and Control */
-> > -#define ZR36057_JMC_JPG                  BIT(31)
-> > -#define ZR36057_JMC_JPG_EXP_MODE          (0 << 29)
-> > -#define ZR36057_JMC_JPG_CMP_MODE           BIT(29)
-> > -#define ZR36057_JMC_MJPG_EXP_MODE         (2 << 29)
-> > -#define ZR36057_JMC_MJPG_CMP_MODE         (3 << 29)
-> > -#define ZR36057_JMC_RTBUSY_FB            BIT(6)
-> > -#define ZR36057_JMC_GO_EN                BIT(5)
-> > -#define ZR36057_JMC_SYNC_MSTR             BIT(4)
-> > -#define ZR36057_JMC_FLD_PER_BUFF         BIT(3)
-> > -#define ZR36057_JMC_VFIFO_FB             BIT(2)
-> > -#define ZR36057_JMC_CFIFO_FB             BIT(1)
-> > -#define ZR36057_JMC_STLL_LIT_ENDIAN       BIT(0)
-> > -
-> > -#define ZR36057_JPC             0x104	/* JPEG Process Control */
-> > -#define ZR36057_JPC_P_RESET              BIT(7)
-> > -#define ZR36057_JPC_COD_TRNS_EN            BIT(5)
-> > -#define ZR36057_JPC_ACTIVE               BIT(0)
-> > -
-> > -#define ZR36057_VSP             0x108	/* Vertical Sync Parameters */
-> > -#define ZR36057_VSP_VSYNC_SIZE           16
-> > -#define ZR36057_VSP_FRM_TOT              0
-> > -
-> > -#define ZR36057_HSP             0x10c	/* Horizontal Sync Parameters */
-> > -#define ZR36057_HSP_HSYNC_START          16
-> > -#define ZR36057_HSP_LINE_TOT             0
-> > -
-> > -#define ZR36057_FHAP            0x110	/* Field Horizontal Active Portion */
-> > -#define ZR36057_FHAP_NAX                16
-> > -#define ZR36057_FHAP_PAX                0
-> > -
-> > -#define ZR36057_FVAP            0x114	/* Field Vertical Active Portion */
-> > -#define ZR36057_FVAP_NAY                16
-> > -#define ZR36057_FVAP_PAY                0
-> > -
-> > -#define ZR36057_FPP             0x118	/* Field Process Parameters */
-> > -#define ZR36057_FPP_ODD_EVEN             BIT(0)
-> > -
-> > -#define ZR36057_JCBA            0x11c	/* JPEG Code Base Address */
-> > -
-> > -#define ZR36057_JCFT            0x120	/* JPEG Code FIFO Threshold */
-> > -
-> > -#define ZR36057_JCGI            0x124	/* JPEG Codec Guest ID */
-> > -#define ZR36057_JCGI_JPE_GUEST_ID         4
-> > -#define ZR36057_JCGI_JPE_GUEST_REG        0
-> > -
-> > -#define ZR36057_GCR2            0x12c	/* GuestBus Control Register (2) */
-> > -
-> > -#define ZR36057_POR             0x200	/* Post Office Register */
-> > -#define ZR36057_POR_PO_PEN                BIT(25)
-> > -#define ZR36057_POR_PO_TIME               BIT(24)
-> > -#define ZR36057_POR_PO_DIR                BIT(23)
-> > -
-> > -#define ZR36057_STR             0x300	/* "Still" Transfer Register */
-> > +/* MPEG Code Memory Pointer Register */
-> > +#define ZR36057_MCMPR			0x038
-> > +
-> > +/* Interrupt Status Register */
-> > +#define ZR36057_ISR			0x03c
-> > +#define ZR36057_ISR_GIRQ1			BIT(30)
-> > +#define ZR36057_ISR_GIRQ0			BIT(29)
-> > +#define ZR36057_ISR_COD_REP_IRQ			BIT(28)
-> > +#define ZR36057_ISR_JPEG_REP_IRQ		BIT(27)
-> > +
-> > +/* Interrupt Control Register */
-> > +#define ZR36057_ICR			0x040
-> > +#define ZR36057_ICR_GIRQ1			BIT(30)
-> > +#define ZR36057_ICR_GIRQ0			BIT(29)
-> > +#define ZR36057_ICR_COD_REP_IRQ			BIT(28)
-> > +#define ZR36057_ICR_JPEG_REP_IRQ		BIT(27)
-> > +#define ZR36057_ICR_INT_PIN_EN			BIT(24)
-> > +
-> > +/* I2C Bus Register */
-> > +#define ZR36057_I2CBR			0x044
-> > +#define ZR36057_I2CBR_SDA			BIT(1)
-> > +#define ZR36057_I2CBR_SCL			BIT(0)
-> > +
-> > +/* JPEG Mode and Control */
-> > +#define ZR36057_JMC			0x100
-> > +#define ZR36057_JMC_JPG				BIT(31)
-> > +#define ZR36057_JMC_JPG_EXP_MODE		(0 << 29)
-> > +#define ZR36057_JMC_JPG_CMP_MODE		BIT(29)
-> > +#define ZR36057_JMC_MJPG_EXP_MODE		(2 << 29)
-> > +#define ZR36057_JMC_MJPG_CMP_MODE		(3 << 29)
-> > +#define ZR36057_JMC_RTBUSY_FB			BIT(6)
-> > +#define ZR36057_JMC_GO_EN			BIT(5)
-> > +#define ZR36057_JMC_SYNC_MSTR			BIT(4)
-> > +#define ZR36057_JMC_FLD_PER_BUFF		BIT(3)
-> > +#define ZR36057_JMC_VFIFO_FB			BIT(2)
-> > +#define ZR36057_JMC_CFIFO_FB			BIT(1)
-> > +#define ZR36057_JMC_STLL_LIT_ENDIAN		BIT(0)
-> > +
-> > +/* JPEG Process Control */
-> > +#define ZR36057_JPC			0x104
-> > +#define ZR36057_JPC_P_RESET			BIT(7)
-> > +#define ZR36057_JPC_COD_TRNS_EN			BIT(5)
-> > +#define ZR36057_JPC_ACTIVE			BIT(0)
-> > +
-> > +/* Vertical Sync Parameters */
-> > +#define ZR36057_VSP			0x108
-> > +#define ZR36057_VSP_VSYNC_SIZE		16
-> > +#define ZR36057_VSP_FRM_TOT		0
-> > +
-> > +/* Horizontal Sync Parameters */
-> > +#define ZR36057_HSP			0x10c
-> > +#define ZR36057_HSP_HSYNC_START		16
-> > +#define ZR36057_HSP_LINE_TOT		0
-> > +
-> > +/* Field Horizontal Active Portion */
-> > +#define ZR36057_FHAP			0x110
-> > +#define ZR36057_FHAP_NAX		16
-> > +#define ZR36057_FHAP_PAX		0
-> > +
-> > +/* Field Vertical Active Portion */
-> > +#define ZR36057_FVAP			0x114
-> > +#define ZR36057_FVAP_NAY		16
-> > +#define ZR36057_FVAP_PAY		0
-> > +
-> > +/* Field Process Parameters */
-> > +#define ZR36057_FPP			0x118
-> > +#define ZR36057_FPP_ODD_EVEN			BIT(0)
-> > +
-> > +/* JPEG Code Base Address */
-> > +#define ZR36057_JCBA			0x11c
-> > +
-> > +/* JPEG Code FIFO Threshold */
-> > +#define ZR36057_JCFT			0x120
-> > +
-> > +/* JPEG Codec Guest ID */
-> > +#define ZR36057_JCGI			0x124
-> > +#define ZR36057_JCGI_JPE_GUEST_ID	4
-> > +#define ZR36057_JCGI_JPE_GUEST_REG	0
-> > +
-> > +/* GuestBus Control Register (2) */
-> > +#define ZR36057_GCR2			0x12c
-> > +
-> > +/* Post Office Register */
-> > +#define ZR36057_POR			0x200
-> > +#define ZR36057_POR_PO_PEN			BIT(25)
-> > +#define ZR36057_POR_PO_TIME			BIT(24)
-> > +#define ZR36057_POR_PO_DIR			BIT(23)
-> > +
-> > +/* "Still" Transfer Register */
-> > +#define ZR36057_STR			0x300
-> >
-> >  #endif
-> > --
-> > 2.30.2
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHCgnP6Jr6TbjwUy%40kali.
-> >
+I looked pretty closely at the hugetlb specific parts of the minor fault
+handling series.  I only took a high level look at the code modifying and
+dealing with the userfaultfd API.  The hugetlb specific parts looked fine
+to me.  I can take a closer look at the userfaultfd API modifications,
+but it would take more time for me to come up to speed on the APIs.
+-- 
+Mike Kravetz
