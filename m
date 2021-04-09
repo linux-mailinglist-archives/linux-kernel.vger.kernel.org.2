@@ -2,95 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61D1935A347
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84ADB35A35D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233934AbhDIQ1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:27:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDIQ1m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:27:42 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D149C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 09:27:29 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id q26so6387332qkm.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:27:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LjrPz2s8A9wB9g0uw7ei0A966rFvFTwMq2h7wfTVNEI=;
-        b=cEkeJQ7Yo/U8WUtvJkxyLqjM00FlFriq23RSEutb7fQpsQXbaWooEUM46FjU3qaPWU
-         yjgVQcQarxtZH0u/3srZMcyZyhyyMuA12/rExznBOiFsAe9zYdz5AdV0n7zHSuUaA2T/
-         1Y5QZHlzFe7/5vS82uVNeUsQjowWsqNcO41TmLLj8+5bZQgFDancNOMdDMt4QDnXlGWH
-         fzBg6hJ+xnGtvQiHqSct+DvpA9uCb3sxN0mw39lOOeehk5ld3MJSJIfvxCop6vcrAKLE
-         8y43RPPhPKcaqP/AJzAb0+K1Qw47hZzlQC3pLB87AOmn3/ovXwwaitera1iDAWuJLt2m
-         bWiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LjrPz2s8A9wB9g0uw7ei0A966rFvFTwMq2h7wfTVNEI=;
-        b=JgDDrYnmeRJo8r5zfWOXVhPBlxl4Vv4zy2JUTHy0fH4QJQO7rRI4TdJLeKA44y+0ca
-         62DYX74y0K7XCP78QMxOTv1Z3F4WCdT1CHmO6INdudXSzj3rSiNPoAPkF86IwnXqkKk9
-         VJ1VUzdHQeh/cScno18buOzFBiNuhsxf3J6ldNamTuR/gQcChGnQfi+nKh/sfRceKFHv
-         i3Qt5/0RnLyQPJ2fx3QQyXmf1Vawq/5PtETI3mlyI3tYwagAd+W/ZxM2WsPs6ki6FBW+
-         ZUF0cALzHsIc1kEwAiPMxX8jVLy9mDpWvczDB0XLVRSwjgJ2xC0I3QoJOYMJeosob1FL
-         ZIgw==
-X-Gm-Message-State: AOAM532kRV8gZJQOjx8/wXO+yACZWqyB5FxNooarT2xvX07n+beEIL/n
-        w/a7JOSYF89FAJ0gYo/p296O0w==
-X-Google-Smtp-Source: ABdhPJw9IByqUYH8m38ORw7YCYBB7s9HYJU7n5MHBiv8feb5avOqDYhLDTefZNXWuHD4YqkwPnEvhw==
-X-Received: by 2002:a37:76c2:: with SMTP id r185mr14303169qkc.204.1617985648354;
-        Fri, 09 Apr 2021 09:27:28 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id v2sm2044427qkv.39.2021.04.09.09.27.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 09:27:27 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 12:27:27 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        bsingharora@gmail.com, shy828301@gmail.com,
-        alex.shi@linux.alibaba.com
-Subject: Re: [RFC PATCH v2 05/18] mm: memcontrol: simplify the logic of objcg
- pinning memcg
-Message-ID: <YHCAb1cZFuqLiy6r@cmpxchg.org>
-References: <20210409122959.82264-1-songmuchun@bytedance.com>
- <20210409122959.82264-6-songmuchun@bytedance.com>
+        id S234153AbhDIQ3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:29:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234011AbhDIQ3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:29:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9001F611C9;
+        Fri,  9 Apr 2021 16:29:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617985748;
+        bh=mq0DbNuduGKt/8Gq3KTibog9pvXQzaTafSLd7wSRyXo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ke78XXtbGDCQOfT3ycd20AXCx4zA43fHe38EtpNwU2fWD1i2eU1F9xCiMdzUMdZr1
+         J3FgDDcLDj66CFmSVvVkjSTOwFHjDk2550bKsH3BDum9AFJir6Qn8Cv5h3ZYs9zAQP
+         kSLGFmpFoQTlwXydX47ZXpIUwUaCyJzhaaXCchY6xci5+gStCjv45lzBhBXVgEaUPc
+         Gd3QLkID+I9CSGFyE7LyZyWQrSl/w00G8TdmgIrKD0AfDAzsIjiRmra9EULwynLE06
+         5aGjReByQEHdGQydsZjWEdIb4N7fFfPIKsaRuiPl2eQt9PbZq+LAF0BJcXSXQ0PcnW
+         xjVeb/sJ/LNog==
+Received: by mail-ej1-f52.google.com with SMTP id g17so6831066ejp.8;
+        Fri, 09 Apr 2021 09:29:08 -0700 (PDT)
+X-Gm-Message-State: AOAM533x8R2F3/TE50AteIlTucbp6IckPyaHQiDirShubCnjFynBBRyT
+        I7awefvtB/yZcG6uWhiRRpHgVPSgDrdeYVV9wA==
+X-Google-Smtp-Source: ABdhPJz3miqJO0314G0q55AgoyXuziE/TVMKiWkXk5yBK5kg54Aev0phZN989BABn9u+cW21U6911tZvMEK926B7c9o=
+X-Received: by 2002:a17:907:217b:: with SMTP id rl27mr9172959ejb.359.1617985747111;
+ Fri, 09 Apr 2021 09:29:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409122959.82264-6-songmuchun@bytedance.com>
+References: <cover.1617972339.git.mchehab+huawei@kernel.org> <4efd81eca266ca0875d3bf9d1672097444146c69.1617972339.git.mchehab+huawei@kernel.org>
+In-Reply-To: <4efd81eca266ca0875d3bf9d1672097444146c69.1617972339.git.mchehab+huawei@kernel.org>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 9 Apr 2021 11:28:55 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqK9TZ6v+YU1dhhD7AyVu1wM4ccmkt_bwCHnyH2_00HkZg@mail.gmail.com>
+Message-ID: <CAL_JsqK9TZ6v+YU1dhhD7AyVu1wM4ccmkt_bwCHnyH2_00HkZg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/8] dt-bindings: fix references for iio-bindings.txt
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        devicetree@vger.kernel.org,
+        Linux HWMON List <linux-hwmon@vger.kernel.org>,
+        "open list:IIO SUBSYSTEM AND DRIVERS" <linux-iio@vger.kernel.org>,
+        Linux Input <linux-input@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 08:29:46PM +0800, Muchun Song wrote:
-> The obj_cgroup_release() and memcg_reparent_objcgs() are serialized by
-> the css_set_lock. We do not need to care about objcg->memcg being
-> released in the process of obj_cgroup_release(). So there is no need
-> to pin memcg before releasing objcg. Remove those pinning logic to
-> simplfy the code.
+On Fri, Apr 9, 2021 at 7:48 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> The iio-bindings.txt was converted into two files and merged
+> at the dt-schema git tree at:
+>
+>         https://github.com/devicetree-org/dt-schema
+>
+> Yet, some documents still refer to the old file. Fix their
+> references, in order to point to the right URL.
+>
+> Fixes: dba91f82d580 ("dt-bindings:iio:iio-binding.txt Drop file as content now in dt-schema")
+> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Acked-by: Guenter Roeck <linux@roeck-us.net>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/hwmon/ntc_thermistor.txt   | 2 +-
+>  Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml   | 5 +++--
+>  Documentation/devicetree/bindings/input/adc-joystick.yaml    | 4 +++-
+>  .../bindings/input/touchscreen/resistive-adc-touch.txt       | 5 ++++-
+>  Documentation/devicetree/bindings/mfd/ab8500.txt             | 4 +++-
+>  5 files changed, 14 insertions(+), 6 deletions(-)
+>
+> diff --git a/Documentation/devicetree/bindings/hwmon/ntc_thermistor.txt b/Documentation/devicetree/bindings/hwmon/ntc_thermistor.txt
+> index 37f18d684f6a..4c5c3712970e 100644
+> --- a/Documentation/devicetree/bindings/hwmon/ntc_thermistor.txt
+> +++ b/Documentation/devicetree/bindings/hwmon/ntc_thermistor.txt
+> @@ -32,7 +32,7 @@ Optional node properties:
+>  - "#thermal-sensor-cells" Used to expose itself to thermal fw.
+>
+>  Read more about iio bindings at
+> -       Documentation/devicetree/bindings/iio/iio-bindings.txt
+> +       https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/
+>
+>  Example:
+>         ncp15wb473@0 {
+> diff --git a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> index 9f414dbdae86..433a3fb55a2e 100644
+> --- a/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> +++ b/Documentation/devicetree/bindings/iio/adc/ingenic,adc.yaml
+> @@ -14,8 +14,9 @@ description: >
+>    Industrial I/O subsystem bindings for ADC controller found in
+>    Ingenic JZ47xx SoCs.
+>
+> -  ADC clients must use the format described in iio-bindings.txt, giving
+> -  a phandle and IIO specifier pair ("io-channels") to the ADC controller.
+> +  ADC clients must use the format described in
+> +  https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/iio-consumer.yaml,
+> +  giving a phandle and IIO specifier pair ("io-channels") to the ADC controller.
+>
+>  properties:
+>    compatible:
+> diff --git a/Documentation/devicetree/bindings/input/adc-joystick.yaml b/Documentation/devicetree/bindings/input/adc-joystick.yaml
+> index 054406bbd22b..721878d5b7af 100644
+> --- a/Documentation/devicetree/bindings/input/adc-joystick.yaml
+> +++ b/Documentation/devicetree/bindings/input/adc-joystick.yaml
+> @@ -24,7 +24,9 @@ properties:
+>      description: >
+>        List of phandle and IIO specifier pairs.
+>        Each pair defines one ADC channel to which a joystick axis is connected.
+> -      See Documentation/devicetree/bindings/iio/iio-bindings.txt for details.
+> +      See
+> +      https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/iio-consumer.yaml
+> +      for details.
 
-Hm yeah, it's not clear to me why inherited objcgs pinned the memcg in
-the first place, since they are reparented during memcg deletion and
-therefor have no actual impact on the memcg's lifetime.
+Please just drop this one. We don't need every user of a common
+property to link to the common schema. If we do, then we should figure
+out how to generate that (there are some json-schema to docs projects
+I'd like to investigate some day).
 
-> There are only two places that modifies the objcg->memcg. One is the
-> initialization to objcg->memcg in the memcg_online_kmem(), another
-> is objcgs reparenting in the memcg_reparent_objcgs(). It is also
-> impossible for the two to run in parallel. So xchg() is unnecessary
-> and it is enough to use WRITE_ONCE().
-
-Good catch.
-
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-
-Looks like a nice cleanup / simplification:
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+>    '#address-cells':
+>      const: 1
+> diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+> index fee0da12474e..af5223bb5bdd 100644
+> --- a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+> +++ b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
+> @@ -5,7 +5,10 @@ Required properties:
+>   - compatible: must be "resistive-adc-touch"
+>  The device must be connected to an ADC device that provides channels for
+>  position measurement and optional pressure.
+> -Refer to Documentation/devicetree/bindings/iio/iio-bindings.txt for details
+> +Refer to
+> +https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/iio-consumer.yaml
+> +for details
+> +
+>   - iio-channels: must have at least two channels connected to an ADC device.
+>  These should correspond to the channels exposed by the ADC device and should
+>  have the right index as the ADC device registers them. These channels
+> diff --git a/Documentation/devicetree/bindings/mfd/ab8500.txt b/Documentation/devicetree/bindings/mfd/ab8500.txt
+> index d2a6e835c257..937b3e5505e0 100644
+> --- a/Documentation/devicetree/bindings/mfd/ab8500.txt
+> +++ b/Documentation/devicetree/bindings/mfd/ab8500.txt
+> @@ -72,7 +72,9 @@ Required child device properties:
+>                                                 pwm|regulator|rtc|sysctrl|usb]";
+>
+>    A few child devices require ADC channels from the GPADC node. Those follow the
+> -  standard bindings from iio/iio-bindings.txt and iio/adc/adc.txt
+> +  standard bindings from
+> +  https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/iio-consumer.yaml
+> +  and Documentation/devicetree/bindings/iio/adc/adc.yaml
+>
+>    abx500-temp           : io-channels "aux1" and "aux2" for measuring external
+>                            temperatures.
+> --
+> 2.30.2
+>
