@@ -2,172 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61309359502
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091323594FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:51:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbhDIFwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:52:39 -0400
-Received: from m12-16.163.com ([220.181.12.16]:49472 "EHLO m12-16.163.com"
+        id S233219AbhDIFvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:51:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhDIFwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:52:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=O0Fw6
-        C8nkVcsEdj5tqNF1VdUgPPuLHJN/DPaM3S9r6A=; b=C5rCZ+exjQYqIMxJXI9KL
-        MMEvRNe3NdGIFMN8nu0Pq/y4kOzd6nfqEjyaCmCFXPKm/1CBKePvvmt4c/ljzXA2
-        pyo6exW/U0hB9/dN3zbC4a3BeQo8zXmYDAeBxXWitS07Xdy/3EyrW0AsllYsiCAK
-        ry5p2h8x6xlXsbirYYbNIo=
-Received: from localhost.localdomain (unknown [183.9.194.37])
-        by smtp12 (Coremail) with SMTP id EMCowABnYDjF6m9grpXkkg--.11493S2;
-        Fri, 09 Apr 2021 13:48:56 +0800 (CST)
-From:   =?UTF-8?q?=C2=A0Zhongjun=20Tan?= <hbut_tan@163.com>
-To:     steffen.klassert@secunet.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, kuba@kernel.org, jmorris@namei.org,
-        serge@hallyn.com, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        keescook@chromium.org, gregkh@linuxfoundation.org,
-        ebiederm@xmission.com, kpsingh@google.com, dhowells@redhat.com,
-        christian.brauner@ubuntu.com, zohar@linux.ibm.com
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        Zhongjun Tan <tanzhongjun@yulong.com>
-Subject: [PATCH 2/2] selinux:Delete selinux_xfrm_policy_lookup() useless argument
-Date:   Fri,  9 Apr 2021 13:48:41 +0800
-Message-Id: <20210409054841.320-1-hbut_tan@163.com>
-X-Mailer: git-send-email 2.30.0.windows.2
+        id S229613AbhDIFvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 01:51:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 647C261168;
+        Fri,  9 Apr 2021 05:50:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617947454;
+        bh=DLamBDMHwwUmraCBU8zYVL5rPaEGxzTypgMW47MM8JI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qX0vGlmIo0+USN4/nQBFMnk0I85/6fDe2+mRIuO+ZyKHktYEBhHs8QV3eISWLpjfT
+         zQ0aQC32q1ZaUJEYXW4gBYR/gMVFfWEihBZyGGQocIBBLY6+JTWaW0r/WQwRJI8oX7
+         hu8wE4oCbhai9U4kJ6FgpkfS9ETAFI2QB9JGf1dbnsuKcEQhcQLJGRWZseoXYy3lrm
+         M7/jPYOvn9iUfhU/1WZRROz9xM/n24l9lQ4J43oMzJ2hnGwv1cgyTDqZwAEoUabaHp
+         UZFS8RbDZVxKBTGRUbyAD/gPvl/C8IKFYzMSZGSqyB3+lAvEFgc6XFTGN5b4MXD0As
+         0Lbh0eJrziZUQ==
+Date:   Fri, 9 Apr 2021 08:50:52 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Zhihao Cheng <chengzhihao1@huawei.com>
+Cc:     peterhuewe@gmx.de, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yukuai3@huawei.com
+Subject: Re: [PATCH v2] char: tpm: fix error return code in
+ tpm_cr50_i2c_tis_recv()
+Message-ID: <YG/rPLtWwhFTgqor@kernel.org>
+References: <20210409011201.1589080-1-chengzhihao1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowABnYDjF6m9grpXkkg--.11493S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxtFWrWr43GrW7CrWkCrW5trb_yoW7Wr15pF
-        4DKFyUKr4UXa4UuFn7JFnruFnIg3yYka9rJrWkCw1YyasrJr1rWws5JryakryFyrWUJFyI
-        9w13CrZ5Gw45trDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jTFALUUUUU=
-X-Originating-IP: [183.9.194.37]
-X-CM-SenderInfo: xkex3sxwdqqiywtou0bp/xtbBqAhvxl75bagm0wAAse
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409011201.1589080-1-chengzhihao1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhongjun Tan <tanzhongjun@yulong.com>
+On Fri, Apr 09, 2021 at 09:12:01AM +0800, Zhihao Cheng wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> Fixes: 3a253caaad11 ("char: tpm: add i2c driver for cr50")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 
-seliunx_xfrm_policy_lookup() is hooks of security_xfrm_policy_lookup().
-The dir argument is uselss in security_xfrm_policy_lookup(). So
-remove the dir argument from selinux_xfrm_policy_lookup() and
-security_xfrm_policy_lookup().
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Signed-off-by: Zhongjun Tan <tanzhongjun@yulong.com>
----
- include/linux/lsm_hook_defs.h   | 3 +--
- include/linux/security.h        | 4 ++--
- net/xfrm/xfrm_policy.c          | 6 ++----
- security/security.c             | 4 ++--
- security/selinux/include/xfrm.h | 2 +-
- security/selinux/xfrm.c         | 2 +-
- 6 files changed, 9 insertions(+), 12 deletions(-)
+> ---
+>  drivers/char/tpm/tpm_tis_i2c_cr50.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c b/drivers/char/tpm/tpm_tis_i2c_cr50.c
+> index ec9a65e7887d..f19c227d20f4 100644
+> --- a/drivers/char/tpm/tpm_tis_i2c_cr50.c
+> +++ b/drivers/char/tpm/tpm_tis_i2c_cr50.c
+> @@ -483,6 +483,7 @@ static int tpm_cr50_i2c_tis_recv(struct tpm_chip *chip, u8 *buf, size_t buf_len)
+>  	expected = be32_to_cpup((__be32 *)(buf + 2));
+>  	if (expected > buf_len) {
+>  		dev_err(&chip->dev, "Buffer too small to receive i2c data\n");
+> +		rc = -E2BIG;
+>  		goto out_err;
+>  	}
+>  
+> -- 
+> 2.25.4
+> 
+> 
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index 04c0179..2adeea4 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -358,8 +358,7 @@
- 	 struct xfrm_sec_ctx *polsec, u32 secid)
- LSM_HOOK(void, LSM_RET_VOID, xfrm_state_free_security, struct xfrm_state *x)
- LSM_HOOK(int, 0, xfrm_state_delete_security, struct xfrm_state *x)
--LSM_HOOK(int, 0, xfrm_policy_lookup, struct xfrm_sec_ctx *ctx, u32 fl_secid,
--	 u8 dir)
-+LSM_HOOK(int, 0, xfrm_policy_lookup, struct xfrm_sec_ctx *ctx, u32 fl_secid)
- LSM_HOOK(int, 1, xfrm_state_pol_flow_match, struct xfrm_state *x,
- 	 struct xfrm_policy *xp, const struct flowi_common *flic)
- LSM_HOOK(int, 0, xfrm_decode_session, struct sk_buff *skb, u32 *secid,
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 06f7c50..24eda04 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -1681,7 +1681,7 @@ int security_xfrm_state_alloc_acquire(struct xfrm_state *x,
- 				      struct xfrm_sec_ctx *polsec, u32 secid);
- int security_xfrm_state_delete(struct xfrm_state *x);
- void security_xfrm_state_free(struct xfrm_state *x);
--int security_xfrm_policy_lookup(struct xfrm_sec_ctx *ctx, u32 fl_secid, u8 dir);
-+int security_xfrm_policy_lookup(struct xfrm_sec_ctx *ctx, u32 fl_secid);
- int security_xfrm_state_pol_flow_match(struct xfrm_state *x,
- 				       struct xfrm_policy *xp,
- 				       const struct flowi_common *flic);
-@@ -1732,7 +1732,7 @@ static inline int security_xfrm_state_delete(struct xfrm_state *x)
- 	return 0;
- }
- 
--static inline int security_xfrm_policy_lookup(struct xfrm_sec_ctx *ctx, u32 fl_secid, u8 dir)
-+static inline int security_xfrm_policy_lookup(struct xfrm_sec_ctx *ctx, u32 fl_secid)
- {
- 	return 0;
- }
-diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-index 156347f..d5d934e 100644
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -1902,8 +1902,7 @@ static int xfrm_policy_match(const struct xfrm_policy *pol,
- 
- 	match = xfrm_selector_match(sel, fl, family);
- 	if (match)
--		ret = security_xfrm_policy_lookup(pol->security, fl->flowi_secid,
--						  dir);
-+		ret = security_xfrm_policy_lookup(pol->security, fl->flowi_secid);
- 	return ret;
- }
- 
-@@ -2181,8 +2180,7 @@ static struct xfrm_policy *xfrm_sk_policy_lookup(const struct sock *sk, int dir,
- 				goto out;
- 			}
- 			err = security_xfrm_policy_lookup(pol->security,
--						      fl->flowi_secid,
--						      dir);
-+						      fl->flowi_secid);
- 			if (!err) {
- 				if (!xfrm_pol_hold_rcu(pol))
- 					goto again;
-diff --git a/security/security.c b/security/security.c
-index b38155b..0c1c979 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -2466,9 +2466,9 @@ void security_xfrm_state_free(struct xfrm_state *x)
- 	call_void_hook(xfrm_state_free_security, x);
- }
- 
--int security_xfrm_policy_lookup(struct xfrm_sec_ctx *ctx, u32 fl_secid, u8 dir)
-+int security_xfrm_policy_lookup(struct xfrm_sec_ctx *ctx, u32 fl_secid)
- {
--	return call_int_hook(xfrm_policy_lookup, 0, ctx, fl_secid, dir);
-+	return call_int_hook(xfrm_policy_lookup, 0, ctx, fl_secid);
- }
- 
- int security_xfrm_state_pol_flow_match(struct xfrm_state *x,
-diff --git a/security/selinux/include/xfrm.h b/security/selinux/include/xfrm.h
-index 0a6f34a..7415940 100644
---- a/security/selinux/include/xfrm.h
-+++ b/security/selinux/include/xfrm.h
-@@ -23,7 +23,7 @@ int selinux_xfrm_state_alloc_acquire(struct xfrm_state *x,
- 				     struct xfrm_sec_ctx *polsec, u32 secid);
- void selinux_xfrm_state_free(struct xfrm_state *x);
- int selinux_xfrm_state_delete(struct xfrm_state *x);
--int selinux_xfrm_policy_lookup(struct xfrm_sec_ctx *ctx, u32 fl_secid, u8 dir);
-+int selinux_xfrm_policy_lookup(struct xfrm_sec_ctx *ctx, u32 fl_secid);
- int selinux_xfrm_state_pol_flow_match(struct xfrm_state *x,
- 				      struct xfrm_policy *xp,
- 				      const struct flowi_common *flic);
-diff --git a/security/selinux/xfrm.c b/security/selinux/xfrm.c
-index 634f3db..be83e5c 100644
---- a/security/selinux/xfrm.c
-+++ b/security/selinux/xfrm.c
-@@ -150,7 +150,7 @@ static int selinux_xfrm_delete(struct xfrm_sec_ctx *ctx)
-  * LSM hook implementation that authorizes that a flow can use a xfrm policy
-  * rule.
-  */
--int selinux_xfrm_policy_lookup(struct xfrm_sec_ctx *ctx, u32 fl_secid, u8 dir)
-+int selinux_xfrm_policy_lookup(struct xfrm_sec_ctx *ctx, u32 fl_secid)
- {
- 	int rc;
- 
--- 
-1.9.1
-
-
+/Jarkko
