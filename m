@@ -2,115 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11C62359FF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F064359FF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:36:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233720AbhDINgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
+        id S233735AbhDINg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:36:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233619AbhDINgR (ORCPT
+        with ESMTP id S231638AbhDINg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:36:17 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370CDC061761
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 06:36:04 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id g8so9710912lfv.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 06:36:04 -0700 (PDT)
+        Fri, 9 Apr 2021 09:36:56 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E10C061760;
+        Fri,  9 Apr 2021 06:36:43 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id r12so8725308ejr.5;
+        Fri, 09 Apr 2021 06:36:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3iD4YPxW/GP1gLZhw0O0u7ekYYA6XBjCYhKSDPDU1Uk=;
-        b=ASn6nOKS/A0qn9YbTJ8T7s3Rq/GyJIDqVwQh4KiNp31Eu3x1Z/F6vdVZf2cgPIK4zI
-         9nbsfUTIbO2JRyeaJYHen9ytoZlrAJXlcm6EkaWSpfDpX6ekzT8I0CBgVwDVfYVuSZGH
-         uNSECLSqHmIbLXWEiO3AtafEPSqnn5WRXro3iW4S1bBjjeWd5nWA8xZVhTLYylCniNv5
-         A7fmusxTFdLHj7gPteXorF3GK/ZzdG8ymUzXqOOw5ppKh2fsC4ldnoVskZJc/GZ+CdW8
-         O2+W2TDIqFKsba2/j7t7/wE8gAYNZb9/F+MlO8bQiEJ3FUEYm+/Ik+8F308mb0Kr/q3C
-         /TVQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ORK7Ni7rBYd2U9kNMSKdG31gNJoCS6P/+dcBmLvcUlw=;
+        b=I7PJzHdH08eGiCDK/m2dCKnNY1v6aBL/CnZw/3Y9DVcpdR2OSfhk/S3obkssrGppSB
+         SqRUC9f9ycTnDC0OmPUMtbQoKvDbt53k1z9v28KbD7dX6hOdDyOOT7X2QkZXm4cXYWjJ
+         uRPuAH6hoAdkQDHGzNwtzw19CmptPfWiHsVw3AVWwBRcPjE8PO49hQqhYHcHfhpijTru
+         H8AINAVDP8J1E4hSndmMApVgYD6gkD/AUJp3ud6NWqR203s+yLPtzuL/ctIgiBLBIPNC
+         m4caMD76ZSxfHqxgXHPz7y/GwjZTGgY++drXNGGGHp79ganJm4tMHqwtVdfKo61Gx5Y0
+         NSAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3iD4YPxW/GP1gLZhw0O0u7ekYYA6XBjCYhKSDPDU1Uk=;
-        b=mlCj3E9DTM1c18ckSjOKDOhyOdmrNYVTqwNV8KFNUvlzdx9AW01VyMlfLo5KVq3dHK
-         DaKYInLj8N1KiH+H2y7ai/fB5hSZvf7dmFxMoZbdtb1l9DqdEbaBpSvHkVvfq2Hzjvdq
-         Uow4O7EeyDj1mHq7jnNXEm34xJZ9valrO+0UY0Kayf6oTWcpFzo9R0OjS4Ww41XXl8Jn
-         qmwMjav+pAnbfCHCM8ZiYrop9DSdrfW+821bFnahnsr/dzSWBgysntqWlCLnUexGSsGI
-         gYd46narHPQsZe6bsJnoVNGrogaQrxoiioopYHO/nCi5E21k7O0ip3SOcWhAjUl5NKW6
-         GxPA==
-X-Gm-Message-State: AOAM530CatC3bgqRt6X6IA3kHf0GdMMvZCf52g9VUmPsnDvy6yndONE0
-        oh7dfR12Ux+qQq+Rr3qzwXbZ/A==
-X-Google-Smtp-Source: ABdhPJzH0HSzYIfAmTefFcmEs8zRV9QQ2kRmVMCTFZ1Mop7ndZjumchbz1SmhaQhEudIYYGEbZGfTg==
-X-Received: by 2002:a05:6512:304c:: with SMTP id b12mr9772234lfb.3.1617975362748;
-        Fri, 09 Apr 2021 06:36:02 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id k11sm272080ljg.119.2021.04.09.06.36.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 06:36:02 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 96C0F102498; Fri,  9 Apr 2021 16:36:01 +0300 (+03)
-Date:   Fri, 9 Apr 2021 16:36:01 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFCv1 2/7] x86/kvm: Introduce KVM memory protection feature
-Message-ID: <20210409133601.2qepfc77stujulhf@box>
-References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
- <20210402152645.26680-3-kirill.shutemov@linux.intel.com>
- <20210408095235.GH10192@zn.tnic>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ORK7Ni7rBYd2U9kNMSKdG31gNJoCS6P/+dcBmLvcUlw=;
+        b=PUTvwkJsHVS9jBxbmufv31nOf7Iri3ro6InJR8mXIURqLCz0eHp4LfahaijaM1yBJ0
+         hUsqnR8ucb+n1Ew1LcyU985NoPmSNT39GJMEquHgnPXdDCTfe2UryQ+1xZUyU6Wpg12B
+         rUL4y4oqZqJK/GJYjdFLkxOtO9t5jacaxjTpFHCgBMWxMl4FEwXt3bot/8OGmS4g8Nsp
+         aBwcd4VDNEsqOGoyzeljaL2Md4xK2V+cIuEMcDAEwvxCgAi4jXsTEOMVwDCjijKaoD6K
+         VLocXLmG6lM0WobDkCE4l1lGB+OQRHHC+q7by0NC0URLi25NBhBUCs+RkreS6p6Zsx9D
+         G2Sg==
+X-Gm-Message-State: AOAM533WmTXAH9kCxdBYg/PQjqc0Xht72Q0vzA6xZSY8Cd5mhcdziD3+
+        DF4gzmNw9pFric30yiNBFkNdzTmb2XBhQJLbzYI=
+X-Google-Smtp-Source: ABdhPJwDt9k6K9SczK6O9QC1MnEEHxtcFSysDpQdAm6P8xxjcFFvuf43OpBKd+HlUTOo6uqDbTdWqz6Y8AmHb4/b4jw=
+X-Received: by 2002:a17:906:44b:: with SMTP id e11mr8419543eja.551.1617975402441;
+ Fri, 09 Apr 2021 06:36:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408095235.GH10192@zn.tnic>
+References: <20210407212122.626137-1-adrien.grassein@gmail.com>
+ <542d469459083fa31e37ca7feb14480831a0445f.camel@pengutronix.de> <bc59b75b-d5b7-fe0f-6cba-d184cab204d3@oss.nxp.com>
+In-Reply-To: <bc59b75b-d5b7-fe0f-6cba-d184cab204d3@oss.nxp.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Fri, 9 Apr 2021 08:36:29 -0500
+Message-ID: <CAHCN7xK=mjvgrMGXfFwN6520rhtdZu9YRiSn6mi6-+9sVA-LWg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/7] imx-gpcv2 improvements
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     Lucas Stach <l.stach@pengutronix.de>,
+        Adrien Grassein <adrien.grassein@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Aisheng Dong <aisheng.dong@nxp.com>, qiangqing.zhang@nxp.com,
+        Alice Guo <alice.guo@nxp.com>,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 11:52:35AM +0200, Borislav Petkov wrote:
-> On Fri, Apr 02, 2021 at 06:26:40PM +0300, Kirill A. Shutemov wrote:
-> > Provide basic helpers, KVM_FEATURE, CPUID flag and a hypercall.
-> > 
-> > Host side doesn't provide the feature yet, so it is a dead code for now.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >  arch/x86/include/asm/cpufeatures.h   |  1 +
-> >  arch/x86/include/asm/kvm_para.h      |  5 +++++
-> >  arch/x86/include/uapi/asm/kvm_para.h |  3 ++-
-> >  arch/x86/kernel/kvm.c                | 18 ++++++++++++++++++
-> >  include/uapi/linux/kvm_para.h        |  3 ++-
-> >  5 files changed, 28 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> > index 84b887825f12..5b6f23e6edc4 100644
-> > --- a/arch/x86/include/asm/cpufeatures.h
-> > +++ b/arch/x86/include/asm/cpufeatures.h
-> > @@ -238,6 +238,7 @@
-> >  #define X86_FEATURE_VMW_VMMCALL		( 8*32+19) /* "" VMware prefers VMMCALL hypercall instruction */
-> >  #define X86_FEATURE_SEV_ES		( 8*32+20) /* AMD Secure Encrypted Virtualization - Encrypted State */
-> >  #define X86_FEATURE_VM_PAGE_FLUSH	( 8*32+21) /* "" VM Page Flush MSR is supported */
-> > +#define X86_FEATURE_KVM_MEM_PROTECTED	( 8*32+22) /* KVM memory protection extenstion */
-> 										    ^^^^^^^^^^
-> What's that feature bit for?
+On Wed, Apr 7, 2021 at 8:27 PM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+>
+> Hi Lucas,
+>
+> On 2021/4/8 6:13, Lucas Stach wrote:
+> > Hi Adrien,
+> >
+> > I feel like I already mentioned to you some time ago that there is
+> > already a much more complete patch series to add this functionality on
+> > the list [1].
+> >
+> > If you want this functionality to go upstream, please help test and
+> > extend this patch series.
+> >
+> > Regards,
+> > Lucas
+> >
+> > [1] https://lore.kernel.org/linux-arm-kernel/20201105174434.1817539-1-l.stach@pengutronix.de/
+>
+> Would you share what's the issue that block this going forward?
 
-The patchset is still in path-finding stage. I'll be more specific once we
-settle on how the feature works.
- 
-> Also, use a spellchecker pls: "extenstion".
+Peng,
 
-Ouch. Thanks.
+I know of a few.  One of them is mentioned in [1] above.  From what I
+can tell, the dt-bindings have halted being able to enable the GPU and
+USB power domains.  See [2] for some of that dialog.
 
--- 
- Kirill A. Shutemov
+The second part that I am aware is the blk-ctl being dependent on the
+power domain and the power domain being dependent on the blk-ctl [3]
+There was some discussion of using syscon to let the power-domain
+finish coming up and then referencing the the power-domain from the
+blk-ctl, but there was some disagreement [4] on that approach
+
+I think Abel tried to create an IRC, but by the time I was able to
+join the IRC, there was no activity.
+
+[2] - https://lore.kernel.org/linux-arm-kernel/CAHCN7xLdkEd0G3fa9gAp-xvKZ-bYmvcyn-8OEbgNjBJyCCOs9g@mail.gmail.com/
+[3] - https://lkml.org/lkml/2020/11/9/17
+[4] - https://www.spinics.net/lists/arm-kernel/msg849032.html
+
+>
+> Thanks,
+> Peng.
+>
+> >
+> > Am Mittwoch, dem 07.04.2021 um 23:21 +0200 schrieb Adrien Grassein:
+> >> Hi,
+> >>
+> >> This patch set aims is to add the support of the i.MX8 MM power domains
+> >> on the mainline kernel.
+> >>
+> >> To achieve this, I do several patches
+> >>    - Check errors when reading or writing registers (concerns i.MX8M base
+> >>      implementation);
+> >>    - Fix power up/down sequence. Handshake was not checked and it was
+> >>      not called at the appropriate time (concerns i.MX8M base
+> >> implementaions);
+> >>    - Allow domains without power sequence control like the HSIOMIX of the
+> >>      i.MX8MM.
+> >>    - Add some i.MX8MM domains (HSIO and OTGS);
+> >>    - Introduce quirks. For example, i.MX8MM OTG domains should not be
+> >>      powered off (seen n the source code of th i.MX ATF). Quirks are
+> >> easily upgrable for other cases.
+> >>    - Finally I defined power domains into the imx8mm.dtb file.
+> >>
+> >> I know that this kind of patch is rejected by NXP ut the other way
+> >> (callin ATF directly) was also rejected.
+> >>
+> >> I also know that NXP is concerned abou adding hundred lines of codes for
+> >> each new SOC but it' the way it works on Linux. And the "added code"
+> >> mainly consist of adding structures, defines and generic methods for
+> >> regmap.
+> >>
+> >> If it's a real problem, maybe we can introduc a new "gpcv3" driver for
+> >> i.MX8MM, i.MX8MN and i.MX8MP.
+> >>
+> >> Thanks,
+> >>
+> >> Adrien Grassein (7):
+> >>    soc: imx: gpcv2: check for errors when r/w registers
+> >>    soc: imx: gpcv2: Fix power up/down sequence
+> >>    soc: imx: gpcv2: allow domains without power sequence control
+> >>    dt-bindings: power: fsl,imx-gpcv2: add definitions for i.MX8MM
+> >>    soc: imx: gpcv2: add HSIOMIX and USB domains for i.MX8MM
+> >>    soc: imx: gpcv2: add quirks to domains
+> >>    arm64: dts: imx8mm: add power-domains
+> >>
+> >>   .../bindings/power/fsl,imx-gpcv2.yaml         |   7 +-
+> >>   arch/arm64/boot/dts/freescale/imx8mm.dtsi     |  35 ++
+> >>   drivers/soc/imx/gpcv2.c                       | 336 ++++++++++++++----
+> >>   include/dt-bindings/power/imx8mm-power.h      |  21 ++
+> >>   4 files changed, 333 insertions(+), 66 deletions(-)
+> >>   create mode 100644 include/dt-bindings/power/imx8mm-power.h
+> >>
+> >
+> >
