@@ -2,345 +2,365 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91124359C5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:53:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD542359C61
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhDIKxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:53:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232087AbhDIKxx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:53:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CE37610D0;
-        Fri,  9 Apr 2021 10:53:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617965621;
-        bh=ujp85nn5IZ9hiRavTEJKD/oMXPuebJQIsoNwcleLqoI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RAr3scnQ7872pPG4MlYyl1PD/wyzISEhscpgVJtlp0LsOPr0wgju+tsIbBGkZbaSL
-         63/dwIRbBtFYYpRkIVGeYmFYXjZ9/U33Be3vRfx5jeZlHGE5OUlyoKp7w/YXm2mJ26
-         DxK8EGPGpj4fmd6fMC/7wEJ4+hMNfD32+v4y6vHm2ibhH70b/NWLI4uxTJsKaSeUr4
-         w/j+x0Rq6aHwbXvmN8KjnLmesywrpp+N3ucHv6NTFMOUqywEJo8cSaMr/w+uzduxg4
-         SPuTpr6GntaZr8GsXOCHTRfQmOvVphwaGIu3re01AaoEaU9/FRKSY8hb5tsj0aFfGn
-         cX/sYwHx+jKhQ==
-From:   Gao Xiang <xiang@kernel.org>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>,
-        Chao Yu <chao@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [PATCH v3.1 02/10] erofs: introduce multipage per-CPU buffers
-Date:   Fri,  9 Apr 2021 18:53:35 +0800
-Message-Id: <20210409105335.18725-1-xiang@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210407043927.10623-3-xiang@kernel.org>
-References: <20210407043927.10623-3-xiang@kernel.org>
+        id S233556AbhDIKyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:54:01 -0400
+Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:47255 "EHLO
+        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232087AbhDIKx6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:53:58 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id UolblMASE43ycUolelV09H; Fri, 09 Apr 2021 12:53:44 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1617965624; bh=GgnuQ2dH0TXnpRVX+UaltcVSavNA7i7VSZxCMTpv1KA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=KMQ84aydgW+9Bg5ApzQT2UJFfgtjERDS0qsb6VliMN/f6Fh8RLcC3K5VyPMUVpSkA
+         FnK1d40FRlRKqaLGEuNhhtXE0Ucqg8i4Z3Bo3ZTTG9+BlcLkTskkfmYOQuKyasBdkH
+         9Hz1f+OBkpxkWOlDg+MUXGTZShGDV2xemXnFLrTbxnM3q3zeQSpbXd00zXYU6Lwm9z
+         ClB7ypuen7fA0N3MYWdurrY+0DmG1xIYPmcjA9JHyKurLrPHP1+qFk+4PN75696P5e
+         EzCoP81iuQicHmyIgIml2zCTfwLW4W+WCSiCfLNdZUT550t2GMeo7zGWoFhAO1d3r5
+         ydYtkPBdPbntw==
+Subject: Re: [PATCH v2] staging: media: zoran: remove and add '*' in
+ long(multi-line) comments
+To:     Mitali Borkar <mitaliborkar810@gmail.com>, clabbe@baylibre.com,
+        mchehab@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+References: <YHAxQh9bfFeN337E@kali>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <9f8b3018-2b5e-2471-f5d4-bac03e4ab259@xs4all.nl>
+Date:   Fri, 9 Apr 2021 12:53:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YHAxQh9bfFeN337E@kali>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfAtVkuMAklExdWZwMxaOrZuUdwBKxIQ0l8odhbzLSOHDyzyWtCZlQuY30upMmAZZUK0NiZ/5Z7Z1ybRbRjXeKzZGTg584w4czfytSkUAUJqvkhpv+FCY
+ ZyQPsm45AlYNT/SBeILbI1/6JiLLtdmBwUiTs+D8z4Nh5H+X3VlGeXGAMN+Pg8dOA37hhPVcTM/d1jWSiF47jok9huyLJCBVlPR0vq90rv1Ql87tbEtoBK+r
+ 7RCE8qsU7+YEDIprFAxmBSv5gKeDMwDYs+QGxexqaAPuELOB9bh63LVu67WOYzRUGLVMxQlKVQK5D6Ufj/tViJ88D5hrLueHslFXlxP4QFskAJAVAY2wiq1W
+ OWCpphHTNO9hV7ettl1Ng/aodyhzre5sOydR477tweYFixz7n+gBozhmy/aecnl8ks2At8Ca3fILZGlDsT60sj7sJ+jZuvsMP0O6xBmktmJ3o41LaHDbQ0ma
+ +HtB1eBxFmkVEvZ+FG/dwvq2OHJk/kkyIP0nkg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+On 09/04/2021 12:49, Mitali Borkar wrote:
+> Added '*' before every line inside long(multi-line) comments. Removed
+> '*/' from end of the comment line and added to next line as per linux
+> kernel coding style. Aligned '*' accordingly to make code neater.
+> 
+> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> ---
+> 
+> Changes from v1:- Changes made in code according to linux kernel coding
+> style for long(multi-line) comments.
+> 
+> drivers/staging/media/zoran/zr36050.c | 138 +++++++++++++++-----------
+>  1 file changed, 81 insertions(+), 57 deletions(-)
+> 
+> diff --git a/drivers/staging/media/zoran/zr36050.c b/drivers/staging/media/zoran/zr36050.c
+> index 663ac2b3434e..703064009c6b 100644
+> --- a/drivers/staging/media/zoran/zr36050.c
+> +++ b/drivers/staging/media/zoran/zr36050.c
+> @@ -25,7 +25,8 @@
+>  #include "videocodec.h"
+>  
+>  /* it doesn't make sense to have more than 20 or so,
 
-To deal the with the cases which inplace decompression is infeasible
-for some inplace I/O. Per-CPU buffers was introduced to get rid of page
-allocation latency and thrash for low-latency decompression algorithms
-such as lz4.
+The coding style says that /* is on a line of its own. So change that too.
 
-For the big pcluster feature, introduce multipage per-CPU buffers to
-keep such inplace I/O pclusters temporarily as well but note that
-per-CPU pages are just consecutive virtually.
+Regards,
 
-When a new big pcluster fs is mounted, its max pclustersize will be
-read and per-CPU buffers can be growed if needed. Shrinking adjustable
-per-CPU buffers is more complex (because we don't know if such size
-is still be used), so currently just release them all when unloading.
+	Hans
 
-Acked-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
-change since v3:
- - add annotation to erofs_{get,put}_pcpubuf() to silence a sparse
-   warning since they should be used in pairs but not self contained.
-
- fs/erofs/Makefile       |   2 +-
- fs/erofs/decompressor.c |   8 ++-
- fs/erofs/internal.h     |  24 ++-----
- fs/erofs/pcpubuf.c      | 138 ++++++++++++++++++++++++++++++++++++++++
- fs/erofs/super.c        |   1 +
- fs/erofs/utils.c        |  12 ----
- 6 files changed, 151 insertions(+), 34 deletions(-)
- create mode 100644 fs/erofs/pcpubuf.c
-
-diff --git a/fs/erofs/Makefile b/fs/erofs/Makefile
-index af159539fc1b..1f9aced49070 100644
---- a/fs/erofs/Makefile
-+++ b/fs/erofs/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- 
- obj-$(CONFIG_EROFS_FS) += erofs.o
--erofs-objs := super.o inode.o data.o namei.o dir.o utils.o
-+erofs-objs := super.o inode.o data.o namei.o dir.o utils.o pcpubuf.o
- erofs-$(CONFIG_EROFS_FS_XATTR) += xattr.o
- erofs-$(CONFIG_EROFS_FS_ZIP) += decompressor.o zmap.o zdata.o
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 27aa6a99b371..fb4838c0f0df 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -47,7 +47,9 @@ int z_erofs_load_lz4_config(struct super_block *sb,
- 	EROFS_SB(sb)->lz4.max_distance_pages = distance ?
- 					DIV_ROUND_UP(distance, PAGE_SIZE) + 1 :
- 					LZ4_MAX_DISTANCE_PAGES;
--	return 0;
-+
-+	/* TODO: use max pclusterblks after bigpcluster is enabled */
-+	return erofs_pcpubuf_growsize(1);
- }
- 
- static int z_erofs_lz4_prepare_destpages(struct z_erofs_decompress_req *rq,
-@@ -114,7 +116,7 @@ static void *generic_copy_inplace_data(struct z_erofs_decompress_req *rq,
- 	 * pages should be copied in order to avoid being overlapped.
- 	 */
- 	struct page **in = rq->in;
--	u8 *const tmp = erofs_get_pcpubuf(0);
-+	u8 *const tmp = erofs_get_pcpubuf(1);
- 	u8 *tmpp = tmp;
- 	unsigned int inlen = rq->inputsize - pageofs_in;
- 	unsigned int count = min_t(uint, inlen, PAGE_SIZE - pageofs_in);
-@@ -271,7 +273,7 @@ static int z_erofs_decompress_generic(struct z_erofs_decompress_req *rq,
- 	 * compressed data is preferred.
- 	 */
- 	if (rq->outputsize <= PAGE_SIZE * 7 / 8) {
--		dst = erofs_get_pcpubuf(0);
-+		dst = erofs_get_pcpubuf(1);
- 		if (IS_ERR(dst))
- 			return PTR_ERR(dst);
- 
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 05b02f99324c..f707d28a46d9 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -197,9 +197,6 @@ static inline int erofs_wait_on_workgroup_freezed(struct erofs_workgroup *grp)
- 
- /* hard limit of pages per compressed cluster */
- #define Z_EROFS_CLUSTER_MAX_PAGES       (CONFIG_EROFS_FS_CLUSTER_PAGE_LIMIT)
--#define EROFS_PCPUBUF_NR_PAGES          Z_EROFS_CLUSTER_MAX_PAGES
--#else
--#define EROFS_PCPUBUF_NR_PAGES          0
- #endif	/* !CONFIG_EROFS_FS_ZIP */
- 
- /* we strictly follow PAGE_SIZE and no buffer head yet */
-@@ -405,24 +402,15 @@ int erofs_namei(struct inode *dir, struct qstr *name,
- /* dir.c */
- extern const struct file_operations erofs_dir_fops;
- 
-+/* pcpubuf.c */
-+void *erofs_get_pcpubuf(unsigned int requiredpages);
-+void erofs_put_pcpubuf(void *ptr);
-+int erofs_pcpubuf_growsize(unsigned int nrpages);
-+void erofs_pcpubuf_exit(void);
-+
- /* utils.c / zdata.c */
- struct page *erofs_allocpage(struct list_head *pool, gfp_t gfp);
- 
--#if (EROFS_PCPUBUF_NR_PAGES > 0)
--void *erofs_get_pcpubuf(unsigned int pagenr);
--#define erofs_put_pcpubuf(buf) do { \
--	(void)&(buf);	\
--	preempt_enable();	\
--} while (0)
--#else
--static inline void *erofs_get_pcpubuf(unsigned int pagenr)
--{
--	return ERR_PTR(-EOPNOTSUPP);
--}
--
--#define erofs_put_pcpubuf(buf) do {} while (0)
--#endif
--
- #ifdef CONFIG_EROFS_FS_ZIP
- int erofs_workgroup_put(struct erofs_workgroup *grp);
- struct erofs_workgroup *erofs_find_workgroup(struct super_block *sb,
-diff --git a/fs/erofs/pcpubuf.c b/fs/erofs/pcpubuf.c
-new file mode 100644
-index 000000000000..401ccfa2c155
---- /dev/null
-+++ b/fs/erofs/pcpubuf.c
-@@ -0,0 +1,138 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) Gao Xiang <xiang@kernel.org>
-+ *
-+ * For low-latency decompression algorithms (e.g. lz4), reserve consecutive
-+ * per-CPU virtual memory (in pages) in advance to store such inplace I/O
-+ * data if inplace decompression is failed (due to unmet inplace margin for
-+ * example).
-+ */
-+#include "internal.h"
-+
-+struct erofs_pcpubuf {
-+	raw_spinlock_t lock;
-+	void *ptr;
-+	struct page **pages;
-+	unsigned int nrpages;
-+};
-+
-+static DEFINE_PER_CPU(struct erofs_pcpubuf, erofs_pcb);
-+
-+void *erofs_get_pcpubuf(unsigned int requiredpages)
-+	__acquires(pcb->lock)
-+{
-+	struct erofs_pcpubuf *pcb = &get_cpu_var(erofs_pcb);
-+
-+	raw_spin_lock(&pcb->lock);
-+	/* check if the per-CPU buffer is too small */
-+	if (requiredpages > pcb->nrpages) {
-+		raw_spin_unlock(&pcb->lock);
-+		put_cpu_var(erofs_pcb);
-+		/* (for sparse checker) pretend pcb->lock is still taken */
-+		__acquire(pcb->lock);
-+		return NULL;
-+	}
-+	return pcb->ptr;
-+}
-+
-+void erofs_put_pcpubuf(void *ptr) __releases(pcb->lock)
-+{
-+	struct erofs_pcpubuf *pcb = &per_cpu(erofs_pcb, smp_processor_id());
-+
-+	DBG_BUGON(pcb->ptr != ptr);
-+	raw_spin_unlock(&pcb->lock);
-+	put_cpu_var(erofs_pcb);
-+}
-+
-+/* the next step: support per-CPU page buffers hotplug */
-+int erofs_pcpubuf_growsize(unsigned int nrpages)
-+{
-+	static DEFINE_MUTEX(pcb_resize_mutex);
-+	static unsigned int pcb_nrpages;
-+	LIST_HEAD(pagepool);
-+	int delta, cpu, ret, i;
-+
-+	mutex_lock(&pcb_resize_mutex);
-+	delta = nrpages - pcb_nrpages;
-+	ret = 0;
-+	/* avoid shrinking pcpubuf, since no idea how many fses rely on */
-+	if (delta <= 0)
-+		goto out;
-+
-+	for_each_possible_cpu(cpu) {
-+		struct erofs_pcpubuf *pcb = &per_cpu(erofs_pcb, cpu);
-+		struct page **pages, **oldpages;
-+		void *ptr, *old_ptr;
-+
-+		pages = kmalloc_array(nrpages, sizeof(*pages), GFP_KERNEL);
-+		if (!pages) {
-+			ret = -ENOMEM;
-+			break;
-+		}
-+
-+		for (i = 0; i < nrpages; ++i) {
-+			pages[i] = erofs_allocpage(&pagepool, GFP_KERNEL);
-+			if (!pages[i]) {
-+				ret = -ENOMEM;
-+				oldpages = pages;
-+				goto free_pagearray;
-+			}
-+		}
-+		ptr = vmap(pages, nrpages, VM_MAP, PAGE_KERNEL);
-+		if (!ptr) {
-+			ret = -ENOMEM;
-+			oldpages = pages;
-+			goto free_pagearray;
-+		}
-+		raw_spin_lock(&pcb->lock);
-+		old_ptr = pcb->ptr;
-+		pcb->ptr = ptr;
-+		oldpages = pcb->pages;
-+		pcb->pages = pages;
-+		i = pcb->nrpages;
-+		pcb->nrpages = nrpages;
-+		raw_spin_unlock(&pcb->lock);
-+
-+		if (!oldpages) {
-+			DBG_BUGON(old_ptr);
-+			continue;
-+		}
-+
-+		if (old_ptr)
-+			vunmap(old_ptr);
-+free_pagearray:
-+		while (i)
-+			list_add(&oldpages[--i]->lru, &pagepool);
-+		kfree(oldpages);
-+		if (ret)
-+			break;
-+	}
-+	pcb_nrpages = nrpages;
-+	put_pages_list(&pagepool);
-+out:
-+	mutex_unlock(&pcb_resize_mutex);
-+	return ret;
-+}
-+
-+void erofs_pcpubuf_exit(void)
-+{
-+	int cpu, i;
-+
-+	for_each_possible_cpu(cpu) {
-+		struct erofs_pcpubuf *pcb = &per_cpu(erofs_pcb, cpu);
-+
-+		if (pcb->ptr) {
-+			vunmap(pcb->ptr);
-+			pcb->ptr = NULL;
-+		}
-+		if (!pcb->pages)
-+			continue;
-+
-+		for (i = 0; i < pcb->nrpages; ++i)
-+			if (pcb->pages[i])
-+				put_page(pcb->pages[i]);
-+		kfree(pcb->pages);
-+		pcb->pages = NULL;
-+	}
-+}
-+
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index b641658e772f..41fbfee4990c 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -684,6 +684,7 @@ static void __exit erofs_module_exit(void)
- 	/* Ensure all RCU free inodes are safe before cache is destroyed. */
- 	rcu_barrier();
- 	kmem_cache_destroy(erofs_inode_cachep);
-+	erofs_pcpubuf_exit();
- }
- 
- /* get filesystem statistics */
-diff --git a/fs/erofs/utils.c b/fs/erofs/utils.c
-index de9986d2f82f..6758c5b19f7c 100644
---- a/fs/erofs/utils.c
-+++ b/fs/erofs/utils.c
-@@ -21,18 +21,6 @@ struct page *erofs_allocpage(struct list_head *pool, gfp_t gfp)
- 	return page;
- }
- 
--#if (EROFS_PCPUBUF_NR_PAGES > 0)
--static struct {
--	u8 data[PAGE_SIZE * EROFS_PCPUBUF_NR_PAGES];
--} ____cacheline_aligned_in_smp erofs_pcpubuf[NR_CPUS];
--
--void *erofs_get_pcpubuf(unsigned int pagenr)
--{
--	preempt_disable();
--	return &erofs_pcpubuf[smp_processor_id()].data[pagenr * PAGE_SIZE];
--}
--#endif
--
- #ifdef CONFIG_EROFS_FS_ZIP
- /* global shrink count (for all mounted EROFS instances) */
- static atomic_long_t erofs_global_shrink_cnt;
--- 
-2.20.1
+> - * just to prevent some unwanted loops */
+> + * just to prevent some unwanted loops
+> + */
+>  #define MAX_CODECS 20
+>  
+>  /* amount of chips attached via this driver */
+> @@ -44,9 +45,10 @@ MODULE_PARM_DESC(debug, "Debug level (0-4)");
+>  
+>  /* =========================================================================
+>   *  Local hardware I/O functions:
+> -
+> -   read/write via codec layer (registers are located in the master device)
+> -   ========================================================================= */
+> + *
+> + *  read/write via codec layer (registers are located in the master device)
+> + * =========================================================================
+> + */
+>  
+>  /* read and write functions */
+>  static u8 zr36050_read(struct zr36050 *ptr, u16 reg)
+> @@ -81,9 +83,10 @@ static void zr36050_write(struct zr36050 *ptr, u16 reg, u8 value)
+>  
+>  /* =========================================================================
+>   *  Local helper function:
+> -
+> -   status read
+> -   ========================================================================= */
+> + *
+> + *  status read
+> + * =========================================================================
+> + */
+>  
+>  /* status is kept in datastructure */
+>  static u8 zr36050_read_status1(struct zr36050 *ptr)
+> @@ -96,9 +99,10 @@ static u8 zr36050_read_status1(struct zr36050 *ptr)
+>  
+>  /* =========================================================================
+>   *  Local helper function:
+> -
+> -   scale factor read
+> -   ========================================================================= */
+> + *
+> + *  scale factor read
+> + * =========================================================================
+> + */
+>  
+>  /* scale factor is kept in datastructure */
+>  static u16 zr36050_read_scalefactor(struct zr36050 *ptr)
+> @@ -113,9 +117,10 @@ static u16 zr36050_read_scalefactor(struct zr36050 *ptr)
+>  
+>  /* =========================================================================
+>   *  Local helper function:
+> -
+> -   wait if codec is ready to proceed (end of processing) or time is over
+> -   ========================================================================= */
+> + *
+> + *  wait if codec is ready to proceed (end of processing) or time is over
+> + * =========================================================================
+> + */
+>  
+>  static void zr36050_wait_end(struct zr36050 *ptr)
+>  {
+> @@ -134,9 +139,10 @@ static void zr36050_wait_end(struct zr36050 *ptr)
+>  
+>  /* =========================================================================
+>   *  Local helper function:
+> -
+> -   basic test of "connectivity", writes/reads to/from memory the SOF marker
+> -   ========================================================================= */
+> + *
+> + *  basic test of "connectivity", writes/reads to/from memory the SOF marker
+> + * =========================================================================
+> + */
+>  
+>  static int zr36050_basic_test(struct zr36050 *ptr)
+>  {
+> @@ -175,9 +181,10 @@ static int zr36050_basic_test(struct zr36050 *ptr)
+>  
+>  /* =========================================================================
+>   *  Local helper function:
+> -
+> -   simple loop for pushing the init datasets
+> -   ========================================================================= */
+> + *
+> + *  simple loop for pushing the init datasets
+> + * =========================================================================
+> + */
+>  
+>  static int zr36050_pushit(struct zr36050 *ptr, u16 startreg, u16 len, const char *data)
+>  {
+> @@ -193,14 +200,15 @@ static int zr36050_pushit(struct zr36050 *ptr, u16 startreg, u16 len, const char
+>  
+>  /* =========================================================================
+>   *  Basic datasets:
+> -
+> -   jpeg baseline setup data (you find it on lots places in internet, or just
+> -   extract it from any regular .jpg image...)
+> -
+> -   Could be variable, but until it's not needed it they are just fixed to save
+> -   memory. Otherwise expand zr36050 structure with arrays, push the values to
+> -   it and initialize from there, as e.g. the linux zr36057/60 driver does it.
+> -   ========================================================================= */
+> + *
+> + *  jpeg baseline setup data (you find it on lots places in internet, or just
+> + *  extract it from any regular .jpg image...)
+> + *
+> + *  Could be variable, but until it's not needed it they are just fixed to save
+> + *  memory. Otherwise expand zr36050 structure with arrays, push the values to
+> + *  it and initialize from there, as e.g. the linux zr36057/60 driver does it.
+> + *  =========================================================================
+> + */
+>  
+>  static const char zr36050_dqt[0x86] = {
+>  	0xff, 0xdb,		//Marker: DQT
+> @@ -295,15 +303,17 @@ static const char zr36050_decimation_v[8] = { 1, 1, 1, 0, 0, 0, 0, 0 };
+>  
+>  /* =========================================================================
+>   *  Local helper functions:
+> -
+> -   calculation and setup of parameter-dependent JPEG baseline segments
+> -   (needed for compression only)
+> -   ========================================================================= */
+> + *
+> + *  calculation and setup of parameter-dependent JPEG baseline segments
+> + *  (needed for compression only)
+> + * =========================================================================
+> + */
+>  
+>  /* ------------------------------------------------------------------------- */
+>  
+>  /* SOF (start of frame) segment depends on width, height and sampling ratio
+> - *			 of each color component */
+> + *			 of each color component
+> + */
+>  
+>  static int zr36050_set_sof(struct zr36050 *ptr)
+>  {
+> @@ -334,7 +344,8 @@ static int zr36050_set_sof(struct zr36050 *ptr)
+>  /* ------------------------------------------------------------------------- */
+>  
+>  /* SOS (start of scan) segment depends on the used scan components
+> - *			of each color component */
+> + *			of each color component
+> + */
+>  
+>  static int zr36050_set_sos(struct zr36050 *ptr)
+>  {
+> @@ -379,12 +390,14 @@ static int zr36050_set_dri(struct zr36050 *ptr)
+>  
+>  /* =========================================================================
+>   *  Setup function:
+> + *
+> + *  Setup compression/decompression of Zoran's JPEG processor
+> + *  ( see also zoran 36050 manual )
+> + *
+> + *  ... sorry for the spaghetti code ...
+> + * =========================================================================
+> + */
+>  
+> -   Setup compression/decompression of Zoran's JPEG processor
+> -   ( see also zoran 36050 manual )
+> -
+> -   ... sorry for the spaghetti code ...
+> -   ========================================================================= */
+>  static void zr36050_init(struct zr36050 *ptr)
+>  {
+>  	int sum = 0;
+> @@ -420,7 +433,8 @@ static void zr36050_init(struct zr36050 *ptr)
+>  		sum += zr36050_set_dri(ptr);
+>  
+>  		/* setup the fixed jpeg tables - maybe variable, though -
+> -		 * (see table init section above) */
+> +		 * (see table init section above)
+> +		 */
+>  		dprintk(3, "%s: write DQT, DHT, APP\n", ptr->name);
+>  		sum += zr36050_pushit(ptr, ZR050_DQT_IDX,
+>  				      sizeof(zr36050_dqt), zr36050_dqt);
+> @@ -532,12 +546,15 @@ static void zr36050_init(struct zr36050 *ptr)
+>  
+>  /* =========================================================================
+>   *  CODEC API FUNCTIONS
+> -
+> -   this functions are accessed by the master via the API structure
+> -   ========================================================================= */
+> + *
+> + *  this functions are accessed by the master via the API structure
+> + * =========================================================================
+> + */
+>  
+>  /* set compression/expansion mode and launches codec -
+> - *  this should be the last call from the master before starting processing */
+> + *  this should be the last call from the master before starting processing
+> + */
+> +
+>  static int zr36050_set_mode(struct videocodec *codec, int mode)
+>  {
+>  	struct zr36050 *ptr = (struct zr36050 *)codec->data;
+> @@ -566,7 +583,8 @@ static int zr36050_set_video(struct videocodec *codec, const struct tvnorm *norm
+>  		cap->decimation, cap->quality);
+>  	/* if () return -EINVAL;
+>  	 * trust the master driver that it knows what it does - so
+> -	 * we allow invalid startx/y and norm for now ... */
+> +	 * we allow invalid startx/y and norm for now ...
+> +	 */
+>  	ptr->width = cap->width / (cap->decimation & 0xff);
+>  	ptr->height = cap->height / ((cap->decimation >> 8) & 0xff);
+>  
+> @@ -586,7 +604,8 @@ static int zr36050_set_video(struct videocodec *codec, const struct tvnorm *norm
+>  	ptr->real_code_vol = size >> 3; /* in bytes */
+>  
+>  	/* Set max_block_vol here (previously in zr36050_init, moved
+> - * here for consistency with zr36060 code */
+> +	 * here for consistency with zr36060 code
+> +	 */
+>  	zr36050_write(ptr, ZR050_MBCV, ptr->max_block_vol);
+>  
+>  	return 0;
+> @@ -643,7 +662,8 @@ static int zr36050_control(struct videocodec *codec, int type, int size, void *d
+>  			return -EFAULT;
+>  		ptr->total_code_vol = *ival;
+>  		/* (Kieran Morrissey)
+> -		 * code copied from zr36060.c to ensure proper bitrate */
+> +		 * code copied from zr36060.c to ensure proper bitrate
+> +		 */
+>  		ptr->real_code_vol = (ptr->total_code_vol * 6) >> 3;
+>  		break;
+>  
+> @@ -708,9 +728,10 @@ static int zr36050_control(struct videocodec *codec, int type, int size, void *d
+>  
+>  /* =========================================================================
+>   *  Exit and unregister function:
+> -
+> -   Deinitializes Zoran's JPEG processor
+> -   ========================================================================= */
+> + *
+> + *  Deinitializes Zoran's JPEG processor
+> + * =========================================================================
+> + */
+>  
+>  static int zr36050_unset(struct videocodec *codec)
+>  {
+> @@ -733,12 +754,13 @@ static int zr36050_unset(struct videocodec *codec)
+>  
+>  /* =========================================================================
+>   *  Setup and registry function:
+> -
+> -   Initializes Zoran's JPEG processor
+> -
+> -   Also sets pixel size, average code size, mode (compr./decompr.)
+> -   (the given size is determined by the processor with the video interface)
+> -   ========================================================================= */
+> + *
+> + *  Initializes Zoran's JPEG processor
+> + *
+> + *  Also sets pixel size, average code size, mode (compr./decompr.)
+> + *  (the given size is determined by the processor with the video interface)
+> + * =========================================================================
+> + */
+>  
+>  static int zr36050_setup(struct videocodec *codec)
+>  {
+> @@ -774,7 +796,8 @@ static int zr36050_setup(struct videocodec *codec)
+>  	memcpy(ptr->v_samp_ratio, zr36050_decimation_v, 8);
+>  
+>  	ptr->bitrate_ctrl = 0;	/* 0 or 1 - fixed file size flag
+> -				 * (what is the difference?) */
+> +				 * (what is the difference?)
+> +				 */
+>  	ptr->mode = CODEC_DO_COMPRESSION;
+>  	ptr->width = 384;
+>  	ptr->height = 288;
+> @@ -814,7 +837,8 @@ static const struct videocodec zr36050_codec = {
+>  
+>  /* =========================================================================
+>   *  HOOK IN DRIVER AS KERNEL MODULE
+> -   ========================================================================= */
+> + * =========================================================================
+> + */
+>  
+>  static int __init zr36050_init_module(void)
+>  {
+> 
 
