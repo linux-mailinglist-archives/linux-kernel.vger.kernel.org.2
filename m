@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF8335A5CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1BB35A5CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:32:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234440AbhDIScB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234313AbhDISb5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:31:57 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72F78C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 11:31:44 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id v70so6778564qkb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 11:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EKQ+PAGgShMzePeTUtIKBivxK+r/dnGaqdyGytm2oWo=;
-        b=fCEschyGAMMn6VF4XHS2XGgUN9Ekoe7/0ZKT+fdRYNG7iwqBjCt2ZG5MVCQm2UpImR
-         pfQNJorBT9ui+crcKlywulA7fWeM4vq4q+AO/ZjSi27KoqxrN5PnfUypmrs9SV9ZHDHX
-         jcpSE8p93+s/UfWmuKIb/sQceslqTjla1XbJLG8Wvfzx1TvgnO8ZI2imcWGp3TOZTjra
-         FSrmmjhLDszTkpV71RNqsEaptogyES14WFo/IJ40KpsNYFItGKyuxbbC1Ib2CiKGgOqn
-         I1jZRD8UpUPNlquDvJ5it8pNSInv3pLslaHtP7fWLkvpnicHWZsagsIXQXRaK87JU+8N
-         UYaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EKQ+PAGgShMzePeTUtIKBivxK+r/dnGaqdyGytm2oWo=;
-        b=XO+n3Y9VkY87uX3FpXjggx5Gny12/MCElKOwf0lhnF50AmsAE+RWcJxP9fowzOZJLV
-         f7DQ9FYkFtpHa/MW/XTdHtLRU4A+ImUtYfhxoncTxBL5pPsPXVFGjYK8uXhMpk0ZLgGF
-         3dFqxC+LvHeXeaXi7hRUAUVGbb7oIQfXZkTMeKBxOVd0KKNWNoVp2p2ZeNyWc4F5b+H2
-         crawQfXQ1IQtDGT2T5rUUo5uLvO410MqJwoYNahd+Hx3j5jwvCCnoVra+Uw5TS/Pbl0k
-         fQ6Q2exQxCwUZEXdGi9XxTrk+pMzSpwqAqDSXcMqa5/j5qL1HVClJFtMtm3cDbf611ba
-         /Lng==
-X-Gm-Message-State: AOAM531zM+2N9khDK2oraFPLKQ8Xi+sdUyyw9ifTm+KCVSIwMNgGIXys
-        xM8gO7t1V26CBuua9+HRmdpaFg==
-X-Google-Smtp-Source: ABdhPJxMTMAOXo89w9z138HDZgi/fLJzWSprm2eXuSdZMKg1xOZTvnQCJpE9XfEYswibLPl3BEUsLg==
-X-Received: by 2002:a05:620a:10ba:: with SMTP id h26mr2158205qkk.155.1617993103749;
-        Fri, 09 Apr 2021 11:31:43 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id 79sm2411128qki.37.2021.04.09.11.31.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:31:43 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 14:31:42 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        bsingharora@gmail.com, shy828301@gmail.com,
-        alex.shi@linux.alibaba.com
-Subject: Re: [RFC PATCH v2 09/18] mm: vmscan: remove noinline_for_stack
-Message-ID: <YHCdjgaB8IjOMq4z@cmpxchg.org>
-References: <20210409122959.82264-1-songmuchun@bytedance.com>
- <20210409122959.82264-10-songmuchun@bytedance.com>
+        id S234481AbhDIScK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:32:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45586 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233332AbhDIScH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 14:32:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 98E0A61104;
+        Fri,  9 Apr 2021 18:31:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617993114;
+        bh=+8hEJqNlvBGqGgzMlwFmXXdv48nf4gyOCd8EnKO/if8=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=kPXS2sbN+RlSr9PmRPlVRlh6l1ZADD+YTH/OCye/N1QDEz0zHg/g7mHSLQftBU9yH
+         ebSRb+AfK+y/WpU9lN+W8ehPZl5P6H/UJ00k3ACTARiXxZQ8rRrEkH7966EIt9o4Cg
+         K9rKjtluHYAZoGjfa+7XPX/rh+aeXmqwEuElJFVSssu5Z88/Me1v2o/zJwjLfWcNRM
+         PGWAz59S8hh+1lOTRIrUZ99HWGfwJz5tbZP4eV98o9TomUgBIpGHE+r+dw8/hIdWC7
+         N4kq3djtul5r7/OBk2viFUR3cLEqF6qDiAHuFnuIBzYh7BDE0wJtOevWeaEqRy3lDN
+         /zTv01AOjNV6w==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409122959.82264-10-songmuchun@bytedance.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMhs-H98xzfK4W9KGSKR0QPtm42_K6Y5PzWiA3c-Pugau7oxyQ@mail.gmail.com>
+References: <20210309052226.29531-1-sergio.paracuellos@gmail.com> <CAMhs-H_zBqe_+dKV4KT3QyOaONErmnCKME4-7ey2CnWJfUVseg@mail.gmail.com> <161799224004.3790633.10957084716451758402@swboyd.mtv.corp.google.com> <CAMhs-H98xzfK4W9KGSKR0QPtm42_K6Y5PzWiA3c-Pugau7oxyQ@mail.gmail.com>
+Subject: Re: [PATCH v11 0/6] MIPS: ralink: add CPU clock detection and clock driver for MT7621
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, John Crispin <john@phrozen.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        COMMON CLK FRAMEWORK <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>, open list:MIPS 
+        <linux-mips@vger.kernel.org>, open list:STAGING SUBSYSTEM 
+        <devel@driverdev.osuosl.org>, NeilBrown <neil@brown.name>, linux-kernel" 
+        <linux-kernel@vger.kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Fri, 09 Apr 2021 11:31:53 -0700
+Message-ID: <161799311308.2810947.13610751486361071085@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 08:29:50PM +0800, Muchun Song wrote:
-> The noinline_for_stack is introduced by commit 666356297ec4 ("vmscan:
-> set up pagevec as late as possible in shrink_inactive_list()"), its
-> purpose is to delay the allocation of pagevec as late as possible to
-> save stack memory. But the commit 2bcf88796381 ("mm: take pagevecs off
-> reclaim stack") replace pagevecs by lists of pages_to_free. So we do
-> not need noinline_for_stack, just remove it (let the compiler decide
-> whether to inline).
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Quoting Sergio Paracuellos (2021-04-09 11:25:24)
+> Hi Stephen,
+>=20
+> On Fri, Apr 9, 2021 at 8:17 PM Stephen Boyd <sboyd@kernel.org> wrote:
+> >
+> > Quoting Sergio Paracuellos (2021-03-23 01:13:22)
+> > > On Tue, Mar 9, 2021 at 6:22 AM Sergio Paracuellos
+> > > <sergio.paracuellos@gmail.com> wrote:
+> > > >
+> > > > Changes in v11:
+> > > >  - Collect Rob's Reviewed-by in bindings documentation patch.
+> > > >  - Fix MAINTAINERS patch using file 'mediatek,mt7621-sysc.yaml'
+> > > >    for documentation bindings.
+> > >
+> > > Something still missing or something that is needed to be fixed to get
+> > > this series applied through your tree?
+> > >
+> > > Thanks in advance for your time.
+> > >
+> >
+> > Sorry I missed this series. I thought it was going through another tree.
+> > It can merge through clk tree. Just a few nits on the clk driver patch
+> > but otherwise I've merged the first two patches. If you resend in the
+> > next few days it would be great. Thanks.
+>=20
+> I will hopefully do during this weekend. Since you already merge the
+> first two patches, the remaining four should be sent as v12, right?
 
-Good catch.
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Since this patch is somewhat independent of the rest of the series,
-you may want to put it in the very beginning, or even submit it
-separately, to keep the main series as compact as possible. Reviewers
-can be more hesitant to get involved with larger series ;)
+Yes. I'll push it out to kernel.org shortly.
