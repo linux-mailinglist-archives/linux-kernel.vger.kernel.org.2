@@ -2,111 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD2C35A555
+	by mail.lfdr.de (Postfix) with ESMTP id 5BFDA35A556
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234500AbhDISLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48934 "EHLO
+        id S234447AbhDISLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:11:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234485AbhDISLA (ORCPT
+        with ESMTP id S234486AbhDISLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:11:00 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79785C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 11:10:46 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id u21so10017009ejo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 11:10:46 -0700 (PDT)
+        Fri, 9 Apr 2021 14:11:01 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 567F7C061763
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 11:10:47 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id g17so7279361ejp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 11:10:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5CNBQKIGe8uXpriUZJHtU/NHWRKcPCBs0Xp0mmWQC1o=;
-        b=MMa2FaUd96cdQJ86rg9WFKDx6meq5+7rehW0AaK15x2icSaIKPxp/2g4gDovCNVRb+
-         ixzRn5HjeRT6uAbGetA558fTcbiDMub0AOnwBaxrTDjebdaQ7maKpa9JYkbQOLttgCK2
-         /Kbuf8rNUDMonuu+2oRZgql3+k9ydCbhODdCArOEuyPV2d5U5Hug369hC9WyyUiTQyc4
-         3wNNMr7h59sKmPZ6uQ+c3BWcXth8PeUr5oa3NpWl94zusdlb7W7FVmjYkGjv7vfIrMve
-         v0a/k8XhFmP5Z2BwMb436oB3IfhefjXQWfAg+zbzlhk4EVu1QvlNCxP+gxPUmfN+nIt2
-         M4zw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=GvlgCI1ISSNUmFdiWubc5OLQ7C7MPljgIz8NbwSgOJA=;
+        b=ovRyfjD3/kdvZPEE+65LeB1xPyxaX/cgUqBNIPsAfCwhkpE/X9xkjFtsO5pYacCVmr
+         tBNArlayrwOf0cde5vQ+ehoehM7b6nSa0LUmtEIvJonOyoI/iYlgXXD9Q+f/iec2+IWN
+         RAKw/bJsMUBEITS20jaftXjbtrPVRz8aAEXKZOO9Qp60Rn7mPYaOp3oTxeen9Vgb3L8D
+         ex7JjENquUelKg76WOQupO9eN9jYlMbk2Ond+X6yt6bsDRqPqQDTxNHhoHgQHK3ACzRN
+         VyjJFWl9urRIPE+KBrBLdts4Wgde/3zy0By8jV1+1kw0ri0w73ZywHOl5H7jRmCjp/s4
+         76YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5CNBQKIGe8uXpriUZJHtU/NHWRKcPCBs0Xp0mmWQC1o=;
-        b=ST+wEiQe7XLZIQHNJcvbjh6KKL7kx1FxGhwStmLCfPGfUuJ0x/r/qJ7MovpTlJrk2V
-         bl77mpZppbfSJ/pTyu105gbEBpj5gXhyu/ZpM1Foubg+cBjD3b6evFeDc/eBTQ4qiAOd
-         MHNUv9Wb1CYebWjc1+O1N1jT5Tcpi9d0Z7oexRRNemFV96CbmKOvaPPZbWozSVKTpy5b
-         mOBlSt/brjfaus/f0yUxi/OESa+5YxKYEDQ9pabGJOKU4DOdYXSyDm45MNi8f5lhOdsV
-         q/oElSe7WiwUPSLRBD/6qUnOWnKdNvUWqfgpDU3WBHi7Wbgr8MMnTo944bTAHWirJQbb
-         dQ+Q==
-X-Gm-Message-State: AOAM5334qN3gzdy4qRF9IiYgwiJ9zf6GNTeyi3uduLDr9CdMJmqNVVco
-        Ivqp65r81WLQR1eExAQgUz1SW+4306ALYA==
-X-Google-Smtp-Source: ABdhPJxnyAfzXARNpDOrH0t4qDW1WS/TK3A7MUQRNFpC51n7Y2sWEcoHysT0+olrbEeliyzErrlUtA==
-X-Received: by 2002:a17:906:f9c3:: with SMTP id lj3mr6466491ejb.134.1617991845057;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=GvlgCI1ISSNUmFdiWubc5OLQ7C7MPljgIz8NbwSgOJA=;
+        b=TX1ENcqrw52D4LNkFgv1wFSlfiuLMmYNNkMQHFa3ElPYk6uZGwWUZVs6IItZY0YJyR
+         pA8LLvhXBk80baaGTslPK6W96NS2LSxsPMfLjXLswEZCAf/1jrPY4DUhtXTrMJ6IHIe0
+         Z0qwG+e9mprCpaKsCc9m/Z+7pGhgw/Otw4+EcrD2oEuknbTBQhuzZ/MfrhGDZbDQJ2zq
+         rkz1nAr5YH7dedXawzG+uQPMj2P/oLaUHJcQ0ZRUuytLUbAbfc1NyfsjRsebhmUKtKrv
+         vUj3Xxq02ZMVf/XLwMVUJ0ZMfKyxafMjTzFp0V3v7PSDSCFgBrERIbwi9ELGFJ1k8zG/
+         IEZQ==
+X-Gm-Message-State: AOAM531VYytDlZg5xlBSAIfMMHlnFbuQb7PeK0WcxuHN9x9+siYpmG2n
+        ND4ScXB3UothceB42FOxS5FXbVjCfVGmUQ==
+X-Google-Smtp-Source: ABdhPJxAbHb60QCYpb+viBPHCETnJhfwREoxLSxaRn4KHKc1EkOoa9j+dANZDv+3cUrR/9i7KnVlgg==
+X-Received: by 2002:a17:906:b191:: with SMTP id w17mr17471539ejy.200.1617991845937;
         Fri, 09 Apr 2021 11:10:45 -0700 (PDT)
 Received: from localhost.localdomain ([95.87.199.133])
-        by smtp.gmail.com with ESMTPSA id s20sm1806303edu.93.2021.04.09.11.10.43
+        by smtp.gmail.com with ESMTPSA id s20sm1806303edu.93.2021.04.09.11.10.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:10:44 -0700 (PDT)
+        Fri, 09 Apr 2021 11:10:45 -0700 (PDT)
 From:   "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     rostedt@goodmis.org, tglx@linutronix.de, peterz@infradead.org,
         "Yordan Karadzhov (VMware)" <y.karadz@gmail.com>
-Subject: [PATCH v3 0/5]  Add "func_no_repete" tracing option
-Date:   Fri,  9 Apr 2021 21:10:26 +0300
-Message-Id: <20210409181031.26772-1-y.karadz@gmail.com>
+Subject: [PATCH v3 1/5] tracing: Define new ftrace event "func_repeats"
+Date:   Fri,  9 Apr 2021 21:10:27 +0300
+Message-Id: <20210409181031.26772-2-y.karadz@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210409181031.26772-1-y.karadz@gmail.com>
+References: <20210409181031.26772-1-y.karadz@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The new option for function tracing aims to save space on the ring
-buffer and to make it more readable in the case when a single function
-is called number of times consecutively:
+The event aims to consolidate the function tracing record in the cases
+when a single function is called number of times consecutively.
 
 	while (cond)
 		do_func();
 
-Instead of having an identical records for each call of the function
-we will record only the first call, followed by an event showing the
-number of repeats.
+This may happen in various scenarios (busy waiting for example).
+The new ftrace event can be used to show repeated function events with
+a single event and save space on the ring buffer
 
-v3 changes:
-  * FUNC_REPEATS_SET_DELTA_TS macro has been optimised.
+Signed-off-by: Yordan Karadzhov (VMware) <y.karadz@gmail.com>
+---
+ kernel/trace/trace.h         |  3 +++
+ kernel/trace/trace_entries.h | 22 +++++++++++++++++
+ kernel/trace/trace_output.c  | 47 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 72 insertions(+)
 
-  * Fixed bug in func_set_flag(): In the previous version the value
-    of the "new_flags" variable was not properly calculated because
-    I misinterpreted the meaning of the "bit" argument of the function.
-    This bug in v2 had no real effect, because for the moment we have
-    only two "function options" so the value of "new_flags" was correct,
-    although its way of calculating was wrong.
-
-v2 changes:
-  * As suggested by Steven in his review, we now record not only the
-    repetition count, but also the time elapsed between the last
-    repetition of the function and the actual generation of the
-    "func_repeats" event. 16 bits are used to record the repetition
-    count. In the case of an overflow of the counter a second pair of
-    "function" and "func_repeats" events will be generated. The time
-    interval gets codded by using up to 48 (32 + 16) bits.
-
-
-Yordan Karadzhov (VMware) (5):
-  tracing: Define new ftrace event "func_repeats"
-  tracing: Add "last_func_repeats" to struct trace_array
-  tracing: Add method for recording "func_repeats" events
-  tracing: Unify the logic for function tracing options
-  tracing: Add "func_no_repeats" option for function tracing
-
- kernel/trace/trace.c           |  27 ++++
- kernel/trace/trace.h           |  25 ++++
- kernel/trace/trace_entries.h   |  28 +++++
- kernel/trace/trace_functions.c | 222 ++++++++++++++++++++++++++++-----
- kernel/trace/trace_output.c    |  47 +++++++
- 5 files changed, 321 insertions(+), 28 deletions(-)
-
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 5506424eae2a..6a5b4c2a0fa7 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -45,6 +45,7 @@ enum trace_type {
+ 	TRACE_BPUTS,
+ 	TRACE_HWLAT,
+ 	TRACE_RAW_DATA,
++	TRACE_FUNC_REPEATS,
+ 
+ 	__TRACE_LAST_TYPE,
+ };
+@@ -442,6 +443,8 @@ extern void __ftrace_bad_type(void);
+ 			  TRACE_GRAPH_ENT);		\
+ 		IF_ASSIGN(var, ent, struct ftrace_graph_ret_entry,	\
+ 			  TRACE_GRAPH_RET);		\
++		IF_ASSIGN(var, ent, struct func_repeats_entry,		\
++			  TRACE_FUNC_REPEATS);				\
+ 		__ftrace_bad_type();					\
+ 	} while (0)
+ 
+diff --git a/kernel/trace/trace_entries.h b/kernel/trace/trace_entries.h
+index 4547ac59da61..fdd022a7aecf 100644
+--- a/kernel/trace/trace_entries.h
++++ b/kernel/trace/trace_entries.h
+@@ -338,3 +338,25 @@ FTRACE_ENTRY(hwlat, hwlat_entry,
+ 		 __entry->nmi_total_ts,
+ 		 __entry->nmi_count)
+ );
++
++#define FUNC_REPEATS_GET_DELTA_TS(entry)			\
++(((u64)entry->top_delta_ts << 32) | entry->bottom_delta_ts)	\
++
++FTRACE_ENTRY(func_repeats, func_repeats_entry,
++
++	TRACE_FUNC_REPEATS,
++
++	F_STRUCT(
++		__field(	unsigned long,	ip		)
++		__field(	unsigned long,	parent_ip	)
++		__field(	u16	,	count		)
++		__field(	u16	,	top_delta_ts	)
++		__field(	u32	,	bottom_delta_ts	)
++	),
++
++	F_printk(" %ps <-%ps\t(repeats:%u  delta_ts: -%llu)",
++		 (void *)__entry->ip,
++		 (void *)__entry->parent_ip,
++		 __entry->count,
++		 FUNC_REPEATS_GET_DELTA_TS(__entry))
++);
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index a0146e1fffdf..55b08e146afc 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -1373,6 +1373,52 @@ static struct trace_event trace_raw_data_event = {
+ 	.funcs		= &trace_raw_data_funcs,
+ };
+ 
++static enum print_line_t
++trace_func_repeats_raw(struct trace_iterator *iter, int flags,
++			 struct trace_event *event)
++{
++	struct func_repeats_entry *field;
++	struct trace_seq *s = &iter->seq;
++
++	trace_assign_type(field, iter->ent);
++
++	trace_seq_printf(s, "%lu %lu %u %llu\n",
++			 field->ip,
++			 field->parent_ip,
++			 field->count,
++			 FUNC_REPEATS_GET_DELTA_TS(field));
++
++	return trace_handle_return(s);
++}
++
++static enum print_line_t
++trace_func_repeats_print(struct trace_iterator *iter, int flags,
++			 struct trace_event *event)
++{
++	struct func_repeats_entry *field;
++	struct trace_seq *s = &iter->seq;
++
++	trace_assign_type(field, iter->ent);
++
++	seq_print_ip_sym(s, field->ip, flags);
++	trace_seq_puts(s, " <-");
++	seq_print_ip_sym(s, field->parent_ip, flags);
++	trace_seq_printf(s, " (repeats: %u, delta_ts: -%llu)\n",
++			 field->count,
++			 FUNC_REPEATS_GET_DELTA_TS(field));
++
++	return trace_handle_return(s);
++}
++
++static struct trace_event_functions trace_func_repeats_funcs = {
++	.trace		= trace_func_repeats_print,
++	.raw		= trace_func_repeats_raw,
++};
++
++static struct trace_event trace_func_repeats_event = {
++	.type	 	= TRACE_FUNC_REPEATS,
++	.funcs		= &trace_func_repeats_funcs,
++};
+ 
+ static struct trace_event *events[] __initdata = {
+ 	&trace_fn_event,
+@@ -1385,6 +1431,7 @@ static struct trace_event *events[] __initdata = {
+ 	&trace_print_event,
+ 	&trace_hwlat_event,
+ 	&trace_raw_data_event,
++	&trace_func_repeats_event,
+ 	NULL
+ };
+ 
 -- 
 2.25.1
 
