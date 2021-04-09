@@ -2,108 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2DF235A1BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3405F35A1BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:11:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234098AbhDIPK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37380 "EHLO
+        id S234108AbhDIPLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:11:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234018AbhDIPKZ (ORCPT
+        with ESMTP id S233915AbhDIPLg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:10:25 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C28B1C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:10:12 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id x13so77757lfr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:10:12 -0700 (PDT)
+        Fri, 9 Apr 2021 11:11:36 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A8EAC061760;
+        Fri,  9 Apr 2021 08:11:22 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id v8so2895392plz.10;
+        Fri, 09 Apr 2021 08:11:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=oNSz1PKdAWaiunWiDpAsiCtuqeEjXHTaoBPs5ItyWAE=;
-        b=XKiwHwPtFSLFPBXyqYnXuaUD1dPvj4to4yZrsJrQtYtCORZSRWomRGRsyp6QrTWq3N
-         Op15EMlzzkqIRyS7dLh9saOhJI/YyASpndMeeyM690qTfzyBLt3+5DW8GS82kh1JsIV9
-         qoxyEKTIjPAI7sKvTAdzbldOf9eTkdtOpDC49Fr3nohO8lyrTDzN52HI+UyK/isIoHQD
-         krmBwxpWV/paN7/vNjyiuRxLI5rLnt7d14vh/af0S5lGuwafS7l31B/DPptdtmGMvPGF
-         FP+T9W/h+g6AMg6EQuTv5xgVeNg0TcY5xyXbaGhbxeNS+k9ynwdA9aQ/nBvVwpB+57mv
-         aI5A==
+        bh=VwUEOjH92oEmqBKxM4cMkLQe6zVpWnWnVa3MdaDyiVA=;
+        b=t+KI1fbe9X4IP5EGG6zIQ2ul1lnbw29irRB7xkpOExmizGzlI7gt9i76FYU48kKvB5
+         vrLLN7tEnKskpxcHd9fR2SsZeprUCUD0HuVAlw5G/+s5b+wuDgUATqyk2k0kL/K44rpv
+         E9qlT8CtGb40jqKe1Cj/Q1J4UzEHKr8GILTCmMDSLhORZQRR6iSKd6UzvKvOrccrZ0tl
+         dyBszdSs6FOCp/8E2kfCbTSAzlFEdlbYV3umSDlTrqf3z8aPoPbh5Eb3JkpW6Mlf5oBi
+         mInmwgd5/ZoSRSnVr7dbSQQfBwIkhN1xrrhYcAhAxahVvB7hAsjNtGNg2Zae+Iw1C3mJ
+         k4+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=oNSz1PKdAWaiunWiDpAsiCtuqeEjXHTaoBPs5ItyWAE=;
-        b=UgbSA5xX4hLAK5orORBDvw+XnQ81B/9TBIQ8wql9n9BuVztH1Ceu3ihQd1ndRfQPw1
-         ldmV3YgfQAhGbc/fQcVD3Kaxz2a0QRn8MNjyvKiTkIIbAzBJu7WFPdPXFx5ZGU/Z7Jyi
-         OPuavh0WqtHkvUooYkn4796Y4dqCJHaIgpNgXEpqlvAfpRRKavAsD8/I8j1RrbflU9rv
-         H6MA4sqraQVLJM6wnKwrIpvTMVy1fkckaZ2KhzyRIR0vupXAOPntHj2xbAB5qb45JIG8
-         Ho54w7to77b++WE6NaLr9YWGUymsL/TbCfAvHro8OgHvwaJIiCWoYQYjAeAaJLpfceNC
-         7s4w==
-X-Gm-Message-State: AOAM531JcluT/XKjYqn7R7PjXMdp8nzMPrQ87KPJtm1uhNOHtLjh4i3T
-        l25JiUB5pK5VqUboVImWZ70p4w==
-X-Google-Smtp-Source: ABdhPJxFPLoNZIJRxuni1QeLgtMxBbo+PHtbsv7xZ2SgQPNP9Hir3TR/PO/Q6Cm041srTrTXGzRpDA==
-X-Received: by 2002:ac2:5a4e:: with SMTP id r14mr1901328lfn.78.1617981011255;
-        Fri, 09 Apr 2021 08:10:11 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id g9sm295692lja.134.2021.04.09.08.10.10
+        bh=VwUEOjH92oEmqBKxM4cMkLQe6zVpWnWnVa3MdaDyiVA=;
+        b=RbZqYwSP12jlD1hppnAgXo6/OSagnmIOrYhfpIV8CM3iTzRS5xmvohwqcoyi/ziW8+
+         WfA5ze4IP8Emy4GNYofXpfrL205D2IfTOS8X6O+Cm9ynnMgAZIUtKV1aOsHeSxN3FYJA
+         9W/7Iba0YCAH/v2bgURjRrkro0OCxbaEjqxCxhLABKx7utZn0YxnB8tVISE5KkRB5jNC
+         i6ZYM33K0HD+KjzO/Se7l9UBfcMHk7PT+wqL3vAMopGe1sZJYMtE1Ij4TV2S4ZDy9TBa
+         Ci5SYkGXK33SMhFyE6WACiX3j99SvweCvfQW7hicIjDS3yu/DBnV+oAVClsxO/irKgdJ
+         NA+w==
+X-Gm-Message-State: AOAM532tMjqxlWRiHm9C8ra6D17xQ+M8PLgfbm6/xT0w4i77+o1pTft3
+        Fb+rLx7+KtMH370MYAaLjXemjBnpHpU7ho8w
+X-Google-Smtp-Source: ABdhPJyiBMjqGAatQPGIL8TqJ0WjQHXP/gTxrVaDLJ7DwW3aOv5M7+Ak5i/9B5Zhsvvm+UmBaizdgg==
+X-Received: by 2002:a17:902:da81:b029:e5:de44:af5b with SMTP id j1-20020a170902da81b02900e5de44af5bmr13397777plx.27.1617981081975;
+        Fri, 09 Apr 2021 08:11:21 -0700 (PDT)
+Received: from kali ([103.141.87.253])
+        by smtp.gmail.com with ESMTPSA id x2sm3371705pgb.89.2021.04.09.08.11.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 08:10:10 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 18B58102498; Fri,  9 Apr 2021 18:10:10 +0300 (+03)
-Date:   Fri, 9 Apr 2021 18:10:10 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v24 13/30] mm: Introduce VM_SHADOW_STACK for shadow stack
- memory
-Message-ID: <20210409151010.d6r3qazmuw53qnqu@box.shutemov.name>
-References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
- <20210401221104.31584-14-yu-cheng.yu@intel.com>
+        Fri, 09 Apr 2021 08:11:21 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 20:41:14 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     clabbe@baylibre.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: Re: [PATCH 1/2] media: zoran: add spaces around '<<'
+Message-ID: <YHBukmdxSiRc+K6I@kali>
+References: <cover.1617912177.git.mitaliborkar810@gmail.com>
+ <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com>
+ <f196d8ff-e8bf-360e-ee7b-cd2dcafd9742@xs4all.nl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401221104.31584-14-yu-cheng.yu@intel.com>
+In-Reply-To: <f196d8ff-e8bf-360e-ee7b-cd2dcafd9742@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 03:10:47PM -0700, Yu-cheng Yu wrote:
-> A shadow stack PTE must be read-only and have _PAGE_DIRTY set.  However,
-> read-only and Dirty PTEs also exist for copy-on-write (COW) pages.  These
-> two cases are handled differently for page faults.  Introduce
-> VM_SHADOW_STACK to track shadow stack VMAs.
+On Fri, Apr 09, 2021 at 09:23:22AM +0200, Hans Verkuil wrote:
+> Hi Mitali,
 > 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Cc: Kees Cook <keescook@chromium.org>
+> On 08/04/2021 22:38, Mitali Borkar wrote:
+> > Added spaces around '<<' operator to improve readability and meet linux
+> > kernel coding style.
+> > Reported by checkpatch
+> > 
+> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > ---
+> >  drivers/staging/media/zoran/zr36057.h | 14 +++++++-------
+> >  1 file changed, 7 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
+> > index 71b651add35a..a2a75fd9f535 100644
+> > --- a/drivers/staging/media/zoran/zr36057.h
+> > +++ b/drivers/staging/media/zoran/zr36057.h
+> > @@ -30,13 +30,13 @@
+> >  #define ZR36057_VFESPFR_HOR_DCM          14
+> >  #define ZR36057_VFESPFR_VER_DCM          8
+> >  #define ZR36057_VFESPFR_DISP_MODE        6
+> > -#define ZR36057_VFESPFR_YUV422          (0<<3)
+> > -#define ZR36057_VFESPFR_RGB888          (1<<3)
+> > -#define ZR36057_VFESPFR_RGB565          (2<<3)
+> > -#define ZR36057_VFESPFR_RGB555          (3<<3)
+> > -#define ZR36057_VFESPFR_ERR_DIF          (1<<2)
+> > -#define ZR36057_VFESPFR_PACK24          (1<<1)
+> > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1<<0)
+> > +#define ZR36057_VFESPFR_YUV422          (0 << 3)
+> > +#define ZR36057_VFESPFR_RGB888          (1 << 3)
+> > +#define ZR36057_VFESPFR_RGB565          (2 << 3)
+> > +#define ZR36057_VFESPFR_RGB555          (3 << 3)
+> > +#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
+> > +#define ZR36057_VFESPFR_PACK24          (1 << 1)
+> > +#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
+> >  
+> >  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
+> >  
+> > 
+> 
+> I looked at that header and it is very messy.
+> 
+> Can you make two new patches? The first aligns every nicely, e.g. this:
+> 
+> #define ZR36057_VFEHCR          0x000   /* Video Front End, Horizontal Configuration Register */
+> #define ZR36057_VFEHCR_HS_POL             BIT(30)
+> #define ZR36057_VFEHCR_H_START           10
+> #define ZR36057_VFEHCR_H_END            0
+> #define ZR36057_VFEHCR_HMASK            0x3ff
+> 
+> should become:
+> 
+> /* Video Front End, Horizontal Configuration Register */
+> #define ZR36057_VFEHCR			0x000
+> #define ZR36057_VFEHCR_HS_POL		BIT(30)
+> #define ZR36057_VFEHCR_H_START		10
+> #define ZR36057_VFEHCR_H_END		0
+> #define ZR36057_VFEHCR_HMASK		0x3ff
+> 
+> Same for all the other register blocks. Use tabs to do the alignment
+> instead of spaces, as is currently the case.
+>
+Okay Sir, will do this.
 
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> The second patch can replace the (0<<3) etc. to BIT(0).
+>
+Sir may I know how to write (2<<3) in BIT() form? Like I am still
+learning and not sure how to convert this. Should it be BIT(2)? But this
+is only possible for (1<<nr), PLease help me out. 
 
--- 
- Kirill A. Shutemov
+Thanks.
+
+> That would be a nice cleanup of this rather messy header.
+> 
+> Thanks!
+> 
+> 	Hans
