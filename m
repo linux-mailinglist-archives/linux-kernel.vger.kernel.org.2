@@ -2,181 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E79E3591EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D68C3591EF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232775AbhDICWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 22:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38294 "EHLO
+        id S232810AbhDICXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 22:23:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232616AbhDICWR (ORCPT
+        with ESMTP id S232616AbhDICXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 22:22:17 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408B3C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 19:22:05 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id r9so6219158ejj.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 19:22:05 -0700 (PDT)
+        Thu, 8 Apr 2021 22:23:45 -0400
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B957BC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 19:23:33 -0700 (PDT)
+Received: by mail-qv1-xf31.google.com with SMTP id o11so1946913qvh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 19:23:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=sifive.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Tihn+691p7iWK//izJ5iKcTFaKEbda2SvpleteY067A=;
-        b=gfbpt+fCTC2llTG8KgbmsKCtpLnOoUOAivy4mzCkmYtqw2y8iEkP8+uOqCjGsJHmhO
-         jSA/4bjQUCSdmGJvbrPmkYIsxM05wr2nmEZpPHPgcGuo4m70wBLcszov3I7NabpLq5VU
-         v4QiKVSPNXyMGtQLBDMd9mqmrPshQsBuwZbXEjyY7XJxRveDzeUpHYE9+IJ8pIYXRVH+
-         tmBddYbvFzUzQqUM5IAUPFQNVLmM8WDxBqbr5OuCymYBXkCITmHwe8gqrvob8TTHVJHC
-         yZdHwnY58zrrhL3CP778Q9TEX/zULPKIAvUFuI7Lw96mFSFuyFKLi4V/7auJbOPT1IuV
-         IQag==
+        bh=Dr8o5YF5yqQzC2Z1k+2QkLomm0GkPLRu2hgFbkn12/A=;
+        b=Ly6yeXcWyzUsF37vzaewuSXMHg8oxjVmIMpbnu20lmjf2vDNQwHhcJZLJIRDtMamKE
+         K5fqcZc3UR7MK8guEJoUxEN9fadEzvmO9H0JI8yTk84XkDtJa1wFiXpzUhpDYeSC7pWG
+         IGdQADOzMvd4hpC4Vbkauk7WodpWYq8eT35sLO68e1F1yv1/iQMjayD7vTvSa4cvS46W
+         zbd3tYCqDJk8QD7A2TCLlL1YKuLXSDp+KL83bqmsgMlpys3Yg+GzEwtVA2voaozzvJxO
+         luDpwa7GFR8AT+1Ojm/+exEFo+cV6z7jBOPvz/3DjHBm8n9reY1bscWa/dQqyBj60mvw
+         hlnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Tihn+691p7iWK//izJ5iKcTFaKEbda2SvpleteY067A=;
-        b=rlgA+bn//KDu+GlnFlTfLfvKR84eyVhzt26PpPXwZWzgJYPlNhtrRvFby/DHOKL1k4
-         G1+cC1bv4s16sQf4UCYDSZ8xc8iP8j3cE0MUwe8RSiRzP8zJOKBTmmy+uQasyDQ2soYf
-         Zeh9OZMsbTTxy5QDUJEP6XvKSXsH0BAf+1mRTcxwLmY+ITi35bkixUsVx5HrmVkiPQkF
-         BtRMxtfJ+8MQxwZLp6q9DWlpzZblKTw549/qPsrHmWcJgd9zXTg8/7WDXn65J/KzHprs
-         B0TZury6svqr2EhybkGQoOH7MgYQgo/3BWw2ZCO79RphFPRo536RfEpq0ODYE8k1bE8a
-         7kxA==
-X-Gm-Message-State: AOAM531dwFJUWM+nK+Fcmkg4PH0ls8dgKlzGY3m26QaR5DMnQzUI6Z2O
-        tzBUvmqz70Y04SF1kTqfPylduvF0E0RvlaCvFji01rIu5mg=
-X-Google-Smtp-Source: ABdhPJywuvwzT6E0mGE+ospgnfd+yL2cK+m5CNEokcsNlOnCpYojvVt3IjHuDjdAnG/lg5Bis0tLE6+KGBX5AADEoIo=
-X-Received: by 2002:a17:906:590b:: with SMTP id h11mr14034374ejq.437.1617934923888;
- Thu, 08 Apr 2021 19:22:03 -0700 (PDT)
+        bh=Dr8o5YF5yqQzC2Z1k+2QkLomm0GkPLRu2hgFbkn12/A=;
+        b=tuha4ammAdJRXQ4EywVLQw1izvaHqY52Ow+B0so35gO3KGKfPbPf8fAF1ZBzjC/44i
+         koB+l8+T8I6DTr9BzF8g3QkZxNTrW31DpBs3LUUDmE9Qo5joixsX1LsJ7Jg4+UTOxYXC
+         ytl7EUCQd2cpfGE0Jsc8ylTblf6tg1HZrFkMdV6G7tq0JM5ESO6Lizd5DcDjY/2EPoPZ
+         UUHmcvFNX0sLBUseWbDoJrzMIioU10MjAoEpEcEMWs5oq68c98FVsEtnVM2Umzzo8urJ
+         UhuqmMNQdLKk3vAuWx1fR9io25O8CqI2TVJ4AAMRVQu2ezPcSor8DzXniq8nCfxCkDzi
+         SpuQ==
+X-Gm-Message-State: AOAM531npKv7hk7SyWfYF1a0dg/OA+OjytNPi3lylW5AEODlMql//e7U
+        zTugUqm8WonP0It5g+ONBgdcoQ3tYNrKeBo5HL1fyg==
+X-Google-Smtp-Source: ABdhPJxtimebsZ9qggqFtKnwApCerfHESWaJIl88HJu0Xf60B4QCcRWMzJJOSmFJIJ+fQt4BpDrO7Q3hF36KGFG+LhI=
+X-Received: by 2002:a05:6214:f0d:: with SMTP id gw13mr11984953qvb.33.1617935012958;
+ Thu, 08 Apr 2021 19:23:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210330052154.26861-1-xuewen.yan94@gmail.com>
- <YGLzQAvVqlrKb8AB@google.com> <34ce11ad-9c20-7ba7-90d8-4830725bf38a@arm.com>
- <CAB8ipk9JATYxJBnpVFfH_XHLqh=yHesbo73wx=Mm7t8mSqW_Gg@mail.gmail.com>
- <1ebddd33-4666-1e6e-7788-a3fe28c9e99c@arm.com> <CAB8ipk9+fdGMY6cYoHnicPUOdd+meJo+EaGaaVZTgoxQ84+Wiw@mail.gmail.com>
- <d85a1db9-4680-1d31-d3e7-6a081f652c5e@arm.com>
-In-Reply-To: <d85a1db9-4680-1d31-d3e7-6a081f652c5e@arm.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Fri, 9 Apr 2021 10:20:52 +0800
-Message-ID: <CAB8ipk_J-W35+iZqsmAm+VO2=OUXRR3EsW6BuhYmvmBiPcHxMA@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: use signed long when compute energy delta in eas
-To:     Pierre <pierre.gondois@arm.com>
-Cc:     Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
-        Quentin Perret <qperret@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ryan Y <xuewyan@foxmail.com>
+References: <20210406092634.50465-1-greentime.hu@sifive.com> <20210408162539.GA32036@lpieralisi>
+In-Reply-To: <20210408162539.GA32036@lpieralisi>
+From:   Greentime Hu <greentime.hu@sifive.com>
+Date:   Fri, 9 Apr 2021 10:23:21 +0800
+Message-ID: <CAHCEehK5vf5V_6McexFQPbcxGeC2SEb_3SXiGc2ASkcELe3fXg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver support
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, hes@sifive.com,
+        Erik Danie <erik.danie@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, robh+dt@kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>, alex.dewar90@gmail.com,
+        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
+        vidyas@nvidia.com, jh80.chung@samsung.com,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> =E6=96=BC 2021=E5=B9=B44=E6=
+=9C=889=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8812:25=E5=AF=AB=E9=81=
+=93=EF=BC=9A
 >
-> Hi,
-> > Hi
+> On Tue, Apr 06, 2021 at 05:26:28PM +0800, Greentime Hu wrote:
+> > This patchset includes SiFive FU740 PCIe host controller driver. We als=
+o
+> > add pcie_aux clock and pcie_power_on_reset controller to prci driver fo=
+r
+> > PCIe driver to use it.
 > >
-> > On Wed, Apr 7, 2021 at 10:11 PM Pierre <pierre.gondois@arm.com> wrote:
-> > >
-> > > Hi,
-> > > > I test the patch, but the overflow still exists.
-> > > > In the "sched/fair: Use pd_cache to speed up
-> > find_energy_efficient_cpu()"
-> > > > I wonder why recompute the cpu util when cpu=3D=3Ddst_cpu in
-> > compute_energy(),
-> > > > when the dst_cpu's util change, it also would cause the overflow.
-> > >
-> > > The patches aim to cache the energy values for the CPUs whose
-> > > utilization is not modified (so we don't have to compute it multiple
-> > > times). The values cached are the 'base values' of the CPUs, i.e. whe=
+> > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon =
+R5
+> > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based o=
 n
-> > > the task is not placed on the CPU. When (cpu=3D=3Ddst_cpu) in
-> > > compute_energy(), it means the energy values need to be updated inste=
-ad
-> > > of using the cached ones.
-> > >
-> > well, is it better to use the task_util(p) + cache values ? but in
-> > this case, the cache
-> > values may need more parameters.
+> > v5.11 Linux kernel.
+> >
+> > Changes in v5:
+> >  - Fix typo in comments
+> >  - Keep comments style consistent
+> >  - Refine some error handling codes
+> >  - Remove unneeded header file including
+> >  - Merge fu740_pcie_ltssm_enable implementation to fu740_pcie_start_lin=
+k
+> >
+> > Changes in v4:
+> >  - Fix Wunused-but-set-variable warning in prci driver
+> >
+> > Changes in v3:
+> >  - Remove items that has been defined
+> >  - Refine format of sifive,fu740-pcie.yaml
+> >  - Replace perstn-gpios with the common one
+> >  - Change DBI mapping space to 2GB from 4GB
+> >  - Refine drivers/reset/Kconfig
+> >
+> > Changes in v2:
+> >  - Refine codes based on reviewers' feedback
+> >  - Remove define and use the common one
+> >  - Replace __raw_writel with writel_relaxed
+> >  - Split fu740_phyregreadwrite to write function
+> >  - Use readl_poll_timeout in stead of while loop checking
+> >  - Use dwc common codes
+> >  - Use gpio descriptors and the gpiod_* api.
+> >  - Replace devm_ioremap_resource with devm_platform_ioremap_resource_by=
+name
+> >  - Replace devm_reset_control_get with devm_reset_control_get_exclusive
+> >  - Add more comments for delay and sleep
+> >  - Remove "phy ? x : y" expressions
+> >  - Refine code logic to remove possible infinite loop
+> >  - Replace magic number with meaningful define
+> >  - Remove fu740_pcie_pm_ops
+> >  - Use builtin_platform_driver
+> >
+> > Greentime Hu (5):
+> >   clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
+> >   clk: sifive: Use reset-simple in prci driver for PCIe driver
+> >   MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
+> >   dt-bindings: PCI: Add SiFive FU740 PCIe host controller
+> >   riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
+> >
+> > Paul Walmsley (1):
+> >   PCI: fu740: Add SiFive FU740 PCIe host controller driver
 >
-> This patch-set is not significantly improving the execution time of
-> feec(). The results we have so far are an improvement of 5-10% in
-> execution time, with feec() being executed in < 10us. So the gain is not
-> spectacular.
+> I can pull the patches above into the PCI tree (but will drop patch 6 -
+> dts changes), is it OK for you ? Please let me know how you would like
+> to upstream it.
+>
 
-well=EF=BC=8C I meaned to cache all util value and compute energy with cach=
-es, when
-(cpu=3D=3Ddst_cpu), use caches instead of updating util, and do not get
-util with function:
- "effective_cpu_util()", to compute util with cache.
-I add more parameters into pd_cache:
-struct pd_cache {
-        unsigned long util;
-        unsigned long util_est;
-        unsigned long util_cfs;
-        unsigned long util_irq;
-        unsigned long util_rt;
-        unsigned long util_dl;
-        unsigned long bw_dl;
-        unsigned long freq_util;
-        unsigned long nrg_util;
-};
-In this way, it can avoid util update while feec. I tested with it,
-and the negative delta disappeared.
-Maybe this is not a good method, but it does work.
->
-> >
-> > > You are right, there is still a possibility to have a negative delta
-> > > with the patches at:
-> > >
-> > https://gitlab.arm.com/linux-arm/linux-power/-/commits/eas/next/integra=
-tion-20210129
-> > <https://gitlab.arm.com/linux-arm/linux-power/-/commits/eas/next/integr=
-ation-20210129>
-> > > Adding a check before subtracting the values, and bailing out in such
-> > > case would avoid this, such as at:
-> > > https://gitlab.arm.com/linux-arm/linux-pg/-/commits/feec_bail_out/
-> > <https://gitlab.arm.com/linux-arm/linux-pg/-/commits/feec_bail_out/>
-> > >
-> > In your patch, you bail out the case by "go to fail", that means you
-> > don't use eas in such
-> > case. However, in the actual scene, the case often occurr when select
-> > cpu for small task.
-> > As a result, the small task would not select cpu according to the eas,
-> > it may affect
-> > power consumption?
-> With this patch (bailing out), the percentage of feec() returning due to
-> a negative delta I get are:
-> on a Juno-r2, with 2 big CPUs and 4 CPUs (capacity of 383), with a
-> workload running during 5s with task having a period of 16 ms and:
->   - 50 tasks at 1%:   0.14%
->   - 30 tasks at 1%:   0.54%
->   - 10 tasks at 1%: < 0.1%
->   - 30 tasks at 5%: < 0.1%
->   - 10 tasks at 5%: < 0.1%
-> It doesn't happen so often to me.If we bail out of feec(), the task will
-> still have another opportunity in the next call. However I agree this
-> can lead to a bad placement when this happens.
-> >
-> > > I think a similar modification should be done in your patch. Even tho=
-ugh
-> > > this is a good idea to group the calls to compute_energy() to reduce =
-the
-> > > chances of having updates of utilization values in between the
-> > > compute_energy() calls,
-> > > there is still a chance to have updates. I think it happened when I
-> > > applied your patch.
-> > >
-> > > About changing the delta(s) from 'unsigned long' to 'long', I am not
-> > > sure of the meaning of having a negative delta. I thing it would be
-> > > better to check and fail before it happens instead.
-> > >
-> > > Regards
-> > >
->
->
->
+Hi Lorenzo,
+
+Thank you.
+I am ok with it. So I should ask Palmer to pick patch 6 dts changes to
+RISC-V tree?
