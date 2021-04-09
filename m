@@ -2,142 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448F9359D7C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38059359D7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:32:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233628AbhDILbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231599AbhDILbn (ORCPT
+        id S232924AbhDILcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:32:05 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:36523 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhDILcE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:31:43 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDBDC061760;
-        Fri,  9 Apr 2021 04:31:30 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id a11so3476728ioo.0;
-        Fri, 09 Apr 2021 04:31:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=4AaNtzCcNTMLVbnvD/41s53XfL4pmpuX/bq2Hn2SJ2c=;
-        b=vbG1LAP7hGQXHDBtDrRyZ9kHpnUOwcJ72/8mBIR71lDFi+4DxHwzLMQfhsYp+Eevd2
-         aD2/8t8T0Ev77cHwogUqG72r1pyjT1CuxgEU7M5QdP44g3pN+l5cksAnYXgY/0LS7WlN
-         DAKw8/h+YtyYR2x79a+vONHrhc1loX5Psrj5sUQ2WBMtcOO+WEjoc50jlZKJDHpvDJCE
-         puwkNGOOROGcJ/R3GruRrLUfVCpMN1C0ZjktA6ix3Spm/r9KMS9vywxWYZHXae6gVb6z
-         BMFmSDEniVv5fqeY/0MfPMr/1/pHrfzASzwrvPpq6/KcUiWTC0XTDytSvQUUYwV/3GeO
-         +cSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=4AaNtzCcNTMLVbnvD/41s53XfL4pmpuX/bq2Hn2SJ2c=;
-        b=M261BKbVgI5RGfpMz2ab5oAfblBb4MbtM0Mz8e9l9Ao6/OCePtjC5D9Ivzh8o9CjQx
-         FFe3aVEWTyevCmog76dhVtC/hK8I2kreo8Hc5BQT5/dwf9TNfU4fNSuEqukxCZfCxBQk
-         swOjM3g//bfxbc4w/47Gs/sEU1HOVxSxaFNGPMtHLKN4VATgP6mbFqSatKe5Dxo3Y1/U
-         dibXHKStkp/E9zkah2qMztdbFeKHy+UpqgyEFQk45O0+SX3mxtPmOm0wMhemWSJYL6mZ
-         v8FM73vDScHYU7qm8MA4zGhT9yxFVX6Qsh0OLLs846GUplZ1VSIpoiAm/27atL8kfoAG
-         JIWQ==
-X-Gm-Message-State: AOAM530uJWxSXGciqpwOWdM7ng3K7j8O9P2PaMFZ+2Qb/7KO5wQHRxQ3
-        xxcs/cGkgX1Nk1nq/JEqe9tSjNhb4FKQypcNZ/o=
-X-Google-Smtp-Source: ABdhPJzcADcBmqte+6MPur7P/QbOkys4CxXpLFoBwZrwtjWdPC72Pb6S/3M+wZllmSloRCrxd5OLXjG/+lTfwANdVPE=
-X-Received: by 2002:a05:6638:35ab:: with SMTP id v43mr13973395jal.65.1617967890055;
- Fri, 09 Apr 2021 04:31:30 -0700 (PDT)
+        Fri, 9 Apr 2021 07:32:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1617967911; x=1649503911;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=qf0GWmTnTvXth8jUl6Kj+vKLOijVCZtt8WTtPaL34Ik=;
+  b=xh2HPbyWPo5XRSuneY0YMd+VgAQ7PUq/+U8xsL+EUJSGK00V+Q7vFe2o
+   In+SOAwxCuakYDCnKifww7DmMR3sVNNcrq29w61hmeIZp01BDRLXdbkUZ
+   zYdqyS7UtRkcHzlmiKTrauU4BppkevQsXy3BPUdDWQpdMQPyyx5ItgtMb
+   YYyLAPrM9ZfNjN4fEvKJNqwMij6q81Q9kTMkLHQvHKOPpcCkUz0wDnkQa
+   A3Ig3SWzp2TKT1yCzAj9og3ff24r2xjVWor2nIFxGdoV6kc02PAUKIWCh
+   jdMGuj1hVBuK0u4CAh6iY2v+iDUnzv0nuYbJ/5qURop/gTHKtA9fzC9vY
+   g==;
+IronPort-SDR: 9MyR6Aj8d+Rv1XGbRWN9HwCsa3qtQj84qfg5Ha4oYvND9d1LwSqF7OX2J+cqcW1lHFdVZBa2/8
+ XXHpOPmN9uW4mMnYCFEeCma0ToONQwGbE/XdMk9IFfML59BE9yzhTRmWHAIjs+IvI02L7WbsEg
+ 46nnRfv6RFOQ36b2DWB1eGuh9ZwhLrKxi3XJAurz9L1WRE5Ijf41f00Ikf9QXOosv4U8R0n7ma
+ R7KjXxFWnj3hEhU69icjRKD/G7FY/QKEtzm1vWqQzbq0vw1nMRW8MoYshdTp59VcsIP7hKKW3S
+ tpw=
+X-IronPort-AV: E=Sophos;i="5.82,209,1613458800"; 
+   d="scan'208";a="122421624"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 09 Apr 2021 04:31:47 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 9 Apr 2021 04:31:47 -0700
+Received: from ROB-ULT-M18282.microchip.com (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Fri, 9 Apr 2021 04:31:25 -0700
+From:   Eugen Hristev <eugen.hristev@microchip.com>
+To:     <linux-arm-kernel@lists.infradead.org>,
+        <alexandre.belloni@bootlin.com>
+CC:     <linux-kernel@vger.kernel.org>, <nicolas.ferre@microchip.com>,
+        <ludovic.desroches@microchip.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH v2 1/2] ARM: at91: add new SoC sama7g5
+Date:   Fri, 9 Apr 2021 14:31:15 +0300
+Message-ID: <20210409113116.482199-1-eugen.hristev@microchip.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210407160927.222092-1-lucjan.lucjanov@gmail.com> <20210409111033.2465074-1-lucjan.lucjanov@gmail.com>
-In-Reply-To: <20210409111033.2465074-1-lucjan.lucjanov@gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 9 Apr 2021 13:31:07 +0200
-Message-ID: <CA+icZUWbYd3z-+FDoXGx5UQcY4R1BuBn5V=o0d06=XADOZD8gQ@mail.gmail.com>
-Subject: Re: Subject: Re: [PATCH v3] kbuild: add support for zstd compressed modules
-To:     Piotr Gorski <lucjan.lucjanov@gmail.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        masahiroy@kernel.org, oleksandr@natalenko.name
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 1:10 PM Piotr Gorski <lucjan.lucjanov@gmail.com> wrote:
->
-> I originally posted the patch in a different form [1] even before Masahiro's changes.
-> I've been testing this solution since December last year and posted it in March this year,
-> after I made sure everything was working fine. This patch was tested by Oleksandr and he also didn't report any objections. [2]
->
-> Masahiro notified me about the planned changes [3] and asked me to resend this patch, adjusted to those changes, which I did.
->
-> My current logs:
->
-> lucjan@archlinux ~ $ zgrep CONFIG_DEBUG_INFO /proc/config.gz
-> CONFIG_DEBUG_INFO=y
-> # CONFIG_DEBUG_INFO_REDUCED is not set
-> # CONFIG_DEBUG_INFO_COMPRESSED is not set
-> # CONFIG_DEBUG_INFO_SPLIT is not set
-> CONFIG_DEBUG_INFO_DWARF4=y
-> CONFIG_DEBUG_INFO_BTF=y
-> CONFIG_DEBUG_INFO_BTF_MODULES=y
-> lucjan@archlinux ~ $ zgrep CONFIG_MODULE_COMPRESS_ZSTD /proc/config.gz
-> CONFIG_MODULE_COMPRESS_ZSTD=y
-> CONFIG_MODULE_COMPRESS_ZSTD_LEVEL=19
->
-> Pay no attention to CONFIG_MODULE_COMPRESS_ZSTD_LEVEL as this is not in the upstream, it's an additional patch I use.
->
-> The only difference - I don't use clang. Maybe those who use will comment on this.
-> I relied on the opinions of Oleksander and a dozen other users who reported no errors in using zstd module compression.
->
-> [1] https://marc.info/?l=linux-kbuild&m=161710402402989&w=2
->
-> [2] https://marc.info/?l=linux-kbuild&m=161710503403517&w=2
->
-> [3] https://marc.info/?l=linux-kbuild&m=161780602730829&w=2
+Add new SoC from at91 family : sama7g5
 
-I am a big fan of ZSTD and have it as default in all available Linux
-Kconfigs and Debian's initramfs-tools.
-So, I am highly interested in getting this fixed.
+Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+[claudiu.beznea@microchip.com: Select PLL, generic clock and UTMI support]
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+Changes in v2:
+- squash previous patch
+ [PATCH 3/3] ARM: at91: Kconfig: select PLL, generic clock and utmi support
+into this one
 
-Unfortunately, I have thrown away my yesterday's Clang-LTO build and
-switched to Clang-CFI with builddeb - should do handle the same way.
+ arch/arm/mach-at91/Kconfig | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-I see three iwlwifi.ko (as an example):
+diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+index ccd7e80ce943..f52b46bccd85 100644
+--- a/arch/arm/mach-at91/Kconfig
++++ b/arch/arm/mach-at91/Kconfig
+@@ -57,6 +57,16 @@ config SOC_SAMA5D4
+ 	help
+ 	  Select this if you are using one of Microchip's SAMA5D4 family SoC.
+ 
++config SOC_SAMA7G5
++	bool "SAMA7G5 family"
++	depends on ARCH_MULTI_V7
++	select HAVE_AT91_GENERATED_CLK
++	select HAVE_AT91_SAM9X60_PLL
++	select HAVE_AT91_UTMI
++	select SOC_SAMA7
++	help
++	  Select this if you are using one of Microchip's SAMA7G5 family SoC.
++
+ config SOC_AT91RM9200
+ 	bool "AT91RM9200"
+ 	depends on ARCH_MULTI_V4T
+@@ -191,4 +201,9 @@ config SOC_SAMA5
+ config ATMEL_PM
+ 	bool
+ 
++config SOC_SAMA7
++	bool
++	select ARM_GIC
++	select MEMORY
++	select SOC_SAM_V7
+ endif
+-- 
+2.25.1
 
-$ LC_ALL=C ll drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
--rw-r--r-- 1 dileks dileks 8.2M Apr  9 11:07
-drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-
-$ file drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-drivers/net/wireless/intel/iwlwifi/iwlwifi.ko: ELF 64-bit LSB
-relocatable, x86-64, version 1 (SYSV),
-BuildID[sha1]=78d593f4fd2b8efe81caeb8f1ea729107a33e244, with
-debug_info, not stripped
-
-That iwlwifi.ko with debug-info is optimized when moving to
-debian/linux-image-dbg directory:
-
-$ LC_ALL=C ll debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
--rw-r--r-- 1 dileks dileks 7.9M Apr  9 11:18
-debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-
-$ file debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko:
-ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV),
-BuildID[sha1]=78d593f4fd2b8efe81caeb8f1ea729107a33e244, with
-debug_info, not stripped
-
-And think it's shrunk down and included debian/linux-image directory:
-
-$ LC_ALL=C ll debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
--rw-r--r-- 1 dileks dileks 694K Apr  9 11:18
-debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-
-$ file debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko:
-ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV),
-BuildID[sha1]=78d593f4fd2b8efe81caeb8f1ea729107a33e244, not stripped
-
-I speculate both iwlwifi.ko below debian directory should be ZSTD-compressed.
-Fact is the one with debug-info is done correctly.
-Might be builddeb script needs a special treatment.
-
-- Sedat -
