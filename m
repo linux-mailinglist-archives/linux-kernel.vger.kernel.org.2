@@ -2,113 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8699C35A04C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:50:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BCE35A053
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233706AbhDINuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:50:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231402AbhDINuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:50:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F1C661184;
-        Fri,  9 Apr 2021 13:49:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617976195;
-        bh=8o2Bt/OdnkU0Any2YvbvhN5VXSpCLXNCewVgojWDjB0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tEhODWo5B3CGcUg0QIjayzKtSQREfa2xGdHS4iMXAHob2c1gH17v5ruox66r4O1iS
-         wcD41YpL/LMqyK+Y9KAVleDL5uaKrehIcTgmwNI6I4pG/TxEQFx1IXRkOh6r27+iwG
-         ZS0XaosHAST5RM8SDNieRj7GK1SrdsJ4RpRqakdBaDgTtYNWDTjl6VQ3VF8DSH67Co
-         MMHx79b/hRwKimp2dNK5fGjEr+os/T4yLXWexgpKh5Q47flOP1xh44gkdoDWrJ9nKT
-         f06GpTtYTduaLCIUK4T+3IjQwqk+HUIZbdZG1Q/wAZ1stMEbMuXSWn4KFpRzG8/AGq
-         eCM7dqez4nDpg==
-Received: by mail-ed1-f46.google.com with SMTP id h10so6617970edt.13;
-        Fri, 09 Apr 2021 06:49:55 -0700 (PDT)
-X-Gm-Message-State: AOAM532myNxwm8aqVl5Q+zsNZVr+5roE3AHck8QIU6H/NeuBRu3HtdP8
-        4o9gUD5lcCJnHI11EDa9NFb8bRRJULECHlYsjQ==
-X-Google-Smtp-Source: ABdhPJyHT7LV1ywH5OhBmdDt4Q7HUdl8a/WQ0SSEN0vMmJjh0KUPwTzoqGyithVEJWynOiqzEjUQjbWRG0QBHP2Ka2w=
-X-Received: by 2002:a05:6402:84e:: with SMTP id b14mr17935095edz.194.1617976193885;
- Fri, 09 Apr 2021 06:49:53 -0700 (PDT)
+        id S233797AbhDINuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233730AbhDINuo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 09:50:44 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E7B3C061760;
+        Fri,  9 Apr 2021 06:50:31 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id t14so4777251ilu.3;
+        Fri, 09 Apr 2021 06:50:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bGJZmmcmbsbv9Z5e9Ce+SCA5Ta6SrwFKxFJMGIFXocM=;
+        b=L/fZOICd2FDYOYlJ5+IACiFpQDtt/9nYKkNO2VKDV489WDZI7uMvJABgLX4n2kaGcO
+         rG0B4tIgc8fY8mXDyHkIP6/xcnfK/Hr4Qta6mLLIVenLblYrJLS+ol/sJhBmV6gxNUm8
+         AQKgRTaoXYzU/AfWvcapXEtNxO7y4rqFs/mnhh38u+E0PNLxoxM2YE2fbEY3/gh/gQjJ
+         NIQN13qgaRtgz2xbuLy0GgaZkcSIXALXezLF3zy54G6PmKXNhfV7mqtDcrKY6MaEZIR7
+         vEsbU/lSXHEh/ugwb2hpOTJ2TX2LVl515OoNbwwdZz6JWlkQzEoYy3XNYw1QPWtr2QVv
+         cPBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bGJZmmcmbsbv9Z5e9Ce+SCA5Ta6SrwFKxFJMGIFXocM=;
+        b=B4/01HJJA26iiZhXZaoyA2wwe8ner5NCR7HhMhOVukn46CMrClHbczq2BJ9rqLxc5R
+         oLjgKkmffTG5ZLiFzZtaitoUfB5YA7pnF7Fvq6OFQ847PoD3GnWBT3tE+0P7+VdM4WKx
+         FO/28qtN1gD+vuPIv4xrIzM5SyL0yMyuwDoNU+FBFyaghIDd4gZVWf3qW7PbU/Ru+uRK
+         S9o84lcmY0qjzdaih/5KuFcSrBLEcXqca6ZC2n4iBuHiqgX0gsHVPNXx+Py+mkmPOqPC
+         08RNikc+86uCmntLVEz149yzNUiSF2zm/dTArVEPMwSakd0w5OBFuPfrPi+5F54Yhg7E
+         KCgw==
+X-Gm-Message-State: AOAM530EaMVYD4rQp6lwV84XQoq/dfsrYVqnsohwZT3GXhgGLGsIHdFB
+        EnZgy3Okle9lPeoeIDyVjuuO4c5PN1bjT5NdP4k=
+X-Google-Smtp-Source: ABdhPJz2017Mp18Bm1uXNEsYU5jWFsdiPDGjYR8JPCOFQBk6CUIieYzbSBDb8lxl7shrh2bRGvzKOfREcH+f6Cbse0U=
+X-Received: by 2002:a92:cd0d:: with SMTP id z13mr12023431iln.250.1617976230737;
+ Fri, 09 Apr 2021 06:50:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210409090711.27358-1-qiangqing.zhang@nxp.com> <20210409090711.27358-2-qiangqing.zhang@nxp.com>
-In-Reply-To: <20210409090711.27358-2-qiangqing.zhang@nxp.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Fri, 9 Apr 2021 08:49:41 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKeqvC=vP+SA3i76W5jsCWxzdiNkrmHS0uU=qXUAoVq8Q@mail.gmail.com>
-Message-ID: <CAL_JsqKeqvC=vP+SA3i76W5jsCWxzdiNkrmHS0uU=qXUAoVq8Q@mail.gmail.com>
-Subject: Re: [PATCH net-next 1/3] dt-bindings: net: add new properties for
- of_get_mac_address from nvmem
-To:     Joakim Zhang <qiangqing.zhang@nxp.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Frank Rowand <frowand.list@gmail.com>,
-        netdev <netdev@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>
+References: <20210221195833.23828-1-lhenriques@suse.de> <20210222102456.6692-1-lhenriques@suse.de>
+ <CAN-5tyELMY7b7CKO-+an47ydq8r_4+SOyhuvdH0qE0-JmdZ44Q@mail.gmail.com>
+ <YDYpHccgM7agpdTQ@suse.de> <CANMq1KBgwEXFh8AxpPW2t1SA0NVsyR45m0paLEU4D4w80dc_fA@mail.gmail.com>
+ <CANMq1KDTgnGtNxWj2XxAT3mdsNjc551uUCg6EWnh=Hd0KcVQKQ@mail.gmail.com> <8735vzfugn.fsf@suse.de>
+In-Reply-To: <8735vzfugn.fsf@suse.de>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 9 Apr 2021 16:50:19 +0300
+Message-ID: <CAOQ4uxjdVZywBi6=D1eRfBhRk+nobTz4N87jcejDtvzBMMMKXQ@mail.gmail.com>
+Subject: Re: [PATCH v8] vfs: fix copy_file_range regression in cross-fs copies
+To:     Luis Henriques <lhenriques@suse.de>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Nicolas Boichat <drinkcat@chromium.org>,
+        Olga Kornievskaia <aglo@umich.edu>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 4:07 AM Joakim Zhang <qiangqing.zhang@nxp.com> wrote:
+On Fri, Apr 9, 2021 at 4:39 PM Luis Henriques <lhenriques@suse.de> wrote:
 >
-> From: Fugang Duan <fugang.duan@nxp.com>
+> Nicolas Boichat <drinkcat@chromium.org> writes:
 >
-> Currently, of_get_mac_address supports NVMEM, some platforms
+> > On Wed, Feb 24, 2021 at 6:44 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
+> >>
+> >> On Wed, Feb 24, 2021 at 6:22 PM Luis Henriques <lhenriques@suse.de> wrote:
+> >> >
+> >> > On Tue, Feb 23, 2021 at 08:00:54PM -0500, Olga Kornievskaia wrote:
+> >> > > On Mon, Feb 22, 2021 at 5:25 AM Luis Henriques <lhenriques@suse.de> wrote:
+> >> > > >
+> >> > > > A regression has been reported by Nicolas Boichat, found while using the
+> >> > > > copy_file_range syscall to copy a tracefs file.  Before commit
+> >> > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") the
+> >> > > > kernel would return -EXDEV to userspace when trying to copy a file across
+> >> > > > different filesystems.  After this commit, the syscall doesn't fail anymore
+> >> > > > and instead returns zero (zero bytes copied), as this file's content is
+> >> > > > generated on-the-fly and thus reports a size of zero.
+> >> > > >
+> >> > > > This patch restores some cross-filesystem copy restrictions that existed
+> >> > > > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy across
+> >> > > > devices").  Filesystems are still allowed to fall-back to the VFS
+> >> > > > generic_copy_file_range() implementation, but that has now to be done
+> >> > > > explicitly.
+> >> > > >
+> >> > > > nfsd is also modified to fall-back into generic_copy_file_range() in case
+> >> > > > vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+> >> > > >
+> >> > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices")
+> >> > > > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-1-drinkcat@chromium.org/
+> >> > > > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0xx+BnvW=ZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> >> > > > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+> >> > > > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> >> > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> >> > >
+> >> > > I tested v8 and I believe it works for NFS.
+> >> >
+> >> > Thanks a lot for the testing.  And to everyone else for reviews,
+> >> > feedback,... and patience.
+> >>
+> >> Thanks so much to you!!!
+> >>
+> >> Works here, you can add my
+> >> Tested-by: Nicolas Boichat <drinkcat@chromium.org>
+> >
+> > What happened to this patch? It does not seem to have been picked up
+> > yet? Any reason why?
+>
+> Hmm... good question.  I'm not actually sure who would be picking it.  Al,
+> maybe...?
+>
 
-What's of_get_mac_address? This is a binding patch. Don't mix Linux
-things in it.
+Darrick,
 
-> MAC address that read from NVMEM efuse requires to swap bytes
-> order, so add new property "nvmem_macaddr_swap" to specify the
-> behavior. If the MAC address is valid from NVMEM, add new property
-> "nvmem-mac-address" in ethernet node.
->
-> Update these two properties in the binding documentation.
->
-> Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-> Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-> ---
->  .../bindings/net/ethernet-controller.yaml          | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.yaml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-> index e8f04687a3e0..c868c295aabf 100644
-> --- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-> +++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-> @@ -32,6 +32,15 @@ properties:
->        - minItems: 6
->          maxItems: 6
->
-> +  nvmem-mac-address:
-> +    allOf:
-> +      - $ref: /schemas/types.yaml#definitions/uint8-array
-> +      - minItems: 6
-> +        maxItems: 6
-> +    description:
-> +      Specifies the MAC address that was read from nvmem-cells and dynamically
-> +      add the property in device node;
+Would you mind taking this through your tree in case Al doesn't pick it up?
 
-Why can't you use local-mac-address or mac-address? Those too can come
-from some other source.
-
-> +
->    max-frame-size:
->      $ref: /schemas/types.yaml#/definitions/uint32
->      description:
-> @@ -52,6 +61,11 @@ properties:
->    nvmem-cell-names:
->      const: mac-address
->
-> +  nvmem_macaddr_swap:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      swap bytes order for the 6 bytes of MAC address
-
-So 'nvmem-mac-address' needs to be swapped or it's swapped before
-writing? In any case, this belongs in the nvmem provider.
-
-Rob
+Thanks,
+Amir.
