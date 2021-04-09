@@ -2,133 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A7D835A874
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 23:44:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE71D35A872
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 23:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234811AbhDIVos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 17:44:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40518 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234513AbhDIVor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 17:44:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DF4C61184
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 21:44:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618004673;
-        bh=a/kaeUNYcF7//ieh1oEiBXj+7BcjAHHvsNrMfouzdE8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gGDF6qDj9ZJHa9yBOkUCJ6974hheYKKbt3iUUFcq1AsOyPzmTc8H5nyB4HCaPaMJ/
-         yvWJzb3WbVEkME0X8tB9hRl3MJVfIBpkWCIGSroVxgYz9ZoSWzhqIEPEseRsDEN2xw
-         jsbuM4TPGz+LuDUHwA0HdWQhjDbohdpRZ2wwLE3ZbxI7JbojOlYou9X9ILxxpCl8vk
-         jF6yFFUlC5dSr70E+pwM5acAFAgRh9xcLB9g9OJVRov1LnTPKX07zJQhZf23AEFa8v
-         xtAKx76fjAXvuI2ADjd6xuCjArcHdmxgEe31Do4CURbKitgHDSG3+UhtXk6NBYbDte
-         g3/6kO9ROgZZQ==
-Received: by mail-ed1-f54.google.com with SMTP id s15so8164457edd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 14:44:33 -0700 (PDT)
-X-Gm-Message-State: AOAM530wgenT/OPEriQeSAlVW2CgxqJdTyPj4g6oAOthEb1t2wryLUU1
-        Iw4ObpreXphJl4r8hiMlcNCobLXUUNDvrrOCNNF8bQ==
-X-Google-Smtp-Source: ABdhPJz6NU2aDEU9x5zPavuQ8sQx+9aDxNPWx+FWEIMpOS/YBBpEmDZIIGjBEjb7+oPf7OwX9apqM1I0ObUbiBvRBS8=
-X-Received: by 2002:aa7:c144:: with SMTP id r4mr4310485edp.222.1618004672078;
- Fri, 09 Apr 2021 14:44:32 -0700 (PDT)
+        id S234796AbhDIVol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 17:44:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39306 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234079AbhDIVok (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 17:44:40 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC32CC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 14:44:26 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so5998771wmq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 14:44:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=xXnoWdHvFEMpnYeMmCx8+vDj7r73l2UDR2+MNWmyRCU=;
+        b=RGbxbx4m1+uucwlFeDcsTASEd+2tMnURvBeMFOQOO+2JYG9D2ieQjdFDp9cQHCp109
+         sIhiRtyoXEJ/qLCzx/2SFFUKe9iCkIBoM8mXOQcP+d8tj9yo0LSxNnPEEysM3JIk8FnT
+         Jyf/6HOxnPAIxC4fvz5Fawa0p6cllkJGma8khzxS4vSD0bI/kfkXSr2sTYy/nuXRP5Jy
+         Y/f/L5z8C8hrHJkucYTKmT5Lm7wEt82aW3/W4w9dmvxErxN5TOH25DJgIvzmgSQDO+rO
+         PdFdkf94IbmxTR0oKIteZ+O3at2i1egzCJiahBRt/gVMbfRD3k8IcIp5qns8s4dcNzoB
+         yzeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=xXnoWdHvFEMpnYeMmCx8+vDj7r73l2UDR2+MNWmyRCU=;
+        b=lwR+DK5gI9lJLEKpIkL8O0Au9SeiNVmsBHosxXtyqnoRK4bK27HNH4E6D9VWIcvWif
+         y7ynJKXf9VwsdtTTJ5TgpEGpSN1TyFV2VGb7RQpSqsKWCbNEKOSTNblIX+fxV9Xj6OY4
+         yuJK2auHzaDk6F1NWhG/z/W+Mn2WlVDBzsMbej8O9r4KpkRGkbso1/c4ZN3ktkU1fQiH
+         KYt+yX5lC48ymubPvHXlvBmETWd1J5uutLCXLApTsTEHfdQ+BZwOPQkgENgtEAPwDama
+         QlUDKCUJRt0nhHVGLLmeI/FS9ypGr8hl+WWqipiQLYVDzfuW5KQED9Bw2yrelIB6uyCH
+         qZyg==
+X-Gm-Message-State: AOAM533M61KKsxxekahZKI71tsWmdjcL6+QYZGMGcgy21l3iOKmx1ABr
+        mcx8vUS/Up9ImhFvbmxh4fZceS3WyqGQEOfu8FU=
+X-Google-Smtp-Source: ABdhPJyo/cBN5IWNYMo/8ab0L3CBlZKmBHyq+wGuy5B+6pPiQpTjUwhULEETgssmOA1c+2ynahTLUN0KtDXZOXxi7Fk=
+X-Received: by 2002:a05:600c:4b86:: with SMTP id e6mr15525700wmp.78.1618004664816;
+ Fri, 09 Apr 2021 14:44:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
- <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net> <CAJvTdK=Lqbzy6bs8qiE8MZ5LSzyZJ-FMUTcNPD4MxYJGEMBW3g@mail.gmail.com>
- <CALCETrW_5QDSo2sfEjBZSJ=Q3EsXTc03Unztn0Rq1caxqwtWpw@mail.gmail.com> <CAJvTdKkDUywOUxb8Toth-7d4U4_S_9_EYHO38XqAPKc2_MXtdA@mail.gmail.com>
-In-Reply-To: <CAJvTdKkDUywOUxb8Toth-7d4U4_S_9_EYHO38XqAPKc2_MXtdA@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Fri, 9 Apr 2021 14:44:20 -0700
-X-Gmail-Original-Message-ID: <CALCETrXA-JzBWKdzBZJA8P+pPNKEkxNRPqLganWMpvm6KEUmCw@mail.gmail.com>
-Message-ID: <CALCETrXA-JzBWKdzBZJA8P+pPNKEkxNRPqLganWMpvm6KEUmCw@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Len Brown <lenb@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
+Received: by 2002:a5d:5609:0:0:0:0:0 with HTTP; Fri, 9 Apr 2021 14:44:24 -0700 (PDT)
+Reply-To: rmadamkoenig@gmail.com
+From:   Mrs Ruhama Koenig <engr.charlesluanga@gmail.com>
+Date:   Fri, 9 Apr 2021 22:44:24 +0100
+Message-ID: <CADG9tUaeBPbUOhxkxZnuPU43V=R78DjS_5m7N6Sq6tSDRejCyA@mail.gmail.com>
+Subject: Re: PLEASE TREAT AS URGENT
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 1:53 PM Len Brown <lenb@kernel.org> wrote:
->
-> On Wed, Mar 31, 2021 at 6:45 PM Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > On Wed, Mar 31, 2021 at 3:28 PM Len Brown <lenb@kernel.org> wrote:
-> >
-> > > We added compiler annotation for user-level interrupt handlers.
-> > > I'm not aware of it failing, or otherwise being confused.
-> >
-> > I followed your link and found nothing. Can you elaborate?  In the
-> > kernel, we have noinstr, and gcc gives approximately no help toward
-> > catching problems.
->
-> A search for the word "interrupt" on this page
-> https://gcc.gnu.org/onlinedocs/gcc/x86-Function-Attributes.html#x86-Function-Attributes
-> comes to the description of this attribute:
->
-> __attribute__ ((interrupt))
->
+--=20
 
-I read that and I see no mention of anything saying "this will
-generate code that does not touch extended state".  Instead I see,
-paraphrasing, "this will generate code with an ABI that is completely
-inappropriate for use in a user space signal handler".  Am I missing
-something?
+My Dearest,
 
-> > > dynamic XCR0 breaks the installed base, I thought we had established that.
-> >
-> > I don't think this is at all established.  If some code thinks it
-> > knows the uncompacted XSTATE size and XCR0 changes, it crashes.  This
-> > is not necessarily a showstopper.
->
-> My working assumption is that crashing applications actually *is* a showstopper.
-> Please clarify.
+Please forgive me for stressing you with my predicaments as I know
+that this letter may come to you as big surprise. Actually, I came
+across your E-mail from my personal search afterward I decided to
+email you directly believing that you will be honest to fulfill my
+final wish before or after my death.
 
-I think you're presuming that some program actually does this.  If no
-program does this, it's not an ABI break.
+Meanwhile, I am Madam Ruhama Koenig, 73 years, am from USA, childless.
+I am suffering from Adenocarcinoma Cancer of the lungs for the past 8
+years and from all indication my condition is really deteriorating as
+my doctors have confirmed and courageously advised me that I may not
+live beyond 3 weeks from now for the reason that my tumor has reached
+a critical stage which has defiled all forms of medical treatment.
 
-More relevantly, this can only happen in a process that uses XSAVE and
-thinks it knows the size that *also* does the prctl to change XCR0.
-By construction, existing programs can't break unless they load new
-dynamic libraries that break them.
+Since my days are numbered, I=E2=80=99ve decided willingly to fulfill my
+long-time vow to donate to the underprivileged the sum of ($18.5M)
+Eighteen Million five Hundred Thousand Dollars I deposited in a
+different bank account for a very longtime because I have tried to
+handle this project by myself but I have seen that my health could not
+allow me to do so anymore. My promise for the poor includes building
+of well-equipped charity foundation hospital and a technical school. I
+will explain to you why I wanted a total stranger for this when I
+receive your positive reply.
 
->
-> > > We've also established that when running in a VMM, every update to
-> > > XCR0 causes a VMEXIT.
-> >
-> > This is true, it sucks, and Intel could fix it going forward.
->
-> What hardware fix do you suggest?
-> If a guest is permitted to set XCR0 bits without notifying the VMM,
-> what happens when it sets bits that the VMM doesn't know about?
+If you will be honest, obedient, kind and willing to assist me handle
+this charity project as I=E2=80=99ve mentioned here and can avoid contact w=
+ith
+anybody for this fund until my fund reaches your hands, I will like
+you to provide me your personal data like:
 
-The VM could have a mask of allowed XCR0 bits that don't exist.
+(1) Your full name:
+(2) Country:
+(3) Phone number:
+(4) Age:
+(5) Gender:
+(6) Your identity:
 
-TDX solved this problem *somehow* -- XSETBV doesn't (visibly?) exit on
-TDX.  Surely plain VMX could fix it too.
+Contact me via my direct email:( rmadamkoenig@gmail.com )
 
->
-> > > I thought the goal was to allow new programs to have fast signal handlers.
-> > > By default, those fast signal handlers would have a stable state
-> > > image, and would
-> > > not inherit large architectural state on their stacks, and could thus
-> > > have minimal overhead on all hardware.
-> >
-> > That is *a* goal, but not necessarily the only goal.
->
-> I fully support coming up with a scheme for fast future-proof signal handlers,
-> and I'm willing to back that up by putting work into it.
->
-> I don't see any other goals articulated in this thread.
+My account officer warned me that anybody am sending to them as the
+beneficiary for this fund must keep secret until he or she receives my
+fund to avoid impersonation and wrong transfer.
 
-Before we get too carried away with *fast* signal handlers, something
-that works with existing programs is also a pretty strong goal.  RIght
-now AVX-512 breaks existing programs, even if they don't use AVX-512.
+Best Regards!
+
+Mrs. Ruhama Koenig
