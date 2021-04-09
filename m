@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9779B35A73C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 828DC35A741
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:42:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235073AbhDITjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
+        id S234221AbhDITmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:42:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234507AbhDITjo (ORCPT
+        with ESMTP id S233883AbhDITme (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:39:44 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6614FC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 12:39:31 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0be100a8e90a67ff2fdfe0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:e100:a8e9:a67:ff2f:dfe0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 91BC91EC04A9;
-        Fri,  9 Apr 2021 21:39:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617997169;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=piAEnbi9i8uJD27RCRs0AnB3SDzJBLyh+CujT1uDyxc=;
-        b=iM5/UlyjnK1s2Wi9+Zn2HGYWIsVl2sz6F7Iy/aXBvySBb9iaxeI0XeESG62GvK2SIRoFGN
-        CSIR/DgZjVxLdgoC86jjO314kF9WLIhaeVD7EF8iD4hY7H+TzC98VtgBzmTRrAfU5FKtll
-        WReREubbxu9vMyXjIA/qEvTyM21+SJ0=
-Date:   Fri, 9 Apr 2021 21:39:29 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Saripalli, RK" <rsaripal@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH 1/5] x86/cpufeatures: Define feature bits to support
- mitigation of PSF
-Message-ID: <20210409193929.GI15567@zn.tnic>
-References: <20210406155004.230790-1-rsaripal@amd.com>
- <20210406155004.230790-2-rsaripal@amd.com>
- <20210409174134.GH15567@zn.tnic>
- <cc5476c9-fe4e-6b4c-d323-37b90237b32b@amd.com>
+        Fri, 9 Apr 2021 15:42:34 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553F2C061763
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 12:42:21 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id f12so5086418qtq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 12:42:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OFTSox0XE2cJ5i/WptJgwAzts8ZiaiuohDM7xn7cty8=;
+        b=QzAH9lGnFFR/geLOlo6UwmTeA+ENERKZCD53aFZL30TSNSc958Bm90CS+vkQ7A0j94
+         fCd0Gp49sHR5kBJLAiTWqq2wQxk25fbqypvBEEAln2uPLZtRCg13hbHc7TdrQUjB4nDn
+         On/K/dtcYBfWjp3yFgFFm2YYnAXyUrVP9dWjU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OFTSox0XE2cJ5i/WptJgwAzts8ZiaiuohDM7xn7cty8=;
+        b=l+Kfy9Xcb4VWyKdaSjUvz95BGHVSeDk7vaDeqr5+b5hWwOQuaa94PFHdAPLMyNlW8V
+         Bgm+FvsRGdJKN8pqSvVLjmmwLUV+XsLjW68HBHJIt7iz9unsjuO4OkkKmVxygVRI3C1Y
+         +x7MniJHfsC9EwaydqKJ49R9BfFKwMu3Wr0T5xOXhUg25n79qyQrrBF3l7zGJCJxbbZl
+         kGATFExH8+2adonZ+oO2SXaKbW7SyoTs12TqsuFEw2Wqzes5EzVknxWsFocqSSO3dZxH
+         T5H0P+ZBThKcra6wE4JLYx++Gjs5hDxVDY7yt2ZV2duGm24HtXxygsDJi/ziZZjfpm0Y
+         WHMw==
+X-Gm-Message-State: AOAM5333v4oQjoUbP7hlG1rIoYAAVibtii9dglx2JolZWtmtJqWc8q3l
+        nZIFfX/9b3dHDP8zoie+odmqiQ==
+X-Google-Smtp-Source: ABdhPJxzT4kyxdeN3XUBh/t6iPeWQS/mXIz5J2vliMosSIJvyhS7itIaZ3B61x1bhK74Hgkul5qdfg==
+X-Received: by 2002:ac8:6044:: with SMTP id k4mr14162915qtm.4.1617997340386;
+        Fri, 09 Apr 2021 12:42:20 -0700 (PDT)
+Received: from bill-the-cat (cpe-65-184-140-239.ec.res.rr.com. [65.184.140.239])
+        by smtp.gmail.com with ESMTPSA id s13sm2489647qtx.42.2021.04.09.12.42.19
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 09 Apr 2021 12:42:19 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 15:41:47 -0400
+From:   Tom Rini <trini@konsulko.com>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Simon Glass <sjg@chromium.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: generic: Update node names to avoid unit addresses
+Message-ID: <20210409194147.GK1310@bill-the-cat>
+References: <20210409174734.GJ1310@bill-the-cat>
+ <20210409192128.3998606-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xzsJsQN6Lm/oxwnO"
 Content-Disposition: inline
-In-Reply-To: <cc5476c9-fe4e-6b4c-d323-37b90237b32b@amd.com>
+In-Reply-To: <20210409192128.3998606-1-nathan@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 01:22:49PM -0500, Saripalli, RK wrote:
-> > And I think you don't need this one either if we do a "light" controls
-> > thing but lemme look at the rest first.
 
-Ok, and what I mean with "lite" version is something like this below
-which needs finishing and testing.
+--xzsJsQN6Lm/oxwnO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Initially, it could support the cmdline params:
+On Fri, Apr 09, 2021 at 12:21:28PM -0700, Nathan Chancellor wrote:
 
-predict_store_fwd={on,off,auto}
+> With the latest mkimage from U-Boot 2021.04, the generic defconfigs no
+> longer build, failing with:
+>=20
+> /usr/bin/mkimage: verify_header failed for FIT Image support with exit co=
+de 1
+>=20
+> This is expected after the linked U-Boot commits because '@' is
+> forbidden in the node names due to the way that libfdt treats nodes with
+> the same prefix but different unit addresses.
+>=20
+> Switch the '@' in the node name to '-'. Drop the unit addresses from the
+> hash and kernel child nodes because there is only one node so they do
+> not need to have a number to differentiate them.
+>=20
+> Cc: stable@vger.kernel.org
+> Link: https://source.denx.de/u-boot/u-boot/-/commit/79af75f7776fc20b0d7eb=
+6afe1e27c00fdb4b9b4
+> Link: https://source.denx.de/u-boot/u-boot/-/commit/3f04db891a353f4b127ed=
+57279279f851c6b4917
+> Suggested-by: Simon Glass <sjg@chromium.org>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 
-to give people the opportunity to experiment with the feature.
+Reviewed-by: Tom Rini <trini@konsulko.com>
 
-If it turns out that prctl and seccomp per-task toggling is needed then
-sure, we can extend but I don't see the reason for a whole separate set
-of options yet. Especially is ssbd already controls this.
+--=20
+Tom
 
-AFAICT, of course and if I'm not missing some other aspect here.
+--xzsJsQN6Lm/oxwnO
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thx.
+-----BEGIN PGP SIGNATURE-----
 
----
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index 2d11384dc9ab..226b73700f88 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -1165,3 +1165,22 @@ void set_dr_addr_mask(unsigned long mask, int dr)
- 		break;
- 	}
- }
-+
-+static int __init psf_cmdline(char *str)
-+{
-+	if (!boot_cpu_has(X86_FEATURE_PSFD))
-+		return 0;
-+
-+	if (!str)
-+		return -EINVAL;
-+
-+	if (!strcmp(str, "off")) {
-+		x86_spec_ctrl_base |= SPEC_CTRL_PSFD;
-+		setup_clear_cpu_cap(X86_FEATURE_PSFD);
-+	}
-+
-+	return 0;
-+}
-+early_param("predict_store_fwd", psf_cmdline);
-+
-+
+iQGzBAABCgAdFiEEGjx/cOCPqxcHgJu/FHw5/5Y0tywFAmBwrfgACgkQFHw5/5Y0
+tywsiQv8DJ4MGJ2Hg+DBmgGuc6jVnJx72/P02b4IvetoDvNTEcEMjHZ8ZxbQKhfM
+6squHGIFqLQfLLJ/DC0EzvmFckf250Akbf5pFvOzWVHTKVNwBNBT2X3hfzZu8h9k
+/j4LVtnkWbaYHInpBvf3WNW/UZdbAlhidlTjQs131JzgwND26W5zdN1xXrmFtujZ
+HQn85lzWfJ3HOjx0kuXlCJM8hnP94WYgm6um6MaQHFgyDNd/oggK1lti7zaULC+7
+la2V4YvcmlYhTbcUy5y1SO5va7Zad9hVNcQS5BqFWmgJ8dOXP7EjwPrYsqIYQn11
+mzNmd4H7N9QYKhbndnjFEO0xvWdenzgQW6DJJr2UrbcaLAcr+q9mkY3eaBo9Btyf
+mIBEdwUm5/3nSHqh71lXmZpAPbX/hYcKlbTm7cTz67MdLuypWuk6662DoQIFUnB2
+o0l4YHeJ4Fowca/jiJ8XiNMfb9XmnbYYVExRtE/ufjDftxVli46tUN270V1fMSCM
+P9a5xgN8
+=gfSn
+-----END PGP SIGNATURE-----
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+--xzsJsQN6Lm/oxwnO--
