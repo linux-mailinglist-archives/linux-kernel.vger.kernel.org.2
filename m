@@ -2,73 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917B23598C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C808D3598CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232755AbhDIJIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:08:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232878AbhDIJIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:08:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E67D610D0;
-        Fri,  9 Apr 2021 09:08:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617959314;
-        bh=P5AFIuwYBrowJYNt7JM2J+ymtXbj3UqqOtwOct8/uEw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=DIo19fYO+HAVmsLHd25TJcFT8Y9ZIX+dv55jjDB/7xaii6taK3x4gVMJjzuvCuE6n
-         XU+hfIxz2/rdL5OsUPV6BaS/l01e+Fm6pEIq+dfAIz/Bt7MyX7ZbaRjpVF9WOhchYm
-         JASgKtDplWCTh1RIfV9u6S9egxgnzNy6500M4L+TeUaO0GCQbe3I8TXqjKoPaUaonT
-         WhX4r1wiOndnMGbsbgjWJa9jTZ+hDnNUA9M6XOD09cQDHqhvbXKTJDWNdczYvOnmz1
-         H6IlgBjERrWnlMUSuClWow13K20Y5FZva6D6SMrmoHnCIKWplEstfDNQpsqcamzHdr
-         eNgwzoomn90dQ==
-From:   Nicolas Saenz Julienne <nsaenz@kernel.org>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     arnd@arndb.de, Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        kernel test robot <lkp@intel.com>, linux-pwm@vger.kernel.org,
+        id S232831AbhDIJJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:09:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31791 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232544AbhDIJJa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:09:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617959357;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=t4HrPUNe1C2/eoGUl35UTxwdBVeab2D940Ztg0ThcXw=;
+        b=jVA6JXZoEM9wkcd0KGGOA2q8+u3ycuhjyKPPI83v5T4gw2E90JgWNAk0B8KWrlLfkpzGEV
+        2BhI9Us1zj1aE/WIdhMJ8BFJSmYU6QHWzB6j0Dbux8BKQFgOJTogITZXVYnDeg7Lzo4+Yi
+        8jp89GJQ1EQrRKdl+w16BFzlN9Yt0TA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-315-DWcyR59bPNm8maj44EYDXw-1; Fri, 09 Apr 2021 05:09:15 -0400
+X-MC-Unique: DWcyR59bPNm8maj44EYDXw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 455B9107ACC7;
+        Fri,  9 Apr 2021 09:09:13 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 529765D9E3;
+        Fri,  9 Apr 2021 09:09:06 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <YG+s0iw5o91KQIlW@zeniv-ca.linux.org.uk>
+References: <YG+s0iw5o91KQIlW@zeniv-ca.linux.org.uk> <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk> <161789064740.6155.11932541175173658065.stgit@warthog.procyon.org.uk>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] pwm: raspberrypi-poe: Fix mailbox message initialization
-Date:   Fri,  9 Apr 2021 11:08:19 +0200
-Message-Id: <20210409090819.24805-1-nsaenz@kernel.org>
-X-Mailer: git-send-email 2.30.2
+Subject: Re: [PATCH v6 01/30] iov_iter: Add ITER_XARRAY
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <289824.1617959345.1@warthog.procyon.org.uk>
+Date:   Fri, 09 Apr 2021 10:09:05 +0100
+Message-ID: <289825.1617959345@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For testing purposes this driver might be built on big-endian
-architectures. So make sure we take that into account when populating
-structures that are to be passed to RPi4's mailbox.
+Al Viro <viro@zeniv.linux.org.uk> wrote:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 79caa362eab6 ("pwm: Add Raspberry Pi Firmware based PWM bus")
-Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
----
+> > +#define iterate_all_kinds(i, n, v, I, B, K, X) {		\
+> 
+> Do you have any users that would pass different B and X?
+> 
+> > @@ -1440,7 +1665,7 @@ ssize_t iov_iter_get_pages_alloc(struct iov_iter *i,
+> >  		return v.bv_len;
+> >  	}),({
+> >  		return -EFAULT;
+> > -	})
+> > +	}), 0
+> 
+> Correction - users that might get that flavour.  This one explicitly checks
+> for xarray and doesn't get to iterate_... in that case.
 
-@arndb: This was just meged into the arm-soc tree some days ago. Should I
-prepare a second PR once it's been reviewed?
+This is the case for iterate_all_kinds(), but not for iterate_and_advance().
 
- drivers/pwm/pwm-raspberrypi-poe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+See _copy_mc_to_iter() for example: that can return directly out of the middle
+of the loop, so the X variant must drop the rcu_read_lock(), but the B variant
+doesn't need to.  You also can't just use break to get out as the X variant
+has a loop within a loop to handle iteration over the subelements of a THP.
 
-diff --git a/drivers/pwm/pwm-raspberrypi-poe.c b/drivers/pwm/pwm-raspberrypi-poe.c
-index 043fc32e8be8..78423e66f4fc 100644
---- a/drivers/pwm/pwm-raspberrypi-poe.c
-+++ b/drivers/pwm/pwm-raspberrypi-poe.c
-@@ -66,7 +66,7 @@ static int raspberrypi_pwm_get_property(struct rpi_firmware *firmware,
- 					u32 reg, u32 *val)
- {
- 	struct raspberrypi_pwm_prop msg = {
--		.reg = reg
-+		.reg = cpu_to_le32(reg),
- 	};
- 	int ret;
- 
--- 
-2.30.2
+But with iterate_all_kinds(), I could just drop the X parameter and use the B
+parameter for both, I think.
+
+David
 
