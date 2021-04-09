@@ -2,259 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 649963594E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44D435949C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233308AbhDIFn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:43:28 -0400
-Received: from mga17.intel.com ([192.55.52.151]:46507 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231540AbhDIFn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:43:26 -0400
-IronPort-SDR: vaLw78A+pycWZh8dExVRLGbvsBeiTYJQgCCCrvKukctAL6l+hUoy2U6fFrS+br0x3K/ixn/qj1
- GZD8TSu7652Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="173778980"
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="173778980"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 22:40:47 -0700
-IronPort-SDR: /X6XxwF8QUIcsBf4ySsyhcfciHB1Uv1U61kGpXcX8CUDFZ2ZVSmnxfj/uBBpNQtWXkyJDzfS16
- 4gUHPQ9qA0+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="442028760"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.128]) ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 08 Apr 2021 22:40:44 -0700
-Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "Gonglei (Arei)" <arei.gonglei@huawei.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] iommu/vt-d: Force to flush iotlb before creating
- superpage
-To:     "Longpeng (Mike, Cloud Infrastructure Service Product Dept.)" 
-        <longpeng2@huawei.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210401071834.1639-1-longpeng2@huawei.com>
- <9c368419-6e45-6b27-0f34-26b581589fa7@linux.intel.com>
- <611cb5849c9a497b8289004dddb71150@huawei.com>
- <808394ea-9ff0-7a6d-72e7-f037e5cd3110@linux.intel.com>
- <54ec81edcf074533867c18f0d86b837b@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <c3b8c8da-2c05-d051-3403-1f3f4f2cb36b@linux.intel.com>
-Date:   Fri, 9 Apr 2021 13:31:13 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <54ec81edcf074533867c18f0d86b837b@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S233271AbhDIFdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:33:50 -0400
+Received: from mx0b-00268f01.pphosted.com ([148.163.159.192]:4796 "EHLO
+        mx0b-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229498AbhDIFdp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 01:33:45 -0400
+Received: from pps.filterd (m0165121.ppops.net [127.0.0.1])
+        by mx0b-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1395SjCa005078;
+        Fri, 9 Apr 2021 05:32:04 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2168.outbound.protection.outlook.com [104.47.56.168])
+        by mx0b-00268f01.pphosted.com with ESMTP id 37te8n8bax-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 05:32:04 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NOk96tCJCr9W5c3DSyPlJav4zQ6oUZW+0TUjxpMEy3ArKLPDcD8jn/24KU91GoITUEaIClLTMHmq3oliDxRSoDuy6Isxxs41E94iwTskcMhMOoFeKMnXyEVgF9xinb/ycZTXhBcn+N7LPlANiGQhDNigNTMcIDOCTRWmsfyPnApnbstkg2dRfvqluj8w0L6cKRwSrakj/Y2pRk5IxTg7Q6AMqQstkjrM39/H/IswDwfLVfAqdBHL5o/PpexH5x+nQFMA6U34PeCpPW04zsnYfKDPKoU9uwtinRzIs+rJIfv/jhvWniciwAeI9QgMEVkjLdr2/mjiR/c6j4D7fvf4Lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kdZxGJbih6o1kf8YTQQdGl8jbmLjoRw6kNolxb80EOY=;
+ b=FT9NS5QYn1jKpzeEce2CQeyFV6EYeecJG1iM8W+MmSiScw8YeVVdsUZZGqIr4bt3cWjsHtN47MDUuXxD5PxBiPu3S5IV4rI5+ke+hRS+HVugXSqwTW64Wei6NXMNjyjJnMrWineR80W93iDT3NETsE2e2IFP/tGaqFfrZKhsgxevtUUsM8+LfxM5VnFX0FLfNRrj5TdP8r/YicPwnLmVH3u/mGkAs8QCuxiB8c0JU8vFyK4l+GLLWmy3DOwn1OwcPNhxchR8tFjgIw2RKj4YE2ibuiTwIPhWhxqQE5+x7ihyiDVVJBLmu1xnHGB/Hfcx13KG2Zy1I5S2vnIhaFOMEA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
+ dkim=pass header.d=equinix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kdZxGJbih6o1kf8YTQQdGl8jbmLjoRw6kNolxb80EOY=;
+ b=eqkPTNZdQCJq8B+9rvL8mMIaCmargGluvzNRfXq7/vt1JVdNq7PHHb7Oge3d6flFa5nseql5/k18dPxZMyS9rjqCaA8C+MLViTh9QMBKOdz3a41s/SjS8ksvgwLa/bilHOSXunCP8s/Oyt6ey7zN88mR9fb4ATYpj/A2pgRyPzg=
+Received: from DM5PR04MB0762.namprd04.prod.outlook.com (2603:10b6:3:f3::13) by
+ DM5PR04MB1036.namprd04.prod.outlook.com (2603:10b6:4:45::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4020.20; Fri, 9 Apr 2021 05:32:01 +0000
+Received: from DM5PR04MB0762.namprd04.prod.outlook.com
+ ([fe80::4c98:aeb:87a8:13ad]) by DM5PR04MB0762.namprd04.prod.outlook.com
+ ([fe80::4c98:aeb:87a8:13ad%5]) with mapi id 15.20.4020.017; Fri, 9 Apr 2021
+ 05:32:01 +0000
+From:   Zev Weiss <zweiss@equinix.com>
+To:     Andrew Jeffery <andrew@aj.id.au>
+CC:     "openipmi-developer@lists.sourceforge.net" 
+        <openipmi-developer@lists.sourceforge.net>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "minyard@acm.org" <minyard@acm.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "ryan_chen@aspeedtech.com" <ryan_chen@aspeedtech.com>,
+        "tmaimon77@gmail.com" <tmaimon77@gmail.com>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "avifishman70@gmail.com" <avifishman70@gmail.com>,
+        "venture@google.com" <venture@google.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tali.perry1@gmail.com" <tali.perry1@gmail.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "chiawei_wang@aspeedtech.com" <chiawei_wang@aspeedtech.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "benjaminfair@google.com" <benjaminfair@google.com>
+Subject: Re: [PATCH v2 07/21] ipmi: kcs_bmc: Make status update atomic
+Thread-Topic: [PATCH v2 07/21] ipmi: kcs_bmc: Make status update atomic
+Thread-Index: AQHXLQGq4crAoraGi029WOpfJ0Hr5g==
+Date:   Fri, 9 Apr 2021 05:32:01 +0000
+Message-ID: <YG/m0Hh4BRGRnm7u@packtop>
+References: <20210319062752.145730-1-andrew@aj.id.au>
+ <20210319062752.145730-7-andrew@aj.id.au>
+In-Reply-To: <20210319062752.145730-7-andrew@aj.id.au>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aj.id.au; dkim=none (message not signed)
+ header.d=none;aj.id.au; dmarc=none action=none header.from=equinix.com;
+x-originating-ip: [24.181.166.149]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 16937c66-a2a1-48c8-372b-08d8fb18cd3f
+x-ms-traffictypediagnostic: DM5PR04MB1036:
+x-microsoft-antispam-prvs: <DM5PR04MB103691E0873530C28363C412C3739@DM5PR04MB1036.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2276;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: w3dLdqOdF0iXSupXSmf6pIJfbUQyA6dhKsg7J1wpSkijqfSJ/Hi2CIeRL+Leom5UhGOmAj6ZAFoS38l+XOVGaWCLKA24ZbNY+5q26clOgdvcf5VoXcYxKH6fvqNMKpXsjWEgNWjX6m15+0uuehYhe8TUJtqnLTNTR1zqweSVWioSdniMrX2jba/rFirq+/EWjx9cArxcfrrgl+ews5Vhi1dN2J9CmM/X4OoF84EhTLwHRtFb70W3fpJF3TlYYkCW7OVVXrYifFocVh4EcBUaj8Xgu542/oUV8l+t+8tOGVC5+aSEHTKzjc6OzsMs4J2836gBmI3lcSLX7IROT1K3MKKU0U3XbqOs1TygyTRUmRVioceuJvnxzKUh9wVu8GjY1MzsbAZUCXVnNFuQetrw5umk1IXHshlijkh71H9iqE5izX/LTqopgA8xYuv/2gzyaGy3U5MtC7VjQYkIOUwXTdpt9UfOzsbmy5POJS6LQGkEypUw2SifMCbB2PylpVjlNXH6W1voxb4gW+uQdwDT34noXVB7Mo2l0Z5noCKTLCvv/nwzezHCsukQ8mrjQkba+S5iMP8orafvad0YyfPPAQ84F0jfCyo/Wvdj4/ttxpcnsQff0DQ/0YuzgzsiJl5ng6csYk7R8Ycv+VkdthUMpu2SqPnClctpQBH70Yko/fI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0762.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(136003)(346002)(396003)(366004)(376002)(39860400002)(71200400001)(6506007)(26005)(2906002)(186003)(9686003)(4326008)(6486002)(6512007)(8936002)(76116006)(66476007)(6916009)(316002)(66556008)(5660300002)(8676002)(66946007)(64756008)(54906003)(86362001)(66446008)(38100700001)(33716001)(478600001)(4744005)(7416002)(83380400001)(91956017);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?eB8tmsaf2HwnezD7fZCPAfdUdKcKVt+UKVbxFETfIOHaTSIBhFuUJIsyMOj+?=
+ =?us-ascii?Q?X7jkZkrRnuoj0h2bwfaO+enlyDqeHgGRm+km0jt+TG2F7A6QaKr1/ynbh8Tn?=
+ =?us-ascii?Q?SS1k0L+6htPbfJB+tJCPaJ0nuiPYid73muWDXxIxmLrY/ZDG3g79+54zdYmU?=
+ =?us-ascii?Q?ge6D78iJMI1U4suO/EI9GktsbwHqubMYjhpyU8TQ0XFRFy6ZokE9zGmynJVW?=
+ =?us-ascii?Q?FjMeOXQtjy83MUVp9jOV4ESyzmW0YhqqtvvSTzBbmR8RoSmB44LviLX7IGXg?=
+ =?us-ascii?Q?wmIJz6z3UI/6UaxcMnXvd9x6z4+YpFkNmxy2aT3VY2kxQrEYdLGVAgNmTqM4?=
+ =?us-ascii?Q?N/TmAsgS9OXnUbeMLP7UGRfQrLgfwYYjri6UCXFrMoD8/MoiGYgxBCwN1dHR?=
+ =?us-ascii?Q?RiBSXAunaYFPK5IfWhc4XZ9nlzLx0L9UNoFgWqUeuEAGbnRkDdigzWsWLIzu?=
+ =?us-ascii?Q?tUHYt0ZAVcmuxdTmcoFcQQo37d8e44FztqxwRni+KPMasHQobpnqT6a4Xm5g?=
+ =?us-ascii?Q?KHv1K+OReq7isxQLZy3qTGf2enICxcMoOZ7rsrx7kXq3LEkBMeXXS1IkfDh+?=
+ =?us-ascii?Q?NzX7yjegagXcFpia0V0Z1j6dQKCEJbXmP7ym9WqfivgNbqyvEYvxSKudFw3z?=
+ =?us-ascii?Q?PZepG6Q245bSj6myFCCJvgew6CcRoVcXOA6n/glSoUCVxKLDgbWRYyOj7MQH?=
+ =?us-ascii?Q?P1g0oSE37bXasE16wvQokwKAUIEDBU1ywPG46ZuBDRWAn8sVjDUfth1BLJxI?=
+ =?us-ascii?Q?nRdVvKbApOjZEufNCYHMtyCXASrIqPBvKBd7I0m+ZkW3jCn3gtmJmQZkjCU+?=
+ =?us-ascii?Q?uM4nozNCXfdsId6MLA220JeYAz3lquLSDQ/YFH4vZScSzFswh/me3jxY3Q2R?=
+ =?us-ascii?Q?z/mv12MQlJHnFoooSElgWscQtaxi7jQOVN53mG2BcdtKuEKjE85Mzpe4M+2m?=
+ =?us-ascii?Q?YgoeJUZctgQO1dJOTL59lvsSQqG5F3K0G/qpZvChnVJ2hwym5pVsTFsqlgCa?=
+ =?us-ascii?Q?Et8Tmr1lU2f8ZhSonQEFxjQNuNYSPNuuatIgsBctLpwlNExp0LWsYE5chiwy?=
+ =?us-ascii?Q?Lh3CroGd6yM5wAfg2EqXkhkuBjSI+PWxUn6OQoxGPywPzI17tjF6PASTF05V?=
+ =?us-ascii?Q?jIgN9SGtLQObQkO7LpiOMOWvfesPUcsbIIf0ZRGQHoaltoYptX6Ruc3JKk52?=
+ =?us-ascii?Q?PuUSiJS+W+RWPzn/plUcFUyduvcIFNM8p0WtZFlV4nrXEXx3o9/ugpmgjQCd?=
+ =?us-ascii?Q?e7bAXCSQqLHAmVWiRPdQcDIGo73xqFVwfycOq4R107PnvUWsjeM/vcrEw9v6?=
+ =?us-ascii?Q?5jqbZ9UJEY3EMeaPT8oAOfve5ZqjAI4TXKsirlxruKjrfw=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <123FDB90147CAF478A030F953C79B5FC@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: equinix.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0762.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 16937c66-a2a1-48c8-372b-08d8fb18cd3f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 05:32:01.3394
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1YsdW1ezjj6QSKkDz2xHKPBaNdB9SZwvy2cV/9eVmG4vC5B+UzFWVgMzTtLUfEGMn/hPRQAwVhFhyDo+AQBmdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB1036
+X-Proofpoint-GUID: DubrzYeD83XtuOF6seDfwIwlboBIu4nZ
+X-Proofpoint-ORIG-GUID: DubrzYeD83XtuOF6seDfwIwlboBIu4nZ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-09_03:2021-04-08,2021-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=659 clxscore=1015 priorityscore=1501
+ phishscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104090040
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Longpeng,
+On Fri, Mar 19, 2021 at 01:27:38AM CDT, Andrew Jeffery wrote:
+>Enable more efficient implementation of read-modify-write sequences.
+>Both device drivers for the KCS BMC stack use regmaps. The new callback
+>allows us to exploit regmap_update_bits().
+>
+>Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 
-On 4/8/21 3:37 PM, Longpeng (Mike, Cloud Infrastructure Service Product 
-Dept.) wrote:
-> Hi Baolu,
-> 
->> -----Original Message-----
->> From: Lu Baolu [mailto:baolu.lu@linux.intel.com]
->> Sent: Thursday, April 8, 2021 12:32 PM
->> To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
->> <longpeng2@huawei.com>; iommu@lists.linux-foundation.org;
->> linux-kernel@vger.kernel.org
->> Cc: baolu.lu@linux.intel.com; David Woodhouse <dwmw2@infradead.org>; Nadav
->> Amit <nadav.amit@gmail.com>; Alex Williamson <alex.williamson@redhat.com>;
->> Kevin Tian <kevin.tian@intel.com>; Gonglei (Arei) <arei.gonglei@huawei.com>;
->> stable@vger.kernel.org
->> Subject: Re: [PATCH] iommu/vt-d: Force to flush iotlb before creating superpage
->>
->> Hi Longpeng,
->>
->> On 4/7/21 2:35 PM, Longpeng (Mike, Cloud Infrastructure Service Product
->> Dept.) wrote:
->>> Hi Baolu,
->>>
->>>> -----Original Message-----
->>>> From: Lu Baolu [mailto:baolu.lu@linux.intel.com]
->>>> Sent: Friday, April 2, 2021 12:44 PM
->>>> To: Longpeng (Mike, Cloud Infrastructure Service Product Dept.)
->>>> <longpeng2@huawei.com>; iommu@lists.linux-foundation.org;
->>>> linux-kernel@vger.kernel.org
->>>> Cc: baolu.lu@linux.intel.com; David Woodhouse <dwmw2@infradead.org>;
->>>> Nadav Amit <nadav.amit@gmail.com>; Alex Williamson
->>>> <alex.williamson@redhat.com>; Kevin Tian <kevin.tian@intel.com>;
->>>> Gonglei (Arei) <arei.gonglei@huawei.com>; stable@vger.kernel.org
->>>> Subject: Re: [PATCH] iommu/vt-d: Force to flush iotlb before creating
->>>> superpage
->>>>
->>>> Hi Longpeng,
->>>>
->>>> On 4/1/21 3:18 PM, Longpeng(Mike) wrote:
->>>>> diff --git a/drivers/iommu/intel/iommu.c
->>>>> b/drivers/iommu/intel/iommu.c index ee09323..cbcb434 100644
->>>>> --- a/drivers/iommu/intel/iommu.c
->>>>> +++ b/drivers/iommu/intel/iommu.c
->>>>> @@ -2342,9 +2342,20 @@ static inline int
->>>>> hardware_largepage_caps(struct
->>>> dmar_domain *domain,
->>>>>     				 * removed to make room for superpage(s).
->>>>>     				 * We're adding new large pages, so make sure
->>>>>     				 * we don't remove their parent tables.
->>>>> +				 *
->>>>> +				 * We also need to flush the iotlb before creating
->>>>> +				 * superpage to ensure it does not perserves any
->>>>> +				 * obsolete info.
->>>>>     				 */
->>>>> -				dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
->>>>> -						       largepage_lvl + 1);
->>>>> +				if (dma_pte_present(pte)) {
->>>>
->>>> The dma_pte_free_pagetable() clears a batch of PTEs. So checking
->>>> current PTE is insufficient. How about removing this check and always
->>>> performing cache invalidation?
->>>>
->>>
->>> Um...the PTE here may be present( e.g. 4K mapping --> superpage mapping )
->> orNOT-present ( e.g. create a totally new superpage mapping ), but we only need to
->> call free_pagetable and flush_iotlb in the former case, right ?
->>
->> But this code covers multiple PTEs and perhaps crosses the page boundary.
->>
->> How about moving this code into a separated function and check PTE presence
->> there. A sample code could look like below: [compiled but not tested!]
->>
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c index
->> d334f5b4e382..0e04d450c38a 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -2300,6 +2300,41 @@ static inline int hardware_largepage_caps(struct
->> dmar_domain *domain,
->>           return level;
->>    }
->>
->> +/*
->> + * Ensure that old small page tables are removed to make room for
->> superpage(s).
->> + * We're going to add new large pages, so make sure we don't remove
->> their parent
->> + * tables. The IOTLB/devTLBs should be flushed if any PDE/PTEs are cleared.
->> + */
->> +static void switch_to_super_page(struct dmar_domain *domain,
->> +                                unsigned long start_pfn,
->> +                                unsigned long end_pfn, int level) {
-> 
-> Maybe "swith_to" will lead people to think "remove old and then setup new", so how about something like "remove_room_for_super_page" or "prepare_for_super_page" ?
-
-I named it like this because we also want to have a opposite operation
-split_from_super_page() which switch a PDE or PDPE from super page
-setting up to small pages, which is needed to optimize dirty bit
-tracking during VM live migration.
-
-> 
->> +       unsigned long lvl_pages = lvl_to_nr_pages(level);
->> +       struct dma_pte *pte = NULL;
->> +       int i;
->> +
->> +       while (start_pfn <= end_pfn) {
-> 
-> start_pfn < end_pfn ?
-
-end_pfn is inclusive.
-
-> 
->> +               if (!pte)
->> +                       pte = pfn_to_dma_pte(domain, start_pfn, &level);
->> +
->> +               if (dma_pte_present(pte)) {
->> +                       dma_pte_free_pagetable(domain, start_pfn,
->> +                                              start_pfn + lvl_pages - 1,
->> +                                              level + 1);
->> +
->> +                       for_each_domain_iommu(i, domain)
->> +                               iommu_flush_iotlb_psi(g_iommus[i],
->> domain,
->> +                                                     start_pfn,
->> lvl_pages,
->> +                                                     0, 0);
->> +               }
->> +
->> +               pte++;
->> +               start_pfn += lvl_pages;
->> +               if (first_pte_in_page(pte))
->> +                       pte = NULL;
->> +       }
->> +}
->> +
->>    static int
->>    __domain_mapping(struct dmar_domain *domain, unsigned long iov_pfn,
->>                    unsigned long phys_pfn, unsigned long nr_pages, int prot)
->> @@ -2341,22 +2376,11 @@ __domain_mapping(struct dmar_domain *domain,
->> unsigned long iov_pfn,
->>                                   return -ENOMEM;
->>                           /* It is large page*/
->>                           if (largepage_lvl > 1) {
->> -                               unsigned long nr_superpages, end_pfn;
->> +                               unsigned long end_pfn;
->>
->>                                   pteval |= DMA_PTE_LARGE_PAGE;
->> -                               lvl_pages = lvl_to_nr_pages(largepage_lvl);
->> -
->> -                               nr_superpages = nr_pages / lvl_pages;
->> -                               end_pfn = iov_pfn + nr_superpages *
->> lvl_pages - 1;
->> -
->> -                               /*
->> -                                * Ensure that old small page tables are
->> -                                * removed to make room for superpage(s).
->> -                                * We're adding new large pages, so make
->> sure
->> -                                * we don't remove their parent tables.
->> -                                */
->> -                               dma_pte_free_pagetable(domain, iov_pfn,
->> end_pfn,
->> -                                                      largepage_lvl +
->> 1);
->> +                               end_pfn = ((iov_pfn + nr_pages) &
->> level_mask(largepage_lvl)) - 1;
->> +                               switch_to_super_page(domain, iov_pfn,
->> end_pfn, largepage_lvl);
->>                           } else {
->>                                   pteval &=
->> ~(uint64_t)DMA_PTE_LARGE_PAGE;
->>                           }
->>
->> I will send you the diff patch off list. Any thoughts?
->>
-> 
-> The solution looks good to me.
-> 
-> It's free for you to send this patch if you want, I'll send V2 if you have no plan to send it :)
-
-Please go ahead with a new version. Thank you for catching this and
-managing to fix it.
-
-Best regards,
-baolu
-
-> 
->> Best regards,
->> baolu
->>
->>>
->>>>> +					int i;
->>>>> +
->>>>> +					dma_pte_free_pagetable(domain, iov_pfn, end_pfn,
->>>>> +							       largepage_lvl + 1);
->>>>> +					for_each_domain_iommu(i, domain)
->>>>> +						iommu_flush_iotlb_psi(g_iommus[i], domain,
->>>>> +								      iov_pfn, nr_pages, 0, 0);
->>>>> +
->>>>
->>>> Best regards,
->>>> baolu
+Reviewed-by: Zev Weiss <zweiss@equinix.com>
