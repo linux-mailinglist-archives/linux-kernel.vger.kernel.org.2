@@ -2,287 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE7B35A917
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9127035A924
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235146AbhDIXJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 19:09:29 -0400
-Received: from mo-csw1515.securemx.jp ([210.130.202.154]:54804 "EHLO
-        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235075AbhDIXJ1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 19:09:27 -0400
-Received: by mo-csw.securemx.jp (mx-mo-csw1515) id 139N8mD8025398; Sat, 10 Apr 2021 08:08:48 +0900
-X-Iguazu-Qid: 34trMInxztO8FwPLNY
-X-Iguazu-QSIG: v=2; s=0; t=1618009728; q=34trMInxztO8FwPLNY; m=xLyc9zJ3M5Z3X3hmJZssjOQ5NC1fCBhJ4zr6bRxGLTE=
-Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
-        by relay.securemx.jp (mx-mr1510) id 139N8l2s003777
-        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 10 Apr 2021 08:08:47 +0900
-Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 3689B1000D7;
-        Sat, 10 Apr 2021 08:08:47 +0900 (JST)
-Received: from hop001.toshiba.co.jp ([133.199.164.63])
-        by enc01.toshiba.co.jp  with ESMTP id 139N8kob024950;
-        Sat, 10 Apr 2021 08:08:46 +0900
-From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>
-Cc:     devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH v4 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM support
-Date:   Sat, 10 Apr 2021 08:08:37 +0900
-X-TSB-HOP: ON
-Message-Id: <20210409230837.1919744-3-nobuhiro1.iwamatsu@toshiba.co.jp>
-X-Mailer: git-send-email 2.30.0.rc2
-In-Reply-To: <20210409230837.1919744-1-nobuhiro1.iwamatsu@toshiba.co.jp>
-References: <20210409230837.1919744-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+        id S235104AbhDIXO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 19:14:26 -0400
+Received: from mga04.intel.com ([192.55.52.120]:31333 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234880AbhDIXOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 19:14:25 -0400
+IronPort-SDR: 8FOQqofsNKjTpM0K517Jcfxc3KzuY1CThC/x+Z2quemPgcz9nj0ZV64O7HC7YFRWp9ffysRaHs
+ cC8kQ2Cfc6tw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="191708954"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="191708954"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:14:11 -0700
+IronPort-SDR: Rs7zQ8aB0ZMvUycmEhQuydYbL7lqQgBkA3wFN0NTzubAov5AhJqpP0n+EbiE6x11UCLPnEfnO5
+ PvrqU4zxc37A==
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="416460352"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.27.140]) ([10.212.27.140])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:14:10 -0700
+Subject: Re: [PATCH v24 04/30] x86/cpufeatures: Introduce X86_FEATURE_CET and
+ setup functions
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
+ <20210401221104.31584-5-yu-cheng.yu@intel.com>
+ <20210409101214.GC15567@zn.tnic>
+ <c7cb0ed6-2725-ba0d-093e-393eab9918b2@intel.com>
+ <20210409171408.GG15567@zn.tnic>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <f7a1299a-916f-70fe-6881-0951fe4fe38a@intel.com>
+Date:   Fri, 9 Apr 2021 16:14:09 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210409171408.GG15567@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add driver for the PWM controller on Toshiba Visconti ARM SoC.
+On 4/9/2021 10:14 AM, Borislav Petkov wrote:
+> On Fri, Apr 09, 2021 at 08:52:52AM -0700, Yu, Yu-cheng wrote:
+>> Recall we had complicated code for the XSAVES features detection in
+>> xstate.c.  Dave Hansen proposed the solution and then the whole thing
+>> becomes simple.  Because of this flag, even when only the shadow stack is
+>> available, the code handles it nicely.
+> 
+> Is that what you mean?
+> 
+> @@ -53,6 +55,8 @@ static short xsave_cpuid_features[] __initdata = {
+>   	X86_FEATURE_INTEL_PT,
+>   	X86_FEATURE_PKU,
+>   	X86_FEATURE_ENQCMD,
+> +	X86_FEATURE_CET, /* XFEATURE_CET_USER */
+> +	X86_FEATURE_CET, /* XFEATURE_CET_KERNEL */
+> 
+> or what is the piece which becomes simpler?
 
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
----
- drivers/pwm/Kconfig        |   9 ++
- drivers/pwm/Makefile       |   1 +
- drivers/pwm/pwm-visconti.c | 188 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 198 insertions(+)
- create mode 100644 drivers/pwm/pwm-visconti.c
+Yes, this is it.
 
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 9a4f66ae8070..8ae68d6203fb 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -601,6 +601,15 @@ config PWM_TWL_LED
- 	  To compile this driver as a module, choose M here: the module
- 	  will be called pwm-twl-led.
- 
-+config PWM_VISCONTI
-+	tristate "Toshiba Visconti PWM support"
-+	depends on ARCH_VISCONTI || COMPILE_TEST
-+	help
-+	  PWM Subsystem driver support for Toshiba Visconti SoCs.
-+
-+	  To compile this driver as a module, choose M here: the module
-+	  will be called pwm-visconti.
-+
- config PWM_VT8500
- 	tristate "vt8500 PWM support"
- 	depends on ARCH_VT8500 || COMPILE_TEST
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index 6374d3b1d6f3..d43b1e17e8e1 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -56,4 +56,5 @@ obj-$(CONFIG_PWM_TIECAP)	+= pwm-tiecap.o
- obj-$(CONFIG_PWM_TIEHRPWM)	+= pwm-tiehrpwm.o
- obj-$(CONFIG_PWM_TWL)		+= pwm-twl.o
- obj-$(CONFIG_PWM_TWL_LED)	+= pwm-twl-led.o
-+obj-$(CONFIG_PWM_VISCONTI)	+= pwm-visconti.o
- obj-$(CONFIG_PWM_VT8500)	+= pwm-vt8500.o
-diff --git a/drivers/pwm/pwm-visconti.c b/drivers/pwm/pwm-visconti.c
-new file mode 100644
-index 000000000000..99d83f94ed86
---- /dev/null
-+++ b/drivers/pwm/pwm-visconti.c
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Toshiba Visconti pulse-width-modulation controller driver
-+ *
-+ * Copyright (c) 2020 TOSHIBA CORPORATION
-+ * Copyright (c) 2020 Toshiba Electronic Devices & Storage Corporation
-+ *
-+ * Authors: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-+ *
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/pwm.h>
-+
-+#define PIPGM_PCSR(ch) (0x400 + 4 * (ch))
-+#define PIPGM_PDUT(ch) (0x420 + 4 * (ch))
-+#define PIPGM_PWMC(ch) (0x440 + 4 * (ch))
-+
-+#define PIPGM_PWMC_PWMACT		BIT(5)
-+#define PIPGM_PWMC_CLK_MASK		GENMASK(1, 0)
-+#define PIPGM_PWMC_POLARITY_MASK	GENMASK(5, 5)
-+
-+struct visconti_pwm_chip {
-+	struct pwm_chip chip;
-+	void __iomem *base;
-+};
-+
-+static inline struct visconti_pwm_chip *to_visconti_chip(struct pwm_chip *chip)
-+{
-+	return container_of(chip, struct visconti_pwm_chip, chip);
-+}
-+
-+static int visconti_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
-+			      const struct pwm_state *state)
-+{
-+	struct visconti_pwm_chip *priv = to_visconti_chip(chip);
-+	u32 period, duty_cycle, pwmc0;
-+
-+	/*
-+	 * pwmc is a 2-bit divider for the input clock running at 1 MHz.
-+	 * When the settings of the PWM are modified, the new values are shadowed in hardware until
-+	 * the period register (PCSR) is written and the currently running period is completed. This
-+	 * way the hardware switches atomically from the old setting to the new.
-+	 * Also, disabling the hardware completes the currently running period and keeps the output
-+	 * at low level at all times.
-+	 */
-+	if (!state->enabled) {
-+		writel(0, priv->base + PIPGM_PCSR(pwm->hwpwm));
-+		return 0;
-+	}
-+
-+	/*
-+	 * The biggest period the hardware can provide is
-+	 *	(0xffff << 3) * 1000 ns
-+	 * This value fits easily in an u32, so simplify the maths by
-+	 * capping the values to 32 bit integers.
-+	 */
-+	if (state->period > (0xffff << 3) * 1000)
-+		period = (0xffff << 3) * 1000;
-+	else
-+		period = state->period;
-+
-+	if (state->duty_cycle > period)
-+		duty_cycle = period;
-+	else
-+		duty_cycle = state->duty_cycle;
-+
-+	/*
-+	 * The input clock runs fixed at 1 MHz, so we have only
-+	 * microsecond resolution and so can divide by
-+	 * NSEC_PER_SEC / CLKFREQ = 1000 without loosing precision.
-+	 */
-+	period /= 1000;
-+	duty_cycle /= 1000;
-+
-+	if (!period)
-+		return -ERANGE;
-+
-+	/*
-+	 * PWMC controls a divider that divides the input clk by a
-+	 * power of two between 1 and 8. As a smaller divider yields
-+	 * higher precision, pick the smallest possible one.
-+	 */
-+	if (period > 0xffff) {
-+		pwmc0 = ilog2(period >> 16);
-+		BUG_ON(pwmc0 > 3);
-+	} else
-+		pwmc0 = 0;
-+
-+	period >>= pwmc0;
-+	duty_cycle >>= pwmc0;
-+
-+	if (state->polarity == PWM_POLARITY_INVERSED)
-+		pwmc0 |= PIPGM_PWMC_PWMACT;
-+	writel(pwmc0, priv->base + PIPGM_PWMC(pwm->hwpwm));
-+	writel(duty_cycle, priv->base + PIPGM_PDUT(pwm->hwpwm));
-+	writel(period, priv->base + PIPGM_PCSR(pwm->hwpwm));
-+
-+	return 0;
-+}
-+
-+static void visconti_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
-+				   struct pwm_state *state)
-+{
-+	struct visconti_pwm_chip *priv = chip_to_priv(chip);
-+	u32 period, duty, pwmc0, pwmc0_clk;
-+
-+	period = readl(priv->base + PIPGM_PCSR(pwm->hwpwm));
-+	if (period)
-+		state->enabled = true;
-+	else
-+		state->enabled = false;
-+
-+	duty = readl(priv->base + PIPGM_PDUT(pwm->hwpwm));
-+	pwmc0 = readl(priv->base + PIPGM_PWMC(pwm->hwpwm));
-+	pwmc0_clk = pwmc0 & PIPGM_PWMC_CLK_MASK;
-+
-+	state->period = (period << pwmc0_clk) * NSEC_PER_USEC;
-+	state->duty_cycle = (duty << pwmc0_clk) * NSEC_PER_USEC;
-+	if (pwmc0 & PIPGM_PWMC_POLARITY_MASK)
-+		state->polarity = PWM_POLARITY_INVERSED;
-+	else
-+		state->polarity = PWM_POLARITY_NORMAL;
-+}
-+
-+static const struct pwm_ops visconti_pwm_ops = {
-+	.apply = visconti_pwm_apply,
-+	.get_state = visconti_pwm_get_state,
-+	.owner = THIS_MODULE,
-+};
-+
-+static int visconti_pwm_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct visconti_pwm_chip *priv;
-+	int ret;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	priv->chip.dev = dev;
-+	priv->chip.ops = &visconti_pwm_ops;
-+	priv->chip.npwm = 4;
-+
-+	ret = pwmchip_add(&priv->chip);
-+	if (ret < 0)
-+		return dev_err_probe(&pdev->dev, ret, "Cannot register visconti PWM\n");
-+
-+	return 0;
-+}
-+
-+static int visconti_pwm_remove(struct platform_device *pdev)
-+{
-+	struct visconti_pwm_chip *priv = platform_get_drvdata(pdev);
-+
-+	return pwmchip_remove(&priv->chip);
-+}
-+
-+static const struct of_device_id visconti_pwm_of_match[] = {
-+	{ .compatible = "toshiba,visconti-pwm", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, visconti_pwm_of_match);
-+
-+static struct platform_driver visconti_pwm_driver = {
-+	.driver = {
-+		.name = "pwm-visconti",
-+		.of_match_table = visconti_pwm_of_match,
-+	},
-+	.probe = visconti_pwm_probe,
-+	.remove = visconti_pwm_remove,
-+};
-+module_platform_driver(visconti_pwm_driver);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_AUTHOR("Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>");
-+MODULE_ALIAS("platform:pwm-visconti");
--- 
-2.30.0.rc2
+>> Would this equal to only CONFIG_X86_CET (one Kconfig option)?  In fact, when
+>> you proposed only CONFIG_X86_CET, things became much simpler.
+> 
+> When you use CONFIG_X86_SHADOW_STACK instead, it should remain same
+> simple no?
+> 
 
+Signals, arch_prctl, and ELF header are three places that need to depend 
+on either shadow stack or IBT is configured.  To remain simple, we can 
+make all three depend on CONFIG_X86_SHADOW_STACK, and in Kconfig, make 
+CONFIG_X86_IBT depend on CONFIG_X86_SHADOW_STACK.  Without shadow stack, 
+IBT itself is not as useful anyway.
+
+>> Practically, IBT is not much in terms of code size.  Since we have already
+>> separated the two, why don't we leave it as-is.  When people start using it
+>> more, there will be more feedback, and we can decide if one Kconfig is
+>> better?
+> 
+> Because when we add stuff to the kernel, we add the simplest and
+> cleanest version possible and later, when we determine that additional
+> functionality is needed, *then* we add it. Not the other way around.
+> 
+> Our Kconfig symbol space is already an abomination so we can't just add
+> some more and decide later.
+> 
+> What happens in such situations usually is stuff gets added, it bitrots
+> and some poor soul - very likely a maintainer who has to mop up after
+> everybody - comes and cleans it up. I'd like to save myself that
+> cleaning up.
+> 
+> Thx.
+>
