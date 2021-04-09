@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E273595B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F0D359583
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233442AbhDIGoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:44:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbhDIGoS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:44:18 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1DFFC061760;
-        Thu,  8 Apr 2021 23:44:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=lNcDyfnAaDVyz40OLs8W9SQUkBFyn/zS9u4y9qrOz48=; b=LxMeQ6k8WthDPtYXuu4E0irPGY
-        7Ar8Y4AF86u8heDiFDTN1+VMvsAi4j/qT/SU7BXXCIAn3qzzZasBvuMVGajAUrVoWxHKxjMMfjYht
-        +6pnLIZeRofrEJmEDuTgDk3kIAOZK/S8EXfk4j1ZnNUzgsfy5BT4/RPwNoGho9hSEn7DKvMO/aUZB
-        9T/a0YGP1hyTP709qleUG/EiV3sk3DUbxjli95g1G6DCCRPG9l/K1xeJXItxIODHBqAxxeqJYk6DO
-        OH+6U8EBEllUbAfpLmKdjb+DRu3gLwzGda35IEcqaH3WgjZ5eohbqicuA2iMPPWUnJ1XsamyfP/Co
-        LGthylxA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUkny-00AJTb-NC; Fri, 09 Apr 2021 06:40:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 47FAB30001B;
-        Fri,  9 Apr 2021 08:39:45 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3A51F20C8BCEB; Fri,  9 Apr 2021 08:39:45 +0200 (CEST)
-Date:   Fri, 9 Apr 2021 08:39:45 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH 02/11] mm/page_alloc: Convert per-cpu list protection to
- local_lock
-Message-ID: <YG/2scd9ADdrIyCM@hirez.programming.kicks-ass.net>
-References: <20210407202423.16022-1-mgorman@techsingularity.net>
- <20210407202423.16022-3-mgorman@techsingularity.net>
- <YG7gV7yAEEjOcQZY@hirez.programming.kicks-ass.net>
- <20210408174244.GG3697@techsingularity.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408174244.GG3697@techsingularity.net>
+        id S233386AbhDIGcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:32:16 -0400
+Received: from mga12.intel.com ([192.55.52.136]:32002 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233251AbhDIGcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 02:32:14 -0400
+IronPort-SDR: K9hmgSiJG3UCMeuVNaj38IMUFkf0fP5zVObG2vLppQ4yMgaUNbTWt8LuuAxXAZmuGu38Uq7Jr3
+ 2f/KbIgkAmHQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="173178630"
+X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
+   d="scan'208";a="173178630"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 23:31:26 -0700
+IronPort-SDR: fAkrdpAmdwbB1Sx8zIqGUC1wNNQz+1eg6lMSCb+qUp9KJDGD3opmVjFV9QPEfv5S4JjLk+QNEU
+ bTIBTGdOUy+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
+   d="scan'208";a="380538699"
+Received: from local-michael-cet-test.sh.intel.com ([10.239.159.166])
+  by orsmga003.jf.intel.com with ESMTP; 08 Apr 2021 23:31:24 -0700
+From:   Yang Weijiang <weijiang.yang@intel.com>
+To:     pbonzini@redhat.com, seanjc@google.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Yang Weijiang <weijiang.yang@intel.com>
+Subject: [PATCH v5 0/3] CET fix patches for nested guest
+Date:   Fri,  9 Apr 2021 14:43:42 +0800
+Message-Id: <20210409064345.31497-1-weijiang.yang@intel.com>
+X-Mailer: git-send-email 2.17.2
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 06:42:44PM +0100, Mel Gorman wrote:
-> On Thu, Apr 08, 2021 at 12:52:07PM +0200, Peter Zijlstra wrote:
-> > > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > > index a68bacddcae0..e9e60d1a85d4 100644
-> > > --- a/mm/page_alloc.c
-> > > +++ b/mm/page_alloc.c
-> > > @@ -112,6 +112,13 @@ typedef int __bitwise fpi_t;
-> > >  static DEFINE_MUTEX(pcp_batch_high_lock);
-> > >  #define MIN_PERCPU_PAGELIST_FRACTION	(8)
-> > >  
-> > > +struct pagesets {
-> > > +	local_lock_t lock;
-> > > +};
-> > > +static DEFINE_PER_CPU(struct pagesets, pagesets) = {
-> > > +	.lock = INIT_LOCAL_LOCK(lock),
-> > > +};
-> > 
-> > So why isn't the local_lock_t in struct per_cpu_pages ? That seems to be
-> > the actual object that is protected by it and is already per-cpu.
-> > 
-> > Is that because you want to avoid the duplication across zones? Is that
-> > worth the effort?
-> 
-> When I wrote the patch, the problem was that zone_pcp_reset freed the
-> per_cpu_pages structure and it was "protected" by local_irq_save(). If
-> that was converted to local_lock_irq then the structure containing the
-> lock is freed before it is released which is obviously bad.
-> 
-> Much later when trying to make the allocator RT-safe in general, I realised
-> that locking was broken and fixed it in patch 3 of this series. With that,
-> the local_lock could potentially be embedded within per_cpu_pages safely
-> at the end of this series.
+This patch series is to fix a few issues found during patch review and
+testing on Linux, also including a patch to explictly disable CET support
+in nested guest over Hyper-V(s).
 
-Fair enough; I was just wondering why the obvious solution wasn't chosen
-and neither changelog nor comment explain, so I had to ask :-)
+change in v5:
+- Changed condition to snapshot CET state to vmcs01 per Sean's feedback.
+- Remove mixed fix code for MPX.
+
+
+Yang Weijiang (3):
+  KVM: nVMX: Sync L2 guest CET states between L1/L2
+  KVM: nVMX: Set X86_CR4_CET in cr4_fixed1_bits if CET IBT is enabled
+  KVM: nVMX: Add CET entry/exit load bits to evmcs unsupported list
+
+ arch/x86/kvm/cpuid.c      |  1 -
+ arch/x86/kvm/vmx/evmcs.c  |  4 ++--
+ arch/x86/kvm/vmx/evmcs.h  |  6 ++++--
+ arch/x86/kvm/vmx/nested.c | 30 ++++++++++++++++++++++++++++++
+ arch/x86/kvm/vmx/vmx.c    |  1 +
+ arch/x86/kvm/vmx/vmx.h    |  3 +++
+ 6 files changed, 40 insertions(+), 5 deletions(-)
+
+-- 
+2.26.2
+
