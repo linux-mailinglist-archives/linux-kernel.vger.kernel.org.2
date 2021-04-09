@@ -2,144 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FFE33595F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:01:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FB2359636
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:18:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233513AbhDIHBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:01:20 -0400
-Received: from thorn.bewilderbeest.net ([71.19.156.171]:45231 "EHLO
-        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233333AbhDIHBT (ORCPT
+        id S231742AbhDIHSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:18:11 -0400
+Received: from gateway36.websitewelcome.com ([192.185.195.25]:15451 "EHLO
+        gateway36.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231402AbhDIHSK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:01:19 -0400
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 240CB86;
-        Fri,  9 Apr 2021 00:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1617951666;
-        bh=+JLpB4B4pZBi2h8DfTURJ08nGqgdO/pYNV0sF8isNXA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CidT4DYvw7ZKpQkK8gdGXnDdEJXCD9goWMGofn7kROmWmdqG5EWltzowMmaLMHNGU
-         6M7G/SO7aMkIYPy7bEV3EaXiUUNr3sIQU3g/L8T8wnqwdiGHfBq5p8sFg0zAprzD90
-         FGNpAD/S63WbHASqkhrS6RDPjVQU9ap1qxx8FeqA=
-Date:   Fri, 9 Apr 2021 02:01:04 -0500
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v5 2/4] drivers/tty/serial/8250: refactor sirq and lpc
- address setting code
-Message-ID: <YG/7sFv+2AlLKbZ5@hatter.bewilderbeest.net>
-References: <20210408011637.5361-1-zev@bewilderbeest.net>
- <20210408011637.5361-3-zev@bewilderbeest.net>
- <db7271d8-8d13-4a8c-a7ba-564e4e769ea5@www.fastmail.com>
+        Fri, 9 Apr 2021 03:18:10 -0400
+X-Greylist: delayed 1424 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 03:18:10 EDT
+Received: from cm13.websitewelcome.com (cm13.websitewelcome.com [100.42.49.6])
+        by gateway36.websitewelcome.com (Postfix) with ESMTP id AF57F401216BE
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:54:11 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id Ul1vlTqu7mJLsUl1vl0HZ5; Fri, 09 Apr 2021 01:54:11 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yiQ8aK6h6sfF+o8lIOec/EO+BVR5kF4D01S8U9RA7EA=; b=xfBzGLbWBxviVD/fLlQKuAwIl/
+        fGSLudVZb/NT8G41TzsLdqyUStepndr8iYrahCxAtGQp0x0Po31GxraZsE8QmcHxCFVLjADW3Rag0
+        Uhe+HRdiMISH7ZZPscKO8sIBMXxWO+I3m9Jsc21QjsqNkwYOiE4OGaFhxNJkXoT5S7Q++NNM0ApDF
+        DcnlNKenEsmR+HVVBDwht/0BRDqa6LiOmTig0e7ycdlvE+koApqvD1+KzCyyUt8TIRMqMNRlwNfe+
+        QT4Ox53X+pyIo10Pf9O7AjnTH7IJI8KkioJpGv3pTo33ZS761dUlBLK8oQpYbhFcgPCOmeKI5xro5
+        CShyD6rw==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:35336 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lUl1v-000PvB-CH; Fri, 09 Apr 2021 01:54:11 -0500
+Subject: Re: [PATCH v3][next] xfs: Replace one-element arrays with
+ flexible-array members
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Dave Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210311042302.GA137676@embeddedor>
+ <20210311044700.GU3419940@magnolia>
+ <96be7032-a95c-e8d2-a7f8-64b96686ea42@embeddedor.com>
+ <20210320201711.GY22100@magnolia>
+ <d5a9046e-e204-c854-34fe-2a39e58faea4@embeddedor.com>
+ <20210320214831.GA22100@magnolia>
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Message-ID: <b9973292-efe6-5f95-a3a5-5d86e4081803@embeddedor.com>
+Date:   Fri, 9 Apr 2021 01:54:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <db7271d8-8d13-4a8c-a7ba-564e4e769ea5@www.fastmail.com>
+In-Reply-To: <20210320214831.GA22100@magnolia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lUl1v-000PvB-CH
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:35336
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 12:06:16AM CDT, Andrew Jeffery wrote:
->
->
->On Thu, 8 Apr 2021, at 10:46, Zev Weiss wrote:
->> This splits dedicated aspeed_vuart_set_{sirq,lpc_address}() functions
->> out of the sysfs store functions in preparation for adding DT
->> properties that will be poking the same registers.  While we're at it,
->> these functions now provide some basic bounds-checking on their
->> arguments.
->>
->> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
->> ---
->>  drivers/tty/serial/8250/8250_aspeed_vuart.c | 51 ++++++++++++++-------
->>  1 file changed, 35 insertions(+), 16 deletions(-)
->>
->> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c
->> b/drivers/tty/serial/8250/8250_aspeed_vuart.c
->> index c33e02cbde93..8433f8dbb186 100644
->> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
->> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
->> @@ -72,22 +72,31 @@ static ssize_t lpc_address_show(struct device *dev,
->>  	return snprintf(buf, PAGE_SIZE - 1, "0x%x\n", addr);
->>  }
->>
->> +static int aspeed_vuart_set_lpc_address(struct aspeed_vuart *vuart, u32 addr)
->> +{
->> +	if (addr > U16_MAX)
->> +		return -EINVAL;
->> +
->> +	writeb(addr >> 8, vuart->regs + ASPEED_VUART_ADDRH);
->> +	writeb(addr >> 0, vuart->regs + ASPEED_VUART_ADDRL);
->> +
->> +	return 0;
->> +}
->> +
->>  static ssize_t lpc_address_store(struct device *dev,
->>  				 struct device_attribute *attr,
->>  				 const char *buf, size_t count)
->>  {
->>  	struct aspeed_vuart *vuart = dev_get_drvdata(dev);
->> -	unsigned long val;
->> +	u32 val;
->>  	int err;
->>
->> -	err = kstrtoul(buf, 0, &val);
->> +	err = kstrtou32(buf, 0, &val);
->>  	if (err)
->>  		return err;
->>
->> -	writeb(val >> 8, vuart->regs + ASPEED_VUART_ADDRH);
->> -	writeb(val >> 0, vuart->regs + ASPEED_VUART_ADDRL);
->> -
->> -	return count;
->> +	err = aspeed_vuart_set_lpc_address(vuart, val);
->> +	return err ? : count;
->>  }
->>
->>  static DEVICE_ATTR_RW(lpc_address);
->> @@ -105,27 +114,37 @@ static ssize_t sirq_show(struct device *dev,
->>  	return snprintf(buf, PAGE_SIZE - 1, "%u\n", reg);
->>  }
->>
->> +static int aspeed_vuart_set_sirq(struct aspeed_vuart *vuart, u32 sirq)
->> +{
->> +	u8 reg;
->> +
->> +	if (sirq > (ASPEED_VUART_GCRB_HOST_SIRQ_MASK >> ASPEED_VUART_GCRB_HOST_SIRQ_SHIFT))
->> +		return -EINVAL;
->> +
->> +	sirq <<= ASPEED_VUART_GCRB_HOST_SIRQ_SHIFT;
->> +	sirq &= ASPEED_VUART_GCRB_HOST_SIRQ_MASK;
->
->This might be less verbose if we reordered things a little:
->
->```
->sirq <<= ASPEED_VUART_GCRB_HOST_SIRQ_SHIFT;
->if (sirq & ASPEED_VUART_GCRB_HOST_SIRQ_MASK)
->	return -EINVAL;
->sirq &= ASPEED_VUART_GCRB_HOST_SIRQ_MASK;
->```
 
-Hmm, that (or something similar, perhaps with a '~' on the mask in the 
-if condition?) does seem like it'd be a nice improvement, though I 
-suppose it'd also mean we'd fail to reject some way-out-of-range sirq 
-values (e.g. if it had its MSB set) -- so I think I'll leave it as is, 
-just in the name of thoroughness/paranoia?
+Hi!
 
->
->But otherwise it looks okay, so
->
->Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
->
+I think I might have caught the issue:
 
-Thanks.
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index e5e0713bebcd8..9231457371100 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -1937,17 +1937,17 @@ xfs_init_zones(void)
+ 		goto out_destroy_trans_zone;
 
+ 	xfs_efd_zone = kmem_cache_create("xfs_efd_item",
+-					(sizeof(struct xfs_efd_log_item) +
+-					(XFS_EFD_MAX_FAST_EXTENTS - 1) *
+-					sizeof(struct xfs_extent)),
+-					0, 0, NULL);
++					 struct_size((struct xfs_efd_log_item *)0,
++					 efd_format.efd_extents,
++					 XFS_EFD_MAX_FAST_EXTENTS),
++					 0, 0, NULL);
+ 	if (!xfs_efd_zone)
+ 		goto out_destroy_buf_item_zone;
+
+ 	xfs_efi_zone = kmem_cache_create("xfs_efi_item",
+-					 (sizeof(struct xfs_efi_log_item) +
+-					 (XFS_EFI_MAX_FAST_EXTENTS - 1) *
+-					 sizeof(struct xfs_extent)),
++					 struct_size((struct xfs_efi_log_item *)0,
++					 efi_format.efi_extents,
++					 XFS_EFI_MAX_FAST_EXTENTS),
+ 					 0, 0, NULL);
+ 	if (!xfs_efi_zone)
+ 		goto out_destroy_efd_zone;
+
+I'm currently testing the patch with the fix above:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?h=testing/xfs-fixed
+
+--
+Gustavo
+
+On 3/20/21 16:48, Darrick J. Wong wrote:
+> On Sat, Mar 20, 2021 at 03:20:55PM -0500, Gustavo A. R. Silva wrote:
+>>
+>>
+>> On 3/20/21 15:17, Darrick J. Wong wrote:
+>>>>>> Below are the results of running xfstests for groups shutdown and log
+>>>>>> with the following configuration in local.config:
+>>>>>>
+>>>>>> export TEST_DEV=/dev/sda3
+>>>>>> export TEST_DIR=/mnt/test
+>>>>>> export SCRATCH_DEV=/dev/sda4
+>>>>>> export SCRATCH_MNT=/mnt/scratch
+>>>>>>
+>>>>>> The size for both partitions /dev/sda3 and /dev/sda4 is 25GB.
+>>>>>
+>>>>> Looks good to me, will toss it at my fstests cloud and see if anything
+>>>>> shakes out.  Thanks for cleaning up this goofy thorn-pile!
+>>>>
+>>>> Great. It's been fun to work on this. :p
+>>>
+>>> Did you run the /entire/ fstests suite?  With this patch applied to
+>>> 5.12-rc2, I keep seeing list corruption assertions about an hour into
+>>
+>> Nope; I run xfstests 'shutdown' and 'log' groups on 5.11.0, only.
+>>
+>> How do you run the entire fstests?
+>> Could you give me some pointers?
+> 
+> ./check -g all
+> 
+> (instead of "./check -g shutdown")
+> 
+>>> the test run, and usually on some test that heavily exercises allocating
+>>> and deleting file extents.  I'll try to look at this patch more closely
+>>> next week, but I figured I should let you know early, on the off chance
+>>> something sticks out to you.
+>>
+>> OK. I'll go run my tests on 5.12-rc2.
+>>
+>> Should I run the entire xfstests, too?
+> 
+> Yes, please.
+> 
+> --D
+> 
+>> Thanks
+>> --
+>> Gustavo
