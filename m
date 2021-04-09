@@ -2,86 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD130359324
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9D3359320
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:38:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233254AbhDIDiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        id S233235AbhDIDiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:38:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233203AbhDIDiL (ORCPT
+        with ESMTP id S233192AbhDIDiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Apr 2021 23:38:11 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FA9C061760;
-        Thu,  8 Apr 2021 20:37:09 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id 1so3269988qtb.0;
-        Thu, 08 Apr 2021 20:37:09 -0700 (PDT)
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AE63C061761;
+        Thu,  8 Apr 2021 20:37:25 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id nh5so2204920pjb.5;
+        Thu, 08 Apr 2021 20:37:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8BgGBrR3Xwqw+MMg1YnlfMAUK+I10lyWE+xZkXB1ujs=;
-        b=Heia25TgE2vtvJwk4Mye9wUNtKT4LCXFpu3RTd7Litn4l6XDwm58yNf5Xo72WKG1Cb
-         Pnh29PYykNQ0Leb0AVytW69/DSGu2rRRdSyPucL7QrMDZjkSbhFQ0sXFxG9k3cGgza9V
-         mXSNHoDmBuqB2Dq6N7NZp/gT1iFd9YrggQtWs=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AjoDWdy7uigSAOeBTzYfInfamNFP4DVUXaPENdJokEw=;
+        b=rD4fSwMmMCEX0HS4ejc3Hb6gpSc2m4ArhR6ghHvQgmR1y8U0MmfK8RZt3uZHt+Sz9u
+         xBUGni9BVfero8kyHmkusbHh0b9QdGhDYAkmO6TSq9uQTe2afYbEecnlOtUBpbBzgOWp
+         CLwdNmFQoATJ5HmsU5Zh+8f2KkEvNJyLNL0RErVrwHDGYCrcnI4V4Fy2IN+WuAUbrALN
+         oPClTLBaOY7HLrZNvHdOfMLKxVLwqqDTzTaFoD8gixhoa2NGBpVRWucKJX+RloxXqMKK
+         v6PBS6sv1ZDIlLMMva3oNTf6BM7BUn/WgRZaYvsAACq5F02VPDSd/n30FEO045W/x4qF
+         PpJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8BgGBrR3Xwqw+MMg1YnlfMAUK+I10lyWE+xZkXB1ujs=;
-        b=jw6ukamSWVotwCXQrCi9tZaelPWAx/Y/SjK5CiZS4roGgR5IADFLCING9taiHeBMSi
-         aAsvGnNP1OI3GRghZccdZULiSFI5Tdhm1VN/yMbtmQCNj/6/cW0gTcGypd6O+/3jmaTf
-         X7Mbx6IgE2By+jFWbKcav5F/Ez3hZSfsUkYY9sGL5I8twSIb+/9qFVqyPDxt3OlrfEsM
-         2JoZFxF3now+PvznEUfFuGnVIeP0Jdv4XFsZQCnxlt6pSsiT0PqstqNXgKxVUGMAM3Y7
-         76BO4EBj1GUP0Alr0oDInj7H66k8iuHXwLJIO8mTml7pL+WmV1z74GVb56yZDPQfsJZm
-         /SUw==
-X-Gm-Message-State: AOAM533Fqd6UVvNEFKS2uayXq0bzCGkvkZ/tPStRQIDAt2AJMzhdIARr
-        apszigu9QX9XuuGeQpW/sXksKLX693guRhVX7d0=
-X-Google-Smtp-Source: ABdhPJxpEB1iiCw0U43cwWPFxVnBP2huZ7QxGaGC6NeOvjxLXRAa+ssU2jFErOgTTQKad2+gM3ZDkIo4Ri3biTi/Bas=
-X-Received: by 2002:ac8:5f87:: with SMTP id j7mr10494309qta.135.1617939429154;
- Thu, 08 Apr 2021 20:37:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210319062752.145730-1-andrew@aj.id.au> <20210319062752.145730-4-andrew@aj.id.au>
-In-Reply-To: <20210319062752.145730-4-andrew@aj.id.au>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 9 Apr 2021 03:36:57 +0000
-Message-ID: <CACPK8Xfre_HriZXa10GVRvzxM51_6jkxCrXi-Ofto6cCKcLw4g@mail.gmail.com>
-Subject: Re: [PATCH v2 04/21] pinctrl: aspeed-g5: Adapt to new LPC device tree layout
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Corey Minyard <minyard@acm.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tali Perry <tali.perry1@gmail.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AjoDWdy7uigSAOeBTzYfInfamNFP4DVUXaPENdJokEw=;
+        b=d+T7ufFh2dHRc/0CLGjuy8tTbnjsiLbSvwLzOx8BTLEy1Ox4ug4M62WeKy/nn5dZUb
+         K4rB4TMuc9Te0Z/du7m6FH63dMaDVCr9nlmLF6edAmDB2JBfGut+1mvmOQo1tKUfH0mR
+         0LmPnMm/F9+kZuiSt9XYx1MPsSNslbF99Wp5nYwaQO/Hd3RL0J6eqojwXCeA6G+4MFnn
+         afa1zt/r+wbfpM9vaMUZP4zABlJv6mFtJf/ZzZ43YMY/FKrtXVzMVGEpSxquMzCrZYs8
+         0i8z9DXQlXCoVVDTl4T0VF0wHpIOw0GYJJ4XUw3byvsLYzPm61v0jz1fYH2KuE4pvkpv
+         wGSg==
+X-Gm-Message-State: AOAM531VuPHl082HfKYrUHTshaXCghr0HJ/H93wA4KO4GShphBOgdqvO
+        Si975gPiBAxoIgAgbN68yyM=
+X-Google-Smtp-Source: ABdhPJy0STsNx2IrHuB6ju6EIrKalhe8t5PRpma4+erIvzt8MdGCtvZkjE7bziGAHp+e6K3DmVaSkQ==
+X-Received: by 2002:a17:902:a716:b029:e8:ba45:ea0f with SMTP id w22-20020a170902a716b02900e8ba45ea0fmr11062085plq.63.1617939444981;
+        Thu, 08 Apr 2021 20:37:24 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id v126sm711637pfv.138.2021.04.08.20.37.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Apr 2021 20:37:24 -0700 (PDT)
+Subject: Re: New 'make dtbs_check W=1' warnings
+To:     Arnd Bergmann <arnd@kernel.org>, DTML <devicetree@vger.kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Cc:     Linus Walleij <linusw@kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Benjamin Fair <benjaminfair@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tony Lindgren <tony@atomide.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
+        SoC Team <soc@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>
+References: <CAK8P3a1L8rWpR5b66v6Su8-m7-scA0wZQr_g_4KnV4dnrky6ZA@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <632cbdec-e477-212c-f5a8-81151915fdeb@gmail.com>
+Date:   Thu, 8 Apr 2021 20:37:21 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <CAK8P3a1L8rWpR5b66v6Su8-m7-scA0wZQr_g_4KnV4dnrky6ZA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 at 06:28, Andrew Jeffery <andrew@aj.id.au> wrote:
->
-> From: "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
->
-> Add check against LPC device v2 compatible string to
-> ensure that the fixed device tree layout is adopted.
-> The LPC register offsets are also fixed accordingly.
->
-> Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+
+On 4/8/2021 8:08 AM, Arnd Bergmann wrote:
+> Greetings to all Arm platform maintainers,
+> 
+> I've just gone through the DT merges I've received so far and, with a
+> little help from Rob,
+> managed to run 'make dtbs_check W=1' before and after, to see what
+> warnings we get.
+> The good news is that the number of warnings is going down, but
+> unfortunately there
+> is still an unmanageable amount of remaining warnings, and some new
+> ones crept in.
+> 
+> I'm still working on my tooling for this, to catch these better, but
+> ideally I think we should
+> try to not introduce new warnings. I think some platforms are already
+> clean, and I did
+> not see any new warnings for mvebu, samsung and broadcom. There were a lot of
+> warnings from .dtsi files, and I probably did an incomplete job at
+> deduplicating those.
+
+There are definitively a ton of warnings for Broacom DTS files, a number
+of those warnings exist because the bindings were not converted to YAML.
+Rafal, do you think you could help me with taking care of the
+BCM5301X/4908 warnings?
+-- 
+Florian
