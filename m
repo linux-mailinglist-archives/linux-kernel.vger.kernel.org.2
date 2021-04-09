@@ -2,1119 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDDFA359371
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC1235937B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233077AbhDID5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:57:13 -0400
-Received: from mx0a-00268f01.pphosted.com ([148.163.148.236]:64704 "EHLO
-        mx0a-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232662AbhDID5L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:57:11 -0400
-X-Greylist: delayed 1878 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Apr 2021 23:57:11 EDT
-Received: from pps.filterd (m0105196.ppops.net [127.0.0.1])
-        by mx0a-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1393n4in003942;
-        Fri, 9 Apr 2021 03:56:05 GMT
-Received: from nam04-sn1-obe.outbound.protection.outlook.com (mail-sn1nam04lp2054.outbound.protection.outlook.com [104.47.44.54])
-        by mx0a-00268f01.pphosted.com with ESMTP id 37t48m26u1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 03:56:05 +0000
+        id S233180AbhDID6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:58:34 -0400
+Received: from mail-dm6nam10on2098.outbound.protection.outlook.com ([40.107.93.98]:4032
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232941AbhDID6b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 23:58:31 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bodHrKey1PKOrSke6bpgSQ/6YnnruVBdMFEDxjQoek2H1SA+bFU5uHHAgXPCACqPKFp8mjAu6S76x6uX7CRFvnfQ/lb98J79dIg3gldlSI63hKO8KU82c0K+UOjQYwtke2ZdxshPk8F5lFROpgMzxZ9xnpYHVjX0GvqYJ6IdfiNW4wPzCjBjeRjVnebNzujKSd/4sFFNxIQJK00kyLpcA9Q25x+Sc3QFwtRTrfTinaEllebP3eC3EIR3bswuN1029lVk1+t0U4yB+87StxAtCYelPp8cjeyBZTMXYIt/sTNKB+X1p980Tbk0ru/UsoFcK0Obl2hpts8ifFke1qlKcw==
+ b=fIAPULx9F6z2J2/Ak6kxNhZszAvo+Zg9yN5TZLLF/AZt6uTgrlSos7Joa+qSGwzWN0jCkm5aVks1vgcNkPgPCIPIzInHNLIs0TDm9/IM/AH1KWEzfVvj2HJYy7aJCOmB5W72LA4lyyZP8DwOt1nr/AzBealrZyxCI5fjbkzydrMsmbVlZAR2/wKZMXZbNJ6toyY+5dDu1AwjUWHpTMCh72PQPza/5TrWJ/pvubvuKulkGIQcYmnRZvcvRiPse6O1v8Rzd45CVM5vToD3W9z01cA+kDpy8FNdJv6UPUj7GN5UxAPMMCb+mjkG6LDuZj4QagqK+e4YLrzHReCJj1+BDQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LdqnQLHGFQMyGQ3rr3giJ3xBiR66orltmmSNi1APXLc=;
- b=dpyAZtEdl97i70GRlVMphS4zfkMRu+M1pJZrqWU7Sr/y2nWxkwVyeXaf7uzjU6RkFVLPaRxTa0W9HcxUXsVur0omz4TCTrN5O94xGKdvl+c7EiSoHagkN2TZUwV8blkkFvARaz50S/MU8yd9LnOle3xC4Z0+wzHqeVu6JMjbobJQMZwmWfxnlIYY4T2VaL1Ud9BLRFiOHOKZvVyS59w0fqPGNUo6kKSt5bwFNEGFh6LTBnv+Bm1xRbWGBQzsAyoxliKMpx27NwRVP5r3ptXCma7KMcMnYzeGx58lRvG2WUma2ZUx0a2lXbaB/K36weOewgAGlD+GgehySg7Nqcqk2w==
+ bh=a1CJLTivzUJdg5y0pAZKF6H0VJPzmOyk1dAxlnwqqvk=;
+ b=NK5aUg9g9I1iljra8yMYME6qW8WJlc2eLPI9fYrqqpOBiRcXWLM5K2sFli5+9EvrfKFmVKFg7YAQtzJDGb6m6xkVUpSx3r+bMplsbgUf1Wfv9af5PXoJAQ5cBKHUDlNheUzj0JF5jWVHs+3tHxmRx9Wbts+m2+CA3g2MasQikALVTGZUY40boq2YVPJ1fCywtzktyfXGIqbB9y+sivjoEWL4TntbLFj/jY5+B0FgaqSH1qiTgrB9bCsmIVcCRpDkSmCo0w7DIam6ToMfIwGDu5tlD48zZW9zngG6UUpbYstWw4laPd9XuTnVwfrD/CpRZfT28vB2GAgFc9nl5CQSnA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
- dkim=pass header.d=equinix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LdqnQLHGFQMyGQ3rr3giJ3xBiR66orltmmSNi1APXLc=;
- b=ebRhjkEovGARjXrZlA44lZQszRNaW3gsI3TUUswsuY0lOElKXnQ+jdjDNtHnCyoGSOKmMSu9CsW0fX9kFjKBTif6uSui2OVPyJ/xsuigGP3s2x+6SuZtls1mlJbj5Jv2mO7LYFaY+4Q0P0GPVbwWngUTx/H5vkN/aJw2Jg+I9Sk=
-Received: from DM5PR04MB0762.namprd04.prod.outlook.com (2603:10b6:3:f3::13) by
- DM6PR04MB6281.namprd04.prod.outlook.com (2603:10b6:5:1e8::21) with Microsoft
+ bh=a1CJLTivzUJdg5y0pAZKF6H0VJPzmOyk1dAxlnwqqvk=;
+ b=HSGwRMP3KlXP7sKMo3C7GmJU/gP6p4fX9PPdPKuVKD7FmZ2tSyJ+WUi7Vv1StSoiMj3E5soNs6AcJcKuJmoAcw/xFGLL7BGin8ni8hf+yj12bSXBUwgQ6tnN4HRrpzwIZqQofrvmkb75gD51HUwm4fbYRmBLh7t+b2xrkL8zMZg=
+Received: from BL0PR2101MB0930.namprd21.prod.outlook.com (52.132.20.146) by
+ BL0PR2101MB1332.namprd21.prod.outlook.com (20.177.244.146) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3999.28; Fri, 9 Apr 2021 03:56:02 +0000
-Received: from DM5PR04MB0762.namprd04.prod.outlook.com
- ([fe80::4c98:aeb:87a8:13ad]) by DM5PR04MB0762.namprd04.prod.outlook.com
- ([fe80::4c98:aeb:87a8:13ad%5]) with mapi id 15.20.4020.017; Fri, 9 Apr 2021
- 03:56:01 +0000
-From:   Zev Weiss <zweiss@equinix.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "minyard@acm.org" <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "ryan_chen@aspeedtech.com" <ryan_chen@aspeedtech.com>,
-        "tmaimon77@gmail.com" <tmaimon77@gmail.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "avifishman70@gmail.com" <avifishman70@gmail.com>,
-        "venture@google.com" <venture@google.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+ 15.20.4042.4; Fri, 9 Apr 2021 03:58:17 +0000
+Received: from BL0PR2101MB0930.namprd21.prod.outlook.com
+ ([fe80::e015:f9cd:dece:f785]) by BL0PR2101MB0930.namprd21.prod.outlook.com
+ ([fe80::e015:f9cd:dece:f785%3]) with mapi id 15.20.4042.006; Fri, 9 Apr 2021
+ 03:58:17 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     David Miller <davem@davemloft.net>,
+        Dexuan Cui <decui@microsoft.com>
+CC:     "kuba@kernel.org" <kuba@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Wei Liu <liuwe@microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "bernd@petrovitsch.priv.at" <bernd@petrovitsch.priv.at>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tali.perry1@gmail.com" <tali.perry1@gmail.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "chiawei_wang@aspeedtech.com" <chiawei_wang@aspeedtech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "benjaminfair@google.com" <benjaminfair@google.com>
-Subject: Re: [PATCH v2 09/21] ipmi: kcs_bmc: Split out kcs_bmc_cdev_ipmi
-Thread-Topic: [PATCH v2 09/21] ipmi: kcs_bmc: Split out kcs_bmc_cdev_ipmi
-Thread-Index: AQHXLPRB0XKWw1jtxk6ym3nb33svGw==
-Date:   Fri, 9 Apr 2021 03:56:01 +0000
-Message-ID: <YG/QUCIdEzW1ghVA@packtop>
-References: <20210319062752.145730-1-andrew@aj.id.au>
- <20210319062752.145730-9-andrew@aj.id.au>
-In-Reply-To: <20210319062752.145730-9-andrew@aj.id.au>
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: RE: [PATCH v3 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Thread-Topic: [PATCH v3 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Thread-Index: AQHXLMrI7wVTXonSwkuA82YgYLN/76qrSScAgAAKxoCAAASdAIAANLMw
+Date:   Fri, 9 Apr 2021 03:58:17 +0000
+Message-ID: <BL0PR2101MB0930523DB18C6F1C1CA00A89CA739@BL0PR2101MB0930.namprd21.prod.outlook.com>
+References: <20210408225840.26304-1-decui@microsoft.com>
+        <20210408.164618.597563844564989065.davem@davemloft.net>
+        <MW2PR2101MB0892B82CBCF2450D4A82DD50BF739@MW2PR2101MB0892.namprd21.prod.outlook.com>
+ <20210408.174122.1793350393067698495.davem@davemloft.net>
+In-Reply-To: <20210408.174122.1793350393067698495.davem@davemloft.net>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none header.from=equinix.com;
-x-originating-ip: [24.181.166.149]
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b3876ea6-8413-47d3-a6a4-0fb00574380d;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-09T03:49:59Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [75.100.88.238]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7e00c22f-8b1b-4bbc-77f4-08d8fb0b6457
-x-ms-traffictypediagnostic: DM6PR04MB6281:
-x-microsoft-antispam-prvs: <DM6PR04MB62817E948151F48922E6B34DC3739@DM6PR04MB6281.namprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:121;
+x-ms-office365-filtering-correlation-id: 4263779f-dc6d-43ed-32ce-08d8fb0bb4eb
+x-ms-traffictypediagnostic: BL0PR2101MB1332:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL0PR2101MB13328C6772CCEDCF99F0BF5CCA739@BL0PR2101MB1332.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dhXBKUlHyGfWvxCh8d57fiV6nA9Vlyk3RRG0pWU9AERQAwQKMkd01ph7Q3eTzf8CYxW3d/gG2PwaTsQeyHdcOGojhWHmlUlcZXbTN/B9TV7Fky5bzLIwJqZBRbCD+B0rgQKkVtUzlXO6R38SQAk7NGVfXqa1V9P7y7mdEO/7ADIibsvHdEhPZ/zm4g0+MAmNeLvOubx8VJTABgbSbqI9HS13r+qJlbTn+BXgb2vOdb0nmLpEp36BDSIQiiRPZaFrNQ2W8WcLyrxdWrhwQ3W4UKMZdJgMtH+HWUpL8niI416x/s9rA2+IKgdv6EWk1wIWnqO89LDF8FsIfOAdDcPCBM/Bz8qKI02dYGQxuZ3zsBvVo7EW+dxxOo4ULDhbw14wmEB49s4XSz8n4KaTZ5mx5Ui+hmxJsSDg1/0ukw7IUMBz23rIaEZkDIrFbr2ObRFJvXyFTIM/nFucGrHjCA9J6j4tDyB3wST0gn84i7AAqB5B1tgqDTcJjaWsPdp0FwagMRqdiDb06RnOMO4SCTKmJvrm9hUVyed/lw2WmmMeVD5vTZLCgqhvZ7duguszL3vChGh4iDRIakVV6nkRIPuecsq3EjSqQoaHv/3K0R0QslGNCBnBarwpYed4hK8envJ6U4v6DXDmcUhkwychWPY219HtImAK+njWn6jVjDqPlIc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0762.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(346002)(136003)(366004)(39860400002)(376002)(396003)(4326008)(8676002)(66476007)(66946007)(64756008)(26005)(6916009)(86362001)(7416002)(186003)(33716001)(2906002)(6512007)(8936002)(9686003)(38100700001)(76116006)(83380400001)(71200400001)(66446008)(66556008)(5660300002)(6506007)(6486002)(478600001)(316002)(54906003)(30864003)(559001)(579004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?4bwGbLwpAuY/Jawk40rcTkDOgIwTy9/eYBQMUJY5z1URFFxNRvT0OI8I4J1u?=
- =?us-ascii?Q?npKXWHveBBAfNDoRW6zz0GGMQaQVlENpO43iW0+mDCtUpxWJQHctJnpMgfnU?=
- =?us-ascii?Q?UyaJtG0HoTn8yD2XO2zLiDbPsKQaeIxwKmH4yz3D1eTGCBrTiUotxee8MyWT?=
- =?us-ascii?Q?ccjbJbE9/7a0vh5BZ1TKF7Umi4bdVIyFqnnoNCiHtsKNlJGkqQ6M6EtFadUt?=
- =?us-ascii?Q?PwdLL/Dv1v0iMHVWZGOYpWVv+CCXjDaWiS2UA98/ZwewkVFDlwhbN1XbkncK?=
- =?us-ascii?Q?woToF4OEeyDuWO84bcvfER6EkGi0rsnLwUk7IQunZ+Fy4OrrN2OBRf/9V9Ne?=
- =?us-ascii?Q?xzb9vxU+Hc10svHFaS5c8ABYZ68SHQ7LqEW5tmgM9BgaDaUEWY68mnUEugaa?=
- =?us-ascii?Q?C8Thcw9uC17OPrFep+ZdI9fW8QJ1ZFER4KFmWoquwgW0WlsP3WytRd5i78Sb?=
- =?us-ascii?Q?cboOzhBOTS+6w2gp1HZ7vb4FrfkBRVVmWOr19a9VLRG/hLZfHDNcon9XZ4OW?=
- =?us-ascii?Q?8VDbMbb2GlxM7juOav+rNhZEurjV/NamV6ynNtLYmrbOmO6Vn5rs3hdq93mC?=
- =?us-ascii?Q?64u/uy4ORGRe+6d3ipvy8sKByvXfKjQpGQFkoUcivMMx2OPOVEvguKo1EbET?=
- =?us-ascii?Q?AYdk0gHXoHgddMQbR/OzvuuhB0OCEuclUUtlfTw7HEOZpGYz0+fgRPrijdrO?=
- =?us-ascii?Q?8p8cM5BkAEep5CNRH6QNCVyToSjGoTojnovxGa1NSn3w6K6TPpNeyvUIYiZo?=
- =?us-ascii?Q?vzPEXd4iC4a79jAEtHc2ZXjf16pianYSGVhmN/9Os2VcLVzdxWKQVuKsYDRP?=
- =?us-ascii?Q?AuGmZzrLyvlldSVpBC9hAE6nG3eAILgM64uUbz12ifIe/rgJhumy6MlnKg5t?=
- =?us-ascii?Q?a7bC/rTsCX+rXHWDKVBU/G08DOOMTd659TpqzMtM6OrbyqSd8yEH+JpE7a/z?=
- =?us-ascii?Q?Ho6YEQOaS8t3fgB/BqH7kBXl1u7hjr2n4D5wduUKgUICcviYk07DtTtlyXwh?=
- =?us-ascii?Q?6zKIcRw7ZydJq39+sJoWXKFVMNSIv+XQHoO6JhlF6bGwAnAq5/OIZ0ckedWR?=
- =?us-ascii?Q?my2BHjWEeGqD2mBarIP1c6zImdMFmuYNEsKcqWN+g/lmwlgJbjD4eLqE2E6/?=
- =?us-ascii?Q?DklskuQYRRHJnso08PQDElnAz5jUgvQ6XmeBfbNwOuMDutDjavEGZDoPcDCn?=
- =?us-ascii?Q?sil/ETwb4cIQFFiXkgwNcxVX50/8thhIEw5oYAtVHBzrBiH6Z4HS0l7WGvNe?=
- =?us-ascii?Q?3jI2RkuMr+8GlLczTfSHTdaX2ji1mvGQTeE6JFHc/WMZ3PDdo6JrvQv3wnEW?=
- =?us-ascii?Q?ExCiRidgak7tk3UAp6AoQ5H1RX3oTD2OoELdVt0Vu+7bxg=3D=3D?=
-x-ms-exchange-transport-forked: True
+x-microsoft-antispam-message-info: VY3wUsnYcraOMwRosLXAtP+FVTPpRI9ASy9iej4wBCSIqL5U/boygSnB5Wbp5B3MQ8+DrH8POjPzz2D2WBBqJYKLaV3M5TO5/b0R7lcjcAnaXKOfPUU3yygW4QBAfpFXyb1+2xO8Ah36bNmxdpTMrM8UJ9E8akg/9xEIIk5a8WtO2vdwC/Y9Uq9LDPKpyTe++9/1JmRjPOfiY6pSwsGnG1/fSseHHZgzXmepd1d3D0zqd0UWyapCY8iOqhxVpdUa6/y+O6sR0ZaVulGnmveb7XGGOz7PE6HUuVmMfaVhFCxs8JEiEKL6oc0SZN7bumQxJmMho/8KOqNXnYU3uVVcrUvzAe+1yZGxQ6Zj+al/Pjvdx3DB8hUHdPb5br6zmiba729WTIX0QlMIlHUUXwZmbrFi7y7KuNV2MuDK9Akun2jNVp8UN0lYilkpNjmndHSxvdmbr6nnfhUoJlNpyuzemM2w4yd9THMj93e/1UcX6uPwOIAYKMBqVWI4fDfn/wiLGbMXQXG5UrEHrKjFjt3BnAGXmQ4csviXUR0WVGbeIIV9n9DJpMxhQ5kw4pxBBsaPSfW5TPqbekuBLVJsCRLOZhwDaIX2OhDvHM54XCWOUdmquRiyrybBzovjE8hVa8Q3ppgBr0cIisz7gm5tXa+aNrtO1hBx1mFMNBLqZIdwYZDQcqyM1HOPoPKC71D+7IKN
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB0930.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(346002)(39860400002)(366004)(47530400004)(54906003)(53546011)(110136005)(186003)(7696005)(26005)(6506007)(2906002)(38100700001)(316002)(86362001)(8990500004)(82950400001)(82960400001)(52536014)(478600001)(83380400001)(64756008)(66946007)(66446008)(66556008)(66476007)(5660300002)(76116006)(4326008)(55016002)(8936002)(8676002)(71200400001)(6636002)(7416002)(9686003)(33656002)(10290500003)(21314003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?WqCjmg7wUeX4v/0BaFVobp4PsVih+BczbNPp8//Mm4J6LtawYOZxGk+R0XPk?=
+ =?us-ascii?Q?Kg0P48/ZmpsB1hWyzbKOacRJ99gW9iL9kCzxmSC4E7lRdARRT05fPnI+iH6v?=
+ =?us-ascii?Q?W4gAkpf+74ks/IxbDnk7gRjwGi4VuC7mzXlgYDcFVg9XnH7hrtCEZp8Vn5aq?=
+ =?us-ascii?Q?n/uHnUw5ReL89vlGmfF0/GZG3dG057kM/RrOBuY/HvDYSHV/dlyd6DPYjyvc?=
+ =?us-ascii?Q?pXAwyiPxwhidwXwGaji4Karz3845lptO2JBJoqT7P7iPkdxOalOFIpRoiJc3?=
+ =?us-ascii?Q?cnR1wbDXXy4yba9EFEdq1kTZ5FwzVM9vYhdYcj5mfLGObJ9UtJrtCPO0Miaj?=
+ =?us-ascii?Q?tuB3IHpOprGBpJC9aFQLJ/Tyjoz8MR0/PSCjjSS0osT1jX7TxlRqmakGCsg5?=
+ =?us-ascii?Q?+ms6Xv6HQvDe05jJN4KuCCArzkESA7VGXeQidiHb+Nao56lt25OBkSzVF0Lf?=
+ =?us-ascii?Q?y3RKcfKKLqqMkQH+s5+PeoH8BX05BaiDybTU+BG0Orwy4q3GlsAoTgxUuJOl?=
+ =?us-ascii?Q?HJAa988QdPydmEaZo0Am2aQwAv4j3vrWqIv4RA9WYnWCzPEQ6aGtcrfoq1JW?=
+ =?us-ascii?Q?PNTj+e5qAZKAg8/+prnfXpVf8dcl+xlJgaWHmpy3HfnMam3wE8QyrcDJRUfh?=
+ =?us-ascii?Q?E9WW+f4eaFhT7bteNi0+BoefI1XPvij85QiWNX2H4TscnZdKrnS9X9BFfMUe?=
+ =?us-ascii?Q?sjfcYayLt3EQTKxwE0mGZOARG8uSJDXwx6a6/4gy3c0qzo2NXLkydq70tUHN?=
+ =?us-ascii?Q?Nj8xb5zLhdOdETxiRm4rqgVpvJpE8T5gno++EgvI3E5CK06fUeGH+oFCHsAX?=
+ =?us-ascii?Q?j6jCSE1g4my1X5l4ZWiybXjd0A9qlahb7STXqBRBYXD3io8mPRIJ4tcch1hM?=
+ =?us-ascii?Q?g572nQt9ahd+Pm+KfB4cklnNjzuVBKA9+BXMiNiADgKgJ0nzRmc6Itv7U4Uw?=
+ =?us-ascii?Q?z9TeJW4SjExTXf94DaPuHOCO0vnPf0kMlnYrJz3+92u4C0nmAl/9dFaIKSN0?=
+ =?us-ascii?Q?qzy1Mn5VLCTL4Olwj8T9UDAzdAwxid0W8PdIswzkNKG6Dob17zPTsDbnzZk8?=
+ =?us-ascii?Q?Y1tXgiDymjnCDQj0uHSilnATIsp+X91cRAlpv2k+5gbAYj+0xctPmsch/l3L?=
+ =?us-ascii?Q?hQOPIXTRR3PA4CzvnQl/L9L9BOOlrsb8CBY8WevpAeLx/k9XrRPbEB4Lx9vw?=
+ =?us-ascii?Q?Gbe7Ms2ntgwOL7aMdt6Rr8ZUoiM3nkUb5iLBHHHGs/3Wcp+BHmcmbpfaPxo3?=
+ =?us-ascii?Q?Rpfg94L4j53v6nXtOVZ20WIsKutuV4BE2vRq3xt7BEKeOShqI/e0cPs8e9Wn?=
+ =?us-ascii?Q?J1FkTR/MgSjk+WhkO3yLL44V?=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <EE6753343E0E8B41A5CD502C97EF8C4C@namprd04.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: equinix.com
+X-OriginatorOrg: microsoft.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0762.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7e00c22f-8b1b-4bbc-77f4-08d8fb0b6457
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 03:56:01.7682
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB0930.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4263779f-dc6d-43ed-32ce-08d8fb0bb4eb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 03:58:17.0540
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: IWAEezmlTQidopuo3XxIL1sSZeeqY6eCEL9EmECAj+/cMdNIqeCgryOqSv31hjgLp9VPw+WYDR0vDp2n8AYlpg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6281
-X-Proofpoint-ORIG-GUID: vLUZRBDHBfdffWSbEI8B6Yt2s-yBVOK3
-X-Proofpoint-GUID: vLUZRBDHBfdffWSbEI8B6Yt2s-yBVOK3
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-09_03:2021-04-08,2021-04-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 mlxlogscore=999 bulkscore=0 mlxscore=0 impostorscore=0
- suspectscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015 spamscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104090025
+X-MS-Exchange-CrossTenant-userprincipalname: 7SE9lAOyaLoIfNjFe1ffS2VU4OKqAJK7sTe/eTOMn+kbwWF9wqKLWt7UIAvg2WnFPMVNl3IBlovImpHeLiriLA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1332
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 01:27:40AM CDT, Andrew Jeffery wrote:
->Take steps towards defining a coherent API to separate the KCS device
->drivers from the userspace interface. Decreasing the coupling will
->improve the separation of concerns and enable the introduction of
->alternative userspace interfaces.
->
->For now, simply split the chardev logic out to a separate file. The code
->continues to build into the same module.
->
->Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
->---
-> drivers/char/ipmi/Makefile            |   2 +-
-> drivers/char/ipmi/kcs_bmc.c           | 423 +------------------------
-> drivers/char/ipmi/kcs_bmc.h           |  10 +-
-> drivers/char/ipmi/kcs_bmc_cdev_ipmi.c | 428 ++++++++++++++++++++++++++
-> 4 files changed, 451 insertions(+), 412 deletions(-)
-> create mode 100644 drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
->
->diff --git a/drivers/char/ipmi/Makefile b/drivers/char/ipmi/Makefile
->index 0822adc2ec41..a302bc865370 100644
->--- a/drivers/char/ipmi/Makefile
->+++ b/drivers/char/ipmi/Makefile
->@@ -22,7 +22,7 @@ obj-$(CONFIG_IPMI_SSIF) +=3D ipmi_ssif.o
-> obj-$(CONFIG_IPMI_POWERNV) +=3D ipmi_powernv.o
-> obj-$(CONFIG_IPMI_WATCHDOG) +=3D ipmi_watchdog.o
-> obj-$(CONFIG_IPMI_POWEROFF) +=3D ipmi_poweroff.o
->-obj-$(CONFIG_IPMI_KCS_BMC) +=3D kcs_bmc.o
->+obj-$(CONFIG_IPMI_KCS_BMC) +=3D kcs_bmc.o kcs_bmc_cdev_ipmi.o
-> obj-$(CONFIG_ASPEED_BT_IPMI_BMC) +=3D bt-bmc.o
-> obj-$(CONFIG_ASPEED_KCS_IPMI_BMC) +=3D kcs_bmc_aspeed.o
-> obj-$(CONFIG_NPCM7XX_KCS_IPMI_BMC) +=3D kcs_bmc_npcm7xx.o
->diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
->index c4336c1f2d6d..ef5c48ffe74a 100644
->--- a/drivers/char/ipmi/kcs_bmc.c
->+++ b/drivers/char/ipmi/kcs_bmc.c
->@@ -3,446 +3,51 @@
->  * Copyright (c) 2015-2018, Intel Corporation.
->  */
->
->-#define pr_fmt(fmt) "kcs-bmc: " fmt
->-
->-#include <linux/errno.h>
->-#include <linux/io.h>
->-#include <linux/ipmi_bmc.h>
-> #include <linux/module.h>
->-#include <linux/platform_device.h>
->-#include <linux/poll.h>
->-#include <linux/sched.h>
->-#include <linux/slab.h>
->
-> #include "kcs_bmc.h"
->
->-#define DEVICE_NAME "ipmi-kcs"
->-
->-#define KCS_MSG_BUFSIZ    1000
->-
->-#define KCS_ZERO_DATA     0
->-
->-
->-/* IPMI 2.0 - Table 9-1, KCS Interface Status Register Bits */
->-#define KCS_STATUS_STATE(state) (state << 6)
->-#define KCS_STATUS_STATE_MASK   GENMASK(7, 6)
->-#define KCS_STATUS_CMD_DAT      BIT(3)
->-#define KCS_STATUS_SMS_ATN      BIT(2)
->-#define KCS_STATUS_IBF          BIT(1)
->-#define KCS_STATUS_OBF          BIT(0)
->-
->-/* IPMI 2.0 - Table 9-2, KCS Interface State Bits */
->-enum kcs_states {
->-	IDLE_STATE  =3D 0,
->-	READ_STATE  =3D 1,
->-	WRITE_STATE =3D 2,
->-	ERROR_STATE =3D 3,
->-};
->-
->-/* IPMI 2.0 - Table 9-3, KCS Interface Control Codes */
->-#define KCS_CMD_GET_STATUS_ABORT  0x60
->-#define KCS_CMD_WRITE_START       0x61
->-#define KCS_CMD_WRITE_END         0x62
->-#define KCS_CMD_READ_BYTE         0x68
->-
->-static inline u8 kcs_bmc_read_data(struct kcs_bmc *kcs_bmc)
->+u8 kcs_bmc_read_data(struct kcs_bmc *kcs_bmc)
-> {
-> 	return kcs_bmc->io_inputb(kcs_bmc, kcs_bmc->ioreg.idr);
-> }
->+EXPORT_SYMBOL(kcs_bmc_read_data);
->
->-static inline void kcs_bmc_write_data(struct kcs_bmc *kcs_bmc, u8 data)
->+void kcs_bmc_write_data(struct kcs_bmc *kcs_bmc, u8 data)
-> {
-> 	kcs_bmc->io_outputb(kcs_bmc, kcs_bmc->ioreg.odr, data);
-> }
->+EXPORT_SYMBOL(kcs_bmc_write_data);
->
->-static inline u8 kcs_bmc_read_status(struct kcs_bmc *kcs_bmc)
->+u8 kcs_bmc_read_status(struct kcs_bmc *kcs_bmc)
-> {
-> 	return kcs_bmc->io_inputb(kcs_bmc, kcs_bmc->ioreg.str);
-> }
->+EXPORT_SYMBOL(kcs_bmc_read_status);
->
->-static inline void kcs_bmc_write_status(struct kcs_bmc *kcs_bmc, u8 data)
->+void kcs_bmc_write_status(struct kcs_bmc *kcs_bmc, u8 data)
-> {
-> 	kcs_bmc->io_outputb(kcs_bmc, kcs_bmc->ioreg.str, data);
-> }
->+EXPORT_SYMBOL(kcs_bmc_write_status);
->
->-static void kcs_bmc_update_status(struct kcs_bmc *kcs_bmc, u8 mask, u8 va=
-l)
->+void kcs_bmc_update_status(struct kcs_bmc *kcs_bmc, u8 mask, u8 val)
-> {
-> 	kcs_bmc->io_updateb(kcs_bmc, kcs_bmc->ioreg.str, mask, val);
-> }
->+EXPORT_SYMBOL(kcs_bmc_update_status);
->
->-static inline void set_state(struct kcs_bmc *kcs_bmc, u8 state)
->-{
->-	kcs_bmc_update_status(kcs_bmc, KCS_STATUS_STATE_MASK,
->-					KCS_STATUS_STATE(state));
->-}
->-
->-static void kcs_force_abort(struct kcs_bmc *kcs_bmc)
->-{
->-	set_state(kcs_bmc, ERROR_STATE);
->-	kcs_bmc_read_data(kcs_bmc);
->-	kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->-
->-	kcs_bmc->phase =3D KCS_PHASE_ERROR;
->-	kcs_bmc->data_in_avail =3D false;
->-	kcs_bmc->data_in_idx =3D 0;
->-}
->-
->-static void kcs_bmc_handle_data(struct kcs_bmc *kcs_bmc)
->-{
->-	u8 data;
->-
->-	switch (kcs_bmc->phase) {
->-	case KCS_PHASE_WRITE_START:
->-		kcs_bmc->phase =3D KCS_PHASE_WRITE_DATA;
->-		fallthrough;
->-
->-	case KCS_PHASE_WRITE_DATA:
->-		if (kcs_bmc->data_in_idx < KCS_MSG_BUFSIZ) {
->-			set_state(kcs_bmc, WRITE_STATE);
->-			kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->-			kcs_bmc->data_in[kcs_bmc->data_in_idx++] =3D
->-						kcs_bmc_read_data(kcs_bmc);
->-		} else {
->-			kcs_force_abort(kcs_bmc);
->-			kcs_bmc->error =3D KCS_LENGTH_ERROR;
->-		}
->-		break;
->-
->-	case KCS_PHASE_WRITE_END_CMD:
->-		if (kcs_bmc->data_in_idx < KCS_MSG_BUFSIZ) {
->-			set_state(kcs_bmc, READ_STATE);
->-			kcs_bmc->data_in[kcs_bmc->data_in_idx++] =3D
->-						kcs_bmc_read_data(kcs_bmc);
->-			kcs_bmc->phase =3D KCS_PHASE_WRITE_DONE;
->-			kcs_bmc->data_in_avail =3D true;
->-			wake_up_interruptible(&kcs_bmc->queue);
->-		} else {
->-			kcs_force_abort(kcs_bmc);
->-			kcs_bmc->error =3D KCS_LENGTH_ERROR;
->-		}
->-		break;
->-
->-	case KCS_PHASE_READ:
->-		if (kcs_bmc->data_out_idx =3D=3D kcs_bmc->data_out_len)
->-			set_state(kcs_bmc, IDLE_STATE);
->-
->-		data =3D kcs_bmc_read_data(kcs_bmc);
->-		if (data !=3D KCS_CMD_READ_BYTE) {
->-			set_state(kcs_bmc, ERROR_STATE);
->-			kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->-			break;
->-		}
->-
->-		if (kcs_bmc->data_out_idx =3D=3D kcs_bmc->data_out_len) {
->-			kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->-			kcs_bmc->phase =3D KCS_PHASE_IDLE;
->-			break;
->-		}
->-
->-		kcs_bmc_write_data(kcs_bmc,
->-			kcs_bmc->data_out[kcs_bmc->data_out_idx++]);
->-		break;
->-
->-	case KCS_PHASE_ABORT_ERROR1:
->-		set_state(kcs_bmc, READ_STATE);
->-		kcs_bmc_read_data(kcs_bmc);
->-		kcs_bmc_write_data(kcs_bmc, kcs_bmc->error);
->-		kcs_bmc->phase =3D KCS_PHASE_ABORT_ERROR2;
->-		break;
->-
->-	case KCS_PHASE_ABORT_ERROR2:
->-		set_state(kcs_bmc, IDLE_STATE);
->-		kcs_bmc_read_data(kcs_bmc);
->-		kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->-		kcs_bmc->phase =3D KCS_PHASE_IDLE;
->-		break;
->-
->-	default:
->-		kcs_force_abort(kcs_bmc);
->-		break;
->-	}
->-}
->-
->-static void kcs_bmc_handle_cmd(struct kcs_bmc *kcs_bmc)
->-{
->-	u8 cmd;
->-
->-	set_state(kcs_bmc, WRITE_STATE);
->-	kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->-
->-	cmd =3D kcs_bmc_read_data(kcs_bmc);
->-	switch (cmd) {
->-	case KCS_CMD_WRITE_START:
->-		kcs_bmc->phase =3D KCS_PHASE_WRITE_START;
->-		kcs_bmc->error =3D KCS_NO_ERROR;
->-		kcs_bmc->data_in_avail =3D false;
->-		kcs_bmc->data_in_idx =3D 0;
->-		break;
->-
->-	case KCS_CMD_WRITE_END:
->-		if (kcs_bmc->phase !=3D KCS_PHASE_WRITE_DATA) {
->-			kcs_force_abort(kcs_bmc);
->-			break;
->-		}
->-
->-		kcs_bmc->phase =3D KCS_PHASE_WRITE_END_CMD;
->-		break;
->-
->-	case KCS_CMD_GET_STATUS_ABORT:
->-		if (kcs_bmc->error =3D=3D KCS_NO_ERROR)
->-			kcs_bmc->error =3D KCS_ABORTED_BY_COMMAND;
->-
->-		kcs_bmc->phase =3D KCS_PHASE_ABORT_ERROR1;
->-		kcs_bmc->data_in_avail =3D false;
->-		kcs_bmc->data_in_idx =3D 0;
->-		break;
->-
->-	default:
->-		kcs_force_abort(kcs_bmc);
->-		kcs_bmc->error =3D KCS_ILLEGAL_CONTROL_CODE;
->-		break;
->-	}
->-}
->-
->+int kcs_bmc_ipmi_event(struct kcs_bmc *kcs_bmc);
 
-This declaration looks a bit out of place here; should it be in
-kcs_bmc.h instead?
 
-> int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc)
-> {
->-	unsigned long flags;
->-	int ret =3D -ENODATA;
->-	u8 status;
->-
->-	spin_lock_irqsave(&kcs_bmc->lock, flags);
->-
->-	status =3D kcs_bmc_read_status(kcs_bmc);
->-	if (status & KCS_STATUS_IBF) {
->-		if (!kcs_bmc->running)
->-			kcs_force_abort(kcs_bmc);
->-		else if (status & KCS_STATUS_CMD_DAT)
->-			kcs_bmc_handle_cmd(kcs_bmc);
->-		else
->-			kcs_bmc_handle_data(kcs_bmc);
->-
->-		ret =3D 0;
->-	}
->-
->-	spin_unlock_irqrestore(&kcs_bmc->lock, flags);
->-
->-	return ret;
->+	return kcs_bmc_ipmi_event(kcs_bmc);
-> }
-> EXPORT_SYMBOL(kcs_bmc_handle_event);
->
->-static inline struct kcs_bmc *to_kcs_bmc(struct file *filp)
->-{
->-	return container_of(filp->private_data, struct kcs_bmc, miscdev);
->-}
->-
->-static int kcs_bmc_open(struct inode *inode, struct file *filp)
->-{
->-	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->-	int ret =3D 0;
->-
->-	spin_lock_irq(&kcs_bmc->lock);
->-	if (!kcs_bmc->running)
->-		kcs_bmc->running =3D 1;
->-	else
->-		ret =3D -EBUSY;
->-	spin_unlock_irq(&kcs_bmc->lock);
->-
->-	return ret;
->-}
->-
->-static __poll_t kcs_bmc_poll(struct file *filp, poll_table *wait)
->-{
->-	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->-	__poll_t mask =3D 0;
->-
->-	poll_wait(filp, &kcs_bmc->queue, wait);
->-
->-	spin_lock_irq(&kcs_bmc->lock);
->-	if (kcs_bmc->data_in_avail)
->-		mask |=3D EPOLLIN;
->-	spin_unlock_irq(&kcs_bmc->lock);
->-
->-	return mask;
->-}
->-
->-static ssize_t kcs_bmc_read(struct file *filp, char __user *buf,
->-			    size_t count, loff_t *ppos)
->-{
->-	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->-	bool data_avail;
->-	size_t data_len;
->-	ssize_t ret;
->-
->-	if (!(filp->f_flags & O_NONBLOCK))
->-		wait_event_interruptible(kcs_bmc->queue,
->-					 kcs_bmc->data_in_avail);
->-
->-	mutex_lock(&kcs_bmc->mutex);
->-
->-	spin_lock_irq(&kcs_bmc->lock);
->-	data_avail =3D kcs_bmc->data_in_avail;
->-	if (data_avail) {
->-		data_len =3D kcs_bmc->data_in_idx;
->-		memcpy(kcs_bmc->kbuffer, kcs_bmc->data_in, data_len);
->-	}
->-	spin_unlock_irq(&kcs_bmc->lock);
->-
->-	if (!data_avail) {
->-		ret =3D -EAGAIN;
->-		goto out_unlock;
->-	}
->-
->-	if (count < data_len) {
->-		pr_err("channel=3D%u with too large data : %zu\n",
->-			kcs_bmc->channel, data_len);
->-
->-		spin_lock_irq(&kcs_bmc->lock);
->-		kcs_force_abort(kcs_bmc);
->-		spin_unlock_irq(&kcs_bmc->lock);
->-
->-		ret =3D -EOVERFLOW;
->-		goto out_unlock;
->-	}
->-
->-	if (copy_to_user(buf, kcs_bmc->kbuffer, data_len)) {
->-		ret =3D -EFAULT;
->-		goto out_unlock;
->-	}
->-
->-	ret =3D data_len;
->-
->-	spin_lock_irq(&kcs_bmc->lock);
->-	if (kcs_bmc->phase =3D=3D KCS_PHASE_WRITE_DONE) {
->-		kcs_bmc->phase =3D KCS_PHASE_WAIT_READ;
->-		kcs_bmc->data_in_avail =3D false;
->-		kcs_bmc->data_in_idx =3D 0;
->-	} else {
->-		ret =3D -EAGAIN;
->-	}
->-	spin_unlock_irq(&kcs_bmc->lock);
->-
->-out_unlock:
->-	mutex_unlock(&kcs_bmc->mutex);
->-
->-	return ret;
->-}
->-
->-static ssize_t kcs_bmc_write(struct file *filp, const char __user *buf,
->-			     size_t count, loff_t *ppos)
->-{
->-	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->-	ssize_t ret;
->-
->-	/* a minimum response size '3' : netfn + cmd + ccode */
->-	if (count < 3 || count > KCS_MSG_BUFSIZ)
->-		return -EINVAL;
->-
->-	mutex_lock(&kcs_bmc->mutex);
->-
->-	if (copy_from_user(kcs_bmc->kbuffer, buf, count)) {
->-		ret =3D -EFAULT;
->-		goto out_unlock;
->-	}
->-
->-	spin_lock_irq(&kcs_bmc->lock);
->-	if (kcs_bmc->phase =3D=3D KCS_PHASE_WAIT_READ) {
->-		kcs_bmc->phase =3D KCS_PHASE_READ;
->-		kcs_bmc->data_out_idx =3D 1;
->-		kcs_bmc->data_out_len =3D count;
->-		memcpy(kcs_bmc->data_out, kcs_bmc->kbuffer, count);
->-		kcs_bmc_write_data(kcs_bmc, kcs_bmc->data_out[0]);
->-		ret =3D count;
->-	} else {
->-		ret =3D -EINVAL;
->-	}
->-	spin_unlock_irq(&kcs_bmc->lock);
->-
->-out_unlock:
->-	mutex_unlock(&kcs_bmc->mutex);
->-
->-	return ret;
->-}
->-
->-static long kcs_bmc_ioctl(struct file *filp, unsigned int cmd,
->-			  unsigned long arg)
->-{
->-	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->-	long ret =3D 0;
->-
->-	spin_lock_irq(&kcs_bmc->lock);
->-
->-	switch (cmd) {
->-	case IPMI_BMC_IOCTL_SET_SMS_ATN:
->-		kcs_bmc_update_status(kcs_bmc, KCS_STATUS_SMS_ATN, KCS_STATUS_SMS_ATN);
->-		break;
->-
->-	case IPMI_BMC_IOCTL_CLEAR_SMS_ATN:
->-		kcs_bmc_update_status(kcs_bmc, KCS_STATUS_SMS_ATN, 0);
->-		break;
->-
->-	case IPMI_BMC_IOCTL_FORCE_ABORT:
->-		kcs_force_abort(kcs_bmc);
->-		break;
->-
->-	default:
->-		ret =3D -EINVAL;
->-		break;
->-	}
->-
->-	spin_unlock_irq(&kcs_bmc->lock);
->-
->-	return ret;
->-}
->-
->-static int kcs_bmc_release(struct inode *inode, struct file *filp)
->-{
->-	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->-
->-	spin_lock_irq(&kcs_bmc->lock);
->-	kcs_bmc->running =3D 0;
->-	kcs_force_abort(kcs_bmc);
->-	spin_unlock_irq(&kcs_bmc->lock);
->-
->-	return 0;
->-}
->-
->-static const struct file_operations kcs_bmc_fops =3D {
->-	.owner          =3D THIS_MODULE,
->-	.open           =3D kcs_bmc_open,
->-	.read           =3D kcs_bmc_read,
->-	.write          =3D kcs_bmc_write,
->-	.release        =3D kcs_bmc_release,
->-	.poll           =3D kcs_bmc_poll,
->-	.unlocked_ioctl =3D kcs_bmc_ioctl,
->-};
->-
->+struct kcs_bmc *kcs_bmc_ipmi_alloc(struct device *dev, int sizeof_priv, u=
-32 channel);
+> -----Original Message-----
+> From: David Miller <davem@davemloft.net>
+> Sent: Thursday, April 8, 2021 8:41 PM
+> To: Dexuan Cui <decui@microsoft.com>
+> Cc: kuba@kernel.org; KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> <haiyangz@microsoft.com>; Stephen Hemminger
+> <sthemmin@microsoft.com>; wei.liu@kernel.org; Wei Liu
+> <liuwe@microsoft.com>; netdev@vger.kernel.org; leon@kernel.org;
+> andrew@lunn.ch; bernd@petrovitsch.priv.at; rdunlap@infradead.org; linux-
+> kernel@vger.kernel.org; linux-hyperv@vger.kernel.org
+> Subject: Re: [PATCH v3 net-next] net: mana: Add a driver for Microsoft Az=
+ure
+> Network Adapter (MANA)
+>=20
+> From: Dexuan Cui <decui@microsoft.com>
+> Date: Fri, 9 Apr 2021 00:24:51 +0000
+>=20
+> >> From: David Miller <davem@davemloft.net>
+> >> Sent: Thursday, April 8, 2021 4:46 PM
+> >> ...
+> >> > +struct gdma_msg_hdr {
+> >> > +	u32 hdr_type;
+> >> > +	u32 msg_type;
+> >> > +	u16 msg_version;
+> >> > +	u16 hwc_msg_id;
+> >> > +	u32 msg_size;
+> >> > +} __packed;
+> >> > +
+> >> > +struct gdma_dev_id {
+> >> > +	union {
+> >> > +		struct {
+> >> > +			u16 type;
+> >> > +			u16 instance;
+> >> > +		};
+> >> > +
+> >> > +		u32 as_uint32;
+> >> > +	};
+> >> > +} __packed;
+> >>
+> >> Please don't  use __packed unless absolutely necessary.  It generates
+> >> suboptimal code (byte at a time
+> >> accesses etc.) and for many of these you don't even need it.
+> >
+> > In the driver code, all the structs/unions marked by __packed are used =
+to
+> > talk with the hardware, so I think __packed is necessary here?
+>=20
+> It actually isan't in many cases, check with and without the __packed
+> directive
+> and see if anything chasnges.
+>=20
+> > Do you think if it's better if we remove all the __packed, and add
+> > static_assert(sizeof(struct XXX) =3D=3D YYY) instead? e.g.
+> >
+> > @@ -105,7 +105,8 @@ struct gdma_msg_hdr {
+> >         u16 msg_version;
+> >         u16 hwc_msg_id;
+> >         u32 msg_size;
+> > -} __packed;
+> > +};
+> > +static_assert(sizeof(struct gdma_msg_hdr) =3D=3D 16);
+>=20
+> This won't make sure the structure member offsets are what you expect.
+>=20
+> I think you'll have to go through the structures one-by-one by hand to
+> figure out which ones really require the __packed attribute and which do =
+not.
 
-Similarly here.
+For the structs containing variables with the same sizes, or already size a=
+ligned=20
+variables, we knew the __packed has no effect. And for these structs, it do=
+esn't=20
+cause performance impact either, correct?=20
 
-> struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 ch=
-annel)
-> {
->-	struct kcs_bmc *kcs_bmc;
->-
->-	kcs_bmc =3D devm_kzalloc(dev, sizeof(*kcs_bmc) + sizeof_priv, GFP_KERNEL=
-);
->-	if (!kcs_bmc)
->-		return NULL;
->-
->-	spin_lock_init(&kcs_bmc->lock);
->-	kcs_bmc->channel =3D channel;
->-
->-	mutex_init(&kcs_bmc->mutex);
->-	init_waitqueue_head(&kcs_bmc->queue);
->-
->-	kcs_bmc->data_in =3D devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
->-	kcs_bmc->data_out =3D devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
->-	kcs_bmc->kbuffer =3D devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
->-
->-	kcs_bmc->miscdev.minor =3D MISC_DYNAMIC_MINOR;
->-	kcs_bmc->miscdev.name =3D devm_kasprintf(dev, GFP_KERNEL, "%s%u",
->-					       DEVICE_NAME, channel);
->-	if (!kcs_bmc->data_in || !kcs_bmc->data_out || !kcs_bmc->kbuffer ||
->-	    !kcs_bmc->miscdev.name)
->-		return NULL;
->-	kcs_bmc->miscdev.fops =3D &kcs_bmc_fops;
->-
->-	return kcs_bmc;
->+	return kcs_bmc_ipmi_alloc(dev, sizeof_priv, channel);
-> }
-> EXPORT_SYMBOL(kcs_bmc_alloc);
->
->diff --git a/drivers/char/ipmi/kcs_bmc.h b/drivers/char/ipmi/kcs_bmc.h
->index 970f53892f2d..febea0c8deb4 100644
->--- a/drivers/char/ipmi/kcs_bmc.h
->+++ b/drivers/char/ipmi/kcs_bmc.h
->@@ -104,6 +104,12 @@ static inline void *kcs_bmc_priv(struct kcs_bmc *kcs_=
-bmc)
-> }
->
-> int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc);
->-struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv,
->-					u32 channel);
->+struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 ch=
-annel);
->+
->+u8 kcs_bmc_read_data(struct kcs_bmc *kcs_bmc);
->+void kcs_bmc_write_data(struct kcs_bmc *kcs_bmc, u8 data);
->+u8 kcs_bmc_read_status(struct kcs_bmc *kcs_bmc);
->+void kcs_bmc_write_status(struct kcs_bmc *kcs_bmc, u8 data);
->+void kcs_bmc_update_status(struct kcs_bmc *kcs_bmc, u8 mask, u8 val);
->+
-> #endif /* __KCS_BMC_H__ */
->diff --git a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c b/drivers/char/ipmi/kcs=
-_bmc_cdev_ipmi.c
->new file mode 100644
->index 000000000000..82c77994e481
->--- /dev/null
->+++ b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
->@@ -0,0 +1,428 @@
->+// SPDX-License-Identifier: GPL-2.0
->+/*
->+ * Copyright (c) 2015-2018, Intel Corporation.
->+ */
->+
->+#define pr_fmt(fmt) "kcs-bmc: " fmt
->+
->+#include <linux/errno.h>
->+#include <linux/io.h>
->+#include <linux/ipmi_bmc.h>
->+#include <linux/module.h>
->+#include <linux/platform_device.h>
->+#include <linux/poll.h>
->+#include <linux/sched.h>
->+#include <linux/slab.h>
->+
->+#include "kcs_bmc.h"
->+
->+#define DEVICE_NAME "ipmi-kcs"
->+
->+#define KCS_MSG_BUFSIZ    1000
->+
->+#define KCS_ZERO_DATA     0
->+
->+
->+/* IPMI 2.0 - Table 9-1, KCS Interface Status Register Bits */
->+#define KCS_STATUS_STATE(state) (state << 6)
->+#define KCS_STATUS_STATE_MASK   GENMASK(7, 6)
->+#define KCS_STATUS_CMD_DAT      BIT(3)
->+#define KCS_STATUS_SMS_ATN      BIT(2)
->+#define KCS_STATUS_IBF          BIT(1)
->+#define KCS_STATUS_OBF          BIT(0)
->+
->+/* IPMI 2.0 - Table 9-2, KCS Interface State Bits */
->+enum kcs_states {
->+	IDLE_STATE  =3D 0,
->+	READ_STATE  =3D 1,
->+	WRITE_STATE =3D 2,
->+	ERROR_STATE =3D 3,
->+};
->+
->+/* IPMI 2.0 - Table 9-3, KCS Interface Control Codes */
->+#define KCS_CMD_GET_STATUS_ABORT  0x60
->+#define KCS_CMD_WRITE_START       0x61
->+#define KCS_CMD_WRITE_END         0x62
->+#define KCS_CMD_READ_BYTE         0x68
->+
->+static inline void set_state(struct kcs_bmc *kcs_bmc, u8 state)
->+{
->+	kcs_bmc_update_status(kcs_bmc, KCS_STATUS_STATE_MASK,
->+					KCS_STATUS_STATE(state));
->+}
->+
->+static void kcs_bmc_ipmi_force_abort(struct kcs_bmc *kcs_bmc)
->+{
->+	set_state(kcs_bmc, ERROR_STATE);
->+	kcs_bmc_read_data(kcs_bmc);
->+	kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->+
->+	kcs_bmc->phase =3D KCS_PHASE_ERROR;
->+	kcs_bmc->data_in_avail =3D false;
->+	kcs_bmc->data_in_idx =3D 0;
->+}
->+
->+static void kcs_bmc_ipmi_handle_data(struct kcs_bmc *kcs_bmc)
->+{
->+	u8 data;
->+
->+	switch (kcs_bmc->phase) {
->+	case KCS_PHASE_WRITE_START:
->+		kcs_bmc->phase =3D KCS_PHASE_WRITE_DATA;
->+		fallthrough;
->+
->+	case KCS_PHASE_WRITE_DATA:
->+		if (kcs_bmc->data_in_idx < KCS_MSG_BUFSIZ) {
->+			set_state(kcs_bmc, WRITE_STATE);
->+			kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->+			kcs_bmc->data_in[kcs_bmc->data_in_idx++] =3D
->+						kcs_bmc_read_data(kcs_bmc);
->+		} else {
->+			kcs_bmc_ipmi_force_abort(kcs_bmc);
->+			kcs_bmc->error =3D KCS_LENGTH_ERROR;
->+		}
->+		break;
->+
->+	case KCS_PHASE_WRITE_END_CMD:
->+		if (kcs_bmc->data_in_idx < KCS_MSG_BUFSIZ) {
->+			set_state(kcs_bmc, READ_STATE);
->+			kcs_bmc->data_in[kcs_bmc->data_in_idx++] =3D
->+						kcs_bmc_read_data(kcs_bmc);
->+			kcs_bmc->phase =3D KCS_PHASE_WRITE_DONE;
->+			kcs_bmc->data_in_avail =3D true;
->+			wake_up_interruptible(&kcs_bmc->queue);
->+		} else {
->+			kcs_bmc_ipmi_force_abort(kcs_bmc);
->+			kcs_bmc->error =3D KCS_LENGTH_ERROR;
->+		}
->+		break;
->+
->+	case KCS_PHASE_READ:
->+		if (kcs_bmc->data_out_idx =3D=3D kcs_bmc->data_out_len)
->+			set_state(kcs_bmc, IDLE_STATE);
->+
->+		data =3D kcs_bmc_read_data(kcs_bmc);
->+		if (data !=3D KCS_CMD_READ_BYTE) {
->+			set_state(kcs_bmc, ERROR_STATE);
->+			kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->+			break;
->+		}
->+
->+		if (kcs_bmc->data_out_idx =3D=3D kcs_bmc->data_out_len) {
->+			kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->+			kcs_bmc->phase =3D KCS_PHASE_IDLE;
->+			break;
->+		}
->+
->+		kcs_bmc_write_data(kcs_bmc,
->+			kcs_bmc->data_out[kcs_bmc->data_out_idx++]);
->+		break;
->+
->+	case KCS_PHASE_ABORT_ERROR1:
->+		set_state(kcs_bmc, READ_STATE);
->+		kcs_bmc_read_data(kcs_bmc);
->+		kcs_bmc_write_data(kcs_bmc, kcs_bmc->error);
->+		kcs_bmc->phase =3D KCS_PHASE_ABORT_ERROR2;
->+		break;
->+
->+	case KCS_PHASE_ABORT_ERROR2:
->+		set_state(kcs_bmc, IDLE_STATE);
->+		kcs_bmc_read_data(kcs_bmc);
->+		kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->+		kcs_bmc->phase =3D KCS_PHASE_IDLE;
->+		break;
->+
->+	default:
->+		kcs_bmc_ipmi_force_abort(kcs_bmc);
->+		break;
->+	}
->+}
->+
->+static void kcs_bmc_ipmi_handle_cmd(struct kcs_bmc *kcs_bmc)
->+{
->+	u8 cmd;
->+
->+	set_state(kcs_bmc, WRITE_STATE);
->+	kcs_bmc_write_data(kcs_bmc, KCS_ZERO_DATA);
->+
->+	cmd =3D kcs_bmc_read_data(kcs_bmc);
->+	switch (cmd) {
->+	case KCS_CMD_WRITE_START:
->+		kcs_bmc->phase =3D KCS_PHASE_WRITE_START;
->+		kcs_bmc->error =3D KCS_NO_ERROR;
->+		kcs_bmc->data_in_avail =3D false;
->+		kcs_bmc->data_in_idx =3D 0;
->+		break;
->+
->+	case KCS_CMD_WRITE_END:
->+		if (kcs_bmc->phase !=3D KCS_PHASE_WRITE_DATA) {
->+			kcs_bmc_ipmi_force_abort(kcs_bmc);
->+			break;
->+		}
->+
->+		kcs_bmc->phase =3D KCS_PHASE_WRITE_END_CMD;
->+		break;
->+
->+	case KCS_CMD_GET_STATUS_ABORT:
->+		if (kcs_bmc->error =3D=3D KCS_NO_ERROR)
->+			kcs_bmc->error =3D KCS_ABORTED_BY_COMMAND;
->+
->+		kcs_bmc->phase =3D KCS_PHASE_ABORT_ERROR1;
->+		kcs_bmc->data_in_avail =3D false;
->+		kcs_bmc->data_in_idx =3D 0;
->+		break;
->+
->+	default:
->+		kcs_bmc_ipmi_force_abort(kcs_bmc);
->+		kcs_bmc->error =3D KCS_ILLEGAL_CONTROL_CODE;
->+		break;
->+	}
->+}
->+
->+int kcs_bmc_ipmi_event(struct kcs_bmc *kcs_bmc);
+But in the future, if different sized variables are added, the __packed may=
+=20
+become necessary again. To prevent anyone accidently forget to add __packed=
+=20
+when adding new variables to these structs, can we keep the __packed for al=
+l=20
+messages going through the "wire"?
 
-Another instance...
+Thanks,
+- Haiyang
 
->+int kcs_bmc_ipmi_event(struct kcs_bmc *kcs_bmc)
->+{
->+	unsigned long flags;
->+	int ret =3D -ENODATA;
->+	u8 status;
->+
->+	spin_lock_irqsave(&kcs_bmc->lock, flags);
->+
->+	status =3D kcs_bmc_read_status(kcs_bmc);
->+	if (status & KCS_STATUS_IBF) {
->+		if (!kcs_bmc->running)
->+			kcs_bmc_ipmi_force_abort(kcs_bmc);
->+		else if (status & KCS_STATUS_CMD_DAT)
->+			kcs_bmc_ipmi_handle_cmd(kcs_bmc);
->+		else
->+			kcs_bmc_ipmi_handle_data(kcs_bmc);
->+
->+		ret =3D 0;
->+	}
->+
->+	spin_unlock_irqrestore(&kcs_bmc->lock, flags);
->+
->+	return ret;
->+}
->+EXPORT_SYMBOL(kcs_bmc_ipmi_event);
->+
->+static inline struct kcs_bmc *to_kcs_bmc(struct file *filp)
->+{
->+	return container_of(filp->private_data, struct kcs_bmc, miscdev);
->+}
->+
->+static int kcs_bmc_ipmi_open(struct inode *inode, struct file *filp)
->+{
->+	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->+	int ret =3D 0;
->+
->+	spin_lock_irq(&kcs_bmc->lock);
->+	if (!kcs_bmc->running)
->+		kcs_bmc->running =3D 1;
->+	else
->+		ret =3D -EBUSY;
->+	spin_unlock_irq(&kcs_bmc->lock);
->+
->+	return ret;
->+}
->+
->+static __poll_t kcs_bmc_ipmi_poll(struct file *filp, poll_table *wait)
->+{
->+	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->+	__poll_t mask =3D 0;
->+
->+	poll_wait(filp, &kcs_bmc->queue, wait);
->+
->+	spin_lock_irq(&kcs_bmc->lock);
->+	if (kcs_bmc->data_in_avail)
->+		mask |=3D EPOLLIN;
->+	spin_unlock_irq(&kcs_bmc->lock);
->+
->+	return mask;
->+}
->+
->+static ssize_t kcs_bmc_ipmi_read(struct file *filp, char __user *buf,
->+			    size_t count, loff_t *ppos)
->+{
->+	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->+	bool data_avail;
->+	size_t data_len;
->+	ssize_t ret;
->+
->+	if (!(filp->f_flags & O_NONBLOCK))
->+		wait_event_interruptible(kcs_bmc->queue,
->+					 kcs_bmc->data_in_avail);
->+
->+	mutex_lock(&kcs_bmc->mutex);
->+
->+	spin_lock_irq(&kcs_bmc->lock);
->+	data_avail =3D kcs_bmc->data_in_avail;
->+	if (data_avail) {
->+		data_len =3D kcs_bmc->data_in_idx;
->+		memcpy(kcs_bmc->kbuffer, kcs_bmc->data_in, data_len);
->+	}
->+	spin_unlock_irq(&kcs_bmc->lock);
->+
->+	if (!data_avail) {
->+		ret =3D -EAGAIN;
->+		goto out_unlock;
->+	}
->+
->+	if (count < data_len) {
->+		pr_err("channel=3D%u with too large data : %zu\n",
->+			kcs_bmc->channel, data_len);
->+
->+		spin_lock_irq(&kcs_bmc->lock);
->+		kcs_bmc_ipmi_force_abort(kcs_bmc);
->+		spin_unlock_irq(&kcs_bmc->lock);
->+
->+		ret =3D -EOVERFLOW;
->+		goto out_unlock;
->+	}
->+
->+	if (copy_to_user(buf, kcs_bmc->kbuffer, data_len)) {
->+		ret =3D -EFAULT;
->+		goto out_unlock;
->+	}
->+
->+	ret =3D data_len;
->+
->+	spin_lock_irq(&kcs_bmc->lock);
->+	if (kcs_bmc->phase =3D=3D KCS_PHASE_WRITE_DONE) {
->+		kcs_bmc->phase =3D KCS_PHASE_WAIT_READ;
->+		kcs_bmc->data_in_avail =3D false;
->+		kcs_bmc->data_in_idx =3D 0;
->+	} else {
->+		ret =3D -EAGAIN;
->+	}
->+	spin_unlock_irq(&kcs_bmc->lock);
->+
->+out_unlock:
->+	mutex_unlock(&kcs_bmc->mutex);
->+
->+	return ret;
->+}
->+
->+static ssize_t kcs_bmc_ipmi_write(struct file *filp, const char __user *b=
-uf,
->+			     size_t count, loff_t *ppos)
->+{
->+	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->+	ssize_t ret;
->+
->+	/* a minimum response size '3' : netfn + cmd + ccode */
->+	if (count < 3 || count > KCS_MSG_BUFSIZ)
->+		return -EINVAL;
->+
->+	mutex_lock(&kcs_bmc->mutex);
->+
->+	if (copy_from_user(kcs_bmc->kbuffer, buf, count)) {
->+		ret =3D -EFAULT;
->+		goto out_unlock;
->+	}
->+
->+	spin_lock_irq(&kcs_bmc->lock);
->+	if (kcs_bmc->phase =3D=3D KCS_PHASE_WAIT_READ) {
->+		kcs_bmc->phase =3D KCS_PHASE_READ;
->+		kcs_bmc->data_out_idx =3D 1;
->+		kcs_bmc->data_out_len =3D count;
->+		memcpy(kcs_bmc->data_out, kcs_bmc->kbuffer, count);
->+		kcs_bmc_write_data(kcs_bmc, kcs_bmc->data_out[0]);
->+		ret =3D count;
->+	} else {
->+		ret =3D -EINVAL;
->+	}
->+	spin_unlock_irq(&kcs_bmc->lock);
->+
->+out_unlock:
->+	mutex_unlock(&kcs_bmc->mutex);
->+
->+	return ret;
->+}
->+
->+static long kcs_bmc_ipmi_ioctl(struct file *filp, unsigned int cmd,
->+			  unsigned long arg)
->+{
->+	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->+	long ret =3D 0;
->+
->+	spin_lock_irq(&kcs_bmc->lock);
->+
->+	switch (cmd) {
->+	case IPMI_BMC_IOCTL_SET_SMS_ATN:
->+		kcs_bmc_update_status(kcs_bmc, KCS_STATUS_SMS_ATN, KCS_STATUS_SMS_ATN);
->+		break;
->+
->+	case IPMI_BMC_IOCTL_CLEAR_SMS_ATN:
->+		kcs_bmc_update_status(kcs_bmc, KCS_STATUS_SMS_ATN, 0);
->+		break;
->+
->+	case IPMI_BMC_IOCTL_FORCE_ABORT:
->+		kcs_bmc_ipmi_force_abort(kcs_bmc);
->+		break;
->+
->+	default:
->+		ret =3D -EINVAL;
->+		break;
->+	}
->+
->+	spin_unlock_irq(&kcs_bmc->lock);
->+
->+	return ret;
->+}
->+
->+static int kcs_bmc_ipmi_release(struct inode *inode, struct file *filp)
->+{
->+	struct kcs_bmc *kcs_bmc =3D to_kcs_bmc(filp);
->+
->+	spin_lock_irq(&kcs_bmc->lock);
->+	kcs_bmc->running =3D 0;
->+	kcs_bmc_ipmi_force_abort(kcs_bmc);
->+	spin_unlock_irq(&kcs_bmc->lock);
->+
->+	return 0;
->+}
->+
->+static const struct file_operations kcs_bmc_fops =3D {
->+	.owner          =3D THIS_MODULE,
->+	.open           =3D kcs_bmc_ipmi_open,
->+	.read           =3D kcs_bmc_ipmi_read,
->+	.write          =3D kcs_bmc_ipmi_write,
->+	.release        =3D kcs_bmc_ipmi_release,
->+	.poll           =3D kcs_bmc_ipmi_poll,
->+	.unlocked_ioctl =3D kcs_bmc_ipmi_ioctl,
->+};
->+
->+struct kcs_bmc *kcs_bmc_ipmi_alloc(struct device *dev, int sizeof_priv, u=
-32 channel);
 
-Here too.
-
->+struct kcs_bmc *kcs_bmc_ipmi_alloc(struct device *dev, int sizeof_priv, u=
-32 channel)
->+{
->+	struct kcs_bmc *kcs_bmc;
->+
->+	kcs_bmc =3D devm_kzalloc(dev, sizeof(*kcs_bmc) + sizeof_priv, GFP_KERNEL=
-);
->+	if (!kcs_bmc)
->+		return NULL;
->+
->+	spin_lock_init(&kcs_bmc->lock);
->+	kcs_bmc->channel =3D channel;
->+
->+	mutex_init(&kcs_bmc->mutex);
->+	init_waitqueue_head(&kcs_bmc->queue);
->+
->+	kcs_bmc->data_in =3D devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
->+	kcs_bmc->data_out =3D devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
->+	kcs_bmc->kbuffer =3D devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
->+
->+	kcs_bmc->miscdev.minor =3D MISC_DYNAMIC_MINOR;
->+	kcs_bmc->miscdev.name =3D devm_kasprintf(dev, GFP_KERNEL, "%s%u",
->+					       DEVICE_NAME, channel);
->+	if (!kcs_bmc->data_in || !kcs_bmc->data_out || !kcs_bmc->kbuffer ||
->+	    !kcs_bmc->miscdev.name)
->+		return NULL;
->+	kcs_bmc->miscdev.fops =3D &kcs_bmc_fops;
->+
->+	return kcs_bmc;
->+}
->+EXPORT_SYMBOL(kcs_bmc_ipmi_alloc);
->+
->+MODULE_LICENSE("GPL v2");
->+MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
->+MODULE_DESCRIPTION("KCS BMC to handle the IPMI request from system softwa=
-re");
->--=20
->2.27.0
->=
