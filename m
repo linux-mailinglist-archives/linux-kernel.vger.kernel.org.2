@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DA1A35A099
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:02:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BD835A09C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:03:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233839AbhDIODB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:03:01 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:55314 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbhDIOC4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:02:56 -0400
-Received: from [192.168.254.32] (unknown [47.187.194.202])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 865BD20B5680;
-        Fri,  9 Apr 2021 07:02:42 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 865BD20B5680
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1617976963;
-        bh=GxI9MmdzWGr7nnktck4TyPxKLYohdw0uB9LcCzDuPYk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=dIQln+/Qcl4vYhj0bP0wGn34Tk4kn6mA+wTTbm9ObqpkZxVOiBHjDVmG1KKlx5bfz
-         YlXt1Yje46hQl+RYZ3wLCy0olo3P+p/slmv7ww0lakcHCxc2acqvqGE6dctSWa5IWe
-         5yZOW1xBL2Orb7sVzh5JHTr1zdEXH1QzKt7TIB8Y=
-Subject: Re: [RFC PATCH v2 3/4] arm64: Detect FTRACE cases that make the stack
- trace unreliable
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
- <20210405204313.21346-1-madvenka@linux.microsoft.com>
- <20210405204313.21346-4-madvenka@linux.microsoft.com>
- <20210408165825.GP4516@sirena.org.uk>
- <eacc6098-a15f-c07a-2730-cb16cb8e1982@linux.microsoft.com>
- <20210409113101.GA4499@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <75944f33-9a3e-27d9-75df-b2038c10ea02@linux.microsoft.com>
-Date:   Fri, 9 Apr 2021 09:02:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233907AbhDIODZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:03:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232796AbhDIODX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 10:03:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 02B5B610F7;
+        Fri,  9 Apr 2021 14:03:07 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 19:33:04 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org, sboyd@kernel.org,
+        mturquette@baylibre.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] clk: qcom: rpmh: add support for SDX55 rpmh IPA clock
+Message-ID: <20210409140304.GF31856@work>
+References: <20210409134407.841137-1-elder@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210409113101.GA4499@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409134407.841137-1-elder@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/9/21 6:31 AM, Mark Brown wrote:
-> On Thu, Apr 08, 2021 at 02:23:39PM -0500, Madhavan T. Venkataraman wrote:
->> On 4/8/21 11:58 AM, Mark Brown wrote:
+On Fri, Apr 09, 2021 at 08:44:07AM -0500, Alex Elder wrote:
+> The IPA core clock is required for SDX55.  Define it.
 > 
->>> This looks good to me however I'd really like someone who has a firmer
->>> understanding of what ftrace is doing to double check as it is entirely
->>> likely that I am missing cases here, it seems likely that if I am
->>> missing stuff it's extra stuff that needs to be added and we're not
->>> actually making use of the reliability information yet.
-> 
->> OK. So, do you have some specific reviewer(s) in mind? Apart from yourself, Mark Rutland and
->> Josh Poimboeuf, these are some reviewers I can think of (in alphabetical order):
-> 
-> Mainly Mark Rutland, but generally someone else who has looked at ftrace
-> on arm64 in detail.  It was mainly a comment to say I wasn't going to do
-> any kind of Reviewed-by but also hadn't spotted any issues.
-> 
+> Signed-off-by: Alex Elder <elder@linaro.org>
 
-Understood.
+I tested this patch on couple of SDX55 based boards like Telit FN980 and
+Thundercomm T55. Hence,
 
-Madhavan
+Tested-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Also cross checked the IPA clock definition using QC internal docs, so
+
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
+
+> ---
+>  drivers/clk/qcom/clk-rpmh.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
+> index c623ce9004063..552d1cbfea4c0 100644
+> --- a/drivers/clk/qcom/clk-rpmh.c
+> +++ b/drivers/clk/qcom/clk-rpmh.c
+> @@ -380,6 +380,7 @@ static const struct clk_rpmh_desc clk_rpmh_sdm845 = {
+>  DEFINE_CLK_RPMH_VRM(sdx55, rf_clk1, rf_clk1_ao, "rfclkd1", 1);
+>  DEFINE_CLK_RPMH_VRM(sdx55, rf_clk2, rf_clk2_ao, "rfclkd2", 1);
+>  DEFINE_CLK_RPMH_BCM(sdx55, qpic_clk, "QP0");
+> +DEFINE_CLK_RPMH_BCM(sdx55, ipa, "IP0");
+>  
+>  static struct clk_hw *sdx55_rpmh_clocks[] = {
+>  	[RPMH_CXO_CLK]		= &sdm845_bi_tcxo.hw,
+> @@ -389,6 +390,7 @@ static struct clk_hw *sdx55_rpmh_clocks[] = {
+>  	[RPMH_RF_CLK2]		= &sdx55_rf_clk2.hw,
+>  	[RPMH_RF_CLK2_A]	= &sdx55_rf_clk2_ao.hw,
+>  	[RPMH_QPIC_CLK]		= &sdx55_qpic_clk.hw,
+> +	[RPMH_IPA_CLK]		= &sdx55_ipa.hw,
+>  };
+>  
+>  static const struct clk_rpmh_desc clk_rpmh_sdx55 = {
+> -- 
+> 2.27.0
+> 
