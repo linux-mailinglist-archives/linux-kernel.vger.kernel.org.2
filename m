@@ -2,73 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C08935943B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693F8359446
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229987AbhDIE5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 00:57:50 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16426 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhDIE5o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 00:57:44 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FGm6Q0PZ2zlWqH;
-        Fri,  9 Apr 2021 12:55:42 +0800 (CST)
-Received: from ubuntu1804.huawei.com (10.67.174.98) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 9 Apr 2021 12:57:23 +0800
-From:   Pu Lehui <pulehui@huawei.com>
-To:     <gregkh@linuxfoundation.org>, <fabioaiuto83@gmail.com>,
-        <ross.schm.dev@gmail.com>, <marcocesati@gmail.com>
-CC:     <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <pulehui@huawei.com>
-Subject: [PATCH -next] staging: rtl8723bs: remove unused variable pwrctl
-Date:   Fri, 9 Apr 2021 12:57:28 +0800
-Message-ID: <20210409045728.125852-1-pulehui@huawei.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.98]
-X-CFilter-Loop: Reflected
+        id S231487AbhDIFFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:05:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhDIFFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 01:05:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 325B061165;
+        Fri,  9 Apr 2021 05:04:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1617944688;
+        bh=iBZJg2qunvF7v3TtboIlcuUe7mCGQTTjlXG5RowbNuM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=adLu+IYoQ7vk7/cFv+oy0OjM4dI0Fkt/4xsMjVGSoZD7vRwf/RColxjqeB9UXBB72
+         ubv+mWWeZjLsFl6JK0afRRIgsWPHCt9pvMARzw2h4oP/wuMRaOZF+8YhKYaMMmOBA4
+         evHoB2QvhdlSOcTjDfAu/EBIDzBiX1XH1PwY3oJM=
+Date:   Thu, 8 Apr 2021 22:04:40 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Daniel Colascione <dancol@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH 0/9] userfaultfd: add minor fault handling for shmem
+Message-Id: <20210408220440.aab59f2f06beb840c22377b3@linux-foundation.org>
+In-Reply-To: <20210408234327.624367-1-axelrasmussen@google.com>
+References: <20210408234327.624367-1-axelrasmussen@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GCC reports the following warning with W=1:
+On Thu,  8 Apr 2021 16:43:18 -0700 Axel Rasmussen <axelrasmussen@google.com> wrote:
 
-drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c:532:23: warning:
- variable 'pwrctl' set but not used [-Wunused-but-set-variable]
-   532 |  struct pwrctrl_priv *pwrctl;
-       |                       ^~~~~~
+> The idea is that it will apply cleanly to akpm's tree, *replacing* the following
+> patches (i.e., drop these first, and then apply this series):
+> 
+> userfaultfd-support-minor-fault-handling-for-shmem.patch
+> userfaultfd-support-minor-fault-handling-for-shmem-fix.patch
+> userfaultfd-support-minor-fault-handling-for-shmem-fix-2.patch
+> userfaultfd-support-minor-fault-handling-for-shmem-fix-3.patch
+> userfaultfd-support-minor-fault-handling-for-shmem-fix-4.patch
+> userfaultfd-selftests-use-memfd_create-for-shmem-test-type.patch
+> userfaultfd-selftests-create-alias-mappings-in-the-shmem-test.patch
+> userfaultfd-selftests-reinitialize-test-context-in-each-test.patch
+> userfaultfd-selftests-exercise-minor-fault-handling-shmem-support.patch
 
-This variable is not used so remove it to fix the warning.
+Well.  the problem is,
 
-Signed-off-by: Pu Lehui <pulehui@huawei.com>
----
- drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c | 2 --
- 1 file changed, 2 deletions(-)
+> +	if (area_alias == MAP_FAILED)
+> +		err("mmap of memfd alias failed");
 
-diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c b/drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c
-index f2ab878babcb..f8c6028f89f3 100644
---- a/drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c
-+++ b/drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c
-@@ -529,7 +529,6 @@ static void rtl8723b_set_FwRsvdPagePkt(
- 	struct xmit_priv *pxmitpriv;
- 	struct mlme_ext_priv *pmlmeext;
- 	struct mlme_ext_info *pmlmeinfo;
--	struct pwrctrl_priv *pwrctl;
- 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
- 	u32 BeaconLength = 0, PSPollLength = 0;
- 	u32 NullDataLength = 0, QosNullLength = 0, BTQosNullLength = 0;
-@@ -544,7 +543,6 @@ static void rtl8723b_set_FwRsvdPagePkt(
- 	pxmitpriv = &padapter->xmitpriv;
- 	pmlmeext = &padapter->mlmeextpriv;
- 	pmlmeinfo = &pmlmeext->mlmext_info;
--	pwrctl = adapter_to_pwrctl(padapter);
- 
- 	RsvdPageNum = BCNQ_PAGE_NUM_8723B + WOWLAN_PAGE_NUM_8723B;
- 	MaxRsvdPageBufSize = RsvdPageNum*PageSize;
--- 
-2.17.1
+`err' doesn't exist until eleventy patches later, in Peter's
+"userfaultfd/selftests: unify error handling".  I got tired of (and
+lost confidence in) replacing "err(...)" with "fprintf(stderr, ...);
+exit(1)" everywhere then fixing up the fallout when Peter's patch came
+along.  Shudder.
+
+Sorry, all this material pretty clearly isn't going to make 5.12
+(potentially nine days hence), so I shall drop all the userfaultfd
+patches.  Let's take a fresh run at all of this after -rc1.
+
+
+I have tentatively retained the first series:
+
+userfaultfd-add-minor-fault-registration-mode.patch
+userfaultfd-add-minor-fault-registration-mode-fix.patch
+userfaultfd-disable-huge-pmd-sharing-for-minor-registered-vmas.patch
+userfaultfd-hugetlbfs-only-compile-uffd-helpers-if-config-enabled.patch
+userfaultfd-add-uffdio_continue-ioctl.patch
+userfaultfd-update-documentation-to-describe-minor-fault-handling.patch
+userfaultfd-selftests-add-test-exercising-minor-fault-handling.patch
+
+but I don't believe they have had much testing standalone, without the
+other userfaultfd patches present.  So I don't think it's smart to
+upstream these in this cycle.  Or I could drop them so you and Peter
+can have a clean shot at redoing the whole thing.  Please let me know.
 
