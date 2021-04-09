@@ -2,273 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B37163594B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9933594BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbhDIFfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:35:48 -0400
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:21248 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233344AbhDIFfL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:35:11 -0400
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1395Pdrl030122;
-        Thu, 8 Apr 2021 22:34:35 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=proofpoint;
- bh=mL6G7Smts08DNYnPWZJwf4BT0Jxd/8tE8c3PFgAtYNA=;
- b=sPF+z31+Yn7FOs4zIatjfngvSNGrS9XkIioQaH6bWADJylKUhPIobt+iBdkFLWP9woz1
- xI+iVgyOOYZMbjuc/CESzZIMqS2c30f0BJZUHm+m/NV0aNnzURRCkK8Z0ZnSrqLbpOQ6
- f3YSuHhYM0nOhrDLwMiM6WqoCy4E50JSOub/+rYYTDe2UCK55RWmH/ok2NqAU078mQyb
- 6CzETguzRRKzbkkCOS5DghkkPR1sSWxwleDyvH480bUp1fPzokgYJJ7JyLuCjUxvruYN
- FLpsYfaynpighRJdL25PT0aYBThptnJDwBjJer9AOX6Z2aPTi1qYKeq4ScnfjOkFvJSJ sQ== 
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-        by mx0b-0014ca01.pphosted.com with ESMTP id 37rvb4ttj1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 08 Apr 2021 22:34:35 -0700
+        id S233345AbhDIFgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:36:09 -0400
+Received: from mail-mw2nam10on2118.outbound.protection.outlook.com ([40.107.94.118]:37409
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233455AbhDIFf5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 01:35:57 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OqJV0NM3VgAReU22wzJgo2WZAQXw+i6+xJD4bLpGcnN5RaDUc5Cnn2+3Bfna4eqKLwywD92DPWSP+y7TXOs2FLyuAc2KT2J8BKyok+EebzV98NM1yU7vEwlsFES4Le0/595L5m206VqTIa2JWN5qn0hTbY8tJH6zwinGel8/9cGCmR6ey9HVG9cRnH62IZfNwdr8dazOZAmllTL1Juw8Ax0SBfsZpaQ2ySa1iBA8tob1AKTUf4h5o88KGpHHsZmJa/plADAfKOllhwZ/KcmBvlk8BZ0LfphBUivf8cckbyb0KMsb2hekLX6SpjfaMO49ALPLy99y3VNVZCoZRcil/A==
+ b=mbJLBIr8vwfQgf0sSZGm4WNBe5lbEIztLZ7LmIRFoSk7JujyKxQd8kU5zliJx9AYaPf9/vMYZKp/xNjyQdVaelP7jRDdn/ASkYQsp9cSEBHUpoyZ6WvQQ6uWj89SzU3eXzCKxoE60DItHX/pIRFnRBA6qOXCxmKZRzq04Dg1REEz91hwjKnI6ZX9AwlCmxGKf47FuTV7v9zfZFDb2TH83JcWQZOLcsqDse5k9Ngwm2C6uaveTbnCRBJOym1EbQWcbuwsjqA5QXVIjy6nWWmPvLUwshA8+yJf8w+f/Lib0cP0hXoORhbXtamxmc9iB7U2RVpc8fJjhG6PY20TsQtTJw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mL6G7Smts08DNYnPWZJwf4BT0Jxd/8tE8c3PFgAtYNA=;
- b=eN/IDQ7+hLvskOkHMQyeYsnrDJ3MPocYugIR/os6Z4xOF+M8sB1teXUDLNUB7icG8/WhjZx9RFng85ovyC5XelkPC3xJQV/z9GlbMtW3+I6QJTkpRNG/fCp28kwuby0QABLuNz5xLhCmK73/b/Y7JlLezK9XpbNd34aOYzpd0SRnxeAHct5T5k6WScD6hdDOrrC/5alPvONZ+9Gj8Oy0DNwtOOdhr+NbzMJS8UZPWypHoTh1u/71jjev/SANv/dTPyLwPHP0r3FXAOj96a4nFU8ePIXJjESP3TYYpGniUUBuSYBdOTrQFRruNeGwwnlvkJq0ZYNvMNtU1zCcY+8LAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 158.140.1.147) smtp.rcpttodomain=pengutronix.de smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
+ bh=d196IQimGvo54x1HxYSeRfx060vkZGWuf+GZc0JnAQ8=;
+ b=nziG3bYUQpT+jiNfrWAif/kzN6UkARtCjegaxuftMIUQqP6sNT1+2/m9vmW4K+E1K7P2tzIXvUnqR51EUuL5S1m9KhKm0TvQSgNwGZdieKSvTzAn/b9Wfdt57QGtDh1gVoQMFP23S/3gROgW32aTBVH3bfgttvtWvDT/1VBHHUqA0laCixfWmXf7+8pW9w80y9nrQHIkTd9WJSQ5mAQYr5IF1fOUDdbaS1uN5BoHoFXSMCEqTkr78lqW12kKXRPPto7gW1bXNhNXWsMU9zkjLeg0NPZ8gJNwEgmSKDcd+g5M0Tr8UQBSQ98EC6TN7tA2FOWgTipnP3b9aYxYoBaylw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mL6G7Smts08DNYnPWZJwf4BT0Jxd/8tE8c3PFgAtYNA=;
- b=16kwfVSME7L5BnKOfnIRtHWlbGxfcPvx1zwYQuj3kkxGKYEACP0WlUiBFl8blGGzqs6/kr3dNS5/aFrgOUw5+9kWaEpu/NS6NsVezP0fwt5nouQv0zUSQHTuHn+Nkw/3LJMY66a0y0sKaqNdFK/A4p2T4FEeU+0fXiQOSYOZTuQ=
-Received: from DM5PR05CA0010.namprd05.prod.outlook.com (2603:10b6:3:d4::20) by
- BYAPR07MB6262.namprd07.prod.outlook.com (2603:10b6:a03:120::19) with
+ bh=d196IQimGvo54x1HxYSeRfx060vkZGWuf+GZc0JnAQ8=;
+ b=hWtTdgSnwiqXZVm2RrQKyXp/ruNLVX2Sns7eVmiAmLf7aQzsjP/7in5hNhQb0TRVPtaruuhk5zPbv+JwzJFD81UKvxer2QaJeIonH9p5eNBULxZAyZBVMuwoyVk0bNFOFhcNMAl1GDKzBjiTLng2vsO6JPtJf0QVnCEGfXfampM=
+Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
+ header.d=none;driverdev.osuosl.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BYAPR04MB3928.namprd04.prod.outlook.com (2603:10b6:a02:aa::26) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Fri, 9 Apr
- 2021 05:34:30 +0000
-Received: from DM6NAM12FT050.eop-nam12.prod.protection.outlook.com
- (2603:10b6:3:d4:cafe::9e) by DM5PR05CA0010.outlook.office365.com
- (2603:10b6:3:d4::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.8 via Frontend
- Transport; Fri, 9 Apr 2021 05:34:30 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
- smtp.mailfrom=cadence.com; pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
- client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
-Received: from sjmaillnx1.cadence.com (158.140.1.147) by
- DM6NAM12FT050.mail.protection.outlook.com (10.13.178.215) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4042.6 via Frontend Transport; Fri, 9 Apr 2021 05:34:30 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 1395YJ5f032749
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 8 Apr 2021 22:34:29 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 9 Apr 2021 07:34:20 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Fri, 9 Apr 2021 07:34:19 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 1395YJVw027889;
-        Fri, 9 Apr 2021 07:34:19 +0200
-Received: (from sjakhade@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 1395YJvd027888;
-        Fri, 9 Apr 2021 07:34:19 +0200
-From:   Swapnil Jakhade <sjakhade@cadence.com>
-To:     <vkoul@kernel.org>, <kishon@ti.com>, <p.zabel@pengutronix.de>,
-        <linux-phy@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC:     <mparab@cadence.com>, <sjakhade@cadence.com>, <lokeshvutla@ti.com>
-Subject: [PATCH 14/14] phy: cadence-torrent: Check PIPE mode PHY status to be ready for operation
-Date:   Fri, 9 Apr 2021 07:34:16 +0200
-Message-ID: <1617946456-27773-15-git-send-email-sjakhade@cadence.com>
-X-Mailer: git-send-email 2.4.5
-In-Reply-To: <1617946456-27773-1-git-send-email-sjakhade@cadence.com>
-References: <1617946456-27773-1-git-send-email-sjakhade@cadence.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Fri, 9 Apr
+ 2021 05:35:41 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::8d56:f2c5:7beb:2bf3]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::8d56:f2c5:7beb:2bf3%7]) with mapi id 15.20.4020.018; Fri, 9 Apr 2021
+ 05:35:41 +0000
+Date:   Fri, 9 Apr 2021 13:35:32 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Robert Foss <robert.foss@linaro.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        Bernie Liang <bliang@analogixsemi.com>,
+        Zhen Li <zhenli@analogixsemi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Subject: [PATCH 1/1] drm/bridge: anx7625: send DPCD command to downstream
+Message-ID: <18ec1a440eb71e4f91c0932cd0fadddd2e9a4c0f.1617937551.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Originating-IP: [60.251.58.79]
+X-ClientProxiedBy: HK2PR02CA0201.apcprd02.prod.outlook.com
+ (2603:1096:201:20::13) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HK2PR02CA0201.apcprd02.prod.outlook.com (2603:1096:201:20::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Fri, 9 Apr 2021 05:35:40 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 21eecb2a-35d6-403c-4cf4-08d8fb19261f
-X-MS-TrafficTypeDiagnostic: BYAPR07MB6262:
-X-Microsoft-Antispam-PRVS: <BYAPR07MB6262C092313338E520F910ADC5739@BYAPR07MB6262.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1388;
+X-MS-Office365-Filtering-Correlation-Id: 2df1cc92-17de-425f-ef25-08d8fb194fc8
+X-MS-TrafficTypeDiagnostic: BYAPR04MB3928:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR04MB3928EF88C9114F4E6596C451C7739@BYAPR04MB3928.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:254;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: grgwd/4iLUwPo3jbipgboB8XPeG34Yt4rD5HuTYw1BnPYmPTXKm2mbgt7G9Gyd3yOrua/CU1yzQIpF5rLFTMvfoY1wcAaT0R1bLkWMNla3ay293eHH3uQiriQHUjHx3VcH541S0xDlHOF9MYnhKFvuPu/lxHbUebUcEV479QSQxoqxtgOEdIeu+HeKpUx6PeTesPusZZZszzyudm3VuW3BXOVKdPCz0TIoO5IflywI4oBI/5ngMcqJmPxb76nC0E9X59+1WFs5bMxfnRO/kirdmDr1jIWD3iL+jBd/chvwkUtq31a+oFsw+tvUOdSgcfOUUupqZRO1ClYQBdj/sE5+FWVH4vrwdDMKh0DDJHRWTPvZbpWs+ghCvirn4YJsLolxDsvEGieVkb1Lho32U2sps+nGRmGol5jLzhqQ81GbJMmGOiIHpcGJ7l59m5GExQifAJtZPUGCLJOd4jpi19Cik/+x5ufE9098eXKEav1LsNMSSRKPkIFH71fHwHeiaI1eNdAD1i99Z2ctYZI4+Ac+yTygPO93cggAqCNROZFe9Tu2IVWaB14lXSxvWi1GJhB4o3xxbHWMV+mSoi4W3TiOhY4Y25v/VnbCQWSRsHf47b5yX05Q2LIkWnc6yw9EM18RLMLOUnI23HKyafKmEgteWIs8uQAFXtaolzAeqv5C9eStIqQ5tRXMyp5F5FausjuRFbyHEkUq3p8FuvTAGoJg==
-X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(39860400002)(396003)(346002)(376002)(136003)(36092001)(36840700001)(46966006)(36906005)(70586007)(6666004)(82740400003)(316002)(2616005)(42186006)(356005)(186003)(478600001)(7636003)(47076005)(26005)(8936002)(83380400001)(86362001)(5660300002)(82310400003)(36756003)(8676002)(336012)(110136005)(426003)(36860700001)(4326008)(70206006)(2906002)(54906003)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 05:34:30.4275
+X-Microsoft-Antispam-Message-Info: qpbGogYtteLYPWbdd0KCvTGsmkSejHWmjotXR3sXXwcgvMzbKB3Wa6j+oaqwW9SnZ65L6+aQFU7+2kz9SUjek7eVdvag139H30eXKQpDADtFIJsOIzKq3E6N6sFpIDc2KMnsoxq/8y82eqKPYtOAQUN1FatwoPLRhz76/hn4ow+j2fqhyXGgWkZttbaqEi8r/b3vu5+kDSr5YFrRmks9kfXUfhNYxZsSJo49u/kD+XP2OX1eNq/n6+qd5qts3xBSK2pQaej9u0SkbzyrP5PLWY0EisGa6P6n0GrqmshqWJ63qhJIV02KLsp67nNSmnZ9z72bWp1aWpNFfKIknYL/OhG+N8cBmfndMzlBLSHx1ByQTVfFCx6CE8BR85bNOU9/OxBKB8utt1Pei4dIC4b6lXncQRJLOVlFbzp7VK/c+DcVHvf5Jsb1kGkCIPZSKc8RSyIt5th6dD86wtNMNS5rXCw5eP/iuCbEnpwb7c1MRLD7hjgYE6mWAvvVL4YbSDj9qUWD1/hLQv1faQ7vWoUCPsCqbE9m8chhwawWoS46e0PYWIANwMjEDyybXzXsXxoVa2+vOzC0LnVoyxy6NYi6pwus0wpF8B879hUj9x6EXodb3SLjApF2/wqTUH53owO/32HoRW0xIYlbdZJ2wGBALsx6ntx51V/zf1tuhYwVkTXknsLjW9tEYbtj2cveGY/L
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39840400004)(346002)(396003)(366004)(376002)(6486002)(478600001)(36756003)(2616005)(86362001)(38350700001)(83380400001)(956004)(54906003)(66556008)(66476007)(186003)(110136005)(16526019)(55236004)(8676002)(66946007)(38100700001)(52116002)(8936002)(6496006)(7416002)(5660300002)(4326008)(316002)(2906002)(26005)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xQiXC9gJV/NQSKkNBDwcz9O9Evd5ln8aSnBbw2LLBh5H4fm7SoPD1u+WBNvy?=
+ =?us-ascii?Q?LDwtAemihbzYFPeoq1y6WgnIXI5Io+NgWUyYt0LYHzksVmxSqw/+SPXy7DZF?=
+ =?us-ascii?Q?q0eUSz4NKSAaGLj2PjspfdAVO3lginaeZRf9WEKz9611fPahrqNDRvzl7Ug/?=
+ =?us-ascii?Q?ACkCH66dXault3svtxg5RWz+DXgmc2R+uZRxbY1q93Z4rJIA3TBol26F8ZqB?=
+ =?us-ascii?Q?YWIoBHPdyx8H5tPmYHvjmJzVRmq+AdM4BYyh77Iw0YtFDuNdZERnDruqJC1H?=
+ =?us-ascii?Q?MtNHaMKVinVhbIhgvktOum3L8rsig3TMiNC2bago+fZo2mEdzB2rcfKrmpij?=
+ =?us-ascii?Q?KoPGHBMy4QsW7697r/QqehuelNWi/2tjpIDnqwYtNTboo1rLmPahVNLcZDK1?=
+ =?us-ascii?Q?WK4EwHh8uaFhpYBUF4IogFTFVwec2b02EYcPTRAn+QC9GmByAIyQwLhokiLI?=
+ =?us-ascii?Q?fL+X0kRKNy1P1rO4jEOUtfgt/7iZqjzkQPllu21Ek1KEBlbCzE0/ytdeuijj?=
+ =?us-ascii?Q?cWQfBSzO+XH4ZE2JwfsTqzwbn6sssNx6i7kPY7YvoHzIdMGdTHQlU18E++0K?=
+ =?us-ascii?Q?e8y2AYY+h1d2bmwmJA2FWCEyJOm23gOfrDmAwU3iP/zwpLSNM9bMmdSo9Gak?=
+ =?us-ascii?Q?BkNhPWArRuuljZX5UjBbohYxge3xWIKyZUUv/zOv7z8Cf1P2FTOq3D90S5WO?=
+ =?us-ascii?Q?UfgFXqLJDo5C+Fs33KA2na/YNrIXCGWLLttJsfGY5+KUK3HGW0yjXeFZENa3?=
+ =?us-ascii?Q?7A7N8eNN01XYF95ohARIu8QFpz/WB74BdzXK9ai4ilt5a8xB3g9Lt65PWq9C?=
+ =?us-ascii?Q?DLtXmwlUMxiBiE2Dcg44bZGEuqlNr/DmL2AmFuK5cjU4L3w4T6OjI8nl5aD4?=
+ =?us-ascii?Q?xKkyGHeQPOIpKKfV8B6c9LjTLrASXdlIhzConLSGpqEz/vRfYu2gefnwgPh6?=
+ =?us-ascii?Q?9aPPKdljri9yLi3kLTZizJT2wo+smBPeTweLs14UdoQ//Rn882G0De5tHmf1?=
+ =?us-ascii?Q?QIbkaxexNfNUAiJiT2KjgiBVw05Sn4FLMOfyOwNaSH6ckMUb79dyC1i2MhnL?=
+ =?us-ascii?Q?cogwr79fWc1PF+C6T323pHyfpVJVo3csA5ZfmMn6HCu/QEjzEdLJBgFtdjw6?=
+ =?us-ascii?Q?IWMo/dIADEAg17zT3LC6vNO1/LcqpRSVdVP9PgP9NjHJxQ7vyMUSxe7abWKc?=
+ =?us-ascii?Q?yQtl/fQBiQ3Kb5/o9+0yP1ADQuZeFORLbWwEMhouVhp1wgjF2KnwC1mObxzj?=
+ =?us-ascii?Q?e0P7fWfdXxeIo8C9YA7eX0TeQVTgGV2z9sM1TnM2Q6jub1cWgAVDDh1U9i1y?=
+ =?us-ascii?Q?FBb5NtUtlhElukTRxF5oPTLX?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2df1cc92-17de-425f-ef25-08d8fb194fc8
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 05:35:40.6796
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 21eecb2a-35d6-403c-4cf4-08d8fb19261f
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM12FT050.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR07MB6262
-X-Proofpoint-ORIG-GUID: 5LuBGJLHQEvckAdRW72S-CYGPhGA9WDI
-X-Proofpoint-GUID: 5LuBGJLHQEvckAdRW72S-CYGPhGA9WDI
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-09_03:2021-04-08,2021-04-09 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 bulkscore=0
- malwarescore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0
- mlxlogscore=999 clxscore=1015 suspectscore=0 spamscore=0 adultscore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2104090040
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PhaIDDgxSGxTR2hQ6JQ2uCaJ44l8L8H2V3mCJIVQUBOsyTS/2kdpXDY9l/WXYsYPUkyjdLbG7Qy169OoHtj/vg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3928
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PIPE PHY status is used to communicate the completion of several PHY
-functions. Check if PHY is ready for operation while configured for
-PIPE mode during startup.
+Send DPCD command to downstream before anx7625 power down,
+tell downstream into standby mode.
 
-Signed-off-by: Swapnil Jakhade <sjakhade@cadence.com>
+Signed-off-by: Xin Ji <xji@analogixsemi.com>
 ---
- drivers/phy/cadence/phy-cadence-torrent.c | 60 +++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 75 +++++++++++++++++++++++
+ 1 file changed, 75 insertions(+)
 
-diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
-index 39145e56e061..42a1bdfd18d5 100644
---- a/drivers/phy/cadence/phy-cadence-torrent.c
-+++ b/drivers/phy/cadence/phy-cadence-torrent.c
-@@ -51,6 +51,10 @@
- #define TORRENT_PHY_PCS_COMMON_OFFSET(block_offset)	\
- 				(0xC000 << (block_offset))
- 
-+#define TORRENT_PHY_PCS_LANE_CDB_OFFSET(ln, block_offset, reg_offset)	\
-+				((0xD000 << (block_offset)) +		\
-+				(((ln) << 9) << (reg_offset)))
-+
- #define TORRENT_PHY_PMA_COMMON_OFFSET(block_offset)	\
- 				(0xE000 << (block_offset))
- 
-@@ -218,6 +222,9 @@
- #define PHY_PIPE_USB3_GEN2_POST_CFG0	0x0022U
- #define PHY_PIPE_USB3_GEN2_POST_CFG1	0x0023U
- 
-+/* PHY PCS lane registers */
-+#define PHY_PCS_ISO_LINK_CTRL		0x000BU
-+
- /* PHY PMA common registers */
- #define PHY_PMA_CMN_CTRL1		0x0000U
- #define PHY_PMA_CMN_CTRL2		0x0001U
-@@ -242,6 +249,9 @@ static const struct reg_field phy_pma_pll_raw_ctrl =
- static const struct reg_field phy_reset_ctrl =
- 				REG_FIELD(PHY_RESET, 8, 8);
- 
-+static const struct reg_field phy_pcs_iso_link_ctrl_1 =
-+				REG_FIELD(PHY_PCS_ISO_LINK_CTRL, 1, 1);
-+
- static const struct reg_field phy_pipe_cmn_ctrl1_0 = REG_FIELD(PHY_PIPE_CMN_CTRL1, 0, 0);
- 
- #define REFCLK_OUT_NUM_CMN_CONFIG	5
-@@ -316,12 +326,14 @@ struct cdns_torrent_phy {
- 	struct regmap *regmap_phy_pma_common_cdb;
- 	struct regmap *regmap_tx_lane_cdb[MAX_NUM_LANES];
- 	struct regmap *regmap_rx_lane_cdb[MAX_NUM_LANES];
-+	struct regmap *regmap_phy_pcs_lane_cdb[MAX_NUM_LANES];
- 	struct regmap *regmap_dptx_phy_reg;
- 	struct regmap_field *phy_pll_cfg;
- 	struct regmap_field *phy_pma_cmn_ctrl_1;
- 	struct regmap_field *phy_pma_cmn_ctrl_2;
- 	struct regmap_field *phy_pma_pll_raw_ctrl;
- 	struct regmap_field *phy_reset_ctrl;
-+	struct regmap_field *phy_pcs_iso_link_ctrl_1[MAX_NUM_LANES];
- 	struct clk *clks[CDNS_TORRENT_REFCLK_DRIVER + 1];
- 	struct clk_onecell_data clk_data;
- };
-@@ -456,6 +468,22 @@ static const struct regmap_config cdns_torrent_common_cdb_config = {
- 	.reg_read = cdns_regmap_read,
- };
- 
-+#define TORRENT_PHY_PCS_LANE_CDB_REGMAP_CONF(n) \
-+{ \
-+	.name = "torrent_phy_pcs_lane" n "_cdb", \
-+	.reg_stride = 1, \
-+	.fast_io = true, \
-+	.reg_write = cdns_regmap_write, \
-+	.reg_read = cdns_regmap_read, \
-+}
-+
-+static const struct regmap_config cdns_torrent_phy_pcs_lane_cdb_config[] = {
-+	TORRENT_PHY_PCS_LANE_CDB_REGMAP_CONF("0"),
-+	TORRENT_PHY_PCS_LANE_CDB_REGMAP_CONF("1"),
-+	TORRENT_PHY_PCS_LANE_CDB_REGMAP_CONF("2"),
-+	TORRENT_PHY_PCS_LANE_CDB_REGMAP_CONF("3"),
-+};
-+
- static const struct regmap_config cdns_torrent_phy_pcs_cmn_cdb_config = {
- 	.name = "torrent_phy_pcs_cmn_cdb",
- 	.reg_stride = 1,
-@@ -1546,6 +1574,16 @@ static int cdns_torrent_phy_on(struct phy *phy)
- 		return ret;
- 	}
- 
-+	if (inst->phy_type == TYPE_PCIE || inst->phy_type == TYPE_USB) {
-+		ret = regmap_field_read_poll_timeout(cdns_phy->phy_pcs_iso_link_ctrl_1[inst->mlane],
-+						     read_val, !read_val, 1000,
-+						     PLL_LOCK_TIMEOUT);
-+		if (ret == -ETIMEDOUT) {
-+			dev_err(cdns_phy->dev, "Timeout waiting for PHY status ready\n");
-+			return ret;
-+		}
-+	}
-+
- 	mdelay(10);
- 
- 	return 0;
-@@ -1822,6 +1860,7 @@ static int cdns_torrent_regfield_init(struct cdns_torrent_phy *cdns_phy)
- 	struct device *dev = cdns_phy->dev;
- 	struct regmap_field *field;
- 	struct regmap *regmap;
-+	int i;
- 
- 	regmap = cdns_phy->regmap_phy_pcs_common_cdb;
- 	field = devm_regmap_field_alloc(dev, regmap, phy_pll_cfg);
-@@ -1855,6 +1894,16 @@ static int cdns_torrent_regfield_init(struct cdns_torrent_phy *cdns_phy)
- 	}
- 	cdns_phy->phy_pma_pll_raw_ctrl = field;
- 
-+	for (i = 0; i < MAX_NUM_LANES; i++) {
-+		regmap = cdns_phy->regmap_phy_pcs_lane_cdb[i];
-+		field = devm_regmap_field_alloc(dev, regmap, phy_pcs_iso_link_ctrl_1);
-+		if (IS_ERR(field)) {
-+			dev_err(dev, "PHY_PCS_ISO_LINK_CTRL reg field init for ln %d failed\n", i);
-+			return PTR_ERR(field);
-+		}
-+		cdns_phy->phy_pcs_iso_link_ctrl_1[i] = field;
-+	}
-+
- 	return 0;
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 65cc05982f82..53d2f0d0ee30 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -124,6 +124,23 @@ static int anx7625_reg_write(struct anx7625_data *ctx,
+ 	return ret;
  }
  
-@@ -1915,6 +1964,17 @@ static int cdns_torrent_regmap_init(struct cdns_torrent_phy *cdns_phy)
- 			return PTR_ERR(regmap);
- 		}
- 		cdns_phy->regmap_rx_lane_cdb[i] = regmap;
++static int anx7625_reg_block_write(struct anx7625_data *ctx,
++				   struct i2c_client *client,
++				   u8 reg_addr, u8 len, u8 *buf)
++{
++	int ret;
++	struct device *dev = &client->dev;
 +
-+		block_offset = TORRENT_PHY_PCS_LANE_CDB_OFFSET(i, block_offset_shift,
-+							       reg_offset_shift);
-+		regmap = cdns_regmap_init(dev, sd_base, block_offset,
-+					  reg_offset_shift,
-+					  &cdns_torrent_phy_pcs_lane_cdb_config[i]);
-+		if (IS_ERR(regmap)) {
-+			dev_err(dev, "Failed to init PHY PCS lane CDB regmap\n");
-+			return PTR_ERR(regmap);
-+		}
-+		cdns_phy->regmap_phy_pcs_lane_cdb[i] = regmap;
- 	}
++	i2c_access_workaround(ctx, client);
++
++	ret = i2c_smbus_write_i2c_block_data(client, reg_addr, len, buf);
++	if (ret < 0)
++		DRM_DEV_ERROR(dev, "write i2c block failed id=%x\n:%x",
++			      client->addr, reg_addr);
++
++	return ret;
++}
++
+ static int anx7625_write_or(struct anx7625_data *ctx,
+ 			    struct i2c_client *client,
+ 			    u8 offset, u8 mask)
+@@ -195,6 +212,55 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
+ 	return val;
+ }
  
- 	block_offset = TORRENT_COMMON_CDB_OFFSET;
++static int anx7625_aux_dpcd_write(struct anx7625_data *ctx,
++				  u8 addrh, u8 addrm, u8 addrl,
++				  u8 len, u8 *buf)
++{
++	struct device *dev = &ctx->client->dev;
++	int ret;
++	u8 cmd;
++
++	if (len > MAX_DPCD_BUFFER_SIZE) {
++		DRM_DEV_ERROR(dev, "exceed aux buffer len.\n");
++		return -EINVAL;
++	}
++
++	cmd = ((len - 1) << 4) | 0x08;
++
++	/* Set command and length */
++	ret = anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
++				AP_AUX_COMMAND, cmd);
++
++	/* Set aux access address */
++	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
++				 AP_AUX_ADDR_7_0, addrl);
++	ret |= anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
++				 AP_AUX_ADDR_15_8, addrm);
++	ret |= anx7625_write_and(ctx, ctx->i2c.rx_p0_client,
++				 AP_AUX_ADDR_19_16, addrh);
++
++	/* Set write data */
++	ret |= anx7625_reg_block_write(ctx, ctx->i2c.rx_p0_client,
++				       AP_AUX_BUFF_START, len, buf);
++	/* Enable aux access */
++	ret |= anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
++				AP_AUX_CTRL_STATUS, AP_AUX_CTRL_OP_EN);
++	if (ret < 0) {
++		DRM_DEV_ERROR(dev, "cannot access aux related register.\n");
++		return -EIO;
++	}
++
++	usleep_range(2000, 2100);
++
++	ret = wait_aux_op_finish(ctx);
++	if (ret) {
++		DRM_DEV_ERROR(dev, "aux IO error: wait aux op finish.\n");
++		return ret;
++	}
++
++	return 0;
++}
++
+ static int anx7625_video_mute_control(struct anx7625_data *ctx,
+ 				      u8 status)
+ {
+@@ -617,6 +683,7 @@ static void anx7625_dp_stop(struct anx7625_data *ctx)
+ {
+ 	struct device *dev = &ctx->client->dev;
+ 	int ret;
++	u8 data;
+ 
+ 	DRM_DEV_DEBUG_DRIVER(dev, "stop dp output\n");
+ 
+@@ -628,8 +695,16 @@ static void anx7625_dp_stop(struct anx7625_data *ctx)
+ 	ret |= anx7625_write_and(ctx, ctx->i2c.tx_p2_client, 0x08, 0x7f);
+ 
+ 	ret |= anx7625_video_mute_control(ctx, 1);
++
++	DRM_DEV_DEBUG_DRIVER(dev, "notify downstream enter into standby\n");
++
++	/* Downstream monitor enter into standby mode */
++	data = 2;
++	ret |= anx7625_aux_dpcd_write(ctx, 0x00, 0x06, 0x00, 1, &data);
+ 	if (ret < 0)
+ 		DRM_DEV_ERROR(dev, "IO error : mute video fail\n");
++
++	return;
+ }
+ 
+ static int sp_tx_rst_aux(struct anx7625_data *ctx)
 -- 
-2.26.1
+2.25.1
 
