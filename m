@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0897B35A7FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F1235A805
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhDIUkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53726 "EHLO
+        id S234452AbhDIUky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233995AbhDIUkl (ORCPT
+        with ESMTP id S231946AbhDIUkn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:40:41 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7210CC061763
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 13:40:28 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id y4so7261934ioy.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 13:40:28 -0700 (PDT)
+        Fri, 9 Apr 2021 16:40:43 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53949C0613D7
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 13:40:29 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id d2so5764916ilm.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 13:40:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kyEt1ksQ+JQPinifGRtvPHx9UK2YlW1JCIGqjukG2tI=;
-        b=sHcIVLC1w2ibtu6NZ4brRofUXy78o2puktCiOlwg1UnwtL+5Tm1Rs7FG437vw3GC7I
-         EUW/0JhXaoJ0TRTKWtR755vpYm0R4X2pOY3m0BRusCprKfIT/11h2wV7dft86cobpKWx
-         V49I6nK189ua/IfhV4svmkVq7OvVAoDF0jWXY5focgnugz4Al8e3tCDwxwGF0NPt8zND
-         p6WVsIFUWN2uu+HlSeM8xPuQXCnu64d8yxoMx4JRDs+CzrBSGF3TqAB1cLonPUtNCBfN
-         Z7Fsg5AHMaS7V0bZyer7Dh1jwrlHX0jRtUuK1Fv+0Xww2uEv6+lqqLOBKHOBAzjdl3SA
-         AJ5g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=eqErB1BGtSYLSRcvCx/61ODE5QLSgu/K7kbGZ07zxxc=;
+        b=CRP2+XeE0cWPtKGLK3vM3qpEMrFVKcT+k05Mf0QBcCsNPy7LTFx7Mg82oqg6PRNP6+
+         x6X+IDRmR8IL/2tQ9LQNkKT5HUYb76npzAr41tmCCN+3llZc6+lG9SiIVqh5Xsgi1aaC
+         oygNusjXjaa5DSMOu1coNLxXicgNcz2Oe2jeqS34X2SwTKso+RWG8ONQ6b2GoArBz8w5
+         d7GjvBOiFfTu2aKLtSF5SEXXbGIAdrhuxRNQzrNFC3u5RBn3UiHnHUo3hrDOw4tux92l
+         jBT08vMEGB2UMoPiqafFt8kgzdOeUrVJu5++RtQ6Km9eJEOWa8xP7WBhqqwlDHoZl7NM
+         A/qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kyEt1ksQ+JQPinifGRtvPHx9UK2YlW1JCIGqjukG2tI=;
-        b=UhIBySOlEz/jn98HHGinNVN0o1Spb9QO4FITkWxHwrFFK6D69se4sdmnmETiHaZB5f
-         oxhj2md4Q8eppHF+9deotvX9G8fzy6DIPYqr6heTNETZgWfH+W0DQYRcnpAznBqYP1Sd
-         foHwpOy7n1TPKxiXrFr4BAKjb/2mi8McUejGHYnF8x+eieia/4z0cLn9YDehM4NfrPaR
-         crz4n0YogEqDEGSiRmT+ojqkB+EP5wgME2S8021FU6tjE9z+fy3cW7vb2mVD26wNxADw
-         IB2O//OobjRR6XJMvURTIr3E2dpcvOdB1CG8d9NmDXipPAiRlxRWW/UBHTp9Mo9SSBTZ
-         NATA==
-X-Gm-Message-State: AOAM53213R2xuaWjjY+iGLyP2l2tGtaB5RnZN44ICl9F0Tk2YexlcwEX
-        UAqwaH2hHXQfcmDsAh/vZ25oOQ==
-X-Google-Smtp-Source: ABdhPJxJv6/aw1y/Gn66AfvT3KOZbNbU1Cs4ktQd8VlYobTFNdQkkc1IUELXGGpZDNKaAS3rUtTwlw==
-X-Received: by 2002:a6b:500c:: with SMTP id e12mr12277326iob.190.1618000827805;
-        Fri, 09 Apr 2021 13:40:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=eqErB1BGtSYLSRcvCx/61ODE5QLSgu/K7kbGZ07zxxc=;
+        b=icnwSTFv3snMoU3gjNqaVVGFI/nCgXr0oE7Bf8Sp4G7DekXna/wNLY/DJaOR32L9lg
+         rG6whE1rEONo3y9+S64XuWhSCnt3PxQomqrwsRhCSXO04cpQj+yVbGrRrMKlwWMYa3i+
+         8ioxdl7nEwGP704jcH+fSRAIGoMBQ2bW+InXZPSXRlFxlTMC/mqesjN3vtcJI5s9020i
+         Tvpw7y6zKoTkMwuV5GjlRnASitmg2vFeUsX2bbWdvNY+GHoyVR/TyVwyvlrI5fGOm0jA
+         8FqtfwI8hyPjr3SZ7gm/OLpacFynTU+K+6Wi4lmx0DRDn7tUoNhe3yXfydcrrYhjCJTb
+         I3SQ==
+X-Gm-Message-State: AOAM531ZetDgJ2KQGvpC7ejhSQCMHMwlu6bMvdpx+dGlZNIXng2NNj3T
+        hZrPBzQhjHgm+nQVzEK1WUGp1Q==
+X-Google-Smtp-Source: ABdhPJyhqyM6lypSVScVyrDKkEEtsmxSsYZMSCcVOR90TXUyUWmH2NHHQcvTxRZJBtK+df2aMa2LWw==
+X-Received: by 2002:a92:c26e:: with SMTP id h14mr12449414ild.33.1618000828764;
+        Fri, 09 Apr 2021 13:40:28 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id b9sm1667212ilc.28.2021.04.09.13.40.26
+        by smtp.gmail.com with ESMTPSA id b9sm1667212ilc.28.2021.04.09.13.40.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 13:40:27 -0700 (PDT)
+        Fri, 09 Apr 2021 13:40:28 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
-        elder@kernel.org, linux-arm-msm@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 0/4] net: ipa: support two more platforms
-Date:   Fri,  9 Apr 2021 15:40:20 -0500
-Message-Id: <20210409204024.1255938-1-elder@linaro.org>
+To:     robh+dt@kernel.org, davem@davemloft.net, kuba@kernel.org
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, elder@kernel.org,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 1/4] dt-bindings: net: qcom,ipa: add some compatible strings
+Date:   Fri,  9 Apr 2021 15:40:21 -0500
+Message-Id: <20210409204024.1255938-2-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210409204024.1255938-1-elder@linaro.org>
+References: <20210409204024.1255938-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series adds IPA support for two more Qualcomm SoCs.
+Add existing supported platform "qcom,sc7180-ipa" to the set of IPA
+compatible strings.  Also add newly-supported "qcom,sdx55-ipa",
+"qcom,sc7280-ipa".
 
-The first patch updates the DT binding to add compatible strings.
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ Documentation/devicetree/bindings/net/qcom,ipa.yaml | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-The second temporarily disables checksum offload support for IPA
-version 4.5 and above.  Changes are required to the RMNet driver
-to support the "inline" checksum offload used for IPA v4.5+, and
-once those are present this capability will be enabled for IPA.
-
-The third and fourth patches add configuration data for IPA versions
-4.5 (used for the SDX55 SoC) and 4.11 (used for the SD7280 SoC).
-
-					-Alex
-
-Alex Elder (4):
-  dt-bindings: net: qcom,ipa: add some compatible strings
-  net: ipa: disable checksum offload for IPA v4.5+
-  net: ipa: add IPA v4.5 configuration data
-  net: ipa: add IPA v4.11 configuration data
-
- .../devicetree/bindings/net/qcom,ipa.yaml     |   6 +-
- drivers/net/ipa/Makefile                      |   3 +-
- drivers/net/ipa/ipa_data-v4.11.c              | 382 +++++++++++++++
- drivers/net/ipa/ipa_data-v4.5.c               | 437 ++++++++++++++++++
- drivers/net/ipa/ipa_data.h                    |   2 +
- drivers/net/ipa/ipa_endpoint.c                |  16 +
- drivers/net/ipa/ipa_main.c                    |   8 +
- drivers/net/ipa/ipa_mem.h                     |   6 +-
- 8 files changed, 855 insertions(+), 5 deletions(-)
- create mode 100644 drivers/net/ipa/ipa_data-v4.11.c
- create mode 100644 drivers/net/ipa/ipa_data-v4.5.c
-
+diff --git a/Documentation/devicetree/bindings/net/qcom,ipa.yaml b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+index 8f86084bf12e9..2645a02cf19bf 100644
+--- a/Documentation/devicetree/bindings/net/qcom,ipa.yaml
++++ b/Documentation/devicetree/bindings/net/qcom,ipa.yaml
+@@ -43,7 +43,11 @@ description:
+ 
+ properties:
+   compatible:
+-    const: "qcom,sdm845-ipa"
++    oneOf:
++      - const: "qcom,sc7180-ipa"
++      - const: "qcom,sc7280-ipa"
++      - const: "qcom,sdm845-ipa"
++      - const: "qcom,sdx55-ipa"
+ 
+   reg:
+     items:
 -- 
 2.27.0
 
