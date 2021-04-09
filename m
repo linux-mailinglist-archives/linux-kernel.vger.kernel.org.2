@@ -2,212 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D600359FDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BFF359FE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233600AbhDINeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231599AbhDINeE (ORCPT
+        id S233607AbhDINfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:35:36 -0400
+Received: from mout.kundenserver.de ([212.227.17.10]:60757 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhDINff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:34:04 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A26AC061761
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 06:33:51 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id j18so9769067lfg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 06:33:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+pHQi2OzKPyPC0KIDsVeHvTEz5QYwkp15iNvMnsgf9c=;
-        b=qmgSCtmourr9L2RlDFZgGr4egPrINyGU02cvXp0bbLU/zh8hYLJR8gXLKqNI4rVRfJ
-         Y216MNdtd9ViTgOGuvoA2McTPPYzN0win0s9md94sOKiqH2TEjZY3SVXFR816pgHmWIj
-         RJpmJtHdZG+harWrFFsinPRs7DedCERbBb/Phy3ALRYSDN+7W4FegvBBC1Q9iE2jUsbU
-         J9RsxSre6uR+dDfvM0SbyPOCbKo8C8dLPayB43e/MzuBtfwuvoGEHn+kEZQKJvqQBCz8
-         RJbvO2AHT87yb4G5GXW6K6QwzW/fRa02DLSME+nD2WtO0RwDg5nzWQPhXPzcqRCURtWK
-         NuWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+pHQi2OzKPyPC0KIDsVeHvTEz5QYwkp15iNvMnsgf9c=;
-        b=A2afLc7Ev5WNVz3iBU5V5zm4pXZo4HThi+Hunms7t4hmQ3vt6LZY5z90NEPAvaPwNS
-         Jrq+l7Ph54v2Lr+gZS4VX2P5EKeY2z8kF5iMQfEIlA37rinAlkTqB1vQOVRdMuTtxYt2
-         sYblpmb2lYO9izL3oIWyKsXWHi9BVZJjImrpHxWRTJL8RnGMbrAxAQMQYfBgsXtGHtxL
-         qcazjMogPM1aoxTZl+USVSBd+ijemWy9grIsR240knm0z9uJOOShTStO5H//kPP+15t4
-         Cs2gpAS0LnilhhqcULkgj6A9KMKA0kGJFujcwZNh8UPjM9fLHRNJ1HctqqNOv5fFg7CY
-         pccw==
-X-Gm-Message-State: AOAM531wK6q3IpUj1DHsTiB6CXNz+OWMJC9Ctf6FT8Z1LAJbATcQXsMh
-        oyrCXI/HOabkkGU5UYr7UCCfJqJiAPEOmg==
-X-Google-Smtp-Source: ABdhPJynjRSJthCRwTX5vDn44O6h7SJMm8/0v0Lujd09ADcCsNIQoU7fugG96bOELQBpOXbWEJf18g==
-X-Received: by 2002:a05:6512:3091:: with SMTP id z17mr10257535lfd.84.1617975229701;
-        Fri, 09 Apr 2021 06:33:49 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id z9sm282834lfa.80.2021.04.09.06.33.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 06:33:48 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id F213F102498; Fri,  9 Apr 2021 16:33:47 +0300 (+03)
-Date:   Fri, 9 Apr 2021 16:33:47 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
-Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
-Message-ID: <20210409133347.r2uf3u5g55pp27xn@box>
-References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
- <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
- <5e934d94-414c-90de-c58e-34456e4ab1cf@redhat.com>
+        Fri, 9 Apr 2021 09:35:35 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]) by
+ mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MKKd7-1lHJaB3nAt-00Lmj3; Fri, 09 Apr 2021 15:35:21 +0200
+Received: by mail-ot1-f46.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so5711168otn.1;
+        Fri, 09 Apr 2021 06:35:20 -0700 (PDT)
+X-Gm-Message-State: AOAM532xvLKvGNL2LF61vwvwtwLHReYP9333LL2z5p1rlYjdMf69CKzw
+        fSpUfUYdMVyq9818UN5Y7dhxe7yzwRDpnGLAGHc=
+X-Google-Smtp-Source: ABdhPJynlbx4kLNikSNjAjnCb5vtFq6G/850R+R5+xWMARHqWLy+tfY7F0Z+Hrp7Hz4KWDmPvvGBCrUcX4hM8LkZWnk=
+X-Received: by 2002:a9d:758b:: with SMTP id s11mr12240759otk.305.1617975319390;
+ Fri, 09 Apr 2021 06:35:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e934d94-414c-90de-c58e-34456e4ab1cf@redhat.com>
+References: <20210409112035.27221-1-david@redhat.com>
+In-Reply-To: <20210409112035.27221-1-david@redhat.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 9 Apr 2021 15:35:03 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a31uKNcim0n99=yt3zjZ+LQSw4V4+8PS8daLsBdS0iSYg@mail.gmail.com>
+Message-ID: <CAK8P3a31uKNcim0n99=yt3zjZ+LQSw4V4+8PS8daLsBdS0iSYg@mail.gmail.com>
+Subject: Re: [PATCH v3] drivers: introduce and use WANT_DMA_CMA for soft
+ dependencies on DMA_CMA
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Eric Anholt <eric@anholt.net>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Suman Anna <s-anna@ti.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:/7zXw/c1UfESlEruqAGXS8UzIHuJI2NxiDK7tVwMgfdq4wYKuFS
+ 6pXkdJchhga4+TmhN9Ms++pwBTz9yL9aKgjVvkvHHvhiWjciAWR+WA3f421jDGE5exNDCzr
+ Zk5rhoQb9IDWjo/pGPYYeB2HOtt/KqEOaWYPozig6+QzGPuhVphXpUk/7G2o29IHNdPUcek
+ fajs/Hllr8UunECmkMm7A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ug59u7F3OJQ=:3IXoa0MamCC3tSceenqEE6
+ Q79+SXOGJ/h7Ykjqa6HuOBjWxBa8k1io25xcFGxpQDn5WLf5vIQ04Q7VygmOtvaDZU34kLSWx
+ 3WtRiTo6IJMGXSre12X0/Tp6Yzk7E81VxdfylZacU9F8rwfU8fpA5K5e8gx8N/QAE4FZLg6AW
+ 5wU9f6mF6tQuLiyMAonPYwaVG0slmNcPh447tFDuIc9sQPklyKSNEBzRsSoFxmvPmWWASKKEW
+ BblFUNyAg6zFxLiQZeahg/nmKUn//83+AutMsoa5nDPJmO8xSe6MIyetduAmheLONxu5JJYfG
+ p/TpJ6nkCuxUfDqGueDOCICsT7xcRKuQNdCODZhVZCmHt5oVXblvQQTU8RpfzPbN19SXMoLRb
+ EbiTZbIFeHKKv5M++TMmBAT4T2WFokbdEyo5UT1cFpUmNgeCCizy7OXCSouDqXcv6yGaHGiuo
+ g9Ph9lviL6CiZVSiRw51AcD+QMmrz2o=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 04:55:54PM +0200, David Hildenbrand wrote:
-> On 02.04.21 17:26, Kirill A. Shutemov wrote:
-> > TDX architecture aims to provide resiliency against confidentiality and
-> > integrity attacks. Towards this goal, the TDX architecture helps enforce
-> > the enabling of memory integrity for all TD-private memory.
-> > 
-> > The CPU memory controller computes the integrity check value (MAC) for
-> > the data (cache line) during writes, and it stores the MAC with the
-> > memory as meta-data. A 28-bit MAC is stored in the ECC bits.
-> > 
-> > Checking of memory integrity is performed during memory reads. If
-> > integrity check fails, CPU poisones cache line.
-> > 
-> > On a subsequent consumption (read) of the poisoned data by software,
-> > there are two possible scenarios:
-> > 
-> >   - Core determines that the execution can continue and it treats
-> >     poison with exception semantics signaled as a #MCE
-> > 
-> >   - Core determines execution cannot continue,and it does an unbreakable
-> >     shutdown
-> > 
-> > For more details, see Chapter 14 of Intel TDX Module EAS[1]
-> > 
-> > As some of integrity check failures may lead to system shutdown host
-> > kernel must not allow any writes to TD-private memory. This requirment
-> > clashes with KVM design: KVM expects the guest memory to be mapped into
-> > host userspace (e.g. QEMU).
-> > 
-> > This patch aims to start discussion on how we can approach the issue.
-> > 
-> > For now I intentionally keep TDX out of picture here and try to find a
-> > generic way to unmap KVM guest memory from host userspace. Hopefully, it
-> > makes the patch more approachable. And anyone can try it out.
-> > 
-> > To the proposal:
-> > 
-> > Looking into existing codepaths I've discovered that we already have
-> > semantics we want. That's PG_hwpoison'ed pages and SWP_HWPOISON swap
-> > entries in page tables:
-> > 
-> >    - If an application touches a page mapped with the SWP_HWPOISON, it will
-> >      get SIGBUS.
-> > 
-> >    - GUP will fail with -EFAULT;
-> > 
-> > Access the poisoned memory via page cache doesn't match required
-> > semantics right now, but it shouldn't be too hard to make it work:
-> > access to poisoned dirty pages should give -EIO or -EHWPOISON.
-> > 
-> > My idea is that we can mark page as poisoned when we make it TD-private
-> > and replace all PTEs that map the page with SWP_HWPOISON.
-> 
-> It looks quite hacky (well, what did I expect from an RFC :) ) you can no
-> longer distinguish actually poisoned pages from "temporarily poisoned"
-> pages. FOLL_ALLOW_POISONED sounds especially nasty and dangerous -  "I want
-> to read/write a poisoned page, trust me, I know what I am doing".
-> 
-> Storing the state for each individual page initially sounded like the right
-> thing to do, but I wonder if we couldn't handle this on a per-VMA level. You
-> can just remember the handful of shared ranges internally like you do right
-> now AFAIU.
+On Fri, Apr 9, 2021 at 1:21 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> Random drivers should not override a user configuration of core knobs
+> (e.g., CONFIG_DMA_CMA=n). Applicable drivers would like to use DMA_CMA,
+> which depends on CMA, if possible; however, these drivers also have to
+> tolerate if DMA_CMA is not available/functioning, for example, if no CMA
+> area for DMA_CMA use has been setup via "cma=X". In the worst case, the
+> driver cannot do it's job properly in some configurations.
+>
+> For example, commit 63f5677544b3 ("drm/etnaviv: select CMA and DMA_CMA if
+> available") documents
+>         While this is no build dependency, etnaviv will only work correctly
+>         on most systems if CMA and DMA_CMA are enabled. Select both options
+>         if available to avoid users ending up with a non-working GPU due to
+>         a lacking kernel config.
+> So etnaviv really wants to have DMA_CMA, however, can deal with some cases
+> where it is not available.
+>
+> Let's introduce WANT_DMA_CMA and use it in most cases where drivers
+> select CMA/DMA_CMA, or depend on DMA_CMA (in a wrong way via CMA because
+> of recursive dependency issues).
+>
+> We'll assume that any driver that selects DRM_GEM_CMA_HELPER or
+> DRM_KMS_CMA_HELPER would like to use DMA_CMA if possible.
+>
+> With this change, distributions can disable CONFIG_CMA or
+> CONFIG_DMA_CMA, without it silently getting enabled again by random
+> drivers. Also, we'll now automatically try to enabled both, CONFIG_CMA
+> and CONFIG_DMA_CMA if they are unspecified and any driver is around that
+> selects WANT_DMA_CMA -- also implicitly via DRM_GEM_CMA_HELPER or
+> DRM_KMS_CMA_HELPER.
+>
+> For example, if any driver selects WANT_DMA_CMA and we do a
+> "make olddefconfig":
+>
+> 1. With "# CONFIG_CMA is not set" and no specification of
+>    "CONFIG_DMA_CMA"
+>
+> -> CONFIG_DMA_CMA won't be part of .config
+>
+> 2. With no specification of CONFIG_CMA or CONFIG_DMA_CMA
+>
+> Contiguous Memory Allocator (CMA) [Y/n/?] (NEW)
+> DMA Contiguous Memory Allocator (DMA_CMA) [Y/n/?] (NEW)
+>
+> 3. With "# CONFIG_CMA is not set" and "# CONFIG_DMA_CMA is not set"
+>
+> -> CONFIG_DMA_CMA will be removed from .config
+>
+> Note: drivers/remoteproc seems to be special; commit c51e882cd711
+> ("remoteproc/davinci: Update Kconfig to depend on DMA_CMA") explains that
+> there is a real dependency to DMA_CMA for it to work; leave that dependency
+> in place and don't convert it to a soft dependency.
 
-per-VMA would not fly for file-backed (e.g. tmpfs) memory. We may need to
-combine PG_hwpoison with VMA flag. Maybe per-inode tracking would also be
-required. Or per-memslot. I donno. Need more experiments.
+I don't think this dependency is fundamentally different from the others,
+though davinci machines tend to have less memory than a lot of the
+other machines, so it's more likely to fail without CMA.
 
-Note, I use PG_hwpoison now, but if we find a show-stopper issue where we
-would see confusion with a real poison, we can switch to new flags and
-a new swap_type(). I have not seen a reason yet.
+Regardless of this,
 
-> From what I get, you want a way to
-> 
-> 1. Unmap pages from the user space page tables.
-
-Plain unmap would not work for some use-cases. Some CSPs want to
-preallocate memory in a specific way. It's a way to provide a fine-grained
-NUMA policy.
-
-The existing mapping has to be converted.
-
-> 2. Disallow re-faulting of the protected pages into the page tables. On user
-> space access, you want to deliver some signal (e.g., SIGBUS).
-
-Note that userspace mapping is the only source of pfn's for VM's shadow
-mapping. The fault should be allow, but lead to non-present PTE that still
-encodes pfn.
-
-> 3. Allow selected users to still grab the pages (esp. KVM to fault them into
-> the page tables).
-
-As long as fault leads to non-present PTEs we are fine. Usespace still may
-want to mlock() some of guest memory. There's no reason to prevent this.
-
-> 4. Allow access to currently shared specific pages from user space.
-> 
-> Right now, you achieve
-> 
-> 1. Via try_to_unmap()
-> 2. TestSetPageHWPoison
-> 3. TBD (e.g., FOLL_ALLOW_POISONED)
-> 4. ClearPageHWPoison()
-> 
-> 
-> If we could bounce all writes to shared pages through the kernel, things
-> could end up a little easier. Some very rough idea:
-> 
-> We could let user space setup VM memory as
-> mprotect(PROT_READ) (+ PROT_KERNEL_WRITE?), and after activating protected
-> memory (I assume via a KVM ioctl), make sure the VMAs cannot be set to
-> PROT_WRITE anymore. This would already properly unmap and deliver a SIGSEGV
-> when trying to write from user space.
-> 
-> You could then still access the pages, e.g., via FOLL_FORCE or a new fancy
-> flag that allows to write with VM_MAYWRITE|VM_DENYUSERWRITE. This would
-> allow an ioctl to write page content and to map the pages into NPTs.
-> 
-> As an extension, we could think about (re?)mapping some shared pages
-> read|write. The question is how to synchronize with user space.
-> 
-> I have no idea how expensive would be bouncing writes (and reads?) through
-> the kernel. Did you ever experiment with that/evaluate that?
-
-It's going to be double bounce buffer: on the guest we force swiotlb to
-make it go through shared region. I don't think it's a good idea.
-
-There are a number of way to share a memory. It's going to be decided by
-the way we get these pages unmapped in the first place.
-
--- 
- Kirill A. Shutemov
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
