@@ -2,84 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7529C35910A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 02:48:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDA435910C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 02:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233110AbhDIAs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 20:48:29 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:16947 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232426AbhDIAs2 (ORCPT
+        id S233136AbhDIAt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 20:49:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232996AbhDIAt4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 20:48:28 -0400
-Received: from unknown (HELO ironmsg02-sd.qualcomm.com) ([10.53.140.142])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 08 Apr 2021 17:48:16 -0700
-X-QCInternal: smtphost
-Received: from gurus-linux.qualcomm.com (HELO gurus-linux.localdomain) ([10.46.162.81])
-  by ironmsg02-sd.qualcomm.com with ESMTP; 08 Apr 2021 17:48:15 -0700
-Received: by gurus-linux.localdomain (Postfix, from userid 383780)
-        id 8FB551A71; Thu,  8 Apr 2021 17:48:15 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 17:48:15 -0700
-From:   Guru Das Srinagesh <gurus@codeaurora.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Markus Elfring <Markus.Elfring@web.de>,
-        linux-arm-msm@vger.kernel.org,
-        Anirudh Ghayal <aghayal@codeaurora.org>,
-        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        David Collins <collinsd@codeaurora.org>,
-        Joe Perches <joe@perches.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v5 0/2] Add support for Qualcomm MFD PMIC register layout
-Message-ID: <20210409004815.GA4345@codeaurora.org>
-References: <cover.1616613838.git.gurus@codeaurora.org>
- <161726943419.2413.4844313396830856637.b4-ty@kernel.org>
- <20210406011152.GA27770@codeaurora.org>
+        Thu, 8 Apr 2021 20:49:56 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7D9C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 17:49:42 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id j26so4163634iog.13
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 17:49:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qC3DsFQp9eza9W51XDdceHkd/83cTsDDXTbOAJ2cHK8=;
+        b=gA6fWvlZ9g0kFHdw3sUl6sZ5HCwFuvplDoXb1X9MAxOoy2KevrNJL56W/XyAmFztfJ
+         HwFikiUchh0N8FHDQBARJaIgVKH+mr8S/3RhQmNLYcwNtXILFpoJKLhBRZmkkJ2RPvZr
+         PMlq78+0qgvQCq0ZrKxdpQlNzRHyVPlJYUUhCMzcQnfOcvwxkPdWl5wRTr3umy9vvNIj
+         i6s3lUIB7JXrO50wvIkANmN0XNrgsDv0ejYn10xOZYdTwAPNhZuPovJD0SCg627z1KFF
+         +fR5jvEq7yseIt/WYGPSFEgLVOYb04QW0XbmOiMheeRGSbGn7eX9IWtCtnTux1wsr4BT
+         fXTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qC3DsFQp9eza9W51XDdceHkd/83cTsDDXTbOAJ2cHK8=;
+        b=hvQRG88ove6u/Dbk3yjKDIL208NjHDXcNvq4kmi64PJm1tmUdHjjlfdmk0ERG81zod
+         RT9LjkfuqpuAEL6lIcGW5TJNCJDpKjquDaQbKWp12sGXtu54dApCXwbrUyXxMyrZx2Dt
+         r3MLuwhul6r5EdQgcTPMADLb4OlGCPEVc8AbOPZj7fgV9O5JRXgNYnyJSxbTzGeBoZ2B
+         V7xsCkoTKUtWdAO74r/eANoua3z3Os0KG96eM9ItyYmj6Yt7X/NbsiMQcY/NJFZJgtv+
+         DAq4YgBwg2Tfw29xGDKLFp2HAiow1zPh5820kPCfEuT3h/opgFdRw08S8OUAHm1hvzXH
+         5q1A==
+X-Gm-Message-State: AOAM532Kv27Q89N82PFxVPll5eNrcwaO7i6DVPSTRflj6nWj1gxuT5Qz
+        zfGHAxEBDDEGMUSIVE2awLU/em2a21KT8rTuircMPVboe04=
+X-Google-Smtp-Source: ABdhPJzCalwDwg9TE14hNaIpwcTDIA0jJkJYUNT7QPQhc+EbmWpQVMp/HBrzERN2R3BkhM8vCNRucMh7R+giCeKnIVk=
+X-Received: by 2002:a02:ca13:: with SMTP id i19mr11782983jak.47.1617929381986;
+ Thu, 08 Apr 2021 17:49:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406011152.GA27770@codeaurora.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20210402014438.1721086-1-srutherford@google.com> <18c68409-5fcf-2f2c-61f2-e8e52aab277e@amd.com>
+In-Reply-To: <18c68409-5fcf-2f2c-61f2-e8e52aab277e@amd.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Thu, 8 Apr 2021 17:49:05 -0700
+Message-ID: <CABayD+fi2Q4nqNGiL8nuO3HfqZbq5PoEgimwWtwjX_o0nANFEQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: SVM: Add support for KVM_SEV_SEND_CANCEL command
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Nathan Tempelman <natet@google.com>,
+        Ashish Kalra <Ashish.Kalra@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 06:11:52PM -0700, Guru Das Srinagesh wrote:
-> On Thu, Apr 01, 2021 at 11:16:17AM +0100, Mark Brown wrote:
-> > On Wed, 24 Mar 2021 12:28:52 -0700, Guru Das Srinagesh wrote:
-> > > Changes from v4:
-> > > - Only one cosmetic change: Moved the declaration of num_virt_regs under
-> > >   num_type_reg instead of under num_main_regs in `struct regmap_irq_chip` so as
-> > >   to reinforce the idea that it is related to the type setting of IRQs.
-> > > - No other changes.
-> > > 
-> > > Changes from v3:
-> > > - Implemented the scheme proposed in my response to Mark in [4].
-> > > - Dropped the RFC tag from this patch series as this series has been tested on
-> > >   target with a client driver utilizing these changes.
-> > > 
-> > > [...]
-> > 
-> > Applied to
-> > 
-> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
-> > 
-> > Thanks!
-> > 
-> > [1/2] regmap-irq: Introduce virtual regs to handle more config regs
-> >       commit: 4c5014456305482412b35a081ca0fb4fefd69764
-> > [2/2] regmap-irq: Add driver callback to configure virtual regs
-> >       commit: 394409aafd017adfcffd075595cb01cc456a9327
-> > 
-> 
-> Thanks for accepting the patches. I'll send out the driver utilizing
-> these changes after code cleanup in the next couple of weeks.
+On Thu, Apr 8, 2021 at 3:27 PM Brijesh Singh <brijesh.singh@amd.com> wrote:
+>
+>
+> On 4/1/21 8:44 PM, Steve Rutherford wrote:
+> > After completion of SEND_START, but before SEND_FINISH, the source VMM can
+> > issue the SEND_CANCEL command to stop a migration. This is necessary so
+> > that a cancelled migration can restart with a new target later.
+> >
+> > Signed-off-by: Steve Rutherford <srutherford@google.com>
+> > ---
+> >  .../virt/kvm/amd-memory-encryption.rst        |  9 +++++++
+> >  arch/x86/kvm/svm/sev.c                        | 24 +++++++++++++++++++
+> >  include/linux/psp-sev.h                       | 10 ++++++++
+> >  include/uapi/linux/kvm.h                      |  2 ++
+> >  4 files changed, 45 insertions(+)
+>
+>
+> Can we add a new case statement in sev_cmd_buffer_len()
+> [drivers/crypto/ccp/sev-dev.c] for this command ? I understand that the
+> command just contains the handle. I have found dyndbg very helpful. If
+> the command is not added in the sev_cmd_buffer_len() then we don't dump
+> the command buffer.
+>
+> With that fixed.
+>
+> Reviewed-by: Brijesh Singh <brijesh.singh@amd.com>
 
-Here it is:
+Nice catch, will follow-up shortly.
 
-https://lore.kernel.org/lkml/cover.1617927259.git.gurus@codeaurora.org/
 
-Guru Das.
+Steve
