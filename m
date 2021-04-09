@@ -2,48 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B75D8359AB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11195359B8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233910AbhDIKBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:01:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44802 "EHLO mail.kernel.org"
+        id S234283AbhDIKNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:13:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233804AbhDIJ6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:58:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C82356100B;
-        Fri,  9 Apr 2021 09:58:02 +0000 (UTC)
+        id S234122AbhDIKEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:04:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE4AC6128E;
+        Fri,  9 Apr 2021 10:01:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962283;
-        bh=+lHF02eFdqqu+El0HIl+kBX03LVd1OQlFnoRE5Mg9xs=;
+        s=korg; t=1617962470;
+        bh=Vf/4atIVJIZu8M3poCXKaRHTSUmtfUTlzgP46VsUrEE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sq9ZHOPhiYyYYRQWXPsPspLqqF8MhtQg9EQ9gcQtFlRRIN2qEfCaM1ZqVvdR2hk7l
-         PY3Guk2Tz3a30Xv+sqH1gmL3fUvYnoxeDrbbiw0x+cWj5Fh3EzStH8R37OMSUXBuwX
-         imcei5/3a9ZPXLgA9Fd8/CXWGVjwQuf6VTXfddLc=
+        b=fBLAnXBXth7+iIqTpSe2yOqKU8yuIc+vTBRvYKyilJOIHp3F/JxDVWkfDGubuU+Ym
+         xkZFAA4//BHAQbWIzaK3datZkYxZpG8TOMqTFh+iSQDXpscUpGDvxfHlJOSdyX69UM
+         4cHEmB8y14nStNzRqoyE5td/J+DxuqoYj6fBbtWo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        KP Singh <kpsingh@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Terrell <terrelln@fb.com>,
-        Quentin Perret <qperret@google.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 23/23] init/Kconfig: make COMPILE_TEST depend on HAS_IOMEM
+        stable@vger.kernel.org, Yangbo Lu <yangbo.lu@nxp.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 27/45] ptp_qoriq: fix overflow in ptp_qoriq_adjfine() u64 calcalation
 Date:   Fri,  9 Apr 2021 11:53:53 +0200
-Message-Id: <20210409095303.631390808@linuxfoundation.org>
+Message-Id: <20210409095306.292333665@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095302.894568462@linuxfoundation.org>
-References: <20210409095302.894568462@linuxfoundation.org>
+In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
+References: <20210409095305.397149021@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,60 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masahiro Yamada <masahiroy@kernel.org>
+From: Yangbo Lu <yangbo.lu@nxp.com>
 
-commit ea29b20a828511de3348334e529a3d046a180416 upstream.
+[ Upstream commit f51d7bf1dbe5522c51c93fe8faa5f4abbdf339cd ]
 
-I read the commit log of the following two:
+Current calculation for diff of TMR_ADD register value may have
+64-bit overflow in this code line, when long type scaled_ppm is
+large.
 
-- bc083a64b6c0 ("init/Kconfig: make COMPILE_TEST depend on !UML")
-- 334ef6ed06fa ("init/Kconfig: make COMPILE_TEST depend on !S390")
+adj *= scaled_ppm;
 
-Both are talking about HAS_IOMEM dependency missing in many drivers.
+This patch is to resolve it by using mul_u64_u64_div_u64().
 
-So, 'depends on HAS_IOMEM' seems the direct, sensible solution to me.
-
-This does not change the behavior of UML. UML still cannot enable
-COMPILE_TEST because it does not provide HAS_IOMEM.
-
-The current dependency for S390 is too strong. Under the condition of
-CONFIG_PCI=y, S390 provides HAS_IOMEM, hence can enable COMPILE_TEST.
-
-I also removed the meaningless 'default n'.
-
-Link: https://lkml.kernel.org/r/20210224140809.1067582-1-masahiroy@kernel.org
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Arnd Bergmann <arnd@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: KP Singh <kpsingh@google.com>
-Cc: Nathan Chancellor <nathan@kernel.org>
-Cc: Nick Terrell <terrelln@fb.com>
-Cc: Quentin Perret <qperret@google.com>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Yangbo Lu <yangbo.lu@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- init/Kconfig |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/ptp/ptp_qoriq.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -76,8 +76,7 @@ config INIT_ENV_ARG_LIMIT
+diff --git a/drivers/ptp/ptp_qoriq.c b/drivers/ptp/ptp_qoriq.c
+index beb5f74944cd..08f4cf0ad9e3 100644
+--- a/drivers/ptp/ptp_qoriq.c
++++ b/drivers/ptp/ptp_qoriq.c
+@@ -189,15 +189,16 @@ int ptp_qoriq_adjfine(struct ptp_clock_info *ptp, long scaled_ppm)
+ 	tmr_add = ptp_qoriq->tmr_add;
+ 	adj = tmr_add;
  
- config COMPILE_TEST
- 	bool "Compile also drivers which will not load"
--	depends on !UML && !S390
--	default n
-+	depends on HAS_IOMEM
- 	help
- 	  Some drivers can be compiled on a different platform than they are
- 	  intended to be run on. Despite they cannot be loaded there (or even
+-	/* calculate diff as adj*(scaled_ppm/65536)/1000000
+-	 * and round() to the nearest integer
++	/*
++	 * Calculate diff and round() to the nearest integer
++	 *
++	 * diff = adj * (ppb / 1000000000)
++	 *      = adj * scaled_ppm / 65536000000
+ 	 */
+-	adj *= scaled_ppm;
+-	diff = div_u64(adj, 8000000);
+-	diff = (diff >> 13) + ((diff >> 12) & 1);
++	diff = mul_u64_u64_div_u64(adj, scaled_ppm, 32768000000);
++	diff = DIV64_U64_ROUND_UP(diff, 2);
+ 
+ 	tmr_add = neg_adj ? tmr_add - diff : tmr_add + diff;
+-
+ 	ptp_qoriq->write(&regs->ctrl_regs->tmr_add, tmr_add);
+ 
+ 	return 0;
+-- 
+2.30.2
+
 
 
