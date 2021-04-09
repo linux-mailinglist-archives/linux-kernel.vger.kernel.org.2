@@ -2,221 +2,335 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4001B359521
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1C9359526
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbhDIGHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:07:24 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:53001 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230219AbhDIGHX (ORCPT
+        id S233312AbhDIGHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233296AbhDIGHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:07:23 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6DB6F5806D9;
-        Fri,  9 Apr 2021 02:07:10 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Fri, 09 Apr 2021 02:07:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=xv1zETl1iB5irtIRE5Ue6naQ2DCplT+
-        Qow5AJr+u6Gs=; b=pEb+ianfzwAfRDEaTJOMTUMGKZNZYn8XI6eeOcIkxBcld2V
-        0M0yMx7Ah9L4jojZhSlx4UtoSkAxW2Sr+BMNKvQoO7YIfRSTdGy4sR1AD21Szs27
-        QrM2oVZsX3Hwf7vdRudLdaGCs3savGhxKWLevdjJW/FMWR3BhLFt/MVWSE8ZrEQb
-        M7Ar/Xi5NIVYWVhuK4+UoezUSbdQMEd4CIvReWCPtK6ofhCoqeq2cvkIT3IWt9tA
-        tUiSZukAr+mAJTCB3BZqxOOx7PtBUlQ96Kz85MV7TUq+8kx0Q4QD0SHKW213E4IG
-        3O2KyER/4YH6taX4pASQVGSZbCYopHNoKiipe7A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=xv1zET
-        l1iB5irtIRE5Ue6naQ2DCplT+Qow5AJr+u6Gs=; b=LNxNQJGg/cAvzOj+gc1zjg
-        bHwAZiLz6xx66pPDxqS3TOkm0gm/sRfbipxCup5hkiDOUVcGUm2taLQSKiCnGnXw
-        ffv+D+EFJ/AuG1YlKvGL8vt5GekgU1VTKNE6jede9OVirWADAt/VMB8v0Tm61ez3
-        bWXhr6yOU3iQJPogaShBTLD5Cv9eTPuurqMskW6QZOJXvqIY6E7iCBkHyJkkBqo2
-        OxcKxvUy0xfCQADymsmWW/N6JbD+zCXI0ScTFLMBLCScEqRaAtZKvPwW5OE+2ruR
-        m+z9FbTHN1XUHLvR/KVtcAb6RQBRcW5Z5dZIHx00NIS2fUCV2V3Ax/Uaqp67dcVA
-        ==
-X-ME-Sender: <xms:De9vYAokWYs_woEEpDZLo6d6Bh8FdNcZKbKeykDkmgluY2Mcl2by-g>
-    <xme:De9vYGpwg5ij96Fz9T01aXrgC21EPAPHhWgYDsRCeMLldtsz4ucqowCNuhMvHClkY
-    jzsT146aK3Ogb3xgg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudektddguddtvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehn
-    ughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtf
-    frrghtthgvrhhnpedutddtkeeugeegvddttdeukeeiuddtgfeuuddtfeeiueetfeeileet
-    tedvtdfhieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:De9vYFNxDoxdpRtlQApYCyglGczswlSyLi9x6VutS_BzFEJHwegi_Q>
-    <xmx:De9vYH4-XlOH5s6ehFTXQFJt5wqW9OLxHRHuoMAdu1csFLGKR_6jug>
-    <xmx:De9vYP6TsUe2YdppspqDimLN9HgsKChjdsl7Ah30P_7Gi5YDobpNtA>
-    <xmx:Du9vYDqXfFY-7SZ8-4TKPT40dkraw-aY6048pTAkU2jPnR5Q3tYchQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 7C074A0007C; Fri,  9 Apr 2021 02:07:09 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
-Mime-Version: 1.0
-Message-Id: <e5c84ec2-5fe7-4f29-866a-331f652edd79@www.fastmail.com>
-In-Reply-To: <YG/RkB07Wh69/xdu@packtop>
-References: <20210319062752.145730-1-andrew@aj.id.au>
- <20210319062752.145730-11-andrew@aj.id.au> <YG/RkB07Wh69/xdu@packtop>
-Date:   Fri, 09 Apr 2021 15:36:48 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Zev Weiss" <zweiss@equinix.com>
-Cc:     "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "Corey Minyard" <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Tomer Maimon" <tmaimon77@gmail.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "Avi Fishman" <avifishman70@gmail.com>,
-        "Patrick Venture" <venture@google.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Tali Perry" <tali.perry1@gmail.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Benjamin Fair" <benjaminfair@google.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_11/21]_ipmi:_kcs=5Fbmc:_Split_headers_into_devic?=
- =?UTF-8?Q?e_and_client?=
-Content-Type: text/plain
+        Fri, 9 Apr 2021 02:07:52 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE62BC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 23:07:36 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id r22so5126878edq.9
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 23:07:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qw+rYW0fzLb+3GKey/TyfjTz/0+LRJjUz/6dnMaN51w=;
+        b=gDCELGMjr7OOtBUpNWRLGZ75NK00Ga4m6WULPHRuU2Egtx6eOMmL65+SwtA9+qWYhL
+         VwV7RA04qleAlzWB76atq/kVEz8wGe665Nr0az4Q2zcdJgTzENgb14NxRttuhO7C/wES
+         ClYWJiwkXKfcfzdMi2W2bjtYmP4SHSfIVuRi6O/hG+TpHESAQd5Jkk72D9cSWEGEd1Dh
+         2aDCHJxUl+LcD1iSYmkLw8BDmHl4fmRLJFuFdnONzja8uzXQ3VoQ/Y7lhL39yo9zJNwh
+         YfXjz2k8hORLGIDunrgRF1zpTEEhWWkkWJ4sgJlKewKeOl6V8lavTTaMZ3KN8zoxtyxR
+         SoTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qw+rYW0fzLb+3GKey/TyfjTz/0+LRJjUz/6dnMaN51w=;
+        b=MQye9dCNzMeI5ZTuMaG8wSGJidfaCcnDWHetnGOIvW3/4j6bRkyJNMQaMY3agnGdj7
+         YpbAdD/5iJEtRQ9zOeTGxZV+VJtvIJhWwTQf+xFiJpIKMO7K1/XxqlKROML3M1wPAD+7
+         z/GCErfEbymAGR8QB35pvvqq4iP0YvhUOoD2MmfWyPWfUMw2hz0O/scu3wSJE3CX2uNx
+         Cdjt+Il61So/vETnRh6UZG5oG/WUtSr3qZECi3e8XnNvSNoS1HGOv7rTJV9EX6SFgm4i
+         mxQF+q8vDp3fJfTttEfUjRR71UUJm8UfkgFmqr1fmN5yo/FLgK/ppB0jDZ2wv0knAnDS
+         0LNg==
+X-Gm-Message-State: AOAM530kbA4q+QXOyWkTtLgsuLDwbt0SeWPUH1wrkIBzVAsq6A1jx3zI
+        IGExY5Xz4DJw7O3sguoRYEWbIasVTeHKyDPOUtNK9Q==
+X-Google-Smtp-Source: ABdhPJx98U6D6SojG3j6/b/A4M2pc68bxOLpJ/dvv5UOZhQWHk/pfcmEEtGC8SNzo8WVmsAkWt0M1iGTXE3eewa6OWE=
+X-Received: by 2002:a05:6402:42c9:: with SMTP id i9mr15930176edc.35.1617948455414;
+ Thu, 08 Apr 2021 23:07:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <1617886593-36421-1-git-send-email-luojiaxing@huawei.com> <1617886593-36421-2-git-send-email-luojiaxing@huawei.com>
+In-Reply-To: <1617886593-36421-2-git-send-email-luojiaxing@huawei.com>
+From:   Jinpu Wang <jinpu.wang@ionos.com>
+Date:   Fri, 9 Apr 2021 08:07:24 +0200
+Message-ID: <CAMGffEnA9PO8u1CBdJ9kOuQLd3nFVBaiVNwMq8uw05FShojJHA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] scsi: pm8001: clean up for white space
+To:     Luo Jiaxing <luojiaxing@huawei.com>
+Cc:     Jinpu Wang <jinpu.wang@cloud.ionos.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Linux SCSI Mailinglist <linux-scsi@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>, linuxarm@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, 9 Apr 2021, at 13:31, Zev Weiss wrote:
-> On Fri, Mar 19, 2021 at 01:27:42AM CDT, Andrew Jeffery wrote:
-> >Strengthen the distinction between code that abstracts the
-> >implementation of the KCS behaviours (device drivers) and code that
-> >exploits KCS behaviours (clients). Neither needs to know about the APIs
-> >required by the other, so provide separate headers.
-> >
-> >Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> >---
-> > drivers/char/ipmi/kcs_bmc.c           | 21 ++++++++++-----
-> > drivers/char/ipmi/kcs_bmc.h           | 30 ++++++++++-----------
-> > drivers/char/ipmi/kcs_bmc_aspeed.c    | 20 +++++++++-----
-> > drivers/char/ipmi/kcs_bmc_cdev_ipmi.c | 39 ++++++++++++++++++---------
-> > drivers/char/ipmi/kcs_bmc_client.h    | 29 ++++++++++++++++++++
-> > drivers/char/ipmi/kcs_bmc_device.h    | 19 +++++++++++++
-> > drivers/char/ipmi/kcs_bmc_npcm7xx.c   | 20 +++++++++-----
-> > 7 files changed, 129 insertions(+), 49 deletions(-)
-> > create mode 100644 drivers/char/ipmi/kcs_bmc_client.h
-> > create mode 100644 drivers/char/ipmi/kcs_bmc_device.h
-> >
-> >diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
-> >index 709b6bdec165..1046ce2bbefc 100644
-> >--- a/drivers/char/ipmi/kcs_bmc.c
-> >+++ b/drivers/char/ipmi/kcs_bmc.c
-> >@@ -1,46 +1,52 @@
-> > // SPDX-License-Identifier: GPL-2.0
-> > /*
-> >  * Copyright (c) 2015-2018, Intel Corporation.
-> >+ * Copyright (c) 2021, IBM Corp.
-> >  */
-> >
-> > #include <linux/module.h>
-> >
-> > #include "kcs_bmc.h"
-> >
-> >+/* Implement both the device and client interfaces here */
-> >+#include "kcs_bmc_device.h"
-> >+#include "kcs_bmc_client.h"
-> >+
-> >+/* Consumer data access */
-> >+
-> > u8 kcs_bmc_read_data(struct kcs_bmc *kcs_bmc)
-> > {
-> >-	return kcs_bmc->io_inputb(kcs_bmc, kcs_bmc->ioreg.idr);
-> >+	return kcs_bmc->ops->io_inputb(kcs_bmc, kcs_bmc->ioreg.idr);
-> > }
-> > EXPORT_SYMBOL(kcs_bmc_read_data);
-> >
-> > void kcs_bmc_write_data(struct kcs_bmc *kcs_bmc, u8 data)
-> > {
-> >-	kcs_bmc->io_outputb(kcs_bmc, kcs_bmc->ioreg.odr, data);
-> >+	kcs_bmc->ops->io_outputb(kcs_bmc, kcs_bmc->ioreg.odr, data);
-> > }
-> > EXPORT_SYMBOL(kcs_bmc_write_data);
-> >
-> > u8 kcs_bmc_read_status(struct kcs_bmc *kcs_bmc)
-> > {
-> >-	return kcs_bmc->io_inputb(kcs_bmc, kcs_bmc->ioreg.str);
-> >+	return kcs_bmc->ops->io_inputb(kcs_bmc, kcs_bmc->ioreg.str);
-> > }
-> > EXPORT_SYMBOL(kcs_bmc_read_status);
-> >
-> > void kcs_bmc_write_status(struct kcs_bmc *kcs_bmc, u8 data)
-> > {
-> >-	kcs_bmc->io_outputb(kcs_bmc, kcs_bmc->ioreg.str, data);
-> >+	kcs_bmc->ops->io_outputb(kcs_bmc, kcs_bmc->ioreg.str, data);
-> > }
-> > EXPORT_SYMBOL(kcs_bmc_write_status);
-> >
-> > void kcs_bmc_update_status(struct kcs_bmc *kcs_bmc, u8 mask, u8 val)
-> > {
-> >-	kcs_bmc->io_updateb(kcs_bmc, kcs_bmc->ioreg.str, mask, val);
-> >+	kcs_bmc->ops->io_updateb(kcs_bmc, kcs_bmc->ioreg.str, mask, val);
-> > }
-> > EXPORT_SYMBOL(kcs_bmc_update_status);
-> >
-> >-int kcs_bmc_ipmi_event(struct kcs_bmc *kcs_bmc);
-> > int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc)
-> > {
-> >-	return kcs_bmc_ipmi_event(kcs_bmc);
-> >+	return kcs_bmc->client.ops->event(&kcs_bmc->client);
-> > }
-> > EXPORT_SYMBOL(kcs_bmc_handle_event);
-> >
-> >@@ -60,4 +66,5 @@ EXPORT_SYMBOL(kcs_bmc_remove_device);
-> >
-> > MODULE_LICENSE("GPL v2");
-> > MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
-> >+MODULE_AUTHOR("Andrew Jeffery <andrew@aj.id.au>");
-> > MODULE_DESCRIPTION("KCS BMC to handle the IPMI request from system software");
-> >diff --git a/drivers/char/ipmi/kcs_bmc.h b/drivers/char/ipmi/kcs_bmc.h
-> >index bf0ae327997f..a1350e567723 100644
-> >--- a/drivers/char/ipmi/kcs_bmc.h
-> >+++ b/drivers/char/ipmi/kcs_bmc.h
-> >@@ -8,6 +8,15 @@
-> >
-> > #include <linux/miscdevice.h>
-> >
-> >+#include "kcs_bmc_client.h"
-> >+
-> >+#define KCS_BMC_EVENT_NONE	0
-> >+#define KCS_BMC_EVENT_HANDLED	1
-> 
-> Is there a particular reason we're introducing these macros and using an
-> int return type for kcs_bmc_client_ops.event instead of just having it
-> be irqreturn_t?  Other event types or outcomes we're anticipating needing
-> to handle maybe?
-
-In earlier iterations of the patches I was doing some extra work in the 
-event handling path and felt it was useful at the time. However I've 
-refactored things a little and this may have outlived its usefulness.
-
-I'll reasses!
-
-> 
-> >+
-> >+#define KCS_BMC_STR_OBF		BIT(0)
-> >+#define KCS_BMC_STR_IBF		BIT(1)
-> >+#define KCS_BMC_STR_CMD_DAT	BIT(3)
-> 
-> The first two of these macros are used later in the series, but the third
-> doesn't end up used at all I think?
-
-I think I just added it as documentation as the hardware-defined bits 
-aren't contiguous.
-
-Andrew
+On Thu, Apr 8, 2021 at 2:56 PM Luo Jiaxing <luojiaxing@huawei.com> wrote:
+>
+> Some errors are found like below when run checkpatch.pl
+>
+> ERROR: space prohibited before that ',' (ctx:WxW)
+> +int pm8001_mpi_general_event(struct pm8001_hba_info *pm8001_ha , void *piomb);
+>
+> It all about white space, so fix them.
+>
+> Signed-off-by: Jianqin Xie <xiejianqin@hisilicon.com>
+> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+looks good to me, thx!
+Acked-by: Jack Wang <jinpu.wang@ionos.com>
+> ---
+>  drivers/scsi/pm8001/pm8001_ctl.c | 20 +++++++++-----------
+>  drivers/scsi/pm8001/pm8001_ctl.h |  5 +++++
+>  drivers/scsi/pm8001/pm8001_hwi.c | 14 +++++++-------
+>  drivers/scsi/pm8001/pm8001_sas.c | 20 ++++++++++----------
+>  drivers/scsi/pm8001/pm8001_sas.h |  2 +-
+>  drivers/scsi/pm8001/pm80xx_hwi.c | 14 +++++++-------
+>  6 files changed, 39 insertions(+), 36 deletions(-)
+>
+> diff --git a/drivers/scsi/pm8001/pm8001_ctl.c b/drivers/scsi/pm8001/pm8001_ctl.c
+> index 12035ba..90b816f 100644
+> --- a/drivers/scsi/pm8001/pm8001_ctl.c
+> +++ b/drivers/scsi/pm8001/pm8001_ctl.c
+> @@ -369,24 +369,22 @@ static ssize_t pm8001_ctl_aap_log_show(struct device *cdev,
+>         struct Scsi_Host *shost = class_to_shost(cdev);
+>         struct sas_ha_struct *sha = SHOST_TO_SAS_HA(shost);
+>         struct pm8001_hba_info *pm8001_ha = sha->lldd_ha;
+> +       u8 *ptr = (u8 *)pm8001_ha->memoryMap.region[AAP1].virt_ptr;
+>         int i;
+> -#define AAP1_MEMMAP(r, c) \
+> -       (*(u32 *)((u8*)pm8001_ha->memoryMap.region[AAP1].virt_ptr + (r) * 32 \
+> -       + (c)))
+>
+>         char *str = buf;
+>         int max = 2;
+>         for (i = 0; i < max; i++) {
+>                 str += sprintf(str, "0x%08x 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x"
+>                                "0x%08x 0x%08x\n",
+> -                              AAP1_MEMMAP(i, 0),
+> -                              AAP1_MEMMAP(i, 4),
+> -                              AAP1_MEMMAP(i, 8),
+> -                              AAP1_MEMMAP(i, 12),
+> -                              AAP1_MEMMAP(i, 16),
+> -                              AAP1_MEMMAP(i, 20),
+> -                              AAP1_MEMMAP(i, 24),
+> -                              AAP1_MEMMAP(i, 28));
+> +                              pm8001_ctl_aap1_memmap(ptr, i, 0),
+> +                              pm8001_ctl_aap1_memmap(ptr, i, 4),
+> +                              pm8001_ctl_aap1_memmap(ptr, i, 8),
+> +                              pm8001_ctl_aap1_memmap(ptr, i, 12),
+> +                              pm8001_ctl_aap1_memmap(ptr, i, 16),
+> +                              pm8001_ctl_aap1_memmap(ptr, i, 20),
+> +                              pm8001_ctl_aap1_memmap(ptr, i, 24),
+> +                              pm8001_ctl_aap1_memmap(ptr, i, 28));
+>         }
+>
+>         return str - buf;
+> diff --git a/drivers/scsi/pm8001/pm8001_ctl.h b/drivers/scsi/pm8001/pm8001_ctl.h
+> index d0d43a2..4743f0d 100644
+> --- a/drivers/scsi/pm8001/pm8001_ctl.h
+> +++ b/drivers/scsi/pm8001/pm8001_ctl.h
+> @@ -59,5 +59,10 @@
+>  #define SYSFS_OFFSET                    1024
+>  #define PM80XX_IB_OB_QUEUE_SIZE         (32 * 1024)
+>  #define PM8001_IB_OB_QUEUE_SIZE         (16 * 1024)
+> +
+> +static inline u32 pm8001_ctl_aap1_memmap(u8 *ptr, int idx, int off)
+> +{
+> +       return *(u32 *)(ptr + idx * 32 + off);
+> +}
+>  #endif /* PM8001_CTL_H_INCLUDED */
+>
+> diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
+> index 49bf2f7..6887fa3 100644
+> --- a/drivers/scsi/pm8001/pm8001_hwi.c
+> +++ b/drivers/scsi/pm8001/pm8001_hwi.c
+> @@ -1826,7 +1826,7 @@ static void pm8001_send_read_log(struct pm8001_hba_info *pm8001_ha,
+>   * that the task has been finished.
+>   */
+>  static void
+> -mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha , void *piomb)
+> +mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  {
+>         struct sas_task *t;
+>         struct pm8001_ccb_info *ccb;
+> @@ -2058,7 +2058,7 @@ mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha , void *piomb)
+>  }
+>
+>  /*See the comments for mpi_ssp_completion */
+> -static void mpi_ssp_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
+> +static void mpi_ssp_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  {
+>         struct sas_task *t;
+>         unsigned long flags;
+> @@ -2294,9 +2294,9 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>                 (status != IO_UNDERFLOW)) {
+>                 if (!((t->dev->parent) &&
+>                         (dev_is_expander(t->dev->parent->dev_type)))) {
+> -                       for (i = 0 , j = 4; j <= 7 && i <= 3; i++ , j++)
+> +                       for (i = 0, j = 4; j <= 7 && i <= 3; i++, j++)
+>                                 sata_addr_low[i] = pm8001_ha->sas_addr[j];
+> -                       for (i = 0 , j = 0; j <= 3 && i <= 3; i++ , j++)
+> +                       for (i = 0, j = 0; j <= 3 && i <= 3; i++, j++)
+>                                 sata_addr_hi[i] = pm8001_ha->sas_addr[j];
+>                         memcpy(&temp_sata_addr_low, sata_addr_low,
+>                                 sizeof(sata_addr_low));
+> @@ -2625,7 +2625,7 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  }
+>
+>  /*See the comments for mpi_ssp_completion */
+> -static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
+> +static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  {
+>         struct sas_task *t;
+>         struct task_status_struct *ts;
+> @@ -3602,7 +3602,7 @@ int pm8001_mpi_fw_flash_update_resp(struct pm8001_hba_info *pm8001_ha,
+>         return 0;
+>  }
+>
+> -int pm8001_mpi_general_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
+> +int pm8001_mpi_general_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  {
+>         u32 status;
+>         int i;
+> @@ -3685,7 +3685,7 @@ int pm8001_mpi_task_abort_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>   * @pm8001_ha: our hba card information
+>   * @piomb: IO message buffer
+>   */
+> -static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void* piomb)
+> +static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  {
+>         unsigned long flags;
+>         struct hw_event_resp *pPayload =
+> diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
+> index a98d449..43b77ac 100644
+> --- a/drivers/scsi/pm8001/pm8001_sas.c
+> +++ b/drivers/scsi/pm8001/pm8001_sas.c
+> @@ -877,8 +877,8 @@ static void pm8001_dev_gone_notify(struct domain_device *dev)
+>                            pm8001_dev->device_id, pm8001_dev->dev_type);
+>                 if (atomic_read(&pm8001_dev->running_req)) {
+>                         spin_unlock_irqrestore(&pm8001_ha->lock, flags);
+> -                       pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev ,
+> -                               dev, 1, 0);
+> +                       pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev,
+> +                                                       dev, 1, 0);
+>                         while (atomic_read(&pm8001_dev->running_req))
+>                                 msleep(20);
+>                         spin_lock_irqsave(&pm8001_ha->lock, flags);
+> @@ -1013,8 +1013,8 @@ int pm8001_I_T_nexus_reset(struct domain_device *dev)
+>                         goto out;
+>                 }
+>                 msleep(2000);
+> -               rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev ,
+> -                       dev, 1, 0);
+> +               rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev,
+> +                                                    dev, 1, 0);
+>                 if (rc) {
+>                         pm8001_dbg(pm8001_ha, EH, "task abort failed %x\n"
+>                                    "with rc %d\n", pm8001_dev->device_id, rc);
+> @@ -1059,8 +1059,8 @@ int pm8001_I_T_nexus_event_handler(struct domain_device *dev)
+>                         goto out;
+>                 }
+>                 /* send internal ssp/sata/smp abort command to FW */
+> -               rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev ,
+> -                                                       dev, 1, 0);
+> +               rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev,
+> +                                                    dev, 1, 0);
+>                 msleep(100);
+>
+>                 /* deregister the target device */
+> @@ -1075,8 +1075,8 @@ int pm8001_I_T_nexus_event_handler(struct domain_device *dev)
+>                 wait_for_completion(&completion_setstate);
+>         } else {
+>                 /* send internal ssp/sata/smp abort command to FW */
+> -               rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev ,
+> -                                                       dev, 1, 0);
+> +               rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev,
+> +                                                    dev, 1, 0);
+>                 msleep(100);
+>
+>                 /* deregister the target device */
+> @@ -1104,8 +1104,8 @@ int pm8001_lu_reset(struct domain_device *dev, u8 *lun)
+>         DECLARE_COMPLETION_ONSTACK(completion_setstate);
+>         if (dev_is_sata(dev)) {
+>                 struct sas_phy *phy = sas_get_local_phy(dev);
+> -               rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev ,
+> -                       dev, 1, 0);
+> +               rc = pm8001_exec_internal_task_abort(pm8001_ha, pm8001_dev,
+> +                                                    dev, 1, 0);
+>                 rc = sas_phy_reset(phy, 1);
+>                 sas_put_local_phy(phy);
+>                 pm8001_dev->setds_completion = &completion_setstate;
+> diff --git a/drivers/scsi/pm8001/pm8001_sas.h b/drivers/scsi/pm8001/pm8001_sas.h
+> index 039ed91..e7f693a 100644
+> --- a/drivers/scsi/pm8001/pm8001_sas.h
+> +++ b/drivers/scsi/pm8001/pm8001_sas.h
+> @@ -705,7 +705,7 @@ int pm8001_mpi_reg_resp(struct pm8001_hba_info *pm8001_ha, void *piomb);
+>  int pm8001_mpi_dereg_resp(struct pm8001_hba_info *pm8001_ha, void *piomb);
+>  int pm8001_mpi_fw_flash_update_resp(struct pm8001_hba_info *pm8001_ha,
+>                                                         void *piomb);
+> -int pm8001_mpi_general_event(struct pm8001_hba_info *pm8001_ha , void *piomb);
+> +int pm8001_mpi_general_event(struct pm8001_hba_info *pm8001_ha, void *piomb);
+>  int pm8001_mpi_task_abort_resp(struct pm8001_hba_info *pm8001_ha, void *piomb);
+>  struct sas_task *pm8001_alloc_task(void);
+>  void pm8001_task_done(struct sas_task *task);
+> diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
+> index 8431556..5e02446 100644
+> --- a/drivers/scsi/pm8001/pm80xx_hwi.c
+> +++ b/drivers/scsi/pm8001/pm80xx_hwi.c
+> @@ -90,7 +90,7 @@ ssize_t pm80xx_get_fatal_dump(struct device *cdev,
+>         struct sas_ha_struct *sha = SHOST_TO_SAS_HA(shost);
+>         struct pm8001_hba_info *pm8001_ha = sha->lldd_ha;
+>         void __iomem *fatal_table_address = pm8001_ha->fatal_tbl_addr;
+> -       u32 accum_len , reg_val, index, *temp;
+> +       u32 accum_len, reg_val, index, *temp;
+>         u32 status = 1;
+>         unsigned long start;
+>         u8 *direct_data;
+> @@ -1904,7 +1904,7 @@ static void pm80xx_send_read_log(struct pm8001_hba_info *pm8001_ha,
+>   * that the task has been finished.
+>   */
+>  static void
+> -mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha , void *piomb)
+> +mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  {
+>         struct sas_task *t;
+>         struct pm8001_ccb_info *ccb;
+> @@ -2194,7 +2194,7 @@ mpi_ssp_completion(struct pm8001_hba_info *pm8001_ha , void *piomb)
+>  }
+>
+>  /*See the comments for mpi_ssp_completion */
+> -static void mpi_ssp_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
+> +static void mpi_ssp_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  {
+>         struct sas_task *t;
+>         unsigned long flags;
+> @@ -2444,9 +2444,9 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>                 (status != IO_UNDERFLOW)) {
+>                 if (!((t->dev->parent) &&
+>                         (dev_is_expander(t->dev->parent->dev_type)))) {
+> -                       for (i = 0 , j = 4; i <= 3 && j <= 7; i++ , j++)
+> +                       for (i = 0, j = 4; i <= 3 && j <= 7; i++, j++)
+>                                 sata_addr_low[i] = pm8001_ha->sas_addr[j];
+> -                       for (i = 0 , j = 0; i <= 3 && j <= 3; i++ , j++)
+> +                       for (i = 0, j = 0; i <= 3 && j <= 3; i++, j++)
+>                                 sata_addr_hi[i] = pm8001_ha->sas_addr[j];
+>                         memcpy(&temp_sata_addr_low, sata_addr_low,
+>                                 sizeof(sata_addr_low));
+> @@ -2788,7 +2788,7 @@ mpi_sata_completion(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  }
+>
+>  /*See the comments for mpi_ssp_completion */
+> -static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha , void *piomb)
+> +static void mpi_sata_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
+>  {
+>         struct sas_task *t;
+>         struct task_status_struct *ts;
+> @@ -4918,7 +4918,7 @@ static void mpi_set_phy_profile_req(struct pm8001_hba_info *pm8001_ha,
+>                                     u32 operation, u32 phyid,
+>                                     u32 length, u32 *buf)
+>  {
+> -       u32 tag , i, j = 0;
+> +       u32 tag, i, j = 0;
+>         int rc;
+>         struct set_phy_profile_req payload;
+>         struct inbound_queue_table *circularQ;
+> --
+> 2.7.4
+>
