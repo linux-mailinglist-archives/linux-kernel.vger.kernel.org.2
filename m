@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E7C9359BC2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB48A359BC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234340AbhDIKQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:16:45 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:53626 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234392AbhDIKNZ (ORCPT
+        id S233894AbhDIKQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:16:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234696AbhDIKPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:13:25 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 139A5FJQ186534;
-        Fri, 9 Apr 2021 10:13:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=5VMAgQY/rRrnQA1Fz/0QJp8YT1vXr4XEk59BoMFyGIE=;
- b=geHAOJCl0FodBJtPzjutS4rf+4kSK9PW0QXLczGnmdSNAzNayYSPPmgD1sxsRt5ttRPs
- tt5sbclJogGXdIEKD1NPCYqoFNm+zYCawBHQcL2QH6q2agyZnFM21BG9kJhBFR2MePUK
- 6nSBr3bZOADrZPfRc4wcsSdRHXpjP82/vaFeoT0Gcz2D6mLiDV4BXINk7gbvVmphmYt0
- 0TkSJowAQSkEcWBb9T19YNPi8l9/DSi99N1y2YhqPeKfdthdB2ganSRVH+1ve6whgZ3v
- Y2eJoI/O4anbRVzQS6z4fws8qSpL0/usTgD2DAYunYUL3kY3HdIhlGYbIepHE87mfUQx fw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 37rvaw8w11-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Apr 2021 10:13:02 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 139AAC5B113928;
-        Fri, 9 Apr 2021 10:13:01 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 37rvbhegs5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Apr 2021 10:13:01 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 139AD0SL028927;
-        Fri, 9 Apr 2021 10:13:00 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 09 Apr 2021 03:12:59 -0700
-Date:   Fri, 9 Apr 2021 13:12:53 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     gregkh@linuxfoundation.org, joe@perches.com,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/10] staging: rtl8723bs: remove commented out RT_TRACE
- logs in hal/ and os_dep/
-Message-ID: <20210409101252.GL6048@kadam>
-References: <cover.1617640221.git.fabioaiuto83@gmail.com>
- <85338f2b2cffb530efbd987064d146fc2be49c72.1617640221.git.fabioaiuto83@gmail.com>
+        Fri, 9 Apr 2021 06:15:10 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A9EC0613AF;
+        Fri,  9 Apr 2021 03:13:32 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGv935JmMz9sW1;
+        Fri,  9 Apr 2021 20:13:27 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617963209;
+        bh=0BjMUodmgPcivICj4iCsFznMR7XM2fWs437KiiMTk1A=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Jt2tltatENitpE2vqx+BdBzRYQxBmIPSqVtXhiN5jMZymXBG5rbSM/zp41jTvbt5O
+         5yaZploqBjbNodRJx3ZMSm3G2JREsDa+JJYh7E0p6RxepoRxJ3cvrRwXCiZFEb4VXk
+         Tuo7tUZGdUpcwSMfYIT7LOvfgxPPf/HaRZ9CtnRRevYdkU+fhdeGj+uYkRKhy97AKa
+         jvEEyC9dFPBtJkB2ZNk1O1SN0gHpC1a05ydljoRNOKP8nsm3uhqpWGhOCnn7KeWmJW
+         WMTgBYrvS+kVPodt7TqGKaaGrGH0WfPg3FyUeT8AdoRESGs7wrA25Tg/lF5hzm0qgk
+         9Izm94lQWdL+g==
+Date:   Fri, 9 Apr 2021 20:13:16 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Hector Martin <marcan@marcan.st>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the arm-soc tree
+Message-ID: <20210409201316.6c9295a4@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <85338f2b2cffb530efbd987064d146fc2be49c72.1617640221.git.fabioaiuto83@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9948 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 spamscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104090073
-X-Proofpoint-ORIG-GUID: 9P1oyh_n1EBBy_-ChxvPw-pat7t0FTWX
-X-Proofpoint-GUID: 9P1oyh_n1EBBy_-ChxvPw-pat7t0FTWX
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9948 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- suspectscore=0 phishscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
- mlxscore=0 bulkscore=0 impostorscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104090072
+Content-Type: multipart/signed; boundary="Sig_/O0xy41JSU/+P=v9ZX3QWlKm";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 06:49:49PM +0200, Fabio Aiuto wrote:
-> diff --git a/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c b/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c
-> index 9b16265b543d..f52cc4e7a6e6 100644
-> --- a/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c
-> +++ b/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c
-> @@ -1785,7 +1785,6 @@ s8 phy_get_tx_pwr_lmt(struct adapter *adapter, u32 reg_pwr_tbl_sel,
->  	/*
->  	if (band_type == BAND_ON_5G && pwr_lmt == MAX_POWER_INDEX) {
->  		if (idx_bandwidth == 0 || idx_bandwidth == 1) {
-> -			RT_TRACE(COMP_INIT, DBG_LOUD, ("No power limit table of the specified band %d, bandwidth %d, ratesection %d, rf path %d\n",
->  				 idx_band, idx_bandwidth,
->  				 idx_rate_sctn, rf_path));
->  			if (idx_rate_sctn == 2)
+--Sig_/O0xy41JSU/+P=v9ZX3QWlKm
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This won't compile.
+Hi all,
 
-regards,
-dan carpenter
+After merging the arm-soc tree, today's linux-next build (powerpc
+allnoconfig) failed like this:
 
+drivers/of/address.c: In function 'of_iomap':
+drivers/of/address.c:907:10: error: implicit declaration of function 'iorem=
+ap_np'; did you mean 'ioremap_wt'? [-Werror=3Dimplicit-function-declaration]
+  907 |   return ioremap_np(res.start, resource_size(&res));
+      |          ^~~~~~~~~~
+      |          ioremap_wt
+drivers/of/address.c:907:10: warning: returning 'int' from a function with =
+return type 'void *' makes pointer from integer without a cast [-Wint-conve=
+rsion]
+  907 |   return ioremap_np(res.start, resource_size(&res));
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/of/address.c: In function 'of_io_request_and_map':
+drivers/of/address.c:942:7: warning: assignment to 'void *' from 'int' make=
+s pointer from integer without a cast [-Wint-conversion]
+  942 |   mem =3D ioremap_np(res.start, resource_size(&res));
+      |       ^
+lib/devres.c: In function '__devm_ioremap':
+lib/devres.c:47:10: error: implicit declaration of function 'ioremap_np'; d=
+id you mean 'ioremap_wt'? [-Werror=3Dimplicit-function-declaration]
+   47 |   addr =3D ioremap_np(offset, size);
+      |          ^~~~~~~~~~
+      |          ioremap_wt
+lib/devres.c:47:8: warning: assignment to 'void *' from 'int' makes pointer=
+ from integer without a cast [-Wint-conversion]
+   47 |   addr =3D ioremap_np(offset, size);
+      |        ^
 
+Caused by commits
+
+  7c566bb5e4d5 ("asm-generic/io.h:  Add a non-posted variant of ioremap()")
+  89897f739d7b ("of/address: Add infrastructure to declare MMIO as non-post=
+ed")
+(and maybe some others)
+
+I have reverted 86332e9e3477..7d2d16ccf15d for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/O0xy41JSU/+P=v9ZX3QWlKm
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBwKLwACgkQAVBC80lX
+0Gxngwf9GQWNnc5LyM+HCaI+pb327CTB58y3t1AoTLkQSwo3Z71bVcl/Z3rv1CuV
+7othJZfgn7gkU29CcB3KZXVKk2IaPfvhVqEEOjNEo7UsR/C1TBU4g5SGI3uCBhEg
+XE8Fxr4RrQ9N6IE7e8qMb6XsEXdC6bxSWmrSRLKKPMPH01PGIeRRmbrTKqtJwSAN
+rD4HDdlo+zGd6qTFuR49SqaJM8jgdA+XzKZmHKCDCQmnVVd/u7ILQ9U+dOxxy62u
+JdA6Xzl8M5aA6BEI/Vbstr8U1DuR3p2V9T/KcfBruyi8X/nOaRb5gtTwA8LbTQOY
+TnF4XkfJzuF+ic29VXw+50dtA6cKcg==
+=Akh3
+-----END PGP SIGNATURE-----
+
+--Sig_/O0xy41JSU/+P=v9ZX3QWlKm--
