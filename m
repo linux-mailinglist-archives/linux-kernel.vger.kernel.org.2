@@ -2,111 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F391335A6CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB1635A6D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234964AbhDITNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:13:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234692AbhDITNV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:13:21 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BC0C061762;
-        Fri,  9 Apr 2021 12:13:08 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id q5so4847760pfh.10;
-        Fri, 09 Apr 2021 12:13:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D0A/Cc8hdMaD+El6MEJZ9FzF6kVCbUYdGbS7BSYWv4w=;
-        b=Zom8TnsCmt9waqDyDmehlMdo3U/FtzgiQHC1r1S7grbrvnJuz8G5m2PNhFdOm1QPc7
-         dJ8h4uGx3FD+mYPEGLbRcZgUUBH+FtQEwXG7PjHXrDFU4IovGHCj1YNEqmbA2QS9xcpv
-         cg7S5oF59hLwyXRR84MfO9THrcHMIjm6db/EK6wdM4fcMwcl6nkVVwHsvfKFGpCp0v50
-         az4YNuig+5iK0DhFCHu9Ll83O8wKwOmQIUKYVQs2+/Bb+1GgjgxkjTXKUL9trdwceAI8
-         Y+7ZA6/8SuZYmolCpOCCZAA5GE6cqFLul0rwYrS3iprAuk794crgpHY3vFL2Tb75A2XR
-         JZRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D0A/Cc8hdMaD+El6MEJZ9FzF6kVCbUYdGbS7BSYWv4w=;
-        b=QJKq5EF8GpQH27va8/COkFctP2K/H6ScNge+MpqrovF5eNFdcjSxcyXBbHl+0OR4xf
-         Fuo7lT5s0Q+RpbWOpwtMYFDbjroJt2x8HqS5tVRVd0MlHRzM7UM+Lg20BWeTPeBfT1wJ
-         nBb0C/qgbimIHoOVzYyfcr30654dT/XoTMeWEs+rBpQkgHynql8ChJKlpAC5oyt53esQ
-         OHo8TODbKvrKmO0iJRka0gKyLYf8RYMh5vx6bSLArnZ+i+JmdqXhYfIjdnuXgEzVh2hC
-         YKL65iyaHggNGarnWC2T/FEzunkZD6eI3EoxujVeH3IXrrrkI8Z1J7LoWAz8f5sziwJ4
-         OUOg==
-X-Gm-Message-State: AOAM531GMYQRD3+KXwkmtsxWXLQQ5Nb5gH3YAKxOXmfr5Rbp3AfVNEBl
-        coGvbs8rzNwSSuJmqZTURn3eJnXJtITehOsNKvE=
-X-Google-Smtp-Source: ABdhPJy7X8xEM0mRN216J13+4z5ETcTQ82rtD13krpuxydWpZkgJfC//7QPJuvw7BKq2lXMejWyUIb5z9RE1nXzeb+A=
-X-Received: by 2002:a63:fd44:: with SMTP id m4mr14939217pgj.233.1617995587894;
- Fri, 09 Apr 2021 12:13:07 -0700 (PDT)
+        id S234885AbhDITRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:17:02 -0400
+Received: from mga18.intel.com ([134.134.136.126]:30407 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234692AbhDITQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 15:16:53 -0400
+IronPort-SDR: oImWjkqm7NCYBbsobkI4zN/KQXojBzMekyhKNqcCPjDqlDKJq3sPVgU7c0pgDR5gjGug/J4qMm
+ X8laBT+A1agw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="181355397"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="181355397"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 12:16:39 -0700
+IronPort-SDR: nIsxTeUnJf0IHI1M23I9+ZLHZDLhHG3mVTrDRXrJkpl0+XYgMn6UDYm/p+F9/+7JeGlkHin0MN
+ eGzViadnxvEA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="397582023"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 09 Apr 2021 12:16:38 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lUwcP-000HF3-Iw; Fri, 09 Apr 2021 19:16:37 +0000
+Date:   Sat, 10 Apr 2021 03:16:25 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars-linux:testing/xfs-fixed] BUILD SUCCESS
+ 29cccbe7974279cab3786063db20a1146b1c4918
+Message-ID: <6070a809.7QaU2ofU9h9VwFeh%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <CAJht_ENNvG=VrD_Z4w+G=4_TCD0Rv--CQAkFUrHWTh4Cz_NT2Q@mail.gmail.com>
- <20210409073046.GI3697@techsingularity.net> <CAJht_EPXS3wVoNyaD6edqLPKvDTG2vg4qxiGuWBgWpFsNhB-4g@mail.gmail.com>
- <20210409084436.GK3697@techsingularity.net> <CAJht_EPrdujG_0QHM1vc2yrgwwKMQiFzUAK2pgR4dS4z9-Xknw@mail.gmail.com>
- <87ab3d13-f95d-07c5-fc6a-fb33e32685e5@gmail.com> <CAJht_EOmcOdKGKnoUQDJD-=mnHOK0MKiV0+4Epty5H5DMED-qw@mail.gmail.com>
- <3c79924f-3603-b259-935a-2e913dc3afcd@gmail.com>
-In-Reply-To: <3c79924f-3603-b259-935a-2e913dc3afcd@gmail.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Fri, 9 Apr 2021 12:12:57 -0700
-Message-ID: <CAJht_EN_N=H8xwVkTT7WiwmdRTeD-L+tM3Z6hu86ebbT_JpBDw@mail.gmail.com>
-Subject: Re: Problem in pfmemalloc skb handling in net/core/dev.c
-To:     Eric Dumazet <eric.dumazet@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Mel Gorman <mgorman@suse.de>, jslaby@suse.cz,
-        Neil Brown <neilb@suse.de>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mike Christie <michaelc@cs.wisc.edu>,
-        Eric B Munson <emunson@mgebm.net>,
-        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 4:50 AM Eric Dumazet <eric.dumazet@gmail.com> wrote:
->
-> On 4/9/21 12:14 PM, Xie He wrote:
->
-> Then simply copy the needed logic.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/xfs-fixed
+branch HEAD: 29cccbe7974279cab3786063db20a1146b1c4918  xfs: Replace one-element arrays with flexible-array members
 
-No, there's no such thing as "sockets" in some of the protocols. There
-is simply no way to copy "the needed logic".
+elapsed time: 724m
 
-> > Also, I think this is a problem in net/core/dev.c, there are a lot of
-> > old protocols that are not aware of pfmemalloc skbs. I don't think
-> > it's a good idea to fix them one by one.
-> >
->
-> I think you are mistaken.
->
-> There is no problem in net/core/dev.c really, it uses
-> skb_pfmemalloc_protocol()
+configs tested: 153
+configs skipped: 3
 
-This is exactly what I'm talking about. "skb_pfmemalloc_protocol"
-cannot guarantee pfmemalloc skbs are not delivered to unrelated
-protocols, because "__netif_receive_skb" will sometimes treat
-pfmemalloc skbs as normal skbs.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> pfmemalloc is best effort really.
->
-> If a layer store packets in many long living queues, it has to drop pfmemalloc packets,
-> unless these packets are used for swapping.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+sh                          polaris_defconfig
+arc                              allyesconfig
+powerpc                     asp8347_defconfig
+m68k                          multi_defconfig
+openrisc                  or1klitex_defconfig
+xtensa                    xip_kc705_defconfig
+arm                            hisi_defconfig
+powerpc                      pmac32_defconfig
+arm                          lpd270_defconfig
+nios2                            alldefconfig
+m68k                         apollo_defconfig
+mips                        omega2p_defconfig
+mips                        nlm_xlr_defconfig
+powerpc                 mpc8315_rdb_defconfig
+nios2                               defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                   motionpro_defconfig
+sh                         ap325rxa_defconfig
+powerpc                       eiger_defconfig
+mips                         tb0226_defconfig
+powerpc                 mpc834x_itx_defconfig
+mips                  maltasmvp_eva_defconfig
+arm                          ep93xx_defconfig
+xtensa                  nommu_kc705_defconfig
+sh                          rsk7264_defconfig
+sh                           se7751_defconfig
+ia64                        generic_defconfig
+mips                        vocore2_defconfig
+powerpc                           allnoconfig
+powerpc                    socrates_defconfig
+arm64                            alldefconfig
+powerpc                       ppc64_defconfig
+arm                          ixp4xx_defconfig
+mips                         cobalt_defconfig
+powerpc                      chrp32_defconfig
+arm                         socfpga_defconfig
+arm                            pleb_defconfig
+arm                            xcep_defconfig
+mips                            e55_defconfig
+arm                       versatile_defconfig
+sh                          lboxre2_defconfig
+arm                         cm_x300_defconfig
+m68k                       m5475evb_defconfig
+mips                         bigsur_defconfig
+mips                      pistachio_defconfig
+powerpc                 mpc836x_rdk_defconfig
+m68k                       m5249evb_defconfig
+ia64                            zx1_defconfig
+m68k                        m5407c3_defconfig
+sh                            titan_defconfig
+arm                        oxnas_v6_defconfig
+mips                     cu1830-neo_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arc                        nsim_700_defconfig
+arm                       netwinder_defconfig
+sh                          kfr2r09_defconfig
+parisc                              defconfig
+powerpc                     tqm8548_defconfig
+mips                          ath79_defconfig
+arm                            mps2_defconfig
+arm                  colibri_pxa300_defconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                         amcore_defconfig
+ia64                             allyesconfig
+microblaze                          defconfig
+sh                        sh7785lcr_defconfig
+sh                          urquell_defconfig
+arc                      axs103_smp_defconfig
+powerpc                     taishan_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                     ppa8548_defconfig
+powerpc                    sam440ep_defconfig
+s390                          debug_defconfig
+powerpc                     sequoia_defconfig
+mips                           ip28_defconfig
+powerpc                    adder875_defconfig
+mips                     loongson1b_defconfig
+arm                         mv78xx0_defconfig
+arm                       multi_v4t_defconfig
+xtensa                  cadence_csp_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+i386                 randconfig-a006-20210409
+i386                 randconfig-a003-20210409
+i386                 randconfig-a001-20210409
+i386                 randconfig-a004-20210409
+i386                 randconfig-a002-20210409
+i386                 randconfig-a005-20210409
+x86_64               randconfig-a014-20210409
+x86_64               randconfig-a015-20210409
+x86_64               randconfig-a012-20210409
+x86_64               randconfig-a011-20210409
+x86_64               randconfig-a013-20210409
+x86_64               randconfig-a016-20210409
+i386                 randconfig-a014-20210409
+i386                 randconfig-a011-20210409
+i386                 randconfig-a016-20210409
+i386                 randconfig-a012-20210409
+i386                 randconfig-a013-20210409
+i386                 randconfig-a015-20210409
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-Yes, the code of "net/core/dev.c" has exactly this problem. It doesn't
-drop pfmemalloc skbs in some situations, and instead deliver them to
-unrelated protocols, which clearly have nothing to do with swapping.
+clang tested configs:
+x86_64               randconfig-a004-20210409
+x86_64               randconfig-a005-20210409
+x86_64               randconfig-a003-20210409
+x86_64               randconfig-a001-20210409
+x86_64               randconfig-a002-20210409
+x86_64               randconfig-a006-20210409
 
-I'm not sure if you understand what I'm saying. Please look at the
-code of "__netif_receive_skb" and see what will happen when
-"sk_memalloc_socks()" is false and "skb_pfmemalloc(skb)" is true.
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
