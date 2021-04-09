@@ -2,347 +2,414 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2A735A524
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4E035A527
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234332AbhDISBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:01:03 -0400
-Received: from mga02.intel.com ([134.134.136.20]:2114 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233332AbhDISBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:01:02 -0400
-IronPort-SDR: dNx40MQFNOz/0kZHiKwEfuUWXpUh3oWyXswlpVWYpMfE79L7LwknVZrFHLcAOOwetnaDzzujQn
- RL8c6wedh+dg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="180942777"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="180942777"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 11:00:49 -0700
-IronPort-SDR: J+zkHtPe2orqaaEnwRqKH/64CAh9vwyAvWXN9GT91BmMxgwONnY//an6VZUshWZZILgpM+mCp6
- xr+ozroq2fYw==
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="459316292"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 11:00:49 -0700
-Date:   Fri, 9 Apr 2021 11:03:05 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
-        zhangfei.gao@linaro.org, vkoul@kernel.org,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 2/2] iommu/sva: Remove mm parameter from SVA bind API
-Message-ID: <20210409110305.6b0471d9@jacob-builder>
-In-Reply-To: <YHAoY9+w2ebYZ7VV@myrica>
-References: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1617901736-24788-2-git-send-email-jacob.jun.pan@linux.intel.com>
-        <YHAoY9+w2ebYZ7VV@myrica>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S234380AbhDISBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:01:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234250AbhDISBg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 14:01:36 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 228EAC061761
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 11:01:23 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id n191so3293067qka.9
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 11:01:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=vyULvHfliw86llDob1tUEBmaECmsWLLxbVG1eALcJv8=;
+        b=QDA02TI3h0bwRSbqCSnCao0Lj/x6HDJqyPik9zjPiux0Uk/V959IUyU+EYsw0oyw8C
+         RbDDvfdg0X3NXpChmeMr4lnv+UNAg9M20yY8RxDtG0TQGNx8k1B7MRo8Lhpv7ntCQLtA
+         mPMGipvvpCq91SbHkNp+YkueSELIJ1H7iGcUpUfOGtyV4EaEacQj591bbGQvHwz4ssjL
+         RApk1aw5ALZ1a8MX1QNjkJo9Y7Lz1LzBJPz83UIcc4s+cr5Eq2lQsirQefn+7UnGmMPx
+         vq09yQr+k6lT1V5yWLRMqF6MmfQR7/83IA4EwBoT/AWKQoo0CDY4qrnSiYD/DGi3fna1
+         cBSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=vyULvHfliw86llDob1tUEBmaECmsWLLxbVG1eALcJv8=;
+        b=GfF+/h9PECllDVH1G2FnNkG5CVBOJ4whaJYs55j/t4WitubWS2OqdtOTipJA9A+SH4
+         Gl3uTZFRo1Mzbkbrgl22NE42KVOytbkBp79AYL1lpDWhZPuK+NQvKjEmdKDJWu+lh1oa
+         5mJfA2MFpqKStyDrVF8a1J0k9AA5LRC/r7WVQvcYJJHJRYrwKrSjWUJGQWuZyFMORC9m
+         1Eitoyp0tXWplCZ/nb4+DdK9wpQGKOXe//Xd2AjCiVLmw1AYgdpFf7T8sFwnaSasca8L
+         HxjuPUJFXFOTD/oe60db69ds6xn9lXfDwYJRua02nk/TVTXUoWK2OL/tPMAY4BqicJGZ
+         LA3Q==
+X-Gm-Message-State: AOAM531C8tPbpeysHFKMXeb3tCSbbde6u5lOjh7lf2x3ZOCggBM6szba
+        GAAlaUxfPmW+KovdQLQ+DwL7yS3ynp+ivQ==
+X-Google-Smtp-Source: ABdhPJxtDE8xG46khdTTmmflcl5ZpcddvDXdcmr9CQIbAJrBy9qZRpGIEnKMaG+ASVNQblDrR+sIhd7Unh4zhw==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:c92c:354b:50aa:d24a])
+ (user=dlatypov job=sendgmr) by 2002:ad4:4350:: with SMTP id
+ q16mr1417022qvs.56.1617991282356; Fri, 09 Apr 2021 11:01:22 -0700 (PDT)
+Date:   Fri,  9 Apr 2021 11:01:05 -0700
+Message-Id: <20210409180105.3825069-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: [PATCH] Documentation: kunit: add tips for running KUnit
+From:   Daniel Latypov <dlatypov@google.com>
+To:     brendanhiggins@google.com
+Cc:     davidgow@google.com, alan.maguire@oracle.com,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jean-Philippe,
+This is long overdue.
 
-On Fri, 9 Apr 2021 12:11:47 +0200, Jean-Philippe Brucker
-<jean-philippe@linaro.org> wrote:
+There are several things that aren't nailed down (in-tree
+.kunitconfig's), or partially broken (GCOV on UML), but having them
+documented, warts and all, is better than having nothing.
 
-> On Thu, Apr 08, 2021 at 10:08:56AM -0700, Jacob Pan wrote:
-> > diff --git a/drivers/iommu/iommu-sva-lib.c
-> > b/drivers/iommu/iommu-sva-lib.c index bd41405..bd99f6b 100644
-> > --- a/drivers/iommu/iommu-sva-lib.c
-> > +++ b/drivers/iommu/iommu-sva-lib.c
-> > @@ -12,27 +12,33 @@ static DECLARE_IOASID_SET(iommu_sva_pasid);
-> >  
-> >  /**
-> >   * iommu_sva_alloc_pasid - Allocate a PASID for the mm
-> > - * @mm: the mm
-> >   * @min: minimum PASID value (inclusive)
-> >   * @max: maximum PASID value (inclusive)
-> >   *
-> > - * Try to allocate a PASID for this mm, or take a reference to the
-> > existing one
-> > - * provided it fits within the [@min, @max] range. On success the
-> > PASID is
-> > - * available in mm->pasid, and must be released with
-> > iommu_sva_free_pasid().
-> > + * Try to allocate a PASID for the current mm, or take a reference to
-> > the
-> > + * existing one provided it fits within the [@min, @max] range. On
-> > success
-> > + * the PASID is available in the current mm->pasid, and must be
-> > released with
-> > + * iommu_sva_free_pasid().
-> >   * @min must be greater than 0, because 0 indicates an unused
-> > mm->pasid. *
-> >   * Returns 0 on success and < 0 on error.
-> >   */
-> > -int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t
-> > max) +int iommu_sva_alloc_pasid(ioasid_t min, ioasid_t max)
-> >  {
-> >  	int ret = 0;
-> >  	ioasid_t pasid;
-> > +	struct mm_struct *mm;
-> >  
-> >  	if (min == INVALID_IOASID || max == INVALID_IOASID ||
-> >  	    min == 0 || max < min)
-> >  		return -EINVAL;
-> >  
-> >  	mutex_lock(&iommu_sva_lock);
-> > +	mm = get_task_mm(current);
-> > +	if (!mm) {
-> > +		ret = -EINVAL;
-> > +		goto out_unlock;
-> > +	}  
-> 
-> I still think it would be more elegant to keep the choice of context in
-> iommu_sva_bind_device() and pass it down to leaf functions such as
-> iommu_sva_alloc_pasid(). The patch is trying to solve two separate
+This covers a bunch of the more recent features
+* kunit_filter_glob
+* kunit.py run --kunitconfig
+* kunit.py run --alltests
+* slightly more detail on building tests as modules
+* CONFIG_KUNIT_DEBUGFS
 
-I agree if iommu_sva_alloc_pasid() is a leaf function, but it is a public
-function, e.g. called by smmu code:
-	/* Allocate a PASID for this mm if necessary */
-	ret = iommu_sva_alloc_pasid(1, (1U << master->ssid_bits) - 1);
-If we give mm as parameter, it will give callers the illusion that this
-mm doesn't have to be current->mm.
+By my count, the only headline features now not mentioned are the KASAN
+integration and KernelCI json output support (kunit.py run --json).
 
-Should we make it into a leaf function by splitting iommu_sva_alloc_pasid()
-into two parts?
-1. iommu_sva_assign_pasid() //a new leaf helper function does mm->pasid
-assignment
-2. ioasid_alloc()
+And then it also discusses how to get code coverage reports under UML
+and non-UML since this is a question people have repeatedly asked.
 
-in iommu_sva_bind_device(), we do:
-1. handle = driver ops->sva_bind(dev, mm, flags);
-2. pasid = sva_get_pasid(handle);
-3. iommu_sva_assign_pasid(mm, pasid)
+Non-UML coverage collection is no differnt from normal, but we should
+probably explicitly call thsi out.
 
-In vendor driver sva_bind(), it just use ioasid_alloc directly with custom
-range. e.g. arm-smmu-v3-sva.c
-- ret = iommu_sva_alloc_pasid(1, (1U << master->ssid_bits) - 1);
-+ ret = ioasid_alloc(&iommu_sva_pasid, 1, (1U << master->ssid_bits);
-                                   
-> problems:
-> 
-> * We don't have a use-case for binding the mm of a remote process (and
->   it's supposedly difficult for device drivers to do it securely). So OK,
->   we remove the mm argument from iommu_sva_bind_device() and use the
->   current mm. But the IOMMU driver isn't going to do get_task_mm(current)
->   every time it needs the mm being bound, it will take it from
->   iommu_sva_bind_device(). Likewise iommu_sva_alloc_pasid() shouldn't need
->   to bother with get_task_mm().
-> 
-> * cgroup accounting for IOASIDs needs to be on the current task. Removing
->   the mm parameter from iommu_sva_alloc_pasid() doesn't help with that.
->   Sure it indicates that iommu_sva_alloc_pasid() needs a specific task
->   context but that's only for cgroup purpose, and I'd rather pass the
->   cgroup down from iommu_sva_bind_device() anyway (but am fine with
->   keeping it within ioasid_alloc() for now). Plus it's an internal helper,
->   easy for us to check that the callers are doing the right thing.
-> 
-With the above split, we really just have one allocation function:
-ioasid_alloc(), so it can manage current cgroup accounting within. Would
-this work?
+As for UML, I was able to get it working again with two small hacks.*
+E.g. with CONFIG_KUNIT=y && CONFIG_KUNIT_ALL_TESTS=y
+  Overall coverage rate:
+    lines......: 15.1% (18294 of 120776 lines)
+    functions..: 16.8% (1860 of 11050 functions)
 
-> >  	if (mm->pasid) {
-> >  		if (mm->pasid >= min && mm->pasid <= max)
-> >  			ioasid_get(mm->pasid);
-> > @@ -45,22 +51,32 @@ int iommu_sva_alloc_pasid(struct mm_struct *mm,
-> > ioasid_t min, ioasid_t max) else
-> >  			mm->pasid = pasid;
-> >  	}
-> > +	mmput(mm);
-> > +out_unlock:
-> >  	mutex_unlock(&iommu_sva_lock);
-> >  	return ret;
-> >  }
-> >  EXPORT_SYMBOL_GPL(iommu_sva_alloc_pasid);
-> >  
-> >  /**
-> > - * iommu_sva_free_pasid - Release the mm's PASID
-> > + * iommu_sva_free_pasid - Release the current mm's PASID
-> >   * @mm: the mm
-> >   *
-> >   * Drop one reference to a PASID allocated with iommu_sva_alloc_pasid()
-> >   */
-> > -void iommu_sva_free_pasid(struct mm_struct *mm)
-> > +void iommu_sva_free_pasid(void)
-> >  {
-> > +	struct mm_struct *mm;
-> > +
-> >  	mutex_lock(&iommu_sva_lock);
-> > +	mm = get_task_mm(current);
-> > +	if (!mm)
-> > +		goto out_unlock;
-> > +  
-> 
-> More importantly, could we at least dissociate free_pasid() from the
-> current process?  Otherwise drivers can't clean up from a workqueue (as
-> amdkfd does) or from an rcu callback. Given that iommu_sva_unbind_device()
-> takes the SVA handle owned by whomever did bind(), there shouldn't be any
-> security issue. For the cgroup problem, ioasid.c could internally keep
-> track of the cgroup used during allocation rather than assuming the
-> context of ioasid_put() is the same as ioasid_get()
-> 
-Good point, you are right cgroup uncharge does not have to be on the
-current. I will keep the mm parameter here.
+*Switching to use gcc/gcov-6 and not using uml_abort().
+I've documented these hacks in "Notes" but left TODOs for
+brendanhiggins@google.com who tracked down the runtime issue in GCC.
+To be clear: these are not issues specific to KUnit, but rather to UML.
 
-> >  	if (ioasid_put(mm->pasid))
-> >  		mm->pasid = 0;
-> > +	mmput(mm);
-> > +out_unlock:
-> >  	mutex_unlock(&iommu_sva_lock);
-> >  }
-> >  EXPORT_SYMBOL_GPL(iommu_sva_free_pasid);
-> > diff --git a/drivers/iommu/iommu-sva-lib.h
-> > b/drivers/iommu/iommu-sva-lib.h index b40990a..278b8b4 100644
-> > --- a/drivers/iommu/iommu-sva-lib.h
-> > +++ b/drivers/iommu/iommu-sva-lib.h
-> > @@ -8,8 +8,8 @@
-> >  #include <linux/ioasid.h>
-> >  #include <linux/mm_types.h>
-> >  
-> > -int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t
-> > max); -void iommu_sva_free_pasid(struct mm_struct *mm);
-> > +int iommu_sva_alloc_pasid(ioasid_t min, ioasid_t max);
-> > +void iommu_sva_free_pasid(void);
-> >  struct mm_struct *iommu_sva_find(ioasid_t pasid);
-> >  
-> >  #endif /* _IOMMU_SVA_LIB_H */
-> > diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> > index bf0a20f..25840e6 100644
-> > --- a/drivers/iommu/iommu.c
-> > +++ b/drivers/iommu/iommu.c
-> > @@ -23,6 +23,7 @@
-> >  #include <linux/property.h>
-> >  #include <linux/fsl/mc.h>
-> >  #include <linux/module.h>
-> > +#include <linux/sched/mm.h>
-> >  #include <trace/events/iommu.h>
-> >  
-> >  static struct kset *iommu_group_kset;
-> > @@ -2959,9 +2960,8 @@ int iommu_aux_get_pasid(struct iommu_domain
-> > *domain, struct device *dev) EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
-> >  
-> >  /**
-> > - * iommu_sva_bind_device() - Bind a process address space to a device
-> > + * iommu_sva_bind_device() - Bind the current process address space to
-> > a device
-> >   * @dev: the device
-> > - * @mm: the mm to bind, caller must hold a reference to it
-> >   * @flags: options for the bind operation
-> >   *
-> >   * Create a bond between device and address space, allowing the device
-> > to access  
-> 
-> There is another reference to @mm to remove in the function description
-> 
-will do
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+ Documentation/dev-tools/kunit/index.rst       |   1 +
+ .../dev-tools/kunit/running_tips.rst          | 278 ++++++++++++++++++
+ Documentation/dev-tools/kunit/start.rst       |   2 +
+ 3 files changed, 281 insertions(+)
+ create mode 100644 Documentation/dev-tools/kunit/running_tips.rst
 
-> > @@ -2975,9 +2975,10 @@ EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
-> >   * On error, returns an ERR_PTR value.
-> >   */
-> >  struct iommu_sva *
-> > -iommu_sva_bind_device(struct device *dev, struct mm_struct *mm,
-> > unsigned int flags) +iommu_sva_bind_device(struct device *dev, unsigned
-> > int flags) {
-> >  	struct iommu_group *group;
-> > +	struct mm_struct *mm = NULL;
-> >  	struct iommu_sva *handle = ERR_PTR(-EINVAL);
-> >  	const struct iommu_ops *ops = dev->bus->iommu_ops;
-> >  
-> > @@ -2989,8 +2990,11 @@ iommu_sva_bind_device(struct device *dev, struct
-> > mm_struct *mm, unsigned int fla return ERR_PTR(-ENODEV);
-> >  
-> >  	/* Supervisor SVA does not need the current mm */
-> > -	if ((flags & IOMMU_SVA_BIND_SUPERVISOR) && mm)
-> > -		return ERR_PTR(-EINVAL);
-> > +	if (!(flags & IOMMU_SVA_BIND_SUPERVISOR)) {
-> > +		mm = get_task_mm(current);
-> > +		if (!mm)
-> > +			return ERR_PTR(-EINVAL);
-> > +	}
-> >  	/* Ensure device count and domain don't change while we're
-> > binding */ mutex_lock(&group->mutex);
-> >  
-> > @@ -3004,6 +3008,8 @@ iommu_sva_bind_device(struct device *dev, struct
-> > mm_struct *mm, unsigned int fla goto out_unlock;
-> >  
-> >  	handle = ops->sva_bind(dev, mm, flags);
-> > +	if (mm)
-> > +		mmput(mm);
-> >  out_unlock:
-> >  	mutex_unlock(&group->mutex);
-> >  	iommu_group_put(group);
-> > diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
-> > index 27e0e04..da4401a 100644
-> > --- a/drivers/misc/uacce/uacce.c
-> > +++ b/drivers/misc/uacce/uacce.c
-> > @@ -99,7 +99,7 @@ static int uacce_bind_queue(struct uacce_device
-> > *uacce, struct uacce_queue *q) if (!(uacce->flags & UACCE_DEV_SVA))
-> >  		return 0;
-> >  
-> > -	handle = iommu_sva_bind_device(uacce->parent, current->mm, 0);
-> > +	handle = iommu_sva_bind_device(uacce->parent, 0);
-> >  	if (IS_ERR(handle))
-> >  		return PTR_ERR(handle);
-> >  
-> > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> > index a3fbaa2..cf752f3 100644
-> > --- a/include/linux/iommu.h
-> > +++ b/include/linux/iommu.h
-> > @@ -231,8 +231,8 @@ struct iommu_iotlb_gather {
-> >   * @dev_feat_enabled: check enabled feature
-> >   * @aux_attach/detach_dev: aux-domain specific attach/detach entries.
-> >   * @aux_get_pasid: get the pasid given an aux-domain
-> > - * @sva_bind: Bind process address space to device
-> > - * @sva_unbind: Unbind process address space from device
-> > + * @sva_bind: Bind the current process address space to device
-> > + * @sva_unbind: Unbind the current process address space from device  
-> 
-> These don't need changing since we're still passing the mm down to the
-> drivers
-> 
-Right, I struggled between two options :)
+diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-tools/kunit/index.rst
+index 848478838347..7f7cf8d2ab20 100644
+--- a/Documentation/dev-tools/kunit/index.rst
++++ b/Documentation/dev-tools/kunit/index.rst
+@@ -14,6 +14,7 @@ KUnit - Unit Testing for the Linux Kernel
+ 	style
+ 	faq
+ 	tips
++	running_tips
+ 
+ What is KUnit?
+ ==============
+diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
+new file mode 100644
+index 000000000000..d38e665e530f
+--- /dev/null
++++ b/Documentation/dev-tools/kunit/running_tips.rst
+@@ -0,0 +1,278 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++============================
++Tips For Running KUnit Tests
++============================
++
++Using ``kunit.py run`` ("kunit tool")
++=====================================
++
++Running from any directory
++--------------------------
++
++It can be handy to create a bash function like:
++
++.. code-block:: bash
++
++	function run_kunit() {
++	  ( cd "$(git rev-parse --show-toplevel)" && ./tools/testing/kunit/kunit.py run $@ )
++	}
++
++.. note::
++	Early versions of ``kunit.py`` (before 5.6) didn't work unless run from
++	the kernel root, hence the use of a subshell and ``cd``.
++
++Running a subset of tests
++-------------------------
++
++``kunit.py run`` accepts an optional glob argument to filter tests. Currently
++this only matches against suite names, but this may change in the future.
++
++Say that we wanted to run the sysctl tests, we could do so via:
++
++.. code-block:: bash
++
++	$ echo -e 'CONFIG_KUNIT=y\nCONFIG_KUNIT_ALL_TESTS=y' > .kunit/.kunitconfig
++	$ ./tools/testing/kunit/kunit.py run 'sysctl*'
++
++We're paying the cost of building more tests than we need this way, but it's
++easier than fiddling with ``.kunitconfig`` files or commenting out
++``kunit_suite``'s.
++
++However, if we wanted to define a set of tests in a less ad hoc way, the next
++tip is useful.
++
++Defining a set of tests
++-----------------------
++
++``kunit.py run`` (along with ``build``, and ``config``) supports a
++``--kunitconfig`` flag. So if you have a set of tests that you want to run on a
++regular basis (especially if they have other dependencies), you can create a
++specific ``.kunitconfig`` for them.
++
++E.g. kunit has own for its tests:
++
++.. code-block:: bash
++
++	$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit/.kunitconfig
++
++Alternatively, if you're following the convention of naming your
++file ``.kunitconfig``, you can just pass in the dir, e.g.
++
++.. code-block:: bash
++
++	$ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit
++
++.. note::
++	This is a relatively new feature (5.12+) so we don't have any
++	conventions yet about on what files should be checked in versus just
++	kept around locally. But if the tests don't have any dependencies
++	(beyond ``CONFIG_KUNIT``), it's probably not worth writing and
++	maintaining a ``.kunitconfig`` fragment.  Running with
++	``CONFIG_KUNIT_ALL_TESTS=y`` is probably easier.
++
++.. note::
++	Having ``.kunitconfig`` fragments in a parent and child directory is
++	iffy. There's discussion about adding an "import" statement in these
++	files to make it possible to have a top-level config run tests from all
++	child directories. But that would mean ``.kunitconfig`` files are no
++	longer just simple .config fragments.
++
++	One alternative would be to have kunit tool recursively combine configs
++	automagically, but tests could theoretically depend on incompatible
++	options, so handling that would be tricky.
++
++Running with ``allyesconfig``
++-----------------------------
++
++.. code-block:: bash
++
++	$ ./tools/testing/kunit/kunit.py run --alltests
++
++This will try and use ``allyesconfig``, or rather ``allyesconfig`` with a list
++of UML-incompatible configs turned off. That list is maintained in
++``tools/testing/kunit/configs/broken_on_uml.config``.
++
++.. note::
++	This will take a *lot* longer to run and might be broken from time to
++	time, especially on -next. It's not recommended to use this unless you
++	need to or are morbidly curious.
++
++Generating code coverage reports under UML
++------------------------------------------
++
++.. note::
++	TODO(brendanhiggins@google.com): There are various issues with UML and
++	versions of gcc 7 and up. You're likely to run into missing ``.gcda``
++	files or compile errors. We know one `faulty GCC commit
++	<https://github.com/gcc-mirror/gcc/commit/8c9434c2f9358b8b8bad2c1990edf10a21645f9d>`_
++	but not how we'd go about getting this fixed. The compile errors still
++	need some investigation.
++
++.. note::
++	TODO(brendanhiggins@google.com): for recent versions of Linux
++	(5.10-5.12, maybe earlier), there's a bug with gcov counters not being
++	flushed in UML. This translates to very low (<1%) reported coverage. This is
++	related to the above issue and can be worked around by replacing the
++	one call to ``uml_abort()`` with a plain ``exit()``.
++
++
++This is different from the "normal" way of getting coverage information that is
++documented in Documentation/dev-tools/gcov.rst.
++
++Instead of enabling ``CONFIG_GCOV_KERNEL=y``, we can set these options:
++
++.. code-block:: none
++
++	CONFIG_DEBUG_KERNEL=y
++	CONFIG_DEBUG_INFO=y
++	CONFIG_GCOV=y
++
++
++Putting it together into a copy-pastable sequence of commands:
++
++.. code-block:: bash
++
++	# Append coverage options to the current config
++	$ echo -e "CONFIG_DEBUG_KERNEL=y\nCONFIG_DEBUG_INFO=y\nCONFIG_GCOV=y" >> .kunit/.kunitconfig
++	$ ./tools/testing/kunit/kunit.py run
++	# Extract the coverage information from the build dir (.kunit/)
++	$ lcov -t "my_kunit_tests" -o coverage.info -c -d .kunit/
++
++	# From here on, it's the same process as with CONFIG_GCOV_KERNEL=y
++	# E.g. can generate an HTML report in a tmp dir like so:
++	$ genhtml -o /tmp/coverage_html coverage.info
++
++
++If your installed version of gcc doesn't work, you can tweak the steps:
++
++.. code-block:: bash
++
++	# need to edit tools/testing/kunit/kunit_kernel.py to call make with 'CC=/usr/bin/gcc-6'
++	$ $EDITOR tools/testing/kunit/kunit_kernel.py
++
++	$ lcov -t "my_kunit_tests" -o coverage.info -c -d .kunit/ --gcov-tool=/usr/bin/gcov-6
++
++
++Running tests manually
++======================
++
++Running tests without using ``kunit.py run`` is also an important use case.
++Currently it's your only option if you want to test on architectures other than
++UML.
++
++As running the tests under UML is fairly straightforward (configure and compile
++the kernel, run the ``./linux`` binary), this section will focus on testing
++non-UML architectures.
++
++
++Running built-in tests
++----------------------
++
++When setting tests to ``=y``, the tests will run as part of boot and print
++results to dmesg in TAP format. So you just need to add your tests to your
++``.config``, build and boot your kernel as normal.
++
++So if we compiled our kernel with:
++
++.. code-block:: none
++
++	CONFIG_KUNIT=y
++	CONFIG_KUNIT_EXAMPLE_TEST=y
++
++Then we'd see output like this in dmesg signaling the test ran and passed:
++
++.. code-block:: none
++
++	TAP version 14
++	1..1
++	    # Subtest: example
++	    1..1
++	    # example_simple_test: initializing
++	    ok 1 - example_simple_test
++	ok 1 - example
++
++Running tests as modules
++------------------------
++
++Depending on the tests, you can build them as loadable modules.
++
++For example, we'd change the config options from before to
++
++.. code-block:: none
++
++	CONFIG_KUNIT=y
++	CONFIG_KUNIT_EXAMPLE_TEST=m
++
++Then after booting into our kernel, we can run the test via
++
++.. code-block:: none
++
++	$ modprobe kunit-example-test
++
++This will then cause it to print TAP output to stdout.
++
++.. note::
++	The ``modprobe`` will *not* have a non-zero exit code if any test
++	failed (as of 5.13). But ``kunit.py parse`` would, see below.
++
++.. note::
++	You can set ``CONFIG_KUNIT=m`` as well, however, some features will not
++	work and thus some tests might break. Ideally tests would specify they
++	depend on ``KUNIT=y`` in their ``Kconfig``'s, but this is an edge case
++	most test authors won't think about.
++	As of 5.13, the only difference is that ``current->kunit_test`` will
++	not exist.
++
++Pretty-printing results
++-----------------------
++
++You can use ``kunit.py parse`` to parse dmesg for test output and print out
++results in the same familiar format that ``kunit.py run`` does.
++
++.. code-block:: bash
++
++	$ ./tools/testing/kunit/kunit.py parse /var/log/dmesg
++
++
++Retrieving per suite results
++----------------------------
++
++Regardless of how you're running your tests, you can enable
++``CONFIG_KUNIT_DEBUGFS`` to expose per-suite TAP-formatted results:
++
++.. code-block:: none
++
++	CONFIG_KUNIT=y
++	CONFIG_KUNIT_EXAMPLE_TEST=m
++	CONFIG_KUNIT_DEBUGFS=y
++
++The results for each suite will be exposed under
++``/sys/kernel/debug/kunit/<suite>/results``.
++So using our example config:
++
++.. code-block:: bash
++
++	$ modprobe kunit-example-test > /dev/null
++	$ cat /sys/kernel/debug/kunit/example/results
++	... <TAP output> ...
++
++	# After removing the module, the corresponding files will go away
++	$ modprobe -r kunit-example-test
++	$ cat /sys/kernel/debug/kunit/example/results
++	/sys/kernel/debug/kunit/example/results: No such file or directory
++
++Generating code coverage reports
++--------------------------------
++
++See Documentation/dev-tools/gcov.rst for details on how to do this.
++
++The only vaguely KUnit-specific advice here is that you probably want to build
++your tests as modules. That way you can isolate the coverage from tests from
++other code executed during boot, e.g.
++
++.. code-block:: bash
++
++	# Reset coverage counters before running the test.
++	$ echo 0 > /sys/kernel/debug/gcov/reset
++	$ modprobe kunit-example-test
+diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
+index 0e65cabe08eb..aa56d7ca6bfb 100644
+--- a/Documentation/dev-tools/kunit/start.rst
++++ b/Documentation/dev-tools/kunit/start.rst
+@@ -236,5 +236,7 @@ Next Steps
+ ==========
+ *   Check out the :doc:`tips` page for tips on
+     writing idiomatic KUnit tests.
++*   Check out the :doc:`running_tips` page for tips on
++    how to make running KUnit tests easier.
+ *   Optional: see the :doc:`usage` page for a more
+     in-depth explanation of KUnit.
 
-> Thanks,
-> Jean
-> 
-> >   * @sva_get_pasid: Get PASID associated to a SVA handle
-> >   * @page_response: handle page request response
-> >   * @cache_invalidate: invalidate translation caches
-> > @@ -652,7 +652,6 @@ void iommu_aux_detach_device(struct iommu_domain
-> > *domain, struct device *dev); int iommu_aux_get_pasid(struct
-> > iommu_domain *domain, struct device *dev); 
-> >  struct iommu_sva *iommu_sva_bind_device(struct device *dev,
-> > -					struct mm_struct *mm,
-> >  					unsigned int flags);
-> >  void iommu_sva_unbind_device(struct iommu_sva *handle);
-> >  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
-> > @@ -1028,7 +1027,7 @@ iommu_aux_get_pasid(struct iommu_domain *domain,
-> > struct device *dev) }
-> >  
-> >  static inline struct iommu_sva *
-> > -iommu_sva_bind_device(struct device *dev, struct mm_struct *mm,
-> > unsigned int flags) +iommu_sva_bind_device(struct device *dev, unsigned
-> > int flags) {
-> >  	return NULL;
-> >  }
-> > -- 
-> > 2.7.4
-> >   
+base-commit: de2fcb3e62013738f22bbb42cbd757d9a242574e
+-- 
+2.31.1.295.g9ea45b61b8-goog
 
-
-Thanks,
-
-Jacob
