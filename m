@@ -2,67 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C65D35987D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A3E35987A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbhDIJB1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:01:27 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:56205 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231127AbhDIJB0 (ORCPT
+        id S231280AbhDIJBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:01:23 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36458 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230181AbhDIJBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:01:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UUyvAMd_1617958862;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UUyvAMd_1617958862)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 09 Apr 2021 17:01:12 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     dmitry.torokhov@gmail.com
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] Input: apbps2 - remove useless variable
-Date:   Fri,  9 Apr 2021 17:00:59 +0800
-Message-Id: <1617958859-64707-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 9 Apr 2021 05:01:21 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lUn0j-0002Ay-6v; Fri, 09 Apr 2021 09:01:05 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][V2] clk: uniphier: Fix potential infinite loop
+Date:   Fri,  9 Apr 2021 10:01:03 +0100
+Message-Id: <20210409090104.629722-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+From: Colin Ian King <colin.king@canonical.com>
 
-drivers/input/serio/apbps2.c:106:16: warning: variable ‘tmp’ set but not
-used [-Wunused-but-set-variable].
+The for-loop iterates with a u8 loop counter i and compares this
+with the loop upper limit of num_parents that is an int type.
+There is a potential infinite loop if num_parents is larger than
+the u8 loop counter. Fix this by making the loop counter the same
+type as num_parents.  Also make num_parents an unsigned int to
+match the return type of the call to clk_hw_get_num_parents.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Addresses-Coverity: ("Infinite loop")
+Fixes: 734d82f4a678 ("clk: uniphier: add core support code for UniPhier clock driver")
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/input/serio/apbps2.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/input/serio/apbps2.c b/drivers/input/serio/apbps2.c
-index 594ac4e..974d7bf 100644
---- a/drivers/input/serio/apbps2.c
-+++ b/drivers/input/serio/apbps2.c
-@@ -103,7 +103,6 @@ static int apbps2_open(struct serio *io)
+V2: Make num_parents an unsigned int to match return type of
+    clk_hw_get_num_parents().
+
+---
+ drivers/clk/uniphier/clk-uniphier-mux.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/uniphier/clk-uniphier-mux.c b/drivers/clk/uniphier/clk-uniphier-mux.c
+index 462c84321b2d..1998e9d4cfc0 100644
+--- a/drivers/clk/uniphier/clk-uniphier-mux.c
++++ b/drivers/clk/uniphier/clk-uniphier-mux.c
+@@ -31,10 +31,10 @@ static int uniphier_clk_mux_set_parent(struct clk_hw *hw, u8 index)
+ static u8 uniphier_clk_mux_get_parent(struct clk_hw *hw)
  {
- 	struct apbps2_priv *priv = io->port_data;
- 	int limit;
--	unsigned long tmp;
+ 	struct uniphier_clk_mux *mux = to_uniphier_clk_mux(hw);
+-	int num_parents = clk_hw_get_num_parents(hw);
++	unsigned int num_parents = clk_hw_get_num_parents(hw);
+ 	int ret;
+ 	unsigned int val;
+-	u8 i;
++	unsigned int i;
  
- 	/* clear error flags */
- 	iowrite32be(0, &priv->regs->status);
-@@ -111,7 +110,7 @@ static int apbps2_open(struct serio *io)
- 	/* Clear old data if available (unlikely) */
- 	limit = 1024;
- 	while ((ioread32be(&priv->regs->status) & APBPS2_STATUS_DR) && --limit)
--		tmp = ioread32be(&priv->regs->data);
-+		ioread32be(&priv->regs->data);
- 
- 	/* Enable reciever and it's interrupt */
- 	iowrite32be(APBPS2_CTRL_RE | APBPS2_CTRL_RI, &priv->regs->ctrl);
+ 	ret = regmap_read(mux->regmap, mux->reg, &val);
+ 	if (ret)
 -- 
-1.8.3.1
+2.30.2
 
