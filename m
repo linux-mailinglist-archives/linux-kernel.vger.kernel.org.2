@@ -2,146 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F0D335A25E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 498A535A26B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233953AbhDIPxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:53:10 -0400
-Received: from mga02.intel.com ([134.134.136.20]:55410 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233827AbhDIPxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:53:08 -0400
-IronPort-SDR: yS1abaxNnF0/+r+/CWsctDT5nvXqp4KZQt7jW6m2SsbzWgQ3KW6IVRcGpnRHFy08Dl4REqD38T
- JjzGWz3U/bNA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="180917390"
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="180917390"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 08:52:54 -0700
-IronPort-SDR: ZexAgEz/BljwHFGPfWGCgKkgzwrs3QaaLNLbxrVoN9CoognrzT4tz/PFTlwdtm7Fo28lWJvetr
- HFhg+y9x11CA==
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="520325087"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.27.140]) ([10.212.27.140])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 08:52:53 -0700
-Subject: Re: [PATCH v24 04/30] x86/cpufeatures: Introduce X86_FEATURE_CET and
- setup functions
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
- <20210401221104.31584-5-yu-cheng.yu@intel.com>
- <20210409101214.GC15567@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <c7cb0ed6-2725-ba0d-093e-393eab9918b2@intel.com>
-Date:   Fri, 9 Apr 2021 08:52:52 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233700AbhDIPzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233395AbhDIPzf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 11:55:35 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697F7C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:55:22 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id z15so6208756oic.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:55:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7FhH3HxnPhik9wr89dR/sW0eRHTu8hPyuSyg+W7XtPs=;
+        b=dnk8I5QzyMjjItJpGxLSIwh4o4JkMyOpncSyroDFsJ1xGvGiZGFQoorYMliGZJzXZg
+         BKbNZA/c9tmuUwlG7u7WVtl5GpJF3u48HtvA9+TgVxb7+Q5yqE2npdQ+SFvqLIns3o82
+         17Hamlac8BB4PUMIksNM1+tw2v9h3iUAbfdRj4Uwa52itndgwIYRzYtrG+jIH4+q/Uew
+         WTqrCsQijhimidHjsvltK7l+/glCt0CONdkZ2/JTFDCRO9M3HGQh9lHscfRR61LbVwja
+         J2HM/J9T/YMYaAwDML0oNx3l1Zdupijh8XfaJK3mZOXTtCpN6ctcpXbZlIOkLBEayOOp
+         ntlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7FhH3HxnPhik9wr89dR/sW0eRHTu8hPyuSyg+W7XtPs=;
+        b=olNE/jNAjvyUhixTiwQdVQXVCej9JsUNAKSu/qJ9fW4saMLG+ngJRLYc2Bk3rp6jTU
+         KWp6rhWNvveLGAJxHUyxeG4msjVXQ10N/sJsme9kl2fvUjCuaYPDlrtLPdxjTRlv9RYY
+         bDXYe/RmFyc5e9efjl0cqeTVJWBxdGNeiy3g8QP1tZr1up5s8Ob0xNY7E3DS1/TLjnW9
+         yZ2Y6j3aQi0Vw3xISv0KcDB0ijsR5k9/0nOX7qI2QIDvo/557gn3+G58ON6X4r/KXiMH
+         qoFKXexCfLonDw1NpN4J3p7NUaV7LU/482VvC2y6psdOCgN0Md3WHGvnd+by8WMQTsCb
+         xMkA==
+X-Gm-Message-State: AOAM533c94F4ec5dHbBQIglLaPrGw9DdqIDYbN2dv5gsAp1Vnq6oT7td
+        JBSaHxLkOcH5l6RCioZ9nQmo1A==
+X-Google-Smtp-Source: ABdhPJz3Dh7G+iRZvpx0N80r9hJXBOQByK4B4InfbL8YiBVAUS7tQEets07umN9tgXMnbtswDzprlw==
+X-Received: by 2002:aca:de06:: with SMTP id v6mr10044632oig.91.1617983721822;
+        Fri, 09 Apr 2021 08:55:21 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w199sm576723oif.41.2021.04.09.08.55.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 08:55:21 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 10:55:19 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Guru Das Srinagesh <gurus@codeaurora.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: mfd: pm8008: Add IRQ listing
+Message-ID: <20210409155519.GX904837@yoga>
+References: <cover.1617927259.git.gurus@codeaurora.org>
+ <2607ca31fce40ecdb1e8c96dac0fb688c26ad722.1617927259.git.gurus@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210409101214.GC15567@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2607ca31fce40ecdb1e8c96dac0fb688c26ad722.1617927259.git.gurus@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/2021 3:12 AM, Borislav Petkov wrote:
-> On Thu, Apr 01, 2021 at 03:10:38PM -0700, Yu-cheng Yu wrote:
->> Introduce a software-defined X86_FEATURE_CET, which indicates either Shadow
->> Stack or Indirect Branch Tracking (or both) is present.  Also introduce
->> related cpu init/setup functions.
->>
->> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
->> Cc: Kees Cook <keescook@chromium.org>
->> ---
->> v24:
->> - Update #ifdef placement to reflect Kconfig changes of splitting shadow stack and ibt.
->>
->>   arch/x86/include/asm/cpufeatures.h          |  2 +-
->>   arch/x86/include/asm/disabled-features.h    |  9 ++++++++-
->>   arch/x86/include/uapi/asm/processor-flags.h |  2 ++
->>   arch/x86/kernel/cpu/common.c                | 14 ++++++++++++++
->>   arch/x86/kernel/cpu/intel.c                 |  3 +++
->>   5 files changed, 28 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
->> index bf861fc89fef..d771e62677de 100644
->> --- a/arch/x86/include/asm/cpufeatures.h
->> +++ b/arch/x86/include/asm/cpufeatures.h
->> @@ -108,7 +108,7 @@
->>   #define X86_FEATURE_EXTD_APICID		( 3*32+26) /* Extended APICID (8 bits) */
->>   #define X86_FEATURE_AMD_DCM		( 3*32+27) /* AMD multi-node processor */
->>   #define X86_FEATURE_APERFMPERF		( 3*32+28) /* P-State hardware coordination feedback capability (APERF/MPERF MSRs) */
->> -/* free					( 3*32+29) */
->> +#define X86_FEATURE_CET			( 3*32+29) /* Control-flow enforcement */
-> 
-> Right, I know we talked about having this synthetic flag but now that we
-> are moving to CONFIG_X86_SHADOW_STACK and separate SHSTK and IBT feature
-> bits, that synthetic flag is not needed anymore.
-> 
-> For the cases where you wanna test whether any of the two are present,
-> we're probably better off adding a x86_cet_enabled() helper which tests
-> SHSTK and IBT bits.
-> 
+On Thu 08 Apr 19:38 CDT 2021, Guru Das Srinagesh wrote:
 
-Recall we had complicated code for the XSAVES features detection in 
-xstate.c.  Dave Hansen proposed the solution and then the whole thing 
-becomes simple.  Because of this flag, even when only the shadow stack 
-is available, the code handles it nicely.
-
-> I haven't gone through the whole thing yet but depending on the context
-> and the fact that AMD doesn't support IBT, that helper might need some
-> tweaking too. I'll see.
+> Add a header file listing all of the IRQs that Qualcomm Technologies,
+> Inc. PM8008 supports. The constants defined in this file may be used in
+> the client device tree node to specify interrupts.
 > 
->>   #define X86_FEATURE_NONSTOP_TSC_S3	( 3*32+30) /* TSC doesn't stop in S3 state */
->>   #define X86_FEATURE_TSC_KNOWN_FREQ	( 3*32+31) /* TSC has known frequency */
->>   
->> diff --git a/arch/x86/include/asm/disabled-features.h b/arch/x86/include/asm/disabled-features.h
->> index e5c6ed9373e8..018cd7acd3e9 100644
->> --- a/arch/x86/include/asm/disabled-features.h
->> +++ b/arch/x86/include/asm/disabled-features.h
->> @@ -74,13 +74,20 @@
->>   #define DISABLE_SHSTK	(1 << (X86_FEATURE_SHSTK & 31))
->>   #endif
->>   
->> +#ifdef CONFIG_X86_CET
-> 
-> And you don't need that config item either - AFAICT, you can use
-> CONFIG_X86_SHADOW_STACK everywhere.
-> 
-> Which would simplify that config space.
+> Change-Id: I13fb096da54458f2882e8d853a3ad9c379e7d5a9
 
-Would this equal to only CONFIG_X86_CET (one Kconfig option)?  In fact, 
-when you proposed only CONFIG_X86_CET, things became much simpler.
-Practically, IBT is not much in terms of code size.  Since we have 
-already separated the two, why don't we leave it as-is.  When people 
-start using it more, there will be more feedback, and we can decide if 
-one Kconfig is better?
+Please remember to drop the Change-Id when posting to the mailing lists.
 
-Thanks,
-Yu-cheng
+
+We typically don't have defines for the IRQ numbers, but I don't mind.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> ---
+>  include/dt-bindings/mfd/qcom-pm8008.h | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>  create mode 100644 include/dt-bindings/mfd/qcom-pm8008.h
+> 
+> diff --git a/include/dt-bindings/mfd/qcom-pm8008.h b/include/dt-bindings/mfd/qcom-pm8008.h
+> new file mode 100644
+> index 0000000..eca9448
+> --- /dev/null
+> +++ b/include/dt-bindings/mfd/qcom-pm8008.h
+> @@ -0,0 +1,19 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2021 The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#ifndef __DT_BINDINGS_MFD_QCOM_PM8008_H
+> +#define __DT_BINDINGS_MFD_QCOM_PM8008_H
+> +
+> +/* PM8008 IRQ numbers */
+> +#define PM8008_IRQ_MISC_UVLO	0
+> +#define PM8008_IRQ_MISC_OVLO	1
+> +#define PM8008_IRQ_MISC_OTST2	2
+> +#define PM8008_IRQ_MISC_OTST3	3
+> +#define PM8008_IRQ_MISC_LDO_OCP	4
+> +#define PM8008_IRQ_TEMP_ALARM	5
+> +#define PM8008_IRQ_GPIO1	6
+> +#define PM8008_IRQ_GPIO2	7
+> +
+> +#endif
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
