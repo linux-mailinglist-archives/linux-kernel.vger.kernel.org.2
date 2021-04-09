@@ -2,55 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3390C359673
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F02359676
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhDIHeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:34:00 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:51784 "EHLO fornost.hmeau.com"
+        id S231566AbhDIHgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:36:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhDIHd7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:33:59 -0400
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1lUle2-0005yJ-EQ; Fri, 09 Apr 2021 17:33:35 +1000
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Fri, 09 Apr 2021 17:33:34 +1000
-Date:   Fri, 9 Apr 2021 17:33:34 +1000
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Hui Tang <tanghui20@huawei.com>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
-        xuzaibo@huawei.com, wangzhou1@hisilicon.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] crypto: hisilicon/hpre - delete redundant log
-Message-ID: <20210409073334.GC23134@gondor.apana.org.au>
-References: <1617362669-40372-1-git-send-email-tanghui20@huawei.com>
+        id S229621AbhDIHgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 03:36:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71F2F61168;
+        Fri,  9 Apr 2021 07:35:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617953749;
+        bh=tUUyn5yye+9bPZTq8k5gPuCkJ7JDJSHxire3zJvNpSY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bJl/WbbGGP9ZGR4vUnZ19dw7oiC5g1gzuuWBboLh+bUf0pnB+GERUZ0HFNMZflQuJ
+         AX9DTQ99/3B34PgAo/njIks+IllMiSiTeCd/XVd3tzPypoS5kI8u1Do1dQQ9VwuXXi
+         88JooGk2iJ6CXcR8E6bogFudNA57goNMdKXii99WcUdy4qVmFrQYLY4JTBaI1sCDzM
+         /P5BSZ+pciujcpajL5uydMD2z0SROSc3qHxEzvIunTkCbwjWXjjDxCSTSdkOysKE1a
+         eZXv1iZDs6gTTCwQciF6mUlFQURNbUWA0QYQQamlq9khHg2IZxMetwMduRfNnLOWxK
+         ttv+tV9R3sqXw==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lUlgA-0001ns-2S; Fri, 09 Apr 2021 09:35:46 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>
+Subject: [PATCH] tty: clarify that not all ttys have a class device
+Date:   Fri,  9 Apr 2021 09:35:12 +0200
+Message-Id: <20210409073512.6876-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617362669-40372-1-git-send-email-tanghui20@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 07:24:29PM +0800, Hui Tang wrote:
-> 'hpre_cfg_by_dsm' has checked and printed error path internally. It is not
-> necessary to do it here, so remove it.
-> 
-> Signed-off-by: Hui Tang <tanghui20@huawei.com>
-> 
-> v1 -> v2:
-> - Return immediately when return value of 'hpre_cfg_by_dsm' is non-zero.
-> ---
->  drivers/crypto/hisilicon/hpre/hpre_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Commit 30004ac9c090 ("tty: add tty_struct->dev pointer to corresponding
+device instance") added a struct device pointer field to struct
+tty_struct which was populated with the corresponding tty class device
+during initialisation.
 
-Your patch description is misleading as the patch does moe than
-just remove the redundant printk.  Please rephrase so that it is
-clear that the patch is in fact changing behaviour.
+Unfortunately, not all ttys have a class device (e.g. pseudoterminals
+and serdev) in which case the device pointer will be set to NULL,
+something which have bit driver authors over the years.
 
-Thanks,
+In retrospect perhaps this field should never have been added, but let's
+at least document the current behaviour.
+
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ include/linux/tty.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/tty.h b/include/linux/tty.h
+index 95fc2f100f12..178d8a3b18f2 100644
+--- a/include/linux/tty.h
++++ b/include/linux/tty.h
+@@ -284,7 +284,7 @@ struct tty_operations;
+ struct tty_struct {
+ 	int	magic;
+ 	struct kref kref;
+-	struct device *dev;
++	struct device *dev;	/* class device or NULL (e.g. ptys, serdev) */
+ 	struct tty_driver *driver;
+ 	const struct tty_operations *ops;
+ 	int index;
 -- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+2.26.3
+
