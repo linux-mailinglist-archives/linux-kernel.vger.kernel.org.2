@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4584359B7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66C53359B49
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234381AbhDIKL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:11:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51088 "EHLO mail.kernel.org"
+        id S233789AbhDIKIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:08:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45290 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234049AbhDIKEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:04:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F2EB661207;
-        Fri,  9 Apr 2021 10:01:01 +0000 (UTC)
+        id S233516AbhDIKAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:00:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5085261246;
+        Fri,  9 Apr 2021 09:59:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962462;
-        bh=uhswwfjgQNA9mV8C+NtZaLC4WwSRw7Ksp8xEIYMKfBU=;
+        s=korg; t=1617962361;
+        bh=JWVXj47Depu7sYPT82JxdirFmMVp8Txwdzm69g+7Rv8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cimjm5IZUqfGiO7Hc3qcLstIRHGWpjHkRIXN8ly0a2j3Oc7D98e2ZAvOJaIUY0vNq
-         iXt2/YPLHsMI7tymYDdHeDNmM4QHr5uqaS24Lqp1c4hBApsm7zXL+vXpWgB9C82ikr
-         AAOtmjRYJNwi5dKKXTokAKftYGRJEj3lB4ZH8RMA=
+        b=Xy7NUqR2vwWqtQxV09WlFUzvdP6OhwejUlvKJv4k4Lyr4d5JDD68o+zAKzrXMMW21
+         CGFZxRvfeiLbTAIJ0zV26TxFAVnkqOW/KiS1HZMZUUZ2QBht/Xnw1C4IzaYrQEIlW9
+         hqOZIIlPX6HVcs5z3kgYNZA/BKn34dyOSEfbcplk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Chiu <chris.chiu@canonical.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
+        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
+        Steve French <stfrench@microsoft.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 24/45] block: clear GD_NEED_PART_SCAN later in bdev_disk_changed
+Subject: [PATCH 5.10 28/41] cifs: revalidate mapping when we open files for SMB1 POSIX
 Date:   Fri,  9 Apr 2021 11:53:50 +0200
-Message-Id: <20210409095306.194485279@linuxfoundation.org>
+Message-Id: <20210409095305.722840125@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
-References: <20210409095305.397149021@linuxfoundation.org>
+In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
+References: <20210409095304.818847860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Chiu <chris.chiu@canonical.com>
+From: Ronnie Sahlberg <lsahlber@redhat.com>
 
-[ Upstream commit 5116784039f0421e9a619023cfba3e302c3d9adc ]
+[ Upstream commit cee8f4f6fcabfdf229542926128e9874d19016d5 ]
 
-The GD_NEED_PART_SCAN is set by bdev_check_media_change to initiate
-a partition scan while removing a block device. It should be cleared
-after blk_drop_paritions because blk_drop_paritions could return
--EBUSY and then the consequence __blkdev_get has no chance to do
-delete_partition if GD_NEED_PART_SCAN already cleared.
+RHBZ: 1933527
 
-It causes some problems on some card readers. Ex. Realtek card
-reader 0bda:0328 and 0bda:0158. The device node of the partition
-will not disappear after the memory card removed. Thus the user
-applications can not update the device mapping correctly.
+Under SMB1 + POSIX, if an inode is reused on a server after we have read and
+cached a part of a file, when we then open the new file with the
+re-cycled inode there is a chance that we may serve the old data out of cache
+to the application.
+This only happens for SMB1 (deprecated) and when posix are used.
+The simplest solution to avoid this race is to force a revalidate
+on smb1-posix open.
 
-BugLink: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1920874
-Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Link: https://lore.kernel.org/r/20210323085219.24428-1-chris.chiu@canonical.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
+Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
+Signed-off-by: Steve French <stfrench@microsoft.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/block_dev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/cifs/file.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index c33151020bcd..85500e2400cf 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1240,13 +1240,13 @@ int bdev_disk_changed(struct block_device *bdev, bool invalidate)
+diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+index be46fab4c96d..da057570bb93 100644
+--- a/fs/cifs/file.c
++++ b/fs/cifs/file.c
+@@ -164,6 +164,7 @@ int cifs_posix_open(char *full_path, struct inode **pinode,
+ 			goto posix_open_ret;
+ 		}
+ 	} else {
++		cifs_revalidate_mapping(*pinode);
+ 		cifs_fattr_to_inode(*pinode, &fattr);
+ 	}
  
- 	lockdep_assert_held(&bdev->bd_mutex);
- 
--	clear_bit(GD_NEED_PART_SCAN, &bdev->bd_disk->state);
--
- rescan:
- 	ret = blk_drop_partitions(bdev);
- 	if (ret)
- 		return ret;
- 
-+	clear_bit(GD_NEED_PART_SCAN, &disk->state);
-+
- 	/*
- 	 * Historically we only set the capacity to zero for devices that
- 	 * support partitions (independ of actually having partitions created).
 -- 
 2.30.2
 
