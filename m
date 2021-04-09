@@ -2,62 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAD91359C2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64F42359C30
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbhDIKej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:34:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:47800 "EHLO foss.arm.com"
+        id S233380AbhDIKgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:36:39 -0400
+Received: from mga18.intel.com ([134.134.136.126]:53503 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233745AbhDIKe3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:34:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7B1AD1FB;
-        Fri,  9 Apr 2021 03:34:15 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74EAF3F73D;
-        Fri,  9 Apr 2021 03:34:14 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: [RFC PATCH 01/10] genirq: Add chip flag to denote automatic IRQ (un)masking
-In-Reply-To: <20210409101725.00007271@Huawei.com>
-References: <20210408154326.3988781-1-valentin.schneider@arm.com> <20210408154326.3988781-2-valentin.schneider@arm.com> <20210409101725.00007271@Huawei.com>
-Date:   Fri, 09 Apr 2021 11:34:07 +0100
-Message-ID: <875z0voig0.mognet@arm.com>
+        id S232796AbhDIKgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:36:37 -0400
+IronPort-SDR: Cu/14eqW35xcxHW8mwSBXtM4BwskmQBbeKL5Pp7Elp4ouZ0QHH9/zQb900XClUrS92Cj6HX3e5
+ mXa8H+iLRy4g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="181268901"
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="181268901"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 03:36:24 -0700
+IronPort-SDR: JUN6OsiiL7YlLceFG2CwMSggCHYJg4I7zhEqbvonH8wtObAJzul8wB5aan5WA3Ioiut/M9gssH
+ TOuNQnH8X8PQ==
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="520238000"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 03:36:20 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lUoUr-002Vbk-Qc; Fri, 09 Apr 2021 13:36:17 +0300
+Date:   Fri, 9 Apr 2021 13:36:17 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        linux-i2c@vger.kernel.org, Sergey.Semin@baikalelectronics.ru,
+        linux-kernel@vger.kernel.org, digetx@gmail.com, treding@nvidia.com,
+        jarkko.nikula@linux.intel.com, rmk+kernel@armlinux.org.uk,
+        song.bao.hua@hisilicon.com, john.garry@huawei.com,
+        mika.westerberg@linux.intel.com, prime.zeng@huawei.com,
+        linuxarm@huawei.com
+Subject: Re: [PATCH v7 2/5] i2c: core: add api to provide frequency mode
+ strings
+Message-ID: <YHAuIdwKMjZuDmXU@smile.fi.intel.com>
+References: <1617880641-664-1-git-send-email-yangyicong@hisilicon.com>
+ <1617880641-664-3-git-send-email-yangyicong@hisilicon.com>
+ <20210408205551.GD1900@kunai>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408205551.GD1900@kunai>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+On Thu, Apr 08, 2021 at 10:55:51PM +0200, Wolfram Sang wrote:
+> 
+> > +const char *i2c_freq_mode_string(u32 bus_freq_hz)
+> > +{
+> > +	switch (bus_freq_hz) {
+> > +	case I2C_MAX_STANDARD_MODE_FREQ:
+> > +		return "Standard Mode (100 kHz)";
+> 
+> Sorry, I just noticed just now. Shouldn't we also support lower
+> frequencies than the maximum one? I.e.
+> 
+> 	if (bus_freq_hz <= I2C_MAX_STANDARD_MODE_FREQ)
+>  		return "Standard Mode (max 100 kHz)";
+> 	else if (bus_freq_hz <= ... )
+> 
+> ?
 
-Thanks for taking a peek :)
+Can we add this later if needed?
+Because in such case additionally printing bus_freq_hz will be fine, no?
 
-On 09/04/21 10:17, Jonathan Cameron wrote:
-> On Thu, 8 Apr 2021 16:43:17 +0100
-> Valentin Schneider <valentin.schneider@arm.com> wrote:
->> diff --git a/include/linux/irq.h b/include/linux/irq.h
->> index bee82809107c..580b1b6b1799 100644
->> --- a/include/linux/irq.h
->> +++ b/include/linux/irq.h
->> @@ -219,6 +219,8 @@ struct irq_data {
->>   *				  irq_chip::irq_set_affinity() when deactivated.
->>   * IRQD_IRQ_ENABLED_ON_SUSPEND	- Interrupt is enabled on suspend by irq pm if
->>   *				  irqchip have flag IRQCHIP_ENABLE_WAKEUP_ON_SUSPEND set.
->> + * IRQD_IRQ_FLOW_MASKED         - Interrupt is masked by ACK. Only EOI can
->> + *                                clear this.
->
-> Nitpick of the day : Seems text above is using tabs for white space blocks
-> whereas you have used spaces. Make it consistent.
-> It's not consistent in the file so I guess you could clean that up, or
-> just go with making it consistent in this block.
->
+But putting max to each frequency representation in the list of strings sounds
+good to me.
 
-I usually let my editor take the wheel when it comes to whitespace vs tabs,
-but it does look like it's not aligned with the rest here.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
