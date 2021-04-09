@@ -2,133 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC94535A738
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9779B35A73C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235050AbhDITir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:38:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234705AbhDITiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:38:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA2FE61165;
-        Fri,  9 Apr 2021 19:38:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617997112;
-        bh=AqqKRuGB+aYlSpd2XHtxaxortNgbyhw4JfrwsQxNLN4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CXwi9Dy+zfc80o7ZkIWXRhs9/ZKsvO31vSVYQYVnq6OvP5VeIuRcuhRudglZoQrQQ
-         XI7tsH+VIwCw4CT/GnM0ZR5PZ3WRQlV38xh0JeEDw9VHzjDIvP+9nHId9Ptt3/kCzR
-         FVppS1H7u4g5ES4XvCWAkfAIZq5W0YPmRb5at5f2GEFA6Jmd5EEwa+qZFj1DXJRmmw
-         sbbUjDjd4yuWNHTnUXnSPTG3vvDp+NXA0HsQ/WZdOgBfMQ/LOtOFCivjxmL0lIb2J7
-         w874TcijUzFj4URMPQq49VLnSCESPe5wYkuv2LFIrfTqsGYl4mp3Xw41AQDRyHnMFr
-         3ALhcqp8DJlkQ==
-Received: by mail-oi1-f172.google.com with SMTP id z15so6888343oic.8;
-        Fri, 09 Apr 2021 12:38:32 -0700 (PDT)
-X-Gm-Message-State: AOAM532ViE9M4ly940fuQ/Nxm05pPigM9LF2f5uusDLy/let8ePcKQ0c
-        I/IZEp+pCMmlvjQ5a+7JQmMiLv87r4he4ah0LrE=
-X-Google-Smtp-Source: ABdhPJwPRkeRcHq2LQ4abuG/9/wDbgW0Bv24YoYSOQZ4hFRrWtMj03Zbtndge10mz92YsjqjXfAUKkMC/mJSZ/pM/cI=
-X-Received: by 2002:a05:6808:3d3:: with SMTP id o19mr1577825oie.4.1617997112043;
- Fri, 09 Apr 2021 12:38:32 -0700 (PDT)
+        id S235073AbhDITjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:39:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234507AbhDITjo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 15:39:44 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6614FC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 12:39:31 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0be100a8e90a67ff2fdfe0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:e100:a8e9:a67:ff2f:dfe0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 91BC91EC04A9;
+        Fri,  9 Apr 2021 21:39:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617997169;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=piAEnbi9i8uJD27RCRs0AnB3SDzJBLyh+CujT1uDyxc=;
+        b=iM5/UlyjnK1s2Wi9+Zn2HGYWIsVl2sz6F7Iy/aXBvySBb9iaxeI0XeESG62GvK2SIRoFGN
+        CSIR/DgZjVxLdgoC86jjO314kF9WLIhaeVD7EF8iD4hY7H+TzC98VtgBzmTRrAfU5FKtll
+        WReREubbxu9vMyXjIA/qEvTyM21+SJ0=
+Date:   Fri, 9 Apr 2021 21:39:29 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Saripalli, RK" <rsaripal@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 1/5] x86/cpufeatures: Define feature bits to support
+ mitigation of PSF
+Message-ID: <20210409193929.GI15567@zn.tnic>
+References: <20210406155004.230790-1-rsaripal@amd.com>
+ <20210406155004.230790-2-rsaripal@amd.com>
+ <20210409174134.GH15567@zn.tnic>
+ <cc5476c9-fe4e-6b4c-d323-37b90237b32b@amd.com>
 MIME-Version: 1.0
-References: <20210328074009.95932-1-sven@svenpeter.dev> <20210328074009.95932-2-sven@svenpeter.dev>
- <20210407104425.GB15173@willie-the-truck> <e0d9af36-fc6c-4470-a87c-61b9161bdf8f@www.fastmail.com>
-In-Reply-To: <e0d9af36-fc6c-4470-a87c-61b9161bdf8f@www.fastmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 9 Apr 2021 21:38:15 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a11O7JVDv+4rfky13C1pZFD7eE_B_54zRN8UQVpBrQJcA@mail.gmail.com>
-Message-ID: <CAK8P3a11O7JVDv+4rfky13C1pZFD7eE_B_54zRN8UQVpBrQJcA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] iommu: io-pgtable: add DART pagetable format
-To:     Sven Peter <sven@svenpeter.dev>
-Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Hector Martin <marcan@marcan.st>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
-        Stan Skowronek <stan@corellium.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Petr Mladek via iommu <iommu@lists.linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <cc5476c9-fe4e-6b4c-d323-37b90237b32b@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 6:56 PM Sven Peter <sven@svenpeter.dev> wrote:
-> On Wed, Apr 7, 2021, at 12:44, Will Deacon wrote:
-> > On Sun, Mar 28, 2021 at 09:40:07AM +0200, Sven Peter wrote:
-> >
-> > > +   cfg->pgsize_bitmap &= SZ_16K;
-> > > +   if (!cfg->pgsize_bitmap)
-> > > +           return NULL;
-> >
-> > This is worrying (and again, I don't think this belongs here). How is this
-> > thing supposed to work if the CPU is using 4k pages?
->
-> This SoC is just full of fun surprises!
-> I didn't even think about that case since I've always been using 16k pages so far.
->
-> I've checked again and wasn't able to find any way to configure the pagesize
-> of the IOMMU. There seem to be variants of this IP in older iPhones which
-> support a 4k pagesize but to the best of my knowledge this is hard wired
-> and not configurable in software.
->
-> When booting with 4k pages I hit the BUG_ON in iova.c that ensures that the
-> iommu pagesize has to be <= the cpu page size.
->
-> I see two options here and I'm not sure I like either of them:
->
-> 1) Just don't support 4k CPU pages together with IOMMU translations and only
->    allow full bypass mode there.
->    This would however mean that PCIe (i.e. ethernet, usb ports on the Mac
->    mini) and possibly Thunderbolt support would not be possible since these
->    devices don't seem to like iommu bypass mode at all.
+On Fri, Apr 09, 2021 at 01:22:49PM -0500, Saripalli, RK wrote:
+> > And I think you don't need this one either if we do a "light" controls
+> > thing but lemme look at the rest first.
 
-It should be possible to do a fake bypass mode by just programming a
-static page table for as much address space as you can, and then
-use swiotlb to address any memory beyond that. This won't perform
-well because it requires bounce buffers for any high memory, but it
-can be a last resort if a dart instance cannot do normal bypass mode.
+Ok, and what I mean with "lite" version is something like this below
+which needs finishing and testing.
 
-> 2) I've had a brief discussion on IRC with Arnd about this [1] and he pointed
->    out that the dma_map_sg API doesn't make any guarantees about the returned
->    iovas and that it might be possible to make this work at least for devices
->    that go through the normal DMA API.
->
->    I've then replaced the page size check with a WARN_ON in iova.c just to see
->    what happens. At least normal devices that go through the DMA API seem to
->    work with my configuration. iommu_dma_alloc took the iommu_dma_alloc_remap
->    path which was called with the cpu page size but then used
->    domain->pgsize_bitmap to increase that to 16k. So this kinda works out, but
->    there are other functions in dma-iommu.c that I believe rely on the fact that
->    the iommu can map single cpu pages. This feels very fragile right now and
->    would probably require some rather invasive changes.
+Initially, it could support the cmdline params:
 
-The other second-to-last resort here would be to duplicate the code from
-the dma-iommu code and implement the dma-mapping API directly on
-top of the dart hardware instead of the iommu layer. This would probably
-be much faster than the swiotlb on top of a bypass or a linear map,
-but it's a really awful abstraction that would require adding special cases
-into a lot of generic code.
+predict_store_fwd={on,off,auto}
 
->    Any driver that tries to use the iommu API directly could be trouble
->    as well if they make similar assumptions.
+to give people the opportunity to experiment with the feature.
 
-I think pretty much all drivers using the iommu API directly already
-depends on having a matching page size.  I don't see any way to use
-e.g. PCI device assignment using vfio, or a GPU driver with per-process
-contexts when the iotlb page size is larger than the CPU's.
+If it turns out that prctl and seccomp per-task toggling is needed then
+sure, we can extend but I don't see the reason for a whole separate set
+of options yet. Especially is ssbd already controls this.
 
->    Is this something you would even want to support in the iommu subsytem
->    and is it even possible to do this in a sane way?
+AFAICT, of course and if I'm not missing some other aspect here.
 
-I don't know how hard it is to do adjust the dma-iommu implementation
-to allow this, but as long as we can work out the DT binding to support
-both normal dma-iommu mode with 16KB pages and some kind of
-passthrough mode (emulated or not) with 4KB pages, it can be left
-as a possible optimization for later.
+Thx.
 
-        Arnd
+---
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 2d11384dc9ab..226b73700f88 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1165,3 +1165,22 @@ void set_dr_addr_mask(unsigned long mask, int dr)
+ 		break;
+ 	}
+ }
++
++static int __init psf_cmdline(char *str)
++{
++	if (!boot_cpu_has(X86_FEATURE_PSFD))
++		return 0;
++
++	if (!str)
++		return -EINVAL;
++
++	if (!strcmp(str, "off")) {
++		x86_spec_ctrl_base |= SPEC_CTRL_PSFD;
++		setup_clear_cpu_cap(X86_FEATURE_PSFD);
++	}
++
++	return 0;
++}
++early_param("predict_store_fwd", psf_cmdline);
++
++
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
