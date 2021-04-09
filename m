@@ -2,84 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 451963594E2
+	by mail.lfdr.de (Postfix) with ESMTP id 91CB53594E3
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:44:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbhDIFnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:43:41 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:52348 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbhDIFnd (ORCPT
+        id S231503AbhDIFn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhDIFnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:43:33 -0400
-Received: by mail-il1-f199.google.com with SMTP id s20so387023ilj.19
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:43:19 -0700 (PDT)
+        Fri, 9 Apr 2021 01:43:55 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2099EC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 22:43:43 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id z9so3796620ilb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:43:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QdyZIH69QZLX+qD184zaI/95rRxErKOr+ptyeL501Dg=;
+        b=IFJpyGI29VNx2ZZT/zab37cZtLh7k2KFjyFBZ5nh9pV4MAsPibOAKyTfUPEZlriKdL
+         VI5krZLxUhCox6dw1qR1p5Q8QKLhl562H8UiAb05GzVeC4UwHhixz8F20z1uqTduV8W3
+         +woVCatxn6E+YIhmgt1O5Jzy7b0DHlo3YDmTBRlCP5DkwDSQhZPXtHDPmQmXYjlTzyMV
+         O+l0MtYLM0zbKnhGXq1NSOOUOTIbSA1kY7/UsDMNSL/hxH6bAgnsxJwmGjdmCJ+JCY5l
+         C+0zRd0FCX3jRBOZDytVWzbUyqqnNEsX8f6vZr/CRP0PgXaAv2rpehSqT7hJMrhG3tNQ
+         AIDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=/ly/4Xm6+8ivV15n83ADfbzIBp0b85vMIRQe3MQRl7o=;
-        b=sC2tGNmWLgksXqUoSYHfIGnmXv6tk68G7wx2rludcHlBmOhHjIWB/RH+KNzHxuT9kY
-         RhPwtf/Q1soa/+ulPPB+wrBCCAaFy7Mu2nTLpXDnaurPSOKYXBZR3DNGO1xguBmLgHJv
-         2rC/rB7gqpGoxvLK/KPVTA6wTPJ6kG/E/brr0M8FPlTQnHcJFFNBaH1Bg1C8oaMcXz5i
-         nv4KpteC7LSQkhtJKWARSOh5PYrknslhHui2f4CAv8Pn8Oy4p1tHqj2MiRKJRHC05+PY
-         oGVbA7OrQ9q7SCwbiXhwmPO2of0/iZjg0oM+6pVgGaSHLjX9qdHqOIQp2lbLoft35FhG
-         quWw==
-X-Gm-Message-State: AOAM531e+zn7pYrYXBvo6613GxQBJq1jMvedY1KQjQDDDVOnHkPB873M
-        8YX5DaQV9sITwf4kB0D3F4sqK0ulpfiBWMzwq3nmbKpiAvee
-X-Google-Smtp-Source: ABdhPJywPyJtv7ooSj0CpwoceEcAzw9/ul9ZWOBL7sVOq2HE4n9irT1sbN79NB+q7VJH7zzMLSUaeL88rbZqr05QNTyU8feZPKPv
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QdyZIH69QZLX+qD184zaI/95rRxErKOr+ptyeL501Dg=;
+        b=SjnaWL94NRauByh2h7r5+1rrVi073LA4z4FyncW4etiOZDXWZkxsC41Xj1lN0B6VKc
+         mGzbx7QiKY1cKStoRFaqoonH4oRxKIThwrpPUzYc6ZSpYx/cspssGeTKzY0ZoB5xqXl4
+         /J8VecIrxSwjjA8wNETgj6Uq5Ox0AiAdyY7PVQ/Jisvj44PLCc4zt+QClC0+AcvYz3SK
+         U3hTSPztXCuRlCEblrfovcZNfYeUovAq8PGDRjejPLyr92ag02/JttqqgdMts+mMkDHj
+         PXzLRfNQvxtpKsRcZk6OLb51AKDwUo0svVMspp5ngK6ELfbHiRJnjrI2PfzlSTsHIPod
+         awpw==
+X-Gm-Message-State: AOAM530ZES61iK6kFTekKK7DPIeK8i5+kdDL2ooJR4PoGO11XBAXnaXA
+        Amy2UurB7+SH9KMIohGyTqHyI+WS1bUFtn9QcQSmTzTG2Cv4sw==
+X-Google-Smtp-Source: ABdhPJwBLNzQvO+jGFN3ALoPBxIkWt9qei6kpyabY/dUNKkbBbeBR/YLrbhcC2j5a34lmYBlAKiZE2VL3kI1LJWpJXY=
+X-Received: by 2002:a05:6e02:1a43:: with SMTP id u3mr10086739ilv.292.1617947022330;
+ Thu, 08 Apr 2021 22:43:42 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:3884:: with SMTP id b4mr12621744jav.18.1617946999193;
- Thu, 08 Apr 2021 22:43:19 -0700 (PDT)
-Date:   Thu, 08 Apr 2021 22:43:19 -0700
-In-Reply-To: <0000000000002c2f5b05b732ce65@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000027071505bf83a4f3@google.com>
-Subject: Re: [syzbot] memory leak in ext4_multi_mount_protect
-From:   syzbot <syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, juan.carlos@b2bworthyleads.com,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu
+References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183223.80F1E291@viggo.jf.intel.com>
+ <YG7XjTG9tiK29y1j@localhost.localdomain> <CAHbLzkqoaSnuBJMAe_heQt01FuPWODYQHJ955gaJNNojwbUjrw@mail.gmail.com>
+ <YG9IthpDC/lri4Qh@localhost.localdomain> <CAHbLzkqt0_xM=rAaNiSwKn=kY=wmWiFe3N+CEuqH_ryU-o1ysQ@mail.gmail.com>
+ <YG/g49rCrId0ALra@localhost.localdomain>
+In-Reply-To: <YG/g49rCrId0ALra@localhost.localdomain>
+From:   Wei Xu <weixugc@google.com>
+Date:   Thu, 8 Apr 2021 22:43:31 -0700
+Message-ID: <CAAPL-u_7UWmAPpRvZJQ=FGMU=OTV+n5evzb-kjU1uCS9OpzwRg@mail.gmail.com>
+Subject: Re: [PATCH 04/10] mm/migrate: make migrate_pages() return nr_succeeded
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Yang Shi <shy828301@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+I agree that it is a good further improvement to make nr_succeeded an optional
+output argument of migrate_pages() given that most callers don't need it.  IMHO,
+the most important thing in this matter is to ensure that nr_succeeded only
+returns (when its return value is needed) the successfully migrated
+pages in this
+round and doesn't accumulate.  This is addressed by both proposals.
 
-HEAD commit:    4fa56ad0 Merge tag 'for-linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12390a96d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b8dbd3c72fdc7777
-dashboard link: https://syzkaller.appspot.com/bug?extid=d9e482e303930fa4f6ff
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=109aaa7ed00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16e77d16d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d9e482e303930fa4f6ff@syzkaller.appspotmail.com
-
-executing program
-BUG: memory leak
-unreferenced object 0xffff888111edd780 (size 32):
-  comm "syz-executor633", pid 8448, jiffies 4294951405 (age 17.620s)
-  hex dump (first 32 bytes):
-    10 64 d1 0f 81 88 ff ff 00 10 7e 12 81 88 ff ff  .d........~.....
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81744606>] kmalloc include/linux/slab.h:554 [inline]
-    [<ffffffff81744606>] ext4_multi_mount_protect+0x4a6/0x5d0 fs/ext4/mmp.c:367
-    [<ffffffff81783614>] ext4_fill_super+0x56a4/0x5b20 fs/ext4/super.c:4769
-    [<ffffffff8154ebf3>] mount_bdev+0x223/0x260 fs/super.c:1367
-    [<ffffffff815aee7b>] legacy_get_tree+0x2b/0x90 fs/fs_context.c:592
-    [<ffffffff8154c7e8>] vfs_get_tree+0x28/0x100 fs/super.c:1497
-    [<ffffffff8158c8ee>] do_new_mount fs/namespace.c:2903 [inline]
-    [<ffffffff8158c8ee>] path_mount+0xc3e/0x1120 fs/namespace.c:3233
-    [<ffffffff8158d51e>] do_mount fs/namespace.c:3246 [inline]
-    [<ffffffff8158d51e>] __do_sys_mount fs/namespace.c:3454 [inline]
-    [<ffffffff8158d51e>] __se_sys_mount fs/namespace.c:3431 [inline]
-    [<ffffffff8158d51e>] __x64_sys_mount+0x18e/0x1d0 fs/namespace.c:3431
-    [<ffffffff842ded2d>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-
+On Thu, Apr 8, 2021 at 10:06 PM Oscar Salvador <osalvador@suse.de> wrote:
+>
+> On Thu, Apr 08, 2021 at 01:40:33PM -0700, Yang Shi wrote:
+> > Thanks a lot for the example code. You didn't miss anything. At first
+> > glance, I thought your suggestion seemed neater. Actually I
+> > misunderstood what Dave said about "That could really have caused some
+> > interesting problems." with multiple calls to migrate_pages(). I was
+> > thinking about:
+> >
+> > unsigned long foo()
+> > {
+> >     unsigned long *ret_succeeded;
+> >
+> >     migrate_pages(..., ret_succeeded);
+> >
+> >     migrate_pages(..., ret_succeeded);
+> >
+> >     return *ret_succeeded;
+> > }
+>
+> But that would not be a problem as well. I mean I am not sure what is
+> foo() supposed to do.
+> I assume is supposed to return the *total* number of pages that were
+> migrated?
+>
+> Then could do something like:
+>
+>  unsigned long foo()
+>  {
+>      unsigned long ret_succeeded;
+>      unsigned long total_succeeded = 0;
+>
+>      migrate_pages(..., &ret_succeeded);
+>      total_succeeded += ret_succeeded;
+>
+>      migrate_pages(..., &ret_succeeded);
+>      total_succeeded += ret_succeeded;
+>
+>      return *total_succeeded;
+>  }
+>
+>  But AFAICS, you would have to do that with Wei Xu's version and with
+>  mine, no difference there.
+>
+> IIUC, Dave's concern was that nr_succeeded was only set to 0 at the beginning
+> of the function, and never reset back, which means, we would carry the
+> sum of previous nr_succeeded instead of the nr_succeeded in that round.
+> That would be misleading for e.g: reclaim in case we were to call
+> migrate_pages() several times, as instead of a delta value, nr_succeeded
+> would accumulate.
+>
+> But that won't happen neither with Wei Xu's version nor with mine.
+>
+> --
+> Oscar Salvador
+> SUSE L3
