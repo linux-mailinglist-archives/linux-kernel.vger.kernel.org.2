@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCAF35929D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD90D3592A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233270AbhDIDKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
+        id S233305AbhDIDKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233284AbhDIDJj (ORCPT
+        with ESMTP id S233291AbhDIDJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:09:39 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A456C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:09:26 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id s11so3301886pfm.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 20:09:26 -0700 (PDT)
+        Thu, 8 Apr 2021 23:09:42 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CAF4C0613D8
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:09:30 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id g15so3303338pfq.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 20:09:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=xyh6BxCHlq1iAwIp2l2ghcJeSru17U4VrmKNujzabBo=;
-        b=gaXW1ByvnpXDvy03WBlHEsOpeWqkl+IMPsH9g76iioXRz1z8bPmJz4pHR8er87VGOs
-         q0j4D3xA42fFaBaC+Wc2bGUPy1vG2qs9g6xx+m39/3sSmmeAkPOBruRqiytUt7lFIXOx
-         ECEY4zWHM/F00YNNKP1MFuyBuH0f1h2YJ+vNo=
+        bh=pzLF/lHRMx9vgkoBZHdk4xI+EiBYL1/uNXhLwkRFSmM=;
+        b=OeE7IznlXSfWWKdviytwQM4KbR437rKzj4xvPdc79uyd8F6aLYSHLkWOqPXFjy4EB2
+         MLVDrO4ox7QQmpuK7akGQCenaMTw+6qzkwzzH3MzzPZlkTMvC+rlWdCbkkyj2Tm2iYE5
+         qTfb8MSjfgJpWsFlIBS2I9A8P0/njmb4fctms=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=xyh6BxCHlq1iAwIp2l2ghcJeSru17U4VrmKNujzabBo=;
-        b=R/zTOopKZNgq0/aTjLiKRlWqfD5uPoiWuCtsLnzUqfAQxZGP7AEHg3dp/GU1VNGy4O
-         hbxzswJMWx1QdIszRjGzhmDcnO9l4wbM/8xLSYNQnYtukir29QzZyIz06JvXipktNxRk
-         IeHJt7PL5LOhfsPGiQBFrUKpWZIYpadKBHSaXrvdjaaXru2NdwgIjenydJlCTMnkr+/X
-         WNJBJUc0MIgQ7Rt7Y3UgrUXJD+AzZmmtAfsgJK5YQqkiuE1qgCYJyg0cwiFhImPjj03m
-         uVtHDvwOUND+pBbgje1UeXaXmZOeZTDTSFztkxFwYIHTawHqhfX4q1ajQCRFByvkQI+z
-         3fvw==
-X-Gm-Message-State: AOAM532afujh7vsfkdI032g9wiTg1fVl//EKBu/6j4gh1JhHKwFFzfyT
-        WWBgUO1D+N73wqk/yDFaCbxWyw==
-X-Google-Smtp-Source: ABdhPJwqsQQCEFuyz+SVMPOLde4MIRXWpWw0fPXSj4UDkVgy7Ze/NK3Erv5r4Bn81Bjqmi2BOa8+qQ==
-X-Received: by 2002:a63:3644:: with SMTP id d65mr10908485pga.49.1617937766156;
-        Thu, 08 Apr 2021 20:09:26 -0700 (PDT)
+        bh=pzLF/lHRMx9vgkoBZHdk4xI+EiBYL1/uNXhLwkRFSmM=;
+        b=WWFpHYpXf8dc3aCKCwLfpe2Z00X5JrAICd/E4hOJWGZQ7rvpSjTZ4aT2JcS0h61VXF
+         X4RGV86RLdEtPeC8kq/cUX+OQogkPMrBa7v73UzsO9913alHJH5Jw+AYJgyIP7MHPg5Q
+         xKk8B/SaoGB/M9T42tyOvPaV7xVijsjIpn16SUgYYK0D3vh7RrFTHhG/vdFtmmZTuHPk
+         Sgcyjo/dXEhT/gDHmPBhZ0GvFDYbZ9gY/Oo2RpH7Gmc3OEOKb6YuSKiroiUBUrPEhgAv
+         /LQMHGDZGn6vBZUzRZohUxtOBLub5eSe9TeQROui8HJFtROEY5i6ZwFRuySwlcdXt4mc
+         NHTA==
+X-Gm-Message-State: AOAM533gVYg8cFs9VSBAlio8kYbCxK2egd8cVAXNCIbJzzKnVW1qQY3C
+        eVNQYULTAMyjmwSEo94ph7kJdA==
+X-Google-Smtp-Source: ABdhPJwwy6+mv9pUNr/1qqHuXXu1m6bi5wMnUF5/No1rulmymNz/L6yikGAtpzQlqI7ckzUJ+zOkHw==
+X-Received: by 2002:a65:6415:: with SMTP id a21mr10976731pgv.417.1617937769921;
+        Thu, 08 Apr 2021 20:09:29 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 7sm698015pfv.97.2021.04.08.20.09.25
+        by smtp.gmail.com with ESMTPSA id h16sm667691pfc.194.2021.04.08.20.09.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 20:09:25 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 20:09:24 -0700
+        Thu, 08 Apr 2021 20:09:29 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 20:09:28 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Masahiro Yamada <masahiroy@kernel.org>,
         Michal Marek <michal.lkml@markovi.net>,
         linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-Subject: Re: [PATCH 19/20] kbuild: sparc: use common install script
-Message-ID: <202104082009.39B8056B0@keescook>
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 08/20] kbuild: riscv: use common install script
+Message-ID: <202104082009.389521C4ED@keescook>
 References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
- <20210407053419.449796-20-gregkh@linuxfoundation.org>
+ <20210407053419.449796-9-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407053419.449796-20-gregkh@linuxfoundation.org>
+In-Reply-To: <20210407053419.449796-9-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 07:34:18AM +0200, Greg Kroah-Hartman wrote:
-> The common scripts/install.sh script will now work for sparc, all that
-> is needed is to add it to the list of arches that do not put the version
-> number in the installed file name.
+On Wed, Apr 07, 2021 at 07:34:07AM +0200, Greg Kroah-Hartman wrote:
+> The common scripts/install.sh script will now work for riscv, all that
+> is needed is to add the compressed image type to it.  So add that file
+> type check and remove the riscv-only version of the file.
 > 
-> With that we can remove the sparc-only version of the install script.
-> 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: sparclinux@vger.kernel.org
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: linux-riscv@lists.infradead.org
 > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Reviewed-by: Kees Cook <keescook@chromium.org>
