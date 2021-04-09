@@ -2,68 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9A535996D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:39:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8693599CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbhDIJjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:39:23 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15652 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232892AbhDIJjV (ORCPT
+        id S232608AbhDIJtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231370AbhDIJto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:39:21 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGtLC5sy6zpWq1;
-        Fri,  9 Apr 2021 17:36:19 +0800 (CST)
-Received: from localhost.localdomain (10.175.102.38) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 9 Apr 2021 17:38:57 +0800
-From:   Wei Yongjun <weiyongjun1@huawei.com>
-To:     <weiyongjun1@huawei.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-CC:     <coresight@lists.linaro.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next v2] coresight: trbe: Fix return value check in arm_trbe_register_coresight_cpu()
-Date:   Fri, 9 Apr 2021 09:49:01 +0000
-Message-ID: <20210409094901.1903622-1-weiyongjun1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 9 Apr 2021 05:49:44 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9096FC061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 02:49:31 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id y2so2485757plg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 02:49:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=78GGtwGvapnO+jnjlzI1npvFGtKC6G2M/8UgM+liQQ4=;
+        b=XcPV9uGtP1a8z4GE4ArPC/hRsZO6o7yUALRutQVUYrPPoeZg60xsSS9slESPAYTog9
+         Uw4/nL1ztWcdaqeeHbJRaizw0bvdEr3pCK5xz/f8CkKDhK7+mFqIIAaZ/blS56mo7ncP
+         tXcaCF++Wr3WaDcyAvkpnRo4LIZPw1TvAzzyNUfT2EOu41V3ncIL9jRyq0uUfeHbR0+G
+         CyBKqpz5WulK4sJL1h4oiljLwMB/B4FtzY7VBhMFqP9/R03zS5sT52Oj1RWRPx/mZRXY
+         CHHZOiCnO5FQrlFW2Hdta7ikmWLIDm3WZfIt34CxXocYcddoTsc0eZ1pQM7xYu75BWMC
+         R+7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=78GGtwGvapnO+jnjlzI1npvFGtKC6G2M/8UgM+liQQ4=;
+        b=GPnvc+gZ3CNaB+cys1jivWil1nxqv5n21/IermP18jtboRakhSBbi3SyGHNn1d5ycQ
+         C5OBkTpiSt7soLK0TqbuC/eF7c4/r+mMOFiMEmC6VM/5k5A07jcyZcmZFJ5A4t+X/686
+         YoeVv7bayod+ok2s4sKpCJ2W5uWUSgcFgQdGYRg35bdmhSrovvcIKpCIWhWY99UVYYXO
+         nnznyoF99y1Nj2CfJDL1cYSMKluT38XRD4ikQVpFAGebcUhT7dfI8nKA01/+SgCa/h66
+         YXZo9dzRoJYGHM98WMtlCsy1wFsQJtSIHRHt5rwhkbDIIZdOlc+PO+Wa2sEg8xZdSjfr
+         PttQ==
+X-Gm-Message-State: AOAM533KIhuUIlLhbvAfAGVoIcfeDp6DsOnfY9ydvcfEgSdDvBDwVhc9
+        QRnF9ibJbMxRHbBd0aQvhipE/UKWaOgU
+X-Google-Smtp-Source: ABdhPJwrAMnYAY800AYz0bfP2kXwbBNzxp7kxmC5rNiBISaiEbCbWPL1j072AIpnrKEaUkldZWNveg==
+X-Received: by 2002:a17:902:8217:b029:e6:2875:b1d9 with SMTP id x23-20020a1709028217b02900e62875b1d9mr11765002pln.70.1617961771079;
+        Fri, 09 Apr 2021 02:49:31 -0700 (PDT)
+Received: from work ([103.77.37.131])
+        by smtp.gmail.com with ESMTPSA id m1sm1890829pjk.24.2021.04.09.02.49.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 09 Apr 2021 02:49:30 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 15:19:27 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Wang Li <wangli74@huawei.com>
+Cc:     broonie@kernel.org, bjorn.andersson@linaro.org, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] spi: qup: fix PM reference leak in spi_qup_remove()
+Message-ID: <20210409094927.GB31856@work>
+References: <20210409095458.29921-1-wangli74@huawei.com>
 MIME-Version: 1.0
-Content-Type:   text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-X-Originating-IP: [10.175.102.38]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409095458.29921-1-wangli74@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of error, the function devm_kasprintf() returns NULL
-pointer not ERR_PTR(). The IS_ERR() test in the return value
-check should be replaced with NULL test.
+On Fri, Apr 09, 2021 at 09:54:58AM +0000, Wang Li wrote:
+> pm_runtime_get_sync will increment pm usage counter even it failed.
+> Forgetting to putting operation will result in reference leak here.
+> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+> counter balanced.
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wang Li <wangli74@huawei.com>
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
-v1 -> v2: remove fixes tag.
----
- drivers/hwtracing/coresight/coresight-trbe.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
-index 5ce239875c98..176868496879 100644
---- a/drivers/hwtracing/coresight/coresight-trbe.c
-+++ b/drivers/hwtracing/coresight/coresight-trbe.c
-@@ -871,7 +871,7 @@ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cp
- 
- 	dev = &cpudata->drvdata->pdev->dev;
- 	desc.name = devm_kasprintf(dev, GFP_KERNEL, "trbe%d", cpu);
--	if (IS_ERR(desc.name))
-+	if (!desc.name)
- 		goto cpu_clear;
- 
- 	desc.type = CORESIGHT_DEV_TYPE_SINK;
+Thanks,
+Mani
 
+> ---
+>  drivers/spi/spi-qup.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/spi/spi-qup.c b/drivers/spi/spi-qup.c
+> index 8dcb2e70735c..d39dec6d1c91 100644
+> --- a/drivers/spi/spi-qup.c
+> +++ b/drivers/spi/spi-qup.c
+> @@ -1263,7 +1263,7 @@ static int spi_qup_remove(struct platform_device *pdev)
+>  	struct spi_qup *controller = spi_master_get_devdata(master);
+>  	int ret;
+>  
+> -	ret = pm_runtime_get_sync(&pdev->dev);
+> +	ret = pm_runtime_resume_and_get(&pdev->dev);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -- 
+> 2.17.1
+> 
