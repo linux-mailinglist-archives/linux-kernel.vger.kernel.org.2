@@ -2,87 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDDB0359826
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBB6359827
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:43:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbhDIInP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36740 "EHLO
+        id S232078AbhDIInb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:43:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229673AbhDIInO (ORCPT
+        with ESMTP id S229673AbhDIIna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:43:14 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56D7C061760;
-        Fri,  9 Apr 2021 01:43:01 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id j18so8485442lfg.5;
-        Fri, 09 Apr 2021 01:43:01 -0700 (PDT)
+        Fri, 9 Apr 2021 04:43:30 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E9AC061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:43:16 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id a6so4784117wrw.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:43:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=tVbQiCGoAumFz/ANTAd5bAwq76g2DUa9AH09IK05F58=;
-        b=T4zdaQh0FbPDXScDng3a+4QGjODZsa8K8Oeq5eWZsQPLuQguEeR2GTmvw23SH9gDsr
-         B7E2oakGIpfIUNrxozsAfr8Ljprd70jPTufvlWN9xD94dY8InQTrQcynhtC39DI7PI8E
-         b1OgR/YUpeXASZ/EneDIs8JhWY1Z89vP0rGoNzuc9TLVSKxqD3e2Y6O1R85gkpxe42XR
-         wZfKKqApBmP3MdKQOPqyijcrgqjrY7kGVOmYX6WPbz3+1W6DCH05MtcBLTQ2MqAW4DHl
-         YYFM1odNZNeVIpSVgK98NKnHcWILKif7u4WWZz+emx5558hgDZesaV+ZllwajvKrljCW
-         yKSw==
+        bh=SxAVnkvMBucxc7nVmzkehM55ix3ppr1nutixxEdT8mc=;
+        b=hzi/nQIm8IbBk14mZiIsufRcM2Cw+6f99hud3p8ZpsCLObKl7z1S650qtmxg5CMtaD
+         RIJ9RjLF8E7L1KpF7o/zuDQmpn7JKmqEcVY8fYIbiGHqEeQfDKW1ZBx3l/ijasZ+aJ4x
+         b7Am0q/FC5+lKR4GLkRYGODR4ffE+C25mAOiBDtkerPcyM5yBctoW94hYBre/MJfelFz
+         UNlUxeKGJ8qtQwcaoofpFf5zZ2iWx0y9MOzAXUJhG6pMomlWGcKkXGYXHAASPDtCJeMd
+         M01f4oOBLkQX5TTVD+MmLwWEALjMO9ylf6sRR6ZLXO7BRvyH2YX6+PCmfXrsjF2zyLYI
+         rgfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=tVbQiCGoAumFz/ANTAd5bAwq76g2DUa9AH09IK05F58=;
-        b=AKDcM1jbJae/AIrYFlXapB12P+s8TRVLFAgkcaqDgwDzLuq3+/UTKxd822so29dQH/
-         ix8pQznBlMCL4g12oQRiCyHHkPcgG+7dmnoUQAXJbPZSUlsqGGhQDT3U6xuLELp348Ha
-         c/hGByPwrL6Pp3s0BRKujEDsiEHDwig6+HbaRfAdo6bNsvlnJ844h/bso6AEYNWRizQ+
-         xO/Hmzs7rQuqdvbtnNec/TFOVs8DReSIViyGi6+QwV8GKaMibrqJjUQ5xk+aFYq6m2X8
-         OQJZMi13KJaXDTf+2c+yl6LzIpgSl1OaLcIG32XsjpfwiDTFgoQU0niRepE2/ZV1dG27
-         SLaA==
-X-Gm-Message-State: AOAM530kwho70l5JLwJfrv1bbjNlqDUhPEppeA81l4LdfE4mkEydDsT9
-        gDu4bgMsfeYHjpxHHMPP+Llr7LHASa4=
-X-Google-Smtp-Source: ABdhPJzpvR4y6canpCpm2ge2noKNVujShfe2KX5MgIvfxL7unuvX24jqm/EnaGR1KtEGFSqzJfkDDg==
-X-Received: by 2002:ac2:5de4:: with SMTP id z4mr9873109lfq.65.1617957780234;
-        Fri, 09 Apr 2021 01:43:00 -0700 (PDT)
-Received: from [192.168.1.100] ([178.176.79.13])
-        by smtp.gmail.com with ESMTPSA id c5sm200792lfk.141.2021.04.09.01.42.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Apr 2021 01:42:59 -0700 (PDT)
-Subject: Re: [PATCH] MIPS: octeon: Add __raw_copy_[from|to|in]_user symbols
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>
-References: <20210408214846.50758-1-tsbogend@alpha.franken.de>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <1fa6ff61-25af-7d24-2d03-de03ec73e8f6@gmail.com>
-Date:   Fri, 9 Apr 2021 11:42:46 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SxAVnkvMBucxc7nVmzkehM55ix3ppr1nutixxEdT8mc=;
+        b=qdniQxLLrLjIH+sfvz5V6rh2WAFLwwtMWx52Xg0GHOGi7u2z8Ygu2BjUFMHrf8MQNv
+         9m/pgnQJd9e0RnclNefaEv+m+hGX51VXZ2Us9MqiJvryD8M0WoRz9ZXx18U8flpPb50U
+         lFvROfKlkZ5UMlqazYmcFNkljO99Pc8S6W3MwniamNU8qAC6yARsQUbfSQEEskSsaU2I
+         ynXDU7nqAkbmeyp9rVPxprZPfg4VV5ZJmJoXfSn5RqsMDvtKiOJ00MPjaJ60mc85XUiD
+         rhphyYxm9g+M6mnNdqZO8K4cOiZOJ3BLYLRanEB2pPm9O4LS36OOKuhlPu8xpuH235Ot
+         hwPA==
+X-Gm-Message-State: AOAM531AfAWkuomBwuCSnyk/DmV7bMe7g+5xJqHNQ3nq+3gVgvI6HoVy
+        G6T+R1sTh35Mb56h3VgCZ0R66Q==
+X-Google-Smtp-Source: ABdhPJyH5BhpUZCaFcVaAl1X3duZCpaxmI4fJOW8UUTkeb23ThLiMR1Qt0/IhBcS9m7rAYQjbh655A==
+X-Received: by 2002:a5d:5152:: with SMTP id u18mr15986534wrt.289.1617957795526;
+        Fri, 09 Apr 2021 01:43:15 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:90c:e290:d6f1:3413:d06b:d6a2])
+        by smtp.gmail.com with ESMTPSA id w7sm3545504wro.43.2021.04.09.01.43.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 01:43:14 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de,
+        matthias.bgg@gmail.com
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Fabien Parent <fparent@baylibre.com>
+Subject: [PATCH] gpu/drm: mediatek: hdmi: check for valid modes on MT8167
+Date:   Fri,  9 Apr 2021 10:43:08 +0200
+Message-Id: <20210409084308.481185-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210408214846.50758-1-tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On MT8167, only CEA modes and anything using a clock below 148500 is
+supported for HDMI. This change adds some checks to make sure the
+video format is OK for MT8167.
 
-On 09.04.2021 0:48, Thomas Bogendoerfer wrote:
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+---
+ drivers/gpu/drm/mediatek/mtk_hdmi.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
-> Cavium Octeon has it's own memcpy implementation and also need the change
+diff --git a/drivers/gpu/drm/mediatek/mtk_hdmi.c b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+index 8ee55f9e2954..991e2e935b93 100644
+--- a/drivers/gpu/drm/mediatek/mtk_hdmi.c
++++ b/drivers/gpu/drm/mediatek/mtk_hdmi.c
+@@ -148,6 +148,8 @@ struct hdmi_audio_param {
+ 
+ struct mtk_hdmi_conf {
+ 	bool tz_disabled;
++	unsigned long max_mode_clock;
++	bool cea_modes_only;
+ };
+ 
+ struct mtk_hdmi {
+@@ -1259,6 +1261,13 @@ static int mtk_hdmi_conn_mode_valid(struct drm_connector *conn,
+ 			return MODE_BAD;
+ 	}
+ 
++	if (hdmi->conf->cea_modes_only && !drm_match_cea_mode(mode))
++		return MODE_BAD;
++
++	if (hdmi->conf->max_mode_clock &&
++	    mode->clock > hdmi->conf->max_mode_clock)
++		return MODE_CLOCK_HIGH;
++
+ 	if (mode->clock < 27000)
+ 		return MODE_CLOCK_LOW;
+ 	if (mode->clock > 297000)
+@@ -1810,10 +1819,18 @@ static const struct mtk_hdmi_conf mtk_hdmi_conf_mt2701 = {
+ 	.tz_disabled = true,
+ };
+ 
++static const struct mtk_hdmi_conf mtk_hdmi_conf_mt8167 = {
++	.max_mode_clock = 148500,
++	.cea_modes_only = true,
++};
++
+ static const struct of_device_id mtk_drm_hdmi_of_ids[] = {
+ 	{ .compatible = "mediatek,mt2701-hdmi",
+ 	  .data = &mtk_hdmi_conf_mt2701,
+ 	},
++	{ .compatible = "mediatek,mt8167-hdmi",
++	  .data = &mtk_hdmi_conf_mt8167,
++	},
+ 	{ .compatible = "mediatek,mt8173-hdmi",
+ 	},
+ 	{}
+-- 
+2.25.1
 
-    Its. :-)
-
-> done in commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs").
-> 
-> Fixes: 04324f44cb69 ("MIPS: Remove get_fs/set_fs")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-[...]
-
-MBR, Sergei
