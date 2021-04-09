@@ -2,180 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94938359684
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CBC5359687
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbhDIHiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:38:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21440 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229621AbhDIHiW (ORCPT
+        id S231816AbhDIHi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:38:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhDIHiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:38:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617953889;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fkrozLMJPACVkdmHi98evbnJXUcRYylIKOGu+prd3Vg=;
-        b=dnINYkrb25nmnE74uLH864arDVMKclN8dEdqySCzGxPiI1L9gp+HX4dsrWiSDEHQ56V8+0
-        vLTEhXvuvFsPXgmiiNDZajZOITudA6QzLC167GzdCnHrXZ9Q1t5GhDG86kFGVgetHNGtBb
-        jBYoR7pVHOUSu9bRZ+h/z7m8aaGffJA=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-511-dZqQAs4FMnSCTzjYqmYRZg-1; Fri, 09 Apr 2021 03:38:06 -0400
-X-MC-Unique: dZqQAs4FMnSCTzjYqmYRZg-1
-Received: by mail-ed1-f71.google.com with SMTP id r19so2260574edv.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 00:38:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=fkrozLMJPACVkdmHi98evbnJXUcRYylIKOGu+prd3Vg=;
-        b=aNNnaM+v7WaGe2LfuZqUUnPMvb2wEbVyM7MTnNrHZN1WXl07wS4Vizzyqhy0euGuPo
-         LN6e5/6uzoLBXRCQYUXFa+Cgi1LgnB2461Sx3cNVLbmFuq7XfVUuFprCfuOlMWmiVWGa
-         S9alzOm7A36cfOdAQabyCcLB0Uj7yebdY35GDxGfZH7/BvFHbFQKhnIWDaFN7Bz6t+5T
-         /Zrdx3o1gQdY0BHhUAWgCtfP1AJi0b69zonZ5IEtW+Hq6px/SltCIxoDUQVAr1oO3vYm
-         QOireP72I10+ej/wzhQbNc5Op+9DRDnU0XMuiIFl6wgHuYS/IrTuddijgu/Ln6awTPNk
-         xdWA==
-X-Gm-Message-State: AOAM530hbJiRsGpkhoTBZkDcxVbm5R3s19ckuUqdMyhtaiIIf1NxbuWF
-        /AiO7R4QPqM94U+dlGob1CEJZrlVYCQqPgrj4fan8AW2hRME7Ji/6HKyFDAukfImEwuMjZ+nPQY
-        QWloxW/E0anRLAhTlqH/VBq7d
-X-Received: by 2002:a17:906:170d:: with SMTP id c13mr14557531eje.491.1617953884853;
-        Fri, 09 Apr 2021 00:38:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw0b2ZoUfqjNAa81uHiiZD1Mdm+c8bRsxSc++bCivJSOo+DhWfXVhlCJ950VqISuyzIOO5GyQ==
-X-Received: by 2002:a17:906:170d:: with SMTP id c13mr14557510eje.491.1617953884680;
-        Fri, 09 Apr 2021 00:38:04 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id q18sm920852edr.26.2021.04.09.00.38.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 00:38:04 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Siddharth Chandrasekaran <sidcha@amazon.de>
-Cc:     Alexander Graf <graf@amazon.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH 4/4] KVM: hyper-v: Advertise support for fast XMM
- hypercalls
-In-Reply-To: <20210408155220.GB32315@u366d62d47e3651.ant.amazon.com>
-References: <20210407211954.32755-1-sidcha@amazon.de>
- <20210407211954.32755-5-sidcha@amazon.de>
- <87blap7zha.fsf@vitty.brq.redhat.com>
- <20210408142053.GA10636@u366d62d47e3651.ant.amazon.com>
- <8735w096pk.fsf@vitty.brq.redhat.com>
- <20210408155220.GB32315@u366d62d47e3651.ant.amazon.com>
-Date:   Fri, 09 Apr 2021 09:38:03 +0200
-Message-ID: <87zgy77vs4.fsf@vitty.brq.redhat.com>
+        Fri, 9 Apr 2021 03:38:54 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC888C061760;
+        Fri,  9 Apr 2021 00:38:41 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 8142986;
+        Fri,  9 Apr 2021 00:38:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1617953921;
+        bh=B4QetOyO+uFZyq4PpiAKXG68c6M2ubQg27N5PfhAomQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WtrW6uKLJrOMTd0j58ovYOAM7amEbDjdunQFF1e7IfmoolkUoPLKI3iZLlUEUFwRn
+         BqSxhw4iQWian4v4xB7TGHnv/jZsv/5C0hIGDe+izir8HQ8UQRt4EY8xk37/YKtnSS
+         n2iHoBLauDsjJIUTZMXiwgB6PBYsw4MHHj5nNZXg=
+Date:   Fri, 9 Apr 2021 02:38:38 -0500
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Joel Stanley <joel@jms.id.au>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
+Subject: Re: [PATCH v5 2/4] drivers/tty/serial/8250: refactor sirq and lpc
+ address setting code
+Message-ID: <YHAEfn4li6F8L9JC@hatter.bewilderbeest.net>
+References: <20210408011637.5361-1-zev@bewilderbeest.net>
+ <20210408011637.5361-3-zev@bewilderbeest.net>
+ <CAHp75Vd6kk0E-kALEGOhsg=YHKhmKLY6cpCTdviOFenO4p1-2A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75Vd6kk0E-kALEGOhsg=YHKhmKLY6cpCTdviOFenO4p1-2A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Siddharth Chandrasekaran <sidcha@amazon.de> writes:
-
-> On Thu, Apr 08, 2021 at 04:44:23PM +0200, Vitaly Kuznetsov wrote:
->> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->>
->>
->>
->> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
->>
->> > On Thu, Apr 08, 2021 at 02:05:53PM +0200, Vitaly Kuznetsov wrote:
->> >> Siddharth Chandrasekaran <sidcha@amazon.de> writes:
->> >>
->> >> > Now that all extant hypercalls that can use XMM registers (based on
->> >> > spec) for input/outputs are patched to support them, we can start
->> >> > advertising this feature to guests.
->> >> >
->> >> > Cc: Alexander Graf <graf@amazon.com>
->> >> > Cc: Evgeny Iakovlev <eyakovl@amazon.de>
->> >> > Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
->> >> > ---
->> >> >  arch/x86/include/asm/hyperv-tlfs.h | 4 ++--
->> >> >  arch/x86/kvm/hyperv.c              | 1 +
->> >> >  2 files changed, 3 insertions(+), 2 deletions(-)
->> >> >
->> >> > diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
->> >> > index e6cd3fee562b..1f160ef60509 100644
->> >> > --- a/arch/x86/include/asm/hyperv-tlfs.h
->> >> > +++ b/arch/x86/include/asm/hyperv-tlfs.h
->> >> > @@ -49,10 +49,10 @@
->> >> >  /* Support for physical CPU dynamic partitioning events is available*/
->> >> >  #define HV_X64_CPU_DYNAMIC_PARTITIONING_AVAILABLE    BIT(3)
->> >> >  /*
->> >> > - * Support for passing hypercall input parameter block via XMM
->> >> > + * Support for passing hypercall input and output parameter block via XMM
->> >> >   * registers is available
->> >> >   */
->> >> > -#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4)
->> >> > +#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE                BIT(4) | BIT(15)
->> >>
->> >> TLFS 6.0b states that there are two distinct bits for input and output:
->> >>
->> >> CPUID Leaf 0x40000003.EDX:
->> >> Bit 4: support for passing hypercall input via XMM registers is available.
->> >> Bit 15: support for returning hypercall output via XMM registers is available.
->> >>
->> >> and HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE is not currently used
->> >> anywhere, I'd suggest we just rename
->> >>
->> >> HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE to HV_X64_HYPERCALL_XMM_INPUT_AVAILABLE
->> >> and add HV_X64_HYPERCALL_XMM_OUTPUT_AVAILABLE (bit 15).
->> >
->> > That is how I had it initially; but then noticed that we would never
->> > need to use either of them separately. So it seemed like a reasonable
->> > abstraction to put them together.
->> >
->>
->> Actually, we may. In theory, KVM userspace may decide to expose just
->> one of these two to the guest as it is not obliged to copy everything
->> from KVM_GET_SUPPORTED_HV_CPUID so we will need separate
->> guest_cpuid_has() checks.
+On Fri, Apr 09, 2021 at 02:24:08AM CDT, Andy Shevchenko wrote:
+>On Thursday, April 8, 2021, Zev Weiss <zev@bewilderbeest.net> wrote:
 >
-> Makes sense. I'll split them and add the checks.
+>> This splits dedicated aspeed_vuart_set_{sirq,lpc_address}() functions
+>> out of the sysfs store functions in preparation for adding DT
+>> properties that will be poking the same registers.  While we're at it,
+>> these functions now provide some basic bounds-checking on their
+>> arguments.
+>>
+>>
 >
->> (This reminds me of something I didn't see in your series:
->> we need to check that XMM hypercall parameters support was actually
->> exposed to the guest as it is illegal for a guest to use it otherwise --
->> and we will likely need two checks, for input and output).
+>Please, use prefix “serial: 8250_aspeed_vuart:” instead of what you have in
+>the subject line. I think I have told this already
 >
-> We observed that Windows expects Hyper-V to support XMM params even if
-> we don't advertise this feature but if userspace wants to hide this
-> feature and the guest does it anyway, then it makes sense to treat it as
-> an illegal OP.
 >
 
-Out of pure curiosity, which Windows version behaves like that? And how
-does this work with KVM without your patches?
+Ah, sorry -- I fixed the cover letter after your first comment (which 
+had definitely been under-tagged); for the patches themselves I was 
+following the example of the last patch in that particular area 
+(8d310c9107a2), though I guess that wasn't the right model to follow.  
+I'll use the requested format in the future.
 
-Sane KVM userspaces will certainly expose both XMM input and output
-capabilities together but having an ability to hide one or both of them
-may come handy while debugging.
-
-Also, we weren't enforcing the rule that enlightenments not exposed to
-the guest don't work, even the whole Hyper-V emulation interface was
-available to all guests who were smart enough to know how to enable it!
-I don't like this for two reasons: security (large attack surface) and
-the fact that someone 'smart' may decide to use Hyper-V emulation
-features on KVM as 'general purpose' features saying 'they're always
-available anyway', this risks becoming an ABI.
-
-Let's at least properly check if the feature was exposed to the guest
-for all new enlightenments.
-
--- 
-Vitaly
 
