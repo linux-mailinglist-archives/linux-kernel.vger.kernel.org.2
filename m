@@ -2,245 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D56F35A2C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FEA35A2D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:18:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233902AbhDIQPF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:15:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:51616 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbhDIQOq (ORCPT
+        id S233441AbhDIQSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:18:14 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:45752 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDIQSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:14:46 -0400
-Date:   Fri, 09 Apr 2021 16:14:32 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617984872;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7hpCSZzOobafpSrSatk3g1IP76KIISPLcnKKUD58Kko=;
-        b=wyynWcf05jj/XpSDv3DIKt/l0ndFj+CYlMhRY0EiU3P6Uxg7wC9vtIzHKh25CjxeW4Oee+
-        JabfNFVq2bKuURAnfZG1OaPm2dT0gx4fqp6IePxoD4iDF9QMxSqKVl0lzde9INtVAyLs/Q
-        MtuOYI9qkjrdidBUJPd29BszeI2vKu3J83i7g0v5z6RMgfEFNlI2TX54KULAFmrSw6rTNr
-        0e+iT4j1CrG79NG5MrkbRZ7SnGvbzHIsyfxXdmJFP9GcJUbaNnWJdPxJDRPrfVemMIeA68
-        Q/cXnbOSkK5I9QELhwNr/9cgsu5qeR30U8FA9lCJYwh9aa3UBYHB1sGBuy2A5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617984872;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7hpCSZzOobafpSrSatk3g1IP76KIISPLcnKKUD58Kko=;
-        b=BDbmlvhrq5QIOHIngGGMcn3ZQ+K6rAH2/LOBMvj6l2R/A1jAw4R81z/nEGrtNG34zF1XHt
-        vJsZsgp/o/+TrDCQ==
-From:   "tip-bot2 for Rik van Riel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Bring back select_idle_smt(), but differently
-Cc:     Rik van Riel <riel@surriel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210326151932.2c187840@imladris.surriel.com>
-References: <20210326151932.2c187840@imladris.surriel.com>
+        Fri, 9 Apr 2021 12:18:12 -0400
+Received: by mail-ot1-f42.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so1093820otf.12;
+        Fri, 09 Apr 2021 09:17:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nPXWno11S4Od5PcOam+OVspUYzqe84Gw2wWYNw5BBRg=;
+        b=UX84FOU8c8GPBpj8I1bQuuRNXDke0/2CP6WPDghc9G4JbdPkCxj4qy8w7q/a1U+zAL
+         qTNaKTLBO9JSx7Wb5tHUSVbfn358CNCNsFJgcv+VssYUVx+i/UJxWLy93uOWpOFEajx2
+         hkAzU+ZHRKrrS4GT8UXWcFscjP1tTBvZJV0e8150qG0QW1BeF4nJ84EoI9qEbq7fOpXD
+         qLqHZNRPCkYU7UKA4W6qYBSmRoPQgpHkPbNPwBnX1fVwdRPMQV/vR71YGnsMmI5QKIOr
+         Q0o+IIhbdQKus1nlnoLvrdkfOG4t5aQAb45+hQK3PHNfhhB+/lYIwyy03H6TsNnoCAcN
+         vFtQ==
+X-Gm-Message-State: AOAM5338abtcZcEH4ITVhbZxfdiMEjU5YtdA4mnX4lfqcWYv4uOTp7F4
+        uB7BvC5skPDR7Prs90uai/iG6H32iQ==
+X-Google-Smtp-Source: ABdhPJwf5uML2LSRjZqxpDpvqc9tar6P33ne+FS3tnIzgi6Q+uhrWPe9XI2nGzLTXRfg7kzTMa0uyg==
+X-Received: by 2002:a9d:7342:: with SMTP id l2mr5141154otk.175.1617985077974;
+        Fri, 09 Apr 2021 09:17:57 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id w1sm37517otq.75.2021.04.09.09.17.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 09:17:57 -0700 (PDT)
+Received: (nullmailer pid 3749394 invoked by uid 1000);
+        Fri, 09 Apr 2021 16:17:55 -0000
+Date:   Fri, 9 Apr 2021 11:17:55 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Erwan Le Ray <erwan.leray@foss.st.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>
+Subject: Re: [PATCH 1/2] dt-bindings: serial: stm32: add fifo threshold
+ configuration
+Message-ID: <20210409161755.GA3745930@robh.at.kernel.org>
+References: <20210406072122.27384-1-erwan.leray@foss.st.com>
+ <20210406072122.27384-2-erwan.leray@foss.st.com>
 MIME-Version: 1.0
-Message-ID: <161798487221.29796.406298137826542407.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210406072122.27384-2-erwan.leray@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Tue, Apr 06, 2021 at 09:21:21AM +0200, Erwan Le Ray wrote:
+> Add two optional DT properties, to configure RX and TX fifo threshold:
+> - st,rx-fifo-threshold-bytes
+> - st,tx-fifo-threshold-bytes
+> 
+> This patch depends on patch ("dt-bindings: serial: Add rx-tx-swap to stm32-usart").
+> 
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> Signed-off-by: Erwan Le Ray <erwan.leray@foss.st.com>
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> index c69f8464cdf3..e163449bf39e 100644
+> --- a/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> +++ b/Documentation/devicetree/bindings/serial/st,stm32-uart.yaml
+> @@ -65,6 +65,22 @@ properties:
+>    linux,rs485-enabled-at-boot-time: true
+>    rs485-rx-during-tx: true
+>  
+> +  st,rx-fifo-threshold-bytes:
+> +    description:
+> +      RX FIFO threshold configuration in bytes.
+> +      If value is set to 1, RX FIFO threshold is disabled.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [1, 2, 4, 8, 12, 14, 16]
+> +    default: 8
+> +
+> +  st,tx-fifo-threshold-bytes:
+> +    description:
+> +      TX FIFO threshold configuration in bytes.
+> +      If value is set to 1, TX FIFO threshold is disabled.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [1, 2, 4, 8, 12, 14, 16]
+> +    default: 8
 
-Commit-ID:     c722f35b513f807629603bbf24640b1a48be21b5
-Gitweb:        https://git.kernel.org/tip/c722f35b513f807629603bbf24640b1a48be21b5
-Author:        Rik van Riel <riel@surriel.com>
-AuthorDate:    Fri, 26 Mar 2021 15:19:32 -04:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 09 Apr 2021 18:01:39 +02:00
+We already have 'tx-threshold' for 8250, so reuse that and add 
+'rx-threshold'.
 
-sched/fair: Bring back select_idle_smt(), but differently
-
-Mel Gorman did some nice work in 9fe1f127b913 ("sched/fair: Merge
-select_idle_core/cpu()"), resulting in the kernel being more efficient
-at finding an idle CPU, and in tasks spending less time waiting to be
-run, both according to the schedstats run_delay numbers, and according
-to measured application latencies. Yay.
-
-The flip side of this is that we see more task migrations (about 30%
-more), higher cache misses, higher memory bandwidth utilization, and
-higher CPU use, for the same number of requests/second.
-
-This is most pronounced on a memcache type workload, which saw a
-consistent 1-3% increase in total CPU use on the system, due to those
-increased task migrations leading to higher L2 cache miss numbers, and
-higher memory utilization. The exclusive L3 cache on Skylake does us
-no favors there.
-
-On our web serving workload, that effect is usually negligible.
-
-It appears that the increased number of CPU migrations is generally a
-good thing, since it leads to lower cpu_delay numbers, reflecting the
-fact that tasks get to run faster. However, the reduced locality and
-the corresponding increase in L2 cache misses hurts a little.
-
-The patch below appears to fix the regression, while keeping the
-benefit of the lower cpu_delay numbers, by reintroducing
-select_idle_smt with a twist: when a socket has no idle cores, check
-to see if the sibling of "prev" is idle, before searching all the
-other CPUs.
-
-This fixes both the occasional 9% regression on the web serving
-workload, and the continuous 2% CPU use regression on the memcache
-type workload.
-
-With Mel's patches and this patch together, task migrations are still
-high, but L2 cache misses, memory bandwidth, and CPU time used are
-back down to what they were before. The p95 and p99 response times for
-the memcache type application improve by about 10% over what they were
-before Mel's patches got merged.
-
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Mel Gorman <mgorman@techsingularity.net>
-Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lkml.kernel.org/r/20210326151932.2c187840@imladris.surriel.com
----
- kernel/sched/fair.c | 55 ++++++++++++++++++++++++++++++++++----------
- 1 file changed, 43 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6d73bdb..bc34e35 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6038,11 +6038,9 @@ static inline bool test_idle_cores(int cpu, bool def)
- {
- 	struct sched_domain_shared *sds;
- 
--	if (static_branch_likely(&sched_smt_present)) {
--		sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
--		if (sds)
--			return READ_ONCE(sds->has_idle_cores);
--	}
-+	sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
-+	if (sds)
-+		return READ_ONCE(sds->has_idle_cores);
- 
- 	return def;
- }
-@@ -6112,6 +6110,24 @@ static int select_idle_core(struct task_struct *p, int core, struct cpumask *cpu
- 	return -1;
- }
- 
-+/*
-+ * Scan the local SMT mask for idle CPUs.
-+ */
-+static int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
-+{
-+	int cpu;
-+
-+	for_each_cpu(cpu, cpu_smt_mask(target)) {
-+		if (!cpumask_test_cpu(cpu, p->cpus_ptr) ||
-+		    !cpumask_test_cpu(cpu, sched_domain_span(sd)))
-+			continue;
-+		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-+			return cpu;
-+	}
-+
-+	return -1;
-+}
-+
- #else /* CONFIG_SCHED_SMT */
- 
- static inline void set_idle_cores(int cpu, int val)
-@@ -6128,6 +6144,11 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
- 	return __select_idle_cpu(core);
- }
- 
-+static inline int select_idle_smt(struct task_struct *p, struct sched_domain *sd, int target)
-+{
-+	return -1;
-+}
-+
- #endif /* CONFIG_SCHED_SMT */
- 
- /*
-@@ -6135,11 +6156,10 @@ static inline int select_idle_core(struct task_struct *p, int core, struct cpuma
-  * comparing the average scan cost (tracked in sd->avg_scan_cost) against the
-  * average idle time for this rq (as found in rq->avg_idle).
-  */
--static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int target)
-+static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, bool has_idle_core, int target)
- {
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
- 	int i, cpu, idle_cpu = -1, nr = INT_MAX;
--	bool smt = test_idle_cores(target, false);
- 	int this = smp_processor_id();
- 	struct sched_domain *this_sd;
- 	u64 time;
-@@ -6150,7 +6170,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 
- 	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
- 
--	if (sched_feat(SIS_PROP) && !smt) {
-+	if (sched_feat(SIS_PROP) && !has_idle_core) {
- 		u64 avg_cost, avg_idle, span_avg;
- 
- 		/*
-@@ -6170,7 +6190,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 	}
- 
- 	for_each_cpu_wrap(cpu, cpus, target) {
--		if (smt) {
-+		if (has_idle_core) {
- 			i = select_idle_core(p, cpu, cpus, &idle_cpu);
- 			if ((unsigned int)i < nr_cpumask_bits)
- 				return i;
-@@ -6184,10 +6204,10 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 		}
- 	}
- 
--	if (smt)
-+	if (has_idle_core)
- 		set_idle_cores(this, false);
- 
--	if (sched_feat(SIS_PROP) && !smt) {
-+	if (sched_feat(SIS_PROP) && !has_idle_core) {
- 		time = cpu_clock(this) - time;
- 		update_avg(&this_sd->avg_scan_cost, time);
- 	}
-@@ -6242,6 +6262,7 @@ static inline bool asym_fits_capacity(int task_util, int cpu)
-  */
- static int select_idle_sibling(struct task_struct *p, int prev, int target)
- {
-+	bool has_idle_core = false;
- 	struct sched_domain *sd;
- 	unsigned long task_util;
- 	int i, recent_used_cpu;
-@@ -6321,7 +6342,17 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
- 	if (!sd)
- 		return target;
- 
--	i = select_idle_cpu(p, sd, target);
-+	if (sched_smt_active()) {
-+		has_idle_core = test_idle_cores(target, false);
-+
-+		if (!has_idle_core && cpus_share_cache(prev, target)) {
-+			i = select_idle_smt(p, sd, prev);
-+			if ((unsigned int)i < nr_cpumask_bits)
-+				return i;
-+		}
-+	}
-+
-+	i = select_idle_cpu(p, sd, has_idle_core, target);
- 	if ((unsigned)i < nr_cpumask_bits)
- 		return i;
- 
+Rob
