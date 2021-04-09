@@ -2,113 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 031543592F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 140C93592EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233190AbhDIDSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:18:18 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:61345 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233083AbhDIDSO (ORCPT
+        id S233069AbhDIDSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:18:09 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15634 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232831AbhDIDSG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:18:14 -0400
-X-Greylist: delayed 22695 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Apr 2021 23:18:12 EDT
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 1393HgZa023146;
-        Fri, 9 Apr 2021 12:17:42 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 1393HgZa023146
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617938262;
-        bh=nRXeibRU4AcCoB24uvxQcso/vauounCB7Cy+XT2rzsI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VubqTYkRf4d5Up7TWCG9toaQseeku33piHD4ogq2gNSVmWkJd3z+EAeqSDxMrQuVc
-         YxrmhZjriQ0JSqFRx/nQX781uIWMZ1vs6FIN9iJAwzgvaL7MaWBbO1MAnuFvIwfF27
-         beESDMnlEEZKFDvqdPM2+L4x7c0Lja37o6yrvN9HJzQCvU0xi8mx7FhafayQs8lS/k
-         UlvzLHOPkLDS+PO3jrCWMmL0O0Xn2K9z2Syov+7ts0Lp3W4SVoLurFETGoUZU4jjsO
-         2VcWolwAGzP5qSxZ9cng7K3/r9Ymu5wxr7bZvwRIqnRhwAkCoiYryAuCYEeCc7r8n8
-         y4G4Qki3Nxs/g==
-X-Nifty-SrcIP: [209.85.216.50]
-Received: by mail-pj1-f50.google.com with SMTP id i4so2200152pjk.1;
-        Thu, 08 Apr 2021 20:17:42 -0700 (PDT)
-X-Gm-Message-State: AOAM531SobHQV1ZUx4ZRFE+Jn2qylXaNhDcaj2GAIm2PHF08YkvCHIay
-        dfj75FAUtZIo+pP/ClUMTA140CAb5klLMEivim8=
-X-Google-Smtp-Source: ABdhPJyKfwZlYOHfHkv5mwhrVgfiEf7eb7BzBT7fqlh6AUhG9PCC+r574MXFnfpu5GfVF+p/vrKZdmLmmtvfHp0+VFU=
-X-Received: by 2002:a17:90a:1056:: with SMTP id y22mr11010180pjd.153.1617938261656;
- Thu, 08 Apr 2021 20:17:41 -0700 (PDT)
+        Thu, 8 Apr 2021 23:18:06 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGjtK2qtvznZ6Q;
+        Fri,  9 Apr 2021 11:15:05 +0800 (CST)
+Received: from [10.174.179.9] (10.174.179.9) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 11:17:49 +0800
+Subject: Re: [PATCH 4/4] mm/hugeltb: handle the error case in
+ hugetlb_fix_reserve_counts()
+To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
+CC:     <n-horiguchi@ah.jp.nec.com>, <hillf.zj@alibaba-inc.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210402093249.25137-1-linmiaohe@huawei.com>
+ <20210402093249.25137-5-linmiaohe@huawei.com>
+ <a61335c2-c6ab-6169-012c-5b5d2d9499da@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <fe37dcbd-5604-8b43-c184-b7d991b16de8@huawei.com>
+Date:   Fri, 9 Apr 2021 11:17:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210408205858.51751-1-masahiroy@kernel.org> <20210408205858.51751-3-masahiroy@kernel.org>
- <CAK8P3a3gzfZhNdp-_=HCxoMw385nGQeNOhhH8X+uyN=AMvHJ8Q@mail.gmail.com>
-In-Reply-To: <CAK8P3a3gzfZhNdp-_=HCxoMw385nGQeNOhhH8X+uyN=AMvHJ8Q@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri, 9 Apr 2021 12:17:04 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR9+u5Q3Sf2jgBSUcpit6xbD_5_Hc-xr-9Ge_m_da-1CA@mail.gmail.com>
-Message-ID: <CAK7LNAR9+u5Q3Sf2jgBSUcpit6xbD_5_Hc-xr-9Ge_m_da-1CA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] pm: allow drivers to drop #ifdef and __maybe_unused
- from pm callbacks
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a61335c2-c6ab-6169-012c-5b5d2d9499da@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 6:30 AM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Thu, Apr 8, 2021 at 11:00 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > Drivers typically surround suspend and resume callbacks with #ifdef
-> > CONFIG_PM(_SLEEP) or mark them as __maybe_unused in order to avoid
-> > -Wunused-const-variable warnings.
-> >
-> > With this commit, drivers will be able to remove #ifdef CONFIG_PM(_SLEEP)
-> > and __maybe_unsed because unused functions are dropped by the compiler
-> > instead of the preprocessor.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> I tried this before and could not get it to work right.
->
-> >
-> > -#ifdef CONFIG_PM_SLEEP
-> > +#define pm_ptr(_ptr)           PTR_IF(IS_ENABLED(CONFIG_PM), _ptr)
-> > +#define pm_sleep_ptr(_ptr)     PTR_IF(IS_ENABLED(CONFIG_PM_SLEEP), _ptr)
-> > +
-> >  #define SET_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn) \
-> > -       .suspend = suspend_fn, \
-> > -       .resume = resume_fn, \
-> > -       .freeze = suspend_fn, \
-> > -       .thaw = resume_fn, \
-> > -       .poweroff = suspend_fn, \
-> > -       .restore = resume_fn,
-> > -#else
-> > -#define SET_SYSTEM_SLEEP_PM_OPS(suspend_fn, resume_fn)
-> > -#endif
-> > +       .suspend  = pm_sleep_ptr(suspend_fn), \
-> > +       .resume   = pm_sleep_ptr(resume_fn), \
-> > +       .freeze   = pm_sleep_ptr(suspend_fn), \
-> > +       .thaw     = pm_sleep_ptr(resume_fn), \
-> > +       .poweroff = pm_sleep_ptr(suspend_fn), \
-> > +       .restore  = pm_sleep_ptr(resume_fn),
->
-> The problem that I think you inevitably hit is that you run into a missing
-> declaration for any driver that still uses an #ifdef around a static
-> function.
->
-> The only way I can see us doing this is to create a new set of
-> macros that behave like the version you propose here but leave
-> the old macros in place until the last such #ifdef has been removed.
->
->        Arnd
+On 2021/4/9 7:25, Mike Kravetz wrote:
+> On 4/2/21 2:32 AM, Miaohe Lin wrote:
+>> A rare out of memory error would prevent removal of the reserve map region
+>> for a page. hugetlb_fix_reserve_counts() handles this rare case to avoid
+>> dangling with incorrect counts. Unfortunately, hugepage_subpool_get_pages
+>> and hugetlb_acct_memory could possibly fail too. We should correctly handle
+>> these cases.
+> 
+> Yes, this is a potential issue.
+> 
+> The 'good news' is that hugetlb_fix_reserve_counts() is unlikely to ever
+> be called.  To do so would imply we could not allocate a region entry
+> which is only 6 words in size.  We also keep a 'cache' of entries so we
+> may not even need to allocate.
+> 
+> But, as mentioned it is a potential issue.
 
-Agh, you are right.
-We cannot change all the callsites atomically due to the huge amount of users.
+Yes, a potential *theoretical* issue.
 
--- 
-Best Regards
-Masahiro Yamada
+> 
+>> Fixes: b5cec28d36f5 ("hugetlbfs: truncate_hugepages() takes a range of pages")
+> 
+> This is likely going to make this get picked by by stable releases.
+> That is unfortunate as mentioned above this is mostly theoretical.
+> 
+
+I will drop this. This does not worth backport.
+
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  mm/hugetlb.c | 11 +++++++++--
+>>  1 file changed, 9 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index bdff8d23803f..ca5464ed04b7 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -745,13 +745,20 @@ void hugetlb_fix_reserve_counts(struct inode *inode)
+>>  {
+>>  	struct hugepage_subpool *spool = subpool_inode(inode);
+>>  	long rsv_adjust;
+>> +	bool reserved = false;
+>>  
+>>  	rsv_adjust = hugepage_subpool_get_pages(spool, 1);
+>> -	if (rsv_adjust) {
+>> +	if (rsv_adjust > 0) {
+>>  		struct hstate *h = hstate_inode(inode);
+>>  
+>> -		hugetlb_acct_memory(h, 1);
+>> +		if (!hugetlb_acct_memory(h, 1))
+>> +			reserved = true;
+>> +	} else if (!rsv_adjust) {
+>> +		reserved = true;
+>>  	}
+>> +
+>> +	if (!reserved)
+>> +		pr_warn("hugetlb: fix reserve count failed\n");
+> 
+> We should expand this warning message a bit to indicate what this may
+> mean to the user.  Add something like"
+> 	"Huge Page Reserved count may go negative".
+> 
+
+Will add it in v2. Many thanks for review and nice suggestion ! :)
