@@ -2,87 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E1035930D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692A8359319
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233103AbhDIDgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:36:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
+        id S233162AbhDIDgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:36:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232941AbhDIDgA (ORCPT
+        with ESMTP id S232941AbhDIDgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:36:00 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061EAC061760;
-        Thu,  8 Apr 2021 20:35:48 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id i9so4603058qka.2;
-        Thu, 08 Apr 2021 20:35:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VW/C+2LLet/ldR+i+V3eCTvpTJBdjFtGmR5udw1qeLQ=;
-        b=kf/yhUgzKhxJK2p+6wg/izoDDT8TFZB4rkZhdAkJoNXFkTR7yODnvd33p9egVGYtph
-         gbjuS+5GR0hjMGkDh2zU1fwjhgdqLPt/a/aFHME6YguBsLD7EVdtdN+p5QMtBp8FPzS0
-         KrAOJQ7t3AKlSkWQfGGwRPGIXSlG6ftCpd/p4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VW/C+2LLet/ldR+i+V3eCTvpTJBdjFtGmR5udw1qeLQ=;
-        b=Ul9Ncs0V+01fJgvRNVAcARlWEe1mqtl4v4kG0QQPstncixw2rZJvRffDgFgPDJdyKP
-         C/jP7TfYKGr6DVNpkQBi7vYaCJrn4qcmgplshbVkjI8fxjPxnJ6s3fzUtjrBG4j5UaK6
-         O62fO0fsweF3q+Jn8NvV5Mmwce7ASlg00PAn1WXJzjFsfsE/9j1waMLkedx48vhw2fxK
-         vJ35aC7uDeKnMpiG/SEO3duvAMjDRijzeI1K4LlnvEIfDorcNLL1tjTBO7kg5QYSYfvx
-         1vnIjxa6JBqd03VsND0FxrwUK2fKcWBYb9UA5QzRO/G6ur0Qxb4dxA+XGMBipcwQh9P/
-         J2eQ==
-X-Gm-Message-State: AOAM53367fuPZrQgDA5svigGiUZfQkpzV2goEbj6iQWvfqTH8AMriSbP
-        v/KNXFh5u9qQXl1UkfEsW5FAm+3/AdvQjFz3ZrppOEm1hVA=
-X-Google-Smtp-Source: ABdhPJxle9zTiCZMcHgQmCbwnJmAkb+TEoOlJ7KMtbFw35LN/7onMEAKpvQn37Vrs7E0ALx7tpeNrdmUUNmbjGlTwlo=
-X-Received: by 2002:a05:620a:28c9:: with SMTP id l9mr11766768qkp.55.1617939347264;
- Thu, 08 Apr 2021 20:35:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210319062752.145730-1-andrew@aj.id.au> <20210319062752.145730-3-andrew@aj.id.au>
-In-Reply-To: <20210319062752.145730-3-andrew@aj.id.au>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 9 Apr 2021 03:35:34 +0000
-Message-ID: <CACPK8XfkvBA+9_WFb96oEa4F1vDPd90hG+M2Y-Ek=Xt5FUFqmQ@mail.gmail.com>
-Subject: Re: [PATCH v2 03/21] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        Corey Minyard <minyard@acm.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        Thu, 8 Apr 2021 23:36:35 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E08C061760;
+        Thu,  8 Apr 2021 20:36:22 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGkLr2qD6z9sW1;
+        Fri,  9 Apr 2021 13:36:20 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617939381;
+        bh=IwQxss0MPfAy2uX0dCdAtFxmafidWn5oWAKM3E+z3Ic=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Cbx0IJH1B3345SvFVnj0qL7KPAMaLiMOGlwUwwFkt2qwE90DW0vGtaQPkzRuyC/j2
+         OVr3ORFzm7SVqfA+is1IEi4TuiEtnqmsBGlpNG1nQuCDufDtJvt2K9NysoydwN0GFz
+         0/bhpxgzqYX+09CfeJZumGNe1y1J6JCBiBy66YDJif3H3uxGYlWyeJ3dhKi3Qean/V
+         KW52Frpm7wc4exN5vRLmq7sZpGxbdiXjbTzPDz5L0tzlCs8p1xprNDK+L2h5DiAZjP
+         dLWOVMfHKonSJJXudsxIQMut13qrSg488RP3wjchNR+nGw0PwhILsKNHJNlHx7rzO0
+         rxtPDUlnCK+mg==
+Date:   Fri, 9 Apr 2021 13:36:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Imre Deak <imre.deak@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Haiyue Wang <haiyue.wang@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm tree
+Message-ID: <20210409133619.69c135ff@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/6fkHv07WnvS/lravUEQ/Ire";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Mar 2021 at 06:28, Andrew Jeffery <andrew@aj.id.au> wrote:
->
-> From: "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
->
-> Add check against LPC device v2 compatible string to
-> ensure that the fixed device tree layout is adopted.
-> The LPC register offsets are also fixed accordingly.
->
-> Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
-> Acked-by: Haiyue Wang <haiyue.wang@linux.intel.com>
+--Sig_/6fkHv07WnvS/lravUEQ/Ire
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+Hi all,
+
+After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
+failed like this:
+
+drivers/gpu/drm/i915/display/intel_dp_link_training.c:43:13: error: redefin=
+ition of 'intel_dp_reset_lttpr_common_caps'
+   43 | static void intel_dp_reset_lttpr_common_caps(struct intel_dp *intel=
+_dp)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/i915/display/intel_dp_link_training.c:38:13: note: previous=
+ definition of 'intel_dp_reset_lttpr_common_caps' was here
+   38 | static void intel_dp_reset_lttpr_common_caps(struct intel_dp *intel=
+_dp)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/gpu/drm/i915/display/intel_dp_link_training.c:38:13: warning: 'inte=
+l_dp_reset_lttpr_common_caps' defined but not used [-Wunused-function]
+
+Caused by commit
+
+  9976ff61f045 ("Merge remote-tracking branch 'drm/drm-next'")
+
+Because commit
+
+  7dffbdedb96a ("drm/i915: Disable LTTPR support when the DPCD rev < 1.4")
+
+from Linus' tree and commit
+
+  264613b406eb ("drm/i915: Disable LTTPR support when the DPCD rev < 1.4")
+
+from the drm tree are the same patch, git added the funtion twice :-(
+
+I have applied a merge fix patch removing the second copy.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/6fkHv07WnvS/lravUEQ/Ire
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBvy7MACgkQAVBC80lX
+0Gy5yAf/U42Uq/AB7igWzd8a6NJkb/jaBLQE0Ee2eptP56lOYXjo+dcpgzctYZg6
+vbNSzWBbCqfeBT4f/W5M/HTvJDs4f+/yKYrCR+T8iITMlDfSh/dDt+XqMTz4bt9A
+ZQKnnRnyvf+ZPFmtca33XXhGiQ1RquTBQuReeGLki0xPnq3ukhyxJdBHuKUYU+QN
+3X+cts3DRnzIAG9uqXpFpxuSPx65gl5tMvewM6X1OdQfYW4q7u8bMUNWUcqTiZsi
+VrLlqmR4JX+ZlQgM4kVaJFpkCmZAUF/X0lZp5+YAHd3fYnmb3Q+EUmUcnsyJ3TPT
+11n+haswRp7TtOzmxv4IvnqA92Ykew==
+=jTb1
+-----END PGP SIGNATURE-----
+
+--Sig_/6fkHv07WnvS/lravUEQ/Ire--
