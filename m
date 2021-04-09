@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58FEB359A51
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82074359A1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:56:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232996AbhDIJ5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:57:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44698 "EHLO mail.kernel.org"
+        id S233557AbhDIJ4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:56:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233640AbhDIJ43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:56:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D77FF611C0;
-        Fri,  9 Apr 2021 09:56:15 +0000 (UTC)
+        id S233519AbhDIJze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:55:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D2A2611C9;
+        Fri,  9 Apr 2021 09:55:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962176;
-        bh=P5pAX8CGqKLZIoiYZTtzs/24ht4yQbWSH0meskpaXP4=;
+        s=korg; t=1617962120;
+        bh=V+x+2INcOzgnWu+tLDdUCCUQothP++KGc7g0v0HqrGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w14FlDMog3NehobdFfjOdkTD2U7SAo+Hgv4mlLrBGMYYedHUh7uQrE4AiHCkAr3Ek
-         zzx7H4m/x/chomeEBw2/pKS2HGv2EuUZlMG4VlR3FZK89fYzHMy+zzsZz6F6/jH83Y
-         bEPZyadhLydoAz/0SPUUMNtWx48W4esnzx0z3o+4=
+        b=YVDiGwKQ7hlJs1wl28mUzIp6Ek9Z6Gp6evuo7n8pEOGekh1j6kU7FPtFf4x+Yc48i
+         c3/GHcgAjWTLInj5N4ovUO374/l9gJ0JIPHdNAjzrvf8NtNJEbyfyYDcZC4jtFL/HG
+         Dx0E/+Uu+bX3d2doXZIOfDqk4//4Qt6n6+WI6kxw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Karthikeyan Kathirvel <kathirve@codeaurora.org>,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 04/14] mac80211: choose first enabled channel for monitor
-Date:   Fri,  9 Apr 2021 11:53:29 +0200
-Message-Id: <20210409095300.535712990@linuxfoundation.org>
+        stable@vger.kernel.org, Piotr Krysiuk <piotras@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Subject: [PATCH 4.9 10/13] bpf, x86: Validate computation of branch displacements for x86-64
+Date:   Fri,  9 Apr 2021 11:53:30 +0200
+Message-Id: <20210409095259.965251658@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095300.391558233@linuxfoundation.org>
-References: <20210409095300.391558233@linuxfoundation.org>
+In-Reply-To: <20210409095259.624577828@linuxfoundation.org>
+References: <20210409095259.624577828@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,53 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Karthikeyan Kathirvel <kathirve@codeaurora.org>
+From: Piotr Krysiuk <piotras@gmail.com>
 
-[ Upstream commit 041c881a0ba8a75f71118bd9766b78f04beed469 ]
+commit e4d4d456436bfb2fe412ee2cd489f7658449b098 upstream.
 
-Even if the first channel from sband channel list is invalid
-or disabled mac80211 ends up choosing it as the default channel
-for monitor interfaces, making them not usable.
+The branch displacement logic in the BPF JIT compilers for x86 assumes
+that, for any generated branch instruction, the distance cannot
+increase between optimization passes.
 
-Fix this by assigning the first available valid or enabled
-channel instead.
+But this assumption can be violated due to how the distances are
+computed. Specifically, whenever a backward branch is processed in
+do_jit(), the distance is computed by subtracting the positions in the
+machine code from different optimization passes. This is because part
+of addrs[] is already updated for the current optimization pass, before
+the branch instruction is visited.
 
-Signed-off-by: Karthikeyan Kathirvel <kathirve@codeaurora.org>
-Link: https://lore.kernel.org/r/1615440547-7661-1-git-send-email-kathirve@codeaurora.org
-[reword commit message, comment, code cleanups]
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+And so the optimizer can expand blocks of machine code in some cases.
+
+This can confuse the optimizer logic, where it assumes that a fixed
+point has been reached for all machine code blocks once the total
+program size stops changing. And then the JIT compiler can output
+abnormal machine code containing incorrect branch displacements.
+
+To mitigate this issue, we assert that a fixed point is reached while
+populating the output image. This rejects any problematic programs.
+The issue affects both x86-32 and x86-64. We mitigate separately to
+ease backporting.
+
+Signed-off-by: Piotr Krysiuk <piotras@gmail.com>
+Reviewed-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/mac80211/main.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ arch/x86/net/bpf_jit_comp.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/net/mac80211/main.c b/net/mac80211/main.c
-index 8a51f94ec1ce..2136ce3b4489 100644
---- a/net/mac80211/main.c
-+++ b/net/mac80211/main.c
-@@ -913,8 +913,19 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
- 			continue;
+--- a/arch/x86/net/bpf_jit_comp.c
++++ b/arch/x86/net/bpf_jit_comp.c
+@@ -1082,7 +1082,16 @@ common_load:
+ 		}
  
- 		if (!dflt_chandef.chan) {
+ 		if (image) {
+-			if (unlikely(proglen + ilen > oldproglen)) {
 +			/*
-+			 * Assign the first enabled channel to dflt_chandef
-+			 * from the list of channels
++			 * When populating the image, assert that:
++			 *
++			 *  i) We do not write beyond the allocated space, and
++			 * ii) addrs[i] did not change from the prior run, in order
++			 *     to validate assumptions made for computing branch
++			 *     displacements.
 +			 */
-+			for (i = 0; i < sband->n_channels; i++)
-+				if (!(sband->channels[i].flags &
-+						IEEE80211_CHAN_DISABLED))
-+					break;
-+			/* if none found then use the first anyway */
-+			if (i == sband->n_channels)
-+				i = 0;
- 			cfg80211_chandef_create(&dflt_chandef,
--						&sband->channels[0],
-+						&sband->channels[i],
- 						NL80211_CHAN_NO_HT);
- 			/* init channel we're on */
- 			if (!local->use_chanctx && !local->_oper_chandef.chan) {
--- 
-2.30.2
-
++			if (unlikely(proglen + ilen > oldproglen ||
++				     proglen + ilen != addrs[i])) {
+ 				pr_err("bpf_jit_compile fatal error\n");
+ 				return -EFAULT;
+ 			}
 
 
