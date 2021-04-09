@@ -2,415 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6943C35A2C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:14:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9B235A2C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233964AbhDIQPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:15:06 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:41793 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233687AbhDIQPA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233786AbhDIQPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 9 Apr 2021 12:15:00 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FH39q43xvz9vBnD;
-        Fri,  9 Apr 2021 18:14:39 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 6ewgkzpIywvU; Fri,  9 Apr 2021 18:14:39 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FH39q35z5z9vBnC;
-        Fri,  9 Apr 2021 18:14:39 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8A8D28B7F9;
-        Fri,  9 Apr 2021 18:14:39 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id csvG6TdzIE5i; Fri,  9 Apr 2021 18:14:39 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4A9238B7E4;
-        Fri,  9 Apr 2021 18:14:19 +0200 (CEST)
-Subject: Re: [PATCH v3] powerpc/traps: Enhance readability for trap types
-To:     Xiongwei Song <sxwjean@me.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, oleg@redhat.com,
-        npiggin@gmail.com, aneesh.kumar@linux.ibm.com,
-        ravi.bangoria@linux.ibm.com, mikey@neuling.org,
-        haren@linux.ibm.com, akpm@linux-foundation.org, rppt@kernel.org,
-        jniethe5@gmail.com, atrajeev@linux.vnet.ibm.com,
-        maddy@linux.ibm.com, peterz@infradead.org, kjain@linux.ibm.com,
-        kan.liang@linux.intel.com, aik@ozlabs.ru, alistair@popple.id.au,
-        pmladek@suse.com, john.ogness@linutronix.de
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-References: <20210408140750.26832-1-sxwjean@me.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <70ece993-12bd-335c-d246-914564eb51dd@csgroup.eu>
-Date:   Fri, 9 Apr 2021 18:14:19 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+Received: from Galois.linutronix.de ([193.142.43.55]:51576 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDIQOq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:14:46 -0400
+Date:   Fri, 09 Apr 2021 16:14:30 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617984872;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/vaVZHOURXnaFpdHiHpXBNeYCgIFf8IrI3j+izmDIIQ=;
+        b=RoSu0n/ePeKnoAFLQ+FDb/2er+XQAqIeeh2Oh4oEEq5OjJTkVF08o+JGksbaDt+KOQadZY
+        /09Ia1CL9gzXXC4ulVVllWDS6vrX0eTJooxXF4ynrj3aQed/KWLwozPAeCdytUXOQ59Aow
+        N3N6Iduy3qQMuTk+V5EgCzJDGGhVEqEZV/ek8CJCf1ckIdZCitcZ7+fp06jDrRSj/GlPdL
+        y/Tb/hBrsU8ggEX+OgYzzssGRrkReceV5foXHBR2Mg0y6diKn5kSrqsZqyjH1n+sVXZGpa
+        XC1K4kxaa2vhHixF4eNFKTKBdVWCLGDzpJ51IGWU9FW/+R3SQewlyJuKQjnmAw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617984872;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/vaVZHOURXnaFpdHiHpXBNeYCgIFf8IrI3j+izmDIIQ=;
+        b=qKnXVGeXmYJntCNIfs9LRi3jgk0eQO+PN6JNu1M6P93TJ0YiKubNHb7aj6J8nVxUOC5AYj
+        k2WlC67Qt/fstKDw==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Introduce a CPU capacity comparison helper
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210407220628.3798191-4-valentin.schneider@arm.com>
+References: <20210407220628.3798191-4-valentin.schneider@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210408140750.26832-1-sxwjean@me.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Message-ID: <161798487099.29796.13541527645202079257.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the sched/core branch of tip:
 
+Commit-ID:     4aed8aa41524a1fc6439171881c2bb7ace197528
+Gitweb:        https://git.kernel.org/tip/4aed8aa41524a1fc6439171881c2bb7ace197528
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Wed, 07 Apr 2021 23:06:28 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 09 Apr 2021 18:02:21 +02:00
 
-Le 08/04/2021 à 16:07, Xiongwei Song a écrit :
-> From: Xiongwei Song <sxwjean@gmail.com>
-> 
-> Create a new header named traps.h, define macros to list ppc interrupt
-> types in traps.h, replace the reference of the trap hex values with these
-> macros.
-> 
-> Referred the hex number in arch/powerpc/kernel/exceptions-64e.S,
-> arch/powerpc/kernel/exceptions-64s.S and
-> arch/powerpc/include/asm/kvm_asm.h.
-> 
-> v2-v3:
-> Correct the prefix of trap macros with INTERRUPT_, the previous prefix
-> is TRAP_, which is not precise. This is suggested by Segher Boessenkool
-> and Nicholas Piggin.
-> 
-> v1-v2:
-> Define more trap macros to replace more trap hexs in code, not just for
-> the __show_regs function. This is suggested by Christophe Leroy.
-> 
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> ---
->   arch/powerpc/include/asm/interrupt.h  |  9 +++++---
->   arch/powerpc/include/asm/ptrace.h     |  3 ++-
->   arch/powerpc/include/asm/traps.h      | 32 +++++++++++++++++++++++++++
->   arch/powerpc/kernel/interrupt.c       |  3 ++-
->   arch/powerpc/kernel/process.c         |  5 ++++-
->   arch/powerpc/mm/book3s64/hash_utils.c |  5 +++--
->   arch/powerpc/mm/fault.c               | 21 +++++++++++-------
->   arch/powerpc/perf/core-book3s.c       |  5 +++--
->   arch/powerpc/xmon/xmon.c              | 16 +++++++++++---
->   9 files changed, 78 insertions(+), 21 deletions(-)
->   create mode 100644 arch/powerpc/include/asm/traps.h
-> 
-> diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
-> index 7c633896d758..5ce9898bc9a6 100644
-> --- a/arch/powerpc/include/asm/interrupt.h
-> +++ b/arch/powerpc/include/asm/interrupt.h
-> @@ -8,6 +8,7 @@
->   #include <asm/ftrace.h>
->   #include <asm/kprobes.h>
->   #include <asm/runlatch.h>
-> +#include <asm/traps.h>
->   
->   struct interrupt_state {
->   #ifdef CONFIG_PPC_BOOK3E_64
-> @@ -59,7 +60,7 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs, struct interrup
->   		 * CT_WARN_ON comes here via program_check_exception,
->   		 * so avoid recursion.
->   		 */
-> -		if (TRAP(regs) != 0x700)
-> +		if (TRAP(regs) != INTERRUPT_PROGRAM)
->   			CT_WARN_ON(ct_state() != CONTEXT_KERNEL);
->   	}
->   #endif
-> @@ -156,7 +157,8 @@ static inline void interrupt_nmi_enter_prepare(struct pt_regs *regs, struct inte
->   	/* Don't do any per-CPU operations until interrupt state is fixed */
->   #endif
->   	/* Allow DEC and PMI to be traced when they are soft-NMI */
-> -	if (TRAP(regs) != 0x900 && TRAP(regs) != 0xf00 && TRAP(regs) != 0x260) {
-> +	if (TRAP(regs) != INTERRUPT_DECREMENTER &&
-> +	    TRAP(regs) != INTERRUPT_PERFMON) {
+sched/fair: Introduce a CPU capacity comparison helper
 
-I think too long names hinder readability, see later for suggestions.
+During load-balance, groups classified as group_misfit_task are filtered
+out if they do not pass
 
->   		state->ftrace_enabled = this_cpu_get_ftrace_enabled();
->   		this_cpu_set_ftrace_enabled(0);
->   	}
-> @@ -180,7 +182,8 @@ static inline void interrupt_nmi_exit_prepare(struct pt_regs *regs, struct inter
->   		nmi_exit();
->   
->   #ifdef CONFIG_PPC64
-> -	if (TRAP(regs) != 0x900 && TRAP(regs) != 0xf00 && TRAP(regs) != 0x260)
-> +	if (TRAP(regs) != INTERRUPT_DECREMENTER &&
-> +	    TRAP(regs) != INTERRUPT_PERFMON)
->   		this_cpu_set_ftrace_enabled(state->ftrace_enabled);
->   
->   #ifdef CONFIG_PPC_BOOK3S_64
-> diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
-> index f10498e1b3f6..7a17e0365d43 100644
-> --- a/arch/powerpc/include/asm/ptrace.h
-> +++ b/arch/powerpc/include/asm/ptrace.h
-> @@ -21,6 +21,7 @@
->   
->   #include <uapi/asm/ptrace.h>
->   #include <asm/asm-const.h>
-> +#include <asm/traps.h>
->   
->   #ifndef __ASSEMBLY__
->   struct pt_regs
-> @@ -237,7 +238,7 @@ static inline bool trap_is_unsupported_scv(struct pt_regs *regs)
->   
->   static inline bool trap_is_syscall(struct pt_regs *regs)
->   {
-> -	return (trap_is_scv(regs) || TRAP(regs) == 0xc00);
-> +	return (trap_is_scv(regs) || TRAP(regs) == INTERRUPT_SYSCALL);
->   }
->   
->   static inline bool trap_norestart(struct pt_regs *regs)
-> diff --git a/arch/powerpc/include/asm/traps.h b/arch/powerpc/include/asm/traps.h
-> new file mode 100644
-> index 000000000000..cb416a17097c
-> --- /dev/null
-> +++ b/arch/powerpc/include/asm/traps.h
-> @@ -0,0 +1,32 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_PPC_TRAPS_H
-> +#define _ASM_PPC_TRAPS_H
-> +
-> +#if defined(CONFIG_BOOKE) || defined(CONFIG_4xx)
-> +#define INTERRUPT_MACHINE_CHECK   0x000
+  group_smaller_max_cpu_capacity(<candidate group>, <local group>);
 
-I'd prefer shorted names in order to not be obliged to split lines.
-Here are some suggestions:
+which itself employs fits_capacity() to compare the sgc->max_capacity of
+both groups.
 
-INT_MCE
+Due to the underlying margin, fits_capacity(X, 1024) will return false for
+any X > 819. Tough luck, the capacity_orig's on e.g. the Pixel 4 are
+{261, 871, 1024}. If a CPU-bound task ends up on one of those "medium"
+CPUs, misfit migration will never intentionally upmigrate it to a CPU of
+higher capacity due to the aforementioned margin.
 
-> +#define INTERRUPT_CRITICAL_INPUT  0x100
+One may argue the 20% margin of fits_capacity() is excessive in the advent
+of counter-enhanced load tracking (APERF/MPERF, AMUs), but one point here
+is that fits_capacity() is meant to compare a utilization value to a
+capacity value, whereas here it is being used to compare two capacity
+values. As CPU capacity and task utilization have different dynamics, a
+sensible approach here would be to add a new helper dedicated to comparing
+CPU capacities.
 
-INT_CRIT
+Also note that comparing capacity extrema of local and source sched_group's
+doesn't make much sense when at the day of the day the imbalance will be
+pulled by a known env->dst_cpu, whose capacity can be anywhere within the
+local group's capacity extrema.
 
-> +#define INTERRUPT_ALTIVEC_UNAVAIL 0x200
-> +#define INTERRUPT_PERFMON         0x260
+While at it, replace group_smaller_{min, max}_cpu_capacity() with
+comparisons of the source group's min/max capacity and the destination
+CPU's capacity.
 
-INT_PERF
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Tested-by: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Link: https://lkml.kernel.org/r/20210407220628.3798191-4-valentin.schneider@arm.com
+---
+ kernel/sched/fair.c | 33 ++++++++++-----------------------
+ 1 file changed, 10 insertions(+), 23 deletions(-)
 
-> +#define INTERRUPT_DOORBELL        0x280
-> +#define INTERRUPT_DEBUG           0xd00
-> +#elif defined(CONFIG_PPC_BOOK3S)
-> +#define INTERRUPT_SYSTEM_RESET    0x100
-
-INT_SRESET
-
-> +#define INTERRUPT_MACHINE_CHECK   0x200
-
-INT_MCE
-
-> +#define INTERRUPT_DATA_SEGMENT    0x380
-
-INT_DSEG
-
-> +#define INTERRUPT_INST_SEGMENT    0x480
-
-INT_ISEG
-
-> +#define INTERRUPT_DOORBELL        0xa00
-
-INT_DBELL
-
-> +#define INTERRUPT_TRACE           0xd00
-
-INT_TRACE
-
-> +#define INTERRUPT_H_DATA_STORAGE  0xe00
-> +#define INTERRUPT_PERFMON         0xf00
-
-INT_PERF
-
-> +#define INTERRUPT_H_FAC_UNAVAIL   0xf80
-> +#endif
-> +
-> +#define INTERRUPT_DATA_STORAGE    0x300
-
-INT_DSI
-
-> +#define INTERRUPT_INST_STORAGE    0x400
-
-INT_ISI
-
-> +#define INTERRUPT_ALIGNMENT       0x600
-
-INT_ALIGN
-
-> +#define INTERRUPT_PROGRAM         0x700
-
-INT_PROG
-
-> +#define INTERRUPT_FP_UNAVAIL      0x800
-
-INT_FP_UNAVAIL
-
-> +#define INTERRUPT_DECREMENTER     0x900
-
-INT_DEC
-
-> +#define INTERRUPT_SYSCALL         0xc00
-
-INT_SYSCALL
-
-
-> +
-> +#endif /* _ASM_PPC_TRAPS_H */
-
-...
-
-> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-> index 0c0b1c2cfb49..641b3feef7ee 100644
-> --- a/arch/powerpc/mm/fault.c
-> +++ b/arch/powerpc/mm/fault.c
-> @@ -44,6 +44,7 @@
->   #include <asm/debug.h>
->   #include <asm/kup.h>
->   #include <asm/inst.h>
-> +#include <asm/traps.h>
->   
->   
->   /*
-> @@ -197,7 +198,7 @@ static int mm_fault_error(struct pt_regs *regs, unsigned long addr,
->   static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
->   			     unsigned long address, bool is_write)
->   {
-> -	int is_exec = TRAP(regs) == 0x400;
-> +	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
->   
->   	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
->   	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
-> @@ -391,7 +392,7 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
->   	struct vm_area_struct * vma;
->   	struct mm_struct *mm = current->mm;
->   	unsigned int flags = FAULT_FLAG_DEFAULT;
-> - 	int is_exec = TRAP(regs) == 0x400;
-> +	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
->   	int is_user = user_mode(regs);
->   	int is_write = page_fault_is_write(error_code);
->   	vm_fault_t fault, major = 0;
-> @@ -588,20 +589,24 @@ void __bad_page_fault(struct pt_regs *regs, int sig)
->   	/* kernel has accessed a bad area */
->   
->   	switch (TRAP(regs)) {
-> -	case 0x300:
-> -	case 0x380:
-> -	case 0xe00:
-> +	case INTERRUPT_DATA_STORAGE:
-> +#ifdef CONFIG_PPC_BOOK3S
-> +	case INTERRUPT_DATA_SEGMENT:
-> +	case INTERRUPT_H_DATA_STORAGE:
-> +#endif
-
-It would be better to avoid #ifdefs when none where necessary before.
-
-
->   		pr_alert("BUG: %s on %s at 0x%08lx\n",
->   			 regs->dar < PAGE_SIZE ? "Kernel NULL pointer dereference" :
->   			 "Unable to handle kernel data access",
->   			 is_write ? "write" : "read", regs->dar);
->   		break;
-> -	case 0x400:
-> -	case 0x480:
-> +	case INTERRUPT_INST_STORAGE:
-> +#ifdef CONFIG_PPC_BOOK3S
-> +	case INTERRUPT_INST_SEGMENT:
-> +#endif
-
-It would be better to avoid #ifdefs when none where necessary before.
-
-
-
->   		pr_alert("BUG: Unable to handle kernel instruction fetch%s",
->   			 regs->nip < PAGE_SIZE ? " (NULL pointer?)\n" : "\n");
->   		break;
-> -	case 0x600:
-> +	case INTERRUPT_ALIGNMENT:
->   		pr_alert("BUG: Unable to handle kernel unaligned access at 0x%08lx\n",
->   			 regs->dar);
->   		break;
-> diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-> index 766f064f00fb..6e34f5bba232 100644
-> --- a/arch/powerpc/perf/core-book3s.c
-> +++ b/arch/powerpc/perf/core-book3s.c
-> @@ -17,6 +17,7 @@
->   #include <asm/firmware.h>
->   #include <asm/ptrace.h>
->   #include <asm/code-patching.h>
-> +#include <asm/traps.h>
->   
->   #ifdef CONFIG_PPC64
->   #include "internal.h"
-> @@ -168,7 +169,7 @@ static bool regs_use_siar(struct pt_regs *regs)
->   	 * they have not been setup using perf_read_regs() and so regs->result
->   	 * is something random.
->   	 */
-> -	return ((TRAP(regs) == 0xf00) && regs->result);
-> +	return ((TRAP(regs) == INTERRUPT_PERFMON) && regs->result);
->   }
->   
->   /*
-> @@ -347,7 +348,7 @@ static inline void perf_read_regs(struct pt_regs *regs)
->   	 * hypervisor samples as well as samples in the kernel with
->   	 * interrupts off hence the userspace check.
->   	 */
-> -	if (TRAP(regs) != 0xf00)
-> +	if (TRAP(regs) != INTERRUPT_PERFMON)
->   		use_siar = 0;
->   	else if ((ppmu->flags & PPMU_NO_SIAR))
->   		use_siar = 0;
-> diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-> index bf7d69625a2e..2a4f99e64bf3 100644
-> --- a/arch/powerpc/xmon/xmon.c
-> +++ b/arch/powerpc/xmon/xmon.c
-> @@ -54,6 +54,7 @@
->   #include <asm/code-patching.h>
->   #include <asm/sections.h>
->   #include <asm/inst.h>
-> +#include <asm/traps.h>
->   
->   #ifdef CONFIG_PPC64
->   #include <asm/hvcall.h>
-> @@ -1769,7 +1770,12 @@ static void excprint(struct pt_regs *fp)
->   	printf("    sp: %lx\n", fp->gpr[1]);
->   	printf("   msr: %lx\n", fp->msr);
->   
-> -	if (trap == 0x300 || trap == 0x380 || trap == 0x600 || trap == 0x200) {
-> +	if (trap == INTERRUPT_DATA_STORAGE ||
-> +#ifdef CONFIG_PPC_BOOK3S
-> +	    trap == INTERRUPT_DATA_SEGMENT ||
-> +#endif
-It would be better to avoid #ifdefs when none where necessary before.
-
-And an #ifdef in the middle of a code line is awful for readability and maintainability.
-
-> +	    trap == INTERRUPT_ALIGNMENT ||
-> +	    trap == INTERRUPT_MACHINE_CHECK) {
->   		printf("   dar: %lx\n", fp->dar);
->   		if (trap != 0x380)
->   			printf(" dsisr: %lx\n", fp->dsisr);
-> @@ -1785,7 +1791,7 @@ static void excprint(struct pt_regs *fp)
->   		       current->pid, current->comm);
->   	}
->   
-> -	if (trap == 0x700)
-> +	if (trap == INTERRUPT_PROGRAM)
->   		print_bug_trap(fp);
->   
->   	printf(linux_banner);
-> @@ -1846,7 +1852,11 @@ static void prregs(struct pt_regs *fp)
->   	printf("ctr = "REG"   xer = "REG"   trap = %4lx\n",
->   	       fp->ctr, fp->xer, fp->trap);
->   	trap = TRAP(fp);
-> -	if (trap == 0x300 || trap == 0x380 || trap == 0x600)
-> +	if (trap == INTERRUPT_DATA_STORAGE ||
-> +#ifdef CONFIG_PPC_BOOK3S
-> +	    trap == INTERRUPT_DATA_SEGMENT ||
-> +#endif
-> +	    trap == INTERRUPT_ALIGNMENT)
-
-It would be better to avoid #ifdefs when none where necessary before.
-
-And an #ifdef in the middle of a code line is awful for readability and maintainability.
-
-
->   		printf("dar = "REG"   dsisr = %.8lx\n", fp->dar, fp->dsisr);
->   }
->   
-> 
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 356637a..9b8ae02 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -113,6 +113,13 @@ int __weak arch_asym_cpu_priority(int cpu)
+  */
+ #define fits_capacity(cap, max)	((cap) * 1280 < (max) * 1024)
+ 
++/*
++ * The margin used when comparing CPU capacities.
++ * is 'cap1' noticeably greater than 'cap2'
++ *
++ * (default: ~5%)
++ */
++#define capacity_greater(cap1, cap2) ((cap1) * 1024 > (cap2) * 1078)
+ #endif
+ 
+ #ifdef CONFIG_CFS_BANDWIDTH
+@@ -8395,26 +8402,6 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
+ 	return false;
+ }
+ 
+-/*
+- * group_smaller_min_cpu_capacity: Returns true if sched_group sg has smaller
+- * per-CPU capacity than sched_group ref.
+- */
+-static inline bool
+-group_smaller_min_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
+-{
+-	return fits_capacity(sg->sgc->min_capacity, ref->sgc->min_capacity);
+-}
+-
+-/*
+- * group_smaller_max_cpu_capacity: Returns true if sched_group sg has smaller
+- * per-CPU capacity_orig than sched_group ref.
+- */
+-static inline bool
+-group_smaller_max_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
+-{
+-	return fits_capacity(sg->sgc->max_capacity, ref->sgc->max_capacity);
+-}
+-
+ static inline enum
+ group_type group_classify(unsigned int imbalance_pct,
+ 			  struct sched_group *group,
+@@ -8570,7 +8557,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+ 	 * internally or be covered by avg_load imbalance (eventually).
+ 	 */
+ 	if (sgs->group_type == group_misfit_task &&
+-	    (!group_smaller_max_cpu_capacity(sg, sds->local) ||
++	    (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
+ 	     sds->local_stat.group_type != group_has_spare))
+ 		return false;
+ 
+@@ -8654,7 +8641,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+ 	 */
+ 	if ((env->sd->flags & SD_ASYM_CPUCAPACITY) &&
+ 	    (sgs->group_type <= group_fully_busy) &&
+-	    (group_smaller_min_cpu_capacity(sds->local, sg)))
++	    (capacity_greater(sg->sgc->min_capacity, capacity_of(env->dst_cpu))))
+ 		return false;
+ 
+ 	return true;
+@@ -9454,7 +9441,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 		 * average load.
+ 		 */
+ 		if (env->sd->flags & SD_ASYM_CPUCAPACITY &&
+-		    capacity_of(env->dst_cpu) < capacity &&
++		    !capacity_greater(capacity_of(env->dst_cpu), capacity) &&
+ 		    nr_running == 1)
+ 			continue;
+ 
