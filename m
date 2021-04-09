@@ -2,101 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC688359FB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6657B359FC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbhDINWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:22:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhDINWV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:22:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0839CC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 06:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/chgEg4vkbYUpoj4VosuonneX2qHK/OetkyDV/bGmho=; b=FmObb3bhd0CVkB5cxv37RlZ+aw
-        xTa5YgJiV+pg6nA0ynFk7QXwyodW7ZRw1jZ2PcjDBP8cwxaVDmvXgC3neI5JxZKD56oqcblVv/mxR
-        VmyQ8NTCMd156+WTnoa67ahUBqjUnreygI1C58lyw83/d77mlKI8ULLJfAVN0CKBgHqcuAJr15fBk
-        mFTimRqXvEbi8P8ILO+5h6Ae+S8VNNRl4nT9EkzV0dwMHlZe0dWZLkIn02/EIMZk/0IUMfgdnxlt7
-        RS8EfBkXSy7piXRK4H+FcmKLWBm2GCIfbeDTFAiltTmeTFkBhhAkkT590gi/kLSmx60335IKpeaX9
-        4lYQk3/g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUr4E-000Q7Q-P5; Fri, 09 Apr 2021 13:21:03 +0000
-Date:   Fri, 9 Apr 2021 14:20:58 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     neilb@suse.de, peterz@infradead.org, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        tglx@linutronix.de, bigeasy@linutronix.de, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/17] s390: Add airq_iv_lock
-Message-ID: <20210409132058.GU2531743@casper.infradead.org>
-References: <20210409025131.4114078-12-willy@infradead.org>
- <202104091435.4GhAON03-lkp@intel.com>
+        id S233481AbhDINYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:24:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:51460 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231127AbhDINYk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 09:24:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 31B231FB;
+        Fri,  9 Apr 2021 06:24:27 -0700 (PDT)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F5283F694;
+        Fri,  9 Apr 2021 06:24:26 -0700 (PDT)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH v3] arm64: mte: Move MTE TCF0 check in entry-common
+Date:   Fri,  9 Apr 2021 14:24:19 +0100
+Message-Id: <20210409132419.29965-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202104091435.4GhAON03-lkp@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 02:18:16PM +0800, kernel test robot wrote:
-> Hi "Matthew,
-> 
-> Thank you for the patch! Yet something to improve:
+The check_mte_async_tcf macro sets the TIF flag non-atomically. This can
+race with another CPU doing a set_tsk_thread_flag() and all the other flags
+can be lost in the process.
 
-Thanks.  I'll fold in this patch to fix it.
+Move the tcf0 check to enter_from_user_mode() and clear tcf0 in
+exit_to_user_mode() to address the problem.
 
+Note: Moving the check in entry-common allows to use set_thread_flag()
+which is safe.
 
-diff --git a/arch/s390/include/asm/airq.h b/arch/s390/include/asm/airq.h
-index d281340de14a..26030b7c1b88 100644
---- a/arch/s390/include/asm/airq.h
-+++ b/arch/s390/include/asm/airq.h
-@@ -26,7 +26,7 @@ struct airq_struct {
+Fixes: 637ec831ea4f ("arm64: mte: Handle synchronous and asynchronous tag check faults")
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: stable@vger.kernel.org
+Reported-by: Will Deacon <will@kernel.org>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+---
+ arch/arm64/include/asm/mte.h     |  9 +++++++++
+ arch/arm64/kernel/entry-common.c |  6 ++++++
+ arch/arm64/kernel/entry.S        | 34 --------------------------------
+ arch/arm64/kernel/mte.c          | 33 +++++++++++++++++++++++++++++--
+ 4 files changed, 46 insertions(+), 36 deletions(-)
+
+diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+index 9b557a457f24..c7ab681a95c3 100644
+--- a/arch/arm64/include/asm/mte.h
++++ b/arch/arm64/include/asm/mte.h
+@@ -49,6 +49,9 @@ int mte_ptrace_copy_tags(struct task_struct *child, long request,
  
- int register_adapter_interrupt(struct airq_struct *airq);
- void unregister_adapter_interrupt(struct airq_struct *airq);
--extern struct iv_lock airq_iv_lock;
-+extern struct split_lock airq_split_lock;
+ void mte_assign_mem_tag_range(void *addr, size_t size);
  
- /* Adapter interrupt bit vector */
- struct airq_iv {
-@@ -73,13 +73,13 @@ static inline unsigned long airq_iv_end(struct airq_iv *iv)
- static inline void airq_iv_lock(struct airq_iv *iv, unsigned long bit)
++void noinstr check_mte_async_tcf0(void);
++void noinstr clear_mte_async_tcf0(void);
++
+ #else /* CONFIG_ARM64_MTE */
+ 
+ /* unused if !CONFIG_ARM64_MTE, silence the compiler */
+@@ -83,6 +86,12 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
  {
- 	const unsigned long be_to_le = BITS_PER_LONG - 1;
--	bit_spin_lock(bit ^ be_to_le, iv->bitlock, &airq_iv_lock);
-+	bit_spin_lock(bit ^ be_to_le, iv->bitlock, &airq_split_lock);
+ 	return -EIO;
+ }
++static inline void check_mte_async_tcf0(void)
++{
++}
++static inline void clear_mte_async_tcf0(void)
++{
++}
+ 
+ static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+ {
+diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+index 9d3588450473..837d3624a1d5 100644
+--- a/arch/arm64/kernel/entry-common.c
++++ b/arch/arm64/kernel/entry-common.c
+@@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
+ 	CT_WARN_ON(ct_state() != CONTEXT_USER);
+ 	user_exit_irqoff();
+ 	trace_hardirqs_off_finish();
++
++	/* Check for asynchronous tag check faults in user space */
++	check_mte_async_tcf0();
  }
  
- static inline void airq_iv_unlock(struct airq_iv *iv, unsigned long bit)
+ asmlinkage void noinstr exit_to_user_mode(void)
  {
- 	const unsigned long be_to_le = BITS_PER_LONG - 1;
--	bit_spin_unlock(bit ^ be_to_le, iv->bitlock, &airq_iv_lock);
-+	bit_spin_unlock(bit ^ be_to_le, iv->bitlock, &airq_split_lock);
++	/* Ignore asynchronous tag check faults in the uaccess routines */
++	clear_mte_async_tcf0();
++
+ 	trace_hardirqs_on_prepare();
+ 	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
+ 	user_enter_irqoff();
+diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+index a31a0a713c85..fb57df0d453f 100644
+--- a/arch/arm64/kernel/entry.S
++++ b/arch/arm64/kernel/entry.S
+@@ -34,15 +34,11 @@
+  * user and kernel mode.
+  */
+ 	.macro user_exit_irqoff
+-#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
+ 	bl	enter_from_user_mode
+-#endif
+ 	.endm
+ 
+ 	.macro user_enter_irqoff
+-#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
+ 	bl	exit_to_user_mode
+-#endif
+ 	.endm
+ 
+ 	.macro	clear_gp_regs
+@@ -147,32 +143,6 @@ alternative_cb_end
+ .L__asm_ssbd_skip\@:
+ 	.endm
+ 
+-	/* Check for MTE asynchronous tag check faults */
+-	.macro check_mte_async_tcf, flgs, tmp
+-#ifdef CONFIG_ARM64_MTE
+-alternative_if_not ARM64_MTE
+-	b	1f
+-alternative_else_nop_endif
+-	mrs_s	\tmp, SYS_TFSRE0_EL1
+-	tbz	\tmp, #SYS_TFSR_EL1_TF0_SHIFT, 1f
+-	/* Asynchronous TCF occurred for TTBR0 access, set the TI flag */
+-	orr	\flgs, \flgs, #_TIF_MTE_ASYNC_FAULT
+-	str	\flgs, [tsk, #TSK_TI_FLAGS]
+-	msr_s	SYS_TFSRE0_EL1, xzr
+-1:
+-#endif
+-	.endm
+-
+-	/* Clear the MTE asynchronous tag check faults */
+-	.macro clear_mte_async_tcf
+-#ifdef CONFIG_ARM64_MTE
+-alternative_if ARM64_MTE
+-	dsb	ish
+-	msr_s	SYS_TFSRE0_EL1, xzr
+-alternative_else_nop_endif
+-#endif
+-	.endm
+-
+ 	.macro mte_set_gcr, tmp, tmp2
+ #ifdef CONFIG_ARM64_MTE
+ 	/*
+@@ -243,8 +213,6 @@ alternative_else_nop_endif
+ 	ldr	x19, [tsk, #TSK_TI_FLAGS]
+ 	disable_step_tsk x19, x20
+ 
+-	/* Check for asynchronous tag check faults in user space */
+-	check_mte_async_tcf x19, x22
+ 	apply_ssbd 1, x22, x23
+ 
+ 	ptrauth_keys_install_kernel tsk, x20, x22, x23
+@@ -775,8 +743,6 @@ SYM_CODE_START_LOCAL(ret_to_user)
+ 	cbnz	x2, work_pending
+ finish_ret_to_user:
+ 	user_enter_irqoff
+-	/* Ignore asynchronous tag check faults in the uaccess routines */
+-	clear_mte_async_tcf
+ 	enable_step_tsk x19, x2
+ #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
+ 	bl	stackleak_erase
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index b3c70a612c7a..84a942c25870 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -166,14 +166,43 @@ static void set_gcr_el1_excl(u64 excl)
+ 	 */
  }
  
- static inline void airq_iv_set_data(struct airq_iv *iv, unsigned long bit,
-diff --git a/drivers/s390/cio/airq.c b/drivers/s390/cio/airq.c
-index 6e850661957c..08bb47200f12 100644
---- a/drivers/s390/cio/airq.c
-+++ b/drivers/s390/cio/airq.c
-@@ -31,8 +31,8 @@ static struct hlist_head airq_lists[MAX_ISC+1];
+-void flush_mte_state(void)
++void noinstr check_mte_async_tcf0(void)
++{
++	u64 tcf0;
++
++	if (!system_supports_mte())
++		return;
++
++	/*
++	 * dsb(ish) is not required before the register read
++	 * because the TFSRE0_EL1 is automatically synchronized
++	 * by the hardware on exception entry as SCTLR_EL1.ITFSB
++	 * is set.
++	 */
++	tcf0 = read_sysreg_s(SYS_TFSRE0_EL1);
++
++	if (tcf0 & SYS_TFSR_EL1_TF0)
++		set_thread_flag(TIF_MTE_ASYNC_FAULT);
++
++	write_sysreg_s(0, SYS_TFSRE0_EL1);
++}
++
++void noinstr clear_mte_async_tcf0(void)
+ {
+ 	if (!system_supports_mte())
+ 		return;
  
- static struct dma_pool *airq_iv_cache;
- 
--DEFINE_SPLIT_LOCK(airq_iv_lock);
--EXPORT_SYMBOL(airq_iv_lock);
-+DEFINE_SPLIT_LOCK(airq_split_lock);
-+EXPORT_SYMBOL(airq_split_lock);
- 
- /**
-  * register_adapter_interrupt() - register adapter interrupt handler
-
+-	/* clear any pending asynchronous tag fault */
+ 	dsb(ish);
+ 	write_sysreg_s(0, SYS_TFSRE0_EL1);
++}
++
++void flush_mte_state(void)
++{
++	if (!system_supports_mte())
++		return;
++
++	/* clear any pending asynchronous tag fault */
++	clear_mte_async_tcf0();
+ 	clear_thread_flag(TIF_MTE_ASYNC_FAULT);
+ 	/* disable tag checking */
+ 	set_sctlr_el1_tcf0(SCTLR_EL1_TCF0_NONE);
+-- 
+2.30.2
 
