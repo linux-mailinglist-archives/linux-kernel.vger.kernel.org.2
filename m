@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD17435A3F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7E535A3F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234113AbhDIQsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:48:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21497 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233961AbhDIQsp (ORCPT
+        id S234011AbhDIQta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:49:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231402AbhDIQt1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:48:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617986912;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=Chg6IKEuKKojYi7mhUKaMLERMRmxIjzmO/LXSZ+TUHU=;
-        b=V4nKrqQSuTyIG4IkWllGKcDGT8v7yAQiczF5Wbj9PqGZUXInrrSoFhdhYDqQS+bIVl3bGi
-        1fPJEiyfSbmyX8yebyQWlJNvebsuvD/8p06u+Fw1BIS/u+wu4WUMeAfchfWQjdtUKJMLzL
-        /p477A7kebgrVfra29ioqGSmkIlR+S4=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-399-fGWmUC4VPKqM3l_tkhxqcA-1; Fri, 09 Apr 2021 12:48:20 -0400
-X-MC-Unique: fGWmUC4VPKqM3l_tkhxqcA-1
-Received: by mail-wr1-f69.google.com with SMTP id z12so2532092wro.22
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:48:20 -0700 (PDT)
+        Fri, 9 Apr 2021 12:49:27 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FA2C061760;
+        Fri,  9 Apr 2021 09:49:12 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id o16so7235335ljp.3;
+        Fri, 09 Apr 2021 09:49:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xAsumXJcN6syFj5poypQyxoqwQFWcqyC5WGT/xKy8v4=;
+        b=dJ80Iu1K+1KISllpH7SXcFnmNUi4Olh2nwoYJdg+3Jmqrxw+kNW7BYEx3Yt4UjHujl
+         vEW30Cv1uER0WCu6vvbZTbTLbqTwTGeBEwlovEkjPTIXAi90fYc6tH80NifAlGy7xpPg
+         6DcAG/8ZIUbeo57xrpdOnveCgsMJSUiq1JGNWDWZVg2yn08NXLe/EPQWAKO+waeJKggR
+         VvC36R7Zp5+IP46nJFbBsJHw9h52cUu3JzvD1ANAJF+lzaIgSQnfNmX1BZBc53swj2qY
+         k6/SmcLCa18maufnLAblP2GidMZ96961HniFyoxGgDtKHi9rMiXt5kA/j2ukyTCFtdAq
+         YJaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=Chg6IKEuKKojYi7mhUKaMLERMRmxIjzmO/LXSZ+TUHU=;
-        b=lGBXlZsPpjYuqtAmk8uZiHCmMqgE6YCmKdeH9FtFrJS2ixvXpEbjn/L9pV3PR93EOv
-         RR7sFA2SXicYJxSCZeWTPsS68Jok8hLnu9QERzMvBnX+NoKhFyXXcrLBafc/P9AzCSXz
-         jgL5OvUskyofO7pR6tK0pMiFUm0ucPX40XcGUt3GC+MBdhSDYs6t17U5RzP+XtbOk3fj
-         RuhZ0adwP36B/aevouKZtJYYi332x6aIF+MrBulxi2TdzAhkL6Gc5CCtoYJTabGA37Me
-         zQlPsfhS7Ihg8Fa9Ho56Mq87gKnyoS5r0udGyJQc2M16J03P40HYedngUzVvvG7ZNdV5
-         XSlA==
-X-Gm-Message-State: AOAM5324qN9+IcK7s6qnlBG+Dj6m0Qppuu6nL/kj7A8tvzB9AcySwCwI
-        9ql0iYh66kU4CUDa/yll9yOeNXe8KS6Rfnd7Gt+gXJ50TPUjX/geawgp2idVHnVGzMwyaAQtfMk
-        SMyyP+FSdexsZQsARI3zk5yWo
-X-Received: by 2002:a1c:9a16:: with SMTP id c22mr7681444wme.7.1617986899513;
-        Fri, 09 Apr 2021 09:48:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw2SClI5Njn6xjA2MPYxm2kpYJCEchwrX/9+aQChXy3FOe+I3afHnDGXz6jYj0V+5m4e1Tm6w==
-X-Received: by 2002:a1c:9a16:: with SMTP id c22mr7681431wme.7.1617986899273;
-        Fri, 09 Apr 2021 09:48:19 -0700 (PDT)
-Received: from redhat.com ([2a10:800e:f0d3:0:b69b:9fb8:3947:5636])
-        by smtp.gmail.com with ESMTPSA id o25sm6618101wmh.1.2021.04.09.09.48.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 09:48:18 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 12:48:16 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        elic@nvidia.com, jasowang@redhat.com, mst@redhat.com,
-        si-wei.liu@oracle.com
-Subject: [GIT PULL] vdpa/mlx5: last minute fixes
-Message-ID: <20210409124816-mutt-send-email-mst@kernel.org>
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xAsumXJcN6syFj5poypQyxoqwQFWcqyC5WGT/xKy8v4=;
+        b=GDUncW1RK4eZIooUkzn8vZXlZlOK73HiGPqYJ0aj82P97jspf8KqMRVyPhL0dhAHao
+         9sxdqU49W7/D7COpRIZbGEk30soMmL0L2XPQlMIKKAaZcrUCqLEevjkvdLSSyboVl6jG
+         Zzo95nB8ZZp9DeVOlSfk0lAnm1kgr9QaTGnxJ0cbunAkQqKe4GeJ9/jXLfN6Np8bFNFB
+         UV34PhXSpsZdZAAL+ZPrcXzGn4GUdLxbGVVnBsiyrcOCX2MuouaPXgXCmdAqOHjJXBFc
+         fntmKKQWG7Mx7D6WSuPFJxIgEEac5D8O0KEieSQQSBLI69V1rEl3FJKziuCAMAg3+cuN
+         Pj7A==
+X-Gm-Message-State: AOAM533udxrS0pMYMOan7mJFAya5ZBeOHd1VISeD8dyuEhMwfWM1O7DM
+        s6ZTpnqXk/8aYbArmqnyZSpxOCbjmR8=
+X-Google-Smtp-Source: ABdhPJy0XbOvDQs4D3oQlaBO/S+FVPUXNXvi9pu/oPNkB3OLJspOwEWOQqiQYV64XLjxVMWXcTiVag==
+X-Received: by 2002:a2e:8e75:: with SMTP id t21mr10030228ljk.216.1617986950569;
+        Fri, 09 Apr 2021 09:49:10 -0700 (PDT)
+Received: from [192.168.1.102] ([178.176.73.141])
+        by smtp.gmail.com with ESMTPSA id m3sm334127lfo.190.2021.04.09.09.49.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 09:49:10 -0700 (PDT)
+From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Subject: Re: [PATCH] pata_ipx4xx_cf: Fix unsigned comparison with less than
+ zero
+To:     angkery <angkery@163.com>, axboe@kernel.dk
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+References: <20210409135426.1773-1-angkery@163.com>
+Message-ID: <e74ec570-96b6-23ce-edd5-b5a38628963a@gmail.com>
+Date:   Fri, 9 Apr 2021 19:49:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+In-Reply-To: <20210409135426.1773-1-angkery@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
+On 4/9/21 4:54 PM, angkery wrote:
 
-  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
+> From: Junlin Yang <yangjunlin@yulong.com>
+> 
+> The return from the call to platform_get_irq() is int, it can be
+> a negative error code, however this is being assigned to an unsigned
+> int variable 'irq', so making 'irq' an int, and change the position to
+> keep the code format.
+> 
+> ./drivers/ata/pata_ixp4xx_cf.c:168:5-8:
+> WARNING: Unsigned expression compared with zero: irq > 0
 
-are available in the Git repository at:
+   I'd understand < 0... but > 0? What tool warned about this issue?
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+> ---
+>  drivers/ata/pata_ixp4xx_cf.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/ata/pata_ixp4xx_cf.c b/drivers/ata/pata_ixp4xx_cf.c
+> index abc0e87..43215a4 100644
+> --- a/drivers/ata/pata_ixp4xx_cf.c
+> +++ b/drivers/ata/pata_ixp4xx_cf.c
+> @@ -135,12 +135,12 @@ static void ixp4xx_setup_port(struct ata_port *ap,
+>  
+>  static int ixp4xx_pata_probe(struct platform_device *pdev)
+>  {
+> -	unsigned int irq;
 
-for you to fetch changes up to bc04d93ea30a0a8eb2a2648b848cef35d1f6f798:
+   Oops, not sure how I missed that. :-/
+   Thanks for fixing my overlook. :-)
 
-  vdpa/mlx5: Fix suspend/resume index restoration (2021-04-09 12:08:28 -0400)
+[...]
 
-----------------------------------------------------------------
-vdpa/mlx5: last minute fixes
-
-These all look like something we are better off having
-than not ...
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Eli Cohen (4):
-      vdpa/mlx5: Use the correct dma device when registering memory
-      vdpa/mlx5: Retrieve BAR address suitable any function
-      vdpa/mlx5: Fix wrong use of bit numbers
-      vdpa/mlx5: Fix suspend/resume index restoration
-
-Si-Wei Liu (1):
-      vdpa/mlx5: should exclude header length and fcs from mtu
-
- drivers/vdpa/mlx5/core/mlx5_vdpa.h |  4 ++++
- drivers/vdpa/mlx5/core/mr.c        |  9 +++++++--
- drivers/vdpa/mlx5/core/resources.c |  3 ++-
- drivers/vdpa/mlx5/net/mlx5_vnet.c  | 40 +++++++++++++++++++++++---------------
- 4 files changed, 37 insertions(+), 19 deletions(-)
-
+MBR, Sergei
