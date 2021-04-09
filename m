@@ -2,87 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0937F35A7BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D157E35A7C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:19:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234276AbhDIUPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48212 "EHLO
+        id S233993AbhDIUTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233824AbhDIUPG (ORCPT
+        with ESMTP id S229665AbhDIUTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:15:06 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90E20C061762;
-        Fri,  9 Apr 2021 13:14:51 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso2130499otv.6;
-        Fri, 09 Apr 2021 13:14:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0BSgAj1XEbq6i5gH+aLavclUB+bFaxuJztpujfJL28M=;
-        b=sSpq7rj8QRrPYaMRuD2N1TjLsn1gYi/vy8q36dqFv+ihUPJRYuopYxm2SI2i440E12
-         nxi1AnCPllgKwb4ko/ql85DIjhs45P82EsUB/3dZbe2KRGltH7e62VLZO9snoIGjNU75
-         jaoKptq3TrmkOqOd2DbsnaHPZjUt0e23CMJm4kPhQQKcoF/iZcm36Vf5yoXTUv6ZQJqP
-         a0Fv/aK/YxqOJ32UWrqN8PApfKscNKpUgKH0L6BDC6v2i7+fb7hRu7uPrdlbqFnNZhph
-         rLNiQBexsQ+H+zG6fQP4WHS23GGnGcDQhk4nB3prItKie35fCpXsoLJEvC7FWj9DLifC
-         cxFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0BSgAj1XEbq6i5gH+aLavclUB+bFaxuJztpujfJL28M=;
-        b=hHHd/sQf9eUjJ84P+GwNMxIUuMuzyVojeFEi7hAI+tvzO4/zBj6XN0f95nt23uth3G
-         RRBBvhCj6GmUmsKavZqdfQUtZN9KYvlswwlUBf4tjapio5yFuBT34pCthCaxZ8LNlj/9
-         vw7w/0zlmASpjupDwth1K7dl1Vo+v5ARsbfmVKwdcXUkb3Zl2QhQan68l1HhhPv1+2w3
-         Dm8U/tY9VipSVm0fPvnbP4uhwvuOxCvAGTUZ6eQvQYmhk6WeP5stNrpVcGo/2FNK3tol
-         9d82OiF+RYmDc9E1ddMajvW4mPgS19dRcpE2KIJ15XzkDbjTF9rj1M769Ef0EHiO2D2g
-         xZsQ==
-X-Gm-Message-State: AOAM530WWE/KeizG19i9thuXfh22z+W2UAGUsILw4/gvRUIm1TjVx4lO
-        uS9NOjJ2zKACLO4DBpOgQg4=
-X-Google-Smtp-Source: ABdhPJwsfHsndDnTTJoe9GXstPvYfKmfmJMRI+VBdaQ9LSd3X4fipeX3Kj+77JqORZ3XDcfCB1KScQ==
-X-Received: by 2002:a9d:51cb:: with SMTP id d11mr13752541oth.32.1617999291047;
-        Fri, 09 Apr 2021 13:14:51 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y2sm265549ooa.10.2021.04.09.13.14.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Apr 2021 13:14:50 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 9 Apr 2021 13:14:49 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.11 00/45] 5.11.13-rc1 review
-Message-ID: <20210409201449.GG227412@roeck-us.net>
-References: <20210409095305.397149021@linuxfoundation.org>
+        Fri, 9 Apr 2021 16:19:40 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01D8FC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 13:19:27 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0be100a8e90a67ff2fdfe0.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:e100:a8e9:a67:ff2f:dfe0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 87E261EC0402;
+        Fri,  9 Apr 2021 22:19:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617999565;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=1GiJOX0Gl/8KHVrhl2oRx1wpfXOmRHeV7lAk5gotfA8=;
+        b=eSTW+Y1GjOgkKRLNjSzlnaFLyItDdd138JllthDrujqNRZG2Zp6J5ZrywKTNf8/rtQKzJd
+        ToH2aKEogrAmDKctxa00F84huxpG/b81pZf/sYm87zna5HmSyDwMUXyQORee89+KU1L5g8
+        SuiedlH/z0kfVBOYHyNIkLXcBSRkuUU=
+Date:   Fri, 9 Apr 2021 22:19:24 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Saripalli, RK" <rsaripal@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: [PATCH 1/5] x86/cpufeatures: Define feature bits to support
+ mitigation of PSF
+Message-ID: <20210409201924.GJ15567@zn.tnic>
+References: <20210406155004.230790-1-rsaripal@amd.com>
+ <20210406155004.230790-2-rsaripal@amd.com>
+ <20210409174134.GH15567@zn.tnic>
+ <cc5476c9-fe4e-6b4c-d323-37b90237b32b@amd.com>
+ <20210409193929.GI15567@zn.tnic>
+ <9dea10b1-bbac-3ed2-6255-8453570d857e@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <9dea10b1-bbac-3ed2-6255-8453570d857e@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 11:53:26AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.11.13 release.
-> There are 45 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Apr 09, 2021 at 02:45:23PM -0500, Saripalli, RK wrote:
+> Yes, these options should be fine for now.
+> Like you said, if we get the need to add prctl and seccomp, I can always do that later.
 > 
-> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
-> Anything received after that time might be too late.
-> 
+> What do you think auto should default to?. 
+> In SSBD case, I believe auto defaults to prctl or seccomp.
+> Since we will not have that here, we should choose something for auto.
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 460 pass: 460 fail: 0
+Or not add it yet. Just have "on" and "off" for now.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Which begs the question should this be controllable by the mitigations=
+switch too?
 
-Guenter
+I wanna say, let's have people evaluate and play with it first and
+we can add it to that switch later. As long as we don't change the
+user-visible controls - if anything we'll be extending them later,
+potentially - we should be fine usage-wise and from user visibility POV.
+
+> All the other mitigation x86 mitigation code goes into kernel/cpu/bugs.c.
+> I think psf_cmdline() or equivalent also belongs there and not in kernel/cpu/amd.c.
+
+It being AMD-specific, it can dwell in amd.c initially.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
