@@ -2,269 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ECEF35A568
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FFF35A5A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbhDISM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:12:57 -0400
-Received: from mga12.intel.com ([192.55.52.136]:29971 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234497AbhDISMw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:12:52 -0400
-IronPort-SDR: 1YrFJpJ8FXpIA10Ak59CwUVifdJUv9nQa7aringYjgGxosk1tOG5QrWsdNdD7Pp0a2FpsdJAxU
- jYMbUjIeSriQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="173292329"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="173292329"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 11:12:38 -0700
-IronPort-SDR: gAdrWIUmR0Xde+gGZqzg1xIgAmJryEsKSYdWjKUCZW9+JbvajE6UNLEYut0PM/AQuG3M0GhMYY
- 0X7wKkAdgkzg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="459320217"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga001.jf.intel.com with ESMTP; 09 Apr 2021 11:12:38 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 9 Apr 2021 11:12:37 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 9 Apr 2021 11:12:37 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Fri, 9 Apr 2021 11:12:37 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.48) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Fri, 9 Apr 2021 11:12:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IZB7DU9LD61Vt1X3KQMScQ01GYc74Qmtahlvgogvo5nPC3D11fKqsTVBKgFMFRCJIQMpgYVw6pLRRT5L9AVh3rZ8NFQhYomCTKaJ0w8h64R87ZG1iXJPgvQ6i1jWTHm4h0C/mYjAHIOIpArQNzw2YuasfCQ33kbU8RuYF2puTaDpfKH6q/dmgVbnYBpRjNaZwmy0mvJdwxH2HkyeNPQ8qslBCODVMBexqTA7CPuACBhm8Jp9SDznaVsBjzKchxJP1qJ4LSRo2r9z2xJHdKygmDrAB/iep7Ig22It+8hJFBy1HlPdPq04KnSY5/wxjXai3v3CMV6kCRbTz0PIQwh7qA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MCjP+l3Am4wJgB+QIz4RpU4TJ6TtYB4+GjaUlogY/f0=;
- b=dqhEDoEYjyempmjDhFqL5fBUicro9m2iBGUWRqhiGXJjnbku6YSnc1s8X0YRieV5mUFbpZKGtrET9QmqaX2XttLlTqa5lQQtgnfZ3KGp/uXX/8G+1qrIoJt+ppnQYNBkOIP+MJCuHi/gmLPc0rrav0OPRUVIc8NvNFCQhpIT8rmXbofnRhMFkvLfFjp6PWlrc6Sp4pLuNcKIw6pVXfUKRRGSHqn2uwuPj7lfUNgAX4bhwc9ma3/w7pHZTyltJCIhfY5waHJP4YYmgLR9CZcYHVzJV5tw3NCx6ZGTS3vGb+FIKwTm7YDWZxIYv4AwA5AehoaVBv5KiuurmadB76llWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MCjP+l3Am4wJgB+QIz4RpU4TJ6TtYB4+GjaUlogY/f0=;
- b=kCml0/ofF3uB5Qxuzj/ajE9+FlUbwbu1yEpbe7f6U/xOJXpkStMMB6WExX5gM1unFU5qdSoh/YY1N8hqo5EuEiETMFImV2u7r8Dqgsu9hyAIp1Ne5qReeLDzCCyYZtB7i1V3r2Ug2mG2FAg6Wm+y4Xb2hhnPLem91G2GxNywWbE=
-Received: from DM6PR11MB4657.namprd11.prod.outlook.com (2603:10b6:5:2a6::7) by
- DM5PR1101MB2203.namprd11.prod.outlook.com (2603:10b6:4:52::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4020.18; Fri, 9 Apr 2021 18:12:35 +0000
-Received: from DM6PR11MB4657.namprd11.prod.outlook.com
- ([fe80::910e:145d:e2f8:ec57]) by DM6PR11MB4657.namprd11.prod.outlook.com
- ([fe80::910e:145d:e2f8:ec57%6]) with mapi id 15.20.4020.020; Fri, 9 Apr 2021
- 18:12:35 +0000
-From:   "Kubalewski, Arkadiusz" <arkadiusz.kubalewski@intel.com>
-To:     "xiao33522@qq.com" <xiao33522@qq.com>,
-        "Brandeburg, Jesse" <jesse.brandeburg@intel.com>,
-        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        xiaolinkui <xiaolinkui@kylinos.cn>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: RE: [Intel-wired-lan] [PATCH] i40e: The state of phy may not be
- correct during power-on
-Thread-Topic: [Intel-wired-lan] [PATCH] i40e: The state of phy may not be
- correct during power-on
-Thread-Index: AQHXLUs+VWmh6nM5fUSVYn6hAWVkL6qsfJ4w
-Date:   Fri, 9 Apr 2021 18:12:35 +0000
-Message-ID: <DM6PR11MB4657EB5A8040E7D5A9CB155E9B739@DM6PR11MB4657.namprd11.prod.outlook.com>
-References: <tencent_A3F0B1FAA65495EB2220B5B72EB6E5AF1B07@qq.com>
-In-Reply-To: <tencent_A3F0B1FAA65495EB2220B5B72EB6E5AF1B07@qq.com>
-Accept-Language: pl-PL, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.6.0.76
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: qq.com; dkim=none (message not signed)
- header.d=none;qq.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [83.20.25.208]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bc8dfb80-1918-4e66-3380-08d8fb830d3d
-x-ms-traffictypediagnostic: DM5PR1101MB2203:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR1101MB2203D39E6059FD9D39AC1CDB9B739@DM5PR1101MB2203.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:5236;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2zHUZnRfaYmaJXG3gqoNxfi8LRknrkYQIYVFODfyZqAYFhgm8iY+oEgyJnubObWY+xDr5lUWNBf4r8gCNUM2dk8AKi5LAs5/RaO8hBody2J+Dr62YUAWhP646uFJ+LwnoDOv3U3/RM+SVruGfugxfo1tGSlw5B/gsla7RTZ7KpK69YvzLue1/TSZxcjPgAcJl05hxXktfWH3+UWx06FpEXUP2MoY1ktK6r34oP6tvXbjw/Gi7+XJ6JLbR4SpxKHrMpTfgSKFXdfpuE6eCW2hEddcd30RyXDhvWf4ToEJljqG+BxMMZPDt4TNJoAfFka9wlW+kniJmQRIFpM6CcK+sXqHXij1fNjr5rcxpiTJTc4m0FmKTj+yuyjen7+bmDKx/Ue2BobKhdL6yQBiC3sO/4qc9pd1hUoJpHyfYlYTlxUXkvPmXTgPkpAhXZSNr8QbtsVwLg6EqiLx4pjdg5caojy3PyIEXksfgLZAbLOpaIaounROoMIZveN0KAmQcyJdJFjZvoW2u0uNUFJp/5jbqAG/mMGbXcxYbxe1nLt13xE5Spr9gDQWqa1yTQzSlDZf0xlA56BOn+amhfPRJ9Pzn/3PZQqFc7hgtcoJEYMsFJtMHArPdis897M4PsgCoXbOg4THuzDikA4UgtHEfv239kDndmNuyHr6hLswQMYPBpKayCqFnnBm85R9f4bhYOfDkkeq54Knl5YbCFnLfFe5qHo7C+7aqivtNTXhepQuO/ZvFtUDuPfE+rbvryNp5ruj
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4657.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(396003)(39860400002)(346002)(136003)(26005)(2906002)(9686003)(66574015)(38100700001)(33656002)(8936002)(55016002)(86362001)(83380400001)(7696005)(71200400001)(8676002)(478600001)(66446008)(6636002)(316002)(4326008)(66556008)(66476007)(64756008)(5660300002)(76116006)(66946007)(110136005)(186003)(52536014)(6506007)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?iso-8859-2?Q?kEWKhYY4iPHAz+qGbYmSTnhtISELQtIPNXMAa86DftHgcv9YQLh5wAzulY?=
- =?iso-8859-2?Q?d7zEfKzGrFJlEb+v6v3DJQVdPbe5MD8CwDKBSafOOl7YQ92eX0VPzGSrNy?=
- =?iso-8859-2?Q?ZFHjY2XvwvnEsZrD1IT97HynabJTLNGgjCqsr9xd/eZ1LByb+is/sdFQA7?=
- =?iso-8859-2?Q?I5B1GJsBrauVIHKBMYJE7ePV6E2q//DhxtlGYWCTb/B7pXv7LcRxQ+i2MG?=
- =?iso-8859-2?Q?uRav0uiBvlZzVAW2gjXQfbFwB2FetTOiOX37iNoaICepFJmXmHduSvgFRp?=
- =?iso-8859-2?Q?YSZJt6DRNOJMXn9EXhCvKRqyn/Rf+68Fo5ATe8FHcueO7D0IkEmcdKXtVv?=
- =?iso-8859-2?Q?bYRxED/hT/f4spXOAQBS1dqopuEAxMAhN9WoWhPS5X0uL9sGZe2nmK/Hz2?=
- =?iso-8859-2?Q?D9Q2Tge7kogAAklXJ5/YXeO7d47Sdibn3BuU0cA2SIwSQ5Y5g0BAp6ZIjZ?=
- =?iso-8859-2?Q?7B5Tckljt6lGD/GSW+NWC3IpSeU8kPAftmZewNMxMHxERddiDQwlS5i7hf?=
- =?iso-8859-2?Q?4wS6hOHvBiMmX/ThdPrKnbbP7rTx1/vDmhBQkjJ/ZCuxQfzkCzwjKX1d07?=
- =?iso-8859-2?Q?6zC+rG0Vpn8cWYyevltSfcssQML6jo1C8n/MtbqZ3nLfnMiQsVwWR6dCe5?=
- =?iso-8859-2?Q?+Url2gm3YGsEOnd04153nNnfDzJ7MQA7RTR0KCWbh8UMvQu5tIy5VrPTM5?=
- =?iso-8859-2?Q?fdPltXiWQoR+qiqRw850WAavnqt14Ipmdy6B8uTFZ72tzjhFpRlGqeC0kZ?=
- =?iso-8859-2?Q?KGSkE2bYvK70e9ij1I+VBDzqrqdrasSLIpCfZYQ64OcNQtSkLsksDWyO3t?=
- =?iso-8859-2?Q?st7GRbrTTBkUYhiOA0Pk6vQ8Q7OwyOKMmanLZmw07EqdaD199v8syBvoDs?=
- =?iso-8859-2?Q?Dml6LttSMpfIz0laCNXMrDLz3c6QElgJil8GDh3ECK1s5ra2fJ+IXTGjTf?=
- =?iso-8859-2?Q?u4C8tG2jHbdqynlLUl0zXFZxewFpPFelT7d93ccOJevL7CUgxqRQ326dEk?=
- =?iso-8859-2?Q?2CorNlhUGiP/7AlUGgTGDKP3qW5tewm82xOTnFebJW7nfa3VQV+bGRgQMt?=
- =?iso-8859-2?Q?FHztxXglIho6frHV/SsT9T/8dU0Ixq6ExlDBlGzWrd+TF3X5/ZIQ3iOHOQ?=
- =?iso-8859-2?Q?shJVYfpabJgLub02bl6Qjr637TQVYIlZ5oJeqj6ONEXaqOLJ/lDcVY1V8s?=
- =?iso-8859-2?Q?OmeFNBm1lo5xL8KlLIPoZBm01rPwEAN4FygTzIgnP65Nr4R1S/6VLMgjkO?=
- =?iso-8859-2?Q?qm0ZprfF+oiWEZppJhEkelRCJUvs3TSyTrhDBmr7rvnMKoyZn0IhNQDZLp?=
- =?iso-8859-2?Q?wESqRBGCuezvVYb3qKiqDdeqYUEaHOvaGg2yGC5e/k06eNQ=3D?=
-Content-Type: text/plain; charset="iso-8859-2"
-Content-Transfer-Encoding: quoted-printable
+        id S234503AbhDISU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:20:27 -0400
+Received: from ste-pvt-msa2.bahnhof.se ([213.80.101.71]:50970 "EHLO
+        ste-pvt-msa2.bahnhof.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233332AbhDISUZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 14:20:25 -0400
+X-Greylist: delayed 380 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 14:20:24 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id A3EB03F63C
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 20:13:43 +0200 (CEST)
+Authentication-Results: ste-pvt-msa2.bahnhof.se;
+        dkim=pass (1024-bit key; unprotected) header.d=flawful.org header.i=@flawful.org header.b=W5fQs61k;
+        dkim=pass (1024-bit key) header.d=flawful.org header.i=@flawful.org header.b=vWJAMXWS;
+        dkim-atps=neutral
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+X-Spam-Flag: NO
+X-Spam-Score: -2.099
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.099 tagged_above=-999 required=6.31
+        tests=[BAYES_00=-1.9, DKIM_SIGNED=0.1, DKIM_VALID=-0.1,
+        DKIM_VALID_AU=-0.1, DKIM_VALID_EF=-0.1, URIBL_BLOCKED=0.001]
+        autolearn=unavailable autolearn_force=no
+Authentication-Results: ste-ftg-msa2.bahnhof.se (amavisd-new);
+        dkim=pass (1024-bit key) header.d=flawful.org header.b=W5fQs61k;
+        dkim=pass (1024-bit key) header.d=flawful.org header.b=vWJAMXWS
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-ftg-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id juMtM90bmg-9 for <linux-kernel@vger.kernel.org>;
+        Fri,  9 Apr 2021 20:13:43 +0200 (CEST)
+Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 303063F5B2
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 20:13:43 +0200 (CEST)
+Received: by flawful.org (Postfix, from userid 112)
+        id 7F5A7E74; Fri,  9 Apr 2021 20:13:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flawful.org; s=mail;
+        t=1617992028; bh=d9+NVrEhCD/F0hqwPtTi0LWkrNwo6qZA/Ms9P1Fu/dE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=W5fQs61k2qA8w4299LVpNjMKu/KMwVSAm/KD9wsQ51wXTojlqx8fNpbWZFJqohx1d
+         TDE6xsGW1ykOGbH7CdRL6n3vNCimdv4lhoUW8lTNnXMipGo5tODKSYiAzSeb8Sh7Rk
+         F08TyCsP4/+JxWPaWiifmTrry4x32RlHw+SuY7SY=
+Received: from x1-carbon.lan (OpenWrt.lan [192.168.1.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by flawful.org (Postfix) with ESMTPSA id D2C50902;
+        Fri,  9 Apr 2021 20:13:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flawful.org; s=mail;
+        t=1617992012; bh=d9+NVrEhCD/F0hqwPtTi0LWkrNwo6qZA/Ms9P1Fu/dE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=vWJAMXWS8k0oAnUQExQned5Wptkii57LjTBKwvRlPAMI1YVsn4yfgyBm47hLLqzP9
+         wLJ0HZr2lszjuHIFj1jAnpMXThqG/jRDy6bmp9yJ3YiSUpE5vfzrF6ScmWL8LJpzNo
+         aQiEAESB4hYsIK/qOu8ZTT2iAsk2wbCNPfkOEN+k=
+From:   Niklas Cassel <nks@flawful.org>
+To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Cc:     Niklas Cassel <niklas.cassel@wdc.com>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] nvme-pci: don't simple map sgl when sgls are disabled
+Date:   Fri,  9 Apr 2021 20:12:55 +0200
+Message-Id: <20210409181255.101847-1-nks@flawful.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4657.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc8dfb80-1918-4e66-3380-08d8fb830d3d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 18:12:35.2853
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: aAVhqgbumAuv4Io8F7QDexSTndSN63mR5a5MxXbHDJmp4plrxBzd8eprf7/NVkECZhsVZ73ZjE87AQt6NhuRtj0K07OwF0GUORjyA/LAzEI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2203
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->-----Original Message-----
->From: Intel-wired-lan <intel-wired-lan-bounces@osuosl.org> On Behalf Of xi=
-ao33522@qq.com
->Sent: pi=B1tek, 9 kwietnia 2021 11:18
->To: Brandeburg, Jesse <jesse.brandeburg@intel.com>; Nguyen, Anthony L <ant=
-hony.l.nguyen@intel.com>
->Cc: netdev@vger.kernel.org; xiaolinkui <xiaolinkui@kylinos.cn>; linux-kern=
-el@vger.kernel.org; intel-wired-lan@lists.osuosl.org; kuba@kernel.org; dave=
-m@davemloft.net
->Subject: [Intel-wired-lan] [PATCH] i40e: The state of phy may not be corre=
-ct during power-on
->
->From: xiaolinkui <xiaolinkui@kylinos.cn>
->
->Sometimes the power on state of the x710 network card indicator is not rig=
-ht, and the indicator shows orange. At this time, the network card speed is=
- Gigabit.
+From: Niklas Cassel <niklas.cassel@wdc.com>
 
-By "power on state" you mean that it happens after power-up of the server?
+According to the module parameter description for sgl_threshold,
+a value of 0 means that SGLs are disabled.
 
->
->After entering the system, check the network card status through the ethto=
-ol command as follows:
->
->[root@localhost ~]# ethtool enp132s0f0
->Settings for enp132s0f0:
->	Supported ports: [ FIBRE ]
->	Supported link modes:   1000baseX/Full
->	                        10000baseSR/Full
->	Supported pause frame use: Symmetric
->	Supports auto-negotiation: Yes
->	Supported FEC modes: Not reported
->	Advertised link modes:  1000baseX/Full
->	                        10000baseSR/Full
->	Advertised pause frame use: No
->	Advertised auto-negotiation: Yes
->	Advertised FEC modes: Not reported
->	Speed: 1000Mb/s
->	Duplex: Full
->	Port: FIBRE
->	PHYAD: 0
->	Transceiver: internal
->	Auto-negotiation: off
->	Supports Wake-on: d
->	Wake-on: d
->	Current message level: 0x00000007 (7)
->			       drv probe link
->	Link detected: yes
->
->We can see that the speed is 1000Mb/s.
->
->If you unplug and plug in the optical cable, it can be restored to 10g.
->After this operation, the rate is as follows:
->
->[root@localhost ~]# ethtool enp132s0f0
->Settings for enp132s0f0:
->        Supported ports: [ FIBRE ]
->        Supported link modes:   1000baseX/Full
->                                10000baseSR/Full
->        Supported pause frame use: Symmetric
->        Supports auto-negotiation: Yes
->        Supported FEC modes: Not reported
->        Advertised link modes:  1000baseX/Full
->                                10000baseSR/Full
->        Advertised pause frame use: No
->        Advertised auto-negotiation: Yes
->        Advertised FEC modes: Not reported
->        Speed: 10000Mb/s
->        Duplex: Full
->        Port: FIBRE
->        PHYAD: 0
->        Transceiver: internal
->        Auto-negotiation: off
->        Supports Wake-on: d
->        Wake-on: d
->        Current message level: 0x00000007 (7)
->                               drv probe link
->        Link detected: yes
->
->Calling i40e_aq_set_link_restart_an can also achieve this function.
->So we need to do a reset operation for the network card when the network c=
-ard status is abnormal.
+If SGLs are disabled, we should respect that, even for the case
+where the request is made up of a single physical segment.
 
-Can't say much about the root cause of the issue right now,
-but I don't think it is good idea for the fix.
-This leads to braking existing link each time=20
-i40e_aq_get_link_info is called on 1 Gigabit PHY.
-For example 'ethtool -m <dev>' does that.
+Fixes: 297910571f08 ("nvme-pci: optimize mapping single segment requests using SGLs")
+Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
+---
+ drivers/nvme/host/pci.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Have you tried reloading the driver?
-Thanks!
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index d47bb18b976a..b06e685d1250 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -854,7 +854,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+ 				return nvme_setup_prp_simple(dev, req,
+ 							     &cmnd->rw, &bv);
+ 
+-			if (iod->nvmeq->qid &&
++			if (iod->nvmeq->qid && sgl_threshold &&
+ 			    dev->ctrl.sgls & ((1 << 0) | (1 << 1)))
+ 				return nvme_setup_sgl_simple(dev, req,
+ 							     &cmnd->rw, &bv);
+-- 
+2.30.2
 
->
->Signed-off-by: xiaolinkui <xiaolinkui@kylinos.cn>
->---
-> drivers/net/ethernet/intel/i40e/i40e_common.c | 4 ++++
-> 1 file changed, 4 insertions(+)
->
->diff --git a/drivers/net/ethernet/intel/i40e/i40e_common.c b/drivers/net/e=
-thernet/intel/i40e/i40e_common.c
->index ec19e18305ec..dde0224776ac 100644
->--- a/drivers/net/ethernet/intel/i40e/i40e_common.c
->+++ b/drivers/net/ethernet/intel/i40e/i40e_common.c
->@@ -1866,6 +1866,10 @@ i40e_status i40e_aq_get_link_info(struct i40e_hw *h=
-w,
-> 	hw_link_info->max_frame_size =3D le16_to_cpu(resp->max_frame_size);
-> 	hw_link_info->pacing =3D resp->config & I40E_AQ_CONFIG_PACING_MASK;
->=20
->+	if (hw_link_info->phy_type =3D=3D I40E_PHY_TYPE_1000BASE_SX &&
->+	    hw->mac.type =3D=3D I40E_MAC_XL710)
->+		i40e_aq_set_link_restart_an(hw, true, NULL);
->+
-> 	/* update fc info */
-> 	tx_pause =3D !!(resp->an_info & I40E_AQ_LINK_PAUSE_TX);
-> 	rx_pause =3D !!(resp->an_info & I40E_AQ_LINK_PAUSE_RX);
->--
->2.17.1
->
->_______________________________________________
->Intel-wired-lan mailing list
->Intel-wired-lan@osuosl.org
->https://lists.osuosl.org/mailman/listinfo/intel-wired-lan
->
