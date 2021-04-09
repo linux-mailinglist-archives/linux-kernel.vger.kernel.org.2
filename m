@@ -2,155 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D4135A047
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E9035A049
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233604AbhDINtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:49:32 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16559 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232884AbhDINt1 (ORCPT
+        id S233661AbhDINtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:49:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52941 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232395AbhDINtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:49:27 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGzvN6S9Rz1BGXx;
-        Fri,  9 Apr 2021 21:46:56 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.196) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 21:49:03 +0800
-Subject: Re: [PATCH v7 2/5] i2c: core: add api to provide frequency mode
- strings
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>
-CC:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Sergey Semin <Sergey.Semin@baikalelectronics.ru>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        "Thierry Reding" <treding@nvidia.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        John Garry <john.garry@huawei.com>,
-        "Mika Westerberg" <mika.westerberg@linux.intel.com>,
-        <prime.zeng@huawei.com>, Linuxarm <linuxarm@huawei.com>
-References: <1617880641-664-1-git-send-email-yangyicong@hisilicon.com>
- <1617880641-664-3-git-send-email-yangyicong@hisilicon.com>
- <20210408205551.GD1900@kunai> <YHAuIdwKMjZuDmXU@smile.fi.intel.com>
- <20210409113722.GB879@ninjato>
- <CAHp75VekZKo-45Pc7mp9Pfwzx=jS7L2SBhb564acWkuAo5cPAQ@mail.gmail.com>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <716b2bca-9d27-529e-93ab-3e6aa75bf948@hisilicon.com>
-Date:   Fri, 9 Apr 2021 21:49:03 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
+        Fri, 9 Apr 2021 09:49:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617976166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RAeyxYOACfEWPJhoR3sMxB9Qn3fM86CFgkp3lnp+k6Q=;
+        b=WBqADTfLPfrb1NSLfSKp2LgVOiLRsOHR45Bz4TMoU6/QGilieRB4eq6vfV0HH6esHRIYov
+        /S70kw8mnwedqOKOzbDWr/Ir1Da7mq0w9fkleMCDvbMp+iJh9FJrQBOVtaahsOGEJu+UP0
+        UmmwVkY7jbe7x6XSkMi3iwzbJey/fLI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-327-okoLqAISMTWOsbhYGgBjHA-1; Fri, 09 Apr 2021 09:49:13 -0400
+X-MC-Unique: okoLqAISMTWOsbhYGgBjHA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 058405B364;
+        Fri,  9 Apr 2021 13:49:12 +0000 (UTC)
+Received: from krava (unknown [10.40.195.216])
+        by smtp.corp.redhat.com (Postfix) with SMTP id EA88060BE5;
+        Fri,  9 Apr 2021 13:49:09 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 15:49:08 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v3 10/27] perf parse-events: Create two hybrid raw events
+Message-ID: <YHBbVMNSCsu/bbii@krava>
+References: <20210329070046.8815-1-yao.jin@linux.intel.com>
+ <20210329070046.8815-11-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VekZKo-45Pc7mp9Pfwzx=jS7L2SBhb564acWkuAo5cPAQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210329070046.8815-11-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Mar 29, 2021 at 03:00:29PM +0800, Jin Yao wrote:
 
+SNIP
 
-On 2021/4/9 19:40, Andy Shevchenko wrote:
-> On Fri, Apr 9, 2021 at 2:37 PM Wolfram Sang <wsa@kernel.org> wrote:
->>
->>
->>> Can we add this later if needed?
->>> Because in such case additionally printing bus_freq_hz will be fine, no?
->>
->> Yes, we can do that.
->>
->>> But putting max to each frequency representation in the list of strings sounds
->>> good to me.
->>
->> It is not important to me if we are going to change that later anyhow.
->> I'll leave it to you guys.
+> +					      name, config_terms, pmu);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  int parse_events__add_numeric_hybrid(struct parse_events_state *parse_state,
+>  				     struct list_head *list,
+>  				     struct perf_event_attr *attr,
+> @@ -91,6 +126,9 @@ int parse_events__add_numeric_hybrid(struct parse_events_state *parse_state,
+>  	if (attr->type != PERF_TYPE_RAW) {
+>  		return add_hw_hybrid(parse_state, list, attr, name,
+>  				     config_terms);
+> +	} else {
+> +		return add_raw_hybrid(parse_state, list, attr, name,
+> +				      config_terms);
+>  	}
+>  
+>  	return -1;
+
+no need for the return -1
+
+jirka
+
+> -- 
+> 2.17.1
 > 
-> Thanks, I think the series is okay to go as is.
-> 
-
-sorry for the late reply. we can have this series applied if possible,
-or you may apply the changed patch below (please let me know if you
-want the whole series updated).
-I didn't realize this, sorry. our two users don't have this situation.
-
-thanks Wolfram and Andy!
-
-Yicong.
-
-
-
-From 14da3be8d85536c16adbc4006fc12c6837ef7474 Mon Sep 17 00:00:00 2001
-From: Yicong Yang <yangyicong@hisilicon.com>
-Date: Sat, 27 Mar 2021 11:48:25 +0800
-Subject: [PATCH] i2c: core: add api to provide frequency mode strings
-
-Some I2C drivers like Designware and HiSilicon will print the
-bus frequency mode information, so add a public one that everyone
-can make use of.
-
-Tested-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
----
- drivers/i2c/i2c-core-base.c | 19 +++++++++++++++++++
- include/linux/i2c.h         |  3 +++
- 2 files changed, 22 insertions(+)
-
-diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
-index de9402c..53836b5 100644
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -76,6 +76,25 @@ void i2c_transfer_trace_unreg(void)
- 	static_branch_dec(&i2c_trace_msg_key);
- }
-
-+const char *i2c_freq_mode_string(u32 bus_freq_hz)
-+{
-+	if (bus_freq_hz <= I2C_MAX_STANDARD_MODE_FREQ)
-+		return "Standard Mode (max 100 kHz)";
-+	else if (bus_freq_hz <= I2C_MAX_FAST_MODE_FREQ)
-+		return "Fast Mode (max 400 kHz)";
-+	else if (bus_freq_hz <= I2C_MAX_FAST_MODE_PLUS_FREQ)
-+		return "Fast Mode Plus (max 1.0 MHz)";
-+	else if (bus_freq_hz <= I2C_MAX_TURBO_MODE_FREQ)
-+		return "Turbo Mode (max 1.4 MHz)";
-+	else if (bus_freq_hz <= I2C_MAX_HIGH_SPEED_MODE_FREQ)
-+		return "High Speed Mode (max 3.4 MHz)";
-+	else if (bus_freq_hz <= I2C_MAX_ULTRA_FAST_MODE_FREQ)
-+		return "Ultra Fast Mode (max 5.0 MHz)";
-+	else
-+		return "Unknown Mode";
-+}
-+EXPORT_SYMBOL_GPL(i2c_freq_mode_string);
-+
- const struct i2c_device_id *i2c_match_id(const struct i2c_device_id *id,
- 						const struct i2c_client *client)
- {
-diff --git a/include/linux/i2c.h b/include/linux/i2c.h
-index 10bd0b0..0813be1 100644
---- a/include/linux/i2c.h
-+++ b/include/linux/i2c.h
-@@ -51,6 +51,9 @@ struct module;
- struct property_entry;
-
- #if IS_ENABLED(CONFIG_I2C)
-+/* Return the Frequency mode string based on the bus frequency */
-+const char *i2c_freq_mode_string(u32 bus_freq_hz);
-+
- /*
-  * The master routines are the ones normally used to transmit data to devices
-  * on a bus (or read from them). Apart from two basic transfer functions to
--- 
-2.8.1
-
-
-
-
 
