@@ -2,30 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24F23599A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302603599AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhDIJoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:44:01 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16876 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233147AbhDIJnr (ORCPT
+        id S233404AbhDIJoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:44:04 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:16860 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233163AbhDIJnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Apr 2021 05:43:47 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FGtSS6DQ9zlWSj;
-        Fri,  9 Apr 2021 17:41:44 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 17:43:23 +0800
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGtS05nccz7v35;
+        Fri,  9 Apr 2021 17:41:20 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 17:43:24 +0800
 From:   Ye Bin <yebin10@huawei.com>
 To:     <yebin10@huawei.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next] [POWERPC] Rename get_property to of_get_property: use DEFINE_SPINLOCK() for spinlock
-Date:   Fri, 9 Apr 2021 17:51:48 +0800
-Message-ID: <20210409095148.2294319-1-yebin10@huawei.com>
+        Zhang Shengju <zhangshengju@cmss.chinamobile.com>,
+        Tang Bin <tangbin@cmss.chinamobile.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        "Hulk Robot" <hulkci@huawei.com>
+Subject: [PATCH -next] dca: use DEFINE_SPINLOCK() for spinlock and DEFINE_IDR() for idr
+Date:   Fri, 9 Apr 2021 17:51:49 +0800
+Message-ID: <20210409095149.2294378-1-yebin10@huawei.com>
 X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
 Content-Type:   text/plain; charset=US-ASCII
@@ -38,33 +40,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 spinlock can be initialized automatically with DEFINE_SPINLOCK()
 rather than explicitly calling spin_lock_init().
+idr can be initialized automatically with DEFINE_IDR()
+rather than explicitly calling idr_init().
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- drivers/macintosh/via-pmu-led.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/dca/dca-sysfs.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/macintosh/via-pmu-led.c b/drivers/macintosh/via-pmu-led.c
-index ae067ab2373d..2502119cff42 100644
---- a/drivers/macintosh/via-pmu-led.c
-+++ b/drivers/macintosh/via-pmu-led.c
-@@ -27,7 +27,7 @@
- #include <linux/pmu.h>
- #include <asm/prom.h>
+diff --git a/drivers/dca/dca-sysfs.c b/drivers/dca/dca-sysfs.c
+index 21ebd0af268b..c56e917f0f19 100644
+--- a/drivers/dca/dca-sysfs.c
++++ b/drivers/dca/dca-sysfs.c
+@@ -14,8 +14,8 @@
+ #include <linux/export.h>
  
--static spinlock_t pmu_blink_lock;
-+static DEFINE_SPINLOCK(pmu_blink_lock);
- static struct adb_request pmu_blink_req;
- /* -1: no change, 0: request off, 1: request on */
- static int requested_change;
-@@ -105,8 +105,6 @@ static int __init via_pmu_led_init(void)
- 		return -ENODEV;
- 	}
- 	of_node_put(dt);
+ static struct class *dca_class;
+-static struct idr dca_idr;
+-static spinlock_t dca_idr_lock;
++static DEFINE_IDR(dca_idr);
++static DEFINE_SPINLOCK(dca_idr_lock);
+ 
+ int dca_sysfs_add_req(struct dca_provider *dca, struct device *dev, int slot)
+ {
+@@ -71,9 +71,6 @@ void dca_sysfs_remove_provider(struct dca_provider *dca)
+ 
+ int __init dca_sysfs_init(void)
+ {
+-	idr_init(&dca_idr);
+-	spin_lock_init(&dca_idr_lock);
 -
--	spin_lock_init(&pmu_blink_lock);
- 	/* no outstanding req */
- 	pmu_blink_req.complete = 1;
- 	pmu_blink_req.done = pmu_req_done;
+ 	dca_class = class_create(THIS_MODULE, "dca");
+ 	if (IS_ERR(dca_class)) {
+ 		idr_destroy(&dca_idr);
 
