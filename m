@@ -2,152 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7D1359EF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A79D359EFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:45:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbhDIMno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhDIMnh (ORCPT
+        id S233363AbhDIMpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:45:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41148 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231402AbhDIMpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:43:37 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF01DC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 05:43:22 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id r9so8445469ejj.3
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 05:43:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=MOH8BOhEq3fjST1xcddkcq46YoBCh9FQecOJHxSXIrk=;
-        b=fEig15pxy0fcUrCDSNt+uJNnYxcgY1mxgypqS61NEu87zDfSeNd5gtCae7C+0Q1RqK
-         pVriBYSG9+0rKgfc8RiIjzBo12iJZqRe25rgC8qGPKkAHFljsggyxEmoA8CgIUjmFihX
-         amPvUg6p91W5ekmYBbGGegQTC9/K4+SGDCGlFPlAvppr/M4AskmP4L35XWQ52QTGDTZH
-         s8wgUkIM0QAGqywcTVu440gSgizWiRPlWwPdCRCMWFrqS+94d23pawbfi4WyhoApCYi6
-         LFAiWtzMOCpH+PGZeQ5PKcrseV+CUZFiSBr23M4KVuFwvS1nG/m3SlbKgtKw2x4nuiMb
-         /tWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=MOH8BOhEq3fjST1xcddkcq46YoBCh9FQecOJHxSXIrk=;
-        b=rFm07BP+HRwNqoJ9ZKMWPTsp86Twb9LH3ugfyF2r1Jv9gFJPcfaKayrYEW4Mn7wyON
-         3xAwQWclan/BTAEy3gWC64fN9h9x659ebKVSrFNxevTDMi0jvKH5+VnARHm48TI/iMz8
-         CPQOqh+kDhQDZcDJLNZyWAcAGPnGN7rw+o4FHGYEraqLGTWpo6rEkZwrCC9XOMyae61w
-         EbUqOxYCscX4RmzbAQ++C8/QhitIAcn+0SC/i18gwVuVnrAx2rAERnby/uwy9n2wIa3B
-         gNQppRqAIjXKMv/M+a+JykqRLGnpeJAUo6AMRmlh0IxlVaCrAD9FU0sKlihDBbsD9ISJ
-         OT5w==
-X-Gm-Message-State: AOAM531rv1zpeKFVHi7roAVSAI8uVRnCxU7peIYsOJ7fiPRCTQZ/4fN1
-        FLrF9Zm69Ays8nD+5Q1yN6o+iWXpyPpUDyM1/ZA=
-X-Google-Smtp-Source: ABdhPJyDgXZHEkvgNdIQGowGrNED4RKeZp5yhNLm5d2Z2ZDCdkkbJSWadRAuTKlEN0IZmCN2EQ5N8EUnhw5TOlZ00Vw=
-X-Received: by 2002:a17:907:75cc:: with SMTP id jl12mr6226881ejc.52.1617972201346;
- Fri, 09 Apr 2021 05:43:21 -0700 (PDT)
+        Fri, 9 Apr 2021 08:45:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617972297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uvnPWZA5WYAbjq6DAmDLsT765wKi9L7F6ktZ4467iS8=;
+        b=TlibWYSu6rfGbUxTnQRv9azQv/5iSA+K79K4hgZOjl33p0HE+TxcQo0A6KcInDkf59oUQI
+        pyKed8YRLYncUatGkJtV/Naaewj9ZAICVAzwbpdUTFN8i4KOFJcmjNOOpmyemZVPamUOmx
+        KMxFY9K2PHEtrzEMGVMDdgrMRxt1z3g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-151-xe4MRLsANf-LYo9N6WjUpQ-1; Fri, 09 Apr 2021 08:44:53 -0400
+X-MC-Unique: xe4MRLsANf-LYo9N6WjUpQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81DA7107ACCD;
+        Fri,  9 Apr 2021 12:44:51 +0000 (UTC)
+Received: from localhost (ovpn-12-59.pek2.redhat.com [10.72.12.59])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3A66660BE5;
+        Fri,  9 Apr 2021 12:44:46 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 20:44:43 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Lianbo Jiang <lijiang@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, x86@kernel.org,
+        ardb@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dvhart@infradead.org, andy@infradead.org,
+        hpa@zytor.com, kexec@lists.infradead.org, dyoung@redhat.com
+Subject: Re: [PATCH] x86/efi: Do not release sub-1MB memory regions when the
+ crashkernel option is specified
+Message-ID: <20210409124443.GA20513@MiWiFi-R3L-srv>
+References: <20210407140316.30210-1-lijiang@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a17:907:3f07:0:0:0:0 with HTTP; Fri, 9 Apr 2021 05:43:20
- -0700 (PDT)
-Reply-To: missfarrinakipkalya@yandex.com
-From:   Miss Farrina kipkalya <mrhassanahmed27@gmail.com>
-Date:   Fri, 9 Apr 2021 13:43:20 +0100
-Message-ID: <CADUbOoEDSSR5FFkVOKg+Z7UJTVLEBTY64tV+Dsvs4q_Y7oE1wA@mail.gmail.com>
-Subject: A cry for help
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407140316.30210-1-lijiang@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My dearest,
+On 04/07/21 at 10:03pm, Lianbo Jiang wrote:
+> Some sub-1MB memory regions may be reserved by EFI boot services, and the
+> memory regions will be released later in the efi_free_boot_services().
+> 
+> Currently, always reserve all sub-1MB memory regions when the crashkernel
+> option is specified, but unfortunately EFI boot services may have already
+> reserved some sub-1MB memory regions before the crash_reserve_low_1M() is
+> called, which makes that the crash_reserve_low_1M() only own the
+> remaining sub-1MB memory regions, not all sub-1MB memory regions, because,
+> subsequently EFI boot services will free its own sub-1MB memory regions.
+> Eventually, DMA will be able to allocate memory from the sub-1MB area and
+> cause the following error:
+> 
 
-I am writing this mail to you with tears and sorrow from my heart.
-With due respect, trust and humanity, i appeal to you to exercise a
-little patience and read through
+So this patch is fixing a problem found in crash utility. We ever met
+the similar issue, later fixed by always reserving low 1M in commit
+6f599d84231fd27 ("x86/kdump: Always reserve the low 1M when the crashkernel
+option is specified"). Seems the commit is not fixing it completely.
 
-my letter i feel quite safe dealing with you in this important
-business having gone through your remarkable profile, honestly i am
-writing this email to you with
+> crash> kmem -s |grep invalid
+> kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
+> kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
+> crash> vtop ffff9403c0067300
+> VIRTUAL           PHYSICAL
+> ffff9403c0067300  67300   --->The physical address falls into this range [0x0000000000063000-0x000000000008efff]
+> 
+> kernel debugging log:
+> ...
+> [    0.008927] memblock_reserve: [0x0000000000010000-0x0000000000013fff] efi_reserve_boot_services+0x85/0xd0
+> [    0.008930] memblock_reserve: [0x0000000000063000-0x000000000008efff] efi_reserve_boot_services+0x85/0xd0
+> ...
+> [    0.009425] memblock_reserve: [0x0000000000000000-0x00000000000fffff] crash_reserve_low_1M+0x2c/0x49
+> ...
+> [    0.010586] Zone ranges:
+> [    0.010587]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
+> [    0.010589]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
+> [    0.010591]   Normal   [mem 0x0000000100000000-0x0000000c7fffffff]
+> [    0.010593]   Device   empty
+> ...
+> [    8.814894] __memblock_free_late: [0x0000000000063000-0x000000000008efff] efi_free_boot_services+0x14b/0x23b
+> [    8.815793] __memblock_free_late: [0x0000000000010000-0x0000000000013fff] efi_free_boot_services+0x14b/0x23b
 
-pains, tears and sorrow from my heart, i will really like to have good
-relationship with you and i have a special reason why I decided to
-contact you. I decided to
 
-contact you due to the urgency of my situation.
+In commit 6f599d84231fd27, we call crash_reserve_low_1M() to lock the
+whole low 1M area if crashkernel is specified in kernel cmdline.
+But earlier efi_reserve_boot_services() invokation will break the
+intention of the whole low 1M reserving. In efi_reserve_boot_services(),
+if any memory under low 1M hasn't been reserved, it will call
+memblock_reserve() to reserve it and leave it to
+efi_free_boot_services() to free.
 
-My name is Miss. Farrina Kipkalya, 22yrs old female and i am from
-Kenya in East Africa. Light in complexion, single (never married) but
-presently i am residing here in Ouagadougou, Burkina Faso refugee
-camp. My father Late Dr Kipkalya Kones was the former Kenyan road
-Minister. He and Assistant Minister of Home Affairs Lorna Laboso
+Hi Lianbo,
 
-had been on board the Cessna 210, which was headed to Kericho and
-crashed in a remote area called Kajong'a, in western Kenya. The plane
-crashed on the Tuesday 10th,
-
-June, 2008. You can read more about the crash through the below
-site:http://edition.cnn.com/2008/WORLD/africa/06/10/kenya.crash/index.html?=
-iref=3Dnextin
-
-After the burial of my father, my Father Brothers conspired and sold
-my father' s property to an Italian Expert rate which they shared the
-money among themselves and
-
-live nothing for me. One faithful morning, I opened my father's
-briefcase and found out the documents which he have deposited huge
-amount of money in one bank in
-
-Burkina Faso with my name as the next of kin, because when he was
-alive he deposited some amount of money in a Bank in Burkina Faso
-which he used my name as the next
-
-of kin. The amount in question is $2.7Million.
- I have informed the bank about claiming this money and the only thing
-they told me is to look for a foreign partner who will assist me in
-the transfer due to my
-
-refugee status here in Burkina Faso. God told me that you are the
-honest and reliable person who will help me and stand as my trustee so
-that I will present you to the
-
-Bank for transferring of my father=E2=80=99s money to your bank account in
-overseas. I have chosen to contact you after my prayers and I believe
-that you
-will not betray my trust. But rather take me as your own biological
-sister or daughter which I will be coming to your country as soon as
-this money is transferred to
-
-your account.
-
-My dearest, things are very bad for me here in the refugee camp when I
-am living today. People are dying here day after day because of lack
-of food and poor medical
-
-treatment. Even one of us died last night and was buried this morning.
-I am afraid of what i am seeing here. I don't know who it will be her
-turn tomorrow; I was
-
-planning to read law in my life before the ugly incident that killed
-my parents that put me in this horrible place i found myself today.
-This place is like a prison as
-
-we are only allowed to go out on Monday and Friday of the week as
-given by the united nation rules and regulation here in Burkina Faso.
-It=E2=80=99s in this refugee we are only allowed to go out two times in a w=
-eek
-it=E2=80=99s just like one staying in the prison and i hope by Gods grace I
-will come out here soon.
-
-I don' t have any relatives now whom i can go to and the only person I
-have now is Rev Isaac Ambrose who is the pastor of the (Christ for all
-Churches) here in the
-
-refugee he has been very nice to me since i came here but i am not
-living with him rather i am leaving in the women's hostel because the
-refugee have two hostels one
-
-for men the other for women, Please if you want to help me out of this
-situation respond back so that I will tell you more about me.
+Please correct me if I am wrong or anything is missed. IIUC, can we move
+efi_reserve_boot_services() after reserve_real_mode() to fix this bug?
+Or move reserve_real_mode() before efi_reserve_boot_services() since
+those real mode regions are all under 1M? Assume efi boot code/data
+won't rely on low 1M area any more at this moment.
 
 Thanks
-Miss Farrina
+Baoquan
+
+> 
+> Do not release sub-1MB memory regions even though they are reserved by
+> EFI boot services, so that always reserve all sub-1MB memory regions when
+> the crashkernel option is specified.
+> 
+> Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
+> ---
+>  arch/x86/platform/efi/quirks.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+> index 67d93a243c35..637f932c4fd4 100644
+> --- a/arch/x86/platform/efi/quirks.c
+> +++ b/arch/x86/platform/efi/quirks.c
+> @@ -18,6 +18,7 @@
+>  #include <asm/cpu_device_id.h>
+>  #include <asm/realmode.h>
+>  #include <asm/reboot.h>
+> +#include <asm/cmdline.h>
+>  
+>  #define EFI_MIN_RESERVE 5120
+>  
+> @@ -303,6 +304,19 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
+>   */
+>  static __init bool can_free_region(u64 start, u64 size)
+>  {
+> +	/*
+> +	 * Some sub-1MB memory regions may be reserved by EFI boot
+> +	 * services, and these memory regions will be released later
+> +	 * in the efi_free_boot_services().
+> +	 *
+> +	 * Do not release sub-1MB memory regions even though they are
+> +	 * reserved by EFI boot services, because, always reserve all
+> +	 * sub-1MB memory when the crashkernel option is specified.
+> +	 */
+> +	if (cmdline_find_option(boot_command_line, "crashkernel", NULL, 0) > 0
+> +		&& (start + size < (1<<20)))
+> +		return false;
+> +
+>  	if (start + size > __pa_symbol(_text) && start <= __pa_symbol(_end))
+>  		return false;
+>  
+> -- 
+> 2.17.1
+> 
+
