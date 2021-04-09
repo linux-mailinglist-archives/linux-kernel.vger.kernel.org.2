@@ -2,127 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98090359BE3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726E6359BE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:22:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233511AbhDIKVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:21:24 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:29555 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232990AbhDIKVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:21:13 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FGvKd22R6z9vBmN;
-        Fri,  9 Apr 2021 12:20:53 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id U6kaT8vyPDk2; Fri,  9 Apr 2021 12:20:53 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FGvKd0qpkz9vBmM;
-        Fri,  9 Apr 2021 12:20:53 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 449288B7E3;
-        Fri,  9 Apr 2021 12:20:54 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 20mYPqZcSrF8; Fri,  9 Apr 2021 12:20:54 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0866D8B7E1;
-        Fri,  9 Apr 2021 12:20:52 +0200 (CEST)
-Subject: Re: [PATCH v4 18/20] x86: Convert to GENERIC_CMDLINE
-To:     Rob Herring <robh@kernel.org>
-Cc:     will@kernel.org, danielwa@cisco.com,
-        daniel@gimpelevich.san-francisco.ca.us, arnd@kernel.org,
-        akpm@linux-foundation.org, linux-arch@vger.kernel.org,
-        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        microblaze <monstr@monstr.eu>, linux-mips@vger.kernel.org,
-        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
-        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-mm@kvack.org
-References: <cover.1617375802.git.christophe.leroy@csgroup.eu>
- <ab0fd4477964cdbf99e3dd2965a455aa3e738e4b.1617375802.git.christophe.leroy@csgroup.eu>
- <20210408194148.GB1724284@robh.at.kernel.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <834c4850-5541-b5c2-0b7b-d7d960ab2629@csgroup.eu>
-Date:   Fri, 9 Apr 2021 12:20:49 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233621AbhDIKWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:22:10 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:31973 "EHLO
+        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231638AbhDIKWI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:22:08 -0400
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 139ALrt0022221
+        for <linux-kernel@vger.kernel.org>; Fri, 9 Apr 2021 13:21:53 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1617963708; x=1620555708;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=4xoOfBoikcbpylZq0tpqCq2qp9BayyeejBfojMmM0AM=;
+        b=XHpblb8NBLx3Snnj94rHJuQRPTYlgy+C6ombwMSnvOU/RhG+jqx+u2ywrcgk2tws
+        GF5EbNR3JtS+E5774E2w4R+rI3t/mmM6xprc+Pgsve6A2eBuiuRVmzymrdt0zPq0
+        66kdHGXqJb0i+WbAxAAcD1aI/rqcZ8+6eooHsm+ecKx8axo7O6sf7aHInMHzPs9b
+        bk0QBgNX2GKJQBk+x72xC3rRd5klkPy1HpzANPggJGiOzmQdZDYvwIPsUkauPGa1
+        3SEVblt4M4sWNuoqiETiLv8HuOjaG119S1CakU859lfU9b0gz+Rbxs6zyNVlxHHr
+        UeVYhVE96m3j5ZYiXRQ4dA==;
+X-AuditID: 8b5b014d-a70347000000209f-e5-60702abc8505
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id 4F.20.08351.CBA20706; Fri,  9 Apr 2021 13:21:48 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
 MIME-Version: 1.0
-In-Reply-To: <20210408194148.GB1724284@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Fri, 09 Apr 2021 13:21:48 +0300
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/5] RISC-V: Add kdump support
+Organization: FORTH
+In-Reply-To: <1385f2a4-53a9-535b-851a-3c470f1f3bc1@ghiti.fr>
+References: <20210405085712.1953848-1-mick@ics.forth.gr>
+ <20210405085712.1953848-5-mick@ics.forth.gr>
+ <1385f2a4-53a9-535b-851a-3c470f1f3bc1@ghiti.fr>
+Message-ID: <75abd98990bfaae51262b72cf7d59831@mailhost.ics.forth.gr>
+X-Sender: mick@mailhost.ics.forth.gr
+User-Agent: Roundcube Webmail/1.3.16
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrELMWRmVeSWpSXmKPExsXSHT1dWXePVkGCwf2/GhbP7nxltbi8aw6b
+        xbbPLWwWze/OsVu8vNzDbNE2i9+BzePNy5csHvdOTGP1eLjpEpPH5iX1Hpear7N7fN4kF8AW
+        xWWTkpqTWZZapG+XwJWxrHMaa8FGtoppR06xNjA+Yeli5OSQEDCR2NV0mbmLkYtDSOAoo8Si
+        jc/YIBKmErP3djKC2LwCghInZ0I0MAtYSEy9sp8RwpaXaN46mxnEZhFQlfj86DuYzSagKTH/
+        0kGwehEBOYm27iOMIAuYBZYxSmw8vgKsSBhoQcOhqWA2v4CwxKe7F1lBbE4BG4k/3c/BmoUE
+        ZjJKfOp172LkADrCRWLXKXeI21QkPvx+wA4SFgWyN89VmsAoOAvJpbOQXDoLyaULGJlXMQok
+        lhnrZSYX66XlF5Vk6KUXbWIEBzuj7w7G25vf6h1iZOJgPMQowcGsJMLb3JyfIMSbklhZlVqU
+        H19UmpNafIhRmoNFSZyXV29CvJBAemJJanZqakFqEUyWiYNTqoHJvmiDxhZngex50z9nTu+Q
+        XRYS/HKv7HNpR6vlR0VONO1lCLmk6Kfe9C384h0Oy5slB9rfCyz++unlr9vf0ox01xT4Z2d8
+        3pO0qfN61UHvnK8TZ1a1n73DYrJJlU9tkV78ht7zbWHPOU0NdHdFLnxy4dGLbBOxCfYtcQuF
+        GFoOLVZ/bSvqt6bqakVm1q6rl3P272+YlH/txaMFPzmEhHYXK55TCBGt2B0Rer4xTlTk5IYm
+        4a3sBc/FJ317+1pnM7fR0W0lGg9sXAvqhax2WzifP16z89sMZsdKRWsrQ2UJ31fW3rkz7zw4
+        aXd4i9+GVeoW20PS21JPZ9+TP773ZMMcwQk882dfXDTvr2nc7d6dSizFGYmGWsxFxYkAnH5t
+        XOUCAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-Le 08/04/2021 à 21:41, Rob Herring a écrit :
-> On Fri, Apr 02, 2021 at 03:18:20PM +0000, Christophe Leroy wrote:
->> This converts the architecture to GENERIC_CMDLINE.
->>
->> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
->> ---
->>   arch/x86/Kconfig        | 45 ++---------------------------------------
->>   arch/x86/kernel/setup.c | 17 ++--------------
->>   2 files changed, 4 insertions(+), 58 deletions(-)
->>
->> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
->> index a20684d56b4b..66b384228ca3 100644
->> --- a/arch/x86/Kconfig
->> +++ b/arch/x86/Kconfig
->> @@ -104,6 +104,7 @@ config X86
->>   	select ARCH_USE_QUEUED_SPINLOCKS
->>   	select ARCH_USE_SYM_ANNOTATIONS
->>   	select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
->> +	select ARCH_WANT_CMDLINE_PREPEND_BY_DEFAULT
+Στις 2021-04-06 21:36, Alex Ghiti έγραψε:
 > 
-> Seems to be non-existent kconfig option.
-
-Oops. Added in v5.
-
->> @@ -883,18 +881,7 @@ void __init setup_arch(char **cmdline_p)
->>   	bss_resource.start = __pa_symbol(__bss_start);
->>   	bss_resource.end = __pa_symbol(__bss_stop)-1;
->>   
->> -#ifdef CONFIG_CMDLINE_BOOL
->> -#ifdef CONFIG_CMDLINE_FORCE
->> -	strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
->> -#else
->> -	if (builtin_cmdline[0]) {
->> -		/* append boot loader cmdline to builtin */
->> -		strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
->> -		strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
->> -		strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
->> -	}
->> -#endif
->> -#endif
->> +	cmdline_build(boot_command_line, boot_command_line);
->>   
->>   	strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
->>   	*cmdline_p = command_line;
+>> +	/* Switch to physical addressing */
+>> +	la	s4, 1f
+>> +	sub	s4, s4, s3
+>> +	csrw	stvec, s4
+>> +	csrw	sptbr, zero
 > 
-> Once this is all done, I wonder if we can get rid of the strlcpy and
-> perhaps also cmdline_p.
+> satp is used everywhere instead of sptbr. And maybe you could CSR_****
+> naming, like you did in riscv_crash_save_regs and like it's done in
+> head.S too.
 > 
 
-It seems rather complicated, in init/main.c you have heavy manipulations of command lines which 
-seems to be done in setup_command_line() which seems to add stuff in front of command lines, at the 
-end we end up with several command lines:
+ACK
 
-/* Untouched saved command line (eg. for /proc) */
-char *saved_command_line;
-/* Command line for parameter parsing */
-static char *static_command_line;
-/* Untouched extra command line */
-static char *extra_command_line;
+>> +		crash_base = memblock_find_in_range(search_start, search_end,
+>> +#ifdef CONFIG_64BIT
+>> +						    crash_size, SZ_2M);
+>> +#else
+>> +						    crash_size, SZ_4M);
+>> +#endif
+> 
+> You can use PMD_SIZE here and get rid of #ifdef.
+> 
+>> +
+>> +#ifdef CONFIG_64BIT
+>> +		if (!IS_ALIGNED(crash_base, SZ_2M)) {
+>> +#else
+>> +		if (!IS_ALIGNED(crash_base, SZ_4M)) {
+>> +#endif
+> 
+> Ditto here.
+> 
 
-Some of them come from the cmdline_p which others are from boot_command_line.
+Will do.
 
-I think a cleanup on all that stuff would be worth it as a further step.
+Thanks a lot for your review !
