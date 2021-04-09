@@ -2,101 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD3B35A46B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:14:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A25D35A470
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233929AbhDIROR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbhDIROQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:14:16 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E21C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:14:03 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id w3so9819963ejc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:14:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=9+KsrNGMheQyZi6tgUyj6QXCX6Kc00oXKAtfc1s77Sw=;
-        b=sZYo2nvCM4l6vMu3KfhEwMtWHpcMwuW5poG9qPZXIF8hkF5nQHvd4rkz1M+zDN5UJ1
-         LPrQWgwKrZ10cd8jr7TgD6B0foDoB+RqcrdFMXEdaH2dupWyUbAoNlLgyI2nwxHuVTSN
-         /2EwZj8DpaBBz/9RWWW8C7iQ4AKoXByFXlTKAvwiWoQqAIUkvR3/AEttkTVsQ1F8qi9d
-         /A+5nwNZHEO7atzA7NNfY9eWYuqTDdEISW1Y9fhU9dMwRn8YivdgmCDf3F/bVbRxwfnj
-         qv3FKpAI1wkzq5au8CFMJpm43Ju7nz8rGRKZGjOgShKBTbLfqRsqwBnv5BvYCxeP48Hv
-         UuKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=9+KsrNGMheQyZi6tgUyj6QXCX6Kc00oXKAtfc1s77Sw=;
-        b=RQr/VUfe0yWLa0oGnWW2luVF2+2EZ/gWfcq8Uqpw1+UxVALiSo3yz7Vy5CbCgJ6qJE
-         oNKy+9UfKFDXu6vuqkyHrrILJkfooFCxk1kWQd3jxkw6NoDdIK24X/KVUBVz8KQLqYIq
-         KYd3cJGOpRaipc/a+nigZBDTL64V/uTJkqBV8Mf4+5yHXPoONYtgm6p4m4CzyxC90Keu
-         KTxa/87rO2g00Wkt7C567nSrstZbFTWAZ5LNH/ae6PpGSjO1Vvfr7q2qxV9f9UPWPm+y
-         qJ3MnPu7UrqGd9nb5Jbwk4VIWmA74z/hSlzrwFgrd2rhYM01bwseusATGCzMATiSRemS
-         Hc3w==
-X-Gm-Message-State: AOAM532qMdEmOok1b43cBRp3YdG56BQkxpmXgA92uxG2dpxb78WD1OWz
-        BPPa28CAlDeiGSTBMA1+Ujw=
-X-Google-Smtp-Source: ABdhPJzbeU2BPiQjV4xbjv2bNbjvRmMmf9xCB+mMv1+4RHhWLc7aosOiI5xpIxtJA83tyYNYINCigg==
-X-Received: by 2002:a17:906:4f15:: with SMTP id t21mr6385260eju.338.1617988441921;
-        Fri, 09 Apr 2021 10:14:01 -0700 (PDT)
-Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id m29sm1512592ejl.61.2021.04.09.10.14.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 10:14:01 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8723bs: Change the type and use of a variable
-Date:   Fri, 09 Apr 2021 19:14:00 +0200
-Message-ID: <2106328.ujm4fZfeqs@localhost.localdomain>
-In-Reply-To: <YHBg1Sy2509vBtrA@kroah.com>
-References: <20210408111942.19411-1-fmdefrancesco@gmail.com> <YHBg1Sy2509vBtrA@kroah.com>
+        id S234189AbhDIROZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:14:25 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:39760 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234049AbhDIROX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 13:14:23 -0400
+Received: from zn.tnic (p200300ec2f0be10039b183a609a7c35d.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:e100:39b1:83a6:9a7:c35d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E7A7A1EC04DA;
+        Fri,  9 Apr 2021 19:14:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1617988449;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=9AYjgxlvYEzX7lP0NtvpK9WeNVbzcrOcj1GyMO32N+8=;
+        b=BkI1zZKAIOXGXVXDZmOJ5kTvnpvdEQxEu9hHsbEfqBXbmcLX9AbdpfXRpPq2jAtv2avPna
+        4L6A5qHTBqjwjIjHBREH2SQLJlAymZ23QG8Bn8+d324iG+C1FfGRkuLghB9fBaKVoM4V49
+        z7Nkq6Q70HYhsY4Wx435Y8ZpYd0sTuA=
+Date:   Fri, 9 Apr 2021 19:14:08 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v24 04/30] x86/cpufeatures: Introduce X86_FEATURE_CET and
+ setup functions
+Message-ID: <20210409171408.GG15567@zn.tnic>
+References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
+ <20210401221104.31584-5-yu-cheng.yu@intel.com>
+ <20210409101214.GC15567@zn.tnic>
+ <c7cb0ed6-2725-ba0d-093e-393eab9918b2@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <c7cb0ed6-2725-ba0d-093e-393eab9918b2@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday, April 9, 2021 4:12:37 PM CEST Greg KH wrote:
-> On Thu, Apr 08, 2021 at 01:19:42PM +0200, Fabio M. De Francesco wrote:
-> > Change the type of fw_current_in_ps_mode from u8 to bool, because
-> > it is used everywhere as a bool and, accordingly, it should be
-> > declared as a bool. Shorten the controlling
-> > expression of an 'if' statement.
-> > 
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> > 
-> >  drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
-> >  drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
-> >  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> I now have 3 patches, I think, for this same driver, from you, and I
-> have no idea what order they should be applied in.
-> 
-> So I'm going to drop them all.  Can you please resend me a patch series,
-> with all of the outstanding patches sent to me from you that I have not
-> applied yet, so that I know which ones to look at and what order to
-> apply them in?
->
-I just sent in the series of patches you requested. Hope the work is as you 
-expected. 
+On Fri, Apr 09, 2021 at 08:52:52AM -0700, Yu, Yu-cheng wrote:
+> Recall we had complicated code for the XSAVES features detection in
+> xstate.c.  Dave Hansen proposed the solution and then the whole thing
+> becomes simple.  Because of this flag, even when only the shadow stack is
+> available, the code handles it nicely.
 
-Thanks,
+Is that what you mean?
 
-Fabio
-> 
-> thanks,
-> 
-> greg k-h
+@@ -53,6 +55,8 @@ static short xsave_cpuid_features[] __initdata = {
+ 	X86_FEATURE_INTEL_PT,
+ 	X86_FEATURE_PKU,
+ 	X86_FEATURE_ENQCMD,
++	X86_FEATURE_CET, /* XFEATURE_CET_USER */
++	X86_FEATURE_CET, /* XFEATURE_CET_KERNEL */
 
+or what is the piece which becomes simpler?
 
+> Would this equal to only CONFIG_X86_CET (one Kconfig option)?  In fact, when
+> you proposed only CONFIG_X86_CET, things became much simpler.
 
+When you use CONFIG_X86_SHADOW_STACK instead, it should remain same
+simple no?
 
+> Practically, IBT is not much in terms of code size.  Since we have already
+> separated the two, why don't we leave it as-is.  When people start using it
+> more, there will be more feedback, and we can decide if one Kconfig is
+> better?
+
+Because when we add stuff to the kernel, we add the simplest and
+cleanest version possible and later, when we determine that additional
+functionality is needed, *then* we add it. Not the other way around.
+
+Our Kconfig symbol space is already an abomination so we can't just add
+some more and decide later.
+
+What happens in such situations usually is stuff gets added, it bitrots
+and some poor soul - very likely a maintainer who has to mop up after
+everybody - comes and cleans it up. I'd like to save myself that
+cleaning up.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
