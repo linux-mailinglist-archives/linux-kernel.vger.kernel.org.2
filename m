@@ -2,66 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB5E359964
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E80A7359968
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232782AbhDIJiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:38:25 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16506 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbhDIJiX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:38:23 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGtK61pdJzPpZZ;
-        Fri,  9 Apr 2021 17:35:22 +0800 (CST)
-Received: from huawei.com (10.67.174.166) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 17:38:09 +0800
-From:   Zucheng Zheng <zhengzucheng@huawei.com>
-To:     <benh@kernel.crashing.org>, <mpe@ellerman.id.au>,
-        <paulus@samba.org>, <rppt@kernel.org>,
-        <christophe.leroy@csgroup.eu>, <akpm@linux-foundation.org>,
-        <oohall@gmail.com>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] powerpc/pmac: Make some symbols static
-Date:   Fri, 9 Apr 2021 17:38:15 +0800
-Message-ID: <20210409093815.118619-1-zhengzucheng@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S232704AbhDIJjH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 9 Apr 2021 05:39:07 -0400
+Received: from aposti.net ([89.234.176.197]:38162 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230181AbhDIJjG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:39:06 -0400
+Date:   Fri, 09 Apr 2021 10:38:39 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 1/2] linux/kconfig.h: replace IF_ENABLED() with PTR_IF()
+ in <linux/kernel.h>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        GPIO SUBSYSTEM <linux-gpio@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mips@vger.kernel.org
+Message-Id: <FSIARQ.A8L3BEWP5IQK3@crapouillou.net>
+In-Reply-To: <CAK7LNATzaKiUewn-ixnDEAWbfQUy8xZL4yjkR1BxrhV3G1=Zng@mail.gmail.com>
+References: <20210408205858.51751-1-masahiroy@kernel.org>
+        <20210408205858.51751-2-masahiroy@kernel.org>
+        <YXEARQ.LGKNU44HTZP01@crapouillou.net>
+        <CAK7LNATzaKiUewn-ixnDEAWbfQUy8xZL4yjkR1BxrhV3G1=Zng@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.174.166]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ppc_override_l2cr/ppc_override_l2cr_value/has_l2cache symbol is not used
-outside of setup.c, so commit marks it static.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zucheng Zheng <zhengzucheng@huawei.com>
----
- arch/powerpc/platforms/powermac/setup.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/platforms/powermac/setup.c b/arch/powerpc/platforms/powermac/setup.c
-index 86aee3f2483f..db5107c80485 100644
---- a/arch/powerpc/platforms/powermac/setup.c
-+++ b/arch/powerpc/platforms/powermac/setup.c
-@@ -71,9 +71,9 @@
- 
- #undef SHOW_GATWICK_IRQS
- 
--int ppc_override_l2cr = 0;
--int ppc_override_l2cr_value;
--int has_l2cache = 0;
-+static int ppc_override_l2cr;
-+static int ppc_override_l2cr_value;
-+static int has_l2cache;
- 
- int pmac_newworld;
- 
--- 
-2.17.1
+Le ven. 9 avril 2021 à 17:30, Masahiro Yamada <masahiroy@kernel.org> a 
+écrit :
+> On Fri, Apr 9, 2021 at 5:15 PM Paul Cercueil <paul@crapouillou.net> 
+> wrote:
+>> 
+>>  Hi Masahiro,
+>> 
+>>  Le ven. 9 avril 2021 à 5:58, Masahiro Yamada 
+>> <masahiroy@kernel.org> a
+>>  écrit :
+>>  > <linux/kconfig.h> is included from all the kernel-space source 
+>> files,
+>>  > including C, assembly, linker scripts. It is intended to contain
+>>  > minimal
+>>  > set of macros to evaluate CONFIG options.
+>>  >
+>>  > IF_ENABLED() is an intruder here because (x ? y : z) is C code, 
+>> which
+>>  > should not be included from assembly files or linker scripts.
+>>  >
+>>  > Also, <linux/kconfig.h> is no longer self-contained because NULL 
+>> is
+>>  > defined in <linux/stddef.h>.
+>>  >
+>>  > Move IF_ENABLED() out to <linux/kernel.h> as PTR_IF().
+>>  >
+>>  > PTR_IF(IS_ENABLED(CONFIG_FOO), ...) is slightly longer than
+>>  > IF_ENABLED(CONFIG_FOO, ...), but it is not a big deal because
+>>  > sub-systems often define dedicated macros such as of_match_ptr(),
+>>  > pm_ptr() etc. for common use-cases.
+>> 
+>>  What's the idea behind changing IF_ENABLED() to PTR_IF()? You didn't
+>>  explain that. What's wrong with IF_ENABLED()?
+> 
+> 
+> PTR_IF() is a more generalized variant, which I believe is
+> a better fit in <linux/kernel.h>
+> The first parameter does not need to be a CONFIG option,
+> but any expression.
+
+Fair enough, but we could still have IF_ENABLED as a specialized 
+variant of PTR_IF:
+
+#define IF_ENABLED(cfg, ptr) PTR_IF(IS_ENABLED(cfg), (ptr))
+
+-Paul
+
+> 
+> 
+>>  Cheers,
+>>  -Paul
+>> 
+>>  > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>>  > ---
+>>  >
+>>  >  drivers/pinctrl/pinctrl-ingenic.c | 20 ++++++++++----------
+>>  >  include/linux/kconfig.h           |  6 ------
+>>  >  include/linux/kernel.h            |  2 ++
+>>  >  3 files changed, 12 insertions(+), 16 deletions(-)
+>>  >
+>>  > diff --git a/drivers/pinctrl/pinctrl-ingenic.c
+>>  > b/drivers/pinctrl/pinctrl-ingenic.c
+>>  > index f2746125b077..b21e2ae4528d 100644
+>>  > --- a/drivers/pinctrl/pinctrl-ingenic.c
+>>  > +++ b/drivers/pinctrl/pinctrl-ingenic.c
+>>  > @@ -2496,43 +2496,43 @@ static int __init
+>>  > ingenic_pinctrl_probe(struct platform_device *pdev)
+>>  >  static const struct of_device_id ingenic_pinctrl_of_match[] = {
+>>  >       {
+>>  >               .compatible = "ingenic,jz4740-pinctrl",
+>>  > -             .data = IF_ENABLED(CONFIG_MACH_JZ4740, 
+>> &jz4740_chip_info)
+>>  > +             .data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4740), 
+>> &jz4740_chip_info)
+>>  >       },
+>>  >       {
+>>  >               .compatible = "ingenic,jz4725b-pinctrl",
+>>  > -             .data = IF_ENABLED(CONFIG_MACH_JZ4725B, 
+>> &jz4725b_chip_info)
+>>  > +             .data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4725B), 
+>> &jz4725b_chip_info)
+>>  >       },
+>>  >       {
+>>  >               .compatible = "ingenic,jz4760-pinctrl",
+>>  > -             .data = IF_ENABLED(CONFIG_MACH_JZ4760, 
+>> &jz4760_chip_info)
+>>  > +             .data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4760), 
+>> &jz4760_chip_info)
+>>  >       },
+>>  >       {
+>>  >               .compatible = "ingenic,jz4760b-pinctrl",
+>>  > -             .data = IF_ENABLED(CONFIG_MACH_JZ4760, 
+>> &jz4760_chip_info)
+>>  > +             .data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4760), 
+>> &jz4760_chip_info)
+>>  >       },
+>>  >       {
+>>  >               .compatible = "ingenic,jz4770-pinctrl",
+>>  > -             .data = IF_ENABLED(CONFIG_MACH_JZ4770, 
+>> &jz4770_chip_info)
+>>  > +             .data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4770), 
+>> &jz4770_chip_info)
+>>  >       },
+>>  >       {
+>>  >               .compatible = "ingenic,jz4780-pinctrl",
+>>  > -             .data = IF_ENABLED(CONFIG_MACH_JZ4780, 
+>> &jz4780_chip_info)
+>>  > +             .data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4780), 
+>> &jz4780_chip_info)
+>>  >       },
+>>  >       {
+>>  >               .compatible = "ingenic,x1000-pinctrl",
+>>  > -             .data = IF_ENABLED(CONFIG_MACH_X1000, 
+>> &x1000_chip_info)
+>>  > +             .data = PTR_IF(IS_ENABLED(CONFIG_MACH_X1000), 
+>> &x1000_chip_info)
+>>  >       },
+>>  >       {
+>>  >               .compatible = "ingenic,x1000e-pinctrl",
+>>  > -             .data = IF_ENABLED(CONFIG_MACH_X1000, 
+>> &x1000_chip_info)
+>>  > +             .data = PTR_IF(IS_ENABLED(CONFIG_MACH_X1000), 
+>> &x1000_chip_info)
+>>  >       },
+>>  >       {
+>>  >               .compatible = "ingenic,x1500-pinctrl",
+>>  > -             .data = IF_ENABLED(CONFIG_MACH_X1500, 
+>> &x1500_chip_info)
+>>  > +             .data = PTR_IF(IS_ENABLED(CONFIG_MACH_X1500), 
+>> &x1500_chip_info)
+>>  >       },
+>>  >       {
+>>  >               .compatible = "ingenic,x1830-pinctrl",
+>>  > -             .data = IF_ENABLED(CONFIG_MACH_X1830, 
+>> &x1830_chip_info)
+>>  > +             .data = PTR_IF(IS_ENABLED(CONFIG_MACH_X1830), 
+>> &x1830_chip_info)
+>>  >       },
+>>  >       { /* sentinel */ },
+>>  >  };
+>>  > diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
+>>  > index 24a59cb06963..cc8fa109cfa3 100644
+>>  > --- a/include/linux/kconfig.h
+>>  > +++ b/include/linux/kconfig.h
+>>  > @@ -70,10 +70,4 @@
+>>  >   */
+>>  >  #define IS_ENABLED(option) __or(IS_BUILTIN(option),
+>>  > IS_MODULE(option))
+>>  >
+>>  > -/*
+>>  > - * IF_ENABLED(CONFIG_FOO, ptr) evaluates to (ptr) if CONFIG_FOO 
+>> is
+>>  > set to 'y'
+>>  > - * or 'm', NULL otherwise.
+>>  > - */
+>>  > -#define IF_ENABLED(option, ptr) (IS_ENABLED(option) ? (ptr) : 
+>> NULL)
+>>  > -
+>>  >  #endif /* __LINUX_KCONFIG_H */
+>>  > diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+>>  > index 5b7ed6dc99ac..8685ca4cf287 100644
+>>  > --- a/include/linux/kernel.h
+>>  > +++ b/include/linux/kernel.h
+>>  > @@ -38,6 +38,8 @@
+>>  >  #define PTR_ALIGN_DOWN(p, a) ((typeof(p))ALIGN_DOWN((unsigned
+>>  > long)(p), (a)))
+>>  >  #define IS_ALIGNED(x, a)             (((x) & ((typeof(x))(a) - 
+>> 1)) == 0)
+>>  >
+>>  > +#define PTR_IF(cond, ptr)    ((cond) ? (ptr) : NULL)
+>>  > +
+>>  >  /* generic data direction definitions */
+>>  >  #define READ                 0
+>>  >  #define WRITE                        1
+>>  > --
+>>  > 2.27.0
+>>  >
+>> 
+>> 
+> 
+> 
+> --
+> Best Regards
+> Masahiro Yamada
+
 
