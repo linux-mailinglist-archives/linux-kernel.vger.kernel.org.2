@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 368D635A777
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F57235A77B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234339AbhDIT7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:59:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37154 "EHLO mail.kernel.org"
+        id S234423AbhDIT7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:59:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232855AbhDIT7f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:59:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 820E36105A;
-        Fri,  9 Apr 2021 19:59:22 +0000 (UTC)
+        id S234361AbhDIT7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 15:59:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 42BDE611AF;
+        Fri,  9 Apr 2021 19:59:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617998362;
-        bh=mPVz2dLLzTXI7/R6bDuxZtSiZScbJwMj8X6+OrnLpo8=;
+        s=k20201202; t=1617998365;
+        bh=pJ7c657VoLqpI/8XU9Khru6I80F9QWhd7I0r2ySUqlk=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=IqTGEJIO4O5YcbfY4CwWsTUzlSN6VD0gjqhMt103CK7JUfD5SxlGTGU9QBmlAax7n
-         Vo7lsLVUAsGAltlyevNxL6nMezAKlWu4lUSjf/+jxzoJ6/YOeMjwTTTRawvVXaeksh
-         ajN30hm+FBA1DlRKCOfW8POD6crgA0aG9YS63nmLcvrAyV6SoILzUjuPzT5rFb6xHx
-         LNADXC3g6oiDAYBrnPyJVF0vair7VN0bhvHCVVrNzNk4WR9VFYrO/DtxMRjJblDpnG
-         DP/N3l8fRuDOoTmcmtpB/lj+gYFjjVWia9Jv11628/LAUJ5ZFNaX2XQL8mEdyNIl1V
-         Hj+Lcl4NxBMiw==
+        b=cJWeYJoKPIy4RKvyJx9JgZ8w1qYfKvC1Q958gU8xF3kj/fUn0wFcO0s/Fipan2Q4b
+         4yRubMzJezjPgcFKtGwpc1FALJ2fA40H4B3DDNPxzOpH8ypp1uxXbqsawkJIpaQiHc
+         uNUnz/paxQFMm83uIluqDIcgUfQgQ7LAzsL40QHoisOKluUcosYwBKNLLmj5OFAWQY
+         thrISi3HSXEVkwACnhUtqIg7lvvWXyuL0fLSXXpuCgLoVfWHg2y9IvpW5HmNO+Euet
+         x8pB2pUUqQ9Y1lbIoscnu+Pe7WbqMN9Dk0D+VUUljvVZzYtDoMmViDmKPs1enmS4cS
+         M3Ciirdi9InfQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6E3A860A2A;
-        Fri,  9 Apr 2021 19:59:22 +0000 (UTC)
-Subject: Re: [GIT PULL] remoteproc fixes for v5.12
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3D25D60A71;
+        Fri,  9 Apr 2021 19:59:25 +0000 (UTC)
+Subject: Re: [GIT PULL] vdpa/mlx5: last minute fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210409160758.775271-1-bjorn.andersson@linaro.org>
-References: <20210409160758.775271-1-bjorn.andersson@linaro.org>
-X-PR-Tracked-List-Id: <linux-remoteproc.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210409160758.775271-1-bjorn.andersson@linaro.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.12-fixes
-X-PR-Tracked-Commit-Id: 9afeefcf06fc7b4bdab06a6e2cb06745bded34dd
+In-Reply-To: <20210409124816-mutt-send-email-mst@kernel.org>
+References: <20210409124816-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210409124816-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+X-PR-Tracked-Commit-Id: bc04d93ea30a0a8eb2a2648b848cef35d1f6f798
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3766fcf5d318046e0ae58659e03ead35d40cb9dd
-Message-Id: <161799836239.7895.8273381484525934131.pr-tracker-bot@kernel.org>
-Date:   Fri, 09 Apr 2021 19:59:22 +0000
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+X-PR-Merge-Commit-Id: 189fefc7a4f0401d0f799de96b772319a6541fc1
+Message-Id: <161799836524.7895.6127535602829010878.pr-tracker-bot@kernel.org>
+Date:   Fri, 09 Apr 2021 19:59:25 +0000
+To:     "Michael S. Tsirkin" <mst@redhat.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Dimitar Dimitrov <dimitar@dinux.eu>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suman Anna <s-anna@ti.com>
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        elic@nvidia.com, jasowang@redhat.com, mst@redhat.com,
+        si-wei.liu@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri,  9 Apr 2021 11:07:58 -0500:
+The pull request you sent on Fri, 9 Apr 2021 12:48:16 -0400:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.12-fixes
+> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3766fcf5d318046e0ae58659e03ead35d40cb9dd
+https://git.kernel.org/torvalds/c/189fefc7a4f0401d0f799de96b772319a6541fc1
 
 Thank you!
 
