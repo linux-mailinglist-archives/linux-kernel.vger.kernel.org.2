@@ -2,122 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB46035A520
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC7935A522
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234358AbhDIR7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:59:30 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:40092 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233896AbhDIR72 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:59:28 -0400
-Received: by mail-io1-f71.google.com with SMTP id e18so4352468iot.7
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:59:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0+Ew6rNNg3ztpKhQhG/z/BAPWHH+xWvZmjOvCb1fdu8=;
-        b=agpm4QzNUpmHJQszS7OfD4gUnVr7iNeMfFNObdpSeRo4jvUy76bjLvHmkaU9RLG5iA
-         7OlldvLM5SnWy76G/CIiOco72K6rKDq5IvFAKEiLk9lLHZHFoO+NmckIHWAZT/IDlC1D
-         00Gk79X2PnTEvFARRzYNGrGojNg6KLvuQ3gTFDJdStXtdDBG+1HxyhLzfXHvAGUDGDWL
-         6iZFAJRPlxYQoiEAB89zfTJi3FkdKN2R1Y28pAJnB6odon1gNkUoF1uQrEo+6A2Ff+5m
-         yHv/4cZWwMcb45u18TSQVRvihzIOgttSUcZXM1YlndbRa4BCSjW4ANIFPJEOqGIFThCD
-         9nhQ==
-X-Gm-Message-State: AOAM533c6ANufXRPi0Awnpp47r5R6iFFYhk5qWIL797BmW+YXHZbM2AR
-        qfGdFZUThMZB9mSWDfjwYNsIb+sazHP5nDIfQTQEYgowTcC8
-X-Google-Smtp-Source: ABdhPJzkQ8GpqnpBVrEegTqvzPxggMdUSz72bWw5uFKXrGcQBqAvYcvPw96M9nSuvyJIMq+fJ1pLRoxWv7LEAw2mn8I7p7x6vJjO
+        id S234400AbhDIR7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:59:34 -0400
+Received: from mga09.intel.com ([134.134.136.24]:31862 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233896AbhDIR7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 13:59:32 -0400
+IronPort-SDR: 67m9HN9cWh9MdhTbFicKowlyvhO0KU3c79ZdYKSSXRJDnBOlmK5KEXa8paRVXFTAHuZqbMTGZN
+ 20gCLWcVLNhg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="193926438"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="193926438"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 10:59:17 -0700
+IronPort-SDR: LaJXrXQbMJqTbvYgetW/DOsIe7SQ7rNaa2ybtpqxHyO/+v28pORM28CqLdmu4PxlPKEYbtLH1U
+ S9TasmGuWYNA==
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="422831148"
+Received: from schen9-mobl.amr.corp.intel.com ([10.209.107.191])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 10:59:17 -0700
+Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
+ for NOHZ
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Dietmar Eggeman <dietmar.eggemann@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
+References: <20210122154600.1722680-1-joel@joelfernandes.org>
+ <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
+ <YAsjOqmo7TEeXjoj@google.com>
+ <CAKfTPtBWoRuwwkaqQKNgHTnQBE4fevyYqEoeGc5RpCsBbOS1sQ@mail.gmail.com>
+ <YBG0W5PFGtGRCEuB@google.com>
+ <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
+ <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com>
+ <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
+ <20210129172727.GA30719@vingu-book>
+ <274d8ae5-8f4d-7662-0e04-2fbc92b416fc@linux.intel.com>
+ <20210324134437.GA17675@vingu-book>
+ <efad4771-c9d1-5103-de9c-0ec5fa78ee24@linux.intel.com>
+ <CAKfTPtDsya_zdUB1ARmoxQs5xWS8o-XrrzyNx5R1iSNrchUXtg@mail.gmail.com>
+ <fc0efe4e-0a81-03b8-08cb-029468c57782@linux.intel.com>
+ <CAKfTPtCKavGWja42NdTmb+95ppG-WxYzoTJMmtgkCQcA-btfBw@mail.gmail.com>
+ <4aa674d9-db49-83d5-356f-a20f9e2a7935@linux.intel.com>
+ <CAKfTPtDJaTr_HR2t=9CQ-9x6keu-qzx6okci92AdW5cJG8J9zg@mail.gmail.com>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <2d2294ce-f1d1-f827-754b-4541c1b43be8@linux.intel.com>
+Date:   Fri, 9 Apr 2021 10:59:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-X-Received: by 2002:a02:c908:: with SMTP id t8mr15943562jao.78.1617991155447;
- Fri, 09 Apr 2021 10:59:15 -0700 (PDT)
-Date:   Fri, 09 Apr 2021 10:59:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000012002d05bf8dec8d@google.com>
-Subject: [syzbot] BUG: spinlock bad magic in erofs_pcpubuf_growsize
-From:   syzbot <syzbot+d6a0e4b80bd39f54c2f6@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, bp@alien8.de, chao@kernel.org,
-        hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        masahiroy@kernel.org, mingo@redhat.com, pbonzini@redhat.com,
-        peterz@infradead.org, rafael.j.wysocki@intel.com,
-        rostedt@goodmis.org, seanjc@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, will@kernel.org,
-        x86@kernel.org, xiang@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAKfTPtDJaTr_HR2t=9CQ-9x6keu-qzx6okci92AdW5cJG8J9zg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    9c54130c Add linux-next specific files for 20210406
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1654617ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d125958c3995ddcd
-dashboard link: https://syzkaller.appspot.com/bug?extid=d6a0e4b80bd39f54c2f6
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101a5786d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1147dd0ed00000
-
-The issue was bisected to:
-
-commit 997acaf6b4b59c6a9c259740312a69ea549cc684
-Author: Mark Rutland <mark.rutland@arm.com>
-Date:   Mon Jan 11 15:37:07 2021 +0000
-
-    lockdep: report broken irq restoration
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11d8d7aad00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=13d8d7aad00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=15d8d7aad00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d6a0e4b80bd39f54c2f6@syzkaller.appspotmail.com
-Fixes: 997acaf6b4b5 ("lockdep: report broken irq restoration")
-
-loop0: detected capacity change from 0 to 31
-BUG: spinlock bad magic on CPU#1, syz-executor062/8434
- lock: 0xffff8880b9c31d60, .magic: 00000000, .owner: <none>/-1, .owner_cpu: 0
-CPU: 1 PID: 8434 Comm: syz-executor062 Not tainted 5.12.0-rc6-next-20210406-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- debug_spin_lock_before kernel/locking/spinlock_debug.c:83 [inline]
- do_raw_spin_lock+0x216/0x2b0 kernel/locking/spinlock_debug.c:112
- erofs_pcpubuf_growsize+0x36f/0x620 fs/erofs/pcpubuf.c:83
- z_erofs_load_lz4_config+0x1ef/0x3e0 fs/erofs/decompressor.c:64
- erofs_read_superblock fs/erofs/super.c:331 [inline]
- erofs_fc_fill_super+0xe84/0x1d10 fs/erofs/super.c:499
- get_tree_bdev+0x440/0x760 fs/super.c:1293
- vfs_get_tree+0x89/0x2f0 fs/super.c:1498
- do_new_mount fs/namespace.c:2905 [inline]
- path_mount+0x132a/0x1fa0 fs/namespace.c:3235
- do_mount fs/namespace.c:3248 [inline]
- __do_sys_mount fs/namespace.c:3456 [inline]
- __se_sys_mount fs/namespace.c:3433 [inline]
- __x64_sys_mount+0x27f/0x300 fs/namespace.c:3433
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x444f7a
-Code: 83 c4 08 5b 5d c3 66 2e 0f 1f 84 00 00 00 00 00 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe1fa3c2a8 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffe1fa3c300 RCX: 0000000000444f7a
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007ffe1fa3c2c0
-RBP: 00007ffe1fa3c2c0 R08: 00007ffe1fa3c300 R09: 
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+On 4/9/21 8:26 AM, Vincent Guittot wrote:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>>>>
+>>>> I was expecting idle load balancer to be rate limited to 60 Hz, which
+>>>
+>>> Why 60Hz ?
+>>>
+>>
+>> My thinking is we will trigger load balance only after rq->next_balance.
+>>
+>> void trigger_load_balance(struct rq *rq)
+>> {
+>>         /* Don't need to rebalance while attached to NULL domain */
+>>         if (unlikely(on_null_domain(rq)))
+>>                 return;
+>>
+>>         if (time_after_eq(jiffies, rq->next_balance))
+>>                 raise_softirq(SCHED_SOFTIRQ);
+>>
+>>         nohz_balancer_kick(rq);
+>> }
+>>
+>> And it seems like next_balance is set to be 60 Hz
+>>
+>> static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
+>> {
+>>         int continue_balancing = 1;
+>>         int cpu = rq->cpu;
+>>         int busy = idle != CPU_IDLE && !sched_idle_cpu(cpu);
+>>         unsigned long interval;
+>>         struct sched_domain *sd;
+>>         /* Earliest time when we have to do rebalance again */
+>>         unsigned long next_balance = jiffies + 60*HZ;
+> 
+> This doesn't mean 60 Hz period but 60*HZ with HZ being the number of
+> jiffies per second. We init next_balance with now + 60 sec to make
+> sure it's far later than the next balance of the sched_domains
+> 
+> Then, update_next_balance() keeps track of 1st balance to happen next time
+> 
+
+Thanks for pointing out my misread of the code.  In this case the
+balance frequency should be lower than I thought as balance should be 60 sec
+apart in theory.  
+
+>> Here's a snapshot of the trace. However I didn't have the current task in my trace.
+>> You can tell the frequency that update_blocked_averages is called on
+>> cpu 2 by the jiffies value.  They are quite close together (1 to 3 jiffies apart).
+>> When I have a chance to get on the machine, I'll take another look
+>> at the current task and whether we got to trigger_load_balance() from scheduler_tick().
+>>
+>>
+>>      3.505 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb731
+>>      4.505 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb732
+>>      6.484 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb733
+>>      6.506 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb734
+>>      9.503 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb737
+>>     11.504 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb739
+>>     11.602 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb739
+>>     11.624 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+>>     11.642 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+>>     11.645 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+>>     11.977 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+>>     12.003 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+>>     12.015 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+>>     12.043 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb739
+>>     12.567 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73a
+>>     13.856 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73b
+>>     13.910 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+>>     14.003 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+>>     14.159 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+>>     14.203 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+>>     14.223 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+>>     14.301 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73b
+>>     14.504 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73c
+>>     14.637 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73c
+>>     14.666 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>>     15.059 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>>     15.083 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>>     15.100 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>>     15.103 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>>     15.150 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>>     15.227 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>>     15.248 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>>     15.311 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73c
+>>     15.503 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73d
+>>     16.140 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73d
+>>     16.185 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
+>>     16.224 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
+>>     16.340 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
+>>     16.384 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73d
+>>     16.503 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73e
+>>     16.993 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73e
+>>     17.504 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb73f
+>>     17.630 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb76c jiffies=0x1004fb73f
+>>     17.830 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
+>>     18.015 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
+>>     18.031 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
+>>     18.036 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
+>>     18.040 (         ): probe:newidle_balance:(ffffffff810d2470) this_rq=0xffff88fe7f8aae00 next_balance=0x1004fb731 jiffies=0x1004fb73f
+>>     18.502 (         ): probe:update_blocked_averages:(ffffffff810cf070) cpu=2 jiffies=0x1004fb740
+>>
+> 
+> I don't know exactly what you track with "next_balance=" in
+
+It is the rq->next_balance value as we enter the newidle_balance function.
+
+> probe:newidle_balance but it always starts with the same value
+> 0x1004fb76c in the future to finish with a value 0x1004fb731 in the
+> past. 
+
+This indeed is odd as the next_balance should move forward and not backward.
+
+> This would mean that a load balance is needed during the next
+> tick which explains why we can see then the
+> probe:update_blocked_averages for each tick.
+
+Will try to debug and find out why the next_balance has gone backwards
+next time I get access to the test system.
+
+> 
+> Also could you check if the tick is stopped when idle. When the
+> predicted idle time is short and the next wake is expected to happen
+> before the next tick, the tick is not stopped.
+> 
+
+Will do. 
+
+Tim
