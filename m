@@ -2,130 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27DA435A953
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EABD235A957
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235218AbhDIXq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 19:46:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36614 "EHLO mail.kernel.org"
+        id S235228AbhDIXrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 19:47:40 -0400
+Received: from mga06.intel.com ([134.134.136.31]:14587 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235163AbhDIXq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 19:46:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D4E6D610CC;
-        Fri,  9 Apr 2021 23:46:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618012003;
-        bh=XCIJfysJJf3a2VP7wbLTB+veGqZtLou6gE/nlIYkC04=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Xxvi0KuuMeQfzbT6Bwj+eTZGgc4fvm9FMOyUlj1NEdZsj70bUOdmO9rx8cKvuFttD
-         y6Y5plGkPZd/F0cqEfUNiOm/R3E0/wMdtrmlZ4ew0oVccgn8Gh1qj1tgTT2YiWO9lJ
-         wVjDIRJg/4wMpluN+CzE7ktNoDwEDiK9Mpo6ULD51cM6MdEdlByuuOPcdiz+cDph02
-         ZTtN/Dmvd7Cwnku85nMaWGvEHFtsr6XtbubW4qZWlZlsTTgBepCRZIXmRoAxICGL4d
-         sLmCA/nArtdmTVZmZP3dRM+hkMQ5WDpJPVg9jL/GQDMwUen4JmPmRHqrQ0rZ+WoqYv
-         +yLvpi+wEYCPA==
-Date:   Fri, 9 Apr 2021 16:46:41 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     samirweng1979 <samirweng1979@163.com>
-Cc:     gustavoars@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: Re: [PATCH] nfc: pn533: remove redundant assignment
-Message-ID: <20210409164641.3334d216@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210409115010.33436-1-samirweng1979@163.com>
-References: <20210409115010.33436-1-samirweng1979@163.com>
+        id S235163AbhDIXri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 19:47:38 -0400
+IronPort-SDR: 4oTMDTbu7ghJ1nVn9+6esl52exZ5ABLXB5jtEzUzErDqkWILSfvJN+EykT59fT/hvgMMspsEND
+ ugC34gjrjVgQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="255190796"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="255190796"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:47:23 -0700
+IronPort-SDR: 7kkS8Wxc9BTdMnvBz67vi/4ovTt7qmo8Sx/XhHsJNzLbHt5HqfH+DEzabiA6I67db98dmOCI/G
+ QyDmN3Xu1ijQ==
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="416470774"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.27.140]) ([10.212.27.140])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:47:22 -0700
+Subject: Re: [PATCH v24 22/30] x86/cet/shstk: Add user-mode shadow stack
+ support
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
+ <20210401221104.31584-23-yu-cheng.yu@intel.com>
+ <20210409155711.kxf3fjc7csvqpl33@box.shutemov.name>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <d1fc2f06-b6ad-f780-72c0-cf7ec6633a30@intel.com>
+Date:   Fri, 9 Apr 2021 16:47:21 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210409155711.kxf3fjc7csvqpl33@box.shutemov.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  9 Apr 2021 19:50:09 +0800 samirweng1979 wrote:
-> From: wengjianfeng <wengjianfeng@yulong.com>
+On 4/9/2021 8:57 AM, Kirill A. Shutemov wrote:
+> On Thu, Apr 01, 2021 at 03:10:56PM -0700, Yu-cheng Yu wrote:
+>> Introduce basic shadow stack enabling/disabling/allocation routines.
+>> A task's shadow stack is allocated from memory with VM_SHADOW_STACK flag
+>> and has a fixed size of min(RLIMIT_STACK, 4GB).
+>>
+>> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+>> Cc: Kees Cook <keescook@chromium.org>
+
+[...]
+
+>> diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+>> new file mode 100644
+>> index 000000000000..5406fdf6df3c
+>> --- /dev/null
+>> +++ b/arch/x86/kernel/shstk.c
+>> @@ -0,0 +1,128 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * shstk.c - Intel shadow stack support
+>> + *
+>> + * Copyright (c) 2021, Intel Corporation.
+>> + * Yu-cheng Yu <yu-cheng.yu@intel.com>
+>> + */
+>> +
+>> +#include <linux/types.h>
+>> +#include <linux/mm.h>
+>> +#include <linux/mman.h>
+>> +#include <linux/slab.h>
+>> +#include <linux/uaccess.h>
+>> +#include <linux/sched/signal.h>
+>> +#include <linux/compat.h>
+>> +#include <linux/sizes.h>
+>> +#include <linux/user.h>
+>> +#include <asm/msr.h>
+>> +#include <asm/fpu/internal.h>
+>> +#include <asm/fpu/xstate.h>
+>> +#include <asm/fpu/types.h>
+>> +#include <asm/cet.h>
+>> +
+>> +static void start_update_msrs(void)
+>> +{
+>> +	fpregs_lock();
+>> +	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+>> +		__fpregs_load_activate();
+>> +}
+>> +
+>> +static void end_update_msrs(void)
+>> +{
+>> +	fpregs_unlock();
+>> +}
+>> +
+>> +static unsigned long alloc_shstk(unsigned long size, int flags)
+>> +{
+>> +	struct mm_struct *mm = current->mm;
+>> +	unsigned long addr, populate;
+>> +
+>> +	/* VM_SHADOW_STACK requires MAP_ANONYMOUS, MAP_PRIVATE */
+>> +	flags |= MAP_ANONYMOUS | MAP_PRIVATE;
 > 
-> In many places,first assign a value to a variable and then return
-> the variable. which is redundant, we should directly return the value.
-> in pn533_rf_field funciton,return statement in the if statement is
-> redundant, we just delete it.
+> Looks like all callers has flags == 0. Do I miss something.
+
+My earlier versions use this flag.  I should have removed it.
+
+>> +
+>> +	mmap_write_lock(mm);
+>> +	addr = do_mmap(NULL, 0, size, PROT_READ, flags, VM_SHADOW_STACK, 0,
+>> +		       &populate, NULL);
+>> +	mmap_write_unlock(mm);
+>> +
+>> +	if (populate)
+>> +		mm_populate(addr, populate);
 > 
-> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> If all callers pass down flags==0, populate will never happen.
 
-Thank you for the changes, please see comments below.
+I will fix it.
 
-> diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
-> index f1469ac..61ab4c0 100644
-> --- a/drivers/nfc/pn533/pn533.c
-> +++ b/drivers/nfc/pn533/pn533.c
-> @@ -489,12 +489,8 @@ static int pn533_send_data_async(struct pn533 *dev, u8 cmd_code,
->  				 pn533_send_async_complete_t complete_cb,
->  				 void *complete_cb_context)
->  {
-> -	int rc;
-> -
-> -	rc = __pn533_send_async(dev, cmd_code, req, complete_cb,
-> +	return __pn533_send_async(dev, cmd_code, req, complete_cb,
->  				complete_cb_context);
+>> +
+>> +	return addr;
+>> +}
+>> +
+>> +int shstk_setup(void)
+>> +{
+>> +	unsigned long addr, size;
+>> +	struct cet_status *cet = &current->thread.cet;
+>> +
+>> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK))
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	size = round_up(min_t(unsigned long long, rlimit(RLIMIT_STACK), SZ_4G), PAGE_SIZE);
+>> +	addr = alloc_shstk(size, 0);
+>> +	if (IS_ERR_VALUE(addr))
+>> +		return PTR_ERR((void *)addr);
+>> +
+>> +	cet->shstk_base = addr;
+>> +	cet->shstk_size = size;
+>> +
+>> +	start_update_msrs();
+>> +	wrmsrl(MSR_IA32_PL3_SSP, addr + size);
+>> +	wrmsrl(MSR_IA32_U_CET, CET_SHSTK_EN);
+>> +	end_update_msrs();
+>> +	return 0;
+>> +}
+>> +
+>> +void shstk_free(struct task_struct *tsk)
+>> +{
+>> +	struct cet_status *cet = &tsk->thread.cet;
+>> +
+>> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK) ||
+>> +	    !cet->shstk_size ||
+>> +	    !cet->shstk_base)
+>> +		return;
+>> +
+>> +	if (!tsk->mm)
+>> +		return;
+>> +
+>> +	while (1) {
+>> +		int r;
+>> +
+>> +		r = vm_munmap(cet->shstk_base, cet->shstk_size);
+>> +
+>> +		/*
+>> +		 * vm_munmap() returns -EINTR when mmap_lock is held by
+>> +		 * something else, and that lock should not be held for a
+>> +		 * long time.  Retry it for the case.
+>> +		 */
+> 
+> Hm, no. -EINTR is not about the lock being held by somebody else. The task
+> got a signal and need to return to userspace.
 
-Please realign the continuation line so it starts after the opening
-bracket.
+ From tracing the code itself, it looks like it cannot acquire the lock. 
+  Let me dig into it.
 
-> -
-> -	return rc;
->  }
->  
->  static int pn533_send_cmd_async(struct pn533 *dev, u8 cmd_code,
-> @@ -502,12 +498,8 @@ static int pn533_send_cmd_async(struct pn533 *dev, u8 cmd_code,
->  				pn533_send_async_complete_t complete_cb,
->  				void *complete_cb_context)
->  {
-> -	int rc;
-> -
-> -	rc = __pn533_send_async(dev, cmd_code, req, complete_cb,
-> +	return __pn533_send_async(dev, cmd_code, req, complete_cb,
->  				complete_cb_context);
+> I have not looked at the rest of the patches yet, but why do you need a
+> special free path for shadow stack? Why the normal unmap route doesn't
+> work for you?
 
-Same here.
+The thread's shadow stack is allocated by the kernel, so it needs to be 
+freed when the thread exits.
 
-> -	return rc;
->  }
->  
->  /*
-> @@ -2614,7 +2606,6 @@ static int pn533_rf_field(struct nfc_dev *nfc_dev, u8 rf)
->  				     (u8 *)&rf_field, 1);
->  	if (rc) {
->  		nfc_err(dev->dev, "Error on setting RF field\n");
-> -		return rc;
->  	}
->  
->  	return rc;
+>> +		if (r == -EINTR) {
+>> +			cond_resched();
+>> +			continue;
+>> +		}
+>> +		break;
+>> +	}
+>> +
+>> +	cet->shstk_base = 0;
+>> +	cet->shstk_size = 0;
+>> +}
+>> +
 
-In case some code is added between the check and the return statement
-it'd be better to fix this by replacing the second return rc with
-return 0:
+[...]
 
-	if (rc) {
-		nfc_err(...);
-		return rc;
-	}
-
-	return 0;
-
-> diff --git a/drivers/nfc/pn533/uart.c b/drivers/nfc/pn533/uart.c
-> index a0665d8..6465348 100644
-> --- a/drivers/nfc/pn533/uart.c
-> +++ b/drivers/nfc/pn533/uart.c
-> @@ -239,9 +239,8 @@ static int pn532_uart_probe(struct serdev_device *serdev)
->  {
->  	struct pn532_uart_phy *pn532;
->  	struct pn533 *priv;
-> -	int err;
-> +	int err = -ENOMEM;
->  
-> -	err = -ENOMEM;
->  	pn532 = kzalloc(sizeof(*pn532), GFP_KERNEL);
-
-IMO having the assignment before the call is more readable, please
-leave as is.
-
->  	if (!pn532)
->  		goto err_exit;
+Thanks,
+Yu-cheng
