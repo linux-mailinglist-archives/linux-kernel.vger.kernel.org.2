@@ -2,120 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498A535A26B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:55:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6701435A26E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233700AbhDIPzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:55:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47296 "EHLO
+        id S233752AbhDIP45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233395AbhDIPzf (ORCPT
+        with ESMTP id S232796AbhDIP44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:55:35 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 697F7C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:55:22 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id z15so6208756oic.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:55:22 -0700 (PDT)
+        Fri, 9 Apr 2021 11:56:56 -0400
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8E4C061760;
+        Fri,  9 Apr 2021 08:56:43 -0700 (PDT)
+Received: by mail-oo1-xc2d.google.com with SMTP id r17-20020a4acb110000b02901b657f28cdcso1441796ooq.6;
+        Fri, 09 Apr 2021 08:56:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7FhH3HxnPhik9wr89dR/sW0eRHTu8hPyuSyg+W7XtPs=;
-        b=dnk8I5QzyMjjItJpGxLSIwh4o4JkMyOpncSyroDFsJ1xGvGiZGFQoorYMliGZJzXZg
-         BKbNZA/c9tmuUwlG7u7WVtl5GpJF3u48HtvA9+TgVxb7+Q5yqE2npdQ+SFvqLIns3o82
-         17Hamlac8BB4PUMIksNM1+tw2v9h3iUAbfdRj4Uwa52itndgwIYRzYtrG+jIH4+q/Uew
-         WTqrCsQijhimidHjsvltK7l+/glCt0CONdkZ2/JTFDCRO9M3HGQh9lHscfRR61LbVwja
-         J2HM/J9T/YMYaAwDML0oNx3l1Zdupijh8XfaJK3mZOXTtCpN6ctcpXbZlIOkLBEayOOp
-         ntlQ==
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zS4oOL5HKDn9FDzihO/lTrV8DNOB2FWtFwRfLW84+lc=;
+        b=IWHF1EDZ2QLXkKVqTO1X36F2AQAvhhQ7gxF8ExGQvugxEsH+sx38REIWFnjLPTIlwD
+         Qe0CKfy04fPJjAzDVhTdhX4wXo9w3CEf/s7vnJxCXUhEhEDnYooA+i8ltu7ia9XJA8oY
+         83syYVfr40Lj16+wAJZeM7CXnLPpTbFEdeQpPLy8xDk9Rf/5lqyfpFU+0lIOrx8C3SF0
+         SdbTBfdCz52LNe/Nsu/kz1kn5CSB4HdI2KtSuv/kfFmBYE+I9UqbakNvvnOwqYQMRCMd
+         agXUPyXQRg0cXJ4VyXKuNNJfpap99w1HRMvirU43FNhQ5TFSVaCD/5H39Cb5UnygbhnX
+         uPCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7FhH3HxnPhik9wr89dR/sW0eRHTu8hPyuSyg+W7XtPs=;
-        b=olNE/jNAjvyUhixTiwQdVQXVCej9JsUNAKSu/qJ9fW4saMLG+ngJRLYc2Bk3rp6jTU
-         KWp6rhWNvveLGAJxHUyxeG4msjVXQ10N/sJsme9kl2fvUjCuaYPDlrtLPdxjTRlv9RYY
-         bDXYe/RmFyc5e9efjl0cqeTVJWBxdGNeiy3g8QP1tZr1up5s8Ob0xNY7E3DS1/TLjnW9
-         yZ2Y6j3aQi0Vw3xISv0KcDB0ijsR5k9/0nOX7qI2QIDvo/557gn3+G58ON6X4r/KXiMH
-         qoFKXexCfLonDw1NpN4J3p7NUaV7LU/482VvC2y6psdOCgN0Md3WHGvnd+by8WMQTsCb
-         xMkA==
-X-Gm-Message-State: AOAM533c94F4ec5dHbBQIglLaPrGw9DdqIDYbN2dv5gsAp1Vnq6oT7td
-        JBSaHxLkOcH5l6RCioZ9nQmo1A==
-X-Google-Smtp-Source: ABdhPJz3Dh7G+iRZvpx0N80r9hJXBOQByK4B4InfbL8YiBVAUS7tQEets07umN9tgXMnbtswDzprlw==
-X-Received: by 2002:aca:de06:: with SMTP id v6mr10044632oig.91.1617983721822;
-        Fri, 09 Apr 2021 08:55:21 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id w199sm576723oif.41.2021.04.09.08.55.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 08:55:21 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 10:55:19 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Guru Das Srinagesh <gurus@codeaurora.org>
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: mfd: pm8008: Add IRQ listing
-Message-ID: <20210409155519.GX904837@yoga>
-References: <cover.1617927259.git.gurus@codeaurora.org>
- <2607ca31fce40ecdb1e8c96dac0fb688c26ad722.1617927259.git.gurus@codeaurora.org>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=zS4oOL5HKDn9FDzihO/lTrV8DNOB2FWtFwRfLW84+lc=;
+        b=jFstaeIHSu5C4+wEZqpsoMqp4cOUfbGNoEBQDw0PfZhpVfFe5B7MNztelrFNHdC01D
+         jBZHKGS85mRsd+YGiHQAzslmMKSVgwHMZsg7hzH8oSJngkt1dGx9A9srxc/O4zouYlqN
+         S6nXUdpNXN8+vV/ln7G5Oj4BOLd19ki4Aq6q0BjumbtbxfbmQCzTvEHZYgbZD7q/Do9i
+         RfE4k+vCwJR/rH+87ptXov87Cbj+F8RZStH9MdLwTLHEpH6UTFJyBMPPpWHn2JZ6/A7D
+         q1Ca0m3eMzHRnfO6lkBXxYcUP77iennOwQGyeFFWj8NXC2fd3Tq8ZEPcaXXcbFe3r5gn
+         clyQ==
+X-Gm-Message-State: AOAM533g7t/qCTGlf/RBq0HNrUIRD4QYprFO0KQpAb10nlbIqKgSpKYm
+        zLB00ogCBhpZqHlkUH9Lb2Vycp0y/Uc=
+X-Google-Smtp-Source: ABdhPJySz1NAfHv3PIXFXvsVgn3JWmjNJv5JK7jE8Ok8+02GazxBMsXcAnGhSNkqNc1h1DUCqDJrQQ==
+X-Received: by 2002:a4a:d10f:: with SMTP id k15mr12474691oor.82.1617983802774;
+        Fri, 09 Apr 2021 08:56:42 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a7sm587160ooo.30.2021.04.09.08.56.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 08:56:41 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v1] watchdog: add new parameter to start the watchdog on
+ module insertion
+To:     Flavio Suligoi <f.suligoi@asem.it>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210409093434.2089459-1-f.suligoi@asem.it>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <e44f3366-cb12-7d7c-fe77-20b5bfea620d@roeck-us.net>
+Date:   Fri, 9 Apr 2021 08:56:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2607ca31fce40ecdb1e8c96dac0fb688c26ad722.1617927259.git.gurus@codeaurora.org>
+In-Reply-To: <20210409093434.2089459-1-f.suligoi@asem.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 08 Apr 19:38 CDT 2021, Guru Das Srinagesh wrote:
-
-> Add a header file listing all of the IRQs that Qualcomm Technologies,
-> Inc. PM8008 supports. The constants defined in this file may be used in
-> the client device tree node to specify interrupts.
+On 4/9/21 2:34 AM, Flavio Suligoi wrote:
+> The new parameter "start_enabled" starts the watchdog at the same time
+> of the module insertion.
+> This feature is very useful in embedded systems, to avoid cases where
+> the system hangs before reaching userspace.
 > 
-> Change-Id: I13fb096da54458f2882e8d853a3ad9c379e7d5a9
-
-Please remember to drop the Change-Id when posting to the mailing lists.
-
-
-We typically don't have defines for the IRQ numbers, but I don't mind.
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> This function can be also enabled in the kernel config, so can be
+> used when the watchdog driver is build as built-in.
+> 
+> This parameter involves the "core" section of the watchdog driver;
+> in this way it is common for all the watchdog hardware implementations.
+> 
+> Note: to use only for watchdog drivers which doesn't support this
+>       parameter by itself.
+> 
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 > ---
->  include/dt-bindings/mfd/qcom-pm8008.h | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
->  create mode 100644 include/dt-bindings/mfd/qcom-pm8008.h
+>  Documentation/watchdog/watchdog-parameters.rst |  5 +++++
+>  drivers/watchdog/Kconfig                       | 14 ++++++++++++++
+>  drivers/watchdog/watchdog_core.c               | 12 ++++++++++++
+>  3 files changed, 31 insertions(+)
 > 
-> diff --git a/include/dt-bindings/mfd/qcom-pm8008.h b/include/dt-bindings/mfd/qcom-pm8008.h
-> new file mode 100644
-> index 0000000..eca9448
-> --- /dev/null
-> +++ b/include/dt-bindings/mfd/qcom-pm8008.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2021 The Linux Foundation. All rights reserved.
-> + */
+> diff --git a/Documentation/watchdog/watchdog-parameters.rst b/Documentation/watchdog/watchdog-parameters.rst
+> index 223c99361a30..623fd064df91 100644
+> --- a/Documentation/watchdog/watchdog-parameters.rst
+> +++ b/Documentation/watchdog/watchdog-parameters.rst
+> @@ -21,6 +21,11 @@ watchdog core:
+>  	timeout. Setting this to a non-zero value can be useful to ensure that
+>  	either userspace comes up properly, or the board gets reset and allows
+>  	fallback logic in the bootloader to try something else.
+> +    start_enabled:
+> +	Watchdog is started on module insertion. This option can be also
+> +	selected by kernel config (default=kernel config parameter).
+> +	Use only for watchdog drivers which doesn't support this parameter
+> +	by itself.
+
+Why ?
+
+>  
+>  -------------------------------------------------
+>  
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 0470dc15c085..c2a668d6bbbc 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -47,6 +47,20 @@ config WATCHDOG_NOWAYOUT
+>  	  get killed. If you say Y here, the watchdog cannot be stopped once
+>  	  it has been started.
+>  
+> +config WATCHDOG_START_ENABLED
+> +	bool "Start watchdog on module insertion"
+> +	help
+> +	  Say Y if you want to start the watchdog at the same time when the
+> +	  driver is loaded.
+> +	  This feature is very useful in embedded systems, to avoid cases where
+> +	  the system could hang before reaching userspace.
+> +	  This parameter involves the "core" section of the watchdog driver,
+> +	  in this way it is common for all the watchdog hardware
+> +	  implementations.
+
+"This parameter applies to all watchdog drivers.". The rest is implementation
+detail and irrelevant here.
+
 > +
-> +#ifndef __DT_BINDINGS_MFD_QCOM_PM8008_H
-> +#define __DT_BINDINGS_MFD_QCOM_PM8008_H
+> +	  Note: to use only for watchdog drivers which doesn't support this
+> +	        parameter by itself.
 > +
-> +/* PM8008 IRQ numbers */
-> +#define PM8008_IRQ_MISC_UVLO	0
-> +#define PM8008_IRQ_MISC_OVLO	1
-> +#define PM8008_IRQ_MISC_OTST2	2
-> +#define PM8008_IRQ_MISC_OTST3	3
-> +#define PM8008_IRQ_MISC_LDO_OCP	4
-> +#define PM8008_IRQ_TEMP_ALARM	5
-> +#define PM8008_IRQ_GPIO1	6
-> +#define PM8008_IRQ_GPIO2	7
+
+This comment is quite useless in the Kconfig description. If enabled, it is enabled,
+period.
+
+>  config WATCHDOG_HANDLE_BOOT_ENABLED
+>  	bool "Update boot-enabled watchdog until userspace takes over"
+>  	default y
+> diff --git a/drivers/watchdog/watchdog_core.c b/drivers/watchdog/watchdog_core.c
+> index 5df0a22e2cb4..5052ae355219 100644
+> --- a/drivers/watchdog/watchdog_core.c
+> +++ b/drivers/watchdog/watchdog_core.c
+> @@ -43,6 +43,11 @@ static int stop_on_reboot = -1;
+>  module_param(stop_on_reboot, int, 0444);
+>  MODULE_PARM_DESC(stop_on_reboot, "Stop watchdogs on reboot (0=keep watching, 1=stop)");
+>  
+> +static bool start_enabled = IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED);
+> +module_param(start_enabled, bool, 0444);
+> +MODULE_PARM_DESC(start_enabled, "Start watchdog on module insertion (default="
+> +	__MODULE_STRING(IS_ENABLED(CONFIG_WATCHDOG_START_ENABLED)) ")");
 > +
-> +#endif
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+>  /*
+>   * Deferred Registration infrastructure.
+>   *
+> @@ -224,6 +229,13 @@ static int __watchdog_register_device(struct watchdog_device *wdd)
+>  	 * corrupted in a later stage then we expect a kernel panic!
+>  	 */
+>  
+> +	/* If required, start the watchdog immediately */
+> +	if (start_enabled) {
+> +		set_bit(WDOG_HW_RUNNING, &wdd->status);
+> +		wdd->ops->start(wdd);
+> +		pr_info("Watchdog enabled\n");
+> +	}
+> +
+>  	/* Use alias for watchdog id if possible */
+>  	if (wdd->parent) {
+>  		ret = of_alias_get_id(wdd->parent->of_node, "watchdog");
 > 
+
