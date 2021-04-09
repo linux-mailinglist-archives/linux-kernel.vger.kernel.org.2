@@ -2,102 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3026335A4E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A44DA35A50E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:57:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbhDIRpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234329AbhDIRpD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:45:03 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384FDC061763
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:44:50 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id m3so7515614edv.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:44:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=nSjCyqrsCYIpjIq/WPQfh7f6ppE3qyWXTgcaAHBDVZg=;
-        b=M67BIZxSEjlJYNXW+eYXjjHCFHMsLzlnur4qfOKyVoYViCymy5iyguGUOgW0ofYGUz
-         1syAlaZIMoPTBeQNvtQTBCv9kQL1GoeshqJreljATES3rFADT5/4Ir/jgyJu8c9Jd2Qn
-         taWv0sH3mtSirfyXSQPpT3nhNSsHJpPgjLbimB+7n5E0IAj4xJXhNmrWTCD0LcP3jIeX
-         uF1PWlZdtsYpvxW5cv7QDbEN8SDksByWD3T2zjXXgWNOdtWwQyh98O1pHHS59Qp7ZlHp
-         4B8s57yeiXvcjmwQX85ASm0czIwVa1J51BMjfWHH4/tffHwxwUYQJyJa09+6sZBSzdFA
-         bFGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=nSjCyqrsCYIpjIq/WPQfh7f6ppE3qyWXTgcaAHBDVZg=;
-        b=ctIk692CoYvFXU3XBTzVMGsyI8mQAoYMi1UTItdC5++slFY/uTOBgmFTn5iuB94ovS
-         1z2xrDWnxgein8gDoDFHObeHxdPhU+43iLlwjTHkLeS4NT62dosk6QCN9nBiisJ1tyav
-         zQXHMWK+VfHJpg5jEW2a9Di2FXDO9wn5eQBftRSC0Tii/QHwOFKSGY/m7Y4oLLNPEIXm
-         j1FZZ28dVvFQPk4p2lHQAy/egADInlTHDoBs/9brdZiRkjo6NgQ/SYBHyo5RFTzQRgiR
-         wKsxmKs2uVvxTBiofd/Yw9dwDh+bUMHJB9zs4EN9Njcrz/Xx10L211upaHinYscojGsY
-         uGtw==
-X-Gm-Message-State: AOAM5336dkecnnKJlWDmGNawFN926RgyfjpxtypuW/wdfCod8vFB/H1p
-        Yx7O/0Smwlg2VkF8ws3D8BhlRZxY0afTcWZUoEtW
-X-Google-Smtp-Source: ABdhPJx90ZIIuFo2jn8xwq3lr2Xj/Vsuta9Az/QMVDn78N2gX3QFhsmKupUsjNpnaLqtCeEsRuNGFiJCt3olsd1KEvo=
-X-Received: by 2002:a05:6402:3c7:: with SMTP id t7mr18723463edw.196.1617990288812;
- Fri, 09 Apr 2021 10:44:48 -0700 (PDT)
-MIME-Version: 1.0
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 9 Apr 2021 13:44:38 -0400
-Message-ID: <CAHC9VhS20dq3FNQjpYX+BkHw=PSc-CrzUaZj_Cg9RBcZ3Ck9xg@mail.gmail.com>
-Subject: [GIT PULL] SELinux fixes for v5.12 (#2)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S234430AbhDIR5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:57:50 -0400
+Received: from gate.crashing.org ([63.228.1.57]:54049 "EHLO gate.crashing.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234409AbhDIR5s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 13:57:48 -0400
+Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
+        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 139HjBG4002289;
+        Fri, 9 Apr 2021 12:45:11 -0500
+Received: (from segher@localhost)
+        by gate.crashing.org (8.14.1/8.14.1/Submit) id 139Hj6hE002280;
+        Fri, 9 Apr 2021 12:45:06 -0500
+X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
+Date:   Fri, 9 Apr 2021 12:45:06 -0500
+From:   Segher Boessenkool <segher@kernel.crashing.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Xiongwei Song <sxwjean@me.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org, oleg@redhat.com,
+        npiggin@gmail.com, aneesh.kumar@linux.ibm.com,
+        ravi.bangoria@linux.ibm.com, mikey@neuling.org,
+        haren@linux.ibm.com, akpm@linux-foundation.org, rppt@kernel.org,
+        jniethe5@gmail.com, atrajeev@linux.vnet.ibm.com,
+        maddy@linux.ibm.com, peterz@infradead.org, kjain@linux.ibm.com,
+        kan.liang@linux.intel.com, aik@ozlabs.ru, alistair@popple.id.au,
+        pmladek@suse.com, john.ogness@linutronix.de,
+        Xiongwei Song <sxwjean@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] powerpc/traps: Enhance readability for trap types
+Message-ID: <20210409174506.GH26583@gate.crashing.org>
+References: <20210408140750.26832-1-sxwjean@me.com> <70ece993-12bd-335c-d246-914564eb51dd@csgroup.eu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <70ece993-12bd-335c-d246-914564eb51dd@csgroup.eu>
+User-Agent: Mutt/1.4.2.3i
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Apr 09, 2021 at 06:14:19PM +0200, Christophe Leroy wrote:
+> >+#define INTERRUPT_SYSTEM_RESET    0x100
+> 
+> INT_SRESET
 
-I realize we are getting late in the v5.12-rcX release cycle, but we
-have three SELinux patches which I believe should be merged before the
-proper v5.12 release.  The patches fix known problems relating to
-(re)loading SELinux policy or changing the policy booleans, and pass
-our test suite without problem.  As of a few minutes ago, the tag
-below also merged cleanly into your tree.
+SRESET exists on many PowerPC, it means "soft reset".  Not the same
+thing at all.
 
-Please pull for the next v5.12-rcX release, thanks.
--Paul
+I think "INT" is not a great prefix fwiw, there are many things you can
+abbr to "INT".
 
---
-The following changes since commit ee5de60a08b7d8d255722662da461ea159c15538:
+> >+#define INTERRUPT_DATA_SEGMENT    0x380
+> 
+> INT_DSEG
 
- selinuxfs: unify policy load error reporting (2021-03-18 23:26:59 -0400)
+exceptions-64s.S calls this "DSLB" (I remember "DSSI" though -- but neither
+is a very official name).  It probably is a good idea to look at that
+existing code, not make up even more new names :-)
 
-are available in the Git repository at:
+> >+#define INTERRUPT_DOORBELL        0xa00
+> 
+> INT_DBELL
 
- git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
-   tags/selinux-pr-20210409
+That saves three characters and makes it very not understandable.
 
-for you to fetch changes up to 9ad6e9cb39c66366bf7b9aece114aca277981a1f:
 
- selinux: fix race between old and new sidtab (2021-04-07 20:42:56 -0400)
-
-----------------------------------------------------------------
-selinux/stable-5.12 PR 20210409
-
-----------------------------------------------------------------
-Ondrej Mosnacek (3):
-     selinux: make nslot handling in avtab more robust
-     selinux: fix cond_list corruption when changing booleans
-     selinux: fix race between old and new sidtab
-
-security/selinux/ss/avtab.c       | 101 ++++++++----------------
-security/selinux/ss/avtab.h       |   2 +-
-security/selinux/ss/conditional.c |  12 +--
-security/selinux/ss/services.c    | 157 +++++++++++++++++++++++++++-------
-security/selinux/ss/sidtab.c      |  21 +++++
-security/selinux/ss/sidtab.h      |   4 +
-6 files changed, 185 insertions(+), 112 deletions(-)
-
--- 
-paul moore
-www.paul-moore.com
+Segher
