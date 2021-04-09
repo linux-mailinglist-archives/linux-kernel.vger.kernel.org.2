@@ -2,59 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9491335A77D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7353E35A784
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234477AbhDIT7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:59:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37250 "EHLO mail.kernel.org"
+        id S234560AbhDIT7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:59:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234412AbhDIT7j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:59:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 31CE960234;
-        Fri,  9 Apr 2021 19:59:26 +0000 (UTC)
+        id S234006AbhDIT7o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 15:59:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AAC0E610F9;
+        Fri,  9 Apr 2021 19:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617998366;
-        bh=T0BSgdVLpRmBgAnPWTejDSc98krY1A2GeGxW7OYNlPI=;
+        s=k20201202; t=1617998370;
+        bh=gfXKKduWvd16y/NVGts30IJAqi1mgL3khm3hFyE8yfY=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=h6n8CG1y3Hh82AW2u/KCJdghGObaMSML6iTd/RaOPXpAYSu0DTqgP5JBcf5JbYp+S
-         fgFfid2xVOzUMKzVTLCk5ImBMibwn6UijzUqrb3yAiKU6IaSv5hIRWrH1NPBL/kI+b
-         SLRVmsnFFkE/rxEOgJIJxUZ4v+8nuPQn8A5mGs8Xj8H0RnX6yr1sF1rTed/7QZLTSr
-         v3M7jRvGH0Bwb/H490oHN4IvpN9TtcMkdRhTQvCBVNrQf0jPYoPnqZtkSQIn3/aLME
-         0Gf2CdLtNemF1IhDUVbo8kZ11dOhEDYnB//w8Zo3CxYtdKzBuBr67kCHO2boHl8G1Z
-         LbPLS2o6dJ1zQ==
+        b=PLGUuLtjTFd/4Ra6ycb3oimTH+KRQF344E2XkeSUoqNGfaK5UazbBYzqjKxcvLZHO
+         CxchqZdly07tEd/5VD3diFKXZzL8CL7YJTn/rw+kxNtXkH5GdgKHIWKK5fl7IFReYa
+         bm4euSf+sVErEvv5lhM3gFj7nuwiUQnpYS4CPiUIeLw14DTqysPlqJaGMDsvFoAvRw
+         7gBvKU48WkgsC+bwCuLDwQdbICqZ2p1H082nsp1gB3Er56f2tMqP6g27S0P418FI/a
+         1gjwJFTu+cue73sh9rWpvbUQY9ETVMXYrsQPnOmzXnl3DB5Zl9fpMDvv4fCy+UGuj/
+         OAS7mNyeWEp+Q==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2D12B60A71;
-        Fri,  9 Apr 2021 19:59:26 +0000 (UTC)
-Subject: Re: [git pull] drm fixes for 5.12-rc7
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A6A3360A2A;
+        Fri,  9 Apr 2021 19:59:30 +0000 (UTC)
+Subject: Re: [GIT PULL] SELinux fixes for v5.12 (#2)
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAPM=9tzEK7pEZ54TMCMc0yLto5QhnBjGE0X6X6Ca+N9EAc+U=w@mail.gmail.com>
-References: <CAPM=9tzEK7pEZ54TMCMc0yLto5QhnBjGE0X6X6Ca+N9EAc+U=w@mail.gmail.com>
-X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
- <dri-devel.lists.freedesktop.org>
-X-PR-Tracked-Message-Id: <CAPM=9tzEK7pEZ54TMCMc0yLto5QhnBjGE0X6X6Ca+N9EAc+U=w@mail.gmail.com>
-X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-10
-X-PR-Tracked-Commit-Id: bd119f471299c8692a00b2f5e9bba8e3b81c3466
+In-Reply-To: <CAHC9VhS20dq3FNQjpYX+BkHw=PSc-CrzUaZj_Cg9RBcZ3Ck9xg@mail.gmail.com>
+References: <CAHC9VhS20dq3FNQjpYX+BkHw=PSc-CrzUaZj_Cg9RBcZ3Ck9xg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAHC9VhS20dq3FNQjpYX+BkHw=PSc-CrzUaZj_Cg9RBcZ3Ck9xg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20210409
+X-PR-Tracked-Commit-Id: 9ad6e9cb39c66366bf7b9aece114aca277981a1f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a85f165e1f38c0a5a6e671ce8126a8cafe35af09
-Message-Id: <161799836617.7895.18282958904138240237.pr-tracker-bot@kernel.org>
-Date:   Fri, 09 Apr 2021 19:59:26 +0000
-To:     Dave Airlie <airlied@gmail.com>
+X-PR-Merge-Commit-Id: 60144b23c94216b4aca6fba90dca9349183f39e1
+Message-Id: <161799837067.7895.9178581619464856698.pr-tracker-bot@kernel.org>
+Date:   Fri, 09 Apr 2021 19:59:30 +0000
+To:     Paul Moore <paul@paul-moore.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 10 Apr 2021 05:46:21 +1000:
+The pull request you sent on Fri, 9 Apr 2021 13:44:38 -0400:
 
-> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-04-10
+> git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git tags/selinux-pr-20210409
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a85f165e1f38c0a5a6e671ce8126a8cafe35af09
+https://git.kernel.org/torvalds/c/60144b23c94216b4aca6fba90dca9349183f39e1
 
 Thank you!
 
