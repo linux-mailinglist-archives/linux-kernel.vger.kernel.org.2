@@ -2,55 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A83B35A5BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 728EB35A5C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhDIS2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:28:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42922 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234428AbhDIS2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:28:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9824361105;
-        Fri,  9 Apr 2021 18:28:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617992900;
-        bh=ZjTb7n32uw4wMA+eHxn6r1KYvlmplQcu3k1hzR0l62M=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=r33BdEHxpsmig2EJQYmrLMJyHJMS55VZLZ7v6Ku5rwTKZzg++Fykk0JlCLaBWvQHI
-         tsVGL4eZ3fw2kTf+30zV2ASbLRsN14ndcYYp4Zr2bQSlAzUn16t9MhaRI/1sPQYpnA
-         c8+nMIFNhX6F+lUeseGfAsMHl7wK9QoKYY24BCPDyxSHfvbIDhOGkZueHx4YYF/pZ/
-         CkZMgH9YHRtkBGZh7jP/47oFgLfXDIXxauCaLGy1c1PB0/SZz6Fk8SEr29rBlkjAm4
-         DB+02u9eONiKKbau5JbF0O+HZBydnSBzVjXjCUKlU1gmit54aFtOIIc2oO94KKJWZu
-         mDWWvZH4RB1rw==
-Content-Type: text/plain; charset="utf-8"
+        id S234534AbhDIS3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:29:45 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:57815 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234375AbhDIS3n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 14:29:43 -0400
+X-Greylist: delayed 42111 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 14:29:42 EDT
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 139ISwmU005372;
+        Sat, 10 Apr 2021 03:28:58 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 139ISwmU005372
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617992938;
+        bh=eCHNQxRkz9e15GI5IVdo8WG8vYYPK2jIVucpCRZPvu4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=wzeCXPVluHCxg3fnohDIUPMXIbzAl1lSWdH+uBypkjqRP1UyjlZ1nKguyxvXBPTdy
+         jpdyo3IP10LqjEpvElHHuwzPCbBCq2JNSlgriAFo+utDfUPEONKvZVmDe2Gor5e3A5
+         LO+j6mSgWfGxJRmLYELLmBGH7r9lJsy0nWgZyyIr4Uii7Q0R4WW9TFG5HNfY3ySjcR
+         ggvVHC8/dEvKlkFisOWsa0n7V5UNn4OGOYSpVh3Qi3PHJ9Y9lofBNvg2noE4/YDHZA
+         IcrNv3RN+WAStMxsM2tXmoTxgBRig8uEK67oIYclPL+d2jjCewjt9/eq/9dGgHBp1K
+         XcHNOb58ioXYA==
+X-Nifty-SrcIP: [209.85.210.179]
+Received: by mail-pf1-f179.google.com with SMTP id a85so4346499pfa.0;
+        Fri, 09 Apr 2021 11:28:58 -0700 (PDT)
+X-Gm-Message-State: AOAM533OjuZ1v87lAJuPySo2F6t/h6YrzK/eYO8ZAs5n9q9yxeYQxfS8
+        wClQ0QK0a68DB3ti1ttcsL9qMY2QlZRSwtdZst8=
+X-Google-Smtp-Source: ABdhPJx+7CPnY7PSLGsEDahPM2MF01RlsoL9wBaM+MVI/s46yFs+CWjOlD0LDR4VTzqRmJfqkVv6VqDDhNTTx2NFltg=
+X-Received: by 2002:aa7:956d:0:b029:1f1:5ba6:2a58 with SMTP id
+ x13-20020aa7956d0000b02901f15ba62a58mr13742848pfq.63.1617992937777; Fri, 09
+ Apr 2021 11:28:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210409082352.233810-3-clare.chenhui@huawei.com>
-References: <20210409082352.233810-1-clare.chenhui@huawei.com> <20210409082352.233810-3-clare.chenhui@huawei.com>
-Subject: Re: [PATCH v2 -next 2/3] clk: qcom: a53-pll: Add missing MODULE_DEVICE_TABLE
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     Chen Hui <clare.chenhui@huawei.com>, agross@kernel.org,
-        bjorn.andersson@linaro.org, georgi.djakov@linaro.org,
-        mani@kernel.org, mturquette@baylibre.com, sivaprak@codeaurora.org
-Date:   Fri, 09 Apr 2021 11:28:19 -0700
-Message-ID: <161799289939.3790633.6073793226576336797@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+References: <20210409090104.629722-1-colin.king@canonical.com> <20210409090104.629722-2-colin.king@canonical.com>
+In-Reply-To: <20210409090104.629722-2-colin.king@canonical.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sat, 10 Apr 2021 03:28:21 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS=cFxQ3Z3GPdQfwB8DBLDbY9Oxm+yK9cjz116HZ8OKAw@mail.gmail.com>
+Message-ID: <CAK7LNAS=cFxQ3Z3GPdQfwB8DBLDbY9Oxm+yK9cjz116HZ8OKAw@mail.gmail.com>
+Subject: Re: [PATCH][V2] clk: uniphier: Fix potential infinite loop
+To:     Colin King <colin.king@canonical.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Chen Hui (2021-04-09 01:23:51)
-> CONFIG_QCOM_A53PLL is tristate option and therefore this driver can be
-> compiled as a module. This patch adds missing MODULE_DEVICE_TABLE
-> definition which generates correct modalias for automatic loading of
-> this driver when it is built as an external module.
->=20
-> Fixes: 0c6ab1b8f894 ("clk: qcom: Add A53 PLL support")
-> Signed-off-by: Chen Hui <clare.chenhui@huawei.com>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Fri, Apr 9, 2021 at 6:01 PM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The for-loop iterates with a u8 loop counter i and compares this
+> with the loop upper limit of num_parents that is an int type.
+> There is a potential infinite loop if num_parents is larger than
+> the u8 loop counter. Fix this by making the loop counter the same
+> type as num_parents.  Also make num_parents an unsigned int to
+> match the return type of the call to clk_hw_get_num_parents.
+>
+> Addresses-Coverity: ("Infinite loop")
+> Fixes: 734d82f4a678 ("clk: uniphier: add core support code for UniPhier clock driver")
+>
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
+>
+> V2: Make num_parents an unsigned int to match return type of
+>     clk_hw_get_num_parents().
 
-Applied to clk-next
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+
+
+
+
+> ---
+>  drivers/clk/uniphier/clk-uniphier-mux.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/clk/uniphier/clk-uniphier-mux.c b/drivers/clk/uniphier/clk-uniphier-mux.c
+> index 462c84321b2d..1998e9d4cfc0 100644
+> --- a/drivers/clk/uniphier/clk-uniphier-mux.c
+> +++ b/drivers/clk/uniphier/clk-uniphier-mux.c
+> @@ -31,10 +31,10 @@ static int uniphier_clk_mux_set_parent(struct clk_hw *hw, u8 index)
+>  static u8 uniphier_clk_mux_get_parent(struct clk_hw *hw)
+>  {
+>         struct uniphier_clk_mux *mux = to_uniphier_clk_mux(hw);
+> -       int num_parents = clk_hw_get_num_parents(hw);
+> +       unsigned int num_parents = clk_hw_get_num_parents(hw);
+>         int ret;
+>         unsigned int val;
+> -       u8 i;
+> +       unsigned int i;
+>
+>         ret = regmap_read(mux->regmap, mux->reg, &val);
+>         if (ret)
+> --
+> 2.30.2
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
