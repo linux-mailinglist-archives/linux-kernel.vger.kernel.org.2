@@ -2,129 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D18E3599D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:51:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A929635998B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhDIJwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:52:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhDIJwD (ORCPT
+        id S232846AbhDIJng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:43:36 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16507 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232286AbhDIJne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:52:03 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DAD9C061760;
-        Fri,  9 Apr 2021 02:51:51 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id z16so3503258pga.1;
-        Fri, 09 Apr 2021 02:51:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=835Zi1xTmXJGXAKE9J8dlAI7VhoZUO683V3q48FcZac=;
-        b=sFZA1KURzYxVfNqPMbAd7kOI8nAXYDBBkDp2lXqno5ehHUF0HY6pdl6TQdcRNy7B9l
-         4394fjcntVMReHZRGPCLcI560NL5JjHY805ktidW4xX52LLrSlm4oH6xn4R0wN3UBd1l
-         T8x51L3OBXnP8n2b1KfP87k2WFvVCAEHyCzhiBVY2gL3bYk/LEUcnMs48ksgtgQMvCKF
-         0tdm4Vacdlq3ywbRwNPK6wnWoiWhSENFS0WIxS3g/V28ZmFX1snmg4xMnOJsCOHED3yE
-         6jikz9rVOhqcZyOg58Ncd/zht+6knivVAqzcKf/QsqgHerSkfyHUTuul60DTsF/yewd7
-         eZmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=835Zi1xTmXJGXAKE9J8dlAI7VhoZUO683V3q48FcZac=;
-        b=RIXmftcgCMFjIhUM+KyqMFSkXFXpKeCXKcSgFjRQ03091IpOI8N+pKOHaDAzYy+vNG
-         b/lmS39hMTe33F2IH3Uen8Z1EX190LPEw1ijkuV+9lCtnsNYZlFqhaBWGsB0qQIa6xD8
-         DqWqfMFmbZh2F8GGeigv5Mlv/mLAe0/2yqym2PHRDHt6j8QqVYpk+u+Kg6Lg2ED+H8kV
-         7nbym+aMtmsf4a/QlRxSfwxjoHVFDBt8ooGQrbj5zNuSahi2IeDv7FzgGPaeszlToC48
-         Lbox1PMIXjUshIxTDAygEiOTLDxn/ZQxFnXZN2CJSq5UY+8JnRMoElhwmUqfEE7Tx0x5
-         S2Bw==
-X-Gm-Message-State: AOAM530Cd13lb5F4tOmRI47yunWf9kF7nUwqoRH8DDnvkpH2MNnd/9Lh
-        EGJ3g8pZf+AXHLDEPbaBZwgc2zUHUwctdLOmNs4=
-X-Google-Smtp-Source: ABdhPJwHvBsJQE4ylmZcWPrAUIq/SkKRzEotMiouB2sMwJnEEC0377S6hgWN898bfdz+ZUvTZ9V6cqy4TPYEfnaOV20=
-X-Received: by 2002:a63:c48:: with SMTP id 8mr12275599pgm.74.1617961910677;
- Fri, 09 Apr 2021 02:51:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210408011637.5361-1-zev@bewilderbeest.net> <20210408011637.5361-3-zev@bewilderbeest.net>
- <CAHp75Vd6kk0E-kALEGOhsg=YHKhmKLY6cpCTdviOFenO4p1-2A@mail.gmail.com> <YHAEfn4li6F8L9JC@hatter.bewilderbeest.net>
-In-Reply-To: <YHAEfn4li6F8L9JC@hatter.bewilderbeest.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 9 Apr 2021 12:51:34 +0300
-Message-ID: <CAHp75VfpE-AvhzN216KwJvxQ25euGTN_kziJ0hKxYCOXXA2BTw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/4] drivers/tty/serial/8250: refactor sirq and lpc
- address setting code
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Joel Stanley <joel@jms.id.au>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
+        Fri, 9 Apr 2021 05:43:34 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGtR46CzZzPpTF;
+        Fri,  9 Apr 2021 17:40:32 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS405-HUB.china.huawei.com
+ (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 17:43:10 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <yebin10@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Michal Simek <michal.simek@xilinx.com>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] char: xilinx_hwicap: use DEFINE_MUTEX() for mutex lock
+Date:   Fri, 9 Apr 2021 17:51:36 +0800
+Message-ID: <20210409095136.2293754-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.25.4
+MIME-Version: 1.0
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 10:38 AM Zev Weiss <zev@bewilderbeest.net> wrote:
->
-> On Fri, Apr 09, 2021 at 02:24:08AM CDT, Andy Shevchenko wrote:
-> >On Thursday, April 8, 2021, Zev Weiss <zev@bewilderbeest.net> wrote:
-> >
-> >> This splits dedicated aspeed_vuart_set_{sirq,lpc_address}() functions
-> >> out of the sysfs store functions in preparation for adding DT
-> >> properties that will be poking the same registers.  While we're at it,
-> >> these functions now provide some basic bounds-checking on their
-> >> arguments.
-> >>
-> >>
-> >
-> >Please, use prefix =E2=80=9Cserial: 8250_aspeed_vuart:=E2=80=9D instead =
-of what you have in
-> >the subject line. I think I have told this already
-> >
-> >
->
-> Ah, sorry -- I fixed the cover letter after your first comment (which
-> had definitely been under-tagged); for the patches themselves I was
-> following the example of the last patch in that particular area
-> (8d310c9107a2), though I guess that wasn't the right model to follow.
-> I'll use the requested format in the future.
+mutex lock can be initialized automatically with DEFINE_MUTEX()
+rather than explicitly calling mutex_init().
 
-Just random amount of most recent patches against 8250 driver:
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ drivers/char/xilinx_hwicap/xilinx_hwicap.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-e47eb5241a8f serial: 8250: Avoid new transfers when shutting down
-e49950d3e737 serial: 8250_dma: use linear buffer for transmit
-34255381fabd serial: 8250_port: Try to run DMA Rx on timeout condition
-7d7dec450a66 8250_tegra: clean up tegra_uart_handle_break
-c3ae3dc896fa serial: 8250_pci: Drop bogus __refdata annotation
-d96f04d347e4 serial: 8250_omap: Avoid FIFO corruption caused by MDR1 access
-6e4e636e0e3e serial: 8250-mtk: Fix reference leak in mtk8250_probe
-a609c58086e3 tty: serial: 8250: 8250_port: Move prototypes to shared locati=
-on
-6f9918504129 serial: 8250: 8250_omap: Fix unused variable warning
-d4548b14dd7e serial: 8250: 8250_omap: Fix possible array out of bounds acce=
-ss
-912ab37c7987 serial: 8250_mtk: Fix uart_get_baud_rate warning
-439c7183e5b9 serial: 8250: 8250_omap: Disable RX interrupt after DMA enable
-32ed248042d1 tty: serial: 8250: serial_cs: Remove unused/unchecked
-variable 'err'
-85985a3dcd74 serial: 8250_dw: Fix clk-notifier/port suspend deadlock
-c8dff3aa8241 serial: 8250: Skip uninitialized TTY port baud rate update
-7718453e3696 serial: 8250: Discard RTS/DTS setting from clock update method
-409cc4541ade serial: 8250_fsl: Fix TX interrupt handling condition
-3c5a87be170a serial: 8250_pci: Add Realtek 816a and 816b
-ea4de367e57d tty: serial: 8250_mtk: set regshift for mmio32
-57cee0713118 serial: 8250_pci: Remove unused function get_pci_irq()
-11361610b005 serial: 8250_fsl: Add ACPI support
+diff --git a/drivers/char/xilinx_hwicap/xilinx_hwicap.c b/drivers/char/xilinx_hwicap/xilinx_hwicap.c
+index 067396bedf22..4d586233dfa4 100644
+--- a/drivers/char/xilinx_hwicap/xilinx_hwicap.c
++++ b/drivers/char/xilinx_hwicap/xilinx_hwicap.c
+@@ -111,7 +111,7 @@
+ /* An array, which is set to true when the device is registered. */
+ static DEFINE_MUTEX(hwicap_mutex);
+ static bool probed_devices[HWICAP_DEVICES];
+-static struct mutex icap_sem;
++static DEFINE_MUTEX(icap_sem);
+ 
+ static struct class *icap_class;
+ 
+@@ -857,7 +857,6 @@ static int __init hwicap_module_init(void)
+ 	int retval;
+ 
+ 	icap_class = class_create(THIS_MODULE, "xilinx_config");
+-	mutex_init(&icap_sem);
+ 
+ 	devt = MKDEV(XHWICAP_MAJOR, XHWICAP_MINOR);
+ 	retval = register_chrdev_region(devt,
 
-
-
-
---=20
-With Best Regards,
-Andy Shevchenko
