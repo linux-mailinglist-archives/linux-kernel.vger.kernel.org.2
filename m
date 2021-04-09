@@ -2,140 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BFF359E35
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:05:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA82C359E2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhDIMFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:05:11 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15656 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhDIMFJ (ORCPT
+        id S232295AbhDIMER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhDIMEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:05:09 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGxZR0rgHzpWs6;
-        Fri,  9 Apr 2021 20:02:07 +0800 (CST)
-Received: from DESKTOP-EFRLNPK.china.huawei.com (10.174.176.196) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 9 Apr 2021 20:04:47 +0800
-From:   Qiheng Lin <linqiheng@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <njavali@marvell.com>, <mrangankar@marvell.com>,
-        <GR-QLogic-Storage-Upstream@marvell.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Qiheng Lin <linqiheng@huawei.com>
-Subject: [PATCH -next] scsi: qla4xxx: remove unneeded if-null-free check
-Date:   Fri, 9 Apr 2021 20:03:45 +0800
-Message-ID: <20210409120345.6447-1-linqiheng@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 9 Apr 2021 08:04:13 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF9AC061760;
+        Fri,  9 Apr 2021 05:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=g2GtkY2xyVbfP4oncgBQ7PLvMs7xcQF1ze4EUV6e/8Y=; b=Qieuquf7P91tQQwsSThvYUsod8
+        5PccWzw+284JyKvO414g0rn6cPXUMmUJs93UxzrVtJNnWbBDAiVsOfRkOVxT5VzuSQBol67qnR2df
+        9KVJCVv9C+jJIFjb1ntEhTJX8oKitk5rjtB8bSPYV5X6GldrorN0UoazNLTx7KFd1+nqmt5ZzvntG
+        bAqSBJQmGAQjjxB69uiGvvsGihUVre8QshxywElka04dG1lGRvwsg+rMQxyd6uWK7pgQE3jZEMHIK
+        KDyDfCPm0nW/rlh1uGcepfzy8Yxn4PDDtimH5XzkrjjnI+EzxIkXSS++HMmzGL8YCIWkLC2Fe8MrT
+        FO1Plxig==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUprX-000gi0-5M; Fri, 09 Apr 2021 12:03:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 68AD1300084;
+        Fri,  9 Apr 2021 14:03:46 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2EB542BDB13FE; Fri,  9 Apr 2021 14:03:46 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 14:03:46 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Malcolm <dmalcolm@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-toolchains@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: Re: static_branch/jump_label vs branch merging
+Message-ID: <YHBCoijoopbsDn29@hirez.programming.kicks-ass.net>
+References: <YG80wg/2iZjXfCDJ@hirez.programming.kicks-ass.net>
+ <CAMj1kXGngxH0VCHyREKeLau=159sRkWYKVZwOV84r6dvCqXcig@mail.gmail.com>
+ <YHA2jPIaj0p23mv8@hirez.programming.kicks-ass.net>
+ <5f78b7e2f9ae937271ef52ee9e999a91c2719da9.camel@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [10.174.176.196]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f78b7e2f9ae937271ef52ee9e999a91c2719da9.camel@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
+On Fri, Apr 09, 2021 at 07:55:42AM -0400, David Malcolm wrote:
+> On Fri, 2021-04-09 at 13:12 +0200, Peter Zijlstra wrote:
+> > On Fri, Apr 09, 2021 at 11:57:22AM +0200, Ard Biesheuvel wrote:
+> > > On Thu, 8 Apr 2021 at 18:53, Peter Zijlstra <peterz@infradead.org>
+> > > wrote:
+> > 
+> > > > Is there *any* way in which we can have the compiler recognise
+> > > > that the
+> > > > asm_goto only depends on its arguments and have it merge the
+> > > > branches
+> > > > itself?
+> > > > 
+> > > > I do realize that asm-goto being volatile this is a fairly huge
+> > > > ask, but
+> > > > I figured I should at least raise the issue, if only to raise
+> > > > awareness.
+> > > > 
+> > > 
+> > > Wouldn't that require the compiler to interpret the contents of the
+> > > asm() block?
+> > 
+> > Yeah, this is more or less asking for ponies :-) One option would be
+> > some annotation that conveys the desired semantics without it having
+> > to
+> > untangle the mess in the asm block.
+> > 
+> > The thing the compiler needs to know is that the branch is constant
+> > for
+> > any @key, and hence allow the obvious optimizations. I'm not sure if
+> > this is something compiler folks would be even willing to consider,
+> > but
+> > I figured asking never hurts.
+> > 
+> 
+> Sorry if this is a dumb question, but does the function attribute:
+>   __attribute__ ((pure)) 
+> help here?  It's meant to allow multiple calls to a predicate to be
+> merged - though I'd be nervous of using it here, the predicate isn't
+> 100% pure, since AIUI the whole point of what you've built is for
+> predicates that very rarely change - but can change occasionally.
 
-drivers/scsi/qla4xxx/ql4_os.c:4175:2-7: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/scsi/qla4xxx/ql4_os.c:4196:2-7: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/scsi/qla4xxx/ql4_os.c:4215:2-7: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/scsi/qla4xxx/ql4_os.c:6400:2-7: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/scsi/qla4xxx/ql4_os.c:6402:2-7: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/scsi/qla4xxx/ql4_os.c:6555:2-7: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/scsi/qla4xxx/ql4_os.c:6557:2-7: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/scsi/qla4xxx/ql4_os.c:7838:2-7: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/scsi/qla4xxx/ql4_os.c:7840:2-7: WARNING:
- NULL check before some freeing functions is not needed.
-
-Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
----
- drivers/scsi/qla4xxx/ql4_os.c | 27 +++++++++------------------
- 1 file changed, 9 insertions(+), 18 deletions(-)
-
-diff --git a/drivers/scsi/qla4xxx/ql4_os.c b/drivers/scsi/qla4xxx/ql4_os.c
-index 867730ed21f7..ad3afe30f617 100644
---- a/drivers/scsi/qla4xxx/ql4_os.c
-+++ b/drivers/scsi/qla4xxx/ql4_os.c
-@@ -4171,8 +4171,7 @@ static void qla4xxx_mem_free(struct scsi_qla_host *ha)
- 		dma_free_coherent(&ha->pdev->dev, ha->queues_len, ha->queues,
- 				  ha->queues_dma);
- 
--	if (ha->fw_dump)
--		vfree(ha->fw_dump);
-+	vfree(ha->fw_dump);
- 
- 	ha->queues_len = 0;
- 	ha->queues = NULL;
-@@ -4192,8 +4191,7 @@ static void qla4xxx_mem_free(struct scsi_qla_host *ha)
- 
- 	dma_pool_destroy(ha->chap_dma_pool);
- 
--	if (ha->chap_list)
--		vfree(ha->chap_list);
-+	vfree(ha->chap_list);
- 	ha->chap_list = NULL;
- 
- 	dma_pool_destroy(ha->fw_ddb_dma_pool);
-@@ -4211,8 +4209,7 @@ static void qla4xxx_mem_free(struct scsi_qla_host *ha)
- 		iounmap(ha->reg);
- 	}
- 
--	if (ha->reset_tmplt.buff)
--		vfree(ha->reset_tmplt.buff);
-+	vfree(ha->reset_tmplt.buff);
- 
- 	pci_release_regions(ha->pdev);
- }
-@@ -6396,10 +6393,8 @@ static int qla4xxx_is_session_exists(struct scsi_qla_host *ha,
- 	}
- 
- exit_check:
--	if (fw_tddb)
--		vfree(fw_tddb);
--	if (tmp_tddb)
--		vfree(tmp_tddb);
-+	vfree(fw_tddb);
-+	vfree(tmp_tddb);
- 	return ret;
- }
- 
-@@ -6551,10 +6546,8 @@ static int qla4xxx_is_flash_ddb_exists(struct scsi_qla_host *ha,
- 	}
- 
- exit_check:
--	if (fw_tddb)
--		vfree(fw_tddb);
--	if (tmp_tddb)
--		vfree(tmp_tddb);
-+	vfree(fw_tddb);
-+	vfree(tmp_tddb);
- 	return ret;
- }
- 
-@@ -7834,10 +7827,8 @@ static int qla4xxx_sysfs_ddb_logout(struct iscsi_bus_flash_session *fnode_sess,
- 		ret = -ESRCH;
- 
- exit_ddb_logout:
--	if (flash_tddb)
--		vfree(flash_tddb);
--	if (tmp_tddb)
--		vfree(tmp_tddb);
-+	vfree(flash_tddb);
-+	vfree(tmp_tddb);
- 	if (fw_ddb_entry)
- 		dma_pool_free(ha->fw_ddb_dma_pool, fw_ddb_entry, fw_ddb_dma);
- 
--- 
-2.31.1
-
+I actually tried that, but it doesn't seem to work. Given the function
+arguments are all compile time constants it should DTRT AFAICT, but
+alas.
