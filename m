@@ -2,198 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468CD359F5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:55:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E141359F62
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233863AbhDIMzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:55:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37881 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233877AbhDIMzE (ORCPT
+        id S233763AbhDIMz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233267AbhDIMz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:55:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617972891;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=huJU/7eTGA9L+HVGecfG2Pp+AIuWsVkRoZrlV5LSukk=;
-        b=D5zv9JUlIFj1Ud+6k8CnLLF1k+c92Y3dS0OH4a7PsqiNzz50dtqSHgnTUaRKrguebiLJQ1
-        aepROYyinAonulbZlDFAi3GFPm3IhWVfDrf9FgdLbq9vp+wAi+Xx3cs+tzQuO24tmAhyY7
-        NK6g4ALvEtZ3UXjgbiXJWBgjD0zdj6c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-17-iD8Z1nnIMTiIhR0FV3YwtA-1; Fri, 09 Apr 2021 08:54:49 -0400
-X-MC-Unique: iD8Z1nnIMTiIhR0FV3YwtA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 90D46107ACCA;
-        Fri,  9 Apr 2021 12:54:47 +0000 (UTC)
-Received: from localhost.localdomain.com (ovpn-114-61.ams2.redhat.com [10.36.114.61])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BEFD310013C1;
-        Fri,  9 Apr 2021 12:54:43 +0000 (UTC)
-From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v5 4/4] selftests: KVM: extend get_cpuid_test to include KVM_GET_EMULATED_CPUID
-Date:   Fri,  9 Apr 2021 14:54:23 +0200
-Message-Id: <20210409125423.26288-5-eesposit@redhat.com>
-In-Reply-To: <20210409125423.26288-1-eesposit@redhat.com>
-References: <20210409125423.26288-1-eesposit@redhat.com>
+        Fri, 9 Apr 2021 08:55:57 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF13BC061760;
+        Fri,  9 Apr 2021 05:55:43 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id a1so6363777ljp.2;
+        Fri, 09 Apr 2021 05:55:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=z3wFYyzO04/nplltFnv9EO/HsXFohiYyEY626pT7Qy4=;
+        b=N5IB0mR1anzwmgyEkin8MFYd382dilaOTkdDf6VE/2rpDe6d0ZysoE9kB8jS4+q0xd
+         LF2D8V+5o6GHWlEvEP/CdfPGjzWqz7JAU/GV2dtNxJeNoMhWLurwp6wLT8HWLn7Aawyp
+         B03xTraZmRE6YUiaIBjSetc1e/G48JEE07YH/V3iT6U9Sd7oYB0MfHt8bbM9soMdZrSf
+         0pvkVvXu528gM2n0nb6jzgKMztZKLPrZN822mHmMNep4/dVCD6ZcEW2X/ibZir8NuBwW
+         vXCByRcEy7pni3IOeVErQSny6Co1QrrMJ7bVIgerGokMhMkaN6FZiJ9WPbB5PZRuk6ie
+         dmAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=z3wFYyzO04/nplltFnv9EO/HsXFohiYyEY626pT7Qy4=;
+        b=F9leUh7xnrC8Q5GmO3VYFI9CdyQFszqNcTN7jg1SmGGp/6/eM3kFG+eKRble17Ynb5
+         DjfMqaD9ZUfoqEGix6REcljIgAEVd6bLBzFiOwmvN3blH/k6tDJXfNVoUGZ+xzJcMCyZ
+         VDMJ8SY5mamNWsNvx66nVGrWelaUn5KhQaSEGlvq9gpesI+m78EIH7mWCvdNsajE7Z9x
+         DoLHK0a4nU/CFJbq3hjRBOq46s47PrBOzAIGF6GrRVxp6nL4X9JvUSPmA7bmHD1JXQiG
+         chFYmT8LnEuwZCl3fcu60KYhxtKzLOzpVMlROdm8edbkqeI75AyIC1Qspwh6iKnWKgpT
+         3Vww==
+X-Gm-Message-State: AOAM533WylLk53LiGj6k4P8OoAyCZwfd28KkY7iI9gNnC2VgT4Stjpxg
+        Q1DbqZIH57946KZxSlonc5cmU5a9vds=
+X-Google-Smtp-Source: ABdhPJz185o6U1Q1rZo8rGSGiz0mC//A/ohSLg+d4znoLqHTwVSMCs3aWjc1dPVKJ2xmOIGZcaO7gg==
+X-Received: by 2002:a2e:5417:: with SMTP id i23mr6189910ljb.112.1617972941990;
+        Fri, 09 Apr 2021 05:55:41 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-85.dynamic.spd-mgts.ru. [109.252.193.85])
+        by smtp.googlemail.com with ESMTPSA id 13sm258278lfz.40.2021.04.09.05.55.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 05:55:41 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] iommu/tegra-smmu: Defer attachment of display
+ clients
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210328233256.20494-1-digetx@gmail.com>
+ <YG75urcXAb90Jj12@orome.fritz.box>
+ <c4b42a3d-d260-9a69-4ee7-8ad586741f8c@gmail.com>
+Message-ID: <7c1ebbf2-5d27-fa2a-3cae-bedab4c8e30a@gmail.com>
+Date:   Fri, 9 Apr 2021 15:55:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <c4b42a3d-d260-9a69-4ee7-8ad586741f8c@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Extend the get_cpuid_test.c selftest to include the KVM_GET_EMULATED_CPUID
-ioctl. Since the behavior and functionality is similar to
-KVM_GET_SUPPORTED_CPUID, we only check additionally:
+08.04.2021 17:07, Dmitry Osipenko пишет:
+>> Whatever happened to the idea of creating identity mappings based on the
+>> obscure tegra_fb_mem (or whatever it was called) command-line option? Is
+>> that command-line not universally passed to the kernel from bootloaders
+>> that initialize display?
+> This is still a good idea! The command-line isn't universally passed
+> just because it's up to a user to override the cmdline and then we get a
+> hang (a very slow boot in reality) on T30 since display client takes out
+> the whole memory bus with the constant SMMU faults. For example I don't
+> have that cmdline option in my current setups.
+> 
 
-1) checks for corner case in the nent field of the struct kvm_cpuid2.
-2) sets and gets it as cpuid from the guest VM
-
-Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
----
- .../selftests/kvm/x86_64/get_cpuid_test.c     | 90 ++++++++++++++++++-
- 1 file changed, 88 insertions(+), 2 deletions(-)
-
-diff --git a/tools/testing/selftests/kvm/x86_64/get_cpuid_test.c b/tools/testing/selftests/kvm/x86_64/get_cpuid_test.c
-index 9b78e8889638..b9f0fba1b0ea 100644
---- a/tools/testing/selftests/kvm/x86_64/get_cpuid_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/get_cpuid_test.c
-@@ -13,6 +13,7 @@
- #include "processor.h"
- 
- #define VCPU_ID 0
-+#define MAX_NENT 1000
- 
- /* CPUIDs known to differ */
- struct {
-@@ -137,7 +138,8 @@ static void run_vcpu(struct kvm_vm *vm, uint32_t vcpuid, int stage)
- 	}
- }
- 
--struct kvm_cpuid2 *vcpu_alloc_cpuid(struct kvm_vm *vm, vm_vaddr_t *p_gva, struct kvm_cpuid2 *cpuid)
-+static struct kvm_cpuid2 *vcpu_alloc_cpuid(struct kvm_vm *vm, vm_vaddr_t *p_gva,
-+					struct kvm_cpuid2 *cpuid)
- {
- 	int size = sizeof(*cpuid) + cpuid->nent * sizeof(cpuid->entries[0]);
- 	vm_vaddr_t gva = vm_vaddr_alloc(vm, size,
-@@ -150,9 +152,84 @@ struct kvm_cpuid2 *vcpu_alloc_cpuid(struct kvm_vm *vm, vm_vaddr_t *p_gva, struct
- 	return guest_cpuids;
- }
- 
-+static struct kvm_cpuid2 *alloc_custom_kvm_cpuid2(int nent)
-+{
-+	struct kvm_cpuid2 *cpuid;
-+	size_t size;
-+
-+	size = sizeof(*cpuid);
-+	size += nent * sizeof(struct kvm_cpuid_entry2);
-+	cpuid = calloc(1, size);
-+	if (!cpuid) {
-+		perror("malloc");
-+		abort();
-+	}
-+
-+	cpuid->nent = nent;
-+
-+	return cpuid;
-+}
-+
-+static void clean_entries_kvm_cpuid2(struct kvm_cpuid2 *cpuid)
-+{
-+	size_t size;
-+	int old_nent = cpuid->nent;
-+
-+	size = sizeof(*cpuid);
-+	size += MAX_NENT * sizeof(struct kvm_cpuid_entry2);
-+	memset(cpuid, 0, size);
-+	cpuid->nent = old_nent;
-+}
-+
-+static void test_emulated_entries(struct kvm_vm *vm)
-+{
-+	int res, right_nent;
-+	struct kvm_cpuid2 *cpuid;
-+
-+	cpuid = alloc_custom_kvm_cpuid2(MAX_NENT);
-+
-+	/* 0 nent, return E2BIG */
-+	cpuid->nent = 0;
-+	res = _kvm_ioctl(vm, KVM_GET_EMULATED_CPUID, cpuid);
-+	TEST_ASSERT(res == -1 && errno == E2BIG, "nent=0 should fail as E2BIG");
-+	clean_entries_kvm_cpuid2(cpuid);
-+
-+	/* high nent, set the entries and adjust */
-+	cpuid->nent = MAX_NENT;
-+	res = _kvm_ioctl(vm, KVM_GET_EMULATED_CPUID, cpuid);
-+	TEST_ASSERT(res == 0, "nent > actual nent should not fail");
-+	right_nent = cpuid->nent;
-+	clean_entries_kvm_cpuid2(cpuid);
-+
-+	/* high nent, set the entries and adjust */
-+	cpuid->nent++;
-+	res = _kvm_ioctl(vm, KVM_GET_EMULATED_CPUID, cpuid);
-+	TEST_ASSERT(res == 0, "nent > actual nent should not fail");
-+	TEST_ASSERT(right_nent == cpuid->nent, "nent should be always the same");
-+	clean_entries_kvm_cpuid2(cpuid);
-+
-+	/* low nent, return E2BIG */
-+	if (right_nent > 1) {
-+		cpuid->nent = 1;
-+		res = _kvm_ioctl(vm, KVM_GET_EMULATED_CPUID, cpuid);
-+		TEST_ASSERT(res == -1 && errno == E2BIG, "nent=1 should fail");
-+		clean_entries_kvm_cpuid2(cpuid);
-+	}
-+
-+	/* exact nent */
-+	cpuid->nent = right_nent;
-+	res = _kvm_ioctl(vm, KVM_GET_EMULATED_CPUID, cpuid);
-+	TEST_ASSERT(res == 0, "nent == actual nent should not fail");
-+	TEST_ASSERT(cpuid->nent == right_nent,
-+		"KVM_GET_EMULATED_CPUID should be invaried when nent is exact");
-+	clean_entries_kvm_cpuid2(cpuid);
-+
-+	free(cpuid);
-+}
-+
- int main(void)
- {
--	struct kvm_cpuid2 *supp_cpuid, *cpuid2;
-+	struct kvm_cpuid2 *supp_cpuid, *emul_cpuid, *cpuid2;
- 	vm_vaddr_t cpuid_gva;
- 	struct kvm_vm *vm;
- 	int stage;
-@@ -171,5 +248,14 @@ int main(void)
- 	for (stage = 0; stage < 3; stage++)
- 		run_vcpu(vm, VCPU_ID, stage);
- 
-+	if (kvm_check_cap(KVM_CAP_EXT_EMUL_CPUID)) {
-+		emul_cpuid = kvm_get_emulated_cpuid();
-+		vcpu_set_cpuid(vm, VCPU_ID, emul_cpuid);
-+		cpuid2 = vcpu_get_cpuid(vm, VCPU_ID);
-+
-+		test_emulated_entries(vm);
-+		compare_cpuids(emul_cpuid, cpuid2);
-+	}
-+
- 	kvm_vm_free(vm);
- }
--- 
-2.30.2
-
+Thinking a bit more about the identity.. have you consulted with the
+memory h/w people about whether it's always safe to enable ASID in a
+middle of DMA request?
