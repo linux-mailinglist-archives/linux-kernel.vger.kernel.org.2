@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F51F359B54
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B768359B8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234546AbhDIKJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:09:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50620 "EHLO mail.kernel.org"
+        id S234266AbhDIKNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:13:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51352 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233510AbhDIKBp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:01:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26D316124C;
-        Fri,  9 Apr 2021 09:59:50 +0000 (UTC)
+        id S234147AbhDIKE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:04:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B726861182;
+        Fri,  9 Apr 2021 10:01:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962391;
-        bh=J5E4uPE70Gjs/RGjRz7yGY+K/FI/LrZncChIoNpOP8E=;
+        s=korg; t=1617962478;
+        bh=nASWuHlKD8CqwwcldSbXDzmniWIdhDF5v2rTX1UEUhU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SGR4K4T6PN+GLO7P6lcHxdUwO2Eh0Akso+BLYDl6krm8yOk29ivup9rsZVnqXmZC4
-         hcLSZuyEzhPSdRtgFwmi+5TSukV8rUdp+23KS2nt5ZyeHvPnITjnE1X6P5OTbepVa2
-         xA/a6E7zXTjOtReqp6UJLDLKO8+oN7Efql1bYx64=
+        b=Eopk/kGStYe1bMxVcG9UGN8IpAZ3EITjz4GH/Bf/lfrHH3azMh29hIc3Z1pd45NXx
+         CloUJfS5De3Iid16XwOO7jtEtSsqU693jSXhmvZkzOronlmN6ceZ6AjJWcTWbDnIOA
+         T14+J7ijFW2MP8XgtXLtVe1vfH+hz1NUowZgFW2g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Gow <davidgow@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        stable@vger.kernel.org, Jordan Crouse <jcrouse@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 07/41] kunit: tool: Fix a python tuple typing error
+Subject: [PATCH 5.11 03/45] drm/msm: a6xx: Make sure the SQE microcode is safe
 Date:   Fri,  9 Apr 2021 11:53:29 +0200
-Message-Id: <20210409095305.051575075@linuxfoundation.org>
+Message-Id: <20210409095305.508979530@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
-References: <20210409095304.818847860@linuxfoundation.org>
+In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
+References: <20210409095305.397149021@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,38 +41,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Gow <davidgow@google.com>
+From: Jordan Crouse <jcrouse@codeaurora.org>
 
-[ Upstream commit 7421b1a4d10c633ca5f14c8236d3e2c1de07e52b ]
+[ Upstream commit 8490f02a3ca45fd1bbcadc243b4db9b69d0e3450 ]
 
-The first argument to namedtuple() should match the name of the type,
-which wasn't the case for KconfigEntryBase.
+Most a6xx targets have security issues that were fixed with new versions
+of the microcode(s). Make sure that we are booting with a safe version of
+the microcode for the target and print a message and error if not.
 
-Fixing this is enough to make mypy show no python typing errors again.
+v2: Add more informative error messages and fix typos
 
-Fixes 97752c39bd ("kunit: kunit_tool: Allow .kunitconfig to disable config items")
-Signed-off-by: David Gow <davidgow@google.com>
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
-Acked-by: Brendan Higgins <brendanhiggins@google.com>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Signed-off-by: Jordan Crouse <jcrouse@codeaurora.org>
+Reviewed-by: Akhil P Oommen <akhilpo@codeaurora.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/kunit/kunit_config.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 77 ++++++++++++++++++++++-----
+ 1 file changed, 64 insertions(+), 13 deletions(-)
 
-diff --git a/tools/testing/kunit/kunit_config.py b/tools/testing/kunit/kunit_config.py
-index 02ffc3a3e5dc..b30e9d6db6b4 100644
---- a/tools/testing/kunit/kunit_config.py
-+++ b/tools/testing/kunit/kunit_config.py
-@@ -12,7 +12,7 @@ import re
- CONFIG_IS_NOT_SET_PATTERN = r'^# CONFIG_(\w+) is not set$'
- CONFIG_PATTERN = r'^CONFIG_(\w+)=(\S+|".*")$'
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 0366419d8bfe..e7a8442b59af 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -521,28 +521,73 @@ static int a6xx_cp_init(struct msm_gpu *gpu)
+ 	return a6xx_idle(gpu, ring) ? 0 : -EINVAL;
+ }
  
--KconfigEntryBase = collections.namedtuple('KconfigEntry', ['name', 'value'])
-+KconfigEntryBase = collections.namedtuple('KconfigEntryBase', ['name', 'value'])
+-static void a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
++/*
++ * Check that the microcode version is new enough to include several key
++ * security fixes. Return true if the ucode is safe.
++ */
++static bool a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
+ 		struct drm_gem_object *obj)
+ {
++	struct adreno_gpu *adreno_gpu = &a6xx_gpu->base;
++	struct msm_gpu *gpu = &adreno_gpu->base;
+ 	u32 *buf = msm_gem_get_vaddr(obj);
++	bool ret = false;
  
- class KconfigEntry(KconfigEntryBase):
+ 	if (IS_ERR(buf))
+-		return;
++		return false;
  
+ 	/*
+-	 * If the lowest nibble is 0xa that is an indication that this microcode
+-	 * has been patched. The actual version is in dword [3] but we only care
+-	 * about the patchlevel which is the lowest nibble of dword [3]
+-	 *
+-	 * Otherwise check that the firmware is greater than or equal to 1.90
+-	 * which was the first version that had this fix built in
++	 * Targets up to a640 (a618, a630 and a640) need to check for a
++	 * microcode version that is patched to support the whereami opcode or
++	 * one that is new enough to include it by default.
+ 	 */
+-	if (((buf[0] & 0xf) == 0xa) && (buf[2] & 0xf) >= 1)
+-		a6xx_gpu->has_whereami = true;
+-	else if ((buf[0] & 0xfff) > 0x190)
+-		a6xx_gpu->has_whereami = true;
++	if (adreno_is_a618(adreno_gpu) || adreno_is_a630(adreno_gpu) ||
++		adreno_is_a640(adreno_gpu)) {
++		/*
++		 * If the lowest nibble is 0xa that is an indication that this
++		 * microcode has been patched. The actual version is in dword
++		 * [3] but we only care about the patchlevel which is the lowest
++		 * nibble of dword [3]
++		 *
++		 * Otherwise check that the firmware is greater than or equal
++		 * to 1.90 which was the first version that had this fix built
++		 * in
++		 */
++		if ((((buf[0] & 0xf) == 0xa) && (buf[2] & 0xf) >= 1) ||
++			(buf[0] & 0xfff) >= 0x190) {
++			a6xx_gpu->has_whereami = true;
++			ret = true;
++			goto out;
++		}
+ 
++		DRM_DEV_ERROR(&gpu->pdev->dev,
++			"a630 SQE ucode is too old. Have version %x need at least %x\n",
++			buf[0] & 0xfff, 0x190);
++	}  else {
++		/*
++		 * a650 tier targets don't need whereami but still need to be
++		 * equal to or newer than 1.95 for other security fixes
++		 */
++		if (adreno_is_a650(adreno_gpu)) {
++			if ((buf[0] & 0xfff) >= 0x195) {
++				ret = true;
++				goto out;
++			}
++
++			DRM_DEV_ERROR(&gpu->pdev->dev,
++				"a650 SQE ucode is too old. Have version %x need at least %x\n",
++				buf[0] & 0xfff, 0x195);
++		}
++
++		/*
++		 * When a660 is added those targets should return true here
++		 * since those have all the critical security fixes built in
++		 * from the start
++		 */
++	}
++out:
+ 	msm_gem_put_vaddr(obj);
++	return ret;
+ }
+ 
+ static int a6xx_ucode_init(struct msm_gpu *gpu)
+@@ -565,7 +610,13 @@ static int a6xx_ucode_init(struct msm_gpu *gpu)
+ 		}
+ 
+ 		msm_gem_object_set_name(a6xx_gpu->sqe_bo, "sqefw");
+-		a6xx_ucode_check_version(a6xx_gpu, a6xx_gpu->sqe_bo);
++		if (!a6xx_ucode_check_version(a6xx_gpu, a6xx_gpu->sqe_bo)) {
++			msm_gem_unpin_iova(a6xx_gpu->sqe_bo, gpu->aspace);
++			drm_gem_object_put(a6xx_gpu->sqe_bo);
++
++			a6xx_gpu->sqe_bo = NULL;
++			return -EPERM;
++		}
+ 	}
+ 
+ 	gpu_write64(gpu, REG_A6XX_CP_SQE_INSTR_BASE_LO,
 -- 
 2.30.2
 
