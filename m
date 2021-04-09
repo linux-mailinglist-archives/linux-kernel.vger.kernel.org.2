@@ -2,64 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD49359C4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7C8359C52
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233431AbhDIKpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:45:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36434 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231611AbhDIKpR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:45:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54E6B610CB;
-        Fri,  9 Apr 2021 10:45:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617965105;
-        bh=ougxCnzB/DTpWXR0gl7FhXHP/fL32LRHhUHh4l07TXA=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hQwDRvP1EbC8YUDkT0In/hR9fO5dJwGLuHaLetPeqJaDl247PAMJmgdsXxgPcPSji
-         nqjrKubLU+48bGQHoSi1LMKQpejVj3TsxeqQMm388j3Fex5gHEbTwamalRpUa0jIlV
-         q1AUBvmJx6Zlzd8SMwymMG7+iTZidLIZZi6nSAyF7ELU00p36wNJiwkpwOOf2odBD5
-         HGnyeo30QnqMwcY+ASyMpqDkWwqKJPBS/04OuWp1NA4WSmLg1B6K+WLFiEsn52NWQe
-         cyIpAptCocyl7qaN5kJaddH/k6D/xosqXu91+85CO6LuJSyx5JIosIsgKKrGRg5Kx0
-         GS6YaTEFPXpsg==
-From:   Nicolas Saenz Julienne <nsaenz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     f.fainelli@gmail.com, phil@raspberrypi.com, stefan.wahren@i2se.com,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-Subject: [PATCH] MAINTAINERS: Update BCM2711/BCM2335 maintainer's mail
-Date:   Fri,  9 Apr 2021 12:44:47 +0200
-Message-Id: <20210409104448.12259-1-nsaenz@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S232910AbhDIKqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:46:36 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:43236 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhDIKqd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:46:33 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 231C01C0B77; Fri,  9 Apr 2021 12:46:19 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 12:46:17 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Kirill Kapranov <kirill.kapranov@compulab.co.il>
+Cc:     a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        phdm@macqel.be, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] rtc:abx80x: Enable xt digital calibration
+Message-ID: <20210409104617.GB10988@amd>
+References: <20210328210232.10395-1-kirill.kapranov@compulab.co.il>
+ <20210328210232.10395-5-kirill.kapranov@compulab.co.il>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="PmA2V3Z32TCmWXqI"
+Content-Disposition: inline
+In-Reply-To: <20210328210232.10395-5-kirill.kapranov@compulab.co.il>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The @kernel.org e-mail address is likely to last longer than the current
-one, so use it.
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--PmA2V3Z32TCmWXqI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d269763af39d..c8f32b7c1e06 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3414,7 +3414,7 @@ F:	include/linux/dsa/brcm.h
- F:	include/linux/platform_data/b53.h
- 
- BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE
--M:	Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-+M:	Nicolas Saenz Julienne <nsaenz@kernel.org>
- L:	bcm-kernel-feedback-list@broadcom.com
- L:	linux-rpi-kernel@lists.infradead.org (moderated for non-subscribers)
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
--- 
-2.31.1
+Hi!
 
+> The XT digital calibration feature allows to improve the RTC accuracy,
+> using a Distributed Digital Calibration function.
+> See ch. 5.9.1 of AB08XX Series Ultra Low Power RTC IC User's Guide
+> https://abracon.com/realtimeclock/AB08XX-Application-Manual.pdf
+>=20
+> Signed-off-by: Kirill Kapranov <kirill.kapranov@compulab.co.il>
+> ---
+>  drivers/rtc/rtc-abx80x.c | 145 +++++++++++++++++++++++++++++++++++++++++=
+++++++
+>  1 file changed, 145 insertions(+)
+
+
+> =20
+> +static const int xt_freq_nom =3D 32768000; //Nominal XT frequency 32 kHz=
+ in mHz
+
+C-style comment?
+
+is it 32 kHz or 32.768 kHz?
+
+> +{
+> +	int retval;
+> +	long Adj;
+
+Adj -> adj.
+
+> +
+> +static DEVICE_ATTR_WO(xt_frequency);
+
+You are adding new user interface, you sould add documentation.
+
+Best regards,
+								Pavel
+							=09
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--PmA2V3Z32TCmWXqI
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmBwMHkACgkQMOfwapXb+vIZCQCgpLHySKQSuRHiyPEiKl+9062O
+rlAAnA86MaZPa0g8CeIxTSVd9Uu19NbW
+=P1AG
+-----END PGP SIGNATURE-----
+
+--PmA2V3Z32TCmWXqI--
