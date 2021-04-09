@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D5C35A53C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E4835A541
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234492AbhDISHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        id S234576AbhDISHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234493AbhDISHm (ORCPT
+        with ESMTP id S234470AbhDISHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:07:42 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A79C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 11:07:29 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id n4so5413479ili.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 11:07:29 -0700 (PDT)
+        Fri, 9 Apr 2021 14:07:44 -0400
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F605C061764
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 11:07:30 -0700 (PDT)
+Received: by mail-il1-x132.google.com with SMTP id n4so5413514ili.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 11:07:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TXhHFiYFF9iWch/VwVE0yX0wx2RhwOIfVPloQrSS3Fw=;
-        b=mbNLrHibsxMliMZoSJFoQ2UV3n6ebW6uxI8EsiRIxq1T8yEoj2tw2lr/F+dmsCJf9q
-         MaZX2mEMWvID+8xCF1gM8pVf4CZWcW3twZur3Bio1wBIH1pk0jcKm4IfGdGkrjMAAYsh
-         SCObZJ+PCmRCwEtG06u2UK3wfRPQUlqV1BpNIvmCMhS9bxQ97rFZc2p69tjKUGUXvxdj
-         I/HIsCb9V7hFyWb81WRsbCEfrSIr+dZ7dMR7D/SGRb3VAVOgd4207OEphPQnQMB95pbP
-         zHtNrv+Ju3CUpEaNUUGCR+TPbfasSykxI3Fybk2IqS5LxyddmSi+hLIKG9tUyvXmlVO0
-         wf/Q==
+        bh=M02HcZujpZ/J/h5ieItU4HENzz4/4ThjFxhYAjdjTos=;
+        b=o1NsykK06oGHfrPp8sbmPR0E2noKbbC6+m22RUf8G7xP+9K879owrt1IiRZEwLAcxm
+         uKhx5XXFzCPDVHgLqm7P6dh7zYR5Z0w8D26voQ6LFHC6nHjo9vQQvdDSXMSNIy4TzYy/
+         2lV47wv1nN2quRJ8ZhqBZrGvJr4yJpHTtdYxVjaGnKDn3qjeHKuZNv2Y72fFWNBTo5+p
+         iu1VIHv+R3AI9sCIN+3ColckgwWlbcPbzbU38Q3fasf83HrLOXGXGBtyBk7IuBC0A6Nj
+         1LhZcguacfNkijZ8v8RPRq6evcpn/YxtrksN6VIr6lJ2DQV8x/YVbG3nYNTp3iUGitKr
+         va+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TXhHFiYFF9iWch/VwVE0yX0wx2RhwOIfVPloQrSS3Fw=;
-        b=K407zmuaD4rblLklm8pDXX1H7Iy1ZL5h4A7cywZUsmp8DJmcm26R9tUgR/iSEqvaJ7
-         mORm2elWfUvbdCpATNuYXkGcpl/Us5Jf//ZaP6MJ6m/B3SWshajmY6fimQn059PN8QE5
-         XmjKklDMiUmq2dog8iCVA5CTQPR+zLhG+tqh4LCZhPpA2cDnDnG24S5CtQ3dBex8bVsf
-         nCmaXh3bbI86j9nRbyVr7QXQBE4VR0tQjm+YbRe0QBwxqfsffnu5TQT2AvRsEZkMj1KQ
-         qGcbzF9rApS6sAab2is3kKxwR83VmFaz/pIprURmnK9h+2g/FN6W/9iUa25j9UH5Kr4e
-         JtKQ==
-X-Gm-Message-State: AOAM531xSGKTetuS3YlEaOLoL0YRTn0GptjXMYMXFbPw4F4L8tCiFWKX
-        4zTC+/JmUA3lvSFJ82nSvNCxaw==
-X-Google-Smtp-Source: ABdhPJxp0Mxac1torzxQcagsV44T65URh3TaZPLpQ2uY6tbaCoGP7hjX/SL1LsVItI+TOdPC+BSQWQ==
-X-Received: by 2002:a05:6e02:1a06:: with SMTP id s6mr11782812ild.289.1617991648619;
-        Fri, 09 Apr 2021 11:07:28 -0700 (PDT)
+        bh=M02HcZujpZ/J/h5ieItU4HENzz4/4ThjFxhYAjdjTos=;
+        b=lcg/3WEm7AaFT8g/i9SM6i1qNSCOzcn6QnDJY1WCJ386KjshquNwFrU/NNTNIYYAV7
+         xgFjglDzIkVxzEJ4b+NbuJP/QUKpTUiQggKw5gH2FqU3sLt2Igdz/2N6gkHDqlom0TxI
+         QIF89kQe8uVEmKrxHbh+Q25NES5x6aSqqTadg2Rjygy12ZXi5CDG7Rt5RpJ5sYbqgAp8
+         UKvriIy8oagkG+Ts0iQCBKnAqmKrC08TpmPVGoRjosivj3tydhrDKltzhYU4ZJU+N42n
+         csybOujQyxxRxLkVy7Sr7E4OmBsHx6Az7ZwV/HR3efWjD60Nbz2Zy5gn0brF2cZTp40s
+         U65Q==
+X-Gm-Message-State: AOAM5327bQsq4mL4PDCZJRTFpvdESWMMnvBXB/C1Gi769+APv874bWxm
+        rr6PgOVEwKmZvk505xBhLQBdRA==
+X-Google-Smtp-Source: ABdhPJzZascuW/5o61qMj3tI9JnZqn2RqjUffIyvYqVEX4p1/fLg1hQ6KKaALUb1P9WirBIX1H14Xg==
+X-Received: by 2002:a05:6e02:1311:: with SMTP id g17mr12465813ilr.14.1617991649583;
+        Fri, 09 Apr 2021 11:07:29 -0700 (PDT)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id g12sm1412786ile.71.2021.04.09.11.07.27
+        by smtp.gmail.com with ESMTPSA id g12sm1412786ile.71.2021.04.09.11.07.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:07:28 -0700 (PDT)
+        Fri, 09 Apr 2021 11:07:29 -0700 (PDT)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     bjorn.andersson@linaro.org, evgreen@chromium.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org, elder@kernel.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 3/7] net: ipa: only set endpoint netdev pointer when in use
-Date:   Fri,  9 Apr 2021 13:07:18 -0500
-Message-Id: <20210409180722.1176868-4-elder@linaro.org>
+Subject: [PATCH net-next 4/7] net: ipa: ipa_stop() does not return an error
+Date:   Fri,  9 Apr 2021 13:07:19 -0500
+Message-Id: <20210409180722.1176868-5-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210409180722.1176868-1-elder@linaro.org>
 References: <20210409180722.1176868-1-elder@linaro.org>
@@ -65,66 +65,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ipa_modem_start(), we set endpoint netdev pointers before the
-network device is registered.  If registration fails, we don't undo
-those assignments.  Instead, wait to assign the netdev pointer until
-after registration succeeds.
-
-Set these endpoint netdev pointers to NULL in ipa_modem_stop()
-before unregistering the network device.
+In ipa_modem_stop(), if the modem netdev pointer is non-null we call
+ipa_stop().  We check for an error and if one is returned we handle
+it.  But ipa_stop() never returns an error, so this extra handling
+is unnecessary.  Simplify the code in ipa_modem_stop() based on the
+knowledge no error handling is needed at this spot.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/ipa_modem.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/net/ipa/ipa_modem.c | 18 ++++--------------
+ 1 file changed, 4 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/net/ipa/ipa_modem.c b/drivers/net/ipa/ipa_modem.c
-index 9b08eb8239846..8a6ccebde2889 100644
+index 8a6ccebde2889..af9aedbde717a 100644
 --- a/drivers/net/ipa/ipa_modem.c
 +++ b/drivers/net/ipa/ipa_modem.c
-@@ -1,7 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
+@@ -240,7 +240,6 @@ int ipa_modem_stop(struct ipa *ipa)
+ {
+ 	struct net_device *netdev = ipa->modem_netdev;
+ 	enum ipa_modem_state state;
+-	int ret;
  
- /* Copyright (c) 2014-2018, The Linux Foundation. All rights reserved.
-- * Copyright (C) 2018-2020 Linaro Ltd.
-+ * Copyright (C) 2018-2021 Linaro Ltd.
-  */
+ 	/* Only attempt to stop the modem if it's running */
+ 	state = atomic_cmpxchg(&ipa->modem_state, IPA_MODEM_STATE_RUNNING,
+@@ -257,29 +256,20 @@ int ipa_modem_stop(struct ipa *ipa)
+ 	/* Prevent the modem from triggering a call to ipa_setup() */
+ 	ipa_smp2p_disable(ipa);
  
- #include <linux/errno.h>
-@@ -213,18 +213,18 @@ int ipa_modem_start(struct ipa *ipa)
- 		goto out_set_state;
- 	}
- 
--	ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]->netdev = netdev;
--	ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]->netdev = netdev;
++	/* Stop the queue and disable the endpoints if it's open */
+ 	if (netdev) {
+-		/* Stop the queue and disable the endpoints if it's open */
+-		ret = ipa_stop(netdev);
+-		if (ret)
+-			goto out_set_state;
 -
- 	SET_NETDEV_DEV(netdev, &ipa->pdev->dev);
- 	priv = netdev_priv(netdev);
- 	priv->ipa = ipa;
- 
- 	ret = register_netdev(netdev);
--	if (ret)
--		free_netdev(netdev);
--	else
-+	if (!ret) {
- 		ipa->modem_netdev = netdev;
-+		ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]->netdev = netdev;
-+		ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]->netdev = netdev;
-+	} else {
-+		free_netdev(netdev);
-+	}
- 
- out_set_state:
- 	if (ret)
-@@ -263,6 +263,8 @@ int ipa_modem_stop(struct ipa *ipa)
- 		if (ret)
- 			goto out_set_state;
- 
-+		ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]->netdev = NULL;
-+		ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]->netdev = NULL;
++		(void)ipa_stop(netdev);
+ 		ipa->name_map[IPA_ENDPOINT_AP_MODEM_RX]->netdev = NULL;
+ 		ipa->name_map[IPA_ENDPOINT_AP_MODEM_TX]->netdev = NULL;
  		ipa->modem_netdev = NULL;
  		unregister_netdev(netdev);
  		free_netdev(netdev);
+-	} else {
+-		ret = 0;
+ 	}
+ 
+-out_set_state:
+-	if (ret)
+-		atomic_set(&ipa->modem_state, IPA_MODEM_STATE_RUNNING);
+-	else
+-		atomic_set(&ipa->modem_state, IPA_MODEM_STATE_STOPPED);
++	atomic_set(&ipa->modem_state, IPA_MODEM_STATE_STOPPED);
+ 	smp_mb__after_atomic();
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ /* Treat a "clean" modem stop the same as a crash */
 -- 
 2.27.0
 
