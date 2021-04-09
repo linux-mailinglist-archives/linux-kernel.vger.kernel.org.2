@@ -2,137 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D19835A4DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3026335A4E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:45:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234356AbhDIRot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:44:49 -0400
-Received: from p3plsmtpa06-09.prod.phx3.secureserver.net ([173.201.192.110]:34737
-        "EHLO p3plsmtpa06-09.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233896AbhDIRoq (ORCPT
+        id S234369AbhDIRpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234329AbhDIRpD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:44:46 -0400
-Received: from [192.168.0.116] ([71.184.94.153])
-        by :SMTPAUTH: with ESMTPSA
-        id UvB9l8sywJpwyUvB9lb2JW; Fri, 09 Apr 2021 10:44:32 -0700
-X-CMAE-Analysis: v=2.4 cv=O+T8ADxW c=1 sm=1 tr=0 ts=60709280
- a=vbvdVb1zh1xTTaY8rfQfKQ==:117 a=vbvdVb1zh1xTTaY8rfQfKQ==:17
- a=IkcTkHD0fZMA:10 a=V14C-qhuNTb9CArrVYEA:9 a=QEXdDO2ut3YA:10
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: [PATCH rdma-next 00/10] Enable relaxed ordering for ULPs
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Chuck Lever III <chuck.lever@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Adit Ranadive <aditr@vmware.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Devesh Sharma <devesh.sharma@broadcom.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Bruce Fields <bfields@fieldses.org>, Jens Axboe <axboe@fb.com>,
-        Karsten Graul <kgraul@linux.ibm.com>,
-        Keith Busch <kbusch@kernel.org>, Lijun Ou <oulijun@huawei.com>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Michael Guralnik <michaelgur@nvidia.com>,
-        Michal Kalderon <mkalderon@marvell.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Naresh Kumar PBS <nareshkumar.pbs@broadcom.com>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Selvin Xavier <selvin.xavier@broadcom.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Somnath Kotur <somnath.kotur@broadcom.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Steve French <sfrench@samba.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        VMware PV-Drivers <pv-drivers@vmware.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>
-References: <20210405052404.213889-1-leon@kernel.org>
- <20210405134115.GA22346@lst.de> <20210405200739.GB7405@nvidia.com>
- <C2924F03-11C5-4839-A4F3-36872194EEA8@oracle.com>
- <20210406114952.GH7405@nvidia.com>
- <aeb7334b-edc0-78c2-4adb-92d4a994210d@talpey.com>
- <20210409164046.GY7405@nvidia.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <70909c83-5e3a-6cb5-a8c0-6bd2a6688fb4@talpey.com>
-Date:   Fri, 9 Apr 2021 13:44:23 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Fri, 9 Apr 2021 13:45:03 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384FDC061763
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:44:50 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id m3so7515614edv.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:44:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=nSjCyqrsCYIpjIq/WPQfh7f6ppE3qyWXTgcaAHBDVZg=;
+        b=M67BIZxSEjlJYNXW+eYXjjHCFHMsLzlnur4qfOKyVoYViCymy5iyguGUOgW0ofYGUz
+         1syAlaZIMoPTBeQNvtQTBCv9kQL1GoeshqJreljATES3rFADT5/4Ir/jgyJu8c9Jd2Qn
+         taWv0sH3mtSirfyXSQPpT3nhNSsHJpPgjLbimB+7n5E0IAj4xJXhNmrWTCD0LcP3jIeX
+         uF1PWlZdtsYpvxW5cv7QDbEN8SDksByWD3T2zjXXgWNOdtWwQyh98O1pHHS59Qp7ZlHp
+         4B8s57yeiXvcjmwQX85ASm0czIwVa1J51BMjfWHH4/tffHwxwUYQJyJa09+6sZBSzdFA
+         bFGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=nSjCyqrsCYIpjIq/WPQfh7f6ppE3qyWXTgcaAHBDVZg=;
+        b=ctIk692CoYvFXU3XBTzVMGsyI8mQAoYMi1UTItdC5++slFY/uTOBgmFTn5iuB94ovS
+         1z2xrDWnxgein8gDoDFHObeHxdPhU+43iLlwjTHkLeS4NT62dosk6QCN9nBiisJ1tyav
+         zQXHMWK+VfHJpg5jEW2a9Di2FXDO9wn5eQBftRSC0Tii/QHwOFKSGY/m7Y4oLLNPEIXm
+         j1FZZ28dVvFQPk4p2lHQAy/egADInlTHDoBs/9brdZiRkjo6NgQ/SYBHyo5RFTzQRgiR
+         wKsxmKs2uVvxTBiofd/Yw9dwDh+bUMHJB9zs4EN9Njcrz/Xx10L211upaHinYscojGsY
+         uGtw==
+X-Gm-Message-State: AOAM5336dkecnnKJlWDmGNawFN926RgyfjpxtypuW/wdfCod8vFB/H1p
+        Yx7O/0Smwlg2VkF8ws3D8BhlRZxY0afTcWZUoEtW
+X-Google-Smtp-Source: ABdhPJx90ZIIuFo2jn8xwq3lr2Xj/Vsuta9Az/QMVDn78N2gX3QFhsmKupUsjNpnaLqtCeEsRuNGFiJCt3olsd1KEvo=
+X-Received: by 2002:a05:6402:3c7:: with SMTP id t7mr18723463edw.196.1617990288812;
+ Fri, 09 Apr 2021 10:44:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210409164046.GY7405@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: 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
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 9 Apr 2021 13:44:38 -0400
+Message-ID: <CAHC9VhS20dq3FNQjpYX+BkHw=PSc-CrzUaZj_Cg9RBcZ3Ck9xg@mail.gmail.com>
+Subject: [GIT PULL] SELinux fixes for v5.12 (#2)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/2021 12:40 PM, Jason Gunthorpe wrote:
-> On Fri, Apr 09, 2021 at 10:26:21AM -0400, Tom Talpey wrote:
-> 
->> My belief is that the biggest risk is from situations where completions
->> are batched, and therefore polling is used to detect them without
->> interrupts (which explicitly).
-> 
-> We don't do this in the kernel.
-> 
-> All kernel ULPs only read data after they observe the CQE. We do not
-> have "last data polling" and our interrupt model does not support some
-> hacky "interrupt means go and use the data" approach.
-> 
-> ULPs have to be designed this way to use the DMA API properly.
+Hi Linus,
 
-Yep. Totally agree.
+I realize we are getting late in the v5.12-rcX release cycle, but we
+have three SELinux patches which I believe should be merged before the
+proper v5.12 release.  The patches fix known problems relating to
+(re)loading SELinux policy or changing the policy booleans, and pass
+our test suite without problem.  As of a few minutes ago, the tag
+below also merged cleanly into your tree.
 
-My concern was about the data being written as relaxed, and the CQE
-racing it. I'll reply in the other fork.
+Please pull for the next v5.12-rcX release, thanks.
+-Paul
 
+--
+The following changes since commit ee5de60a08b7d8d255722662da461ea159c15538:
 
-> Fencing a DMA before it is completed by the HW will cause IOMMU
-> errors.
-> 
-> Userspace is a different story, but that will remain as-is with
-> optional relaxed ordering.
-> 
-> Jason
-> 
+ selinuxfs: unify policy load error reporting (2021-03-18 23:26:59 -0400)
+
+are available in the Git repository at:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+   tags/selinux-pr-20210409
+
+for you to fetch changes up to 9ad6e9cb39c66366bf7b9aece114aca277981a1f:
+
+ selinux: fix race between old and new sidtab (2021-04-07 20:42:56 -0400)
+
+----------------------------------------------------------------
+selinux/stable-5.12 PR 20210409
+
+----------------------------------------------------------------
+Ondrej Mosnacek (3):
+     selinux: make nslot handling in avtab more robust
+     selinux: fix cond_list corruption when changing booleans
+     selinux: fix race between old and new sidtab
+
+security/selinux/ss/avtab.c       | 101 ++++++++----------------
+security/selinux/ss/avtab.h       |   2 +-
+security/selinux/ss/conditional.c |  12 +--
+security/selinux/ss/services.c    | 157 +++++++++++++++++++++++++++-------
+security/selinux/ss/sidtab.c      |  21 +++++
+security/selinux/ss/sidtab.h      |   4 +
+6 files changed, 185 insertions(+), 112 deletions(-)
+
+-- 
+paul moore
+www.paul-moore.com
