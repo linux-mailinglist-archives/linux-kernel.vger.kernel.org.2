@@ -2,131 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B04D359DB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D7E359DBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbhDILpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:45:17 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2825 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231611AbhDILpK (ORCPT
+        id S233708AbhDILqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231638AbhDILqG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:45:10 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FGwzX2wvKz682sM;
-        Fri,  9 Apr 2021 19:35:20 +0800 (CST)
-Received: from fraphisprd00473.huawei.com (7.182.8.141) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 9 Apr 2021 13:44:56 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH 7/7] evm: Extend evm= with allow_metadata_writes and complete values
-Date:   Fri, 9 Apr 2021 13:43:13 +0200
-Message-ID: <20210409114313.4073-8-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210409114313.4073-1-roberto.sassu@huawei.com>
-References: <20210409114313.4073-1-roberto.sassu@huawei.com>
+        Fri, 9 Apr 2021 07:46:06 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2970C061760;
+        Fri,  9 Apr 2021 04:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=c1r8qKf2WZUBFC6KK+MUpMLPvRW0EBtQK/vl4+qTDxg=; b=NOPeCLY4PZdlE1Sl+vERrsPYCI
+        kaU09fmm4qGEaxVbWWYfFtOZ0dfLZ0wlHt1TzAnVRj0Z2OnnJiJQ0JujMFGZxOCpvd+X6kmCbo3AS
+        s5+ioH0yGL6LgNWu2HItUFI8XLwGijzp9kyjepKmcaUnw64YW8EIvsTg/nnJn/u6n330Gve2P9cwj
+        rXMtz0FIN995Nc8299Q4VfAqFO+HJOxpNwc+t30qega9f7aXSdDzrTspNvtwCRTmQ5YA6Ul7BgXXa
+        UlbaHzCLXvvLEl1pr2Gck45gORD7uhzGD0ESWrGa2jpa3n0HxAGKyWlmP+ZsmPzLNoVPdMTj/I6Rm
+        mdx5vNFA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUpZI-000Iht-4A; Fri, 09 Apr 2021 11:45:05 +0000
+Date:   Fri, 9 Apr 2021 12:44:56 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, linux-mm@kvack.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Steve French <sfrench@samba.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        David Wysochanski <dwysocha@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 01/30] iov_iter: Add ITER_XARRAY
+Message-ID: <20210409114456.GT2531743@casper.infradead.org>
+References: <YG+s0iw5o91KQIlW@zeniv-ca.linux.org.uk>
+ <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
+ <161789064740.6155.11932541175173658065.stgit@warthog.procyon.org.uk>
+ <289825.1617959345@warthog.procyon.org.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [7.182.8.141]
-X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <289825.1617959345@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the patch 'evm: Ignore INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS if
-conditions are safe', the INTEGRITY_NOLABEL and INTEGRITY_NOXATTRS errors
-can be ignored by setting the EVM_SETUP_COMPLETE flag. Also, the same
-errors can be avoided by disabling EVM verification completely with the
-EVM_ALLOW_METADATA_WRITES flag.
+On Fri, Apr 09, 2021 at 10:09:05AM +0100, David Howells wrote:
+> Al Viro <viro@zeniv.linux.org.uk> wrote:
+> 
+> > > +#define iterate_all_kinds(i, n, v, I, B, K, X) {		\
+> > 
+> > Do you have any users that would pass different B and X?
+> > 
+> > > @@ -1440,7 +1665,7 @@ ssize_t iov_iter_get_pages_alloc(struct iov_iter *i,
+> > >  		return v.bv_len;
+> > >  	}),({
+> > >  		return -EFAULT;
+> > > -	})
+> > > +	}), 0
+> > 
+> > Correction - users that might get that flavour.  This one explicitly checks
+> > for xarray and doesn't get to iterate_... in that case.
+> 
+> This is the case for iterate_all_kinds(), but not for iterate_and_advance().
+> 
+> See _copy_mc_to_iter() for example: that can return directly out of the middle
+> of the loop, so the X variant must drop the rcu_read_lock(), but the B variant
+> doesn't need to.  You also can't just use break to get out as the X variant
+> has a loop within a loop to handle iteration over the subelements of a THP.
 
-This patch makes it possible to set these initialization flags directly in
-the kernel command line, so that no additional setup is required from the
-initial ram disk. The new allowed values for evm= are:
-
-allow_metadata_writes: permit metadata modificatons;
-complete: don't allow further changes of the EVM mode.
-
-While EVM_ALLOW_METADATA_WRITES will be applied directly by the kernel at
-setup time, EVM_SETUP_COMPLETE will be applied only if a public key is
-loaded by evm_load_x509().
-
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
----
- Documentation/admin-guide/kernel-parameters.txt |  8 +++++---
- security/integrity/evm/evm_main.c               | 16 ++++++++++++----
- 2 files changed, 17 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index f61ce44c5d8e..eaf08095df43 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1339,9 +1339,11 @@
- 			has equivalent usage. See its documentation for details.
- 
- 	evm=		[EVM]
--			Format: { "fix" }
--			Permit 'security.evm' to be updated regardless of
--			current integrity status.
-+			Format: { "fix" | "allow_metadata_writes" | "complete" }
-+			fix: permit 'security.evm' to be updated regardless of
-+			current integrity status;
-+			allow_metadata_writes: permit metadata modificatons;
-+			complete: don't allow further changes of the EVM mode.
- 
- 	evm_hash=	[EVM] Hash algorithm used to calculate the HMAC.
- 			Format: { md5 | sha1 | rmd160 | sha256 | sha384
-diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-index cb3754e0cc60..84a9b7a69b1f 100644
---- a/security/integrity/evm/evm_main.c
-+++ b/security/integrity/evm/evm_main.c
-@@ -56,17 +56,22 @@ static struct xattr_list evm_config_default_xattrnames[] = {
- 
- LIST_HEAD(evm_config_xattrnames);
- 
--static int evm_fixmode;
--static int __init evm_set_fixmode(char *str)
-+static int evm_fixmode __ro_after_init;
-+static int evm_complete __ro_after_init;
-+static int __init evm_set_param(char *str)
- {
- 	if (strncmp(str, "fix", 3) == 0)
- 		evm_fixmode = 1;
-+	else if (strncmp(str, "allow_metadata_writes", 21) == 0)
-+		evm_initialized |= EVM_ALLOW_METADATA_WRITES;
-+	else if (strncmp(str, "complete", 8) == 0)
-+		evm_complete = 1;
- 	else
- 		pr_err("invalid \"%s\" mode", str);
- 
- 	return 0;
- }
--__setup("evm=", evm_set_fixmode);
-+__setup("evm=", evm_set_param);
- 
- static void __init evm_init_config(void)
- {
-@@ -737,8 +742,11 @@ void __init evm_load_x509(void)
- 	int rc;
- 
- 	rc = integrity_load_x509(INTEGRITY_KEYRING_EVM, CONFIG_EVM_X509_PATH);
--	if (!rc)
-+	if (!rc) {
- 		evm_initialized |= EVM_INIT_X509;
-+		if (evm_complete)
-+			evm_initialized |= EVM_SETUP_COMPLETE;
-+	}
- }
- #endif
- 
--- 
-2.26.2
-
+"Why does it need a loop? bvecs can contain multi-page vectors"
+"memcpy_from_page can't handle that"
+"doesn't that mean that iterating over a bvec is already broken?"
+"yes"
