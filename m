@@ -2,439 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A63535918F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 835D8359189
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233194AbhDIBmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 21:42:25 -0400
-Received: from mga17.intel.com ([192.55.52.151]:30281 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233153AbhDIBmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:42:23 -0400
-IronPort-SDR: VsVZGgrtVMEYhP6ZTFXJP9tI/ukoojSmbIe3AKWnxBVDJBDOTfARqu8h+SBsgi3jBTyOuRgo9F
- 8rPYF6Pt2LQQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="173752574"
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="173752574"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Apr 2021 18:42:11 -0700
-IronPort-SDR: Fp8ubvMUMoaHCQX+InVbY6t4Pn57uvosX6hKT6kE5GKG3+ys4KHB8zpTLRG1fmgpar0XRq3Nvz
- FI2OXcB5cKpg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,208,1613462400"; 
-   d="scan'208";a="416043217"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by fmsmga008.fm.intel.com with ESMTP; 08 Apr 2021 18:42:08 -0700
-Date:   Fri, 9 Apr 2021 09:37:30 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     "Wu, Hao" <hao.wu@intel.com>
-Cc:     Moritz Fischer <mdf@kernel.org>,
-        "matthew.gerlach@linux.intel.com" <matthew.gerlach@linux.intel.com>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "russell.h.weight@linux.intel.com" <russell.h.weight@linux.intel.com>
-Subject: Re: [PATCH 2/3] fpga: dfl: Add DFL bus driver for Altera SPI Master
-Message-ID: <20210409013730.GB2713@yilunxu-OptiPlex-7050>
-References: <20210405235301.187542-1-matthew.gerlach@linux.intel.com>
- <20210405235301.187542-3-matthew.gerlach@linux.intel.com>
- <YGuvFYvJTMPPm2Jy@epycbox.lan>
- <alpine.DEB.2.22.394.2104060847030.208844@rhweight-WRK1>
- <YGyQdN9uS/niyFDP@epycbox.lan>
- <DM6PR11MB3819E0FC4F735C72746CE54785749@DM6PR11MB3819.namprd11.prod.outlook.com>
- <20210408081152.GA2713@yilunxu-OptiPlex-7050>
- <DM6PR11MB3819317A55FD7798E778EC4D85749@DM6PR11MB3819.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR11MB3819317A55FD7798E778EC4D85749@DM6PR11MB3819.namprd11.prod.outlook.com>
+        id S233179AbhDIBk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 21:40:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233099AbhDIBk0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 21:40:26 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CD8C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 18:40:15 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id x7so3850095ybs.10
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 18:40:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=LPkfXEcX7j03W4gFStiTJq0OGRMKXC4ALTO941+p63k=;
+        b=THrHvnSdHdYVunDjdSo3QnSW4+VcXI2f2oCd4EGjEi+NppUjFadEwu/aGWiKPxqluP
+         Y2uUAOSEDDWI6Ys593r4nXXWnx0JlSEglrFWw8X5Tt6xIsqX3PDEQPTpFWQHdCLLrmnB
+         v08EYbzQc4V8hAP6MUyOlQG/h2EZv+cqAcOOiXCZ7BPCfsm0OyMsRaBYJAZqn5uNycVr
+         8s+qMVlmdP1HYd9aj4bePIr+8RlXxEHGxkVBrS9ZoWYOrOVgW2TAifIqha43IsYyazDQ
+         Lm9pe/3f/NlZSXaNr8edyLdy5rLYZyzfQNThC3AhmerI3pUPG96BDyTES917cTmOK5Y1
+         uGvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=LPkfXEcX7j03W4gFStiTJq0OGRMKXC4ALTO941+p63k=;
+        b=AE5ygpiDUmjijp5Jdyf7ZGbt69ONNtfFlZIXMWc9OIeq5J3L6afgmU9qK0ObVSMc4K
+         AaN+2FadgOjRdEk7D/eo6X5FDa7/DufH4kt7s+/6q1iaURAuh/dCF4yUcS+YjF+p0Jqp
+         TLUFUSOO1q4cBQy2udDPZtL6M258sOueyRliXWUd7zueqvCdWyAo3DRo4PmWAQAUbfVB
+         xsGL/7ZmfujCEwPoGMjDOPjOfVAlz4wnwJ/xUbULrtNCBKgyzHKo7K7ICaPe46SszLOY
+         v+5CaMEG39PrcugziEnao325O+IDGEb5dRdTuTgxZ2f0m2MdI9HJwCVO5ZKB9IEOVPwG
+         O9NA==
+X-Gm-Message-State: AOAM5309CRNV96RwZssKX5nzUHVb4aLizd1EM9xU2dg9oLAnFIg5bSZK
+        l3ZL8MYOhkygj+yoYxyj9avp4L8lMV52Hg==
+X-Google-Smtp-Source: ABdhPJzqqGaQOoKXks68+kTPh9MTCoMcCu6Lz2LEH52hZjyk5pHQDu0UVXcwxB8Xs7C6Klj6LYbqeQ0ATO0TEw==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:c92c:354b:50aa:d24a])
+ (user=dlatypov job=sendgmr) by 2002:a05:6902:102d:: with SMTP id
+ x13mr14540935ybt.503.1617932414138; Thu, 08 Apr 2021 18:40:14 -0700 (PDT)
+Date:   Thu,  8 Apr 2021 18:40:01 -0700
+Message-Id: <20210409014001.2946212-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: [PATCH v4] lib: add basic KUnit test for lib/math
+From:   Daniel Latypov <dlatypov@google.com>
+To:     andriy.shevchenko@linux.intel.com
+Cc:     brendanhiggins@google.com, davidgow@google.com,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 05:20:19PM +0800, Wu, Hao wrote:
-> > On Thu, Apr 08, 2021 at 03:30:15PM +0800, Wu, Hao wrote:
-> > > > > On Mon, 5 Apr 2021, Moritz Fischer wrote:
-> > > > >
-> > > > > > Hi Matthew,
-> > > > > >
-> > > > > > On Mon, Apr 05, 2021 at 04:53:00PM -0700,
-> > > > matthew.gerlach@linux.intel.com wrote:
-> > > > > > > From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > > > > >
-> > > > > > > This patch adds DFL bus driver for the Altera SPI Master
-> > > > > > > controller.  The SPI master is connected to an Intel SPI Slave to
-> > > > > > > Avalon Master Bridge, inside an Intel MAX10 BMC Chip.
-> > > > > > >
-> > > > > > > Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > > > > > ---
-> > > > > > >  drivers/fpga/Kconfig          |   9 ++
-> > > > > > >  drivers/fpga/Makefile         |   1 +
-> > > > > > >  drivers/fpga/dfl-spi-altera.c | 221
-> > > > ++++++++++++++++++++++++++++++++++++++++++
-> > > > > > >  3 files changed, 231 insertions(+)
-> > > > > > >  create mode 100644 drivers/fpga/dfl-spi-altera.c
-> > > > > > >
-> > > > > > > diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
-> > > > > > > index d591dd9..0a86994 100644
-> > > > > > > --- a/drivers/fpga/Kconfig
-> > > > > > > +++ b/drivers/fpga/Kconfig
-> > > > > > > @@ -210,6 +210,15 @@ config FPGA_DFL_NIOS_INTEL_PAC_N3000
-> > > > > > >    the card. It also instantiates the SPI master (spi-altera) for
-> > > > > > >    the card's BMC (Board Management Controller).
-> > > > > > >
-> > > > > > > +config FPGA_DFL_SPI_ALTERA
-> > > > > > > +tristate "FPGA DFL Altera SPI Master Driver"
-> > > > > > > +depends on FPGA_DFL
-> > > > > > > +select REGMAP
-> > > > > > > +help
-> > > > > > > +  This is a DFL bus driver for the Altera SPI master controller.
-> > > > > > > +  The SPI master is connected to a SPI slave to Avalon Master
-> > > > > > > +  bridge in a Intel MAX BMC.
-> > > > > > > +
-> > > > > > >  config FPGA_DFL_PCI
-> > > > > > >  tristate "FPGA DFL PCIe Device Driver"
-> > > > > > >  depends on PCI && FPGA_DFL
-> > > > > > > diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
-> > > > > > > index 18dc9885..58a42ad 100644
-> > > > > > > --- a/drivers/fpga/Makefile
-> > > > > > > +++ b/drivers/fpga/Makefile
-> > > > > > > @@ -45,6 +45,7 @@ dfl-afu-objs := dfl-afu-main.o dfl-afu-region.o dfl-
-> > > > afu-dma-region.o
-> > > > > > >  dfl-afu-objs += dfl-afu-error.o
-> > > > > > >
-> > > > > > >  obj-$(CONFIG_FPGA_DFL_NIOS_INTEL_PAC_N3000)+= dfl-n3000-
-> > > > nios.o
-> > > > > > > +obj-$(CONFIG_FPGA_DFL_SPI_ALTERA)+= dfl-spi-altera.o
-> > > > > > >
-> > > > > > >  # Drivers for FPGAs which implement DFL
-> > > > > > >  obj-$(CONFIG_FPGA_DFL_PCI)+= dfl-pci.o
-> > > > > > > diff --git a/drivers/fpga/dfl-spi-altera.c b/drivers/fpga/dfl-spi-altera.c
-> > > > > > > new file mode 100644
-> > > > > > > index 0000000..9bec25fd
-> > > > > > > --- /dev/null
-> > > > > > > +++ b/drivers/fpga/dfl-spi-altera.c
-> > > > > > > @@ -0,0 +1,221 @@
-> > > > > > > +// SPDX-License-Identifier: GPL-2.0
-> > > > > > > +/*
-> > > > > > > + * DFL bus driver for Altera SPI Master
-> > > > > > > + *
-> > > > > > > + * Copyright (C) 2020 Intel Corporation, Inc.
-> > > > > > > + *
-> > > > > > > + * Authors:
-> > > > > > > + *   Matthew Gerlach <matthew.gerlach@linux.intel.com>
-> > > > > > > + */
-> > > > > > > +
-> > > > > > > +#include <linux/types.h>
-> > > > > > > +#include <linux/kernel.h>
-> > > > > > > +#include <linux/module.h>
-> > > > > > > +#include <linux/stddef.h>
-> > > > > > > +#include <linux/errno.h>
-> > > > > > > +#include <linux/platform_device.h>
-> > > > > > > +#include <linux/io.h>
-> > > > > > > +#include <linux/bitfield.h>
-> > > > > > > +#include <linux/io-64-nonatomic-lo-hi.h>
-> > > > > > > +#include <linux/regmap.h>
-> > > > > > > +#include <linux/spi/spi.h>
-> > > > > > > +#include <linux/spi/altera.h>
-> > > > > > > +#include <linux/dfl.h>
-> > > > > > > +
-> > > > > > > +struct dfl_altera_spi {
-> > > > > > > +void __iomem *base;
-> > > > > > > +struct regmap *regmap;
-> > > > > > > +struct device *dev;
-> > > > > > > +struct platform_device *altr_spi;
-> > > > > > > +};
-> > > > > > > +
-> > > > > > > +#define SPI_CORE_PARAMETER      0x8
-> > > > > > > +#define SHIFT_MODE              BIT_ULL(1)
-> > > > > > > +#define SHIFT_MODE_MSB          0
-> > > > > > > +#define SHIFT_MODE_LSB          1
-> > > > > > > +#define DATA_WIDTH              GENMASK_ULL(7, 2)
-> > > > > > > +#define NUM_CHIPSELECT          GENMASK_ULL(13, 8)
-> > > > > > > +#define CLK_POLARITY            BIT_ULL(14)
-> > > > > > > +#define CLK_PHASE               BIT_ULL(15)
-> > > > > > > +#define PERIPHERAL_ID           GENMASK_ULL(47, 32)
-> > > > > > > +#define SPI_CLK                 GENMASK_ULL(31, 22)
-> > > > > > > +#define SPI_INDIRECT_ACC_OFST   0x10
-> > > > > > > +
-> > > > > > > +#define INDIRECT_ADDR           (SPI_INDIRECT_ACC_OFST+0x0)
-> > > > > > > +#define INDIRECT_WR             BIT_ULL(8)
-> > > > > > > +#define INDIRECT_RD             BIT_ULL(9)
-> > > > > > > +#define INDIRECT_RD_DATA        (SPI_INDIRECT_ACC_OFST+0x8)
-> > > > > > > +#define INDIRECT_DATA_MASK      GENMASK_ULL(31, 0)
-> > > > > > > +#define INDIRECT_DEBUG          BIT_ULL(32)
-> > > > > > > +#define INDIRECT_WR_DATA        (SPI_INDIRECT_ACC_OFST+0x10)
-> > > > > > > +#define INDIRECT_TIMEOUT        10000
-> > > > > > > +
-> > > > > > > +static int indirect_bus_reg_read(void *context, unsigned int reg,
-> > > > > > > + unsigned int *val)
-> > > > > > > +{
-> > > > > > > +struct dfl_altera_spi *aspi = context;
-> > > > > > > +void __iomem *base = aspi->base;
-> > > > > > > +int loops;
-> > > > > > > +u64 v;
-> > > > > > > +
-> > > > > > > +writeq((reg >> 2) | INDIRECT_RD, base + INDIRECT_ADDR);
-> > > > > > > +
-> > > > > > > +loops = 0;
-> > > > > > > +while ((readq(base + INDIRECT_ADDR) & INDIRECT_RD) &&
-> > > > > > > +       (loops++ < INDIRECT_TIMEOUT))
-> > > > > > > +cpu_relax();
-> > > > > > > +
-> > > > > > > +if (loops >= INDIRECT_TIMEOUT) {
-> > > > > > > +pr_err("%s timed out %d\n", __func__, loops);
-> > > > > > > +return -ETIME;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +v = readq(base + INDIRECT_RD_DATA);
-> > > > > > > +
-> > > > > > > +*val = v & INDIRECT_DATA_MASK;
-> > > > > > > +
-> > > > > > > +return 0;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static int indirect_bus_reg_write(void *context, unsigned int reg,
-> > > > > > > +  unsigned int val)
-> > > > > > > +{
-> > > > > > > +struct dfl_altera_spi *aspi = context;
-> > > > > > > +void __iomem *base = aspi->base;
-> > > > > > > +int loops;
-> > > > > > > +
-> > > > > > > +writeq(val, base + INDIRECT_WR_DATA);
-> > > > > > > +writeq((reg >> 2) | INDIRECT_WR, base + INDIRECT_ADDR);
-> > > > > > > +
-> > > > > > > +loops = 0;
-> > > > > > > +while ((readq(base + INDIRECT_ADDR) & INDIRECT_WR) &&
-> > > > > > > +       (loops++ < INDIRECT_TIMEOUT))
-> > > > > > > +cpu_relax();
-> > > > > > > +
-> > > > > > > +if (loops >= INDIRECT_TIMEOUT) {
-> > > > > > > +pr_err("%s timed out %d\n", __func__, loops);
-> > > > > > > +return -ETIME;
-> > > > > > > +}
-> > > > > > > +return 0;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static const struct regmap_config indirect_regbus_cfg = {
-> > > > > > > +.reg_bits = 32,
-> > > > > > > +.reg_stride = 4,
-> > > > > > > +.val_bits = 32,
-> > > > > > > +.fast_io = true,
-> > > > > > > +
-> > > > > > > +.reg_write = indirect_bus_reg_write,
-> > > > > > > +.reg_read = indirect_bus_reg_read,
-> > > > > > > +};
-> > > > > > > +
-> > > > > > > +static struct spi_board_info m10_bmc_info = {
-> > > > > > > +.modalias = "m10-d5005",
-> > > > > > > +.max_speed_hz = 12500000,
-> > > > > > > +.bus_num = 0,
-> > > > > > > +.chip_select = 0,
-> > > > > > > +};
-> > > > > > > +
-> > > > > > > +static struct platform_device *create_cntrl(struct device *dev,
-> > > > > > > +    void __iomem *base,
-> > > > > > > +    struct spi_board_info *m10_info)
-> > > > > > > +{
-> > > > > > > +struct altera_spi_platform_data pdata;
-> > > > > > > +struct platform_device_info pdevinfo;
-> > > > > > > +u64 v;
-> > > > > > > +
-> > > > > > > +v = readq(base + SPI_CORE_PARAMETER);
-> > > > > > > +
-> > > > > > > +memset(&pdata, 0, sizeof(pdata));
-> > > > > > > +pdata.mode_bits = SPI_CS_HIGH;
-> > > > > > > +if (FIELD_GET(CLK_POLARITY, v))
-> > > > > > > +pdata.mode_bits |= SPI_CPOL;
-> > > > > > > +if (FIELD_GET(CLK_PHASE, v))
-> > > > > > > +pdata.mode_bits |= SPI_CPHA;
-> > > > > > > +
-> > > > > > > +pdata.num_chipselect = FIELD_GET(NUM_CHIPSELECT, v);
-> > > > > > > +pdata.bits_per_word_mask =
-> > > > > > > +SPI_BPW_RANGE_MASK(1, FIELD_GET(DATA_WIDTH, v));
-> > > > > > > +
-> > > > > > > +pdata.num_devices = 1;
-> > > > > > > +pdata.devices = m10_info;
-> > > > > > > +
-> > > > > > > +dev_dbg(dev, "%s cs %u bpm 0x%x mode 0x%x\n", __func__,
-> > > > > > > +pdata.num_chipselect, pdata.bits_per_word_mask,
-> > > > > > > +pdata.mode_bits);
-> > > > > > > +
-> > > > > > > +memset(&pdevinfo, 0, sizeof(pdevinfo));
-> > > > > > > +
-> > > > > > > +pdevinfo.name = "subdev_spi_altera";
-> > > > > > > +pdevinfo.id = PLATFORM_DEVID_AUTO;
-> > > > > > > +pdevinfo.parent = dev;
-> > > > > > > +pdevinfo.data = &pdata;
-> > > > > > > +pdevinfo.size_data = sizeof(pdata);
-> > > > > > > +
-> > > > > > > +return platform_device_register_full(&pdevinfo);
-> > > > > >
-> > > > > > Should this be a SPI driver? I think looking at the UIO case we had
-> > > > > > decided against this pattern?
-> > > > >
-> > > > > This driver is similar in function to drivers/fpga/dfl-n3000-nios.c which
-> > > > > uses this design pattern.  Is it okay to keep this design pattern for
-> > > > > consistency?
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > > +}
-> > > > > > > +static int dfl_spi_altera_probe(struct dfl_device *dfl_dev)
-> > > > > > > +{
-> > > > > > > +struct device *dev = &dfl_dev->dev;
-> > > > > > > +struct dfl_altera_spi *aspi;
-> > > > > > > +
-> > > > > > > +aspi = devm_kzalloc(dev, sizeof(*aspi), GFP_KERNEL);
-> > > > > > > +
-> > > > > > > +if (!aspi)
-> > > > > > > +return -ENOMEM;
-> > > > > > > +
-> > > > > > > +dev_set_drvdata(dev, aspi);
-> > > > > > > +
-> > > > > > > +aspi->dev = dev;
-> > > > > > > +
-> > > > > > > +aspi->base = devm_ioremap_resource(dev, &dfl_dev->mmio_res);
-> > > > > > > +
-> > > > > > > +if (IS_ERR(aspi->base)) {
-> > > > > > > +dev_err(dev, "%s get mem resource fail!\n", __func__);
-> > > > > > > +return PTR_ERR(aspi->base);
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +aspi->regmap = devm_regmap_init(dev, NULL, aspi,
-> > > > &indirect_regbus_cfg);
-> > > > > > > +if (IS_ERR(aspi->regmap))
-> > > > > > > +return PTR_ERR(aspi->regmap);
-> > > > > > > +
-> > > > > > > +aspi->altr_spi = create_cntrl(dev, aspi->base, &m10_bmc_info);
-> > > > > > > +
-> > > > > > > +if (IS_ERR(aspi->altr_spi)) {
-> > > > > > > +dev_err(dev, "%s failed to create spi platform driver\n",
-> > > > > > > +__func__);
-> > > > > > > +return PTR_ERR(aspi->base);
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +return 0;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +static void dfl_spi_altera_remove(struct dfl_device *dfl_dev)
-> > > > > > > +{
-> > > > > > > +struct dfl_altera_spi *aspi = dev_get_drvdata(&dfl_dev->dev);
-> > > > > > > +
-> > > > > > > +platform_device_unregister(aspi->altr_spi);
-> > > > > > > +}
-> > > > > > > +
-> > > > > > > +#define FME_FEATURE_ID_MAX10_SPI        0xe
-> > > > > > > +
-> > > > > > > +static const struct dfl_device_id dfl_spi_altera_ids[] = {
-> > > > > > > +{ FME_ID, FME_FEATURE_ID_MAX10_SPI },
-> > > > > > > +{ }
-> > > > > > > +};
-> > > > > >
-> > > > > > Maybe you can extend the Altera SPI driver with this part?
-> > > > >
-> > > > > The file, drivers/spi/spi-altera.c, already has platform MODULE_ related
-> > > > > code.  Wouldn't moving this code to that file produce conflicts?
-> > > >
-> > > > I've seen other drivers support multiple busses, so it should be
-> > > > possible, there might be nuances I'm missing in my brief look at this,
-> > > > though.
-> > > >
-> > > > I think one of them would be MODULE_DEVICE_TABLE(platform, ...)
-> > > > and the other one MODULE_DEVICE_TABLE(dfl, ...)
-> > > >
-> > > > See drivers/i2c/busses/i2c-designware-platdrv.c for an example (though
-> > > > they might be guarding against what you describe with CONFIG_OF vs
-> > > > CONFIG_ACPI)
-> > > >
-> > > > If that doesn't work we could split it up into
-> > > >
-> > > > altera-spi-plat.c and altera-spi-dfl.c and altera-spi-core.c
-> > > > or something of that sort?
-> > > >
-> > > > My point being, now that we have a bus, let's use it and develop drivers
-> > > > according to the Linux device model where possible :)
-> > >
-> > > Agree. This does make sense from my side too. DFL core provides the
-> > mechanism
-> > > to enumerate different IPs on FPGA, but each function driver needs to go to
-> > > related subsystem for review.  : )
-> > >
-> > > I understand that for FPGA case, it may have some additional logics for specific
-> > > purposes based on common altera spi master IP, then additional code for
-> >
-> > I'm wondering if the additional logics are extensions for common spi-altera. Like
-> > the
-> > SPI_CORE_PARAMETER register, it is not within the register space of
-> > spi-altera,
-> >
-> >
-> >   |   |      +-------------+
-> >   |DFL|------| +--------+  |
-> >   |BUS|      | |SPI CORE|  |
-> >   |   |      | |PARAM   |  |
-> >   |   |      | +--------+  |
-> >   |   |      |             |
-> >   |   |      | +--------+  |   +-------+
-> >              | |Indirect|  |   |spi    |
-> >              | |access  +--+---|altera |
-> >              | |master  |  |   +-------+
-> >              | +--------+  |
-> >              +-------------+
-> > > a specific product still can be put into altera-spi-xxxx.c or altera-spi-dfl-xxxx.c
-> >
-> > So is it proper we integrate this feature into spi-altera? Previously
-> > we have merged the dfl-n3000-nios, its spi part is very similar as
-> > this driver. The dfl-n3000-nios make the spi-altera as a sub device.
-> > Could we borrow the idea, or could we just integrate this driver in
-> > dfl-n3000-nios?
-> 
-> Looks like those are enhancements of the IP. They can be applied even
+Add basic test coverage for files that don't require any config options:
+* gcd.c
+* lcm.c
+* int_sqrt.c
+* reciprocal_div.c
+(Ignored int_pow.c since it's a simple textbook algorithm.)
 
-I don't think the extra registers are the enhancement of the IP. They
-are not part of the IP because they are not within the IP's register
-space. They are like some external way of describing the IP like
-Devicetree or ACPI.
+These tests aren't particularly interesting, but they
+* provide short and simple examples of parameterized tests
+* provide a place to add tests for any new files in this dir
+* are written so adding new test cases to cover edge cases should be easy
 
-> other buses are used, not only for DFL, like PCI device or platform device,
-> right? then why not put related code together with the original IP?
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+Changes since v3: 
+* fix `checkpatch.pl --strict` warnings
+* add test cases for gcd(0,0) and lcm(0,0)
+* minor: don't test both gcd(a,b) and gcd(b,a) when a == b
 
-The code of devicetree or ACPI parsing are integrated in the IP drivers,
-but for this case, it may not be proper for now, cause this style is not
-formally introduced by any standard. IP specific parameters description
-are not within the scope of DFL now.
+Changes since v2: mv math_test.c => math_kunit.c
 
-> 
-> The reason I suggested that function drivers which use DFL bus, still need
-> to go to related subsystem, because we know DFL quite well but may
-> not be the experts for every subsystem (e.g. SPI), and every IPs (e.g.
-> Altera SPI Master). Altera SPI Master driver maintainer could give more
-> valuable suggestions on your question if this feature can be integrated
-> into spi-altera or not. : )
+Changes since v1:
+* Rebase and rewrite to use the new parameterized testing support.
+* misc: fix overflow in literal and inline int_sqrt format string.
+* related: commit 1f0e943df68a ("Documentation: kunit: provide guidance
+for testing many inputs") was merged explaining the patterns shown here.
+  * there's an in-flight patch to update it for parameterized testing.
 
-I agree that we put drivers to their related subsystem. I'm just
-wondering if drivers/spi is the proper domain for it. Anyway getting
-some inputs from SPI maintainers is a good suggestion.
+v1: https://lore.kernel.org/lkml/20201019224556.3536790-1-dlatypov@google.com/
+---
+ lib/math/Kconfig      |   5 +
+ lib/math/Makefile     |   2 +
+ lib/math/math_kunit.c | 214 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 221 insertions(+)
+ create mode 100644 lib/math/math_kunit.c
 
-Thanks,
-Yilun
+diff --git a/lib/math/Kconfig b/lib/math/Kconfig
+index f19bc9734fa7..6ba8680439c1 100644
+--- a/lib/math/Kconfig
++++ b/lib/math/Kconfig
+@@ -15,3 +15,8 @@ config PRIME_NUMBERS
+ 
+ config RATIONAL
+ 	bool
++
++config MATH_KUNIT_TEST
++	tristate "KUnit test for lib/math" if !KUNIT_ALL_TESTS
++	default KUNIT_ALL_TESTS
++	depends on KUNIT
+diff --git a/lib/math/Makefile b/lib/math/Makefile
+index be6909e943bd..30abb7a8d564 100644
+--- a/lib/math/Makefile
++++ b/lib/math/Makefile
+@@ -4,3 +4,5 @@ obj-y += div64.o gcd.o lcm.o int_pow.o int_sqrt.o reciprocal_div.o
+ obj-$(CONFIG_CORDIC)		+= cordic.o
+ obj-$(CONFIG_PRIME_NUMBERS)	+= prime_numbers.o
+ obj-$(CONFIG_RATIONAL)		+= rational.o
++
++obj-$(CONFIG_MATH_KUNIT_TEST)	+= math_kunit.o
+diff --git a/lib/math/math_kunit.c b/lib/math/math_kunit.c
+new file mode 100644
+index 000000000000..fed15ade8fb2
+--- /dev/null
++++ b/lib/math/math_kunit.c
+@@ -0,0 +1,214 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Simple KUnit suite for math helper funcs that are always enabled.
++ *
++ * Copyright (C) 2020, Google LLC.
++ * Author: Daniel Latypov <dlatypov@google.com>
++ */
++
++#include <kunit/test.h>
++#include <linux/gcd.h>
++#include <linux/kernel.h>
++#include <linux/lcm.h>
++#include <linux/reciprocal_div.h>
++
++/* Generic test case for unsigned long inputs. */
++struct test_case {
++	unsigned long a, b;
++	unsigned long result;
++};
++
++static struct test_case gcd_cases[] = {
++	{
++		.a = 0, .b = 0,
++		.result = 0,
++	},
++	{
++		.a = 0, .b = 1,
++		.result = 1,
++	},
++	{
++		.a = 2, .b = 2,
++		.result = 2,
++	},
++	{
++		.a = 2, .b = 4,
++		.result = 2,
++	},
++	{
++		.a = 3, .b = 5,
++		.result = 1,
++	},
++	{
++		.a = 3 * 9, .b = 3 * 5,
++		.result = 3,
++	},
++	{
++		.a = 3 * 5 * 7, .b = 3 * 5 * 11,
++		.result = 15,
++	},
++	{
++		.a = 1 << 21,
++		.b = (1 << 21) - 1,
++		.result = 1,
++	},
++};
++
++KUNIT_ARRAY_PARAM(gcd, gcd_cases, NULL);
++
++static void gcd_test(struct kunit *test)
++{
++	const char *message_fmt = "gcd(%lu, %lu)";
++	const struct test_case *test_param = test->param_value;
++
++	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
++			    gcd(test_param->a, test_param->b),
++			    message_fmt, test_param->a,
++			    test_param->b);
++
++	if (test_param->a == test_param->b)
++		return;
++
++	/* gcd(a,b) == gcd(b,a) */
++	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
++			    gcd(test_param->b, test_param->a),
++			    message_fmt, test_param->b,
++			    test_param->a);
++}
++
++static struct test_case lcm_cases[] = {
++	{
++		.a = 0, .b = 0,
++		.result = 0,
++	},
++	{
++		.a = 0, .b = 1,
++		.result = 0,
++	},
++	{
++		.a = 1, .b = 2,
++		.result = 2,
++	},
++	{
++		.a = 2, .b = 2,
++		.result = 2,
++	},
++	{
++		.a = 3 * 5, .b = 3 * 7,
++		.result = 3 * 5 * 7,
++	},
++};
++
++KUNIT_ARRAY_PARAM(lcm, lcm_cases, NULL);
++
++static void lcm_test(struct kunit *test)
++{
++	const char *message_fmt = "lcm(%lu, %lu)";
++	const struct test_case *test_param = test->param_value;
++
++	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
++			    lcm(test_param->a, test_param->b),
++			    message_fmt, test_param->a,
++			    test_param->b);
++
++	if (test_param->a == test_param->b)
++		return;
++
++	/* lcm(a,b) == lcm(b,a) */
++	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
++			    lcm(test_param->b, test_param->a),
++			    message_fmt, test_param->b,
++			    test_param->a);
++}
++
++static struct test_case int_sqrt_cases[] = {
++	{
++		.a = 0,
++		.result = 0,
++	},
++	{
++		.a = 1,
++		.result = 1,
++	},
++	{
++		.a = 4,
++		.result = 2,
++	},
++	{
++		.a = 5,
++		.result = 2,
++	},
++	{
++		.a = 8,
++		.result = 2,
++	},
++	{
++		.a = 1UL << 30,
++		.result = 1UL << 15,
++	},
++};
++
++KUNIT_ARRAY_PARAM(int_sqrt, int_sqrt_cases, NULL);
++
++static void int_sqrt_test(struct kunit *test)
++{
++	const struct test_case *test_param = test->param_value;
++
++	KUNIT_EXPECT_EQ_MSG(test, int_sqrt(test_param->a),
++			    test_param->result, "sqrt(%lu)",
++			    test_param->a);
++}
++
++struct reciprocal_test_case {
++	u32 a, b;
++	u32 result;
++};
++
++static struct reciprocal_test_case reciprocal_div_cases[] = {
++	{
++		.a = 0, .b = 1,
++		.result = 0,
++	},
++	{
++		.a = 42, .b = 20,
++		.result = 2,
++	},
++	{
++		.a = 42, .b = 9999,
++		.result = 0,
++	},
++	{
++		.a = (1 << 16), .b = (1 << 14),
++		.result = 1 << 2,
++	},
++};
++
++KUNIT_ARRAY_PARAM(reciprocal_div, reciprocal_div_cases, NULL);
++
++static void reciprocal_div_test(struct kunit *test)
++{
++	const struct reciprocal_test_case *test_param = test->param_value;
++	struct reciprocal_value rv = reciprocal_value(test_param->b);
++
++	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
++			    reciprocal_divide(test_param->a, rv),
++			    "reciprocal_divide(%u, %u)",
++			    test_param->a, test_param->b);
++}
++
++static struct kunit_case math_test_cases[] = {
++	KUNIT_CASE_PARAM(gcd_test, gcd_gen_params),
++	KUNIT_CASE_PARAM(lcm_test, lcm_gen_params),
++	KUNIT_CASE_PARAM(int_sqrt_test, int_sqrt_gen_params),
++	KUNIT_CASE_PARAM(reciprocal_div_test, reciprocal_div_gen_params),
++	{}
++};
++
++static struct kunit_suite math_test_suite = {
++	.name = "lib-math",
++	.test_cases = math_test_cases,
++};
++
++kunit_test_suites(&math_test_suite);
++
++MODULE_LICENSE("GPL v2");
 
-> 
-> Hao
-> 
-> >
-> > Thanks,
-> > Yilun
-> >
-> > >
-> > > Thanks
-> > > Hao
-> > >
-> > > >
-> > > > Cheers,
-> > > > Moritz
+base-commit: 4fa56ad0d12e24df768c98bffe9039f915d1bc02
+-- 
+2.31.1.295.g9ea45b61b8-goog
+
