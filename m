@@ -2,145 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571CF35A35F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:29:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0411C35A362
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234120AbhDIQ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
+        id S234032AbhDIQaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234049AbhDIQ3h (ORCPT
+        with ESMTP id S231402AbhDIQaQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:29:37 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73A7C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 09:29:22 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id k25so6516298iob.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:29:22 -0700 (PDT)
+        Fri, 9 Apr 2021 12:30:16 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F8E6C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 09:30:02 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id n2so9592460ejy.7
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:30:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wbUK7UuZXTiha9THCq0CsZWhhZsM7W4Qq19KgIJbtgE=;
-        b=h+OjIaVgd72KP23hcGzaNnj5C6ltyypnWlViECgf37wsnHcmArWRt/QOBi8xO70/A4
-         s+fj0rXFue25P2/TpbT9a+fYgEMEpHaIiKnB4t+1sMtyT75aNXTTlFGX7Zg5QaKG3Mk6
-         8EsdWMwY5XdZciE89sLyZ8HOKhmtEiwl0qjSiXGZrVQ14tg+dnw4JeyjljEmrWCx8cvI
-         BFLUx4x9lm6qUhLBzCDh1xlnTmEFtYCK/MZi/kSg9OTUlixz7isDqnhAoqBxjuNS4rKN
-         s+f/KOnK2mMBy5S/THxYodNC0WbvsIw6mmWdPTCgcuV4/rZf5NjoYgVmfQYQP/ocxgDO
-         KMeA==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O3vu4JiCvawgkzQRTM733t0EmK6dXnhEuYP8MQmV/cQ=;
+        b=XYaZinIjzm7bKXCZvWWYr4et4NaJwkj9zBf+7IkCaB+ak+bZUgBTWbU1CSkb8mX15s
+         4+uczQ4jcSv3bXbFKUV4hbS+NQV4KiFQouIwJztvQ/FI6434CmaiQQ2v+CbsoewMm02x
+         lyJPTnD8tDgygvzS/6eq3A9TTyxjL8j3wMYb8+XqZ3htIyjrOol+/mp/z8NuF2xK8TNA
+         VUZskotMeznEZvvs82pDZHXzrPQ7YNkhcLtvRLQyYd5t5La8qwKF57V1bfjaX1c6A6mi
+         HG5dIRYa6GNJiaILTS0FxGnu8mvbs9SHbwH5sTweGCPQlLMeerESEpkhoQfgwGLt4VKS
+         PlrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wbUK7UuZXTiha9THCq0CsZWhhZsM7W4Qq19KgIJbtgE=;
-        b=NUl941kSbOrtbY3x+mqGWQEZ5g+AOiJ7BJiay9soovIJOe9N/EvoSS6bKGWTBFyGXf
-         DKN1aiwvsrQoBL7lE/iAZsqrSZCRQNZgIPGxDKR6a6aaKl3Q0v7Y4Sz2tOVtQ1ItUxSP
-         YGldC4NTAyc81XKvhRejenc5wGhFRZODqCjoDOvdMyRflBY7M9F6Frc20i3rIn/ZMTOO
-         BKcRk3cqqe6UoZISkrrNFm6YxzJByinDt5uJe1Oy7/uHQUt7Xdyk+262pSPnUFL3s3bo
-         XIiGZq7X3wM8f3LZsaFXdkN9w33iZT/2vChT74Hcu7LczgfeI1rq3qyO8s0e5SK9Rqrt
-         BUwA==
-X-Gm-Message-State: AOAM5337ytEPyrcf/acpzaRYlYcYckZkjl3mPRj7xCP2MvZxM/aRmUaf
-        vWcjE1JnblRzwTAzzYu8ECg3DMpCgU4xzEgzJ/dENQ==
-X-Google-Smtp-Source: ABdhPJxJ2yCk9sU6ZHRHklOXDyRUcgWoYnG2ga9U+unMLX61flbc5GB7IkxuugYQ+2FPNoKakQvNzLckD20LkzKsCnQ=
-X-Received: by 2002:a05:6638:371e:: with SMTP id k30mr15362345jav.4.1617985762163;
- Fri, 09 Apr 2021 09:29:22 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=O3vu4JiCvawgkzQRTM733t0EmK6dXnhEuYP8MQmV/cQ=;
+        b=T9jzAsgNC+70nPk7r5VNYUanQIuTWmR9iMOSv9+YAfQaljPmXJdasyoYoI8uewi/p1
+         0dwOrne+wh4/Vd0P4HfFuQQXaV1aSyjXSBnJZZszSLyZjnuSd/ZQa6tugoQPbqWlNyJg
+         K+pKfFD5q5LEac1aIXPOAKfQmAxYuTvoJiAtCiPIuP7GYWqHXbR3glwS13Qf8/I3aBAR
+         h00dL7Tvo5DNT8KXKl7TRW5GRgMJCX+hJPk5G+KA4qC15WT13TIBxnTwOCJiOCqvSeFZ
+         U9gGtAVNzBd5G5yj95aNWff1QlPm1CN/Mtt/81DCcHPxPQ96jNN+D2uMXY33dj17ImXU
+         tHrQ==
+X-Gm-Message-State: AOAM532SfALBjCYndoYYM+gwYD0WwV7RTpQOXIhDsbSvZKB60ALkJblB
+        rzSuvYdPqqqOesKIgV2WsKDCcmQ8MU6nLrNs
+X-Google-Smtp-Source: ABdhPJxdZNxps2WOHBx4rLR7Gnoyvp1Go36M8pkbSwXXyld8P7FgvhWbVQgY9Mg9GZ5kqvaWqVG1fg==
+X-Received: by 2002:a17:907:213a:: with SMTP id qo26mr16615247ejb.547.1617985801079;
+        Fri, 09 Apr 2021 09:30:01 -0700 (PDT)
+Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id mp36sm1415095ejc.48.2021.04.09.09.29.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 09:30:00 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [Outreachy kernel] [Patch 0/3]
+Date:   Fri, 09 Apr 2021 18:29:59 +0200
+Message-ID: <6552860.D8CPca6BT0@localhost.localdomain>
 MIME-Version: 1.0
-References: <20210409014001.2946212-1-dlatypov@google.com> <YHBzA7SwH194ywRv@smile.fi.intel.com>
-In-Reply-To: <YHBzA7SwH194ywRv@smile.fi.intel.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Fri, 9 Apr 2021 09:29:10 -0700
-Message-ID: <CAGS_qxr0=nvQb787SURuVN7G-M9BdMR800FtwR3YAkFxQgPf5w@mail.gmail.com>
-Subject: Re: [PATCH v4] lib: add basic KUnit test for lib/math
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 8:30 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Apr 08, 2021 at 06:40:01PM -0700, Daniel Latypov wrote:
-> > Add basic test coverage for files that don't require any config options:
-> > * gcd.c
-> > * lcm.c
-> > * int_sqrt.c
-> > * reciprocal_div.c
-> > (Ignored int_pow.c since it's a simple textbook algorithm.)
->
-> What about adding math.h test cases?
->
-> We have some macros there and it might be a good idea to test them, for example
-> that round_up() and roundup() produces the same output for the same (power of
-> two divisor) input.
+This patch series removes camelcases, changes the type and use of a 
+variable, and correct misspelled words.
 
-I completely overlooked the macros in math.h, sounds like a good idea.
+Patch 1/3: staging: rtl8723bs: Remove camelcase in several files
 
-Grepping around, seems like abs() and DIV_ROUND_UP/CLOSEST() are among
-the more popular macros:
-$ ag -s '\bDIV_ROUND_UP\(' | wc -l
-2946
-$ ag -s '\babs\(' | wc -l
-923
-$ ag -s '\bDIV_ROUND_CLOSEST\(' | wc -l
-864
-$ ag -s '\bround_up\(' | wc -l
-727
-$ ag -s '\broundup\(' | wc -l
-620
-$ ag -s '\bround_down\(' | wc -l
-371
-$ ag -s 'rounddown\(' | wc -l
-131
+drivers/staging/rtl8723bs/core/rtw_cmd.c       |  2 +-
+drivers/staging/rtl8723bs/core/rtw_mlme.c      |  2 +-
+drivers/staging/rtl8723bs/core/rtw_pwrctrl.c   | 18 +++++++++---------
+drivers/staging/rtl8723bs/hal/hal_intf.c       |  2 +-
+drivers/staging/rtl8723bs/hal/rtl8723b_dm.c    |  6 +++---
+.../staging/rtl8723bs/hal/rtl8723b_hal_init.c  |  2 +-
+drivers/staging/rtl8723bs/hal/sdio_ops.c       | 14 +++++++-------
+.../staging/rtl8723bs/include/rtw_pwrctrl.h    |  2 +-
+8 files changed, 24 insertions(+), 24 deletions(-)
+
+Patch 2/3: staging: rtl8723bs: Change the type and use of a variable
+
+drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
+ drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+Patch 3/3: staging: rtl8723bs: include: Fix misspelled words in comments
+
+.../rtl8723bs/include/Hal8192CPhyReg.h        |  8 ++---
+ .../staging/rtl8723bs/include/basic_types.h   |  2 +-
+ drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
+ drivers/staging/rtl8723bs/include/hal_com.h   |  2 +-
+ .../staging/rtl8723bs/include/hal_com_reg.h   | 34 +++++++++----------
+ drivers/staging/rtl8723bs/include/hal_data.h  |  2 +-
+ .../staging/rtl8723bs/include/hal_pwr_seq.h   |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_cmd.h   |  6 ++--
+ drivers/staging/rtl8723bs/include/rtw_mlme.h  | 18 +++++-----
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_mp.h    |  2 +-
+ .../staging/rtl8723bs/include/rtw_pwrctrl.h   |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_recv.h  |  4 +--
+ drivers/staging/rtl8723bs/include/rtw_xmit.h  |  2 +-
+ drivers/staging/rtl8723bs/include/sta_info.h  |  2 +-
+ drivers/staging/rtl8723bs/include/wifi.h      |  2 +-
+ 16 files changed, 46 insertions(+), 46 deletions(-)
+
+Fabio M. De Francesco
 
 
->
-> > These tests aren't particularly interesting, but they
-> > * provide short and simple examples of parameterized tests
-> > * provide a place to add tests for any new files in this dir
-> > * are written so adding new test cases to cover edge cases should be easy
->
-> Yes, that's why I think macros also can be a good example how to test *macro*.
 
-Yeah, there's more to cover there since they have a range of types
-they can work on.
-
-On another note, the parameterized test arrays all use unsigned long,
-so abs() sticks out even more.
-I'm thinking of something like
-
-static void test_abs(struct kunit *test)
-{
-  KUNIT_EXPECT_EQ(test, abs('a'), 'a');
-  KUNIT_EXPECT_EQ(test, abs(-'a'), 'a');
-  ...
-}
-
-and then maybe use parameters for the other macros but also throw in
-an additional test case like
-
-static void test_div_round_up_diff_types(struct kunit *test)
-{
-  KUNIT_EXPECT_EQ(test, DIV_ROUND_UP((char) 42, (char) 10), (char) 4);
-  KUNIT_EXPECT_EQ(test, DIV_ROUND_UP((int) 42, (int) 10), (int) 4);
-  KUNIT_EXPECT_EQ(test, DIV_ROUND_UP((long) 42, (long) 10), (long) 4);
-   ...
-}
-
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/YHBzA7SwH194ywRv%40smile.fi.intel.com.
