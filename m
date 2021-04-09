@@ -2,95 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BE6A35A138
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:36:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B7C35A13C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233468AbhDIOgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:36:03 -0400
-Received: from mga03.intel.com ([134.134.136.65]:41145 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233982AbhDIOfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:35:54 -0400
-IronPort-SDR: /iEQOYZvgIWusp5+jinojyFLWNKDtQ2RhGJcKYqt5TOMSzaaKTbaGPC6mhruPoKTIIAcxz/qXs
- vZLnW1cskHRQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="193812281"
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="193812281"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 07:35:41 -0700
-IronPort-SDR: YCm4ygIJ1oB1hKg8J80oLu0/Eqppbwh5Ap1b5mv0yE3d9fbcFnb6rqDZZUmLexWGVIfW1gIRof
- iive88Loa5/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="387801770"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 09 Apr 2021 07:35:40 -0700
-Received: from [10.209.7.33] (kliang2-MOBL.ccr.corp.intel.com [10.209.7.33])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id A24EF5807A3;
-        Fri,  9 Apr 2021 07:35:38 -0700 (PDT)
-Subject: Re: [PATCH V5 23/25] perf/x86/msr: Add Alder Lake CPU support
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-        ricardo.neri-calderon@linux.intel.com
-References: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
- <1617635467-181510-24-git-send-email-kan.liang@linux.intel.com>
- <YHAdW5GmTNwshpOi@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <8e7c3eb5-d6e4-14d7-881c-614c428909d1@linux.intel.com>
-Date:   Fri, 9 Apr 2021 10:35:37 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233947AbhDIOhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:37:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231946AbhDIOhS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 10:37:18 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C385C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 07:37:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+K3RMGrwBpTT6UMZAxwuKE/mfBnKMr0kMABeiMthIw0=; b=IrFySA2e2ZVfvgkVhNbb9+AqKF
+        nzn/+JxTXwk30j1doW/l4rfjI0c9HEKteKS/g/wI9Lv0CL6tpDjO/hSN+DTrbeOJgL/Qk3N+I+tza
+        5hYpc0L0KBM+zBf1Gc2WjM5iUAW7Z7pzOwu4fbybxZew6VVChx3p9ycuf9bZeJmKrib2sodqXb/l3
+        lHgbBEXwo6eYKlJyEr6TDzg5Tb66bRja8DktiPYKb3+P//36JiuGJQJPOEMf51Vt1+AWvoeLNtYOZ
+        DdtX66+bdvWGrZ7UDzH+Mb6UE4qjHN5PdZmubqrC16GzG+XV4wJSqsc/z9ml+wWOXRWRljVD5DqUP
+        dAZWcWWA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUsEl-000V6O-3S; Fri, 09 Apr 2021 14:36:18 +0000
+Date:   Fri, 9 Apr 2021 15:35:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     neilb@suse.de, peterz@infradead.org, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        tglx@linutronix.de, bigeasy@linutronix.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/17] bit_spinlock: Prepare for split_locks
+Message-ID: <20210409143555.GV2531743@casper.infradead.org>
+References: <20210409025131.4114078-1-willy@infradead.org>
+ <20210409025131.4114078-4-willy@infradead.org>
+ <YHBlj3AjYbQHfsc0@mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <YHAdW5GmTNwshpOi@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHBlj3AjYbQHfsc0@mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/9/2021 5:24 AM, Peter Zijlstra wrote:
-> On Mon, Apr 05, 2021 at 08:11:05AM -0700, kan.liang@linux.intel.com wrote:
->> From: Kan Liang <kan.liang@linux.intel.com>
->>
->> PPERF and SMI_COUNT MSRs are also supported on Alder Lake.
->>
->> The External Design Specification (EDS) is not published yet. It comes
->> from an authoritative internal source.
->>
->> The patch has been tested on real hardware.
->>
->> Reviewed-by: Andi Kleen <ak@linux.intel.com>
->> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->> ---
->>   arch/x86/events/msr.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/arch/x86/events/msr.c b/arch/x86/events/msr.c
->> index 680404c..c853b28 100644
->> --- a/arch/x86/events/msr.c
->> +++ b/arch/x86/events/msr.c
->> @@ -100,6 +100,8 @@ static bool test_intel(int idx, void *data)
->>   	case INTEL_FAM6_TIGERLAKE_L:
->>   	case INTEL_FAM6_TIGERLAKE:
->>   	case INTEL_FAM6_ROCKETLAKE:
->> +	case INTEL_FAM6_ALDERLAKE:
->> +	case INTEL_FAM6_ALDERLAKE_L:
->>   		if (idx == PERF_MSR_SMI || idx == PERF_MSR_PPERF)
->>   			return true;
->>   		break;
+On Fri, Apr 09, 2021 at 10:32:47AM -0400, Theodore Ts'o wrote:
+> On Fri, Apr 09, 2021 at 03:51:17AM +0100, Matthew Wilcox (Oracle) wrote:
+> > Make bit_spin_lock() and variants variadic to help with the transition.
+> > The split_lock parameter will become mandatory at the end of the series.
+> > Also add bit_spin_lock_nested() and bit_spin_unlock_assign() which will
+> > both be used by the rhashtable code later.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > 
-> If only it would be sanely enumerated... What about sapphire rapids?
-> 
+> This changes the function signature for bit_spin_lock(), if I'm
+> reading this correctly.  Hence, this is going to break git
+> bisectability; was this patch series separated out for easy of review,
+> and you were planning on collapsing things into a single patch to
+> preserve bisectability?
 
-SPR also supports the MSRs. I will submit a patch separately to support SPR.
+It's perfectly bisectable.
 
-Thanks,
-Kan
+Before: bit_spin_lock takes two arguments
+During: bit_spin_lock takes at least two arguments, ignores all but the first two
+After: bit_spin_lock takes three arguments
