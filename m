@@ -2,171 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC86359D47
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:25:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A7F6359D4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234034AbhDILZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:25:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44332 "EHLO
+        id S232490AbhDIL0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233564AbhDILZQ (ORCPT
+        with ESMTP id S231402AbhDIL0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:25:16 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C57C061760;
-        Fri,  9 Apr 2021 04:25:03 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id v6so6827729ejo.6;
-        Fri, 09 Apr 2021 04:25:03 -0700 (PDT)
+        Fri, 9 Apr 2021 07:26:06 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54073C061760;
+        Fri,  9 Apr 2021 04:25:53 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id bx20so4971068edb.12;
+        Fri, 09 Apr 2021 04:25:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Cbo+DXvK45YRkq2giTOBH2tx/RdgPCKXEbdJaZjL3o4=;
-        b=Qeep4bRnU8LENO71Sy+3g9QeKeI5LfIPnzxy+FKwQcBEi9A/iJT6Np32IcCpgKrqD+
-         q1fnqqjMlIF5bVHipLNhCkGQV2YKG/HO7HirgR9yzo6rdqYp5YmWg+ATI8ckr0lACXcL
-         dTbNaQMk/6orDt58faxYVKGXNPbHQfWWq8/LnZpQTNcLfj99iuDusYVh4XByvU6nlSNr
-         uHOuTCYUhaD0R5L/bW3tKrAPwxI/dvE0ml6aeUMmRavkGu7vq8UzklY3NelUJ3B7p/nv
-         T5GhyNffr8wYf6KA//3J/GU7vJ6947XVib0ODDDPanrWWVDIHgyT+geloMwEa0NjFdsZ
-         hkGg==
+        bh=z3iRN/I24Xnjz+j7u+e6vGeVFrbk0mkTz1K2mX1+zZ4=;
+        b=lu1+MscvHl6oYz2WRVYlnwFW4sV6Fxg8Dt5a6PFtxqn8iSZPVQA0jvOxvONLWKJzcf
+         uBLEeUFYzQoaRB88la2aOnulhsqPRPbfM7AdD3Vw9k8nMr1BH5QzFnt9Nb1QWvISB51t
+         VddpT+M5vXl+hYFKCJFaTuST0Y4VZoNW1rpm4SD5rmAX6J6kPBno2yzRU6PzbutuJA/G
+         eBAOb3Bh7ESvcfqC+DCGU+1z3iXnyVHpe/sDhPrH97jwoog6D1HfG9ERo/1IiZ9aeGX+
+         FqG5ESugET/I3+PWUV2tZzb7NOq6VaVVusFGtAKfCjcNwiGGdUdPjFcvz8YDHdP6FJki
+         0jrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Cbo+DXvK45YRkq2giTOBH2tx/RdgPCKXEbdJaZjL3o4=;
-        b=hMHzzuZp/GY5WQhkI1w4SkSloRcFzPiE45kxxt0issO95MWmLJOpW/wIWHfJ0f2ueB
-         F/aIVWkJYAQGGP4z4oDeVjCJ/T6DSZlRlkFLfryZG7PggsgRKDmeZIIMzgQiuSQe8KqW
-         J+hZdJH0yaLj6lFVv0HTm5Won7yS6O4JdqsuENGuNdSkQSfw5bGbxxttpNkVjjHEn+eG
-         47IlwmzMQFcgOgaQglze8Dv75p2umietXliXhlhUbeUXRY+YL95bNB3OBDo4Lo9noiUP
-         LFEK1eGyhNV5miCXlT/w+R+y+TNnozwVMe9aDndkwzApQ5hxw7SIJz+gVbZb9PmJQf4W
-         WOgQ==
-X-Gm-Message-State: AOAM530cV/4DiLkN/wVycNei589HbL1QDLL1UDPb20WzZFxbrzNB8cID
-        GOcjTNnccsQD0OcPm6hn2Zc=
-X-Google-Smtp-Source: ABdhPJxV8P7Fx754nV6CKaEvI9W2XdWYiYZis1aHD+K/n0cncD86J2fpH7VPtbbR/n1kFFDkmjyGSA==
-X-Received: by 2002:a17:906:9bd3:: with SMTP id de19mr4717225ejc.329.1617967502168;
-        Fri, 09 Apr 2021 04:25:02 -0700 (PDT)
+        bh=z3iRN/I24Xnjz+j7u+e6vGeVFrbk0mkTz1K2mX1+zZ4=;
+        b=fq2L6FXW2PBhuwSYSVPV7H8rTy/kCgjTPReVld7ctWjc3ogy94HZIEX38KA9lqwAWW
+         ZGQJGZdIO7PejrmYFChHctCMHP+B7zLN3x8SoaaVEvah3DzoNxVGbU4GtnWxmbDjfSEd
+         8sLZaBpwlZl63e2YCYo4+8EN9g+80VKDQ0NwcC9Iybcs8SvwldGFc5T3JT81KEV2pd4U
+         VfK2sglXWBbINfl++so6fTo2eV34ObzqBPHUwFfLe1G/LuICGLL9mowpNC1rjDoLF42z
+         nglxZnEg6QwDft4wXEOdTVmjT3fWK63g2JXJH3Ufo4rcc7NZHqvqs/4zxHJUeDZ27cts
+         lrEA==
+X-Gm-Message-State: AOAM533lO3bgPLiIHQ6rngW7rDK/5tGOVEoN+Sv2MeCkT1htFB1C/+SF
+        3OwFVKqklVqs2b9IS/ztmC379K70tg0=
+X-Google-Smtp-Source: ABdhPJwF/w41qz6XqwlgyMjkN5G3/aUYTUyE1FopaLpE5m91LzAeHeRGfDaHKJyyKw3CTvDssukkBg==
+X-Received: by 2002:a05:6402:408:: with SMTP id q8mr16671807edv.201.1617967552100;
+        Fri, 09 Apr 2021 04:25:52 -0700 (PDT)
 Received: from localhost (pd9e51abe.dip0.t-ipconnect.de. [217.229.26.190])
-        by smtp.gmail.com with ESMTPSA id l2sm1043990ejz.93.2021.04.09.04.25.00
+        by smtp.gmail.com with ESMTPSA id d1sm1097407eje.26.2021.04.09.04.25.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 04:25:00 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 13:25:36 +0200
+        Fri, 09 Apr 2021 04:25:50 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 13:26:26 +0200
 From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
-        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/8] pwm: core: Support new PWM_STAGGERING_ALLOWED flag
-Message-ID: <YHA5sPuZmbSLU3aM@orome.fritz.box>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-5-clemens.gruber@pqgruber.com>
- <20210407054658.qdsjkstqwynxeuxj@pengutronix.de>
- <YG4UNoBCQJkEEfwi@workstation.tuxnet>
- <20210407213403.h6n6l2t7vqoalceu@pengutronix.de>
- <YG78IHIMGtl8Pokp@orome.fritz.box>
- <YG8miEOZXsH0NTcA@workstation.tuxnet>
- <20210408173637.w26njwystfuyrgan@pengutronix.de>
+To:     Sowjanya Komatineni <skomatineni@nvidia.com>
+Cc:     axboe@kernel.dk, digetx@gmail.com, jonathanh@nvidia.com,
+        linux-ide@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ata: ahci_tegra: call tegra_powergate_power_off only
+ when PM domain is not present
+Message-ID: <YHA54tOh2vLdrwXr@orome.fritz.box>
+References: <1617915315-13639-1-git-send-email-skomatineni@nvidia.com>
+ <1617915315-13639-2-git-send-email-skomatineni@nvidia.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="KTkCqOTt+VsekVzf"
+        protocol="application/pgp-signature"; boundary="fIkQHRLcmm9c6Rkl"
 Content-Disposition: inline
-In-Reply-To: <20210408173637.w26njwystfuyrgan@pengutronix.de>
+In-Reply-To: <1617915315-13639-2-git-send-email-skomatineni@nvidia.com>
 User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---KTkCqOTt+VsekVzf
-Content-Type: text/plain; charset=utf-8
+--fIkQHRLcmm9c6Rkl
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 08, 2021 at 07:36:37PM +0200, Uwe Kleine-K=C3=B6nig wrote:
-> On Thu, Apr 08, 2021 at 05:51:36PM +0200, Clemens Gruber wrote:
-> > On Thu, Apr 08, 2021 at 02:50:40PM +0200, Thierry Reding wrote:
-> > > Yes, I think that's basically what this is saying. I think we're perh=
-aps
-> > > getting hung up on the terminology here. PWM_STAGGERING_ALLOWED gives
-> > > the impression that we're dealing with some provider-specific feature,
-> > > whereas what we really want to express is that the PWM doesn't care
-> > > exactly when the active cycle starts and based on that a provider that
-> > > can support it may optimize the EMI behavior.
-> > >=20
-> > > Maybe we can find a better name for this? Ultimately what this means =
-is
-> > > that the consumer is primarily interested in the power output of the =
-PWM
-> > > rather than the exact shape of the signal. So perhaps something like
-> > > PWM_USAGE_POWER would be more appropriate.
-> >=20
-> > Yes, although it would then no longer be obvious that this feature leads
-> > to improved EMI behavior, as long as we mention that in the docs, I
-> > think it's a good idea
-> >=20
-> > Maybe document it as follows?
-> > PWM_USAGE_POWER - Allow the driver to delay the start of the cycle
-> > for EMI improvements, as long as the power output stays the same
+On Thu, Apr 08, 2021 at 01:55:15PM -0700, Sowjanya Komatineni wrote:
+> This patch adds check to call legacy power domain API
+> tegra_powergate_power_off() only when PM domain is not present.
 >=20
-> I don't like both names, because for someone who is only halfway into
-> PWM stuff it is not understandable. Maybe ALLOW_PHASE_SHIFT?
+> This is a follow-up patch to Tegra186 AHCI support patch series.
+> ---
+>  drivers/ata/ahci_tegra.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 
-Heh... how's that any more understandable?
+Acked-by: Thierry Reding <treding@nvidia.com>
 
-> When a consumer is only interested in the power output than
->=20
-> 	.period =3D 20
-> 	.duty_cycle =3D 5
->=20
-> would also be an allowed response for the request
->=20
-> 	.period =3D 200
-> 	.duty_cycle =3D 50
->=20
-> and this is not what is in the focus here.
-
-Actually, that's *exactly* what's important here. From a consumer point
-of view the output power is the key in this case. The specifier is a
-description of a particular PWM in the consumer context. And the
-consumer not going to care what exactly the PWM controller might end up
-configuring to achieve best results. If the controller allows the phase
-shift to be changed and the constraints allow it, then that's great, but
-it isn't something that the consumer has to know if all it wants is that
-the power output is as requested.
-
-Put another way, the more generically we can describe the constraints or
-use cases, the more flexibility we get for drivers to fulfill those
-constraints. For example one controller might support phase shifting and
-use that for PWM_USAGE_POWER for better EMI behaviour. But another PWM
-controller may not support it. But it could perhaps want to optimize the
-PWM signal by reversing the polarity of one channel or whatever other
-mechanism there may be.
-
-If we add a flag such as ALLOW_PHASE_SHIFT, then only controllers that
-support programmable phase shift will be able to support this. If some
-other mechanism can also be used to support "equivalent power" use
-cases, that would have to be described as some other flag, which has
-essentially the same meaning. So you can get into a situation where you
-have multiple flags used for the same thing.
-
-Thierry
-
---KTkCqOTt+VsekVzf
+--fIkQHRLcmm9c6Rkl
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBwOa4ACgkQ3SOs138+
-s6GwhQ/6A96x54jvvgMXyX1Y+IqI/xhZhGPDf3V94OiLCKG/O5GFOx5pnyrH7X9w
-Qz61XkBlrK8ww4EKZ0I/HxZyVsrwjtOvQVsNs1iadZzwVFpznB2ISPsHfBO6ikqM
-0W23v6cWCSZ1ZVNz9X2SijzkD8QAK2RfKTiwlMqkP8kPKus2xOLfo6E769r3kItj
-aqSGqsDC2WYXmYffC8lcAWBdVznFYZ3EGDuarKoRHReLjQFVOnJqwzBanM0EpxQa
-Jtj8zEmmKfYEy5gUOTyLQUTDUtpZ4t0SdEv8AMUThHzCHzQ/mprADm2PT9wtp9GO
-VwgF7OSlW7AJ1YutEHHHmIzxSBtmLWpASd0kiu5pYgGgLhWvkWm2n1FjIBV69XdC
-/n1YS0JRjKRLcDKhjtZ2/wmJVJtWJFTuk1zD2Hp0UI1ivJuafvmuzqwqjEz0vutY
-4HSfhkWbCCyq/764ilAqKd5HZyggp91fvIcUK0TwIZMgESz533QqYPFeQdSjejYP
-qqz0/E/s9ArJOpaWEmT3F1XGBhlxnUeSlxJBBzI3J7Py4pazkFjZRSurRqLUgnH2
-4esLQXaq3mmkXd59Ie2xz0osv3lFa1wYB/+ccwSt/59L3KLyLHmf+mzltwwaX0i+
-J1dP7xW8VybL4w8TqrEPIxQQiQChYlrU5+glsDS8XSlm/n2TrEI=
-=+a3n
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBwOeIACgkQ3SOs138+
+s6EK/w/8C9IWiy2sKUPiyf+jE7S7Trl3xGTfNCEvFEwGMUGWrm1vd9oCfpFNTZM0
+x3teuqhV/jU86BHe/dGgegT6iAdCcwHZpV2ctb19ljSUkyfuk/jYFVFpJaBXMuHn
+P/DPWiQRZJLCpFT+u+6eO+diQbmO7qxQfFsHx5yWFYg+1XtTm0nvYRP5RSeGhgYi
+jOBER28uXpyGFzWloMYMkQSrBVkX9Jb6xguImfYhy1Z7WgtnMCt1eT9SeeCo/2y9
+wtqBfVlK2RyxxAuWh8ss9GiCWM9pgyJEHjCurklkBJrnGukaiv3Ng3hwdYQvDRfL
+BpjOi8fFSaV3EKk1pMqhWjcocKLHYTNk+Yz8Tx2g1b4HS+Sx5bfPtSeWdB/z67us
+CvRNOCM1n43V/ZGq221cV6+y2qzwC98n6hxP0MwXZlxYOU5Tdtu7t5wBvJQeVDTm
+PTBQJK1NiX8usbmgMy6E7d7VnLd71Xz7LiqzOkLHyURIRiungwWUjCGY/cLf1vGQ
+Lea9lpDyxGLeO7HKCJEu4WBWB9kCTB5NMQIsUVYm75KiT3ycUCtFutTM8MfN/WlG
+dzBwQSGIRK4JT3NPLD25dhEzT8wznqUjozOmpPtCqH5eaTuhhbK8gJIULRkY5MnM
+7Qn88hpOXRFdOhcPNw4q0AhsSfoD5ILLTiJU+EGF2FEOZVkNhsw=
+=yjN0
 -----END PGP SIGNATURE-----
 
---KTkCqOTt+VsekVzf--
+--fIkQHRLcmm9c6Rkl--
