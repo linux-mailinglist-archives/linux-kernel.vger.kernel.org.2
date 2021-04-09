@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EE0359EEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D34359EF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhDIMkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:40:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
+        id S233228AbhDIMkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:40:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhDIMkX (ORCPT
+        with ESMTP id S232763AbhDIMkZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:40:23 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DCAC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 05:40:10 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id s15so6387258edd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 05:40:10 -0700 (PDT)
+        Fri, 9 Apr 2021 08:40:25 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51CA7C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 05:40:12 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id e7so6359023edu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 05:40:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nA95kZEJJpqMfkhMGZ1MEF+fc5vdCxf4Uu1PJMOy2OU=;
-        b=YvvvTJYOEjErRv9reh1VXfkRZUhqKZYgGhk87dO0FLdLDzHXO8FqmgbNTm7QEc5NMQ
-         Q4vUJb+AWBWF/BdNyMCCtVGQK1DCNsZSUtomu9Qo+H9LtRlD0ncFJfgOCI2PPnAsOXvz
-         cjLcfIMBofa+QgdG5FSYpzG+DtSuPn8o9ldqngah3f7WzvLSfDOPYJnbTEBBo0XLBc6R
-         QC8nit4gmYT0v6mf7Gk1iVRHpCpgRZPNB9X6tnLFbJnlsaBzDGJRVP1vglW6Rew61deF
-         Edx3139AQ5DtI9voQbbSAqweK0XL5C+wl9qAEhvGPESYaF5wJLohmljNUDGoziHc2OcS
-         zBWg==
+        bh=jP3PhGigK/Ueh3VHQJ9puGdUHkKb5RPpqr31LnHq7qA=;
+        b=iALCGv7dgZJfAl75kq+j15/GEW609PAV7qIjtsmpitYkjUbDk2Srcv5XeJ9WUay9tI
+         OPtn2chLgQntM1yVNqd+A4gBWXL1vBbgpkqcS7pC3d+rlPxlVybKn/1XnrjuxTOqKn8/
+         cAI84iEpY/5eEIR/2w9w5jWQ3yFKBEYlkV6ZYmsszFf57mZo4LXRHqerCOGD/NQ+Z4jp
+         3NEwcKBPH6Y9ucTzZWlzzbR/J5voOovP1J/5p72FEPF7IYSFOpmrqoMLHeUbipnxkcKm
+         ZCPj3/sPK/YaibFxl5UJJphOBn1gebOgJ1khPGWsdy5SEXF5jYf1KkntbfUhNnm1s6k/
+         zIag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nA95kZEJJpqMfkhMGZ1MEF+fc5vdCxf4Uu1PJMOy2OU=;
-        b=q6NXgHtqigkX8jlg9Ns4ll1dfFxXns0du6l2SkxqqXhSaDEvOMaoekufseI9tvl70S
-         Dh2SqBNA0+LR6tQ2M50GFb8SIgCrZ8Xzwskp11q2+q7e+o9jv8qdfIHGFm6+PJAQ8qS9
-         EABTMOSfRQwioZn3GScQnKZOfQ5Jkwwdw5cdrVNFHq4L9o/vIVyesBPUTgQ3b9cdJ3cC
-         Ucyasf94Mk5+MNFkP1/sjDunjbg26D3S7s93sY24RI07Jv3R0XdMPyPhaEq23OcvZswv
-         AbXSqhsEP1JYme1h1XNKHHNtXqqylO2Z8fmrcG+GB3Asz+pXTQuolHjjpIglWMACJssO
-         EVng==
-X-Gm-Message-State: AOAM530afyId+J3GWlLn1FfGhhCBgXYyA4JisUilxf8z312tRHMNrwK6
-        J42uBjgjV8+ctL0TzeJ44Jw=
-X-Google-Smtp-Source: ABdhPJwdIV+GDWoNh41IlZJZQi/JBiJ9Ya0z2wGjn0zFd4GLcknJaZ2WadnuGYFNRbOZOmYW8SNwNA==
-X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr17271732edb.62.1617972009212;
-        Fri, 09 Apr 2021 05:40:09 -0700 (PDT)
+        bh=jP3PhGigK/Ueh3VHQJ9puGdUHkKb5RPpqr31LnHq7qA=;
+        b=ro7Im12jIVJ9mc3t0zpcyBtrl939S7aeJVKPO/yuk5f/7nZQPd/15H9jpXRzmDe4fU
+         k5e3U5Dqj46fEVlcdRhQAuoF6ipYZ4IdsYW6wNI016a8A4zyoOnNwLCKj9vX7C7yMr2c
+         Jr3Cn3ztpZRBfKIKQenI3LMcb7kDB5lCKfe2psWIGRBWTbuqx/fu4HaHz1elh3Ljp2ng
+         uqz+jd1q09YDesoDRo17dPV9GfyV3bqGkb8PGjtSrKw4aq93V3SXNGuzQ1K5hFdggIgp
+         cHWcTeU9Jq1QF03m5PbWgPDH3q1rxAVFAbRgoPy84gMtEvqY4RlzgQCbVSDnC2n5BUSs
+         zSMQ==
+X-Gm-Message-State: AOAM533fF0AUixdpCj8bN2n8P4g6WCaYyLCu/eMd2UMj0/BRU0oo/VrK
+        koRH6Ig/2f0QexsAt/DgIQM=
+X-Google-Smtp-Source: ABdhPJw2vjjPOvYZVnYSy+uAgediVSvUZ+6nuGvzEe3aEpQZknjVA6iqVETu50DlFxmUbl9jr+YdgQ==
+X-Received: by 2002:a05:6402:105a:: with SMTP id e26mr17307788edu.164.1617972011158;
+        Fri, 09 Apr 2021 05:40:11 -0700 (PDT)
 Received: from agape ([151.43.204.41])
-        by smtp.gmail.com with ESMTPSA id hd8sm1172227ejc.92.2021.04.09.05.40.08
+        by smtp.gmail.com with ESMTPSA id q19sm1175784ejy.50.2021.04.09.05.40.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 05:40:08 -0700 (PDT)
+        Fri, 09 Apr 2021 05:40:10 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         Fabio Aiuto <fabioaiuto83@gmail.com>
-Subject: [PATCH 1/3] staging: rtl8723bs: remove all MSG_8192C logs
-Date:   Fri,  9 Apr 2021 14:40:01 +0200
-Message-Id: <fa7f52aa90928dc86b3249ca9c5b27f92c2b071b.1617971592.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 2/3] staging: rtl8723bs: remove commented out MSG_8192C log
+Date:   Fri,  9 Apr 2021 14:40:02 +0200
+Message-Id: <845969563d7c90d1b7aa3215ae29dd91afc5100c.1617971592.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1617971592.git.fabioaiuto83@gmail.com>
 References: <cover.1617971592.git.fabioaiuto83@gmail.com>
@@ -64,7 +64,7 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove all MSG_8192C logs.
+remove commented out MSG_8192C log.
 
 MSG_8192C is a private trace mechanism macro and is deactivated.
 (i.e. the default behaviour is _do nothing_)
@@ -75,54 +75,23 @@ So just remove it.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 4 ----
- drivers/staging/rtl8723bs/hal/sdio_halinit.c      | 4 ----
- 2 files changed, 8 deletions(-)
+ drivers/staging/rtl8723bs/hal/odm.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-index e31ad3feed62..dcb7cb131432 100644
---- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-+++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-@@ -1787,8 +1787,6 @@ static struct hal_version ReadChipVersion8723B(struct adapter *padapter)
+diff --git a/drivers/staging/rtl8723bs/hal/odm.c b/drivers/staging/rtl8723bs/hal/odm.c
+index 6f8f38a58237..dea4e3679b8e 100644
+--- a/drivers/staging/rtl8723bs/hal/odm.c
++++ b/drivers/staging/rtl8723bs/hal/odm.c
+@@ -776,9 +776,6 @@ void odm_TXPowerTrackingInit(struct dm_odm_t *pDM_Odm)
  	else
- 		pHalData->rf_type = RF_1T1R;
- 
--	MSG_8192C("RF_Type is %x!!\n", pHalData->rf_type);
--
- 	return ChipVersion;
- }
- 
-@@ -2139,8 +2137,6 @@ u8 GetEEPROMSize8723B(struct adapter *padapter)
- 	/*  6: EEPROM used is 93C46, 4: boot from E-Fuse. */
- 	size = (cr & BOOT_FROM_EEPROM) ? 6 : 4;
- 
--	MSG_8192C("EEPROM type is %s\n", size == 4 ? "E-FUSE" : "93C46");
--
- 	return size;
- }
- 
-diff --git a/drivers/staging/rtl8723bs/hal/sdio_halinit.c b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-index 0251ddafe605..989f6974c817 100644
---- a/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-+++ b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-@@ -1175,7 +1175,6 @@ static s32 _ReadAdapterInfo8723BS(struct adapter *padapter)
- 
- 
- 	val8 = rtw_read8(padapter, 0x4e);
--	MSG_8192C("%s, 0x4e = 0x%x\n", __func__, val8);
- 	val8 |= BIT(6);
- 	rtw_write8(padapter, 0x4e, val8);
- 
-@@ -1192,9 +1191,6 @@ static s32 _ReadAdapterInfo8723BS(struct adapter *padapter)
- 		CardDisableRTL8723BSdio(padapter);/* for the power consumption issue,  wifi ko module is loaded during booting, but wifi GUI is off */
- 	}
+ 		pdmpriv->TxPowerTrackControl = false;
  
 -
--	MSG_8192C("<==== _ReadAdapterInfo8723BS in %d ms\n", jiffies_to_msecs(jiffies - start));
+-	/* MSG_8192C("pdmpriv->TxPowerTrackControl = %d\n", pdmpriv->TxPowerTrackControl); */
 -
- 	return _SUCCESS;
- }
- 
+ 	/* pDM_Odm->RFCalibrateInfo.TxPowerTrackControl = true; */
+ 	pDM_Odm->RFCalibrateInfo.ThermalValue = pHalData->EEPROMThermalMeter;
+ 	pDM_Odm->RFCalibrateInfo.ThermalValue_IQK = pHalData->EEPROMThermalMeter;
 -- 
 2.20.1
 
