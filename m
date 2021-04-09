@@ -2,79 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8596F359213
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA70035921B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbhDICj2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 22:39:28 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:32851 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232616AbhDICj1 (ORCPT
+        id S232889AbhDICnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 22:43:01 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16103 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232616AbhDICm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 22:39:27 -0400
-X-UUID: 42acbb786ab846b5aa462aae7e359e64-20210409
-X-UUID: 42acbb786ab846b5aa462aae7e359e64-20210409
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1531868952; Fri, 09 Apr 2021 10:39:11 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 9 Apr 2021 10:39:09 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 9 Apr 2021 10:39:08 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Nishad Kamdar <nishadkamdar@gmail.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: [RFC PATCH] usb: core: reduce power-on-good delay time of root hub
-Date:   Fri, 9 Apr 2021 10:39:07 +0800
-Message-ID: <1617935947-24045-1-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
+        Thu, 8 Apr 2021 22:42:59 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGj6T4F9qz19Ks2;
+        Fri,  9 Apr 2021 10:40:33 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 9 Apr 2021 10:42:36 +0800
+Subject: Re: [PATCH v2 0/2] USB:ehci:fix the no SRBN register problem
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <liudongdong3@huawei.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kong.kongxinwei@hisilicon.com>,
+        <yisen.zhuang@huawei.com>
+References: <1617889760-17733-1-git-send-email-liulongfang@huawei.com>
+ <20210408145332.GA1296449@rowland.harvard.edu>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <f5eb92ab-9d28-d4a9-a3a0-6a759656ad37@huawei.com>
+Date:   Fri, 9 Apr 2021 10:42:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: E08103E15D8BA582B180E4E4D7CBAA8F1514BC09414DEEB178647A498EF9A0E32000:8
-X-MTK:  N
+In-Reply-To: <20210408145332.GA1296449@rowland.harvard.edu>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return the exactly delay time given by root hub descriptor,
-this helps to reduce resume time etc.
-
-Due to the root hub descriptor is usually provided by the host
-controller driver, if there is compatibility for a root hub,
-we can fix it easily without affect other root hub
-
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
- drivers/usb/core/hub.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/core/hub.h b/drivers/usb/core/hub.h
-index 73f4482d833a..22ea1f4f2d66 100644
---- a/drivers/usb/core/hub.h
-+++ b/drivers/usb/core/hub.h
-@@ -148,8 +148,10 @@ static inline unsigned hub_power_on_good_delay(struct usb_hub *hub)
- {
- 	unsigned delay = hub->descriptor->bPwrOn2PwrGood * 2;
- 
--	/* Wait at least 100 msec for power to become stable */
--	return max(delay, 100U);
-+	if (!hub->hdev->parent)	/* root hub */
-+		return delay;
-+	else /* Wait at least 100 msec for power to become stable */
-+		return max(delay, 100U);
- }
- 
- static inline int hub_port_debounce_be_connected(struct usb_hub *hub,
--- 
-2.18.0
-
+On 2021/4/8 22:53, Alan Stern wrote:
+> On Thu, Apr 08, 2021 at 09:49:18PM +0800, Longfang Liu wrote:
+>> (1) Add a whitelist for EHCI devices without SBRN registers.
+>> (2) Add Kunpeng920's EHCI device to the whitelist.
+>>
+>> Changes in v2:
+>> 	- Fix some code style issues.
+>> 	- Update function name.
+>>
+>> Longfang Liu (2):
+>>   USB:ehci:Add a whitelist for EHCI controllers
+>>   USB:ehci:fix Kunpeng920 ehci hardware problem
+>>
+>>  drivers/usb/host/ehci-pci.c | 30 ++++++++++++++++++++++++++----
+>>  1 file changed, 26 insertions(+), 4 deletions(-)
+> 
+> I don't think we need a whole list, along with an associated lookup 
+> routine, when there are only two entries.  The total amount of code will 
+> be smaller if you just add a check for the Kunpeng920 controller to
+> the existing check for the STMICRO controller.
+> 
+> Alan Stern
+> .
+> 
+Now there are two EHCI controllers that do not have SBRN registers,
+and there may be more in the future. This list is added for subsequent
+compatibility if there are such controllers, instead of a series of if-else.
+Thanks.
+Longfang.
