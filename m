@@ -2,112 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EA403595B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0C53595C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233383AbhDIGnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:43:25 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16108 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbhDIGnX (ORCPT
+        id S233366AbhDIGr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:47:56 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:52854 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233461AbhDIGrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:43:23 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGpRq6S07z1BFyZ;
-        Fri,  9 Apr 2021 14:40:55 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS402-HUB.china.huawei.com
- (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 14:43:04 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-CC:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <daniel.lezcano@linaro.org>
-Subject: [PATCH -next v2] clocksource/drivers/qcom: add missing iounmap() on error in msm_dt_timer_init()
-Date:   Fri, 9 Apr 2021 14:46:42 +0800
-Message-ID: <20210409064642.687623-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 9 Apr 2021 02:47:53 -0400
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 1396lOaH013190;
+        Fri, 9 Apr 2021 15:47:25 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 1396lOaH013190
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1617950845;
+        bh=3qlAPQ+Wex7yCtbxYfgxiJvo2zY3a2uhCaoULi7lupU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iqGtWaRY/N04oOQyWJA7bSLK7HDW/FC5VF20BuMgJ0Yyz6DkLDNHKFD2MhVmpmZY2
+         wYhRiZ8GR1M3FpWxnxNsr5PBGJx66A0wPY+kjB+AtlrajjaSLiKHXPtU8C6n/bMuRX
+         NgvN744mTsvR/hEWm3Tm1CunxaGm9F/C1Fc802U0bxDqYjwAska/rWgcz41mDHPGXl
+         XTDV+uz2MbefCe3t/N6Q5KWBOQzKs4n9A7deG2m5im71GlGHb7gwS8u52ADIiQdpkq
+         86a8XfPMTOMtYFxMnFq4EJ9rm+02rQGCeSRYNZ78Q+oRsK/8HlumKtiu18HAbWBqx4
+         6wQeFOXszQXEA==
+X-Nifty-SrcIP: [209.85.214.170]
+Received: by mail-pl1-f170.google.com with SMTP id g10so2260173plt.8;
+        Thu, 08 Apr 2021 23:47:25 -0700 (PDT)
+X-Gm-Message-State: AOAM531rkqYVGMZ/9VI67hqGLVcmKbOIByr7Y8B4uKN7WAE3QWdkdIyl
+        4Hic3j65fZ98yikYikRShnTTUIMW44kuLotT6Qg=
+X-Google-Smtp-Source: ABdhPJy9fFjnUC0a7uXsLzObtUuTxt83kTVyYgo+75uamccOxStRHsnBhz/UJNqTdyxhx6Am4H0+e9/oAwwpEEoVDuQ=
+X-Received: by 2002:a17:902:b589:b029:e6:2875:aa4c with SMTP id
+ a9-20020a170902b589b02900e62875aa4cmr11554274pls.71.1617950844298; Thu, 08
+ Apr 2021 23:47:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-CFilter-Loop: Reflected
+References: <20210407152457.497346-1-colin.king@canonical.com>
+In-Reply-To: <20210407152457.497346-1-colin.king@canonical.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 9 Apr 2021 15:46:47 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAT+JTg5QYYbYqCm+m11X7CF_ZWyYRA4eAtqeTEuHRqoyw@mail.gmail.com>
+Message-ID: <CAK7LNAT+JTg5QYYbYqCm+m11X7CF_ZWyYRA4eAtqeTEuHRqoyw@mail.gmail.com>
+Subject: Re: [PATCH] clk: uniphier: Fix potential infinite loop
+To:     Colin King <colin.king@canonical.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-base and cpu0_base are not unmapped on error path, add the missing
-iounmap() before return msm_dt_timer_init() in the error handling
-cases.
+On Thu, Apr 8, 2021 at 12:25 AM Colin King <colin.king@canonical.com> wrote:
+>
+> From: Colin Ian King <colin.king@canonical.com>
+>
+> The for-loop iterates with a u8 loop counter i and compares this
+> with the loop upper limit of num_parents that is an int type.
+> There is a potential infinite loop if num_parents is larger than
+> the u8 loop counter. Fix this by making the loop counter the same
+> type as num_parents.
+>
+> Addresses-Coverity: ("Infinite loop")
+> Fixes: 734d82f4a678 ("clk: uniphier: add core support code for UniPhier clock driver")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/clk/uniphier/clk-uniphier-mux.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/clk/uniphier/clk-uniphier-mux.c b/drivers/clk/uniphier/clk-uniphier-mux.c
+> index 462c84321b2d..ce219e0d2a85 100644
+> --- a/drivers/clk/uniphier/clk-uniphier-mux.c
+> +++ b/drivers/clk/uniphier/clk-uniphier-mux.c
+> @@ -34,7 +34,7 @@ static u8 uniphier_clk_mux_get_parent(struct clk_hw *hw)
+>         int num_parents = clk_hw_get_num_parents(hw);
+>         int ret;
+>         unsigned int val;
+> -       u8 i;
+> +       int i;
+>
+>         ret = regmap_read(mux->regmap, mux->reg, &val);
+>         if (ret)
+> --
+> 2.30.2
+>
 
-Fixes: 6e3321631ac2 ("ARM: msm: Add DT support to msm_timer")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
-v2:
-  add missing "ret = -EINVAL" assignment
----
- drivers/clocksource/timer-qcom.c | 24 +++++++++++++++++++-----
- 1 file changed, 19 insertions(+), 5 deletions(-)
+clk_hw_get_num_parents() returns 'unsigned int', so
+I think 'num_parents' should also have been 'unsigned int'.
 
-diff --git a/drivers/clocksource/timer-qcom.c b/drivers/clocksource/timer-qcom.c
-index b4afe3a67583..f2d9a949f3f7 100644
---- a/drivers/clocksource/timer-qcom.c
-+++ b/drivers/clocksource/timer-qcom.c
-@@ -213,7 +213,8 @@ static int __init msm_dt_timer_init(struct device_node *np)
- 	irq = irq_of_parse_and_map(np, 1);
- 	if (irq <= 0) {
- 		pr_err("Can't get irq\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_unmap_base;
- 	}
- 
- 	/* We use CPU0's DGT for the clocksource */
-@@ -223,18 +224,20 @@ static int __init msm_dt_timer_init(struct device_node *np)
- 	ret = of_address_to_resource(np, 0, &res);
- 	if (ret) {
- 		pr_err("Failed to parse DGT resource\n");
--		return ret;
-+		goto err_unmap_base;
- 	}
- 
- 	cpu0_base = ioremap(res.start + percpu_offset, resource_size(&res));
- 	if (!cpu0_base) {
- 		pr_err("Failed to map source base\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_unmap_base;
- 	}
- 
- 	if (of_property_read_u32(np, "clock-frequency", &freq)) {
- 		pr_err("Unknown frequency\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_unmap_cpu0_base;
- 	}
- 
- 	event_base = base + 0x4;
-@@ -243,7 +246,18 @@ static int __init msm_dt_timer_init(struct device_node *np)
- 	freq /= 4;
- 	writel_relaxed(DGT_CLK_CTL_DIV_4, source_base + DGT_CLK_CTL);
- 
--	return msm_timer_init(freq, 32, irq, !!percpu_offset);
-+	ret = msm_timer_init(freq, 32, irq, !!percpu_offset);
-+	if (ret)
-+		goto err_unmap_cpu0_base;
-+
-+	return 0;
-+
-+err_unmap_cpu0_base:
-+	iounmap(cpu0_base);
-+err_unmap_base:
-+	iounmap(base);
-+
-+	return ret;
- }
- TIMER_OF_DECLARE(kpss_timer, "qcom,kpss-timer", msm_dt_timer_init);
- TIMER_OF_DECLARE(scss_timer, "qcom,scss-timer", msm_dt_timer_init);
+Maybe, the loop counter 'i' also should be 'unsigned int' then?
+
+
 -- 
-2.25.1
-
+Best Regards
+Masahiro Yamada
