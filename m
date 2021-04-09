@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA42435990D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76328359915
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhDIJXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:23:08 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:44406 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230181AbhDIJXH (ORCPT
+        id S232470AbhDIJY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:24:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230181AbhDIJYy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:23:07 -0400
-X-UUID: 92cf7f6a22df4782bebec04fda71f075-20210409
-X-UUID: 92cf7f6a22df4782bebec04fda71f075-20210409
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <fengquan.chen@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1677009369; Fri, 09 Apr 2021 17:22:52 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 9 Apr 2021 17:22:48 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 9 Apr 2021 17:22:47 +0800
-From:   Fengquan Chen <Fengquan.Chen@mediatek.com>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     <fengquan.chen@mediatek.com>, <dehui.sun@mediatek.com>,
-        Fengquan Chen <Fengquan.Chen@mediatek.com>
-Subject: [PATCH] [v4, 1/1] clocksource/drivers/timer-mediatek: optimize systimer irq clear flow on shutdown
-Date:   Fri, 9 Apr 2021 17:22:42 +0800
-Message-ID: <1617960162-1988-2-git-send-email-Fengquan.Chen@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1617960162-1988-1-git-send-email-Fengquan.Chen@mediatek.com>
-References: <1617960162-1988-1-git-send-email-Fengquan.Chen@mediatek.com>
+        Fri, 9 Apr 2021 05:24:54 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA48C061760;
+        Fri,  9 Apr 2021 02:24:40 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id w8so369770pfn.9;
+        Fri, 09 Apr 2021 02:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eqDORfVYih3KdHWf8wh+CjrsEDSV3l8FMtBY017n5ac=;
+        b=FPkpy4xo3U7lSI+b72CXor5mLB4WB7xRgrIC0e0/E9Ur2Gf3DvbtTf+SqoeONPSEA5
+         bKXSuA0P7DABvV2z3CroS6el/a5QRlj0uMVckp+iIWTh6YigSod5lK5iSoUrJQvJpo3/
+         5ATuYBxcuoT1fE1ofiz7cc/IJFZ6QvovLQDLqvshPFFHUeyhbGUMfI0UoidpQ8oBXe9i
+         l+g4cYbzzH9Lvon0cSTFS6JsTf4jrnJ4LtPlfZwjkXB35EQK1/q9Em9WgELFFLbYoR8u
+         zcXJ/3ItrKMmHTar3w0mMyLRJI3vX+x1Ntm1lkfeRt2LQGGAXfoiVOM3xwptzAR+xZ8z
+         VwQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eqDORfVYih3KdHWf8wh+CjrsEDSV3l8FMtBY017n5ac=;
+        b=UrdnLmC4wseX6/7y0Dc46G61bPUWdyapWcKX7BPdhEAyjbMMLL3KNfWTSvp1INlJZi
+         DgKa9jXKqe9+FfbaajNKboiFsQ8kjZx5hu7O7FT4qFdPM0zI/VS7NMg8BnLUVhiVTbOU
+         9leGPf2zcgp9funrZDzDkO38xteLR0gvMDCtYyflUMJ+nooDGPL5oUKtq4VvyEkaCpKO
+         Dt6wjALK0llEEWzytEaGZFWr9cUebEWMypENZ+Mrya7RZOALVAcbosigmEP0PvfrexSB
+         UPv1IR3z9iu1f/NVMsi8ctS7p4jOx9Gd4wGi47DNpOH4ofDyUwsdSQbz2luqM7TO80Ib
+         avkw==
+X-Gm-Message-State: AOAM532ZCwfUUO4zITA7/cQbgEDxbGaNaNz/UsEOiglkGNweZiKZVTCT
+        duI68V2IHJlyxM/4S4wcHE8Lmg8+NvF3n/4Ivq4=
+X-Google-Smtp-Source: ABdhPJyyVY6OveNJsRaLQ77/g3WxhETPEL2Tr0wIxsYjLWDeGaWxTKJuY8IwV2ZN2+DTEION8vYAHDLN6Gye3w+Yp9M=
+X-Received: by 2002:a63:3e4b:: with SMTP id l72mr12053286pga.203.1617960279766;
+ Fri, 09 Apr 2021 02:24:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 826507B506F2E6CE2B0689A4825496BE862FBCB05A78F7CDF6D4B0793C0B89D32000:8
-X-MTK:  N
+References: <20210408205858.51751-1-masahiroy@kernel.org> <20210408205858.51751-2-masahiroy@kernel.org>
+In-Reply-To: <20210408205858.51751-2-masahiroy@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 9 Apr 2021 12:24:23 +0300
+Message-ID: <CAHp75VdZ67Tab2jOU0NSys_P1rU_GicJw_ADd1w9JY4rEG5g1w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] linux/kconfig.h: replace IF_ENABLED() with PTR_IF()
+ in <linux/kernel.h>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mtk_syst_clkevt_shutdown is called after irq disabled in suspend flow,
-clear any pending systimer irq when shutdown to avoid suspend aborted
-due to timer irq pending
+On Fri, Apr 9, 2021 at 12:00 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> <linux/kconfig.h> is included from all the kernel-space source files,
+> including C, assembly, linker scripts. It is intended to contain minimal
 
-Also as for systimer in mediatek socs, there must be firstly enable
-timer before clear systimer irq
+a minimal
 
-Fixes: e3af677607d9("clocksource/drivers/timer-mediatek: Add support for system timer")
-Signed-off-by: Fengquan Chen <fengquan.chen@mediatek.com>
+> set of macros to evaluate CONFIG options.
+>
+> IF_ENABLED() is an intruder here because (x ? y : z) is C code, which
+> should not be included from assembly files or linker scripts.
+>
+> Also, <linux/kconfig.h> is no longer self-contained because NULL is
+> defined in <linux/stddef.h>.
+>
+> Move IF_ENABLED() out to <linux/kernel.h> as PTR_IF().
+>
+> PTR_IF(IS_ENABLED(CONFIG_FOO), ...) is slightly longer than
+> IF_ENABLED(CONFIG_FOO, ...), but it is not a big deal because
+> sub-systems often define dedicated macros such as of_match_ptr(),
+> pm_ptr() etc. for common use-cases.
 
----
- drivers/clocksource/timer-mediatek.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+>  include/linux/kernel.h            |  2 ++
 
-diff --git a/drivers/clocksource/timer-mediatek.c b/drivers/clocksource/timer-mediatek.c
-index 9318edc..6461fd3 100644
---- a/drivers/clocksource/timer-mediatek.c
-+++ b/drivers/clocksource/timer-mediatek.c
-@@ -60,9 +60,9 @@
-  * SYST_CON_EN: Clock enable. Shall be set to
-  *   - Start timer countdown.
-  *   - Allow timeout ticks being updated.
-- *   - Allow changing interrupt functions.
-+ *   - Allow changing interrupt status,like clear irq pending.
-  *
-- * SYST_CON_IRQ_EN: Set to allow interrupt.
-+ * SYST_CON_IRQ_EN: Set to enable interrupt.
-  *
-  * SYST_CON_IRQ_CLR: Set to clear interrupt.
-  */
-@@ -75,6 +75,7 @@
- static void mtk_syst_ack_irq(struct timer_of *to)
- {
- 	/* Clear and disable interrupt */
-+	writel(SYST_CON_EN, SYST_CON_REG(to));
- 	writel(SYST_CON_IRQ_CLR | SYST_CON_EN, SYST_CON_REG(to));
- }
- 
-@@ -111,6 +112,9 @@ static int mtk_syst_clkevt_next_event(unsigned long ticks,
- 
- static int mtk_syst_clkevt_shutdown(struct clock_event_device *clkevt)
- {
-+	/* Clear any irq */
-+	mtk_syst_ack_irq(to_timer_of(clkevt));
-+
- 	/* Disable timer */
- 	writel(0, SYST_CON_REG(to_timer_of(clkevt)));
- 
+Why kernel.h? Shouldn't it belong to a particular domain with a
+respective header file?
+
+Really what we have in the kernel.h right now is a complete train
+wreck of something.
+We have to define what exactly is kernel.h for?
+
+Arnd? Others? Shall we start a wider discussion on the topic?
+
 -- 
-1.8.1.1.dirty
-
+With Best Regards,
+Andy Shevchenko
