@@ -2,133 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6897535A49C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A99435A4A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234294AbhDIR1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:27:03 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:32679
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233713AbhDIR1A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:27:00 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Abr03kKnDZVW9L84g4ina0hwZcsnpDfNNimdD?=
- =?us-ascii?q?5ilNYBxZY6Wkvuqpm+kW0gKxtSYJVBgb6Kq9EYSjYVeZz5565oENIayvNTOMhE?=
- =?us-ascii?q?KEJJxvhLGM/xTOFyHy/eZW1+NBXsFFebvNJHdgi8KS2mOFOvMh2sTC0I3Av5am?=
- =?us-ascii?q?815JTRt2L51m9RtzEAyBEkZ7LTM2Z6YRMZqH+456oCC9cm4cdcSxCj09WfLfzu?=
- =?us-ascii?q?e78a7ORT4jK1oZ5BKVjTWugYSKaCSw+hsFSTtAzfMD3AH+8jDR3amov/GlxhK0?=
- =?us-ascii?q?7Qa6071slMLl2p9/AqW35PQ9ECnmiQqjee1aN4GqgTZdmoySwWdvvuLtjlMZH+?=
- =?us-ascii?q?kb0QKzQkiF5TXX+ySl6xoAgkWD9XaoxV/K5ez/Xi8zDMBM7LgpFSfx2g4FlJVG?=
- =?us-ascii?q?3K1GxG6fvZY/N2KloA3No/zBVxRrkUSVjBMZ4JYus0A=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,210,1613430000"; 
-   d="scan'208";a="378242890"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 19:26:45 +0200
-Date:   Fri, 9 Apr 2021 19:26:45 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-cc:     Hans Verkuil <hverkuil@xs4all.nl>, clabbe@baylibre.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] Re: [PATCH 1/2] media: zoran: add spaces
- around '<<'
-In-Reply-To: <YHCFsNZVGfjjyHDi@kali>
-Message-ID: <alpine.DEB.2.22.394.2104091926280.17316@hadrien>
-References: <cover.1617912177.git.mitaliborkar810@gmail.com> <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com> <f196d8ff-e8bf-360e-ee7b-cd2dcafd9742@xs4all.nl> <YHCFsNZVGfjjyHDi@kali>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S232642AbhDIRaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:30:02 -0400
+Received: from mga06.intel.com ([134.134.136.31]:51551 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233896AbhDIRaB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 13:30:01 -0400
+IronPort-SDR: W0wfnBFrXG5tVDWknGBa905mptxaKesffdUOP0KHBG/kgdVQ3BaEU4e7BDXCWm4sIEFr6wEYQq
+ clHicCacTnfw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="255138394"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="255138394"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 10:29:47 -0700
+IronPort-SDR: hRAxO/mNHC/hOzyEkl8MDOadVgoElpYqv3lAU6zwmWoQBzBSaJ3pbC4J8aBi9J1l01XCpw2X59
+ C3HAZxrJY87w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="520350495"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Apr 2021 10:29:41 -0700
+Subject: Re: [PATCH v17 1/2] scsi: ufs: Enable power management for wlun
+To:     "Asutosh Das (asd)" <asutoshd@codeaurora.org>,
+        daejun7.park@samsung.com,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
+Cc:     "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Bean Huo <beanhuo@micron.com>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Yue Hu <huyue2@yulong.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Satya Tangirala <satyat@google.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <1b3d53dad245a7166f3f67a4c65f3a731e6600b3.1617893198.git.asutoshd@codeaurora.org>
+ <cover.1617893198.git.asutoshd@codeaurora.org>
+ <CGME20210408145007epcas2p1accfbd653b2e1318b2722c1f5661c1e0@epcms2p1>
+ <1891546521.01617937981650.JavaMail.epsvc@epcpadp4>
+ <32b2327f-a34f-03ac-a110-e683ae416fdc@intel.com>
+ <8e8bd375-ed27-d1aa-430d-4f1d3d00cb9a@codeaurora.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <d709ebda-77ac-d9e2-5875-7e5d607904ef@intel.com>
+Date:   Fri, 9 Apr 2021 20:30:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <8e8bd375-ed27-d1aa-430d-4f1d3d00cb9a@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/04/21 8:15 pm, Asutosh Das (asd) wrote:
+> On 4/9/2021 3:07 AM, Adrian Hunter wrote:
+>> On 9/04/21 5:27 am, Daejun Park wrote:
+>>> Hi Asutosh Das,
+>>>
+>>>> During runtime-suspend of ufs host, the scsi devices are
+>>>> already suspended and so are the queues associated with them.
+>>>> But the ufs host sends SSU (START_STOP_UNIT) to wlun
+>>>> during its runtime-suspend.
+>>>> During the process blk_queue_enter checks if the queue is not in
+>>>> suspended state. If so, it waits for the queue to resume, and never
+>>>> comes out of it.
+>>>> The commit
+>>>> (d55d15a33: scsi: block: Do not accept any requests while suspended)
+>>>> adds the check if the queue is in suspended state in blk_queue_enter().
+>>>>
+>>>> Call trace:
+>>>> __switch_to+0x174/0x2c4
+>>>> __schedule+0x478/0x764
+>>>> schedule+0x9c/0xe0
+>>>> blk_queue_enter+0x158/0x228
+>>>> blk_mq_alloc_request+0x40/0xa4
+>>>> blk_get_request+0x2c/0x70
+>>>> __scsi_execute+0x60/0x1c4
+>>>> ufshcd_set_dev_pwr_mode+0x124/0x1e4
+>>>> ufshcd_suspend+0x208/0x83c
+>>>> ufshcd_runtime_suspend+0x40/0x154
+>>>> ufshcd_pltfrm_runtime_suspend+0x14/0x20
+>>>> pm_generic_runtime_suspend+0x28/0x3c
+>>>> __rpm_callback+0x80/0x2a4
+>>>> rpm_suspend+0x308/0x614
+>>>> rpm_idle+0x158/0x228
+>>>> pm_runtime_work+0x84/0xac
+>>>> process_one_work+0x1f0/0x470
+>>>> worker_thread+0x26c/0x4c8
+>>>> kthread+0x13c/0x320
+>>>> ret_from_fork+0x10/0x18
+>>>>
+>>>> Fix this by registering ufs device wlun as a scsi driver and
+>>>> registering it for block runtime-pm. Also make this as a
+>>>> supplier for all other luns. That way, this device wlun
+>>>> suspends after all the consumers and resumes after
+>>>> hba resumes.
+>>>>
+>>>> Co-developed-by: Can Guo <cang@codeaurora.org>
+>>>> Signed-off-by: Can Guo <cang@codeaurora.org>
+>>>> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+>>>> ---
+>>>> drivers/scsi/ufs/cdns-pltfrm.c     |   2 +
+>>>> drivers/scsi/ufs/tc-dwc-g210-pci.c |   2 +
+>>>> drivers/scsi/ufs/ufs-debugfs.c     |   6 +-
+>>>> drivers/scsi/ufs/ufs-debugfs.h     |   2 +-
+>>>> drivers/scsi/ufs/ufs-exynos.c      |   2 +
+>>>> drivers/scsi/ufs/ufs-hisi.c        |   2 +
+>>>> drivers/scsi/ufs/ufs-mediatek.c    |  12 +-
+>>>> drivers/scsi/ufs/ufs-qcom.c        |   2 +
+>>>> drivers/scsi/ufs/ufs_bsg.c         |   6 +-
+>>>> drivers/scsi/ufs/ufshcd-pci.c      |  36 +--
+>>>> drivers/scsi/ufs/ufshcd.c          | 642 ++++++++++++++++++++++++++-----------
+>>>> drivers/scsi/ufs/ufshcd.h          |   6 +
+>>>> include/trace/events/ufs.h         |  20 ++
+>>>> 13 files changed, 509 insertions(+), 231 deletions(-)
+>>>
+>>> In this patch, you changed pm_runtime_{get, put}_sync to scsi_autopm_{get, put}_device.
+>>> But, scsi_autopm_get_device() calls pm_runtime_put_sync() in case of error
+>>> of pm_runtime_get_sync(). So, pm_runtime_put_sync() can be called twice if
+>>> scsi_autopm_get_device has error.
+>>
+>> Also it might be tidy to make wrappers e.g.
+>>
+>> static inline int ufshcd_rpm_get_sync(struct ufs_hba *hba)
+>> {
+>>      return pm_runtime_get_sync(&hba->sdev_ufs_device->sdev_gendev);
+>> }
+>>     static inline int ufshcd_rpm_put(struct ufs_hba *hba)
+>> {
+>>      return pm_runtime_put(&hba->sdev_ufs_device->sdev_gendev);
+>> }
+>>
+>> static inline int ufshcd_rpm_put_sync(struct ufs_hba *hba)
+>> {
+>>      return pm_runtime_put_sync(&hba->sdev_ufs_device->sdev_gendev);
+>> }
+>>
+>> And also consider matching: e.g.
+>>
+>>     pm_runtime_put(hba->dev)    to    ufshcd_rpm_put(hba)
+>>     pm_runtime_put_sync(hba->dev)    to    ufshcd_rpm_put_sync(hba)
+>>
+>>
+>>
+> 
+> Ok, I'll push the changes shortly.
+> 
 
+I think I will have some more comments, so you could wait if you want.
 
-On Fri, 9 Apr 2021, Mitali Borkar wrote:
-
-> On Fri, Apr 09, 2021 at 09:23:22AM +0200, Hans Verkuil wrote:
-> > Hi Mitali,
-> >
-> > On 08/04/2021 22:38, Mitali Borkar wrote:
-> > > Added spaces around '<<' operator to improve readability and meet linux
-> > > kernel coding style.
-> > > Reported by checkpatch
-> > >
-> > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > > ---
-> > >  drivers/staging/media/zoran/zr36057.h | 14 +++++++-------
-> > >  1 file changed, 7 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> > > index 71b651add35a..a2a75fd9f535 100644
-> > > --- a/drivers/staging/media/zoran/zr36057.h
-> > > +++ b/drivers/staging/media/zoran/zr36057.h
-> > > @@ -30,13 +30,13 @@
-> > >  #define ZR36057_VFESPFR_HOR_DCM          14
-> > >  #define ZR36057_VFESPFR_VER_DCM          8
-> > >  #define ZR36057_VFESPFR_DISP_MODE        6
-> > > -#define ZR36057_VFESPFR_YUV422          (0<<3)
-> > > -#define ZR36057_VFESPFR_RGB888          (1<<3)
-> > > -#define ZR36057_VFESPFR_RGB565          (2<<3)
-> > > -#define ZR36057_VFESPFR_RGB555          (3<<3)
-> > > -#define ZR36057_VFESPFR_ERR_DIF          (1<<2)
-> > > -#define ZR36057_VFESPFR_PACK24          (1<<1)
-> > > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1<<0)
-> > > +#define ZR36057_VFESPFR_YUV422          (0 << 3)
-> > > +#define ZR36057_VFESPFR_RGB888          (1 << 3)
-> > > +#define ZR36057_VFESPFR_RGB565          (2 << 3)
-> > > +#define ZR36057_VFESPFR_RGB555          (3 << 3)
-> > > +#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
-> > > +#define ZR36057_VFESPFR_PACK24          (1 << 1)
-> > > +#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
-> > >
-> > >  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
-> > >
-> > >
-> >
-> > I looked at that header and it is very messy.
-> >
-> > Can you make two new patches? The first aligns every nicely, e.g. this:
-> >
-> > #define ZR36057_VFEHCR          0x000   /* Video Front End, Horizontal Configuration Register */
-> > #define ZR36057_VFEHCR_HS_POL             BIT(30)
-> > #define ZR36057_VFEHCR_H_START           10
-> > #define ZR36057_VFEHCR_H_END            0
-> > #define ZR36057_VFEHCR_HMASK            0x3ff
-> >
-> > should become:
-> >
-> > /* Video Front End, Horizontal Configuration Register */
-> > #define ZR36057_VFEHCR			0x000
-> > #define ZR36057_VFEHCR_HS_POL		BIT(30)
-> > #define ZR36057_VFEHCR_H_START		10
-> > #define ZR36057_VFEHCR_H_END		0
-> > #define ZR36057_VFEHCR_HMASK		0x3ff
-> >
-> > Same for all the other register blocks. Use tabs to do the alignment
-> > instead of spaces, as is currently the case.
-> >
-> > The second patch can replace the (0<<3) etc. to BIT(0).
-> >
-> Then I guess only one new patch would be needed for proper alignment, am
-> i right? I have to rename it as v2 or should send as a completely new
-> patch?
-
-v2 might reduce confusion.
-
-julia
-
-> > That would be a nice cleanup of this rather messy header.
-> >
-> > Thanks!
-> >
-> > 	Hans
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHCFsNZVGfjjyHDi%40kali.
->
