@@ -2,85 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1514359C1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B505359C1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233504AbhDIK3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:29:47 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40030 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232469AbhDIK3k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:29:40 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lUoOC-0000EC-Kv; Fri, 09 Apr 2021 10:29:24 +0000
-From:   Colin Ian King <colin.king@canonical.com>
-Subject: cnic: issue with double assignment to
- ictx->xstorm_st_context.common.flags
-To:     Vladislav Zolotarov <vladz@broadcom.com>,
-        Michael Chan <mchan@broadcom.com>,
-        Bhanu Prakash Gollapudi <bprakash@broadcom.com>,
-        Eilon Greenstein <eilong@broadcom.com>
-Cc:     "David S. Miller" <davem@conan.davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Javed Hasan <jhasan@marvell.com>,
-        GR-QLogic-Storage-Upstream@marvell.com,
-        Nilesh Javali <njavali@marvell.com>,
-        Manish Rangankar <mrangankar@marvell.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <45fd66c6-764b-bc0d-7ff9-920db399f11b@canonical.com>
-Date:   Fri, 9 Apr 2021 11:29:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233417AbhDIKaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:30:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:47724 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231402AbhDIKaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:30:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72E8F1FB;
+        Fri,  9 Apr 2021 03:29:53 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 397DB3F73D;
+        Fri,  9 Apr 2021 03:29:52 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 11:29:46 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Rahul Tanwar <rtanwar@maxlinear.com>
+Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Cheol Yong Kim <ckim@maxlinear.com>,
+        Qiming Wu <qwu@maxlinear.com>,
+        Lei Chuan Hua <lchuanhua@maxlinear.com>
+Subject: Re: [PATCH] PCI: dwc/intel-gw: Fix enabling the legacy PCI interrupt
+ lines
+Message-ID: <20210409102946.GA14799@lpieralisi>
+References: <20210106135540.48420-1-martin.blumenstingl@googlemail.com>
+ <20210323113559.GE29286@e121166-lin.cambridge.arm.com>
+ <CAFBinCBaa_uGBg8x=nPTs6sYNqv_OCU2PgCaUKLQGNSN+Up99A@mail.gmail.com>
+ <MN2PR19MB36934176A011B86624E1EA2BB1739@MN2PR19MB3693.namprd19.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MN2PR19MB36934176A011B86624E1EA2BB1739@MN2PR19MB3693.namprd19.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Apr 09, 2021 at 10:17:12AM +0000, Rahul Tanwar wrote:
+> On 9/4/2021 4:40 am, Martin Blumenstingl wrote:
+> > This email was sent from outside of MaxLinear.
+> > 
+> > Hi Lorenzo,
+> > 
+> > On Tue, Mar 23, 2021 at 12:36 PM Lorenzo Pieralisi
+> > <lorenzo.pieralisi@arm.com> wrote:
+> >  >
+> >  > On Wed, Jan 06, 2021 at 02:55:40PM +0100, Martin Blumenstingl wrote:
+> >  > > The legacy PCI interrupt lines need to be enabled using PCIE_APP_IRNEN
+> >  > > bits 13 (INTA), 14 (INTB), 15 (INTC) and 16 (INTD). The old code 
+> > however
+> >  > > was taking (for example) "13" as raw value instead of taking BIT(13).
+> >  > > Define the legacy PCI interrupt bits using the BIT() macro and then use
+> >  > > these in PCIE_APP_IRN_INT.
+> >  > >
+> >  > > Fixes: ed22aaaede44 ("PCI: dwc: intel: PCIe RC controller driver")
+> >  > > Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+> >  > > ---
+> >  > > drivers/pci/controller/dwc/pcie-intel-gw.c | 10 ++++++----
+> >  > > 1 file changed, 6 insertions(+), 4 deletions(-)
+> >  > >
+> >  > > diff --git a/drivers/pci/controller/dwc/pcie-intel-gw.c 
+> > b/drivers/pci/controller/dwc/pcie-intel-gw.c
+> >  > > index 0cedd1f95f37..ae96bfbb6c83 100644
+> >  > > --- a/drivers/pci/controller/dwc/pcie-intel-gw.c
+> >  > > +++ b/drivers/pci/controller/dwc/pcie-intel-gw.c
+> >  > > @@ -39,6 +39,10 @@
+> >  > > #define PCIE_APP_IRN_PM_TO_ACK BIT(9)
+> >  > > #define PCIE_APP_IRN_LINK_AUTO_BW_STAT BIT(11)
+> >  > > #define PCIE_APP_IRN_BW_MGT BIT(12)
+> >  > > +#define PCIE_APP_IRN_INTA BIT(13)
+> >  > > +#define PCIE_APP_IRN_INTB BIT(14)
+> >  > > +#define PCIE_APP_IRN_INTC BIT(15)
+> >  > > +#define PCIE_APP_IRN_INTD BIT(16)
+> >  > > #define PCIE_APP_IRN_MSG_LTR BIT(18)
+> >  > > #define PCIE_APP_IRN_SYS_ERR_RC BIT(29)
+> >  > > #define PCIE_APP_INTX_OFST 12
+> >  > > @@ -48,10 +52,8 @@
+> >  > > PCIE_APP_IRN_RX_VDM_MSG | PCIE_APP_IRN_SYS_ERR_RC | \
+> >  > > PCIE_APP_IRN_PM_TO_ACK | PCIE_APP_IRN_MSG_LTR | \
+> >  > > PCIE_APP_IRN_BW_MGT | PCIE_APP_IRN_LINK_AUTO_BW_STAT | \
+> >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTA) | \
+> >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTB) | \
+> >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTC) | \
+> >  > > - (PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTD))
+> >  > > + PCIE_APP_IRN_INTA | PCIE_APP_IRN_INTB | \
+> >  > > + PCIE_APP_IRN_INTC | PCIE_APP_IRN_INTD)
+> >  > >
+> >  > > #define BUS_IATU_OFFSET SZ_256M
+> >  > > #define RESET_INTERVAL_MS 100
+> >  >
+> >  > This looks like a significant bug - which in turn raises the question
+> >  > on how well this driver has been tested.
+> > to give them the benefit of doubt: maybe only MSIs were tested
+> > 
+> >  > Dilip, can you review and ACK asap please ?
+> >  From "Re: MaxLinear, please maintain your drivers was Re: [PATCH]
+> > leds: lgm: fix gpiolib dependency" [0]:
+> >  > Please send any Lightning Mountain SoC related issues email to Rahul
+> >  > Tanwar (rtanwar@maxlinear.com) and I will ensure that I address the
+> >  > issues in a timely manner.
+> > so I added rtanwar@maxlinear.com to this email
+> > 
+> > 
+> > Best regards,
+> > Martin
+> > 
+> > 
+> > [0] https://lkml.org/lkml/2021/3/16/282 
+> > <https://lkml.org/lkml/2021/3/16/282>
+> 
+> 
+> Dilip has left the org. So not sure how exactly he tested it (maybe only 
+> MSIs). But i have confirmed it to be a bug. Thanks Martin for fixing it.
 
-Analysis of linux with Coverity has detected an issue with the
-assignment of ictx->xstorm_st_context.common.fla in
-drivers/net/ethernet/broadcom/cnic.c in function cnic_setup_bnx2x_ctx.
+Can you take on maintainership for this driver please ?
 
-This was introduced a while back with the following commit:
+If yes please send a MAINTAINERS file patch.
 
-commit 619c5cb6885b936c44ae1422ef805b69c6291485
-Author: Vlad Zolotarov <vladz@broadcom.com>
-Date:   Tue Jun 14 14:33:44 2011 +0300
+Thanks,
+Lorenzo
 
-    New 7.0 FW: bnx2x, cnic, bnx2i, bnx2fc
-
-The static analysis is as follows:
-
-1761        ictx->xstorm_st_context.common.flags =
-
-Unused value (UNUSED_VALUE)assigned_value: Assigning value 1 to
-ictx->xstorm_st_context.common.flags here, but that stored value is
-overwritten before it can be used.
-
-1762                1 <<
-XSTORM_COMMON_CONTEXT_SECTION_PHYSQ_INITIALIZED_SHIFT;
-1763        ictx->xstorm_st_context.common.flags =
-
-    value_overwrite: Overwriting previous write to
-ictx->xstorm_st_context.common.flags with value from port << 1.
-
-1764                port << XSTORM_COMMON_CONTEXT_SECTION_PBF_PORT_SHIFT;
-1765
-1766        ictx->tstorm_st_context.iscsi.hdr_bytes_2_fetch =
-ISCSI_HEADER_SIZE;
-
-The re-assignment of ictx->xstorm_st_context.common.flags in line 1763
-is overwriting the value assigned on line 1761.  Should the = operator
-on the re-assignment be an |= operator instead?
-
-Colin
+> Acked-by: Rahul Tanwar <rtanwar@maxlinear.com>
+> 
+> Regards,
+> Rahul
+> 
+> 
+> 
+> 
+> 
