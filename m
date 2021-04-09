@@ -2,165 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8765F359D90
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:40:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DBF359D92
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233318AbhDILkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233472AbhDILkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:40:43 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:41538 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233316AbhDILkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Apr 2021 07:40:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbhDILkh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:40:37 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8068C061760;
-        Fri,  9 Apr 2021 04:40:24 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id g10so2607817plt.8;
-        Fri, 09 Apr 2021 04:40:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=M4xX2WWfEqm7PGNI70AcSFeFug982FHKb8Dt0b/QqpQ=;
-        b=vSPUmZpmgYYgSkQNzGePiVkKAonQ6CSFAsAIqewjEWD2/5cYOPYSu/TYwYBaiys5N4
-         1O9MgUNs11EfINvx5nlt2nODwsba9ow5TPW0At8E+pmJvg/VqagcB5X6DXFdQe7Fi0/N
-         T3EGOWO3SnShUixUDlgLU65CEwka8aDhSmooz812PueEg9EMd9nUhkzYnAMLhDcwkBV+
-         m4gzV+zTSZzWB1zk8VRvrMnIXFy440Ccbg0XLxSwj3CEq6HFP1Kp0WGVCKVdrQ0BBZj+
-         hcNz4OucUSws3F/aGP3hrPcwShgGhsGgAnxeEaqAFB9Cil1ZIQRLY1uKyQPzoK79A2ph
-         pWJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=M4xX2WWfEqm7PGNI70AcSFeFug982FHKb8Dt0b/QqpQ=;
-        b=WNt+94Gxpfn+a1SlLmuVas4/xsSy8udfHyiSZRGosnd8IK8L/3lvoQzN6ct5Vo69cq
-         uFgdym0uGINIknWoWwL9l8iZzGdkeS7Gc/13OqCDdN0IHsGCKLfyXYg2FJIq9maayaSz
-         Aha7GhKGaOZX7uKtxzob8PA8DG4frRr6TrW6iMgLwP3bLPICGhBT+aFOxqpvETMNjyWy
-         WZANuPapHgby+sahjEi8NqIfmo/S84TT7ldEWwooaInFPk/f/qhNJhKHI7NPg7xr2Hzj
-         ++QW+pCPRDcF8bL6wq4+OfMtoO030GOd8kTrw3wMGlyX8ojWZ3qMMtpnn150XnmbRJm4
-         Wc/Q==
-X-Gm-Message-State: AOAM533Tx/bccBmSdLsJEsaBSPD+2BMlGFc01HOjidoer4EqTwPTiZtf
-        gvJD7T6EKODZPQeVGwMwQfGOBa19oPM4Mw==
-X-Google-Smtp-Source: ABdhPJwAVbX2Y/sOadYxvegw/IWh+DXCxN78WniKOnFyUpKbrR5bSRAfnvOhochMc31hJCXxFerTxQ==
-X-Received: by 2002:a17:902:db05:b029:e9:ab78:51fd with SMTP id m5-20020a170902db05b02900e9ab7851fdmr3319055plx.22.1617968424384;
-        Fri, 09 Apr 2021 04:40:24 -0700 (PDT)
-Received: from kali ([103.141.87.254])
-        by smtp.gmail.com with ESMTPSA id x22sm2108568pfa.24.2021.04.09.04.40.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 04:40:24 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 17:10:17 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     clabbe@baylibre.com, mchehab@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Subject: [PATCH v3] staging: media: zoran: remove and move statement in next
- line with '*'
-Message-ID: <YHA9IdZVRr4kbVJ0@kali>
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id B153CFB03;
+        Fri,  9 Apr 2021 13:40:24 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id xwtZgkfuU3mX; Fri,  9 Apr 2021 13:40:22 +0200 (CEST)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id 8E68640622; Fri,  9 Apr 2021 13:40:21 +0200 (CEST)
+From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, Liu Ying <victor.liu@nxp.com>
+Subject: [PATCH v5 0/2] phy: fsl-imx8-mipi-dphy: Hook into runtime pm
+Date:   Fri,  9 Apr 2021 13:40:19 +0200
+Message-Id: <cover.1617968250.git.agx@sigxcpu.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed and moved statement in line in long(multi-line) comments and
-added '*' before it to meet linux kernel coding style for long (multi-line) comments
+This allows us to shut down the mipi power domain on the imx8. The alternative
+would be to drop the dphy from the mipi power domain in the SOCs device tree
+and only have the DSI host controller visible there but since the PD is mostly
+about the PHY that would defeat it's purpose.
 
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
----
+This allows to shut off the power domain when blanking the LCD panel:
 
-Changes from v2:- made style changes in code according to linux kernel
-coding style for long comments.
+pm_genpd_summary before:
 
-drivers/staging/media/zoran/zr36050.c | 26 +++++++++++++++++---------
- 1 file changed, 17 insertions(+), 9 deletions(-)
+domain                          status          slaves
+    /device                                             runtime status
+----------------------------------------------------------------------
+mipi                            on
+    /devices/platform/soc@0/soc@0:bus@30800000/30a00300.dphy  unsupported
+    /devices/platform/soc@0/soc@0:bus@30800000/30a00000.mipi_dsi  suspended
 
-diff --git a/drivers/staging/media/zoran/zr36050.c b/drivers/staging/media/zoran/zr36050.c
-index 703064009c6b..b89afa239b0c 100644
---- a/drivers/staging/media/zoran/zr36050.c
-+++ b/drivers/staging/media/zoran/zr36050.c
-@@ -24,7 +24,8 @@
- /* codec io API */
- #include "videocodec.h"
- 
--/* it doesn't make sense to have more than 20 or so,
-+/*
-+ * it doesn't make sense to have more than 20 or so,
-  * just to prevent some unwanted loops
-  */
- #define MAX_CODECS 20
-@@ -311,7 +312,8 @@ static const char zr36050_decimation_v[8] = { 1, 1, 1, 0, 0, 0, 0, 0 };
- 
- /* ------------------------------------------------------------------------- */
- 
--/* SOF (start of frame) segment depends on width, height and sampling ratio
-+/*
-+ * SOF (start of frame) segment depends on width, height and sampling ratio
-  *			 of each color component
-  */
- 
-@@ -343,7 +345,8 @@ static int zr36050_set_sof(struct zr36050 *ptr)
- 
- /* ------------------------------------------------------------------------- */
- 
--/* SOS (start of scan) segment depends on the used scan components
-+/*
-+ * SOS (start of scan) segment depends on the used scan components
-  *			of each color component
-  */
- 
-@@ -432,7 +435,8 @@ static void zr36050_init(struct zr36050 *ptr)
- 		sum += zr36050_set_sos(ptr);
- 		sum += zr36050_set_dri(ptr);
- 
--		/* setup the fixed jpeg tables - maybe variable, though -
-+		/*
-+		 * setup the fixed jpeg tables - maybe variable, though -
- 		 * (see table init section above)
- 		 */
- 		dprintk(3, "%s: write DQT, DHT, APP\n", ptr->name);
-@@ -551,8 +555,9 @@ static void zr36050_init(struct zr36050 *ptr)
-  * =========================================================================
-  */
- 
--/* set compression/expansion mode and launches codec -
-- *  this should be the last call from the master before starting processing
-+/*
-+ * set compression/expansion mode and launches codec -
-+ * this should be the last call from the master before starting processing
-  */
- 
- static int zr36050_set_mode(struct videocodec *codec, int mode)
-@@ -581,7 +586,8 @@ static int zr36050_set_video(struct videocodec *codec, const struct tvnorm *norm
- 		ptr->name, norm->h_start, norm->v_start,
- 		cap->x, cap->y, cap->width, cap->height,
- 		cap->decimation, cap->quality);
--	/* if () return -EINVAL;
-+	/*
-+	 * if () return -EINVAL;
- 	 * trust the master driver that it knows what it does - so
- 	 * we allow invalid startx/y and norm for now ...
- 	 */
-@@ -603,7 +609,8 @@ static int zr36050_set_video(struct videocodec *codec, const struct tvnorm *norm
- 
- 	ptr->real_code_vol = size >> 3; /* in bytes */
- 
--	/* Set max_block_vol here (previously in zr36050_init, moved
-+	/*
-+	 * Set max_block_vol here (previously in zr36050_init, moved
- 	 * here for consistency with zr36060 code
- 	 */
- 	zr36050_write(ptr, ZR050_MBCV, ptr->max_block_vol);
-@@ -661,7 +668,8 @@ static int zr36050_control(struct videocodec *codec, int type, int size, void *d
- 		if (size != sizeof(int))
- 			return -EFAULT;
- 		ptr->total_code_vol = *ival;
--		/* (Kieran Morrissey)
-+		/*
-+		 * (Kieran Morrissey)
- 		 * code copied from zr36060.c to ensure proper bitrate
- 		 */
- 		ptr->real_code_vol = (ptr->total_code_vol * 6) >> 3;
+after:
+
+mipi                            off-0
+    /devices/platform/soc@0/soc@0:bus@30800000/30a00300.dphy  suspended
+    /devices/platform/soc@0/soc@0:bus@30800000/30a00000.mipi_dsi  suspended
+
+Changes from v1:
+ - Tweak commit message slightly
+
+Changes from v2:
+  - As per review comment by Lucas Stach
+    https://lore.kernel.org/linux-arm-kernel/ee22b072e0abe07559a3e6a63ccf6ece064a46cb.camel@pengutronix.de/
+    Check for pm_runtime_get_sync failure
+
+Changes from v3:
+  - As per review comment by Liu Ying
+    https://lore.kernel.org/linux-arm-kernel/424af315b677934fe6a91cee5a0a7aee058245a9.camel@nxp.com/
+    https://lore.kernel.org/linux-arm-kernel/a98f7531b9d0293d3c89174446f742d4199cb27c.camel@nxp.com/
+    - Use phy layers runtime pm
+    - simplify mixel_dphy_remove
+
+Chanes from v4:
+  - As per review comment by Liu Ying
+    https://lore.kernel.org/linux-arm-kernel/daef1299e43f0372a95c149b979441f8083f4b15.camel@nxp.com/
+    - Disable after probe errors
+    - core: increment device usage count on .configure as well
+
+Guido Günther (2):
+  phy: core: Use runtime pm during configure too
+  phy: fsl-imx8-mipi-dphy: Hook into runtime pm
+
+ drivers/phy/freescale/phy-fsl-imx8-mipi-dphy.c | 13 +++++++++++++
+ drivers/phy/phy-core.c                         |  6 ++++++
+ 2 files changed, 19 insertions(+)
+
 -- 
-2.30.2
+2.30.1
 
