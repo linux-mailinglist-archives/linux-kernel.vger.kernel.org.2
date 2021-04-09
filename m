@@ -2,135 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F4B35A02D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:42:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B5C35A02E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhDINmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:42:14 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:52444 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233856AbhDINmD (ORCPT
+        id S233705AbhDINmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:42:40 -0400
+Received: from outbound-smtp50.blacknight.com ([46.22.136.234]:57653 "EHLO
+        outbound-smtp50.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233655AbhDINmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:42:03 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 139Dfbol029329;
-        Fri, 9 Apr 2021 08:41:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1617975697;
-        bh=yzQFMlEvLc1NJ8+6qQzAMS/IJa1/2LrIrpQLN6vAeQU=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=UNQR6TKCVjkHc2LapYnv+gSYZDa9D7jgM4msj9gaN4CbCbyhk70VjclQuaPZ27NTK
-         dO4M2i4au2NgZaIC+aksBNFvCZq2NCDdC13YvOL8Lh0I5CSU8dyfplbQVb11I3YiKZ
-         ZVVVF9vzfQ55HLYEixq0dNtSgTG3w9PjhNOwd+Ho=
-Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 139DfbJF116872
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 9 Apr 2021 08:41:37 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 9 Apr
- 2021 08:41:37 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 9 Apr 2021 08:41:36 -0500
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 139Dewmd029277;
-        Fri, 9 Apr 2021 08:41:31 -0500
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Faiz Abbas <faiz_abbas@ti.com>,
-        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        <linux-can@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-phy@lists.infradead.org>
-Subject: [PATCH 4/4] can: m_can_platform: Add support for transceiver as phy
-Date:   Fri, 9 Apr 2021 19:10:54 +0530
-Message-ID: <20210409134056.18740-5-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210409134056.18740-1-a-govindraju@ti.com>
-References: <20210409134056.18740-1-a-govindraju@ti.com>
+        Fri, 9 Apr 2021 09:42:36 -0400
+Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
+        by outbound-smtp50.blacknight.com (Postfix) with ESMTPS id D71E0FAD4C
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 14:42:22 +0100 (IST)
+Received: (qmail 15210 invoked from network); 9 Apr 2021 13:42:22 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Apr 2021 13:42:22 -0000
+Date:   Fri, 9 Apr 2021 14:42:21 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH] mm/memory_hotplug: Make unpopulated zones PCP structures
+ unreachable during hot remove
+Message-ID: <20210409134221.GO3697@techsingularity.net>
+References: <20210409120957.GM3697@techsingularity.net>
+ <YHBL0e8s+EesIyDl@dhcp22.suse.cz>
+ <YHBNDEAw1OqIWwb5@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <YHBNDEAw1OqIWwb5@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Faiz Abbas <faiz_abbas@ti.com>
+On Fri, Apr 09, 2021 at 02:48:12PM +0200, Michal Hocko wrote:
+> On Fri 09-04-21 14:42:58, Michal Hocko wrote:
+> > On Fri 09-04-21 13:09:57, Mel Gorman wrote:
+> > > zone_pcp_reset allegedly protects against a race with drain_pages
+> > > using local_irq_save but this is bogus. local_irq_save only operates
+> > > on the local CPU. If memory hotplug is running on CPU A and drain_pages
+> > > is running on CPU B, disabling IRQs on CPU A does not affect CPU B and
+> > > offers no protection.
+> > 
+> > Yes, the synchronization aspect is bogus indeed.
+> > 
+> > > This patch reorders memory hotremove such that the PCP structures
+> > > relevant to the zone are no longer reachable by the time the structures
+> > > are freed.  With this reordering, no protection is required to prevent
+> > > a use-after-free and the IRQs can be left enabled. zone_pcp_reset is
+> > > renamed to zone_pcp_destroy to make it clear that the per-cpu structures
+> > > are deleted when the function returns.
+> > 
+> > Wouldn't it be much easier to simply not destroy/reset pcp of an empty
+> > zone at all? The whole point of this exercise seems to be described in
+> > 340175b7d14d5. setup_zone_pageset can check for an already allocated pcp
+> > and simply reinitialize it. 
+> 
+> I meant this
+> 
 
-Add support for implementing transceiver node as phy. The max_bitrate is
-obtained by getting a phy attribute.
+It might be simplier but if the intention is to free as much memory
+as possible during hot-remove, it seems wasteful to leave the per-cpu
+structures behind if we do not have to. If a problem with my patch can
+be spotted then I'm happy to go with an alternative fix but there are
+two minor issues with your proposed fix.
 
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
- drivers/net/can/m_can/m_can_platform.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index e6a602e82860..b0fdda77e570 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -6496,7 +6496,13 @@ void __meminit setup_zone_pageset(struct zone *zone)
+>  	struct per_cpu_pageset *p;
+>  	int cpu;
+>  
+> -	zone->pageset = alloc_percpu(struct per_cpu_pageset);
+> +	/*
+> +	 * zone could have gone completely offline during memory hotplug
+> +	 * when the pgdat is left behind for simplicity. On a next onlining
+> +	 * we do not need to reallocate pcp state.
+> +	 */
+> +	if (!zone->pageset)
+> +		zone->pageset = alloc_percpu(struct per_cpu_pageset);
 
-diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-index 599de0e08cd7..4a762b5a21d8 100644
---- a/drivers/net/can/m_can/m_can_platform.c
-+++ b/drivers/net/can/m_can/m_can_platform.c
-@@ -6,6 +6,7 @@
- // Copyright (C) 2018-19 Texas Instruments Incorporated - http://www.ti.com/
- 
- #include <linux/platform_device.h>
-+#include <linux/phy/phy.h>
- 
- #include "m_can.h"
- 
-@@ -67,7 +68,9 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *addr;
- 	void __iomem *mram_addr;
-+	struct phy *transceiver;
- 	int irq, ret = 0;
-+	u32 bitrate_max;
- 
- 	mcan_class = m_can_class_allocate_dev(&pdev->dev,
- 					      sizeof(struct m_can_plat_priv));
-@@ -101,6 +104,28 @@ static int m_can_plat_probe(struct platform_device *pdev)
- 		goto probe_fail;
- 	}
- 
-+	transceiver = devm_phy_optional_get(&pdev->dev, "can_transceiver");
-+	if (IS_ERR(transceiver)) {
-+		ret = PTR_ERR(transceiver);
-+		dev_err(&pdev->dev, "error while getting phy, err=%d\n", ret);
-+		return ret;
-+	}
-+
-+	if (!transceiver) {
-+		dev_warn(&pdev->dev, "No transceiver phy found\n");
-+	} else {
-+		ret = phy_power_on(transceiver);
-+		if (ret) {
-+			dev_err(&pdev->dev, "error powering on phy, err=%d\n", ret);
-+			return ret;
-+		}
-+		/* converting from Mbps to bps */
-+		bitrate_max = (transceiver->attrs.max_link_rate) * 1000000;
-+		if (!bitrate_max)
-+			dev_warn(&pdev->dev, "Invalid value for transceiver max bitrate. Ignoring bitrate limit\n");
-+		priv->cdev.can.bitrate_max = bitrate_max;
-+	}
-+
- 	priv->base = addr;
- 	priv->mram_base = mram_addr;
- 
+Should be "if (zone->pageset != &boot_pageset)" ?
+
+
+>  	for_each_possible_cpu(cpu) {
+>  		p = per_cpu_ptr(zone->pageset, cpu);
+>  		pageset_init(p);
+> @@ -8803,25 +8809,6 @@ void zone_pcp_enable(struct zone *zone)
+>  	mutex_unlock(&pcp_batch_high_lock);
+>  }
+>  
+> -void zone_pcp_reset(struct zone *zone)
+> -{
+> -	unsigned long flags;
+> -	int cpu;
+> -	struct per_cpu_pageset *pset;
+> -
+> -	/* avoid races with drain_pages()  */
+> -	local_irq_save(flags);
+> -	if (zone->pageset != &boot_pageset) {
+> -		for_each_online_cpu(cpu) {
+> -			pset = per_cpu_ptr(zone->pageset, cpu);
+> -			drain_zonestat(zone, pset);
+> -		}
+> -		free_percpu(zone->pageset);
+> -		zone->pageset = &boot_pageset;
+> -	}
+> -	local_irq_restore(flags);
+> -}
+> -
+
+zone_pcp_reset still needs to exist to drain the remaining vmstats or
+it'll break 5a883813845a ("memory-hotplug: fix zone stat
+mismatch").
+
 -- 
-2.17.1
-
+Mel Gorman
+SUSE Labs
