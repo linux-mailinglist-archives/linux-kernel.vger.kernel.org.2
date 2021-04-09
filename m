@@ -2,264 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7C235A959
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F7435A95B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:54:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235209AbhDIXtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 19:49:31 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:57329 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235053AbhDIXta (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 19:49:30 -0400
-Received: by mail-il1-f200.google.com with SMTP id v7so4470663ilh.23
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 16:49:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=RVdrXiS+QPJOI31tv5oW1fGIS7xA4x7qB16eTxnycVE=;
-        b=SmHOPFkmZyafIYV6iNpzZuanEHgZZq/oDjkikCnTqIfeD3lehIi15VSabPCG6DsS+Y
-         889HQbiDAT6T4UfIPEGBchdML7pOHeT7Sz7U78xIAYWgZ8xBcJDZwQyPYeIJTg6Fi41Q
-         mqKPcaHdNDviS8K0FMdyy9SPHXRKudX0I4m7iL4gIRF7rVthNPPfqmXZy96vXNreOD/K
-         6qIoc18f2e4LDlhgQbznAiyODyf3BcRQwARlicKxxq0NqIgW9XbhUAhbCXC/8GfSPD6D
-         d7Pnob+LqRle84EOnbQT0mGDDBcHS5qoYoPyFg/hgGS0hP+ihsk7RlS7kn7DWsww8w6w
-         xZXw==
-X-Gm-Message-State: AOAM5300bLCyi4J67cxSn5LbtGLfHNq3RB1IQqGxcGOMAvHH0/t4S+9w
-        ymzs7TytJ5X4vI2EX7KXlKrKIpXxW3nCLQCCFc58qcl6XN6R
-X-Google-Smtp-Source: ABdhPJzi8c2uWKMwxTSXb11V/331ccjQ1ldnLnbGRtiOX+qZyFQyt14DFSAfZ0XKT3iFHZXm6QuSIutc0mfRwcA0oYdLpDfUYM4m
+        id S235212AbhDIXyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 19:54:16 -0400
+Received: from mga18.intel.com ([134.134.136.126]:49980 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235053AbhDIXyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 19:54:14 -0400
+IronPort-SDR: zOkpSvKpl48rqd9bsA/Vx++j5GWO4Wk5ICOykfzsfK5Tv8LSxXJeCESM7MqYdrUQGLzFiNGrOz
+ Fhv2IzC3LWCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="181390442"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="181390442"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:54:00 -0700
+IronPort-SDR: vTHn/6FVEdCXz97Hykc4lm8kK0tf6XFCjkGwQMc2Doy/NoaTRSvVUkEQM+viNjNE5ExlzTe26q
+ gbLhxN+yFEMQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="422938420"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 09 Apr 2021 16:53:59 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lV0wo-000HYC-JX; Fri, 09 Apr 2021 23:53:58 +0000
+Date:   Sat, 10 Apr 2021 07:53:30 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:locking/core] BUILD SUCCESS
+ 9432bbd969c667fc9c4b1c140c5a745ff2a7b540
+Message-ID: <6070e8fa.ycejPAWkeNd5jygv%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:58f:: with SMTP id a15mr16716556jar.35.1618012156271;
- Fri, 09 Apr 2021 16:49:16 -0700 (PDT)
-Date:   Fri, 09 Apr 2021 16:49:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d12a3405bf92cf00@google.com>
-Subject: [syzbot] INFO: task hung in n_tty_read (2)
-From:   syzbot <syzbot+f013a12629d1698e22ca@syzkaller.appspotmail.com>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking/core
+branch HEAD: 9432bbd969c667fc9c4b1c140c5a745ff2a7b540  static_call: Relax static_call_update() function argument type
 
-syzbot found the following issue on:
+elapsed time: 728m
 
-HEAD commit:    454c576c Add linux-next specific files for 20210401
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=113432a1d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=920cc274cae812a5
-dashboard link: https://syzkaller.appspot.com/bug?extid=f013a12629d1698e22ca
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13682a36d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10322fbed00000
+configs tested: 216
+configs skipped: 4
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f013a12629d1698e22ca@syzkaller.appspotmail.com
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-INFO: task agetty:1550 blocked for more than 143 seconds.
-      Not tainted 5.12.0-rc5-next-20210401-syzkaller #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:agetty          state:D stack:27336 pid: 1550 ppid:     1 flags:0x00004004
-Call Trace:
- context_switch kernel/sched/core.c:4329 [inline]
- __schedule+0x911/0x2160 kernel/sched/core.c:5079
- schedule+0xcf/0x270 kernel/sched/core.c:5158
- schedule_timeout+0x1db/0x250 kernel/time/timer.c:1854
- do_wait_for_common kernel/sched/completion.c:85 [inline]
- __wait_for_common kernel/sched/completion.c:106 [inline]
- wait_for_common kernel/sched/completion.c:117 [inline]
- wait_for_completion+0x168/0x270 kernel/sched/completion.c:138
- __flush_work+0x527/0xac0 kernel/workqueue.c:3052
- n_tty_read+0x97c/0x12f0 drivers/tty/n_tty.c:2217
- iterate_tty_read drivers/tty/tty_io.c:873 [inline]
- tty_read+0x33a/0x5d0 drivers/tty/tty_io.c:950
- call_read_iter include/linux/fs.h:2100 [inline]
- new_sync_read+0x41e/0x6e0 fs/read_write.c:415
- vfs_read+0x35c/0x570 fs/read_write.c:496
- ksys_read+0x12d/0x250 fs/read_write.c:634
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x7f2a6197c910
-RSP: 002b:00007ffdc969e528 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-RAX: ffffffffffffffda RBX: 00007ffdc969e58f RCX: 00007f2a6197c910
-RDX: 0000000000000001 RSI: 00007ffdc969e58f RDI: 0000000000000000
-RBP: 000000000000001e R08: ffffffffffffff98 R09: 00007ffdc969d3e0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000055ba37a0d900 R14: 00007ffdc969e590 R15: 0000000000000012
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+riscv                            allmodconfig
+x86_64                           allyesconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+sh                          polaris_defconfig
+arc                              allyesconfig
+powerpc                     asp8347_defconfig
+m68k                          multi_defconfig
+arm64                            alldefconfig
+powerpc                      bamboo_defconfig
+m68k                       bvme6000_defconfig
+mips                      pistachio_defconfig
+openrisc                 simple_smp_defconfig
+openrisc                  or1klitex_defconfig
+xtensa                    xip_kc705_defconfig
+arm                            hisi_defconfig
+powerpc                      pmac32_defconfig
+arm                          lpd270_defconfig
+sh                           se7750_defconfig
+powerpc                       ebony_defconfig
+mips                           xway_defconfig
+powerpc                     mpc83xx_defconfig
+ia64                      gensparse_defconfig
+arm                          simpad_defconfig
+powerpc                 mpc834x_itx_defconfig
+powerpc                     pq2fads_defconfig
+mips                    maltaup_xpa_defconfig
+ia64                             allyesconfig
+mips                          ath79_defconfig
+m68k                                defconfig
+arm                         shannon_defconfig
+powerpc                  mpc866_ads_defconfig
+m68k                             alldefconfig
+arc                           tb10x_defconfig
+sh                           se7722_defconfig
+m68k                        m5307c3_defconfig
+powerpc                       ppc64_defconfig
+nios2                               defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                   motionpro_defconfig
+sh                         ap325rxa_defconfig
+powerpc                       eiger_defconfig
+mips                         tb0226_defconfig
+arm                          gemini_defconfig
+powerpc                     ep8248e_defconfig
+powerpc                      tqm8xx_defconfig
+openrisc                         alldefconfig
+arm                            mmp2_defconfig
+um                             i386_defconfig
+powerpc64                           defconfig
+sh                             espt_defconfig
+arm                         vf610m4_defconfig
+mips                          rb532_defconfig
+mips                            gpr_defconfig
+sh                           se7206_defconfig
+mips                      fuloong2e_defconfig
+arm                           sama5_defconfig
+mips                      maltasmvp_defconfig
+arm                             rpc_defconfig
+powerpc                   currituck_defconfig
+sh                        dreamcast_defconfig
+powerpc                 mpc837x_mds_defconfig
+microblaze                      mmu_defconfig
+powerpc                      chrp32_defconfig
+arm                         socfpga_defconfig
+arm                            pleb_defconfig
+arm                            xcep_defconfig
+arm                          ep93xx_defconfig
+mips                            e55_defconfig
+mips                        workpad_defconfig
+mips                       bmips_be_defconfig
+sh                            shmin_defconfig
+arm                        multi_v7_defconfig
+um                                allnoconfig
+arm                       imx_v4_v5_defconfig
+mips                           ip27_defconfig
+mips                         mpc30x_defconfig
+s390                                defconfig
+riscv                    nommu_k210_defconfig
+arc                            hsdk_defconfig
+riscv             nommu_k210_sdcard_defconfig
+arm                        multi_v5_defconfig
+h8300                               defconfig
+mips                         tb0287_defconfig
+mips                         tb0219_defconfig
+sh                          urquell_defconfig
+arm                        spear6xx_defconfig
+sh                            titan_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arm                         cm_x300_defconfig
+m68k                       m5475evb_defconfig
+mips                         bigsur_defconfig
+powerpc                 mpc836x_rdk_defconfig
+m68k                       m5249evb_defconfig
+ia64                            zx1_defconfig
+arm                          ixp4xx_defconfig
+arm                        shmobile_defconfig
+arm                         s3c6400_defconfig
+arm                         s3c2410_defconfig
+m68k                        stmark2_defconfig
+mips                     cu1830-neo_defconfig
+arc                 nsimosci_hs_smp_defconfig
+arc                        nsim_700_defconfig
+arm                       netwinder_defconfig
+sh                           se7712_defconfig
+mips                        qi_lb60_defconfig
+powerpc                     pseries_defconfig
+mips                             allyesconfig
+arm                  colibri_pxa300_defconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                         amcore_defconfig
+microblaze                          defconfig
+sh                        sh7785lcr_defconfig
+arc                          axs101_defconfig
+sh                          sdk7780_defconfig
+arm                          badge4_defconfig
+s390                             allyesconfig
+m68k                       m5208evb_defconfig
+openrisc                            defconfig
+ia64                          tiger_defconfig
+sh                   sh7770_generic_defconfig
+powerpc                 canyonlands_defconfig
+arc                      axs103_smp_defconfig
+powerpc                     taishan_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                     ppa8548_defconfig
+sh                           se7751_defconfig
+sh                           se7619_defconfig
+h8300                     edosk2674_defconfig
+powerpc                      pasemi_defconfig
+powerpc                     ksi8560_defconfig
+mips                       rbtx49xx_defconfig
+xtensa                  audio_kc705_defconfig
+arm                      jornada720_defconfig
+sh                           se7780_defconfig
+sh                          lboxre2_defconfig
+sh                          r7785rp_defconfig
+powerpc                     sbc8548_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                 mpc837x_rdb_defconfig
+mips                           ip28_defconfig
+powerpc                    adder875_defconfig
+mips                     loongson1b_defconfig
+arm                         mv78xx0_defconfig
+arm                       multi_v4t_defconfig
+xtensa                  cadence_csp_defconfig
+sh                   secureedge5410_defconfig
+arm                       versatile_defconfig
+arc                        nsimosci_defconfig
+sh                               alldefconfig
+arm                          collie_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+m68k                             allmodconfig
+m68k                             allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a006-20210409
+i386                 randconfig-a003-20210409
+i386                 randconfig-a001-20210409
+i386                 randconfig-a004-20210409
+i386                 randconfig-a002-20210409
+i386                 randconfig-a005-20210409
+x86_64               randconfig-a014-20210409
+x86_64               randconfig-a015-20210409
+x86_64               randconfig-a012-20210409
+x86_64               randconfig-a011-20210409
+x86_64               randconfig-a013-20210409
+x86_64               randconfig-a016-20210409
+i386                 randconfig-a014-20210409
+i386                 randconfig-a011-20210409
+i386                 randconfig-a016-20210409
+i386                 randconfig-a012-20210409
+i386                 randconfig-a013-20210409
+i386                 randconfig-a015-20210409
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-Showing all locks held in the system:
-8 locks held by kworker/0:1/7:
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
- #1: ffffc90000cc7da8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
- #2: ffff88801cebf220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #2: ffff88801cebf220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5590
- #3: ffff888027283220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #3: ffff888027283220 (&dev->mutex){....}-{3:3}, at: usb_disconnect.cold+0x43/0x791 drivers/usb/core/hub.c:2210
- #4: 
-ffff8880316191a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
-ffff8880316191a8 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:989 [inline]
-ffff8880316191a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal drivers/base/dd.c:1197 [inline]
-ffff8880316191a8 (&dev->mutex){....}-{3:3}, at: device_release_driver+0x1c/0x40 drivers/base/dd.c:1223
- #5: ffff88801d601ab0 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #5: ffff88801d601ab0 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:989 [inline]
- #5: ffff88801d601ab0 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal drivers/base/dd.c:1197 [inline]
- #5: ffff88801d601ab0 (&dev->mutex){....}-{3:3}, at: device_release_driver+0x1c/0x40 drivers/base/dd.c:1223
- #6: ffffffff8cfd3668 (input_mutex){+.+.}-{3:3}, at: __input_unregister_device+0x16d/0x470 drivers/input/input.c:2186
- #7: ffffffff8bf7e268 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:290 [inline]
- #7: ffffffff8bf7e268 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x4fa/0x620 kernel/rcu/tree_exp.h:837
-1 lock held by khungtaskd/1620:
- #0: ffffffff8bf75060 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6333
-1 lock held by in:imklog/8144:
- #0: ffff8880127474f0 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:967
-7 locks held by kworker/0:0/8434:
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
- #1: ffffc9000165fda8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
- #2: ffff88801ceff220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #2: ffff88801ceff220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5590
- #3: ffff88802ffd7220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #3: ffff88802ffd7220 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4b0 drivers/base/dd.c:901
- #4: ffff88801a0e81a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #4: ffff88801a0e81a8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4b0 drivers/base/dd.c:901
- #5: ffff8880194ddab0 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #5: ffff8880194ddab0 (&dev->mutex){....}-{3:3}, at: __device_attach+0x7a/0x4b0 drivers/base/dd.c:901
- #6: ffffffff8cfd3668 (input_mutex){+.+.}-{3:3}, at: input_register_device.cold+0x34/0x307 drivers/input/input.c:2328
-3 locks held by kworker/0:3/8466:
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
- #1: ffffc900016efda8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
- #2: ffff88823bc6e220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #2: ffff88823bc6e220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5590
-7 locks held by kworker/0:4/8468:
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
- #1: ffffc900016afda8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
- #2: ffff88801cf29220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #2: ffff88801cf29220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5590
- #3: ffff88801d30e220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #3: ffff88801d30e220 (&dev->mutex){....}-{3:3}, at: usb_disconnect.cold+0x43/0x791 drivers/usb/core/hub.c:2210
- #4: ffff88801a0e91a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #4: ffff88801a0e91a8 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:989 [inline]
- #4: ffff88801a0e91a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal drivers/base/dd.c:1197 [inline]
- #4: ffff88801a0e91a8 (&dev->mutex){....}-{3:3}, at: device_release_driver+0x1c/0x40 drivers/base/dd.c:1223
- #5: ffff88802d0b5ab0 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #5: ffff88802d0b5ab0 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:989 [inline]
- #5: ffff88802d0b5ab0 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal drivers/base/dd.c:1197 [inline]
- #5: ffff88802d0b5ab0 (&dev->mutex){....}-{3:3}, at: device_release_driver+0x1c/0x40 drivers/base/dd.c:1223
- #6: ffffffff8cfd3668 (input_mutex){+.+.}-{3:3}, at: __input_unregister_device+0x16d/0x470 drivers/input/input.c:2186
-2 locks held by kworker/0:6/9210:
- #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888010866538 ((wq_completion)rcu_gp){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
- #1: ffffc90008fb7da8 ((work_completion)(&rew.rew_work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
-10 locks held by kworker/u4:5/13496:
-3 locks held by kworker/1:9/14502:
-2 locks held by agetty/1550:
- #0: ffff8880308fc098 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x22/0x80 drivers/tty/tty_ldisc.c:266
- #1: ffffc90001e7b2e8 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0xd5b/0x12f0 drivers/tty/n_tty.c:2178
-7 locks held by kworker/0:10/6065:
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
- #0: ffff888015c01138 ((wq_completion)usb_hub_wq){+.+.}-{0:0}, at: process_one_work+0x871/0x1600 kernel/workqueue.c:2246
- #1: ffffc9000c877da8 ((work_completion)(&hub->events)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x1600 kernel/workqueue.c:2250
- #2: ffff88801ceb8220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #2: ffff88801ceb8220 (&dev->mutex){....}-{3:3}, at: hub_event+0x1c1/0x4330 drivers/usb/core/hub.c:5590
- #3: ffff888029d4e220 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #3: ffff888029d4e220 (&dev->mutex){....}-{3:3}, at: usb_disconnect.cold+0x43/0x791 drivers/usb/core/hub.c:2210
- #4: ffff88801c48b1a8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #4: ffff88801c48b1a8 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:989 [inline]
- #4: ffff88801c48b1a8 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal drivers/base/dd.c:1197 [inline]
- #4: ffff88801c48b1a8 (&dev->mutex){....}-{3:3}, at: device_release_driver+0x1c/0x40 drivers/base/dd.c:1223
- #5: ffff888025c35ab0 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:744 [inline]
- #5: ffff888025c35ab0 (&dev->mutex){....}-{3:3}, at: __device_driver_lock drivers/base/dd.c:989 [inline]
- #5: ffff888025c35ab0 (&dev->mutex){....}-{3:3}, at: device_release_driver_internal drivers/base/dd.c:1197 [inline]
- #5: ffff888025c35ab0 (&dev->mutex){....}-{3:3}, at: device_release_driver+0x1c/0x40 drivers/base/dd.c:1223
- #6: ffffffff8cfd3668 (input_mutex){+.+.}-{3:3}, at: __input_unregister_device+0x16d/0x470 drivers/input/input.c:2186
-3 locks held by systemd-udevd/14727:
-1 lock held by systemd-udevd/14735:
-1 lock held by systemd-udevd/14763:
-3 locks held by systemd-udevd/14780:
- #0: ffff88802620cc88 (&of->mutex){+.+.}-{3:3}, at: kernfs_file_read_iter fs/kernfs/file.c:203 [inline]
- #0: ffff88802620cc88 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_read_iter+0x185/0x5f0 fs/kernfs/file.c:242
- #1: ffff88803513f490 (kn->active#92){++++}-{0:0}, at: kernfs_file_read_iter fs/kernfs/file.c:204 [inline]
- #1: ffff88803513f490 (kn->active#92){++++}-{0:0}, at: kernfs_fop_read_iter+0x1a8/0x5f0 fs/kernfs/file.c:242
- #2: ffff88802ffd7220 (&dev->mutex){....}-{3:3}, at: device_lock_interruptible include/linux/device.h:749 [inline]
- #2: ffff88802ffd7220 (&dev->mutex){....}-{3:3}, at: read_descriptors+0x3c/0x2c0 drivers/usb/core/sysfs.c:897
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 PID: 1620 Comm: khungtaskd Not tainted 5.12.0-rc5-next-20210401-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- nmi_cpu_backtrace.cold+0x44/0xd7 lib/nmi_backtrace.c:105
- nmi_trigger_cpumask_backtrace+0x1b3/0x230 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:146 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:253 [inline]
- watchdog+0xd8e/0xf40 kernel/hung_task.c:338
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 PID: 22 Comm: kdevtmpfs Not tainted 5.12.0-rc5-next-20210401-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__sanitizer_cov_trace_const_cmp1+0x0/0x80 kernel/kcov.c:269
-Code: 39 fe 72 1f 48 83 c2 01 4c 89 44 38 e8 48 c7 44 38 e0 06 00 00 00 48 89 4c 38 f0 4e 89 54 c8 20 48 89 10 c3 66 0f 1f 44 00 00 <53> 41 89 fb 41 89 f1 bf 03 00 00 00 65 48 8b 0c 25 00 f0 01 00 48
-RSP: 0018:ffffc90000dcfc40 EFLAGS: 00000246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888011c40000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffff88814385b318 R08: 0000000000000000 R09: ffff88814385b3ab
-R10: ffffffff81ca1aeb R11: 0000000000000000 R12: ffff88814385b3a8
-R13: ffffffff81ca1985 R14: 0000000000000001 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f4d8113b2d0 CR3: 00000000277e5000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- rcu_read_unlock include/linux/rcupdate.h:707 [inline]
- dput+0x1b4/0xbc0 fs/dcache.c:874
- handle_remove+0x394/0x5fe drivers/base/devtmpfs.c:343
- handle drivers/base/devtmpfs.c:382 [inline]
- devtmpfs_work_loop drivers/base/devtmpfs.c:395 [inline]
- devtmpfsd+0x1b9/0x2a3 drivers/base/devtmpfs.c:437
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
+clang tested configs:
+x86_64               randconfig-a004-20210409
+x86_64               randconfig-a005-20210409
+x86_64               randconfig-a003-20210409
+x86_64               randconfig-a001-20210409
+x86_64               randconfig-a002-20210409
+x86_64               randconfig-a006-20210409
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
