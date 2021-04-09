@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226E435A1C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D2F35A1C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234089AbhDIPMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:12:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37854 "EHLO
+        id S234114AbhDIPMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233878AbhDIPMf (ORCPT
+        with ESMTP id S234111AbhDIPMk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:12:35 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C582C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:12:22 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id b4so10234518lfi.6
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:12:22 -0700 (PDT)
+        Fri, 9 Apr 2021 11:12:40 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACB4CC061763
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:12:27 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id x13so89008lfr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:12:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/cjPyAVeoyKs/BJVrTfgcsuPwG3n5h8l8AkpiqD0Yok=;
-        b=fL4UvF3Mormy3B8XnEQTzwwQUiNjYqdK6JtsLu/2UKCfCY7oEzvCCEC8cFtw4CFXlw
-         tbc/yoNlYSiyq2cyichqo7FRg9n5ZndydJFgpBOb0k/Ay3r7/jVK4SOnN4ibk2nZCpkX
-         1xF+itPSTEsStf5ea5aAjrVTwOPJaNrqJYqBPFcXhfcoeA+LMnkmbTmhWcyINm5pUu0J
-         zXT+FEJdQQNziDzHUjNKplBmzPy4CTwUUwSoPrs6ojVuHPQnaYEedB/J6GY+yFUv3gEB
-         NwW4H3Yl+5C124lS5euXkCSUHbJ5ztVnlzfngkdcQcVnad23pwMnm0v1w9ccrv3Vb2aR
-         bGHw==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PDyMSJJvLIMFC1KbCjmLHB5PTIgl8fLhsjpA7s8Yb6Q=;
+        b=WUE6Vxis/wkboifvaP4/0mKQH9ZqXTXg09FLow2NBClwREFinJQQ7Ym269+P2rGdYS
+         H8OWs7F1iSt6G0pM1qTUlLYbVDnQPeqAXBmP92LWmtN69zpGrjqmOrTUUlRTZHR8pogT
+         HSxBDs2fiYTfAa+HHPHzSFp+8beCoBX+rQifO+DG79+wglkVBUUlIFhyZuhQz4JHNwqk
+         kPJS1NjJ+V/xdMmrwNrtSJB7PzFZN5PhPjT2q6jGA2WKNNSR3+/AURsA2gkd01+BcMhd
+         0LXY1hEnpKIJdbbkNFmtfPJLm1ibRZPKLfbAtJRACzTh3QzzHpzbwLEb4YDGLWvW7amr
+         s2bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/cjPyAVeoyKs/BJVrTfgcsuPwG3n5h8l8AkpiqD0Yok=;
-        b=Vawc/43I1wiytU6CgSN7Nvd2fy88pKn1HS9XvnBbs6aFJsBtkK6s2wmvcB57yXLc5R
-         sKIH11irfqZAsVTu+sguoZiCmrMEaT3MPRZUoha9+wV70TgzZyocCjU3VB1jcYADXvZY
-         UUVTU3EQwQMphCypnCWK+Zr2Nl+3oX478MSeEEk3CD1DjGakKcXiUw6tLC+m3+r2RvQd
-         rg+SqCwMabtWRHaWWCNdXFeg9+H6wWPUkcereJTFHaZPFLvgtno6kFlu1EZ5KTVANYP7
-         Mo3+rOML7L+jhriyJDF7ju1yeOcW7WXwOC8sWvJSALC/vv+I4vvaZ+plAVtOf9emIEvJ
-         tfDw==
-X-Gm-Message-State: AOAM532wntFjSE02sx4JIUiNnB/WXUCLpMefqoheXDTwPxIEYrdnz1Ln
-        pz4K2feOpQgJbmIv5fmdwVu/+CFqdvRivDJ1MxIhew==
-X-Google-Smtp-Source: ABdhPJwsHZoVY7qlq7NbCebva/XKPpIsDOVrIJDyoE19v6sAhvg+bFHPHExjBfj11XWbm3jxs1PUIbtSJBuVhTUB09I=
-X-Received: by 2002:a05:6512:68b:: with SMTP id t11mr10439447lfe.597.1617981140059;
- Fri, 09 Apr 2021 08:12:20 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PDyMSJJvLIMFC1KbCjmLHB5PTIgl8fLhsjpA7s8Yb6Q=;
+        b=EJqEzJlqSHw3gKLDvreeIy6iSyMN9+Ex+Su8OYJu6gh4gSSJrsY2DwoJpv6WzEzsjY
+         R/4anD1ERuRLOR4+18sKq1wdeiJKTUFFXZ/1sH7l+TPx+W8rtnLcaQCWE/Y6bcPGrcjz
+         3JIb733azHUZ4V4aALNft441mj8VXmVnkRrrHJ63pEuJbUkG/0YvQ/CnCliPo6hcxVaD
+         /tZjYaZeGVp5gaCU+7Gp4qq9q5oGnMprM8LwMY2S4TnGE20l5UZvbYARD3WttNuZv7CW
+         BYGDaCHyzBjcvJWbsaJGTvfL2J3szxMqlKC1nuSLlxj8yb11U+GXMmL7K8if/rqIvJjF
+         Vk3Q==
+X-Gm-Message-State: AOAM530qOFA8R30E12v0UyOYhstYDtX3PJE6Qm4k25R6zGT1I19rFjQj
+        SnTpYo0tRSsEtcvdtpDpPtRMDA==
+X-Google-Smtp-Source: ABdhPJyAXO7XxweiGZ6jKD2WpLH/voQpq46hnsIJmUDXRxILxGzeLt3DBPtRLvbc6rthzzbO9px7xw==
+X-Received: by 2002:a19:8c0a:: with SMTP id o10mr10600843lfd.175.1617981146160;
+        Fri, 09 Apr 2021 08:12:26 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id k18sm295287lfg.32.2021.04.09.08.12.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 08:12:25 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 05C1F102498; Fri,  9 Apr 2021 18:12:25 +0300 (+03)
+Date:   Fri, 9 Apr 2021 18:12:24 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [PATCH v24 14/30] x86/mm: Shadow Stack page fault error checking
+Message-ID: <20210409151224.4tlklypbjpxcztpt@box.shutemov.name>
+References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
+ <20210401221104.31584-15-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-References: <1617961246-4502-1-git-send-email-hangl@codeaurora.org> <1617961246-4502-2-git-send-email-hangl@codeaurora.org>
-In-Reply-To: <1617961246-4502-2-git-send-email-hangl@codeaurora.org>
-From:   Todd Kjos <tkjos@google.com>
-Date:   Fri, 9 Apr 2021 08:12:07 -0700
-Message-ID: <CAHRSSExq9=-+3ck7-pm6igV77szy0tjv29bu_-0cK5xbq-s7Ag@mail.gmail.com>
-Subject: Re: [PATCH 1/2] binder: fix the missing BR_FROZEN_REPLY in binder_return_strings
-To:     Hang Lu <hangl@codeaurora.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        =?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>, rdunlap@infradead.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401221104.31584-15-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Li Li
+On Thu, Apr 01, 2021 at 03:10:48PM -0700, Yu-cheng Yu wrote:
+> Shadow stack accesses are those that are performed by the CPU where it
+> expects to encounter a shadow stack mapping.  These accesses are performed
+> implicitly by CALL/RET at the site of the shadow stack pointer.  These
+> accesses are made explicitly by shadow stack management instructions like
+> WRUSSQ.
+> 
+> Shadow stacks accesses to shadow-stack mapping can see faults in normal,
+> valid operation just like regular accesses to regular mappings.  Shadow
+> stacks need some of the same features like delayed allocation, swap and
+> copy-on-write.
+> 
+> Shadow stack accesses can also result in errors, such as when a shadow
+> stack overflows, or if a shadow stack access occurs to a non-shadow-stack
+> mapping.
+> 
+> In handling a shadow stack page fault, verify it occurs within a shadow
+> stack mapping.  It is always an error otherwise.  For valid shadow stack
+> accesses, set FAULT_FLAG_WRITE to effect copy-on-write.  Because clearing
+> _PAGE_DIRTY (vs. _PAGE_RW) is used to trigger the fault, shadow stack read
+> fault and shadow stack write fault are not differentiated and both are
+> handled as a write access.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
 
-On Fri, Apr 9, 2021 at 2:42 AM Hang Lu <hangl@codeaurora.org> wrote:
->
-> Add BR_FROZEN_REPLY in binder_return_strings to support stat function.
->
-> Fixes: ae28c1be1e54 ("binder: BINDER_GET_FROZEN_INFO ioctl")
-> Signed-off-by: Hang Lu <hangl@codeaurora.org>
+Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Acked-by: Todd Kjos <tkjos@google.com>
-
-> ---
->  drivers/android/binder.c          | 3 ++-
->  drivers/android/binder_internal.h | 2 +-
->  2 files changed, 3 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index e1a484a..be34da3 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -5559,7 +5559,8 @@ static const char * const binder_return_strings[] = {
->         "BR_FINISHED",
->         "BR_DEAD_BINDER",
->         "BR_CLEAR_DEATH_NOTIFICATION_DONE",
-> -       "BR_FAILED_REPLY"
-> +       "BR_FAILED_REPLY",
-> +       "BR_FROZEN_REPLY",
->  };
->
->  static const char * const binder_command_strings[] = {
-> diff --git a/drivers/android/binder_internal.h b/drivers/android/binder_internal.h
-> index 2872a7d..a507166 100644
-> --- a/drivers/android/binder_internal.h
-> +++ b/drivers/android/binder_internal.h
-> @@ -155,7 +155,7 @@ enum binder_stat_types {
->  };
->
->  struct binder_stats {
-> -       atomic_t br[_IOC_NR(BR_FAILED_REPLY) + 1];
-> +       atomic_t br[_IOC_NR(BR_FROZEN_REPLY) + 1];
->         atomic_t bc[_IOC_NR(BC_REPLY_SG) + 1];
->         atomic_t obj_created[BINDER_STAT_COUNT];
->         atomic_t obj_deleted[BINDER_STAT_COUNT];
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
+-- 
+ Kirill A. Shutemov
