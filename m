@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D614F35A683
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:01:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC00E35A68B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:02:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234613AbhDITBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
+        id S234901AbhDITCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:02:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234869AbhDITBb (ORCPT
+        with ESMTP id S234825AbhDITCK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:01:31 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695A9C061762;
-        Fri,  9 Apr 2021 12:01:17 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id 7so6879705qka.7;
-        Fri, 09 Apr 2021 12:01:17 -0700 (PDT)
+        Fri, 9 Apr 2021 15:02:10 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053A8C061764
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 12:01:56 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id a4so6610492wrr.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 12:01:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dggCkVFWKXm7BbwuV1M/eeJV+LFnVGWYUCSH1BrxITE=;
-        b=eoD/75Lry9hYJW+NtaMx1kuHbs6Y9pTzAWqGmRHkW2kF6YA2vILYwTZkysqyIKsT8+
-         TnZeYAmb0U9yvdQvjX09FuGZA0Lz2YEO34j8q5Ikks1lrkPX89+lo8w6ifWmcJo7x7Fj
-         AJDqq5W98PpPeuXUds4KKh7guTwZPgA28JaFWCsCIH9XSeuI3bMLgZB0fRAjqgmXWGR8
-         TdalXAUNp71Ck+dq6p9xpCorY1yXqMs1OfRx88gRqTPUGvopovi0czH2Y3tiRSSlhGhd
-         zjEhQfdyOvasgd6MmcNrPR84DxyYufy25Z1I8aN3qNisWuZdK1oke4VNVNMzAdcpDXKC
-         Vyag==
+         :content-disposition:in-reply-to;
+        bh=TYvRNFEFPSE+z1sa0+NnEaU3aTLadE1XBWABqAHCDrA=;
+        b=GL4glA+XfI+5dwISOImLfOVy6KK+9uj1FRRoMsBevZYzhKlZpRZikRe6Vz15h6lIRi
+         AsWw6s6hUsYirZvn9j8E1Ks3iDWD8nfNNUfiQEgz+9IDxFDEc1Cz0ZON7NHl12rPuNKW
+         ITdHML6/UjWfEsx/yuBr6ms+lS/2R0wZ9BwOIFXcrcLBsV6mL8qBDovdGayG8FaV6Wf8
+         5JeSLeR6XQ2LRo3hYh99ocPD5WbM/PWG+bKMua9G2iXwl8Cvy3+vxpDDd78+ObFlVRPq
+         EAj/+etfj+QVDBb9lZEUNyDVYieq4ROlHennZ5lNUAiKASB575jd5G3Fg0OLCNEB2SwN
+         LA1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dggCkVFWKXm7BbwuV1M/eeJV+LFnVGWYUCSH1BrxITE=;
-        b=KmNCMyG72FbkJmRXb1XjBZeEc9SrBKFvGCyuVFdqueb24A2qkkwJcR8wJndrg/Aup5
-         f+h2D87YR+plbSTpmiJAsnCj6CRweG1rrGjVHdt8g01m2DL3woMYjikcuHlrHyFxYdb+
-         v6l0pNADfiOn9wfJjq8AFC89Ar1BAOWn6rhJWw6oQqhqLw4nB7ZnmWj76X5qpNGBF9tE
-         HdVL+l/vz8R01FWTPhSWip3ZYuNsLrRehKzfx6HfyyK14+LqdcxxPtVHCw7EXuBIHYN+
-         4kjXckxlAy74WHygEZpt+k+Ml5mlxdLw2La29Uv1U9HylD6OQJRqXECoAT3Zpu3HNFqm
-         z1Qw==
-X-Gm-Message-State: AOAM530ABBmq96pKPpyhge7LX6b6GNvYhDrllAORU8UiRtGnrAEvKJSo
-        olI7iPqgu6sgqUX4vI6O5zk=
-X-Google-Smtp-Source: ABdhPJwLkehJzpMkS/f9rgVtrK0GiM31Fa1sZOds5K6XDrb5dYFdR2BbEIqsNXvMvGih9zIwJQuupg==
-X-Received: by 2002:a05:620a:244f:: with SMTP id h15mr8950992qkn.235.1617994871845;
-        Fri, 09 Apr 2021 12:01:11 -0700 (PDT)
-Received: from focaruja ([177.220.174.147])
-        by smtp.gmail.com with ESMTPSA id w78sm2409960qkb.11.2021.04.09.12.01.10
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 09 Apr 2021 12:01:11 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 16:01:08 -0300
-From:   Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        alinesantanacordeiro@gmail.com
-Subject: [Outreachy kernel][PATCH 2/2] staging: media: omap4iss: Align line
- break to the open parenthesis in file iss_video.c
-Message-ID: <30cadc4bf072dc592cc82fba96a40685e25787dd.1617994571.git.alinesantanacordeiro@gmail.com>
-References: <cover.1617994571.git.alinesantanacordeiro@gmail.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=TYvRNFEFPSE+z1sa0+NnEaU3aTLadE1XBWABqAHCDrA=;
+        b=mN2PeveWgAhhJlFP12a1A41lsEwgiIN0FV/3+ohg0YTeD1kg//s1D41BlpVdfwDO5H
+         rXTmN9vkp1kq/LNyIcMkG/1pBqHd6gvYT36QNeX/EUtXXg4fI208vPd26tbdJ6HuDg15
+         iIL/ZmGeDMj0Ieztpe7xJUcHZBnivcGUAWIjej79IcYEVb3t2Hipl/WKmwtcG+F/hGn3
+         mGNg1qea0tpyGFmh4ekVFvZN43LogWI/OsGzk//imKmKE7eJFjTupasZ7kv+M+yx6o7i
+         WQTKnI7HD5E/+S/iPyT1ZAspwIl4J7yTfjGyH49PAPN7gZTZigZIkOBkACj7yL/osFRO
+         JXNg==
+X-Gm-Message-State: AOAM533uLZ44YPPmo6MQeGcB7XUyAxToVQtV1esMq/UKjcZWE22ZT+mO
+        6TVQ+rCKlLrOS7tbiLfkg8V43g==
+X-Google-Smtp-Source: ABdhPJzN4HISy8kMoayr1DePmSSMkapwFKAgfUjwl2MkrEZzrXlNlNiAKOUqbBMnV5/tRTsMJc4PGQ==
+X-Received: by 2002:adf:f405:: with SMTP id g5mr18414472wro.279.1617994914782;
+        Fri, 09 Apr 2021 12:01:54 -0700 (PDT)
+Received: from apalos.home (ppp-94-65-225-75.home.otenet.gr. [94.65.225.75])
+        by smtp.gmail.com with ESMTPSA id s8sm5745590wrn.97.2021.04.09.12.01.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 12:01:54 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 22:01:51 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH net-next v2 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <YHCknwlzJHPFXm2j@apalos.home>
+References: <20210402181733.32250-1-mcroce@linux.microsoft.com>
+ <20210402181733.32250-4-mcroce@linux.microsoft.com>
+ <20210409115648.169523fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1617994571.git.alinesantanacordeiro@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210409115648.169523fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aligns line break with the remaining function arguments
-to the open parenthesis. Issue found by checkpatch.
+On Fri, Apr 09, 2021 at 11:56:48AM -0700, Jakub Kicinski wrote:
+> On Fri,  2 Apr 2021 20:17:31 +0200 Matteo Croce wrote:
+> > Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > Co-developed-by: Matteo Croce <mcroce@microsoft.com>
+> > Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+> 
+> Checkpatch says we need sign-offs from all authors.
+> Especially you since you're posting.
 
-Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
----
- drivers/staging/media/omap4iss/iss_video.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yes it does, we forgot that.  Let me take a chance on this one. 
+The patch is changing the default skb return path and while we've done enough
+testing, I would really prefer this going in on a future -rc1 (assuming we even
+consider merging it), allowing enough time to have wider tests.
 
-diff --git a/drivers/staging/media/omap4iss/iss_video.c b/drivers/staging/media/omap4iss/iss_video.c
-index 66975a3..a2cef7c 100644
---- a/drivers/staging/media/omap4iss/iss_video.c
-+++ b/drivers/staging/media/omap4iss/iss_video.c
-@@ -399,7 +399,7 @@ static void iss_video_buf_queue(struct vb2_buffer *vb)
- 
- 		if (start)
- 			omap4iss_pipeline_set_stream(pipe,
--						ISS_PIPELINE_STREAM_SINGLESHOT);
-+						     ISS_PIPELINE_STREAM_SINGLESHOT);
- 	}
- }
- 
-@@ -957,7 +957,7 @@ iss_video_streamon(struct file *file, void *fh, enum v4l2_buf_type type)
- 		unsigned long flags;
- 
- 		ret = omap4iss_pipeline_set_stream(pipe,
--					      ISS_PIPELINE_STREAM_CONTINUOUS);
-+						   ISS_PIPELINE_STREAM_CONTINUOUS);
- 		if (ret < 0)
- 			goto err_omap4iss_set_stream;
- 		spin_lock_irqsave(&video->qlock, flags);
--- 
-2.7.4
-
+Regards
+/Ilias
