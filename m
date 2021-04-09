@@ -2,109 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEA2359167
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:24:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE93B35916D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233201AbhDIBY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 21:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232918AbhDIBYw (ORCPT
+        id S233115AbhDIB1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 21:27:13 -0400
+Received: from rcdn-iport-9.cisco.com ([173.37.86.80]:54712 "EHLO
+        rcdn-iport-9.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232918AbhDIB1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:24:52 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A75C061761;
-        Thu,  8 Apr 2021 18:24:40 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id w10so2659480pgh.5;
-        Thu, 08 Apr 2021 18:24:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=V4nRcD3hjDMC12ZIm/yS1mQ2MbVA8+EsozsRdRPo14E=;
-        b=tWfnjXJPya1rmZ+p7F9B9NXxESBP/tTLqT7f3ci3KJSrT3qiHGZQTbTcRlDxdAttZ6
-         ZoDm1ITIuz+kNhXVhfjGzL9sIz8sinVu3FUh2unEpj0dc7d7J/iGEX3XMEggY9uE7Tju
-         itl2tjN8vjDLkd2iv95zHBNaVFmGxAzyBOb2bWqKKfxRKsNzfcplCfrglgxrdwdt+Q5G
-         y0cXCQUJxjlJsLytgK0EgaRJIbYmb3cCERnDOFB3v26QVScmuI12PlHO2xkghm9fVMQ3
-         GAmaAWWM4Hqtz+xuaVw6lMCZeyCwahZjxTJEryjZm1parWSFhcik5/UA6da8oaBX62ac
-         rSLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=V4nRcD3hjDMC12ZIm/yS1mQ2MbVA8+EsozsRdRPo14E=;
-        b=Kp7M3T4BGckASgQlCuVajAfwdNNDMQOaM/Cdz/nZMlLbWhuwBWsG4yWkE8iGvSDaVf
-         uUtW5iNyXFlm/iDa+n89i57jEm9PZv1GO9Pjp0kiiAkKRdmmjmqcCRfHw+8ClMDtQ/P0
-         SuIYvDR9Yxoh+Mb323WlX9XvSiWv9zV41fu61GgfyzHPwe4Tptl1hHUYsbdgGrXj75rx
-         yo/1s9TH6Y8qbEkG4oM/MI8dequsajmtht69K26JS5U0YpsbZI1h0NMx7cbCN5eweAy5
-         CcG14byeUY0w6GjZHfNKahm0xfMBAxz10N5s1FmZT8IV1jH/3l7tMXhJnJb34mWgbK2t
-         6p+Q==
-X-Gm-Message-State: AOAM530lb2Jnx+y4Br33TXKUnr01a9lAfQfgr7AK/nUbVp8JgGjn3liZ
-        95WQiYXynyx5Gg5RTMPtiNr707N1H54=
-X-Google-Smtp-Source: ABdhPJwL2S8E9hhU8fHuAfC+x1JSTWxST9gc2Z6els+66bOCXSS6DVLEDlQWuCZlVJR4ksCtqpd80w==
-X-Received: by 2002:a63:5f54:: with SMTP id t81mr10493972pgb.283.1617931479636;
-        Thu, 08 Apr 2021 18:24:39 -0700 (PDT)
-Received: from [10.43.90.134] ([103.114.158.1])
-        by smtp.gmail.com with ESMTPSA id fs9sm500411pjb.40.2021.04.08.18.24.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 18:24:39 -0700 (PDT)
-Subject: Re: [PATCH v2] integrity: Add declarations to init_once void
- arguments.
-To:     zohar@linux.ibm.com
-Cc:     jmorris@namei.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
-References: <20210407014438.39516-1-unclexiaole@gmail.com>
-From:   Jiele Zhao <unclexiaole@gmail.com>
-Message-ID: <4a41b0e9-a1cd-deaf-8b22-a4ca33968496@gmail.com>
-Date:   Fri, 9 Apr 2021 09:24:49 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 8 Apr 2021 21:27:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=3696; q=dns/txt; s=iport;
+  t=1617931621; x=1619141221;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zMAEQSGGxAXPhVbwdo8g6BKr75SG96pClPfZ618q3KM=;
+  b=OhYeNgwA2D/QNT+h3lb6GZcK9hczjzaxh5DW3XEzHBgnJPgmyD3oV2cz
+   LQg35XX8/aVYWGWoVQ8MfTIKLAvX8h4ZadFVmSY69wzrw4gbHRUvLP6SV
+   Kh28ZAutnNkGt4SzLUz6FP82n26X9TJX60MiQ2JmE1KnAZGPkBwxmWiDI
+   0=;
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AzTkORKl6L0U17Sf68XftOckLpnPpDfN3im?=
+ =?us-ascii?q?dD5ilNYBxZY6Wkvuql9c516TbfjjENVHY83f2BIrCHW3PA9ZhziLNhWIuKdg?=
+ =?us-ascii?q?/gpWeuMcVe/ZLvqgeQeRHW2+ZB2c5bGZRWJ8b3CTFB4PrSwA79KNo4xcnCza?=
+ =?us-ascii?q?bAv5a7815IbSVHL55t9B14DAHzKDwUeCBjCYAiHJSRouprzgDARV0tYs62Bm?=
+ =?us-ascii?q?YIUoH4zrWhqLvcbRELHBIh4gWV5AnJ1JfBDxOa0h0COgkg/Z4e9wH+/zDR1+?=
+ =?us-ascii?q?GKr+y8jiTRzXbU6I5b3OH808JZCNaX4/JlTQnEu0KPeJlrXaGEsXQTpuyigW?=
+ =?us-ascii?q?xa6eXkklMHI9l57W/XcyWOhSbVnyPk0Doo9hbZuDmlvUc=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0AEAABOrG9g/4ENJK1aGQEBAQEBAQE?=
+ =?us-ascii?q?BAQEBAQEBAQEBARIBAQEBAQEBAQEBAQFAgT4EAQEBAQELAYIqgU0BOTGMZok?=
+ =?us-ascii?q?xA5ANilyBfAsBAQENAQE0BAEBhFACgXcCJTQJDgIDAQEMAQEFAQEBAgEGBHE?=
+ =?us-ascii?q?ThV2GRQEFHhw/EAsSBi48DQ4GE4V5qjx1gTSBAYgUgUQUDoEXAY1MJxyBSUK?=
+ =?us-ascii?q?ENT6KOQSCQAeBDoIoEjcCk3MBilucKYMVgSaVJYYiMhCDeqBnuD4CBAYFAha?=
+ =?us-ascii?q?BVDqBWTMaCBsVgyRQGQ6OKxaORyEDLzgCBgoBAQMJikwsghkBAQ?=
+X-IronPort-AV: E=Sophos;i="5.82,208,1613433600"; 
+   d="scan'208";a="789889986"
+Received: from alln-core-9.cisco.com ([173.36.13.129])
+  by rcdn-iport-9.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 09 Apr 2021 01:26:59 +0000
+Received: from zorba ([10.24.9.242])
+        by alln-core-9.cisco.com (8.15.2/8.15.2) with ESMTPS id 1391Qv7b032706
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 9 Apr 2021 01:26:58 GMT
+Date:   Thu, 8 Apr 2021 18:26:57 -0700
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        xe-linux-external@cisco.com,
+        Ruslan Ruslichenko <rruslich@cisco.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/8] CMDLINE: drivers: of: ifdef out cmdline section
+Message-ID: <20210409012657.GH3981976@zorba>
+References: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
+ <0c4b839f023f87c451c8aa3c4f7a8d92729c2f02.1617126961.git.danielwa@cisco.com>
+ <CAL_Jsq+_gF9Cy7H6ic2q8dxnPf4+FsBa5pFYYRydJsEmDhnNhA@mail.gmail.com>
+ <20210330231717.GA2469518@zorba>
+ <20210407225915.GA147338@robh.at.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210407014438.39516-1-unclexiaole@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407225915.GA147338@robh.at.kernel.org>
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.24.9.242, [10.24.9.242]
+X-Outbound-Node: alln-core-9.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mimi,
+On Wed, Apr 07, 2021 at 05:59:15PM -0500, Rob Herring wrote:
+> On Tue, Mar 30, 2021 at 04:17:53PM -0700, Daniel Walker wrote:
+> > On Tue, Mar 30, 2021 at 02:49:13PM -0500, Rob Herring wrote:
+> > > On Tue, Mar 30, 2021 at 12:57 PM Daniel Walker <danielwa@cisco.com> wrote:
+> > > >
+> > > > It looks like there's some seepage of cmdline stuff into
+> > > > the generic device tree code. This conflicts with the
+> > > > generic cmdline implementation so I remove it in the case
+> > > > when that's enabled.
+> > > >
+> > > > Cc: xe-linux-external@cisco.com
+> > > > Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
+> > > > Signed-off-by: Daniel Walker <danielwa@cisco.com>
+> > > > ---
+> > > >  drivers/of/fdt.c | 14 ++++++++++++++
+> > > >  1 file changed, 14 insertions(+)
+> > > >
+> > > > diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+> > > > index dcc1dd96911a..d8805cd9717a 100644
+> > > > --- a/drivers/of/fdt.c
+> > > > +++ b/drivers/of/fdt.c
+> > > > @@ -25,6 +25,7 @@
+> > > >  #include <linux/serial_core.h>
+> > > >  #include <linux/sysfs.h>
+> > > >  #include <linux/random.h>
+> > > > +#include <linux/cmdline.h>
+> > > >
+> > > >  #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+> > > >  #include <asm/page.h>
+> > > > @@ -1050,6 +1051,18 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+> > > >
+> > > >         /* Retrieve command line */
+> > > >         p = of_get_flat_dt_prop(node, "bootargs", &l);
+> > > > +
+> > > > +#if defined(CONFIG_GENERIC_CMDLINE) && defined(CONFIG_GENERIC_CMDLINE_OF)
+> > > 
+> > > Moving in the wrong direction... This code already has too many
+> > > #ifdef's. I like Christophe's version as it gets rid of all the code
+> > > here.
+> >  
+> > It's temporary .. Notice CONFIG_GENERIC_CMDLINE_OF is only used on PowerPC. I
+> > experienced doubling on arm64 when this was used (i.e. the append and prepend
+> > was added twice).
+> > 
+> > I don't think there are any other users which can't be moved outside the device
+> > tree code, but powerpc uses this function three times during boot up plus the
+> > prom_init user. It's possible to use the generic command line in all four places,
+> > but it become space inefficient.
+> 
+> What's the 3rd use? I count kaslr code and in 
+> early_init_dt_scan_chosen_ppc. Do we need to build the command line for 
+> kaslr seed? Getting any build time value from the kernel is pointless.
 
-And this is another patch that has been modified.
+I think I may have been mistaken. I added a dump_stack() , but there may have
+been other stack traces during bootup on prior -rcX's I was testing.
 
-On 2021/4/7 9:44, Jiele Zhao wrote:
-> init_once is a callback to kmem_cache_create. The parameter
-> type of this function is void *, so it's better to give a
-> explicit cast here.
->
-> Signed-off-by: Jiele Zhao <unclexiaole@gmail.com>
-> ---
->   security/integrity/iint.c         | 2 +-
->   security/integrity/ima/ima_main.c | 2 +-
->   2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
-> index 0ba01847e836..fca8a9409e4a 100644
-> --- a/security/integrity/iint.c
-> +++ b/security/integrity/iint.c
-> @@ -160,7 +160,7 @@ void integrity_inode_free(struct inode *inode)
->   
->   static void init_once(void *foo)
->   {
-> -	struct integrity_iint_cache *iint = foo;
-> +	struct integrity_iint_cache *iint = (struct integrity_iint_cache *) foo;
->   
->   	memset(iint, 0, sizeof(*iint));
->   	iint->ima_file_status = INTEGRITY_UNKNOWN;
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 9ef748ea829f..03bef720ab44 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -482,7 +482,7 @@ int ima_bprm_check(struct linux_binprm *bprm)
->   }
->   
->   /**
-> - * ima_path_check - based on policy, collect/store measurement.
-> + * ima_file_check - based on policy, collect/store measurement.
->    * @file: pointer to the file to be measured
->    * @mask: contains MAY_READ, MAY_WRITE, MAY_EXEC or MAY_APPEND
->    *
+I re-ran the test and I only see one user on powerpc and powerpc64,
+
+powerpc64,
+
+[    T0] Call Trace:
+[    T0] [c000000001517d00] [c00000000077e910] dump_stack+0xc4/0x114 (unreliable)
+[    T0] [c000000001517d50] [c000000001186fb4] early_init_dt_scan_chosen+0x238/0x324
+[    T0] [c000000001517de0] [c000000001138b00] early_init_dt_scan_chosen_ppc+0x20/0x194
+[    T0] [c000000001517e10] [c000000001186ae0] of_scan_flat_dt+0xc8/0x130
+[    T0] [c000000001517e70] [c000000001139404] early_init_devtree+0xa4/0x48c
+[    T0] [c000000001517f10] [c00000000113ac90] early_setup+0xc8/0x254
+[    T0] [c000000001517f90] [000000000000c754] 0xc754
+
+powerpc32,
+
+Call Trace:
+[c06bbee0] [c067e334] early_init_dt_scan_chosen+0xf8/0x1dc (unreliable)
+[c06bbf10] [c0666ec4] early_init_dt_scan_chosen_ppc+0x18/0x6c
+[c06bbf30] [c067e048] of_scan_flat_dt+0x98/0xf4
+[c06bbf70] [c0667234] early_init_devtree+0x48/0x2d0
+[c06bbfb0] [c06679cc] machine_init+0x98/0xcc
+[c06bbff0] [c0000398] set_ivor+0x114/0x154
+
+I think it would be possible to just move the generic handling entire into
+architecture code.
+
+Daniel
