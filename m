@@ -2,228 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00F5359BDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C99B359BE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbhDIKVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:21:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:47450 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234250AbhDIKTb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:19:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B3EF11FB;
-        Fri,  9 Apr 2021 03:19:17 -0700 (PDT)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD8B63F73D;
-        Fri,  9 Apr 2021 03:19:16 -0700 (PDT)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH v2] arm64: mte: Move MTE TCF0 check in entry-common
-Date:   Fri,  9 Apr 2021 11:19:02 +0100
-Message-Id: <20210409101902.2800-1-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.30.2
+        id S233319AbhDIKVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:21:22 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:31883 "EHLO
+        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234368AbhDIKTv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:19:51 -0400
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 139AJb3U022165
+        for <linux-kernel@vger.kernel.org>; Fri, 9 Apr 2021 13:19:37 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1617963571; x=1620555571;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=FcdW2pK1FPyss3ZOQ0A9eTn1YvwQct1bsYua2abjDLo=;
+        b=VV+0cvFlY6micMneUT8WZPCnHrE3uHm9bZeW/lUexAGBbb23Q+AuEzn0fFPcH41n
+        ahSBcUZ8UYJFf8rV3o0rTKl9tG5/EXQQ0Jzc72kjuVTguSUERzArqP4m2PBiZhJX
+        HSvMwP7NVjHgbYkRzkwSdhTY1AXkL1K/0Uc9pxkhdAcWLUiyAiDHONuu9dgMoZbL
+        haCJq8y8lui8Ad5VRo4VdzlCdTQT9PVbXdyqZjkpxf5SKlSLQwfRwgestv02wQSZ
+        p/3Yk8QXkoXU7Vxz4VEdM+KMLShXnlGo0EgIw44+poUwvwiB+QxAumrQKzerl1vC
+        KqG2bmaE8ubf1J1cuXWCoQ==;
+X-AuditID: 8b5b014d-a4c337000000209f-bc-60702a339219
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id B9.20.08351.33A20706; Fri,  9 Apr 2021 13:19:31 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
+Date:   Fri, 09 Apr 2021 13:19:28 +0300
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     Alex Ghiti <alex@ghiti.fr>
+Cc:     Nick Kossifidis <mick@ics.forth.gr>,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] RISC-V: Add kexec support
+Organization: FORTH
+In-Reply-To: <386bf260-006a-62c4-2d7b-1a22a43b3513@ghiti.fr>
+References: <20210405085712.1953848-1-mick@ics.forth.gr>
+ <20210405085712.1953848-3-mick@ics.forth.gr>
+ <386bf260-006a-62c4-2d7b-1a22a43b3513@ghiti.fr>
+Message-ID: <3c821aaf141651f5c58c84bb0f294e9b@mailhost.ics.forth.gr>
+X-Sender: mick@mailhost.ics.forth.gr
+User-Agent: Roundcube Webmail/1.3.16
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrMLMWRmVeSWpSXmKPExsXSHT1dWddYqyDB4HSXmcWzO19ZLS7vmsNm
+        se1zC5tF87tz7BYvL/cwW7TN4ndg83jz8iWLx70T01g9Hm66xOSxeUm9x6Xm6+wenzfJBbBF
+        cdmkpOZklqUW6dslcGU0rX3EVvCTpWLnpJmsDYwvmbsYOTkkBEwkXrdcYe9i5OIQEjjKKHHr
+        9wZWiISpxOy9nYwgNq+AoMTJmU9YQGxmAQuJqVf2M0LY8hLNW2eDDWIRUJV49vMsO4jNJqAp
+        Mf/SQbB6EQE5ibbuI4wgC5gFljFKbDy+AqxBGGjB3tkbwBr4BYQlPt29CLSYg4NTwEbi1cZy
+        iINmMkrcXzyVBeIIF4kzN24yQhynIvHh9wN2kHpRIHvzXKUJjIKzkJw6C8mps5CcuoCReRWj
+        QGKZsV5mcrFeWn5RSYZeetEmRnC4M/ruYLy9+a3eIUYmDsZDjBIczEoivM3N+QlCvCmJlVWp
+        RfnxRaU5qcWHGKU5WJTEeXn1JsQLCaQnlqRmp6YWpBbBZJk4OKUamE47rWj9XzrPqz5gyZ6v
+        wTt6Jf7fOa5r8GwPM3dX7ok1GkVbXAMLDWrSzuSKdIhercnVefoqWS5NKcHPi69ypmqzXfLq
+        XpWVN3ee8ltUw1tp6vgxedl2PXOt9kL5L+cf58+RDKz4Mfvh6h0VUrwJ29QnnDHX2H35qO+c
+        EItLrKxL1rs+cj8YdO5Aj0Si0ud/j3+4fc2e6Cy4teDh1IbwcLa86V8tJRiPc0VvlP0WkfbV
+        IKSzzs/WdV0hD/fiP3ZvRP/Pbzsu/oRDhmfyhv8atQmSWbUtl+c2rWC7dlN4Lven1dMt2qfZ
+        sLlq3do2b32f8+nJV+1KdTnk5iot7O71zwvUy61fMFePSVuxtW6tEktxRqKhFnNRcSIAHbEJ
+        f+YCAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The check_mte_async_tcf macro sets the TIF flag non-atomically. This can
-race with another CPU doing a set_tsk_thread_flag() and all the other flags
-can be lost in the process.
+Στις 2021-04-06 21:38, Alex Ghiti έγραψε:
+> Le 4/5/21 à 4:57 AM, Nick Kossifidis a écrit :
+>> +
+>> +/* Reserve a page for the control code buffer */
+>> +#define KEXEC_CONTROL_PAGE_SIZE 4096
+> 
+> PAGE_SIZE instead ?
+> 
 
-Move the tcf0 check to enter_from_user_mode() and clear tcf0 in
-exit_to_user_mode() to address the problem.
+Yup, I'll change it.
 
-Note: Moving the check in entry-common allows to use set_thread_flag()
-which is safe.
+>> +obj-${CONFIG_KEXEC}		+= kexec_relocate.o machine_kexec.o
+> 
+> Other obj-$() use parenthesis.
+> 
 
-Fixes: 637ec831ea4f ("arm64: mte: Handle synchronous and asynchronous tag check faults")
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: stable@vger.kernel.org
-Reported-by: Will Deacon <will@kernel.org>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
----
- arch/arm64/include/asm/mte.h     |  8 ++++++++
- arch/arm64/kernel/entry-common.c |  6 ++++++
- arch/arm64/kernel/entry.S        | 34 --------------------------------
- arch/arm64/kernel/mte.c          | 33 +++++++++++++++++++++++++++++--
- 4 files changed, 45 insertions(+), 36 deletions(-)
+ACK
 
-diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index 9b557a457f24..2ecb2156dac1 100644
---- a/arch/arm64/include/asm/mte.h
-+++ b/arch/arm64/include/asm/mte.h
-@@ -31,6 +31,8 @@ void mte_invalidate_tags(int type, pgoff_t offset);
- void mte_invalidate_tags_area(int type);
- void *mte_allocate_tag_storage(void);
- void mte_free_tag_storage(char *storage);
-+void noinstr check_mte_async_tcf0(void);
-+void noinstr clear_mte_async_tcf0(void);
- 
- #ifdef CONFIG_ARM64_MTE
- 
-@@ -83,6 +85,12 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
- {
- 	return -EIO;
- }
-+static inline void check_mte_async_tcf0(void)
-+{
-+}
-+static inline void clear_mte_async_tcf0(void)
-+{
-+}
- 
- static inline void mte_assign_mem_tag_range(void *addr, size_t size)
- {
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 9d3588450473..837d3624a1d5 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
- 	CT_WARN_ON(ct_state() != CONTEXT_USER);
- 	user_exit_irqoff();
- 	trace_hardirqs_off_finish();
-+
-+	/* Check for asynchronous tag check faults in user space */
-+	check_mte_async_tcf0();
- }
- 
- asmlinkage void noinstr exit_to_user_mode(void)
- {
-+	/* Ignore asynchronous tag check faults in the uaccess routines */
-+	clear_mte_async_tcf0();
-+
- 	trace_hardirqs_on_prepare();
- 	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
- 	user_enter_irqoff();
-diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-index a31a0a713c85..fb57df0d453f 100644
---- a/arch/arm64/kernel/entry.S
-+++ b/arch/arm64/kernel/entry.S
-@@ -34,15 +34,11 @@
-  * user and kernel mode.
-  */
- 	.macro user_exit_irqoff
--#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
- 	bl	enter_from_user_mode
--#endif
- 	.endm
- 
- 	.macro user_enter_irqoff
--#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
- 	bl	exit_to_user_mode
--#endif
- 	.endm
- 
- 	.macro	clear_gp_regs
-@@ -147,32 +143,6 @@ alternative_cb_end
- .L__asm_ssbd_skip\@:
- 	.endm
- 
--	/* Check for MTE asynchronous tag check faults */
--	.macro check_mte_async_tcf, flgs, tmp
--#ifdef CONFIG_ARM64_MTE
--alternative_if_not ARM64_MTE
--	b	1f
--alternative_else_nop_endif
--	mrs_s	\tmp, SYS_TFSRE0_EL1
--	tbz	\tmp, #SYS_TFSR_EL1_TF0_SHIFT, 1f
--	/* Asynchronous TCF occurred for TTBR0 access, set the TI flag */
--	orr	\flgs, \flgs, #_TIF_MTE_ASYNC_FAULT
--	str	\flgs, [tsk, #TSK_TI_FLAGS]
--	msr_s	SYS_TFSRE0_EL1, xzr
--1:
--#endif
--	.endm
--
--	/* Clear the MTE asynchronous tag check faults */
--	.macro clear_mte_async_tcf
--#ifdef CONFIG_ARM64_MTE
--alternative_if ARM64_MTE
--	dsb	ish
--	msr_s	SYS_TFSRE0_EL1, xzr
--alternative_else_nop_endif
--#endif
--	.endm
--
- 	.macro mte_set_gcr, tmp, tmp2
- #ifdef CONFIG_ARM64_MTE
- 	/*
-@@ -243,8 +213,6 @@ alternative_else_nop_endif
- 	ldr	x19, [tsk, #TSK_TI_FLAGS]
- 	disable_step_tsk x19, x20
- 
--	/* Check for asynchronous tag check faults in user space */
--	check_mte_async_tcf x19, x22
- 	apply_ssbd 1, x22, x23
- 
- 	ptrauth_keys_install_kernel tsk, x20, x22, x23
-@@ -775,8 +743,6 @@ SYM_CODE_START_LOCAL(ret_to_user)
- 	cbnz	x2, work_pending
- finish_ret_to_user:
- 	user_enter_irqoff
--	/* Ignore asynchronous tag check faults in the uaccess routines */
--	clear_mte_async_tcf
- 	enable_step_tsk x19, x2
- #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
- 	bl	stackleak_erase
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index b3c70a612c7a..84a942c25870 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -166,14 +166,43 @@ static void set_gcr_el1_excl(u64 excl)
- 	 */
- }
- 
--void flush_mte_state(void)
-+void noinstr check_mte_async_tcf0(void)
-+{
-+	u64 tcf0;
-+
-+	if (!system_supports_mte())
-+		return;
-+
-+	/*
-+	 * dsb(ish) is not required before the register read
-+	 * because the TFSRE0_EL1 is automatically synchronized
-+	 * by the hardware on exception entry as SCTLR_EL1.ITFSB
-+	 * is set.
-+	 */
-+	tcf0 = read_sysreg_s(SYS_TFSRE0_EL1);
-+
-+	if (tcf0 & SYS_TFSR_EL1_TF0)
-+		set_thread_flag(TIF_MTE_ASYNC_FAULT);
-+
-+	write_sysreg_s(0, SYS_TFSRE0_EL1);
-+}
-+
-+void noinstr clear_mte_async_tcf0(void)
- {
- 	if (!system_supports_mte())
- 		return;
- 
--	/* clear any pending asynchronous tag fault */
- 	dsb(ish);
- 	write_sysreg_s(0, SYS_TFSRE0_EL1);
-+}
-+
-+void flush_mte_state(void)
-+{
-+	if (!system_supports_mte())
-+		return;
-+
-+	/* clear any pending asynchronous tag fault */
-+	clear_mte_async_tcf0();
- 	clear_thread_flag(TIF_MTE_ASYNC_FAULT);
- 	/* disable tag checking */
- 	set_sctlr_el1_tcf0(SCTLR_EL1_TCF0_NONE);
--- 
-2.30.2
+>> +	li	s5, ((1 << PAGE_SHIFT) / RISCV_SZPTR)
+> 
+> 1 << PAGE_SHIFT = PAGE_SIZE
+> 
 
+ACK
+
+>> +#if defined(CONFIG_HOTPLUG_CPU) && (CONFIG_SMP)
+> 
+> Shouldn't it be defined(CONFIG_SMP) ?
+> 
+
+It depends on SMP anyway, I'll remove the second part.
