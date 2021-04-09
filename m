@@ -2,111 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E73D3597F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5060D3597F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhDIIeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:34:09 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:5125 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232328AbhDIIeI (ORCPT
+        id S232312AbhDIIfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229829AbhDIIe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:34:08 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FGrvq2VFYzYV47;
-        Fri,  9 Apr 2021 16:31:51 +0800 (CST)
-Received: from dggpeml500013.china.huawei.com (7.185.36.41) by
- DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Fri, 9 Apr 2021 16:33:53 +0800
-Received: from [10.174.187.161] (10.174.187.161) by
- dggpeml500013.china.huawei.com (7.185.36.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Fri, 9 Apr 2021 16:33:52 +0800
-Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
- Lake Servers
-To:     "Xu, Like" <like.xu@intel.com>
-References: <20210329054137.120994-2-like.xu@linux.intel.com>
- <606BD46F.7050903@huawei.com>
- <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
-CC:     <andi@firstfloor.org>, "Fangyi (Eric)" <eric.fangyi@huawei.com>,
-        Xiexiangyou <xiexiangyou@huawei.com>,
-        <kan.liang@linux.intel.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <wei.w.wang@intel.com>,
-        <x86@kernel.org>
-From:   "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
-        <liuxiangdong5@huawei.com>
-Message-ID: <60701165.3060000@huawei.com>
-Date:   Fri, 9 Apr 2021 16:33:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Fri, 9 Apr 2021 04:34:59 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C842C061760;
+        Fri,  9 Apr 2021 01:34:46 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id l19so201168ilk.13;
+        Fri, 09 Apr 2021 01:34:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NCwJI5ffEAzMKRWH7+S+TuRytYmua5VwVLYnvYOAOL8=;
+        b=U0Q9jEHKICx2Sug1O6lx9JD4azkZzxDi0jJwfbBegQO/515gYCJZ26NIh7ka8qKuqY
+         K/XPPFAMPMn6vm9Y4dB8CtVLpAncreQLESMRlKjajFTrcDaAEWl42wO/8NQaRWBzO9u+
+         HtxC74LzWdcWeE1IsRYFWY8tzK6ge+ELzCx9fSu6vwqktM4OrnkznkmOohU2hDSjeMQ8
+         jApYiteBXa28UetICZLEs1QacK6MN24OH8ujDBmKDThzRUp5oTLvKmpDZPKGvQ8T117M
+         gu9xl9SDpG5skzkrX/unJP6GCjO8ZLO64vHPke5hxjlOlwkSHXJBKOsdtsGzRuIh5Zar
+         1Vnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NCwJI5ffEAzMKRWH7+S+TuRytYmua5VwVLYnvYOAOL8=;
+        b=nrnQhLuqQFiQfy7OMaHUv43Gn83eQbaMMv5znaEYTSpFHLokE8CJtU1mS6jYDWPf1b
+         zGJKs0Vx6sbBU4mM2xOK5fCIPtrRLzITvQjQV4X1mVkcxRQxXGs2SwM896Sr0VX2RquE
+         D2qVs8wNAsVFvjDeUEoNkO/wMsZadFkqhZ+MXA8aMV3frJ7wAtlqp3vyvST/zSXHfC0S
+         xP+kcAt9LzWkLDjgynarFmfvbLyExOqOU5719nmJ4GkqjEFrfQj2bROMcZcG8daSgepH
+         9K85JPqBLumDlGECgpQiwfNZAUA+m+jb9Zpc9cYS2wxGuRhyR4bVlEOEuqjR5hFLM50R
+         hMAQ==
+X-Gm-Message-State: AOAM532+twGrQx733aQjvnEV8DYsrKxcCO5iZQGBBTC68ApXS8XAsFmv
+        CsHRGljazUtIFdavSAz6tVdSCBCsoSaancQPQhSQAhzcyUM=
+X-Google-Smtp-Source: ABdhPJy8Go9eGKnxjqs+H5oCYvcs+FPgMqWv4m1tQrwU/f3ose04FlweQI1nD/xWG1T8+OZ7INEY9e3s45xNKoTSP9s=
+X-Received: by 2002:a92:dd12:: with SMTP id n18mr10698284ilm.109.1617957285922;
+ Fri, 09 Apr 2021 01:34:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.187.161]
-X-ClientProxiedBy: dggeme716-chm.china.huawei.com (10.1.199.112) To
- dggpeml500013.china.huawei.com (7.185.36.41)
-X-CFilter-Loop: Reflected
+References: <20210409082957.2909213-1-weiyongjun1@huawei.com>
+In-Reply-To: <20210409082957.2909213-1-weiyongjun1@huawei.com>
+From:   =?UTF-8?Q?Andreas_Gr=C3=BCnbacher?= <andreas.gruenbacher@gmail.com>
+Date:   Fri, 9 Apr 2021 10:34:34 +0200
+Message-ID: <CAHpGcMJdBD9XDJvzy2_9EuKaduSewd0p+39B1przV7UW3rtouA@mail.gmail.com>
+Subject: Re: [PATCH -next] gfs2: use kmem_cache_free() instead of kfree()
+To:     Wei Yongjun <weiyongjun1@huawei.com>
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel <cluster-devel@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do you have any comments or ideas about it ?
+Hi,
 
-https://lore.kernel.org/kvm/606E5EF6.2060402@huawei.com/
+Am Fr., 9. Apr. 2021 um 10:20 Uhr schrieb Wei Yongjun <weiyongjun1@huawei.com>:
+> memory allocated by kmem_cache_alloc() should be freed using
+> kmem_cache_free(), not kfree().
 
+thanks for the patch, that's true. This patch has turned out to have
+other problems as well, so we've pulled it and Bob is currently
+investigating.
 
-On 2021/4/6 13:14, Xu, Like wrote:
-> Hi Xiangdong,
->
-> On 2021/4/6 11:24, Liuxiangdong (Aven, Cloud Infrastructure Service 
-> Product Dept.) wrote:
->> Hi，like.
->> Some questions about this new pebs patches set：
->> https://lore.kernel.org/kvm/20210329054137.120994-2-like.xu@linux.intel.com/ 
->>
->>
->> The new hardware facility supporting guest PEBS is only available
->> on Intel Ice Lake Server platforms for now.
->
-> Yes, we have documented this "EPT-friendly PEBS" capability in the SDM
-> 18.3.10.1 Processor Event Based Sampling (PEBS) Facility
->
-> And again, this patch set doesn't officially support guest PEBS on the 
-> Skylake.
->
->>
->>
->> AFAIK， Icelake supports adaptive PEBS and extended PEBS which 
->> Skylake doesn't.
->> But we can still use IA32_PEBS_ENABLE MSR to indicate general-purpose 
->> counter in Skylake.
->
-> For Skylake, only the PMC0-PMC3 are valid for PEBS and you may
-> mask the other unsupported bits in the pmu->pebs_enable_mask.
->
->> Is there anything else that only Icelake supports in this patches set?
->
-> The PDIR counter on the Ice Lake is the fixed counter 0
-> while the PDIR counter on the Sky Lake is the gp counter 1.
->
-> You may also expose x86_pmu.pebs_vmx for Skylake in the 1st patch.
->
->>
->>
->> Besides, we have tried this patches set in Icelake.  We can use 
->> pebs(eg: "perf record -e cycles:pp")
->> when guest is kernel-5.11, but can't when kernel-4.18.  Is there a 
->> minimum guest kernel version requirement?
->
-> The Ice Lake CPU model has been added since v5.4.
->
-> You may double check whether the stable tree(s) code has
-> INTEL_FAM6_ICELAKE in the arch/x86/include/asm/intel-family.h.
->
->>
->>
->> Thanks,
->> Xiangdong Liu
->
-
+Andreas
