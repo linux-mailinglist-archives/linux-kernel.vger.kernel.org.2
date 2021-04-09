@@ -2,125 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB48435A23A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D58435A264
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233535AbhDIPrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:47:36 -0400
-Received: from mga03.intel.com ([134.134.136.65]:47626 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229665AbhDIPre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:47:34 -0400
-IronPort-SDR: owtE6YA/GBCKzRy8QAl5+PuU/Z7muUwEQqNsGxaCC6p05Jm2DGngPxYUGayU7A3JljgMiG6IMP
- fEglB9W279WQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="193827948"
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="193827948"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 08:47:09 -0700
-IronPort-SDR: rYpSCmdB/Oa0x44Bo26NfIeNiuTSUTE71xCYwt0Mt2f/AaIfk3cJWy32yM8H5rsLlmDe7/Jnt3
- 5XJOWBmi78sA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="382137555"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga006.jf.intel.com with ESMTP; 09 Apr 2021 08:47:09 -0700
-Received: from [10.209.7.33] (kliang2-MOBL.ccr.corp.intel.com [10.209.7.33])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 1AF915807A3;
-        Fri,  9 Apr 2021 08:47:08 -0700 (PDT)
-Subject: Re: [PATCH V5 16/25] perf/x86: Register hybrid PMUs
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
-        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
-        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
-        ricardo.neri-calderon@linux.intel.com
-References: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
- <1617635467-181510-17-git-send-email-kan.liang@linux.intel.com>
- <YG/7BgFaRC/Eos76@hirez.programming.kicks-ass.net>
- <41c7b4ec-b742-2f7c-9991-7b23c9971dc6@linux.intel.com>
- <YHB2mNgw7k/NUIl9@hirez.programming.kicks-ass.net>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <525491eb-1733-ffd8-9b92-6409b2b6e0a0@linux.intel.com>
-Date:   Fri, 9 Apr 2021 11:47:06 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S233744AbhDIPyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:54:17 -0400
+Received: from router.aksignal.cz ([62.44.4.214]:36868 "EHLO
+        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232642AbhDIPyQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 11:54:16 -0400
+X-Greylist: delayed 396 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 11:54:15 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by router.aksignal.cz (Postfix) with ESMTP id 59F4A41211;
+        Fri,  9 Apr 2021 17:47:25 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
+Received: from router.aksignal.cz ([127.0.0.1])
+        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id EDYXkwSrg_ZP; Fri,  9 Apr 2021 17:47:25 +0200 (CEST)
+Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
+        (Authenticated sender: jiri.prchal@aksignal.cz)
+        by router.aksignal.cz (Postfix) with ESMTPSA id B4DB64120E;
+        Fri,  9 Apr 2021 17:47:24 +0200 (CEST)
+From:   Jiri Prchal <jiri.prchal@aksignal.cz>
+To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Jiri Prchal <jiri.prchal@aksignal.cz>
+Subject: [PATCH 0/3] nvmem: eeprom: add support for FRAM
+Date:   Fri,  9 Apr 2021 17:47:17 +0200
+Message-Id: <20210409154720.130902-1-jiri.prchal@aksignal.cz>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YHB2mNgw7k/NUIl9@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Adds sopport for Cypress FRAMs.
 
+Jiri Prchal (3):
+  nvmem: eeprom: at25: add support for FRAM
+  nvmem: eeprom: at25: add support for FRAM
+  nvmem: eeprom: add documentation for FRAM
 
-On 4/9/2021 11:45 AM, Peter Zijlstra wrote:
-> On Fri, Apr 09, 2021 at 09:50:20AM -0400, Liang, Kan wrote:
->>
->>
->> On 4/9/2021 2:58 AM, Peter Zijlstra wrote:
->>> On Mon, Apr 05, 2021 at 08:10:58AM -0700, kan.liang@linux.intel.com wrote:
->>>> @@ -2089,9 +2119,46 @@ static int __init init_hw_perf_events(void)
->>>>    	if (err)
->>>>    		goto out1;
->>>> -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
->>>> -	if (err)
->>>> -		goto out2;
->>>> +	if (!is_hybrid()) {
->>>> +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
->>>> +		if (err)
->>>> +			goto out2;
->>>> +	} else {
->>>> +		u8 cpu_type = get_this_hybrid_cpu_type();
->>>> +		struct x86_hybrid_pmu *hybrid_pmu;
->>>> +		bool registered = false;
->>>> +		int i;
->>>> +
->>>> +		if (!cpu_type && x86_pmu.get_hybrid_cpu_type)
->>>> +			cpu_type = x86_pmu.get_hybrid_cpu_type();
->>>> +
->>>> +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
->>>> +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
->>>> +
->>>> +			hybrid_pmu->pmu = pmu;
->>>> +			hybrid_pmu->pmu.type = -1;
->>>> +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
->>>> +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
->>>> +
->>>> +			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
->>>> +						(hybrid_pmu->cpu_type == hybrid_big) ? PERF_TYPE_RAW : -1);
->>>> +			if (err)
->>>> +				continue;
->>>> +
->>>> +			if (cpu_type == hybrid_pmu->cpu_type)
->>>> +				x86_pmu_update_cpu_context(&hybrid_pmu->pmu, raw_smp_processor_id());
->>>> +
->>>> +			registered = true;
->>>> +		}
->>>> +
->>>> +		if (!registered) {
->>>> +			pr_warn("Failed to register hybrid PMUs\n");
->>>> +			kfree(x86_pmu.hybrid_pmu);
->>>> +			x86_pmu.hybrid_pmu = NULL;
->>>> +			x86_pmu.num_hybrid_pmus = 0;
->>>> +			goto out2;
->>>> +		}
->>>
->>> I don't think this is quite right. registered will be true even if one
->>> fails, while I think you meant to only have it true when all (both)
->>> types registered correctly.
->>
->> No, I mean that perf error out only when all types fail to be registered.
-> 
-> All or nothing seems a better approach to me. There really isn't a good
-> reason for any one of them to fail.
-> 
+ .../devicetree/bindings/eeprom/at25.yaml      |  12 +-
+ drivers/misc/eeprom/Kconfig                   |   5 +-
+ drivers/misc/eeprom/at25.c                    | 151 ++++++++++++++----
+ drivers/nvmem/core.c                          |   4 +
+ include/linux/nvmem-provider.h                |   1 +
+ 5 files changed, 139 insertions(+), 34 deletions(-)
 
-Sure. I will change it in V6.
+-- 
+2.25.1
 
-Thanks,
-Kan
