@@ -2,76 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7CE35A3EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD17435A3F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234237AbhDIQq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:46:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232990AbhDIQq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:46:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B65EF610A7;
-        Fri,  9 Apr 2021 16:46:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617986774;
-        bh=UQn1oy9ovI4wcnd7hZW7lUvbYomqZrBjvcbkP9zVz8M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=hJqXuthM+urxzSEEUmo18nHrBsBJKJx61gmZHfvC7ayobxOz3yTG1IBURdFRtk9ly
-         R7I5jgHmipy3w5rxg6IElx4X0MnYvW66QmD9xa0Tl9NDdv0VTNeMUIbv5X/Al70veg
-         lnCwRwLLyplYP5nJ+KHa53phA2v9d1pIAwCHXVRGFmHYXmOxQ1wo8rKfWUYbw/xMJD
-         yQuXKJ/LV5XNm3QvveTAFYllmCep3Qdo0tZ147QABIBhpoOdwqg4djwtJM8k5kMlak
-         9DOVQqv2tnJru/wS4sZg6O9uD5WwzE3Nm3wL+7LflCV9fB1KfeYlNCpAnGVX/IAge8
-         F0bCCHWybD7QA==
-Date:   Fri, 9 Apr 2021 11:46:12 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Raphael Norwitz <raphael.norwitz@nutanix.com>
-Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>,
-        Alay Shah <alay.shah@nutanix.com>,
-        Suresh Gumpula <suresh.gumpula@nutanix.com>
-Subject: Re: [PATCH] PCI: Delay after FLR of Intel DC P4510 NVMe
-Message-ID: <20210409164612.GA2037722@bjorn-Precision-5520>
+        id S234113AbhDIQsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:48:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21497 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233961AbhDIQsp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:48:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617986912;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=Chg6IKEuKKojYi7mhUKaMLERMRmxIjzmO/LXSZ+TUHU=;
+        b=V4nKrqQSuTyIG4IkWllGKcDGT8v7yAQiczF5Wbj9PqGZUXInrrSoFhdhYDqQS+bIVl3bGi
+        1fPJEiyfSbmyX8yebyQWlJNvebsuvD/8p06u+Fw1BIS/u+wu4WUMeAfchfWQjdtUKJMLzL
+        /p477A7kebgrVfra29ioqGSmkIlR+S4=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-399-fGWmUC4VPKqM3l_tkhxqcA-1; Fri, 09 Apr 2021 12:48:20 -0400
+X-MC-Unique: fGWmUC4VPKqM3l_tkhxqcA-1
+Received: by mail-wr1-f69.google.com with SMTP id z12so2532092wro.22
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:48:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Chg6IKEuKKojYi7mhUKaMLERMRmxIjzmO/LXSZ+TUHU=;
+        b=lGBXlZsPpjYuqtAmk8uZiHCmMqgE6YCmKdeH9FtFrJS2ixvXpEbjn/L9pV3PR93EOv
+         RR7sFA2SXicYJxSCZeWTPsS68Jok8hLnu9QERzMvBnX+NoKhFyXXcrLBafc/P9AzCSXz
+         jgL5OvUskyofO7pR6tK0pMiFUm0ucPX40XcGUt3GC+MBdhSDYs6t17U5RzP+XtbOk3fj
+         RuhZ0adwP36B/aevouKZtJYYi332x6aIF+MrBulxi2TdzAhkL6Gc5CCtoYJTabGA37Me
+         zQlPsfhS7Ihg8Fa9Ho56Mq87gKnyoS5r0udGyJQc2M16J03P40HYedngUzVvvG7ZNdV5
+         XSlA==
+X-Gm-Message-State: AOAM5324qN9+IcK7s6qnlBG+Dj6m0Qppuu6nL/kj7A8tvzB9AcySwCwI
+        9ql0iYh66kU4CUDa/yll9yOeNXe8KS6Rfnd7Gt+gXJ50TPUjX/geawgp2idVHnVGzMwyaAQtfMk
+        SMyyP+FSdexsZQsARI3zk5yWo
+X-Received: by 2002:a1c:9a16:: with SMTP id c22mr7681444wme.7.1617986899513;
+        Fri, 09 Apr 2021 09:48:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw2SClI5Njn6xjA2MPYxm2kpYJCEchwrX/9+aQChXy3FOe+I3afHnDGXz6jYj0V+5m4e1Tm6w==
+X-Received: by 2002:a1c:9a16:: with SMTP id c22mr7681431wme.7.1617986899273;
+        Fri, 09 Apr 2021 09:48:19 -0700 (PDT)
+Received: from redhat.com ([2a10:800e:f0d3:0:b69b:9fb8:3947:5636])
+        by smtp.gmail.com with ESMTPSA id o25sm6618101wmh.1.2021.04.09.09.48.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 09:48:18 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 12:48:16 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        elic@nvidia.com, jasowang@redhat.com, mst@redhat.com,
+        si-wei.liu@oracle.com
+Subject: [GIT PULL] vdpa/mlx5: last minute fixes
+Message-ID: <20210409124816-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408190521.16897-1-raphael.norwitz@nutanix.com>
+X-Mutt-Fcc: =sent
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 07:05:27PM +0000, Raphael Norwitz wrote:
-> Like the Intel DC P3700 NVMe, the Intel P4510 NVMe exhibits a timeout
-> failure when the driver tries to interact with the device to soon after
-> an FLR. The same reset quirk the P3700 uses also resolves the failure
-> for the P4510, so this change introduces the same reset quirk for the
-> P4510.
-> 
-> Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Alay Shah <alay.shah@nutanix.com>
-> Signed-off-by: Suresh Gumpula <suresh.gumpula@nutanix.com>
-> Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
 
-Applied to pci/virtualization for v5.13, thanks!
+  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
 
-> ---
->  drivers/pci/quirks.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 653660e3ba9e..5a8c059b848d 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -3922,6 +3922,7 @@ static const struct pci_dev_reset_methods pci_dev_reset_methods[] = {
->  		reset_ivb_igd },
->  	{ PCI_VENDOR_ID_SAMSUNG, 0xa804, nvme_disable_and_flr },
->  	{ PCI_VENDOR_ID_INTEL, 0x0953, delay_250ms_after_flr },
-> +	{ PCI_VENDOR_ID_INTEL, 0x0a54, delay_250ms_after_flr },
->  	{ PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
->  		reset_chelsio_generic_dev },
->  	{ 0 }
-> -- 
-> 2.20.1
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+
+for you to fetch changes up to bc04d93ea30a0a8eb2a2648b848cef35d1f6f798:
+
+  vdpa/mlx5: Fix suspend/resume index restoration (2021-04-09 12:08:28 -0400)
+
+----------------------------------------------------------------
+vdpa/mlx5: last minute fixes
+
+These all look like something we are better off having
+than not ...
+
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+
+----------------------------------------------------------------
+Eli Cohen (4):
+      vdpa/mlx5: Use the correct dma device when registering memory
+      vdpa/mlx5: Retrieve BAR address suitable any function
+      vdpa/mlx5: Fix wrong use of bit numbers
+      vdpa/mlx5: Fix suspend/resume index restoration
+
+Si-Wei Liu (1):
+      vdpa/mlx5: should exclude header length and fcs from mtu
+
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h |  4 ++++
+ drivers/vdpa/mlx5/core/mr.c        |  9 +++++++--
+ drivers/vdpa/mlx5/core/resources.c |  3 ++-
+ drivers/vdpa/mlx5/net/mlx5_vnet.c  | 40 +++++++++++++++++++++++---------------
+ 4 files changed, 37 insertions(+), 19 deletions(-)
+
