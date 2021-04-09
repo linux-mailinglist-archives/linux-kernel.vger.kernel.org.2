@@ -2,83 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0890335A673
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0904035A67E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234794AbhDIS7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:59:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48455 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234759AbhDIS7u (ORCPT
+        id S234855AbhDITBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234692AbhDITBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:59:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617994776;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I6z5k9pvR2eM8TAQJhvmPMLc2M+kDJxe7m6egiFSE+Y=;
-        b=ByYf9gtdNNj92bTPnUnt5jBeA96mLz/v0DKnPlDCNvBd9DAaQLyKosJJRsx3Xa7LRKfN7l
-        3nOyUcMRbq7C7jGXRcJDEqdzXhMz+3PVtvuyivRniBg/b5R9vqUXFDyEojx3YYPO3PDTJW
-        lOBVPtg2CJX6V0vwPWzf3HxtFeHfx2I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-520-wr-qbaoQN4yd8r-ArWGbWg-1; Fri, 09 Apr 2021 14:59:33 -0400
-X-MC-Unique: wr-qbaoQN4yd8r-ArWGbWg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E39BB1922962;
-        Fri,  9 Apr 2021 18:59:31 +0000 (UTC)
-Received: from [10.36.115.11] (ovpn-115-11.ams2.redhat.com [10.36.115.11])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D975660C0F;
-        Fri,  9 Apr 2021 18:59:24 +0000 (UTC)
-Subject: Re: [PATCH 03/10] mm/migrate: update node demotion order during on
- hotplug events
-To:     Oscar Salvador <osalvador@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        shy828301@gmail.com, weixugc@google.com, rientjes@google.com,
-        ying.huang@intel.com, dan.j.williams@intel.com
-References: <20210401183216.443C4443@viggo.jf.intel.com>
- <20210401183221.977831DE@viggo.jf.intel.com>
- <YG7Sc3i54IV6KyPn@localhost.localdomain> <20210409101400.GA32159@linux>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <fb51273c-12e5-f47f-064b-86f5b30b1072@redhat.com>
-Date:   Fri, 9 Apr 2021 20:59:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 9 Apr 2021 15:01:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264EDC061762;
+        Fri,  9 Apr 2021 12:01:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=Jy8OgE/ibRhYpmxJWqJ5F9J87NOfXTTmiZFJczWvAp4=; b=BwgYB9MBM7oWYpGFyfrTwgPYE7
+        ZSfW3lcXj4cSu2aNL0y8k4aEem7psK5ME7uwysts4LogpBrG3VvT4d4L7T1V60cRxyh31lNPbm/v7
+        ocqrpv4eMepzMZ1h8b37Ohpcm1QXhWvNNjkQuHX0Eo7nWlT4eC8Tn/TYfsoQbYvu1DuoMuFWohSBy
+        mKDDEfrInd0kzeEw0XyVPy3HHITvgLDFzix0kr2+2IBFl6EYChQLztkXZJ873GEWGh2mvjlZMvzF+
+        3eIDQcAHi7crkwY0u/ue4DowFsMVpaJ6g2Xoz+fNXbd76qvlYhU6sjY3eZJC3xuIH4fSHDehmay1o
+        nC3U8MKQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUwLn-000nlx-Ee; Fri, 09 Apr 2021 18:59:42 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v7 12/28] mm/filemap: Add folio_next_index
+Date:   Fri,  9 Apr 2021 19:50:49 +0100
+Message-Id: <20210409185105.188284-13-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210409185105.188284-1-willy@infradead.org>
+References: <20210409185105.188284-1-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210409101400.GA32159@linux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09.04.21 12:14, Oscar Salvador wrote:
-> On Thu, Apr 08, 2021 at 11:52:51AM +0200, Oscar Salvador wrote:
->> I am not really into PMEM, and I ignore whether we need
->> CONFIG_MEMORY_HOTPLUG in order to have such memory on the system.
->> If so, the following can be partly ignored.
-> 
-> Ok, I refreshed by memory with [1].
->  From that, it seems that in order to use PMEM as RAM we need CONFIG_MEMORY_HOTPLUG.
-> But is that always the case? Can happen that in some scenario PMEM comes ready
-> to use and we do not need the hotplug trick?
+This helper returns the page index of the next folio in the file (ie
+the end of this folio, plus one).
 
-The only way to add more System RAM is via add_memory() and friends like 
-add_memory_driver_managed(). These all require CONFIG_MEMORY_HOTPLUG.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Jeff Layton <jlayton@kernel.org>
+---
+ include/linux/pagemap.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Memory ballooning is a different case, but there we're only adjusting 
-the managed page counters.
-
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index a8b108a9ac6e..5130503519b0 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -482,6 +482,17 @@ static inline pgoff_t folio_index(struct folio *folio)
+         return folio->index;
+ }
+ 
++/**
++ * folio_next_index - Get the index of the next folio.
++ * @folio: The current folio.
++ *
++ * Return: The index of the folio which follows this folio in the file.
++ */
++static inline pgoff_t folio_next_index(struct folio *folio)
++{
++	return folio->index + folio_nr_pages(folio);
++}
++
+ /**
+  * folio_file_page - The page for a particular index.
+  * @folio: The folio which contains this index.
 -- 
-Thanks,
-
-David / dhildenb
+2.30.2
 
