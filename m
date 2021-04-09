@@ -2,145 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADA435966C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1685359670
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhDIHcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhDIHcK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:32:10 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6462FC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 00:31:58 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id q10so3244216pgj.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 00:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BF+Ynk25edmDGRQzllVeejrpjdoiXp/2zkQWTVrdN/I=;
-        b=g5TDCJpB6VHinqvDcni+7Djgn4WO1pCqA4mjyC4KtcE2/poU5PO98s871xwf0sdgFC
-         9sF/pL+L5BZlOuLm1KdnKdUHAgh8irK96w68V4c/hSK+/4SbjLfGFDmHzLJWBP2WTQPX
-         eek13SjDE84wxB1TZ+cApyigA4TNxI5SRVtkAfhrKbQy42p7I7A6yLWUDxWZNmdixlJ4
-         4feSMP/5ydPRwno+5OUPL1WXP3ty7Lgs/9FIhYIen7rRfcMwXUrhGJqtdqCe9SESWn8c
-         vmeoIckesF9dEwydL/pyrUP3yZBv7uJ9Uy7kEJKS4/YWQ6gvImwb8dTYG4krzQ5XNRqu
-         Mojw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BF+Ynk25edmDGRQzllVeejrpjdoiXp/2zkQWTVrdN/I=;
-        b=hdbm1cN7y0q/mr7Tr0NiY3wJI/2udNc7IArGiO492O2YPuhZlsZwhHM9iWKjSNUZMy
-         BkQmS5NqADcdakLR4HQGU5kjTzJpzGuxumcn2+Wm+at9JWBuiNnO6OZl8hJolzgSKWpw
-         oibwCHkTWAYxFuoJJB2tg88DbjesUUCW8nuYkl1BvDJ5dzXjaBEQmBqA7ilmx5chenwY
-         lDN+6JP6vYcs2vmf67bZgGmG9vtTpYF7aKzsloRxgy6hboyX3oJukqeRhPDMKWUyAqqz
-         /goMJtKztZmgyxQdknBhZVLlOBskSO0A5FF25XrrzU5nknmGSAiQ9eAMtWn+IvkFFx57
-         Gvvw==
-X-Gm-Message-State: AOAM5310FA5+Ughvlq+vbPcRKLAuOPxEYqP94X0G+xyX0LdRjXRw/3h6
-        tLdJZDmdGk6r25iJjdT8bjgV
-X-Google-Smtp-Source: ABdhPJzpSrEdAvXiTBAf4hBdLS6zlntm+U3O+7tXwn8kQBk+GYj5GAcg5B5h98Nx9AIZYqOx1wSNaw==
-X-Received: by 2002:a63:d242:: with SMTP id t2mr11789981pgi.431.1617953517730;
-        Fri, 09 Apr 2021 00:31:57 -0700 (PDT)
-Received: from work ([103.77.37.131])
-        by smtp.gmail.com with ESMTPSA id gk20sm1423565pjb.17.2021.04.09.00.31.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Apr 2021 00:31:57 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 13:01:53 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Deepak Kumar Singh <deesin@codeaurora.org>, clew@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V1 1/2] soc: qcom: aoss: Expose send for generic usecase
-Message-ID: <20210409073153.GE4376@work>
-References: <1617344238-12137-1-git-send-email-deesin@codeaurora.org>
- <1617344238-12137-2-git-send-email-deesin@codeaurora.org>
- <YGn0wBkOOILgaq5w@builder.lan>
+        id S231818AbhDIHdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:33:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229621AbhDIHdQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 03:33:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D204061107;
+        Fri,  9 Apr 2021 07:33:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617953583;
+        bh=GpkQILVYiC09Ip8zqjS9RHquSeBdjqJpZ9Hi15ftwNE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GVPF5apRWN7oCDiWFjYyPFko6zdr6xX3XK4rwUFd7YAXRiRSqhVsD4GL8nFXfgkW4
+         ainwWuVLMHbzoEzSeYaF2px6m04oJByx5Y5vv9BsBg6cpGj4ZCqnIlPnNAbBTSaZ8U
+         45oCgCR8JqQlg36a4aDD3UvTwIzBYGmmNksUVm12nBgSKDuKEl80Pkq32fJa5Zwmcb
+         jxVgvR/pjJ6/Ba9i+F53/9L3dC819d4iGfLKSmYyGLyhx1YeDcWk0aJRK4aTrALSp4
+         uzj9vogYIqRJbwXynEO2EDTR6iRAqBOdzw0hNtla4bjV3YUkXhtY45+IZNxjLUd9Wd
+         E4BarMzVM+NbQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Gregory Clement <gregory.clement@bootlin.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "kernelci . org bot" <bot@kernelci.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: mvebu: fix SPI device node
+Date:   Fri,  9 Apr 2021 09:32:26 +0200
+Message-Id: <20210409073252.1764731-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YGn0wBkOOILgaq5w@builder.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 04, 2021 at 12:17:52PM -0500, Bjorn Andersson wrote:
-> On Fri 02 Apr 01:17 CDT 2021, Deepak Kumar Singh wrote:
-> 
-> > Not all upcoming usecases will have an interface to allow the aoss
-> > driver to hook onto. Expose the send api and create a get function to
-> > enable drivers to send their own messages to aoss.
-> > 
-> > Signed-off-by: Chris Lew <clew@codeaurora.org>
-> > Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
-> > ---
-> >  drivers/soc/qcom/qcom_aoss.c | 36 +++++++++++++++++++++++++++++++++++-
-> >  1 file changed, 35 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> > index 53acb94..5c643f0 100644
-> > --- a/drivers/soc/qcom/qcom_aoss.c
-> > +++ b/drivers/soc/qcom/qcom_aoss.c
-> > @@ -8,10 +8,12 @@
+From: Arnd Bergmann <arnd@arndb.de>
 
-[...]
+dtc warns about a mismatched address:
 
-> > +	pdev = of_find_device_by_node(np);
-> 
-> of_find_device_by_node() will increment the refcount of the underlying
-> struct device of pdev, so you need to platform_device_put() once you're
-> done with it.
-> 
-> As a side effect of not putting the struct device, the devm_kzalloc'ed
-> qmp pointer will remain valid. So care is needed to make sure that the
-> client doesn't end up with a dangling pointer if the qmp device is
-> removed.
-> 
-> My suggestion is that you add a "qmp_put()" function, which invokes
-> platform_device_put() and that you add some sort of tracking ("bool
-> orphan"?) to the struct qmp and make qmp_send() fail if this is set.
-> 
+arch/arm/boot/dts/armada-385-atl-x530.dts:171.14-199.4: Warning (spi_bus_reg): /soc/spi@10680/spi-flash@0: SPI bus unit address format error, expected "1"
 
-I think this is a duplication of what the struct device offers. Why
-can't we use the generic infrastructure for this usecase?
+I assume the "reg" property is correct here, so adjust the unit address
+accordingly.
 
-Like using device_initialize() in qmp_probe() along with a release
-callback for "struct device", then using get_device() in qmp_get().
-Then there should also be a qmp_put() API which calls put_device() to
-decrease the refcount.
+Fixes: c6dfc019c239 ("ARM: dts: mvebu: Add device tree for ATL-x530 Board")
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Reported-by: kernelci.org bot <bot@kernelci.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+I applied this fixup to the arm/dt branch on top of the new file, this
+will be part of linux-next and the v5.13 pull request
 
-Ideally, the final refcount should be dropped in qmp_remove() and then
-the release callback will be called automatically to free "struct qmp".
+ arch/arm/boot/dts/armada-385-atl-x530.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> That way if someone unbinds the aoss device, the client will still have
-> a "valid" pointer, but won't be able to qmp_send() after qmp_close() has
-> been called in the aoss remove function.
-> 
+diff --git a/arch/arm/boot/dts/armada-385-atl-x530.dts b/arch/arm/boot/dts/armada-385-atl-x530.dts
+index 2041bf09c578..ed3f41c7df71 100644
+--- a/arch/arm/boot/dts/armada-385-atl-x530.dts
++++ b/arch/arm/boot/dts/armada-385-atl-x530.dts
+@@ -168,7 +168,7 @@ &spi1 {
+ 	pinctrl-0 = <&spi1_pins>;
+ 	status = "okay";
+ 
+-	spi-flash@0 {
++	spi-flash@1 {
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
+ 		compatible = "jedec,spi-nor";
+-- 
+2.29.2
 
-How can someone remove the qmp device if a client is holding its reference?
-
-Thanks,
-Mani
-
-> Regards,
-> Bjorn
-> 
-> > +	if (!pdev)
-> > +		return ERR_PTR(-EINVAL);
-> > +
-> > +	qmp = platform_get_drvdata(pdev);
-> > +	return qmp ? qmp : ERR_PTR(-EPROBE_DEFER);
-> > +}
-> > +EXPORT_SYMBOL(qmp_get);
-> > +
-> >  static int qmp_probe(struct platform_device *pdev)
-> >  {
-> >  	struct resource *res;
-> > -- 
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> > a Linux Foundation Collaborative Project
-> > 
