@@ -2,115 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4CE35975F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57571359768
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhDIIO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:14:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25082 "EHLO
+        id S229621AbhDIIOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:14:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55488 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232021AbhDIIO0 (ORCPT
+        by vger.kernel.org with ESMTP id S232297AbhDIIOu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:14:26 -0400
+        Fri, 9 Apr 2021 04:14:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617956054;
+        s=mimecast20190719; t=1617956077;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=M0WtewEB21VR9buYKo7EFc1sWeqSCtJz+J9VX2xS7d0=;
-        b=cxlMHljZ5ACH7Jw9ioPrnNhRBaxOt45MLnAj5r5MIDUwpYS5rqyEYtZ3m8nGyTl27kjlg0
-        mBOlBsI371D+NzBvd7AFFz/lEDqvtGGDLoADB3iDKWqNalU21r0eUeyX27QhbMVxNlu+11
-        zA/048/mmVE8arTAWUPiC+y/P5hnp5U=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-134-8fJnD2UaM-Gl5bXQPNmILg-1; Fri, 09 Apr 2021 04:14:12 -0400
-X-MC-Unique: 8fJnD2UaM-Gl5bXQPNmILg-1
-Received: by mail-ej1-f71.google.com with SMTP id jx20so1882717ejc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:14:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=M0WtewEB21VR9buYKo7EFc1sWeqSCtJz+J9VX2xS7d0=;
-        b=o6HwsuFoeDZpd22j45NuG0Opb9tHXNA2NmRYiDfiHrKucdkrvT8scjmt5LW4TxY3Qs
-         IZmMD+IMoIOBRQvaLvcBj3J1pstIjd8L9/kvxswRK+boke9yQn4uSP8a7FUCO7NWW6ED
-         rv8+Ssh0jV+oM6TcDEvOKh696LTh3n5r85YB/nxQJL/ickfC5zmr6FCmiLUcrq30b6Mk
-         O3PkHlscb2PRchC8dxBt6m8uT3nC3VrUpyoYclssYgdFqcsXLcA3Jft/1Gs2K9fr/Kga
-         mM+W0fc4q9wjTu+4J5o7o9ocu4wD4Ix8bwpiHOopYw9gsdFfIv08z5tUb5a3LwZAUvRB
-         Saqg==
-X-Gm-Message-State: AOAM533PW8l7dNBQ7qF0u8ICa78LI2ay7nbsZu+LKdCdjuULbpW97t3A
-        6IFHwhgAS24YjslEmeY1RcqQ1hSI8vjSdDdDiLLJ3LzacwTVMc3trJa6iowcMBFZ77Kihycw7jT
-        eq2tb/AnVCSnSnCAU1wBeMiyJ
-X-Received: by 2002:a17:906:468b:: with SMTP id a11mr14853926ejr.190.1617956051449;
-        Fri, 09 Apr 2021 01:14:11 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxZDjr8pGY0n9Fs4qsXTDO5ldcdsheAJLSO7rFz9v3VPmkLdykCNxPW8r3nTwSE1zNy8TkPew==
-X-Received: by 2002:a17:906:468b:: with SMTP id a11mr14853907ejr.190.1617956051215;
-        Fri, 09 Apr 2021 01:14:11 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id rh6sm853598ejb.39.2021.04.09.01.14.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Apr 2021 01:14:10 -0700 (PDT)
-To:     jejb@linux.ibm.com, Steve Rutherford <srutherford@google.com>
-Cc:     Ashish Kalra <ashish.kalra@amd.com>,
-        Nathan Tempelman <natet@google.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        dovmurik@linux.vnet.ibm.com, lersek@redhat.com, frankeh@us.ibm.com
-References: <20210316014027.3116119-1-natet@google.com>
- <20210402115813.GB17630@ashkalra_ubuntu_server>
- <87bdd3a6-f5eb-91e4-9442-97dfef231640@redhat.com>
- <936fa1e7755687981bdbc3bad9ecf2354c748381.camel@linux.ibm.com>
- <CABayD+cBdOMzy7g6X4W-M8ssMpbpDGxFA5o-Nc5CmWi-aeCArQ@mail.gmail.com>
- <fc32a469ae219763f80ef1fc9f151a62cfe76ed6.camel@linux.ibm.com>
- <CABayD+c22hgPtjJBLkhyvyt+WAKXhoQOM6n0toVR1XrFY4WHAw@mail.gmail.com>
- <75863fa3f1c93ffda61f1cddfef0965a0391ef60.camel@linux.ibm.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [RFC v2] KVM: x86: Support KVM VMs sharing SEV context
-Message-ID: <ed7c38cd-4cfd-9f36-dd81-b8d699fd498d@redhat.com>
-Date:   Fri, 9 Apr 2021 10:14:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        bh=6YraNPigCCa2QjWFUNdLS4ExsZNHhjTNhXM21Vxjs0s=;
+        b=QohY6qYwd0uA5XK6l966gmbPjTbovLlOjJUZwaAZLV8eVQGh7EBZqo54LtK8lD8q/KVpk7
+        9uWD9Y7VIAaMnupUDzgsWtLuJYCyQtDnK8XwRxqXjs6pK8cGi+3C0W4gRQEaQV7NP+JDh+
+        bF1GPcuj8J5AbeASqYEIlcD2C7aC/II=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-01GEC8DGP-Cp7uL9zOpe3g-1; Fri, 09 Apr 2021 04:14:33 -0400
+X-MC-Unique: 01GEC8DGP-Cp7uL9zOpe3g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B9A5510054F6;
+        Fri,  9 Apr 2021 08:14:31 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-119-35.rdu2.redhat.com [10.10.119.35])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C66C160BE5;
+        Fri,  9 Apr 2021 08:14:25 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wi_XrtTanTwoKs0jwnjhSvwpMYVDJ477VtjvvTXRjm5wQ@mail.gmail.com>
+References: <CAHk-=wi_XrtTanTwoKs0jwnjhSvwpMYVDJ477VtjvvTXRjm5wQ@mail.gmail.com> <20210408145057.GN2531743@casper.infradead.org> <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk> <161789066013.6155.9816857201817288382.stgit@warthog.procyon.org.uk> <46017.1617897451@warthog.procyon.org.uk> <136646.1617916529@warthog.procyon.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Jeff Layton <jlayton@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        "open list:NFS, SUNRPC, AND..." <linux-nfs@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>, ceph-devel@vger.kernel.org,
+        v9fs-developer@lists.sourceforge.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC][PATCH] mm: Split page_has_private() in two to better handle PG_private_2
 MIME-Version: 1.0
-In-Reply-To: <75863fa3f1c93ffda61f1cddfef0965a0391ef60.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <184802.1617956064.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 09 Apr 2021 09:14:24 +0100
+Message-ID: <184803.1617956064@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/04/21 03:18, James Bottomley wrote:
-> If you want to share ASIDs you have to share the firmware that the
-> running VM has been attested to.  Once the VM moves from LAUNCH to
-> RUNNING, the PSP won't allow the VMM to inject any more firmware or do
-> any more attestations.
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-I think Steve is suggesting to just change the RIP of the mirror VM, 
-which would work for SEV but not SEV-ES (the RAM migration helper won't 
-*suffice* for SEV-ES, but perhaps you could use the PSP to migrate the 
-VMSA and the migration helper for the rest?).
+> >  #define PAGE_FLAGS_PRIVATE                             \
+> >         (1UL << PG_private | 1UL << PG_private_2)
+>
+> I think this should be re-named to be PAGE_FLAGS_CLEANUP, because I
+> don't think it makes any other sense to "combine" the two PG_private*
+> bits any more. No?
 
-If you want to use a single firmware binary, SEC does almost no I/O 
-accesses (the exception being the library constructor from 
-SourceLevelDebugPkg's SecPeiDebugAgentLib), so you probably can:
+Sure.  Do we even want it still, or should I just fold it into
+page_needs_cleanup()?  It seems to be the only place it's used.
 
-- detect the migration helper hardware in PlatformPei, either from 
-fw_cfg or based on the lack of it
+> > +static inline int page_private_count(struct page *page)
+> > +{
+> > +       return test_bit(PG_private, &page->flags) ? 1 : 0;
+> > +}
+>
+> Why is this open-coding the bit test, rather than just doing
+>
+>         return PagePrivate(page) ? 1 : 0;
+>
+> instead? In fact, since test_bit() _should_ return a 'bool', I think eve=
+n just
+>
+>         return PagePrivate(page);
 
-- either divert execution to the migration helper through 
-gEfiEndOfPeiSignalPpiGuid, or if it's too late add a new boot mode and 
-PPI to DxeLoadCore.
+Sorry, yes, it should be that.  I was looking at transforming the "1 <<
+PG_private" and completely overlooked that this should be PagePrivate().
 
-Paolo
+> should work and give the same result, but I could imagine that some
+> architecture version of "test_bit()" might return some other non-zero
+> value (although honestly, I think that should be fixed if so).
 
-> What you mirror after this point can thus only
-> contain what has already been measured or what the guest added.  This
-> is why we think there has to be a new entry path into the VM for the
-> mirror vCPU.
+Yeah.  I seem to recall that test_bit() on some arches used to return the
+datum just with the other bits masked off, but I may be misremembering.
+
+In asm-generic/bitops/non-atomic.h:
+
+static inline int test_bit(int nr, const volatile unsigned long *addr)
+{
+	return 1UL & (addr[BIT_WORD(nr)] >> (nr & (BITS_PER_LONG-1)));
+}
+
+should perhaps return bool?
+
+I wonder, should:
+
+	static __always_inline int PageTail(struct page *page)
+	static __always_inline int PageCompound(struct page *page)
+	static __always_inline int Page##uname(struct page *page)
+	static __always_inline int TestSetPage##uname(struct page *page)
+	static __always_inline int TestClearPage##uname(struct page *page)
+
+also all return bool?
+
+David
 
