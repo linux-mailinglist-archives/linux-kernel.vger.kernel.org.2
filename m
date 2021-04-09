@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E66A35A7F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE6735A7F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234341AbhDIUjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233995AbhDIUjb (ORCPT
+        id S234354AbhDIUkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:40:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47412 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233995AbhDIUkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:39:31 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267ABC061763
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 13:39:18 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id d12so3095437iod.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 13:39:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FGfX5TmqBx32OBvwAjpKaY+KA4LiepNY7Un7Dew26tA=;
-        b=WltMpC4qUtPUa1/kLe8yfI/2GtcaaTm0ODsC03X/ZtFkMVf6dgtOjEaALNAIneAF5E
-         Kzuoh36XmB1pcsHLA+Umj46oTao+3hn9n4Nte72wXQcaySDdqo/sE2pSV0cleSLP0kQ6
-         NkyJgRl5qoLibaopYits37RkFYn2ybZHEKXX4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FGfX5TmqBx32OBvwAjpKaY+KA4LiepNY7Un7Dew26tA=;
-        b=RihXlmdBX3ocWR9UKEf+JlNWan17/pgUOzj8k/jRArOQ7SYGuM8f9HPULHsOSD6hmZ
-         DtqFX+5M0nFwNqlZ35YaLTvG+mZHq8fixfs3XzykNFdm85Mx4R8oiHCxtOih0K/a1Bzb
-         tABULEU2h2fVl1izml4Eptu/w6ClGKR/hpljKqkqhheNHyemGCaBPeeyCHAI1Bnwgxaf
-         TnSIQ0yEEWDB50bSJKBL6Y2HsjNvvfdhJQGMxvfTxDDDkblMlD2YYvAywVCuF37RZ9Z+
-         WJFwh+QDmVRiwzVheHEjWpSMSdlhnpHAne88U+sjhJBMSoX5nL+L5HOqH0qBYk9A4q2R
-         kz6g==
-X-Gm-Message-State: AOAM532Kjof7UDmIPlSQd+xk59q7tW9JawlUpj8AG1m7HiHq0tSDEPtK
-        BR6Cr1ajZvEoBUN9M6GGB6Zgwg==
-X-Google-Smtp-Source: ABdhPJyO+/53JyP7yFDOi6MndCyH+AKchtR0CX73iuood2fncvaXZZV0oP+bGccnduKMcuKQTwnUmQ==
-X-Received: by 2002:a6b:fe13:: with SMTP id x19mr12993757ioh.73.1618000757689;
-        Fri, 09 Apr 2021 13:39:17 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id g12sm1537584ile.71.2021.04.09.13.39.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Apr 2021 13:39:17 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/23] 5.4.111-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210409095302.894568462@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <92f275a3-77a8-71c3-ddf4-c0e647d7724d@linuxfoundation.org>
-Date:   Fri, 9 Apr 2021 14:39:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 9 Apr 2021 16:40:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618000819;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q193xZr1BMYRCl6sJseS6djVgHOxLnB/RXmKWcvH1Ro=;
+        b=RICn4UlyJws681foM51ayuyHoY92Yq/WlHkF9axS57L85V1gqZy7I9yVTMXmXQ/7f91t2P
+        GYqLjTY4VKerT8rFr6fLQCALHoC5xBdJZVBgS9RY6AsqWKJ6pvZHUMOoL21CoBNTCM0/pK
+        UJLdp1ouOGlKCxPJ97tKQMux5w9P+jk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-455-tXkxNBTDO2CqPBZqDhxCrg-1; Fri, 09 Apr 2021 16:40:15 -0400
+X-MC-Unique: tXkxNBTDO2CqPBZqDhxCrg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1978A107ACCD;
+        Fri,  9 Apr 2021 20:40:13 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D29B16EF50;
+        Fri,  9 Apr 2021 20:40:06 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 22:40:05 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     brouer@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH net-next v2 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <20210409224005.6dc6dcd6@carbon>
+In-Reply-To: <YHCknwlzJHPFXm2j@apalos.home>
+References: <20210402181733.32250-1-mcroce@linux.microsoft.com>
+        <20210402181733.32250-4-mcroce@linux.microsoft.com>
+        <20210409115648.169523fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YHCknwlzJHPFXm2j@apalos.home>
 MIME-Version: 1.0
-In-Reply-To: <20210409095302.894568462@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 9 Apr 2021 22:01:51 +0300
+Ilias Apalodimas <ilias.apalodimas@linaro.org> wrote:
 
+> On Fri, Apr 09, 2021 at 11:56:48AM -0700, Jakub Kicinski wrote:
+> > On Fri,  2 Apr 2021 20:17:31 +0200 Matteo Croce wrote:  
+> > > Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > > Co-developed-by: Matteo Croce <mcroce@microsoft.com>
+> > > Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>  
+> > 
+> > Checkpatch says we need sign-offs from all authors.
+> > Especially you since you're posting.  
+> 
+> Yes it does, we forgot that.  Let me take a chance on this one. 
+> The patch is changing the default skb return path and while we've done enough
+> testing, I would really prefer this going in on a future -rc1 (assuming we even
+> consider merging it), allowing enough time to have wider tests.
 
-On 4/9/21 3:53 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.111 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.111-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+You can have my:
 
-Compiled and booted on my test system. No dmesg regressions.
+Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+But as Ilias suggested in IRC lets send a V3, and Cc the MM-people, as
+this also dig into their area.
 
-thanks,
--- Shuah
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
