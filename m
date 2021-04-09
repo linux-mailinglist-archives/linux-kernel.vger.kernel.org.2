@@ -2,124 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87CAF35955D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:24:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A905359560
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhDIGX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:23:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
+        id S233403AbhDIGXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbhDIGX0 (ORCPT
+        with ESMTP id S233296AbhDIGXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:23:26 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED56C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 23:23:13 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id 7so2239480plb.7
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 23:23:13 -0700 (PDT)
+        Fri, 9 Apr 2021 02:23:52 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14890C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 23:23:40 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id g17so4074144ejp.8
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 23:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=y7eM9NOxV0/YJgk1/+DqK+RAGiy7J8VSlaHOoYfGcZ0=;
-        b=xg1e2XKIJGCnu9rtT3vQ5jB8J47gAp+cBscH1HOv5eTTP1BtFeOJcrzQqSKQZko3Zt
-         1a1BkvQjmsGVUPKufSF9mVOi30trvnkjubP/h7LnZQZvpF3bs86nmmDhQS6j9WjzM4lH
-         diprXRbSl5n2iLYp+wFaEHHDAfYH2k3qG1+hor+iFtWHNKdbt91/0dkHb/KGw3kXyjz7
-         VVQxRzt6+cMQd0v6MG2MPT/kNA2Lm5wNl9owZI7YjPvhorRGAhAAeoaVpX10etZGsLjL
-         l0FKEQNjXheMWLj3h3fxm3fz64Devx/ZQLHvNcu3FmUa100ctkxJ01Tgy0Np6tRcc9Mq
-         YpHQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/0WMp8MwKJ/u3qX7Dv8XtiWzb8xXHglsszw5dF/53Js=;
+        b=RSzU/8fTXW2zL+EO/inJbfSmLIUvORZ+0ncpCjsA5xwox5jMW+/13995cQ1BG3+drn
+         IZLu1plLrnt4tTK9456EABz/OGQNBErWwlNrkad+Xu2ynqUdG049uL1nGgvDOpkN5YQF
+         Z5VxJ8a24qmf8sTw08PZCOYyjRLbLc3aSYuEVLbcrzIzisS19Y+MvrZRe4EsB/OXp7Zc
+         Nduhl29srfd0adZ5Np0cthNChuCC60bAfT50gGRfWDz28GU052SKiHM22kDt34JNpaSP
+         j+zO42c44T9gPxiY1sPbQ8GzIO4UTE4AKDK4iq42bImf4aZVY+wH3fXj/mbLqLnaRAzL
+         UY3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=y7eM9NOxV0/YJgk1/+DqK+RAGiy7J8VSlaHOoYfGcZ0=;
-        b=tdADozN9wIwXs88V+x2f6eyO4p/jzMGmO7UnqpH5re7wZkzoAPjku2QMgwcM+wMwgr
-         zNl6X1Gh8rBQJR9Cvmhj26xR5TFODbZqlDIZMruOiQEJuwh6VqWxIfdlDYJCQOpmvgUr
-         mphL3A/Cuue+yvlsbLKl6tyJK7nFJrioAQrT2C92xab94MY++JR9k6TlM8/0EGOajena
-         b8CoHW0xK20xX0rrIthbv+HJmOB3MZCpHyEBIlZ/zKztiex2kIX4r4plB5lgvrrRtR8E
-         AfiHfxkD5VIpdbPStY4KorjCyiE/F5PNDN72XTG6kf2tBuZ1GEYllJ7DFqIi1GMLVUjm
-         CapA==
-X-Gm-Message-State: AOAM531UCXk8U4SGrUzJPTWqH25JwQt0e5ygHgz8ikYrpvhpHRe8O3+S
-        WxfVnr56gFD3Y0jCOfJ+g5Jk
-X-Google-Smtp-Source: ABdhPJwqcPnHiZfVT81sTN1xfVUQ5KL2PK9I3uMYKi0LR7nqL97u0wRp8MFM4ZN00uHgga7iSwz6WA==
-X-Received: by 2002:a17:90b:1490:: with SMTP id js16mr11908041pjb.131.1617949393034;
-        Thu, 08 Apr 2021 23:23:13 -0700 (PDT)
-Received: from work ([103.77.37.131])
-        by smtp.gmail.com with ESMTPSA id d24sm1090136pjw.37.2021.04.08.23.23.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 08 Apr 2021 23:23:12 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 11:53:08 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Chen Hui <clare.chenhui@huawei.com>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] clk: qcom: Add missing MODULE_DEVICE_TABLE
-Message-ID: <20210409062308.GB4376@work>
-References: <20210408135509.208921-1-clare.chenhui@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/0WMp8MwKJ/u3qX7Dv8XtiWzb8xXHglsszw5dF/53Js=;
+        b=TiBKeO2En8P3XHegTMoXYbaBddE84Sb+uPUmmPU4w5o4BsiDu2Q5vUJQV/lC+Oso/f
+         Uea8Mk33l25/GL1NeL6XWmmTZtFjcqPArrGOmX+ot4Urfbanmee5cSMWg7sIagbb2mHs
+         L5sXMBU2azWV3U6JeapGs+z8H/gHrF598Reuc2oJPvH6+FRg8O8sjHX+23MrNLP21Z3I
+         a0soUS4zNZJu5VyP0DrwTF3o0lCOUT9k+haqUrbLjvUSVPRKHzg3someGmdzj8n/2KcU
+         e2RyNsnELVNWz3o8fSRt2qv87YvC8FmckEWJSsbMaQmP5SfKj/9VP73/iXH7txJVNkBG
+         pLlw==
+X-Gm-Message-State: AOAM533Um95676lMj91CrSF0PV+QjjXsOc4+MsLhSvjdLH/PCInCo6Ay
+        4o2k7C8GAXZDuhx7YZFPNYbxewuzb+/mFAqMke1PYw==
+X-Google-Smtp-Source: ABdhPJyNW8FA7KCEbD2ruFaUWyLqipptmdm8sQ3TknahXLmC9cmxEHhJE+UDIIR9xnnqW2/0yG2B0wUwPtpsfi7AkfM=
+X-Received: by 2002:a17:907:7785:: with SMTP id ky5mr14338784ejc.133.1617949418711;
+ Thu, 08 Apr 2021 23:23:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408135509.208921-1-clare.chenhui@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <CA+G9fYtNAEwCk1WkA_25FVUrR0QJ2vt2Dh_w+m-QOSjb8f5TBQ@mail.gmail.com>
+ <BYAPR04MB4965A95A5131664085CDD8B786739@BYAPR04MB4965.namprd04.prod.outlook.com>
+In-Reply-To: <BYAPR04MB4965A95A5131664085CDD8B786739@BYAPR04MB4965.namprd04.prod.outlook.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 9 Apr 2021 11:53:27 +0530
+Message-ID: <CA+G9fYt30EZOv2mUOf+xGh3R3A0SMJhvVtHFwZuKyBgB75UTTw@mail.gmail.com>
+Subject: Re: [next] drivers/cdrom/gdrom.c:586:61: error: 'rq' undeclared
+ (first use in this function)
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 09:55:09PM +0800, Chen Hui wrote:
-> Add missing MODULE_DEVICE_TABLE entries to support module autoloading,
-> as these drivers can be compiled as external modules.
-> 
-> Signed-off-by: Chen Hui <clare.chenhui@huawei.com>
+Hi Chaitanya,
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Fri, 9 Apr 2021 at 11:01, Chaitanya Kulkarni
+<Chaitanya.Kulkarni@wdc.com> wrote:
+>
+> On 4/8/21 22:21, Naresh Kamboju wrote:
+> > Linux next tag 20210408 architecture sh builds failed due to these errors.
+> >
+> > # to reproduce this build locally:
+> >
+> > make --silent --keep-going --jobs=8
+> > O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=sh
+> > CROSS_COMPILE=sh4-linux-gnu- 'CC=sccache sh4-linux-gnu-gcc'
+> > 'HOSTCC=sccache gcc'
+> >
+> >
+> > In file included from /builds/linux/include/linux/scatterlist.h:9,
+> >                  from /builds/linux/include/linux/dma-mapping.h:10,
+> >                  from /builds/linux/drivers/cdrom/gdrom.c:16:
+> > /builds/linux/drivers/cdrom/gdrom.c: In function 'gdrom_readdisk_dma':
+> > /builds/linux/drivers/cdrom/gdrom.c:586:61: error: 'rq' undeclared
+> > (first use in this function)
+> >   586 |  __raw_writel(page_to_phys(bio_page(req->bio)) + bio_offset(rq->bio),
+> >       |                                                             ^~
+> >
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> >
+> > Regressions found on sh:
+> >   - build/gcc-9-dreamcast_defconfig
+> >   - build/gcc-10-dreamcast_defconfig
+> >   - build/gcc-8-dreamcast_defconfig
+> >
+> > --
+> > Linaro LKFT
+> > https://lkft.linaro.org
+> >
+>
+> This can be fixed by following :-
+>
+> diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
+> index e7717d090868..742b4a0932e3 100644
+> --- a/drivers/cdrom/gdrom.c
+> +++ b/drivers/cdrom/gdrom.c
+> @@ -583,7 +583,7 @@ static blk_status_t gdrom_readdisk_dma(struct
+> request *req)
+>         read_command->cmd[1] = 0x20;
+>         block = blk_rq_pos(req)/GD_TO_BLK + GD_SESSION_OFFSET;
+>         block_cnt = blk_rq_sectors(req)/GD_TO_BLK;
+> -       __raw_writel(page_to_phys(bio_page(req->bio)) + bio_offset(rq->bio),
+> +       __raw_writel(page_to_phys(bio_page(req->bio)) +
+> bio_offset(req->bio),
+>                         GDROM_DMA_STARTADDR_REG);
+>         __raw_writel(block_cnt * GDROM_HARD_SECTOR, GDROM_DMA_LENGTH_REG);
+>         __raw_writel(1, GDROM_DMA_DIRECTION_REG);
 
-Thanks,
-Mani
+Thanks for your patch.
+After applying this typo fix, the build pass now.
 
-> ---
->  drivers/clk/qcom/a53-pll.c      | 1 +
->  drivers/clk/qcom/a7-pll.c       | 1 +
->  drivers/clk/qcom/apss-ipq-pll.c | 1 +
->  3 files changed, 3 insertions(+)
-> 
-> diff --git a/drivers/clk/qcom/a53-pll.c b/drivers/clk/qcom/a53-pll.c
-> index 45cfc57bff92..af6ac17c7dae 100644
-> --- a/drivers/clk/qcom/a53-pll.c
-> +++ b/drivers/clk/qcom/a53-pll.c
-> @@ -93,6 +93,7 @@ static const struct of_device_id qcom_a53pll_match_table[] = {
->  	{ .compatible = "qcom,msm8916-a53pll" },
->  	{ }
->  };
-> +MODULE_DEVICE_TABLE(of, qcom_a53pll_match_table);
->  
->  static struct platform_driver qcom_a53pll_driver = {
->  	.probe = qcom_a53pll_probe,
-> diff --git a/drivers/clk/qcom/a7-pll.c b/drivers/clk/qcom/a7-pll.c
-> index e171d3caf2cf..c4a53e5db229 100644
-> --- a/drivers/clk/qcom/a7-pll.c
-> +++ b/drivers/clk/qcom/a7-pll.c
-> @@ -86,6 +86,7 @@ static const struct of_device_id qcom_a7pll_match_table[] = {
->  	{ .compatible = "qcom,sdx55-a7pll" },
->  	{ }
->  };
-> +MODULE_DEVICE_TABLE(of, qcom_a7pll_match_table);
->  
->  static struct platform_driver qcom_a7pll_driver = {
->  	.probe = qcom_a7pll_probe,
-> diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
-> index 30be87fb222a..bef7899ad0d6 100644
-> --- a/drivers/clk/qcom/apss-ipq-pll.c
-> +++ b/drivers/clk/qcom/apss-ipq-pll.c
-> @@ -81,6 +81,7 @@ static const struct of_device_id apss_ipq_pll_match_table[] = {
->  	{ .compatible = "qcom,ipq6018-a53pll" },
->  	{ }
->  };
-> +MODULE_DEVICE_TABLE(of, apss_ipq_pll_match_table);
->  
->  static struct platform_driver apss_ipq_pll_driver = {
->  	.probe = apss_ipq_pll_probe,
-> -- 
-> 2.17.1
-> 
+- Naresh
