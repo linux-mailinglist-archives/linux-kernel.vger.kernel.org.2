@@ -2,193 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342EB35A43E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1809035A446
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233961AbhDIRAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
+        id S234182AbhDIRB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:01:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDIRAk (ORCPT
+        with ESMTP id S234179AbhDIRBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:00:40 -0400
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B73FC061760;
-        Fri,  9 Apr 2021 10:00:27 -0700 (PDT)
-Received: by mail-qk1-x72f.google.com with SMTP id q26so6496943qkm.6;
-        Fri, 09 Apr 2021 10:00:27 -0700 (PDT)
+        Fri, 9 Apr 2021 13:01:19 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1813C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:01:06 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id l123so4622333pfl.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:01:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=EHJ5xH8b3drIKRi0K3TBNoofABYf4wlu7xRfP2aofl0=;
-        b=eIbJ3KA+c7F12XU8RjHnMwvpR/Ho4F+KHqyVHHqJzhCGHelcpX4VTPO4skvvC9lkhm
-         ndAv+axRJgTFIN857CMdzYCh3Zo86cWEeaAY4YGbvnnxVV4dHasP5Rt6nR/ZytrCfUtf
-         IlmS5OsqZVmAQ/nfvvTZPbilJJ2aGltBC6SdCx28T1mGAYhPiKG5yPobw4IrUjCEGFz/
-         xuP5Lon1EYJdNtc/ttSUpYqkOlAOsLQFckHsPnxV5tOcIeNaZQ0Iwu3F4LXdyqj6wdqe
-         k3JLUSj3yAwv9q0DG6NcsQUTYro28z9S4Mje33DdLwlggYVRB1UZYLNEDh3lnM7ls5kx
-         Zq+Q==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=Y+dtVUQQoKBT4QD8w22iCkdT2lXFXX96rY1QL4XBEhk=;
+        b=Bj10EXFFti3jwrOObuKak/5UWWbOw1R+c5AYo7DIKOeibu1rV7jHUpBVMj6qft2LFm
+         AQfJE0xX0wLjCk404YBcawfGv81kIVqoZpvKGAcxmtSXjLPFadyG3/mqTU8/+vZ7IDw5
+         sTK4q33hDtHXEG6Mhw2K9NNml0ztOnLSvUhLE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=EHJ5xH8b3drIKRi0K3TBNoofABYf4wlu7xRfP2aofl0=;
-        b=O/E0V3CN2qDdliC9nNVBFyVbOmed5HHv9oQtYKS8a6SibdXyoGJGejb3B1moCR4w34
-         fjhjf8ep4ya9SMI5Ayw2KQf8yw9cyf3vchLFZCcdibNER5xqT67Ij0H02DbxdTEsf13E
-         hu8A5Fc8CaReMPcVReupa8dhVpnpN/edoJxBnd1l44x9zhzkkEQmPfmA/oV2njLnUZOo
-         znjvBIEOUYI/gVH0TguRPqscXaIKL8ad21YYHlf6yjuQ6aB0KL8W+3vWMXTkAl4OiGPl
-         4+n113mJ8htnEk+9rIDcRn1xU17tVEcMW3gCeEOJMEsT3/UPKY9/liMQ6rpzsSbYL5p9
-         EHww==
-X-Gm-Message-State: AOAM5307p+3bI/TsoUUFFgiRO3I8V6dZdW1JniUkUrYrD9CU0YqPnQOL
-        pcuTcyqemojBgiVZ59xHy28=
-X-Google-Smtp-Source: ABdhPJz0QP8syR0XJXwx2xA37Y8uc6ajjbC1Iy2vb3n+qHZwhUf+yRxr/jfG9DtVd7XvoYX2PxIieA==
-X-Received: by 2002:a37:e315:: with SMTP id y21mr14808173qki.418.1617987626510;
-        Fri, 09 Apr 2021 10:00:26 -0700 (PDT)
-Received: from [192.168.100.7] ([177.220.174.147])
-        by smtp.gmail.com with ESMTPSA id e14sm2076253qka.56.2021.04.09.10.00.23
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=Y+dtVUQQoKBT4QD8w22iCkdT2lXFXX96rY1QL4XBEhk=;
+        b=RL8T205bQ3pX+VH2xadVedyCyipQPIUTa0rHPFcdljh2bcANDYmIpXIMO1sBFtdsQ/
+         ZWHF9yaNlzg+NQWxC1aWhTR30HC2gWGYaUrmwWZW2JvgainM8sbcVz2zBIAdcoGZLXse
+         rW5Y3iEBihDmXmrcI89hH+bykwKIY5B52AX3IHAt4jbmsLNfteAhEB8epUuqIwA8/QFj
+         uPrQPhpECvSiF2BRSxbrIDUXyFl40atEb1UGUJfDKRPy02o/vXiRISmhBBhpIh/UVRwb
+         j+QjcXbi+xn9vSUfl+/6jGqbzerKQlvuWoyi7xgWRwbHoq7BLGQLpasJaY50p8BtKr6F
+         jQgw==
+X-Gm-Message-State: AOAM532jbvCrlbT/IZJITcQWiSjMAtul+cfDWLNQ8vDsdyKDQvLCtAxD
+        zXxnpg9yDwMDcrfIQWzWhoUQTA==
+X-Google-Smtp-Source: ABdhPJyomjBj+/2DEtc/Q+SEr95sFJMVE8yo0USbDJj9yVPAfCRpXjjlOM0LFvT1nBq2QPjp6a/5Eg==
+X-Received: by 2002:a63:fc07:: with SMTP id j7mr14383423pgi.401.1617987666112;
+        Fri, 09 Apr 2021 10:01:06 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:44c3:3248:e7f5:1bbd])
+        by smtp.gmail.com with ESMTPSA id q5sm2621786pfj.131.2021.04.09.10.01.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 10:00:26 -0700 (PDT)
-Message-ID: <138794d79c42510d9b6ae744df20216904773032.camel@gmail.com>
-Subject: Re: [Outreachy kernel][PATCH] staging: media: hantro: Rewrite macro
- function in lower case
-From:   ascordeiro <alinesantanacordeiro@gmail.com>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Date:   Fri, 09 Apr 2021 14:00:22 -0300
-In-Reply-To: <9c09806cce4c7e5c5f0dc03e8c502cf29716f00f.camel@collabora.com>
-References: <20210409135404.GA26172@focaruja>
-         <9c09806cce4c7e5c5f0dc03e8c502cf29716f00f.camel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        Fri, 09 Apr 2021 10:01:05 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210406163330.11996-1-srivasam@codeaurora.org>
+References: <20210406163330.11996-1-srivasam@codeaurora.org>
+Subject: Re: [PATCH v2] arm64: dts: qcom: Update iommu property for simultaneous playback
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        devicetree@vger.kernel.org, dianders@chromium.org,
+        judyhsiao@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org
+Date:   Fri, 09 Apr 2021 10:01:04 -0700
+Message-ID: <161798766423.3790633.3895809656191757415@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em sex, 2021-04-09 às 13:44 -0300, Ezequiel Garcia escreveu:
-> Hi Aline,
+Quoting Srinivasa Rao Mandadapu (2021-04-06 09:33:30)
+> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+>=20
+> Update iommu property in lpass cpu node for supporting
+> simultaneous playback on headset and speaker.
+>=20
+> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> ---
+> Changes since v1:
+>    -- Commit messge header change
+>=20
+>  arch/arm64/boot/dts/qcom/sc7180.dtsi | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/q=
+com/sc7180.dtsi
+> index a6da78d31fdd..6228ba2d8513 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -3566,7 +3566,8 @@ lpass_cpu: lpass@62f00000 {
+>                         reg =3D <0 0x62f00000 0 0x29000>;
+>                         reg-names =3D "lpass-lpaif";
+> =20
+> -                       iommus =3D <&apps_smmu 0x1020 0>;
+> +                       iommus =3D <&apps_smmu 0x1020 0>,
+> +                               <&apps_smmu 0x1021 0>;
 
-Hi Ezequiel,
-> 
-> On Fri, 2021-04-09 at 10:54 -0300, Aline Santana Cordeiro wrote:
-> > Rewrite macros resembling functions #define HANTRO_PP_REG_WRITE
-> > and #define HANTRO_PP_RED_WRITE_S in lower case, according with
-> > code style.
-> > 
-> 
-> Where is this written in the Coding Style?
+The stream ID 0x1032 was also dropped in this version but there's no
+mention of that in the changelog. Why?
 
-I found this in section 12, about Macros, Enums and RTL in both
-references:
-https://www.kernel.org/doc/html/latest/process/coding-style.html
-https://elixir.bootlin.com/linux/latest/source/Documentation/process/coding-style.rst
-> 
-> Thanks!
-> Ezequiel
-
-Thank you!
-Aline
-> 
-> > Signed-off-by: Aline Santana Cordeiro <  
-> > alinesantanacordeiro@gmail.com>
-> > ---
-> >  drivers/staging/media/hantro/hantro_postproc.c | 34 +++++++++++++-
-> > ------------
-> >  1 file changed, 17 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/drivers/staging/media/hantro/hantro_postproc.c
-> > b/drivers/staging/media/hantro/hantro_postproc.c
-> > index 6d2a8f2a..06279c0 100644
-> > --- a/drivers/staging/media/hantro/hantro_postproc.c
-> > +++ b/drivers/staging/media/hantro/hantro_postproc.c
-> > @@ -12,14 +12,14 @@
-> >  #include "hantro_hw.h"
-> >  #include "hantro_g1_regs.h"
-> >  
-> > -#define HANTRO_PP_REG_WRITE(vpu, reg_name, val) \
-> > +#define hantro_pp_reg_write(vpu, reg_name, val) \
-> >  { \
-> >         hantro_reg_write(vpu, \
-> >                          &(vpu)->variant->postproc_regs->reg_name,
-> > \
-> >                          val); \
-> >  }
-> >  
-> > -#define HANTRO_PP_REG_WRITE_S(vpu, reg_name, val) \
-> > +#define hantro_pp_reg_write_s(vpu, reg_name, val) \
-> >  { \
-> >         hantro_reg_write_s(vpu, \
-> >                            &(vpu)->variant->postproc_regs-
-> > >reg_name, \
-> > @@ -61,7 +61,7 @@ void hantro_postproc_enable(struct hantro_ctx
-> > *ctx)
-> >                 return;
-> >  
-> >         /* Turn on pipeline mode. Must be done first. */
-> > -       HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x1);
-> > +       hantro_pp_reg_write_s(vpu, pipeline_en, 0x1);
-> >  
-> >         src_pp_fmt = VPU_PP_IN_NV12;
-> >  
-> > @@ -79,19 +79,19 @@ void hantro_postproc_enable(struct hantro_ctx
-> > *ctx)
-> >         dst_buf = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
-> >         dst_dma = vb2_dma_contig_plane_dma_addr(&dst_buf->vb2_buf,
-> > 0);
-> >  
-> > -       HANTRO_PP_REG_WRITE(vpu, clk_gate, 0x1);
-> > -       HANTRO_PP_REG_WRITE(vpu, out_endian, 0x1);
-> > -       HANTRO_PP_REG_WRITE(vpu, out_swap32, 0x1);
-> > -       HANTRO_PP_REG_WRITE(vpu, max_burst, 16);
-> > -       HANTRO_PP_REG_WRITE(vpu, out_luma_base, dst_dma);
-> > -       HANTRO_PP_REG_WRITE(vpu, input_width, MB_WIDTH(ctx-
-> > >dst_fmt.width));
-> > -       HANTRO_PP_REG_WRITE(vpu, input_height, MB_HEIGHT(ctx-
-> > >dst_fmt.height));
-> > -       HANTRO_PP_REG_WRITE(vpu, input_fmt, src_pp_fmt);
-> > -       HANTRO_PP_REG_WRITE(vpu, output_fmt, dst_pp_fmt);
-> > -       HANTRO_PP_REG_WRITE(vpu, output_width, ctx->dst_fmt.width);
-> > -       HANTRO_PP_REG_WRITE(vpu, output_height, ctx-
-> > >dst_fmt.height);
-> > -       HANTRO_PP_REG_WRITE(vpu, orig_width, MB_WIDTH(ctx-
-> > >dst_fmt.width));
-> > -       HANTRO_PP_REG_WRITE(vpu, display_width, ctx-
-> > >dst_fmt.width);
-> > +       hantro_pp_reg_write(vpu, clk_gate, 0x1);
-> > +       hantro_pp_reg_write(vpu, out_endian, 0x1);
-> > +       hantro_pp_reg_write(vpu, out_swap32, 0x1);
-> > +       hantro_pp_reg_write(vpu, max_burst, 16);
-> > +       hantro_pp_reg_write(vpu, out_luma_base, dst_dma);
-> > +       hantro_pp_reg_write(vpu, input_width, MB_WIDTH(ctx-
-> > >dst_fmt.width));
-> > +       hantro_pp_reg_write(vpu, input_height, MB_HEIGHT(ctx-
-> > >dst_fmt.height));
-> > +       hantro_pp_reg_write(vpu, input_fmt, src_pp_fmt);
-> > +       hantro_pp_reg_write(vpu, output_fmt, dst_pp_fmt);
-> > +       hantro_pp_reg_write(vpu, output_width, ctx->dst_fmt.width);
-> > +       hantro_pp_reg_write(vpu, output_height, ctx-
-> > >dst_fmt.height);
-> > +       hantro_pp_reg_write(vpu, orig_width, MB_WIDTH(ctx-
-> > >dst_fmt.width));
-> > +       hantro_pp_reg_write(vpu, display_width, ctx-
-> > >dst_fmt.width);
-> >  }
-> >  
-> >  void hantro_postproc_free(struct hantro_ctx *ctx)
-> > @@ -146,5 +146,5 @@ void hantro_postproc_disable(struct hantro_ctx
-> > *ctx)
-> >         if (!vpu->variant->postproc_regs)
-> >                 return;
-> >  
-> > -       HANTRO_PP_REG_WRITE_S(vpu, pipeline_en, 0x0);
-> > +       hantro_pp_reg_write_s(vpu, pipeline_en, 0x0);
-> >  }
-> 
-> 
-
-
+> =20
+>                         power-domains =3D <&lpass_hm LPASS_CORE_HM_GDSCR>;
+>
