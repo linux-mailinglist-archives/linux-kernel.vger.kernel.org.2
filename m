@@ -2,165 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B329A359DF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9E1359DF6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233747AbhDILvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231599AbhDILvv (ORCPT
+        id S233772AbhDILwP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:52:15 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:35874 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhDILwO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:51:51 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC042C061760;
-        Fri,  9 Apr 2021 04:51:38 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id d12so1462276iod.12;
-        Fri, 09 Apr 2021 04:51:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=hZuwsXlFEKsc4YD4j7Gs3CXLME7CKIHW1tceSVydmro=;
-        b=YWxml39dBvA2WXxRMCWCVC+9Dmk8/cUVGj878DovUpCWCgZv8zKCnyBTmeB+dEI4H0
-         K2hy14VF7afTMfBCeVdEb0TLQOpO1V3OwjqT+ZTZ537+43o+xzS4dao43XCTjgAd18L5
-         VYHQAGjdu4EigD8Xhu0vHgBV/ufa1GMfUEPJ3zsPDOPXVFrZtaZPgtNmNd4yCUHJFrHV
-         N8pnuDkeOCbK5aZJI5yEaNcO+r4kwP9xRPkd6DLE4uldYaUV2KzvT4BvT8vjEmRLkIs8
-         ld32sZ5l1cYze5JxZzNtTYulz6lYPGhdM8AuSC64to/XFYmkbkoDvm6AkKzh2t8E8/gB
-         OslQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=hZuwsXlFEKsc4YD4j7Gs3CXLME7CKIHW1tceSVydmro=;
-        b=lYN5C3rDHvtcR6GiBy/GMwiB1aFXNAus6oYbPIRJjCTxEimsoFUSrb6o72bgyME8tD
-         oXX8uzpEs8utlDAbnwrowr0x00dju0/qIjljBeLSmz8fU9b9+i+sGlc1ZI5VtKWh4I7B
-         upeF1ynGtAaZBJ9h8sqbOI4/pHPCZxSZlGPHNsw3O9PV4RyUp1pCEZBAIj0/GRHiVk5P
-         rsG6/lWGEVniSrS4mQ0o1Kybk+4X8XWNkmuOmeG/sjMACqDVzw2kOr7qcELHcsZ2al5m
-         E/o0CkAEdC/cEMqkIFPTscoyXSz+LWIrcSq0i5SlnZNRWoVNecZJ78bbkNuqlMiAaPcK
-         +ixQ==
-X-Gm-Message-State: AOAM533FyciJX0QMfK0Y9ticmmTwDoZJtWMdkpBP1KFN1lZ0LlXbjp7R
-        X7L42IgX9C4qbfwWhitTTMRuogHn1GH6yrzH4zWSlK3JzTciow==
-X-Google-Smtp-Source: ABdhPJyb05xsvIXPk6HYPoPa37KUWp1rOB+P87BWuGwWA15tteFqafTjEylSBQO2el9Om5X1T4ae5jqUnfgl6k099bo=
-X-Received: by 2002:a6b:c843:: with SMTP id y64mr2213556iof.57.1617969098185;
- Fri, 09 Apr 2021 04:51:38 -0700 (PDT)
+        Fri, 9 Apr 2021 07:52:14 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 74AF61F464C8
+Received: by earth.universe (Postfix, from userid 1000)
+        id D80423C0C96; Fri,  9 Apr 2021 13:51:57 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 13:51:57 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Chen Lifu <chenlifu@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH -next] power: reset: hisi-reboot: add missing
+ MODULE_DEVICE_TABLE
+Message-ID: <20210409115157.cifirven2au4mj45@earth.universe>
+References: <20210409025011.8796-1-chenlifu@huawei.com>
 MIME-Version: 1.0
-References: <20210407160927.222092-1-lucjan.lucjanov@gmail.com>
- <20210409111033.2465074-1-lucjan.lucjanov@gmail.com> <CA+icZUWbYd3z-+FDoXGx5UQcY4R1BuBn5V=o0d06=XADOZD8gQ@mail.gmail.com>
-In-Reply-To: <CA+icZUWbYd3z-+FDoXGx5UQcY4R1BuBn5V=o0d06=XADOZD8gQ@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 9 Apr 2021 13:51:16 +0200
-Message-ID: <CA+icZUWC-1uhVK52v=twDWSKqbBMAh=Fp0iXA0Acoq_AYxOnWQ@mail.gmail.com>
-Subject: Re: Subject: Re: [PATCH v3] kbuild: add support for zstd compressed modules
-To:     Piotr Gorski <lucjan.lucjanov@gmail.com>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        masahiroy@kernel.org, oleksandr@natalenko.name
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5pez7hzvzer77b36"
+Content-Disposition: inline
+In-Reply-To: <20210409025011.8796-1-chenlifu@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 1:31 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Fri, Apr 9, 2021 at 1:10 PM Piotr Gorski <lucjan.lucjanov@gmail.com> wrote:
-> >
-> > I originally posted the patch in a different form [1] even before Masahiro's changes.
-> > I've been testing this solution since December last year and posted it in March this year,
-> > after I made sure everything was working fine. This patch was tested by Oleksandr and he also didn't report any objections. [2]
-> >
-> > Masahiro notified me about the planned changes [3] and asked me to resend this patch, adjusted to those changes, which I did.
-> >
-> > My current logs:
-> >
-> > lucjan@archlinux ~ $ zgrep CONFIG_DEBUG_INFO /proc/config.gz
-> > CONFIG_DEBUG_INFO=y
-> > # CONFIG_DEBUG_INFO_REDUCED is not set
-> > # CONFIG_DEBUG_INFO_COMPRESSED is not set
-> > # CONFIG_DEBUG_INFO_SPLIT is not set
-> > CONFIG_DEBUG_INFO_DWARF4=y
-> > CONFIG_DEBUG_INFO_BTF=y
-> > CONFIG_DEBUG_INFO_BTF_MODULES=y
-> > lucjan@archlinux ~ $ zgrep CONFIG_MODULE_COMPRESS_ZSTD /proc/config.gz
-> > CONFIG_MODULE_COMPRESS_ZSTD=y
-> > CONFIG_MODULE_COMPRESS_ZSTD_LEVEL=19
-> >
-> > Pay no attention to CONFIG_MODULE_COMPRESS_ZSTD_LEVEL as this is not in the upstream, it's an additional patch I use.
-> >
-> > The only difference - I don't use clang. Maybe those who use will comment on this.
-> > I relied on the opinions of Oleksander and a dozen other users who reported no errors in using zstd module compression.
-> >
-> > [1] https://marc.info/?l=linux-kbuild&m=161710402402989&w=2
-> >
-> > [2] https://marc.info/?l=linux-kbuild&m=161710503403517&w=2
-> >
-> > [3] https://marc.info/?l=linux-kbuild&m=161780602730829&w=2
->
-> I am a big fan of ZSTD and have it as default in all available Linux
-> Kconfigs and Debian's initramfs-tools.
-> So, I am highly interested in getting this fixed.
->
-> Unfortunately, I have thrown away my yesterday's Clang-LTO build and
-> switched to Clang-CFI with builddeb - should do handle the same way.
->
-> I see three iwlwifi.ko (as an example):
->
-> $ LC_ALL=C ll drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-> -rw-r--r-- 1 dileks dileks 8.2M Apr  9 11:07
-> drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
->
-> $ file drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-> drivers/net/wireless/intel/iwlwifi/iwlwifi.ko: ELF 64-bit LSB
-> relocatable, x86-64, version 1 (SYSV),
-> BuildID[sha1]=78d593f4fd2b8efe81caeb8f1ea729107a33e244, with
-> debug_info, not stripped
->
-> That iwlwifi.ko with debug-info is optimized when moving to
-> debian/linux-image-dbg directory:
->
-> $ LC_ALL=C ll debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-> -rw-r--r-- 1 dileks dileks 7.9M Apr  9 11:18
-> debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
->
-> $ file debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-> debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko:
-> ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV),
-> BuildID[sha1]=78d593f4fd2b8efe81caeb8f1ea729107a33e244, with
-> debug_info, not stripped
->
-> And think it's shrunk down and included debian/linux-image directory:
->
-> $ LC_ALL=C ll debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-> -rw-r--r-- 1 dileks dileks 694K Apr  9 11:18
-> debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
->
-> $ file debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
-> debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko:
-> ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV),
-> BuildID[sha1]=78d593f4fd2b8efe81caeb8f1ea729107a33e244, not stripped
->
-> I speculate both iwlwifi.ko below debian directory should be ZSTD-compressed.
-> Fact is the one with debug-info is done correctly.
-> Might be builddeb script needs a special treatment.
->
 
-OK, I see (sorry Gmail truncates my paste of snippet).
+--5pez7hzvzer77b36
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We need to add in this block a CONFIG_MODULE_COMPRESS_XXX handling:
+Hi,
 
-[ scripts/package/builddeb ]
+On Fri, Apr 09, 2021 at 10:50:11AM +0800, Chen Lifu wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
+>=20
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Chen Lifu <chenlifu@huawei.com>
+> ---
 
-#159: if is_enabled CONFIG_MODULES; then
-...
-#184: fi
+Thanks, queued.
 
-Maybe other scripts in scripts/package/ directory, too.
+-- Sebastian
 
-What do you say Masahiro?
+>  drivers/power/reset/hisi-reboot.c | 1 +
+>  1 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/power/reset/hisi-reboot.c b/drivers/power/reset/hisi=
+-reboot.c
+> index 5abc5f6ba0fd..34409340528f 100644
+> --- a/drivers/power/reset/hisi-reboot.c
+> +++ b/drivers/power/reset/hisi-reboot.c
+> @@ -68,6 +68,7 @@ static const struct of_device_id hisi_reboot_of_match[]=
+ =3D {
+>  	{ .compatible =3D "hisilicon,sysctrl" },
+>  	{}
+>  };
+> +MODULE_DEVICE_TABLE(of, hisi_reboot_of_match);
+> =20
+>  static struct platform_driver hisi_reboot_driver =3D {
+>  	.probe =3D hisi_reboot_probe,
+>=20
 
-I have to admit I never used any compression for kernel-modules before
-and after recent changes in <kbuild.git#kbuild>.
+--5pez7hzvzer77b36
+Content-Type: application/pgp-signature; name="signature.asc"
 
-- Sedat -
+-----BEGIN PGP SIGNATURE-----
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/tree/scripts/package/builddeb?h=kbuild#n159
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBwP90ACgkQ2O7X88g7
++podlg//Q/InvDUDGeGGzBjK9HaUmbZ9yb9A2n4jKp1hpxH0kdy3DDu63+k+uHtp
+ZcwsrVjtVzdMsCb/g/S7cqZIZEcjB6g6fyRqvgul5g6sZJkMrx+ASdersUCALXua
+yfC7nxzigWncVGV+H0DT96FwUHQYjfR7riD0yGI3hweXO8MDM+NK6OGAJIJ/maHW
+Fb6rC6WMwEkc+sKmDyrKRKVnTcbTiDE+4zBVmi5c9RMQOk0xchs/lJqU36NzYflI
+rmZnFrMwuwszVjaDc6AHAIPgyPcCZtgnF3souUKn67FrTTNtPsNNXmmATQAZkiDM
+nIdWFt5PYX5b4MlC20H4sWvvGG5ojJacd14NB/1u2wGROhCL5lkvrg65sSysQty8
+/+U9vTR7v4S3uNrM9C9fefERRcvt2M7y0nLumKlhwnY0HW4EgeUXMOTMwCpgij1g
+l85P7Gf0s55dw8XeB7fJ4gwQ5bc/qvE/9yqt5o1J0u+Pr1cr6tqENUH2fUsNb/Zp
+9hAiBhw67LWW/dBvoyDbR/nAVGBwFbqYB/h7+kJiuoAUoD0ATaESPf8zC0v8BCdF
+qDg+K1CVngSLIqVFQ1o0L1jxBIx8ojNNUxkjYpTliJs/ChR6UKiYor4Sft9xMJSJ
+nXvyBoSmpVPe5rZxBfKZe6QMNbvlt8d+PigGWXZ7459FyI8LEVU=
+=XwSD
+-----END PGP SIGNATURE-----
+
+--5pez7hzvzer77b36--
