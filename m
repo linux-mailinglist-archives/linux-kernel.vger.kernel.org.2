@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04313592DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8513592DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:15:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233313AbhDIDPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:15:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
+        id S233326AbhDIDPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233303AbhDIDPC (ORCPT
+        with ESMTP id S233069AbhDIDPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:15:02 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A749FC061760;
-        Thu,  8 Apr 2021 20:14:49 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id g15so4555059qkl.4;
-        Thu, 08 Apr 2021 20:14:49 -0700 (PDT)
+        Thu, 8 Apr 2021 23:15:04 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869CEC061762;
+        Thu,  8 Apr 2021 20:14:52 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id h3so1233900qve.13;
+        Thu, 08 Apr 2021 20:14:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=et03yqOqpGISagTVprudhL8f3OBi+8uNy9K7WISaF/Y=;
-        b=F+k6Tm7w2WgimbEOzaCfJsaWGHpsmmwEdl4O1kvsXGMQeNKNh66qaSFc6/lF2oHjXf
-         6iVkDtgXezl36AefZGXsU3c6ivkjURknA6b/K3b5jiYuIb+IFkUbPMqw7jiaao7BkFqE
-         seI2nio4Q05SkimK1cUNuS5sXvgYGU78H04nNYb7JoyZCI0mRIbcz216Wjo7iSpfGfiI
-         PePGTnr3bNC9g+Os7CW7O9S97w0P091eNvv7eNqlYaxGd0nNt4cGdMRn6/T8jZgeqaAT
-         Rpn58z19cSSyxJNnHGyr2DhyPLQZys5psSEkaBuRgvjs6kUZCvV+NuyF46HRwum0vUu2
-         SULg==
+        bh=MZVVGzNYcMxmtISNSUfUMnz2s444oX5WOS+3c0FDAUg=;
+        b=nQ6a6moNbQ+DcpgT1m9g70qQjy89DfNqx0liE6U4Y9bbZLy5ckkPi/Loy82BiMUyqK
+         hw44MehYX3mauAQAekXMpqbZgIkm7vrYTeAlX3L3gf0BRyo/+tN5E8CzYAanHwXMhe9T
+         oVD01MXeRdKj0tuiKg9208Pzdy9dWXolETKNdwqBlL7GGY8I8RcXHktNsiHk0F3WeBtt
+         YVCq5uzM/LIxkP++a5bvp80DqkhQLJp6UGagXpKLZ5LZmc0No5KxSV967Zq1PEV5BB6V
+         HcJfb+r2ZcjBJtGD/gPa+cwICY4AaCPAsVOsMqsI+VmZvj1q78pe4ruxYDpNbhe7N+sm
+         VIHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=et03yqOqpGISagTVprudhL8f3OBi+8uNy9K7WISaF/Y=;
-        b=qqFuN1Y6i+6V4oKMfEVwO+63Ctp/5KJtzozDD2MLebhBPWyWdwrcj/+0B2EGTYFQiA
-         c9KVn/jP74fhuGaY7UjXzxU4ygul8EymGiJ4HUQkd4mhqBZm+1YoxjS2zs4boReCkXh+
-         vEyHKkNaKBdTOC15+l90dqzO7GWcHNC0pbVEsXV/JNx/n5cXPPxcp8is+PfC7NEagjPZ
-         EX1A1oV41R15B7eRRUN6ZTy29buadLr7ziXcAokkqqJBz6T8I9hY/jyuG5KgBUcc9Juf
-         xKR0x5KdcP3sjZsQ8zkEE/E1Q2JqRRX6Vky7huq4L7WTqt3DDtGwCuK9yQAjTW0liZ05
-         bfwA==
-X-Gm-Message-State: AOAM531dhFcjjJBnYX+zApIbXeYQV7tXg2aBUvZN9BxSpdH8yM8yFwUg
-        nKKaDOrfd/nS3c2AmSXg17M=
-X-Google-Smtp-Source: ABdhPJwZU8FkTLhbGPM8CuL/Oz8M9THDfu0lriwGXPCDGU36jr4BylcGo9dDSOep4Ft0EFLY86VgdQ==
-X-Received: by 2002:a37:5f04:: with SMTP id t4mr11607962qkb.440.1617938088979;
-        Thu, 08 Apr 2021 20:14:48 -0700 (PDT)
+        bh=MZVVGzNYcMxmtISNSUfUMnz2s444oX5WOS+3c0FDAUg=;
+        b=LmqmBvKKsTCSFcgJSh0Bit9Szm36QVLuD7dwe4LJAg+CTGK/nunOb/HtsmBZrT2GBn
+         pOLbexAGu8ca743kBF7/PLsNOaRaa3/Ckos78laIvdKYI/nLijRDF3duO092nOZDLA07
+         sHg7w/Rxx/WRZoW4ZXrFrF0rDGorCf/0I3yX8FoJqTrqCnsqvLPSGrMCO0W+OuwXdv9r
+         N1fQrZmERLDU3n9QxPHcTeetSwr4pCRbEl4utFQSSD4Evp6Kb3h9L/zD/nrH9wycF/JD
+         E1lyNsgcmvlyXo7EWJWCQeJ8w1q78H1SP5dtaZVhMpEy+o1v9ZE+Wv8mnmJdETA4pNep
+         oDyw==
+X-Gm-Message-State: AOAM531qntfOSfL4ACEy8O3Z667YwAn509pc4fuyi1BK/mBNSMex/0xW
+        lURMCFlsHCt3R9+kEc4Ug+Y=
+X-Google-Smtp-Source: ABdhPJylv2PkcYs1iEg8u4er9Qb7mkiwgk0xlSRkDAF+6l9kNvRiCJoYzFzfdTUV/u6w4MB7i6U54A==
+X-Received: by 2002:a05:6214:19c4:: with SMTP id j4mr11912579qvc.27.1617938091309;
+        Thu, 08 Apr 2021 20:14:51 -0700 (PDT)
 Received: from LuizSampaio-PC.localdomain ([2804:14d:5c21:af45:3b27:576c:7dde:37f1])
-        by smtp.gmail.com with ESMTPSA id x1sm1003167qtr.97.2021.04.08.20.14.46
+        by smtp.gmail.com with ESMTPSA id x1sm1003167qtr.97.2021.04.08.20.14.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 20:14:48 -0700 (PDT)
+        Thu, 08 Apr 2021 20:14:51 -0700 (PDT)
 From:   Luiz Sampaio <sampaio.ime@gmail.com>
 To:     zbr@ioremap.net
 Cc:     corbet@lwn.net, rikard.falkeborn@gmail.com,
         gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, Luiz Sampaio <sampaio.ime@gmail.com>
-Subject: [PATCH v6 1/6] w1: ds2438: fixed a coding style issue
-Date:   Fri,  9 Apr 2021 00:15:28 -0300
-Message-Id: <20210409031533.442123-2-sampaio.ime@gmail.com>
+Subject: [PATCH v6 2/6] w1: ds2438: fixed if brackets coding style issue
+Date:   Fri,  9 Apr 2021 00:15:29 -0300
+Message-Id: <20210409031533.442123-3-sampaio.ime@gmail.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <20210409031533.442123-1-sampaio.ime@gmail.com>
 References: <20210409030942.441830-1-sampaio.ime@gmail.com>
@@ -66,35 +66,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is an if statement and, if the function goes into it, it returns. So,
-the next else is not required.
+Since there is only one statement inside the if clause, no brackets are
+required.
 
 Signed-off-by: Luiz Sampaio <sampaio.ime@gmail.com>
 ---
- drivers/w1/slaves/w1_ds2438.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/w1/slaves/w1_ds2438.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/w1/slaves/w1_ds2438.c b/drivers/w1/slaves/w1_ds2438.c
-index 5cfb0ae23e91..148921fb9702 100644
+index 148921fb9702..56e53a748059 100644
 --- a/drivers/w1/slaves/w1_ds2438.c
 +++ b/drivers/w1/slaves/w1_ds2438.c
-@@ -154,11 +154,11 @@ static int w1_ds2438_change_config_bit(struct w1_slave *sl, u8 mask, u8 value)
+@@ -287,9 +287,9 @@ static ssize_t iad_read(struct file *filp, struct kobject *kobj,
+ 	if (!buf)
+ 		return -EINVAL;
  
- 		if ((status & mask) == value)
- 			return 0;	/* already set as requested */
--		else {
--			/* changing bit */
--			status ^= mask;
--			perform_write = 1;
--		}
-+
-+		/* changing bit */
-+		status ^= mask;
-+		perform_write = 1;
-+
- 		break;
- 	}
+-	if (w1_ds2438_get_current(sl, &voltage) == 0) {
++	if (w1_ds2438_get_current(sl, &voltage) == 0)
+ 		ret = snprintf(buf, count, "%i\n", voltage);
+-	} else
++	else
+ 		ret = -EIO;
  
+ 	return ret;
+@@ -338,9 +338,9 @@ static ssize_t temperature_read(struct file *filp, struct kobject *kobj,
+ 	if (!buf)
+ 		return -EINVAL;
+ 
+-	if (w1_ds2438_get_temperature(sl, &temp) == 0) {
++	if (w1_ds2438_get_temperature(sl, &temp) == 0)
+ 		ret = snprintf(buf, count, "%i\n", temp);
+-	} else
++	else
+ 		ret = -EIO;
+ 
+ 	return ret;
+@@ -359,9 +359,9 @@ static ssize_t vad_read(struct file *filp, struct kobject *kobj,
+ 	if (!buf)
+ 		return -EINVAL;
+ 
+-	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VAD, &voltage) == 0) {
++	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VAD, &voltage) == 0)
+ 		ret = snprintf(buf, count, "%u\n", voltage);
+-	} else
++	else
+ 		ret = -EIO;
+ 
+ 	return ret;
+@@ -380,9 +380,9 @@ static ssize_t vdd_read(struct file *filp, struct kobject *kobj,
+ 	if (!buf)
+ 		return -EINVAL;
+ 
+-	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VDD, &voltage) == 0) {
++	if (w1_ds2438_get_voltage(sl, DS2438_ADC_INPUT_VDD, &voltage) == 0)
+ 		ret = snprintf(buf, count, "%u\n", voltage);
+-	} else
++	else
+ 		ret = -EIO;
+ 
+ 	return ret;
 -- 
 2.30.1
 
