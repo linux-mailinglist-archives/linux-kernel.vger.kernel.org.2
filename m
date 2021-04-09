@@ -2,368 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C3735A6A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F391335A6CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234904AbhDITGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:06:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234441AbhDITGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:06:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D53E261165;
-        Fri,  9 Apr 2021 19:06:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617995196;
-        bh=UiDFDxGW8LdDQcfafewaNTNN1E5V8+fsWZ541xWEVp8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FjakeB192rqCj/zu+BwixOYwQlMBUVm6qFNB5iSgv+aD3kUTnRc0xRCI1hg7nzw22
-         s5W4SresS3t7IDDtjLxmbkpjgZb8ZZ7cc9NRH/nOEB9+iw4CjemIi2by8oagQ9ZX3M
-         ElYEs0kLM6lxbGDlyvsG0oaxwTWb+pRL6H8u0T70Au9BmHxff0+puUg8stJ5cBcCmZ
-         iwBch9s7FBo8R/F0SMXE7012J4nwhHwY8A41Ro27uUZ90h6u8Kx17Og1bqzYTe4euG
-         PAMLWOMKWguviS45CCwevJX3QqCNHCu5HVIm1BzvF34yDqXb5NXjl2vMfRcGXSrq2B
-         mGrOr9MdLFwcw==
-From:   Gao Xiang <xiang@kernel.org>
-To:     linux-erofs@lists.ozlabs.org, Chao Yu <yuchao0@huawei.com>,
-        Chao Yu <chao@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [PATCH v3.2 02/10] erofs: introduce multipage per-CPU buffers
-Date:   Sat, 10 Apr 2021 03:06:30 +0800
-Message-Id: <20210409190630.19569-1-xiang@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210407043927.10623-3-xiang@kernel.org>
-References: <20210407043927.10623-3-xiang@kernel.org>
+        id S234964AbhDITNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:13:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234692AbhDITNV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 15:13:21 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51BC0C061762;
+        Fri,  9 Apr 2021 12:13:08 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id q5so4847760pfh.10;
+        Fri, 09 Apr 2021 12:13:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D0A/Cc8hdMaD+El6MEJZ9FzF6kVCbUYdGbS7BSYWv4w=;
+        b=Zom8TnsCmt9waqDyDmehlMdo3U/FtzgiQHC1r1S7grbrvnJuz8G5m2PNhFdOm1QPc7
+         dJ8h4uGx3FD+mYPEGLbRcZgUUBH+FtQEwXG7PjHXrDFU4IovGHCj1YNEqmbA2QS9xcpv
+         cg7S5oF59hLwyXRR84MfO9THrcHMIjm6db/EK6wdM4fcMwcl6nkVVwHsvfKFGpCp0v50
+         az4YNuig+5iK0DhFCHu9Ll83O8wKwOmQIUKYVQs2+/Bb+1GgjgxkjTXKUL9trdwceAI8
+         Y+7ZA6/8SuZYmolCpOCCZAA5GE6cqFLul0rwYrS3iprAuk794crgpHY3vFL2Tb75A2XR
+         JZRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D0A/Cc8hdMaD+El6MEJZ9FzF6kVCbUYdGbS7BSYWv4w=;
+        b=QJKq5EF8GpQH27va8/COkFctP2K/H6ScNge+MpqrovF5eNFdcjSxcyXBbHl+0OR4xf
+         Fuo7lT5s0Q+RpbWOpwtMYFDbjroJt2x8HqS5tVRVd0MlHRzM7UM+Lg20BWeTPeBfT1wJ
+         nBb0C/qgbimIHoOVzYyfcr30654dT/XoTMeWEs+rBpQkgHynql8ChJKlpAC5oyt53esQ
+         OHo8TODbKvrKmO0iJRka0gKyLYf8RYMh5vx6bSLArnZ+i+JmdqXhYfIjdnuXgEzVh2hC
+         YKL65iyaHggNGarnWC2T/FEzunkZD6eI3EoxujVeH3IXrrrkI8Z1J7LoWAz8f5sziwJ4
+         OUOg==
+X-Gm-Message-State: AOAM531GMYQRD3+KXwkmtsxWXLQQ5Nb5gH3YAKxOXmfr5Rbp3AfVNEBl
+        coGvbs8rzNwSSuJmqZTURn3eJnXJtITehOsNKvE=
+X-Google-Smtp-Source: ABdhPJy7X8xEM0mRN216J13+4z5ETcTQ82rtD13krpuxydWpZkgJfC//7QPJuvw7BKq2lXMejWyUIb5z9RE1nXzeb+A=
+X-Received: by 2002:a63:fd44:: with SMTP id m4mr14939217pgj.233.1617995587894;
+ Fri, 09 Apr 2021 12:13:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAJht_ENNvG=VrD_Z4w+G=4_TCD0Rv--CQAkFUrHWTh4Cz_NT2Q@mail.gmail.com>
+ <20210409073046.GI3697@techsingularity.net> <CAJht_EPXS3wVoNyaD6edqLPKvDTG2vg4qxiGuWBgWpFsNhB-4g@mail.gmail.com>
+ <20210409084436.GK3697@techsingularity.net> <CAJht_EPrdujG_0QHM1vc2yrgwwKMQiFzUAK2pgR4dS4z9-Xknw@mail.gmail.com>
+ <87ab3d13-f95d-07c5-fc6a-fb33e32685e5@gmail.com> <CAJht_EOmcOdKGKnoUQDJD-=mnHOK0MKiV0+4Epty5H5DMED-qw@mail.gmail.com>
+ <3c79924f-3603-b259-935a-2e913dc3afcd@gmail.com>
+In-Reply-To: <3c79924f-3603-b259-935a-2e913dc3afcd@gmail.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Fri, 9 Apr 2021 12:12:57 -0700
+Message-ID: <CAJht_EN_N=H8xwVkTT7WiwmdRTeD-L+tM3Z6hu86ebbT_JpBDw@mail.gmail.com>
+Subject: Re: Problem in pfmemalloc skb handling in net/core/dev.c
+To:     Eric Dumazet <eric.dumazet@gmail.com>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        Mel Gorman <mgorman@suse.de>, jslaby@suse.cz,
+        Neil Brown <neilb@suse.de>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mike Christie <michaelc@cs.wisc.edu>,
+        Eric B Munson <emunson@mgebm.net>,
+        Sebastian Andrzej Siewior <sebastian@breakpoint.cc>,
+        Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+On Fri, Apr 9, 2021 at 4:50 AM Eric Dumazet <eric.dumazet@gmail.com> wrote:
+>
+> On 4/9/21 12:14 PM, Xie He wrote:
+>
+> Then simply copy the needed logic.
 
-To deal the with the cases which inplace decompression is infeasible
-for some inplace I/O. Per-CPU buffers was introduced to get rid of page
-allocation latency and thrash for low-latency decompression algorithms
-such as lz4.
+No, there's no such thing as "sockets" in some of the protocols. There
+is simply no way to copy "the needed logic".
 
-For the big pcluster feature, introduce multipage per-CPU buffers to
-keep such inplace I/O pclusters temporarily as well but note that
-per-CPU pages are just consecutive virtually.
+> > Also, I think this is a problem in net/core/dev.c, there are a lot of
+> > old protocols that are not aware of pfmemalloc skbs. I don't think
+> > it's a good idea to fix them one by one.
+> >
+>
+> I think you are mistaken.
+>
+> There is no problem in net/core/dev.c really, it uses
+> skb_pfmemalloc_protocol()
 
-When a new big pcluster fs is mounted, its max pclustersize will be
-read and per-CPU buffers can be growed if needed. Shrinking adjustable
-per-CPU buffers is more complex (because we don't know if such size
-is still be used), so currently just release them all when unloading.
+This is exactly what I'm talking about. "skb_pfmemalloc_protocol"
+cannot guarantee pfmemalloc skbs are not delivered to unrelated
+protocols, because "__netif_receive_skb" will sometimes treat
+pfmemalloc skbs as normal skbs.
 
-Acked-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
-change since v3:
- - add annotation to erofs_{get,put}_pcpubuf() to silence a sparse
-   warning since they should be used in pairs but not self contained.
+> pfmemalloc is best effort really.
+>
+> If a layer store packets in many long living queues, it has to drop pfmemalloc packets,
+> unless these packets are used for swapping.
 
- - fix missing per-CPU spinlock initialization reported in:
-   https://lore.kernel.org/linux-erofs/00000000000012002d05bf8dec8d@google.com
+Yes, the code of "net/core/dev.c" has exactly this problem. It doesn't
+drop pfmemalloc skbs in some situations, and instead deliver them to
+unrelated protocols, which clearly have nothing to do with swapping.
 
- fs/erofs/Makefile       |   2 +-
- fs/erofs/decompressor.c |   8 ++-
- fs/erofs/internal.h     |  25 ++-----
- fs/erofs/pcpubuf.c      | 149 ++++++++++++++++++++++++++++++++++++++++
- fs/erofs/super.c        |   2 +
- fs/erofs/utils.c        |  12 ----
- 6 files changed, 164 insertions(+), 34 deletions(-)
- create mode 100644 fs/erofs/pcpubuf.c
-
-diff --git a/fs/erofs/Makefile b/fs/erofs/Makefile
-index af159539fc1b..1f9aced49070 100644
---- a/fs/erofs/Makefile
-+++ b/fs/erofs/Makefile
-@@ -1,6 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- 
- obj-$(CONFIG_EROFS_FS) += erofs.o
--erofs-objs := super.o inode.o data.o namei.o dir.o utils.o
-+erofs-objs := super.o inode.o data.o namei.o dir.o utils.o pcpubuf.o
- erofs-$(CONFIG_EROFS_FS_XATTR) += xattr.o
- erofs-$(CONFIG_EROFS_FS_ZIP) += decompressor.o zmap.o zdata.o
-diff --git a/fs/erofs/decompressor.c b/fs/erofs/decompressor.c
-index 27aa6a99b371..fb4838c0f0df 100644
---- a/fs/erofs/decompressor.c
-+++ b/fs/erofs/decompressor.c
-@@ -47,7 +47,9 @@ int z_erofs_load_lz4_config(struct super_block *sb,
- 	EROFS_SB(sb)->lz4.max_distance_pages = distance ?
- 					DIV_ROUND_UP(distance, PAGE_SIZE) + 1 :
- 					LZ4_MAX_DISTANCE_PAGES;
--	return 0;
-+
-+	/* TODO: use max pclusterblks after bigpcluster is enabled */
-+	return erofs_pcpubuf_growsize(1);
- }
- 
- static int z_erofs_lz4_prepare_destpages(struct z_erofs_decompress_req *rq,
-@@ -114,7 +116,7 @@ static void *generic_copy_inplace_data(struct z_erofs_decompress_req *rq,
- 	 * pages should be copied in order to avoid being overlapped.
- 	 */
- 	struct page **in = rq->in;
--	u8 *const tmp = erofs_get_pcpubuf(0);
-+	u8 *const tmp = erofs_get_pcpubuf(1);
- 	u8 *tmpp = tmp;
- 	unsigned int inlen = rq->inputsize - pageofs_in;
- 	unsigned int count = min_t(uint, inlen, PAGE_SIZE - pageofs_in);
-@@ -271,7 +273,7 @@ static int z_erofs_decompress_generic(struct z_erofs_decompress_req *rq,
- 	 * compressed data is preferred.
- 	 */
- 	if (rq->outputsize <= PAGE_SIZE * 7 / 8) {
--		dst = erofs_get_pcpubuf(0);
-+		dst = erofs_get_pcpubuf(1);
- 		if (IS_ERR(dst))
- 			return PTR_ERR(dst);
- 
-diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
-index 05b02f99324c..4db085413304 100644
---- a/fs/erofs/internal.h
-+++ b/fs/erofs/internal.h
-@@ -197,9 +197,6 @@ static inline int erofs_wait_on_workgroup_freezed(struct erofs_workgroup *grp)
- 
- /* hard limit of pages per compressed cluster */
- #define Z_EROFS_CLUSTER_MAX_PAGES       (CONFIG_EROFS_FS_CLUSTER_PAGE_LIMIT)
--#define EROFS_PCPUBUF_NR_PAGES          Z_EROFS_CLUSTER_MAX_PAGES
--#else
--#define EROFS_PCPUBUF_NR_PAGES          0
- #endif	/* !CONFIG_EROFS_FS_ZIP */
- 
- /* we strictly follow PAGE_SIZE and no buffer head yet */
-@@ -405,24 +402,16 @@ int erofs_namei(struct inode *dir, struct qstr *name,
- /* dir.c */
- extern const struct file_operations erofs_dir_fops;
- 
-+/* pcpubuf.c */
-+void *erofs_get_pcpubuf(unsigned int requiredpages);
-+void erofs_put_pcpubuf(void *ptr);
-+int erofs_pcpubuf_growsize(unsigned int nrpages);
-+void erofs_pcpubuf_init(void);
-+void erofs_pcpubuf_exit(void);
-+
- /* utils.c / zdata.c */
- struct page *erofs_allocpage(struct list_head *pool, gfp_t gfp);
- 
--#if (EROFS_PCPUBUF_NR_PAGES > 0)
--void *erofs_get_pcpubuf(unsigned int pagenr);
--#define erofs_put_pcpubuf(buf) do { \
--	(void)&(buf);	\
--	preempt_enable();	\
--} while (0)
--#else
--static inline void *erofs_get_pcpubuf(unsigned int pagenr)
--{
--	return ERR_PTR(-EOPNOTSUPP);
--}
--
--#define erofs_put_pcpubuf(buf) do {} while (0)
--#endif
--
- #ifdef CONFIG_EROFS_FS_ZIP
- int erofs_workgroup_put(struct erofs_workgroup *grp);
- struct erofs_workgroup *erofs_find_workgroup(struct super_block *sb,
-diff --git a/fs/erofs/pcpubuf.c b/fs/erofs/pcpubuf.c
-new file mode 100644
-index 000000000000..9844483b3c7a
---- /dev/null
-+++ b/fs/erofs/pcpubuf.c
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) Gao Xiang <xiang@kernel.org>
-+ *
-+ * For low-latency decompression algorithms (e.g. lz4), reserve consecutive
-+ * per-CPU virtual memory (in pages) in advance to store such inplace I/O
-+ * data if inplace decompression is failed (due to unmet inplace margin for
-+ * example).
-+ */
-+#include "internal.h"
-+
-+struct erofs_pcpubuf {
-+	raw_spinlock_t lock;
-+	void *ptr;
-+	struct page **pages;
-+	unsigned int nrpages;
-+};
-+
-+static DEFINE_PER_CPU(struct erofs_pcpubuf, erofs_pcb);
-+
-+void *erofs_get_pcpubuf(unsigned int requiredpages)
-+	__acquires(pcb->lock)
-+{
-+	struct erofs_pcpubuf *pcb = &get_cpu_var(erofs_pcb);
-+
-+	raw_spin_lock(&pcb->lock);
-+	/* check if the per-CPU buffer is too small */
-+	if (requiredpages > pcb->nrpages) {
-+		raw_spin_unlock(&pcb->lock);
-+		put_cpu_var(erofs_pcb);
-+		/* (for sparse checker) pretend pcb->lock is still taken */
-+		__acquire(pcb->lock);
-+		return NULL;
-+	}
-+	return pcb->ptr;
-+}
-+
-+void erofs_put_pcpubuf(void *ptr) __releases(pcb->lock)
-+{
-+	struct erofs_pcpubuf *pcb = &per_cpu(erofs_pcb, smp_processor_id());
-+
-+	DBG_BUGON(pcb->ptr != ptr);
-+	raw_spin_unlock(&pcb->lock);
-+	put_cpu_var(erofs_pcb);
-+}
-+
-+/* the next step: support per-CPU page buffers hotplug */
-+int erofs_pcpubuf_growsize(unsigned int nrpages)
-+{
-+	static DEFINE_MUTEX(pcb_resize_mutex);
-+	static unsigned int pcb_nrpages;
-+	LIST_HEAD(pagepool);
-+	int delta, cpu, ret, i;
-+
-+	mutex_lock(&pcb_resize_mutex);
-+	delta = nrpages - pcb_nrpages;
-+	ret = 0;
-+	/* avoid shrinking pcpubuf, since no idea how many fses rely on */
-+	if (delta <= 0)
-+		goto out;
-+
-+	for_each_possible_cpu(cpu) {
-+		struct erofs_pcpubuf *pcb = &per_cpu(erofs_pcb, cpu);
-+		struct page **pages, **oldpages;
-+		void *ptr, *old_ptr;
-+
-+		pages = kmalloc_array(nrpages, sizeof(*pages), GFP_KERNEL);
-+		if (!pages) {
-+			ret = -ENOMEM;
-+			break;
-+		}
-+
-+		for (i = 0; i < nrpages; ++i) {
-+			pages[i] = erofs_allocpage(&pagepool, GFP_KERNEL);
-+			if (!pages[i]) {
-+				ret = -ENOMEM;
-+				oldpages = pages;
-+				goto free_pagearray;
-+			}
-+		}
-+		ptr = vmap(pages, nrpages, VM_MAP, PAGE_KERNEL);
-+		if (!ptr) {
-+			ret = -ENOMEM;
-+			oldpages = pages;
-+			goto free_pagearray;
-+		}
-+		raw_spin_lock(&pcb->lock);
-+		old_ptr = pcb->ptr;
-+		pcb->ptr = ptr;
-+		oldpages = pcb->pages;
-+		pcb->pages = pages;
-+		i = pcb->nrpages;
-+		pcb->nrpages = nrpages;
-+		raw_spin_unlock(&pcb->lock);
-+
-+		if (!oldpages) {
-+			DBG_BUGON(old_ptr);
-+			continue;
-+		}
-+
-+		if (old_ptr)
-+			vunmap(old_ptr);
-+free_pagearray:
-+		while (i)
-+			list_add(&oldpages[--i]->lru, &pagepool);
-+		kfree(oldpages);
-+		if (ret)
-+			break;
-+	}
-+	pcb_nrpages = nrpages;
-+	put_pages_list(&pagepool);
-+out:
-+	mutex_unlock(&pcb_resize_mutex);
-+	return ret;
-+}
-+
-+void erofs_pcpubuf_init(void)
-+{
-+	int cpu;
-+
-+	for_each_possible_cpu(cpu) {
-+		struct erofs_pcpubuf *pcb = &per_cpu(erofs_pcb, cpu);
-+
-+		raw_spin_lock_init(&pcb->lock);
-+	}
-+}
-+
-+void erofs_pcpubuf_exit(void)
-+{
-+	int cpu, i;
-+
-+	for_each_possible_cpu(cpu) {
-+		struct erofs_pcpubuf *pcb = &per_cpu(erofs_pcb, cpu);
-+
-+		if (pcb->ptr) {
-+			vunmap(pcb->ptr);
-+			pcb->ptr = NULL;
-+		}
-+		if (!pcb->pages)
-+			continue;
-+
-+		for (i = 0; i < pcb->nrpages; ++i)
-+			if (pcb->pages[i])
-+				put_page(pcb->pages[i]);
-+		kfree(pcb->pages);
-+		pcb->pages = NULL;
-+	}
-+}
-+
-diff --git a/fs/erofs/super.c b/fs/erofs/super.c
-index b641658e772f..bbf3bbd908e0 100644
---- a/fs/erofs/super.c
-+++ b/fs/erofs/super.c
-@@ -655,6 +655,7 @@ static int __init erofs_module_init(void)
- 	if (err)
- 		goto shrinker_err;
- 
-+	erofs_pcpubuf_init();
- 	err = z_erofs_init_zip_subsystem();
- 	if (err)
- 		goto zip_err;
-@@ -684,6 +685,7 @@ static void __exit erofs_module_exit(void)
- 	/* Ensure all RCU free inodes are safe before cache is destroyed. */
- 	rcu_barrier();
- 	kmem_cache_destroy(erofs_inode_cachep);
-+	erofs_pcpubuf_exit();
- }
- 
- /* get filesystem statistics */
-diff --git a/fs/erofs/utils.c b/fs/erofs/utils.c
-index de9986d2f82f..6758c5b19f7c 100644
---- a/fs/erofs/utils.c
-+++ b/fs/erofs/utils.c
-@@ -21,18 +21,6 @@ struct page *erofs_allocpage(struct list_head *pool, gfp_t gfp)
- 	return page;
- }
- 
--#if (EROFS_PCPUBUF_NR_PAGES > 0)
--static struct {
--	u8 data[PAGE_SIZE * EROFS_PCPUBUF_NR_PAGES];
--} ____cacheline_aligned_in_smp erofs_pcpubuf[NR_CPUS];
--
--void *erofs_get_pcpubuf(unsigned int pagenr)
--{
--	preempt_disable();
--	return &erofs_pcpubuf[smp_processor_id()].data[pagenr * PAGE_SIZE];
--}
--#endif
--
- #ifdef CONFIG_EROFS_FS_ZIP
- /* global shrink count (for all mounted EROFS instances) */
- static atomic_long_t erofs_global_shrink_cnt;
--- 
-2.20.1
-
+I'm not sure if you understand what I'm saying. Please look at the
+code of "__netif_receive_skb" and see what will happen when
+"sk_memalloc_socks()" is false and "skb_pfmemalloc(skb)" is true.
