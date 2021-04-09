@@ -2,339 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CF235A272
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5819435A276
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233790AbhDIP53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233288AbhDIP51 (ORCPT
+        id S233878AbhDIP6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:58:33 -0400
+Received: from mail-io1-f71.google.com ([209.85.166.71]:50618 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233824AbhDIP6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:57:27 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAF4C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:57:13 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id f17so3387924lfu.7
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:57:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XsvaSY8zYN9q+b8PbsWtp1w+Khl2vjj666Eagwy6n5c=;
-        b=Sxywz2hcOMwDVDk2CRpRj35+nfOUayyt5AgurLU6/5LbZVVIrGm0OSEUetnqf8s+Xr
-         Ca3L5pd44k1WYJtzFaqb1ge5LmarpaDUj83GyGgHm1xh5gwqrIAqy0/csimThBS4XZKp
-         F90EiIohVQpSZ/n+/XVxCqqjsXRNzApETZu2jafVluNR5Toh2A4EiU+Cy3IjahBUR2KM
-         /rfpuVa/n9Zh2fkO1GBaDCNniGZj/oEm9Od19IKM2cQ3TIcXZ3/MV0RGluxxEd6Vl8dm
-         jBevVax0yxfRXa6E9Lxz5kQMBqE6l252/antXatpXEYgFPqzK22/wjgjhUmtKaffmm8B
-         jeVg==
+        Fri, 9 Apr 2021 11:58:32 -0400
+Received: by mail-io1-f71.google.com with SMTP id a1so4086325iow.17
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:58:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XsvaSY8zYN9q+b8PbsWtp1w+Khl2vjj666Eagwy6n5c=;
-        b=qCYp4ZcFEu3p35yU+w3NJDLwmoDqLkBHhcpQIkFFDGJuszg6TaD+hJ94/GpTwKnz4/
-         coBO6ZAsqH85wreX0j9Z6ASmggdTimQGaD7vZZSYDTTRy9NWdh3+Irt2yeW/D+UG0gPi
-         ifEgoyL4VGcc6NNOY/Np6Xqju5SeIFTU7sXQjA0qDY9BrRady5ek+Ku5vTaCV+5q26Ya
-         GtF4+/9uwwN8L4jWiWz6aUeWo8SPSVqt3W8eYOBVhy1xZYLRbXNQVh5/WZ1KYNiaVKr+
-         T09CL4jyIneyX9e0WJMHBXJrEBzYmUgtovyOzqu3NCuGjZMFsP40EP2UjpOpHkvhy3H0
-         HOcA==
-X-Gm-Message-State: AOAM531H3AZ9GoeCLCRxMuMWiW+24GnIaQ2Ma0GSVr5W6Dpl+m6LWJTW
-        8jEG7/Z0Massd3qhSsTVY6KDyg==
-X-Google-Smtp-Source: ABdhPJx4167C4epw4GZ3O6x+I3bz4h7dUH3Dy06BAJVx7+AZjRBM6+oPCgBhDIGlc3OtAdyHcZZ4mw==
-X-Received: by 2002:a05:6512:33a8:: with SMTP id i8mr10617815lfg.375.1617983832458;
-        Fri, 09 Apr 2021 08:57:12 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id f15sm304423lfr.51.2021.04.09.08.57.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 08:57:11 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 586C5102498; Fri,  9 Apr 2021 18:57:11 +0300 (+03)
-Date:   Fri, 9 Apr 2021 18:57:11 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Subject: Re: [PATCH v24 22/30] x86/cet/shstk: Add user-mode shadow stack
- support
-Message-ID: <20210409155711.kxf3fjc7csvqpl33@box.shutemov.name>
-References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
- <20210401221104.31584-23-yu-cheng.yu@intel.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=GIohHUbCgzTSJND56+4iG4z/4sF+r+F4DISktHzbcmM=;
+        b=JeSV2cAcFWPK/mlxkSdrqo0Zm7qjNcu1C792b2FyG1SgIgBqQ0Eciba7n7ZiBOeWpn
+         c4B9DkU56AP9FdzNyAOhKUMPi4jIUWIyA/mV/0vmJ7FK1w/RxUkZKlFQbjRVdUPjKYRv
+         SkEYGkZsjDoHO1KtGq1OgDskBJxJvf51803pSCnjHRRSwrH9DLXHI3YE13o9p4b4vA0v
+         ITs1mguCRGIKV7m33iyGfW0R5VUwUk562DzoznofYTNHjuzo1TJJbaXt2Gzk0hApFsjR
+         GBL0NLuD8SlGyiSjDX4ih/Ra/8YaF0gGccz/MDYpXiJdSWzhILZ/49VhzT5SuddNJ0t8
+         6R0A==
+X-Gm-Message-State: AOAM532svqw28y9jlV0kNlIC1s8at4lqgsQKWSR6sEE3T1nttCDxG+zg
+        gflndpGxECke7GrvSePBWOi9yX4Yka1h6JeBgyBA7OTJ9X3J
+X-Google-Smtp-Source: ABdhPJyxdIgsSf4hTenIxLpv1fZfb7HUrW3oz28Sm+d+/95yeWOMDn0i9TZCsUY+Zn3rMDogMIDoQSkdZnbnMnTlE1azOLGlT98a
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401221104.31584-23-yu-cheng.yu@intel.com>
+X-Received: by 2002:a92:c549:: with SMTP id a9mr12177389ilj.300.1617983897560;
+ Fri, 09 Apr 2021 08:58:17 -0700 (PDT)
+Date:   Fri, 09 Apr 2021 08:58:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000776f4105bf8c3bca@google.com>
+Subject: [syzbot] WARNING in ieee802154_del_device
+From:   syzbot <syzbot+bf8b5834b7ec229487ce@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, stefan@datenfreihafen.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 03:10:56PM -0700, Yu-cheng Yu wrote:
-> Introduce basic shadow stack enabling/disabling/allocation routines.
-> A task's shadow stack is allocated from memory with VM_SHADOW_STACK flag
-> and has a fixed size of min(RLIMIT_STACK, 4GB).
-> 
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Cc: Kees Cook <keescook@chromium.org>
-> ---
-> v24:
-> - Rename cet.c to shstk.c, update related areas accordingly.
-> 
->  arch/x86/include/asm/cet.h       |  29 +++++++
->  arch/x86/include/asm/processor.h |   5 ++
->  arch/x86/kernel/Makefile         |   2 +
->  arch/x86/kernel/shstk.c          | 128 +++++++++++++++++++++++++++++++
->  4 files changed, 164 insertions(+)
->  create mode 100644 arch/x86/include/asm/cet.h
->  create mode 100644 arch/x86/kernel/shstk.c
-> 
-> diff --git a/arch/x86/include/asm/cet.h b/arch/x86/include/asm/cet.h
-> new file mode 100644
-> index 000000000000..aa85d599b184
-> --- /dev/null
-> +++ b/arch/x86/include/asm/cet.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_X86_CET_H
-> +#define _ASM_X86_CET_H
-> +
-> +#ifndef __ASSEMBLY__
-> +#include <linux/types.h>
-> +
-> +struct task_struct;
-> +/*
-> + * Per-thread CET status
-> + */
-> +struct cet_status {
-> +	unsigned long	shstk_base;
-> +	unsigned long	shstk_size;
-> +};
-> +
-> +#ifdef CONFIG_X86_SHADOW_STACK
-> +int shstk_setup(void);
-> +void shstk_free(struct task_struct *p);
-> +void shstk_disable(void);
-> +#else
-> +static inline int shstk_setup(void) { return 0; }
-> +static inline void shstk_free(struct task_struct *p) {}
-> +static inline void shstk_disable(void) {}
-> +#endif
-> +
-> +#endif /* __ASSEMBLY__ */
-> +
-> +#endif /* _ASM_X86_CET_H */
-> diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-> index f1b9ed5efaa9..a5d703fda74e 100644
-> --- a/arch/x86/include/asm/processor.h
-> +++ b/arch/x86/include/asm/processor.h
-> @@ -27,6 +27,7 @@ struct vm86;
->  #include <asm/unwind_hints.h>
->  #include <asm/vmxfeatures.h>
->  #include <asm/vdso/processor.h>
-> +#include <asm/cet.h>
->  
->  #include <linux/personality.h>
->  #include <linux/cache.h>
-> @@ -535,6 +536,10 @@ struct thread_struct {
->  
->  	unsigned int		sig_on_uaccess_err:1;
->  
-> +#ifdef CONFIG_X86_CET
-> +	struct cet_status	cet;
-> +#endif
-> +
->  	/* Floating point and extended processor state */
->  	struct fpu		fpu;
->  	/*
-> diff --git a/arch/x86/kernel/Makefile b/arch/x86/kernel/Makefile
-> index 2ddf08351f0b..0f99b093f350 100644
-> --- a/arch/x86/kernel/Makefile
-> +++ b/arch/x86/kernel/Makefile
-> @@ -150,6 +150,8 @@ obj-$(CONFIG_UNWINDER_FRAME_POINTER)	+= unwind_frame.o
->  obj-$(CONFIG_UNWINDER_GUESS)		+= unwind_guess.o
->  
->  obj-$(CONFIG_AMD_MEM_ENCRYPT)		+= sev-es.o
-> +obj-$(CONFIG_X86_SHADOW_STACK)		+= shstk.o
-> +
->  ###
->  # 64 bit specific files
->  ifeq ($(CONFIG_X86_64),y)
-> diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-> new file mode 100644
-> index 000000000000..5406fdf6df3c
-> --- /dev/null
-> +++ b/arch/x86/kernel/shstk.c
-> @@ -0,0 +1,128 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * shstk.c - Intel shadow stack support
-> + *
-> + * Copyright (c) 2021, Intel Corporation.
-> + * Yu-cheng Yu <yu-cheng.yu@intel.com>
-> + */
-> +
-> +#include <linux/types.h>
-> +#include <linux/mm.h>
-> +#include <linux/mman.h>
-> +#include <linux/slab.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/sched/signal.h>
-> +#include <linux/compat.h>
-> +#include <linux/sizes.h>
-> +#include <linux/user.h>
-> +#include <asm/msr.h>
-> +#include <asm/fpu/internal.h>
-> +#include <asm/fpu/xstate.h>
-> +#include <asm/fpu/types.h>
-> +#include <asm/cet.h>
-> +
-> +static void start_update_msrs(void)
-> +{
-> +	fpregs_lock();
-> +	if (test_thread_flag(TIF_NEED_FPU_LOAD))
-> +		__fpregs_load_activate();
-> +}
-> +
-> +static void end_update_msrs(void)
-> +{
-> +	fpregs_unlock();
-> +}
-> +
-> +static unsigned long alloc_shstk(unsigned long size, int flags)
-> +{
-> +	struct mm_struct *mm = current->mm;
-> +	unsigned long addr, populate;
-> +
-> +	/* VM_SHADOW_STACK requires MAP_ANONYMOUS, MAP_PRIVATE */
-> +	flags |= MAP_ANONYMOUS | MAP_PRIVATE;
+Hello,
 
-Looks like all callers has flags == 0. Do I miss something.
+syzbot found the following issue on:
 
-> +
-> +	mmap_write_lock(mm);
-> +	addr = do_mmap(NULL, 0, size, PROT_READ, flags, VM_SHADOW_STACK, 0,
-> +		       &populate, NULL);
-> +	mmap_write_unlock(mm);
-> +
-> +	if (populate)
-> +		mm_populate(addr, populate);
+HEAD commit:    08c27f33 batman-adv: initialize "struct batadv_tvlv_tt_vla..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=111688fcd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=daeff30c2474a60f
+dashboard link: https://syzkaller.appspot.com/bug?extid=bf8b5834b7ec229487ce
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=176af0e2d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11fcb16ed00000
 
-If all callers pass down flags==0, populate will never happen.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+bf8b5834b7ec229487ce@syzkaller.appspotmail.com
 
-> +
-> +	return addr;
-> +}
-> +
-> +int shstk_setup(void)
-> +{
-> +	unsigned long addr, size;
-> +	struct cet_status *cet = &current->thread.cet;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK))
-> +		return -EOPNOTSUPP;
-> +
-> +	size = round_up(min_t(unsigned long long, rlimit(RLIMIT_STACK), SZ_4G), PAGE_SIZE);
-> +	addr = alloc_shstk(size, 0);
-> +	if (IS_ERR_VALUE(addr))
-> +		return PTR_ERR((void *)addr);
-> +
-> +	cet->shstk_base = addr;
-> +	cet->shstk_size = size;
-> +
-> +	start_update_msrs();
-> +	wrmsrl(MSR_IA32_PL3_SSP, addr + size);
-> +	wrmsrl(MSR_IA32_U_CET, CET_SHSTK_EN);
-> +	end_update_msrs();
-> +	return 0;
-> +}
-> +
-> +void shstk_free(struct task_struct *tsk)
-> +{
-> +	struct cet_status *cet = &tsk->thread.cet;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK) ||
-> +	    !cet->shstk_size ||
-> +	    !cet->shstk_base)
-> +		return;
-> +
-> +	if (!tsk->mm)
-> +		return;
-> +
-> +	while (1) {
-> +		int r;
-> +
-> +		r = vm_munmap(cet->shstk_base, cet->shstk_size);
-> +
-> +		/*
-> +		 * vm_munmap() returns -EINTR when mmap_lock is held by
-> +		 * something else, and that lock should not be held for a
-> +		 * long time.  Retry it for the case.
-> +		 */
+------------[ cut here ]------------
+DEBUG_LOCKS_WARN_ON(lock->magic != lock)
+WARNING: CPU: 0 PID: 8389 at kernel/locking/mutex.c:931 __mutex_lock_common kernel/locking/mutex.c:931 [inline]
+WARNING: CPU: 0 PID: 8389 at kernel/locking/mutex.c:931 __mutex_lock+0xc0b/0x1120 kernel/locking/mutex.c:1096
+Modules linked in:
+CPU: 1 PID: 8389 Comm: syz-executor116 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__mutex_lock_common kernel/locking/mutex.c:931 [inline]
+RIP: 0010:__mutex_lock+0xc0b/0x1120 kernel/locking/mutex.c:1096
+Code: 08 84 d2 0f 85 a3 04 00 00 8b 05 78 80 c0 04 85 c0 0f 85 12 f5 ff ff 48 c7 c6 20 8b 6b 89 48 c7 c7 e0 88 6b 89 e8 12 3d bd ff <0f> 0b e9 f8 f4 ff ff 65 48 8b 1c 25 00 f0 01 00 be 08 00 00 00 48
+RSP: 0018:ffffc90001aaf3d8 EFLAGS: 00010286
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: ffff88801ac8d4c0 RSI: ffffffff815c4d15 RDI: fffff52000355e6d
+RBP: ffff888022324c90 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815bdaae R11: 0000000000000000 R12: 0000000000000000
+R13: dffffc0000000000 R14: ffffc90001aaf8b0 R15: 0000000000000000
+FS:  000000000082e300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000088 CR3: 0000000018643000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ieee802154_del_device+0x3f/0x70 net/mac802154/cfg.c:412
+ rdev_del_device net/ieee802154/rdev-ops.h:299 [inline]
+ nl802154_del_llsec_dev+0x22f/0x310 net/ieee802154/nl802154.c:1767
+ genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+ genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+ genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43fd19
+Code: 28 c3 e8 5a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffcff3b4778 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 000000000043fd19
+RDX: 0000000000040000 RSI: 00000000200002c0 RDI: 0000000000000004
+RBP: 0000000000403780 R08: 0000000000000008 R09: 00000000004004a0
+R10: 0000000000000006 R11: 0000000000000246 R12: 0000000000403810
+R13: 0000000000000000 R14: 00000000004ad018 R15: 00000000004004a0
 
-Hm, no. -EINTR is not about the lock being held by somebody else. The task
-got a signal and need to return to userspace.
 
-I have not looked at the rest of the patches yet, but why do you need a
-special free path for shadow stack? Why the normal unmap route doesn't
-work for you?
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> +		if (r == -EINTR) {
-> +			cond_resched();
-> +			continue;
-> +		}
-> +		break;
-> +	}
-> +
-> +	cet->shstk_base = 0;
-> +	cet->shstk_size = 0;
-> +}
-> +
-> +void shstk_disable(void)
-> +{
-> +	struct cet_status *cet = &current->thread.cet;
-> +	u64 msr_val;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SHSTK) ||
-> +	    !cet->shstk_size ||
-> +	    !cet->shstk_base)
-> +		return;
-> +
-> +	start_update_msrs();
-> +	rdmsrl(MSR_IA32_U_CET, msr_val);
-> +	wrmsrl(MSR_IA32_U_CET, msr_val & ~CET_SHSTK_EN);
-> +	wrmsrl(MSR_IA32_PL3_SSP, 0);
-> +	end_update_msrs();
-> +
-> +	shstk_free(current);
-> +}
-> -- 
-> 2.21.0
-> 
-> 
-
--- 
- Kirill A. Shutemov
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
