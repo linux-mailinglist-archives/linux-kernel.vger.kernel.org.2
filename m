@@ -2,277 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3EF35A6CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD63235A681
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234972AbhDITNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34828 "EHLO
+        id S234867AbhDITB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234956AbhDITNc (ORCPT
+        with ESMTP id S234857AbhDITB0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:13:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B0CC061762;
-        Fri,  9 Apr 2021 12:13:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=dl4E25VaOZgxcjdR0PhbxuiaBRZCL/bisqxXsJbtZSs=; b=cflLdbmBku/LPNa8eCOKhqggj7
-        jCO0AHaBlcgCJASKotLwVp1xWSUqfyFWphcIP0pFjrysueYHZx/BzsKmc7YRj9fMDEdfao5afVOvl
-        6+bg3Twv/3tcNWH+UA1dyZklgulV03vbiUKYLdRN+9niBEcevfztYlp4P6A9hsSxjyHsIAHvddNiL
-        j82i3dvgap/4+x6Ut69FJUEeywUffde1x0qwIcbVOWt69rvatLux2oRvT1nVRknMg+5qg8T5NNrA0
-        eUigNN7HFn2F0Zs7CNuwZgP0qEwxXxDys7dCBGGby0im+8pJy56fMCp0rGASy0lE8/6fE2MJutggC
-        01tLXAKg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUwXc-000ojG-TK; Fri, 09 Apr 2021 19:12:16 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@kernel.org>
-Subject: [PATCH v7 28/28] mm/filemap: Convert page wait queues to be folios
-Date:   Fri,  9 Apr 2021 19:51:05 +0100
-Message-Id: <20210409185105.188284-29-willy@infradead.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210409185105.188284-1-willy@infradead.org>
-References: <20210409185105.188284-1-willy@infradead.org>
+        Fri, 9 Apr 2021 15:01:26 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C6AC061762;
+        Fri,  9 Apr 2021 12:01:12 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id bs7so2706380qvb.12;
+        Fri, 09 Apr 2021 12:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=x9RZ29lxXI2EMOo8VcDY6H7j93lSk5LdfLmzVMobZAc=;
+        b=ggNdrJEtMe70DykOxl7JcGyB3Cy/Ge1LmuWHtH9bwpy8qtDes7cEIVI+ecqqts83VO
+         cib4ulPzT6RrN6sAahwPETkUvs+1TGiRulb959tlz34IwhgWCWRh8kDWY6ZtBGJGwMc+
+         Gqxu6toWZtKZKEWVWbj9Xfe9zzh58ua/qgn97n/qtz6X53Ql3n5AAI3UtaDNT24qjs5o
+         XsoQvq2FSKLNfMhrTLZDZ/NtvBw/KCvjM9kZ1+yII4LSLJwiDSPnE70I66/q8ytg9Q+Q
+         7uXU3gZ9q+gFrrE1spr+LKrUWFoNaxBxTpcOprA0xBKKAVX1JCC5gtjnC2MvOX+oUSut
+         FHlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=x9RZ29lxXI2EMOo8VcDY6H7j93lSk5LdfLmzVMobZAc=;
+        b=f6QpP+JpLowzRTBr7jwnyHkad7AkxB7BcsAjBexZc/M1v0UWEDB9O3MNGJKKhatUE8
+         Z+C2kuzv9/SiosUpwph3uUCBTvJIXj4dVxGwySRiMNafic8+PSxEMkB9Ipj34SM5iFuo
+         5+c1ddLTSxzZNdEBBX98ryDfl/drqzflPhusMrt3olzIP4GIvxfNxbXH6t6cjpvVyHQb
+         /EtVQu83mtTjtysEpIqdjMeZ9xfzS0uRl27UAKLU84obC8iOwBhxIKE4sk5Dvfw3Syaz
+         yfkF5emfaozBOfHm79M/cP71aN5E5F03B9N5Si6PEvsasBPE6ifMo5wjIKm9F3QMpvMS
+         5Ylg==
+X-Gm-Message-State: AOAM532vhIlmPu4ReXdePLtMk0/oTRgx0yD2y7Uhgf9Aa8UaBUNLh5qZ
+        vByzx5ip77+gLeL6bhg7xRo=
+X-Google-Smtp-Source: ABdhPJxTNKtMxFdbac6tnjQtMoRd9lbflE2c8t8Fy5DVo1my0b2QLYO4wxYi3J//gjzj3WVJe+a1/Q==
+X-Received: by 2002:a0c:c488:: with SMTP id u8mr15234090qvi.47.1617994867308;
+        Fri, 09 Apr 2021 12:01:07 -0700 (PDT)
+Received: from focaruja ([177.220.174.147])
+        by smtp.gmail.com with ESMTPSA id d14sm2519392qkg.33.2021.04.09.12.01.06
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Fri, 09 Apr 2021 12:01:06 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 16:01:04 -0300
+From:   Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        alinesantanacordeiro@gmail.com
+Subject: [Outreachy kernel][PATCH 1/2] staging: media: omap4iss: Align line
+ break to the open parenthesis in file iss.c
+Message-ID: <aed4449f7f054eee329a808527c2a08d79076c78.1617994571.git.alinesantanacordeiro@gmail.com>
+References: <cover.1617994571.git.alinesantanacordeiro@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1617994571.git.alinesantanacordeiro@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reinforce that if we're waiting for a bit in a struct page, that's
-actually in the head page by changing the type from page to folio.
-Increases the size of cachefiles by two bytes, but the kernel core
-is unchanged in size.
+Aligns line break with the remaining function arguments
+to the open parenthesis. Issue found by checkpatch.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Jeff Layton <jlayton@kernel.org>
+Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
 ---
- fs/cachefiles/rdwr.c    | 16 ++++++++--------
- include/linux/pagemap.h |  8 ++++----
- mm/filemap.c            | 38 +++++++++++++++++++-------------------
- 3 files changed, 31 insertions(+), 31 deletions(-)
+ drivers/staging/media/omap4iss/iss.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/cachefiles/rdwr.c b/fs/cachefiles/rdwr.c
-index 8ffc40e84a59..364af267ebaa 100644
---- a/fs/cachefiles/rdwr.c
-+++ b/fs/cachefiles/rdwr.c
-@@ -25,20 +25,20 @@ static int cachefiles_read_waiter(wait_queue_entry_t *wait, unsigned mode,
- 	struct cachefiles_object *object;
- 	struct fscache_retrieval *op = monitor->op;
- 	struct wait_page_key *key = _key;
--	struct page *page = wait->private;
-+	struct folio *folio = wait->private;
- 
- 	ASSERT(key);
- 
- 	_enter("{%lu},%u,%d,{%p,%u}",
- 	       monitor->netfs_page->index, mode, sync,
--	       key->page, key->bit_nr);
-+	       key->folio, key->bit_nr);
- 
--	if (key->page != page || key->bit_nr != PG_locked)
-+	if (key->folio != folio || key->bit_nr != PG_locked)
- 		return 0;
- 
--	_debug("--- monitor %p %lx ---", page, page->flags);
-+	_debug("--- monitor %p %lx ---", folio, folio->flags);
- 
--	if (!PageUptodate(page) && !PageError(page)) {
-+	if (!FolioUptodate(folio) && !FolioError(folio)) {
- 		/* unlocked, not uptodate and not erronous? */
- 		_debug("page probably truncated");
- 	}
-@@ -107,7 +107,7 @@ static int cachefiles_read_reissue(struct cachefiles_object *object,
- 	put_page(backpage2);
- 
- 	INIT_LIST_HEAD(&monitor->op_link);
--	add_page_wait_queue(backpage, &monitor->monitor);
-+	add_folio_wait_queue(page_folio(backpage), &monitor->monitor);
- 
- 	if (trylock_page(backpage)) {
- 		ret = -EIO;
-@@ -294,7 +294,7 @@ static int cachefiles_read_backing_file_one(struct cachefiles_object *object,
- 	get_page(backpage);
- 	monitor->back_page = backpage;
- 	monitor->monitor.private = backpage;
--	add_page_wait_queue(backpage, &monitor->monitor);
-+	add_folio_wait_queue(page_folio(backpage), &monitor->monitor);
- 	monitor = NULL;
- 
- 	/* but the page may have been read before the monitor was installed, so
-@@ -548,7 +548,7 @@ static int cachefiles_read_backing_file(struct cachefiles_object *object,
- 		get_page(backpage);
- 		monitor->back_page = backpage;
- 		monitor->monitor.private = backpage;
--		add_page_wait_queue(backpage, &monitor->monitor);
-+		add_folio_wait_queue(page_folio(backpage), &monitor->monitor);
- 		monitor = NULL;
- 
- 		/* but the page may have been read before the monitor was
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 5bccccff48eb..17df86f2bcde 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -690,13 +690,13 @@ static inline pgoff_t linear_page_index(struct vm_area_struct *vma,
- }
- 
- struct wait_page_key {
--	struct page *page;
-+	struct folio *folio;
- 	int bit_nr;
- 	int page_match;
- };
- 
- struct wait_page_queue {
--	struct page *page;
-+	struct folio *folio;
- 	int bit_nr;
- 	wait_queue_entry_t wait;
- };
-@@ -704,7 +704,7 @@ struct wait_page_queue {
- static inline bool wake_page_match(struct wait_page_queue *wait_page,
- 				  struct wait_page_key *key)
- {
--	if (wait_page->page != key->page)
-+	if (wait_page->folio != key->folio)
- 	       return false;
- 	key->page_match = 1;
- 
-@@ -859,7 +859,7 @@ int wait_on_page_private_2_killable(struct page *page);
- /*
-  * Add an arbitrary waiter to a page's wait queue
-  */
--extern void add_page_wait_queue(struct page *page, wait_queue_entry_t *waiter);
-+void add_folio_wait_queue(struct folio *folio, wait_queue_entry_t *waiter);
- 
- /*
-  * Fault everything in given userspace address range in.
-diff --git a/mm/filemap.c b/mm/filemap.c
-index dfdc04130c5b..bc0021632c47 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1019,11 +1019,11 @@ EXPORT_SYMBOL(__page_cache_alloc);
-  */
- #define PAGE_WAIT_TABLE_BITS 8
- #define PAGE_WAIT_TABLE_SIZE (1 << PAGE_WAIT_TABLE_BITS)
--static wait_queue_head_t page_wait_table[PAGE_WAIT_TABLE_SIZE] __cacheline_aligned;
-+static wait_queue_head_t folio_wait_table[PAGE_WAIT_TABLE_SIZE] __cacheline_aligned;
- 
--static wait_queue_head_t *page_waitqueue(struct page *page)
-+static wait_queue_head_t *folio_waitqueue(struct folio *folio)
- {
--	return &page_wait_table[hash_ptr(page, PAGE_WAIT_TABLE_BITS)];
-+	return &folio_wait_table[hash_ptr(folio, PAGE_WAIT_TABLE_BITS)];
- }
- 
- void __init pagecache_init(void)
-@@ -1031,7 +1031,7 @@ void __init pagecache_init(void)
- 	int i;
- 
- 	for (i = 0; i < PAGE_WAIT_TABLE_SIZE; i++)
--		init_waitqueue_head(&page_wait_table[i]);
-+		init_waitqueue_head(&folio_wait_table[i]);
- 
- 	page_writeback_init();
- }
-@@ -1086,10 +1086,10 @@ static int wake_page_function(wait_queue_entry_t *wait, unsigned mode, int sync,
- 	 */
- 	flags = wait->flags;
- 	if (flags & WQ_FLAG_EXCLUSIVE) {
--		if (test_bit(key->bit_nr, &key->page->flags))
-+		if (test_bit(key->bit_nr, &key->folio->flags))
- 			return -1;
- 		if (flags & WQ_FLAG_CUSTOM) {
--			if (test_and_set_bit(key->bit_nr, &key->page->flags))
-+			if (test_and_set_bit(key->bit_nr, &key->folio->flags))
- 				return -1;
- 			flags |= WQ_FLAG_DONE;
+diff --git a/drivers/staging/media/omap4iss/iss.c b/drivers/staging/media/omap4iss/iss.c
+index dae9073..c89f268a 100644
+--- a/drivers/staging/media/omap4iss/iss.c
++++ b/drivers/staging/media/omap4iss/iss.c
+@@ -960,7 +960,7 @@ iss_register_subdev_group(struct iss_device *iss,
  		}
-@@ -1123,12 +1123,12 @@ static int wake_page_function(wait_queue_entry_t *wait, unsigned mode, int sync,
  
- static void wake_up_folio_bit(struct folio *folio, int bit_nr)
- {
--	wait_queue_head_t *q = page_waitqueue(&folio->page);
-+	wait_queue_head_t *q = folio_waitqueue(folio);
- 	struct wait_page_key key;
- 	unsigned long flags;
- 	wait_queue_entry_t bookmark;
- 
--	key.page = &folio->page;
-+	key.folio = folio;
- 	key.bit_nr = bit_nr;
- 	key.page_match = 0;
- 
-@@ -1220,7 +1220,7 @@ int sysctl_page_lock_unfairness = 5;
- static inline int wait_on_folio_bit_common(struct folio *folio, int bit_nr,
- 		int state, enum behavior behavior)
- {
--	wait_queue_head_t *q = page_waitqueue(&folio->page);
-+	wait_queue_head_t *q = folio_waitqueue(folio);
- 	int unfairness = sysctl_page_lock_unfairness;
- 	struct wait_page_queue wait_page;
- 	wait_queue_entry_t *wait = &wait_page.wait;
-@@ -1240,7 +1240,7 @@ static inline int wait_on_folio_bit_common(struct folio *folio, int bit_nr,
- 
- 	init_wait(wait);
- 	wait->func = wake_page_function;
--	wait_page.page = &folio->page;
-+	wait_page.folio = folio;
- 	wait_page.bit_nr = bit_nr;
- 
- repeat:
-@@ -1389,23 +1389,23 @@ int put_and_wait_on_page_locked(struct page *page, int state)
- }
- 
- /**
-- * add_page_wait_queue - Add an arbitrary waiter to a page's wait queue
-- * @page: Page defining the wait queue of interest
-+ * add_folio_wait_queue - Add an arbitrary waiter to a folio's wait queue
-+ * @folio: Folio defining the wait queue of interest
-  * @waiter: Waiter to add to the queue
-  *
-- * Add an arbitrary @waiter to the wait queue for the nominated @page.
-+ * Add an arbitrary @waiter to the wait queue for the nominated @folio.
-  */
--void add_page_wait_queue(struct page *page, wait_queue_entry_t *waiter)
-+void add_folio_wait_queue(struct folio *folio, wait_queue_entry_t *waiter)
- {
--	wait_queue_head_t *q = page_waitqueue(page);
-+	wait_queue_head_t *q = folio_waitqueue(folio);
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&q->lock, flags);
- 	__add_wait_queue_entry_tail(q, waiter);
--	SetPageWaiters(page);
-+	SetFolioWaiters(folio);
- 	spin_unlock_irqrestore(&q->lock, flags);
- }
--EXPORT_SYMBOL_GPL(add_page_wait_queue);
-+EXPORT_SYMBOL_GPL(add_folio_wait_queue);
- 
- #ifndef clear_bit_unlock_is_negative_byte
- 
-@@ -1593,10 +1593,10 @@ EXPORT_SYMBOL_GPL(__lock_folio_killable);
- 
- static int __lock_folio_async(struct folio *folio, struct wait_page_queue *wait)
- {
--	struct wait_queue_head *q = page_waitqueue(&folio->page);
-+	struct wait_queue_head *q = folio_waitqueue(folio);
- 	int ret = 0;
- 
--	wait->page = &folio->page;
-+	wait->folio = folio;
- 	wait->bit_nr = PG_locked;
- 
- 	spin_lock_irq(&q->lock);
+ 		subdev = v4l2_i2c_new_subdev_board(&iss->v4l2_dev, adapter,
+-				board_info->board_info, NULL);
++						   board_info->board_info, NULL);
+ 		if (!subdev) {
+ 			dev_err(iss->dev, "Unable to register subdev %s\n",
+ 				board_info->board_info->type);
 -- 
-2.30.2
+2.7.4
 
