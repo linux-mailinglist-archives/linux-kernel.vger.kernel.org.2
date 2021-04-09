@@ -2,65 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7176935A82B
+	by mail.lfdr.de (Postfix) with ESMTP id 251E435A82A
 	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234670AbhDIUyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:54:32 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:48036 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234564AbhDIUyW (ORCPT
+        id S234635AbhDIUya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:54:30 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:43350 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234552AbhDIUyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:54:22 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 139KoO7L167119;
-        Fri, 9 Apr 2021 20:53:25 GMT
+        Fri, 9 Apr 2021 16:54:21 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 139KnTOu070833;
+        Fri, 9 Apr 2021 20:53:28 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references :
  content-transfer-encoding : content-type : mime-version;
- s=corp-2020-01-29; bh=/cs++IFL2HEM2BnhtMJRQEt6gwqxu4GmDQow6+W7nz0=;
- b=QRubzLQ3hE8bOYhNxIhwlC2mQt/IiQn5v/oUhn3PBRx02cmY5k9yA17wjpdoKsraVjpc
- /8X6Cb+GtwsUufEXTRmGjBqS+kS6vnEYii5Ha/1CFpjwoaFTaBosSeGXACNKFqN7MZ/U
- ApSlpNCGJKMOjnGbhKhc0ipb9u2ZF/hwHIFyTso0kWBIIvXi+UcUIo5S3glY7+/Hotgu
- emjGfvBcTl/xx8+MBBDl2YOkNQrZ4hHwUnInFMpeJv/nAAiRpdulT/79bNsdLGtpv4Md
- 17lL4X8ySqLkH63KDEfo6fVgiXa7YxN+/G5pHIRRke9/GtZEJ+LukH9G/EkaF0sUFHdE xg== 
+ s=corp-2020-01-29; bh=trx4TZTciQVbJ/A4mmJ0yuGcB7ADXR5lguIkSPVO61s=;
+ b=XtdkxyQFNBYgmbulmcJto4QcrS6nGk9ZnKNh/VxjLYPr8rE7tnueizTCRwxtj0z6j7s2
+ t3OEwOVDU6EBbJB+t3XHC5SA085oX98A7u9o4c7MDUknRI39RCUIRp40Mb2E6rYEvAiW
+ DfO0ODPz6Z4fPMdtGNC0PfpD/XQzs5DjtGcwzjk9fzSfC9nFScsXMTnuCs6Ld9xpmLGy
+ bpsJBbb+ZZGqnQf2AAfTSeRHAMGDXEBgs/u6FKZKTXL8NI0uLAAjZTJV8OvX3elQyWwh
+ 1i8EbYbO4lm5HH88ba4q+ctmhm5QTLgnaRb5tU8xoU8GbfZ7oZWtRA3cdbMnLr3yVYK5 FQ== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 37rvagjqf0-1
+        by userp2120.oracle.com with ESMTP id 37rvasaq5h-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Apr 2021 20:53:25 +0000
+        Fri, 09 Apr 2021 20:53:28 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 139KjS6D174400;
-        Fri, 9 Apr 2021 20:53:25 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2104.outbound.protection.outlook.com [104.47.70.104])
-        by aserp3020.oracle.com with ESMTP id 37rvb71qqf-1
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 139KjRee174341;
+        Fri, 9 Apr 2021 20:53:27 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2102.outbound.protection.outlook.com [104.47.70.102])
+        by aserp3020.oracle.com with ESMTP id 37rvb71qrk-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Apr 2021 20:53:25 +0000
+        Fri, 09 Apr 2021 20:53:27 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ExWseDeAbLk2g04rm7udU1Rz47gkB60G1GOO8aoaQMlB7aQymMD5Wm8p4krGz1u0EX4pdG24fXVReAxYqy1Fw56VQli4h5fgeFoSFb9vM32QHpze1rKkKJCk9VydIXpfCo1nCEHFWGJpQXUP05OLfNIM8Lb9PVeJkGKOZJnF989EVdisSuxP0/Q1w027GRMHnWpTbSXPPVDhPR5b4aTTl/01fFbC5+VBn+1mdNcGenC6EHaMIw8sJv1oONHiBtU7BTrSzuBnHK74b9ZGv6wd1hX6sB3vyT9UotnaZpsWytCn5iLJgY4d2AKSMpaF8GyZDEcorTpM63MWOqvVwJmdBg==
+ b=Pfb13TDqrFm+WB74lzILBhf3JzP/fBu1t35li0ABTanQUIqy7FaWqATSEiLgLykwUb5ncLpiRjgfaYJX/n4hEbUf6WM4497CsxpRDLQ6gTXecmQ5F2YCuzuJ2WxthkXXVq/l1V11+3Rb5tiqERybtx0FwmPHDJrlqpKhZiqBX9lHU4bG/F9GUZEoA4A2EyoyC2OdwjW3aRdK39zNtqxpRKjazbfs5PI1DgMNYwrw7sGidSj3FqbI/2vWoNZovlKv7uWegOl8mSKm4sIalbiaf8hBACR4323HWYsrMHAPLiahai7YYLMK9NPpL7AIrNVUmL1V/0mVFeFdaq7a6xgsFQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/cs++IFL2HEM2BnhtMJRQEt6gwqxu4GmDQow6+W7nz0=;
- b=gs7W6zSDW8S2Dt9iUD7PTmke9L/734XrhhL7ElS1QVPzPpLHcu2LATSKTTIW57cJ8dqXav3ssKr7LTGUjCvZDqbagLudSLa3eX6UCHEF6y1sdH8Ji0irSqsIJFlMV0f7zl/K2JVTE9btCoApmkR+lJAHng9AulA/u8zHfCYXvRNRM4QvwfojDP0gP8a3iulY5FjoxAsimYr/wrOuLRHVGK3CfyJOVg+5nFLV0fI2xGQvwYPhs69taBZBb0tn0dMtw/SHMX8tWNtb51IjnrmdlPAJU+5+sQnRU9Ez0ktukTj3jnxIkTLfNmqCk6wluc4MMGMlmkq5pWeRtogUg41c7w==
+ bh=trx4TZTciQVbJ/A4mmJ0yuGcB7ADXR5lguIkSPVO61s=;
+ b=KKl5Vd8vf3j7vo8uXZ3/GI1Z0cFMcx9IXOJUkaBJlH/LZfeth7Djs8nNUxj3TZ+cUro0mUBPN8dquZpOkI431qKyZEdGcQszTuT02jQKzMX0XuDTw9hY+vDojf1bxnO0lDvreV3EI/Vy8wQdkQhFvrqyiVXEorb5hfVDZoCqYdNWJ0iYp4XzKV/M1xK+jkGB+fhko+/3QH3ylJAFWiF5ltnrLDhYIT1Xo+3aR/2FAoYr6uIYhdovz9oYEpo5nOSr/2BIbyMewcc7AwiyncmEjpErfYAg61B3Dtq80SP/I7xjRhjGNrM/ZCyS0ajroQKeIOGDgLr+kT0lCLpFfAJ7ig==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/cs++IFL2HEM2BnhtMJRQEt6gwqxu4GmDQow6+W7nz0=;
- b=kvH4jE0dqEIdJj8omdpvWFFRGZfRRr9ToWeVoHuXStQ5I+1iclX/N0TSx0VA5URw5ZYeINQZrx/VswHhdB326zG0RBz8OeAcOpeAAjCd0FROkPsR5GIseXKRaoDNPgKgmnBuAYrL2vhvZmJX0et+tJULf6aBsmKq7IwZTYSZKT0=
+ bh=trx4TZTciQVbJ/A4mmJ0yuGcB7ADXR5lguIkSPVO61s=;
+ b=Q+k4PrgDYeEvcSN1AX/TZQ6tRXJUp0AKjwFQqudk7RctfmGo1RV4sB/WTrNit3GsjTNaQg5vg9EamxUA9QFEIzwdofZdlGwbnfrB0DdUHE6EyTWPAQU6OTzDfjYSSr2HUBw99BmTxU2RT1mC+RRUeDcNgWvGl5QybRmEfpseOi4=
 Authentication-Results: kvack.org; dkim=none (message not signed)
  header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
  by BY5PR10MB3972.namprd10.prod.outlook.com (2603:10b6:a03:1b6::22) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Fri, 9 Apr
- 2021 20:53:22 +0000
+ 2021 20:53:25 +0000
 Received: from BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
  ([fe80::980e:61ba:57d2:47ee%7]) with mapi id 15.20.4020.018; Fri, 9 Apr 2021
- 20:53:22 +0000
+ 20:53:25 +0000
 From:   Mike Kravetz <mike.kravetz@oracle.com>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>
@@ -82,9 +82,9 @@ Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
         Barry Song <song.bao.hua@hisilicon.com>,
         Will Deacon <will@kernel.org>,
         Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH v5 6/8] hugetlb: change free_pool_huge_page to remove_pool_huge_page
-Date:   Fri,  9 Apr 2021 13:52:52 -0700
-Message-Id: <20210409205254.242291-7-mike.kravetz@oracle.com>
+Subject: [PATCH v5 7/8] hugetlb: make free_huge_page irq safe
+Date:   Fri,  9 Apr 2021 13:52:53 -0700
+Message-Id: <20210409205254.242291-8-mike.kravetz@oracle.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210409205254.242291-1-mike.kravetz@oracle.com>
 References: <20210409205254.242291-1-mike.kravetz@oracle.com>
@@ -96,300 +96,654 @@ X-ClientProxiedBy: CO1PR15CA0050.namprd15.prod.outlook.com
  (2603:10b6:a03:20d::23)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from monkey.oracle.com (50.38.35.18) by CO1PR15CA0050.namprd15.prod.outlook.com (2603:10b6:101:1f::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Fri, 9 Apr 2021 20:53:21 +0000
+Received: from monkey.oracle.com (50.38.35.18) by CO1PR15CA0050.namprd15.prod.outlook.com (2603:10b6:101:1f::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Fri, 9 Apr 2021 20:53:23 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5eaddcd4-fc7e-41f6-4c58-08d8fb998367
+X-MS-Office365-Filtering-Correlation-Id: 3fb94e87-445b-4cf1-3789-08d8fb99849d
 X-MS-TrafficTypeDiagnostic: BY5PR10MB3972:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR10MB3972942D63F8647BC4C3A6D4E2739@BY5PR10MB3972.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Microsoft-Antispam-PRVS: <BY5PR10MB3972B5B8BA6083E724582F1EE2739@BY5PR10MB3972.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kNh6k9Ul+T7APtIiIJKFV4IKDCkYoithnKLqYdMoHRlIjF1e9JBChdBCLCsayKid7YAyvpD89rAycU6A9ge0am9C0pD3hkzuvMmKSF5Kbb1qeKWO07FT04QOB5uDCgyzut9E+ngF7+Vxg1ZADAlVvW3GgTjGXuieX8FijQDfiTVvojDeNmuIVHTHdZZMsYGP2yllO4/zFo9FGYUCjtyWGDXKFx7kcGgE/6CnaOC9DH15SOg88iCVt6Ng5EEOue8ovMFJAMfi5QvzMPHoTwPBDt4RjFRfrMlmrinW2RWGml6EXH3bh99gUT5pO+zDmE28xOFIGYal4hgms2v3rTvcQg+WGSgYXPfq3qMI3zy9vpAqyMfvfqmoctETRbM5e0hyASEt6G7YsUp6gp9GPe5ivXJnMsEUTTNrSPoBGmyhgW1yvEz5YLMX8TfAS99XLKer+xsnH3JeQRKAnB+eHvk7FWgkXDue5yrxe01hE7adzhb7Q8O6IhGIGlirw2a16pj97rI1RW9LrdjLkxQpx0YdqqLrjDJyEFGS8JOxRqfgL+isWYGFjRpNHqzwO74MaMEA89PsIx+NHaj+J5CtxqH5antVTgZCt2XWFmCsjRfrHtCCHHa0ApZspA/Ch9A8XmRuo599VRuFY4ueLGkFOi+1mJsUB9ik+tWtZThq/tVqOK8oyktWIN7OtEtW4C4v2nCupm25YB+om4urkkDOz5Ra4w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(366004)(136003)(39860400002)(38100700001)(5660300002)(66946007)(7416002)(956004)(6486002)(83380400001)(66556008)(8936002)(66476007)(4326008)(316002)(6666004)(6916009)(54906003)(44832011)(7696005)(2906002)(478600001)(1076003)(52116002)(16526019)(38350700001)(107886003)(36756003)(26005)(86362001)(8676002)(186003)(2616005)(14583001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?AhQZuOfGR7VPtTP3eVgFn3GiECvSztMLcWnj75ntaB89Gc0KHAiHOAKXwr7C?=
- =?us-ascii?Q?ACOcChkWQ1C/x2OdIiWM/jyqk33Gh20ez1rNOZzcaw610hYo+jGKU9JOWLPt?=
- =?us-ascii?Q?Gr3GClyfma+x52Ap+c102938jUFKwiDwZo2OWc41a2sxHxb57clfrY2iZBQi?=
- =?us-ascii?Q?tz/DwkPKMwtWanFblSX7bfGA7JbxBEwKKmGXmYM5W/eJTomxvdqNUlKMoYub?=
- =?us-ascii?Q?JdTyuEcYvYtUiAWjYtkXVnR9txwosKh/LkyqJXtaEZ0vMALnENudZ0uKJi7T?=
- =?us-ascii?Q?YKYe2DcPvz9uAKIlan1dDjoWBMvqBB4+/c1XyStmEzVmbC8pTdFF1tLsRLtS?=
- =?us-ascii?Q?aheZ/lVhgNW14J169m98lLbV549ZFEjWEmo++oOXQtktN+2grCG1JRBAAJkb?=
- =?us-ascii?Q?0rVOhhw+YvR1vDZn5BJuPPDhSt6i8dfvb5h0MpnB3D4dtZ4Vexkn+v8tLHeZ?=
- =?us-ascii?Q?kifu5U/E4lUAie+cL+chqSWXBJdx0NDgXzA8PxVXFdRTnvyGEo1hXNFkOux2?=
- =?us-ascii?Q?1gQdkqPbbNWABWcxGwA3M+MivS8R0rJiBdPiSy7EO23YoxpQ/D9xvDNCw7Wt?=
- =?us-ascii?Q?anXgfo35iOVxKqkojayvvOQdOnzI3RzWPDU49qtvNAvMZvJKcZzNJdhAKdKx?=
- =?us-ascii?Q?1L8iWulMeLKKvro92N5+e352dho9f6Ks1SWaipe9ytY3x7I9D+ns6Qu/GP7e?=
- =?us-ascii?Q?LOPeVsfmnAQamnqsHQvzVNzGTNbmNOHd6N/unZ1GNrCDb3vjgJ34ezrhFaHh?=
- =?us-ascii?Q?e6xlzCk/4Viw1Ioeo1kWmK221lU7NusHnrnfQ5opJJ8nmyLeVutqFMKPohl5?=
- =?us-ascii?Q?yqvUuvSW1JnYdcDX2cpDyO1oq7NKvHUmt9eJ+SaG74duBxVKGLd7owk2EfMB?=
- =?us-ascii?Q?4Y+2kEQhKtUdGRZuLThuqknP/BaUg2aB9rNdyenyUPd8g5dInPQZZwxvEdP1?=
- =?us-ascii?Q?+dQ/sAIM5wS5VhTJlM9MXUJ7XC+/3nmOcSrV79yXHvo4Vey/ypY/W+NLHP3m?=
- =?us-ascii?Q?bjwGgAw8mCfO+WT4q9p8+Pz7hUo2a5J+PhvoaRJdEi1yVJ2DB/TaI0xHKkH9?=
- =?us-ascii?Q?MwGc9m2ciT9WzZenpdexGjWg+MTFLZw4lPLuPvn+RKkArfsspJ32cUifqwmJ?=
- =?us-ascii?Q?3iPQK8lGYBqbCpCqpYEFF5bgMYi10wf+03eIN7JX0h5p2v+MqsD28D4QdlIn?=
- =?us-ascii?Q?SY0AZw7HiulAMBzLKqigyZweuB6owxePcq9oiZZEq6T/Wy2A8TY1bk4E23Q0?=
- =?us-ascii?Q?br/yru7vvrMmqwoNByh8vSrDCAHXidWbkDDTvieekGszSG9ptYO6oSComzdD?=
- =?us-ascii?Q?OUzCuwNj+zKZDu+tC/X43MrB?=
+X-Microsoft-Antispam-Message-Info: z25hQZaU99pUY7c1877YgG7vzLcRbLRHxz9VFwjkb76yuYGEkhqQ699EafKa0LDNyA50jihqth5wHV87tSuj3t6SBuWjh5sJqBn7w6cCqAlq45K9DokV18Cxec2vAonTZsfmm8+xClEiYS74uf/G8uD6VT11Omg4zTG27K7P8Ws2w2wsQruSVdXVhIyQfHTVNewV99OkBHsEmU4mfAvG+ZVpwkX4kpZj1sygP2mpBppKoyLhijZMkf28FUxZzk+ejveG3X/NYUauCtmOQHRuy1Sx2zB6AW4TRNMa8JM21WDRDro2wE4/n3dLooMGzhi4sX4pNSbFMPxRKu8KDSNZJN6g9aYk/jlSz9qnsqjqOZptHup+vK3EgL8242H2mMYq/citNA/Z+VHxkeAUDOhVzuzx9rgq+BzlixPel/l9ydlFmTu+3gf5+wC3DTqo0ln4MKZGeUymy7fV7QgBdoRqH1T5x7Yh8VewqJGafLdThhyxNX15+kQXF7X2ubbKF8VcMZnQlbpL7DHeVCdcF2kTYjZ95OHkDHMpNc4IMI+IPugzk/wR1upCo5aaOWCVNlCb7HLwT0OLHtbtjJy0SmoVu5m5gXP4zcTxD8C5ZsGtz/l+vdMQeJ75XknMXrHmnJcGZ84HE7hlFZ6igqReNaB62olxIILkR38qcmMFoz2d6J52migOQbzTOai4CRB9LNbSZHu5AWrkdHwCy6X6kGSxkZ0aX0Vjk4eUuxPYgHSRm1uApcYtBETT9jZP9D2XaRyPAWJuG14fnu8aG+x9iYNswZP2B9PFAfUJX4bPZnL8w98=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(376002)(366004)(136003)(39860400002)(38100700001)(5660300002)(66946007)(7416002)(956004)(6486002)(83380400001)(66556008)(966005)(8936002)(30864003)(66476007)(4326008)(316002)(6666004)(6916009)(54906003)(44832011)(7696005)(2906002)(478600001)(1076003)(52116002)(16526019)(38350700001)(107886003)(36756003)(26005)(86362001)(8676002)(186003)(2616005)(14583001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?jUmRA3EuV2+mR61nLQnVboIQScMSO3knkTkcb6fzZdd/bI1PsgwhtTou2pv7?=
+ =?us-ascii?Q?budQEwxurfpqGL3mk/+LzRIBM2MQjTGUNh0dehYqtYWw1oV4tiwA5YJQ4M+W?=
+ =?us-ascii?Q?A9H0bXIkNfJlh3hUC8RuVzU80dWPSg84SsHNY78/uexFDx+UWa1aXGkwo1PO?=
+ =?us-ascii?Q?YLANCNscmpfUP5xXxqgKcXXXIqFcgfebDk6pNBgKFz7SatDGbFVm7iaOHCTD?=
+ =?us-ascii?Q?KHMstDMCsyyT76Cl/S0mzf/HuH4k3a/2zrzeQQiuOC3eXXY7JSU3DVHbndbE?=
+ =?us-ascii?Q?sfgX4P33kK46yYDSZx46xAJjxNAeh7/RajXz0tbK8s+YufMo4cM6OKyE4PNo?=
+ =?us-ascii?Q?z08Y5eL8EaxRxQzJFidxAUEalRqHNFwnVBXmkQzSjOsCcmIgBBegJuQyyz/u?=
+ =?us-ascii?Q?HWyUPBTvgdepQoZFPA32osCqVgcjrKPqUj1CnICNRp+1HGpvIhBC8MzTqcoW?=
+ =?us-ascii?Q?mZB4rlahkmy6OrJabQn+Tf5PcQg9BbGpFfmE/c1KOo6v82y+f6kpnJ3ELQOA?=
+ =?us-ascii?Q?3Dg9XoZksRnCLeJixenQB0C3gOBqhfd2m5bEzkc843m3BsDXnxs8DcwoimUL?=
+ =?us-ascii?Q?dO0hv63cElMhEruh3mm7Bo9X0rxRA7sSXqCRsFT1WCsuBujslStmDxPj17OL?=
+ =?us-ascii?Q?fGihmmvSW4J5UISOk1DW7iuAefTvyqm8MD97vE5XPOJvejqWEePFWCXIt46w?=
+ =?us-ascii?Q?uPnt0ILDVo6vsstqr5SsG5ouGEPMeELtjL7snYI1GixxnOwbspOGzf+6m5Ni?=
+ =?us-ascii?Q?zmoQtJgCDt4ebd9+og1YqoI3186I80/gK9+kIlSzEshROPnhwk6jvVrnLC9q?=
+ =?us-ascii?Q?67aWjCb47dadaTN3SENrPpkP2uMyJ3apRYRhQmwUsFkt38mQv7w+3mkFPy8o?=
+ =?us-ascii?Q?vVTgQrKRQPgWnEH1TX9ztbb0XZ81EDm6fKe32j+tkD+eY5hy/Y6aM+Mz4h1C?=
+ =?us-ascii?Q?cNk0EKMbDxdsSCZOGv+9FXf2CMCy+gx4PmrzivY1hc/y/UMl+1uymbZN5kbb?=
+ =?us-ascii?Q?ITKvuBbUZvT8VJWVZadPxJuU81vtN8u1jKxdEkXO0SpiWo2SFhEClm1iWFcC?=
+ =?us-ascii?Q?XSHCyesMjfxVCSlvX4mBYnyfiI40jWloOO2ACdX439Rot7iPFHcp8FvPqYW5?=
+ =?us-ascii?Q?aSartZvUp86XN9GODFZnnxTDb6Pv+G2m+wvJIUtjEv0x48qcbcVoCVyYk6uf?=
+ =?us-ascii?Q?QyXecU4M9Xwecs4rhZJ/1l+xf3UI0VnS4EsZ35WKa110Qvr52wjDOChDkSId?=
+ =?us-ascii?Q?T/ru+XSs/50KTj2XC2pA6XFzWkbPKpHH0S9bLys8Fp0YsQTxfy/aqPJtv0jc?=
+ =?us-ascii?Q?B7SLl9YhUby02cNCVoIMB0Vm?=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5eaddcd4-fc7e-41f6-4c58-08d8fb998367
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3fb94e87-445b-4cf1-3789-08d8fb99849d
 X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 20:53:22.7432
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 20:53:24.8942
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: avFg+av8zXl++mzhSjeonN+JoiLP9SkERXMnmgwOuxTSC9P/OkXai52AJ2lo/KGdZRzD/WAxjuYIIBYzXQTxiQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5L1bbRsdhU5kOr1HMXRSNMGJ2Li+BHmlaG1jJQ7Q9RB4OP+PY3PFLplqyUcSQvRtnPJsFkNES7e4Zgv/rn/4Jg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3972
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9949 signatures=668683
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999
  malwarescore=0 mlxscore=0 suspectscore=0 adultscore=0 spamscore=0
  bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2104060000 definitions=main-2104090152
-X-Proofpoint-GUID: _IeZHdSqDomymu_QdHcFTmtyIdYu8bpE
-X-Proofpoint-ORIG-GUID: _IeZHdSqDomymu_QdHcFTmtyIdYu8bpE
+X-Proofpoint-GUID: v5ygzdZFdejTAG4-ef7-cDgrnfrn5tTy
+X-Proofpoint-ORIG-GUID: v5ygzdZFdejTAG4-ef7-cDgrnfrn5tTy
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9949 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxlogscore=999
- suspectscore=0 spamscore=0 phishscore=0 clxscore=1015 bulkscore=0
- mlxscore=0 lowpriorityscore=0 adultscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104090152
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 clxscore=1015
+ bulkscore=0 mlxscore=0 phishscore=0 spamscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104090152
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-free_pool_huge_page was called with hugetlb_lock held.  It would remove
-a hugetlb page, and then free the corresponding pages to the lower level
-allocators such as buddy.  free_pool_huge_page was called in a loop to
-remove hugetlb pages and these loops could hold the hugetlb_lock for a
-considerable time.
+Commit c77c0a8ac4c5 ("mm/hugetlb: defer freeing of huge pages if in
+non-task context") was added to address the issue of free_huge_page
+being called from irq context.  That commit hands off free_huge_page
+processing to a workqueue if !in_task.  However, this doesn't cover
+all the cases as pointed out by 0day bot lockdep report [1].
 
-Create new routine remove_pool_huge_page to replace free_pool_huge_page.
-remove_pool_huge_page will remove the hugetlb page, and it must be
-called with the hugetlb_lock held.  It will return the removed page and
-it is the responsibility of the caller to free the page to the lower
-level allocators.  The hugetlb_lock is dropped before freeing to these
-allocators which results in shorter lock hold times.
+:  Possible interrupt unsafe locking scenario:
+:
+:        CPU0                    CPU1
+:        ----                    ----
+:   lock(hugetlb_lock);
+:                                local_irq_disable();
+:                                lock(slock-AF_INET);
+:                                lock(hugetlb_lock);
+:   <Interrupt>
+:     lock(slock-AF_INET);
 
-Add new helper routine to call update_and_free_page for a list of pages.
+Shakeel has later explained that this is very likely TCP TX zerocopy
+from hugetlb pages scenario when the networking code drops a last
+reference to hugetlb page while having IRQ disabled. Hugetlb freeing
+path doesn't disable IRQ while holding hugetlb_lock so a lock dependency
+chain can lead to a deadlock.
 
-Note: Some changes to the routine return_unused_surplus_pages are in
-need of explanation.  Commit e5bbc8a6c992 ("mm/hugetlb.c: fix reservation
-race when freeing surplus pages") modified this routine to address a
-race which could occur when dropping the hugetlb_lock in the loop that
-removes pool pages.  Accounting changes introduced in that commit were
-subtle and took some thought to understand.  This commit removes the
-cond_resched_lock() and the potential race.  Therefore, remove the
-subtle code and restore the more straight forward accounting effectively
-reverting the commit.
+This commit addresses the issue by doing the following:
+- Make hugetlb_lock irq safe.  This is mostly a simple process of
+  changing spin_*lock calls to spin_*lock_irq* calls.
+- Make subpool lock irq safe in a similar manner.
+- Revert the !in_task check and workqueue handoff.
+
+[1] https://lore.kernel.org/linux-mm/000000000000f1c03b05bc43aadc@google.com/
 
 Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Acked-by: Michal Hocko <mhocko@suse.com>
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 Reviewed-by: Oscar Salvador <osalvador@suse.de>
 ---
- mm/hugetlb.c | 93 ++++++++++++++++++++++++++++------------------------
- 1 file changed, 51 insertions(+), 42 deletions(-)
+ mm/hugetlb.c        | 169 +++++++++++++++++---------------------------
+ mm/hugetlb_cgroup.c |   8 +--
+ 2 files changed, 67 insertions(+), 110 deletions(-)
 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index d3e5e49bf687..d4872303a76a 100644
+index d4872303a76a..049ca0bccfcc 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -1204,7 +1204,7 @@ static int hstate_next_node_to_alloc(struct hstate *h,
+@@ -93,9 +93,10 @@ static inline bool subpool_is_free(struct hugepage_subpool *spool)
+ 	return true;
+ }
+ 
+-static inline void unlock_or_release_subpool(struct hugepage_subpool *spool)
++static inline void unlock_or_release_subpool(struct hugepage_subpool *spool,
++						unsigned long irq_flags)
+ {
+-	spin_unlock(&spool->lock);
++	spin_unlock_irqrestore(&spool->lock, irq_flags);
+ 
+ 	/* If no pages are used, and no other handles to the subpool
+ 	 * remain, give up any reservations based on minimum size and
+@@ -134,10 +135,12 @@ struct hugepage_subpool *hugepage_new_subpool(struct hstate *h, long max_hpages,
+ 
+ void hugepage_put_subpool(struct hugepage_subpool *spool)
+ {
+-	spin_lock(&spool->lock);
++	unsigned long flags;
++
++	spin_lock_irqsave(&spool->lock, flags);
+ 	BUG_ON(!spool->count);
+ 	spool->count--;
+-	unlock_or_release_subpool(spool);
++	unlock_or_release_subpool(spool, flags);
  }
  
  /*
-- * helper for free_pool_huge_page() - return the previously saved
-+ * helper for remove_pool_huge_page() - return the previously saved
-  * node ["this node"] from which to free a huge page.  Advance the
-  * next node id whether or not we find a free huge page to free so
-  * that the next attempt to free addresses the next node.
-@@ -1384,6 +1384,16 @@ static void update_and_free_page(struct hstate *h, struct page *page)
+@@ -156,7 +159,7 @@ static long hugepage_subpool_get_pages(struct hugepage_subpool *spool,
+ 	if (!spool)
+ 		return ret;
+ 
+-	spin_lock(&spool->lock);
++	spin_lock_irq(&spool->lock);
+ 
+ 	if (spool->max_hpages != -1) {		/* maximum size accounting */
+ 		if ((spool->used_hpages + delta) <= spool->max_hpages)
+@@ -183,7 +186,7 @@ static long hugepage_subpool_get_pages(struct hugepage_subpool *spool,
  	}
+ 
+ unlock_ret:
+-	spin_unlock(&spool->lock);
++	spin_unlock_irq(&spool->lock);
+ 	return ret;
  }
  
-+static void update_and_free_pages_bulk(struct hstate *h, struct list_head *list)
-+{
-+	struct page *page, *t_page;
-+
-+	list_for_each_entry_safe(page, t_page, list, lru) {
-+		update_and_free_page(h, page);
-+		cond_resched();
-+	}
-+}
-+
- struct hstate *size_to_hstate(unsigned long size)
+@@ -197,11 +200,12 @@ static long hugepage_subpool_put_pages(struct hugepage_subpool *spool,
+ 				       long delta)
  {
- 	struct hstate *h;
-@@ -1714,16 +1724,18 @@ static int alloc_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
+ 	long ret = delta;
++	unsigned long flags;
+ 
+ 	if (!spool)
+ 		return delta;
+ 
+-	spin_lock(&spool->lock);
++	spin_lock_irqsave(&spool->lock, flags);
+ 
+ 	if (spool->max_hpages != -1)		/* maximum size accounting */
+ 		spool->used_hpages -= delta;
+@@ -222,7 +226,7 @@ static long hugepage_subpool_put_pages(struct hugepage_subpool *spool,
+ 	 * If hugetlbfs_put_super couldn't free spool due to an outstanding
+ 	 * quota reference, free it now.
+ 	 */
+-	unlock_or_release_subpool(spool);
++	unlock_or_release_subpool(spool, flags);
+ 
+ 	return ret;
+ }
+@@ -1405,7 +1409,7 @@ struct hstate *size_to_hstate(unsigned long size)
+ 	return NULL;
  }
  
- /*
-- * Free huge page from pool from next node to free.
-- * Attempt to keep persistent huge pages more or less
-- * balanced over allowed nodes.
-+ * Remove huge page from pool from next node to free.  Attempt to keep
-+ * persistent huge pages more or less balanced over allowed nodes.
-+ * This routine only 'removes' the hugetlb page.  The caller must make
-+ * an additional call to free the page to low level allocators.
-  * Called with hugetlb_lock locked.
-  */
--static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
--							 bool acct_surplus)
-+static struct page *remove_pool_huge_page(struct hstate *h,
-+						nodemask_t *nodes_allowed,
-+						 bool acct_surplus)
+-static void __free_huge_page(struct page *page)
++void free_huge_page(struct page *page)
  {
- 	int nr_nodes, node;
--	int ret = 0;
-+	struct page *page = NULL;
+ 	/*
+ 	 * Can't pass hstate in here because it is called from the
+@@ -1415,6 +1419,7 @@ static void __free_huge_page(struct page *page)
+ 	int nid = page_to_nid(page);
+ 	struct hugepage_subpool *spool = hugetlb_page_subpool(page);
+ 	bool restore_reserve;
++	unsigned long flags;
  
- 	for_each_node_mask_to_free(h, nr_nodes, node, nodes_allowed) {
- 		/*
-@@ -1732,23 +1744,14 @@ static int free_pool_huge_page(struct hstate *h, nodemask_t *nodes_allowed,
+ 	VM_BUG_ON_PAGE(page_count(page), page);
+ 	VM_BUG_ON_PAGE(page_mapcount(page), page);
+@@ -1443,7 +1448,7 @@ static void __free_huge_page(struct page *page)
+ 			restore_reserve = true;
+ 	}
+ 
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irqsave(&hugetlb_lock, flags);
+ 	ClearHPageMigratable(page);
+ 	hugetlb_cgroup_uncharge_page(hstate_index(h),
+ 				     pages_per_huge_page(h), page);
+@@ -1454,66 +1459,18 @@ static void __free_huge_page(struct page *page)
+ 
+ 	if (HPageTemporary(page)) {
+ 		remove_hugetlb_page(h, page, false);
+-		spin_unlock(&hugetlb_lock);
++		spin_unlock_irqrestore(&hugetlb_lock, flags);
+ 		update_and_free_page(h, page);
+ 	} else if (h->surplus_huge_pages_node[nid]) {
+ 		/* remove the page from active list */
+ 		remove_hugetlb_page(h, page, true);
+-		spin_unlock(&hugetlb_lock);
++		spin_unlock_irqrestore(&hugetlb_lock, flags);
+ 		update_and_free_page(h, page);
+ 	} else {
+ 		arch_clear_hugepage_flags(page);
+ 		enqueue_huge_page(h, page);
+-		spin_unlock(&hugetlb_lock);
+-	}
+-}
+-
+-/*
+- * As free_huge_page() can be called from a non-task context, we have
+- * to defer the actual freeing in a workqueue to prevent potential
+- * hugetlb_lock deadlock.
+- *
+- * free_hpage_workfn() locklessly retrieves the linked list of pages to
+- * be freed and frees them one-by-one. As the page->mapping pointer is
+- * going to be cleared in __free_huge_page() anyway, it is reused as the
+- * llist_node structure of a lockless linked list of huge pages to be freed.
+- */
+-static LLIST_HEAD(hpage_freelist);
+-
+-static void free_hpage_workfn(struct work_struct *work)
+-{
+-	struct llist_node *node;
+-	struct page *page;
+-
+-	node = llist_del_all(&hpage_freelist);
+-
+-	while (node) {
+-		page = container_of((struct address_space **)node,
+-				     struct page, mapping);
+-		node = node->next;
+-		__free_huge_page(page);
+-	}
+-}
+-static DECLARE_WORK(free_hpage_work, free_hpage_workfn);
+-
+-void free_huge_page(struct page *page)
+-{
+-	/*
+-	 * Defer freeing if in non-task context to avoid hugetlb_lock deadlock.
+-	 */
+-	if (!in_task()) {
+-		/*
+-		 * Only call schedule_work() if hpage_freelist is previously
+-		 * empty. Otherwise, schedule_work() had been called but the
+-		 * workfn hasn't retrieved the list yet.
+-		 */
+-		if (llist_add((struct llist_node *)&page->mapping,
+-			      &hpage_freelist))
+-			schedule_work(&free_hpage_work);
+-		return;
++		spin_unlock_irqrestore(&hugetlb_lock, flags);
+ 	}
+-
+-	__free_huge_page(page);
+ }
+ 
+ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
+@@ -1523,11 +1480,11 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
+ 	hugetlb_set_page_subpool(page, NULL);
+ 	set_hugetlb_cgroup(page, NULL);
+ 	set_hugetlb_cgroup_rsvd(page, NULL);
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	h->nr_huge_pages++;
+ 	h->nr_huge_pages_node[nid]++;
+ 	ClearHPageFreed(page);
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ }
+ 
+ static void prep_compound_gigantic_page(struct page *page, unsigned int order)
+@@ -1773,7 +1730,7 @@ int dissolve_free_huge_page(struct page *page)
+ 	if (!PageHuge(page))
+ 		return 0;
+ 
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	if (!PageHuge(page)) {
+ 		rc = 0;
+ 		goto out;
+@@ -1790,7 +1747,7 @@ int dissolve_free_huge_page(struct page *page)
+ 		 * when it is dissolved.
  		 */
- 		if ((!acct_surplus || h->surplus_huge_pages_node[node]) &&
- 		    !list_empty(&h->hugepage_freelists[node])) {
--			struct page *page =
--				list_entry(h->hugepage_freelists[node].next,
-+			page = list_entry(h->hugepage_freelists[node].next,
- 					  struct page, lru);
- 			remove_hugetlb_page(h, page, acct_surplus);
--			/*
--			 * unlock/lock around update_and_free_page is temporary
--			 * and will be removed with subsequent patch.
--			 */
+ 		if (unlikely(!HPageFreed(head))) {
 -			spin_unlock(&hugetlb_lock);
--			update_and_free_page(h, page);
--			spin_lock(&hugetlb_lock);
--			ret = 1;
- 			break;
++			spin_unlock_irq(&hugetlb_lock);
+ 			cond_resched();
+ 
+ 			/*
+@@ -1814,12 +1771,12 @@ int dissolve_free_huge_page(struct page *page)
+ 		}
+ 		remove_hugetlb_page(h, page, false);
+ 		h->max_huge_pages--;
+-		spin_unlock(&hugetlb_lock);
++		spin_unlock_irq(&hugetlb_lock);
+ 		update_and_free_page(h, head);
+ 		return 0;
+ 	}
+ out:
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 	return rc;
+ }
+ 
+@@ -1861,16 +1818,16 @@ static struct page *alloc_surplus_huge_page(struct hstate *h, gfp_t gfp_mask,
+ 	if (hstate_is_gigantic(h))
+ 		return NULL;
+ 
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	if (h->surplus_huge_pages >= h->nr_overcommit_huge_pages)
+ 		goto out_unlock;
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 
+ 	page = alloc_fresh_huge_page(h, gfp_mask, nid, nmask, NULL);
+ 	if (!page)
+ 		return NULL;
+ 
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	/*
+ 	 * We could have raced with the pool size change.
+ 	 * Double check that and simply deallocate the new page
+@@ -1880,7 +1837,7 @@ static struct page *alloc_surplus_huge_page(struct hstate *h, gfp_t gfp_mask,
+ 	 */
+ 	if (h->surplus_huge_pages >= h->nr_overcommit_huge_pages) {
+ 		SetHPageTemporary(page);
+-		spin_unlock(&hugetlb_lock);
++		spin_unlock_irq(&hugetlb_lock);
+ 		put_page(page);
+ 		return NULL;
+ 	} else {
+@@ -1889,7 +1846,7 @@ static struct page *alloc_surplus_huge_page(struct hstate *h, gfp_t gfp_mask,
+ 	}
+ 
+ out_unlock:
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 
+ 	return page;
+ }
+@@ -1939,17 +1896,17 @@ struct page *alloc_buddy_huge_page_with_mpol(struct hstate *h,
+ struct page *alloc_huge_page_nodemask(struct hstate *h, int preferred_nid,
+ 		nodemask_t *nmask, gfp_t gfp_mask)
+ {
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	if (h->free_huge_pages - h->resv_huge_pages > 0) {
+ 		struct page *page;
+ 
+ 		page = dequeue_huge_page_nodemask(h, gfp_mask, preferred_nid, nmask);
+ 		if (page) {
+-			spin_unlock(&hugetlb_lock);
++			spin_unlock_irq(&hugetlb_lock);
+ 			return page;
  		}
  	}
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
  
--	return ret;
-+	return page;
+ 	return alloc_migrate_huge_page(h, gfp_mask, preferred_nid, nmask);
  }
+@@ -1997,7 +1954,7 @@ static int gather_surplus_pages(struct hstate *h, long delta)
  
- /*
-@@ -2068,17 +2071,16 @@ static int gather_surplus_pages(struct hstate *h, long delta)
-  *    to the associated reservation map.
-  * 2) Free any unused surplus pages that may have been allocated to satisfy
-  *    the reservation.  As many as unused_resv_pages may be freed.
-- *
-- * Called with hugetlb_lock held.  However, the lock could be dropped (and
-- * reacquired) during calls to cond_resched_lock.  Whenever dropping the lock,
-- * we must make sure nobody else can claim pages we are in the process of
-- * freeing.  Do this by ensuring resv_huge_page always is greater than the
-- * number of huge pages we plan to free when dropping the lock.
-  */
- static void return_unused_surplus_pages(struct hstate *h,
- 					unsigned long unused_resv_pages)
- {
- 	unsigned long nr_pages;
-+	struct page *page;
-+	LIST_HEAD(page_list);
-+
-+	/* Uncommit the reservation */
-+	h->resv_huge_pages -= unused_resv_pages;
- 
- 	/* Cannot return gigantic pages currently */
- 	if (hstate_is_gigantic(h))
-@@ -2095,24 +2097,21 @@ static void return_unused_surplus_pages(struct hstate *h,
- 	 * evenly across all nodes with memory. Iterate across these nodes
- 	 * until we can no longer free unreserved surplus pages. This occurs
- 	 * when the nodes with surplus pages have no free pages.
--	 * free_pool_huge_page() will balance the freed pages across the
-+	 * remove_pool_huge_page() will balance the freed pages across the
- 	 * on-line nodes with memory and will handle the hstate accounting.
--	 *
--	 * Note that we decrement resv_huge_pages as we free the pages.  If
--	 * we drop the lock, resv_huge_pages will still be sufficiently large
--	 * to cover subsequent pages we may free.
+ 	ret = -ENOMEM;
+ retry:
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 	for (i = 0; i < needed; i++) {
+ 		page = alloc_surplus_huge_page(h, htlb_alloc_mask(h),
+ 				NUMA_NO_NODE, NULL);
+@@ -2014,7 +1971,7 @@ static int gather_surplus_pages(struct hstate *h, long delta)
+ 	 * After retaking hugetlb_lock, we need to recalculate 'needed'
+ 	 * because either resv_huge_pages or free_huge_pages may have changed.
  	 */
- 	while (nr_pages--) {
--		h->resv_huge_pages--;
--		unused_resv_pages--;
--		if (!free_pool_huge_page(h, &node_states[N_MEMORY], 1))
-+		page = remove_pool_huge_page(h, &node_states[N_MEMORY], 1);
-+		if (!page)
- 			goto out;
--		cond_resched_lock(&hugetlb_lock);
-+
-+		list_add(&page->lru, &page_list);
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	needed = (h->resv_huge_pages + delta) -
+ 			(h->free_huge_pages + allocated);
+ 	if (needed > 0) {
+@@ -2054,12 +2011,12 @@ static int gather_surplus_pages(struct hstate *h, long delta)
+ 		enqueue_huge_page(h, page);
+ 	}
+ free:
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 
+ 	/* Free unnecessary surplus pages to the buddy allocator */
+ 	list_for_each_entry_safe(page, tmp, &surplus_list, lru)
+ 		put_page(page);
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 
+ 	return ret;
+ }
+@@ -2109,9 +2066,9 @@ static void return_unused_surplus_pages(struct hstate *h,
  	}
  
  out:
--	/* Fully uncommit the reservation */
--	h->resv_huge_pages -= unused_resv_pages;
-+	spin_unlock(&hugetlb_lock);
-+	update_and_free_pages_bulk(h, &page_list);
-+	spin_lock(&hugetlb_lock);
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 	update_and_free_pages_bulk(h, &page_list);
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
  }
  
  
-@@ -2566,7 +2565,6 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
- 						nodemask_t *nodes_allowed)
- {
- 	int i;
--	struct page *page, *next;
- 	LIST_HEAD(page_list);
+@@ -2346,7 +2303,7 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
+ 	if (ret)
+ 		goto out_uncharge_cgroup_reservation;
  
- 	if (hstate_is_gigantic(h))
-@@ -2576,6 +2574,7 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
- 	 * Collect pages to be freed on a list, and free after dropping lock
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	/*
+ 	 * glb_chg is passed to indicate whether or not a page must be taken
+ 	 * from the global free pool (global change).  gbl_chg == 0 indicates
+@@ -2354,7 +2311,7 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
  	 */
- 	for_each_node_mask(i, *nodes_allowed) {
-+		struct page *page, *next;
- 		struct list_head *freel = &h->hugepage_freelists[i];
- 		list_for_each_entry_safe(page, next, freel, lru) {
- 			if (count >= h->nr_huge_pages)
-@@ -2589,10 +2588,7 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
+ 	page = dequeue_huge_page_vma(h, vma, addr, avoid_reserve, gbl_chg);
+ 	if (!page) {
+-		spin_unlock(&hugetlb_lock);
++		spin_unlock_irq(&hugetlb_lock);
+ 		page = alloc_buddy_huge_page_with_mpol(h, vma, addr);
+ 		if (!page)
+ 			goto out_uncharge_cgroup;
+@@ -2362,7 +2319,7 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
+ 			SetHPageRestoreReserve(page);
+ 			h->resv_huge_pages--;
+ 		}
+-		spin_lock(&hugetlb_lock);
++		spin_lock_irq(&hugetlb_lock);
+ 		list_add(&page->lru, &h->hugepage_activelist);
+ 		/* Fall through */
+ 	}
+@@ -2375,7 +2332,7 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
+ 						  h_cg, page);
+ 	}
+ 
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 
+ 	hugetlb_set_page_subpool(page, spool);
+ 
+@@ -2587,9 +2544,9 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
+ 	}
  
  out:
- 	spin_unlock(&hugetlb_lock);
--	list_for_each_entry_safe(page, next, &page_list, lru) {
--		update_and_free_page(h, page);
--		cond_resched();
--	}
-+	update_and_free_pages_bulk(h, &page_list);
- 	spin_lock(&hugetlb_lock);
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 	update_and_free_pages_bulk(h, &page_list);
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
  }
  #else
-@@ -2639,6 +2635,8 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
- 			      nodemask_t *nodes_allowed)
- {
- 	unsigned long min_count, ret;
-+	struct page *page;
-+	LIST_HEAD(page_list);
- 	NODEMASK_ALLOC(nodemask_t, node_alloc_noretry, GFP_KERNEL);
+ static inline void try_to_free_low(struct hstate *h, unsigned long count,
+@@ -2654,7 +2611,7 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+ 	 * pages in hstate via the proc/sysfs interfaces.
+ 	 */
+ 	mutex_lock(&h->resize_lock);
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
  
  	/*
-@@ -2751,11 +2749,22 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
- 	min_count = h->resv_huge_pages + h->nr_huge_pages - h->free_huge_pages;
- 	min_count = max(count, min_count);
- 	try_to_free_low(h, min_count, nodes_allowed);
-+
-+	/*
-+	 * Collect pages to be removed on list without dropping lock
-+	 */
- 	while (min_count < persistent_huge_pages(h)) {
--		if (!free_pool_huge_page(h, nodes_allowed, 0))
-+		page = remove_pool_huge_page(h, nodes_allowed, 0);
-+		if (!page)
- 			break;
--		cond_resched_lock(&hugetlb_lock);
-+
-+		list_add(&page->lru, &page_list);
+ 	 * Check for a node specific request.
+@@ -2685,7 +2642,7 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+ 	 */
+ 	if (hstate_is_gigantic(h) && !IS_ENABLED(CONFIG_CONTIG_ALLOC)) {
+ 		if (count > persistent_huge_pages(h)) {
+-			spin_unlock(&hugetlb_lock);
++			spin_unlock_irq(&hugetlb_lock);
+ 			mutex_unlock(&h->resize_lock);
+ 			NODEMASK_FREE(node_alloc_noretry);
+ 			return -EINVAL;
+@@ -2715,14 +2672,14 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+ 		 * page, free_huge_page will handle it by freeing the page
+ 		 * and reducing the surplus.
+ 		 */
+-		spin_unlock(&hugetlb_lock);
++		spin_unlock_irq(&hugetlb_lock);
+ 
+ 		/* yield cpu to avoid soft lockup */
+ 		cond_resched();
+ 
+ 		ret = alloc_pool_huge_page(h, nodes_allowed,
+ 						node_alloc_noretry);
+-		spin_lock(&hugetlb_lock);
++		spin_lock_irq(&hugetlb_lock);
+ 		if (!ret)
+ 			goto out;
+ 
+@@ -2761,9 +2718,9 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+ 		list_add(&page->lru, &page_list);
  	}
-+	/* free the pages after dropping lock */
-+	spin_unlock(&hugetlb_lock);
-+	update_and_free_pages_bulk(h, &page_list);
-+	spin_lock(&hugetlb_lock);
-+
+ 	/* free the pages after dropping lock */
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 	update_and_free_pages_bulk(h, &page_list);
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 
  	while (count < persistent_huge_pages(h)) {
  		if (!adjust_pool_surplus(h, nodes_allowed, 1))
- 			break;
+@@ -2771,7 +2728,7 @@ static int set_max_huge_pages(struct hstate *h, unsigned long count, int nid,
+ 	}
+ out:
+ 	h->max_huge_pages = persistent_huge_pages(h);
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 	mutex_unlock(&h->resize_lock);
+ 
+ 	NODEMASK_FREE(node_alloc_noretry);
+@@ -2927,9 +2884,9 @@ static ssize_t nr_overcommit_hugepages_store(struct kobject *kobj,
+ 	if (err)
+ 		return err;
+ 
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	h->nr_overcommit_huge_pages = input;
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 
+ 	return count;
+ }
+@@ -3516,9 +3473,9 @@ int hugetlb_overcommit_handler(struct ctl_table *table, int write,
+ 		goto out;
+ 
+ 	if (write) {
+-		spin_lock(&hugetlb_lock);
++		spin_lock_irq(&hugetlb_lock);
+ 		h->nr_overcommit_huge_pages = tmp;
+-		spin_unlock(&hugetlb_lock);
++		spin_unlock_irq(&hugetlb_lock);
+ 	}
+ out:
+ 	return ret;
+@@ -3614,7 +3571,7 @@ static int hugetlb_acct_memory(struct hstate *h, long delta)
+ 	if (!delta)
+ 		return 0;
+ 
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	/*
+ 	 * When cpuset is configured, it breaks the strict hugetlb page
+ 	 * reservation as the accounting is done on a global variable. Such
+@@ -3653,7 +3610,7 @@ static int hugetlb_acct_memory(struct hstate *h, long delta)
+ 		return_unused_surplus_pages(h, (unsigned long) -delta);
+ 
+ out:
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 	return ret;
+ }
+ 
+@@ -5717,7 +5674,7 @@ bool isolate_huge_page(struct page *page, struct list_head *list)
+ {
+ 	bool ret = true;
+ 
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	if (!PageHeadHuge(page) ||
+ 	    !HPageMigratable(page) ||
+ 	    !get_page_unless_zero(page)) {
+@@ -5727,16 +5684,16 @@ bool isolate_huge_page(struct page *page, struct list_head *list)
+ 	ClearHPageMigratable(page);
+ 	list_move_tail(&page->lru, list);
+ unlock:
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 	return ret;
+ }
+ 
+ void putback_active_hugepage(struct page *page)
+ {
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	SetHPageMigratable(page);
+ 	list_move_tail(&page->lru, &(page_hstate(page))->hugepage_activelist);
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 	put_page(page);
+ }
+ 
+@@ -5770,12 +5727,12 @@ void move_hugetlb_state(struct page *oldpage, struct page *newpage, int reason)
+ 		 */
+ 		if (new_nid == old_nid)
+ 			return;
+-		spin_lock(&hugetlb_lock);
++		spin_lock_irq(&hugetlb_lock);
+ 		if (h->surplus_huge_pages_node[old_nid]) {
+ 			h->surplus_huge_pages_node[old_nid]--;
+ 			h->surplus_huge_pages_node[new_nid]++;
+ 		}
+-		spin_unlock(&hugetlb_lock);
++		spin_unlock_irq(&hugetlb_lock);
+ 	}
+ }
+ 
+diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+index 726b85f4f303..5383023d0cca 100644
+--- a/mm/hugetlb_cgroup.c
++++ b/mm/hugetlb_cgroup.c
+@@ -204,11 +204,11 @@ static void hugetlb_cgroup_css_offline(struct cgroup_subsys_state *css)
+ 	do {
+ 		idx = 0;
+ 		for_each_hstate(h) {
+-			spin_lock(&hugetlb_lock);
++			spin_lock_irq(&hugetlb_lock);
+ 			list_for_each_entry(page, &h->hugepage_activelist, lru)
+ 				hugetlb_cgroup_move_parent(idx, h_cg, page);
+ 
+-			spin_unlock(&hugetlb_lock);
++			spin_unlock_irq(&hugetlb_lock);
+ 			idx++;
+ 		}
+ 		cond_resched();
+@@ -784,7 +784,7 @@ void hugetlb_cgroup_migrate(struct page *oldhpage, struct page *newhpage)
+ 	if (hugetlb_cgroup_disabled())
+ 		return;
+ 
+-	spin_lock(&hugetlb_lock);
++	spin_lock_irq(&hugetlb_lock);
+ 	h_cg = hugetlb_cgroup_from_page(oldhpage);
+ 	h_cg_rsvd = hugetlb_cgroup_from_page_rsvd(oldhpage);
+ 	set_hugetlb_cgroup(oldhpage, NULL);
+@@ -794,7 +794,7 @@ void hugetlb_cgroup_migrate(struct page *oldhpage, struct page *newhpage)
+ 	set_hugetlb_cgroup(newhpage, h_cg);
+ 	set_hugetlb_cgroup_rsvd(newhpage, h_cg_rsvd);
+ 	list_move(&newhpage->lru, &h->hugepage_activelist);
+-	spin_unlock(&hugetlb_lock);
++	spin_unlock_irq(&hugetlb_lock);
+ 	return;
+ }
+ 
 -- 
 2.30.2
 
