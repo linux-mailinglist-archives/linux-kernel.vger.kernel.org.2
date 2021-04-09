@@ -2,188 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55574359308
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E1035930D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbhDIDbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:31:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53436 "EHLO
+        id S233103AbhDIDgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:36:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233087AbhDIDb2 (ORCPT
+        with ESMTP id S232941AbhDIDgA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:31:28 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F43BC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:31:11 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id h7so3239306qtx.3
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 20:31:11 -0700 (PDT)
+        Thu, 8 Apr 2021 23:36:00 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 061EAC061760;
+        Thu,  8 Apr 2021 20:35:48 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id i9so4603058qka.2;
+        Thu, 08 Apr 2021 20:35:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=6UuQfMQF3OUZ83yBXGwyDB/n7MYxlPyfj5Q62eMYOas=;
-        b=n0r36yzy05cjaLySQ0nj0iZxl6wD3E4lQ6XjHXdBIqrfwkHyxefdW5OcIoLS2tZ0YI
-         LuyoNJdit33LPL5CN0O8ValmYVvyaO8c1H+Pa32tCe2s8yw9vN7yKw9fTj6NWR0XXldQ
-         V5tKvHEeVR2d9dLU2jf46yC3lTz7U8cNQodrDZ9+2IL3eouiIzbagu1a+kD4XLmG/fmB
-         DqZaLi9IfpC9FkwNMHXzDryhD/kETBKmfmFHIDhpcxd2c7fQv0HhQxpeoAOZ0W3Pjals
-         WS1UMVcOaWeFwSQjoWOQd6jesuDkXUHFz+exC2VxfQg+NpLMLeAuhdeXWeH7grZAbrdL
-         yDdQ==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VW/C+2LLet/ldR+i+V3eCTvpTJBdjFtGmR5udw1qeLQ=;
+        b=kf/yhUgzKhxJK2p+6wg/izoDDT8TFZB4rkZhdAkJoNXFkTR7yODnvd33p9egVGYtph
+         gbjuS+5GR0hjMGkDh2zU1fwjhgdqLPt/a/aFHME6YguBsLD7EVdtdN+p5QMtBp8FPzS0
+         KrAOJQ7t3AKlSkWQfGGwRPGIXSlG6ftCpd/p4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=6UuQfMQF3OUZ83yBXGwyDB/n7MYxlPyfj5Q62eMYOas=;
-        b=bXd4nc766l9potb8l0UV/2RkGt/0Cbu3XmCYE95tYB96O9hiu7TavpRClAOIPaoPN7
-         R4RO58/SMU60r9+negJt4gFdI6K2ATIxqREPhOJV4p11CbafedA4rqr00pAvHdR2LK/r
-         2DbAj96aKKbTWQyjr2cU/CC+GJo0vgTNHTpNhLlWLu9/Vxki6KTXKe8Zpo82QkBprKnA
-         UyyU4v6VD4uJ+K1DGKFMHHSQ1OHeTBqyIcFb7NQ8oB+bczWZA7VjQr02Lmg3nBQLuCzv
-         0LGe60HHbGSxwcCtV8xJF4MfmIS06zbwj7ZvOcWyWdf8Uqj2USXS0/ofS+QiCI5sUGcm
-         XyYw==
-X-Gm-Message-State: AOAM5329zq9+pF1tlSYNyFwzLUcoBHqSzvhcT+SGV3ezcKy4vQaz7CnB
-        +VEIRwsK5l7Gl9LoX2j8eoo=
-X-Google-Smtp-Source: ABdhPJxDnbslzKC7wrVB97E/nbUaKtOowt3QwqLALE//+XDB8gZptK7ggVkaiwxtYZrZlzhpsciICw==
-X-Received: by 2002:ac8:6f2e:: with SMTP id i14mr10652056qtv.277.1617939070848;
-        Thu, 08 Apr 2021 20:31:10 -0700 (PDT)
-Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([2804:14c:482:7b04::1000])
-        by smtp.gmail.com with ESMTPSA id g11sm953629qkk.5.2021.04.08.20.31.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 20:31:10 -0700 (PDT)
-Message-ID: <418f044aab385389681529b0b6057e75825b0e5f.camel@gmail.com>
-Subject: Re: [PATCH 3/3] powerpc/mm/hash: Avoid multiple HPT resize-downs on
- memory hotunplug
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Fri, 09 Apr 2021 00:31:03 -0300
-In-Reply-To: <YFksMw8Hw/mC48yb@yekko.fritz.box>
-References: <20210312072940.598696-1-leobras.c@gmail.com>
-         <20210312072940.598696-4-leobras.c@gmail.com>
-         <YFksMw8Hw/mC48yb@yekko.fritz.box>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VW/C+2LLet/ldR+i+V3eCTvpTJBdjFtGmR5udw1qeLQ=;
+        b=Ul9Ncs0V+01fJgvRNVAcARlWEe1mqtl4v4kG0QQPstncixw2rZJvRffDgFgPDJdyKP
+         C/jP7TfYKGr6DVNpkQBi7vYaCJrn4qcmgplshbVkjI8fxjPxnJ6s3fzUtjrBG4j5UaK6
+         O62fO0fsweF3q+Jn8NvV5Mmwce7ASlg00PAn1WXJzjFsfsE/9j1waMLkedx48vhw2fxK
+         vJ35aC7uDeKnMpiG/SEO3duvAMjDRijzeI1K4LlnvEIfDorcNLL1tjTBO7kg5QYSYfvx
+         1vnIjxa6JBqd03VsND0FxrwUK2fKcWBYb9UA5QzRO/G6ur0Qxb4dxA+XGMBipcwQh9P/
+         J2eQ==
+X-Gm-Message-State: AOAM53367fuPZrQgDA5svigGiUZfQkpzV2goEbj6iQWvfqTH8AMriSbP
+        v/KNXFh5u9qQXl1UkfEsW5FAm+3/AdvQjFz3ZrppOEm1hVA=
+X-Google-Smtp-Source: ABdhPJxle9zTiCZMcHgQmCbwnJmAkb+TEoOlJ7KMtbFw35LN/7onMEAKpvQn37Vrs7E0ALx7tpeNrdmUUNmbjGlTwlo=
+X-Received: by 2002:a05:620a:28c9:: with SMTP id l9mr11766768qkp.55.1617939347264;
+ Thu, 08 Apr 2021 20:35:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210319062752.145730-1-andrew@aj.id.au> <20210319062752.145730-3-andrew@aj.id.au>
+In-Reply-To: <20210319062752.145730-3-andrew@aj.id.au>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 9 Apr 2021 03:35:34 +0000
+Message-ID: <CACPK8XfkvBA+9_WFb96oEa4F1vDPd90hG+M2Y-Ek=Xt5FUFqmQ@mail.gmail.com>
+Subject: Re: [PATCH v2 03/21] ipmi: kcs: aspeed: Adapt to new LPC DTS layout
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Corey Minyard <minyard@acm.org>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Haiyue Wang <haiyue.wang@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello David, thanks for commenting.
+On Fri, 19 Mar 2021 at 06:28, Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+> From: "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+>
+> Add check against LPC device v2 compatible string to
+> ensure that the fixed device tree layout is adopted.
+> The LPC register offsets are also fixed accordingly.
+>
+> Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> Acked-by: Haiyue Wang <haiyue.wang@linux.intel.com>
 
-On Tue, 2021-03-23 at 10:45 +1100, David Gibson wrote:
-> > @@ -805,6 +808,10 @@ static int resize_hpt_for_hotplug(unsigned long new_mem_size, bool shrinking)
-> >  	if (shrinking) {
-> > 
-> > +		/* When batch removing entries, only resizes HPT at the end. */
-> > +		if (atomic_read_acquire(&hpt_resize_disable))
-> > +			return 0;
-> > +
-> 
-> I'm not quite convinced by this locking.  Couldn't hpt_resize_disable
-> be set after this point, but while you're still inside
-> resize_hpt_for_hotplug()?  Probably better to use an explicit mutex
-> (and mutex_trylock()) to make the critical sections clearer.
-
-Sure, I can do that for v2.
-
-> Except... do we even need the fancy mechanics to suppress the resizes
-> in one place to do them elswhere.  Couldn't we just replace the
-> existing resize calls with the batched ones?
-
-How do you think of having batched resizes-down in HPT? 
-Other than the current approach, I could only think of a way that would
-touch a lot of generic code, and/or duplicate some functions, as
-dlpar_add_lmb() does a lot of other stuff.
-
-> > +void hash_memory_batch_shrink_end(void)
-> > +{
-> > +	unsigned long newsize;
-> > +
-> > +	/* Re-enables HPT resize-down after hot-unplug */
-> > +	atomic_set_release(&hpt_resize_disable, 0);
-> > +
-> > +	newsize = memblock_phys_mem_size();
-> > +	/* Resize to smallest SHIFT possible */
-> > +	while (resize_hpt_for_hotplug(newsize, true) == -ENOSPC) {
-> > +		newsize *= 2;
-> 
-> As noted earlier, doing this without an explicit cap on the new hpt
-> size (of the existing size) this makes me nervous. 
-> 
-
-I can add a stop in v2.
-
->  Less so, but doing
-> the calculations on memory size, rather than explictly on HPT size /
-> HPT order also seems kinda clunky.
-
-Agree, but at this point, it would seem kind of a waste to find the
-shift from newsize, then calculate (1 << shift) for each retry of
-resize_hpt_for_hotplug() only to point that we are retrying the order
-value.
-
-But sure, if you think it looks better, I can change that. 
-
-> > +void memory_batch_shrink_begin(void)
-> > +{
-> > +	if (!radix_enabled())
-> > +		hash_memory_batch_shrink_begin();
-> > +}
-> > +
-> > +void memory_batch_shrink_end(void)
-> > +{
-> > +	if (!radix_enabled())
-> > +		hash_memory_batch_shrink_end();
-> > +}
-> 
-> Again, these wrappers don't seem particularly useful to me.
-
-Options would be add 'if (!radix_enabled())' to hotplug-memory.c
-functions or to hash* functions, which look kind of wrong.
-
-> > +	memory_batch_shrink_end();
-> 
-> remove_by_index only removes a single LMB, so there's no real point to
-> batching here.
-
-Sure, will be fixed for v2.
-
-> > @@ -700,6 +712,7 @@ static int dlpar_memory_add_by_count(u32 lmbs_to_add)
-> >  	if (lmbs_added != lmbs_to_add) {
-> >  		pr_err("Memory hot-add failed, removing any added LMBs\n");
-> > 
-> > +		memory_batch_shrink_begin();
-> 
-> 
-> The effect of these on the memory grow path is far from clear.
-> 
-
-On hotplug, HPT is resized-up before adding LMBs.
-On hotunplug, HPT is resized-down after removing LMBs.
-And each one has it's own mechanism to batch HPT resizes...
-
-I can't understand exactly how using it on hotplug fail path can be any
-different than using it on hotunplug.
-> 
-
-Can you please help me understanding this?
-
-Best regards,
-Leonardo Bras
-
+Reviewed-by: Joel Stanley <joel@jms.id.au>
