@@ -2,128 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C06A43595E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEEB43595EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbhDIGyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
+        id S233422AbhDIG7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233461AbhDIGyR (ORCPT
+        with ESMTP id S231540AbhDIG7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:54:17 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC354C061760;
-        Thu,  8 Apr 2021 23:54:04 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        Fri, 9 Apr 2021 02:59:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C6AC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 23:58:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ob2ufrv9W9kaz7mrVWRRvsjATK5g5L7t7+n/YniHhkI=; b=M9SjYHx64+cTEDLVBs5X5mfnMw
+        tIK3La3wwbVC5Ug3Hd2H4qecpGSwCuxpcHFDDaeLpk2V3yTDZByZNPvt0zh+ivEMhflmIIHx8py9d
+        h4nfzrXSbBnOa5pAYeCyDhjgiPZahJdJutfMWblJo5CSqVv1iUYX1N+7td2m6aJ97w8ntP0S/Bn7G
+        Z9n6i/v/hTQtiy6d7OkMbY+D1HJhetLKt4y5Vqs0k3XDH7F6q8kGuC0ReSPRx1gGuAgso7TpxJwzU
+        4tryrY5wbr2CP82/hehiofazoFyPxnocMaCTx4s5B8WPZm5uGKssKLUi9XMZuiULbJTmH9yobjju3
+        Gj0/pGmg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUl5r-00HXSK-Fz; Fri, 09 Apr 2021 06:58:21 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGpkw4klVz9sTD;
-        Fri,  9 Apr 2021 16:54:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1617951241;
-        bh=oF2th14REDVdRnIZ+k1NwPyoOzLOuLa/j/cyZB2p4+Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=oy9XYw40lymK72hOowHNbGwd0kRmSc8il0feR7ohUg+wTv/GBJWez3WLtvBEvupGP
-         x0T8n+hz/xNI33Xn35cG3RCrq2ub4HfnDdVX+xxGlkNInMSm4hnYef025q6SCkxA+6
-         5ctWFjMU2dq8kW1A1z9nCWRUNbb8DL1hdbTho2oFI8zOg1QUhLMen/dnjBb6Djdw3o
-         FJBg3R1zi29ChvzcJ9UOPeZBitDFYiVbMLmA8G6ionOj4//C9uMicJjJlP2+lotFvQ
-         gaLnH6fRUcjib1v7B3eD9k6JOj8f7fIIoWXa1cqFHYzK0T4ST4ahaad0JBvFseaeVg
-         E5v4gy0Z3pEqg==
-Date:   Fri, 9 Apr 2021 16:53:59 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mark.gross@intel.com>,
-        Sebastian Reichel <sre@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Subject: linux-next: manual merge of the drivers-x86 tree with the battery
- tree
-Message-ID: <20210409165359.42535004@canb.auug.org.au>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 757AC30001B;
+        Fri,  9 Apr 2021 08:58:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 574B92040C569; Fri,  9 Apr 2021 08:58:14 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 08:58:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+        ricardo.neri-calderon@linux.intel.com
+Subject: Re: [PATCH V5 16/25] perf/x86: Register hybrid PMUs
+Message-ID: <YG/7BgFaRC/Eos76@hirez.programming.kicks-ass.net>
+References: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
+ <1617635467-181510-17-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/GpXxHTGakZb2qwH_erQ+_uF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617635467-181510-17-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/GpXxHTGakZb2qwH_erQ+_uF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Apr 05, 2021 at 08:10:58AM -0700, kan.liang@linux.intel.com wrote:
+> @@ -2089,9 +2119,46 @@ static int __init init_hw_perf_events(void)
+>  	if (err)
+>  		goto out1;
+>  
+> -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+> -	if (err)
+> -		goto out2;
+> +	if (!is_hybrid()) {
+> +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+> +		if (err)
+> +			goto out2;
+> +	} else {
+> +		u8 cpu_type = get_this_hybrid_cpu_type();
+> +		struct x86_hybrid_pmu *hybrid_pmu;
+> +		bool registered = false;
+> +		int i;
+> +
+> +		if (!cpu_type && x86_pmu.get_hybrid_cpu_type)
+> +			cpu_type = x86_pmu.get_hybrid_cpu_type();
+> +
+> +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
+> +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
+> +
+> +			hybrid_pmu->pmu = pmu;
+> +			hybrid_pmu->pmu.type = -1;
+> +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
+> +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
+> +
+> +			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
+> +						(hybrid_pmu->cpu_type == hybrid_big) ? PERF_TYPE_RAW : -1);
+> +			if (err)
+> +				continue;
+> +
+> +			if (cpu_type == hybrid_pmu->cpu_type)
+> +				x86_pmu_update_cpu_context(&hybrid_pmu->pmu, raw_smp_processor_id());
+> +
+> +			registered = true;
+> +		}
+> +
+> +		if (!registered) {
+> +			pr_warn("Failed to register hybrid PMUs\n");
+> +			kfree(x86_pmu.hybrid_pmu);
+> +			x86_pmu.hybrid_pmu = NULL;
+> +			x86_pmu.num_hybrid_pmus = 0;
+> +			goto out2;
+> +		}
 
-Hi all,
+I don't think this is quite right. registered will be true even if one
+fails, while I think you meant to only have it true when all (both)
+types registered correctly.
 
-Today's linux-next merge of the drivers-x86 tree got a conflict in:
-
-  MAINTAINERS
-
-between commit:
-
-  167f77f7d0b3 ("power: supply: Add battery driver for Surface Aggregator M=
-odule")
-
-from the battery tree and commit:
-
-  1d609992832e ("platform/surface: Add DTX driver")
-
-from the drivers-x86 tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc MAINTAINERS
-index f5efa8c0b927,7dd6b67f0f51..000000000000
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@@ -11993,14 -11872,14 +12004,22 @@@ F:	drivers/scsi/smartpqi/smartpqi*.[ch
-  F:	include/linux/cciss*.h
-  F:	include/uapi/linux/cciss*.h
- =20
- +MICROSOFT SURFACE BATTERY AND AC DRIVERS
- +M:	Maximilian Luz <luzmaximilian@gmail.com>
- +L:	linux-pm@vger.kernel.org
- +L:	platform-driver-x86@vger.kernel.org
- +S:	Maintained
- +F:	drivers/power/supply/surface_battery.c
- +F:	drivers/power/supply/surface_charger.c
- +
-+ MICROSOFT SURFACE DTX DRIVER
-+ M:	Maximilian Luz <luzmaximilian@gmail.com>
-+ L:	platform-driver-x86@vger.kernel.org
-+ S:	Maintained
-+ F:	Documentation/driver-api/surface_aggregator/clients/dtx.rst
-+ F:	drivers/platform/surface/surface_dtx.c
-+ F:	include/uapi/linux/surface_aggregator/dtx.h
-+=20
-  MICROSOFT SURFACE GPE LID SUPPORT DRIVER
-  M:	Maximilian Luz <luzmaximilian@gmail.com>
-  L:	platform-driver-x86@vger.kernel.org
-
---Sig_/GpXxHTGakZb2qwH_erQ+_uF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBv+gcACgkQAVBC80lX
-0GyFoAf/SDgFr8xBtqJp3KRlbYX6fAUWingeCxmkRyTsawRLQetkBx1ps9vIOoyH
-JtW9F1Afe/hqoDCMdsISpQlTiUTenHJVse/tMLCZSaF8CT2LPvb/fPaDHkBCRMAX
-sYgAGvby+z5Irr7N4Ryqn4p851lZE29iBU+SxJXn/j48CnZ9kVDZPa/Zg+/DJ/78
-dBMR0zSmbymcmy+XSJDfFSkAXLFJlzbtd+suBLP3NnEH6asx+I1NXpR4jDUoBpFW
-HmbjRCAW/Yim25ULewIzvMOw6DBXP7IaCmss//HIAOdhsMdmDRQviYuxSTM7UzyD
-Tl4sBMtkDYYatpbPAKiL1tZ5YDCsrg==
-=wPnG
------END PGP SIGNATURE-----
-
---Sig_/GpXxHTGakZb2qwH_erQ+_uF--
+> +	}
+>  
+>  	return 0;
+>  
