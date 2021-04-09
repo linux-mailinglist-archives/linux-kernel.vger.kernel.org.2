@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D87359B9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:15:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B118E359AE2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:06:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234413AbhDIKO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:14:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51586 "EHLO mail.kernel.org"
+        id S234128AbhDIKEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:04:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234209AbhDIKFM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:05:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 048F261352;
-        Fri,  9 Apr 2021 10:01:32 +0000 (UTC)
+        id S233880AbhDIJ7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:59:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD64F61178;
+        Fri,  9 Apr 2021 09:58:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962493;
-        bh=zbUYVA0Aak82mjeAyjKw0nf0XfPsh2sO9uhwAHHAEu8=;
+        s=korg; t=1617962309;
+        bh=afjAZ38MI3Al9vEQWcfvvTvWrQamy2cHT/EP8Prj7OA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WDlw6EFGwQFvzGJrHqMyX5U7JbfJEX/WmzD6XQbBCUO6PIaHkJ3O/aywCNKEqpDAA
-         8hwTMlLogwlJEFKoJRjdVeggaDKwYToS+f5hF3+x+QeTDtqsaTCSVuqWlmeKq2o1cJ
-         2DKIQf6ZE8Y8y77RTK1ofcq1pv6RpitprkGdpxr4=
+        b=tXg9ZluP+dfWwnvm3kc3PN8LlA+EZgz5ppjcSNt9WIPsLKtQx4DSuuuX/42lXcQ6q
+         b+ZQNunzeLDBWeh1zJWk70ws4s1Cr7BoZ8NyWcdk2T4HWt5pw8gD2rO48idJ7KJbWw
+         FwlByl+cE3s7HEkeqsMRFGGR+q1JSxTKb9bwozDE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>,
-        Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org,
+        Karthikeyan Kathirvel <kathirve@codeaurora.org>,
+        Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 06/45] net/mlx5e: Enforce minimum value check for ICOSQ size
+Subject: [PATCH 5.10 10/41] mac80211: choose first enabled channel for monitor
 Date:   Fri,  9 Apr 2021 11:53:32 +0200
-Message-Id: <20210409095305.596128291@linuxfoundation.org>
+Message-Id: <20210409095305.151034826@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
-References: <20210409095305.397149021@linuxfoundation.org>
+In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
+References: <20210409095304.818847860@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tariq Toukan <tariqt@nvidia.com>
+From: Karthikeyan Kathirvel <kathirve@codeaurora.org>
 
-[ Upstream commit 5115daa675ccf70497fe56e8916cf738d8212c10 ]
+[ Upstream commit 041c881a0ba8a75f71118bd9766b78f04beed469 ]
 
-The ICOSQ size should not go below MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE.
-Enforce this where it's missing.
+Even if the first channel from sband channel list is invalid
+or disabled mac80211 ends up choosing it as the default channel
+for monitor interfaces, making them not usable.
 
-Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
-Reviewed-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-Reviewed-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fix this by assigning the first available valid or enabled
+channel instead.
+
+Signed-off-by: Karthikeyan Kathirvel <kathirve@codeaurora.org>
+Link: https://lore.kernel.org/r/1615440547-7661-1-git-send-email-kathirve@codeaurora.org
+[reword commit message, comment, code cleanups]
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ net/mac80211/main.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index aaa5a56b44c7..b6324d11a008 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -2317,8 +2317,9 @@ static u8 mlx5e_build_icosq_log_wq_sz(struct mlx5e_params *params,
- {
- 	switch (params->rq_wq_type) {
- 	case MLX5_WQ_TYPE_LINKED_LIST_STRIDING_RQ:
--		return order_base_2(MLX5E_UMR_WQEBBS) +
--			mlx5e_get_rq_log_wq_sz(rqp->rqc);
-+		return max_t(u8, MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE,
-+			     order_base_2(MLX5E_UMR_WQEBBS) +
-+			     mlx5e_get_rq_log_wq_sz(rqp->rqc));
- 	default: /* MLX5_WQ_TYPE_CYCLIC */
- 		return MLX5E_PARAMS_MINIMUM_LOG_SQ_SIZE;
- 	}
+diff --git a/net/mac80211/main.c b/net/mac80211/main.c
+index 523380aed92e..19c093bb3876 100644
+--- a/net/mac80211/main.c
++++ b/net/mac80211/main.c
+@@ -982,8 +982,19 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+ 			continue;
+ 
+ 		if (!dflt_chandef.chan) {
++			/*
++			 * Assign the first enabled channel to dflt_chandef
++			 * from the list of channels
++			 */
++			for (i = 0; i < sband->n_channels; i++)
++				if (!(sband->channels[i].flags &
++						IEEE80211_CHAN_DISABLED))
++					break;
++			/* if none found then use the first anyway */
++			if (i == sband->n_channels)
++				i = 0;
+ 			cfg80211_chandef_create(&dflt_chandef,
+-						&sband->channels[0],
++						&sband->channels[i],
+ 						NL80211_CHAN_NO_HT);
+ 			/* init channel we're on */
+ 			if (!local->use_chanctx && !local->_oper_chandef.chan) {
 -- 
 2.30.2
 
