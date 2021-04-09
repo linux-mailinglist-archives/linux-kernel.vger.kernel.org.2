@@ -2,245 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C60A35A932
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FC4E35A934
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235195AbhDIXUC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 19:20:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22515 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235181AbhDIXT5 (ORCPT
+        id S235181AbhDIXVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 19:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234880AbhDIXVx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 19:19:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618010383;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=VV6+ghNH1/AQ98hZ8A1K9EsRVAqRThkZsOYM3AOhXtQ=;
-        b=ZKFbrfcmVVTZHicbPfReb1uP9O7gruBZgmlfsfPvmSB3OyGXjp8Hhg4TTyu7FHAQdmgiPN
-        JMMGzU/jLWkbgQpjSLwrbMtiA6ZJFGLTPMLXYm2KUWwUvwmwCelpT7yc5RiTIbQRFl7Ls/
-        1LWFjIrupB4eaf3eWY/C1kI46d2TJAs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-317-KuKrdhoMNLmBEUiaohrPzA-1; Fri, 09 Apr 2021 19:19:39 -0400
-X-MC-Unique: KuKrdhoMNLmBEUiaohrPzA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D8931020C20;
-        Fri,  9 Apr 2021 23:19:36 +0000 (UTC)
-Received: from llong.com (ovpn-113-226.rdu2.redhat.com [10.10.113.226])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6B4FC1B400;
-        Fri,  9 Apr 2021 23:19:34 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH 5/5] mm/memcg: Optimize user context object stock access
-Date:   Fri,  9 Apr 2021 19:18:42 -0400
-Message-Id: <20210409231842.8840-6-longman@redhat.com>
-In-Reply-To: <20210409231842.8840-1-longman@redhat.com>
-References: <20210409231842.8840-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Fri, 9 Apr 2021 19:21:53 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D28EC061762;
+        Fri,  9 Apr 2021 16:21:40 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so7271471otk.5;
+        Fri, 09 Apr 2021 16:21:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Tjadi9gWiZf3KwIFwiKeQrMHEpLjgOQPNAFRf78f8yU=;
+        b=jvGwIo/yMRm9sb0hxpgzQG3L01wPiDBqCbpQemdhdC0QrhmNMVXEvJe0cgP3Ybm1Xk
+         GHJShl32LIGMtQxG4uX9X+J3WX0/4EuQQW4IQ+5pnxDMHK5/naT/jr01lcFaTEPYM7U2
+         ZFMGGY1F1Vfu7fc8//9Y9spoOgp/gtU7bdd9btdU7AciRR9u0obaU5CrhzvvkyEK9Jg0
+         URvIc6rg2Om/9b4t6tYFZ/CBpIbxkWugWA1fL5orEhy2SOasee7WSouErCkENz+aNeci
+         8rQ0kXo3/ur75aRMf8dqjESGITd5ZJuZcNWDYUWjCpXUMbbUO47dQ4ogjjMLAzW3/pM9
+         x6ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Tjadi9gWiZf3KwIFwiKeQrMHEpLjgOQPNAFRf78f8yU=;
+        b=eLQDJIpSbmwZfYn1rOrpjmKtBom68vYiONUcq1MzbGgTkNcoqXntGnscovRNKGleMZ
+         Lasepi/rfwRm5m7qDiTGwEyX8haOEHtR8I74LHmODqfKpLo2t0Ow4r8ualCQvHsYdrMN
+         t1mIgmQPIEHTjS6xEF1DQfNN8oYpFV6b4qmTKcj3h6gD9/Cit7r5QQoxw1bjyta3fiW2
+         3pUqz11EFP+Lh9DAuhQdZm2r0dvaqWk5qm2o/rxJn4IGhq6dr3bCL/GzlVa+fmoEleuk
+         huoFlackJauK6eNCw545U1YFhb04nvxRX7tdv2xd/GyifF/B1dczgP3odSUNfV/oe/hA
+         XA8w==
+X-Gm-Message-State: AOAM530g94ja7mOiqeKKxWKkbL2yOWtUq+JH1cZVzad3xE+mWMvd1y9b
+        P5rWeXU5mkmCk2yMDqm2THac5rh+fNM=
+X-Google-Smtp-Source: ABdhPJzG/OROLHRdsVDoT1NMneB+k8fbjA6Nj4YkiPknfTm0Q0R9M+U13PCfH8pqRibiSQxoStPnwg==
+X-Received: by 2002:a9d:5ae:: with SMTP id 43mr2535063otd.347.1618010498818;
+        Fri, 09 Apr 2021 16:21:38 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k8sm775584oig.6.2021.04.09.16.21.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 09 Apr 2021 16:21:38 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 9 Apr 2021 16:21:36 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Sebastian Oechsle <setboolean@icloud.com>
+Cc:     pali@kernel.org, jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hwmon: (dell-smm) Add Dell Latitude 7440 to fan control
+ whitelist
+Message-ID: <20210409232136.GA70972@roeck-us.net>
+References: <EE8F83B0-0C39-4E2A-B5FB-B94A1389588D@icloud.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <EE8F83B0-0C39-4E2A-B5FB-B94A1389588D@icloud.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Most kmem_cache_alloc() calls are from user context. With instrumentation
-enabled, the measured amount of kmem_cache_alloc() calls from non-task
-context was about 0.01% of the total.
+On Tue, Mar 30, 2021 at 07:02:55PM +0200, Sebastian Oechsle wrote:
+> Allow manual PWM control on Dell Latitude 7440.
+> 
+> Signed-off-by: Sebastian Oechsle <setboolean@icloud.com <mailto:setboolean@icloud.com>>
 
-The irq disable/enable sequence used in this case to access content
-from object stock is slow.  To optimize for user context access, there
-are now two object stocks for task context and interrupt context access
-respectively.
+This patch is corrupt, to the point where it doesn't show up in hwmon patchwork.
+I just happened to find it, but I can not convince git to apply it. Please
+fix the problem and resubmit.
 
-The task context object stock can be accessed after disabling preemption
-which is cheap in non-preempt kernel. The interrupt context object stock
-can only be accessed after disabling interrupt. User context code can
-access interrupt object stock, but not vice versa.
+Thanks,
+Guenter
 
-The mod_objcg_state() function is also modified to make sure that memcg
-and lruvec stat updates are done with interrupted disabled.
-
-The downside of this change is that there are more data stored in local
-object stocks and not reflected in the charge counter and the vmstat
-arrays.  However, this is a small price to pay for better performance.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- mm/memcontrol.c | 71 +++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 57 insertions(+), 14 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 69f728383efe..00c9074e42e5 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2229,7 +2229,8 @@ struct obj_stock {
- struct memcg_stock_pcp {
- 	struct mem_cgroup *cached; /* this never be root cgroup */
- 	unsigned int nr_pages;
--	struct obj_stock obj;
-+	struct obj_stock task_obj;
-+	struct obj_stock irq_obj;
- 
- 	struct work_struct work;
- 	unsigned long flags;
-@@ -2254,11 +2255,46 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- }
- #endif
- 
-+/*
-+ * Most kmem_cache_alloc() calls are from user context. The irq disable/enable
-+ * sequence used in this case to access content from object stock is slow.
-+ * To optimize for user context access, there are now two object stocks for
-+ * task context and interrupt context access respectively.
-+ *
-+ * The task context object stock can be accessed by disabling preemption only
-+ * which is cheap in non-preempt kernel. The interrupt context object stock
-+ * can only be accessed after disabling interrupt. User context code can
-+ * access interrupt object stock, but not vice versa.
-+ */
- static inline struct obj_stock *current_obj_stock(void)
- {
- 	struct memcg_stock_pcp *stock = this_cpu_ptr(&memcg_stock);
- 
--	return &stock->obj;
-+	return in_task() ? &stock->task_obj : &stock->irq_obj;
-+}
-+
-+#define get_obj_stock(flags)			\
-+({						\
-+	struct memcg_stock_pcp *stock;		\
-+	struct obj_stock *obj_stock;		\
-+						\
-+	if (in_task()) {			\
-+		preempt_disable();		\
-+		(flags) = -1L;			\
-+		obj_stock = &stock->task_obj;	\
-+	} else {				\
-+		local_irq_save(flags);		\
-+		obj_stock = &stock->irq_obj;	\
-+	}					\
-+	obj_stock;				\
-+})
-+
-+static inline void put_obj_stock(unsigned long flags)
-+{
-+	if (flags == -1L)
-+		preempt_enable();
-+	else
-+		local_irq_restore(flags);
- }
- 
- /**
-@@ -2327,7 +2363,9 @@ static void drain_local_stock(struct work_struct *dummy)
- 	local_irq_save(flags);
- 
- 	stock = this_cpu_ptr(&memcg_stock);
--	drain_obj_stock(&stock->obj);
-+	drain_obj_stock(&stock->irq_obj);
-+	if (in_task())
-+		drain_obj_stock(&stock->task_obj);
- 	drain_stock(stock);
- 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
- 
-@@ -3183,7 +3221,7 @@ static inline void mod_objcg_state(struct obj_cgroup *objcg,
- 	memcg = obj_cgroup_memcg(objcg);
- 	if (pgdat)
- 		lruvec = mem_cgroup_lruvec(memcg, pgdat);
--	__mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
-+	mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
- 	rcu_read_unlock();
- }
- 
-@@ -3193,7 +3231,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- 	unsigned long flags;
- 	bool ret = false;
- 
--	local_irq_save(flags);
-+	stock = get_obj_stock(flags);
- 
- 	stock = current_obj_stock();
- 	if (objcg == stock->cached_objcg && stock->nr_bytes >= nr_bytes) {
-@@ -3201,7 +3239,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- 		ret = true;
- 	}
- 
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- 
- 	return ret;
- }
-@@ -3254,8 +3292,13 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
- {
- 	struct mem_cgroup *memcg;
- 
--	if (stock->obj.cached_objcg) {
--		memcg = obj_cgroup_memcg(stock->obj.cached_objcg);
-+	if (in_task() && stock->task_obj.cached_objcg) {
-+		memcg = obj_cgroup_memcg(stock->task_obj.cached_objcg);
-+		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
-+			return true;
-+	}
-+	if (stock->irq_obj.cached_objcg) {
-+		memcg = obj_cgroup_memcg(stock->irq_obj.cached_objcg);
- 		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
- 			return true;
- 	}
-@@ -3283,9 +3326,9 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- {
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	get_obj_stock(flags);
- 	__refill_obj_stock(objcg, nr_bytes);
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- }
- 
- static void __mod_obj_stock_state(struct obj_cgroup *objcg,
-@@ -3325,9 +3368,9 @@ void mod_obj_stock_state(struct obj_cgroup *objcg, struct pglist_data *pgdat,
- {
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	get_obj_stock(flags);
- 	__mod_obj_stock_state(objcg, pgdat, idx, nr);
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- }
- 
- int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
-@@ -3380,10 +3423,10 @@ void obj_cgroup_uncharge_mod_state(struct obj_cgroup *objcg, size_t size,
- {
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	get_obj_stock(flags);
- 	__refill_obj_stock(objcg, size);
- 	__mod_obj_stock_state(objcg, pgdat, idx, -(int)size);
--	local_irq_restore(flags);
-+	put_obj_stock(flags);
- }
- 
- #endif /* CONFIG_MEMCG_KMEM */
--- 
-2.18.1
-
+> ---
+> drivers/hwmon/dell-smm-hwmon.c | 8 ++++++++
+> 1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
+> index 73b9db9e3aab..2970892bed82 100644
+> --- a/drivers/hwmon/dell-smm-hwmon.c
+> +++ b/drivers/hwmon/dell-smm-hwmon.c
+> @@ -1210,6 +1210,14 @@ static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
+> 		},
+> 		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+> 	},
+> +	{
+> +		.ident = "Dell Latitude E7440",
+> +		.matches = {
+> +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Latitude E7440"),
+> +		},
+> +		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
+> +	},
+> 	{ }
+> };
+> 
+> --
+> 2.31.1
