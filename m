@@ -2,63 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3AFC359CED
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84112359D16
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233682AbhDILPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:15:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41968 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234017AbhDILPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:15:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 72EE26100A;
-        Fri,  9 Apr 2021 11:14:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617966899;
-        bh=0xBkD+he3W0F2fKoAl+j3RSucxzjZ3CqggJbCxWKyMs=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aqXJjfr/VHOlXT+S2ZYsA0QaGeT9ICPv8Xl4SGtwN+QKUnE2NVlmLpfY9oW9FfoMo
-         zkhS253XQ1OxDhQEeqx/RyX28lTL6C0meCfMxNLePWPvR83AVMQbklfxxZrEm2ySvR
-         fef8naKcEw5f7kKyBVEr9SfmDsTuVUNSWQeXi0pIZ5k6WvCjpUvSKC67n5lKzv3ysc
-         XzyHnokJ71we2qnWDmDxurt9JbIyXnyI+TYt/PFMRawawi2B9+YbseOgqKWcpN6PsP
-         bWIq4ad3VP2LmbTD4UilplTMAx0D0bcfjM/Kzf1ez0h5FCwvfi0IKkAgpjVgsg9jDj
-         umUbOKbv6K0sA==
-From:   Nicolas Saenz Julienne <nsaenz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     f.fainelli@gmail.com, stefan.wahren@i2se.com,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>
-Subject: [PATCH] mailmap: Update email address for Nicolas Saenz
-Date:   Fri,  9 Apr 2021 13:14:53 +0200
-Message-Id: <20210409111453.28121-1-nsaenz@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S234176AbhDILS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234019AbhDILSM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 07:18:12 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B93C061760;
+        Fri,  9 Apr 2021 04:17:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=NZ0GUoV5NUz8hE+Uk6t9Fqrda/6popJtIxpTk8vMhZY=; b=utWGGGSPJgLFv3o84RnoQNMr/R
+        BCVG26RMz5SxbkQfQ5IrP4xFaDAEAf5ASKP1uzLJwjH1x7HK6BJ+Exk6BXSTPNV4yh3Z8lx8SM38S
+        ruxp0ryDzBqKWTodmz/kDjE3W1mn+jbR011JcRQ9KeZs7FlgrzICl/FQFl84Q47JKdLs5FwSsou3f
+        e97K75J5yjER6rkUtS6vJaZodNi+BOJzt/m/4bSENEOWmQxmh50PMKkyOoKgyLyI99E0oLxsEV6BV
+        4y7BGWwLpd+jEkJfmVWHvXd7CGbxhD5Ug5IXrHGA4EOGfMhhiwo9Sef174deyitwc8FOMBFnKOm4u
+        nZpu3syQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUp7h-000Ggy-7u; Fri, 09 Apr 2021 11:16:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DF6213001E3;
+        Fri,  9 Apr 2021 13:16:24 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C5C6E23CDCDDD; Fri,  9 Apr 2021 13:16:24 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 13:16:24 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>, linux-toolchains@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jason Baron <jbaron@akamai.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: Re: static_branch/jump_label vs branch merging
+Message-ID: <YHA3iGyT5dMq7/06@hirez.programming.kicks-ass.net>
+References: <YG80wg/2iZjXfCDJ@hirez.programming.kicks-ass.net>
+ <CAMj1kXGngxH0VCHyREKeLau=159sRkWYKVZwOV84r6dvCqXcig@mail.gmail.com>
+ <877dlbzq09.fsf@oldenburg.str.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877dlbzq09.fsf@oldenburg.str.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add my kernel.org address for old email address.
+On Fri, Apr 09, 2021 at 12:55:18PM +0200, Florian Weimer wrote:
+> * Ard Biesheuvel:
+> 
+> > Wouldn't that require the compiler to interpret the contents of the
+> > asm() block?
+> 
+> Yes and no.  It would require proper toolchain support, so in this case
+> a new ELF relocation type, with compiler, assembler, and linker support
+> to generate those relocations and process them.  As far as I understand
+> it, the kernel doesn't do things this way.
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
----
- .mailmap | 2 ++
- 1 file changed, 2 insertions(+)
+I don't think that all is needed. All we need is for the compiler to
+recognise that:
 
-diff --git a/.mailmap b/.mailmap
-index 78835e80214a..b407e1192fb3 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -260,6 +260,8 @@ Nguyen Anh Quynh <aquynh@gmail.com>
- Nicolas Ferre <nicolas.ferre@microchip.com> <nicolas.ferre@atmel.com>
- Nicolas Pitre <nico@fluxnic.net> <nicolas.pitre@linaro.org>
- Nicolas Pitre <nico@fluxnic.net> <nico@linaro.org>
-+Nicolas Saenz Julienne <nsaenz@kernel.org> <nsaenzjulienne@suse.de>
-+Nicolas Saenz Julienne <nsaenz@kernel.org> <nsaenzjulienne@suse.com>
- Oleksij Rempel <linux@rempel-privat.de> <bug-track@fisher-privat.net>
- Oleksij Rempel <linux@rempel-privat.de> <external.Oleksij.Rempel@de.bosch.com>
- Oleksij Rempel <linux@rempel-privat.de> <fixed-term.Oleksij.Rempel@de.bosch.com>
--- 
-2.31.1
+	if (cond) {
+		stmt-A;
+	}
+	if (cond) {
+		stmt-B;
+	}
 
+both cond are equivalent and hence can merge the blocks like:
+
+	if (cond) {
+		stmt-A;
+		stmt-B;
+	}
+
+But because @cond is some super opaque asm crap, the compiler throws up
+it's imaginry hands and says it cannot possibly tell and leaves them as
+is.
