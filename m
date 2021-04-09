@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76328359915
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA2E359916
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbhDIJY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
+        id S232161AbhDIJZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:25:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbhDIJYy (ORCPT
+        with ESMTP id S230181AbhDIJZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:24:54 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA48C061760;
-        Fri,  9 Apr 2021 02:24:40 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id w8so369770pfn.9;
-        Fri, 09 Apr 2021 02:24:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eqDORfVYih3KdHWf8wh+CjrsEDSV3l8FMtBY017n5ac=;
-        b=FPkpy4xo3U7lSI+b72CXor5mLB4WB7xRgrIC0e0/E9Ur2Gf3DvbtTf+SqoeONPSEA5
-         bKXSuA0P7DABvV2z3CroS6el/a5QRlj0uMVckp+iIWTh6YigSod5lK5iSoUrJQvJpo3/
-         5ATuYBxcuoT1fE1ofiz7cc/IJFZ6QvovLQDLqvshPFFHUeyhbGUMfI0UoidpQ8oBXe9i
-         l+g4cYbzzH9Lvon0cSTFS6JsTf4jrnJ4LtPlfZwjkXB35EQK1/q9Em9WgELFFLbYoR8u
-         zcXJ/3ItrKMmHTar3w0mMyLRJI3vX+x1Ntm1lkfeRt2LQGGAXfoiVOM3xwptzAR+xZ8z
-         VwQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eqDORfVYih3KdHWf8wh+CjrsEDSV3l8FMtBY017n5ac=;
-        b=UrdnLmC4wseX6/7y0Dc46G61bPUWdyapWcKX7BPdhEAyjbMMLL3KNfWTSvp1INlJZi
-         DgKa9jXKqe9+FfbaajNKboiFsQ8kjZx5hu7O7FT4qFdPM0zI/VS7NMg8BnLUVhiVTbOU
-         9leGPf2zcgp9funrZDzDkO38xteLR0gvMDCtYyflUMJ+nooDGPL5oUKtq4VvyEkaCpKO
-         Dt6wjALK0llEEWzytEaGZFWr9cUebEWMypENZ+Mrya7RZOALVAcbosigmEP0PvfrexSB
-         UPv1IR3z9iu1f/NVMsi8ctS7p4jOx9Gd4wGi47DNpOH4ofDyUwsdSQbz2luqM7TO80Ib
-         avkw==
-X-Gm-Message-State: AOAM532ZCwfUUO4zITA7/cQbgEDxbGaNaNz/UsEOiglkGNweZiKZVTCT
-        duI68V2IHJlyxM/4S4wcHE8Lmg8+NvF3n/4Ivq4=
-X-Google-Smtp-Source: ABdhPJyyVY6OveNJsRaLQ77/g3WxhETPEL2Tr0wIxsYjLWDeGaWxTKJuY8IwV2ZN2+DTEION8vYAHDLN6Gye3w+Yp9M=
-X-Received: by 2002:a63:3e4b:: with SMTP id l72mr12053286pga.203.1617960279766;
- Fri, 09 Apr 2021 02:24:39 -0700 (PDT)
+        Fri, 9 Apr 2021 05:25:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CF75C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 02:25:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iVxq0dNeikAhWMPF1J4XtUbl5B83AWHFSRk0lJ3YhZA=; b=rn9KSkrn67rKqFexra4gczsJow
+        zUglAWpXRQHiypTPn4I8TvhoMcahAwld+8KCmFa4amdEUkZ0mdUA42OQg+0UUo44jVy37GqXvlRiZ
+        JCtrUlSYX6DWmx6k5jla7jXobfAHFYwCdUnJfbhJGPMZ9XYZlzHUN5c1bCYMba0nK2MQOVfugLWOs
+        ttHj3cFO0rEkK+2huZrzKbj087lM4eJLqnIAVBH/pq+o11i8URk6K31EHwKnOHqjsO7ko82qRKtLw
+        aH1/zpbjkv6zcC3v8wYViMFoPjJM//3TpJ+R5KJ7I7meZsdSM8RCOjfZ3fQE+xytfljr/xJGR0kI7
+        XWmD84yA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUnNc-0007sh-LL; Fri, 09 Apr 2021 09:24:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B2632300033;
+        Fri,  9 Apr 2021 11:24:43 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9B9BB2C2328B7; Fri,  9 Apr 2021 11:24:43 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 11:24:43 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+        ricardo.neri-calderon@linux.intel.com
+Subject: Re: [PATCH V5 23/25] perf/x86/msr: Add Alder Lake CPU support
+Message-ID: <YHAdW5GmTNwshpOi@hirez.programming.kicks-ass.net>
+References: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
+ <1617635467-181510-24-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-References: <20210408205858.51751-1-masahiroy@kernel.org> <20210408205858.51751-2-masahiroy@kernel.org>
-In-Reply-To: <20210408205858.51751-2-masahiroy@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 9 Apr 2021 12:24:23 +0300
-Message-ID: <CAHp75VdZ67Tab2jOU0NSys_P1rU_GicJw_ADd1w9JY4rEG5g1w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] linux/kconfig.h: replace IF_ENABLED() with PTR_IF()
- in <linux/kernel.h>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617635467-181510-24-git-send-email-kan.liang@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 12:00 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> <linux/kconfig.h> is included from all the kernel-space source files,
-> including C, assembly, linker scripts. It is intended to contain minimal
+On Mon, Apr 05, 2021 at 08:11:05AM -0700, kan.liang@linux.intel.com wrote:
+> From: Kan Liang <kan.liang@linux.intel.com>
+> 
+> PPERF and SMI_COUNT MSRs are also supported on Alder Lake.
+> 
+> The External Design Specification (EDS) is not published yet. It comes
+> from an authoritative internal source.
+> 
+> The patch has been tested on real hardware.
+> 
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> ---
+>  arch/x86/events/msr.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/events/msr.c b/arch/x86/events/msr.c
+> index 680404c..c853b28 100644
+> --- a/arch/x86/events/msr.c
+> +++ b/arch/x86/events/msr.c
+> @@ -100,6 +100,8 @@ static bool test_intel(int idx, void *data)
+>  	case INTEL_FAM6_TIGERLAKE_L:
+>  	case INTEL_FAM6_TIGERLAKE:
+>  	case INTEL_FAM6_ROCKETLAKE:
+> +	case INTEL_FAM6_ALDERLAKE:
+> +	case INTEL_FAM6_ALDERLAKE_L:
+>  		if (idx == PERF_MSR_SMI || idx == PERF_MSR_PPERF)
+>  			return true;
+>  		break;
 
-a minimal
-
-> set of macros to evaluate CONFIG options.
->
-> IF_ENABLED() is an intruder here because (x ? y : z) is C code, which
-> should not be included from assembly files or linker scripts.
->
-> Also, <linux/kconfig.h> is no longer self-contained because NULL is
-> defined in <linux/stddef.h>.
->
-> Move IF_ENABLED() out to <linux/kernel.h> as PTR_IF().
->
-> PTR_IF(IS_ENABLED(CONFIG_FOO), ...) is slightly longer than
-> IF_ENABLED(CONFIG_FOO, ...), but it is not a big deal because
-> sub-systems often define dedicated macros such as of_match_ptr(),
-> pm_ptr() etc. for common use-cases.
-
->  include/linux/kernel.h            |  2 ++
-
-Why kernel.h? Shouldn't it belong to a particular domain with a
-respective header file?
-
-Really what we have in the kernel.h right now is a complete train
-wreck of something.
-We have to define what exactly is kernel.h for?
-
-Arnd? Others? Shall we start a wider discussion on the topic?
-
--- 
-With Best Regards,
-Andy Shevchenko
+If only it would be sanely enumerated... What about sapphire rapids?
