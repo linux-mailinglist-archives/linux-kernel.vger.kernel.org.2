@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E4A7359848
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9649B359845
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:48:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbhDIIul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:50:41 -0400
-Received: from mga05.intel.com ([192.55.52.43]:45794 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232156AbhDIIui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:50:38 -0400
-IronPort-SDR: Drgww6uLaV4L8ECM4dKXbxLpnQVdrc6hGDBEnavJ7bWZJSVI58gTkHl7al8x1awTiheOSA+z0G
- 7kECTuI0mIlQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="278997562"
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="278997562"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 01:50:25 -0700
-IronPort-SDR: 2nVKxe0lWGZr4gIsqpDas1QZRO3N/XmeLyWI1dgidfpFhm0vVZAym3tcAZ4cB7jhA/kAIuGcOS
- 0oU0VWjOTplQ==
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="422644512"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 01:50:22 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
-        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
-        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
-        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH 4/5] mm/swap_state: fix potential faulted in race in
- swap_ra_info()
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
-        <20210408130820.48233-5-linmiaohe@huawei.com>
-Date:   Fri, 09 Apr 2021 16:50:18 +0800
-In-Reply-To: <20210408130820.48233-5-linmiaohe@huawei.com> (Miaohe Lin's
-        message of "Thu, 8 Apr 2021 09:08:19 -0400")
-Message-ID: <874kgfyh85.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S231761AbhDIItG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhDIItE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:49:04 -0400
+Received: from smtp-42ae.mail.infomaniak.ch (smtp-42ae.mail.infomaniak.ch [IPv6:2001:1600:4:17::42ae])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EB8C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:48:51 -0700 (PDT)
+Received: from smtp-3-0001.mail.infomaniak.ch (unknown [10.4.36.108])
+        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4FGsHQ0xDNzMqVFY;
+        Fri,  9 Apr 2021 10:48:50 +0200 (CEST)
+Received: from ns3096276.ip-94-23-54.eu (unknown [23.97.221.149])
+        by smtp-3-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4FGsHN47Lwzlh8TL;
+        Fri,  9 Apr 2021 10:48:48 +0200 (CEST)
+Subject: Re: linux-next: manual merge of the security tree with the ext3 tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        James Morris <jmorris@namei.org>, Jan Kara <jack@suse.cz>
+Cc:     James Morris <jamorris@linux.microsoft.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@linux.microsoft.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+References: <20210319130551.76ce2b8f@canb.auug.org.au>
+ <20210409143954.22329cfa@canb.auug.org.au>
+From:   =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Message-ID: <ec4beec7-b68e-55d2-6551-2a910d19ff11@digikod.net>
+Date:   Fri, 9 Apr 2021 10:50:41 +0200
+User-Agent: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+In-Reply-To: <20210409143954.22329cfa@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miaohe Lin <linmiaohe@huawei.com> writes:
+Looks good, thanks Stephen!
 
-> While we released the pte lock, somebody else might faulted in this pte.
-> So we should check whether it's swap pte first to guard against such race
-> or swp_type would be unexpected. And we can also avoid some unnecessary
-> readahead cpu cycles possibly.
->
-> Fixes: ec560175c0b6 ("mm, swap: VMA based swap readahead")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  mm/swap_state.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
->
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 709c260d644a..3bf0d0c297bc 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -724,10 +724,10 @@ static void swap_ra_info(struct vm_fault *vmf,
->  {
->  	struct vm_area_struct *vma = vmf->vma;
->  	unsigned long ra_val;
-> -	swp_entry_t entry;
-> +	swp_entry_t swap_entry;
->  	unsigned long faddr, pfn, fpfn;
->  	unsigned long start, end;
-> -	pte_t *pte, *orig_pte;
-> +	pte_t *pte, *orig_pte, entry;
->  	unsigned int max_win, hits, prev_win, win, left;
->  #ifndef CONFIG_64BIT
->  	pte_t *tpte;
-> @@ -742,8 +742,13 @@ static void swap_ra_info(struct vm_fault *vmf,
->  
->  	faddr = vmf->address;
->  	orig_pte = pte = pte_offset_map(vmf->pmd, faddr);
-> -	entry = pte_to_swp_entry(*pte);
-> -	if ((unlikely(non_swap_entry(entry)))) {
-> +	entry = *pte;
-> +	if (unlikely(!is_swap_pte(entry))) {
-> +		pte_unmap(orig_pte);
-> +		return;
-> +	}
-> +	swap_entry = pte_to_swp_entry(entry);
-> +	if ((unlikely(non_swap_entry(swap_entry)))) {
->  		pte_unmap(orig_pte);
->  		return;
->  	}
-
-This isn't a real issue.  entry or swap_entry isn't used in this
-function.  And we have enough checking when we really operate the PTE
-entries later.  But I admit it's confusing.  So I suggest to just remove
-the checking.  We will check it when necessary.
-
-Best Regards,
-Huang, Ying
+On 09/04/2021 06:39, Stephen Rothwell wrote:
+> Hi all,
+> 
+> On Fri, 19 Mar 2021 13:05:51 +1100 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>>
+>> Today's linux-next merge of the security tree got conflicts in:
+>>
+>>   arch/alpha/kernel/syscalls/syscall.tbl
+>>   arch/arm/tools/syscall.tbl
+>>   arch/arm64/include/asm/unistd.h
+>>   arch/arm64/include/asm/unistd32.h
+>>   arch/ia64/kernel/syscalls/syscall.tbl
+>>   arch/m68k/kernel/syscalls/syscall.tbl
+>>   arch/microblaze/kernel/syscalls/syscall.tbl
+>>   arch/mips/kernel/syscalls/syscall_n32.tbl
+>>   arch/mips/kernel/syscalls/syscall_n64.tbl
+>>   arch/mips/kernel/syscalls/syscall_o32.tbl
+>>   arch/parisc/kernel/syscalls/syscall.tbl
+>>   arch/powerpc/kernel/syscalls/syscall.tbl
+>>   arch/s390/kernel/syscalls/syscall.tbl
+>>   arch/sh/kernel/syscalls/syscall.tbl
+>>   arch/sparc/kernel/syscalls/syscall.tbl
+>>   arch/x86/entry/syscalls/syscall_32.tbl
+>>   arch/x86/entry/syscalls/syscall_64.tbl
+>>   arch/xtensa/kernel/syscalls/syscall.tbl
+>>   include/uapi/asm-generic/unistd.h
+>>
+>> between commit:
+>>
+>>   fa8b90070a80 ("quota: wire up quotactl_path")
+>>
+>> from the ext3 tree and commit:
+>>
+>>   818946f8b806 ("arch: Wire up Landlock syscalls")
+> 
+> This is now commit
+> 
+>   9fbebb70210a ("arch: Wire up Landlock syscalls")
+> 
+>> from the security tree.
+>>
+>> I fixed it up (see below) and can carry the fix as necessary. This
+>> is now fixed as far as linux-next is concerned, but any non trivial
+>> conflicts should be mentioned to your upstream maintainer when your tree
+>> is submitted for merging.  You may also want to consider cooperating
+>> with the maintainer of the conflicting tree to minimise any particularly
+>> complex conflicts.
+> 
+> The resolution now looks like below (since the lanlock syscall number
+> have been updated).
+> 
