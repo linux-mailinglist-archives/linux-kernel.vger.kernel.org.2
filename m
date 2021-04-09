@@ -2,176 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1341B35A790
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B7F35A798
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234258AbhDIUFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:05:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233657AbhDIUFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:05:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CCFE6105A;
-        Fri,  9 Apr 2021 20:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617998711;
-        bh=jPirD6AFgqrx5T70iNJSnKVguvkaiGABVLXA8bNgzAs=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pivTiouDUjHJzZjqfWZ5RBqxJkskejgOcXXlRy3dIHON+74gsOgHCmjy9CrmtabTL
-         UDYhJdXF/YVqOfFRDwythj5DpDMoOToOOs7dQZg4B22CF+9PlZxT20ItfNMS/RfnH+
-         Ho78JxXS3nFkvd2564sCcDqzdwQUyVW0CGUq4VqxdQfmifECmTjUDpeAuLMJ4UIktd
-         LNjDpWjSyQsZDXTRzjk7VlWHs5d1rfZHPLkVXeQwrpZGgzht+BrPDgMfRiF9MMe0S6
-         o0L30kA6D+4TPLU6UD0N6ZJaX7z7S09SEWREJRPUqA3rhngNY5m0bFjLPrkaL26e20
-         Uezd+8KfKuqYg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id D222D5C00B4; Fri,  9 Apr 2021 13:05:10 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 13:05:10 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Joel Fernandes <joel@joelfernandes.org>
-Subject: Re: [PATCH 2/5] srcu: Initialize SRCU after timers
-Message-ID: <20210409200510.GR4510@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210408223902.6405-1-frederic@kernel.org>
- <20210408223902.6405-3-frederic@kernel.org>
+        id S233866AbhDIUI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232796AbhDIUIY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 16:08:24 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99019C061762;
+        Fri,  9 Apr 2021 13:08:11 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so6867829otn.1;
+        Fri, 09 Apr 2021 13:08:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FDi8twRY3pAIh9FY0xZNV+Kr720yHQSrwVhdhEFDaOM=;
+        b=XSdIw5vxZ1Mc/bguKfv0EIiGdUlUHtSyIZeRUqu/4loSiPb+s56BwyNfeyCQaHEYod
+         ATaNxoMZrzSI/raFfIuwId684RJLIshSdFw624Twht65VjBf5bmwFNzSIxCnoVjTweeR
+         lvj9zwoe1WRQDpM4GzzZpMS1eHbFAXuy2gq6FKcTovvJUiywKss1WyfGElMylORhG23U
+         uHe8m5kFdFdtH3fiGv8BKeArFpXr/TU05vjo65bO1LVJDUMreH0zIUza8hq+F9zzwA4s
+         yLCMNfQFEMY2Ho4kMooQr0Rs9M07T03PJsv0C6dG8pFNhCfQz4jVsQpxXXLDPD5iiHVb
+         XkGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FDi8twRY3pAIh9FY0xZNV+Kr720yHQSrwVhdhEFDaOM=;
+        b=ElIKZ+YbpV2j5bnxmsGqclpt2CQso2i0QYPR6rcfoYN7mcEsCgyIbLrjs9xaU5yk1H
+         DWG5G4jy8ulherf+x+ObEPTDaIjoIcaliNAAB0suk7sNkzE4iSKshiWqRzHnS2uxxzds
+         uwJ+Su7YaLZQjNGhBc4+BVcG4ooo0Gkd1j3XNifRnTK3FQIxDGEOQV58QKqN7uex06s4
+         hO3N+MI2OPKtc2K2gbfGhpNqI+gV3d+3RGnT7xLp6t8Kf1M2UbGKYb1gI4W0N8s94OnY
+         kbk2wLBF8XuTa2WvsihG4wnmfQH6ba2erIkEZgb0EH7/trWYq82EvG+CnQVvf9xaxE2J
+         GSAA==
+X-Gm-Message-State: AOAM531i41t/vls0QWjvq2rVynPOEjyexQj7+Ztc21eMZaPValyCcIE2
+        9CqTjECpV+3cwKKe33xbt5E=
+X-Google-Smtp-Source: ABdhPJyzaLGNSmMnKwsoXwmLLDiQIjwCm/+p9XuLKkLCbe+BX1vYGH65ahQq+Ao+jgly0ikF9KXeGQ==
+X-Received: by 2002:a05:6830:808:: with SMTP id r8mr14078396ots.61.1617998891063;
+        Fri, 09 Apr 2021 13:08:11 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z17sm807820ote.77.2021.04.09.13.08.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 09 Apr 2021 13:08:10 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 9 Apr 2021 13:08:08 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.4 00/20] 4.4.266-rc1 review
+Message-ID: <20210409200808.GA227412@roeck-us.net>
+References: <20210409095259.957388690@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408223902.6405-3-frederic@kernel.org>
+In-Reply-To: <20210409095259.957388690@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 12:38:59AM +0200, Frederic Weisbecker wrote:
-> Once srcu_init() is called, the SRCU core is free to queue delayed
-> workqueues, which rely on timers. However init_timers() is called
-> several steps after rcu_init(). Any call_srcu() in-between would finish
-> its course inside a dangerously uninitialized timer core.
+On Fri, Apr 09, 2021 at 11:53:06AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.266 release.
+> There are 20 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Make sure we stay in early SRCU mode until everything is well settled.
+> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Uladzislau Rezki <urezki@gmail.com>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-> Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Cc: Josh Triplett <josh@joshtriplett.org>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
+Build results:
+	total: 160 pass: 160 fail: 0
+Qemu test results:
+	total: 328 pass: 328 fail: 0
 
-Good catches!  Apparently not so many people are using SRCU that early
-in boot, but good to get it working.  I queued this patch and the
-preceding one (1/5).
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-								
-							Thanx, Paul
-
-> ---
->  include/linux/srcu.h  | 6 ++++++
->  init/main.c           | 2 ++
->  kernel/rcu/rcu.h      | 6 ------
->  kernel/rcu/srcutree.c | 5 +++++
->  kernel/rcu/tiny.c     | 1 -
->  kernel/rcu/tree.c     | 1 -
->  6 files changed, 13 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-> index a0895bbf71ce..e6011a9975af 100644
-> --- a/include/linux/srcu.h
-> +++ b/include/linux/srcu.h
-> @@ -64,6 +64,12 @@ unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp);
->  unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp);
->  bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie);
->  
-> +#ifdef CONFIG_SRCU
-> +void srcu_init(void);
-> +#else /* #ifdef CONFIG_SRCU */
-> +static inline void srcu_init(void) { }
-> +#endif /* #else #ifdef CONFIG_SRCU */
-> +
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->  
->  /**
-> diff --git a/init/main.c b/init/main.c
-> index 53b278845b88..1bc5cc9e52ef 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -42,6 +42,7 @@
->  #include <linux/profile.h>
->  #include <linux/kfence.h>
->  #include <linux/rcupdate.h>
-> +#include <linux/srcu.h>
->  #include <linux/moduleparam.h>
->  #include <linux/kallsyms.h>
->  #include <linux/writeback.h>
-> @@ -956,6 +957,7 @@ asmlinkage __visible void __init __no_sanitize_address start_kernel(void)
->  	tick_init();
->  	rcu_init_nohz();
->  	init_timers();
-> +	srcu_init();
->  	hrtimers_init();
->  	softirq_init();
->  	timekeeping_init();
-> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> index d64b842f4078..b3af34068051 100644
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -422,12 +422,6 @@ do {									\
->  
->  #endif /* #if defined(CONFIG_SRCU) || !defined(CONFIG_TINY_RCU) */
->  
-> -#ifdef CONFIG_SRCU
-> -void srcu_init(void);
-> -#else /* #ifdef CONFIG_SRCU */
-> -static inline void srcu_init(void) { }
-> -#endif /* #else #ifdef CONFIG_SRCU */
-> -
->  #ifdef CONFIG_TINY_RCU
->  /* Tiny RCU doesn't expedite, as its purpose in life is instead to be tiny. */
->  static inline bool rcu_gp_is_normal(void) { return true; }
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 10e681ea7051..108f9ca06047 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -1384,6 +1384,11 @@ void __init srcu_init(void)
->  {
->  	struct srcu_struct *ssp;
->  
-> +	/*
-> +	 * Once that is set, call_srcu() can follow the normal path and
-> +	 * queue delayed work. This must follow RCU workqueues creation
-> +	 * and timers initialization.
-> +	 */
->  	srcu_init_done = true;
->  	while (!list_empty(&srcu_boot_list)) {
->  		ssp = list_first_entry(&srcu_boot_list, struct srcu_struct,
-> diff --git a/kernel/rcu/tiny.c b/kernel/rcu/tiny.c
-> index c8a029fbb114..340b3f8b090d 100644
-> --- a/kernel/rcu/tiny.c
-> +++ b/kernel/rcu/tiny.c
-> @@ -221,5 +221,4 @@ void __init rcu_init(void)
->  {
->  	open_softirq(RCU_SOFTIRQ, rcu_process_callbacks);
->  	rcu_early_boot_tests();
-> -	srcu_init();
->  }
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 5c214705c33f..740f5cd34459 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -4714,7 +4714,6 @@ void __init rcu_init(void)
->  	WARN_ON(!rcu_gp_wq);
->  	rcu_par_gp_wq = alloc_workqueue("rcu_par_gp", WQ_MEM_RECLAIM, 0);
->  	WARN_ON(!rcu_par_gp_wq);
-> -	srcu_init();
->  
->  	/* Fill in default value for rcutree.qovld boot parameter. */
->  	/* -After- the rcu_node ->lock fields are initialized! */
-> -- 
-> 2.25.1
-> 
+Guenter
