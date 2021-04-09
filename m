@@ -2,149 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6D9535A45B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9742E35A461
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234184AbhDIREt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:04:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34350 "EHLO
+        id S234137AbhDIRGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234222AbhDIREo (ORCPT
+        with ESMTP id S233038AbhDIRGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:04:44 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70E39C061763
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:04:30 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id x12so2431465ilm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:04:30 -0700 (PDT)
+        Fri, 9 Apr 2021 13:06:38 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D9F0C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:06:24 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id z136so6599469iof.10
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:06:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tZExfZaItW8I8mhIQZwJxd1DH8tD4RWPfY6sL+HgdVY=;
-        b=LpGpVWkFN6IMUF2DmNCDOz5Lr43s5Mdk0xGtSotDyp7K7I9pO3VTOb+DwJ1rvNd8Ac
-         TS2DvgkHDVuxh4QXFbqqNv0rTiX4bcksCQgLMTKtgAW5hkDSFdjL0gBon4114r48HTIH
-         WRb8Co81Ctlicn7/2099Bw28/SUhSV6Fs01MVitACqs+0mqOyWnw5OYof/3cC92vfIGa
-         MlT0GGIbZO6AM0+48idHFJrFlGY6XRXUf/wLp9FmxyeNJsSopQVn7MBWGJXlw9H/5edT
-         mZMgszZ4Kg6DT+D/MIs1Kk9xu4H+GdFu2CZGz84dFURvWISly+gxFjErlhkBxMaGgFgs
-         mMsg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ckuQKqYSNgY7eF5IEy/O9xqtXaRMqkkILp0uvz39yLw=;
+        b=DEFRRBW7mUM0LwIC914tb1EnBOQjQOWcSoOpU0+RNeVf1rMBJ6apYAbKymvAtXEWOK
+         pky1YZirx1+TImTY8pDc8zgciCwiRk76ZgOy81myto3FOf1NwLWAMpDzi3xAhk72VLg2
+         TJBNtnN5ubOP44umFdm52CT7GInzWukLU4WsA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tZExfZaItW8I8mhIQZwJxd1DH8tD4RWPfY6sL+HgdVY=;
-        b=giWHR4EEXDd6HC66VLCZXGJNLccxQgOyE/8/VgCwwzm+RCJ48MLt/19g4n+MqyER4M
-         plRtpRkgdJWiOiD9VnYmCxzuC0SdRH7DaMK58/XzziWN9KEp0ynKEO426dYkkjiTPJyc
-         6i3RXBS45wa9O8lbJhJEOEkQRpv4Io6oNBl2BA1j+Yn7I4NmDziGXPSiCipJejJ9Qzr9
-         1dIcJk+ZwhKzVZn1zFEozNcdg/XrlSvWo4CFbNetp1cjn4qREMWlJY0nZ+y3lzQ0m/mQ
-         OIms8UZdwyRWjdtcXttaCTv5dQBXQknNcXc+oBIkqCguFvFjE4AKKjonfVIAQ5zgSJCb
-         05zw==
-X-Gm-Message-State: AOAM530IOOjc9JargEw9MHwW/vsD9TBZwZ/j8VSj89/46xBXkO7t+bLf
-        5/AHjYx4kn/rN6w8npdPBzg5eK32tMUVWazuhC5JMQ==
-X-Google-Smtp-Source: ABdhPJzM/e3TJU7ySB/2UMdS6n5bzAsPhMQxYMxjQpi360O8iBGeG86NQBa10fgltinhiL8KYpVlSnqeYcYvkENPNrw=
-X-Received: by 2002:a05:6e02:4cd:: with SMTP id f13mr12318125ils.258.1617987869608;
- Fri, 09 Apr 2021 10:04:29 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ckuQKqYSNgY7eF5IEy/O9xqtXaRMqkkILp0uvz39yLw=;
+        b=gk6W5+0J+WUm/71WOiCdPifVLgrWGtXbYetTnOdL4Da3lRxTSvQ8rJItZKW1xBiu84
+         aLRZDNzDinWZ9WAJECE7AaEh++7gz+fioi+U6LxBBSmPGWtQ23B2UPsj0uJUmwf68LaS
+         0lOfODYoot1t4t7s5MMaGDrE3q3aXXWSj7h6DUSjol/NmbVNSWo/+20OwLZXamSJwIaO
+         bQIICbV713C/814TguQ/xgHd45tembOhVyBNVcR1b19wjCbt+d/YSfTRMTfM3R1Ol+Eg
+         6DA1Rxq5VXoAd7y4MaNVgy2v7ItM4h57QHWDcT15q4+pPWbsmuTthZGCQv9qpbwUesia
+         YPNA==
+X-Gm-Message-State: AOAM533sm3CwZMpaf1Ndez/p2ja70iMm5BKgxGfdfHBbydKdIS1tzPLz
+        NVp1AldIVbRaySpCVPXoNQXNMA==
+X-Google-Smtp-Source: ABdhPJyijYXlk1P49PEEb/iVM02dNCqi2XwX7HAn08GrYbt0mqY0L69S3e7RupJ8rCwxzY4jxxNmtQ==
+X-Received: by 2002:a05:6638:381c:: with SMTP id i28mr15333884jav.60.1617987983281;
+        Fri, 09 Apr 2021 10:06:23 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id s15sm1391221ilv.13.2021.04.09.10.06.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 10:06:22 -0700 (PDT)
+Subject: Re: [PATCH 1/2] Revert "iommu/amd: Fix performance counter
+ initialization"
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Cc:     joro@8bytes.org, will@kernel.org, jsnitsel@redhat.com,
+        pmenzel@molgen.mpg.de, Jon.Grimm@amd.com,
+        Tj <ml.linux@elloe.vision>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        David Coe <david.coe@live.co.uk>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210409085848.3908-1-suravee.suthikulpanit@amd.com>
+ <20210409085848.3908-2-suravee.suthikulpanit@amd.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <f156768c-37fd-a4e8-3959-a5bc5dae918c@linuxfoundation.org>
+Date:   Fri, 9 Apr 2021 11:06:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210408234327.624367-1-axelrasmussen@google.com> <20210408220440.aab59f2f06beb840c22377b3@linux-foundation.org>
-In-Reply-To: <20210408220440.aab59f2f06beb840c22377b3@linux-foundation.org>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Fri, 9 Apr 2021 10:03:53 -0700
-Message-ID: <CAJHvVcj84fcuh0vXtHdEPoV+DrFDSXjUg1fO+oLFCOaxWBH13w@mail.gmail.com>
-Subject: Re: [PATCH 0/9] userfaultfd: add minor fault handling for shmem
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Daniel Colascione <dancol@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210409085848.3908-2-suravee.suthikulpanit@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 10:04 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Thu,  8 Apr 2021 16:43:18 -0700 Axel Rasmussen <axelrasmussen@google.com> wrote:
->
-> > The idea is that it will apply cleanly to akpm's tree, *replacing* the following
-> > patches (i.e., drop these first, and then apply this series):
-> >
-> > userfaultfd-support-minor-fault-handling-for-shmem.patch
-> > userfaultfd-support-minor-fault-handling-for-shmem-fix.patch
-> > userfaultfd-support-minor-fault-handling-for-shmem-fix-2.patch
-> > userfaultfd-support-minor-fault-handling-for-shmem-fix-3.patch
-> > userfaultfd-support-minor-fault-handling-for-shmem-fix-4.patch
-> > userfaultfd-selftests-use-memfd_create-for-shmem-test-type.patch
-> > userfaultfd-selftests-create-alias-mappings-in-the-shmem-test.patch
-> > userfaultfd-selftests-reinitialize-test-context-in-each-test.patch
-> > userfaultfd-selftests-exercise-minor-fault-handling-shmem-support.patch
->
-> Well.  the problem is,
->
-> > +     if (area_alias == MAP_FAILED)
-> > +             err("mmap of memfd alias failed");
->
-> `err' doesn't exist until eleventy patches later, in Peter's
-> "userfaultfd/selftests: unify error handling".  I got tired of (and
-> lost confidence in) replacing "err(...)" with "fprintf(stderr, ...);
-> exit(1)" everywhere then fixing up the fallout when Peter's patch came
-> along.  Shudder.
+On 4/9/21 2:58 AM, Suravee Suthikulpanit wrote:
+> From: Paul Menzel <pmenzel@molgen.mpg.de>
+> 
+> This reverts commit 6778ff5b21bd8e78c8bd547fd66437cf2657fd9b.
+> 
+> The original commit tries to address an issue, where PMC power-gating
+> causing the IOMMU PMC pre-init test to fail on certain desktop/mobile
+> platforms where the power-gating is normally enabled.
+> 
+> There have been several reports that the workaround still does not
+> guarantee to work, and can add up to 100 ms (on the worst case)
+> to the boot process on certain platforms such as the MSI B350M MORTAR
+> with AMD Ryzen 3 2200G.
+> 
+> Therefore, revert this commit as a prelude to removing the pre-init
+> test.
+> 
+> Link: https://lore.kernel.org/linux-iommu/alpine.LNX.3.20.13.2006030935570.3181@monopod.intra.ispras.ru/
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
+> Cc: Tj (Elloe Linux) <ml.linux@elloe.vision>
+> Cc: Shuah Khan <skhan@linuxfoundation.org>
+> Cc: Alexander Monakov <amonakov@ispras.ru>
+> Cc: David Coe <david.coe@live.co.uk>
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> ---
+> Note: I have revised the commit message to add more detail
+>        and remove uncessary information.
+> 
+>   drivers/iommu/amd/init.c | 45 ++++++++++------------------------------
+>   1 file changed, 11 insertions(+), 34 deletions(-)
+> 
+> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+> index 321f5906e6ed..648cdfd03074 100644
+> --- a/drivers/iommu/amd/init.c
+> +++ b/drivers/iommu/amd/init.c
+> @@ -12,7 +12,6 @@
+>   #include <linux/acpi.h>
+>   #include <linux/list.h>
+>   #include <linux/bitmap.h>
+> -#include <linux/delay.h>
+>   #include <linux/slab.h>
+>   #include <linux/syscore_ops.h>
+>   #include <linux/interrupt.h>
+> @@ -257,8 +256,6 @@ static enum iommu_init_state init_state = IOMMU_START_STATE;
+>   static int amd_iommu_enable_interrupts(void);
+>   static int __init iommu_go_to_state(enum iommu_init_state state);
+>   static void init_device_table_dma(void);
+> -static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
+> -				u8 fxn, u64 *value, bool is_write);
+>   
+>   static bool amd_iommu_pre_enabled = true;
+>   
+> @@ -1717,11 +1714,13 @@ static int __init init_iommu_all(struct acpi_table_header *table)
+>   	return 0;
+>   }
+>   
+> -static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
+> +static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
+> +				u8 fxn, u64 *value, bool is_write);
+> +
+> +static void init_iommu_perf_ctr(struct amd_iommu *iommu)
+>   {
+> -	int retry;
+>   	struct pci_dev *pdev = iommu->dev;
+> -	u64 val = 0xabcd, val2 = 0, save_reg, save_src;
+> +	u64 val = 0xabcd, val2 = 0, save_reg = 0;
+>   
+>   	if (!iommu_feature(iommu, FEATURE_PC))
+>   		return;
+> @@ -1729,39 +1728,17 @@ static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
+>   	amd_iommu_pc_present = true;
+>   
+>   	/* save the value to restore, if writable */
+> -	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false) ||
+> -	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, false))
+> -		goto pc_false;
+> -
+> -	/*
+> -	 * Disable power gating by programing the performance counter
+> -	 * source to 20 (i.e. counts the reads and writes from/to IOMMU
+> -	 * Reserved Register [MMIO Offset 1FF8h] that are ignored.),
+> -	 * which never get incremented during this init phase.
+> -	 * (Note: The event is also deprecated.)
+> -	 */
+> -	val = 20;
+> -	if (iommu_pc_get_set_reg(iommu, 0, 0, 8, &val, true))
+> +	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
+>   		goto pc_false;
+>   
+>   	/* Check if the performance counters can be written to */
+> -	val = 0xabcd;
+> -	for (retry = 5; retry; retry--) {
+> -		if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true) ||
+> -		    iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false) ||
+> -		    val2)
+> -			break;
+> -
+> -		/* Wait about 20 msec for power gating to disable and retry. */
+> -		msleep(20);
+> -	}
+> -
+> -	/* restore */
+> -	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true) ||
+> -	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, true))
+> +	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
+> +	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
+> +	    (val != val2))
 
-Oof - sorry about that!
+Probably don't need parentheses around 'val != val2'
 
->
-> Sorry, all this material pretty clearly isn't going to make 5.12
-> (potentially nine days hence), so I shall drop all the userfaultfd
-> patches.  Let's take a fresh run at all of this after -rc1.
+>   		goto pc_false;
+>   
+> -	if (val != val2)
+> +	/* restore */
+> +	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
+>   		goto pc_false;
+>   
+>   	pci_info(pdev, "IOMMU performance counters supported\n");
+> 
 
-That's okay, my understanding was already that it certainly wouldn't
-be in the 5.12 release, but that we might be ready in time for 5.13.
-
->
->
-> I have tentatively retained the first series:
->
-> userfaultfd-add-minor-fault-registration-mode.patch
-> userfaultfd-add-minor-fault-registration-mode-fix.patch
-> userfaultfd-disable-huge-pmd-sharing-for-minor-registered-vmas.patch
-> userfaultfd-hugetlbfs-only-compile-uffd-helpers-if-config-enabled.patch
-> userfaultfd-add-uffdio_continue-ioctl.patch
-> userfaultfd-update-documentation-to-describe-minor-fault-handling.patch
-> userfaultfd-selftests-add-test-exercising-minor-fault-handling.patch
->
-> but I don't believe they have had much testing standalone, without the
-> other userfaultfd patches present.  So I don't think it's smart to
-> upstream these in this cycle.  Or I could drop them so you and Peter
-> can have a clean shot at redoing the whole thing.  Please let me know.
-
-From my perspective, both Peter's error handling and the hugetlbfs
-minor faulting patches are ready to go. (Peter's most importantly; we
-should establish that as a base, and put all the burden on resolving
-conflicts with it on us instead of you :).)
-
-My memory was that Peter's patch was applied before my shmem series,
-but it seems I was mistaken. So, maybe the best thing to do is to have
-Peter send a version of it based on your tree, without the shmem
-series? And then I'll resolve any conflicts in my tree?
-
-It's true that we haven't tested the hugetlbfs minor faults patch
-extensively *with the shmem one also applied*, but it has had more
-thorough review than the shmem one at this point (e.g. by Mike
-Kravetz), and they're rather separate code paths (I'd be surprised if
-one breaks the other).
-
->
+thanks,
+-- Shuah
