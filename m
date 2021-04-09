@@ -2,598 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035D635950E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5B21359517
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbhDIF7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:59:45 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:45201 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229715AbhDIF7n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:59:43 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 6A0375806EE;
-        Fri,  9 Apr 2021 01:59:30 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Fri, 09 Apr 2021 01:59:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=eozesVVwSRqxpSlAE9E8S7LkQOF6G3k
-        TLWbQrY5gxlQ=; b=YFqNOwCmrvZqMKLwzehe/nARuh05WfWnnMMY57f9vzBzJ/c
-        LiOSke3Uhxo8CHkbN34xPIVWT2CjkIIdGaJR+k2Hnq0LbuBtJw/7cJlL2okhLgZY
-        6UI34VE+cj6AMO0VF9IFUHreeHP2Zga9EvG8mRMX0D2oeWGUWBFv0xYg9D7ouZQr
-        laPkM4bM3NK1hofbKGRloa+NFZNV1IiQZNrWCNQFMZG9AzA+sayLOWfV7uSWJBTD
-        p9ysy5FfrTueS6T83vMKxYsgzih6sD5NNmNW5RaBPz79G8U4DM1mfhBoeyA7t3Dj
-        o0rxJiUsYdOYDQ3UevD0HfN8p0hSaK0ml/yAu0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=eozesV
-        VwSRqxpSlAE9E8S7LkQOF6G3kTLWbQrY5gxlQ=; b=ZrrNFkycFjsdOYyNML4y6b
-        V/Js9kFMpvbZz6S12T8i8Ha5iAXmolQRm8zTk0B9fFcZDGebAVKH1FR94VP1tPGo
-        hGF70Uc75nEjUH5Hpm/M9xr4XAU9zGt48fTkxd5DCpiHR8+97GP4Gatg39QciTyq
-        WhZdAaJ22jVWNXML+GfUpNMqmovgJ48J9Ph7vsseIFJAcIW/Hlea3KYGkC9Upisa
-        3gD29ZmW5fMhXmh9cv/2dMmJm+3rFUQ+b55TNQx6lyY00EUG4UZozTFEVGe2j5Jp
-        d/cl2xr5c/oySdU3EsucZQ3vANnj7pQ3C4Ttk+Uo4G/B4LVccZoIK+PIiAvbPNLA
-        ==
-X-ME-Sender: <xms:Qe1vYIX6bBesvraK3boUIXQBh2EMSyXMRbvIX27HSBmEIwtCo0pRzA>
-    <xme:Qe1vYMlEDHNNBwAOSmAeT7sQUZqu9LnIUsh0OEOZ66diacVw6tlgKeI1rCkhchhQ7
-    swCPT49aInXEsN1Fg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudektddguddttdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehn
-    ughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtf
-    frrghtthgvrhhnpedutddtkeeugeegvddttdeukeeiuddtgfeuuddtfeeiueetfeeileet
-    tedvtdfhieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:Qe1vYMY3srCUwgXXlru6Pu0YiYV8KJgiYNKdY6fK5TYLggdwFChsKQ>
-    <xmx:Qe1vYHUPab2kxdC9wAx3LpffnkW6cnSmnrg4EXFS3qPdGfd-Y-98iw>
-    <xmx:Qe1vYCl3vvv3tlewlY0dpryemOuYMnJYisuKyZHJCJsQPRED9vHgxQ>
-    <xmx:Qu1vYM2zWRALufM3l5BJp3_5_LCMf_j_ut7oJeEzS_uCzLaz7HyplA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 81D1DA0007C; Fri,  9 Apr 2021 01:59:29 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
-Mime-Version: 1.0
-Message-Id: <ea34ee69-a266-4737-8450-4695d2d0fbd4@www.fastmail.com>
-In-Reply-To: <YG/Ql9z9X/mtOSvl@packtop>
-References: <20210319062752.145730-1-andrew@aj.id.au>
- <20210319062752.145730-10-andrew@aj.id.au> <YG/Ql9z9X/mtOSvl@packtop>
-Date:   Fri, 09 Apr 2021 15:29:09 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Zev Weiss" <zweiss@equinix.com>
-Cc:     "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "Corey Minyard" <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Tomer Maimon" <tmaimon77@gmail.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "Avi Fishman" <avifishman70@gmail.com>,
-        "Patrick Venture" <venture@google.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Tali Perry" <tali.perry1@gmail.com>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "Benjamin Fair" <benjaminfair@google.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_10/21]_ipmi:_kcs=5Fbmc:_Turn_the_driver_data-str?=
- =?UTF-8?Q?uctures_inside-out?=
-Content-Type: text/plain
+        id S233282AbhDIGCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:02:52 -0400
+Received: from ned.t-8ch.de ([212.47.237.191]:34170 "EHLO ned.t-8ch.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233244AbhDIGCu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 02:02:50 -0400
+Date:   Fri, 9 Apr 2021 08:02:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
+        s=mail; t=1617948149;
+        bh=FHpOq7QS5QYAWuDQCp+yK31YAWp1DRpKH+1+t7s003I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FayLsPnKzAtX8Vx8EDISy/FpK1sMI/VA6cDo4MvXv0VIG2TxMvDiinOilY2L6UnnN
+         f9twWpEZtdV1fx22PYZAY+KbFjCy0LR3LHowFB0GxB8GIP9BKCqQQckPXgjd73A2tm
+         KU3GWPNrbOOdx2072zUqCKeqWoRQwEqkpQ2SvUYY=
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        platform-driver-x86@vger.kernel.org,
+        Mark Gross <mgross@linux.intel.com>,
+        linux-kernel@vger.kernel.org,
+        =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>
+Subject: Re: [PATCH v2] platform/x86: add Gigabyte WMI temperature driver
+Message-ID: <c55b1f8e-24b9-4574-8668-aed64832242b@t-8ch.de>
+References: <N6sOrC__lJeA1mtEKUtB18DPy9hp5bSjL9rq1TfOXiRE7IAO5aih5oyPEpq-vyqdZZsF4W8FIe-9GWB15lO-3fQlqjWQrMTlTJvqLBBGYOQ=@protonmail.com>
+ <20210405204810.339763-1-linux@weissschuh.net>
+ <44fbb57c-88ee-62f0-c72c-507cad17eb7d@redhat.com>
+ <123d021b-b86b-4356-b234-fb46fa260193@t-8ch.de>
+ <6993d257-fdc1-2be6-555d-86c6b8c9d18d@redhat.com>
+ <d6cc98f4-1be2-f8bf-0426-58e324fc495b@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d6cc98f4-1be2-f8bf-0426-58e324fc495b@roeck-us.net>
+Jabber-ID: thomas@t-8ch.de
+X-Accept: text/plain, text/html;q=0.2, text/*;q=0.1
+X-Accept-Language: en-us, en;q=0.8, de-de;q=0.7, de;q=0.6
+X-PGP-Key: https://t-8ch.de/pubkey.asc
+X-PGP-Key-Fingerprint: 187EF7CE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, 9 Apr 2021, at 13:27, Zev Weiss wrote:
-> On Fri, Mar 19, 2021 at 01:27:41AM CDT, Andrew Jeffery wrote:
-> >Make the KCS device drivers responsible for allocating their own memory.
-> >
-> >Until now the private data for the device driver was allocated internal
-> >to the private data for the chardev interface. This coupling required
-> >the slightly awkward API of passing through the struct size for the
-> >driver private data to the chardev constructor, and then retrieving a
-> >pointer to the driver private data from the allocated chardev memory.
-> >
-> >In addition to being awkward, the arrangement prevents the
-> >implementation of alternative userspace interfaces as the device driver
-> >private data is not independent.
-> >
-> >Peel a layer off the onion and turn the data-structures inside out by
-> >exploiting container_of() and embedding `struct kcs_device` in the
-> >driver private data.
-> >
-> >Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> >---
-> > drivers/char/ipmi/kcs_bmc.c           | 15 +++++--
-> > drivers/char/ipmi/kcs_bmc.h           | 12 ++----
-> > drivers/char/ipmi/kcs_bmc_aspeed.c    | 60 ++++++++++++++++-----------
-> > drivers/char/ipmi/kcs_bmc_cdev_ipmi.c | 60 ++++++++++++++++++---------
-> > drivers/char/ipmi/kcs_bmc_npcm7xx.c   | 37 ++++++++++-------
-> > 5 files changed, 113 insertions(+), 71 deletions(-)
-> >
-> >diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
-> >index ef5c48ffe74a..709b6bdec165 100644
-> >--- a/drivers/char/ipmi/kcs_bmc.c
-> >+++ b/drivers/char/ipmi/kcs_bmc.c
-> >@@ -44,12 +44,19 @@ int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc)
-> > }
-> > EXPORT_SYMBOL(kcs_bmc_handle_event);
-> >
-> >-struct kcs_bmc *kcs_bmc_ipmi_alloc(struct device *dev, int sizeof_priv, u32 channel);
-> >-struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 channel)
-> >+int kcs_bmc_ipmi_attach_cdev(struct kcs_bmc *kcs_bmc);
+On Do, 2021-04-08T08:00-0700, Guenter Roeck wrote:
+> On 4/8/21 2:36 AM, Hans de Goede wrote:
+> > On 4/7/21 9:43 PM, Thomas Weißschuh wrote:
+> >> On Mi, 2021-04-07T17:54+0200, Hans de Goede wrote:
+> > Jean, Guenter,
+> > 
+> > Thomas has been working on a WMI driver to expose various motherboard
+> > temperatures on a gigabyte board where the IO-addresses for the it87 chip
+> > are reserved by ACPI. We are discussing how best to deal with this, there
+> > are some ACPI methods to directly access the super-IO registers (with locking
+> > to protect against other ACPI accesses). This reminded me of an idea I had
+> > a while ago to solve a similar issue with an other superIO chip, abstract
+> > the superIO register access-es using some reg_ops struct and allow an ACPI/WMI
+> > driver to provide alternative reg_ops:
+> > https://bugzilla.kernel.org/show_bug.cgi?id=204807#c47
+> > 
+> > Do you think this is a good idea (or a bad one)? And would something like that
+> > be acceptable to you ?
+> > 
 > 
-> Another declaration perhaps intended for kcs_bmc.h?
-
-These are temporary while the code gets shuffled around. The symbol 
-name is an implementation detail, not a "public" part of the API; after 
-some further shuffling these are eventually assigned as callbacks in an 
-ops struct.
-
+> The upstream it87 driver is severely out of date. I had an out-of-tree driver
+> with various improvements which I didn't upstream, first because no one was willing
+> to review changes and then because it had deviated too much. I pulled it from
+> public view because I got pounded for not upstreaming it, because people started
+> demanding support (not asking, demanding) for it, and because Gigabyte stopped
+> providing datasheets for the more recent ITE chips and it became effectively
+> unmaintainable.
 > 
-> >+int kcs_bmc_add_device(struct kcs_bmc *kcs_bmc)
-> > {
-> >-	return kcs_bmc_ipmi_alloc(dev, sizeof_priv, channel);
-> >+	return kcs_bmc_ipmi_attach_cdev(kcs_bmc);
-> > }
-> >-EXPORT_SYMBOL(kcs_bmc_alloc);
-> >+EXPORT_SYMBOL(kcs_bmc_add_device);
-> >+
-> >+int kcs_bmc_ipmi_detach_cdev(struct kcs_bmc *kcs_bmc);
+> Some ITE chips have issues which can cause system hangs if accessed directly.
+> I put some work to remedy that into the non-upstream driver, but that was all
+> just guesswork. Gigabyte knows about the problem (or so I was told from someone
+> who has an NDA with them), but I didn't get them or ITE to even acknowledge it
+> to me. I even had a support case open with Gigabyte for a while, but all I could
+> get out of them is that they don't support Linux and what I would have to reproduce
+> the problem with Windows for them to provide assistance (even though, again,
+> they knew about it).
 > 
-> Here too.
+> As for using ACPI locks or WMI to ensure that ACPI leaves the chip alone while
+> the driver accesses chips directly: That is an option, but it has (at least)
+> two problems.
 > 
-> >+int kcs_bmc_remove_device(struct kcs_bmc *kcs_bmc)
-> >+{
-> >+	return kcs_bmc_ipmi_detach_cdev(kcs_bmc);
-> >+}
-> >+EXPORT_SYMBOL(kcs_bmc_remove_device);
-> >
-> > MODULE_LICENSE("GPL v2");
-> > MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
-> >diff --git a/drivers/char/ipmi/kcs_bmc.h b/drivers/char/ipmi/kcs_bmc.h
-> >index febea0c8deb4..bf0ae327997f 100644
-> >--- a/drivers/char/ipmi/kcs_bmc.h
-> >+++ b/drivers/char/ipmi/kcs_bmc.h
-> >@@ -67,6 +67,8 @@ struct kcs_ioreg {
-> > };
-> >
-> > struct kcs_bmc {
-> >+	struct device *dev;
-> >+
-> > 	spinlock_t lock;
-> >
-> > 	u32 channel;
-> >@@ -94,17 +96,11 @@ struct kcs_bmc {
-> > 	u8 *kbuffer;
-> >
-> > 	struct miscdevice miscdev;
-> >-
-> >-	unsigned long priv[];
-> > };
-> >
-> >-static inline void *kcs_bmc_priv(struct kcs_bmc *kcs_bmc)
-> >-{
-> >-	return kcs_bmc->priv;
-> >-}
-> >-
-> > int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc);
-> >-struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 channel);
-> >+int kcs_bmc_add_device(struct kcs_bmc *kcs_bmc);
-> >+int kcs_bmc_remove_device(struct kcs_bmc *kcs_bmc);
-> >
-> > u8 kcs_bmc_read_data(struct kcs_bmc *kcs_bmc);
-> > void kcs_bmc_write_data(struct kcs_bmc *kcs_bmc, u8 data);
-> >diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
-> >index 630cf095560e..0416ac78ce68 100644
-> >--- a/drivers/char/ipmi/kcs_bmc_aspeed.c
-> >+++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
-> >@@ -61,6 +61,8 @@
-> > #define LPC_STR4             0x11C
-> >
-> > struct aspeed_kcs_bmc {
-> >+	struct kcs_bmc kcs_bmc;
-> >+
-> > 	struct regmap *map;
-> > };
-> >
-> >@@ -69,9 +71,14 @@ struct aspeed_kcs_of_ops {
-> > 	int (*get_io_address)(struct platform_device *pdev);
-> > };
-> >
-> >+static inline struct aspeed_kcs_bmc *to_aspeed_kcs_bmc(struct kcs_bmc *kcs_bmc)
-> >+{
-> >+	return container_of(kcs_bmc, struct aspeed_kcs_bmc, kcs_bmc);
-> >+}
-> >+
-> > static u8 aspeed_kcs_inb(struct kcs_bmc *kcs_bmc, u32 reg)
-> > {
-> >-	struct aspeed_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> >+	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
-> > 	u32 val = 0;
-> > 	int rc;
-> >
-> >@@ -83,7 +90,7 @@ static u8 aspeed_kcs_inb(struct kcs_bmc *kcs_bmc, u32 reg)
-> >
-> > static void aspeed_kcs_outb(struct kcs_bmc *kcs_bmc, u32 reg, u8 data)
-> > {
-> >-	struct aspeed_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> >+	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
-> > 	int rc;
-> >
-> > 	rc = regmap_write(priv->map, reg, data);
-> >@@ -92,7 +99,7 @@ static void aspeed_kcs_outb(struct kcs_bmc *kcs_bmc, u32 reg, u8 data)
-> >
-> > static void aspeed_kcs_updateb(struct kcs_bmc *kcs_bmc, u32 reg, u8 mask, u8 val)
-> > {
-> >-	struct aspeed_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> >+	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
-> > 	int rc;
-> >
-> > 	rc = regmap_update_bits(priv->map, reg, mask, val);
-> >@@ -114,7 +121,7 @@ static void aspeed_kcs_updateb(struct kcs_bmc *kcs_bmc, u32 reg, u8 mask, u8 val
-> >  */
-> > static void aspeed_kcs_set_address(struct kcs_bmc *kcs_bmc, u16 addr)
-> > {
-> >-	struct aspeed_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> >+	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
-> >
-> > 	switch (kcs_bmc->channel) {
-> > 	case 1:
-> >@@ -148,7 +155,7 @@ static void aspeed_kcs_set_address(struct kcs_bmc *kcs_bmc, u16 addr)
-> >
-> > static void aspeed_kcs_enable_channel(struct kcs_bmc *kcs_bmc, bool enable)
-> > {
-> >-	struct aspeed_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> >+	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
-> >
-> > 	switch (kcs_bmc->channel) {
-> > 	case 1:
-> >@@ -323,16 +330,16 @@ static int aspeed_kcs_of_v2_get_io_address(struct platform_device *pdev)
-> > static int aspeed_kcs_probe(struct platform_device *pdev)
-> > {
-> > 	const struct aspeed_kcs_of_ops *ops;
-> >-	struct device *dev = &pdev->dev;
-> >+	struct aspeed_kcs_bmc *priv;
-> > 	struct kcs_bmc *kcs_bmc;
-> > 	struct device_node *np;
-> > 	int rc, channel, addr;
-> >
-> >-	np = dev->of_node->parent;
-> >+	np = pdev->dev.of_node->parent;
-> > 	if (!of_device_is_compatible(np, "aspeed,ast2400-lpc-v2") &&
-> > 	    !of_device_is_compatible(np, "aspeed,ast2500-lpc-v2") &&
-> > 	    !of_device_is_compatible(np, "aspeed,ast2600-lpc-v2")) {
-> >-		dev_err(dev, "unsupported LPC device binding\n");
-> >+		dev_err(&pdev->dev, "unsupported LPC device binding\n");
-> > 		return -ENODEV;
-> > 	}
-> > 	ops = of_device_get_match_data(&pdev->dev);
-> >@@ -343,18 +350,27 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
-> > 	if (channel < 0)
-> > 		return channel;
-> >
-> >-	kcs_bmc = kcs_bmc_alloc(&pdev->dev, sizeof(struct aspeed_kcs_bmc), channel);
-> >-	if (!kcs_bmc)
-> >+	addr = ops->get_io_address(pdev);
-> >+	if (addr < 0)
-> >+		return addr;
-> >+
-> >+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> >+	if (!priv)
-> > 		return -ENOMEM;
-> >
-> >+	kcs_bmc = &priv->kcs_bmc;
-> >+	kcs_bmc->dev = &pdev->dev;
-> >+	kcs_bmc->channel = channel;
-> > 	kcs_bmc->ioreg = ast_kcs_bmc_ioregs[channel - 1];
-> > 	kcs_bmc->io_inputb = aspeed_kcs_inb;
-> > 	kcs_bmc->io_outputb = aspeed_kcs_outb;
-> > 	kcs_bmc->io_updateb = aspeed_kcs_updateb;
-> >
-> >-	addr = ops->get_io_address(pdev);
-> >-	if (addr < 0)
-> >-		return addr;
-> >+	priv->map = syscon_node_to_regmap(pdev->dev.parent->of_node);
-> >+	if (IS_ERR(priv->map)) {
-> >+		dev_err(&pdev->dev, "Couldn't get regmap\n");
-> >+		return -ENODEV;
-> >+	}
+> First, ACPI access methods are not well documented or standardized. I had tried
+> to find useful means to do that some time ago, but I gave up because each board
+> (even from the same vendor) handles locking and accesses differently. We would
+> end up with lots of board specific code. Coincidentally, that was for ASUS boards
+> and the nct6775 driver.
+
+At least for all the Gigabyte ACPI tables I have looked at all access is done
+via two-byte "OperationRegion" over the Index/Data addresses, a "Field" with
+two entries for these and an "IndexField" that is actually used to perform the
+accesses.
+As the IndexField is synchronized via "Lock" it should take a lock on the
+OperationRegion itself.
+
+So I think we should be technically fine with validating these assumption and
+then also taking locks on the OperationRegion.
+
+If it is reasonable to do so is another question.
+
+> Second, access through ACPI is only one of the issues. Turns out there are two
+> ITE chips on many of the Gigabyte boards nowadays, and the two chips talk to each
+> other using I2C. My out-of-tree driver tried to remedy that by blocking those
+> accesses while the driver used the chip, but, again, without Gigabyte / ITE
+> support this was never a perfect solution, and there was always the risk that
+> the board ended up hanging because that access was blocked for too long.
+> Recent ITE chips solve that problem by providing memory mapped access to the
+> chip registers, but that is only useful if one has a datasheet.
+
+Are both of these chips available at the two well-known registers 0x2e and
+0x4e?
+
+Would this too-long blocking also occur when only accessing single registers
+for read-only access?
+Any write access would probably have to be blocked anyways.
+
+> Overall, I don't think it makes much sense trying to make significant changes
+> to the it87 driver without pulling in all the changes I had made, and without
+> finding a better fix for the cross-chip access problems. I for sure won't have
+> time for that (and getting hwmon patches reviewed is still very much an issue).
 > 
-> The reanimated priv->map initialization I suspect wasn't meant to
-> have been removed in the first place...
+> Having said that, I am of course open to adding WMI/ACPI drivers for the various
+> boards. Good luck getting support from Gigabyte, though. Or from ASUS, for that
+> matter.
 
-Yeah, I'll have to go back and figure out what went wrong there!
-
-Thanks for catching that.
-
-> 
-> >
-> > 	aspeed_kcs_set_address(kcs_bmc, addr);
-> >
-> >@@ -362,29 +378,25 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
-> > 	if (rc)
-> > 		return rc;
-> >
-> >-	dev_set_drvdata(dev, kcs_bmc);
-> >+	platform_set_drvdata(pdev, priv);
-> >
-> > 	aspeed_kcs_enable_channel(kcs_bmc, true);
-> >
-> >-	rc = misc_register(&kcs_bmc->miscdev);
-> >-	if (rc) {
-> >-		dev_err(dev, "Unable to register device\n");
-> >+	rc = kcs_bmc_add_device(&priv->kcs_bmc);
-> >+	if (rc < 0)
-> > 		return rc;
-> >-	}
-> >
-> >-	dev_dbg(&pdev->dev,
-> >-		"Probed KCS device %d (IDR=0x%x, ODR=0x%x, STR=0x%x)\n",
-> >-		kcs_bmc->channel, kcs_bmc->ioreg.idr, kcs_bmc->ioreg.odr,
-> >-		kcs_bmc->ioreg.str);
-> >+	dev_info(&pdev->dev, "Initialised channel %d at 0x%x\n", kcs_bmc->channel, addr);
-> 
-> Is the dbg->info change here intentional?  (I have no particular
-> objection if so, but it's often a change I make myself during
-> testing/debugging and then forget to revert...)
-
-Yeah, it was possibly something I forgot to revert. If others have 
-issues with it staying at dev_info() I'll switch it back.
-
-> 
-> >
-> > 	return 0;
-> > }
-> >
-> > static int aspeed_kcs_remove(struct platform_device *pdev)
-> > {
-> >-	struct kcs_bmc *kcs_bmc = dev_get_drvdata(&pdev->dev);
-> >+	struct aspeed_kcs_bmc *priv = platform_get_drvdata(pdev);
-> >+	struct kcs_bmc *kcs_bmc = &priv->kcs_bmc;
-> >
-> >-	misc_deregister(&kcs_bmc->miscdev);
-> >+	kcs_bmc_remove_device(kcs_bmc);
-> 
-> Should we propagate the return value outward here?
-
-Probably!
-
-> 
-> >
-> > 	return 0;
-> > }
-> >diff --git a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-> >index 82c77994e481..0ca71c135a1a 100644
-> >--- a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-> >+++ b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-> >@@ -382,7 +382,7 @@ static int kcs_bmc_ipmi_release(struct inode *inode, struct file *filp)
-> > 	return 0;
-> > }
-> >
-> >-static const struct file_operations kcs_bmc_fops = {
-> >+static const struct file_operations kcs_bmc_ipmi_fops = {
-> > 	.owner          = THIS_MODULE,
-> > 	.open           = kcs_bmc_ipmi_open,
-> > 	.read           = kcs_bmc_ipmi_read,
-> >@@ -392,36 +392,58 @@ static const struct file_operations kcs_bmc_fops = {
-> > 	.unlocked_ioctl = kcs_bmc_ipmi_ioctl,
-> > };
-> >
-> >-struct kcs_bmc *kcs_bmc_ipmi_alloc(struct device *dev, int sizeof_priv, u32 channel);
-> >-struct kcs_bmc *kcs_bmc_ipmi_alloc(struct device *dev, int sizeof_priv, u32 channel)
-> >+int kcs_bmc_ipmi_attach_cdev(struct kcs_bmc *kcs_bmc);
-> 
-> Errant declaration again?
-
-As previously explained.
-
-> 
-> >+int kcs_bmc_ipmi_attach_cdev(struct kcs_bmc *kcs_bmc)
-> > {
-> >-	struct kcs_bmc *kcs_bmc;
-> >-
-> >-	kcs_bmc = devm_kzalloc(dev, sizeof(*kcs_bmc) + sizeof_priv, GFP_KERNEL);
-> >-	if (!kcs_bmc)
-> >-		return NULL;
-> >+	int rc;
-> >
-> > 	spin_lock_init(&kcs_bmc->lock);
-> >-	kcs_bmc->channel = channel;
-> >-
-> > 	mutex_init(&kcs_bmc->mutex);
-> > 	init_waitqueue_head(&kcs_bmc->queue);
-> >
-> >-	kcs_bmc->data_in = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> >-	kcs_bmc->data_out = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> >-	kcs_bmc->kbuffer = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> >+	kcs_bmc->data_in = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> >+	kcs_bmc->data_out = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> >+	kcs_bmc->kbuffer = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> >
-> > 	kcs_bmc->miscdev.minor = MISC_DYNAMIC_MINOR;
-> >-	kcs_bmc->miscdev.name = devm_kasprintf(dev, GFP_KERNEL, "%s%u",
-> >-					       DEVICE_NAME, channel);
-> >+	kcs_bmc->miscdev.name = devm_kasprintf(kcs_bmc->dev, GFP_KERNEL, "%s%u",
-> >+					       DEVICE_NAME, kcs_bmc->channel);
-> > 	if (!kcs_bmc->data_in || !kcs_bmc->data_out || !kcs_bmc->kbuffer ||
-> > 	    !kcs_bmc->miscdev.name)
-> >-		return NULL;
-> >-	kcs_bmc->miscdev.fops = &kcs_bmc_fops;
-> >+		return -ENOMEM;
-> >
-> >-	return kcs_bmc;
-> >+	kcs_bmc->miscdev.fops = &kcs_bmc_ipmi_fops;
-> >+
-> >+	rc = misc_register(&kcs_bmc->miscdev);
-> >+	if (rc) {
-> >+		dev_err(kcs_bmc->dev, "Unable to register device: %d\n", rc);
-> >+		return rc;
-> >+	}
-> >+
-> >+	dev_info(kcs_bmc->dev, "Initialised IPMI client for channel %d", kcs_bmc->channel);
-> >+
-> >+	return 0;
-> >+}
-> >+EXPORT_SYMBOL(kcs_bmc_ipmi_attach_cdev);
-> >+
-> >+int kcs_bmc_ipmi_detach_cdev(struct kcs_bmc *kcs_bmc);
-> 
-> Same here.
-
-Same explanation.
-
-> 
-> >+int kcs_bmc_ipmi_detach_cdev(struct kcs_bmc *kcs_bmc)
-> >+{
-> >+	misc_deregister(&kcs_bmc->miscdev);
-> >+
-> >+	spin_lock_irq(&kcs_bmc->lock);
-> >+	kcs_bmc->running = 0;
-> >+	kcs_bmc_ipmi_force_abort(kcs_bmc);
-> >+	spin_unlock_irq(&kcs_bmc->lock);
-> >+
-> >+	devm_kfree(kcs_bmc->dev, kcs_bmc->kbuffer);
-> >+	devm_kfree(kcs_bmc->dev, kcs_bmc->data_out);
-> >+	devm_kfree(kcs_bmc->dev, kcs_bmc->data_in);
-> >+	devm_kfree(kcs_bmc->dev, kcs_bmc);
-> >+
-> >+	return 0;
-> > }
-> >-EXPORT_SYMBOL(kcs_bmc_ipmi_alloc);
-> >+EXPORT_SYMBOL(kcs_bmc_ipmi_detach_cdev);
-> >
-> > MODULE_LICENSE("GPL v2");
-> > MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
-> >diff --git a/drivers/char/ipmi/kcs_bmc_npcm7xx.c b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-> >index 1f44aadec9e8..5d017498dc69 100644
-> >--- a/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-> >+++ b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-> >@@ -65,6 +65,8 @@ struct npcm7xx_kcs_reg {
-> > };
-> >
-> > struct npcm7xx_kcs_bmc {
-> >+	struct kcs_bmc kcs_bmc;
-> >+
-> > 	struct regmap *map;
-> >
-> > 	const struct npcm7xx_kcs_reg *reg;
-> >@@ -76,9 +78,14 @@ static const struct npcm7xx_kcs_reg npcm7xx_kcs_reg_tbl[KCS_CHANNEL_MAX] = {
-> > 	{ .sts = KCS3ST, .dob = KCS3DO, .dib = KCS3DI, .ctl = KCS3CTL, .ie = KCS3IE },
-> > };
-> >
-> >+static inline struct npcm7xx_kcs_bmc *to_npcm7xx_kcs_bmc(struct kcs_bmc *kcs_bmc)
-> >+{
-> >+	return container_of(kcs_bmc, struct npcm7xx_kcs_bmc, kcs_bmc);
-> >+}
-> >+
-> > static u8 npcm7xx_kcs_inb(struct kcs_bmc *kcs_bmc, u32 reg)
-> > {
-> >-	struct npcm7xx_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> >+	struct npcm7xx_kcs_bmc *priv = to_npcm7xx_kcs_bmc(kcs_bmc);
-> > 	u32 val = 0;
-> > 	int rc;
-> >
-> >@@ -90,7 +97,7 @@ static u8 npcm7xx_kcs_inb(struct kcs_bmc *kcs_bmc, u32 reg)
-> >
-> > static void npcm7xx_kcs_outb(struct kcs_bmc *kcs_bmc, u32 reg, u8 data)
-> > {
-> >-	struct npcm7xx_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> >+	struct npcm7xx_kcs_bmc *priv = to_npcm7xx_kcs_bmc(kcs_bmc);
-> > 	int rc;
-> >
-> > 	rc = regmap_write(priv->map, reg, data);
-> >@@ -99,7 +106,7 @@ static void npcm7xx_kcs_outb(struct kcs_bmc *kcs_bmc, u32 reg, u8 data)
-> >
-> > static void npcm7xx_kcs_updateb(struct kcs_bmc *kcs_bmc, u32 reg, u8 mask, u8 data)
-> > {
-> >-	struct npcm7xx_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> >+	struct npcm7xx_kcs_bmc *priv = to_npcm7xx_kcs_bmc(kcs_bmc);
-> > 	int rc;
-> >
-> > 	rc = regmap_update_bits(priv->map, reg, mask, data);
-> >@@ -108,7 +115,7 @@ static void npcm7xx_kcs_updateb(struct kcs_bmc *kcs_bmc, u32 reg, u8 mask, u8 da
-> >
-> > static void npcm7xx_kcs_enable_channel(struct kcs_bmc *kcs_bmc, bool enable)
-> > {
-> >-	struct npcm7xx_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> >+	struct npcm7xx_kcs_bmc *priv = to_npcm7xx_kcs_bmc(kcs_bmc);
-> >
-> > 	regmap_update_bits(priv->map, priv->reg->ctl, KCS_CTL_IBFIE,
-> > 			   enable ? KCS_CTL_IBFIE : 0);
-> >@@ -155,11 +162,10 @@ static int npcm7xx_kcs_probe(struct platform_device *pdev)
-> > 		return -ENODEV;
-> > 	}
-> >
-> >-	kcs_bmc = kcs_bmc_alloc(dev, sizeof(*priv), chan);
-> >-	if (!kcs_bmc)
-> >+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> >+	if (!priv)
-> > 		return -ENOMEM;
-> >
-> >-	priv = kcs_bmc_priv(kcs_bmc);
-> > 	priv->map = syscon_node_to_regmap(dev->parent->of_node);
-> > 	if (IS_ERR(priv->map)) {
-> > 		dev_err(dev, "Couldn't get regmap\n");
-> >@@ -167,6 +173,9 @@ static int npcm7xx_kcs_probe(struct platform_device *pdev)
-> > 	}
-> > 	priv->reg = &npcm7xx_kcs_reg_tbl[chan - 1];
-> >
-> >+	kcs_bmc = &priv->kcs_bmc;
-> >+	kcs_bmc->dev = &pdev->dev;
-> >+	kcs_bmc->channel = chan;
-> > 	kcs_bmc->ioreg.idr = priv->reg->dib;
-> > 	kcs_bmc->ioreg.odr = priv->reg->dob;
-> > 	kcs_bmc->ioreg.str = priv->reg->sts;
-> >@@ -174,31 +183,27 @@ static int npcm7xx_kcs_probe(struct platform_device *pdev)
-> > 	kcs_bmc->io_outputb = npcm7xx_kcs_outb;
-> > 	kcs_bmc->io_updateb = npcm7xx_kcs_updateb;
-> >
-> >-	dev_set_drvdata(dev, kcs_bmc);
-> >+	platform_set_drvdata(pdev, priv);
-> >
-> > 	npcm7xx_kcs_enable_channel(kcs_bmc, true);
-> > 	rc = npcm7xx_kcs_config_irq(kcs_bmc, pdev);
-> > 	if (rc)
-> > 		return rc;
-> >
-> >-	rc = misc_register(&kcs_bmc->miscdev);
-> >-	if (rc) {
-> >-		dev_err(dev, "Unable to register device\n");
-> >-		return rc;
-> >-	}
-> >
-> > 	pr_info("channel=%u idr=0x%x odr=0x%x str=0x%x\n",
-> > 		chan,
-> > 		kcs_bmc->ioreg.idr, kcs_bmc->ioreg.odr, kcs_bmc->ioreg.str);
-> >
-> >-	return 0;
-> >+	return kcs_bmc_add_device(kcs_bmc);
-> > }
-> >
-> > static int npcm7xx_kcs_remove(struct platform_device *pdev)
-> > {
-> >-	struct kcs_bmc *kcs_bmc = dev_get_drvdata(&pdev->dev);
-> >+	struct npcm7xx_kcs_bmc *priv = platform_get_drvdata(pdev);
-> >+	struct kcs_bmc *kcs_bmc = &priv->kcs_bmc;
-> >
-> >-	misc_deregister(&kcs_bmc->miscdev);
-> >+	kcs_bmc_remove_device(kcs_bmc);
-> 
-> As with the corresponding aspeed code, should we propagate the return
-> value here?
-
-I'll address this.
-
-Thanks for the review!
-
-Andrew
+Thomas
