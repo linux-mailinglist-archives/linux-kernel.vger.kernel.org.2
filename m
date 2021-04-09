@@ -2,244 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801B535A828
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 369DA35A82E
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 22:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234524AbhDIUyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 16:54:25 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:45558 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234539AbhDIUyT (ORCPT
+        id S234584AbhDIUzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 16:55:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234278AbhDIUzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 16:54:19 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 139KnFd7028850;
-        Fri, 9 Apr 2021 20:53:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references :
- content-transfer-encoding : content-type : mime-version;
- s=corp-2020-01-29; bh=KFsTE2vrECjTbvsLeSvgSWewsuDLc2psH6Wi8Zq6GX0=;
- b=bdCLvTDkwnT2gkxHrV/rx6N6JOkiT6K82v6hnBI/8gF/suiSb22M/640DKc44wlI1zyg
- fyR85ZLR8t353UGIbdipAhG1HByNzLKTA1GULTWLVQzdq7y63VJndJGEFyOiSz0dKgYI
- 973dHMly9Ec/2op0MPhk7fODlz7HUNk2PQW7rW9SOvov3/IKz06v1n6UpR18c+NGX6hc
- /pVGBv3zXpUDSvJeYPkImMJ91FfmuaeTA1FQeWCfUA61mxpdnrwPNyZoB1UrdxxpSDaJ
- 8Gr/gmJvZo/xoBlhP3D+TK0I+4tsCxZXsVJULg5K0CtORUG7dTjW/ARwBd4+X/rkBfRy dg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 37rvawaqb7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Apr 2021 20:53:29 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 139KkEYQ178858;
-        Fri, 9 Apr 2021 20:53:29 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2048.outbound.protection.outlook.com [104.47.56.48])
-        by aserp3030.oracle.com with ESMTP id 37rvbj1prb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Apr 2021 20:53:29 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mq+zzwwjgZ/unbmpKVAKWnkIbQJ2/1ybWlSZ3YTjEn/5TDouNWS+0DttqdYGc7zn8RzCnjO+4b+Gql37NcuvDo/mHkgoXV3Avkr1qzPlDHRcv0X4mvbWOR10J22IQjg4zPJYWNKK2oARnCNncxZcdq4IS5r22P97rsrnPs4H7nGUN1/6k3iQWVtZBU4jhWtNkG+MeLadpq1D0fz054wu/HbWtVzIJRL4Arf6WVZoVf08Cpo2DR1ejlYIs8C6e5yr4HK654TPTOtc5mGh+vwsb6SzgTRZ+q7b4kiK0VKMyEYKDVU5rwhu2DWKZn9IZsLKE9ErpQTL4O7GX1nz63kNyw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KFsTE2vrECjTbvsLeSvgSWewsuDLc2psH6Wi8Zq6GX0=;
- b=Wk2U3chVzi1/ryDo/4VsaP4Pu9bmb3ibN3/cmfnPYIaSNLZqH3kTDR0Ljo7UuhUe6hVgNqK8y9OcTQFJ+7xNRYFIk5t2EZkU5sa1Kk9f4E2VTHEY0rcNEjP0qPkKHLe4YqVnkTTBlsy723c2RWm6OE+VF3QOSkh3zQsXcpPOPkb1w91DKiHyNZVwNUvsiwA5wAVRpx1dmMEkSAuRtOiDf3Y3I0r5w67vurejbzJCKi/5/QemTJVNOdoUt654oMamgXY8VTx1PvT3xs3BBgqVh1SPle35zyv6TSM2p7+BH2dNtX3qsZ4jBJ4KVPPqEos6uTKzq9b+T90ko5RxXjdfQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 9 Apr 2021 16:55:31 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54198C061763
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 13:55:18 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id x12so2955541ilm.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 13:55:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KFsTE2vrECjTbvsLeSvgSWewsuDLc2psH6Wi8Zq6GX0=;
- b=oHUhXfS3Xwx7OtuFSMepKrsPNlNmxF4C1VRXqVHEocbDXEh5IiSD761AzaATFcZDW6E+zegyYa6zZjdUomYUVx4TthNvPrTi56n98wIExWH+8sA+kHGph48MjJF4gzjf8vDNjZyaM8mvWwe3ANeSn0QUvVlCM6Vca5L1pupIx7E=
-Authentication-Results: kvack.org; dkim=none (message not signed)
- header.d=none;kvack.org; dmarc=none action=none header.from=oracle.com;
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com (2603:10b6:a03:20d::23)
- by BY5PR10MB3988.namprd10.prod.outlook.com (2603:10b6:a03:1b1::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Fri, 9 Apr
- 2021 20:53:27 +0000
-Received: from BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee]) by BY5PR10MB4196.namprd10.prod.outlook.com
- ([fe80::980e:61ba:57d2:47ee%7]) with mapi id 15.20.4020.018; Fri, 9 Apr 2021
- 20:53:27 +0000
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Rientjes <rientjes@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        HORIGUCHI NAOYA <naoya.horiguchi@nec.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Waiman Long <longman@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: [PATCH v5 8/8] hugetlb: add lockdep_assert_held() calls for hugetlb_lock
-Date:   Fri,  9 Apr 2021 13:52:54 -0700
-Message-Id: <20210409205254.242291-9-mike.kravetz@oracle.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210409205254.242291-1-mike.kravetz@oracle.com>
-References: <20210409205254.242291-1-mike.kravetz@oracle.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [50.38.35.18]
-X-ClientProxiedBy: CO1PR15CA0050.namprd15.prod.outlook.com
- (2603:10b6:101:1f::18) To BY5PR10MB4196.namprd10.prod.outlook.com
- (2603:10b6:a03:20d::23)
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6hMpOiSIwB9P1pmhgUat4Wuzv5g8vXfjIlrMwSbXm4Y=;
+        b=g0o7vIE9GPFakyteUScum6iPcfsuHZiUfZcphYRB6bpRXzJFN99ZzUegI3YjpwxeqS
+         6UdGOv1+CgMcZH4UtPzm5SmmMm/W+yztlp4MOl6JwfnQHqDWfp8LkcSwT3s9eKZIWedB
+         jQxqJ4qbtv0kXgWxDJTC7s34oMBdOwq1c+Hlk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6hMpOiSIwB9P1pmhgUat4Wuzv5g8vXfjIlrMwSbXm4Y=;
+        b=Q1BV8VCQIb19sdTuaQ1Jf1vBTgomJsG1a9p82BaPTsHlFCIo/KMbkkvrh5E+Wgtzyu
+         mG7QEIYBOFCblEVwXN9sAn3VxOChgj3su7Rs6778jF9Snfo0nGFqGmtEfhEXiYJOSeei
+         G/LU2rTlIunh5IAbaAqpxJ9/0qSEC7h8RVXqzBCptC3ZX6l9B3eFw8sGm1uYOc3BxTX+
+         Nm7igENTPo5NyROHZU6/w6cAHsr9i1DUWBUIpeUzpL+HTuwYDCkfM++TykKS9fgbZtKs
+         viMvL5RbMwRE8HwTxkFUjip2vxkHhqETS/4dhnG7Iqda6INnUrsSSWWhiLPM4Naj80k1
+         Hhaw==
+X-Gm-Message-State: AOAM533RyWO7mQfEKsx4DrmQbzDxLyxvnU0NyzR7wpOZy+hNcSOAPg7n
+        c5m2FI9UD4b35ZjmkeJb/9ToNg==
+X-Google-Smtp-Source: ABdhPJx9KZQgGD/mDdUoAWlvowRa2dNB37Vyuo9GzdZxAsl/od8cRd6pWXc/kMPenKZjB3+BKUWcgg==
+X-Received: by 2002:a05:6e02:1aab:: with SMTP id l11mr13099966ilv.150.1618001717704;
+        Fri, 09 Apr 2021 13:55:17 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id t9sm1695900ioi.27.2021.04.09.13.55.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 13:55:17 -0700 (PDT)
+Subject: Re: [PATCH 4.19 00/18] 4.19.186-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210409095301.525783608@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <a3241bd5-c8cd-dd47-03a8-906b66cf74e8@linuxfoundation.org>
+Date:   Fri, 9 Apr 2021 14:55:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from monkey.oracle.com (50.38.35.18) by CO1PR15CA0050.namprd15.prod.outlook.com (2603:10b6:101:1f::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Fri, 9 Apr 2021 20:53:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2d0f73a3-cb30-4cc4-19d2-08d8fb9985e8
-X-MS-TrafficTypeDiagnostic: BY5PR10MB3988:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR10MB39884C17EBE5EE0E31D73D00E2739@BY5PR10MB3988.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mJzPSjCD50aoYXzHsexL4mLJFXXl3DIdFB8Hl8+3/UEpCJS5P1IQgkvms4DX44nq84lN3gE6+CRxKFdfcGW44C7561XNkURh+nMqltPXucxzVfftVoVBvEnBN662OvQpC+jmzchQfhq63LotKv+/4oDemF01HnBPdQkFR/Kt5ry5NYg3ElHn0hYaUadABgWPhyxgcKLay8ESjVwzRrlHNKBPXV2Q57/VRY/jdZ8RqpYQuMVuoeuMYYlXt68/N7WG3N3GoE9hef/UdAWRqoQKZ9ox/mtsUeshQ62PvORqkq/yQ9PWWsitaHpUCln7358pSqkm2Ejxmm+rAqge7s9URJx1QPiET8OntMU6h0QT10D64ugizmbCb8yKje4NXSRw4gODdxaBsIFr9Besn7HdVUY2XoTAjur68Z9g4Iv9duBbuho8lSA4Z4labJmYTKH+3Izl1ATfkpmHwt3lcn6JjnLoxNM+ghe3p4ouIWRQLWlmjqiYT4uqjhk0dVJVnlFzcS9tNXRmS23u5kUF/XcZymBaAjnyiKnJcyZIMPNGNrC98IAeo/MSZSaC8X6vp0b58IdoVErLESbScfgWBcMGWsB5q7ZWv6AS1RY+lkcfkYqGzDrnZnEC4Mq/80EGETaJ0clwCoFuxiL13diBPbW2EiN93v85omFjX3VoRjOmM6JUnOwAm1d6s5uUTmq4YRzs
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR10MB4196.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(396003)(136003)(366004)(39860400002)(7416002)(478600001)(8936002)(107886003)(83380400001)(36756003)(956004)(6486002)(52116002)(8676002)(2616005)(44832011)(4326008)(38100700001)(38350700001)(2906002)(86362001)(66946007)(26005)(66556008)(7696005)(16526019)(6666004)(186003)(316002)(1076003)(6916009)(54906003)(5660300002)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?cyRA/lTHwt/ZUdGIrnmjgdTbz1rkN9ZCzUMx8EHZjMcbmFUiaQwZaSXFtdMp?=
- =?us-ascii?Q?bJhWKBhqm8J1s3oXxOzmuhTEpNrVyFXzj8I0B5kNFcw19shCsKgUVAeoWYZA?=
- =?us-ascii?Q?trW3RJ7MC1PZVoXw3DUCyrqlCuul4uVRVvQ6of8u5aHqA7JXgKLxgNIsEx3d?=
- =?us-ascii?Q?MoexMaSlAgTYUp+TjmkwPoKq7xHD9qgo/I21EWHXJ/Yp+5wySVcpeoydMgUB?=
- =?us-ascii?Q?ddSGrzWmRW5C5P1nCVcKO53SkfKrw1OWgonXnXep/Y4DhidoJaulqkmDD9tX?=
- =?us-ascii?Q?TIdPDueupr0qM0B27sqCarV7tNKe7SZ+l4l77eRyHPuWlKal5HGCknmxr6CB?=
- =?us-ascii?Q?adfrvyAL3ILWHkDJJHDOZq5VvDlz2E8EkKTAkK7OHM54rVeaPEVir7Ia5Z0n?=
- =?us-ascii?Q?Uc67H0U2kkLvzz8XSvsU8vkaGR6Xr2dZ5zoMNd0u6TLWfu0CHRDDH7URk/pB?=
- =?us-ascii?Q?obQc5G+MUrmSEQKJsgdxjO3oZ8IUpORuYLGuPVML0xrqNdUGekqjg/PR5eDf?=
- =?us-ascii?Q?ILZ3vHp4QBF38C6+DWybrFVNKRrbbuolz5yh6kYeMkrCvD7CTQ9TVKCeu0f4?=
- =?us-ascii?Q?iAsX12hw/k6OoJaHUm1PnR46MFSEA8K8zZwaIPWCU3ZKnmjNTwfhIuN+VkAq?=
- =?us-ascii?Q?iPoLqwiiXXx6qA5nq614EwPfCGxEcMiyIqsd4tAP7xxHykOOhtRI86MU/UY6?=
- =?us-ascii?Q?OgYNn+cQB22nnIgSXEq8aEtftcRFPnYVNIJNvDG9bmMZK4M7d9wrpzvTbobu?=
- =?us-ascii?Q?hl4pQuhnxE0yXWlqx3RFiu+GxtHtTxY9Tc9veNth73a+FzGghF+gcwAp3w1h?=
- =?us-ascii?Q?p25NGgjco+amp3glnqxVu4CvQkSggUSj6Ke27PpiKK3NjgnayoFsjBWz+bHj?=
- =?us-ascii?Q?fOaMxggsoL89zDdvD2yVSCeqQ8FvE1nPGyyQ0xInL6tgKgkxKcxMKoxkD4T6?=
- =?us-ascii?Q?g3+aTy9Zt6Qa1M9/wvfpUThgigM+Nf8ixSf+a1290eaoggXanh1g35WowHNQ?=
- =?us-ascii?Q?LmEMhmBE2jxZLImZdDdhFbMEY/pG30kHSfbALPcqiDuNquoKcCYj5JwFLuLl?=
- =?us-ascii?Q?bRi145TGaiw4RF8emJRBwkOZVHTDkXl7jPqDMIQyRYifvYWDh79K3THe9x6e?=
- =?us-ascii?Q?jl4vAKFc5esNS9X5NVEdMAI2+UeIeVhY6GGK7mS4DY5/9G9Y4dUTfyxuaehz?=
- =?us-ascii?Q?84RC6UDIHwxUGfc8nLwy5Lu5ee3E3usy6aTz4aB40Au/YrnWUDzsxO2s23hX?=
- =?us-ascii?Q?SgPQiFDT4yPqJeEXDy4/YRiKlhS9N/TFF1VE+2PEBOhCxcKX6jBMNzq9SlpM?=
- =?us-ascii?Q?bLV3waZ7vnm8XKWa88zCqwSk?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d0f73a3-cb30-4cc4-19d2-08d8fb9985e8
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR10MB4196.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 20:53:26.9771
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3Lc1KW/iyas++eVDh/ESSZxRaQRzFVlw0BaHgUHtTYBNLCo/dacUiK/uw1KMQpeTGgyQkupq+Kfuz2gO6SYAAA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3988
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9949 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 spamscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104090152
-X-Proofpoint-ORIG-GUID: kzBVHzZqU5QGTFo6kwtiGUmyHpnJ3dXw
-X-Proofpoint-GUID: kzBVHzZqU5QGTFo6kwtiGUmyHpnJ3dXw
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9949 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- suspectscore=0 phishscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
- mlxscore=0 bulkscore=0 impostorscore=0 adultscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104090152
+In-Reply-To: <20210409095301.525783608@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After making hugetlb lock irq safe and separating some functionality
-done under the lock, add some lockdep_assert_held to help verify
-locking.
+On 4/9/21 3:53 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.186 release.
+> There are 18 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.186-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
----
- mm/hugetlb.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+I am seeing a new warn - will debug later on today and let you know
+what I find:
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 049ca0bccfcc..5cf2b7e5ca50 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1062,6 +1062,8 @@ static bool vma_has_reserves(struct vm_area_struct *vma, long chg)
- static void enqueue_huge_page(struct hstate *h, struct page *page)
- {
- 	int nid = page_to_nid(page);
-+
-+	lockdep_assert_held(&hugetlb_lock);
- 	list_move(&page->lru, &h->hugepage_freelists[nid]);
- 	h->free_huge_pages++;
- 	h->free_huge_pages_node[nid]++;
-@@ -1073,6 +1075,7 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
- 	struct page *page;
- 	bool pin = !!(current->flags & PF_MEMALLOC_PIN);
- 
-+	lockdep_assert_held(&hugetlb_lock);
- 	list_for_each_entry(page, &h->hugepage_freelists[nid], lru) {
- 		if (pin && !is_pinnable_page(page))
- 			continue;
-@@ -1344,6 +1347,7 @@ static void remove_hugetlb_page(struct hstate *h, struct page *page,
- 	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page(page), page);
- 	VM_BUG_ON_PAGE(hugetlb_cgroup_from_page_rsvd(page), page);
- 
-+	lockdep_assert_held(&hugetlb_lock);
- 	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
- 		return;
- 
-@@ -1694,6 +1698,7 @@ static struct page *remove_pool_huge_page(struct hstate *h,
- 	int nr_nodes, node;
- 	struct page *page = NULL;
- 
-+	lockdep_assert_held(&hugetlb_lock);
- 	for_each_node_mask_to_free(h, nr_nodes, node, nodes_allowed) {
- 		/*
- 		 * If we're returning unused surplus pages, only examine
-@@ -1943,6 +1948,7 @@ static int gather_surplus_pages(struct hstate *h, long delta)
- 	long needed, allocated;
- 	bool alloc_ok = true;
- 
-+	lockdep_assert_held(&hugetlb_lock);
- 	needed = (h->resv_huge_pages + delta) - h->free_huge_pages;
- 	if (needed <= 0) {
- 		h->resv_huge_pages += delta;
-@@ -2036,6 +2042,7 @@ static void return_unused_surplus_pages(struct hstate *h,
- 	struct page *page;
- 	LIST_HEAD(page_list);
- 
-+	lockdep_assert_held(&hugetlb_lock);
- 	/* Uncommit the reservation */
- 	h->resv_huge_pages -= unused_resv_pages;
- 
-@@ -2524,6 +2531,7 @@ static void try_to_free_low(struct hstate *h, unsigned long count,
- 	int i;
- 	LIST_HEAD(page_list);
- 
-+	lockdep_assert_held(&hugetlb_lock);
- 	if (hstate_is_gigantic(h))
- 		return;
- 
-@@ -2565,6 +2573,7 @@ static int adjust_pool_surplus(struct hstate *h, nodemask_t *nodes_allowed,
- {
- 	int nr_nodes, node;
- 
-+	lockdep_assert_held(&hugetlb_lock);
- 	VM_BUG_ON(delta != -1 && delta != 1);
- 
- 	if (delta < 0) {
--- 
-2.30.2
 
+WARNING: CPU: 9 PID: 0 at drivers/net/wireless/ath/ath10k/htt_rx.c:46 
+ath10k_htt_rx_pop_paddr+0xde/0x100 [ath10k_core]
+Modules linked in: cmac algif_hash algif_skcipher af_alg bnep arc4 
+nls_iso8859_1 wmi_bmof snd_hda_codec_realtek snd_hda_codec_generic 
+snd_hda_codec_hdmi edac_mce_amd snd_hda_intel snd_hda_codec kvm_amd 
+snd_hda_core ccp snd_hwdep kvm snd_pcm snd_seq_midi crct10dif_pclmul 
+snd_seq_midi_event ghash_clmulni_intel pcbc snd_rawmidi ath10k_pci 
+snd_seq ath10k_core aesni_intel ath snd_seq_device rtsx_usb_ms btusb 
+aes_x86_64 snd_timer crypto_simd btrtl cryptd joydev btbcm glue_helper 
+memstick mac80211 snd btintel input_leds bluetooth soundcore cfg80211 
+ecdh_generic video wmi mac_hid sch_fq_codel parport_pc ppdev lp parport 
+drm ip_tables x_tables autofs4 hid_generic rtsx_usb_sdmmc usbhid 
+rtsx_usb hid crc32_pclmul uas i2c_piix4 r8169 ahci realtek usb_storage 
+libahci gpio_amdpt gpio_generic
+CPU: 9 PID: 0 Comm: swapper/9 Not tainted 4.19.186-rc1+ #24
+Hardware name: LENOVO 90Q30008US/3728, BIOS O4ZKT1CA 09/16/2020
+RIP: 0010:ath10k_htt_rx_pop_paddr+0xde/0x100 [ath10k_core]
+Code: 02 00 00 48 85 c9 74 30 4c 8b 49 28 4d 85 c9 74 1e 48 8b 30 45 31 
+c0 b9 02 00 00 00 e8 9b 27 ca cc 4c 89 e0 4c 8b 65 f8 c9 c3 <0f> 0b 45 
+31 e4 4c 89 e0 4c 8b 65 f8 c9 c3 48 8b 0d 1d df 4c cd eb
+RSP: 0018:ffff8d81bf043da0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff8d81927b2150 RCX: ffff8d81b8c01580
+RDX: 0000000000000008 RSI: 00000000ff708a80 RDI: ffff8d81b8c01e78
+RBP: ffff8d81bf043da8 R08: 0000000000200000 R09: 0000000000000000
+R10: ffffdd1f0f40f300 R11: 000ffffffffff000 R12: ffff8d81b8c02068
+R13: ffff8d81b8c01580 R14: ffff8d81927b2148 R15: ffff8d81b8c01580
+FS:  0000000000000000(0000) GS:ffff8d81bf040000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055a2c99a2000 CR3: 00000003de8d4000 CR4: 0000000000340ee0
+Call Trace:
+  <IRQ>
+  ath10k_htt_txrx_compl_task+0x58d/0xe70 [ath10k_core]
+  ath10k_pci_napi_poll+0x52/0x110 [ath10k_pci]
+  net_rx_action+0x13c/0x350
+  __do_softirq+0xd4/0x2ae
+  irq_exit+0x9c/0xe0
+  do_IRQ+0x86/0xe0
+  common_interrupt+0xf/0xf
+  </IRQ>
+RIP: 0010:cpuidle_enter_state+0x10b/0x2c0
+Code: ff e8 f9 68 85 ff 80 7d c7 00 74 17 9c 58 0f 1f 44 00 00 f6 c4 02 
+0f 85 97 01 00 00 31 ff e8 6c 5d 8b ff fb 66 0f 1f 44 00 00 <48> b8 ff 
+ff ff ff f3 01 00 00 4c 2b 7d c8 ba ff ff ff 7f 49 39 c7
+RSP: 0018:ffffb11e01a77e50 EFLAGS: 00000246 ORIG_RAX: ffffffffffffffda
+RAX: ffff8d81bf0626c0 RBX: ffff8d81b2690400 RCX: 00000006e8cb49d2
+RDX: 0000000000000689 RSI: 00000006e8cb49d2 RDI: 0000000000000000
+RBP: ffffb11e01a77e90 R08: 00000006e8cb505b R09: 0000000000000e29
+R10: 0000000000000f04 R11: ffff8d81bf061528 R12: 0000000000000003
+R13: ffffffff8df9e860 R14: ffffffff8df9e980 R15: 00000006e8cb505b
+  cpuidle_enter+0x17/0x20
+
+thanks,
+-- Shuah
