@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 113543598BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917B23598C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233276AbhDIJIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:08:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232563AbhDIJH5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:07:57 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6BFC061761
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 02:07:44 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0be10048f842a34b65c796.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:e100:48f8:42a3:4b65:c796])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C85051EC030D;
-        Fri,  9 Apr 2021 11:07:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617959262;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=t4PipJRxNW7hV1bpmymrmsyDv4ybS5qWPJmGY6G7EJE=;
-        b=FBkJARK9rCDTs5NBsSLfh6Wu+49wcFoDH2A4YmlxuR2VeJom3CVtMIi8dewAyAlWzZJVQj
-        eoaI0CZHYs/5GtJmaKJuCKG5EKj1X+obM4udvKwEFvtFuFlaWnlnKd7MqNWcOnBVx/jF6N
-        2WJtu14wnh8Bi50ZxNn2tMfV0vgCkP8=
-Date:   Fri, 9 Apr 2021 11:07:46 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Saripalli, RK" <rsaripal@amd.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH 0/5] Introduce support for PSF mitigation
-Message-ID: <20210409090746.GB15567@zn.tnic>
-References: <20210406155004.230790-1-rsaripal@amd.com>
- <20210407223905.5dqgzdaibvgq7jeq@treble>
- <e72bc628-111f-5e3a-bb79-7e77c9fe0424@amd.com>
+        id S232755AbhDIJIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:08:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232878AbhDIJIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:08:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E67D610D0;
+        Fri,  9 Apr 2021 09:08:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617959314;
+        bh=P5AFIuwYBrowJYNt7JM2J+ymtXbj3UqqOtwOct8/uEw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DIo19fYO+HAVmsLHd25TJcFT8Y9ZIX+dv55jjDB/7xaii6taK3x4gVMJjzuvCuE6n
+         XU+hfIxz2/rdL5OsUPV6BaS/l01e+Fm6pEIq+dfAIz/Bt7MyX7ZbaRjpVF9WOhchYm
+         JASgKtDplWCTh1RIfV9u6S9egxgnzNy6500M4L+TeUaO0GCQbe3I8TXqjKoPaUaonT
+         WhX4r1wiOndnMGbsbgjWJa9jTZ+hDnNUA9M6XOD09cQDHqhvbXKTJDWNdczYvOnmz1
+         H6IlgBjERrWnlMUSuClWow13K20Y5FZva6D6SMrmoHnCIKWplEstfDNQpsqcamzHdr
+         eNgwzoomn90dQ==
+From:   Nicolas Saenz Julienne <nsaenz@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     arnd@arndb.de, Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        kernel test robot <lkp@intel.com>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] pwm: raspberrypi-poe: Fix mailbox message initialization
+Date:   Fri,  9 Apr 2021 11:08:19 +0200
+Message-Id: <20210409090819.24805-1-nsaenz@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e72bc628-111f-5e3a-bb79-7e77c9fe0424@amd.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 09:56:47AM -0500, Saripalli, RK wrote:
-> It is possible most applications have been reviewed and scrubbed for
-> SSB-type attacks but PSF-type issues may not have been looked at yet.
-> This may be one of the cases where SSB is enabled but PSF is disabled
-> until the application(s) are scrubbed for the same.
+For testing purposes this driver might be built on big-endian
+architectures. So make sure we take that into account when populating
+structures that are to be passed to RPi4's mailbox.
 
-Right, and for that I think we could do a slimmer version of the psfd=
-toggle - no prctl and seccomp stuff - just the cmdline disable thing to
-keep this simpler.
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 79caa362eab6 ("pwm: Add Raspberry Pi Firmware based PWM bus")
+Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
+---
 
-Btw "psfd=" is maybe too short and cryptic. It would probably be more
-user-friendly if it were called:
+@arndb: This was just meged into the arm-soc tree some days ago. Should I
+prepare a second PR once it's been reviewed?
 
-predict_store_fwd={on,off,...}
+ drivers/pwm/pwm-raspberrypi-poe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-or so.
-
-Thx.
-
+diff --git a/drivers/pwm/pwm-raspberrypi-poe.c b/drivers/pwm/pwm-raspberrypi-poe.c
+index 043fc32e8be8..78423e66f4fc 100644
+--- a/drivers/pwm/pwm-raspberrypi-poe.c
++++ b/drivers/pwm/pwm-raspberrypi-poe.c
+@@ -66,7 +66,7 @@ static int raspberrypi_pwm_get_property(struct rpi_firmware *firmware,
+ 					u32 reg, u32 *val)
+ {
+ 	struct raspberrypi_pwm_prop msg = {
+-		.reg = reg
++		.reg = cpu_to_le32(reg),
+ 	};
+ 	int ret;
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.30.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
