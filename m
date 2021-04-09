@@ -2,132 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E346835A88B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 00:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BAB835A896
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 00:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234870AbhDIWD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 18:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234079AbhDIWDZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 18:03:25 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B8A2C061762;
-        Fri,  9 Apr 2021 15:03:12 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id m11so5109679pfc.11;
-        Fri, 09 Apr 2021 15:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R+gAfsPgzIf+Vl+2Q04sIKqvI+NoEh91IwRV5HMRlM0=;
-        b=g3RNUqs8G26UV5PlGVkTztahx/7bKGHr+sYgfG4imRFlBMgoDJI9C7pwQ2CTn8wz5r
-         v0XuNcMwKtLD5c1BOZLiqTqt5g2r+Un4sRSoR0NfZVz4Ew7xk2HygOR/UWH7iI3yhSl/
-         maNigIJiklSniZqpDgmMrQZteFPltUPVXVAwKaAreYzW6lpEXo/4EuVOySxoYq8yPRAU
-         JU4CfadOdglrryEyoR9kxPF8vUy2XqUATEIxzjmotR7ZTPTzmJr+3yn3uSPlbk0SqX64
-         lTUQh0wrdC4GEUfIagzehhSwzO2jA+2TTZBpnv2rWu9UWCfPgkUkY+kvnaMM4GXNorC0
-         3YCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R+gAfsPgzIf+Vl+2Q04sIKqvI+NoEh91IwRV5HMRlM0=;
-        b=G0DuWdDPElXE4CD+Ehy067NFWTpKH1SV7qLShYg283D+pjq62zjQ5S1Ww4MEPob/7u
-         rjtChFZMRwLYDWZuzdIF675u7On1lfilqp9BHiO1BRpsEjnQWsrToVoHcGJ7+/r7v1LP
-         Dx/nqygObJ71cTa87rJfesSnEFReQpNQynFgPvx5UK9WkikZCR7d9TDTgY1WQWho1dxH
-         KapcR1rBbHX0g0MUmIAKxsozyzx07JPWf1mmQ9X8r6DzjBzBd4DrPPYIP3W2Jl5hzZHs
-         mNCi4K+/qo4oINfYYpB6wbw3Kybamz6FOs/VOecq8QE534X6pA37q1kY8TjeuWBSJ/Zq
-         0cXQ==
-X-Gm-Message-State: AOAM532tdKrFo7PSV4Lzj/aIeonQX1KfDBulXraZ/6pm3/OFp4KsuiTS
-        UnTfCP11XvJiYuw1nNldMEJPPLx95V4N+gDE
-X-Google-Smtp-Source: ABdhPJw96bm87v9sMiU6oXKtctDcc+9dIDthQ0Sd1Ac5EwRMOpcMlKkwUf6ufEEl02/Ql7N1Z8XUbQ==
-X-Received: by 2002:aa7:818e:0:b029:215:2466:3994 with SMTP id g14-20020aa7818e0000b029021524663994mr14788264pfi.48.1618005791570;
-        Fri, 09 Apr 2021 15:03:11 -0700 (PDT)
-Received: from kali ([103.141.87.253])
-        by smtp.gmail.com with ESMTPSA id e190sm3147248pfe.3.2021.04.09.15.03.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 15:03:11 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 03:33:05 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     clabbe@baylibre.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] [PATCH v2 1/2] media: zoran: add spaces
- around '<<'
-Message-ID: <YHDPGVo1mTYtPigo@kali>
-References: <YHCgksbiLv0pFF2F@kali>
- <alpine.DEB.2.22.394.2104092239170.23056@hadrien>
+        id S234966AbhDIWE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 18:04:28 -0400
+Received: from mx.kolabnow.com ([95.128.36.40]:34494 "EHLO mx.kolabnow.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234932AbhDIWE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 18:04:26 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by ext-mx-out003.mykolab.com (Postfix) with ESMTP id 4AF2D40B5D;
+        Sat, 10 Apr 2021 00:04:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kolabnow.com; h=
+        message-id:references:in-reply-to:subject:subject:from:from:date
+        :date:content-transfer-encoding:content-type:content-type
+        :mime-version:received:received:received; s=dkim20160331; t=
+        1618005849; x=1619820250; bh=FEZ8XfP/C/s3g8U/Ca+1kTURK7HIFQDsrey
+        PbmLxgvI=; b=KEvbED46Nzzg+zHqlRtDTjdqxabx8uUHB1oR4prVlCNid1pJZQ4
+        M3Q3nV8GVfxRdnPfqsnlrtpFvlKQ+Y2XWcuHJXcpb1srAAN/JpcTq1bRm0zLKFJC
+        ZggRnnnL6+NWHDG7o8b+xY9RqtwGrIl6XK+sZH3S70O8zZTO0Nkmq6vDGMOEdvAc
+        gn18yOHfF33gTfCmHrA5lGFz68ZW4PKqXP4NzawOcHEpdDsbFPSHm1O7UthKAFrS
+        ki0p6GmgH/608ut+QNnOphcaa0WWfGRLKcw+ks+193IqyIn3QrpiGYRmzT/bwsz4
+        TzhmqUvVWEsFyJCPdHA/biH1wTG9PbgB5oo2OLG/GNmqxFxhI0sgkHEWDjIYJ6hD
+        fu9gQLXIvTJwEVUgR/8prYsTbbnoGNE22GRHwbyBOCZjYMlnxzTLK6ztZ4BMwcUg
+        S3T0jG28kg5e/9Fis5N6yBC5ahFq0OIJuv32K/dHb4f832qCm9QkY8PzFb/rWg/u
+        fOMW0bAXxmA2+l9FPgtcFuBChCPDZmZcIllLWflfTyq5Q1NfcsxdS2l7EVg4CL0h
+        2rbDztY55nCeX8iChK5bOnMFXgX7UdM0ksKGT4Rn0AZDqUenyXayq6IVzO/e5L/5
+        EaKsDjyDa8amN3cyDqLMdlA3NltW2G3vtucsogxEazDcIhRGuZpYzAVc=
+X-Virus-Scanned: amavisd-new at mykolab.com
+X-Spam-Flag: NO
+X-Spam-Score: -1.9
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.9 tagged_above=-10 required=5
+        tests=[BAYES_00=-1.9] autolearn=ham autolearn_force=no
+Received: from mx.kolabnow.com ([127.0.0.1])
+        by localhost (ext-mx-out003.mykolab.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id yzb_qYtMbBFZ; Sat, 10 Apr 2021 00:04:09 +0200 (CEST)
+Received: from int-mx003.mykolab.com (unknown [10.9.13.3])
+        by ext-mx-out003.mykolab.com (Postfix) with ESMTPS id D5E1F403F1;
+        Sat, 10 Apr 2021 00:04:07 +0200 (CEST)
+Received: from int-subm002.mykolab.com (unknown [10.9.37.2])
+        by int-mx003.mykolab.com (Postfix) with ESMTPS id CA8D63162;
+        Sat, 10 Apr 2021 00:04:05 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2104092239170.23056@hadrien>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 10 Apr 2021 00:04:03 +0200
+From:   Federico Vaga <federico.vaga@vaga.pv.it>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Alex Shi <alexs@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thorsten Leemhuis <linux@leemhuis.info>,
+        Wu XiangCheng <bobwxc@email.cn>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 6/8] docs: replace transation references for
+ reporting-bugs.rst
+In-Reply-To: <3c7eb94992f7d85d75c8faf82c6a4690b2666951.1617972339.git.mchehab+huawei@kernel.org>
+References: <cover.1617972339.git.mchehab+huawei@kernel.org>
+ <3c7eb94992f7d85d75c8faf82c6a4690b2666951.1617972339.git.mchehab+huawei@kernel.org>
+Message-ID: <028fa780f186689cddfba701b87c4c87@vaga.pv.it>
+X-Sender: federico.vaga@vaga.pv.it
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 10:40:25PM +0200, Julia Lawall wrote:
+On 2021-04-09 14:47, Mauro Carvalho Chehab wrote:
+> Changeset d2ce285378b0 ("docs: make reporting-issues.rst official and
+> delete reporting-bugs.rst")
+> dropped reporting-bugs.rst, in favor of reporting-issues.rst, but
+> translations still need to be updated, in order to point to the
+> new file.
 > 
-> 
-> On Sat, 10 Apr 2021, Mitali Borkar wrote:
-> 
-> > No changes required in this patch.
-> > In v1:- Added spaces around '<<' operator to improve readability and meet linux kernel coding
-> > style
-> 
-> The text above would go in the git history.  "No changes required in this
-> patch." doesn't make sense in that context.  If you want to say something
-> that relates to the history of the submitted patches, then that should be
-> under the ---.  The text there will disappear when the patch is applied.
->
-Ok Ma'am, I will rectify this mistake and send patch v3 with correct
-patch body.
+> Fixes: d2ce285378b0 ("docs: make reporting-issues.rst official and
+> delete reporting-bugs.rst")
+> Acked-by: Wu XiangCheng <bobwxc@email.cn>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  Documentation/translations/it_IT/process/howto.rst            | 2 +-
 
-> julia
-> 
-> 
-> >
-> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > ---
-> >
-> > Changes from v1:- No changes required in this patch. Below is the git
-> > diff of v1.
-> >
-> >  drivers/staging/media/zoran/zr36057.h | 14 +++++++-------
-> >  1 file changed, 7 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> > index 71b651add35a..a2a75fd9f535 100644
-> > --- a/drivers/staging/media/zoran/zr36057.h
-> > +++ b/drivers/staging/media/zoran/zr36057.h
-> > @@ -30,13 +30,13 @@
-> >  #define ZR36057_VFESPFR_HOR_DCM          14
-> >  #define ZR36057_VFESPFR_VER_DCM          8
-> >  #define ZR36057_VFESPFR_DISP_MODE        6
-> > -#define ZR36057_VFESPFR_YUV422          (0<<3)
-> > -#define ZR36057_VFESPFR_RGB888          (1<<3)
-> > -#define ZR36057_VFESPFR_RGB565          (2<<3)
-> > -#define ZR36057_VFESPFR_RGB555          (3<<3)
-> > -#define ZR36057_VFESPFR_ERR_DIF          (1<<2)
-> > -#define ZR36057_VFESPFR_PACK24          (1<<1)
-> > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1<<0)
-> > +#define ZR36057_VFESPFR_YUV422          (0 << 3)
-> > +#define ZR36057_VFESPFR_RGB888          (1 << 3)
-> > +#define ZR36057_VFESPFR_RGB565          (2 << 3)
-> > +#define ZR36057_VFESPFR_RGB555          (3 << 3)
-> > +#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
-> > +#define ZR36057_VFESPFR_PACK24          (1 << 1)
-> > +#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
-> >
-> >  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
-> >
-> > --
-> > 2.30.2
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHCgksbiLv0pFF2F%40kali.
-> >
+Acked-by: Federico Vaga <federico.vaga@vaga.pv.it>
+
+>  Documentation/translations/ja_JP/howto.rst                    | 2 +-
+>  Documentation/translations/zh_CN/SecurityBugs                 | 2 +-
+>  .../translations/zh_CN/admin-guide/reporting-issues.rst       | 4 ++--
+>  Documentation/translations/zh_CN/process/howto.rst            | 2 +-
+>  5 files changed, 6 insertions(+), 6 deletions(-)
+
+-- 
+Federico Vaga
