@@ -2,79 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C98F359284
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C953592A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:10:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233178AbhDIDJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232926AbhDIDJD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:09:03 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB43C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:08:51 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id t22so2850052pgu.0
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 20:08:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=h3/zuAkLa/ADOI4qQOD5EyWX5f7zNMFVEr3AGRbxlzs=;
-        b=Qu68/UtbNay6Ey8RBiWsqTf7H769Hs16vmlRffRA305itJafW9w8eOhm2Ks/ZI5lRW
-         MO6vcAGxVhQDBFf6O80cqlCf31Ae8d44QgEsiuUOhKnoHv8NjDmFO8f8sZ2dcabZROgI
-         LSWCTwdC7ovN6o7lj2OP2rTjHyPpV+ySSgqD0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=h3/zuAkLa/ADOI4qQOD5EyWX5f7zNMFVEr3AGRbxlzs=;
-        b=lvd/fXoSJg63qDb86gY8c/Le1g9zcjrD6ryrlyJs48vuBt/S0f+cQOP4gAVO8gPvAo
-         F1OrieHWXmlS/MBhRHmTPFU7Uxm7s31RyxLu/0B+bi5d6sX+n40pqnHUhTQ6NGL5BAgA
-         Hsq2HRApBHOhIG7WSQ9uNowu7p9Rb1q6ZXn8BFjipcaMegZUzeku9ZnASCJEO43gyZ2e
-         2TxqzrfeeNgqZxbJ7UYuKdd8LsfYeHX77qR/I1rV08dXxB+PHMCA7+Avk+OpsI7nZidG
-         29Ma6syyFSy6hY7ha2QnlQryvsHbJ8wM2hLNY0ckXHsLqPcQ9YKaHGbTh/osEft2y8yS
-         d0bQ==
-X-Gm-Message-State: AOAM533YE50OyLiy1+ipwhq0ZN+J+epP24sMt56dY+Z0ZImzKylqjzom
-        X+nPMeowPVzL+r4NAsd16UkaWw==
-X-Google-Smtp-Source: ABdhPJwHogY0DATf5duyo92TJZmtUJWTBk3mjGIjRNGLYYG5MoEeyaiDAuLca/mdUjjXd4N5OWUM5w==
-X-Received: by 2002:a63:390:: with SMTP id 138mr11306786pgd.8.1617937730705;
-        Thu, 08 Apr 2021 20:08:50 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i14sm625160pgk.77.2021.04.08.20.08.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 20:08:50 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 20:08:49 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/20] kbuild: scripts/install.sh: prepare for
- arch-specific bootloaders
-Message-ID: <202104082008.25EB080@keescook>
-References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
- <20210407053419.449796-6-gregkh@linuxfoundation.org>
+        id S233354AbhDIDKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:10:35 -0400
+Received: from m12-16.163.com ([220.181.12.16]:47907 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233268AbhDIDKZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 8 Apr 2021 23:10:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=7rh5j
+        vLPWFTr5xxocUp0KFEzkTg6sq3XwroqTIXlHro=; b=R6kJUS/YV/JefnZ9Qv7a/
+        B7gj6IFH4Dwg5gRwyMW8vZag/+Lu7kmdmJHcFPNKMde6yKkTSjL4z0naZiT7v69C
+        r0+lprj/y9s0ZFEQ9lPKRhhL4Q/S9GGKAVGtpS2HrIEFpXFjrBRRTdCvIsy2LEVo
+        NhxerCcU89tFq+ZGZwPRBQ=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp12 (Coremail) with SMTP id EMCowADn4DhpxW9gVATTkg--.10285S2;
+        Fri, 09 Apr 2021 11:09:31 +0800 (CST)
+From:   dingsenjie@163.com
+To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        dingsenjie <dingsenjie@yulong.com>
+Subject: [PATCH] mtd: devices: Remove superfluous "break"
+Date:   Fri,  9 Apr 2021 11:09:00 +0800
+Message-Id: <20210409030900.40296-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210407053419.449796-6-gregkh@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EMCowADn4DhpxW9gVATTkg--.10285S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUxTKuUUUUU
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbiHhdmyFSItk9OwAABsN
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 07, 2021 at 07:34:04AM +0200, Greg Kroah-Hartman wrote:
-> Despite the last release of LILO being in 2015, it seems that it is
-> still the default x86 bootloader and wants to be called to "install" the
-> new kernel image when it has been replaced on the disk.  To allow
-> arch-specific programs like this to be called in future changes, move
-> the logic to an arch-specific test now.
-> 
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: dingsenjie <dingsenjie@yulong.com>
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Remove superfluous "break", as there is a "return" before them.
 
+Signed-off-by: dingsenjie <dingsenjie@yulong.com>
+---
+ drivers/mtd/devices/ms02-nv.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/mtd/devices/ms02-nv.c b/drivers/mtd/devices/ms02-nv.c
+index fb4a6aa..08f76ff 100644
+--- a/drivers/mtd/devices/ms02-nv.c
++++ b/drivers/mtd/devices/ms02-nv.c
+@@ -286,7 +286,6 @@ static int __init ms02nv_init(void)
+ 		break;
+ 	default:
+ 		return -ENODEV;
+-		break;
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(ms02nv_addrs); i++)
 -- 
-Kees Cook
+1.9.1
+
+
