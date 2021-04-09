@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3889359B59
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66510359B5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234062AbhDIKJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:09:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46030 "EHLO mail.kernel.org"
+        id S234116AbhDIKJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:09:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233741AbhDIKCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:02:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E678B6120C;
-        Fri,  9 Apr 2021 10:00:01 +0000 (UTC)
+        id S233426AbhDIKCI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 06:02:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8622D6103E;
+        Fri,  9 Apr 2021 10:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962402;
-        bh=N8n3jcYHWyo1wp21uJxRgPbrFjs21WTUixqnVBSy01Q=;
+        s=korg; t=1617962405;
+        bh=hmIcV6g2nTUsEzZimcA6GiCe/NcKeNtvL1AKwwHtmtQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y3Z62XP0zPtQFvO6p4UeByqaTM8gYemtKPi3lkVVcANcazCdCY/Tz5qQmOPiYJV81
-         g6kvm/TVuGpv5g7Z91pNkN8RxAajppc37eYslNa1OWcKyGct/TQxIj8eEjCH396R3K
-         LGnOeODQd92RjBoE5cBWElRpZrkdFdiKpPdkZEGk=
+        b=srIs3/jRd+AuSxZwCB58zqll7qTbqhYGTyGU10sRbO4rOPmJISUN4bsU89huJ71/7
+         Vuc0O79cAtzDjVXT8sLD8oSXSy0Z/pFpicbMGoPyk6fFkAXstLBa8FQpNAEtw6Z/j1
+         exaUbhZXobc0Vl0a+4nvvGnZuc1la3lSJqr3dKhQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        stable@vger.kernel.org, Stanislav Fomichev <sdf@google.com>,
         Andrii Nakryiko <andrii@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 36/41] kbuild: Do not clean resolve_btfids if the output does not exist
-Date:   Fri,  9 Apr 2021 11:53:58 +0200
-Message-Id: <20210409095305.973227790@linuxfoundation.org>
+Subject: [PATCH 5.10 37/41] tools/resolve_btfids: Add /libbpf to .gitignore
+Date:   Fri,  9 Apr 2021 11:53:59 +0200
+Message-Id: <20210409095306.011497745@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210409095304.818847860@linuxfoundation.org>
 References: <20210409095304.818847860@linuxfoundation.org>
@@ -41,51 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Olsa <jolsa@kernel.org>
+From: Stanislav Fomichev <sdf@google.com>
 
-[ Upstream commit 0e1aa629f1ce9e8cb89e0cefb9e3bfb3dfa94821 ]
+[ Upstream commit 90a82b1fa40d0cee33d1c9306dc54412442d1e57 ]
 
-Nathan reported issue with cleaning empty build directory:
+This is what I see after compiling the kernel:
 
-  $ make -s O=build distclean
-  ../../scripts/Makefile.include:4: *** \
-  O=/ho...build/tools/bpf/resolve_btfids does not exist.  Stop.
+ # bpf-next...bpf-next/master
+ ?? tools/bpf/resolve_btfids/libbpf/
 
-The problem that tools scripts require existing output
-directory, otherwise it fails.
-
-Adding check around the resolve_btfids clean target to
-ensure the output directory is in place.
-
-Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Fixes: fc6b48f692f8 ("tools/resolve_btfids: Build libbpf and libsubcmd in separate directories")
+Signed-off-by: Stanislav Fomichev <sdf@google.com>
 Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
-Link: https://lore.kernel.org/bpf/20210211124004.1144344-1-jolsa@kernel.org
+Link: https://lore.kernel.org/bpf/20210212010053.668700-1-sdf@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Makefile | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ tools/bpf/resolve_btfids/.gitignore | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Makefile b/Makefile
-index 3a3937ab7ed0..4420131d4709 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1085,8 +1085,14 @@ endif
- 
- PHONY += resolve_btfids_clean
- 
-+resolve_btfids_O = $(abspath $(objtree))/tools/bpf/resolve_btfids
-+
-+# tools/bpf/resolve_btfids directory might not exist
-+# in output directory, skip its clean in that case
- resolve_btfids_clean:
--	$(Q)$(MAKE) -sC $(srctree)/tools/bpf/resolve_btfids O=$(abspath $(objtree))/tools/bpf/resolve_btfids clean
-+ifneq ($(wildcard $(resolve_btfids_O)),)
-+	$(Q)$(MAKE) -sC $(srctree)/tools/bpf/resolve_btfids O=$(resolve_btfids_O) clean
-+endif
- 
- ifdef CONFIG_BPF
- ifdef CONFIG_DEBUG_INFO_BTF
+diff --git a/tools/bpf/resolve_btfids/.gitignore b/tools/bpf/resolve_btfids/.gitignore
+index 25f308c933cc..16913fffc985 100644
+--- a/tools/bpf/resolve_btfids/.gitignore
++++ b/tools/bpf/resolve_btfids/.gitignore
+@@ -1,2 +1,3 @@
+ /fixdep
+ /resolve_btfids
++/libbpf/
 -- 
 2.30.2
 
