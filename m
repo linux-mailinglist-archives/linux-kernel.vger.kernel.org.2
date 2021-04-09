@@ -2,180 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97A9C35A0B6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B76C35A0B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233267AbhDIOKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:10:19 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16512 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhDIOKS (ORCPT
+        id S233808AbhDIOKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:10:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22618 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233009AbhDIOKf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:10:18 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FH0Lp2L84zPnDc;
-        Fri,  9 Apr 2021 22:07:14 +0800 (CST)
-Received: from [127.0.0.1] (10.69.38.196) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 22:09:56 +0800
-Subject: Re: [PATCH 3/4] docs: Add documentation for HiSilicon PTT device
- driver
-To:     Bjorn Helgaas <helgaas@kernel.org>
-CC:     <alexander.shishkin@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <lorenzo.pieralisi@arm.com>, <gregkh@linuxfoundation.org>,
-        <jonathan.cameron@huawei.com>, <song.bao.hua@hisilicon.com>,
-        <prime.zeng@huawei.com>, <linux-doc@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <20210408165758.GA1935187@bjorn-Precision-5520>
-From:   Yicong Yang <yangyicong@hisilicon.com>
-Message-ID: <e94e9a35-a799-216d-c9a4-2f5fddc5e8b6@hisilicon.com>
-Date:   Fri, 9 Apr 2021 22:09:56 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.1
-MIME-Version: 1.0
-In-Reply-To: <20210408165758.GA1935187@bjorn-Precision-5520>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.38.196]
-X-CFilter-Loop: Reflected
+        Fri, 9 Apr 2021 10:10:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617977422;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EWNREvrOtHiS/gdxlthAoSyaX95CLmAUl3lJOVpNYCw=;
+        b=c69PVkQPjTFGc7JIumKw59bMWstrVDN32l4cqWo1wNYz9r5wTwyEt18yamBKDTwxeY2qXG
+        mY8oVgp59wrcwix185Aa7LmVaGPa3VCJ7e3r1ua4JeegzFY47g4tX5mr344MCNrANGJ2Vf
+        FTErhDBAdx50ABq8b39T9thPMS1hiRg=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-533-z92XHroaMyisCL3gja52_Q-1; Fri, 09 Apr 2021 10:10:18 -0400
+X-MC-Unique: z92XHroaMyisCL3gja52_Q-1
+Received: by mail-wm1-f70.google.com with SMTP id 18-20020a05600c2312b029011e88b0f2baso850475wmo.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 07:10:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=EWNREvrOtHiS/gdxlthAoSyaX95CLmAUl3lJOVpNYCw=;
+        b=g5gMUDSyEP2c4mWzxOMlqJZFnlJOpD4uvkj7JjZr+P7pXlBhGXdDi33YH8FHD3djEW
+         CClZPuYumCz79O7qXWLay4n+6lcQhmH3Jtt42TNoibUdVAZkBTHTrTP+OZ0eRJlcvv1D
+         +y9CwAsEdQTxrI4amHswhdQXkvkb7Fmx2wlMeDy9QjJ9tpjBrhgxCGfCf6bKDiuFpJ6V
+         KUAEHQwk7qt4D16qIFio2V6G90wfVFfFf/6qoHLYgx3q2mkgBLAcGxZd6/hAGBoQYGxI
+         CqGkljVgAXh+jx22etWMLdpt3Izhy1fL7/uiKR0php1mDWzMvVpR2MUbgkLbA7GKNTGz
+         kyfA==
+X-Gm-Message-State: AOAM532xNwx8jLjCtUvKkvTda2oeJAq00O/FMZOXAhpdzho3j4niV+1Z
+        rhB6yuJ63uWoqdcNkfnpGSR2qxOIph9vBUcsXZpMu1tUvF5F4RizlBEuKW9jrX1rPvxDUJgOQgH
+        aZ95IPYn/cTQAcWw+VKxgDMbR
+X-Received: by 2002:a1c:49d5:: with SMTP id w204mr14121440wma.51.1617977417370;
+        Fri, 09 Apr 2021 07:10:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxK2eQJebQQhfMGzxEK9Jzyvz7ElE085TfiU8H50Wp6kUuTBF1Ga0ilIdJhVRoRW8OfQyc2eA==
+X-Received: by 2002:a1c:49d5:: with SMTP id w204mr14121423wma.51.1617977417130;
+        Fri, 09 Apr 2021 07:10:17 -0700 (PDT)
+Received: from [192.168.3.108] (p5b0c6302.dip0.t-ipconnect.de. [91.12.99.2])
+        by smtp.gmail.com with ESMTPSA id u8sm4960453wrr.42.2021.04.09.07.10.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 07:10:16 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   David Hildenbrand <david@redhat.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v7] RISC-V: enable XIP
+Date:   Fri, 9 Apr 2021 16:10:15 +0200
+Message-Id: <F096121C-8F7A-4E9A-B319-2C5F656610EA@redhat.com>
+References: <YHBdzPsHantT9r8t@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>, Alex Ghiti <alex@ghiti.fr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        Vitaly Wool <vitaly.wool@konsulko.com>
+In-Reply-To: <YHBdzPsHantT9r8t@linux.ibm.com>
+To:     Mike Rapoport <rppt@linux.ibm.com>
+X-Mailer: iPhone Mail (18D70)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/9 0:57, Bjorn Helgaas wrote:
-> On Thu, Apr 08, 2021 at 09:22:52PM +0800, Yicong Yang wrote:
->> On 2021/4/8 2:55, Bjorn Helgaas wrote:
->>> On Tue, Apr 06, 2021 at 08:45:53PM +0800, Yicong Yang wrote:
-> 
->>>> +On Kunpeng 930 SoC, the PCIe root complex is composed of several
->>>> +PCIe cores.
->>
->>> Can you connect "Kunpeng 930" to something in the kernel tree?
->>> "git grep -i kunpeng" shows nothing that's obviously relevant.
->>> I assume there's a related driver in drivers/pci/controller/?
->>
->> Kunpeng 930 is the product name of Hip09 platform. The PCIe
->> controller uses the generic PCIe driver based on ACPI.
-> 
-> I guess I'm just looking for a hint to help users know when to enable
-> the Kconfig for this.  Maybe the "HiSilicon" in the Kconfig help is
-> enough?  Maybe "Kunpeng 930" is not even necessary?  If "Kunpeng 930"
-> *is* necessary, there should be some way to relate it to something
-> else.
-> 
 
-since it's added in Kunpeng 930. otherwise users maybe confused why they
-don't find it on Kunpeng 920 (Hip 08) or older platforms. The Kunpeng is
-the product name, users should have known it when they have such a platform.
+> Am 09.04.2021 um 15:59 schrieb Mike Rapoport <rppt@linux.ibm.com>:
+>=20
+> =EF=BB=BFOn Fri, Apr 09, 2021 at 02:46:17PM +0200, David Hildenbrand wrote=
+:
+>>>>> Also, will that memory properly be exposed in the resource tree as
+>>>>> System RAM (e.g., /proc/iomem) ? Otherwise some things (/proc/kcore)
+>>>>> won't work as expected - the kernel won't be included in a dump.
+>>> Do we really need a XIP kernel to included in kdump?
+>>> And does not it sound weird to expose flash as System RAM in /proc/iomem=
+? ;-)
+>>=20
+>> See my other mail, maybe we actually want something different.
+>>=20
+>>>=20
+>>>> I have just checked and it does not appear in /proc/iomem.
+>>>>=20
+>>>> Ok your conclusion would be to have struct page, I'm going to implement=
+ this
+>>>> version then using memblock as you described.
+>>>=20
+>>> I'm not sure this is required. With XIP kernel text never gets into RAM,=
+ so
+>>> it does not seem to require struct page.
+>>>=20
+>>> XIP by definition has some limitations relatively to "normal" operation,=
 
->>>> +from the file, and the desired value written to the file to tune.
->>>
->>>> +Tuning multiple events at the same time is not permitted, which means
->>>> +you cannot read or write more than one tune file at one time.
->>>
->>> I think this is obvious from the model, so the sentence doesn't really
->>> add anything.  Each event is a separate file, and it's obvious that
->>> there's no way to write to multiple files simultaneously.
->>
->> from the usage we shown below this situation won't happen. I just worry
->> that users may have a program to open multiple files at the same time and
->> read/write simultaneously, so add this line here to mention the restriction.
-> 
-> How is this possible?  I don't think "writing multiple files
-> simultaneously" is even possible in the Linux syscall model.  I don't
-> think a user will do anything differently after reading "you cannot
-> read or write more than one tune file at one time."
-> 
-then I'll remove this line. thanks.
->>>> +- tx_path_rx_req_alloc_buf_level: watermark of RX requested
->>>> +- tx_path_tx_req_alloc_buf_level: watermark of TX requested
->>>> +
->>>> +These events influence the watermark of the buffer allocated for each
->>>> +type. RX means the inbound while Tx means outbound. For a busy
->>>> +direction, you should increase the related buffer watermark to enhance
->>>> +the performance.
->>>
->>> Based on what you have written here, I would just write 2 to both
->>> files to enhance the performance in both directions.  But obviously
->>> there must be some tradeoff here, e.g., increasing Rx performance
->>> comes at the cost of Tx performane.
->>
->> the Rx buffer and Tx buffer are separate, so they won't influence
->> each other.
-> 
-> Why would I write anything other than 2 to these files?  That's the
-> question I think this paragraph should answer.
-> 
+>>> so lack of kdump could be one of them.
+>>=20
+>> I agree.
+>>=20
+>>>=20
+>>> I might be wrong, but IMHO, artificially creating a memory map for part o=
+f
+>>> flash would cause more problems in the long run.
+>>=20
+>> Can you elaborate?
+>=20
+> Nothing particular, just a gut feeling. Usually, when you force something
+> it comes out the wrong way later.
+>=20
+>>>=20
+>>> BTW, how does XIP account the kernel text on other architectures that
+>>> implement it?
+>>=20
+>> Interesting point, I thought XIP would be something new on RISC-V (well, a=
+t
+>> least to me :) ). If that concept exists already, we better mimic what
+>> existing implementations do.
+>=20
+> I had quick glance at ARM, it seems that kernel text does not have memory
+> map and does not show up in System RAM.
+>=20
 
-In most cases just keep the normal level.
+Does it show up in a different way or not at all?
 
-the data in the buffer will be posted when reaching the watermark
-or timed out. for some situation you have an idle traffic but you
-want a quick response, then set the watermark in lower level.
-
->>>> +9. data_format
->>>> +--------------
->>>> +
->>>> +File to indicate the format of the traced TLP headers. User can also
->>>> +specify the desired format of traced TLP headers. Available formats
->>>> +are 4DW, 8DW which indicates the length of each TLP headers traced.
->>>> +::
->>>> +    $ cat data_format
->>>> +    [4DW]    8DW
->>>> +    $ echo 8 > data_format
->>>> +    $ cat data_format
->>>> +    4DW     [8DW]
->>>> +
->>>> +The traced TLP header format is different from the PCIe standard.
->>>
->>> I'm confused.  Below you say the fields of the traced TLP header are
->>> defined by the PCIe spec.  But here you say the format is *different*.
->>> What exactly is different?
->>
->> For the Request Header Format for 64-bit addressing of Memory, defind in
->> PCIe spec 4.0, Figure 2-15, the 1st DW is like:
->>
->> Byte 0 > [Fmt] [Type] [T9] [Tc] [T8] [Attr] [LN] [TH] ... [Length]
->>
->> some are recorded in our traced header like below, which some are not.
->> that's what I mean the format of the header are different. But for a
->> certain field like 'Fmt', the meaning keeps same with what Spec defined.
->> that's what I mean the fields definition of our traced header keep same
->> with the Spec.
-> 
-> Ah, that helps a lot, thank you.  Maybe you could say something along
-> the lines of this:
-> 
->   When using the 8DW data format, the entire TLP header is logged.
->   For example, the TLP header for Memory Reads with 64-bit addresses
->   is shown in PCIe r5.0, Figure 2-17; the header for Configuration
->   Requests is shown in Figure 2.20, etc.
-> 
->   In addition, 8DW trace buffer entries contain a timestamp and
->   possibly a prefix, e.g., a PASID TLP prefix (see Figure 6-20).  TLPs
->   may include more than one prefix, but only one can be logged in
->   trace buffer entries.
-> 
-
-yes. but currently we'll only trace the PASID TLP prefix. This field
-will be all 0 for a packet with no PASID TLP prefix. I'll mention
-it in the doc.
-
->   When using the 4DW data format, DW0 of the trace buffer entry
->   contains selected fields of DW0 of the TLP, together with a
->   timestamp.  DW1-DW3 of the trace buffer entry contain DW1-DW3
->   directly from the TLP header.
-> 
-
-thanks a lot. it does look more clearer. will update the doc
-as suggested.
-
-> This looks like a really cool device.  I wish we had this for more
-> platforms.
-
-thanks! glad to hear that!
-
-Regards,
-Yicong
+> --=20
+> Sincerely yours,
+> Mike.
+>=20
 
