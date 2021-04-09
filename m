@@ -2,79 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D99F535A234
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BB835A236
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233333AbhDIPpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:45:15 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:38436 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDIPpL (ORCPT
+        id S233534AbhDIPp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232796AbhDIPp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:45:11 -0400
-Received: by mail-ot1-f43.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so6090959otk.5;
-        Fri, 09 Apr 2021 08:44:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=VEs+wjuKWR88LlB/ggXhauOBmGil7c6BjaxvckBhYQ4=;
-        b=a06WFuZgHMU0O82/cciLXpl2GH3Ld1MrXyAWH4PHUpaPARP1QDEJBONN3sZD/KBwXZ
-         bNu1rhGqLkv3EB4Z1d3trLpckJKwt2yD2ABa9NEcQGEW10dB8cHyqd5VexxYYpFeMkaS
-         EdTyiddNSa0WWd7GGTg57ZUJUEA1T7s4j41UkrLJffi4QtzBZhPVFsGfhaDjbF8tIZZe
-         Z29cEFAUU/tGLIecllgtJ8EpmkjiGJt6id6NXJKDm4TdcDCuQFdy/ZsJs18oOVzeB22f
-         2vEdwkYagMG0RcS7MjpIWf0eRDenonOOxMfF8xpgUDze+pN5LhzaGDP0zSHpcXJS5moy
-         ikoA==
-X-Gm-Message-State: AOAM533brFgrZIBi9S+VARh79BVTEprflpVjVcmuel3QVZ9GUB/MFPr9
-        49XwiqmWRFoV3laOXOBBECw2kawCws4whQqzb3YzKXBJNJE=
-X-Google-Smtp-Source: ABdhPJwWVM3ciwS3ypd+YxjYLoj0wKLxTpwAipbch/ikf/aK4FVW/HTpcTzEtEX8IDCOmsYbognCVSRNejrymwzsKc0=
-X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr12669145otb.260.1617983098087;
- Fri, 09 Apr 2021 08:44:58 -0700 (PDT)
+        Fri, 9 Apr 2021 11:45:57 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CB4C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ccacilQpw8gp06qfs/99roXEeahKogw23vAA74hgdvo=; b=Lt5gnjW56W4zdS9TCXUP0VLqKq
+        UQ6r757R95oVk5leaf9pAafNW2F0ShHEJWJHWKwz/kFFraISRl5oK9RP3v9hTzWIYKWi+Qzu6Qbfx
+        VfFCpLRvNqgBZDP4dVjWngl4Gpqv1mZzJCj6AXkQhPBFN+EvDyF9TkDDs9isOGs/ytR0BsLEcPNk5
+        hdOZrq/PH1u8ldAwzZAqGbkTRLjcs6+fFT7zrjfQDdQH6DW1Fu4gfobLfpBuvcLa55icd4hu9wNQ5
+        8kcVRV34GpvJ5+6VVinlbhkuwzEZQyCdMYpmGe/nB3EKUlN7Zw0OhqW1jpJomUtDQo2jhocM3/apj
+        nPVZzGgw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUtK6-0012JJ-Bs; Fri, 09 Apr 2021 15:45:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9240830001B;
+        Fri,  9 Apr 2021 17:45:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 802B52BE951AC; Fri,  9 Apr 2021 17:45:28 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 17:45:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
+        tglx@linutronix.de, bp@alien8.de, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+        ricardo.neri-calderon@linux.intel.com
+Subject: Re: [PATCH V5 16/25] perf/x86: Register hybrid PMUs
+Message-ID: <YHB2mNgw7k/NUIl9@hirez.programming.kicks-ass.net>
+References: <1617635467-181510-1-git-send-email-kan.liang@linux.intel.com>
+ <1617635467-181510-17-git-send-email-kan.liang@linux.intel.com>
+ <YG/7BgFaRC/Eos76@hirez.programming.kicks-ass.net>
+ <41c7b4ec-b742-2f7c-9991-7b23c9971dc6@linux.intel.com>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 9 Apr 2021 17:44:47 +0200
-Message-ID: <CAJZ5v0ii5+k8j-9LwGxjHnJZ5ru3UNSLP=Z_BoE4pOWZN0nTyQ@mail.gmail.com>
-Subject: [GIT PULL] ACPI fix for v5.12-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41c7b4ec-b742-2f7c-9991-7b23c9971dc6@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Apr 09, 2021 at 09:50:20AM -0400, Liang, Kan wrote:
+> 
+> 
+> On 4/9/2021 2:58 AM, Peter Zijlstra wrote:
+> > On Mon, Apr 05, 2021 at 08:10:58AM -0700, kan.liang@linux.intel.com wrote:
+> > > @@ -2089,9 +2119,46 @@ static int __init init_hw_perf_events(void)
+> > >   	if (err)
+> > >   		goto out1;
+> > > -	err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+> > > -	if (err)
+> > > -		goto out2;
+> > > +	if (!is_hybrid()) {
+> > > +		err = perf_pmu_register(&pmu, "cpu", PERF_TYPE_RAW);
+> > > +		if (err)
+> > > +			goto out2;
+> > > +	} else {
+> > > +		u8 cpu_type = get_this_hybrid_cpu_type();
+> > > +		struct x86_hybrid_pmu *hybrid_pmu;
+> > > +		bool registered = false;
+> > > +		int i;
+> > > +
+> > > +		if (!cpu_type && x86_pmu.get_hybrid_cpu_type)
+> > > +			cpu_type = x86_pmu.get_hybrid_cpu_type();
+> > > +
+> > > +		for (i = 0; i < x86_pmu.num_hybrid_pmus; i++) {
+> > > +			hybrid_pmu = &x86_pmu.hybrid_pmu[i];
+> > > +
+> > > +			hybrid_pmu->pmu = pmu;
+> > > +			hybrid_pmu->pmu.type = -1;
+> > > +			hybrid_pmu->pmu.attr_update = x86_pmu.attr_update;
+> > > +			hybrid_pmu->pmu.capabilities |= PERF_PMU_CAP_HETEROGENEOUS_CPUS;
+> > > +
+> > > +			err = perf_pmu_register(&hybrid_pmu->pmu, hybrid_pmu->name,
+> > > +						(hybrid_pmu->cpu_type == hybrid_big) ? PERF_TYPE_RAW : -1);
+> > > +			if (err)
+> > > +				continue;
+> > > +
+> > > +			if (cpu_type == hybrid_pmu->cpu_type)
+> > > +				x86_pmu_update_cpu_context(&hybrid_pmu->pmu, raw_smp_processor_id());
+> > > +
+> > > +			registered = true;
+> > > +		}
+> > > +
+> > > +		if (!registered) {
+> > > +			pr_warn("Failed to register hybrid PMUs\n");
+> > > +			kfree(x86_pmu.hybrid_pmu);
+> > > +			x86_pmu.hybrid_pmu = NULL;
+> > > +			x86_pmu.num_hybrid_pmus = 0;
+> > > +			goto out2;
+> > > +		}
+> > 
+> > I don't think this is quite right. registered will be true even if one
+> > fails, while I think you meant to only have it true when all (both)
+> > types registered correctly.
+> 
+> No, I mean that perf error out only when all types fail to be registered.
 
-Please pull from the tag
-
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.12-rc7
-
-with top-most commit fa26d0c778b432d3d9814ea82552e813b33eeb5c
-
- ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
-
-on top of commit e49d033bddf5b565044e2abe4241353959bc9120
-
- Linux 5.12-rc6
-
-to receive an ACPI fix for 5.12-rc7.
-
-This fixes a build issue introduced by a previous fix in the ACPI
-processor driver (Vitaly Kuznetsov).
-
-Thanks!
-
-
----------------
-
-Vitaly Kuznetsov (1):
-      ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
-
----------------
-
- arch/x86/include/asm/smp.h    |  2 +-
- arch/x86/kernel/smpboot.c     | 26 ++++++++++++--------------
- drivers/acpi/processor_idle.c |  4 +---
- 3 files changed, 14 insertions(+), 18 deletions(-)
+All or nothing seems a better approach to me. There really isn't a good
+reason for any one of them to fail.
