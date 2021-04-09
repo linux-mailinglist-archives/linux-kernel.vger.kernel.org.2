@@ -2,125 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9127035A924
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:14:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6313835A928
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235104AbhDIXO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 19:14:26 -0400
-Received: from mga04.intel.com ([192.55.52.120]:31333 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234880AbhDIXOZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 19:14:25 -0400
-IronPort-SDR: 8FOQqofsNKjTpM0K517Jcfxc3KzuY1CThC/x+Z2quemPgcz9nj0ZV64O7HC7YFRWp9ffysRaHs
- cC8kQ2Cfc6tw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="191708954"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="191708954"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:14:11 -0700
-IronPort-SDR: Rs7zQ8aB0ZMvUycmEhQuydYbL7lqQgBkA3wFN0NTzubAov5AhJqpP0n+EbiE6x11UCLPnEfnO5
- PvrqU4zxc37A==
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="416460352"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.27.140]) ([10.212.27.140])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:14:10 -0700
-Subject: Re: [PATCH v24 04/30] x86/cpufeatures: Introduce X86_FEATURE_CET and
- setup functions
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
- <20210401221104.31584-5-yu-cheng.yu@intel.com>
- <20210409101214.GC15567@zn.tnic>
- <c7cb0ed6-2725-ba0d-093e-393eab9918b2@intel.com>
- <20210409171408.GG15567@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <f7a1299a-916f-70fe-6881-0951fe4fe38a@intel.com>
-Date:   Fri, 9 Apr 2021 16:14:09 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <20210409171408.GG15567@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235128AbhDIXTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 19:19:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22810 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235052AbhDIXTr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 19:19:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618010372;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=PsIsstixQZmp09N5dzfFC9lZcQcKbivYZNxi99QL8gg=;
+        b=HgLF1QyLx9FG7mAGhr4HoI0e6gYlXfnm2Wfst25ybw0ip0icrGv3A6zWLInJ2//uHarkqf
+        FboDvWipb3r5EHdHXUqA3SMu5GUBR3BnHYqpEpIX9Gn1bn4k1P9IM/WPphjy3LBp0dWX7i
+        IFnU+GSsMajaPoCNhchnyTfIZsuwqaI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-NuTI7DlQNsGWx8R-aRzgiw-1; Fri, 09 Apr 2021 19:19:29 -0400
+X-MC-Unique: NuTI7DlQNsGWx8R-aRzgiw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 73462107ACC7;
+        Fri,  9 Apr 2021 23:19:25 +0000 (UTC)
+Received: from llong.com (ovpn-113-226.rdu2.redhat.com [10.10.113.226])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6A4A31B400;
+        Fri,  9 Apr 2021 23:19:19 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH 0/5] mm/memcg: Reduce kmemcache memory accounting overhead
+Date:   Fri,  9 Apr 2021 19:18:37 -0400
+Message-Id: <20210409231842.8840-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/2021 10:14 AM, Borislav Petkov wrote:
-> On Fri, Apr 09, 2021 at 08:52:52AM -0700, Yu, Yu-cheng wrote:
->> Recall we had complicated code for the XSAVES features detection in
->> xstate.c.  Dave Hansen proposed the solution and then the whole thing
->> becomes simple.  Because of this flag, even when only the shadow stack is
->> available, the code handles it nicely.
-> 
-> Is that what you mean?
-> 
-> @@ -53,6 +55,8 @@ static short xsave_cpuid_features[] __initdata = {
->   	X86_FEATURE_INTEL_PT,
->   	X86_FEATURE_PKU,
->   	X86_FEATURE_ENQCMD,
-> +	X86_FEATURE_CET, /* XFEATURE_CET_USER */
-> +	X86_FEATURE_CET, /* XFEATURE_CET_KERNEL */
-> 
-> or what is the piece which becomes simpler?
+With the recent introduction of the new slab memory controller, we
+eliminate the need for having separate kmemcaches for each memory
+cgroup and reduce overall kernel memory usage. However, we also add
+additional memory accounting overhead to each call of kmem_cache_alloc()
+and kmem_cache_free().
 
-Yes, this is it.
+For workloads that require a lot of kmemcache allocations and
+de-allocations, they may experience performance regression as illustrated
+in [1].
 
->> Would this equal to only CONFIG_X86_CET (one Kconfig option)?  In fact, when
->> you proposed only CONFIG_X86_CET, things became much simpler.
-> 
-> When you use CONFIG_X86_SHADOW_STACK instead, it should remain same
-> simple no?
-> 
+With a simple kernel module that performs repeated loop of 100,000,000
+kmem_cache_alloc() and kmem_cache_free() of 64-byte object at module
+init. The execution time to load the kernel module with and without
+memory accounting were:
 
-Signals, arch_prctl, and ELF header are three places that need to depend 
-on either shadow stack or IBT is configured.  To remain simple, we can 
-make all three depend on CONFIG_X86_SHADOW_STACK, and in Kconfig, make 
-CONFIG_X86_IBT depend on CONFIG_X86_SHADOW_STACK.  Without shadow stack, 
-IBT itself is not as useful anyway.
+  with accounting = 6.798s
+  w/o  accounting = 1.758s
 
->> Practically, IBT is not much in terms of code size.  Since we have already
->> separated the two, why don't we leave it as-is.  When people start using it
->> more, there will be more feedback, and we can decide if one Kconfig is
->> better?
-> 
-> Because when we add stuff to the kernel, we add the simplest and
-> cleanest version possible and later, when we determine that additional
-> functionality is needed, *then* we add it. Not the other way around.
-> 
-> Our Kconfig symbol space is already an abomination so we can't just add
-> some more and decide later.
-> 
-> What happens in such situations usually is stuff gets added, it bitrots
-> and some poor soul - very likely a maintainer who has to mop up after
-> everybody - comes and cleans it up. I'd like to save myself that
-> cleaning up.
-> 
-> Thx.
->
+That is an increase of 5.04s (287%). With this patchset applied, the
+execution time became 4.254s. So the memory accounting overhead is now
+2.496s which is a 50% reduction.
+
+It was found that a major part of the memory accounting overhead
+is caused by the local_irq_save()/local_irq_restore() sequences in
+updating local stock charge bytes and vmstat array, at least in x86
+systems. There are two such sequences in kmem_cache_alloc() and two
+in kmem_cache_free(). This patchset tries to reduce the use of such
+sequences as much as possible. In fact, it eliminates them in the common
+case. Another part of this patchset to cache the vmstat data update in
+the local stock as well which also helps.
+
+[1] https://lore.kernel.org/linux-mm/20210408193948.vfktg3azh2wrt56t@gabell/T/#u
+
+Waiman Long (5):
+  mm/memcg: Pass both memcg and lruvec to mod_memcg_lruvec_state()
+  mm/memcg: Introduce obj_cgroup_uncharge_mod_state()
+  mm/memcg: Cache vmstat data in percpu memcg_stock_pcp
+  mm/memcg: Separate out object stock data into its own struct
+  mm/memcg: Optimize user context object stock access
+
+ include/linux/memcontrol.h |  14 ++-
+ mm/memcontrol.c            | 198 ++++++++++++++++++++++++++++++++-----
+ mm/percpu.c                |   9 +-
+ mm/slab.h                  |  32 +++---
+ 4 files changed, 195 insertions(+), 58 deletions(-)
+
+-- 
+2.18.1
+
