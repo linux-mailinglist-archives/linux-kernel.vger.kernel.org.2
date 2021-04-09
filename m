@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248CA35A54B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E66935A52B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234585AbhDISIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:08:11 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:35408 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234578AbhDISII (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:08:08 -0400
-Received: by mail-ot1-f44.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so6543055oto.2;
-        Fri, 09 Apr 2021 11:07:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4yvF98K4lFRVo3XP29/vi2BrNQZ7QCXpM/98vWUndG4=;
-        b=MaTiiZ4+elFgWEerQrtCNacS9EJqtcPIbOasJlHt9NMNFKfZahy5WapYpQ7gToAjeF
-         MhGdTtbNRTD9GR5ov09KAypSoqCHOrrI7f5VhKK6nSSOhXS+uT4ZsaZVhPovi6pW4eGd
-         vfzzNXVt/nid0ZRhNExRT/RNrCC1R/tRcx2Uto6LnaSqhYBdBFspeYeLf3CQ7R3E0reH
-         Ni1o3nVEL70FtvtE/wgr29NVoQOY1KfalY6xwM3hKbtx3a2wJUdo/JUqF9zGiZnLKOj3
-         TtRNC5UJOYCCU7cAaLH6M8BLFZTm33vOrMMekKpYoFMjrAxwtr5B7i6520IifvsmEOZz
-         WesA==
-X-Gm-Message-State: AOAM531DKga3NFcrzYei36zyM7A4MKFtCn6ZDWehAiJxHtLxV3ijJ+d6
-        UFcHhvp2jxJFm5ZX+5qCGg==
-X-Google-Smtp-Source: ABdhPJycyNDeF4TXmOLJ3zpWi5p3KJj9nwxrubKDZZI0I4BTxfGzpiiIDWKvlDp7tT89D/07Lg/cVA==
-X-Received: by 2002:a9d:7e8d:: with SMTP id m13mr13036594otp.54.1617991674538;
-        Fri, 09 Apr 2021 11:07:54 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u185sm181079oie.12.2021.04.09.11.07.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:07:53 -0700 (PDT)
-Received: (nullmailer pid 3892577 invoked by uid 1000);
-        Fri, 09 Apr 2021 18:07:52 -0000
-Date:   Fri, 9 Apr 2021 13:07:52 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     heiko@sntech.de, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/2] dt-bindings: pwm: convert pwm-rockchip.txt to YAML
-Message-ID: <20210409180752.GB3769113@robh.at.kernel.org>
-References: <20210406155053.29101-1-jbx6244@gmail.com>
- <8f05dc0d-8fb7-c200-5251-d9e147b1d00d@gmail.com>
+        id S234389AbhDISFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:05:47 -0400
+Received: from mga14.intel.com ([192.55.52.115]:51248 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234316AbhDISFq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 14:05:46 -0400
+IronPort-SDR: 324gwhcxogtKvaBv9iom/07m4ZRGZQenOXQ729d00eTc2MQx5lGLq0FIxidsvtPdeLl4y8cStQ
+ cul3Jgi9TJHw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="193364216"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="193364216"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 11:05:33 -0700
+IronPort-SDR: L1/U4YPgSSizYdUR951ccnL+di8YpAqnU3aL/5HnFUPuDbedxXKf+CzAXn80Pc2Z6qs/YcH+Y4
+ If7uo2XhNMRQ==
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="449158863"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 11:05:33 -0700
+Date:   Fri, 9 Apr 2021 11:08:08 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 2/2] iommu/sva: Remove mm parameter from SVA bind API
+Message-ID: <20210409110808.58f22606@jacob-builder>
+In-Reply-To: <f29495e1-e3a0-8c45-bfca-067c1e996eca@linux.intel.com>
+References: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1617901736-24788-2-git-send-email-jacob.jun.pan@linux.intel.com>
+        <f29495e1-e3a0-8c45-bfca-067c1e996eca@linux.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f05dc0d-8fb7-c200-5251-d9e147b1d00d@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 09:04:29PM +0200, Johan Jonker wrote:
-> Hi,
-> 
-> Question for Heiko:
-> rv1108.dtsi and rk3328.dtsi have a undocumented "interrupts" property
-> AFAICT without driver support.
-> Please advise what to do with it.
-> 
-> 
-> See build log:
-> https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210406155053.29101-1-jbx6244@gmail.com/
-> 
-> ====
-> 
-> Question for Rob:
-> It looks like that recent "improvements" with regard to checking for
-> undocumented compatible strings make it almost impossible to do any
-> useful dt_checking, let alone for the average user. Maybe reduce the
-> notification blurb output a bit for things that have nothing to do with
-> this document. 
+Hi Lu,
 
-It's off by default for dt_binding_check until the 80 or so warnings are 
-killed. It's on for the PW checks so new ones don't get added. It's also 
-off for dtbs_check if you set DT_SCHEMA_FILES. 
+On Fri, 9 Apr 2021 20:45:22 +0800, Lu Baolu <baolu.lu@linux.intel.com>
+wrote:
 
-> Unable to fall back to previous versions for older kernels.
+> > -int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t
+> > max) +int iommu_sva_alloc_pasid(ioasid_t min, ioasid_t max)
+> >   {
+> >   	int ret = 0;
+> >   	ioasid_t pasid;
+> > +	struct mm_struct *mm;
+> >   
+> >   	if (min == INVALID_IOASID || max == INVALID_IOASID ||
+> >   	    min == 0 || max < min)
+> >   		return -EINVAL;
+> >   
+> >   	mutex_lock(&iommu_sva_lock);
+> > +	mm = get_task_mm(current);  
+> 
+> How could we allocate a supervisor PASID through iommu_sva_alloc_pasid()
+> if we always use current->mm here?
+I don't think you can. But I guess the current callers of this function do
+not need supervisor PASID.
+In reply to Jean, I suggest we split this function into mm->pasid
+assignment and keep using ioasid_alloc() directly, then supervisor PASID is
+caller's bind choice.
 
-Sorry, don't understand this sentence.
+Thanks,
 
-> 
-> pip3 install git+https://github.com/devicetree-org/dt-schema.git@master
-> --upgrade
-> 
-> make ARCH=arm dtbs_check
-> make ARCH=arm dtbs_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
-> 
-> make ARCH=arm64 dtbs_check
-> make ARCH=arm64 dtbs_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
+Jacob
