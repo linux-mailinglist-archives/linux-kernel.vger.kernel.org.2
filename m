@@ -2,168 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FAD93591E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAD63591E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:16:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbhDICOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 22:14:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36496 "EHLO
+        id S232725AbhDICRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 22:17:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232673AbhDICOA (ORCPT
+        with ESMTP id S232616AbhDICRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 22:14:00 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F29C061762
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 19:13:48 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id ba6so4705434edb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 19:13:48 -0700 (PDT)
+        Thu, 8 Apr 2021 22:17:01 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BCEC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 19:16:49 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id x27so1955579qvd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 19:16:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=f2qaiiK1miGaHFDZOcjWpGbeY0G0GNPiEFJnOCok4zM=;
-        b=yq7NYbntAfC6ZE5vwPH8NQp6c/9DeWBTAw85Zl/9kTUELym7jNaKZMPofpwWuOyxsJ
-         6mJ4tatrCAM9QChJP/npb9QyVmqALziSs6c7fz+iuUmZVNruPf/JiFvbq0g1HpWdlYrL
-         S9Qd+pkmOR7AQHG3HJ35aWygLAKS4+dqQhxjd5nqjQKdm2H5VYcFFoYiQ6BXSkp2bdAl
-         ryk5rZpGoSACoNx6dG78mU2GzUYrtVKazPdGcCcXymf/Fo+vPSpxo6ak7nfq2r2vDRnZ
-         nTiFgCxxIeIkAuJe1VGd39aTB4KIJ2TgwzPa0oNEeA+C65tQx45HtnEsbwdRq9GNyJPc
-         bfWA==
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=vHCqILecOIPMQuLKMX6nqeGWPqCzxrgf7erUzPmed2M=;
+        b=vUlcX0JmHoAeHVh7mvYJUTN5IFH3I+jOTc7imFq83Jp9W+LzGr01bfpD1NAdJONbx/
+         vmHAARqJImYAeb863Nw2TMmzMLnBwCPpBhlVK7osUmveksTSMmyPS63zeKwEzbnyor2P
+         BRI2aNvNZPLAaBl4snSim/3oaOiMgMN6xv4KlN4ndDDtOZVH/bRjjclTNHhpZMkw8LUo
+         YSW0L1QUf0a8sA0NA3i0to87xFzxwEk8xOWWCK7KYYuDNupwRE9k9TU9Dy/fz5y0hgQi
+         khqzeLYJW8ihZiO8tl9wqzEwi3PNd1hkfy3+jUJE6ZuixrOCdKP3JRtWJmD4ljQUsZf6
+         5E/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f2qaiiK1miGaHFDZOcjWpGbeY0G0GNPiEFJnOCok4zM=;
-        b=AdmhjGcKY1pe4WS55XhLd24v4ineFVmlVmsK9Qv/UCKsmkn3JlzOa4jCHgwsoVkAoM
-         c9klg6sXJz22e81TBNDm6d6XuC0ZcGMLfjuhoVMY4qpHHH1q18aZhUffKg6ndY4GBpGr
-         OmC7Xy6CCuwl9fQIhLudTUEHiHu4OJVVVjHTZpvbB7aIg+IdiSlemcb3E3zrlWj4YFCt
-         Iu9Y2KAXqXVkT7Mshj3NnlViu9gqcYNljY3hvOs/fVFJa/Y3h3OOwWV86Y0WkGDaX89w
-         C183RAYLhtCdWIPHdmDQrkA2sndshLUXAloI/lR1v7GW30UXHS78UKHkrjYCYYwLMCjr
-         SXMA==
-X-Gm-Message-State: AOAM533RR805rp6CzGTQ0nNEnhZ00XZ6mgSF5xVLmEf/nH9qy6jg6EtE
-        07VvqbHmh0ibK96VdY9NBO5U83nShClL5j7Y8wkD9w==
-X-Google-Smtp-Source: ABdhPJy8T/A/b0CcVSuNgdFN6MQiQW7XBPZq78CD/4+wYIqurY2iw+THk2r3Sw/gRB14TkMR0lGHk1vunwcPz60JRjU=
-X-Received: by 2002:a05:6402:30ae:: with SMTP id df14mr14946235edb.97.1617934426999;
- Thu, 08 Apr 2021 19:13:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <161728748083.2474040.753623311074560290.stgit@dwillia2-desk3.amr.corp.intel.com>
- <20210408224215.GA1964510@bjorn-Precision-5520>
-In-Reply-To: <20210408224215.GA1964510@bjorn-Precision-5520>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Thu, 8 Apr 2021 19:13:38 -0700
-Message-ID: <CAPcyv4hAc=DERr1z8kr=V01+NSi74f-kSfMAdeArLmVb112_Dw@mail.gmail.com>
-Subject: Re: [PATCH v2 7/8] cxl/port: Introduce cxl_port objects
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     linux-cxl@vger.kernel.org, Linux PCI <linux-pci@vger.kernel.org>,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        Vishal L Verma <vishal.l.verma@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Matthew Wilcox <willy@infradead.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=vHCqILecOIPMQuLKMX6nqeGWPqCzxrgf7erUzPmed2M=;
+        b=qQijZiW/2LcAaMh1KUrXJFNa3f19irpkUuHUC6nGo6goWjjEP717nPebV/faPlBMKb
+         WDLfNBua3xZ1vXTH2I0jWYaxO1tZAI51Kj3uMiMOiqdBdPS28VWmHiedfh0UJfyxpvGG
+         PyB0nyW0bv5AL/d7lMid+pJe5TZgWKeQUr09RBn+lgDpKau9RkhWGRX8aOGAuizePt17
+         FhCTtIW4uc8WLKiDX4P49SSKsAhQylPTzaLSQJuFZ7uPzsouCNTVODdDOmfgSVjUis2G
+         DKfOYKXBhxDTj9/wc1Z/1q6ar1pv0kld+CRX+qAmxazDPRdNiIhUXJBLwx8X56e1BSFo
+         pPrQ==
+X-Gm-Message-State: AOAM532+liT8Hv5xd+OjlroJ6k3tGhjzuDcds+gseaUTx2a9177irarv
+        8UhO3bTG3LNQU9f5aaI8JU6nZhb+xSc=
+X-Google-Smtp-Source: ABdhPJzxiJ8LOxfShzSQ06LGn73uHCtnki60lqvmhHu+BVJZf39NIe4lJ5RSfdLC0VSskVlAPboFQw==
+X-Received: by 2002:ad4:560e:: with SMTP id ca14mr9581170qvb.20.1617934608675;
+        Thu, 08 Apr 2021 19:16:48 -0700 (PDT)
+Received: from li-908e0a4c-2250-11b2-a85c-f027e903211b.ibm.com ([2804:14c:482:7b04::1000])
+        by smtp.gmail.com with ESMTPSA id z24sm843211qkz.65.2021.04.08.19.16.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 19:16:47 -0700 (PDT)
+Message-ID: <09c57b599f8dd95f4ff1c02b83aa093615257f2f.camel@gmail.com>
+Subject: Re: [PATCH 1/3] powerpc/mm/hash: Avoid resizing-down HPT on first
+ memory hotplug
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     David Gibson <david@gibson.dropbear.id.au>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Bharata B Rao <bharata@linux.ibm.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Thu, 08 Apr 2021 23:16:41 -0300
+In-Reply-To: <YFg+Edy6dfmZx3lr@yekko.fritz.box>
+References: <20210312072940.598696-1-leobras.c@gmail.com>
+         <20210312072940.598696-2-leobras.c@gmail.com>
+         <YFg+Edy6dfmZx3lr@yekko.fritz.box>
+Organization: IBM
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn, thanks for taking a look.
+Hello David, thanks for your feedback.
+
+On Mon, 2021-03-22 at 17:49 +1100, David Gibson wrote:
+> I don't love this approach.  Adding the extra flag at this level seems
+> a bit inelegant, and it means we're passing up an easy opportunity to
+> reduce our resource footprint on the host.
+
+I understand, but trying to reduce resource footprint in host, and
+mostly failing is what causes hot-add and hot-remove to take so long.
+
+> But... maybe we'll have to do it.  I'd like to see if we can get
+> things to work well enough with just the "batching" to avoid multiple
+> resize attempts first.
+
+This batching is something I had thought a lot about.
+Problem is that there are a lot of generic interfaces between memory
+hotplug and actually resizing HPT. I tried a simpler approach in
+patches 2 & 3, so I don't touch much stuff there.
+
+Best regards,
+Leonardo Bras
 
 
-On Thu, Apr 8, 2021 at 3:42 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
->
-> [+cc Greg, Rafael, Matthew: device model questions]
->
-> Hi Dan,
->
-> On Thu, Apr 01, 2021 at 07:31:20AM -0700, Dan Williams wrote:
-> > Once the cxl_root is established then other ports in the hierarchy can
-> > be attached. The cxl_port object, unlike cxl_root that is associated
-> > with host bridges, is associated with PCIE Root Ports or PCIE Switch
-> > Ports. Add cxl_port instances for all PCIE Root Ports in an ACPI0016
-> > host bridge.
->
-> I'm not a device model expert, but I'm not sure about adding a new
-> /sys/bus/cxl/devices hierarchy.  I'm under the impression that CXL
-> devices will be enumerated by the PCI core as PCIe devices.
 
-Yes, PCIe is involved, but mostly only for the CXL.io slow path
-(configuration and provisioning via mailbox) when we're talking about
-memory expander devices (CXL calls these Type-3). So-called "Type-3"
-support is the primary driver of this infrastructure.
 
-You might be thinking of CXL accelerator devices that will look like
-plain PCIe devices that happen to participate in the CPU cache
-hierarchy (CXL calls these Type-1). There will also be accelerator
-devices that want to share coherent memory with the system (CXL calls
-these Type-2).
-
-The infrastructure being proposed here is primarily for the memory
-expander (Type-3) device case where the PCI sysfs hierarchy is wholly
-unsuited for modeling it. A single CXL memory region device may span
-multiple endpoints, switches, and host bridges. It poses similar
-stress to an OS device model as RAID where there is a driver for the
-component contributors to an upper level device / driver that exposes
-the RAID Volume (CXL memory region interleave set). The CXL memory
-decode space (HDM: Host Managed Device Memory) is independent of the
-PCIe MMIO BAR space.
-
-That's where the /sys/bus/cxl hierarchy is needed, to manage the HDM
-space across the CXL topology in a way that is foreign to PCIE (HDM
-Decoder hierarchy).
-
-> Doesn't
-> that mean we will have one struct device in the pci_dev, and another
-> one in the cxl_port?
-
-Yes, that is the proposal.
-
-> That seems like an issue to me.  More below.
-
-hmm...
-
->
-> > The cxl_port instances for PCIE Switch Ports are not
-> > included here as those are to be modeled as another service device
-> > registered on the pcie_port_bus_type.
->
-> I'm hesitant about the idea of adding more uses of pcie_port_bus_type.
-> I really dislike portdrv because it makes a parallel hierarchy:
->
->   /sys/bus/pci
->   /sys/bus/pci_express
->
-> for things that really should not be different.  There's a struct
-> device in pci_dev, and potentially several pcie_devices, each with
-> another struct device.  We make these pcie_device things for AER, DPC,
-> hotplug, etc.  E.g.,
->
->   /sys/bus/pci/devices/0000:00:1c.0
->   /sys/bus/pci_express/devices/0000:00:1c.0:pcie002  # AER
->   /sys/bus/pci_express/devices/0000:00:1c.0:pcie010  # BW notification
->
-> These are all the same PCI device.  AER is a PCI capability.
-> Bandwidth notification is just a feature of all Downstream Ports.  I
-> think it makes zero sense to have extra struct devices for them.  From
-> a device point of view (enumeration, power management, VM assignment),
-> we can't manage them separately from the underlying PCI device.  For
-> example, we have three separate "power/" directories, but obviously
-> there's only one point of control (00:1c.0):
->
->   /sys/devices/pci0000:00/0000:00:1c.0/power/
->   /sys/devices/pci0000:00/0000:00:1c.0/0000:00:1c.0:pcie002/power/
->   /sys/devices/pci0000:00/0000:00:1c.0/0000:00:1c.0:pcie010/power/
-
-The superfluous power/ issue can be cleaned up with
-device_set_pm_not_required().
-
-What are the other problems this poses, because in other areas this
-ability to subdivide a device's functionality into sub-drivers is a
-useful organization principle? So much so that several device writer
-teams came together to create the auxiliary-bus for the purpose of
-allowing sub-drivers to be carved off for independent functionality
-similar to the portdrv organization.
-
-That said, I'm open to CXL switch support *not* building on the
-portdrv model, but I'm not yet on the same page with your concern.
