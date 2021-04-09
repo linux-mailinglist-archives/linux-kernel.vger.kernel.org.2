@@ -2,87 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A825135A4F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C7D35A4FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234362AbhDIRyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:54:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbhDIRyl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:54:41 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EA2C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:54:26 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id g17so7209205ejp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:54:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GuGOCMsxnSRJkFXoL0px3WemZnAxxxYEAqPblSK2aKs=;
-        b=sThAnAdSnO3iZHIZPMgbX1ZpXC5ABvIgYDEYyxUSZW9IccFRNN1xNK2emIAW3ZaVnW
-         XCokPA+zA8NFFg58OhLhPXBOixpKv154E2ERt/Vgb793MEmxddSnCyZ304LzkdGBDEFF
-         3kUYOJFZ54z8fnBl8dS853pdQaroRotAd8toOv5cbJAAwcyZuscUZ+j3XnFEyIbuOdm2
-         hSjB/zzJWinuhtGfiYVGuZeraRlZK7f2yH/rD9OpZKleTvjf7U1fO+JTpre9ybofhNRL
-         cQai7Mo2sZQYCTa1ZfEgba/7Ah8cLjbGynKXhykOaaB7090u5OnpAtlNlCQRV0ztT4V4
-         Qj+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GuGOCMsxnSRJkFXoL0px3WemZnAxxxYEAqPblSK2aKs=;
-        b=ndwRXjvhRVs9XB5suzMFk9/ckuNadeNb+R86Sr23OSPcnAhClpJ1TH8O3lk3/4RMdj
-         Rvo8EwV4WJ2hH0wjbuP/CoTWzkzmM5PcvKkcOctV6Pccup6Q9fOAKXk/VDE1K+iKs/V9
-         3RpFr1HLznzU+3VlFKY3tDUyAHiuGhNdV+OuSz4cvdvjG95jaYC6m6fy8Umk1ehN0ZzK
-         jcX11w0LXL922ZfN6mcuF4hNSN3oxTDCl1kJtRx8XUbXQlv76hBFu6npQ8WnCKMFxe7h
-         4Tm4Kb+Lgp4R1I8ifsftuE0u7idRaGgHWH3kSHZtWoQs6wmr/Dc0frVGfZ6MB6+wVKjZ
-         JP2A==
-X-Gm-Message-State: AOAM532B0esOH3pArVOmbQKNPo0h0Esy5ZBdaTcK9Kpzgr7d0HW3atrB
-        qh0K5CFJq9DxlBMTXs1fsV0bXdSR61XwNAC4iVoJRA==
-X-Google-Smtp-Source: ABdhPJztzbhO6E534jWeed4RXeQBg6BWEsaaajL/mT6jcMWBCgehqrmsGKzjtxqaNuLdBvIazSo15Sb0n7hgbUgF9Go=
-X-Received: by 2002:a17:906:4f91:: with SMTP id o17mr17257086eju.503.1617990865370;
- Fri, 09 Apr 2021 10:54:25 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYu60T=vymv7gA0eaopfNDWXAVT9WRS11Rrk1OfTkrCevw@mail.gmail.com>
- <PSAP153MB042218315B664B15A59A80B094739@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
- <CA+G9fYvcSK-Z7+VrRbHp7ADDDgw2tWWaqTfQMyC2dxuOYGLz6A@mail.gmail.com>
-In-Reply-To: <CA+G9fYvcSK-Z7+VrRbHp7ADDDgw2tWWaqTfQMyC2dxuOYGLz6A@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 9 Apr 2021 23:24:14 +0530
-Message-ID: <CA+G9fYuNHTscCZDwGnxv5axibgUw1iRKQ4RJrJxHQpSNrQPaBg@mail.gmail.com>
-Subject: Re: [EXTERNAL] [next] ERROR: modpost: "dns_query" [fs/cifs/cifs.ko] undefined
-To:     Shyam Prasad <Shyam.Prasad@microsoft.com>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
-        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
-        Maciek Borzecki <maciek.borzecki@gmail.com>,
-        Wan Jiabing <wanjiabing@vivo.com>,
-        Steven French <Steven.French@microsoft.com>, pc <pc@cjr.nz>,
-        Pavel Shilovskiy <pshilov@microsoft.com>,
-        Steve French <sfrench@samba.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S234398AbhDIR4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:56:37 -0400
+Received: from smtp.uniroma2.it ([160.80.6.16]:33511 "EHLO smtp.uniroma2.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233332AbhDIR4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 13:56:34 -0400
+Received: from smtpauth-2019-1.uniroma2.it (smtpauth-2019-1.uniroma2.it [160.80.5.46])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 139Htp74014136;
+        Fri, 9 Apr 2021 19:55:57 +0200
+Received: from lubuntu-18.04 (unknown [160.80.103.126])
+        by smtpauth-2019-1.uniroma2.it (Postfix) with ESMTPSA id A5D921200A8;
+        Fri,  9 Apr 2021 19:55:46 +0200 (CEST)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=uniroma2.it;
+        s=ed201904; t=1617990947; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pni0KvBbEd9KTaOWkuAW37WojjxsQ6NNGlUAutGZc7c=;
+        b=M9P7KmqNMt1w5lUBFckAsIZkfaw1R//JwL01Pn4CZ9d2516zOPULHUUPPxsZREVx8Fhpo4
+        LQoF1OYMSp0madDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniroma2.it; s=rsa201904;
+        t=1617990947; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pni0KvBbEd9KTaOWkuAW37WojjxsQ6NNGlUAutGZc7c=;
+        b=FQJrs19RAr+0OSkd71Wqabf8tQmFALZZw7KuuQNayEem2TNWZ72ae/HyDvLLPmi7xR+bg4
+        f/7Z3OVsmkBwWSZ1xMIslhPx8RwCJcVdFKDVY87etuUkiDWv0JFjxK0mr7ODajWCm/bQW+
+        j8JdMNVZI8oKLN8qFR9tf835JAXUqV6wkMB3F7wdxItJWcLoUrPTbxzdhSZpKKZUmHVxbd
+        qPMSuYrsfP7P5qQqg2Uxf+tTpT+zIJGjft2YiOD4GuLd0QAAzqmSdF2bQjRaKxtnb0pcl2
+        UkMDUiZ/Tn7hp7xH8uURXYjVTVhmD9WQii9PbTgSSLcxg5KWjMTst56O5IdzkQ==
+Date:   Fri, 9 Apr 2021 19:55:46 +0200
+From:   Andrea Mayer <andrea.mayer@uniroma2.it>
+To:     David Ahern <dsahern@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Ahmed Abdelsalam <ahabdels.dev@gmail.com>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Subject: Re: [RFC net-next 1/1] seg6: add counters support for SRv6
+ Behaviors
+Message-Id: <20210409195546.d528ca172b7360c9ac4d1dd3@uniroma2.it>
+In-Reply-To: <26222d31-2a27-c250-97e2-9220c098d836@gmail.com>
+References: <20210407180332.29775-1-andrea.mayer@uniroma2.it>
+        <20210407180332.29775-2-andrea.mayer@uniroma2.it>
+        <26222d31-2a27-c250-97e2-9220c098d836@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Apr 2021 at 23:17, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> On Fri, 9 Apr 2021 at 21:49, Shyam Prasad <Shyam.Prasad@microsoft.com> wrote:
-> >
-> > Hi Naresh,
-> >
-> > AFAIK, this has been fixed in an updated patch last evening. Can you please check if you're still seeing it?
->
-> Please share the fix commit and subject here.
->
-> FYI,
+On Wed, 7 Apr 2021 16:55:41 -0600
+David Ahern <dsahern@gmail.com> wrote:
 
-ignore the below statement.
-our build system did not trigger today tag yet.
+> On 4/7/21 12:03 PM, Andrea Mayer wrote:
+> > diff --git a/include/uapi/linux/seg6_local.h b/include/uapi/linux/seg6_local.h
+> > index 3b39ef1dbb46..ae5e3fd12b73 100644
+> > --- a/include/uapi/linux/seg6_local.h
+> > +++ b/include/uapi/linux/seg6_local.h
+> > @@ -27,6 +27,7 @@ enum {
+> >  	SEG6_LOCAL_OIF,
+> >  	SEG6_LOCAL_BPF,
+> >  	SEG6_LOCAL_VRFTABLE,
+> > +	SEG6_LOCAL_COUNTERS,
+> >  	__SEG6_LOCAL_MAX,
+> >  };
+> >  #define SEG6_LOCAL_MAX (__SEG6_LOCAL_MAX - 1)
+> > @@ -78,4 +79,11 @@ enum {
+> >  
+> >  #define SEG6_LOCAL_BPF_PROG_MAX (__SEG6_LOCAL_BPF_PROG_MAX - 1)
+> >  
+> > +/* SRv6 Behavior counters */
+> > +struct seg6_local_counters {
+> > +	__u64 rx_packets;
+> > +	__u64 rx_bytes;
+> > +	__u64 rx_errors;
+> > +};
+> > +
+> >  #endif
+> 
+> It's highly likely that more stats would get added over time. It would
+> be good to document that here for interested parties and then make sure
+> iproute2 can handle different sized stats structs. e.g., commit support
+> to your repo, then add a new one (e.g, rx_drops) and verify the
+> combinations handle it. e.g., old kernel - new iproute2, new kernel -
+> old iproute, old - old and new-new.
+> 
 
-> This build error is still on today's Linux next tag 20210409.
+Hi David,
+thanks for your review.
 
-- Naresh
+I totally agree with you: we may want to add other counters in the future, even
+if they are not considered in RFC8986.
+
+With that in mind, the shared struct seg6_local_counters is not the best way to
+go if we want to add other counters (because it will be difficult to manage
+different sized structures when considering different kernel/iproute2 versions).
+
+To make it easier adding new counters, instead of sharing the struct
+seg6_local_counters, I would use netlink nested attributes to exchange counters
+individually. In this way, only recognized (nested) attributes can be processed
+by both the kernel and iproute2.
+
+For example:
+
+enum {
+       SEG6_LOCAL_CNT_UNSPEC,
+       SEG6_LOCAL_CNT_PAD,             /* padding for 64 bits values */
+       SEG6_LOCAL_CNT_RX_PACKETS,
+       SEG6_LOCAL_CNT_RX_BYTES,
+       SEG6_LOCAL_CNT_RX_ERRORS,
+       __SEG6_LOCAL_CNT_MAX,
+};
+#define SEG6_LOCAL_CNT_MAX (__SEG6_LOCAL_CNT_MAX - 1)
+
+updating the policy for SEG6_LOCAL_COUNTERS to NLA_NESTED.
+
+Then, I create a new policy for counters which handles each supported
+counter separately.
+
+static const struct
+nla_policy seg6_local_counters_policy[SEG6_LOCAL_CNT_MAX + 1] = {
+       [SEG6_LOCAL_CNT_RX_PACKETS]     = { .type = NLA_U64 },
+       [SEG6_LOCAL_CNT_RX_BYTES]       = { .type = NLA_U64 },
+       [SEG6_LOCAL_CNT_RX_ERRORS]      = { .type = NLA_U64 },
+};
+
+At the end, I update the parse_nla_counters(), put_nla_counters(), etc
+according to the changes, i.e:
+ - nla_parse_nested() in parse_nla_counters();
+ - nla_nest_{start/end}() and for each supported counter nla_put_u64_64bit()
+   in put_nla_counters().
+
+On the iproute2 side, we have to update the code to reflect the changes
+discussed above. 
+
+I plan to issue an RFC v2 in a few days.
+
+Andrea
