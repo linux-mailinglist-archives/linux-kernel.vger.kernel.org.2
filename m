@@ -2,92 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB7235A169
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC6C35A16B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233950AbhDIOru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:47:50 -0400
-Received: from mail-pj1-f47.google.com ([209.85.216.47]:56183 "EHLO
-        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233854AbhDIOrk (ORCPT
+        id S233854AbhDIOrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:47:55 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:46887 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233939AbhDIOrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:47:40 -0400
-Received: by mail-pj1-f47.google.com with SMTP id nh5so2998513pjb.5;
-        Fri, 09 Apr 2021 07:47:27 -0700 (PDT)
+        Fri, 9 Apr 2021 10:47:43 -0400
+Received: by mail-ot1-f53.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso3996899otb.13;
+        Fri, 09 Apr 2021 07:47:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jTLSmAm41oxeAgKBlDAz8ViVnVYi/8ty/DbvglCmKuE=;
-        b=nlRc3BkoNlKkbKo9bS3c43j+Ns1GG1pFjMroHVNF6TVp3zGTjMlvHx+BsHNA77rwoW
-         8IqQGBB17aM2r9ut6NiwzEUhIOBsnIRNneTbMZOyMjiO4fMEfbq9TQzOzVtnYeirhtRL
-         bwema6cA/WNT7R/2D4ru5G+kFdDlDlAHPIwHQXrYT6gQtFN+7RDdDmlnhDrBobQOow3Y
-         J4vB/VnI5SMCO20y7zhOIY2Y/LySovyMKss/EAH+GVpib/kmc//1l+FB9sdkP2oGlMYe
-         Do7QasSuzLKLg+OzFDNQ9zhK8JXmZTYMY2SHOGDcLsTyRhHYhbFbyCYvKDTZiQ9pxo/E
-         PTjQ==
-X-Gm-Message-State: AOAM532tk30+0EfQG1gdBQt4WhQqgs+pLFTE5jwLZUPvAqnB2uHgZi0f
-        PrkBXPe19Aeq8jEhLoKi3Ds=
-X-Google-Smtp-Source: ABdhPJzXDX3qKI5eWH7T2xiUC7daXNprDW48f1xMMTLKXxTrGThczdoMpZrfVo5mzIMriyyXtlPf1g==
-X-Received: by 2002:a17:90b:2250:: with SMTP id hk16mr14158721pjb.110.1617979647044;
-        Fri, 09 Apr 2021 07:47:27 -0700 (PDT)
-Received: from [192.168.51.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id k69sm3172807pga.45.2021.04.09.07.47.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Apr 2021 07:47:26 -0700 (PDT)
-Subject: Re: [RESEND,v5,1/2] bio: limit bio max size
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Changheun Lee <nanich.lee@samsung.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "asml.silence@gmail.com" <asml.silence@gmail.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "jisoo2146.oh@samsung.com" <jisoo2146.oh@samsung.com>,
-        "junho89.kim@samsung.com" <junho89.kim@samsung.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "mj0123.lee@samsung.com" <mj0123.lee@samsung.com>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "patchwork-bot@kernel.org" <patchwork-bot@kernel.org>,
-        "seunghwan.hyun@samsung.com" <seunghwan.hyun@samsung.com>,
-        "sookwan7.kim@samsung.com" <sookwan7.kim@samsung.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "tom.leiming@gmail.com" <tom.leiming@gmail.com>,
-        "woosung2.lee@samsung.com" <woosung2.lee@samsung.com>,
-        "yt0928.kim@samsung.com" <yt0928.kim@samsung.com>
-References: <YG1iC944hUkBniDM@kroah.com>
- <CGME20210407094610epcas1p472207e8d3ca0e5e697974c993a2a34f7@epcas1p4.samsung.com>
- <20210407092836.13016-1-nanich.lee@samsung.com>
- <BL0PR04MB65146F70831B61CB6B9AFE7CE7759@BL0PR04MB6514.namprd04.prod.outlook.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <cdd26ed3-2013-7edd-b25e-557a56397614@acm.org>
-Date:   Fri, 9 Apr 2021 07:47:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0V92N7vT+lUzz87n7KGp059iqscBjCvjd5Xj1nP3DBU=;
+        b=nno5s5/g7TqdRGntK5bZ2xEdcuXqC/UGHMeGgjhcy0iwnrOSxRfZNzRY2hDYnwifTf
+         cqfHftqBqU/eCfqRUHwt5fiAkWkAiPtu4CiYVf3uv6vOHtsExer0WrRdzYQPQkanft7l
+         2gQyAXOWjfYXMT4rkbA34UTF7RPAhsKmkGQXDRf540NvU4N629kHpH2B242473xpdxSs
+         Ess3V/f6eTKN/C05L3KSVUH5XD0JbbhhJCTOk5jGnrDiaE2HycZ8CXxk8AK0cFtyatdG
+         EjsPNpp9nbfV8ULppyP7eq/dTaSmTMmk6M6fIH3OgYN0n9jhnblLnvBTnQiH/dqdeMgj
+         /Sfw==
+X-Gm-Message-State: AOAM5329d480lpZhhF+qbV76ih4O4yeBMPkBkhP7y2pf5H8Gce8uD5wW
+        nRow2pA4/ngaTmjqEqTmgw==
+X-Google-Smtp-Source: ABdhPJwjLJtZpPVjegVIRtRAIAj7Yv/lPl9U6lNLwRC20v8gG3z0aPUD0nr+q7SaxuV4ssyS7h6YVQ==
+X-Received: by 2002:a9d:7699:: with SMTP id j25mr12569409otl.177.1617979649690;
+        Fri, 09 Apr 2021 07:47:29 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s131sm553775oib.14.2021.04.09.07.47.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 07:47:29 -0700 (PDT)
+Received: (nullmailer pid 3627857 invoked by uid 1000);
+        Fri, 09 Apr 2021 14:47:27 -0000
+Date:   Fri, 9 Apr 2021 09:47:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Nava kishore Manne <nava.manne@xilinx.com>
+Cc:     mdf@kernel.org, trix@redhat.com, michal.simek@xilinx.com,
+        sumit.semwal@linaro.org, christian.koenig@amd.com,
+        linux-fpga@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org, git@xilinx.com
+Subject: Re: [PATCH RFC 1/3] fpga: region: Add fpga-region property
+ 'fpga-config-from-dmabuf'
+Message-ID: <20210409144727.GA3625530@robh.at.kernel.org>
+References: <20210402090933.32276-1-nava.manne@xilinx.com>
+ <20210402090933.32276-2-nava.manne@xilinx.com>
 MIME-Version: 1.0
-In-Reply-To: <BL0PR04MB65146F70831B61CB6B9AFE7CE7759@BL0PR04MB6514.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210402090933.32276-2-nava.manne@xilinx.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/21 3:27 AM, Damien Le Moal wrote:
-> On 2021/04/07 18:46, Changheun Lee wrote:
->> I'll prepare new patch as you recommand. It will be added setting of
->> limit_bio_size automatically when queue max sectors is determined.
+On Fri, Apr 02, 2021 at 02:39:31PM +0530, Nava kishore Manne wrote:
+> Add "fpga-config-from-dmabuf" property to allow the bitstream
+> configuration from pre-allocated dma-buffer.
 > 
-> Please do that in the driver for the HW that benefits from it. Do not do this
-> for all block devices.
+> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
+> ---
+>  Documentation/devicetree/bindings/fpga/fpga-region.txt | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> index 969ca53bb65e..c573cf258d60 100644
+> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> @@ -177,6 +177,8 @@ Optional properties:
+>  	it indicates that the FPGA has already been programmed with this image.
+>  	If this property is in an overlay targeting a FPGA region, it is a
+>  	request to program the FPGA with that image.
+> +- fpga-config-from-dmabuf : boolean, set if the FPGA configured done from the
+> +	pre-allocated dma-buffer.
 
-Hmm ... is it ever useful to build a bio with a size that exceeds 
-max_hw_sectors when submitting a bio directly to a block device, or in 
-other words, if no stacked block driver sits between the submitter and 
-the block device? Am I perhaps missing something?
+Sounds like an implementation detail of the OS. Doesn't belong in DT.
 
-Thanks,
+Rob
 
-Bart.
+>  - fpga-bridges : should contain a list of phandles to FPGA Bridges that must be
+>  	controlled during FPGA programming along with the parent FPGA bridge.
+>  	This property is optional if the FPGA Manager handles the bridges.
+> -- 
+> 2.18.0
+> 
