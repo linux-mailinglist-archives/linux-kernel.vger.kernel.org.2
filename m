@@ -2,109 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F8435961B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:12:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80FCA35961D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233478AbhDIHMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:12:38 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42382 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231679AbhDIHMg (ORCPT
+        id S233520AbhDIHMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:12:54 -0400
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:26968 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231679AbhDIHMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:12:36 -0400
-X-UUID: 96e6dfa9373a443c949729cfb833874e-20210409
-X-UUID: 96e6dfa9373a443c949729cfb833874e-20210409
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
-        (envelope-from <michael.kao@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 871725561; Fri, 09 Apr 2021 15:12:21 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 9 Apr 2021 15:11:58 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 9 Apr 2021 15:11:58 +0800
-From:   Michael Kao <michael.kao@mediatek.com>
-To:     <michael.kao@mediatek.com>, <fan.chen@mediatek.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        <linux-pm@vger.kernel.org>, <srv_heupstream@mediatek.com>
-CC:     Eduardo Valentin <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <hsinyi@chromium.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH 1/1] arm64: dts: mt8183-kukui: Enable thermal Tboard
-Date:   Fri, 9 Apr 2021 15:11:58 +0800
-Message-ID: <20210409071158.2346-1-michael.kao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Fri, 9 Apr 2021 03:12:53 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id ADF43400160;
+        Fri,  9 Apr 2021 15:12:38 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-sh@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] sh: boards: Remove unnecessary break
+Date:   Fri,  9 Apr 2021 15:12:11 +0800
+Message-Id: <20210409071222.1097104-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGktITFYaHhpJHUpOH0hPGh9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6ODY6PTo6HT8NGhoOVkoyNhUJ
+        LTMaCyhVSlVKTUpMQk5JSE5CSk5OVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFKTk5LNwY+
+X-HM-Tid: 0a78b579c1b4d991kuwsadf43400160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Tboard thermal sensor settings.
+There is a return above the break.
+The break here is unnecessary. Remove it.
 
-pull-up voltage: 1800 mv
-pull-up resistor: 75K
-
-Vsense = pull-up voltage * Rntc / ( pull-up resistor + Rntc )
-AuxIn = Vsense * 4096 / 1500
-
-TEST=boot kukui
-     check /sys/class/thermal/thermal_zone*/type
-     check /sys/class/thermal/thermal_zone*/temp
-
-Signed-off-by: Michael Kao <michael.kao@mediatek.com>
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 ---
- arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 14 ++++++++++++++
- arch/arm64/boot/dts/mediatek/mt8183.dtsi       |  2 +-
- 2 files changed, 15 insertions(+), 1 deletion(-)
+ arch/sh/boards/mach-landisk/gio.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-index bf2ad1294dd3..202acb542b12 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-@@ -801,6 +801,20 @@
- 	status = "okay";
- };
+diff --git a/arch/sh/boards/mach-landisk/gio.c b/arch/sh/boards/mach-landisk/gio.c
+index ff2200fec29a..fd7a3283942f 100644
+--- a/arch/sh/boards/mach-landisk/gio.c
++++ b/arch/sh/boards/mach-landisk/gio.c
+@@ -106,7 +106,6 @@ static long gio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 		break;
+ 	default:
+ 		return -EFAULT;
+-		break;
+ 	}
  
-+&thermal_zones {
-+	Tboard1 {
-+		polling-delay = <1000>; /* milliseconds */
-+		polling-delay-passive = <0>; /* milliseconds */
-+		thermal-sensors = <&tboard_thermistor1>;
-+	};
-+
-+	Tboard2 {
-+		polling-delay = <1000>; /* milliseconds */
-+		polling-delay-passive = <0>; /* milliseconds */
-+		thermal-sensors = <&tboard_thermistor2>;
-+	};
-+};
-+
- &u3phy {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index 1ad0a1d55d53..f0719dbef249 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -673,7 +673,7 @@
- 			nvmem-cell-names = "calibration-data";
- 		};
- 
--		thermal-zones {
-+		thermal_zones: thermal-zones {
- 			cpu_thermal: cpu_thermal {
- 				polling-delay-passive = <100>;
- 				polling-delay = <500>;
+ 	if ((cmd & 0x01) == 0) {	/* read */
 -- 
-2.18.0
+2.25.1
 
