@@ -2,120 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA9835A2AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BAA35A2B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233940AbhDIQI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233657AbhDIQI0 (ORCPT
+        id S233889AbhDIQKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:10:13 -0400
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:37727 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDIQKH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:08:26 -0400
-Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF5B9C061761;
-        Fri,  9 Apr 2021 09:08:13 -0700 (PDT)
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 35805C725C8;
-        Fri,  9 Apr 2021 18:08:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1617984492;
-        bh=Np0R8jz8X4f7v3vdRWj+57iPcgTXHXb9XIYeOfW1UjU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BVZ9FKGYwtfh+ksPg4LV9T5cfz/S7UWpckmigqBJUkQ++69eYSiEdVfd6NDGrQC1G
-         LKm+7ywk4nXYWJH2ncU5dth8JOXifkKfFBNZ8FnlqCjrRm5hrCdJpaZk6JL1kA3KI1
-         bKVi50TYuyy6nI4j+lkYZ15TzPyAi80Rum4Y651I=
-Date:   Fri, 9 Apr 2021 18:08:10 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, devicetree@vger.kernel.org,
+        Fri, 9 Apr 2021 12:10:07 -0400
+Received: by mail-oi1-f169.google.com with SMTP id k25so6289685oic.4;
+        Fri, 09 Apr 2021 09:09:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=n+nQDvb/53iLrx65bNFB8m0WfRA8chQiqg6z4BH6ptQ=;
+        b=SmqFKk8rfDzYYc4LZfCKza/GGL8b2uA8jDOb5o48tvamP+ovP5euZH9+D5BsvSxw+I
+         gR5HI9pv1oAhpz1MFJALwzFh/LNsOmCDjMMfgQjN/WNkIFnSPVvA2ykZ0GA03b+Aj4nP
+         RO5phYsw9hoTT9G0jWd2yxyZzgmLchUGQ3dndjbPlAwa8q6B8vAxF23JwilmxWhqI93v
+         WgIVar1WhzNqIOklJbDLnY1AxkWIJ4CT6RxIsMP5/s9gm+hsS4kizpqwLjLP4tXuCRic
+         MyaKD8LUgU+XwYz3E47EyBKI7gZFO/FRporrLyCAlW/S+CHK6wS29sraOD/7JCeLZTE5
+         s1qA==
+X-Gm-Message-State: AOAM531VyH9hBqIvse3v/ThHQsaC01tUZazB4s31nC3t38gh5/8eUnaY
+        68Uyjr8QVsD960H6CO//lA==
+X-Google-Smtp-Source: ABdhPJyx96s5z7I79DNbhK+m+BlpkOsXdWoDBbvjYIrbOyvKs5VMYPdv6B4sQMa5RpY4OGpAJ5L/Ow==
+X-Received: by 2002:aca:d485:: with SMTP id l127mr10614199oig.21.1617984593974;
+        Fri, 09 Apr 2021 09:09:53 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id n83sm575460oif.18.2021.04.09.09.09.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 09:09:53 -0700 (PDT)
+Received: (nullmailer pid 3738915 invoked by uid 1000);
+        Fri, 09 Apr 2021 16:09:52 -0000
+Date:   Fri, 9 Apr 2021 11:09:52 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 3/8] pwm: pca9685: Improve runtime PM behavior
-Message-ID: <YHB76i7IcVAqvTQm@workstation.tuxnet>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-3-clemens.gruber@pqgruber.com>
- <YHBQmGJIsa6sNRIg@orome.fritz.box>
+Subject: Re: [PATCH v2] dt-bindings: serial: samsung: include generic
+ dtschema to match bluetooth child
+Message-ID: <20210409160952.GA3737690@robh.at.kernel.org>
+References: <20210405172119.7484-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHBQmGJIsa6sNRIg@orome.fritz.box>
+In-Reply-To: <20210405172119.7484-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 03:03:20PM +0200, Thierry Reding wrote:
-> On Tue, Apr 06, 2021 at 06:41:35PM +0200, Clemens Gruber wrote:
-> > The chip does not come out of POR in active state but in sleep state.
-> > To be sure (in case the bootloader woke it up) we force it to sleep in
-> > probe.
-> > 
-> > On kernels without CONFIG_PM, we wake the chip in .probe and put it to
-> > sleep in .remove.
-> > 
-> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> > ---
-> > Changes since v6:
-> > - Improved !CONFIG_PM handling (wake it up without putting it to sleep
-> >   first)
-> > 
-> >  drivers/pwm/pwm-pca9685.c | 26 +++++++++++++++++++-------
-> >  1 file changed, 19 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/pwm/pwm-pca9685.c b/drivers/pwm/pwm-pca9685.c
-> > index d4474c5ff96f..0bcec04b138a 100644
-> > --- a/drivers/pwm/pwm-pca9685.c
-> > +++ b/drivers/pwm/pwm-pca9685.c
-> > @@ -474,13 +474,18 @@ static int pca9685_pwm_probe(struct i2c_client *client,
-> >  		return ret;
-> >  	}
-> >  
-> > -	/* The chip comes out of power-up in the active state */
-> > -	pm_runtime_set_active(&client->dev);
-> > -	/*
-> > -	 * Enable will put the chip into suspend, which is what we
-> > -	 * want as all outputs are disabled at this point
-> > -	 */
-> > -	pm_runtime_enable(&client->dev);
-> > +	if (IS_ENABLED(CONFIG_PM)) {
+On Mon, Apr 05, 2021 at 07:21:19PM +0200, Krzysztof Kozlowski wrote:
+> From: Krzysztof Kozlowski <krzk@kernel.org>
 > 
-> This looks odd to me. I've seen similar constructs, but they usually go
-> something like this (I think):
-> 
-> 	pm_runtime_enable(&client->dev);
-> 
-> 	if (!pm_runtime_enabled(&client->dev)) {
-> 		/* resume device */
-> 	}
-> 
-> Which I guess in your would be somewhat the opposite and it wouldn't
-> actually resume the device but rather put it to sleep.
+> Include the generic serial.yaml dtschema so the child node like
+> "bluetooh" will be properly matched:
 
-Yes, I wanted to keep it in sleep mode if runtime PM is supported (to be
-woken up later) and otherwise just wake it up in probe.
+typo
 
 > 
-> Perhaps something like this:
+>   arch/arm/boot/dts/exynos4210-universal_c210.dt.yaml:
+>     serial@13800000: 'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
 > 
-> 	pm_runtime_enable(&client->dev);
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 > 
-> 	if (pm_runtime_enabled(&client->dev)) {
-> 		pca9685_set_sleep_mode(pca, true);
-> 		pm_runtime_set_suspended(&client->dev);
-> 	} else {
-> 		/* wake the chip up on non-PM environments */
-> 		pca9685_set_sleep_mode(pca, false);
-> 	}
+> ---
 > 
-> ? I think that's slightly more correct than your original because it
-> takes into account things like sysfs power control and such. It also
-> doesn't rely on the config option alone but instead uses the runtime
-> PM API to achieve this more transparently.
+> Changes since v1:
+> 1. Drop the new example, as Rob suggested.
+> ---
+>  Documentation/devicetree/bindings/serial/samsung_uart.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-Ah, yes, I missed the fact that runtime could be disabled 'at runtime'
-via sysfs as well, so yes, that's more correct and pm_runtime_enabled
-will just return false if !CONFIG_PM, so that should work as well.
+Otherwise,
 
-Thanks,
-Clemens
+Reviewed-by: Rob Herring <robh@kernel.org>
