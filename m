@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A073359E83
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:23:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D78DB359E87
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232042AbhDIMX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:23:26 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:16865 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhDIMXZ (ORCPT
+        id S232985AbhDIMXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:23:40 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:42432 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232763AbhDIMXf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:23:25 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGy091Yytz9xX2;
-        Fri,  9 Apr 2021 20:20:57 +0800 (CST)
-Received: from DESKTOP-EFRLNPK.china.huawei.com (10.174.176.196) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 9 Apr 2021 20:22:59 +0800
-From:   Qiheng Lin <linqiheng@huawei.com>
-To:     <l.stach@pengutronix.de>, <linux+etnaviv@armlinux.org.uk>,
-        <christian.gmeiner@gmail.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>
-CC:     <etnaviv@lists.freedesktop.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-kernel@vger.kernel.org>, Qiheng Lin <linqiheng@huawei.com>
-Subject: [PATCH -next] drm/etnaviv: remove unneeded if-null-free check
-Date:   Fri, 9 Apr 2021 20:22:31 +0800
-Message-ID: <20210409122231.8391-1-linqiheng@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 9 Apr 2021 08:23:35 -0400
+Received: from [192.168.86.30] (c-73-38-52-84.hsd1.vt.comcast.net [73.38.52.84])
+        by linux.microsoft.com (Postfix) with ESMTPSA id E677C20B5680;
+        Fri,  9 Apr 2021 05:23:20 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E677C20B5680
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1617971002;
+        bh=g1IkxfC02BI2BaL8HcBt5TCTlI/DmrIpd9NIeiz+BX8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=fDj98FQ0o8C9gtrF5zNWuas2cJ8KOF0kYOBZ9RmYT9qJ8Jo4iRsYJXO8L3kX5B6iK
+         3LB/y/+2He4rNKz2eYoVDAsWb2ovypwCeabvrYsiDOyGf1Cs0x9sCbyU3qqjLLNOcj
+         qRHsOdSZjrj+OAonLaLjzVJvyKqvYo12nV0IyJF0=
+Subject: Re: [PATCH 1/7] hyperv: Detect Nested virtualization support for SVM
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "K. Y. Srinivasan" <kys@microsoft.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hyperv@vger.kernel.org,
+        Lan Tianyu <Tianyu.Lan@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Wei Liu <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+References: <cover.1617804573.git.viremana@linux.microsoft.com>
+ <e14dac75ff1088b2c4bea361954b37e414edd03c.1617804573.git.viremana@linux.microsoft.com>
+ <87lf9tavci.fsf@vitty.brq.redhat.com>
+ <af87c25e-78c6-5859-e1c1-2aa07d087a25@linux.microsoft.com>
+ <YG8gPI6NZHGBc3Zl@google.com>
+From:   Vineeth Pillai <viremana@linux.microsoft.com>
+Message-ID: <cce1a04e-7b72-ea7f-d6eb-099a7e777cf3@linux.microsoft.com>
+Date:   Fri, 9 Apr 2021 08:23:19 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <YG8gPI6NZHGBc3Zl@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [10.174.176.196]
-X-CFilter-Loop: Reflected
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
 
-drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:616:2-8: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:618:2-8: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:620:2-8: WARNING:
- NULL check before some freeing functions is not needed.
-drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:622:2-8: WARNING:
- NULL check before some freeing functions is not needed.
+On 4/8/21 11:24 AM, Sean Christopherson wrote:
+>
+> Technically, you can use normal memory accesses, so long as software guarantees
+> the VMCS isn't resident in the VMCS cache and knows the field offsets for the
+> underlying CPU.  The lack of an architecturally defined layout is the biggest
+> issue, e.g. tacking on dirty bits through a PV ABI would be trivial.
+>
+>> Yes, you are right. I was referring to the fact that we cant use normal
+>> memory accesses, but is a bit mis-worded.
+> If you slot in "architectural" it will read nicely, i.e. "VMCB is already an
+> architectural datastructure in memory".
+Yes, this makes sense. Thanks for the suggestion, will reword as you
+suggested.
 
-Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
----
- drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c b/drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c
-index d05c35994579..bd0d66ebf314 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c
-@@ -612,14 +612,10 @@ int etnaviv_ioctl_gem_submit(struct drm_device *dev, void *data,
- err_submit_cmds:
- 	if (ret && (out_fence_fd >= 0))
- 		put_unused_fd(out_fence_fd);
--	if (stream)
--		kvfree(stream);
--	if (bos)
--		kvfree(bos);
--	if (relocs)
--		kvfree(relocs);
--	if (pmrs)
--		kvfree(pmrs);
-+	kvfree(stream);
-+	kvfree(bos);
-+	kvfree(relocs);
-+	kvfree(pmrs);
- 
- 	return ret;
- }
--- 
-2.31.1
-
+Thanks,
+Vineeth
