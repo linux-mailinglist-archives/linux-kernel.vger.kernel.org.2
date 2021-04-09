@@ -2,81 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB6E4359A36
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF78B359A88
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233704AbhDIJ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:56:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42520 "EHLO mail.kernel.org"
+        id S233948AbhDIJ7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:59:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233367AbhDIJ4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:56:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C47BA611C0;
-        Fri,  9 Apr 2021 09:55:46 +0000 (UTC)
+        id S233771AbhDIJ5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:57:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24537611BE;
+        Fri,  9 Apr 2021 09:57:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617962147;
-        bh=llLN9xU9vdoxLzdQwQJM2fJmmSdqDdov5+bePIV0doo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sXHw6/DtrL85sZESZSV8RhNzo0c+g2vWuO5I0pTOS2nJlxE3VAuvdDROUQL0txlMb
-         1jsXV1WQU0epaBBpHW1KDjBrF4Y2AStgvmoD6At39rVma36/Ch7HM507rQ5k/mZn6G
-         5KGIyPAYkkdTnkLnI43Yci2g8OjOZfd7DFOCQi1c=
+        s=korg; t=1617962242;
+        bh=ZTGjvPpX4x6XCHR41mBzBpjePuAtjMXdtn8AuUA4s7w=;
+        h=From:To:Cc:Subject:Date:From;
+        b=prKSx7IX8MT7jSsFXRNWXKe2G+R3u7cOU92p4FwrzHQOP5/nP435uPLMKf5++EOqg
+         Y3jVsreq6nEAiF3mWzvQcmR56vW08jhswCoWqvZcZ07mH74TjDiR82Xlbp4sVc6R6G
+         QwOAZE/kTea9KnQhWJVRuwb1zIVv5HCDRgDbQGEM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ronnie Sahlberg <lsahlber@redhat.com>,
-        "Paulo Alcantara (SUSE)" <pc@cjr.nz>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 08/13] cifs: revalidate mapping when we open files for SMB1 POSIX
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.19 00/18] 4.19.186-rc1 review
 Date:   Fri,  9 Apr 2021 11:53:28 +0200
-Message-Id: <20210409095259.890571984@linuxfoundation.org>
+Message-Id: <20210409095301.525783608@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210409095259.624577828@linuxfoundation.org>
-References: <20210409095259.624577828@linuxfoundation.org>
-User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.186-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.186-rc1
+X-KernelTest-Deadline: 2021-04-11T09:53+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronnie Sahlberg <lsahlber@redhat.com>
+This is the start of the stable review cycle for the 4.19.186 release.
+There are 18 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-[ Upstream commit cee8f4f6fcabfdf229542926128e9874d19016d5 ]
+Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
+Anything received after that time might be too late.
 
-RHBZ: 1933527
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.186-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-Under SMB1 + POSIX, if an inode is reused on a server after we have read and
-cached a part of a file, when we then open the new file with the
-re-cycled inode there is a chance that we may serve the old data out of cache
-to the application.
-This only happens for SMB1 (deprecated) and when posix are used.
-The simplest solution to avoid this race is to force a revalidate
-on smb1-posix open.
+thanks,
 
-Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Reviewed-by: Paulo Alcantara (SUSE) <pc@cjr.nz>
-Signed-off-by: Steve French <stfrench@microsoft.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/cifs/file.c | 1 +
- 1 file changed, 1 insertion(+)
+greg k-h
 
-diff --git a/fs/cifs/file.c b/fs/cifs/file.c
-index 24508b69e78b..e2ce90fc504e 100644
---- a/fs/cifs/file.c
-+++ b/fs/cifs/file.c
-@@ -163,6 +163,7 @@ int cifs_posix_open(char *full_path, struct inode **pinode,
- 			goto posix_open_ret;
- 		}
- 	} else {
-+		cifs_revalidate_mapping(*pinode);
- 		cifs_fattr_to_inode(*pinode, &fattr);
- 	}
- 
--- 
-2.30.2
+-------------
+Pseudo-Shortlog of commits:
 
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.186-rc1
+
+Masahiro Yamada <masahiroy@kernel.org>
+    init/Kconfig: make COMPILE_TEST depend on HAS_IOMEM
+
+Heiko Carstens <hca@linux.ibm.com>
+    init/Kconfig: make COMPILE_TEST depend on !S390
+
+Piotr Krysiuk <piotras@gmail.com>
+    bpf, x86: Validate computation of branch displacements for x86-32
+
+Piotr Krysiuk <piotras@gmail.com>
+    bpf, x86: Validate computation of branch displacements for x86-64
+
+Vincent Whitchurch <vincent.whitchurch@axis.com>
+    cifs: Silently ignore unknown oplock break handle
+
+Ronnie Sahlberg <lsahlber@redhat.com>
+    cifs: revalidate mapping when we open files for SMB1 POSIX
+
+Sergei Trofimovich <slyfox@gentoo.org>
+    ia64: fix format strings for err_inject
+
+Sergei Trofimovich <slyfox@gentoo.org>
+    ia64: mca: allocate early mca with GFP_ATOMIC
+
+Martin Wilck <mwilck@suse.com>
+    scsi: target: pscsi: Clean up after failure in pscsi_map_sg()
+
+Arnd Bergmann <arnd@arndb.de>
+    x86/build: Turn off -fcf-protection for realmode targets
+
+Esteve Varela Colominas <esteve.varela@gmail.com>
+    platform/x86: thinkpad_acpi: Allow the FnLock LED to change state
+
+Rob Clark <robdclark@chromium.org>
+    drm/msm: Ratelimit invalid-fence message
+
+Karthikeyan Kathirvel <kathirve@codeaurora.org>
+    mac80211: choose first enabled channel for monitor
+
+Tong Zhang <ztong0001@gmail.com>
+    mISDN: fix crash in fritzpci
+
+Pavel Andrianov <andrianov@ispras.ru>
+    net: pxa168_eth: Fix a potential data race in pxa168_eth_remove
+
+Alban Bedel <albeu@free.fr>
+    platform/x86: intel-hid: Support Lenovo ThinkPad X1 Tablet Gen 2
+
+Tony Lindgren <tony@atomide.com>
+    bus: ti-sysc: Fix warning on unbind if reset is not deasserted
+
+Mans Rullgard <mans@mansr.com>
+    ARM: dts: am33xx: add aliases for mmc interfaces
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                  |  4 ++--
+ arch/arm/boot/dts/am33xx.dtsi             |  3 +++
+ arch/ia64/kernel/err_inject.c             | 22 +++++++++++-----------
+ arch/ia64/kernel/mca.c                    |  2 +-
+ arch/x86/Makefile                         |  2 +-
+ arch/x86/net/bpf_jit_comp.c               | 11 ++++++++++-
+ arch/x86/net/bpf_jit_comp32.c             | 11 ++++++++++-
+ drivers/bus/ti-sysc.c                     |  4 +++-
+ drivers/gpu/drm/msm/msm_fence.c           |  2 +-
+ drivers/isdn/hardware/mISDN/mISDNipac.c   |  2 +-
+ drivers/net/ethernet/marvell/pxa168_eth.c |  2 +-
+ drivers/platform/x86/intel-hid.c          |  7 +++++++
+ drivers/platform/x86/thinkpad_acpi.c      |  8 +++++++-
+ drivers/target/target_core_pscsi.c        |  8 ++++++++
+ fs/cifs/file.c                            |  1 +
+ fs/cifs/smb2misc.c                        |  4 ++--
+ init/Kconfig                              |  3 +--
+ net/mac80211/main.c                       | 13 ++++++++++++-
+ 18 files changed, 82 insertions(+), 27 deletions(-)
 
 
