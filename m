@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93B6E35A494
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC8C35A497
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234179AbhDIRYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:24:17 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:32565
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232642AbhDIRYP (ORCPT
+        id S234295AbhDIRYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:24:39 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:21820 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232642AbhDIRYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:24:15 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A0/2Gc6BBUteEyBzlHelN55DYdL4zR+YMi2QD?=
- =?us-ascii?q?/UZ3VBBTb4ikh9mj9c5rsSPcpT4NVBgb8uyoF7KHRRrnn6JdwY5UBru6WRmjhW?=
- =?us-ascii?q?3AFuBfxK/D5xGlJCHk7O5a0s5bAs1DIfn9F0Jzg8q/wCTQKbYd6eKK+qypmuvS?=
- =?us-ascii?q?pk0FJT1CUK1u4xx0DQyWCCRNNWp7LKAkH5mR7NcvnVSdUEkQB/7WOlA4ReTZ4/?=
- =?us-ascii?q?XEmJX6CCR2ZSIP2U2+yQml77P3CHGjsys2WTkn+9gfzVQ=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,210,1613430000"; 
-   d="scan'208";a="378242715"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 19:24:00 +0200
-Date:   Fri, 9 Apr 2021 19:24:00 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-cc:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8723bs: Change the type
- and use of a variable
-In-Reply-To: <2106328.ujm4fZfeqs@localhost.localdomain>
-Message-ID: <alpine.DEB.2.22.394.2104091923280.17316@hadrien>
-References: <20210408111942.19411-1-fmdefrancesco@gmail.com> <YHBg1Sy2509vBtrA@kroah.com> <2106328.ujm4fZfeqs@localhost.localdomain>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 9 Apr 2021 13:24:38 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-48-ln2KbiuqPvaZzMYR95nVZQ-1; Fri, 09 Apr 2021 18:24:21 +0100
+X-MC-Unique: ln2KbiuqPvaZzMYR95nVZQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Fri, 9 Apr 2021 18:24:14 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Fri, 9 Apr 2021 18:24:14 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Sven Van Asbroeck' <thesven73@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+CC:     George McCollister <george.mccollister@gmail.com>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net v1] Revert "lan743x: trim all 4 bytes of the FCS; not
+ just 2"
+Thread-Topic: [PATCH net v1] Revert "lan743x: trim all 4 bytes of the FCS; not
+ just 2"
+Thread-Index: AQHXLKX9yeMJ8Y9FRkulXregE9xpyqqsb2bw
+Date:   Fri, 9 Apr 2021 17:24:14 +0000
+Message-ID: <55ddacc3b51347ebb439c3f134344a21@AcuMS.aculab.com>
+References: <20210408172353.21143-1-TheSven73@gmail.com>
+ <CAFSKS=O4Yp6gknSyo1TtTO3KJ+FwC6wOAfNkbBaNtL0RLGGsxw@mail.gmail.com>
+ <CAGngYiVg+XXScqTyUQP-H=dvLq84y31uATy4DDzzBvF1OWxm5g@mail.gmail.com>
+ <CAFSKS=P3Skh4ddB0K_wUxVtQ5K9RtGgSYo1U070TP9TYrBerDQ@mail.gmail.com>
+ <820ed30b-90f4-2cba-7197-6c6136d2e04e@gmail.com>
+ <CAGngYiU=v16Z3NHC0FyxcZqEJejKz5wn2hjLubQZKJKHg_qYhw@mail.gmail.com>
+ <CAGngYiXH8WsK347ekOZau+oLtKa4RFF8RCc5dAoSsKFvZAFbTw@mail.gmail.com>
+In-Reply-To: <CAGngYiXH8WsK347ekOZau+oLtKa4RFF8RCc5dAoSsKFvZAFbTw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+RnJvbTogU3ZlbiBWYW4gQXNicm9lY2sNCj4gU2VudDogMDggQXByaWwgMjAyMSAxOTozNQ0KLi4u
+DQo+IC0gICAgICAgYnVmZmVyX2xlbmd0aCA9IG5ldGRldi0+bXR1ICsgRVRIX0hMRU4gKyA0ICsg
+UlhfSEVBRF9QQURESU5HOw0KPiArICAgICAgIGJ1ZmZlcl9sZW5ndGggPSBuZXRkZXYtPm10dSAr
+IEVUSF9ITEVOICsgRVRIX0ZDU19MRU4gKyBSWF9IRUFEX1BBRERJTkc7DQoNCkknZCB0cnkgdG8g
+d3JpdGUgdGhlIGxlbmd0aHMgaW4gdGhlIG9yZGVyIHRoZXkgaGFwcGVuLCBzbzoNCglidWZmZXJf
+bGVuZ3RoID0gUlhfSEVBRF9QQURESU5HICsgRVRIX0hMRU4gKyBuZXRkZXYtPm10dSArIEVUSF9G
+Q1NfTEVOOw0KDQpUaGUgY29tcGlsZXIgc2hvdWxkIGFkZCBhbGwgdGhlIGNvbnN0YW50cyB0b2dl
+dGhlciwNCnNvIHRoZSBnZW5lcmF0ZWQgY29kZSBvdWdodCB0byBiZSB0aGUgc2FtZS4NCg0KCURh
+dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
+dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
+Mzg2IChXYWxlcykNCg==
 
-
-On Fri, 9 Apr 2021, Fabio M. De Francesco wrote:
-
-> On Friday, April 9, 2021 4:12:37 PM CEST Greg KH wrote:
-> > On Thu, Apr 08, 2021 at 01:19:42PM +0200, Fabio M. De Francesco wrote:
-> > > Change the type of fw_current_in_ps_mode from u8 to bool, because
-> > > it is used everywhere as a bool and, accordingly, it should be
-> > > declared as a bool. Shorten the controlling
-> > > expression of an 'if' statement.
-> > >
-> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > ---
-> > >
-> > >  drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
-> > >  drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > I now have 3 patches, I think, for this same driver, from you, and I
-> > have no idea what order they should be applied in.
-> >
-> > So I'm going to drop them all.  Can you please resend me a patch series,
-> > with all of the outstanding patches sent to me from you that I have not
-> > applied yet, so that I know which ones to look at and what order to
-> > apply them in?
-> >
-> I just sent in the series of patches you requested. Hope the work is as you
-> expected.
-
-If you make multiple patches that touch the same files they have to be in
-a series.
-
-julia
