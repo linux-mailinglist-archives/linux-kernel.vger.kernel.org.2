@@ -2,163 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF82535927E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9C035927B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbhDIDIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
+        id S233099AbhDIDIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233153AbhDIDIj (ORCPT
+        with ESMTP id S232831AbhDIDIe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:08:39 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416B6C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:08:23 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id n8so4357437oie.10
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 20:08:23 -0700 (PDT)
+        Thu, 8 Apr 2021 23:08:34 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2DEC061761
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:08:20 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id f29so2816419pgm.8
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 20:08:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=9uthe1FxOzaDy+lszfFzdCpFcyILmV2zQJPxB5oi21c=;
-        b=DpTO01Wvt3BiLQVzhjRo0O2uCjpzLu70Np53FubkoZ5Wdd4qB2TR4aq3G9EAuD5kxF
-         oKF1DQSbaeH0Wsxv1mpYjNa8XRaKmzmSNp+vwuza6oodi2c2AAqBt3OD47SqSSS0tFI+
-         K8jBnnpO/rDXkTN3+NWWKrz9bwvrhtEGv5yrBReSjvO+JY9IFv16d59VPPOw02lRkAhs
-         r/nWyOyUH2x3myijAHfpBX7wXT2scNBUXRNVhtTADzi4YG989Y465H+/RBYqs3ljSd4H
-         EPWJuyGBLUvAy+2/j+FPNu1synqnp1lefptHLDgoGHKqKglfmH32ligoKuhKT5My+M2X
-         2WUA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qBMvo8evKNRC1mxrN/i7ZVaEgG6elSKJhlY8HtxFtHo=;
+        b=NgeQId413/TWMsJRKMQzt4AMwYyCF3vnpS8DNOnr5M9IlgSa+6pklDgCshooKKqU9c
+         ybAs87qAUg8YkXygY0a8syQePjVbaDcLRyn3BBBwIY5JngGyXAQ3UN8l0IIBbu5Lo5Vn
+         ZGUP6yO8JgEtHdKcMLnH/3YQjlxOOZP8f/lso=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=9uthe1FxOzaDy+lszfFzdCpFcyILmV2zQJPxB5oi21c=;
-        b=DeBN/D2FA+ZSEvTbfb1/PfXz0ImubEbkZY+AUIO7dvrkBFqiLY5PMZ5JAQT70BrqaS
-         EYOHOmMk6U3LWN7j26qNT3mvAnd7/IUo44ykyfYgEpN8K0MEDQkKnmg3bNgagGCwiB/c
-         if26ppjO2v2JpNdcqKo5jpueNzngeP1rp9l4svuQhH86XHqdLw82nLJQodxj5pJZ4zLu
-         YvqhhEG6rAGRSIp5/xkBETWD52rAZO/AYW36AQ/ztRTvGQ/+J2tzDz8hH+PvZzT4mh+c
-         sjaZTdqYajFh8HtCKdFNIqOiDv3sQeK+xhi/vu6BVnaL8vXzTwhCAMlzb4XcHtxPLDw4
-         pN2Q==
-X-Gm-Message-State: AOAM532gQaEmru0/gS5tiG7qMpg0DLlBplNv5neeEqjYrPHDtXbFfsK6
-        aFNpxPK7aZLz992RooMrDpm41Q==
-X-Google-Smtp-Source: ABdhPJwuyOcM3WhiOtVZEWdmStl8yBE9r5JSQp/xMohf6HKVzzwFaVwovIdg+etJ8w9iw+UpuDnMSw==
-X-Received: by 2002:aca:db41:: with SMTP id s62mr8559824oig.54.1617937702431;
-        Thu, 08 Apr 2021 20:08:22 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id f29sm327464ots.22.2021.04.08.20.08.20
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 08 Apr 2021 20:08:21 -0700 (PDT)
-Date:   Thu, 8 Apr 2021 20:08:07 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Axel Rasmussen <axelrasmussen@google.com>
-cc:     Peter Xu <peterx@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Linux MM <linux-mm@kvack.org>,
-        linux-kselftest@vger.kernel.org, Brian Geffon <bgeffon@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v5] userfaultfd/shmem: fix MCOPY_ATOMIC_CONTINUE
- behavior
-In-Reply-To: <CAJHvVcjqu7XymFBOMJTuF03Tts7=pOcs0nTZy25Y=t6sYQPJrw@mail.gmail.com>
-Message-ID: <alpine.LSU.2.11.2104081912360.19277@eggly.anvils>
-References: <20210405171917.2423068-1-axelrasmussen@google.com> <20210406234949.GN628002@xz-x1> <CAJHvVcjqu7XymFBOMJTuF03Tts7=pOcs0nTZy25Y=t6sYQPJrw@mail.gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qBMvo8evKNRC1mxrN/i7ZVaEgG6elSKJhlY8HtxFtHo=;
+        b=log1NkxT0fc/RNG51JI7kvdVHv/d8wDJGzMcAYWaDgi+YbxXxYOajvWIbT8y0rhtu2
+         cBwYhk32PQ3AB354lsHt9yzVuA+doZOpuf4q9JxQANJww8iLGQLH9ACfwK+AzuCcgUqQ
+         A0pYZ20ws6ZcYk46Dgri4dTpEJN/xMM+RCgz1psBjmUt/DF0tsZGuC7eUeEi3pF+J2/o
+         0VNNG2x15dlTo8QyTEd9Q0Oll9S/nK8Jga8abIN+XrIQ5xAmHS6gAtc/5lhFPZLWicF/
+         5lXuT81sDvVOltJ7+WQlGqM1H5IBKAwuxz4ChnbK9G0ULqO6W/tkCivlQK+ByHqOoRmB
+         1DOw==
+X-Gm-Message-State: AOAM531f3C3d0z0rwn+j119fJBdZ5P1Hna3F79/CWaZZ/wHbmSlT8mhJ
+        bdXNeiLXT+CYs4ekkvcwUe9Gew==
+X-Google-Smtp-Source: ABdhPJyHo1TPCLI+4uWyuTbfK5+Vodl/lmd7z9H7XsnC6ze0ivUxnfzHT+a9JH2slM6oVprHwdDR8g==
+X-Received: by 2002:a65:4d4c:: with SMTP id j12mr10846262pgt.346.1617937700544;
+        Thu, 08 Apr 2021 20:08:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id x2sm676590pfx.41.2021.04.08.20.08.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Apr 2021 20:08:19 -0700 (PDT)
+Date:   Thu, 8 Apr 2021 20:08:18 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 09/20] kbuild: arm64: use common install script
+Message-ID: <202104082007.88622E72F@keescook>
+References: <20210407053419.449796-1-gregkh@linuxfoundation.org>
+ <20210407053419.449796-10-gregkh@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407053419.449796-10-gregkh@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Apr 2021, Axel Rasmussen wrote:
-> On Tue, Apr 6, 2021 at 4:49 PM Peter Xu <peterx@redhat.com> wrote:
-> > On Mon, Apr 05, 2021 at 10:19:17AM -0700, Axel Rasmussen wrote:
-...
-> > > --- a/mm/userfaultfd.c
-> > > +++ b/mm/userfaultfd.c
-...
-> > > +
-> > > +     if (is_file_backed) {
-> > > +             /* The shmem MAP_PRIVATE case requires checking the i_size */
-> > > +             inode = dst_vma->vm_file->f_inode;
-> > > +             offset = linear_page_index(dst_vma, dst_addr);
-> > > +             max_off = DIV_ROUND_UP(i_size_read(inode), PAGE_SIZE);
-> > > +             ret = -EFAULT;
-> > > +             if (unlikely(offset >= max_off))
-> > > +                     goto out_unlock;
-> >
-> > Frankly I don't really know why this must be put into pgtable lock..  Since if
-> > not required then it can be moved into UFFDIO_COPY path, as CONTINUE doesn't
-> > need it iiuc.  Just raise it up as a pure question.
+On Wed, Apr 07, 2021 at 07:34:08AM +0200, Greg Kroah-Hartman wrote:
+> The common scripts/install.sh script will now work for arm65, no changes
+
+nit: arm64
+
+> needed so convert the arm64 boot Makefile to call it instead of the
+> arm64-only version of the file and remove the now unused file.
 > 
-> It's not clear to me either. shmem_getpage_gfp() does check this twice
-> kinda like we're doing, but it doesn't ever touch the PTL. What it
-> seems to be worried about is, what happens if a concurrent
-> FALLOC_FL_PUNCH_HOLE happens somewhere in the middle of whatever
-> manipulation we're doing? From looking at shmem_fallocate(), I think
-> the basic point is that truncation happens while "inode_lock(inode)"
-> is held, but neither shmem_mcopy_atomic_pte() or the new
-> mcopy_atomic_install_ptes() take that lock.
-> 
-> I'm a bit hesitant to just remove it, run some tests, and then declare
-> victory, because it seems plausible it's there to catch some
-> semi-hard-to-induce race. I'm not sure how to prove that *isn't*
-> needed, so my inclination is to just keep it?
-> 
-> I'll send a series addressing the feedback so far this afternoon, and
-> I'll leave this alone for now - at least, it doesn't seem to hurt
-> anything. Maybe Hugh or someone else has some more advice about it. If
-> so, I'm happy to remove it in a follow-up.
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-It takes some thinking about, but the i_size check is required to be
-under the pagetable lock, for the MAP_PRIVATE UFFDIO_COPY path, where
-it is inserting an anonymous page into the file-backed vma (skipping
-actually inserting a page into page cache, as an ordinary fault would).
+With that fixed:
 
-Not because of FALLOC_FL_PUNCH_HOLE (which makes no change to i_size;
-and it's okay if a race fills in the hole immediately afterwards),
-but because of truncation (which must remove all beyond i_size).
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-In the MAP_SHARED case, with a locked page inserted into page cache,
-the page lock is enough to exclude concurrent truncation.  But even
-in that case the second i_size check (I'm looking at 5.12-rc's
-shmem_mfill_atomic_pte(), rather than recent patches which might differ)
-is required: because the first i_size check was done before the page
-became visible in page cache, so a concurrent truncation could miss it).
-
-Maybe that first check is redundant, though I'm definitely for doing it;
-or maybe shmem_add_to_page_cache() would be better if it made that check
-itself, under xas_lock (I think the reason it does not is historical).
-The second check, in the MAP_SHARED case, does not need to be under
-pagetable lock - the page lock on the page cache page is enough -
-but probably Andrea placed it there to resemble the anonymous case.
-
-You might then question, how come there is no i_size check in all of
-mm/memory.c, where ordinary faulting is handled.  I'll answer that
-the pte_same() check, under pagetable lock in wp_page_copy(), is
-where the equivalent to userfaultfd's MAP_PRIVATE UFFDIO_COPY check
-is made: if the page cache page has already been truncated, that pte
-will have been cleared.
-
-Or, if the page cache page is truncated an instant after wp_page_copy()
-drops page table lock, then the unmap_mapping_range(,,, even_cows = 1)
-which follows truncation has to clean it up.  Er, does that mean that
-the i_size check I started off insisting is required, actually is not
-required?  Um, maybe, but let's just keep it and say goodnight!
-
-Hugh
+-- 
+Kees Cook
