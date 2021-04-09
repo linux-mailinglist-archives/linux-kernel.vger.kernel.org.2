@@ -2,61 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D49E35A0C9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6E535A0D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233933AbhDIOMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:12:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55408 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233019AbhDIOMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:12:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E41B961007;
-        Fri,  9 Apr 2021 14:12:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1617977560;
-        bh=H+p7sz3QwAUi4pf0kx+inkj6rVgLwICxUqcknon1Udg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eQwpOMyilhqv0pZzlwG6vkrbIBcneuoQGW6GHVmTPyK+InAaaOF8GX37rjd//lQf2
-         FXhWFn90m3mddKPRoWe70Zjdqv18KlRMFX7c5LX7cwo7+zuF5vCDWCpMrnb0YFeSBA
-         OXPYfKYlH6YCV9OjCDMh8eLSP0ez43bGmDn51L9A=
-Date:   Fri, 9 Apr 2021 16:12:37 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8723bs: Change the type
- and use of a variable
-Message-ID: <YHBg1Sy2509vBtrA@kroah.com>
-References: <20210408111942.19411-1-fmdefrancesco@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408111942.19411-1-fmdefrancesco@gmail.com>
+        id S233768AbhDIOO2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 9 Apr 2021 10:14:28 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:45734 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232286AbhDIOO0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 10:14:26 -0400
+Received: from marcel-macbook.holtmann.net (p5b3d235a.dip0.t-ipconnect.de [91.61.35.90])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 316B2CECC3;
+        Fri,  9 Apr 2021 16:21:53 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v1] Bluetooth: Return whether a connection is outbound
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210402105437.v1.1.Id5ee0a2edda8f0902498aaeb1b6c78d062579b75@changeid>
+Date:   Fri, 9 Apr 2021 16:14:09 +0200
+Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Alain Michaud <alainm@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <4E147FE8-F1B6-4EE9-9D7F-FE5656EAB2BE@holtmann.org>
+References: <20210402105437.v1.1.Id5ee0a2edda8f0902498aaeb1b6c78d062579b75@changeid>
+To:     Yu Liu <yudiliu@google.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 01:19:42PM +0200, Fabio M. De Francesco wrote:
-> Change the type of fw_current_in_ps_mode from u8 to bool, because
-> it is used everywhere as a bool and, accordingly, it should be
-> declared as a bool. Shorten the controlling
-> expression of an 'if' statement.
+Hi Yu,
+
+> When an MGMT_EV_DEVICE_CONNECTED event is reported back to the user
+> space we will set the flags to tell if the established connection is
+> outbound or not. This is useful for the user space to log better metrics
+> and error messages.
 > 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> Reviewed-by: Alain Michaud <alainm@chromium.org>
+> Signed-off-by: Yu Liu <yudiliu@google.com>
 > ---
->  drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
->  drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> Changes in v1:
+> - Initial change
+> 
+> include/net/bluetooth/mgmt.h | 2 ++
+> net/bluetooth/mgmt.c         | 5 +++++
+> 2 files changed, 7 insertions(+)
+> 
+> diff --git a/include/net/bluetooth/mgmt.h b/include/net/bluetooth/mgmt.h
+> index a7cffb069565..7cc724386b00 100644
+> --- a/include/net/bluetooth/mgmt.h
+> +++ b/include/net/bluetooth/mgmt.h
+> @@ -885,6 +885,8 @@ struct mgmt_ev_new_long_term_key {
+> 	struct mgmt_ltk_info key;
+> } __packed;
+> 
+> +#define MGMT_DEV_CONN_INITIATED_CONNECTION 0x08
+> +
 
-I now have 3 patches, I think, for this same driver, from you, and I
-have no idea what order they should be applied in.
+I would just add this to MGMT_DEV_FOUND_INITIATED_CONN 0x08. And yes, I realize that this is a bit weird, but then all values are in one place.
 
-So I'm going to drop them all.  Can you please resend me a patch series,
-with all of the outstanding patches sent to me from you that I have not
-applied yet, so that I know which ones to look at and what order to
-apply them in?
+> #define MGMT_EV_DEVICE_CONNECTED	0x000B
+> struct mgmt_ev_device_connected {
+> 	struct mgmt_addr_info addr;
+> diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+> index 09e099c419f2..77213e67e8e4 100644
+> --- a/net/bluetooth/mgmt.c
+> +++ b/net/bluetooth/mgmt.c
+> @@ -8774,6 +8774,11 @@ void mgmt_device_connected(struct hci_dev *hdev, struct hci_conn *conn,
+> 	bacpy(&ev->addr.bdaddr, &conn->dst);
+> 	ev->addr.type = link_to_bdaddr(conn->type, conn->dst_type);
 
-thanks,
+So the prototype of mgmt_device_connected needs to be changed to remove the flags parameter. It is not used at all.
 
-greg k-h
+> 
+> +	if (conn->out)
+> +		flags |= MGMT_DEV_CONN_INITIATED_CONNECTION;
+> +	else
+> +		flags &= ~MGMT_DEV_CONN_INITIATED_CONNECTION;
+> +
+
+And then this should be just this:
+
+	if (conn->out)
+		flags |= MGMT_DEV_CONN_INITIATED_CONNECTION;
+
+> 	ev->flags = __cpu_to_le32(flags);
+> 
+> 	/* We must ensure that the EIR Data fields are ordered and
+
+Regards
+
+Marcel
+
