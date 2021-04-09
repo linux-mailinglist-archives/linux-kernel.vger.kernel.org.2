@@ -2,89 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDCA23593AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D6893593B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231203AbhDIERO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 00:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
+        id S231251AbhDIESz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 00:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhDIERM (ORCPT
+        with ESMTP id S229526AbhDIESy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 00:17:12 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 108E9C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 21:16:59 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id g10so2105110plt.8
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 21:16:59 -0700 (PDT)
+        Fri, 9 Apr 2021 00:18:54 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 783E3C061760;
+        Thu,  8 Apr 2021 21:18:42 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id i4so2259215pjk.1;
+        Thu, 08 Apr 2021 21:18:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a0qsp2jIyenJ7KHlPYVUT6/QMykCuCokvpYJBkoNKqc=;
-        b=UwV8R/Q8+Casp+Pr+/Ktx9Z6WK5t0P2rFMKBKIpUjWSSl8OSpfZViFSMulAfx4hbnP
-         W49eveLRdRyxptJtTAhj7Ikfmsb9guP7kMgG4HGKmLeg9RZJ1zmYfrtgkFl1LJLvvd+M
-         jAYoAdCI5eDyI/Y457bz2jfz3irfpyRFuTLaM=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Gd+gXcz6Jd6OEHUz9h21bPRreafNfkInMEF4YPsbOpk=;
+        b=tefdWYpWO2XnAMMkeY/iwlwssVIS8QxEFUzgz5cgjuzgTa71RZuaRnkw6Ut8ArDbyt
+         vDNQsQgqr3DIjUSZO6EfCN7beVAnJVrK9U+hlpT6YjmgOcs84zwx0bdl64ZbUg/9Dc7o
+         Z733MXUGKLVBoLTrLPzWC5ZcJaPAw3fjuEdR7MrVOMS6t3oDGNH5vu9kcntpfYSZAFph
+         RA/3iUXqQse83yjjcQ684JF+a0fhcRKpF7zMTgtUIqVQSobgttedo1xpusc1zPgXbfNA
+         VBD4ecS7hAqyFryS25kHF0+mN8gbWKf9m4KtgMEZRXkrV+xr8ndqzxA/NYMfEuNbrLyh
+         cWnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a0qsp2jIyenJ7KHlPYVUT6/QMykCuCokvpYJBkoNKqc=;
-        b=mF5BpwgczmAjDeMl0OPGRTKjfv5DogbK/sUNOTR/l8UoZqwtYv6IdfI8y9XPxdCupK
-         j56+rOMP4P5VMbJ2dcD7+nuFfxA5P5IHoqQ0ohBXwcbq5qdWuvDckt2Ne5gt+Gi83BM/
-         PLRmHm8tVOxk3CG9tQ30CZarMUmkYQZfawJiM2rFKLGmI4rqfc/r+/nt58awl+MzqiU4
-         ZKFuGvq1v7gs1YU5pCLbjNd3YKAZ2vp26cTCzqrGd0/UyCJbd84FX557z1X4DaVoC83F
-         Q+sDljNlrqEAJMONlZIFt8mfS/U1CCdoUctGKKRw9/wS+KYX5/jkDmNKbOIAO6PcJta0
-         jNuQ==
-X-Gm-Message-State: AOAM533tffSL9zlwWGotBAanK5ZOeAEm0fn7d56ykKk+E13WtyjTtUCp
-        t8G+jgJWW4h8AU/HNUkKeFhR+A==
-X-Google-Smtp-Source: ABdhPJyGyvCVEa7LiGau1j+FxGNErVPRWIzRVPPBHEYkQhjh2VoBYdj4TU0vPnGb3OyVgIqdufgkqQ==
-X-Received: by 2002:a17:90b:ecc:: with SMTP id gz12mr11681301pjb.79.1617941818642;
-        Thu, 08 Apr 2021 21:16:58 -0700 (PDT)
-Received: from chromium.org ([2401:fa00:8f:2:4c17:c5d7:544d:4527])
-        by smtp.gmail.com with ESMTPSA id y66sm794846pgb.78.2021.04.08.21.16.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Apr 2021 21:16:58 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 13:16:54 +0900
-From:   Tomasz Figa <tfiga@chromium.org>
-To:     Ricardo Ribalda <ribalda@chromium.org>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tianshu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] media: staging/intel-ipu3: Fix set_fmt error
- handling
-Message-ID: <YG/VNufYSadPL9a9@chromium.org>
-References: <20210315123406.1523607-1-ribalda@chromium.org>
- <20210315123406.1523607-2-ribalda@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210315123406.1523607-2-ribalda@chromium.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Gd+gXcz6Jd6OEHUz9h21bPRreafNfkInMEF4YPsbOpk=;
+        b=Mb2s8ABvf6IUYFbVa5uq/3+rjIcsA2+1Jl79Go+6MrH6641uBdbjK/IwAXLd+xA83v
+         nG1HLhEudgQEuXdrlWb0UUgYY+TTwUzfZcOdmx+o/y0FOvKQqfWf5GxYv1yRWh7t7gIu
+         RjPwT3GBBUSbgcXFabDb3K5K2HWo2FeJGmY5JwJdbwNnJOlLwxa1VrYtzDp/SZLqNVYw
+         Q5asMZejogj9RDJLVYQ48Zo3E3uDEI97uzQ9Zw+qG/qYumyfCoqIcTflF7pN/Gj04CNK
+         kZoPxNLM0gB3fjPbBy91St3eVdTRKCW6x36Lgo9o4Imsp1o/grlq6zzJ9NKEMFoYbHed
+         uzAg==
+X-Gm-Message-State: AOAM531NDu+g+X63yWv3eq38AmOYyQYoSVXm9oP7TDD6Ia5InH8NbVf/
+        xUcVEA18tanPK3CSG8QooYWA97qXjuo=
+X-Google-Smtp-Source: ABdhPJyYC5We5GOGs227qlbjCUawiRAdPZfMPTKKs2CTtjRaW/csMkfeTbEps/Ol1v0ogr1/E98Fpg==
+X-Received: by 2002:a17:90a:5889:: with SMTP id j9mr12376248pji.69.1617941921712;
+        Thu, 08 Apr 2021 21:18:41 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id gw24sm765553pjb.42.2021.04.08.21.18.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 08 Apr 2021 21:18:41 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH v2 1/3] x86/kvm: Don't bother __pv_cpu_mask when !CONFIG_SMP
+Date:   Fri,  9 Apr 2021 12:18:29 +0800
+Message-Id: <1617941911-5338-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 15, 2021 at 01:34:06PM +0100, Ricardo Ribalda wrote:
-> If there in an error during a set_fmt, do not overwrite the previous
-> sizes with the invalid config.
-> 
-> [   38.662975] ipu3-imgu 0000:00:05.0: swiotlb buffer is full (sz: 4096 bytes)
-> [   38.662980] DMA: Out of SW-IOMMU space for 4096 bytes at device 0000:00:05.0
-> [   38.663010] general protection fault: 0000 [#1] PREEMPT SMP
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 6d5f26f2e045 ("media: staging/intel-ipu3-v4l: reduce kernel stack usage")
-> Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
->  drivers/staging/media/ipu3/ipu3-v4l2.c | 25 ++++++++++++++-----------
->  1 file changed, 14 insertions(+), 11 deletions(-)
+From: Wanpeng Li <wanpengli@tencent.com>
 
-Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+Enable PV TLB shootdown when !CONFIG_SMP doesn't make sense. Let's 
+move it inside CONFIG_SMP. In addition, we can avoid define and 
+alloc __pv_cpu_mask when !CONFIG_SMP and get rid of 'alloc' variable 
+in kvm_alloc_cpumask.
 
-Best regards,
-Tomasz
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+v1 -> v2:
+ * shuffle things around a bit more
+
+ arch/x86/kernel/kvm.c | 118 +++++++++++++++++++++++---------------------------
+ 1 file changed, 55 insertions(+), 63 deletions(-)
+
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index 5e78e01..224a7a1 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -451,6 +451,10 @@ static void __init sev_map_percpu_data(void)
+ 	}
+ }
+ 
++#ifdef CONFIG_SMP
++
++static DEFINE_PER_CPU(cpumask_var_t, __pv_cpu_mask);
++
+ static bool pv_tlb_flush_supported(void)
+ {
+ 	return (kvm_para_has_feature(KVM_FEATURE_PV_TLB_FLUSH) &&
+@@ -458,10 +462,6 @@ static bool pv_tlb_flush_supported(void)
+ 		kvm_para_has_feature(KVM_FEATURE_STEAL_TIME));
+ }
+ 
+-static DEFINE_PER_CPU(cpumask_var_t, __pv_cpu_mask);
+-
+-#ifdef CONFIG_SMP
+-
+ static bool pv_ipi_supported(void)
+ {
+ 	return kvm_para_has_feature(KVM_FEATURE_PV_SEND_IPI);
+@@ -574,6 +574,49 @@ static void kvm_smp_send_call_func_ipi(const struct cpumask *mask)
+ 	}
+ }
+ 
++static void kvm_flush_tlb_others(const struct cpumask *cpumask,
++			const struct flush_tlb_info *info)
++{
++	u8 state;
++	int cpu;
++	struct kvm_steal_time *src;
++	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
++
++	cpumask_copy(flushmask, cpumask);
++	/*
++	 * We have to call flush only on online vCPUs. And
++	 * queue flush_on_enter for pre-empted vCPUs
++	 */
++	for_each_cpu(cpu, flushmask) {
++		src = &per_cpu(steal_time, cpu);
++		state = READ_ONCE(src->preempted);
++		if ((state & KVM_VCPU_PREEMPTED)) {
++			if (try_cmpxchg(&src->preempted, &state,
++					state | KVM_VCPU_FLUSH_TLB))
++				__cpumask_clear_cpu(cpu, flushmask);
++		}
++	}
++
++	native_flush_tlb_others(flushmask, info);
++}
++
++static __init int kvm_alloc_cpumask(void)
++{
++	int cpu;
++
++	if (!kvm_para_available() || nopv)
++		return 0;
++
++	if (pv_tlb_flush_supported() || pv_ipi_supported())
++		for_each_possible_cpu(cpu) {
++			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
++				GFP_KERNEL, cpu_to_node(cpu));
++		}
++
++	return 0;
++}
++arch_initcall(kvm_alloc_cpumask);
++
+ static void __init kvm_smp_prepare_boot_cpu(void)
+ {
+ 	/*
+@@ -611,33 +654,8 @@ static int kvm_cpu_down_prepare(unsigned int cpu)
+ 	local_irq_enable();
+ 	return 0;
+ }
+-#endif
+-
+-static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+-			const struct flush_tlb_info *info)
+-{
+-	u8 state;
+-	int cpu;
+-	struct kvm_steal_time *src;
+-	struct cpumask *flushmask = this_cpu_cpumask_var_ptr(__pv_cpu_mask);
+-
+-	cpumask_copy(flushmask, cpumask);
+-	/*
+-	 * We have to call flush only on online vCPUs. And
+-	 * queue flush_on_enter for pre-empted vCPUs
+-	 */
+-	for_each_cpu(cpu, flushmask) {
+-		src = &per_cpu(steal_time, cpu);
+-		state = READ_ONCE(src->preempted);
+-		if ((state & KVM_VCPU_PREEMPTED)) {
+-			if (try_cmpxchg(&src->preempted, &state,
+-					state | KVM_VCPU_FLUSH_TLB))
+-				__cpumask_clear_cpu(cpu, flushmask);
+-		}
+-	}
+ 
+-	native_flush_tlb_others(flushmask, info);
+-}
++#endif
+ 
+ static void __init kvm_guest_init(void)
+ {
+@@ -653,12 +671,6 @@ static void __init kvm_guest_init(void)
+ 		pv_ops.time.steal_clock = kvm_steal_clock;
+ 	}
+ 
+-	if (pv_tlb_flush_supported()) {
+-		pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
+-		pv_ops.mmu.tlb_remove_table = tlb_remove_table;
+-		pr_info("KVM setup pv remote TLB flush\n");
+-	}
+-
+ 	if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
+ 		apic_set_eoi_write(kvm_guest_apic_eoi_write);
+ 
+@@ -668,6 +680,12 @@ static void __init kvm_guest_init(void)
+ 	}
+ 
+ #ifdef CONFIG_SMP
++	if (pv_tlb_flush_supported()) {
++		pv_ops.mmu.flush_tlb_others = kvm_flush_tlb_others;
++		pv_ops.mmu.tlb_remove_table = tlb_remove_table;
++		pr_info("KVM setup pv remote TLB flush\n");
++	}
++
+ 	smp_ops.smp_prepare_boot_cpu = kvm_smp_prepare_boot_cpu;
+ 	if (pv_sched_yield_supported()) {
+ 		smp_ops.send_call_func_ipi = kvm_smp_send_call_func_ipi;
+@@ -734,7 +752,7 @@ static uint32_t __init kvm_detect(void)
+ 
+ static void __init kvm_apic_init(void)
+ {
+-#if defined(CONFIG_SMP)
++#ifdef CONFIG_SMP
+ 	if (pv_ipi_supported())
+ 		kvm_setup_pv_ipi();
+ #endif
+@@ -794,32 +812,6 @@ static __init int activate_jump_labels(void)
+ }
+ arch_initcall(activate_jump_labels);
+ 
+-static __init int kvm_alloc_cpumask(void)
+-{
+-	int cpu;
+-	bool alloc = false;
+-
+-	if (!kvm_para_available() || nopv)
+-		return 0;
+-
+-	if (pv_tlb_flush_supported())
+-		alloc = true;
+-
+-#if defined(CONFIG_SMP)
+-	if (pv_ipi_supported())
+-		alloc = true;
+-#endif
+-
+-	if (alloc)
+-		for_each_possible_cpu(cpu) {
+-			zalloc_cpumask_var_node(per_cpu_ptr(&__pv_cpu_mask, cpu),
+-				GFP_KERNEL, cpu_to_node(cpu));
+-		}
+-
+-	return 0;
+-}
+-arch_initcall(kvm_alloc_cpumask);
+-
+ #ifdef CONFIG_PARAVIRT_SPINLOCKS
+ 
+ /* Kick a cpu by its apicid. Used to wake up a halted vcpu */
+-- 
+2.7.4
+
