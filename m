@@ -2,95 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D51359883
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:02:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E56D35988B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232632AbhDIJC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:02:28 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16500 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232327AbhDIJCX (ORCPT
+        id S232213AbhDIJDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:03:36 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36540 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhDIJDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:02:23 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGsWY5hzHzPpQ3;
-        Fri,  9 Apr 2021 16:59:21 +0800 (CST)
-Received: from huawei.com (10.174.28.241) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 17:02:03 +0800
-From:   Bixuan Cui <cuibixuan@huawei.com>
-To:     <cuibixuan@huawei.com>, Michael Ellerman <mpe@ellerman.id.au>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        "Madhavan Srinivasan" <maddy@linux.ibm.com>
-CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-Subject: [PATCH -next] powerpc/perf/hv-24x7: Make some symbols static
-Date:   Fri, 9 Apr 2021 17:01:24 +0800
-Message-ID: <20210409090124.59492-1-cuibixuan@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 9 Apr 2021 05:03:30 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lUn2p-0002Js-BC; Fri, 09 Apr 2021 09:03:15 +0000
+Subject: Re: [PATCH][next] mlxsw: spectrum_router: remove redundant
+ initialization of variable force
+To:     Ido Schimmel <idosch@idosch.org>
+Cc:     Jiri Pirko <jiri@nvidia.com>, Ido Schimmel <idosch@nvidia.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        petrm@nvidia.com
+References: <20210327223334.24655-1-colin.king@canonical.com>
+ <YGF+D6fXNIbNVzff@shredder.lan>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <af12da04-aaef-c40e-682c-88fe683448dc@canonical.com>
+Date:   Fri, 9 Apr 2021 10:03:14 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
+In-Reply-To: <YGF+D6fXNIbNVzff@shredder.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.28.241]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sparse tool complains as follows:
+On 29/03/2021 08:13, Ido Schimmel wrote:
+> On Sat, Mar 27, 2021 at 10:33:34PM +0000, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> The variable force is being initialized with a value that is
+>> never read and it is being updated later with a new value. The
+>> initialization is redundant and can be removed.
+>>
+>> Addresses-Coverity: ("Unused value")
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>  drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+>> index 6ccaa194733b..ff240e3c29f7 100644
+>> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+>> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+>> @@ -5059,7 +5059,7 @@ mlxsw_sp_nexthop_obj_bucket_adj_update(struct mlxsw_sp *mlxsw_sp,
+>>  {
+>>  	u16 bucket_index = info->nh_res_bucket->bucket_index;
+>>  	struct netlink_ext_ack *extack = info->extack;
+>> -	bool force = info->nh_res_bucket->force;
+>> +	bool force;
+> 
+> Actually, there is a bug to be fixed here:
+> 
+> ```
+> diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> index 6ccaa194733b..41259c0004d1 100644
+> --- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> +++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_router.c
+> @@ -5068,8 +5068,9 @@ mlxsw_sp_nexthop_obj_bucket_adj_update(struct mlxsw_sp *mlxsw_sp,
+>         /* No point in trying an atomic replacement if the idle timer interval
+>          * is smaller than the interval in which we query and clear activity.
+>          */
+> -       force = info->nh_res_bucket->idle_timer_ms <
+> -               MLXSW_SP_NH_GRP_ACTIVITY_UPDATE_INTERVAL;
+> +       if (!force && info->nh_res_bucket->idle_timer_ms <
+> +           MLXSW_SP_NH_GRP_ACTIVITY_UPDATE_INTERVAL)
+> +               force = true;
+>  
+>         adj_index = nh->nhgi->adj_index + bucket_index;
+>         err = mlxsw_sp_nexthop_update(mlxsw_sp, adj_index, nh, force, ratr_pl);
+> ```
+> 
+> We should only fallback to a non-atomic replacement when the current
+> replacement is atomic and the idle timer is too short.
+> 
+> We currently ignore the value of 'force'. This means that a non-atomic
+> replacement ('force' is true) can be made atomic if idle timer is larger
+> than 1 second.
+> 
+> Colin, do you mind if I submit it formally as a fix later this week? I
+> want to run it through our usual process. Will mention you in
+> Reported-by, obviously.
 
-arch/powerpc/perf/hv-24x7.c:229:1: warning:
- symbol '__pcpu_scope_hv_24x7_txn_flags' was not declared. Should it be static?
-arch/powerpc/perf/hv-24x7.c:230:1: warning:
- symbol '__pcpu_scope_hv_24x7_txn_err' was not declared. Should it be static?
-arch/powerpc/perf/hv-24x7.c:236:1: warning:
- symbol '__pcpu_scope_hv_24x7_hw' was not declared. Should it be static?
-arch/powerpc/perf/hv-24x7.c:244:1: warning:
- symbol '__pcpu_scope_hv_24x7_reqb' was not declared. Should it be static?
-arch/powerpc/perf/hv-24x7.c:245:1: warning:
- symbol '__pcpu_scope_hv_24x7_resb' was not declared. Should it be static?
+Sure. Good idea.
 
-This symbol is not used outside of hv-24x7.c, so this
-commit marks it static.
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
----
- arch/powerpc/perf/hv-24x7.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/arch/powerpc/perf/hv-24x7.c b/arch/powerpc/perf/hv-24x7.c
-index e5eb33255066..1816f560a465 100644
---- a/arch/powerpc/perf/hv-24x7.c
-+++ b/arch/powerpc/perf/hv-24x7.c
-@@ -226,14 +226,14 @@ static struct attribute_group event_long_desc_group = {
- 
- static struct kmem_cache *hv_page_cache;
- 
--DEFINE_PER_CPU(int, hv_24x7_txn_flags);
--DEFINE_PER_CPU(int, hv_24x7_txn_err);
-+static DEFINE_PER_CPU(int, hv_24x7_txn_flags);
-+static DEFINE_PER_CPU(int, hv_24x7_txn_err);
- 
- struct hv_24x7_hw {
- 	struct perf_event *events[255];
- };
- 
--DEFINE_PER_CPU(struct hv_24x7_hw, hv_24x7_hw);
-+static DEFINE_PER_CPU(struct hv_24x7_hw, hv_24x7_hw);
- 
- /*
-  * request_buffer and result_buffer are not required to be 4k aligned,
-@@ -241,8 +241,8 @@ DEFINE_PER_CPU(struct hv_24x7_hw, hv_24x7_hw);
-  * the simplest way to ensure that.
-  */
- #define H24x7_DATA_BUFFER_SIZE	4096
--DEFINE_PER_CPU(char, hv_24x7_reqb[H24x7_DATA_BUFFER_SIZE]) __aligned(4096);
--DEFINE_PER_CPU(char, hv_24x7_resb[H24x7_DATA_BUFFER_SIZE]) __aligned(4096);
-+static DEFINE_PER_CPU(char, hv_24x7_reqb[H24x7_DATA_BUFFER_SIZE]) __aligned(4096);
-+static DEFINE_PER_CPU(char, hv_24x7_resb[H24x7_DATA_BUFFER_SIZE]) __aligned(4096);
- 
- static unsigned int max_num_requests(int interface_version)
- {
+> 
+>>  	char ratr_pl_new[MLXSW_REG_RATR_LEN];
+>>  	char ratr_pl[MLXSW_REG_RATR_LEN];
+>>  	u32 adj_index;
+>> -- 
+>> 2.30.2
+>>
 
