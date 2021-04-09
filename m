@@ -2,132 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D68A73595F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFE33595F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhDIHBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:01:02 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:38726 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233333AbhDIHBB (ORCPT
+        id S233513AbhDIHBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:01:20 -0400
+Received: from thorn.bewilderbeest.net ([71.19.156.171]:45231 "EHLO
+        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233333AbhDIHBT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:01:01 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AaZky869hf89ZhSeqzB1uk+A3I+orLtY04lQ7?=
- =?us-ascii?q?vn1ZYxpTb8CeioSKlPMUyRf7hF8qKRQdsPqHP7SNRm6ZyI5t7eAqTNWfdSTvpW?=
- =?us-ascii?q?fAFu9fxKT4xTmIIUHD385bkZxtaq1vTOD3ZGIK7vrSxCmdP5IezMKc8Kau7N2/?=
- =?us-ascii?q?815IQRtxY69tqydVYzz1LmRMSANLBYU0GfOnj6J6jgGtdngNYsOwCmNtZYX+ju?=
- =?us-ascii?q?fWn5HrawNuPXUawTSJ5AnD1JfHCRSCmj8RXzRTqI1CzVT4?=
-X-IronPort-AV: E=Sophos;i="5.82,208,1613430000"; 
-   d="scan'208";a="502341671"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 09:00:48 +0200
-Date:   Fri, 9 Apr 2021 09:00:48 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-cc:     clabbe@baylibre.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] [PATCH 2/2] media: zoran: replace bit shifts
- by BIT() macro
-In-Reply-To: <YG+OibRNRmILe8nQ@kali>
-Message-ID: <alpine.DEB.2.22.394.2104090900350.2852@hadrien>
-References: <cover.1617912177.git.mitaliborkar810@gmail.com> <ac8ec2b70ac2cc7c541c05a1d9a8db1fe79df793.1617912177.git.mitaliborkar810@gmail.com> <alpine.DEB.2.22.394.2104082314090.21785@hadrien> <YG95l9b++d+RFrDa@kali> <alpine.DEB.2.22.394.2104090009220.21785@hadrien>
- <YG+OibRNRmILe8nQ@kali>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 9 Apr 2021 03:01:19 -0400
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 240CB86;
+        Fri,  9 Apr 2021 00:01:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1617951666;
+        bh=+JLpB4B4pZBi2h8DfTURJ08nGqgdO/pYNV0sF8isNXA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CidT4DYvw7ZKpQkK8gdGXnDdEJXCD9goWMGofn7kROmWmdqG5EWltzowMmaLMHNGU
+         6M7G/SO7aMkIYPy7bEV3EaXiUUNr3sIQU3g/L8T8wnqwdiGHfBq5p8sFg0zAprzD90
+         FGNpAD/S63WbHASqkhrS6RDPjVQU9ap1qxx8FeqA=
+Date:   Fri, 9 Apr 2021 02:01:04 -0500
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Joel Stanley <joel@jms.id.au>, openbmc@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v5 2/4] drivers/tty/serial/8250: refactor sirq and lpc
+ address setting code
+Message-ID: <YG/7sFv+2AlLKbZ5@hatter.bewilderbeest.net>
+References: <20210408011637.5361-1-zev@bewilderbeest.net>
+ <20210408011637.5361-3-zev@bewilderbeest.net>
+ <db7271d8-8d13-4a8c-a7ba-564e4e769ea5@www.fastmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <db7271d8-8d13-4a8c-a7ba-564e4e769ea5@www.fastmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 09, 2021 at 12:06:16AM CDT, Andrew Jeffery wrote:
+>
+>
+>On Thu, 8 Apr 2021, at 10:46, Zev Weiss wrote:
+>> This splits dedicated aspeed_vuart_set_{sirq,lpc_address}() functions
+>> out of the sysfs store functions in preparation for adding DT
+>> properties that will be poking the same registers.  While we're at it,
+>> these functions now provide some basic bounds-checking on their
+>> arguments.
+>>
+>> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+>> ---
+>>  drivers/tty/serial/8250/8250_aspeed_vuart.c | 51 ++++++++++++++-------
+>>  1 file changed, 35 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c
+>> b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+>> index c33e02cbde93..8433f8dbb186 100644
+>> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
+>> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+>> @@ -72,22 +72,31 @@ static ssize_t lpc_address_show(struct device *dev,
+>>  	return snprintf(buf, PAGE_SIZE - 1, "0x%x\n", addr);
+>>  }
+>>
+>> +static int aspeed_vuart_set_lpc_address(struct aspeed_vuart *vuart, u32 addr)
+>> +{
+>> +	if (addr > U16_MAX)
+>> +		return -EINVAL;
+>> +
+>> +	writeb(addr >> 8, vuart->regs + ASPEED_VUART_ADDRH);
+>> +	writeb(addr >> 0, vuart->regs + ASPEED_VUART_ADDRL);
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static ssize_t lpc_address_store(struct device *dev,
+>>  				 struct device_attribute *attr,
+>>  				 const char *buf, size_t count)
+>>  {
+>>  	struct aspeed_vuart *vuart = dev_get_drvdata(dev);
+>> -	unsigned long val;
+>> +	u32 val;
+>>  	int err;
+>>
+>> -	err = kstrtoul(buf, 0, &val);
+>> +	err = kstrtou32(buf, 0, &val);
+>>  	if (err)
+>>  		return err;
+>>
+>> -	writeb(val >> 8, vuart->regs + ASPEED_VUART_ADDRH);
+>> -	writeb(val >> 0, vuart->regs + ASPEED_VUART_ADDRL);
+>> -
+>> -	return count;
+>> +	err = aspeed_vuart_set_lpc_address(vuart, val);
+>> +	return err ? : count;
+>>  }
+>>
+>>  static DEVICE_ATTR_RW(lpc_address);
+>> @@ -105,27 +114,37 @@ static ssize_t sirq_show(struct device *dev,
+>>  	return snprintf(buf, PAGE_SIZE - 1, "%u\n", reg);
+>>  }
+>>
+>> +static int aspeed_vuart_set_sirq(struct aspeed_vuart *vuart, u32 sirq)
+>> +{
+>> +	u8 reg;
+>> +
+>> +	if (sirq > (ASPEED_VUART_GCRB_HOST_SIRQ_MASK >> ASPEED_VUART_GCRB_HOST_SIRQ_SHIFT))
+>> +		return -EINVAL;
+>> +
+>> +	sirq <<= ASPEED_VUART_GCRB_HOST_SIRQ_SHIFT;
+>> +	sirq &= ASPEED_VUART_GCRB_HOST_SIRQ_MASK;
+>
+>This might be less verbose if we reordered things a little:
+>
+>```
+>sirq <<= ASPEED_VUART_GCRB_HOST_SIRQ_SHIFT;
+>if (sirq & ASPEED_VUART_GCRB_HOST_SIRQ_MASK)
+>	return -EINVAL;
+>sirq &= ASPEED_VUART_GCRB_HOST_SIRQ_MASK;
+>```
 
-
-On Fri, 9 Apr 2021, Mitali Borkar wrote:
-
-> On Fri, Apr 09, 2021 at 12:10:06AM +0200, Julia Lawall wrote:
-> >
-> >
-> > On Fri, 9 Apr 2021, Mitali Borkar wrote:
-> >
-> > > On Thu, Apr 08, 2021 at 11:15:07PM +0200, Julia Lawall wrote:
-> > > >
-> > > >
-> > > > On Fri, 9 Apr 2021, Mitali Borkar wrote:
-> > > >
-> > > > > Added #include <linux/bitops.h> and replaced bit shifts by BIT() macro.
-> > > > > This BIT() macro from linux/bitops.h is used to define ZR36057_VFESPFR_* bitmasks.
-> > > > > Use of macro is better and neater. It maintains consistency.
-> > > > > Reported by checkpatch.
-> > > > >
-> > > > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > > > > ---
-> > > > >  drivers/staging/media/zoran/zr36057.h | 10 ++++++----
-> > > > >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> > > > > index a2a75fd9f535..93075459f910 100644
-> > > > > --- a/drivers/staging/media/zoran/zr36057.h
-> > > > > +++ b/drivers/staging/media/zoran/zr36057.h
-> > > > > @@ -8,6 +8,8 @@
-> > > > >  #ifndef _ZR36057_H_
-> > > > >  #define _ZR36057_H_
-> > > > >
-> > > > > +#include <linux/bitops.h>
-> > > > > +
-> > > > >  /* Zoran ZR36057 registers */
-> > > > >
-> > > > >  #define ZR36057_VFEHCR          0x000	/* Video Front End, Horizontal Configuration Register */
-> > > > > @@ -31,12 +33,12 @@
-> > > > >  #define ZR36057_VFESPFR_VER_DCM          8
-> > > > >  #define ZR36057_VFESPFR_DISP_MODE        6
-> > > > >  #define ZR36057_VFESPFR_YUV422          (0 << 3)
-> > > > > -#define ZR36057_VFESPFR_RGB888          (1 << 3)
-> > > > > +#define ZR36057_VFESPFR_RGB888          BIT(3)
-> > > >
-> > > > Uniformity is generally considered to be more important than using BIT.
-> > > > Having only a few constants defined using BIT is a bit strange.
-> > > >
-> > > Okay Ma'am. Can you please tell me on how to proceed now? I am not sure
-> > > how to proceed.
-> >
-> > I think that this code should just be left as is.
-> >
-> > Checkpatch makes suggestions.  Its suggestions are not always appropriate
-> > for the context.
-> >
-> Okay Ma'am. This means I should not do any changes now. Do I need to do
-> something in this patch now? Or move onto next one?
-
-You can move on.
-
-julia
+Hmm, that (or something similar, perhaps with a '~' on the mask in the 
+if condition?) does seem like it'd be a nice improvement, though I 
+suppose it'd also mean we'd fail to reject some way-out-of-range sirq 
+values (e.g. if it had its MSB set) -- so I think I'll leave it as is, 
+just in the name of thoroughness/paranoia?
 
 >
-> > julia
-> >
-> > >
-> > > > julia
-> > > >
-> > > > >  #define ZR36057_VFESPFR_RGB565          (2 << 3)
-> > > > >  #define ZR36057_VFESPFR_RGB555          (3 << 3)
-> > > > > -#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
-> > > > > -#define ZR36057_VFESPFR_PACK24          (1 << 1)
-> > > > > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
-> > > > > +#define ZR36057_VFESPFR_ERR_DIF          BIT(2)
-> > > > > +#define ZR36057_VFESPFR_PACK24          BIT(1)
-> > > > > +#define ZR36057_VFESPFR_LITTLE_ENDIAN    BIT(0)
-> > > > >
-> > > > >  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
-> > > > >
-> > > > > --
-> > > > > 2.30.2
-> > > > >
-> > > > > --
-> > > > > You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> > > > > To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> > > > > To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/ac8ec2b70ac2cc7c541c05a1d9a8db1fe79df793.1617912177.git.mitaliborkar810%40gmail.com.
-> > > > >
-> > >
+>But otherwise it looks okay, so
 >
+>Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+>
+
+Thanks.
+
