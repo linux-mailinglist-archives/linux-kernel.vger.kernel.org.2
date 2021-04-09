@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C83359361
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32992359369
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbhDIDru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:47:50 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16059 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232662AbhDIDrt (ORCPT
+        id S233025AbhDIDxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232662AbhDIDxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:47:49 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGkXc1HR8zPpPs;
-        Fri,  9 Apr 2021 11:44:48 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 9 Apr 2021 11:47:29 +0800
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Yuqi Jin <jinyuqi@huawei.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shaokun Zhang <zhangshaokun@hisilicon.com>
-Subject: [PATCH] fs: Optimized file struct to improve performance
-Date:   Fri, 9 Apr 2021 11:47:37 +0800
-Message-ID: <1617940057-52843-1-git-send-email-zhangshaokun@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 8 Apr 2021 23:53:32 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37535C061760;
+        Thu,  8 Apr 2021 20:53:19 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id b14so7475561lfv.8;
+        Thu, 08 Apr 2021 20:53:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WvAkE14RRxFyw37VbW7supzk2d4KzKaaFk6V2nsZhQc=;
+        b=Bes+aZ8kQWHR8gW+UFXLxhe2qQj9C4RZbvCC9IHufR4O78b+ajGfFHFXjQa5Dldzxs
+         u3jvjTjJXaOVJdpfWEKQ9wfK+KxymjJKajonU+uL4191I3QspKmea917j9nMus5xMXGy
+         3k3U4X0sLzyjDT+k8Dpa1CodWZEyltZgQvotn4B0QmnFY16ZQ5ibWdoRFjpayByEnEab
+         dD02pRam72lYHtwHuBngVn97sA7LA15NLjRyrSfX81DIi66RyK+RTuStrjich3nWmLnJ
+         o5EYAG4IWjIowlBgLkvG+4PqAkXcgWtU6P3Dm1NsNimGRsGzsORZEnWBxrr0vPOcaDC6
+         GCZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WvAkE14RRxFyw37VbW7supzk2d4KzKaaFk6V2nsZhQc=;
+        b=XHvtVgJrRrj2I4uj2JgQLAL06+Q10OLlSruwUpIbsBYWwMP+oL7pdN3XVHj+UhDzyE
+         O2GaPeeq9oc+mUvsODMMKHe/Av/GPXEgvgS2IWfByhY0thol1aClPoKGjUh9bo+qltMf
+         4lyZDhVKylQwkIBn3aWRrAe4RbLJvnkeKKhuiFRPFZNAJdI3ECdSY8hAcMUeW8AhM2VE
+         NhKGrk4rRw2okfAw1pk/lltkbWzQJ8skt4i6N2xuMGnegjhaRCnE2IHo+GmrPwcHqw7u
+         WgjxYsknsr0YWICIeQkWD3cXQzyorVv201diSjmhlFvQVArGLEfX4DLTdZegBeDcpLgV
+         u5Iw==
+X-Gm-Message-State: AOAM533Lc1uPYFgo0iwqZYHtnQYbSAFQTSpVr9ITyyQ+qQhiTuxcA+4I
+        9NlLdWtBWlbIbPyWgjnQ1tUse2+Vp9+4PU+D5Em66R8xQNg=
+X-Google-Smtp-Source: ABdhPJz4OoYDuXPlbyzjjdbCDm7bu+Itw0zg+AhNUPCi78022CFqFtV8pXgxDrS3RfpuLFbQVdCBZCiVCqd6Y46rsoI=
+X-Received: by 2002:a19:8c0a:: with SMTP id o10mr9022702lfd.175.1617940397489;
+ Thu, 08 Apr 2021 20:53:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+References: <20210409024639.1092204-1-wanjiabing@vivo.com>
+In-Reply-To: <20210409024639.1092204-1-wanjiabing@vivo.com>
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 8 Apr 2021 22:53:06 -0500
+Message-ID: <CAH2r5muuziT__TfpFWgeQkXRLkE0ZmekAXLBVwxwOAmCAFrh2w@mail.gmail.com>
+Subject: Re: [PATCH] fs: cifs: Remove repeated struct declaration
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Steve French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>, kael_w@yeah.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuqi Jin <jinyuqi@huawei.com>
+merged into cifs-2.6.git for-next
 
-In the syscall process, @f_count and @f_mod are frequently used, if
-we put them together with each other and they will share the same
-cacheline. It is useful for the performance.
+On Thu, Apr 8, 2021 at 9:47 PM Wan Jiabing <wanjiabing@vivo.com> wrote:
+>
+> struct cifs_writedata is declared twice.
+> One is declared at 209th line.
+> And struct cifs_writedata is defined blew.
+> The declaration hear is not needed. Remove the duplicate.
+>
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>  fs/cifs/cifsglob.h | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/fs/cifs/cifsglob.h b/fs/cifs/cifsglob.h
+> index ec824ab8c5ca..5ec60745034e 100644
+> --- a/fs/cifs/cifsglob.h
+> +++ b/fs/cifs/cifsglob.h
+> @@ -1316,8 +1316,6 @@ struct cifs_readdata {
+>         struct page                     **pages;
+>  };
+>
+> -struct cifs_writedata;
+> -
+>  /* asynchronous write support */
+>  struct cifs_writedata {
+>         struct kref                     refcount;
+> --
+> 2.25.1
+>
 
-syscall of unixbench is tested on Intel 8180.
-before this patch
-80 CPUs in system; running 80 parallel copies of tests
 
-System Call Overhead                    3789860.2 lps   (10.0 s, 1 samples)
-
-System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-System Call Overhead                          15000.0    3789860.2   2526.6
-                                                                   ========
-System Benchmarks Index Score (Partial Only)                         2526.6
-
-after this patch
-80 CPUs in system; running 80 parallel copies of tests
-
-System Call Overhead                    3951328.1 lps   (10.0 s, 1 samples)
-
-System Benchmarks Partial Index              BASELINE       RESULT    INDEX
-System Call Overhead                          15000.0    3951328.1   2634.2
-                                                                   ========
-System Benchmarks Index Score (Partial Only)                         2634.2
-
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
----
- include/linux/fs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 3fbb98126248..cfc91d2dd6a7 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -917,7 +917,6 @@ struct file {
- 		struct llist_node	fu_llist;
- 		struct rcu_head 	fu_rcuhead;
- 	} f_u;
--	struct path		f_path;
- 	struct inode		*f_inode;	/* cached value */
- 	const struct file_operations	*f_op;
- 
-@@ -926,13 +925,14 @@ struct file {
- 	 * Must not be taken from IRQ context.
- 	 */
- 	spinlock_t		f_lock;
--	enum rw_hint		f_write_hint;
- 	atomic_long_t		f_count;
- 	unsigned int 		f_flags;
- 	fmode_t			f_mode;
- 	struct mutex		f_pos_lock;
- 	loff_t			f_pos;
- 	struct fown_struct	f_owner;
-+	enum rw_hint		f_write_hint;
-+	struct path		f_path;
- 	const struct cred	*f_cred;
- 	struct file_ra_state	f_ra;
- 
 -- 
-2.7.4
+Thanks,
 
+Steve
