@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD95359262
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:02:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A094F359264
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233172AbhDIDCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46914 "EHLO
+        id S232975AbhDIDCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232831AbhDIDCB (ORCPT
+        with ESMTP id S232808AbhDIDCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 23:02:01 -0400
+        Thu, 8 Apr 2021 23:02:41 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE39FC061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:01:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA89C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 20:02:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=byDjZSIxNauly9aoLpQzt14Js28JNwt3koY8qFYLlj4=; b=LAAKnOaA3ygZn6bdBSy3KIc7Jn
-        OA2EH/tQNzmSGFIp0Rkh2k6fA0n4Kkfg3jobvn/UIkmUMbrDInkJlKCzXbczdDLnGse8i+VjOZjNz
-        DHgqhHxnaItJTbTRdmnXQbZa3fyVqRQgXkgF2yDoFQMxDlinLLUOZcaCkIkULoJ85E3XY1ygN+gZd
-        gQ4uX9vFW0WoFkVs94kUXi4xRhS1m02spgQRyd1j0CKUnWh/eYcFmT7klpenupsKIy2g2wiRqeXRs
-        L0fm18+mIFjF+2sdkSauJbxUNuZVdg/lJ4bylkt/eNi1HLUkrSTq4twaMZAqV/qqyOs9hpqj02izi
-        3DEQ2jHw==;
+        bh=p5O+YfzhbSOEW+YNsQ9Wekh4cXltadiHCoSHXULSbic=; b=M8orZNYTqj09D378OLA6YQnUyF
+        OR+xi361aCoFkvureKCjnhfhjBjD5CH43YDpy1H0XXEDv7dgdCXPICMAMRVxmZc4Dps1K75P8NRJQ
+        pM+bxJw4XQ9ZucR3cQPBVV4LUv104K7uJdhYYNrKEN8CSKelNWOkZkcLF+vVc8N9T9p387M7mT5Kq
+        QoDUg4lEvk50uFLp95u9XNbh1Ma76k4zpnm7BYNBc/XnkCb+7RMypaQNQysyMaJjHPtEh7z+MRqbG
+        Rafzw6Vi7PkfJmQ4KK0escRINQUAaQ9zYs3MIQoDYMq717R78//+ITYtebVprrKej484WXDrGzCGt
+        iQBuCmSA==;
 Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lUhNl-00HH3s-3t; Fri, 09 Apr 2021 03:00:35 +0000
+        id 1lUhOB-00HH5j-E2; Fri, 09 Apr 2021 03:01:00 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     neilb@suse.de, peterz@infradead.org, mingo@redhat.com,
         will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
         tglx@linutronix.de, bigeasy@linutronix.de
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 15/17] zsmalloc: Add zs_pin_lock
-Date:   Fri,  9 Apr 2021 03:51:29 +0100
-Message-Id: <20210409025131.4114078-16-willy@infradead.org>
+Subject: [PATCH 16/17] rhashtable: Convert to split_lock
+Date:   Fri,  9 Apr 2021 03:51:30 +0100
+Message-Id: <20210409025131.4114078-17-willy@infradead.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210409025131.4114078-1-willy@infradead.org>
 References: <20210409025131.4114078-1-willy@infradead.org>
@@ -45,50 +45,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow lockdep to track zsmalloc's pin bit spin lock.
+NeilBrown noticed the same problem with bit spinlocks that I did,
+but chose to solve it locally in the rhashtable implementation rather
+than lift it all the way to the bit spin lock implementation.  Convert
+rhashtables to use split_locks.
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: NeilBrown <neilb@suse.de>
 ---
- mm/zsmalloc.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ include/linux/rhashtable.h | 20 +++++++-------------
+ lib/rhashtable.c           |  5 +----
+ 2 files changed, 8 insertions(+), 17 deletions(-)
 
-diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-index 9a7c91c14b84..9d89a1857901 100644
---- a/mm/zsmalloc.c
-+++ b/mm/zsmalloc.c
-@@ -874,6 +874,8 @@ static unsigned long obj_to_head(struct page *page, void *obj)
- 		return *(unsigned long *)obj;
+diff --git a/include/linux/rhashtable.h b/include/linux/rhashtable.h
+index 68dab3e08aad..4df164fe6222 100644
+--- a/include/linux/rhashtable.h
++++ b/include/linux/rhashtable.h
+@@ -65,12 +65,11 @@ struct rhash_lock_head {};
+  * struct bucket_table - Table of hash buckets
+  * @size: Number of hash buckets
+  * @nest: Number of bits of first-level nested table.
+- * @rehash: Current bucket being rehashed
+  * @hash_rnd: Random seed to fold into hash
+  * @walkers: List of active walkers
+  * @rcu: RCU structure for freeing the table
+  * @future_tbl: Table under construction during rehashing
+- * @ntbl: Nested table used when out of memory.
++ * @sl: Conceptual spinlock representing every per-bucket lock.
+  * @buckets: size * hash buckets
+  */
+ struct bucket_table {
+@@ -82,7 +81,7 @@ struct bucket_table {
+ 
+ 	struct bucket_table __rcu *future_tbl;
+ 
+-	struct lockdep_map	dep_map;
++	struct split_lock	sl;
+ 
+ 	struct rhash_lock_head __rcu *buckets[] ____cacheline_aligned_in_smp;
+ };
+@@ -327,8 +326,7 @@ static inline void rht_lock(struct bucket_table *tbl,
+ 			    struct rhash_lock_head __rcu **bkt)
+ {
+ 	local_bh_disable();
+-	bit_spin_lock(0, (unsigned long *)bkt);
+-	lock_map_acquire(&tbl->dep_map);
++	bit_spin_lock(0, (unsigned long *)bkt, &tbl->sl);
  }
  
-+static DEFINE_SPLIT_LOCK(zs_pin_lock);
-+
- static inline int testpin_tag(unsigned long handle)
+ static inline void rht_lock_nested(struct bucket_table *tbl,
+@@ -336,15 +334,13 @@ static inline void rht_lock_nested(struct bucket_table *tbl,
+ 				   unsigned int subclass)
  {
- 	return bit_spin_is_locked(HANDLE_PIN_BIT, (unsigned long *)handle);
-@@ -881,17 +883,20 @@ static inline int testpin_tag(unsigned long handle)
- 
- static inline int trypin_tag(unsigned long handle)
- {
--	return bit_spin_trylock(HANDLE_PIN_BIT, (unsigned long *)handle);
-+	return bit_spin_trylock(HANDLE_PIN_BIT, (unsigned long *)handle,
-+				&zs_pin_lock);
+ 	local_bh_disable();
+-	bit_spin_lock(0, (unsigned long *)bucket);
+-	lock_acquire_exclusive(&tbl->dep_map, subclass, 0, NULL, _THIS_IP_);
++	bit_spin_lock_nested(0, (unsigned long *)bucket, &tbl->sl, subclass);
  }
  
- static void pin_tag(unsigned long handle) __acquires(bitlock)
+ static inline void rht_unlock(struct bucket_table *tbl,
+ 			      struct rhash_lock_head __rcu **bkt)
  {
--	bit_spin_lock(HANDLE_PIN_BIT, (unsigned long *)handle);
-+	bit_spin_lock(HANDLE_PIN_BIT, (unsigned long *)handle,
-+			&zs_pin_lock);
+-	lock_map_release(&tbl->dep_map);
+-	bit_spin_unlock(0, (unsigned long *)bkt);
++	bit_spin_unlock(0, (unsigned long *)bkt, &tbl->sl);
+ 	local_bh_enable();
  }
  
- static void unpin_tag(unsigned long handle) __releases(bitlock)
+@@ -397,10 +393,8 @@ static inline void rht_assign_unlock(struct bucket_table *tbl,
  {
--	bit_spin_unlock(HANDLE_PIN_BIT, (unsigned long *)handle);
-+	bit_spin_unlock(HANDLE_PIN_BIT, (unsigned long *)handle,
-+			&zs_pin_lock);
+ 	if (rht_is_a_nulls(obj))
+ 		obj = NULL;
+-	lock_map_release(&tbl->dep_map);
+-	rcu_assign_pointer(*bkt, (void *)obj);
+-	preempt_enable();
+-	__release(bitlock);
++	bit_spin_unlock_assign((unsigned long *)bkt, (unsigned long)obj,
++				&tbl->sl);
+ 	local_bh_enable();
  }
  
- static void reset_page(struct page *page)
+diff --git a/lib/rhashtable.c b/lib/rhashtable.c
+index c949c1e3b87c..bfdb0bf87f99 100644
+--- a/lib/rhashtable.c
++++ b/lib/rhashtable.c
+@@ -179,7 +179,6 @@ static struct bucket_table *bucket_table_alloc(struct rhashtable *ht,
+ 	struct bucket_table *tbl = NULL;
+ 	size_t size;
+ 	int i;
+-	static struct lock_class_key __key;
+ 
+ 	tbl = kvzalloc(struct_size(tbl, buckets, nbuckets), gfp);
+ 
+@@ -193,10 +192,8 @@ static struct bucket_table *bucket_table_alloc(struct rhashtable *ht,
+ 	if (tbl == NULL)
+ 		return NULL;
+ 
+-	lockdep_init_map(&tbl->dep_map, "rhashtable_bucket", &__key, 0);
+-
++	split_lock_init(&tbl->sl);
+ 	tbl->size = size;
+-
+ 	rcu_head_init(&tbl->rcu);
+ 	INIT_LIST_HEAD(&tbl->walkers);
+ 
 -- 
 2.30.2
 
