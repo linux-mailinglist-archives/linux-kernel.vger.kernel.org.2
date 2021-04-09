@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 404F83597A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6D33597A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232749AbhDIIVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:21:46 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:54903 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232704AbhDIIVl (ORCPT
+        id S232785AbhDIIVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:21:48 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:40352 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232373AbhDIIVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:21:41 -0400
-X-UUID: 35e67773653a456d8471ab3de3f9bee6-20210409
-X-UUID: 35e67773653a456d8471ab3de3f9bee6-20210409
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
+        Fri, 9 Apr 2021 04:21:44 -0400
+X-UUID: 18e40afcb43e41b290d0fd2f94b82b14-20210409
+X-UUID: 18e40afcb43e41b290d0fd2f94b82b14-20210409
+Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
         (envelope-from <nina-cm.wu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2072133455; Fri, 09 Apr 2021 16:21:27 +0800
+        with ESMTP id 1752416080; Fri, 09 Apr 2021 16:21:30 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 9 Apr 2021 16:21:24 +0800
+ mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 9 Apr 2021 16:21:28 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 9 Apr 2021 16:21:24 +0800
+ Transport; Fri, 9 Apr 2021 16:21:28 +0800
 From:   Nina Wu <nina-cm.wu@mediatek.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         Matthias Brugger <matthias.bgg@gmail.com>
@@ -34,15 +34,14 @@ CC:     Nina Wu <Nina-CM.Wu@mediatek.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-mediatek@lists.infradead.org>,
         <srv_heupstream@mediatek.com>, <Jackson-kt.Chang@mediatek.com>
-Subject: [PATCH v3 5/7] soc: mediatek: devapc: add debug register for new IC support
-Date:   Fri, 9 Apr 2021 16:19:35 +0800
-Message-ID: <1617956377-4075-5-git-send-email-nina-cm.wu@mediatek.com>
+Subject: [PATCH v3 6/7] soc: mediatek: devapc: support mt8192
+Date:   Fri, 9 Apr 2021 16:19:36 +0800
+Message-ID: <1617956377-4075-6-git-send-email-nina-cm.wu@mediatek.com>
 X-Mailer: git-send-email 2.6.4
 In-Reply-To: <1617956377-4075-1-git-send-email-nina-cm.wu@mediatek.com>
 References: <1617956377-4075-1-git-send-email-nina-cm.wu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: 3C549EE1532870A94D5A7D3EFCA14F1F25D1A7FBBC15D67579D6860EE2A25D042000:8
 X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,108 +49,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nina Wu <Nina-CM.Wu@mediatek.com>
 
-There are 3 debug info registers in new ICs while in legacy ones,
-we have only 2. We add a 'version' field in compatible data to
-decide how we extract the debug info.
+Add compatible to support mt8192.
 
 Signed-off-by: Nina Wu <Nina-CM.Wu@mediatek.com>
 ---
- drivers/soc/mediatek/mtk-devapc.c | 43 +++++++++++++++++++++++++++++++++++----
- 1 file changed, 39 insertions(+), 4 deletions(-)
+ drivers/soc/mediatek/mtk-devapc.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/drivers/soc/mediatek/mtk-devapc.c b/drivers/soc/mediatek/mtk-devapc.c
-index f5d63c5..bdc8fe9 100644
+index bdc8fe9..84dd6a2 100644
 --- a/drivers/soc/mediatek/mtk-devapc.c
 +++ b/drivers/soc/mediatek/mtk-devapc.c
-@@ -26,12 +26,24 @@ struct mtk_devapc_vio_dbgs {
- 			u32 addr_h:4;
- 			u32 resv:4;
- 		} dbg0_bits;
-+
-+		struct {
-+			u32 dmnid:6;
-+			u32 vio_w:1;
-+			u32 vio_r:1;
-+			u32 addr_h:4;
-+			u32 resv:20;
-+		} dbg0_bits_ver2;
- 	};
- 
- 	u32 vio_dbg1;
-+	u32 vio_dbg2;
+@@ -265,11 +265,27 @@ static const struct mtk_devapc_data devapc_mt6779 = {
+ 	.vio_shift_con_offset = 0xF20,
  };
  
- struct mtk_devapc_data {
-+	/* architecture version */
-+	u32 version;
++static const struct mtk_devapc_data devapc_mt8192 = {
++	.version = 2,
++	.vio_mask_offset = 0x0,
++	.vio_sta_offset = 0x400,
++	.vio_dbg0_offset = 0x900,
++	.vio_dbg1_offset = 0x904,
++	.vio_dbg2_offset = 0x908,
++	.apc_con_offset = 0xF00,
++	.vio_shift_sta_offset = 0xF20,
++	.vio_shift_sel_offset = 0xF30,
++	.vio_shift_con_offset = 0xF10,
++};
 +
- 	/* default numbers of violation index */
- 	u32 vio_idx_num;
+ static const struct of_device_id mtk_devapc_dt_match[] = {
+ 	{
+ 		.compatible = "mediatek,mt6779-devapc",
+ 		.data = &devapc_mt6779,
+ 	}, {
++		.compatible = "mediatek,mt8192-devapc",
++		.data = &devapc_mt8192,
++	}, {
+ 	},
+ };
  
-@@ -40,6 +52,7 @@ struct mtk_devapc_data {
- 	u32 vio_sta_offset;
- 	u32 vio_dbg0_offset;
- 	u32 vio_dbg1_offset;
-+	u32 vio_dbg2_offset;
- 	u32 apc_con_offset;
- 	u32 vio_shift_sta_offset;
- 	u32 vio_shift_sel_offset;
-@@ -163,22 +176,43 @@ static void devapc_extract_vio_dbg(struct mtk_devapc_context *ctx)
- 	struct mtk_devapc_vio_dbgs vio_dbgs;
- 	void __iomem *vio_dbg0_reg;
- 	void __iomem *vio_dbg1_reg;
-+	void __iomem *vio_dbg2_reg;
-+	u32 vio_addr, bus_id, domain_id;
-+	u32 vio_w, vio_r;
- 
- 	vio_dbg0_reg = ctx->base + ctx->data->vio_dbg0_offset;
- 	vio_dbg1_reg = ctx->base + ctx->data->vio_dbg1_offset;
-+	vio_dbg2_reg = ctx->base + ctx->data->vio_dbg2_offset;
- 
- 	vio_dbgs.vio_dbg0 = readl(vio_dbg0_reg);
- 	vio_dbgs.vio_dbg1 = readl(vio_dbg1_reg);
-+	if (ctx->data->version == 2U)
-+		vio_dbgs.vio_dbg2 = readl(vio_dbg2_reg);
-+
-+	if (ctx->data->version == 1U) {
-+		/* arch version 1 */
-+		bus_id = vio_dbgs.dbg0_bits.mstid;
-+		vio_addr = vio_dbgs.vio_dbg1;
-+		domain_id = vio_dbgs.dbg0_bits.dmnid;
-+		vio_w = vio_dbgs.dbg0_bits.vio_w;
-+		vio_r = vio_dbgs.dbg0_bits.vio_r;
-+	} else {
-+		/* arch version 2 */
-+		bus_id = vio_dbgs.vio_dbg1;
-+		vio_addr = vio_dbgs.vio_dbg2;
-+		domain_id = vio_dbgs.dbg0_bits_ver2.dmnid;
-+		vio_w = vio_dbgs.dbg0_bits_ver2.vio_w;
-+		vio_r = vio_dbgs.dbg0_bits_ver2.vio_r;
-+	}
- 
- 	/* Print violation information */
--	if (vio_dbgs.dbg0_bits.vio_w)
-+	if (vio_w)
- 		dev_info(ctx->dev, "Write Violation\n");
--	else if (vio_dbgs.dbg0_bits.vio_r)
-+	else if (vio_r)
- 		dev_info(ctx->dev, "Read Violation\n");
- 
- 	dev_info(ctx->dev, "Bus ID:0x%x, Dom ID:0x%x, Vio Addr:0x%x\n",
--		 vio_dbgs.dbg0_bits.mstid, vio_dbgs.dbg0_bits.dmnid,
--		 vio_dbgs.vio_dbg1);
-+		 bus_id, domain_id, vio_addr);
- }
- 
- /*
-@@ -219,6 +253,7 @@ static void stop_devapc(struct mtk_devapc_context *ctx)
- }
- 
- static const struct mtk_devapc_data devapc_mt6779 = {
-+	.version = 1,
- 	.vio_idx_num = 511,
- 	.vio_mask_offset = 0x0,
- 	.vio_sta_offset = 0x400,
 -- 
 2.6.4
 
