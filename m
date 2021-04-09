@@ -2,105 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FC4E35A934
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F14C35A93C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235181AbhDIXVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 19:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234880AbhDIXVx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 19:21:53 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D28EC061762;
-        Fri,  9 Apr 2021 16:21:40 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so7271471otk.5;
-        Fri, 09 Apr 2021 16:21:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Tjadi9gWiZf3KwIFwiKeQrMHEpLjgOQPNAFRf78f8yU=;
-        b=jvGwIo/yMRm9sb0hxpgzQG3L01wPiDBqCbpQemdhdC0QrhmNMVXEvJe0cgP3Ybm1Xk
-         GHJShl32LIGMtQxG4uX9X+J3WX0/4EuQQW4IQ+5pnxDMHK5/naT/jr01lcFaTEPYM7U2
-         ZFMGGY1F1Vfu7fc8//9Y9spoOgp/gtU7bdd9btdU7AciRR9u0obaU5CrhzvvkyEK9Jg0
-         URvIc6rg2Om/9b4t6tYFZ/CBpIbxkWugWA1fL5orEhy2SOasee7WSouErCkENz+aNeci
-         8rQ0kXo3/ur75aRMf8dqjESGITd5ZJuZcNWDYUWjCpXUMbbUO47dQ4ogjjMLAzW3/pM9
-         x6ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Tjadi9gWiZf3KwIFwiKeQrMHEpLjgOQPNAFRf78f8yU=;
-        b=eLQDJIpSbmwZfYn1rOrpjmKtBom68vYiONUcq1MzbGgTkNcoqXntGnscovRNKGleMZ
-         Lasepi/rfwRm5m7qDiTGwEyX8haOEHtR8I74LHmODqfKpLo2t0Ow4r8ualCQvHsYdrMN
-         t1mIgmQPIEHTjS6xEF1DQfNN8oYpFV6b4qmTKcj3h6gD9/Cit7r5QQoxw1bjyta3fiW2
-         3pUqz11EFP+Lh9DAuhQdZm2r0dvaqWk5qm2o/rxJn4IGhq6dr3bCL/GzlVa+fmoEleuk
-         huoFlackJauK6eNCw545U1YFhb04nvxRX7tdv2xd/GyifF/B1dczgP3odSUNfV/oe/hA
-         XA8w==
-X-Gm-Message-State: AOAM530g94ja7mOiqeKKxWKkbL2yOWtUq+JH1cZVzad3xE+mWMvd1y9b
-        P5rWeXU5mkmCk2yMDqm2THac5rh+fNM=
-X-Google-Smtp-Source: ABdhPJzG/OROLHRdsVDoT1NMneB+k8fbjA6Nj4YkiPknfTm0Q0R9M+U13PCfH8pqRibiSQxoStPnwg==
-X-Received: by 2002:a9d:5ae:: with SMTP id 43mr2535063otd.347.1618010498818;
-        Fri, 09 Apr 2021 16:21:38 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k8sm775584oig.6.2021.04.09.16.21.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Apr 2021 16:21:38 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 9 Apr 2021 16:21:36 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Sebastian Oechsle <setboolean@icloud.com>
-Cc:     pali@kernel.org, jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hwmon: (dell-smm) Add Dell Latitude 7440 to fan control
- whitelist
-Message-ID: <20210409232136.GA70972@roeck-us.net>
-References: <EE8F83B0-0C39-4E2A-B5FB-B94A1389588D@icloud.com>
+        id S235161AbhDIX1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 19:27:09 -0400
+Received: from mga17.intel.com ([192.55.52.151]:65425 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234880AbhDIX1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 19:27:08 -0400
+IronPort-SDR: BMHMMRbCYigH1KDjKnmmKvDqz1JEva23+7VC728O6O3h2GZTE7NbqszfXi7OpmepWbRmh7S8V0
+ Ke57gnrBMBZQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="173944581"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="173944581"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:26:54 -0700
+IronPort-SDR: xI7fWbzk+7AHdOiloNamNnAumWwQc+RJVrBcMtdpjnse13cIpgOsnTWs9LjI35Of840C0ng4+n
+ zTSVlnJXxY5Q==
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="422931465"
+Received: from schen9-mobl.amr.corp.intel.com ([10.209.107.191])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 16:26:54 -0700
+Subject: Re: [RFC PATCH v1 00/11] Manage the top tier memory in a tiered
+ memory
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1617642417.git.tim.c.chen@linux.intel.com>
+ <YGwlGrHtDJPQF7UG@dhcp22.suse.cz>
+ <c615a610-eb4b-7e1e-16d1-4bc12938b08a@linux.intel.com>
+ <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <58e5dcc9-c134-78de-6965-7980f8596b57@linux.intel.com>
+Date:   Fri, 9 Apr 2021 16:26:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <EE8F83B0-0C39-4E2A-B5FB-B94A1389588D@icloud.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YG7ugXZZ9BcXyGGk@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 07:02:55PM +0200, Sebastian Oechsle wrote:
-> Allow manual PWM control on Dell Latitude 7440.
-> 
-> Signed-off-by: Sebastian Oechsle <setboolean@icloud.com <mailto:setboolean@icloud.com>>
 
-This patch is corrupt, to the point where it doesn't show up in hwmon patchwork.
-I just happened to find it, but I can not convince git to apply it. Please
-fix the problem and resubmit.
+On 4/8/21 4:52 AM, Michal Hocko wrote:
 
-Thanks,
-Guenter
+>> The top tier memory used is reported in
+>>
+>> memory.toptier_usage_in_bytes
+>>
+>> The amount of top tier memory usable by each cgroup without
+>> triggering page reclaim is controlled by the
+>>
+>> memory.toptier_soft_limit_in_bytes 
+> 
 
-> ---
-> drivers/hwmon/dell-smm-hwmon.c | 8 ++++++++
-> 1 file changed, 8 insertions(+)
+Michal,
+
+Thanks for your comments.  I will like to take a step back and
+look at the eventual goal we envision: a mechanism to partition the 
+tiered memory between the cgroups. 
+
+A typical use case may be a system with two set of tasks.
+One set of task is very latency sensitive and we desire instantaneous
+response from them. Another set of tasks will be running batch jobs
+were latency and performance is not critical.   In this case,
+we want to carve out enough top tier memory such that the working set
+of the latency sensitive tasks can fit entirely in the top tier memory.
+The rest of the top tier memory can be assigned to the background tasks.  
+
+To achieve such cgroup based tiered memory management, we probably want
+something like the following.
+
+For generalization let's say that there are N tiers of memory t_0, t_1 ... t_N-1,
+where tier t_0 sits at the top and demotes to the lower tier. 
+We envision for this top tier memory t0 the following knobs and counters 
+in the cgroup memory controller
+
+memory_t0.current 	Current usage of tier 0 memory by the cgroup.
+
+memory_t0.min		If tier 0 memory used by the cgroup falls below this low
+			boundary, the memory will not be subjected to demotion
+			to lower tiers to free up memory at tier 0.  
+
+memory_t0.low		Above this boundary, the tier 0 memory will be subjected
+			to demotion.  The demotion pressure will be proportional
+			to the overage.
+
+memory_t0.high		If tier 0 memory used by the cgroup exceeds this high
+			boundary, allocation of tier 0 memory by the cgroup will
+			be throttled. The tier 0 memory used by this cgroup
+			will also be subjected to heavy demotion.
+
+memory_t0.max		This will be a hard usage limit of tier 0 memory on the cgroup.
+
+If needed, memory_t[12...].current/min/low/high for additional tiers can be added.
+This follows closely with the design of the general memory controller interface.  
+
+Will such an interface looks sane and acceptable with everyone?
+
+The patch set I posted is meant to be a straw man cgroup v1 implementation
+and I readily admits that it falls short of the eventual functionality 
+we want to achieve.  It is meant to solicit feedback from everyone on how the tiered
+memory management should work.
+
+> Are you trying to say that soft limit acts as some sort of guarantee?
+
+No, the soft limit does not offers guarantee.  It will only serves to keep the usage
+of the top tier memory in the vicinity of the soft limits.
+
+> Does that mean that if the memcg is under memory pressure top tiear
+> memory is opted out from any reclaim if the usage is not in excess?
+
+In the prototype implementation, regular memory reclaim is still in effect
+if we are under heavy memory pressure. 
+
 > 
-> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-> index 73b9db9e3aab..2970892bed82 100644
-> --- a/drivers/hwmon/dell-smm-hwmon.c
-> +++ b/drivers/hwmon/dell-smm-hwmon.c
-> @@ -1210,6 +1210,14 @@ static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
-> 		},
-> 		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
-> 	},
-> +	{
-> +		.ident = "Dell Latitude E7440",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Latitude E7440"),
-> +		},
-> +		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
-> +	},
-> 	{ }
-> };
+> From you previous email it sounds more like the limit is evaluated on
+> the global memory pressure to balance specific memcgs which are in
+> excess when trying to reclaim/demote a toptier numa node.
+
+On a top tier node, if the free memory on the node falls below a percentage, then
+we will start to reclaim/demote from the node.
+
 > 
-> --
-> 2.31.1
+> Soft limit reclaim has several problems. Those are historical and
+> therefore the behavior cannot be changed. E.g. go after the biggest
+> excessed memcg (with priority 0 - aka potential full LRU scan) and then
+> continue with a normal reclaim. This can be really disruptive to the top
+> user.
+
+Thanks for pointing out these problems with soft limit explicitly.
+
+> 
+> So you can likely define a more sane semantic. E.g. push back memcgs
+> proporitional to their excess but then we have two different soft limits
+> behavior which is bad as well. I am not really sure there is a sensible
+> way out by (ab)using soft limit here.
+> 
+> Also I am not really sure how this is going to be used in practice.
+> There is no soft limit by default. So opting in would effectivelly
+> discriminate those memcgs. There has been a similar problem with the
+> soft limit we have in general. Is this really what you are looing for?
+> What would be a typical usecase?
+
+>> Want to make sure I understand what you mean by NUMA aware limits.
+>> Yes, in the patch set, it does treat the NUMA nodes differently.
+>> We are putting constraint on the "top tier" RAM nodes vs the lower
+>> tier PMEM nodes.  Is this what you mean?
+> 
+> What I am trying to say (and I have brought that up when demotion has been
+> discussed at LSFMM) is that the implementation shouldn't be PMEM aware.
+> The specific technology shouldn't be imprinted into the interface.
+> Fundamentally you are trying to balance memory among NUMA nodes as we do
+> not have other abstraction to use. So rather than talking about top,
+> secondary, nth tier we have different NUMA nodes with different
+> characteristics and you want to express your "priorities" for them.
+
+With node priorities, how would the system reserve enough
+high performance memory for those performance critical task cgroup? 
+
+By priority, do you mean the order of allocation of nodes for a cgroup?
+Or you mean that all the similar performing memory node will be grouped in
+the same priority?
+
+Tim
