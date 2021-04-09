@@ -2,65 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A9B2359F4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EFF359F50
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:54:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233401AbhDIMwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:52:42 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16558 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhDIMwl (ORCPT
+        id S233702AbhDIMyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:54:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51248 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232855AbhDIMyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:52:41 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGydx5wLDz1BGYF;
-        Fri,  9 Apr 2021 20:50:13 +0800 (CST)
-Received: from DESKTOP-EFRLNPK.china.huawei.com (10.174.176.196) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 9 Apr 2021 20:52:16 +0800
-From:   Qiheng Lin <linqiheng@huawei.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <jani.nikula@linux.intel.com>, <joonas.lahtinen@linux.intel.com>,
-        <rodrigo.vivi@intel.com>, <intel-gfx@lists.freedesktop.org>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Qiheng Lin <linqiheng@huawei.com>
-Subject: [PATCH -next] drm/i915/display: remove redundant NULL check
-Date:   Fri, 9 Apr 2021 20:51:51 +0800
-Message-ID: <20210409125151.9520-1-linqiheng@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 9 Apr 2021 08:54:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617972873;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=t1x564ycJ2gyj0RLJZ2QQlV+6k3Blj33nf5guRDQz0g=;
+        b=K8u28eslDeUMPRMvGBn2nlOazM2GYBCuBi3EJbNEHbpF7bub8oaPoIzGHklJzAHphdngb8
+        0UUmYtkWbeelLYbG2+oqUS2Wfe4hF0G1VLS1o2f1UVRYdSS5AzLE3M1Wr9SEL7DcmNFk60
+        UKgYPKLGqvblZ/Ufy9cHfoAvcaZWavQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-341-TDr1uGSDMkO_hGXeTkomAQ-1; Fri, 09 Apr 2021 08:54:31 -0400
+X-MC-Unique: TDr1uGSDMkO_hGXeTkomAQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8FB5910054F6;
+        Fri,  9 Apr 2021 12:54:29 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-114-61.ams2.redhat.com [10.36.114.61])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CE51E10013C1;
+        Fri,  9 Apr 2021 12:54:24 +0000 (UTC)
+From:   Emanuele Giuseppe Esposito <eesposit@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v5 0/4] KVM: cpuid: fix KVM_GET_EMULATED_CPUID implementation
+Date:   Fri,  9 Apr 2021 14:54:19 +0200
+Message-Id: <20210409125423.26288-1-eesposit@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain
-X-Originating-IP: [10.174.176.196]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+This series aims to clarify the behavior of the KVM_GET_EMULATED_CPUID
+ioctl, and fix a corner case where -E2BIG is returned when
+the nent field of struct kvm_cpuid2 is matching the amount of
+emulated entries that kvm returns.
 
-drivers/gpu/drm/i915/display/intel_psr.c:1530:29-31: WARNING
- !A || A && B is equivalent to !A || B
+Patch 1 proposes the nent field fix to cpuid.c,
+patch 2 updates the ioctl documentation accordingly and
+patches 3 and 4 extend the x86_64/get_cpuid_test.c selftest to check
+the intended behavior of KVM_GET_EMULATED_CPUID.
 
-Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
+Signed-off-by: Emanuele Giuseppe Esposito <eesposit@redhat.com>
 ---
- drivers/gpu/drm/i915/display/intel_psr.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+v5:
+- Better comment in cpuid.c (patch 1)
 
-diff --git a/drivers/gpu/drm/i915/display/intel_psr.c b/drivers/gpu/drm/i915/display/intel_psr.c
-index 32d3d56259c2..4cec6b4d7fb9 100644
---- a/drivers/gpu/drm/i915/display/intel_psr.c
-+++ b/drivers/gpu/drm/i915/display/intel_psr.c
-@@ -1526,8 +1526,7 @@ void intel_psr_wait_for_idle(const struct intel_crtc_state *new_crtc_state)
- 		u32 psr_status;
- 
- 		mutex_lock(&intel_dp->psr.lock);
--		if (!intel_dp->psr.enabled ||
--		    (intel_dp->psr.enabled && intel_dp->psr.psr2_enabled)) {
-+		if (!intel_dp->psr.enabled || intel_dp->psr.psr2_enabled) {
- 			mutex_unlock(&intel_dp->psr.lock);
- 			continue;
- 		}
+Emanuele Giuseppe Esposito (4):
+  KVM: x86: Fix a spurious -E2BIG in KVM_GET_EMULATED_CPUID
+  Documentation: KVM: update KVM_GET_EMULATED_CPUID ioctl description
+  selftests: add kvm_get_emulated_cpuid to processor.h
+  selftests: KVM: extend get_cpuid_test to include
+    KVM_GET_EMULATED_CPUID
+
+ Documentation/virt/kvm/api.rst                | 10 +--
+ arch/x86/kvm/cpuid.c                          | 33 ++++---
+ .../selftests/kvm/include/x86_64/processor.h  |  1 +
+ .../selftests/kvm/lib/x86_64/processor.c      | 33 +++++++
+ .../selftests/kvm/x86_64/get_cpuid_test.c     | 90 ++++++++++++++++++-
+ 5 files changed, 142 insertions(+), 25 deletions(-)
+
 -- 
-2.31.1
+2.30.2
 
