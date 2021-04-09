@@ -2,16 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DFC0359C0B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51368359C11
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 12:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233584AbhDIK16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 06:27:58 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49590 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231756AbhDIK1l (ORCPT
+        id S233540AbhDIK2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 06:28:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233071AbhDIK1n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 06:27:41 -0400
+        Fri, 9 Apr 2021 06:27:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F374AC061763;
+        Fri,  9 Apr 2021 03:27:30 -0700 (PDT)
 Date:   Fri, 09 Apr 2021 10:27:26 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1617964047;
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PdEIUud9lZ4pLFmnef0chA/BMguCQiBj/F0RgBkA7IM=;
-        b=x8xjV9HzbEobrvU++VoiXGbwb8xwqrU5tVZaOUEjyrgv08U0ZBo5wlf+j0MUQkoIssq//E
-        pfx/R2C8AJ+VmrZxs0h6a7/v9sjdo1qG42sXinpj2IwjCH8FFmxHzihnAHXsO7UTO4SPXT
-        auOEYJOV2JrKCy/eMmcxXiSny6hmpRl851P0yhn3/ZhuKddx2Xc1GphMiy8v+mzBmDhDYK
-        vdlhfs1D/5i7Ej4pA9avqB49n0On/P8tv5QDK+B3e5uyHSYoG0kDNc9sP3KJcjC67nY+nI
-        +mTS0JS7vx8kuCMyqRcJoAnKmiHaBmVHyLf4jF7L79H/6NKrvJ4zYyTXLRVOuw==
+        bh=eOpjc/5oLseTKTdow5GlBUGuJdmu0mipYLa59vxGndk=;
+        b=NuHjq8adSrImFjqVh1LrvBrNHVxQ8xBkzGkCy/SR8il5kcG1OctfGInG7M7/UEUYn3YuFN
+        vsqkF3bQ7LNVgnS4au/8XEWGHDUd5gTyhcSlqeYwtFVI1Rcspmt1d5HxsbCJnZiwyG1Ewo
+        QzPI0/mjPPIG89XvVtAJvVJlBhBNtxJ+uHONi9Dvy2pctggcTc0b75UobcBHRZ9SFO3T7t
+        nPcBe2erlWrI79tmCv+zxgnw/4FM3yqdL1vtaev9MZkMELXEMV4C1qapQ0wfT3XmF2Oer7
+        cJMCjy7ruRxviTbAMU7zA7/0ygfLe/mGC4z8McLj+Grc/ZStnLUOGkNl/qB27w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1617964047;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,72 +36,71 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=PdEIUud9lZ4pLFmnef0chA/BMguCQiBj/F0RgBkA7IM=;
-        b=Q7H8M1WHrocW/IBt/MFO7N4iDSRFR1eAYsc/sFpycnCyTQEoSfHwUQcYrC72JJYEaxy6OJ
-        c8J2FfBQ0cJDOtAQ==
-From:   "tip-bot2 for Wolfram Sang" <tip-bot2@linutronix.de>
+        bh=eOpjc/5oLseTKTdow5GlBUGuJdmu0mipYLa59vxGndk=;
+        b=jQm1FmUhtRzUuNC2h7XZq1N0M7iqRxC0vYTveTD+qZkwLRMI+WbcFZZrjWZRCTC9yjF5F7
+        aWDY036+cjvmzMAw==
+From:   "tip-bot2 for Drew Fustini" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/sh_cmt: Don't use CMTOUT_IE
- with R-Car Gen2/3
-Cc:     Phong Hoang <phong.hoang.wz@renesas.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        niklas.soderlund+renesas@ragnatech.se,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+Subject: [tip: timers/core] clocksource/drivers/pistachio: Fix trivial typo
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Drew Fustini <drew@beagleboard.org>,
         Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210309094448.31823-1-wsa+renesas@sang-engineering.com>
-References: <20210309094448.31823-1-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20210305090315.384547-1-drew@beagleboard.org>
+References: <20210305090315.384547-1-drew@beagleboard.org>
 MIME-Version: 1.0
-Message-ID: <161796404656.29796.2438653089234156067.tip-bot2@tip-bot2>
+Message-ID: <161796404695.29796.11103155064345782166.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     68c70aae06e9660473a00fd7d68e0b53f4d7b6f4
-Gitweb:        https://git.kernel.org/tip/68c70aae06e9660473a00fd7d68e0b53f4d=
-7b6f4
-Author:        Wolfram Sang <wsa+renesas@sang-engineering.com>
-AuthorDate:    Tue, 09 Mar 2021 10:44:48 +01:00
+Commit-ID:     a47d7ef4550d08fb428ea4c3f1a9c71674212208
+Gitweb:        https://git.kernel.org/tip/a47d7ef4550d08fb428ea4c3f1a9c71674212208
+Author:        Drew Fustini <drew@beagleboard.org>
+AuthorDate:    Fri, 05 Mar 2021 01:03:17 -08:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Thu, 08 Apr 2021 13:24:16 +02:00
+CommitterDate: Thu, 08 Apr 2021 13:24:15 +02:00
 
-clocksource/drivers/sh_cmt: Don't use CMTOUT_IE with R-Car Gen2/3
+clocksource/drivers/pistachio: Fix trivial typo
 
-CMTOUT_IE is only supported for older SoCs. Newer SoCs shall not set
-this bit. So, add a version check.
+Fix trivial typo, rename local variable from 'overflw' to 'overflow' in
+pistachio_clocksource_read_cycles().
 
-Reported-by: Phong Hoang <phong.hoang.wz@renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Reviewed-by: Niklas S=C3=B6derlund <niklas.soderlund+renesas@ragnatech.se>
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Reported-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Drew Fustini <drew@beagleboard.org>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210309094448.31823-1-wsa+renesas@sang-engin=
-eering.com
+Link: https://lore.kernel.org/r/20210305090315.384547-1-drew@beagleboard.org
 ---
- drivers/clocksource/sh_cmt.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/clocksource/timer-pistachio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clocksource/sh_cmt.c b/drivers/clocksource/sh_cmt.c
-index c98f885..d7ed99f 100644
---- a/drivers/clocksource/sh_cmt.c
-+++ b/drivers/clocksource/sh_cmt.c
-@@ -339,8 +339,9 @@ static int sh_cmt_enable(struct sh_cmt_channel *ch)
- 		sh_cmt_write_cmcsr(ch, SH_CMT16_CMCSR_CMIE |
- 				   SH_CMT16_CMCSR_CKS512);
- 	} else {
--		sh_cmt_write_cmcsr(ch, SH_CMT32_CMCSR_CMM |
--				   SH_CMT32_CMCSR_CMTOUT_IE |
-+		u32 cmtout =3D ch->cmt->info->model <=3D SH_CMT_48BIT ?
-+			      SH_CMT32_CMCSR_CMTOUT_IE : 0;
-+		sh_cmt_write_cmcsr(ch, cmtout | SH_CMT32_CMCSR_CMM |
- 				   SH_CMT32_CMCSR_CMR_IRQ |
- 				   SH_CMT32_CMCSR_CKS_RCLK8);
- 	}
+diff --git a/drivers/clocksource/timer-pistachio.c b/drivers/clocksource/timer-pistachio.c
+index a2dd85d..6f37181 100644
+--- a/drivers/clocksource/timer-pistachio.c
++++ b/drivers/clocksource/timer-pistachio.c
+@@ -71,7 +71,7 @@ static u64 notrace
+ pistachio_clocksource_read_cycles(struct clocksource *cs)
+ {
+ 	struct pistachio_clocksource *pcs = to_pistachio_clocksource(cs);
+-	u32 counter, overflw;
++	u32 counter, overflow;
+ 	unsigned long flags;
+ 
+ 	/*
+@@ -80,7 +80,7 @@ pistachio_clocksource_read_cycles(struct clocksource *cs)
+ 	 */
+ 
+ 	raw_spin_lock_irqsave(&pcs->lock, flags);
+-	overflw = gpt_readl(pcs->base, TIMER_CURRENT_OVERFLOW_VALUE, 0);
++	overflow = gpt_readl(pcs->base, TIMER_CURRENT_OVERFLOW_VALUE, 0);
+ 	counter = gpt_readl(pcs->base, TIMER_CURRENT_VALUE, 0);
+ 	raw_spin_unlock_irqrestore(&pcs->lock, flags);
+ 
