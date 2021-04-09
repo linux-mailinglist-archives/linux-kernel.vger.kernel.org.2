@@ -2,100 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABE035914C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3529D35912C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbhDIBUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 21:20:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDIBUj (ORCPT
+        id S233170AbhDIBMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 21:12:37 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:16848 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232958AbhDIBMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:20:39 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C7D1C061760;
-        Thu,  8 Apr 2021 18:20:27 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id h20so1945931plr.4;
-        Thu, 08 Apr 2021 18:20:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=VUM3PU+E+VHC9ih3cbEFirpKeZTUeG/FI++7dLfr2rI=;
-        b=LBar/o0BPMpBGSVMwaf8sjdjB+VB7zx4QxGrqoIIGrWJayPobFHiNr+UxXmWdddfO7
-         vkF19Og4VnC9vRoY4xdzymMe4PTYTlEjqYJRNwFnN/ATk1lRTHO1tosIjAUlhVT5Ov2F
-         eRwnI5RFl7uKlr1x0WptyLAK1gFgZVOyRgCU69ln/dmpSwwuC9UqXKpWEZH9KVDAVepj
-         L/BGXb3Bop2ZL9T+qJzrt08odp+3GS+WZYqrsgNAdCL4OVpo6cITGGjLeApBNZ3nuPRK
-         6Q0fOv4Ivas8wIDsPxIxakMZfs8AJQ9nEG6YGdcm7rpFSJqQuSYbQvxVoa88ga11ry+a
-         prLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=VUM3PU+E+VHC9ih3cbEFirpKeZTUeG/FI++7dLfr2rI=;
-        b=aNESa2elEI5tJOnhrOkcZ9ZsGelMnu5ZrFmqsFeghABBltRXpPQdBwvy9fUhG7kzqB
-         j+XesEkBbJRG182Eb43rz5U2pO0QqiN4bgihx3CM+EHnlGN5+AdbDQSuzi+WNoCVCiHl
-         VEe3g840KbOXjBwvBF5ZkHcOahpAyrtqAbQLDrTjLsAWxA44ZE3Fi58owFmYd/Fb6tpg
-         mxy2Po0zGNO5lA0vlGi23TXk7QKvon+GpqqYxj7Duy9H4B9yXk1S348ssGflnoD7S+9y
-         /XTks5qaeurXlokObe5+DsvTGIbuDpXKAi7CsYw/Gw+7Mtp8MhwFa2E008px38U/4rOZ
-         9llQ==
-X-Gm-Message-State: AOAM530+3yqbbhqJ6gYlBdv8fnnxuyVMvlKuB3Z49pz6ao0WIWOxvh5U
-        EXX1eOtiTm7qBPHk8guaB7qzD4a8cZg=
-X-Google-Smtp-Source: ABdhPJzzzXkuqwlDa9eZ/oJpRY5iwJJRmAbxDW/M4xaePQDIneqjUbDPBPpg29D8kETveiDmkwXrcA==
-X-Received: by 2002:a17:902:748c:b029:e9:3d7e:7894 with SMTP id h12-20020a170902748cb02900e93d7e7894mr10825072pll.51.1617931226779;
-        Thu, 08 Apr 2021 18:20:26 -0700 (PDT)
-Received: from [10.43.90.134] ([103.114.158.1])
-        by smtp.gmail.com with ESMTPSA id j188sm555313pfd.64.2021.04.08.18.20.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 18:20:26 -0700 (PDT)
-Subject: Re: [PATCH v2] ima: Fix function name error in comment.
-To:     zohar@linux.ibm.com, jmorris@namei.org
-Cc:     linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210406021210.2843-1-unclexiaole@gmail.com>
-From:   Jiele Zhao <unclexiaole@gmail.com>
-Message-ID: <c108ff27-717b-a5a0-ce02-c617667328ac@gmail.com>
-Date:   Fri, 9 Apr 2021 09:20:37 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Thu, 8 Apr 2021 21:12:34 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FGg6729DRz9xZl;
+        Fri,  9 Apr 2021 09:10:07 +0800 (CST)
+Received: from localhost.localdomain (10.175.102.38) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 9 Apr 2021 09:12:09 +0800
+From:   Wei Yongjun <weiyongjun1@huawei.com>
+To:     <weiyongjun1@huawei.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+CC:     <coresight@lists.linaro.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next] coresight: trbe: Fix return value check in arm_trbe_register_coresight_cpu()
+Date:   Fri, 9 Apr 2021 01:22:13 +0000
+Message-ID: <20210409012213.3664473-1-weiyongjun1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210406021210.2843-1-unclexiaole@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type:   text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+X-Originating-IP: [10.175.102.38]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mimi,
+In case of error, the function devm_kasprintf() returns NULL
+pointer not ERR_PTR(). The IS_ERR() test in the return value
+check should be replaced with NULL test.
 
-On 2021/4/6 10:12, Jiele Zhao wrote:
-> The original function name was ima_path_check().  The policy parsing
-> still supports PATH_CHECK.   Commit 9bbb6cad0173 ("ima: rename
-> ima_path_check to ima_file_check") renamed the function to
-> ima_file_check(), but missed modifying the function name in the
-> comment.
->
-> Fixes: 9bbb6cad0173 ("ima: rename ima_path_check to ima_file_check").
->
-> Signed-off-by: Jiele Zhao <unclexiaole@gmail.com>
-> ---
->   security/integrity/ima/ima_main.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-> index 9ef748ea829f..03bef720ab44 100644
-> --- a/security/integrity/ima/ima_main.c
-> +++ b/security/integrity/ima/ima_main.c
-> @@ -482,7 +482,7 @@ int ima_bprm_check(struct linux_binprm *bprm)
->   }
->   
->   /**
-> - * ima_path_check - based on policy, collect/store measurement.
-> + * ima_file_check - based on policy, collect/store measurement.
->    * @file: pointer to the file to be measured
->    * @mask: contains MAY_READ, MAY_WRITE, MAY_EXEC or MAY_APPEND
->    *
+Fixes: 3fbf7f011f24 ("coresight: sink: Add TRBE driver")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+---
+ drivers/hwtracing/coresight/coresight-trbe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is the [patch v2] based on your suggestion. Does this meet the 
-requirements ?
-
+diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
+index 5ce239875c98..176868496879 100644
+--- a/drivers/hwtracing/coresight/coresight-trbe.c
++++ b/drivers/hwtracing/coresight/coresight-trbe.c
+@@ -871,7 +871,7 @@ static void arm_trbe_register_coresight_cpu(struct trbe_drvdata *drvdata, int cp
+ 
+ 	dev = &cpudata->drvdata->pdev->dev;
+ 	desc.name = devm_kasprintf(dev, GFP_KERNEL, "trbe%d", cpu);
+-	if (IS_ERR(desc.name))
++	if (!desc.name)
+ 		goto cpu_clear;
+ 
+ 	desc.type = CORESIGHT_DEV_TYPE_SINK;
 
