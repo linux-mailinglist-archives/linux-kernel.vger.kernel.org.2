@@ -2,51 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD313599B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9F73599C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhDIJqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:46:40 -0400
-Received: from elvis.franken.de ([193.175.24.41]:36276 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231370AbhDIJqf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:46:35 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lUniV-0004w2-00; Fri, 09 Apr 2021 11:46:19 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 3AA26C24DC; Fri,  9 Apr 2021 11:44:55 +0200 (CEST)
-Date:   Fri, 9 Apr 2021 11:44:55 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] MIPS: octeon: Add __raw_copy_[from|to|in]_user symbols
-Message-ID: <20210409094455.GA8810@alpha.franken.de>
-References: <20210408214846.50758-1-tsbogend@alpha.franken.de>
- <1fa6ff61-25af-7d24-2d03-de03ec73e8f6@gmail.com>
+        id S232435AbhDIJrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:47:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16509 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231638AbhDIJru (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:47:50 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGtX02Pv8zPpY6;
+        Fri,  9 Apr 2021 17:44:48 +0800 (CST)
+Received: from [10.174.178.48] (10.174.178.48) by smtp.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 17:47:30 +0800
+Subject: Re: [PATCH -next] [POWERPC] Rename get_property to of_get_property:
+ use DEFINE_SPINLOCK() for spinlock
+To:     Ye Bin <yebin10@huawei.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+CC:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-janitors@vger.kernel.org>, Hulk Robot <hulkci@huawei.com>
+References: <20210409095148.2294319-1-yebin10@huawei.com>
+From:   "weiyongjun (A)" <weiyongjun1@huawei.com>
+Message-ID: <4b0b16f3-bb06-3a90-5148-ea8302bb3a58@huawei.com>
+Date:   Fri, 9 Apr 2021 17:47:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1fa6ff61-25af-7d24-2d03-de03ec73e8f6@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210409095148.2294319-1-yebin10@huawei.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.48]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 11:42:46AM +0300, Sergei Shtylyov wrote:
-> Hello!
-> 
-> On 09.04.2021 0:48, Thomas Bogendoerfer wrote:
-> 
-> > Cavium Octeon has it's own memcpy implementation and also need the change
-> 
->    Its. :-)
+Rename get_property to of_get_property: use DEFINE_SPINLOCK() for spinlock
 
-applied (with typo fixed) to mips-next.
+~~~~~~~~~~~~~
 
-Thomas.
+这是啥模块名？
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+
+在 2021/4/9 17:51, Ye Bin 写道:
+> spinlock can be initialized automatically with DEFINE_SPINLOCK()
+> rather than explicitly calling spin_lock_init().
+>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
+> ---
+>   drivers/macintosh/via-pmu-led.c | 4 +---
+>   1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/macintosh/via-pmu-led.c b/drivers/macintosh/via-pmu-led.c
+> index ae067ab2373d..2502119cff42 100644
+> --- a/drivers/macintosh/via-pmu-led.c
+> +++ b/drivers/macintosh/via-pmu-led.c
+> @@ -27,7 +27,7 @@
+>   #include <linux/pmu.h>
+>   #include <asm/prom.h>
+>   
+> -static spinlock_t pmu_blink_lock;
+> +static DEFINE_SPINLOCK(pmu_blink_lock);
+>   static struct adb_request pmu_blink_req;
+>   /* -1: no change, 0: request off, 1: request on */
+>   static int requested_change;
+> @@ -105,8 +105,6 @@ static int __init via_pmu_led_init(void)
+>   		return -ENODEV;
+>   	}
+>   	of_node_put(dt);
+> -
+> -	spin_lock_init(&pmu_blink_lock);
+>   	/* no outstanding req */
+>   	pmu_blink_req.complete = 1;
+>   	pmu_blink_req.done = pmu_req_done;
+>
