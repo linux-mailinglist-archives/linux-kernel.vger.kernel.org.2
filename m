@@ -2,157 +2,476 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29A8835A883
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 23:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE80C35A87F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 23:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234896AbhDIV4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 17:56:33 -0400
-Received: from mail-db8eur05on2068.outbound.protection.outlook.com ([40.107.20.68]:42944
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234079AbhDIV4c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 17:56:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DYMSKTuRi2o7X/oL570QG3qiau8WPPn+evcGopL2uGqpWwkt3nt8iCWKtsr1o8IXLbml8jgeYhcn0bJiotLNVnjjWMyZM3dNyQMcc1JSakikws+7OOGt6/ZtuclUl7wzXo2s3RXhWtM5DtkC2hfyiqeI7IUpSPKKfjXW36IagbFbZ7ns3CEKoy3LLXoMEt9qBIex80z/Me3K27y+rMuhlGrwIVcQtPxCJuzbOem6da+fO/qAkVk04icGnRliyBLBC/gN5jVj7iS6HbJlYWxmW/3/1LhM0xGtWDEumvDDW0FA4KDk5p4pEJvrbVj9tqmBLw2o2rMz/d1n63io6M39oQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8iaSEqGmYlpiIHYKCpKnMALw/TWq8eXhy6MTOGwqd/A=;
- b=VoB5TEKiw00yGDaVfY7dYhS2AYlO8yqUjod6IJl/WBd6K3bvIBELdVRqWm3aTmX+XuYYr2OIuRvqbXmY3iGuwDHanIJWPcek7ZUr7kgX7gZwURVy01QKacl/R/HpcG6VT9v+UTn7+CcyLsifpy60qEtaAAot34hPqoE3LEvEosmQfaw+BTcUXQkUpLNYcIQeQ15DA+axy7SGzF7dCqg07/+l6jX2X/+gYfW50sw9zxMMtwdDsLl7lfjmyhrvhV4E8orzP0RLN4VMr0MWEYFf6vTiqn3GtL/5ytQyPlTBjNxuAfmh0mUQF0XpcBpnYA7aakuiUR9ydyIcdUQBiErdkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8iaSEqGmYlpiIHYKCpKnMALw/TWq8eXhy6MTOGwqd/A=;
- b=JSDjr/pMiwpInZBWWCqE5mk96lVO5Y/WK+CVcZS+cTqntV/CWOE9VxVJRe9qGSB22hWDM9Sv6w6ayMVdF4Hfi/YaD3XRcjgq8yYF9qaXaT5j+h6Ug9Sp1juMSbj8DbC4bTBxnVDvsgk7ueBC2HMUdnqFqCYHLALpQpRlEko8Nv8=
-Received: from AM6PR04MB4471.eurprd04.prod.outlook.com (2603:10a6:20b:1f::27)
- by AM6PR04MB6166.eurprd04.prod.outlook.com (2603:10a6:20b:b6::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.27; Fri, 9 Apr
- 2021 21:56:16 +0000
-Received: from AM6PR04MB4471.eurprd04.prod.outlook.com
- ([fe80::5961:303c:4973:f21b]) by AM6PR04MB4471.eurprd04.prod.outlook.com
- ([fe80::5961:303c:4973:f21b%6]) with mapi id 15.20.3999.032; Fri, 9 Apr 2021
- 21:56:16 +0000
-From:   Leo Li <leoyang.li@nxp.com>
-To:     Ye Bin <yebin10@huawei.com>, Qiang Zhao <qiang.zhao@nxp.com>
-CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: RE: [PATCH -next] soc: fsl: qe: use DEFINE_SPINLOCK() for spinlock
-Thread-Topic: [PATCH -next] soc: fsl: qe: use DEFINE_SPINLOCK() for spinlock
-Thread-Index: AQHXLSTUMJPMTYcgGEmdwjH8p41/uKqsu+wQ
-Date:   Fri, 9 Apr 2021 21:56:16 +0000
-Message-ID: <AM6PR04MB4471507F0A759451E68FA8638F739@AM6PR04MB4471.eurprd04.prod.outlook.com>
-References: <20210409095152.2294487-1-yebin10@huawei.com>
-In-Reply-To: <20210409095152.2294487-1-yebin10@huawei.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [136.49.83.111]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dd46d67c-e573-40e7-35e4-08d8fba24cc5
-x-ms-traffictypediagnostic: AM6PR04MB6166:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB6166D60485880084493EB5018F739@AM6PR04MB6166.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1728;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Utu+jVcHGUt2kcnmGan/d0xyuVSVpsoEbqinA1Y7T5MeY7lCE/cg4RaE3WAhATiue7ufQs2iAi2Qq6/ZIm4M5OY4vvOBOUB7j+vEM0RMGp46gbea/NeQcrs5bspdChyxs8cxKP5Is8GI4EiH+xLW/3I7SL7JMkXtS5lKGysXcQ+6A7xNVgF+j4OpGhZLgY1r+Um21kqDBUflJ2ccdSa3SkbI8KiCEI5tXhsdwBUB3uw5WvyYaPfkhu2k04d/53uX70WUfhw/6O45HxjSikgr8OszYkcfcJoL/EPHxpJwZhugz56J9eh+ncdjaFjBw8B2b0fPR761Vz2y1DuGnRlZY71vzOeHYSRsQlaaGUc/N6AeLYMZkaOt6dZ7k7GMk+j/VxP9AlIh6BjK5ZIgUIvUEPWoY1t5AsmQcUmyrDJf2KNFXNHeX28oAyIi3Ey5EnsasASb5bRQW7X1NcN5q960hVrZgcU9t7prRjUiB0TfRbjV2a4MKOVnQ17VybUvubpzvXCgBMm9vXO2r7bLpD5ppPr7g9Zd89LGlyapcYPtIDQfMyt+gqa1bz4VHKUeq5VnPInaN6xZRIgBF+c0t+JZIHWDxI9XWUpukjWIGDt6yXvMYVDD4fWvpDp1lyYMi8DC3lxQpLsB2mw8linwJ50vnrkfQcNQA1+nc0OsPqIVKno=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4471.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(346002)(39860400002)(366004)(64756008)(66446008)(5660300002)(66556008)(66476007)(52536014)(26005)(83380400001)(110136005)(53546011)(86362001)(2906002)(6506007)(478600001)(6636002)(186003)(38100700001)(55016002)(7696005)(54906003)(66946007)(9686003)(8936002)(316002)(71200400001)(76116006)(33656002)(8676002)(4326008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?pUp35RPrR6pJ9De/l5pSQLXidcDwLXrvrj6p2xKmFvNwIawbtoEwOvvYo4yy?=
- =?us-ascii?Q?xzH9k/qXVds/qQZgCsii5z3ZMGeXhr4jpKnvIdERWBBOklxlkl5ryjPwlab4?=
- =?us-ascii?Q?2ERbBHv02Rr9jQikNcaLrhJMXVTsYj0oQegm3uDHuflkSbtynKm0a5UELCN3?=
- =?us-ascii?Q?nVUqCQId95TDebPbCYT1qW5J53OwSD5KJwmdDwhhMGj3MyY+hgcXcd5j/BP8?=
- =?us-ascii?Q?2WLMK7TVwgp9Dgxh57PQciE17pY1yIB+or0s9v1pyzhaeqNv+RpHcA5DLtks?=
- =?us-ascii?Q?p7wW1NMvQFHEUZ1cd6DzWcRH15p9LNX0Y8T6/R6m+duUEX6kOUz+Xrt+d8LP?=
- =?us-ascii?Q?NYmY4Ji/1juJhfzfTZ/PdnN6/5esW9bY93+CkpfenVlEvSf1pOY+p5FtD7iJ?=
- =?us-ascii?Q?NgTljgjn8Qew5r+SAgxhPGQHSlWJ4DVY7fNmd+GDPPK6NbjvUqHDXE8YKetO?=
- =?us-ascii?Q?cESyz0BKp9Bla708jbcMK2TBx/GgUneM39OTmutm/R9iEGsTloTWmsvQKbBk?=
- =?us-ascii?Q?YzSldPipJrSxV0TU0ewQVFy4spMyIkgb5wGgedGIafPFX8wVPucqFRq3ySzw?=
- =?us-ascii?Q?KnlusuY2n/pKxeYyHNFPSrsgt92gEiQtHW85nuWbE1WjVLSC2TBsrzMz64ZX?=
- =?us-ascii?Q?Xzi3hXVGdqHbD9NhdiV3/DavZL5L8XSVNfRDwxHh90kR0hd0HJVXxDVelJbg?=
- =?us-ascii?Q?tT2W6x6NxzPjDKYxl4HL4FY2V5srSuaEwnludzg4yiThGgdtq2WNhVLvhjlx?=
- =?us-ascii?Q?QCGkrurztlT8qHO9BBAQo1+xo97rULgPN725WCKc++HaH5U+2a6FDGfDH9vC?=
- =?us-ascii?Q?lCFADvZA0r8c+vbr0ttcvd9OxyxxotmFpOWvOwpzTu84n228ajy0nbg0Y0Ft?=
- =?us-ascii?Q?t0S3ZKEIgh5kUO4xUj5BZ2XX334zmAmL7Bio7Htv7Gg3rAP8yA3JQTK+GcmJ?=
- =?us-ascii?Q?rKBIN2TEVmC0uJ2s5mqloPtkvGyUsNVl5IFV8n49knPHgqkK+D51/RuexdyJ?=
- =?us-ascii?Q?/X1fjSZdDpq5oTcnVJCOI17SdwJ34JltdfavaKVuBf6Gu4PAZwFSo4eTuKFh?=
- =?us-ascii?Q?3nYW7SM3wnod05XxkNZtpPLurx+gkQ4vgwPpWMQukC7SZ/ypfbQErlcxl87J?=
- =?us-ascii?Q?WrblUOyET0WiSrrONawVXZNHDjFNvCIqQz2R9Ueh4mvyZ9BpkfqEHDg+tjiQ?=
- =?us-ascii?Q?B9wDe1kYMZpdtBOpXm72ECiPhEHYJpjcBMiVsySlf3UrjS3XhDeMP8VN6JzE?=
- =?us-ascii?Q?Fm12Jf7XyINHcsXAMWI+GQ2g8aVZjtFiBTAauqV4hhXsfQT36jbsSIZy0OwP?=
- =?us-ascii?Q?QKyNZkyopUUNQBku3DtpCJF9?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S234740AbhDIVzZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 9 Apr 2021 17:55:25 -0400
+Received: from mga02.intel.com ([134.134.136.20]:19892 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234079AbhDIVzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 17:55:23 -0400
+IronPort-SDR: glU3fuETzo5HCnUCwDVfqRNb0sgfjd8VUMWLvrBW3tOG/hWjTvhYoN6OmJSFdFsa+D+S55Q94M
+ GPrxkYPdXo0Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="180974504"
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="180974504"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 14:55:09 -0700
+IronPort-SDR: 6N4TSo4z/Q7eeeVH0WDhCl7wScdpx7ww5MQXd3vgLSWnM+D5R/oW1+4TZfojLAE9aymKK7+sUh
+ Mx0Pr2r7npyg==
+X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
+   d="scan'208";a="422904142"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 14:55:08 -0700
+Date:   Fri, 9 Apr 2021 14:57:44 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Yi Liu <yi.l.liu@intel.com>, Raj Ashok <ashok.raj@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Dave Jiang <dave.jiang@intel.com>, wangzhou1@hisilicon.com,
+        zhangfei.gao@linaro.org, vkoul@kernel.org,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 1/2] iommu/sva: Tighten SVA bind API with explicit flags
+Message-ID: <20210409145744.108d1bba@jacob-builder>
+In-Reply-To: <YHAq3Y5ld+7QtXgZ@myrica>
+References: <1617901736-24788-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <YHAq3Y5ld+7QtXgZ@myrica>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4471.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd46d67c-e573-40e7-35e4-08d8fba24cc5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 21:56:16.2449
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4lqwp379Nl/i/6Iernp4tZeH74OfvJLJWb0BSbxrIWx0t33LwdOhNbECQe8OBqarfmKxk4GMlGM9vTvEncvBNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB6166
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jean-Philippe,
+
+On Fri, 9 Apr 2021 12:22:21 +0200, Jean-Philippe Brucker
+<jean-philippe@linaro.org> wrote:
+
+> On Thu, Apr 08, 2021 at 10:08:55AM -0700, Jacob Pan wrote:
+> > The void* drvdata parameter isn't really used in iommu_sva_bind_device()
+> > API,  
+> 
+> Right, it used to be a cookie passed to the device driver in the exit_mm()
+> callback, but that went away with edcc40d2ab5f ("iommu: Remove
+> iommu_sva_ops::mm_exit()")
+> 
+> > the current IDXD code "borrows" the drvdata for a VT-d private flag
+> > for supervisor SVA usage.
+> > 
+> > Supervisor/Privileged mode request is a generic feature. It should be
+> > promoted from the VT-d vendor driver to the generic code.
+> > 
+> > This patch replaces void* drvdata with a unsigned int flags parameter
+> > and adjusts callers accordingly.  
+> 
+> Thanks for cleaning this up. Making flags unsigned long seems more common
+> (I suggested int without thinking). But it doesn't matter much, we won't
+> get to 32 flags.
+> 
+I was just thinking unsigned int is 32 bit for both 32 and 64 bit machine.
+
+> > 
+> > Link: https://lore.kernel.org/linux-iommu/YFhiMLR35WWMW%2FHu@myrica/
+> > Suggested-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >  drivers/dma/idxd/cdev.c                         |  2 +-
+> >  drivers/dma/idxd/init.c                         |  6 +++---
+> >  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c |  2 +-
+> >  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h     |  4 ++--
+> >  drivers/iommu/intel/Kconfig                     |  1 +
+> >  drivers/iommu/intel/svm.c                       | 18 ++++++------------
+> >  drivers/iommu/iommu.c                           |  9 ++++++---
+> >  drivers/misc/uacce/uacce.c                      |  2 +-
+> >  include/linux/intel-iommu.h                     |  2 +-
+> >  include/linux/intel-svm.h                       | 17 ++---------------
+> >  include/linux/iommu.h                           | 19
+> > ++++++++++++++++--- 11 files changed, 40 insertions(+), 42 deletions(-)
+> > 
+> > diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
+> > index 0db9b82..21ec82b 100644
+> > --- a/drivers/dma/idxd/cdev.c
+> > +++ b/drivers/dma/idxd/cdev.c
+> > @@ -103,7 +103,7 @@ static int idxd_cdev_open(struct inode *inode,
+> > struct file *filp) filp->private_data = ctx;
+> >  
+> >  	if (device_pasid_enabled(idxd)) {
+> > -		sva = iommu_sva_bind_device(dev, current->mm, NULL);
+> > +		sva = iommu_sva_bind_device(dev, current->mm, 0);
+> >  		if (IS_ERR(sva)) {
+> >  			rc = PTR_ERR(sva);
+> >  			dev_err(dev, "pasid allocation failed: %d\n",
+> > rc); diff --git a/drivers/dma/idxd/init.c b/drivers/dma/idxd/init.c
+> > index 085a0c3..cdc85f1 100644
+> > --- a/drivers/dma/idxd/init.c
+> > +++ b/drivers/dma/idxd/init.c
+> > @@ -300,13 +300,13 @@ static struct idxd_device *idxd_alloc(struct
+> > pci_dev *pdev) 
+> >  static int idxd_enable_system_pasid(struct idxd_device *idxd)
+> >  {
+> > -	int flags;
+> > +	unsigned int flags;
+> >  	unsigned int pasid;
+> >  	struct iommu_sva *sva;
+> >  
+> > -	flags = SVM_FLAG_SUPERVISOR_MODE;
+> > +	flags = IOMMU_SVA_BIND_SUPERVISOR;
+> >  
+> > -	sva = iommu_sva_bind_device(&idxd->pdev->dev, NULL, &flags);
+> > +	sva = iommu_sva_bind_device(&idxd->pdev->dev, NULL, flags);
+> >  	if (IS_ERR(sva)) {
+> >  		dev_warn(&idxd->pdev->dev,
+> >  			 "iommu sva bind failed: %ld\n", PTR_ERR(sva));
+> > diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+> > b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c index
+> > bb251ca..23e287e 100644 ---
+> > a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c +++
+> > b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c @@ -354,7 +354,7 @@
+> > __arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm) }
+> >  
+> >  struct iommu_sva *
+> > -arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm, void
+> > *drvdata) +arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm,
+> > unsigned int flags)  
+> 
+> Could you add a check on flags:
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
+> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c index
+> bb251cab61f3..145ceb2fc5da 100644 ---
+> a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c +++
+> b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c @@ -354,12 +354,15 @@
+> __arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm) }
+> 
+>  struct iommu_sva *
+> -arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm, void
+> *drvdata) +arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm,
+> unsigned int flags) {
+>  	struct iommu_sva *handle;
+>  	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
+>  	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+> 
+> +	if (flags)
+> +		return ERR_PTR(-EINVAL);
+> +
+yes, will do.
+
+>  	if (smmu_domain->stage != ARM_SMMU_DOMAIN_S1)
+>  		return ERR_PTR(-EINVAL);
+> 
+> 
+> 
+> >  {
+> >  	struct iommu_sva *handle;
+> >  	struct iommu_domain *domain = iommu_get_domain_for_dev(dev);
+> > diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> > b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h index f985817..b971d4d
+> > 100644 --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> > +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> > @@ -711,7 +711,7 @@ bool arm_smmu_master_sva_enabled(struct
+> > arm_smmu_master *master); int arm_smmu_master_enable_sva(struct
+> > arm_smmu_master *master); int arm_smmu_master_disable_sva(struct
+> > arm_smmu_master *master); struct iommu_sva *arm_smmu_sva_bind(struct
+> > device *dev, struct mm_struct *mm,
+> > -				    void *drvdata);
+> > +				    unsigned int flags);
+> >  void arm_smmu_sva_unbind(struct iommu_sva *handle);
+> >  u32 arm_smmu_sva_get_pasid(struct iommu_sva *handle);
+> >  void arm_smmu_sva_notifier_synchronize(void);
+> > @@ -742,7 +742,7 @@ static inline int
+> > arm_smmu_master_disable_sva(struct arm_smmu_master *master) }
+> >  
+> >  static inline struct iommu_sva *
+> > -arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm, void
+> > *drvdata) +arm_smmu_sva_bind(struct device *dev, struct mm_struct *mm,
+> > unsigned int flags) {
+> >  	return ERR_PTR(-ENODEV);
+> >  }
+> > diff --git a/drivers/iommu/intel/Kconfig b/drivers/iommu/intel/Kconfig
+> > index 28a3d15..5415052 100644
+> > --- a/drivers/iommu/intel/Kconfig
+> > +++ b/drivers/iommu/intel/Kconfig
+> > @@ -41,6 +41,7 @@ config INTEL_IOMMU_SVM
+> >  	select PCI_PRI
+> >  	select MMU_NOTIFIER
+> >  	select IOASID
+> > +	select IOMMU_SVA_LIB  
+> 
+> Not needed here?
+intel/svm.c is registered to sva-lib and use the IOMMU_SVA_BIND_SUPERVISOR
+flag.
+
+> 
+> >  	help
+> >  	  Shared Virtual Memory (SVM) provides a facility for devices
+> >  	  to access DMA resources through process address space by
+> > diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> > index 574a7e6..4b5f8b0 100644
+> > --- a/drivers/iommu/intel/svm.c
+> > +++ b/drivers/iommu/intel/svm.c
+> > @@ -486,12 +486,9 @@ intel_svm_bind_mm(struct device *dev, unsigned int
+> > flags, } else
+> >  		pasid_max = 1 << 20;
+> >  
+> > -	/* Bind supervisor PASID shuld have mm = NULL */
+> > -	if (flags & SVM_FLAG_SUPERVISOR_MODE) {
+> > -		if (!ecap_srs(iommu->ecap) || mm) {
+> > -			pr_err("Supervisor PASID with user provided
+> > mm.\n");
+> > -			return -EINVAL;
+> > -		}
+> > +	if ((flags & IOMMU_SVA_BIND_SUPERVISOR) &&
+> > !ecap_srs(iommu->ecap)) {
+> > +		pr_err("Supervisor PASID not supported.\n");
+> > +		return -EINVAL;
+> >  	}
+> >  
+> >  	if (!(flags & SVM_FLAG_PRIVATE_PASID)) {
+> > @@ -593,7 +590,7 @@ intel_svm_bind_mm(struct device *dev, unsigned int
+> > flags, ret = intel_pasid_setup_first_level(iommu, dev,
+> >  				mm ? mm->pgd : init_mm.pgd,
+> >  				svm->pasid, FLPT_DEFAULT_DID,
+> > -				(mm ? 0 : PASID_FLAG_SUPERVISOR_MODE) |
+> > +				(mm ? 0 : IOMMU_SVA_BIND_SUPERVISOR) |
+> >  				(cpu_feature_enabled(X86_FEATURE_LA57)
+> > ? PASID_FLAG_FL5LP : 0));
+> >  		spin_unlock_irqrestore(&iommu->lock, iflags);
+> > @@ -620,7 +617,7 @@ intel_svm_bind_mm(struct device *dev, unsigned int
+> > flags, ret = intel_pasid_setup_first_level(iommu, dev,
+> >  						mm ? mm->pgd :
+> > init_mm.pgd, svm->pasid, FLPT_DEFAULT_DID,
+> > -						(mm ? 0 :
+> > PASID_FLAG_SUPERVISOR_MODE) |
+> > +						(mm ? 0 :
+> > IOMMU_SVA_BIND_SUPERVISOR) | (cpu_feature_enabled(X86_FEATURE_LA57) ?
+> >  						PASID_FLAG_FL5LP : 0));
+> >  		spin_unlock_irqrestore(&iommu->lock, iflags);
+> > @@ -1059,11 +1056,10 @@ static irqreturn_t prq_event_thread(int irq,
+> > void *d) 
+> >  #define to_intel_svm_dev(handle) container_of(handle, struct
+> > intel_svm_dev, sva) struct iommu_sva *
+> > -intel_svm_bind(struct device *dev, struct mm_struct *mm, void *drvdata)
+> > +intel_svm_bind(struct device *dev, struct mm_struct *mm, unsigned int
+> > flags) {
+> >  	struct iommu_sva *sva = ERR_PTR(-EINVAL);
+> >  	struct intel_svm_dev *sdev = NULL;
+> > -	unsigned int flags = 0;
+> >  	int ret;
+> >  
+> >  	/*
+> > @@ -1071,8 +1067,6 @@ intel_svm_bind(struct device *dev, struct
+> > mm_struct *mm, void *drvdata)
+> >  	 * It will require shared SVM data structures, i.e. combine
+> > io_mm
+> >  	 * and intel_svm etc.
+> >  	 */
+> > -	if (drvdata)
+> > -		flags = *(unsigned int *)drvdata;
+> >  	mutex_lock(&pasid_mutex);
+> >  	ret = intel_svm_bind_mm(dev, flags, NULL, mm, &sdev);
+> >  	if (ret)
+> > diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> > index d0b0a15..bf0a20f 100644
+> > --- a/drivers/iommu/iommu.c
+> > +++ b/drivers/iommu/iommu.c
+> > @@ -2962,6 +2962,7 @@ EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+> >   * iommu_sva_bind_device() - Bind a process address space to a device
+> >   * @dev: the device
+> >   * @mm: the mm to bind, caller must hold a reference to it
+> > + * @flags: options for the bind operation  
+> 
+> Could also specify valid flags "IOMMU_SVA_BIND_*"
+> 
+Good point! will do.
+
+> >   *
+> >   * Create a bond between device and address space, allowing the device
+> > to access
+> >   * the mm using the returned PASID. If a bond already exists between
+> > @device and @@ -2974,7 +2975,7 @@
+> > EXPORT_SYMBOL_GPL(iommu_aux_get_pasid);
+> >   * On error, returns an ERR_PTR value.
+> >   */
+> >  struct iommu_sva *
+> > -iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void
+> > *drvdata) +iommu_sva_bind_device(struct device *dev, struct mm_struct
+> > *mm, unsigned int flags) {
+> >  	struct iommu_group *group;
+> >  	struct iommu_sva *handle = ERR_PTR(-EINVAL);
+> > @@ -2987,6 +2988,9 @@ iommu_sva_bind_device(struct device *dev, struct
+> > mm_struct *mm, void *drvdata) if (!group)
+> >  		return ERR_PTR(-ENODEV);
+> >  
+> > +	/* Supervisor SVA does not need the current mm */
+> > +	if ((flags & IOMMU_SVA_BIND_SUPERVISOR) && mm)
+> > +		return ERR_PTR(-EINVAL);
+> >  	/* Ensure device count and domain don't change while we're
+> > binding */ mutex_lock(&group->mutex);
+> >  
+> > @@ -2999,8 +3003,7 @@ iommu_sva_bind_device(struct device *dev, struct
+> > mm_struct *mm, void *drvdata) if (iommu_group_device_count(group) != 1)
+> >  		goto out_unlock;
+> >  
+> > -	handle = ops->sva_bind(dev, mm, drvdata);
+> > -
+> > +	handle = ops->sva_bind(dev, mm, flags);
+> >  out_unlock:
+> >  	mutex_unlock(&group->mutex);
+> >  	iommu_group_put(group);
+> > diff --git a/drivers/misc/uacce/uacce.c b/drivers/misc/uacce/uacce.c
+> > index d07af4e..27e0e04 100644
+> > --- a/drivers/misc/uacce/uacce.c
+> > +++ b/drivers/misc/uacce/uacce.c
+> > @@ -99,7 +99,7 @@ static int uacce_bind_queue(struct uacce_device
+> > *uacce, struct uacce_queue *q) if (!(uacce->flags & UACCE_DEV_SVA))
+> >  		return 0;
+> >  
+> > -	handle = iommu_sva_bind_device(uacce->parent, current->mm,
+> > NULL);
+> > +	handle = iommu_sva_bind_device(uacce->parent, current->mm, 0);
+> >  	if (IS_ERR(handle))
+> >  		return PTR_ERR(handle);
+> >  
+> > diff --git a/include/linux/intel-iommu.h b/include/linux/intel-iommu.h
+> > index 1bc46b8..cdff752 100644
+> > --- a/include/linux/intel-iommu.h
+> > +++ b/include/linux/intel-iommu.h
+> > @@ -757,7 +757,7 @@ int intel_svm_bind_gpasid(struct iommu_domain
+> > *domain, struct device *dev, struct iommu_gpasid_bind_data *data);
+> >  int intel_svm_unbind_gpasid(struct device *dev, u32 pasid);
+> >  struct iommu_sva *intel_svm_bind(struct device *dev, struct mm_struct
+> > *mm,
+> > -				 void *drvdata);
+> > +				 unsigned int flags);
+> >  void intel_svm_unbind(struct iommu_sva *handle);
+> >  u32 intel_svm_get_pasid(struct iommu_sva *handle);
+> >  int intel_svm_page_response(struct device *dev, struct
+> > iommu_fault_event *evt, diff --git a/include/linux/intel-svm.h
+> > b/include/linux/intel-svm.h index 39d368a..ef6b753 100644
+> > --- a/include/linux/intel-svm.h
+> > +++ b/include/linux/intel-svm.h
+> > @@ -30,30 +30,17 @@ struct svm_dev_ops {
+> >   * if there is no other way to do so. It should be used sparingly, if
+> > at all. */
+> >  #define SVM_FLAG_PRIVATE_PASID		(1<<0)
+> > -
+> > -/*
+> > - * The SVM_FLAG_SUPERVISOR_MODE flag requests a PASID which can be
+> > used only
+> > - * for access to kernel addresses. No IOTLB flushes are automatically
+> > done
+> > - * for kernel mappings; it is valid only for access to the kernel's
+> > static
+> > - * 1:1 mapping of physical memory — not to vmalloc or even module
+> > mappings.
+> > - * A future API addition may permit the use of such ranges, by means
+> > of an
+> > - * explicit IOTLB flush call (akin to the DMA API's unmap method).
+> > - *
+> > - * It is unlikely that we will ever hook into flush_tlb_kernel_range()
+> > to
+> > - * do such IOTLB flushes automatically.
+> > - */
+> > -#define SVM_FLAG_SUPERVISOR_MODE	(1<<1)
+> >  /*
+> >   * The SVM_FLAG_GUEST_MODE flag is used when a PASID bind is for guest
+> >   * processes. Compared to the host bind, the primary differences are:
+> >   * 1. mm life cycle management
+> >   * 2. fault reporting
+> >   */
+> > -#define SVM_FLAG_GUEST_MODE		(1<<2)
+> > +#define SVM_FLAG_GUEST_MODE		(1<<1)
+> >  /*
+> >   * The SVM_FLAG_GUEST_PASID flag is used when a guest has its own
+> > PASID space,
+> >   * which requires guest and host PASID translation at both directions.
+> >   */
+> > -#define SVM_FLAG_GUEST_PASID		(1<<3)
+> > +#define SVM_FLAG_GUEST_PASID		(1<<2)
+> >  
+> >  #endif /* __INTEL_SVM_H__ */
+> > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> > index 5e7fe51..a3fbaa2 100644
+> > --- a/include/linux/iommu.h
+> > +++ b/include/linux/iommu.h
+> > @@ -166,6 +166,19 @@ enum iommu_dev_features {
+> >  
+> >  #ifdef CONFIG_IOMMU_API
+> >  
+> > +/*
+> > + * The IOMMU_SVA_BIND_SUPERVISOR flag requests a PASID which can be
+> > used only
+> > + * for access to kernel addresses. No IOTLB flushes are automatically
+> > done
+> > + * for kernel mappings; it is valid only for access to the kernel's
+> > static
+> > + * 1:1 mapping of physical memory — not to vmalloc or even module
+> > mappings.
+> > + * A future API addition may permit the use of such ranges, by means
+> > of an
+> > + * explicit IOTLB flush call (akin to the DMA API's unmap method).
+> > + *
+> > + * It is unlikely that we will ever hook into flush_tlb_kernel_range()
+> > to
+> > + * do such IOTLB flushes automatically.
+> > + */
+> > +#define IOMMU_SVA_BIND_SUPERVISOR       BIT(0)
+> > +  
+> 
+> It needs to be defined before the #ifdef CONFIG_IOMMU_API, otherwise
+> drivers using it won't build with !CONFIG_IOMMU_API
+> 
+Good point, I was counting on driver that uses SVA must depend on
+CONFIG_IOMMU_API. But SVA could be an option of the driver itself.
+
+> Thanks,
+> Jean
+> 
+> >  /**
+> >   * struct iommu_iotlb_gather - Range information for a pending IOTLB
+> > flush *
+> > @@ -287,7 +300,7 @@ struct iommu_ops {
+> >  	int (*aux_get_pasid)(struct iommu_domain *domain, struct
+> > device *dev); 
+> >  	struct iommu_sva *(*sva_bind)(struct device *dev, struct
+> > mm_struct *mm,
+> > -				      void *drvdata);
+> > +				      unsigned int flags);
+> >  	void (*sva_unbind)(struct iommu_sva *handle);
+> >  	u32 (*sva_get_pasid)(struct iommu_sva *handle);
+> >  
+> > @@ -640,7 +653,7 @@ int iommu_aux_get_pasid(struct iommu_domain
+> > *domain, struct device *dev); 
+> >  struct iommu_sva *iommu_sva_bind_device(struct device *dev,
+> >  					struct mm_struct *mm,
+> > -					void *drvdata);
+> > +					unsigned int flags);
+> >  void iommu_sva_unbind_device(struct iommu_sva *handle);
+> >  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
+> >  
+> > @@ -1015,7 +1028,7 @@ iommu_aux_get_pasid(struct iommu_domain *domain,
+> > struct device *dev) }
+> >  
+> >  static inline struct iommu_sva *
+> > -iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void
+> > *drvdata) +iommu_sva_bind_device(struct device *dev, struct mm_struct
+> > *mm, unsigned int flags) {
+> >  	return NULL;
+> >  }
+> > -- 
+> > 2.7.4
+> >   
 
 
-> -----Original Message-----
-> From: Ye Bin <yebin10@huawei.com>
-> Sent: Friday, April 9, 2021 4:52 AM
-> To: yebin10@huawei.com; Qiang Zhao <qiang.zhao@nxp.com>; Leo Li
-> <leoyang.li@nxp.com>
-> Cc: linuxppc-dev@lists.ozlabs.org; linux-arm-kernel@lists.infradead.org;
-> linux-kernel@vger.kernel.org; kernel-janitors@vger.kernel.org; Hulk Robot
-> <hulkci@huawei.com>
-> Subject: [PATCH -next] soc: fsl: qe: use DEFINE_SPINLOCK() for spinlock
->=20
-> spinlock can be initialized automatically with DEFINE_SPINLOCK() rather t=
-han
-> explicitly calling spin_lock_init().
+Thanks,
 
-The previous version has been applied.  Thanks.
-
->=20
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> ---
->  drivers/soc/fsl/qe/qe_common.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/drivers/soc/fsl/qe/qe_common.c
-> b/drivers/soc/fsl/qe/qe_common.c index 654e9246ce6b..a0cb8e746879
-> 100644
-> --- a/drivers/soc/fsl/qe/qe_common.c
-> +++ b/drivers/soc/fsl/qe/qe_common.c
-> @@ -26,7 +26,7 @@
->  #include <soc/fsl/qe/qe.h>
->=20
->  static struct gen_pool *muram_pool;
-> -static spinlock_t cpm_muram_lock;
-> +static DEFINE_SPINLOCK(cpm_muram_lock);
->  static void __iomem *muram_vbase;
->  static phys_addr_t muram_pbase;
->=20
-> @@ -54,7 +54,6 @@ int cpm_muram_init(void)
->  	if (muram_pbase)
->  		return 0;
->=20
-> -	spin_lock_init(&cpm_muram_lock);
->  	np =3D of_find_compatible_node(NULL, NULL, "fsl,cpm-muram-data");
->  	if (!np) {
->  		/* try legacy bindings */
-
+Jacob
