@@ -2,90 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CB33595D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E6B3595D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:52:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233509AbhDIGwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233422AbhDIGwS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233488AbhDIGwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:52:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233333AbhDIGwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 9 Apr 2021 02:52:18 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89773C061760
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 23:51:39 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id x4so5285790edd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 23:51:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iVXwoDR1W9QvRjhucoUC7c/vC9MQIOWHo7DvYHCPOJo=;
-        b=jp3edxb/QxA1ggevZiqUpfEhTNzwuTu/Fzj3YxQUTh4uqo999d9sPlwYAnEzGlbngh
-         q0RaAWEavXjMLa0TBLUPgkW2QQUZn4tsAq0OF9xGh0RLGxDPSQ/OSPf759uM/8KlW0eW
-         jwKxoGPSxdVoitKMl7IdqIO0OJ95VMnHaRQClJsHbSHBJ45LGgHPVpQJWfjmvejA0ady
-         7wO8SRe9WKfr+QW/QLb/Ck/B08DqaAy3wEm6bU18zNWPrSl8J4hC7PIAPglYE6eUinbd
-         Y/1xWROZxgpxGonT8d9oQdbt+WasxYr+B8Ehe4U3vwECdbUAJ2yPuiRG7mCixEdIeMpC
-         z4Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iVXwoDR1W9QvRjhucoUC7c/vC9MQIOWHo7DvYHCPOJo=;
-        b=SPAWGcT8IDYqtMG81dTk/5vY9UMBhcvCZdmV4YD3nuwTp8j2+WP2apawi8hdoyhNIj
-         i1TSzNl54psGbqMMqybhk5p6dZV+USY9jWqfQG+7IIHJJ/VGrxtH0izwefDolJoW7TQT
-         0E4P7vZsa0Uk02jptpwd0RY0FnOcOlVeedAauS+1nCnMHsME+A6W1vyBbcBDpVhFzLKc
-         UueqOfIS6J7pCpvOcgKEaXn6Fqor/EHFo15SxpRHCLyukKvykC3XLxagqDabI/WQ+Vfr
-         uJ8ArRW0pLYneq+HhHQzn5UqwFSShsMkhO3x6PrHtgyDT4Y2AS4Xun1FfAVT8WSfHMsW
-         iVcQ==
-X-Gm-Message-State: AOAM53160ioBMH8njnChTa1lBTaSOoQ+ONcbA3b+Lh5ZgvEQd/gq9whl
-        gztZeo3kWzq93v37IsWkewsitTDYxhrvYxaei8STKg==
-X-Google-Smtp-Source: ABdhPJyJvtMdjK2KX7gsxXdwAKOJSMBjGpt1UhnyQgrzyqzOqiWv/VvaFEcu7shOuE5aXr1d1z9IsTvLv40e3h/k3UA=
-X-Received: by 2002:aa7:d843:: with SMTP id f3mr10419259eds.52.1617951098105;
- Thu, 08 Apr 2021 23:51:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYtNAEwCk1WkA_25FVUrR0QJ2vt2Dh_w+m-QOSjb8f5TBQ@mail.gmail.com>
- <BYAPR04MB4965A95A5131664085CDD8B786739@BYAPR04MB4965.namprd04.prod.outlook.com>
- <CA+G9fYt30EZOv2mUOf+xGh3R3A0SMJhvVtHFwZuKyBgB75UTTw@mail.gmail.com> <BYAPR04MB49657BEEB8988BBEF3C4429486739@BYAPR04MB4965.namprd04.prod.outlook.com>
-In-Reply-To: <BYAPR04MB49657BEEB8988BBEF3C4429486739@BYAPR04MB4965.namprd04.prod.outlook.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 9 Apr 2021 12:21:27 +0530
-Message-ID: <CA+G9fYuZE3ciSrkJdT1byLyKwUV1c6yrk4zT97_-FxDDLK6GvQ@mail.gmail.com>
-Subject: Re: [next] drivers/cdrom/gdrom.c:586:61: error: 'rq' undeclared
- (first use in this function)
-To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06AAB610FC;
+        Fri,  9 Apr 2021 06:51:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1617951093;
+        bh=rpxdJ+VoQo4exBN4jPf+RLIrO1vUqpKfUs6VC0gjRv8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d8hSSOgx1UTougP+ANtHxesbQOAwBtspUUXVyNAHSGCgx361cOHfHF+Hp6l5GSk5K
+         8vPc5JDAneVT29XdrYpmGwCyZza4pdb+eKcrizHfBMK1Uv1Rp7nuNwFgizsyXhlA6T
+         ydo/fTOE0h3ctovMUNK8ifP/uK6K+fA7ua07T604=
+Date:   Thu, 8 Apr 2021 23:51:32 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Gioh Kim <gi-oh.kim@ionos.com>, linux-kernel@vger.kernel.org,
+        ndesaulniers@google.com, dan.j.williams@intel.com,
+        laniel_francis@privacyrequired.com, keescook@chromium.org,
+        dja@axtens.net, haris.iqbal@ionos.com, jinpu.wang@ionos.com
+Subject: Re: [PATCH v4] lib/string: Introduce sysfs_streqcase
+Message-Id: <20210408235132.e62ace3277fd46f123f5ff1b@linux-foundation.org>
+In-Reply-To: <YG/315XLSIZG2bCU@kroah.com>
+References: <20210408130605.541796-1-gi-oh.kim@ionos.com>
+        <20210408220502.8126bc2f278b5199707ec122@linux-foundation.org>
+        <YG/315XLSIZG2bCU@kroah.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Apr 2021 at 12:02, Chaitanya Kulkarni
-<Chaitanya.Kulkarni@wdc.com> wrote:
->
-> On 4/8/21 23:24, Naresh Kamboju wrote:
-> >> bio_offset(req->bio),
-> >>                         GDROM_DMA_STARTADDR_REG);
-> >>         __raw_writel(block_cnt * GDROM_HARD_SECTOR, GDROM_DMA_LENGTH_REG);
-> >>         __raw_writel(1, GDROM_DMA_DIRECTION_REG);
-> > Thanks for your patch.
-> > After applying this typo fix, the build pass now.
-> >
-> > - Naresh
-> >
->
-> are you okay if I add your tested by tag to the official patch ?
->
-> Or you want to send it as a reply to that patch ?
+On Fri, 9 Apr 2021 08:44:39 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-Please create a patch and add my Reported-by / Tested-by tags.
+> On Thu, Apr 08, 2021 at 10:05:02PM -0700, Andrew Morton wrote:
+> > On Thu,  8 Apr 2021 15:06:05 +0200 Gioh Kim <gi-oh.kim@ionos.com> wrote:
+> > 
+> > > As the name shows, it checks if strings are equal in case insensitive
+> > > manner.
+> > 
+> > Peh.  Who would die if we simply made sysfs_streq() case-insensitive?
+> 
+> I doubt anyone, let's do that instead.
 
-- Naresh
+There's a risk that people will write scripts/config/etc on a 5.13+
+kernel and then find that they malfunction on earlier kernels...
+
