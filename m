@@ -2,408 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0187335A109
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E63535A11B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233848AbhDIO3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:29:01 -0400
-Received: from pv50p00im-zteg10011401.me.com ([17.58.6.41]:37411 "EHLO
-        pv50p00im-zteg10011401.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232884AbhDIO27 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:28:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1617978526; bh=pvaBz+5lRBcsWP67c8Q1CqZeEtpj8crJ5u3DCAQ9ZpU=;
-        h=From:To:Subject:Date:Message-Id;
-        b=v/1pJ6CuqhJY81T8cAutr7I5xEQsPY+CwEnHWzY+Wr6kMVyYnac1w3UiqZQVld6Ht
-         gBx2p5ib7uEiUqTj3AP9X3HjiX//VH9I5gIb0TiemRLHAapV6r2evq3cQoaxphTiir
-         qtHNNf/nLbw+s6urzL8BrQH2u+0H+rtbLbQr1rYIaaHR45hv8gzIvg7v0UCk3HIdY9
-         of717Nn6HM3h/iBL30WrgAdfwMET7Ty7XPpVPFr7daMVw1+5Bp/OF4vbfcVenclLGd
-         we1snaH6+h61vFrIUZ+wko44KNeNFFHeeQ0MXTj+t+5eB4xjQaT+bG0elf8mvdF9AH
-         PBUZ1f6jxCg0w==
-Received: from localhost.localdomain (unknown [120.245.2.39])
-        by pv50p00im-zteg10011401.me.com (Postfix) with ESMTPSA id BFCC69003EE;
-        Fri,  9 Apr 2021 14:28:38 +0000 (UTC)
-From:   Xiongwei Song <sxwjean@me.com>
-To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        oleg@redhat.com, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        aneesh.kumar@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        mikey@neuling.org, haren@linux.ibm.com, akpm@linux-foundation.org,
-        rppt@kernel.org, jniethe5@gmail.com, atrajeev@linux.vnet.ibm.com,
-        maddy@linux.ibm.com, peterz@infradead.org, kjain@linux.ibm.com,
-        kan.liang@linux.intel.com, aik@ozlabs.ru, alistair@popple.id.au,
-        pmladek@suse.com, john.ogness@linutronix.de
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-Subject: [PATCH v4] powerpc/traps: Enhance readability for trap types
-Date:   Fri,  9 Apr 2021 22:28:32 +0800
-Message-Id: <20210409142832.26063-1-sxwjean@me.com>
-X-Mailer: git-send-email 2.17.1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-09_06:2021-04-09,2021-04-09 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=734 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2104090110
+        id S233794AbhDIOdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:33:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:52726 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231946AbhDIOdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 10:33:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3C7351FB;
+        Fri,  9 Apr 2021 07:32:59 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.28.223])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5EEE33F694;
+        Fri,  9 Apr 2021 07:32:57 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 15:32:47 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v3] arm64: mte: Move MTE TCF0 check in entry-common
+Message-ID: <20210409143247.GA58461@C02TD0UTHF1T.local>
+References: <20210409132419.29965-1-vincenzo.frascino@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409132419.29965-1-vincenzo.frascino@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <sxwjean@gmail.com>
+Hi Vincenzo,
 
-Create a new header named traps.h, define macros to list ppc interrupt
-types in traps.h, replace the references of the trap hex values with these
-macros.
+On Fri, Apr 09, 2021 at 02:24:19PM +0100, Vincenzo Frascino wrote:
+> The check_mte_async_tcf macro sets the TIF flag non-atomically. This can
+> race with another CPU doing a set_tsk_thread_flag() and all the other flags
+> can be lost in the process.
+> 
+> Move the tcf0 check to enter_from_user_mode() and clear tcf0 in
+> exit_to_user_mode() to address the problem.
+> 
+> Note: Moving the check in entry-common allows to use set_thread_flag()
+> which is safe.
+> 
+> Fixes: 637ec831ea4f ("arm64: mte: Handle synchronous and asynchronous tag check faults")
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: stable@vger.kernel.org
+> Reported-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> ---
+>  arch/arm64/include/asm/mte.h     |  9 +++++++++
+>  arch/arm64/kernel/entry-common.c |  6 ++++++
+>  arch/arm64/kernel/entry.S        | 34 --------------------------------
+>  arch/arm64/kernel/mte.c          | 33 +++++++++++++++++++++++++++++--
+>  4 files changed, 46 insertions(+), 36 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
+> index 9b557a457f24..c7ab681a95c3 100644
+> --- a/arch/arm64/include/asm/mte.h
+> +++ b/arch/arm64/include/asm/mte.h
+> @@ -49,6 +49,9 @@ int mte_ptrace_copy_tags(struct task_struct *child, long request,
+>  
+>  void mte_assign_mem_tag_range(void *addr, size_t size);
+>  
+> +void noinstr check_mte_async_tcf0(void);
+> +void noinstr clear_mte_async_tcf0(void);
 
-Referred the hex numbers in arch/powerpc/kernel/exceptions-64e.S,
-arch/powerpc/kernel/exceptions-64s.S and
-arch/powerpc/include/asm/kvm_asm.h.
+Can we please put the implementations in the header so that they can be
+inlined? Otherwise when the HW doesn't support MTE we'll always do a pointless
+branch to the out-of-line implementation.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
----
+With that, we can mark them __always_inline to avoid weirdness with an inline
+noinstr function.
 
-v3-v4:
-Fix compile issue:
-arch/powerpc/kernel/process.c:1473:14: error: 'INTERRUPT_MACHINE_CHECK' undeclared (first use in this function); did you mean 'TAINT_MACHINE_CHECK'?
-I didn't add "Reported-by: kernel test robot <lkp@intel.com>" here,
-because it's improper for this patch.
+Otherwise, this looks good to me.
 
-v2-v3:
-Correct the prefix of trap macros with INTERRUPT_, the previous prefix
-is TRAP_, which is not precise. This is suggested by Segher Boessenkool
-and Nicholas Piggin.
+Thanks,
+Mark.
 
-v1-v2:
-Define more trap macros to replace more trap hexs in code, not just for
-the __show_regs function. This is suggested by Christophe Leroy.
+> +
+>  #else /* CONFIG_ARM64_MTE */
+>  
+>  /* unused if !CONFIG_ARM64_MTE, silence the compiler */
+> @@ -83,6 +86,12 @@ static inline int mte_ptrace_copy_tags(struct task_struct *child,
+>  {
+>  	return -EIO;
+>  }
+> +static inline void check_mte_async_tcf0(void)
+> +{
+> +}
+> +static inline void clear_mte_async_tcf0(void)
+> +{
+> +}
+>  
+>  static inline void mte_assign_mem_tag_range(void *addr, size_t size)
+>  {
+> diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
+> index 9d3588450473..837d3624a1d5 100644
+> --- a/arch/arm64/kernel/entry-common.c
+> +++ b/arch/arm64/kernel/entry-common.c
+> @@ -289,10 +289,16 @@ asmlinkage void noinstr enter_from_user_mode(void)
+>  	CT_WARN_ON(ct_state() != CONTEXT_USER);
+>  	user_exit_irqoff();
+>  	trace_hardirqs_off_finish();
+> +
+> +	/* Check for asynchronous tag check faults in user space */
+> +	check_mte_async_tcf0();
 
----
- arch/powerpc/include/asm/interrupt.h  |  9 +++++---
- arch/powerpc/include/asm/ptrace.h     |  3 ++-
- arch/powerpc/include/asm/traps.h      | 32 +++++++++++++++++++++++++++
- arch/powerpc/kernel/interrupt.c       |  3 ++-
- arch/powerpc/kernel/process.c         |  5 ++++-
- arch/powerpc/mm/book3s64/hash_utils.c |  5 +++--
- arch/powerpc/mm/fault.c               | 21 +++++++++++-------
- arch/powerpc/perf/core-book3s.c       |  5 +++--
- arch/powerpc/xmon/xmon.c              | 16 +++++++++++---
- 9 files changed, 78 insertions(+), 21 deletions(-)
- create mode 100644 arch/powerpc/include/asm/traps.h
 
-diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
-index 05e7fc4ffb50..4fd904fb5d59 100644
---- a/arch/powerpc/include/asm/interrupt.h
-+++ b/arch/powerpc/include/asm/interrupt.h
-@@ -8,6 +8,7 @@
- #include <asm/ftrace.h>
- #include <asm/kprobes.h>
- #include <asm/runlatch.h>
-+#include <asm/traps.h>
- 
- static inline void nap_adjust_return(struct pt_regs *regs)
- {
-@@ -70,7 +71,7 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs, struct interrup
- 		 * CT_WARN_ON comes here via program_check_exception,
- 		 * so avoid recursion.
- 		 */
--		if (TRAP(regs) != 0x700)
-+		if (TRAP(regs) != INTERRUPT_PROGRAM)
- 			CT_WARN_ON(ct_state() != CONTEXT_KERNEL);
- 	}
- #endif
-@@ -175,7 +176,8 @@ static inline void interrupt_nmi_enter_prepare(struct pt_regs *regs, struct inte
- 	/* Don't do any per-CPU operations until interrupt state is fixed */
- #endif
- 	/* Allow DEC and PMI to be traced when they are soft-NMI */
--	if (TRAP(regs) != 0x900 && TRAP(regs) != 0xf00 && TRAP(regs) != 0x260) {
-+	if (TRAP(regs) != INTERRUPT_DECREMENTER &&
-+	    TRAP(regs) != INTERRUPT_PERFMON) {
- 		state->ftrace_enabled = this_cpu_get_ftrace_enabled();
- 		this_cpu_set_ftrace_enabled(0);
- 	}
-@@ -204,7 +206,8 @@ static inline void interrupt_nmi_exit_prepare(struct pt_regs *regs, struct inter
- 	 */
- 
- #ifdef CONFIG_PPC64
--	if (TRAP(regs) != 0x900 && TRAP(regs) != 0xf00 && TRAP(regs) != 0x260)
-+	if (TRAP(regs) != INTERRUPT_DECREMENTER &&
-+	    TRAP(regs) != INTERRUPT_PERFMON)
- 		this_cpu_set_ftrace_enabled(state->ftrace_enabled);
- 
- #ifdef CONFIG_PPC_BOOK3S_64
-diff --git a/arch/powerpc/include/asm/ptrace.h b/arch/powerpc/include/asm/ptrace.h
-index 95600f3a6523..07ff8629e776 100644
---- a/arch/powerpc/include/asm/ptrace.h
-+++ b/arch/powerpc/include/asm/ptrace.h
-@@ -21,6 +21,7 @@
- 
- #include <uapi/asm/ptrace.h>
- #include <asm/asm-const.h>
-+#include <asm/traps.h>
- 
- #ifndef __ASSEMBLY__
- struct pt_regs
-@@ -237,7 +238,7 @@ static inline bool trap_is_unsupported_scv(struct pt_regs *regs)
- 
- static inline bool trap_is_syscall(struct pt_regs *regs)
- {
--	return (trap_is_scv(regs) || TRAP(regs) == 0xc00);
-+	return (trap_is_scv(regs) || TRAP(regs) == INTERRUPT_SYSCALL);
- }
- 
- static inline bool trap_norestart(struct pt_regs *regs)
-diff --git a/arch/powerpc/include/asm/traps.h b/arch/powerpc/include/asm/traps.h
-new file mode 100644
-index 000000000000..2e64e10afcef
---- /dev/null
-+++ b/arch/powerpc/include/asm/traps.h
-@@ -0,0 +1,32 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ASM_PPC_TRAPS_H
-+#define _ASM_PPC_TRAPS_H
-+
-+#if defined(CONFIG_BOOKE) || defined(CONFIG_4xx)
-+#define INTERRUPT_MACHINE_CHECK   0x000
-+#define INTERRUPT_CRITICAL_INPUT  0x100
-+#define INTERRUPT_ALTIVEC_UNAVAIL 0x200
-+#define INTERRUPT_PERFMON         0x260
-+#define INTERRUPT_DOORBELL        0x280
-+#define INTERRUPT_DEBUG           0xd00
-+#else
-+#define INTERRUPT_SYSTEM_RESET    0x100
-+#define INTERRUPT_MACHINE_CHECK   0x200
-+#define INTERRUPT_DATA_SEGMENT    0x380
-+#define INTERRUPT_INST_SEGMENT    0x480
-+#define INTERRUPT_DOORBELL        0xa00
-+#define INTERRUPT_TRACE           0xd00
-+#define INTERRUPT_H_DATA_STORAGE  0xe00
-+#define INTERRUPT_PERFMON         0xf00
-+#define INTERRUPT_H_FAC_UNAVAIL   0xf80
-+#endif
-+
-+#define INTERRUPT_DATA_STORAGE    0x300
-+#define INTERRUPT_INST_STORAGE    0x400
-+#define INTERRUPT_ALIGNMENT       0x600
-+#define INTERRUPT_PROGRAM         0x700
-+#define INTERRUPT_FP_UNAVAIL      0x800
-+#define INTERRUPT_DECREMENTER     0x900
-+#define INTERRUPT_SYSCALL         0xc00
-+
-+#endif /* _ASM_PPC_TRAPS_H */
-diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
-index c4dd4b8f9cfa..72689f7ca7c8 100644
---- a/arch/powerpc/kernel/interrupt.c
-+++ b/arch/powerpc/kernel/interrupt.c
-@@ -19,6 +19,7 @@
- #include <asm/syscall.h>
- #include <asm/time.h>
- #include <asm/unistd.h>
-+#include <asm/traps.h>
- 
- #if defined(CONFIG_PPC_ADV_DEBUG_REGS) && defined(CONFIG_PPC32)
- unsigned long global_dbcr0[NR_CPUS];
-@@ -456,7 +457,7 @@ notrace unsigned long interrupt_exit_kernel_prepare(struct pt_regs *regs, unsign
- 	 * CT_WARN_ON comes here via program_check_exception,
- 	 * so avoid recursion.
- 	 */
--	if (TRAP(regs) != 0x700)
-+	if (TRAP(regs) != INTERRUPT_PROGRAM)
- 		CT_WARN_ON(ct_state() == CONTEXT_USER);
- 
- 	kuap = kuap_get_and_assert_locked();
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index b966c8e0cead..92cd49427b2f 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -64,6 +64,7 @@
- #include <asm/asm-prototypes.h>
- #include <asm/stacktrace.h>
- #include <asm/hw_breakpoint.h>
-+#include <asm/traps.h>
- 
- #include <linux/kprobes.h>
- #include <linux/kdebug.h>
-@@ -1469,7 +1470,9 @@ static void __show_regs(struct pt_regs *regs)
- 	trap = TRAP(regs);
- 	if (!trap_is_syscall(regs) && cpu_has_feature(CPU_FTR_CFAR))
- 		pr_cont("CFAR: "REG" ", regs->orig_gpr3);
--	if (trap == 0x200 || trap == 0x300 || trap == 0x600) {
-+	if (trap == INTERRUPT_MACHINE_CHECK ||
-+	    trap == INTERRUPT_DATA_STORAGE ||
-+	    trap == INTERRUPT_ALIGNMENT) {
- 		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
- 			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->dsisr);
- 		else
-diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
-index 7719995323c3..2bf06e01b309 100644
---- a/arch/powerpc/mm/book3s64/hash_utils.c
-+++ b/arch/powerpc/mm/book3s64/hash_utils.c
-@@ -64,6 +64,7 @@
- #include <asm/pte-walk.h>
- #include <asm/asm-prototypes.h>
- #include <asm/ultravisor.h>
-+#include <asm/traps.h>
- 
- #include <mm/mmu_decl.h>
- 
-@@ -1145,7 +1146,7 @@ unsigned int hash_page_do_lazy_icache(unsigned int pp, pte_t pte, int trap)
- 
- 	/* page is dirty */
- 	if (!test_bit(PG_dcache_clean, &page->flags) && !PageReserved(page)) {
--		if (trap == 0x400) {
-+		if (trap == INTERRUPT_INST_STORAGE) {
- 			flush_dcache_icache_page(page);
- 			set_bit(PG_dcache_clean, &page->flags);
- 		} else
-@@ -1545,7 +1546,7 @@ DEFINE_INTERRUPT_HANDLER_RET(__do_hash_fault)
- 	if (user_mode(regs) || (region_id == USER_REGION_ID))
- 		access &= ~_PAGE_PRIVILEGED;
- 
--	if (TRAP(regs) == 0x400)
-+	if (TRAP(regs) == INTERRUPT_INST_STORAGE)
- 		access |= _PAGE_EXEC;
- 
- 	err = hash_page_mm(mm, ea, access, TRAP(regs), flags);
-diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
-index 0c0b1c2cfb49..1215fa2a72a7 100644
---- a/arch/powerpc/mm/fault.c
-+++ b/arch/powerpc/mm/fault.c
-@@ -44,6 +44,7 @@
- #include <asm/debug.h>
- #include <asm/kup.h>
- #include <asm/inst.h>
-+#include <asm/traps.h>
- 
- 
- /*
-@@ -197,7 +198,7 @@ static int mm_fault_error(struct pt_regs *regs, unsigned long addr,
- static bool bad_kernel_fault(struct pt_regs *regs, unsigned long error_code,
- 			     unsigned long address, bool is_write)
- {
--	int is_exec = TRAP(regs) == 0x400;
-+	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
- 
- 	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G on others */
- 	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT |
-@@ -391,7 +392,7 @@ static int ___do_page_fault(struct pt_regs *regs, unsigned long address,
- 	struct vm_area_struct * vma;
- 	struct mm_struct *mm = current->mm;
- 	unsigned int flags = FAULT_FLAG_DEFAULT;
-- 	int is_exec = TRAP(regs) == 0x400;
-+	int is_exec = TRAP(regs) == INTERRUPT_INST_STORAGE;
- 	int is_user = user_mode(regs);
- 	int is_write = page_fault_is_write(error_code);
- 	vm_fault_t fault, major = 0;
-@@ -588,20 +589,24 @@ void __bad_page_fault(struct pt_regs *regs, int sig)
- 	/* kernel has accessed a bad area */
- 
- 	switch (TRAP(regs)) {
--	case 0x300:
--	case 0x380:
--	case 0xe00:
-+	case INTERRUPT_DATA_STORAGE:
-+#if !defined(CONFIG_BOOKE) && !defined(CONFIG_4xx)
-+	case INTERRUPT_DATA_SEGMENT:
-+	case INTERRUPT_H_DATA_STORAGE:
-+#endif
- 		pr_alert("BUG: %s on %s at 0x%08lx\n",
- 			 regs->dar < PAGE_SIZE ? "Kernel NULL pointer dereference" :
- 			 "Unable to handle kernel data access",
- 			 is_write ? "write" : "read", regs->dar);
- 		break;
--	case 0x400:
--	case 0x480:
-+	case INTERRUPT_INST_STORAGE:
-+#if !defined(CONFIG_BOOKE) && !defined(CONFIG_4xx)
-+	case INTERRUPT_INST_SEGMENT:
-+#endif
- 		pr_alert("BUG: Unable to handle kernel instruction fetch%s",
- 			 regs->nip < PAGE_SIZE ? " (NULL pointer?)\n" : "\n");
- 		break;
--	case 0x600:
-+	case INTERRUPT_ALIGNMENT:
- 		pr_alert("BUG: Unable to handle kernel unaligned access at 0x%08lx\n",
- 			 regs->dar);
- 		break;
-diff --git a/arch/powerpc/perf/core-book3s.c b/arch/powerpc/perf/core-book3s.c
-index 766f064f00fb..6e34f5bba232 100644
---- a/arch/powerpc/perf/core-book3s.c
-+++ b/arch/powerpc/perf/core-book3s.c
-@@ -17,6 +17,7 @@
- #include <asm/firmware.h>
- #include <asm/ptrace.h>
- #include <asm/code-patching.h>
-+#include <asm/traps.h>
- 
- #ifdef CONFIG_PPC64
- #include "internal.h"
-@@ -168,7 +169,7 @@ static bool regs_use_siar(struct pt_regs *regs)
- 	 * they have not been setup using perf_read_regs() and so regs->result
- 	 * is something random.
- 	 */
--	return ((TRAP(regs) == 0xf00) && regs->result);
-+	return ((TRAP(regs) == INTERRUPT_PERFMON) && regs->result);
- }
- 
- /*
-@@ -347,7 +348,7 @@ static inline void perf_read_regs(struct pt_regs *regs)
- 	 * hypervisor samples as well as samples in the kernel with
- 	 * interrupts off hence the userspace check.
- 	 */
--	if (TRAP(regs) != 0xf00)
-+	if (TRAP(regs) != INTERRUPT_PERFMON)
- 		use_siar = 0;
- 	else if ((ppmu->flags & PPMU_NO_SIAR))
- 		use_siar = 0;
-diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
-index 3fe37495f63d..59136634c5ce 100644
---- a/arch/powerpc/xmon/xmon.c
-+++ b/arch/powerpc/xmon/xmon.c
-@@ -54,6 +54,7 @@
- #include <asm/code-patching.h>
- #include <asm/sections.h>
- #include <asm/inst.h>
-+#include <asm/traps.h>
- 
- #ifdef CONFIG_PPC64
- #include <asm/hvcall.h>
-@@ -1769,7 +1770,12 @@ static void excprint(struct pt_regs *fp)
- 	printf("    sp: %lx\n", fp->gpr[1]);
- 	printf("   msr: %lx\n", fp->msr);
- 
--	if (trap == 0x300 || trap == 0x380 || trap == 0x600 || trap == 0x200) {
-+	if (trap == INTERRUPT_DATA_STORAGE ||
-+#if !defined(CONFIG_BOOKE) && !defined(CONFIG_4xx)
-+	    trap == INTERRUPT_DATA_SEGMENT ||
-+#endif
-+	    trap == INTERRUPT_ALIGNMENT ||
-+	    trap == INTERRUPT_MACHINE_CHECK) {
- 		printf("   dar: %lx\n", fp->dar);
- 		if (trap != 0x380)
- 			printf(" dsisr: %lx\n", fp->dsisr);
-@@ -1785,7 +1791,7 @@ static void excprint(struct pt_regs *fp)
- 		       current->pid, current->comm);
- 	}
- 
--	if (trap == 0x700)
-+	if (trap == INTERRUPT_PROGRAM)
- 		print_bug_trap(fp);
- 
- 	printf(linux_banner);
-@@ -1846,7 +1852,11 @@ static void prregs(struct pt_regs *fp)
- 	printf("ctr = "REG"   xer = "REG"   trap = %4lx\n",
- 	       fp->ctr, fp->xer, fp->trap);
- 	trap = TRAP(fp);
--	if (trap == 0x300 || trap == 0x380 || trap == 0x600)
-+	if (trap == INTERRUPT_DATA_STORAGE ||
-+#if !defined(CONFIG_BOOKE) && !defined(CONFIG_4xx)
-+	    trap == INTERRUPT_DATA_SEGMENT ||
-+#endif
-+	    trap == INTERRUPT_ALIGNMENT)
- 		printf("dar = "REG"   dsisr = %.8lx\n", fp->dar, fp->dsisr);
- }
- 
--- 
-2.17.1
 
+>  }
+>  
+>  asmlinkage void noinstr exit_to_user_mode(void)
+>  {
+> +	/* Ignore asynchronous tag check faults in the uaccess routines */
+> +	clear_mte_async_tcf0();
+> +
+>  	trace_hardirqs_on_prepare();
+>  	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
+>  	user_enter_irqoff();
+> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+> index a31a0a713c85..fb57df0d453f 100644
+> --- a/arch/arm64/kernel/entry.S
+> +++ b/arch/arm64/kernel/entry.S
+> @@ -34,15 +34,11 @@
+>   * user and kernel mode.
+>   */
+>  	.macro user_exit_irqoff
+> -#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
+>  	bl	enter_from_user_mode
+> -#endif
+>  	.endm
+>  
+>  	.macro user_enter_irqoff
+> -#if defined(CONFIG_CONTEXT_TRACKING) || defined(CONFIG_TRACE_IRQFLAGS)
+>  	bl	exit_to_user_mode
+> -#endif
+>  	.endm
+>  
+>  	.macro	clear_gp_regs
+> @@ -147,32 +143,6 @@ alternative_cb_end
+>  .L__asm_ssbd_skip\@:
+>  	.endm
+>  
+> -	/* Check for MTE asynchronous tag check faults */
+> -	.macro check_mte_async_tcf, flgs, tmp
+> -#ifdef CONFIG_ARM64_MTE
+> -alternative_if_not ARM64_MTE
+> -	b	1f
+> -alternative_else_nop_endif
+> -	mrs_s	\tmp, SYS_TFSRE0_EL1
+> -	tbz	\tmp, #SYS_TFSR_EL1_TF0_SHIFT, 1f
+> -	/* Asynchronous TCF occurred for TTBR0 access, set the TI flag */
+> -	orr	\flgs, \flgs, #_TIF_MTE_ASYNC_FAULT
+> -	str	\flgs, [tsk, #TSK_TI_FLAGS]
+> -	msr_s	SYS_TFSRE0_EL1, xzr
+> -1:
+> -#endif
+> -	.endm
+> -
+> -	/* Clear the MTE asynchronous tag check faults */
+> -	.macro clear_mte_async_tcf
+> -#ifdef CONFIG_ARM64_MTE
+> -alternative_if ARM64_MTE
+> -	dsb	ish
+> -	msr_s	SYS_TFSRE0_EL1, xzr
+> -alternative_else_nop_endif
+> -#endif
+> -	.endm
+> -
+>  	.macro mte_set_gcr, tmp, tmp2
+>  #ifdef CONFIG_ARM64_MTE
+>  	/*
+> @@ -243,8 +213,6 @@ alternative_else_nop_endif
+>  	ldr	x19, [tsk, #TSK_TI_FLAGS]
+>  	disable_step_tsk x19, x20
+>  
+> -	/* Check for asynchronous tag check faults in user space */
+> -	check_mte_async_tcf x19, x22
+>  	apply_ssbd 1, x22, x23
+>  
+>  	ptrauth_keys_install_kernel tsk, x20, x22, x23
+> @@ -775,8 +743,6 @@ SYM_CODE_START_LOCAL(ret_to_user)
+>  	cbnz	x2, work_pending
+>  finish_ret_to_user:
+>  	user_enter_irqoff
+> -	/* Ignore asynchronous tag check faults in the uaccess routines */
+> -	clear_mte_async_tcf
+>  	enable_step_tsk x19, x2
+>  #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
+>  	bl	stackleak_erase
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index b3c70a612c7a..84a942c25870 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -166,14 +166,43 @@ static void set_gcr_el1_excl(u64 excl)
+>  	 */
+>  }
+>  
+> -void flush_mte_state(void)
+> +void noinstr check_mte_async_tcf0(void)
+> +{
+> +	u64 tcf0;
+> +
+> +	if (!system_supports_mte())
+> +		return;
+> +
+> +	/*
+> +	 * dsb(ish) is not required before the register read
+> +	 * because the TFSRE0_EL1 is automatically synchronized
+> +	 * by the hardware on exception entry as SCTLR_EL1.ITFSB
+> +	 * is set.
+> +	 */
+> +	tcf0 = read_sysreg_s(SYS_TFSRE0_EL1);
+> +
+> +	if (tcf0 & SYS_TFSR_EL1_TF0)
+> +		set_thread_flag(TIF_MTE_ASYNC_FAULT);
+> +
+> +	write_sysreg_s(0, SYS_TFSRE0_EL1);
+> +}
+> +
+> +void noinstr clear_mte_async_tcf0(void)
+>  {
+>  	if (!system_supports_mte())
+>  		return;
+>  
+> -	/* clear any pending asynchronous tag fault */
+>  	dsb(ish);
+>  	write_sysreg_s(0, SYS_TFSRE0_EL1);
+> +}
+> +
+> +void flush_mte_state(void)
+> +{
+> +	if (!system_supports_mte())
+> +		return;
+> +
+> +	/* clear any pending asynchronous tag fault */
+> +	clear_mte_async_tcf0();
+>  	clear_thread_flag(TIF_MTE_ASYNC_FAULT);
+>  	/* disable tag checking */
+>  	set_sctlr_el1_tcf0(SCTLR_EL1_TCF0_NONE);
+> -- 
+> 2.30.2
+> 
