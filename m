@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAB9F35A8B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 00:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E36035A8B9
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 00:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235041AbhDIWcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 18:32:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234602AbhDIWcN (ORCPT
+        id S235065AbhDIWcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 18:32:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27872 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234602AbhDIWcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 18:32:13 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824CEC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 15:32:00 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id e8so7502483iok.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 15:32:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LyVEXM4TmInjbu+KbY9qpw8hJXr4CrkW2ZOgUZ+M4BA=;
-        b=Azopk5RVVPkbdafyzlAwLMi5Hz+KXXjoXzGkuUods75WbPdFNCYevyX8CaFi/WydCF
-         31Oh+lyQq43ZWyQT2zHbVDHYqV3hsLxImw+yyO1FkQP5cLthJdySzo6XvuWwzKRm43QV
-         XTCzTYNC863uVJ8OwaGcptzvB6yWgEkPkr9EQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LyVEXM4TmInjbu+KbY9qpw8hJXr4CrkW2ZOgUZ+M4BA=;
-        b=A2AiN+yz/Nv90FWBptH8dVBixLnYBL2YoWm3yvwKoI50F5yht+mYSBrFxtFbuDjNIG
-         XRmKCYXEWYQCYxfNrRDuay2R9Z5tsqcg8slWUSBOKBOyi/iYgavNhg/iNtilcIuZ4B9e
-         2leSOGifb+5HL7YC5rjvPrfPRXoc5ndkP4iRnO+4M7lK7lG0T8AdpmPn9+fhNSBHoOrK
-         YZ1IJ4uyl/H92/IfPGvhGYECbkry5ftVQxG4Dx0sP4H8f9MjxYHuHumN0TWsp3p3Ywsl
-         llFaW/7W2byvQL9GlnHc0EBH9XqGdP/Ez2HrYKFrSXy3RcDQDfsZp9xAPS3pXjKJtrHU
-         hdvA==
-X-Gm-Message-State: AOAM531T1dlNHFgNgiFLwA+1aETNgZkSuv8XIjgg2Rl0xrAK9zhFvFi/
-        awRSw0OroHKQc72RT6cBHREUvg==
-X-Google-Smtp-Source: ABdhPJxudhSnnUH+2iUvXsMMidUT4RADAD6TfRkDFtd4q/Dg9UvT4+AFbxt8KuaAmOHxq7bSCxsZhA==
-X-Received: by 2002:a05:6638:2a3:: with SMTP id d3mr17326922jaq.42.1618007519929;
-        Fri, 09 Apr 2021 15:31:59 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o6sm1816670ioa.21.2021.04.09.15.31.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Apr 2021 15:31:59 -0700 (PDT)
-Subject: Re: [PATCH 4.9 00/13] 4.9.266-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210409095259.624577828@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <d308015d-6a38-61e0-b2c1-4fdade360efb@linuxfoundation.org>
-Date:   Fri, 9 Apr 2021 16:31:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Fri, 9 Apr 2021 18:32:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618007558;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yyr/6Ag1Vbeg1psngxfhYGjr6J2CEL/d4aEho0RnXho=;
+        b=LcqrHOeBwwnbaBCqh6U9zXnjTh7cCe77GguZ2NxOnOLQXXHQMEDHhJMhZkgNpYnP0GHc9W
+        1SFLdGMhQab+EBbkZgRxBEX8AU3IxxjKVSbFjVJZBbY8hgUHwmELS8ioRX+cjzfKe9f1Li
+        6tSTY0DRdWL4wltwWUWpIK6I1ux54LY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-241-0AUWjXB6OJWe5318dHN-_w-1; Fri, 09 Apr 2021 18:32:36 -0400
+X-MC-Unique: 0AUWjXB6OJWe5318dHN-_w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0F5F10053E7;
+        Fri,  9 Apr 2021 22:32:34 +0000 (UTC)
+Received: from treble (ovpn-112-2.rdu2.redhat.com [10.10.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A29605C1D5;
+        Fri,  9 Apr 2021 22:32:29 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 17:32:27 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, broonie@kernel.org,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH v2 0/4] arm64: Implement stack trace reliability
+ checks
+Message-ID: <20210409223227.rvf6tfhvgnpzmabn@treble>
+References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
+ <20210405204313.21346-1-madvenka@linux.microsoft.com>
+ <20210409120859.GA51636@C02TD0UTHF1T.local>
+ <20210409213741.kqmwyajoppuqrkge@treble>
+ <8c30ec5f-b51e-494f-5f6c-d2f012135f69@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210409095259.624577828@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <8c30ec5f-b51e-494f-5f6c-d2f012135f69@linux.microsoft.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/21 3:53 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.266 release.
-> There are 13 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Apr 09, 2021 at 05:05:58PM -0500, Madhavan T. Venkataraman wrote:
+> > FWIW, over the years we've had zero issues with encoding the frame
+> > pointer on x86.  After you save pt_regs, you encode the frame pointer to
+> > point to it.  Ideally in the same macro so it's hard to overlook.
+> > 
 > 
-> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.266-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> I had the same opinion. In fact, in my encoding scheme, I have additional
+> checks to make absolutely sure that it is a true encoding and not stack
+> corruption. The chances of all of those values accidentally matching are,
+> well, null.
 
-Compiled and booted on my test system. No dmesg regressions.
+Right, stack corruption -- which is already exceedingly rare -- would
+have to be combined with a miracle or two in order to come out of the
+whole thing marked as 'reliable' :-)
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+And really, we already take a similar risk today by "trusting" the frame
+pointer value on the stack to a certain extent.
 
-thanks,
--- Shuah
+> >> I think there's a lot more code that we cannot unwind, e.g. KVM
+> >> exception code, or almost anything marked with SYM_CODE_END().
+> > 
+> > Just a reminder that livepatch only unwinds blocked tasks (plus the
+> > 'current' task which calls into livepatch).  So practically speaking, it
+> > doesn't matter whether the 'unreliable' detection has full coverage.
+> > The only exceptions which really matter are those which end up calling
+> > schedule(), e.g. preemption or page faults.
+> > 
+> > Being able to consistently detect *all* possible unreliable paths would
+> > be nice in theory, but it's unnecessary and may not be worth the extra
+> > complexity.
+> > 
+> 
+> You do have a point. I tried to think of arch_stack_walk_reliable() as
+> something that should be implemented independent of livepatching. But
+> I could not really come up with a single example of where else it would
+> really be useful.
+> 
+> So, if we assume that the reliable stack trace is solely for the purpose
+> of livepatching, I agree with your earlier comments as well.
+
+One thought: if folks really view this as a problem, it might help to
+just rename things to reduce confusion.
+
+For example, instead of calling it 'reliable', we could call it
+something more precise, like 'klp_reliable', to indicate that its
+reliable enough for live patching.
+
+Then have a comment above 'klp_reliable' and/or
+stack_trace_save_tsk_klp_reliable() which describes what that means.
+
+Hm, for that matter, even without renaming things, a comment above
+stack_trace_save_tsk_reliable() describing the meaning of "reliable"
+would be a good idea.
+
+-- 
+Josh
 
