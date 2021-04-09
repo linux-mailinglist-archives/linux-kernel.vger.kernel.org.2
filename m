@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8163835A2A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75F7935A2A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233745AbhDIQHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:07:38 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:41488 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDIQHh (ORCPT
+        id S233859AbhDIQIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:08:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232642AbhDIQIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:07:37 -0400
-Received: by mail-ot1-f43.google.com with SMTP id l12-20020a9d6a8c0000b0290238e0f9f0d8so6148224otq.8;
-        Fri, 09 Apr 2021 09:07:24 -0700 (PDT)
+        Fri, 9 Apr 2021 12:08:12 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCFFDC061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 09:07:59 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id g8-20020a9d6c480000b02901b65ca2432cso6176664otq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 09:07:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8S+2fYEeMVwFqCwfJgeBBpDxfhhAdcH8iaoIoajPSJU=;
+        b=H8qwhyJWrXJPiSuHlG7cZHWEbypJ/9bfaLCdc8y9pS1WAkUMtmvNMDFlwLdUYFXc/z
+         qfTKaejISonfZiO0a/I/jWwmV8fLoI0kS5fawymabWz2OjleOP2jsVPFbThqjKQKx2af
+         Pt6+1fFMPsjWG4FDb9cAtvvEJrqguUVvrrYpCUulct12NOu6ckNBDgvYjLB6wIoVzMX0
+         PipHynlT9cyf1/hGmJmKiBsGCW3wqIDzZuWlh5YOMAhvmMO1s637DWisPPkKwwGms70A
+         3ORInnfVSv+Jr37CqhRMYTiwFAvm44A/6x6rdzgEtQhnwSTDkPTdMIbn93FZR9UhlA0B
+         dFcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=OCJr7Vk+1FJPSb9Nhdjq3OzP+a2tNeZU1Kg0OHLMxSE=;
-        b=pPpdx7z5BDIZDegh3uJXHHm0MwSDc2qtfgTlZ94DiHNhc05w8qDqdcRygrvS5Gd3Mx
-         /ZQuyz+h3PmkSSsumqNqxwwCcFM1Sb95A+D/hIsqpEuzIQERvUxpDnaYuW7QzPx10TNA
-         YxKwN9UbhhnnevCJaQq9cDwYKyEJlrDCw3FJB1nQ+0X3goylTV0ElO2xABmVLJipsV+j
-         VjU1AWRTrDm7pJZEXBzh7nebPw3innanf/dFce+QEJaIB/z6YddHtffVzH3GhrN2mILB
-         lpPrbLr/CyIAimDgikmed+JavLRGoMLZnWMUpn/WKHc15AryN76wSFjl+eL8n0PuYbee
-         aOyw==
-X-Gm-Message-State: AOAM530pXodyWUV0S7cEWbUENvAz5btFgB47OduCUyusksy0JEQ0rYHa
-        Vb3gWa7upYnnnew1u88hM22usLllFw==
-X-Google-Smtp-Source: ABdhPJwfqJ/8w13GYqG7DeY3Ek9KCysjpMwYFpXqJFVhsBOItZGKZBDlG29F90Y9Brx/5lnXI8k28Q==
-X-Received: by 2002:a9d:550b:: with SMTP id l11mr12532876oth.218.1617984443767;
-        Fri, 09 Apr 2021 09:07:23 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id d21sm554705oic.54.2021.04.09.09.07.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8S+2fYEeMVwFqCwfJgeBBpDxfhhAdcH8iaoIoajPSJU=;
+        b=iumJjA4VLldpZ1j5scPpjYxvYapQEXCz04JT/aHcycRBJ7aEWafnV53ZhWT0S3X/kg
+         9mFmJ0gfTraZ24j4c4pNOgf7Fh8xMjvgrQ4Ivg3CtQfJfDcYrzMZ1Tkm0lD9tp8PrZJI
+         1wQ4fnyYspyrDJDkWXM5mfOriWxP7PzMX6uoEtik0Z1G2oqBge6zRoBBlp6XGhdohNg6
+         4hbpsW1zEszDDe0AOXXJh1CPvQ1JdWc6YqAGIWRKBAnI6mcG58y2m7zUzN5POxSk6YPJ
+         wzLJo7qZF0tce2XfRZwlDxRapbMtceDKiPkBAuar17Md/9GtqjP/FoHkVFBTkYzLEJ/c
+         VsGQ==
+X-Gm-Message-State: AOAM531WuUXKFWVxTvpSrJPGbuYlcokBp0bUGV9s2FMuCelw2chI6YFD
+        J8MQoFNsFsIUzO19mfNeGCmKNw==
+X-Google-Smtp-Source: ABdhPJzwv/4c9FWTOwYkpSuHqty/UHM9VsG6gL/I0CaJvHNGHTAgLMmQLbEXXCsWK8pdzGL++MnDWg==
+X-Received: by 2002:a9d:5a8d:: with SMTP id w13mr12842440oth.145.1617984479324;
+        Fri, 09 Apr 2021 09:07:59 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id 68sm670611otc.54.2021.04.09.09.07.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 09:07:22 -0700 (PDT)
-Received: (nullmailer pid 3735531 invoked by uid 1000);
-        Fri, 09 Apr 2021 16:07:22 -0000
-Date:   Fri, 9 Apr 2021 11:07:22 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 28/30] dt-bindings: media: atmel: add microchip-xisc
- binding
-Message-ID: <20210409160722.GA3733611@robh.at.kernel.org>
-References: <20210405155105.162529-1-eugen.hristev@microchip.com>
- <20210405155105.162529-29-eugen.hristev@microchip.com>
+        Fri, 09 Apr 2021 09:07:58 -0700 (PDT)
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Dimitar Dimitrov <dimitar@dinux.eu>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suman Anna <s-anna@ti.com>
+Subject: [GIT PULL] remoteproc fixes for v5.12
+Date:   Fri,  9 Apr 2021 11:07:58 -0500
+Message-Id: <20210409160758.775271-1-bjorn.andersson@linaro.org>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210405155105.162529-29-eugen.hristev@microchip.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 06:51:03PM +0300, Eugen Hristev wrote:
-> Add bindings for the microchip xisc, a driver based on atmel-isc.
-> It shares common code with atmel-isc, but the xisc is the next generation
-> ISC which is present on sama7g5 product.
-> It has an enhanced pipeline, additional modules, formats, and it supports
-> not only parallel sensors, but also serial sensors, by connecting to a demux
-> endpoint present on sama7g5.
-> One of the key points for creating a new binding is the clocking scheme, as
-> atmel-isc requires 3 mandatory clocks, the microchip-xisc requires a single
-> input clock.
-> 
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> ---
-> 
-> Hello Rob, all,
-> 
-> I did not convert this yet to yaml because I would like first your feedback
-> if the binding is good.
-> If it's fine I will convert both this new binding and the old atmel-isc
-> to yaml.
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-Looks pretty straight forward.
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
-Rob
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/andersson/remoteproc.git tags/rproc-v5.12-fixes
+
+for you to fetch changes up to 9afeefcf06fc7b4bdab06a6e2cb06745bded34dd:
+
+  remoteproc: pru: Fix firmware loading crashes on K3 SoCs (2021-03-17 14:15:07 -0500)
+
+----------------------------------------------------------------
+remoteproc fixes for v5.12
+
+This fixes an issue with firmware loading on the TI K3 PRU, fixes
+compatibility with GNU binutils for the same and resolves link error
+due to a 64-bit division in the Qualcomm PIL info.
+
+It also recognizes Mathieu Poirier as co-maintainer of the remoteproc
+and rpmsg subsystems.
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      remoteproc: qcom: pil_info: avoid 64-bit division
+
+Dimitar Dimitrov (1):
+      remoteproc: pru: Fix loading of GNU Binutils ELF
+
+Mathieu Poirier (1):
+      MAINTAINERS: Add co-maintainer for remoteproc/RPMSG subsystems
+
+Suman Anna (1):
+      remoteproc: pru: Fix firmware loading crashes on K3 SoCs
+
+ MAINTAINERS                        |  2 ++
+ drivers/remoteproc/pru_rproc.c     | 20 +++++++++++++++++++-
+ drivers/remoteproc/qcom_pil_info.c |  2 +-
+ 3 files changed, 22 insertions(+), 2 deletions(-)
