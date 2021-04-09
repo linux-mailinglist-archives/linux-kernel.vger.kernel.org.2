@@ -2,176 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77AEB359732
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:10:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8403C35973A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:10:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232318AbhDIIKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
+        id S232493AbhDIIKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:10:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhDIIKK (ORCPT
+        with ESMTP id S232452AbhDIIKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:10:10 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1112C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:09:57 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id s11so3745526pfm.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:09:57 -0700 (PDT)
+        Fri, 9 Apr 2021 04:10:17 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D536C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:10:03 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id q26so4688781wrz.9
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:10:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GZEKNpc5NkiGkvi6lIHFrkThqi2fqlKkWIV3fYKJyuA=;
-        b=gc4UhQTrFpfRpAHfE+rHovxWUmxetzTRDbP0b3VohpspZz4bz9yJsZQ4pQyOHs3C2d
-         a709dWDa92NaLpGrJ9DsSOV8nIKRLQ9jk7kLH4DCSaIHD5rmHjCOopn5hOV7kGXF32Cd
-         GOebrQFDP9TOBqGJVBXWJ5kfJpI+FISCSP19cIZChRfEtU4fI/Gr0KwllL7dDwxRL/qj
-         U/BTDwGc52Kf/fJuKtyxW0J6QyBBP6dUXJDd+F5CJgnx3tLX2OJ8sXFzlPkoMFk+sci0
-         j1QqfQAjJ1SweYZ+BuFGN96FLx9ZiDrgNJPyzLuYN4vOAiivnOItRPr064c5E92spjg/
-         1VEg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KwLBWMBZRdz46SUCvmDH9Z5zZXCHk+G/HINFfQ17P4M=;
+        b=hNhtj/aNpiqdIzZxP30CSRrlHSEJ+O8XRNC6jWPo79WZV4eucvGfZoZkKIdlEF6Khu
+         N+SQeipigjG2DjlfUvoxpdaaHARK2jibT3Ojl+9fBLq90YpUiKiJZAFS1RkH4ZC07h/u
+         p+WxjHZXM1FPv+9AWnAjECvuHh4dW66akPp3V7i2jJAzYNGjBOq8m91JKig8nHsDClHA
+         wDszXITwkUa3he/ggRpNIGHI0P/qgrs0BYF4MpTe3Zf3zHBbK0XaSzRZw0rM1XdDtJmW
+         MPsTCb833ukTW1aPV15PJuTaQOEw00OlZeSqY3JBQ3ltR1bsHn5hpL+mZzdfzF3fyw65
+         Ebfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GZEKNpc5NkiGkvi6lIHFrkThqi2fqlKkWIV3fYKJyuA=;
-        b=gZbXCxmmbC/WzUj9biKy5B6zHvhbKUlwcoEzbcMVsuJnGTYFNjsbO5gVAX3zuXIvRd
-         oiMiwN/P/IMf7xAuQCSyOlRJJxMQJdu5rv0L/H/OJc51X4qEBsgcPO+pHk5PQ+Mq7MNC
-         MBSKI6xJQ8AC57UKDas/nd8CFIsgL8PLeU5pzMWNtFnDv03RzFo0m92O55vFIi/m2zeU
-         rbc/HjupSZGQt4at6KwhgL2o5sn7wg0FRDF/p6buqJPdq9vbFp/sxqyGn7VL6Uy4QrHq
-         PbuyEINIiO+1mMPx3AqWWxvAhSiMPMC9Bfudo7Q+FnarT8Hlp0G1/eqQAx3oZ7yigy7e
-         Zlww==
-X-Gm-Message-State: AOAM5303RXmdcUOQir/i6vcTjCJhMXVeR86cYFK7ey6BcFI1kKXz/ogm
-        3JQC+5KJ0Yf7PFRqI9cUJFYk
-X-Google-Smtp-Source: ABdhPJwR6Gd26b9J2YYANqvPzzJQy0KaCHFKuzWGlkClWsGSRpcsm/QdRe4aH+p/1u/5v6+z53O3ww==
-X-Received: by 2002:a63:3e4b:: with SMTP id l72mr11801928pga.203.1617955797234;
-        Fri, 09 Apr 2021 01:09:57 -0700 (PDT)
-Received: from work ([103.77.37.131])
-        by smtp.gmail.com with ESMTPSA id q9sm1805976pfn.19.2021.04.09.01.09.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Apr 2021 01:09:56 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 13:39:52 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Deepak Kumar Singh <deesin@qti.qualcomm.com>
-Cc:     bjorn.andersson@linaro.org, clew@codeaurora.org,
-        sibis@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH V2 2/2] soc: qcom: aoss: Add debugfs entry
-Message-ID: <20210409080952.GA17381@work>
-References: <1617943188-23278-1-git-send-email-deesin@qti.qualcomm.com>
- <1617943188-23278-3-git-send-email-deesin@qti.qualcomm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KwLBWMBZRdz46SUCvmDH9Z5zZXCHk+G/HINFfQ17P4M=;
+        b=APklUuCvpR5ak28KO9SUvljH7I89OQ0wE/1H6i58PjV4Zbv6TdOrMNZxOV3nFfyc1h
+         xMMrMkO2S/5snAN5lDn2R2+i1vZDglSV5Mcf2x16LxqtdadiweiDjx3TyOD67Gy4sC7n
+         cu63GoZKJhkxFdJmiH/JbfBsv4YFcwdLv/iIYLzWZ9m/y/uz64KvHmcGjU3cT4GdJ0fp
+         ZT4BLNo5FD/vm+kSEWUjWUneccRUfJzAa5Nl2Q/YmFTq/4+pea5I57QATodMCZTtrWCY
+         +tuRfsQXEZqARxGbxN7tgmRlQAZoCFWPaknweQC08jMBTdbGPDAwmBF0rQlPr85XLozg
+         CF2w==
+X-Gm-Message-State: AOAM531fo4FtgbL9Z9nL88LI4muFgI4r2pH2RDbU2+UJkGGdY/hIDm5D
+        cst7vp35tfOWo4PZbiJP2hYsDw==
+X-Google-Smtp-Source: ABdhPJy4XQCBVWHdPm5wWRMqkGkFiEZh0CiXWdXcPLlAZvt02L7wI+v/m2X3FQwQNaQuzsiZpcriMA==
+X-Received: by 2002:adf:dc4f:: with SMTP id m15mr16484222wrj.420.1617955801641;
+        Fri, 09 Apr 2021 01:10:01 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:5d29:55c:ba8e:9bff? ([2a01:e34:ed2f:f020:5d29:55c:ba8e:9bff])
+        by smtp.googlemail.com with ESMTPSA id u9sm2677419wmc.38.2021.04.09.01.09.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 01:10:00 -0700 (PDT)
+Subject: Re: [v7,1/3] arm64: dts: mt8183: add thermal zone node
+To:     Michael Kao <michael.kao@mediatek.com>, fan.chen@mediatek.com,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        srv_heupstream@mediatek.com
+Cc:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20210316070144.28440-1-michael.kao@mediatek.com>
+ <20210316070144.28440-2-michael.kao@mediatek.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <f7003979-0210-882e-bb28-f24047e18061@linaro.org>
+Date:   Fri, 9 Apr 2021 10:09:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617943188-23278-3-git-send-email-deesin@qti.qualcomm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210316070144.28440-2-michael.kao@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 10:09:48AM +0530, Deepak Kumar Singh wrote:
-> It can be useful to control the different power states of various
-> parts of hardware for device testing. Add a debugfs node for qmp so
-> messages can be sent to aoss for debugging and testing purposes.
+On 16/03/2021 08:01, Michael Kao wrote:
+> From: "michael.kao" <michael.kao@mediatek.com>
 > 
-> Signed-off-by: Chris Lew <clew@codeaurora.org>
-> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> Add thermal zone node to Mediatek MT8183 dts file.
+> 
+> Evaluate the thermal zone every 500ms while not cooling
+> and every 100ms when passive cooling is performed.
+> 
+> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
 > ---
->  drivers/soc/qcom/qcom_aoss.c | 41 +++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 41 insertions(+)
+>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 85 ++++++++++++++++++++++++
+>  1 file changed, 85 insertions(+)
 > 
-> diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-> index 0e397a7..6057bbe 100644
-> --- a/drivers/soc/qcom/qcom_aoss.c
-> +++ b/drivers/soc/qcom/qcom_aoss.c
-> @@ -4,6 +4,7 @@
->   */
->  #include <dt-bindings/power/qcom-aoss-qmp.h>
->  #include <linux/clk-provider.h>
-> +#include <linux/debugfs.h>
->  #include <linux/interrupt.h>
->  #include <linux/io.h>
->  #include <linux/mailbox_client.h>
-> @@ -88,6 +89,9 @@ struct qmp {
->  	struct clk_hw qdss_clk;
->  	struct genpd_onecell_data pd_data;
->  	struct qmp_cooling_device *cooling_devs;
-> +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> +	struct dentry *debugfs_file;
-> +#endif /* CONFIG_DEBUG_FS */
->  };
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> index 5b782a4769e7..d3550af06408 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> @@ -657,6 +657,87 @@
+>  			status = "disabled";
+>  		};
 >  
->  struct qmp_pd {
-> @@ -560,6 +564,34 @@ void qmp_put(struct platform_device *pdev)
->  }
->  EXPORT_SYMBOL(qmp_put);
->  
-> +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> +static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
-> +			      size_t len, loff_t *pos)
-> +{
-> +	struct qmp *qmp = file->private_data;
-> +	char buf[QMP_MSG_LEN] = {};
-> +	int ret;
+> +		thermal: thermal@1100b000 {
+> +			#thermal-sensor-cells = <1>;
+> +			compatible = "mediatek,mt8183-thermal";
+> +			reg = <0 0x1100b000 0 0x1000>;
+> +			clocks = <&infracfg CLK_INFRA_THERM>,
+> +				 <&infracfg CLK_INFRA_AUXADC>;
+> +			clock-names = "therm", "auxadc";
+> +			resets = <&infracfg  MT8183_INFRACFG_AO_THERM_SW_RST>;
+> +			interrupts = <0 76 IRQ_TYPE_LEVEL_LOW>;
+> +			mediatek,auxadc = <&auxadc>;
+> +			mediatek,apmixedsys = <&apmixedsys>;
+> +			nvmem-cells = <&thermal_calibration>;
+> +			nvmem-cell-names = "calibration-data";
+> +		};
 > +
-> +	if (!len || len >= QMP_MSG_LEN)
-> +		return -EINVAL;
+> +		thermal-zones {
+> +			cpu_thermal: cpu_thermal {
+> +				polling-delay-passive = <100>;
+> +				polling-delay = <500>;
+> +				thermal-sensors = <&thermal 0>;
+> +				sustainable-power = <5000>;
+> +			};
 > +
-> +	ret  = copy_from_user(buf, userstr, len);
-> +	if (ret) {
-> +		dev_err(qmp->dev, "copy from user failed, ret:%d\n", ret);
+> +			/* The tzts1 ~ tzts6 don't need to polling */
+> +			/* The tzts1 ~ tzts6 don't need to thermal throttle */
+> +
+> +			tzts1: tzts1 {
+> +				polling-delay-passive = <0>;
+> +				polling-delay = <0>;
+> +				thermal-sensors = <&thermal 1>;
+> +				sustainable-power = <5000>;
+> +				trips {};
+> +				cooling-maps {};
+> +			};
 
-Does the userspace need to know how many bytes were not copied? I don't
-think this is a useful information. So you could remove this err print.
+What is the point of defining the sustainable power with no cooling
+device associated ?
 
-With that,
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Thanks,
-Mani
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-> +		return -EFAULT;
-> +	}
-> +
-> +	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
-> +
-> +	return ret ? ret : len;
-> +}
-> +
-> +static const struct file_operations aoss_dbg_fops = {
-> +	.open = simple_open,
-> +	.write = aoss_dbg_write,
-> +};
-> +#endif /* CONFIG_DEBUG_FS */
-> +
->  static int qmp_probe(struct platform_device *pdev)
->  {
->  	struct resource *res;
-> @@ -616,6 +648,11 @@ static int qmp_probe(struct platform_device *pdev)
->  
->  	atomic_set(&qmp->orphan, 0);
->  
-> +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> +	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
-> +						qmp, &aoss_dbg_fops);
-> +#endif /* CONFIG_DEBUG_FS */
-> +
->  	return 0;
->  
->  err_remove_qdss_clk:
-> @@ -632,6 +669,10 @@ static int qmp_remove(struct platform_device *pdev)
->  {
->  	struct qmp *qmp = platform_get_drvdata(pdev);
->  
-> +#if IS_ENABLED(CONFIG_DEBUG_FS)
-> +	debugfs_remove(qmp->debugfs_file);
-> +#endif /* CONFIG_DEBUG_FS */
-> +
->  	qmp_qdss_clk_remove(qmp);
->  	qmp_pd_remove(qmp);
->  	qmp_cooling_devices_remove(qmp);
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
