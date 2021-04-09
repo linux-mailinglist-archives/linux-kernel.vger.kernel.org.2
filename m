@@ -2,90 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D81B8359805
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 795F635981B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhDIIhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:37:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:44578 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229673AbhDIIhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:37:23 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3B821FB;
-        Fri,  9 Apr 2021 01:37:10 -0700 (PDT)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6BE023F694;
-        Fri,  9 Apr 2021 01:37:09 -0700 (PDT)
-Subject: Re: [PATCH] mm/page_alloc: Ensure that HUGETLB_PAGE_ORDER is less
- than MAX_ORDER
-To:     David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-References: <1617947717-2424-1-git-send-email-anshuman.khandual@arm.com>
- <5a92f302-1917-1374-a8c7-0badb9ec1b8c@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <2fde38dd-7556-4651-8623-321066e48861@arm.com>
-Date:   Fri, 9 Apr 2021 14:07:59 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231679AbhDIIlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:41:03 -0400
+Received: from smtprelay0003.hostedemail.com ([216.40.44.3]:37338 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231280AbhDIIlC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:41:02 -0400
+Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 1E804181CB2D4;
+        Fri,  9 Apr 2021 08:40:49 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id E63D027DD11;
+        Fri,  9 Apr 2021 08:40:46 +0000 (UTC)
+Message-ID: <05802da66d3751611b85eb63d566220e09ef4bb7.camel@perches.com>
+Subject: Re: [PATCH] staging: media: meson: vdec: matched alignment with
+ parenthesis
+From:   Joe Perches <joe@perches.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Mitali Borkar <mitaliborkar810@gmail.com>,
+        narmstrong@baylibre.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Date:   Fri, 09 Apr 2021 01:40:45 -0700
+In-Reply-To: <479be6a4-2e6f-98a6-045f-d7c2132137c4@xs4all.nl>
+References: <YG+Bcqxetfj98l6V@kali>
+         <479be6a4-2e6f-98a6-045f-d7c2132137c4@xs4all.nl>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-In-Reply-To: <5a92f302-1917-1374-a8c7-0badb9ec1b8c@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=1.60
+X-Stat-Signature: 3wzrfrdy5sxkqd6b68tqw46b31ozb1s4
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: E63D027DD11
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX186Cki4iz9kgGIdAcl84qUVMxED1MeG/h8=
+X-HE-Tag: 1617957646-625853
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/9/21 1:54 PM, David Hildenbrand wrote:
-> On 09.04.21 07:55, Anshuman Khandual wrote:
->> pageblock_order must always be less than MAX_ORDER, otherwise it might lead
->> to an warning during boot. A similar problem got fixed on arm64 platform
->> with the commit 79cc2ed5a716 ("arm64/mm: Drop THP conditionality from
->> FORCE_MAX_ZONEORDER"). Assert the above condition before HUGETLB_PAGE_ORDER
->> gets assigned as pageblock_order. This will help detect the problem earlier
->> on platforms where HUGETLB_PAGE_SIZE_VARIABLE is enabled.
->>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   mm/page_alloc.c | 11 +++++++++--
->>   1 file changed, 9 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index 604dcd69397b..81b7460e1228 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -7068,10 +7068,17 @@ void __init set_pageblock_order(void)
->>       if (pageblock_order)
->>           return;
->>   -    if (HPAGE_SHIFT > PAGE_SHIFT)
->> +    if (HPAGE_SHIFT > PAGE_SHIFT) {
->> +        /*
->> +         * pageblock_order must always be less than
->> +         * MAX_ORDER. So does HUGETLB_PAGE_ORDER if
->> +         * that is being assigned here.
->> +         */
->> +        WARN_ON(HUGETLB_PAGE_ORDER >= MAX_ORDER);
+On Fri, 2021-04-09 at 09:30 +0200, Hans Verkuil wrote:
+> On 09/04/2021 00:19, Mitali Borkar wrote:
+> > Matched alignment with open parenthesis to meet linux kernel coding
+> > style.
+> > Reported by checkpatch
+> > 
+> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > ---
+> > �drivers/staging/media/meson/vdec/codec_mpeg12.c | 2 +-
+> > �1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/staging/media/meson/vdec/codec_mpeg12.c b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+> > index 48869cc3d973..21e93a13356c 100644
+> > --- a/drivers/staging/media/meson/vdec/codec_mpeg12.c
+> > +++ b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+> > @@ -81,7 +81,7 @@ static int codec_mpeg12_start(struct amvdec_session *sess)
+> > �	}
+> > �
+> > 
+> > �	ret = amvdec_set_canvases(sess, (u32[]){ AV_SCRATCH_0, 0 },
+> > -					(u32[]){ 8, 0 });
+> > +				  (u32[]){ 8, 0 });
 > 
-> Can't that be a BUILD_BUG_ON() ?
+> The alignment here is because the 2nd and 3rd arguments belong together, so
+> the alignment indicates that. In order to keep that I would add a newline
+> after 'sess,' as well. Same as is done in meson/vdec/codec_h264.c.
 
-Yes, it can be. Probably might be appropriate as well, given that both
-the arguments here are compile time constants. Okay, will change.
+Perhaps better as:
 
-> 
->>           order = HUGETLB_PAGE_ORDER;
->> -    else
->> +    } else {
->>           order = MAX_ORDER - 1;
->> +    }
->>         /*
->>        * Assume the largest contiguous order of interest is a huge page.
->>
-> 
-> 
+---
+ drivers/staging/media/meson/vdec/codec_mpeg12.c | 5 +++--
+ drivers/staging/media/meson/vdec/vdec_helpers.c | 2 +-
+ drivers/staging/media/meson/vdec/vdec_helpers.h | 2 +-
+ 3 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/staging/media/meson/vdec/codec_mpeg12.c b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+index 48869cc3d973..933f1cd16ce1 100644
+--- a/drivers/staging/media/meson/vdec/codec_mpeg12.c
++++ b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+@@ -65,6 +65,8 @@ static int codec_mpeg12_start(struct amvdec_session *sess)
+ 	struct amvdec_core *core = sess->core;
+ 	struct codec_mpeg12 *mpeg12;
+ 	int ret;
++	static const u32 canvas1[] = { AV_SCRATCH_0, 0 };
++	static const u32 canvas2[] = { 8, 0 };
+ 
+ 	mpeg12 = kzalloc(sizeof(*mpeg12), GFP_KERNEL);
+ 	if (!mpeg12)
+@@ -80,8 +82,7 @@ static int codec_mpeg12_start(struct amvdec_session *sess)
+ 		goto free_mpeg12;
+ 	}
+ 
+-	ret = amvdec_set_canvases(sess, (u32[]){ AV_SCRATCH_0, 0 },
+-					(u32[]){ 8, 0 });
++	ret = amvdec_set_canvases(sess, canvas1, canvas2);
+ 	if (ret)
+ 		goto free_workspace;
+ 
+diff --git a/drivers/staging/media/meson/vdec/vdec_helpers.c b/drivers/staging/media/meson/vdec/vdec_helpers.c
+index 7f07a9175815..df5c27266c44 100644
+--- a/drivers/staging/media/meson/vdec/vdec_helpers.c
++++ b/drivers/staging/media/meson/vdec/vdec_helpers.c
+@@ -177,7 +177,7 @@ static int set_canvas_nv12m(struct amvdec_session *sess,
+ }
+ 
+ int amvdec_set_canvases(struct amvdec_session *sess,
+-			u32 reg_base[], u32 reg_num[])
++			const u32 reg_base[], const u32 reg_num[])
+ {
+ 	struct v4l2_m2m_buffer *buf;
+ 	u32 pixfmt = sess->pixfmt_cap;
+diff --git a/drivers/staging/media/meson/vdec/vdec_helpers.h b/drivers/staging/media/meson/vdec/vdec_helpers.h
+index cfaed52ab526..ace8897c34fe 100644
+--- a/drivers/staging/media/meson/vdec/vdec_helpers.h
++++ b/drivers/staging/media/meson/vdec/vdec_helpers.h
+@@ -17,7 +17,7 @@
+  * @reg_num: number of contiguous registers after each reg_base (including it)
+  */
+ int amvdec_set_canvases(struct amvdec_session *sess,
+-			u32 reg_base[], u32 reg_num[]);
++			const u32 reg_base[], const u32 reg_num[]);
+ 
+ /* Helpers to read/write to the various IPs (DOS, PARSER) */
+ u32 amvdec_read_dos(struct amvdec_core *core, u32 reg);
+
