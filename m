@@ -2,70 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FBA93595E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06A43595E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbhDIGyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:54:12 -0400
-Received: from www381.your-server.de ([78.46.137.84]:49900 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhDIGyL (ORCPT
+        id S233484AbhDIGyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233461AbhDIGyR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:54:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=m0u4XcGvYFcZ1UHSFyyZX1Jfe2bc3nmFCI95VAmpg/Y=; b=bPnDJ71ykZh+qpXXKWPEWeesS0
-        WLPil5vj03znC6R7KltB9Ojr+UczWFOdzIROqQc8WS5uB12+c9ikHNFORL6OqH76eKH6TuwexOSKc
-        C5yK8f1B2L1A0/RUrUDAbtzM3qR9FDwaBzq+jHfbBkthk4vU9x3Z3rLmnyvfTUNLagIOGyz+nGe2T
-        DCihPb/6BMMzfMzj+hF43FEHelnphzri0INg9vQMwd0Y7yLjHURcAcal8U/aHQ8e+ULb9kYzFlKLf
-        xywpC+a2/gv4+PyYS9pIUOlpIVZLHrJV6pSffmOX/MMHiAajIttTp2d0sJ8oSNsyPpZdYZQYkQU05
-        2s9VAmYw==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1lUl1e-0001w4-R5; Fri, 09 Apr 2021 08:53:54 +0200
-Received: from [2001:a61:2bab:901:9e5c:8eff:fe01:8578]
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1lUl1e-0005l9-MY; Fri, 09 Apr 2021 08:53:54 +0200
-Subject: Re: [PATCH v4 2/2] iio: temperature: add driver support for ti tmp117
-To:     Puranjay Mohan <puranjay12@gmail.com>,
-        alexandru.ardelean@analog.com, jic23@kernel.org,
-        devicetree@vger.kernel.org, knaack.h@gmx.de,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        andy.shevchenko@gmail.com
-References: <20210407182147.77221-1-puranjay12@gmail.com>
- <20210407182147.77221-3-puranjay12@gmail.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <66a723ee-c04c-a70c-42d3-03f6ffed9733@metafoo.de>
-Date:   Fri, 9 Apr 2021 08:53:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Fri, 9 Apr 2021 02:54:17 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC354C061760;
+        Thu,  8 Apr 2021 23:54:04 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FGpkw4klVz9sTD;
+        Fri,  9 Apr 2021 16:54:00 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1617951241;
+        bh=oF2th14REDVdRnIZ+k1NwPyoOzLOuLa/j/cyZB2p4+Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=oy9XYw40lymK72hOowHNbGwd0kRmSc8il0feR7ohUg+wTv/GBJWez3WLtvBEvupGP
+         x0T8n+hz/xNI33Xn35cG3RCrq2ub4HfnDdVX+xxGlkNInMSm4hnYef025q6SCkxA+6
+         5ctWFjMU2dq8kW1A1z9nCWRUNbb8DL1hdbTho2oFI8zOg1QUhLMen/dnjBb6Djdw3o
+         FJBg3R1zi29ChvzcJ9UOPeZBitDFYiVbMLmA8G6ionOj4//C9uMicJjJlP2+lotFvQ
+         gaLnH6fRUcjib1v7B3eD9k6JOj8f7fIIoWXa1cqFHYzK0T4ST4ahaad0JBvFseaeVg
+         E5v4gy0Z3pEqg==
+Date:   Fri, 9 Apr 2021 16:53:59 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mark.gross@intel.com>,
+        Sebastian Reichel <sre@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: linux-next: manual merge of the drivers-x86 tree with the battery
+ tree
+Message-ID: <20210409165359.42535004@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210407182147.77221-3-puranjay12@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26134/Thu Apr  8 13:08:38 2021)
+Content-Type: multipart/signed; boundary="Sig_/GpXxHTGakZb2qwH_erQ+_uF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/21 8:21 PM, Puranjay Mohan wrote:
-> TMP117 is a Digital temperature sensor with integrated Non-Volatile memory.
-> Add support for tmp117 driver in iio subsystem.
->
-> Datasheet: https://www.ti.com/lit/gpn/tmp117
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+--Sig_/GpXxHTGakZb2qwH_erQ+_uF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Looks good to me, thanks.
+Hi all,
 
-Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
+Today's linux-next merge of the drivers-x86 tree got a conflict in:
 
+  MAINTAINERS
+
+between commit:
+
+  167f77f7d0b3 ("power: supply: Add battery driver for Surface Aggregator M=
+odule")
+
+from the battery tree and commit:
+
+  1d609992832e ("platform/surface: Add DTX driver")
+
+from the drivers-x86 tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc MAINTAINERS
+index f5efa8c0b927,7dd6b67f0f51..000000000000
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@@ -11993,14 -11872,14 +12004,22 @@@ F:	drivers/scsi/smartpqi/smartpqi*.[ch
+  F:	include/linux/cciss*.h
+  F:	include/uapi/linux/cciss*.h
+ =20
+ +MICROSOFT SURFACE BATTERY AND AC DRIVERS
+ +M:	Maximilian Luz <luzmaximilian@gmail.com>
+ +L:	linux-pm@vger.kernel.org
+ +L:	platform-driver-x86@vger.kernel.org
+ +S:	Maintained
+ +F:	drivers/power/supply/surface_battery.c
+ +F:	drivers/power/supply/surface_charger.c
+ +
++ MICROSOFT SURFACE DTX DRIVER
++ M:	Maximilian Luz <luzmaximilian@gmail.com>
++ L:	platform-driver-x86@vger.kernel.org
++ S:	Maintained
++ F:	Documentation/driver-api/surface_aggregator/clients/dtx.rst
++ F:	drivers/platform/surface/surface_dtx.c
++ F:	include/uapi/linux/surface_aggregator/dtx.h
++=20
+  MICROSOFT SURFACE GPE LID SUPPORT DRIVER
+  M:	Maximilian Luz <luzmaximilian@gmail.com>
+  L:	platform-driver-x86@vger.kernel.org
+
+--Sig_/GpXxHTGakZb2qwH_erQ+_uF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBv+gcACgkQAVBC80lX
+0GyFoAf/SDgFr8xBtqJp3KRlbYX6fAUWingeCxmkRyTsawRLQetkBx1ps9vIOoyH
+JtW9F1Afe/hqoDCMdsISpQlTiUTenHJVse/tMLCZSaF8CT2LPvb/fPaDHkBCRMAX
+sYgAGvby+z5Irr7N4Ryqn4p851lZE29iBU+SxJXn/j48CnZ9kVDZPa/Zg+/DJ/78
+dBMR0zSmbymcmy+XSJDfFSkAXLFJlzbtd+suBLP3NnEH6asx+I1NXpR4jDUoBpFW
+HmbjRCAW/Yim25ULewIzvMOw6DBXP7IaCmss//HIAOdhsMdmDRQviYuxSTM7UzyD
+Tl4sBMtkDYYatpbPAKiL1tZ5YDCsrg==
+=wPnG
+-----END PGP SIGNATURE-----
+
+--Sig_/GpXxHTGakZb2qwH_erQ+_uF--
