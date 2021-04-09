@@ -2,96 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E542F3591A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55FCD3591A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbhDIBsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 21:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDIBsk (ORCPT
+        id S233216AbhDIBst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 21:48:49 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15988 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhDIBso (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:48:40 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35939C061760;
-        Thu,  8 Apr 2021 18:48:28 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id r8so7085828lfp.10;
-        Thu, 08 Apr 2021 18:48:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=6NgfgA0s6MnBhC/H7IGMsvIcqRpCu3I9s/mh+o4Drj0=;
-        b=tHrgO2/8ybnJ+o1Gqs6ygkjQfj37V9yixDpht/Ts3/v7tjPIQgxd0Nn0JkkTPcXRJm
-         tzgmhNfuUyOB1N5ShOgOmhX0i1a8ZU7ukw0Qe4csS6VsUWvmfN8YIXgOoeQFtiZtyRs9
-         rifGvUyOQXjKQU/9tD99pjiMngB6VvQyhWmlsFz1I1cWrQ4p1O98i7zDnlAasEnxo226
-         zqRKGuUexj5J9/ZY+ZW+zc1D7MZpZVuQrMsnye/KVQrXheucuYBwd/JSLKnyjq5vIQ7B
-         IZPnbvsc42fec2xlhM9RwxXhT5tinmdxXYS5oZwnYvtB7PuKgVJVHgcve55FduMpFz7g
-         Y+3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=6NgfgA0s6MnBhC/H7IGMsvIcqRpCu3I9s/mh+o4Drj0=;
-        b=a5BUvVsSY6DYU9Bf3+YORgwbf3PS950zCYDVZSo1MsJAD6XzsFo1RK8h+VPKe3WNDs
-         6JL1OSvgaxntbqJXecSc6NrUxkaMfeftyiVjx76jUXZOGcYvb246QRvXjYHRU6XFYDY1
-         g2wRIZOQfnU3jjZ7PTDZL1PsEfz7fqZI8BRbTz4o7T8W4igfe5IQVTU7weNuNCUaPYGi
-         mHj2HJHYYeJOvUYHV6CJqNRNEg5T15o3F+PEupB6VyDERw0Pm9zicYY5szpmuu/x7PQg
-         3k0c1GZM+rgc3ClRKYp737u2a09aztJI0YwbWYvtGdeYUW/RseV2MTTImrYnbDOGimIa
-         qB3Q==
-X-Gm-Message-State: AOAM531zLDQDaOdS+GGFXCJJOhvNnMZyD8dzo8NId1KfvbX+egomxmyi
-        y9pkWWCWvetebef4/CzeicHwymXpUzQgapVIGCrJU9WURm3u2w==
-X-Google-Smtp-Source: ABdhPJzL8DeK8OBPYhib6hxQbq6JW02KcvjegbpLKhnUwB0uxSd6hfpXxpJ+LRkx974hjYZDKCGuN5Cj9J30rvCWtB8=
-X-Received: by 2002:ac2:4148:: with SMTP id c8mr8094436lfi.307.1617932906642;
- Thu, 08 Apr 2021 18:48:26 -0700 (PDT)
+        Thu, 8 Apr 2021 21:48:44 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGgvs6ztxzyP83;
+        Fri,  9 Apr 2021 09:46:17 +0800 (CST)
+Received: from [10.67.102.71] (10.67.102.71) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 09:48:26 +0800
+Subject: Re: [PATCH -next] clk: qcom: Add missing MODULE_DEVICE_TABLE
+To:     Stephen Boyd <sboyd@kernel.org>, <agross@kernel.org>,
+        <bjorn.andersson@linaro.org>, <mturquette@baylibre.com>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210408135509.208921-1-clare.chenhui@huawei.com>
+ <161791383177.3790633.17835417455437133606@swboyd.mtv.corp.google.com>
+From:   "Chenhui (clare)" <clare.chenhui@huawei.com>
+Message-ID: <87ec5a80-16d0-f3df-c05a-7750c29f881b@huawei.com>
+Date:   Fri, 9 Apr 2021 09:48:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Thu, 8 Apr 2021 20:48:16 -0500
-Message-ID: <CAH2r5mvZEvGskzcrcd=PbQ7zqAyH0=uDyvVG7vu9XEPM7qJLHA@mail.gmail.com>
-Subject: [GIT PULL] SMB3 Fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        CIFS <linux-cifs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <161791383177.3790633.17835417455437133606@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.71]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-e49d033bddf5b565044e2abe4241353959bc9120:
+在 2021/4/9 4:30, Stephen Boyd 写道:
 
-  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
+> Quoting Chen Hui (2021-04-08 06:55:09)
+>> Add missing MODULE_DEVICE_TABLE entries to support module autoloading,
+>> as these drivers can be compiled as external modules.
+>>
+>> Signed-off-by: Chen Hui <clare.chenhui@huawei.com>
+> Any fixes tag?
+> .
 
-are available in the Git repository at:
+Thanks for reviewing, fixes tags will be added in v2 patches, which I 
+will send out later
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.12-rc6-smb3
-
-for you to fetch changes up to 0fc9322ab5e1fe6910c9673e1a7ff29f7dd72611:
-
-  cifs: escape spaces in share names (2021-04-07 21:30:27 -0500)
-
-----------------------------------------------------------------
-3 cifs/smb3 fixes, 2 for stable, includes a reconnect fix (for case
-when server address changed) and fix for proper display of devnames
-(when have space or tab).
-
-Test results: http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/550
-----------------------------------------------------------------
-Maciek Borzecki (1):
-      cifs: escape spaces in share names
-
-Shyam Prasad N (1):
-      cifs: On cifs_reconnect, resolve the hostname again.
-
-Wan Jiabing (1):
-      fs: cifs: Remove unnecessary struct declaration
-
- fs/cifs/Kconfig    |  3 +--
- fs/cifs/Makefile   |  5 +++--
- fs/cifs/cifsfs.c   |  3 ++-
- fs/cifs/cifsglob.h |  2 --
- fs/cifs/connect.c  | 17 ++++++++++++++++-
- 5 files changed, 22 insertions(+), 8 deletions(-)
-
--- 
-Thanks,
-
-Steve
