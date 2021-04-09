@@ -2,188 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20173591EA
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E79E3591EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbhDICUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 22:20:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37918 "EHLO
+        id S232775AbhDICWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 22:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232616AbhDICUg (ORCPT
+        with ESMTP id S232616AbhDICWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 22:20:36 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC24C061760;
-        Thu,  8 Apr 2021 19:20:24 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id a8so4271693oic.11;
-        Thu, 08 Apr 2021 19:20:24 -0700 (PDT)
+        Thu, 8 Apr 2021 22:22:17 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408B3C061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 19:22:05 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id r9so6219158ejj.3
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 19:22:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rmOjBwpL4Q1nyIe9hUH1/jVTOJmvFoqkXPcEHdU8FVA=;
-        b=TrjsgPQxp9cn453svP6nTYmZqbUJLu4bo69Aepv7I4LFZO9+TdKB6fvE69YhyBtIyh
-         4VWXsjaF85poDTy4Sm9EI0mGpk3kP8mitJP1PD40hAQL2xTcr2T0dzXKjI6ah4Ti5oNZ
-         EgnpUwCFJs8GB7r4F6+LCNJuAk1HdELpGFvMd+8Swq5Uqoy9uAizOw5ooMIijVf2AwdN
-         58TaobQbOItimaHMBT0Xceio7Dn+OTXatm1eIXkOMDBOe7MJdBJldRXAiPnOvoZshq0y
-         Vq/rCflXDrOlp+p3G85Uad5H796gktMq4hmw12ebHsTWdVmXhfMuXjvDpUsrVxwLZlLd
-         Qm9g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Tihn+691p7iWK//izJ5iKcTFaKEbda2SvpleteY067A=;
+        b=gfbpt+fCTC2llTG8KgbmsKCtpLnOoUOAivy4mzCkmYtqw2y8iEkP8+uOqCjGsJHmhO
+         jSA/4bjQUCSdmGJvbrPmkYIsxM05wr2nmEZpPHPgcGuo4m70wBLcszov3I7NabpLq5VU
+         v4QiKVSPNXyMGtQLBDMd9mqmrPshQsBuwZbXEjyY7XJxRveDzeUpHYE9+IJ8pIYXRVH+
+         tmBddYbvFzUzQqUM5IAUPFQNVLmM8WDxBqbr5OuCymYBXkCITmHwe8gqrvob8TTHVJHC
+         yZdHwnY58zrrhL3CP778Q9TEX/zULPKIAvUFuI7Lw96mFSFuyFKLi4V/7auJbOPT1IuV
+         IQag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=rmOjBwpL4Q1nyIe9hUH1/jVTOJmvFoqkXPcEHdU8FVA=;
-        b=VV2bpoY4YwVgnckOA08yXMsHFWTSfcuazdlt2cdCmuARKeb61YBO3x7N70kBbm5gvr
-         FSsHFfdXmB2uV2IyeHn88Z6KIxnOpK4HFcxVj7+YpvVlc5tTurinN4rJo8BQjA9ZGfIt
-         V4Czw4QpV1IjVJN5SZ3ZTy41dAFiDPm9Dw6sLtf+gWNCnpzF4m/KcDZ54shM37Puwk17
-         kgzjuFL29BWHpgQhcBLpfh8Bt43ydO1ZsyiLxTtmlKz9Bw5BsfTKEEBhA+vkzLHaX991
-         /PMVeshcoFKXzKlh2U2Rh7AAih5zUkJqdQ/S82iGlFxBkxGTTuH6PBxV9v3f8mMg+30/
-         uYoQ==
-X-Gm-Message-State: AOAM530tzkpDHVDa3Bl2Qvh+C99kkXkd5Cu85Vx4IwNgb/G9GHrxtJju
-        p/Glch43ArhPjB+ITEK83jh0Nxg1pWA=
-X-Google-Smtp-Source: ABdhPJxrksno3Id9WLxpGTlIy6P2vXTeMn8+luUI4APYUhoG6wkNY8edsZgGpn2FoVbhX/REI/oqXA==
-X-Received: by 2002:aca:d485:: with SMTP id l127mr8524306oig.21.1617934823430;
-        Thu, 08 Apr 2021 19:20:23 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v23sm309518ots.63.2021.04.08.19.20.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Apr 2021 19:20:23 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v4 1/1] of: unittest: overlay: ensure proper alignment of
- copied FDT
-To:     Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        devicetree@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210408204508.2276230-1-frowand.list@gmail.com>
- <CAL_Jsq+Os6O6CpRYurmf_4-Xnzgpkd1jbDbnp0en1TPbZXTf7w@mail.gmail.com>
- <b73965c7-e975-6c48-3367-411f6c754181@roeck-us.net>
- <c625202a-0530-adbd-d4f8-0935d3ed37e2@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <b081277a-763e-fdd4-43e3-483869a7e5c5@roeck-us.net>
-Date:   Thu, 8 Apr 2021 19:20:21 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Tihn+691p7iWK//izJ5iKcTFaKEbda2SvpleteY067A=;
+        b=rlgA+bn//KDu+GlnFlTfLfvKR84eyVhzt26PpPXwZWzgJYPlNhtrRvFby/DHOKL1k4
+         G1+cC1bv4s16sQf4UCYDSZ8xc8iP8j3cE0MUwe8RSiRzP8zJOKBTmmy+uQasyDQ2soYf
+         Zeh9OZMsbTTxy5QDUJEP6XvKSXsH0BAf+1mRTcxwLmY+ITi35bkixUsVx5HrmVkiPQkF
+         BtRMxtfJ+8MQxwZLp6q9DWlpzZblKTw549/qPsrHmWcJgd9zXTg8/7WDXn65J/KzHprs
+         B0TZury6svqr2EhybkGQoOH7MgYQgo/3BWw2ZCO79RphFPRo536RfEpq0ODYE8k1bE8a
+         7kxA==
+X-Gm-Message-State: AOAM531dwFJUWM+nK+Fcmkg4PH0ls8dgKlzGY3m26QaR5DMnQzUI6Z2O
+        tzBUvmqz70Y04SF1kTqfPylduvF0E0RvlaCvFji01rIu5mg=
+X-Google-Smtp-Source: ABdhPJywuvwzT6E0mGE+ospgnfd+yL2cK+m5CNEokcsNlOnCpYojvVt3IjHuDjdAnG/lg5Bis0tLE6+KGBX5AADEoIo=
+X-Received: by 2002:a17:906:590b:: with SMTP id h11mr14034374ejq.437.1617934923888;
+ Thu, 08 Apr 2021 19:22:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c625202a-0530-adbd-d4f8-0935d3ed37e2@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210330052154.26861-1-xuewen.yan94@gmail.com>
+ <YGLzQAvVqlrKb8AB@google.com> <34ce11ad-9c20-7ba7-90d8-4830725bf38a@arm.com>
+ <CAB8ipk9JATYxJBnpVFfH_XHLqh=yHesbo73wx=Mm7t8mSqW_Gg@mail.gmail.com>
+ <1ebddd33-4666-1e6e-7788-a3fe28c9e99c@arm.com> <CAB8ipk9+fdGMY6cYoHnicPUOdd+meJo+EaGaaVZTgoxQ84+Wiw@mail.gmail.com>
+ <d85a1db9-4680-1d31-d3e7-6a081f652c5e@arm.com>
+In-Reply-To: <d85a1db9-4680-1d31-d3e7-6a081f652c5e@arm.com>
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+Date:   Fri, 9 Apr 2021 10:20:52 +0800
+Message-ID: <CAB8ipk_J-W35+iZqsmAm+VO2=OUXRR3EsW6BuhYmvmBiPcHxMA@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: use signed long when compute energy delta in eas
+To:     Pierre <pierre.gondois@arm.com>
+Cc:     Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Benjamin Segall <bsegall@google.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Ryan Y <xuewyan@foxmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/21 3:53 PM, Frank Rowand wrote:
-> On 4/8/21 4:54 PM, Guenter Roeck wrote:
->> On 4/8/21 2:28 PM, Rob Herring wrote:
->>>
->>> Applying now so this gets into linux-next this week.
->>>
->> The patch doesn't apply on top of today's -next; it conflicts
->> with "of: properly check for error returned by fdt_get_name()".
->>
->> I reverted that patch and applied this one, and the DT unittests
->> run with it on openrisc. I do get a single test failure, but I that
->> is a different problem (possibly with the test case itself).
->>
->> ### dt-test ### FAIL of_unittest_dma_ranges_one():923 of_dma_get_range: wrong DMA addr 0x00000000
->> 	(expecting 100000000) on node /testcase-data/address-tests/bus@80000000/device@1000
-> 
-> That is a known regression on the target that I use for testing (and
-> has been since 5.10-rc1) - the 8074 dragonboard, arm 32.  No
-> one else has reported it on the list, so even though I want to debug
-> and fix it "promptly", other tasks have had higher priority.  In my
-> notes I list two suspect commits:
-> 
->   e0d072782c73 dma-mapping: introduce DMA range map, supplanting dma_pfn_offset
->   0a0f0d8be76d dma-mapping: split <linux/dma-mapping.h>
-> 
-> I think that was purely based on looking at the list of commits that
-> may have touched OF dma.  I have not done a bisect.
-> 
+Hi
+>
+> Hi,
+> > Hi
+> >
+> > On Wed, Apr 7, 2021 at 10:11 PM Pierre <pierre.gondois@arm.com> wrote:
+> > >
+> > > Hi,
+> > > > I test the patch, but the overflow still exists.
+> > > > In the "sched/fair: Use pd_cache to speed up
+> > find_energy_efficient_cpu()"
+> > > > I wonder why recompute the cpu util when cpu=3D=3Ddst_cpu in
+> > compute_energy(),
+> > > > when the dst_cpu's util change, it also would cause the overflow.
+> > >
+> > > The patches aim to cache the energy values for the CPUs whose
+> > > utilization is not modified (so we don't have to compute it multiple
+> > > times). The values cached are the 'base values' of the CPUs, i.e. whe=
+n
+> > > the task is not placed on the CPU. When (cpu=3D=3Ddst_cpu) in
+> > > compute_energy(), it means the energy values need to be updated inste=
+ad
+> > > of using the cached ones.
+> > >
+> > well, is it better to use the task_util(p) + cache values ? but in
+> > this case, the cache
+> > values may need more parameters.
+>
+> This patch-set is not significantly improving the execution time of
+> feec(). The results we have so far are an improvement of 5-10% in
+> execution time, with feec() being executed in < 10us. So the gain is not
+> spectacular.
 
-Here you are:
-
-# bad: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
-# good: [bbf5c979011a099af5dc76498918ed7df445635b] Linux 5.9
-git bisect start 'v5.10' 'v5.9'
-# bad: [4d0e9df5e43dba52d38b251e3b909df8fa1110be] lib, uaccess: add failure injection to usercopy functions
-git bisect bad 4d0e9df5e43dba52d38b251e3b909df8fa1110be
-# good: [f888bdf9823c85fe945c4eb3ba353f749dec3856] Merge tag 'devicetree-for-5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux
-git bisect good f888bdf9823c85fe945c4eb3ba353f749dec3856
-# good: [640eee067d9aae0bb98d8706001976ff1affaf00] Merge tag 'drm-misc-next-fixes-2020-10-13' of git://anongit.freedesktop.org/drm/drm-misc into drm-next
-git bisect good 640eee067d9aae0bb98d8706001976ff1affaf00
-# good: [c6dbef7307629cce855aa6b482b60cbf7777ed88] Merge tag 'usb-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
-git bisect good c6dbef7307629cce855aa6b482b60cbf7777ed88
-# good: [ce1558c285f9ad04c03b46833a028230771cc0a7] ALSA: hda/hdmi: fix incorrect locking in hdmi_pcm_close
-git bisect good ce1558c285f9ad04c03b46833a028230771cc0a7
-# good: [c48b75b7271db23c1b2d1204d6e8496d91f27711] Merge tag 'sound-5.10-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
-git bisect good c48b75b7271db23c1b2d1204d6e8496d91f27711
-# bad: [0cd7d9795fa82226e7516d38b474bddae8b1ff26] Merge branch 'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/livepatching/livepatching
-git bisect bad 0cd7d9795fa82226e7516d38b474bddae8b1ff26
-# good: [b1839e7c2a42ccd9a0587c0092e880c7a213ee2a] dmaengine: xilinx: dpdma: convert tasklets to use new tasklet_setup() API
-git bisect good b1839e7c2a42ccd9a0587c0092e880c7a213ee2a
-# bad: [0de327969b61a245e3a47b60009eae73fe513cef] cma: decrease CMA_ALIGNMENT lower limit to 2
-git bisect bad 0de327969b61a245e3a47b60009eae73fe513cef
-# good: [6eb0233ec2d0df288fe8515d5b0b2b15562e05bb] usb: don't inherity DMA properties for USB devices
-git bisect good 6eb0233ec2d0df288fe8515d5b0b2b15562e05bb
-# bad: [48d15814dd0fc429e3205b87f1af6cc472018478] lib82596: move DMA allocation into the callers of i82596_probe
-git bisect bad 48d15814dd0fc429e3205b87f1af6cc472018478
-# bad: [eba304c6861613a649ba46cfab835b1eddeacd8e] dma-mapping: better document dma_addr_t and DMA_MAPPING_ERROR
-git bisect bad eba304c6861613a649ba46cfab835b1eddeacd8e
-# bad: [b9bb694b9f62f4b31652223ed3ca38cf98bbb370] iommu/io-pgtable-arm: Clean up faulty sanity check
-git bisect bad b9bb694b9f62f4b31652223ed3ca38cf98bbb370
-# bad: [a97740f81874c8063c12c24f34d25f10c4f5e9aa] dma-debug: convert comma to semicolon
-git bisect bad a97740f81874c8063c12c24f34d25f10c4f5e9aa
-# bad: [e0d072782c734d27f5af062c62266f2598f68542] dma-mapping: introduce DMA range map, supplanting dma_pfn_offset
-git bisect bad e0d072782c734d27f5af062c62266f2598f68542
-# first bad commit: [e0d072782c734d27f5af062c62266f2598f68542] dma-mapping: introduce DMA range map, supplanting dma_pfn_offset
-
-Guenter
+well=EF=BC=8C I meaned to cache all util value and compute energy with cach=
+es, when
+(cpu=3D=3Ddst_cpu), use caches instead of updating util, and do not get
+util with function:
+ "effective_cpu_util()", to compute util with cache.
+I add more parameters into pd_cache:
+struct pd_cache {
+        unsigned long util;
+        unsigned long util_est;
+        unsigned long util_cfs;
+        unsigned long util_irq;
+        unsigned long util_rt;
+        unsigned long util_dl;
+        unsigned long bw_dl;
+        unsigned long freq_util;
+        unsigned long nrg_util;
+};
+In this way, it can avoid util update while feec. I tested with it,
+and the negative delta disappeared.
+Maybe this is not a good method, but it does work.
+>
+> >
+> > > You are right, there is still a possibility to have a negative delta
+> > > with the patches at:
+> > >
+> > https://gitlab.arm.com/linux-arm/linux-power/-/commits/eas/next/integra=
+tion-20210129
+> > <https://gitlab.arm.com/linux-arm/linux-power/-/commits/eas/next/integr=
+ation-20210129>
+> > > Adding a check before subtracting the values, and bailing out in such
+> > > case would avoid this, such as at:
+> > > https://gitlab.arm.com/linux-arm/linux-pg/-/commits/feec_bail_out/
+> > <https://gitlab.arm.com/linux-arm/linux-pg/-/commits/feec_bail_out/>
+> > >
+> > In your patch, you bail out the case by "go to fail", that means you
+> > don't use eas in such
+> > case. However, in the actual scene, the case often occurr when select
+> > cpu for small task.
+> > As a result, the small task would not select cpu according to the eas,
+> > it may affect
+> > power consumption?
+> With this patch (bailing out), the percentage of feec() returning due to
+> a negative delta I get are:
+> on a Juno-r2, with 2 big CPUs and 4 CPUs (capacity of 383), with a
+> workload running during 5s with task having a period of 16 ms and:
+>   - 50 tasks at 1%:   0.14%
+>   - 30 tasks at 1%:   0.54%
+>   - 10 tasks at 1%: < 0.1%
+>   - 30 tasks at 5%: < 0.1%
+>   - 10 tasks at 5%: < 0.1%
+> It doesn't happen so often to me.If we bail out of feec(), the task will
+> still have another opportunity in the next call. However I agree this
+> can lead to a bad placement when this happens.
+> >
+> > > I think a similar modification should be done in your patch. Even tho=
+ugh
+> > > this is a good idea to group the calls to compute_energy() to reduce =
+the
+> > > chances of having updates of utilization values in between the
+> > > compute_energy() calls,
+> > > there is still a chance to have updates. I think it happened when I
+> > > applied your patch.
+> > >
+> > > About changing the delta(s) from 'unsigned long' to 'long', I am not
+> > > sure of the meaning of having a negative delta. I thing it would be
+> > > better to check and fail before it happens instead.
+> > >
+> > > Regards
+> > >
+>
+>
+>
