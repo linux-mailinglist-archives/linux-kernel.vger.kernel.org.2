@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5207F359325
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:38:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD130359324
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 05:38:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbhDIDiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 23:38:19 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15635 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232990AbhDIDiL (ORCPT
+        id S233254AbhDIDiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 23:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233203AbhDIDiL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 8 Apr 2021 23:38:11 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGkJW4QMSznZ6Z;
-        Fri,  9 Apr 2021 11:34:19 +0800 (CST)
-Received: from DESKTOP-TMVL5KK.china.huawei.com (10.174.187.128) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 9 Apr 2021 11:36:57 +0800
-From:   Yanan Wang <wangyanan55@huawei.com>
-To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        "Alexandru Elisei" <alexandru.elisei@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        <kvmarm@lists.cs.columbia.edu>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        <wanghaibin.wang@huawei.com>, <zhukeqian1@huawei.com>,
-        <yuzenghui@huawei.com>, Yanan Wang <wangyanan55@huawei.com>
-Subject: [PATCH v4 2/2] KVM: arm64: Distinguish cases of memcache allocations completely
-Date:   Fri, 9 Apr 2021 11:36:52 +0800
-Message-ID: <20210409033652.28316-3-wangyanan55@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210409033652.28316-1-wangyanan55@huawei.com>
-References: <20210409033652.28316-1-wangyanan55@huawei.com>
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FA9C061760;
+        Thu,  8 Apr 2021 20:37:09 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id 1so3269988qtb.0;
+        Thu, 08 Apr 2021 20:37:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8BgGBrR3Xwqw+MMg1YnlfMAUK+I10lyWE+xZkXB1ujs=;
+        b=Heia25TgE2vtvJwk4Mye9wUNtKT4LCXFpu3RTd7Litn4l6XDwm58yNf5Xo72WKG1Cb
+         Pnh29PYykNQ0Leb0AVytW69/DSGu2rRRdSyPucL7QrMDZjkSbhFQ0sXFxG9k3cGgza9V
+         mXSNHoDmBuqB2Dq6N7NZp/gT1iFd9YrggQtWs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8BgGBrR3Xwqw+MMg1YnlfMAUK+I10lyWE+xZkXB1ujs=;
+        b=jw6ukamSWVotwCXQrCi9tZaelPWAx/Y/SjK5CiZS4roGgR5IADFLCING9taiHeBMSi
+         aAsvGnNP1OI3GRghZccdZULiSFI5Tdhm1VN/yMbtmQCNj/6/cW0gTcGypd6O+/3jmaTf
+         X7Mbx6IgE2By+jFWbKcav5F/Ez3hZSfsUkYY9sGL5I8twSIb+/9qFVqyPDxt3OlrfEsM
+         2JoZFxF3now+PvznEUfFuGnVIeP0Jdv4XFsZQCnxlt6pSsiT0PqstqNXgKxVUGMAM3Y7
+         76BO4EBj1GUP0Alr0oDInj7H66k8iuHXwLJIO8mTml7pL+WmV1z74GVb56yZDPQfsJZm
+         /SUw==
+X-Gm-Message-State: AOAM533Fqd6UVvNEFKS2uayXq0bzCGkvkZ/tPStRQIDAt2AJMzhdIARr
+        apszigu9QX9XuuGeQpW/sXksKLX693guRhVX7d0=
+X-Google-Smtp-Source: ABdhPJxpEB1iiCw0U43cwWPFxVnBP2huZ7QxGaGC6NeOvjxLXRAa+ssU2jFErOgTTQKad2+gM3ZDkIo4Ri3biTi/Bas=
+X-Received: by 2002:ac8:5f87:: with SMTP id j7mr10494309qta.135.1617939429154;
+ Thu, 08 Apr 2021 20:37:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.128]
-X-CFilter-Loop: Reflected
+References: <20210319062752.145730-1-andrew@aj.id.au> <20210319062752.145730-4-andrew@aj.id.au>
+In-Reply-To: <20210319062752.145730-4-andrew@aj.id.au>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 9 Apr 2021 03:36:57 +0000
+Message-ID: <CACPK8Xfre_HriZXa10GVRvzxM51_6jkxCrXi-Ofto6cCKcLw4g@mail.gmail.com>
+Subject: Re: [PATCH v2 04/21] pinctrl: aspeed-g5: Adapt to new LPC device tree layout
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Corey Minyard <minyard@acm.org>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Benjamin Fair <benjaminfair@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With a guest translation fault, the memcache pages are not needed if KVM
-is only about to install a new leaf entry into the existing page table.
-And with a guest permission fault, the memcache pages are also not needed
-for a write_fault in dirty-logging time if KVM is only about to update
-the existing leaf entry instead of collapsing a block entry into a table.
+On Fri, 19 Mar 2021 at 06:28, Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+> From: "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+>
+> Add check against LPC device v2 compatible string to
+> ensure that the fixed device tree layout is adopted.
+> The LPC register offsets are also fixed accordingly.
+>
+> Signed-off-by: Chia-Wei Wang <chiawei_wang@aspeedtech.com>
+> Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
+> Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
-By comparing fault_granule and vma_pagesize, cases that require allocations
-from memcache and cases that don't can be distinguished completely.
-
-Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
----
- arch/arm64/kvm/mmu.c | 25 ++++++++++++-------------
- 1 file changed, 12 insertions(+), 13 deletions(-)
-
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 1eec9f63bc6f..05af40dc60c1 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -810,19 +810,6 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	gfn = fault_ipa >> PAGE_SHIFT;
- 	mmap_read_unlock(current->mm);
- 
--	/*
--	 * Permission faults just need to update the existing leaf entry,
--	 * and so normally don't require allocations from the memcache. The
--	 * only exception to this is when dirty logging is enabled at runtime
--	 * and a write fault needs to collapse a block entry into a table.
--	 */
--	if (fault_status != FSC_PERM || (logging_active && write_fault)) {
--		ret = kvm_mmu_topup_memory_cache(memcache,
--						 kvm_mmu_cache_min_pages(kvm));
--		if (ret)
--			return ret;
--	}
--
- 	mmu_seq = vcpu->kvm->mmu_notifier_seq;
- 	/*
- 	 * Ensure the read of mmu_notifier_seq happens before we call
-@@ -880,6 +867,18 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	else if (cpus_have_const_cap(ARM64_HAS_CACHE_DIC))
- 		prot |= KVM_PGTABLE_PROT_X;
- 
-+	/*
-+	 * Allocations from the memcache are required only when granule of the
-+	 * lookup level where the guest fault happened exceeds vma_pagesize,
-+	 * which means new page tables will be created in the fault handlers.
-+	 */
-+	if (fault_granule > vma_pagesize) {
-+		ret = kvm_mmu_topup_memory_cache(memcache,
-+						 kvm_mmu_cache_min_pages(kvm));
-+		if (ret)
-+			return ret;
-+	}
-+
- 	/*
- 	 * Under the premise of getting a FSC_PERM fault, we just need to relax
- 	 * permissions only if vma_pagesize equals fault_granule. Otherwise,
--- 
-2.19.1
-
+Reviewed-by: Joel Stanley <joel@jms.id.au>
