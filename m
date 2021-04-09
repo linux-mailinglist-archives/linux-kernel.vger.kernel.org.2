@@ -2,143 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A4B235A85E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 23:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 370B535A881
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 23:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234574AbhDIVbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 17:31:02 -0400
-Received: from mail-pg1-f174.google.com ([209.85.215.174]:43936 "EHLO
-        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233687AbhDIVbB (ORCPT
+        id S234861AbhDIVzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 17:55:50 -0400
+Received: from bosmailout10.eigbox.net ([66.96.187.10]:41007 "EHLO
+        bosmailout10.eigbox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234079AbhDIVzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 17:31:01 -0400
-Received: by mail-pg1-f174.google.com with SMTP id p12so4863054pgj.10;
-        Fri, 09 Apr 2021 14:30:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2XXqOMB7no84r14nU406OpNWXXLiSmIGXiQhHcyMAkk=;
-        b=iCSC3AERc/mTBUDNMTnczOVjgXldZvSPc/6dzLL3wibnvmZv/YHqI1fIM+yND9yan2
-         HyYyHHaRDAgSxzEERFdgGJiA3rzK7oCRVQ8P9/t/Bj+/EVsBTPqFi5npuxAvYYvR0q5z
-         00LEhy3/ZS+yW2ONGTpSwQxwAryXYlea/x3zS5+bdprjB5Hgc5tLT9AzZYB/Vti8vKsX
-         a2EktsrZfoOTc3vFqP4Npfxbt9Ff7boFLao9PQKnEgnWoVsfWMo5JGbo03mW69JuB71b
-         oSsfVGVMO/PD+wajHjfdK53wBGDLuidyriUTNi6mtMoAqG6r7Vo2Aum7vZqTcCgVjDfQ
-         NnRA==
-X-Gm-Message-State: AOAM532OCZaer2KZ/+UvBNJSMbhb0mRt/iinVslOIy4+KitZ3lN+2vPU
-        gZFnglcn2zCO9uPo+vWvOOz6KoPqFIg=
-X-Google-Smtp-Source: ABdhPJwBrLtol0mRutEPMQs4Fpt4m0HV/+0/6ayK48mHIdHR3+k7+LHV2Q2U+8ZRkZWw0s/l8S0vHg==
-X-Received: by 2002:a63:c145:: with SMTP id p5mr14851986pgi.451.1618003847503;
-        Fri, 09 Apr 2021 14:30:47 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id k10sm2995741pfk.205.2021.04.09.14.30.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 14:30:46 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 14:30:45 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Nava kishore Manne <nava.manne@xilinx.com>
-Cc:     mdf@kernel.org, trix@redhat.com, robh+dt@kernel.org,
-        michal.simek@xilinx.com, linux-fpga@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, git@xilinx.com
-Subject: Re: [PATCH 3/3] fpga: region: Adds runtime PM support
-Message-ID: <YHDHhf1tQo6vI49W@epycbox.lan>
-References: <20210402092049.479-1-nava.manne@xilinx.com>
- <20210402092049.479-4-nava.manne@xilinx.com>
+        Fri, 9 Apr 2021 17:55:49 -0400
+X-Greylist: delayed 1801 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 17:55:49 EDT
+Received: from bosmailscan07.eigbox.net ([10.20.15.7])
+        by bosmailout10.eigbox.net with esmtp (Exim)
+        id 1lUydC-00031B-Hj
+        for linux-kernel@vger.kernel.org; Fri, 09 Apr 2021 17:25:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aroba00.com
+        ; s=dkim; h=Sender:Content-Transfer-Encoding:Content-Type:Message-ID:Reply-To
+        :Subject:To:From:Date:MIME-Version:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=j/2w54k6QiND+xCmDlhOZ4FhmnEVovmAfHp4mNSvZpw=; b=0Kst1XkNM6JTuMYYm0tzIVkVBw
+        wll2z7p4E99xwxVr4Fc5wPsAbm/dly4qv/ssMfPr6Yq/+GtYdlIeBTJDcd9VFrH6ouNLzDzZkkteT
+        7qC56GJZHsqIKvSPUiJdJYglV0ppN8w7fQ/nqnaQK5RzY7d760xRw2wpaMfqJRTskjMAuBdmVGL3B
+        qp9zitWE8YUGDMaKbUEoG2W8iU6jwaqSA7X6Iylx2V40JitBBOMQiAWgHoZlT8tZBTaeh6v4/Pz3h
+        uhs/G/Veqn5ST3HSLMfwFM6Aams5g8OEPUgAyxoXPvn19atUvWvRhkgODfzvvqqVmqhIIgUkNHj9d
+        +ZH95xoA==;
+Received: from [10.115.3.33] (helo=bosimpout13)
+        by bosmailscan07.eigbox.net with esmtp (Exim)
+        id 1lUydC-0001Gy-8O
+        for linux-kernel@vger.kernel.org; Fri, 09 Apr 2021 17:25:34 -0400
+Received: from boswebmail08.eigbox.net ([10.20.16.8])
+        by bosimpout13 with 
+        id qlR12400h0ASFPu01lRN59; Fri, 09 Apr 2021 17:25:34 -0400
+X-Authority-Analysis: v=2.3 cv=RNUo47q+ c=1 sm=1 tr=0
+ a=nrbQDdKp8bIvKAbSIVj10Q==:117 a=quF6OkJX2JkgrmAOVFxFYg==:17
+ a=ynNchLzGGVQA:10 a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=x7bEGLp0ZPQA:10
+ a=aX4iDkUV3q0Z1BGtcMEA:9 a=EIYLPocOnPveAysI:21 a=zD1n7Qp9K8CShBJE:21
+ a=CjuIK1q_8ugA:10 a=0SFVNkT-byZ66ebLn1w0:22
+Received: from [127.0.0.1] (helo=homestead)
+        by boswebmail08.eigbox.net with esmtp (Exim)
+        id 1lUycI-0006NG-6N; Fri, 09 Apr 2021 17:24:38 -0400
+Received: from [41.138.102.250]
+ by emailmg.homestead.com
+ with HTTP (HTTP/1.1 POST); Fri, 09 Apr 2021 17:24:38 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210402092049.479-4-nava.manne@xilinx.com>
+Date:   Fri, 09 Apr 2021 23:24:38 +0200
+From:   janete Moon <demo1@aroba00.com>
+To:     undisclosed-recipients:;
+Subject: an Orphan needs your help
+Reply-To: janete.moon20@gmail.com
+Mail-Reply-To: janete.moon20@gmail.com
+Message-ID: <687b33b1130021c621732725ec2ff2c0@aroba00.com>
+X-Sender: demo1@aroba00.com
+User-Agent: Roundcube Webmail/1.3.14
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-EN-AuthUser: demo1@aroba00.com
+Sender:  janete Moon <demo1@aroba00.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 02, 2021 at 02:50:49PM +0530, Nava kishore Manne wrote:
-> Adds support to handle FPGA/PL power domain. With this patch,
-> the PL power domain will be turned on before loading the bitstream
-> and turned off while removing/unloading the bitstream using overlays.
-> This can be achieved by adding the runtime PM support.
-> 
-> Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
-> ---
->  drivers/fpga/of-fpga-region.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/fpga/of-fpga-region.c b/drivers/fpga/of-fpga-region.c
-> index e405309baadc..35fc2f3d4bd8 100644
-> --- a/drivers/fpga/of-fpga-region.c
-> +++ b/drivers/fpga/of-fpga-region.c
-> @@ -15,6 +15,7 @@
->  #include <linux/of_platform.h>
->  #include <linux/slab.h>
->  #include <linux/spinlock.h>
-> +#include <linux/pm_runtime.h>
->  
->  static const struct of_device_id fpga_region_of_match[] = {
->  	{ .compatible = "fpga-region", },
-> @@ -302,6 +303,7 @@ static int of_fpga_region_notify_pre_apply(struct fpga_region *region,
->  	}
->  
->  	region->info = info;
-> +	pm_runtime_get_sync(dev->parent);
->  	ret = fpga_region_program_fpga(region);
->  	if (ret) {
->  		/* error; reject overlay */
-> @@ -324,10 +326,13 @@ static int of_fpga_region_notify_pre_apply(struct fpga_region *region,
->  static void of_fpga_region_notify_post_remove(struct fpga_region *region,
->  					      struct of_overlay_notify_data *nd)
->  {
-> +	struct device *dev = &region->dev;
-> +
->  	fpga_bridges_disable(&region->bridge_list);
->  	fpga_bridges_put(&region->bridge_list);
->  	fpga_image_info_free(region->info);
->  	region->info = NULL;
-> +	pm_runtime_put(dev->parent);
->  }
->  
->  /**
-> @@ -411,9 +416,16 @@ static int of_fpga_region_probe(struct platform_device *pdev)
->  		goto eprobe_mgr_put;
->  	}
->  
-> +	pm_runtime_enable(&pdev->dev);
-> +	ret = pm_runtime_get_sync(&pdev->dev);
-> +	if (ret < 0)
-> +		goto err_pm;
-> +
-> +	pm_runtime_put(&pdev->dev);
-> +
->  	ret = fpga_region_register(region);
->  	if (ret)
-> -		goto eprobe_mgr_put;
-> +		goto err_pm;
->  
->  	of_platform_populate(np, fpga_region_of_match, NULL, &region->dev);
->  	platform_set_drvdata(pdev, region);
-> @@ -422,6 +434,9 @@ static int of_fpga_region_probe(struct platform_device *pdev)
->  
->  	return 0;
->  
-> +err_pm:
-> +	pm_runtime_put(&pdev->dev);
-> +	pm_runtime_disable(&pdev->dev);
->  eprobe_mgr_put:
->  	fpga_mgr_put(mgr);
->  	return ret;
-> @@ -434,6 +449,7 @@ static int of_fpga_region_remove(struct platform_device *pdev)
->  
->  	fpga_region_unregister(region);
->  	fpga_mgr_put(mgr);
-> +	pm_runtime_disable(region->dev.parent);
->  
->  	return 0;
->  }
-> -- 
-> 2.18.0
-> 
 
-Does this add a dependency on CONFIG_PM?
 
-Thanks,
-Moritz
+Hello Friend,
+
+Greetings and thanks for your reply.
+
+I am Janete moon but unfortunately, I 'm now an orphan,the only child 
+and
+Daughter of late Mr and Mrs Joseph moon, from Ivory Coast  Abidjan.
+I know it may have sounded very strange to you on why I contact you as
+you are a complete stranger to me and I must tell you this,
+
+It will be very difficult for me to get in touch with someone here
+who knows me because of the ugly circumstance that surrounds
+the demise of my lovely parents with whom my future ws looking
+very bright from all looks.
+
+My uncle conspired with my father's business rivals and poisoned my
+parents during a business lunch hour and their motive for eliminating
+them was to take over their businesses and inherit their wealth. In one 
+of
+their letter's that I stumbled into, they were asking my uncle to give
+them their own part of the deal so While reading that letter,
+I fainted and my uncle came in and caught me with the letter.
+I'm afraid that they might decide to kill me or poison me as they did
+to my parents in order to keep me silent for the evil they did to my
+beloved late parents. For safety, I decided to run away from the house.
+I'm now hiding in a neigbouring country called Burkina Faso.
+
+My purpose of contacting you is because I need to come to your country
+secretly so that my uncle will not know my where about. I got 
+information
+from my father before he died in the hospital about the secret fund
+(15.5 Million US Dollars only) he kept in a finance house here in
+Burkina Faso  West Africa.
+
+I have verified this with them before contacting you. I shall require 
+your help
+in transfering this money to your country for investment purpose like 
+buying of
+company shares,Real Estate Investment Trust funds,Jewels or Diamond,
+and to continue my studies from where I stopped as Immediately after the
+transfer I will come to live in your country.
+
+I will give you more information once I hear from you as I am in
+sincere desire of your humble assistance in this regard. Your
+suggestions and ideas will be highly welcomed and I am willing to
+offer you 15% of the total fund once it is transferred to your account
+.
+
+Now permit me to ask these few questions
+
+1. Can you honestly help me from your heart?
+2. Can I completely trust you?
+
+
+Thank you and God bless.
+Yours affectionately
+Miss. Janete moon.
