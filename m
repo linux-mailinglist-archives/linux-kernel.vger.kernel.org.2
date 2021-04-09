@@ -2,77 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F92D35A4B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0683E35A4BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbhDIRev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40872 "EHLO
+        id S234293AbhDIRgo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:36:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233896AbhDIRev (ORCPT
+        with ESMTP id S232855AbhDIRgn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:34:51 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A701FC061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:34:36 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id b8-20020a17090a5508b029014d0fbe9b64so5318085pji.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:34:36 -0700 (PDT)
+        Fri, 9 Apr 2021 13:36:43 -0400
+Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 402A5C061761;
+        Fri,  9 Apr 2021 10:36:30 -0700 (PDT)
+Received: by mail-qv1-xf32.google.com with SMTP id j3so3060483qvs.1;
+        Fri, 09 Apr 2021 10:36:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Ykf0tN0fWsKekEr13nX5aHTUFQwxAERXijWEaE3zFI4=;
-        b=J6nBuEDwyCmL5qm1axZCHQCds7sgBxerm5CHGcBTHAD6EgEopdHJRprsxdzmy+DDbI
-         UH8GQs5X+I8ITbPYaB7KFFcbZTD5xrQ06a42MBGwDKYCGCYOLcMqyubaUr5Y7r7iH0KL
-         97jLe+v3bb3J1FkmhfYGyNMZLxQNgY6+KSq18mXy6XMEP6KhtWIIB+3lj+rTl31EGd7L
-         9V4Hdz2aK9R0uBieFpp3lWqROkwDdrnYxOmpcwoUxbOVp60gv4+yITHHuntqW/TCwGUR
-         OZM4bj7FjhAyu8opsaWmTocQ9STSO2KZOwPgOux8ggJmoLjDpTV1r78/hWPxynkloT07
-         sm1g==
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=iaFkKzWMamTzdA9WJNo3nuUtl8TLuaeVqvjAOEZQMfY=;
+        b=idsyB02cFc5uHVLFZz/dNjbR3BcMiU/iIUqaPb7PstrPwbVW+QI77u9DF8T0syEnpf
+         2V/sl/8UYJHTTXMRYvr39I7Z57DefYfLSeVcOUI6qAXT8gEfuiyVAIGvLZ5MGX+oJCvo
+         a5NVRRM1OJWfDltXbCzN53Es2d7mvlSMKfYWaIx9A/Os0VqxcChfMBpZ4y2pgsXfOduF
+         hEEwLEfh2hElGoXmsAFBdyteM5/rMuTXs8FMzS8ZphTHu9mhKNQWKZjwGM/RlPuHY28t
+         FpSXE/e1PSULso1Z1TxZzfxdpZhcmpaEsh0DgN/gZNLrBqEY/Mi4GGHiMxUyTfoiZHVo
+         5jGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ykf0tN0fWsKekEr13nX5aHTUFQwxAERXijWEaE3zFI4=;
-        b=deylQIX2Ur2/pktUMt5LCK463oZz+FngPIGMgr3RWLIzi+SFiCTb7C/B4O1hqkcFFA
-         UB3J/HJnyMQop9h0onoN63Y/XjnXLcTEhxttcKM+q0o+DvJCXS86mTzVpaPSZgh9LgZC
-         Zr6FLQGlHBH4kTovmFlYlGmKI9jAcyqwRSydiI994s295WYsbu9MVtkQ/5h5JMHD6VyS
-         L6kFU5x0EWdFHKA9Buds40BhLh/mq3rnNrbQHt0gjnZyjOV9angZO+crbMPMrV1fMZ/E
-         jgDDzqlpvdQLZJPQTiuq24Rnbz357d4UJ+JXmTDaNrAkA/O+RuRk3R2JpFGbK/hKAuRe
-         +//w==
-X-Gm-Message-State: AOAM531DUQGBBQSUTwXf4b9eWVsE782mYz6P02fhvbrxfnsdhXCHW7OT
-        w6Jli1C4rqjB7PNyuggXYaU=
-X-Google-Smtp-Source: ABdhPJz+gqjEQDOUKJ/CuBIonQGc0M8HQ/gKNUJl1WFcOCYIsvCEay+nUk0EF3JhTe72LXihwM1ttQ==
-X-Received: by 2002:a17:902:9304:b029:e6:8d24:b5ce with SMTP id bc4-20020a1709029304b02900e68d24b5cemr13617759plb.27.1617989676222;
-        Fri, 09 Apr 2021 10:34:36 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id b1sm3486646pgf.84.2021.04.09.10.34.35
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=iaFkKzWMamTzdA9WJNo3nuUtl8TLuaeVqvjAOEZQMfY=;
+        b=MXLgUdspBrAoePdgbJrWJYzsWOX7UuyD3yDqlFgZpMrsI79celBnnpKkM87WbEvBMI
+         q7aHKNnSlnoaW9InNCQCrwDgzGUnRGk+kXNaaxsTjpcXlU4VGXKfu1SYReABqTZSEWB5
+         zHfuclM7c/3TFA977Wxd6uXzrV5esJGrv2v2mdp9fMGJtbcqUY3k1gLabdDVMj/j2vEL
+         swXBSFqL8Zum1L7meKpDOQSq+VgsWQuQl9wYyWOCtXOsOiIiUyuP9biV90xdmqTXo45s
+         0mXIVvZBdTq3OaenwUbZMkEeug78qiF4EEDjGjsiai7+Mnei1RPNiXWq4wbieeNzzwXB
+         df+g==
+X-Gm-Message-State: AOAM530vpr2zI6WXVvThxmmpCYpoDzDZNbEyfc7BgaDPMzRXcwPVv62i
+        yP9GTrmM6CxKNjaF/koIt9k=
+X-Google-Smtp-Source: ABdhPJwR4sJ9wsj0+ipygYICMcMViHTwd5+mt6N3j49V1XJ0VCxQKwKPOaPGU93iRa8qsw/WXkHyHQ==
+X-Received: by 2002:a05:6214:1081:: with SMTP id o1mr14885607qvr.11.1617989789596;
+        Fri, 09 Apr 2021 10:36:29 -0700 (PDT)
+Received: from [192.168.100.7] ([177.220.174.147])
+        by smtp.gmail.com with ESMTPSA id n15sm2092540qkk.109.2021.04.09.10.36.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 10:34:35 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     bcm-kernel-feedback-list@broadcom.com,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     phil@raspberrypi.com, stefan.wahren@i2se.com
-Subject: Re: [PATCH] MAINTAINERS: Update BCM2711/BCM2335 maintainer's mail
-Date:   Fri,  9 Apr 2021 10:34:34 -0700
-Message-Id: <20210409173434.3036128-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210409104448.12259-1-nsaenz@kernel.org>
-References: <20210409104448.12259-1-nsaenz@kernel.org>
+        Fri, 09 Apr 2021 10:36:29 -0700 (PDT)
+Message-ID: <34466470c14123542af3b8e0ced80425ea3afec8.camel@gmail.com>
+Subject: Re: [Outreachy kernel][PATCH] staging: media: hantro: Rewrite macro
+ function in lower case
+From:   ascordeiro <alinesantanacordeiro@gmail.com>
+To:     Ezequiel Garcia <ezequiel@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Date:   Fri, 09 Apr 2021 14:36:25 -0300
+In-Reply-To: <88e48e7bb5679b913e3f223d29b566ce8c18e9c3.camel@collabora.com>
+References: <20210409135404.GA26172@focaruja>
+         <9c09806cce4c7e5c5f0dc03e8c502cf29716f00f.camel@collabora.com>
+         <138794d79c42510d9b6ae744df20216904773032.camel@gmail.com>
+         <88e48e7bb5679b913e3f223d29b566ce8c18e9c3.camel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 (by Flathub.org) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri,  9 Apr 2021 12:44:47 +0200, Nicolas Saenz Julienne <nsaenz@kernel.org> wrote:
-> The @kernel.org e-mail address is likely to last longer than the current
-> one, so use it.
+Em sex, 2021-04-09 às 14:15 -0300, Ezequiel Garcia escreveu:
+> On Fri, 2021-04-09 at 14:00 -0300, ascordeiro wrote:
+> > Em sex, 2021-04-09 às 13:44 -0300, Ezequiel Garcia escreveu:
+> > > Hi Aline,
+> > 
+> > Hi Ezequiel,
+> > > 
+> > > On Fri, 2021-04-09 at 10:54 -0300, Aline Santana Cordeiro wrote:
+> > > > Rewrite macros resembling functions #define HANTRO_PP_REG_WRITE
+> > > > and #define HANTRO_PP_RED_WRITE_S in lower case, according with
+> > > > code style.
+> > > > 
+> > > 
+> > > Where is this written in the Coding Style?
+> > 
+> > I found this in section 12, about Macros, Enums and RTL in both
+> > references:
+> > https://www.kernel.org/doc/html/latest/process/coding-style.html
+> > https://elixir.bootlin.com/linux/latest/source/Documentation/process/coding-style.rst
 > 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenz@kernel.org>
-> ---
+> It seems this
+> 
+> """
+> CAPITALIZED macro names are appreciated but macros resembling
+> functions may be named in lower case.
+> """
+> 
+> It's just a suggestion, not a big deal. In general, if checkpatch.pl
+> is not complaining, it's not worth the trouble.
+> 
+> So let's skip this fix.
+Okay! I'm going to check different problems with the checkpatch.pl
+> 
+> Thanks a lot!
+> Ezequiel
+> 
+Thank you!
+Aline
 
-Applied to maintainers/next, thanks!
---
-Florian
