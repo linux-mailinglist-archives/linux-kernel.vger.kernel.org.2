@@ -2,107 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCE9359433
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C08935943B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhDIExq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 00:53:46 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16425 "EHLO
+        id S229987AbhDIE5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 00:57:50 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:16426 "EHLO
         szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbhDIExo (ORCPT
+        with ESMTP id S229526AbhDIE5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 00:53:44 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FGm1p336wzlWqH;
-        Fri,  9 Apr 2021 12:51:42 +0800 (CST)
-Received: from huawei.com (10.175.103.91) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 12:53:25 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>
-CC:     <agross@kernel.org>, <bjorn.andersson@linaro.org>,
-        <daniel.lezcano@linaro.org>
-Subject: [PATCH -next] clocksource/drivers/qcom: add missing iounmap() on error in msm_dt_timer_init()
-Date:   Fri, 9 Apr 2021 12:56:57 +0800
-Message-ID: <20210409045657.666888-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 9 Apr 2021 00:57:44 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FGm6Q0PZ2zlWqH;
+        Fri,  9 Apr 2021 12:55:42 +0800 (CST)
+Received: from ubuntu1804.huawei.com (10.67.174.98) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 9 Apr 2021 12:57:23 +0800
+From:   Pu Lehui <pulehui@huawei.com>
+To:     <gregkh@linuxfoundation.org>, <fabioaiuto83@gmail.com>,
+        <ross.schm.dev@gmail.com>, <marcocesati@gmail.com>
+CC:     <linux-staging@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <pulehui@huawei.com>
+Subject: [PATCH -next] staging: rtl8723bs: remove unused variable pwrctl
+Date:   Fri, 9 Apr 2021 12:57:28 +0800
+Message-ID: <20210409045728.125852-1-pulehui@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
+Content-Type: text/plain
+X-Originating-IP: [10.67.174.98]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-base and cpu0_base are not unmapped on error path, add the missing
-iounmap() before return msm_dt_timer_init() in the error handling
-cases.
+GCC reports the following warning with W=1:
 
-Fixes: 6e3321631ac2 ("ARM: msm: Add DT support to msm_timer")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c:532:23: warning:
+ variable 'pwrctl' set but not used [-Wunused-but-set-variable]
+   532 |  struct pwrctrl_priv *pwrctl;
+       |                       ^~~~~~
+
+This variable is not used so remove it to fix the warning.
+
+Signed-off-by: Pu Lehui <pulehui@huawei.com>
 ---
- drivers/clocksource/timer-qcom.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/clocksource/timer-qcom.c b/drivers/clocksource/timer-qcom.c
-index b4afe3a67583..3488876198e0 100644
---- a/drivers/clocksource/timer-qcom.c
-+++ b/drivers/clocksource/timer-qcom.c
-@@ -213,7 +213,8 @@ static int __init msm_dt_timer_init(struct device_node *np)
- 	irq = irq_of_parse_and_map(np, 1);
- 	if (irq <= 0) {
- 		pr_err("Can't get irq\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_unmap_base;
- 	}
+diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c b/drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c
+index f2ab878babcb..f8c6028f89f3 100644
+--- a/drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c
++++ b/drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c
+@@ -529,7 +529,6 @@ static void rtl8723b_set_FwRsvdPagePkt(
+ 	struct xmit_priv *pxmitpriv;
+ 	struct mlme_ext_priv *pmlmeext;
+ 	struct mlme_ext_info *pmlmeinfo;
+-	struct pwrctrl_priv *pwrctl;
+ 	struct mlme_priv *pmlmepriv = &padapter->mlmepriv;
+ 	u32 BeaconLength = 0, PSPollLength = 0;
+ 	u32 NullDataLength = 0, QosNullLength = 0, BTQosNullLength = 0;
+@@ -544,7 +543,6 @@ static void rtl8723b_set_FwRsvdPagePkt(
+ 	pxmitpriv = &padapter->xmitpriv;
+ 	pmlmeext = &padapter->mlmeextpriv;
+ 	pmlmeinfo = &pmlmeext->mlmext_info;
+-	pwrctl = adapter_to_pwrctl(padapter);
  
- 	/* We use CPU0's DGT for the clocksource */
-@@ -223,18 +224,19 @@ static int __init msm_dt_timer_init(struct device_node *np)
- 	ret = of_address_to_resource(np, 0, &res);
- 	if (ret) {
- 		pr_err("Failed to parse DGT resource\n");
--		return ret;
-+		goto err_unmap_base;
- 	}
- 
- 	cpu0_base = ioremap(res.start + percpu_offset, resource_size(&res));
- 	if (!cpu0_base) {
- 		pr_err("Failed to map source base\n");
--		return -EINVAL;
-+		goto err_unmap_base;
- 	}
- 
- 	if (of_property_read_u32(np, "clock-frequency", &freq)) {
- 		pr_err("Unknown frequency\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err_unmap_cpu0_base;
- 	}
- 
- 	event_base = base + 0x4;
-@@ -243,7 +245,18 @@ static int __init msm_dt_timer_init(struct device_node *np)
- 	freq /= 4;
- 	writel_relaxed(DGT_CLK_CTL_DIV_4, source_base + DGT_CLK_CTL);
- 
--	return msm_timer_init(freq, 32, irq, !!percpu_offset);
-+	ret = msm_timer_init(freq, 32, irq, !!percpu_offset);
-+	if (ret)
-+		goto err_unmap_cpu0_base;
-+
-+	return 0;
-+
-+err_unmap_cpu0_base:
-+	iounmap(cpu0_base);
-+err_unmap_base:
-+	iounmap(base);
-+
-+	return ret;
- }
- TIMER_OF_DECLARE(kpss_timer, "qcom,kpss-timer", msm_dt_timer_init);
- TIMER_OF_DECLARE(scss_timer, "qcom,scss-timer", msm_dt_timer_init);
+ 	RsvdPageNum = BCNQ_PAGE_NUM_8723B + WOWLAN_PAGE_NUM_8723B;
+ 	MaxRsvdPageBufSize = RsvdPageNum*PageSize;
 -- 
-2.25.1
+2.17.1
 
