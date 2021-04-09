@@ -2,210 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A004359505
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7A23594F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233301AbhDIFx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:53:56 -0400
-Received: from esa16.fujitsucc.c3s2.iphmx.com ([216.71.158.33]:29525 "EHLO
-        esa16.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229840AbhDIFxz (ORCPT
+        id S233049AbhDIFsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:48:08 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63582 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229613AbhDIFsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:53:55 -0400
-X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 01:53:54 EDT
-IronPort-SDR: WJMjrz4/1Dp1ReRR6t1FzyYM5BGXSOqQrrtCxXZDgC6J30xAy0C9/BQ1Cnnxgdhx/LJLNKV+kk
- uWLKSk0bzdhiDzvLf+/tSPk6dOX68YS7cnh+bxdETk5iDzik3JAMix5jp5AKum8ZLe6hWvIFVA
- 1myq11xrZ0747Efks3au5klWfEifmt+RlY8GxgkK2OPJI8pHy388zdkqR/YwcfPz5HrASqMXe2
- jglWLRV0oM07yxVjVVvSPhOAfKjNQDajharlo/VJC9T8oDemTXUAK9ZhFGddrG08Np9zSVghTu
- yuk=
-X-IronPort-AV: E=McAfee;i="6000,8403,9948"; a="29335514"
-X-IronPort-AV: E=Sophos;i="5.82,208,1613401200"; 
-   d="scan'208";a="29335514"
-Received: from mail-ty1jpn01lp2050.outbound.protection.outlook.com (HELO JPN01-TY1-obe.outbound.protection.outlook.com) ([104.47.93.50])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 14:46:32 +0900
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TyuIlWhxS/V3WitfkhD9jaHBKtE4oAapbiFEPxZb7OY//68kzeizWjL3ivS+dL52p9A/k+H2JrXOxb0/zyEsrv3adyMnTCMZ8lUzg7v1zgbrbokSbdsa4f7d2gkVmSHpQLVGeBzaePQ3W17OsJpx6mhOsmS2HfDZ38JcFwDJg3aecCWPOwulUp+hxECRwT7FCBXNLCdiOC/+UznIs+EicB2J1a0rVmOYhyutTsYLnfM8DGwv3NzVZ3k4y5OeRmulEtsNFXFHPvi0wO/9d6zl6amydXLbbFTngkcn/288iVbSUPk0F98aixHhAl2OWOHQid4pdZAUdUe53hGVaERDDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZQYafnE16lFJcFCTU+AvV2L1pZYr6iITTWbnoGnVNXY=;
- b=Xy/PrdrPAzFNGE5HAKPzEnP/IM0u2uwk7tHpteWPV3TIC3rkYICaa04f4ZjAu4orEZHzOrGPXifc9/mX9BnyvmrV8KlOEdMRFtuz7rfxutI0liiRxMVpKsAiBg4ISwxJa+SfeZgx9tQBQnMKUfY9auxIfiHAz4HF3vrMZ8ipKhaN84558ln/16mx4wzwOAW2oHjA19rn07PGKeS//pVqGVw3UE8i8dwrvcYFPYAJ+XBaeS1z1oQ5qzr4xXlT12CH2mMSjSD3U0yidHRcH8ahie5zzmQKnrFNRhTsiTOysr6htzqbqDCN5UruEUCrXhryx/qXSabOv4h/ICYrh5fU/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZQYafnE16lFJcFCTU+AvV2L1pZYr6iITTWbnoGnVNXY=;
- b=Ar/LNk3wMTbeZQ2865dH32OSwncKEm+Emy1COD6ht4O4BqtnrQFbt9//PeC95RVj4MGqiJe0DrYA0xOwd3ZMg7jOPCi1U2OJVZfk3iDA4omLhu/2hBPceZUSsNkiXIjq9IJi8GYsTcXnwtQNoOZFa5D1UYvSR8FXuvUqCUG2Um0=
-Received: from OSAPR01MB2146.jpnprd01.prod.outlook.com (2603:1096:603:15::15)
- by OS3PR01MB6150.jpnprd01.prod.outlook.com (2603:1096:604:d4::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Fri, 9 Apr
- 2021 05:46:28 +0000
-Received: from OSAPR01MB2146.jpnprd01.prod.outlook.com
- ([fe80::6876:99f3:9288:691d]) by OSAPR01MB2146.jpnprd01.prod.outlook.com
- ([fe80::6876:99f3:9288:691d%6]) with mapi id 15.20.3999.034; Fri, 9 Apr 2021
- 05:46:28 +0000
-From:   "tan.shaopeng@fujitsu.com" <tan.shaopeng@fujitsu.com>
-To:     "'fenghua.yu@intel.com'" <fenghua.yu@intel.com>,
-        "'reinette.chatre@intel.com'" <reinette.chatre@intel.com>
-CC:     "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-        "'linux-arm-kernel@lists.infradead.org'" 
-        <linux-arm-kernel@lists.infradead.org>,
-        'James Morse' <james.morse@arm.com>,
-        "misono.tomohiro@fujitsu.com" <misono.tomohiro@fujitsu.com>
-Subject: About add an A64FX cache control function into resctrl
-Thread-Topic: About add an A64FX cache control function into resctrl
-Thread-Index: AdctARUohIvM7pb1S52qTlM+pjp6RA==
-Date:   Fri, 9 Apr 2021 05:46:28 +0000
-Message-ID: <OSAPR01MB214600C7923AEF7C35B02E648B739@OSAPR01MB2146.jpnprd01.prod.outlook.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=fujitsu.com;
-x-originating-ip: [210.162.30.51]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 1fcf883b-389b-4019-80eb-08d8fb1ad239
-x-ms-traffictypediagnostic: OS3PR01MB6150:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <OS3PR01MB615037E8C2AFB7633861FB728B739@OS3PR01MB6150.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: dag8asAfFM9AZgpElUPTJzTVfhfNxAMTJMTvZUdpD6uB/YPn5phKA1wMaj5tmjIBA4j2Nq3vBgpAplE7f9PtjuxJ+OxMYuYRug0wJd4VYo1oqQcWH/SDpWNIDamh4W4kKPfYYmn/r8YyvM7FnhAWTl46QJfoM+boSOgct2SQYyQTGOrxHu748lN2fzFdiucdkBOsG58X7K1qwVxNIjKKrGcChtc+pXYq9PTbcHyA9Pbh3fFSD7c7SwLuKb8ygngbj8XZynxUmGYTGZF+l33f5aDYtNQsKmWY8RdlhgEkQ9m21t2hTHBN8JVEtcRtv2Ra9wNCxMoFFO8rCSAwROI1oVoZLyFcdTbArWQZGwOdOiOi9ZNcAiqYkQXVGFZ1+X1Dc0WnAxsdwmmID6z35rSmeaEInS8gSUWRrhlfZdklIhZpiUWs2TiwgFMPb+oH1TjYKFm4xQ9ltNNS/Jjpz3GXkCvohe2lGep4L5PYZaWA/q9t/ofRg5eLI8p8AZ5os5WUdr9+4RiilKUSN7kEHwgrOWBVlujWBBmMp8hBcgRScyf5rXkk4RAlcNCnoXNosDkEZ+cQenuCBru+f6U50tSe+8Zy0dhbiCNY32s/TqpyIOMGqwkkFeTxthfFGP3KgSR1I217LJgjGz/H9FQQSusXW7oyiNtm2Mil3SPdeMc8UwfoX4J/e9ZxgkKznyW//OjT9fYROluVgKCoFqBz1Q/ShVZ3HVgAYrHurTBlogLrGhC60bdNVI1VF09kUDcJcOg5
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB2146.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(376002)(39860400002)(366004)(83380400001)(9686003)(66476007)(66446008)(64756008)(52536014)(66946007)(86362001)(54906003)(2906002)(66556008)(76116006)(33656002)(110136005)(8676002)(107886003)(4326008)(966005)(71200400001)(7696005)(85182001)(5660300002)(6506007)(316002)(478600001)(55016002)(186003)(8936002)(38100700001)(26005)(491001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?iso-2022-jp?B?QTAreHBqVlJoOXNvNjNNY1M3em10OG1zeGZ2ckxaZHNXb3RuV1Q5ZWNt?=
- =?iso-2022-jp?B?U0JDMlhGemwrbEt4ODNuRzQyWjlGUWhhTFdjMlR3aHp5TUZKRlI3MHpH?=
- =?iso-2022-jp?B?MzFnNUhtUGhBTzhUQlhWaEZSY01NckQzSVJKeHFlUlJ0cXlLa0s5amo0?=
- =?iso-2022-jp?B?Q21tVGpKUWViblZwWDc5K0FSZ1dNbkxVMU9Wa0YvMzlxNCtUdnNLRm8w?=
- =?iso-2022-jp?B?ZmF3czJwQkY1VHZLeU9wQi9iSVBNcnZRSVE2U241YVBnWTFBOXhGWGN6?=
- =?iso-2022-jp?B?QmVsREFYUTA5VEpKQUFPdnI4Ty9jL1ZFK2h5YzB3bFhabmpRMmROZEsw?=
- =?iso-2022-jp?B?cElGNnZMbnBSREk4K3JQNmJXZndjTi9rbGdsYitFNURrRlVsUFFyNmtB?=
- =?iso-2022-jp?B?ZkRsZFViNU9uT0g1YXN4L0FOTHg5MmlkRFo4cFNBbEJENllSSFlHYmwv?=
- =?iso-2022-jp?B?bDNKQmx3SWZBbjlyZXVuSWtiL3grWVdEM0pYbHA3S0xKNnFxdGF3MUM1?=
- =?iso-2022-jp?B?eEsxdC9TL0VqWVpxWnh1dTA1YWNoMVlqVG13TDk3bTl4ZmEzL0REWDZv?=
- =?iso-2022-jp?B?TDFVeGpkNUJWTXJKSDRKQ1QrM1h4cmY1V1dPRFJYWVJMZ1F4K1ZKR1RC?=
- =?iso-2022-jp?B?aUhnM3RhQW1yblcxWFdmcnA3N3hRd1RMb2lDVWd4bU1vakVPOEhJY0cr?=
- =?iso-2022-jp?B?d1M4V09BMXQvWnJzTTVjYW9WN3d1TTEwNGxkR2gzKzVLNS84ejNoS2th?=
- =?iso-2022-jp?B?U0E5Qy9uQzU3MFoxSXBpNllncnc5Tk1RUG9DVmR1a2UyeVg3dVEwKzBJ?=
- =?iso-2022-jp?B?aUsyMmllVkZ1dElGVERiQURxZlFGM1lYN0dXRXVyejc1VXNDRXFNbTBK?=
- =?iso-2022-jp?B?cFBkRm13NjVLaCs3UFNJSVJUQmlTRFFnUGp4Z2hBeUxOZzdFdFBZNzgr?=
- =?iso-2022-jp?B?VTVKYUo0T3htZXlvOWtISzhTbjJHbUZzcThybGZnalFrVTZQcEtCbGpn?=
- =?iso-2022-jp?B?Y0lJQjM0TmViUHhRV2FPZGl4aU5nd2hpSk9ubzlUY1Vvc1FmVHA2cTNp?=
- =?iso-2022-jp?B?S1ZINHNoNWM1Q3FMd1UycGhmcHh2WlJKTlVFVnpmYmZheW9oNVpDck9V?=
- =?iso-2022-jp?B?RzB1TndxelQ2NVJpc2lkVWlKalh0QWllSHpTTDdQQXRIdEs2K2VMeDZ1?=
- =?iso-2022-jp?B?RC9pQTNPeWc2N3NUQWVSUXVvUVBNc296Q3hMRUFWbDU4TjN0bnNmaHdU?=
- =?iso-2022-jp?B?YUlRTVBUUGhOQTF3VExzVlpxRUtxRGdRRzB4RExVeno0K09BUDlGQWox?=
- =?iso-2022-jp?B?L0xjc2EyelhzRFVkYzRoaGhmeFNOMkRVUW91dU4zYmluaS8xaDh6WWVV?=
- =?iso-2022-jp?B?SjlEVlF6YVlSb3U0NVNybEdleUxSWWRvaXJhY25qc2RYNXQzWUsrZWZa?=
- =?iso-2022-jp?B?RGRMRDVxaHZ0di9kcHFnYTVyZmJ3MFM0RFV0cWdiamlET3dGMSthMGtx?=
- =?iso-2022-jp?B?MFlDZ0RQbVh2dGRwOGxieG1sSUNHc1dGazlsM1BlYWVoaW5rSHlSSVpw?=
- =?iso-2022-jp?B?eUkwVTNnOEYvdXpWUlVUL1VQV3pGYnNTT01LMCt2TXJIRDVNeWNYTlZr?=
- =?iso-2022-jp?B?T2pFT1RydzYwZCtEdC8xRUxVRko0NTVPZ0NmTWZ1aktSb0FTRE91cVdl?=
- =?iso-2022-jp?B?OWlxNzNJbTJNVmV2WjR3WVd5amlIYkFuaGZqYnpwMTJTbzYzNm5uQXFO?=
- =?iso-2022-jp?B?d0xWQjYvOTR4OUFRcUg0ODR5Z2lBakRTRjF5ZEZRdTAyU0lNRm9VeTJp?=
- =?iso-2022-jp?B?cHNWWm5zK0JsVTlqVEl6QmF3MnAxcE5xU1k2RHhxUGFzOHIwV1J1Y01K?=
- =?iso-2022-jp?B?dElhMXRldDZUbFd4dGdGSFRmalozVG9UODJIY2tXME9od2xWQjZTYnBI?=
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 9 Apr 2021 01:48:02 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1395XYKP061441;
+        Fri, 9 Apr 2021 01:47:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=m8k8JqU5GcKtPlR1dzQ/5tJECYdaRdUSpLxKkpfx3DM=;
+ b=hih5TJKgovOSRJVJRzvJmiDTANlR8zQTiAAVe5R14xXKtcnOMc1G/kAxm/kWxLIiytO8
+ uUNatpG5v0GavpKYmFEkPN6qWji5m6At3JshzDCh1Y4YFUP/8/seHm59f4r79e9y8rhV
+ PrUzmj4TOzfTKEstWj2vOUpn32fITxtNZIiTf/jExojh+rBKTgLgkHXClwCMRcIGrxt8
+ 177AIb7Zy2UciaI9rxoWnJKYS6lsEs4W0wzHOyq6zR0+buz0lm1AqwQ6CY94qKpSk4cW
+ 2ml+KULI1a2jxflGKmnH4dL2JRK24VsH6uOQn3EQtqDPsDnu+BNcohXBuzfBsnjuG8C+ xg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37rwf2431m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 01:47:39 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1395ldt1105098;
+        Fri, 9 Apr 2021 01:47:39 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 37rwf24319-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 01:47:39 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 1395lbWl013460;
+        Fri, 9 Apr 2021 05:47:37 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma06ams.nl.ibm.com with ESMTP id 37rvbwa66q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 05:47:37 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1395lZ9a38207772
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 9 Apr 2021 05:47:35 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E64EA42042;
+        Fri,  9 Apr 2021 05:47:34 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 855584203F;
+        Fri,  9 Apr 2021 05:47:34 +0000 (GMT)
+Received: from localhost (unknown [9.85.70.102])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  9 Apr 2021 05:47:34 +0000 (GMT)
+Date:   Fri, 9 Apr 2021 11:17:33 +0530
+From:   riteshh <riteshh@linux.ibm.com>
+To:     Wen Yang <wenyang@linux.alibaba.com>
+Cc:     adilger@dilger.ca, tytso@mit.edu, linux-ext4@vger.kernel.org,
+        jack@suse.cz, linux-kernel@vger.kernel.org,
+        baoyou.xie@alibaba-inc.com
+Subject: Re: [PATCH] ext4: add a configurable parameter to prevent endless
+ loop in ext4_mb_discard_group_p
+Message-ID: <20210409054733.avv3ofqpka4m6xe5@riteshh-domain>
+References: <f16d7afa-3799-f523-3c19-9ceb9427ff6e@linux.alibaba.com>
 MIME-Version: 1.0
-X-OriginatorOrg: fujitsu.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB2146.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1fcf883b-389b-4019-80eb-08d8fb1ad239
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 05:46:28.6691
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GdVT5/sSOGjm+63lmvxrz9wNLoudjmUgcRzbfF9uUSOMH+u84c/ki15gJ/egeSgW/JtDddCkBYtMdQF4mwwJjmLYFdATo9bp3lE1JpJDuDg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB6150
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f16d7afa-3799-f523-3c19-9ceb9427ff6e@linux.alibaba.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Y6sTmaWE4PXyMNh8R1A4LaGiUiMZdRqa
+X-Proofpoint-ORIG-GUID: J59IlW6J9eVYVfe5xDi8men53wquNAI3
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-09_03:2021-04-08,2021-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 bulkscore=0
+ malwarescore=0 impostorscore=0 phishscore=0 suspectscore=0
+ lowpriorityscore=0 priorityscore=1501 mlxlogscore=999 mlxscore=0
+ spamscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104090041
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On 21/04/09 02:50AM, Wen Yang wrote:
+> > On Apr 7, 2021, at 5:16 AM, riteshh <riteshh@linux.ibm.com> wrote:
+> >>
+> >> On 21/04/07 03:01PM, Wen Yang wrote:
+> >>> From: Wen Yang <simon.wy@alibaba-inc.com>
+> >>>
+> >>> The kworker has occupied 100% of the CPU for several days:
+> >>> PID USER  PR  NI VIRT RES SHR S  %CPU  %MEM TIME+  COMMAND
+> >>> 68086 root 20 0  0    0   0   R  100.0 0.0  9718:18 kworker/u64:11
+> >>>
+> >>> And the stack obtained through sysrq is as follows:
+> >>> [20613144.850426] task: ffff8800b5e08000 task.stack: ffffc9001342c000
+> >>> [20613144.850438] Call Trace:
+> >>> [20613144.850439] [<ffffffffa0244209>]ext4_mb_new_blocks+0x429/0x550
+> [ext4]
+> >>> [20613144.850439]  [<ffffffffa02389ae>] ext4_ext_map_blocks+0xb5e/0xf30
+> [ext4]
+> >>> [20613144.850441]  [<ffffffffa0204b52>] ext4_map_blocks+0x172/0x620
+> [ext4]
+> >>> [20613144.850442]  [<ffffffffa0208675>] ext4_writepages+0x7e5/0xf00
+> [ext4]
+> >>> [20613144.850443]  [<ffffffff811c487e>] do_writepages+0x1e/0x30
+> >>> [20613144.850444]  [<ffffffff81280265>]
+> __writeback_single_inode+0x45/0x320
+> >>> [20613144.850444]  [<ffffffff81280ab2>] writeback_sb_inodes+0x272/0x600
+> >>> [20613144.850445]  [<ffffffff81280ed2>] __writeback_inodes_wb+0x92/0xc0
+> >>> [20613144.850445]  [<ffffffff81281238>] wb_writeback+0x268/0x300
+> >>> [20613144.850446]  [<ffffffff812819f4>] wb_workfn+0xb4/0x380
+> >>> [20613144.850447]  [<ffffffff810a5dc9>] process_one_work+0x189/0x420
+> >>> [20613144.850447]  [<ffffffff810a60ae>] worker_thread+0x4e/0x4b0
+> >>>
+> >>> The cpu resources of the cloud server are precious, and the server
+> >>> cannot be restarted after running for a long time, so a configuration
+> >>> parameter is added to prevent this endless loop.
+> >>
+> >> Strange, if there is a endless loop here. Then I would definitely see
+> >> if there is any accounting problem in pa->pa_count. Otherwise busy=1
+> >> should not be set everytime. ext4_mb_show_pa() function may help debug
+> this.
+> >>
+> >> If yes, then that means there always exists either a file preallocation
+> >> or a group preallocation. Maybe it is possible, in some use case.
+> >> Others may know of such use case, if any.
+>
+> > If this code is broken, then it doesn't make sense to me that we would
+> > leave it in the "run forever" state after the patch, and require a sysfs
+> > tunable to be set to have a properly working system?
+>
+> > Is there anything particularly strange about the workload/system that
+> > might cause this?  Filesystem is very full, memory is very low, etc?
+>
+> Hi Ritesh and Andreas,
+>
+> Thank you for your reply. Since there is still a faulty machine, we have
+> analyzed it again and found it is indeed a very special case:
+>
+>
+> crash> struct ext4_group_info ffff8813bb5f72d0
+> struct ext4_group_info {
+>   bb_state = 0,
+>   bb_free_root = {
+>     rb_node = 0x0
+>   },
+>   bb_first_free = 1681,
+>   bb_free = 0,
+
+Not related to this issue, but above two variables values doesn't looks
+consistent.
+
+>   bb_fragments = 0,
+>   bb_largest_free_order = -1,
+>   bb_prealloc_list = {
+>     next = 0xffff880268291d78,
+>     prev = 0xffff880268291d78     ---> *** The list is empty
+>   },
+
+Ok. So when you collected the dump this list was empty.
+
+>   alloc_sem = {
+>     count = {
+>       counter = 0
+>     },
+>     wait_list = {
+>       next = 0xffff8813bb5f7308,
+>       prev = 0xffff8813bb5f7308
+>     },
+>     wait_lock = {
+>       raw_lock = {
+>         {
+>           val = {
+>             counter = 0
+>           },
+>           {
+>             locked = 0 '\000',
+>             pending = 0 '\000'
+>           },
+>           {
+>             locked_pending = 0,
+>             tail = 0
+>           }
+>         }
+>       }
+>     },
+>     osq = {
+>       tail = {
+>         counter = 0
+>       }
+>     },
+>     owner = 0x0
+>   },
+>   bb_counters = 0xffff8813bb5f7328
+> }
+> crash>
+>
+>
+> crash> list 0xffff880268291d78  -l ext4_prealloc_space.pa_group_list -s
+
+No point of doing this I guess, since the list anyway is empty.
+What you may be seeing below is some garbage data.
+
+> ext4_prealloc_space.pa_count
+> ffff880268291d78
+>   pa_count = {
+>     counter = 1      ---> ****pa->pa_count
+>   }
+> ffff8813bb5f72f0
+>   pa_count = {
+>     counter = -30701
+>   }
+
+I guess, since list is empty and you are seeing garbage hence counter value
+of above node looks weird.
+
+>
+>
+> crash> struct -xo  ext4_prealloc_space
+> struct ext4_prealloc_space {
+>    [0x0] struct list_head pa_inode_list;
+>   [0x10] struct list_head pa_group_list;
+>          union {
+>              struct list_head pa_tmp_list;
+>              struct callback_head pa_rcu;
+>   [0x20] } u;
+>   [0x30] spinlock_t pa_lock;
+>   [0x34] atomic_t pa_count;
+>   [0x38] unsigned int pa_deleted;
+>   [0x40] ext4_fsblk_t pa_pstart;
+>   [0x48] ext4_lblk_t pa_lstart;
+>   [0x4c] ext4_grpblk_t pa_len;
+>   [0x50] ext4_grpblk_t pa_free;
+>   [0x54] unsigned short pa_type;
+>   [0x58] spinlock_t *pa_obj_lock;
+>   [0x60] struct inode *pa_inode;
+> }
+> SIZE: 0x68
+>
+>
+> crash> rd 0xffff880268291d68 20
+> ffff880268291d68:  ffff881822f8a4c8 ffff881822f8a4c8   ..."......."....
+> ffff880268291d78:  ffff8813bb5f72f0 ffff8813bb5f72f0   .r_......r_.....
+> ffff880268291d88:  0000000000001000 ffff880db2371000   ..........7.....
+> ffff880268291d98:  0000000100000001 0000000000000000   ................
+> ffff880268291da8:  0000000000029c39 0000001700000c41   9.......A.......
+> ffff880268291db8:  ffff000000000016 ffff881822f8a4d8   ..........."....
+> ffff880268291dc8:  ffff881822f8a268 ffff880268291af8   h.."......)h....
+> ffff880268291dd8:  ffff880268291dd0 ffffea00069a07c0   ..)h............
+> ffff880268291de8:  00000000004d5bb7 0000000000001000   .[M.............
+> ffff880268291df8:  ffff8801a681f000 0000000000000000   ................
+
+I am not sure what was intention behind above data.
+
+>
+>
+>
+> Before "goto repeat", it is necessary to check whether grp->bb_prealloc_list
+> is empty.
+> This patch may fix it.
+> Please kindly give us your comments and suggestions.
+> Thanks.
+>
+>
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 99bf091..8082e2d 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -4290,7 +4290,7 @@ static void ext4_mb_new_preallocation(struct
+> ext4_allocation_context *ac)
+>         free_total += free;
+>
+>         /* if we still need more blocks and some PAs were used, try again */
+> -       if (free_total < needed && busy) {
+> +       if (free_total < needed && busy &&
+> !list_empty(&grp->bb_prealloc_list)) {
+>                 ext4_unlock_group(sb, group);
+>                 cond_resched();
+>                 busy = 0;
+>
+>
+
+Not really. Since we anyway check busy variable too. Which is only set when the
+bb_prealloc_list is actually not empty and have some busy pa's in it.
+
+What may explain this scenario is.
+1. That this writeback thread which is trying to write the dirty data, tries to
+   free up some blocks but since the free_total < needed and busy == 1,
+   -> so it released the group lock (ext4_unlock_group()) and make busy = 0.
+   -> at this point there could be something running in parallel which may take
+   the group lock and allocate those PAs which were released by this process.
+
+2. writeback thread again comes and tries to check if the bb_prealloc_list is
+   empty and it is not since some other thread again allocated something which
+   this guys freed for itself.
 
 
-I'm Tan Shaopeng from Fujitsu Limited.=20
+Tell me -
+1. How low was free space when you hit this issue.
+2. How big was your FS? How many groups?
+3. Is there some backgroud worker constantly running who is doing some
+   allocations. Do you have a single cpu system?
+   On this as soon writeback thread release the group lock, the other process
+   gets schedule in, takes the lock and does some group preallocations from the
+   same group from which wb thread freed some blocks.
+   And so wb thread keeps looping.
+4. Is this a real workload or is it some sort of simulated tests?
 
-I=1B$B!G=1B(Bm trying to implement Fujitsu A64FX=1B$B!G=1B(Bs cache related=
- features.=20
-It is a cache partitioning function we called sector cache function=20
-that using the value of the tag that is upper 8 bits of the 64bit=20
-address and the value of the sector cache register to control virtual=20
-cache capacity of the L1D&L2 cache.=20
+Maybe if you explain your above setup/environment better, that will help in
+debugging on why this writeback thread was constantly running/enlessly-looping
+for days
 
-A few days ago, when I sent a driver that realizes this function to=20
-ARM64 kernel community, Will Deacon and Arnd Bergmann suggested=20
-an idea to add the sector cache function of A64FX into resctrl.=20
-https://lore.kernel.org/linux-arm-kernel/CAK8P3a2pFcNTw9NpRtQfYr7A5OcZ=3DAs=
-2kM0D_sbfFcGQ_J2Q+Q@mail.gmail.com/=20
-
-Based on my study, I think the sector cache function of A64FX can be=20
-added into the allocation features of resctrl after James' resctrl=20
-rework has finished. But, in order to implement this function,=20
-more interfaces for resctrl are need. The details are as follow,=20
-and could you give me some advice?=20
-
-[Sector cache function]=20
-The sector cache function split cache into multiple sectors and=20
-control them separately. It is implemented on the L1D cache and=20
-L2 cache in the A64FX processor and can be controlled individually=20
-for L1D cache and L2 cache. A64FX has no L3 cache. Each L1D cache=20
-and L2 cache has 4 sectors. Which L1D sector is used is specified=20
-by the value of [57:56] bits of address, how many ways of sector=20
-are specified by the value of register (IMP_SCCR_L1_EL0).=20
-Which L2 sector is used is specified by the value of [56] bits of=20
-address, and how many ways of sector are specified by value of register=20
-(IMP_SCCR_ASSIGN_EL1, IMP_SCCR_SET0_L2_EL1, IMP_SCCR_SET1_L2_EL1).=20
-
-For more details of sector cache function,=20
-see A64FX HPC extension specification (1.2. Sector cache) in=20
-https://github.com/fujitsu/A64FX=20
-
-[Difference between resctrl(CAT) and this sector cache function]=20
-L2/L3 CAT (Cache Allocation Technology) enables the user to specify=20
-some physical partition of cache space that an application can fill.=20
-A64FX's L1D/L2 cache has 4 sectors and 16ways. This sector function=20
-enables a user to specify number of ways each sector uses.=20
-Therefore, for CAT it is enough to specify a cache portion for=20
-each cache_id (socket). On the other hand, sector cache needs to=20
-specify cache portion of each sector for each cache_id, and following=20
-extension to resctrl interface is needed to support sector cache.=20
-
-[Idear for A64FX sector cache function control interface (schemata file det=
-ails)]=20
-L1:<cache_id0>=3D<cwbm>,<cwbm>,<cwbm>,<cwbm>;<cache_id1>=3D<cwbm>,<cwbm>,<c=
-wbm>,<cwbm>;=1B$B!D=1B(B =20
-L2:<cache_id0>=3D>=3D<cwbm>,<cwbm>,<cwbm>,<cwbm>;<cache_id1>=3D<cwbm>,<cwbm=
->,<cwbm>,<cwbm>;=1B$B!D=1B(B=20
-
-=1B$B!&=1B(BL1: Add a new interface to control the L1D cache.=20
-=1B$B!&=1B(B<cwbm>,<cwbm>,<cwbm>,<cwbm>=1B$B!'=1B(BSpecify the number of wa=
-ys for each sector.=20
-=1B$B!&=1B(Bcwbm=1B$B!'=1B(BSpecify the number of ways in each sector as a =
-bitmap (percentage),=20
-  but the bitmap does not indicate the location of the cache.=20
-* In the sector cache function, L2 sector cache way setting register is=20
-  shared among PEs (Processor Element) in shared domain. If two PEs=20
-  which share L2 cache belongs to different resource groups, one resource=20
-  group's L2 setting will affect to other resource group's L2 setting.=20
-* Since A64FX does not support MPAM, it is not necessary to consider=20
-  how to switch between MPAM and sector cache function now.=20
-
-Some questions:=20
-1.I'm still studying about RDT, could you tell me whether RDT has=20
-  the similar mechanism with sector cache function?=20
-2.In RDT, L3 cache is shared among cores in socket. If two cores which=20
-  share L3 cache belongs to different resource groups, one resource=20
-  group's L3 setting will affect to other resource group's L3 setting?=20
-3.Is this approach acceptable? could you give me some advice?=20
-
-
-Best regards=20
-Tan Shaopeng=20
+-ritesh
 
