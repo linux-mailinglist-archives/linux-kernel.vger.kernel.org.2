@@ -2,110 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2ABD35A2F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F166A35A2FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbhDIQXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234008AbhDIQW5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:22:57 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 908EDC061760;
-        Fri,  9 Apr 2021 09:22:43 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so5242471pjh.1;
-        Fri, 09 Apr 2021 09:22:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Q7xFBcWlzYhkzF0WJIFSviLducCgzZ0CokBZ31tudr8=;
-        b=QBGtFUpxtyST88wpT2VS1e6bxUVNLEU3isT8LbSz2sjUN67usjspo0zLuXLHg5ftPr
-         BxtX+hEvwiHAksy4TUZNqb/fOESLtTU7O3x9lCAQBxsUMepp8icZmyIrQYj7yUGMVRRQ
-         9bi6caEfDqwrp96z94DwqYDPHhfsu41Dv25sa3n8FpWKGaxqIVbHt8NDj64T0b5LAw49
-         GPXGLFw17N5Gu/b9Oh/hz9Dr1VpocZNDK3SScYjFEzqKhdlNrOeXrILfA1ZcgZxt4pHU
-         IFePyE7Wf0wA/SnOn8ngEBVSAeHW0aboJDYud4jOpq0ozjGNp54uJFE3MTvTqrQUbSTC
-         9aFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Q7xFBcWlzYhkzF0WJIFSviLducCgzZ0CokBZ31tudr8=;
-        b=ZmcafCvko2hgRqz80myii74H0GZnIT9B9YcmhoNEfUoByQkOrJos5arqh0o6yxpOzW
-         gxBZj+FvTN9f1/UVD7ZGb54Q71tLdlWDkgGTKjRf+nguuAHZxJ7+5spVOAPz+a8hMOPh
-         AFt31QaYwNKBm63+j8/YL3Yi++CW2pJzVPkEjPcf1rdQTqWPdV0ID+Uaf9h9m38hCIZe
-         iBCnK8OPYm1Szsi0trjpo9GwlgEDdU6JYbQpsX8rjQYFsj5FbOxnKySFTnfvu8Bpgr5R
-         QjOy141BeAc/JvRPJjFtRVlHepvXUvZ8oTcXJjW/aezAxUqH0FvU7PurufDoc1G3lWRt
-         hy7A==
-X-Gm-Message-State: AOAM532oyhYm9GBQOKUz/mSVEXj/RJ1q/SotMGPNaiuftRpuXgqd9Icm
-        VevWDuGruUT3MZJDzf7TSrFc0i3qsUnZqTsR8hs=
-X-Google-Smtp-Source: ABdhPJzHulcDtkpv4/jVHu4ZJ3AL1cpR1QPajGhCJtU749k98+sXH4kPAbU0LNRTIISGw79xEitiTU7U/Qor3y/kjxs=
-X-Received: by 2002:a17:90b:1e0a:: with SMTP id pg10mr14589038pjb.129.1617985363066;
- Fri, 09 Apr 2021 09:22:43 -0700 (PDT)
+        id S234123AbhDIQXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:23:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59734 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233864AbhDIQXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:23:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CE8C6105A;
+        Fri,  9 Apr 2021 16:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617985397;
+        bh=AtMxuAc0rwMUJsKBsJmtUeCRyl8bAabZIwT9Uehu7Bc=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=LIMfGDncmDxz4CzhaLYP43ccv+bf8F20uwitMuVe1kIpdOtT3mHlkgMqReY0G55SW
+         wRBQXDInzUSPqQkzTecUsTnlr9TTA8L+wJVasrdTGJv5+LonihTyx+p8lQ5N2Bvk+v
+         H6rFjlNsXq72HKwOylEX4lX//0JemTP0pV2Tu+iBxzJieoCR8mQiu+dg3B0//XmJqF
+         VslgB9AndrumMls3xqyZVx6FqWyOjhLiYQ23kXoX3pecDxlQSeSjwJYNiA976+Jid5
+         UHH7oceyclz7ip9K0pG8+0C0AidLFKcwwLtlvDX7y5h/Wl1kNm8/cIqFeTFt6++YtA
+         0aOL1p2WGriyQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Muhammad Usama Anjum <musamaanjum@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Tian Tao <tiantao6@hisilicon.com>,
+        "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org,
+        colin.king@canonical.com, dan.carpenter@oracle.com
+Subject: Re: [PATCH] spi: orion: set devdata properly as it is being used later
+Date:   Fri,  9 Apr 2021 17:22:39 +0100
+Message-Id: <161798356987.48466.7574385472200837460.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210408195718.GA3075166@LEGION>
+References: <20210408195718.GA3075166@LEGION>
 MIME-Version: 1.0
-References: <20210409155216.31867-1-johan@kernel.org> <20210409155216.31867-3-johan@kernel.org>
-In-Reply-To: <20210409155216.31867-3-johan@kernel.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 9 Apr 2021 19:22:26 +0300
-Message-ID: <CAHp75VdEgDuwrRPFm1BXQXQFSNZzC2qQnBG-DJt+GqLzJ+HwuA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] USB: serial: cp210x: add gpio-configuration debug printk
-To:     Johan Hovold <johan@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Pho Tran <photranvan0712@gmail.com>, Hung.Nguyen@silabs.com,
-        Tung.Pham@silabs.com, USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 6:52 PM Johan Hovold <johan@kernel.org> wrote:
->
-> Add a debug printk to dump the GPIO configuration stored in EEPROM
-> during probe.
->
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
->  drivers/usb/serial/cp210x.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
-> index ceb3a656a075..ee595d1bea0a 100644
-> --- a/drivers/usb/serial/cp210x.c
-> +++ b/drivers/usb/serial/cp210x.c
-> @@ -1543,10 +1543,16 @@ static int cp210x_gpio_init_valid_mask(struct gpio_chip *gc,
->  {
->         struct usb_serial *serial = gpiochip_get_data(gc);
->         struct cp210x_serial_private *priv = usb_get_serial_data(serial);
-> +       struct device *dev = &serial->interface->dev;
->         unsigned long altfunc_mask = priv->gpio_altfunc;
->
->         bitmap_complement(valid_mask, &altfunc_mask, ngpios);
->
-> +       if (bitmap_empty(valid_mask, ngpios))
-> +               dev_dbg(dev, "no pin configured for GPIO\n");
+On Fri, 9 Apr 2021 00:57:18 +0500, Muhammad Usama Anjum wrote:
+> If device_get_match_data returns NULL, devdata isn't being updated
+> properly. It is being used later in the function. Both devdata and
+> spi->devdata should be updated to avoid NULL pointer dereference.
 
-Shouldn't we drop the GPIO device completely in such a case?
-Bart, wouldn't it be a good idea for GPIO library to do something like
-this on driver's behalf?
+Applied to
 
-> +       else
-> +               dev_dbg(dev, "GPIO.%*pbl configured for GPIO\n", ngpios,
-> +                               valid_mask);
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-A nit-pick:
-I would change GPIO -> pin in the second message in the first occurrence.
+Thanks!
 
->         return 0;
->  }
->
-> --
-> 2.26.3
->
+[1/1] spi: orion: set devdata properly as it is being used later
+      commit: e980048263ba72dcdbbf45d59e84c02001340f75
 
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
--- 
-With Best Regards,
-Andy Shevchenko
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
