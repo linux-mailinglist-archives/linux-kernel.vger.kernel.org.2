@@ -2,46 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1432035A47F
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C592435A488
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234205AbhDIRRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:17:33 -0400
-Received: from mga11.intel.com ([192.55.52.93]:30442 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232395AbhDIRRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:17:32 -0400
-IronPort-SDR: xgTrn5iMzvWO/50mqaVNS+p6sRa1ZOUWIomRuu0CVhvraWWXfXuS/F8QcSCH9MWlkO/WbCK9GF
- 9ZidjiLkeHVw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="190607335"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="190607335"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 10:17:18 -0700
-IronPort-SDR: zIQTy+bctBXPiRuqxwpT1wrH6pJVXZokV3DAjz/I+HarzA2RDLmg86m83HkfN0zyK+DOohZ9EJ
- 9IQhhLrlsnQA==
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="422819313"
-Received: from schen9-mobl.amr.corp.intel.com ([10.209.107.191])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 10:17:18 -0700
-Subject: Re: [PATCH 2/5] swap: fix do_swap_page() race with swapoff
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, mhocko@suse.com, iamjoonsoo.kim@lge.com,
-        vbabka@suse.cz, alex.shi@linux.alibaba.com, willy@infradead.org,
-        minchan@kernel.org, richard.weiyang@gmail.com,
-        ying.huang@intel.com, hughd@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
- <20210408130820.48233-3-linmiaohe@huawei.com>
- <7684b3de-2824-9b1f-f033-d4bc14f9e195@linux.intel.com>
- <50d34b02-c155-bad7-da1f-03807ad31275@huawei.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <995a130b-f07a-4771-1fe3-477d2f3c1e8e@linux.intel.com>
-Date:   Fri, 9 Apr 2021 10:17:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S234177AbhDIRTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:19:42 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53843 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233332AbhDIRTk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 13:19:40 -0400
+Received: from mail-wr1-f69.google.com ([209.85.221.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lUun0-00088R-Qp
+        for linux-kernel@vger.kernel.org; Fri, 09 Apr 2021 17:19:26 +0000
+Received: by mail-wr1-f69.google.com with SMTP id a15so2546248wrf.19
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:19:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MF7ir3WvrSx3fVs+kwq9HlQIkfNHtZbHStyjJVEI674=;
+        b=aP8OpBuGr+Br5/cuESqaZdd6xCu7kIjAfeclDrxnl9cJ2bUFgOnWPUtXAVEkfrDjjG
+         TglDmBnt49rtflL/2hRVFs3H/ePnkD0cU2AvDYHK22Gq9QRsl3fwRzWwsPZAncTMSUus
+         W8TN0SZAcfvRW3kTnJ9Kp+h4u9r30soiQ7eOOkbijRQMDkj3mPS7su6MLsqFaizHf3wl
+         s2MLxiYzqUuc4qdYhwYgsMtQP4ImrBhJp5Trew+VNHJfGHExI8rGo/9Vq/hw0JXEkN6Q
+         1HMb1WBn0dXamZCaqYb4YxxW+Y6DUoNzw9H0EX/BJSvMdiMWc+TF+FYgTmNMJhta5z/C
+         oSrQ==
+X-Gm-Message-State: AOAM531wW95mApBdlqyhAWHUufTFbx+3RjBhkcqTeArYP/W20WBdNDAr
+        5svYEiG8UllwFg56NTQ5uT5G2cpBUercgOenSAcn4Xhtymhb44s+2E+4Ku8koLqOvPYtGMXX5PO
+        BTyR+gM0kFKis76ufrwZXC4d7izot/Fsk0qgG1TiSYA==
+X-Received: by 2002:a5d:6ad1:: with SMTP id u17mr18632733wrw.214.1617988766176;
+        Fri, 09 Apr 2021 10:19:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyoHmJCq+boBnAlfaIBVP5XJAn1stsfy3E4Yg3rVDRyUJcFf9LW6ZyaB9V9QoKKEjW3PrCWwQ==
+X-Received: by 2002:a5d:6ad1:: with SMTP id u17mr18632724wrw.214.1617988766071;
+        Fri, 09 Apr 2021 10:19:26 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id s83sm4841985wms.16.2021.04.09.10.19.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 10:19:25 -0700 (PDT)
+Subject: Re: [PATCH v2] dt-bindings: serial: samsung: include generic dtschema
+ to match bluetooth child
+To:     Rob Herring <robh@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210405172119.7484-1-krzysztof.kozlowski@canonical.com>
+ <20210409160952.GA3737690@robh.at.kernel.org>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <d4d90a42-8c18-2f5e-d77d-da006f9b108f@canonical.com>
+Date:   Fri, 9 Apr 2021 19:19:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <50d34b02-c155-bad7-da1f-03807ad31275@huawei.com>
+In-Reply-To: <20210409160952.GA3737690@robh.at.kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -49,115 +67,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/9/21 1:42 AM, Miaohe Lin wrote:
-> On 2021/4/9 5:34, Tim Chen wrote:
+On 09/04/2021 18:09, Rob Herring wrote:
+> On Mon, Apr 05, 2021 at 07:21:19PM +0200, Krzysztof Kozlowski wrote:
+>> From: Krzysztof Kozlowski <krzk@kernel.org>
 >>
+>> Include the generic serial.yaml dtschema so the child node like
+>> "bluetooh" will be properly matched:
+> 
+> typo
+> 
 >>
->> On 4/8/21 6:08 AM, Miaohe Lin wrote:
->>> When I was investigating the swap code, I found the below possible race
->>> window:
->>>
->>> CPU 1					CPU 2
->>> -----					-----
->>> do_swap_page
->>>   synchronous swap_readpage
->>>     alloc_page_vma
->>> 					swapoff
->>> 					  release swap_file, bdev, or ...
+>>   arch/arm/boot/dts/exynos4210-universal_c210.dt.yaml:
+>>     serial@13800000: 'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
 >>
-> 
-> Many thanks for quick review and reply!
-> 
->> Perhaps I'm missing something.  The release of swap_file, bdev etc
->> happens after we have cleared the SWP_VALID bit in si->flags in destroy_swap_extents
->> if I read the swapoff code correctly.
-> Agree. Let's look this more close:
-> CPU1								CPU2
-> -----								-----
-> swap_readpage
->   if (data_race(sis->flags & SWP_FS_OPS)) {
-> 								swapoff
-> 								  p->swap_file = NULL;
->     struct file *swap_file = sis->swap_file;
->     struct address_space *mapping = swap_file->f_mapping;[oops!]
-> 								  ...
-> 								  p->flags = 0;
->     ...
-> 
-> Does this make sense for you?
-
-p->swapfile = NULL happens after the 
-p->flags &= ~SWP_VALID, synchronize_rcu(), destroy_swap_extents() sequence in swapoff().
-
-So I don't think the sequence you illustrated on CPU2 is in the right order.
-That said, without get_swap_device/put_swap_device in swap_readpage, you could
-potentially blow pass synchronize_rcu() on CPU2 and causes a problem.  so I think
-the problematic race looks something like the following:
-
-
-CPU1								CPU2
------								-----
-swap_readpage
-  if (data_race(sis->flags & SWP_FS_OPS)) {
-								swapoff
-								  p->flags = &= ~SWP_VALID;
-								  ..
-								  synchronize_rcu();
-								  ..
-								  p->swap_file = NULL;
-    struct file *swap_file = sis->swap_file;
-    struct address_space *mapping = swap_file->f_mapping;[oops!]
-								  ...
-    ...
-
-By adding get_swap_device/put_swap_device, then the race is fixed.
-
-
-CPU1								CPU2
------								-----
-swap_readpage
-  get_swap_device()
-  ..
-  if (data_race(sis->flags & SWP_FS_OPS)) {
-								swapoff
-								  p->flags = &= ~SWP_VALID;
-								  ..
-    struct file *swap_file = sis->swap_file;
-    struct address_space *mapping = swap_file->f_mapping;[valid value]
-  ..
-  put_swap_device()
-								  synchronize_rcu();
-								  ..
-								  p->swap_file = NULL;
-
-
-> 
->>>
->>>       swap_readpage
->>> 	check sis->flags is ok
->>> 	  access swap_file, bdev...[oops!]
->>> 					    si->flags = 0
+>> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 >>
->> This happens after we clear the si->flags
->> 					synchronize_rcu()
->> 					release swap_file, bdev, in destroy_swap_extents()
+>> ---
 >>
->> So I think if we have get_swap_device/put_swap_device in do_swap_page,
->> it should fix the race you've pointed out here.  
->> Then synchronize_rcu() will wait till we have completed do_swap_page and
->> call put_swap_device.
+>> Changes since v1:
+>> 1. Drop the new example, as Rob suggested.
+>> ---
+>>  Documentation/devicetree/bindings/serial/samsung_uart.yaml | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> Right, get_swap_device/put_swap_device could fix this race. __But__ rcu_read_lock()
-> in get_swap_device() could disable preempt and do_swap_page() may take a really long
-> time because it involves I/O. It may not be acceptable to disable preempt for such a
-> long time. :(
+> Otherwise,
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
 
-I can see that it is not a good idea to hold rcu read lock for a long
-time over slow file I/O operation, which will be the side effect of
-introducing get/put_swap_device to swap_readpage.  So using percpu_ref
-will then be preferable for synchronization once we introduce 
-get/put_swap_device into swap_readpage.
+Thanks, I'll send with fixed typo.
 
-Tim
+Best regards,
+Krzysztof
