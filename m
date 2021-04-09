@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1954435A60C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFEC35A60D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234630AbhDISq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:46:59 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:38884 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234582AbhDISq5 (ORCPT
+        id S234669AbhDISsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:48:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234653AbhDISsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:46:57 -0400
-Received: by mail-ot1-f51.google.com with SMTP id w21-20020a9d63950000b02901ce7b8c45b4so6628637otk.5;
-        Fri, 09 Apr 2021 11:46:44 -0700 (PDT)
+        Fri, 9 Apr 2021 14:48:02 -0400
+Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3345C061763
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 11:47:43 -0700 (PDT)
+Received: by mail-il1-x12b.google.com with SMTP id t14so5538862ilu.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 11:47:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QCxgqS+GIdc01GAi2BBY4vi+QbypofN8DAcQ//bJP/A=;
+        b=eOj02iuOehaMaoynUqQfooPaxBNWHAp8bTG5A5IkhvUsfdX+T9CPj4hjEqgDJ7+WMG
+         ZWsSHEo0iBr4B+wXExLqUV+UA2y/QJlBU3JXdMEWkORJYpzQa0DRh3L9LuuGRRduwrV/
+         fu0AhAbfhSLTNybayB+jVi0xaS4FR3kgy967zTXD2G52cv1GeJvOSmy+XsVzZFqoavmw
+         KETq52CpzMokakz0kLs2S+BcpxqQmHETgOwsoIG6qknhQ8/9BZEXeq69ZYlWP6yZf/m6
+         DIksoQG14xqmX0uDRdhDpR8Uz2xKPrY6BI9P3dWwDiLsiDmz9UtQH/4PNGbLTTU1K9Mg
+         V7ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zIKUUvCQTKc9kZxOX2hfZDYJ/ChiaA0HWL0RSJ3boaw=;
-        b=mnPoqA3w0SVPkbAdPJtvdu/DCCK0ylXGBy8sIpBMccdSXhW5VJ1r+nuncHREvELpL2
-         KOzuyAEiRp7apE+wyx7nS8NFdBAluYAptAlm3CLGbuHQ7JWnTN7ia3aKY7uiAVrnHAQk
-         PzuxCHA0mm1KtkjeINyCG+v6dsRUrH5FY0vDxe/0vPthHcHvzR/QckWUKTJHuhjDhVNL
-         eLjp7BvNO0hsxl+QharUwsHoQwqiFFyJORXp0uBxYC8ASQPKA6/N30j5V7oq0soH0IVF
-         jsFZYe1Nmx9Enw1L/uX9kWksLeveumfoCG5Tj4O2lMiHNnx+/wf34qofC3bvWzUFDp8+
-         U24w==
-X-Gm-Message-State: AOAM531NMYP+aZA6YYksQn6mB7jWMCmoUjvvZ+GOYPNnt1eP51EBowvZ
-        gxp7BZI31R+NKfdfImHiJA==
-X-Google-Smtp-Source: ABdhPJw1vtPQKX2TyzYFXavxrvsJp19iipkYMN+QANMDOK/33HXQOnLjECyJVPRdzn2I/hnNkIO8XQ==
-X-Received: by 2002:a9d:39ca:: with SMTP id y68mr13420149otb.84.1617994004110;
-        Fri, 09 Apr 2021 11:46:44 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k9sm772670ots.24.2021.04.09.11.46.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:46:43 -0700 (PDT)
-Received: (nullmailer pid 3944329 invoked by uid 1000);
-        Fri, 09 Apr 2021 18:46:42 -0000
-Date:   Fri, 9 Apr 2021 13:46:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Courtney Cavin <courtney.cavin@sonymobile.com>,
-        linux-kernel@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        David Collins <collinsd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        linux-pm@vger.kernel.org, kgunda@codeaurora.org,
-        Andy Gross <agross@kernel.org>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH V2 2/4] dt-bindings: input: pm8941-pwrkey: add pmk8350
- compatible strings
-Message-ID: <20210409184642.GA3944299@robh.at.kernel.org>
-References: <1617881469-31965-1-git-send-email-skakit@codeaurora.org>
- <1617881469-31965-3-git-send-email-skakit@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QCxgqS+GIdc01GAi2BBY4vi+QbypofN8DAcQ//bJP/A=;
+        b=C9dKteyZ9HQdMs0v42pIrHTyXsQx0nB91WESdaSySY3VZddFsV37KRAlOMzZwT9R2b
+         hx5a9JMQGTV1HW01KpjUhJzuo6cxExb7MvXy05PRvctqM/SieHpXs0zklAZyB9E1GA0h
+         ktfihq0xMoUBz7W5acsw9JsA2yj+tBevvzUktfolaL3QF9XWmXCaSSCrPc8HZ16mYEue
+         cSkATfrL+WbIT/jqhvmX5NWsnTqNha3QKHiLjZuba4bi4DDe5Wn6URLx3L5DNF+sVh8G
+         B5xr7OMlm3Otxlk8aQz7Kkfb1Ubn78A4QFVMqiLR+2RzbKp3YkxPQ/LYSubulywQWmHo
+         lXfw==
+X-Gm-Message-State: AOAM531srBy83YoWSPt0tCaO5bhHvIfk2zNdwQOi2MkvsVJ4BSILJSgM
+        57KX8j1v3ijxmRWylvkzprGMKwKsCCGcbH1s5WnhPQ==
+X-Google-Smtp-Source: ABdhPJx072OlknUi2iEvkfpvMZPY78ass5Uo72enMkSesF5KKnbz78Uq6W6xvDu5uUt3uhGOseOKXC1h4RHlLASi8Xg=
+X-Received: by 2002:a05:6e02:11a9:: with SMTP id 9mr2322814ilj.288.1617994063197;
+ Fri, 09 Apr 2021 11:47:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617881469-31965-3-git-send-email-skakit@codeaurora.org>
+References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183223.80F1E291@viggo.jf.intel.com>
+ <YG7XjTG9tiK29y1j@localhost.localdomain> <CAHbLzkqoaSnuBJMAe_heQt01FuPWODYQHJ955gaJNNojwbUjrw@mail.gmail.com>
+ <YG9IthpDC/lri4Qh@localhost.localdomain> <d200de95-c6be-75fd-7302-e5368894d201@intel.com>
+In-Reply-To: <d200de95-c6be-75fd-7302-e5368894d201@intel.com>
+From:   Wei Xu <weixugc@google.com>
+Date:   Fri, 9 Apr 2021 11:47:31 -0700
+Message-ID: <CAAPL-u8W7_9scDT3vRjmfpxu9shoDA5C1VDZKKr3WD3KvLDRbQ@mail.gmail.com>
+Subject: Re: [PATCH 04/10] mm/migrate: make migrate_pages() return nr_succeeded
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Oscar Salvador <osalvador@suse.de>, Yang Shi <shy828301@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 08 Apr 2021 17:01:07 +0530, satya priya wrote:
-> From: David Collins <collinsd@codeaurora.org>
-> 
-> Add power key and resin compatible strings for the PMK8350 PMIC.
-> These are needed to distinguish key PON_HLOS register differences
-> between PMK8350 and previous PMIC PON modules.
-> 
-> Signed-off-by: David Collins <collinsd@codeaurora.org>
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
-> Chnages in V2:
->  - Moved this patch before the conversion patches.
-> 
->  Documentation/devicetree/bindings/input/qcom,pm8941-pwrkey.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+On Fri, Apr 9, 2021 at 8:50 AM Dave Hansen <dave.hansen@intel.com> wrote:
+> I also considered passing NULL to mean "I don't care about
+> nr_succeeded".  I mostly avoided it to reduce churn.  But, looking at it
+> here, it does seem cleaner.
+>
+> Any objections to moving over to Oscar's suggestion?
 
-Acked-by: Rob Herring <robh@kernel.org>
+I like this approach (making *nr_succeeded an optional argument).  No
+objection here.
