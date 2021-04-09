@@ -2,91 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC00E35A68B
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A809335A6A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:06:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234901AbhDITCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234825AbhDITCK (ORCPT
+        id S234882AbhDITFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:05:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56741 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234692AbhDITFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:02:10 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 053A8C061764
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 12:01:56 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id a4so6610492wrr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 12:01:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=TYvRNFEFPSE+z1sa0+NnEaU3aTLadE1XBWABqAHCDrA=;
-        b=GL4glA+XfI+5dwISOImLfOVy6KK+9uj1FRRoMsBevZYzhKlZpRZikRe6Vz15h6lIRi
-         AsWw6s6hUsYirZvn9j8E1Ks3iDWD8nfNNUfiQEgz+9IDxFDEc1Cz0ZON7NHl12rPuNKW
-         ITdHML6/UjWfEsx/yuBr6ms+lS/2R0wZ9BwOIFXcrcLBsV6mL8qBDovdGayG8FaV6Wf8
-         5JeSLeR6XQ2LRo3hYh99ocPD5WbM/PWG+bKMua9G2iXwl8Cvy3+vxpDDd78+ObFlVRPq
-         EAj/+etfj+QVDBb9lZEUNyDVYieq4ROlHennZ5lNUAiKASB575jd5G3Fg0OLCNEB2SwN
-         LA1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TYvRNFEFPSE+z1sa0+NnEaU3aTLadE1XBWABqAHCDrA=;
-        b=mN2PeveWgAhhJlFP12a1A41lsEwgiIN0FV/3+ohg0YTeD1kg//s1D41BlpVdfwDO5H
-         rXTmN9vkp1kq/LNyIcMkG/1pBqHd6gvYT36QNeX/EUtXXg4fI208vPd26tbdJ6HuDg15
-         iIL/ZmGeDMj0Ieztpe7xJUcHZBnivcGUAWIjej79IcYEVb3t2Hipl/WKmwtcG+F/hGn3
-         mGNg1qea0tpyGFmh4ekVFvZN43LogWI/OsGzk//imKmKE7eJFjTupasZ7kv+M+yx6o7i
-         WQTKnI7HD5E/+S/iPyT1ZAspwIl4J7yTfjGyH49PAPN7gZTZigZIkOBkACj7yL/osFRO
-         JXNg==
-X-Gm-Message-State: AOAM533uLZ44YPPmo6MQeGcB7XUyAxToVQtV1esMq/UKjcZWE22ZT+mO
-        6TVQ+rCKlLrOS7tbiLfkg8V43g==
-X-Google-Smtp-Source: ABdhPJzN4HISy8kMoayr1DePmSSMkapwFKAgfUjwl2MkrEZzrXlNlNiAKOUqbBMnV5/tRTsMJc4PGQ==
-X-Received: by 2002:adf:f405:: with SMTP id g5mr18414472wro.279.1617994914782;
-        Fri, 09 Apr 2021 12:01:54 -0700 (PDT)
-Received: from apalos.home (ppp-94-65-225-75.home.otenet.gr. [94.65.225.75])
-        by smtp.gmail.com with ESMTPSA id s8sm5745590wrn.97.2021.04.09.12.01.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 12:01:54 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 22:01:51 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        David Ahern <dsahern@gmail.com>,
-        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
-Subject: Re: [PATCH net-next v2 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YHCknwlzJHPFXm2j@apalos.home>
-References: <20210402181733.32250-1-mcroce@linux.microsoft.com>
- <20210402181733.32250-4-mcroce@linux.microsoft.com>
- <20210409115648.169523fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Fri, 9 Apr 2021 15:05:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617995139;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MD6fT2WmgURb9WkY36QJuynGDfPwVK4tcjKqqbkDs38=;
+        b=YjWRvIITd4wtpba6j20YUet2BcP5nq+eQEsNGmL0p9gXsFtRck6LO/hfyDJz13iZA4XVAg
+        53sLRa3DY901zQD5NXKDWwQ4CKEUuZCuax8np3D+wfHHQc/Qdhj/kXLAT9LgtdtACL9Z6V
+        vuFZ0ZlFfIthxlq5KG3JVWt6OqjbDSY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-0Ff2iCCONNi1oMX_ByaBPQ-1; Fri, 09 Apr 2021 15:05:35 -0400
+X-MC-Unique: 0Ff2iCCONNi1oMX_ByaBPQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0EEF6801814;
+        Fri,  9 Apr 2021 19:05:34 +0000 (UTC)
+Received: from [10.36.115.11] (ovpn-115-11.ams2.redhat.com [10.36.115.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1D2D32C01F;
+        Fri,  9 Apr 2021 19:05:26 +0000 (UTC)
+Subject: Re: [PATCH] mm/memory_hotplug: Make unpopulated zones PCP structures
+ unreachable during hot remove
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>
+References: <20210409120957.GM3697@techsingularity.net>
+ <YHBL0e8s+EesIyDl@dhcp22.suse.cz> <YHBNDEAw1OqIWwb5@dhcp22.suse.cz>
+ <20210409134221.GO3697@techsingularity.net> <YHBmxwH41WEHuVJj@dhcp22.suse.cz>
+ <20210409151259.GP3697@techsingularity.net>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <9317b74e-f706-27eb-6e5c-3dc0f3ee98b8@redhat.com>
+Date:   Fri, 9 Apr 2021 21:05:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409115648.169523fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210409151259.GP3697@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 11:56:48AM -0700, Jakub Kicinski wrote:
-> On Fri,  2 Apr 2021 20:17:31 +0200 Matteo Croce wrote:
-> > Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> > Co-developed-by: Matteo Croce <mcroce@microsoft.com>
-> > Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+>>> zone_pcp_reset still needs to exist to drain the remaining vmstats or
+>>> it'll break 5a883813845a ("memory-hotplug: fix zone stat
+>>> mismatch").
+>>
+>> Are you sure we are reseting vmstats in the hotremove. I do not see
+>> anything like that. Maybe this was needed at the time. I will double
+>> check.
 > 
-> Checkpatch says we need sign-offs from all authors.
-> Especially you since you're posting.
+> zone_pcp_reset calls drain_zonestat to apply the per-cpu vmstat deltas
+> to the atomic per-zone and global stats.
+> 
+> If anything, the minimal "fix" is to simply delete IRQ disable/enable on
+> the grounds that IRQs protect nothing and assume the existing hotplug
+> paths guarantees the PCP cannot be used after zone_pcp_enable(). That
 
-Yes it does, we forgot that.  Let me take a chance on this one. 
-The patch is changing the default skb return path and while we've done enough
-testing, I would really prefer this going in on a future -rc1 (assuming we even
-consider merging it), allowing enough time to have wider tests.
+^ that sounds sane to me
 
-Regards
-/Ilias
+> should be the case already because all the pages have been freed and
+> there is nothing to even put into the PCPs but I worried that the PCP
+> structure itself might still be reachable even if it's useless which is
+> why I freed the structure once they could not be reached via zonelists.
+> 
+
+
+-- 
+Thanks,
+
+David / dhildenb
+
