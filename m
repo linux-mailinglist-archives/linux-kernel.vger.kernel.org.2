@@ -2,87 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89709359D7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 448F9359D7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbhDILbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:31:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233532AbhDILbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:31:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 59CDA6113A;
-        Fri,  9 Apr 2021 11:31:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617967879;
-        bh=fUp0KpjNQFEeNM0zf+0A70wkSLLCHLMN8TUpFFkE/Ck=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=trVdlCtfHEy41zGKMjob9ykuUD1Qjq3pGi4wPcrTsBrFrBpoFV4awRihVWa74ZlUO
-         X8kaF5+9MazVIiXDLCW92DCjcVcZhoDXenOHyyH8bDyOy/4tZt+xBDGsJI36vTfVnp
-         dtPmATsLtylovnLwq/Qhe4BxlcaKrL+UcXG7xFxmrb1U+FMYLHlqXxug7EcXWAiPN/
-         CW3vRWtgmbSTOe2BfHgpeNOODK74yeOtJYAcLf2e7NFmxBNbK8a6Fg/rA0FkeitLoy
-         veTNJZoy0kbq0iKhae8l+lS7xLcGeHBDFkpUAvmmKlydcStoSjq5o47c4jzqFElZPA
-         X95ZXrN1eLITw==
-Date:   Fri, 9 Apr 2021 12:31:01 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 3/4] arm64: Detect FTRACE cases that make the
- stack trace unreliable
-Message-ID: <20210409113101.GA4499@sirena.org.uk>
-References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
- <20210405204313.21346-1-madvenka@linux.microsoft.com>
- <20210405204313.21346-4-madvenka@linux.microsoft.com>
- <20210408165825.GP4516@sirena.org.uk>
- <eacc6098-a15f-c07a-2730-cb16cb8e1982@linux.microsoft.com>
+        id S233628AbhDILbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:31:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhDILbn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 07:31:43 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADDBDC061760;
+        Fri,  9 Apr 2021 04:31:30 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id a11so3476728ioo.0;
+        Fri, 09 Apr 2021 04:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=4AaNtzCcNTMLVbnvD/41s53XfL4pmpuX/bq2Hn2SJ2c=;
+        b=vbG1LAP7hGQXHDBtDrRyZ9kHpnUOwcJ72/8mBIR71lDFi+4DxHwzLMQfhsYp+Eevd2
+         aD2/8t8T0Ev77cHwogUqG72r1pyjT1CuxgEU7M5QdP44g3pN+l5cksAnYXgY/0LS7WlN
+         DAKw8/h+YtyYR2x79a+vONHrhc1loX5Psrj5sUQ2WBMtcOO+WEjoc50jlZKJDHpvDJCE
+         puwkNGOOROGcJ/R3GruRrLUfVCpMN1C0ZjktA6ix3Spm/r9KMS9vywxWYZHXae6gVb6z
+         BMFmSDEniVv5fqeY/0MfPMr/1/pHrfzASzwrvPpq6/KcUiWTC0XTDytSvQUUYwV/3GeO
+         +cSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=4AaNtzCcNTMLVbnvD/41s53XfL4pmpuX/bq2Hn2SJ2c=;
+        b=M261BKbVgI5RGfpMz2ab5oAfblBb4MbtM0Mz8e9l9Ao6/OCePtjC5D9Ivzh8o9CjQx
+         FFe3aVEWTyevCmog76dhVtC/hK8I2kreo8Hc5BQT5/dwf9TNfU4fNSuEqukxCZfCxBQk
+         swOjM3g//bfxbc4w/47Gs/sEU1HOVxSxaFNGPMtHLKN4VATgP6mbFqSatKe5Dxo3Y1/U
+         dibXHKStkp/E9zkah2qMztdbFeKHy+UpqgyEFQk45O0+SX3mxtPmOm0wMhemWSJYL6mZ
+         v8FM73vDScHYU7qm8MA4zGhT9yxFVX6Qsh0OLLs846GUplZ1VSIpoiAm/27atL8kfoAG
+         JIWQ==
+X-Gm-Message-State: AOAM530uJWxSXGciqpwOWdM7ng3K7j8O9P2PaMFZ+2Qb/7KO5wQHRxQ3
+        xxcs/cGkgX1Nk1nq/JEqe9tSjNhb4FKQypcNZ/o=
+X-Google-Smtp-Source: ABdhPJzcADcBmqte+6MPur7P/QbOkys4CxXpLFoBwZrwtjWdPC72Pb6S/3M+wZllmSloRCrxd5OLXjG/+lTfwANdVPE=
+X-Received: by 2002:a05:6638:35ab:: with SMTP id v43mr13973395jal.65.1617967890055;
+ Fri, 09 Apr 2021 04:31:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
-Content-Disposition: inline
-In-Reply-To: <eacc6098-a15f-c07a-2730-cb16cb8e1982@linux.microsoft.com>
-X-Cookie: Ring around the collar.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210407160927.222092-1-lucjan.lucjanov@gmail.com> <20210409111033.2465074-1-lucjan.lucjanov@gmail.com>
+In-Reply-To: <20210409111033.2465074-1-lucjan.lucjanov@gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 9 Apr 2021 13:31:07 +0200
+Message-ID: <CA+icZUWbYd3z-+FDoXGx5UQcY4R1BuBn5V=o0d06=XADOZD8gQ@mail.gmail.com>
+Subject: Re: Subject: Re: [PATCH v3] kbuild: add support for zstd compressed modules
+To:     Piotr Gorski <lucjan.lucjanov@gmail.com>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        masahiroy@kernel.org, oleksandr@natalenko.name
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 9, 2021 at 1:10 PM Piotr Gorski <lucjan.lucjanov@gmail.com> wrote:
+>
+> I originally posted the patch in a different form [1] even before Masahiro's changes.
+> I've been testing this solution since December last year and posted it in March this year,
+> after I made sure everything was working fine. This patch was tested by Oleksandr and he also didn't report any objections. [2]
+>
+> Masahiro notified me about the planned changes [3] and asked me to resend this patch, adjusted to those changes, which I did.
+>
+> My current logs:
+>
+> lucjan@archlinux ~ $ zgrep CONFIG_DEBUG_INFO /proc/config.gz
+> CONFIG_DEBUG_INFO=y
+> # CONFIG_DEBUG_INFO_REDUCED is not set
+> # CONFIG_DEBUG_INFO_COMPRESSED is not set
+> # CONFIG_DEBUG_INFO_SPLIT is not set
+> CONFIG_DEBUG_INFO_DWARF4=y
+> CONFIG_DEBUG_INFO_BTF=y
+> CONFIG_DEBUG_INFO_BTF_MODULES=y
+> lucjan@archlinux ~ $ zgrep CONFIG_MODULE_COMPRESS_ZSTD /proc/config.gz
+> CONFIG_MODULE_COMPRESS_ZSTD=y
+> CONFIG_MODULE_COMPRESS_ZSTD_LEVEL=19
+>
+> Pay no attention to CONFIG_MODULE_COMPRESS_ZSTD_LEVEL as this is not in the upstream, it's an additional patch I use.
+>
+> The only difference - I don't use clang. Maybe those who use will comment on this.
+> I relied on the opinions of Oleksander and a dozen other users who reported no errors in using zstd module compression.
+>
+> [1] https://marc.info/?l=linux-kbuild&m=161710402402989&w=2
+>
+> [2] https://marc.info/?l=linux-kbuild&m=161710503403517&w=2
+>
+> [3] https://marc.info/?l=linux-kbuild&m=161780602730829&w=2
 
---xHFwDpU9dbj6ez1V
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I am a big fan of ZSTD and have it as default in all available Linux
+Kconfigs and Debian's initramfs-tools.
+So, I am highly interested in getting this fixed.
 
-On Thu, Apr 08, 2021 at 02:23:39PM -0500, Madhavan T. Venkataraman wrote:
-> On 4/8/21 11:58 AM, Mark Brown wrote:
+Unfortunately, I have thrown away my yesterday's Clang-LTO build and
+switched to Clang-CFI with builddeb - should do handle the same way.
 
-> > This looks good to me however I'd really like someone who has a firmer
-> > understanding of what ftrace is doing to double check as it is entirely
-> > likely that I am missing cases here, it seems likely that if I am
-> > missing stuff it's extra stuff that needs to be added and we're not
-> > actually making use of the reliability information yet.
+I see three iwlwifi.ko (as an example):
 
-> OK. So, do you have some specific reviewer(s) in mind? Apart from yourself, Mark Rutland and
-> Josh Poimboeuf, these are some reviewers I can think of (in alphabetical order):
+$ LC_ALL=C ll drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
+-rw-r--r-- 1 dileks dileks 8.2M Apr  9 11:07
+drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
 
-Mainly Mark Rutland, but generally someone else who has looked at ftrace
-on arm64 in detail.  It was mainly a comment to say I wasn't going to do
-any kind of Reviewed-by but also hadn't spotted any issues.
+$ file drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
+drivers/net/wireless/intel/iwlwifi/iwlwifi.ko: ELF 64-bit LSB
+relocatable, x86-64, version 1 (SYSV),
+BuildID[sha1]=78d593f4fd2b8efe81caeb8f1ea729107a33e244, with
+debug_info, not stripped
 
---xHFwDpU9dbj6ez1V
-Content-Type: application/pgp-signature; name="signature.asc"
+That iwlwifi.ko with debug-info is optimized when moving to
+debian/linux-image-dbg directory:
 
------BEGIN PGP SIGNATURE-----
+$ LC_ALL=C ll debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
+-rw-r--r-- 1 dileks dileks 7.9M Apr  9 11:18
+debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBwOvQACgkQJNaLcl1U
-h9C1ywf/Zbw1Z1QFQ9f8u2MHhFttf12fqFoSFd5iqQ9spEcbfaBlpTl2v8M/5H9h
-R6oBURNPeVfVCxvv/71t9Orzqyn9ARMB/OizAb2stUPdlFcnKAYcK+EGhOLqLKvu
-ROhmYPrJxYkjx9Qegny0xAZp5MrlJ6nmUDl8xOLJYYj706CxMFP5Ajsbx+iYk1ZE
-s3sEJFrMhNTcQGo/Ov6u8icSdzC5GmdnbLZLZQABGM2XGtLYaI4OEAg9ZwXD/fIK
-A97q5N6unW1DVvNGwOdKRGakFGw/B9JoLtSEvWjEpsDzePbgTOm5hiWQi1GZNR51
-9te0IeS7HVke1UH7AXxDqXJPHrbPLg==
-=neW0
------END PGP SIGNATURE-----
+$ file debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
+debian/linux-image-dbg/usr/lib/debug/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko:
+ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV),
+BuildID[sha1]=78d593f4fd2b8efe81caeb8f1ea729107a33e244, with
+debug_info, not stripped
 
---xHFwDpU9dbj6ez1V--
+And think it's shrunk down and included debian/linux-image directory:
+
+$ LC_ALL=C ll debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
+-rw-r--r-- 1 dileks dileks 694K Apr  9 11:18
+debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
+
+$ file debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko
+debian/linux-image/lib/modules/5.12.0-rc6-5-amd64-clang12-cfi/kernel/drivers/net/wireless/intel/iwlwifi/iwlwifi.ko:
+ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV),
+BuildID[sha1]=78d593f4fd2b8efe81caeb8f1ea729107a33e244, not stripped
+
+I speculate both iwlwifi.ko below debian directory should be ZSTD-compressed.
+Fact is the one with debug-info is done correctly.
+Might be builddeb script needs a special treatment.
+
+- Sedat -
