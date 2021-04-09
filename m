@@ -2,101 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D99035A722
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D9935A725
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234955AbhDIT2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:28:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48062 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234861AbhDIT2h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:28:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617996504;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gtQRyJkei76MgWJGNFUnR7KOo7QbxlHYKJLaZxgsRec=;
-        b=dN1JdqjwSzrJHiZXkmw5O7rc4eVrfHEtj9F4nl4N6E5uU8Gq4H1iHjChAXpb5qZpG61cAj
-        EQBRi0EKFQNRR21ve/2Wk4NNSAOenKjJhPpylDw19lyDLzIdMAoTR81z7S2iTf+QXyjbCx
-        +3jHS4kKxWm3TLkVquf0sJXicpJd1os=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-400-z8sidzyZP0CHhR2Aqn2ACg-1; Fri, 09 Apr 2021 15:28:22 -0400
-X-MC-Unique: z8sidzyZP0CHhR2Aqn2ACg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 102BB1008062;
-        Fri,  9 Apr 2021 19:28:21 +0000 (UTC)
-Received: from crecklin.bos.csb (ovpn-113-158.rdu2.redhat.com [10.10.113.158])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D1A7019704;
-        Fri,  9 Apr 2021 19:28:15 +0000 (UTC)
-Reply-To: crecklin@redhat.com
-Subject: Re: [PATCH v4 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-To:     David Laight <David.Laight@ACULAB.COM>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "simo@redhat.com" <simo@redhat.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "decui@microsoft.com" <decui@microsoft.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210408104629.31357-1-crecklin@redhat.com>
- <6be63531313d46caa7161697bf240dfc@AcuMS.aculab.com>
-From:   Chris von Recklinghausen <crecklin@redhat.com>
-Organization: Red Hat
-Message-ID: <822eaebf-4ef9-d469-4238-54107c8ba6a6@redhat.com>
-Date:   Fri, 9 Apr 2021 15:28:15 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S235007AbhDIT3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:29:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234783AbhDIT3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 15:29:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D2256100B;
+        Fri,  9 Apr 2021 19:29:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617996570;
+        bh=00hZbP3J+izsAiSi4sMaAXm6sau+FuPNSfPCQ/OjoCs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QV6oGEDfP6VuRfBhsmtJKVgb+Av3rTLMjmWg8K3vVSZsfL0VsWzv+JlqFT+cEa7ti
+         2ovBcr8pBZE7ekt4NnI5f+E1c5kSnG027X/KAbwQjEwOeepqQInmMDpAMDlX/jTPlD
+         44SCm7q/kKyJGzUdL4Yry7jetveIL8hgehAc6n/cOIZhY3EeBBv69BeXdXnmiaKZK5
+         DUJ8q+9BHGVjxbGWkfP90SJYfEr5cyY9B1wDX/3OSh+0QFA2vAYb7j2LrEF+Xi/GEA
+         7XO5p02Ugz0fC46L9/CUNBgar2bkDpj/14kALqTYh/2jZ6BJodD4El9YOLKf1J+fJA
+         6b2qu6R/oRSzg==
+Date:   Fri, 9 Apr 2021 12:29:29 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        David Ahern <dsahern@gmail.com>,
+        Saeed Mahameed <saeed@kernel.org>, Andrew Lunn <andrew@lunn.ch>
+Subject: Re: [PATCH net-next v2 3/5] page_pool: Allow drivers to hint on SKB
+ recycling
+Message-ID: <20210409122929.5c2793df@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <YHCknwlzJHPFXm2j@apalos.home>
+References: <20210402181733.32250-1-mcroce@linux.microsoft.com>
+        <20210402181733.32250-4-mcroce@linux.microsoft.com>
+        <20210409115648.169523fd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <YHCknwlzJHPFXm2j@apalos.home>
 MIME-Version: 1.0
-In-Reply-To: <6be63531313d46caa7161697bf240dfc@AcuMS.aculab.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/21 12:56 PM, David Laight wrote:
-> From: Chris von Recklinghausen
->> Sent: 08 April 2021 11:46
->>
->> Suspend fails on a system in fips mode because md5 is used for the e820
->> integrity check and is not available. Use crc32 instead.
->>
->> Prior to this patch, MD5 is used only to create a digest to ensure integrity of
->> the region, no actual encryption is done. This patch set changes the integrity
->> check to use crc32 instead of md5 since crc32 is available in both FIPS and
->> non-FIPS modes.
->>
->> Note that the digest is only used as an integrity check. No actual encryption
->> is done.
-> If crc32 is good enough, would a 1's compliment sum be good enough?
-> It is likely to be faster to calculate and not need special
-> functions be built into the kernel at all.
+On Fri, 9 Apr 2021 22:01:51 +0300 Ilias Apalodimas wrote:
+> On Fri, Apr 09, 2021 at 11:56:48AM -0700, Jakub Kicinski wrote:
+> > On Fri,  2 Apr 2021 20:17:31 +0200 Matteo Croce wrote:  
+> > > Co-developed-by: Jesper Dangaard Brouer <brouer@redhat.com>
+> > > Co-developed-by: Matteo Croce <mcroce@microsoft.com>
+> > > Signed-off-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>  
+> > 
+> > Checkpatch says we need sign-offs from all authors.
+> > Especially you since you're posting.  
+> 
+> Yes it does, we forgot that.  Let me take a chance on this one. 
+> The patch is changing the default skb return path and while we've done enough
+> testing, I would really prefer this going in on a future -rc1 (assuming we even
+> consider merging it), allowing enough time to have wider tests.
 
-
-Eric Biggers <ebiggers@kernel.org> suggested using crc32_le() which is 
-in the library interface (lib/crc32.c) and will always be available 
-without any special ifdefs. That's what my next version will be based on.
-
-Thanks,
-
-Chris
-
-
->
-> 	David
->
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
->
-
+Up to you guys. FWIW if you decide to try for 5.13 the missing signoffs
+can be posted in replies, no need to repost.
