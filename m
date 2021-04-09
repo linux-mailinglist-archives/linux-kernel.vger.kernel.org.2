@@ -2,124 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E8835A1D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:20:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA4F35A1E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbhDIPU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39582 "EHLO
+        id S234132AbhDIPWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234059AbhDIPUZ (ORCPT
+        with ESMTP id S234065AbhDIPWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:20:25 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C0D8C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:20:12 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id r8so10210508lfp.10
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:20:11 -0700 (PDT)
+        Fri, 9 Apr 2021 11:22:17 -0400
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285A5C061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:22:04 -0700 (PDT)
+Received: by mail-vs1-xe2a.google.com with SMTP id g20so3107594vst.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:22:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BdyCaKl/yFk8RKzHPOIXKxOU3yTB+9Fr3zs0DpkeLKM=;
-        b=d1siBDnR6tbrwRIdnsNOlc6NmlCCox/2Jn4ypJ4KC81Y4bNAMgjMseR+/nK3e5VDbG
-         ojFCJJRxN1mxXKbEGZsasX+fDSTeoQEYxDMWr46YxnysDD4NcxU+4OFO50nm+bM768nN
-         FMyZWZ1hm/ZA3A2TvlUd0sx63vQnN+Z9j86KxWoKOTtHi7X6/dx8IYkx9RRGpCmlAZ+Z
-         2Ix6jFhc1cuRHLwW+INfVp1hpN+g5OzC3yVQxSg3bk+t7q0l7kckXYGg4nkDrAE90Yv0
-         yQ3EoPc/AqyVJuvCymv5CIaeZ8/5fKQXVzalMV2DSlXxNZGgxsfDnAcEbIvliAmXavWp
-         KiJA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3s5iM0DDtutXCX2CW4Fk02eYIx8aYsLaJtdlto8nJPE=;
+        b=G4wrRJhals2S4TjgcKsiTJsyA42YcY65w3HJYq0XZf/exUD4l9dN8DLs3Lf4l4uEZW
+         r+lhWBYLZ8h69qf8p5HuPR1WrXxgvwYTqpi8L1VjwX6BmTaTsBuLkkCOO2deNVXOJaGZ
+         wRnTyIPFXF7G7Sw0vGk0FD23+S/FAsPtABsf+Kew9aelHZWKuE2fzrWBAHVK3EpN7uwJ
+         0mpu4aVambDs60rl1skyVuV/HTHMlC3jWsuo6xEulxmVF1p4FxlN9zFD09qoGxPwBtr9
+         E9CYoTtcsVxOX898Pk5FfQvIl/iFTLgy9AKUQiZCWLDiN/JO+uvI1HX6e6/IZZJ1MaES
+         Za3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BdyCaKl/yFk8RKzHPOIXKxOU3yTB+9Fr3zs0DpkeLKM=;
-        b=U43URXz8bPwn3rUBBFdF84XRe6CZNZG4iORSe1ovk28L4yxX/iNjxTxxG91FQE5S1L
-         TpUjQE0cFtf+US9dUQCk1aCSMiDJ22tli0GdTFrgBcdJnnHZsVaxXWJQAK7nRKGPWMDJ
-         h1k4PHj1FFLDUEszXYLmMSFoXxIyXKZgDQM4PBZss9Jt3diMVLjzXp/M07FfDHfbxMa0
-         dD9R03y/rumH1s0DV9VwKEVq77camEvscHt932W8QJExqF0hckYubot1OJBvv/dnkMw6
-         82Wk/qJvYQqHaHV3XoYIimdVXujAq85wpOMj0n7k+NcfH22CSKDXK/zIG/VXd0WJQ2Fp
-         9nSA==
-X-Gm-Message-State: AOAM530SFjXUQT4q9pjHT50y/hXdytH2bHob6Dv2HXP/jSJXDFhYnr2m
-        OX2FzmeRDFr/cItVijJvjn6+LA==
-X-Google-Smtp-Source: ABdhPJyeY3SOcNghbUnFtmBYutviMO6rEuJWu8D3EaniZ1hk2GrTHZuB3RQ8/DjT6S0hr71xS0x82A==
-X-Received: by 2002:a19:c46:: with SMTP id 67mr10560336lfm.369.1617981610479;
-        Fri, 09 Apr 2021 08:20:10 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id s2sm306117ljj.36.2021.04.09.08.20.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 08:20:10 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 740FE102498; Fri,  9 Apr 2021 18:20:09 +0300 (+03)
-Date:   Fri, 9 Apr 2021 18:20:09 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [PATCH v24 16/30] mm: Fixup places that call pte_mkwrite()
- directly
-Message-ID: <20210409152009.xyewe3eefxce2dqq@box.shutemov.name>
-References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
- <20210401221104.31584-17-yu-cheng.yu@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3s5iM0DDtutXCX2CW4Fk02eYIx8aYsLaJtdlto8nJPE=;
+        b=MDYmf/5nPTdj4NhT3HkjyGwqNFIjUuRx/lWwSCk3tvxqMw/ZMjKnFBGmuH43PrdYcx
+         VRcph8VbP+jgLUwgykq445m5bLXgpCfctAASWUT9T3dC/4CPN7yp776lmyHHeiZ0Ukcj
+         xThzW/bi5m19CNrEqaa3eWelIo+8jK4uz/Ugg2cz8wtWHjY1yCrXk5ZJnDpuW79eKUFb
+         DWW2Ftiqsplymr4NhgCaR/xMSFIFdMsWfaCu+pRFvH7mBFOttWIDMTa1UwMe8LCq4Hw2
+         WBRZBVSe8WHXWhvKIqJAdfi8LGXvvLDe2fmwqZigRQjpFj3ene7ELbnuEONmM/p62EpM
+         MnrQ==
+X-Gm-Message-State: AOAM532nt9V3lFcNEs9Naxzw5AvsyW3D5mrd3xvk4RuNIximXWHM3UTS
+        71O7nkSKX+W0YQuUdbvE/pisR4YIdQsfxkPe64M=
+X-Google-Smtp-Source: ABdhPJwYrqbTO+toHceKeBWFha82OgtSQjsuKppLIZhszG27iDCJgqD0OJhNgbIISMnlNTxQrt/pp+m7P4CZUTxsEX8=
+X-Received: by 2002:a67:e15c:: with SMTP id o28mr8648918vsl.9.1617981723139;
+ Fri, 09 Apr 2021 08:22:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401221104.31584-17-yu-cheng.yu@intel.com>
+References: <20210409122231.8391-1-linqiheng@huawei.com>
+In-Reply-To: <20210409122231.8391-1-linqiheng@huawei.com>
+From:   Christian Gmeiner <christian.gmeiner@gmail.com>
+Date:   Fri, 9 Apr 2021 17:21:52 +0200
+Message-ID: <CAH9NwWfkug1dN2sSMEpJ2JuKNG=wJ7mCcNejgEFKihwviuAbcw@mail.gmail.com>
+Subject: Re: [PATCH -next] drm/etnaviv: remove unneeded if-null-free check
+To:     Qiheng Lin <linqiheng@huawei.com>
+Cc:     Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        The etnaviv authors <etnaviv@lists.freedesktop.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 03:10:50PM -0700, Yu-cheng Yu wrote:
-> When serving a page fault, maybe_mkwrite() makes a PTE writable if it is in
-> a writable vma.  A shadow stack vma is writable, but its PTEs need
-> _PAGE_DIRTY to be set to become writable.  For this reason, maybe_mkwrite()
-> has been updated.
-> 
-> There are a few places that call pte_mkwrite() directly, but have the
-> same result as from maybe_mkwrite().  These sites need to be updated for
-> shadow stack as well.  Thus, change them to maybe_mkwrite():
-> 
-> - do_anonymous_page() and migrate_vma_insert_page() check VM_WRITE directly
->   and call pte_mkwrite(), which is the same as maybe_mkwrite().  Change
->   them to maybe_mkwrite().
-> 
-> - In do_numa_page(), if the numa entry was writable, then pte_mkwrite()
->   is called directly.  Fix it by doing maybe_mkwrite().
-> 
-> - In change_pte_range(), pte_mkwrite() is called directly.  Replace it with
->   maybe_mkwrite().
-> 
->   A shadow stack vma is writable but has different vma
-> flags, and handled accordingly in maybe_mkwrite().
-> 
+Am Fr., 9. Apr. 2021 um 14:23 Uhr schrieb Qiheng Lin <linqiheng@huawei.com>:
+>
+> Eliminate the following coccicheck warning:
+>
+> drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:616:2-8: WARNING:
+>  NULL check before some freeing functions is not needed.
+> drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:618:2-8: WARNING:
+>  NULL check before some freeing functions is not needed.
+> drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:620:2-8: WARNING:
+>  NULL check before some freeing functions is not needed.
+> drivers/gpu/drm/etnaviv/etnaviv_gem_submit.c:622:2-8: WARNING:
+>  NULL check before some freeing functions is not needed.
+>
+> Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
 
-Have you checked THP side? Looks like at least do_huge_pmd_numa_page()
-needs adjustment, no?
+Reviewed-by: Christian Gmeiner <christian.gmeiner@gmail.com>
 
 -- 
- Kirill A. Shutemov
+greets
+--
+Christian Gmeiner, MSc
+
+https://christian-gmeiner.info/privacypolicy
