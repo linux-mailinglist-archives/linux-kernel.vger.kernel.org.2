@@ -2,164 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5DBA35A735
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC94535A738
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 21:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235047AbhDITh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 15:37:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234705AbhDITh1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 15:37:27 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FBC1C061763
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 12:37:13 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id x189so7818584ybg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 12:37:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R1/OVPtN1o6F7NiHy85jZm12iAQXmTjdYOcMRG5H5z8=;
-        b=H9Jv6ncbEXaM6/C7+ee9aKWZSK/+1IvwExFPRwoyOqN6ZW1XyFCFNQpEyuBdnnOj9H
-         CEldmayQUFpeaVZJvxt1TmodyDhik/6mPTm4+4vTrRmXD0rpEolOpGbrleZWbLXd17TR
-         pHrOD7Cl+RI2efjYt99WdKQMPC/wdzbMi7eXq6kaGzMQpDTLwSGDCZp3MBajQqUD9bQV
-         mxk3MtxXvJBVpuwfLtM4BMt89sZdF6VcJ//3oZ+HNUNQ0VSoI+eRHiiLPvIROwSkUb1l
-         FRtqGvNbfhaOANAwPXq6zka4WZ7fRmfqZnSY11SRKP7zrLbMUnumUBLEUzMePjyQvt1l
-         O1og==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R1/OVPtN1o6F7NiHy85jZm12iAQXmTjdYOcMRG5H5z8=;
-        b=tgfxy4dTrHGGvZ7VyBdcHvez3NmiThT4AgBZa2XOEoo0dcxwZnpKsHsm5Jifv6G7eR
-         jDxMOF2/PTmsD7C+5xQiYqVmBPdquC4rxM2ODn+OgPB+MQj527yrfE0JUhvxrpIbQgD/
-         DVjdbRZydvCx6CXe7TORm2EC6ZfCfrJLsBBMqyxBV6BpVe/iAbgE4Zw691YoVodGlmUC
-         SqnbhEmfB1eWtus1BHNuH4/7Po5NOnCnIDxhytv/xjSW0OZNCX62oOEz8CC+h2aum/xd
-         VFRIOA5OSf+6aMtjSNJdi1nf58A7Tu8nuW3TIW6BSKjgBXKPAsX9F6OdJcj0NU01jFce
-         Iezw==
-X-Gm-Message-State: AOAM530fYo+zhejhi+mjc3wptCJaiepogT2Sv8DKYMCm6UpQAGlz8Yvp
-        5harg79/fCfOWzwaB8mNe1bC29D7gr/p3I9fvjzO2Q==
-X-Google-Smtp-Source: ABdhPJzaO3tSHtgjMLsj1QfG8LQ8GH0SaOQv4dVtyf3TMcwnLp4vs6u/zBz+XyfW/1p2FWpgwS3wMqRwWdxIDiijEJk=
-X-Received: by 2002:a25:907:: with SMTP id 7mr20270089ybj.346.1617997032220;
- Fri, 09 Apr 2021 12:37:12 -0700 (PDT)
+        id S235050AbhDITir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 15:38:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234705AbhDITiq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 15:38:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA2FE61165;
+        Fri,  9 Apr 2021 19:38:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617997112;
+        bh=AqqKRuGB+aYlSpd2XHtxaxortNgbyhw4JfrwsQxNLN4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CXwi9Dy+zfc80o7ZkIWXRhs9/ZKsvO31vSVYQYVnq6OvP5VeIuRcuhRudglZoQrQQ
+         XI7tsH+VIwCw4CT/GnM0ZR5PZ3WRQlV38xh0JeEDw9VHzjDIvP+9nHId9Ptt3/kCzR
+         FVppS1H7u4g5ES4XvCWAkfAIZq5W0YPmRb5at5f2GEFA6Jmd5EEwa+qZFj1DXJRmmw
+         sbbUjDjd4yuWNHTnUXnSPTG3vvDp+NXA0HsQ/WZdOgBfMQ/LOtOFCivjxmL0lIb2J7
+         w874TcijUzFj4URMPQq49VLnSCESPe5wYkuv2LFIrfTqsGYl4mp3Xw41AQDRyHnMFr
+         3ALhcqp8DJlkQ==
+Received: by mail-oi1-f172.google.com with SMTP id z15so6888343oic.8;
+        Fri, 09 Apr 2021 12:38:32 -0700 (PDT)
+X-Gm-Message-State: AOAM532ViE9M4ly940fuQ/Nxm05pPigM9LF2f5uusDLy/let8ePcKQ0c
+        I/IZEp+pCMmlvjQ5a+7JQmMiLv87r4he4ah0LrE=
+X-Google-Smtp-Source: ABdhPJwPRkeRcHq2LQ4abuG/9/wDbgW0Bv24YoYSOQZ4hFRrWtMj03Zbtndge10mz92YsjqjXfAUKkMC/mJSZ/pM/cI=
+X-Received: by 2002:a05:6808:3d3:: with SMTP id o19mr1577825oie.4.1617997112043;
+ Fri, 09 Apr 2021 12:38:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
- <20210405222540.18145-1-ilya.lipnitskiy@gmail.com> <CAGETcx-gF4r1TeY2AA4Vwb5e+5O+_O3E2ENo5tKhh=n_EOJnEQ@mail.gmail.com>
- <20210407003408.GA2551507@robh.at.kernel.org> <CAGETcx8=sSWj_OmM1GPXNiLcv3anEkJnb_C7NoO9mNwS-O0KhQ@mail.gmail.com>
- <CAL_JsqLs4c3+9WwV6Vnk9Tovb6HiyH7t+_WXYP-ZDO72mOcO+w@mail.gmail.com>
- <CAGETcx-W_K9NFV51iBvyZ-Q+1LCUM3qipMmap9yEW_eu9B7CCg@mail.gmail.com>
- <CALCv0x1qOKkMmwJu82sXEJ3L5Y2n4eQp8n+SN1HYwcgpYm6CAw@mail.gmail.com> <CAL_JsqJN5W60Cy6ec5HJxKMRag-MYO3yqkbBnWp6k_u6h85T=A@mail.gmail.com>
-In-Reply-To: <CAL_JsqJN5W60Cy6ec5HJxKMRag-MYO3yqkbBnWp6k_u6h85T=A@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Fri, 9 Apr 2021 12:36:36 -0700
-Message-ID: <CAGETcx_3CYxrSBtTgRkyRJUS0kdtn3ukLYpSznY-e9O6eOe+xA@mail.gmail.com>
-Subject: Re: [PATCH v2] of: property: fw_devlink: do not link ".*,nr-gpios"
-To:     Rob Herring <robh@kernel.org>
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210328074009.95932-1-sven@svenpeter.dev> <20210328074009.95932-2-sven@svenpeter.dev>
+ <20210407104425.GB15173@willie-the-truck> <e0d9af36-fc6c-4470-a87c-61b9161bdf8f@www.fastmail.com>
+In-Reply-To: <e0d9af36-fc6c-4470-a87c-61b9161bdf8f@www.fastmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 9 Apr 2021 21:38:15 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a11O7JVDv+4rfky13C1pZFD7eE_B_54zRN8UQVpBrQJcA@mail.gmail.com>
+Message-ID: <CAK8P3a11O7JVDv+4rfky13C1pZFD7eE_B_54zRN8UQVpBrQJcA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] iommu: io-pgtable: add DART pagetable format
+To:     Sven Peter <sven@svenpeter.dev>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Hector Martin <marcan@marcan.st>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mohamed Mediouni <mohamed.mediouni@caramail.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Mark Kettenis <mark.kettenis@xs4all.nl>,
+        Petr Mladek via iommu <iommu@lists.linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 12:26 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Apr 7, 2021 at 3:45 PM Ilya Lipnitskiy
-> <ilya.lipnitskiy@gmail.com> wrote:
+On Fri, Apr 9, 2021 at 6:56 PM Sven Peter <sven@svenpeter.dev> wrote:
+> On Wed, Apr 7, 2021, at 12:44, Will Deacon wrote:
+> > On Sun, Mar 28, 2021 at 09:40:07AM +0200, Sven Peter wrote:
 > >
-> > On Tue, Apr 6, 2021 at 6:24 PM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Tue, Apr 6, 2021 at 6:10 PM Rob Herring <robh@kernel.org> wrote:
-> > > >
-> > > > On Tue, Apr 6, 2021 at 7:46 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > >
-> > > > > On Tue, Apr 6, 2021 at 5:34 PM Rob Herring <robh@kernel.org> wrote:
-> > > > > >
-> > > > > > On Tue, Apr 06, 2021 at 04:09:10PM -0700, Saravana Kannan wrote:
-> > > > > > > On Mon, Apr 5, 2021 at 3:26 PM Ilya Lipnitskiy
-> > > > > > > <ilya.lipnitskiy@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-> > > > > > > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-> > > > > > > > not configured by #gpio-cells and can't be parsed along with other
-> > > > > > > > "*-gpios" properties.
-> > > > > > > >
-> > > > > > > > nr-gpios without the "<vendor>," prefix is not allowed by the DT
-> > > > > > > > spec[1], so only add exception for the ",nr-gpios" suffix and let the
-> > > > > > > > error message continue being printed for non-compliant implementations.
-> > > > > > > >
-> > > > > > > > [0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
-> > > > > > > >  - gpio-adnp.txt
-> > > > > > > >  - gpio-xgene-sb.txt
-> > > > > > > >  - gpio-xlp.txt
-> > > > > > > >  - snps,dw-apb-gpio.yaml
-> > > > > > > >
-> > > > > > > > [1]:
-> > > > > > > > Link: https://github.com/devicetree-org/dt-schema/blob/cb53a16a1eb3e2169ce170c071e47940845ec26e/schemas/gpio/gpio-consumer.yaml#L20
-> > > > > > > >
-> > > > > > > > Fixes errors such as:
-> > > > > > > >   OF: /palmbus@300000/gpio@600: could not find phandle
-> > > > > > > >
-> > > > > > > > Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
-> > > > > > > > Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> > > > > > > > Cc: Saravana Kannan <saravanak@google.com>
-> > > > > > > > Cc: <stable@vger.kernel.org> # 5.5.x
-> > > > > > > > ---
-> > > > > > > >  drivers/of/property.c | 11 ++++++++++-
-> > > > > > > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > > > > > > index 2046ae311322..1793303e84ac 100644
-> > > > > > > > --- a/drivers/of/property.c
-> > > > > > > > +++ b/drivers/of/property.c
-> > > > > > > > @@ -1281,7 +1281,16 @@ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
-> > > > > > > >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-> > > > > > > >  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
-> > > > > > > >  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
-> > > > > > > > -DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-> > > > > > > > +
-> > > > > > > > +static struct device_node *parse_gpios(struct device_node *np,
-> > > > > > > > +                                      const char *prop_name, int index)
-> > > > > > > > +{
-> > > > > > > > +       if (!strcmp_suffix(prop_name, ",nr-gpios"))
-> > > > > > > > +               return NULL;
-> > > > > > >
-> > > > > > > Ah I somehow missed this patch. This gives a blanked exception for
-> > > > > > > vendor,nr-gpios. I'd prefer explicit exceptions for all the instances
-> > > > > > > of ",nr-gpios" we are grandfathering in. Any future additions should
-> > > > > > > be rejected. Can we do that please?
-> > > > > > >
-> > > > > > > Rob, you okay with making this list more explicit?
-> > > > > >
-> > > > > > Not the kernel's job IMO. A schema is the right way to handle that.
-> > > > >
-> > > > > Ok, that's fine by me. Btw, let's land this in driver-core? I've made
-> > > > > changes there and this might cause conflicts. Not sure.
-> > > >
-> > > > It merges with linux-next fine. You'll need to resend this to Greg if
-> > > > you want to do that.
-> > > >
-> > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > >
-> > > Hi Greg,
-> > >
-> > > Can you pull this into driver-core please?
-> > Do you want me to re-spin on top of driver-core? The patch is
-> > currently based on dt/next in robh/linux.git
+> > > +   cfg->pgsize_bitmap &= SZ_16K;
+> > > +   if (!cfg->pgsize_bitmap)
+> > > +           return NULL;
+> >
+> > This is worrying (and again, I don't think this belongs here). How is this
+> > thing supposed to work if the CPU is using 4k pages?
 >
-> I did say you need to resend the patch to Greg, but since there's no
-> movement on this and I have other things to send upstream, I've
-> applied it.
+> This SoC is just full of fun surprises!
+> I didn't even think about that case since I've always been using 16k pages so far.
+>
+> I've checked again and wasn't able to find any way to configure the pagesize
+> of the IOMMU. There seem to be variants of this IP in older iPhones which
+> support a 4k pagesize but to the best of my knowledge this is hard wired
+> and not configurable in software.
+>
+> When booting with 4k pages I hit the BUG_ON in iova.c that ensures that the
+> iommu pagesize has to be <= the cpu page size.
+>
+> I see two options here and I'm not sure I like either of them:
+>
+> 1) Just don't support 4k CPU pages together with IOMMU translations and only
+>    allow full bypass mode there.
+>    This would however mean that PCIe (i.e. ethernet, usb ports on the Mac
+>    mini) and possibly Thunderbolt support would not be possible since these
+>    devices don't seem to like iommu bypass mode at all.
 
-:'(
+It should be possible to do a fake bypass mode by just programming a
+static page table for as much address space as you can, and then
+use swiotlb to address any memory beyond that. This won't perform
+well because it requires bounce buffers for any high memory, but it
+can be a last resort if a dart instance cannot do normal bypass mode.
 
-If it's not too late, can we please drop it? I'm sure Greg would be
-okay with picking this up.
+> 2) I've had a brief discussion on IRC with Arnd about this [1] and he pointed
+>    out that the dma_map_sg API doesn't make any guarantees about the returned
+>    iovas and that it might be possible to make this work at least for devices
+>    that go through the normal DMA API.
+>
+>    I've then replaced the page size check with a WARN_ON in iova.c just to see
+>    what happens. At least normal devices that go through the DMA API seem to
+>    work with my configuration. iommu_dma_alloc took the iommu_dma_alloc_remap
+>    path which was called with the cpu page size but then used
+>    domain->pgsize_bitmap to increase that to 16k. So this kinda works out, but
+>    there are other functions in dma-iommu.c that I believe rely on the fact that
+>    the iommu can map single cpu pages. This feels very fragile right now and
+>    would probably require some rather invasive changes.
 
--Saravana
+The other second-to-last resort here would be to duplicate the code from
+the dma-iommu code and implement the dma-mapping API directly on
+top of the dart hardware instead of the iommu layer. This would probably
+be much faster than the swiotlb on top of a bypass or a linear map,
+but it's a really awful abstraction that would require adding special cases
+into a lot of generic code.
+
+>    Any driver that tries to use the iommu API directly could be trouble
+>    as well if they make similar assumptions.
+
+I think pretty much all drivers using the iommu API directly already
+depends on having a matching page size.  I don't see any way to use
+e.g. PCI device assignment using vfio, or a GPU driver with per-process
+contexts when the iotlb page size is larger than the CPU's.
+
+>    Is this something you would even want to support in the iommu subsytem
+>    and is it even possible to do this in a sane way?
+
+I don't know how hard it is to do adjust the dma-iommu implementation
+to allow this, but as long as we can work out the DT binding to support
+both normal dma-iommu mode with 16KB pages and some kind of
+passthrough mode (emulated or not) with 4KB pages, it can be left
+as a possible optimization for later.
+
+        Arnd
