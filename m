@@ -2,100 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FDE35972C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08786359730
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232362AbhDIII3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:08:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbhDIII2 (ORCPT
+        id S232366AbhDIIJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:09:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:37904 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229621AbhDIIJm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:08:28 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8C8C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:08:15 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id e12so4676406wro.11
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:08:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4n5XQyXIMcAvvSVHJa1+lHKqEgUtFQKp+M5Ydfb4ys4=;
-        b=PBaL3LS2SQBr213UpbZLcQZtzq8Tftnqxcf972qOnt5LcxDOzXyTUP4oKSW2ZS5/Vd
-         FP1LTP3r747Omm5WJgBItRP4SGiXHuPPovxyhQIKcRyh/azg5wC6tC3NmdUHtNIFjWfR
-         /c+crwDj4lx11ztCTwZ6v5qIRbyzblZUGR76rTxW5lvCggLHC38yKc9lzTubbRdV+rEr
-         3x1pGsyZe9omFLP2X4dBbpzV+uMYZgdKJoIU/im8w88aFlyHzl9r8K2GIjNtxIVLFMj4
-         JvQ191AvXnwi+/vhXtdnlXOwaKdGcBqLEow+QVLGlr34TIa2H/HuNu65/tO1/PuG/Qbp
-         IO1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4n5XQyXIMcAvvSVHJa1+lHKqEgUtFQKp+M5Ydfb4ys4=;
-        b=ehxp3EVEuw403t5DAhXsn7RFcpXvl1tJdjXZAXmIubtekfwVgQdbZf9B0wFUtKVSTW
-         Dpjdr8PpUbsNQKk/OOxQAsCf6pcrRcy2cDsPdxP6AqMuMfugU2EhUefgqqecac5/kfOH
-         yMdwZg0m61A3ZDlPxIUzCDXwQV3HqtZrg6flK4DZAlXEKhPPzg/9aTwjZZzIx0/DwDP8
-         kFfsJCh2fYH+DVvGLpGbb4K+0b2+1QMwUWmlpTeLc5ZW6qAFeDE1rTpbfp54GK7RPYkn
-         TyK7Ew6Tl7EoRKbd1jrMLfJ8kzp6lWiN1rGCHar2tUJO360vl7mjni0at2xHcROaamsm
-         p+xg==
-X-Gm-Message-State: AOAM530/4DpkbhhZP+86fYZshgTHhQRfeD6WPh7IE+0+urj6MzSye4Yl
-        V0ux+cQ0xTj3UX7Q5epHHIHqyQ==
-X-Google-Smtp-Source: ABdhPJxINGm2Cs/J55+AIsgzJGyjQFvX8rWJi0ktXHgRlfGG7RsZH/UItz3GB7TR9I/PNd+/Ulb7Vg==
-X-Received: by 2002:adf:9d48:: with SMTP id o8mr16279163wre.183.1617955694111;
-        Fri, 09 Apr 2021 01:08:14 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id z1sm3276489wrt.8.2021.04.09.01.08.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 01:08:13 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 08:08:11 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Gavin Shan <gshan@redhat.com>, wanghaibin.wang@huawei.com,
-        zhukeqian1@huawei.com, yuzenghui@huawei.com
-Subject: Re: [PATCH v4 1/2] KVM: arm64: Move CMOs from user_mem_abort to the
- fault handlers
-Message-ID: <YHALa38PPQBceqF9@google.com>
-References: <20210409033652.28316-1-wangyanan55@huawei.com>
- <20210409033652.28316-2-wangyanan55@huawei.com>
+        Fri, 9 Apr 2021 04:09:42 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 139834f7048406;
+        Fri, 9 Apr 2021 04:09:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=oMQnkpNydPuwHeLwOwD6pr0oIYbZT0IE6tD5wSdcxaQ=;
+ b=S9K/fQ+s+mwT3phk7AQUQJ6EHTUBZ62L/o+KBgazilF/BcNUDky2aXHRi9y8fzgjO2Ry
+ fl/A+AIvXpeGrAaPsM28QqSvBbNtZ/XN17y+jiNCyT6adcEBB2UeJ8x663oR+d0PhOhU
+ mGyTlFC4kvav+TcdyjD5pEhlxoBBg7CJzh65bEVHKzUm8hR1QIg/OPDT6TEj2HFG83WW
+ DWlAqp7qsGW+TrYcNPUtNj0ZFeFhg6tr9Vksjr3bmbQs4b8zn9kQWQHAlrngiy6OS/22
+ DAG6H+eYVuFDP/aCq5JRUFOiKLuwP2RWfqMbfbaB+lkSlk1VIB9ni+aM7dumKyhKMBkm Vg== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37rvpw5j1k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 04:09:29 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13983Ce6017354;
+        Fri, 9 Apr 2021 08:09:27 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma01fra.de.ibm.com with ESMTP id 37rvmq97bn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 08:09:26 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13989NC848628088
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 9 Apr 2021 08:09:24 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CB3D742041;
+        Fri,  9 Apr 2021 08:09:23 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7D65B4203F;
+        Fri,  9 Apr 2021 08:09:23 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri,  9 Apr 2021 08:09:23 +0000 (GMT)
+From:   Thomas Richter <tmricht@linux.ibm.com>
+To:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org
+Cc:     svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH] perf ftrace: Command fails on s390
+Date:   Fri,  9 Apr 2021 10:09:12 +0200
+Message-Id: <20210409080912.2960595-1-tmricht@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409033652.28316-2-wangyanan55@huawei.com>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: sTKAVn5_S4EkFvKp8EGEFBoeb9Zes4bc
+X-Proofpoint-GUID: sTKAVn5_S4EkFvKp8EGEFBoeb9Zes4bc
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-09_04:2021-04-08,2021-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 adultscore=0
+ suspectscore=0 phishscore=0 lowpriorityscore=0 clxscore=1015
+ priorityscore=1501 malwarescore=0 mlxlogscore=999 spamscore=0 mlxscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104090059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yanan,
+Command 'perf ftrace -v -- ls' fails in s390 (at least 5.12.0rc6).
 
-On Friday 09 Apr 2021 at 11:36:51 (+0800), Yanan Wang wrote:
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> +static void stage2_invalidate_icache(void *addr, u64 size)
-> +{
-> +	if (icache_is_aliasing()) {
-> +		/* Flush any kind of VIPT icache */
-> +		__flush_icache_all();
-> +	} else if (is_kernel_in_hyp_mode() || !icache_is_vpipt()) {
-> +		/* PIPT or VPIPT at EL2 */
-> +		invalidate_icache_range((unsigned long)addr,
-> +					(unsigned long)addr + size);
-> +	}
-> +}
-> +
+The root cause is a missing pointer dereference which causes an
+array element address to be used as PID.
 
-I would recommend to try and rebase this patch on kvmarm/next because
-we've made a few changes in pgtable.c recently. It is now linked into
-the EL2 NVHE code which means there are constraints on what can be used
-from there -- you'll need a bit of extra work to make some of these
-functions available to EL2.
+Fix this by extracting the PID.
 
-Thanks,
-Quentin
+Output before:
+  # ./perf ftrace -v -- ls
+  function_graph tracer is used
+  write '-263732416' to tracing/set_ftrace_pid failed: Invalid argument
+  failed to set ftrace pid
+  #
+
+Output after:
+   ./perf ftrace -v -- ls
+   function_graph tracer is used
+   # tracer: function_graph
+   #
+   # CPU  DURATION                  FUNCTION CALLS
+   # |     |   |                     |   |   |   |
+   4)               |  rcu_read_lock_sched_held() {
+   4)   0.552 us    |    rcu_lockdep_current_cpu_online();
+   4)   6.124 us    |  }
+
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+---
+ tools/perf/builtin-ftrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/perf/builtin-ftrace.c b/tools/perf/builtin-ftrace.c
+index d49448a1060c..87cb11a7a3ee 100644
+--- a/tools/perf/builtin-ftrace.c
++++ b/tools/perf/builtin-ftrace.c
+@@ -289,7 +289,7 @@ static int set_tracing_pid(struct perf_ftrace *ftrace)
+ 
+ 	for (i = 0; i < perf_thread_map__nr(ftrace->evlist->core.threads); i++) {
+ 		scnprintf(buf, sizeof(buf), "%d",
+-			  ftrace->evlist->core.threads->map[i]);
++			  perf_thread_map__pid(ftrace->evlist->core.threads, i));
+ 		if (append_tracing_file("set_ftrace_pid", buf) < 0)
+ 			return -1;
+ 	}
+-- 
+2.30.2
+
