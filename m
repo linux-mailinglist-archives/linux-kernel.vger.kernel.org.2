@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CD0359D59
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89709359D7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:31:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhDILaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:30:46 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:50118 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhDILap (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:30:45 -0400
-Date:   Fri, 09 Apr 2021 11:30:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1617967831;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bwual4sIAnoZe8dE2uFyqX/II+fAPUVbohLGfbgniEo=;
-        b=M5AInw0qDBFXpKKGKyPWT9ZIbHqhbfiRgVrvi91xvxxk2qcIMDPD99Hpc2BzaU4X7Zfphe
-        Smnk4N9pdoszESqMCF4vKM/kWgsrklEqCIbGeUTqZbVdjJg0jAHBFT3BXGaIM8bgsx83pp
-        G1CEyWsU+nqMDXGhWTDHays4JkcAGz4mytDAj7qv0jcqFe5Y1j5DIQA9IQ7QC5ZUMhZyp+
-        zTEcvTseo1h0QSuF+N4Aw29BAa+y0NN8mXnbFZgfwJCmQDJJ37IDv2t0FF8Zen/E3pviUC
-        lFkHLYEagQrbB/xzYWqr/hMnlqfX0McxXyK5JOlAGq8La2PK3jIgIwRlyA/MjA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1617967831;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bwual4sIAnoZe8dE2uFyqX/II+fAPUVbohLGfbgniEo=;
-        b=HPBtZKyVOg6eozoePTKuM3DL7P4HpHgkmH5e0HNJOdPqov8ln2kC45g/wN5qIpcgxvPeh4
-        i0abe2fMcBOm2SDw==
-From:   "tip-bot2 for Matthieu Baerts" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/core] static_call: Fix unused variable warn w/o MODULE
-Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210326105023.2058860-1-matthieu.baerts@tessares.net>
-References: <20210326105023.2058860-1-matthieu.baerts@tessares.net>
+        id S233592AbhDILbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:31:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233532AbhDILbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 07:31:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59CDA6113A;
+        Fri,  9 Apr 2021 11:31:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617967879;
+        bh=fUp0KpjNQFEeNM0zf+0A70wkSLLCHLMN8TUpFFkE/Ck=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=trVdlCtfHEy41zGKMjob9ykuUD1Qjq3pGi4wPcrTsBrFrBpoFV4awRihVWa74ZlUO
+         X8kaF5+9MazVIiXDLCW92DCjcVcZhoDXenOHyyH8bDyOy/4tZt+xBDGsJI36vTfVnp
+         dtPmATsLtylovnLwq/Qhe4BxlcaKrL+UcXG7xFxmrb1U+FMYLHlqXxug7EcXWAiPN/
+         CW3vRWtgmbSTOe2BfHgpeNOODK74yeOtJYAcLf2e7NFmxBNbK8a6Fg/rA0FkeitLoy
+         veTNJZoy0kbq0iKhae8l+lS7xLcGeHBDFkpUAvmmKlydcStoSjq5o47c4jzqFElZPA
+         X95ZXrN1eLITw==
+Date:   Fri, 9 Apr 2021 12:31:01 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v2 3/4] arm64: Detect FTRACE cases that make the
+ stack trace unreliable
+Message-ID: <20210409113101.GA4499@sirena.org.uk>
+References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
+ <20210405204313.21346-1-madvenka@linux.microsoft.com>
+ <20210405204313.21346-4-madvenka@linux.microsoft.com>
+ <20210408165825.GP4516@sirena.org.uk>
+ <eacc6098-a15f-c07a-2730-cb16cb8e1982@linux.microsoft.com>
 MIME-Version: 1.0
-Message-ID: <161796783118.29796.15597297301390026189.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
+Content-Disposition: inline
+In-Reply-To: <eacc6098-a15f-c07a-2730-cb16cb8e1982@linux.microsoft.com>
+X-Cookie: Ring around the collar.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/core branch of tip:
 
-Commit-ID:     7d95f22798ecea513f37b792b39fec4bcf20fec3
-Gitweb:        https://git.kernel.org/tip/7d95f22798ecea513f37b792b39fec4bcf2=
-0fec3
-Author:        Matthieu Baerts <matthieu.baerts@tessares.net>
-AuthorDate:    Fri, 26 Mar 2021 11:50:23 +01:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Fri, 09 Apr 2021 13:22:12 +02:00
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-static_call: Fix unused variable warn w/o MODULE
+On Thu, Apr 08, 2021 at 02:23:39PM -0500, Madhavan T. Venkataraman wrote:
+> On 4/8/21 11:58 AM, Mark Brown wrote:
 
-Here is the warning converted as error and reported by GCC:
+> > This looks good to me however I'd really like someone who has a firmer
+> > understanding of what ftrace is doing to double check as it is entirely
+> > likely that I am missing cases here, it seems likely that if I am
+> > missing stuff it's extra stuff that needs to be added and we're not
+> > actually making use of the reliability information yet.
 
-  kernel/static_call.c: In function =E2=80=98__static_call_update=E2=80=99:
-  kernel/static_call.c:153:18: error: unused variable =E2=80=98mod=E2=80=99 [=
--Werror=3Dunused-variable]
-    153 |   struct module *mod =3D site_mod->mod;
-        |                  ^~~
-  cc1: all warnings being treated as errors
-  make[1]: *** [scripts/Makefile.build:271: kernel/static_call.o] Error 1
+> OK. So, do you have some specific reviewer(s) in mind? Apart from yourself, Mark Rutland and
+> Josh Poimboeuf, these are some reviewers I can think of (in alphabetical order):
 
-This is simply because since recently, we no longer use 'mod' variable
-elsewhere if MODULE is unset.
+Mainly Mark Rutland, but generally someone else who has looked at ftrace
+on arm64 in detail.  It was mainly a comment to say I wasn't going to do
+any kind of Reviewed-by but also hadn't spotted any issues.
 
-When using 'make tinyconfig' to generate the default kconfig, MODULE is
-unset.
+--xHFwDpU9dbj6ez1V
+Content-Type: application/pgp-signature; name="signature.asc"
 
-There are different ways to fix this warning. Here I tried to minimised
-the number of modified lines and not add more #ifdef. We could also move
-the declaration of the 'mod' variable inside the if-statement or
-directly use site_mod->mod.
+-----BEGIN PGP SIGNATURE-----
 
-Fixes: 698bacefe993 ("static_call: Align static_call_is_init() patching condi=
-tion")
-Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210326105023.2058860-1-matthieu.baerts@tess=
-ares.net
----
- kernel/static_call.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBwOvQACgkQJNaLcl1U
+h9C1ywf/Zbw1Z1QFQ9f8u2MHhFttf12fqFoSFd5iqQ9spEcbfaBlpTl2v8M/5H9h
+R6oBURNPeVfVCxvv/71t9Orzqyn9ARMB/OizAb2stUPdlFcnKAYcK+EGhOLqLKvu
+ROhmYPrJxYkjx9Qegny0xAZp5MrlJ6nmUDl8xOLJYYj706CxMFP5Ajsbx+iYk1ZE
+s3sEJFrMhNTcQGo/Ov6u8icSdzC5GmdnbLZLZQABGM2XGtLYaI4OEAg9ZwXD/fIK
+A97q5N6unW1DVvNGwOdKRGakFGw/B9JoLtSEvWjEpsDzePbgTOm5hiWQi1GZNR51
+9te0IeS7HVke1UH7AXxDqXJPHrbPLg==
+=neW0
+-----END PGP SIGNATURE-----
 
-diff --git a/kernel/static_call.c b/kernel/static_call.c
-index 2c5950b..723fcc9 100644
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -165,13 +165,13 @@ void __static_call_update(struct static_call_key *key, =
-void *tramp, void *func)
-=20
- 		stop =3D __stop_static_call_sites;
-=20
--#ifdef CONFIG_MODULES
- 		if (mod) {
-+#ifdef CONFIG_MODULES
- 			stop =3D mod->static_call_sites +
- 			       mod->num_static_call_sites;
- 			init =3D mod->state =3D=3D MODULE_STATE_COMING;
--		}
- #endif
-+		}
-=20
- 		for (site =3D site_mod->sites;
- 		     site < stop && static_call_key(site) =3D=3D key; site++) {
+--xHFwDpU9dbj6ez1V--
