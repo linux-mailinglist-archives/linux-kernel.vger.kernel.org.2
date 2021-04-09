@@ -2,148 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2EB35A0B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:09:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97A9C35A0B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbhDIOI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:08:57 -0400
-Received: from mail-mw2nam12on2085.outbound.protection.outlook.com ([40.107.244.85]:8439
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233009AbhDIOIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:08:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mYiav54/wgqliTo0qmYs9q0ZeaeavGo5EYyJNIxbBDtYPPt9yrjFYNborvlZcwppLyMtkKoigz+xG3WeW+Q4yTGAR9Gh1yOLftcnzvgoDwitfPXcaJM1ehDsiX+tGnt6KPrejwXc9QnhvhoifrHkfTBQ1RMz9IPjT/pusJqtsntK924ODWNbAcYO7nYVMv9qp18l8dlkIEkLCH90TVG6H0WwVSML+ZI8zs5nylrg5DcwJRBD1oXm/sLl4o1HnMcBUilD93IPQrygdaAA5jsdnVu6sJ+AtUNiNOdm9PK7DGaPacKJW1NnzIFekITJvay1zpZnacOHCZYkLKoLX66QxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wcX+I0oO6tCUrm3FHhb5h5u/UXaWk6B32HUO9NKx/YY=;
- b=BXwxroabjoPuueUkkt/yrRTPnIhFlQxn6Eo8OM/MyWFH5ruWjSeTRwcUQXfC0VZmOmptbu2J5hyPhivlrivVK9Ks2i/QB2zHcN0rMXnDe+EdHzHlv2A1nlEFMnrbsQldI1xcmYf+yV9FfuQ2nYBKzmP/B/AtciS9+8exPJ+kX7G+JvXC5Q8SvvDOitWvXCXWEOCj3N3hJab3S2UhAcBML8l59bUvPyE5zJ9mNKTOgYJALuGWQsS237hsGpRaRuxXveuEVzQbW2zXuR41kwwL341d1Ilj8BRtf/d2iGzZwWRqFp40ZK8VSKjqYiNMeUb1FhtU2Qp85qM9waIYFB5KoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=linaro.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wcX+I0oO6tCUrm3FHhb5h5u/UXaWk6B32HUO9NKx/YY=;
- b=mGCSOH7VuIdjYK4/4q6b8ZkxwbjfKb5b4i3MGl5tZCtP/Sv2jSP1jH2juTF63/8cq6hRtnCyBfCIzwnRCleZN8O4do5mNkBr8dN1C2tZTiSn+LfnmLch8qLP0BuP/pE+f9aoJ2wfwduqkt8g0UWGccmN2A6NmO/314aVHZ/O1Sg=
-Received: from CY4PR18CA0063.namprd18.prod.outlook.com (2603:10b6:903:13f::25)
- by SN6PR02MB5055.namprd02.prod.outlook.com (2603:10b6:805:67::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Fri, 9 Apr
- 2021 14:08:37 +0000
-Received: from CY1NAM02FT055.eop-nam02.prod.protection.outlook.com
- (2603:10b6:903:13f:cafe::b6) by CY4PR18CA0063.outlook.office365.com
- (2603:10b6:903:13f::25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend
- Transport; Fri, 9 Apr 2021 14:08:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- CY1NAM02FT055.mail.protection.outlook.com (10.152.74.80) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4020.17 via Frontend Transport; Fri, 9 Apr 2021 14:08:37 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 9 Apr 2021 07:08:28 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2106.2 via Frontend Transport; Fri, 9 Apr 2021 07:08:28 -0700
-Envelope-to: git@xilinx.com,
- linus.walleij@linaro.org,
- bgolaszewski@baylibre.com,
- linux-gpio@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-Received: from [172.23.80.241] (port=38546 helo=xhdsneeli40x.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <srinivas.neeli@xilinx.com>)
-        id 1lUroB-0005KB-6s; Fri, 09 Apr 2021 07:08:27 -0700
-From:   Srinivas Neeli <srinivas.neeli@xilinx.com>
-To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
-        <michal.simek@xilinx.com>, <shubhrajyoti.datta@xilinx.com>,
-        <sgoud@xilinx.com>
-CC:     <linux-gpio@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <git@xilinx.com>,
-        Srinivas Neeli <srinivas.neeli@xilinx.com>
-Subject: [PATCH 3/3] gpio: zynq: Check return value of irq_get_irq_data
-Date:   Fri, 9 Apr 2021 19:38:06 +0530
-Message-ID: <20210409140806.31824-4-srinivas.neeli@xilinx.com>
-X-Mailer: git-send-email 2.9.1
-In-Reply-To: <20210409140806.31824-1-srinivas.neeli@xilinx.com>
-References: <20210409140806.31824-1-srinivas.neeli@xilinx.com>
+        id S233267AbhDIOKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:10:19 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16512 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231402AbhDIOKS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 10:10:18 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FH0Lp2L84zPnDc;
+        Fri,  9 Apr 2021 22:07:14 +0800 (CST)
+Received: from [127.0.0.1] (10.69.38.196) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 22:09:56 +0800
+Subject: Re: [PATCH 3/4] docs: Add documentation for HiSilicon PTT device
+ driver
+To:     Bjorn Helgaas <helgaas@kernel.org>
+CC:     <alexander.shishkin@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <lorenzo.pieralisi@arm.com>, <gregkh@linuxfoundation.org>,
+        <jonathan.cameron@huawei.com>, <song.bao.hua@hisilicon.com>,
+        <prime.zeng@huawei.com>, <linux-doc@vger.kernel.org>,
+        <linuxarm@huawei.com>
+References: <20210408165758.GA1935187@bjorn-Precision-5520>
+From:   Yicong Yang <yangyicong@hisilicon.com>
+Message-ID: <e94e9a35-a799-216d-c9a4-2f5fddc5e8b6@hisilicon.com>
+Date:   Fri, 9 Apr 2021 22:09:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f24e1bc3-dec6-4583-8e1f-08d8fb60f85c
-X-MS-TrafficTypeDiagnostic: SN6PR02MB5055:
-X-Microsoft-Antispam-PRVS: <SN6PR02MB5055D40DAF3B9D4BC96202C1AF739@SN6PR02MB5055.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JnGIdhXZQYcmCcdM6wvBQN8j9XkpSd3WMUHeSDVWgKnDFizENX5rluAYrEMWhnfnrKd62SISH/5HHXICWxI/3VZjxQWxeoE+9pTleWqsrhZclZeUTujD06xUVuwjUF+xKRZr8Iwa/170+2xQsMNBmIBIi7J26TkHueO5NbeqZuaJqjLL5SiMTxcqnckgsweUeOhX75dp4ujzQD24NN44t97/fMx1nrXou/DAJt6XS2xQR/Wbh30FqibUa3XnO3m3bI338/pmVUnDs4nuaBGoTiSLicQCjhDTyYO9FkCZCJW/ZEJ9KHhn7tNLEjiyFA8/kHCaylLHWtxRHa/N24JBSQwhUSo+LqbY1WBk+X7YV+fRzgnuR4eDPu58U2duHV8+o/7+63PC7RdBeoP9UpvMp6Wrhrigh50AzpU7o/kgYJaeTBXuTKRQnO71H66OKWJxM/926pbzdAzAc9vjr6LUy+O043afw1jiEhVlJ5yPY8+U9znzjcOrfAIZpgOUkiohQEzubSgb9s3EttRaryHHmNY4IJJlmTwafjTncSk/+2eUtKqLX2uC/+bM6OlsMgkUZ2hCxymnQ8oDD4QsW94Zr26nk5nBS2mJZmbYh3JLKtMRT570RTU2zC2grxF9mv5WTBUABrMLcIYCua0KqdCBAoMd/rwM1xnwU9HIUAwJEkl36LZiUCXgiZV0YmO7kAyX
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(136003)(39860400002)(396003)(376002)(36840700001)(46966006)(107886003)(44832011)(4326008)(356005)(83380400001)(1076003)(36756003)(82740400003)(7636003)(2616005)(8936002)(110136005)(316002)(54906003)(9786002)(36906005)(6636002)(5660300002)(7696005)(6666004)(8676002)(478600001)(36860700001)(82310400003)(47076005)(186003)(426003)(336012)(70206006)(2906002)(26005)(70586007)(102446001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 14:08:37.4543
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f24e1bc3-dec6-4583-8e1f-08d8fb60f85c
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY1NAM02FT055.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR02MB5055
+In-Reply-To: <20210408165758.GA1935187@bjorn-Precision-5520>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.38.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In two different instances the return value of "irq_get_irq_data"
-API was neither captured nor checked.
-Fixed it by capturing the return value and then checking for any error.
+On 2021/4/9 0:57, Bjorn Helgaas wrote:
+> On Thu, Apr 08, 2021 at 09:22:52PM +0800, Yicong Yang wrote:
+>> On 2021/4/8 2:55, Bjorn Helgaas wrote:
+>>> On Tue, Apr 06, 2021 at 08:45:53PM +0800, Yicong Yang wrote:
+> 
+>>>> +On Kunpeng 930 SoC, the PCIe root complex is composed of several
+>>>> +PCIe cores.
+>>
+>>> Can you connect "Kunpeng 930" to something in the kernel tree?
+>>> "git grep -i kunpeng" shows nothing that's obviously relevant.
+>>> I assume there's a related driver in drivers/pci/controller/?
+>>
+>> Kunpeng 930 is the product name of Hip09 platform. The PCIe
+>> controller uses the generic PCIe driver based on ACPI.
+> 
+> I guess I'm just looking for a hint to help users know when to enable
+> the Kconfig for this.  Maybe the "HiSilicon" in the Kconfig help is
+> enough?  Maybe "Kunpeng 930" is not even necessary?  If "Kunpeng 930"
+> *is* necessary, there should be some way to relate it to something
+> else.
+> 
 
-Addresses-Coverity: "returned_null"
-Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
----
- drivers/gpio/gpio-zynq.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+since it's added in Kunpeng 930. otherwise users maybe confused why they
+don't find it on Kunpeng 920 (Hip 08) or older platforms. The Kunpeng is
+the product name, users should have known it when they have such a platform.
 
-diff --git a/drivers/gpio/gpio-zynq.c b/drivers/gpio/gpio-zynq.c
-index c91302a16c77..f0cb8ccd03ed 100644
---- a/drivers/gpio/gpio-zynq.c
-+++ b/drivers/gpio/gpio-zynq.c
-@@ -736,6 +736,11 @@ static int __maybe_unused zynq_gpio_suspend(struct device *dev)
- 	struct zynq_gpio *gpio = dev_get_drvdata(dev);
- 	struct irq_data *data = irq_get_irq_data(gpio->irq);
- 
-+	if (!data) {
-+		dev_err(dev, "irq_get_irq_data() failed\n");
-+		return -EINVAL;
-+	}
-+
- 	if (!device_may_wakeup(dev))
- 		disable_irq(gpio->irq);
- 
-@@ -753,6 +758,11 @@ static int __maybe_unused zynq_gpio_resume(struct device *dev)
- 	struct irq_data *data = irq_get_irq_data(gpio->irq);
- 	int ret;
- 
-+	if (!data) {
-+		dev_err(dev, "irq_get_irq_data() failed\n");
-+		return -EINVAL;
-+	}
-+
- 	if (!device_may_wakeup(dev))
- 		enable_irq(gpio->irq);
- 
--- 
-2.9.1
+>>>> +from the file, and the desired value written to the file to tune.
+>>>
+>>>> +Tuning multiple events at the same time is not permitted, which means
+>>>> +you cannot read or write more than one tune file at one time.
+>>>
+>>> I think this is obvious from the model, so the sentence doesn't really
+>>> add anything.  Each event is a separate file, and it's obvious that
+>>> there's no way to write to multiple files simultaneously.
+>>
+>> from the usage we shown below this situation won't happen. I just worry
+>> that users may have a program to open multiple files at the same time and
+>> read/write simultaneously, so add this line here to mention the restriction.
+> 
+> How is this possible?  I don't think "writing multiple files
+> simultaneously" is even possible in the Linux syscall model.  I don't
+> think a user will do anything differently after reading "you cannot
+> read or write more than one tune file at one time."
+> 
+then I'll remove this line. thanks.
+>>>> +- tx_path_rx_req_alloc_buf_level: watermark of RX requested
+>>>> +- tx_path_tx_req_alloc_buf_level: watermark of TX requested
+>>>> +
+>>>> +These events influence the watermark of the buffer allocated for each
+>>>> +type. RX means the inbound while Tx means outbound. For a busy
+>>>> +direction, you should increase the related buffer watermark to enhance
+>>>> +the performance.
+>>>
+>>> Based on what you have written here, I would just write 2 to both
+>>> files to enhance the performance in both directions.  But obviously
+>>> there must be some tradeoff here, e.g., increasing Rx performance
+>>> comes at the cost of Tx performane.
+>>
+>> the Rx buffer and Tx buffer are separate, so they won't influence
+>> each other.
+> 
+> Why would I write anything other than 2 to these files?  That's the
+> question I think this paragraph should answer.
+> 
+
+In most cases just keep the normal level.
+
+the data in the buffer will be posted when reaching the watermark
+or timed out. for some situation you have an idle traffic but you
+want a quick response, then set the watermark in lower level.
+
+>>>> +9. data_format
+>>>> +--------------
+>>>> +
+>>>> +File to indicate the format of the traced TLP headers. User can also
+>>>> +specify the desired format of traced TLP headers. Available formats
+>>>> +are 4DW, 8DW which indicates the length of each TLP headers traced.
+>>>> +::
+>>>> +    $ cat data_format
+>>>> +    [4DW]    8DW
+>>>> +    $ echo 8 > data_format
+>>>> +    $ cat data_format
+>>>> +    4DW     [8DW]
+>>>> +
+>>>> +The traced TLP header format is different from the PCIe standard.
+>>>
+>>> I'm confused.  Below you say the fields of the traced TLP header are
+>>> defined by the PCIe spec.  But here you say the format is *different*.
+>>> What exactly is different?
+>>
+>> For the Request Header Format for 64-bit addressing of Memory, defind in
+>> PCIe spec 4.0, Figure 2-15, the 1st DW is like:
+>>
+>> Byte 0 > [Fmt] [Type] [T9] [Tc] [T8] [Attr] [LN] [TH] ... [Length]
+>>
+>> some are recorded in our traced header like below, which some are not.
+>> that's what I mean the format of the header are different. But for a
+>> certain field like 'Fmt', the meaning keeps same with what Spec defined.
+>> that's what I mean the fields definition of our traced header keep same
+>> with the Spec.
+> 
+> Ah, that helps a lot, thank you.  Maybe you could say something along
+> the lines of this:
+> 
+>   When using the 8DW data format, the entire TLP header is logged.
+>   For example, the TLP header for Memory Reads with 64-bit addresses
+>   is shown in PCIe r5.0, Figure 2-17; the header for Configuration
+>   Requests is shown in Figure 2.20, etc.
+> 
+>   In addition, 8DW trace buffer entries contain a timestamp and
+>   possibly a prefix, e.g., a PASID TLP prefix (see Figure 6-20).  TLPs
+>   may include more than one prefix, but only one can be logged in
+>   trace buffer entries.
+> 
+
+yes. but currently we'll only trace the PASID TLP prefix. This field
+will be all 0 for a packet with no PASID TLP prefix. I'll mention
+it in the doc.
+
+>   When using the 4DW data format, DW0 of the trace buffer entry
+>   contains selected fields of DW0 of the TLP, together with a
+>   timestamp.  DW1-DW3 of the trace buffer entry contain DW1-DW3
+>   directly from the TLP header.
+> 
+
+thanks a lot. it does look more clearer. will update the doc
+as suggested.
+
+> This looks like a really cool device.  I wish we had this for more
+> platforms.
+
+thanks! glad to hear that!
+
+Regards,
+Yicong
 
