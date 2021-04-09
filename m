@@ -2,154 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD980359E63
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04209359E75
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233608AbhDIMKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:10:14 -0400
-Received: from outbound-smtp54.blacknight.com ([46.22.136.238]:42267 "EHLO
-        outbound-smtp54.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233572AbhDIMKM (ORCPT
+        id S233238AbhDIMR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:17:57 -0400
+Received: from esa4.hc3370-68.iphmx.com ([216.71.155.144]:29813 "EHLO
+        esa4.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229801AbhDIMR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:10:12 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp54.blacknight.com (Postfix) with ESMTPS id 384ABFABF7
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 13:09:59 +0100 (IST)
-Received: (qmail 12263 invoked from network); 9 Apr 2021 12:09:59 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Apr 2021 12:09:59 -0000
-Date:   Fri, 9 Apr 2021 13:09:57 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: [PATCH] mm/memory_hotplug: Make unpopulated zones PCP structures
- unreachable during hot remove
-Message-ID: <20210409120957.GM3697@techsingularity.net>
+        Fri, 9 Apr 2021 08:17:56 -0400
+X-Greylist: delayed 429 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 08:17:56 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1617970664;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=kXQadYr7lBMnMrP9f0KECt/GboONQfDPaqej/fNyBjM=;
+  b=AAv1YbK5TwdZL4ZhlkeX6SQXRqZciDc7YeiwhWGFm3hxanxEI7qwl/bk
+   k+8OZ4NSwUiF/vKEZtReAEHsYLRgSHNzXlbT+dkI0xIK3cCM8R409nJf4
+   AkxLBsB/EOXh7voYcPCyvf6+8BwnQPr+BUEhw7eOmjHfpbR8ytN2HomZy
+   c=;
+Authentication-Results: esa4.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
+IronPort-SDR: nozO2MJ1xcVf0oIqZGCiEbLfXCUaRqSL8bB63wXvhlhdvPkAn+hnoyyMhJzCDByp8y9qmX03w2
+ wyMDK5LoPpfLE0Us55g0z1t2U3KRoi7eoqZQ/yblsPDyTYfnQJggbJhKRaZuF5lj/rhOfty4en
+ lzTAKw3JCk5kUAW90y9JXdacPJtVBA94Sl49clbjN2Hp57Wg1evYJKD93/4L5uklh6DU0uWq7A
+ XxixjN7qZ03QiyyMacCxASzmN86/x91eoEwZmlzGCPyssGSto0exTjnnLbe3+iMCNDA1MFeOTR
+ 7fM=
+X-SBRS: 4.0
+X-MesageID: 42727005
+X-Ironport-Server: esa4.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+IronPort-HdrOrdr: A9a23:bFjS3qFPe/NogvkupLqFOpHXdLJzesId70hD6mlYVQFVfsuEl8
+ qngfQc0lvOhCwMXWw78OrsBICrSxrnlaJdy48XILukQU3aqHKlRbsSibfK7h/BP2nF9uBb3b
+ p9aKQWMrfNJHVzkMqS2maFOvk6xt3vys6VrMP/61socg1wcaFn6G5Ce2OmO2l7XhNPC5Z8NL
+ f03LslmxOadX4abtu2CxA+NoCum/TxmI/7ehlDPhY76WC15g+A0qLwEBSTw34lIlFy6IolmF
+ KlryXJop+Nntv+4R/a2m/V4f1t6abc4+oGPuOgoIw4Lj3tjyyheYhuXaaT1QpF3N2H2RIRv/
+ Tn5zsmIsRv+1PdF1vF3ifF6k3b/xsFr1/k1FOCjnPoraXCNUwHIvsEv611WF/9ySMbzbZB+Z
+ MO5U21nd5rKCmFuyLH693BR3hR5zGJiEtnq8E/pThiS4cEAYUhy7A3zQduP7orOjn104wjGP
+ kGNrCn2N9mNWmXaH3UpQBUsaWRd0V2Gh+HR34LsdCO3w5Xm2hkz1AZyNZ3pAZ5yK4A
+X-IronPort-AV: E=Sophos;i="5.82,209,1613451600"; 
+   d="scan'208";a="42727005"
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+To:     LKML <linux-kernel@vger.kernel.org>
+CC:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tony Luck <tony.luck@intel.com>, <x86@kernel.org>
+Subject: [PATCH] x86/cpu: Comment Skylake server stepping too
+Date:   Fri, 9 Apr 2021 13:10:27 +0100
+Message-ID: <20210409121027.16437-1-andrew.cooper3@citrix.com>
+X-Mailer: git-send-email 2.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-zone_pcp_reset allegedly protects against a race with drain_pages
-using local_irq_save but this is bogus. local_irq_save only operates
-on the local CPU. If memory hotplug is running on CPU A and drain_pages
-is running on CPU B, disabling IRQs on CPU A does not affect CPU B and
-offers no protection.
+Further to commit 53375a5a218e ("x86/cpu: Resort and comment Intel
+models"), CascadeLake and CooperLake are steppings of Skylake, and make up
+the 1st to 3rd generation "Xeon Scalable Processor" line.
 
-This patch reorders memory hotremove such that the PCP structures
-relevant to the zone are no longer reachable by the time the structures
-are freed.  With this reordering, no protection is required to prevent
-a use-after-free and the IRQs can be left enabled. zone_pcp_reset is
-renamed to zone_pcp_destroy to make it clear that the per-cpu structures
-are deleted when the function returns.
-
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
 ---
- mm/internal.h       |  2 +-
- mm/memory_hotplug.c | 10 +++++++---
- mm/page_alloc.c     | 22 ++++++++++++++++------
- 3 files changed, 24 insertions(+), 10 deletions(-)
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: Tony Luck <tony.luck@intel.com>
+CC: x86@kernel.org
+CC: linux-kernel@vger.kernel.org
 
-diff --git a/mm/internal.h b/mm/internal.h
-index 09adf152a10b..cc34ce4461b7 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -203,7 +203,7 @@ extern void free_unref_page(struct page *page);
- extern void free_unref_page_list(struct list_head *list);
+It is left as an exercise to the reader to ponder why the 3rd generation Xeon
+Scalable brand is formed of both CooperLake and IceLake parts.
+---
+ arch/x86/include/asm/intel-family.h | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
+index b15262f1f645..955b06d6325a 100644
+--- a/arch/x86/include/asm/intel-family.h
++++ b/arch/x86/include/asm/intel-family.h
+@@ -33,7 +33,7 @@
+  *		_EX	- 4+ socket server parts
+  *
+  * The #define line may optionally include a comment including platform or core
+- * names. An exception is made for kabylake where steppings seem to have gotten
++ * names. An exception is made for skylake/kabylake where steppings seem to have gotten
+  * their own names :-(
+  */
  
- extern void zone_pcp_update(struct zone *zone);
--extern void zone_pcp_reset(struct zone *zone);
-+extern void zone_pcp_destroy(struct zone *zone);
- extern void zone_pcp_disable(struct zone *zone);
- extern void zone_pcp_enable(struct zone *zone);
+@@ -74,6 +74,8 @@
+ #define INTEL_FAM6_SKYLAKE_L		0x4E	/* Sky Lake             */
+ #define INTEL_FAM6_SKYLAKE		0x5E	/* Sky Lake             */
+ #define INTEL_FAM6_SKYLAKE_X		0x55	/* Sky Lake             */
++/*                 CASCADELAKE_X	0x55	   Sky Lake -- s: 7     */
++/*                 COOPERLAKE_X		0x55	   Sky Lake -- s: 11    */
  
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 0cdbbfbc5757..3d059c9f9c2d 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1687,12 +1687,16 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
- 	zone->nr_isolate_pageblock -= nr_pages / pageblock_nr_pages;
- 	spin_unlock_irqrestore(&zone->lock, flags);
- 
--	zone_pcp_enable(zone);
--
- 	/* removal success */
- 	adjust_managed_page_count(pfn_to_page(start_pfn), -nr_pages);
- 	zone->present_pages -= nr_pages;
- 
-+	/*
-+	 * Restore PCP after managed pages has been updated. Unpopulated
-+	 * zones PCP structures will remain unusable.
-+	 */
-+	zone_pcp_enable(zone);
-+
- 	pgdat_resize_lock(zone->zone_pgdat, &flags);
- 	zone->zone_pgdat->node_present_pages -= nr_pages;
- 	pgdat_resize_unlock(zone->zone_pgdat, &flags);
-@@ -1700,8 +1704,8 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
- 	init_per_zone_wmark_min();
- 
- 	if (!populated_zone(zone)) {
--		zone_pcp_reset(zone);
- 		build_all_zonelists(NULL);
-+		zone_pcp_destroy(zone);
- 	} else
- 		zone_pcp_update(zone);
- 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 5e8aedb64b57..d6c3db853552 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8946,18 +8946,29 @@ void zone_pcp_disable(struct zone *zone)
- 
- void zone_pcp_enable(struct zone *zone)
- {
--	__zone_set_pageset_high_and_batch(zone, zone->pageset_high, zone->pageset_batch);
-+	/*
-+	 * If the zone is populated, restore the high and batch counts.
-+	 * If unpopulated, leave the high and batch count as 0 and 1
-+	 * respectively as done by zone_pcp_disable. The per-cpu
-+	 * structures will later be freed by zone_pcp_destroy.
-+	 */
-+	if (populated_zone(zone))
-+		__zone_set_pageset_high_and_batch(zone, zone->pageset_high, zone->pageset_batch);
-+
- 	mutex_unlock(&pcp_batch_high_lock);
- }
- 
--void zone_pcp_reset(struct zone *zone)
-+/*
-+ * Called when a zone has been hot-removed. At this point, the PCP has been
-+ * drained, disabled and the zone is removed from the zonelists so the
-+ * structures are no longer in use. PCP was disabled/drained by
-+ * zone_pcp_disable. This function will drain any remaining vmstat deltas.
-+ */
-+void zone_pcp_destroy(struct zone *zone)
- {
--	unsigned long flags;
- 	int cpu;
- 	struct per_cpu_pageset *pset;
- 
--	/* avoid races with drain_pages()  */
--	local_irq_save(flags);
- 	if (zone->pageset != &boot_pageset) {
- 		for_each_online_cpu(cpu) {
- 			pset = per_cpu_ptr(zone->pageset, cpu);
-@@ -8966,7 +8977,6 @@ void zone_pcp_reset(struct zone *zone)
- 		free_percpu(zone->pageset);
- 		zone->pageset = &boot_pageset;
- 	}
--	local_irq_restore(flags);
- }
- 
- #ifdef CONFIG_MEMORY_HOTREMOVE
+ #define INTEL_FAM6_KABYLAKE_L		0x8E	/* Sky Lake             */
+ /*                 AMBERLAKE_L		0x8E	   Sky Lake -- s: 9     */
+-- 
+2.11.0
+
