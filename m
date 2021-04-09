@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F7E359E0E
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E154D359E14
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:57:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbhDIL5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:57:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51472 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231611AbhDIL5k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:57:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ABD266115B;
-        Fri,  9 Apr 2021 11:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617969447;
-        bh=xWpZMs8SF1KeRP75gFOHcEWwPPGqR29BI1NfJEUZSpM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p5nvaFt2mOhhxiQsclwdeybVrho712FuWXR+NV8KhOzB2O7xRD4wLfZHp4HgW3ypz
-         h6y1CTRkgOerE2hXcrD9b6oXIUxy4NRLcPnhmzkxyfix2DIFv2d9z/20+3QwcB7uTF
-         j6QHEE7lXRZkW8rU7pVWXcyRBwFxUduEJ1uyGcwfevQISRDSN++5xjTdu7G6a0a7Zm
-         JiSaOVX+TTq5oUkdkA/QsRSxqfP6E5paBUgkm0J6wGGead2CHJkVWACA2ValNdbUVW
-         875sa8vPjaBibm7/DvjjFV5ZVwbB7RXDXWSTa1yv2xgI1BnkXF8DgpsRDIgHnSulfH
-         jaNIv44yfKZsw==
-Date:   Fri, 9 Apr 2021 12:57:08 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 1/4] arm64: Implement infrastructure for stack
- trace reliability checks
-Message-ID: <20210409115708.GB4499@sirena.org.uk>
-References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
- <20210405204313.21346-1-madvenka@linux.microsoft.com>
- <20210405204313.21346-2-madvenka@linux.microsoft.com>
- <20210408171715.GQ4516@sirena.org.uk>
- <69b6924b-88f6-6c40-7b18-8cdf15d92bd1@linux.microsoft.com>
- <eb905f70-a963-6257-c597-89e008675539@linux.microsoft.com>
+        id S233792AbhDIL6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231611AbhDIL6F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 07:58:05 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B04C061760;
+        Fri,  9 Apr 2021 04:57:52 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id A26831F4659F
+Received: by earth.universe (Postfix, from userid 1000)
+        id 0F1A63C0C96; Fri,  9 Apr 2021 13:57:48 +0200 (CEST)
+Date:   Fri, 9 Apr 2021 13:57:48 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     skakit@codeaurora.org
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH V2 3/4] dt-bindings: power: reset: qcom-pon: Convert qcom
+ PON binding to yaml
+Message-ID: <20210409115748.xfxukqgoyvscgpln@earth.universe>
+References: <1617881469-31965-1-git-send-email-skakit@codeaurora.org>
+ <1617881469-31965-4-git-send-email-skakit@codeaurora.org>
+ <20210408130001.k3qbq3vvwkiyykzv@earth.universe>
+ <0cb9b3503000ac7206f4a3ef5fd16c17@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GID0FwUMdk1T2AWN"
+        protocol="application/pgp-signature"; boundary="ioziho372aqje6wl"
 Content-Disposition: inline
-In-Reply-To: <eb905f70-a963-6257-c597-89e008675539@linux.microsoft.com>
-X-Cookie: Ring around the collar.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0cb9b3503000ac7206f4a3ef5fd16c17@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---GID0FwUMdk1T2AWN
+--ioziho372aqje6wl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 08, 2021 at 06:30:22PM -0500, Madhavan T. Venkataraman wrote:
-> On 4/8/21 2:30 PM, Madhavan T. Venkataraman wrote:
+Hi,
 
-> > 1. Create a common section (I will have to come up with an appropriate name) and put
-> >    all such functions in that one section.
+On Fri, Apr 09, 2021 at 01:48:58PM +0530, skakit@codeaurora.org wrote:
+>> Please do not drop the example :)
+>=20
+> As per my understanding on Rob's comments [1] I have added one complete
+> example in qcom,pm8941-pwrkey.yaml (see patch 4/4) and dropped it here.
+>=20
+> [1] https://lore.kernel.org/patchwork/patch/1390062/#1588027
 
-> > 2. Create one section for each logical type (exception section, ftrace section and
-> >    kprobe section) or some such.
+Ok, please add a note about this in the commit message.
+Something like:
 
-> For now, I will start with idea 2. I will create a special section for each class of
-> functions (EL1 exception handlers, FTRACE trampolines, KPROBE trampolines). Instead of a
-> special functions array, I will implement a special_sections array. The rest of the code
-> should just fall into place.
+The example has been removed in favour of full example being
+available in the qcom,pm8941-pwrkey binding.
 
-> Let me know if you prefer something different.
+Thanks,
 
-It might be safer to start off by just putting all SYM_CODE into a
-section then pulling bits we know to be safe out of the section as
-needed - we know that anything that's SYM_CODE is doing something
-non-standard and needs checking to verify that the unwinder will be
-happy with it and I that should cover most if not all of the cases above
-as well as anything else we didn't explicitly think of.
+-- Sebastian
 
---GID0FwUMdk1T2AWN
+--ioziho372aqje6wl
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmBwQRMACgkQJNaLcl1U
-h9CDkAf+M7uGGOV6l9nKclvAJwd8o31oulE0GngUxx7kQvOsTZvVfWVJOR921/x/
-42gh2W7vxL7LOfQ37vMafyz3BtoO+aX29aRSfSfqskqufOk4KmbqZ2YmMTs5iiwy
-r8Dr0POZ9NYuie7+f+aYLbYaLBStriNn6VamKJlomBaXmiZdvsEmmif8IrjrLLnR
-Sz6+G0qFRd6VK30NB0dbpjLQzzHFDN8gc0IpPjmgSMysz+/Oe8XqGgdhq6Xti6Bl
-T/A/VeO/+E3xDTwIooXm0pk95tRg8ef+gmYpFi01C63F6zEUk7/frUC/g0VZGzPL
-7lxu5UFkpo8Bi9bvHxhk6LaTXjMAxw==
-=y0XZ
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmBwQTsACgkQ2O7X88g7
++ppvxA//ZDqA2HcgKmkY/5edbV1Mv2x1kz92+zc6n7n8g0HO5qCxbIDi0BVH+O9X
+OPP6eoyMRa2zTcKh9Z9j/KxRVNSx7ntnIm9CS/q8nDD6f99tyCCUTcNcHsd0QC0I
+Ff4T4FlGYVWwbyb3p5Qly2YaAAngd5C6zV1ln9RtKOUJs+eJxfy6lluJwSgyPPGq
+ssQtuRpUdq7Ql9vuxbHa5fMzFlwvibz9UYKMfNTxIc8KU/E8NtZVegtP0q1GDX0O
+Df9iNLTAYcN1olyG5gTo9223kPFwcuJtGAHMVrORjpXsmrY6kznRWtRVEB/YBZE6
+8pihnV01bgdalxXkn17VvBulRzUERYzXTaLUC0z90BI9/qg8ZeUgWAk7O4TGBiuF
+vo4TERUhwbI0KwOwaQ1F/qHVSlJN6XQiiq9MB5Pr7SxzNdvcCp6p6OBmGyjWhBwU
+jb/0XOBG9n6C8MNjwc6GGyM6W92Vd7jRca1RRvPQaXWTKX8zijFvdXKhKgY4DCAy
+yxtHKsxqUDi/uW6rQZYh1jDVKTjN4MbTJoXdlNfyHU2nkijBDKWJumtxHh5tetj4
+W+ouewINUSGbpzyeiHLHWXXnPXBetuh8OOA9J3IF39wFJzp2O5kAdnpcQ35QhvIz
+zc0tY9CRl4/dAl4UMezOF9RTtWIeuA0h0U0dmc6rnrnwGY4ibFc=
+=KCef
 -----END PGP SIGNATURE-----
 
---GID0FwUMdk1T2AWN--
+--ioziho372aqje6wl--
