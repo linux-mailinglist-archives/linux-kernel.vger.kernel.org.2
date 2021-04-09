@@ -2,119 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E274359DC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A98359DC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233300AbhDILrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:47:12 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:34505 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231599AbhDILrK (ORCPT
+        id S233609AbhDILro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhDILrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:47:10 -0400
-Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
-  by alexa-out.qualcomm.com with ESMTP; 09 Apr 2021 04:46:57 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 09 Apr 2021 04:46:55 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 09 Apr 2021 17:16:33 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 1DEEE217A8; Fri,  9 Apr 2021 17:16:32 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, swboyd@chromium.org,
-        bjorn.andersson@linaro.org,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v4] media: venus : hfi: add venus image info into smem
-Date:   Fri,  9 Apr 2021 17:16:19 +0530
-Message-Id: <1617968779-28526-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Fri, 9 Apr 2021 07:47:41 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E533AC061761;
+        Fri,  9 Apr 2021 04:47:28 -0700 (PDT)
+Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=truhe.fritz.box); authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1lUpbg-0005de-PL; Fri, 09 Apr 2021 13:47:24 +0200
+From:   Thorsten Leemhuis <linux@leemhuis.info>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Randy Dunlap <rdunlap@infradead.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] Mention regression mailing list in reporting-bugs and MAINTAINERS
+Date:   Fri,  9 Apr 2021 13:47:22 +0200
+Message-Id: <cover.1617967127.git.linux@leemhuis.info>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1617968849;7011f6d2;
+X-HE-SMSGID: 1lUpbg-0005de-PL
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fill fw version info into smem to be printed as part of
-soc info.
+Hi! A mailing list for regressions was finally created as
+regressions@lists.linux.dev (we dropped the linux- prefix as the term is already
+in the domain name). Hence, add it to MAINTAINERS, as that where people will
+look it up. I was a bit unsure how to actually do that, see the note in the
+first patch of the series for details.
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-Reported-by: kernel test robot <lkp@intel.com>
+The second patch makes reporting-issues.rst mention the new list, so people CC
+it.
 
-change since v3:
- added dependency on QCOM_SMEM (Stephen)
----
- drivers/media/platform/Kconfig               |  2 +-
- drivers/media/platform/qcom/venus/hfi_msgs.c | 21 +++++++++++++++++++--
- 2 files changed, 20 insertions(+), 3 deletions(-)
+@Jonathan: this hopefully is the last round of patches for reporting-issues.rst
+for this cycle. Please let me known if you think the addition to the MAINTAINERS
+file should better go through a different maintainer.
 
-diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index fd1831e..9c75e88 100644
---- a/drivers/media/platform/Kconfig
-+++ b/drivers/media/platform/Kconfig
-@@ -543,7 +543,7 @@ config VIDEO_TI_VPE_DEBUG
- 
- config VIDEO_QCOM_VENUS
- 	tristate "Qualcomm Venus V4L2 encoder/decoder driver"
--	depends on VIDEO_DEV && VIDEO_V4L2
-+	depends on VIDEO_DEV && VIDEO_V4L2 && QCOM_SMEM
- 	depends on (ARCH_QCOM && IOMMU_DMA) || COMPILE_TEST
- 	select QCOM_MDT_LOADER if ARCH_QCOM
- 	select QCOM_SCM if ARCH_QCOM
-diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
-index 06a1908..74cfc4f 100644
---- a/drivers/media/platform/qcom/venus/hfi_msgs.c
-+++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
-@@ -6,6 +6,7 @@
- #include <linux/hash.h>
- #include <linux/list.h>
- #include <linux/slab.h>
-+#include <linux/soc/qcom/smem.h>
- #include <media/videobuf2-v4l2.h>
- 
- #include "core.h"
-@@ -14,6 +15,10 @@
- #include "hfi_msgs.h"
- #include "hfi_parser.h"
- 
-+#define SMEM_IMG_VER_TBL 469
-+#define VER_STR_SZ	128
-+#define SMEM_IMG_OFFSET_VENUS (14 * 128)
-+
- static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
- 			      struct hfi_msg_event_notify_pkt *pkt)
- {
-@@ -239,15 +244,27 @@ static void
- sys_get_prop_image_version(struct device *dev,
- 			   struct hfi_msg_sys_property_info_pkt *pkt)
- {
-+	u8 *smem_tbl_ptr;
-+	u8 *img_ver;
- 	int req_bytes;
-+	size_t smem_blk_sz;
- 
- 	req_bytes = pkt->hdr.size - sizeof(*pkt);
- 
--	if (req_bytes < 128 || !pkt->data[1] || pkt->num_properties > 1)
-+	if (req_bytes < VER_STR_SZ || !pkt->data[1] || pkt->num_properties > 1)
- 		/* bad packet */
- 		return;
- 
--	dev_dbg(dev, VDBGL "F/W version: %s\n", (u8 *)&pkt->data[1]);
-+	img_ver = (u8 *)&pkt->data[1];
-+
-+	dev_dbg(dev, VDBGL "F/W version: %s\n", img_ver);
-+
-+	smem_tbl_ptr = qcom_smem_get(QCOM_SMEM_HOST_ANY,
-+		SMEM_IMG_VER_TBL, &smem_blk_sz);
-+	if (smem_tbl_ptr &&
-+	    smem_blk_sz >= SMEM_IMG_OFFSET_VENUS + VER_STR_SZ)
-+		memcpy(smem_tbl_ptr + SMEM_IMG_OFFSET_VENUS,
-+		       img_ver, VER_STR_SZ);
- }
- 
- static void hfi_sys_property_info(struct venus_core *core,
+Ciao, Thorsten
+
+Thorsten Leemhuis (2):
+  MAINTAINERS: add regressions mailing list
+  docs: reporting-issues: make everyone CC the regressions list
+
+ .../admin-guide/reporting-issues.rst          | 55 ++++++++++++-------
+ MAINTAINERS                                   |  5 ++
+ 2 files changed, 40 insertions(+), 20 deletions(-)
+
+
+base-commit: dfc7927d4ee008c69c5b60f9076e2ad8980589bc
 -- 
-2.7.4
+2.30.2
 
