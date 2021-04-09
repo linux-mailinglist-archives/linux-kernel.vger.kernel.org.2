@@ -2,204 +2,446 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4283D3593F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E56359405
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 06:37:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbhDIEeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 00:34:12 -0400
-Received: from mail-dm6nam12on2065.outbound.protection.outlook.com ([40.107.243.65]:18219
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229498AbhDIEeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 00:34:11 -0400
+        id S231582AbhDIEhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 00:37:22 -0400
+Received: from mx0b-00268f01.pphosted.com ([148.163.159.192]:45332 "EHLO
+        mx0b-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229526AbhDIEhT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 00:37:19 -0400
+Received: from pps.filterd (m0105197.ppops.net [127.0.0.1])
+        by mx0a-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1394YFpU020213;
+        Fri, 9 Apr 2021 04:35:33 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2108.outbound.protection.outlook.com [104.47.55.108])
+        by mx0a-00268f01.pphosted.com with ESMTP id 37te7hg87x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 09 Apr 2021 04:35:33 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=idiLzuyvYMD4DbLDMKrgUpNhYcry9nWzz2wEQmxLBNW4DHbV94CraSb9V6b1AEHMYRPYnSln2QNDKEVZQDfmWfKiLRMi9jsz+mXRaizhbVGmtZmswlBsmOc4e4Rynl7clkPSbXetukr3nses/MtZxxBG28PM40UzC9H6mvRd7ZEHYjKWEDfvDLRVyLfM6b3vqa2epZqemLlQS00u3/KeQRIJ6avfZ39lOHKho4beyztrb6dvaDq0Cu0tIJhdQAh5CuRsruYsWDoMmqd5IMCFTsKkHQePSgKmIocp6HCzL1T2AtbS0RBw4gQ+X8ZikKNxiSS1n3ClPruJs101BLGj9Q==
+ b=oIYbSEOTQ8Mc7CXvJR0kh1HEf405Kzdo15e91KQ5mvaHyGZCxUCp050IGpzrSqehDaCfa4uhREk3j/9ce+4i0sAKpahh2evnd4zbnk+r0GAUQobGdmUROrQ76yfM3ZZiEiPSak01PCSipwSlWzzS89NArRMYZL2U9mkKhKeAqLBPezX+FCyQwBy+NIDcON3xOZDAm93zygvtNgPLKPXPNGihpEFeqBYhxKPv+X+suR71WunPZJmrqVqp2OpFnqryz0o62BO66EpeCALdNoZc47NIStY5w2vzK/qF1v9dC7hHmq5dLN9gYYx3wwetO3ssWKBV8ytEi2hO65y8RoMrUA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p1rgfQoIFofAdZT/oeGetKSVlt/NZh9LGH/qaoDBp3o=;
- b=PpcBKFiThNYud+zflcxxAcPopAuIIysV3bV4zEO0QJeRa1+yDiKllBQu4mxb0QCEac1fIuyrCJREWx9hSvKmCZPwrwfu4Cxfhv3qZIWhAngTYLQNNwfJ9rkCxoPuf9Elr3Oh+C0Q3e4mpylweuIKVZIUfJhibNXtdDG+Yt4/UFZ5Ncxjx4vFFjwpQ6zg0r+aPQF7q9zDC3S8826EI9Q5vujUDyZAzbu7VA+SN7yMclIakLB4YdYDqis1IRXPvWdUq7zgFqdEVue3PItNXgo0lBgM8t84noZl/4nBFyQgREkeRwOT5Ri5ZSticOuWUbXg/dDqR+rRtbMPfXj4HiL2bg==
+ bh=t8enUxkv9576dfL8WOpXWiwwclKCfVQNvd45RtiNPPc=;
+ b=PH2FztBU+aAN0ECIjRZgIEvueMkHX9nxx4NTacoEOjZR4twaJixUg2vTdsAZE0PIL5MM2bPgHyKn9yg4q6NqEW9Y6CzooiUlJE+7l7hdzIN/pHEZ+47/s4FoICvGPXmSvnRioPwkkd6jOQ9wiYlhTty/WyrBQIf96xvbXcjJHA6/YHs4sA+GimR5yzsKzpR5zUUa0N9iZoqTGXn2cKpiRnf6YTbhe/yrdOTFOgH7TJFg/KSZEkuH0GOAn8SWdYmWBM0GGY7VWpqogxI3hCCC0HdBbLNmvKLmrqfLe914M5q1S2Luin0fdDyhSjxgfdsn2UGIf9hLp1EMjFWLAp+4AA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
+ dkim=pass header.d=equinix.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=p1rgfQoIFofAdZT/oeGetKSVlt/NZh9LGH/qaoDBp3o=;
- b=0F3dZYUs3mYIYKUzPqdDVrpfSpBWQ+Ixi6cjOfpjrsai87MJSUBJs//MfLtO4dvDAa212QzB2g0xf1vd3zNw+/0Kll9b2pKFXkrbnuueY/z/gVwprZiGoILsN5LuQx1/1btr+rNRe0pKnqnhyxSbcpGIoSOcCkgHUn18ITPqVHo=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from BL0PR12MB4948.namprd12.prod.outlook.com (2603:10b6:208:1cc::20)
- by MN2PR12MB3950.namprd12.prod.outlook.com (2603:10b6:208:16d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.20; Fri, 9 Apr
- 2021 04:33:53 +0000
-Received: from BL0PR12MB4948.namprd12.prod.outlook.com
- ([fe80::70f5:99ed:65a1:c033]) by BL0PR12MB4948.namprd12.prod.outlook.com
- ([fe80::70f5:99ed:65a1:c033%7]) with mapi id 15.20.3933.039; Fri, 9 Apr 2021
- 04:33:53 +0000
-Subject: Re: Linux Kernel build bug with AMD_IOMMU_V2=M and HSA_AMD=Y
-To:     David Niklas <Hgntkwis@vfemail.net>, linux-kernel@vger.kernel.org
-Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        jroedel@suse.de, evan.quan@amd.com, baolu.lu@linux.intel.com,
-        fenghua.yu@intel.com, ray.huang@amd.com
-References: <20210408190456.3bf2cc2e@Zen-II-x12.niklas.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Organization: AMD Inc.
-Message-ID: <9da019d0-60e8-4336-b06e-ce7b96514316@amd.com>
-Date:   Fri, 9 Apr 2021 00:33:50 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210408190456.3bf2cc2e@Zen-II-x12.niklas.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
+ bh=t8enUxkv9576dfL8WOpXWiwwclKCfVQNvd45RtiNPPc=;
+ b=DqHCA2XAP5zPbmmNTrG3cGYlUEaaSRlZnW3P7y5R5C9byKs5KtpPykyRhb5gUyy5GFgz5e38548b7ANcSYZ7v2LhuswxgQxjRfYmg7BiPWgcGLF+vHfNjkHg+znhW9VQjdgjGJ7EhEdaHn6+JhZzCwZfzYYVQZJqWrPiF9nE/j8=
+Received: from DM5PR04MB0762.namprd04.prod.outlook.com (2603:10b6:3:f3::13) by
+ DM6PR04MB3929.namprd04.prod.outlook.com (2603:10b6:5:ac::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4020.17; Fri, 9 Apr 2021 04:35:31 +0000
+Received: from DM5PR04MB0762.namprd04.prod.outlook.com
+ ([fe80::4c98:aeb:87a8:13ad]) by DM5PR04MB0762.namprd04.prod.outlook.com
+ ([fe80::4c98:aeb:87a8:13ad%5]) with mapi id 15.20.4020.017; Fri, 9 Apr 2021
+ 04:35:30 +0000
+From:   Zev Weiss <zweiss@equinix.com>
+To:     Andrew Jeffery <andrew@aj.id.au>
+CC:     "openipmi-developer@lists.sourceforge.net" 
+        <openipmi-developer@lists.sourceforge.net>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "minyard@acm.org" <minyard@acm.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "ryan_chen@aspeedtech.com" <ryan_chen@aspeedtech.com>,
+        "tmaimon77@gmail.com" <tmaimon77@gmail.com>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "avifishman70@gmail.com" <avifishman70@gmail.com>,
+        "venture@google.com" <venture@google.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tali.perry1@gmail.com" <tali.perry1@gmail.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        "chiawei_wang@aspeedtech.com" <chiawei_wang@aspeedtech.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "benjaminfair@google.com" <benjaminfair@google.com>
+Subject: Re: [PATCH v2 13/21] ipmi: kcs_bmc: Decouple the IPMI chardev from
+ the core
+Thread-Topic: [PATCH v2 13/21] ipmi: kcs_bmc: Decouple the IPMI chardev from
+ the core
+Thread-Index: AQHXLPnFQEyxqSF8jUWs1YYelcFYYg==
+Date:   Fri, 9 Apr 2021 04:35:30 +0000
+Message-ID: <YG/ZkanVAypmjCba@packtop>
+References: <20210319062752.145730-1-andrew@aj.id.au>
+ <20210319062752.145730-13-andrew@aj.id.au>
+In-Reply-To: <20210319062752.145730-13-andrew@aj.id.au>
+Accept-Language: en-US
 Content-Language: en-US
-X-Originating-IP: [165.204.55.251]
-X-ClientProxiedBy: YT1PR01CA0144.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2f::23) To BL0PR12MB4948.namprd12.prod.outlook.com
- (2603:10b6:208:1cc::20)
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aj.id.au; dkim=none (message not signed)
+ header.d=none;aj.id.au; dmarc=none action=none header.from=equinix.com;
+x-originating-ip: [24.181.166.149]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d145adf1-d759-4231-7004-08d8fb10e85a
+x-ms-traffictypediagnostic: DM6PR04MB3929:
+x-microsoft-antispam-prvs: <DM6PR04MB39296E1954C441A9C6284AC1C3739@DM6PR04MB3929.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4125;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: xwUF7zaDdLndD6FsjHU0irzbj8Fk4ygxWidhOBE4Kb1Dg1/I3kYxOL7SDoCKneENxQ+qxNOpoylh/Um899psulkRL7RC3gUy1P7f3/NzeiCBkP7Mmzyp9fuLl5yQHMGt8SCZ7tOyn9kS6QO/LImXHRqTTjF2JHXCDSKq5YJXqwynuj3swHUXyMF4T3aYdD9OQh9EKDOip+ZfWN5qY0fQXo78VesTTUG4tSuy8OdYVIQkRa7/9gFufmC1H2AJUU9MwnXrOolRDhHE1ejNr0vrQfb4/8n2zjWyLzUYSLWGvJGl30aH4uOADgiFP8lmX27B9g4ui2IIIQPCV2eaBrKLCSJTS72a4n+J5eJL5KLuNK3sQ1tK/vnFNtb+Nk2FI5twcplLlLyQEAbs8uCIYPr3kzMUdoxuWmt4hpenzTNIG8+JhcwwuEvuPJNiRqGYluGEUFao86MbZIHtPjuqBcznEjw2UpAycoJ0/FDGaU+4kwaVjZo+7VU8/sooW+r+KYqUi8DlvWWyFB2NU4VijyfdpvnEDpB646iUfLyYKXUYVTVGOwSlm1y2mNuvN9s4l3c/n9s+coYa7v+TapS/SMfYODpP9oULoKRyFGB6kI/L9tZ+8wEEdfjC3YPuJSrnSo2M+j00n1M5WUrzAx584AUabQr/Jcb5p8HkS3uG/JGJDaI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0762.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(346002)(366004)(136003)(396003)(39860400002)(376002)(6916009)(38100700001)(186003)(2906002)(7416002)(91956017)(6486002)(26005)(6506007)(478600001)(6512007)(4326008)(9686003)(71200400001)(54906003)(83380400001)(316002)(66946007)(8936002)(8676002)(66446008)(64756008)(86362001)(76116006)(66476007)(66556008)(5660300002)(33716001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?K+VirYjecySypYT1boZQahHAdPdd+tU3QG9FNs3u+ZdZ5PcYMGE/sQ+Nk5hu?=
+ =?us-ascii?Q?cIdsSlWhgJAiTU+11c6Jg+ocb0gVGJnFKdfLSYxubbsZSw0qOmZbZrpnju7Q?=
+ =?us-ascii?Q?dIj/jbgMdjTFxAve77whgBn8n3zszVsEtLbsFpfhhD2AXOvcSkVGM/f1V9aq?=
+ =?us-ascii?Q?4TTW2EOgyNa11Pqj3eexcO8TSjfPA4b9CRDJpuXkig4vST3UrpNuJNNNwDXM?=
+ =?us-ascii?Q?7FSnHXW3bXfekQ/BoZ0WrWDr5z/xW/uIa5tuFBStT4ROKmhVPHin4eRsc2hg?=
+ =?us-ascii?Q?EAWty1zsPKF0d8EPIiKkj6ULsrilfzP4sawFsx8Z24ln9UV6nsvfHmzmlk4m?=
+ =?us-ascii?Q?vfIaPj+BFwgZxFFeW41R4TjxtcVjkesdF2Hlnqigyev8LD3UWVMwfo8K2laI?=
+ =?us-ascii?Q?NmIWlOeAhXKidQbKElvrf7iqaFSTlh/IPGpYzORhm709q/LkyvFf+4uT/Olu?=
+ =?us-ascii?Q?onPIBist7srMMpdEnUCUVlJjpuNLw425pHvGlZaeKlMNYKtnIlWBqMFfXPOy?=
+ =?us-ascii?Q?fypkp/8Ou9lkSpHKIMeg3we2w+NjoWRw9nxHc34zbWH4or1ArqtPwWV0RY+m?=
+ =?us-ascii?Q?ZfZ4KleTCnFskO6lP7ab3s/RAgNPBVRWy2/tSjiq8rIRXIpu3xJH8dOXledT?=
+ =?us-ascii?Q?+bCo2/oTWGLp+wrwAKuMDhpuiCX6YnnVtCMwY1WOj6w8isA2IYCUEc0EPx2z?=
+ =?us-ascii?Q?jRu5Xf+s9klqyiVqDJo+cWPvS0pcldaAZf6l/4ZCshH+j76j8nNCmJoNS8m9?=
+ =?us-ascii?Q?84K0Q8OBWQ8NHBzi4YmH/xlzefevzAU1ycBqqGBD2AmEMAcQ1NJYb+LNDAxG?=
+ =?us-ascii?Q?Bp8tgMADoaKC5hJh2lYTCeGtRaf6ztmAv0ppbo7/KuDxCsgb1FCYjGS6Cejp?=
+ =?us-ascii?Q?DvkQotq0jeHMoq7/2b6NoAnO0p1c3dZ6Iud00l7XDmCFZmhvE+lcqwRj2FFy?=
+ =?us-ascii?Q?i4+QB46W1oaGK72M9nQG5dnCenxdYMOQTdX77/6ci61aDJflyts3AjahSGB2?=
+ =?us-ascii?Q?E4CfRQ8WffzYYgPr3kdJBCxXI33gagFzix3hkdIdgOioLXcUoDycwFL6fl1P?=
+ =?us-ascii?Q?8DY9g35I0R2HV2bWpJce3f+XUHk7h4zMJ+aoLcf0v4BDO2LvVqKJI66+s8Lj?=
+ =?us-ascii?Q?Pt3pss9PLf+Z4T2YWawG0suZZkv+fM9zJoyk0wfRnX7puXgf2sE12MnKrt0M?=
+ =?us-ascii?Q?GnMQVVKVq6RFwgIeLHRdbXGTuRlWRIvzRHGKzeWhaFOzfaCw/l2Nqj235Hvn?=
+ =?us-ascii?Q?0/s8p83J7K8amp8+//pKJa6WrikncYXCbHzDJdL/69D2iL6zMe4x2McqwwFg?=
+ =?us-ascii?Q?Fwjad3fYXGgf4DEdFUVVGw88ZHyQud+E0pLVauspaZFxCw=3D=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <451798C445515348AE8682B544D05EFC@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.27.226.80] (165.204.55.251) by YT1PR01CA0144.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2f::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32 via Frontend Transport; Fri, 9 Apr 2021 04:33:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cfe65026-4b82-4ca6-4ce5-08d8fb10add2
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3950:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR12MB39500A3EDBA35DDBEF5978F092739@MN2PR12MB3950.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Kxr2Lk1agH/hMUi83ELnSIy0oJGFrYpZylQ+qR28DhwdtKQbyUDXEe66TWeuHa8vQk7mXRdYSHtkQl1VTswWm5ALf7vpoPF8QedF118pxArTU0a+ZbF4OPP3iC/sDYyluzOA5jFdZSYd9gS5nC6Dsxw38r+RzA7chu9TA0qifJdDejK4nL1gLIz73R+eQGB7aU9nRfmJBbveLXxrJr7zkpMk5vkrYtbFz0RTZfLpseP7xKLstfrUVABAtEYSsQdWxzNBFfosuQ7tYr5AXPu+L4gXHEsvtRHBzR0bqUMgGLq4ygdBMe43pTivUibCEJxtV4pwxfvtfXqgAQ8YSj894b8iUxGPqNpuGsXspSKZGHRnSbtZ/+fbsHB9YVXveu3AENhQ2GR4SjKNqpS7Vn8otYS2XBKOgF4HXiKVk3Rcd9UI3exUC3oyEAGh6f1+fDqSfWeDp2y+8shZ4hqnj51ZE8Bk7MK3kSN1HKkRxX/c5K0hnE3BfbVVDKATsbC/RiXOohr/aW+ygTu6Snoae+as8noDXFeHuMA8y9IyDDyDuKzoXOyH7vqHdk7bl+yrmjh5YDlmo+3Twx74t7lRvDdoT07dtWNaFQy+6vepxNIWBiUNX5VA2GsKAqrxyoVgprp5JReWGomcnE+yVSbFmghUZwlQwiJPbYn0Q2YkyApAwlX378mmyiCcAlUgJf+ghBnz+l2iLVjk5NEZlA/Qf7G7djXi7oqmXgeGtk/ZU6d5ODMIPIYFhG2yhqfglFNA3OskH30qjoHY95EOmLOoiD5SPSNYok4CeLhOtLJOk4OgUMfbVgVpx2eP9fBjeAXQV1bX78hCPgIVWgTyRgKq/UKUAw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB4948.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(396003)(366004)(346002)(376002)(136003)(36756003)(956004)(8676002)(86362001)(31686004)(66476007)(478600001)(316002)(4326008)(8936002)(966005)(66556008)(38100700001)(53546011)(44832011)(31696002)(2616005)(16526019)(83380400001)(26005)(66946007)(5660300002)(186003)(16576012)(2906002)(6486002)(38350700001)(66574015)(52116002)(36916002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?Windows-1252?Q?yB+iQk8aQ7r4ooEVaLz/SMcGp7/Zbvp//AneA8bIRqSyeU6aCWOaJf2U?=
- =?Windows-1252?Q?+AEhlFK/qewYN8B5crPDRe2CtXqso/qaW0L69OXx+iMDF6v3ZPpH475K?=
- =?Windows-1252?Q?4OAyRmXYNAp3Ynic5z3jSZxeGNsDsByq1Mh9USiGzSHTCF2o72jAjaVL?=
- =?Windows-1252?Q?uZGndOAKZsJ5M/MTMGJkoNTTh12VMl0DOEd0Wl3JLkQc119E/xGRp/j4?=
- =?Windows-1252?Q?VFctXlFbabfqPj0sir1vDGUeXa+04qfev9wibn1aQyapjdwFVnk3pmrS?=
- =?Windows-1252?Q?AbVHmP1m7P9oPdZ9+VMI0lQNCViCK+OOoLqR9B79hXZSOI5KrAN0ul8R?=
- =?Windows-1252?Q?qSVqnZznLDmzjZzloRZy7D2Enzqis0rySX8RxmZ2GP60p5KQEn0UcToB?=
- =?Windows-1252?Q?LLzIwTFXNCagi+N0XaZRC8KVfOHzVv+v6eQe+dMICc/xm+arM1gzMGWY?=
- =?Windows-1252?Q?tsDqdXbg0mQdT/yvDw/FPvFGJarA02YImLfdLN6zQFylZ6NztyYSF0B9?=
- =?Windows-1252?Q?tu4/mrenJMRohSrAdnpSF0ns7JUrL7n6DWgBiVpBsVPlna1id/fG/h2T?=
- =?Windows-1252?Q?Rxcs3yNQw55uZzO6Ri6ksnPSwNI07RBXxd6IMBTG2b/Qz8HraREkivpq?=
- =?Windows-1252?Q?f4oJVtoGWjZE4IPbYu4uVwiE326WZ1ZgaRUM/JwBGOMMwX54UUTZs1FE?=
- =?Windows-1252?Q?ISImZZj/qqek4Phdmzpa2bRM+TX0uT5dpxK4vPRoqyUC/0uEQjflhaii?=
- =?Windows-1252?Q?kht5lD25QvC29QWdy7LfHfN6zCMYplpLDsYlS5cFw+xk9fcCQHOzyShm?=
- =?Windows-1252?Q?uzENxflJT4l5SeeElFERfJ+OrUXUBPAdxeIn1IKLN4xgp7vwXhVHziAW?=
- =?Windows-1252?Q?oMadT7a1i4pAOaOWM+5JaAM/cu8XdqAArgiFpzKRABbYuxZH+L7av5bP?=
- =?Windows-1252?Q?9v53+HVgZ2uuGlSHZo3Rkmlo8uib2Wr2eraCDF8jly1RXvbC20ehmdhw?=
- =?Windows-1252?Q?jQmPpOPML9CB5w7B0U5Epo8uMCm+39FhTFASTyvLAu8o+EITN3yE5ywS?=
- =?Windows-1252?Q?rcsotlpyEIXaFuzBvrZ/GutTsXBf300N3LjEAwmwsHfe6Y6e5Y1mVFDy?=
- =?Windows-1252?Q?QrrRldQYtBJq1CNmmMo2Mpfw0yJbv7VXPocZHjUCHBHPJVOmbXIq/fXY?=
- =?Windows-1252?Q?kQQUs3jG7B4+uSVAyJn1Me9m35EKGCYh/Xeaho6F+WpCV3Yaj8ZLkjqr?=
- =?Windows-1252?Q?RUTseC5Ld5qXrUC4B7CfPvvaiFJLjeTcYNFUws9pkhdF7Sz/3St+D5u7?=
- =?Windows-1252?Q?0NWMQXMA9SX//9pS5vc+gUbdDFUz0YRkxQVphYrXKaPitCx22YWO/5Fs?=
- =?Windows-1252?Q?Ak1fkTGOkMMklXOsZ2bFYL/z2KlR7/FYca26F/6q8VWtUiwMMvrb03Np?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cfe65026-4b82-4ca6-4ce5-08d8fb10add2
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB4948.namprd12.prod.outlook.com
+X-OriginatorOrg: equinix.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 04:33:52.8926
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0762.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d145adf1-d759-4231-7004-08d8fb10e85a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Apr 2021 04:35:30.7325
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3TlqB8s5MOB+HL8TNF7iDdjuKPz67cM+MRaB0TvifBKBDt07rhGR1iiDghgnuypNgzHARK3hyRedLnG4eBFPog==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3950
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EpqZx4qXPcMBAJ2cFQTuyZNfMORu6Epe02CuwVGU7uGOdH0vKxtjm0DkHR03Km4kZXdiTLXrbI6zm2jbvmukcg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB3929
+X-Proofpoint-GUID: xZ4TW2q5kiPrWIIQmBij_Hb34bBv53NQ
+X-Proofpoint-ORIG-GUID: xZ4TW2q5kiPrWIIQmBij_Hb34bBv53NQ
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-09_03:2021-04-08,2021-04-09 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ spamscore=0 mlxscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1015 bulkscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104090032
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This should have been fixed by this commit in amd-staging-drm-next: 
-https://lore.kernel.org/patchwork/patch/1392368/
-
-commit b8aff1f3a0b3d8434f8ccf5d3017137c29aca77b
-Author: Felix Kuehling <Felix.Kuehling@amd.com>
-Date:   Mon Mar 8 22:15:42 2021 -0500
-
-     drm/amdkfd: fix build error with AMD_IOMMU_V2=m
-     
-     Using 'imply AMD_IOMMU_V2' does not guarantee that the driver can link
-     against the exported functions. If the GPU driver is built-in but the
-     IOMMU driver is a loadable module, the kfd_iommu.c file is indeed
-     built but does not work:
-     
-     x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_bind_process_to_device':
-     kfd_iommu.c:(.text+0x516): undefined reference to `amd_iommu_bind_pasid'
-     x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_unbind_process':
-     kfd_iommu.c:(.text+0x691): undefined reference to `amd_iommu_unbind_pasid'
-     x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_suspend':
-     kfd_iommu.c:(.text+0x966): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-     x86_64-linux-ld: kfd_iommu.c:(.text+0x97f): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-     x86_64-linux-ld: kfd_iommu.c:(.text+0x9a4): undefined reference to `amd_iommu_free_device'
-     x86_64-linux-ld: drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: in function `kfd_iommu_resume':
-     kfd_iommu.c:(.text+0xa9a): undefined reference to `amd_iommu_init_device'
-     x86_64-linux-ld: kfd_iommu.c:(.text+0xadc): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-     x86_64-linux-ld: kfd_iommu.c:(.text+0xaff): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-     x86_64-linux-ld: kfd_iommu.c:(.text+0xc72): undefined reference to `amd_iommu_bind_pasid'
-     x86_64-linux-ld: kfd_iommu.c:(.text+0xe08): undefined reference to `amd_iommu_set_invalidate_ctx_cb'
-     x86_64-linux-ld: kfd_iommu.c:(.text+0xe26): undefined reference to `amd_iommu_set_invalid_ppr_cb'
-     x86_64-linux-ld: kfd_iommu.c:(.text+0xe42): undefined reference to `amd_iommu_free_device'
-     
-     Use IS_REACHABLE to only build IOMMU-V2 support if the amd_iommu symbols
-     are reachable by the amdkfd driver. Output a warning if they are not,
-     because that may not be what the user was expecting.
-     
-     Fixes: 64d1c3a43a6f ("drm/amdkfd: Centralize IOMMUv2 code and make it conditional")
-     Reported-by: Arnd Bergmann <arnd@arndb.de>
-     Signed-off-by: Felix Kuehling <Felix.Kuehling@amd.com>
-     Reviewed-by: Christian König <christian.koenig@amd.com>
-
-Regards,
-   Felix
-
-On 2021-04-08 7:04 p.m., David Niklas wrote:
-> Hello,
-> (There are so many maintainers for kfd_iommu.c I feel like I'm spamming.)
+On Fri, Mar 19, 2021 at 01:27:44AM CDT, Andrew Jeffery wrote:
+>Now that we have untangled the data-structures, split the userspace
+>interface out into its own module. Userspace interfaces and drivers are
+>registered to the KCS BMC core to support arbitrary binding of either.
 >
-> When compiling for Linux version 5.11.12 using the AMDGPU GPU driver
-> with HSA_AMD enabled, I get the below set of errors. To work around this,
-> I need to change AMD_IOMMU_V2 from M to Y. This bug doesn't affect linux
-> kernel version 5.6 as it requires AMD_IOMMU_V2 to by Y when HSA_AMD is
-> enabled.
-> I'd bisect and request the removal of the relevant patch, but it's
-> possible that building the linux kernel should work this way and so a fix,
-> not a patch removal, is what should be issued.
-> I'm attaching my kernel config for 5.11.
+>Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+>---
+> drivers/char/ipmi/Kconfig             | 13 +++++
+> drivers/char/ipmi/Makefile            |  3 +-
+> drivers/char/ipmi/kcs_bmc.c           | 78 ++++++++++++++++++++++++++-
+> drivers/char/ipmi/kcs_bmc.h           |  4 --
+> drivers/char/ipmi/kcs_bmc_cdev_ipmi.c | 33 +++++++++---
+> drivers/char/ipmi/kcs_bmc_client.h    | 14 +++++
+> 6 files changed, 132 insertions(+), 13 deletions(-)
 >
-> Thanks,
-> David
+>diff --git a/drivers/char/ipmi/Kconfig b/drivers/char/ipmi/Kconfig
+>index 07847d9a459a..bc5f81899b62 100644
+>--- a/drivers/char/ipmi/Kconfig
+>+++ b/drivers/char/ipmi/Kconfig
+>@@ -124,6 +124,19 @@ config NPCM7XX_KCS_IPMI_BMC
+> 	  This support is also available as a module.  If so, the module
+> 	  will be called kcs_bmc_npcm7xx.
 >
-> PS: I made an official bug report in case you'd prefer that:
-> https://bugzilla.kernel.org/show_bug.cgi?id=212619
+>+config IPMI_KCS_BMC_CDEV_IPMI
+>+	depends on IPMI_KCS_BMC
+>+	tristate "IPMI character device interface for BMC KCS devices"
+>+	help
+>+	  Provides a BMC-side character device implementing IPMI
+>+	  semantics for KCS IPMI devices.
+>+
+>+	  Say YES if you wish to expose KCS devices on the BMC for IPMI
+>+	  purposes.
+>+
+>+	  This support is also available as a module. The module will be
+>+	  called kcs_bmc_cdev_ipmi.
+>+
+> config ASPEED_BT_IPMI_BMC
+> 	depends on ARCH_ASPEED || COMPILE_TEST
+> 	depends on REGMAP && REGMAP_MMIO && MFD_SYSCON
+>diff --git a/drivers/char/ipmi/Makefile b/drivers/char/ipmi/Makefile
+>index a302bc865370..fcfa676afddb 100644
+>--- a/drivers/char/ipmi/Makefile
+>+++ b/drivers/char/ipmi/Makefile
+>@@ -22,7 +22,8 @@ obj-$(CONFIG_IPMI_SSIF) +=3D ipmi_ssif.o
+> obj-$(CONFIG_IPMI_POWERNV) +=3D ipmi_powernv.o
+> obj-$(CONFIG_IPMI_WATCHDOG) +=3D ipmi_watchdog.o
+> obj-$(CONFIG_IPMI_POWEROFF) +=3D ipmi_poweroff.o
+>-obj-$(CONFIG_IPMI_KCS_BMC) +=3D kcs_bmc.o kcs_bmc_cdev_ipmi.o
+>+obj-$(CONFIG_IPMI_KCS_BMC) +=3D kcs_bmc.o
+>+obj-$(CONFIG_IPMI_KCS_BMC_CDEV_IPMI) +=3D kcs_bmc_cdev_ipmi.o
+> obj-$(CONFIG_ASPEED_BT_IPMI_BMC) +=3D bt-bmc.o
+> obj-$(CONFIG_ASPEED_KCS_IPMI_BMC) +=3D kcs_bmc_aspeed.o
+> obj-$(CONFIG_NPCM7XX_KCS_IPMI_BMC) +=3D kcs_bmc_npcm7xx.o
+>diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
+>index 266ebec71d6f..694db6ee2a92 100644
+>--- a/drivers/char/ipmi/kcs_bmc.c
+>+++ b/drivers/char/ipmi/kcs_bmc.c
+>@@ -5,7 +5,9 @@
+>  */
 >
-> drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: In function
-> `kfd_iommu_bind_process_to_device': /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:120:
-> undefined reference to `amd_iommu_bind_pasid'
-> drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: In function
-> `kfd_iommu_unbind_process': /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:138:
-> undefined reference to `amd_iommu_unbind_pasid'
-> drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: In function
-> `kfd_iommu_suspend': /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:292:
-> undefined reference to
-> `amd_iommu_set_invalidate_ctx_cb' /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:293:
-> undefined reference to `amd_iommu_set_invalid_ppr_cb'
-> drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: In function
-> `kfd_iommu_resume': /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:312:
-> undefined reference to
-> `amd_iommu_init_device' /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:316:
-> undefined reference to
-> `amd_iommu_set_invalidate_ctx_cb' /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:318:
-> undefined reference to
-> `amd_iommu_set_invalid_ppr_cb' /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:323:
-> undefined reference to
-> `amd_iommu_set_invalidate_ctx_cb' /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:324:
-> undefined reference to
-> `amd_iommu_set_invalid_ppr_cb' /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:325:
-> undefined reference to
-> `amd_iommu_free_device' /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:232:
-> undefined reference to `amd_iommu_bind_pasid'
-> drivers/gpu/drm/amd/amdkfd/kfd_iommu.o: In function
-> `kfd_iommu_suspend': /root/working/linux-5.11.12/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_iommu.c:294:
-> undefined reference to `amd_iommu_free_device' Makefile:1166: recipe for
-> target 'vmlinux' failed make: *** [vmlinux] Error 1
+> #include <linux/device.h>
+>+#include <linux/list.h>
+> #include <linux/module.h>
+>+#include <linux/mutex.h>
+>
+> #include "kcs_bmc.h"
+>
+>@@ -13,6 +15,11 @@
+> #include "kcs_bmc_device.h"
+> #include "kcs_bmc_client.h"
+>
+>+/* Record probed devices and cdevs */
+>+static DEFINE_MUTEX(kcs_bmc_lock);
+>+static LIST_HEAD(kcs_bmc_devices);
+>+static LIST_HEAD(kcs_bmc_cdevs);
+>+
+> /* Consumer data access */
+>
+> u8 kcs_bmc_read_data(struct kcs_bmc_device *kcs_bmc)
+>@@ -100,16 +107,83 @@ EXPORT_SYMBOL(kcs_bmc_disable_device);
+>
+> int kcs_bmc_add_device(struct kcs_bmc_device *kcs_bmc)
+> {
+>-	return kcs_bmc_ipmi_attach_cdev(kcs_bmc);
+>+	struct kcs_bmc_cdev *cdev;
+>+	int rc;
+>+
+>+	spin_lock_init(&kcs_bmc->lock);
+>+	kcs_bmc->client =3D NULL;
+>+
+>+	mutex_lock(&kcs_bmc_lock);
+>+	list_add(&kcs_bmc->entry, &kcs_bmc_devices);
+>+	list_for_each_entry(cdev, &kcs_bmc_cdevs, entry) {
+>+		rc =3D cdev->ops->add_device(kcs_bmc);
+>+		if (rc)
+>+			dev_err(kcs_bmc->dev, "Failed to add chardev for KCS channel %d: %d",
+>+				kcs_bmc->channel, rc);
+>+	}
+>+	mutex_unlock(&kcs_bmc_lock);
+>+
+>+	return 0;
+
+We're ignoring failed ->add_device() calls here?
+
+> }
+> EXPORT_SYMBOL(kcs_bmc_add_device);
+>
+> int kcs_bmc_remove_device(struct kcs_bmc_device *kcs_bmc)
+> {
+>-	return kcs_bmc_ipmi_detach_cdev(kcs_bmc);
+>+	struct kcs_bmc_cdev *cdev;
+>+	int rc;
+>+
+>+	mutex_lock(&kcs_bmc_lock);
+>+	list_del(&kcs_bmc->entry);
+>+	list_for_each_entry(cdev, &kcs_bmc_cdevs, entry) {
+>+		rc =3D cdev->ops->remove_device(kcs_bmc);
+>+		if (rc)
+>+			dev_err(kcs_bmc->dev, "Failed to remove chardev for KCS channel %d: %d=
+",
+>+				kcs_bmc->channel, rc);
+>+	}
+>+	mutex_unlock(&kcs_bmc_lock);
+>+
+>+	return 0;
+
+Similarly with the return value here...
+
+> }
+> EXPORT_SYMBOL(kcs_bmc_remove_device);
+>
+>+int kcs_bmc_register_cdev(struct kcs_bmc_cdev *cdev)
+>+{
+>+	struct kcs_bmc_device *kcs_bmc;
+>+	int rc;
+>+
+>+	mutex_lock(&kcs_bmc_lock);
+>+	list_add(&cdev->entry, &kcs_bmc_cdevs);
+>+	list_for_each_entry(kcs_bmc, &kcs_bmc_devices, entry) {
+>+		rc =3D cdev->ops->add_device(kcs_bmc);
+>+		if (rc)
+>+			dev_err(kcs_bmc->dev, "Failed to add chardev for KCS channel %d: %d",
+>+				kcs_bmc->channel, rc);
+>+	}
+>+	mutex_unlock(&kcs_bmc_lock);
+>+
+>+	return 0;
+
+...return value again here...
+
+>+}
+>+EXPORT_SYMBOL(kcs_bmc_register_cdev);
+>+
+>+int kcs_bmc_unregister_cdev(struct kcs_bmc_cdev *cdev)
+>+{
+>+	struct kcs_bmc_device *kcs_bmc;
+>+	int rc;
+>+
+>+	mutex_lock(&kcs_bmc_lock);
+>+	list_del(&cdev->entry);
+>+	list_for_each_entry(kcs_bmc, &kcs_bmc_devices, entry) {
+>+		rc =3D cdev->ops->remove_device(kcs_bmc);
+>+		if (rc)
+>+			dev_err(kcs_bmc->dev, "Failed to add chardev for KCS channel %d: %d",
+
+s/add/remove/
+
+Might also want to differentiate the *_device() error messages from the
+*_cdev() ones a bit more?
+
+>+				kcs_bmc->channel, rc);
+>+	}
+>+	mutex_unlock(&kcs_bmc_lock);
+>+
+>+	return rc;
+
+...but this one is a bit incongruous, propagating the return value of
+only the last ->remove_device() call.
+
+(I'd have expected this to trigger a warning about returning a
+potentially uninitialized 'rc', but in some manual testing it doesn't
+seem to do so for me...not certain why.)
+
+>+}
+>+EXPORT_SYMBOL(kcs_bmc_unregister_cdev);
+>+
+> MODULE_LICENSE("GPL v2");
+> MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
+> MODULE_AUTHOR("Andrew Jeffery <andrew@aj.id.au>");
+>diff --git a/drivers/char/ipmi/kcs_bmc.h b/drivers/char/ipmi/kcs_bmc.h
+>index 3f266740c759..5deb9a0b8e60 100644
+>--- a/drivers/char/ipmi/kcs_bmc.h
+>+++ b/drivers/char/ipmi/kcs_bmc.h
+>@@ -42,8 +42,4 @@ struct kcs_bmc_device {
+> 	spinlock_t lock;
+> 	struct kcs_bmc_client *client;
+> };
+>-
+>-/* Temporary exports while refactoring */
+>-int kcs_bmc_ipmi_attach_cdev(struct kcs_bmc_device *kcs_bmc);
+>-int kcs_bmc_ipmi_detach_cdev(struct kcs_bmc_device *kcs_bmc);
+> #endif /* __KCS_BMC_H__ */
+>diff --git a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c b/drivers/char/ipmi/kcs=
+_bmc_cdev_ipmi.c
+>index 58c42e76483d..df83d67851ac 100644
+>--- a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
+>+++ b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
+>@@ -469,8 +469,7 @@ static const struct file_operations kcs_bmc_ipmi_fops =
+=3D {
+> static DEFINE_SPINLOCK(kcs_bmc_ipmi_instances_lock);
+> static LIST_HEAD(kcs_bmc_ipmi_instances);
+>
+>-int kcs_bmc_ipmi_attach_cdev(struct kcs_bmc_device *kcs_bmc);
+>-int kcs_bmc_ipmi_attach_cdev(struct kcs_bmc_device *kcs_bmc)
+>+static int kcs_bmc_ipmi_attach_cdev(struct kcs_bmc_device *kcs_bmc)
+> {
+> 	struct kcs_bmc_ipmi *priv;
+> 	int rc;
+>@@ -512,10 +511,8 @@ int kcs_bmc_ipmi_attach_cdev(struct kcs_bmc_device *k=
+cs_bmc)
+>
+> 	return 0;
+> }
+>-EXPORT_SYMBOL(kcs_bmc_ipmi_attach_cdev);
+>
+>-int kcs_bmc_ipmi_detach_cdev(struct kcs_bmc_device *kcs_bmc);
+>-int kcs_bmc_ipmi_detach_cdev(struct kcs_bmc_device *kcs_bmc)
+>+static int kcs_bmc_ipmi_detach_cdev(struct kcs_bmc_device *kcs_bmc)
+> {
+> 	struct kcs_bmc_ipmi *priv =3D NULL, *pos;
+>
+>@@ -541,7 +538,31 @@ int kcs_bmc_ipmi_detach_cdev(struct kcs_bmc_device *k=
+cs_bmc)
+>
+> 	return 0;
+> }
+>-EXPORT_SYMBOL(kcs_bmc_ipmi_detach_cdev);
+>+
+>+static const struct kcs_bmc_cdev_ops kcs_bmc_ipmi_cdev_ops =3D {
+>+	.add_device =3D kcs_bmc_ipmi_attach_cdev,
+>+	.remove_device =3D kcs_bmc_ipmi_detach_cdev,
+>+};
+>+
+>+static struct kcs_bmc_cdev kcs_bmc_ipmi_cdev =3D {
+>+	.ops =3D &kcs_bmc_ipmi_cdev_ops,
+>+};
+>+
+>+static int kcs_bmc_ipmi_init(void)
+>+{
+>+	return kcs_bmc_register_cdev(&kcs_bmc_ipmi_cdev);
+>+}
+>+module_init(kcs_bmc_ipmi_init);
+>+
+>+static void kcs_bmc_ipmi_exit(void)
+>+{
+>+	int rc;
+>+
+>+	rc =3D kcs_bmc_unregister_cdev(&kcs_bmc_ipmi_cdev);
+>+	if (rc)
+>+		pr_warn("Failed to remove KCS BMC client: %d", rc);
+>+}
+>+module_exit(kcs_bmc_ipmi_exit);
+>
+> MODULE_LICENSE("GPL v2");
+> MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
+>diff --git a/drivers/char/ipmi/kcs_bmc_client.h b/drivers/char/ipmi/kcs_bm=
+c_client.h
+>index 2dd710f4b4aa..d0a7404ff584 100644
+>--- a/drivers/char/ipmi/kcs_bmc_client.h
+>+++ b/drivers/char/ipmi/kcs_bmc_client.h
+>@@ -10,6 +10,17 @@
+>
+> #include "kcs_bmc.h"
+>
+>+struct kcs_bmc_cdev_ops {
+>+	int (*add_device)(struct kcs_bmc_device *kcs_bmc);
+>+	int (*remove_device)(struct kcs_bmc_device *kcs_bmc);
+>+};
+>+
+>+struct kcs_bmc_cdev {
+>+	struct list_head entry;
+>+
+>+	const struct kcs_bmc_cdev_ops *ops;
+>+};
+>+
+> struct kcs_bmc_client_ops {
+> 	int (*event)(struct kcs_bmc_client *client);
+> };
+>@@ -20,6 +31,9 @@ struct kcs_bmc_client {
+> 	struct kcs_bmc_device *dev;
+> };
+>
+>+int kcs_bmc_register_cdev(struct kcs_bmc_cdev *cdev);
+>+int kcs_bmc_unregister_cdev(struct kcs_bmc_cdev *cdev);
+>+
+> int kcs_bmc_enable_device(struct kcs_bmc_device *kcs_bmc, struct kcs_bmc_=
+client *client);
+> void kcs_bmc_disable_device(struct kcs_bmc_device *kcs_bmc, struct kcs_bm=
+c_client *client);
+>
+>--=20
+>2.27.0
+>=
