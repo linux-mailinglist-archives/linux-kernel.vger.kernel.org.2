@@ -2,136 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE25C35A1FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652C935A203
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233071AbhDIP3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:29:53 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:59896
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229665AbhDIP3w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:29:52 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AvN0Vi643PBWk+UYPHQPXwHbXdLJzesId70hD?=
- =?us-ascii?q?6mlaTxtJfsuE0/20lPMA2hPuzBoXUncsmdePUZPgfVr385lp7Y4NeYqzRQWOgg?=
- =?us-ascii?q?WVBaxr8IeK+UyFJwTQ7ehYvJ0NT4FbKPndSWd3ltz75g7QKbYd6f2K6rqhi+ub?=
- =?us-ascii?q?71oFd3AJV4ha4w10ChmWHyRNLWEsb6YRL5aA+tFB4wOpZHV/VLXZOlA+Q+PBq9?=
- =?us-ascii?q?fX/aiKXTc6AXcchzWmvHeHzPrBHxKFxRcCQ1p0sNEf2FmAtRf46KWlu/SS0QTd?=
- =?us-ascii?q?yGfX0pRTlLLau75+Lf3Jt+xQEBLQsEKTQLlZMofy2wwInA=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,209,1613430000"; 
-   d="scan'208";a="378232684"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 17:29:37 +0200
-Date:   Fri, 9 Apr 2021 17:29:37 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-cc:     Hans Verkuil <hverkuil@xs4all.nl>, clabbe@baylibre.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] Re: [PATCH 1/2] media: zoran: add spaces
- around '<<'
-In-Reply-To: <YHBukmdxSiRc+K6I@kali>
-Message-ID: <alpine.DEB.2.22.394.2104091729080.13602@hadrien>
-References: <cover.1617912177.git.mitaliborkar810@gmail.com> <8e8ac690d97478f7cbb9b91d46ef7a95e4444e5f.1617912177.git.mitaliborkar810@gmail.com> <f196d8ff-e8bf-360e-ee7b-cd2dcafd9742@xs4all.nl> <YHBukmdxSiRc+K6I@kali>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S233501AbhDIPac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:30:32 -0400
+Received: from mga12.intel.com ([192.55.52.136]:16319 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229665AbhDIPab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 11:30:31 -0400
+IronPort-SDR: /Z27a6ZsnHF4f8rKg+K51iC2sskvSL3yXgcGpxneojPDpQGZC4VGwCz6hAWItdKzaM6ZuZ/8bF
+ NG9c7zIC7cZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="173263176"
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="173263176"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 08:30:16 -0700
+IronPort-SDR: b9aW+JDzv/r43wIU27jokbG+2KrZhFll/ltF89ooSup2gWBscWI6bCH/m+2OFMJcRH9m3OpmqA
+ RLK3rZis6txg==
+X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
+   d="scan'208";a="416306861"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 08:30:14 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lUt5H-002a29-RY; Fri, 09 Apr 2021 18:30:11 +0300
+Date:   Fri, 9 Apr 2021 18:30:11 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     brendanhiggins@google.com, davidgow@google.com,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org
+Subject: Re: [PATCH v4] lib: add basic KUnit test for lib/math
+Message-ID: <YHBzA7SwH194ywRv@smile.fi.intel.com>
+References: <20210409014001.2946212-1-dlatypov@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409014001.2946212-1-dlatypov@google.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 08, 2021 at 06:40:01PM -0700, Daniel Latypov wrote:
+> Add basic test coverage for files that don't require any config options:
+> * gcd.c
+> * lcm.c
+> * int_sqrt.c
+> * reciprocal_div.c
+> (Ignored int_pow.c since it's a simple textbook algorithm.)
+
+What about adding math.h test cases?
+
+We have some macros there and it might be a good idea to test them, for example
+that round_up() and roundup() produces the same output for the same (power of
+two divisor) input.
+
+> These tests aren't particularly interesting, but they
+> * provide short and simple examples of parameterized tests
+> * provide a place to add tests for any new files in this dir
+> * are written so adding new test cases to cover edge cases should be easy
+
+Yes, that's why I think macros also can be a good example how to test *macro*.
+
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
-On Fri, 9 Apr 2021, Mitali Borkar wrote:
-
-> On Fri, Apr 09, 2021 at 09:23:22AM +0200, Hans Verkuil wrote:
-> > Hi Mitali,
-> >
-> > On 08/04/2021 22:38, Mitali Borkar wrote:
-> > > Added spaces around '<<' operator to improve readability and meet linux
-> > > kernel coding style.
-> > > Reported by checkpatch
-> > >
-> > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > > ---
-> > >  drivers/staging/media/zoran/zr36057.h | 14 +++++++-------
-> > >  1 file changed, 7 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> > > index 71b651add35a..a2a75fd9f535 100644
-> > > --- a/drivers/staging/media/zoran/zr36057.h
-> > > +++ b/drivers/staging/media/zoran/zr36057.h
-> > > @@ -30,13 +30,13 @@
-> > >  #define ZR36057_VFESPFR_HOR_DCM          14
-> > >  #define ZR36057_VFESPFR_VER_DCM          8
-> > >  #define ZR36057_VFESPFR_DISP_MODE        6
-> > > -#define ZR36057_VFESPFR_YUV422          (0<<3)
-> > > -#define ZR36057_VFESPFR_RGB888          (1<<3)
-> > > -#define ZR36057_VFESPFR_RGB565          (2<<3)
-> > > -#define ZR36057_VFESPFR_RGB555          (3<<3)
-> > > -#define ZR36057_VFESPFR_ERR_DIF          (1<<2)
-> > > -#define ZR36057_VFESPFR_PACK24          (1<<1)
-> > > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1<<0)
-> > > +#define ZR36057_VFESPFR_YUV422          (0 << 3)
-> > > +#define ZR36057_VFESPFR_RGB888          (1 << 3)
-> > > +#define ZR36057_VFESPFR_RGB565          (2 << 3)
-> > > +#define ZR36057_VFESPFR_RGB555          (3 << 3)
-> > > +#define ZR36057_VFESPFR_ERR_DIF          (1 << 2)
-> > > +#define ZR36057_VFESPFR_PACK24          (1 << 1)
-> > > +#define ZR36057_VFESPFR_LITTLE_ENDIAN    (1 << 0)
-> > >
-> > >  #define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
-> > >
-> > >
-> >
-> > I looked at that header and it is very messy.
-> >
-> > Can you make two new patches? The first aligns every nicely, e.g. this:
-> >
-> > #define ZR36057_VFEHCR          0x000   /* Video Front End, Horizontal Configuration Register */
-> > #define ZR36057_VFEHCR_HS_POL             BIT(30)
-> > #define ZR36057_VFEHCR_H_START           10
-> > #define ZR36057_VFEHCR_H_END            0
-> > #define ZR36057_VFEHCR_HMASK            0x3ff
-> >
-> > should become:
-> >
-> > /* Video Front End, Horizontal Configuration Register */
-> > #define ZR36057_VFEHCR			0x000
-> > #define ZR36057_VFEHCR_HS_POL		BIT(30)
-> > #define ZR36057_VFEHCR_H_START		10
-> > #define ZR36057_VFEHCR_H_END		0
-> > #define ZR36057_VFEHCR_HMASK		0x3ff
-> >
-> > Same for all the other register blocks. Use tabs to do the alignment
-> > instead of spaces, as is currently the case.
-> >
-> Okay Sir, will do this.
->
-> > The second patch can replace the (0<<3) etc. to BIT(0).
-> >
-> Sir may I know how to write (2<<3) in BIT() form? Like I am still
-> learning and not sure how to convert this. Should it be BIT(2)? But this
-> is only possible for (1<<nr), PLease help me out.
-
-I think that you are correct.  BIT is not usable her.
-
-julia
-
->
-> Thanks.
->
-> > That would be a nice cleanup of this rather messy header.
-> >
-> > Thanks!
-> >
-> > 	Hans
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHBukmdxSiRc%2BK6I%40kali.
->
