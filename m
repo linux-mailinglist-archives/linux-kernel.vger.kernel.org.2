@@ -2,156 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD75735A628
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:51:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC1A35A663
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 20:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbhDISvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 14:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58016 "EHLO
+        id S234788AbhDIS5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 14:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbhDISvC (ORCPT
+        with ESMTP id S234784AbhDIS4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 14:51:02 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A459EC061762;
-        Fri,  9 Apr 2021 11:50:47 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id f12so4977636qtf.2;
-        Fri, 09 Apr 2021 11:50:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=x5UZWC8zVAh94JSKCovtgfLgGs7oIt1cZDdRs8Arpcc=;
-        b=mz1SSsG7XNZLlQ6clNY1SSAcig7F9uj6Fk38/Fomw/Nho88ffCzoo0OAQR3FUuS7EP
-         5ZYEliG11XcYlQfQJ4s9rKZvb2KwZkS1HOEA+j3bzMbouTn/dILs+d7XXpKyXEai41CQ
-         XPDKTXPj8feMcTCJgAg6kwCe30awp6TMOjn1r3c0o7qYQQjdes+FB33cldMAnOFCxHac
-         kTuYDSrdJC+qd9pJgGURRDAdC5Fm6S3friCfhLA5UauNE7xSWoDbR6/XratCUULLzXuM
-         YNaQ6SfWomeNgo9yBT15De1JsZKwYtgmaUVE36Ti+e9NKdCmsgEq+b2bHLyBSzpQBc6N
-         Oj9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=x5UZWC8zVAh94JSKCovtgfLgGs7oIt1cZDdRs8Arpcc=;
-        b=Crgn9Nwdj9tjsyqkzVeG33doDhuWBs3Na42Lb6EA5UcR40kofgI7CHpbC14NJlUfV1
-         w79w35nrTVcSXUjL7+beNn3fuMjLcThrMHaJzjlqhIr341eBYXCh2Kya1tAeoD1Yr/nt
-         P3zMoy53hfO4HmRYifE/DKWx4N/+92R9+l7VSAPaj8z4JWFJEJ+Bh7fDbJGzDJKCCbdO
-         kBzocBHSf0HFYifr7lEgnZwRV/5l0N3EKhYCc13+4jgIflzsT/9lkLiDP53UQorggOPN
-         Y4n64GTcHxhUvaKho1eF7vxVTmtR0nVigf3dZ+KyrnJ7tRGEcqQpMy2xmIiT9ruYHd6n
-         dSqg==
-X-Gm-Message-State: AOAM532zlX4aNAg9cbH9vGtXVOvxmaxBEDXxcpbW3eE6iHbOJlg/ri3Q
-        ZDMjrnYG83BFwT09YwBvAKY=
-X-Google-Smtp-Source: ABdhPJy273/ixAJu7iZq8qTlqMCsfrqWgXHmiFQOfi8j6E2Ns1onoQVgkb52060W1ljv4Gty9/KdUA==
-X-Received: by 2002:ac8:6c5d:: with SMTP id z29mr14302222qtu.99.1617994246940;
-        Fri, 09 Apr 2021 11:50:46 -0700 (PDT)
-Received: from smtp.gmail.com ([2804:14c:73:9a01:86f3:17eb:e23c:86fd])
-        by smtp.gmail.com with ESMTPSA id 184sm2376583qki.97.2021.04.09.11.50.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 11:50:46 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 15:50:42 -0300
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH 3/3] staging: iio: cdc: ad7746: use dt binding to set the
- excitation level
-Message-ID: <07b173e1d823dbdde40dc9ea31bb699b48043278.1617993776.git.lucas.p.stankus@gmail.com>
-References: <cover.1617993776.git.lucas.p.stankus@gmail.com>
+        Fri, 9 Apr 2021 14:56:50 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4444CC061762;
+        Fri,  9 Apr 2021 11:56:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=lNGTjyhh13MFnT9MIY1x+p1qaBVxicG1pgWcNmY+dLk=; b=McLfG7tKPTMUci8Q58lasgYmBR
+        /KdijAFWf1YcEnViWTM8ifDuzmT7S+5ToN3XZpkwIKNv3Q9JjzPxGcz3S9Fpm340DzUV1boVRP0VJ
+        lQhqdXEmyUL4Rw5XpYvY0UkyZGQCoptntHOUB/9CQ261x4P13YjnUMY7beRGH9fYf/Q90Pxx4hsQF
+        t6gn+snF0jf9Rmk6pEDkmnsljwy/iW1TA/VAVBU7xmti3CWk8nM/MJgx2GJFG/dQsT/8A354yg9sd
+        WitifOpB/StzxUUxpqmX7wVARg0AzRS5L/Wp7GmKHWXoCRjvt2rLSvZrfEj67sr3CEBk3VhjivXVw
+        s/Nw5cOA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lUwHa-000nKF-W9; Fri, 09 Apr 2021 18:55:34 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        Christoph Hellwig <hch@lst.de>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v7 06/28] mm: Add folio reference count functions
+Date:   Fri,  9 Apr 2021 19:50:43 +0100
+Message-Id: <20210409185105.188284-7-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210409185105.188284-1-willy@infradead.org>
+References: <20210409185105.188284-1-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1617993776.git.lucas.p.stankus@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set device excitation level using properties from device tree binding
-instead of using platform_data.
-As this replaces the last instance where the platform_data struct was
-used, remove ad7746.h header file since it's no longer needed.
+These functions mirror their page reference counterparts.
 
-Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Acked-by: Jeff Layton <jlayton@kernel.org>
 ---
- drivers/staging/iio/cdc/ad7746.c | 16 ++++++----------
- drivers/staging/iio/cdc/ad7746.h | 24 ------------------------
- 2 files changed, 6 insertions(+), 34 deletions(-)
- delete mode 100644 drivers/staging/iio/cdc/ad7746.h
+ Documentation/core-api/mm-api.rst |  1 +
+ include/linux/page_ref.h          | 88 ++++++++++++++++++++++++++++++-
+ 2 files changed, 88 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-index 63041b164dbe..3c75d147c3dd 100644
---- a/drivers/staging/iio/cdc/ad7746.c
-+++ b/drivers/staging/iio/cdc/ad7746.c
-@@ -18,8 +18,6 @@
- #include <linux/iio/iio.h>
- #include <linux/iio/sysfs.h>
+diff --git a/Documentation/core-api/mm-api.rst b/Documentation/core-api/mm-api.rst
+index 34f46df91a8b..1ead2570b217 100644
+--- a/Documentation/core-api/mm-api.rst
++++ b/Documentation/core-api/mm-api.rst
+@@ -97,3 +97,4 @@ More Memory Management Functions
+    :internal:
+ .. kernel-doc:: include/linux/mm.h
+    :internal:
++.. kernel-doc:: include/linux/page_ref.h
+diff --git a/include/linux/page_ref.h b/include/linux/page_ref.h
+index f3318f34fc54..47f0070dc508 100644
+--- a/include/linux/page_ref.h
++++ b/include/linux/page_ref.h
+@@ -67,9 +67,31 @@ static inline int page_ref_count(struct page *page)
+ 	return atomic_read(&page->_refcount);
+ }
  
--#include "ad7746.h"
--
- /*
-  * AD7746 Register Definition
-  */
-@@ -676,11 +674,10 @@ static const struct iio_info ad7746_info = {
- static int ad7746_probe(struct i2c_client *client,
- 			const struct i2c_device_id *id)
++/**
++ * folio_ref_count - The reference count on this folio.
++ * @folio: The folio.
++ *
++ * The refcount is usually incremented by calls to get_folio() and
++ * decremented by calls to put_folio().  Some typical users of the
++ * folio refcount:
++ *
++ * - Each reference from a page table
++ * - The page cache
++ * - Filesystem private data
++ * - The LRU list
++ * - Pipes
++ * - Direct IO which references this page in the process address space
++ *
++ * Return: The number of references to this folio.
++ */
++static inline int folio_ref_count(struct folio *folio)
++{
++	return page_ref_count(&folio->page);
++}
++
+ static inline int page_count(struct page *page)
  {
--	struct ad7746_platform_data *pdata = client->dev.platform_data;
- 	struct device_node *np = client->dev.of_node;
- 	struct ad7746_chip_info *chip;
- 	struct iio_dev *indio_dev;
--	unsigned int exca_en, excb_en;
-+	unsigned int exca_en, excb_en, exclvl;
- 	unsigned char regval = 0;
- 	int ret = 0;
+-	return atomic_read(&compound_head(page)->_refcount);
++	return folio_ref_count(page_folio(page));
+ }
  
-@@ -721,12 +718,11 @@ static int ad7746_probe(struct i2c_client *client,
- 			regval |= AD7746_EXCSETUP_NEXCB;
- 	}
+ static inline void set_page_count(struct page *page, int v)
+@@ -79,6 +101,11 @@ static inline void set_page_count(struct page *page, int v)
+ 		__page_ref_set(page, v);
+ }
  
--	if (pdata) {
--		regval |= AD7746_EXCSETUP_EXCLVL(pdata->exclvl);
--	} else {
--		dev_warn(&client->dev, "No platform data? using default\n");
--		regval = AD7746_EXCSETUP_EXCLVL(3);
--	}
-+	ret = of_property_read_u32(np, "adi,excitation-voltage-level", &exclvl);
-+	if (!ret)
-+		regval |= AD7746_EXCSETUP_EXCLVL(exclvl);
-+	else
-+		regval |= AD7746_EXCSETUP_EXCLVL(3);
++static inline void set_folio_count(struct folio *folio, int v)
++{
++	set_page_count(&folio->page, v);
++}
++
+ /*
+  * Setup the page count before being freed into the page allocator for
+  * the first time (boot or memory hotplug)
+@@ -95,6 +122,11 @@ static inline void page_ref_add(struct page *page, int nr)
+ 		__page_ref_mod(page, nr);
+ }
  
- 	ret = i2c_smbus_write_byte_data(chip->client,
- 					AD7746_REG_EXC_SETUP, regval);
-diff --git a/drivers/staging/iio/cdc/ad7746.h b/drivers/staging/iio/cdc/ad7746.h
-deleted file mode 100644
-index 6cae4ecf779e..000000000000
---- a/drivers/staging/iio/cdc/ad7746.h
-+++ /dev/null
-@@ -1,24 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 */
--/*
-- * AD7746 capacitive sensor driver supporting AD7745, AD7746 and AD7747
-- *
-- * Copyright 2011 Analog Devices Inc.
-- */
--
--#ifndef IIO_CDC_AD7746_H_
--#define IIO_CDC_AD7746_H_
--
--/*
-- * TODO: struct ad7746_platform_data needs to go into include/linux/iio
-- */
--
--#define AD7466_EXCLVL_0		0 /* +-VDD/8 */
--#define AD7466_EXCLVL_1		1 /* +-VDD/4 */
--#define AD7466_EXCLVL_2		2 /* +-VDD * 3/8 */
--#define AD7466_EXCLVL_3		3 /* +-VDD/2 */
--
--struct ad7746_platform_data {
--	unsigned char exclvl;	/*Excitation Voltage Level */
--};
--
--#endif /* IIO_CDC_AD7746_H_ */
++static inline void folio_ref_add(struct folio *folio, int nr)
++{
++	page_ref_add(&folio->page, nr);
++}
++
+ static inline void page_ref_sub(struct page *page, int nr)
+ {
+ 	atomic_sub(nr, &page->_refcount);
+@@ -102,6 +134,11 @@ static inline void page_ref_sub(struct page *page, int nr)
+ 		__page_ref_mod(page, -nr);
+ }
+ 
++static inline void folio_ref_sub(struct folio *folio, int nr)
++{
++	page_ref_sub(&folio->page, nr);
++}
++
+ static inline int page_ref_sub_return(struct page *page, int nr)
+ {
+ 	int ret = atomic_sub_return(nr, &page->_refcount);
+@@ -111,6 +148,11 @@ static inline int page_ref_sub_return(struct page *page, int nr)
+ 	return ret;
+ }
+ 
++static inline int folio_ref_sub_return(struct folio *folio, int nr)
++{
++	return page_ref_sub_return(&folio->page, nr);
++}
++
+ static inline void page_ref_inc(struct page *page)
+ {
+ 	atomic_inc(&page->_refcount);
+@@ -118,6 +160,11 @@ static inline void page_ref_inc(struct page *page)
+ 		__page_ref_mod(page, 1);
+ }
+ 
++static inline void folio_ref_inc(struct folio *folio)
++{
++	page_ref_inc(&folio->page);
++}
++
+ static inline void page_ref_dec(struct page *page)
+ {
+ 	atomic_dec(&page->_refcount);
+@@ -125,6 +172,11 @@ static inline void page_ref_dec(struct page *page)
+ 		__page_ref_mod(page, -1);
+ }
+ 
++static inline void folio_ref_dec(struct folio *folio)
++{
++	page_ref_dec(&folio->page);
++}
++
+ static inline int page_ref_sub_and_test(struct page *page, int nr)
+ {
+ 	int ret = atomic_sub_and_test(nr, &page->_refcount);
+@@ -134,6 +186,11 @@ static inline int page_ref_sub_and_test(struct page *page, int nr)
+ 	return ret;
+ }
+ 
++static inline int folio_ref_sub_and_test(struct folio *folio, int nr)
++{
++	return page_ref_sub_and_test(&folio->page, nr);
++}
++
+ static inline int page_ref_inc_return(struct page *page)
+ {
+ 	int ret = atomic_inc_return(&page->_refcount);
+@@ -143,6 +200,11 @@ static inline int page_ref_inc_return(struct page *page)
+ 	return ret;
+ }
+ 
++static inline int folio_ref_inc_return(struct folio *folio)
++{
++	return page_ref_inc_return(&folio->page);
++}
++
+ static inline int page_ref_dec_and_test(struct page *page)
+ {
+ 	int ret = atomic_dec_and_test(&page->_refcount);
+@@ -152,6 +214,11 @@ static inline int page_ref_dec_and_test(struct page *page)
+ 	return ret;
+ }
+ 
++static inline int folio_ref_dec_and_test(struct folio *folio)
++{
++	return page_ref_dec_and_test(&folio->page);
++}
++
+ static inline int page_ref_dec_return(struct page *page)
+ {
+ 	int ret = atomic_dec_return(&page->_refcount);
+@@ -161,6 +228,11 @@ static inline int page_ref_dec_return(struct page *page)
+ 	return ret;
+ }
+ 
++static inline int folio_ref_dec_return(struct folio *folio)
++{
++	return page_ref_dec_return(&folio->page);
++}
++
+ static inline int page_ref_add_unless(struct page *page, int nr, int u)
+ {
+ 	int ret = atomic_add_unless(&page->_refcount, nr, u);
+@@ -170,6 +242,11 @@ static inline int page_ref_add_unless(struct page *page, int nr, int u)
+ 	return ret;
+ }
+ 
++static inline int folio_ref_add_unless(struct folio *folio, int nr, int u)
++{
++	return page_ref_add_unless(&folio->page, nr, u);
++}
++
+ static inline int page_ref_freeze(struct page *page, int count)
+ {
+ 	int ret = likely(atomic_cmpxchg(&page->_refcount, count, 0) == count);
+@@ -179,6 +256,11 @@ static inline int page_ref_freeze(struct page *page, int count)
+ 	return ret;
+ }
+ 
++static inline int folio_ref_freeze(struct folio *folio, int count)
++{
++	return page_ref_freeze(&folio->page, count);
++}
++
+ static inline void page_ref_unfreeze(struct page *page, int count)
+ {
+ 	VM_BUG_ON_PAGE(page_count(page) != 0, page);
+@@ -189,4 +271,8 @@ static inline void page_ref_unfreeze(struct page *page, int count)
+ 		__page_ref_unfreeze(page, count);
+ }
+ 
++static inline void folio_ref_unfreeze(struct folio *folio, int count)
++{
++	page_ref_unfreeze(&folio->page, count);
++}
+ #endif
 -- 
-2.31.1
+2.30.2
 
