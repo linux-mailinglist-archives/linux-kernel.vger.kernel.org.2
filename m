@@ -2,194 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A83F0359EA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDAD359EA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:27:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233445AbhDIM1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:27:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:50344 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232855AbhDIM1T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:27:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6275F1063;
-        Fri,  9 Apr 2021 05:27:06 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.28.223])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36AC63F694;
-        Fri,  9 Apr 2021 05:27:04 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 13:27:01 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     madvenka@linux.microsoft.com
-Cc:     broonie@kernel.org, jpoimboe@redhat.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v2 3/4] arm64: Detect FTRACE cases that make the
- stack trace unreliable
-Message-ID: <20210409122701.GB51636@C02TD0UTHF1T.local>
-References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
- <20210405204313.21346-1-madvenka@linux.microsoft.com>
- <20210405204313.21346-4-madvenka@linux.microsoft.com>
+        id S233005AbhDIM1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:27:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231127AbhDIM1O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 08:27:14 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CBDC061760;
+        Fri,  9 Apr 2021 05:27:01 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id e7so6313891edu.10;
+        Fri, 09 Apr 2021 05:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=+NoIuLmraW7WrDEIWjYM9bekRcvNvAvsNvzQ1CZ92l4=;
+        b=ucH6bHS+8d0oGOyOMjbzJVnM9UgTV5uR6XE0aARQIzTZxOkdVmA/eC6Klo/2BPvJyn
+         nEyi82Z+y+0HU5r2HhJEj83PfoceOWXSKzFNHVDrXfB8+wUq4kJCAZTHALij/JUB1yxV
+         5Yc+TssTeFY8O/nXnDaYOxx2PaiVWiE+dF//50j6guuzcp1hI4OeamBiHdBdYVhh/Msb
+         FpFJrTVmHr2N6867pd+Z5ONw9Ph8V+dFLJeHqamb4hcUm+SadOkRAV8qGXgtI49gVyhP
+         OLu6uZAnGvHAuQJVubXpmGsFpywcqYKz8QWyTGnJb+RpkW+4M1XByumO1dzoUgPYqCaE
+         nSWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+NoIuLmraW7WrDEIWjYM9bekRcvNvAvsNvzQ1CZ92l4=;
+        b=aY4B6aVfO9ZjX35TE4hCJYGdnGS7S2xGz4aDyUHRIVPZGRky7CjR4lC0KraQu38iY7
+         LyTamzKywTLZr9iTKddDcWjwScb8OxHltdK/nFcTffp9jhuamYjbnHjQksEDr2v4LGra
+         Rm4z5fATo9aRkGkWptu4ss8hq8IKxgs4I+0UutUR7HbCZQnYGtzyWDl7JeL0q0vH2Je2
+         osmAtrF/xl2zrJ0Arlfarfx0F5sazS+gm3QnWt9YC8vTGT58DIIsszLC9jw1xF6ETqds
+         E9O6RBP56S9qGYtOGa/Q06UvUM8trU+t8d1dxnDIrKXlpcE2PeAzauM5Q/kQpSTWp6lH
+         wQ0A==
+X-Gm-Message-State: AOAM533TTfeweUnQ+z6CJJZzPscpd2zx2X00+wqy4as9EM59on2V/3vX
+        qm+iPiA6v6FzciA1IgklApI=
+X-Google-Smtp-Source: ABdhPJyxjfvzdOcSd857ibe5u5kjyCcl896iR5wPhcUb2EniGednDQT1JC0Ox0HrXjM0vCNgUuZM4g==
+X-Received: by 2002:a05:6402:1b1c:: with SMTP id by28mr17221009edb.62.1617971220527;
+        Fri, 09 Apr 2021 05:27:00 -0700 (PDT)
+Received: from localhost (pd9e51abe.dip0.t-ipconnect.de. [217.229.26.190])
+        by smtp.gmail.com with ESMTPSA id b13sm1350588edw.45.2021.04.09.05.26.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 05:26:59 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 14:27:34 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
+        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v7 4/8] dt-bindings: pwm: Support new
+ PWM_STAGGERING_ALLOWED flag
+Message-ID: <YHBINhLa3pCZjoxO@orome.fritz.box>
+References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
+ <20210406164140.81423-4-clemens.gruber@pqgruber.com>
+ <20210407053357.ok62rqpgyqou53m3@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bALA5fzjI4YAv2cb"
 Content-Disposition: inline
-In-Reply-To: <20210405204313.21346-4-madvenka@linux.microsoft.com>
+In-Reply-To: <20210407053357.ok62rqpgyqou53m3@pengutronix.de>
+User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 05, 2021 at 03:43:12PM -0500, madvenka@linux.microsoft.com wrote:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-> 
-> When CONFIG_DYNAMIC_FTRACE_WITH_REGS is enabled and tracing is activated
-> for a function, the ftrace infrastructure is called for the function at
-> the very beginning. Ftrace creates two frames:
-> 
-> 	- One for the traced function
-> 
-> 	- One for the caller of the traced function
-> 
-> That gives a reliable stack trace while executing in the ftrace code. When
-> ftrace returns to the traced function, the frames are popped and everything
-> is back to normal.
-> 
-> However, in cases like live patch, a tracer function may redirect execution
-> to a different function when it returns. A stack trace taken while still in
-> the tracer function will not show the target function. The target function
-> is the real function that we want to track.
-> 
-> So, if an FTRACE frame is detected on the stack, just mark the stack trace
-> as unreliable. The detection is done by checking the return PC against
-> FTRACE trampolines.
-> 
-> Also, the Function Graph Tracer modifies the return address of a traced
-> function to a return trampoline to gather tracing data on function return.
-> Stack traces taken from that trampoline and functions it calls are
-> unreliable as the original return address may not be available in
-> that context. Mark the stack trace unreliable accordingly.
-> 
-> Signed-off-by: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
-> ---
->  arch/arm64/kernel/entry-ftrace.S | 12 +++++++
->  arch/arm64/kernel/stacktrace.c   | 61 ++++++++++++++++++++++++++++++++
->  2 files changed, 73 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/entry-ftrace.S b/arch/arm64/kernel/entry-ftrace.S
-> index b3e4f9a088b1..1f0714a50c71 100644
-> --- a/arch/arm64/kernel/entry-ftrace.S
-> +++ b/arch/arm64/kernel/entry-ftrace.S
-> @@ -86,6 +86,18 @@ SYM_CODE_START(ftrace_caller)
->  	b	ftrace_common
->  SYM_CODE_END(ftrace_caller)
->  
-> +/*
-> + * A stack trace taken from anywhere in the FTRACE trampoline code should be
-> + * considered unreliable as a tracer function (patched at ftrace_call) could
-> + * potentially set pt_regs->pc and redirect execution to a function different
-> + * than the traced function. E.g., livepatch.
 
-IIUC the issue here that we have two copies of the pc: one in the regs,
-and one in a frame record, and so after the update to the regs, the
-frame record is stale.
+--bALA5fzjI4YAv2cb
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This is something that we could fix by having
-ftrace_instruction_pointer_set() set both.
+On Wed, Apr 07, 2021 at 07:33:57AM +0200, Uwe Kleine-K=C3=B6nig wrote:
+> On Tue, Apr 06, 2021 at 06:41:36PM +0200, Clemens Gruber wrote:
+> > Add the flag and corresponding documentation for the new PWM staggering
+> > mode feature.
+> >=20
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+>=20
+> For the record, I don't like this and still prefer to make this
+> staggering explicit for the consumer by expanding struct pwm_state with
+> an .offset member to shift the active phase in the period.
 
-However, as noted elsewhere there are other issues which mean we'd still
-need special unwinding code for this.
+How are consumers supposed to know which offset to choose? And worse:
+how should consumers even know that the driver supports phase shifts?
 
-Thanks,
-Mark.
+Thierry
 
-> + *
-> + * No stack traces are taken in this FTRACE trampoline assembly code. But
-> + * they can be taken from C functions that get called from here. The unwinder
-> + * checks if a return address falls in this FTRACE trampoline code. See
-> + * stacktrace.c. If function calls in this code are changed, please keep the
-> + * special_functions[] array in stacktrace.c in sync.
-> + */
->  SYM_CODE_START(ftrace_common)
->  	sub	x0, x30, #AARCH64_INSN_SIZE	// ip (callsite's BL insn)
->  	mov	x1, x9				// parent_ip (callsite's LR)
-> diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-> index fb11e4372891..7a3c638d4aeb 100644
-> --- a/arch/arm64/kernel/stacktrace.c
-> +++ b/arch/arm64/kernel/stacktrace.c
-> @@ -51,6 +51,52 @@ struct function_range {
->   * unreliable. Breakpoints are used for executing probe code. Stack traces
->   * taken while in the probe code will show an EL1 frame and will be considered
->   * unreliable. This is correct behavior.
-> + *
-> + * FTRACE
-> + * ======
-> + *
-> + * When CONFIG_DYNAMIC_FTRACE_WITH_REGS is enabled, the FTRACE trampoline code
-> + * is called from a traced function even before the frame pointer prolog.
-> + * FTRACE sets up two stack frames (one for the traced function and one for
-> + * its caller) so that the unwinder can provide a sensible stack trace for
-> + * any tracer function called from the FTRACE trampoline code.
-> + *
-> + * There are two cases where the stack trace is not reliable.
-> + *
-> + * (1) The task gets preempted before the two frames are set up. Preemption
-> + *     involves an interrupt which is an EL1 exception. The unwinder already
-> + *     handles EL1 exceptions.
-> + *
-> + * (2) The tracer function that gets called by the FTRACE trampoline code
-> + *     changes the return PC (e.g., livepatch).
-> + *
-> + *     Not all tracer functions do that. But to err on the side of safety,
-> + *     consider the stack trace as unreliable in all cases.
-> + *
-> + * When Function Graph Tracer is used, FTRACE modifies the return address of
-> + * the traced function in its stack frame to an FTRACE return trampoline
-> + * (return_to_handler). When the traced function returns, control goes to
-> + * return_to_handler. return_to_handler calls FTRACE to gather tracing data
-> + * and to obtain the original return address. Then, return_to_handler returns
-> + * to the original return address.
-> + *
-> + * There are two cases to consider from a stack trace reliability point of
-> + * view:
-> + *
-> + * (1) Stack traces taken within the traced function (and functions that get
-> + *     called from there) will show return_to_handler instead of the original
-> + *     return address. The original return address can be obtained from FTRACE.
-> + *     The unwinder already obtains it and modifies the return PC in its copy
-> + *     of the stack frame to the original return address. So, this is handled.
-> + *
-> + * (2) return_to_handler calls FTRACE as mentioned before. FTRACE discards
-> + *     the record of the original return address along the way as it does not
-> + *     need to maintain it anymore. This means that the unwinder cannot get
-> + *     the original return address beyond that point while the task is still
-> + *     executing in return_to_handler. So, consider the stack trace unreliable
-> + *     if return_to_handler is detected on the stack.
-> + *
-> + * NOTE: The unwinder must do (1) before (2).
->   */
->  static struct function_range	special_functions[] = {
->  	/*
-> @@ -64,6 +110,21 @@ static struct function_range	special_functions[] = {
->  	{ (unsigned long) el1_fiq_invalid, 0 },
->  	{ (unsigned long) el1_error_invalid, 0 },
->  
-> +	/*
-> +	 * FTRACE trampolines.
-> +	 *
-> +	 * Tracer function gets patched at the label ftrace_call. Its return
-> +	 * address is the next instruction address.
-> +	 */
-> +#ifdef CONFIG_DYNAMIC_FTRACE_WITH_REGS
-> +	{ (unsigned long) ftrace_call + 4, 0 },
-> +#endif
-> +
-> +#ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> +	{ (unsigned long) ftrace_graph_caller, 0 },
-> +	{ (unsigned long) return_to_handler, 0 },
-> +#endif
-> +
->  	{ /* sentinel */ }
->  };
->  
-> -- 
-> 2.25.1
-> 
+--bALA5fzjI4YAv2cb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBwSDYACgkQ3SOs138+
+s6HaHBAAqqXtYcIg6E5ADZv6/LDzrzvykS0Z6SBNDrh6QKpwkfHyhejv06aRtDm9
+NZ49Flpuj5+hxTH15SKV9A0NRjpIs6e9L/8mq5pS6HhusKyKZelVUuTKEtH/aDI1
+b53zcan3ooRkNfmKwJQnWvfoUIG/pXUXrXMYCkf2TYnQxafBLr6EeSqk3YGoU/GN
+uLrYY6HOVe9zmz4pFfHSSAX8hHYW4FUsuqTeO2AOOH3eygICzNFhT/T0Wd9f6txY
+QXWU9Wjw3GjEAxf/ispALrQuYacnjXtfKaQdN32RM0W1Z2sYf78A3tjqa9vaYXX1
+RJasmE9z1gVLwN5eIk53xRBvMdUvtuEHwBHZK8mKtrSZ8zJ2GkGKLdZPtvHzcFPN
+c4QmTZzKYhZ6VN91pWXI7wpKmC1lWF1uW7JVepYl5iw90U9E3bOhJPzQi77+ZGux
+SJacNNwzRTfLx6KERgTGB1adIhEAxbUA3yiSN8ktVNrlx8ZN5EuLEhlU42Z2VoHc
+5GGfCysKDah+mnnQElekv57+z2E2lyJZhqwbvliXlV0jYQmoddP1f7yt7vzBeymD
+E1Tu2hFl/fz7ypF2+rxgm4aoMYm6a4y6Zli2FelvCE0J/UXY/FS3fxnHMLL3W8Po
+buGPvntKEz7S5SrpHq1Pw2p5C16JRcgQYC1tAj162RjSVnhgFOY=
+=ia/o
+-----END PGP SIGNATURE-----
+
+--bALA5fzjI4YAv2cb--
