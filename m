@@ -2,229 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C21ED359CB8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B6A359CBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:10:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbhDILKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:10:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
+        id S233893AbhDILK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbhDILKM (ORCPT
+        with ESMTP id S232042AbhDILKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:10:12 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A40C061760;
-        Fri,  9 Apr 2021 04:09:58 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id r12so8035906ejr.5;
-        Fri, 09 Apr 2021 04:09:58 -0700 (PDT)
+        Fri, 9 Apr 2021 07:10:54 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8323DC061760;
+        Fri,  9 Apr 2021 04:10:41 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id n8so9124697lfh.1;
+        Fri, 09 Apr 2021 04:10:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iLAkumpobJhziT5GcspBLNu4MlEVC9VQBaW2/D0P0z0=;
-        b=ZNLLSFnLdm7lexLLqXO7gA5XkQ2WaK8XIp5sLH+iNIeQ7mea+9IIi093AsguOr5DaD
-         UraA7odVsYWE2blfugk43c0718zcR9A4BO3KdKkZQEScptH0YF+gvnH0fEmRK6KN3mV9
-         DOfTDx4yzmx0laxMB6b+TwEZTguEsP81sZHltqaXFhh7Uydx+TOJvt4jhL6tduXD73/o
-         kXy7LTuw0EZzX7aCirLomHPO+ynheZ3aSh/QASqPs0d7FE+Lr4B7KMJ2dnC43RaLS32f
-         A5ku/4R6W3tKrHsHnXOuPnpsXJ+22ZsjgcNP0FngGnUk/Q2S5WmIeb/5QwaXXz/qq2Ar
-         dO5Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=eTGSojB1p0GIuzN4LK3eQfQd4PSDYHeJzhPj7VxYv5s=;
+        b=swRIo78Tx6wjeC3T33k43CmBXkooWNcUYgqA/XptyQioRSepwQ1b+b27YjOcuuZZIm
+         mPEoBA1sGgwv9r/M3p6PbiKsz0nsByfoTHtl1DMLo/UQcilDVo5bg/SmegFTbknovXHP
+         kBb5yAqkvJc/r6dfLWFyoH8wJxIB2cEei/1okbDEIT/ngC1LX7f4DQ3DQ5p9QY/K9erY
+         yCh5UR/jMo/uudMkKEHMy61SZ5W9v29E2NGXD/mbEKY4R3FyNlRPHMgXpUw71LM86kEf
+         AGaARsYw+F4rqRPDxIfi7XzlPsRkY5gtO16T112l4d2ixI7KRUC8V6MX9z2YLuY5QSYX
+         +ltQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iLAkumpobJhziT5GcspBLNu4MlEVC9VQBaW2/D0P0z0=;
-        b=PdCNZHveyZjTiFWP4wuBdUDdtHKzI9rnTz1bDVVtcI5KIbY65jCIbBDhQa7XzfcC6D
-         os6Xo5mGPnnZf5ozqFniPrM4TXtcpFJPJ7pZofLysktocbw7zkNocKEpXAI5mMoxjXK9
-         J30DsOBV83Tiur09HqXaEb5EoC9LfqNJq9+s/Qet0xzbQZ1MPyXZoJQiHolioOiy3RJF
-         Hi1MhHDfVxPNRjzUqYpLJbHB1UNn5HfutQkThjrbBDrMW3g5LY0ffaij/eNfHH/3NHs7
-         jVr8G+3X6btEJPfZ2aN4qTAgIs7kkURA1V6expRxF+sCcFZFsjlMg6eR/DW9hlFKzqxP
-         rnXg==
-X-Gm-Message-State: AOAM530LB0Rrr/mvs39QlsOzpIFW8WdKuIVMJhAM9UUjVxu6vrwVWe2/
-        D7Cub0h6cq6k6My3FTIbc50=
-X-Google-Smtp-Source: ABdhPJxL7jFxgjPk5C1ySO1Br2FEnfurUa37p0Mqe2QjNpq2aBlnDcBjaUPMrUhcyf5gho7OzdfLtw==
-X-Received: by 2002:a17:906:b2cd:: with SMTP id cf13mr6290178ejb.419.1617966597033;
-        Fri, 09 Apr 2021 04:09:57 -0700 (PDT)
-Received: from localhost (pd9e51abe.dip0.t-ipconnect.de. [217.229.26.190])
-        by smtp.gmail.com with ESMTPSA id ka11sm1060302ejb.43.2021.04.09.04.09.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=eTGSojB1p0GIuzN4LK3eQfQd4PSDYHeJzhPj7VxYv5s=;
+        b=Gkd+1lo47kzYn95zk3Sk3YOCKFaxtYFl3oBEzwihh93XuvecKKo3jjbPkw+Nn4QpUr
+         Kq2Gjxf0G7GL5drWmLmUBTZaDkTe/dZqYgin43XoijXyMbDUv5rzrVENAhJj0j1xT6BI
+         EEziZ31trYSUC4iVGTy0UgSORjFce9VFtO5HHriWjDgECYhlHgV612hcVHChDQnkm+3a
+         mQnxk3bdd82hPO6+dskWw9i+PC9QDpr9hLilXSSp8H6dJPjLpSezF1FeuP6/yzXgqPG6
+         wr/r1/dEUv4YhVE7VZz20YgIvlCgzyA6ZSjZvvGlaqxKiMbhFldciiIuAgIhJ3wD3Jj7
+         X8hg==
+X-Gm-Message-State: AOAM530T20YO0iDLVN+niXL7sSeFVuEyxVhbXhQ7CNVEzyb31hizmaU9
+        Xe+YlUByIuxG6J4I8LwAw+M=
+X-Google-Smtp-Source: ABdhPJy2Z/HDSD43zwS6lCNuBcuvejo2ytLgGWkAbTOUsjnZ8k355Ca7RRKLO2O9NR2zclLP9/krMA==
+X-Received: by 2002:ac2:5591:: with SMTP id v17mr10087187lfg.82.1617966640081;
+        Fri, 09 Apr 2021 04:10:40 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:a31a:e13a:eb00:c5cf:27cc:1ef2:859])
+        by smtp.gmail.com with ESMTPSA id h10sm236572lfc.266.2021.04.09.04.10.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 04:09:55 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 13:10:31 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, linux-pwm@vger.kernel.org,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 5/8] pwm: core: Support new PWM_STAGGERING_ALLOWED flag
-Message-ID: <YHA2J92rgib1Qs17@orome.fritz.box>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-5-clemens.gruber@pqgruber.com>
- <20210407054658.qdsjkstqwynxeuxj@pengutronix.de>
- <YG4UNoBCQJkEEfwi@workstation.tuxnet>
- <20210407213403.h6n6l2t7vqoalceu@pengutronix.de>
- <YG78IHIMGtl8Pokp@orome.fritz.box>
- <YG8miEOZXsH0NTcA@workstation.tuxnet>
+        Fri, 09 Apr 2021 04:10:39 -0700 (PDT)
+From:   Piotr Gorski <lucjan.lucjanov@gmail.com>
+To:     lucjan.lucjanov@gmail.com
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        masahiroy@kernel.org, oleksandr@natalenko.name,
+        sedat.dilek@gmail.com
+Subject: Subject: Re: [PATCH v3] kbuild: add support for zstd compressed modules
+Date:   Fri,  9 Apr 2021 13:10:33 +0200
+Message-Id: <20210409111033.2465074-1-lucjan.lucjanov@gmail.com>
+X-Mailer: git-send-email 2.31.0.97.g1424303384
+In-Reply-To: <20210407160927.222092-1-lucjan.lucjanov@gmail.com>
+References: <20210407160927.222092-1-lucjan.lucjanov@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qR1/E7TKJN8+Cew2"
-Content-Disposition: inline
-In-Reply-To: <YG8miEOZXsH0NTcA@workstation.tuxnet>
-User-Agent: Mutt/2.0.6 (98f8cb83) (2021-03-06)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+I originally posted the patch in a different form [1] even before Masahiro's changes. 
+I've been testing this solution since December last year and posted it in March this year, 
+after I made sure everything was working fine. This patch was tested by Oleksandr and he also didn't report any objections. [2]
 
---qR1/E7TKJN8+Cew2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Masahiro notified me about the planned changes [3] and asked me to resend this patch, adjusted to those changes, which I did.
 
-On Thu, Apr 08, 2021 at 05:51:36PM +0200, Clemens Gruber wrote:
-> On Thu, Apr 08, 2021 at 02:50:40PM +0200, Thierry Reding wrote:
-> > On Wed, Apr 07, 2021 at 11:34:03PM +0200, Uwe Kleine-K=C3=B6nig wrote:
-> > > On Wed, Apr 07, 2021 at 10:21:10PM +0200, Clemens Gruber wrote:
-> > > > On Wed, Apr 07, 2021 at 07:46:58AM +0200, Uwe Kleine-K=C3=B6nig wro=
-te:
-> > > > > On Tue, Apr 06, 2021 at 06:41:37PM +0200, Clemens Gruber wrote:
-> > > > > > If the flag PWM_STAGGERING_ALLOWED is set on a channel, the PWM=
- driver
-> > > > > > may (if supported by the HW) delay the ON time of the channel r=
-elative
-> > > > > > to the channel number.
-> > > > > > This does not alter the duty cycle ratio and is only relevant f=
-or PWM
-> > > > > > chips with less prescalers than channels, which would otherwise=
- assert
-> > > > > > multiple or even all enabled channels at the same time.
-> > > > > >=20
-> > > > > > If this feature is supported by the driver and the flag is set =
-on
-> > > > > > multiple channels, their ON times are spread out to improve EMI=
- and
-> > > > > > reduce current spikes.
-> > > > >=20
-> > > > > As said in reply to patch 4/8 already: I don't like this idea and
-> > > > > think this should be made explicit using a new offset member in s=
-truct
-> > > > > pwm_state instead. That's because I think that the wave form a PWM
-> > > > > generates should be (completely) defined by the consumer and not =
-by a
-> > > > > mix between consumer and device tree. Also the consumer has no (s=
-ane)
-> > > > > way to determine if staggering is in use or not.
-> > > >=20
-> > > > I don't think offsets are ideal for this feature: It makes it more
-> > > > cumbersome for the user, because he has to allocate the offsets
-> > > > himself instead of a simple on/off switch.
-> > > > The envisioned usecase is: "I want better EMI behavior and don't ca=
-re
-> > > > about the individual channels no longer being asserted at the exact=
- same
-> > > > time".
-> > >=20
-> > > The formal thing is: "I want better EMI behavior and don't care if
-> > > periods start with the active phase, it might be anywhere, even over a
-> > > period boundary." Being asserted at the exact same time is just a det=
-ail
-> > > for the pca9685.
-> > > =20
-> > > > > One side effect (at least for the pca9685) is that when programmi=
-ng a
-> > > > > new duty cycle it takes a bit longer than without staggering unti=
-l the
-> > > > > new setting is active.=20
-> > > >=20
-> > > > Yes, but it can be turned off if this is a problem, now even per-PW=
-M.
-> > >=20
-> > > Yes and that is a good thing. (BTW: I'd call it per-PWM-consumer, but
-> > > details.)
-> > >=20
-> > > > > Another objection I have is that we already have some technical d=
-ebt
-> > > > > because there are already two different types of drivers (.apply =
-vs
-> > > > > .config+.set_polarity+.enable+.disable) and I would like to unify=
- this
-> > > > > first before introducing new stuff.
-> > > >=20
-> > > > But there is already PWM_POLARITY_INVERTED, which can be set in the=
- DT.
-> > > > I am only adding another flag.
-> > >=20
-> > > I understand your reasoning, and similar to "This diplay backlight ne=
-eds
-> > > an inverted PWM (as a low duty-cycle results in a high brightness" th=
-is
-> > > semantic "This consumer doesn't care if the active cycle is anywhere =
-in
-> > > the period". Hmm, maybe I just have to think about it a bit more to
-> > > become friends with that thought.
-> >=20
-> > Yes, I think that's basically what this is saying. I think we're perhaps
-> > getting hung up on the terminology here. PWM_STAGGERING_ALLOWED gives
-> > the impression that we're dealing with some provider-specific feature,
-> > whereas what we really want to express is that the PWM doesn't care
-> > exactly when the active cycle starts and based on that a provider that
-> > can support it may optimize the EMI behavior.
-> >=20
-> > Maybe we can find a better name for this? Ultimately what this means is
-> > that the consumer is primarily interested in the power output of the PWM
-> > rather than the exact shape of the signal. So perhaps something like
-> > PWM_USAGE_POWER would be more appropriate.
->=20
-> Yes, although it would then no longer be obvious that this feature leads
-> to improved EMI behavior, as long as we mention that in the docs, I
-> think it's a good idea
->=20
-> Maybe document it as follows?
-> PWM_USAGE_POWER - Allow the driver to delay the start of the cycle
-> for EMI improvements, as long as the power output stays the same
+My current logs:
 
-That's a very narrow definition of what this does, but yeah, I think the
-more we document this the better.
+lucjan@archlinux ~ $ zgrep CONFIG_DEBUG_INFO /proc/config.gz
+CONFIG_DEBUG_INFO=y
+# CONFIG_DEBUG_INFO_REDUCED is not set
+# CONFIG_DEBUG_INFO_COMPRESSED is not set
+# CONFIG_DEBUG_INFO_SPLIT is not set
+CONFIG_DEBUG_INFO_DWARF4=y
+CONFIG_DEBUG_INFO_BTF=y
+CONFIG_DEBUG_INFO_BTF_MODULES=y
+lucjan@archlinux ~ $ zgrep CONFIG_MODULE_COMPRESS_ZSTD /proc/config.gz
+CONFIG_MODULE_COMPRESS_ZSTD=y
+CONFIG_MODULE_COMPRESS_ZSTD_LEVEL=19
 
-However, the intention for naming this PWM_USAGE_POWER is to make it
-clear that from the *consumer* side of things we use the PWM for its
-power output and therefore we don't care about the signal actually looks
-like, except that it should provide power equivalent to what the
-consumer requested.
+Pay no attention to CONFIG_MODULE_COMPRESS_ZSTD_LEVEL as this is not in the upstream, it's an additional patch I use. 
 
-> > Come to think of it, a flag like that might even be useful to implement
-> > the common case of emulating inverted polarity with reversing the duty
-> > cycle. That is, if PWM_USAGE_POWER | PWM_POLARITY_INVERSED was specified
-> > and the PWM provider did not support polarity inversion, the inversion
-> > could still be implemented using emulation. Currently we push that logic
-> > down into consumers, but this could be a way to bring that up into
-> > drivers, or perhaps even the core.
->=20
-> Interesting, but that would be left for another series in the future, I
-> assume?
+The only difference - I don't use clang. Maybe those who use will comment on this. 
+I relied on the opinions of Oleksander and a dozen other users who reported no errors in using zstd module compression.  
 
-Yes, of course. I was merely thinking about what could be done with this
-if we describe it in this generic way.
+[1] https://marc.info/?l=linux-kbuild&m=161710402402989&w=2
 
-Thierry
+[2] https://marc.info/?l=linux-kbuild&m=161710503403517&w=2
 
---qR1/E7TKJN8+Cew2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmBwNiQACgkQ3SOs138+
-s6HRVhAAi5obwN1Gq1fJKT+lEE22dF5bPfAy0PIzbIDxlkkn3Wh5YRfCoUFhbbzu
-1LpCUhO6wmvtJTo80XRqrTrJadYnQiGcRlSURmpH4JwYqVMyJACkAm40TGjHJAw0
-DyZmk7M7JmZefHA8IominGPJEtF2mzZSRoxp2biWf3AIPobcfOTlbtGve/tP3MBf
-kLFpves+E1FaPmYKTLAG2xmQyd9Skrqm8WnKvf26XWl0DFyc0q/8s1VDvM5BIY+D
-HmEyjoLjAwEbSe06GgJblXh+0oLElNJRWH4ThR7NyTuv41eyrcPIw3zdKEHfj5tE
-UPanMLWNxgUOcoN+pxf/8RCeR2G45tEGcgYdGK4q72FptfmTB8XTQgK79DVQPtWB
-hseenPDbEfEM8MXXV27HY4noyohfIW8uZCzc5bTG3iwT2vP3lOw2Bat1jHf6TECl
-Kzk+Vvv+F72F73vs9TxyMo3We4rOQF23b7v9NpfulRmDgwXxwTDvnqC7lP4g2yss
-lVx8hrIIxBwPVr+MpUzOkueWm8vkDpcuQsl0kd0+bYRMbLVOo6CeD+cZxgW8olPH
-88Of7qKPSiovLyTW/Iap3jv3tNegVystHelgHCwXKsb0djo+NoTP+PA1OnAgLegW
-4TcaOeksNnyMd37GOOFc5Fw09a1RA+bIlzr9Yrs+ldWqx1vMF1w=
-=lZai
------END PGP SIGNATURE-----
-
---qR1/E7TKJN8+Cew2--
+[3] https://marc.info/?l=linux-kbuild&m=161780602730829&w=2
