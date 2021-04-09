@@ -2,71 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D23E3591C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9D763591CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 04:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbhDIB6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 21:58:54 -0400
-Received: from mail-m963.mail.126.com ([123.126.96.3]:44088 "EHLO
-        mail-m963.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhDIB6y (ORCPT
+        id S233067AbhDICAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 22:00:42 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16056 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhDICAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:58:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=6myTYJ/6oXihRxGonF
-        RwbGYMjlu+sduVYchFyN3kgEE=; b=lVV9+qH2cvtcwzftgpjy0OFDmU8X4IcPAV
-        jmiTDormglV8wUc5vMlkm298Kr2w8AUwd6BC3vvrRZWc62SQml5zxwbghLHDgvM5
-        I9Clx0AKwNOXQcjMWXD6hI0Kr8bcHeH/f3C4fW9kAWsK5aQLWKdqQvCl3EiaPWa6
-        cnOgjP66E=
-Received: from localhost.localdomain (unknown [116.162.2.189])
-        by smtp8 (Coremail) with SMTP id NORpCgCX06PFtG9gAtgdHQ--.10140S2;
-        Fri, 09 Apr 2021 09:58:31 +0800 (CST)
-From:   wangyingjie55@126.com
-To:     dan.j.williams@intel.com, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, ira.weiny@intel.com,
-        linux-nvdimm@lists.01.org
-Cc:     wangyingjie55@126.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] libnvdimm, dax: Fix a missing check in nd_dax_probe()
-Date:   Thu,  8 Apr 2021 18:58:26 -0700
-Message-Id: <1617933506-13684-1-git-send-email-wangyingjie55@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: NORpCgCX06PFtG9gAtgdHQ--.10140S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtFykKr4rJFyxArykKFy5XFb_yoWfKFbEkF
-        y7Zr929Fy0krnayr42vr1fu34vyrn29r1kur4jgw13Ar4j9r13GrWkur9Ikrsagr4xZr1D
-        urnFqFnxuF15ujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeVnQUUUUUU==
-X-Originating-IP: [116.162.2.189]
-X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiGAdvp1pEC2HqHgAAsX
+        Thu, 8 Apr 2021 22:00:36 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGh8v3TwRzPpMK;
+        Fri,  9 Apr 2021 09:57:35 +0800 (CST)
+Received: from huawei.com (10.67.174.78) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 10:00:14 +0800
+From:   Chen Lifu <chenlifu@huawei.com>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+CC:     Chen Lifu <chenlifu@huawei.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next] ASoC: sti: sti_uniperif: add missing MODULE_DEVICE_TABLE
+Date:   Fri, 9 Apr 2021 09:59:53 +0800
+Message-ID: <20210409015953.259688-1-chenlifu@huawei.com>
+X-Mailer: git-send-email 2.17.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.174.78]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yingjie Wang <wangyingjie55@126.com>
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
-In nd_dax_probe(), 'nd_dax' is allocated by nd_dax_alloc().
-nd_dax_alloc() may fail and return NULL, so we should better check
-it's return value to avoid a NULL pointer dereference
-a bit later in the code.
-
-Fixes: c5ed9268643c ("libnvdimm, dax: autodetect support")
-Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Lifu <chenlifu@huawei.com>
 ---
- drivers/nvdimm/dax_devs.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sti/sti_uniperif.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvdimm/dax_devs.c b/drivers/nvdimm/dax_devs.c
-index 99965077bac4..b1426ac03f01 100644
---- a/drivers/nvdimm/dax_devs.c
-+++ b/drivers/nvdimm/dax_devs.c
-@@ -106,6 +106,8 @@ int nd_dax_probe(struct device *dev, struct nd_namespace_common *ndns)
+diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
+index 67315d9b352d..e3561f00ed40 100644
+--- a/sound/soc/sti/sti_uniperif.c
++++ b/sound/soc/sti/sti_uniperif.c
+@@ -97,6 +97,7 @@ static const struct of_device_id snd_soc_sti_match[] = {
+ 	},
+ 	{},
+ };
++MODULE_DEVICE_TABLE(of, snd_soc_sti_match);
  
- 	nvdimm_bus_lock(&ndns->dev);
- 	nd_dax = nd_dax_alloc(nd_region);
-+	if (!nd_dax)
-+		return -ENOMEM;
- 	nd_pfn = &nd_dax->nd_pfn;
- 	dax_dev = nd_pfn_devinit(nd_pfn, ndns);
- 	nvdimm_bus_unlock(&ndns->dev);
--- 
-2.7.4
+ int  sti_uniperiph_reset(struct uniperif *uni)
+ {
 
