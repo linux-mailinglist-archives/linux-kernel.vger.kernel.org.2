@@ -2,106 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29ECB35A90F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE7B35A917
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235069AbhDIXIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 19:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234880AbhDIXIy (ORCPT
+        id S235146AbhDIXJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 19:09:29 -0400
+Received: from mo-csw1515.securemx.jp ([210.130.202.154]:54804 "EHLO
+        mo-csw.securemx.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235075AbhDIXJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 19:08:54 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFA4C061762;
-        Fri,  9 Apr 2021 16:08:40 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so7273273oto.2;
-        Fri, 09 Apr 2021 16:08:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lpr1Vp/cOtO89rHVLcXxZ2elGZKeYl02Lj39b4gnicU=;
-        b=YokWywBaf20r1JtMG0TGKj/6/R7Zo7V1Q+QHkU0M+LmEKD+2eSNWfwea76Ca9CfTqk
-         wQ88K0u81uFHxsVgVjfx2K15ob2f3JCANESyhjhgPpOZzIqHJwdIFyTAEZdKo+aglbQ0
-         mLx4CY5D0WwDSCvkp6tKsw4mZlePvgYGBbh/CvZgIL+IKkYGvj8m2V7YJpDrnjx/R2yK
-         y3vCscP3sZm48xrP7IpKBchcY8j43N2/gXWlkI5Jd2DCcJNnNOnPlGP/BF45AVz4c/tl
-         MDiV+EE4mFCuJsqvCctk67i+Gkf9zHgfRE4OHbD4tSMDwKbmZ1S/x84g0jUOUad0ekmU
-         nyAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lpr1Vp/cOtO89rHVLcXxZ2elGZKeYl02Lj39b4gnicU=;
-        b=LQvJZohjTqpJ8UWH6G6Qo2WgZomwnpBVZUNzO067x9MkuwckM3gYwRERF6wq9A0YMo
-         n/9Eeo7R3DFHIrqaEVSJas0RmDa8pQL7RXeKZDllcqroxu4r+q3loDI7GS2LE5mcS4OT
-         xdBaY3VaOLOA+k/3CIdOipJ++CQhhQA8PMT1zRk4WeMO2TSKVUSfzcN27H5FcWXFRBIx
-         2Cc8J9E1qRNMm6kbyxEHg83fceU60IM/8g36DEmhJDIDXskpll0QpMahRZ7zXk59oyEG
-         zAajYvq98M5273oba+2z7CH5MUKVrqKSZ9m6Cqh9YtgxkmUc6xpRbVit07nf30d1I4Ej
-         hZ5A==
-X-Gm-Message-State: AOAM53089bLwGpv5vYwkMkIX+Nvy3kaMQedowwqNrcNkECMnKUpt8wxm
-        D8RLTXtyPqi52UrFFV/1gbNPRioLaHc=
-X-Google-Smtp-Source: ABdhPJzKMvsE4AME1eu0c8egA9ucA8RkdHrtaWfOCcvFYa7lBlOp/TkbPHExyqCCijtDC9lH8c24wA==
-X-Received: by 2002:a9d:4509:: with SMTP id w9mr14076784ote.111.1618009720035;
-        Fri, 09 Apr 2021 16:08:40 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f2sm781554oos.16.2021.04.09.16.08.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Apr 2021 16:08:39 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 9 Apr 2021 16:08:37 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Juerg Haefliger <juergh@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        "Mark M . Hoffman" <mhoffman@lightlink.com>,
-        linux-hwmon@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH]  hwmon: (dme1737): Add missing null check on return from
- platform_get_resource
-Message-ID: <20210409230837.GA69920@roeck-us.net>
-References: <20210406185458.433826-1-colin.king@canonical.com>
+        Fri, 9 Apr 2021 19:09:27 -0400
+Received: by mo-csw.securemx.jp (mx-mo-csw1515) id 139N8mD8025398; Sat, 10 Apr 2021 08:08:48 +0900
+X-Iguazu-Qid: 34trMInxztO8FwPLNY
+X-Iguazu-QSIG: v=2; s=0; t=1618009728; q=34trMInxztO8FwPLNY; m=xLyc9zJ3M5Z3X3hmJZssjOQ5NC1fCBhJ4zr6bRxGLTE=
+Received: from imx2-a.toshiba.co.jp (imx2-a.toshiba.co.jp [106.186.93.35])
+        by relay.securemx.jp (mx-mr1510) id 139N8l2s003777
+        (version=TLSv1.2 cipher=AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 10 Apr 2021 08:08:47 +0900
+Received: from enc01.toshiba.co.jp (enc01.toshiba.co.jp [106.186.93.100])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by imx2-a.toshiba.co.jp (Postfix) with ESMTPS id 3689B1000D7;
+        Sat, 10 Apr 2021 08:08:47 +0900 (JST)
+Received: from hop001.toshiba.co.jp ([133.199.164.63])
+        by enc01.toshiba.co.jp  with ESMTP id 139N8kob024950;
+        Sat, 10 Apr 2021 08:08:46 +0900
+From:   Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        punit1.agrawal@toshiba.co.jp, yuji2.ishikawa@toshiba.co.jp,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH v4 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM support
+Date:   Sat, 10 Apr 2021 08:08:37 +0900
+X-TSB-HOP: ON
+Message-Id: <20210409230837.1919744-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+X-Mailer: git-send-email 2.30.0.rc2
+In-Reply-To: <20210409230837.1919744-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+References: <20210409230837.1919744-1-nobuhiro1.iwamatsu@toshiba.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406185458.433826-1-colin.king@canonical.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 07:54:58PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The call to platform_get_resource can potentially return a NULL pointer
-> on failure, so add this check and return -EINVAL if it fails.
-> 
-> Addresses-Coverity: ("Dereference null return")
-> Fixes: e95c237d78c0 ("hwmon: (dme1737) Add sch311x support")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Add driver for the PWM controller on Toshiba Visconti ARM SoC.
 
-Not really sure what to do with this; it is a false positive.
-The resource is always set by the instantiating code (in the same
-driver). Adding an error check just to make coverity happy seems
-like a waste. Maybe we should introduce the equivalent of
-devm_ioremap_resource() for IORESOURCE_IO.
+Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+---
+ drivers/pwm/Kconfig        |   9 ++
+ drivers/pwm/Makefile       |   1 +
+ drivers/pwm/pwm-visconti.c | 188 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 198 insertions(+)
+ create mode 100644 drivers/pwm/pwm-visconti.c
 
-Guenter
+diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+index 9a4f66ae8070..8ae68d6203fb 100644
+--- a/drivers/pwm/Kconfig
++++ b/drivers/pwm/Kconfig
+@@ -601,6 +601,15 @@ config PWM_TWL_LED
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called pwm-twl-led.
+ 
++config PWM_VISCONTI
++	tristate "Toshiba Visconti PWM support"
++	depends on ARCH_VISCONTI || COMPILE_TEST
++	help
++	  PWM Subsystem driver support for Toshiba Visconti SoCs.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called pwm-visconti.
++
+ config PWM_VT8500
+ 	tristate "vt8500 PWM support"
+ 	depends on ARCH_VT8500 || COMPILE_TEST
+diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+index 6374d3b1d6f3..d43b1e17e8e1 100644
+--- a/drivers/pwm/Makefile
++++ b/drivers/pwm/Makefile
+@@ -56,4 +56,5 @@ obj-$(CONFIG_PWM_TIECAP)	+= pwm-tiecap.o
+ obj-$(CONFIG_PWM_TIEHRPWM)	+= pwm-tiehrpwm.o
+ obj-$(CONFIG_PWM_TWL)		+= pwm-twl.o
+ obj-$(CONFIG_PWM_TWL_LED)	+= pwm-twl-led.o
++obj-$(CONFIG_PWM_VISCONTI)	+= pwm-visconti.o
+ obj-$(CONFIG_PWM_VT8500)	+= pwm-vt8500.o
+diff --git a/drivers/pwm/pwm-visconti.c b/drivers/pwm/pwm-visconti.c
+new file mode 100644
+index 000000000000..99d83f94ed86
+--- /dev/null
++++ b/drivers/pwm/pwm-visconti.c
+@@ -0,0 +1,188 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Toshiba Visconti pulse-width-modulation controller driver
++ *
++ * Copyright (c) 2020 TOSHIBA CORPORATION
++ * Copyright (c) 2020 Toshiba Electronic Devices & Storage Corporation
++ *
++ * Authors: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
++ *
++ */
++
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++#include <linux/pwm.h>
++
++#define PIPGM_PCSR(ch) (0x400 + 4 * (ch))
++#define PIPGM_PDUT(ch) (0x420 + 4 * (ch))
++#define PIPGM_PWMC(ch) (0x440 + 4 * (ch))
++
++#define PIPGM_PWMC_PWMACT		BIT(5)
++#define PIPGM_PWMC_CLK_MASK		GENMASK(1, 0)
++#define PIPGM_PWMC_POLARITY_MASK	GENMASK(5, 5)
++
++struct visconti_pwm_chip {
++	struct pwm_chip chip;
++	void __iomem *base;
++};
++
++static inline struct visconti_pwm_chip *to_visconti_chip(struct pwm_chip *chip)
++{
++	return container_of(chip, struct visconti_pwm_chip, chip);
++}
++
++static int visconti_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
++			      const struct pwm_state *state)
++{
++	struct visconti_pwm_chip *priv = to_visconti_chip(chip);
++	u32 period, duty_cycle, pwmc0;
++
++	/*
++	 * pwmc is a 2-bit divider for the input clock running at 1 MHz.
++	 * When the settings of the PWM are modified, the new values are shadowed in hardware until
++	 * the period register (PCSR) is written and the currently running period is completed. This
++	 * way the hardware switches atomically from the old setting to the new.
++	 * Also, disabling the hardware completes the currently running period and keeps the output
++	 * at low level at all times.
++	 */
++	if (!state->enabled) {
++		writel(0, priv->base + PIPGM_PCSR(pwm->hwpwm));
++		return 0;
++	}
++
++	/*
++	 * The biggest period the hardware can provide is
++	 *	(0xffff << 3) * 1000 ns
++	 * This value fits easily in an u32, so simplify the maths by
++	 * capping the values to 32 bit integers.
++	 */
++	if (state->period > (0xffff << 3) * 1000)
++		period = (0xffff << 3) * 1000;
++	else
++		period = state->period;
++
++	if (state->duty_cycle > period)
++		duty_cycle = period;
++	else
++		duty_cycle = state->duty_cycle;
++
++	/*
++	 * The input clock runs fixed at 1 MHz, so we have only
++	 * microsecond resolution and so can divide by
++	 * NSEC_PER_SEC / CLKFREQ = 1000 without loosing precision.
++	 */
++	period /= 1000;
++	duty_cycle /= 1000;
++
++	if (!period)
++		return -ERANGE;
++
++	/*
++	 * PWMC controls a divider that divides the input clk by a
++	 * power of two between 1 and 8. As a smaller divider yields
++	 * higher precision, pick the smallest possible one.
++	 */
++	if (period > 0xffff) {
++		pwmc0 = ilog2(period >> 16);
++		BUG_ON(pwmc0 > 3);
++	} else
++		pwmc0 = 0;
++
++	period >>= pwmc0;
++	duty_cycle >>= pwmc0;
++
++	if (state->polarity == PWM_POLARITY_INVERSED)
++		pwmc0 |= PIPGM_PWMC_PWMACT;
++	writel(pwmc0, priv->base + PIPGM_PWMC(pwm->hwpwm));
++	writel(duty_cycle, priv->base + PIPGM_PDUT(pwm->hwpwm));
++	writel(period, priv->base + PIPGM_PCSR(pwm->hwpwm));
++
++	return 0;
++}
++
++static void visconti_pwm_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
++				   struct pwm_state *state)
++{
++	struct visconti_pwm_chip *priv = chip_to_priv(chip);
++	u32 period, duty, pwmc0, pwmc0_clk;
++
++	period = readl(priv->base + PIPGM_PCSR(pwm->hwpwm));
++	if (period)
++		state->enabled = true;
++	else
++		state->enabled = false;
++
++	duty = readl(priv->base + PIPGM_PDUT(pwm->hwpwm));
++	pwmc0 = readl(priv->base + PIPGM_PWMC(pwm->hwpwm));
++	pwmc0_clk = pwmc0 & PIPGM_PWMC_CLK_MASK;
++
++	state->period = (period << pwmc0_clk) * NSEC_PER_USEC;
++	state->duty_cycle = (duty << pwmc0_clk) * NSEC_PER_USEC;
++	if (pwmc0 & PIPGM_PWMC_POLARITY_MASK)
++		state->polarity = PWM_POLARITY_INVERSED;
++	else
++		state->polarity = PWM_POLARITY_NORMAL;
++}
++
++static const struct pwm_ops visconti_pwm_ops = {
++	.apply = visconti_pwm_apply,
++	.get_state = visconti_pwm_get_state,
++	.owner = THIS_MODULE,
++};
++
++static int visconti_pwm_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct visconti_pwm_chip *priv;
++	int ret;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->base = devm_platform_ioremap_resource(pdev, 0);
++	if (IS_ERR(priv->base))
++		return PTR_ERR(priv->base);
++
++	platform_set_drvdata(pdev, priv);
++
++	priv->chip.dev = dev;
++	priv->chip.ops = &visconti_pwm_ops;
++	priv->chip.npwm = 4;
++
++	ret = pwmchip_add(&priv->chip);
++	if (ret < 0)
++		return dev_err_probe(&pdev->dev, ret, "Cannot register visconti PWM\n");
++
++	return 0;
++}
++
++static int visconti_pwm_remove(struct platform_device *pdev)
++{
++	struct visconti_pwm_chip *priv = platform_get_drvdata(pdev);
++
++	return pwmchip_remove(&priv->chip);
++}
++
++static const struct of_device_id visconti_pwm_of_match[] = {
++	{ .compatible = "toshiba,visconti-pwm", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, visconti_pwm_of_match);
++
++static struct platform_driver visconti_pwm_driver = {
++	.driver = {
++		.name = "pwm-visconti",
++		.of_match_table = visconti_pwm_of_match,
++	},
++	.probe = visconti_pwm_probe,
++	.remove = visconti_pwm_remove,
++};
++module_platform_driver(visconti_pwm_driver);
++
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>");
++MODULE_ALIAS("platform:pwm-visconti");
+-- 
+2.30.0.rc2
 
-> ---
->  drivers/hwmon/dme1737.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/hwmon/dme1737.c b/drivers/hwmon/dme1737.c
-> index c1e4cfb40c3d..a2157872e126 100644
-> --- a/drivers/hwmon/dme1737.c
-> +++ b/drivers/hwmon/dme1737.c
-> @@ -2633,6 +2633,8 @@ static int dme1737_isa_probe(struct platform_device *pdev)
->  	int err;
->  
->  	res = platform_get_resource(pdev, IORESOURCE_IO, 0);
-> +	if (!res)
-> +		return -EINVAL;
->  	if (!devm_request_region(dev, res->start, DME1737_EXTENT, "dme1737")) {
->  		dev_err(dev, "Failed to request region 0x%04x-0x%04x.\n",
->  			(unsigned short)res->start,
