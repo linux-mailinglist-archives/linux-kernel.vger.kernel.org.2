@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB4035A48D
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C61F35A490
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234282AbhDIRUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:20:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234201AbhDIRUD (ORCPT
+        id S234287AbhDIRUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:20:48 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53868 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232395AbhDIRUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:20:03 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB6D2C061760;
-        Fri,  9 Apr 2021 10:19:50 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id r9so9840136ejj.3;
-        Fri, 09 Apr 2021 10:19:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DleQ7VeK2meirvzYzHUPaLLy20dHNBvI8Mjkq4A3H1s=;
-        b=j22BykHfFoyhwXi6yVO9ewnjs4GZk3+4853WEzYDBBJ4lEQHhs0VYUwbgMq8AO3SE3
-         aQPpLFn75NHmz+AOIAiK5UBPomT6w5Mty5DuPTIsVuT3HQSBu7liBGHu/6nhgZcg1PQY
-         ZkpMYGHo7MTD+ZVXWS7QScEjZoFAs8JQjWj/WK6ebfROWhNPxUaqTwvNPMZi9+q3cM5+
-         HrL/iIe/6B+RmyrjqO6V02GNnl5KVcK3g49+Fc6DuVED4oAYy36ZrFT/GnIfEzL4srs0
-         L27TR5myLoiStV72W5TnIlyHGLXhrE/hQ0Uakz/tFSje2vR9DzUxlM1T7xOLR2jSh4cD
-         eiSg==
+        Fri, 9 Apr 2021 13:20:45 -0400
+Received: from mail-wr1-f69.google.com ([209.85.221.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lUuo3-0008D4-C9
+        for linux-kernel@vger.kernel.org; Fri, 09 Apr 2021 17:20:31 +0000
+Received: by mail-wr1-f69.google.com with SMTP id r11so2584767wrp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:20:31 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DleQ7VeK2meirvzYzHUPaLLy20dHNBvI8Mjkq4A3H1s=;
-        b=AHBhNDHAMJL4b45Ht9Qu9YVZzljBXTlEZmNqLl2Ki2qnjse/4UaQ+fopCryAQI5ZxD
-         ILInWCiisqHkSuBsG78S0/9vwmmvz7/0PnPF8/DzM79t0Gn6CgB1kODFuxZDpmg/xbzw
-         rwA33LTKYDyTGNqwTjDUEizjAQVlcQ9ICD80tzh0sigKPBgyqPqjfUXDm+vaDzQjlj4x
-         zfbhRF07ZzCo7HS6k74q7uQDuEGASwyF4U8efd8PNiegfEwoAPcEcAeldgOV5aYDEN0t
-         9kpZbsnCDsYCnOYG1J+wqKhMa3pHikdGTZ3SWb4RF/QpNoroAUmrR97iGK+2qq1tkPC7
-         05EQ==
-X-Gm-Message-State: AOAM532GtWYC7n3Jmv08SUR3vsXr5y4PSVGr/1bEwUol2SYdBFGyqIvh
-        MX96C6fdWMU2DoiJt21EdvY=
-X-Google-Smtp-Source: ABdhPJw59Urs+Bg3MLQeNl4rjtDBFUthpekCWV6+UGY8tQ7Zf18ebh1qO3qx2QEL1SmMzS4ngh0yew==
-X-Received: by 2002:a17:906:958f:: with SMTP id r15mr17174327ejx.450.1617988789377;
-        Fri, 09 Apr 2021 10:19:49 -0700 (PDT)
-Received: from anparri ([151.76.116.20])
-        by smtp.gmail.com with ESMTPSA id k12sm1762352edo.50.2021.04.09.10.19.48
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4uyrzUrjaAi1BmA4U4HPTxMZ5ghSP8t5+bP/xEnKvPA=;
+        b=HvL+RBdgBCvdJS4yfgCnI9DiUqzNc5fMBf0sAQMIVsVQLoiRSROJ7Ar6GcGhE+Xs8k
+         jTGuakri2Dg5N8SQ+gudVQzGzdpcRmBlpIL1ZFDlcw7R1GSOntvajc/Y99oMyxysTvRW
+         H6Y5X4lGh4Ck5N3cpalCSnhJBtSNb+zQ+xFm585MCG7dH/PW1A6QlgimPfL6jfuj1oS2
+         PFvSpd5tXUOf+Y/5kpNYsFFSEe4hO3GUyBUhUpeHd/liQtGgMfi4qvS3DeBd7pnfK1OZ
+         BEyMBxuHs/KWaNiWxsrxVULwg+Y8uFbbTNxSKSAJKfZe6oQ1qSnqILQuCo9U/UYjm7/t
+         kNog==
+X-Gm-Message-State: AOAM532AbPRSk6V67wlHZdFac4Zp5YF2VeJaspgR/V06ctCSZlJ1hTER
+        kQhnBuoT1uLEh7VYoh6+r9MdSLD8Jaem0dgjVMRVcMnBSARaJEOPsV0ytxTS1w3EK57NSsLprkU
+        tdXXdL+OELgK+YbKcVmv2rjmCnmREmMTVGZ2boxOyjA==
+X-Received: by 2002:a05:600c:228d:: with SMTP id 13mr15001633wmf.49.1617988831091;
+        Fri, 09 Apr 2021 10:20:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw+JyoKZKJpIbVuRb8NNntAEpfeqVfkIhTYqe0bAoqdpPbIiazDgM3Y6xaCNkmht2L2eOtOrw==
+X-Received: by 2002:a05:600c:228d:: with SMTP id 13mr15001626wmf.49.1617988830984;
+        Fri, 09 Apr 2021 10:20:30 -0700 (PDT)
+Received: from localhost.localdomain (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id f8sm5444428wro.29.2021.04.09.10.20.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 10:19:49 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 19:19:40 +0200
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        Andres Beltran <lkmlabelt@gmail.com>
-Subject: Re: [PATCH hyperv-next] Drivers: hv: vmbus: Copy packets sent by
- Hyper-V out of the ring buffer
-Message-ID: <20210409171940.GA3468@anparri>
-References: <20210408161439.341988-1-parri.andrea@gmail.com>
- <MWHPR21MB1593B81DEB6428DC3FD6085ED7739@MWHPR21MB1593.namprd21.prod.outlook.com>
+        Fri, 09 Apr 2021 10:20:30 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh@kernel.org>
+Subject: [PATCH v3] dt-bindings: serial: samsung: include generic dtschema to match bluetooth child
+Date:   Fri,  9 Apr 2021 19:20:27 +0200
+Message-Id: <20210409172027.11296-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB1593B81DEB6428DC3FD6085ED7739@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 03:49:00PM +0000, Michael Kelley wrote:
-> From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Thursday, April 8, 2021 9:15 AM
-> > 
-> > Pointers to ring-buffer packets sent by Hyper-V are used within the
-> > guest VM. Hyper-V can send packets with erroneous values or modify
-> > packet fields after they are processed by the guest. To defend
-> > against these scenarios, return a copy of the incoming VMBus packet
-> > after validating its length and offset fields in hv_pkt_iter_first().
-> > In this way, the packet can no longer be modified by the host.
-> 
-> Andrea -- has anything changed in this version of this patch, except
-> the value of NETVSC_MAX_XFER_PAGE_RANGES?  It used to be a
-> fixed 375, but now is NVSP_RSC_MAX, which is 562.
-> 
-> If that's the only change, then
-> 
-> Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-The only change here is indeed the value of NETVSC_MAX_XFER_PAGE_RANGES,
-apologies for the omission of the changelog.
+Include the generic serial.yaml dtschema so the child node like
+"bluetooth" will be properly matched:
 
-Thanks for the review.
+  arch/arm/boot/dts/exynos4210-universal_c210.dt.yaml:
+    serial@13800000: 'bluetooth' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-  Andrea
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+---
+
+Changes since v2:
+1. Fix typo in commit msg.
+2. Add Rob's review.
+
+Changes since v1:
+1. Drop the new example, as Rob suggested.
+---
+ Documentation/devicetree/bindings/serial/samsung_uart.yaml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/serial/samsung_uart.yaml b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
+index 4f98a3896b3a..97ec8a093bf3 100644
+--- a/Documentation/devicetree/bindings/serial/samsung_uart.yaml
++++ b/Documentation/devicetree/bindings/serial/samsung_uart.yaml
+@@ -79,9 +79,11 @@ required:
+   - interrupts
+   - reg
+ 
+-additionalProperties: false
++unevaluatedProperties: false
+ 
+ allOf:
++  - $ref: /schemas/serial.yaml#
++
+   - if:
+       properties:
+         compatible:
+-- 
+2.25.1
+
