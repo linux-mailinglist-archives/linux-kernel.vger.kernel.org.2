@@ -2,193 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84275359842
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACD735986B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232358AbhDIIrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 04:47:55 -0400
-Received: from mail-mw2nam12on2052.outbound.protection.outlook.com ([40.107.244.52]:33505
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232276AbhDIIru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:47:50 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eA+X26ObniYWZomigDbWyBZX4vuIDTj3Yy2GkUXXZo7KrqdRZydgl+jbX7q5tybGKxGL2wJq+43yPrJsISgxj0h0jQlP3sljE5ru2Yri65yHofKb6mW3TSckYFZyJ8SQunOCi/fsKvY5P43VqrpNwNuxZn034xvzArgswjzotLeTFP/0LCmXkdSipk0AKLZEJS3Te8W57YXsBzAaq4mij81KQcubzJDq3VS39061W8b9zsjhRMycuIVYdE72xeiF4ZwbHfSDhpSRx6Sp+b3WuCzd0QzNCh3Yi9wL3fKcw/jZkvo7FEKSfY0SxIwzGBpVn29jd25PmKoATw8qfEUKHQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W437qHzN0xTwIqfgWm8AG/ephKbNSH6ZbiHdR1qeO64=;
- b=fGSrpdj6Ng2QTs2osLTDY5mxYwB4d3cUUZCO7r9MTSZSJ/auqDEIij1hrwdy2xCmmPRRhAF6g17+hMN9W9ae+lT/vws6XPlCR2SayiJ0TDCGaUKBSU6Y661UxpqrAkT6bN1tMdKWZM0kowg0aqQMiSxSI2zQdL7J5yQmqXLKNC4+wF9P5lf3fdXApLcc2Krh80xi7DYBtNQDikPl92hBBvI5ysFOCgnkC5zmVKB+Yc1n23Puw1ymT30I8Vj0pYDLDNTWr9RsJOJlHoHEdWXlZUQ4zvjwYPUlS29mVSxlgXXe5JD4PBz7e5gARaOq62nU1BcBN2zZPdlrdKNPA9nNsQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W437qHzN0xTwIqfgWm8AG/ephKbNSH6ZbiHdR1qeO64=;
- b=yUmWqDXn3pAmulN0Fq8qSaKqRpcX9Zxy5Yf4Q4buH2TL1y90BGV+AZ+gJW+Fvm3V+IxLowreFnRGVbOQua0/FSeDXi/qUOLOlWXllp06TtgheXCZHENeR5VSYKMQ404u6ugiknG/YvC3WI5gT0FIiifdRpJYksieG+g4p5Te66s=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
- by BY5PR12MB3889.namprd12.prod.outlook.com (2603:10b6:a03:1ad::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Fri, 9 Apr
- 2021 08:47:34 +0000
-Received: from BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::cc86:d78a:bb1d:5109]) by BYAPR12MB4597.namprd12.prod.outlook.com
- ([fe80::cc86:d78a:bb1d:5109%5]) with mapi id 15.20.3999.036; Fri, 9 Apr 2021
- 08:47:34 +0000
-From:   Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     joro@8bytes.org, will@kernel.org, jsnitsel@redhat.com,
-        pmenzel@molgen.mpg.de, Jon.Grimm@amd.com,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Tj <ml.linux@elloe.vision>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Alexander Monakov <amonakov@ispras.ru>,
-        David Coe <david.coe@live.co.uk>
-Subject: [PATCH 2/2] iommu/amd: Remove performance counter pre-initialization test
-Date:   Fri,  9 Apr 2021 03:58:48 -0500
-Message-Id: <20210409085848.3908-3-suravee.suthikulpanit@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210409085848.3908-1-suravee.suthikulpanit@amd.com>
-References: <20210409085848.3908-1-suravee.suthikulpanit@amd.com>
-Content-Type: text/plain
-X-Originating-IP: [165.204.78.2]
-X-ClientProxiedBy: SN6PR01CA0011.prod.exchangelabs.com (2603:10b6:805:b6::24)
- To BYAPR12MB4597.namprd12.prod.outlook.com (2603:10b6:a03:10b::14)
+        id S231765AbhDII7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:59:25 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3081 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230181AbhDII7X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:59:23 -0400
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FGsRF3G8zzWV6R;
+        Fri,  9 Apr 2021 16:55:37 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 9 Apr 2021 16:59:09 +0800
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2106.2; Fri, 9 Apr 2021 16:59:08 +0800
+Subject: Re: [PATCH v4 1/2] KVM: arm64: Move CMOs from user_mem_abort to the
+ fault handlers
+To:     Quentin Perret <qperret@google.com>
+CC:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "Alexandru Elisei" <alexandru.elisei@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>, <wanghaibin.wang@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>
+References: <20210409033652.28316-1-wangyanan55@huawei.com>
+ <20210409033652.28316-2-wangyanan55@huawei.com> <YHALa38PPQBceqF9@google.com>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <67c497cc-5a74-e431-a9bc-d05582998bbe@huawei.com>
+Date:   Fri, 9 Apr 2021 16:59:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ethanolx5673host.amd.com (165.204.78.2) by SN6PR01CA0011.prod.exchangelabs.com (2603:10b6:805:b6::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Fri, 9 Apr 2021 08:47:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e79a77d1-8901-43ce-2da4-08d8fb341e7a
-X-MS-TrafficTypeDiagnostic: BY5PR12MB3889:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR12MB388993B20B7717E15C02EDC5F3739@BY5PR12MB3889.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z2xrYNTe/kFnEBYK3jOeNRx49MGYQXYOgiBHilLFp40Hega0ERCy62ZSq3O/jQgfAcCPTWcGRG5cLzlI8lr5JZ35Hx53R2TaP1bUGWJ1iC1yZ8ZE9aa3pHypuKlrSveWG/VaoUoAQYezzFpOAe6zRLDDyf2Q8lMVPdDyrfbYnMBeCaLXG12rv8jEvj5IDLuTlvLVYlW1SSI1CJimcFvSBZi+vFV9NWgRMdsGPSC5OaF0YpQxxYaA9fUWmOn7FlHUxiif4kBBTsDorq4NjaoT+wgf6PR64riM73B+jmpaY5oGUosO90Xysz04Ex/5crObFjKhQbj4txFkGU9vXimEm89U1irF3aGs+ZQ+PoKvmxyEm2dpU8QpNYWwhUAhgjKy3JqHTIJjyg/rl+PH/HpTgMH8Bqu/KtfI/vu3vltgFioSNXC/CkR0DwS3JMZf5vekT+48ubH29C89/GxaMIoTSwKHLPhzdO3xqRV4ewnlKXJ+GeTCb1R7qiYwPpbBMG0RMuIAEbKW7IiGyjHGUmiLoitlwUgXJWuydbnJ2qw1HgdQYera+kXy4xwBq1CUPZPL1YbVpIldwLDYU/K0l4ev6YwYvFHgMbE1MdbhgJKDC/nbxThT4B6DsSr8FPP9xJqH0G4FGYSybz9m19jsNBD0sYZPe1/qd6O5ovIIbRV/JRmDUpSMeB/afCN95G0KsVJkNVYQPhc+Q+ijOVD/lJliFMVghq5Sk/L+Ym1vcS5OGWSDiRMYQvm4OkVXo1YqqVkUh3nK2pGDeOSOeD6sZrwvtVsofcFOZ67OLzcdx/p4DHA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB4597.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(366004)(346002)(39860400002)(7696005)(52116002)(38100700001)(36756003)(26005)(38350700001)(54906003)(83380400001)(4326008)(8936002)(8676002)(66946007)(44832011)(7416002)(5660300002)(2616005)(86362001)(478600001)(966005)(2906002)(66476007)(34580700001)(1076003)(16526019)(6486002)(186003)(956004)(316002)(6666004)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?ngekihBaC1798PnYvI5KyriXmQLgJd5BFOcJj5Z79yLD8rHfIN7QX9uFry9e?=
- =?us-ascii?Q?a0Lw2C6zWxOftaoFZcWiKAjArKN6Z3XdwhU2yKNB5LDrUy0T1uE204/pRo+4?=
- =?us-ascii?Q?BCl61csnZo/9akDTImdSgS9h1x6XlBAM63wLeBSb5G3Y90g/E81RJPu509PC?=
- =?us-ascii?Q?qI/BYx7Za4Mbf4Af5w7EIaSiXVQuLlzKx1Be+If0EmvPTG5cEJF/wUwyzV6v?=
- =?us-ascii?Q?BCEVzUw8XSUHTyFRqBGI/oLjliS9Ithvc1xngi5tZMWI+j+DnI22uN+zvaJs?=
- =?us-ascii?Q?BeD9+d3jYugGnTOxW0xmHvEzBElpxA4OBkK9kUfSxnYlz5E67X9jL4xItmWv?=
- =?us-ascii?Q?ZmSfnTBjKVC/wLryMFcqIlYattXLMoOaHJX8EfGV61Y2jaHeFS8gjN4wQvcH?=
- =?us-ascii?Q?4EBSOj3nd4U/aPjCNzh6IK4Jq2QzoIBbo0ukfDfddiWmDUg1QXutH4n5hPjI?=
- =?us-ascii?Q?exHVWSEFbCK/8KkRvvw70cvm36qUJx8QhiAvAqJaowteVp7ENp6cghHcyxl1?=
- =?us-ascii?Q?spFtMV7BRwTc/TrSomLKWlNVpFuxvTrbTOUjlPTG3uvm4ZoW5Cc7WBE4/2De?=
- =?us-ascii?Q?k1keWv+O7xQjCw/LtmuvXWN7klIbHqGXoktYsPzFmsbZUz6qeMcIoeoXDsOk?=
- =?us-ascii?Q?VJ4VOipQhG7q/uN6BNhivEk2uLeJeZdr+B2PgRiX1iLuwZtICG97z12CZJo5?=
- =?us-ascii?Q?4+YqV4OlrskBxO4U4LUj11R+aoNt4S3DDINblzzLA0qyXPdYZUbQsUCiqOBt?=
- =?us-ascii?Q?wXj/WigZmsXymNoWq3Hu/kWVsa2Uv0ZlM9UzmV4CH2g1SRnvmeqIuugEgI7n?=
- =?us-ascii?Q?Iw+vLHoLIhcp73wH/LDlEaRk+z6rgVJArmYjky+ms4AKHN43Bx7EREOUMMua?=
- =?us-ascii?Q?mlqu7fd8y7IYHEyWyVXjTsfMFbva/ZQU/Cefc5mY8/rrpmtfQdOgjL5eRUFI?=
- =?us-ascii?Q?woAZcqC9PHa//9BBxqkPONBhYt3fRrLHpZ7RH9HPARg2xatxKKb9X5Ll/dWk?=
- =?us-ascii?Q?lWx+h7x6UmqrES6YoaqAjCkAv0lOjIJwYBCfbkIrkx75/NoDiDKv884a09wm?=
- =?us-ascii?Q?ojPg/X+rD5M69fJqQpYuuToLpAVUNcPWaCuMTN4HLF3cb8IdzeIQ4SY/fea2?=
- =?us-ascii?Q?ZVJB/iCO3Xd/NHAiNzEpaupuQb6UpBg8Xcm1spsr+bCrdM//6CRK+0xK+dBH?=
- =?us-ascii?Q?BuzYC11o1qB2TwnhRF8ps5/zoGFE5qnJuRx1PWnlomjLq/+0myuySD2d1S4q?=
- =?us-ascii?Q?8H6LYZdQ72iielE791mkyK3YXPV/V8R6ROghiWRWUxsEKKgxZGuGvZItWnZD?=
- =?us-ascii?Q?e93HEE9nruhldb+JFQ/ZIELA?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e79a77d1-8901-43ce-2da4-08d8fb341e7a
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB4597.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Apr 2021 08:47:34.3258
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: b3xJzhBX3XVYXkXubHR9DgvwIu/TP/o/C5xmMN9kqH0uZhJSay9Yjb3zyfA+1DXmMJryfd8fPgwXWShVI/a+IA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3889
+In-Reply-To: <YHALa38PPQBceqF9@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In early AMD desktop/mobile platforms (during 2013), when the IOMMU
-Performance Counter (PMC) support was first introduced in
-commit 30861ddc9cca ("perf/x86/amd: Add IOMMU Performance Counter
-resource management"), there was a HW bug where the counters could not
-be accessed. The result was reading of the counter always return zero.
+Hi Quentin,
 
-At the time, the suggested workaround was to add a test logic prior
-to initializing the PMC feature to check if the counters can be programmed
-and read back the same value. This has been working fine until the more
-recent desktop/mobile platforms start enabling power gating for the PMC,
-which prevents access to the counters. This results in the PMC support
-being disabled unnecesarily.
+On 2021/4/9 16:08, Quentin Perret wrote:
+> Hi Yanan,
+>
+> On Friday 09 Apr 2021 at 11:36:51 (+0800), Yanan Wang wrote:
+>> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+>> +static void stage2_invalidate_icache(void *addr, u64 size)
+>> +{
+>> +	if (icache_is_aliasing()) {
+>> +		/* Flush any kind of VIPT icache */
+>> +		__flush_icache_all();
+>> +	} else if (is_kernel_in_hyp_mode() || !icache_is_vpipt()) {
+>> +		/* PIPT or VPIPT at EL2 */
+>> +		invalidate_icache_range((unsigned long)addr,
+>> +					(unsigned long)addr + size);
+>> +	}
+>> +}
+>> +
+> I would recommend to try and rebase this patch on kvmarm/next because
+> we've made a few changes in pgtable.c recently. It is now linked into
+> the EL2 NVHE code which means there are constraints on what can be used
+> from there -- you'll need a bit of extra work to make some of these
+> functions available to EL2.
+I see, thanks for reminding me this.
+I will work on kvmarm/next and send a new version later.
 
-Unfortunatly, there is no documentation of since which generation
-of hardware the original PMC HW bug was fixed. Although, it was fixed
-soon after the first introduction of the PMC. Base on this, we assume
-that the buggy platforms are less likely to be in used, and it should
-be relatively safe to remove this legacy logic.
-
-Link: https://lore.kernel.org/linux-iommu/alpine.LNX.3.20.13.2006030935570.3181@monopod.intra.ispras.ru/
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
-Cc: Tj (Elloe Linux) <ml.linux@elloe.vision>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Cc: Alexander Monakov <amonakov@ispras.ru>
-Cc: David Coe <david.coe@live.co.uk>
-Cc: Paul Menzel <pmenzel@molgen.mpg.de>
-Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
----
- drivers/iommu/amd/init.c | 24 +-----------------------
- 1 file changed, 1 insertion(+), 23 deletions(-)
-
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 648cdfd03074..247cdda5d683 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -1714,33 +1714,16 @@ static int __init init_iommu_all(struct acpi_table_header *table)
- 	return 0;
- }
- 
--static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
--				u8 fxn, u64 *value, bool is_write);
--
- static void init_iommu_perf_ctr(struct amd_iommu *iommu)
- {
-+	u64 val;
- 	struct pci_dev *pdev = iommu->dev;
--	u64 val = 0xabcd, val2 = 0, save_reg = 0;
- 
- 	if (!iommu_feature(iommu, FEATURE_PC))
- 		return;
- 
- 	amd_iommu_pc_present = true;
- 
--	/* save the value to restore, if writable */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
--		goto pc_false;
--
--	/* Check if the performance counters can be written to */
--	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
--	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
--	    (val != val2))
--		goto pc_false;
--
--	/* restore */
--	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
--		goto pc_false;
--
- 	pci_info(pdev, "IOMMU performance counters supported\n");
- 
- 	val = readl(iommu->mmio_base + MMIO_CNTR_CONF_OFFSET);
-@@ -1748,11 +1731,6 @@ static void init_iommu_perf_ctr(struct amd_iommu *iommu)
- 	iommu->max_counters = (u8) ((val >> 7) & 0xf);
- 
- 	return;
--
--pc_false:
--	pci_err(pdev, "Unable to read/write to IOMMU perf counter.\n");
--	amd_iommu_pc_present = false;
--	return;
- }
- 
- static ssize_t amd_iommu_show_cap(struct device *dev,
--- 
-2.17.1
-
+Thanks,
+Yanan
+>
+> Thanks,
+> Quentin
+> .
