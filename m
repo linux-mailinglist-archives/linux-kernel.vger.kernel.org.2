@@ -2,73 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0640635A140
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9B4235A141
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhDIOiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:38:03 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:43246 "EHLO mail.skyhub.de"
+        id S233968AbhDIOiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:38:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38482 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231946AbhDIOiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:38:02 -0400
-Received: from zn.tnic (p200300ec2f0be1008c36e9c40e111c65.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:e100:8c36:e9c4:e11:1c65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6D7D11EC04A9;
-        Fri,  9 Apr 2021 16:37:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1617979068;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=/tfcyJXvXhNZLReR1htttf0UwfGGssjKO1d9l61G0Cc=;
-        b=m2dw4XzUKula8B2dsTyQD+VYSfLSxCqY8SqdIRzbQSWNLxiRf7SDhSavwjvNSnDVvbvoxI
-        0/pTN2qfZfnumeSjwGSS3mdEbhgAGogMHWA8GkpkD3buCnQFNKESkBjFCs5LSeB6mdLbQe
-        EiacvRj5D+MEk1Pf3ZQNg9u5YA8cf8k=
-Date:   Fri, 9 Apr 2021 16:37:46 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFCv1 2/7] x86/kvm: Introduce KVM memory protection feature
-Message-ID: <20210409143746.GE15567@zn.tnic>
-References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
- <20210402152645.26680-3-kirill.shutemov@linux.intel.com>
- <20210408095235.GH10192@zn.tnic>
- <20210409133601.2qepfc77stujulhf@box>
+        id S233534AbhDIOiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 10:38:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1617979081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zOQ3rg6ce2gAE0EHpaf9R+8bA2cDCqkX5SpWPIIXZ9Q=;
+        b=XVAQh3tjII1aK9yDkWWdqVQ5XkQxa0KFncA9qygh4nOFpOEcd5zO0+banR5+6sxg/dSfox
+        OPH/RHnySBlv3CPHa0iMICfDa0SZUtbbkMdEbX5a5OF/osC367Vx2azJ/+Ef7DlgjwpAgc
+        LabMun8BCraZz1fJU7ezv5J1pCXede8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B98A8B080;
+        Fri,  9 Apr 2021 14:38:01 +0000 (UTC)
+Date:   Fri, 9 Apr 2021 16:37:59 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH] mm/memory_hotplug: Make unpopulated zones PCP structures
+ unreachable during hot remove
+Message-ID: <YHBmxwH41WEHuVJj@dhcp22.suse.cz>
+References: <20210409120957.GM3697@techsingularity.net>
+ <YHBL0e8s+EesIyDl@dhcp22.suse.cz>
+ <YHBNDEAw1OqIWwb5@dhcp22.suse.cz>
+ <20210409134221.GO3697@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210409133601.2qepfc77stujulhf@box>
+In-Reply-To: <20210409134221.GO3697@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 04:36:01PM +0300, Kirill A. Shutemov wrote:
-> The patchset is still in path-finding stage. I'll be more specific once we
-> settle on how the feature works.
+On Fri 09-04-21 14:42:21, Mel Gorman wrote:
+> On Fri, Apr 09, 2021 at 02:48:12PM +0200, Michal Hocko wrote:
+> > On Fri 09-04-21 14:42:58, Michal Hocko wrote:
+> > > On Fri 09-04-21 13:09:57, Mel Gorman wrote:
+> > > > zone_pcp_reset allegedly protects against a race with drain_pages
+> > > > using local_irq_save but this is bogus. local_irq_save only operates
+> > > > on the local CPU. If memory hotplug is running on CPU A and drain_pages
+> > > > is running on CPU B, disabling IRQs on CPU A does not affect CPU B and
+> > > > offers no protection.
+> > > 
+> > > Yes, the synchronization aspect is bogus indeed.
+> > > 
+> > > > This patch reorders memory hotremove such that the PCP structures
+> > > > relevant to the zone are no longer reachable by the time the structures
+> > > > are freed.  With this reordering, no protection is required to prevent
+> > > > a use-after-free and the IRQs can be left enabled. zone_pcp_reset is
+> > > > renamed to zone_pcp_destroy to make it clear that the per-cpu structures
+> > > > are deleted when the function returns.
+> > > 
+> > > Wouldn't it be much easier to simply not destroy/reset pcp of an empty
+> > > zone at all? The whole point of this exercise seems to be described in
+> > > 340175b7d14d5. setup_zone_pageset can check for an already allocated pcp
+> > > and simply reinitialize it. 
+> > 
+> > I meant this
+> > 
+> 
+> It might be simplier but if the intention is to free as much memory
+> as possible during hot-remove, it seems wasteful to leave the per-cpu
+> structures behind if we do not have to.
 
-This is not why I'm asking: these feature bits are visible to userspace
-in /proc/cpuinfo and if you don't have a use case to show this to
-userspace, use the "" in the comment.
+We do leave the whole pgdat behind. I do not think pagesets really do
+matter.
 
-And if you don't need that feature bit at all (you're only setting it
-but not querying it) you should not add it at all.
+> If a problem with my patch can
+> be spotted then I'm happy to go with an alternative fix but there are
+> two minor issues with your proposed fix.
 
-Thx.
+I will not insist but this code has proven to bitrot and I just find it
+much simpler to drop it altogether rather than conserve it in some form.
+Not something I would insist though.
 
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index e6a602e82860..b0fdda77e570 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -6496,7 +6496,13 @@ void __meminit setup_zone_pageset(struct zone *zone)
+> >  	struct per_cpu_pageset *p;
+> >  	int cpu;
+> >  
+> > -	zone->pageset = alloc_percpu(struct per_cpu_pageset);
+> > +	/*
+> > +	 * zone could have gone completely offline during memory hotplug
+> > +	 * when the pgdat is left behind for simplicity. On a next onlining
+> > +	 * we do not need to reallocate pcp state.
+> > +	 */
+> > +	if (!zone->pageset)
+> > +		zone->pageset = alloc_percpu(struct per_cpu_pageset);
+> 
+> Should be "if (zone->pageset != &boot_pageset)" ?
+
+Memory hotplug really wants the NULL
+check. it doesn't use boot_pageset (if we drop rest to boot_pageset).
+But you are right that the boot time initialization first sets
+boot_pageset (zone_pcp_init) and initializes real pagesets later
+(setup_per_cpu_pageset). But this can be handled at the memory hotplug
+layer I believe
+
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 754026a9164d..1cadfec323fc 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -883,7 +883,8 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+ 	 */
+ 	if (!populated_zone(zone)) {
+ 		need_zonelists_rebuild = 1;
+-		setup_zone_pageset(zone);
++		if (!zone->pageset)
++			setup_zone_pageset(zone);
+ 	}
+
+> >  	for_each_possible_cpu(cpu) {
+> >  		p = per_cpu_ptr(zone->pageset, cpu);
+> >  		pageset_init(p);
+> > @@ -8803,25 +8809,6 @@ void zone_pcp_enable(struct zone *zone)
+> >  	mutex_unlock(&pcp_batch_high_lock);
+> >  }
+> >  
+> > -void zone_pcp_reset(struct zone *zone)
+> > -{
+> > -	unsigned long flags;
+> > -	int cpu;
+> > -	struct per_cpu_pageset *pset;
+> > -
+> > -	/* avoid races with drain_pages()  */
+> > -	local_irq_save(flags);
+> > -	if (zone->pageset != &boot_pageset) {
+> > -		for_each_online_cpu(cpu) {
+> > -			pset = per_cpu_ptr(zone->pageset, cpu);
+> > -			drain_zonestat(zone, pset);
+> > -		}
+> > -		free_percpu(zone->pageset);
+> > -		zone->pageset = &boot_pageset;
+> > -	}
+> > -	local_irq_restore(flags);
+> > -}
+> > -
+> 
+> zone_pcp_reset still needs to exist to drain the remaining vmstats or
+> it'll break 5a883813845a ("memory-hotplug: fix zone stat
+> mismatch").
+
+Are you sure we are reseting vmstats in the hotremove. I do not see
+anything like that. Maybe this was needed at the time. I will double
+check.
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Michal Hocko
+SUSE Labs
