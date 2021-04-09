@@ -2,91 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE80C35946C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B72C35947F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 07:25:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhDIFSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 01:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48354 "EHLO
+        id S231714AbhDIFYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 01:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhDIFSR (ORCPT
+        with ESMTP id S229526AbhDIFXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 01:18:17 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D99EC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 22:18:05 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id w3so6663182ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:18:04 -0700 (PDT)
+        Fri, 9 Apr 2021 01:23:47 -0400
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A30EAC061760
+        for <linux-kernel@vger.kernel.org>; Thu,  8 Apr 2021 22:23:35 -0700 (PDT)
+Received: by mail-ua1-x92d.google.com with SMTP id h34so1461289uah.5
+        for <linux-kernel@vger.kernel.org>; Thu, 08 Apr 2021 22:23:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=YFWCdm8gK/rxc5k1ld9Wf9KmQQO/U3GJZHseXv0RvhU=;
-        b=blihwRCH6BPRaNb6n+4GjpRzJe0CLY+voSb/0Q6RtjNKxbyFuYxgiXJW8ZAD5xp8y/
-         KVm2LokvqO+3o5TUyFf8bY5PV5xcwkglds0fmNpyeidH4JnLq/NDnyZKr9gZgKF1Y5MQ
-         RnUpx4pGJY1U42VsARWS8CnFv8LNF8zmssAf7tjpgtLIxsPq33rqx1X6hg30wGNRE9FP
-         ybInYJqEOjgQ3en+oyp+wHdFkTgAjFZwqG9b3qdGsdvz4EW3g2/O75VaLUmsuh4reeqg
-         fA6Je1xnivfCdmwPoj2Sr5Oza3xW4vDu7XCNUyaUAtZeMrZ63yZNbrXrWs0lxHzABaWQ
-         Wf2A==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gTs7X0Kha8yyPPjoketYAk4TM4kCJYNv+QtbVLV11qw=;
+        b=JBxB536edN2icemaU8QdaNm6AYnLTCaemM3Ithzlz1Np8v6pO1wJVYu2ejP+rZfSsz
+         3qTVcd9dZRn1Feo6qXBUuDjeMAnnW2T0zl5u/1BBTcFJ+rKqnzY7gZyIabasGO0cSGPX
+         8205mExpo36r3SKCYZ/4AByGCO1VBW7dAvtH8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=YFWCdm8gK/rxc5k1ld9Wf9KmQQO/U3GJZHseXv0RvhU=;
-        b=Y8umLVNDXakd0+DTEf7vr2ef9kSH37IOmEqrFwA81A845MH/ozuFzgDI1+HMwhzDSS
-         VRNGHPjqpjEPKQ1CNEqEimNC0F9QJzR9FyqVbaS4QrzQmqDixosmCxOH8gNBbr0B/z/f
-         Uv+xoKMNgGsRcPpT2rP4RhiWkkbTLmxVbGeYYvqABIm8L7v5xTDEANdfRomeKF/UQpwi
-         QUMI3v5cAviOOG8Zy/qj6udxJPniSO8b4y8Aab84kE9dQrbWL8WjcTt9nNt0BiCYJLj5
-         zsbAwOXEnxW+ybYu1uHUioeazDWK9g8+a/G2T7lbbIOBGwTSDRrZPH0mXzn4ekcGg+t4
-         ZDXg==
-X-Gm-Message-State: AOAM531KcJpvf+95S3a/wk46G6hK2dX4zDGylUFsaKCdivghYEMlIOen
-        dXdqUX1VksuTlH2dVHgocc7IsUP/FaXb1k5FUEutfg==
-X-Google-Smtp-Source: ABdhPJyAYw1Bwp6jKS3SxG1Cpit61Ggd/8J/n4HfRANmqtGHieko6wg1KVMUr2Vgr1/f6WKlkLzH8EYHgXzT2zuWwVo=
-X-Received: by 2002:a17:906:9605:: with SMTP id s5mr14703271ejx.287.1617945483617;
- Thu, 08 Apr 2021 22:18:03 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gTs7X0Kha8yyPPjoketYAk4TM4kCJYNv+QtbVLV11qw=;
+        b=dWNSX1ZlItZvZZAuvma+9yWm1RbJpQMJwnjOFRlag84qx5srLLM7LLTKtZsQhPriBh
+         AEkZF+UdiMxWXBMXa5rqiUes+e8sSXxOf4XEBTPItJN9RgwTMwInPNzQCxSFc1B0KUP+
+         qOSlJK2D/Mh6/8LTKgelVDBK4VfUQ2J5xSfsBSBB4TOL4Xk+uD9P5Ox/kTiPORDopTo1
+         aMNT9yFdK+NrJBeb3UBn88zEoCc98LI0vEMOBLnV5D/nxvnCYBrq7lEFDsvLQXZ4/iM0
+         9aYzcIMn8Qc5WLp6GRbHWyXvW903jTZVtwAoXYd7b+dpfUVPk5p91JyjYPPXUaV6KFIG
+         HzBA==
+X-Gm-Message-State: AOAM532dc1DxZ+GPGJ5bOyTqroUwXEHCT7MjWaOH4Ltm/8tr1JMRITph
+        ADOq5U1ZZLJ5qgtA7lfZzlTYAG5kRMbkspbxNu/tsw==
+X-Google-Smtp-Source: ABdhPJyiEqe2/5BdCT+RzysMIjR0yOEhjnFfYuWD4d3HBGwzC0gqP0VjxLNWerB7XM2SkAAm/TzcFU4LTi8Xfv/RYMA=
+X-Received: by 2002:ab0:7593:: with SMTP id q19mr9451736uap.74.1617945814814;
+ Thu, 08 Apr 2021 22:23:34 -0700 (PDT)
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 9 Apr 2021 10:47:52 +0530
-Message-ID: <CA+G9fYtNAEwCk1WkA_25FVUrR0QJ2vt2Dh_w+m-QOSjb8f5TBQ@mail.gmail.com>
-Subject: [next] drivers/cdrom/gdrom.c:586:61: error: 'rq' undeclared (first
- use in this function)
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>
-Cc:     Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>
+References: <20210221195833.23828-1-lhenriques@suse.de> <20210222102456.6692-1-lhenriques@suse.de>
+ <CAN-5tyELMY7b7CKO-+an47ydq8r_4+SOyhuvdH0qE0-JmdZ44Q@mail.gmail.com>
+ <YDYpHccgM7agpdTQ@suse.de> <CANMq1KBgwEXFh8AxpPW2t1SA0NVsyR45m0paLEU4D4w80dc_fA@mail.gmail.com>
+In-Reply-To: <CANMq1KBgwEXFh8AxpPW2t1SA0NVsyR45m0paLEU4D4w80dc_fA@mail.gmail.com>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Fri, 9 Apr 2021 13:23:23 +0800
+Message-ID: <CANMq1KDTgnGtNxWj2XxAT3mdsNjc551uUCg6EWnh=Hd0KcVQKQ@mail.gmail.com>
+Subject: Re: [PATCH v8] vfs: fix copy_file_range regression in cross-fs copies
+To:     Luis Henriques <lhenriques@suse.de>
+Cc:     Olga Kornievskaia <aglo@umich.edu>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        Steve French <sfrench@samba.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Ian Lance Taylor <iant@google.com>,
+        Luis Lozano <llozano@chromium.org>,
+        Andreas Dilger <adilger@dilger.ca>,
+        Christoph Hellwig <hch@infradead.org>,
+        ceph-devel <ceph-devel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-nfs <linux-nfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linux next tag 20210408 architecture sh builds failed due to these errors.
+On Wed, Feb 24, 2021 at 6:44 PM Nicolas Boichat <drinkcat@chromium.org> wro=
+te:
+>
+> On Wed, Feb 24, 2021 at 6:22 PM Luis Henriques <lhenriques@suse.de> wrote=
+:
+> >
+> > On Tue, Feb 23, 2021 at 08:00:54PM -0500, Olga Kornievskaia wrote:
+> > > On Mon, Feb 22, 2021 at 5:25 AM Luis Henriques <lhenriques@suse.de> w=
+rote:
+> > > >
+> > > > A regression has been reported by Nicolas Boichat, found while usin=
+g the
+> > > > copy_file_range syscall to copy a tracefs file.  Before commit
+> > > > 5dae222a5ff0 ("vfs: allow copy_file_range to copy across devices") =
+the
+> > > > kernel would return -EXDEV to userspace when trying to copy a file =
+across
+> > > > different filesystems.  After this commit, the syscall doesn't fail=
+ anymore
+> > > > and instead returns zero (zero bytes copied), as this file's conten=
+t is
+> > > > generated on-the-fly and thus reports a size of zero.
+> > > >
+> > > > This patch restores some cross-filesystem copy restrictions that ex=
+isted
+> > > > prior to commit 5dae222a5ff0 ("vfs: allow copy_file_range to copy a=
+cross
+> > > > devices").  Filesystems are still allowed to fall-back to the VFS
+> > > > generic_copy_file_range() implementation, but that has now to be do=
+ne
+> > > > explicitly.
+> > > >
+> > > > nfsd is also modified to fall-back into generic_copy_file_range() i=
+n case
+> > > > vfs_copy_file_range() fails with -EOPNOTSUPP or -EXDEV.
+> > > >
+> > > > Fixes: 5dae222a5ff0 ("vfs: allow copy_file_range to copy across dev=
+ices")
+> > > > Link: https://lore.kernel.org/linux-fsdevel/20210212044405.4120619-=
+1-drinkcat@chromium.org/
+> > > > Link: https://lore.kernel.org/linux-fsdevel/CANMq1KDZuxir2LM5jOTm0x=
+x+BnvW=3DZmpsG47CyHFJwnw7zSX6Q@mail.gmail.com/
+> > > > Link: https://lore.kernel.org/linux-fsdevel/20210126135012.1.If45b7=
+cdc3ff707bc1efa17f5366057d60603c45f@changeid/
+> > > > Reported-by: Nicolas Boichat <drinkcat@chromium.org>
+> > > > Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > >
+> > > I tested v8 and I believe it works for NFS.
+> >
+> > Thanks a lot for the testing.  And to everyone else for reviews,
+> > feedback,... and patience.
+>
+> Thanks so much to you!!!
+>
+> Works here, you can add my
+> Tested-by: Nicolas Boichat <drinkcat@chromium.org>
 
-# to reproduce this build locally:
+What happened to this patch? It does not seem to have been picked up
+yet? Any reason why?
 
-make --silent --keep-going --jobs=8
-O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=sh
-CROSS_COMPILE=sh4-linux-gnu- 'CC=sccache sh4-linux-gnu-gcc'
-'HOSTCC=sccache gcc'
-
-
-In file included from /builds/linux/include/linux/scatterlist.h:9,
-                 from /builds/linux/include/linux/dma-mapping.h:10,
-                 from /builds/linux/drivers/cdrom/gdrom.c:16:
-/builds/linux/drivers/cdrom/gdrom.c: In function 'gdrom_readdisk_dma':
-/builds/linux/drivers/cdrom/gdrom.c:586:61: error: 'rq' undeclared
-(first use in this function)
-  586 |  __raw_writel(page_to_phys(bio_page(req->bio)) + bio_offset(rq->bio),
-      |                                                             ^~
-
-Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-Regressions found on sh:
-  - build/gcc-9-dreamcast_defconfig
-  - build/gcc-10-dreamcast_defconfig
-  - build/gcc-8-dreamcast_defconfig
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> >
+> > I'll now go look into the manpage and see what needs to be changed.
+> >
+> > Cheers,
+> > --
+> > Lu=C3=ADs
