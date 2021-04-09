@@ -2,62 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7058D359120
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33CA35912F
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 03:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233155AbhDIBEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 8 Apr 2021 21:04:11 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:16101 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232918AbhDIBEK (ORCPT
+        id S233140AbhDIBN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 8 Apr 2021 21:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhDIBNv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 8 Apr 2021 21:04:10 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FGfwS3rx4z19KYK;
-        Fri,  9 Apr 2021 09:01:44 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
- 09:03:48 +0800
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-To:     <jarkko@kernel.org>, <peterhuewe@gmx.de>
-CC:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <chengzhihao1@huawei.com>, <yi.zhang@huawei.com>,
-        <yukuai3@huawei.com>
-Subject: [PATCH v2] char: tpm: fix error return code in tpm_cr50_i2c_tis_recv()
-Date:   Fri, 9 Apr 2021 09:12:01 +0800
-Message-ID: <20210409011201.1589080-1-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        Thu, 8 Apr 2021 21:13:51 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B97ECC061760;
+        Thu,  8 Apr 2021 18:13:39 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id p22so2053794wmc.3;
+        Thu, 08 Apr 2021 18:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JAqTOaB6AqxWVuo3igBJfsWNViQnv2eMo64FW2jIXe4=;
+        b=cIWCgLNe5Xq9k/RDHeGutB+7FTAsghngk4ZdIxKqZ6GzU4/+1sYzxpU9W4xUcr/eDp
+         Z9AknBlBc/EBkOXRhRQYqTvofPFYKO9b+NrSbB4Lz0xrd6c3H/zX1a6q+ZFT/arIHcEk
+         AnP31BYZTRNe6cF0S9uRN0C0wEpTWl5VUGwcK1ZrsN2wlkJztXapiigAcZRCcKzvJGxX
+         lR2/zr0QYk9d8cBVgsaJt1Lnj3CyYphYdeBCliRVe+3CtBtcSYE/HMkadGSwMM30Awep
+         GaMsPefZebX7u8soSrEWvtl1A52GPJlvjwTl1NQlb5RkarxJbyb2w6CFmAY5j9zwskHu
+         HCcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JAqTOaB6AqxWVuo3igBJfsWNViQnv2eMo64FW2jIXe4=;
+        b=j31PzGXvizFv8AmKLlgAjLp/RqJEWw43TCQuxlmBB1JmJ9aDX8ZCLLFAnRY2N+WzfL
+         Cd8AMXauANql7oTNCsFjWBMy7rOi9fVnFaGv8hnASR8XkuYqRubVXf/8Ak48j4GRoC5J
+         bmqYRhJDUQVbsfelYoLMiboyB+YPkBKD8LRAbJMnavgeBJTEB403lvewgjcoankbzPF9
+         G3O2xGeSB4aUaDfEL5oyYbTMhmibfFkmi2AKp5yOM79xVn+y45gMsnLJmkGhTnyF7S3i
+         bOxbCfkJL8jbOiIxDdUeDrHLixy+8/AHA6Shff+Smzcuen26bAzoNhvAQ7f1I3Z+CrHA
+         Nurg==
+X-Gm-Message-State: AOAM530zEj3evH/inEbOjZo001pkXcQmQPQA4eGiGY5lbqtq1IUWBXku
+        w3GZGDDmS/N9y0tcPIEh/jhzlUJU2jTH7C4chHg=
+X-Google-Smtp-Source: ABdhPJwj25Fn03NInXWGzlwJdKPNC+OGeiSZYvOgNOi9K60s8vB8Z/XjeaHJbuGrqqCr/SbcO9bS9ACIvRKdHGfUwtw=
+X-Received: by 2002:a1c:20c2:: with SMTP id g185mr683648wmg.74.1617930818446;
+ Thu, 08 Apr 2021 18:13:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+References: <20210409003904.8957-1-TheSven73@gmail.com> <YG+ntliV37vBZ9RR@lunn.ch>
+In-Reply-To: <YG+ntliV37vBZ9RR@lunn.ch>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Thu, 8 Apr 2021 21:13:27 -0400
+Message-ID: <CAGngYiWDuYt6+sAd+bXfk9J67C5KAY3TN=qc3yJ=-ze-OFyy7w@mail.gmail.com>
+Subject: Re: [PATCH net v1] lan743x: fix ethernet frame cutoff issue
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        George McCollister <george.mccollister@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+Hi Andrew,
 
-Fixes: 3a253caaad11 ("char: tpm: add i2c driver for cr50")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- drivers/char/tpm/tpm_tis_i2c_cr50.c | 1 +
- 1 file changed, 1 insertion(+)
+On Thu, Apr 8, 2021 at 9:02 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> Adding a Suggested-by: would be good. And it might sometime help
+> Johnathan Corbet extract some interesting statistics from the commit
+> messages if everybody uses the same format.
 
-diff --git a/drivers/char/tpm/tpm_tis_i2c_cr50.c b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-index ec9a65e7887d..f19c227d20f4 100644
---- a/drivers/char/tpm/tpm_tis_i2c_cr50.c
-+++ b/drivers/char/tpm/tpm_tis_i2c_cr50.c
-@@ -483,6 +483,7 @@ static int tpm_cr50_i2c_tis_recv(struct tpm_chip *chip, u8 *buf, size_t buf_len)
- 	expected = be32_to_cpup((__be32 *)(buf + 2));
- 	if (expected > buf_len) {
- 		dev_err(&chip->dev, "Buffer too small to receive i2c data\n");
-+		rc = -E2BIG;
- 		goto out_err;
- 	}
- 
--- 
-2.25.4
-
+Thank you for the suggestion. I'll definitely use that in the future.
