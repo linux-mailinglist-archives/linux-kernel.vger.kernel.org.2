@@ -2,382 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07238359E40
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AD3B359E3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 14:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhDIMFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 08:05:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43930 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233796AbhDIMFe (ORCPT
+        id S233613AbhDIMF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 08:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231611AbhDIMFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 08:05:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1617969920;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Fri, 9 Apr 2021 08:05:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488E0C061760;
+        Fri,  9 Apr 2021 05:05:12 -0700 (PDT)
+Date:   Fri, 09 Apr 2021 12:05:09 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617969910;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4YB/yXO3WcXh4gjqG/AQitp/ke5dP3pJqtYgeLFW/yc=;
-        b=UN0FQj5h8gzMPS44DrSwVAhGImVdjmDy7ai8EWFhqKVLFZcI+G/tLMM4yEJYFcIgoRoqcy
-        ofj/e7gNipd8kG8+STxxCP0AVorNpegRaWUnFXRP62yN7mEzqayjbCZitr3zUBVCrchMPc
-        L/6iz9Tv1ry4jgsBqB1Oyh7M9tAGQRk=
-Received: from mail-yb1-f198.google.com (mail-yb1-f198.google.com
- [209.85.219.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-576-NZmaK6rdOOaITsck7-VYqA-1; Fri, 09 Apr 2021 08:05:18 -0400
-X-MC-Unique: NZmaK6rdOOaITsck7-VYqA-1
-Received: by mail-yb1-f198.google.com with SMTP id w7so5122813ybq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 05:05:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4YB/yXO3WcXh4gjqG/AQitp/ke5dP3pJqtYgeLFW/yc=;
-        b=sYcPhinNNeoxM0f/Om8XhuN/j8hIQM86yfvE4Uk7Xvj1guLpLI2EO5MiTiD1E0E2up
-         0ifuSOOPvnixa7+Km3rMyVmWB2SqxhkQrUXXpcrpLQkB6jsqRN+3iZqwL40lg8uxIqj5
-         t/AUhT4Gr6HZuzTExh+QrWqDyXZrOcVCG5aAlD2Bz7sshCjItTTzznwIQa8cUjRTPw+z
-         IQjbpPlY7eTm37E7Un4VVJZCIas6PpHplHUp+HPPBdnfAjA8EROcg9KlwmmjTmBIjg25
-         mbE7GE6bFm7B/x6olAwLkna5tBl9lLESvJRrJezb8tlOpjbizYqMmmpvhhG0c6xjocts
-         NUDw==
-X-Gm-Message-State: AOAM53311Xzy9W1hetNqxGH7bXjIVu/zHmvV8HWhWF/BGSN/in+puPy7
-        QqQ3Sm+AYH9AeTwfR8eySfLu69UNJQ9K4jeLYSQ9Kfzqzu1ET+mR4RP9MaMKuBEI9Z9+eTuX5lB
-        0Zw9nmR8gvcCEGCs1WMesMeoOQFNzfG7bdZBZkk5h
-X-Received: by 2002:a25:e74d:: with SMTP id e74mr311371ybh.423.1617969917342;
-        Fri, 09 Apr 2021 05:05:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxrfhli/GqXEIu7O2+MBCMr0DO9wHQ+dDGo3RAQZykmzV29kae/Yag/SpnsVYRWRFi/mIP1/YLMR5luzXtOgcg=
-X-Received: by 2002:a25:e74d:: with SMTP id e74mr311297ybh.423.1617969916792;
- Fri, 09 Apr 2021 05:05:16 -0700 (PDT)
+        bh=6rpOWbLDM7Me4C7MsIK2gkZlNkiK+QbtG/iFtFXTgSg=;
+        b=GsxYfk04BerxN0wnlxwC+pA3e2Ka40MVWJ/neTwpGFZWZkbG2J80+FM9vOS38qTcS2aFRY
+        kL7ti18kagjyJJ0zzOL1e1/wT0SdHNMBUr2bVYs+KBhA0zvnETxO9WXOsqjK94R+8LGS7o
+        WtId42NDT9KTbeJmaHime8cMQgmmZcg/rcQMyrUur95yggbUEtbrs/3maxKtyr6031SWNL
+        YXglu72AAyfixWQs+uDbSCDWKn7TEBELqv4zeWptIhqnsB1kjznbuy0fQu/Q6561hZbYiX
+        AD1zApgC744nYF3tsT1E4uY2IjUAumo17n53cHTgiD0dsxORvz00BCb6pXJrZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617969910;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6rpOWbLDM7Me4C7MsIK2gkZlNkiK+QbtG/iFtFXTgSg=;
+        b=25mxMmk2nWiUuNgnH84Rlnz0ac2xneV1W3M5XawNbvf6zEvlxNvfxQXvCoqQT223FYAmm9
+        k+U15jByN3YfCTDQ==
+From:   "tip-bot2 for Valentin Schneider" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/fair: Introduce a CPU capacity comparison helper
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210407220628.3798191-4-valentin.schneider@arm.com>
+References: <20210407220628.3798191-4-valentin.schneider@arm.com>
 MIME-Version: 1.0
-References: <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
-In-Reply-To: <161789062190.6155.12711584466338493050.stgit@warthog.procyon.org.uk>
-From:   David Wysochanski <dwysocha@redhat.com>
-Date:   Fri, 9 Apr 2021 08:04:41 -0400
-Message-ID: <CALF+zO=AV-uqUi9kwyGhGQU3jNpE8TEk_BS8z73z68cexGPz_w@mail.gmail.com>
-Subject: Re: [PATCH v6 00/30] Network fs helper library & fscache kiocb API
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>, linux-mm@kvack.org,
-        linux-cifs <linux-cifs@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Mike Marshall <hubcap@omnibond.com>,
-        linux-afs@lists.infradead.org,
-        v9fs-developer@lists.sourceforge.net,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Jeff Layton <jlayton@redhat.com>,
-        linux-nfs <linux-nfs@vger.kernel.org>,
-        linux-cachefs <linux-cachefs@redhat.com>,
-        ceph-devel@vger.kernel.org,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <161796991000.29796.16063011242960573924.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 8, 2021 at 10:04 AM David Howells <dhowells@redhat.com> wrote:
->
->
-> Here's a set of patches to do two things:
->
->  (1) Add a helper library to handle the new VM readahead interface.  This
->      is intended to be used unconditionally by the filesystem (whether or
->      not caching is enabled) and provides a common framework for doing
->      caching, transparent huge pages and, in the future, possibly fscrypt
->      and read bandwidth maximisation.  It also allows the netfs and the
->      cache to align, expand and slice up a read request from the VM in
->      various ways; the netfs need only provide a function to read a stretch
->      of data to the pagecache and the helper takes care of the rest.
->
->  (2) Add an alternative fscache/cachfiles I/O API that uses the kiocb
->      facility to do async DIO to transfer data to/from the netfs's pages,
->      rather than using readpage with wait queue snooping on one side and
->      vfs_write() on the other.  It also uses less memory, since it doesn't
->      do buffered I/O on the backing file.
->
->      Note that this uses SEEK_HOLE/SEEK_DATA to locate the data available
->      to be read from the cache.  Whilst this is an improvement from the
->      bmap interface, it still has a problem with regard to a modern
->      extent-based filesystem inserting or removing bridging blocks of
->      zeros.  Fixing that requires a much greater overhaul.
->
-> This is a step towards overhauling the fscache API.  The change is opt-in
-> on the part of the network filesystem.  A netfs should not try to mix the
-> old and the new API because of conflicting ways of handling pages and the
-> PG_fscache page flag and because it would be mixing DIO with buffered I/O.
-> Further, the helper library can't be used with the old API.
->
-> This does not change any of the fscache cookie handling APIs or the way
-> invalidation is done.
->
-> In the near term, I intend to deprecate and remove the old I/O API
-> (fscache_allocate_page{,s}(), fscache_read_or_alloc_page{,s}(),
-> fscache_write_page() and fscache_uncache_page()) and eventually replace
-> most of fscache/cachefiles with something simpler and easier to follow.
->
-> The patchset contains the following parts:
->
->  (1) Some helper patches, including provision of an ITER_XARRAY iov
->      iterator and a function to do readahead expansion.
->
->  (2) Patches to add the netfs helper library.
->
->  (3) A patch to add the fscache/cachefiles kiocb API.
->
->  (4) Patches to add support in AFS for this.
->
-> Jeff Layton has patches to add support in Ceph for this.
->
-> With this, AFS without a cache passes all expected xfstests; with a cache,
-> there's an extra failure, but that's also there before these patches.
-> Fixing that probably requires a greater overhaul.  Ceph also passes the
-> expected tests.
->
-> The netfs lib and fscache/cachefiles patches can be found also on:
->
->         https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=netfs-lib
->
-> The afs patches can be found on:
->
->         https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-netfs-lib
->
->
-> Changes
-> =======
->
-> ver #6:
->       Merged in some fixes and added an additional tracepoint[8], including
->       fixing the amalgamation of contiguous subrequests that are to be
->       written to the cache.
->
->       Added/merged some patches from Matthew Wilcox to make
->       readahead_expand() appropriately adjust the trigger for the next
->       readahead[9].  Also included is a patch to kerneldocify the
->       file_ra_state struct.
->
->       Altered netfs_write_begin() to use DEFINE_READAHEAD()[10].
->
->       Split the afs patches out into their own branch.
->
-> ver #5:
->       Fixed some review comments from Matthew Wilcox:
->
->       - Put a comment into netfs_readahead() to indicate why there's a loop
->         that puts, but doesn't unlock, "unconsumed" pages at the end when
->         it could just return said pages to the caller to dispose of[6].
->         (This is because where those pages are marked consumed).
->
->       - Use the page_file_mapping() and page_index() helper functions
->         rather than accessing the page struct directly[6].
->
->       - Better names for wrangling functions for PG_private_2 and
->         PG_fscache wrangling functions[7].  Came up with
->         {set,end,wait_for}_page_private_2() and aliased these for fscache.
->
->       Moved the taking of/dropping a page ref for the PG_private_2 flag
->       into the set and end functions.
->
-> ver #4:
->       Fixed some review comments from Christoph Hellwig, including dropping
->       the export of rw_verify_area()[3] and some minor stuff[4].
->
->       Moved the declaration of readahead_expand() to a better location[5].
->
->       Rebased to v5.12-rc2 and added a bunch of references into individual
->       commits.
->
->       Dropped Ceph support - that will go through the maintainer's tree.
->
->       Added interface documentation for the netfs helper library.
->
-> ver #3:
->       Rolled in the bug fixes.
->
->       Adjusted the functions that unlock and wait for PG_fscache according
->       to Linus's suggestion[1].
->
->       Hold a ref on a page when PG_fscache is set as per Linus's
->       suggestion[2].
->
->       Dropped NFS support and added Ceph support.
->
-> ver #2:
->       Fixed some bugs and added NFS support.
->
-> Link: https://lore.kernel.org/r/CAHk-=wh+2gbF7XEjYc=HV9w_2uVzVf7vs60BPz0gFA=+pUm3ww@mail.gmail.com/ [1]
-> Link: https://lore.kernel.org/r/CAHk-=wjgA-74ddehziVk=XAEMTKswPu1Yw4uaro1R3ibs27ztw@mail.gmail.com/ [2]
-> Link: https://lore.kernel.org/r/20210216102614.GA27555@lst.de/ [3]
-> Link: https://lore.kernel.org/r/20210216084230.GA23669@lst.de/ [4]
-> Link: https://lore.kernel.org/r/20210217161358.GM2858050@casper.infradead.org/ [5]
-> Link: https://lore.kernel.org/r/20210321014202.GF3420@casper.infradead.org/ [6]
-> Link: https://lore.kernel.org/r/20210321105309.GG3420@casper.infradead.org/ [7]
-> Link: https://lore.kernel.org/r/161781041339.463527.18139104281901492882.stgit@warthog.procyon.org.uk/ [8]
-> Link: https://lore.kernel.org/r/20210407201857.3582797-1-willy@infradead.org/ [9]
-> Link: https://lore.kernel.org/r/1234933.1617886271@warthog.procyon.org.uk/ [10]
->
-> References
-> ==========
->
-> These patches have been published for review before, firstly as part of a
-> larger set:
->
-> Link: https://lore.kernel.org/r/158861203563.340223.7585359869938129395.stgit@warthog.procyon.org.uk/
->
-> Link: https://lore.kernel.org/r/159465766378.1376105.11619976251039287525.stgit@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/159465784033.1376674.18106463693989811037.stgit@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/159465821598.1377938.2046362270225008168.stgit@warthog.procyon.org.uk/
->
-> Link: https://lore.kernel.org/r/160588455242.3465195.3214733858273019178.stgit@warthog.procyon.org.uk/
->
-> Then as a cut-down set:
->
-> Link: https://lore.kernel.org/r/161118128472.1232039.11746799833066425131.stgit@warthog.procyon.org.uk/ # v1
->
-> Link: https://lore.kernel.org/r/161161025063.2537118.2009249444682241405.stgit@warthog.procyon.org.uk/ # v2
->
-> Link: https://lore.kernel.org/r/161340385320.1303470.2392622971006879777.stgit@warthog.procyon.org.uk/ # v3
->
-> Link: https://lore.kernel.org/r/161539526152.286939.8589700175877370401.stgit@warthog.procyon.org.uk/ # v4
->
-> Link: https://lore.kernel.org/r/161653784755.2770958.11820491619308713741.stgit@warthog.procyon.org.uk/ # v5
->
-> Proposals/information about the design has been published here:
->
-> Link: https://lore.kernel.org/r/24942.1573667720@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/2758811.1610621106@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/1441311.1598547738@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/160655.1611012999@warthog.procyon.org.uk/
->
-> And requests for information:
->
-> Link: https://lore.kernel.org/r/3326.1579019665@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/4467.1579020509@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/3577430.1579705075@warthog.procyon.org.uk/
->
-> I've posted partial patches to try and help 9p and cifs along:
->
-> Link: https://lore.kernel.org/r/1514086.1605697347@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/1794123.1605713481@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/241017.1612263863@warthog.procyon.org.uk/
-> Link: https://lore.kernel.org/r/270998.1612265397@warthog.procyon.org.uk/
->
-> David
-> ---
-> David Howells (28):
->       iov_iter: Add ITER_XARRAY
->       mm: Add set/end/wait functions for PG_private_2
->       mm: Implement readahead_control pageset expansion
->       netfs: Make a netfs helper module
->       netfs: Documentation for helper library
->       netfs, mm: Move PG_fscache helper funcs to linux/netfs.h
->       netfs, mm: Add set/end/wait_on_page_fscache() aliases
->       netfs: Provide readahead and readpage netfs helpers
->       netfs: Add tracepoints
->       netfs: Gather stats
->       netfs: Add write_begin helper
->       netfs: Define an interface to talk to a cache
->       netfs: Add a tracepoint to log failures that would be otherwise unseen
->       fscache, cachefiles: Add alternate API to use kiocb for read/write to cache
->       afs: Disable use of the fscache I/O routines
->       afs: Pass page into dirty region helpers to provide THP size
->       afs: Print the operation debug_id when logging an unexpected data version
->       afs: Move key to afs_read struct
->       afs: Don't truncate iter during data fetch
->       afs: Log remote unmarshalling errors
->       afs: Set up the iov_iter before calling afs_extract_data()
->       afs: Use ITER_XARRAY for writing
->       afs: Wait on PG_fscache before modifying/releasing a page
->       afs: Extract writeback extension into its own function
->       afs: Prepare for use of THPs
->       afs: Use the fs operation ops to handle FetchData completion
->       afs: Use new netfs lib read helper API
->       afs: Use the netfs_write_begin() helper
->
-> Matthew Wilcox (Oracle) (2):
->       mm/filemap: Pass the file_ra_state in the ractl
->       fs: Document file_ra_state
->
->
->  Documentation/filesystems/index.rst         |    1 +
->  Documentation/filesystems/netfs_library.rst |  526 ++++++++
->  fs/Kconfig                                  |    1 +
->  fs/Makefile                                 |    1 +
->  fs/afs/Kconfig                              |    1 +
->  fs/afs/dir.c                                |  225 ++--
->  fs/afs/file.c                               |  483 ++------
->  fs/afs/fs_operation.c                       |    4 +-
->  fs/afs/fsclient.c                           |  108 +-
->  fs/afs/inode.c                              |    7 +-
->  fs/afs/internal.h                           |   59 +-
->  fs/afs/rxrpc.c                              |  150 +--
->  fs/afs/write.c                              |  657 +++++-----
->  fs/afs/yfsclient.c                          |   82 +-
->  fs/cachefiles/Makefile                      |    1 +
->  fs/cachefiles/interface.c                   |    5 +-
->  fs/cachefiles/internal.h                    |    9 +
->  fs/cachefiles/io.c                          |  420 +++++++
->  fs/ext4/verity.c                            |    2 +-
->  fs/f2fs/file.c                              |    2 +-
->  fs/f2fs/verity.c                            |    2 +-
->  fs/fscache/Kconfig                          |    1 +
->  fs/fscache/Makefile                         |    1 +
->  fs/fscache/internal.h                       |    4 +
->  fs/fscache/io.c                             |  116 ++
->  fs/fscache/page.c                           |    2 +-
->  fs/fscache/stats.c                          |    1 +
->  fs/netfs/Kconfig                            |   23 +
->  fs/netfs/Makefile                           |    5 +
->  fs/netfs/internal.h                         |   97 ++
->  fs/netfs/read_helper.c                      | 1185 +++++++++++++++++++
->  fs/netfs/stats.c                            |   59 +
->  include/linux/fs.h                          |   24 +-
->  include/linux/fscache-cache.h               |    4 +
->  include/linux/fscache.h                     |   50 +-
->  include/linux/netfs.h                       |  234 ++++
->  include/linux/pagemap.h                     |   41 +-
->  include/net/af_rxrpc.h                      |    2 +-
->  include/trace/events/afs.h                  |   74 +-
->  include/trace/events/netfs.h                |  261 ++++
->  mm/filemap.c                                |   63 +-
->  mm/internal.h                               |    7 +-
->  mm/readahead.c                              |   97 +-
->  net/rxrpc/recvmsg.c                         |    9 +-
->  44 files changed, 3998 insertions(+), 1108 deletions(-)
->  create mode 100644 Documentation/filesystems/netfs_library.rst
->  create mode 100644 fs/cachefiles/io.c
->  create mode 100644 fs/fscache/io.c
->  create mode 100644 fs/netfs/Kconfig
->  create mode 100644 fs/netfs/Makefile
->  create mode 100644 fs/netfs/internal.h
->  create mode 100644 fs/netfs/read_helper.c
->  create mode 100644 fs/netfs/stats.c
->  create mode 100644 include/linux/netfs.h
->  create mode 100644 include/trace/events/netfs.h
->
->
+The following commit has been merged into the sched/core branch of tip:
 
-Similar to Jeff, for most of first 16 patches (except patch 1 and 13)
-you can add
-Tested-by: Dave Wysochanski <dwysocha@redhat.com>
+Commit-ID:     816969e4af7a56bfd284d2e0fa11511900ab93e3
+Gitweb:        https://git.kernel.org/tip/816969e4af7a56bfd284d2e0fa11511900ab93e3
+Author:        Valentin Schneider <valentin.schneider@arm.com>
+AuthorDate:    Wed, 07 Apr 2021 23:06:28 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 09 Apr 2021 13:53:12 +02:00
 
-I rebased my latest NFS patches on top of your netfs-lib branch at the
-below commit (the 16th patch here)
-fce8d8a1ae46 fscache, cachefiles: Add alternate API to use kiocb for
-read/write to cache
+sched/fair: Introduce a CPU capacity comparison helper
 
-With netfs and fscache enabled mount, I ran the following tests, and
-found the series to be very solid, with no obvious failures (hangs,
-oopses, etc), and results matched tests run on vanilla 5.12-rc6:
-* unit tests: NFSv3, 4.0, 4.1, 4.2; localhost server; with/without all
-tracepoints enabled (fscache, cachefiles, netfs)
-* NFS connectathon: NFSv3, 4.0, 4.1, 4.2; rhel7 server; with/without
-all tracepoints enabled (fscache, cachefiles, netfs)
-* xfstests generic: NFSv3, 4.0, 4.1, 4.2; rhel7, rhel8 server
-Notes
-1. I still have not resolved the pNFS issues so I did not run fscache
-enabled pNFS tests.
-2. Current NFS patches do not use ITER_XARRAY (patch 1/30) or
-write_begin helper (patch 13/30)
+During load-balance, groups classified as group_misfit_task are filtered
+out if they do not pass
 
+  group_smaller_max_cpu_capacity(<candidate group>, <local group>);
+
+which itself employs fits_capacity() to compare the sgc->max_capacity of
+both groups.
+
+Due to the underlying margin, fits_capacity(X, 1024) will return false for
+any X > 819. Tough luck, the capacity_orig's on e.g. the Pixel 4 are
+{261, 871, 1024}. If a CPU-bound task ends up on one of those "medium"
+CPUs, misfit migration will never intentionally upmigrate it to a CPU of
+higher capacity due to the aforementioned margin.
+
+One may argue the 20% margin of fits_capacity() is excessive in the advent
+of counter-enhanced load tracking (APERF/MPERF, AMUs), but one point here
+is that fits_capacity() is meant to compare a utilization value to a
+capacity value, whereas here it is being used to compare two capacity
+values. As CPU capacity and task utilization have different dynamics, a
+sensible approach here would be to add a new helper dedicated to comparing
+CPU capacities.
+
+Also note that comparing capacity extrema of local and source sched_group's
+doesn't make much sense when at the day of the day the imbalance will be
+pulled by a known env->dst_cpu, whose capacity can be anywhere within the
+local group's capacity extrema.
+
+While at it, replace group_smaller_{min, max}_cpu_capacity() with
+comparisons of the source group's min/max capacity and the destination
+CPU's capacity.
+
+Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Reviewed-by: Qais Yousef <qais.yousef@arm.com>
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Tested-by: Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Link: https://lkml.kernel.org/r/20210407220628.3798191-4-valentin.schneider@arm.com
+---
+ kernel/sched/fair.c | 33 ++++++++++-----------------------
+ 1 file changed, 10 insertions(+), 23 deletions(-)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 3ed436e..f9440ee 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -113,6 +113,13 @@ int __weak arch_asym_cpu_priority(int cpu)
+  */
+ #define fits_capacity(cap, max)	((cap) * 1280 < (max) * 1024)
+ 
++/*
++ * The margin used when comparing CPU capacities.
++ * is 'cap1' noticeably greater than 'cap2'
++ *
++ * (default: ~5%)
++ */
++#define capacity_greater(cap1, cap2) ((cap1) * 1024 > (cap2) * 1078)
+ #endif
+ 
+ #ifdef CONFIG_CFS_BANDWIDTH
+@@ -8395,26 +8402,6 @@ group_is_overloaded(unsigned int imbalance_pct, struct sg_lb_stats *sgs)
+ 	return false;
+ }
+ 
+-/*
+- * group_smaller_min_cpu_capacity: Returns true if sched_group sg has smaller
+- * per-CPU capacity than sched_group ref.
+- */
+-static inline bool
+-group_smaller_min_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
+-{
+-	return fits_capacity(sg->sgc->min_capacity, ref->sgc->min_capacity);
+-}
+-
+-/*
+- * group_smaller_max_cpu_capacity: Returns true if sched_group sg has smaller
+- * per-CPU capacity_orig than sched_group ref.
+- */
+-static inline bool
+-group_smaller_max_cpu_capacity(struct sched_group *sg, struct sched_group *ref)
+-{
+-	return fits_capacity(sg->sgc->max_capacity, ref->sgc->max_capacity);
+-}
+-
+ static inline enum
+ group_type group_classify(unsigned int imbalance_pct,
+ 			  struct sched_group *group,
+@@ -8570,7 +8557,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+ 	 * internally or be covered by avg_load imbalance (eventually).
+ 	 */
+ 	if (sgs->group_type == group_misfit_task &&
+-	    (!group_smaller_max_cpu_capacity(sg, sds->local) ||
++	    (!capacity_greater(capacity_of(env->dst_cpu), sg->sgc->max_capacity) ||
+ 	     sds->local_stat.group_type != group_has_spare))
+ 		return false;
+ 
+@@ -8654,7 +8641,7 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+ 	 */
+ 	if ((env->sd->flags & SD_ASYM_CPUCAPACITY) &&
+ 	    (sgs->group_type <= group_fully_busy) &&
+-	    (group_smaller_min_cpu_capacity(sds->local, sg)))
++	    (capacity_greater(sg->sgc->min_capacity, capacity_of(env->dst_cpu))))
+ 		return false;
+ 
+ 	return true;
+@@ -9454,7 +9441,7 @@ static struct rq *find_busiest_queue(struct lb_env *env,
+ 		 * average load.
+ 		 */
+ 		if (env->sd->flags & SD_ASYM_CPUCAPACITY &&
+-		    capacity_of(env->dst_cpu) < capacity &&
++		    !capacity_greater(capacity_of(env->dst_cpu), capacity) &&
+ 		    nr_running == 1)
+ 			continue;
+ 
