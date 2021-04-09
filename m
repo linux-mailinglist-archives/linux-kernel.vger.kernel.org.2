@@ -2,88 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF46935A152
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1FB735A157
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234051AbhDIOlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:41:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49110 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232884AbhDIOlQ (ORCPT
+        id S233849AbhDIOmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232884AbhDIOmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:41:16 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lUsJi-00069A-Fx; Fri, 09 Apr 2021 14:41:02 +0000
-Subject: Re: [PATCH] xfs: fix return of uninitialized value in variable error
-To:     Brian Foster <bfoster@redhat.com>
-Cc:     "Darrick J . Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
-        Dave Chinner <dchinner@redhat.com>,
-        Allison Collins <allison.henderson@oracle.com>,
-        Chandan Babu R <chandanrlinux@gmail.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210409141834.667163-1-colin.king@canonical.com>
- <YHBkjihVv4+7D62Q@bfoster>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <08de5ee4-28ca-cb33-7c6c-72f133d97b36@canonical.com>
-Date:   Fri, 9 Apr 2021 15:41:02 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 9 Apr 2021 10:42:39 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41CDFC061760
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 07:42:25 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id u20so6726101lja.13
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 07:42:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mgWegSwhOpcGml0uML3IWUn1X3Z+AH0MFZdCHi/93PY=;
+        b=o7eFJ30qOzBa3dgRnh/WcCN0kX49sPw9maR/6OuBKUPp5AJKAFmoQDa74vCSyYhlXn
+         hXJeJrBR3C5NdSpTtex/aViY9q5M/fbQ4/Z9GR18hYJendIm2ZSEhhp48Syfl2xDKuD7
+         d6uhhhrmy+ADPRbj2wNKbzG2BqQoEEVnbG5DY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mgWegSwhOpcGml0uML3IWUn1X3Z+AH0MFZdCHi/93PY=;
+        b=WJGNqDEQVm/p+Blmvds9jqnEW7v9WhF+P4MMS+FlNBUMr8H2gbwOJ9GGpT5nmO49oW
+         M3MzsM2AHOA3mThwaTV7RZ3TZToOFqm8rd/DS5m6lzU7siEFnAmltbElot5M+VbOEjdN
+         3hl69v5wb29FhFQkWDd0lbbPyBtSqwp2EHyYtcgFJYXrdEf/tNgayzYrEkHTM7muXn1u
+         6m07I/U7FlZcqRTaqfIyWXr2+4lwZu9m2r2DT2GnTJOtrlUCS67NAg7jS7byJRdamYCX
+         IpmRPJLqZs+HXl+ue6jyHsDpoRLxTpqI+NVyFasadPq/tV0dVD0XsKFn9fIHoigRu0lY
+         0XRw==
+X-Gm-Message-State: AOAM530noK/Melndzbn+B6BFUUffJsh8Nm5L0kWuOFipipYXA/Xoh0//
+        QcWRylpFOaC1SaE2dOGiZa7JBa56qQ7sEfPtCuMskA==
+X-Google-Smtp-Source: ABdhPJyLql3K0BO+oWb/9QvOTKYKMmjccNLMOLeXWEEXD3jfxsO8N+MD+HIzwc0FZJ18L7cYPrFgQ7ScHDtmwE+wAss=
+X-Received: by 2002:a2e:9dd8:: with SMTP id x24mr9267330ljj.173.1617979343021;
+ Fri, 09 Apr 2021 07:42:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YHBkjihVv4+7D62Q@bfoster>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210409065115.11054-1-alex@ghiti.fr> <3500f3cb-b660-5bbc-ae8d-0c9770e4a573@ghiti.fr>
+ <be575094-badf-bac7-1629-36808ca530cc@redhat.com> <c4e78916-7e4c-76db-47f6-4dda3f09c871@ghiti.fr>
+ <YHBEsDuEvPAnL8Vb@linux.ibm.com> <e7e87306-bb04-2d4f-7e7f-aabd40dccb3b@redhat.com>
+ <YHBdzPsHantT9r8t@linux.ibm.com>
+In-Reply-To: <YHBdzPsHantT9r8t@linux.ibm.com>
+From:   Vitaly Wool <vitaly.wool@konsulko.com>
+Date:   Fri, 9 Apr 2021 16:42:12 +0200
+Message-ID: <CAM4kBBKyHSYz+NNDpT=fWseWccsQ4HZ3teBc01jYT2g8j7Ze2A@mail.gmail.com>
+Subject: Re: [PATCH v7] RISC-V: enable XIP
+To:     Mike Rapoport <rppt@linux.ibm.com>
+Cc:     David Hildenbrand <david@redhat.com>, Alex Ghiti <alex@ghiti.fr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/04/2021 15:28, Brian Foster wrote:
-> On Fri, Apr 09, 2021 at 03:18:34PM +0100, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> A previous commit removed a call to xfs_attr3_leaf_read that
->> assigned an error return code to variable error. We now have
->> a few early error return paths to label 'out' that return
->> error if error is set; however error now is uninitialized
->> so potentially garbage is being returned.  Fix this by setting
->> error to zero to restore the original behaviour where error
->> was zero at the label 'restart'.
->>
->> Addresses-Coverity: ("Uninitialized scalar variable")
->> Fixes: 07120f1abdff ("xfs: Add xfs_has_attr and subroutines")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  fs/xfs/libxfs/xfs_attr.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/fs/xfs/libxfs/xfs_attr.c b/fs/xfs/libxfs/xfs_attr.c
->> index 472b3039eabb..902e5f7e6642 100644
->> --- a/fs/xfs/libxfs/xfs_attr.c
->> +++ b/fs/xfs/libxfs/xfs_attr.c
->> @@ -928,6 +928,7 @@ xfs_attr_node_addname(
->>  	 * Search to see if name already exists, and get back a pointer
->>  	 * to where it should go.
->>  	 */
->> +	error = 0;
->>  	retval = xfs_attr_node_hasname(args, &state);
->>  	if (retval != -ENOATTR && retval != -EEXIST)
->>  		goto out;
-> 
-> I think it would be nicer to initialize at the top of the function as
-> opposed to try and "preserve" historical behavior, but that nit aside:
+On Fri, Apr 9, 2021 at 3:59 PM Mike Rapoport <rppt@linux.ibm.com> wrote:
+>
+> On Fri, Apr 09, 2021 at 02:46:17PM +0200, David Hildenbrand wrote:
+> > > > > Also, will that memory properly be exposed in the resource tree as
+> > > > > System RAM (e.g., /proc/iomem) ? Otherwise some things (/proc/kcore)
+> > > > > won't work as expected - the kernel won't be included in a dump.
+> > > Do we really need a XIP kernel to included in kdump?
+> > > And does not it sound weird to expose flash as System RAM in /proc/iomem? ;-)
+> >
+> > See my other mail, maybe we actually want something different.
+> >
+> > >
+> > > > I have just checked and it does not appear in /proc/iomem.
+> > > >
+> > > > Ok your conclusion would be to have struct page, I'm going to implement this
+> > > > version then using memblock as you described.
+> > >
+> > > I'm not sure this is required. With XIP kernel text never gets into RAM, so
+> > > it does not seem to require struct page.
+> > >
+> > > XIP by definition has some limitations relatively to "normal" operation,
+> > > so lack of kdump could be one of them.
+> >
+> > I agree.
+> >
+> > >
+> > > I might be wrong, but IMHO, artificially creating a memory map for part of
+> > > flash would cause more problems in the long run.
+> >
+> > Can you elaborate?
+>
+> Nothing particular, just a gut feeling. Usually, when you force something
+> it comes out the wrong way later.
 
-I did think about that, but this fix does ensure it's zero'd for each
-iteration rather than just the once, so it should catch any code changes
-later on that may loop back to this point were error is non-zero.
+It's possible still that MTD_XIP is implemented allowing to write to
+the flash used for XIP. While flash is being written, memory map
+doesn't make sense at all. I can't come up with a real life example
+when it can actually lead to problems but it is indeed weird when
+System RAM suddenly becomes unreadable. I really don't think exposing
+it in /proc/iomem is a good idea.
 
-> 
-> Reviewed-by: Brian Foster <bfoster@redhat.com>
-> 
->> -- 
->> 2.30.2
->>
-> 
+> > > BTW, how does XIP account the kernel text on other architectures that
+> > > implement it?
+> >
+> > Interesting point, I thought XIP would be something new on RISC-V (well, at
+> > least to me :) ). If that concept exists already, we better mimic what
+> > existing implementations do.
+>
+> I had quick glance at ARM, it seems that kernel text does not have memory
+> map and does not show up in System RAM.
 
+Exactly, and I believe ARM64 won't do that too when it gets its own
+XIP support (which is underway).
+
+Best regards,
+   Vitaly
