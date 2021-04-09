@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814C9359695
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2579359698
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231945AbhDIHls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:41:48 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:44944 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229751AbhDIHlo (ORCPT
+        id S231817AbhDIHmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:42:52 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:35608 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229751AbhDIHmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:41:44 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1397axb0012005;
-        Fri, 9 Apr 2021 09:40:58 +0200
+        Fri, 9 Apr 2021 03:42:50 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1397fcsY013416;
+        Fri, 9 Apr 2021 09:42:05 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
  references : from : message-id : date : mime-version : in-reply-to :
  content-type : content-transfer-encoding; s=selector1;
- bh=n06VPaXv/86nkAfO+Ew799xc9jm8nPwhGU0C5uayBqo=;
- b=1RA8xsujC5lSSS18IpKAI7zlKhO5HqRRLX8P+prNVx+GAvyBdI36ADgSxKkowBZ2Q5xQ
- jNxeqn6AOotH1CcVFV75WwUIuUql3AAfEoglVH5/7Z5on6nkoTD9yVnWizPzIcjqalxq
- jNeX4ZfivWEJZSkZp0Ec/cX+Bw6y06TOr4FYQYXWI6kBJIUW4O+RIL/ed48ub4clXJrN
- iQAzLEiyvgDsagp4p6osTuHJAefJ4fug62DNG3kEK+AGC8H3Ipb7dhe0kExRyapZErzA
- N/c1iuY11Wxh35H+n1LPCDlldFVpGU/X0GxTGSPquR00mAowcyY21E3aU6NuVPcwC7Pp +A== 
+ bh=lBIuI0IPIG0tqQ2R1deHRETQaTs9jGsCKm26UPFx2S8=;
+ b=QPeB6UYsSP0FyvDqQhnUBlDgwVqFsuU6/njkpkzG5xj0Vh1vvCDevZlo6E4KP23a1mwi
+ E9SCxgm2W/O6/7cUSzgnQPjbBwvAlJi6DhztA2fwLlS0hfl1xXncHCxkGfThckanzJl2
+ RQxZzWxVupUiEast9xkq9x7rP2ZwWSgwQvndJSg5vq7qn9yGvDubLMyX2iAzozRHM/Ni
+ XajOjOu5WZ6CSZu++m82/zu53CkGIBu4N7M9HC7DZVjI1/gSGMIVFLNCIaJ/1Yxg6QJF
+ e4DPa5m5h8zXYE4BLmQPcYwjH7ErOOX3nPjb8bKnRdyGkxbRriuy5F8iDm5BeJU7+Efe qw== 
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37tj4d8a3x-1
+        by mx07-00178001.pphosted.com with ESMTP id 37sw5yxw6s-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 09 Apr 2021 09:40:58 +0200
+        Fri, 09 Apr 2021 09:42:05 +0200
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BB76210002A;
-        Fri,  9 Apr 2021 09:40:56 +0200 (CEST)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 55AB9100038;
+        Fri,  9 Apr 2021 09:42:04 +0200 (CEST)
 Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 584B721CA9E;
-        Fri,  9 Apr 2021 09:40:56 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 42FC521CA9E;
+        Fri,  9 Apr 2021 09:42:04 +0200 (CEST)
+Received: from lmecxl0573.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
  (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 9 Apr
- 2021 09:40:55 +0200
-Subject: Re: [PATCH -next] ASoC: sti: sti_uniperif: add missing
- MODULE_DEVICE_TABLE
-To:     Chen Lifu <chenlifu@huawei.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-References: <20210409015953.259688-1-chenlifu@huawei.com>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <228beb65-2cd3-f2fe-92c8-5a4d3c0a4d33@foss.st.com>
-Date:   Fri, 9 Apr 2021 09:40:54 +0200
+ 2021 09:42:03 +0200
+Subject: Re: [PATCH -next] mmc: sdhci-st: Remove unnecessary error log
+To:     Laibin Qiu <qiulaibin@huawei.com>, <adrian.hunter@intel.com>,
+        <ulf.hansson@linaro.org>, <yuehaibing@huawei.com>
+CC:     <linux-mmc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210409023801.3326572-1-qiulaibin@huawei.com>
+From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
+Message-ID: <39dd50a7-6e85-49e4-8072-e88fcc471714@foss.st.com>
+Date:   Fri, 9 Apr 2021 09:42:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210409015953.259688-1-chenlifu@huawei.com>
+In-Reply-To: <20210409023801.3326572-1-qiulaibin@huawei.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.44]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
  (10.75.127.6)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-04-09_04:2021-04-08,2021-04-09 signatures=0
@@ -65,35 +63,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Laibin
 
-
-On 4/9/21 3:59 AM, Chen Lifu wrote:
-> This patch adds missing MODULE_DEVICE_TABLE definition which generates
-> correct modalias for automatic loading of this driver when it is built
-> as an external module.
+On 4/9/21 4:38 AM, Laibin Qiu wrote:
+> devm_ioremap_resource() has recorded error log, so it's
+> unnecessary to record log again.
 > 
 > Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Chen Lifu <chenlifu@huawei.com>
-
-Reviewed-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-
-Thanks,
-Arnaud
-
+> Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
 > ---
->  sound/soc/sti/sti_uniperif.c | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/mmc/host/sdhci-st.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
 > 
-> diff --git a/sound/soc/sti/sti_uniperif.c b/sound/soc/sti/sti_uniperif.c
-> index 67315d9b352d..e3561f00ed40 100644
-> --- a/sound/soc/sti/sti_uniperif.c
-> +++ b/sound/soc/sti/sti_uniperif.c
-> @@ -97,6 +97,7 @@ static const struct of_device_id snd_soc_sti_match[] = {
->  	},
->  	{},
->  };
-> +MODULE_DEVICE_TABLE(of, snd_soc_sti_match);
+> diff --git a/drivers/mmc/host/sdhci-st.c b/drivers/mmc/host/sdhci-st.c
+> index 78941ac3a1d6..d41582c21aa3 100644
+> --- a/drivers/mmc/host/sdhci-st.c
+> +++ b/drivers/mmc/host/sdhci-st.c
+> @@ -400,10 +400,8 @@ static int sdhci_st_probe(struct platform_device *pdev)
+>  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>  					   "top-mmc-delay");
+>  	pdata->top_ioaddr = devm_ioremap_resource(&pdev->dev, res);
+> -	if (IS_ERR(pdata->top_ioaddr)) {
+> -		dev_warn(&pdev->dev, "FlashSS Top Dly registers not available");
+> +	if (IS_ERR(pdata->top_ioaddr))
+>  		pdata->top_ioaddr = NULL;
+> -	}
 >  
->  int  sti_uniperiph_reset(struct uniperif *uni)
->  {
+>  	pltfm_host->clk = clk;
+>  	pdata->icnclk = icnclk;
 > 
+
+Reviewed-by: Patrice Chotard <patrice.chotard@foss.st.com>
+
+Thanks
+Patrice
