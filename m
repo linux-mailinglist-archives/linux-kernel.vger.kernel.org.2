@@ -2,149 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D54C35A94A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B6935A94D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 01:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235191AbhDIXgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 19:36:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35038 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235096AbhDIXgg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 19:36:36 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1799C061763
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 16:36:22 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id y1so8322303ljm.10
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 16:36:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MQEhdxl+cSU7BC7XRTZDcCsNpOwQL3MJhJomrvmkJCY=;
-        b=naXn5kfXgRlukFVoSCe/aS9mSub16qMDDnXU0x9NB9VvBXEc/nCg53QsttbiYYoOdy
-         NvXp8jYd89b8HUaPN7fRNWO7pgHhHGs0K2z7HvJSpG4ldxCjcMZNSGLrjUXwkFVHREQu
-         EkdeDYJ7eqF5tFBnfniDsngW17bsbFPd/pBe5DFNZhQSWnOUt41ATFBagvjygDaOpiYo
-         62J7wMp79geIT6GRT+gjXifp+0VcR8gXSKkd4nk/0kY3pkxISXwVA86aOf+t+AdlrKRe
-         U7Y/TWL9S15pzXqvCbz7Fo4iNaFjd0uAUUBxFrQUZ7BwZ3283l1O3CNk3bQetk5ztkO4
-         RIrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MQEhdxl+cSU7BC7XRTZDcCsNpOwQL3MJhJomrvmkJCY=;
-        b=FJmjEG8wFMOtNoPUiZVGFuL1E6ob4uC3yOJqps+qquASCPVgYpWJ6MJtyglDelcOfc
-         M9t9RVut3YmRvsVXkzM2gUY5iXgx8KGIXArxvgg5ttBNcuGQZGzOKakD2K9bevRTdGao
-         pQ/ahxeo8fk4J1OTQxcriqVQ//VhauZMLk22t7CU8QkTF4NOG3Ao9E9puHxM6+250SFl
-         Xw7jUHFY8ioSbBnx82Tt2UyEFSIlSmBI3Ccb4gCukVfqRG8B/YSHCwfmB8WXkOzBXoLr
-         2VTZFViYEyAKtpiZmplr3pkaSmKJ0I3Jokzbz0wCtbuQVUHAPtl5OFqGSNKtUaN7Bthv
-         /0CA==
-X-Gm-Message-State: AOAM530UXxBO5Ef0kqBDFcEfMWSr1IXxUASIgQ79cKEjuxKW2zRKuKgL
-        FIAN2IUpKsWykQnNWo1sbzbxQgJaQGrc3p7jlrFIMA==
-X-Google-Smtp-Source: ABdhPJxPZM+yBj5h9pJP265DYko714wL+M/i9xL4wgwVQK69SoBcfbh2i4JxHFXtqH+bSlHJjvuHtaD+RYSUTCWwTuU=
-X-Received: by 2002:a2e:3603:: with SMTP id d3mr10563594lja.495.1618011380903;
- Fri, 09 Apr 2021 16:36:20 -0700 (PDT)
+        id S235203AbhDIXi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 19:38:57 -0400
+Received: from m12-18.163.com ([220.181.12.18]:59784 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235151AbhDIXi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 19:38:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=PMyya
+        haBzqHvEXTUg5sQu5drqNL/NXL/3ExuqhxFwPA=; b=bk3aRJNWjzAGnPH3BNpvj
+        OVALxHyXd4R+ctOXM4LpFTDvHISmuhV+7etmtq47O4tAIUg9WsWPj98wohG/MT4E
+        VsVMfP/w6mV530Y2r8mxuVeoe58ZL7LrJT07A64t8+ce6pvfLmMM0KLVgEdwLgyn
+        DMSqYHNCw46FnhT8yny5kA=
+Received: from localhost (unknown [119.137.53.45])
+        by smtp14 (Coremail) with SMTP id EsCowABnYO5m5XBgTMFpdA--.12868S2;
+        Sat, 10 Apr 2021 07:38:15 +0800 (CST)
+Date:   Sat, 10 Apr 2021 07:38:14 +0800
+From:   angkery <angkery@163.com>
+To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Cc:     axboe@kernel.dk, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
+Subject: Re: [PATCH] pata_ipx4xx_cf: Fix unsigned comparison with less than
+ zero
+Message-ID: <20210410073814.00003b86.angkery@163.com>
+In-Reply-To: <e6bf7f02-f0b8-b0c4-2253-62a55ea98d17@gmail.com>
+References: <20210409135426.1773-1-angkery@163.com>
+        <e74ec570-96b6-23ce-edd5-b5a38628963a@gmail.com>
+        <e6bf7f02-f0b8-b0c4-2253-62a55ea98d17@gmail.com>
+Organization: yulong
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
 MIME-Version: 1.0
-References: <20210409221155.1113205-1-nathan@kernel.org>
-In-Reply-To: <20210409221155.1113205-1-nathan@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 9 Apr 2021 16:36:09 -0700
-Message-ID: <CAKwvOdnTFXPy29L5JhcMBJAP4STfZUMn6739Mc4J_2Qwu3efBw@mail.gmail.com>
-Subject: Re: [PATCH] crypto: arm/curve25519 - Move '.fpu' after '.arch'
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "# 3.4.x" <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Jessica Clarke <jrtc27@jrtc27.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: EsCowABnYO5m5XBgTMFpdA--.12868S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7CrW7KF1rKw4kCr4UZF1xuFg_yoW8GFWxpF
+        47Ca4j9rWvq342k39rtrsrZFyrta1rGryIv3y3CrWYvr1qq3Z7JFyagrWj9F4q9r4xGr10
+        vry5tw47uF47ZaUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UMVbkUUUUU=
+X-Originating-IP: [119.137.53.45]
+X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiLA9vI1spZ9kimAABsY
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 3:12 PM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> Debian's clang carries a patch that makes the default FPU mode
-> 'vfp3-d16' instead of 'neon' for 'armv7-a' to avoid generating NEON
-> instructions on hardware that does not support them:
->
-> https://salsa.debian.org/pkg-llvm-team/llvm-toolchain/-/raw/5a61ca6f21b4ad8c6ac4970e5ea5a7b5b4486d22/debian/patches/clang-arm-default-vfp3-on-armv7a.patch
-> https://bugs.debian.org/841474
-> https://bugs.debian.org/842142
-> https://bugs.debian.org/914268
+On Fri, 9 Apr 2021 20:02:56 +0300
+Sergei Shtylyov <sergei.shtylyov@gmail.com> wrote:
 
-Another good link would be the one from Jessica describing more
-precisely what the ARM targets for Debian are:
-https://wiki.debian.org/ArchitectureSpecificsMemo#armel
-
->
-> This results in the following build error when clang's integrated
-> assembler is used because the '.arch' directive overrides the '.fpu'
-> directive:
->
-> arch/arm/crypto/curve25519-core.S:25:2: error: instruction requires: NEON
->  vmov.i32 q0, #1
->  ^
-> arch/arm/crypto/curve25519-core.S:26:2: error: instruction requires: NEON
->  vshr.u64 q1, q0, #7
->  ^
-> arch/arm/crypto/curve25519-core.S:27:2: error: instruction requires: NEON
->  vshr.u64 q0, q0, #8
->  ^
-> arch/arm/crypto/curve25519-core.S:28:2: error: instruction requires: NEON
->  vmov.i32 d4, #19
->  ^
->
-> Shuffle the order of the '.arch' and '.fpu' directives so that the code
-> builds regardless of the default FPU mode. This has been tested against
-> both clang with and without Debian's patch and GCC.
->
-> Cc: stable@vger.kernel.org
-> Fixes: d8f1308a025f ("crypto: arm/curve25519 - wire up NEON implementation")
-> Link: https://github.com/ClangBuiltLinux/continuous-integration2/issues/118
-> Reported-by: Arnd Bergmann <arnd@arndb.de>
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Suggested-by: Jessica Clarke <jrtc27@jrtc27.com>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-
-Great work tracking down that Debian was carrying patches! Thank you!
-I've run this through the same 3 assemblers.
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-
-> ---
->  arch/arm/crypto/curve25519-core.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/crypto/curve25519-core.S b/arch/arm/crypto/curve25519-core.S
-> index be18af52e7dc..b697fa5d059a 100644
-> --- a/arch/arm/crypto/curve25519-core.S
-> +++ b/arch/arm/crypto/curve25519-core.S
-> @@ -10,8 +10,8 @@
->  #include <linux/linkage.h>
->
->  .text
-> -.fpu neon
->  .arch armv7-a
-> +.fpu neon
->  .align 4
->
->  ENTRY(curve25519_neon)
->
-> base-commit: e49d033bddf5b565044e2abe4241353959bc9120
-> --
-> 2.31.1.189.g2e36527f23
->
+> On 4/9/21 7:49 PM, Sergei Shtylyov wrote:
+> 
+> >> From: Junlin Yang <yangjunlin@yulong.com>
+> >>
+> >> The return from the call to platform_get_irq() is int, it can be
+> >> a negative error code, however this is being assigned to an
+> >> unsigned int variable 'irq', so making 'irq' an int, and change
+> >> the position to keep the code format.
+> >>
+> >> ./drivers/ata/pata_ixp4xx_cf.c:168:5-8:
+> >> WARNING: Unsigned expression compared with zero: irq > 0  
+> > 
+> >    I'd understand < 0... but > 0? What tool warned about this issue?
+> >   
+> > > yes, by coccicheck, i will update commits information.
+> >
+> >> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+> >> ---
+> >>  drivers/ata/pata_ixp4xx_cf.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/ata/pata_ixp4xx_cf.c
+> >> b/drivers/ata/pata_ixp4xx_cf.c index abc0e87..43215a4 100644
+> >> --- a/drivers/ata/pata_ixp4xx_cf.c
+> >> +++ b/drivers/ata/pata_ixp4xx_cf.c
+> >> @@ -135,12 +135,12 @@ static void ixp4xx_setup_port(struct
+> >> ata_port *ap, 
+> >>  static int ixp4xx_pata_probe(struct platform_device *pdev)
+> >>  {
+> >> -	unsigned int irq;  
+> > 
+> >    Oops, not sure how I missed that. :-/
+> >    Thanks for fixing my overlook. :-)  
+> 
+>    Forgot to add my
+> 
+> Reviewed-by: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+> 
+> > [...]  
+> 
+> MBR, Sergei
 
 
--- 
-Thanks,
-~Nick Desaulniers
