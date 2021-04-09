@@ -2,187 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E155359892
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AD735988D
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 11:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232415AbhDIJFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 05:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231621AbhDIJFb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 05:05:31 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC38C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 02:05:18 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id z8so5558500ljm.12
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 02:05:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Diu26lQeyc9P30LZFZqyI13l/S31KxD5z4XWDOuH4g8=;
-        b=qERsISDlAU/QOVO75hzThfBtSMeroZxxnjblbrgURP4R2TDm1x0A7b8Dc27BY0Jtyw
-         UrbSmqFt4gZo47ulHn+1RV7RF7JYmm6OzbUpAIZf3X7SK341PuXhYT3It1fINRnlz6Wi
-         HSpj5ivgzBbRfB9g+uP/d6IbtRfGOMFILLKMyAJ8843uEsVQR8GodsRNZTJ5Mww0aJYw
-         o4+voc/hj6ou6zm8uP+gcCd7hfQ49QBW+Av5UPmc7QpQdoOIG56OZLxnkz34sNKaSy8e
-         dZtN2n47F6NeAY+feM8GVHMmYCwSQiFV60IHITad2s9qs73k3ERomNerayWcRkTzki0v
-         G69w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Diu26lQeyc9P30LZFZqyI13l/S31KxD5z4XWDOuH4g8=;
-        b=HaHPXG2+K3n26eh8OPSEKLg5LiE7TIZpBIEiDBdkuQaqCInR/6029JQtCm15Lz89Ab
-         Sge/R1f51741NEiZCgiYFhOywbeCv0jkrnZ9+ph7mRUS+QUsFYPd6768zw2fedkqhP+a
-         hk4y6sEOy4z12iw7oNhnhKQsnVWJyTXPXg5stBt/Gvb+mp8U2UvakMbmSUWAlNuGjYFD
-         gZCsNuAMa/Lde3tYOlMNBHnJ5gl5+Jw50RLYh3nvVwRScqivWftTPalqHogYTJDmXcia
-         n+zV57+xazg6PJW+i0b6OwU/TbIzIoi7wM0KDUZGkFywbfng3Er1Y6m511TxFbiRXo6k
-         FP6w==
-X-Gm-Message-State: AOAM533/szTNSMccHlv1nqfpZ+lOqy6aFcBohUVhrXCCmOcjF0KDv0w2
-        0i8MJBw709vjdenaoJMUQNQd2dfUsOnlnBj9qdSkug==
-X-Google-Smtp-Source: ABdhPJwaVZc0tYy44wzKUDea7qRugvOw/yWDaetLR7bc9J6yrtNr9rrIY8blj73ciqmYIq9llziS9quXTXF0uV6EiVQ=
-X-Received: by 2002:a2e:b014:: with SMTP id y20mr8760575ljk.464.1617959117051;
- Fri, 09 Apr 2021 02:05:17 -0700 (PDT)
+        id S232131AbhDIJEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 05:04:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:45292 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231127AbhDIJEc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 05:04:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 640C11FB;
+        Fri,  9 Apr 2021 02:04:19 -0700 (PDT)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C26353F73D;
+        Fri,  9 Apr 2021 02:04:16 -0700 (PDT)
+Subject: Re: [PATCH -next] coresight: core: Make symbol 'csdev_sink' static
+To:     Wei Yongjun <weiyongjun1@huawei.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+References: <20210409013215.488823-1-weiyongjun1@huawei.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <291c6015-dbef-553b-c756-9d5acd1d9fe2@arm.com>
+Date:   Fri, 9 Apr 2021 14:35:07 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210407095527.2771582-1-wak@google.com> <CAHp75VcRE3JOyFEMzvP9RW1du3cXx3zaTq-8KJnGt9zaJeiJZg@mail.gmail.com>
-In-Reply-To: <CAHp75VcRE3JOyFEMzvP9RW1du3cXx3zaTq-8KJnGt9zaJeiJZg@mail.gmail.com>
-From:   William Kennington <wak@google.com>
-Date:   Fri, 9 Apr 2021 02:05:05 -0700
-Message-ID: <CAPnigKnV+=X9jn+iD2-DemfujRobANcL1NztXQjp_PeGbkWejw@mail.gmail.com>
-Subject: Re: [PATCH] spi: Fix use-after-free with devm_spi_alloc_*
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "broonie@kernel.org" <broonie@kernel.org>,
-        "linux-spi@vger.kernel.org" <linux-spi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Joel Stanley <joel@jms.id.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210409013215.488823-1-weiyongjun1@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the header file comment? I think it's actually backwards since
-`devm_allocated =3D true` would indicate the device is managed with
-devres. Should I send a followup change or v2?
 
 
-On Fri, Apr 9, 2021 at 12:20 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
->
->
-> On Wednesday, April 7, 2021, William A. Kennington III <wak@google.com> w=
-rote:
->>
->> We can't rely on the contents of the devres list during
->> spi_unregister_controller(), as the list is already torn down at the
->> time we perform devres_find() for devm_spi_release_controller. This
->> causes devices registered with devm_spi_alloc_{master,slave}() to be
->> mistakenly identified as legacy, non-devm managed devices and have their
->> reference counters decremented below 0.
->>
->> ------------[ cut here ]------------
->> WARNING: CPU: 1 PID: 660 at lib/refcount.c:28 refcount_warn_saturate+0x1=
-08/0x174
->> [<b0396f04>] (refcount_warn_saturate) from [<b03c56a4>] (kobject_put+0x9=
-0/0x98)
->> [<b03c5614>] (kobject_put) from [<b0447b4c>] (put_device+0x20/0x24)
->>  r4:b6700140
->> [<b0447b2c>] (put_device) from [<b07515e8>] (devm_spi_release_controller=
-+0x3c/0x40)
->> [<b07515ac>] (devm_spi_release_controller) from [<b045343c>] (release_no=
-des+0x84/0xc4)
->>  r5:b6700180 r4:b6700100
->> [<b04533b8>] (release_nodes) from [<b0454160>] (devres_release_all+0x5c/=
-0x60)
->>  r8:b1638c54 r7:b117ad94 r6:b1638c10 r5:b117ad94 r4:b163dc10
->> [<b0454104>] (devres_release_all) from [<b044e41c>] (__device_release_dr=
-iver+0x144/0x1ec)
->>  r5:b117ad94 r4:b163dc10
->> [<b044e2d8>] (__device_release_driver) from [<b044f70c>] (device_driver_=
-detach+0x84/0xa0)
->>  r9:00000000 r8:00000000 r7:b117ad94 r6:b163dc54 r5:b1638c10 r4:b163dc10
->> [<b044f688>] (device_driver_detach) from [<b044d274>] (unbind_store+0xe4=
-/0xf8)
->>
->> Instead, determine the devm allocation state as a flag on the
->> controller which is guaranteed to be stable during cleanup.
->>
->> Fixes: 5e844cc37a5c ("spi: Introduce device-managed SPI controller alloc=
-ation")
->> Signed-off-by: William A. Kennington III <wak@google.com>
->> ---
->>  drivers/spi/spi.c       | 9 ++-------
->>  include/linux/spi/spi.h | 3 +++
->>  2 files changed, 5 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
->> index b08efe88ccd6..904a353798b6 100644
->> --- a/drivers/spi/spi.c
->> +++ b/drivers/spi/spi.c
->> @@ -2496,6 +2496,7 @@ struct spi_controller *__devm_spi_alloc_controller=
-(struct device *dev,
->>
->>         ctlr =3D __spi_alloc_controller(dev, size, slave);
->>         if (ctlr) {
->> +               ctlr->devm_allocated =3D true;
->>                 *ptr =3D ctlr;
->>                 devres_add(dev, ptr);
->>         } else {
->> @@ -2842,11 +2843,6 @@ int devm_spi_register_controller(struct device *d=
-ev,
->>  }
->>  EXPORT_SYMBOL_GPL(devm_spi_register_controller);
->>
->> -static int devm_spi_match_controller(struct device *dev, void *res, voi=
-d *ctlr)
->> -{
->> -       return *(struct spi_controller **)res =3D=3D ctlr;
->> -}
->> -
->>  static int __unregister(struct device *dev, void *null)
->>  {
->>         spi_unregister_device(to_spi_device(dev));
->> @@ -2893,8 +2889,7 @@ void spi_unregister_controller(struct spi_controll=
-er *ctlr)
->>         /* Release the last reference on the controller if its driver
->>          * has not yet been converted to devm_spi_alloc_master/slave().
->>          */
->> -       if (!devres_find(ctlr->dev.parent, devm_spi_release_controller,
->> -                        devm_spi_match_controller, ctlr))
->> +       if (!ctlr->devm_allocated)
->>                 put_device(&ctlr->dev);
->>
->>         /* free bus id */
->> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
->> index 592897fa4f03..643139b1eafe 100644
->> --- a/include/linux/spi/spi.h
->> +++ b/include/linux/spi/spi.h
->> @@ -510,6 +510,9 @@ struct spi_controller {
->>
->>  #define SPI_MASTER_GPIO_SS             BIT(5)  /* GPIO CS must select s=
-lave */
->>
->> +       /* flag indicating this is a non-devres managed controller */
->
->
->
-> Isn=E2=80=99t =E2=80=9Cnon-=E2=80=9C part confusing a lot?
->
->>
->> +       bool                    devm_allocated;
->> +
->>         /* flag indicating this is an SPI slave controller */
->>         bool                    slave;
->>
->> --
->> 2.31.0.208.g409f899ff0-goog
->>
->
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+On 4/9/21 7:02 AM, Wei Yongjun wrote:
+> The sparse tool complains as follows:
+> 
+> drivers/hwtracing/coresight/coresight-core.c:26:1: warning:
+>  symbol '__pcpu_scope_csdev_sink' was not declared. Should it be static?
+> 
+> This symbol is not used outside of coresight-core.c, so this
+> commit marks it static.
+
+commit ? It is not on the tree yet. s/commit/change instead.
+
+> 
+> Fixes: 2cd87a7b293d ("coresight: core: Add support for dedicated percpu sinks")
+
+There is no functional problem that this patch is proposing to fix
+and hence the "Fixes:" tag is not warranted. Suzuki/Matihieu ?
+
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 3e779e1619ed..6c68d34d956e 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -23,7 +23,7 @@
+>  #include "coresight-priv.h"
+>  
+>  static DEFINE_MUTEX(coresight_mutex);
+> -DEFINE_PER_CPU(struct coresight_device *, csdev_sink);
+> +static DEFINE_PER_CPU(struct coresight_device *, csdev_sink);
+>  
+>  /**
+>   * struct coresight_node - elements of a path, from source to sink
+> 
+
+Otherwise LGTM. As csdev_sink is not being used outside coresight-core.c
+file after the introduction of coresight_[set|get]_percpu_sink() helpers.
