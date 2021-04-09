@@ -2,150 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12D11359595
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:35:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBCF335959A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233408AbhDIGf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbhDIGfz (ORCPT
+        id S233460AbhDIGgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:36:23 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16494 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233419AbhDIGgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:35:55 -0400
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01ADBC061760;
-        Thu,  8 Apr 2021 23:35:42 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id BE0C286;
-        Thu,  8 Apr 2021 23:35:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1617950142;
-        bh=hL8ydsRBjSGH93b6DxoXiwuUEU1J17Wd5fwxzHWrkNk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mKveTuIk1LSmdqqibJKuKd4WfGGtVPH2qUmK7P0kElsfhc2lKlcw9tuMcG0DDd2wX
-         xPsuYjCibyjCeDJ0A7GHT6pacWenP3xpeJwVSvL3LsCYMpYrpXhUP42V/nHUCQJ419
-         guR2vdR+BBTQBLRxhVIPUmO+WorScztFE/rt3vI0=
-Date:   Fri, 9 Apr 2021 01:35:39 -0500
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     Joel Stanley <joel@jms.id.au>, linux-aspeed@lists.ozlabs.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 3/4] drivers/tty/serial/8250: add aspeed, lpc-io-reg
- and aspeed, lpc-interrupts DT properties
-Message-ID: <YG/1u/kxl12sIO0V@hatter.bewilderbeest.net>
-References: <20210408011637.5361-1-zev@bewilderbeest.net>
- <20210408011637.5361-4-zev@bewilderbeest.net>
- <3eef2478-c5b8-4f14-a937-16bbe0a3e05a@www.fastmail.com>
+        Fri, 9 Apr 2021 02:36:20 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FGpH05ts5zPpXF;
+        Fri,  9 Apr 2021 14:33:16 +0800 (CST)
+Received: from [10.174.179.9] (10.174.179.9) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Fri, 9 Apr 2021
+ 14:36:04 +0800
+Subject: Re: [PATCH 3/4] mm/hugeltb: fix potential wrong gbl_reserve value for
+ hugetlb_acct_memory()
+To:     Mike Kravetz <mike.kravetz@oracle.com>, <akpm@linux-foundation.org>
+CC:     <n-horiguchi@ah.jp.nec.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20210402093249.25137-1-linmiaohe@huawei.com>
+ <20210402093249.25137-4-linmiaohe@huawei.com>
+ <20afccd5-2bc4-9db9-695e-dd6175b0b42b@oracle.com>
+ <1311fcfe-bc5f-e878-3912-ca9a9e0eed90@huawei.com>
+ <ecd3e4c9-1add-c304-5f26-7e34e5e6494c@oracle.com>
+ <ddec1fba-25ea-ebb3-fb87-41671db5cb92@huawei.com>
+ <0ebaa062-80e8-b380-c02e-7eb72e67f973@huawei.com>
+ <90188b1a-a206-5586-2da9-683f7537f960@oracle.com>
+ <8dfe32a3-1789-6a40-b650-304c2cfb6531@huawei.com>
+ <83e5f2a0-bf92-ab42-c5ff-52a07eab9ee8@oracle.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <b3658faa-ed18-2421-9960-df732f7a59cc@huawei.com>
+Date:   Fri, 9 Apr 2021 14:36:04 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <3eef2478-c5b8-4f14-a937-16bbe0a3e05a@www.fastmail.com>
+In-Reply-To: <83e5f2a0-bf92-ab42-c5ff-52a07eab9ee8@oracle.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 12:14:54AM CDT, Andrew Jeffery wrote:
->Hi Zev,
->
->A couple of minor comments:
->
->On Thu, 8 Apr 2021, at 10:46, Zev Weiss wrote:
->> These allow describing all the Aspeed VUART attributes currently
->> available via sysfs.  aspeed,sirq
->
->aspeed,lpc-interrupts now
-
-Ah right, thanks.
-
->
->> provides a replacement for the
->> deprecated aspeed,sirq-polarity-sense property.
+On 2021/4/9 12:37, Mike Kravetz wrote:
+> On 4/8/21 8:01 PM, Miaohe Lin wrote:
+>> On 2021/4/9 6:53, Mike Kravetz wrote:
+>>>
+>>> Yes, add a comment to hugetlb_unreserve_pages saying that !resv_map
+>>> implies freed == 0.
+>>>
 >>
->> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
->> ---
->>  drivers/tty/serial/8250/8250_aspeed_vuart.c | 44 ++++++++++++++++++++-
->>  1 file changed, 43 insertions(+), 1 deletion(-)
+>> Sounds good!
 >>
->> diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c
->> b/drivers/tty/serial/8250/8250_aspeed_vuart.c
->> index 8433f8dbb186..75ef006fa24b 100644
->> --- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
->> +++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
->> @@ -28,6 +28,10 @@
->>  #define ASPEED_VUART_ADDRL		0x28
->>  #define ASPEED_VUART_ADDRH		0x2c
+>>> It would also be helpful to check for (chg - freed) == 0 and skip the
+>>> calls to hugepage_subpool_put_pages() and hugetlb_acct_memory().  Both
+>>> of those routines may perform an unnecessary lock/unlock cycle in this
+>>> case.
+>>>
+>>> A simple
+>>> 	if (chg == free)
+>>> 		return 0;
+>>> before the call to hugepage_subpool_put_pages would work.
 >>
->> +#define ASPEED_VUART_DEFAULT_LPC_ADDR	0x3f8
->> +#define ASPEED_VUART_DEFAULT_SIRQ	4
->> +#define ASPEED_VUART_DEFAULT_SIRQ_POLARITY	IRQ_TYPE_LEVEL_LOW
->> +
->>  struct aspeed_vuart {
->>  	struct device		*dev;
->>  	void __iomem		*regs;
->> @@ -393,7 +397,8 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
->>  	struct aspeed_vuart *vuart;
->>  	struct device_node *np;
->>  	struct resource *res;
->> -	u32 clk, prop;
->> +	u32 clk, prop, sirq[2];
->> +	bool sirq_polarity;
->>  	int rc;
->>
->>  	np = pdev->dev.of_node;
->> @@ -501,6 +506,43 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
->>  		of_node_put(sirq_polarity_sense_args.np);
->>  	}
->>
->> +	rc = of_property_read_u32(np, "aspeed,lpc-io-reg", &prop);
->> +	if (rc < 0)
->> +		prop = ASPEED_VUART_DEFAULT_LPC_ADDR;
->> +
->> +	rc = aspeed_vuart_set_lpc_address(vuart, prop);
->> +	if (rc < 0) {
->> +		dev_err(&pdev->dev, "invalid value in aspeed,lpc-io-reg property\n");
->> +		goto err_clk_disable;
->> +	}
->> +
->> +	rc = of_property_read_u32_array(np, "aspeed,lpc-interrupts", sirq, 2);
->> +	if (rc < 0) {
->> +		sirq[0] = ASPEED_VUART_DEFAULT_SIRQ;
->> +		sirq[1] = ASPEED_VUART_DEFAULT_SIRQ_POLARITY;
->> +	}
->> +
->> +	rc = aspeed_vuart_set_sirq(vuart, sirq[0]);
->> +	if (rc < 0) {
->> +		dev_err(&pdev->dev, "invalid sirq number in aspeed,lpc-interrupts > property\n");
->> +		goto err_clk_disable;
->> +	}
->> +
->> +	switch (sirq[1]) {
->> +	case IRQ_TYPE_LEVEL_LOW:
->> +		sirq_polarity = false;
->> +		break;
->> +	case IRQ_TYPE_LEVEL_HIGH:
->> +		sirq_polarity = true;
->> +		break;
->> +	default:
->> +		dev_err(&pdev->dev, "invalid sirq polarity in aspeed,lpc-interrupts
->> property\n");
->> +		rc = -EINVAL;
->> +		goto err_clk_disable;
->> +	}
->
->A bit ugly open-coding the mapping and error handling, maybe worth a helper?
->
+>> This may not be really helpful because hugepage_subpool_put_pages() and hugetlb_acct_memory()
+>> both would handle delta == 0 case without unnecessary lock/unlock cycle.
+>> Does this make sense for you? If so, I will prepare v2 with the changes to add a comment
+>> to hugetlb_unreserve_pages() __without__ the check for (chg - freed) == 0.
+> 
+> Sorry, I forgot about the recent changes to check for delta == 0.
+> No need for the check here, just the comment.
+> 
 
-Yeah, that sounds reasonable -- will do.
-
-Thanks!
-
-
-Zev
-
+That's all right. Will add the comment in V2.
+Thanks.
