@@ -2,164 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2748359773
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43142359777
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 10:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232051AbhDIIQD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 9 Apr 2021 04:16:03 -0400
-Received: from aposti.net ([89.234.176.197]:56432 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhDIIQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 04:16:02 -0400
-Date:   Fri, 09 Apr 2021 09:15:34 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/2] linux/kconfig.h: replace IF_ENABLED() with PTR_IF()
- in <linux/kernel.h>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Message-Id: <YXEARQ.LGKNU44HTZP01@crapouillou.net>
-In-Reply-To: <20210408205858.51751-2-masahiroy@kernel.org>
-References: <20210408205858.51751-1-masahiroy@kernel.org>
-        <20210408205858.51751-2-masahiroy@kernel.org>
+        id S232297AbhDIIQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 04:16:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232276AbhDIIQW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 04:16:22 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E73C061761
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 01:16:08 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id p19so2460151wmq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 01:16:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LRj04aylh/M/utY6Vb5m6Brz3i8rRk89mp42xbGh50c=;
+        b=Y1Ye8Pu1vzTfpaMER5fLdOOHuYOydweGzPny7okrNuORSfaLyQm1nP3qMuwfQi1MUU
+         iE0KlyYkAWj3ExylYBFMoly7Ns7Dpf7fcKW/LATImCn7chh4AP8/WIT4SjWZ+1qUWwTt
+         4CGsRmxprOJthB1JXY1MLsZr9KUJcoMaBny3rTWp+XU9Jbe7mtdcChkz9WbR/Keru0yr
+         iIyzpUX54xlUqP8eET7sHoKYCIfhii8dLC1++yUIugvalYMSoEoCggbYZbj4uhSNXPFI
+         lbKw2l8vSIjsPz22udPFlOq/QyXAfevUiW8enCN7H+sbo4bSWuv3CU44pdRRUIqzGJCG
+         DMQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LRj04aylh/M/utY6Vb5m6Brz3i8rRk89mp42xbGh50c=;
+        b=kzT0ddhcNfgYZL5pe69VuGdpqtb+D8+QmNSY/H9E+ylGyHES6Pqlww1m7osNniu22Z
+         3fGme9f2/GYgrRzvmyAmKAyPymT2q30TFNs1NJEp28s/A0kXd2zvOS9L1VpLILcmjiRP
+         YA4oUt0z+gBSIOhXZ9GNtOFYxvl8srZ3HO8eyCd9miWabxn+F06JGOSeoNCm3+646SqJ
+         corrV6GC/b4Yf6XLLtaonN68ETVmV5d7Ov+3MZ2UKlwV1Oz5MPMmtbAj9v6lLm24rSaJ
+         4IAsAPl9IvXGYnLdAeKigERy2qNxI9Fj8Sf6hCNgrTnnRS1dsk87Pq/+bMtziyftNfLe
+         u9Ew==
+X-Gm-Message-State: AOAM530MpOEIWDr+elWfrSYec2sDtvkfQ9ovwiR2uN3ZF+tVXwICDc5z
+        xbeBUfPtDZ6cboRry08IDUvwhw==
+X-Google-Smtp-Source: ABdhPJxC8OUe5wkOGAsqADIeWX+ybHtiZ41Qw6+hkby8yn3SMoV79nHh+S2e94pcqlrgUd/tFtGliQ==
+X-Received: by 2002:a05:600c:3541:: with SMTP id i1mr12594653wmq.97.1617956166600;
+        Fri, 09 Apr 2021 01:16:06 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:5d29:55c:ba8e:9bff? ([2a01:e34:ed2f:f020:5d29:55c:ba8e:9bff])
+        by smtp.googlemail.com with ESMTPSA id z1sm3313831wrt.8.2021.04.09.01.16.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 01:16:06 -0700 (PDT)
+Subject: Re: [v7,3/3] thermal: mediatek: add another get_temp ops for thermal
+ sensors
+To:     Michael Kao <michael.kao@mediatek.com>, fan.chen@mediatek.com,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
+        srv_heupstream@mediatek.com
+Cc:     Eduardo Valentin <edubezval@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20210316070144.28440-1-michael.kao@mediatek.com>
+ <20210316070144.28440-4-michael.kao@mediatek.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <dac1f9bc-6caa-9cb7-97d6-882a8bd20fea@linaro.org>
+Date:   Fri, 9 Apr 2021 10:16:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210316070144.28440-4-michael.kao@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
-
-Le ven. 9 avril 2021 à 5:58, Masahiro Yamada <masahiroy@kernel.org> a 
-écrit :
-> <linux/kconfig.h> is included from all the kernel-space source files,
-> including C, assembly, linker scripts. It is intended to contain 
-> minimal
-> set of macros to evaluate CONFIG options.
+On 16/03/2021 08:01, Michael Kao wrote:
+> Provide thermal zone to read thermal sensor
+> in the SoC. We can read all the thermal sensors
+> value in the SoC by the node /sys/class/thermal/
 > 
-> IF_ENABLED() is an intruder here because (x ? y : z) is C code, which
-> should not be included from assembly files or linker scripts.
+> In mtk_thermal_bank_temperature, return -EAGAIN instead of -EACCESS
+> on the first read of sensor that often are bogus values.
+> This can avoid following warning on boot:
 > 
-> Also, <linux/kconfig.h> is no longer self-contained because NULL is
-> defined in <linux/stddef.h>.
-> 
-> Move IF_ENABLED() out to <linux/kernel.h> as PTR_IF().
-> 
-> PTR_IF(IS_ENABLED(CONFIG_FOO), ...) is slightly longer than
-> IF_ENABLED(CONFIG_FOO, ...), but it is not a big deal because
-> sub-systems often define dedicated macros such as of_match_ptr(),
-> pm_ptr() etc. for common use-cases.
+>   thermal thermal_zone6: failed to read out thermal zone (-13)
 
-What's the idea behind changing IF_ENABLED() to PTR_IF()? You didn't 
-explain that. What's wrong with IF_ENABLED()?
+This patch is changing more things than described in the changelog.
 
-Cheers,
--Paul
+Is it possible to share some technical details about how the sensor(s)
+are working or point to some documentation if any ? and possibly the
+layout ?
 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+IIUC there is a fake thermal zone zero with the purpose of aggregating
+all the other sensors by taking the max temperature of all the sensors.
+
+This patch adds a thermal zone per sensor, and each sensor is per CPU.
+CPU0 being actually the max of all the other sensors, right ?
+
+
+> Signed-off-by: Michael Kao <michael.kao@mediatek.com>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 > ---
+>  drivers/thermal/mtk_thermal.c | 100 +++++++++++++++++++++++++---------
+>  1 file changed, 75 insertions(+), 25 deletions(-)
 > 
->  drivers/pinctrl/pinctrl-ingenic.c | 20 ++++++++++----------
->  include/linux/kconfig.h           |  6 ------
->  include/linux/kernel.h            |  2 ++
->  3 files changed, 12 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
-> b/drivers/pinctrl/pinctrl-ingenic.c
-> index f2746125b077..b21e2ae4528d 100644
-> --- a/drivers/pinctrl/pinctrl-ingenic.c
-> +++ b/drivers/pinctrl/pinctrl-ingenic.c
-> @@ -2496,43 +2496,43 @@ static int __init 
-> ingenic_pinctrl_probe(struct platform_device *pdev)
->  static const struct of_device_id ingenic_pinctrl_of_match[] = {
->  	{
->  		.compatible = "ingenic,jz4740-pinctrl",
-> -		.data = IF_ENABLED(CONFIG_MACH_JZ4740, &jz4740_chip_info)
-> +		.data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4740), &jz4740_chip_info)
->  	},
->  	{
->  		.compatible = "ingenic,jz4725b-pinctrl",
-> -		.data = IF_ENABLED(CONFIG_MACH_JZ4725B, &jz4725b_chip_info)
-> +		.data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4725B), &jz4725b_chip_info)
->  	},
->  	{
->  		.compatible = "ingenic,jz4760-pinctrl",
-> -		.data = IF_ENABLED(CONFIG_MACH_JZ4760, &jz4760_chip_info)
-> +		.data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4760), &jz4760_chip_info)
->  	},
->  	{
->  		.compatible = "ingenic,jz4760b-pinctrl",
-> -		.data = IF_ENABLED(CONFIG_MACH_JZ4760, &jz4760_chip_info)
-> +		.data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4760), &jz4760_chip_info)
->  	},
->  	{
->  		.compatible = "ingenic,jz4770-pinctrl",
-> -		.data = IF_ENABLED(CONFIG_MACH_JZ4770, &jz4770_chip_info)
-> +		.data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4770), &jz4770_chip_info)
->  	},
->  	{
->  		.compatible = "ingenic,jz4780-pinctrl",
-> -		.data = IF_ENABLED(CONFIG_MACH_JZ4780, &jz4780_chip_info)
-> +		.data = PTR_IF(IS_ENABLED(CONFIG_MACH_JZ4780), &jz4780_chip_info)
->  	},
->  	{
->  		.compatible = "ingenic,x1000-pinctrl",
-> -		.data = IF_ENABLED(CONFIG_MACH_X1000, &x1000_chip_info)
-> +		.data = PTR_IF(IS_ENABLED(CONFIG_MACH_X1000), &x1000_chip_info)
->  	},
->  	{
->  		.compatible = "ingenic,x1000e-pinctrl",
-> -		.data = IF_ENABLED(CONFIG_MACH_X1000, &x1000_chip_info)
-> +		.data = PTR_IF(IS_ENABLED(CONFIG_MACH_X1000), &x1000_chip_info)
->  	},
->  	{
->  		.compatible = "ingenic,x1500-pinctrl",
-> -		.data = IF_ENABLED(CONFIG_MACH_X1500, &x1500_chip_info)
-> +		.data = PTR_IF(IS_ENABLED(CONFIG_MACH_X1500), &x1500_chip_info)
->  	},
->  	{
->  		.compatible = "ingenic,x1830-pinctrl",
-> -		.data = IF_ENABLED(CONFIG_MACH_X1830, &x1830_chip_info)
-> +		.data = PTR_IF(IS_ENABLED(CONFIG_MACH_X1830), &x1830_chip_info)
->  	},
->  	{ /* sentinel */ },
->  };
-> diff --git a/include/linux/kconfig.h b/include/linux/kconfig.h
-> index 24a59cb06963..cc8fa109cfa3 100644
-> --- a/include/linux/kconfig.h
-> +++ b/include/linux/kconfig.h
-> @@ -70,10 +70,4 @@
->   */
->  #define IS_ENABLED(option) __or(IS_BUILTIN(option), 
-> IS_MODULE(option))
-> 
-> -/*
-> - * IF_ENABLED(CONFIG_FOO, ptr) evaluates to (ptr) if CONFIG_FOO is 
-> set to 'y'
-> - * or 'm', NULL otherwise.
-> - */
-> -#define IF_ENABLED(option, ptr) (IS_ENABLED(option) ? (ptr) : NULL)
-> -
->  #endif /* __LINUX_KCONFIG_H */
-> diff --git a/include/linux/kernel.h b/include/linux/kernel.h
-> index 5b7ed6dc99ac..8685ca4cf287 100644
-> --- a/include/linux/kernel.h
-> +++ b/include/linux/kernel.h
-> @@ -38,6 +38,8 @@
->  #define PTR_ALIGN_DOWN(p, a)	((typeof(p))ALIGN_DOWN((unsigned 
-> long)(p), (a)))
->  #define IS_ALIGNED(x, a)		(((x) & ((typeof(x))(a) - 1)) == 0)
-> 
-> +#define PTR_IF(cond, ptr)	((cond) ? (ptr) : NULL)
+> diff --git a/drivers/thermal/mtk_thermal.c b/drivers/thermal/mtk_thermal.c
+> index 149c6d7fd5a0..57e4f08a947e 100644
+> --- a/drivers/thermal/mtk_thermal.c
+> +++ b/drivers/thermal/mtk_thermal.c
+> @@ -245,6 +245,11 @@ enum mtk_thermal_version {
+>  
+>  struct mtk_thermal;
+>  
+> +struct mtk_thermal_zone {
+> +	struct mtk_thermal *mt;
+> +	int id;
+> +};
 > +
->  /* generic data direction definitions */
->  #define READ			0
->  #define WRITE			1
-> --
-> 2.27.0
+>  struct thermal_bank_cfg {
+>  	unsigned int num_sensors;
+>  	const int *sensors;
+> @@ -637,6 +642,30 @@ static void mtk_thermal_put_bank(struct mtk_thermal_bank *bank)
+>  		mutex_unlock(&mt->lock);
+>  }
+>  
+> +static u32 _get_sensor_temp(struct mtk_thermal *mt, int id)
+> +{
+> +	u32 raw;
+> +	int temp;
+> +
+> +	raw = readl(mt->thermal_base + mt->conf->msr[id]);
+> +
+> +	if (mt->conf->version == MTK_THERMAL_V1)
+> +		temp = raw_to_mcelsius_v1(mt, id, raw);
+> +	else
+> +		temp = raw_to_mcelsius_v2(mt, id, raw);
+> +
+> +	/*
+> +	 * The first read of a sensor often contains very high bogus
+> +	 * temperature value. Filter these out so that the system does
+> +	 * not immediately shut down.
+> +	 */
+> +
+> +	if (temp > 200000)
+> +		return -EAGAIN;
+> +	else
+> +		return temp;
+> +}
+> +
+>  /**
+>   * mtk_thermal_bank_temperature - get the temperature of a bank
+>   * @bank:	The bank
+> @@ -647,28 +676,11 @@ static void mtk_thermal_put_bank(struct mtk_thermal_bank *bank)
+>  static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
+>  {
+>  	struct mtk_thermal *mt = bank->mt;
+> -	const struct mtk_thermal_data *conf = mt->conf;
+>  	int i, temp = INT_MIN, max = INT_MIN;
+> -	u32 raw;
+> -
+> -	for (i = 0; i < conf->bank_data[bank->id].num_sensors; i++) {
+> -		raw = readl(mt->thermal_base + conf->msr[i]);
+>  
+> -		if (mt->conf->version == MTK_THERMAL_V1) {
+> -			temp = raw_to_mcelsius_v1(
+> -				mt, conf->bank_data[bank->id].sensors[i], raw);
+> -		} else {
+> -			temp = raw_to_mcelsius_v2(
+> -				mt, conf->bank_data[bank->id].sensors[i], raw);
+> -		}
+> +	for (i = 0; i < mt->conf->bank_data[bank->id].num_sensors; i++) {
+>  
+> -		/*
+> -		 * The first read of a sensor often contains very high bogus
+> -		 * temperature value. Filter these out so that the system does
+> -		 * not immediately shut down.
+> -		 */
+> -		if (temp > 200000)
+> -			temp = 0;
+> +		temp = _get_sensor_temp(mt, i);
+>  
+>  		if (temp > max)
+>  			max = temp;
+> @@ -679,7 +691,8 @@ static int mtk_thermal_bank_temperature(struct mtk_thermal_bank *bank)
+>  
+>  static int mtk_read_temp(void *data, int *temperature)
+>  {
+> -	struct mtk_thermal *mt = data;
+> +	struct mtk_thermal_zone *tz = data;
+> +	struct mtk_thermal *mt = tz->mt;
+>  	int i;
+>  	int tempmax = INT_MIN;
+>  
+> @@ -698,10 +711,28 @@ static int mtk_read_temp(void *data, int *temperature)
+>  	return 0;
+>  }
+>  
+> +static int mtk_read_sensor_temp(void *data, int *temperature)
+> +{
+> +	struct mtk_thermal_zone *tz = data;
+> +	struct mtk_thermal *mt = tz->mt;
+> +	int id = tz->id - 1;
+> +
+> +	if (id < 0)
+> +		return -EACCES;
+> +
+> +	*temperature = _get_sensor_temp(mt, id);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct thermal_zone_of_device_ops mtk_thermal_ops = {
+>  	.get_temp = mtk_read_temp,
+>  };
+>  
+> +static const struct thermal_zone_of_device_ops mtk_thermal_sensor_ops = {
+> +	.get_temp = mtk_read_sensor_temp,
+> +};
+> +
+>  static void mtk_thermal_init_bank(struct mtk_thermal *mt, int num,
+>  				  u32 apmixed_phys_base, u32 auxadc_phys_base,
+>  				  int ctrl_id)
+> @@ -992,6 +1023,7 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+>  	u64 auxadc_phys_base, apmixed_phys_base;
+>  	struct thermal_zone_device *tzdev;
+>  	void __iomem *apmixed_base, *auxadc_base;
+> +	struct mtk_thermal_zone *tz;
+>  
+>  	mt = devm_kzalloc(&pdev->dev, sizeof(*mt), GFP_KERNEL);
+>  	if (!mt)
+> @@ -1080,11 +1112,29 @@ static int mtk_thermal_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, mt);
+>  
+> -	tzdev = devm_thermal_zone_of_sensor_register(&pdev->dev, 0, mt,
+> -						     &mtk_thermal_ops);
+> -	if (IS_ERR(tzdev)) {
+> -		ret = PTR_ERR(tzdev);
+> -		goto err_disable_clk_peri_therm;
+> +	for (i = 0; i < mt->conf->num_sensors + 1; i++) {
+> +		tz = devm_kmalloc(&pdev->dev, sizeof(*tz), GFP_KERNEL);
+> +		if (!tz)
+> +			return -ENOMEM;
+> +
+> +		tz->mt = mt;
+> +		tz->id = i;
+> +
+> +		tzdev = devm_thermal_zone_of_sensor_register(&pdev->dev, i, tz, (i == 0) ?
+> +							     &mtk_thermal_ops :
+> +							     &mtk_thermal_sensor_ops);
+> +
+> +		if (IS_ERR(tzdev)) {
+> +			if (PTR_ERR(tzdev) == -ENODEV) {
+> +				dev_warn(&pdev->dev,
+> +					 "sensor %d not registered in thermal zone in dt\n", i);
+> +				continue;
+> +			}
+> +			if (PTR_ERR(tzdev) == -EACCES) {
+> +				ret = PTR_ERR(tzdev);
+> +				goto err_disable_clk_peri_therm;
+> +			}
+> +		}
+>  	}
+>  
+>  	return 0;
 > 
 
 
+-- 
+<http://www.linaro.org/> Linaro.org â”‚ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
