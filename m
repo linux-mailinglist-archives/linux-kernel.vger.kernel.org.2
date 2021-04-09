@@ -2,116 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8EF35A24C
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D2835A250
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 17:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbhDIPvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 11:51:06 -0400
-Received: from mga03.intel.com ([134.134.136.65]:47932 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233409AbhDIPvF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 11:51:05 -0400
-IronPort-SDR: vQYB3VQCNu0w2uicZJNAfrmUbcr86KXkhRcJlsrr2qR+kz8m2x80u1ViTSyPyuMv88n3Cvov69
- R5Iy19u60Zog==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="193828516"
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="193828516"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 08:50:51 -0700
-IronPort-SDR: +uKezKP2SrqUYROdQiXFpPwB1MzPtWcosZUFMMj92WYq5vLSTa+KrHDhNlFVmRpwwSOUeCL7u4
- Qn+oxxjqJmBQ==
-X-IronPort-AV: E=Sophos;i="5.82,209,1613462400"; 
-   d="scan'208";a="416313111"
-Received: from atrived1-mobl3.amr.corp.intel.com (HELO [10.209.53.230]) ([10.209.53.230])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Apr 2021 08:50:49 -0700
-Subject: Re: [PATCH 04/10] mm/migrate: make migrate_pages() return
- nr_succeeded
-To:     Oscar Salvador <osalvador@suse.de>, Yang Shi <shy828301@gmail.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>, weixugc@google.com,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-References: <20210401183216.443C4443@viggo.jf.intel.com>
- <20210401183223.80F1E291@viggo.jf.intel.com>
- <YG7XjTG9tiK29y1j@localhost.localdomain>
- <CAHbLzkqoaSnuBJMAe_heQt01FuPWODYQHJ955gaJNNojwbUjrw@mail.gmail.com>
- <YG9IthpDC/lri4Qh@localhost.localdomain>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <d200de95-c6be-75fd-7302-e5368894d201@intel.com>
-Date:   Fri, 9 Apr 2021 08:50:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233851AbhDIPvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 11:51:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233786AbhDIPvU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 11:51:20 -0400
+Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E911C061763
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 08:51:08 -0700 (PDT)
+Received: by mail-oo1-xc36.google.com with SMTP id n12-20020a4ad12c0000b02901b63e7bc1b4so1435005oor.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 08:51:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yjz3RZlWmDnIdbGeqiIWT3LCNv9pDPUhAL9jkHODWaA=;
+        b=SwOqVBgqSt+JcynoMv7Ujr6TrdkjnuLZHQp7t35SNF73hPzBzw9x8tb1BLc69BbiNO
+         W7dLfPXDZfLkLdx0lrcyiVL6+jsQCM4NwdJm1lOVJmh8urAZ3zs2HoECWdFbcNWrt7Yc
+         OfCijvpq7WtT/xEbU0pY/IKhZoou4cqY0D9b9P1F8d7Dvyibi+qG5+gXBJYUS+WtcKMO
+         e7Tu2sKC45647/8w4lTihc0uMC+qvfFCXfpePS1UL6v9wNCnFwdNqRG9MgM6pOrFheuG
+         hRY1j+oco9SCJhjM4k2Wds5bxMO4QIqhjBJYBoFQFdWfj8RuARxqv5vjIq6U02wRjs/g
+         ykSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yjz3RZlWmDnIdbGeqiIWT3LCNv9pDPUhAL9jkHODWaA=;
+        b=NYQm76OW8UJhTCVxUxRwps06X6WyJ2jQ2W4PJKb3Lc+jXM0ghUnD+LyDhEuRGwhMXD
+         jsxeT85vFKYakxJLtAS4Evku1B5K5SgKpNPQa55mVj9x/tz8lS0woc+w4R+Pil9oX/ic
+         ls5lveTBkUP+RDOJdH4Vy/cap9f3m6yC7D/608sH2hKP2YruvK81uxr7CxvHwQG1Iw6M
+         I3lqjtCB1aO5OV6EH2ZSmjN7Upq/ZjpI/omR7QzUVE8HS4L5HFTgPRz4ywkj9TfF9TXT
+         e/C31WiXz9Z46xTx4MNPuuppLcOAyXDrTsKjvLrsxlOywwI5NNu5UiN5A4B2s1OVoCTK
+         eS4A==
+X-Gm-Message-State: AOAM532E3Y3vH3f6jO1was2obUnbynMJdD7KxGfrpDT9J6bZS4Ft0IAV
+        UDfSYD9WOhQw474sV4ecnBWPUlCMdbokag==
+X-Google-Smtp-Source: ABdhPJyvjKrF8cPJGVvH9CRuffjHnJ2hFmA3Sg5thXznUR/rTeh6eMPqgmayYHLehk7FcY6WsyuEuw==
+X-Received: by 2002:a05:6820:129:: with SMTP id i9mr12437657ood.80.1617983467285;
+        Fri, 09 Apr 2021 08:51:07 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id f129sm586154oia.9.2021.04.09.08.51.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 08:51:06 -0700 (PDT)
+Date:   Fri, 9 Apr 2021 10:51:04 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     satya priya <skakit@codeaurora.org>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, linux-rtc@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [PATCH V2 4/4] dt-bindings: rtc: qcom-pm8xxx-rtc: Add qcom
+ pm8xxx rtc bindings
+Message-ID: <20210409155104.GW904837@yoga>
+References: <1617976766-7852-1-git-send-email-skakit@codeaurora.org>
+ <1617976766-7852-5-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <YG9IthpDC/lri4Qh@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617976766-7852-5-git-send-email-skakit@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/8/21 11:17 AM, Oscar Salvador wrote:
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8490,7 +8490,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->  		cc->nr_migratepages -= nr_reclaimed;
+On Fri 09 Apr 08:59 CDT 2021, satya priya wrote:
+
+> Add binding doc for qcom pm8xxx rtc device.
 > 
->  		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
-> -				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
-> +				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE,
-> +				NULL);
->  	}
->  	if (ret < 0) {
->  		putback_movable_pages(&cc->migratepages);
 
-I also considered passing NULL to mean "I don't care about
-nr_succeeded".  I mostly avoided it to reduce churn.  But, looking at it
-here, it does seem cleaner.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Any objections to moving over to Oscar's suggestion?
+Regards,
+Bjorn
+
+> Signed-off-by: satya priya <skakit@codeaurora.org>
+> ---
+> Changes in V2:
+>  - Added this in V2 to have separate binding for rtc node.
+> 
+>  .../devicetree/bindings/rtc/qcom-pm8xxx-rtc.yaml   | 62 ++++++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/qcom-pm8xxx-rtc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/qcom-pm8xxx-rtc.yaml b/Documentation/devicetree/bindings/rtc/qcom-pm8xxx-rtc.yaml
+> new file mode 100644
+> index 0000000..4fba6db
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/qcom-pm8xxx-rtc.yaml
+> @@ -0,0 +1,62 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rtc/qcom-pm8xxx-rtc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm PM8xxx PMIC RTC device
+> +
+> +maintainers:
+> +  - Satya Priya <skakit@codeaurora.org>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,pm8058-rtc
+> +      - qcom,pm8921-rtc
+> +      - qcom,pm8941-rtc
+> +      - qcom,pm8018-rtc
+> +      - qcom,pmk8350-rtc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  allow-set-time:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Indicates that the setting of RTC time is allowed by the host CPU.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/spmi/spmi.h>
+> +    spmi_bus: spmi@c440000 {
+> +      reg = <0x0c440000 0x1100>;
+> +      #address-cells = <2>;
+> +      #size-cells = <0>;
+> +      pmicintc: pmic@0 {
+> +        reg = <0x0 SPMI_USID>;
+> +        compatible = "qcom,pm8921";
+> +        interrupts = <104 8>;
+> +        #interrupt-cells = <2>;
+> +        interrupt-controller;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        pm8921_rtc: rtc@11d {
+> +          compatible = "qcom,pm8921-rtc";
+> +          reg = <0x11d>;
+> +          interrupts = <0x27 0>;
+> +        };
+> +      };
+> +    };
+> +...
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
+> of Code Aurora Forum, hosted by The Linux Foundation
+> 
