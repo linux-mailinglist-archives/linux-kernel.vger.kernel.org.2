@@ -2,228 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2075B359D75
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D85C359D5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 13:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbhDILbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 07:31:11 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:49584 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233009AbhDILay (ORCPT
+        id S232813AbhDILat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 07:30:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232087AbhDILaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 07:30:54 -0400
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        <linux-usb@vger.kernel.org>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH RESEND v8 7/7] arm64: dts: qcom: Harmonize DWC USB3 DT nodes name
-Date:   Fri, 9 Apr 2021 14:30:28 +0300
-Message-ID: <20210409113029.7144-8-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20210409113029.7144-1-Sergey.Semin@baikalelectronics.ru>
-References: <20210409113029.7144-1-Sergey.Semin@baikalelectronics.ru>
+        Fri, 9 Apr 2021 07:30:46 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFB07C061760;
+        Fri,  9 Apr 2021 04:30:33 -0700 (PDT)
+Date:   Fri, 09 Apr 2021 11:30:30 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1617967831;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Km7DiN2FPvX3T9yR0beKC7ca7dahwW7kRvrJji7fck8=;
+        b=0DfX++Sx5LdcS/BaxXC73uqQItd9fLAXa18fcFpwOvzTGY746+jvcUP4P7+70nJ77L+tEr
+        fyL5hk/pt4HDaoW7mCJCr7g+8JoLz8kWZcdkLA7Ond6GAoaBN+TG7JZ0w7+aGeritbvMBM
+        9CIWcNPqTahwHAnKczDYtQC3dThVVLgkmhmEQ4afVAD4fEVniIyLkdtvu9TzJJjusyCJCg
+        D+2p6LVYjhxZa+LDT14sjlYISw+jzO/aD+AL8+tZXvKQt+8M9+16pZPzreIeSI9U2rYsTF
+        dj/ds7M/zIAC9kYE3qRbtdHV/UL7rxD4eRV80Q+40WUZVBGWQhFY3JKsvcQmKA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1617967831;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Km7DiN2FPvX3T9yR0beKC7ca7dahwW7kRvrJji7fck8=;
+        b=DmH7xFUcepLJJq3jHreMmYwKkz/JvvasO9VGvTNdJ7/76SgYFpm4Su2DBvN1B5BIOs1j9X
+        +uk4cUwOD8HVsJCw==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/core] static_call: Relax static_call_update() function
+ argument type
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <YFoN7nCl8OfGtpeh@hirez.programming.kicks-ass.net>
+References: <YFoN7nCl8OfGtpeh@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Message-ID: <161796783069.29796.12129990523788339245.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In accordance with the DWC USB3 bindings the corresponding node
-name is suppose to comply with the Generic USB HCD DT schema, which
-requires the USB nodes to have the name acceptable by the regexp:
-"^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
-named.
+The following commit has been merged into the locking/core branch of tip:
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Commit-ID:     9432bbd969c667fc9c4b1c140c5a745ff2a7b540
+Gitweb:        https://git.kernel.org/tip/9432bbd969c667fc9c4b1c140c5a745ff2a7b540
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Tue, 23 Mar 2021 16:49:03 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Fri, 09 Apr 2021 13:22:12 +02:00
+
+static_call: Relax static_call_update() function argument type
+
+static_call_update() had stronger type requirements than regular C,
+relax them to match. Instead of requiring the @func argument has the
+exact matching type, allow any type which C is willing to promote to the
+right (function) pointer type. Specifically this allows (void *)
+arguments.
+
+This cleans up a bunch of static_call_update() callers for
+PREEMPT_DYNAMIC and should get around silly GCC11 warnings for free.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/YFoN7nCl8OfGtpeh@hirez.programming.kicks-ass.net
 ---
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 4 ++--
- arch/arm64/boot/dts/qcom/ipq8074.dtsi        | 4 ++--
- arch/arm64/boot/dts/qcom/msm8996.dtsi        | 4 ++--
- arch/arm64/boot/dts/qcom/msm8998.dtsi        | 2 +-
- arch/arm64/boot/dts/qcom/qcs404-evb.dtsi     | 2 +-
- arch/arm64/boot/dts/qcom/qcs404.dtsi         | 4 ++--
- arch/arm64/boot/dts/qcom/sc7180.dtsi         | 2 +-
- arch/arm64/boot/dts/qcom/sdm845.dtsi         | 4 ++--
- arch/arm64/boot/dts/qcom/sm8150.dtsi         | 2 +-
- 9 files changed, 14 insertions(+), 14 deletions(-)
+ include/linux/static_call.h |  4 ++--
+ kernel/sched/core.c         | 18 +++++++++---------
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-index defcbd15edf9..34e97da98270 100644
---- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-@@ -1064,7 +1064,7 @@ &usb2 {
- 	status = "okay";
- 	extcon = <&usb2_id>;
+diff --git a/include/linux/static_call.h b/include/linux/static_call.h
+index 85ecc78..8d50f62 100644
+--- a/include/linux/static_call.h
++++ b/include/linux/static_call.h
+@@ -113,9 +113,9 @@ extern void arch_static_call_transform(void *site, void *tramp, void *func, bool
  
--	dwc3@7600000 {
-+	usb@7600000 {
- 		extcon = <&usb2_id>;
- 		dr_mode = "otg";
- 		maximum-speed = "high-speed";
-@@ -1075,7 +1075,7 @@ &usb3 {
- 	status = "okay";
- 	extcon = <&usb3_id>;
+ #define static_call_update(name, func)					\
+ ({									\
+-	BUILD_BUG_ON(!__same_type(*(func), STATIC_CALL_TRAMP(name)));	\
++	typeof(&STATIC_CALL_TRAMP(name)) __F = (func);			\
+ 	__static_call_update(&STATIC_CALL_KEY(name),			\
+-			     STATIC_CALL_TRAMP_ADDR(name), func);	\
++			     STATIC_CALL_TRAMP_ADDR(name), __F);	\
+ })
  
--	dwc3@6a00000 {
-+	usb@6a00000 {
- 		extcon = <&usb3_id>;
- 		dr_mode = "otg";
- 	};
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index a32e5e79ab0b..7df4eb710aae 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -427,7 +427,7 @@ usb_0: usb@8af8800 {
- 			resets = <&gcc GCC_USB0_BCR>;
- 			status = "disabled";
+ #ifdef CONFIG_HAVE_STATIC_CALL_INLINE
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9819121..67f9890 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5396,25 +5396,25 @@ static void sched_dynamic_update(int mode)
+ 	switch (mode) {
+ 	case preempt_dynamic_none:
+ 		static_call_update(cond_resched, __cond_resched);
+-		static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
+-		static_call_update(preempt_schedule, (typeof(&preempt_schedule)) NULL);
+-		static_call_update(preempt_schedule_notrace, (typeof(&preempt_schedule_notrace)) NULL);
+-		static_call_update(irqentry_exit_cond_resched, (typeof(&irqentry_exit_cond_resched)) NULL);
++		static_call_update(might_resched, (void *)&__static_call_return0);
++		static_call_update(preempt_schedule, NULL);
++		static_call_update(preempt_schedule_notrace, NULL);
++		static_call_update(irqentry_exit_cond_resched, NULL);
+ 		pr_info("Dynamic Preempt: none\n");
+ 		break;
  
--			dwc_0: dwc3@8a00000 {
-+			dwc_0: usb@8a00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x8a00000 0xcd00>;
- 				interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
-@@ -468,7 +468,7 @@ usb_1: usb@8cf8800 {
- 			resets = <&gcc GCC_USB1_BCR>;
- 			status = "disabled";
+ 	case preempt_dynamic_voluntary:
+ 		static_call_update(cond_resched, __cond_resched);
+ 		static_call_update(might_resched, __cond_resched);
+-		static_call_update(preempt_schedule, (typeof(&preempt_schedule)) NULL);
+-		static_call_update(preempt_schedule_notrace, (typeof(&preempt_schedule_notrace)) NULL);
+-		static_call_update(irqentry_exit_cond_resched, (typeof(&irqentry_exit_cond_resched)) NULL);
++		static_call_update(preempt_schedule, NULL);
++		static_call_update(preempt_schedule_notrace, NULL);
++		static_call_update(irqentry_exit_cond_resched, NULL);
+ 		pr_info("Dynamic Preempt: voluntary\n");
+ 		break;
  
--			dwc_1: dwc3@8c00000 {
-+			dwc_1: usb@8c00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x8c00000 0xcd00>;
- 				interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/msm8996.dtsi b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-index ce430ba9c118..9eb31b3e6ee7 100644
---- a/arch/arm64/boot/dts/qcom/msm8996.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996.dtsi
-@@ -1772,7 +1772,7 @@ usb3: usb@6af8800 {
- 			power-domains = <&gcc USB30_GDSC>;
- 			status = "disabled";
- 
--			dwc3@6a00000 {
-+			usb@6a00000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x06a00000 0xcc00>;
- 				interrupts = <0 131 IRQ_TYPE_LEVEL_HIGH>;
-@@ -1983,7 +1983,7 @@ usb2: usb@76f8800 {
- 			power-domains = <&gcc USB30_GDSC>;
- 			status = "disabled";
- 
--			dwc3@7600000 {
-+			usb@7600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x07600000 0xcc00>;
- 				interrupts = <0 138 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-index 1f2e93aa6553..9141c5d09b59 100644
---- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
-@@ -1962,7 +1962,7 @@ usb3: usb@a8f8800 {
- 
- 			resets = <&gcc GCC_USB_30_BCR>;
- 
--			usb3_dwc3: dwc3@a800000 {
-+			usb3_dwc3: usb@a800000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x0a800000 0xcd00>;
- 				interrupts = <GIC_SPI 131 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-index a80c578484ba..f8a55307b855 100644
---- a/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404-evb.dtsi
-@@ -337,7 +337,7 @@ &usb2_phy_sec {
- &usb3 {
- 	status = "okay";
- 
--	dwc3@7580000 {
-+	usb@7580000 {
- 		dr_mode = "host";
- 	};
- };
-diff --git a/arch/arm64/boot/dts/qcom/qcs404.dtsi b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-index 339790ba585d..9c4be020d568 100644
---- a/arch/arm64/boot/dts/qcom/qcs404.dtsi
-+++ b/arch/arm64/boot/dts/qcom/qcs404.dtsi
-@@ -544,7 +544,7 @@ usb3: usb@7678800 {
- 			assigned-clock-rates = <19200000>, <200000000>;
- 			status = "disabled";
- 
--			dwc3@7580000 {
-+			usb@7580000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x07580000 0xcd00>;
- 				interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-@@ -573,7 +573,7 @@ usb2: usb@79b8800 {
- 			assigned-clock-rates = <19200000>, <133333333>;
- 			status = "disabled";
- 
--			dwc3@78c0000 {
-+			usb@78c0000 {
- 				compatible = "snps,dwc3";
- 				reg = <0x078c0000 0xcc00>;
- 				interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 1ea3344ab62c..8b83ffbb5b2a 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2869,7 +2869,7 @@ usb_1: usb@a6f8800 {
- 					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3 0>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
--			usb_1_dwc3: dwc3@a600000 {
-+			usb_1_dwc3: usb@a600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a600000 0 0xe000>;
- 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 454f794af547..809be2c67d7a 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -3769,7 +3769,7 @@ usb_1: usb@a6f8800 {
- 					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_0 0>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
--			usb_1_dwc3: dwc3@a600000 {
-+			usb_1_dwc3: usb@a600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a600000 0 0xcd00>;
- 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
-@@ -3817,7 +3817,7 @@ usb_2: usb@a8f8800 {
- 					<&gladiator_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_USB3_1 0>;
- 			interconnect-names = "usb-ddr", "apps-usb";
- 
--			usb_2_dwc3: dwc3@a800000 {
-+			usb_2_dwc3: usb@a800000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a800000 0 0xcd00>;
- 				interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
-diff --git a/arch/arm64/boot/dts/qcom/sm8150.dtsi b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-index e5bb17bc2f46..e4c3edc13676 100644
---- a/arch/arm64/boot/dts/qcom/sm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8150.dtsi
-@@ -1719,7 +1719,7 @@ usb_1: usb@a6f8800 {
- 
- 			resets = <&gcc GCC_USB30_PRIM_BCR>;
- 
--			usb_1_dwc3: dwc3@a600000 {
-+			usb_1_dwc3: usb@a600000 {
- 				compatible = "snps,dwc3";
- 				reg = <0 0x0a600000 0 0xcd00>;
- 				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.30.1
-
+ 	case preempt_dynamic_full:
+-		static_call_update(cond_resched, (typeof(&__cond_resched)) __static_call_return0);
+-		static_call_update(might_resched, (typeof(&__cond_resched)) __static_call_return0);
++		static_call_update(cond_resched, (void *)&__static_call_return0);
++		static_call_update(might_resched, (void *)&__static_call_return0);
+ 		static_call_update(preempt_schedule, __preempt_schedule_func);
+ 		static_call_update(preempt_schedule_notrace, __preempt_schedule_notrace_func);
+ 		static_call_update(irqentry_exit_cond_resched, irqentry_exit_cond_resched);
