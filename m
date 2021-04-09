@@ -2,83 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73443596A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86CD335969B
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 09:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbhDIHnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 03:43:55 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16430 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231809AbhDIHnx (ORCPT
+        id S231996AbhDIHnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 03:43:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48892 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229751AbhDIHm7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 03:43:53 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FGqp65yCDzlWyN;
-        Fri,  9 Apr 2021 15:41:50 +0800 (CST)
-Received: from A190218597.china.huawei.com (10.47.76.230) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 9 Apr 2021 15:43:31 +0800
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <salil.mehta@huawei.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <linuxarm@openeuler.org>
-Subject: [PATCH net] net: hns3: Trivial spell fix in hns3 driver
-Date:   Fri, 9 Apr 2021 08:42:23 +0100
-Message-ID: <20210409074223.32480-1-salil.mehta@huawei.com>
-X-Mailer: git-send-email 2.8.3
+        Fri, 9 Apr 2021 03:42:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1617954165;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YNRAYvZEYzpqoys7GviK7KCuwJyenrXNkiKbNxZPfpU=;
+        b=FgzlNYXjrTPL8ggQz8x1I706ycXRv5tEt2Hp7n04/Lb2x2Uu2XU5eagECCXfU3ZhpXXenI
+        SUo4lR+eGD/lgIykF231EchHhmfLkKJZPWvRQ6FrKarwudx0K0DzL+iRW3UtEXaKBZv5vG
+        +ZSykqdgFDkxLU4m+WUJ2Hw/K6EaUHg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-297-StnJo_gRM3GRIHDe6W70cg-1; Fri, 09 Apr 2021 03:42:44 -0400
+X-MC-Unique: StnJo_gRM3GRIHDe6W70cg-1
+Received: by mail-ej1-f69.google.com with SMTP id h19so1860737ejk.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 00:42:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=YNRAYvZEYzpqoys7GviK7KCuwJyenrXNkiKbNxZPfpU=;
+        b=nm2MLcmCG7SS8Lo6NT+s25QBEqFTqwObFTOPlSUdPRD4/k89VHVVxPz/hW/Wcy3vOE
+         0SkL+EEcjEzlZ4xYz1974LIjruIzf+g38lYG/ucOdzlUhrqE6nGKJbjmvJToWZ0SKvFa
+         2UC487NUxC5lMx62nfnTolLENQnL1hsXKXc41zuGTwju7BXPullwExVChyk372EL0LyY
+         JBm4GFrE+eM/hNilgDiR1GPtERaazGNYDIUNWW0H0OXrS637O++tlT3SodqI0x6x5iid
+         FQpg2boatPfI4is8lVrrictXiWt8i8tcaATYxggzL/7tyUiGwUrmhzbjyVs8pNbHBkYN
+         2xBg==
+X-Gm-Message-State: AOAM531ksjr08GoRKysimSBoyLz01tPyhIxljMSmNdwVhWD+9yPLvqXt
+        Umv+RG44eR4f++3DLWsZprwx/mIApYxMsW8sw1go1v4ERaGLoAuJjjIK/jyw8kaGVuNS19kcphN
+        CAHV7OyUWqNvYTLAoPaTAtRmL
+X-Received: by 2002:a50:f29a:: with SMTP id f26mr16170629edm.13.1617954163349;
+        Fri, 09 Apr 2021 00:42:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw9X6LUCm/VlbxytiCCUWpZztthGe5jHm4meEp8gBOoBrkZhZ7mUGCrZnvizxVfncZD29wCmQ==
+X-Received: by 2002:a50:f29a:: with SMTP id f26mr16170612edm.13.1617954163221;
+        Fri, 09 Apr 2021 00:42:43 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id ju23sm819785ejc.17.2021.04.09.00.42.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 00:42:42 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Siddharth Chandrasekaran <sidcha@amazon.de>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kys@microsoft.com,
+        haiyangz@microsoft.com, sthemmin@microsoft.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        seanjc@google.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, graf@amazon.com, eyakovl@amazon.de,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Wei Liu <wei.liu@kernel.org>
+Subject: Re: [PATCH 0/4] Add support for XMM fast hypercalls
+In-Reply-To: <20210408174521.GF32315@u366d62d47e3651.ant.amazon.com>
+References: <20210407212926.3016-1-sidcha@amazon.de>
+ <20210408152817.k4d4hjdqu7hsjllo@liuwe-devbox-debian-v2>
+ <033e7d77-d640-2c12-4918-da6b5b7f4e21@redhat.com>
+ <20210408154006.GA32315@u366d62d47e3651.ant.amazon.com>
+ <53200f24-bd57-1509-aee2-0723aa8a3f6f@redhat.com>
+ <20210408155442.GC32315@u366d62d47e3651.ant.amazon.com>
+ <20210408163018.mlr23jd2r4st54jc@liuwe-devbox-debian-v2>
+ <20210408174521.GF32315@u366d62d47e3651.ant.amazon.com>
+Date:   Fri, 09 Apr 2021 09:42:41 +0200
+Message-ID: <87wntb7vke.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.47.76.230]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some trivial spelling mistakes which caught my eye during the
-review of the code.
+Siddharth Chandrasekaran <sidcha@amazon.de> writes:
 
-Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
----
- drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c   | 2 +-
- drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+> On Thu, Apr 08, 2021 at 04:30:18PM +0000, Wei Liu wrote:
+>> On Thu, Apr 08, 2021 at 05:54:43PM +0200, Siddharth Chandrasekaran wrote:
+>> > On Thu, Apr 08, 2021 at 05:48:19PM +0200, Paolo Bonzini wrote:
+>> > > On 08/04/21 17:40, Siddharth Chandrasekaran wrote:
+>> > > > > > > Although the Hyper-v TLFS mentions that a guest cannot use this feature
+>> > > > > > > unless the hypervisor advertises support for it, some hypercalls which
+>> > > > > > > we plan on upstreaming in future uses them anyway.
+>> > > > > > No, please don't do this. Check the feature bit(s) before you issue
+>> > > > > > hypercalls which rely on the extended interface.
+>> > > > > Perhaps Siddharth should clarify this, but I read it as Hyper-V being
+>> > > > > buggy and using XMM arguments unconditionally.
+>> > > > The guest is at fault here as it expects Hyper-V to consume arguments
+>> > > > from XMM registers for certain hypercalls (that we are working) even if
+>> > > > we didn't expose the feature via CPUID bits.
+>> > >
+>> > > What guest is that?
+>> >
+>> > It is a Windows Server 2016.
+>> 
+>> Can you be more specific? Are you implementing some hypercalls from
+>> TLFS? If so, which ones?
+>
+> Yes all of them are from TLFS. We are implementing VSM and there are a
+> bunch of hypercalls that we have implemented to manage VTL switches,
+> memory protection and virtual interrupts.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-index 2dd2af269b46..b0dbe6dcaa7b 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_main.c
-@@ -11210,7 +11210,7 @@ static int hclge_set_channels(struct hnae3_handle *handle, u32 new_tqps_num,
- 	if (ret)
- 		return ret;
- 
--	/* RSS indirection table has been configuared by user */
-+	/* RSS indirection table has been configured by user */
- 	if (rxfh_configured)
- 		goto out;
- 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index 700e068764c8..4c5ec5e38cea 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -2193,7 +2193,7 @@ static void hclgevf_reset_service_task(struct hclgevf_dev *hdev)
- 
- 	if (test_and_clear_bit(HCLGEVF_RESET_PENDING,
- 			       &hdev->reset_state)) {
--		/* PF has initmated that it is about to reset the hardware.
-+		/* PF has intimated that it is about to reset the hardware.
- 		 * We now have to poll & check if hardware has actually
- 		 * completed the reset sequence. On hardware reset completion,
- 		 * VF needs to reset the client and ae device.
-@@ -3497,7 +3497,7 @@ static int hclgevf_set_channels(struct hnae3_handle *handle, u32 new_tqps_num,
- 	if (ret)
- 		return ret;
- 
--	/* RSS indirection table has been configuared by user */
-+	/* RSS indirection table has been configured by user */
- 	if (rxfh_configured)
- 		goto out;
- 
+Wow, sounds awesome! Do you plan to upstream this work?
+
+> The following 3 hypercalls that use the XMM fast hypercalls are relevant
+> to this patch set:
+>
+> HvCallModifyVtlProtectionMask
+> HvGetVpRegisters 
+> HvSetVpRegisters 
+
+It seems AccessVSM and AccessVpRegisters privilges have implicit
+dependency on XMM input/output. This will need to be enforced in KVM
+userspace.
+
 -- 
-2.17.1
+Vitaly
 
