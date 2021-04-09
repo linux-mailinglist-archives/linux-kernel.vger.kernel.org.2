@@ -2,169 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B4235A141
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:38:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE0FE35A142
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233968AbhDIOiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:38:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38482 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233534AbhDIOiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:38:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1617979081; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=zOQ3rg6ce2gAE0EHpaf9R+8bA2cDCqkX5SpWPIIXZ9Q=;
-        b=XVAQh3tjII1aK9yDkWWdqVQ5XkQxa0KFncA9qygh4nOFpOEcd5zO0+banR5+6sxg/dSfox
-        OPH/RHnySBlv3CPHa0iMICfDa0SZUtbbkMdEbX5a5OF/osC367Vx2azJ/+Ef7DlgjwpAgc
-        LabMun8BCraZz1fJU7ezv5J1pCXede8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B98A8B080;
-        Fri,  9 Apr 2021 14:38:01 +0000 (UTC)
-Date:   Fri, 9 Apr 2021 16:37:59 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH] mm/memory_hotplug: Make unpopulated zones PCP structures
- unreachable during hot remove
-Message-ID: <YHBmxwH41WEHuVJj@dhcp22.suse.cz>
-References: <20210409120957.GM3697@techsingularity.net>
- <YHBL0e8s+EesIyDl@dhcp22.suse.cz>
- <YHBNDEAw1OqIWwb5@dhcp22.suse.cz>
- <20210409134221.GO3697@techsingularity.net>
+        id S233984AbhDIOjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:39:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233534AbhDIOjD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 10:39:03 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E517C061760;
+        Fri,  9 Apr 2021 07:38:50 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id g18-20020a7bc4d20000b0290116042cfdd8so4881298wmk.4;
+        Fri, 09 Apr 2021 07:38:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q/s19jnmq9yXkDEdnIUWAHsNWisl9i8b1FxYCjtZZCk=;
+        b=bzD0Y9C1nAqjHtDhfjK1ZkhUhuirtvB+CB5vkxNrNTZ23417sVN6Z/80FCsZsIBMnS
+         Q3WQTvT6W9cFtfWYRLZycJFmeU47kJ+t6UbrCj+flIYxh5psKKRLkWOwbsYrwHp7VJOy
+         yXT6vtqCrZjYVG8INSMgX4LAPW6i8ugCO0EDfMSOEGjgErDY9IyiJ+bsUI4j7c0BtcUV
+         5s0gwv9/r1nS3c6nlFOWkjCKHMlFDqqlwzxXXhHMrl8m0DRqZ+4zFP9A4u5WKuVR3tX4
+         bJo/D625jw6pFx+iIENjREbymWaF2qOoTgHll8ZPei7Net/dzZUNAcfWla/WkaZ15BXY
+         PwAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q/s19jnmq9yXkDEdnIUWAHsNWisl9i8b1FxYCjtZZCk=;
+        b=X7OXkkUL/7zsYrDjjH38Ub/cEP59CL9kfkIeuGWSKEPQaI0/oq3fxZqIXGgZCjMzdT
+         dJkTZEX27mUmWMF8X19ZtwwXpficnNrsCrXBMu71hnpFWmFM5apmWvk0eYAGA6J0xZ4j
+         C8rjSzrJjsapKtb5+iGNeisQoS5k8Pekdb8cz12FRiBhdMagwfTZY9uqKHL6iCC0UeRY
+         YR0+YSGwjXLInlBA33HsDCwQDOuz45TFfayixFw8a9zj9LQ+Bk0MNZrZZiV0SMAtHQdr
+         WYkfMI5KIbmKu6rGvSZXjCaB/rc4wyI/wkV/YXXyqOpCOLfbXj0Ach4dTZmgOZroSGMT
+         Aq/w==
+X-Gm-Message-State: AOAM532+YrMr6EYnctdSsNU4fYu8c1OximN5+8FjAZ6u0DbQ8KnvO831
+        e/mO5gs6QTDsZU8XktSDjeiva3jkTrl3480M5u4=
+X-Google-Smtp-Source: ABdhPJxXVuNOkYVwS5W2bY5LrHjVjeSj4QMZgXCdTnnox58HSDZ4lhh/3X6iWr24AQGaYcX3SvqG8y4KtOg6SkdnuLU=
+X-Received: by 2002:a1c:20c2:: with SMTP id g185mr3380998wmg.74.1617979129019;
+ Fri, 09 Apr 2021 07:38:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409134221.GO3697@techsingularity.net>
+References: <20210409003904.8957-1-TheSven73@gmail.com> <CAFSKS=OQ0wv7mWVcZrDdrP_1WKZ+sGPZWyNMV6snc7SWRi-o5A@mail.gmail.com>
+In-Reply-To: <CAFSKS=OQ0wv7mWVcZrDdrP_1WKZ+sGPZWyNMV6snc7SWRi-o5A@mail.gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Fri, 9 Apr 2021 10:38:38 -0400
+Message-ID: <CAGngYiV6Msz8nkM7wegk4DEL+RAeYGNk+cufuz+nTHKNqtuk5A@mail.gmail.com>
+Subject: Re: [PATCH net v1] lan743x: fix ethernet frame cutoff issue
+To:     George McCollister <george.mccollister@gmail.com>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 09-04-21 14:42:21, Mel Gorman wrote:
-> On Fri, Apr 09, 2021 at 02:48:12PM +0200, Michal Hocko wrote:
-> > On Fri 09-04-21 14:42:58, Michal Hocko wrote:
-> > > On Fri 09-04-21 13:09:57, Mel Gorman wrote:
-> > > > zone_pcp_reset allegedly protects against a race with drain_pages
-> > > > using local_irq_save but this is bogus. local_irq_save only operates
-> > > > on the local CPU. If memory hotplug is running on CPU A and drain_pages
-> > > > is running on CPU B, disabling IRQs on CPU A does not affect CPU B and
-> > > > offers no protection.
-> > > 
-> > > Yes, the synchronization aspect is bogus indeed.
-> > > 
-> > > > This patch reorders memory hotremove such that the PCP structures
-> > > > relevant to the zone are no longer reachable by the time the structures
-> > > > are freed.  With this reordering, no protection is required to prevent
-> > > > a use-after-free and the IRQs can be left enabled. zone_pcp_reset is
-> > > > renamed to zone_pcp_destroy to make it clear that the per-cpu structures
-> > > > are deleted when the function returns.
-> > > 
-> > > Wouldn't it be much easier to simply not destroy/reset pcp of an empty
-> > > zone at all? The whole point of this exercise seems to be described in
-> > > 340175b7d14d5. setup_zone_pageset can check for an already allocated pcp
-> > > and simply reinitialize it. 
-> > 
-> > I meant this
-> > 
-> 
-> It might be simplier but if the intention is to free as much memory
-> as possible during hot-remove, it seems wasteful to leave the per-cpu
-> structures behind if we do not have to.
+Hi George,
 
-We do leave the whole pgdat behind. I do not think pagesets really do
-matter.
+On Fri, Apr 9, 2021 at 10:12 AM George McCollister
+<george.mccollister@gmail.com> wrote:
+>
+> I'm glad everyone was able to work together to get this fixed properly
+> without any figure pointing or mud slinging! Kudos everyone.
 
-> If a problem with my patch can
-> be spotted then I'm happy to go with an alternative fix but there are
-> two minor issues with your proposed fix.
+Same, this is what the kernel community is supposed to be all about.
 
-I will not insist but this code has proven to bitrot and I just find it
-much simpler to drop it altogether rather than conserve it in some form.
-Not something I would insist though.
-
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index e6a602e82860..b0fdda77e570 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -6496,7 +6496,13 @@ void __meminit setup_zone_pageset(struct zone *zone)
-> >  	struct per_cpu_pageset *p;
-> >  	int cpu;
-> >  
-> > -	zone->pageset = alloc_percpu(struct per_cpu_pageset);
-> > +	/*
-> > +	 * zone could have gone completely offline during memory hotplug
-> > +	 * when the pgdat is left behind for simplicity. On a next onlining
-> > +	 * we do not need to reallocate pcp state.
-> > +	 */
-> > +	if (!zone->pageset)
-> > +		zone->pageset = alloc_percpu(struct per_cpu_pageset);
-> 
-> Should be "if (zone->pageset != &boot_pageset)" ?
-
-Memory hotplug really wants the NULL
-check. it doesn't use boot_pageset (if we drop rest to boot_pageset).
-But you are right that the boot time initialization first sets
-boot_pageset (zone_pcp_init) and initializes real pagesets later
-(setup_per_cpu_pageset). But this can be handled at the memory hotplug
-layer I believe
-
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 754026a9164d..1cadfec323fc 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -883,7 +883,8 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
- 	 */
- 	if (!populated_zone(zone)) {
- 		need_zonelists_rebuild = 1;
--		setup_zone_pageset(zone);
-+		if (!zone->pageset)
-+			setup_zone_pageset(zone);
- 	}
-
-> >  	for_each_possible_cpu(cpu) {
-> >  		p = per_cpu_ptr(zone->pageset, cpu);
-> >  		pageset_init(p);
-> > @@ -8803,25 +8809,6 @@ void zone_pcp_enable(struct zone *zone)
-> >  	mutex_unlock(&pcp_batch_high_lock);
-> >  }
-> >  
-> > -void zone_pcp_reset(struct zone *zone)
-> > -{
-> > -	unsigned long flags;
-> > -	int cpu;
-> > -	struct per_cpu_pageset *pset;
-> > -
-> > -	/* avoid races with drain_pages()  */
-> > -	local_irq_save(flags);
-> > -	if (zone->pageset != &boot_pageset) {
-> > -		for_each_online_cpu(cpu) {
-> > -			pset = per_cpu_ptr(zone->pageset, cpu);
-> > -			drain_zonestat(zone, pset);
-> > -		}
-> > -		free_percpu(zone->pageset);
-> > -		zone->pageset = &boot_pageset;
-> > -	}
-> > -	local_irq_restore(flags);
-> > -}
-> > -
-> 
-> zone_pcp_reset still needs to exist to drain the remaining vmstats or
-> it'll break 5a883813845a ("memory-hotplug: fix zone stat
-> mismatch").
-
-Are you sure we are reseting vmstats in the hotremove. I do not see
-anything like that. Maybe this was needed at the time. I will double
-check.
--- 
-Michal Hocko
-SUSE Labs
+And thank you for testing+reviewing. And for not freaking out too much
+when I lobbed that revert patch in your general direction :-]
