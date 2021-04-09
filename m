@@ -2,99 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62EA359554
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:22:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D5D35955A
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 08:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233306AbhDIGWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 02:22:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:56579 "EHLO m43-7.mailgun.net"
+        id S233374AbhDIGXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 02:23:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229715AbhDIGWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 02:22:18 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1617949325; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=Dr0V2K2hPThW8HdEC7Q5FkD6Iazwjel62EYhwC4zXhE=; b=iM18ZoGg4eaJ2WNep0n2UUvKjg147gxehTdkxQsZZOWmayTKFlQmAnVS1eF4LOc5+cDREyf0
- NgF7mwBgd5MwsHIkv/GIlNVr4V+kDwQMEdZyACgy9tr8vqwon7FXmeDXvn7BRbd2yken3KD1
- Dywx1bDi32kh8D2Hjnri9Pw0P1o=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 606ff28c2cc44d3aea2d642c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 09 Apr 2021 06:22:04
- GMT
-Sender: hangl=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 776C6C433CA; Fri,  9 Apr 2021 06:22:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.239.97.70] (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hangl)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8EC88C43461;
-        Fri,  9 Apr 2021 06:22:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8EC88C43461
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hangl@codeaurora.org
-Subject: Re: [PATCH v4] binder: tell userspace to dump current backtrace when
- detected oneway spamming
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     tkjos@google.com, tkjos@android.com, maco@android.com,
-        arve@android.com, joel@joelfernandes.org, christian@brauner.io,
-        hridya@google.com, surenb@google.com, rdunlap@infradead.org,
-        linux-kernel@vger.kernel.org
-References: <CAHRSSEyTDZTWMrWe+H4awCOBrf+AZd-TEqi3gZONZxYYQSWB5Q@mail.gmail.com>
- <1617939657-14044-1-git-send-email-hangl@codeaurora.org>
- <YG/veiWKkaJtEZkq@kroah.com>
-From:   Hang Lu <hangl@codeaurora.org>
-Message-ID: <17cf5552-8fec-3aca-a671-f5fbc9344c95@codeaurora.org>
-Date:   Fri, 9 Apr 2021 14:21:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <YG/veiWKkaJtEZkq@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S229715AbhDIGXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 02:23:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B90B261057;
+        Fri,  9 Apr 2021 06:23:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1617949385;
+        bh=mJ2iIVENJVBOnN2uXfAcyB/K8aKm5K5QHhvwNyApuAU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=csPjYedzWhmuKBGMU155cpHTdZItXq65aNVGkrX9cDOfKgzfcWV1yVZ7+8tq01r+z
+         ODfCoIhkGumpTuUlBz+43/5MvpO/6M0D+77/eRG+VIJ27eTKjfLfS57BTaW5YITUdh
+         97swMkpU38QBpyu9C25OZZIPhXniOvfHNvdymBZE=
+Date:   Thu, 8 Apr 2021 23:23:03 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joerg Roedel <jroedel@suse.de>, Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        "open list:LINUX FOR POWERPC PA SEMI PWRFICIENT" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        openipmi-developer@lists.sourceforge.net,
+        linux-remoteproc@vger.kernel.org,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        kexec@lists.infradead.org, rcu@vger.kernel.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Corey Minyard <minyard@acm.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>
+Subject: Re: [PATCH v1 1/1] kernel.h: Split out panic and oops helpers
+Message-Id: <20210408232303.453749e0e6fb0adfa8545440@linux-foundation.org>
+In-Reply-To: <CAHp75Ve+11u=dtNTO8BCohOJHGWSMJtb1nGCOrNde7bXaD4ehA@mail.gmail.com>
+References: <20210406133158.73700-1-andriy.shevchenko@linux.intel.com>
+        <202104061143.E11D2D0@keescook>
+        <CAHp75Ve+11u=dtNTO8BCohOJHGWSMJtb1nGCOrNde7bXaD4ehA@mail.gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/2021 2:08 PM, Greg KH wrote:
-> On Fri, Apr 09, 2021 at 11:40:57AM +0800, Hang Lu wrote:
->> When async binder buffer got exhausted, some normal oneway transactions
->> will also be discarded and may cause system or application failures. By
->> that time, the binder debug information we dump may not be relevant to
->> the root cause. And this issue is difficult to debug if without the
->> backtrace of the thread sending spam.
->>
->> This change will send BR_ONEWAY_SPAM_SUSPECT to userspace when oneway
->> spamming is detected, request to dump current backtrace. Oneway spamming
->> will be reported only once when exceeding the threshold (target process
->> dips below 80% of its oneway space, and current process is responsible for
->> either more than 50 transactions, or more than 50% of the oneway space).
->> And the detection will restart when the async buffer has returned to a
->> healthy state.
->>
->> Signed-off-by: Hang Lu <hangl@codeaurora.org>
->> ---
->> v4: add missing BR_FROZEN_REPLY in binder_return_strings and change the size of binder_stats.br array
+On Wed, 7 Apr 2021 11:46:37 +0300 Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+
+> On Wed, Apr 7, 2021 at 11:17 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Tue, Apr 06, 2021 at 04:31:58PM +0300, Andy Shevchenko wrote:
+> > > kernel.h is being used as a dump for all kinds of stuff for a long time.
+> > > Here is the attempt to start cleaning it up by splitting out panic and
+> > > oops helpers.
+> > >
+> > > At the same time convert users in header and lib folder to use new header.
+> > > Though for time being include new header back to kernel.h to avoid twisted
+> > > indirected includes for existing users.
+> > >
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >
+> > I like it! Do you have a multi-arch CI to do allmodconfig builds to
+> > double-check this?
 > 
-> Should the BR_FROZEN_REPLY string be a separate patch as it's a fix for
-> the "binder frozen feature", not this new feature, right?  Or does this
-> patch require that change and the frozen patch did not?
+> Unfortunately no, I rely on plenty of bots that are harvesting mailing lists.
+> 
+> But I will appreciate it if somebody can run this through various build tests.
+> 
 
-Yes, BR_FROZEN_REPLY string is a fix and seems should to be separated from this new feature. But I'm still wondering how to submit these 2 separate patches as they edit the same place(maybe merge conflict). Do you know which of the following two commit methods is more suitable? Thanks!
+um, did you try x86_64 allmodconfig?
 
-1. char-misc-next HEAD --> BR_FROZEN_REPLY fix patch --> new feature patch
+I'm up to
+kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix-fix.patch
+and counting.
 
-2. char-misc-next HEAD --> BR_FROZEN_REPLY fix patch
-                   \-----> new feature patch
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kernelh-split-out-panic-and-oops-helpers-fix
 
+more files need panic_notifier.h
+
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/x86/xen/enlighten.c        |    1 +
+ drivers/video/fbdev/hyperv_fb.c |    1 +
+ 2 files changed, 2 insertions(+)
+
+--- a/arch/x86/xen/enlighten.c~kernelh-split-out-panic-and-oops-helpers-fix
++++ a/arch/x86/xen/enlighten.c
+@@ -6,6 +6,7 @@
+ #include <linux/cpu.h>
+ #include <linux/kexec.h>
+ #include <linux/slab.h>
++#include <linux/panic_notifier.h>
+ 
+ #include <xen/xen.h>
+ #include <xen/features.h>
+--- a/drivers/video/fbdev/hyperv_fb.c~kernelh-split-out-panic-and-oops-helpers-fix
++++ a/drivers/video/fbdev/hyperv_fb.c
+@@ -52,6 +52,7 @@
+ #include <linux/completion.h>
+ #include <linux/fb.h>
+ #include <linux/pci.h>
++#include <linux/panic_notifier.h>
+ #include <linux/efi.h>
+ #include <linux/console.h>
+ 
+_
+
+
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix
+
+arch/x86/purgatory/purgatory.c needs kernel.h
+
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ arch/x86/purgatory/purgatory.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/x86/purgatory/purgatory.c~kernelh-split-out-panic-and-oops-helpers-fix-fix
++++ a/arch/x86/purgatory/purgatory.c
+@@ -8,6 +8,7 @@
+  *       Vivek Goyal <vgoyal@redhat.com>
+  */
+ 
++#include <linux/kernel.h>
+ #include <linux/bug.h>
+ #include <crypto/sha2.h>
+ #include <asm/purgatory.h>
+_
+
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix-fix
+
+drivers/clk/analogbits/wrpll-cln28hpc.c needs minmax.h, math.h and limits.h
+
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/clk/analogbits/wrpll-cln28hpc.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/drivers/clk/analogbits/wrpll-cln28hpc.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix
++++ a/drivers/clk/analogbits/wrpll-cln28hpc.c
+@@ -25,6 +25,10 @@
+ #include <linux/err.h>
+ #include <linux/log2.h>
+ #include <linux/math64.h>
++#include <linux/minmax.h>
++#include <linux/math.h>
++#include <linux/limits.h>
++
+ #include <linux/clk/analogbits-wrpll-cln28hpc.h>
+ 
+ /* MIN_INPUT_FREQ: minimum input clock frequency, in Hz (Fref_min) */
+_
+
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix
+
+drivers/misc/pvpanic/pvpanic.c needs panic_notifier.h
+
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/misc/pvpanic/pvpanic.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/misc/pvpanic/pvpanic.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix
++++ a/drivers/misc/pvpanic/pvpanic.c
+@@ -13,6 +13,7 @@
+ #include <linux/mod_devicetable.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
++#include <linux/panic_notifier.h>
+ #include <linux/types.h>
+ #include <linux/cdev.h>
+ #include <linux/list.h>
+_
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix
+
+fix drivers/misc/pvpanic/pvpanic.c and drivers/net/ipa/ipa_smp2p.c
+
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/net/ipa/ipa_smp2p.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/net/ipa/ipa_smp2p.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix
++++ a/drivers/net/ipa/ipa_smp2p.c
+@@ -8,6 +8,7 @@
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
+ #include <linux/notifier.h>
++#include <linux/panic_notifier.h>
+ #include <linux/soc/qcom/smem.h>
+ #include <linux/soc/qcom/smem_state.h>
+ 
+_
+
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix
+
+fix drivers/power/reset/ltc2952-poweroff.c and drivers/misc/bcm-vk/bcm_vk_dev.c
+
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/misc/bcm-vk/bcm_vk_dev.c       |    1 +
+ drivers/power/reset/ltc2952-poweroff.c |    1 +
+ 2 files changed, 2 insertions(+)
+
+--- a/drivers/power/reset/ltc2952-poweroff.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix
++++ a/drivers/power/reset/ltc2952-poweroff.c
+@@ -52,6 +52,7 @@
+ #include <linux/slab.h>
+ #include <linux/kmod.h>
+ #include <linux/module.h>
++#include <linux/panic_notifier.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/gpio/consumer.h>
+ #include <linux/reboot.h>
+--- a/drivers/misc/bcm-vk/bcm_vk_dev.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix
++++ a/drivers/misc/bcm-vk/bcm_vk_dev.c
+@@ -9,6 +9,7 @@
+ #include <linux/fs.h>
+ #include <linux/idr.h>
+ #include <linux/interrupt.h>
++#include <linux/panic_notifier.h>
+ #include <linux/kref.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+_
+
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix-fix
+
+fix drivers/leds/trigger/ledtrig-panic.c and drivers/firmware/google/gsmi.c
+
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+---
+
+ drivers/firmware/google/gsmi.c       |    1 +
+ drivers/leds/trigger/ledtrig-panic.c |    1 +
+ 2 files changed, 2 insertions(+)
+
+--- a/drivers/leds/trigger/ledtrig-panic.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix-fix
++++ a/drivers/leds/trigger/ledtrig-panic.c
+@@ -8,6 +8,7 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/notifier.h>
++#include <linux/panic_notifier.h>
+ #include <linux/leds.h>
+ #include "../leds.h"
+ 
+--- a/drivers/firmware/google/gsmi.c~kernelh-split-out-panic-and-oops-helpers-fix-fix-fix-fix-fix-fix-fix
++++ a/drivers/firmware/google/gsmi.c
+@@ -19,6 +19,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/fs.h>
+ #include <linux/slab.h>
++#include <linux/panic_notifier.h>
+ #include <linux/ioctl.h>
+ #include <linux/acpi.h>
+ #include <linux/io.h>
+_
+
+
+and.... drivers/leds/trigger/ledtrig-heartbeat.c as well.
+
+I'll drop it.
