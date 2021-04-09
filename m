@@ -2,153 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB2E35A4F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A825135A4F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 19:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234335AbhDIRyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 13:54:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45162 "EHLO
+        id S234362AbhDIRyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 13:54:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233332AbhDIRyJ (ORCPT
+        with ESMTP id S233332AbhDIRyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 13:54:09 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185F6C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:53:55 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id s11so4739567pfm.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:53:55 -0700 (PDT)
+        Fri, 9 Apr 2021 13:54:41 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9EA2C061761
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 10:54:26 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id g17so7209205ejp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 10:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t0lA/jFVR3TTCjtnv1uyJJiTbsD33ku905quI/YeL/8=;
-        b=ujzqBY4P8EW3BO2TN+Pcc1TuyrOGLeEzdi6LjPKFvGdzOrzLy+E3xdB6qDl7lnihv7
-         mtR4mmom/nb94xbAaHAgP4YyETgvmhM99+46KpKkZiu7Mk73tAWdkdVgVaRqYJKW0hQI
-         Bqa8PL8+fsaU9pm6TbG3aH7vLnq4jvdzsY87YLCIbLDBO8va6hggYohkPwYFX2cUKf5w
-         VPXOBlEuxvHCiVhsPdUgwzjmx6BRnMTva66Bvgr+a6430LOyipUkgDPeMdxZeU1kv9Iz
-         bST5+/kITQOvnzSmXiePB5EZlE9qgE6+aJ1EyCp36p4diDPPk6Ikgv+1G/OM1+JHsh4u
-         Qpww==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GuGOCMsxnSRJkFXoL0px3WemZnAxxxYEAqPblSK2aKs=;
+        b=sThAnAdSnO3iZHIZPMgbX1ZpXC5ABvIgYDEYyxUSZW9IccFRNN1xNK2emIAW3ZaVnW
+         XCokPA+zA8NFFg58OhLhPXBOixpKv154E2ERt/Vgb793MEmxddSnCyZ304LzkdGBDEFF
+         3kUYOJFZ54z8fnBl8dS853pdQaroRotAd8toOv5cbJAAwcyZuscUZ+j3XnFEyIbuOdm2
+         hSjB/zzJWinuhtGfiYVGuZeraRlZK7f2yH/rD9OpZKleTvjf7U1fO+JTpre9ybofhNRL
+         cQai7Mo2sZQYCTa1ZfEgba/7Ah8cLjbGynKXhykOaaB7090u5OnpAtlNlCQRV0ztT4V4
+         Qj+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t0lA/jFVR3TTCjtnv1uyJJiTbsD33ku905quI/YeL/8=;
-        b=NGIauIP2GbFfQuyfBn09fZjQn+OyWQ9cpvi7ZPvsTpfc04OdhZZLdO2YRaITW4Z8Zn
-         CO+OaG1Lauh/Djs1u3FVp4OG9zkjTpzK4WoXaxYmzmN37TQnKsX92GCdi5cJ4Oe/dxMU
-         XnL6TCmBc7k/oEm1KX25Y1oGJXqMy7QtRsOjZ6SgSJnz0IULzFuBzxDXLN/t8XKBSNQR
-         oByhSqb58mH5F7JJ7/iyhHbcKkNAMlp251m/jdHwXSUxa6KzzzHjynQWGZBHJmxI8r7K
-         a0d7XoPLiiI3Z6WcZzeAqQMOqnYb39zdk7z3iBfjdGdKsI0OVLY1YhT9sFWV6daf7sdW
-         t8fg==
-X-Gm-Message-State: AOAM531xfnVHtyFKPnraBSJwV734qHdk3BYfcDSpQ4YjINmSHhBjLRH9
-        hj1h90TWGTjV415zZkzrIf4m1Q==
-X-Google-Smtp-Source: ABdhPJzxMzOT86u7n+dmZg6aYJAHdUkT8NqqK1u+CwJMn8VdnNGQaux3HBYp8DZNloQZe9Q//Gftyw==
-X-Received: by 2002:a05:6a00:883:b029:247:562:f8f9 with SMTP id q3-20020a056a000883b02902470562f8f9mr3739481pfj.34.1617990834443;
-        Fri, 09 Apr 2021 10:53:54 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id n73sm3049665pfd.196.2021.04.09.10.53.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 10:53:53 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 11:53:52 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 4/7] rpmsg: char: Introduce __rpmsg_chrdev_create_eptdev
- function
-Message-ID: <20210409175352.GB489094@xps15>
-References: <20210323122737.23035-1-arnaud.pouliquen@foss.st.com>
- <20210323122737.23035-5-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GuGOCMsxnSRJkFXoL0px3WemZnAxxxYEAqPblSK2aKs=;
+        b=ndwRXjvhRVs9XB5suzMFk9/ckuNadeNb+R86Sr23OSPcnAhClpJ1TH8O3lk3/4RMdj
+         Rvo8EwV4WJ2hH0wjbuP/CoTWzkzmM5PcvKkcOctV6Pccup6Q9fOAKXk/VDE1K+iKs/V9
+         3RpFr1HLznzU+3VlFKY3tDUyAHiuGhNdV+OuSz4cvdvjG95jaYC6m6fy8Umk1ehN0ZzK
+         jcX11w0LXL922ZfN6mcuF4hNSN3oxTDCl1kJtRx8XUbXQlv76hBFu6npQ8WnCKMFxe7h
+         4Tm4Kb+Lgp4R1I8ifsftuE0u7idRaGgHWH3kSHZtWoQs6wmr/Dc0frVGfZ6MB6+wVKjZ
+         JP2A==
+X-Gm-Message-State: AOAM532B0esOH3pArVOmbQKNPo0h0Esy5ZBdaTcK9Kpzgr7d0HW3atrB
+        qh0K5CFJq9DxlBMTXs1fsV0bXdSR61XwNAC4iVoJRA==
+X-Google-Smtp-Source: ABdhPJztzbhO6E534jWeed4RXeQBg6BWEsaaajL/mT6jcMWBCgehqrmsGKzjtxqaNuLdBvIazSo15Sb0n7hgbUgF9Go=
+X-Received: by 2002:a17:906:4f91:: with SMTP id o17mr17257086eju.503.1617990865370;
+ Fri, 09 Apr 2021 10:54:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323122737.23035-5-arnaud.pouliquen@foss.st.com>
+References: <CA+G9fYu60T=vymv7gA0eaopfNDWXAVT9WRS11Rrk1OfTkrCevw@mail.gmail.com>
+ <PSAP153MB042218315B664B15A59A80B094739@PSAP153MB0422.APCP153.PROD.OUTLOOK.COM>
+ <CA+G9fYvcSK-Z7+VrRbHp7ADDDgw2tWWaqTfQMyC2dxuOYGLz6A@mail.gmail.com>
+In-Reply-To: <CA+G9fYvcSK-Z7+VrRbHp7ADDDgw2tWWaqTfQMyC2dxuOYGLz6A@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 9 Apr 2021 23:24:14 +0530
+Message-ID: <CA+G9fYuNHTscCZDwGnxv5axibgUw1iRKQ4RJrJxHQpSNrQPaBg@mail.gmail.com>
+Subject: Re: [EXTERNAL] [next] ERROR: modpost: "dns_query" [fs/cifs/cifs.ko] undefined
+To:     Shyam Prasad <Shyam.Prasad@microsoft.com>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "samba-technical@lists.samba.org" <samba-technical@lists.samba.org>,
+        "lkft-triage@lists.linaro.org" <lkft-triage@lists.linaro.org>,
+        Maciek Borzecki <maciek.borzecki@gmail.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Steven French <Steven.French@microsoft.com>, pc <pc@cjr.nz>,
+        Pavel Shilovskiy <pshilov@microsoft.com>,
+        Steve French <sfrench@samba.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:27:34PM +0100, Arnaud Pouliquen wrote:
-> Introduce the __rpmsg_chrdev_create_eptdev internal function that returns
-> the rpmsg_eptdev context structure.
-> 
-> This patch prepares the introduction of a rpmsg channel device for the
-> char device. The rpmsg device will need a reference to the context.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> 
-> ---
-> update from [1]
-> - propagate parent param in rpmsg_chrdev_create_eptdev,
-> - fix changelog.
-> 
-> [1] https://patchwork.kernel.org/project/linux-remoteproc/patch/20210219111501.14261-14-arnaud.pouliquen@foss.st.com/
-> ---
->  drivers/rpmsg/rpmsg_char.c | 21 +++++++++++++++++----
->  1 file changed, 17 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> index 5d4a768002ce..7f6d46078179 100644
-> --- a/drivers/rpmsg/rpmsg_char.c
-> +++ b/drivers/rpmsg/rpmsg_char.c
-> @@ -325,7 +325,8 @@ static void rpmsg_eptdev_release_device(struct device *dev)
->  	kfree(eptdev);
->  }
->  
-> -int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
-> +static struct rpmsg_eptdev *__rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev,
-> +							 struct device *parent,
->  			       struct rpmsg_channel_info chinfo, struct class *rpmsg_class)
+On Fri, 9 Apr 2021 at 23:17, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> On Fri, 9 Apr 2021 at 21:49, Shyam Prasad <Shyam.Prasad@microsoft.com> wrote:
+> >
+> > Hi Naresh,
+> >
+> > AFAIK, this has been fixed in an updated patch last evening. Can you please check if you're still seeing it?
+>
+> Please share the fix commit and subject here.
+>
+> FYI,
 
-Please fix:
+ignore the below statement.
+our build system did not trigger today tag yet.
 
-static struct rpmsg_eptdev *
-__rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
-                             struct rpmsg_channel_info chinfo, struct class *rpmsg_class)
+> This build error is still on today's Linux next tag 20210409.
 
->  {
->  	struct rpmsg_eptdev *eptdev;
-> @@ -334,7 +335,7 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->  
->  	eptdev = kzalloc(sizeof(*eptdev), GFP_KERNEL);
->  	if (!eptdev)
-> -		return -ENOMEM;
-> +		return ERR_PTR(-ENOMEM);
->  
->  	dev = &eptdev->dev;
->  	eptdev->rpdev = rpdev;
-> @@ -378,7 +379,7 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->  		put_device(dev);
->  	}
->  
-> -	return ret;
-> +	return eptdev;
->  
->  free_ept_ida:
->  	ida_simple_remove(&rpmsg_ept_ida, dev->id);
-> @@ -388,7 +389,19 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->  	put_device(dev);
->  	kfree(eptdev);
->  
-> -	return ret;
-> +	return ERR_PTR(ret);
-> +}
-> +
-> +int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent,
-> +			       struct rpmsg_channel_info chinfo,  struct class *rpmsg_class)
-> +{
-> +	struct rpmsg_eptdev *eptdev;
-> +
-> +	eptdev = __rpmsg_chrdev_create_eptdev(rpdev, parent, chinfo, rpmsg_class);
-> +	if (IS_ERR(eptdev))
-> +		return PTR_ERR(eptdev);
-> +
-> +	return 0;
->  }
->  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
->  
-> -- 
-> 2.17.1
-> 
+- Naresh
