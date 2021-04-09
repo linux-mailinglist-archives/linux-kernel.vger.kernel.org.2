@@ -2,298 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78404359FDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D600359FDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 15:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233598AbhDINdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 09:33:14 -0400
-Received: from outbound-smtp10.blacknight.com ([46.22.139.15]:55743 "EHLO
-        outbound-smtp10.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231819AbhDINdM (ORCPT
+        id S233600AbhDINeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 09:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhDINeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 09:33:12 -0400
-Received: from mail.blacknight.com (pemlinmail06.blacknight.ie [81.17.255.152])
-        by outbound-smtp10.blacknight.com (Postfix) with ESMTPS id 6698F1C3F2D
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 14:32:58 +0100 (IST)
-Received: (qmail 26227 invoked from network); 9 Apr 2021 13:32:58 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Apr 2021 13:32:58 -0000
-Date:   Fri, 9 Apr 2021 14:32:56 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH 02/11] mm/page_alloc: Convert per-cpu list protection to
- local_lock
-Message-ID: <20210409133256.GN3697@techsingularity.net>
-References: <20210407202423.16022-1-mgorman@techsingularity.net>
- <20210407202423.16022-3-mgorman@techsingularity.net>
- <YG7gV7yAEEjOcQZY@hirez.programming.kicks-ass.net>
- <20210408174244.GG3697@techsingularity.net>
- <YG/2scd9ADdrIyCM@hirez.programming.kicks-ass.net>
- <20210409075939.GJ3697@techsingularity.net>
- <YHAPOKPTgJcLuDJl@hirez.programming.kicks-ass.net>
+        Fri, 9 Apr 2021 09:34:04 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A26AC061761
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 06:33:51 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id j18so9769067lfg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 06:33:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+pHQi2OzKPyPC0KIDsVeHvTEz5QYwkp15iNvMnsgf9c=;
+        b=qmgSCtmourr9L2RlDFZgGr4egPrINyGU02cvXp0bbLU/zh8hYLJR8gXLKqNI4rVRfJ
+         Y216MNdtd9ViTgOGuvoA2McTPPYzN0win0s9md94sOKiqH2TEjZY3SVXFR816pgHmWIj
+         RJpmJtHdZG+harWrFFsinPRs7DedCERbBb/Phy3ALRYSDN+7W4FegvBBC1Q9iE2jUsbU
+         J9RsxSre6uR+dDfvM0SbyPOCbKo8C8dLPayB43e/MzuBtfwuvoGEHn+kEZQKJvqQBCz8
+         RJbvO2AHT87yb4G5GXW6K6QwzW/fRa02DLSME+nD2WtO0RwDg5nzWQPhXPzcqRCURtWK
+         NuWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+pHQi2OzKPyPC0KIDsVeHvTEz5QYwkp15iNvMnsgf9c=;
+        b=A2afLc7Ev5WNVz3iBU5V5zm4pXZo4HThi+Hunms7t4hmQ3vt6LZY5z90NEPAvaPwNS
+         Jrq+l7Ph54v2Lr+gZS4VX2P5EKeY2z8kF5iMQfEIlA37rinAlkTqB1vQOVRdMuTtxYt2
+         sYblpmb2lYO9izL3oIWyKsXWHi9BVZJjImrpHxWRTJL8RnGMbrAxAQMQYfBgsXtGHtxL
+         qcazjMogPM1aoxTZl+USVSBd+ijemWy9grIsR240knm0z9uJOOShTStO5H//kPP+15t4
+         Cs2gpAS0LnilhhqcULkgj6A9KMKA0kGJFujcwZNh8UPjM9fLHRNJ1HctqqNOv5fFg7CY
+         pccw==
+X-Gm-Message-State: AOAM531wK6q3IpUj1DHsTiB6CXNz+OWMJC9Ctf6FT8Z1LAJbATcQXsMh
+        oyrCXI/HOabkkGU5UYr7UCCfJqJiAPEOmg==
+X-Google-Smtp-Source: ABdhPJynjRSJthCRwTX5vDn44O6h7SJMm8/0v0Lujd09ADcCsNIQoU7fugG96bOELQBpOXbWEJf18g==
+X-Received: by 2002:a05:6512:3091:: with SMTP id z17mr10257535lfd.84.1617975229701;
+        Fri, 09 Apr 2021 06:33:49 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id z9sm282834lfa.80.2021.04.09.06.33.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 06:33:48 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id F213F102498; Fri,  9 Apr 2021 16:33:47 +0300 (+03)
+Date:   Fri, 9 Apr 2021 16:33:47 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
+Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
+Message-ID: <20210409133347.r2uf3u5g55pp27xn@box>
+References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
+ <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
+ <5e934d94-414c-90de-c58e-34456e4ab1cf@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHAPOKPTgJcLuDJl@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <5e934d94-414c-90de-c58e-34456e4ab1cf@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 10:24:24AM +0200, Peter Zijlstra wrote:
-> On Fri, Apr 09, 2021 at 08:59:39AM +0100, Mel Gorman wrote:
-> > In the end I just gave up and kept it simple as there is no benefit to
-> > !PREEMPT_RT which just disables IRQs. Maybe it'll be worth considering when
-> > PREEMPT_RT is upstream and can be enabled. The series was functionally
-> > tested on the PREEMPT_RT tree by reverting the page_alloc.c patch and
-> > applies this series and all of its prerequisites on top.
+On Wed, Apr 07, 2021 at 04:55:54PM +0200, David Hildenbrand wrote:
+> On 02.04.21 17:26, Kirill A. Shutemov wrote:
+> > TDX architecture aims to provide resiliency against confidentiality and
+> > integrity attacks. Towards this goal, the TDX architecture helps enforce
+> > the enabling of memory integrity for all TD-private memory.
+> > 
+> > The CPU memory controller computes the integrity check value (MAC) for
+> > the data (cache line) during writes, and it stores the MAC with the
+> > memory as meta-data. A 28-bit MAC is stored in the ECC bits.
+> > 
+> > Checking of memory integrity is performed during memory reads. If
+> > integrity check fails, CPU poisones cache line.
+> > 
+> > On a subsequent consumption (read) of the poisoned data by software,
+> > there are two possible scenarios:
+> > 
+> >   - Core determines that the execution can continue and it treats
+> >     poison with exception semantics signaled as a #MCE
+> > 
+> >   - Core determines execution cannot continue,and it does an unbreakable
+> >     shutdown
+> > 
+> > For more details, see Chapter 14 of Intel TDX Module EAS[1]
+> > 
+> > As some of integrity check failures may lead to system shutdown host
+> > kernel must not allow any writes to TD-private memory. This requirment
+> > clashes with KVM design: KVM expects the guest memory to be mapped into
+> > host userspace (e.g. QEMU).
+> > 
+> > This patch aims to start discussion on how we can approach the issue.
+> > 
+> > For now I intentionally keep TDX out of picture here and try to find a
+> > generic way to unmap KVM guest memory from host userspace. Hopefully, it
+> > makes the patch more approachable. And anyone can try it out.
+> > 
+> > To the proposal:
+> > 
+> > Looking into existing codepaths I've discovered that we already have
+> > semantics we want. That's PG_hwpoison'ed pages and SWP_HWPOISON swap
+> > entries in page tables:
+> > 
+> >    - If an application touches a page mapped with the SWP_HWPOISON, it will
+> >      get SIGBUS.
+> > 
+> >    - GUP will fail with -EFAULT;
+> > 
+> > Access the poisoned memory via page cache doesn't match required
+> > semantics right now, but it shouldn't be too hard to make it work:
+> > access to poisoned dirty pages should give -EIO or -EHWPOISON.
+> > 
+> > My idea is that we can mark page as poisoned when we make it TD-private
+> > and replace all PTEs that map the page with SWP_HWPOISON.
 > 
-> Right, I see the problem. Fair enough; perhaps ammend the changelog to
-> include some of that so that we can 'remember' in a few months why the
-> code is 'funneh'.
+> It looks quite hacky (well, what did I expect from an RFC :) ) you can no
+> longer distinguish actually poisoned pages from "temporarily poisoned"
+> pages. FOLL_ALLOW_POISONED sounds especially nasty and dangerous -  "I want
+> to read/write a poisoned page, trust me, I know what I am doing".
 > 
+> Storing the state for each individual page initially sounded like the right
+> thing to do, but I wonder if we couldn't handle this on a per-VMA level. You
+> can just remember the handful of shared ranges internally like you do right
+> now AFAIU.
 
-I updated the changelog and also added a comment above the
-declaration. That said, there are some curious users already.
-fs/squashfs/decompressor_multi_percpu.c looks like it always uses the
-local_lock in CPU 0's per-cpu structure instead of stabilising a per-cpu
-pointer. drivers/block/zram/zcomp.c appears to do the same although for
-at least one of the zcomp_stream_get() callers, the CPU is pinned for
-other reasons (bit spin lock held). I think it happens to work anyway
-but it's weird and I'm not a fan.
+per-VMA would not fly for file-backed (e.g. tmpfs) memory. We may need to
+combine PG_hwpoison with VMA flag. Maybe per-inode tracking would also be
+required. Or per-memslot. I donno. Need more experiments.
 
-Anyway, new version looks like is below.
+Note, I use PG_hwpoison now, but if we find a show-stopper issue where we
+would see confusion with a real poison, we can switch to new flags and
+a new swap_type(). I have not seen a reason yet.
+
+> From what I get, you want a way to
+> 
+> 1. Unmap pages from the user space page tables.
+
+Plain unmap would not work for some use-cases. Some CSPs want to
+preallocate memory in a specific way. It's a way to provide a fine-grained
+NUMA policy.
+
+The existing mapping has to be converted.
+
+> 2. Disallow re-faulting of the protected pages into the page tables. On user
+> space access, you want to deliver some signal (e.g., SIGBUS).
+
+Note that userspace mapping is the only source of pfn's for VM's shadow
+mapping. The fault should be allow, but lead to non-present PTE that still
+encodes pfn.
+
+> 3. Allow selected users to still grab the pages (esp. KVM to fault them into
+> the page tables).
+
+As long as fault leads to non-present PTEs we are fine. Usespace still may
+want to mlock() some of guest memory. There's no reason to prevent this.
+
+> 4. Allow access to currently shared specific pages from user space.
+> 
+> Right now, you achieve
+> 
+> 1. Via try_to_unmap()
+> 2. TestSetPageHWPoison
+> 3. TBD (e.g., FOLL_ALLOW_POISONED)
+> 4. ClearPageHWPoison()
+> 
+> 
+> If we could bounce all writes to shared pages through the kernel, things
+> could end up a little easier. Some very rough idea:
+> 
+> We could let user space setup VM memory as
+> mprotect(PROT_READ) (+ PROT_KERNEL_WRITE?), and after activating protected
+> memory (I assume via a KVM ioctl), make sure the VMAs cannot be set to
+> PROT_WRITE anymore. This would already properly unmap and deliver a SIGSEGV
+> when trying to write from user space.
+> 
+> You could then still access the pages, e.g., via FOLL_FORCE or a new fancy
+> flag that allows to write with VM_MAYWRITE|VM_DENYUSERWRITE. This would
+> allow an ioctl to write page content and to map the pages into NPTs.
+> 
+> As an extension, we could think about (re?)mapping some shared pages
+> read|write. The question is how to synchronize with user space.
+> 
+> I have no idea how expensive would be bouncing writes (and reads?) through
+> the kernel. Did you ever experiment with that/evaluate that?
+
+It's going to be double bounce buffer: on the guest we force swiotlb to
+make it go through shared region. I don't think it's a good idea.
+
+There are a number of way to share a memory. It's going to be decided by
+the way we get these pages unmapped in the first place.
 
 -- 
-[PATCH] mm/page_alloc: Convert per-cpu list protection to local_lock
-
-There is a lack of clarity of what exactly local_irq_save/local_irq_restore
-protects in page_alloc.c . It conflates the protection of per-cpu page
-allocation structures with per-cpu vmstat deltas.
-
-This patch protects the PCP structure using local_lock which for most
-configurations is identical to IRQ enabling/disabling.  The scope of the
-lock is still wider than it should be but this is decreased later.
-
-local_lock is declared statically instead of placing it within a structure
-and this is deliberate. Placing it in the zone offers limited benefit and
-confuses what the lock is protecting -- struct per_cpu_pages. However,
-putting it in per_cpu_pages is problematic because the task is not guaranteed
-to be pinned to the CPU yet so looking up a per-cpu structure is unsafe.
-
-[lkp@intel.com: Make pagesets static]
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- include/linux/mmzone.h |  2 ++
- mm/page_alloc.c        | 67 +++++++++++++++++++++++++++++++++++++++-----------
- 2 files changed, 54 insertions(+), 15 deletions(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index a4393ac27336..106da8fbc72a 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -20,6 +20,7 @@
- #include <linux/atomic.h>
- #include <linux/mm_types.h>
- #include <linux/page-flags.h>
-+#include <linux/local_lock.h>
- #include <asm/page.h>
- 
- /* Free memory management - zoned buddy allocator.  */
-@@ -337,6 +338,7 @@ enum zone_watermarks {
- #define high_wmark_pages(z) (z->_watermark[WMARK_HIGH] + z->watermark_boost)
- #define wmark_pages(z, i) (z->_watermark[i] + z->watermark_boost)
- 
-+/* Fields and list protected by pagesets local_lock in page_alloc.c */
- struct per_cpu_pages {
- 	int count;		/* number of pages in the list */
- 	int high;		/* high watermark, emptying needed */
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3bc4da4cbf9c..04644c3dd187 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -112,6 +112,30 @@ typedef int __bitwise fpi_t;
- static DEFINE_MUTEX(pcp_batch_high_lock);
- #define MIN_PERCPU_PAGELIST_FRACTION	(8)
- 
-+/*
-+ * Protects the per_cpu_pages structures.
-+ *
-+ * This lock is not placed in struct per_cpu_pages because the task acquiring
-+ * the lock is not guaranteed to be pinned to the CPU yet due to
-+ * preempt/migrate/IRQs disabled or holding a spinlock. The pattern to acquire
-+ * the lock would become
-+ *
-+ *   migrate_disable();
-+ *   pcp = this_cpu_ptr(zone->per_cpu_pageset);
-+ *   local_lock_irqsave(&pcp->lock, flags);
-+ *
-+ * While a helper would avoid code duplication, there is no inherent advantage
-+ * and migrate_disable itself is undesirable (see include/linux/preempt.h).
-+ * Similarly, putting the lock in the zone offers no particular benefit but
-+ * confuses what the lock is protecting.
-+ */
-+struct pagesets {
-+	local_lock_t lock;
-+};
-+static DEFINE_PER_CPU(struct pagesets, pagesets) = {
-+	.lock = INIT_LOCAL_LOCK(lock),
-+};
-+
- #ifdef CONFIG_USE_PERCPU_NUMA_NODE_ID
- DEFINE_PER_CPU(int, numa_node);
- EXPORT_PER_CPU_SYMBOL(numa_node);
-@@ -1421,6 +1445,10 @@ static void free_pcppages_bulk(struct zone *zone, int count,
- 		} while (--count && --batch_free && !list_empty(list));
- 	}
- 
-+	/*
-+	 * local_lock_irq held so equivalent to spin_lock_irqsave for
-+	 * both PREEMPT_RT and non-PREEMPT_RT configurations.
-+	 */
- 	spin_lock(&zone->lock);
- 	isolated_pageblocks = has_isolate_pageblock(zone);
- 
-@@ -1541,6 +1569,11 @@ static void __free_pages_ok(struct page *page, unsigned int order,
- 		return;
- 
- 	migratetype = get_pfnblock_migratetype(page, pfn);
-+
-+	/*
-+	 * TODO FIX: Disable IRQs before acquiring IRQ-safe zone->lock
-+	 * and protect vmstat updates.
-+	 */
- 	local_irq_save(flags);
- 	__count_vm_events(PGFREE, 1 << order);
- 	free_one_page(page_zone(page), page, pfn, order, migratetype,
-@@ -2910,6 +2943,10 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
- {
- 	int i, allocated = 0;
- 
-+	/*
-+	 * local_lock_irq held so equivalent to spin_lock_irqsave for
-+	 * both PREEMPT_RT and non-PREEMPT_RT configurations.
-+	 */
- 	spin_lock(&zone->lock);
- 	for (i = 0; i < count; ++i) {
- 		struct page *page = __rmqueue(zone, order, migratetype,
-@@ -2962,12 +2999,12 @@ void drain_zone_pages(struct zone *zone, struct per_cpu_pages *pcp)
- 	unsigned long flags;
- 	int to_drain, batch;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&pagesets.lock, flags);
- 	batch = READ_ONCE(pcp->batch);
- 	to_drain = min(pcp->count, batch);
- 	if (to_drain > 0)
- 		free_pcppages_bulk(zone, to_drain, pcp);
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&pagesets.lock, flags);
- }
- #endif
- 
-@@ -2983,13 +3020,13 @@ static void drain_pages_zone(unsigned int cpu, struct zone *zone)
- 	unsigned long flags;
- 	struct per_cpu_pages *pcp;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&pagesets.lock, flags);
- 
- 	pcp = per_cpu_ptr(zone->per_cpu_pageset, cpu);
- 	if (pcp->count)
- 		free_pcppages_bulk(zone, pcp->count, pcp);
- 
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&pagesets.lock, flags);
- }
- 
- /*
-@@ -3252,9 +3289,9 @@ void free_unref_page(struct page *page)
- 	if (!free_unref_page_prepare(page, pfn))
- 		return;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&pagesets.lock, flags);
- 	free_unref_page_commit(page, pfn);
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&pagesets.lock, flags);
- }
- 
- /*
-@@ -3274,7 +3311,7 @@ void free_unref_page_list(struct list_head *list)
- 		set_page_private(page, pfn);
- 	}
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&pagesets.lock, flags);
- 	list_for_each_entry_safe(page, next, list, lru) {
- 		unsigned long pfn = page_private(page);
- 
-@@ -3287,12 +3324,12 @@ void free_unref_page_list(struct list_head *list)
- 		 * a large list of pages to free.
- 		 */
- 		if (++batch_count == SWAP_CLUSTER_MAX) {
--			local_irq_restore(flags);
-+			local_unlock_irqrestore(&pagesets.lock, flags);
- 			batch_count = 0;
--			local_irq_save(flags);
-+			local_lock_irqsave(&pagesets.lock, flags);
- 		}
- 	}
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&pagesets.lock, flags);
- }
- 
- /*
-@@ -3449,7 +3486,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
- 	struct page *page;
- 	unsigned long flags;
- 
--	local_irq_save(flags);
-+	local_lock_irqsave(&pagesets.lock, flags);
- 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
- 	list = &pcp->lists[migratetype];
- 	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
-@@ -3457,7 +3494,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
- 		__count_zid_vm_events(PGALLOC, page_zonenum(page), 1);
- 		zone_statistics(preferred_zone, zone);
- 	}
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&pagesets.lock, flags);
- 	return page;
- }
- 
-@@ -5052,7 +5089,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		goto failed;
- 
- 	/* Attempt the batch allocation */
--	local_irq_save(flags);
-+	local_lock_irqsave(&pagesets.lock, flags);
- 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
- 	pcp_list = &pcp->lists[ac.migratetype];
- 
-@@ -5090,12 +5127,12 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		nr_populated++;
- 	}
- 
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&pagesets.lock, flags);
- 
- 	return nr_populated;
- 
- failed_irq:
--	local_irq_restore(flags);
-+	local_unlock_irqrestore(&pagesets.lock, flags);
- 
- failed:
- 	page = __alloc_pages(gfp, 0, preferred_nid, nodemask);
+ Kirill A. Shutemov
