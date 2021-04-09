@@ -2,101 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB7D35A0C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:12:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF82235A0C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 16:12:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbhDIOMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 10:12:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52954 "EHLO
+        id S233925AbhDIOMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 10:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbhDIOM2 (ORCPT
+        with ESMTP id S231402AbhDIOMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 10:12:28 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B78C061760
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 07:12:14 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id p23so2967056ljn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 07:12:13 -0700 (PDT)
+        Fri, 9 Apr 2021 10:12:50 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8B4AC061760;
+        Fri,  9 Apr 2021 07:12:35 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id j20-20020a4ad6d40000b02901b66fe8acd6so1363281oot.7;
+        Fri, 09 Apr 2021 07:12:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NDsvXUdltGvvpLLyVAvKO+pIIX+hnM4/5t6QQsKamX4=;
-        b=KIx+P5g+pGir5D4L/bl008ypkOLxkw9EMUHHovL+BOej8xyb0weCq1XijtSDfDpTFA
-         SqMYfgMvQiJW4sfTBLebyhjCFW7UpdD4b0Evc1txWo0q3ACeRe8vHAnTP/xsXN7tCznb
-         lq0qYYe3ZsK2lONfy+hLR3ywcj7L0C3h20w8vffd0U14WwWJrAhEqlATTAc1iTFKeWcC
-         5vRsEUQTcR0Ze97CB1m/XctanDdaeVKwhfbKioYUG7rBgq7QA20GQmSLB8tSI4g4f5Rp
-         qixidefXZQiEvkqMSeMSLFhbuCinCREOfV4po/6LpNF6wd9hPaz8xPsoYWp87DcyCDoS
-         6hnw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CpQHn57amOsWI+OpdDVdAxOV6I/PlLrCLOlZZkn9GPQ=;
+        b=Z9p3LiByZ1X3mW6GEFc4/tI0qTERGziUmU3r1/OPk2Hjpuvtjit34CjRkn+nmUXr7K
+         GEHDqFLRvxAdvzYmeY+csxyEhOT8bFKY7DFzhkweUsOczq91sieLrYXdMaYzvaO7EusF
+         V8sB0ztN/9OSYbNb9+YXv0rIO9w/s9JZGulSbPJu+LO5eyVmzhAzF9nHYgpYY+z257DZ
+         BwoNYQJYk0NTenMAV+y7v45mTcXBJW0Muj+4itN7cfmj/CvWenVpr2oRazX/5GEMw71D
+         vnglR8XUT5ZXuwKUz7Cjj0Wx9ENLDkIcL3m3M8r++kPi/l/BcglDQnoQ/3mNc+0uAvFa
+         4JBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NDsvXUdltGvvpLLyVAvKO+pIIX+hnM4/5t6QQsKamX4=;
-        b=d8bfigFxvMuBTYg6upPtFoUbUXmhLxEIwJL21wL5cBDW8F/O6Ykn2lX3/3MY8E4BJL
-         +P5a6IAeyBooS50hQIWyOlwJtsOxFSrZMUk/alheulGGYuDER9amAdswM2Sh4JIcLz1b
-         dT5xqQfXDCwqq+v1DycNkHptFSFnsyVSKp6aMWrAlKquG+xCTfMcJIykqxbF3ezVKGtI
-         UA/0/1G/1k++yXUoVwf09HmpXq0WqXIDMNDruZh/vOn/Hw8agL1Nd7Xv+fM/K7+aD7jo
-         woTPOAI/2iTet4qGoDyfROErI3ja0g1aNN4nS0bBKUwAWRyU7buRf7AkRxtQozJFipl6
-         I8yA==
-X-Gm-Message-State: AOAM533USHRmRb6QQzgl/RbpQChitm2N+865yp3GO3/umRQAfsXxUU9P
-        4zm3TtdfgdVf0253K8l7oFpzCQ==
-X-Google-Smtp-Source: ABdhPJygMC32GdhqTvZsDSgSixX9aK7vPRPI1+Ns5bn6Vxj6vZL4UquVC6LKIQ8m6/0BYLMDzKTNBQ==
-X-Received: by 2002:a05:651c:200b:: with SMTP id s11mr9021619ljo.177.1617977532354;
-        Fri, 09 Apr 2021 07:12:12 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id r23sm282443lfm.73.2021.04.09.07.12.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 07:12:11 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 1B878102498; Fri,  9 Apr 2021 17:12:11 +0300 (+03)
-Date:   Fri, 9 Apr 2021 17:12:11 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>
-Subject: Re: [RFCv1 7/7] KVM: unmap guest memory using poisoned pages
-Message-ID: <20210409141211.wfbyzflj7ygtx7ex@box.shutemov.name>
-References: <20210402152645.26680-1-kirill.shutemov@linux.intel.com>
- <20210402152645.26680-8-kirill.shutemov@linux.intel.com>
- <5e934d94-414c-90de-c58e-34456e4ab1cf@redhat.com>
- <20210409133347.r2uf3u5g55pp27xn@box>
- <5ef83789-ffa5-debd-9ea2-50d831262237@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CpQHn57amOsWI+OpdDVdAxOV6I/PlLrCLOlZZkn9GPQ=;
+        b=pl2mYxxmBJ8aJrp1aD+CTResciCcTG9EVypHUTBoIvn/Ra3roxa5N87cIb/x+z0/+9
+         /tYqpTc2Z0i8mGuMKbV1gcSv7vYmfhpyNp6N1PFVIaDcU0p7hI1BYeQLjvZDP9gvVXmC
+         TmecDPQFqJePIoQ53arX1kQaiF5gAxKJLWBwyd336G8gGRUknXFl904x3zZJMUI7yHL3
+         zeEO8kd5pUrMvZlVZx+Y+SwxIy+YHrorDesI7Vk+JmIQRIWBdGdbcdAJRVL1hRV5raKy
+         OjLzmFSkN2MMeqy7Yc99/qU3g3aLKH+Mae0Yri6X+xwN7BN28RqpWf7jCZ3ycoVqImCX
+         nN3A==
+X-Gm-Message-State: AOAM532Wcs3E+LKQaDrXE4Yo8V72OHyHhH+sjZHMNS+ZyF0eFIjKk0//
+        yOYm1u4vapvjLjFqIk6yV5HDbqWx3IHRxYw0jn6WLVRdn0x/
+X-Google-Smtp-Source: ABdhPJxyt0ic1lHvV025CibhRWK/pckqHEKp+vtB/lJCEj95Xv8JAXzGeVZiqbY9iB2w0y8IR09DTqPd80/86CZ+AtI=
+X-Received: by 2002:a4a:d0ce:: with SMTP id u14mr12099539oor.36.1617977555254;
+ Fri, 09 Apr 2021 07:12:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ef83789-ffa5-debd-9ea2-50d831262237@redhat.com>
+References: <20210409003904.8957-1-TheSven73@gmail.com>
+In-Reply-To: <20210409003904.8957-1-TheSven73@gmail.com>
+From:   George McCollister <george.mccollister@gmail.com>
+Date:   Fri, 9 Apr 2021 09:12:23 -0500
+Message-ID: <CAFSKS=OQ0wv7mWVcZrDdrP_1WKZ+sGPZWyNMV6snc7SWRi-o5A@mail.gmail.com>
+Subject: Re: [PATCH net v1] lan743x: fix ethernet frame cutoff issue
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Bryan Whitehead <bryan.whitehead@microchip.com>,
+        David S Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 03:50:42PM +0200, David Hildenbrand wrote:
-> > > 3. Allow selected users to still grab the pages (esp. KVM to fault them into
-> > > the page tables).
-> > 
-> > As long as fault leads to non-present PTEs we are fine. Usespace still may
-> > want to mlock() some of guest memory. There's no reason to prevent this.
-> 
-> I'm curious, even get_user_pages() will lead to a present PTE as is, no? So
-> that will need modifications I assume. (although I think it fundamentally
-> differs to the way get_user_pages() works - trigger a fault first, then
-> lookup the PTE in the page tables).
+On Thu, Apr 8, 2021 at 7:39 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+>
+> From: Sven Van Asbroeck <thesven73@gmail.com>
+>
+> The ethernet frame length is calculated incorrectly. Depending on
+> the value of RX_HEAD_PADDING, this may result in ethernet frames
+> that are too short (cut off at the end), or too long (garbage added
+> to the end).
+>
+> Fix by calculating the ethernet frame length correctly. For added
+> clarity, use the ETH_FCS_LEN constant in the calculation.
+>
+> Many thanks to Heiner Kallweit for suggesting this solution.
+>
+> Fixes: 3e21a10fdea3 ("lan743x: trim all 4 bytes of the FCS; not just 2")
+> Link: https://lore.kernel.org/lkml/20210408172353.21143-1-TheSven73@gmail.com/
+> Signed-off-by: Sven Van Asbroeck <thesven73@gmail.com>
 
-For now, the patch has two step poisoning: first fault in, on the add to
-shadow PTE -- poison. By the time VM has chance to use the page it's
-poisoned and unmapped from the host userspace.
+I'm glad everyone was able to work together to get this fixed properly
+without any figure pointing or mud slinging! Kudos everyone.
 
--- 
- Kirill A. Shutemov
+Reviewed-by: George McCollister <george.mccollister@gmail.com>
+Tested-By: George McCollister <george.mccollister@gmail.com>
+
+> ---
+>
+> Tree: git://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git # 864db232dc70
+>
+> To: Bryan Whitehead <bryan.whitehead@microchip.com>
+> To: "David S. Miller" <davem@davemloft.net>
+> To: Jakub Kicinski <kuba@kernel.org>
+> To: George McCollister <george.mccollister@gmail.com>
+> Cc: Heiner Kallweit <hkallweit1@gmail.com>
+> Cc: Andrew Lunn <andrew@lunn.ch>
+> Cc: UNGLinuxDriver@microchip.com
+> Cc: netdev@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+>
+>  drivers/net/ethernet/microchip/lan743x_main.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+> index 1c3e204d727c..7b6794aa8ea9 100644
+> --- a/drivers/net/ethernet/microchip/lan743x_main.c
+> +++ b/drivers/net/ethernet/microchip/lan743x_main.c
+> @@ -885,8 +885,8 @@ static int lan743x_mac_set_mtu(struct lan743x_adapter *adapter, int new_mtu)
+>         }
+>
+>         mac_rx &= ~(MAC_RX_MAX_SIZE_MASK_);
+> -       mac_rx |= (((new_mtu + ETH_HLEN + 4) << MAC_RX_MAX_SIZE_SHIFT_) &
+> -                 MAC_RX_MAX_SIZE_MASK_);
+> +       mac_rx |= (((new_mtu + ETH_HLEN + ETH_FCS_LEN)
+> +                 << MAC_RX_MAX_SIZE_SHIFT_) & MAC_RX_MAX_SIZE_MASK_);
+>         lan743x_csr_write(adapter, MAC_RX, mac_rx);
+>
+>         if (enabled) {
+> @@ -1944,7 +1944,7 @@ static int lan743x_rx_init_ring_element(struct lan743x_rx *rx, int index)
+>         struct sk_buff *skb;
+>         dma_addr_t dma_ptr;
+>
+> -       buffer_length = netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING;
+> +       buffer_length = netdev->mtu + ETH_HLEN + ETH_FCS_LEN + RX_HEAD_PADDING;
+>
+>         descriptor = &rx->ring_cpu_ptr[index];
+>         buffer_info = &rx->buffer_info[index];
+> @@ -2040,7 +2040,7 @@ lan743x_rx_trim_skb(struct sk_buff *skb, int frame_length)
+>                 dev_kfree_skb_irq(skb);
+>                 return NULL;
+>         }
+> -       frame_length = max_t(int, 0, frame_length - RX_HEAD_PADDING - 4);
+> +       frame_length = max_t(int, 0, frame_length - ETH_FCS_LEN);
+>         if (skb->len > frame_length) {
+>                 skb->tail -= skb->len - frame_length;
+>                 skb->len = frame_length;
+> --
+> 2.17.1
+>
