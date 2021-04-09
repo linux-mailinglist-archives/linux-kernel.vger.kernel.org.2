@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC7D35A329
-	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A4935A30C
+	for <lists+linux-kernel@lfdr.de>; Fri,  9 Apr 2021 18:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234336AbhDIQZK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 12:25:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234222AbhDIQY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 12:24:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BEDA611AE;
-        Fri,  9 Apr 2021 16:24:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1617985454;
-        bh=u+yMz9sTai8LTSnsmwKVcgcxO9gvfLc4Y4/q7OTEhCM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dWIQmAabbDh/HcS3qeAwu1qmsH5h200FJgIG7BN1GaQYkZ34d5kdTMmXCHJo0jeC6
-         Aq9BcYdYl+4DO/QplmAjHiOpxjDzRHQKT8W2VJfRZw66Mm7ax3GAb42DVnh2App4av
-         tLcv9xOD7rWPCfF0GfvKetcqosm/y9bhvSCBCOdPvxtuQ0i9JL8n/z92fYtTJn3hiC
-         1Opab0gfQgW9AaCtU0cI2w+DPMTHZBkXUDXEn2w0azKA1W02E5dr5F5ef/xJKWHP+T
-         rhq5L0zYbXlexveaRmkwdBcpkuVXqnyR8Dke49h2KFfDPIzgp3LEXv8sE4pV12Yne0
-         pIwxSQ3xUIBiw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Ye Bin <yebin10@huawei.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Takashi Iwai <tiwai@suse.com>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Hulk Robot <hulkci@huawei.com>
-Subject: Re: [PATCH -next] ASoC: rt715-sdca: Constify static struct snd_soc_dai_ops
-Date:   Fri,  9 Apr 2021 17:22:59 +0100
-Message-Id: <161798344184.47643.14354986986103091724.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210408062654.803538-1-yebin10@huawei.com>
-References: <20210408062654.803538-1-yebin10@huawei.com>
+        id S234162AbhDIQXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 12:23:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232796AbhDIQXt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 12:23:49 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6432AC061760;
+        Fri,  9 Apr 2021 09:23:28 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id t22so4325008pgu.0;
+        Fri, 09 Apr 2021 09:23:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nDusQ2OuAkZSg4NVX/t5wwyf/vXXXB7lfR1OxJXRB3s=;
+        b=WU/t+K7gJF1eKmth+Fx8Km+m0zRCt40wXeHPJ+ncI4YKlr24IOVGAREsDJZ0ex+uwf
+         14mRXDVbiWwylGSwCgFMXFomPLW6VeUisk4BsjOAPrUUsbhFx1BKmgwxlF0v5vwiUg/d
+         u2SfhHFD23syf4FuFsKqyYoRrj94ysVAvtOVlfIYGOvLFAx9+mfY05k8HBwbORjzn2YH
+         CgVP1jh7Q6N/8Y6BxnLbttOPKXOyXMdblAeThxbXiQUUg1LDdymLezykkJUz5kc9WSmS
+         ZT/qBtcESMiHHUzJQQzQhluY0c7HFLv427B++neqy7OwhhKoP7AJY3/FHcGcTJ5cCgvb
+         bgiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nDusQ2OuAkZSg4NVX/t5wwyf/vXXXB7lfR1OxJXRB3s=;
+        b=cWPuoDCKU3givSP0KaxCy+3ecQ3m3C+2NJjdFhBG9oDLtVhp0VlG7FPz8/idWuaUH2
+         qC0muCOCS8Yxe3Xh+J/HOX8ZTu21U6W3pSquQnklTPjb5+2BDgiziVF47vER1oj+/FNf
+         +Cikm03PQ/UIa51O/fLv0RKmmPs0i8K9UspJ7aPKGxroq6WNO1RPEWNbVxZxHv6rSvag
+         vwxah4xJZDuzKghquD3UNvzKWa/XO5HdeAXFPgh3R0T6QoyBT+n1QR0hZRNXUMOkrVJZ
+         i9G8lj95dyVyI1IAZoLufjqHP2C7ZNHSC8N3yRe0iegneOARC6BTQW3Eg0nb3Fjq9CLo
+         2+IA==
+X-Gm-Message-State: AOAM533i6gfaySBZSO6Ao4O7rvggM4NpXsuegbesiw5IN75jxdRAzSsJ
+        iV0J4dBu8ncUjCkkZkNq3CN5gNEP95JtmnBnVfQ=
+X-Google-Smtp-Source: ABdhPJwLYPqG7zCqxZIsi/geZhQoa08NeY7Kg13aATTx89RIAVutBerolpUW4gNQU2b0iPy8nazkY8b3QcebcgDP3hw=
+X-Received: by 2002:aa7:8593:0:b029:246:c18b:ff16 with SMTP id
+ w19-20020aa785930000b0290246c18bff16mr3915775pfn.40.1617985407948; Fri, 09
+ Apr 2021 09:23:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20210409155216.31867-1-johan@kernel.org>
+In-Reply-To: <20210409155216.31867-1-johan@kernel.org>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 9 Apr 2021 19:23:11 +0300
+Message-ID: <CAHp75Vds=yXk3yYMh1yyDb0o_YyVTh3-6iKh8rYKwYHORebdkQ@mail.gmail.com>
+Subject: Re: [PATCH 0/2] USB: serial: cp210x: provide gpio valid mask
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Pho Tran <photranvan0712@gmail.com>, Hung.Nguyen@silabs.com,
+        Tung.Pham@silabs.com, USB <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 8 Apr 2021 14:26:54 +0800, Ye Bin wrote:
-> The snd_soc_dai_ops structures is only stored in the ops field of a
-> snd_soc_dai_driver structure, so make the snd_soc_dai_ops structure
-> const to allow the compiler to put it in read-only memory.
+On Fri, Apr 9, 2021 at 6:52 PM Johan Hovold <johan@kernel.org> wrote:
+>
+> Use the new GPIO valid-mask feature to inform gpiolib which pins are
+> available for use instead of handling that in a request callback.
+>
+> This also allows user space to figure out which pins are available
+> through the chardev interface without having to request each pin in
+> turn.
 
-Applied to
+Thanks! I like the series.
+Independently on reaction on my comments:
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+> Johan
+>
+>
+> Johan Hovold (2):
+>   USB: serial: cp210x: provide gpio valid mask
+>   USB: serial: cp210x: add gpio-configuration debug printk
+>
+>  drivers/usb/serial/cp210x.c | 31 +++++++++++++++++++------------
+>  1 file changed, 19 insertions(+), 12 deletions(-)
+>
+> --
+> 2.26.3
+>
 
-Thanks!
 
-[1/1] ASoC: rt715-sdca: Constify static struct snd_soc_dai_ops
-      commit: 1f34084cc85d654a542c547df6714dae8a32d3c9
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+-- 
+With Best Regards,
+Andy Shevchenko
