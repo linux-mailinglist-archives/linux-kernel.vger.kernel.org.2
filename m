@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE71235AD58
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF2435AD5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:45:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234626AbhDJMkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 08:40:37 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:45742 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234091AbhDJMka (ORCPT
+        id S234641AbhDJMpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 08:45:14 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:46193 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234262AbhDJMpN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 08:40:30 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lVCuL-0002YQ-B3
-        for linux-kernel@vger.kernel.org; Sat, 10 Apr 2021 12:40:13 +0000
-Received: by mail-ed1-f69.google.com with SMTP id o9so574829edq.16
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 05:40:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=k8kbv7tLUPin7vEZz6Y8S8Ho2i9EHLVgMoQhgUpPZTc=;
-        b=OO8qVJuU9zI7kl4q5wh2Hw+t1/mTfN3s30cQPpEeiJhPMBvb1G/Hsf1hyPbw2ZlQDX
-         xYTDS/ebiUYyvQmoeXRJfFScPbW5B3677INIX3WOnGxvGtaKsWLoKe9kolUKwao7W0Rc
-         /yGuu5PYMvA+ccD298AR6l7P5KPYEAUW/wICHSseaBXjtOA/4Fdm5LX+KwjVR7zQ3Jvz
-         VKoGgb6zd+NjOcXa9W8UoP1leDUXK/fgfShjLBPIZQ5IhIJ5et5RjuUBhFxgafp4ij0e
-         IblXqWjM7lJBgTAGCF1S+JddRK2732PSWjWuXC0KYYks5BfK2r9ooXxmUZdeJ3VXVxlM
-         flCw==
-X-Gm-Message-State: AOAM532HWv8twvu38+3LB0b86UhwMzS7CMCdp5LcpIXY5wvSIU4t61Ps
-        pRNif2QYqu1Yo1ZM5b3D6mRhB2qKptzlZnNWVnlys8HaH4nPpEhiOkUJShTRMyDu2GpjeZ2qnpI
-        qfLI6ubpBhccqcgm4NvWOL8IFk8iYMVKCC92zmflUuQ==
-X-Received: by 2002:a05:6402:148a:: with SMTP id e10mr21482429edv.377.1618058413094;
-        Sat, 10 Apr 2021 05:40:13 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwnEqzqI9N9YfHRefBuhHMer8IAZFUeA1p/w31AAx1VON2hHKiqTW68RFjQfE3PCZ9Bpj9RyA==
-X-Received: by 2002:a05:6402:148a:: with SMTP id e10mr21482422edv.377.1618058412954;
-        Sat, 10 Apr 2021 05:40:12 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
-        by smtp.gmail.com with ESMTPSA id d6sm3149960edr.21.2021.04.10.05.40.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Apr 2021 05:40:12 -0700 (PDT)
-Subject: Re: [PATCH v5 04/16] memory: mtk-smi: Add device-link between
- smi-larb and smi-common
-To:     Yong Wu <yong.wu@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Evan Green <evgreen@chromium.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
-        yi.kuo@mediatek.com, eizan@chromium.org, acourbot@chromium.org
-References: <20210410091128.31823-1-yong.wu@mediatek.com>
- <20210410091128.31823-5-yong.wu@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <ea7ed30f-050d-2d38-7c61-1e0c192f6ded@canonical.com>
-Date:   Sat, 10 Apr 2021 14:40:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Sat, 10 Apr 2021 08:45:13 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-265-ddWTUGa6MeiYCKVuvWi_EA-1; Sat, 10 Apr 2021 13:44:56 +0100
+X-MC-Unique: ddWTUGa6MeiYCKVuvWi_EA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Sat, 10 Apr 2021 13:44:55 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Sat, 10 Apr 2021 13:44:55 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Malcolm' <dmalcolm@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+CC:     Ard Biesheuvel <ardb@kernel.org>,
+        "linux-toolchains@vger.kernel.org" <linux-toolchains@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Jason Baron" <jbaron@akamai.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: RE: static_branch/jump_label vs branch merging
+Thread-Topic: static_branch/jump_label vs branch merging
+Thread-Index: AQHXLUcPoLE1E+ToRECqr0r/4koSQqqtr8wQ
+Date:   Sat, 10 Apr 2021 12:44:55 +0000
+Message-ID: <0a2e658a936a4b7788b23c57ff37119b@AcuMS.aculab.com>
+References: <YG80wg/2iZjXfCDJ@hirez.programming.kicks-ass.net>
+         <CAMj1kXGngxH0VCHyREKeLau=159sRkWYKVZwOV84r6dvCqXcig@mail.gmail.com>
+         <YHA2jPIaj0p23mv8@hirez.programming.kicks-ass.net>
+         <5f78b7e2f9ae937271ef52ee9e999a91c2719da9.camel@redhat.com>
+         <YHBCoijoopbsDn29@hirez.programming.kicks-ass.net>
+         <YHBQPr8q0cx4iUfN@hirez.programming.kicks-ass.net>
+         <YHBS70ZQ6gOpMk2K@hirez.programming.kicks-ass.net>
+ <3c062f70ffef2dcd48a661f7c8162fb8fbaf6869.camel@redhat.com>
+In-Reply-To: <3c062f70ffef2dcd48a661f7c8162fb8fbaf6869.camel@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210410091128.31823-5-yong.wu@mediatek.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/04/2021 11:11, Yong Wu wrote:
-> Normally, If the smi-larb HW need work, we should enable the smi-common
-> HW power and clock firstly.
-> This patch adds device-link between the smi-larb dev and the smi-common
-> dev. then If pm_runtime_get_sync(smi-larb-dev), the pm_runtime_get_sync
-> (smi-common-dev) will be called automatically.
-> 
-> Also, Add DL_FLAG_STATELESS to avoid the smi-common clocks be gated when
-> probe.
-> 
-> CC: Matthias Brugger <matthias.bgg@gmail.com>
-> Suggested-by: Tomasz Figa <tfiga@chromium.org>
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->  drivers/memory/mtk-smi.c | 19 ++++++++++---------
->  1 file changed, 10 insertions(+), 9 deletions(-)
+RnJvbTogRGF2aWQgTWFsY29sbQ0KPiBTZW50OiAwOSBBcHJpbCAyMDIxIDE0OjQ5DQouLi4NCj4g
+V2l0aCB0aGUgY2F2ZWF0IHRoYXQgbXkga25vd2xlZGdlIG9mIEdDQydzIG1pZGRsZS1lbmQgaXMg
+bW9zdGx5IGFib3V0DQo+IGltcGxlbWVudGluZyB3YXJuaW5ncywgcmF0aGVyIHRoYW4gb3B0aW1p
+emF0aW9uLCBJIGRpZCBzb21lDQo+IGV4cGVyaW1lbnRhdGlvbiwgd2l0aCBnY2MgdHJ1bmsgb24g
+eDg2XzY0IEZXSVcuDQo+IA0KPiBHaXZlbjoNCj4gDQo+IGludCBfX2F0dHJpYnV0ZV9fKChwdXJl
+KSkgZm9vKHZvaWQpOw0KPiANCj4gaW50IHQodm9pZCkNCj4gew0KPiAgIGludCBhOw0KICAgICAg
+ICAgICA9IDA7DQo+ICAgaWYgKGZvbygpKQ0KPiAgICAgYSsrOw0KPiAgIGlmIChmb28oKSkNCj4g
+ICAgIGErKzsNCj4gICBpZiAoZm9vKCkpDQo+ICAgICBhKys7DQo+ICAgcmV0dXJuIGE7DQo+IH0N
+Cj4gDQo+IEF0IC1PMSBhbmQgYWJvdmUgdGhpcyBpcyBvcHRpbWl6ZWQgdG8gYSBzaW5nbGUgY2Fs
+bCB0byBmb28sIHJldHVybmluZyAwDQo+IG9yIDMgYWNjb3JkaW5nbHkuDQoNCkludGVyZXN0aW5n
+IGhvcnJpZCBpZGVhLg0KVGhlIGNvZGUgZ2VuZXJhdGVkIGZvciB0aGUgYWJvdmUgc2hvdWxkIGJl
+Og0KCWNhbGwJZm9vDQoJanoJbGFiZWwNClNvIG9ianRvb2wgY291bGQgZmluZCB0aGUgcmVsb2Nh
+dGlvbiBlbnRyaWVzIGZvciAnZm9vJw0KYW5kIHVzZSB0aGF0IGluZm9ybWF0aW9uIHRvIHJlcGxh
+Y2UgdGhlIGNhbGwgaW5zdHJ1Y3Rpb24NCihhbmQgbWF5YmUgdGhlIGp6KSB3aXRoIGEgc3VpdGFi
+bGUgYWx0ZXJuYXRlIGluc3RydWN0aW9uDQpzZXF1ZW5jZS4NCg0KQWx0aG91Z2ggdGhhdCBtaWdo
+dCBlbmQgdXAgd2l0aCBhIGdhbWUgb2YgJ3doYWNrLWEtbW9sZScNCm9uIHRoZSBwZXJ2ZXJzZSBp
+bnN0cnVjdGlvbiBzZXF1ZW5jZXMgdGhlIGNvbXBpbGVyDQpnZW5lcmF0ZXMuDQoNCglEYXZpZA0K
+DQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFy
+bSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAo
+V2FsZXMpDQo=
 
-I understood this is a dependency for other patches, so:
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-If I am wrong and I can take it via memory tree, let me know.
-
-Best regards,
-Krzysztof
