@@ -2,57 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A047235AF2F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 19:11:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FB735AF2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 19:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234951AbhDJRDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 13:03:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53468 "EHLO mail.kernel.org"
+        id S234932AbhDJRDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 13:03:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234903AbhDJRDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234900AbhDJRDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 10 Apr 2021 13:03:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 45550611AF;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 11F84611C2;
         Sat, 10 Apr 2021 17:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1618074212;
-        bh=dtMAO0X4BeSs8Bei37ewMJMk5KOmk4jcKsKKZb1G9qg=;
+        bh=wfGUp6nDowhIgv8vKG3p+S+94HworLOEblno8hScZeE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=VxaenhPs1s+wwOgYpRr0veCmg5E0fiuMu8FWAntGQzfXbGlyVwf/K3qrtXv8ZUjI7
-         lXaTUgfqS3QB88Wufi/xcIgaKcvbQGR3B5ihrQDq4eIh0jpGL20XTNh2RWJTEcAH6p
-         3HZExzxqUM390+gKDpZcKh3/ssGo8rlYANP4j6Q+Cw7MHWKVASw3795swEm7tVmTTO
-         RRFx09DKuXglVsyL5PpbB2hf7mQe9eDGOC+fbvIlDOaLwO5kHZ7aHOIU058tp/xZ3V
-         mStSMrXtzcxAQFWwPoUcxygjbAkWehh/edQLk0L57szpR38K2oplbwuVrdOPVgYd0X
-         5WehuuVvbPA9Q==
+        b=F+Ealjj0eHp5IKeneOyAn5504+3Ot1fZSV1o4t3ity1jR6IMkvSjeDg995ZJvP+MX
+         5sRlizraoHHMO/Jxhh5W6ckITN28G7MIcb28EHNbbuyG9cKm+zHK99i0J5NBiKEb2a
+         XfXaYI6m5k1ApFw/Uvb5zvsQ2kq7N0kM0da8KPcDjMgGHgqEAu+BES6O5sJzgAQjGR
+         PtdpDMn4fhsqJ6vrNJ5FHq1nhwX337Y9J8OwfLR2kuGUReqwNAOGZyLFc6Gxh2u7IT
+         7iIO0ahq917ydy2chXNAdEH6szQ3qfI3DoO0U424UtXlQ0MCLKiBleoeLHwgI6CGKD
+         a3j96n8BurcNw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3FE8060192;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0D59760192;
         Sat, 10 Apr 2021 17:03:32 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.12-6 tag
+Subject: Re: [GIT PULL] Driver core fix for 5.12-rc7
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <871rbidwt6.fsf@mpe.ellerman.id.au>
-References: <871rbidwt6.fsf@mpe.ellerman.id.au>
+In-Reply-To: <YHGkPlxkMvG1JKdn@kroah.com>
+References: <YHGkPlxkMvG1JKdn@kroah.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <871rbidwt6.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.12-6
-X-PR-Tracked-Commit-Id: 791f9e36599d94af5a76d3f74d04e16326761aae
+X-PR-Tracked-Message-Id: <YHGkPlxkMvG1JKdn@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.12-rc7
+X-PR-Tracked-Commit-Id: eed6e41813deb9ee622cd9242341f21430d7789f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 95c7b07551879c8ad4d6dca10c02de46ddbf55a8
-Message-Id: <161807421225.30985.5791691520680055342.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: d5fa1dad75bef69fbff5a193b7a99ada624a0154
+Message-Id: <161807421204.30985.16911060115857759169.pr-tracker-bot@kernel.org>
 Date:   Sat, 10 Apr 2021 17:03:32 +0000
-To:     Michael Ellerman <mpe@ellerman.id.au>
+To:     Greg KH <gregkh@linuxfoundation.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Saravana Kannan <saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 11 Apr 2021 00:43:49 +1000:
+The pull request you sent on Sat, 10 Apr 2021 15:12:30 +0200:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.12-6
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.12-rc7
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/95c7b07551879c8ad4d6dca10c02de46ddbf55a8
+https://git.kernel.org/torvalds/c/d5fa1dad75bef69fbff5a193b7a99ada624a0154
 
 Thank you!
 
