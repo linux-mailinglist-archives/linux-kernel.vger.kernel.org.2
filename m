@@ -2,104 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB7635B006
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 21:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0838935B00D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 21:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234957AbhDJTLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 15:11:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45068 "EHLO mail.kernel.org"
+        id S234956AbhDJTRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 15:17:39 -0400
+Received: from smtp36.i.mail.ru ([94.100.177.96]:54178 "EHLO smtp36.i.mail.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234768AbhDJTLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 15:11:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC6966113A;
-        Sat, 10 Apr 2021 19:11:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618081863;
-        bh=rBfw+r2um68UpFbzVkxVlHHyJ+hgFPf/zBrFYQw7TNI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CIhhz328zzet5a/BvXZzSs9qZeOvsRmdTIQX8oHvPt4oPq31f6SdMiRQlV3wwxeNa
-         GmirfKbnBbXy13rC5mPC5X4IYTxOrbfSp201pVc2ivwXNFWXhMjpUUd6Z3P6GdAypc
-         hXQbk3jNgzXE4abVKr5LlTbMx3yus3tJYykOkPF4g5QUy/4sEmN3QnSl1XUTyImSG8
-         +nrIDp4z3hEGajjGuvQYOwmAvld9GZf6ZqRXKlZ6kJNOxc2eYZ8HIjAVZ3TijeONug
-         5j3gyVLCEPaB6nGAjThA9V1IH5nKdc2cpKmOF0OJJIEPxgrvw2FaG4CSqtEAVnEU7R
-         BXNDi+Akq/Lhw==
-Received: by mail-ot1-f47.google.com with SMTP id k14-20020a9d7dce0000b02901b866632f29so8973160otn.1;
-        Sat, 10 Apr 2021 12:11:03 -0700 (PDT)
-X-Gm-Message-State: AOAM531Gu7ZroMfzZPVK+zswSeVKSRAt6gNScNWY7toYwzv0pgTbqngs
-        YoYRoVagkOv02V8N9BihJZYRoDdswmEDZttOAdg=
-X-Google-Smtp-Source: ABdhPJy5fKRN+b0N+vdm7HuaN0voD9Ksx0FbjR4NiXXEFlqO3Rbtb6TftW/JNl1MSl+hXOUABL/gf3HkAiDbD0wFK7g=
-X-Received: by 2002:a05:6830:148c:: with SMTP id s12mr17843523otq.251.1618081863076;
- Sat, 10 Apr 2021 12:11:03 -0700 (PDT)
+        id S234439AbhDJTRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 15:17:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bk.ru; s=mail3;
+        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=/n3VjNvACnAJ60ANKxwDucsN/FQ+u+9EHf1Ytd05s50=;
+        b=azG6BCcV9bd2T9NScyz05hjCoLCtKuXZxc1oOYONNueZrUayxxObY/cauzxiM4e+7Ck+xKavW3DIyDN0nCKGUwP10+0hOYxQqsNpv5YIFOEKFLthkYAOWDoeiBE9lYy0s6rbQIwQt3QoRMwWE1/xP8HVBRTT/mEFEkhDOWJnx/4=;
+Received: by smtp36.i.mail.ru with esmtpa (envelope-from <dev.dragon@bk.ru>)
+        id 1lVJ6f-0005ol-2Q; Sat, 10 Apr 2021 22:17:21 +0300
+From:   dev.dragon@bk.ru
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Dmitrii Wolf <dev.dragon@bk.ru>
+Subject: [PATCH] Staging: media: atomisp: pci: fixed a curly bracket coding style issue.
+Date:   Sat, 10 Apr 2021 22:16:56 +0300
+Message-Id: <20210410191655.32719-1-dev.dragon@bk.ru>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210409185105.188284-3-willy@infradead.org> <202104100656.N7EVvkNZ-lkp@intel.com>
- <20210410024313.GX2531743@casper.infradead.org>
-In-Reply-To: <20210410024313.GX2531743@casper.infradead.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 10 Apr 2021 21:10:47 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3uEGaEN-p06vFP+jwbFt3P=Bx4=aRN+kUyB4PcFPxLRg@mail.gmail.com>
-Message-ID: <CAK8P3a3uEGaEN-p06vFP+jwbFt3P=Bx4=aRN+kUyB4PcFPxLRg@mail.gmail.com>
-Subject: Re: Bogus struct page layout on 32-bit
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, Linux-MM <linux-mm@kvack.org>,
-        kbuild-all@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp36.i.mail.ru; auth=pass smtp.auth=dev.dragon@bk.ru smtp.mailfrom=dev.dragon@bk.ru
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD92FFCB8E6708E7480D608FE24BC85426BB1B55F651FED8C70182A05F53808504038C4C691BD028CD67577BC6197054B408E37FA8AA24A30922BB3CF5DFFD08385
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7046EF22710D35B81EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006376F978168E59B07A5EA1F7E6F0F101C67CDEEF6D7F21E0D1D9295C2E9FA3191EE1B59CA4C82EFA658666293059DC4D586984B2E6512477067F6B57BC7E64490618DEB871D839B73339E8FC8737B5C22494854413538E1713FCC7F00164DA146DAFE8445B8C89999729449624AB7ADAF37F6B57BC7E64490611E7FA7ABCAF51C92176DF2183F8FC7C0A3E989B1926288338941B15DA834481F9449624AB7ADAF37BA3038C0950A5D3613377AFFFEAFD2697680F9384605B90368BA0AD3B22A3C517B076A6E789B0E97A8DF7F3B2552694A1E7802607F20496D49FD398EE364050F042285CD7A5C321F3DBBCB839D0549ACB3661434B16C20AC78D18283394535A9E827F84554CEF50127C277FBC8AE2E8BA83251EDC214901ED5E8D9A59859A8B6E9687809A427A9F9089D37D7C0E48F6C5571747095F342E88FB05168BE4CE3AF
+X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A2368A440D3B0F6089093C9A16E5BC824A2A04A2ABAA09D25379311020FFC8D4AD521342F7752FCF28B3A09396CAA66D86
+X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975CE44850EFB5864EA2C70ABAD5AAE7D166EC96BA78500BA6849C2B6934AE262D3EE7EAB7254005DCED556CBE7F905700A49510FB958DCE06DB6ED91DBE5ABE359A7EE5648E065588D469F8FEF10F1C2C2993EDB24507CE13387DFF0A840B692CF8
+X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D346B222596F62B8FA952447156549F56AD52E08A11414F586FD44D5FF33397B7C0F1E608E91EC90EB21D7E09C32AA3244C49BD678CA6371EB5E7ADEF6E32E096A83FD9C8CA1B0515E083B48618A63566E0
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojqcJA+pXcDukX0g/nTt995Q==
+X-Mailru-Sender: 3A338A78718AEC5AA85B3E7661095C1EDAE73A6F6FD4E0364AF7413C85806CCE80644619C1906B6F3833C6AC539110AEA432B8CD90067B65A6C5C4E98768B51D7AA22088860DD9FF5CDEF9E650933936342CD0BA774DB6A9AE208404248635DF
+X-Mras: Ok
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 4:44 AM Matthew Wilcox <willy@infradead.org> wrote:
-> +                       dma_addr_t dma_addr __packed;
->                 };
->                 struct {        /* slab, slob and slub */
->                         union {
->
-> but I don't know if GCC is smart enough to realise that dma_addr is now
-> on an 8 byte boundary and it can use a normal instruction to access it,
-> or whether it'll do something daft like use byte loads to access it.
->
-> We could also do:
->
-> +                       dma_addr_t dma_addr __packed __aligned(sizeof(void *));
->
-> and I see pahole, at least sees this correctly:
->
->                 struct {
->                         long unsigned int _page_pool_pad; /*     4     4 */
->                         dma_addr_t dma_addr __attribute__((__aligned__(4))); /*     8     8 */
->                 } __attribute__((__packed__)) __attribute__((__aligned__(4)));
->
-> This presumably affects any 32-bit architecture with a 64-bit phys_addr_t
-> / dma_addr_t.  Advice, please?
+From: Dmitrii Wolf <dev.dragon@bk.ru>
 
-I've tried out what gcc would make of this:  https://godbolt.org/z/aTEbxxbG3
+Fixed a coding style issue.
+---
+ drivers/staging/media/atomisp/pci/atomisp_csi2.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-struct page {
-    short a;
-    struct {
-        short b;
-        long long c __attribute__((packed, aligned(2)));
-    } __attribute__((packed));
-} __attribute__((aligned(8)));
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_csi2.c b/drivers/staging/media/atomisp/pci/atomisp_csi2.c
+index 060b8765ae96..200f16994f3a 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_csi2.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_csi2.c
+@@ -29,7 +29,8 @@ static struct v4l2_mbus_framefmt *__csi2_get_format(struct
+ 	v4l2_subdev_pad_config *cfg,
+ 	enum
+ 	v4l2_subdev_format_whence
+-	which, unsigned int pad) {
++	which, unsigned int pad)
++{
+ 	if (which == V4L2_SUBDEV_FORMAT_TRY)
+ 		return v4l2_subdev_get_try_format(&csi2->subdev, cfg, pad);
+ 	else
+-- 
+2.25.1
 
-In this structure, 'c' is clearly aligned to eight bytes, and gcc does
-realize that
-it is safe to use the 'ldrd' instruction for 32-bit arm, which is forbidden on
-struct members with less than 4 byte alignment. However, it also complains
-that passing a pointer to 'c' into a function that expects a 'long long' is not
-allowed because alignof(c) is only '2' here.
-
-(I used 'short' here because I having a 64-bit member misaligned by four
-bytes wouldn't make a difference to the instructions on Arm, or any other
-32-bit architecture I can think of, regardless of the ABI requirements).
-
-      Arnd
