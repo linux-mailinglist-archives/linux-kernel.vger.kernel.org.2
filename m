@@ -2,147 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5273E35AAB0
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 06:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CDB35AAE3
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 06:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233957AbhDJEPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 00:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
+        id S230055AbhDJEeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 00:34:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbhDJEPA (ORCPT
+        with ESMTP id S229464AbhDJEeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 00:15:00 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672B1C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 21:14:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=3bB+m0fbtX3OhtdFNOgtTWp1ZNIwh6ik4e61/uqX+1Q=; b=uVOMEBzYkT6VmFOA9oLuTssCmk
-        8N3JkFlt2shGL9sds12Bge87VDKeD1GPZAQWgAX1/WS6HjvUOk0NSqDZgxB206JGHt0QkjtXDdI5a
-        NF1ViY4S+pZs48hVjdP6rPvbgZZ8mpymEtRdH9L+bcZ8GqSYbycUObkDiFG0O6n0klZC5Rhe+ros/
-        Kovj8MGjiJi/vg7/vReZPGktDUv7e2sucNenwJlDLMS+sdRURXGUbQIBcJyF/EW31ZzrsT4T50r4o
-        kQxXkEGbdbDoXwdnuY8RnZRQ3pDFQAcBy6AgkJnGl9UIAszQ7kwxHpEY6min+JCOtTCh5n2mMDR2m
-        lYMsKKUA==;
-Received: from [2601:1c0:6280:3f0::e0e1]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lV50G-001Ixr-LS; Sat, 10 Apr 2021 04:13:58 +0000
-Subject: Re: [PATCH] um: add 2 missing libs to fix various build errors
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Brendan Jackman <jackmanb@google.com>,
-        Alexei Starovoitov <ast@kernel.org>, kbuild-all@lists.01.org,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        linux-um@lists.infradead.org,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Johannes Berg <johannes.berg@intel.com>
-References: <20210404182044.9918-1-rdunlap@infradead.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <9f7eeb70-8ddc-fb04-a378-5f1e80d485e6@infradead.org>
-Date:   Fri, 9 Apr 2021 21:13:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sat, 10 Apr 2021 00:34:16 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34EBC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 21:34:02 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id z22-20020a17090a0156b029014d4056663fso4211654pje.0
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 21:34:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FW1Qa2Pww1tEjlyfwRyqPFS3bdetO5szAzOdgn/LNKs=;
+        b=cPT5KTO9NK/LC19lH63RuMviNJtAyfY2N86QrNDR6sKsVMNLfz4RWwozZ6wBTf1uc0
+         PRrrhpXOE0i2ImCkMGKX9VoGtfJZs5F32WcMM3Y4TDwY67/S6Mqxs+TmYV2UnND8Hmj2
+         cHU9x5fbtVUfMpMfZWUN29VV9o0EQi3Yy+iSd7g3e7rm0c3/3agO37V2z5PiOOyt5Ddo
+         IRnmSsbCMtvsOdmdVs7gQf9XHa1wtA2j6rOQ8X7h1NsocjgF0R6MphRgx9oE9XMBW9J+
+         AUYGMF6wjdrD0dJGWf6Rc2faxdRoYmXDr0Tvv/g2C4uCBbskRZE8IuEcB2x4SlUl74iI
+         oblg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FW1Qa2Pww1tEjlyfwRyqPFS3bdetO5szAzOdgn/LNKs=;
+        b=Vn6L/zPHZVwQzmSHcLPyjZC+BtByHjSIpJgHowfgJYNLlo3yT81LxC00axiHepnB3C
+         Ymt9yvV56o5/na8tfD7jIN0J+SLtdoXqN+EhLohNYGiLVglsYstfP9vR3enCXwc8Kgpw
+         QTQLi3Qb4LdAR4BzTmN1wkRxNI07imspOB70vyaysVkGeo1QMawhEj28MbFx62xDUuMp
+         0Jnw8x2YTL9I85hVV/LyA0prUDlHwS9L0H6/9TPpyGx8ZkNbUKOSLfGPxDW5fSZdjgII
+         ORv5uFuZC8ut3KKI0IxPZUZ3yhukLnt75mlBXYm6Ti9QvHPB8+Lgd926SvOeRhTSC7hR
+         7nNg==
+X-Gm-Message-State: AOAM530zc7W2OpjpZLA983SOSRXKyKVhEb6E3wLzYpOMJ4MVLdENDPoK
+        e4CGq2Ed2wIxNfOpVj1bcmPkud7h39nbrsl4Ay2uBg==
+X-Google-Smtp-Source: ABdhPJxZhzgitiiSg64+M/hoJTMFSjRogSq/t3z8Bht8t1xPnJcWBgx28PAULBfXXSYhJbGHyiLHH4BDecMclMAyCjY=
+X-Received: by 2002:a17:902:8308:b029:e9:d69:a2f with SMTP id
+ bd8-20020a1709028308b02900e90d690a2fmr15961107plb.20.1618029242417; Fri, 09
+ Apr 2021 21:34:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210404182044.9918-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210409122959.82264-1-songmuchun@bytedance.com>
+ <20210409122959.82264-10-songmuchun@bytedance.com> <YHCdjgaB8IjOMq4z@cmpxchg.org>
+In-Reply-To: <YHCdjgaB8IjOMq4z@cmpxchg.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sat, 10 Apr 2021 12:33:26 +0800
+Message-ID: <CAMZfGtUMgSu8hw2UdxJPzXCXTXvC3Z=av2B2tqrJ4oTT11JgYw@mail.gmail.com>
+Subject: Re: [External] Re: [RFC PATCH v2 09/18] mm: vmscan: remove noinline_for_stack
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
+        bsingharora@gmail.com, shy828301@gmail.com,
+        alex.shi@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/4/21 11:20 AM, Randy Dunlap wrote:
-> Fix many build errors (at least 18 build error reports) for uml on i386
-> by adding 2 more library object files. All missing symbols are
-> either cmpxchg8b_emu or atomic*386.
-> 
-> Here are a few examples of the build errors that are eliminated:
-> 
->    /usr/bin/ld: core.c:(.text+0xd83): undefined reference to `cmpxchg8b_emu'
->    /usr/bin/ld: core.c:(.text+0x2bb2): undefined reference to `atomic64_add_386'
->    /usr/bin/ld: core.c:(.text+0x2c5d): undefined reference to `atomic64_xchg_386'
->    syscall.c:(.text+0x2f49): undefined reference to `atomic64_set_386'
->    /usr/bin/ld: syscall.c:(.text+0x2f54): undefined reference to `atomic64_set_386'
->    syscall.c:(.text+0x33a4): undefined reference to `atomic64_inc_386'
->    /usr/bin/ld: syscall.c:(.text+0x33ac): undefined reference to `atomic64_inc_386'
->    /usr/bin/ld: net/ipv4/inet_timewait_sock.o: in function `inet_twsk_alloc':
->    inet_timewait_sock.c:(.text+0x3d1): undefined reference to `atomic64_read_386'
->    /usr/bin/ld: inet_timewait_sock.c:(.text+0x3dd): undefined reference to `atomic64_set_386'
->    /usr/bin/ld: net/ipv4/inet_connection_sock.o: in function `inet_csk_clone_lock':
->    inet_connection_sock.c:(.text+0x1d74): undefined reference to `atomic64_read_386'
->    /usr/bin/ld: inet_connection_sock.c:(.text+0x1d80): undefined reference to `atomic64_set_386'
->    /usr/bin/ld: net/ipv4/tcp_input.o: in function `inet_reqsk_alloc':
->    tcp_input.c:(.text+0xa345): undefined reference to `atomic64_set_386'
->    /usr/bin/ld: net/mac80211/wpa.o: in function `ieee80211_crypto_tkip_encrypt':
->    wpa.c:(.text+0x739): undefined reference to `atomic64_inc_return_386'
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Brendan Jackman <jackmanb@google.com>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: kbuild-all@lists.01.org
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: linux-um@lists.infradead.org
-> Cc: Johannes Berg <johannes@sipsolutions.net>
-> Cc: Johannes Berg <johannes.berg@intel.com>
-> ---
-> My UML on i386 build environment is br0ken so this is not tested other
-> than to see that the .o files are built as expected.
-> If someone can test/verify it, please respond. Thanks.
+On Sat, Apr 10, 2021 at 2:31 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Fri, Apr 09, 2021 at 08:29:50PM +0800, Muchun Song wrote:
+> > The noinline_for_stack is introduced by commit 666356297ec4 ("vmscan:
+> > set up pagevec as late as possible in shrink_inactive_list()"), its
+> > purpose is to delay the allocation of pagevec as late as possible to
+> > save stack memory. But the commit 2bcf88796381 ("mm: take pagevecs off
+> > reclaim stack") replace pagevecs by lists of pages_to_free. So we do
+> > not need noinline_for_stack, just remove it (let the compiler decide
+> > whether to inline).
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Good catch.
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> Since this patch is somewhat independent of the rest of the series,
+> you may want to put it in the very beginning, or even submit it
+> separately, to keep the main series as compact as possible. Reviewers
+> can be more hesitant to get involved with larger series ;)
 
-Hi,
-Instead of trying to build this on x86_64, I powered up my 32-bit x86
-laptop and verified that this patch fixes the build errors of
-undefined references to cmpxchg8b_emu() and atomic64_*_386() functions.
-
-There are still some build errors in 2 object files:
-
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x63): more undefined references to `X86_FEATURE_XMM' follow
-
-and
-
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x63): undefined reference to `X86_FEATURE_XMM2'
-/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x70): undefined reference to `X86_FEATURE_XMM2'
-
-I don't know what to do about these or what is causing them (other than
-"alternatives").
-
-
-
->  arch/x86/um/Makefile |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> --- lnx-512-rc5.orig/arch/x86/um/Makefile
-> +++ lnx-512-rc5/arch/x86/um/Makefile
-> @@ -21,6 +21,7 @@ obj-y += checksum_32.o syscalls_32.o
->  obj-$(CONFIG_ELF_CORE) += elfcore.o
->  
->  subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
-> +subarch-y += ../lib/cmpxchg8b_emu.o ../lib/atomic64_386_32.o
->  subarch-y += ../kernel/sys_ia32.o
->  
->  else
-> 
-
-
--- 
-~Randy
+OK. I will gather all the cleanup patches into a separate series.
+Thanks for your suggestion.
