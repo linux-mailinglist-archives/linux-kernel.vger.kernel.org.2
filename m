@@ -2,158 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41D435AA32
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 04:05:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31CB835AA35
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 04:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234110AbhDJCFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 22:05:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15963 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233943AbhDJCFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 22:05:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618020307; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=I7XkTGHBd6/6KHKf2xFt+UXxiBzlJ5dMk4gABwW+drs=; b=dxfOPVeHK+Z1uJ8sOdxhwa79A2PBCnl/AGoRtHHjACGLmdMF/fp/ylOSRfWDjVGUrcdhMDZ6
- 41eSiZvZIRFYCI5N2YDBOUrq6mD4eo83rYmOHCnvN4cRqQ/td2gJgYKMvyJ55QcLZ+xZ/6+4
- W5NiJGJO+C/hvAKwvue595w14bs=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 607107cf8166b7eff718edb0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 10 Apr 2021 02:05:03
- GMT
-Sender: tdas=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 81A57C43464; Sat, 10 Apr 2021 02:05:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from tdas-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tdas)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9C1F1C433C6;
-        Sat, 10 Apr 2021 02:04:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9C1F1C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tdas@codeaurora.org
-From:   Taniya Das <tdas@codeaurora.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-Subject: [PATCH v1 2/2] arm64: dts: qcom: sc7280: Add clock controller nodes
-Date:   Sat, 10 Apr 2021 07:34:40 +0530
-Message-Id: <1618020280-5470-3-git-send-email-tdas@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618020280-5470-1-git-send-email-tdas@codeaurora.org>
-References: <1618020280-5470-1-git-send-email-tdas@codeaurora.org>
+        id S233610AbhDJCH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 22:07:26 -0400
+Received: from smtprelay0209.hostedemail.com ([216.40.44.209]:41116 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229665AbhDJCHZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 22:07:25 -0400
+Received: from omf17.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id A36711812FAA6;
+        Sat, 10 Apr 2021 02:07:11 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id 91FCC27DD18;
+        Sat, 10 Apr 2021 02:07:10 +0000 (UTC)
+Message-ID: <f5fe04d62b22eb5e09c299e769d9b9d8917f119c.camel@perches.com>
+Subject: Re: [PATCH 4/6] staging: rtl8192e: matched alignment with open
+ parenthesis
+From:   Joe Perches <joe@perches.com>
+To:     Mitali Borkar <mitaliborkar810@gmail.com>,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Date:   Fri, 09 Apr 2021 19:07:09 -0700
+In-Reply-To: <YHEA2Te3Hik5J39t@kali>
+References: <YHEA2Te3Hik5J39t@kali>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 91FCC27DD18
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: mkpzxbsbmfazgbhd1k69skk37sdefyeh
+X-Rspamd-Server: rspamout04
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX187jCxClcn3J4yFzx2u4t0xldxYR15e8j0=
+X-HE-Tag: 1618020430-317341
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the video, gpu, display, lpass clock controller
-device nodes for SC7280 SoC.
+On Sat, 2021-04-10 at 07:05 +0530, Mitali Borkar wrote:
+> Matched the alignment with open parenthesis to meet linux kernel coding
+> style.
+> Reported by checkpatch.
+[]
+> diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+[]
+> @@ -154,7 +154,7 @@ bool IsHTHalfNmodeAPs(struct rtllib_device *ieee)
+>  	    (net->ralink_cap_exist))
+>  		retValue = true;
+>  	else if (!memcmp(net->bssid, UNKNOWN_BORADCOM, 3) ||
+> -		!memcmp(net->bssid, LINKSYSWRT330_LINKSYSWRT300_BROADCOM, 3) ||
+> +		 !memcmp(net->bssid, LINKSYSWRT330_LINKSYSWRT300_BROADCOM, 3) ||
+>  		!memcmp(net->bssid, LINKSYSWRT350_LINKSYSWRT150_BROADCOM, 3) ||
+>  		(net->broadcom_cap_exist))
 
-Signed-off-by: Taniya Das <tdas@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 58 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
+checkpatch is a stupid script.
+Look further at the code not just at what checkpatch reports.
+Align all the contination lines, not just the first one.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index cda3f2a..b59ffff 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -5,8 +5,12 @@
-  * Copyright (c) 2020-2021, The Linux Foundation. All rights reserved.
-  */
+It might be sensible to add a generic function like
 
-+#include <dt-bindings/clock/qcom,dispcc-sc7280.h>
- #include <dt-bindings/clock/qcom,gcc-sc7280.h>
-+#include <dt-bindings/clock/qcom,gpucc-sc7280.h>
-+#include <dt-bindings/clock/qcom,lpass-sc7280.h>
- #include <dt-bindings/clock/qcom,rpmh.h>
-+#include <dt-bindings/clock/qcom,videocc-sc7280.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/mailbox/qcom-ipcc.h>
- #include <dt-bindings/power/qcom-aoss-qmp.h>
-@@ -324,6 +328,31 @@
- 			};
- 		};
+static inline bool ether_oui_equal(const u8 *addr, const u8 *oui)
+{
+	return addr[0] == oui[0] && addr[1] == oui[1] && addr[2] == oui[2];
+}	
 
-+		lpasscc: lpasscc@3000000 {
-+			compatible = "qcom,sc7280-lpasscc";
-+			reg = <0 0x03000000 0 0x40>,
-+			      <0 0x03c04000 0 0x4>,
-+			      <0 0x03389000 0 0x24>;
-+			reg-names = "qdsp6ss", "top_cc", "cc";
-+			clocks = <&gcc GCC_CFG_NOC_LPASS_CLK>;
-+			clock-names = "iface";
-+			#clock-cells = <1>;
-+		};
-+
-+		gpucc: clock-controller@3d90000 {
-+			compatible = "qcom,sc7280-gpucc";
-+			reg = <0 0x03d90000 0 0x9000>;
-+			clocks = <&rpmhcc RPMH_CXO_CLK>,
-+				 <&gcc GCC_GPU_GPLL0_CLK_SRC>,
-+				 <&gcc GCC_GPU_GPLL0_DIV_CLK_SRC>;
-+			clock-names = "bi_tcxo",
-+				      "gcc_gpu_gpll0_clk_src",
-+				      "gcc_gpu_gpll0_div_clk_src";
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
-+		};
-+
- 		stm@6002000 {
- 			compatible = "arm,coresight-stm", "arm,primecell";
- 			reg = <0 0x06002000 0 0x1000>,
-@@ -820,6 +849,35 @@
- 			interrupts = <GIC_SPI 582 IRQ_TYPE_LEVEL_HIGH>;
- 		};
+to include/linux/etherdevice.h
 
-+		videocc: clock-controller@aaf0000 {
-+			compatible = "qcom,sc7280-videocc";
-+			reg = <0 0xaaf0000 0 0x10000>;
-+			clocks = <&rpmhcc RPMH_CXO_CLK>,
-+				<&rpmhcc RPMH_CXO_CLK_A>;
-+			clock-names = "bi_tcxo", "bi_tcxo_ao";
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
-+		};
-+
-+		dispcc: clock-controller@af00000 {
-+			compatible = "qcom,sc7280-dispcc";
-+			reg = <0 0xaf00000 0 0x20000>;
-+			clocks = <&rpmhcc RPMH_CXO_CLK>,
-+				 <&gcc GCC_DISP_GPLL0_CLK_SRC>,
-+				 <0>, <0>, <0>, <0>, <0>, <0>;
-+			clock-names = "bi_tcxo", "gcc_disp_gpll0_clk",
-+				      "dsi0_phy_pll_out_byteclk",
-+				      "dsi0_phy_pll_out_dsiclk",
-+				      "dp_phy_pll_link_clk",
-+				      "dp_phy_pll_vco_div_clk",
-+				      "edp_phy_pll_link_clk",
-+				      "edp_phy_pll_vco_div_clk";
-+			#clock-cells = <1>;
-+			#reset-cells = <1>;
-+			#power-domain-cells = <1>;
-+		};
-+
- 		pdc: interrupt-controller@b220000 {
- 			compatible = "qcom,sc7280-pdc", "qcom,pdc";
- 			reg = <0 0x0b220000 0 0x30000>;
---
-Qualcomm INDIA, on behalf of Qualcomm Innovation Center, Inc.is a member
-of the Code Aurora Forum, hosted by the  Linux Foundation.
+(Maybe use & instead of && if it's speed sensitive)
+
+so this would read
+
+	else if (ether_oui_equal(net->bssid, UNKNOWN_BORADCOM) ||
+		 ether_oui_equal(net->bssid, LINKSYSWRT330_LINKSYSWRT300_BROADCOM) ||
+		 ether_oui_equal(net->bssid, LINKSYSWRT350_LINKSYSWRT150_BROADCOM) ||
+		 net->broacom_cap_exist)
+
+and it'd also be good to correct the typo of UNKNOWN_BORADCOM globally.
+
+> @@ -654,13 +654,13 @@ void HTInitializeHTInfo(struct rtllib_device *ieee)
+>  	pHTInfo->CurrentAMPDUFactor = pHTInfo->AMPDU_Factor;
+>  
+> 
+>  	memset((void *)(&(pHTInfo->SelfHTCap)), 0,
+> -		sizeof(pHTInfo->SelfHTCap));
+> +	       sizeof(pHTInfo->SelfHTCap));
+
+Doesn't need casts or parentheses.
+
+	memset(&pHTInfo->SelfHTCap, 0, sizeof(pHTInfo->SelfHCap));
+
+>  	memset((void *)(&(pHTInfo->SelfHTInfo)), 0,
+> -		sizeof(pHTInfo->SelfHTInfo));
+> +	       sizeof(pHTInfo->SelfHTInfo));
+
+etc...
+
+> @@ -815,7 +815,7 @@ void HTUseDefaultSetting(struct rtllib_device *ieee)
+>  		HTFilterMCSRate(ieee, ieee->Regdot11TxHTOperationalRateSet,
+>  				ieee->dot11HTOperationalRateSet);
+>  		ieee->HTHighestOperaRate = HTGetHighestMCSRate(ieee,
+> -					   ieee->dot11HTOperationalRateSet,
+> +							       ieee->dot11HTOperationalRateSet,
+>  					   MCS_FILTER_ALL);
+
+multi line statement alignment etc...
+
 
