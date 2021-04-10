@@ -2,153 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C012235ACCB
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB6635ACCD
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234638AbhDJLAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 07:00:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234180AbhDJLAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 07:00:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 834A3610CC;
-        Sat, 10 Apr 2021 11:00:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618052430;
-        bh=FNfQfDTUtRjkPROBxVhZOjwwHM1e+WBZqb0vxIi4APo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lg4rsqiIji1aXb2fXe+VhXNq8OGFqSW75A5/6NuGwcw+6994lVr0YPqT+Lin8TQK5
-         gfq/qw4LSwWMq4aKoVUXG77B0YfNFWLQHbVHEfUI6Cv1FOOzt9UvUpJj+MNekYaMnS
-         pEYFQTL99cdQDvktseWvoR4MChrtntsgcbi0sj8loHV6g5TZj6XGGsJWqY4spYenH5
-         8xOMZRUUalKZdFCZLsNR+2K12u4sTePaZF8SiMkirQYDqblbx2eK1t1HXa4IptTyyl
-         4U3GjaWn43sgVdM9Y4iGGC1XFb2X/ki1aq1sMNUKeQZvtKLGC1AmOn4WdqMoQvst+Y
-         RywUrAVpnxTBQ==
-Date:   Sat, 10 Apr 2021 13:00:24 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PULL REQUEST] i2c for 5.12
-Message-ID: <20210410110024.GA1323@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>
+        id S234618AbhDJLBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 07:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234180AbhDJLBB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 07:01:01 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E5D3C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:00:46 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id l14so3205644ybf.11
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:00:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=J8DQJVSaUjQNGe8Y0lpiq/r3H4nNp7NGhGr+XrWaz+c=;
+        b=VTnHXX+osSuBIin2yn6F5r0CcGi/2W+Iz6nLwwnYQ5ot6ENNNyz5LsdmLgc7uTv9lA
+         xdaXlzUBBmkw0v3PAJ1IoFWmMlHiI184t/6q4E6bSuA7LyisSQDLCcE9dy7KsXDCKCWj
+         qrR6uGRvjp3z4OuoBhifMB8YpoxjNruKph8YV6VGuydhNuO+RQvIsRe4vDse6HvpNQsF
+         d50lR8H57npELrzb0NSvukXpGdoLjdtTX8VGl9SwWRAXUk+b6Eu8x3mOUegs+nVorXns
+         zFvAJdHtCfcGwgxgE7CZogwwRH1gNY3t8QIGIWLnF+yf2gOawvpEhrW6ZvpYhwpiq92O
+         77jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=J8DQJVSaUjQNGe8Y0lpiq/r3H4nNp7NGhGr+XrWaz+c=;
+        b=KaL5zddyApSIBQGpm8h+D2jPDVDCoxKevl+A+uoHYZmtgqdgaPnaR6+UQLW1EtAmZV
+         cA7i6AQcE+NqyGQNudXTrxSmLYHWMbYBpWOiS+ijS3jjPd11txscpoSH9HlRILrBHXX5
+         0wcxw7qTXAsCQS8CjcpdqhjtNwE1eeQSRiWpAmIIsuBv1OQjORXamMhg47MNw11hLobG
+         L2ee0BwbKWMfL6NmXUqTcC6tFSXiJOe9x0zKQVCFkRdHKRejg7GkO8jkVWje63TOLEJp
+         IE+OXnYoekJoRnRfAhUDvPHsDZ4U8V4UqkXm9oBMSVP95h/9168c+GYb+8fKk1OImgjQ
+         Zg7Q==
+X-Gm-Message-State: AOAM533Y/OyA6qm0G4MeMMfL2xKDjSobSR5s27GKVXgHuYxhuDJkDkaK
+        E95Ujx/mBKMq3ttGktBGK0N0vgS3/SySrUF/AHyZ/w==
+X-Google-Smtp-Source: ABdhPJy1c0yvqvGLHQRiKUs1CQHeYxl4wNYuB3N7it4WhKn204XaKWFigIJ9FS858TKQTDuJeHfcTxpAtwnikIBpIU4=
+X-Received: by 2002:a25:b906:: with SMTP id x6mr23305699ybj.504.1618052445594;
+ Sat, 10 Apr 2021 04:00:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="liOOAslEiF7prFVr"
-Content-Disposition: inline
+References: <20210410095149.3708143-1-phil@philpotter.co.uk> <CANn89iJdoaC9P_Nd=BrXVRyMS43YOg-DX=VciDO89mH_JPVRTg@mail.gmail.com>
+In-Reply-To: <CANn89iJdoaC9P_Nd=BrXVRyMS43YOg-DX=VciDO89mH_JPVRTg@mail.gmail.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Sat, 10 Apr 2021 13:00:34 +0200
+Message-ID: <CANn89iK4HuKv4AgY5PPWGEEihNEFxGhhqpBp7zv-FfCcJyboDg@mail.gmail.com>
+Subject: Re: [PATCH] net: core: sk_buff: zero-fill skb->data in __alloc_skb function
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        linmiaohe <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Marco Elver <elver@google.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Dongseok Yi <dseok.yi@samsung.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, vladimir.oltean@nxp.com,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Apr 10, 2021 at 12:12 PM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Sat, Apr 10, 2021 at 11:51 AM Phillip Potter <phil@philpotter.co.uk> wrote:
+> >
+> > Zero-fill skb->data in __alloc_skb function of net/core/skbuff.c,
+> > up to start of struct skb_shared_info bytes. Fixes a KMSAN-found
+> > uninit-value bug reported by syzbot at:
+> > https://syzkaller.appspot.com/bug?id=abe95dc3e3e9667fc23b8d81f29ecad95c6f106f
+> >
+> > Reported-by: syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com
+> > Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> > ---
+> >  net/core/skbuff.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > index 785daff48030..9ac26cdb5417 100644
+> > --- a/net/core/skbuff.c
+> > +++ b/net/core/skbuff.c
+> > @@ -215,6 +215,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
+> >          * to allow max possible filling before reallocation.
+> >          */
+> >         size = SKB_WITH_OVERHEAD(ksize(data));
+> > +       memset(data, 0, size);
+> >         prefetchw(data + size);
+>
+>
+> Certainly not.
+>
+> There is a difference between kmalloc() and kzalloc()
+>
+> Here you are basically silencing KMSAN and make it useless.
+>
+> Please fix the real issue, or stop using KMSAN if it bothers you.
 
---liOOAslEiF7prFVr
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+My understanding of the KMSAN bug (when I released it months ago) was
+that it was triggered by some invalid assumptions in geneve_xmit()
 
-Linus,
+The syzbot repro sends a packet with a very small size (Ethernet
+header only) and no IP/IPv6 header
 
-here is a mixture of driver and documentation bugfixes for I2C.
+Fix for ipv4 part (sorry, not much time during week end to test all this)
 
-Please pull.
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index e3b2375ac5eb55f544bbc1f309886cc9be189fd1..0a72779bc74bc50c20c34c05b2c525cca829f33c
+100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -892,6 +892,9 @@ static int geneve_xmit_skb(struct sk_buff *skb,
+struct net_device *dev,
+        __be16 sport;
+        int err;
 
-Thanks,
-
-   Wolfram
-
-
-The following changes since commit 1e28eed17697bcf343c6743f0028cc3b5dd88bf0:
-
-  Linux 5.12-rc3 (2021-03-14 14:41:02 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-curre=
-nt
-
-for you to fetch changes up to df8a39f2911a4c7769e0f760509f556a9e9d37af:
-
-  i2c: imx: mention Oleksij as maintainer of the binding docs (2021-04-08 2=
-2:39:12 +0200)
-
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      i2c: designware: Adjust bus_freq_hz when refuse high speed mode set
-
-Bhaskar Chowdhury (1):
-      i2c: stm32f4: Mundane typo fix
-
-Hao Fang (1):
-      i2c: hix5hd2: use the correct HiSilicon copyright
-
-Krzysztof Kozlowski (1):
-      i2c: exynos5: correct top kerneldoc
-
-Wolfram Sang (4):
-      i2c: turn recovery error on init to debug
-      i2c: imx: drop me as maintainer of binding docs
-      i2c: gpio: update email address in binding docs
-      i2c: imx: mention Oleksij as maintainer of the binding docs
-
-=E5=91=A8=E7=90=B0=E6=9D=B0 (Zhou Yanjie) (1):
-      I2C: JZ4780: Fix bug for Ingenic X1000.
-
-
-with much appreciated quality assurance from
-----------------------------------------------------------------
-Alain Volmat (1):
-      (Rev.) i2c: stm32f4: Mundane typo fix
-
-Barry Song (1):
-      (Rev.) i2c: designware: Adjust bus_freq_hz when refuse high speed mod=
-e set
-
-Klaus Kudielka (1):
-      (Test) i2c: turn recovery error on init to debug
-
-Oleksij Rempel (1):
-      (Rev.) i2c: imx: mention Oleksij as maintainer of the binding docs
-
-Pierre-Yves MORDRET (1):
-      (Rev.) i2c: stm32f4: Mundane typo fix
-
-Rob Herring (1):
-      (Rev.) i2c: imx: mention Oleksij as maintainer of the binding docs
-
-=E6=9D=A8=E6=96=87=E9=BE=99 (Yang Wenlong) (1):
-      (Test) I2C: JZ4780: Fix bug for Ingenic X1000.
-
- Documentation/devicetree/bindings/i2c/i2c-gpio.yaml | 2 +-
- Documentation/devicetree/bindings/i2c/i2c-imx.yaml  | 2 +-
- drivers/i2c/busses/i2c-designware-master.c          | 1 +
- drivers/i2c/busses/i2c-exynos5.c                    | 2 +-
- drivers/i2c/busses/i2c-hix5hd2.c                    | 2 +-
- drivers/i2c/busses/i2c-jz4780.c                     | 4 ++--
- drivers/i2c/busses/i2c-stm32f4.c                    | 2 +-
- drivers/i2c/i2c-core-base.c                         | 7 ++++---
- 8 files changed, 12 insertions(+), 10 deletions(-)
-
---liOOAslEiF7prFVr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmBxhUQACgkQFA3kzBSg
-KbYHIxAApxBBgKdTuXtE3aU4ffIz8/xWK/CVUEdpPygvLd3ptllOBlntdI82eJyI
-O1zPwMA65VsG5vWJcusSlXPIoFXzLLcErXMatYF53LG+3kCvYkHbbwpbWi2XbLvu
-p9Twh0BTOz6hjWMLMipKOA4bEJVqUXoaK56DYPBs/4wfreRdr4SX4OZNnjbsPMNM
-mi9OILo328ta7V9E8QNdS3/ra+8TiVTsGgsQJ0+QHbrKWUhh6lbwKv7zN4ATDJ4m
-aSVrYyGxVSLR+CdjMlRm9jW8LMFzQTyyoQiiCAnQyeNvNIBZdoW9dTj4RB90HLbT
-IK9TR3GjBL3UF21baRA4vWPrASzKahIzDfgBg3dm/dE6nr8FN9BmoNMKLuXm7D9E
-wokhpSi4udwljnoj1a9BaovE5hlTDXC+gbhmv2qtyDfYmXqMB5bZiuan7n9YLv/z
-aNa00cQMSOMckvDfuyoNB1YVaxnhbgMTk+rGaNJO8G12EmJLaK2trNNOM25Kf7bM
-7+1vPzDS9bdnsOBmBKIZ0p0MKd+Y3FNGcluOmX14ElJLrf2zluzqBzGSLljHorm3
-u6urF74lf/P2PgPcz1e6ylFzJUI4i9n00G6BFw8oyfYd11WYv/Zletz/h7tp1cpW
-JcEJXaIhpz2fhbnSt37QReys/nA+gKQCGdzDDU8ryaZZFjtLX3g=
-=qAPL
------END PGP SIGNATURE-----
-
---liOOAslEiF7prFVr--
++       if (!pskb_network_may_pull(skb, sizeof(struct iphdr))
++               return -EINVAL;
++
+        sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
+        rt = geneve_get_v4_rt(skb, dev, gs4, &fl4, info,
+                              geneve->cfg.info.key.tp_dst, sport);
