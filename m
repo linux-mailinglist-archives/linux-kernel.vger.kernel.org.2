@@ -2,123 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE0E035B811
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA8035B85E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236537AbhDLBZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 21:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236485AbhDLBZx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 21:25:53 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988C5C06138E
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 18:25:36 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id t22so8173950pgu.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 18:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=6UWOIGtqeOeXuUvHOjCb1jTlJLlUgyBDQUb3NqK9hjs=;
-        b=SzSdZEYQrxdEvWA2xFeyuX4kQNz4i53+4NSl/wYOSiZbjIXKqWbUS8Xa1zenkUCxsf
-         h5tNXMbgXWvIvWD5/jGXoRJCDJqqBoKlsNftMJdWNeL8inpJIKBBKuIeTJOXzdfOHsRW
-         a8LxX1o3yiNFyV0r7++xO3pSrtcQd9GBOA7iThaiPngO5gDi94SGiVnj5Cfu72xEdonk
-         t+BL5+EwUt3MFZtFbpNPD5Bw44ThjDg4gKNMBznERTvYX0tqyX76rBv7suQ9Ai3Gaw7D
-         uqeFM/WjhHUZAZ0esBNsNwuJgoRjzZCUhEmjCFEi0XACSEaVrxq1dyC6m1Z0u2SgKVB4
-         /3dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6UWOIGtqeOeXuUvHOjCb1jTlJLlUgyBDQUb3NqK9hjs=;
-        b=JSaV3Id6r6s3b1vddP7tEJ6WYC/eCFhWYlzvo8l7Sz/05iyh/qmwDXeT2/fk6QeuxT
-         sc4Khbv4HhOqYIs1BIkH0Gxv1AXQYT80A9SyS+Y06LIFFAPc/9tHEaSH5C8xycNr5fF4
-         twwCzV747fegeIufe6NJVlv/9lqsxKh4RTWWnT/tDDSJWIDvLm4A2khl5uUQjHyKTJTf
-         itbFte14fIH/GB+S+ohsLbvl7mhj+uvrm7D/iMwklUJov+Mii3zhWnjufDoRguhtGSZy
-         qhy6fLRSoxRoVTbK7aqQlK+Qw0D9IqYwCIS7pFLlJxAYSuxhuVIeRARbLovTfEUXCMzR
-         22Gw==
-X-Gm-Message-State: AOAM5337t9uiGrQNv/f/Z3fLmYqgj8BL+WfelDfVNgKqJ/+88AZpXizC
-        kbs4N8L7KxoIOsqSq5v1Tfz9MA==
-X-Google-Smtp-Source: ABdhPJwVFHx91KywmuwrpjzYzCKCdiKF1p0NVsF6qcvxMQKRlCa6GXmZyyt9m1W2cMVjEagDhzweVA==
-X-Received: by 2002:a05:6a00:1c67:b029:215:6f93:d220 with SMTP id s39-20020a056a001c67b02902156f93d220mr21655362pfw.36.1618190736003;
-        Sun, 11 Apr 2021 18:25:36 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id g21sm9050908pjl.28.2021.04.11.18.25.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 11 Apr 2021 18:25:35 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 09:25:29 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com
-Subject: Re: [PATCH 1/2] dt-binding: bcm43xx-fmac: add optional brcm,ccode-map
-Message-ID: <20210412012528.GB15093@dragon>
-References: <20210408113022.18180-1-shawn.guo@linaro.org>
- <20210408113022.18180-2-shawn.guo@linaro.org>
- <87k0p9mewt.fsf@codeaurora.org>
+        id S236299AbhDLB77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 21:59:59 -0400
+Received: from m1.softwest.net ([128.204.218.75]:54660 "EHLO m1.softwest.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235543AbhDLB76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 21:59:58 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by m1.softwest.net (Postfix) with ESMTP id 9CB517F21981;
+        Sun, 11 Apr 2021 02:34:16 +0300 (EEST)
+Received: from m1.softwest.net ([127.0.0.1])
+        by localhost (m1.softwest.net [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id cqCGujvB7wlq; Sun, 11 Apr 2021 02:34:15 +0300 (EEST)
+Received: from localhost (localhost [127.0.0.1])
+        by m1.softwest.net (Postfix) with ESMTP id B41D47F23458;
+        Sun, 11 Apr 2021 02:29:19 +0300 (EEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 m1.softwest.net B41D47F23458
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nashkraj.com.ua;
+        s=29263256-4649-11E7-9487-87764B012C4A; t=1618097359;
+        bh=hQD7nmS0LfXsM4gFI4GZ309Yqz39ndMh5VTK8vz1+1U=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=UjZYNJyIGymZFaRYBcLq+bNb9wSsMAst26pfLulcP8EVeW6/NqdgwBNQ34NVbKy2V
+         xgk7SnZuevwzloaSnPCBnUZJfFfHnytQObOgq/MXa/QBqlMd19fcGeauK7vu/atR7Y
+         HEvY6GQbbaQygLraQGw+k91/Z2YgdUGckY1AQEBc=
+X-Virus-Scanned: amavisd-new at m1.softwest.net
+Received: from m1.softwest.net ([127.0.0.1])
+        by localhost (m1.softwest.net [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id kJwt9MSj0GJc; Sun, 11 Apr 2021 02:29:19 +0300 (EEST)
+Received: from [192.168.8.103] (8ta-229-137-165.telkomadsl.co.za [197.229.137.165])
+        by m1.softwest.net (Postfix) with ESMTPSA id CA28C7F12BD5;
+        Sun, 11 Apr 2021 02:21:53 +0300 (EEST)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87k0p9mewt.fsf@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Sie haben eine Spende von 1.000.000,00 Euro 
+To:     Recipients <nkraj393@nashkraj.com.ua>
+From:   nkraj393@nashkraj.com.ua
+Date:   Sat, 10 Apr 2021 16:21:48 -0700
+Reply-To: prejimsfoundation@gmail.com
+Message-Id: <20210410232153.CA28C7F12BD5@m1.softwest.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 10:57:54AM +0300, Kalle Valo wrote:
-> Shawn Guo <shawn.guo@linaro.org> writes:
-> 
-> > Add optional brcm,ccode-map property to support translation from ISO3166
-> > country code to brcmfmac firmware country code and revision.
-> >
-> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> > ---
-> >  .../devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt b/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
-> > index cffb2d6876e3..a65ac4384c04 100644
-> > --- a/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
-> > +++ b/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
-> > @@ -15,6 +15,12 @@ Optional properties:
-> >  	When not specified the device will use in-band SDIO interrupts.
-> >   - interrupt-names : name of the out-of-band interrupt, which must be set
-> >  	to "host-wake".
-> > + - brcm,ccode-map : multiple strings for translating ISO3166 country code to
-> > +	brcmfmac firmware country code and revision.  Each string must be in
-> > +	format "AA-BB-num" where:
-> > +	  AA is the ISO3166 country code which must be 2 characters.
-> > +	  BB is the firmware country code which must be 2 characters.
-> > +	  num is the revision number which must fit into signed integer.
-> >  
-> >  Example:
-> >  
-> > @@ -34,5 +40,6 @@ mmc3: mmc@1c12000 {
-> >  		interrupt-parent = <&pio>;
-> >  		interrupts = <10 8>; /* PH10 / EINT10 */
-> >  		interrupt-names = "host-wake";
-> > +		brcm,ccode-map = "JP-JP-78", "US-Q2-86";
-> 
-> The commit log does not answer "Why?". Why this needs to be in device
-> tree and, for example, not hard coded in the driver?
 
-Thanks for the comment, Kalle.  Actually, this is something I need some
-input from driver maintainers.  I can see this country code mapping
-table is chipset specific, and can be hard coded in driver per chip id
-and revision.  But on the other hand, it makes some sense to have this
-table in device tree, as the country code that need to be supported
-could be a device specific configuration.
-
-Shawn
+Herzliche Gl=FCckw=FCnsche!!! Die Azim Premji Foundation hat Ihnen eine Spe=
+nde in H=F6he von 1.000.000,00 Euro geleistet. Weitere Informationen finden=
+ Sie hier: http://en.wikipedia.org/wiki/Azim_Premji und fordern Sie jetzt e=
+ine E-Mail an: prejimsfoundation@gmail.com Vielen Dank Herr Azim Premji=20
