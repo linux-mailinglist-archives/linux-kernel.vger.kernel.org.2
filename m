@@ -2,163 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B05CC35AE98
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CE435AE9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbhDJOxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:53:33 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:54144 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234821AbhDJOxY (ORCPT
+        id S234795AbhDJO4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:56:51 -0400
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:27969 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234519AbhDJO4u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:53:24 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost1.synopsys.com [10.225.0.209])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id 141B040473;
-        Sat, 10 Apr 2021 14:53:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1618066389; bh=FuCe6OfwyzCRHgde9lvKpsWM5qscJ9aMWtKpkEXQcXI=;
-        h=From:To:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=IEHJeHaeGBUYjuTYi2Tit/MOcuCrMey+Yv6UuFEd1rDe32Od55iDeWXbiOdg95M5v
-         cX/DgnZMZ5FV/3/dKsneSBxuCkobz0c7HO+DVWHWCTUYHsmmYKArKQAB8HNH/1pC+2
-         XVesph6ayyAJ8syvOS7QZnRUke+rWkTFjyEdYDS1Rk4cBRcHeqm7EiUpKWI+/7tZVX
-         Fq+osNxfyeFHEpoK43mLG/xuNPDCY/stuLHCbDHUkfs/j9eqLx7imnlUzatlx3Xzvo
-         bXZi/H2lk2TmHmzCkqp4L8kL7xADO8h90wI/mHcs0zKyWhK5l3N6+WE/Xz0VS51bZm
-         NyXa4q6+1BB5Q==
-Received: from de02dwvm009.internal.synopsys.com (de02dwvm009.internal.synopsys.com [10.225.17.73])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 72C40A0232;
-        Sat, 10 Apr 2021 14:53:06 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-Subject: [PATCH v4 2/2] dw-xdata-pcie: Update outdated info and improve text format
-Date:   Sat, 10 Apr 2021 16:52:59 +0200
-Message-Id: <4e72f931474a784d478e5a67961ecf116911997a.1618066164.git.gustavo.pimentel@synopsys.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1618066164.git.gustavo.pimentel@synopsys.com>
-References: <cover.1618066164.git.gustavo.pimentel@synopsys.com>
-In-Reply-To: <cover.1618066164.git.gustavo.pimentel@synopsys.com>
-References: <cover.1618066164.git.gustavo.pimentel@synopsys.com>
+        Sat, 10 Apr 2021 10:56:50 -0400
+Date:   Sat, 10 Apr 2021 14:56:27 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1618066593;
+        bh=y+5Vaf23mVkXNxK22g/k1LT3KwDKQudyGF5Dp8peF64=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=O4ZjCVBl18lbwdYtjqLGF7C3LTOo5h94bAQtsLukLIyKzN664zh4+DBbdDZo28nKq
+         PbIdaXvbshVioUnCP6N7xBAvUYnJyGQrEyZhv6d08s0bS1WXw45jnCdvIEPx66sQsg
+         8rivE962hKca7Q/Fp4xrVQMBWrB6oQNVPJhaeUrUJ/v0J+9xrXH2szMO11kHxbkH6l
+         Au4+ohKawGAE2bUUKSaxLGfv9cVmX8iBcKDmajpR4mrShRTgopdq69UF1vrhYqHCLC
+         /8vCIP1kPbf3fi+MSo+LT6NJoUyUbBKfMI7NmDJY+9edIUEYnLVYhviCsT4to5knG7
+         AKog8hkAJNTPw==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: Re: [PATCH v2] staging: rtl8723bs: remove unnecessary goto jumps
+Message-ID: <20210410145615.gz4yzy34ofvmwjde@bryanbrattlof.com>
+In-Reply-To: <YHG2A4rJdl1uiZjV@kroah.com>
+References: <20210410141945.424238-1-hello@bryanbrattlof.com> <YHG2A4rJdl1uiZjV@kroah.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removes old information related to the stop file interface in sysfs left
-by mistake during patch revision.
+On Sat, Apr 10, 2021 at 04:28:19PM +0200, Greg Kroah-Hartman wrote:
+>
+>On Sat, Apr 10, 2021 at 02:20:19PM +0000, Bryan Brattlof wrote:
+>> The next instruction for both 'goto exit' jump statements is to
+>> execute the exit jump instructions regardless. We can safely
+>> remove all jump statements from __init rtw_drv_entry()
+>>
+>> Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+>> ---
+>> Changes from:
+>>   v1: removed unnecessary edit of DBG_871X_LEVEL
+>>
+>>  drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 5 -----
+>>  1 file changed, 5 deletions(-)
+>>
+>> diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/stag=
+ing/rtl8723bs/os_dep/sdio_intf.c
+>> index 9fd926e1698f..39b6d4b6dec4 100644
+>> --- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+>> +++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+>> @@ -517,12 +517,8 @@ static int __init rtw_drv_entry(void)
+>>  =09if (ret !=3D 0) {
+>>  =09=09sdio_drvpriv.drv_registered =3D false;
+>>  =09=09rtw_ndev_notifier_unregister();
+>> -=09=09goto exit;
+>>  =09}
+>>
+>> -=09goto exit;
+>> -
+>> -exit:
+>>  =09DBG_871X_LEVEL(_drv_always_, "module init ret =3D%d\n", ret);
+>>  =09return ret;
+>>  }
+>> @@ -540,6 +536,5 @@ static void __exit rtw_drv_halt(void)
+>>  =09DBG_871X_LEVEL(_drv_always_, "module exit success\n");
+>>  }
+>>
+>> -
+>>  module_init(rtw_drv_entry);
+>>  module_exit(rtw_drv_halt);
+>
+>Any reason you removed this extra line?
+>
 
-Improves the document text format to be more user-friendly and adds
-basic driver related information, such as support, datasheet, and author.
+Oops! My bad... again :(
 
-Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
----
- Documentation/misc-devices/dw-xdata-pcie.rst | 76 ++++++++++++++++++----------
- 1 file changed, 50 insertions(+), 26 deletions(-)
+I removed the line to take away one of the many checkpatch.pl messages.
 
-diff --git a/Documentation/misc-devices/dw-xdata-pcie.rst b/Documentation/misc-devices/dw-xdata-pcie.rst
-index cbc9f69..781c679 100644
---- a/Documentation/misc-devices/dw-xdata-pcie.rst
-+++ b/Documentation/misc-devices/dw-xdata-pcie.rst
-@@ -4,37 +4,61 @@
- Driver for Synopsys DesignWare PCIe traffic generator (also known as xData)
- ===========================================================================
- 
-+Supported chips:
-+Synopsys DesignWare PCIe prototype solution
-+
-+Datasheet:
-+Not freely available
-+
-+Author:
-+Gustavo Pimentel <gustavo.pimentel@synopsys.com>
-+
-+Description
-+-----------
-+
- This driver should be used as a host-side (Root Complex) driver and Synopsys
- DesignWare prototype that includes this IP.
- 
--The "dw-xdata-pcie" driver can be used to enable/disable PCIe traffic
-+The dw-xdata-pcie driver can be used to enable/disable PCIe traffic
- generator in either direction (mutual exclusion) besides allowing the
- PCIe link performance analysis.
- 
- The interaction with this driver is done through the module parameter and
- can be changed in runtime. The driver outputs the requested command state
--information to /var/log/kern.log or dmesg.
--
--Request write TLPs traffic generation - Root Complex to Endpoint direction
--- Command:
--echo 1 > /sys/class/misc/dw-xdata-pcie/write
--
--Get write TLPs traffic link throughput in MB/s
--- Command:
--cat /sys/class/misc/dw-xdata-pcie/write
--- Output example:
--204
--
--Request read TLPs traffic generation - Endpoint to Root Complex direction:
--- Command:
--echo 1 > /sys/class/misc/dw-xdata-pcie/read
--
--Get read TLPs traffic link throughput in MB/s
--- Command:
--cat /sys/class/misc/dw-xdata-pcie/read
--- Output example:
--199
--
--Request to stop any current TLP transfer:
--- Command:
--echo 1 > /sys/class/misc/dw-xdata-pcie/stop
-+information to ``/var/log/kern.log`` or dmesg.
-+
-+Example
-+-------
-+
-+Write TLPs traffic generation - Root Complex to Endpoint direction
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Generate traffic::
-+
-+ # echo 1 > /sys/class/misc/dw-xdata-pcie.0/write
-+
-+Get link throughput in MB/s::
-+
-+ # cat /sys/class/misc/dw-xdata-pcie.0/write
-+ 204
-+
-+Stop traffic in any direction::
-+
-+ # echo 0 > /sys/class/misc/dw-xdata-pcie.0/write
-+
-+Read TLPs traffic generation - Endpoint to Root Complex direction
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Generate traffic::
-+
-+ # echo 1 > /sys/class/misc/dw-xdata-pcie.0/read
-+
-+Get link throughput in MB/s::
-+
-+ # cat /sys/class/misc/dw-xdata-pcie.0/read
-+ 199
-+
-+Stop traffic in any direction::
-+
-+ # echo 0 > /sys/class/misc/dw-xdata-pcie.0/read
-+
--- 
-2.7.4
+I'll be sending v3 here momentarily with an updated commit message
+
+>
+>thanks,
+>
+>greg k-h
+
+Sorry for the noise today
+--
+~Bryan
 
