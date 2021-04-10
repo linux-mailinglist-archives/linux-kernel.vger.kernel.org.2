@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D15835AECD
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 17:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3B735AED1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 17:24:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234813AbhDJPV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 11:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234392AbhDJPVZ (ORCPT
+        id S234519AbhDJPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 11:24:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45886 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234925AbhDJPYN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 11:21:25 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5DCC06138A;
-        Sat, 10 Apr 2021 08:21:10 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id h2-20020a4ad7420000b02901e5901169a5so1809954oot.8;
-        Sat, 10 Apr 2021 08:21:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pjI6u6UYsUkFtZQA7WTP9+7XiMaMvTGfuvAt/AdrZpE=;
-        b=ul9vhkECX9ZtPHmn00cPAEOTNPFYMkc4vVlLAdFgA0ImSW2Yz/cqrLDDaCbiQGf+w/
-         cNN/cJTUA3sTYVW/YkL5D1AA1ok8DUy85P8GF4gXn/leQJkhfAGBrrvX1nC7Kaec1G7+
-         e61ykR7cz8w/E/vSLqXxmvfWwd440ktxmCcZnLkt8Y3ZwTrWh8WWSGIKb/GBSIOJzCgR
-         Y0ViOfNDoLzXwgwqXMkSWZlo6DM69YqZoFZ4haMYgvIWc7XEE2DpZbxn4TijMBMhIyiu
-         G75fXKIOgX+3JbJC9W4XTrVV45ozMDg3U6lX4V3iQxrIEvbBEjatrt2wbFJ5wPgsGhJg
-         GTqw==
+        Sat, 10 Apr 2021 11:24:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618068238;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AKP1RgUF6azjm5gI1sLyPycvEBve9nVWiIDZlkb2eNc=;
+        b=RZ5hEXWLERUDLsujh9IfmZq6h9cjK5gEqYK1aIstAt+AwpFneia29hyagGKPSlQw5UAJ4g
+        INlLg6AnT3P0K/DzBFizuArPYDGoQiO/sfG//zIIs9zXSdYKZZ6JHqW4OsIKYVTC8D9oVi
+        DqOq5veBheuenkeE+UJbF0gSPFIyeGc=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-531-gdgyaqh8OxmhkXkoBCcEEQ-1; Sat, 10 Apr 2021 11:23:57 -0400
+X-MC-Unique: gdgyaqh8OxmhkXkoBCcEEQ-1
+Received: by mail-ed1-f72.google.com with SMTP id h9so729145edb.10
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 08:23:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=pjI6u6UYsUkFtZQA7WTP9+7XiMaMvTGfuvAt/AdrZpE=;
-        b=Lb4bkC/XC4ucs+g74pa0bUNjo9rbfds70aH3RDWW1z3GKm012rOF5ncfnVur5GprDT
-         /FSzwU+INB5UGVBm4Xg0flPvRjlCWY2g/534xkqk7ew7+dpTIEwLYQqENOTlBCHI0O1s
-         5CaXdgbaiBGPY5BZJEsaV4F+A110X5XuVM6hZnQ+g/vmyM4ApQpWm4pMgymb7jXv3hff
-         vMLYcZiDYP515Cvd0uCVgNbvWRJjEcRG6vp06+kgELD2YHpyMBOc5rtZR2SleQhXNyEu
-         ghRB7PSU6kwMDEm5KKdMSR19nMy2CpCjugobPnIvt9ssJuK7DTSLjGugVjgghnYWe0iF
-         skuw==
-X-Gm-Message-State: AOAM531fImHjHc4ir391CHsP6fyaDvsYBF21i7luRLRp5Lpz27Si9TPs
-        TInLjdMxe6YUhBP+JD7OZLNkXTVdZoM=
-X-Google-Smtp-Source: ABdhPJw+BlPSHq6JzuPgNUDjljHiuRm/+F7JCpOhqwtHwoIWLfUdHIl2EnT9QNcRd4/2zSxeljK2EA==
-X-Received: by 2002:a4a:bd1a:: with SMTP id n26mr16097535oop.45.1618068069960;
-        Sat, 10 Apr 2021 08:21:09 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v65sm1164166oib.42.2021.04.10.08.21.08
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AKP1RgUF6azjm5gI1sLyPycvEBve9nVWiIDZlkb2eNc=;
+        b=A/QE2O56tBGAAKrquOOVbBqszXIkX8uHtkOBsHV5IEPnj5QHfT+HLypuTl0vG9PQlU
+         qqg38OO5F4IfKP/Z1LAP7BRSyUtLnw3fbU02nEZSu+Hk5bnca4hk7MHrG6OpCLZqflPg
+         rCzaL0QYLbSlRXmyg1b5a4IZBnZUDbg6n8iHzBNs6CfVqY5s7sVWiAtnAMyZ13JjGkb0
+         kqOqypuaVNMld0OynlUy+zkHFPuZl5fB7lJGPHTSs1e4cBfLfUN6te5ZteNj3MC/CCwX
+         pwjr5BieuFx2JTslfW2Z3yXyaCAga5y4qGxj0wOp9z23miuTPYVprdk7WKvMjR4/a5yY
+         PNaQ==
+X-Gm-Message-State: AOAM532mmE/xDLGQ7Mzk0hYySAhUnq/lnu9l99urmSJyxeQPCeYD0hcR
+        U+j7XMbb2Yrp0ORpz3kdtwwbAwoQrHA2jXqxm33BHQZpQeyV6RC1bHbcHIxlhsgNM8tG/L/MJDY
+        MMv4huUIVsYQgBPFiSuCLSv6n
+X-Received: by 2002:a17:906:170f:: with SMTP id c15mr20323211eje.358.1618068235714;
+        Sat, 10 Apr 2021 08:23:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxnDVjHSem4a3tzYxht4xVl+73P09qhE8lQV4f1VVc3ORJJU2+U0nClePluNc91oBRkGrXczQ==
+X-Received: by 2002:a17:906:170f:: with SMTP id c15mr20323194eje.358.1618068235530;
+        Sat, 10 Apr 2021 08:23:55 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id bf14sm3261866edb.67.2021.04.10.08.23.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Apr 2021 08:21:09 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
+        Sat, 10 Apr 2021 08:23:55 -0700 (PDT)
 Subject: Re: [PATCH v3] platform/x86: add Gigabyte WMI temperature driver
-To:     Hans de Goede <hdegoede@redhat.com>,
+To:     Guenter Roeck <linux@roeck-us.net>,
         =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
         platform-driver-x86@vger.kernel.org,
         Mark Gross <mgross@linux.intel.com>,
@@ -62,57 +63,14 @@ To:     Hans de Goede <hdegoede@redhat.com>,
 Cc:     Matthew Garrett <mjg59@srcf.ucam.org>
 References: <117cadef-c1cb-d66a-15f8-ce50d596be4b@redhat.com>
  <20210410144021.138035-1-linux@weissschuh.net>
- <e1b86746-b04d-0f14-8121-d24da4d10ceb@redhat.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <2ffc9df4-f5d1-e093-6223-e6c705ef8688@roeck-us.net>
-Date:   Sat, 10 Apr 2021 08:21:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ <3d974a64-14a6-2347-ac1a-666d1b8d6eef@roeck-us.net>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <6a096978-67ad-6def-6ed0-9ad38a460e95@redhat.com>
+Date:   Sat, 10 Apr 2021 17:23:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <e1b86746-b04d-0f14-8121-d24da4d10ceb@redhat.com>
+In-Reply-To: <3d974a64-14a6-2347-ac1a-666d1b8d6eef@roeck-us.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -120,10 +78,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/10/21 7:57 AM, Hans de Goede wrote:
-> Hi,
-> 
-> On 4/10/21 4:40 PM, Thomas Weißschuh wrote:
+Hi,
+
+On 4/10/21 5:15 PM, Guenter Roeck wrote:
+> On 4/10/21 7:40 AM, Thomas Weißschuh wrote:
 >> Changes since v1:
 >> * Incorporate feedback from Barnabás Pőcze
 >>   * Use a WMI driver instead of a platform driver
@@ -149,79 +107,6 @@ On 4/10/21 7:57 AM, Hans de Goede wrote:
 >> less are exposed via WMI.
 >>
 >> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> 
-> This looks good, one small nitpick:
-> 
-> I know this is a touchy subject for some, but we are trying to move away
-> from the whitelist/blacklist naming where possible and we don't want to
-> introduce any new cases, see:
-> 
-> https://github.com/torvalds/linux/blob/master/Documentation/process/coding-style.rst#4-naming
-> 
-> The driver currently uses this twice:
-> "Force loading on non-whitelisted platform"
-> "Forcing loading on non-whitelisted platform"
-> 
-> Interestingly enough you already avoided naming the dmi_system_id table
-> a whitelist (good).
-> 
-> I would like to see "non-whitelisted" replaced with "unknown" so that we end up with:
-> 
-> "Force loading on unknown platform"
-> "Forcing loading on unknown platform"
-> 
-> And while at it, I think for the second sentence this would be better English
-> (I'm not a native speaker myself):
-> 
-> "Forcing load on unknown platform"
-> 
-
-Not native either, but I think it is either "Forcing load" or "Force loading".
-
-> If you are ok with these changes I can fix this up while merging, no need
-> to send a v4. Although if you prefer to send a v4 that is fine too.
-> 
-
-Please consider adding an existence check into the is_visible function.
-Sysfs attributes for non-existing sensors should not be created.
-
-Thanks,
-Guenter
-
-> Either way let me know.
-> 
-> Regards,
-> 
-> Hans
-> 
-> p.s.
-> 
-> For v4 or for a next patch, the way to add the changelog so that it does
-> not get picked up / automatically gets snipped by git am is to put it
-> below the Signed-off-by at the end of the commit message like this:
-> 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> ---
-> Changes since v1:
-> * Incorporate feedback from Barnabás Pőcze
->   * Use a WMI driver instead of a platform driver
->   * Let the kernel manage the driver lifecycle
->   * Fix errno/ACPI error confusion
->   * Fix resource cleanup
->   * Document reason for integer casting
->  
-> Changes since v2:
-> * Style cleanups
-> * Test for usability during probing
-> * DMI-based whitelist
-> * CC hwmon maintainers
-> 
-> 
-> 
-> 
-> 
-> 
-> 
 >> ---
 >>  MAINTAINERS                         |   6 +
 >>  drivers/platform/x86/Kconfig        |  11 ++
@@ -301,6 +186,14 @@ Guenter
 >> +
 >> +#define GIGABYTE_WMI_GUID "DEADBEEF-2001-0000-00A0-C90629100000"
 >> +#define NUM_TEMPERATURE_SENSORS 6
+> 
+> Style: #define<space>name<tab>value
+> 
+> but of course that is Hans' call.
+
+I agree that aligning the 2 define values with tabs would be better.
+
+> 
 >> +
 >> +static bool force_load;
 >> +module_param(force_load, bool, 0);
@@ -367,6 +260,18 @@ Guenter
 >> +	if (ret == 0) {
 >> +		if (temp == 0)
 >> +			return -ENODEV;
+> 
+> That should be checked in gigabyte_wmi_hwmon_is_visible(); that is what that
+> function is for.
+
+Good point, actually the way I think this should be done is cache the result of
+the initial probe done in gigabyte_wmi_validate_sensor_presence() and use that in
+is_visible to return either 0 (not visible) or 0444, this way you can also
+hide sensors when there is a whole in the range of sensors somehow.
+
+So I guess we do need a v4 of this patch after all.
+
+> 
 >> +		*res = (s8)temp * 1000; // value is a signed 8-bit integer
 >> +	}
 >> +	return ret;
@@ -449,11 +354,34 @@ Guenter
 >> +			dev_warn(&wdev->dev, "Forcing loading on non-whitelisted platform");
 >> +		else
 >> +			return -ENODEV;
+> 
+> Style:
+> 		if (!force_load)
+> 			return -ENODEV;
+> 		dev_warn(&wdev->dev, "Forcing loading on non-whitelisted platform");
+
+Ack, that would be better.
+
+> 
 >> +	}
 >> +
 >> +	ret = gigabyte_wmi_validate_sensor_presence(wdev);
 >> +	if (ret) {
 >> +		dev_info(&wdev->dev, "No temperature sensors usable");
+> 
+> Normally one does not display a message if a probe function returns -ENODEV,
+> unless it is an error, to avoid polluting the kernel log.
+
+This will normally only be shown when the force_load module parameter is used,
+at which point I think it makes sense to explain why the driver is still not
+loading.
+
+Regards,
+
+Hans
+
+
+> 
 >> +		return ret;
 >> +	}
 >> +
