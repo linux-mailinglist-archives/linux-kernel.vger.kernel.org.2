@@ -2,66 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A85835AA87
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 05:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14C535AA95
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 05:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234157AbhDJDc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 23:32:26 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16434 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231737AbhDJDcW (ORCPT
+        id S234171AbhDJDvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 23:51:40 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15659 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231933AbhDJDvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 23:32:22 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FHL7c1ZzqzqT4J;
-        Sat, 10 Apr 2021 11:28:44 +0800 (CST)
-Received: from localhost.localdomain (10.175.101.6) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 10 Apr 2021 11:30:48 +0800
-From:   Wang Li <wangli74@huawei.com>
-To:     <chunkuang.hu@kernel.org>, <p.zabel@pengutronix.de>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>, <matthias.bgg@gmail.com>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        Wang Li <wangli74@huawei.com>
-Subject: [PATCH -next] drm/mediatek: Fix PM reference leak in mtk_crtc_ddp_hw_init()
-Date:   Sat, 10 Apr 2021 03:48:41 +0000
-Message-ID: <20210410034841.16567-1-wangli74@huawei.com>
+        Fri, 9 Apr 2021 23:51:38 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FHLZV4ySRzpWhp;
+        Sat, 10 Apr 2021 11:48:34 +0800 (CST)
+Received: from huawei.com (10.174.28.241) by DGGEMS407-HUB.china.huawei.com
+ (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Sat, 10 Apr 2021
+ 11:51:14 +0800
+From:   Bixuan Cui <cuibixuan@huawei.com>
+To:     <cuibixuan@huawei.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        "Baolin Wang" <baolin.wang7@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+Subject: [PATCH -next] nvmem: sprd: Add missing MODULE_DEVICE_TABLE
+Date:   Sat, 10 Apr 2021 11:50:33 +0800
+Message-ID: <20210410035033.11274-1-cuibixuan@huawei.com>
 X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.28.241]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync will increment pm usage counter even it failed.
-Forgetting to putting operation will result in reference leak here.
-Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-counter balanced.
+This patch adds missing MODULE_DEVICE_TABLE definition which generates
+correct modalias for automatic loading of this driver when it is built
+as an external module.
 
 Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Wang Li <wangli74@huawei.com>
+Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvmem/sprd-efuse.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-index 54ab3a324752..f1954242d8f6 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
-@@ -259,7 +259,7 @@ static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
- 		drm_connector_list_iter_end(&conn_iter);
- 	}
+diff --git a/drivers/nvmem/sprd-efuse.c b/drivers/nvmem/sprd-efuse.c
+index 59523245db8a..5d394559edf2 100644
+--- a/drivers/nvmem/sprd-efuse.c
++++ b/drivers/nvmem/sprd-efuse.c
+@@ -425,6 +425,7 @@ static const struct of_device_id sprd_efuse_of_match[] = {
+ 	{ .compatible = "sprd,ums312-efuse", .data = &ums312_data },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(of, sprd_efuse_of_match);
  
--	ret = pm_runtime_get_sync(crtc->dev->dev);
-+	ret = pm_runtime_resume_and_get(crtc->dev->dev);
- 	if (ret < 0) {
- 		DRM_ERROR("Failed to enable power domain: %d\n", ret);
- 		return ret;
--- 
-2.17.1
+ static struct platform_driver sprd_efuse_driver = {
+ 	.probe = sprd_efuse_probe,
 
