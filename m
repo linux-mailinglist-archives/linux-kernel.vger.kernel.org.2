@@ -2,123 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5F435AD4D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:35:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE71235AD58
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234427AbhDJMei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 08:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234091AbhDJMeg (ORCPT
+        id S234626AbhDJMkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 08:40:37 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:45742 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234091AbhDJMka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 08:34:36 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8441DC061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 05:34:21 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id mj7-20020a17090b3687b029014d162a65b6so6324599pjb.2
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 05:34:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PXHn0JTgY+La3+5YIGKYFWelzukB7RedFElx6gczrqk=;
-        b=KPPCL8xefCVfIQ/eO0Gf7y0/Jx3dpw/yEh+nij8tebQlWjMY2IBKtk2rpnv3mSWkvq
-         24EnqrK6KwfPinNDIJZq5KlFIR/b9TlXxqIOfd8u8dfj4Kz0PJuq2bMYsyJcJI5wK/Ff
-         EvGmVWkoI9N21zSWE6ikaobNvPynGiKELZXS04ydxV3KZgJcrbNHZ6fcJTP9Qd3D6iAl
-         +MXGCZ5ojWEJE2lzPauji9RsbwFa77A135b9mCKlLC9EWM7ArZl7104lyxmF4DVI27yh
-         eHSIMi9BmYlHaOZnli5ao3t8ydxhwdm5fOAikLT4AorejTFNiitzaF8RcAHBn8IEURPR
-         zEDA==
+        Sat, 10 Apr 2021 08:40:30 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lVCuL-0002YQ-B3
+        for linux-kernel@vger.kernel.org; Sat, 10 Apr 2021 12:40:13 +0000
+Received: by mail-ed1-f69.google.com with SMTP id o9so574829edq.16
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 05:40:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PXHn0JTgY+La3+5YIGKYFWelzukB7RedFElx6gczrqk=;
-        b=aSJerJIRJ19vDklIa2A6Sa/NJYJ41EKM/sHd81qD8ELdYaF4tTw7s+ABoUGiHxaygg
-         KcIMr//almOwn2i0VS3+lpKRX6nAe9blHsCCOR43EynzNSYu0m4r75iegERVg1U8Q7JL
-         xQ9IHAVyPnHYjGnyMjmxefDz+rZErDVNbBpjpBu4F8CzHb2L8+xsNFU1/swmr2XtFlrZ
-         9pD0/+8Eu420eRFY7zdsOADTrj5eXBbdsoec8uijcjNK/lKYFC0oDY8i67CoiYGnsAQ6
-         Z64B8iEC+7Ps8flU5WsFElllfVyd1ClJhxi7kMaZc7yaaTseXBykFp1KIOuHXYzWL8r3
-         8+tA==
-X-Gm-Message-State: AOAM531NW3hGCV2MZdM2pFU7Gca20iBrKZNFbQlkXhJLU/VR1ExgHQAk
-        WEwyY+/KIpki7FDoLuxCwv8=
-X-Google-Smtp-Source: ABdhPJzwTMEdOsR0vy3cArPM/2aBvJDhgMNvXNE+UCI4/J7xEYgsSSDCbRVv3ksuHZYN1E6X62TwVA==
-X-Received: by 2002:a17:90a:4309:: with SMTP id q9mr18091539pjg.40.1618058060802;
-        Sat, 10 Apr 2021 05:34:20 -0700 (PDT)
-Received: from kali ([103.141.87.253])
-        by smtp.gmail.com with ESMTPSA id fs9sm5109138pjb.40.2021.04.10.05.34.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 05:34:20 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 18:04:11 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8192e: replace comparison
- to NULL by bool
-Message-ID: <YHGbQ+y0Fplssz44@kali>
-References: <YHDnWpWztxeZospi@kali>
- <alpine.DEB.2.22.394.2104101408100.2975@hadrien>
- <YHGVvn8Yi0tWL3sa@kroah.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=k8kbv7tLUPin7vEZz6Y8S8Ho2i9EHLVgMoQhgUpPZTc=;
+        b=OO8qVJuU9zI7kl4q5wh2Hw+t1/mTfN3s30cQPpEeiJhPMBvb1G/Hsf1hyPbw2ZlQDX
+         xYTDS/ebiUYyvQmoeXRJfFScPbW5B3677INIX3WOnGxvGtaKsWLoKe9kolUKwao7W0Rc
+         /yGuu5PYMvA+ccD298AR6l7P5KPYEAUW/wICHSseaBXjtOA/4Fdm5LX+KwjVR7zQ3Jvz
+         VKoGgb6zd+NjOcXa9W8UoP1leDUXK/fgfShjLBPIZQ5IhIJ5et5RjuUBhFxgafp4ij0e
+         IblXqWjM7lJBgTAGCF1S+JddRK2732PSWjWuXC0KYYks5BfK2r9ooXxmUZdeJ3VXVxlM
+         flCw==
+X-Gm-Message-State: AOAM532HWv8twvu38+3LB0b86UhwMzS7CMCdp5LcpIXY5wvSIU4t61Ps
+        pRNif2QYqu1Yo1ZM5b3D6mRhB2qKptzlZnNWVnlys8HaH4nPpEhiOkUJShTRMyDu2GpjeZ2qnpI
+        qfLI6ubpBhccqcgm4NvWOL8IFk8iYMVKCC92zmflUuQ==
+X-Received: by 2002:a05:6402:148a:: with SMTP id e10mr21482429edv.377.1618058413094;
+        Sat, 10 Apr 2021 05:40:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnEqzqI9N9YfHRefBuhHMer8IAZFUeA1p/w31AAx1VON2hHKiqTW68RFjQfE3PCZ9Bpj9RyA==
+X-Received: by 2002:a05:6402:148a:: with SMTP id e10mr21482422edv.377.1618058412954;
+        Sat, 10 Apr 2021 05:40:12 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-192-147.adslplus.ch. [188.155.192.147])
+        by smtp.gmail.com with ESMTPSA id d6sm3149960edr.21.2021.04.10.05.40.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 10 Apr 2021 05:40:12 -0700 (PDT)
+Subject: Re: [PATCH v5 04/16] memory: mtk-smi: Add device-link between
+ smi-larb and smi-common
+To:     Yong Wu <yong.wu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Evan Green <evgreen@chromium.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Will Deacon <will.deacon@arm.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
+        yi.kuo@mediatek.com, eizan@chromium.org, acourbot@chromium.org
+References: <20210410091128.31823-1-yong.wu@mediatek.com>
+ <20210410091128.31823-5-yong.wu@mediatek.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <ea7ed30f-050d-2d38-7c61-1e0c192f6ded@canonical.com>
+Date:   Sat, 10 Apr 2021 14:40:11 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHGVvn8Yi0tWL3sa@kroah.com>
+In-Reply-To: <20210410091128.31823-5-yong.wu@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 02:10:38PM +0200, Greg KH wrote:
-> On Sat, Apr 10, 2021 at 02:08:30PM +0200, Julia Lawall wrote:
-> > 
-> > 
-> > On Sat, 10 Apr 2021, Mitali Borkar wrote:
-> > 
-> > > Fixed Comparison to NULL can be written as '!...' by replacing it with
-> > > simpler form i.e boolean expression. This makes code more readable alternative.
-> > > Reported by checkpatch.
-> > >
-> > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > > ---
-> > >  drivers/staging/rtl8192e/rtl819x_TSProc.c | 6 +++---
-> > >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > >
-> > > diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-> > > index 65eac33aaa5b..476875125e87 100644
-> > > --- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
-> > > +++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-> > > @@ -269,12 +269,12 @@ static void MakeTSEntry(struct ts_common_info *pTsCommonInfo, u8 *Addr,
-> > >  {
-> > >  	u8	count;
-> > >
-> > > -	if (pTsCommonInfo == NULL)
-> > > +	if (!pTsCommonInfo)
-> > >  		return;
-> > >
-> > >  	memcpy(pTsCommonInfo->Addr, Addr, 6);
-> > >
-> > > -	if (pTSPEC != NULL)
-> > > +	if (pTSPEC)
-> > >  		memcpy((u8 *)(&(pTsCommonInfo->TSpec)), (u8 *)pTSPEC,
-> > >  		       sizeof(union tspec_body));
-> > >
-> > > @@ -328,7 +328,7 @@ bool GetTs(struct rtllib_device *ieee, struct ts_common_info **ppTS,
-> > >  	}
-> > >
-> > >  	*ppTS = SearchAdmitTRStream(ieee, Addr, UP, TxRxSelect);
-> > > -	if (*ppTS != NULL)
-> > > +	if (ppTS)
-> > 
-> > You lost a * here.
+On 10/04/2021 11:11, Yong Wu wrote:
+> Normally, If the smi-larb HW need work, we should enable the smi-common
+> HW power and clock firstly.
+> This patch adds device-link between the smi-larb dev and the smi-common
+> dev. then If pm_runtime_get_sync(smi-larb-dev), the pm_runtime_get_sync
+> (smi-common-dev) will be called automatically.
 > 
-> Ugh, good catch.
+> Also, Add DL_FLAG_STATELESS to avoid the smi-common clocks be gated when
+> probe.
 > 
-> Mitali, can you send me a fix-up patch for this, or do you want me to
-> drop your original patch from my tree?
->
-Yes Sir, I am making corrections right now in this patch. Will send the
-fix up patch in an hour.
+> CC: Matthias Brugger <matthias.bgg@gmail.com>
+> Suggested-by: Tomasz Figa <tfiga@chromium.org>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>  drivers/memory/mtk-smi.c | 19 ++++++++++---------
+>  1 file changed, 10 insertions(+), 9 deletions(-)
 
+I understood this is a dependency for other patches, so:
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-> thanks,
-> 
-> greg k-h
+If I am wrong and I can take it via memory tree, let me know.
+
+Best regards,
+Krzysztof
