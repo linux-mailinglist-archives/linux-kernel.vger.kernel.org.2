@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E4D35AAF7
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC5635AAF8
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 07:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234255AbhDJFCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 01:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        id S234229AbhDJFCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 01:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234191AbhDJFCS (ORCPT
+        with ESMTP id S234236AbhDJFCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 01:02:18 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D07F3C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 22:02:04 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id y32so5366444pga.11
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 22:02:04 -0700 (PDT)
+        Sat, 10 Apr 2021 01:02:22 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA099C061763
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 22:02:07 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so5959252pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 22:02:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=S2eMAvnU/VPv1tOaH24j1fTs/20qgersR7UfBpgGUfc=;
-        b=GeWCfq8v7BKxOeZLMYA4WMw4ttCARZDuEUue4sfCkBPbzNy/Y0VbbK58tw20qjz4ol
-         YA0CgSmlDd/lLZLavVzWqr9upF621I0KZXY6aZuw1u/LwmULAoLlWpFEGm53M129TOIG
-         99ce6ZNEUC2SZw4QB6YP3qqBTvQzUrPnKjnoZl4VnhseUos8vIe1xswrMBPvSuc1FFUs
-         xjySAnINzI02vCM5rJ0q+7myQi9k+4MnL+61/AAhlyehFCEJ16ji5dWOEQ5En8e+ilb3
-         pSnfLTQAXXxqyo8qqquv4OpGTKPmchAvQzNTo7H67emxXtzI/l8MAW282BbcOTpEEhRk
-         pKGA==
+        bh=ldonlZ9vwUBTltfCI1GiIsYf2KMOuo8USr97TAcSYMM=;
+        b=bjtDPNSTZO0aYZ6szvGPFul2u9l0UGtVTr0fsrIW0qLHl+vyvUt5AdgJ28cKf18QJD
+         EZZGou8FY0gOzpgucSM2oSKCujcH8syC6a5HJqpQqIuVG1iCO8iK0ljVohnrxNpOajP3
+         +PYOpKVAegAAXLDyC/HENvHS55X1rzDRjMfZ2U2f0bPCXHD/ndNskdjaz4piHxFkfo8u
+         J32FYP2PmyW/k3Szsi+puuRDB15/e+qXZle8J3yNXW068FcdBC+U3mYzLGqO8Uxi22ks
+         nu4Qkf/NQGupFwDfpgFN0ILKL6nVHF0bo2+ufLPA8WOgZmS41YlESNmuNANYIcUkuJbl
+         Y+rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=S2eMAvnU/VPv1tOaH24j1fTs/20qgersR7UfBpgGUfc=;
-        b=Bq6DCeNvEF0P00LHFVHTWaaa9l+7NgQ2AhX285QjuxaBDmyb9Ck0iD2ajS4cTaYNJ3
-         9PUj3LttJAFrJibND8irRyNvSjG/6rUm9Xlxw8YqNcncrwZDdNB39Aiy1nsznzSzuorZ
-         ZiIeX6VyUlhS/qCNvNRQNWZfLbFL6G4pRVbZBDT8noHXKOF8a1iDMHJdOtu/HZecL5G+
-         zR/hR26cNROJdneySkn8bv/Qcq2tIyMAvfqXK3tvCah/pXygI5/nktE9wSXyNAFnTLsR
-         5MhgjyRlzK05ST67dl4FfA5CAFL68rhMN/LK6THw4WFKK0ENS7+h01p43BZkegwooKgp
-         o7OQ==
-X-Gm-Message-State: AOAM530HmIEZ37y/+ST5V8zuWCndTt6aARP0cjP7J2z1e26b3qbhiem6
-        dGhMrSuuDp8tTvLx3al8Ld1Log==
-X-Google-Smtp-Source: ABdhPJzS+S0dzrXM99O8/UPWV3kxKBMLsMGFfEVyW9mZ6F+83Vt8JVXNF3v1JCkFDeEm4SwiHBCVTQ==
-X-Received: by 2002:a62:db43:0:b029:244:3c4c:6b90 with SMTP id f64-20020a62db430000b02902443c4c6b90mr11294634pfg.59.1618030924319;
-        Fri, 09 Apr 2021 22:02:04 -0700 (PDT)
+        bh=ldonlZ9vwUBTltfCI1GiIsYf2KMOuo8USr97TAcSYMM=;
+        b=M1GgNJSFHumiNjEbYJ+gnAH/WVHZ47+B4I942V5/y+/ZAeFFadwOzPuIS0u56iYoOA
+         lTl4Rr/2kgfUp01cYCVjGa4Iba3O5pRaKnO4OAhvoF7Jb0BnXsRAP+eoAAliikai9bHV
+         mfizhkH+J2EoIgMi2wQ/U7P9Q9QMd3VTHmTA/2pC/9el/3xjlmhQKRSU0RsTXVbsXyyD
+         JR8SsrvD9Ej/uBlIqK06daeGRYfDhdDwPi/OBThJihra2REo6Oy/t27Hua2q3iRkqFBK
+         ynkf/OPtXfTHEj3oHbcoAWfOlCYL+9CB+rnfJjVd1/ZVSSvWz1OL/Lcfd50/AFLyxM+n
+         Vc3A==
+X-Gm-Message-State: AOAM531vgX2gjpEUD5TKL26115LG33yctQqywJtovmOlRCTdszzkMunv
+        QwQA6wJKIewuQOg4knztnE6cYg==
+X-Google-Smtp-Source: ABdhPJyyi5ok+gdSArX8iIPD5OsC8Noiegn+PZFOSCbd3tpHsLX04I5N3GHQ3deKmp6BSCQ7+hKL0w==
+X-Received: by 2002:a17:902:7594:b029:e8:c21b:76aa with SMTP id j20-20020a1709027594b02900e8c21b76aamr16120415pll.37.1618030927227;
+        Fri, 09 Apr 2021 22:02:07 -0700 (PDT)
 Received: from localhost ([116.206.101.232])
-        by smtp.gmail.com with ESMTPSA id w1sm4232233pgh.26.2021.04.09.22.02.03
+        by smtp.gmail.com with ESMTPSA id c15sm3608092pfi.207.2021.04.09.22.02.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 22:02:03 -0700 (PDT)
+        Fri, 09 Apr 2021 22:02:06 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Al Grant <Al.Grant@arm.com>,
@@ -65,9 +65,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         James Clark <James.Clark@arm.com>
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 3/6] perf arm-spe: Convert event kernel time to counter value
-Date:   Sat, 10 Apr 2021 13:00:43 +0800
-Message-Id: <20210410050046.5394-4-leo.yan@linaro.org>
+Subject: [PATCH v3 4/6] perf arm-spe: Assign kernel time to synthesized event
+Date:   Sat, 10 Apr 2021 13:00:44 +0800
+Message-Id: <20210410050046.5394-5-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210410050046.5394-1-leo.yan@linaro.org>
 References: <20210410050046.5394-1-leo.yan@linaro.org>
@@ -77,13 +77,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When handle a perf event, Arm SPE decoder needs to decide if this perf
-event is earlier or later than the samples from Arm SPE trace data; to
-do comparision, it needs to use the same unit for the time.
+In current code, it assigns the arch timer counter to the synthesized
+samples Arm SPE trace, thus the samples don't contain the kernel time
+but only contain the raw counter value.
 
-This patch converts the event kernel time to arch timer's counter value,
-thus it can be used to compare with counter value contained in Arm SPE
-Timestamp packet.
+To fix the issue, this patch converts the timer counter to kernel time
+and assigns it to sample timestamp.
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
@@ -91,18 +90,18 @@ Signed-off-by: Leo Yan <leo.yan@linaro.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-index b48816d5c0b4..f66e10c62473 100644
+index f66e10c62473..ec7df83b50fd 100644
 --- a/tools/perf/util/arm-spe.c
 +++ b/tools/perf/util/arm-spe.c
-@@ -669,7 +669,7 @@ static int arm_spe_process_event(struct perf_session *session,
- 	}
+@@ -234,7 +234,7 @@ static void arm_spe_prep_sample(struct arm_spe *spe,
+ 	struct arm_spe_record *record = &speq->decoder->record;
  
- 	if (sample->time && (sample->time != (u64) -1))
--		timestamp = sample->time;
-+		timestamp = perf_time_to_tsc(sample->time, &spe->tc);
- 	else
- 		timestamp = 0;
+ 	if (!spe->timeless_decoding)
+-		sample->time = speq->timestamp;
++		sample->time = tsc_to_perf_time(record->timestamp, &spe->tc);
  
+ 	sample->ip = record->from_ip;
+ 	sample->cpumode = arm_spe_cpumode(spe, sample->ip);
 -- 
 2.25.1
 
