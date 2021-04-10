@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A04C35AA48
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 04:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE8035AA4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 04:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234174AbhDJCOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 22:14:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232796AbhDJCOJ (ORCPT
+        id S233909AbhDJCUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 22:20:30 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16433 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDJCU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 22:14:09 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A5DC061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 19:13:56 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id d5-20020a17090a2a45b029014d934553c4so4761671pjg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 19:13:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=nLePSplx7PtSkXHGdXyCusnm0ImMRD9rerpY+TAlPHg=;
-        b=cXw10tBrh9lVLSS0FkJG7oTiJtaMODJjfgdmqz4mTEi+hVS0Wr48giTPDmIyZzQf6r
-         2mKJvQ/xUxJMdPj5PNzMlmNkpDJfTaCxaYMqHxs+kb7y8ZfL8Tp+0zVUq3v7OVyaDqFs
-         tdDAHKHxr427clCOZZi7nY1dc1dsdxkYQcGoo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=nLePSplx7PtSkXHGdXyCusnm0ImMRD9rerpY+TAlPHg=;
-        b=UxADNdpc2GMlzseu1JFQKejS191dKWu4Hl4B6kSvtVCH078IHcvLx1IFr8H37yBFSy
-         4jGgSd8hSTMZukNBiU1rDelS3Ma7ZZvZCbovEDXA6deNYFYQcOImbzpnbJF1R7RsyeYu
-         7TqO9f5SxwfNIMre1sKP+RMPC5cHyOPZ4yZinKCaWGWQ52ADHMB2JhmyZ7SSHbMCJ10m
-         YT535/Z+5s500z0WhmAerYYKakBzt3j3n4Xkc/f2AMjbmjAIGHscZrWlkgRczZfrk1de
-         e/Z7+DEvIZXLxXH1ln6IxRE/IvYGfjKW9v7W4hqyj1brJAC7dt8G2M63rVCvl5TOvQct
-         qodw==
-X-Gm-Message-State: AOAM5304MFtsMWoNc1bWblL4aFDH7WLcyRDE6j3F4D8VlO0a4lK1ORop
-        ELdQ8m346CfbCUZ5ZXr9Y0wPgULAjDG/yg==
-X-Google-Smtp-Source: ABdhPJyDcS64ZZFzixjsjMMnAtyV704sq0UdPuwlwsXio8lAwsnAuX2nMSAYMbgnNY74A6RJcHXizw==
-X-Received: by 2002:a17:90a:55ca:: with SMTP id o10mr16069191pjm.173.1618020835728;
-        Fri, 09 Apr 2021 19:13:55 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:5141:7881:7013:743b])
-        by smtp.gmail.com with ESMTPSA id q15sm3795524pje.28.2021.04.09.19.13.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 19:13:55 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 9 Apr 2021 22:20:28 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FHJZ00DdgzqT0W;
+        Sat, 10 Apr 2021 10:18:00 +0800 (CST)
+Received: from DESKTOP-EFRLNPK.china.huawei.com (10.174.176.196) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 10 Apr 2021 10:20:06 +0800
+From:   Qiheng Lin <linqiheng@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>,
+        <luiz.dentz@gmail.com>, <linux-bluetooth@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qiheng Lin <linqiheng@huawei.com>
+Subject: [PATCH -next] Bluetooth: use flexible-array member instead of zero-length array
+Date:   Sat, 10 Apr 2021 10:19:35 +0800
+Message-ID: <20210410021935.11100-1-linqiheng@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1618020280-5470-2-git-send-email-tdas@codeaurora.org>
-References: <1618020280-5470-1-git-send-email-tdas@codeaurora.org> <1618020280-5470-2-git-send-email-tdas@codeaurora.org>
-Subject: Re: [PATCH v1 1/2] arm64: dts: qcom: sc7280: Add cpufreq hw node
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Taniya Das <tdas@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Taniya Das <tdas@codeaurora.org>
-Date:   Fri, 09 Apr 2021 19:13:53 -0700
-Message-ID: <161802083374.3764895.12006553235097369856@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.176.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Taniya Das (2021-04-09 19:04:39)
-> @@ -1116,6 +1124,17 @@
->                                 #clock-cells =3D <1>;
->                         };
->                 };
-> +
-> +               cpufreq_hw: cpufreq@18591000 {
-> +                       compatible =3D "qcom,cpufreq-epss";
-> +                       reg =3D <0 0x18591000 0 0x1000>,
-> +                             <0 0x18592000 0 0x1000>,
-> +                             <0 0x18593000 0 0x1000>;
-> +                       reg-names =3D "freq-domain0", "freq-domain1", "fr=
-eq-domain2";
+Fix the following coccicheck warning:
 
-The reg-names provides practically no value. Can you drop it?
+net/bluetooth/msft.c:37:6-13: WARNING use flexible-array member instead
+net/bluetooth/msft.c:42:6-10: WARNING use flexible-array member instead
+net/bluetooth/msft.c:52:6-10: WARNING use flexible-array member instead
 
-> +                       clocks =3D <&rpmhcc RPMH_CXO_CLK>, <&gcc GCC_GPLL=
-0>;
-> +                       clock-names =3D "xo", "alternate";
-> +                       #freq-domain-cells =3D <1>;
-> +               };
->         };
->
+Signed-off-by: Qiheng Lin <linqiheng@huawei.com>
+---
+ net/bluetooth/msft.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/net/bluetooth/msft.c b/net/bluetooth/msft.c
+index e28f15439ce4..37a394786a94 100644
+--- a/net/bluetooth/msft.c
++++ b/net/bluetooth/msft.c
+@@ -34,12 +34,12 @@ struct msft_le_monitor_advertisement_pattern {
+ 	__u8 length;
+ 	__u8 data_type;
+ 	__u8 start_byte;
+-	__u8 pattern[0];
++	__u8 pattern[];
+ };
+ 
+ struct msft_le_monitor_advertisement_pattern_data {
+ 	__u8 count;
+-	__u8 data[0];
++	__u8 data[];
+ };
+ 
+ struct msft_cp_le_monitor_advertisement {
+@@ -49,7 +49,7 @@ struct msft_cp_le_monitor_advertisement {
+ 	__u8 rssi_low_interval;
+ 	__u8 rssi_sampling_period;
+ 	__u8 cond_type;
+-	__u8 data[0];
++	__u8 data[];
+ } __packed;
+ 
+ struct msft_rp_le_monitor_advertisement {
+-- 
+2.31.1
+
