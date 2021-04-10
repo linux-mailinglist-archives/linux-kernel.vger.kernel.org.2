@@ -2,104 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D1035AC73
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1190C35AC77
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234419AbhDJJ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 05:28:36 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:55662 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhDJJ2f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 05:28:35 -0400
-Date:   Sat, 10 Apr 2021 09:28:18 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618046900;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kGIPj4SQZcv0/wBkkIdwyWDpziRZinACvXDJl8d9nmY=;
-        b=tnV7mpHUS/w7Ax+DyLVcmQ4ILbfAEQ7xbqPoaKj0LLll7kVi+/Jn8i/eQ5lRC70pSUaa55
-        2VGToxGdVOGpwJFEBQp7ICwY9rq2Jt2AkCKR5HpsH4NAk+vX+anvKNuSyqSZcFYsLLmyuF
-        SHKU2rdaOEF6O3XyBrUcjLD62zu9zyrHvFbl16T8wmZvGlLmC06L/buMnnXczrPwpRoTAL
-        HeVqoSGym/NQvZVCr2Ix1VlM8Boy5zVfo0dd0EGSDN5o4tfJ+YHgafgj34Jj5/V3lK4Jb0
-        fMcx0/vefaMBjVLgGsyZ9hINFJgRtLVVPTdm1j/A0kR7GnIbq1BegBMWIgL1HA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618046900;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kGIPj4SQZcv0/wBkkIdwyWDpziRZinACvXDJl8d9nmY=;
-        b=kRcdVkxsNmvxb7LNrsMfpWqD9Hleyb82Jhwd0V/8lS8ilBQt1o0a3DVzjGthPUL3deNCMG
-        1FHBd2e/q2OBIKBA==
-From:   "tip-bot2 for Andrew Cooper" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/core] x86/cpu: Comment Skylake server stepping too
-Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210409121027.16437-1-andrew.cooper3@citrix.com>
-References: <20210409121027.16437-1-andrew.cooper3@citrix.com>
+        id S234461AbhDJJaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 05:30:08 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:37160 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229537AbhDJJaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 05:30:07 -0400
+Received: from zn.tnic (p200300ec2f1aea004ff424aef8172112.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:ea00:4ff4:24ae:f817:2112])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 243AB1EC0409;
+        Sat, 10 Apr 2021 11:29:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618046992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=U4fOVgCu+Cc3JD0fk9iTK0StzoBFsYk6BLIrkX0M9Mk=;
+        b=DRP6H5Ya6IuI83rk+l8ifJgdtETmDKwOsMtW/uVOTSKMmoq2JlNAflXx9ngr3q1hYBwnKo
+        Otg746xtSkovC47rbD3PERQsxbGqzbsmyQ/zEdn+F8RrBZtspuxrsUYofvIb8SM6xRVtGJ
+        GvB0pOIrbUR/pw+mHGHW1CoVzKbqFO0=
+Date:   Sat, 10 Apr 2021 11:29:51 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v24 04/30] x86/cpufeatures: Introduce X86_FEATURE_CET and
+ setup functions
+Message-ID: <20210410092951.GA21691@zn.tnic>
+References: <20210401221104.31584-1-yu-cheng.yu@intel.com>
+ <20210401221104.31584-5-yu-cheng.yu@intel.com>
+ <20210409101214.GC15567@zn.tnic>
+ <c7cb0ed6-2725-ba0d-093e-393eab9918b2@intel.com>
+ <20210409171408.GG15567@zn.tnic>
+ <f7a1299a-916f-70fe-6881-0951fe4fe38a@intel.com>
 MIME-Version: 1.0
-Message-ID: <161804689861.29796.13981417353552777541.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f7a1299a-916f-70fe-6881-0951fe4fe38a@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/core branch of tip:
+On Fri, Apr 09, 2021 at 04:14:09PM -0700, Yu, Yu-cheng wrote:
+> > @@ -53,6 +55,8 @@ static short xsave_cpuid_features[] __initdata = {
+> >   	X86_FEATURE_INTEL_PT,
+> >   	X86_FEATURE_PKU,
+> >   	X86_FEATURE_ENQCMD,
+> > +	X86_FEATURE_CET, /* XFEATURE_CET_USER */
+> > +	X86_FEATURE_CET, /* XFEATURE_CET_KERNEL */
+> > 
+> > or what is the piece which becomes simpler?
+> 
+> Yes, this is it.
 
-Commit-ID:     99cb64de36d5c9397a664808b92943e35bdce25e
-Gitweb:        https://git.kernel.org/tip/99cb64de36d5c9397a664808b92943e35bdce25e
-Author:        Andrew Cooper <andrew.cooper3@citrix.com>
-AuthorDate:    Fri, 09 Apr 2021 13:10:27 +01:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Sat, 10 Apr 2021 11:14:33 +02:00
+Those should be X86_FEATURE_SHSTK no?
 
-x86/cpu: Comment Skylake server stepping too
+> Signals, arch_prctl, and ELF header are three places that need to depend on
+> either shadow stack or IBT is configured.  To remain simple, we can make all
+> three depend on CONFIG_X86_SHADOW_STACK, and in Kconfig, make CONFIG_X86_IBT
+> depend on CONFIG_X86_SHADOW_STACK.  Without shadow stack, IBT itself is not
+> as useful anyway.
 
-Further to
+Makes sense to me.
 
-  53375a5a218e ("x86/cpu: Resort and comment Intel models"),
+Thx.
 
-CascadeLake and CooperLake are steppings of Skylake, and make up the 1st
-to 3rd generation "Xeon Scalable Processor" line.
+-- 
+Regards/Gruss,
+    Boris.
 
-Signed-off-by: Andrew Cooper <andrew.cooper3@citrix.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210409121027.16437-1-andrew.cooper3@citrix.com
----
- arch/x86/include/asm/intel-family.h | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/intel-family.h b/arch/x86/include/asm/intel-family.h
-index b15262f..955b06d 100644
---- a/arch/x86/include/asm/intel-family.h
-+++ b/arch/x86/include/asm/intel-family.h
-@@ -33,7 +33,7 @@
-  *		_EX	- 4+ socket server parts
-  *
-  * The #define line may optionally include a comment including platform or core
-- * names. An exception is made for kabylake where steppings seem to have gotten
-+ * names. An exception is made for skylake/kabylake where steppings seem to have gotten
-  * their own names :-(
-  */
- 
-@@ -74,6 +74,8 @@
- #define INTEL_FAM6_SKYLAKE_L		0x4E	/* Sky Lake             */
- #define INTEL_FAM6_SKYLAKE		0x5E	/* Sky Lake             */
- #define INTEL_FAM6_SKYLAKE_X		0x55	/* Sky Lake             */
-+/*                 CASCADELAKE_X	0x55	   Sky Lake -- s: 7     */
-+/*                 COOPERLAKE_X		0x55	   Sky Lake -- s: 11    */
- 
- #define INTEL_FAM6_KABYLAKE_L		0x8E	/* Sky Lake             */
- /*                 AMBERLAKE_L		0x8E	   Sky Lake -- s: 9     */
+https://people.kernel.org/tglx/notes-about-netiquette
