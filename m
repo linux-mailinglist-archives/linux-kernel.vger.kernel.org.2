@@ -2,126 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD44F35AD76
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:13:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A377935AD77
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234728AbhDJNNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:13:42 -0400
-Received: from fgw23-7.mail.saunalahti.fi ([62.142.5.84]:22136 "EHLO
-        fgw23-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234684AbhDJNNe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:13:34 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw23.mail.saunalahti.fi (Halon) with ESMTP
-        id 83156157-99fe-11eb-8ccd-005056bdfda7;
-        Sat, 10 Apr 2021 16:13:16 +0300 (EEST)
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devel@acpica.org
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>
-Subject: [PATCH v1 1/1] ACPI: utils: Document for_each_acpi_dev_match() macro
-Date:   Sat, 10 Apr 2021 16:13:04 +0300
-Message-Id: <20210410131304.1858623-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        id S234720AbhDJNOl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 09:14:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34706 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234376AbhDJNOl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 09:14:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F138E610F7;
+        Sat, 10 Apr 2021 13:14:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618060466;
+        bh=aXasx+AstFoj3HDw0Zv75AyHIuHJ93VYSUn//nda9IQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TC6c0r2xVx+5x8gxvGcVou3fB//TkwKUVuM9dbLn00CqT6NhQ6rDIeWlnoR4UW8+j
+         DTV/aOSL0zdH3W5g8bNacV2yqvyEwkAuh1cmlIs0T6CvwKMinROFXPHgx1ctV3R64D
+         Bsf95y6/1OvDMCxqjKxjygHiq7Z6KkTq4N3ZHeOA=
+Date:   Sat, 10 Apr 2021 15:14:24 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mitali Borkar <mitaliborkar810@gmail.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: Re: [PATCH v2] staging: rtl8192e: fixed pointer error by adding '*'
+Message-ID: <YHGksKltkkmaUeAk@kroah.com>
+References: <YHGhdtldqAlRsPHT@kali>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHGhdtldqAlRsPHT@kali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The macro requires to call acpi_dev_put() on each iteration.
-Due to this it doesn't tolerate sudden disappearence of the devices.
+On Sat, Apr 10, 2021 at 06:30:38PM +0530, Mitali Borkar wrote:
+> Fixed Comparison to NULL can be written as '!...' by replacing it with
+> simpler form i.e. boolean expression. This makes code more readable
+> alternative.
+> Reported by checkpatch.
 
-Document all these nuances to prevent users blindly call it without
-understanding the possible issues.
+Checkpatch did not report this specific problem, Julia did :)
 
-While at it, add the note to the acpi_dev_get_next_match_dev() and
-advertise acpi_dev_put() instead of put_device() in the whole family
-of the helper functions.
+And this changelog text does not reflect the commit you made here.
 
-Fixes: bf263f64e804 ("media: ACPI / bus: Add acpi_dev_get_next_match_dev() and helper macro")
-Cc: Daniel Scally <djrscally@gmail.com>
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/acpi/utils.c    | 12 ++++++++----
- include/acpi/acpi_bus.h | 13 +++++++++++++
- 2 files changed, 21 insertions(+), 4 deletions(-)
+> 
+> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
 
-diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
-index f1aff4dab476..3f3171e9aef5 100644
---- a/drivers/acpi/utils.c
-+++ b/drivers/acpi/utils.c
-@@ -811,7 +811,7 @@ static int acpi_dev_match_cb(struct device *dev, const void *data)
-  * Note that if the device is pluggable, it may since have disappeared.
-  *
-  * Note that unlike acpi_dev_found() this function checks the status
-- * of the device. So for devices which are present in the dsdt, but
-+ * of the device. So for devices which are present in the DSDT, but
-  * which are disabled (their _STA callback returns 0) this function
-  * will return false.
-  *
-@@ -838,7 +838,7 @@ EXPORT_SYMBOL(acpi_dev_present);
- 
- /**
-  * acpi_dev_get_next_match_dev - Return the next match of ACPI device
-- * @adev: Pointer to the previous acpi_device matching this @hid, @uid and @hrv
-+ * @adev: Pointer to the previous ACPI device matching this @hid, @uid and @hrv
-  * @hid: Hardware ID of the device.
-  * @uid: Unique ID of the device, pass NULL to not check _UID
-  * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
-@@ -846,7 +846,11 @@ EXPORT_SYMBOL(acpi_dev_present);
-  * Return the next match of ACPI device if another matching device was present
-  * at the moment of invocation, or NULL otherwise.
-  *
-- * The caller is responsible to call put_device() on the returned device.
-+ * Note, the function does not tolerate the sudden disappearance of @adev, e.g.
-+ * in the case of hotplug event. That said, caller should ensure that this will
-+ * never happen.
-+ *
-+ * The caller is responsible to call acpi_dev_put() on the returned device.
-  *
-  * See additional information in acpi_dev_present() as well.
-  */
-@@ -875,7 +879,7 @@ EXPORT_SYMBOL(acpi_dev_get_next_match_dev);
-  * Return the first match of ACPI device if a matching device was present
-  * at the moment of invocation, or NULL otherwise.
-  *
-- * The caller is responsible to call put_device() on the returned device.
-+ * The caller is responsible to call acpi_dev_put() on the returned device.
-  *
-  * See additional information in acpi_dev_present() as well.
-  */
-diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index f28b097c658f..834b7a1f7405 100644
---- a/include/acpi/acpi_bus.h
-+++ b/include/acpi/acpi_bus.h
-@@ -689,6 +689,19 @@ acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const cha
- struct acpi_device *
- acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv);
- 
-+/**
-+ * for_each_acpi_dev_match - iterate over ACPI devices that matching the criteria
-+ * @adev: pointer to the matching ACPI device, NULL at the end of the loop
-+ * @hid: Hardware ID of the device.
-+ * @uid: Unique ID of the device, pass NULL to not check _UID
-+ * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
-+ *
-+ * The caller is responsible to call acpi_dev_put() on the returned device.
-+ *
-+ * Due to above requirement there is a window that may invalidate @adev and
-+ * next iteration will use a dangling pointer, e.g. in the case of hotplug
-+ * event. That said, caller should ensure that this will never happen.
-+ */
- #define for_each_acpi_dev_match(adev, hid, uid, hrv)			\
- 	for (adev = acpi_dev_get_first_match_dev(hid, uid, hrv);	\
- 	     adev;							\
--- 
-2.31.1
+We need a "Reported-by:" line here to reflect that someone reported the
+problem as well.
 
+Ideally it will have a "Fixes:" tag also, but I can add that if you
+don't know how to do that just yet.
+
+thanks,
+
+greg k-h
