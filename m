@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A0DC35AEA7
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 17:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AD735AEA8
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 17:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234931AbhDJPA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 11:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
+        id S234939AbhDJPBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 11:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234856AbhDJPA4 (ORCPT
+        with ESMTP id S234923AbhDJPA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 11:00:56 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 477D6C06138A
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 08:00:41 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id v6so11876075ejo.6
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 08:00:41 -0700 (PDT)
+        Sat, 10 Apr 2021 11:00:58 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D2ECC06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 08:00:44 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a7so13169587eju.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 08:00:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+GS5YSfWFuaI4QAKIQGwDg4lsv5EguJ6x2s2YbgKL78=;
-        b=XBAoLJGU1Gz/A/gMAcXAIHOyw/xJ6GQVtG9UVSMOnNEDap5BWU+A/2pekAzKgy7QGj
-         nvLIonwIrbXh9TDom7KndIiqlQY9StdWdUFZOm7Zko3OGv+eOnHeysa0McQahXW/DHRP
-         kAUG8Zi7EWayOGG+JgB/sejgspfOvRLyetjmPo96fsQ8p5E8vIBXxnIyxqlE4QCwQ1+P
-         yPDCUeUX7Nj7oo1ptJQHDzDKqdo/qYp3QBe3KZCi2WH0lgyXoMi7wzs6U0Kb1RpZIS9p
-         sSsWTL6TLaCRxsddem7IYmfNuAfh5nqVCIP7lNjGj31KewzOzwrOg/xPtbl3nVfttJbr
-         ts6Q==
+        bh=HBudnlgBbgfTMMB5wWvaY2YPBfD3jKz3AvHUYC6wfiU=;
+        b=KXn/WS0nh8U5TCwCHs9nhls7+Wi1VipCJrtUFEWprx4nvj05F0iCWB/h+lQGtbTTVd
+         5GqPxxgtnUH8u1uUkNYjYxa0KaxwjC38zR7sJyZZ4Q4FDxbNU6bxN2QBsofVr11NVb/w
+         /Ub0Gz0e/QrXCmviLRWnpZQNuWzv1dGrVpfNJYN/OyP0NkE4khGkp+s5XHOfV5LPSO4X
+         1OO3f1IeNn34shVpRBlzlqtHkp1pU7p6UyVIMdRpRo6ytbn+E2yg40K8rU0BNLgHuwSD
+         5rMoxaSOMmebyLrC88halSacUYyBuGGoqSMQcqFbXHtFZEPvknuWPdqX1aV8LmY/tp6J
+         ioOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+GS5YSfWFuaI4QAKIQGwDg4lsv5EguJ6x2s2YbgKL78=;
-        b=qu0Kgc3oGk1668nHElMspZBt3TyHNYdb0vsDfQdpbIYz5ioMVuFytiwr6BWIaZNoWh
-         oIgXC1UiHIEDfa9a8fihk1TpkoFY1vnK8flEDFTh/c9h2XfAWWIa9n3ghyrI6Y3vMXGq
-         /QSVGReIGFjeM9GhlPOryBaruvaUp8ImNXBFxxvLuJ2KRWZnYasm3EAPS//iPQPUSI1U
-         dyJfcvinPPQtkpdrQBw/u/+yzzCTBYy/53q82k1+1ANFrvVkBuNN0uDCDnpW9DY1feBZ
-         avkcPb2BLtaeh11LXKsIkE3n8Zs6txDUO1mm43TxOVP43a44wzRq9QwLSBTvuOwqfwbD
-         81sw==
-X-Gm-Message-State: AOAM533h2DLl1LgY06TgrwAvVsSrHRQJfnrTSHqU91x0YzNZltedS5vG
-        fF/K95ubUR6SX21G1zZyJtU=
-X-Google-Smtp-Source: ABdhPJzUPJhD/Jw25OmsKVnptLqsNbw9k+oR68MuFXrpm1oxEr3dV8AQ2bx0m0E8+qZDdyfnNx6pGg==
-X-Received: by 2002:a17:906:5413:: with SMTP id q19mr1563472ejo.8.1618066840031;
-        Sat, 10 Apr 2021 08:00:40 -0700 (PDT)
+        bh=HBudnlgBbgfTMMB5wWvaY2YPBfD3jKz3AvHUYC6wfiU=;
+        b=T3T7k5Sc8PjeNs1hqBEBSNR1NEVdse/BPNptxZZjN+UY0f2z8KAeBRjDkXaCdUy+DA
+         1JBgKMUoWT7wLx/K7fIojttCktUo62U029XQawfWlpUlS8mOmwYGVBy8f919FvK60SUj
+         Thg8jkA4WxLsPS2qlT2jEkcDHNw8bdBDtHPFo+SBc1LLvGYjoKMsSu+B99ozf/jjKtFi
+         JoZA/C8Fe7VQXs0NPb5VNIwaXqrRw1BAEzbMABTovIrhWjPTyg2YdT3J4/W4CQKDx8u1
+         s8dOvRCNCRVCkyj1/X12xJv5qvgsbgKJ35FLryFzufC3yAUg678WUQQ8HDwCzTYRKnzM
+         OXZQ==
+X-Gm-Message-State: AOAM530xVMtkhPa+UkiYqQ27S0RXMUdJ1FtBAjn0vLw5IuAQNrMFKcHj
+        wbWNJZrewmDJPL96GBDA/iBcttc4E35/ccBm
+X-Google-Smtp-Source: ABdhPJy3Pso3VQyp2/erSKZ1q+PkaTfsXQRbsZgriQsRZJIomIIh6WMSQ6NXwDkOOz4Wcs2NQXFy0A==
+X-Received: by 2002:a17:907:9858:: with SMTP id jj24mr20174686ejc.212.1618066842785;
+        Sat, 10 Apr 2021 08:00:42 -0700 (PDT)
 Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id gb4sm2719494ejc.122.2021.04.10.08.00.39
+        by smtp.gmail.com with ESMTPSA id gb4sm2719494ejc.122.2021.04.10.08.00.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 08:00:39 -0700 (PDT)
+        Sat, 10 Apr 2021 08:00:42 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Greg KH <gregkh@linuxfoundation.org>,
         outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
 Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH v2 4/5] staging: rtl8723bs: Change the type and use of a variable
-Date:   Sat, 10 Apr 2021 17:00:07 +0200
-Message-Id: <20210410150008.5460-5-fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH v2 5/5] staging: rtl8723bs: core: Change a controlling expression
+Date:   Sat, 10 Apr 2021 17:00:08 +0200
+Message-Id: <20210410150008.5460-6-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210410150008.5460-1-fmdefrancesco@gmail.com>
 References: <20210410150008.5460-1-fmdefrancesco@gmail.com>
@@ -65,45 +65,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the type of fw_current_in_ps_mode from u8 to bool, because
-it is used everywhere as a bool and, accordingly, it should be
-declared as a bool. Shorten the controlling expression of an 'if' statement.
+Change a controlling expression within an 'if' statement: don't compare
+with 'true'.
 
 Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
 
-Changes from v1: No changes.
+Changes from v1: No changes. This related patch is new to this series.
 
- drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
- drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_cmd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/rtl8723bs/hal/hal_intf.c b/drivers/staging/rtl8723bs/hal/hal_intf.c
-index 96fe172ced8d..8dc4dd8c6d4c 100644
---- a/drivers/staging/rtl8723bs/hal/hal_intf.c
-+++ b/drivers/staging/rtl8723bs/hal/hal_intf.c
-@@ -348,7 +348,7 @@ void rtw_hal_dm_watchdog(struct adapter *padapter)
+diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+index 32079e0f71d5..600366cb1aeb 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
++++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
+@@ -1507,7 +1507,7 @@ static void rtw_lps_change_dtim_hdl(struct adapter *padapter, u8 dtim)
+ 	if (pwrpriv->dtim != dtim)
+ 		pwrpriv->dtim = dtim;
  
- void rtw_hal_dm_watchdog_in_lps(struct adapter *padapter)
- {
--	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode == true) {
-+	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode) {
- 		if (padapter->HalFunc.hal_dm_watchdog_in_lps)
- 			padapter->HalFunc.hal_dm_watchdog_in_lps(padapter); /* this function caller is in interrupt context */
- 	}
-diff --git a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-index 0a48f1653be5..0767dbb84199 100644
---- a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-+++ b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-@@ -203,7 +203,7 @@ struct pwrctrl_priv {
- 	u8 LpsIdleCount;
- 	u8 power_mgnt;
- 	u8 org_power_mgnt;
--	u8 fw_current_in_ps_mode;
-+	bool fw_current_in_ps_mode;
- 	unsigned long	DelayLPSLastTimeStamp;
- 	s32		pnp_current_pwr_state;
- 	u8 pnp_bstop_trx;
+-	if ((pwrpriv->fw_current_in_ps_mode == true) && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
++	if ((pwrpriv->fw_current_in_ps_mode) && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
+ 		u8 ps_mode = pwrpriv->pwr_mode;
+ 
+ 		rtw_hal_set_hwreg(padapter, HW_VAR_H2C_FW_PWRMODE, (u8 *)(&ps_mode));
 -- 
 2.31.1
 
