@@ -2,70 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6136935ABD7
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 802E035ABD8
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhDJIPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 04:15:48 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:25148 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhDJIPr (ORCPT
+        id S233827AbhDJIQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 04:16:36 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:36484 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229494AbhDJIQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 04:15:47 -0400
-Received: from belgarion ([90.11.64.244])
-        by mwinf5d03 with ME
-        id qwFG2400R5GBUJa03wFRLb; Sat, 10 Apr 2021 10:15:30 +0200
-X-ME-Helo: belgarion
-X-ME-Auth: amFyem1pay5yb2JlcnRAb3JhbmdlLmZy
-X-ME-Date: Sat, 10 Apr 2021 10:15:30 +0200
-X-ME-IP: 90.11.64.244
-From:   Robert Jarzmik <robert.jarzmik@free.fr>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, soc@kernel.org
-Subject: Re: [PATCH] ARM: pxa: mainstone: avoid -Woverride-init warning
-In-Reply-To: <161727243811.583633.1536328285829233051.b4-ty@arndb.de> (Arnd
-        Bergmann's message of "Thu, 1 Apr 2021 12:23:29 +0200")
-References: <20210323130849.2362001-1-arnd@kernel.org>
-        <161727243811.583633.1536328285829233051.b4-ty@arndb.de>
-User-Agent: Gnus/5.130008 (Ma Gnus v0.8) Emacs/26 (gnu/linux)
-X-URL:  http://belgarath.falguerolles.org/
-Date:   Sat, 10 Apr 2021 10:15:15 +0200
-Message-ID: <87im4utv1o.fsf@belgarion.home>
+        Sat, 10 Apr 2021 04:16:34 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AhHlmwqg61Ye3+5hDwb+Ew+rd1XBQXvMji2hD?=
+ =?us-ascii?q?6mlwRA09T+WzkceykPMHkSLlkTp5YhAdsP2JJaXoexjh3LFv5415B9ufdS3HnE?=
+ =?us-ascii?q?ftE41494vlxFTbdRHW0uJGz69vf+xfJbTLZ2RStsrx7AmmH9tI+rDuzImTmezc?=
+ =?us-ascii?q?w31xJDsGV4hc6W5CZTqmLg=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,210,1613430000"; 
+   d="scan'208";a="502532363"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 10:16:19 +0200
+Date:   Sat, 10 Apr 2021 10:16:19 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Mitali Borkar <mitaliborkar810@gmail.com>
+cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: Re: [Outreachy kernel] [PATCH 1/3] staging: rtl8192e: replace
+ comparison to NULL by boolean
+In-Reply-To: <YHEJngq5MHBEspGY@kali>
+Message-ID: <alpine.DEB.2.22.394.2104101015560.2975@hadrien>
+References: <YHEJngq5MHBEspGY@kali>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> writes:
 
-> From: Arnd Bergmann <arnd@arndb.de>
+
+On Sat, 10 Apr 2021, Mitali Borkar wrote:
+
+> Replaced comparison to NULL by boolean expressions
+> (here used boolean negations). This improves readability of code.
+> Reported by checkpatch.
 >
-> On Tue, 23 Mar 2021 14:08:27 +0100, Arnd Bergmann wrote:
->> The default initializer at the start of the array causes a warning
->> when building with W=1:
->> 
->> In file included from arch/arm/mach-pxa/mainstone.c:47:
->> arch/arm/mach-pxa/mainstone.h:124:33: error: initialized field overwritten [-Werror=override-init]
->>   124 | #define MAINSTONE_IRQ(x)        (MAINSTONE_NR_IRQS + (x))
->>       |                                 ^
->> arch/arm/mach-pxa/mainstone.h:133:33: note: in expansion of macro 'MAINSTONE_IRQ'
->>   133 | #define MAINSTONE_S0_CD_IRQ     MAINSTONE_IRQ(9)
->>       |                                 ^~~~~~~~~~~~~
->> arch/arm/mach-pxa/mainstone.c:506:15: note: in expansion of macro 'MAINSTONE_S0_CD_IRQ'
->>   506 |         [5] = MAINSTONE_S0_CD_IRQ,
->>       |               ^~~~~~~~~~~~~~~~~~~
->> 
->> [...]
+> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> ---
+>  drivers/staging/rtl8192e/rtl819x_HTProc.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 >
-> Applied to arm/fixes.
-Too late, but ...
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+> index 65202dd53447..0b1e92f17805 100644
+> --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
+> +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+> @@ -276,7 +276,7 @@ void HTConstructCapabilityElement(struct rtllib_device *ieee, u8 *posHTCap,
+>  	struct rt_hi_throughput *pHT = ieee->pHTInfo;
+>  	struct ht_capab_ele *pCapELE = NULL;
+>
+> -	if ((posHTCap == NULL) || (pHT == NULL)) {
+> +	if ((!posHTCap) || (!pHT)) {
 
-Cheers.
+You can drop the parentheses. ! has higher precedenace than ||.
 
--- 
-Robert
+julia
+
+>  		netdev_warn(ieee->dev,
+>  			    "%s(): posHTCap and pHTInfo are null\n", __func__);
+>  		return;
+> @@ -357,7 +357,7 @@ void HTConstructInfoElement(struct rtllib_device *ieee, u8 *posHTInfo,
+>  	struct rt_hi_throughput *pHT = ieee->pHTInfo;
+>  	struct ht_info_ele *pHTInfoEle = (struct ht_info_ele *)posHTInfo;
+>
+> -	if ((posHTInfo == NULL) || (pHTInfoEle == NULL)) {
+> +	if ((!posHTInfo) || (!pHTInfoEle)) {
+>  		netdev_warn(ieee->dev,
+>  			    "%s(): posHTInfo and pHTInfoEle are null\n",
+>  			    __func__);
+> @@ -397,7 +397,7 @@ void HTConstructInfoElement(struct rtllib_device *ieee, u8 *posHTInfo,
+>  void HTConstructRT2RTAggElement(struct rtllib_device *ieee, u8 *posRT2RTAgg,
+>  				u8 *len)
+>  {
+> -	if (posRT2RTAgg == NULL) {
+> +	if (!posRT2RTAgg) {
+>  		netdev_warn(ieee->dev, "%s(): posRT2RTAgg is null\n", __func__);
+>  		return;
+>  	}
+> @@ -420,7 +420,7 @@ static u8 HT_PickMCSRate(struct rtllib_device *ieee, u8 *pOperateMCS)
+>  {
+>  	u8 i;
+>
+> -	if (pOperateMCS == NULL) {
+> +	if (!pOperateMCS) {
+>  		netdev_warn(ieee->dev, "%s(): pOperateMCS is null\n", __func__);
+>  		return false;
+>  	}
+> @@ -453,7 +453,7 @@ u8 HTGetHighestMCSRate(struct rtllib_device *ieee, u8 *pMCSRateSet,
+>  	u8		mcsRate = 0;
+>  	u8		availableMcsRate[16];
+>
+> -	if (pMCSRateSet == NULL || pMCSFilter == NULL) {
+> +	if (!pMCSRateSet || !pMCSFilter) {
+>  		netdev_warn(ieee->dev,
+>  			    "%s(): pMCSRateSet and pMCSFilter are null\n",
+>  			    __func__);
+> --
+> 2.30.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHEJngq5MHBEspGY%40kali.
+>
