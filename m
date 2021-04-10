@@ -2,131 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7439F35AE7F
+	by mail.lfdr.de (Postfix) with ESMTP id BFC7F35AE80
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234759AbhDJOtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:49:05 -0400
-Received: from mga17.intel.com ([192.55.52.151]:65199 "EHLO mga17.intel.com"
+        id S234802AbhDJOtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:49:18 -0400
+Received: from mga17.intel.com ([192.55.52.151]:36795 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234392AbhDJOsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:48:54 -0400
-IronPort-SDR: CBeyzvuF8RjPoDaVEhu1HAiXO7sw11Z/0FaRJ9L2VpISwq6sCOHq+GSQCY9SKzR3ZFT6RrJgg8
- ez18fnmljSww==
-X-IronPort-AV: E=McAfee;i="6000,8403,9950"; a="174023925"
+        id S234587AbhDJOtP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 10:49:15 -0400
+IronPort-SDR: txoN0MZeBNvbdzUPHbs85EEhmoMIhhe0u7Lzk0AwvaY4yBtfESebctKDozUTnk1MAv3POGkkVB
+ rWRxcEFhSQCQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9950"; a="174023976"
 X-IronPort-AV: E=Sophos;i="5.82,212,1613462400"; 
-   d="scan'208";a="174023925"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 07:48:32 -0700
-IronPort-SDR: /K0zYiG79dyb0W27hbgX9JJzhV7Dme9RiX8eF9yEmMPh2qk40XaXvo+imdoPtdSDpTqTjqXG/+
- lcyFGsAMNxhQ==
+   d="scan'208";a="174023976"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 07:49:00 -0700
+IronPort-SDR: 4LLPejWhnujnYJd2Rv5aRHA5Bqo3JakHoF2v4TBaDPM6OdktWh91cNGqStVb+jUJaQ1frdpTaD
+ uu40+wdc70pQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,212,1613462400"; 
-   d="scan'208";a="520621770"
-Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Apr 2021 07:48:29 -0700
-Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lVEuS-000ITS-S4; Sat, 10 Apr 2021 14:48:28 +0000
-Date:   Sat, 10 Apr 2021 22:47:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     satya priya <skakit@codeaurora.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     kbuild-all@lists.01.org, Lee Jones <lee.jones@linaro.org>,
-        linux-rtc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH V2 3/4] dt-bindings: mfd: Convert pm8xxx bindings to yaml
-Message-ID: <202104102224.0snQfjaj-lkp@intel.com>
-References: <1617976766-7852-4-git-send-email-skakit@codeaurora.org>
+   d="scan'208";a="416687791"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by fmsmga008.fm.intel.com with ESMTP; 10 Apr 2021 07:48:57 -0700
+Date:   Sat, 10 Apr 2021 22:48:56 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, rui.zhang@intel.com,
+        andi.kleen@intel.com, dave.hansen@intel.com, len.brown@intel.com
+Subject: Re: [RFC 1/2] x86/tsc: add a timer to make sure tsc_adjust is always
+ checked
+Message-ID: <20210410144856.GC22054@shbuild999.sh.intel.com>
+References: <1617092747-15769-1-git-send-email-feng.tang@intel.com>
+ <87y2dq32xc.ffs@nanos.tec.linutronix.de>
+ <20210410094752.GB21691@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1617976766-7852-4-git-send-email-skakit@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210410094752.GB21691@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi satya,
+Hi Boris,
 
-Thank you for the patch! Perhaps something to improve:
+On Sat, Apr 10, 2021 at 11:47:52AM +0200, Borislav Petkov wrote:
+> On Sat, Apr 10, 2021 at 11:27:11AM +0200, Thomas Gleixner wrote:
+> > On Tue, Mar 30 2021 at 16:25, Feng Tang wrote:
+> > > Normally the tsc_sync will be checked every time system enters idle state,
+> > > but there is still caveat that a system won't enter idle, either because
+> > > it's too busy or configured purposely to not enter idle. Setup a periodic
+> > > timer to make sure the check is always on.
+> > 
+> > Bah. I really hate the fact that we don't have a knob to disable writes
+> > to the TSC/TSC_ADJUST msrs. That would spare this business alltogether.
+> 
+> We have the MSR filtering and I'd *love* to add those MSRs to a
+> permanent ban list of MSRs which will never ever be written to from
+> luserspace.
 
-[auto build test WARNING on abelloni/rtc-next]
-[also build test WARNING on lee-mfd/for-mfd-next robh/for-next v5.12-rc6 next-20210409]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+Yep, I just tried changing TSC_ADJUST msr with 'wrmsr' command, and
+it did succeed and trigger the warning of tsc_verify_tsc_adjust():
 
-url:    https://github.com/0day-ci/linux/commits/satya-priya/Add-RTC-support-for-PMIC-PMK8350/20210409-220149
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git rtc-next
-compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
-reproduce: make ARCH=arm dtbs_check
+	[ 1135.387866] [Firmware Bug]: TSC ADJUST differs: CPU0 0 --> 4096. Restoring
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
+And the bigger risk is still BIOS's writing to TSC_ADJUST MSR beneath
+kernel.
 
+Thanks,
+Feng
 
-dtcheck warnings: (new ones prefixed by >>)
-   arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml: power-controller@2099000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml: power-controller@20a9000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml: power-controller@20b9000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml: sps-sic-non-secure@12100000: compatible: 'anyOf' conditional failed, one must be fixed:
-   	['syscon'] is too short
-   	'syscon' is not one of ['allwinner,sun8i-a83t-system-controller', 'allwinner,sun8i-h3-system-controller', 'allwinner,sun8i-v3s-system-controller', 'allwinner,sun50i-a64-system-controller', 'hisilicon,dsa-subctrl', 'hisilicon,hi6220-sramctrl', 'hisilicon,pcie-sas-subctrl', 'hisilicon,peri-subctrl', 'microchip,sparx5-cpu-syscon', 'mstar,msc313-pmsleep', 'rockchip,px30-qos', 'rockchip,rk3066-qos', 'rockchip,rk3288-qos', 'rockchip,rk3399-qos', 'samsung,exynos3-sysreg', 'samsung,exynos4-sysreg', 'samsung,exynos5-sysreg', 'samsung,exynos5433-sysreg']
-   	From schema: Documentation/devicetree/bindings/mfd/syscon.yaml
->> arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml: pmic@1: 'mpps@50' does not match any of the regexes: 'pinctrl-[0-9]+', 'rtc@[0-9a-f]+$'
-   	From schema: Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-   Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.9/dist-packages/dtschema/schemas/rtc/qcom-pm8xxx-rtc.yaml'
---
-   arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml: power-controller@2099000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml: power-controller@20a9000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml: power-controller@20b9000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml: sps-sic-non-secure@12100000: compatible: 'anyOf' conditional failed, one must be fixed:
-   	['syscon'] is too short
-   	'syscon' is not one of ['allwinner,sun8i-a83t-system-controller', 'allwinner,sun8i-h3-system-controller', 'allwinner,sun8i-v3s-system-controller', 'allwinner,sun50i-a64-system-controller', 'hisilicon,dsa-subctrl', 'hisilicon,hi6220-sramctrl', 'hisilicon,pcie-sas-subctrl', 'hisilicon,peri-subctrl', 'microchip,sparx5-cpu-syscon', 'mstar,msc313-pmsleep', 'rockchip,px30-qos', 'rockchip,rk3066-qos', 'rockchip,rk3288-qos', 'rockchip,rk3399-qos', 'samsung,exynos3-sysreg', 'samsung,exynos4-sysreg', 'samsung,exynos5-sysreg', 'samsung,exynos5433-sysreg']
-   	From schema: Documentation/devicetree/bindings/mfd/syscon.yaml
->> arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml: pmic@1: 'mpps@50' does not match any of the regexes: 'pinctrl-[0-9]+', 'rtc@[0-9a-f]+$'
-   	From schema: Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-   Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.9/dist-packages/dtschema/schemas/rtc/qcom-pm8xxx-rtc.yaml'
---
-   arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml: power-controller@2099000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml: power-controller@20a9000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml: power-controller@20b9000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml: sps-sic-non-secure@12100000: compatible: 'anyOf' conditional failed, one must be fixed:
-   	['syscon'] is too short
-   	'syscon' is not one of ['allwinner,sun8i-a83t-system-controller', 'allwinner,sun8i-h3-system-controller', 'allwinner,sun8i-v3s-system-controller', 'allwinner,sun50i-a64-system-controller', 'hisilicon,dsa-subctrl', 'hisilicon,hi6220-sramctrl', 'hisilicon,pcie-sas-subctrl', 'hisilicon,peri-subctrl', 'microchip,sparx5-cpu-syscon', 'mstar,msc313-pmsleep', 'rockchip,px30-qos', 'rockchip,rk3066-qos', 'rockchip,rk3288-qos', 'rockchip,rk3399-qos', 'samsung,exynos3-sysreg', 'samsung,exynos4-sysreg', 'samsung,exynos5-sysreg', 'samsung,exynos5433-sysreg']
-   	From schema: Documentation/devicetree/bindings/mfd/syscon.yaml
->> arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml: pmic@1: 'mpps@50' does not match any of the regexes: 'pinctrl-[0-9]+', 'rtc@[0-9a-f]+$'
-   	From schema: Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-   Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.9/dist-packages/dtschema/schemas/rtc/qcom-pm8xxx-rtc.yaml'
---
-   arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml: power-controller@2099000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml: power-controller@20a9000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml: power-controller@20b9000: '#power-domain-cells' is a required property
-   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
-   arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml: sps-sic-non-secure@12100000: compatible: 'anyOf' conditional failed, one must be fixed:
-   	['syscon'] is too short
-   	'syscon' is not one of ['allwinner,sun8i-a83t-system-controller', 'allwinner,sun8i-h3-system-controller', 'allwinner,sun8i-v3s-system-controller', 'allwinner,sun50i-a64-system-controller', 'hisilicon,dsa-subctrl', 'hisilicon,hi6220-sramctrl', 'hisilicon,pcie-sas-subctrl', 'hisilicon,peri-subctrl', 'microchip,sparx5-cpu-syscon', 'mstar,msc313-pmsleep', 'rockchip,px30-qos', 'rockchip,rk3066-qos', 'rockchip,rk3288-qos', 'rockchip,rk3399-qos', 'samsung,exynos3-sysreg', 'samsung,exynos4-sysreg', 'samsung,exynos5-sysreg', 'samsung,exynos5433-sysreg']
-   	From schema: Documentation/devicetree/bindings/mfd/syscon.yaml
->> arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml: pmic@1: 'mpps@50' does not match any of the regexes: 'pinctrl-[0-9]+', 'rtc@[0-9a-f]+$'
-   	From schema: Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
-   Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.9/dist-packages/dtschema/schemas/rtc/qcom-pm8xxx-rtc.yaml'
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
