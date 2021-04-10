@@ -2,98 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38DE35B07E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 22:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED1C35B081
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 22:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235056AbhDJUsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 16:48:36 -0400
-Received: from mupuf.org ([167.71.42.210]:41458 "EHLO mupuf.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234439AbhDJUsf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 16:48:35 -0400
-Received: from [IPv6:2a01:4b00:86b9:100:9ede:1593:85ef:7eda] (unknown [IPv6:2a01:4b00:86b9:100:9ede:1593:85ef:7eda])
-        by Neelix.spliet.org (Postfix) with ESMTPSA id 03CC4F20011;
-        Sat, 10 Apr 2021 21:48:15 +0100 (BST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 Neelix.spliet.org 03CC4F20011
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spliet.org;
-        s=default; t=1618087696;
-        bh=G/KMHNxJ10tQbDe69nA++juz4fZynQZtQ/TmQnU8gZU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=rtcv1a0XHMirOX80HxcGaWbLsoJRj6qdJd3vWIhMsW3jREz5OLGRbkylBUe31GukR
-         KfHjxMcHhGdDpL4mBMubQ+bys/OMe0DzF4R6g6BgrfpZktq2tA/AFgr1s8EkUvOXgO
-         11vjcgkRFBdspV765d/qjjBXIc5u//qW2yTaT+yI=
-Subject: Re: [Nouveau] [PATCH v2] ALSA: hda: Continue to probe when codec
- probe fails
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Karol Herbst <kherbst@redhat.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        tiwai@suse.com, Alex Deucher <alexander.deucher@amd.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        open list <linux-kernel@vger.kernel.org>,
-        Aaron Plattner <aplattner@nvidia.com>
-References: <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
- <s5hsg85n2km.wl-tiwai@suse.de> <s5hmtydn0yg.wl-tiwai@suse.de>
- <CAAd53p6MMFh=HCNF9pyrJc9hVMZWFe7_8MvBcBHVWARqHU_TTA@mail.gmail.com>
- <s5h7dpfk06y.wl-tiwai@suse.de>
- <CAAd53p53w0H6tsb4JgQtFTkYinniicTYBs2uk7tc=heP2dM_Cw@mail.gmail.com>
- <CAKb7UvjWX7xbwMKtnad5EVy16nY1M-A13YJeRWyUwHzemcVswA@mail.gmail.com>
- <CAAd53p4=bSX26QzsPyV1sxADiuVn2sowWyb5JFDoPZQ+ZYoCzA@mail.gmail.com>
- <CACO55tsPx_UC3OPf9Hq9sGdnZg9jH1+B0zOi6EAxTZ13E1tf7A@mail.gmail.com>
- <d01e375f-bf16-a005-ec66-0910956cc616@spliet.org>
- <20210410192314.GB16240@wunner.de>
-From:   Roy Spliet <nouveau@spliet.org>
-Message-ID: <bddba2ca-15d5-7fd3-5b64-f4ba7e179ec0@spliet.org>
-Date:   Sat, 10 Apr 2021 21:48:15 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235088AbhDJUxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 16:53:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234439AbhDJUxk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 16:53:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91A0FC06138A;
+        Sat, 10 Apr 2021 13:53:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=HTkpYNC2wTW6Zm43v2gmt2r8ARHTWf8+PnXOPO0doXI=; b=Ozahz+ujymLR6HRV/gUOZ0gS1P
+        BDxgLs4uWmYMJEQ30kO1xYpxSOZuU3h08C7SIYNtLc/oIaEOgoADxjaJUBMDXKILVtnjSouZO/lPQ
+        aNoJocoo0y+OakKVQFsGfNC6hCM05ztUqOsU3MOgwCGgy+1ypt/X4LiFKiLuwLF6p6spu4OyVf58l
+        N5OKNtz1OCrsxBpSOE3NlX8z2plRdlW/ReN3u5na5rvYaJXfHDHZUmcZ+kaml3vrQ2iuDTwWob/C3
+        MwFjTKUtdre3pEAuqIyXnRJCGrKsKCsCGWHfLX1nMevAlwYQof1vRaKjR1TB0qnKxtw8nmsW7AiZW
+        zeNaEQmQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVKb2-0027v9-QT; Sat, 10 Apr 2021 20:52:57 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Subject: [PATCH 0/1] Fix struct page layout on 32-bit systems
+Date:   Sat, 10 Apr 2021 21:52:44 +0100
+Message-Id: <20210410205246.507048-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <20210410192314.GB16240@wunner.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A
-        autolearn=unavailable autolearn_force=no version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on Neelix
-X-Virus-Scanned: clamav-milter 0.103.2 at Neelix
-X-Virus-Status: Clean
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Op 10-04-2021 om 20:23 schreef Lukas Wunner:
-> On Sat, Apr 10, 2021 at 04:51:27PM +0100, Roy Spliet wrote:
->> Can I ask someone with more
->> technical knowledge of snd_hda_intel and vgaswitcheroo to brainstorm about
->> the possible challenges of nouveau taking matters into its own hand rather
->> than keeping this PCI quirk around?
-> 
-> It sounds to me like the HDA is not powered if no cable is plugged in.
-> What is reponsible then for powering it up or down, firmware code on
-> the GPU or in the host's BIOS?
+I'd really appreciate people testing this, particularly on
+arm32/mips32/ppc32 systems with a 64-bit dma_addr_t.
 
-Sometimes the BIOS, but definitely unconditionally the PCI quirk code: 
-https://github.com/torvalds/linux/blob/master/drivers/pci/quirks.c#L5289
+Matthew Wilcox (Oracle) (1):
+  mm: Fix struct page layout on 32-bit systems
 
-(CC Aaron Plattner)
+ include/linux/mm_types.h | 38 ++++++++++++++++++++++++++------------
+ 1 file changed, 26 insertions(+), 12 deletions(-)
 
-> 
-> Ideally, we should try to find out how to control HDA power from the
-> operating system rather than trying to cooperate with whatever firmware
-> is doing.  If we have that capability, the OS should power the HDA up
-> and down as it sees fit.
-> 
-> Thanks,
-> 
-> Lukas
-> 
+-- 
+2.30.2
 
