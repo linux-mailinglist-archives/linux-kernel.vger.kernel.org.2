@@ -2,63 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A3935ACD0
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B373035ACD3
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234637AbhDJLDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 07:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40656 "EHLO
+        id S234606AbhDJLOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 07:14:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234507AbhDJLDw (ORCPT
+        with ESMTP id S234180AbhDJLOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 07:03:52 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA070C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:03:37 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id g17so9763919ejp.8
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:03:37 -0700 (PDT)
+        Sat, 10 Apr 2021 07:14:18 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6304C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:14:03 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so6323359wmq.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:14:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4x707U9exLm2LVQU/9fq4M+cW4wadgJtnzlwv6yCJQc=;
-        b=Fcw/JRMzMRbltve0AdRQp/h0V0gLGSs2uLSaLdRGU+x9zcrrhUlhCPdZ6tBW/zwT9X
-         8SgvN5OzJgeUlpE5UoWg/9K7OhDueYO3RedKpjyOZeb3yblgd3Ie0wugFe9w6OwuJqg/
-         yTiRapuuEeJNYKzTZeKy+/XMC9ZzmM+MoR0FDZ6DbHtH1FhxhaWOfz0KAosCufwjGP9Y
-         raPbbL+SqC30A4z5HEmg1GGhFs0xdvM8ozTDyvt1lCtOFvAq1DTVJg404bFosYNa2ajg
-         Jv9wk+dgvd9BcO9PXAZF1XnApBmTZXj7OJpu5Z/c3/kB3CR2QdzHtQ1NSHauqxDlbTzX
-         TSeQ==
+        bh=wVfLNGwq4Y38Oo6/3eTyuo9TqavVMKjShNNhMd2XCcM=;
+        b=mVZHBg2124wRfyiC4uft4HMy/RKEVvF0bqoTYK0qL/LTVrHUs7xyJoaN570NvvNCh1
+         mOnj8eim20WQ3YBLpNb08m0SrUAcV0SFaa4eJNNPa3tTh+KnFPPrVa1XBZvnDA6uhR4H
+         OrejnliC0WDLA4vMKzMx3OglPMumXbkLBuQ/gP74qsncYAYK8oSxwvcLDRSdFhWN9Se7
+         myPl9InbdxGNYf0GYLEUukrmW940Ziu2yGEb2DDHbkju6knJNZmap2Vsi95VU7OZM1EI
+         5sFR6j/xM3Fy+kQZVKZ57Ib2Rg5BtQ9jyqUcoFHTR8UNWwokClvajsd4wah2aYZz5vRE
+         LJoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to:content-transfer-encoding;
-        bh=4x707U9exLm2LVQU/9fq4M+cW4wadgJtnzlwv6yCJQc=;
-        b=V1ZPxKsKgRIVphJZ3/dES/lLnfo6+LpBgGYXeFyu/GVnze9VFqUkkLqCyPJyiRSaDx
-         sL/buPB8fXZ4zp+XRLgsDPktaJoRbBeqaSAhHjeJSC9Lpvvblls8BuRQYNLxFi4Evy7u
-         jT7aAhXH3KocVRCD0l51xhXjosf2SI82KCsE168hL8XJ1tAgX6Aeq8h4t14aABcswTVK
-         8dy1Om+zoZH1qLDx+zKEV+qXPImYeeHT/naC7uvlg0eIE1GbuSbWWx9iBx5MNSdP51VX
-         uxoT93jOkyjAkTjtyKjpubRX6PsRTYSmj2iuuzgttMbAL3eYReyLd9Kr71ySL1veinAg
-         ySrQ==
-X-Gm-Message-State: AOAM533De3dpOjqfmPz5TNGysZ1GfTx8W+XPmKtHCk9htRGJj8bRf9rf
-        sdTQpM9JUq0JXzDbo/hacF2R0eHf1lQGa4qkV+E=
-X-Google-Smtp-Source: ABdhPJxvFDf2M/+Go049UHg4GSNr9aQTDt/O9PbLzPJpY5i3LVm0YKsHKXXcc1LhP8G+FmtwgrU4kwElcqROWNswbwg=
-X-Received: by 2002:a17:907:94c3:: with SMTP id dn3mr19960524ejc.280.1618052616612;
- Sat, 10 Apr 2021 04:03:36 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wVfLNGwq4Y38Oo6/3eTyuo9TqavVMKjShNNhMd2XCcM=;
+        b=q3gNIj1FsQiqL8Ra1Oolu++7vD8GkP+VuWOmglIAVoMB5sPI7imuF2nJ6MNsAgB/41
+         ZzAotZR8e1uQQo0qDeQfHsqL6r5cEQCZ49ru3gDQxAlH3dw4AjFYQ1HcyM+riatGbyu1
+         tlWmgWsVWpzHcdgOwwJAe3pKYieTOsQ6zT8WhkDyg0PdzOvYOBbfKKhIP5/GmoOLlWqn
+         svknLJrZIVIqGQPjS9f2CmJLuuxF4pP+lrehLZrjtFQGJGzO1TaFetRwEieOuGQ9Rdw7
+         wB3ZAAHWGZ5tW5CYl2bXb4oPspKNjZybC4WNLydm5xPPGojpaX+xXFjiMpJHpROeEBOI
+         D39A==
+X-Gm-Message-State: AOAM533XrCGi+m8xo1aMgs3yliebZB8KroMKUlDsaQNFPbl8r4M8owxO
+        P/T5Z1zKDqeT8UqtMkbdydSpKA==
+X-Google-Smtp-Source: ABdhPJzNqvuGbJt/3Dgix3d7sN0jEOCKmD6hp0FcnKi+oBdbyeLb0E/Ks2dP3/zZnFfs7dMH1Dtb9w==
+X-Received: by 2002:a1c:6a03:: with SMTP id f3mr17735443wmc.179.1618053242564;
+        Sat, 10 Apr 2021 04:14:02 -0700 (PDT)
+Received: from starbuck.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.googlemail.com with ESMTPSA id s8sm8370117wrn.97.2021.04.10.04.14.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 04:14:02 -0700 (PDT)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
+Subject: [PATCH 0/5] ASoC: clock provider clean-up
+Date:   Sat, 10 Apr 2021 13:13:51 +0200
+Message-Id: <20210410111356.467340-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Sender: louiskoassi75@gmail.com
-Received: by 2002:a17:907:3f99:0:0:0:0 with HTTP; Sat, 10 Apr 2021 04:03:36
- -0700 (PDT)
-From:   Kayla Manthey <sgt.kayla12@gmail.com>
-Date:   Sat, 10 Apr 2021 11:03:36 +0000
-X-Google-Sender-Auth: KN18kJPNdsb3By42PrfNadvC1dg
-Message-ID: <CAKgY+fSzHwSSQ+PQgKYUCTwYwOxHH5y3KAdqEbxz9dED4zr2SQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bitte ich m=C3=B6chte wissen, ob Sie meine vorherige Nachricht erhalten hab=
-en, danke.
+The purpose of this patchset it remove the use the clk member of
+'struct clk_hw' in ASoC. 'struct clk' is a per-user reference to an actual
+clock. In the future, the clk member in 'struct clk_hw' may go away.
+
+The usage of this member by a clock provider usually falls into either of
+following categories:
+* Mis-usage of the clock consumer API by a clock provider.
+* Clock provider also being a user of its own clocks. In this case the
+  provider should request a 'struct clk' through the appropriate API
+  instead of poking in 'struct clk_hw' internals.
+
+Jerome Brunet (5):
+  ASoC: stm32: properly get clk from the provider
+  ASoC: wcd934x: use the clock provider API
+  ASoC: rt5682: clock driver must use the clock provider API
+  ASoC: lpass: use the clock provider API
+  ASoC: da7219: properly get clk from the provider
+
+ sound/soc/codecs/da7219.c          | 5 ++++-
+ sound/soc/codecs/lpass-va-macro.c  | 2 +-
+ sound/soc/codecs/lpass-wsa-macro.c | 9 +++------
+ sound/soc/codecs/rt5682.c          | 6 +++---
+ sound/soc/codecs/wcd934x.c         | 6 ++++--
+ sound/soc/stm/stm32_sai_sub.c      | 5 ++++-
+ 6 files changed, 19 insertions(+), 14 deletions(-)
+
+-- 
+2.30.2
+
