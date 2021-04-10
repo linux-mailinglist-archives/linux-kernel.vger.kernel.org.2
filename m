@@ -2,192 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F001435AF04
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 18:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190D735AF09
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 18:17:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234781AbhDJQQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 12:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51220 "EHLO
+        id S234838AbhDJQRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 12:17:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234334AbhDJQQF (ORCPT
+        with ESMTP id S234832AbhDJQRJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 12:16:05 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0170FC06138A;
-        Sat, 10 Apr 2021 09:15:50 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id y2so4193922plg.5;
-        Sat, 10 Apr 2021 09:15:50 -0700 (PDT)
+        Sat, 10 Apr 2021 12:17:09 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77FEC06138B
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 09:16:52 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so6506583wmq.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 09:16:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6AzED3WX9uZhznt9Toi/RF3r18Jze+otjqZ77388uaE=;
-        b=ofcSZxrICvNJf0Gcs3Zr3b9sNjTh/K5jK2d+PS3tTdJmS8TqSzif0iO4X5qfhpLy8c
-         KAM++uUbGzfzl4dno4Ll5msj8oHpGaTTEx0TlIwrUl0pplOasUPCK+/47qSoH7QsRo7s
-         00tfC+sJ1AkPvuKRPDspxeBGtGXS9PHmI/lT69aq0tBJqzhN9NhEBVZOTKTx73JDFlaE
-         8kF5Cgww6l6rS7Y2/j/5syrotzTbCkG6VgponBJn5AELFv9O//tjT4vTKLnpZyBUp/lu
-         pG14BIkA4j1rIetLUiGFQ/rtoVEyWyxEGg5oyPOzhok2ulnFVLq9XIVB8SZWWFYLK0/e
-         EutQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZtZHBLTCs7MZ+oNP0mY9TjGEU/md/IA3GJQkuj80sew=;
+        b=Bp3G7rXdj30nXahmCb0DX42/GpQq1NqVzRF3U8dpNmLoLFw08YqVW0WmTFlQz+n48O
+         M2zywKwO2O5xxvb1z3UGKVFtAEDcrkDu8fWhD3WoVLSrFWHESGd3gWEfXxADH05sAM7O
+         wGaMz+7TbhLVVvc8C90tpPkoqpXDs0nzasfuK/ZtQfCl+zxDbsrTM93E9yzxqn2iXTco
+         YX2lZWxg+TldvU18p6YAWW/e3bw7NAvlwm3SHKK367vEwZzH9gKvwPrTcsdXyWMDg6qr
+         de5eOntFj7fjAPKLWzRfU+Z9V+yxdliPGzjBwyEc/fmcBy+1nxuTJ0czZ3m4q/pHEgr9
+         KwFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6AzED3WX9uZhznt9Toi/RF3r18Jze+otjqZ77388uaE=;
-        b=B4EDuCyO8j040R8NyXBOUSM99Rg/9aPTj6jaQw0qew+dfT3Ug4a0zxTdPqnGD4UNtF
-         GKWYKICM2KwDYKzqvv2e6GGU6yaWjEKwB7xvFBhqHxm/rbFI2p8oXTNegcvfACXwHsH5
-         5tWzWvyWeaa21nMow5EMxiqAMR1EJgITJe6u4EM5k5lbcJ6XaPy+U4oPIWc8XwWXETpJ
-         DXdJL6TOxGYJ715W294CLL6qaQ421IWcyLTBU6FrM0mBgW4WacMGFKujfQC/9DP/ZZZ7
-         E0nK9Ipk4vBcPA7nXm2J/OCnnWXECo55PBnL1S0uC+88z+GU+v1YoBUaS2RDI3ZPAnRH
-         9WQg==
-X-Gm-Message-State: AOAM533L4mnjjbQyd97xOMBgtpmYWh53590RZlH3m4ascwgouueUXLWZ
-        k+vc2iYIsE9/239Ida6iydJEGpNuT8lOKzIJFEo=
-X-Google-Smtp-Source: ABdhPJzmpsDfHZ2eDvbkQmWePBfWblFvMNvkabSPe67K1ZxH/zIhLJCrfDH6kAkbvW+nTFG8IBx6wnd9a6zpNYwMKMw=
-X-Received: by 2002:a17:902:c641:b029:e9:4226:beca with SMTP id
- s1-20020a170902c641b02900e94226becamr18555646pls.38.1618071350405; Sat, 10
- Apr 2021 09:15:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZtZHBLTCs7MZ+oNP0mY9TjGEU/md/IA3GJQkuj80sew=;
+        b=KeS2+bZAKmJNcizxDCwLxgFhvlIMJT85KCGp9hvcU+/9uTPyKtCK9KwfdLVUEwPyTe
+         TwHFJcyBSDeUMTj8vlLJQn18pc5aAicQAhNS6L1WJs4u70JLTuINrqBg8cJ55te5+Nbx
+         O1skx+3d+9VSWEzPz0WzBcsJtJyKNa/kLjCZ0R5zUgZOrBKoaAEh6vgMx/dqI72Wnnqh
+         3xIRKmDUgjpQeH10DjQZsVzMoDgKaw28hBIqIzVATbZmaDZJqKzMNiU5dkmaTGgbfUi8
+         foDiO7P+KMPk4wDYKMFqGcgLA9/Bvs3moP6HrijnWJeX0/LGFYqKbkZ1yFp5p7nT9B3c
+         0coA==
+X-Gm-Message-State: AOAM532XMPDjZBDw3jJCDLmJt/74wxmNAg5vkU3JGrzP6n49f69Cted/
+        TPt6qJBRw8mq6TzMMN+m50JTIg==
+X-Google-Smtp-Source: ABdhPJzfo2oPB457fWxv/FRl0ytj31GVMTNjfB58hqzRB9Zc1TPw+2J3WRF+a+hA0AXzUFSSRq9MXw==
+X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr13991903wmq.65.1618071411457;
+        Sat, 10 Apr 2021 09:16:51 -0700 (PDT)
+Received: from enceladus (ppp-94-65-225-75.home.otenet.gr. [94.65.225.75])
+        by smtp.gmail.com with ESMTPSA id m26sm8126680wmg.17.2021.04.10.09.16.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 09:16:50 -0700 (PDT)
+Date:   Sat, 10 Apr 2021 19:16:45 +0300
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
+        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <YHHPbQm2pn2ysth0@enceladus>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-3-mcroce@linux.microsoft.com>
+ <20210410154824.GZ2531743@casper.infradead.org>
 MIME-Version: 1.0
-References: <cover.1617993776.git.lucas.p.stankus@gmail.com>
- <39486895e4e985d0220342f3accfd98a1e149ea7.1617993776.git.lucas.p.stankus@gmail.com>
- <CA+U=Dsot+p76kaCAecN+ORdhZ_u+Bw1J8oVKZYAjoexHgiazVg@mail.gmail.com>
-In-Reply-To: <CA+U=Dsot+p76kaCAecN+ORdhZ_u+Bw1J8oVKZYAjoexHgiazVg@mail.gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Sat, 10 Apr 2021 19:15:39 +0300
-Message-ID: <CA+U=DsqGG=NA9yHimRYuoSuBxupiqZ8JH-7FKThXj9J7D__U=A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] staging: iio: cdc: ad7746: use dt bindings to set the
- EXCx pins output
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210410154824.GZ2531743@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 7:12 PM Alexandru Ardelean
-<ardeleanalex@gmail.com> wrote:
->
-> On Fri, Apr 9, 2021 at 9:51 PM Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
-> >
-> > Ditch platform_data fields in favor of device tree properties for
-> > configuring EXCA and EXCB output.
-> > This also removes the fields from the platform_data struct, since they're
-> > not used anymore.
-> >
-> > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+Hi Matthew 
+
+On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:
+> On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:
+> > This is needed by the page_pool to avoid recycling a page not allocated
+> > via page_pool.
+> 
+> Is the PageType mechanism more appropriate to your needs?  It wouldn't
+> be if you use page->_mapcount (ie mapping it to userspace).
+
+Interesting!
+Please keep in mind this was written ~2018 and was stale on my branches for
+quite some time.  So back then I did try to use PageType, but had not free
+bits.  Looking at it again though, it's cleaned up.  So yes I think this can
+be much much cleaner.  Should we go and define a new PG_pagepool?
+
+
+Thanks!
+/Ilias
+> 
+> > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
 > > ---
-> >  drivers/staging/iio/cdc/ad7746.c | 33 +++++++++++++++++---------------
-> >  drivers/staging/iio/cdc/ad7746.h |  4 ----
-> >  2 files changed, 18 insertions(+), 19 deletions(-)
-> >
-> > diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-> > index dfd71e99e872..63041b164dbe 100644
-> > --- a/drivers/staging/iio/cdc/ad7746.c
-> > +++ b/drivers/staging/iio/cdc/ad7746.c
-> > @@ -677,8 +677,10 @@ static int ad7746_probe(struct i2c_client *client,
-> >                         const struct i2c_device_id *id)
-> >  {
-> >         struct ad7746_platform_data *pdata = client->dev.platform_data;
-> > +       struct device_node *np = client->dev.of_node;
-> >         struct ad7746_chip_info *chip;
-> >         struct iio_dev *indio_dev;
-> > +       unsigned int exca_en, excb_en;
-> >         unsigned char regval = 0;
-> >         int ret = 0;
-> >
-> > @@ -703,26 +705,27 @@ static int ad7746_probe(struct i2c_client *client,
-> >         indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
-> >         indio_dev->modes = INDIO_DIRECT_MODE;
-> >
->
-> [1]
->
-> > -       if (pdata) {
-> > -               if (pdata->exca_en) {
-> > -                       if (pdata->exca_inv_en)
-> > -                               regval |= AD7746_EXCSETUP_NEXCA;
-> > -                       else
-> > -                               regval |= AD7746_EXCSETUP_EXCA;
-> > -               }
-> > +       ret = of_property_read_u32(np, "adi,exca-output", &exca_en);
->
-> maybe a better idea would be to use:
->
-> device_property_read_u32(dev, .... )
-> where:
-> dev = client->dev.;
->
-> this would make the driver a bit more friendly with both OF and ACPI
->
-> > +       if (!ret && exca_en) {
-> > +               if (exca_en == 1)
-> > +                       regval |= AD7746_EXCSETUP_EXCA;
-> > +               else
-> > +                       regval |= AD7746_EXCSETUP_NEXCA;
-> > +       }
-> >
-> > -               if (pdata->excb_en) {
-> > -                       if (pdata->excb_inv_en)
-> > -                               regval |= AD7746_EXCSETUP_NEXCB;
-> > -                       else
-> > -                               regval |= AD7746_EXCSETUP_EXCB;
-> > -               }
-> > +       ret = of_property_read_u32(np, "adi,excb-output", &excb_en);
-> > +       if (!ret && excb_en) {
-> > +               if (excb_en == 1)
-> > +                       regval |= AD7746_EXCSETUP_EXCB;
-> > +               else
-> > +                       regval |= AD7746_EXCSETUP_NEXCB;
-> > +       }
-> >
-> > +       if (pdata) {
-> >                 regval |= AD7746_EXCSETUP_EXCLVL(pdata->exclvl);
-> >         } else {
-> >                 dev_warn(&client->dev, "No platform data? using default\n");
-> > -               regval = AD7746_EXCSETUP_EXCA | AD7746_EXCSETUP_EXCB |
-> > -                       AD7746_EXCSETUP_EXCLVL(3);
->
-> This logic is problematic now.
-> Because no matter what you're setting in the DT, it always gets
-> overridden here because there is no platform data.
->
-> Maybe a better idea is to do something like:
-> if (!pdata)
->      regval = AD7746_EXCSETUP_EXCLVL(3);
->
-> but this should be placed somewhere around [1]
-
-[ i can see that this logic will get corrected in the next patch]
-to add here a bit: the idea of a patch is that it should try to not
-introduce any [even temporary] breakage, even when it's in a series;
-if a driver was already broken, then it should get fixed via it's own patch;
-but no patch should introduce any breakages [if possible]
-
->
->
-> > +               regval = AD7746_EXCSETUP_EXCLVL(3);
-> >         }
-> >
-> >         ret = i2c_smbus_write_byte_data(chip->client,
-> > diff --git a/drivers/staging/iio/cdc/ad7746.h b/drivers/staging/iio/cdc/ad7746.h
-> > index 8bdbd732dbbd..6cae4ecf779e 100644
-> > --- a/drivers/staging/iio/cdc/ad7746.h
-> > +++ b/drivers/staging/iio/cdc/ad7746.h
-> > @@ -19,10 +19,6 @@
-> >
-> >  struct ad7746_platform_data {
-> >         unsigned char exclvl;   /*Excitation Voltage Level */
-> > -       bool exca_en;           /* enables EXCA pin as the excitation output */
-> > -       bool exca_inv_en;       /* enables /EXCA pin as the excitation output */
-> > -       bool excb_en;           /* enables EXCB pin as the excitation output */
-> > -       bool excb_inv_en;       /* enables /EXCB pin as the excitation output */
-> >  };
-> >
-> >  #endif /* IIO_CDC_AD7746_H_ */
-> > --
-> > 2.31.1
-> >
+> >  include/linux/mm_types.h | 1 +
+> >  include/net/page_pool.h  | 2 ++
+> >  net/core/page_pool.c     | 4 ++++
+> >  3 files changed, 7 insertions(+)
+> > 
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index 6613b26a8894..ef2d0d5f62e4 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -101,6 +101,7 @@ struct page {
+> >  			 * 32-bit architectures.
+> >  			 */
+> >  			dma_addr_t dma_addr;
+> > +			unsigned long signature;
+> >  		};
+> >  		struct {	/* slab, slob and slub */
+> >  			union {
+> > diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+> > index b5b195305346..b30405e84b5e 100644
+> > --- a/include/net/page_pool.h
+> > +++ b/include/net/page_pool.h
+> > @@ -63,6 +63,8 @@
+> >   */
+> >  #define PP_ALLOC_CACHE_SIZE	128
+> >  #define PP_ALLOC_CACHE_REFILL	64
+> > +#define PP_SIGNATURE		0x20210303
+> > +
+> >  struct pp_alloc_cache {
+> >  	u32 count;
+> >  	void *cache[PP_ALLOC_CACHE_SIZE];
+> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+> > index ad8b0707af04..2ae9b554ef98 100644
+> > --- a/net/core/page_pool.c
+> > +++ b/net/core/page_pool.c
+> > @@ -232,6 +232,8 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+> >  		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+> >  
+> >  skip_dma_map:
+> > +	page->signature = PP_SIGNATURE;
+> > +
+> >  	/* Track how many pages are held 'in-flight' */
+> >  	pool->pages_state_hold_cnt++;
+> >  
+> > @@ -302,6 +304,8 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
+> >  			     DMA_ATTR_SKIP_CPU_SYNC);
+> >  	page->dma_addr = 0;
+> >  skip_dma_unmap:
+> > +	page->signature = 0;
+> > +
+> >  	/* This may be the last page returned, releasing the pool, so
+> >  	 * it is not safe to reference pool afterwards.
+> >  	 */
+> > -- 
+> > 2.30.2
+> > 
