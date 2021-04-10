@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D860135AAF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 07:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CFCA35AAF5
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 07:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhDJFCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 01:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
+        id S233707AbhDJFCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 01:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhDJFCL (ORCPT
+        with ESMTP id S231348AbhDJFCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 01:02:11 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C692C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 22:01:55 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id i4so3894269pjk.1
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 22:01:55 -0700 (PDT)
+        Sat, 10 Apr 2021 01:02:13 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B52DC061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 22:01:58 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id l1so3705350plg.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 22:01:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6TgiRaJFqBmvsmznOoufuYH6M5dZcKrePan+fSzUiFs=;
-        b=ebj7bkVJFJ4IFpNeeD/7M7t/giKuU5uQR/BXMU32Z5OyAzjhz7XH+RMm8z9MUAd6pc
-         EiDmkLEd9nZqc21LELvAe6J9jBYTGHz1FFpKj4boV7AUsKL1QKerzwRMBh6ccIHXm9Qi
-         3RBX6FJduzYDRqMj6N8xUU4NM8Ph0w4HTsbp7JtNN8/s2d2nsMfnXL0CUHz+qFmZ0a6B
-         uaEsUDSY4TsBBC4iqbaoesv8snnoMPsiO613pJ/krU9SCv2XvOZLUAD9fPKh9Rua7OzI
-         jDW6yTKaEbE6pOqXwuXKfyyvcv5q4L5Il+f22OBqq5oO4TadNKZFzYTKC3wFtwoeBpLS
-         S2uw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gk/+cUxEFhkA5Sr23xDJi6lyVwLgABo9cNglBLLd61g=;
+        b=MHzX+bH5wAfGsTIjjMgZ8+J+KG3d/2OycnIBTrqE+sj5TI+m4n+qeglu+BSY7rzm3T
+         wSJav4Gf2niOUp07dCN9UESr6hR3WpXQKkkNC60faX4rS7I5gkWj++iprL/Da9rxq4L0
+         p4fRX6PTRW8N3HZz/MdHzaZlBO1Lg4r+b2+AFjukrfmXuJJ+3mOPgBi8hh6lSr9nRiU2
+         hen5YX24paXB7psi3qAo+H4VpW4CJsbPujw3EoKMAByFRKiaKsKxP7eBTCJImdmdEyBm
+         kS655LqURaDNKL+WsSrKgJ4vgofVtftfQklTVSH8Xu0L9CEpznSlhuYqFRp2hWay8Dvi
+         L9Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6TgiRaJFqBmvsmznOoufuYH6M5dZcKrePan+fSzUiFs=;
-        b=T9NjO2Pows7W7raBT8ERkwdV9Fxz0pxUSTEwSdh15qycvqiGonylw+OMm5OHVGFM+4
-         6TMplLSbn0Uzl8n6vCLoRVBezzSMxX6wVueHGI82yMUd+vDi2Pz+g9h6MyVL8xWrXh4E
-         fTKxTQCgx1wtaL4cz4Yg71G7q2HpX+XArBmh2Vi2ATKHBLxWS4ySuZPDpyuLJVfb2I+b
-         7cF4MGPM9lDc3gq+gCSdmY/1WQ0G/+YS0xa38HslRpj8s33P+amWDrNzYpMyJrkegFGB
-         tjzJOwxwC5M7qjAmm6pBckoZlZU508clvNbuH2R17LQ1VZPmEFAJt1HF6IFmoBcdEBoO
-         jYew==
-X-Gm-Message-State: AOAM5312s8Oa+110sSIIX6HAmfj4WkrWByPWWKJdyVHZkV8DHqp9LpWr
-        m//3X7/k5SNpevMhc+ny5SvBlw==
-X-Google-Smtp-Source: ABdhPJxad8N511r6NwGuCGqoh3SQ/vLLAzrsnDdpTAiJ2IRwJ+9ETaG3qZvwNMfKuh5tfd+QIZRvqA==
-X-Received: by 2002:a17:902:ed84:b029:e7:1f2b:1eb4 with SMTP id e4-20020a170902ed84b02900e71f2b1eb4mr16430980plj.74.1618030914537;
-        Fri, 09 Apr 2021 22:01:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gk/+cUxEFhkA5Sr23xDJi6lyVwLgABo9cNglBLLd61g=;
+        b=T5vPOD/k70m0l86aglwzjDJz7rEyXiAAXhlUlwzi8b/SSn1sERQjZwDP2ZmpcSqbXD
+         W5ULooHCaIN4p6Xtnxt7N1RUVeQdjjPc3XFRLZJYCQkpYJ8sPFJDQE5o2Sk223bGxYaJ
+         JB74U7gVCJ9zYkMVgTCzhJ85KUgGkjhbfJHoSHXJuAlfJNmlgj1WvPpGRSVoEhd1yp/S
+         Y6V73uz1D54driczf9DbwuZUphVctj4LRyf0S7AH/B7wZu520PsLaeVbxd7dYvHXZui0
+         lRAGTUJUDq6v+mXBkx/x4jS+YNdiGJ7gcoX0NRw2S6WWP4sK9idur624KbfQ8XWIXBWX
+         g4gg==
+X-Gm-Message-State: AOAM531cVIgHrVYZuX5ZJv6ENfR+hU00u3p4r/IxzxOnsuXY5N7rwCDH
+        gS1YvsiojHBo5jEZoSe+ZE5YGw==
+X-Google-Smtp-Source: ABdhPJyPq0oOx2MfQ6NZ/w5udW4Rm+IrpgcyDCfR8yJ1J6lY1i5dHLanogygyBkXcCFG/6Pj5C0hyg==
+X-Received: by 2002:a17:90b:1e0b:: with SMTP id pg11mr17539430pjb.146.1618030917907;
+        Fri, 09 Apr 2021 22:01:57 -0700 (PDT)
 Received: from localhost ([116.206.101.232])
-        by smtp.gmail.com with ESMTPSA id 7sm3866279pfv.97.2021.04.09.22.01.53
+        by smtp.gmail.com with ESMTPSA id u18sm3607677pfm.4.2021.04.09.22.01.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 22:01:54 -0700 (PDT)
+        Fri, 09 Apr 2021 22:01:57 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Al Grant <Al.Grant@arm.com>,
@@ -65,52 +65,37 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         James Clark <James.Clark@arm.com>
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 0/6] perf arm-spe: Enable timestamp
-Date:   Sat, 10 Apr 2021 13:00:40 +0800
-Message-Id: <20210410050046.5394-1-leo.yan@linaro.org>
+Subject: [PATCH v3 1/6] perf arm-spe: Remove unused enum value ARM_SPE_PER_CPU_MMAPS
+Date:   Sat, 10 Apr 2021 13:00:41 +0800
+Message-Id: <20210410050046.5394-2-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210410050046.5394-1-leo.yan@linaro.org>
+References: <20210410050046.5394-1-leo.yan@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set is to enable timestamp for Arm SPE trace.  It reads out
-TSC parameters from the TIME_CONV event, the parameters are used for
-conversion between timer counter and kernel time and which is applied
-for Arm SPE samples.
+The enum value 'ARM_SPE_PER_CPU_MMAPS' is never used so remove it.
 
-This version dropped the change for adding hardware clock parameters
-into auxtrace info, alternatively, it utilizes the TIME_CONV event to
-extract the clock parameters which is used for timestamp calculation.
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+---
+ tools/perf/util/arm-spe.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-This patch set can be clearly applied on perf/core branch with:
-
-  commit 2c0cb9f56020 ("perf test: Add a shell test for 'perf stat --bpf-counters' new option")
-
-Ths patch series has been tested on Hisilicon D06 platform.
-
-Changes from v2:
-* Changed to use TIME_CONV event for extracing clock parameters (Al).
-
-Changes from v1:
-* Rebased patch series on the latest perf/core branch;
-* Fixed the patch for dumping TSC parameters to support both the
-  older and new auxtrace info format.
-
-
-Leo Yan (6):
-  perf arm-spe: Remove unused enum value ARM_SPE_PER_CPU_MMAPS
-  perf arm-spe: Save clock parameters from TIME_CONV event
-  perf arm-spe: Convert event kernel time to counter value
-  perf arm-spe: Assign kernel time to synthesized event
-  perf arm-spe: Bail out if the trace is later than perf event
-  perf arm-spe: Don't wait for PERF_RECORD_EXIT event
-
- tools/perf/util/arm-spe.c | 66 +++++++++++++++++++++++++++++++++------
- tools/perf/util/arm-spe.h |  1 -
- 2 files changed, 56 insertions(+), 11 deletions(-)
-
+diff --git a/tools/perf/util/arm-spe.h b/tools/perf/util/arm-spe.h
+index 98d3235781c3..105ce0ea0a01 100644
+--- a/tools/perf/util/arm-spe.h
++++ b/tools/perf/util/arm-spe.h
+@@ -11,7 +11,6 @@
+ 
+ enum {
+ 	ARM_SPE_PMU_TYPE,
+-	ARM_SPE_PER_CPU_MMAPS,
+ 	ARM_SPE_AUXTRACE_PRIV_MAX,
+ };
+ 
 -- 
 2.25.1
 
