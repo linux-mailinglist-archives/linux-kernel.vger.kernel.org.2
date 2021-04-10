@@ -2,78 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F45535AA75
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 05:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6555D35AA79
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 05:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233998AbhDJDMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 23:12:02 -0400
-Received: from m176149.mail.qiye.163.com ([59.111.176.149]:53065 "EHLO
-        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDJDMB (ORCPT
+        id S233883AbhDJDRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 23:17:53 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17301 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDJDRv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 23:12:01 -0400
-Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
-        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 72DB6282503;
-        Sat, 10 Apr 2021 11:11:45 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <AKoADwCwDn4bllbdA00CnKoA.3.1618024305455.Hmail.wangqing@vivo.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gd2F0Y2hkb2c6IG10azogc3VwcG9ydCBwcmUtdGltZW91dCB3aGVuIHRoZSBiYXJrIGlycSBpcyBhdmFpbGFibGU=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <95861c15-0294-ddda-6080-ca15f19eb048@roeck-us.net>
+        Fri, 9 Apr 2021 23:17:51 -0400
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FHKr94ZV4z9xF3;
+        Sat, 10 Apr 2021 11:15:21 +0800 (CST)
+Received: from [10.174.179.9] (10.174.179.9) by DGGEMS403-HUB.china.huawei.com
+ (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Sat, 10 Apr 2021
+ 11:17:29 +0800
+Subject: Re: [PATCH 2/5] swap: fix do_swap_page() race with swapoff
+To:     Tim Chen <tim.c.chen@linux.intel.com>, <akpm@linux-foundation.org>
+CC:     <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <vbabka@suse.cz>, <alex.shi@linux.alibaba.com>,
+        <willy@infradead.org>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <ying.huang@intel.com>,
+        <hughd@google.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>
+References: <20210408130820.48233-1-linmiaohe@huawei.com>
+ <20210408130820.48233-3-linmiaohe@huawei.com>
+ <7684b3de-2824-9b1f-f033-d4bc14f9e195@linux.intel.com>
+ <50d34b02-c155-bad7-da1f-03807ad31275@huawei.com>
+ <995a130b-f07a-4771-1fe3-477d2f3c1e8e@linux.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <d2a26fb0-caef-04b7-e163-88bcda358b0d@huawei.com>
+Date:   Sat, 10 Apr 2021 11:17:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Sat, 10 Apr 2021 11:11:45 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Date:   Sat, 10 Apr 2021 11:11:45 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGU9OGFZMTR5PQkhCGh0eT09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JTEhOTkhCSUtLN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6MBQ6Pww4DD8VTxkXFxkfOktLOBUwFDpVSFVKTUpDS0lPSEtOTE5JVTMWGhIXVQwaFRwKEhUc
-        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBT01PTDcG
-X-HM-Tid: 0a78b9c393409395kuws72db6282503
+In-Reply-To: <995a130b-f07a-4771-1fe3-477d2f3c1e8e@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.9]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj5PbiA0LzkvMjEgNzo0MiBQTSwg546L5pOOIHdyb3RlOgo+PiAKPj4+IE9uIDQvOS8yMSAyOjU1
-IEFNLCBXYW5nIFFpbmcgd3JvdGU6Cj4+Pj4gVXNlIHRoZSBiYXJrIGludGVycnVwdCBhcyB0aGUg
-cHJldGltZW91dCBub3RpZmllciBpZiBhdmFpbGFibGUuCj4+Pj4KPj4+PiBCeSBkZWZhdWx0LCB0
-aGUgcHJldGltZW91dCBub3RpZmljYXRpb24gc2hhbGwgb2NjdXIgb25lIHNlY29uZCBlYXJsaWVy
-Cj4+Pj4gdGhhbiB0aGUgdGltZW91dC4KPj4+Pgo+Pj4+IFNpZ25lZC1vZmYtYnk6IFdhbmcgUWlu
-ZyA8d2FuZ3FpbmdAdml2by5jb20+Cj4+Pj4gLS0tCj4+Pj4gIGRyaXZlcnMvd2F0Y2hkb2cvbXRr
-X3dkdC5jIHwgNDcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0t
-LQo+Pj4+ICAxIGZpbGUgY2hhbmdlZCwgNDQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkK
-Pj4+Pgo+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3dhdGNoZG9nL210a193ZHQuYyBiL2RyaXZl
-cnMvd2F0Y2hkb2cvbXRrX3dkdC5jCj4+Pj4gaW5kZXggOTdjYTk5My4uOGI5MTljYwo+Pj4+IC0t
-LSBhL2RyaXZlcnMvd2F0Y2hkb2cvbXRrX3dkdC5jCj4+Pj4gKysrIGIvZHJpdmVycy93YXRjaGRv
-Zy9tdGtfd2R0LmMKPj4+PiBAQCAtMjUsNiArMjUsNyBAQAo+Pj4+ICAjaW5jbHVkZSA8bGludXgv
-cmVzZXQtY29udHJvbGxlci5oPgo+Pj4+ICAjaW5jbHVkZSA8bGludXgvdHlwZXMuaD4KPj4+PiAg
-I2luY2x1ZGUgPGxpbnV4L3dhdGNoZG9nLmg+Cj4+Pj4gKyNpbmNsdWRlIDxsaW51eC9pbnRlcnJ1
-cHQuaD4KPj4+PiAgCj4+Pj4gICNkZWZpbmUgV0RUX01BWF9USU1FT1VUCQkzMQo+Pj4+ICAjZGVm
-aW5lIFdEVF9NSU5fVElNRU9VVAkJMQo+Pj4+IEBAIC0yMzQsMTggKzIzNSwzNSBAQCBzdGF0aWMg
-aW50IG10a193ZHRfc3RhcnQoc3RydWN0IHdhdGNoZG9nX2RldmljZSAqd2R0X2RldikKPj4+PiAg
-CXZvaWQgX19pb21lbSAqd2R0X2Jhc2UgPSBtdGtfd2R0LT53ZHRfYmFzZTsKPj4+PiAgCWludCBy
-ZXQ7Cj4+Pj4gIAo+Pj4+IC0JcmV0ID0gbXRrX3dkdF9zZXRfdGltZW91dCh3ZHRfZGV2LCB3ZHRf
-ZGV2LT50aW1lb3V0KTsKPj4+PiArCXJldCA9IG10a193ZHRfc2V0X3RpbWVvdXQod2R0X2Rldiwg
-d2R0X2Rldi0+dGltZW91dCAtIHdkdF9kZXYtPnByZXRpbWVvdXQpOwo+Pj4KPj4+IFRoYXQgbG9v
-a3Mgc3VzcGljaW91c2x5IGxpa2UgdGhlIHJlYWwgd2F0Y2hkb2cgd29uJ3QgaGFwcGVuIGF0IGFs
-bC4KPj4+IFdoYXQgd2lsbCBoYXBwZW4gaWYgdGhlIHByZXRpbWVvdXQgZ292ZXJub3IgaXMgc2V0
-IHRvIG5vbmUgPwo+Pj4KPj4+IEd1ZW50ZXIKPj4+Cj4+IFRoZSBwcmV0aW1lb3V0IGdvdmVybm9y
-IGlzIHBhbmljIGJ5IGRlZmF1bHQuIElmIHByZXRpbWVvdXQgaXMgZW5hYmxlZCBhbmQgdGhlIGdv
-dmVybm9yIGlzCj4+IHNldCB0byBub25lLCBpdCBtZWFucyB0aGUgdGltZW91dCBiZWhhdmlvciBk
-b2VzIG5vdCBuZWVkIHRvIGJlIHByb2Nlc3NlZCwgb25seSBwcmludGluZy4KPj4gCj4KPlRoYXQg
-d2FzIG5vdCBteSBxdWVzdGlvbi4gTXkgcXVlc3Rpb24gd2FzIGlmIHRoZSByZWFsIHRpbWVvdXQg
-aGFwcGVucyBpbiB0aGF0IGNhc2UuCj4KPkd1ZW50ZXIKPgpZZXMsIHRoZSByZWFsIHRpbWVvdXQg
-d2lsbCBoYXBwZW4uIEFmdGVyIFdEVCB0aW1lb3V0LCBJUlEgaXMgc2VudCBvdXQgaW5zdGVhZCBv
-ZiAKcmVzZXQgc2lnbmFsIGZpcnN0LiBJbiBvcmRlciB0byBlbnN1cmUgdGhhdCBDUFUgZG9lcyBu
-b3QgZ2V0IHN0dWNrIGFmdGVyIElSUSBpcyBzZW50IG91dCwgCldEVCB3aWxsIHRpbWUgYWdhaW4g
-YW5kIHNlbmQgcmVzZXQgc2lnbmFsIHRvIHJlc2V0LgoKVGhhbmtzLgpRaW5nIFdhbmcuDQoNCg==
+On 2021/4/10 1:17, Tim Chen wrote:
+> 
+> 
+> On 4/9/21 1:42 AM, Miaohe Lin wrote:
+>> On 2021/4/9 5:34, Tim Chen wrote:
+>>>
+>>>
+>>> On 4/8/21 6:08 AM, Miaohe Lin wrote:
+>>>> When I was investigating the swap code, I found the below possible race
+>>>> window:
+>>>>
+>>>> CPU 1					CPU 2
+>>>> -----					-----
+>>>> do_swap_page
+>>>>   synchronous swap_readpage
+>>>>     alloc_page_vma
+>>>> 					swapoff
+>>>> 					  release swap_file, bdev, or ...
+>>>
+>>
+>> Many thanks for quick review and reply!
+>>
+>>> Perhaps I'm missing something.  The release of swap_file, bdev etc
+>>> happens after we have cleared the SWP_VALID bit in si->flags in destroy_swap_extents
+>>> if I read the swapoff code correctly.
+>> Agree. Let's look this more close:
+>> CPU1								CPU2
+>> -----								-----
+>> swap_readpage
+>>   if (data_race(sis->flags & SWP_FS_OPS)) {
+>> 								swapoff
+>> 								  p->swap_file = NULL;
+>>     struct file *swap_file = sis->swap_file;
+>>     struct address_space *mapping = swap_file->f_mapping;[oops!]
+>> 								  ...
+>> 								  p->flags = 0;
+>>     ...
+>>
+>> Does this make sense for you?
+> 
+> p->swapfile = NULL happens after the 
+> p->flags &= ~SWP_VALID, synchronize_rcu(), destroy_swap_extents() sequence in swapoff().
+> 
+> So I don't think the sequence you illustrated on CPU2 is in the right order.
+> That said, without get_swap_device/put_swap_device in swap_readpage, you could
+> potentially blow pass synchronize_rcu() on CPU2 and causes a problem.  so I think
+> the problematic race looks something like the following:
+> 
+> 
+> CPU1								CPU2
+> -----								-----
+> swap_readpage
+>   if (data_race(sis->flags & SWP_FS_OPS)) {
+> 								swapoff
+> 								  p->flags = &= ~SWP_VALID;
+> 								  ..
+> 								  synchronize_rcu();
+> 								  ..
+> 								  p->swap_file = NULL;
+>     struct file *swap_file = sis->swap_file;
+>     struct address_space *mapping = swap_file->f_mapping;[oops!]
+> 								  ...
+>     ...
+> 
+
+Agree. This is also what I meant to illustrate. And you provide a better one. Many thanks!
+
+> By adding get_swap_device/put_swap_device, then the race is fixed.
+> 
+> 
+> CPU1								CPU2
+> -----								-----
+> swap_readpage
+>   get_swap_device()
+>   ..
+>   if (data_race(sis->flags & SWP_FS_OPS)) {
+> 								swapoff
+> 								  p->flags = &= ~SWP_VALID;
+> 								  ..
+>     struct file *swap_file = sis->swap_file;
+>     struct address_space *mapping = swap_file->f_mapping;[valid value]
+>   ..
+>   put_swap_device()
+> 								  synchronize_rcu();
+> 								  ..
+> 								  p->swap_file = NULL;
+> 
+> 
+>>
+>>>>
+>>>>       swap_readpage
+>>>> 	check sis->flags is ok
+>>>> 	  access swap_file, bdev...[oops!]
+>>>> 					    si->flags = 0
+>>>
+>>> This happens after we clear the si->flags
+>>> 					synchronize_rcu()
+>>> 					release swap_file, bdev, in destroy_swap_extents()
+>>>
+>>> So I think if we have get_swap_device/put_swap_device in do_swap_page,
+>>> it should fix the race you've pointed out here.  
+>>> Then synchronize_rcu() will wait till we have completed do_swap_page and
+>>> call put_swap_device.
+>>
+>> Right, get_swap_device/put_swap_device could fix this race. __But__ rcu_read_lock()
+>> in get_swap_device() could disable preempt and do_swap_page() may take a really long
+>> time because it involves I/O. It may not be acceptable to disable preempt for such a
+>> long time. :(
+> 
+> I can see that it is not a good idea to hold rcu read lock for a long
+> time over slow file I/O operation, which will be the side effect of
+> introducing get/put_swap_device to swap_readpage.  So using percpu_ref
+> will then be preferable for synchronization once we introduce 
+> get/put_swap_device into swap_readpage.
+> 
+
+The sis->bdev should also be protected by get/put_swap_device. It has the similar
+issue. And swap_slot_free_notify (called from callback end_swap_bio_read) would
+race with swapoff too. So I use get/put_swap_device to protect swap_readpage until
+file I/O operation is completed.
+
+Thanks again!
+
+> Tim
+> .
+> 
