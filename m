@@ -2,139 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E33C635ACEF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC72035ACF7
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234409AbhDJL2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 07:28:54 -0400
-Received: from mail-wr1-f41.google.com ([209.85.221.41]:42924 "EHLO
-        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbhDJL2x (ORCPT
+        id S234393AbhDJLde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 07:33:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231279AbhDJLdd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 07:28:53 -0400
-Received: by mail-wr1-f41.google.com with SMTP id p6so1361895wrn.9
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:28:38 -0700 (PDT)
+        Sat, 10 Apr 2021 07:33:33 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B666C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:33:18 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso4298393wmi.0
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:33:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fvdzUEOBZnrRgws5JVo7yfOmTexEa+PsOPP655oivsE=;
+        b=UBP1bbhv47oJHLt6G6DWDz4KPZiLYyi/H7xlN2PMJM4kHddpto3q+cnuXfnWKHjSbo
+         e3Obl7L368/7VqTBSrXJXF9WjGLRhDUVqps8KOoZXsfThB0T+JuqhZmhtqOkUxiJUTwL
+         3zkLNhMDaoMAfcx8uI7bMwfHQAJc1VXfF0OzQ8F7vnm9X68SNwrSLn0pGxv6CQ0eh65z
+         KLQilvSfiVQzSQwWHy4eonhQ9YClUaIAQCToc8Vw6GOshEYwmYdclgW3s04UOPk7Dtzz
+         jhK8cOHvuLB71U2/ozCZouAoAte34UFuOwdGDo0JkoJ/G+7ZFxyNqWcSYeMW+PPyS3Oy
+         ARIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=rPyvO5p6R4xdh4iYQtis3fsH4ovA9npNrFpGcTCeObA=;
-        b=QVq/yqPGKDf7m3pojLmpEIXx+/JE8TcdlJh/3g4dj8SRPo8wpDZTCPTuZ7zWKELcht
-         E2NOZGLb1CoY6O02kGLNgR44rf3QuvxOONHfWUr0Ls+Wucsu8hkHLa58pvzjvh4XZuwV
-         eIM2q5vJKscWvKsF2fpysP25Cl/jU5EvjlPhF0aV1TLYrH8/D9ZQAHoCKUklwFcI3upo
-         LCF+Hn2Id8R3bJLwOAi5uRv91NNx1j0cbEDCxQKc0fY4bvVVl87HebCExtk+xDDULS6+
-         /PPVcNa5L+OAk1rT9nhiWIXiz+3R2Gtmz3Tyu7EzrnLsgEBXPCsp32SMLNuUs3F5yX8y
-         7muQ==
-X-Gm-Message-State: AOAM5307x6TXqmy1HjNThMYV8JmFq+g71lLT7UKwR+ZblNAktF6UoM7W
-        65X+JjNjw3kmpZGRPS1/Ox6FiCEPX3zT
-X-Google-Smtp-Source: ABdhPJynBMcvUr2DdfhGGZ4c7MRuxMUjp1OO98n0DRpeXskW9TltMiVUSsk4ac/i7njP6gJ2ngyfBA==
-X-Received: by 2002:adf:ce83:: with SMTP id r3mr22001123wrn.144.1618054118246;
-        Sat, 10 Apr 2021 04:28:38 -0700 (PDT)
-Received: from tesla ([2a02:c7d:8e07:7c00:3e97:eff:feb3:72f1])
-        by smtp.gmail.com with ESMTPSA id f8sm8558775wro.29.2021.04.10.04.28.36
+        bh=fvdzUEOBZnrRgws5JVo7yfOmTexEa+PsOPP655oivsE=;
+        b=OcxTMojYYAYagxFZ5Y8gU2whXDsZUJ9GNQCQcaOOIKWKZkd79hCeUVcuBtTPdVKZYu
+         doLnjPdgS9B8Yvw8k43B0yOqyAbGjQBDup+7F+hq2+jQ4MEC+E8i6ZySQKT8000DOqpR
+         AgalAkAm3gChXnLXs/0z4UGNCnMtgr6ouXmVDn7o7pTta4uVvDF5tdijjOxj0A9cvqam
+         z1qCZ0Ci/qTnJgDl8mut/5m92tliOxmfa6a6hD9UP20FitMXuj+Z0rVdlRTipaILGw63
+         UAmfLoyXfKb9R29XxgzIWEpOaBZA8fP4l7Gh3R4hGNxmrAXsxGfy0AxYSNS154bok+Q2
+         jwSw==
+X-Gm-Message-State: AOAM532UCu6SaHUjIAvF/JhYZ9I7aw0Z9tIEbkYxvsUvuIz85P80CwuY
+        jKgiQjHxVvTv4KBc6wNG4S3EXtQf/Rs=
+X-Google-Smtp-Source: ABdhPJy5M4zou8GJe5SFLivC59/pu7Ie4GkBi5tmaEVlo+EhWnaCDMuIqzYiqMey8Gg6U9IGVgn5pA==
+X-Received: by 2002:a1c:804d:: with SMTP id b74mr2980631wmd.15.1618054397124;
+        Sat, 10 Apr 2021 04:33:17 -0700 (PDT)
+Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
+        by smtp.gmail.com with ESMTPSA id w22sm7576006wmc.13.2021.04.10.04.33.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 04:28:37 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 12:28:36 +0100
-From:   Javi Merino <javi.merino@kernel.org>
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     Lukasz Luba <lukasz.luba@arm.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-kernel@vger.kernel.org, thara.gopinath@linaro.org,
-        amitk@kernel.org, rui.zhang@intel.com
-Subject: Re: [RESEND PATCH] MAINTAINERS: update thermal CPU cooling section
-Message-ID: <YHGL5MDcOnXPRL+0@tesla>
-References: <20210217115908.22547-1-lukasz.luba@arm.com>
- <20210218041812.o2yksgbfdvbgtwc4@vireshk-i7>
- <e3208461-f4ec-8c88-8af4-67c777f9382a@arm.com>
- <fe4cf822-2915-6de3-3920-9d1a4aa1d3e1@linaro.org>
+        Sat, 10 Apr 2021 04:33:16 -0700 (PDT)
+Date:   Sat, 10 Apr 2021 08:33:09 -0300
+From:   Melissa Wen <melissa.srw@gmail.com>
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
+        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 1/2] drm/vkms: Refactor vkms_composer_worker() to prep
+ for virtual_hw mode
+Message-ID: <20210410113309.4tgdkqgooixgou3q@smtp.gmail.com>
+References: <cover.1617602076.git.sylphrenadin@gmail.com>
+ <ab3492843ea631c51a3ff8dcf8e3f7af96aaed60.1617602076.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="bszoGADahcLG+mih"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fe4cf822-2915-6de3-3920-9d1a4aa1d3e1@linaro.org>
+In-Reply-To: <ab3492843ea631c51a3ff8dcf8e3f7af96aaed60.1617602076.git.sylphrenadin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 04/05, Sumera Priyadarsini wrote:
+> Add two new functions vkms_composer_common() and vkms_crtc_composer().
+> The actual plane composition work has been moved to the helper function,
+> vkms_composer_common() which is called by both vkms_composer_worker()
+> and vkms_crtc_composer(). vkms_crtc_composer() can be used when we
+> implement virtual_hw mode.
 
---bszoGADahcLG+mih
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Sumera,
 
-On Fri, Apr 02, 2021 at 12:53:08PM +0200, Daniel Lezcano wrote:
-> On 02/04/2021 12:25, Lukasz Luba wrote:
-> > Hi Viresh, Daniel
-> >=20
-> > On 2/18/21 4:18 AM, Viresh Kumar wrote:
-> >> On 17-02-21, 11:59, Lukasz Luba wrote:
-> >>> Update maintainers responsible for CPU cooling on Arm side.
-> >>>
-> >>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> >>> ---
-> >>> Hi Daniel,
-> >>>
-> >>> Please ignore the previous email and that this change with 'R'.
-> >>> Javi will ack it later.
-> >>>
-> >>> Regards,
-> >>> Lukasz
-> >>>
-> >>> =C2=A0 MAINTAINERS | 2 +-
-> >>> =C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/MAINTAINERS b/MAINTAINERS
-> >>> index f32ebcff37d2..fe34f56acb0f 100644
-> >>> --- a/MAINTAINERS
-> >>> +++ b/MAINTAINERS
-> >>> @@ -17774,7 +17774,7 @@ THERMAL/CPU_COOLING
-> >>> =C2=A0 M:=C2=A0=C2=A0=C2=A0 Amit Daniel Kachhap <amit.kachhap@gmail.c=
-om>
-> >>> =C2=A0 M:=C2=A0=C2=A0=C2=A0 Daniel Lezcano <daniel.lezcano@linaro.org>
-> >>> =C2=A0 M:=C2=A0=C2=A0=C2=A0 Viresh Kumar <viresh.kumar@linaro.org>
-> >>> -M:=C2=A0=C2=A0=C2=A0 Javi Merino <javi.merino@kernel.org>
-> >>> +R:=C2=A0=C2=A0=C2=A0 Lukasz Luba <lukasz.luba@arm.com>
-> >>> =C2=A0 L:=C2=A0=C2=A0=C2=A0 linux-pm@vger.kernel.org
-> >>> =C2=A0 S:=C2=A0=C2=A0=C2=A0 Supported
-> >>> =C2=A0 F:=C2=A0=C2=A0=C2=A0 Documentation/driver-api/thermal/cpu-cool=
-ing-api.rst
-> >>
-> >> Good that we have one more reviewer for this :)
-> >>
-> >> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
-> >>
-> >=20
-> > I believe it has lost somewhere in people mailboxes.
-> >=20
-> > Thank you Viresh for the ACK.
-> >=20
-> > Could you Daniel (or you Viresh) take this patch, please?
->=20
-> I was expecting Javi to ack it.
+At this point, vkms_crtc_composer is never called. You should move this
+function to the patch where you actually add virtual_hw mode, giving
+meaning to create a different function (suitable for composition on
+vblank-less mode). keep here only the prep work to add virtual hardware.
 
-I did, but it looks like my replies never made it to the mailing
-list.  Anyway, here it is:
+Thanks,
 
-Acked-by: Javi Merino <javi.merino@kernel.org>
+Melissa
 
---bszoGADahcLG+mih
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE9DQZSW3HuWfDbCD6B7SEUnaNOCQFAmBxi90ACgkQB7SEUnaN
-OCQseg//dE9dpv0kXK9nTTM7BeAwDYK8zeYiNe0zoTS37vD2hLq2bf/yEF5O/UF8
-y5hG1HF1o7vD/7qWOMmaFIsfLzmt2tUPNeIIFHP275voD1pFy55ORuQounRq6d+h
-9cRAEAVQEpNQhdIFE7A07EZNu3fluxN9yS5ORQ0mRfcHlwW2JrjHU4OT8SRMhU/5
-NhTSv6iZDrfzjxBJeI2sFmFyX9sE+gbmA4aw01EDrqgiZWR5wjqYZPfM1pS4CJEV
-vt/UmHbnqBTS3MDNdIqtcUzbBGCOjIz8JFeg7I3lnSiM8zm83TkyWIcw+b591U4C
-PP6uN9ukppFFUYXGXs2vnhlDVURRN2N41NBZEoIVmiBdDwXAnMLpF/0uvBKNZ6cD
-qlPRQuZc4Ro4gl7B/EV2F3etgn3TakloHjZrNEdEx36V5e6BHznyRvERC4ECT3C2
-sV6em3KMbBlokN2w4mYI9q+lntFkUvbhyx0TOJkF212z6gvNvTkHEYGPGaLFSBwc
-+Jm1t9HwRrq9yELDF0YKucmIkr34JZctRSrC2SZeHB5S8wEu9bdooE1tbTjcCn/r
-4mpfXInc7sm4t4m8pai0QNq9+dMQnOGT/x5vYJapv77awYlHWMxdnU6fOzEipjnT
-F4A66+rnQeN2SvbbODNY1LrQ/lrAeCAFkQrvONHF9ovOtAdU+Vg=
-=jdq0
------END PGP SIGNATURE-----
-
---bszoGADahcLG+mih--
+> 
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> ---
+> Changes in V4:
+> - Fix warning
+> Changes in V3:
+> - Refactor patchset (Melissa)
+> Change in V2:
+> - Add vkms_composer_common() (Daniel)
+> ---
+>  drivers/gpu/drm/vkms/vkms_composer.c | 88 +++++++++++++++++-----------
+>  drivers/gpu/drm/vkms/vkms_drv.h      |  3 +
+>  2 files changed, 58 insertions(+), 33 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/vkms/vkms_composer.c b/drivers/gpu/drm/vkms/vkms_composer.c
+> index 66c6842d70db..0d2bad3ff849 100644
+> --- a/drivers/gpu/drm/vkms/vkms_composer.c
+> +++ b/drivers/gpu/drm/vkms/vkms_composer.c
+> @@ -169,6 +169,44 @@ static int compose_planes(void **vaddr_out,
+>  	return 0;
+>  }
+>  
+> +int vkms_composer_common(struct vkms_crtc_state *crtc_state,
+> +			 struct vkms_output *out, bool wb_pending, uint32_t *crc32)
+> +{
+> +	struct vkms_composer *primary_composer = NULL;
+> +	struct vkms_composer *cursor_composer = NULL;
+> +	void *vaddr_out = NULL;
+> +	int ret;
+> +
+> +	if (crtc_state->num_active_planes >= 1)
+> +		primary_composer = crtc_state->active_planes[0]->composer;
+> +	if (crtc_state->num_active_planes == 2)
+> +		cursor_composer = crtc_state->active_planes[1]->composer;
+> +	if (!primary_composer)
+> +		return -EINVAL;
+> +	if (wb_pending)
+> +		vaddr_out = crtc_state->active_writeback;
+> +
+> +	ret = compose_planes(&vaddr_out, primary_composer, cursor_composer);
+> +	if (ret) {
+> +		if (ret == -EINVAL && !wb_pending)
+> +			kfree(vaddr_out);
+> +		return -EINVAL;
+> +	}
+> +
+> +	*crc32 = compute_crc(vaddr_out, primary_composer);
+> +
+> +	if (wb_pending) {
+> +		drm_writeback_signal_completion(&out->wb_connector, 0);
+> +		spin_lock_irq(&out->composer_lock);
+> +		crtc_state->wb_pending = false;
+> +		spin_unlock_irq(&out->composer_lock);
+> +	} else {
+> +		kfree(vaddr_out);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  /**
+>   * vkms_composer_worker - ordered work_struct to compute CRC
+>   *
+> @@ -185,12 +223,9 @@ void vkms_composer_worker(struct work_struct *work)
+>  						composer_work);
+>  	struct drm_crtc *crtc = crtc_state->base.crtc;
+>  	struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
+> -	struct vkms_composer *primary_composer = NULL;
+> -	struct vkms_composer *cursor_composer = NULL;
+>  	bool crc_pending, wb_pending;
+> -	void *vaddr_out = NULL;
+> -	u32 crc32 = 0;
+>  	u64 frame_start, frame_end;
+> +	u32 crc32 = 0;
+>  	int ret;
+>  
+>  	spin_lock_irq(&out->composer_lock);
+> @@ -210,36 +245,9 @@ void vkms_composer_worker(struct work_struct *work)
+>  	if (!crc_pending)
+>  		return;
+>  
+> -	if (crtc_state->num_active_planes >= 1)
+> -		primary_composer = crtc_state->active_planes[0]->composer;
+> -
+> -	if (crtc_state->num_active_planes == 2)
+> -		cursor_composer = crtc_state->active_planes[1]->composer;
+> -
+> -	if (!primary_composer)
+> -		return;
+> -
+> -	if (wb_pending)
+> -		vaddr_out = crtc_state->active_writeback;
+> -
+> -	ret = compose_planes(&vaddr_out, primary_composer, cursor_composer);
+> -	if (ret) {
+> -		if (ret == -EINVAL && !wb_pending)
+> -			kfree(vaddr_out);
+> +	ret = vkms_composer_common(crtc_state, out, wb_pending, &crc32);
+> +	if (ret == -EINVAL)
+>  		return;
+> -	}
+> -
+> -	crc32 = compute_crc(vaddr_out, primary_composer);
+> -
+> -	if (wb_pending) {
+> -		drm_writeback_signal_completion(&out->wb_connector, 0);
+> -		spin_lock_irq(&out->composer_lock);
+> -		crtc_state->wb_pending = false;
+> -		spin_unlock_irq(&out->composer_lock);
+> -	} else {
+> -		kfree(vaddr_out);
+> -	}
+> -
+>  	/*
+>  	 * The worker can fall behind the vblank hrtimer, make sure we catch up.
+>  	 */
+> @@ -247,6 +255,20 @@ void vkms_composer_worker(struct work_struct *work)
+>  		drm_crtc_add_crc_entry(crtc, true, frame_start++, &crc32);
+>  }
+>  
+> +void vkms_crtc_composer(struct vkms_crtc_state *crtc_state)
+> +{
+> +	struct drm_crtc *crtc = crtc_state->base.crtc;
+> +	struct vkms_output *out = drm_crtc_to_vkms_output(crtc);
+> +	u32 crc32 = 0;
+> +	int ret;
+> +
+> +	ret = vkms_composer_common(crtc_state, out, crtc_state->wb_pending, &crc32);
+> +	if (ret == -EINVAL)
+> +		return;
+> +
+> +	drm_crtc_add_crc_entry(crtc, true, 0, &crc32);
+> +}
+> +
+>  static const char * const pipe_crc_sources[] = {"auto"};
+>  
+>  const char *const *vkms_get_crc_sources(struct drm_crtc *crtc,
+> diff --git a/drivers/gpu/drm/vkms/vkms_drv.h b/drivers/gpu/drm/vkms/vkms_drv.h
+> index 35540c7c4416..538315140585 100644
+> --- a/drivers/gpu/drm/vkms/vkms_drv.h
+> +++ b/drivers/gpu/drm/vkms/vkms_drv.h
+> @@ -125,8 +125,11 @@ int vkms_verify_crc_source(struct drm_crtc *crtc, const char *source_name,
+>  			   size_t *values_cnt);
+>  
+>  /* Composer Support */
+> +int vkms_composer_common(struct vkms_crtc_state *crtc_state, struct vkms_output *out,
+> +			 bool wb_pending, uint32_t *crcs);
+>  void vkms_composer_worker(struct work_struct *work);
+>  void vkms_set_composer(struct vkms_output *out, bool enabled);
+> +void vkms_crtc_composer(struct vkms_crtc_state *crtc_state);
+>  
+>  /* Writeback */
+>  int vkms_enable_writeback_connector(struct vkms_device *vkmsdev);
+> -- 
+> 2.25.1
+> 
