@@ -2,247 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5258E35AA67
+	by mail.lfdr.de (Postfix) with ESMTP id 05C7935AA66
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 04:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234105AbhDJC5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 22:57:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59326 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233915AbhDJC5E (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233955AbhDJC5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 9 Apr 2021 22:57:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618023410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7I+eMWiwUytX/eCn1RbadqntYrqf9xq/6Gyfxo9/q8w=;
-        b=PVBDdWgvQxGltEPVemFV2CK/43RNgke/q9Jue39oqCgob3UQfqjoUuvVwAV4f2HgWh9yiz
-        Vl5k1xOVP3YMbrMwKMnQcLkj+qs49x7Ex1U5Rw1zdIfqF69VrmKSJsedIldewmb2tzUxZT
-        Hvg2UnSzOpib3AyZvl84vAcIXeIpvW4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-499-n9M99CJgMoW0fH2I0Vd_iQ-1; Fri, 09 Apr 2021 22:56:48 -0400
-X-MC-Unique: n9M99CJgMoW0fH2I0Vd_iQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08AB6817469;
-        Sat, 10 Apr 2021 02:56:46 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-12-141.pek2.redhat.com [10.72.12.141])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 67C8019705;
-        Sat, 10 Apr 2021 02:56:35 +0000 (UTC)
-Subject: Re: [PATCH] x86/efi: Do not release sub-1MB memory regions when the
- crashkernel option is specified
-To:     Baoquan He <bhe@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, x86@kernel.org,
-        ardb@kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dvhart@infradead.org, andy@infradead.org,
-        hpa@zytor.com, kexec@lists.infradead.org, dyoung@redhat.com
-References: <20210407140316.30210-1-lijiang@redhat.com>
- <20210409124443.GA20513@MiWiFi-R3L-srv>
-From:   lijiang <lijiang@redhat.com>
-Message-ID: <54859cf5-210d-a3fe-7978-9c2cd375ebc6@redhat.com>
-Date:   Sat, 10 Apr 2021 10:56:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDJC5B (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 9 Apr 2021 22:57:01 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4260BC061762;
+        Fri,  9 Apr 2021 19:56:48 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so2477410otf.12;
+        Fri, 09 Apr 2021 19:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SVR2eN/8DGiy/V1JHUR96/GaDSzjKtaVBwZ1h8GZUN0=;
+        b=uUD2O/y51KW3JSdZbAgToXoJGs1ixszwRykqnfHRQ0eyrS5GFry/NNWbdnQENL21/P
+         IlBQhUQ0P5UQqllx0WvT6Nfsir3Pl9SdSz3F3OZAi9Sd/AsPfjywMRoouGGUlmyFX1U3
+         i7p1oiVpmO7FqR720vxGGvjpj731Jtp5AF88MtKYdYrXaZsGUqQu9q+NkDJzlu17zDKM
+         3m4+v+hxRBZVo54UyauBlwxlN8MSc2DXUu/tocFpD/2eoBS8TfnIP2LoKhv2mSRVq38a
+         SKj/WwGiSuPqWRG9fKc3fp5+DQNgbeUOSv3U0pyhYCbLtFRkUsCJdKwTYl7IEoV1+txW
+         BPNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=SVR2eN/8DGiy/V1JHUR96/GaDSzjKtaVBwZ1h8GZUN0=;
+        b=RJ6fPOm6dkvZX+HlvJbdG7UmK+92yojmtVswOlpDeUjEqHioX8egjMj3wpHTr5KVT7
+         X2ny3fEeqVHrEVKl0tMmm5rJ3qbm3cxzO5hxgcRP+foa/qU2pqLa+aP8pSyd/NfdN3Y/
+         VdrXD0JG/P/Fi4f3S/kOhH+Bs3XFTVrGolOZtxguy9lTz/fCZUNgLeVqPR4zqbxj2ucv
+         SSAHjW4mplSmVa81ShU3eHdZGeXIug6nSLdqb3dK+LTfHq/EmCYs9bTEGO0Qb2d/Dq8b
+         mMSUBg2DNLmJqk3kofcXY7s3OWrCb8bwpp7zHIo/QjwodhFQ84JzWWGdgFg0YlgUgCoz
+         eDzQ==
+X-Gm-Message-State: AOAM532O5GtT0BZUyIaACogMwiC9jVg7ToIZUr6Cu1X3IE7ROu3y4X2O
+        1bBExu4GFyXTonhPgcuAx6Hj9WO4eFE=
+X-Google-Smtp-Source: ABdhPJxK9Xr35G5Tb9LyWMJhEbLRDKeNHIScNazBc5xFbZnU/yYYo9l8G376bIhW8g2jw9Gfk1VhbQ==
+X-Received: by 2002:a05:6830:1af6:: with SMTP id c22mr14123458otd.291.1618023407436;
+        Fri, 09 Apr 2021 19:56:47 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j10sm882405oos.27.2021.04.09.19.56.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 19:56:46 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] watchdog: mtk: support pre-timeout when the bark irq is
+ available
+To:     =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <ANUA4QBkDhibiES5bK7X8Ko8.3.1618022553315.Hmail.wangqing@vivo.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <95861c15-0294-ddda-6080-ca15f19eb048@roeck-us.net>
+Date:   Fri, 9 Apr 2021 19:56:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210409124443.GA20513@MiWiFi-R3L-srv>
+In-Reply-To: <ANUA4QBkDhibiES5bK7X8Ko8.3.1618022553315.Hmail.wangqing@vivo.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Baoquan
-Thank you for the comment.
-在 2021年04月09日 20:44, Baoquan He 写道:
-> On 04/07/21 at 10:03pm, Lianbo Jiang wrote:
->> Some sub-1MB memory regions may be reserved by EFI boot services, and the
->> memory regions will be released later in the efi_free_boot_services().
+On 4/9/21 7:42 PM, 王擎 wrote:
+> 
+>> On 4/9/21 2:55 AM, Wang Qing wrote:
+>>> Use the bark interrupt as the pretimeout notifier if available.
+>>>
+>>> By default, the pretimeout notification shall occur one second earlier
+>>> than the timeout.
+>>>
+>>> Signed-off-by: Wang Qing <wangqing@vivo.com>
+>>> ---
+>>>  drivers/watchdog/mtk_wdt.c | 47 +++++++++++++++++++++++++++++++++++++++++++---
+>>>  1 file changed, 44 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/watchdog/mtk_wdt.c b/drivers/watchdog/mtk_wdt.c
+>>> index 97ca993..8b919cc
+>>> --- a/drivers/watchdog/mtk_wdt.c
+>>> +++ b/drivers/watchdog/mtk_wdt.c
+>>> @@ -25,6 +25,7 @@
+>>>  #include <linux/reset-controller.h>
+>>>  #include <linux/types.h>
+>>>  #include <linux/watchdog.h>
+>>> +#include <linux/interrupt.h>
+>>>  
+>>>  #define WDT_MAX_TIMEOUT		31
+>>>  #define WDT_MIN_TIMEOUT		1
+>>> @@ -234,18 +235,35 @@ static int mtk_wdt_start(struct watchdog_device *wdt_dev)
+>>>  	void __iomem *wdt_base = mtk_wdt->wdt_base;
+>>>  	int ret;
+>>>  
+>>> -	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout);
+>>> +	ret = mtk_wdt_set_timeout(wdt_dev, wdt_dev->timeout - wdt_dev->pretimeout);
 >>
->> Currently, always reserve all sub-1MB memory regions when the crashkernel
->> option is specified, but unfortunately EFI boot services may have already
->> reserved some sub-1MB memory regions before the crash_reserve_low_1M() is
->> called, which makes that the crash_reserve_low_1M() only own the
->> remaining sub-1MB memory regions, not all sub-1MB memory regions, because,
->> subsequently EFI boot services will free its own sub-1MB memory regions.
->> Eventually, DMA will be able to allocate memory from the sub-1MB area and
->> cause the following error:
+>> That looks suspiciously like the real watchdog won't happen at all.
+>> What will happen if the pretimeout governor is set to none ?
 >>
-> 
-> So this patch is fixing a problem found in crash utility. We ever met
-> the similar issue, later fixed by always reserving low 1M in commit
-> 6f599d84231fd27 ("x86/kdump: Always reserve the low 1M when the crashkernel
-> option is specified"). Seems the commit is not fixing it completely.
-> 
-Maybe I should add the "Fixes: 6f599d84231f" in front of 'Signed-off-by' as below:
-
-Fixes: 6f599d84231f ("x86/kdump: Always reserve the low 1M when the crashkernel option is specified")
-
->> crash> kmem -s |grep invalid
->> kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
->> kmem: dma-kmalloc-512: slab: ffffd52c40001900 invalid freepointer: ffff9403c0067300
->> crash> vtop ffff9403c0067300
->> VIRTUAL           PHYSICAL
->> ffff9403c0067300  67300   --->The physical address falls into this range [0x0000000000063000-0x000000000008efff]
+>> Guenter
 >>
->> kernel debugging log:
->> ...
->> [    0.008927] memblock_reserve: [0x0000000000010000-0x0000000000013fff] efi_reserve_boot_services+0x85/0xd0
->> [    0.008930] memblock_reserve: [0x0000000000063000-0x000000000008efff] efi_reserve_boot_services+0x85/0xd0
->> ...
->> [    0.009425] memblock_reserve: [0x0000000000000000-0x00000000000fffff] crash_reserve_low_1M+0x2c/0x49
->> ...
->> [    0.010586] Zone ranges:
->> [    0.010587]   DMA      [mem 0x0000000000001000-0x0000000000ffffff]
->> [    0.010589]   DMA32    [mem 0x0000000001000000-0x00000000ffffffff]
->> [    0.010591]   Normal   [mem 0x0000000100000000-0x0000000c7fffffff]
->> [    0.010593]   Device   empty
->> ...
->> [    8.814894] __memblock_free_late: [0x0000000000063000-0x000000000008efff] efi_free_boot_services+0x14b/0x23b
->> [    8.815793] __memblock_free_late: [0x0000000000010000-0x0000000000013fff] efi_free_boot_services+0x14b/0x23b
-> 
-> 
-> In commit 6f599d84231fd27, we call crash_reserve_low_1M() to lock the
-> whole low 1M area if crashkernel is specified in kernel cmdline.
-> But earlier efi_reserve_boot_services() invokation will break the
-> intention of the whole low 1M reserving. In efi_reserve_boot_services(),
-> if any memory under low 1M hasn't been reserved, it will call
-> memblock_reserve() to reserve it and leave it to
-> efi_free_boot_services() to free.
+> The pretimeout governor is panic by default. If pretimeout is enabled and the governor is
+> set to none, it means the timeout behavior does not need to be processed, only printing.
 > 
 
-Good understanding.
+That was not my question. My question was if the real timeout happens in that case.
 
-> Hi Lianbo,
-> 
-> Please correct me if I am wrong or anything is missed. IIUC, can we move
-> efi_reserve_boot_services() after reserve_real_mode() to fix this bug?
-
-What do you think about the following changes?
-
-patch [1]:
-
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 5ecd69a48393..c343de3178ec 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1064,12 +1064,6 @@ void __init setup_arch(char **cmdline_p)
-        efi_esrt_init();
-        efi_mokvar_table_init();
- 
--       /*
--        * The EFI specification says that boot service code won't be
--        * called after ExitBootServices(). This is, in fact, a lie.
--        */
--       efi_reserve_boot_services();
--
-        /* preallocate 4k for mptable mpc */
-        e820__memblock_alloc_reserved_mpc_new();
- 
-@@ -1087,6 +1081,12 @@ void __init setup_arch(char **cmdline_p)
-        trim_platform_memory_ranges();
-        trim_low_memory_range();
- 
-+       /*
-+        * The EFI specification says that boot service code won't be
-+        * called after ExitBootServices(). This is, in fact, a lie.
-+        */
-+       efi_reserve_boot_services();
-+
-        init_mem_mapping();
- 
-        idt_setup_early_pf();
-
-> Or move reserve_real_mode() before efi_reserve_boot_services() since
-> those real mode regions are all under 1M? Assume efi boot code/data
-
-Or patch [2]
-
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 5ecd69a48393..ceec5af0dfab 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1058,6 +1058,7 @@ void __init setup_arch(char **cmdline_p)
-        sev_setup_arch();
- 
-        reserve_bios_regions();
-+       reserve_real_mode();
- 
-        efi_fake_memmap();
-        efi_find_mirror();
-@@ -1082,8 +1083,6 @@ void __init setup_arch(char **cmdline_p)
-                        (max_pfn_mapped<<PAGE_SHIFT) - 1);
- #endif
- 
--       reserve_real_mode();
--
-        trim_platform_memory_ranges();
-        trim_low_memory_range();
-
-
-I tested the above two changes on my machine, both work well.
-
-But I'm not very sure if the reordering of the code may affect the startup(boot)
-on other machines. Any comments about this?
-
-Thanks.
-Lianbo
-
-> won't rely on low 1M area any more at this moment.
-> 
-> Thanks
-> Baoquan
-> 
->>
->> Do not release sub-1MB memory regions even though they are reserved by
->> EFI boot services, so that always reserve all sub-1MB memory regions when
->> the crashkernel option is specified.
->>
->> Signed-off-by: Lianbo Jiang <lijiang@redhat.com>
->> ---
->>  arch/x86/platform/efi/quirks.c | 14 ++++++++++++++
->>  1 file changed, 14 insertions(+)
->>
->> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
->> index 67d93a243c35..637f932c4fd4 100644
->> --- a/arch/x86/platform/efi/quirks.c
->> +++ b/arch/x86/platform/efi/quirks.c
->> @@ -18,6 +18,7 @@
->>  #include <asm/cpu_device_id.h>
->>  #include <asm/realmode.h>
->>  #include <asm/reboot.h>
->> +#include <asm/cmdline.h>
->>  
->>  #define EFI_MIN_RESERVE 5120
->>  
->> @@ -303,6 +304,19 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
->>   */
->>  static __init bool can_free_region(u64 start, u64 size)
->>  {
->> +	/*
->> +	 * Some sub-1MB memory regions may be reserved by EFI boot
->> +	 * services, and these memory regions will be released later
->> +	 * in the efi_free_boot_services().
->> +	 *
->> +	 * Do not release sub-1MB memory regions even though they are
->> +	 * reserved by EFI boot services, because, always reserve all
->> +	 * sub-1MB memory when the crashkernel option is specified.
->> +	 */
->> +	if (cmdline_find_option(boot_command_line, "crashkernel", NULL, 0) > 0
->> +		&& (start + size < (1<<20)))
->> +		return false;
->> +
->>  	if (start + size > __pa_symbol(_text) && start <= __pa_symbol(_end))
->>  		return false;
->>  
->> -- 
->> 2.17.1
->>
+Guenter
 
