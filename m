@@ -2,55 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7626C35AA0D
+	by mail.lfdr.de (Postfix) with ESMTP id C165F35AA0E
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 03:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234159AbhDJBxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 21:53:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36066 "EHLO
+        id S234260AbhDJBxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 21:53:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234085AbhDJBxW (ORCPT
+        with ESMTP id S234131AbhDJBxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 21:53:22 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786B9C0613D8
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 18:53:07 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d124so5353177pfa.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 18:53:07 -0700 (PDT)
+        Fri, 9 Apr 2021 21:53:23 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A230C0613D9
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 18:53:08 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id n38so5399256pfv.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 18:53:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=br6Q9nB7EzUYGhvzSIch8sIAGewUeFhxJoVc038K6FM=;
-        b=TP/ej0A5oIbB+SZtsRxku6ynn0XFhltYZbU946pbzvENIPryBryzlCL8OsXZPO5/39
-         5wp3q/GEB1X8Vec131bV1WM0mwViEIKK3qoyRIirnHyTnuEvIpGVUefSgMxW8FVaiD9H
-         IDhSM2hT9uM40D9RHJWn5U6LOvPEUXG0EI1M4=
+        bh=UUQWTfijg1cAUQuQg/jqN0uOSlJ8iwcYRlNSG9SB/TU=;
+        b=AIimY/rCAR/aUWtyJ2t2wANiXe5VkUMQQRwEdSCBWnpGsuTrpU/1oWHRYh43EjJufx
+         Jfp2DqV/P/OGOnbF79EMEEXn09OL/zvW/53bWaOy/DtnItf2rLdhlvNLRrgWCsPXStC+
+         eueFlyJfKD+73OdUruEkMIGCm4joo4Yzugkis=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=br6Q9nB7EzUYGhvzSIch8sIAGewUeFhxJoVc038K6FM=;
-        b=GFje5/g1vjTe6Md6HJfWxdvQXH8FzHgcmlP9eij+C8RW+SVPfnCAQW5y8EE+BnGigH
-         7OYwrLkrKYeW2ti/8Wa09towtxsQ6u/Ngmdkb/OpoFvHugKpuu5GWPEgrMmnAuug+Z4o
-         PJJOR/oKwq27atVkFxd8psl9t1nWtGT+yYs7e2yU/AqbKH0rnWXwlLSlPEKnMT2D+vz9
-         7dhAilI1x70GEreSF3GlJvxDp5FaABSfUryvZVMxZ8V/ywN2AnC0AoETskZmjLg7nk4s
-         sUPT621pPhUT7G05QAiTfwMWHNVOQ4g4U9tPDASaNoElgq322WXWGhDiDx6nSOSBB3HK
-         1rXw==
-X-Gm-Message-State: AOAM530luXpyDJf9A2M1kS3+7lA6BJRTL2p84kUD8Jo6ayEClBzg5zzI
-        Kf09vLFFRaIDIccMp2vRlTXznA==
-X-Google-Smtp-Source: ABdhPJw8ZEAEA342lhXIwD1tc1lC/gFPTrsFOOLwwizGLOeyoEtQpg+N0r26bdjfaqGjN5mMFbargw==
-X-Received: by 2002:a63:1820:: with SMTP id y32mr15990639pgl.157.1618019587023;
+        bh=UUQWTfijg1cAUQuQg/jqN0uOSlJ8iwcYRlNSG9SB/TU=;
+        b=Ib/UBonejCGEtX2yZ1XVMq0rqe8lbWzsqN27HQN6YrtnMfbfa5PHF6mImjID5kqB/D
+         QQlQHNQuuzyCBIg1btpymcePo1KzM3TUW5iBImY8bXspauOrWyiCvT29/5fPcgGx8fcZ
+         1XuSFJPnYnINccfVB4V+tykry1J1NBTVL3shWHqXxtGQyYJ+CZhjBiwCgzK9+kVB7XAI
+         Id1HFOayeq7NbYSkg0lPg4/OtuNRxBeOMr37DPE0cp0HHNUxuo4QlGH+/UrCcoR914aF
+         BkyQ0F2+XzLzhFP0K2343utdOV8XRZVo/heQYFhdBc5gJxNOkXVOTioYSBKPm3xIDihH
+         QOWA==
+X-Gm-Message-State: AOAM53201N0HReMm/Hz6D2dlGc97sVwmjxjKmpd8FVrGXaixPyAXtR6g
+        xN2yRI83fPDhho3Axt8H5GodVw==
+X-Google-Smtp-Source: ABdhPJwKZMBcsAc59YGHuABKAPfV6l4KYnqWQf4Qp8UlVb9HwYa7Tz+TCtM5emHDoukIUiQ+vxi3fQ==
+X-Received: by 2002:a63:556:: with SMTP id 83mr16381598pgf.436.1618019587880;
         Fri, 09 Apr 2021 18:53:07 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:5141:7881:7013:743b])
-        by smtp.gmail.com with ESMTPSA id n23sm3837962pgl.49.2021.04.09.18.53.06
+        by smtp.gmail.com with ESMTPSA id n23sm3837962pgl.49.2021.04.09.18.53.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 18:53:06 -0700 (PDT)
+        Fri, 09 Apr 2021 18:53:07 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, Jiri Olsa <jolsa@kernel.org>,
+Cc:     linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Jiri Olsa <jolsa@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Jessica Yu <jeyu@kernel.org>,
         Evan Green <evgreen@chromium.org>,
@@ -59,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Steven Rostedt <rostedt@goodmis.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v4 06/13] arm64: stacktrace: Use %pSb for backtrace printing
-Date:   Fri,  9 Apr 2021 18:52:53 -0700
-Message-Id: <20210410015300.3764485-7-swboyd@chromium.org>
+Subject: [PATCH v4 07/13] x86/dumpstack: Use %pSb/%pBb for backtrace printing
+Date:   Fri,  9 Apr 2021 18:52:54 -0700
+Message-Id: <20210410015300.3764485-8-swboyd@chromium.org>
 X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 In-Reply-To: <20210410015300.3764485-1-swboyd@chromium.org>
 References: <20210410015300.3764485-1-swboyd@chromium.org>
@@ -71,14 +70,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's use the new printk format to print the stacktrace entry when
+Let's use the new printk formats to print the stacktrace entries when
 printing a backtrace to the kernel logs. This will include any module's
 build ID[1] in it so that offline/crash debugging can easily locate the
 debuginfo for a module via something like debuginfod[2].
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: <x86@kernel.org>
 Cc: Jiri Olsa <jolsa@kernel.org>
 Cc: Alexei Starovoitov <ast@kernel.org>
 Cc: Jessica Yu <jeyu@kernel.org>
@@ -92,22 +92,34 @@ Link: https://fedoraproject.org/wiki/Releases/FeatureBuildId [1]
 Link: https://sourceware.org/elfutils/Debuginfod.html [2]
 Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
- arch/arm64/kernel/stacktrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kernel/dumpstack.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/kernel/stacktrace.c b/arch/arm64/kernel/stacktrace.c
-index ad20981dfda4..9d38da01ff98 100644
---- a/arch/arm64/kernel/stacktrace.c
-+++ b/arch/arm64/kernel/stacktrace.c
-@@ -129,7 +129,7 @@ NOKPROBE_SYMBOL(walk_stackframe);
- 
- static void dump_backtrace_entry(unsigned long where, const char *loglvl)
+diff --git a/arch/x86/kernel/dumpstack.c b/arch/x86/kernel/dumpstack.c
+index 299c20f0a38b..be2de39bf16f 100644
+--- a/arch/x86/kernel/dumpstack.c
++++ b/arch/x86/kernel/dumpstack.c
+@@ -69,7 +69,7 @@ static void printk_stack_address(unsigned long address, int reliable,
+ 				 const char *log_lvl)
  {
--	printk("%s %pS\n", loglvl, (void *)where);
-+	printk("%s %pSb\n", loglvl, (void *)where);
+ 	touch_nmi_watchdog();
+-	printk("%s %s%pB\n", log_lvl, reliable ? "" : "? ", (void *)address);
++	printk("%s %s%pBb\n", log_lvl, reliable ? "" : "? ", (void *)address);
  }
  
- void dump_backtrace(struct pt_regs *regs, struct task_struct *tsk,
+ static int copy_code(struct pt_regs *regs, u8 *buf, unsigned long src,
+@@ -143,9 +143,9 @@ void show_opcodes(struct pt_regs *regs, const char *loglvl)
+ void show_ip(struct pt_regs *regs, const char *loglvl)
+ {
+ #ifdef CONFIG_X86_32
+-	printk("%sEIP: %pS\n", loglvl, (void *)regs->ip);
++	printk("%sEIP: %pSb\n", loglvl, (void *)regs->ip);
+ #else
+-	printk("%sRIP: %04x:%pS\n", loglvl, (int)regs->cs, (void *)regs->ip);
++	printk("%sRIP: %04x:%pSb\n", loglvl, (int)regs->cs, (void *)regs->ip);
+ #endif
+ 	show_opcodes(regs, loglvl);
+ }
 -- 
 https://chromeos.dev
 
