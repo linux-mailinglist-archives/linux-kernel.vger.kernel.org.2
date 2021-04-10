@@ -2,424 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DC135AD1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A472435AD1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234689AbhDJL4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 07:56:42 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:59815
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234565AbhDJL4l (ORCPT
+        id S234718AbhDJL5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 07:57:15 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:48137 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234439AbhDJL5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 07:56:41 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A3EgqpavArrurC4lMMY7y6bzb7skDl9V00zAX?=
- =?us-ascii?q?/kB9WHVpW+afkN2jm+le6A/shF8qKRUdsP2JJaXoexjh3LFv5415B92fdSng/F?=
- =?us-ascii?q?ClNYRzqbblqgeAJwTb1spwkZhtaLJ/DtqYNykese/f7BOjG9gthPmrmZrJuc7k?=
- =?us-ascii?q?w31gTR5nZshbhm9EIz2WHUFsSA5NCYBRLuv+2uN8uzGidX4LB/7UOlA5WYH4y+?=
- =?us-ascii?q?HjqIjrelovCRIh9WC1/FGVwY+/Ilyj0hASXygn+9of2GLO+jaX2pme?=
-X-IronPort-AV: E=Sophos;i="5.82,210,1613430000"; 
-   d="scan'208";a="378282687"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 13:56:25 +0200
-Date:   Sat, 10 Apr 2021 13:56:24 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-cc:     clabbe@baylibre.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] [PATCH v2 2/2] staging: media: zoran: remove
- and add comments; align code
-In-Reply-To: <YHDR7VxighihfZd5@kali>
-Message-ID: <alpine.DEB.2.22.394.2104101354180.2975@hadrien>
-References: <YHCgnP6Jr6TbjwUy@kali> <alpine.DEB.2.22.394.2104092209200.23056@hadrien> <YHDR7VxighihfZd5@kali>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sat, 10 Apr 2021 07:57:13 -0400
+Received: from localhost.localdomain ([90.126.11.170])
+        by mwinf5d50 with ME
+        id qzwx2400d3g7mfN03zwy1i; Sat, 10 Apr 2021 13:56:58 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 10 Apr 2021 13:56:58 +0200
+X-ME-IP: 90.126.11.170
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 3/3] staging: rtl8712: Use existing arc4 implementation
+Date:   Sat, 10 Apr 2021 13:56:57 +0200
+Message-Id: <a793f56d34e53397607df54c683943d2c48b84f7.1618055514.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <7e16c40d5baa007dca81a12b967a597ed00d8dd7.1618055514.git.christophe.jaillet@wanadoo.fr>
+References: <7e16c40d5baa007dca81a12b967a597ed00d8dd7.1618055514.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Use functions provided by <crypto/arc4.h> instead of hand writing them.
 
+The implementations are slightly different, but are equivalent. It has
+been checked with a test program which compares the output of the 2 sets of
+functions.
 
-On Sat, 10 Apr 2021, Mitali Borkar wrote:
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/staging/rtl8712/rtl871x_security.c | 118 +++++----------------
+ 1 file changed, 29 insertions(+), 89 deletions(-)
 
-> On Fri, Apr 09, 2021 at 10:12:12PM +0200, Julia Lawall wrote:
-> >
-> >
-> > On Sat, 10 Apr 2021, Mitali Borkar wrote:
-> >
-> > > Removed comments from the same line and added them to new line above the
-> > > blocks, aligned everything properly by using tabs to make code neater
-> > > and improve readability.
-> > >
-> > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > > ---
-> > >  drivers/staging/media/zoran/zr36057.h | 293 ++++++++++++++------------
-> > >  1 file changed, 162 insertions(+), 131 deletions(-)
-> > >
-> > > diff --git a/drivers/staging/media/zoran/zr36057.h b/drivers/staging/media/zoran/zr36057.h
-> > > index 93075459f910..198d344a8879 100644
-> > > --- a/drivers/staging/media/zoran/zr36057.h
-> > > +++ b/drivers/staging/media/zoran/zr36057.h
-> > > @@ -12,145 +12,176 @@
-> > >
-> > >  /* Zoran ZR36057 registers */
-> > >
-> > > -#define ZR36057_VFEHCR          0x000	/* Video Front End, Horizontal Configuration Register */
-> > > -#define ZR36057_VFEHCR_HS_POL             BIT(30)
-> > > -#define ZR36057_VFEHCR_H_START           10
-> > > +/* Video Front End, Horizontal Configuration Register */
-> > > +#define ZR36057_VFEHCR			0x000
-> > > +#define ZR36057_VFEHCR_HS_POL			BIT(30)
-> >
-> > It looks like the alignment didn't work out here?  Check that the use of
-> > tabs is the same as on the nearby lines.
-> >
-> Do I need to align BIT(30), 10, 0x000 and rest in same column or should I
-> align them separately?
+diff --git a/drivers/staging/rtl8712/rtl871x_security.c b/drivers/staging/rtl8712/rtl871x_security.c
+index 1c7df65db3c9..b546e2f19620 100644
+--- a/drivers/staging/rtl8712/rtl871x_security.c
++++ b/drivers/staging/rtl8712/rtl871x_security.c
+@@ -16,6 +16,7 @@
+ 
+ #define  _RTL871X_SECURITY_C_
+ 
++#include <crypto/arc4.h>
+ #include <linux/compiler.h>
+ #include <linux/kernel.h>
+ #include <linux/errno.h>
+@@ -38,66 +39,6 @@
+ 
+ /* =====WEP related===== */
+ 
+-struct arc4context {
+-	u32 x;
+-	u32 y;
+-	u8 state[256];
+-};
+-
+-static void arcfour_init(struct arc4context *parc4ctx, u8 *key, u32 key_len)
+-{
+-	u32	t, u;
+-	u32	keyindex;
+-	u32	stateindex;
+-	u8 *state;
+-	u32	counter;
+-
+-	state = parc4ctx->state;
+-	parc4ctx->x = 0;
+-	parc4ctx->y = 0;
+-	for (counter = 0; counter < 256; counter++)
+-		state[counter] = (u8)counter;
+-	keyindex = 0;
+-	stateindex = 0;
+-	for (counter = 0; counter < 256; counter++) {
+-		t = state[counter];
+-		stateindex = (stateindex + key[keyindex] + t) & 0xff;
+-		u = state[stateindex];
+-		state[stateindex] = (u8)t;
+-		state[counter] = (u8)u;
+-		if (++keyindex >= key_len)
+-			keyindex = 0;
+-	}
+-}
+-
+-static u32 arcfour_byte(struct arc4context *parc4ctx)
+-{
+-	u32 x;
+-	u32 y;
+-	u32 sx, sy;
+-	u8 *state;
+-
+-	state = parc4ctx->state;
+-	x = (parc4ctx->x + 1) & 0xff;
+-	sx = state[x];
+-	y = (sx + parc4ctx->y) & 0xff;
+-	sy = state[y];
+-	parc4ctx->x = x;
+-	parc4ctx->y = y;
+-	state[y] = (u8)sx;
+-	state[x] = (u8)sy;
+-	return state[(sx + sy) & 0xff];
+-}
+-
+-static void arcfour_encrypt(struct arc4context	*parc4ctx,
+-		     u8 *dest, u8 *src, u32 len)
+-{
+-	u32 i;
+-
+-	for (i = 0; i < len; i++)
+-		dest[i] = src[i] ^ (unsigned char)arcfour_byte(parc4ctx);
+-}
+-
+ static sint bcrc32initialized;
+ static u32 crc32_table[256];
+ 
+@@ -151,7 +92,7 @@ static u32 getcrc32(u8 *buf, u32 len)
+ void r8712_wep_encrypt(struct _adapter *padapter, u8 *pxmitframe)
+ {	/* exclude ICV */
+ 	unsigned char	crc[4];
+-	struct arc4context  mycontext;
++	struct arc4_ctx  mycontext;
+ 	u32 curfragnum, length, keylength, pki;
+ 	u8 *pframe, *payload, *iv;    /*,*wepkey*/
+ 	u8 wepkey[16];
+@@ -182,22 +123,22 @@ void r8712_wep_encrypt(struct _adapter *padapter, u8 *pxmitframe)
+ 					pattrib->icv_len;
+ 				*((__le32 *)crc) = cpu_to_le32(getcrc32(
+ 						payload, length));
+-				arcfour_init(&mycontext, wepkey, 3 + keylength);
+-				arcfour_encrypt(&mycontext, payload, payload,
+-						length);
+-				arcfour_encrypt(&mycontext, payload + length,
+-						crc, 4);
++				arc4_setkey(&mycontext, wepkey, 3 + keylength);
++				arc4_crypt(&mycontext, payload, payload,
++					   length);
++				arc4_crypt(&mycontext, payload + length,
++					   crc, 4);
+ 			} else {
+ 				length = pxmitpriv->frag_len -
+ 					 pattrib->hdrlen - pattrib->iv_len -
+ 					 pattrib->icv_len;
+ 				*((__le32 *)crc) = cpu_to_le32(getcrc32(
+ 						payload, length));
+-				arcfour_init(&mycontext, wepkey, 3 + keylength);
+-				arcfour_encrypt(&mycontext, payload, payload,
+-						length);
+-				arcfour_encrypt(&mycontext, payload + length,
+-						crc, 4);
++				arc4_setkey(&mycontext, wepkey, 3 + keylength);
++				arc4_crypt(&mycontext, payload, payload,
++					   length);
++				arc4_crypt(&mycontext, payload + length,
++					   crc, 4);
+ 				pframe += pxmitpriv->frag_len;
+ 				pframe = (u8 *)RND4((addr_t)(pframe));
+ 			}
+@@ -209,7 +150,7 @@ void r8712_wep_decrypt(struct _adapter  *padapter, u8 *precvframe)
+ {
+ 	/* exclude ICV */
+ 	u8 crc[4];
+-	struct arc4context  mycontext;
++	struct arc4_ctx mycontext;
+ 	u32 length, keylength;
+ 	u8 *pframe, *payload, *iv, wepkey[16];
+ 	u8  keyindex;
+@@ -233,8 +174,8 @@ void r8712_wep_decrypt(struct _adapter  *padapter, u8 *precvframe)
+ 			   u.hdr.len - prxattrib->hdrlen - prxattrib->iv_len;
+ 		payload = pframe + prxattrib->iv_len + prxattrib->hdrlen;
+ 		/* decrypt payload include icv */
+-		arcfour_init(&mycontext, wepkey, 3 + keylength);
+-		arcfour_encrypt(&mycontext, payload, payload,  length);
++		arc4_setkey(&mycontext, wepkey, 3 + keylength);
++		arc4_crypt(&mycontext, payload, payload, length);
+ 		/* calculate icv and compare the icv */
+ 		*((__le32 *)crc) = cpu_to_le32(getcrc32(payload, length - 4));
+ 	}
+@@ -563,7 +504,7 @@ u32 r8712_tkip_encrypt(struct _adapter *padapter, u8 *pxmitframe)
+ 	u8 rc4key[16];
+ 	u8 ttkey[16];
+ 	u8 crc[4];
+-	struct arc4context mycontext;
++	struct arc4_ctx mycontext;
+ 	u32 curfragnum, length;
+ 
+ 	u8 *pframe, *payload, *iv, *prwskey;
+@@ -606,11 +547,11 @@ u32 r8712_tkip_encrypt(struct _adapter *padapter, u8 *pxmitframe)
+ 					     pattrib->icv_len;
+ 					*((__le32 *)crc) = cpu_to_le32(
+ 						getcrc32(payload, length));
+-					arcfour_init(&mycontext, rc4key, 16);
+-					arcfour_encrypt(&mycontext, payload,
+-							payload, length);
+-					arcfour_encrypt(&mycontext, payload +
+-							length, crc, 4);
++					arc4_setkey(&mycontext, rc4key, 16);
++					arc4_crypt(&mycontext, payload,
++						   payload, length);
++					arc4_crypt(&mycontext, payload +
++						   length, crc, 4);
+ 				} else {
+ 					length = pxmitpriv->frag_len -
+ 						 pattrib->hdrlen -
+@@ -618,12 +559,11 @@ u32 r8712_tkip_encrypt(struct _adapter *padapter, u8 *pxmitframe)
+ 						 pattrib->icv_len;
+ 					*((__le32 *)crc) = cpu_to_le32(getcrc32(
+ 							payload, length));
+-					arcfour_init(&mycontext, rc4key, 16);
+-					arcfour_encrypt(&mycontext, payload,
+-							 payload, length);
+-					arcfour_encrypt(&mycontext,
+-							payload + length, crc,
+-							4);
++					arc4_setkey(&mycontext, rc4key, 16);
++					arc4_crypt(&mycontext, payload,
++						   payload, length);
++					arc4_crypt(&mycontext,
++						   payload + length, crc, 4);
+ 					pframe += pxmitpriv->frag_len;
+ 					pframe = (u8 *)RND4((addr_t)(pframe));
+ 				}
+@@ -643,7 +583,7 @@ void r8712_tkip_decrypt(struct _adapter *padapter, u8 *precvframe)
+ 	u8 rc4key[16];
+ 	u8 ttkey[16];
+ 	u8 crc[4];
+-	struct arc4context mycontext;
++	struct arc4_ctx mycontext;
+ 	u32 length;
+ 	u8 *pframe, *payload, *iv, *prwskey, idx = 0;
+ 	union pn48 txpn;
+@@ -682,8 +622,8 @@ void r8712_tkip_decrypt(struct _adapter *padapter, u8 *precvframe)
+ 			phase2(&rc4key[0], prwskey, (unsigned short *)
+ 			       &ttkey[0], pnl);
+ 			/* 4 decrypt payload include icv */
+-			arcfour_init(&mycontext, rc4key, 16);
+-			arcfour_encrypt(&mycontext, payload, payload, length);
++			arc4_setkey(&mycontext, rc4key, 16);
++			arc4_crypt(&mycontext, payload, payload, length);
+ 			*((__le32 *)crc) = cpu_to_le32(getcrc32(payload,
+ 					length - 4));
+ 		}
+-- 
+2.27.0
 
-If there are a bunch of #defines with no blank line between them and
-similar names (these all start with ZR36057_VFEHCR), then it can be nice
-to line them all up.
-
->
-> > > +#define ZR36057_VFEHCR_H_START		10
-> > >  #define ZR36057_VFEHCR_H_END		0
-> > >  #define ZR36057_VFEHCR_HMASK		0x3ff
-> > >
-> > > -#define ZR36057_VFEVCR          0x004	/* Video Front End, Vertical Configuration Register */
-> > > -#define ZR36057_VFEVCR_VS_POL             BIT(30)
-> > > -#define ZR36057_VFEVCR_V_START           10
-> > > +/* Video Front End, Vertical Configuration Register */
-> > > +#define ZR36057_VFEVCR			0x004
-> > > +#define ZR36057_VFEVCR_VS_POL			BIT(30)
-> > > +#define ZR36057_VFEVCR_V_START		10
-> > >  #define ZR36057_VFEVCR_V_END		0
-> > >  #define ZR36057_VFEVCR_VMASK		0x3ff
-> > >
-> > > -#define ZR36057_VFESPFR         0x008	/* Video Front End, Scaler and Pixel Format Register */
-> > > -#define ZR36057_VFESPFR_EXT_FL            BIT(26)
-> > > -#define ZR36057_VFESPFR_TOP_FIELD         BIT(25)
-> > > -#define ZR36057_VFESPFR_VCLK_POL          BIT(24)
-> > > -#define ZR36057_VFESPFR_H_FILTER         21
-> > > -#define ZR36057_VFESPFR_HOR_DCM          14
-> > > -#define ZR36057_VFESPFR_VER_DCM          8
-> > > -#define ZR36057_VFESPFR_DISP_MODE        6
-> > > -#define ZR36057_VFESPFR_YUV422          (0 << 3)
-> > > -#define ZR36057_VFESPFR_RGB888          BIT(3)
-> > > -#define ZR36057_VFESPFR_RGB565          (2 << 3)
-> > > -#define ZR36057_VFESPFR_RGB555          (3 << 3)
-> > > -#define ZR36057_VFESPFR_ERR_DIF          BIT(2)
-> > > -#define ZR36057_VFESPFR_PACK24          BIT(1)
-> > > -#define ZR36057_VFESPFR_LITTLE_ENDIAN    BIT(0)
-> > > -
-> > > -#define ZR36057_VDTR            0x00c	/* Video Display "Top" Register */
-> > > -
-> > > -#define ZR36057_VDBR            0x010	/* Video Display "Bottom" Register */
-> > > -
-> > > -#define ZR36057_VSSFGR          0x014	/* Video Stride, Status, and Frame Grab Register */
-> > > -#define ZR36057_VSSFGR_DISP_STRIDE       16
-> > > -#define ZR36057_VSSFGR_VID_OVF            BIT(8)
-> > > -#define ZR36057_VSSFGR_SNAP_SHOT          BIT(1)
-> > > -#define ZR36057_VSSFGR_FRAME_GRAB         BIT(0)
-> > > -
-> > > -#define ZR36057_VDCR            0x018	/* Video Display Configuration Register */
-> > > -#define ZR36057_VDCR_VID_EN               BIT(31)
-> > > -#define ZR36057_VDCR_MIN_PIX             24
-> > > -#define ZR36057_VDCR_TRITON              BIT(24)
-> > > -#define ZR36057_VDCR_VID_WIN_HT           12
-> > > -#define ZR36057_VDCR_VID_WIN_WID          0
-> > > -
-> > > -#define ZR36057_MMTR            0x01c	/* Masking Map "Top" Register */
-> > > -
-> > > -#define ZR36057_MMBR            0x020	/* Masking Map "Bottom" Register */
-> > > -
-> > > -#define ZR36057_OCR             0x024	/* Overlay Control Register */
-> > > -#define ZR36057_OCR_OVL_ENABLE            BIT(15)
-> > > -#define ZR36057_OCR_MASK_STRIDE          0
-> > > -
-> > > -#define ZR36057_SPGPPCR         0x028	/* System, PCI, and General Purpose Pins Control Register */
-> > > -#define ZR36057_SPGPPCR_SOFT_RESET	 BIT(24)
-> > > -
-> > > -#define ZR36057_GPPGCR1         0x02c	/* General Purpose Pins and GuestBus Control Register (1) */
-> > > -
-> > > -#define ZR36057_MCSAR           0x030	/* MPEG Code Source Address Register */
-> > > -
-> > > -#define ZR36057_MCTCR           0x034	/* MPEG Code Transfer Control Register */
-> > > -#define ZR36057_MCTCR_COD_TIME            BIT(30)
-> > > -#define ZR36057_MCTCR_C_EMPTY             BIT(29)
-> > > -#define ZR36057_MCTCR_C_FLUSH             BIT(28)
-> > > +/* Video Front End, Scaler and Pixel Format Register */
-> > > +#define ZR36057_VFESPFR			0x008
-> > > +#define ZR36057_VFESPFR_EXT_FL			BIT(26)
-> > > +#define ZR36057_VFESPFR_TOP_FIELD		BIT(25)
-> > > +#define ZR36057_VFESPFR_VCLK_POL		BIT(24)
-> > > +#define ZR36057_VFESPFR_H_FILTER	21
-> > > +#define ZR36057_VFESPFR_HOR_DCM		14
-> > > +#define ZR36057_VFESPFR_VER_DCM		8
-> > > +#define ZR36057_VFESPFR_DISP_MODE	6
-> >
-> > The above four lines also look odd.
-> >
-> > > +#define ZR36057_VFESPFR_YUV422			(0 << 3)
-> > > +#define ZR36057_VFESPFR_RGB888			BIT(3)
-> >
-> > Was there really a BIT in the original code, or is this a patch against
-> > your previous patch?
-> >
-> No, I added BIT(3), originally it was (1<<3).
-
-OK, I don't think it is good to have just one BIT when there is a clear
-pattern for the others that the BIT is hiding.  So you should do the
-alignment patch against the original code, and not the code with this
-change.
-
-julia
-
-> > > +#define ZR36057_VFESPFR_RGB565			(2 << 3)
-> > > +#define ZR36057_VFESPFR_RGB555			(3 << 3)
-> > > +#define ZR36057_VFESPFR_ERR_DIF			BIT(2)
-> > > +#define ZR36057_VFESPFR_PACK24			BIT(1)
-> > > +#define ZR36057_VFESPFR_LITTLE_ENDIAN		BIT(0)
-> > > +
-> > > +/* Video Display "Top" Register */
-> > > +#define ZR36057_VDTR			0x00c
-> > > +
-> > > +/* Video Display "Bottom" Register */
-> > > +#define ZR36057_VDBR			0x010
-> > > +
-> > > +/* Video Stride, Status, and Frame Grab Register */
-> > > +#define ZR36057_VSSFGR			0x014
-> > > +#define ZR36057_VSSFGR_DISP_STRIDE	16
-> > > +#define ZR36057_VSSFGR_VID_OVF			BIT(8)
-> > > +#define ZR36057_VSSFGR_SNAP_SHOT		BIT(1)
-> > > +#define ZR36057_VSSFGR_FRAME_GRAB		BIT(0)
-> > > +
-> > > +/* Video Display Configuration Register */
-> > > +#define ZR36057_VDCR			0x018
-> > > +#define ZR36057_VDCR_VID_EN			BIT(31)
-> > > +#define ZR36057_VDCR_MIN_PIX		24
-> > > +#define ZR36057_VDCR_TRITON			BIT(24)
-> > > +#define ZR36057_VDCR_VID_WIN_HT		12
-> >
-> > These don't look well aligned either.
-> >
-> > Please check on the rest.
-> >
-> Yes Ma'am, I am rechecking this.
->
-> > julia
-> >
-> >
-> > > +#define ZR36057_VDCR_VID_WIN_WID	0
-> > > +
-> > > +/* Masking Map "Top" Register */
-> > > +#define ZR36057_MMTR			0x01c
-> > > +
-> > > +/* Masking Map "Bottom" Register */
-> > > +#define ZR36057_MMBR			0x020
-> > > +
-> > > +/* Overlay Control Register */
-> > > +#define ZR36057_OCR			0x024
-> > > +#define ZR36057_OCR_OVL_ENABLE			BIT(15)
-> > > +#define ZR36057_OCR_MASK_STRIDE		0
-> > > +
-> > > +/* System, PCI, and General Purpose Pins Control Register */
-> > > +#define ZR36057_SPGPPCR			0x028
-> > > +#define ZR36057_SPGPPCR_SOFT_RESET		BIT(24)
-> > > +
-> > > +/* General Purpose Pins and GuestBus Control Register (1) */
-> > > +#define ZR36057_GPPGCR1			0x02c
-> > > +
-> > > +/* MPEG Code Source Address Register */
-> > > +#define ZR36057_MCSAR			0x030
-> > > +
-> > > +/* MPEG Code Transfer Control Register */
-> > > +#define ZR36057_MCTCR			0x034
-> > > +#define ZR36057_MCTCR_COD_TIME			BIT(30)
-> > > +#define ZR36057_MCTCR_C_EMPTY			BIT(29)
-> > > +#define ZR36057_MCTCR_C_FLUSH			BIT(28)
-> > >  #define ZR36057_MCTCR_COD_GUEST_ID	20
-> > >  #define ZR36057_MCTCR_COD_GUEST_REG	16
-> > >
-> > > -#define ZR36057_MCMPR           0x038	/* MPEG Code Memory Pointer Register */
-> > > -
-> > > -#define ZR36057_ISR             0x03c	/* Interrupt Status Register */
-> > > -#define ZR36057_ISR_GIRQ1                BIT(30)
-> > > -#define ZR36057_ISR_GIRQ0                BIT(29)
-> > > -#define ZR36057_ISR_COD_REP_IRQ            BIT(28)
-> > > -#define ZR36057_ISR_JPEG_REP_IRQ           BIT(27)
-> > > -
-> > > -#define ZR36057_ICR             0x040	/* Interrupt Control Register */
-> > > -#define ZR36057_ICR_GIRQ1                BIT(30)
-> > > -#define ZR36057_ICR_GIRQ0                BIT(29)
-> > > -#define ZR36057_ICR_COD_REP_IRQ            BIT(28)
-> > > -#define ZR36057_ICR_JPEG_REP_IRQ           BIT(27)
-> > > -#define ZR36057_ICR_INT_PIN_EN             BIT(24)
-> > > -
-> > > -#define ZR36057_I2CBR           0x044	/* I2C Bus Register */
-> > > -#define ZR36057_I2CBR_SDA		 BIT(1)
-> > > -#define ZR36057_I2CBR_SCL		 BIT(0)
-> > > -
-> > > -#define ZR36057_JMC             0x100	/* JPEG Mode and Control */
-> > > -#define ZR36057_JMC_JPG                  BIT(31)
-> > > -#define ZR36057_JMC_JPG_EXP_MODE          (0 << 29)
-> > > -#define ZR36057_JMC_JPG_CMP_MODE           BIT(29)
-> > > -#define ZR36057_JMC_MJPG_EXP_MODE         (2 << 29)
-> > > -#define ZR36057_JMC_MJPG_CMP_MODE         (3 << 29)
-> > > -#define ZR36057_JMC_RTBUSY_FB            BIT(6)
-> > > -#define ZR36057_JMC_GO_EN                BIT(5)
-> > > -#define ZR36057_JMC_SYNC_MSTR             BIT(4)
-> > > -#define ZR36057_JMC_FLD_PER_BUFF         BIT(3)
-> > > -#define ZR36057_JMC_VFIFO_FB             BIT(2)
-> > > -#define ZR36057_JMC_CFIFO_FB             BIT(1)
-> > > -#define ZR36057_JMC_STLL_LIT_ENDIAN       BIT(0)
-> > > -
-> > > -#define ZR36057_JPC             0x104	/* JPEG Process Control */
-> > > -#define ZR36057_JPC_P_RESET              BIT(7)
-> > > -#define ZR36057_JPC_COD_TRNS_EN            BIT(5)
-> > > -#define ZR36057_JPC_ACTIVE               BIT(0)
-> > > -
-> > > -#define ZR36057_VSP             0x108	/* Vertical Sync Parameters */
-> > > -#define ZR36057_VSP_VSYNC_SIZE           16
-> > > -#define ZR36057_VSP_FRM_TOT              0
-> > > -
-> > > -#define ZR36057_HSP             0x10c	/* Horizontal Sync Parameters */
-> > > -#define ZR36057_HSP_HSYNC_START          16
-> > > -#define ZR36057_HSP_LINE_TOT             0
-> > > -
-> > > -#define ZR36057_FHAP            0x110	/* Field Horizontal Active Portion */
-> > > -#define ZR36057_FHAP_NAX                16
-> > > -#define ZR36057_FHAP_PAX                0
-> > > -
-> > > -#define ZR36057_FVAP            0x114	/* Field Vertical Active Portion */
-> > > -#define ZR36057_FVAP_NAY                16
-> > > -#define ZR36057_FVAP_PAY                0
-> > > -
-> > > -#define ZR36057_FPP             0x118	/* Field Process Parameters */
-> > > -#define ZR36057_FPP_ODD_EVEN             BIT(0)
-> > > -
-> > > -#define ZR36057_JCBA            0x11c	/* JPEG Code Base Address */
-> > > -
-> > > -#define ZR36057_JCFT            0x120	/* JPEG Code FIFO Threshold */
-> > > -
-> > > -#define ZR36057_JCGI            0x124	/* JPEG Codec Guest ID */
-> > > -#define ZR36057_JCGI_JPE_GUEST_ID         4
-> > > -#define ZR36057_JCGI_JPE_GUEST_REG        0
-> > > -
-> > > -#define ZR36057_GCR2            0x12c	/* GuestBus Control Register (2) */
-> > > -
-> > > -#define ZR36057_POR             0x200	/* Post Office Register */
-> > > -#define ZR36057_POR_PO_PEN                BIT(25)
-> > > -#define ZR36057_POR_PO_TIME               BIT(24)
-> > > -#define ZR36057_POR_PO_DIR                BIT(23)
-> > > -
-> > > -#define ZR36057_STR             0x300	/* "Still" Transfer Register */
-> > > +/* MPEG Code Memory Pointer Register */
-> > > +#define ZR36057_MCMPR			0x038
-> > > +
-> > > +/* Interrupt Status Register */
-> > > +#define ZR36057_ISR			0x03c
-> > > +#define ZR36057_ISR_GIRQ1			BIT(30)
-> > > +#define ZR36057_ISR_GIRQ0			BIT(29)
-> > > +#define ZR36057_ISR_COD_REP_IRQ			BIT(28)
-> > > +#define ZR36057_ISR_JPEG_REP_IRQ		BIT(27)
-> > > +
-> > > +/* Interrupt Control Register */
-> > > +#define ZR36057_ICR			0x040
-> > > +#define ZR36057_ICR_GIRQ1			BIT(30)
-> > > +#define ZR36057_ICR_GIRQ0			BIT(29)
-> > > +#define ZR36057_ICR_COD_REP_IRQ			BIT(28)
-> > > +#define ZR36057_ICR_JPEG_REP_IRQ		BIT(27)
-> > > +#define ZR36057_ICR_INT_PIN_EN			BIT(24)
-> > > +
-> > > +/* I2C Bus Register */
-> > > +#define ZR36057_I2CBR			0x044
-> > > +#define ZR36057_I2CBR_SDA			BIT(1)
-> > > +#define ZR36057_I2CBR_SCL			BIT(0)
-> > > +
-> > > +/* JPEG Mode and Control */
-> > > +#define ZR36057_JMC			0x100
-> > > +#define ZR36057_JMC_JPG				BIT(31)
-> > > +#define ZR36057_JMC_JPG_EXP_MODE		(0 << 29)
-> > > +#define ZR36057_JMC_JPG_CMP_MODE		BIT(29)
-> > > +#define ZR36057_JMC_MJPG_EXP_MODE		(2 << 29)
-> > > +#define ZR36057_JMC_MJPG_CMP_MODE		(3 << 29)
-> > > +#define ZR36057_JMC_RTBUSY_FB			BIT(6)
-> > > +#define ZR36057_JMC_GO_EN			BIT(5)
-> > > +#define ZR36057_JMC_SYNC_MSTR			BIT(4)
-> > > +#define ZR36057_JMC_FLD_PER_BUFF		BIT(3)
-> > > +#define ZR36057_JMC_VFIFO_FB			BIT(2)
-> > > +#define ZR36057_JMC_CFIFO_FB			BIT(1)
-> > > +#define ZR36057_JMC_STLL_LIT_ENDIAN		BIT(0)
-> > > +
-> > > +/* JPEG Process Control */
-> > > +#define ZR36057_JPC			0x104
-> > > +#define ZR36057_JPC_P_RESET			BIT(7)
-> > > +#define ZR36057_JPC_COD_TRNS_EN			BIT(5)
-> > > +#define ZR36057_JPC_ACTIVE			BIT(0)
-> > > +
-> > > +/* Vertical Sync Parameters */
-> > > +#define ZR36057_VSP			0x108
-> > > +#define ZR36057_VSP_VSYNC_SIZE		16
-> > > +#define ZR36057_VSP_FRM_TOT		0
-> > > +
-> > > +/* Horizontal Sync Parameters */
-> > > +#define ZR36057_HSP			0x10c
-> > > +#define ZR36057_HSP_HSYNC_START		16
-> > > +#define ZR36057_HSP_LINE_TOT		0
-> > > +
-> > > +/* Field Horizontal Active Portion */
-> > > +#define ZR36057_FHAP			0x110
-> > > +#define ZR36057_FHAP_NAX		16
-> > > +#define ZR36057_FHAP_PAX		0
-> > > +
-> > > +/* Field Vertical Active Portion */
-> > > +#define ZR36057_FVAP			0x114
-> > > +#define ZR36057_FVAP_NAY		16
-> > > +#define ZR36057_FVAP_PAY		0
-> > > +
-> > > +/* Field Process Parameters */
-> > > +#define ZR36057_FPP			0x118
-> > > +#define ZR36057_FPP_ODD_EVEN			BIT(0)
-> > > +
-> > > +/* JPEG Code Base Address */
-> > > +#define ZR36057_JCBA			0x11c
-> > > +
-> > > +/* JPEG Code FIFO Threshold */
-> > > +#define ZR36057_JCFT			0x120
-> > > +
-> > > +/* JPEG Codec Guest ID */
-> > > +#define ZR36057_JCGI			0x124
-> > > +#define ZR36057_JCGI_JPE_GUEST_ID	4
-> > > +#define ZR36057_JCGI_JPE_GUEST_REG	0
-> > > +
-> > > +/* GuestBus Control Register (2) */
-> > > +#define ZR36057_GCR2			0x12c
-> > > +
-> > > +/* Post Office Register */
-> > > +#define ZR36057_POR			0x200
-> > > +#define ZR36057_POR_PO_PEN			BIT(25)
-> > > +#define ZR36057_POR_PO_TIME			BIT(24)
-> > > +#define ZR36057_POR_PO_DIR			BIT(23)
-> > > +
-> > > +/* "Still" Transfer Register */
-> > > +#define ZR36057_STR			0x300
-> > >
-> > >  #endif
-> > > --
-> > > 2.30.2
-> > >
-> > > --
-> > > You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> > > To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> > > To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHCgnP6Jr6TbjwUy%40kali.
-> > >
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHDR7VxighihfZd5%40kali.
->
