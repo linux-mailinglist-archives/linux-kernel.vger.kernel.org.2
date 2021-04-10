@@ -2,52 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8945735A9BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 02:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DBD35A9C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 02:56:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235348AbhDJAy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 20:54:58 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43975 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235268AbhDJAy5 (ORCPT
+        id S235367AbhDJAzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 20:55:32 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:4438 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235362AbhDJAzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 20:54:57 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13A0sMod002434
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 9 Apr 2021 20:54:22 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D15CF15C3B12; Fri,  9 Apr 2021 20:54:21 -0400 (EDT)
-Date:   Fri, 9 Apr 2021 20:54:21 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Ye Bin <yebin10@huawei.com>
-Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        Fri, 9 Apr 2021 20:55:25 -0400
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 09 Apr 2021 17:55:12 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com (HELO gurus-linux.localdomain) ([10.46.162.81])
+  by ironmsg04-sd.qualcomm.com with ESMTP; 09 Apr 2021 17:55:03 -0700
+Received: by gurus-linux.localdomain (Postfix, from userid 383780)
+        id D4D4F19FD; Fri,  9 Apr 2021 17:55:02 -0700 (PDT)
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         linux-kernel@vger.kernel.org,
-        Liu Zhi Qiang <liuzhiqiang26@huawei.com>,
-        Andreas Dilger <adilger@dilger.ca>
-Subject: Re: [PATCH v3] ext4: Fix ext4_error_err save negative errno into
- superblock
-Message-ID: <YHD3PbAv1ywmAVSs@mit.edu>
-References: <20210406025331.148343-1-yebin10@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210406025331.148343-1-yebin10@huawei.com>
+        Guru Das Srinagesh <gurus@codeaurora.org>
+Subject: [PATCH v2 0/3] Add Qualcomm Technologies, Inc. PM8008 MFD driver
+Date:   Fri,  9 Apr 2021 17:54:59 -0700
+Message-Id: <cover.1618015804.git.gurus@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 10:53:31AM +0800, Ye Bin wrote:
-> As write_mmp_block return 1 when buffer isn't uptodate, return -EIO is
-> more appropriate.
-> 
-> Fixes: 54d3adbc29f0 ("ext4: save all error info in save_error_info() and drop ext4_set_errno()")
-> Reported-by: Liu Zhi Qiang <liuzhiqiang26@huawei.com>
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
-> Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+Changes from v1:
+  - Removed errant Change-Id from dt-bindings IRQ patch and gathered Bjorn's
+    Reviewed-by
+  - Fixed up YAML errors using make dt_binding_check
 
-Thanks, applied.
+This driver is dependent on changes that have been made to the regmap-irq
+framework that have currently been accepted [1][2] in regmap.git upstream by
+Mark Brown but haven't made it to Linus' tree yet. For this reason, this driver
+has been based on the tip of regmap.git and not mfd.git.
 
-					- Ted
+Those changes, and this driver, are the result of a rewrite effort that was
+promised a long ago [3]. The framework changes and this driver have been tested
+and verified end-to-end on an internal platform.
+
+[1] https://lore.kernel.org/lkml/20210318183607.gFxO2hoTO274vl3jUuxWbi19rq9wQELzN-y3B4jvO10@z/
+[2] https://lore.kernel.org/lkml/161726943419.2413.4844313396830856637.b4-ty@kernel.org/
+[3] https://lore.kernel.org/lkml/20200519185757.GA13992@codeaurora.org/
+
+Guru Das Srinagesh (3):
+  dt-bindings: mfd: pm8008: Add IRQ listing
+  dt-bindings: mfd: pm8008: Add bindings
+  mfd: pm8008: Add driver for QCOM PM8008 PMIC
+
+ .../devicetree/bindings/mfd/qcom,pm8008.yaml       | 119 +++++++++
+ drivers/mfd/Kconfig                                |  15 ++
+ drivers/mfd/Makefile                               |   1 +
+ drivers/mfd/qcom-pm8008.c                          | 284 +++++++++++++++++++++
+ include/dt-bindings/mfd/qcom-pm8008.h              |  19 ++
+ 5 files changed, 438 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mfd/qcom,pm8008.yaml
+ create mode 100644 drivers/mfd/qcom-pm8008.c
+ create mode 100644 include/dt-bindings/mfd/qcom-pm8008.h
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
