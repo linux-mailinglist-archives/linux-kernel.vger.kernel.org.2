@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0269035AE50
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1827935AE4B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:29:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234859AbhDJO3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:29:52 -0400
-Received: from ozlabs.org ([203.11.71.1]:32849 "EHLO ozlabs.org"
+        id S234797AbhDJO3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:29:48 -0400
+Received: from ozlabs.org ([203.11.71.1]:42989 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234768AbhDJO3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:29:47 -0400
+        id S234392AbhDJO3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 10:29:46 -0400
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4FHcp42Vcbz9sWc; Sun, 11 Apr 2021 00:29:32 +1000 (AEST)
+        id 4FHcp23yX0z9sWP; Sun, 11 Apr 2021 00:29:30 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <cover.1615398265.git.christophe.leroy@csgroup.eu>
-References: <cover.1615398265.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH v2 00/15] powerpc: Cleanup of uaccess.h and adding asm goto for get_user()
-Message-Id: <161806493038.1467223.3176738134833493844.b4-ty@ellerman.id.au>
-Date:   Sun, 11 Apr 2021 00:28:50 +1000
+        cmr@codefail.de, Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arch@vger.kernel.org
+In-Reply-To: <cover.1616151715.git.christophe.leroy@csgroup.eu>
+References: <cover.1616151715.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH 00/10] Convert signal32 to user read access by block
+Message-Id: <161806493285.1467223.5574270316923753261.b4-ty@ellerman.id.au>
+Date:   Sun, 11 Apr 2021 00:28:52 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -31,47 +32,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 10 Mar 2021 17:46:39 +0000 (UTC), Christophe Leroy wrote:
-> This series cleans up uaccess.h and adds asm goto for get_user()
+On Fri, 19 Mar 2021 11:06:49 +0000 (UTC), Christophe Leroy wrote:
+> Similarly to the work done earlier with writes, this series
+> converts signal32 to using user_read_access_begin/end and
+> unsafe_get_user() and friends.
 > 
-> v2:
-> - Further clean ups
-> - asm goto for get_user()
-> - Move a few patches unrelated to put_user/get_user into another misc series.
+> Applies on to of the signal64 series, ie on merge-test (ca6e327fefb2)
+> 
+> Christophe Leroy (10):
+>   signal: Add unsafe_get_compat_sigset()
+>   powerpc/uaccess: Also perform 64 bits copies in
+>     unsafe_copy_from_user() on ppc32
+>   powerpc/signal: Add unsafe_copy_ck{fpr/vsx}_from_user
+>   powerpc/signal32: Rename save_user_regs_unsafe() and
+>     save_general_regs_unsafe()
+>   powerpc/signal32: Remove ifdefery in middle of if/else in sigreturn()
+>   powerpc/signal32: Perform access_ok() inside restore_user_regs()
+>   powerpc/signal32: Reorder user reads in restore_tm_user_regs()
+>   powerpc/signal32: Convert restore_[tm]_user_regs() to user access
+>     block
+>   powerpc/signal32: Convert do_setcontext[_tm]() to user access block
+>   powerpc/signal32: Simplify logging in sigreturn()
 > 
 > [...]
 
 Applied to powerpc/next.
 
-[01/15] powerpc/uaccess: Remove __get_user_allowed() and unsafe_op_wrap()
-        https://git.kernel.org/powerpc/c/8cdf748d557f15ae6f9e0d4108cc3ea6e1ee4419
-[02/15] powerpc/uaccess: Define ___get_user_instr() for ppc32
-        https://git.kernel.org/powerpc/c/9bd68dc5d7463cb959bff9ac4b6c7e578171de35
-[03/15] powerpc/align: Convert emulate_spe() to user_access_begin
-        https://git.kernel.org/powerpc/c/3fa3db32956d74c0784171ae0334685502bb169a
-[04/15] powerpc/uaccess: Remove __get/put_user_inatomic()
-        https://git.kernel.org/powerpc/c/bad956b8fe1a8b3b634d596ed2023ec30726cdf1
-[05/15] powerpc/uaccess: Move get_user_instr helpers in asm/inst.h
-        https://git.kernel.org/powerpc/c/35506a3e2d7c4d93cb564e23471a448cbd98f085
-[06/15] powerpc/align: Don't use __get_user_instr() on kernel addresses
-        https://git.kernel.org/powerpc/c/111631b5e9dae764754657aad00bd6cd1a805d0d
-[07/15] powerpc/uaccess: Call might_fault() inconditionaly
-        https://git.kernel.org/powerpc/c/ed0d9c66f97c6865e87fa6e3631bbc3919a31ad6
-[08/15] powerpc/uaccess: Remove __unsafe_put_user_goto()
-        https://git.kernel.org/powerpc/c/be15a165796598cd3929ca9aac56ba5ec69e41c1
-[09/15] powerpc/uaccess: Remove __chk_user_ptr() in __get/put_user
-        https://git.kernel.org/powerpc/c/028e15616857add3ba4951f989027675370b0e82
-[10/15] powerpc/uaccess: Remove calls to __get_user_bad() and __put_user_bad()
-        https://git.kernel.org/powerpc/c/9975f852ce1bf041a1a81bf882e29ee7a3b78ca6
-[11/15] powerpc/uaccess: Split out __get_user_nocheck()
-        https://git.kernel.org/powerpc/c/f904c22f2a9fb09fe705efdedbe4af9a30bdf633
-[12/15] powerpc/uaccess: Rename __get/put_user_check/nocheck
-        https://git.kernel.org/powerpc/c/17f8c0bc21bbb7d1fe729c7f656924a6ea72079b
-[13/15] powerpc/uaccess: Refactor get/put_user() and __get/put_user()
-        https://git.kernel.org/powerpc/c/e72fcdb26cde72985c418b39f72ecaa222e1f4d5
-[14/15] powerpc/uaccess: Introduce __get_user_size_goto()
-        https://git.kernel.org/powerpc/c/035785ab2826beb43cfa65a2df37d60074915a4d
-[15/15] powerpc/uaccess: Use asm goto for get_user when compiler supports it
-        https://git.kernel.org/powerpc/c/5cd29b1fd3e8f2b45fe6d011588d832417defe31
+[01/10] signal: Add unsafe_get_compat_sigset()
+        https://git.kernel.org/powerpc/c/fb05121fd6a20f0830ff2a4420c51af6ca4ac6e7
+[02/10] powerpc/uaccess: Also perform 64 bits copies in unsafe_copy_from_user() on ppc32
+        https://git.kernel.org/powerpc/c/c1cc1570bc8d94f288060f262f11be8f7672578c
+[03/10] powerpc/signal: Add unsafe_copy_ck{fpr/vsx}_from_user
+        https://git.kernel.org/powerpc/c/7c11f8893a76ac4e86c07f4b57371d5fa593627f
+[04/10] powerpc/signal32: Rename save_user_regs_unsafe() and save_general_regs_unsafe()
+        https://git.kernel.org/powerpc/c/f918a81e209f24acb45cd935bcfb78d2c024f6a1
+[05/10] powerpc/signal32: Remove ifdefery in middle of if/else in sigreturn()
+        https://git.kernel.org/powerpc/c/ca9e1605cdd9473a0eb4d6da238d2524be12591a
+[06/10] powerpc/signal32: Perform access_ok() inside restore_user_regs()
+        https://git.kernel.org/powerpc/c/362471b3192e4184fff5fedee1ea20bdf637a0c8
+[07/10] powerpc/signal32: Reorder user reads in restore_tm_user_regs()
+        https://git.kernel.org/powerpc/c/036fc2cb1dc2245c2ea7d2f03c7af80417b6310c
+[08/10] powerpc/signal32: Convert restore_[tm]_user_regs() to user access block
+        https://git.kernel.org/powerpc/c/627b72bee84d6652e0af26617e71ce2b3c18fcd5
+[09/10] powerpc/signal32: Convert do_setcontext[_tm]() to user access block
+        https://git.kernel.org/powerpc/c/887f3ceb51cd34109ac17bfc98695162e299e657
+[10/10] powerpc/signal32: Simplify logging in sigreturn()
+        https://git.kernel.org/powerpc/c/c7393a71eb1abdda7e3a3ef798bae60de11540ec
 
 cheers
