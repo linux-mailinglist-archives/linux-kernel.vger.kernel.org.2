@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D40FA35ADB5
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFD435ADB6
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbhDJNgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:36:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40654 "EHLO mail.kernel.org"
+        id S234741AbhDJNhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 09:37:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234392AbhDJNgo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:36:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CDB561028;
-        Sat, 10 Apr 2021 13:36:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618061789;
-        bh=zE7oyEro2yopPuqtrMWUastuB5GsnGSa2kFwaliFI+g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XZd+dbEc2KjV7az/jFra6hv3ug19y69DHBRGAPNR9UyQl/dyjwxpj/iI5pjptgALN
-         XFdnJsIigrHm3zBy/aG9kzTH03yWB6M76S5pfMT0RZiCIzLBIeNkV8GyeU+fEExl90
-         17ohOMVlJDImnxysLOo9OKU5hOoSWJYqzdPzsmto=
-Date:   Sat, 10 Apr 2021 15:36:27 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: remove unnecessary goto jumps
-Message-ID: <YHGp2yd1b9E1JTFI@kroah.com>
-References: <20210410133212.422929-1-hello@bryanbrattlof.com>
+        id S234392AbhDJNhO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 09:37:14 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 536846108B;
+        Sat, 10 Apr 2021 13:36:56 +0000 (UTC)
+Date:   Sat, 10 Apr 2021 09:36:53 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        "linux-trace-devel@vger.kernel.org" 
+        <linux-trace-devel@vger.kernel.org>,
+        Linux-trace Users <linux-trace-users@vger.kernel.org>
+Cc:     Zamir SUN <sztsian@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>, zsun@redhat.com,
+        Vitaly Chikunov <vt@altlinux.org>,
+        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
+        Yordan Karadzhov <ykaradzhov@vmware.com>,
+        Ben Hutchings <ben@decadent.org.uk>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Tony Jones <tonyj@suse.de>, John Kacur <jkacur@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Al Stone <ahs3@debian.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Jes Sorensen <jes.sorensen@gmail.com>
+Subject: [ANNOUNCE] libtraceevent 1.2.0
+Message-ID: <20210410093653.0d9ffc95@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210410133212.422929-1-hello@bryanbrattlof.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 01:33:09PM +0000, Bryan Brattlof wrote:
-> The next instruction for both 'goto exit' jump statements is to
-> execute the exit jump instructions regardless. We can safely
-> remove all jump statements from __init rtw_drv_entry()
-> 
-> Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
-> ---
->  drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> index 9fd926e1698f..84ac81d19746 100644
-> --- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> @@ -517,13 +517,9 @@ static int __init rtw_drv_entry(void)
->  	if (ret != 0) {
->  		sdio_drvpriv.drv_registered = false;
->  		rtw_ndev_notifier_unregister();
-> -		goto exit;
->  	}
->  
-> -	goto exit;
-> -
-> -exit:
-> -	DBG_871X_LEVEL(_drv_always_, "module init ret =%d\n", ret);
-> +	DBG_870X_LEVEL(_drv_always_, "module init ret =%d\n", ret);
+I'm pleased to announce the new version of libtraceevent library has been
+released:
 
-Why did you change this line?
+  libtraceevent: 1.2.0
 
-thanks,
 
-greg k-h
+ https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/snapshot/libtraceevent-1.2.0.tar.gz
+ https://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git/
+
+
+Changes since 1.1.3:
+
+ - Generic override warning() function is now called tep_warning()
+
+ - Generic override __vwarning() is now called tep_vwarning() and takes another
+   parameter that can pass in the application name that calls it.
+
+ - New API tep_parse_kallsyms() to load kallsyms file.
+
+ - New API tep_parse_saved_cmdlines() to load saved_cmdilnes file.
+
+ - New API tep_parse_printk_formats() to load printk_formats file.
+
+ - And small clean ups and fixes.
+
+-- Steve
