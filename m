@@ -2,90 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF0335ADE1
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 689FC35ADE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234762AbhDJN73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50002 "EHLO
+        id S234814AbhDJOCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234376AbhDJN72 (ORCPT
+        with ESMTP id S234759AbhDJOCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:59:28 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E411C06138A
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:59:13 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id f2-20020a17090a4a82b02900c67bf8dc69so6390740pjh.1
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:59:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=rfTe7qVwJ3j0wr2RCsj+TUrasTd+AoVaaUkJcF+TL78=;
-        b=h5Ou9+OiaESvdUnOFknMWzm5BZvQjhhLDihQC+Fczy8srhBlFsRJZsXov9/5n+vfUK
-         SZN1d3T7LbiSBKZbnhqF3vhZyafvp3qJy0jlpz9/JcqkkPoE3dInG5uX+ippegOzaWyl
-         Cn3fqkxA/V9lcmPBqWAr4hsCP3Z/iXWDlWpZ1dEhnKagnLFLW5fQlVZBZL8jqlP1CK+A
-         vkiMUxCAXM5UeFq7MMtptKcccmJrXyzD/N9xOqc+S02GF8s0j0zviIaCmXpo01l0S/GG
-         uLhbMqJm1jKz9YFx3bvKbQZYAj94FXISxhEXZ5FTSn0rbBbCRVzAXSqCxXPe4kTFMGOv
-         aIGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=rfTe7qVwJ3j0wr2RCsj+TUrasTd+AoVaaUkJcF+TL78=;
-        b=B2Rc91xdVIB6s1WfwsAc7/1RDsF5+5zpZgOsQpHiyvv+2T75nqsgyNU7YHtNJ1ATLv
-         kcUFxNTyUF+T5I+i5sKL/QzJ7F/Bn7EDvwB9BNVznfeRQEzbKuWb/xuazKCzzLS/dC7J
-         Xgl/IVNQs6Y4dy6grfvej793fiyUh4sTD8eEiFEZdzxDyLKdeFQPgrGCpi6Es8RvFcFu
-         F+KwvxV2LUu+tZPruCSbhhGQZfmOPcHRekZ4c8ZmwiFWXZlZ25QYyTWi5ontzhLWGAlQ
-         F3ApdAydfybCtwUHq4OFX2l94WIiZmpo7Do6oxgnVUEG0RNXY64inocFjgYwQBSg7eT4
-         yHiw==
-X-Gm-Message-State: AOAM5318enmATUIV6+ccD4wB1imCmcTXIHrdwosqIdgcVK6DQJQqSMQT
-        xsgz96tupEg3RCTie9aK4i0=
-X-Google-Smtp-Source: ABdhPJxeehylySE2bL479tNyW69Q0UAX9z+Ki1FawSLvDa4Wh/+z6Nskm8LDqPK2pytH+5VNfgzzAA==
-X-Received: by 2002:a17:90a:7348:: with SMTP id j8mr8072477pjs.155.1618063152360;
-        Sat, 10 Apr 2021 06:59:12 -0700 (PDT)
-Received: from kali ([106.195.15.71])
-        by smtp.gmail.com with ESMTPSA id q66sm5519824pja.27.2021.04.10.06.59.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 06:59:11 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 19:29:03 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: [PATCH v3] staging: rtl8192e: fixed pointer error by adding '*'
-Message-ID: <YHGvJxMhQ8nzHf6I@kali>
+        Sat, 10 Apr 2021 10:02:08 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D4EC06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:01:53 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lVEBH-0000GW-Ez; Sat, 10 Apr 2021 16:01:47 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lVEBH-0008Cl-00; Sat, 10 Apr 2021 16:01:47 +0200
+Date:   Sat, 10 Apr 2021 16:01:46 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
+        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v7 4/8] dt-bindings: pwm: Support new
+ PWM_STAGGERING_ALLOWED flag
+Message-ID: <20210410140146.5nlp5eczltezbyq2@pengutronix.de>
+References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
+ <20210406164140.81423-4-clemens.gruber@pqgruber.com>
+ <20210407053357.ok62rqpgyqou53m3@pengutronix.de>
+ <YHBINhLa3pCZjoxO@orome.fritz.box>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dndaw2zk5osfq3kr"
 Content-Disposition: inline
+In-Reply-To: <YHBINhLa3pCZjoxO@orome.fritz.box>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed pointer error by adding '*' to the function.
-Reported by Julia.
 
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
----
-Changes from v2:- modified patch body but writing commit message
-clearly.
-Changes from v1:- added pointer to the function.
+--dndaw2zk5osfq3kr
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
- drivers/staging/rtl8192e/rtl819x_TSProc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hello Thierry,
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-index 4457c1acfbf6..78b5b4eaec5f 100644
---- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-@@ -327,7 +327,7 @@ bool GetTs(struct rtllib_device *ieee, struct ts_common_info **ppTS,
- 	}
- 
- 	*ppTS = SearchAdmitTRStream(ieee, Addr, UP, TxRxSelect);
--	if (ppTS)
-+	if (*ppTS)
- 		return true;
- 
- 	if (!bAddNewTs) {
--- 
-2.30.2
+On Fri, Apr 09, 2021 at 02:27:34PM +0200, Thierry Reding wrote:
+> On Wed, Apr 07, 2021 at 07:33:57AM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Tue, Apr 06, 2021 at 06:41:36PM +0200, Clemens Gruber wrote:
+> > > Add the flag and corresponding documentation for the new PWM staggeri=
+ng
+> > > mode feature.
+> > >=20
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> >=20
+> > For the record, I don't like this and still prefer to make this
+> > staggering explicit for the consumer by expanding struct pwm_state with
+> > an .offset member to shift the active phase in the period.
+>=20
+> How are consumers supposed to know which offset to choose? And worse:
+> how should consumers even know that the driver supports phase shifts?
 
+I'm aware that we're a long way from being able to use this. The clean
+approach would be to get the offset from the device tree in the same way
+as the period. And in the meantime I agree that introducing a flag that
+allows to shift the active part in the period is a sane idea. So I
+suggest we concentrate on getting the details in the corresponding
+discussion straight.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--dndaw2zk5osfq3kr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBxr8cACgkQwfwUeK3K
+7AkjVQgAjo/Bp/amP5OhhbHAxsZaKUXnsIuqDl25vhizVzvUI1359jMQ4GUWhrjS
+vW2pyfjftqYGuFf7y6ePoJSGxFMuRKm6Xw82MNmATDKseTDsILkFuZX/5AKaHg7D
+RlRQtxvLwYE+FVyCy/LHTuqR9w8cRzmuVFXIpFXYE4SeAFEgMUfA4YcuBiIqbqEs
+pOqC38xat2HpMmpqTrUNZfoJYZy48aB1D/u/o1HmYPJ+VUEo03XZazuFzxuV/iyx
+BSLTZuIxhMpO0jJjPgv7tnR7GDqZnWlzDVzI6dWgiT5iAh9S4gLYDlyzzdu2wmsA
+rmZCk7YDVwaVRJygGA5dmqLQVMkZwg==
+=nMwu
+-----END PGP SIGNATURE-----
+
+--dndaw2zk5osfq3kr--
