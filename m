@@ -2,56 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9354E35AF31
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 19:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B6E35AF2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 19:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234892AbhDJRGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 13:06:31 -0400
-Received: from gate.crashing.org ([63.228.1.57]:58088 "EHLO gate.crashing.org"
+        id S234909AbhDJRDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 13:03:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234680AbhDJRGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 13:06:30 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 13AH2bxh009969;
-        Sat, 10 Apr 2021 12:02:37 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 13AH2ara009963;
-        Sat, 10 Apr 2021 12:02:36 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Sat, 10 Apr 2021 12:02:36 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jason Baron <jbaron@akamai.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        dmalcolm@redhat.com
-Subject: Re: static_branch/jump_label vs branch merging
-Message-ID: <20210410170236.GJ26583@gate.crashing.org>
-References: <YG80wg/2iZjXfCDJ@hirez.programming.kicks-ass.net> <CAMj1kXGngxH0VCHyREKeLau=159sRkWYKVZwOV84r6dvCqXcig@mail.gmail.com> <877dlbzq09.fsf@oldenburg.str.redhat.com> <YHA3iGyT5dMq7/06@hirez.programming.kicks-ass.net> <CAKwvOdnBXyR6gPgQjaXbHF8Ozx9Kk=OKgPv8_P7=jvvsWRVHEg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnBXyR6gPgQjaXbHF8Ozx9Kk=OKgPv8_P7=jvvsWRVHEg@mail.gmail.com>
-User-Agent: Mutt/1.4.2.3i
+        id S234392AbhDJRDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 13:03:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 7D242611AE;
+        Sat, 10 Apr 2021 17:03:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618074210;
+        bh=Qlpuzzsjm1zFdj5YliE4YG7nruI3C7EE1C3ufI4t2FI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=NUKwUsOuD8CAMZp+Jb3HWg8sDfPhkv4uv8nZ21ncwWC9nVGAnNyXH05v9LTNvedkP
+         N6D0C6STSOTolUykaNIqVW6dIJNbQoGa7v1YNaGHnvop6cQqI6VYzuCFYV8jBTyah/
+         pMnTsuaLRi2t2hrpjvZeySt2AZYLNdhHobE1KS2mUOEZ5QfNSqKCcu0mdEHuQ0jxAg
+         4ROJP856oq2NW6TzPd4PW23OJn281CtH44E8jmaQ90w2otFiXEc2X+ZRT26U458BV+
+         fs77nb8KwvrbezFlF8GyW/ZXaTYsAjOoyfZoeMbwrQC95PqjOUYEst0olDn6XSiJrZ
+         c8zf7a2AYAKZg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6785160727;
+        Sat, 10 Apr 2021 17:03:30 +0000 (UTC)
+Subject: Re: [GIT PULL] USB/Thunderbolt driver fixes for 5.12-rc7
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <YHGivAMSbiL2Y7je@kroah.com>
+References: <YHGivAMSbiL2Y7je@kroah.com>
+X-PR-Tracked-List-Id: <linux-usb.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YHGivAMSbiL2Y7je@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.12-rc7
+X-PR-Tracked-Commit-Id: bc2f3e4c662841dc19f7e7efae87782b9f3c0831
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 445e09e79743c8ba01f1e9eb6b10faab5a92a5c7
+Message-Id: <161807421036.30985.2882771287219457048.pr-tracker-bot@kernel.org>
+Date:   Sat, 10 Apr 2021 17:03:30 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 12:33:29PM -0700, Nick Desaulniers wrote:
-> Since asm goto is implicitly volatile qualified, it sounds like
-> removing the implicit volatile qualifier from asm goto might help?
-> Then if there were side effects but you forgot to inform the compiler
-> that there were via an explicit volatile qualifier, and it performed
-> the suggested merge, oh well.
+The pull request you sent on Sat, 10 Apr 2021 15:06:04 +0200:
 
-"asm goto" without outputs is always volatile, just like any other asm
-without outputs (if it wasn't, the compiler would always delete every
-asm without outputs!)
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.12-rc7
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/445e09e79743c8ba01f1e9eb6b10faab5a92a5c7
 
-Segher
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
