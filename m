@@ -2,96 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA33435ABFF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9203035AC03
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233332AbhDJIw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 04:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40726 "EHLO
+        id S229494AbhDJIxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 04:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229494AbhDJIw0 (ORCPT
+        with ESMTP id S232254AbhDJIxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 04:52:26 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60827C061762;
-        Sat, 10 Apr 2021 01:52:12 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id b4so13402938lfi.6;
-        Sat, 10 Apr 2021 01:52:12 -0700 (PDT)
+        Sat, 10 Apr 2021 04:53:18 -0400
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B90C061764
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 01:53:03 -0700 (PDT)
+Received: by mail-yb1-xb34.google.com with SMTP id z1so9234089ybf.6
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 01:53:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4svQIHaWyonus6NC9Wt6UCIb/Wkk+iEs+l9TOzqnCus=;
-        b=oo8UIIim2xX9Ykzn12egb1Q5OuDF5+RMeJ/pNLTiGQ3lmNhLpVcr4qIDxU2IrRVBzh
-         zfwXRKUUhD9PQcZ+rvtkmoKaC+J+pC1SuYWmSlOF2Z7k9kcXlH9uE3Q+Zhk4gCv1++V/
-         EzRpb5tLY5tIW91EDLkQXQvkksFGmdsoKSY4UC6bllpuIutvFKDJxRoo0dsd7Lobj3oT
-         My6bbwzh0bDXhBE8LF7t8E6FJnokffka3OiL/mZ2pRHY/kbXqP+21xnKtW0li2qli5iJ
-         wuSj2FdHnXq0xFh06nLR2JXXFjp+TOqZZBnIchDr8hjrYXFHhGd/Hct3o7N6CV9LTv5V
-         xf0w==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7yHuiMf2mbQHC9INRUFE4f0Q8iL2DCKJY335xtgKT+M=;
+        b=s0sXCo3dvECgpdJR7whscVJ1iWTqthnxVLYQ+cWKngNry1eueNvN2t1KtSQvyAKpin
+         13En8yn6d+Yw7fzHTql9MiHET60pC0eR48G0sg4Y0BJt25ufPVNEf0X34Jx1xzMIG4Hy
+         Y7EKWXgnYUH4e5mY/YU8c2uHjr8njpZ3dTzJt0iYL4TJPYPHOv7FAshptX+jC9Tzkz3z
+         hfvu7Qt1gZ4d5Qsr3NTxYjx2QW7Fdl/cbwNiQ02u18593AOU/WV8l+R+9uqhoWnAmXr9
+         /+iF2mseThA+yNVXeIr6fq/WlwKArwfqxhv/83FA2rfwSlB5wOfyw2hsXxWSVYF6fqRM
+         JrGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=4svQIHaWyonus6NC9Wt6UCIb/Wkk+iEs+l9TOzqnCus=;
-        b=Ox29weTYOVxOM+wUq0Hl5PmVRu830dB89t07ziqKZ4O9q4gqHCaEVEjgWsLeYhj0nd
-         YVlMntfIYXTdbkra+vYs2CbaZyEwVXyVMmkeD3sQdD/mmp+i4pMzLFxnEotV0JY69ldP
-         wAovrYf6oj4L4wJHYVyIlBKoBeNa8ss9JZxitI3U8wJYL4fTewvi71srlQz4VPTNmwSi
-         9/L2L05Q9uaCQBoy9CKHsmYwNAkJfLXBTAiCQZWwfgzaxqdWyYG31NObWUQv6yADvctB
-         Ouqixc97AStovSdbzD8pnTGa87vlp6tLSfbA2Iz+W+NmaHn+tNagLfrKrVvN4tz0WhBR
-         i+Zw==
-X-Gm-Message-State: AOAM53012JPJNsPhMYBr5ddp7TVvXWT2Pnds1NJsJD3rbGg/27/W1eHY
-        4Q2FPUBjo2gIe5ndk0qGk6ah2llJnqY=
-X-Google-Smtp-Source: ABdhPJypzKENQeeFQdZM6ErG8H+Ffw1RWKwpyuFBAMvHLN3IebCdmTFdVM3+lJ+5DKbAXPa/Ld6oUw==
-X-Received: by 2002:a19:e206:: with SMTP id z6mr1375798lfg.100.1618044730773;
-        Sat, 10 Apr 2021 01:52:10 -0700 (PDT)
-Received: from [192.168.1.100] ([178.176.75.45])
-        by smtp.gmail.com with ESMTPSA id m3sm897123lfo.190.2021.04.10.01.52.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Apr 2021 01:52:10 -0700 (PDT)
-Subject: Re: [PATCH v1] pata_ipx4xx_cf: Fix unsigned comparison with less than
- zero
-To:     angkery <angkery@163.com>, axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-References: <20210409234242.1979-1-angkery@163.com>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <a9af3dac-7ce5-71fb-5d89-a9afab4e48d4@gmail.com>
-Date:   Sat, 10 Apr 2021 11:52:08 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7yHuiMf2mbQHC9INRUFE4f0Q8iL2DCKJY335xtgKT+M=;
+        b=Z/ZK6qwbVk6kxpsc5BzedCubo2fEdaRT7lYo/FUBhTB4ywSWPrwLUOlJBnXL8WZpw3
+         UX8GblnfXDE7oOD6TWOsxwcaGcV+ANVRJiqsR/Dh+JGNuGDOJi7EChydDnKfZb6WV1wP
+         qxNd3/JTpAMvfBvXTcrXEIiI+BfIYdmn7OiwXRB9VCCsh5mDLN2kNYcD3jqDcnU0QjFE
+         G6XodzBx8tXOqXVcksiYCLliddzsP5sXMl9B5TLOoQS6mPfgFQfwxCKuWznErLbRfbWP
+         M/ruL2krvWxhGS14LB33yg9wxVSjumo4VjtS5N8OyqsUpDYXX1v7xlmxkLzfnzfUHFXW
+         /w5w==
+X-Gm-Message-State: AOAM532LUW/QMJ1b5FjoUYcl9inPJMEy19LkFxnJsUpcfqfYx5fX3Af2
+        SiuWYe+h2E/1PyTuoJE1nwa9PK8DFw0hZ8T6CohwRQ==
+X-Google-Smtp-Source: ABdhPJy5dr9lQOxU6kvADPui00Fq+MldBcPrkITVyRf0//k/8cK2iDR0U0j3GM3hEL13gRzjdmouFNrBWiWVxuk2Mok=
+X-Received: by 2002:a25:2bc1:: with SMTP id r184mr25473310ybr.51.1618044782263;
+ Sat, 10 Apr 2021 01:53:02 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210409234242.1979-1-angkery@163.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210409185105.188284-3-willy@infradead.org> <202104100656.N7EVvkNZ-lkp@intel.com>
+ <20210410024313.GX2531743@casper.infradead.org> <20210410082158.79ad09a6@carbon>
+In-Reply-To: <20210410082158.79ad09a6@carbon>
+From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Date:   Sat, 10 Apr 2021 11:52:26 +0300
+Message-ID: <CAC_iWjLXZ6-hhvmvee6r4R_N64u-hrnLqE_CSS1nQk+YaMQQnA@mail.gmail.com>
+Subject: Re: Bogus struct page layout on 32-bit
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Linux-MM <linux-mm@kvack.org>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10.04.2021 2:42, angkery wrote:
++CC Grygorii for the cpsw part as Ivan's email is not valid anymore
 
-> From: Junlin Yang <yangjunlin@yulong.com>
-> 
-> The return from the call to platform_get_irq() is int, it can be
-> a negative error code, however this is being assigned to an unsigned
-> int variable 'irq', so making 'irq' an int, and change the position to
-> keep the code format.
-> 
-> Fixes coccicheck warnings:
-> ./drivers/ata/pata_ixp4xx_cf.c:168:5-8:
-> WARNING: Unsigned expression compared with zero: irq > 0
-> 
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
-> ---
-> changes in v1:
-> update the commit information.
+Thanks for catching this. Interesting indeed...
 
-    Not seeing what's updated, and anwyways it should read irq < 0, else it 
-doesn't make sense...
-
-[...]
-
-MBR, Sergei
+On Sat, 10 Apr 2021 at 09:22, Jesper Dangaard Brouer <brouer@redhat.com> wrote:
+>
+> On Sat, 10 Apr 2021 03:43:13 +0100
+> Matthew Wilcox <willy@infradead.org> wrote:
+>
+> > On Sat, Apr 10, 2021 at 06:45:35AM +0800, kernel test robot wrote:
+> > > >> include/linux/mm_types.h:274:1: error: static_assert failed due to requirement '__builtin_offsetof(struct page, lru) == __builtin_offsetof(struct folio, lru)' "offsetof(struct page, lru) == offsetof(struct folio, lru)"
+> > >    FOLIO_MATCH(lru, lru);
+> > >    include/linux/mm_types.h:272:2: note: expanded from macro 'FOLIO_MATCH'
+> > >            static_assert(offsetof(struct page, pg) == offsetof(struct folio, fl))
+> >
+> > Well, this is interesting.  pahole reports:
+> >
+> > struct page {
+> >         long unsigned int          flags;                /*     0     4 */
+> >         /* XXX 4 bytes hole, try to pack */
+> >         union {
+> >                 struct {
+> >                         struct list_head lru;            /*     8     8 */
+> > ...
+> > struct folio {
+> >         union {
+> >                 struct {
+> >                         long unsigned int flags;         /*     0     4 */
+> >                         struct list_head lru;            /*     4     8 */
+> >
+> > so this assert has absolutely done its job.
+> >
+> > But why has this assert triggered?  Why is struct page layout not what
+> > we thought it was?  Turns out it's the dma_addr added in 2019 by commit
+> > c25fff7171be ("mm: add dma_addr_t to struct page").  On this particular
+> > config, it's 64-bit, and ppc32 requires alignment to 64-bit.  So
+> > the whole union gets moved out by 4 bytes.
+>
+> Argh, good that you are catching this!
+>
+> > Unfortunately, we can't just fix this by putting an 'unsigned long pad'
+> > in front of it.  It still aligns the entire union to 8 bytes, and then
+> > it skips another 4 bytes after the pad.
+> >
+> > We can fix it like this ...
+> >
+> > +++ b/include/linux/mm_types.h
+> > @@ -96,11 +96,12 @@ struct page {
+> >                         unsigned long private;
+> >                 };
+> >                 struct {        /* page_pool used by netstack */
+> > +                       unsigned long _page_pool_pad;
+>
+> I'm fine with this pad.  Matteo is currently proposing[1] to add a 32-bit
+> value after @dma_addr, and he could use this area instead.
+>
+> [1] https://lore.kernel.org/netdev/20210409223801.104657-3-mcroce@linux.microsoft.com/
+>
+> When adding/changing this, we need to make sure that it doesn't overlap
+> member @index, because network stack use/check page_is_pfmemalloc().
+> As far as my calculations this is safe to add.  I always try to keep an
+> eye out for this, but I wonder if we could have a build check like yours.
+>
+>
+> >                         /**
+> >                          * @dma_addr: might require a 64-bit value even on
+> >                          * 32-bit architectures.
+> >                          */
+> > -                       dma_addr_t dma_addr;
+> > +                       dma_addr_t dma_addr __packed;
+> >                 };
+> >                 struct {        /* slab, slob and slub */
+> >                         union {
+> >
+> > but I don't know if GCC is smart enough to realise that dma_addr is now
+> > on an 8 byte boundary and it can use a normal instruction to access it,
+> > or whether it'll do something daft like use byte loads to access it.
+> >
+> > We could also do:
+> >
+> > +                       dma_addr_t dma_addr __packed __aligned(sizeof(void *));
+> >
+> > and I see pahole, at least sees this correctly:
+> >
+> >                 struct {
+> >                         long unsigned int _page_pool_pad; /*     4     4 */
+> >                         dma_addr_t dma_addr __attribute__((__aligned__(4))); /*     8     8 */
+> >                 } __attribute__((__packed__)) __attribute__((__aligned__(4)));
+> >
+> > This presumably affects any 32-bit architecture with a 64-bit phys_addr_t
+> > / dma_addr_t.  Advice, please?
+>
+> I'm not sure that the 32-bit behavior is with 64-bit (dma) addrs.
+>
+> I don't have any 32-bit boards with 64-bit DMA.  Cc. Ivan, wasn't your
+> board (572x ?) 32-bit with driver 'cpsw' this case (where Ivan added
+> XDP+page_pool) ?
+>
+> --
+> Best regards,
+>   Jesper Dangaard Brouer
+>   MSc.CS, Principal Kernel Engineer at Red Hat
+>   LinkedIn: http://www.linkedin.com/in/brouer
+>
