@@ -2,80 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C5CF35AF5E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 19:45:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6D235AF61
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 19:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234923AbhDJRpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 13:45:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234392AbhDJRo7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 13:44:59 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D05C06138A
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 10:44:44 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id v140so14741232lfa.4
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 10:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=esMk4wtxK5QjSki1w8GqTaqU70e3m70uQ3+iN1O/jRI=;
-        b=lhHzahZDj1gMLdiDi/XX+TdfvNNizYENvZUbJwrIUVRU2/diE7cFZPVpW/k1XaJiBf
-         b+/7c5kXVs/jFVIqGKAxF3563w6mBH8JshvbRE82Ghv4LAA8So5dRJ7W5BQZMxcKQSN8
-         sLkwNYwC2/ZSoxkID3sMpuXqG/zHr2NtSvRID1sL6S2nJlRT+94R/Jhnn32dkzO6Lf2h
-         mZnqG0pYukR+aVuDWGkgGZnCrYG8d5vG+Db13eVBcCl1LufrnKDqCwNVCsNKsRsxrOsb
-         Ib/W98X/9r1yhITrnUfy/1YY609MeDAXRqPacRJTeVQPOlmd6XYPcAaZD+rBxdKJQDAn
-         ptxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=esMk4wtxK5QjSki1w8GqTaqU70e3m70uQ3+iN1O/jRI=;
-        b=ZpSBVi7ZSR2PnGmA1HbdC61h0vfG/xlGIJd4yP7LCggwp9+0zX3K5I5GNIfuzuccBw
-         jKt8ekRuf16OYplQECTf5qlkheo8/Hk4faI8tFlJlVPWVBs8GZWidm1zrFQi8b5FGV4F
-         ZQbWJBGcydXPttMgPRCmPlmfKu9WWGf6+WJBHnkQaJUrbADpJwLMTFuezA6ytbrHp74f
-         HiQN8IUO3jITinmp6d1k0BrYTQ/vHJ0vbB2ni49iXul4hzGUZe7u4F9tNTlTvbD4l+sq
-         MyQ99qrNaAXIvevlXpsyfb3Bxch9HsCP8WHGQU8vMdkWb4A3lKeYrzndp5zQ2/SF9lpX
-         pk6Q==
-X-Gm-Message-State: AOAM532bY5XuUA/LhYVzxM22ZJ/oqoUFSRHZe0/1fG7wIoDWSk5lGJU6
-        MLuyojrrdGMt91NEpr9z0b2G+TLVTqqq2TydOn9GYg==
-X-Google-Smtp-Source: ABdhPJwCIxB9VaioeQzZKXJb1BZEo4stMYbxAma3VmJJVffcYjLv02rlt0z2a3FumM27zs/qNy4cun6iw9RiSkQaz9U=
-X-Received: by 2002:a05:6512:c04:: with SMTP id z4mr13907650lfu.299.1618076682646;
- Sat, 10 Apr 2021 10:44:42 -0700 (PDT)
+        id S234900AbhDJRrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 13:47:12 -0400
+Received: from smtp.uniroma2.it ([160.80.6.16]:58895 "EHLO smtp.uniroma2.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234392AbhDJRrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 13:47:10 -0400
+Received: from localhost.localdomain ([160.80.103.126])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 13AHkYij031595
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 10 Apr 2021 19:46:34 +0200
+From:   Andrea Mayer <andrea.mayer@uniroma2.it>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@uniroma2.it>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Subject: [PATCH net] net: seg6: trivial fix of a spelling mistake in comment
+Date:   Sat, 10 Apr 2021 19:46:14 +0200
+Message-Id: <20210410174614.13359-1-andrea.mayer@uniroma2.it>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210409122959.82264-1-songmuchun@bytedance.com> <20210409122959.82264-2-songmuchun@bytedance.com>
-In-Reply-To: <20210409122959.82264-2-songmuchun@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Sat, 10 Apr 2021 10:44:30 -0700
-Message-ID: <CALvZod7kYwt7XfuC6LnZreswKrXRLnUEZ7LbSSuNtgb-rdo=RA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 01/18] mm: memcontrol: fix page charging in page replacement
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, Balbir Singh <bsingharora@gmail.com>,
-        Yang Shi <shy828301@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 5:32 AM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> The pages aren't accounted at the root level, so do not charge the page
-> to the root memcg in page replacement. Although we do not display the
-> value (mem_cgroup_usage) so there shouldn't be any actual problem, but
-> there is a WARN_ON_ONCE in the page_counter_cancel(). Who knows if it
-> will trigger? So it is better to fix it.
->
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+There is a comment spelling mistake "interfarence" -> "interference" in
+function parse_nla_action(). Fix it.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Andrea Mayer <andrea.mayer@uniroma2.it>
+---
+ net/ipv6/seg6_local.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ipv6/seg6_local.c b/net/ipv6/seg6_local.c
+index 8936f48570fc..bd7140885e60 100644
+--- a/net/ipv6/seg6_local.c
++++ b/net/ipv6/seg6_local.c
+@@ -1475,7 +1475,7 @@ static int parse_nla_action(struct nlattr **attrs, struct seg6_local_lwt *slwt)
+ 	/* Forcing the desc->optattrs *set* and the desc->attrs *set* to be
+ 	 * disjoined, this allow us to release acquired resources by optional
+ 	 * attributes and by required attributes independently from each other
+-	 * without any interfarence.
++	 * without any interference.
+ 	 * In other terms, we are sure that we do not release some the acquired
+ 	 * resources twice.
+ 	 *
+-- 
+2.20.1
+
