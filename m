@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B6E35AF2B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 19:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F45935AF2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 19:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234909AbhDJRDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 13:03:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53434 "EHLO mail.kernel.org"
+        id S234942AbhDJRDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 13:03:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234392AbhDJRDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 13:03:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 7D242611AE;
-        Sat, 10 Apr 2021 17:03:30 +0000 (UTC)
+        id S234898AbhDJRDr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 13:03:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DF670611AE;
+        Sat, 10 Apr 2021 17:03:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618074210;
-        bh=Qlpuzzsjm1zFdj5YliE4YG7nruI3C7EE1C3ufI4t2FI=;
+        s=k20201202; t=1618074211;
+        bh=C+tuvCV313xfdpUMvLxGC87XuFpxy9cRtqvUZJvrBr8=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=NUKwUsOuD8CAMZp+Jb3HWg8sDfPhkv4uv8nZ21ncwWC9nVGAnNyXH05v9LTNvedkP
-         N6D0C6STSOTolUykaNIqVW6dIJNbQoGa7v1YNaGHnvop6cQqI6VYzuCFYV8jBTyah/
-         pMnTsuaLRi2t2hrpjvZeySt2AZYLNdhHobE1KS2mUOEZ5QfNSqKCcu0mdEHuQ0jxAg
-         4ROJP856oq2NW6TzPd4PW23OJn281CtH44E8jmaQ90w2otFiXEc2X+ZRT26U458BV+
-         fs77nb8KwvrbezFlF8GyW/ZXaTYsAjOoyfZoeMbwrQC95PqjOUYEst0olDn6XSiJrZ
-         c8zf7a2AYAKZg==
+        b=YvIsupbeQZSAz+YyvWcnQ9n0uEMdKp7tdT82fLjdqQzgQ1Mq5kh0a5nuyOz1QaFRq
+         fzU1ypAW7amaGxMNgzuKlqyl8ogOB/oNhKwRHLYvwmsUHtM+Kqb3K59xADGhBvcla/
+         bJ0mwztWeoIVwUC/V3yplM8lqk4WrY93L6vO4W/TVhtODuRxgkqnbudN1hrM6WIZcc
+         aESdLaOmuIiqJgwK2D+hCDC86jeioS6qiYnJuAkgmI0kuvp0BlhCRZIBCUymEsJa1O
+         9xLYIpfai6X6HUwWh74TKYsvkFnWLSRYCCFyN9SO820SH/MGIGjlc+wD06rKgcs/XW
+         /8BEzS4uXOzDQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6785160727;
-        Sat, 10 Apr 2021 17:03:30 +0000 (UTC)
-Subject: Re: [GIT PULL] USB/Thunderbolt driver fixes for 5.12-rc7
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id DA6E460727;
+        Sat, 10 Apr 2021 17:03:31 +0000 (UTC)
+Subject: Re: [PULL REQUEST] i2c for 5.12
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YHGivAMSbiL2Y7je@kroah.com>
-References: <YHGivAMSbiL2Y7je@kroah.com>
-X-PR-Tracked-List-Id: <linux-usb.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YHGivAMSbiL2Y7je@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.12-rc7
-X-PR-Tracked-Commit-Id: bc2f3e4c662841dc19f7e7efae87782b9f3c0831
+In-Reply-To: <20210410110024.GA1323@kunai>
+References: <20210410110024.GA1323@kunai>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210410110024.GA1323@kunai>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+X-PR-Tracked-Commit-Id: df8a39f2911a4c7769e0f760509f556a9e9d37af
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 445e09e79743c8ba01f1e9eb6b10faab5a92a5c7
-Message-Id: <161807421036.30985.2882771287219457048.pr-tracker-bot@kernel.org>
-Date:   Sat, 10 Apr 2021 17:03:30 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
+X-PR-Merge-Commit-Id: 12a0cf7241f9ee6b9b62e4c5aad53c43f46817a4
+Message-Id: <161807421188.30985.16643099820731503596.pr-tracker-bot@kernel.org>
+Date:   Sat, 10 Apr 2021 17:03:31 +0000
+To:     Wolfram Sang <wsa@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 10 Apr 2021 15:06:04 +0200:
+The pull request you sent on Sat, 10 Apr 2021 13:00:24 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.12-rc7
+> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/445e09e79743c8ba01f1e9eb6b10faab5a92a5c7
+https://git.kernel.org/torvalds/c/12a0cf7241f9ee6b9b62e4c5aad53c43f46817a4
 
 Thank you!
 
