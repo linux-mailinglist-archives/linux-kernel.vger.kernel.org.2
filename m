@@ -2,103 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F32B835AC42
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:15:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222FC35AC50
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234628AbhDJJOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 05:14:07 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:37837 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234386AbhDJJOA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 05:14:00 -0400
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 13A9DWjZ007591
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 18:13:33 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 13A9DWjZ007591
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1618046013;
-        bh=+hdfayiNVQX2n4soZ0P6JpA8C3ANS1WRtJuZiigUefQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=BS6PRJQQO1EO/wDXpKcXXkrJNg78sjWcw6g0f0iNl1ewbSz8mwCLW7K5XU/a22G4D
-         ph5YVFBn6WibUblDrLCeWbBSE05EUe9DKv2X5IvN6Owm7CQ0tyDLmPB81ct2fjVCLP
-         5DTkNRp8gTcAn+ToQ89QbmG0IzoMtYmnDBUsUVKPeJWwIRZL2xP2g/F8dcS+fDDp74
-         m8STriyiVahLnMSNBTBw+wkjCjLzuwJvgs3N+f5r5xwwYDVcOFpI0z6JpwPEgWMHh/
-         T/HEwDdDGGOLk9IiU1r5KaGuJNfs6WcKRSgnULbmKhh0S2H1d8WhSdDgl33K85+Mo3
-         fIkmFb+CbGWmQ==
-X-Nifty-SrcIP: [209.85.216.51]
-Received: by mail-pj1-f51.google.com with SMTP id t23so4080035pjy.3
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:13:32 -0700 (PDT)
-X-Gm-Message-State: AOAM5307guSUzo61a9O6f0hXXqCYkd865c7uuvXQiuiTk1/HAs+TnP29
-        MnwXl+CWhyoLecmo9PfkBViJ+xGYAXGpFOiIP6E=
-X-Google-Smtp-Source: ABdhPJw7lYuWw2AMWsrC52sL9wclEJx9rUOOB3i7/ClTK3bq1hWvi1a6XJ484VpPtvDevWbTCXJznJ8QX5xbSwdjRJ0=
-X-Received: by 2002:a17:90a:f68a:: with SMTP id cl10mr17980591pjb.87.1618046012066;
- Sat, 10 Apr 2021 02:13:32 -0700 (PDT)
+        id S234449AbhDJJPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 05:15:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234306AbhDJJPg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 05:15:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B0DE60233;
+        Sat, 10 Apr 2021 09:15:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618046121;
+        bh=ylacISelC0n5uq3LcWny5QQY5S3oyLsn0/lLqR99PSk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c30pMcHbUE6mjml6G9xJuol9fJbGrG9PZ/sQEkACfNmUFQoVpZcR6CY5GUTzQE7ny
+         uV2CfIQZ9LeGAY+2hDpqNmF/aQi2BqqUqEXHtZSeShPTLIwnzMmqrIyvnjXzBE0BZK
+         Fg5Xr+wYncoviVx+GxxqA2FBwjom/Uk7f5KoMxXA=
+Date:   Sat, 10 Apr 2021 11:15:19 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Roman Guskov <rguskov@dh-electronics.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH stable] gpiolib: Read "gpio-line-names" from a firmware
+ node
+Message-ID: <YHFsp1Q0rcqQwz3t@kroah.com>
+References: <20210410090919.3157-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-References: <20210327120155.500-1-ionic@ionic.de> <20210328095227.24323-1-ionic@ionic.de>
- <CAK7LNATzx9ujmapPbPzjL1Yo-A0RAXz0Kma+ve8pUeDDVx8GGw@mail.gmail.com> <9e8d429f-c21c-7d9e-0dcd-8947846fe9ba@ionic.de>
-In-Reply-To: <9e8d429f-c21c-7d9e-0dcd-8947846fe9ba@ionic.de>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 10 Apr 2021 18:12:54 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARzoCoeTtTxyver_XsLd_hCC3Tbs++GU_bAx7q1Crc20Q@mail.gmail.com>
-Message-ID: <CAK7LNARzoCoeTtTxyver_XsLd_hCC3Tbs++GU_bAx7q1Crc20Q@mail.gmail.com>
-Subject: Re: [PATCH v2] kconfig: nconf: stop endless search-up loops
-To:     Mihai Moldovan <ionic@ionic.de>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210410090919.3157-1-brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 4:00 PM Mihai Moldovan <ionic@ionic.de> wrote:
->
-> * On 4/10/21 7:47 AM, Masahiro Yamada wrote:
-> > On Sun, Mar 28, 2021 at 6:52 PM Mihai Moldovan <ionic@ionic.de> wrote:
-> >> +               if ((index == -1) && (index == match_start))
-> >> +                       return -1;
-> >
-> > We know 'index' is -1 in the second comparison.
-> > So, you can also write like this:
-> >
-> >        if (match_start == -1 && index == -1)
-> >                 return -1;
->
-> I know, but I sided for the other form for semantic reasons - this more closely
-> directly describes what we actually care about (both being the same value and
-> either one being -1).
->
->
-> > But, it is not the correct fix, either.
-> >
-> > The root cause of the bug is match_start
-> > becoming -1.
-> >
-> >
-> > The following is the correct way to fix the bug
-> > without increasing the number of lines.
-> >
-> >
-> >
-> > diff --git a/scripts/kconfig/nconf.c b/scripts/kconfig/nconf.c
-> > index e0f965529166..af814b39b876 100644
-> > [...]
-> > +       match_start = (match_start + items_num) % items_num;
-> >         index = match_start;
-> > -       index = (index + items_num) % items_num;
->
-> This is probably more elegant and fixes two issues at the same time: match_start
-> becoming -1 or n (which is likewise invalid, but was implicitly handled through
-> the remainder operation).
->
-> No objections from my side.
+On Sat, Apr 10, 2021 at 11:09:19AM +0200, Bartosz Golaszewski wrote:
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
+> see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
+> pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
+> and iterates over all of its DT subnodes when registering each GPIO
+> bank gpiochip. Each gpiochip has:
+> 
+>   - gpio_chip.parent = dev,
+>     where dev is the device node of the pin controller
+>   - gpio_chip.of_node = np,
+>     which is the OF node of the GPIO bank
+> 
+> Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
+> i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
+> 
+> The original code behaved correctly, as it extracted the "gpio-line-names"
+> from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
+> 
+> To achieve the same behaviour, read property from the firmware node.
+> 
+> Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
+> Cc: stable@vger.kernel.org
+> Reported-by: Marek Vasut <marex@denx.de>
+> Reported-by: Roman Guskov <rguskov@dh-electronics.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Tested-by: Marek Vasut <marex@denx.de>
+> Reviewed-by: Marek Vasut <marex@denx.de>
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+> Hi Greg,
+> 
+> This patch somehow got lost and never made its way into stable. Could you
+> please apply it?
 
+What is the git commit id of it in Linus's tree?
 
-Could you send v3 please?
+thanks,
 
-Then, I will apply it.
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+greg k-h
