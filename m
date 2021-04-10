@@ -2,82 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0954C35A9DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 03:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873DB35A9D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 03:07:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235387AbhDJBQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 21:16:10 -0400
-Received: from m1561.mail.126.com ([220.181.15.61]:40579 "EHLO
-        m1561.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235215AbhDJBQJ (ORCPT
+        id S235340AbhDJBFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 21:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235215AbhDJBFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 21:16:09 -0400
-X-Greylist: delayed 1851 seconds by postgrey-1.27 at vger.kernel.org; Fri, 09 Apr 2021 21:16:09 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=5/lTD
-        DTtvqPXapa1EVayUD87lA5OjiS04PXgFp2HWM4=; b=XWKEfU3I+wKd7eE+0vtRE
-        xCey5IwiHqXgbhpQbooKsST3PaWhUW5XVOCcKwlwmi+9AgOu+h9njaOtXv3Ihha6
-        YLRfHAvvcmswa/xqakTDprzGiRDkLQGbKGd61djoTqrn+krD9mrgStekQx+YibUD
-        sMQ1VO1P0IB6JMTBhcFaCw=
-Received: from wangyingjie55$126.com ( [106.17.213.220] ) by
- ajax-webmail-wmsvr61 (Coremail) ; Sat, 10 Apr 2021 08:43:43 +0800 (CST)
-X-Originating-IP: [106.17.213.220]
-Date:   Sat, 10 Apr 2021 08:43:43 +0800 (CST)
-From:   "Yingjie Wang" <wangyingjie55@126.com>
-To:     "Alex Deucher" <alexdeucher@gmail.com>
-Cc:     "Deucher, Alexander" <alexander.deucher@amd.com>,
-        "Christian Koenig" <christian.koenig@amd.com>,
-        "Dave Airlie" <airlied@linux.ie>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        "Dave Airlie" <airlied@redhat.com>,
-        "Maling list - DRI developers" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx list" <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re:Re: [PATCH v1] drm/radeon: Fix a missing check bug in
- radeon_dp_mst_detect()
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn 126com
-In-Reply-To: <CADnq5_OujJOLukc74YQwwW4pdCA-M_4Gz_pZg8Je1ep3HZBBMw@mail.gmail.com>
-References: <1617765004-5308-1-git-send-email-wangyingjie55@126.com>
- <CADnq5_OujJOLukc74YQwwW4pdCA-M_4Gz_pZg8Je1ep3HZBBMw@mail.gmail.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Fri, 9 Apr 2021 21:05:49 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75535C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 18:05:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Received:Date:From:To:Cc:
+        Subject:Message-ID:References:MIME-Version:Content-Type:
+        Content-Disposition:In-Reply-To; bh=+7wzJQFL7hr5KXWeTq/So2HMeFsi
+        T+/RRKBLo4YOw70=; b=NIhZJdUw5rrtOjFX7YI5x0vzUICV70edFfcRNCGJjBCK
+        Nu7E2cx4vui77vPn1mSPSkD+gQZHm0OoCpd+q8L+umIuicdDMyPanpDjekImBMLY
+        9zGtdxapzqhz2eCCxJhy7uYK+r1YsUJI1nrNl15uvYEhC+zmPlICxZrB7xIv7OY=
+Received: from wfg-e595 (unknown [125.120.234.91])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygBHT0vZ+XBgnLW8AA--.26S3;
+        Sat, 10 Apr 2021 09:05:30 +0800 (CST)
+Received: from wfg by wfg-e595 with local (Exim 4.93)
+        (envelope-from <wfg@mail.ustc.edu.cn>)
+        id 1lV244-001QeW-IV; Sat, 10 Apr 2021 09:05:32 +0800
+Date:   Sat, 10 Apr 2021 09:05:32 +0800
+From:   Wu Fengguang <wfg@mail.ustc.edu.cn>
+To:     Hui Zhu <teawater@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH for vm-scalability] usemem: Add code for touch-alloc
+Message-ID: <20210410010532.GA339619@wfg-e595>
+References: <20210408134255.12330-1-teawater@gmail.com>
 MIME-Version: 1.0
-Message-ID: <50fb7dba.1f7.178b93c0caa.Coremail.wangyingjie55@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: PcqowADX5jbA9HBgFpk8AQ--.52414W
-X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbiVwlvp1pEDRCg5AACsT
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210408134255.12330-1-teawater@gmail.com>
+X-CM-TRANSID: LkAmygBHT0vZ+XBgnLW8AA--.26S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrWruF18Xr1fAFWDWryUZFb_yoW8Cr18pa
+        1xKwn8trW7t39IkFWSvas8WFy5Gwn5ta1xta17t34UZa42yF15urW3Zwn7AF48ArykZFs7
+        Aay3CFyDurZFyaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUklb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI
+        12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r
+        1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lc2xSY4AK67AK
+        6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxV
+        WUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI
+        7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r
+        1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4U
+        MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8qjg7UUUU
+        U==
+X-CM-SenderInfo: xzijqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-TXkgcGxlYXN1cmUhCkF0IDIwMjEtMDQtMDkgMDQ6MTc6MzYsICJBbGV4IERldWNoZXIiIDxhbGV4
-ZGV1Y2hlckBnbWFpbC5jb20+IHdyb3RlOgo+QXBwbGllZC4gIFRoYW5rcyENCj4NCj5BbGV4DQo+
-DQo+T24gV2VkLCBBcHIgNywgMjAyMSBhdCAyOjIzIEFNIDx3YW5neWluZ2ppZTU1QDEyNi5jb20+
-IHdyb3RlOg0KPj4NCj4+IEZyb206IFlpbmdqaWUgV2FuZyA8d2FuZ3lpbmdqaWU1NUAxMjYuY29t
-Pg0KPj4NCj4+IEluIHJhZGVvbl9kcF9tc3RfZGV0ZWN0KCksIFdlIHNob3VsZCBjaGVjayB3aGV0
-aGVyIG9yIG5vdCBAY29ubmVjdG9yDQo+PiBoYXMgYmVlbiB1bnJlZ2lzdGVyZWQgZnJvbSB1c2Vy
-c3BhY2UuIElmIHRoZSBjb25uZWN0b3IgaXMgdW5yZWdpc3RlcmVkLA0KPj4gd2Ugc2hvdWxkIHJl
-dHVybiBkaXNjb25uZWN0ZWQgc3RhdHVzLg0KPj4NCj4+IEZpeGVzOiA5ODQzZWFkMDhmMTggKCJk
-cm0vcmFkZW9uOiBhZGQgRGlzcGxheVBvcnQgTVNUIHN1cHBvcnQgKHYyKSIpDQo+PiBTaWduZWQt
-b2ZmLWJ5OiBZaW5namllIFdhbmcgPHdhbmd5aW5namllNTVAMTI2LmNvbT4NCj4+IC0tLQ0KPj4g
-IGRyaXZlcnMvZ3B1L2RybS9yYWRlb24vcmFkZW9uX2RwX21zdC5jIHwgMyArKysNCj4+ICAxIGZp
-bGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-Z3B1L2RybS9yYWRlb24vcmFkZW9uX2RwX21zdC5jIGIvZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9y
-YWRlb25fZHBfbXN0LmMNCj4+IGluZGV4IDJjMzIxODZjNGFjZC4uNGU0YzkzN2MzNmM2IDEwMDY0
-NA0KPj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9yYWRlb25fZHBfbXN0LmMNCj4+ICsr
-KyBiL2RyaXZlcnMvZ3B1L2RybS9yYWRlb24vcmFkZW9uX2RwX21zdC5jDQo+PiBAQCAtMjQyLDYg
-KzI0Miw5IEBAIHJhZGVvbl9kcF9tc3RfZGV0ZWN0KHN0cnVjdCBkcm1fY29ubmVjdG9yICpjb25u
-ZWN0b3IsDQo+PiAgICAgICAgICAgICAgICAgdG9fcmFkZW9uX2Nvbm5lY3Rvcihjb25uZWN0b3Ip
-Ow0KPj4gICAgICAgICBzdHJ1Y3QgcmFkZW9uX2Nvbm5lY3RvciAqbWFzdGVyID0gcmFkZW9uX2Nv
-bm5lY3Rvci0+bXN0X3BvcnQ7DQo+Pg0KPj4gKyAgICAgICBpZiAoZHJtX2Nvbm5lY3Rvcl9pc191
-bnJlZ2lzdGVyZWQoY29ubmVjdG9yKSkNCj4+ICsgICAgICAgICAgICAgICByZXR1cm4gY29ubmVj
-dG9yX3N0YXR1c19kaXNjb25uZWN0ZWQ7DQo+PiArDQo+PiAgICAgICAgIHJldHVybiBkcm1fZHBf
-bXN0X2RldGVjdF9wb3J0KGNvbm5lY3RvciwgY3R4LCAmbWFzdGVyLT5tc3RfbWdyLA0KPj4gICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICByYWRlb25fY29ubmVjdG9yLT5wb3J0
-KTsNCj4+ICB9DQo+PiAtLQ0KPj4gMi43LjQNCj4+DQo+PiBfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXw0KPj4gZHJpLWRldmVsIG1haWxpbmcgbGlzdA0KPj4g
-ZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZw0KPj4gaHR0cHM6Ly9saXN0cy5mcmVlZGVz
-a3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwNCg==
+Applied, thanks!
+
+On Thu, Apr 08, 2021 at 09:42:55PM +0800, Hui Zhu wrote:
+>Add code for touch-alloc.
+>And Change read memory to write memory to avoid use the zero-page for
+>reads in do_anonymous_page.
+>
+>Signed-off-by: Hui Zhu <teawater@gmail.com>
+>---
+> usemem.c | 34 ++++++++++++++++++++++------------
+> 1 file changed, 22 insertions(+), 12 deletions(-)
+>
+>diff --git a/usemem.c b/usemem.c
+>index e2c46ec..5b90aae 100644
+>--- a/usemem.c
+>+++ b/usemem.c
+>@@ -329,6 +329,18 @@ void detach(void)
+> 	}
+> }
+>
+>+unsigned long do_access(unsigned long *p, unsigned long idx, int read)
+>+{
+>+	volatile unsigned long *vp = p;
+>+
+>+	if (read)
+>+		return vp[idx];	/* read data */
+>+	else {
+>+		vp[idx] = idx;	/* write data */
+>+		return 0;
+>+	}
+>+}
+>+
+> unsigned long * allocate(unsigned long bytes)
+> {
+> 	unsigned long *p;
+>@@ -355,6 +367,14 @@ unsigned long * allocate(unsigned long bytes)
+> 		p = (unsigned long *)ALIGN((unsigned long)p, pagesize - 1);
+> 	}
+>
+>+	if (opt_touch_alloc) {
+>+		unsigned long i;
+>+		unsigned long m = bytes / sizeof(*p);
+>+
+>+		for (i = 0; i < m; i += 1)
+>+			do_access(p, i, 0);
+>+	}
+>+
+> 	return p;
+> }
+>
+>@@ -436,18 +456,6 @@ void shm_unlock(int seg_id)
+> 	shmctl(seg_id, SHM_UNLOCK, NULL);
+> }
+>
+>-unsigned long do_access(unsigned long *p, unsigned long idx, int read)
+>-{
+>-	volatile unsigned long *vp = p;
+>-
+>-	if (read)
+>-		return vp[idx];	/* read data */
+>-	else {
+>-		vp[idx] = idx;	/* write data */
+>-		return 0;
+>-	}
+>-}
+>-
+> #define NSEC_PER_SEC  (1UL * 1000 * 1000 * 1000)
+>
+> long nsec_sub(long nsec1, long nsec2)
+>@@ -953,6 +961,8 @@ int main(int argc, char *argv[])
+> 				opt_punch_holes = 1;
+> 			} else if (strcmp(opts[opt_index].name, "init-time") == 0) {
+> 				opt_init_time = 1;
+>+			} else if (strcmp(opts[opt_index].name, "touch-alloc") == 0) {
+>+				opt_touch_alloc = 1;
+> 			} else
+> 				usage(1);
+> 			break;
+>-- 
+>2.17.1
+>
+
