@@ -2,66 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA94335AEC4
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 17:15:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D15835AECD
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 17:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234849AbhDJPPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 11:15:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38288 "EHLO
+        id S234813AbhDJPV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 11:21:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234392AbhDJPPg (ORCPT
+        with ESMTP id S234392AbhDJPVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 11:15:36 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FE2C06138A;
-        Sat, 10 Apr 2021 08:15:22 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so8565291otb.7;
-        Sat, 10 Apr 2021 08:15:22 -0700 (PDT)
+        Sat, 10 Apr 2021 11:21:25 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA5DCC06138A;
+        Sat, 10 Apr 2021 08:21:10 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id h2-20020a4ad7420000b02901e5901169a5so1809954oot.8;
+        Sat, 10 Apr 2021 08:21:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=A4/cYC0UOb1c2Eadie+wrxMS0F5PkKrtRmBw6cRr1u4=;
-        b=IE1A5K4mw53txlL56DkvTyZLpHZWsSDNNXw3z/Qfy4McWklAqYd5tsui8OlEuiV2dv
-         Hy2u1TJi7pRXytiirrbcJTaZT1ydRNJYzoK2qhRy6tofI/n9yvCFKkuLtJGxWESJSSRi
-         N1EzL9oRSB2O7cKDsACtiw2591nruVty/N1ZaOmLErjEb2Q3B4uoAscD3DrQzvm/tRXs
-         KoFXNOiDnwtRnA47Xg+V5VfqVfXHoz9DgFANpwcyp8GZoPEJVptYb1IPB76lEmsCSVUu
-         2VxL3UaMMIE3Pl+9WZB0Q4MaH1I6o3chqiTN+ytIvmrPa5xiWfqOpKvGOVuDDWziYqrp
-         nsAw==
+        bh=pjI6u6UYsUkFtZQA7WTP9+7XiMaMvTGfuvAt/AdrZpE=;
+        b=ul9vhkECX9ZtPHmn00cPAEOTNPFYMkc4vVlLAdFgA0ImSW2Yz/cqrLDDaCbiQGf+w/
+         cNN/cJTUA3sTYVW/YkL5D1AA1ok8DUy85P8GF4gXn/leQJkhfAGBrrvX1nC7Kaec1G7+
+         e61ykR7cz8w/E/vSLqXxmvfWwd440ktxmCcZnLkt8Y3ZwTrWh8WWSGIKb/GBSIOJzCgR
+         Y0ViOfNDoLzXwgwqXMkSWZlo6DM69YqZoFZ4haMYgvIWc7XEE2DpZbxn4TijMBMhIyiu
+         G75fXKIOgX+3JbJC9W4XTrVV45ozMDg3U6lX4V3iQxrIEvbBEjatrt2wbFJ5wPgsGhJg
+         GTqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=A4/cYC0UOb1c2Eadie+wrxMS0F5PkKrtRmBw6cRr1u4=;
-        b=bQ6CxtCrFHF1LwaFjt0fWVTaGm9dNy81QP7FMk+jAnZhop4XNKqU0OnJ103kBuLalj
-         h+9Jc/TiYySxYw0Ujnyt+DYXIM25u9shBSi2YVcIJsktxpqZYLaeDjihONIuWv/+Psno
-         8FplAaaCEBY/qZxSG8X8BgcTfDeS7Vk3aqJxUNnrv08p3fhKbOfqpJ2u5dHfXSQu9Gto
-         9r7i+DZFCDqgCj6a6aCxs9lgUizgXTYnQWe6iCBWI9Cev8c36H07WCqdNinQC4GQPuo0
-         YtdjeaMIKy3HZiYna//igOJEhuVQDgIG3LqkZVtDkDfvcziBuzs9C5H9NMf05LGWwqYJ
-         upWg==
-X-Gm-Message-State: AOAM531hDvh6D4uqa/zHYaziKLEcmEi4ZtvMNHMOV30XwxFKZqYtWFF7
-        9sm2pa2s5eKTXC4EH8qv9Rc=
-X-Google-Smtp-Source: ABdhPJw/VTZ85a3Fq7w5cUM0UWo5xHVbpi6VNM/7Ca2icdXy2rckMSOSaxzmklMd4Ip5k6D3p5LAkA==
-X-Received: by 2002:a05:6830:15d2:: with SMTP id j18mr16921118otr.75.1618067721425;
-        Sat, 10 Apr 2021 08:15:21 -0700 (PDT)
+        bh=pjI6u6UYsUkFtZQA7WTP9+7XiMaMvTGfuvAt/AdrZpE=;
+        b=Lb4bkC/XC4ucs+g74pa0bUNjo9rbfds70aH3RDWW1z3GKm012rOF5ncfnVur5GprDT
+         /FSzwU+INB5UGVBm4Xg0flPvRjlCWY2g/534xkqk7ew7+dpTIEwLYQqENOTlBCHI0O1s
+         5CaXdgbaiBGPY5BZJEsaV4F+A110X5XuVM6hZnQ+g/vmyM4ApQpWm4pMgymb7jXv3hff
+         vMLYcZiDYP515Cvd0uCVgNbvWRJjEcRG6vp06+kgELD2YHpyMBOc5rtZR2SleQhXNyEu
+         ghRB7PSU6kwMDEm5KKdMSR19nMy2CpCjugobPnIvt9ssJuK7DTSLjGugVjgghnYWe0iF
+         skuw==
+X-Gm-Message-State: AOAM531fImHjHc4ir391CHsP6fyaDvsYBF21i7luRLRp5Lpz27Si9TPs
+        TInLjdMxe6YUhBP+JD7OZLNkXTVdZoM=
+X-Google-Smtp-Source: ABdhPJw+BlPSHq6JzuPgNUDjljHiuRm/+F7JCpOhqwtHwoIWLfUdHIl2EnT9QNcRd4/2zSxeljK2EA==
+X-Received: by 2002:a4a:bd1a:: with SMTP id n26mr16097535oop.45.1618068069960;
+        Sat, 10 Apr 2021 08:21:09 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c2sm1340671otf.66.2021.04.10.08.15.19
+        by smtp.gmail.com with ESMTPSA id v65sm1164166oib.42.2021.04.10.08.21.08
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Apr 2021 08:15:20 -0700 (PDT)
+        Sat, 10 Apr 2021 08:21:09 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
 Subject: Re: [PATCH v3] platform/x86: add Gigabyte WMI temperature driver
-To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
+To:     Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
         platform-driver-x86@vger.kernel.org,
         Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
         linux-kernel@vger.kernel.org,
         =?UTF-8?Q?Barnab=c3=a1s_P=c5=91cze?= <pobrn@protonmail.com>,
         Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
 Cc:     Matthew Garrett <mjg59@srcf.ucam.org>
 References: <117cadef-c1cb-d66a-15f8-ce50d596be4b@redhat.com>
  <20210410144021.138035-1-linux@weissschuh.net>
+ <e1b86746-b04d-0f14-8121-d24da4d10ceb@redhat.com>
 From:   Guenter Roeck <linux@roeck-us.net>
 Autocrypt: addr=linux@roeck-us.net; keydata=
  xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
@@ -106,12 +107,12 @@ Autocrypt: addr=linux@roeck-us.net; keydata=
  WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
  HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
  mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <3d974a64-14a6-2347-ac1a-666d1b8d6eef@roeck-us.net>
-Date:   Sat, 10 Apr 2021 08:15:18 -0700
+Message-ID: <2ffc9df4-f5d1-e093-6223-e6c705ef8688@roeck-us.net>
+Date:   Sat, 10 Apr 2021 08:21:07 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210410144021.138035-1-linux@weissschuh.net>
+In-Reply-To: <e1b86746-b04d-0f14-8121-d24da4d10ceb@redhat.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -119,7 +120,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/10/21 7:40 AM, Thomas Weißschuh wrote:
+On 4/10/21 7:57 AM, Hans de Goede wrote:
+> Hi,
+> 
+> On 4/10/21 4:40 PM, Thomas Weißschuh wrote:
+>> Changes since v1:
+>> * Incorporate feedback from Barnabás Pőcze
+>>   * Use a WMI driver instead of a platform driver
+>>   * Let the kernel manage the driver lifecycle
+>>   * Fix errno/ACPI error confusion
+>>   * Fix resource cleanup
+>>   * Document reason for integer casting
+>>
+>> Changes since v2:
+>> * Style cleanups
+>> * Test for usability during probing
+>> * DMI-based whitelist
+>> * CC hwmon maintainers
+>>
+>> -- >8 --
+>>
+>> Tested with a X570 I Aorus Pro Wifi.
+>> The mainboard contains an ITE IT8688E chip for management.
+>> This chips is also handled by drivers/hwmon/i87.c but as it is also used
+>> by the firmware itself it needs an ACPI driver.
+>>
+>> Unfortunately not all sensor registers are handled by the firmware and even
+>> less are exposed via WMI.
+>>
+>> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> 
+> This looks good, one small nitpick:
+> 
+> I know this is a touchy subject for some, but we are trying to move away
+> from the whitelist/blacklist naming where possible and we don't want to
+> introduce any new cases, see:
+> 
+> https://github.com/torvalds/linux/blob/master/Documentation/process/coding-style.rst#4-naming
+> 
+> The driver currently uses this twice:
+> "Force loading on non-whitelisted platform"
+> "Forcing loading on non-whitelisted platform"
+> 
+> Interestingly enough you already avoided naming the dmi_system_id table
+> a whitelist (good).
+> 
+> I would like to see "non-whitelisted" replaced with "unknown" so that we end up with:
+> 
+> "Force loading on unknown platform"
+> "Forcing loading on unknown platform"
+> 
+> And while at it, I think for the second sentence this would be better English
+> (I'm not a native speaker myself):
+> 
+> "Forcing load on unknown platform"
+> 
+
+Not native either, but I think it is either "Forcing load" or "Force loading".
+
+> If you are ok with these changes I can fix this up while merging, no need
+> to send a v4. Although if you prefer to send a v4 that is fine too.
+> 
+
+Please consider adding an existence check into the is_visible function.
+Sysfs attributes for non-existing sensors should not be created.
+
+Thanks,
+Guenter
+
+> Either way let me know.
+> 
+> Regards,
+> 
+> Hans
+> 
+> p.s.
+> 
+> For v4 or for a next patch, the way to add the changelog so that it does
+> not get picked up / automatically gets snipped by git am is to put it
+> below the Signed-off-by at the end of the commit message like this:
+> 
+> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+> ---
 > Changes since v1:
 > * Incorporate feedback from Barnabás Pőcze
 >   * Use a WMI driver instead of a platform driver
@@ -127,303 +209,280 @@ On 4/10/21 7:40 AM, Thomas Weißschuh wrote:
 >   * Fix errno/ACPI error confusion
 >   * Fix resource cleanup
 >   * Document reason for integer casting
-> 
+>  
 > Changes since v2:
 > * Style cleanups
 > * Test for usability during probing
 > * DMI-based whitelist
 > * CC hwmon maintainers
 > 
-> -- >8 --
 > 
-> Tested with a X570 I Aorus Pro Wifi.
-> The mainboard contains an ITE IT8688E chip for management.
-> This chips is also handled by drivers/hwmon/i87.c but as it is also used
-> by the firmware itself it needs an ACPI driver.
 > 
-> Unfortunately not all sensor registers are handled by the firmware and even
-> less are exposed via WMI.
 > 
-> Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> ---
->  MAINTAINERS                         |   6 +
->  drivers/platform/x86/Kconfig        |  11 ++
->  drivers/platform/x86/Makefile       |   1 +
->  drivers/platform/x86/gigabyte-wmi.c | 194 ++++++++++++++++++++++++++++
->  4 files changed, 212 insertions(+)
->  create mode 100644 drivers/platform/x86/gigabyte-wmi.c
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index d92f85ca831d..9c10cfc00fe8 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -7543,6 +7543,12 @@ F:	Documentation/filesystems/gfs2*
->  F:	fs/gfs2/
->  F:	include/uapi/linux/gfs2_ondisk.h
->  
-> +GIGABYTE WMI DRIVER
-> +M:	Thomas Weißschuh <linux@weissschuh.net>
-> +L:	platform-driver-x86@vger.kernel.org
-> +S:	Maintained
-> +F:	drivers/platform/x86/gigabyte-wmi.c
-> +
->  GNSS SUBSYSTEM
->  M:	Johan Hovold <johan@kernel.org>
->  S:	Maintained
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index ad4e630e73e2..96622a2106f7 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -123,6 +123,17 @@ config XIAOMI_WMI
->  	  To compile this driver as a module, choose M here: the module will
->  	  be called xiaomi-wmi.
->  
-> +config GIGABYTE_WMI
-> +	tristate "Gigabyte WMI temperature driver"
-> +	depends on ACPI_WMI
-> +	depends on HWMON
-> +	help
-> +	  Say Y here if you want to support WMI-based temperature reporting on
-> +	  Gigabyte mainboards.
-> +
-> +	  To compile this driver as a module, choose M here: the module will
-> +	  be called gigabyte-wmi.
-> +
->  config ACERHDF
->  	tristate "Acer Aspire One temperature and fan driver"
->  	depends on ACPI && THERMAL
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index 60d554073749..1621ebfd04fd 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -15,6 +15,7 @@ obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)	+= intel-wmi-thunderbolt.o
->  obj-$(CONFIG_MXM_WMI)			+= mxm-wmi.o
->  obj-$(CONFIG_PEAQ_WMI)			+= peaq-wmi.o
->  obj-$(CONFIG_XIAOMI_WMI)		+= xiaomi-wmi.o
-> +obj-$(CONFIG_GIGABYTE_WMI)		+= gigabyte-wmi.o
->  
->  # Acer
->  obj-$(CONFIG_ACERHDF)		+= acerhdf.o
-> diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
-> new file mode 100644
-> index 000000000000..fb4e6d4c1823
-> --- /dev/null
-> +++ b/drivers/platform/x86/gigabyte-wmi.c
-> @@ -0,0 +1,194 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + *  Copyright (C) 2021 Thomas Weißschuh <thomas@weissschuh.net>
-> + */
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/dmi.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/module.h>
-> +#include <linux/wmi.h>
-> +
-> +#define GIGABYTE_WMI_GUID "DEADBEEF-2001-0000-00A0-C90629100000"
-> +#define NUM_TEMPERATURE_SENSORS 6
-
-Style: #define<space>name<tab>value
-
-but of course that is Hans' call.
-
-> +
-> +static bool force_load;
-> +module_param(force_load, bool, 0);
-> +MODULE_PARM_DESC(force_load, "Force loading on non-whitelisted platform");
-> +
-> +enum gigabyte_wmi_commandtype {
-> +	GIGABYTE_WMI_BUILD_DATE_QUERY       =   0x1,
-> +	GIGABYTE_WMI_MAINBOARD_TYPE_QUERY   =   0x2,
-> +	GIGABYTE_WMI_FIRMWARE_VERSION_QUERY =   0x4,
-> +	GIGABYTE_WMI_MAINBOARD_NAME_QUERY   =   0x5,
-> +	GIGABYTE_WMI_TEMPERATURE_QUERY      = 0x125,
-> +};
-> +
-> +struct gigabyte_wmi_args {
-> +	u32 arg1;
-> +};
-> +
-> +static int gigabyte_wmi_perform_query(struct wmi_device *wdev,
-> +				      enum gigabyte_wmi_commandtype command,
-> +				      struct gigabyte_wmi_args *args, struct acpi_buffer *out)
-> +{
-> +	const struct acpi_buffer in = {
-> +		.length = sizeof(*args),
-> +		.pointer = args,
-> +	};
-> +
-> +	acpi_status ret = wmidev_evaluate_method(wdev, 0x0, command, &in, out);
-> +
-> +	if ACPI_FAILURE(ret)
-> +		return -EIO;
-> +
-> +	return 0;
-> +}
-> +
-> +static int gigabyte_wmi_query_integer(struct wmi_device *wdev,
-> +				      enum gigabyte_wmi_commandtype command,
-> +				      struct gigabyte_wmi_args *args, u64 *res)
-> +{
-> +	union acpi_object *obj;
-> +	struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
-> +	int ret;
-> +
-> +	ret = gigabyte_wmi_perform_query(wdev, command, args, &result);
-> +	if (ret)
-> +		return ret;
-> +	obj = result.pointer;
-> +	if (obj && obj->type == ACPI_TYPE_INTEGER)
-> +		*res = obj->integer.value;
-> +	else
-> +		ret = -EIO;
-> +	kfree(result.pointer);
-> +	return ret;
-> +}
-> +
-> +static int gigabyte_wmi_temperature(struct wmi_device *wdev, u8 sensor, long *res)
-> +{
-> +	struct gigabyte_wmi_args args = {
-> +		.arg1 = sensor,
-> +	};
-> +	u64 temp;
-> +	acpi_status ret;
-> +
-> +	ret = gigabyte_wmi_query_integer(wdev, GIGABYTE_WMI_TEMPERATURE_QUERY, &args, &temp);
-> +	if (ret == 0) {
-> +		if (temp == 0)
-> +			return -ENODEV;
-
-That should be checked in gigabyte_wmi_hwmon_is_visible(); that is what that
-function is for.
-
-> +		*res = (s8)temp * 1000; // value is a signed 8-bit integer
-> +	}
-> +	return ret;
-> +}
-> +
-> +static int gigabyte_wmi_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-> +				   u32 attr, int channel, long *val)
-> +{
-> +	struct wmi_device *wdev = dev_get_drvdata(dev);
-> +
-> +	return gigabyte_wmi_temperature(wdev, channel, val);
-> +}
-> +
-> +static umode_t gigabyte_wmi_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
-> +					     u32 attr, int channel)
-> +{
-> +	return 0444;
-> +}
-> +
-> +static const struct hwmon_channel_info *gigabyte_wmi_hwmon_info[] = {
-> +	HWMON_CHANNEL_INFO(temp,
-> +			   HWMON_T_INPUT,
-> +			   HWMON_T_INPUT,
-> +			   HWMON_T_INPUT,
-> +			   HWMON_T_INPUT,
-> +			   HWMON_T_INPUT,
-> +			   HWMON_T_INPUT),
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_ops gigabyte_wmi_hwmon_ops = {
-> +	.read = gigabyte_wmi_hwmon_read,
-> +	.is_visible = gigabyte_wmi_hwmon_is_visible,
-> +};
-> +
-> +static const struct hwmon_chip_info gigabyte_wmi_hwmon_chip_info = {
-> +	.ops = &gigabyte_wmi_hwmon_ops,
-> +	.info = gigabyte_wmi_hwmon_info,
-> +};
-> +
-> +static int gigabyte_wmi_validate_sensor_presence(struct wmi_device *wdev)
-> +{
-> +	int working_sensors = 0, i;
-> +	long temp;
-> +
-> +	for (i = 0; i < NUM_TEMPERATURE_SENSORS; i++) {
-> +		if (!gigabyte_wmi_temperature(wdev, i, &temp))
-> +			working_sensors++;
-> +	}
-> +	return working_sensors ? 0 : -ENODEV;
-> +}
-> +
-> +static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
-> +	{ .matches = {
-> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550 GAMING X V2"),
-> +	}},
-> +	{ .matches = {
-> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M DS3H"),
-> +	}},
-> +	{ .matches = {
-> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "Z390 I AORUS PRO WIFI-CF"),
-> +	}},
-> +	{ .matches = {
-> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "X570 I AORUS PRO WIFI"),
-> +	}},
-> +	{ }
-> +};
-> +
-> +static int gigabyte_wmi_probe(struct wmi_device *wdev, const void *context)
-> +{
-> +	struct device *hwmon_dev;
-> +	int ret;
-> +
-> +	if (!dmi_check_system(gigabyte_wmi_known_working_platforms)) {
-> +		if (force_load)
-> +			dev_warn(&wdev->dev, "Forcing loading on non-whitelisted platform");
-> +		else
-> +			return -ENODEV;
-
-Style:
-		if (!force_load)
-			return -ENODEV;
-		dev_warn(&wdev->dev, "Forcing loading on non-whitelisted platform");
-
-> +	}
-> +
-> +	ret = gigabyte_wmi_validate_sensor_presence(wdev);
-> +	if (ret) {
-> +		dev_info(&wdev->dev, "No temperature sensors usable");
-
-Normally one does not display a message if a probe function returns -ENODEV,
-unless it is an error, to avoid polluting the kernel log.
-
-> +		return ret;
-> +	}
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(&wdev->dev, "gigabyte_wmi", wdev,
-> +							 &gigabyte_wmi_hwmon_chip_info, NULL);
-> +
-> +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +}
-> +
-> +static const struct wmi_device_id gigabyte_wmi_id_table[] = {
-> +	{ GIGABYTE_WMI_GUID, NULL },
-> +	{ }
-> +};
-> +
-> +static struct wmi_driver gigabyte_wmi_driver = {
-> +	.driver = {
-> +		.name = "gigabyte-wmi",
-> +	},
-> +	.id_table = gigabyte_wmi_id_table,
-> +	.probe = gigabyte_wmi_probe,
-> +};
-> +module_wmi_driver(gigabyte_wmi_driver);
-> +
-> +MODULE_DEVICE_TABLE(wmi, gigabyte_wmi_id_table);
-> +MODULE_AUTHOR("Thomas Weißschuh <thomas@weissschuh.net>");
-> +MODULE_DESCRIPTION("Gigabyte WMI temperature Driver");
-> +MODULE_LICENSE("GPL");
 > 
-> base-commit: 144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
+> 
+>> ---
+>>  MAINTAINERS                         |   6 +
+>>  drivers/platform/x86/Kconfig        |  11 ++
+>>  drivers/platform/x86/Makefile       |   1 +
+>>  drivers/platform/x86/gigabyte-wmi.c | 194 ++++++++++++++++++++++++++++
+>>  4 files changed, 212 insertions(+)
+>>  create mode 100644 drivers/platform/x86/gigabyte-wmi.c
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index d92f85ca831d..9c10cfc00fe8 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -7543,6 +7543,12 @@ F:	Documentation/filesystems/gfs2*
+>>  F:	fs/gfs2/
+>>  F:	include/uapi/linux/gfs2_ondisk.h
+>>  
+>> +GIGABYTE WMI DRIVER
+>> +M:	Thomas Weißschuh <linux@weissschuh.net>
+>> +L:	platform-driver-x86@vger.kernel.org
+>> +S:	Maintained
+>> +F:	drivers/platform/x86/gigabyte-wmi.c
+>> +
+>>  GNSS SUBSYSTEM
+>>  M:	Johan Hovold <johan@kernel.org>
+>>  S:	Maintained
+>> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+>> index ad4e630e73e2..96622a2106f7 100644
+>> --- a/drivers/platform/x86/Kconfig
+>> +++ b/drivers/platform/x86/Kconfig
+>> @@ -123,6 +123,17 @@ config XIAOMI_WMI
+>>  	  To compile this driver as a module, choose M here: the module will
+>>  	  be called xiaomi-wmi.
+>>  
+>> +config GIGABYTE_WMI
+>> +	tristate "Gigabyte WMI temperature driver"
+>> +	depends on ACPI_WMI
+>> +	depends on HWMON
+>> +	help
+>> +	  Say Y here if you want to support WMI-based temperature reporting on
+>> +	  Gigabyte mainboards.
+>> +
+>> +	  To compile this driver as a module, choose M here: the module will
+>> +	  be called gigabyte-wmi.
+>> +
+>>  config ACERHDF
+>>  	tristate "Acer Aspire One temperature and fan driver"
+>>  	depends on ACPI && THERMAL
+>> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+>> index 60d554073749..1621ebfd04fd 100644
+>> --- a/drivers/platform/x86/Makefile
+>> +++ b/drivers/platform/x86/Makefile
+>> @@ -15,6 +15,7 @@ obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)	+= intel-wmi-thunderbolt.o
+>>  obj-$(CONFIG_MXM_WMI)			+= mxm-wmi.o
+>>  obj-$(CONFIG_PEAQ_WMI)			+= peaq-wmi.o
+>>  obj-$(CONFIG_XIAOMI_WMI)		+= xiaomi-wmi.o
+>> +obj-$(CONFIG_GIGABYTE_WMI)		+= gigabyte-wmi.o
+>>  
+>>  # Acer
+>>  obj-$(CONFIG_ACERHDF)		+= acerhdf.o
+>> diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
+>> new file mode 100644
+>> index 000000000000..fb4e6d4c1823
+>> --- /dev/null
+>> +++ b/drivers/platform/x86/gigabyte-wmi.c
+>> @@ -0,0 +1,194 @@
+>> +// SPDX-License-Identifier: GPL-2.0-or-later
+>> +/*
+>> + *  Copyright (C) 2021 Thomas Weißschuh <thomas@weissschuh.net>
+>> + */
+>> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>> +
+>> +#include <linux/acpi.h>
+>> +#include <linux/dmi.h>
+>> +#include <linux/hwmon.h>
+>> +#include <linux/module.h>
+>> +#include <linux/wmi.h>
+>> +
+>> +#define GIGABYTE_WMI_GUID "DEADBEEF-2001-0000-00A0-C90629100000"
+>> +#define NUM_TEMPERATURE_SENSORS 6
+>> +
+>> +static bool force_load;
+>> +module_param(force_load, bool, 0);
+>> +MODULE_PARM_DESC(force_load, "Force loading on non-whitelisted platform");
+>> +
+>> +enum gigabyte_wmi_commandtype {
+>> +	GIGABYTE_WMI_BUILD_DATE_QUERY       =   0x1,
+>> +	GIGABYTE_WMI_MAINBOARD_TYPE_QUERY   =   0x2,
+>> +	GIGABYTE_WMI_FIRMWARE_VERSION_QUERY =   0x4,
+>> +	GIGABYTE_WMI_MAINBOARD_NAME_QUERY   =   0x5,
+>> +	GIGABYTE_WMI_TEMPERATURE_QUERY      = 0x125,
+>> +};
+>> +
+>> +struct gigabyte_wmi_args {
+>> +	u32 arg1;
+>> +};
+>> +
+>> +static int gigabyte_wmi_perform_query(struct wmi_device *wdev,
+>> +				      enum gigabyte_wmi_commandtype command,
+>> +				      struct gigabyte_wmi_args *args, struct acpi_buffer *out)
+>> +{
+>> +	const struct acpi_buffer in = {
+>> +		.length = sizeof(*args),
+>> +		.pointer = args,
+>> +	};
+>> +
+>> +	acpi_status ret = wmidev_evaluate_method(wdev, 0x0, command, &in, out);
+>> +
+>> +	if ACPI_FAILURE(ret)
+>> +		return -EIO;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static int gigabyte_wmi_query_integer(struct wmi_device *wdev,
+>> +				      enum gigabyte_wmi_commandtype command,
+>> +				      struct gigabyte_wmi_args *args, u64 *res)
+>> +{
+>> +	union acpi_object *obj;
+>> +	struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
+>> +	int ret;
+>> +
+>> +	ret = gigabyte_wmi_perform_query(wdev, command, args, &result);
+>> +	if (ret)
+>> +		return ret;
+>> +	obj = result.pointer;
+>> +	if (obj && obj->type == ACPI_TYPE_INTEGER)
+>> +		*res = obj->integer.value;
+>> +	else
+>> +		ret = -EIO;
+>> +	kfree(result.pointer);
+>> +	return ret;
+>> +}
+>> +
+>> +static int gigabyte_wmi_temperature(struct wmi_device *wdev, u8 sensor, long *res)
+>> +{
+>> +	struct gigabyte_wmi_args args = {
+>> +		.arg1 = sensor,
+>> +	};
+>> +	u64 temp;
+>> +	acpi_status ret;
+>> +
+>> +	ret = gigabyte_wmi_query_integer(wdev, GIGABYTE_WMI_TEMPERATURE_QUERY, &args, &temp);
+>> +	if (ret == 0) {
+>> +		if (temp == 0)
+>> +			return -ENODEV;
+>> +		*res = (s8)temp * 1000; // value is a signed 8-bit integer
+>> +	}
+>> +	return ret;
+>> +}
+>> +
+>> +static int gigabyte_wmi_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
+>> +				   u32 attr, int channel, long *val)
+>> +{
+>> +	struct wmi_device *wdev = dev_get_drvdata(dev);
+>> +
+>> +	return gigabyte_wmi_temperature(wdev, channel, val);
+>> +}
+>> +
+>> +static umode_t gigabyte_wmi_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
+>> +					     u32 attr, int channel)
+>> +{
+>> +	return 0444;
+>> +}
+>> +
+>> +static const struct hwmon_channel_info *gigabyte_wmi_hwmon_info[] = {
+>> +	HWMON_CHANNEL_INFO(temp,
+>> +			   HWMON_T_INPUT,
+>> +			   HWMON_T_INPUT,
+>> +			   HWMON_T_INPUT,
+>> +			   HWMON_T_INPUT,
+>> +			   HWMON_T_INPUT,
+>> +			   HWMON_T_INPUT),
+>> +	NULL
+>> +};
+>> +
+>> +static const struct hwmon_ops gigabyte_wmi_hwmon_ops = {
+>> +	.read = gigabyte_wmi_hwmon_read,
+>> +	.is_visible = gigabyte_wmi_hwmon_is_visible,
+>> +};
+>> +
+>> +static const struct hwmon_chip_info gigabyte_wmi_hwmon_chip_info = {
+>> +	.ops = &gigabyte_wmi_hwmon_ops,
+>> +	.info = gigabyte_wmi_hwmon_info,
+>> +};
+>> +
+>> +static int gigabyte_wmi_validate_sensor_presence(struct wmi_device *wdev)
+>> +{
+>> +	int working_sensors = 0, i;
+>> +	long temp;
+>> +
+>> +	for (i = 0; i < NUM_TEMPERATURE_SENSORS; i++) {
+>> +		if (!gigabyte_wmi_temperature(wdev, i, &temp))
+>> +			working_sensors++;
+>> +	}
+>> +	return working_sensors ? 0 : -ENODEV;
+>> +}
+>> +
+>> +static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
+>> +	{ .matches = {
+>> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
+>> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550 GAMING X V2"),
+>> +	}},
+>> +	{ .matches = {
+>> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
+>> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M DS3H"),
+>> +	}},
+>> +	{ .matches = {
+>> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
+>> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "Z390 I AORUS PRO WIFI-CF"),
+>> +	}},
+>> +	{ .matches = {
+>> +		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
+>> +		DMI_EXACT_MATCH(DMI_BOARD_NAME, "X570 I AORUS PRO WIFI"),
+>> +	}},
+>> +	{ }
+>> +};
+>> +
+>> +static int gigabyte_wmi_probe(struct wmi_device *wdev, const void *context)
+>> +{
+>> +	struct device *hwmon_dev;
+>> +	int ret;
+>> +
+>> +	if (!dmi_check_system(gigabyte_wmi_known_working_platforms)) {
+>> +		if (force_load)
+>> +			dev_warn(&wdev->dev, "Forcing loading on non-whitelisted platform");
+>> +		else
+>> +			return -ENODEV;
+>> +	}
+>> +
+>> +	ret = gigabyte_wmi_validate_sensor_presence(wdev);
+>> +	if (ret) {
+>> +		dev_info(&wdev->dev, "No temperature sensors usable");
+>> +		return ret;
+>> +	}
+>> +
+>> +	hwmon_dev = devm_hwmon_device_register_with_info(&wdev->dev, "gigabyte_wmi", wdev,
+>> +							 &gigabyte_wmi_hwmon_chip_info, NULL);
+>> +
+>> +	return PTR_ERR_OR_ZERO(hwmon_dev);
+>> +}
+>> +
+>> +static const struct wmi_device_id gigabyte_wmi_id_table[] = {
+>> +	{ GIGABYTE_WMI_GUID, NULL },
+>> +	{ }
+>> +};
+>> +
+>> +static struct wmi_driver gigabyte_wmi_driver = {
+>> +	.driver = {
+>> +		.name = "gigabyte-wmi",
+>> +	},
+>> +	.id_table = gigabyte_wmi_id_table,
+>> +	.probe = gigabyte_wmi_probe,
+>> +};
+>> +module_wmi_driver(gigabyte_wmi_driver);
+>> +
+>> +MODULE_DEVICE_TABLE(wmi, gigabyte_wmi_id_table);
+>> +MODULE_AUTHOR("Thomas Weißschuh <thomas@weissschuh.net>");
+>> +MODULE_DESCRIPTION("Gigabyte WMI temperature Driver");
+>> +MODULE_LICENSE("GPL");
+>>
+>> base-commit: 144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
+>>
 > 
 
