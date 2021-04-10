@@ -2,120 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB4B35ACEE
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:24:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E33C635ACEF
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:28:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbhDJLY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 07:24:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45610 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234091AbhDJLYz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 07:24:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8704A610CB;
-        Sat, 10 Apr 2021 11:24:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618053881;
-        bh=HW0d0eO3v4EhDvfbtxrFUAT9yVpKkp9co0ssN0SMbQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X2fFvLwMlrHdDh+b3Y9ktC4ZZaFNK3mi1qyjp2vTavNhm8xaAiRCuIx2jKAT4c/lU
-         yJ4sgVT/FQVeyayB7v8wyz5fqrfsQX/uLnQmeHMWiflrXnllc1bWx4LzSXJG+8gieU
-         DAvCJM/FmXloBxUoSFdVsdhW/gP9XKRgR93WRduI=
-Date:   Sat, 10 Apr 2021 13:24:38 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/18] 4.19.186-rc1 review
-Message-ID: <YHGK9p687604pOUv@kroah.com>
-References: <20210409095301.525783608@linuxfoundation.org>
- <a3241bd5-c8cd-dd47-03a8-906b66cf74e8@linuxfoundation.org>
+        id S234409AbhDJL2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 07:28:54 -0400
+Received: from mail-wr1-f41.google.com ([209.85.221.41]:42924 "EHLO
+        mail-wr1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231279AbhDJL2x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 07:28:53 -0400
+Received: by mail-wr1-f41.google.com with SMTP id p6so1361895wrn.9
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:28:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rPyvO5p6R4xdh4iYQtis3fsH4ovA9npNrFpGcTCeObA=;
+        b=QVq/yqPGKDf7m3pojLmpEIXx+/JE8TcdlJh/3g4dj8SRPo8wpDZTCPTuZ7zWKELcht
+         E2NOZGLb1CoY6O02kGLNgR44rf3QuvxOONHfWUr0Ls+Wucsu8hkHLa58pvzjvh4XZuwV
+         eIM2q5vJKscWvKsF2fpysP25Cl/jU5EvjlPhF0aV1TLYrH8/D9ZQAHoCKUklwFcI3upo
+         LCF+Hn2Id8R3bJLwOAi5uRv91NNx1j0cbEDCxQKc0fY4bvVVl87HebCExtk+xDDULS6+
+         /PPVcNa5L+OAk1rT9nhiWIXiz+3R2Gtmz3Tyu7EzrnLsgEBXPCsp32SMLNuUs3F5yX8y
+         7muQ==
+X-Gm-Message-State: AOAM5307x6TXqmy1HjNThMYV8JmFq+g71lLT7UKwR+ZblNAktF6UoM7W
+        65X+JjNjw3kmpZGRPS1/Ox6FiCEPX3zT
+X-Google-Smtp-Source: ABdhPJynBMcvUr2DdfhGGZ4c7MRuxMUjp1OO98n0DRpeXskW9TltMiVUSsk4ac/i7njP6gJ2ngyfBA==
+X-Received: by 2002:adf:ce83:: with SMTP id r3mr22001123wrn.144.1618054118246;
+        Sat, 10 Apr 2021 04:28:38 -0700 (PDT)
+Received: from tesla ([2a02:c7d:8e07:7c00:3e97:eff:feb3:72f1])
+        by smtp.gmail.com with ESMTPSA id f8sm8558775wro.29.2021.04.10.04.28.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 04:28:37 -0700 (PDT)
+Date:   Sat, 10 Apr 2021 12:28:36 +0100
+From:   Javi Merino <javi.merino@kernel.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Lukasz Luba <lukasz.luba@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-kernel@vger.kernel.org, thara.gopinath@linaro.org,
+        amitk@kernel.org, rui.zhang@intel.com
+Subject: Re: [RESEND PATCH] MAINTAINERS: update thermal CPU cooling section
+Message-ID: <YHGL5MDcOnXPRL+0@tesla>
+References: <20210217115908.22547-1-lukasz.luba@arm.com>
+ <20210218041812.o2yksgbfdvbgtwc4@vireshk-i7>
+ <e3208461-f4ec-8c88-8af4-67c777f9382a@arm.com>
+ <fe4cf822-2915-6de3-3920-9d1a4aa1d3e1@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bszoGADahcLG+mih"
 Content-Disposition: inline
-In-Reply-To: <a3241bd5-c8cd-dd47-03a8-906b66cf74e8@linuxfoundation.org>
+In-Reply-To: <fe4cf822-2915-6de3-3920-9d1a4aa1d3e1@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 02:55:16PM -0600, Shuah Khan wrote:
-> On 4/9/21 3:53 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.19.186 release.
-> > There are 18 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.186-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> 
-> I am seeing a new warn - will debug later on today and let you know
-> what I find:
-> 
-> 
-> WARNING: CPU: 9 PID: 0 at drivers/net/wireless/ath/ath10k/htt_rx.c:46
-> ath10k_htt_rx_pop_paddr+0xde/0x100 [ath10k_core]
-> Modules linked in: cmac algif_hash algif_skcipher af_alg bnep arc4
-> nls_iso8859_1 wmi_bmof snd_hda_codec_realtek snd_hda_codec_generic
-> snd_hda_codec_hdmi edac_mce_amd snd_hda_intel snd_hda_codec kvm_amd
-> snd_hda_core ccp snd_hwdep kvm snd_pcm snd_seq_midi crct10dif_pclmul
-> snd_seq_midi_event ghash_clmulni_intel pcbc snd_rawmidi ath10k_pci snd_seq
-> ath10k_core aesni_intel ath snd_seq_device rtsx_usb_ms btusb aes_x86_64
-> snd_timer crypto_simd btrtl cryptd joydev btbcm glue_helper memstick
-> mac80211 snd btintel input_leds bluetooth soundcore cfg80211 ecdh_generic
-> video wmi mac_hid sch_fq_codel parport_pc ppdev lp parport drm ip_tables
-> x_tables autofs4 hid_generic rtsx_usb_sdmmc usbhid rtsx_usb hid crc32_pclmul
-> uas i2c_piix4 r8169 ahci realtek usb_storage libahci gpio_amdpt gpio_generic
-> CPU: 9 PID: 0 Comm: swapper/9 Not tainted 4.19.186-rc1+ #24
-> Hardware name: LENOVO 90Q30008US/3728, BIOS O4ZKT1CA 09/16/2020
-> RIP: 0010:ath10k_htt_rx_pop_paddr+0xde/0x100 [ath10k_core]
-> Code: 02 00 00 48 85 c9 74 30 4c 8b 49 28 4d 85 c9 74 1e 48 8b 30 45 31 c0
-> b9 02 00 00 00 e8 9b 27 ca cc 4c 89 e0 4c 8b 65 f8 c9 c3 <0f> 0b 45 31 e4 4c
-> 89 e0 4c 8b 65 f8 c9 c3 48 8b 0d 1d df 4c cd eb
-> RSP: 0018:ffff8d81bf043da0 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: ffff8d81927b2150 RCX: ffff8d81b8c01580
-> RDX: 0000000000000008 RSI: 00000000ff708a80 RDI: ffff8d81b8c01e78
-> RBP: ffff8d81bf043da8 R08: 0000000000200000 R09: 0000000000000000
-> R10: ffffdd1f0f40f300 R11: 000ffffffffff000 R12: ffff8d81b8c02068
-> R13: ffff8d81b8c01580 R14: ffff8d81927b2148 R15: ffff8d81b8c01580
-> FS:  0000000000000000(0000) GS:ffff8d81bf040000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000055a2c99a2000 CR3: 00000003de8d4000 CR4: 0000000000340ee0
-> Call Trace:
->  <IRQ>
->  ath10k_htt_txrx_compl_task+0x58d/0xe70 [ath10k_core]
->  ath10k_pci_napi_poll+0x52/0x110 [ath10k_pci]
->  net_rx_action+0x13c/0x350
->  __do_softirq+0xd4/0x2ae
->  irq_exit+0x9c/0xe0
->  do_IRQ+0x86/0xe0
->  common_interrupt+0xf/0xf
->  </IRQ>
-> RIP: 0010:cpuidle_enter_state+0x10b/0x2c0
-> Code: ff e8 f9 68 85 ff 80 7d c7 00 74 17 9c 58 0f 1f 44 00 00 f6 c4 02 0f
-> 85 97 01 00 00 31 ff e8 6c 5d 8b ff fb 66 0f 1f 44 00 00 <48> b8 ff ff ff ff
-> f3 01 00 00 4c 2b 7d c8 ba ff ff ff 7f 49 39 c7
-> RSP: 0018:ffffb11e01a77e50 EFLAGS: 00000246 ORIG_RAX: ffffffffffffffda
-> RAX: ffff8d81bf0626c0 RBX: ffff8d81b2690400 RCX: 00000006e8cb49d2
-> RDX: 0000000000000689 RSI: 00000006e8cb49d2 RDI: 0000000000000000
-> RBP: ffffb11e01a77e90 R08: 00000006e8cb505b R09: 0000000000000e29
-> R10: 0000000000000f04 R11: ffff8d81bf061528 R12: 0000000000000003
-> R13: ffffffff8df9e860 R14: ffffffff8df9e980 R15: 00000006e8cb505b
->  cpuidle_enter+0x17/0x20
-> 
 
-Odd, there's no ath10k changes in here, only one wireless core change.
-Bisection would be great if you can do that, thanks!
+--bszoGADahcLG+mih
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-greg k-h
+On Fri, Apr 02, 2021 at 12:53:08PM +0200, Daniel Lezcano wrote:
+> On 02/04/2021 12:25, Lukasz Luba wrote:
+> > Hi Viresh, Daniel
+> >=20
+> > On 2/18/21 4:18 AM, Viresh Kumar wrote:
+> >> On 17-02-21, 11:59, Lukasz Luba wrote:
+> >>> Update maintainers responsible for CPU cooling on Arm side.
+> >>>
+> >>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> >>> ---
+> >>> Hi Daniel,
+> >>>
+> >>> Please ignore the previous email and that this change with 'R'.
+> >>> Javi will ack it later.
+> >>>
+> >>> Regards,
+> >>> Lukasz
+> >>>
+> >>> =C2=A0 MAINTAINERS | 2 +-
+> >>> =C2=A0 1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/MAINTAINERS b/MAINTAINERS
+> >>> index f32ebcff37d2..fe34f56acb0f 100644
+> >>> --- a/MAINTAINERS
+> >>> +++ b/MAINTAINERS
+> >>> @@ -17774,7 +17774,7 @@ THERMAL/CPU_COOLING
+> >>> =C2=A0 M:=C2=A0=C2=A0=C2=A0 Amit Daniel Kachhap <amit.kachhap@gmail.c=
+om>
+> >>> =C2=A0 M:=C2=A0=C2=A0=C2=A0 Daniel Lezcano <daniel.lezcano@linaro.org>
+> >>> =C2=A0 M:=C2=A0=C2=A0=C2=A0 Viresh Kumar <viresh.kumar@linaro.org>
+> >>> -M:=C2=A0=C2=A0=C2=A0 Javi Merino <javi.merino@kernel.org>
+> >>> +R:=C2=A0=C2=A0=C2=A0 Lukasz Luba <lukasz.luba@arm.com>
+> >>> =C2=A0 L:=C2=A0=C2=A0=C2=A0 linux-pm@vger.kernel.org
+> >>> =C2=A0 S:=C2=A0=C2=A0=C2=A0 Supported
+> >>> =C2=A0 F:=C2=A0=C2=A0=C2=A0 Documentation/driver-api/thermal/cpu-cool=
+ing-api.rst
+> >>
+> >> Good that we have one more reviewer for this :)
+> >>
+> >> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+> >>
+> >=20
+> > I believe it has lost somewhere in people mailboxes.
+> >=20
+> > Thank you Viresh for the ACK.
+> >=20
+> > Could you Daniel (or you Viresh) take this patch, please?
+>=20
+> I was expecting Javi to ack it.
+
+I did, but it looks like my replies never made it to the mailing
+list.  Anyway, here it is:
+
+Acked-by: Javi Merino <javi.merino@kernel.org>
+
+--bszoGADahcLG+mih
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE9DQZSW3HuWfDbCD6B7SEUnaNOCQFAmBxi90ACgkQB7SEUnaN
+OCQseg//dE9dpv0kXK9nTTM7BeAwDYK8zeYiNe0zoTS37vD2hLq2bf/yEF5O/UF8
+y5hG1HF1o7vD/7qWOMmaFIsfLzmt2tUPNeIIFHP275voD1pFy55ORuQounRq6d+h
+9cRAEAVQEpNQhdIFE7A07EZNu3fluxN9yS5ORQ0mRfcHlwW2JrjHU4OT8SRMhU/5
+NhTSv6iZDrfzjxBJeI2sFmFyX9sE+gbmA4aw01EDrqgiZWR5wjqYZPfM1pS4CJEV
+vt/UmHbnqBTS3MDNdIqtcUzbBGCOjIz8JFeg7I3lnSiM8zm83TkyWIcw+b591U4C
+PP6uN9ukppFFUYXGXs2vnhlDVURRN2N41NBZEoIVmiBdDwXAnMLpF/0uvBKNZ6cD
+qlPRQuZc4Ro4gl7B/EV2F3etgn3TakloHjZrNEdEx36V5e6BHznyRvERC4ECT3C2
+sV6em3KMbBlokN2w4mYI9q+lntFkUvbhyx0TOJkF212z6gvNvTkHEYGPGaLFSBwc
++Jm1t9HwRrq9yELDF0YKucmIkr34JZctRSrC2SZeHB5S8wEu9bdooE1tbTjcCn/r
+4mpfXInc7sm4t4m8pai0QNq9+dMQnOGT/x5vYJapv77awYlHWMxdnU6fOzEipjnT
+F4A66+rnQeN2SvbbODNY1LrQ/lrAeCAFkQrvONHF9ovOtAdU+Vg=
+=jdq0
+-----END PGP SIGNATURE-----
+
+--bszoGADahcLG+mih--
