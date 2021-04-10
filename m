@@ -2,135 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C6D735AF5A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 19:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5CF35AF5E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 19:45:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234920AbhDJRnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 13:43:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41540 "EHLO
+        id S234923AbhDJRpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 13:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234668AbhDJRnA (ORCPT
+        with ESMTP id S234392AbhDJRo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 13:43:00 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A02C06138D
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 10:42:45 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id p23so6565311ljn.0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 10:42:45 -0700 (PDT)
+        Sat, 10 Apr 2021 13:44:59 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D05C06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 10:44:44 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id v140so14741232lfa.4
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 10:44:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YQRCaZgP2UefM3Ubw17zbmZirkjkTDsaBGQG+axJ5kQ=;
-        b=mjbnE9JRYwo/fH61O7Xyg2aVRfgPRGJsm4XORh9xQMVPMxNp+zDIb9pMaFMV3ATQt1
-         +M6LrxvuT5e9oDB0rkXB3wmBvNR5UTP6ndLcJvIlUC/C6YqLmzFDpNWr6yxOzloHsibA
-         tBA385gGi2e6vbt5P0I+lZ4/gLnEsvg1MMxBJz/poKMw42gMCkjCZeJAsSPJtDpkVpmL
-         h4P0hfiQhLFbhxUpMMAUkID0aSo/qqJaKEmrSEfzJ2rIKAOhoLyFc+USxeCPa8Cy817P
-         zqEMX41eeVSLoHDtC8131M4jumJazcD+PQis77VUdbRdVU4X/JjbmLmGylWWbsV/pbX4
-         HxRw==
+        bh=esMk4wtxK5QjSki1w8GqTaqU70e3m70uQ3+iN1O/jRI=;
+        b=lhHzahZDj1gMLdiDi/XX+TdfvNNizYENvZUbJwrIUVRU2/diE7cFZPVpW/k1XaJiBf
+         b+/7c5kXVs/jFVIqGKAxF3563w6mBH8JshvbRE82Ghv4LAA8So5dRJ7W5BQZMxcKQSN8
+         sLkwNYwC2/ZSoxkID3sMpuXqG/zHr2NtSvRID1sL6S2nJlRT+94R/Jhnn32dkzO6Lf2h
+         mZnqG0pYukR+aVuDWGkgGZnCrYG8d5vG+Db13eVBcCl1LufrnKDqCwNVCsNKsRsxrOsb
+         Ib/W98X/9r1yhITrnUfy/1YY609MeDAXRqPacRJTeVQPOlmd6XYPcAaZD+rBxdKJQDAn
+         ptxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YQRCaZgP2UefM3Ubw17zbmZirkjkTDsaBGQG+axJ5kQ=;
-        b=daIzgO5saFxS1gu9/cdt7BwzuE2g8HM8ocCGJlqUitSoQDtHPp7isTcO8q7XUYyuTT
-         fQnXDXOwFuoDapyKlLiQv0z24ooTkVep9frhztygSXzU4jyy85gfhPmTtLUMwLATgx9a
-         Oo52QuebYuaeOCthw7WTmhdvf6tPWbXFaZppSzGenya5WVoIwe1/yIFl2NnR7xj0/FJC
-         Mr8l1HCEGheBWMGjAOn8iBdkq3nMGPNAsSL/2X66AX1f4FqVNLlMJ5+QHmWV8niyObBz
-         9S3+6MzpW64qJOVNzI1RaGN0n4RLXjKXDiPZY5x9Az2MVOuSbrvdQQv+ErOayxvtxeTH
-         RXjw==
-X-Gm-Message-State: AOAM532X3PoqEtF5qFP54MZgrjsxbKP5tR1aryzg1aL1Socx4x3t9h1i
-        jqhcvWhdcLziuWz+/ShiffqpzFbsd7WIh8H/XE3Jlg==
-X-Google-Smtp-Source: ABdhPJz54PyIV6KeuDGJx6pxTDDePDj+YPgyrhMW/RNrlHb4Plp9GyuL8iOp7iVgh+YTm/eAuEaH7X7lzhVg+2SHD4E=
-X-Received: by 2002:a2e:9cc4:: with SMTP id g4mr12781684ljj.34.1618076563428;
- Sat, 10 Apr 2021 10:42:43 -0700 (PDT)
+        bh=esMk4wtxK5QjSki1w8GqTaqU70e3m70uQ3+iN1O/jRI=;
+        b=ZpSBVi7ZSR2PnGmA1HbdC61h0vfG/xlGIJd4yP7LCggwp9+0zX3K5I5GNIfuzuccBw
+         jKt8ekRuf16OYplQECTf5qlkheo8/Hk4faI8tFlJlVPWVBs8GZWidm1zrFQi8b5FGV4F
+         ZQbWJBGcydXPttMgPRCmPlmfKu9WWGf6+WJBHnkQaJUrbADpJwLMTFuezA6ytbrHp74f
+         HiQN8IUO3jITinmp6d1k0BrYTQ/vHJ0vbB2ni49iXul4hzGUZe7u4F9tNTlTvbD4l+sq
+         MyQ99qrNaAXIvevlXpsyfb3Bxch9HsCP8WHGQU8vMdkWb4A3lKeYrzndp5zQ2/SF9lpX
+         pk6Q==
+X-Gm-Message-State: AOAM532bY5XuUA/LhYVzxM22ZJ/oqoUFSRHZe0/1fG7wIoDWSk5lGJU6
+        MLuyojrrdGMt91NEpr9z0b2G+TLVTqqq2TydOn9GYg==
+X-Google-Smtp-Source: ABdhPJwCIxB9VaioeQzZKXJb1BZEo4stMYbxAma3VmJJVffcYjLv02rlt0z2a3FumM27zs/qNy4cun6iw9RiSkQaz9U=
+X-Received: by 2002:a05:6512:c04:: with SMTP id z4mr13907650lfu.299.1618076682646;
+ Sat, 10 Apr 2021 10:44:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com> <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus>
-In-Reply-To: <YHHPbQm2pn2ysth0@enceladus>
+References: <20210409122959.82264-1-songmuchun@bytedance.com> <20210409122959.82264-2-songmuchun@bytedance.com>
+In-Reply-To: <20210409122959.82264-2-songmuchun@bytedance.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Sat, 10 Apr 2021 10:42:30 -0700
-Message-ID: <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+Date:   Sat, 10 Apr 2021 10:44:30 -0700
+Message-ID: <CALvZod7kYwt7XfuC6LnZreswKrXRLnUEZ7LbSSuNtgb-rdo=RA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 01/18] mm: memcontrol: fix page charging in page replacement
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, Balbir Singh <bsingharora@gmail.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 9:16 AM Ilias Apalodimas
-<ilias.apalodimas@linaro.org> wrote:
+On Fri, Apr 9, 2021 at 5:32 AM Muchun Song <songmuchun@bytedance.com> wrote:
 >
-> Hi Matthew
+> The pages aren't accounted at the root level, so do not charge the page
+> to the root memcg in page replacement. Although we do not display the
+> value (mem_cgroup_usage) so there shouldn't be any actual problem, but
+> there is a WARN_ON_ONCE in the page_counter_cancel(). Who knows if it
+> will trigger? So it is better to fix it.
 >
-> On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:
-> > On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:
-> > > This is needed by the page_pool to avoid recycling a page not allocated
-> > > via page_pool.
-> >
-> > Is the PageType mechanism more appropriate to your needs?  It wouldn't
-> > be if you use page->_mapcount (ie mapping it to userspace).
->
-> Interesting!
-> Please keep in mind this was written ~2018 and was stale on my branches for
-> quite some time.  So back then I did try to use PageType, but had not free
-> bits.  Looking at it again though, it's cleaned up.  So yes I think this can
-> be much much cleaner.  Should we go and define a new PG_pagepool?
->
->
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-can not be used.
-
-There is a recent discussion [1] on memcg accounting of TCP RX
-zerocopy and I am wondering if this work can somehow help in that
-regard. I will take a look at the series.
-
-[1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
