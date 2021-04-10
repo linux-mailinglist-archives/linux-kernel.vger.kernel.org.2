@@ -2,112 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B134035AB12
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 07:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4124835AB15
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 07:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhDJFRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 01:17:48 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:55528 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229494AbhDJFRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 01:17:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618031853; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=MbkO+CCbuA9UR2abtVh1RmywDTJ5QCfxhgA6USUv4fg=; b=fqUtHwnIzyFJZtI6i6HribaRmKPpuyBlYLblU4LpZNi+1wD7A4FdT9N+bAsC5Q46MFIKIKar
- sK6uzrxx/CiTNl4wRM/gUW6iFUCOyx+V9wgLYW0rwpd/S80igpRKaR6j6Y+Pqa9ZnwsaRcKf
- 91SeqG8bDjAKuh7DNQqsYgAWHYI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 607134da8807bcde1d6bb69b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 10 Apr 2021 05:17:14
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4404EC43463; Sat, 10 Apr 2021 05:17:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.252.214.131] (unknown [202.46.23.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EB620C433C6;
-        Sat, 10 Apr 2021 05:17:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EB620C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH v2] arm64: dts: qcom: Update iommu property for
- simultaneous playback
-To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
-        dianders@chromium.org, judyhsiao@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <20210406163330.11996-1-srivasam@codeaurora.org>
- <161798766423.3790633.3895809656191757415@swboyd.mtv.corp.google.com>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <b955dcbb-48b6-f236-ccbd-bc7d0de1df60@codeaurora.org>
-Date:   Sat, 10 Apr 2021 10:47:07 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S230414AbhDJF25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 01:28:57 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:30803 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229472AbhDJF24 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 01:28:56 -0400
+X-UUID: 9cac798b3f9a4c3f99cc5b6f17d8f24f-20210410
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MlIao8blKXAQsabTwL7mSrhVFjww5CHYY94qATPfwNQ=;
+        b=MizXZU8MhCqGYz+utIlfN9yzL+M+KTbkoxexrKiLY3lQqzpSLSFvIpG+i3lKRZvPn1ut054BrzxRPNvuGE297LTEZWmcGqiz2i2o83xEQtOJVvdVio30ylE+0/Z+S0SRFG5Q2BgrPkDRs2ZVNWTVjSIw0/JSqhWvUHvZVxZk6zg=;
+X-UUID: 9cac798b3f9a4c3f99cc5b6f17d8f24f-20210410
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <yong.wu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1987728062; Sat, 10 Apr 2021 13:28:38 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 10 Apr
+ 2021 13:28:35 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 10 Apr 2021 13:28:34 +0800
+Message-ID: <1618032514.26944.20.camel@mhfsdcap03>
+Subject: Re: [PATCH] iommu/mediatek: always enable the clk on resume
+From:   Yong Wu <yong.wu@mediatek.com>
+To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <matthias.bgg@gmail.com>,
+        <will@kernel.org>, <joro@8bytes.org>, <kernel@collabora.com>,
+        <dafna3@gmail.com>, <enric.balletbo@collabora.com>
+Date:   Sat, 10 Apr 2021 13:28:34 +0800
+In-Reply-To: <20210408122842.29009-1-dafna.hirschfeld@collabora.com>
+References: <20210408122842.29009-1-dafna.hirschfeld@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <161798766423.3790633.3895809656191757415@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-TM-SNTS-SMTP: F7EA9B2BB2D8F08BC06597B904289D59BAB636E1C29EA433EE645D2BBDA110822000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen.
-
-Thanks for your time!!!
-
-
-On 4/9/2021 10:31 PM, Stephen Boyd wrote:
-> Quoting Srinivasa Rao Mandadapu (2021-04-06 09:33:30)
->> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
->>
->> Update iommu property in lpass cpu node for supporting
->> simultaneous playback on headset and speaker.
->>
->> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> ---
->> Changes since v1:
->>     -- Commit messge header change
->>
->>   arch/arm64/boot/dts/qcom/sc7180.dtsi | 3 ++-
->>   1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> index a6da78d31fdd..6228ba2d8513 100644
->> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
->> @@ -3566,7 +3566,8 @@ lpass_cpu: lpass@62f00000 {
->>                          reg = <0 0x62f00000 0 0x29000>;
->>                          reg-names = "lpass-lpaif";
->>   
->> -                       iommus = <&apps_smmu 0x1020 0>;
->> +                       iommus = <&apps_smmu 0x1020 0>,
->> +                               <&apps_smmu 0x1021 0>;
-> The stream ID 0x1032 was also dropped in this version but there's no
-> mention of that in the changelog. Why?
-That is ID is for HDMI Stream, so as part of DP patches that will be added.
->
->>   
->>                          power-domains = <&lpass_hm LPASS_CORE_HM_GDSCR>;
->>
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+T24gVGh1LCAyMDIxLTA0LTA4IGF0IDE0OjI4ICswMjAwLCBEYWZuYSBIaXJzY2hmZWxkIHdyb3Rl
+Og0KPiBJbiBtdGtfaW9tbXVfcnVudGltZV9yZXN1bWUgYWx3YXlzIGVuYWJsZSB0aGUgY2xrLCBl
+dmVuDQo+IGlmIG00dV9kb20gaXMgbnVsbC4gT3RoZXJ3aXNlIHRoZSAnc3VzcGVuZCcgY2IgbWln
+aHQNCj4gZGlzYWJsZSB0aGUgY2xrIHdoaWNoIGlzIGFscmVhZHkgZGlzYWJsZWQgY2F1c2luZyB0
+aGUgd2FybmluZzoNCg0KSGkgRGFmbmEsDQoNClRoYW5rcyB2ZXJ5IG11Y2ggZm9yIHRlc3Rpbmcg
+YW5kIHJlcG9ydC4gSSBoYXZlIHJlcHJvZHVjZWQgdGhpcyBpc3N1ZQ0KbG9jYWxseS4gSXQgaGFw
+cGVuZWQgd2hlbiBpb21tdSBwcm9iZSBiZWZvcmUgdGhhbiBzbWktY29tbW9uKGlvbW11IGlzDQp0
+aGUgc3VwcGxpZXIgaW4gdGhlIGRldi1saW5rKS4NCg0KSSBwdXQgY2xrX3ByZXBhcmVfZW5hYmxl
+IGluIHRoZSBfaHdfaW5pdCBzaW5jZSBJIGhhdmUgcGxhbiB0byByZW1vdmUgdGhlDQpwbV9ydW50
+aW1lX2dldC9wdXQgaW4gdGhlIF9hdHRhY2hfZGV2aWNlKFRoaXMgd2lsbCB0dXJuIG9mZiB0aGUg
+ZGlzcGxheQ0KcG93ZXIgZG9tYWluIGlmIHdlIHNob3cgZmFzdGxvZ28gYXQgdGhhdCB0aW1lLikg
+TWF5IGJlIHdlIHNob3VsZCBrZWVwDQp0aGUgc21pLWNvbW1vbiBwcm9iZSBhbHdheXMgYmVmb3Jl
+IHRoYW4gaW9tbXUuDQoNCkFueXdheSwgVGhpcyBwYXRjaCBtYWtlcyBjb2RlIHN5bW1ldHJpY2Fs
+IGFuZCBpdCBpcyBnb29kIGZvciBub3cuDQoNClJldmlld2VkLWJ5OiBZb25nIFd1IDx5b25nLnd1
+QG1lZGlhdGVrLmNvbT4NCg0KPiANCj4gWyAgICAxLjU4NjEwNF0gaW5mcmFfbTR1IGFscmVhZHkg
+ZGlzYWJsZWQNCj4gWyAgICAxLjU4NjEzM10gV0FSTklORzogQ1BVOiAwIFBJRDogMTIxIGF0IGRy
+aXZlcnMvY2xrL2Nsay5jOjk1MiBjbGtfY29yZV9kaXNhYmxlKzB4YjAvMHhiOA0KPiBbICAgIDEu
+NTk0MzkxXSBtdGstaW9tbXUgMTAyMDUwMDAuaW9tbXU6IGJvdW5kIDE4MDAxMDAwLmxhcmIgKG9w
+cyBtdGtfc21pX2xhcmJfY29tcG9uZW50X29wcykNCj4gWyAgICAxLjU5ODEwOF0gTW9kdWxlcyBs
+aW5rZWQgaW46DQo+IFsgICAgMS41OTgxMTRdIENQVTogMCBQSUQ6IDEyMSBDb21tOiBrd29ya2Vy
+LzA6MiBOb3QgdGFpbnRlZCA1LjEyLjAtcmM1ICM2OQ0KPiBbICAgIDEuNjA5MjQ2XSBtdGstaW9t
+bXUgMTAyMDUwMDAuaW9tbXU6IGJvdW5kIDE0MDI3MDAwLmxhcmIgKG9wcyBtdGtfc21pX2xhcmJf
+Y29tcG9uZW50X29wcykNCj4gWyAgICAxLjYxNzQ4N10gSGFyZHdhcmUgbmFtZTogR29vZ2xlIEVs
+bSAoRFQpDQo+IFsgICAgMS42MTc0OTFdIFdvcmtxdWV1ZTogcG0gcG1fcnVudGltZV93b3JrDQo+
+IFsgICAgMS42MjA1NDVdIG10ay1pb21tdSAxMDIwNTAwMC5pb21tdTogYm91bmQgMTkwMDEwMDAu
+bGFyYiAob3BzIG10a19zbWlfbGFyYl9jb21wb25lbnRfb3BzKQ0KPiANCj4gWyAgICAxLjYyNzIy
+OV0gcHN0YXRlOiA2MDAwMDA4NSAoblpDdiBkYUlmIC1QQU4gLVVBTyAtVENPIEJUWVBFPS0tKQ0K
+PiBbICAgIDEuNjU5Mjk3XSBwYyA6IGNsa19jb3JlX2Rpc2FibGUrMHhiMC8weGI4DQo+IFsgICAg
+MS42NjM0NzVdIGxyIDogY2xrX2NvcmVfZGlzYWJsZSsweGIwLzB4YjgNCj4gWyAgICAxLjY2NzY1
+Ml0gc3AgOiBmZmZmODAwMDExYjliYmUwDQo+IFsgICAgMS42NzA5NTldIHgyOTogZmZmZjgwMDAx
+MWI5YmJlMCB4Mjg6IDAwMDAwMDAwMDAwMDAwMDANCj4gWyAgICAxLjY3NjI2N10geDI3OiBmZmZm
+ODAwMDExNDQ4MDAwIHgyNjogZmZmZjgwMDAxMDBjZmQ5OA0KPiBbICAgIDEuNjgxNTc0XSB4MjU6
+IGZmZmY4MDAwMTFiOWJkNDggeDI0OiAwMDAwMDAwMDAwMDAwMDAwDQo+IFsgICAgMS42ODY4ODJd
+IHgyMzogMDAwMDAwMDAwMDAwMDAwMCB4MjI6IGZmZmY4MDAwMTA2ZmFkOTANCj4gWyAgICAxLjY5
+MjE4OV0geDIxOiAwMDAwMDAwMDAwMDAwMDBhIHgyMDogZmZmZjAwMDBjMDA0ODUwMA0KPiBbICAg
+IDEuNjk3NDk2XSB4MTk6IGZmZmYwMDAwYzAwNDg1MDAgeDE4OiBmZmZmZmZmZmZmZmZmZmZmDQo+
+IFsgICAgMS43MDI4MDRdIHgxNzogMDAwMDAwMDAwMDAwMDAwMCB4MTY6IDAwMDAwMDAwMDAwMDAw
+MDANCj4gWyAgICAxLjcwODExMl0geDE1OiBmZmZmODAwMDExNDYwMzAwIHgxNDogZmZmZmZmZmZm
+ZmZlMDAwMA0KPiBbICAgIDEuNzEzNDIwXSB4MTM6IGZmZmY4MDAwMTE0NjAyZDggeDEyOiAwNzIw
+MDcyMDA3MjAwNzIwDQo+IFsgICAgMS43MTg3MjddIHgxMTogMDcyMDA3MjAwNzIwMDcyMCB4MTA6
+IDA3MjAwNzIwMDcyMDA3MjANCj4gWyAgICAxLjcyNDAzNV0geDkgOiBmZmZmODAwMDExYjliYmUw
+IHg4IDogZmZmZjgwMDAxMWI5YmJlMA0KPiBbICAgIDEuNzI5MzQyXSB4NyA6IDAwMDAwMDAwMDAw
+MDAwMDkgeDYgOiBmZmZmODAwMDExNGI4MzI4DQo+IFsgICAgMS43MzQ2NDldIHg1IDogMDAwMDAw
+MDAwMDAwMDAwMCB4NCA6IDAwMDAwMDAwMDAwMDAwMDANCj4gWyAgICAxLjczOTk1Nl0geDMgOiAw
+MDAwMDAwMGZmZmZmZmZmIHgyIDogZmZmZjgwMDAxMTQ2MDI5OA0KPiBbICAgIDEuNzQ1MjYzXSB4
+MSA6IDFhZjFkN2RlMjc2ZjQ1MDAgeDAgOiAwMDAwMDAwMDAwMDAwMDAwDQo+IFsgICAgMS43NTA1
+NzJdIENhbGwgdHJhY2U6DQo+IFsgICAgMS43NTMwMTBdICBjbGtfY29yZV9kaXNhYmxlKzB4YjAv
+MHhiOA0KPiBbICAgIDEuNzU2ODQwXSAgY2xrX2NvcmVfZGlzYWJsZV9sb2NrKzB4MjQvMHg0MA0K
+PiBbICAgIDEuNzYxMTA1XSAgY2xrX2Rpc2FibGUrMHgyMC8weDMwDQo+IFsgICAgMS43NjQ1MDFd
+ICBtdGtfaW9tbXVfcnVudGltZV9zdXNwZW5kKzB4ODgvMHhhOA0KPiBbICAgIDEuNzY5MTE0XSAg
+cG1fZ2VuZXJpY19ydW50aW1lX3N1c3BlbmQrMHgyYy8weDQ4DQo+IFsgICAgMS43NzM4MTVdICBf
+X3JwbV9jYWxsYmFjaysweGUwLzB4MTc4DQo+IFsgICAgMS43Nzc1NTldICBycG1fY2FsbGJhY2sr
+MHgyNC8weDg4DQo+IFsgICAgMS43ODEwNDFdICBycG1fc3VzcGVuZCsweGRjLzB4NDcwDQo+IFsg
+ICAgMS43ODQ1MjNdICBycG1faWRsZSsweDEyYy8weDE3MA0KPiBbICAgIDEuNzg3ODMxXSAgcG1f
+cnVudGltZV93b3JrKzB4YTgvMHhjMA0KPiBbICAgIDEuNzkxNTczXSAgcHJvY2Vzc19vbmVfd29y
+aysweDFlOC8weDM2MA0KPiBbICAgIDEuNzk1NTgwXSAgd29ya2VyX3RocmVhZCsweDQ0LzB4NDc4
+DQo+IFsgICAgMS43OTkyMzddICBrdGhyZWFkKzB4MTUwLzB4MTU4DQo+IFsgICAgMS44MDI0NjBd
+ICByZXRfZnJvbV9mb3JrKzB4MTAvMHgzMA0KPiBbICAgIDEuODA2MDM0XSAtLS1bIGVuZCB0cmFj
+ZSA4MjQwMjkyMGVmNjQ1NzNiIF0tLS0NCj4gWyAgICAxLjgxMDcyOF0gLS0tLS0tLS0tLS0tWyBj
+dXQgaGVyZSBdLS0tLS0tLS0tLS0tDQo+IA0KPiBJbiBhZGRpdGlvbiwgd2Ugbm93IGRvbid0IG5l
+ZWQgdG8gZW5hYmxlIHRoZSBjbG9jayBmcm9tIHRoZQ0KPiBmdW5jdGlvbiBtdGtfaW9tbXVfaHdf
+aW5pdCBzaW5jZSBpdCBpcyBhbHJlYWR5IGVuYWJsZWQgYnkgdGhlIHJlc3VtZS4NCj4gDQo+IEZp
+eGVzOiBjb21taXQgYzBiNTc1ODFiNzNiICgiaW9tbXUvbWVkaWF0ZWs6IEFkZCBwb3dlci1kb21h
+aW4gb3BlcmF0aW9uIikNCj4gU2lnbmVkLW9mZi1ieTogRGFmbmEgSGlyc2NoZmVsZCA8ZGFmbmEu
+aGlyc2NoZmVsZEBjb2xsYWJvcmEuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvaW9tbXUvbXRrX2lv
+bW11LmMgfCAxOSArKysrKysrKy0tLS0tLS0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNl
+cnRpb25zKCspLCAxMSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lv
+bW11L210a19pb21tdS5jIGIvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiBpbmRleCA2ZWNj
+MDA3ZjA3Y2QuLmUxNjhhNjgyODA2YSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9pb21tdS9tdGtf
+aW9tbXUuYw0KPiArKysgYi9kcml2ZXJzL2lvbW11L210a19pb21tdS5jDQo+IEBAIC02ODgsMTMg
+KzY4OCw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaW9tbXVfb3BzIG10a19pb21tdV9vcHMgPSB7
+DQo+ICBzdGF0aWMgaW50IG10a19pb21tdV9od19pbml0KGNvbnN0IHN0cnVjdCBtdGtfaW9tbXVf
+ZGF0YSAqZGF0YSkNCj4gIHsNCj4gIAl1MzIgcmVndmFsOw0KPiAtCWludCByZXQ7DQo+IC0NCj4g
+LQlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoZGF0YS0+YmNsayk7DQo+IC0JaWYgKHJldCkgew0K
+PiAtCQlkZXZfZXJyKGRhdGEtPmRldiwgIkZhaWxlZCB0byBlbmFibGUgaW9tbXUgYmNsayglZClc
+biIsIHJldCk7DQo+IC0JCXJldHVybiByZXQ7DQo+IC0JfQ0KPiAgDQo+ICAJaWYgKGRhdGEtPnBs
+YXRfZGF0YS0+bTR1X3BsYXQgPT0gTTRVX01UODE3Mykgew0KPiAgCQlyZWd2YWwgPSBGX01NVV9Q
+UkVGRVRDSF9SVF9SRVBMQUNFX01PRCB8DQo+IEBAIC03NjAsNyArNzUzLDYgQEAgc3RhdGljIGlu
+dCBtdGtfaW9tbXVfaHdfaW5pdChjb25zdCBzdHJ1Y3QgbXRrX2lvbW11X2RhdGEgKmRhdGEpDQo+
+ICAJaWYgKGRldm1fcmVxdWVzdF9pcnEoZGF0YS0+ZGV2LCBkYXRhLT5pcnEsIG10a19pb21tdV9p
+c3IsIDAsDQo+ICAJCQkgICAgIGRldl9uYW1lKGRhdGEtPmRldiksICh2b2lkICopZGF0YSkpIHsN
+Cj4gIAkJd3JpdGVsX3JlbGF4ZWQoMCwgZGF0YS0+YmFzZSArIFJFR19NTVVfUFRfQkFTRV9BRERS
+KTsNCj4gLQkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGRhdGEtPmJjbGspOw0KPiAgCQlkZXZfZXJy
+KGRhdGEtPmRldiwgIkZhaWxlZCBAIElSUS0lZCBSZXF1ZXN0XG4iLCBkYXRhLT5pcnEpOw0KPiAg
+CQlyZXR1cm4gLUVOT0RFVjsNCj4gIAl9DQo+IEBAIC05NzcsMTQgKzk2OSwxOSBAQCBzdGF0aWMg
+aW50IF9fbWF5YmVfdW51c2VkIG10a19pb21tdV9ydW50aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNl
+ICpkZXYpDQo+ICAJdm9pZCBfX2lvbWVtICpiYXNlID0gZGF0YS0+YmFzZTsNCj4gIAlpbnQgcmV0
+Ow0KPiAgDQo+IC0JLyogQXZvaWQgZmlyc3QgcmVzdW1lIHRvIGFmZmVjdCB0aGUgZGVmYXVsdCB2
+YWx1ZSBvZiByZWdpc3RlcnMgYmVsb3cuICovDQo+IC0JaWYgKCFtNHVfZG9tKQ0KPiAtCQlyZXR1
+cm4gMDsNCj4gIAlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoZGF0YS0+YmNsayk7DQo+ICAJaWYg
+KHJldCkgew0KPiAgCQlkZXZfZXJyKGRhdGEtPmRldiwgIkZhaWxlZCB0byBlbmFibGUgY2xrKCVk
+KSBpbiByZXN1bWVcbiIsIHJldCk7DQo+ICAJCXJldHVybiByZXQ7DQo+ICAJfQ0KPiArDQo+ICsJ
+LyoNCj4gKwkgKiBVcHBvbiBmaXJzdCByZXN1bWUsIG9ubHkgZW5hYmxlIHRoZSBjbGsgYW5kIHJl
+dHVybiwgc2luY2UgdGhlIHZhbHVlcyBvZiB0aGUNCj4gKwkgKiByZWdpc3RlcnMgYXJlIG5vdCB5
+ZXQgc2V0Lg0KPiArCSAqLw0KPiArCWlmICghbTR1X2RvbSkNCj4gKwkJcmV0dXJuIDA7DQo+ICsN
+Cj4gIAl3cml0ZWxfcmVsYXhlZChyZWctPndyX2xlbl9jdHJsLCBiYXNlICsgUkVHX01NVV9XUl9M
+RU5fQ1RSTCk7DQo+ICAJd3JpdGVsX3JlbGF4ZWQocmVnLT5taXNjX2N0cmwsIGJhc2UgKyBSRUdf
+TU1VX01JU0NfQ1RSTCk7DQo+ICAJd3JpdGVsX3JlbGF4ZWQocmVnLT5kY21fZGlzLCBiYXNlICsg
+UkVHX01NVV9EQ01fRElTKTsNCg0K
 
