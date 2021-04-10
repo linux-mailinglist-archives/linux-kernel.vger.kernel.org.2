@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D627335AE20
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4BE035AE18
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:20:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234887AbhDJOVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:21:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234829AbhDJOVF (ORCPT
+        id S234772AbhDJOUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:20:45 -0400
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:51437 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234519AbhDJOUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:21:05 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBC4C06138A
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:20:50 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id sd23so4381995ejb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:20:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/Lkqq2V46NZQ/iOiuGJd2meNdKo8+AHiDVO59b9jNUY=;
-        b=QmImsZ0Dpg40Z5YyyMPHvT21jqkIK/2JLMXawV0LcpKyGoE7u/jiQMpnVvAMsqmUgs
-         ndExBtdxcI16L7AeKRJA3wg7k/zOwFN/W3LsT/DrO7eMiQ50mXrH0XxSH2At4uPRzp3J
-         PXY6hoR+vLY6h+Ewp4FQ3x0mC08UD/s8HYIBsjExA+LjSS2lXgtxwAiNDxdsP6as6juU
-         rF5pbkrHlFL1hFngEqvXlM4FHkP6s8bJbuOqpDTt3zt7uXbBHn73+9AVpkMfBslYBZAM
-         Afj94scUwSAMuP5RAGK8yThFgPpmQMNINzfAml2sTxMeKlTrsKq+xC5Ul3ROYZZp+Qfp
-         fnIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/Lkqq2V46NZQ/iOiuGJd2meNdKo8+AHiDVO59b9jNUY=;
-        b=MYeAGA9RExeMY2cJvgbKSAV00EQuyOkpZoQhtrAFRvJpMDiqgKuG/liaWYPZlJ3D0q
-         HZTDtJ55GITb0fEurYSKTRg0u4K1xcCGdWy9Hj4zsZm+f4gCQeB+l+n6LZgpmuSA7IQo
-         RxC+E1yAeA7swRwnhUSNWWJjv3K1D8R6Ic/MovwqWN0s8XdL8oG7O6dTFzMoSpynq1Ad
-         RUbW/95U5LhNjXsDLNy0L6oYsZaPLHux86PthoU1Jylz/ghpo6I/t+OcV3FE7ZwbU53g
-         Ppiddrx9iTfmvMWN5RqtQx9MJt9iy7wpPj2KWpMTl1ZgvZjMherX9+zK4/Gxym05UEFF
-         zOFw==
-X-Gm-Message-State: AOAM530IqPlMl49KMgEr98040YNwwHvFAPRq7gui08ErYhmP0T2yrE3u
-        D81/iR2xDIVo22FO8V4ugaNx3qkGisUfBQ==
-X-Google-Smtp-Source: ABdhPJyL06EkeJPFuy3JVuCqETeaHRiFIl6/6SgwWTNB5NRbwiMEExv4/fJb39fnV8bixE44WRELYg==
-X-Received: by 2002:a17:906:d9ca:: with SMTP id qk10mr19504519ejb.436.1618064448856;
-        Sat, 10 Apr 2021 07:20:48 -0700 (PDT)
-Received: from agape ([5.171.81.28])
-        by smtp.gmail.com with ESMTPSA id dj8sm3170248edb.86.2021.04.10.07.20.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 07:20:48 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 05/25] staging: rtl8723bs: put spaces around operators
-Date:   Sat, 10 Apr 2021 16:20:18 +0200
-Message-Id: <35c6c5efa2661c6fd9d40c3a681eb8470c5015e6.1618064274.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1618064274.git.fabioaiuto83@gmail.com>
-References: <cover.1618064274.git.fabioaiuto83@gmail.com>
+        Sat, 10 Apr 2021 10:20:43 -0400
+Date:   Sat, 10 Apr 2021 14:20:19 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1618064427;
+        bh=9IwoH2UcLoIb4zzjDMXjFYQvN8/nnZXjHg+Ev5D0vqQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=pB8VcD1Y+IhvvVvC99JSiSxDGrqsB+sQEkZEqu3DKpuoh1aj9v5atmGpAxgj854/A
+         /q2aen4oPcVSnFWudSbxZHOJiZYIouCfNv564UnIqAXQr4xA1DBDg30IkD0Z3o+u01
+         UDG3yY8a8eyxQ9Tfbawr5MN7jQz5Oprn1aDlPWRCwXYxquBjR9SV8jKRHzpIyt3tfa
+         gOQdtXognDu7MGUzPQI+ieD7xT4MyRwv2q9nQLqg20SUjiuFbBCWtBiCaHtK/tjtPu
+         i0QzHM6SnBzWgMP+tfUA1cyZmVya4KsQSQUhNhIMSuT0YivcjdHs6jZEJNthPBM+xX
+         dgX/AWLmf+HBQ==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Bryan Brattlof <hello@bryanbrattlof.com>
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: [PATCH v2] staging: rtl8723bs: remove unnecessary goto jumps
+Message-ID: <20210410141945.424238-1-hello@bryanbrattlof.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix following post-commit hook checkpatch issue:
+The next instruction for both 'goto exit' jump statements is to
+execute the exit jump instructions regardless. We can safely
+remove all jump statements from __init rtw_drv_entry()
 
-CHECK: spaces preferred around that '+' (ctx:VxV)
-89: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:2431:
-+	rtw_get_wps_ie(pbuf+_FIXED_IE_LENGTH_, ;
- 	                   ^
-len-_FIXED_IE_LENGTH_, NULL, &wps_ielen)
-
-CHECK: spaces preferred around that '-' (ctx:VxV)
-89: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:2431:
-+	rtw_get_wps_ie(pbuf+_FIXED_IE_LENGTH_, len-_FIXED_IE_LENGTH_,
-	                                          ^
-NULL, &wps_ielen);
-
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
 ---
- drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes from:
+  v1: removed unnecessary edit of DBG_871X_LEVEL
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-index 6d5109aa4b69..80d9805eaa38 100644
---- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-+++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-@@ -2428,7 +2428,7 @@ static int rtw_add_beacon(struct adapter *adapter, const u8 *head, size_t head_l
- 	len = head_len+tail_len-24;
- 
- 	/* check wps ie if inclued */
--	rtw_get_wps_ie(pbuf+_FIXED_IE_LENGTH_, len-_FIXED_IE_LENGTH_, NULL, &wps_ielen);
-+	rtw_get_wps_ie(pbuf + _FIXED_IE_LENGTH_, len - _FIXED_IE_LENGTH_, NULL, &wps_ielen);
- 
- 	/* pbss_network->IEs will not include p2p_ie, wfd ie */
- 	rtw_ies_remove_ie(pbuf, &len, _BEACON_IE_OFFSET_, WLAN_EID_VENDOR_SPECIFIC, P2P_OUI, 4);
--- 
-2.20.1
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging=
+/rtl8723bs/os_dep/sdio_intf.c
+index 9fd926e1698f..39b6d4b6dec4 100644
+--- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
++++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+@@ -517,12 +517,8 @@ static int __init rtw_drv_entry(void)
+ =09if (ret !=3D 0) {
+ =09=09sdio_drvpriv.drv_registered =3D false;
+ =09=09rtw_ndev_notifier_unregister();
+-=09=09goto exit;
+ =09}
+=20
+-=09goto exit;
+-
+-exit:
+ =09DBG_871X_LEVEL(_drv_always_, "module init ret =3D%d\n", ret);
+ =09return ret;
+ }
+@@ -540,6 +536,5 @@ static void __exit rtw_drv_halt(void)
+ =09DBG_871X_LEVEL(_drv_always_, "module exit success\n");
+ }
+=20
+-
+ module_init(rtw_drv_entry);
+ module_exit(rtw_drv_halt);
+--=20
+2.27.0
+
 
