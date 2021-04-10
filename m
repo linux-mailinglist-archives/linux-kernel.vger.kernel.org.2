@@ -2,71 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A90335AD73
+	by mail.lfdr.de (Postfix) with ESMTP id 9C49B35AD74
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbhDJNMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234091AbhDJNMp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:12:45 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919D0C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:12:30 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id a8so8712210oic.11
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=EqZjh7FfQz6itUdKUiF7ntDm22+F+9VPDKI9cNs1Vyw=;
-        b=fAVvUrL/RUYQ3wbcrcaKq2OYtsK7zH9vY3Bixd3VCJw2YJ80AM70mgoFGHFljAuzuR
-         /Ue+FnKR7+crNKgV7FGdVZge3PutNxkOEcQsv5OmXTV9wQqvvKAf2+LY9EPMAWSCUuet
-         lOzU4S/KglxLbHIEMrhKpNZ4TZmuLaYItXfDOgWH9HMCyTYwxHnC5bjGnNIMmd785u6Q
-         sMLN7RjEpSZZCu6RE2iHjVEM3u95Uy+qJYMbAzMuoezMQsDzQK2iaipUyKLeGzQUSfsq
-         BcibgTjDGXi0NGcQnAqQLjGlodb3SmbOiSjHFFn0/sbnWj44OMa6sC6pq9Htuw5TjyDE
-         8BoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=EqZjh7FfQz6itUdKUiF7ntDm22+F+9VPDKI9cNs1Vyw=;
-        b=C8uZVEw+7ta8TUAWI0NHBUmX8qnAauuXza1VGoB2ycMK9j4TKjHmE/HBJOqI61iDcl
-         aqXYrZwexhZRdsZDLYko/Lqz0v5NrwgdUfNTo6mEQXArN/mNx4rZr6Mcy1j45a4jdgqp
-         3omkXV3ds46bo4YbKCCghPMDovBJR/7/0rQVvgCQzyjuf16IoPqTAzxa1SZaQ/xz9XqZ
-         wgnaks7dJDFSjOeWxllg1uc7BlkclneL34Y0l88W5O/Gz+nC49ol5K5PZGmtIuOCB2m2
-         o2ejXw06KMrfZKKz3tzD+QkXNpExcViuCpbjC2tNW5yVlzorf8xpwrNShOLpwKlHiwfa
-         nUsw==
-X-Gm-Message-State: AOAM5328P8zOb8t74bx3DtY/WlBwKtBTRxlYZXKH48sBpegqnwHgjbDE
-        KEs6/PuMvwDnp4DajqhFStXGxbg+OBSYv7kI4Ss=
-X-Google-Smtp-Source: ABdhPJySypBjZ9QUH0IGtWqF9zt74SHQNsSIA5j8998cLnr7bIJNVGmeCtwvxsJJrNjE+iz4iNg/9Gl2BQq5qz7dVNc=
-X-Received: by 2002:aca:f13:: with SMTP id 19mr13119859oip.56.1618060349892;
- Sat, 10 Apr 2021 06:12:29 -0700 (PDT)
+        id S234696AbhDJNMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 09:12:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234091AbhDJNMr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 09:12:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 906B0610F7;
+        Sat, 10 Apr 2021 13:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618060353;
+        bh=LhEYAqfXIQ/avprsHf0aOqseXBcHQxdYzMNXzGKYxR4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=zge/gBnlKU5oHhbzcTRjJwzbTebXjmigOtfE5m9ZbaFqWKEdou41hTIwUUyOBzCbW
+         AJxCeKHnfMDRdCgnSoQi4uEQJM0Rm0ULEPbVvnO1Dt5q/IPTsrh198bVp2yHWiyHNf
+         djJ/LYFcdZtelP+VzmeaEPJzL1rqlYw7js0FGHhM=
+Date:   Sat, 10 Apr 2021 15:12:30 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [GIT PULL] Driver core fix for 5.12-rc7
+Message-ID: <YHGkPlxkMvG1JKdn@kroah.com>
 MIME-Version: 1.0
-Reply-To: mrs.chantal778@gmail.com
-Sender: yasmimmohamma5@gmail.com
-Received: by 2002:a9d:2c69:0:0:0:0:0 with HTTP; Sat, 10 Apr 2021 06:12:29
- -0700 (PDT)
-From:   "Mrs.chantal lawrence" <mrschantal737@gmail.com>
-Date:   Sat, 10 Apr 2021 06:12:29 -0700
-X-Google-Sender-Auth: 0i_jKV0TbcZmL53Ab-kbBe-pWIk
-Message-ID: <CAEj7YGg6XJMc7p63+eV3pCTes=JVt=HocQGTk3LnWno6Eed2Jg@mail.gmail.com>
-Subject: Good Day
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HELLO
+The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
 
-I am Mrs. Chantal Lawrence. I am sending this brief letter to solicit
-your partnership to transfer a sum of 12 Million Dollars into your
-reliable account as my business partner. However, it's my urgent need
-for foreign partner that made me to contact you for this transaction.
-Further details of the transfer will be forwarded to you if you are
-ready to assist me.
+  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
 
-Best Regards
-Mrs.Chantal Lawrence
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git tags/driver-core-5.12-rc7
+
+for you to fetch changes up to eed6e41813deb9ee622cd9242341f21430d7789f:
+
+  driver core: Fix locking bug in deferred_probe_timeout_work_func() (2021-04-05 09:14:18 +0200)
+
+----------------------------------------------------------------
+Driver core fix for 5.12-rc7
+
+Here is a single driver core fix for 5.12-rc7 to resolve a reported
+problem that caused some devices to lockup when booting.  It has been in
+linux-next with no reported issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Saravana Kannan (1):
+      driver core: Fix locking bug in deferred_probe_timeout_work_func()
+
+ drivers/base/dd.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
