@@ -2,90 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A55735AA86
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 05:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C5F35AA89
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 05:36:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234067AbhDJDcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 23:32:24 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32873 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229665AbhDJDbI (ORCPT
+        id S234026AbhDJDg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 23:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDJDgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 23:31:08 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13A3UCti013647
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 9 Apr 2021 23:30:12 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id E0D1615C3B12; Fri,  9 Apr 2021 23:30:11 -0400 (EDT)
-Date:   Fri, 9 Apr 2021 23:30:11 -0400
-From:   tytso@mit.edu
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        Yi Li <yili@winhong.com>, Jens Axboe <axboe@kernel.dk>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        changfengnan <fengnanchang@foxmail.com>,
-        Shijie Luo <luoshijie1@huawei.com>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: fix debug format string warning
-Message-ID: <YHEbw84HHzViYQfj@mit.edu>
+        Fri, 9 Apr 2021 23:36:24 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B325C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 20:36:11 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id z3so7944910ioc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 20:36:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=daL6soG/LrpwywjD7Ye7mA6cNwbKbr4iQbT4lP+NwEM=;
+        b=aZvZdzeLjBlNJV36cLN1bMrDa0dtnuPuH00CSidpIvUvux5G78RMK2a6LP1MwtUzpr
+         SSjCH2hamMYYzQerdHjchdQMNOFL5PM8s7JYZS8/YZe0DXxBYQ8K6Ui8LFJks3fBDrNq
+         e9fw1dCHlR1PlOboZRKN+OneaOtZDxF4AiTat0hy3ofg9r15o8sDlzezzYN5uBzolgYQ
+         ubXwU4dGd0hR0GlLcujgDlz2dknGxW7cFfLgyxic+oaVEokFKE5DL3glYhZ0qTg6+OEA
+         bKgAZHM3xeeDrsdSN1jIXX1QGAu5P1UX3WOqqLmmmXhXjOB3DHlKYaPXaq8xu3tQEJnD
+         3F6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=daL6soG/LrpwywjD7Ye7mA6cNwbKbr4iQbT4lP+NwEM=;
+        b=Y7ZSgu5Juo/JOcBsrNHYrYD60upISnCky/hbvLvCeBGKRHInFJ0KTi7kN/Vd60rfHm
+         WnHn3yWmujJs9Clk+UNBCnfQ2hfHnIeF9B/IpRwTA4k5Pdto+abnWPtxedzbjX/mvvVQ
+         ELG2s742UFogYrMekNFHMqzQ+8skHeArtl5kFxZMY44re2V35BZLuG5ezyi1jmchaowh
+         9BErmJVaSnfYpMuerWcdJ9oZmFa8dITTYh3tNSQB+bKRn7GG5uCk06sH0UNcmGMniPqW
+         AELc0SdLCkrBaUAXeO568PNuoW0Gi6vO31Qniq9iqQhbD39LvcqonXixTKtGkB8lUO9C
+         APzA==
+X-Gm-Message-State: AOAM532uOSGxhncOLGTGc2BX1/Vk+ykbCAlboG19dKKBLYeMQB2CM1Oe
+        G6Pk2b1llCSGfIYAWEf+mhgD40Bf0s1pMvi011V1sQ==
+X-Google-Smtp-Source: ABdhPJwv09+tYGUZsmPinlJUc4NnAl6vn5Qg9uNrthhS28+Wdbxeric036UalSMhJyiPbon46hBWD6HwcJGkRwQgq4I=
+X-Received: by 2002:a6b:8ec2:: with SMTP id q185mr14109157iod.150.1618025770259;
+ Fri, 09 Apr 2021 20:36:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409201211.1866633-1-arnd@kernel.org>
+References: <20210401183216.443C4443@viggo.jf.intel.com> <20210401183225.2EDC224F@viggo.jf.intel.com>
+In-Reply-To: <20210401183225.2EDC224F@viggo.jf.intel.com>
+From:   Wei Xu <weixugc@google.com>
+Date:   Fri, 9 Apr 2021 20:35:59 -0700
+Message-ID: <CAAPL-u_8wkxLbq6g0dRkhNni11+kTgjRkjUg6meXuGiS5wQtig@mail.gmail.com>
+Subject: Re: [PATCH 05/10] mm/migrate: demote pages during reclaim
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Oscar Salvador <osalvador@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 10:12:05PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Using no_printk() for jbd_debug() revealed two warnings:
-> 
-> fs/jbd2/recovery.c: In function 'fc_do_one_pass':
-> fs/jbd2/recovery.c:256:30: error: format '%d' expects a matching 'int' argument [-Werror=format=]
->   256 |                 jbd_debug(3, "Processing fast commit blk with seq %d");
->       |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> fs/ext4/fast_commit.c: In function 'ext4_fc_replay_add_range':
-> fs/ext4/fast_commit.c:1732:30: error: format '%d' expects argument of type 'int', but argument 2 has type 'long unsigned int' [-Werror=format=]
->  1732 |                 jbd_debug(1, "Converting from %d to %d %lld",
-> 
-> The first one was added incorrectly, and was also missing a few newlines
-> in debug output, and the second one happened when the type of an
-> argument changed.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: d556435156b7 ("jbd2: avoid -Wempty-body warnings")
-> Fixes: 6db074618969 ("ext4: use BIT() macro for BH_** state bits")
-> Fixes: 5b849b5f96b4 ("jbd2: fast commit recovery path")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> +static unsigned int demote_page_list(struct list_head *demote_pages,
+> +                                    struct pglist_data *pgdat,
+> +                                    struct scan_control *sc)
 
-Thanks, applied, with one change.
+sc is not needed and can be removed from demote_page_list().
 
-> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-> index 69f18fe20923..60601c5779f1 100644
-> --- a/fs/jbd2/recovery.c
-> +++ b/fs/jbd2/recovery.c
-> @@ -245,15 +245,15 @@ static int fc_do_one_pass(journal_t *journal,
->     ....
->  
->  		if (err) {
-> -			jbd_debug(3, "Fast commit replay: read error");
-> +			jbd_debug(3, "Fast commit replay: read error\n");
->  			break;
->  		}
->  
-> -		jbd_debug(3, "Processing fast commit blk with seq %d");
-> +		jbd_debug(3, "Processing fast commit blk with seq\n");
-
-This debug statement isn't adding any real value, so I just removed
-it.
-
-				- Ted
+Reviewed-by: Wei Xu <weixugc@google.com>
