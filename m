@@ -2,137 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEFA35A96E
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 02:11:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B73935A96F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 02:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235271AbhDJAMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 20:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42644 "EHLO
+        id S235285AbhDJAMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 20:12:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235250AbhDJAMF (ORCPT
+        with ESMTP id S235277AbhDJAMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 20:12:05 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE3B4C061765
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 17:11:51 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id k128so3709271wmk.4
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 17:11:51 -0700 (PDT)
+        Fri, 9 Apr 2021 20:12:30 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81001C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 17:12:17 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso3992477pjh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 17:12:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fA8Z5aUUNElBHQmTl0rVRM8cCmxTfIGvqWZXobJvnWQ=;
-        b=CtMvdE66Fm4dWjje6zKsz5kv72mdudXYT7IjWrKjKo1ElzVKNAsIxbE4ZKxunfPt2/
-         8ie4/TsZVuhs4+43rmUlu+6M5YlxQlZEbyG1HgCeyhrzubvSiO1oRRhBFP93PkeXTXNQ
-         aHTar9XiwUAq8rpKJmYWgPOZbUDWF22pGOe2uku4LffjB5xotLkIyhkxdoq9Mbkt9xnT
-         e08O690WOfdvLNwLu8dTOPL9slPOPP4GCBz8q2w/IqHXGhvq71v3FiDWd63lPEpLH88S
-         KqfyPamBXXC2iXxWp3jZZJH7Gg2oV2dtcUo55+5gXdpVcjJXcYI02ISu0xYho/CKXJaX
-         CL0Q==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=2lxfN5ByZEbEMKEjmWp1Q7WunCY5qRG4cae/+TcjBiw=;
+        b=nNLrhJg01t54nH/nElkvEhcvw2owYft633IxmHULTyL9BdkUnROR8QFoRypeZfkKRa
+         etaDJ1PEK3ghpeEaXfO1legoCBaVQ55m9elz9GtyRAmCBd7hD2+jsvZZG16od8vZSaOp
+         fcgc85nlx9VDpTU0rudcm/NrKKvTVpBZ+tZbsAFLbN6do8LQlndorth2PBAssBTrH0+o
+         IR4LXu56UUnTb4W5dqCF4cc2PHfq4eP+ENoIMaa9BaZ6WQJZTgK30qXW98ydovS+xffZ
+         pGoeIIpXDxzVuErKvFY1ebqZIcEUp/eY+S29dW7kQaTVz1fUVYVvGdus9WhMMpSrPxtU
+         GdVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fA8Z5aUUNElBHQmTl0rVRM8cCmxTfIGvqWZXobJvnWQ=;
-        b=q2LHkzmtMFMwEfTMoIpniAG7UKb881BRAvCoXVDLjIxROcS9GLxt8GlISDYVKsyRiA
-         T5KO6vPYi5EP7mDO2RmNBQA/RjATLtJ50aMqsSx6cgFZWPZ+mdnzKBo/2/nUQZKOrpEi
-         EhHCPU5Jajq43awh4UJ1U/vXlYk9Ifd4CX9/t/VJ5MHYtb2/NQMWBhHcwSn3E/cM+OPu
-         FFll9XaLj7Weih7VzM+NXxAhDKkDJZCJ7LOzxtnhO4373BBw4H7vAd8DBbr7AOt5+sVZ
-         7ughKVt4bOXdB4xO2vVF+V4Z/QgkLghLJxj6qoD3KMMN9TIXSz7bRCv6+RLK3J8aOEZE
-         01EA==
-X-Gm-Message-State: AOAM533wbAL0IF4PQu8np7tJlsqi3VG6OOYJgbyPRcnOyphmSzzhgrUT
-        NKjKA0msKJ/iiQJwSAfx6Rop7Q==
-X-Google-Smtp-Source: ABdhPJzAaP35Kiw87xpUTi5qQTsrRoBKS6TFnZdpjti+HlUXGZNQDuwqZCfg9FEauKEV6I1dmHPq2w==
-X-Received: by 2002:a7b:c38d:: with SMTP id s13mr15914875wmj.147.1618013510497;
-        Fri, 09 Apr 2021 17:11:50 -0700 (PDT)
-Received: from apalos.home (ppp-94-65-225-75.home.otenet.gr. [94.65.225.75])
-        by smtp.gmail.com with ESMTPSA id p10sm6815210wmi.0.2021.04.09.17.11.46
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=2lxfN5ByZEbEMKEjmWp1Q7WunCY5qRG4cae/+TcjBiw=;
+        b=qX9MNH8iMh8Lxrc3PLb8tux8oE0eTnaH6cu1fIm86pDlclUHfDOmoZSTRLJ4mVI6ND
+         0gZoWMwXHx8KzS8J6tIcQpTyf8DH6tkT0kSYHn90nQk1pM3atjKpyEVUQn/m5d35zCTR
+         vy1J/qT+ZJEVLTMXTNi/B1m5t/ycVUHiTSyQKpz3Y0PsyUxtUE6ah9afY93fUMfM98Sq
+         MIVcaRuCb8oeRBOX94pBKYHRDiaQ6WcpAROjMYDTrghsWlttDqM3lT6F5b0wLf2i/jJD
+         MDxW1MMbdoJ0WWAcNbbb748LNC5LkDngUpkLyTpHmhiTtrQgECkWfUgl1UHEuTMFDzEb
+         e0dQ==
+X-Gm-Message-State: AOAM5330koDCcJobDFs3gVvdJWl8wBX6SOV6JxUU6igTf+ZMzHm8lqBf
+        ua4+j9udqPWiUPOXH6KNhpw=
+X-Google-Smtp-Source: ABdhPJz2YsGjbI6FPzSN5p2ywTltyFXdJSttu1EElON6QcZ8OoXr2NIz9jI033O5O+SKRvfsoeN8yw==
+X-Received: by 2002:a17:90a:2bc4:: with SMTP id n4mr5147236pje.52.1618013536891;
+        Fri, 09 Apr 2021 17:12:16 -0700 (PDT)
+Received: from kali ([103.141.87.254])
+        by smtp.gmail.com with ESMTPSA id s19sm3203011pfh.168.2021.04.09.17.12.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 17:11:50 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 03:11:45 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 3/5] page_pool: Allow drivers to hint on SKB
- recycling
-Message-ID: <YHDtQWyzFmrjuQWr@apalos.home>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-4-mcroce@linux.microsoft.com>
+        Fri, 09 Apr 2021 17:12:16 -0700 (PDT)
+Date:   Sat, 10 Apr 2021 05:42:10 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: [PATCH] staging: rtl8192e: remove unnecesasry f-trace like logging
+Message-ID: <YHDtWizzh5EVLL4/@kali>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210409223801.104657-4-mcroce@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matteo, 
+Fixed Check: Remove unnecessary f-trace like logging by simply deleting
+that statement as we have other modes of logging like ftrace.
+Reported by checkpatch.
 
-[...]
-> +bool page_pool_return_skb_page(void *data);
-> +
->  struct page_pool *page_pool_create(const struct page_pool_params *params);
->  
->  #ifdef CONFIG_PAGE_POOL
-> @@ -243,4 +247,13 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
->  		spin_unlock_bh(&pool->ring.producer_lock);
->  }
->  
-> +/* Store mem_info on struct page and use it while recycling skb frags */
-> +static inline
-> +void page_pool_store_mem_info(struct page *page, struct xdp_mem_info *mem)
-> +{
-> +	u32 *xmi = (u32 *)mem;
-> +
+Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+---
+ drivers/staging/rtl8192e/rtl819x_TSProc.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I just noticed this changed from the original patchset I was carrying. 
-On the original, I had a union containing a u32 member to explicitly avoid
-this casting. Let's wait for comments on the rest of the series, but i'd like 
-to change that back in a v4. Aplogies, I completely missed this on the
-previous postings ...
+diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+index 476875125e87..4457c1acfbf6 100644
+--- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
++++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+@@ -136,7 +136,6 @@ void TSInitialize(struct rtllib_device *ieee)
+ 	struct rx_reorder_entry *pRxReorderEntry = ieee->RxReorderEntry;
+ 	u8				count = 0;
+ 
+-	netdev_vdbg(ieee->dev, "%s()\n", __func__);
+ 	INIT_LIST_HEAD(&ieee->Tx_TS_Admit_List);
+ 	INIT_LIST_HEAD(&ieee->Tx_TS_Pending_List);
+ 	INIT_LIST_HEAD(&ieee->Tx_TS_Unused_List);
+-- 
+2.30.2
 
-Thanks
-/Ilias
