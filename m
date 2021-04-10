@@ -2,127 +2,434 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD21135ABE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B22335ABE5
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234076AbhDJIXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 04:23:19 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:36774 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229494AbhDJIXQ (ORCPT
+        id S234163AbhDJIbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 04:31:55 -0400
+Received: from pv50p00im-hyfv10021501.me.com ([17.58.6.48]:39791 "EHLO
+        pv50p00im-hyfv10021501.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229494AbhDJIbx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 04:23:16 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AZK5RiaEzgjE4cwejpLqECceALOonbusQ8zAX?=
- =?us-ascii?q?/mp2TgFYddHdqtC2kJ0gpHvJoRsYRX1Io7u9EYaaR3e0z/RIyKkXeYyvRQz3/F?=
- =?us-ascii?q?avRbsC0aLH4xnNXxLz7fRc06AISdkaNPTVAUJhhcj3pCmUeuxB/PC9/KqlhfjT?=
- =?us-ascii?q?wh5WJGlXQppt4AtjBgGQHlcefngkObMCCJGe6sBbzgDPRV0raK2AakUtY/LOvJ?=
- =?us-ascii?q?nimp7gfHc9dnwawTjLvHeT5Ln2HwPw5HojejlEqI1MzVT4?=
-X-IronPort-AV: E=Sophos;i="5.82,210,1613430000"; 
-   d="scan'208";a="502532788"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 10:22:45 +0200
-Date:   Sat, 10 Apr 2021 10:22:45 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Greg KH <gregkh@linuxfoundation.org>
-cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [Patch 0/3]
-In-Reply-To: <YHFcI104K+ih3UDG@kroah.com>
-Message-ID: <alpine.DEB.2.22.394.2104101021190.2975@hadrien>
-References: <6552860.D8CPca6BT0@localhost.localdomain> <YHFT2S31kFy72DMv@kroah.com> <2101069.1PIH1tPmJ7@localhost.localdomain> <YHFcI104K+ih3UDG@kroah.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Sat, 10 Apr 2021 04:31:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1618043495; bh=cfgftSXJmVCqAi+8gmCFQtOOnBSSZlx1p3Gs4EutkF4=;
+        h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
+        b=H6+xypT/vssjznBIsxAJhFd79hOBP4rofUpIK6Ct4EDgq7r1/QiPZ1dzVzUKSCRwP
+         OVNBsuBv35LoPBucJ5DDqwXCgza5WXGUY+bYvavJLGNGuZsG4ZKYatIugQjYT5Zw23
+         QbKAIdCnSBYJhVK6tVpFOlQ4Dny4OmOvYeeHozds4ZZLlE+1FElgL1gl3m0CXwFU+M
+         fifmvBn3AVssJYLEzNlIepQCMSbQ0K6CShCmgIiVLM3qDULhOMgN4gjrYBoECEBQQI
+         6h8wwzIvMUmfQLlcXwHu7qT1uuEp//RA249P52WzRdpxzX/gzl33Jl4j/sKMhLOHWU
+         QZa1ApJ7AOaxg==
+Received: from 192.168.1.3 (unknown [120.245.2.39])
+        by pv50p00im-hyfv10021501.me.com (Postfix) with ESMTPSA id C9B69B4026F;
+        Sat, 10 Apr 2021 08:31:28 +0000 (UTC)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH v3] powerpc/traps: Enhance readability for trap types
+From:   Xiongwei Song <sxwjean@me.com>
+In-Reply-To: <70ece993-12bd-335c-d246-914564eb51dd@csgroup.eu>
+Date:   Sat, 10 Apr 2021 16:31:25 +0800
+Cc:     Michael Ellerman <mpe@ellerman.id.au>, benh@kernel.crashing.org,
+        paulus@samba.org, oleg@redhat.com, npiggin@gmail.com,
+        aneesh.kumar@linux.ibm.com, ravi.bangoria@linux.ibm.com,
+        mikey@neuling.org, haren@linux.ibm.com, akpm@linux-foundation.org,
+        rppt@kernel.org, jniethe5@gmail.com, atrajeev@linux.vnet.ibm.com,
+        maddy@linux.ibm.com, peterz@infradead.org, kjain@linux.ibm.com,
+        kan.liang@linux.intel.com, aik@ozlabs.ru, alistair@popple.id.au,
+        pmladek@suse.com, john.ogness@linutronix.de,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Xiongwei Song <sxwjean@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D7E3FD58-D69B-484C-99E4-F3082890E485@me.com>
+References: <20210408140750.26832-1-sxwjean@me.com>
+ <70ece993-12bd-335c-d246-914564eb51dd@csgroup.eu>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-10_04:2021-04-09,2021-04-10 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=-2147483648 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2104100064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+> On Apr 10, 2021, at 12:14 AM, Christophe Leroy =
+<christophe.leroy@csgroup.eu> wrote:
+>=20
+>=20
+>=20
+> Le 08/04/2021 =C3=A0 16:07, Xiongwei Song a =C3=A9crit :
+>> From: Xiongwei Song <sxwjean@gmail.com>
+>> Create a new header named traps.h, define macros to list ppc =
+interrupt
+>> types in traps.h, replace the reference of the trap hex values with =
+these
+>> macros.
+>> Referred the hex number in arch/powerpc/kernel/exceptions-64e.S,
+>> arch/powerpc/kernel/exceptions-64s.S and
+>> arch/powerpc/include/asm/kvm_asm.h.
+>> v2-v3:
+>> Correct the prefix of trap macros with INTERRUPT_, the previous =
+prefix
+>> is TRAP_, which is not precise. This is suggested by Segher =
+Boessenkool
+>> and Nicholas Piggin.
+>> v1-v2:
+>> Define more trap macros to replace more trap hexs in code, not just =
+for
+>> the __show_regs function. This is suggested by Christophe Leroy.
+>> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+>> ---
+>>  arch/powerpc/include/asm/interrupt.h  |  9 +++++---
+>>  arch/powerpc/include/asm/ptrace.h     |  3 ++-
+>>  arch/powerpc/include/asm/traps.h      | 32 =
++++++++++++++++++++++++++++
+>>  arch/powerpc/kernel/interrupt.c       |  3 ++-
+>>  arch/powerpc/kernel/process.c         |  5 ++++-
+>>  arch/powerpc/mm/book3s64/hash_utils.c |  5 +++--
+>>  arch/powerpc/mm/fault.c               | 21 +++++++++++-------
+>>  arch/powerpc/perf/core-book3s.c       |  5 +++--
+>>  arch/powerpc/xmon/xmon.c              | 16 +++++++++++---
+>>  9 files changed, 78 insertions(+), 21 deletions(-)
+>>  create mode 100644 arch/powerpc/include/asm/traps.h
+>> diff --git a/arch/powerpc/include/asm/interrupt.h =
+b/arch/powerpc/include/asm/interrupt.h
+>> index 7c633896d758..5ce9898bc9a6 100644
+>> --- a/arch/powerpc/include/asm/interrupt.h
+>> +++ b/arch/powerpc/include/asm/interrupt.h
+>> @@ -8,6 +8,7 @@
+>>  #include <asm/ftrace.h>
+>>  #include <asm/kprobes.h>
+>>  #include <asm/runlatch.h>
+>> +#include <asm/traps.h>
+>>    struct interrupt_state {
+>>  #ifdef CONFIG_PPC_BOOK3E_64
+>> @@ -59,7 +60,7 @@ static inline void interrupt_enter_prepare(struct =
+pt_regs *regs, struct interrup
+>>  		 * CT_WARN_ON comes here via program_check_exception,
+>>  		 * so avoid recursion.
+>>  		 */
+>> -		if (TRAP(regs) !=3D 0x700)
+>> +		if (TRAP(regs) !=3D INTERRUPT_PROGRAM)
+>>  			CT_WARN_ON(ct_state() !=3D CONTEXT_KERNEL);
+>>  	}
+>>  #endif
+>> @@ -156,7 +157,8 @@ static inline void =
+interrupt_nmi_enter_prepare(struct pt_regs *regs, struct inte
+>>  	/* Don't do any per-CPU operations until interrupt state is =
+fixed */
+>>  #endif
+>>  	/* Allow DEC and PMI to be traced when they are soft-NMI */
+>> -	if (TRAP(regs) !=3D 0x900 && TRAP(regs) !=3D 0xf00 && TRAP(regs) =
+!=3D 0x260) {
+>> +	if (TRAP(regs) !=3D INTERRUPT_DECREMENTER &&
+>> +	    TRAP(regs) !=3D INTERRUPT_PERFMON) {
+>=20
+> I think too long names hinder readability, see later for suggestions.
+>=20
+>>  		state->ftrace_enabled =3D this_cpu_get_ftrace_enabled();
+>>  		this_cpu_set_ftrace_enabled(0);
+>>  	}
+>> @@ -180,7 +182,8 @@ static inline void =
+interrupt_nmi_exit_prepare(struct pt_regs *regs, struct inter
+>>  		nmi_exit();
+>>    #ifdef CONFIG_PPC64
+>> -	if (TRAP(regs) !=3D 0x900 && TRAP(regs) !=3D 0xf00 && TRAP(regs) =
+!=3D 0x260)
+>> +	if (TRAP(regs) !=3D INTERRUPT_DECREMENTER &&
+>> +	    TRAP(regs) !=3D INTERRUPT_PERFMON)
+>>  		this_cpu_set_ftrace_enabled(state->ftrace_enabled);
+>>    #ifdef CONFIG_PPC_BOOK3S_64
+>> diff --git a/arch/powerpc/include/asm/ptrace.h =
+b/arch/powerpc/include/asm/ptrace.h
+>> index f10498e1b3f6..7a17e0365d43 100644
+>> --- a/arch/powerpc/include/asm/ptrace.h
+>> +++ b/arch/powerpc/include/asm/ptrace.h
+>> @@ -21,6 +21,7 @@
+>>    #include <uapi/asm/ptrace.h>
+>>  #include <asm/asm-const.h>
+>> +#include <asm/traps.h>
+>>    #ifndef __ASSEMBLY__
+>>  struct pt_regs
+>> @@ -237,7 +238,7 @@ static inline bool trap_is_unsupported_scv(struct =
+pt_regs *regs)
+>>    static inline bool trap_is_syscall(struct pt_regs *regs)
+>>  {
+>> -	return (trap_is_scv(regs) || TRAP(regs) =3D=3D 0xc00);
+>> +	return (trap_is_scv(regs) || TRAP(regs) =3D=3D =
+INTERRUPT_SYSCALL);
+>>  }
+>>    static inline bool trap_norestart(struct pt_regs *regs)
+>> diff --git a/arch/powerpc/include/asm/traps.h =
+b/arch/powerpc/include/asm/traps.h
+>> new file mode 100644
+>> index 000000000000..cb416a17097c
+>> --- /dev/null
+>> +++ b/arch/powerpc/include/asm/traps.h
+>> @@ -0,0 +1,32 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef _ASM_PPC_TRAPS_H
+>> +#define _ASM_PPC_TRAPS_H
+>> +
+>> +#if defined(CONFIG_BOOKE) || defined(CONFIG_4xx)
+>> +#define INTERRUPT_MACHINE_CHECK   0x000
+>=20
+> I'd prefer shorted names in order to not be obliged to split lines.
+> Here are some suggestions:
+>=20
+> INT_MCE
+>=20
+>> +#define INTERRUPT_CRITICAL_INPUT  0x100
+>=20
+> INT_CRIT
+>=20
+>> +#define INTERRUPT_ALTIVEC_UNAVAIL 0x200
+>> +#define INTERRUPT_PERFMON         0x260
+>=20
+> INT_PERF
+>=20
+>> +#define INTERRUPT_DOORBELL        0x280
+>> +#define INTERRUPT_DEBUG           0xd00
+>> +#elif defined(CONFIG_PPC_BOOK3S)
+>> +#define INTERRUPT_SYSTEM_RESET    0x100
+>=20
+> INT_SRESET
+>=20
+>> +#define INTERRUPT_MACHINE_CHECK   0x200
+>=20
+> INT_MCE
+>=20
+>> +#define INTERRUPT_DATA_SEGMENT    0x380
+>=20
+> INT_DSEG
+>=20
+>> +#define INTERRUPT_INST_SEGMENT    0x480
+>=20
+> INT_ISEG
+>=20
+>> +#define INTERRUPT_DOORBELL        0xa00
+>=20
+> INT_DBELL
+>=20
+>> +#define INTERRUPT_TRACE           0xd00
+>=20
+> INT_TRACE
+>=20
+>> +#define INTERRUPT_H_DATA_STORAGE  0xe00
+>> +#define INTERRUPT_PERFMON         0xf00
+>=20
+> INT_PERF
+>=20
+>> +#define INTERRUPT_H_FAC_UNAVAIL   0xf80
+>> +#endif
+>> +
+>> +#define INTERRUPT_DATA_STORAGE    0x300
+>=20
+> INT_DSI
+>=20
+>> +#define INTERRUPT_INST_STORAGE    0x400
+>=20
+> INT_ISI
+>=20
+>> +#define INTERRUPT_ALIGNMENT       0x600
+>=20
+> INT_ALIGN
+>=20
+>> +#define INTERRUPT_PROGRAM         0x700
+>=20
+> INT_PROG
+>=20
+>> +#define INTERRUPT_FP_UNAVAIL      0x800
+>=20
+> INT_FP_UNAVAIL
+>=20
+>> +#define INTERRUPT_DECREMENTER     0x900
+>=20
+> INT_DEC
+>=20
+>> +#define INTERRUPT_SYSCALL         0xc00
+>=20
+> INT_SYSCALL
+>=20
+>=20
+>> +
+>> +#endif /* _ASM_PPC_TRAPS_H */
+>=20
+> ...
+>=20
+>> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
+>> index 0c0b1c2cfb49..641b3feef7ee 100644
+>> --- a/arch/powerpc/mm/fault.c
+>> +++ b/arch/powerpc/mm/fault.c
+>> @@ -44,6 +44,7 @@
+>>  #include <asm/debug.h>
+>>  #include <asm/kup.h>
+>>  #include <asm/inst.h>
+>> +#include <asm/traps.h>
+>>      /*
+>> @@ -197,7 +198,7 @@ static int mm_fault_error(struct pt_regs *regs, =
+unsigned long addr,
+>>  static bool bad_kernel_fault(struct pt_regs *regs, unsigned long =
+error_code,
+>>  			     unsigned long address, bool is_write)
+>>  {
+>> -	int is_exec =3D TRAP(regs) =3D=3D 0x400;
+>> +	int is_exec =3D TRAP(regs) =3D=3D INTERRUPT_INST_STORAGE;
+>>    	/* NX faults set DSISR_PROTFAULT on the 8xx, DSISR_NOEXEC_OR_G =
+on others */
+>>  	if (is_exec && (error_code & (DSISR_NOEXEC_OR_G | DSISR_KEYFAULT =
+|
+>> @@ -391,7 +392,7 @@ static int ___do_page_fault(struct pt_regs *regs, =
+unsigned long address,
+>>  	struct vm_area_struct * vma;
+>>  	struct mm_struct *mm =3D current->mm;
+>>  	unsigned int flags =3D FAULT_FLAG_DEFAULT;
+>> - 	int is_exec =3D TRAP(regs) =3D=3D 0x400;
+>> +	int is_exec =3D TRAP(regs) =3D=3D INTERRUPT_INST_STORAGE;
+>>  	int is_user =3D user_mode(regs);
+>>  	int is_write =3D page_fault_is_write(error_code);
+>>  	vm_fault_t fault, major =3D 0;
+>> @@ -588,20 +589,24 @@ void __bad_page_fault(struct pt_regs *regs, int =
+sig)
+>>  	/* kernel has accessed a bad area */
+>>    	switch (TRAP(regs)) {
+>> -	case 0x300:
+>> -	case 0x380:
+>> -	case 0xe00:
+>> +	case INTERRUPT_DATA_STORAGE:
+>> +#ifdef CONFIG_PPC_BOOK3S
+>> +	case INTERRUPT_DATA_SEGMENT:
+>> +	case INTERRUPT_H_DATA_STORAGE:
+>> +#endif
+>=20
+> It would be better to avoid #ifdefs when none where necessary before.
+>=20
+>=20
+>>  		pr_alert("BUG: %s on %s at 0x%08lx\n",
+>>  			 regs->dar < PAGE_SIZE ? "Kernel NULL pointer =
+dereference" :
+>>  			 "Unable to handle kernel data access",
+>>  			 is_write ? "write" : "read", regs->dar);
+>>  		break;
+>> -	case 0x400:
+>> -	case 0x480:
+>> +	case INTERRUPT_INST_STORAGE:
+>> +#ifdef CONFIG_PPC_BOOK3S
+>> +	case INTERRUPT_INST_SEGMENT:
+>> +#endif
+>=20
+> It would be better to avoid #ifdefs when none where necessary before.
+>=20
+Good point. Will delete them.
 
-On Sat, 10 Apr 2021, Greg KH wrote:
+Regards,
+Xiongwei
 
-> On Sat, Apr 10, 2021 at 09:57:00AM +0200, Fabio M. De Francesco wrote:
-> > On Saturday, April 10, 2021 9:29:29 AM CEST Greg KH wrote:
-> > > On Fri, Apr 09, 2021 at 06:29:59PM +0200, Fabio M. De Francesco wrote:
-> > > > This patch series removes camelcases, changes the type and use of a
-> > > > variable, and correct misspelled words.
-> > > >
-> > > > Patch 1/3: staging: rtl8723bs: Remove camelcase in several files
-> > > >
-> > > > drivers/staging/rtl8723bs/core/rtw_cmd.c       |  2 +-
-> > > > drivers/staging/rtl8723bs/core/rtw_mlme.c      |  2 +-
-> > > > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c   | 18 +++++++++---------
-> > > > drivers/staging/rtl8723bs/hal/hal_intf.c       |  2 +-
-> > > > drivers/staging/rtl8723bs/hal/rtl8723b_dm.c    |  6 +++---
-> > > > .../staging/rtl8723bs/hal/rtl8723b_hal_init.c  |  2 +-
-> > > > drivers/staging/rtl8723bs/hal/sdio_ops.c       | 14 +++++++-------
-> > > > .../staging/rtl8723bs/include/rtw_pwrctrl.h    |  2 +-
-> > > > 8 files changed, 24 insertions(+), 24 deletions(-)
-> > > >
-> > > > Patch 2/3: staging: rtl8723bs: Change the type and use of a variable
-> > > >
-> > > > drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
-> > > >
-> > > >  drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
-> > > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > Patch 3/3: staging: rtl8723bs: include: Fix misspelled words in
-> > > > comments
-> > > >
-> > > > .../rtl8723bs/include/Hal8192CPhyReg.h        |  8 ++---
-> > > >
-> > > >  .../staging/rtl8723bs/include/basic_types.h   |  2 +-
-> > > >  drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
-> > > >  drivers/staging/rtl8723bs/include/hal_com.h   |  2 +-
-> > > >  .../staging/rtl8723bs/include/hal_com_reg.h   | 34 +++++++++----------
-> > > >  drivers/staging/rtl8723bs/include/hal_data.h  |  2 +-
-> > > >  .../staging/rtl8723bs/include/hal_pwr_seq.h   |  2 +-
-> > > >  drivers/staging/rtl8723bs/include/rtw_cmd.h   |  6 ++--
-> > > >  drivers/staging/rtl8723bs/include/rtw_mlme.h  | 18 +++++-----
-> > > >  .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  2 +-
-> > > >  drivers/staging/rtl8723bs/include/rtw_mp.h    |  2 +-
-> > > >  .../staging/rtl8723bs/include/rtw_pwrctrl.h   |  2 +-
-> > > >  drivers/staging/rtl8723bs/include/rtw_recv.h  |  4 +--
-> > > >  drivers/staging/rtl8723bs/include/rtw_xmit.h  |  2 +-
-> > > >  drivers/staging/rtl8723bs/include/sta_info.h  |  2 +-
-> > > >  drivers/staging/rtl8723bs/include/wifi.h      |  2 +-
-> > > >  16 files changed, 46 insertions(+), 46 deletions(-)
-> > > >
-> > > > Fabio M. De Francesco
-> > >
-> > > I have no idea how you created this patch series, but I do not think it
-> > > worked well :(
-> > >
-> > > Please use our standard tools, that do this all for you automatically,
-> > >
-> > Apart from the fact that I forgot to save the subject, I didn't know that
-> > there are standard tools for doing Patch 0/N. Therefore I thought to make
-> > an email message that contained the information about the patch series.
-> >
-> > I was wrong, sorry. I have to research this topic in the git manual or
-> > somewhere else.
->
-> 'git format-patch --cover-letter main..HEAD' will to the trick, if you
-> are on a different branch from 'main'.  Then edit the 0000-* file and
-> then send them all off with 'git send-email'.
+>=20
+>=20
+>>  		pr_alert("BUG: Unable to handle kernel instruction =
+fetch%s",
+>>  			 regs->nip < PAGE_SIZE ? " (NULL pointer?)\n" : =
+"\n");
+>>  		break;
+>> -	case 0x600:
+>> +	case INTERRUPT_ALIGNMENT:
+>>  		pr_alert("BUG: Unable to handle kernel unaligned access =
+at 0x%08lx\n",
+>>  			 regs->dar);
+>>  		break;
+>> diff --git a/arch/powerpc/perf/core-book3s.c =
+b/arch/powerpc/perf/core-book3s.c
+>> index 766f064f00fb..6e34f5bba232 100644
+>> --- a/arch/powerpc/perf/core-book3s.c
+>> +++ b/arch/powerpc/perf/core-book3s.c
+>> @@ -17,6 +17,7 @@
+>>  #include <asm/firmware.h>
+>>  #include <asm/ptrace.h>
+>>  #include <asm/code-patching.h>
+>> +#include <asm/traps.h>
+>>    #ifdef CONFIG_PPC64
+>>  #include "internal.h"
+>> @@ -168,7 +169,7 @@ static bool regs_use_siar(struct pt_regs *regs)
+>>  	 * they have not been setup using perf_read_regs() and so =
+regs->result
+>>  	 * is something random.
+>>  	 */
+>> -	return ((TRAP(regs) =3D=3D 0xf00) && regs->result);
+>> +	return ((TRAP(regs) =3D=3D INTERRUPT_PERFMON) && regs->result);
+>>  }
+>>    /*
+>> @@ -347,7 +348,7 @@ static inline void perf_read_regs(struct pt_regs =
+*regs)
+>>  	 * hypervisor samples as well as samples in the kernel with
+>>  	 * interrupts off hence the userspace check.
+>>  	 */
+>> -	if (TRAP(regs) !=3D 0xf00)
+>> +	if (TRAP(regs) !=3D INTERRUPT_PERFMON)
+>>  		use_siar =3D 0;
+>>  	else if ((ppmu->flags & PPMU_NO_SIAR))
+>>  		use_siar =3D 0;
+>> diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+>> index bf7d69625a2e..2a4f99e64bf3 100644
+>> --- a/arch/powerpc/xmon/xmon.c
+>> +++ b/arch/powerpc/xmon/xmon.c
+>> @@ -54,6 +54,7 @@
+>>  #include <asm/code-patching.h>
+>>  #include <asm/sections.h>
+>>  #include <asm/inst.h>
+>> +#include <asm/traps.h>
+>>    #ifdef CONFIG_PPC64
+>>  #include <asm/hvcall.h>
+>> @@ -1769,7 +1770,12 @@ static void excprint(struct pt_regs *fp)
+>>  	printf("    sp: %lx\n", fp->gpr[1]);
+>>  	printf("   msr: %lx\n", fp->msr);
+>>  -	if (trap =3D=3D 0x300 || trap =3D=3D 0x380 || trap =3D=3D 0x600 =
+|| trap =3D=3D 0x200) {
+>> +	if (trap =3D=3D INTERRUPT_DATA_STORAGE ||
+>> +#ifdef CONFIG_PPC_BOOK3S
+>> +	    trap =3D=3D INTERRUPT_DATA_SEGMENT ||
+>> +#endif
+> It would be better to avoid #ifdefs when none where necessary before.
+>=20
+> And an #ifdef in the middle of a code line is awful for readability =
+and maintainability.
+>=20
+>> +	    trap =3D=3D INTERRUPT_ALIGNMENT ||
+>> +	    trap =3D=3D INTERRUPT_MACHINE_CHECK) {
+>>  		printf("   dar: %lx\n", fp->dar);
+>>  		if (trap !=3D 0x380)
+>>  			printf(" dsisr: %lx\n", fp->dsisr);
+>> @@ -1785,7 +1791,7 @@ static void excprint(struct pt_regs *fp)
+>>  		       current->pid, current->comm);
+>>  	}
+>>  -	if (trap =3D=3D 0x700)
+>> +	if (trap =3D=3D INTERRUPT_PROGRAM)
+>>  		print_bug_trap(fp);
+>>    	printf(linux_banner);
+>> @@ -1846,7 +1852,11 @@ static void prregs(struct pt_regs *fp)
+>>  	printf("ctr =3D "REG"   xer =3D "REG"   trap =3D %4lx\n",
+>>  	       fp->ctr, fp->xer, fp->trap);
+>>  	trap =3D TRAP(fp);
+>> -	if (trap =3D=3D 0x300 || trap =3D=3D 0x380 || trap =3D=3D 0x600)
+>> +	if (trap =3D=3D INTERRUPT_DATA_STORAGE ||
+>> +#ifdef CONFIG_PPC_BOOK3S
+>> +	    trap =3D=3D INTERRUPT_DATA_SEGMENT ||
+>> +#endif
+>> +	    trap =3D=3D INTERRUPT_ALIGNMENT)
+>=20
+> It would be better to avoid #ifdefs when none where necessary before.
+>=20
+> And an #ifdef in the middle of a code line is awful for readability =
+and maintainability.
+>=20
+>=20
+>>  		printf("dar =3D "REG"   dsisr =3D %.8lx\n", fp->dar, =
+fp->dsisr);
+>>  }
+>> =20
 
-Fabio,
-
-The --cover-letter option is discussed in the "Versioning patchsets"
-section of the tutorial.  Perhaps that is not the best place for it, since
-the need for a cover letter is not specific to versioning...
-
-julia
-
->
-> thanks,
->
-> greg k-h
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHFcI104K%2Bih3UDG%40kroah.com.
->
