@@ -2,82 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E3535AAA9
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 06:12:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5273E35AAB0
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 06:14:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232176AbhDJEL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 00:11:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58818 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229437AbhDJEL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 00:11:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BECD8611AF;
-        Sat, 10 Apr 2021 04:11:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618027873;
-        bh=AyKTQz3diuZcepHqxJ9DHk8auhUU1Lp6XSHBUmhJcBU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=gGDAXtj2AkKtOn3bthXPbWmspxSFxQPlItKWQfML/KQ6kczaJ3ZbnaM0jRZH/s31a
-         8fCfiuG+SA1Jnyma3wZzvecV+3l91/Iw+oPCtcFbrNyi51XArpxmE1YQqLlek/XkVR
-         CLM5T9MEqAgncAbUFiHbEUDGxr8ZpS8bECiv57vaATHfRGYDRVCla0Y4k0XT2T/OQW
-         izdi7iWI2v9NspZM+hxFmL9fwipKpuuXzAM/3UI6hn+whJv2fvlMnyLiatNExbU0ay
-         wk5Zx3iUKcoCm/TCqsFEHKKeuFtUnLA6q3u33iEmvBPvtRBIS43x8AKwwqkgKZB64L
-         U9MQFaX89j2oQ==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AC61460BFF;
-        Sat, 10 Apr 2021 04:11:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233957AbhDJEPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 00:15:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38070 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229437AbhDJEPA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 00:15:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672B1C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 21:14:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=3bB+m0fbtX3OhtdFNOgtTWp1ZNIwh6ik4e61/uqX+1Q=; b=uVOMEBzYkT6VmFOA9oLuTssCmk
+        8N3JkFlt2shGL9sds12Bge87VDKeD1GPZAQWgAX1/WS6HjvUOk0NSqDZgxB206JGHt0QkjtXDdI5a
+        NF1ViY4S+pZs48hVjdP6rPvbgZZ8mpymEtRdH9L+bcZ8GqSYbycUObkDiFG0O6n0klZC5Rhe+ros/
+        Kovj8MGjiJi/vg7/vReZPGktDUv7e2sucNenwJlDLMS+sdRURXGUbQIBcJyF/EW31ZzrsT4T50r4o
+        kQxXkEGbdbDoXwdnuY8RnZRQ3pDFQAcBy6AgkJnGl9UIAszQ7kwxHpEY6min+JCOtTCh5n2mMDR2m
+        lYMsKKUA==;
+Received: from [2601:1c0:6280:3f0::e0e1]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lV50G-001Ixr-LS; Sat, 10 Apr 2021 04:13:58 +0000
+Subject: Re: [PATCH] um: add 2 missing libs to fix various build errors
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        Alexei Starovoitov <ast@kernel.org>, kbuild-all@lists.01.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Johannes Berg <johannes.berg@intel.com>
+References: <20210404182044.9918-1-rdunlap@infradead.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <9f7eeb70-8ddc-fb04-a378-5f1e80d485e6@infradead.org>
+Date:   Fri, 9 Apr 2021 21:13:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next 0/7] net: ipa: a few small fixes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161802787370.22966.5421763361774209604.git-patchwork-notify@kernel.org>
-Date:   Sat, 10 Apr 2021 04:11:13 +0000
-References: <20210409180722.1176868-1-elder@linaro.org>
-In-Reply-To: <20210409180722.1176868-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <20210404182044.9918-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Fri,  9 Apr 2021 13:07:15 -0500 you wrote:
-> This series implements some minor bug fixes or improvements.
+On 4/4/21 11:20 AM, Randy Dunlap wrote:
+> Fix many build errors (at least 18 build error reports) for uml on i386
+> by adding 2 more library object files. All missing symbols are
+> either cmpxchg8b_emu or atomic*386.
 > 
-> The first patch removes an apparently unnecessary restriction, which
-> results in an error on a 32-bit ARM build.
+> Here are a few examples of the build errors that are eliminated:
 > 
-> The second makes a definition used for SDM845 match what is used in
-> the downstream code.
+>    /usr/bin/ld: core.c:(.text+0xd83): undefined reference to `cmpxchg8b_emu'
+>    /usr/bin/ld: core.c:(.text+0x2bb2): undefined reference to `atomic64_add_386'
+>    /usr/bin/ld: core.c:(.text+0x2c5d): undefined reference to `atomic64_xchg_386'
+>    syscall.c:(.text+0x2f49): undefined reference to `atomic64_set_386'
+>    /usr/bin/ld: syscall.c:(.text+0x2f54): undefined reference to `atomic64_set_386'
+>    syscall.c:(.text+0x33a4): undefined reference to `atomic64_inc_386'
+>    /usr/bin/ld: syscall.c:(.text+0x33ac): undefined reference to `atomic64_inc_386'
+>    /usr/bin/ld: net/ipv4/inet_timewait_sock.o: in function `inet_twsk_alloc':
+>    inet_timewait_sock.c:(.text+0x3d1): undefined reference to `atomic64_read_386'
+>    /usr/bin/ld: inet_timewait_sock.c:(.text+0x3dd): undefined reference to `atomic64_set_386'
+>    /usr/bin/ld: net/ipv4/inet_connection_sock.o: in function `inet_csk_clone_lock':
+>    inet_connection_sock.c:(.text+0x1d74): undefined reference to `atomic64_read_386'
+>    /usr/bin/ld: inet_connection_sock.c:(.text+0x1d80): undefined reference to `atomic64_set_386'
+>    /usr/bin/ld: net/ipv4/tcp_input.o: in function `inet_reqsk_alloc':
+>    tcp_input.c:(.text+0xa345): undefined reference to `atomic64_set_386'
+>    /usr/bin/ld: net/mac80211/wpa.o: in function `ieee80211_crypto_tkip_encrypt':
+>    wpa.c:(.text+0x739): undefined reference to `atomic64_inc_return_386'
 > 
-> [...]
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Brendan Jackman <jackmanb@google.com>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: kbuild-all@lists.01.org
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: linux-um@lists.infradead.org
+> Cc: Johannes Berg <johannes@sipsolutions.net>
+> Cc: Johannes Berg <johannes.berg@intel.com>
+> ---
+> My UML on i386 build environment is br0ken so this is not tested other
+> than to see that the .o files are built as expected.
+> If someone can test/verify it, please respond. Thanks.
 
-Here is the summary with links:
-  - [net-next,1/7] net: ipa: relax pool entry size requirement
-    https://git.kernel.org/netdev/net-next/c/7ad3bd52cbcb
-  - [net-next,2/7] net: ipa: update sequence type for modem TX endpoint
-    https://git.kernel.org/netdev/net-next/c/49e76a418981
-  - [net-next,3/7] net: ipa: only set endpoint netdev pointer when in use
-    https://git.kernel.org/netdev/net-next/c/57f63faf0562
-  - [net-next,4/7] net: ipa: ipa_stop() does not return an error
-    https://git.kernel.org/netdev/net-next/c/077e770f2601
-  - [net-next,5/7] net: ipa: get rid of empty IPA functions
-    https://git.kernel.org/netdev/net-next/c/74858b63c47c
-  - [net-next,6/7] net: ipa: get rid of empty GSI functions
-    https://git.kernel.org/netdev/net-next/c/57ab8ca42fa0
-  - [net-next,7/7] net: ipa: three small fixes
-    https://git.kernel.org/netdev/net-next/c/602a1c76f847
+Hi,
+Instead of trying to build this on x86_64, I powered up my 32-bit x86
+laptop and verified that this patch fixes the build errors of
+undefined references to cmpxchg8b_emu() and atomic64_*_386() functions.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+There are still some build errors in 2 object files:
+
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x63): more undefined references to `X86_FEATURE_XMM' follow
+
+and
+
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x63): undefined reference to `X86_FEATURE_XMM2'
+/usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x70): undefined reference to `X86_FEATURE_XMM2'
+
+I don't know what to do about these or what is causing them (other than
+"alternatives").
 
 
+
+>  arch/x86/um/Makefile |    1 +
+>  1 file changed, 1 insertion(+)
+> 
+> --- lnx-512-rc5.orig/arch/x86/um/Makefile
+> +++ lnx-512-rc5/arch/x86/um/Makefile
+> @@ -21,6 +21,7 @@ obj-y += checksum_32.o syscalls_32.o
+>  obj-$(CONFIG_ELF_CORE) += elfcore.o
+>  
+>  subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
+> +subarch-y += ../lib/cmpxchg8b_emu.o ../lib/atomic64_386_32.o
+>  subarch-y += ../kernel/sys_ia32.o
+>  
+>  else
+> 
+
+
+-- 
+~Randy
