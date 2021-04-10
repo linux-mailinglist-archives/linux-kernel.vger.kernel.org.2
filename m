@@ -2,158 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91B5B35A98B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 02:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CF135A99B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 02:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235279AbhDJAfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 20:35:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235215AbhDJAfn (ORCPT
+        id S235305AbhDJAkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 20:40:21 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:52614 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235215AbhDJAkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 20:35:43 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39478C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 17:35:30 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id t140so5091975pgb.13
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 17:35:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=duQL5fqfdjVk74WsrRNkd3MzfrtB4pdKonpe19giHo4=;
-        b=CvYrswaGjt5112kTOORZzJJImgPjCQpHJRK4HbodBvBxX903ZjhYl1vDQF1avo77bI
-         Sb8OnlBn2xCxhjxa2eLpS/czyS3FWho+E6ElgYsuFawLl3GpRJj8npCmCUFRCgO1EZzJ
-         WeouNbcbGz7XgvEJ1dMqazt9voLkBN13cly9eGd+8LLljrll9JPcihPDkqNK3At9v3jd
-         NejEjh5GXCJ7H5Zmp8tv0KZLh5MKWzvQ3LkJPXTo+Y1p54OddbVwEkyznMpN5RvgWZjZ
-         6nfVcXaIc26s4mkEIDR6QCOPU8KYSHv22cr4UWLyf0KCS82FTGniaxVq81Gbn2Z/HlIe
-         qCGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=duQL5fqfdjVk74WsrRNkd3MzfrtB4pdKonpe19giHo4=;
-        b=AYCW/RORbeNKjigt2DRb1dcGuGSWiY7/2bzhdP+6rPOID0xYCdP9+k/m++W2Jg6nn1
-         5E4029HeMuxV6+Y5ZKjPd+IIZYOfs5lLpGy9CjBki9yCx0sNSnIASuufiXfoquhCGv4P
-         K7OG2tKVgyUGKbmpUtW0iexoWul7blbj+V0y1N8MzmQ5je4nOE6hth9qi9FGiCxJkDKu
-         LG6Njhf/QM9mP7tgeRNXvTulzr/gAw1OKoJHOBpSUBV1rwPpZU/lXKaEGm9KksLdLvjK
-         24kWMgo0HcgvoIdCWEbUdK4/2UulAoM8eWudELfPhgU0zPsfYCeDBZRNIa6oN64nwDf1
-         MSig==
-X-Gm-Message-State: AOAM532G9mL4tGccQOAD+tqQgRPs1jMB+DJE53KlORQFOGHSiRJbIAkM
-        c9GaNw+Pe65el7UTXE8uUus=
-X-Google-Smtp-Source: ABdhPJxmp07NcyypcPCMuuArj1lHKGy23+HGQW2ewFOv0L7xOSZKhigQYnktNwYeeouu0QipzYVumg==
-X-Received: by 2002:a63:b91b:: with SMTP id z27mr15753090pge.231.1618014928947;
-        Fri, 09 Apr 2021 17:35:28 -0700 (PDT)
-Received: from localhost (193-116-90-211.tpgi.com.au. [193.116.90.211])
-        by smtp.gmail.com with ESMTPSA id n73sm3396388pfd.196.2021.04.09.17.35.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 17:35:28 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 10:35:23 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v4] powerpc/traps: Enhance readability for trap types
-To:     aik@ozlabs.ru, akpm@linux-foundation.org, alistair@popple.id.au,
-        aneesh.kumar@linux.ibm.com, atrajeev@linux.vnet.ibm.com,
-        benh@kernel.crashing.org, christophe.leroy@csgroup.eu,
-        haren@linux.ibm.com, jniethe5@gmail.com, john.ogness@linutronix.de,
-        kan.liang@linux.intel.com, kjain@linux.ibm.com,
-        maddy@linux.ibm.com, mikey@neuling.org, mpe@ellerman.id.au,
-        oleg@redhat.com, paulus@samba.org, peterz@infradead.org,
-        pmladek@suse.com, ravi.bangoria@linux.ibm.com, rppt@kernel.org,
-        Xiongwei Song <sxwjean@me.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Xiongwei Song <sxwjean@gmail.com>
-References: <20210409142832.26063-1-sxwjean@me.com>
-In-Reply-To: <20210409142832.26063-1-sxwjean@me.com>
+        Fri, 9 Apr 2021 20:40:17 -0400
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A584220B5683;
+        Fri,  9 Apr 2021 17:40:03 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A584220B5683
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1618015203;
+        bh=JxAWTKu0RsLOn+CtOJNoC1FW0WcD7DLqFKDKm5Tu7xg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oHL6t39YonTW38B5zIyWMIxXPFYAXsrJ1LA+xAxog1i3nr6opzclHK9FMNwuSJPjp
+         G+O74GkXOPZ6fYtvi5mj7L2gjH2mejD4EkEumfzzh21qpKtYX+e8olGqz8gfjD3Hz+
+         Z1/3PwXzhgpo+Uh1MrFjw71nPxqY5i2+/NOUWl6k=
+Received: by mail-pj1-f42.google.com with SMTP id ot17-20020a17090b3b51b0290109c9ac3c34so5765558pjb.4;
+        Fri, 09 Apr 2021 17:40:03 -0700 (PDT)
+X-Gm-Message-State: AOAM532z8fWhtlAfHeIOvh7bNlggRgaxC39Qlm12m7mzEXBpXMjK6+EN
+        qTWef47rBPltY2VScCk18PLuW5LQJTOtZBWFkEQ=
+X-Google-Smtp-Source: ABdhPJxsiSBaEo0q7IWG1XR6kNJzbJXnsnMAllDVNr0h3y82Zw+JbOCz2+OIKyRWvvOv4WiFz2E42r9sXZlYYlk4Od0=
+X-Received: by 2002:a17:90a:5306:: with SMTP id x6mr11539930pjh.39.1618015203252;
+ Fri, 09 Apr 2021 17:40:03 -0700 (PDT)
 MIME-Version: 1.0
-Message-Id: <1618014353.jyyolglj7u.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+ <20210409223801.104657-4-mcroce@linux.microsoft.com> <YHDtQWyzFmrjuQWr@apalos.home>
+In-Reply-To: <YHDtQWyzFmrjuQWr@apalos.home>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Sat, 10 Apr 2021 02:39:27 +0200
+X-Gmail-Original-Message-ID: <CAFnufp0aRJnJU4ZvLnp+zj2mp7FkgXGTon5JDFDU4BMoPsdUaQ@mail.gmail.com>
+Message-ID: <CAFnufp0aRJnJU4ZvLnp+zj2mp7FkgXGTon5JDFDU4BMoPsdUaQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 3/5] page_pool: Allow drivers to hint on SKB recycling
+To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Cc:     netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for working on this, I think it's a nice cleanup and helps
-non-powerpc people understand the code a bit better.
+On Sat, Apr 10, 2021 at 2:11 AM Ilias Apalodimas
+<ilias.apalodimas@linaro.org> wrote:
+>
+> Hi Matteo,
+>
+> [...]
+> > +bool page_pool_return_skb_page(void *data);
+> > +
+> >  struct page_pool *page_pool_create(const struct page_pool_params *params);
+> >
+> >  #ifdef CONFIG_PAGE_POOL
+> > @@ -243,4 +247,13 @@ static inline void page_pool_ring_unlock(struct page_pool *pool)
+> >               spin_unlock_bh(&pool->ring.producer_lock);
+> >  }
+> >
+> > +/* Store mem_info on struct page and use it while recycling skb frags */
+> > +static inline
+> > +void page_pool_store_mem_info(struct page *page, struct xdp_mem_info *mem)
+> > +{
+> > +     u32 *xmi = (u32 *)mem;
+> > +
+>
+> I just noticed this changed from the original patchset I was carrying.
+> On the original, I had a union containing a u32 member to explicitly avoid
+> this casting. Let's wait for comments on the rest of the series, but i'd like
+> to change that back in a v4. Aplogies, I completely missed this on the
+> previous postings ...
+>
 
-Excerpts from Xiongwei Song's message of April 10, 2021 12:28 am:
-> From: Xiongwei Song <sxwjean@gmail.com>
->=20
-> Create a new header named traps.h, define macros to list ppc interrupt
-> types in traps.h, replace the references of the trap hex values with thes=
-e
-> macros.
->=20
-> Referred the hex numbers in arch/powerpc/kernel/exceptions-64e.S,
-> arch/powerpc/kernel/exceptions-64s.S and
-> arch/powerpc/include/asm/kvm_asm.h.
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
+Hi,
 
-It now looks like lkp asked for this whole cleanup patch. I would
-put [kernel test robot <lkp@intel.com>] in your v3->4 changelog
-item.
+I had to change this because including net/xdp.h here caused a
+circular dependency.
+I think that the safest thing we can do is to use memcpy(), which will
+handle the alignments correctly, depending on the architecture.
 
-> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> ---
->=20
-> v3-v4:
-> Fix compile issue:
-> arch/powerpc/kernel/process.c:1473:14: error: 'INTERRUPT_MACHINE_CHECK' u=
-ndeclared (first use in this function); did you mean 'TAINT_MACHINE_CHECK'?
-> I didn't add "Reported-by: kernel test robot <lkp@intel.com>" here,
-> because it's improper for this patch.
-
-[...]
-
-> diff --git a/arch/powerpc/include/asm/traps.h b/arch/powerpc/include/asm/=
-traps.h
-> new file mode 100644
-> index 000000000000..2e64e10afcef
-> --- /dev/null
-> +++ b/arch/powerpc/include/asm/traps.h
-> @@ -0,0 +1,32 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ASM_PPC_TRAPS_H
-> +#define _ASM_PPC_TRAPS_H
-
-These could go in interrupt.h.
-
-> +#if defined(CONFIG_BOOKE) || defined(CONFIG_4xx)
-> +#define INTERRUPT_MACHINE_CHECK   0x000
-> +#define INTERRUPT_CRITICAL_INPUT  0x100
-> +#define INTERRUPT_ALTIVEC_UNAVAIL 0x200
-> +#define INTERRUPT_PERFMON         0x260
-> +#define INTERRUPT_DOORBELL        0x280
-> +#define INTERRUPT_DEBUG           0xd00
-> +#else
-> +#define INTERRUPT_SYSTEM_RESET    0x100
-> +#define INTERRUPT_MACHINE_CHECK   0x200
-
-[...]
-
-> @@ -1469,7 +1470,9 @@ static void __show_regs(struct pt_regs *regs)
->  	trap =3D TRAP(regs);
->  	if (!trap_is_syscall(regs) && cpu_has_feature(CPU_FTR_CFAR))
->  		pr_cont("CFAR: "REG" ", regs->orig_gpr3);
-> -	if (trap =3D=3D 0x200 || trap =3D=3D 0x300 || trap =3D=3D 0x600) {
-> +	if (trap =3D=3D INTERRUPT_MACHINE_CHECK ||
-> +	    trap =3D=3D INTERRUPT_DATA_STORAGE ||
-> +	    trap =3D=3D INTERRUPT_ALIGNMENT) {
->  		if (IS_ENABLED(CONFIG_4xx) || IS_ENABLED(CONFIG_BOOKE))
->  			pr_cont("DEAR: "REG" ESR: "REG" ", regs->dar, regs->dsisr);
->  		else
-
-This is now a change in behaviour because previously BOOKE/4xx tested
-0x200, but now it tests 0.
-
-That looks wrong for 4xx. 64e does put 0x000 there but I wonder if it=20
-should use 0x200 instead. Bit difficult to test this stuff, I do have
-some MCE injection patches for QEMU for 64s, might be able to look at
-porting them to 64e although I have no idea about booke machine checks.
-
-Anyway I don't think this patch should change generated code at all.
-Either change the code first with smaller patches, or make sure you
-keep the tests the same.
-
-Thanks,
-Nick
+Cheers,
+-- 
+per aspera ad upstream
