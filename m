@@ -2,329 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A8835AF8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 20:19:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C9335AF8C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 20:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234921AbhDJSTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 14:19:36 -0400
-Received: from ned.t-8ch.de ([212.47.237.191]:37962 "EHLO ned.t-8ch.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234392AbhDJSTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 14:19:35 -0400
-From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1618078753;
-        bh=IAK+kRS5kwVeNyt619n6qjAlMDlCizXlYR690zVVgJU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=niOiihyk4W5BFZZq4Pi7PfMkZM0gFc6PeoJ2029XJSsKvEj73z8L1y5vWfqSM7LOy
-         xaGO+L6yWcX1SKdHM3g8yX4Wcc4iP5SbZSIN8ZuDNGMjWZyG5ap06Qiw3hrpnSDF0l
-         9s7oYbcQjwgg2IPX2tgynPKXDq6Rh2kXVuP3HPNQ=
-To:     platform-driver-x86@vger.kernel.org,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Barnab=C3=A1s=20P=C5=91cze?= <pobrn@protonmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Matthew Garrett <mjg59@srcf.ucam.org>
-Subject: [PATCH v4] platform/x86: add Gigabyte WMI temperature driver
-Date:   Sat, 10 Apr 2021 20:18:56 +0200
-Message-Id: <20210410181856.144988-1-linux@weissschuh.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <6a096978-67ad-6def-6ed0-9ad38a460e95@redhat.com>
-References: <6a096978-67ad-6def-6ed0-9ad38a460e95@redhat.com>
+        id S234879AbhDJSWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 14:22:55 -0400
+Received: from mail-io1-f49.google.com ([209.85.166.49]:46702 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234392AbhDJSWy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 14:22:54 -0400
+Received: by mail-io1-f49.google.com with SMTP id j26so9239345iog.13
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 11:22:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=Byz/Sc22eLv5OrE3COYJ5OikDlNUAwwd8T2iK8Gi2u4=;
+        b=SWY1ti2s5TcmRbvh2WgfUQQsofC+pPUq6pj+xmKh5uCU6QOgtdeJIUr5BGBxWpoKfI
+         GmPCJziwjLjGdSz0Okzxp+D1qoBoEkntaJpkOa1ZfzXZFyxnAUrUvQ3yqTRcnLifPXIC
+         4UUwy/lgINhXu33vGGEe9MQuAjmVoqHvqPJcYQitx+GQXPxG3L7O5lIFjJRkwZheBPgw
+         rPXK986TINZbxtr5An599x9HBN2dKuDeqw09UL+l2AQAHeQcnMKoFUh7x9UBvv9otF4c
+         VDpsNDHGviwVA2C3wwBeUE/6ouyy6qZoUqgWZ/lw912zMmj23OkhcwCw/lTgVP7LYIRS
+         UiCQ==
+X-Gm-Message-State: AOAM53366c2GOMqYAt3SaEU72oDoHiOtMb5Mo2Yf1hSIeMhZ2mS1Bh6R
+        NVm2HqmwZLIFHCxvomk3/HU=
+X-Google-Smtp-Source: ABdhPJwQiUBpl3ntjXx+9mtQ5U7RER/yw5mFR+uR/u1yf0x4DTbMlUUN4KM5c7+dO6XkEMLihJpnpA==
+X-Received: by 2002:a05:6602:179e:: with SMTP id y30mr2649047iox.130.1618078957570;
+        Sat, 10 Apr 2021 11:22:37 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id o6sm2977907ioa.21.2021.04.10.11.22.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 11:22:37 -0700 (PDT)
+Date:   Sat, 10 Apr 2021 18:22:35 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] percpu changes for v5.12-rc7
+Message-ID: <YHHs618ESvKhYeeM@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changes since v3:
-* Completely hide unusable sensors
-* Expose force_load parameter read-only via sysfs
-* Naming
-* Style cleanups
+Hi Linus,
 
--- >8 --
+This pull request contains a fix for sporadically failing atomic percpu
+allocations. I only caught it recently while I was reviewing a new
+series [1] and simultaneously saw reports by btrfs in xfstests [2] and
+[3].
 
-Tested with
-* X570 I Aorus Pro Wifi (rev 1.0)
-* B550M DS3H
-* B550 Gaming X V2 (rev.1.x)
-* Z390 I AORUS PRO WIFI (rev. 1.0)
+In v5.9, memcg accounting was extended to percpu done by adding a second
+type of chunk. I missed an interaction with the free page float count
+used to ensure we can support atomic allocations. If 1 type of chunk has
+no free pages, but the other has enough to satisfy the free page float
+requirement, we will not repopulate the free pages for the former type
+of chunk. This led to sporadically failing atomic allocations.
 
-The mainboard contains an ITE IT8688E chip for management.
-This chips is also handled by drivers/hwmon/i87.c but as it is also used
-by the firmware itself it needs an ACPI driver.
+[1] https://lore.kernel.org/linux-mm/20210324190626.564297-1-guro@fb.com/
+[2] https://lore.kernel.org/linux-mm/20210401185158.3275.409509F4@e16-tech.com/
+[3] https://lore.kernel.org/linux-mm/CAL3q7H5RNBjCi708GH7jnczAOe0BLnacT9C+OBgA-Dx9jhB6SQ@mail.gmail.com/
 
-Unfortunately not all sensor registers are handled by the firmware and even
-less are exposed via WMI.
+Thanks,
+Dennis
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- MAINTAINERS                         |   6 +
- drivers/platform/x86/Kconfig        |  11 ++
- drivers/platform/x86/Makefile       |   1 +
- drivers/platform/x86/gigabyte-wmi.c | 195 ++++++++++++++++++++++++++++
- 4 files changed, 213 insertions(+)
- create mode 100644 drivers/platform/x86/gigabyte-wmi.c
+The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d92f85ca831d..9c10cfc00fe8 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7543,6 +7543,12 @@ F:	Documentation/filesystems/gfs2*
- F:	fs/gfs2/
- F:	include/uapi/linux/gfs2_ondisk.h
- 
-+GIGABYTE WMI DRIVER
-+M:	Thomas Weißschuh <linux@weissschuh.net>
-+L:	platform-driver-x86@vger.kernel.org
-+S:	Maintained
-+F:	drivers/platform/x86/gigabyte-wmi.c
-+
- GNSS SUBSYSTEM
- M:	Johan Hovold <johan@kernel.org>
- S:	Maintained
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index ad4e630e73e2..96622a2106f7 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -123,6 +123,17 @@ config XIAOMI_WMI
- 	  To compile this driver as a module, choose M here: the module will
- 	  be called xiaomi-wmi.
- 
-+config GIGABYTE_WMI
-+	tristate "Gigabyte WMI temperature driver"
-+	depends on ACPI_WMI
-+	depends on HWMON
-+	help
-+	  Say Y here if you want to support WMI-based temperature reporting on
-+	  Gigabyte mainboards.
-+
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called gigabyte-wmi.
-+
- config ACERHDF
- 	tristate "Acer Aspire One temperature and fan driver"
- 	depends on ACPI && THERMAL
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 60d554073749..1621ebfd04fd 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -15,6 +15,7 @@ obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)	+= intel-wmi-thunderbolt.o
- obj-$(CONFIG_MXM_WMI)			+= mxm-wmi.o
- obj-$(CONFIG_PEAQ_WMI)			+= peaq-wmi.o
- obj-$(CONFIG_XIAOMI_WMI)		+= xiaomi-wmi.o
-+obj-$(CONFIG_GIGABYTE_WMI)		+= gigabyte-wmi.o
- 
- # Acer
- obj-$(CONFIG_ACERHDF)		+= acerhdf.o
-diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
-new file mode 100644
-index 000000000000..c17e51fcf000
---- /dev/null
-+++ b/drivers/platform/x86/gigabyte-wmi.c
-@@ -0,0 +1,195 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *  Copyright (C) 2021 Thomas Weißschuh <thomas@weissschuh.net>
-+ */
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/acpi.h>
-+#include <linux/dmi.h>
-+#include <linux/hwmon.h>
-+#include <linux/module.h>
-+#include <linux/wmi.h>
-+
-+#define GIGABYTE_WMI_GUID	"DEADBEEF-2001-0000-00A0-C90629100000"
-+#define NUM_TEMPERATURE_SENSORS	6
-+
-+static bool force_load;
-+module_param(force_load, bool, 0444);
-+MODULE_PARM_DESC(force_load, "Force loading on unknown platform");
-+
-+static u8 usable_sensors_mask;
-+
-+enum gigabyte_wmi_commandtype {
-+	GIGABYTE_WMI_BUILD_DATE_QUERY       =   0x1,
-+	GIGABYTE_WMI_MAINBOARD_TYPE_QUERY   =   0x2,
-+	GIGABYTE_WMI_FIRMWARE_VERSION_QUERY =   0x4,
-+	GIGABYTE_WMI_MAINBOARD_NAME_QUERY   =   0x5,
-+	GIGABYTE_WMI_TEMPERATURE_QUERY      = 0x125,
-+};
-+
-+struct gigabyte_wmi_args {
-+	u32 arg1;
-+};
-+
-+static int gigabyte_wmi_perform_query(struct wmi_device *wdev,
-+				      enum gigabyte_wmi_commandtype command,
-+				      struct gigabyte_wmi_args *args, struct acpi_buffer *out)
-+{
-+	const struct acpi_buffer in = {
-+		.length = sizeof(*args),
-+		.pointer = args,
-+	};
-+
-+	acpi_status ret = wmidev_evaluate_method(wdev, 0x0, command, &in, out);
-+
-+	if ACPI_FAILURE(ret)
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static int gigabyte_wmi_query_integer(struct wmi_device *wdev,
-+				      enum gigabyte_wmi_commandtype command,
-+				      struct gigabyte_wmi_args *args, u64 *res)
-+{
-+	union acpi_object *obj;
-+	struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
-+	int ret;
-+
-+	ret = gigabyte_wmi_perform_query(wdev, command, args, &result);
-+	if (ret)
-+		return ret;
-+	obj = result.pointer;
-+	if (obj && obj->type == ACPI_TYPE_INTEGER)
-+		*res = obj->integer.value;
-+	else
-+		ret = -EIO;
-+	kfree(result.pointer);
-+	return ret;
-+}
-+
-+static int gigabyte_wmi_temperature(struct wmi_device *wdev, u8 sensor, long *res)
-+{
-+	struct gigabyte_wmi_args args = {
-+		.arg1 = sensor,
-+	};
-+	u64 temp;
-+	acpi_status ret;
-+
-+	ret = gigabyte_wmi_query_integer(wdev, GIGABYTE_WMI_TEMPERATURE_QUERY, &args, &temp);
-+	if (ret == 0) {
-+		if (temp == 0)
-+			return -ENODEV;
-+		*res = (s8)temp * 1000; // value is a signed 8-bit integer
-+	}
-+	return ret;
-+}
-+
-+static int gigabyte_wmi_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-+				   u32 attr, int channel, long *val)
-+{
-+	struct wmi_device *wdev = dev_get_drvdata(dev);
-+
-+	return gigabyte_wmi_temperature(wdev, channel, val);
-+}
-+
-+static umode_t gigabyte_wmi_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
-+					     u32 attr, int channel)
-+{
-+	return usable_sensors_mask & BIT(channel) ? 0444  : 0;
-+}
-+
-+static const struct hwmon_channel_info *gigabyte_wmi_hwmon_info[] = {
-+	HWMON_CHANNEL_INFO(temp,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT),
-+	NULL
-+};
-+
-+static const struct hwmon_ops gigabyte_wmi_hwmon_ops = {
-+	.read = gigabyte_wmi_hwmon_read,
-+	.is_visible = gigabyte_wmi_hwmon_is_visible,
-+};
-+
-+static const struct hwmon_chip_info gigabyte_wmi_hwmon_chip_info = {
-+	.ops = &gigabyte_wmi_hwmon_ops,
-+	.info = gigabyte_wmi_hwmon_info,
-+};
-+
-+static u8 gigabyte_wmi_detect_sensor_usability(struct wmi_device *wdev)
-+{
-+	int i;
-+	long temp;
-+	u8 r = 0;
-+
-+	for (i = 0; i < NUM_TEMPERATURE_SENSORS; i++) {
-+		if (!gigabyte_wmi_temperature(wdev, i, &temp))
-+			r |= BIT(i);
-+	}
-+	return r;
-+}
-+
-+static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
-+	{ .matches = {
-+		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-+		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550 GAMING X V2"),
-+	}},
-+	{ .matches = {
-+		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-+		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M DS3H"),
-+	}},
-+	{ .matches = {
-+		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-+		DMI_EXACT_MATCH(DMI_BOARD_NAME, "Z390 I AORUS PRO WIFI-CF"),
-+	}},
-+	{ .matches = {
-+		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-+		DMI_EXACT_MATCH(DMI_BOARD_NAME, "X570 I AORUS PRO WIFI"),
-+	}},
-+	{ }
-+};
-+
-+static int gigabyte_wmi_probe(struct wmi_device *wdev, const void *context)
-+{
-+	struct device *hwmon_dev;
-+
-+	if (!dmi_check_system(gigabyte_wmi_known_working_platforms)) {
-+		if (!force_load)
-+			return -ENODEV;
-+		dev_warn(&wdev->dev, "Forcing load on unknown platform");
-+	}
-+
-+	usable_sensors_mask = gigabyte_wmi_detect_sensor_usability(wdev);
-+	if (!usable_sensors_mask) {
-+		dev_info(&wdev->dev, "No temperature sensors usable");
-+		return -ENODEV;
-+	}
-+
-+	hwmon_dev = devm_hwmon_device_register_with_info(&wdev->dev, "gigabyte_wmi", wdev,
-+							 &gigabyte_wmi_hwmon_chip_info, NULL);
-+
-+	return PTR_ERR_OR_ZERO(hwmon_dev);
-+}
-+
-+static const struct wmi_device_id gigabyte_wmi_id_table[] = {
-+	{ GIGABYTE_WMI_GUID, NULL },
-+	{ }
-+};
-+
-+static struct wmi_driver gigabyte_wmi_driver = {
-+	.driver = {
-+		.name = "gigabyte-wmi",
-+	},
-+	.id_table = gigabyte_wmi_id_table,
-+	.probe = gigabyte_wmi_probe,
-+};
-+module_wmi_driver(gigabyte_wmi_driver);
-+
-+MODULE_DEVICE_TABLE(wmi, gigabyte_wmi_id_table);
-+MODULE_AUTHOR("Thomas Weißschuh <thomas@weissschuh.net>");
-+MODULE_DESCRIPTION("Gigabyte WMI temperature Driver");
-+MODULE_LICENSE("GPL");
+  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
 
-base-commit: 144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
--- 
-2.31.1
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/dennis/percpu.git for-5.12-fixes
+
+for you to fetch changes up to 0760fa3d8f7fceeea508b98899f1c826e10ffe78:
+
+  percpu: make pcpu_nr_empty_pop_pages per chunk type (2021-04-09 13:58:38 +0000)
+
+----------------------------------------------------------------
+Roman Gushchin (1):
+      percpu: make pcpu_nr_empty_pop_pages per chunk type
+
+ mm/percpu-internal.h |  2 +-
+ mm/percpu-stats.c    |  9 +++++++--
+ mm/percpu.c          | 14 +++++++-------
+ 3 files changed, 15 insertions(+), 10 deletions(-)
