@@ -2,232 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E06E35ABA5
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B258B35ABA7
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbhDJH1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 03:27:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhDJH1k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 03:27:40 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0212EC061763
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 00:27:25 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id bx20so7894945edb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 00:27:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9t4IRZ/xinBCPXe8QPt8b+U2YfiOvj3rWWbVkVl9T04=;
-        b=myAq0fm9w1xMepaESeemquQQy91gZRs5y3tN5CYWCGP7+xereCOGhNa9ayLd7u9rhx
-         9w8GQ2LyefMz5tzQR7PsSb9bxn3EWGc/XqTo0nKxVlCebOHrHjJ4ZYdqylY0PVnx02TP
-         aQLNIYGRasdkFKRv3xVMTM7NgZNH2TTzKCRDQqPs9P4WNvk3/UMprehVAZuS1kZOK+Ss
-         GN5COX34xeTpToZLLMFvY8oKpNN/xmzQ5fvD4yOTTYZQ4zV+MDrfVfrD4DGyM86B+T3m
-         nqPy46qKt4JcXWWC2uvXythgpwJ0nTD2YjPf1wZyxJRj1l/ltu0NjL4JRW5NCSG0crci
-         BGVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9t4IRZ/xinBCPXe8QPt8b+U2YfiOvj3rWWbVkVl9T04=;
-        b=Gmnz/e41wnLRKgw9c8WzdCOzYVc4uxsHnxP5w5VqdwnodygFO1hS6CRhU5kdjsH0zO
-         HOm8YnvkvOopub6REVGvCQwzQu/zLIsnLAVgcTk1YDkYbKVn3MfaRVl037OCEFc/1keC
-         NkgUYzKkL8HRXvE5Tg0APwJhX8cncOm4ZJRiYbwAx6fTOrNyrS9KN0CI7DE7bC12pN05
-         VLkh3E0Zy7NLlP6mU1I16QwZbNhzWN8lGf9aB/tAeZAfacLmXxkyIuLlRyAyQBNt7blc
-         Ttp6n48v8Go7uRPLydn75XI611UHHr3kZg46oJphBcwSWQhxCL+TRTMqx2BFZwGK+DGK
-         Dz9A==
-X-Gm-Message-State: AOAM532gCLSwk1Sgu32NGYbd1kWsRQd71x8e9b+rAkY/eROJcIrYmffC
-        UEaLpufl6viuBmHlkzHrkaMYIfHyCh2LonQGKrPDz2lCs0srCnMt
-X-Google-Smtp-Source: ABdhPJwTilbpJpSK2NjPnCOgu3sFXGOexK40ZrbjnpEB9hu/CPBECSOySJ/eeP6qL/hw/wsB4aUYzPt0r5D2Oa/FhAg=
-X-Received: by 2002:a50:eb92:: with SMTP id y18mr12874227edr.230.1618039644471;
- Sat, 10 Apr 2021 00:27:24 -0700 (PDT)
+        id S231573AbhDJH3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 03:29:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229472AbhDJH3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 03:29:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B997B610CB;
+        Sat, 10 Apr 2021 07:29:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618039773;
+        bh=6dqsCuwOxzPRtweC7qc1rnM65QPQJBohOG5bLmKsBEg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KU0+ab193iyQWutIghoi3oevU1UUdLhuFJD/YpfGtH7iOYDcjG3CIfyQ3S5gKoqWV
+         RN3PtXLX9fMIH/VcN3pzz3FfjJZCfij79O3ykmDsx8EcuIrbVil2bsdzB0i7Bzml96
+         qowIuunenOgpRwNylXCeTkP8/sFlEF/m3psd6jDs=
+Date:   Sat, 10 Apr 2021 09:29:29 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [Patch 0/3]
+Message-ID: <YHFT2S31kFy72DMv@kroah.com>
+References: <6552860.D8CPca6BT0@localhost.localdomain>
 MIME-Version: 1.0
-References: <20210409095302.894568462@linuxfoundation.org>
-In-Reply-To: <20210409095302.894568462@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 10 Apr 2021 12:57:13 +0530
-Message-ID: <CA+G9fYs_RpXGYk4fscy-R-Nk6C3KyhiVD_J=pgA+3jQmSwdejA@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/23] 5.4.111-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6552860.D8CPca6BT0@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Apr 2021 at 15:29, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.111 release.
-> There are 23 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.111-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Fri, Apr 09, 2021 at 06:29:59PM +0200, Fabio M. De Francesco wrote:
+> This patch series removes camelcases, changes the type and use of a 
+> variable, and correct misspelled words.
+> 
+> Patch 1/3: staging: rtl8723bs: Remove camelcase in several files
+> 
+> drivers/staging/rtl8723bs/core/rtw_cmd.c       |  2 +-
+> drivers/staging/rtl8723bs/core/rtw_mlme.c      |  2 +-
+> drivers/staging/rtl8723bs/core/rtw_pwrctrl.c   | 18 +++++++++---------
+> drivers/staging/rtl8723bs/hal/hal_intf.c       |  2 +-
+> drivers/staging/rtl8723bs/hal/rtl8723b_dm.c    |  6 +++---
+> .../staging/rtl8723bs/hal/rtl8723b_hal_init.c  |  2 +-
+> drivers/staging/rtl8723bs/hal/sdio_ops.c       | 14 +++++++-------
+> .../staging/rtl8723bs/include/rtw_pwrctrl.h    |  2 +-
+> 8 files changed, 24 insertions(+), 24 deletions(-)
+> 
+> Patch 2/3: staging: rtl8723bs: Change the type and use of a variable
+> 
+> drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
+>  drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> Patch 3/3: staging: rtl8723bs: include: Fix misspelled words in comments
+> 
+> .../rtl8723bs/include/Hal8192CPhyReg.h        |  8 ++---
+>  .../staging/rtl8723bs/include/basic_types.h   |  2 +-
+>  drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
+>  drivers/staging/rtl8723bs/include/hal_com.h   |  2 +-
+>  .../staging/rtl8723bs/include/hal_com_reg.h   | 34 +++++++++----------
+>  drivers/staging/rtl8723bs/include/hal_data.h  |  2 +-
+>  .../staging/rtl8723bs/include/hal_pwr_seq.h   |  2 +-
+>  drivers/staging/rtl8723bs/include/rtw_cmd.h   |  6 ++--
+>  drivers/staging/rtl8723bs/include/rtw_mlme.h  | 18 +++++-----
+>  .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  2 +-
+>  drivers/staging/rtl8723bs/include/rtw_mp.h    |  2 +-
+>  .../staging/rtl8723bs/include/rtw_pwrctrl.h   |  2 +-
+>  drivers/staging/rtl8723bs/include/rtw_recv.h  |  4 +--
+>  drivers/staging/rtl8723bs/include/rtw_xmit.h  |  2 +-
+>  drivers/staging/rtl8723bs/include/sta_info.h  |  2 +-
+>  drivers/staging/rtl8723bs/include/wifi.h      |  2 +-
+>  16 files changed, 46 insertions(+), 46 deletions(-)
+> 
+> Fabio M. De Francesco
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I have no idea how you created this patch series, but I do not think it
+worked well :(
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Please use our standard tools, that do this all for you automatically,
+and send them out in a series of emails that have a proper subject line
+(look at what you used here...) and are properly "threaded".
 
-## Build
-* kernel: 5.4.111-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: 9b00696cdc423c6b92ee4d7cea65858137f8456f
-* git describe: v5.4.110-24-g9b00696cdc42
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-10-24-g9b00696cdc42
+thanks,
 
-## No regressions (compared to v5.4.110)
-
-## No fixes (compared to v5.4.110)
-
-## Test result summary
- total: 66085, pass: 54986, fail: 899, skip: 9988, xfail: 212,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 191 total, 190 passed, 1 failed
-* arm64: 25 total, 25 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 13 passed, 1 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 25 total, 25 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+greg k-h
