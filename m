@@ -2,120 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F109635AD29
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:02:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BDEA35AD2D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234679AbhDJMCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 08:02:22 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56316 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbhDJMCV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 08:02:21 -0400
-Date:   Sat, 10 Apr 2021 12:02:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618056125;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n1T/Y7QFWKNq4nSX24N1lPYPb7RxrPrrcq+fFSziO5Q=;
-        b=qEYHMXpSYJWev6Z3n8Ek677qBaLaHoyO6F+InhTE9JaRT3Bpd/EY+3L5krxfamRZp6+kQk
-        Of9F6AXUF9gkAdVbQBhYef2+xjT43ysknJQVwNl15pX0wjww7w2vxG+2vG6ucu6d4shbos
-        PnRmzd6Nr/dDIsfGVt2lQTL/6KxcsPyK3axQYNFaCGEdcVjhK4eNOLPseOU11c6cGWytPE
-        UeCa7s2GNcTN3Kck+/u+k79rUnAl6tQ7WnhST95SNYQMnAYJi/DO1nIEnhGSqqFy9/UUpN
-        6PAFxkNnUQiBgc08htx0NMXr5FbdxO0M72xr50eXxbWrhfeCSVOVUDsKpXET3Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618056125;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=n1T/Y7QFWKNq4nSX24N1lPYPb7RxrPrrcq+fFSziO5Q=;
-        b=uKlpdnWhHHJwPWv9OVM5w7n2ZCRg3PPHhD6oaljZTCo/OYTrKfr+BkCoafXrU4JEcedOOQ
-        Rys5GHeVBsQCsMBQ==
-From:   "tip-bot2 for Aditya Srivastava" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/platform/intel/quark: Fix incorrect
- kernel-doc comment syntax in files
-Cc:     Aditya Srivastava <yashsri421@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210330213022.28769-1-yashsri421@gmail.com>
-References: <20210330213022.28769-1-yashsri421@gmail.com>
+        id S234501AbhDJMII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 08:08:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57124 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231279AbhDJMIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 08:08:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 88C0661165;
+        Sat, 10 Apr 2021 12:07:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618056470;
+        bh=TOGFWa9Nn+4J9hISS6++HsfYZalNKWKelOxu1CZ9JKc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XeX6B1Wg1409bUXGrRz+W/5iV3gdA2dVbOF7KHXy+lzXYaOmYWK0hgL4Mma+PnYKk
+         zdaPSYSdFXcrLzsLvGuxh6SHUgp2XT0s2DkSzQss2/8A2Co5Z+SoqWtvcXg4cmim7j
+         Nm6MekC8iMXLpIxiQc/2Nsoo4r/Q3PHhMrQsUAHs=
+Date:   Sat, 10 Apr 2021 14:07:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Roman Guskov <rguskov@dh-electronics.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH stable] gpiolib: Read "gpio-line-names" from a firmware
+ node
+Message-ID: <YHGVE1hMDUiK0P2A@kroah.com>
+References: <20210410090919.3157-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-Message-ID: <161805612484.29796.17285965963701960462.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210410090919.3157-1-brgl@bgdev.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On Sat, Apr 10, 2021 at 11:09:19AM +0200, Bartosz Golaszewski wrote:
+> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
+> see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
+> pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
+> and iterates over all of its DT subnodes when registering each GPIO
+> bank gpiochip. Each gpiochip has:
+> 
+>   - gpio_chip.parent = dev,
+>     where dev is the device node of the pin controller
+>   - gpio_chip.of_node = np,
+>     which is the OF node of the GPIO bank
+> 
+> Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
+> i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
+> 
+> The original code behaved correctly, as it extracted the "gpio-line-names"
+> from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
+> 
+> To achieve the same behaviour, read property from the firmware node.
+> 
+> Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
+> Cc: stable@vger.kernel.org
+> Reported-by: Marek Vasut <marex@denx.de>
+> Reported-by: Roman Guskov <rguskov@dh-electronics.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Tested-by: Marek Vasut <marex@denx.de>
+> Reviewed-by: Marek Vasut <marex@denx.de>
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+> Hi Greg,
+> 
+> This patch somehow got lost and never made its way into stable. Could you
+> please apply it?
 
-Commit-ID:     0d6c8e1e246586b81cb4e6ab1a93a6d4a08a0cf9
-Gitweb:        https://git.kernel.org/tip/0d6c8e1e246586b81cb4e6ab1a93a6d4a08a0cf9
-Author:        Aditya Srivastava <yashsri421@gmail.com>
-AuthorDate:    Wed, 31 Mar 2021 03:00:22 +05:30
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 10 Apr 2021 13:59:25 +02:00
+This has been added and removed more times than I can remember already.
 
-x86/platform/intel/quark: Fix incorrect kernel-doc comment syntax in files
+Are you all _SURE_ this is safe for a stable kernel release?  Look in
+the archives for complaints when we added this in the past.
 
-The opening comment mark '/**' is used for highlighting the beginning of
-kernel-doc comments.
-There are certain files in arch/x86/platform/intel-quark, which follow this
-syntax, but the content inside does not comply with kernel-doc.
-Such lines were probably not meant for kernel-doc parsing, but are parsed
-due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-causes unexpected warnings from kernel-doc.
+thanks,
 
-E.g., presence of kernel-doc like comment in the header lines for
-arch/x86/platform/intel-quark/imr.c causes these warnings:
-"warning: Function parameter or member 'fmt' not described in 'pr_fmt'"
-"warning: expecting prototype for c(). Prototype was for pr_fmt() instead"
-
-Similarly for arch/x86/platform/intel-quark/imr_selftest.c too.
-
-Provide a simple fix by replacing these occurrences with general comment
-format, i.e. '/*', to prevent kernel-doc from parsing it.
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Link: https://lore.kernel.org/r/20210330213022.28769-1-yashsri421@gmail.com
-
----
- arch/x86/platform/intel-quark/imr.c          | 2 +-
- arch/x86/platform/intel-quark/imr_selftest.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/platform/intel-quark/imr.c b/arch/x86/platform/intel-quark/imr.c
-index 122e0f3..d3d4569 100644
---- a/arch/x86/platform/intel-quark/imr.c
-+++ b/arch/x86/platform/intel-quark/imr.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-only
--/**
-+/*
-  * imr.c -- Intel Isolated Memory Region driver
-  *
-  * Copyright(c) 2013 Intel Corporation.
-diff --git a/arch/x86/platform/intel-quark/imr_selftest.c b/arch/x86/platform/intel-quark/imr_selftest.c
-index 570e306..761f368 100644
---- a/arch/x86/platform/intel-quark/imr_selftest.c
-+++ b/arch/x86/platform/intel-quark/imr_selftest.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--/**
-+/*
-  * imr_selftest.c -- Intel Isolated Memory Region self-test driver
-  *
-  * Copyright(c) 2013 Intel Corporation.
+greg k-h
