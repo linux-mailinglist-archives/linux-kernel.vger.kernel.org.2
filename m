@@ -2,179 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9203035AC03
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D641135AC05
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:55:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229494AbhDJIxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 04:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232254AbhDJIxS (ORCPT
+        id S234245AbhDJIzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 04:55:24 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:47811 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229632AbhDJIzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 04:53:18 -0400
-Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B90C061764
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 01:53:03 -0700 (PDT)
-Received: by mail-yb1-xb34.google.com with SMTP id z1so9234089ybf.6
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 01:53:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7yHuiMf2mbQHC9INRUFE4f0Q8iL2DCKJY335xtgKT+M=;
-        b=s0sXCo3dvECgpdJR7whscVJ1iWTqthnxVLYQ+cWKngNry1eueNvN2t1KtSQvyAKpin
-         13En8yn6d+Yw7fzHTql9MiHET60pC0eR48G0sg4Y0BJt25ufPVNEf0X34Jx1xzMIG4Hy
-         Y7EKWXgnYUH4e5mY/YU8c2uHjr8njpZ3dTzJt0iYL4TJPYPHOv7FAshptX+jC9Tzkz3z
-         hfvu7Qt1gZ4d5Qsr3NTxYjx2QW7Fdl/cbwNiQ02u18593AOU/WV8l+R+9uqhoWnAmXr9
-         /+iF2mseThA+yNVXeIr6fq/WlwKArwfqxhv/83FA2rfwSlB5wOfyw2hsXxWSVYF6fqRM
-         JrGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7yHuiMf2mbQHC9INRUFE4f0Q8iL2DCKJY335xtgKT+M=;
-        b=Z/ZK6qwbVk6kxpsc5BzedCubo2fEdaRT7lYo/FUBhTB4ywSWPrwLUOlJBnXL8WZpw3
-         UX8GblnfXDE7oOD6TWOsxwcaGcV+ANVRJiqsR/Dh+JGNuGDOJi7EChydDnKfZb6WV1wP
-         qxNd3/JTpAMvfBvXTcrXEIiI+BfIYdmn7OiwXRB9VCCsh5mDLN2kNYcD3jqDcnU0QjFE
-         G6XodzBx8tXOqXVcksiYCLliddzsP5sXMl9B5TLOoQS6mPfgFQfwxCKuWznErLbRfbWP
-         M/ruL2krvWxhGS14LB33yg9wxVSjumo4VjtS5N8OyqsUpDYXX1v7xlmxkLzfnzfUHFXW
-         /w5w==
-X-Gm-Message-State: AOAM532LUW/QMJ1b5FjoUYcl9inPJMEy19LkFxnJsUpcfqfYx5fX3Af2
-        SiuWYe+h2E/1PyTuoJE1nwa9PK8DFw0hZ8T6CohwRQ==
-X-Google-Smtp-Source: ABdhPJy5dr9lQOxU6kvADPui00Fq+MldBcPrkITVyRf0//k/8cK2iDR0U0j3GM3hEL13gRzjdmouFNrBWiWVxuk2Mok=
-X-Received: by 2002:a25:2bc1:: with SMTP id r184mr25473310ybr.51.1618044782263;
- Sat, 10 Apr 2021 01:53:02 -0700 (PDT)
+        Sat, 10 Apr 2021 04:55:22 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id CA907580837;
+        Sat, 10 Apr 2021 04:55:07 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Sat, 10 Apr 2021 04:55:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=5uGzC6LNv+sAq4wwCUhA+ZWu3IK
+        7ZSq0aFCqAf14d0Q=; b=HvEYZVKwKybrc+hwpLOCV+3kvgyZcCQBYLg58PghLeW
+        IMOEZPNGoMnr25CBiUYz1hn9InOHocNBB2g6xAKJJ5axfLc63pifdZdbvF0Oz7tw
+        Ao65ZccGjGnWmdRrqEitT9yDuzOjyS/y1UZ455gTrzu9V95E9J7gF4i7Cf1UNfcH
+        ehLHpZvN2GlIWntBcdiUlnigpdCjRJymqkV2LUDwi9GtxOl6g78/3tlKZhfEa3HE
+        QhguJhj2sl+8S3QcLrXMq8bEF3ny0foTx3/46eplso4PdCAjj+A11TENwvZdmkzC
+        5cRepQVGyuGRQdWgdTzOyP9WskGFu1L07b6mCIGte/A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=5uGzC6
+        LNv+sAq4wwCUhA+ZWu3IK7ZSq0aFCqAf14d0Q=; b=mx0MeMsxHvtgYZV3LIeuBu
+        eHQUZaRqosNpEDt0qOm1Bse4BLOXyrEpNuPUrrqJy6ajjh+54SBIbrmpA8MvKVmf
+        L/g4hNy+ku9uzklKEkPojfoUQ1kSIAHN6n2r0g1EVUk/aILzHX3v2zTTT2zrFLK3
+        38ykYJ2jHuav+i8ERK4JhMj1fmEFq09BjvMdruQFEHPmsOkXEOjHXfn1XPc5D9uU
+        CLdavAbKvR/JD3+oQ1ouH9mp11bwQSflo7mwUESF+tV0W1wQdpekHXe0xFdvcj6U
+        T5/Ge8A15F80aEKQFRyvT19rSDf4b/vc8OEp++Egj96A7I8K6M1rVC9dOWOg6WYA
+        ==
+X-ME-Sender: <xms:6GdxYBDse1rPZPrI3VsS_BaCc_W8xH1jLrVrInuo5Z1MtqCURr8Fog>
+    <xme:6GdxYPj-j6PJShry4lVzicG674J9tTkY903ypzgb1hbTyAx-5kLWSko_87lyOfBW-
+    vhMBdE8vARzZg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekfedguddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:6GdxYMm3YhftpsiX78d2fv4y5btEgLgnk-_N3SSDkZYOwQfksUDBQg>
+    <xmx:6GdxYLxCVqZXbFqU11X36ZNv6CMADoDwn9JaMDDDVtQnuTaz8A677g>
+    <xmx:6GdxYGQWQxyTizoLTcsX4hF3SD9wpN36FfjrccXyhPRZGMWeTLKMZA>
+    <xmx:62dxYKAV02l7-F86dfgl2lFZh-rC7eI3LyjIQiC9LIVPf9jWkXBN7A>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id CCA9B24005D;
+        Sat, 10 Apr 2021 04:55:03 -0400 (EDT)
+Date:   Sat, 10 Apr 2021 10:55:01 +0200
+From:   Greg KH <greg@kroah.com>
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
+        Jonathan.Cameron@huawei.com, acme@kernel.org,
+        alexander.shishkin@linux.intel.com, amit@kernel.org,
+        benh@kernel.crashing.org, brendanhiggins@google.com,
+        corbet@lwn.net, david@redhat.com, dwmw@amazon.com,
+        elver@google.com, fan.du@intel.com, foersleo@amazon.de,
+        gthelen@google.com, guoju.fgj@alibaba-inc.com, mgorman@suse.de,
+        minchan@kernel.org, mingo@redhat.com, namhyung@kernel.org,
+        peterz@infradead.org, riel@surriel.com, rientjes@google.com,
+        rostedt@goodmis.org, rppt@kernel.org, shakeelb@google.com,
+        shuah@kernel.org, snu@amazon.de, vbabka@suse.cz,
+        vdavydov.dev@gmail.com, zgf574564920@gmail.com,
+        linux-damon@amazon.com, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v27 07/13] mm/damon: Implement a debugfs-based user space
+ interface
+Message-ID: <YHFn5fOTIQQ4TXHA@kroah.com>
+References: <20210408134854.31625-1-sj38.park@gmail.com>
+ <20210408134854.31625-8-sj38.park@gmail.com>
 MIME-Version: 1.0
-References: <20210409185105.188284-3-willy@infradead.org> <202104100656.N7EVvkNZ-lkp@intel.com>
- <20210410024313.GX2531743@casper.infradead.org> <20210410082158.79ad09a6@carbon>
-In-Reply-To: <20210410082158.79ad09a6@carbon>
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Date:   Sat, 10 Apr 2021 11:52:26 +0300
-Message-ID: <CAC_iWjLXZ6-hhvmvee6r4R_N64u-hrnLqE_CSS1nQk+YaMQQnA@mail.gmail.com>
-Subject: Re: Bogus struct page layout on 32-bit
-To:     Jesper Dangaard Brouer <brouer@redhat.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Linux-MM <linux-mm@kvack.org>, kbuild-all@lists.01.org,
-        clang-built-linux@googlegroups.com,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408134854.31625-8-sj38.park@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+CC Grygorii for the cpsw part as Ivan's email is not valid anymore
+On Thu, Apr 08, 2021 at 01:48:48PM +0000, SeongJae Park wrote:
+> +static int dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
+> +{
+> +	const char * const file_names[] = {"attrs", "target_ids"};
+> +	const struct file_operations *fops[] = {&attrs_fops, &target_ids_fops};
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(file_names); i++)
+> +		debugfs_create_file(file_names[i], 0600, dir, ctx, fops[i]);
+> +
+> +	return 0;
+> +}
 
-Thanks for catching this. Interesting indeed...
+Why do you have a function that can only return 0, actually return
+something?  It should be void, right?
 
-On Sat, 10 Apr 2021 at 09:22, Jesper Dangaard Brouer <brouer@redhat.com> wrote:
->
-> On Sat, 10 Apr 2021 03:43:13 +0100
-> Matthew Wilcox <willy@infradead.org> wrote:
->
-> > On Sat, Apr 10, 2021 at 06:45:35AM +0800, kernel test robot wrote:
-> > > >> include/linux/mm_types.h:274:1: error: static_assert failed due to requirement '__builtin_offsetof(struct page, lru) == __builtin_offsetof(struct folio, lru)' "offsetof(struct page, lru) == offsetof(struct folio, lru)"
-> > >    FOLIO_MATCH(lru, lru);
-> > >    include/linux/mm_types.h:272:2: note: expanded from macro 'FOLIO_MATCH'
-> > >            static_assert(offsetof(struct page, pg) == offsetof(struct folio, fl))
-> >
-> > Well, this is interesting.  pahole reports:
-> >
-> > struct page {
-> >         long unsigned int          flags;                /*     0     4 */
-> >         /* XXX 4 bytes hole, try to pack */
-> >         union {
-> >                 struct {
-> >                         struct list_head lru;            /*     8     8 */
-> > ...
-> > struct folio {
-> >         union {
-> >                 struct {
-> >                         long unsigned int flags;         /*     0     4 */
-> >                         struct list_head lru;            /*     4     8 */
-> >
-> > so this assert has absolutely done its job.
-> >
-> > But why has this assert triggered?  Why is struct page layout not what
-> > we thought it was?  Turns out it's the dma_addr added in 2019 by commit
-> > c25fff7171be ("mm: add dma_addr_t to struct page").  On this particular
-> > config, it's 64-bit, and ppc32 requires alignment to 64-bit.  So
-> > the whole union gets moved out by 4 bytes.
->
-> Argh, good that you are catching this!
->
-> > Unfortunately, we can't just fix this by putting an 'unsigned long pad'
-> > in front of it.  It still aligns the entire union to 8 bytes, and then
-> > it skips another 4 bytes after the pad.
-> >
-> > We can fix it like this ...
-> >
-> > +++ b/include/linux/mm_types.h
-> > @@ -96,11 +96,12 @@ struct page {
-> >                         unsigned long private;
-> >                 };
-> >                 struct {        /* page_pool used by netstack */
-> > +                       unsigned long _page_pool_pad;
->
-> I'm fine with this pad.  Matteo is currently proposing[1] to add a 32-bit
-> value after @dma_addr, and he could use this area instead.
->
-> [1] https://lore.kernel.org/netdev/20210409223801.104657-3-mcroce@linux.microsoft.com/
->
-> When adding/changing this, we need to make sure that it doesn't overlap
-> member @index, because network stack use/check page_is_pfmemalloc().
-> As far as my calculations this is safe to add.  I always try to keep an
-> eye out for this, but I wonder if we could have a build check like yours.
->
->
-> >                         /**
-> >                          * @dma_addr: might require a 64-bit value even on
-> >                          * 32-bit architectures.
-> >                          */
-> > -                       dma_addr_t dma_addr;
-> > +                       dma_addr_t dma_addr __packed;
-> >                 };
-> >                 struct {        /* slab, slob and slub */
-> >                         union {
-> >
-> > but I don't know if GCC is smart enough to realise that dma_addr is now
-> > on an 8 byte boundary and it can use a normal instruction to access it,
-> > or whether it'll do something daft like use byte loads to access it.
-> >
-> > We could also do:
-> >
-> > +                       dma_addr_t dma_addr __packed __aligned(sizeof(void *));
-> >
-> > and I see pahole, at least sees this correctly:
-> >
-> >                 struct {
-> >                         long unsigned int _page_pool_pad; /*     4     4 */
-> >                         dma_addr_t dma_addr __attribute__((__aligned__(4))); /*     8     8 */
-> >                 } __attribute__((__packed__)) __attribute__((__aligned__(4)));
-> >
-> > This presumably affects any 32-bit architecture with a 64-bit phys_addr_t
-> > / dma_addr_t.  Advice, please?
->
-> I'm not sure that the 32-bit behavior is with 64-bit (dma) addrs.
->
-> I don't have any 32-bit boards with 64-bit DMA.  Cc. Ivan, wasn't your
-> board (572x ?) 32-bit with driver 'cpsw' this case (where Ivan added
-> XDP+page_pool) ?
->
-> --
-> Best regards,
->   Jesper Dangaard Brouer
->   MSc.CS, Principal Kernel Engineer at Red Hat
->   LinkedIn: http://www.linkedin.com/in/brouer
->
+thanks,
+
+greg k-h
