@@ -2,270 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E843F35B044
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 22:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BE9335B04C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 22:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235057AbhDJUDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 16:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234439AbhDJUDH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 16:03:07 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D844C06138A
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 13:02:52 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id y20-20020a1c4b140000b029011f294095d3so6471746wma.3
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 13:02:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KQVc6ALPRczTIMmLPJFtRRr0DNOfBBNxvSVhyFFM4K4=;
-        b=hr0iJ1WtsIlMpe2hr16+8h88/1pin2I46eCM682iC5gJjB19XCUjyOBBMy+cIQvPcb
-         ok1gaC1AEfhOQ7r2myEaAwnmyPi9DbpyYGRKH+W/vigx48Cl7dT38alxbvtAEP+VM25o
-         MaCagMU5eLfWaN3SY0KwFadIMXf1RUFNDjywVjv5kx6Jsaqrrsj7TESduWcOXOuv6jfl
-         6g/JmiFVRPrDG1Z3L9hncbNzSxv2zjrlnCqKPiVV5qbWfLfDm7ytS6z0w+JAQ0GFaJdk
-         rkU9/m+W6Fy+CRFvcs6E20SdneoX2GfxQ1HHCRreZSRNdrJTRZ066f+jtcgrIuYLoW2O
-         JovQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KQVc6ALPRczTIMmLPJFtRRr0DNOfBBNxvSVhyFFM4K4=;
-        b=VAM5V7OMaB1a/psxUJ4DGflmQuhNmSFepFMbWEJZYupSzdtJHOd/7jdXeHa914Hac8
-         r+oJ0mBQl+hnjvRL5AsJwiiTe9YIgwmDv/hS+ltnnnss39EG+aiiHcUrqFkR023WMF7w
-         K6Zjvv23fln5fwM9qKNfZ9+jcyNEAjQuqBdoUz5LtHW3BikOg2sXGRYCO/xkWsUCbfuX
-         vYOXUeKArsUPZjQX1xG8IbMuvRQEBdPeSc3FpoXYdaaxZK12urplfRpfWla9poCxJd/F
-         6elKS8IchokYbkYJoQ89e5yxQYOnKACT96QNazS1Bh0911ZyPeKPibVBP9/EAs82AR2U
-         8enQ==
-X-Gm-Message-State: AOAM5308C/YYRNb+jifRLrpkn3TIXA12Nw+/SxfPUe3QNly7l4Hg89M3
-        FvA8y0VP6WoN2dfyoin072smPDb17iAYJEcJ83b4aQ==
-X-Google-Smtp-Source: ABdhPJzPg6vFeaJ5urVg1wxZjP90byCsCiZUy7mnevv/n5dldzigX7Hqf5xNy7cKaguyCo4LjODdsuEOR6oGSzPKIB8=
-X-Received: by 2002:a1c:c918:: with SMTP id f24mr19844443wmb.12.1618084970674;
- Sat, 10 Apr 2021 13:02:50 -0700 (PDT)
+        id S234999AbhDJUNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 16:13:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234439AbhDJUNV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 16:13:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A39C610A6;
+        Sat, 10 Apr 2021 20:13:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618085586;
+        bh=Guk9ZX60Q80653TRrPCy85Qd3vZd+SQXZ1x/M/c0tB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tZhIw33UqppP/xKmC0bV9lkTeRGxlu1r8ekkqxmf1Ddv/+cWYaDgTYpyuhfa/63C4
+         hqpMDlEhW460JTivK3JyVU7Qu2HDc2rFGPCP4oxOpYGmxG3PwvZNk8+XiEFPrYFUuH
+         AAFor6RBS8/ZKY0bI0JF7WosuaC0eBobPpKHKJmySUGtcOSHc55dCGvbCvIJla/O2j
+         1AcStvbNkOVZaT4HwgeDqDs5FT3ulAyAhD5/UBpdlXOqg7DfnugkF4n21Pawh5K2rj
+         T30AmXeP+b87vs12pf/CHC9AdGYOU+5goCGMs61Rdb9T0md0kHuy4vmbJHRZCOW2C7
+         wkP3S9tgh88oA==
+Date:   Sat, 10 Apr 2021 22:13:02 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     robh+dt@kernel.org, linux@roeck-us.net, jdelvare@suse.com,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] i2c: mpc: Interrupt driven transfer
+Message-ID: <20210410201302.GC2471@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        robh+dt@kernel.org, linux@roeck-us.net, jdelvare@suse.com,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210329015206.17437-1-chris.packham@alliedtelesis.co.nz>
+ <20210329015206.17437-7-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-References: <20210405102008.25504-1-linmiaohe@huawei.com> <5ec0f24e-eac2-1e62-628b-757f8ce11dc2@huawei.com>
- <CAOUHufYYjRgO0+3zD6OMn2m3u5qm6sFg5pWxNujnPMaK0hv4Qw@mail.gmail.com> <7e5ea991-f219-5b42-ee71-4ec4004ca550@huawei.com>
-In-Reply-To: <7e5ea991-f219-5b42-ee71-4ec4004ca550@huawei.com>
-From:   Yu Zhao <yuzhao@google.com>
-Date:   Sat, 10 Apr 2021 14:02:39 -0600
-Message-ID: <CAOUHufbZWC0+7bSko1zQAvqKbUUOF1fa_c33J5VrVphS2bvZ0Q@mail.gmail.com>
-Subject: Re: [PATCH] mm/frontswap: fix frontswap_register_ops() race with
- swapon and swapoff
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, konrad.wilk@oracle.com,
-        Dan Streetman <ddstreet@ieee.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7qSK/uQB79J36Y4o"
+Content-Disposition: inline
+In-Reply-To: <20210329015206.17437-7-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 5:01 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
->
-> On 2021/4/10 18:42, Yu Zhao wrote:
-> > On Sat, Apr 10, 2021 at 1:30 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
-> >>
-> >> Hi:
-> >> On 2021/4/5 18:20, Miaohe Lin wrote:
-> >>> frontswap_register_ops can race with swapon. Consider the following scene:
-> >>
-> >> Any comment or suggestion? Or is this race window too theoretical to fix?
-> >> Thanks.
-> >
-> > Let me run a stress test and get back to you (within a day or so).
->
-> That's very kind of you. Many thanks!
 
-I'm still getting the following crash. Probably I should try the other
-series you sent earlier too?
+--7qSK/uQB79J36Y4o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  BUG: unable to handle page fault for address: ffffaa7937d82000
-  RIP: 0010:scan_swap_map_slots+0x12b/0x7f0
-  Call Trace:
-  get_swap_pages+0x278/0x590
-   get_swap_page+0x1ab/0x280
-   add_to_swap+0x7d/0x130
-   shrink_page_list+0xf84/0x25f0
-   reclaim_pages+0x313/0x430
-  madvise_cold_or_pageout_pte_range+0x95c/0xaa0
-   walk_p4d_range+0x43f/0x790
-   walk_pgd_range+0xf1/0x150
-   __walk_page_range+0x6f/0x1b0
-   walk_page_range+0xbe/0x1e
-   do_madvise+0x271/0x720
+On Mon, Mar 29, 2021 at 02:52:06PM +1300, Chris Packham wrote:
+> The fsl-i2c controller will generate an interrupt after every byte
+> transferred. Make use of this interrupt to drive a state machine which
+> allows the next part of a transfer to happen as soon as the interrupt is
+> received. This is particularly helpful with SMBUS devices like the LM81
+> which will timeout if we take too long between bytes in a transfer.
+>=20
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-> >>> CPU1                                  CPU2
-> >>> ----                                  ----
-> >>> frontswap_register_ops
-> >>>   fill bitmap a
-> >>>   ops->init
-> >>>                                       sys_swapon
-> >>>                                         enable_swap_info
-> >>>                                           frontswap_init without new ops
-> >>>   add ops to frontswap_ops list
-> >>>   check if swap_active_head changed
-> >>>                                           add to swap_active_head
-> >>>
-> >>> So the frontswap_ops init is missed on the new swap device. Consider the
-> >>> another scene:
-> >>> CPU1                                    CPU2
-> >>> ----                                    ----
-> >>> frontswap_register_ops
-> >>>   fill bitmap a
-> >>>   ops->init
-> >>>   add ops to frontswap_ops list
-> >>>                                         sys_swapon
-> >>>                                           enable_swap_info
-> >>>                                             frontswap_init with new ops
-> >>>                                             add to swap_active_head
-> >>>   check if swap_active_head changed
-> >>>   ops->init for new swap device [twice!]
-> >>>
-> >>> The frontswap_ops init will be called two times on the new swap device this
-> >>> time. frontswap_register_ops can also race with swapoff. Consider the
-> >>> following scene:
-> >>>
-> >>> CPU1                                    CPU2
-> >>> ----                                    ----
-> >>>                                         sys_swapoff
-> >>>                                         removed from swap_active_head
-> >>> frontswap_register_ops
-> >>>   fill bitmap a
-> >>>   ops->init without swap device
-> >>>   add ops to frontswap_ops list
-> >>>                                             invalidate_area with new ops
-> >>>   check if swap_active_head changed
-> >>>
-> >>> We could call invalidate_area on a swap device under swapoff with frontswap
-> >>> is uninitialized yet. Fix all these by using swapon_mutex to guard against
-> >>> race with swapon and add swap_info_get_if_under_swapoff() to collect swap
-> >>> devices under swapoff.
-> >>>
-> >>> Fixes: d1dc6f1bcf1e ("frontswap: allow multiple backends")
-> >>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> >>> ---
-> >>>  include/linux/swapfile.h |  2 ++
-> >>>  mm/frontswap.c           | 40 +++++++++++++++++-----------------------
-> >>>  mm/swapfile.c            | 13 ++++++++++++-
-> >>>  3 files changed, 31 insertions(+), 24 deletions(-)
-> >>>
-> >>> diff --git a/include/linux/swapfile.h b/include/linux/swapfile.h
-> >>> index e06febf62978..7ae15d917828 100644
-> >>> --- a/include/linux/swapfile.h
-> >>> +++ b/include/linux/swapfile.h
-> >>> @@ -9,8 +9,10 @@
-> >>>  extern spinlock_t swap_lock;
-> >>>  extern struct plist_head swap_active_head;
-> >>>  extern struct swap_info_struct *swap_info[];
-> >>> +extern struct mutex swapon_mutex;
-> >>>  extern int try_to_unuse(unsigned int, bool, unsigned long);
-> >>>  extern unsigned long generic_max_swapfile_size(void);
-> >>>  extern unsigned long max_swapfile_size(void);
-> >>> +extern struct swap_info_struct *swap_info_get_if_under_swapoff(int type);
-> >>>
-> >>>  #endif /* _LINUX_SWAPFILE_H */
-> >>> diff --git a/mm/frontswap.c b/mm/frontswap.c
-> >>> index 130e301c5ac0..c16bfc7550b5 100644
-> >>> --- a/mm/frontswap.c
-> >>> +++ b/mm/frontswap.c
-> >>> @@ -123,12 +123,26 @@ void frontswap_register_ops(struct frontswap_ops *ops)
-> >>>
-> >>>       bitmap_zero(a, MAX_SWAPFILES);
-> >>>       bitmap_zero(b, MAX_SWAPFILES);
-> >>> -
-> >>> +     mutex_lock(&swapon_mutex);
-> >>>       spin_lock(&swap_lock);
-> >>>       plist_for_each_entry(si, &swap_active_head, list) {
-> >>>               if (!WARN_ON(!si->frontswap_map))
-> >>>                       set_bit(si->type, a);
-> >>>       }
-> >>> +     /*
-> >>> +      * There might be some swap devices under swapoff, i.e. they are
-> >>> +      * removed from swap_active_head but frontswap_invalidate_area()
-> >>> +      * is not called yet due to swapon_mutex is held here. We must
-> >>> +      * collect these swap devices and call ops->init on them or they
-> >>> +      * might invalidate frontswap area while frontswap is uninitialized.
-> >>> +      */
-> >>> +     for_each_clear_bit(i, a, MAX_SWAPFILES) {
-> >>> +             si = swap_info_get_if_under_swapoff(i);
-> >>> +             if (!si || !si->frontswap_map)
-> >>> +                     continue;
-> >>> +             set_bit(si->type, b);
-> >>> +     }
-> >>> +     bitmap_or(a, a, b, MAX_SWAPFILES);
-> >>>       spin_unlock(&swap_lock);
-> >>>
-> >>>       /* the new ops needs to know the currently active swap devices */
-> >>> @@ -144,29 +158,9 @@ void frontswap_register_ops(struct frontswap_ops *ops)
-> >>>               ops->next = frontswap_ops;
-> >>>       } while (cmpxchg(&frontswap_ops, ops->next, ops) != ops->next);
-> >>>
-> >>> -     static_branch_inc(&frontswap_enabled_key);
-> >>> -
-> >>> -     spin_lock(&swap_lock);
-> >>> -     plist_for_each_entry(si, &swap_active_head, list) {
-> >>> -             if (si->frontswap_map)
-> >>> -                     set_bit(si->type, b);
-> >>> -     }
-> >>> -     spin_unlock(&swap_lock);
-> >>> +     mutex_unlock(&swapon_mutex);
-> >>>
-> >>> -     /*
-> >>> -      * On the very unlikely chance that a swap device was added or
-> >>> -      * removed between setting the "a" list bits and the ops init
-> >>> -      * calls, we re-check and do init or invalidate for any changed
-> >>> -      * bits.
-> >>> -      */
-> >>> -     if (unlikely(!bitmap_equal(a, b, MAX_SWAPFILES))) {
-> >>> -             for (i = 0; i < MAX_SWAPFILES; i++) {
-> >>> -                     if (!test_bit(i, a) && test_bit(i, b))
-> >>> -                             ops->init(i);
-> >>> -                     else if (test_bit(i, a) && !test_bit(i, b))
-> >>> -                             ops->invalidate_area(i);
-> >>> -             }
-> >>> -     }
-> >>> +     static_branch_inc(&frontswap_enabled_key);
-> >>>  }
-> >>>  EXPORT_SYMBOL(frontswap_register_ops);
-> >>>
-> >>> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> >>> index 149e77454e3c..ee736533717f 100644
-> >>> --- a/mm/swapfile.c
-> >>> +++ b/mm/swapfile.c
-> >>> @@ -89,7 +89,7 @@ static DEFINE_SPINLOCK(swap_avail_lock);
-> >>>
-> >>>  struct swap_info_struct *swap_info[MAX_SWAPFILES];
-> >>>
-> >>> -static DEFINE_MUTEX(swapon_mutex);
-> >>> +DEFINE_MUTEX(swapon_mutex);
-> >>>
-> >>>  static DECLARE_WAIT_QUEUE_HEAD(proc_poll_wait);
-> >>>  /* Activity counter to indicate that a swapon or swapoff has occurred */
-> >>> @@ -2958,6 +2958,17 @@ __weak unsigned long max_swapfile_size(void)
-> >>>       return generic_max_swapfile_size();
-> >>>  }
-> >>>
-> >>> +struct swap_info_struct *swap_info_get_if_under_swapoff(int type)
-> >>> +{
-> >>> +     struct swap_info_struct *si = swap_type_to_swap_info(type);
-> >>> +
-> >>> +     if (!si || !si->swap_map)
-> >>> +             return NULL;
-> >>> +     if ((si->flags & SWP_USED) && !(si->flags & SWP_WRITEOK))
-> >>> +             return si;
-> >>> +     return NULL;
-> >>> +}
-> >>> +
-> >>>  static unsigned long read_swap_header(struct swap_info_struct *p,
-> >>>                                       union swap_header *swap_header,
-> >>>                                       struct inode *inode)
-> >>>
-> >>
-> >>
-> > .
-> >
->
->
+Okay, this change is too large and HW specific for a detailed review.
+But I trust you and hope you will be around to fix regressions if I
+apply it for 5.13? That kind of leads to the question if you want to
+step up as the maintainer for this driver?
+
+Only thing I noticed was a "BUG" and "BUG_ON" and wonder if we really
+need to halt the kernel in that case. Maybe WARN is enough?
+
+I'll apply the first five patches now, they look good to me.
+
+
+--7qSK/uQB79J36Y4o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmByBs4ACgkQFA3kzBSg
+KbbBJxAAsW07ykMExY2JTtBGweEr2vjNc1a5TEE9gw1Id8wLV6lRCcs9Cpdrs+8x
+T5udKmoXq0DtOB3OUfgP8/rB1xnHDX7SeONw1RAmCGECLZmYMR+J6pTjb34uzfw0
++e3TnR6J3J9B6c+p6Hv5VHKTW226AQ1Ay81n9YFls1m6yqk0PVsaKUcaWbGflqZy
+KC0rOEHGxxpLUqW0kj7gt8mEP2hQURf2vmpy3CdRmvHnEuoiN5MASBWH7zAUn3bH
+RF+WyRzMyIcH6cOW0ysiy9xlcikfMmVPkUeM6/pZnL3VI/lNw873n0XoSqG3CSSY
+Z2E4vg7CzPWqjWsfYlBNJtO6wIsCkwdBx++g0NB30f+tzxeicFNwyk9nznIpNMq7
+7NoqLURtP0amLEJh6/7mIdH0xK4CjgBbNP3t4xCljRfLnpy8S88ENosdUgnr92eY
+Hv07MIMOc0qpQFjk9WdFFoBM57nXigJtA3ZCE3RuWWIEsJm0DP9vVeDLGXGeECzh
+n5MfyQvyttA86K1/IqF76HnEl6nBZzCenmxEtSUI09vpnj73gg4pCObyj4K9s772
+LlNV3OFONtJwsSo1cFy3ciCj7di7uOybWMF4d33hUxhfiKoqTYFNj273THmRDtA3
+3sSWSTGQMu+bWiKr2L0ixDAZMFMltiPtmxcG9yu/B7YykqAI/9g=
+=Dg/c
+-----END PGP SIGNATURE-----
+
+--7qSK/uQB79J36Y4o--
