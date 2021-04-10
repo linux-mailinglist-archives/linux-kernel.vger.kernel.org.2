@@ -2,71 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7AD35AA56
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 04:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C3735AA58
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 04:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233687AbhDJCmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 22:42:54 -0400
-Received: from m176149.mail.qiye.163.com ([59.111.176.149]:30769 "EHLO
-        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDJCmu (ORCPT
+        id S233977AbhDJCo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 22:44:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDJCo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 22:42:50 -0400
-Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
-        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 4F3A4282535;
-        Sat, 10 Apr 2021 10:42:33 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <ANUA4QBkDhibiES5bK7X8Ko8.3.1618022553315.Hmail.wangqing@vivo.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org,
+        Fri, 9 Apr 2021 22:44:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE7CC061762;
+        Fri,  9 Apr 2021 19:44:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kSBfGQGdldHOGZqey2pG91Lm4sBchHdpUdkbO6By1YI=; b=Exz1xebH0z4i/y6qs7XFO141Qk
+        eRdSApUIFaSir1NyVFycHEYEbOXEp95qDIa230dForIUOhOrcL8b410X67OZZNpDdPq7jmGPKucr7
+        Jm/mNgBVC4BZbhVGO7ZiGnxsB72BAayKt8FYPWcUkpAAo/QYX9jaHmqnmcaOOEaZUAvoCv7+YoC+d
+        azojKss4OD+27TdGNupRux2mmMjSbuKCdgisakoI1PTwZoivDI2KZGt9qSU6szreGgStQJ6HXtug+
+        4dyr/8D2BnK5laEKba2tcv99gMP977IVwZBCOGjK+KP98CtMI/JYoGJ42Sjy4kn89qoYCE05lmJgV
+        2L/4kfhQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lV3ab-001Esh-RM; Sat, 10 Apr 2021 02:43:27 +0000
+Date:   Sat, 10 Apr 2021 03:43:13 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-mm@kvack.org, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
         linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gd2F0Y2hkb2c6IG10azogc3VwcG9ydCBwcmUtdGltZW91dCB3aGVuIHRoZSBiYXJrIGlycSBpcyBhdmFpbGFibGU=?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <58b6f50a-4522-dc21-3411-7ed18059b480@roeck-us.net>
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Bogus struct page layout on 32-bit
+Message-ID: <20210410024313.GX2531743@casper.infradead.org>
+References: <20210409185105.188284-3-willy@infradead.org>
+ <202104100656.N7EVvkNZ-lkp@intel.com>
 MIME-Version: 1.0
-Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Sat, 10 Apr 2021 10:42:33 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Date:   Sat, 10 Apr 2021 10:42:33 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQh0aQ1ZDHx4dGk1DTEMaTxpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JTElDQ0hMQkxDN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6NS46Tyo5ED8TEhkSPihOGTBMI0MwFENVSFVKTUpDS0lJTk5ITkxKVTMWGhIXVQwaFRwKEhUc
-        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBT0tPSjcG
-X-HM-Tid: 0a78b9a8d6ef9395kuws4f3a4282535
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202104100656.N7EVvkNZ-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj5PbiA0LzkvMjEgMjo1NSBBTSwgV2FuZyBRaW5nIHdyb3RlOgo+PiBVc2UgdGhlIGJhcmsgaW50
-ZXJydXB0IGFzIHRoZSBwcmV0aW1lb3V0IG5vdGlmaWVyIGlmIGF2YWlsYWJsZS4KPj4gCj4+IEJ5
-IGRlZmF1bHQsIHRoZSBwcmV0aW1lb3V0IG5vdGlmaWNhdGlvbiBzaGFsbCBvY2N1ciBvbmUgc2Vj
-b25kIGVhcmxpZXIKPj4gdGhhbiB0aGUgdGltZW91dC4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IFdh
-bmcgUWluZyA8d2FuZ3FpbmdAdml2by5jb20+Cj4+IC0tLQo+PiAgZHJpdmVycy93YXRjaGRvZy9t
-dGtfd2R0LmMgfCA0NyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-LS0tCj4+ICAxIGZpbGUgY2hhbmdlZCwgNDQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkK
-Pj4gCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3dhdGNoZG9nL210a193ZHQuYyBiL2RyaXZlcnMv
-d2F0Y2hkb2cvbXRrX3dkdC5jCj4+IGluZGV4IDk3Y2E5OTMuLjhiOTE5Y2MKPj4gLS0tIGEvZHJp
-dmVycy93YXRjaGRvZy9tdGtfd2R0LmMKPj4gKysrIGIvZHJpdmVycy93YXRjaGRvZy9tdGtfd2R0
-LmMKPj4gQEAgLTI1LDYgKzI1LDcgQEAKPj4gICNpbmNsdWRlIDxsaW51eC9yZXNldC1jb250cm9s
-bGVyLmg+Cj4+ICAjaW5jbHVkZSA8bGludXgvdHlwZXMuaD4KPj4gICNpbmNsdWRlIDxsaW51eC93
-YXRjaGRvZy5oPgo+PiArI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5oPgo+PiAgCj4+ICAjZGVm
-aW5lIFdEVF9NQVhfVElNRU9VVAkJMzEKPj4gICNkZWZpbmUgV0RUX01JTl9USU1FT1VUCQkxCj4+
-IEBAIC0yMzQsMTggKzIzNSwzNSBAQCBzdGF0aWMgaW50IG10a193ZHRfc3RhcnQoc3RydWN0IHdh
-dGNoZG9nX2RldmljZSAqd2R0X2RldikKPj4gIAl2b2lkIF9faW9tZW0gKndkdF9iYXNlID0gbXRr
-X3dkdC0+d2R0X2Jhc2U7Cj4+ICAJaW50IHJldDsKPj4gIAo+PiAtCXJldCA9IG10a193ZHRfc2V0
-X3RpbWVvdXQod2R0X2Rldiwgd2R0X2Rldi0+dGltZW91dCk7Cj4+ICsJcmV0ID0gbXRrX3dkdF9z
-ZXRfdGltZW91dCh3ZHRfZGV2LCB3ZHRfZGV2LT50aW1lb3V0IC0gd2R0X2Rldi0+cHJldGltZW91
-dCk7Cj4KPlRoYXQgbG9va3Mgc3VzcGljaW91c2x5IGxpa2UgdGhlIHJlYWwgd2F0Y2hkb2cgd29u
-J3QgaGFwcGVuIGF0IGFsbC4KPldoYXQgd2lsbCBoYXBwZW4gaWYgdGhlIHByZXRpbWVvdXQgZ292
-ZXJub3IgaXMgc2V0IHRvIG5vbmUgPwo+Cj5HdWVudGVyCj4KVGhlIHByZXRpbWVvdXQgZ292ZXJu
-b3IgaXMgcGFuaWMgYnkgZGVmYXVsdC4gSWYgcHJldGltZW91dCBpcyBlbmFibGVkIGFuZCB0aGUg
-Z292ZXJub3IgaXMKc2V0IHRvIG5vbmUsIGl0IG1lYW5zIHRoZSB0aW1lb3V0IGJlaGF2aW9yIGRv
-ZXMgbm90IG5lZWQgdG8gYmUgcHJvY2Vzc2VkLCBvbmx5IHByaW50aW5nLgoKVGhhbmtzLgoKUWlu
-ZyBXYW5nLgoNCg0K
+On Sat, Apr 10, 2021 at 06:45:35AM +0800, kernel test robot wrote:
+> >> include/linux/mm_types.h:274:1: error: static_assert failed due to requirement '__builtin_offsetof(struct page, lru) == __builtin_offsetof(struct folio, lru)' "offsetof(struct page, lru) == offsetof(struct folio, lru)"
+>    FOLIO_MATCH(lru, lru);
+>    include/linux/mm_types.h:272:2: note: expanded from macro 'FOLIO_MATCH'
+>            static_assert(offsetof(struct page, pg) == offsetof(struct folio, fl))
+
+Well, this is interesting.  pahole reports:
+
+struct page {
+        long unsigned int          flags;                /*     0     4 */
+        /* XXX 4 bytes hole, try to pack */
+        union {
+                struct {
+                        struct list_head lru;            /*     8     8 */
+...
+struct folio {
+        union {
+                struct {
+                        long unsigned int flags;         /*     0     4 */
+                        struct list_head lru;            /*     4     8 */
+
+so this assert has absolutely done its job.
+
+But why has this assert triggered?  Why is struct page layout not what
+we thought it was?  Turns out it's the dma_addr added in 2019 by commit
+c25fff7171be ("mm: add dma_addr_t to struct page").  On this particular
+config, it's 64-bit, and ppc32 requires alignment to 64-bit.  So
+the whole union gets moved out by 4 bytes.
+
+Unfortunately, we can't just fix this by putting an 'unsigned long pad'
+in front of it.  It still aligns the entire union to 8 bytes, and then
+it skips another 4 bytes after the pad.
+
+We can fix it like this ...
+
++++ b/include/linux/mm_types.h
+@@ -96,11 +96,12 @@ struct page {
+                        unsigned long private;
+                };
+                struct {        /* page_pool used by netstack */
++                       unsigned long _page_pool_pad;
+                        /**
+                         * @dma_addr: might require a 64-bit value even on
+                         * 32-bit architectures.
+                         */
+-                       dma_addr_t dma_addr;
++                       dma_addr_t dma_addr __packed;
+                };
+                struct {        /* slab, slob and slub */
+                        union {
+
+but I don't know if GCC is smart enough to realise that dma_addr is now
+on an 8 byte boundary and it can use a normal instruction to access it,
+or whether it'll do something daft like use byte loads to access it.
+
+We could also do:
+
++                       dma_addr_t dma_addr __packed __aligned(sizeof(void *));
+
+and I see pahole, at least sees this correctly:
+
+                struct {
+                        long unsigned int _page_pool_pad; /*     4     4 */
+                        dma_addr_t dma_addr __attribute__((__aligned__(4))); /*     8     8 */
+                } __attribute__((__packed__)) __attribute__((__aligned__(4)));  
+
+This presumably affects any 32-bit architecture with a 64-bit phys_addr_t
+/ dma_addr_t.  Advice, please?
