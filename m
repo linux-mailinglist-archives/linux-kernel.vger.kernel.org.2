@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DC2D35AC24
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:12:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA63C35AC28
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:12:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234375AbhDJJMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 05:12:09 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:37642 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229537AbhDJJMI (ORCPT
+        id S234397AbhDJJMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 05:12:32 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:33533 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229591AbhDJJMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 05:12:08 -0400
-X-UUID: e9a56419edf143c592b23de8e80baf7c-20210410
-X-UUID: e9a56419edf143c592b23de8e80baf7c-20210410
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        Sat, 10 Apr 2021 05:12:30 -0400
+X-UUID: 36954cfc71454c1993b8acfecc617f9f-20210410
+X-UUID: 36954cfc71454c1993b8acfecc617f9f-20210410
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1197079844; Sat, 10 Apr 2021 17:11:48 +0800
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1650693383; Sat, 10 Apr 2021 17:12:12 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
  mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 10 Apr 2021 17:11:46 +0800
+ 15.0.1497.2; Sat, 10 Apr 2021 17:12:11 +0800
 Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 10 Apr 2021 17:11:45 +0800
+ Transport; Sat, 10 Apr 2021 17:12:04 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Matthias Brugger <matthias.bgg@gmail.com>,
         Joerg Roedel <joro@8bytes.org>,
@@ -43,9 +43,9 @@ CC:     Evan Green <evgreen@chromium.org>,
         <chao.hao@mediatek.com>, <ming-fan.chen@mediatek.com>,
         <yi.kuo@mediatek.com>, <eizan@chromium.org>,
         <acourbot@chromium.org>
-Subject: [PATCH v5 01/16] dt-binding: mediatek: Get rid of mediatek,larb for multimedia HW
-Date:   Sat, 10 Apr 2021 17:11:13 +0800
-Message-ID: <20210410091128.31823-2-yong.wu@mediatek.com>
+Subject: [PATCH v5 02/16] iommu/mediatek: Add probe_defer for smi-larb
+Date:   Sat, 10 Apr 2021 17:11:14 +0800
+Message-ID: <20210410091128.31823-3-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210410091128.31823-1-yong.wu@mediatek.com>
 References: <20210410091128.31823-1-yong.wu@mediatek.com>
@@ -56,226 +56,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After adding device_link between the consumer with the smi-larbs,
-if the consumer call its owner pm_runtime_get(_sync), the
-pm_runtime_get(_sync) of smi-larb and smi-common will be called
-automatically. Thus, the consumer don't need the property.
+The iommu consumer should use device_link to connect with the
+smi-larb(supplier). then the smi-larb should run before the iommu
+consumer. Here we delay the iommu driver until the smi driver is
+ready, then all the iommu consumer always is after the smi driver.
 
-And IOMMU also know which larb this consumer connects with from
-iommu id in the "iommus=" property.
+When there is no this patch, if some consumer drivers run before
+smi-larb, the supplier link_status is DL_DEV_NO_DRIVER(0) in the
+device_link_add, then device_links_driver_bound will use WARN_ON
+to complain that the link_status of supplier is not right.
+
+This is a preparing patch for adding device_link.
 
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Evan Green <evgreen@chromium.org>
 ---
- .../bindings/display/mediatek/mediatek,disp.txt          | 9 ---------
- .../devicetree/bindings/media/mediatek-jpeg-decoder.txt  | 4 ----
- .../devicetree/bindings/media/mediatek-jpeg-encoder.txt  | 4 ----
- Documentation/devicetree/bindings/media/mediatek-mdp.txt | 8 --------
- .../devicetree/bindings/media/mediatek-vcodec.txt        | 4 ----
- 5 files changed, 29 deletions(-)
+To Matthias,
 
-diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
-index 93b160df3eec..6336bae8a6d7 100644
---- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
-+++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt
-@@ -61,8 +61,6 @@ Required properties (DMA function blocks):
- 	"mediatek,<chip>-disp-rdma"
- 	"mediatek,<chip>-disp-wdma"
-   the supported chips are mt2701, mt8167 and mt8173.
--- larb: Should contain a phandle pointing to the local arbiter device as defined
--  in Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
- - iommus: Should point to the respective IOMMU block with master port as
-   argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-   for details.
-@@ -91,7 +89,6 @@ ovl0: ovl@1400c000 {
- 	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 	clocks = <&mmsys CLK_MM_DISP_OVL0>;
- 	iommus = <&iommu M4U_PORT_DISP_OVL0>;
--	mediatek,larb = <&larb0>;
- };
+In v2, You suggested use device_is_bound here. But from [1], this
+interface is not allowed to be EXPORT. It will affect this driver
+built as module. thus I still use dev.driver to check here.
+
+[1] https://lore.kernel.org/patchwork/patch/1334670/
+---
+ drivers/iommu/mtk_iommu.c    | 2 +-
+ drivers/iommu/mtk_iommu_v1.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
+index 6ecc007f07cd..7a7b8260d308 100644
+--- a/drivers/iommu/mtk_iommu.c
++++ b/drivers/iommu/mtk_iommu.c
+@@ -862,7 +862,7 @@ static int mtk_iommu_probe(struct platform_device *pdev)
+ 			id = i;
  
- ovl1: ovl@1400d000 {
-@@ -101,7 +98,6 @@ ovl1: ovl@1400d000 {
- 	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 	clocks = <&mmsys CLK_MM_DISP_OVL1>;
- 	iommus = <&iommu M4U_PORT_DISP_OVL1>;
--	mediatek,larb = <&larb4>;
- };
- 
- rdma0: rdma@1400e000 {
-@@ -111,7 +107,6 @@ rdma0: rdma@1400e000 {
- 	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 	clocks = <&mmsys CLK_MM_DISP_RDMA0>;
- 	iommus = <&iommu M4U_PORT_DISP_RDMA0>;
--	mediatek,larb = <&larb0>;
- 	mediatek,rdma-fifosize = <8192>;
- };
- 
-@@ -122,7 +117,6 @@ rdma1: rdma@1400f000 {
- 	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 	clocks = <&mmsys CLK_MM_DISP_RDMA1>;
- 	iommus = <&iommu M4U_PORT_DISP_RDMA1>;
--	mediatek,larb = <&larb4>;
- };
- 
- rdma2: rdma@14010000 {
-@@ -132,7 +126,6 @@ rdma2: rdma@14010000 {
- 	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 	clocks = <&mmsys CLK_MM_DISP_RDMA2>;
- 	iommus = <&iommu M4U_PORT_DISP_RDMA2>;
--	mediatek,larb = <&larb4>;
- };
- 
- wdma0: wdma@14011000 {
-@@ -142,7 +135,6 @@ wdma0: wdma@14011000 {
- 	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 	clocks = <&mmsys CLK_MM_DISP_WDMA0>;
- 	iommus = <&iommu M4U_PORT_DISP_WDMA0>;
--	mediatek,larb = <&larb0>;
- };
- 
- wdma1: wdma@14012000 {
-@@ -152,7 +144,6 @@ wdma1: wdma@14012000 {
- 	power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 	clocks = <&mmsys CLK_MM_DISP_WDMA1>;
- 	iommus = <&iommu M4U_PORT_DISP_WDMA1>;
--	mediatek,larb = <&larb4>;
- };
- 
- color0: color@14013000 {
-diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
-index cf60c5acc0e4..7978f210e3d4 100644
---- a/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-decoder.txt
-@@ -15,9 +15,6 @@ Required properties:
- - clock-names: must contain "jpgdec-smi" and "jpgdec".
- - power-domains: a phandle to the power domain, see
-   Documentation/devicetree/bindings/power/power_domain.txt for details.
--- mediatek,larb: must contain the local arbiters in the current Socs, see
--  Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
--  for details.
- - iommus: should point to the respective IOMMU block with master port as
-   argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-   for details.
-@@ -32,7 +29,6 @@ Example:
- 		clock-names = "jpgdec-smi",
- 			      "jpgdec";
- 		power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
--		mediatek,larb = <&larb2>;
- 		iommus = <&iommu MT2701_M4U_PORT_JPGDEC_WDMA>,
- 			 <&iommu MT2701_M4U_PORT_JPGDEC_BSDMA>;
- 	};
-diff --git a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt
-index acfb50375b8a..4b3664987362 100644
---- a/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-jpeg-encoder.txt
-@@ -13,9 +13,6 @@ Required properties:
- - clock-names: must contain "jpgenc". It is the clock of JPEG encoder.
- - power-domains: a phandle to the power domain, see
-   Documentation/devicetree/bindings/power/power_domain.txt for details.
--- mediatek,larb: must contain the local arbiters in the current SoCs, see
--  Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
--  for details.
- - iommus: should point to the respective IOMMU block with master port as
-   argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-   for details.
-@@ -29,7 +26,6 @@ Example:
- 		clocks =  <&imgsys CLK_IMG_VENC>;
- 		clock-names = "jpgenc";
- 		power-domains = <&scpsys MT2701_POWER_DOMAIN_ISP>;
--		mediatek,larb = <&larb2>;
- 		iommus = <&iommu MT2701_M4U_PORT_JPGENC_RDMA>,
- 			 <&iommu MT2701_M4U_PORT_JPGENC_BSDMA>;
- 	};
-diff --git a/Documentation/devicetree/bindings/media/mediatek-mdp.txt b/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-index f4798d04e925..df69c5a06250 100644
---- a/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-mdp.txt
-@@ -27,9 +27,6 @@ Required properties (DMA function blocks, child node):
- - iommus: should point to the respective IOMMU block with master port as
-   argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
-   for details.
--- mediatek,larb: must contain the local arbiters in the current Socs, see
--  Documentation/devicetree/bindings/memory-controllers/mediatek,smi-larb.yaml
--  for details.
- 
- Example:
- 	mdp_rdma0: rdma@14001000 {
-@@ -40,7 +37,6 @@ Example:
- 			 <&mmsys CLK_MM_MUTEX_32K>;
- 		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 		iommus = <&iommu M4U_PORT_MDP_RDMA0>;
--		mediatek,larb = <&larb0>;
- 		mediatek,vpu = <&vpu>;
- 	};
- 
-@@ -51,7 +47,6 @@ Example:
- 			 <&mmsys CLK_MM_MUTEX_32K>;
- 		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 		iommus = <&iommu M4U_PORT_MDP_RDMA1>;
--		mediatek,larb = <&larb4>;
- 	};
- 
- 	mdp_rsz0: rsz@14003000 {
-@@ -81,7 +76,6 @@ Example:
- 		clocks = <&mmsys CLK_MM_MDP_WDMA>;
- 		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 		iommus = <&iommu M4U_PORT_MDP_WDMA>;
--		mediatek,larb = <&larb0>;
- 	};
- 
- 	mdp_wrot0: wrot@14007000 {
-@@ -90,7 +84,6 @@ Example:
- 		clocks = <&mmsys CLK_MM_MDP_WROT0>;
- 		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 		iommus = <&iommu M4U_PORT_MDP_WROT0>;
--		mediatek,larb = <&larb0>;
- 	};
- 
- 	mdp_wrot1: wrot@14008000 {
-@@ -99,5 +92,4 @@ Example:
- 		clocks = <&mmsys CLK_MM_MDP_WROT1>;
- 		power-domains = <&scpsys MT8173_POWER_DOMAIN_MM>;
- 		iommus = <&iommu M4U_PORT_MDP_WROT1>;
--		mediatek,larb = <&larb4>;
- 	};
-diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-index 8318f0ed492d..ad7ba4bf23fe 100644
---- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-@@ -12,7 +12,6 @@ Required properties:
- - reg : Physical base address of the video codec registers and length of
-   memory mapped region.
- - interrupts : interrupt number to the cpu.
--- mediatek,larb : must contain the local arbiters in the current Socs.
- - clocks : list of clock specifiers, corresponding to entries in
-   the clock-names property.
- - clock-names: avc encoder must contain "venc_sel", vp8 encoder must
-@@ -44,7 +43,6 @@ vcodec_dec: vcodec@16000000 {
-           <0 0x16027800 0 0x800>,   /*VP8_VL*/
-           <0 0x16028400 0 0x400>;   /*VP9_VD*/
-     interrupts = <GIC_SPI 204 IRQ_TYPE_LEVEL_LOW>;
--    mediatek,larb = <&larb1>;
-     iommus = <&iommu M4U_PORT_HW_VDEC_MC_EXT>,
-              <&iommu M4U_PORT_HW_VDEC_PP_EXT>,
-              <&iommu M4U_PORT_HW_VDEC_AVC_MV_EXT>,
-@@ -97,7 +95,6 @@ vcodec_enc_avc: vcodec@18002000 {
-              <&iommu M4U_PORT_VENC_REF_CHROMA>,
-              <&iommu M4U_PORT_VENC_NBM_RDMA>,
-              <&iommu M4U_PORT_VENC_NBM_WDMA>;
--    mediatek,larb = <&larb3>;
-     mediatek,vpu = <&vpu>;
-     clocks = <&topckgen CLK_TOP_VENC_SEL>;
-     clock-names = "venc_sel";
-@@ -118,7 +115,6 @@ vcodec_enc_vp8: vcodec@19002000 {
-              <&iommu M4U_PORT_VENC_CUR_CHROMA_SET2>,
-              <&iommu M4U_PORT_VENC_REF_LUMA_SET2>,
-              <&iommu M4U_PORT_VENC_REC_CHROMA_SET2>;
--    mediatek,larb = <&larb5>;
-     mediatek,vpu = <&vpu>;
-     clocks = <&topckgen CLK_TOP_VENC_LT_SEL>;
-     clock-names = "venc_lt_sel";
+ 		plarbdev = of_find_device_by_node(larbnode);
+-		if (!plarbdev) {
++		if (!plarbdev || !plarbdev->dev.driver) {
+ 			of_node_put(larbnode);
+ 			return -EPROBE_DEFER;
+ 		}
+diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
+index 82ddfe9170d4..a82466e4046e 100644
+--- a/drivers/iommu/mtk_iommu_v1.c
++++ b/drivers/iommu/mtk_iommu_v1.c
+@@ -597,7 +597,7 @@ static int mtk_iommu_probe(struct platform_device *pdev)
+ 			plarbdev = of_platform_device_create(
+ 						larb_spec.np, NULL,
+ 						platform_bus_type.dev_root);
+-			if (!plarbdev) {
++			if (!plarbdev || !plarbdev->dev.driver) {
+ 				of_node_put(larb_spec.np);
+ 				return -EPROBE_DEFER;
+ 			}
 -- 
 2.18.0
 
