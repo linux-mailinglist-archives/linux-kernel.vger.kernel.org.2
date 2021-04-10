@@ -2,92 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E9F35AB90
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCE835AB93
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234415AbhDJHBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 03:01:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
+        id S234313AbhDJHF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 03:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234367AbhDJHA4 (ORCPT
+        with ESMTP id S229537AbhDJHF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 03:00:56 -0400
-Received: from mail.ionic.de (ionic.de [IPv6:2001:41d0:a:588b:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26979C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 00:00:42 -0700 (PDT)
-Authentication-Results: root24.eu; spf=softfail (domain owner 
-   discourages use of this host) smtp.mailfrom=ionic.de 
-   (client-ip=217.92.117.31; helo=home.ionic.de; 
-   envelope-from=ionic@ionic.de; receiver=<UNKNOWN>)
-Received: from [192.168.0.46] (home.ionic.de [217.92.117.31])
-        by mail.ionic.de (Postfix) with ESMTPSA id 3A9DB4F00338;
-        Sat, 10 Apr 2021 07:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ionic.de; s=default;
-        t=1618038034; bh=S+95RKxtO3PJbCmeLJdIjWCX646SI4fb/oRRtGv+Tmc=;
-        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
-        b=l1fuYv6Qu+dPFolJPBqxKxCZ3YmD2h6qPvkKCl5nqmoQfi9uk6IKFTphCfNFF3jHw
-         hTtK9ixYhxfhSyxSppXJe6KvtD45sDv7NKOUc5ID+hyo4+aw6fx7W5KLHqX8aMXf8I
-         aUJEh+3tlze3TLixts1xDxiXkAUFECIaoga75aWM=
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210327120155.500-1-ionic@ionic.de>
- <20210328095227.24323-1-ionic@ionic.de>
- <CAK7LNATzx9ujmapPbPzjL1Yo-A0RAXz0Kma+ve8pUeDDVx8GGw@mail.gmail.com>
-From:   Mihai Moldovan <ionic@ionic.de>
-Subject: Re: [PATCH v2] kconfig: nconf: stop endless search-up loops
-Message-ID: <9e8d429f-c21c-7d9e-0dcd-8947846fe9ba@ionic.de>
-Date:   Sat, 10 Apr 2021 09:00:33 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <CAK7LNATzx9ujmapPbPzjL1Yo-A0RAXz0Kma+ve8pUeDDVx8GGw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Sat, 10 Apr 2021 03:05:58 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959FDC061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 00:05:44 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id s8so4599616qve.16
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 00:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=dg+DEOFhZoTD7YuipHSWP7rFu7usavK/AqGGNE1MsEo=;
+        b=CqrubxNWGOqMFlWtCDFuYRI6BwZUxMbSwCv7+PwHNBuiJMSHErQvNPKR/lmbVirnET
+         Cwj1Niebl2pa4buq50GDRQqm7XaAnw6CiLu4zm49mqzc6PBXcxA941EJNLm+ujvY71l/
+         NPMko1wQE7sL8lOmkGR3Bb1SUu35/50R6kWzOTW8dMgbUJYyBVBEv/YmUUvbBm7KQ9dL
+         Cl3L4ajgl9YYDbJdpXTm9sUgEboY36TW8WZU6tqF8G+dpYg4tAPH97G76P33PMI0g9IR
+         cHXAxQu1Gt2aWM1EhJHMhIiGXs/io/FaD9b7iEVw0lVuS0iLozSf7/x96C8vu26klQAf
+         BPhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=dg+DEOFhZoTD7YuipHSWP7rFu7usavK/AqGGNE1MsEo=;
+        b=GBl6t0ZoKUe8vr2CFxFfChO63eymWFUWmp706uxi/buDuB6sqqJv50tIK26MH0MtAA
+         uon2XWwq4Bb4FFe8c++q+yTeft4pX0PHDJcqcooIxDnUPLQkNRZveObJz1duYh41N3YT
+         MNeT/Pv7kxGG1VPClmRKi6g+I0NXOQ7VYbw2bPQYH8Pu0ucUOe0RZ7zbVC9CbD8EODNq
+         zRtIOIcLdqZVuPwvCf2qlQ56VQ14Saf06O4tCXMjl9nUlvJOesNOaaimt1DXb70z4qsa
+         cNlOpNzIiXYo5koNGMAGVxoAmSCDpsjNrOFDPuC3w2YtjLbyXrnx+ZZ3AU9G+hcTQ20q
+         rI2g==
+X-Gm-Message-State: AOAM531EzxcI8YkLdoYeO6xGOywJGDQBBzz4N38GOjls8o6YmtV89Lmz
+        I5uafNLETYQGV105ppPGxwmZzxbaSYc/Tg==
+X-Google-Smtp-Source: ABdhPJyv/+jcJ6yI0cEvELtKheEfjqsjvXd0itiD/eULOlwWVf8f5xw+AYtcLhLzSmf9f6f6r4lhCc8eoQwJXQ==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:f493:fef7:82d5:5e83])
+ (user=davidgow job=sendgmr) by 2002:a0c:f74d:: with SMTP id
+ e13mr18725327qvo.8.1618038343525; Sat, 10 Apr 2021 00:05:43 -0700 (PDT)
+Date:   Sat, 10 Apr 2021 00:05:30 -0700
+Message-Id: <20210410070529.4113432-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: [PATCH] Documentation: dev-tools: Add Testing Overview
+From:   David Gow <davidgow@google.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>
+Cc:     David Gow <davidgow@google.com>, linux-doc@vger.kernel.org,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* On 4/10/21 7:47 AM, Masahiro Yamada wrote:
-> On Sun, Mar 28, 2021 at 6:52 PM Mihai Moldovan <ionic@ionic.de> wrote:
->> +               if ((index == -1) && (index == match_start))
->> +                       return -1;
-> 
-> We know 'index' is -1 in the second comparison.
-> So, you can also write like this:
-> 
->        if (match_start == -1 && index == -1)
->                 return -1;
+The kernel now has a number of testing and debugging tools, and we've
+seen a bit of confusion about what the differences between them are.
 
-I know, but I sided for the other form for semantic reasons - this more closely
-directly describes what we actually care about (both being the same value and
-either one being -1).
+Add a basic documentation outlining the testing tools, when to use each,
+and how they interact.
 
+This is a pretty quick overview rather than the idealised "kernel
+testing guide" that'd probably be optimal, but given the number of times
+questions like "When do you use KUnit and when do you use Kselftest?"
+are being asked, it seemed worth at least having something. Hopefully
+this can form the basis for more detailed documentation later.
 
-> But, it is not the correct fix, either.
-> 
-> The root cause of the bug is match_start
-> becoming -1.
-> 
-> 
-> The following is the correct way to fix the bug
-> without increasing the number of lines.
-> 
-> 
-> 
-> diff --git a/scripts/kconfig/nconf.c b/scripts/kconfig/nconf.c
-> index e0f965529166..af814b39b876 100644
-> [...]
-> +       match_start = (match_start + items_num) % items_num;
->         index = match_start;
-> -       index = (index + items_num) % items_num;
+Signed-off-by: David Gow <davidgow@google.com>
+---
+ Documentation/dev-tools/index.rst            |   3 +
+ Documentation/dev-tools/testing-overview.rst | 102 +++++++++++++++++++
+ 2 files changed, 105 insertions(+)
+ create mode 100644 Documentation/dev-tools/testing-overview.rst
 
-This is probably more elegant and fixes two issues at the same time: match_start
-becoming -1 or n (which is likewise invalid, but was implicitly handled through
-the remainder operation).
+diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/in=
+dex.rst
+index 1b1cf4f5c9d9..f590e5860794 100644
+--- a/Documentation/dev-tools/index.rst
++++ b/Documentation/dev-tools/index.rst
+@@ -7,6 +7,8 @@ be used to work on the kernel. For now, the documents have =
+been pulled
+ together without any significant effort to integrate them into a coherent
+ whole; patches welcome!
+=20
++A brief overview of testing-specific tools can be found in :doc:`testing-o=
+verview`.
++
+ .. class:: toc-title
+=20
+ 	   Table of contents
+@@ -14,6 +16,7 @@ whole; patches welcome!
+ .. toctree::
+    :maxdepth: 2
+=20
++   testing-overview
+    coccinelle
+    sparse
+    kcov
+diff --git a/Documentation/dev-tools/testing-overview.rst b/Documentation/d=
+ev-tools/testing-overview.rst
+new file mode 100644
+index 000000000000..8452adcb8608
+--- /dev/null
++++ b/Documentation/dev-tools/testing-overview.rst
+@@ -0,0 +1,102 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
++Kernel Testing Guide
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
++
++
++There are a number of different tools for testing the Linux kernel, so kno=
+wing
++when to use each of them can be a challenge. This document provides a roug=
+h
++overview of their differences, and how they fit together.
++
++
++Writing and Running Tests
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
++
++The bulk of kernel tests are written using either the :doc:`kselftest
++<kselftest>` or :doc:`KUnit <kunit/index>` frameworks. These both provide
++infrastructure to help make running tests and groups of tests easier, as w=
+ell
++as providing helpers to aid in writing new tests.
++
++If you're looking to verify the behaviour of the Kernel =E2=80=94 particul=
+arly specific
++parts of the kernel =E2=80=94 then you'll want to use `KUnit` or `kselftes=
+t`.
++
++
++The Difference Between KUnit and kselftest
++------------------------------------------
++
++:doc:`KUnit <kunit/index>` is an entirely in-kernel system for "white box"
++testing: because test code is part of the kernel, it can access internal
++structures and functions which aren't exposed to userspace.
++
++`KUnit` tests therefore are best written against small, self-contained par=
+ts
++of the kernel, which can be tested in isolation. This aligns well with the
++concept of Unit testing.
++
++For example, a KUnit test might test an individual kernel function (or eve=
+n a
++single codepath through a function, such as an error handling case), rathe=
+r
++than a feature as a whole.
++
++There is a KUnit test style guide which may give further pointers
++
++
++:doc:`kselftest <kselftest>`, on the other hand, is largely implemented in
++userspace, and tests are normal userspace scripts or programs.
++
++This makes it easier to write more complicated tests, or tests which need =
+to
++manipulate the overall system state more (e.g., spawning processes, etc.).
++However, it's not possible to call kernel functions directly unless they'r=
+e
++exposed to userspace (by a syscall, device, filesystem, etc.) Some tests t=
+o
++also provide a kernel module which is loaded by the test, though for tests
++which run mostly or entirely within the kernel, `KUnit` may be the better =
+tool.
++
++`kselftest` is therefore suited well to tests of whole features, as these =
+will
++expose an interface to userspace, which can be tested, but not implementat=
+ion
++details. This aligns well with 'system' or 'end-to-end' testing.
++
++
++Code Coverage Tools
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
++
++The Linux Kernel supports two different code coverage mesurement tools. Th=
+ese
++can be used to verify that a test is executing particular functions or lin=
+es
++of code. This is useful for determining how much of the kernel is being te=
+sted,
++and for finding corner-cases which are not covered by the appropriate test=
+.
++
++:doc:`kcov` is a feature which can be built in to the kernel to allow
++capturing coverage on a per-task level. It's therefore useful for fuzzing =
+and
++other situations where information about code executed during, for example=
+, a
++single syscall is useful.
++
++:doc:`gcov` is GCC's coverage testing tool, which can be used with the ker=
+nel
++to get global or per-module coverage. Unlike KCOV, it does not record per-=
+task
++coverage. Coverage data can be read from debugfs, and interpreted using th=
+e
++usual gcov tooling.
++
++
++Sanitizers
++=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
++
++The kernel also supports a number of sanitizers, which attempt to detect
++classes of issues when the occur in a running kernel. These typically
++look for undefined behaviour of some kind, such as invalid memory accesses=
+,
++concurrency issues such as data races, or other undefined behaviour like
++integer overflows.
++
++* :doc:`kmemleak` (Kmemleak) detects possible memory leaks.
++* :doc:`kasan` detects invalid memory accesses such as out-of-bounds and
++  use-after-free errors.
++* :doc:`ubsan` detects behaviour that is undefined by the C standard, like
++  integer overflows.
++* :doc:`kcsan` detects data races.
++* :doc:`kfence` is a low-overhead detector of memory issues, which is much
++  faster than KASAN and can be used in production.
++
++These tools tend to test the kernel as a whole, and do not "pass" like
++kselftest or KUnit tests. They can be combined with KUnit or kselftest by
++running tests on a kernel with a sanitizer enabled: you can then be sure
++that none of these errors are occurring during the test.
++
++Some of these sanitizers integrate with KUnit or kselftest and will
++automatically fail tests if an issue is detected by a sanitizer.
++
+--=20
+2.31.1.295.g9ea45b61b8-goog
 
-No objections from my side.
-
-
-
-Mihai
