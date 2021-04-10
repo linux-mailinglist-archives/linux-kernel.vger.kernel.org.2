@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFABC35AD6B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A90335AD73
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:12:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234727AbhDJNGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:06:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234091AbhDJNGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:06:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 235CF610E7;
-        Sat, 10 Apr 2021 13:06:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618059967;
-        bh=Nx+Az8uucARo5rt3kk1DkG1a9AVj6LLG/pm3AuITkTc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=B+Tz28WLLVVeR5HeyWbUyAr2DuCGJ7pQAj7EWMfIIhmXAtQvt6osvT31cSwkMCaDL
-         EYbb18WrUlC1ts6QCYLxh3+GmfzhTqUXdRt4NisPGE1OonIm4c/nnAQxN8kDPdfH5R
-         g+gqyS3eBOeMYx80WsCeouQKTfutoosdALoUcuy4=
-Date:   Sat, 10 Apr 2021 15:06:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: [GIT PULL] USB/Thunderbolt driver fixes for 5.12-rc7
-Message-ID: <YHGivAMSbiL2Y7je@kroah.com>
+        id S234594AbhDJNMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 09:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234091AbhDJNMp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 09:12:45 -0400
+Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919D0C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:12:30 -0700 (PDT)
+Received: by mail-oi1-x22b.google.com with SMTP id a8so8712210oic.11
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:12:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=EqZjh7FfQz6itUdKUiF7ntDm22+F+9VPDKI9cNs1Vyw=;
+        b=fAVvUrL/RUYQ3wbcrcaKq2OYtsK7zH9vY3Bixd3VCJw2YJ80AM70mgoFGHFljAuzuR
+         /Ue+FnKR7+crNKgV7FGdVZge3PutNxkOEcQsv5OmXTV9wQqvvKAf2+LY9EPMAWSCUuet
+         lOzU4S/KglxLbHIEMrhKpNZ4TZmuLaYItXfDOgWH9HMCyTYwxHnC5bjGnNIMmd785u6Q
+         sMLN7RjEpSZZCu6RE2iHjVEM3u95Uy+qJYMbAzMuoezMQsDzQK2iaipUyKLeGzQUSfsq
+         BcibgTjDGXi0NGcQnAqQLjGlodb3SmbOiSjHFFn0/sbnWj44OMa6sC6pq9Htuw5TjyDE
+         8BoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=EqZjh7FfQz6itUdKUiF7ntDm22+F+9VPDKI9cNs1Vyw=;
+        b=C8uZVEw+7ta8TUAWI0NHBUmX8qnAauuXza1VGoB2ycMK9j4TKjHmE/HBJOqI61iDcl
+         aqXYrZwexhZRdsZDLYko/Lqz0v5NrwgdUfNTo6mEQXArN/mNx4rZr6Mcy1j45a4jdgqp
+         3omkXV3ds46bo4YbKCCghPMDovBJR/7/0rQVvgCQzyjuf16IoPqTAzxa1SZaQ/xz9XqZ
+         wgnaks7dJDFSjOeWxllg1uc7BlkclneL34Y0l88W5O/Gz+nC49ol5K5PZGmtIuOCB2m2
+         o2ejXw06KMrfZKKz3tzD+QkXNpExcViuCpbjC2tNW5yVlzorf8xpwrNShOLpwKlHiwfa
+         nUsw==
+X-Gm-Message-State: AOAM5328P8zOb8t74bx3DtY/WlBwKtBTRxlYZXKH48sBpegqnwHgjbDE
+        KEs6/PuMvwDnp4DajqhFStXGxbg+OBSYv7kI4Ss=
+X-Google-Smtp-Source: ABdhPJySypBjZ9QUH0IGtWqF9zt74SHQNsSIA5j8998cLnr7bIJNVGmeCtwvxsJJrNjE+iz4iNg/9Gl2BQq5qz7dVNc=
+X-Received: by 2002:aca:f13:: with SMTP id 19mr13119859oip.56.1618060349892;
+ Sat, 10 Apr 2021 06:12:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reply-To: mrs.chantal778@gmail.com
+Sender: yasmimmohamma5@gmail.com
+Received: by 2002:a9d:2c69:0:0:0:0:0 with HTTP; Sat, 10 Apr 2021 06:12:29
+ -0700 (PDT)
+From:   "Mrs.chantal lawrence" <mrschantal737@gmail.com>
+Date:   Sat, 10 Apr 2021 06:12:29 -0700
+X-Google-Sender-Auth: 0i_jKV0TbcZmL53Ab-kbBe-pWIk
+Message-ID: <CAEj7YGg6XJMc7p63+eV3pCTes=JVt=HocQGTk3LnWno6Eed2Jg@mail.gmail.com>
+Subject: Good Day
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
+HELLO
 
-  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
+I am Mrs. Chantal Lawrence. I am sending this brief letter to solicit
+your partnership to transfer a sum of 12 Million Dollars into your
+reliable account as my business partner. However, it's my urgent need
+for foreign partner that made me to contact you for this transaction.
+Further details of the transfer will be forwarded to you if you are
+ready to assist me.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.12-rc7
-
-for you to fetch changes up to bc2f3e4c662841dc19f7e7efae87782b9f3c0831:
-
-  Merge tag 'thunderbolt-for-v5.12-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt into usb-linus (2021-04-08 11:48:48 +0200)
-
-----------------------------------------------------------------
-USB/Thunderbolt fixes for 5.12-rc7
-
-Here are a few small USB and Thunderbolt driver fixes for 5.12-rc7 for
-reported issues:
-	- thunderbolt leaks and off-by-one fix
-	- cdnsp deque fix
-	- usbip fixes for syzbot-reported issues.
-
-all have been in linux-next with no reported problems.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Dan Carpenter (2):
-      thunderbolt: Fix a leak in tb_retimer_add()
-      thunderbolt: Fix off by one in tb_port_find_retimer()
-
-Greg Kroah-Hartman (2):
-      Merge tag 'v5.12-rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb into usb-linus
-      Merge tag 'thunderbolt-for-v5.12-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt into usb-linus
-
-Pawel Laszczak (1):
-      usb: cdnsp: Fixes issue with dequeuing requests after disabling endpoint
-
-Shuah Khan (4):
-      usbip: add sysfs_lock to synchronize sysfs code paths
-      usbip: stub-dev synchronize sysfs code paths
-      usbip: vudc synchronize sysfs code paths
-      usbip: synchronize event handler with sysfs code paths
-
- drivers/thunderbolt/retimer.c    |  4 ++--
- drivers/usb/cdns3/cdnsp-gadget.c |  4 ++++
- drivers/usb/usbip/stub_dev.c     | 11 +++++++++--
- drivers/usb/usbip/usbip_common.h |  3 +++
- drivers/usb/usbip/usbip_event.c  |  2 ++
- drivers/usb/usbip/vhci_hcd.c     |  1 +
- drivers/usb/usbip/vhci_sysfs.c   | 30 +++++++++++++++++++++++++-----
- drivers/usb/usbip/vudc_dev.c     |  1 +
- drivers/usb/usbip/vudc_sysfs.c   |  5 +++++
- 9 files changed, 52 insertions(+), 9 deletions(-)
+Best Regards
+Mrs.Chantal Lawrence
