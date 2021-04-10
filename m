@@ -2,216 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2548935ABAB
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB7D35ABB1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbhDJHbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 03:31:06 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16517 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhDJHbE (ORCPT
+        id S230235AbhDJHfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 03:35:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229472AbhDJHfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 03:31:04 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FHRRf6LDSzNvPf;
-        Sat, 10 Apr 2021 15:27:58 +0800 (CST)
-Received: from [10.174.179.9] (10.174.179.9) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Sat, 10 Apr 2021
- 15:30:46 +0800
-Subject: Re: [PATCH] mm/frontswap: fix frontswap_register_ops() race with
- swapon and swapoff
-To:     <akpm@linux-foundation.org>, <konrad.wilk@oracle.com>
-CC:     <ddstreet@ieee.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210405102008.25504-1-linmiaohe@huawei.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <5ec0f24e-eac2-1e62-628b-757f8ce11dc2@huawei.com>
-Date:   Sat, 10 Apr 2021 15:30:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Sat, 10 Apr 2021 03:35:53 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50A2C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 00:35:38 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id a6so7697361wrw.8
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 00:35:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IL4eJ2SU5IZ2kRbEuN6Vx3POFYlD6P3bZwQQbIsZ3gM=;
+        b=IUjMDuQz1QTXpdQ6ZjYur6b1MKimoIZQ1pPqdm64E038xdIuePT/FK6ehBxr0+3jke
+         SG+3b54iLikdNuXINDGLmPz86lg7kBrVZ+cuW4j/D68pNIvDwoBdXK+6jNCkvRdlDxyI
+         wr6CAUrQLPVFfIomfsjEFs9piCwpi7n2VJchE9oh+OsA2a6xO3kneGr4Q9+1t2aMOAjZ
+         mBm56efTpMoot2G1otLwkKujF5fJvoLVkDnvBiCiElil86jmggWSwbC/iuD72MtzrY0D
+         Ar+EH8ivv+Ms+6O83KJkdrdjNmvQ82F5hGSArtNKyMbIczWeONfP2HZ32IO/RXvOWppg
+         WMcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IL4eJ2SU5IZ2kRbEuN6Vx3POFYlD6P3bZwQQbIsZ3gM=;
+        b=BNVxyPp0PHPUY3rPnUlh3KzBFFP5ceGLs07+qAG9aQUuoRt82LXV3IegX2kmfPob8v
+         sfGh9cKFE9fXU3tB1t76GOQX1WOXtzSKTHxCc9w0F9FD/oUijrrPNWI7HB31r3wxruT5
+         0PHSukkabV35X2upF3LfH9CPVlSmPq19xFCC+KjBDnSitI4KcnWdWYt0AFcrT1uqc3Z8
+         JyNwK7xiA5NQjVOSOHtp1nZ92dN1AAjyyfV4VmVU/Bn1W+1QufauxwCmG/73WNA0O2vT
+         aFosL86aTCX1Av7pWuv/tTxpFLNScY57W+6J737FTqI5MBVcrKvnEBK/UI4TgkK5aGY+
+         WAkA==
+X-Gm-Message-State: AOAM533qLniWarzbZmpXZ3QmGIg6Et/xZ7Auq69XWY/wWrXIdm0rvEtG
+        J4w9t/ywy2VpumJuGAldsmh5jXvpvzw=
+X-Google-Smtp-Source: ABdhPJzH9RrO+cKCAo1UqT215D4ZHaE1CFuTbhSvCVMR1arhSh3HT8YnxPEs1m60ahapqIhZF36Dnw==
+X-Received: by 2002:adf:db42:: with SMTP id f2mr21498856wrj.359.1618040137667;
+        Sat, 10 Apr 2021 00:35:37 -0700 (PDT)
+Received: from localhost.localdomain ([85.203.46.195])
+        by smtp.gmail.com with ESMTPSA id k16sm7770749wrl.47.2021.04.10.00.35.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 00:35:37 -0700 (PDT)
+From:   Zhouyi Zhou <zhouzhouyi@gmail.com>
+To:     tglx@linutronix.de, peterz@infradead.org, luto@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Zhouyi Zhou <zhouzhouyi@gmail.com>
+Subject: [PATCH] preempt/dynamic: fix typo in macro conditional statement
+Date:   Sat, 10 Apr 2021 15:35:23 +0800
+Message-Id: <20210410073523.5493-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210405102008.25504-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.9]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/4/5 18:20, Miaohe Lin wrote:
-> frontswap_register_ops can race with swapon. Consider the following scene:
+commit 40607ee97e4e ("preempt/dynamic: Provide irqentry_exit_cond_resched()
+ static call") tried to provide irqentry_exit_cond_resched() static call
+in irqentry_exit, but has a typo in macro conditional statement.
 
-Any comment or suggestion? Or is this race window too theoretical to fix?
-Thanks.
+This patch fix this typo.
 
-> 
-> CPU1					CPU2
-> ----					----
-> frontswap_register_ops
->   fill bitmap a
->   ops->init
-> 					sys_swapon
-> 					  enable_swap_info
-> 					    frontswap_init without new ops
->   add ops to frontswap_ops list
->   check if swap_active_head changed
-> 					    add to swap_active_head
-> 
-> So the frontswap_ops init is missed on the new swap device. Consider the
-> another scene:
-> CPU1                                    CPU2
-> ----                                    ----
-> frontswap_register_ops
->   fill bitmap a
->   ops->init
->   add ops to frontswap_ops list
->                                         sys_swapon
->                                           enable_swap_info
->                                             frontswap_init with new ops
->                                             add to swap_active_head
->   check if swap_active_head changed
->   ops->init for new swap device [twice!]
-> 
-> The frontswap_ops init will be called two times on the new swap device this
-> time. frontswap_register_ops can also race with swapoff. Consider the
-> following scene:
-> 
-> CPU1                                    CPU2
-> ----                                    ----
->                                         sys_swapoff
-> 					  removed from swap_active_head
-> frontswap_register_ops
->   fill bitmap a
->   ops->init without swap device
->   add ops to frontswap_ops list
->                                             invalidate_area with new ops
->   check if swap_active_head changed
-> 
-> We could call invalidate_area on a swap device under swapoff with frontswap
-> is uninitialized yet. Fix all these by using swapon_mutex to guard against
-> race with swapon and add swap_info_get_if_under_swapoff() to collect swap
-> devices under swapoff.
-> 
-> Fixes: d1dc6f1bcf1e ("frontswap: allow multiple backends")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  include/linux/swapfile.h |  2 ++
->  mm/frontswap.c           | 40 +++++++++++++++++-----------------------
->  mm/swapfile.c            | 13 ++++++++++++-
->  3 files changed, 31 insertions(+), 24 deletions(-)
-> 
-> diff --git a/include/linux/swapfile.h b/include/linux/swapfile.h
-> index e06febf62978..7ae15d917828 100644
-> --- a/include/linux/swapfile.h
-> +++ b/include/linux/swapfile.h
-> @@ -9,8 +9,10 @@
->  extern spinlock_t swap_lock;
->  extern struct plist_head swap_active_head;
->  extern struct swap_info_struct *swap_info[];
-> +extern struct mutex swapon_mutex;
->  extern int try_to_unuse(unsigned int, bool, unsigned long);
->  extern unsigned long generic_max_swapfile_size(void);
->  extern unsigned long max_swapfile_size(void);
-> +extern struct swap_info_struct *swap_info_get_if_under_swapoff(int type);
->  
->  #endif /* _LINUX_SWAPFILE_H */
-> diff --git a/mm/frontswap.c b/mm/frontswap.c
-> index 130e301c5ac0..c16bfc7550b5 100644
-> --- a/mm/frontswap.c
-> +++ b/mm/frontswap.c
-> @@ -123,12 +123,26 @@ void frontswap_register_ops(struct frontswap_ops *ops)
->  
->  	bitmap_zero(a, MAX_SWAPFILES);
->  	bitmap_zero(b, MAX_SWAPFILES);
-> -
-> +	mutex_lock(&swapon_mutex);
->  	spin_lock(&swap_lock);
->  	plist_for_each_entry(si, &swap_active_head, list) {
->  		if (!WARN_ON(!si->frontswap_map))
->  			set_bit(si->type, a);
->  	}
-> +	/*
-> +	 * There might be some swap devices under swapoff, i.e. they are
-> +	 * removed from swap_active_head but frontswap_invalidate_area()
-> +	 * is not called yet due to swapon_mutex is held here. We must
-> +	 * collect these swap devices and call ops->init on them or they
-> +	 * might invalidate frontswap area while frontswap is uninitialized.
-> +	 */
-> +	for_each_clear_bit(i, a, MAX_SWAPFILES) {
-> +		si = swap_info_get_if_under_swapoff(i);
-> +		if (!si || !si->frontswap_map)
-> +			continue;
-> +		set_bit(si->type, b);
-> +	}
-> +	bitmap_or(a, a, b, MAX_SWAPFILES);
->  	spin_unlock(&swap_lock);
->  
->  	/* the new ops needs to know the currently active swap devices */
-> @@ -144,29 +158,9 @@ void frontswap_register_ops(struct frontswap_ops *ops)
->  		ops->next = frontswap_ops;
->  	} while (cmpxchg(&frontswap_ops, ops->next, ops) != ops->next);
->  
-> -	static_branch_inc(&frontswap_enabled_key);
-> -
-> -	spin_lock(&swap_lock);
-> -	plist_for_each_entry(si, &swap_active_head, list) {
-> -		if (si->frontswap_map)
-> -			set_bit(si->type, b);
-> -	}
-> -	spin_unlock(&swap_lock);
-> +	mutex_unlock(&swapon_mutex);
->  
-> -	/*
-> -	 * On the very unlikely chance that a swap device was added or
-> -	 * removed between setting the "a" list bits and the ops init
-> -	 * calls, we re-check and do init or invalidate for any changed
-> -	 * bits.
-> -	 */
-> -	if (unlikely(!bitmap_equal(a, b, MAX_SWAPFILES))) {
-> -		for (i = 0; i < MAX_SWAPFILES; i++) {
-> -			if (!test_bit(i, a) && test_bit(i, b))
-> -				ops->init(i);
-> -			else if (test_bit(i, a) && !test_bit(i, b))
-> -				ops->invalidate_area(i);
-> -		}
-> -	}
-> +	static_branch_inc(&frontswap_enabled_key);
->  }
->  EXPORT_SYMBOL(frontswap_register_ops);
->  
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 149e77454e3c..ee736533717f 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -89,7 +89,7 @@ static DEFINE_SPINLOCK(swap_avail_lock);
->  
->  struct swap_info_struct *swap_info[MAX_SWAPFILES];
->  
-> -static DEFINE_MUTEX(swapon_mutex);
-> +DEFINE_MUTEX(swapon_mutex);
->  
->  static DECLARE_WAIT_QUEUE_HEAD(proc_poll_wait);
->  /* Activity counter to indicate that a swapon or swapoff has occurred */
-> @@ -2958,6 +2958,17 @@ __weak unsigned long max_swapfile_size(void)
->  	return generic_max_swapfile_size();
->  }
->  
-> +struct swap_info_struct *swap_info_get_if_under_swapoff(int type)
-> +{
-> +	struct swap_info_struct *si = swap_type_to_swap_info(type);
-> +
-> +	if (!si || !si->swap_map)
-> +		return NULL;
-> +	if ((si->flags & SWP_USED) && !(si->flags & SWP_WRITEOK))
-> +		return si;
-> +	return NULL;
-> +}
-> +
->  static unsigned long read_swap_header(struct swap_info_struct *p,
->  					union swap_header *swap_header,
->  					struct inode *inode)
-> 
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+ kernel/entry/common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/entry/common.c b/kernel/entry/common.c
+index 8442e5c9cfa2..2003d69bd6d5 100644
+--- a/kernel/entry/common.c
++++ b/kernel/entry/common.c
+@@ -422,7 +422,7 @@ noinstr void irqentry_exit(struct pt_regs *regs, irqentry_state_t state)
+ 
+ 		instrumentation_begin();
+ 		if (IS_ENABLED(CONFIG_PREEMPTION)) {
+-#ifdef CONFIG_PREEMT_DYNAMIC
++#ifdef CONFIG_PREEMPT_DYNAMIC
+ 			static_call(irqentry_exit_cond_resched)();
+ #else
+ 			irqentry_exit_cond_resched();
+-- 
+2.25.1
 
