@@ -2,108 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77AEA35AB8F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4E9F35AB90
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbhDJHA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 03:00:56 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:40244 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234059AbhDJHAw (ORCPT
+        id S234415AbhDJHBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 03:01:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234367AbhDJHA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 03:00:52 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 13A70Hps095333;
-        Sat, 10 Apr 2021 02:00:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1618038017;
-        bh=pzTHVOnm2wnm6WLUxbxt/mXnLZUzGfpBV4GVwNNPJiI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Cg6+OekaEML9c5PwuHkVBWPRGnPTU1WA6f+mreF/wUf1bqELqFuHf+tzPlXayldmy
-         iHEXXAE3AfVDL5YGmTgCgqN8ySM1hglrVlPQ/oRiTjxyGqWTi+LrY8EwT95tXM8tsZ
-         hIJVFINED5XYSI3fZC/Jfowl3w3qCsEisognMQDA=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 13A70HFn129634
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 10 Apr 2021 02:00:17 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 10
- Apr 2021 02:00:16 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Sat, 10 Apr 2021 02:00:16 -0500
-Received: from [10.250.234.120] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 13A70DL7076204;
-        Sat, 10 Apr 2021 02:00:14 -0500
-Subject: Re: [PATCH -next] i2c: omap: fix PM reference leak in
- omap_i2c_probe()
-To:     Li Huafei <lihuafei1@huawei.com>, <tony@atomide.com>,
-        <aaro.koskinen@iki.fi>
-CC:     <linux-omap@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yangjihong1@huawei.com>,
-        <zhangjinhao2@huawei.com>, <--lihuafei1@huawei.com>
-References: <20210408125648.136519-1-lihuafei1@huawei.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <4b9bdf6e-f6f0-6971-0761-e7255e1355da@ti.com>
-Date:   Sat, 10 Apr 2021 12:30:12 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 10 Apr 2021 03:00:56 -0400
+Received: from mail.ionic.de (ionic.de [IPv6:2001:41d0:a:588b:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 26979C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 00:00:42 -0700 (PDT)
+Authentication-Results: root24.eu; spf=softfail (domain owner 
+   discourages use of this host) smtp.mailfrom=ionic.de 
+   (client-ip=217.92.117.31; helo=home.ionic.de; 
+   envelope-from=ionic@ionic.de; receiver=<UNKNOWN>)
+Received: from [192.168.0.46] (home.ionic.de [217.92.117.31])
+        by mail.ionic.de (Postfix) with ESMTPSA id 3A9DB4F00338;
+        Sat, 10 Apr 2021 07:00:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ionic.de; s=default;
+        t=1618038034; bh=S+95RKxtO3PJbCmeLJdIjWCX646SI4fb/oRRtGv+Tmc=;
+        h=To:Cc:References:From:Subject:Date:In-Reply-To:From;
+        b=l1fuYv6Qu+dPFolJPBqxKxCZ3YmD2h6qPvkKCl5nqmoQfi9uk6IKFTphCfNFF3jHw
+         hTtK9ixYhxfhSyxSppXJe6KvtD45sDv7NKOUc5ID+hyo4+aw6fx7W5KLHqX8aMXf8I
+         aUJEh+3tlze3TLixts1xDxiXkAUFECIaoga75aWM=
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210327120155.500-1-ionic@ionic.de>
+ <20210328095227.24323-1-ionic@ionic.de>
+ <CAK7LNATzx9ujmapPbPzjL1Yo-A0RAXz0Kma+ve8pUeDDVx8GGw@mail.gmail.com>
+From:   Mihai Moldovan <ionic@ionic.de>
+Subject: Re: [PATCH v2] kconfig: nconf: stop endless search-up loops
+Message-ID: <9e8d429f-c21c-7d9e-0dcd-8947846fe9ba@ionic.de>
+Date:   Sat, 10 Apr 2021 09:00:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210408125648.136519-1-lihuafei1@huawei.com>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAK7LNATzx9ujmapPbPzjL1Yo-A0RAXz0Kma+ve8pUeDDVx8GGw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
-
-On 4/8/21 6:26 PM, Li Huafei wrote:
-> pm_runtime_get_sync will increment pm usage counter even it failed.
-> Forgetting to putting operation will result in reference leak here. Fix
-> it by replacing it with pm_runtime_resume_and_get to keep usage counter
-> balanced.
+* On 4/10/21 7:47 AM, Masahiro Yamada wrote:
+> On Sun, Mar 28, 2021 at 6:52 PM Mihai Moldovan <ionic@ionic.de> wrote:
+>> +               if ((index == -1) && (index == match_start))
+>> +                       return -1;
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Li Huafei <lihuafei1@huawei.com>
-> ---
->  drivers/i2c/busses/i2c-omap.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> We know 'index' is -1 in the second comparison.
+> So, you can also write like this:
 > 
-> diff --git a/drivers/i2c/busses/i2c-omap.c b/drivers/i2c/busses/i2c-omap.c
-> index 12ac4212aded..edbe498d49b8 100644
-> --- a/drivers/i2c/busses/i2c-omap.c
-> +++ b/drivers/i2c/busses/i2c-omap.c
-> @@ -1404,7 +1404,7 @@ omap_i2c_probe(struct platform_device *pdev)
->  	pm_runtime_set_autosuspend_delay(omap->dev, OMAP_I2C_PM_TIMEOUT);
->  	pm_runtime_use_autosuspend(omap->dev);
->  
-> -	r = pm_runtime_get_sync(omap->dev);
-> +	r = pm_runtime_resume_and_get(omap->dev);
->  	if (r < 0)
->  		goto err_free_mem;
->  
-> @@ -1525,7 +1525,7 @@ static int omap_i2c_remove(struct platform_device *pdev)
->  	int ret;
->  
->  	i2c_del_adapter(&omap->adapter);
-> -	ret = pm_runtime_get_sync(&pdev->dev);
-> +	ret = pm_runtime_resume_and_get(&pdev->dev);
->  	if (ret < 0)
->  		return ret;
->  
+>        if (match_start == -1 && index == -1)
+>                 return -1;
+
+I know, but I sided for the other form for semantic reasons - this more closely
+directly describes what we actually care about (both being the same value and
+either one being -1).
+
+
+> But, it is not the correct fix, either.
 > 
-There is a similar patch at: lore.kernel.org/r/20210407033030.13419-1-dinghao.liu@zju.edu.cn
-But seems like this patch is better as it fixes module remove path as well.
-Would appreciate if you could work with author of above patch and come up
-with a single patch.
+> The root cause of the bug is match_start
+> becoming -1.
+> 
+> 
+> The following is the correct way to fix the bug
+> without increasing the number of lines.
+> 
+> 
+> 
+> diff --git a/scripts/kconfig/nconf.c b/scripts/kconfig/nconf.c
+> index e0f965529166..af814b39b876 100644
+> [...]
+> +       match_start = (match_start + items_num) % items_num;
+>         index = match_start;
+> -       index = (index + items_num) % items_num;
 
-Could you add stable tag and repost given that pm_runtime_resume_and_get()
-API is backported to stable kernels such as v5.4?
+This is probably more elegant and fixes two issues at the same time: match_start
+becoming -1 or n (which is likewise invalid, but was implicitly handled through
+the remainder operation).
 
-Regards
-Vignesh
+No objections from my side.
+
+
+
+Mihai
