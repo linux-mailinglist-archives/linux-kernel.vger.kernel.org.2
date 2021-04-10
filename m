@@ -2,105 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D641135AC05
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:55:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4900E35AC08
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:56:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234245AbhDJIzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 04:55:24 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:47811 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229632AbhDJIzW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 04:55:22 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id CA907580837;
-        Sat, 10 Apr 2021 04:55:07 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sat, 10 Apr 2021 04:55:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=5uGzC6LNv+sAq4wwCUhA+ZWu3IK
-        7ZSq0aFCqAf14d0Q=; b=HvEYZVKwKybrc+hwpLOCV+3kvgyZcCQBYLg58PghLeW
-        IMOEZPNGoMnr25CBiUYz1hn9InOHocNBB2g6xAKJJ5axfLc63pifdZdbvF0Oz7tw
-        Ao65ZccGjGnWmdRrqEitT9yDuzOjyS/y1UZ455gTrzu9V95E9J7gF4i7Cf1UNfcH
-        ehLHpZvN2GlIWntBcdiUlnigpdCjRJymqkV2LUDwi9GtxOl6g78/3tlKZhfEa3HE
-        QhguJhj2sl+8S3QcLrXMq8bEF3ny0foTx3/46eplso4PdCAjj+A11TENwvZdmkzC
-        5cRepQVGyuGRQdWgdTzOyP9WskGFu1L07b6mCIGte/A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=5uGzC6
-        LNv+sAq4wwCUhA+ZWu3IK7ZSq0aFCqAf14d0Q=; b=mx0MeMsxHvtgYZV3LIeuBu
-        eHQUZaRqosNpEDt0qOm1Bse4BLOXyrEpNuPUrrqJy6ajjh+54SBIbrmpA8MvKVmf
-        L/g4hNy+ku9uzklKEkPojfoUQ1kSIAHN6n2r0g1EVUk/aILzHX3v2zTTT2zrFLK3
-        38ykYJ2jHuav+i8ERK4JhMj1fmEFq09BjvMdruQFEHPmsOkXEOjHXfn1XPc5D9uU
-        CLdavAbKvR/JD3+oQ1ouH9mp11bwQSflo7mwUESF+tV0W1wQdpekHXe0xFdvcj6U
-        T5/Ge8A15F80aEKQFRyvT19rSDf4b/vc8OEp++Egj96A7I8K6M1rVC9dOWOg6WYA
-        ==
-X-ME-Sender: <xms:6GdxYBDse1rPZPrI3VsS_BaCc_W8xH1jLrVrInuo5Z1MtqCURr8Fog>
-    <xme:6GdxYPj-j6PJShry4lVzicG674J9tTkY903ypzgb1hbTyAx-5kLWSko_87lyOfBW-
-    vhMBdE8vARzZg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekfedguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:6GdxYMm3YhftpsiX78d2fv4y5btEgLgnk-_N3SSDkZYOwQfksUDBQg>
-    <xmx:6GdxYLxCVqZXbFqU11X36ZNv6CMADoDwn9JaMDDDVtQnuTaz8A677g>
-    <xmx:6GdxYGQWQxyTizoLTcsX4hF3SD9wpN36FfjrccXyhPRZGMWeTLKMZA>
-    <xmx:62dxYKAV02l7-F86dfgl2lFZh-rC7eI3LyjIQiC9LIVPf9jWkXBN7A>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA id CCA9B24005D;
-        Sat, 10 Apr 2021 04:55:03 -0400 (EDT)
-Date:   Sat, 10 Apr 2021 10:55:01 +0200
-From:   Greg KH <greg@kroah.com>
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     akpm@linux-foundation.org, SeongJae Park <sjpark@amazon.de>,
-        Jonathan.Cameron@huawei.com, acme@kernel.org,
-        alexander.shishkin@linux.intel.com, amit@kernel.org,
-        benh@kernel.crashing.org, brendanhiggins@google.com,
-        corbet@lwn.net, david@redhat.com, dwmw@amazon.com,
-        elver@google.com, fan.du@intel.com, foersleo@amazon.de,
-        gthelen@google.com, guoju.fgj@alibaba-inc.com, mgorman@suse.de,
-        minchan@kernel.org, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org, riel@surriel.com, rientjes@google.com,
-        rostedt@goodmis.org, rppt@kernel.org, shakeelb@google.com,
-        shuah@kernel.org, snu@amazon.de, vbabka@suse.cz,
-        vdavydov.dev@gmail.com, zgf574564920@gmail.com,
-        linux-damon@amazon.com, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v27 07/13] mm/damon: Implement a debugfs-based user space
- interface
-Message-ID: <YHFn5fOTIQQ4TXHA@kroah.com>
-References: <20210408134854.31625-1-sj38.park@gmail.com>
- <20210408134854.31625-8-sj38.park@gmail.com>
+        id S234201AbhDJI4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 04:56:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60964 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhDJI4x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 04:56:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2385F610CB;
+        Sat, 10 Apr 2021 08:56:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618044998;
+        bh=uh476dzlm2ZLs/3KLJeBiudSJ+eOoSJUDrPdW896eBQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oSpM29hARBYcly2jIPOx3Wi0tvsmDxTsAuiepulAY/nmjcGb9VHKFiWTkYzuGnsWW
+         wFh3yXpdpeanQBcFTZVT9mv3HtLEzo+8p4rsnwVUDwC/rfykFoENE9ILXHpAVZZFto
+         Ym2VMs6e/feghkniisPpbh9arW9H4a9Eh7mR01OA=
+Date:   Sat, 10 Apr 2021 10:56:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] of: property: fw_devlink: do not link ".*,nr-gpios"
+Message-ID: <YHFoRFJny4+fibG4@kroah.com>
+References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
+ <20210405222540.18145-1-ilya.lipnitskiy@gmail.com>
+ <CAGETcx-gF4r1TeY2AA4Vwb5e+5O+_O3E2ENo5tKhh=n_EOJnEQ@mail.gmail.com>
+ <20210407003408.GA2551507@robh.at.kernel.org>
+ <CAGETcx8=sSWj_OmM1GPXNiLcv3anEkJnb_C7NoO9mNwS-O0KhQ@mail.gmail.com>
+ <CAL_JsqLs4c3+9WwV6Vnk9Tovb6HiyH7t+_WXYP-ZDO72mOcO+w@mail.gmail.com>
+ <CAGETcx-W_K9NFV51iBvyZ-Q+1LCUM3qipMmap9yEW_eu9B7CCg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408134854.31625-8-sj38.park@gmail.com>
+In-Reply-To: <CAGETcx-W_K9NFV51iBvyZ-Q+1LCUM3qipMmap9yEW_eu9B7CCg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 01:48:48PM +0000, SeongJae Park wrote:
-> +static int dbgfs_fill_ctx_dir(struct dentry *dir, struct damon_ctx *ctx)
-> +{
-> +	const char * const file_names[] = {"attrs", "target_ids"};
-> +	const struct file_operations *fops[] = {&attrs_fops, &target_ids_fops};
-> +	int i;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(file_names); i++)
-> +		debugfs_create_file(file_names[i], 0600, dir, ctx, fops[i]);
-> +
-> +	return 0;
-> +}
+On Tue, Apr 06, 2021 at 06:24:21PM -0700, Saravana Kannan wrote:
+> On Tue, Apr 6, 2021 at 6:10 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Tue, Apr 6, 2021 at 7:46 PM Saravana Kannan <saravanak@google.com> wrote:
+> > >
+> > > On Tue, Apr 6, 2021 at 5:34 PM Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Tue, Apr 06, 2021 at 04:09:10PM -0700, Saravana Kannan wrote:
+> > > > > On Mon, Apr 5, 2021 at 3:26 PM Ilya Lipnitskiy
+> > > > > <ilya.lipnitskiy@gmail.com> wrote:
+> > > > > >
+> > > > > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
+> > > > > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
+> > > > > > not configured by #gpio-cells and can't be parsed along with other
+> > > > > > "*-gpios" properties.
+> > > > > >
+> > > > > > nr-gpios without the "<vendor>," prefix is not allowed by the DT
+> > > > > > spec[1], so only add exception for the ",nr-gpios" suffix and let the
+> > > > > > error message continue being printed for non-compliant implementations.
+> > > > > >
+> > > > > > [0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
+> > > > > >  - gpio-adnp.txt
+> > > > > >  - gpio-xgene-sb.txt
+> > > > > >  - gpio-xlp.txt
+> > > > > >  - snps,dw-apb-gpio.yaml
+> > > > > >
+> > > > > > [1]:
+> > > > > > Link: https://github.com/devicetree-org/dt-schema/blob/cb53a16a1eb3e2169ce170c071e47940845ec26e/schemas/gpio/gpio-consumer.yaml#L20
+> > > > > >
+> > > > > > Fixes errors such as:
+> > > > > >   OF: /palmbus@300000/gpio@600: could not find phandle
+> > > > > >
+> > > > > > Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
+> > > > > > Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> > > > > > Cc: Saravana Kannan <saravanak@google.com>
+> > > > > > Cc: <stable@vger.kernel.org> # 5.5.x
+> > > > > > ---
+> > > > > >  drivers/of/property.c | 11 ++++++++++-
+> > > > > >  1 file changed, 10 insertions(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > > > > > index 2046ae311322..1793303e84ac 100644
+> > > > > > --- a/drivers/of/property.c
+> > > > > > +++ b/drivers/of/property.c
+> > > > > > @@ -1281,7 +1281,16 @@ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
+> > > > > >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
+> > > > > >  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
+> > > > > >  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
+> > > > > > -DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
+> > > > > > +
+> > > > > > +static struct device_node *parse_gpios(struct device_node *np,
+> > > > > > +                                      const char *prop_name, int index)
+> > > > > > +{
+> > > > > > +       if (!strcmp_suffix(prop_name, ",nr-gpios"))
+> > > > > > +               return NULL;
+> > > > >
+> > > > > Ah I somehow missed this patch. This gives a blanked exception for
+> > > > > vendor,nr-gpios. I'd prefer explicit exceptions for all the instances
+> > > > > of ",nr-gpios" we are grandfathering in. Any future additions should
+> > > > > be rejected. Can we do that please?
+> > > > >
+> > > > > Rob, you okay with making this list more explicit?
+> > > >
+> > > > Not the kernel's job IMO. A schema is the right way to handle that.
+> > >
+> > > Ok, that's fine by me. Btw, let's land this in driver-core? I've made
+> > > changes there and this might cause conflicts. Not sure.
+> >
+> > It merges with linux-next fine. You'll need to resend this to Greg if
+> > you want to do that.
+> >
+> > Reviewed-by: Rob Herring <robh@kernel.org>
+> 
+> Hi Greg,
+> 
+> Can you pull this into driver-core please? I touch this file a lot and
+> might need to do so again if any fw_devlink=on issues come up. So
+> trying to preemptively avoid conflicts.
 
-Why do you have a function that can only return 0, actually return
-something?  It should be void, right?
+Pull what?  I'm totally lost in this thread, sorry...
+
+If you need me to apply something, you at least need to cc: me on it :)
 
 thanks,
 
-greg k-h
+gre gk-h
