@@ -2,85 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDDDE35AE41
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8E8C35AE0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235067AbhDJOZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:25:13 -0400
-Received: from m12-13.163.com ([220.181.12.13]:56304 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234781AbhDJOY4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:24:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=M3pE8
-        79huBIU0JRzqJ2pcE9coxXHeCptiOi+gjhWg+I=; b=fJKzt+LVwGgj8ly+RAI3a
-        6FuZZouMd1YRKMVpzcHRs1TvqnCgG39J6Jqkt74e7wk/zO++NSAVaJ9a8nIq67li
-        7pwePokj9vyQjpSIBjXSrB9mc2weha0clSfjdv/60dME9YxO+CJEGFuf+WLBMLDP
-        s4avBbbd5BSe/m5EoagzSs=
-Received: from yangjunlin.ccdomain.com (unknown [119.137.53.114])
-        by smtp9 (Coremail) with SMTP id DcCowAA3nbhAsXFgiRE5FQ--.33694S2;
-        Sat, 10 Apr 2021 22:08:01 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     axboe@kernel.dk
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: [PATCH v2] pata_ipx4xx_cf: Fix unsigned comparison with less than zero
-Date:   Sat, 10 Apr 2021 22:07:57 +0800
-Message-Id: <20210410140757.2093-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S234748AbhDJORY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 10 Apr 2021 10:17:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:53205 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234392AbhDJORX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 10:17:23 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-84-kCKo1-18OZuYsleNdk-yPA-1; Sat, 10 Apr 2021 15:17:06 +0100
+X-MC-Unique: kCKo1-18OZuYsleNdk-yPA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Sat, 10 Apr 2021 15:17:05 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Sat, 10 Apr 2021 15:17:05 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Matthew Wilcox' <willy@infradead.org>,
+        kernel test robot <lkp@intel.com>
+CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "clang-built-linux@googlegroups.com" 
+        <clang-built-linux@googlegroups.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: RE: Bogus struct page layout on 32-bit
+Thread-Topic: Bogus struct page layout on 32-bit
+Thread-Index: AQHXLbNopyewSd0HZEaZbqB5fscTXqqtw2Cg
+Date:   Sat, 10 Apr 2021 14:17:04 +0000
+Message-ID: <b9d5b09eaec44334b29241e16b8605d5@AcuMS.aculab.com>
+References: <20210409185105.188284-3-willy@infradead.org>
+ <202104100656.N7EVvkNZ-lkp@intel.com>
+ <20210410024313.GX2531743@casper.infradead.org>
+In-Reply-To: <20210410024313.GX2531743@casper.infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowAA3nbhAsXFgiRE5FQ--.33694S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7WF1fKw1xWw13tF4kAr4fZrb_yoW8Jw4DpF
-        WUCaykurWkJas09w4kJr47ZF13JFn5W3yIv3y3C3y3Zrn8XrykJFySga4jvF1qkrZ7Gr13
-        try5tr4UWFsrZF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jToGQUUUUU=
-X-Originating-IP: [119.137.53.114]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/xtbBHglwI13mAONV1wAAse
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+From: Matthew Wilcox
+> Sent: 10 April 2021 03:43
+> On Sat, Apr 10, 2021 at 06:45:35AM +0800, kernel test robot wrote:
+> > >> include/linux/mm_types.h:274:1: error: static_assert failed due to requirement
+> '__builtin_offsetof(struct page, lru) == __builtin_offsetof(struct folio, lru)' "offsetof(struct page,
+> lru) == offsetof(struct folio, lru)"
+> >    FOLIO_MATCH(lru, lru);
+> >    include/linux/mm_types.h:272:2: note: expanded from macro 'FOLIO_MATCH'
+> >            static_assert(offsetof(struct page, pg) == offsetof(struct folio, fl))
+> 
+> Well, this is interesting.  pahole reports:
+> 
+> struct page {
+>         long unsigned int          flags;                /*     0     4 */
+>         /* XXX 4 bytes hole, try to pack */
+>         union {
+>                 struct {
+>                         struct list_head lru;            /*     8     8 */
+> ...
+> struct folio {
+>         union {
+>                 struct {
+>                         long unsigned int flags;         /*     0     4 */
+>                         struct list_head lru;            /*     4     8 */
+> 
+> so this assert has absolutely done its job.
+> 
+> But why has this assert triggered?  Why is struct page layout not what
+> we thought it was?  Turns out it's the dma_addr added in 2019 by commit
+> c25fff7171be ("mm: add dma_addr_t to struct page").  On this particular
+> config, it's 64-bit, and ppc32 requires alignment to 64-bit.  So
+> the whole union gets moved out by 4 bytes.
+> 
+> Unfortunately, we can't just fix this by putting an 'unsigned long pad'
+> in front of it.  It still aligns the entire union to 8 bytes, and then
+> it skips another 4 bytes after the pad.
+> 
+> We can fix it like this ...
+> 
+> +++ b/include/linux/mm_types.h
+> @@ -96,11 +96,12 @@ struct page {
+>                         unsigned long private;
+>                 };
+>                 struct {        /* page_pool used by netstack */
+> +                       unsigned long _page_pool_pad;
+>                         /**
+>                          * @dma_addr: might require a 64-bit value even on
+>                          * 32-bit architectures.
+>                          */
+> -                       dma_addr_t dma_addr;
+> +                       dma_addr_t dma_addr __packed;
+>                 };
+>                 struct {        /* slab, slob and slub */
+>                         union {
+> 
+> but I don't know if GCC is smart enough to realise that dma_addr is now
+> on an 8 byte boundary and it can use a normal instruction to access it,
+> or whether it'll do something daft like use byte loads to access it.
 
-The return from the call to platform_get_irq() is int, it can be
-a negative error code, however this is being assigned to an unsigned
-int variable 'irq', so making 'irq' an int, and change the position to
-keep the code format.
+I'm betting it will use byte accesses.
+Checked - it does seem to use 4-byte accesses.
+(godbolt is rather short of 32 bit compilers...)
 
-Fixes coccicheck warnings:
-./drivers/ata/pata_ixp4xx_cf.c:168:5-8:
-WARNING: Unsigned expression compared with zero: irq < 0
+> 
+> We could also do:
+> 
+> +                       dma_addr_t dma_addr __packed __aligned(sizeof(void *));
 
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
----
-changes in v1:
-update the commit information.
-changes in v2:
-As Sergei said, it should read irq < 0, update commit information.
+I wonder if __aligned(n) should be defined as
+	__attribute__((packed,aligned(n))
+I don't think you ever want the 'unpacked' variant.
 
- drivers/ata/pata_ixp4xx_cf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But explicitly reducing the alignment of single member is much
+better than the habit of marking the structure 'packed'.
 
-diff --git a/drivers/ata/pata_ixp4xx_cf.c b/drivers/ata/pata_ixp4xx_cf.c
-index abc0e87..43215a4 100644
---- a/drivers/ata/pata_ixp4xx_cf.c
-+++ b/drivers/ata/pata_ixp4xx_cf.c
-@@ -135,12 +135,12 @@ static void ixp4xx_setup_port(struct ata_port *ap,
- 
- static int ixp4xx_pata_probe(struct platform_device *pdev)
- {
--	unsigned int irq;
- 	struct resource *cs0, *cs1;
- 	struct ata_host *host;
- 	struct ata_port *ap;
- 	struct ixp4xx_pata_data *data = dev_get_platdata(&pdev->dev);
- 	int ret;
-+	int irq;
- 
- 	cs0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	cs1 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
--- 
-1.9.1
+(Never mind the habit of adding __packed 'because we don't want
+the compiler to add random padding.)
 
+> 
+> and I see pahole, at least sees this correctly:
+> 
+>                 struct {
+>                         long unsigned int _page_pool_pad; /*     4     4 */
+>                         dma_addr_t dma_addr __attribute__((__aligned__(4))); /*     8     8 */
+>                 } __attribute__((__packed__)) __attribute__((__aligned__(4)));
+
+Is the attribute on the struct an artifact of pahole?
+It should just have an alignment of 4 without anything special.
+
+> 
+> This presumably affects any 32-bit architecture with a 64-bit phys_addr_t
+> / dma_addr_t.  Advice, please?
+
+Only those where a 64-bit value is 64-bit aligned.
+So that excludes x86 (which can have 64-bit dma) but includes sparc32
+(which probably doesn't).
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
