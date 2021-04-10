@@ -2,75 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4FF35ABE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D1235ABE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbhDJIcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 04:32:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56950 "EHLO mail.kernel.org"
+        id S234164AbhDJId7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 04:33:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229632AbhDJIcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 04:32:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7CCB610C8;
-        Sat, 10 Apr 2021 08:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618043503;
-        bh=TLe3b6eYl5WXk+SrGIqyCYCg/bSYEiSQG3SxWxQ8LvE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XOWTgARkjElBB5yfl2YiPxa34rMrEFaaSfFy4aj8LQhv51SAGx8kkJnE8Zsw5OIMQ
-         GtjRRgNIG6KKlmq6Xw56aJN5xl+ZAKr1CHYAP1/AqawFIMr+nwsXnozcD5oHroHaEU
-         4FBOy9Ackv95/ZB573PW3fxr9HnEq++B1TyNRpGY=
-Date:   Sat, 10 Apr 2021 10:31:40 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [PATCH 0/6] staging: rtl8192e: cleanup patchset for style issues
-Message-ID: <YHFibAvRrun6Jk6T@kroah.com>
-References: <YHEAnyO11wgp5PNZ@kali>
+        id S229494AbhDJId6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 04:33:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37172610C8;
+        Sat, 10 Apr 2021 08:33:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618043624;
+        bh=lS9lkcfqzV/7AwxdfQRujIQfHTrH03nU7vYgR5usPVA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VpG9rx3xPsw5/BSNCa5fwbE2C+vDvyvvHj4gJryTTE9cGTGm22DYfmEw+j20S4x0Q
+         KilUGuKbi2hP9EzW1Qy1Vw6JnX/17/EL+7D32nJoB1+CnQWQOpB2jAMyQKYXpsHcbo
+         ipsjjr634aDXX85tAUIs3/It7hnWLeDyai77GwdAfCxFs0//P+tYs+cEGZq9qvkv9c
+         N7cwaEEBsbl8kJXSRBdSAQPOjEX2WXLgwwesu7GyN7OjIzRMV3d23ftIlm7/Y4QV6X
+         f20MljMFwYGkrkxobUf5e/398b3wFBptpYoz8LJyrC9B5/3RMfo6Ec8a7hoMy1EftQ
+         AF1k4vzuRIpLw==
+Received: by mail-ot1-f42.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso6076754otb.13;
+        Sat, 10 Apr 2021 01:33:44 -0700 (PDT)
+X-Gm-Message-State: AOAM530hOEYel4O55sNFg2OPotXsG5aIzFzG+vWHcCo2rSjSiW1h32Bz
+        9Y2vqrmH+oYPkM1BmW6NkipsFiqrIaVHvIWpPoI=
+X-Google-Smtp-Source: ABdhPJyDxw2NORXjwupt1IqrCmpfOr8jpKJwdR/Fri5xj8u+ukRamo2nRRO/GrR9a6BBpomrFPchSg804GKu5ccAMoo=
+X-Received: by 2002:a9d:12cb:: with SMTP id g69mr15336611otg.77.1618043623547;
+ Sat, 10 Apr 2021 01:33:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHEAnyO11wgp5PNZ@kali>
+References: <20210404181216.1450776-1-andy.shevchenko@gmail.com>
+In-Reply-To: <20210404181216.1450776-1-andy.shevchenko@gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 10 Apr 2021 10:33:32 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHTWf-9=y2kSVm09Ln9Aq=mriL57zEHwfBnS_K0Sqn86A@mail.gmail.com>
+Message-ID: <CAMj1kXHTWf-9=y2kSVm09Ln9Aq=mriL57zEHwfBnS_K0Sqn86A@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] efi/dev-path-parser: Switch to use for_each_acpi_dev_match()
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-efi <linux-efi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lukas Wunner <lukas@wunner.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 07:04:23AM +0530, Mitali Borkar wrote:
-> This patches fix the cleanup style issues.
-> 
-> Mitali Borkar (6):
->   staging: rtl8192e: add spaces around binary operators
->   staging: rtl8192e: remove unnecessary blank line before brace
->   staging: rtl8192e: remove unncessary blank line after brace
->   staging: rtl8192e: matched alignment with open parenthesis
->   staging: rtl8192e: removed multiple blank lines
->   staging: rtl8192e: align statements properly
-> 
->  drivers/staging/rtl8192e/rtl819x_HTProc.c | 43 +++++++++--------------
->  drivers/staging/rtl8192e/rtl819x_TSProc.c | 28 +++++++--------
->  2 files changed, 29 insertions(+), 42 deletions(-)
+On Sun, 4 Apr 2021 at 20:12, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>
+> Switch to use for_each_acpi_dev_match() instead of home grown analogue.
+> No functional change intended.
+>
+> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> ---
+> v2: fixed refcounting
+>     (example from which I took the v1 approach has been broken, fix is sent :-)
 
-You emails are not threaded properly at all :(
+Queued up in efi/next, thanks
 
-Look at how this showed up on lore.kernel.org:
-	https://lore.kernel.org/linux-staging/YHEAnyO11wgp5PNZ@kali/
-
-See, only the first email shows there.
-
-But here is a properly threaded series of patches:
-	https://lore.kernel.org/r/161793058309.10062.17056551235139961080.stgit@mickey.themaw.net
-
-Look down at the bottom of the page to see all patches, and the
-responses, linked together.
-
-Please use 'git send-email' to send your patches out as it will
-correctly thread things if you do not know how to do this "by hand".
-And note, "by hand" is hard to do...
-
-I have now dropped all pending patches from you from my queue, please
-fix up your two patch series and resend.
-
-thanks,
-
-greg k-h
+>  drivers/firmware/efi/dev-path-parser.c | 49 ++++++++++----------------
+>  1 file changed, 18 insertions(+), 31 deletions(-)
+>
+> diff --git a/drivers/firmware/efi/dev-path-parser.c b/drivers/firmware/efi/dev-path-parser.c
+> index 5c9625e552f4..10d4457417a4 100644
+> --- a/drivers/firmware/efi/dev-path-parser.c
+> +++ b/drivers/firmware/efi/dev-path-parser.c
+> @@ -12,52 +12,39 @@
+>  #include <linux/efi.h>
+>  #include <linux/pci.h>
+>
+> -struct acpi_hid_uid {
+> -       struct acpi_device_id hid[2];
+> -       char uid[11]; /* UINT_MAX + null byte */
+> -};
+> -
+> -static int __init match_acpi_dev(struct device *dev, const void *data)
+> -{
+> -       struct acpi_hid_uid hid_uid = *(const struct acpi_hid_uid *)data;
+> -       struct acpi_device *adev = to_acpi_device(dev);
+> -
+> -       if (acpi_match_device_ids(adev, hid_uid.hid))
+> -               return 0;
+> -
+> -       if (adev->pnp.unique_id)
+> -               return !strcmp(adev->pnp.unique_id, hid_uid.uid);
+> -       else
+> -               return !strcmp("0", hid_uid.uid);
+> -}
+> -
+>  static long __init parse_acpi_path(const struct efi_dev_path *node,
+>                                    struct device *parent, struct device **child)
+>  {
+> -       struct acpi_hid_uid hid_uid = {};
+> +       char hid[ACPI_ID_LEN], uid[11]; /* UINT_MAX + null byte */
+> +       struct acpi_device *adev;
+>         struct device *phys_dev;
+>
+>         if (node->header.length != 12)
+>                 return -EINVAL;
+>
+> -       sprintf(hid_uid.hid[0].id, "%c%c%c%04X",
+> +       sprintf(hid, "%c%c%c%04X",
+>                 'A' + ((node->acpi.hid >> 10) & 0x1f) - 1,
+>                 'A' + ((node->acpi.hid >>  5) & 0x1f) - 1,
+>                 'A' + ((node->acpi.hid >>  0) & 0x1f) - 1,
+>                         node->acpi.hid >> 16);
+> -       sprintf(hid_uid.uid, "%u", node->acpi.uid);
+> -
+> -       *child = bus_find_device(&acpi_bus_type, NULL, &hid_uid,
+> -                                match_acpi_dev);
+> -       if (!*child)
+> +       sprintf(uid, "%u", node->acpi.uid);
+> +
+> +       for_each_acpi_dev_match(adev, hid, NULL, -1) {
+> +               if (adev->pnp.unique_id && !strcmp(adev->pnp.unique_id, uid))
+> +                       break;
+> +               if (!adev->pnp.unique_id && node->acpi.uid == 0)
+> +                       break;
+> +               acpi_dev_put(adev);
+> +       }
+> +       if (!adev)
+>                 return -ENODEV;
+>
+> -       phys_dev = acpi_get_first_physical_node(to_acpi_device(*child));
+> +       phys_dev = acpi_get_first_physical_node(adev);
+>         if (phys_dev) {
+> -               get_device(phys_dev);
+> -               put_device(*child);
+> -               *child = phys_dev;
+> -       }
+> +               *child = get_device(phys_dev);
+> +               acpi_dev_put(adev);
+> +       } else
+> +               *child = &adev->dev;
+>
+>         return 0;
+>  }
+> --
+> 2.31.1
+>
