@@ -2,150 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4124835AB15
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 07:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1249D35AB39
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 07:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230414AbhDJF25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 01:28:57 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:30803 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229472AbhDJF24 (ORCPT
+        id S234244AbhDJFzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 01:55:05 -0400
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:55636 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229992AbhDJFzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 01:28:56 -0400
-X-UUID: 9cac798b3f9a4c3f99cc5b6f17d8f24f-20210410
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=MlIao8blKXAQsabTwL7mSrhVFjww5CHYY94qATPfwNQ=;
-        b=MizXZU8MhCqGYz+utIlfN9yzL+M+KTbkoxexrKiLY3lQqzpSLSFvIpG+i3lKRZvPn1ut054BrzxRPNvuGE297LTEZWmcGqiz2i2o83xEQtOJVvdVio30ylE+0/Z+S0SRFG5Q2BgrPkDRs2ZVNWTVjSIw0/JSqhWvUHvZVxZk6zg=;
-X-UUID: 9cac798b3f9a4c3f99cc5b6f17d8f24f-20210410
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1987728062; Sat, 10 Apr 2021 13:28:38 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 10 Apr
- 2021 13:28:35 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 10 Apr 2021 13:28:34 +0800
-Message-ID: <1618032514.26944.20.camel@mhfsdcap03>
-Subject: Re: [PATCH] iommu/mediatek: always enable the clk on resume
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-CC:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <matthias.bgg@gmail.com>,
-        <will@kernel.org>, <joro@8bytes.org>, <kernel@collabora.com>,
-        <dafna3@gmail.com>, <enric.balletbo@collabora.com>
-Date:   Sat, 10 Apr 2021 13:28:34 +0800
-In-Reply-To: <20210408122842.29009-1-dafna.hirschfeld@collabora.com>
-References: <20210408122842.29009-1-dafna.hirschfeld@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Sat, 10 Apr 2021 01:55:04 -0400
+X-Greylist: delayed 1541 seconds by postgrey-1.27 at vger.kernel.org; Sat, 10 Apr 2021 01:55:03 EDT
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1lV6Am-00027U-LZ; Sat, 10 Apr 2021 05:28:47 +0000
+Received: from madding.kot-begemot.co.uk ([192.168.3.98])
+        by jain.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1lV6Ak-00015E-5i; Sat, 10 Apr 2021 06:28:44 +0100
+Subject: Re: [PATCH] um: add 2 missing libs to fix various build errors
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Brendan Jackman <jackmanb@google.com>,
+        Alexei Starovoitov <ast@kernel.org>, kbuild-all@lists.01.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-um@lists.infradead.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Johannes Berg <johannes.berg@intel.com>
+References: <20210404182044.9918-1-rdunlap@infradead.org>
+ <9f7eeb70-8ddc-fb04-a378-5f1e80d485e6@infradead.org>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Organization: Cambridge Greys
+Message-ID: <74a0ba94-9a22-b7a4-3c1b-596ddbaa856e@cambridgegreys.com>
+Date:   Sat, 10 Apr 2021 06:28:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: F7EA9B2BB2D8F08BC06597B904289D59BAB636E1C29EA433EE645D2BBDA110822000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <9f7eeb70-8ddc-fb04-a378-5f1e80d485e6@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTA0LTA4IGF0IDE0OjI4ICswMjAwLCBEYWZuYSBIaXJzY2hmZWxkIHdyb3Rl
-Og0KPiBJbiBtdGtfaW9tbXVfcnVudGltZV9yZXN1bWUgYWx3YXlzIGVuYWJsZSB0aGUgY2xrLCBl
-dmVuDQo+IGlmIG00dV9kb20gaXMgbnVsbC4gT3RoZXJ3aXNlIHRoZSAnc3VzcGVuZCcgY2IgbWln
-aHQNCj4gZGlzYWJsZSB0aGUgY2xrIHdoaWNoIGlzIGFscmVhZHkgZGlzYWJsZWQgY2F1c2luZyB0
-aGUgd2FybmluZzoNCg0KSGkgRGFmbmEsDQoNClRoYW5rcyB2ZXJ5IG11Y2ggZm9yIHRlc3Rpbmcg
-YW5kIHJlcG9ydC4gSSBoYXZlIHJlcHJvZHVjZWQgdGhpcyBpc3N1ZQ0KbG9jYWxseS4gSXQgaGFw
-cGVuZWQgd2hlbiBpb21tdSBwcm9iZSBiZWZvcmUgdGhhbiBzbWktY29tbW9uKGlvbW11IGlzDQp0
-aGUgc3VwcGxpZXIgaW4gdGhlIGRldi1saW5rKS4NCg0KSSBwdXQgY2xrX3ByZXBhcmVfZW5hYmxl
-IGluIHRoZSBfaHdfaW5pdCBzaW5jZSBJIGhhdmUgcGxhbiB0byByZW1vdmUgdGhlDQpwbV9ydW50
-aW1lX2dldC9wdXQgaW4gdGhlIF9hdHRhY2hfZGV2aWNlKFRoaXMgd2lsbCB0dXJuIG9mZiB0aGUg
-ZGlzcGxheQ0KcG93ZXIgZG9tYWluIGlmIHdlIHNob3cgZmFzdGxvZ28gYXQgdGhhdCB0aW1lLikg
-TWF5IGJlIHdlIHNob3VsZCBrZWVwDQp0aGUgc21pLWNvbW1vbiBwcm9iZSBhbHdheXMgYmVmb3Jl
-IHRoYW4gaW9tbXUuDQoNCkFueXdheSwgVGhpcyBwYXRjaCBtYWtlcyBjb2RlIHN5bW1ldHJpY2Fs
-IGFuZCBpdCBpcyBnb29kIGZvciBub3cuDQoNClJldmlld2VkLWJ5OiBZb25nIFd1IDx5b25nLnd1
-QG1lZGlhdGVrLmNvbT4NCg0KPiANCj4gWyAgICAxLjU4NjEwNF0gaW5mcmFfbTR1IGFscmVhZHkg
-ZGlzYWJsZWQNCj4gWyAgICAxLjU4NjEzM10gV0FSTklORzogQ1BVOiAwIFBJRDogMTIxIGF0IGRy
-aXZlcnMvY2xrL2Nsay5jOjk1MiBjbGtfY29yZV9kaXNhYmxlKzB4YjAvMHhiOA0KPiBbICAgIDEu
-NTk0MzkxXSBtdGstaW9tbXUgMTAyMDUwMDAuaW9tbXU6IGJvdW5kIDE4MDAxMDAwLmxhcmIgKG9w
-cyBtdGtfc21pX2xhcmJfY29tcG9uZW50X29wcykNCj4gWyAgICAxLjU5ODEwOF0gTW9kdWxlcyBs
-aW5rZWQgaW46DQo+IFsgICAgMS41OTgxMTRdIENQVTogMCBQSUQ6IDEyMSBDb21tOiBrd29ya2Vy
-LzA6MiBOb3QgdGFpbnRlZCA1LjEyLjAtcmM1ICM2OQ0KPiBbICAgIDEuNjA5MjQ2XSBtdGstaW9t
-bXUgMTAyMDUwMDAuaW9tbXU6IGJvdW5kIDE0MDI3MDAwLmxhcmIgKG9wcyBtdGtfc21pX2xhcmJf
-Y29tcG9uZW50X29wcykNCj4gWyAgICAxLjYxNzQ4N10gSGFyZHdhcmUgbmFtZTogR29vZ2xlIEVs
-bSAoRFQpDQo+IFsgICAgMS42MTc0OTFdIFdvcmtxdWV1ZTogcG0gcG1fcnVudGltZV93b3JrDQo+
-IFsgICAgMS42MjA1NDVdIG10ay1pb21tdSAxMDIwNTAwMC5pb21tdTogYm91bmQgMTkwMDEwMDAu
-bGFyYiAob3BzIG10a19zbWlfbGFyYl9jb21wb25lbnRfb3BzKQ0KPiANCj4gWyAgICAxLjYyNzIy
-OV0gcHN0YXRlOiA2MDAwMDA4NSAoblpDdiBkYUlmIC1QQU4gLVVBTyAtVENPIEJUWVBFPS0tKQ0K
-PiBbICAgIDEuNjU5Mjk3XSBwYyA6IGNsa19jb3JlX2Rpc2FibGUrMHhiMC8weGI4DQo+IFsgICAg
-MS42NjM0NzVdIGxyIDogY2xrX2NvcmVfZGlzYWJsZSsweGIwLzB4YjgNCj4gWyAgICAxLjY2NzY1
-Ml0gc3AgOiBmZmZmODAwMDExYjliYmUwDQo+IFsgICAgMS42NzA5NTldIHgyOTogZmZmZjgwMDAx
-MWI5YmJlMCB4Mjg6IDAwMDAwMDAwMDAwMDAwMDANCj4gWyAgICAxLjY3NjI2N10geDI3OiBmZmZm
-ODAwMDExNDQ4MDAwIHgyNjogZmZmZjgwMDAxMDBjZmQ5OA0KPiBbICAgIDEuNjgxNTc0XSB4MjU6
-IGZmZmY4MDAwMTFiOWJkNDggeDI0OiAwMDAwMDAwMDAwMDAwMDAwDQo+IFsgICAgMS42ODY4ODJd
-IHgyMzogMDAwMDAwMDAwMDAwMDAwMCB4MjI6IGZmZmY4MDAwMTA2ZmFkOTANCj4gWyAgICAxLjY5
-MjE4OV0geDIxOiAwMDAwMDAwMDAwMDAwMDBhIHgyMDogZmZmZjAwMDBjMDA0ODUwMA0KPiBbICAg
-IDEuNjk3NDk2XSB4MTk6IGZmZmYwMDAwYzAwNDg1MDAgeDE4OiBmZmZmZmZmZmZmZmZmZmZmDQo+
-IFsgICAgMS43MDI4MDRdIHgxNzogMDAwMDAwMDAwMDAwMDAwMCB4MTY6IDAwMDAwMDAwMDAwMDAw
-MDANCj4gWyAgICAxLjcwODExMl0geDE1OiBmZmZmODAwMDExNDYwMzAwIHgxNDogZmZmZmZmZmZm
-ZmZlMDAwMA0KPiBbICAgIDEuNzEzNDIwXSB4MTM6IGZmZmY4MDAwMTE0NjAyZDggeDEyOiAwNzIw
-MDcyMDA3MjAwNzIwDQo+IFsgICAgMS43MTg3MjddIHgxMTogMDcyMDA3MjAwNzIwMDcyMCB4MTA6
-IDA3MjAwNzIwMDcyMDA3MjANCj4gWyAgICAxLjcyNDAzNV0geDkgOiBmZmZmODAwMDExYjliYmUw
-IHg4IDogZmZmZjgwMDAxMWI5YmJlMA0KPiBbICAgIDEuNzI5MzQyXSB4NyA6IDAwMDAwMDAwMDAw
-MDAwMDkgeDYgOiBmZmZmODAwMDExNGI4MzI4DQo+IFsgICAgMS43MzQ2NDldIHg1IDogMDAwMDAw
-MDAwMDAwMDAwMCB4NCA6IDAwMDAwMDAwMDAwMDAwMDANCj4gWyAgICAxLjczOTk1Nl0geDMgOiAw
-MDAwMDAwMGZmZmZmZmZmIHgyIDogZmZmZjgwMDAxMTQ2MDI5OA0KPiBbICAgIDEuNzQ1MjYzXSB4
-MSA6IDFhZjFkN2RlMjc2ZjQ1MDAgeDAgOiAwMDAwMDAwMDAwMDAwMDAwDQo+IFsgICAgMS43NTA1
-NzJdIENhbGwgdHJhY2U6DQo+IFsgICAgMS43NTMwMTBdICBjbGtfY29yZV9kaXNhYmxlKzB4YjAv
-MHhiOA0KPiBbICAgIDEuNzU2ODQwXSAgY2xrX2NvcmVfZGlzYWJsZV9sb2NrKzB4MjQvMHg0MA0K
-PiBbICAgIDEuNzYxMTA1XSAgY2xrX2Rpc2FibGUrMHgyMC8weDMwDQo+IFsgICAgMS43NjQ1MDFd
-ICBtdGtfaW9tbXVfcnVudGltZV9zdXNwZW5kKzB4ODgvMHhhOA0KPiBbICAgIDEuNzY5MTE0XSAg
-cG1fZ2VuZXJpY19ydW50aW1lX3N1c3BlbmQrMHgyYy8weDQ4DQo+IFsgICAgMS43NzM4MTVdICBf
-X3JwbV9jYWxsYmFjaysweGUwLzB4MTc4DQo+IFsgICAgMS43Nzc1NTldICBycG1fY2FsbGJhY2sr
-MHgyNC8weDg4DQo+IFsgICAgMS43ODEwNDFdICBycG1fc3VzcGVuZCsweGRjLzB4NDcwDQo+IFsg
-ICAgMS43ODQ1MjNdICBycG1faWRsZSsweDEyYy8weDE3MA0KPiBbICAgIDEuNzg3ODMxXSAgcG1f
-cnVudGltZV93b3JrKzB4YTgvMHhjMA0KPiBbICAgIDEuNzkxNTczXSAgcHJvY2Vzc19vbmVfd29y
-aysweDFlOC8weDM2MA0KPiBbICAgIDEuNzk1NTgwXSAgd29ya2VyX3RocmVhZCsweDQ0LzB4NDc4
-DQo+IFsgICAgMS43OTkyMzddICBrdGhyZWFkKzB4MTUwLzB4MTU4DQo+IFsgICAgMS44MDI0NjBd
-ICByZXRfZnJvbV9mb3JrKzB4MTAvMHgzMA0KPiBbICAgIDEuODA2MDM0XSAtLS1bIGVuZCB0cmFj
-ZSA4MjQwMjkyMGVmNjQ1NzNiIF0tLS0NCj4gWyAgICAxLjgxMDcyOF0gLS0tLS0tLS0tLS0tWyBj
-dXQgaGVyZSBdLS0tLS0tLS0tLS0tDQo+IA0KPiBJbiBhZGRpdGlvbiwgd2Ugbm93IGRvbid0IG5l
-ZWQgdG8gZW5hYmxlIHRoZSBjbG9jayBmcm9tIHRoZQ0KPiBmdW5jdGlvbiBtdGtfaW9tbXVfaHdf
-aW5pdCBzaW5jZSBpdCBpcyBhbHJlYWR5IGVuYWJsZWQgYnkgdGhlIHJlc3VtZS4NCj4gDQo+IEZp
-eGVzOiBjb21taXQgYzBiNTc1ODFiNzNiICgiaW9tbXUvbWVkaWF0ZWs6IEFkZCBwb3dlci1kb21h
-aW4gb3BlcmF0aW9uIikNCj4gU2lnbmVkLW9mZi1ieTogRGFmbmEgSGlyc2NoZmVsZCA8ZGFmbmEu
-aGlyc2NoZmVsZEBjb2xsYWJvcmEuY29tPg0KPiAtLS0NCj4gIGRyaXZlcnMvaW9tbXUvbXRrX2lv
-bW11LmMgfCAxOSArKysrKysrKy0tLS0tLS0tLS0tDQo+ICAxIGZpbGUgY2hhbmdlZCwgOCBpbnNl
-cnRpb25zKCspLCAxMSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2lv
-bW11L210a19pb21tdS5jIGIvZHJpdmVycy9pb21tdS9tdGtfaW9tbXUuYw0KPiBpbmRleCA2ZWNj
-MDA3ZjA3Y2QuLmUxNjhhNjgyODA2YSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9pb21tdS9tdGtf
-aW9tbXUuYw0KPiArKysgYi9kcml2ZXJzL2lvbW11L210a19pb21tdS5jDQo+IEBAIC02ODgsMTMg
-KzY4OCw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaW9tbXVfb3BzIG10a19pb21tdV9vcHMgPSB7
-DQo+ICBzdGF0aWMgaW50IG10a19pb21tdV9od19pbml0KGNvbnN0IHN0cnVjdCBtdGtfaW9tbXVf
-ZGF0YSAqZGF0YSkNCj4gIHsNCj4gIAl1MzIgcmVndmFsOw0KPiAtCWludCByZXQ7DQo+IC0NCj4g
-LQlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoZGF0YS0+YmNsayk7DQo+IC0JaWYgKHJldCkgew0K
-PiAtCQlkZXZfZXJyKGRhdGEtPmRldiwgIkZhaWxlZCB0byBlbmFibGUgaW9tbXUgYmNsayglZClc
-biIsIHJldCk7DQo+IC0JCXJldHVybiByZXQ7DQo+IC0JfQ0KPiAgDQo+ICAJaWYgKGRhdGEtPnBs
-YXRfZGF0YS0+bTR1X3BsYXQgPT0gTTRVX01UODE3Mykgew0KPiAgCQlyZWd2YWwgPSBGX01NVV9Q
-UkVGRVRDSF9SVF9SRVBMQUNFX01PRCB8DQo+IEBAIC03NjAsNyArNzUzLDYgQEAgc3RhdGljIGlu
-dCBtdGtfaW9tbXVfaHdfaW5pdChjb25zdCBzdHJ1Y3QgbXRrX2lvbW11X2RhdGEgKmRhdGEpDQo+
-ICAJaWYgKGRldm1fcmVxdWVzdF9pcnEoZGF0YS0+ZGV2LCBkYXRhLT5pcnEsIG10a19pb21tdV9p
-c3IsIDAsDQo+ICAJCQkgICAgIGRldl9uYW1lKGRhdGEtPmRldiksICh2b2lkICopZGF0YSkpIHsN
-Cj4gIAkJd3JpdGVsX3JlbGF4ZWQoMCwgZGF0YS0+YmFzZSArIFJFR19NTVVfUFRfQkFTRV9BRERS
-KTsNCj4gLQkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGRhdGEtPmJjbGspOw0KPiAgCQlkZXZfZXJy
-KGRhdGEtPmRldiwgIkZhaWxlZCBAIElSUS0lZCBSZXF1ZXN0XG4iLCBkYXRhLT5pcnEpOw0KPiAg
-CQlyZXR1cm4gLUVOT0RFVjsNCj4gIAl9DQo+IEBAIC05NzcsMTQgKzk2OSwxOSBAQCBzdGF0aWMg
-aW50IF9fbWF5YmVfdW51c2VkIG10a19pb21tdV9ydW50aW1lX3Jlc3VtZShzdHJ1Y3QgZGV2aWNl
-ICpkZXYpDQo+ICAJdm9pZCBfX2lvbWVtICpiYXNlID0gZGF0YS0+YmFzZTsNCj4gIAlpbnQgcmV0
-Ow0KPiAgDQo+IC0JLyogQXZvaWQgZmlyc3QgcmVzdW1lIHRvIGFmZmVjdCB0aGUgZGVmYXVsdCB2
-YWx1ZSBvZiByZWdpc3RlcnMgYmVsb3cuICovDQo+IC0JaWYgKCFtNHVfZG9tKQ0KPiAtCQlyZXR1
-cm4gMDsNCj4gIAlyZXQgPSBjbGtfcHJlcGFyZV9lbmFibGUoZGF0YS0+YmNsayk7DQo+ICAJaWYg
-KHJldCkgew0KPiAgCQlkZXZfZXJyKGRhdGEtPmRldiwgIkZhaWxlZCB0byBlbmFibGUgY2xrKCVk
-KSBpbiByZXN1bWVcbiIsIHJldCk7DQo+ICAJCXJldHVybiByZXQ7DQo+ICAJfQ0KPiArDQo+ICsJ
-LyoNCj4gKwkgKiBVcHBvbiBmaXJzdCByZXN1bWUsIG9ubHkgZW5hYmxlIHRoZSBjbGsgYW5kIHJl
-dHVybiwgc2luY2UgdGhlIHZhbHVlcyBvZiB0aGUNCj4gKwkgKiByZWdpc3RlcnMgYXJlIG5vdCB5
-ZXQgc2V0Lg0KPiArCSAqLw0KPiArCWlmICghbTR1X2RvbSkNCj4gKwkJcmV0dXJuIDA7DQo+ICsN
-Cj4gIAl3cml0ZWxfcmVsYXhlZChyZWctPndyX2xlbl9jdHJsLCBiYXNlICsgUkVHX01NVV9XUl9M
-RU5fQ1RSTCk7DQo+ICAJd3JpdGVsX3JlbGF4ZWQocmVnLT5taXNjX2N0cmwsIGJhc2UgKyBSRUdf
-TU1VX01JU0NfQ1RSTCk7DQo+ICAJd3JpdGVsX3JlbGF4ZWQocmVnLT5kY21fZGlzLCBiYXNlICsg
-UkVHX01NVV9EQ01fRElTKTsNCg0K
+On 10/04/2021 05:13, Randy Dunlap wrote:
+> On 4/4/21 11:20 AM, Randy Dunlap wrote:
+>> Fix many build errors (at least 18 build error reports) for uml on i386
+>> by adding 2 more library object files. All missing symbols are
+>> either cmpxchg8b_emu or atomic*386.
+>>
+>> Here are a few examples of the build errors that are eliminated:
+>>
+>>     /usr/bin/ld: core.c:(.text+0xd83): undefined reference to `cmpxchg8b_emu'
+>>     /usr/bin/ld: core.c:(.text+0x2bb2): undefined reference to `atomic64_add_386'
+>>     /usr/bin/ld: core.c:(.text+0x2c5d): undefined reference to `atomic64_xchg_386'
+>>     syscall.c:(.text+0x2f49): undefined reference to `atomic64_set_386'
+>>     /usr/bin/ld: syscall.c:(.text+0x2f54): undefined reference to `atomic64_set_386'
+>>     syscall.c:(.text+0x33a4): undefined reference to `atomic64_inc_386'
+>>     /usr/bin/ld: syscall.c:(.text+0x33ac): undefined reference to `atomic64_inc_386'
+>>     /usr/bin/ld: net/ipv4/inet_timewait_sock.o: in function `inet_twsk_alloc':
+>>     inet_timewait_sock.c:(.text+0x3d1): undefined reference to `atomic64_read_386'
+>>     /usr/bin/ld: inet_timewait_sock.c:(.text+0x3dd): undefined reference to `atomic64_set_386'
+>>     /usr/bin/ld: net/ipv4/inet_connection_sock.o: in function `inet_csk_clone_lock':
+>>     inet_connection_sock.c:(.text+0x1d74): undefined reference to `atomic64_read_386'
+>>     /usr/bin/ld: inet_connection_sock.c:(.text+0x1d80): undefined reference to `atomic64_set_386'
+>>     /usr/bin/ld: net/ipv4/tcp_input.o: in function `inet_reqsk_alloc':
+>>     tcp_input.c:(.text+0xa345): undefined reference to `atomic64_set_386'
+>>     /usr/bin/ld: net/mac80211/wpa.o: in function `ieee80211_crypto_tkip_encrypt':
+>>     wpa.c:(.text+0x739): undefined reference to `atomic64_inc_return_386'
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: Brendan Jackman <jackmanb@google.com>
+>> Cc: Alexei Starovoitov <ast@kernel.org>
+>> Cc: kbuild-all@lists.01.org
+>> Cc: Jeff Dike <jdike@addtoit.com>
+>> Cc: Richard Weinberger <richard@nod.at>
+>> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+>> Cc: linux-um@lists.infradead.org
+>> Cc: Johannes Berg <johannes@sipsolutions.net>
+>> Cc: Johannes Berg <johannes.berg@intel.com>
+>> ---
+>> My UML on i386 build environment is br0ken so this is not tested other
+>> than to see that the .o files are built as expected.
+>> If someone can test/verify it, please respond. Thanks.
+> 
+> Hi,
+> Instead of trying to build this on x86_64, I powered up my 32-bit x86
+> laptop and verified that this patch fixes the build errors of
+> undefined references to cmpxchg8b_emu() and atomic64_*_386() functions.
+> 
+> There are still some build errors in 2 object files:
+> 
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: kernel/irq/generic-chip.o:(.altinstructions+0x63): more undefined references to `X86_FEATURE_XMM' follow
+> 
+> and
+> 
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x8): undefined reference to `X86_FEATURE_XMM2'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x15): undefined reference to `X86_FEATURE_XMM2'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x22): undefined reference to `X86_FEATURE_XMM'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x2f): undefined reference to `X86_FEATURE_XMM'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x3c): undefined reference to `X86_FEATURE_XMM'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x49): undefined reference to `X86_FEATURE_XMM'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x56): undefined reference to `X86_FEATURE_XMM'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x63): undefined reference to `X86_FEATURE_XMM2'
+> /usr/lib/gcc/i586-suse-linux/10/../../../../i586-suse-linux/bin/ld: drivers/fpga/altera-pr-ip-core.o:(.altinstructions+0x70): undefined reference to `X86_FEATURE_XMM2'
+> 
+> I don't know what to do about these or what is causing them (other than
+> "alternatives").
 
+I have a patch in the queue which should fix these - it "steals" the 
+bug/feature definitions from the x86 tree.
+
+A
+
+> 
+> 
+> 
+>>   arch/x86/um/Makefile |    1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> --- lnx-512-rc5.orig/arch/x86/um/Makefile
+>> +++ lnx-512-rc5/arch/x86/um/Makefile
+>> @@ -21,6 +21,7 @@ obj-y += checksum_32.o syscalls_32.o
+>>   obj-$(CONFIG_ELF_CORE) += elfcore.o
+>>   
+>>   subarch-y = ../lib/string_32.o ../lib/atomic64_32.o ../lib/atomic64_cx8_32.o
+>> +subarch-y += ../lib/cmpxchg8b_emu.o ../lib/atomic64_386_32.o
+>>   subarch-y += ../kernel/sys_ia32.o
+>>   
+>>   else
+>>
+> 
+> 
+
+
+-- 
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
