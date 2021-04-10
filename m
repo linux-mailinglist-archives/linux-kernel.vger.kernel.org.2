@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D50735AC38
+	by mail.lfdr.de (Postfix) with ESMTP id B5A9835AC3A
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234552AbhDJJN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 05:13:29 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:38304 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S234180AbhDJJN1 (ORCPT
+        id S234582AbhDJJNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 05:13:42 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:34302 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S234180AbhDJJNl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 05:13:27 -0400
-X-UUID: 8384d657d78c442a84a8f1b80fb5d853-20210410
-X-UUID: 8384d657d78c442a84a8f1b80fb5d853-20210410
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        Sat, 10 Apr 2021 05:13:41 -0400
+X-UUID: 4c2078a3667c4e9eb62e9498c17e483f-20210410
+X-UUID: 4c2078a3667c4e9eb62e9498c17e483f-20210410
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
         (envelope-from <yong.wu@mediatek.com>)
         (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1813379967; Sat, 10 Apr 2021 17:13:11 +0800
+        with ESMTP id 1153496210; Sat, 10 Apr 2021 17:13:23 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
  mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 10 Apr 2021 17:13:09 +0800
+ 15.0.1497.2; Sat, 10 Apr 2021 17:13:21 +0800
 Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 10 Apr 2021 17:13:08 +0800
+ Transport; Sat, 10 Apr 2021 17:13:20 +0800
 From:   Yong Wu <yong.wu@mediatek.com>
 To:     Matthias Brugger <matthias.bgg@gmail.com>,
         Joerg Roedel <joro@8bytes.org>,
@@ -42,12 +42,10 @@ CC:     Evan Green <evgreen@chromium.org>,
         Matthias Kaehlcke <mka@chromium.org>, <anan.sun@mediatek.com>,
         <chao.hao@mediatek.com>, <ming-fan.chen@mediatek.com>,
         <yi.kuo@mediatek.com>, <eizan@chromium.org>,
-        <acourbot@chromium.org>,
-        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>
-Subject: [PATCH v5 08/16] media: mtk-mdp: Get rid of mtk_smi_larb_get/put
-Date:   Sat, 10 Apr 2021 17:11:20 +0800
-Message-ID: <20210410091128.31823-9-yong.wu@mediatek.com>
+        <acourbot@chromium.org>
+Subject: [PATCH v5 09/16] drm/mediatek: Use pm_runtime_resume_and_get for PM get_sync
+Date:   Sat, 10 Apr 2021 17:11:21 +0800
+Message-ID: <20210410091128.31823-10-yong.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20210410091128.31823-1-yong.wu@mediatek.com>
 References: <20210410091128.31823-1-yong.wu@mediatek.com>
@@ -58,129 +56,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MediaTek IOMMU has already added the device_link between the consumer
-and smi-larb device. If the mdp device call the pm_runtime_get_sync,
-the smi-larb's pm_runtime_get_sync also be called automatically.
+pm_runtime_get_sync will increment pm usage counter even it failed.
+This patch use pm_runtime_resume_and_get instead of pm_runtime_get
+to keep usage counter balanced.
 
-CC: Minghsiu Tsai <minghsiu.tsai@mediatek.com>
-CC: Houlong Wei <houlong.wei@mediatek.com>
 Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-Reviewed-by: Evan Green <evgreen@chromium.org>
 ---
- drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 40 -------------------
- drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  2 -
- drivers/media/platform/mtk-mdp/mtk_mdp_core.c |  1 -
- 3 files changed, 43 deletions(-)
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-index b3426a551bea..1e3833f1c9ae 100644
---- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-+++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.c
-@@ -9,7 +9,6 @@
- #include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_platform.h>
--#include <soc/mediatek/smi.h>
- 
- #include "mtk_mdp_comp.h"
- 
-@@ -18,14 +17,6 @@ void mtk_mdp_comp_clock_on(struct device *dev, struct mtk_mdp_comp *comp)
- {
- 	int i, err;
- 
--	if (comp->larb_dev) {
--		err = mtk_smi_larb_get(comp->larb_dev);
--		if (err)
--			dev_err(dev,
--				"failed to get larb, err %d. type:%d\n",
--				err, comp->type);
--	}
--
- 	for (i = 0; i < ARRAY_SIZE(comp->clk); i++) {
- 		if (IS_ERR(comp->clk[i]))
- 			continue;
-@@ -46,17 +37,12 @@ void mtk_mdp_comp_clock_off(struct device *dev, struct mtk_mdp_comp *comp)
- 			continue;
- 		clk_disable_unprepare(comp->clk[i]);
- 	}
--
--	if (comp->larb_dev)
--		mtk_smi_larb_put(comp->larb_dev);
- }
- 
- int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
- 		      struct mtk_mdp_comp *comp,
- 		      enum mtk_mdp_comp_type comp_type)
- {
--	struct device_node *larb_node;
--	struct platform_device *larb_pdev;
- 	int ret;
- 	int i;
- 
-@@ -77,32 +63,6 @@ int mtk_mdp_comp_init(struct device *dev, struct device_node *node,
- 			break;
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+index 8b0de90156c6..69d23ce56d2c 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_crtc.c
+@@ -259,7 +259,7 @@ static int mtk_crtc_ddp_hw_init(struct mtk_drm_crtc *mtk_crtc)
+ 		drm_connector_list_iter_end(&conn_iter);
  	}
  
--	/* Only DMA capable components need the LARB property */
--	comp->larb_dev = NULL;
--	if (comp->type != MTK_MDP_RDMA &&
--	    comp->type != MTK_MDP_WDMA &&
--	    comp->type != MTK_MDP_WROT)
--		return 0;
--
--	larb_node = of_parse_phandle(node, "mediatek,larb", 0);
--	if (!larb_node) {
--		dev_err(dev,
--			"Missing mediadek,larb phandle in %pOF node\n", node);
--		ret = -EINVAL;
--		goto put_dev;
--	}
--
--	larb_pdev = of_find_device_by_node(larb_node);
--	if (!larb_pdev) {
--		dev_warn(dev, "Waiting for larb device %pOF\n", larb_node);
--		of_node_put(larb_node);
--		ret = -EPROBE_DEFER;
--		goto put_dev;
--	}
--	of_node_put(larb_node);
--
--	comp->larb_dev = &larb_pdev->dev;
--
- 	return 0;
- 
- put_dev:
-diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
-index 1bf0242cce46..36bc1b8f6222 100644
---- a/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
-+++ b/drivers/media/platform/mtk-mdp/mtk_mdp_comp.h
-@@ -27,14 +27,12 @@ enum mtk_mdp_comp_type {
-  * @node:	list node to track sibing MDP components
-  * @dev_node:	component device node
-  * @clk:	clocks required for component
-- * @larb_dev:	SMI device required for component
-  * @type:	component type
-  */
- struct mtk_mdp_comp {
- 	struct list_head	node;
- 	struct device_node	*dev_node;
- 	struct clk		*clk[2];
--	struct device		*larb_dev;
- 	enum mtk_mdp_comp_type	type;
- };
- 
-diff --git a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-index 976aa1f4829b..70a8eab16863 100644
---- a/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-+++ b/drivers/media/platform/mtk-mdp/mtk_mdp_core.c
-@@ -17,7 +17,6 @@
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/workqueue.h>
--#include <soc/mediatek/smi.h>
- 
- #include "mtk_mdp_core.h"
- #include "mtk_mdp_m2m.h"
+-	ret = pm_runtime_get_sync(crtc->dev->dev);
++	ret = pm_runtime_resume_and_get(crtc->dev->dev);
+ 	if (ret < 0) {
+ 		DRM_ERROR("Failed to enable power domain: %d\n", ret);
+ 		return ret;
 -- 
 2.18.0
 
