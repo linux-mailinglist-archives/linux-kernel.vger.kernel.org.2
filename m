@@ -2,169 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E8C35AE0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E2B35AE19
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234748AbhDJORY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 10 Apr 2021 10:17:24 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:53205 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234392AbhDJORX (ORCPT
+        id S234792AbhDJOU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:20:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234722AbhDJOU4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:17:23 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-84-kCKo1-18OZuYsleNdk-yPA-1; Sat, 10 Apr 2021 15:17:06 +0100
-X-MC-Unique: kCKo1-18OZuYsleNdk-yPA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sat, 10 Apr 2021 15:17:05 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Sat, 10 Apr 2021 15:17:05 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Matthew Wilcox' <willy@infradead.org>,
-        kernel test robot <lkp@intel.com>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: RE: Bogus struct page layout on 32-bit
-Thread-Topic: Bogus struct page layout on 32-bit
-Thread-Index: AQHXLbNopyewSd0HZEaZbqB5fscTXqqtw2Cg
-Date:   Sat, 10 Apr 2021 14:17:04 +0000
-Message-ID: <b9d5b09eaec44334b29241e16b8605d5@AcuMS.aculab.com>
-References: <20210409185105.188284-3-willy@infradead.org>
- <202104100656.N7EVvkNZ-lkp@intel.com>
- <20210410024313.GX2531743@casper.infradead.org>
-In-Reply-To: <20210410024313.GX2531743@casper.infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 10 Apr 2021 10:20:56 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8916C06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:20:41 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id f8so9781848edd.11
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:20:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VnVAs9S/fAMLk5Dt98uPXMFZSkDV368cEFeZ4fHEM3U=;
+        b=mfLlFm5nlRvh5A7RB4B/XPr5PEQ1v6SLW2lXm6UvMdBgPtXEMdCysF85acOGNlO7PC
+         gEGt/MhbBlmQD7jDsbeLP4uRVi84eHThpMmGbRAHIA9lJsTaBBlyYoJOgmLOp+wrznWF
+         Qql2NEtI97AEnwk0cjowHBFQ0BEclzcn5s3kyExBVTbFRmX69BjvxJ9x7uQYsQJ52KOQ
+         AoXjTA96kTtnUV+0He22kP4HElq64xbxzMQmyXK3dk670oA95a3HjMl0MOv2TFszYCHx
+         TyOyeQFNLLeXy5O/tVFJXqNLcxXt5Cgi0xftBWOsC7Phxi0Txi2ewR/e1jcFAHhii2kd
+         1jEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VnVAs9S/fAMLk5Dt98uPXMFZSkDV368cEFeZ4fHEM3U=;
+        b=TG0/KtJf/qMbxi/vE1/VvoGZjAuZm+dFZitk+l0QgxcD2qH5e1s86s8DRNp1LCVLZ5
+         WXN9Qz43RyrDimC6rPVcBmbpChwBSxDY3FjrLFjVP9baggT35tIydXoBU/11E5YZXMkk
+         a9YupJSfXxkFBViaNtlT0ENzMUdN4Jt3xddWEREv13F3f4CpdaZ1kjJ3jJ6xAfQiHiGD
+         5AOShkmNWKNtEImvETooy3cYsOG3OsSNQ9XNRBp9QY0KrY6s6jGnq1BRAudgFNeEj7rH
+         u7zWJgvFSknMccUWNDZHM7gqPoVpVFs9UCpQwnFKAerbzqEGiZOjCfCapbvIziu/HojT
+         MhQw==
+X-Gm-Message-State: AOAM5331+PvaIBvSwc2CyjhTaLVbjSouKTtclFcXN5/wRwgy2hCaBTbb
+        RXFvDP9YSh5AmeWKae0sWebri3BiD0GHeg==
+X-Google-Smtp-Source: ABdhPJyV8eNOc9Rt2W+POJcV98aeRx5aZaIngmY8S9UnYdU98Lj6bEEVXJJXWiQwR3ptzyGE1vOAbQ==
+X-Received: by 2002:a05:6402:5205:: with SMTP id s5mr19022336edd.65.1618064440313;
+        Sat, 10 Apr 2021 07:20:40 -0700 (PDT)
+Received: from agape ([5.171.81.28])
+        by smtp.gmail.com with ESMTPSA id b21sm2740100ejz.123.2021.04.10.07.20.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 07:20:40 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 00/25] staging: rtl8723bs: remove DBG_8192C tracing macro
+Date:   Sat, 10 Apr 2021 16:20:13 +0200
+Message-Id: <cover.1618064274.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Wilcox
-> Sent: 10 April 2021 03:43
-> On Sat, Apr 10, 2021 at 06:45:35AM +0800, kernel test robot wrote:
-> > >> include/linux/mm_types.h:274:1: error: static_assert failed due to requirement
-> '__builtin_offsetof(struct page, lru) == __builtin_offsetof(struct folio, lru)' "offsetof(struct page,
-> lru) == offsetof(struct folio, lru)"
-> >    FOLIO_MATCH(lru, lru);
-> >    include/linux/mm_types.h:272:2: note: expanded from macro 'FOLIO_MATCH'
-> >            static_assert(offsetof(struct page, pg) == offsetof(struct folio, fl))
-> 
-> Well, this is interesting.  pahole reports:
-> 
-> struct page {
->         long unsigned int          flags;                /*     0     4 */
->         /* XXX 4 bytes hole, try to pack */
->         union {
->                 struct {
->                         struct list_head lru;            /*     8     8 */
-> ...
-> struct folio {
->         union {
->                 struct {
->                         long unsigned int flags;         /*     0     4 */
->                         struct list_head lru;            /*     4     8 */
-> 
-> so this assert has absolutely done its job.
-> 
-> But why has this assert triggered?  Why is struct page layout not what
-> we thought it was?  Turns out it's the dma_addr added in 2019 by commit
-> c25fff7171be ("mm: add dma_addr_t to struct page").  On this particular
-> config, it's 64-bit, and ppc32 requires alignment to 64-bit.  So
-> the whole union gets moved out by 4 bytes.
-> 
-> Unfortunately, we can't just fix this by putting an 'unsigned long pad'
-> in front of it.  It still aligns the entire union to 8 bytes, and then
-> it skips another 4 bytes after the pad.
-> 
-> We can fix it like this ...
-> 
-> +++ b/include/linux/mm_types.h
-> @@ -96,11 +96,12 @@ struct page {
->                         unsigned long private;
->                 };
->                 struct {        /* page_pool used by netstack */
-> +                       unsigned long _page_pool_pad;
->                         /**
->                          * @dma_addr: might require a 64-bit value even on
->                          * 32-bit architectures.
->                          */
-> -                       dma_addr_t dma_addr;
-> +                       dma_addr_t dma_addr __packed;
->                 };
->                 struct {        /* slab, slob and slub */
->                         union {
-> 
-> but I don't know if GCC is smart enough to realise that dma_addr is now
-> on an 8 byte boundary and it can use a normal instruction to access it,
-> or whether it'll do something daft like use byte loads to access it.
+This patchset remove from rtl8723bs driver the tracing macro
+DBG_8192C.
 
-I'm betting it will use byte accesses.
-Checked - it does seem to use 4-byte accesses.
-(godbolt is rather short of 32 bit compilers...)
+This macro belongs to a verbose private tracing family,
+which by default is set to _do nothing_. The only way
+to activate the tracing is to manually define a symbol
+in code.
 
-> 
-> We could also do:
-> 
-> +                       dma_addr_t dma_addr __packed __aligned(sizeof(void *));
+First patch applies the following semantic patch:
 
-I wonder if __aligned(n) should be defined as
-	__attribute__((packed,aligned(n))
-I don't think you ever want the 'unpacked' variant.
+@@
+expression a, b, c, d, e, f, g, h, i, j, k;
+constant B, C, D, E;
+@@
 
-But explicitly reducing the alignment of single member is much
-better than the habit of marking the structure 'packed'.
+(
+-	DBG_8192C(a);
+|
+-	DBG_8192C(a, b);
+|
+-	DBG_8192C(a, B);
+|
+-	DBG_8192C(a, b, c);
+|
+-	DBG_8192C(a, B, c);
+|
+-	DBG_8192C(a, b, C);
+|
+-	DBG_8192C(a, B, C);
+|
+-	DBG_8192C(a, b, c, d);
+|
+-	DBG_8192C(a, B, c, d);
+|
+-	DBG_8192C(a, b, C, d);
+|
+-	DBG_8192C(a, b, c, D);
+|
+-	DBG_8192C(a, B, C, d);
+|
+-	DBG_8192C(a, B, c, D);
+|
+-	DBG_8192C(a, b, C, D);
+|
+-	DBG_8192C(a, B, C, D);
+|
+-	DBG_8192C(a, b, c, d, e);
+|
+-	DBG_8192C(a, B, c, d, e);
+|
+-	DBG_8192C(a, b, C, d, e);
+|
+-	DBG_8192C(a, b, c, D, e);
+|
+-	DBG_8192C(a, b, c, d, E);
+|
+-	DBG_8192C(a, B, C, d, e);
+|
+-	DBG_8192C(a, B, c, D, e);
+|
+-	DBG_8192C(a, B, c, d, E);
+|
+-	DBG_8192C(a, b, C, D, e);
+|
+-	DBG_8192C(a, b, C, d, E);
+|
+-	DBG_8192C(a, b, c, D, E);
+|
+-	DBG_8192C(a, B, C, D, e);
+|
+-	DBG_8192C(a, B, C, d, E);
+|
+-	DBG_8192C(a, B, c, D, E);
+|
+-	DBG_8192C(a, b, C, D, E);
+|
+-	DBG_8192C(a, B, C, D, E);
+|
+-	DBG_8192C(a, b, c, d, e, f);
+|
+-	DBG_8192C(a, b, c, d, e, f, g);
+|
+-	DBG_8192C(a, b, c, d, e, f, g, h);
+|
+-	DBG_8192C(a, b, c, d, e, f, g, h, i);
+|
+-	DBG_8192C(a, b, c, d, e, f, g, h, i, j);
+|
+-	DBG_8192C(a, b, c, d, e, f, g, h, i, j, k);
+)
 
-(Never mind the habit of adding __packed 'because we don't want
-the compiler to add random padding.)
+Second patch removes all commented out call of macro.
 
-> 
-> and I see pahole, at least sees this correctly:
-> 
->                 struct {
->                         long unsigned int _page_pool_pad; /*     4     4 */
->                         dma_addr_t dma_addr __attribute__((__aligned__(4))); /*     8     8 */
->                 } __attribute__((__packed__)) __attribute__((__aligned__(4)));
+Third patch removes macro definitions.
 
-Is the attribute on the struct an artifact of pahole?
-It should just have an alignment of 4 without anything special.
+All subsequent patches do some code cleaning in all places
+left empty by deleted macro, such as empty #ifdef blocks,
+conditional code blocks guarded by never defined symbols
+if-else blocks, for cycles, commented debug symbol definitions,
+unnecessary parentheses and some other checkpatch issues.
 
-> 
-> This presumably affects any 32-bit architecture with a 64-bit phys_addr_t
-> / dma_addr_t.  Advice, please?
+Fabio Aiuto (25):
+  staging: rtl8723bs: remove all DBG_8192C logs
+  staging: rtl8723bs: remove all commented out DBG_8192C logs
+  staging: rtl8723bs: remove DBG_8192C macro definitions
+  staging: rtl8723bs: remove all if-blocks left empty by
+    DBG_8192C-remove coccinelle script
+  staging: rtl8723bs: put spaces around operators
+  staging: rtl8723bs: remove unused code blocks guarded by DEBUG_RTL871X
+  staging: rtl8723bs: remove commented out DEBUG_RTL871X definition
+  staging: rtl8723bs: remove code blocks guarded by DEBUG symbol
+  staging: rtl8723bs: remove empty code block guarded by DBG_CCX
+  staging: rtl8723bs: remove code block guarded by undefined
+    SDIO_DEBUG_IO
+  staging: rtl8723bs: remove commented out SDIO_DEBUG_IO symbol
+    definition
+  staging: rtl8723bs: remove empty ifdef blocks conditioned to
+    DEBUG_CFG80211 definition
+  staging: rtl8723bs: remove commented out DEBUG_CFG80211 symbol
+    definition
+  staging: rtl8723bs: remove unnecessary bracks
+  staging: rtl8723bs: fix comparison to null
+  staging: rtl8723bs: put spaces around operators
+  staging: rtl8723bs: split long line
+  staging: rtl8723bs: put constant on the right side of the test
+  staging: rtl8723bs: remove empty if and else blocks
+  staging: rtl8723bs: put constant on the right side of a test in
+    os_dep/ioctl_cfg80211.c
+  staging: rtl8723bs: remove unnecessary parentheses in
+    os_dep/ioctl_cfg80211.c
+  staging: rtl8723bs: remove empty else block in os_dep/ioctl_cfg80211.c
+  staging: rtl8723bs: fix comparison to true issue
+  staging: rtl8723bs: remove more unnecessary parentheses
+  staging: rtl8723bs: remove more empty if blocks after DBG_8192C
+    deletion
 
-Only those where a 64-bit value is 64-bit aligned.
-So that excludes x86 (which can have 64-bit dma) but includes sparc32
-(which probably doesn't).
+ drivers/staging/rtl8723bs/core/rtw_debug.c    |  35 ---
+ .../staging/rtl8723bs/core/rtw_ieee80211.c    |   1 -
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  21 --
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c  |   7 -
+ .../staging/rtl8723bs/core/rtw_wlan_util.c    |   3 -
+ drivers/staging/rtl8723bs/core/rtw_xmit.c     |   7 +-
+ drivers/staging/rtl8723bs/hal/hal_com.c       |  10 +-
+ drivers/staging/rtl8723bs/hal/odm.c           |   1 -
+ drivers/staging/rtl8723bs/hal/rtl8723b_cmd.c  |  48 +---
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c | 263 +++---------------
+ .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   |   2 -
+ .../staging/rtl8723bs/hal/rtl8723b_rxdesc.c   |   3 -
+ .../staging/rtl8723bs/hal/rtl8723bs_recv.c    |  15 +-
+ drivers/staging/rtl8723bs/hal/sdio_halinit.c  |  19 +-
+ drivers/staging/rtl8723bs/hal/sdio_ops.c      |  39 +--
+ drivers/staging/rtl8723bs/include/autoconf.h  |   7 -
+ drivers/staging/rtl8723bs/include/rtw_debug.h |  10 -
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 216 +-------------
+ .../staging/rtl8723bs/os_dep/ioctl_linux.c    |   6 -
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c  |  35 +--
+ 20 files changed, 69 insertions(+), 679 deletions(-)
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+-- 
+2.20.1
 
