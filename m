@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E56E35AA7C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 05:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A55735AA86
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 05:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbhDJDTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 23:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhDJDTs (ORCPT
+        id S234067AbhDJDcY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 23:32:24 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:32873 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229665AbhDJDbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 23:19:48 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D14CC061762;
-        Fri,  9 Apr 2021 20:19:35 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id m18so1439245plc.13;
-        Fri, 09 Apr 2021 20:19:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=FuDb4XqUMe9TU7/4yVIm0WIy1Jl3xWNbvk7QdIOf26Q=;
-        b=k/ie8mfKXozaPOxCOdJJQ2mBuu/6dyJYHXrhscpGC0VIIna+olep/MXSJXii+SZDP+
-         Rn314TLsda3nSrP8YrGr+LvtNHv4WHIt5OtR547J6IBtBECC2MazDiY3KGzsEuX7yvk1
-         jKUN2ynCrlitLfF/4vUl8MaisEhglwFamz9CVwGRlFJRzY0BFpo4fXFKOHDbkl/FSZEE
-         ynsFejZTR0kfgDuT4QPsDeql84d4ZEl3QbvBSWpqlhfNqJQGWS4DglvJyd0MMLBct9hg
-         y5dMOvBnwQVxpqxeb2RehXQDfUtSCfYOrCxGQ+SP1vFmXjPm0mOvoqiMka700bmMp7RV
-         SkDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=FuDb4XqUMe9TU7/4yVIm0WIy1Jl3xWNbvk7QdIOf26Q=;
-        b=Ll1GZelE8pqc5T/xiwk1s4WFBwhUll9VFqDRoeB+C5r3C1qRDXxeSjoCOhOSLk9HQo
-         lml2Ru6rK9dADTUmKddWJuKbGH3iN1n51TG7TNuPsIG5ifR4F+YQsLK4NvzGUs4aN5sq
-         /+B7IBSU4BylRqaLrh59KXDqyU/v29RwGqVrCjUYUZGn3wbWnU9xqUckWjn0KdsrLU7l
-         DDnuNSrfu2mWnlc1zeAjp9GPsBsa3sfJeYp130m2vz1Xq5cPtva86e3HCz55MshvpHm4
-         58Eyl5YzeTJutWA1vXBCyUBZhvFsMUI0VmYCtvT5vE33RZ3MD7l2LONif0SK4RFJMaOC
-         cHkw==
-X-Gm-Message-State: AOAM533sM7yxpzB24jY9SjDFXQtKPxb2ssxclS/BcNjzfvTP19ZTgPjY
-        unE953/YpOc+8Gp5Ape2d/xVxK5HtW33/g==
-X-Google-Smtp-Source: ABdhPJwFAl99Oh5SmbbDo6TIxx9vPTPUoYlUfxcVE7x2YoPSJuIF+aCDO31zbZ/8E2WrbCuLiqLJZQ==
-X-Received: by 2002:a17:90b:b09:: with SMTP id bf9mr16459246pjb.17.1618024774291;
-        Fri, 09 Apr 2021 20:19:34 -0700 (PDT)
-Received: from [10.43.90.134] ([103.114.158.1])
-        by smtp.gmail.com with ESMTPSA id s2sm3951482pjs.49.2021.04.09.20.19.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Apr 2021 20:19:33 -0700 (PDT)
-Subject: Re: [PATCH v2] integrity: Add declarations to init_once void
- arguments.
-To:     Mimi Zohar <zohar@linux.ibm.com>
-Cc:     jmorris@namei.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org
-References: <20210407014438.39516-1-unclexiaole@gmail.com>
- <cb640adf4fe93e054d7a8c148fea601048bfd562.camel@linux.ibm.com>
-From:   Jiele Zhao <unclexiaole@gmail.com>
-Message-ID: <48cf65b2-8dd8-4ceb-15a8-9aedecbcca75@gmail.com>
-Date:   Sat, 10 Apr 2021 11:19:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Fri, 9 Apr 2021 23:31:08 -0400
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 13A3UCti013647
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 9 Apr 2021 23:30:12 -0400
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id E0D1615C3B12; Fri,  9 Apr 2021 23:30:11 -0400 (EDT)
+Date:   Fri, 9 Apr 2021 23:30:11 -0400
+From:   tytso@mit.edu
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        Ritesh Harjani <riteshh@linux.ibm.com>,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        Yi Li <yili@winhong.com>, Jens Axboe <axboe@kernel.dk>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        changfengnan <fengnanchang@foxmail.com>,
+        Shijie Luo <luoshijie1@huawei.com>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: fix debug format string warning
+Message-ID: <YHEbw84HHzViYQfj@mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <cb640adf4fe93e054d7a8c148fea601048bfd562.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409201211.1866633-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Okay, thank you. I'll keep an eye on that !
+On Fri, Apr 09, 2021 at 10:12:05PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Using no_printk() for jbd_debug() revealed two warnings:
+> 
+> fs/jbd2/recovery.c: In function 'fc_do_one_pass':
+> fs/jbd2/recovery.c:256:30: error: format '%d' expects a matching 'int' argument [-Werror=format=]
+>   256 |                 jbd_debug(3, "Processing fast commit blk with seq %d");
+>       |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> fs/ext4/fast_commit.c: In function 'ext4_fc_replay_add_range':
+> fs/ext4/fast_commit.c:1732:30: error: format '%d' expects argument of type 'int', but argument 2 has type 'long unsigned int' [-Werror=format=]
+>  1732 |                 jbd_debug(1, "Converting from %d to %d %lld",
+> 
+> The first one was added incorrectly, and was also missing a few newlines
+> in debug output, and the second one happened when the type of an
+> argument changed.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: d556435156b7 ("jbd2: avoid -Wempty-body warnings")
+> Fixes: 6db074618969 ("ext4: use BIT() macro for BH_** state bits")
+> Fixes: 5b849b5f96b4 ("jbd2: fast commit recovery path")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-On 2021/4/10 2:55, Mimi Zohar wrote:
-> Hi Jiele,
->
-> On Wed, 2021-04-07 at 01:44 +0000, Jiele Zhao wrote:
->> init_once is a callback to kmem_cache_create. The parameter
->> type of this function is void *, so it's better to give a
->> explicit cast here.
->>
->> Signed-off-by: Jiele Zhao <unclexiaole@gmail.com>
->> ---
->>   security/integrity/iint.c         | 2 +-
->>   security/integrity/ima/ima_main.c | 2 +-
->>   2 files changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
->> index 0ba01847e836..fca8a9409e4a 100644
->> --- a/security/integrity/iint.c
->> +++ b/security/integrity/iint.c
->> @@ -160,7 +160,7 @@ void integrity_inode_free(struct inode *inode)
->>   
->>   static void init_once(void *foo)
->>   {
->> -	struct integrity_iint_cache *iint = foo;
->> +	struct integrity_iint_cache *iint = (struct integrity_iint_cache *) foo;
->>   
->>   	memset(iint, 0, sizeof(*iint));
->>   	iint->ima_file_status = INTEGRITY_UNKNOWN;
->> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
->> index 9ef748ea829f..03bef720ab44 100644
->> --- a/security/integrity/ima/ima_main.c
->> +++ b/security/integrity/ima/ima_main.c
->> @@ -482,7 +482,7 @@ int ima_bprm_check(struct linux_binprm *bprm)
->>   }
->>   
->>   /**
->> - * ima_path_check - based on policy, collect/store measurement.
->> + * ima_file_check - based on policy, collect/store measurement.
->>    * @file: pointer to the file to be measured
->>    * @mask: contains MAY_READ, MAY_WRITE, MAY_EXEC or MAY_APPEND
->>    *
-> This change was already posted as "ima: Fix function name error in
-> comment".  I've dropped this hunk.  In the future, please review your
-> patch line by line before posting.
->
-> Applied to
-> git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-integrity.git
-> next-integrity
->
-> thanks,
->
-> Mimi
->
+Thanks, applied, with one change.
+
+> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+> index 69f18fe20923..60601c5779f1 100644
+> --- a/fs/jbd2/recovery.c
+> +++ b/fs/jbd2/recovery.c
+> @@ -245,15 +245,15 @@ static int fc_do_one_pass(journal_t *journal,
+>     ....
+>  
+>  		if (err) {
+> -			jbd_debug(3, "Fast commit replay: read error");
+> +			jbd_debug(3, "Fast commit replay: read error\n");
+>  			break;
+>  		}
+>  
+> -		jbd_debug(3, "Processing fast commit blk with seq %d");
+> +		jbd_debug(3, "Processing fast commit blk with seq\n");
+
+This debug statement isn't adding any real value, so I just removed
+it.
+
+				- Ted
