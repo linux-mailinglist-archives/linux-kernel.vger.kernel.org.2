@@ -2,106 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D1D35B038
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 21:48:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAB3735B040
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 22:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235008AbhDJTsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 15:48:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50070 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234548AbhDJTse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 15:48:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EE2D610A3;
-        Sat, 10 Apr 2021 19:48:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618084099;
-        bh=kJSTGGf2nz6yNk6E8TmDdedimXMqQy0Wh3oLnTh1+88=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pq8w+X27R8E/X9E5tQCZA9dS72IOovDKrJ4ZkhXQ/LJvmGvx10T8jQhnDtlD/k3qn
-         TQ8z72PxVXnPrhOQxHwvUtsZ5/yXyNaTjduqm5ldu3YIu5eHRr+u/uN+M8W6NtqxFM
-         mrN/oGjAaz8UqyAUwrWUn3akRbXZfJAf4H9Ux02ISS2wapXhuvU0+CcrCtKe1dovuO
-         qgu0d3JKoJmBHpFIFvEMD47Yum4V1OC3G7VQK927qpnlIwCfkMpgeusj7vVWUPk3lm
-         hmAtRjoXKFLmDb88eJxY+Q5o2omJ14p5jqpsqQOe/cJpc+RCA8EA7YqloNmC5bwFpZ
-         Dn9BsP+M2FQMg==
-Date:   Sat, 10 Apr 2021 21:48:12 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/12] i2c: Adding support for software nodes
-Message-ID: <20210410194812.GA2471@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
+        id S235002AbhDJUAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 16:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234439AbhDJUAR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 16:00:17 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6440BC06138A;
+        Sat, 10 Apr 2021 13:00:02 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id s11so6543806pfm.1;
+        Sat, 10 Apr 2021 13:00:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=8qqSBlwS3BjvcFhE+2QmiRSvqs5dG4808gdiJ8MHloc=;
+        b=R9E0t8jbEk8pEznmH16EJC3SE9XWeFJKEto+B3bLUgFg/KNcTYMpQmo5lVhdsvQ85B
+         tYNRDvqslfA/C8KzTBPg5ppe2T100rPX/fzVtEKTTDmbluutulvnr+kYmsSM/KVg2Dqz
+         WT6997QdO0bElsR1Z4dCJoDOdV/sBmL2vWy81JUG5PfaOTSETIrrNPpQxpSLB8UVe0K0
+         BoXFgK2YWsYC5TwHTeo1/IW7OKbza3zuFXSXYAtRUYbgsF2fmVaLFrzb+4mUfjXWG6fx
+         m5R/v+TiDuw8t7Z8HazpEI26y5iwqnXYW3gYbDOfLVljMJiPWzvSup+4cn9EVLwMSUgn
+         +xlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=8qqSBlwS3BjvcFhE+2QmiRSvqs5dG4808gdiJ8MHloc=;
+        b=ASwKMpFjlB1rMNZFr3KTAhxziJuSRjlMk8nXJ6HlkKmYgj+QA82YUyXRAsDOkgQyoL
+         UtkKTdWORVlcat/QpA6b/GPY/VxoKkXHSAKMEa9GeZz+Qa/br90xvoo+g0trNhn3DG2y
+         HMnz7TtKub3Awvsy63qBz/DlUdoePmW2fDe94eAk3pkI9Yzaa4g+rmdhPW94iojUHact
+         ihz7TgrJSKrtWhfVJ2/vuuhXTv/jm+tICERdF3dfq2IQHO876481YfNMQo+ChzH0Mb1p
+         2ttCzdr9LUsJ/UPaLt2jdtUnLddMI7nc3kfO2Q91u1PoucT2529Fxx1RP1Z/GiqZwB6O
+         WaGw==
+X-Gm-Message-State: AOAM533TQBQXw6K776XdaRYjNB05lrb6MHIv8XGscTspGqbNZpvXLCHV
+        GWe0cj4xiz2vGdGHpaa4SZ8=
+X-Google-Smtp-Source: ABdhPJz9ZE6/H20EWXVj5VokMTn6CzyncVCxx+zAozO8FqPL4U15btcy878L9n+lVDVJjBz5lyZ5/g==
+X-Received: by 2002:a63:c111:: with SMTP id w17mr1829524pgf.127.1618084801801;
+        Sat, 10 Apr 2021 13:00:01 -0700 (PDT)
+Received: from kali ([103.141.87.254])
+        by smtp.gmail.com with ESMTPSA id k69sm6554464pga.45.2021.04.10.12.59.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 13:00:01 -0700 (PDT)
+Date:   Sun, 11 Apr 2021 01:29:53 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     narmstrong@baylibre.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in, linux-amlogic@lists.infradead.org
+Subject: [PATCH v2] staging: media: meson: vdec: declare u32 as const and
+ static const
+Message-ID: <YHIDufKhTEeuxyl5@kali>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tKW2IUtsqtDRztdT"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210329105047.51033-1-heikki.krogerus@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Declared 32 bit unsigned int as static constant inside a function and
+replaced u32[] {x,y} as canvas1, canvas2 in codec_mpeg12.c
+This indicates the value of canvas indexes will remain constant throughout execution.
+Replaced u32 reg_base and u32 reg_name with const u32 reg_base and const
+u32 reg_name as it will contain data/registry bases to write static
+const indexes declared above and will keep track of of contiguos
+registers after each reg_base.
+This makes code look better, neater. It improves readability.
 
---tKW2IUtsqtDRztdT
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+---
+ drivers/staging/media/meson/vdec/codec_mpeg12.c | 5 +++--
+ drivers/staging/media/meson/vdec/vdec_helpers.c | 2 +-
+ drivers/staging/media/meson/vdec/vdec_helpers.h | 2 +-
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
-On Mon, Mar 29, 2021 at 01:50:35PM +0300, Heikki Krogerus wrote:
-> Hi,
->=20
-> The old device property API (device_add_properties()) is going to be
-> removed. These prepare the i2c subsystem and drivers for the change.
-> The change is fairly trivial in case of i2c. All we need to do is add
-> complete software nodes to the devices instead of only the device
-> properties in those nodes.
->=20
-> thanks,
->=20
-> Heikki Krogerus (12):
->   i2c: Add support for software nodes
->   ARM: davinci: Constify the software nodes
->   ARM: omap1: osk: Constify the software node
->   ARM: pxa: stargate2: Constify the software node
->   ARM: s3c: mini2440: Constify the software node
->   platform/x86: intel_cht_int33fe_microb: Constify the software node
->   i2c: cht-wc: Constify the software node
->   i2c: nvidia-gpu: Constify the software node
->   i2c: icy: Constify the software node
->   platform/chrome: chromeos_laptop - Prepare complete software nodes
->   Input: elantech - Prepare a complete software node for the device
->   i2c: Remove support for dangling device properties
+diff --git a/drivers/staging/media/meson/vdec/codec_mpeg12.c b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+index 21e93a13356c..861d8584f22f 100644
+--- a/drivers/staging/media/meson/vdec/codec_mpeg12.c
++++ b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+@@ -65,6 +65,8 @@ static int codec_mpeg12_start(struct amvdec_session *sess)
+ 	struct amvdec_core *core = sess->core;
+ 	struct codec_mpeg12 *mpeg12;
+ 	int ret;
++	static const u32 canvas1[] = { AV_SCRATCH_0, 0 };
++	static const u32 canvas2[] = { 8, 0 }
+ 
+ 	mpeg12 = kzalloc(sizeof(*mpeg12), GFP_KERNEL);
+ 	if (!mpeg12)
+@@ -80,8 +82,7 @@ static int codec_mpeg12_start(struct amvdec_session *sess)
+ 		goto free_mpeg12;
+ 	}
+ 
+-	ret = amvdec_set_canvases(sess, (u32[]){ AV_SCRATCH_0, 0 },
+-				  (u32[]){ 8, 0 });
++	ret = amvdec_set_canvases(sess, canvas1, canvas2);
+ 	if (ret)
+ 		goto free_workspace;
+ 
+diff --git a/drivers/staging/media/meson/vdec/vdec_helpers.c b/drivers/staging/media/meson/vdec/vdec_helpers.c
+index 7f07a9175815..df5c27266c44 100644
+--- a/drivers/staging/media/meson/vdec/vdec_helpers.c
++++ b/drivers/staging/media/meson/vdec/vdec_helpers.c
+@@ -177,7 +177,7 @@ static int set_canvas_nv12m(struct amvdec_session *sess,
+ }
+ 
+ int amvdec_set_canvases(struct amvdec_session *sess,
+-			u32 reg_base[], u32 reg_num[])
++			const u32 reg_base[], const u32 reg_num[])
+ {
+ 	struct v4l2_m2m_buffer *buf;
+ 	u32 pixfmt = sess->pixfmt_cap;
+diff --git a/drivers/staging/media/meson/vdec/vdec_helpers.h b/drivers/staging/media/meson/vdec/vdec_helpers.h
+index cfaed52ab526..ace8897c34fe 100644
+--- a/drivers/staging/media/meson/vdec/vdec_helpers.h
++++ b/drivers/staging/media/meson/vdec/vdec_helpers.h
+@@ -17,7 +17,7 @@
+  * @reg_num: number of contiguous registers after each reg_base (including it)
+  */
+ int amvdec_set_canvases(struct amvdec_session *sess,
+-			u32 reg_base[], u32 reg_num[]);
++			const u32 reg_base[], const u32 reg_num[]);
+ 
+ /* Helpers to read/write to the various IPs (DOS, PARSER) */
+ u32 amvdec_read_dos(struct amvdec_core *core, u32 reg);
+-- 
+2.30.2
 
-Merged the immutable branch (with added tag from Robert) to for-next
-now. Branch is here:
-
-git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/software-no=
-des
-
-tag: <i2c-software-nodes-20210410>
-
-Thank you, Heikki and all reviewers!
-
-
---tKW2IUtsqtDRztdT
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmByAPgACgkQFA3kzBSg
-KbaY3w//Q4C/yR6w9Gchkx+3Xzsnm++Sw+I82MDLP9Nhe7gANQPpxsdfvhmcne05
-qj0H1XJZQsXLLPkgCR/FK7AQej8WOP7NTdkH/Ix/QdIeZpO9rA09K3I7b+HulUBU
-nABRUuW6uFSS0t0jvASK9XOwGmPgChF1q09/tpsxMEGVuiNFa1ZofnikI8XTc2HE
-xysay+fXSe0D684PcXqMZiNL95Z2q4PCthQausCU2TV9OsWBrFFQYIaAqAvlnZuG
-oDGombZrdNEqTZGnrwpeHY0GMX/BzAXvVcKtY/Do8eqUHBZjLQ1EdKPEfpZpd87X
-SUvcmoCijWJt5KOGl7wPF/dkkW9ybm/HuF5HCx3jevWicj2MXypB7Ly9qhOOE17t
-Q1/IBA3k2pBeRgoHkVD0CV4/++SeJtHjcse9RwZE+wLEeDoCcc6oVasVKerLam8j
-fvX2e4ozKNP4ZK7kUzAousHegOtV8HRACiVA6/Q4zuFoK/rH1HmaS+BRqHDQ9q5W
-/5jjwAmljVp9YEL5miHMRMMCRAz+TtwJl3mBGKvzOJSM4LD7U7PGDw2n4nKOb9J8
-llfslY7cKoixPtpyqdUpV4gPA/V+F71K8YeUpMlFhkI58RUcdS279fzEx+1rinwN
-3U9QaTb6Ih/QoNc+n3Vd3yGYkMbQIM9csc0iVKP+g3kaO1umRQc=
-=9iRX
------END PGP SIGNATURE-----
-
---tKW2IUtsqtDRztdT--
