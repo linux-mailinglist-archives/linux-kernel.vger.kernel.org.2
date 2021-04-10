@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C54035ACD6
+	by mail.lfdr.de (Postfix) with ESMTP id 677AE35ACD7
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 13:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbhDJLOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 07:14:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42876 "EHLO
+        id S234716AbhDJLO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 07:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234607AbhDJLOU (ORCPT
+        with ESMTP id S234180AbhDJLOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 10 Apr 2021 07:14:20 -0400
 Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F2AC061763
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:14:05 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso4283710wmi.0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:14:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12F6CC061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:14:06 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id z24-20020a1cf4180000b029012463a9027fso4258586wma.5
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 04:14:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=QNN+T8BLDOEY3hY3Q8J1z1U466PRLMSEBuyc1PHvJfo=;
-        b=v9U97RoSwZSup94uN9Uxxm1PqJKrOJHw3i4+6XE11F7YO0YlBQFFBKNGBgsFykzzO+
-         SyJybwBPDP3LoWKZbqGTtLsZCmDWDjxCu9p50M6UcKPO5dJIR+z2jXzZwWW+lUZdPibF
-         RPfdXU+rrfv5v6P5U9WSyt/bc8mwJ4eL13BvakKp6hNqd7OJ1yvJYeIxWmp2dZ11zMO9
-         cvJcLF90mrSx4cVlx5xiEPQUKiEe7l7Orc2kJNhK41wGd1QFHW2wNuwkRy+AqwYUJcTB
-         9dI5scsAd47NO5N+I48qS/uNxv2InLZFW+7wXZsW3RKCCXFyIHlzdiry+/tuSAjsC9mp
-         +yMw==
+        bh=TP8T7u/GZFTrtgKPlRTZREBN4itlWMrED3RXVnj2Hvk=;
+        b=A3xrc6nvjZqOxDDtK7Wx3wmDtTLWfx71NNoOx2Eq7lEMJwyrIsFIVSq5FFPUIcibcp
+         rkSQB+P1yoi1YGs+ip7cvj3aJ3M7f8k2hlVQOPTwGQsjEQLYe7b/nDCE03dmnjDBU7c3
+         waSD8DKKGazkEEHzmZo9dX22J9wwfcSztUkq1n/+1OKe6lswa3gTn4325ZxgAwWE4j+4
+         K0ovXowaDT5Qb3NCmmbghjL2prSKgJbRzwDGoFMkfD64WqZ/iMIVpvQ8pqe0hx3n0M3f
+         9EaQHGHdiIMARyC3N/GUrt0NuuMpS9W836Bq34pUCMcVQQOvN86EJ8mGAEoVJvLLM9L9
+         Xrlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=QNN+T8BLDOEY3hY3Q8J1z1U466PRLMSEBuyc1PHvJfo=;
-        b=Iu/U2SGipskRnfh06gsRcl9fekiUmaWBFw/COsxXWDbibxG7GjuBfyM8X2Y0fngYMk
-         9nNaAZjVky0ccW+L6NUTNj75Bq9dRr72lJMIf+voyEKbladRTprc++gjd6dUi4LzwS7R
-         bD1bzk9jm/WnhD1ayIYxxTTYSRYly524/8ZaRkZG3q70eV0jRPbQ//RxsKi0G+94BhE2
-         hfyoBulJV+ilamRE2nIx4PxmIOTZpe6gm+L/eMnSB4RNs7Zt6WuHV4og+DjEOCS9rhGk
-         uaoYgLP7pDN3zJkD0QccSH6dBfEvfqa6XeCnIqfoxt2Gyunlk0D4GzZ2pwweqdUPlzOY
-         xmqg==
-X-Gm-Message-State: AOAM531jIFHBPeRsgEQ7Fzae0br8gLLjGs44CsMoJH1r6ebd4WZOt1Qy
-        Gb2yeNjUVuJOZactFfigUb27fA==
-X-Google-Smtp-Source: ABdhPJzPWFJbT8j9mVKSkGi4AalpAZcoxl73akrvuCpEf0o1LSZf+CIY4lYmIhXbZ6f56s90pj0Djg==
-X-Received: by 2002:a05:600c:ad3:: with SMTP id c19mr17827365wmr.125.1618053244161;
+        bh=TP8T7u/GZFTrtgKPlRTZREBN4itlWMrED3RXVnj2Hvk=;
+        b=MG3tVt3WE06r2vUFNuy4AafzeQ+JBpIIY6PJ/ceOs+1eYiQ1+O8f6toRfNbD4veupw
+         vh6zik7B28Tge/c3Ri5W/AxCFTKKaokOS8SCQz9v38Qk6cE9kwdJsiNQ6H/rCdfzldou
+         y7zy/gebu0fgITMZFhfgvWGH+R3yAu7tNQSrdcQkHOcp2psYSKKTk+rPF4LQ6tAYRN+U
+         sQll68Fbtmz14g+o28QXgEY+hP22tNUnf0hVbKDXCoNorAUkbD9KvMiGGKD4MVyuGRsb
+         AwCQjq5O+X6zoDXc3H/xw8URV1g28+sHqLYU+dAsX3KddExZiYczXWYr3prlrNPRpVw9
+         vakw==
+X-Gm-Message-State: AOAM5329AvUScd8MKVExas69dVxGxsi+jn5qMXp26WAcqrZXhSj6nFP2
+        xeAzrfDeCGpHzINKs+77O2dqsg==
+X-Google-Smtp-Source: ABdhPJw9q7x+1VOwDxzk2hAmfo7HajBJAxPBRPLtfyVt6RgWc3TQJxduuAimU7XHHgvYNPMwoLvJMQ==
+X-Received: by 2002:a1c:2704:: with SMTP id n4mr18029046wmn.143.1618053244789;
         Sat, 10 Apr 2021 04:14:04 -0700 (PDT)
 Received: from starbuck.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.googlemail.com with ESMTPSA id s8sm8370117wrn.97.2021.04.10.04.14.03
+        by smtp.googlemail.com with ESMTPSA id s8sm8370117wrn.97.2021.04.10.04.14.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 04:14:03 -0700 (PDT)
+        Sat, 10 Apr 2021 04:14:04 -0700 (PDT)
 From:   Jerome Brunet <jbrunet@baylibre.com>
 To:     Mark Brown <broonie@kernel.org>,
         Liam Girdwood <lgirdwood@gmail.com>
 Cc:     Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>
-Subject: [PATCH 3/5] ASoC: rt5682: clock driver must use the clock provider API
-Date:   Sat, 10 Apr 2021 13:13:54 +0200
-Message-Id: <20210410111356.467340-4-jbrunet@baylibre.com>
+Subject: [PATCH 4/5] ASoC: lpass: use the clock provider API
+Date:   Sat, 10 Apr 2021 13:13:55 +0200
+Message-Id: <20210410111356.467340-5-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210410111356.467340-1-jbrunet@baylibre.com>
 References: <20210410111356.467340-1-jbrunet@baylibre.com>
@@ -66,38 +66,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clock drivers ops should not the clk API but the clock provider (clk_hw)
-instead.
+Clock providers should be registered using the clk_hw API.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/codecs/rt5682.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/lpass-va-macro.c  | 2 +-
+ sound/soc/codecs/lpass-wsa-macro.c | 9 +++------
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 0e2a10ed11da..2eee02ac8d49 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2634,7 +2634,7 @@ static int rt5682_wclk_set_rate(struct clk_hw *hw, unsigned long rate,
- 		container_of(hw, struct rt5682_priv,
- 			     dai_clks_hw[RT5682_DAI_WCLK_IDX]);
- 	struct snd_soc_component *component = rt5682->component;
--	struct clk *parent_clk;
-+	struct clk_hw *parent_hw;
- 	const char * const clk_name = clk_hw_get_name(hw);
- 	int pre_div;
- 	unsigned int clk_pll2_out;
-@@ -2649,8 +2649,8 @@ static int rt5682_wclk_set_rate(struct clk_hw *hw, unsigned long rate,
- 	 *
- 	 * It will set the codec anyway by assuming mclk is 48MHz.
- 	 */
--	parent_clk = clk_get_parent(hw->clk);
--	if (!parent_clk)
-+	parent_hw = clk_hw_get_parent(hw);
-+	if (!parent_hw)
- 		dev_warn(component->dev,
- 			"Parent mclk of wclk not acquired in driver. Please ensure mclk was provided as %d Hz.\n",
- 			CLK_PLL2_FIN);
+diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
+index 5294c57b2cd4..56b887301172 100644
+--- a/sound/soc/codecs/lpass-va-macro.c
++++ b/sound/soc/codecs/lpass-va-macro.c
+@@ -1343,7 +1343,7 @@ static int va_macro_register_fsgen_output(struct va_macro *va)
+ 	if (ret)
+ 		return ret;
+ 
+-	return of_clk_add_provider(np, of_clk_src_simple_get, va->hw.clk);
++	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, &va->hw);
+ }
+ 
+ static int va_macro_validate_dmic_sample_rate(u32 dmic_sample_rate,
+diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+index e79a70386b4b..acb95e83c788 100644
+--- a/sound/soc/codecs/lpass-wsa-macro.c
++++ b/sound/soc/codecs/lpass-wsa-macro.c
+@@ -2337,10 +2337,9 @@ static const struct clk_ops swclk_gate_ops = {
+ 	.recalc_rate = swclk_recalc_rate,
+ };
+ 
+-static struct clk *wsa_macro_register_mclk_output(struct wsa_macro *wsa)
++static int wsa_macro_register_mclk_output(struct wsa_macro *wsa)
+ {
+ 	struct device *dev = wsa->dev;
+-	struct device_node *np = dev->of_node;
+ 	const char *parent_clk_name;
+ 	const char *clk_name = "mclk";
+ 	struct clk_hw *hw;
+@@ -2358,11 +2357,9 @@ static struct clk *wsa_macro_register_mclk_output(struct wsa_macro *wsa)
+ 	hw = &wsa->hw;
+ 	ret = clk_hw_register(wsa->dev, hw);
+ 	if (ret)
+-		return ERR_PTR(ret);
+-
+-	of_clk_add_provider(np, of_clk_src_simple_get, hw->clk);
++		return ret;
+ 
+-	return NULL;
++	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, hw);
+ }
+ 
+ static const struct snd_soc_component_driver wsa_macro_component_drv = {
 -- 
 2.30.2
 
