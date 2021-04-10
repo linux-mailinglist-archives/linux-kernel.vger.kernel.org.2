@@ -2,106 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 689FC35ADE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E7335ADE7
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234814AbhDJOCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234759AbhDJOCI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234779AbhDJOCI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 10 Apr 2021 10:02:08 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D4EC06138A
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:01:53 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lVEBH-0000GW-Ez; Sat, 10 Apr 2021 16:01:47 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lVEBH-0008Cl-00; Sat, 10 Apr 2021 16:01:47 +0200
-Date:   Sat, 10 Apr 2021 16:01:46 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
-        linux-pwm@vger.kernel.org, Sven Van Asbroeck <TheSven73@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v7 4/8] dt-bindings: pwm: Support new
- PWM_STAGGERING_ALLOWED flag
-Message-ID: <20210410140146.5nlp5eczltezbyq2@pengutronix.de>
-References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
- <20210406164140.81423-4-clemens.gruber@pqgruber.com>
- <20210407053357.ok62rqpgyqou53m3@pengutronix.de>
- <YHBINhLa3pCZjoxO@orome.fritz.box>
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:43482
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234548AbhDJOCH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 10:02:07 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3Ar6mAq67lpGrAOLVITwPXwCnXdLJzesId70hD?=
+ =?us-ascii?q?6mlaTxtJfsuE0/2/hfhz726RtB89UGwt8OrqBICuWnXZnKQe3aAwOvOYUBDiqC?=
+ =?us-ascii?q?+UKuhZjLfK5x3FN2nA+vVG1aFmGpIObeHYKVRhl8717E2ZPr8boOWvy6yjiefA?=
+ =?us-ascii?q?w3oFd2gDV4ha4wh0EQqdGEFtLTM2ZqYRLoaW5cZMulObF0g/U8LTPBU4dtTYq8?=
+ =?us-ascii?q?aOvJzrZgNuPW9E1CC+yQLt0rL8HhSCty1ybxpEy94ZnlT4rw=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,212,1613430000"; 
+   d="scan'208";a="378288243"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 16:01:51 +0200
+Date:   Sat, 10 Apr 2021 16:01:51 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+cc:     Julia Lawall <julia.lawall@inria.fr>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH 4/4] staging: rtl8723bs: Change the
+ type and use of a variable
+In-Reply-To: <3114102.qbl0ZuBMXl@localhost.localdomain>
+Message-ID: <alpine.DEB.2.22.394.2104101601100.2975@hadrien>
+References: <20210410092232.15155-1-fmdefrancesco@gmail.com> <2186059.xkuF2sVEJi@localhost.localdomain> <alpine.DEB.2.22.394.2104101524260.2975@hadrien> <3114102.qbl0ZuBMXl@localhost.localdomain>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dndaw2zk5osfq3kr"
-Content-Disposition: inline
-In-Reply-To: <YHBINhLa3pCZjoxO@orome.fritz.box>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---dndaw2zk5osfq3kr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello Thierry,
+On Sat, 10 Apr 2021, Fabio M. De Francesco wrote:
 
-On Fri, Apr 09, 2021 at 02:27:34PM +0200, Thierry Reding wrote:
-> On Wed, Apr 07, 2021 at 07:33:57AM +0200, Uwe Kleine-K=F6nig wrote:
-> > On Tue, Apr 06, 2021 at 06:41:36PM +0200, Clemens Gruber wrote:
-> > > Add the flag and corresponding documentation for the new PWM staggeri=
-ng
-> > > mode feature.
-> > >=20
-> > > Cc: Rob Herring <robh+dt@kernel.org>
-> > > Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
-> >=20
-> > For the record, I don't like this and still prefer to make this
-> > staggering explicit for the consumer by expanding struct pwm_state with
-> > an .offset member to shift the active phase in the period.
->=20
-> How are consumers supposed to know which offset to choose? And worse:
-> how should consumers even know that the driver supports phase shifts?
+> On Saturday, April 10, 2021 3:24:43 PM CEST Julia Lawall wrote:
+> > On Sat, 10 Apr 2021, Fabio M. De Francesco wrote:
+> > > On Saturday, April 10, 2021 2:12:28 PM CEST Julia Lawall wrote:
+> > > > On Sat, 10 Apr 2021, Fabio M. De Francesco wrote:
+> > > > > On Saturday, April 10, 2021 1:37:30 PM CEST Julia Lawall wrote:
+> > > > > > > That variable has global scope and is assigned at least in:
+> > > > > > What do you mean by global scope?  None of the following look
+> > > > > > like
+> > > > > > references to global variables.
+> > > > > >
+> > > > > > julia
+> > > > >
+> > > > > I just mean that fw_current_in_ps_mode is a field of a struct in a
+> > > > > .h
+> > > > > file included everywhere in this driver and that the functions whom
+> > > > > the following assignments belong to have not the "static" type
+> > > > > modifier.
+> > > >
+> > > > OK, but a field in a structure is not a variable, and this is not
+> > > > what
+> > > > scope means.
+> > >
+> > > You're right, a field in a structure is not a variable.
+> > >
+> > > > int x;
+> > > >
+> > > > outside of anything is a global variable (global scope).
+> > > >
+> > > > int foo() {
+> > > >
+> > > >   int x;
+> > > >   ...
+> > > >
+> > > > }
+> > > >
+> > > > Here x is a local variable.  Its scope is the body of the function.
+> > > >
+> > > > int foo() {
+> > > >
+> > > >   if (abc) {
+> > > >
+> > > >     int x;
+> > > >     ...
+> > > >
+> > > >   }
+> > > >
+> > > > }
+> > > >
+> > > > Here x is a local variable, but its scope is only in the if branch.
+> > >
+> > > And you're right again: I needed a little refresh of my knowledge of C.
+> > >
+> > > I've searched again in the code for the purpose of finding out if that
+> > > struct is initialized with global scope but I didn't find anything. I
+> > > didn't even find any dynamic allocation within functions that returns
+> > > pointers to that struct.
+> > >
+> > > Therefore, according to Greg's request, I'll delete that stupid 'if'
+> > > statement in the patch series v2 that I'm about to submit.
+> >
+> > I'm really not clear on why the if should be deleted.
+> >
+> > julia
+> >
+> I'm supposed to delete it because of the review made by Greg. In a couple
+> of previous messages he wrote:
+>
+> "If this is only checked, how can it ever be true?  Who ever sets this
+> value?"
+>
+> and then:
+>
+> "Just delete the variable from the structure entirely and when it is
+> used.".
+>
+> However, like you, I'm not sure yet.
 
-I'm aware that we're a long way from being able to use this. The clean
-approach would be to get the offset from the device tree in the same way
-as the period. And in the meantime I agree that introducing a flag that
-allows to shift the active part in the period is a sane idea. So I
-suggest we concentrate on getting the details in the corresponding
-discussion straight.
+Be sure.  Greg already said that he misinterpreted the patch, because he
+thought that the name also changed.
 
-Best regards
-Uwe
+julia
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
---dndaw2zk5osfq3kr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBxr8cACgkQwfwUeK3K
-7AkjVQgAjo/Bp/amP5OhhbHAxsZaKUXnsIuqDl25vhizVzvUI1359jMQ4GUWhrjS
-vW2pyfjftqYGuFf7y6ePoJSGxFMuRKm6Xw82MNmATDKseTDsILkFuZX/5AKaHg7D
-RlRQtxvLwYE+FVyCy/LHTuqR9w8cRzmuVFXIpFXYE4SeAFEgMUfA4YcuBiIqbqEs
-pOqC38xat2HpMmpqTrUNZfoJYZy48aB1D/u/o1HmYPJ+VUEo03XZazuFzxuV/iyx
-BSLTZuIxhMpO0jJjPgv7tnR7GDqZnWlzDVzI6dWgiT5iAh9S4gLYDlyzzdu2wmsA
-rmZCk7YDVwaVRJygGA5dmqLQVMkZwg==
-=nMwu
------END PGP SIGNATURE-----
-
---dndaw2zk5osfq3kr--
+>
+> Thanks,
+>
+> Fabio
+> >
+> > > I've really appreciated your help.
+> > >
+> > > Thanks,
+> > >
+> > > Fabio
+> > >
+> > > > julia
+> > > >
+> > > > > Thanks,
+> > > > >
+> > > > > Fabio
+> > > > >
+> > > > > > > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:368:
+> > > > > > > pwrpriv->fw_current_in_ps_mode = false;
+> > > > > > >
+> > > > > > > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:380:
+> > > > > > > pwrpriv->fw_current_in_ps_mode = true;
+> > > > > > >
+> > > > > > > drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:433:
+> > > > > > > adapter_to_pwrctl(padapter)->fw_current_in_ps_mode = false;
+> > > > > > >
+> > > > > > > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:981:
+> > > > > > > pwrctrlpriv->fw_current_in_ps_mode = false;
+>
+>
+>
+>
+>
