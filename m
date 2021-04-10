@@ -2,252 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9344135AB4A
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 08:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5070E35AB50
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 08:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbhDJGJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 02:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhDJGJB (ORCPT
+        id S234272AbhDJGWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 02:22:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28811 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230235AbhDJGWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 02:09:01 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1346C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 23:08:46 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id a1so8972661ljp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 23:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YtlxBAckHEVcMTzzk1eSnqgjQve7RSRroSO9lEg7fso=;
-        b=OhThh5iEjoeLawSNAlUqk65gx1iZfMpx7HG3h7vzPlbh4gZRlouUjaL8PrNXxQfAk7
-         fEDeZUGSyOL6+Ok+0JSR4fYRukbeRoO9VPO46ZHLO7jk2hCiTKcQbHIo3aXHJjRC+HnQ
-         0BX3UTnej7hn1WjqTjc70pRXVsFHlVAY7f9+7mE/RGuOJA0UbxwVYON2yA9QQ3/SI63p
-         s4fNFzgm9jXdzrMm0bp78cGXH7TbQvzuikW9bx8hCk51zKrmtIzVDDZd23DspBz/jiCH
-         8uiwKwvjJAhp2iTeBXGgTXhSJGKt9UoEUfaH1kqiB80kJwWD2o/BkffWXT969jzjF1rx
-         fvsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YtlxBAckHEVcMTzzk1eSnqgjQve7RSRroSO9lEg7fso=;
-        b=GcVpqWHLvqcXFs8Lr9iWgeaVs7PsPNOr7HwCwwZis24MQgtZEldq5H6vq0xDps1pbk
-         NDPkgtk3Y95AoAw8tp6PSx+oExzHBwwO5hBVBkkOxiyl8nqm3IIfzSddGJ7WsoamPBEw
-         mGsBxI3sXsYUVzcEQLFccpzvkLWt5PiNJpoqB9QAAzQ3HnoFgYyM1qTHtLGFiWxBsYOB
-         F6mBFGbIak/OLHVcn8coT8Gf9+4/vDfLoyU8f/i0H0+dvF1sNafQ+eMSeH+lCnbDNqNa
-         gfrus9UUBkGugTcaQseCapAOniBrkXctYw4Ac+gMG+gzmmkDC5y0COhFC6zLTBG6WZoi
-         MZBA==
-X-Gm-Message-State: AOAM5333jqx7I3MlEWK7A9cOYrUkSsa3HTYZEwB3XsUKSM+O10XHOhsi
-        7tkU4ENfRqJINe9i9XxxhkL73TF8yVs2uqhjY4qTz7ppu8xVqg==
-X-Google-Smtp-Source: ABdhPJzRQC6OQhKJ6Z94kPR5hmnw7C3mH2x/FThwj56shsx6DYDvvf2CCZi1U0mZhCFWW+/8YLIr0tPXXgyEvKSPhwo=
-X-Received: by 2002:a2e:9047:: with SMTP id n7mr11459133ljg.291.1618034924829;
- Fri, 09 Apr 2021 23:08:44 -0700 (PDT)
+        Sat, 10 Apr 2021 02:22:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618035739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Nv0p4RXdpoXEf7jqWszTL6fVOOyMMq+6cdW6F9BHRE8=;
+        b=cDx2Kr02pDCs3CexD206x/O+ZbG6UBaC+1ppHR+0pnBNWVbzadgc24K/zMtt7o+pjBJ7SD
+        bhxDPMuft3DcGg7WsAYmal07EFa618wGU6fFKya8BrZNE5WVbApxPh2EJqJTcCPYurfeQO
+        d6zYBxc87mbw9eZzDdiadEH7Q6XsRtQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-169-H9vV9Gg_ME-THv76LsVBSA-1; Sat, 10 Apr 2021 02:22:12 -0400
+X-MC-Unique: H9vV9Gg_ME-THv76LsVBSA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3FA4593C0;
+        Sat, 10 Apr 2021 06:22:08 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DD3276F968;
+        Sat, 10 Apr 2021 06:21:59 +0000 (UTC)
+Date:   Sat, 10 Apr 2021 08:21:58 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     kernel test robot <lkp@intel.com>, linux-mm@kvack.org,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        "David S. Miller" <davem@davemloft.net>, brouer@redhat.com,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: Bogus struct page layout on 32-bit
+Message-ID: <20210410082158.79ad09a6@carbon>
+In-Reply-To: <20210410024313.GX2531743@casper.infradead.org>
+References: <20210409185105.188284-3-willy@infradead.org>
+        <202104100656.N7EVvkNZ-lkp@intel.com>
+        <20210410024313.GX2531743@casper.infradead.org>
 MIME-Version: 1.0
-References: <20210225053204.697951-1-lzye@google.com> <1b315e2cd02f4017cc746909088cc8bc1a39024e.camel@hadess.net>
- <CAFFuddJKqkUEFdqhk8o+6K3_a42UyT934dmj002MS8deLD6fdA@mail.gmail.com>
- <CAFFudd+Y6maj=F8LwGeakvkRoh_a_s2yi_rtB4LUnY=CVrMGWA@mail.gmail.com>
- <CAEc3jaCG2NvYcNHwk7rnvw4pgmbEEeDdfvB3SdP5Vs2ROtS9kw@mail.gmail.com>
- <9f7e01a5b70a7e06c66eca4c297e3882f5243bfc.camel@hadess.net> <CAFFudd+rRgc5MnpMHDioNVxmdyu=gVy0r1s-+WyEX8q+_dSs3A@mail.gmail.com>
-In-Reply-To: <CAFFudd+rRgc5MnpMHDioNVxmdyu=gVy0r1s-+WyEX8q+_dSs3A@mail.gmail.com>
-From:   Chris Ye <lzye@google.com>
-Date:   Fri, 9 Apr 2021 23:08:33 -0700
-Message-ID: <CAFFuddKwXoQgiPnP_oj3fvYTnkOOLug61a-5WB4XYYnAWC+qwA@mail.gmail.com>
-Subject: Re: [PATCH] [v2] Input: Add "Share" button to Microsoft Xbox One controller.
-To:     Bastien Nocera <hadess@hadess.net>
-Cc:     Roderick Colenbrander <thunderbird2k@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        =?UTF-8?Q?=C5=81ukasz_Patron?= <priv.luk@gmail.com>,
-        Benjamin Valentin <benpicco@googlemail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Olivier_Cr=C3=AAte?= <olivier.crete@ocrete.ca>,
-        Sanjay Govind <sanjay.govind9@gmail.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        linux-input <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, trivial@kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From the product information site
-https://www.xbox.com/en-US/accessories/controllers/xbox-wireless-controller
-this button is referred as "Share button":
-"Stay on target with textured grip and a hybrid D-pad. Seamlessly
-capture and share content with a dedicated Share button. Quickly pair
-with, play on, and switch between devices "
-Should we override the product button name and name it "Select" in
-driver?   I am ok with either way but can we have a name everyone can
-agree on and move forward?
+On Sat, 10 Apr 2021 03:43:13 +0100
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Thanks!
-Chris
+> On Sat, Apr 10, 2021 at 06:45:35AM +0800, kernel test robot wrote:
+> > >> include/linux/mm_types.h:274:1: error: static_assert failed due to requirement '__builtin_offsetof(struct page, lru) == __builtin_offsetof(struct folio, lru)' "offsetof(struct page, lru) == offsetof(struct folio, lru)"  
+> >    FOLIO_MATCH(lru, lru);
+> >    include/linux/mm_types.h:272:2: note: expanded from macro 'FOLIO_MATCH'
+> >            static_assert(offsetof(struct page, pg) == offsetof(struct folio, fl))  
+> 
+> Well, this is interesting.  pahole reports:
+> 
+> struct page {
+>         long unsigned int          flags;                /*     0     4 */
+>         /* XXX 4 bytes hole, try to pack */
+>         union {
+>                 struct {
+>                         struct list_head lru;            /*     8     8 */
+> ...
+> struct folio {
+>         union {
+>                 struct {
+>                         long unsigned int flags;         /*     0     4 */
+>                         struct list_head lru;            /*     4     8 */
+> 
+> so this assert has absolutely done its job.
+> 
+> But why has this assert triggered?  Why is struct page layout not what
+> we thought it was?  Turns out it's the dma_addr added in 2019 by commit
+> c25fff7171be ("mm: add dma_addr_t to struct page").  On this particular
+> config, it's 64-bit, and ppc32 requires alignment to 64-bit.  So
+> the whole union gets moved out by 4 bytes.
+
+Argh, good that you are catching this!
+
+> Unfortunately, we can't just fix this by putting an 'unsigned long pad'
+> in front of it.  It still aligns the entire union to 8 bytes, and then
+> it skips another 4 bytes after the pad.
+> 
+> We can fix it like this ...
+> 
+> +++ b/include/linux/mm_types.h
+> @@ -96,11 +96,12 @@ struct page {
+>                         unsigned long private;
+>                 };
+>                 struct {        /* page_pool used by netstack */
+> +                       unsigned long _page_pool_pad;
+
+I'm fine with this pad.  Matteo is currently proposing[1] to add a 32-bit
+value after @dma_addr, and he could use this area instead.
+
+[1] https://lore.kernel.org/netdev/20210409223801.104657-3-mcroce@linux.microsoft.com/
+
+When adding/changing this, we need to make sure that it doesn't overlap
+member @index, because network stack use/check page_is_pfmemalloc().
+As far as my calculations this is safe to add.  I always try to keep an
+eye out for this, but I wonder if we could have a build check like yours.
 
 
-On Tue, Mar 23, 2021 at 2:52 PM Chris Ye <lzye@google.com> wrote:
->
-> The name "Share button" is a product name from Microsoft and they choose the button to be used for "record" as the device firmware maps the button to Consumer(Record) HID usage.
-> Can we accept the patch to make the "Share button" to work consistently under USB mode, same as Bluetooth mode?
->
-> Thanks!
-> Chris
->
-> On Thu, Mar 4, 2021 at 11:18 PM Bastien Nocera <hadess@hadess.net> wrote:
->>
->> On Thu, 2021-03-04 at 20:42 -0800, Roderick Colenbrander wrote:
->> > (resend in plain text)
->> > +benjamin in a more explicit way
->> >
->> > Hi Chris,
->> >
->> > I see the need for the Record button. I wonder what makes sense from
->> > the Linux kernel perspective. For DualShock 4 and DualSense there is a
->> > Share button too (it introduced it). For DualShock 4 that was mapped
->> > to 'Select' I think per Linux gamepad spec. For DualSense in 5.12 we
->> > did the same... Though if there is a true 'Record' button we want to
->> > use moving forward. Maybe we still want to change the button
->> > definition for DualSensein 5.12 while we can...
->> >
->> > It would be good to get some consensus on these buttons.
->>
->> The XBox One Series X controller has 3 of those "middle" buttons, 2
->> equivalent to Start/Select on older controllers (that were already
->> present on older versions of the pad) and Share.
->> https://www.xbox.com/en-US/accessories/controllers/xbox-wireless-controller
->>
->> The Options buttons on the DS4 replaces Start and Select:
->> https://manuals.playstation.net/document/en/ps4/basic/pn_controller.html
->> so Share got added, but Select taken away, which is why you had to
->> label it Select in the driver.
->>
->> I don't really see how to fix that without retroactively re-adding
->> buttons to the DS4 controller ;)
->>
->> >
->> > Thanks,
->> > Roderick
->> >
->> >
->> > On Thu, Mar 4, 2021 at 6:25 PM Chris Ye <lzye@google.com> wrote:
->> > >
->> > > Hi Bastien,  just want to follow up again on this.  I've checked
->> > > again
->> > > with the Xbox team that the "Share button" is given for the product,
->> > > the HID usage profile and mapping to RECORD is what Xbox team expects
->> > > and they want the same mapping for USB.
->> > >
->> > > Thanks!
->> > > Chris
->> > >
->> > >
->> > > On Tue, Mar 2, 2021 at 3:57 PM Chris Ye <lzye@google.com> wrote:
->> > > >
->> > > > Hi Bastien,
->> > > >     The "Share button" is a name Microsoft calls it, it actually
->> > > > has
->> > > > HID descriptor defined in the bluetooth interface, which the HID
->> > > > usage
->> > > > is:
->> > > > consumer 0xB2:
->> > > > 0x05, 0x0C,        //   Usage Page (Consumer)
->> > > > 0x0A, 0xB2, 0x00,  //   Usage (Record)
->> > > > Microsoft wants the same key code to be generated consistently for
->> > > > USB
->> > > > and bluetooth.
->> > > > Thanks!
->> > > > Chris
->> > > >
->> > > >
->> > > > On Tue, Mar 2, 2021 at 1:50 AM Bastien Nocera <hadess@hadess.net>
->> > > > wrote:
->> > > > >
->> > > > > On Thu, 2021-02-25 at 05:32 +0000, Chris Ye wrote:
->> > > > > > Add "Share" button input capability and input event mapping for
->> > > > > > Microsoft Xbox One controller.
->> > > > > > Fixed Microsoft Xbox One controller share button not working
->> > > > > > under USB
->> > > > > > connection.
->> > > > > >
->> > > > > > Signed-off-by: Chris Ye <lzye@google.com>
->> > > > > > ---
->> > > > > >  drivers/input/joystick/xpad.c | 9 ++++++++-
->> > > > > >  1 file changed, 8 insertions(+), 1 deletion(-)
->> > > > > >
->> > > > > > diff --git a/drivers/input/joystick/xpad.c
->> > > > > > b/drivers/input/joystick/xpad.c
->> > > > > > index 9f0d07dcbf06..0c3374091aff 100644
->> > > > > > --- a/drivers/input/joystick/xpad.c
->> > > > > > +++ b/drivers/input/joystick/xpad.c
->> > > > > > @@ -79,6 +79,7 @@
->> > > > > >  #define MAP_DPAD_TO_BUTTONS            (1 << 0)
->> > > > > >  #define MAP_TRIGGERS_TO_BUTTONS                (1 << 1)
->> > > > > >  #define MAP_STICKS_TO_NULL             (1 << 2)
->> > > > > > +#define MAP_SHARE_BUTTON               (1 << 3)
->> > > > > >  #define DANCEPAD_MAP_CONFIG    (MAP_DPAD_TO_BUTTONS
->> > > > > > >                  \
->> > > > > >                                 MAP_TRIGGERS_TO_BUTTONS |
->> > > > > > MAP_STICKS_TO_NULL)
->> > > > > >
->> > > > > > @@ -130,6 +131,7 @@ static const struct xpad_device {
->> > > > > >         { 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0,
->> > > > > > XTYPE_XBOXONE },
->> > > > > >         { 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0,
->> > > > > > XTYPE_XBOXONE
->> > > > > > },
->> > > > > >         { 0x045e, 0x0719, "Xbox 360 Wireless Receiver",
->> > > > > > MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
->> > > > > > +       { 0x045e, 0x0b12, "Microsoft X-Box One X pad",
->> > > > > > MAP_SHARE_BUTTON, XTYPE_XBOXONE },
->> > > > > >         { 0x046d, 0xc21d, "Logitech Gamepad F310", 0,
->> > > > > > XTYPE_XBOX360 },
->> > > > > >         { 0x046d, 0xc21e, "Logitech Gamepad F510", 0,
->> > > > > > XTYPE_XBOX360 },
->> > > > > >         { 0x046d, 0xc21f, "Logitech Gamepad F710", 0,
->> > > > > > XTYPE_XBOX360 },
->> > > > > > @@ -862,6 +864,8 @@ static void xpadone_process_packet(struct
->> > > > > > usb_xpad
->> > > > > > *xpad, u16 cmd, unsigned char
->> > > > > >         /* menu/view buttons */
->> > > > > >         input_report_key(dev, BTN_START,  data[4] & 0x04);
->> > > > > >         input_report_key(dev, BTN_SELECT, data[4] & 0x08);
->> > > > > > +       if (xpad->mapping & MAP_SHARE_BUTTON)
->> > > > > > +               input_report_key(dev, KEY_RECORD, data[22] &
->> > > > > > 0x01);
->> > > > > >
->> > > > > >         /* buttons A,B,X,Y */
->> > > > > >         input_report_key(dev, BTN_A,    data[4] & 0x10);
->> > > > > > @@ -1669,9 +1673,12 @@ static int xpad_init_input(struct
->> > > > > > usb_xpad
->> > > > > > *xpad)
->> > > > > >
->> > > > > >         /* set up model-specific ones */
->> > > > > >         if (xpad->xtype == XTYPE_XBOX360 || xpad->xtype ==
->> > > > > > XTYPE_XBOX360W ||
->> > > > > > -           xpad->xtype == XTYPE_XBOXONE) {
->> > > > > > +               xpad->xtype == XTYPE_XBOXONE) {
->> > > > > >                 for (i = 0; xpad360_btn[i] >= 0; i++)
->> > > > > >                         input_set_capability(input_dev, EV_KEY,
->> > > > > > xpad360_btn[i]);
->> > > > > > +               if (xpad->mapping & MAP_SHARE_BUTTON) {
->> > > > > > +                       input_set_capability(input_dev, EV_KEY,
->> > > > > > KEY_RECORD);
->> > > > >
->> > > > > Is there not a better keycode to use than "Record"? Should a
->> > > > > "share"
->> > > > > keycode be added?
->> > > > >
->> > > > > I couldn't find a share button in the most recent USB HID Usage
->> > > > > Tables:
->> > > > > https://www.usb.org/document-library/hid-usage-tables-121
->> > > > >
->> > > > > > +               }
->> > > > > >         } else {
->> > > > > >                 for (i = 0; xpad_btn[i] >= 0; i++)
->> > > > > >                         input_set_capability(input_dev, EV_KEY,
->> > > > > > xpad_btn[i]);
->> > > > >
->> > > > >
->>
->>
+>                         /**
+>                          * @dma_addr: might require a 64-bit value even on
+>                          * 32-bit architectures.
+>                          */
+> -                       dma_addr_t dma_addr;
+> +                       dma_addr_t dma_addr __packed;
+>                 };
+>                 struct {        /* slab, slob and slub */
+>                         union {
+> 
+> but I don't know if GCC is smart enough to realise that dma_addr is now
+> on an 8 byte boundary and it can use a normal instruction to access it,
+> or whether it'll do something daft like use byte loads to access it.
+> 
+> We could also do:
+> 
+> +                       dma_addr_t dma_addr __packed __aligned(sizeof(void *));
+> 
+> and I see pahole, at least sees this correctly:
+> 
+>                 struct {
+>                         long unsigned int _page_pool_pad; /*     4     4 */
+>                         dma_addr_t dma_addr __attribute__((__aligned__(4))); /*     8     8 */
+>                 } __attribute__((__packed__)) __attribute__((__aligned__(4)));  
+> 
+> This presumably affects any 32-bit architecture with a 64-bit phys_addr_t
+> / dma_addr_t.  Advice, please?
+
+I'm not sure that the 32-bit behavior is with 64-bit (dma) addrs.
+
+I don't have any 32-bit boards with 64-bit DMA.  Cc. Ivan, wasn't your
+board (572x ?) 32-bit with driver 'cpsw' this case (where Ivan added
+XDP+page_pool) ?
+
+-- 
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
+
