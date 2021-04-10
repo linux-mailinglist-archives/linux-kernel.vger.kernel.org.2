@@ -2,179 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C14335AAEE
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 06:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A175535AAF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 06:55:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhDJExS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 00:53:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46206 "EHLO
+        id S233800AbhDJEzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 00:55:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbhDJExR (ORCPT
+        with ESMTP id S229464AbhDJEzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 00:53:17 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E09C061762;
-        Fri,  9 Apr 2021 21:53:03 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so7732860otr.4;
-        Fri, 09 Apr 2021 21:53:03 -0700 (PDT)
+        Sat, 10 Apr 2021 00:55:14 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFD8C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 21:55:00 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id w3so11770088ejc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 21:55:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bL7Zqg78qITrTGx8VZ7++HQa6dmuoLMfUFQLMD05YYk=;
-        b=EW1xoCh17m5Uns4J4+3LE9ziSx0BgtsKXhwyh4zxtouIsZ0NHsO1NB/u9toy/C0Q6F
-         iLQBFJ2OVXEFdbKXo3alVwbCU6aYFK3T9tlcpq7qPpsWoUaLTAmApikaeX8CwQvzFqzG
-         LaYkylpEwuzbwdKLxVJ4keQr0oWWm7eAoyyKnuzrEhe5+21aA/dus723MVwAR3CzFsoj
-         XehafCjSpbP9yPvoZpirbzNAz7ei+e0iEDRvNQYVINJNYyOILRRDEqyFxps2ZvdNnlze
-         M+RHWI0Vh2UGlpgMmPU5w5POHTScgY7+OM8PKd7PL8XH6yizY9Ok2vTtlDqC7DqE/JbG
-         IFUg==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4d0pH++PQprtx+vqNO/EImXYyO+3e2J6Tc3oRYuTHK8=;
+        b=BFX07dcQQC7idy+oqH7E1iiDyabFawNYenVXM+2lE5XxCaEbyFMazKJOth+88p3tju
+         SzPwxXxrY2LkPYOTNXxLEbBYtKl19VmsoCGFmXT86oltTsMrwc+VvpV4D5CotvB2h8fL
+         eBUdSRQY839fxM8M0Y1gZ91sCyqmv69CePGWSIgGQoveZWn7UU6Vs5NmSjSLLFH3vH4N
+         V/UHOIBL2/0M8vhTrswkLWS3I6vVexDEdkuZ29C3M0yBqmzPvc6Wq/difVZaeQjJJy3o
+         q2W+LXLoNUy1Sh2w0ESC8+EjXQBHs7Ro0AnRC6GjC/GpNLwau7erKvMfav7KcPAoywi/
+         KeXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bL7Zqg78qITrTGx8VZ7++HQa6dmuoLMfUFQLMD05YYk=;
-        b=jtpsBCk4Fdeawu8ayLfMPZ+o1Q/20zoo3OM0yPh4hSAVu3fRZnNuA1AWRr1WsDCiI2
-         GaTQF26SFRzkXUeT4//5UvTup/bWGRt0kOB1w4Cxbeik05hTGtmiM4KWzwxdEaQ6UD9j
-         BYFj3O0IxcGFFLVTLSXLMb/BISbNy34plug4kwrzVDPpqcm5jbx9LMfnlQ6A6mupTVru
-         ct0OXwieaaEkSdg8RuLLF72/vFes0yZzp0bwHmdhzRXuIzfj3AME6Tm31a1r2mmV20yA
-         zTClQi6EQ6zLqoNGQI5Ok7JiMZ2c6re1Cr80ijzcftSN2ZE3d2TUCEFoDvUwagXsEbFr
-         XJOQ==
-X-Gm-Message-State: AOAM530CfvrxA3Azy3o3y76WflFi6PK7r6mUf4Qr9Uja/VL+Zvc49jsJ
-        tibzxgJBrybgyWO8ObmeVOY=
-X-Google-Smtp-Source: ABdhPJwWKeWaMdzDB1PLAeHNnBisxGB28G/vN/rhgylR0YTreWx/GhRU3mXpKoTg8wdoKLVuqOuc1w==
-X-Received: by 2002:a05:6830:1510:: with SMTP id k16mr14280600otp.57.1618030382948;
-        Fri, 09 Apr 2021 21:53:02 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t19sm1137273otm.40.2021.04.09.21.53.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 09 Apr 2021 21:53:02 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 9 Apr 2021 21:53:01 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.14 00/14] 4.14.230-rc1 review
-Message-ID: <20210410045301.GA135090@roeck-us.net>
-References: <20210409095300.391558233@linuxfoundation.org>
- <20210409201306.GC227412@roeck-us.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4d0pH++PQprtx+vqNO/EImXYyO+3e2J6Tc3oRYuTHK8=;
+        b=JGMEa2pDYL1UQgdMXrrTKdKQqGhXb7kUdyHygRC+PlUr485qziH1hQHIAHMx5rqexL
+         IbifHX1DTPPPK6LJCWfPaOtHaejUdzH9Cc2FAIhIUFYWZibWDtqcNrwXfaR2wY397HO2
+         vf+0STTLW/qL5Msttk797oiMrXj9ND8EbsDII/ier+KOq2uQ1MlSMblVcy8H1lJ1iiQs
+         gpeVi7GO1J5szztegy+DXHwX2i2HAByTos6dvoHuPVXc6DQoZT8xGZ4oyy4uV9Y/zvzD
+         MgtcwLTaVoM8KzXihA64fSbgVElYxotH8dU/MzYJAnT4liQWcDE6Eg4jiP3s1rPhBCB7
+         Vn+Q==
+X-Gm-Message-State: AOAM530An6omNZSZVt2lAwdAs7pP4zpVh7xd39r4ctbZCSl03DnXuzc/
+        K9FyW/Jk0ZBLtNiuwbf9rS3aQnKo7F2aQpJgzhRyvw==
+X-Google-Smtp-Source: ABdhPJy97uW/eMQbp6c11KKQsQT06Pryo58CAEY7vl4VUrtBAYLoCvDlt1KzsXgSFSdQmlWio+8NSWoCrNq2lW4GkQA=
+X-Received: by 2002:a17:906:4fcd:: with SMTP id i13mr18945286ejw.341.1618030498122;
+ Fri, 09 Apr 2021 21:54:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409201306.GC227412@roeck-us.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1618014803-17231-1-git-send-email-wangyingjie55@126.com>
+In-Reply-To: <1618014803-17231-1-git-send-email-wangyingjie55@126.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 9 Apr 2021 21:54:50 -0700
+Message-ID: <CAPcyv4hBN2eCGehzZES7_NNco5xupKsvv69JtxzzCoV-DzT9bQ@mail.gmail.com>
+Subject: Re: [PATCH v1] libnvdimm, dax: Fix a missing check in nd_dax_probe()
+To:     wangyingjie55@126.com
+Cc:     Vishal L Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Weiny, Ira" <ira.weiny@intel.com>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 01:13:06PM -0700, Guenter Roeck wrote:
-> On Fri, Apr 09, 2021 at 11:53:25AM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.14.230 release.
-> > There are 14 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> Build results:
-> 	total: 168 pass: 168 fail: 0
-> Qemu test results:
-> 	total: 408 pass: 408 fail: 0
-> 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
-> 
-> Having said this, I did see a spurious crash, and I see an unusual warning.
-> I have seen the crash only once, but the warning happens with every boot.
-> These are likely not new but exposed because I added network interface
-> tests. This is all v4.14.y specific; I did not see it in other branches.
-> See below for the tracebacks. Maybe someone has seen it before.
-> 
-> Thanks,
-> Guenter
-> 
+On Fri, Apr 9, 2021 at 5:33 PM <wangyingjie55@126.com> wrote:
+>
+> From: Yingjie Wang <wangyingjie55@126.com>
+>
+> In nd_dax_probe(), nd_dax_alloc() may fail and return NULL.
+> Check for NULL before attempting to
+> use nd_dax to avoid a NULL pointer dereference.
+>
+> Fixes: c5ed9268643c ("libnvdimm, dax: autodetect support")
+> Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
 > ---
-> ftgmac100 1e660000.ethernet eth0: NCSI interface down
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 477 at drivers/base/dma-mapping.c:325 remap_allocator_free+0x54/0x5c
-> trying to free invalid coherent area: 909a1000
-> Modules linked in:
-> CPU: 0 PID: 477 Comm: ip Not tainted 4.14.230-rc1-00015-gbbc0ac1df344 #1
-> Hardware name: Generic DT based system
-> [<8000f8dc>] (unwind_backtrace) from [<8000d194>] (show_stack+0x10/0x14)
-> [<8000d194>] (show_stack) from [<805a5a80>] (__warn+0xc0/0xf4)
-> [<805a5a80>] (__warn) from [<800177b4>] (warn_slowpath_fmt+0x38/0x48)
-> [<800177b4>] (warn_slowpath_fmt) from [<80010554>] (remap_allocator_free+0x54/0x5c)
-> [<80010554>] (remap_allocator_free) from [<80010e4c>] (__arm_dma_free.constprop.0+0xec/0x13c)
-> [<80010e4c>] (__arm_dma_free.constprop.0) from [<80429924>] (ftgmac100_free_rings+0x17c/0x1f8)
-> [<80429924>] (ftgmac100_free_rings) from [<80429a24>] (ftgmac100_stop+0x84/0xa4)
-> [<80429a24>] (ftgmac100_stop) from [<804e8a70>] (__dev_close_many+0xac/0x100)
-> [<804e8a70>] (__dev_close_many) from [<804f0dc0>] (__dev_change_flags+0xb4/0x1a0)
-> [<804f0dc0>] (__dev_change_flags) from [<804f0ec4>] (dev_change_flags+0x18/0x48)
-> [<804f0ec4>] (dev_change_flags) from [<80561644>] (devinet_ioctl+0x6cc/0x808)
-> [<80561644>] (devinet_ioctl) from [<804d1548>] (sock_ioctl+0x188/0x2e4)
-> [<804d1548>] (sock_ioctl) from [<800eac80>] (do_vfs_ioctl+0x3a0/0x82c)
-> [<800eac80>] (do_vfs_ioctl) from [<800eb140>] (SyS_ioctl+0x34/0x60)
-> [<800eb140>] (SyS_ioctl) from [<8000a600>] (ret_fast_syscall+0x0/0x28)
-> ---[ end trace c13f2f82f69274ad ]---
-> 
-> =====
-> 
-> ftgmac100 1e660000.ethernet eth0: NCSI interface up
-> Unable to handle kernel NULL pointer dereference at virtual address 00000000
-> pgd = 9ec84000
-> [00000000] *pgd=9f7f6831, *pte=00000000, *ppte=00000000
-> Internal error: Oops: 17 [#1] ARM
-> Modules linked in:
-> CPU: 0 PID: 397 Comm: default.script Not tainted 4.14.230-rc1-00015-gbbc0ac1df344 #1
-> Hardware name: Generic DT based system
-> task: 9f5cc260 task.stack: 9ecee000
-> PC is at anon_vma_clone+0x64/0x19c
-> LR is at fs_reclaim_release+0x8/0x18
-> pc : [<800c1ccc>]    lr : [<80098b5c>]    psr: a0000153
-> sp : 9ecefe78  ip : 00000000  fp : ffffffff
-> r10: 01000200  r9 : 9f7e6d10  r8 : 80cb9a44
-> r7 : 9f7e0da0  r6 : 9f7e6d10  r5 : 9ed0f600  r4 : 9f5a562c
-> r3 : 00000030  r2 : 9fbdf618  r1 : 00000034  r0 : 9ed0f600
-> Flags: NzCv  IRQs on  FIQs off  Mode SVC_32  ISA ARM  Segment user
-> Control: 00c5387d  Table: 9ec84008  DAC: 00000055
-> Process default.script (pid: 397, stack limit = 0x9ecee188)
-> Stack: (0x9ecefe78 to 0x9ecf0000)
-> fe60:                                                       9f5a303c 9f5a3000
-> fe80: 00000002 9f7e0da0 9f7e0ab4 9f5a3000 9f77e600 9f7e0da0 9f5a3000 9f77e400
-> fea0: 9f72dc64 800c1e28 9f7e0ab0 9f7e0ab4 00000002 9f77e600 9f7e0da0 800161f8
-> fec0: 9f5cc640 cacd966c 9f5cc260 cd397f94 80cb0afc 00000000 80016870 00000000
-> fee0: 00000000 9f69f2f8 9f7e0aa8 807ca224 9f7e0aa0 9f72dc70 9f69f100 00000011
-> ff00: 9f77e658 9f77e458 9eceff08 9eceff08 9f5cc650 00000011 7eb26888 00000000
-> ff20: 00000000 00000000 9ecee000 00000000 76eff3a0 80016870 00000000 00000000
-> ff40: ffffffff 7eb26888 9eceff78 00000000 9ecee000 76ec4a28 7eb26888 9eceff78
-> ff60: 00000000 7eb26888 00000008 00000000 00000008 800245e4 76efdcd0 7eb26888
-> ff80: 00000000 00000002 8000a704 9ecee000 00000000 80016cd4 00000000 00000000
-> ffa0: 9ecee000 8000a520 76efdcd0 7eb26888 76efffcc 00000001 76efe7ac 00000000
-> ffc0: 76efdcd0 7eb26888 00000000 00000002 7eb26918 76efe000 76f00c60 76eff3a0
-> ffe0: 000e0350 7eb26888 76e96b94 76e96b98 60000150 76efffcc 00000000 00000000
-> [<800c1ccc>] (anon_vma_clone) from [<800c1e28>] (anon_vma_fork+0x24/0x138)
-> [<800c1e28>] (anon_vma_fork) from [<800161f8>] (copy_process.part.0+0x12a4/0x17dc)
-> [<800161f8>] (copy_process.part.0) from [<80016870>] (_do_fork+0xa0/0x488)
-> [<80016870>] (_do_fork) from [<80016cd4>] (sys_fork+0x24/0x2c)
-> [<80016cd4>] (sys_fork) from [<8000a520>] (ret_fast_syscall+0x0/0x4c)
-> Code: eb001f58 e2505000 0a000017 e594b004 (e59b9000)
-> ---[ end trace 6680cdd56c4514b7 ]---
-> 
+>  drivers/nvdimm/dax_devs.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/nvdimm/dax_devs.c b/drivers/nvdimm/dax_devs.c
+> index 99965077bac4..b1426ac03f01 100644
+> --- a/drivers/nvdimm/dax_devs.c
+> +++ b/drivers/nvdimm/dax_devs.c
+> @@ -106,6 +106,8 @@ int nd_dax_probe(struct device *dev, struct nd_namespace_common *ndns)
+>
+>         nvdimm_bus_lock(&ndns->dev);
 
-Hmm, turns out those are a bit more severe than I thought. The fix for both
-the crash and the warning is commit 062b3e1b6d4f ("net/ncsi: Refactor MAC,
-VLAN filters"). Unfortunately, that commit does not apply on its own.
-The following sequence of commits on top of v4.14.y fixes the problem
-for me.
+hmmm...
 
-5a6d80034471 net/ncsi: Make local function ncsi_get_filter() static
-9ef8690be13d net/ncsi: Improve general state logging
-04bad8bda9e2 net/ncsi: Don't return error on normal response
-955dc68cb9b2 net/ncsi: Add generic netlink family
-062b3e1b6d4f net/ncsi: Refactor MAC, VLAN filters
+>         nd_dax = nd_dax_alloc(nd_region);
+> +       if (!nd_dax)
+> +               return -ENOMEM;
 
-Guenter
+Can you spot the bug this introduces? See the hint above.
+
+>         nd_pfn = &nd_dax->nd_pfn;
+>         dax_dev = nd_pfn_devinit(nd_pfn, ndns);
+>         nvdimm_bus_unlock(&ndns->dev);
+> --
+> 2.7.4
+>
