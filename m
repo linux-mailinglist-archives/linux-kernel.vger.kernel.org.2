@@ -2,79 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C3B235AB55
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 08:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4D4635AB62
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 08:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234344AbhDJG3G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 02:29:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38406 "EHLO
+        id S234379AbhDJGdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 02:33:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231933AbhDJG3D (ORCPT
+        with ESMTP id S233606AbhDJGdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 02:29:03 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95645C061762;
-        Fri,  9 Apr 2021 23:28:49 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id mj7-20020a17090b3687b029014d162a65b6so6043568pjb.2;
-        Fri, 09 Apr 2021 23:28:49 -0700 (PDT)
+        Sat, 10 Apr 2021 02:33:13 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2FCC061764
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 23:32:59 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id sd23so3292961ejb.12
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 23:32:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=loC0B4YD8IW3+UrJDzkmpmiX6G452jTJ5CL5SMmmaxg=;
-        b=oAJYpMTbReDKIAwFCQVa91fc+lkmNt4rde5Bq1N0vfzQZEpsw6vk5OsCTq118dc4sn
-         T/5abUeSstgASSD7ag8xK17vQKLHJVugHBhV4pkahQD3jXe+HnQM7v21Ru9H43vx1SbC
-         JGGvdaU/tAHlQh7SC6hcugodbG9/cLToO/jYR9cn800nB6DV12p0RhFAkzHXy2lSS3L0
-         XM9AxteAAH475z44I90Rws0t2KQ5l5rCm9c+QgrIrod8nkpZafED+w55dbfTQqarNr0S
-         BivB3ag1DhPBTca7C32DWajM4g8KIyadw7SNVMAs+x4OfGmuskto8ft21xH2nWZ/xulQ
-         N/Tg==
+        d=javigon-com.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=QmBA/khm9QQj8QSTpq8GUmMDxfR3EYkN2ltUuGJAbWQ=;
+        b=sYihbTj0ySH56E1/o08bUwUHP6PyMBpmkgNghaJfVEKAxJr6SwXUAXRRgAbBC/Bzs6
+         XCmi+fNGzSELeEOU9OyM5gKWSCuhiaTBo8xg5JOR1Xx5YhMEyV5UoZRlzGvOCBFxfdnb
+         Y4XuBjJrymTHqG4Q9c4L/6mmF0Y28mUwbQA1Pievd7aBVzSEiSirgpM/5BDL+f3GB6hH
+         akcyRLY3HEflOUB++qOGJgYxTP9/zppRBr6LWHBQooOIim3A4sdddrOCduKHbzLbGxCf
+         Y8xxy+DyzLOE1m84KcHyUnaOjgn3AqxfX4rVJEXqpze20A3tB7uDXjDBDbGYmlx2eivb
+         nPIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=loC0B4YD8IW3+UrJDzkmpmiX6G452jTJ5CL5SMmmaxg=;
-        b=TpN0CeDbva5r0UdM0uUxGRXJEZIpilzZ2ibpcomQGQqdqCEwbe5hih1zlVT0kgz2ha
-         S1Wku68pB1g1kEG9ao7AJMvpvP6lCIRUbB2H8UcWCqn/+WkyYDT0bEx6Qax/NuwqaJfg
-         Xb9S/13BV9Beq8N02frABmk8O5KtDtU9lRj/V30hni4i5RV/xw6gk64XDFZFMTkDN3VT
-         x4GVaSlT1k7IF175ZwsGSwZ7DIOXO57Uvc/HzaLSx33awU90SeK8ALbug3p91d9dvTrU
-         Fb+qJe5t1QMZ+yvohxsNT4k/Cvq946IDn8uLVYUZhJjw9s1B+JhHg8bA4sdlrh3PGult
-         rX+w==
-X-Gm-Message-State: AOAM530AgRFLSJrGA71ZO9z/JCjWLYTuiX+QObK3A6BCdGAZrNpR10Qd
-        Hsf0OmXWxESpKfVq+vDpfCW3Qtspqc8=
-X-Google-Smtp-Source: ABdhPJyYuI/YdXpa5mshiB78m340fekMdLnTSp0ub+toykg1N2a7CMG/M/YbZ9+QbNcWND+65U9PSQ==
-X-Received: by 2002:a17:902:6907:b029:ea:d1e8:b80b with SMTP id j7-20020a1709026907b02900ead1e8b80bmr20088plk.41.1618036128994;
-        Fri, 09 Apr 2021 23:28:48 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:c9de:23b9:54df:4a55])
-        by smtp.gmail.com with ESMTPSA id s8sm3885152pjg.29.2021.04.09.23.28.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Apr 2021 23:28:47 -0700 (PDT)
-Date:   Fri, 9 Apr 2021 23:28:45 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: apbps2 - remove useless variable
-Message-ID: <YHFFnSGtzmRz1Lv9@google.com>
-References: <1617958859-64707-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-MIME-Version: 1.0
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=QmBA/khm9QQj8QSTpq8GUmMDxfR3EYkN2ltUuGJAbWQ=;
+        b=US41hQCZ7uMPji9MU4vpHcwe62sJkRRlhmJ4gHyXFTaGcRKFZFI+QR+7IopS7R+cGB
+         sFVuiHCugWN8VbFBkcjn/yvGO7duXSKUC7QGZg1Ifjvu/vK9VN1czNqTDK7aySJtWRhT
+         fYsHUONhwwfIxURlQUa3nc6eLCfsyxBl5HNkYVVM17cEnv7uvUtBBk0ucW5GU9RalE00
+         QdVUV6+YRlDVVC26OppKtj1bbKJUe+65iXS6EF74vyys/WuaSm1lWyFqYYBDoyCetYyT
+         zuIELiKoyXqNRH5N23W4o3Br2PX2hbaidmHkIvEIsyzmIFreWdtnTAKGq5R5Kv1TdCKW
+         izCA==
+X-Gm-Message-State: AOAM5328bM65hXg9Q9OzKNUkFxLr/5pOr0TwtNGMDUb0IafohBAuc8AR
+        3YgkSrU2qGTCRiZc7K6zeiQ0oA==
+X-Google-Smtp-Source: ABdhPJwG75/xQdAUY5SZ7i9s/RKcSTINm5eq6NN0AZ16BVTCynQFcgZwYqtZ3G/MLDxy4IQWenOqbw==
+X-Received: by 2002:a17:906:1d0e:: with SMTP id n14mr19377458ejh.97.1618036378037;
+        Fri, 09 Apr 2021 23:32:58 -0700 (PDT)
+Received: from [192.168.10.20] (5.186.124.214.cgn.fibianet.dk. [5.186.124.214])
+        by smtp.gmail.com with ESMTPSA id ck29sm2558898edb.47.2021.04.09.23.32.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 09 Apr 2021 23:32:57 -0700 (PDT)
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1617958859-64707-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Transfer-Encoding: quoted-printable
+From:   =?utf-8?Q?Javier_Gonz=C3=A1lez?= <javier@javigon.com>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [RFC PATCH v5 0/4] add simple copy support
+Date:   Sat, 10 Apr 2021 08:32:56 +0200
+Message-Id: <5BE5E1D9-675F-4122-A845-B0A29BB74447@javigon.com>
+References: <BYAPR04MB49652982D00724001AE758C986729@BYAPR04MB4965.namprd04.prod.outlook.com>
+Cc:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        SelvaKumar S <selvakuma.s1@samsung.com>,
+        linux-nvme@lists.infradead.org, axboe@kernel.dk,
+        Damien Le Moal <damien.lemoal@wdc.com>, kch@kernel.org,
+        sagi@grimberg.me, snitzer@redhat.com, selvajove@gmail.com,
+        linux-kernel@vger.kernel.org, nj.shetty@samsung.com,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dm-devel@redhat.com, joshi.k@samsung.com, javier.gonz@samsung.com,
+        kbusch@kernel.org, joshiiitr@gmail.com, hch@lst.de
+In-Reply-To: <BYAPR04MB49652982D00724001AE758C986729@BYAPR04MB4965.namprd04.prod.outlook.com>
+To:     Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+X-Mailer: iPhone Mail (18D70)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 05:00:59PM +0800, Jiapeng Chong wrote:
-> Fix the following gcc warning:
-> 
-> drivers/input/serio/apbps2.c:106:16: warning: variable ‘tmp’ set but not
-> used [-Wunused-but-set-variable].
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-Applied, thank you.
+> On 10 Apr 2021, at 02.30, Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com> w=
+rote:
+>=20
+> =EF=BB=BFOn 4/9/21 17:22, Max Gurtovoy wrote:
+>>> On 2/19/2021 2:45 PM, SelvaKumar S wrote:
+>>> This patchset tries to add support for TP4065a ("Simple Copy Command"),
+>>> v2020.05.04 ("Ratified")
+>>>=20
+>>> The Specification can be found in following link.
+>>> https://nvmexpress.org/wp-content/uploads/NVM-Express-1.4-Ratified-TPs-1=
+.zip
+>>>=20
+>>> Simple copy command is a copy offloading operation and is  used to copy
+>>> multiple contiguous ranges (source_ranges) of LBA's to a single destinat=
+ion
+>>> LBA within the device reducing traffic between host and device.
+>>>=20
+>>> This implementation doesn't add native copy offload support for stacked
+>>> devices rather copy offload is done through emulation. Possible use
+>>> cases are F2FS gc and BTRFS relocation/balance.
+>>>=20
+>>> *blkdev_issue_copy* takes source bdev, no of sources, array of source
+>>> ranges (in sectors), destination bdev and destination offset(in sectors)=
+.
+>>> If both source and destination block devices are same and copy_offload =3D=
+ 1,
+>>> then copy is done through native copy offloading. Copy emulation is used=
 
--- 
-Dmitry
+>>> in other cases.
+>>>=20
+>>> As SCSI XCOPY can take two different block devices and no of source rang=
+e is
+>>> equal to 1, this interface can be extended in future to support SCSI XCO=
+PY.
+>> Any idea why this TP wasn't designed for copy offload between 2=20
+>> different namespaces in the same controller ?
+>=20
+> Yes, it was the first attempt so to keep it simple.
+>=20
+> Further work is needed to add incremental TP so that we can also do a copy=
+
+> between the name-spaces of same controller (if we can't already) and to th=
+e
+> namespaces that belongs to the different controller.
+>=20
+>> And a simple copy will be the case where the src_nsid =3D=3D dst_nsid ?
+>>=20
+>> Also why there are multiple source ranges and only one dst range ? We=20
+>> could add a bit to indicate if this range is src or dst..
+
+One of the target use cases was ZNS in order to avoid fabric transfers durin=
+g host GC. You can see how this plays well with several zone ranges and a si=
+ngle zone destination.=20
+
+If we start getting support in Linux through the different past copy offload=
+ efforts, I=E2=80=99m sure we can extend this TP in the future.=20
