@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45DF935AE32
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:23:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 577D935AE37
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235157AbhDJOXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
+        id S235045AbhDJOX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234996AbhDJOVb (ORCPT
+        with ESMTP id S235055AbhDJOVu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:21:31 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEBEC06138C
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:14 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id bx20so8632500edb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:14 -0700 (PDT)
+        Sat, 10 Apr 2021 10:21:50 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8282EC06138B
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:16 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a7so13073728eju.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=hm/qIgnpnFQqfRktyMoUjQ+eNm+mCcSEBpPI8cninMM=;
-        b=BlaFFSRQbAEsZ0MlGWQH6QmDa7YFr7kk+hDjY6hXiB9W2bQscsmyooFeFnXFsDxNKv
-         uZQI5xHuKh+IZT65I9eY5xyPqUT9gpxkJvhPf3XMiUMlPGWq8Fiiz5XV424qP9njoyUZ
-         3ddytLAWPONthG/aDfAHKTuudbn9NIcCiPTreKf201/RwZXH/6dx4QEu1MPe5CBpg+BG
-         ts7c7wIX3mTzP76vmpCedOGr2ORBX2NNkMEvqGZFK66kmlaICTEWU7PgGivTiJaRAO+N
-         5jLNjWdq3KSSoAXh2+a2EG6MyjIuvr/Qmh862RBYEpzqTZIgiF3IsYnno6iX7dcQfDV5
-         V2Sw==
+        bh=75uzijMaXeM4/Fh+95uVhQDxEt+qvy+jANgJCzP36jQ=;
+        b=ksHXqnnv8/h/I2BisfVI0eVxaRryQkJRHKRYd6dhEpq5U5U+mL03tLYSGIaVwHnlkr
+         EOh5l0nY2T/KyJXJGdPE41RmkMf/16Ty2Ij3/D6Ro/L8LbEPG/auPFJU7cNRGej2uu+H
+         vriPKe4wQFq2UCNws1w4z8R3XFNFUBVDqfeCdS6tKjJFVkRK9RUMBnJG8vXAMtMqnYaM
+         CaHwrDHYjh8i7XbPK++N639AwCJa0wHbvWoOVjJ4mLBqyotOvxF8wpUyAoM4pyfNPnEx
+         Ra4/wdIfXxDHiIp5TSZdEVVe7No5hvJy76eqoXRHRiRoOZW3Inl5JBFvlZhIcvqBd3UI
+         fOhQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=hm/qIgnpnFQqfRktyMoUjQ+eNm+mCcSEBpPI8cninMM=;
-        b=Y51mNciAwN3zD5anwRLPldKwTgbqCJPFsevCGnVGoX6r8CuQFtjfWFOxc7VAR7bnnt
-         DJeh3IjmbvHw9leVyAqtzgSbe/pxRCI4XmQFWZjMaS2CMKkYNYmhwOjDz0L//mp2xy4T
-         Tv389Li/aaoBrcQwC83M+WrnwSHhqGoR27ylYDQTQ6d4mgG18GYgjzPyWwTi7LFRmwjK
-         t9mL56DboT2N6dPxkcwIq8tV65LDinsd+U0xy55+9u71WjaoQdZsmTcjr6jncXzaMvM2
-         NV7iNCheOs5ohB6fuVvOnUH3rJUn1ZmoWwe8qZLEaUJejxdEnqK2cGPVtnVbBVRns1F3
-         tPAg==
-X-Gm-Message-State: AOAM531xb8AUzSJZUSfWJQB2bGmBHxFssSzYEkmAgsboLzIWBpRqSNp9
-        tObn4IXTAUz5adWTdLUWZ3ozlPg9GBkNqw==
-X-Google-Smtp-Source: ABdhPJzkvTJR5DJhdl4awLQwrpneHDogeI/VTxTLo1jYUQ2sYMtmZls+4SggD0ZPIWQfir/3Q4qqFA==
-X-Received: by 2002:a05:6402:2054:: with SMTP id bc20mr8960838edb.334.1618064473472;
-        Sat, 10 Apr 2021 07:21:13 -0700 (PDT)
+        bh=75uzijMaXeM4/Fh+95uVhQDxEt+qvy+jANgJCzP36jQ=;
+        b=RT1twNVwPXMkvekqV5RBLma4sApqP2i0JBCiIzk4tbSCePt8eObFLLp0ELZVVwDB9g
+         6tYwwkjGEVXewydni0iOxKWUbJLxZ1KLUxM94R8ZMQypUTZPgIDuUc/4vQFGY+ZecVGB
+         5uZ5jsS56yyEu5I+5IX4Aj+8wdhyEE26d+7DlWDw8aklvD+p6nhSuN3Kdbqnc1i/AOuv
+         lozYrnGCYcQ/L9uee2zWWFXwNXo+vxlp19WX9noeDjnblGz9aqwQbdMUI4chJEhbXwqM
+         r6nrYfdOc9CGruO3Zj3rfIV1N0ofYNZp1hiP/LsUlA500cm5n0TJynt8EKfHviBEM+da
+         FAiQ==
+X-Gm-Message-State: AOAM533NcUl5jY/wcFkoMLFJwCcmyPkEq+9pcMF5yREyAHrzy5w1u2lv
+        HT839zoQQ/AMvYvxcQ9MXsSpLU1cQPDDEQ==
+X-Google-Smtp-Source: ABdhPJw1Z+2EI7/w/oe2Njaf6Oaf1PDv6h984uE9U03dK5B51ZrfjPz9sNSVBiStHY12OtDZhbm1NQ==
+X-Received: by 2002:a17:906:c9d8:: with SMTP id hk24mr20444378ejb.480.1618064475094;
+        Sat, 10 Apr 2021 07:21:15 -0700 (PDT)
 Received: from agape ([5.171.81.28])
-        by smtp.gmail.com with ESMTPSA id p9sm3168261edu.79.2021.04.10.07.21.12
+        by smtp.gmail.com with ESMTPSA id z22sm2052818ejr.60.2021.04.10.07.21.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 07:21:13 -0700 (PDT)
+        Sat, 10 Apr 2021 07:21:14 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 21/25] staging: rtl8723bs: remove unnecessary parentheses in os_dep/ioctl_cfg80211.c
-Date:   Sat, 10 Apr 2021 16:20:34 +0200
-Message-Id: <fabc590b9f74f687cc0f7ea978577f0357df2974.1618064275.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 22/25] staging: rtl8723bs: remove empty else block in os_dep/ioctl_cfg80211.c
+Date:   Sat, 10 Apr 2021 16:20:35 +0200
+Message-Id: <1bee993834410c2c11a6799e1868589efc1334f6.1618064275.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1618064274.git.fabioaiuto83@gmail.com>
 References: <cover.1618064274.git.fabioaiuto83@gmail.com>
@@ -63,34 +63,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fix following post-commit hook checkpatch issue:
-
-WARNING: braces {} are not necessary for single statement blocks
-94: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:1225:
-+		if (pwdev_priv->scan_request->wiphy == pwdev_priv->rtw_wdev->wiphy)
- 		{
- 			cfg80211_scan_done(pwdev_priv->scan_request, &info);
- 		}
+remove empty else-block
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-index 617c88c6e4e7..39d0a0d24d2b 100644
+index 39d0a0d24d2b..9c98820952e4 100644
 --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
 +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-@@ -1223,9 +1223,7 @@ void rtw_cfg80211_indicate_scan_done(struct adapter *adapter, bool aborted)
- 	if (pwdev_priv->scan_request) {
- 		/* avoid WARN_ON(request != wiphy_to_dev(request->wiphy)->scan_req); */
- 		if (pwdev_priv->scan_request->wiphy == pwdev_priv->rtw_wdev->wiphy)
--		{
+@@ -1226,7 +1226,6 @@ void rtw_cfg80211_indicate_scan_done(struct adapter *adapter, bool aborted)
  			cfg80211_scan_done(pwdev_priv->scan_request, &info);
--		}
  
  		pwdev_priv->scan_request = NULL;
- 	} else {
+-	} else {
+ 	}
+ 	spin_unlock_bh(&pwdev_priv->scan_req_lock);
+ }
 -- 
 2.20.1
 
