@@ -2,73 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CD035AA52
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 04:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7AD35AA56
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 04:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233777AbhDJCcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 22:32:11 -0400
-Received: from smtprelay0189.hostedemail.com ([216.40.44.189]:44586 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229665AbhDJCcK (ORCPT
+        id S233687AbhDJCmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 22:42:54 -0400
+Received: from m176149.mail.qiye.163.com ([59.111.176.149]:30769 "EHLO
+        m176149.mail.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDJCmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 22:32:10 -0400
-Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 396D718150A50;
-        Sat, 10 Apr 2021 02:31:56 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 3314B13D94;
-        Sat, 10 Apr 2021 02:31:55 +0000 (UTC)
-Message-ID: <04fcc5ac37f750e335447aee57da5aad072e321d.camel@perches.com>
-Subject: Re: [PATCH 4/6] staging: rtl8192e: matched alignment with open
- parenthesis
-From:   Joe Perches <joe@perches.com>
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Date:   Fri, 09 Apr 2021 19:31:53 -0700
-In-Reply-To: <YHEMrQdEFpXgmMh/@kali>
-References: <YHEA2Te3Hik5J39t@kali>
-         <f5fe04d62b22eb5e09c299e769d9b9d8917f119c.camel@perches.com>
-         <YHEMrQdEFpXgmMh/@kali>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 9 Apr 2021 22:42:50 -0400
+Received: from vivo.com (wm-9.qy.internal [127.0.0.1])
+        by m176149.mail.qiye.163.com (Hmail) with ESMTP id 4F3A4282535;
+        Sat, 10 Apr 2021 10:42:33 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <ANUA4QBkDhibiES5bK7X8Ko8.3.1618022553315.Hmail.wangqing@vivo.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gd2F0Y2hkb2c6IG10azogc3VwcG9ydCBwcmUtdGltZW91dCB3aGVuIHRoZSBiYXJrIGlycSBpcyBhdmFpbGFibGU=?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.182
+In-Reply-To: <58b6f50a-4522-dc21-3411-7ed18059b480@roeck-us.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: qyweys8gmc393ikshcq9nfi1t1idfwm4
-X-Rspamd-Server: rspamout05
-X-Rspamd-Queue-Id: 3314B13D94
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/jsGVRnYflYxVFQhm6ZrKMmWNfkAc0CcM=
-X-HE-Tag: 1618021915-880427
+Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Sat, 10 Apr 2021 10:42:33 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Date:   Sat, 10 Apr 2021 10:42:33 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQh0aQ1ZDHx4dGk1DTEMaTxpVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1JTElDQ0hMQkxDN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6NS46Tyo5ED8TEhkSPihOGTBMI0MwFENVSFVKTUpDS0lJTk5ITkxKVTMWGhIXVQwaFRwKEhUc
+        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBT0tPSjcG
+X-HM-Tid: 0a78b9a8d6ef9395kuws4f3a4282535
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-04-10 at 07:55 +0530, Mitali Borkar wrote:
-> On Fri, Apr 09, 2021 at 07:07:09PM -0700, Joe Perches wrote:
-> > On Sat, 2021-04-10 at 07:05 +0530, Mitali Borkar wrote:
-> > > Matched the alignment with open parenthesis to meet linux kernel coding
-> > > style.
-> > > Reported by checkpatch.
-> > []
-> > > diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
-> > []
-> > > @@ -154,7 +154,7 @@ bool IsHTHalfNmodeAPs(struct rtllib_device *ieee)
-> > >  	    (net->ralink_cap_exist))
-> > >  		retValue = true;
-> > >  	else if (!memcmp(net->bssid, UNKNOWN_BORADCOM, 3) ||
-> > > -		!memcmp(net->bssid, LINKSYSWRT330_LINKSYSWRT300_BROADCOM, 3) ||
-> > > +		 !memcmp(net->bssid, LINKSYSWRT330_LINKSYSWRT300_BROADCOM, 3) ||
-> > >  		!memcmp(net->bssid, LINKSYSWRT350_LINKSYSWRT150_BROADCOM, 3) ||
-> > >  		(net->broadcom_cap_exist))
-> > 
-> > checkpatch is a stupid script.
-> > Look further at the code not just at what checkpatch reports.
-> > Align all the contination lines, not just the first one.
-> > 
-> Sir, I have aligned them in last patch of this patchset.
-
-This sort of change should not require an additional patch.
-
-
+Cj5PbiA0LzkvMjEgMjo1NSBBTSwgV2FuZyBRaW5nIHdyb3RlOgo+PiBVc2UgdGhlIGJhcmsgaW50
+ZXJydXB0IGFzIHRoZSBwcmV0aW1lb3V0IG5vdGlmaWVyIGlmIGF2YWlsYWJsZS4KPj4gCj4+IEJ5
+IGRlZmF1bHQsIHRoZSBwcmV0aW1lb3V0IG5vdGlmaWNhdGlvbiBzaGFsbCBvY2N1ciBvbmUgc2Vj
+b25kIGVhcmxpZXIKPj4gdGhhbiB0aGUgdGltZW91dC4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IFdh
+bmcgUWluZyA8d2FuZ3FpbmdAdml2by5jb20+Cj4+IC0tLQo+PiAgZHJpdmVycy93YXRjaGRvZy9t
+dGtfd2R0LmMgfCA0NyArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+LS0tCj4+ICAxIGZpbGUgY2hhbmdlZCwgNDQgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkK
+Pj4gCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3dhdGNoZG9nL210a193ZHQuYyBiL2RyaXZlcnMv
+d2F0Y2hkb2cvbXRrX3dkdC5jCj4+IGluZGV4IDk3Y2E5OTMuLjhiOTE5Y2MKPj4gLS0tIGEvZHJp
+dmVycy93YXRjaGRvZy9tdGtfd2R0LmMKPj4gKysrIGIvZHJpdmVycy93YXRjaGRvZy9tdGtfd2R0
+LmMKPj4gQEAgLTI1LDYgKzI1LDcgQEAKPj4gICNpbmNsdWRlIDxsaW51eC9yZXNldC1jb250cm9s
+bGVyLmg+Cj4+ICAjaW5jbHVkZSA8bGludXgvdHlwZXMuaD4KPj4gICNpbmNsdWRlIDxsaW51eC93
+YXRjaGRvZy5oPgo+PiArI2luY2x1ZGUgPGxpbnV4L2ludGVycnVwdC5oPgo+PiAgCj4+ICAjZGVm
+aW5lIFdEVF9NQVhfVElNRU9VVAkJMzEKPj4gICNkZWZpbmUgV0RUX01JTl9USU1FT1VUCQkxCj4+
+IEBAIC0yMzQsMTggKzIzNSwzNSBAQCBzdGF0aWMgaW50IG10a193ZHRfc3RhcnQoc3RydWN0IHdh
+dGNoZG9nX2RldmljZSAqd2R0X2RldikKPj4gIAl2b2lkIF9faW9tZW0gKndkdF9iYXNlID0gbXRr
+X3dkdC0+d2R0X2Jhc2U7Cj4+ICAJaW50IHJldDsKPj4gIAo+PiAtCXJldCA9IG10a193ZHRfc2V0
+X3RpbWVvdXQod2R0X2Rldiwgd2R0X2Rldi0+dGltZW91dCk7Cj4+ICsJcmV0ID0gbXRrX3dkdF9z
+ZXRfdGltZW91dCh3ZHRfZGV2LCB3ZHRfZGV2LT50aW1lb3V0IC0gd2R0X2Rldi0+cHJldGltZW91
+dCk7Cj4KPlRoYXQgbG9va3Mgc3VzcGljaW91c2x5IGxpa2UgdGhlIHJlYWwgd2F0Y2hkb2cgd29u
+J3QgaGFwcGVuIGF0IGFsbC4KPldoYXQgd2lsbCBoYXBwZW4gaWYgdGhlIHByZXRpbWVvdXQgZ292
+ZXJub3IgaXMgc2V0IHRvIG5vbmUgPwo+Cj5HdWVudGVyCj4KVGhlIHByZXRpbWVvdXQgZ292ZXJu
+b3IgaXMgcGFuaWMgYnkgZGVmYXVsdC4gSWYgcHJldGltZW91dCBpcyBlbmFibGVkIGFuZCB0aGUg
+Z292ZXJub3IgaXMKc2V0IHRvIG5vbmUsIGl0IG1lYW5zIHRoZSB0aW1lb3V0IGJlaGF2aW9yIGRv
+ZXMgbm90IG5lZWQgdG8gYmUgcHJvY2Vzc2VkLCBvbmx5IHByaW50aW5nLgoKVGhhbmtzLgoKUWlu
+ZyBXYW5nLgoNCg0K
