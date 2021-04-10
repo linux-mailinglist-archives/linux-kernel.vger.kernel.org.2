@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A80E35AD30
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB67E35AD31
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:08:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234580AbhDJMIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 08:08:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231279AbhDJMIn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 08:08:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9653C611AF;
-        Sat, 10 Apr 2021 12:08:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618056507;
-        bh=/WH6SBPC+bQg04mE0kmlbX3u2IbS/MY+cappevAC1Zw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cjh7YLusfa6RqhdKrp9QIdy45lk9Rh8Dc3ufuRkcwwcmO1/sWDMIx8AQuX0AHWT02
-         WN1JwnTUHIytWZIQhSr9PanW9tLX7DESPOxTysGXvorLzJnE2Vbud8ppX/bqZ09H6Q
-         76gUEy7uT9vkTpxg5nAMisacuL3TQ4o0JwnF/Gv4=
-Date:   Sat, 10 Apr 2021 14:08:24 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] of: property: fw_devlink: do not link ".*,nr-gpios"
-Message-ID: <YHGVOO0j2VpzounG@kroah.com>
-References: <20210405031436.2465475-1-ilya.lipnitskiy@gmail.com>
- <20210405222540.18145-1-ilya.lipnitskiy@gmail.com>
- <CAGETcx-gF4r1TeY2AA4Vwb5e+5O+_O3E2ENo5tKhh=n_EOJnEQ@mail.gmail.com>
- <20210407003408.GA2551507@robh.at.kernel.org>
- <CAGETcx8=sSWj_OmM1GPXNiLcv3anEkJnb_C7NoO9mNwS-O0KhQ@mail.gmail.com>
- <CAL_JsqLs4c3+9WwV6Vnk9Tovb6HiyH7t+_WXYP-ZDO72mOcO+w@mail.gmail.com>
- <CAGETcx-W_K9NFV51iBvyZ-Q+1LCUM3qipMmap9yEW_eu9B7CCg@mail.gmail.com>
- <CALCv0x1qOKkMmwJu82sXEJ3L5Y2n4eQp8n+SN1HYwcgpYm6CAw@mail.gmail.com>
- <CAL_JsqJN5W60Cy6ec5HJxKMRag-MYO3yqkbBnWp6k_u6h85T=A@mail.gmail.com>
- <CAGETcx_3CYxrSBtTgRkyRJUS0kdtn3ukLYpSznY-e9O6eOe+xA@mail.gmail.com>
+        id S234648AbhDJMIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 08:08:47 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:65144
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234619AbhDJMIq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 08:08:46 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AV9AJgaqWA7P3crQT0RgVjsMaV5rKeYIsi2QD?=
+ =?us-ascii?q?101hICF9WMqeisyogbAnxQb54QxhPE0ItNicNMC7Kk/02oVy5eAqV4uKfA6jg2?=
+ =?us-ascii?q?ewKZEn0I2K+VzdMgnf0sIY6qt6aah5D7TLfD1HpOL3+hOxHdpl4PTvysCVrNzT?=
+ =?us-ascii?q?xXtsUg1mApsIhztRMQqVHlZ7QwNLH/MCZfmhz/BarDmtc2l/VKqGL0QCNtKum/?=
+ =?us-ascii?q?T2jp78JTYJCxk7gTP+7w+A2frKVyKV2RoTSFp0rIsK+2KtqWPE2pk=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,210,1613430000"; 
+   d="scan'208";a="378283426"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 14:08:30 +0200
+Date:   Sat, 10 Apr 2021 14:08:30 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Mitali Borkar <mitaliborkar810@gmail.com>
+cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8192e: replace comparison
+ to NULL by bool
+In-Reply-To: <YHDnWpWztxeZospi@kali>
+Message-ID: <alpine.DEB.2.22.394.2104101408100.2975@hadrien>
+References: <YHDnWpWztxeZospi@kali>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx_3CYxrSBtTgRkyRJUS0kdtn3ukLYpSznY-e9O6eOe+xA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 12:36:36PM -0700, Saravana Kannan wrote:
-> On Fri, Apr 9, 2021 at 12:26 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Wed, Apr 7, 2021 at 3:45 PM Ilya Lipnitskiy
-> > <ilya.lipnitskiy@gmail.com> wrote:
-> > >
-> > > On Tue, Apr 6, 2021 at 6:24 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > >
-> > > > On Tue, Apr 6, 2021 at 6:10 PM Rob Herring <robh@kernel.org> wrote:
-> > > > >
-> > > > > On Tue, Apr 6, 2021 at 7:46 PM Saravana Kannan <saravanak@google.com> wrote:
-> > > > > >
-> > > > > > On Tue, Apr 6, 2021 at 5:34 PM Rob Herring <robh@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Tue, Apr 06, 2021 at 04:09:10PM -0700, Saravana Kannan wrote:
-> > > > > > > > On Mon, Apr 5, 2021 at 3:26 PM Ilya Lipnitskiy
-> > > > > > > > <ilya.lipnitskiy@gmail.com> wrote:
-> > > > > > > > >
-> > > > > > > > > [<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-> > > > > > > > > the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-> > > > > > > > > not configured by #gpio-cells and can't be parsed along with other
-> > > > > > > > > "*-gpios" properties.
-> > > > > > > > >
-> > > > > > > > > nr-gpios without the "<vendor>," prefix is not allowed by the DT
-> > > > > > > > > spec[1], so only add exception for the ",nr-gpios" suffix and let the
-> > > > > > > > > error message continue being printed for non-compliant implementations.
-> > > > > > > > >
-> > > > > > > > > [0]: nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
-> > > > > > > > >  - gpio-adnp.txt
-> > > > > > > > >  - gpio-xgene-sb.txt
-> > > > > > > > >  - gpio-xlp.txt
-> > > > > > > > >  - snps,dw-apb-gpio.yaml
-> > > > > > > > >
-> > > > > > > > > [1]:
-> > > > > > > > > Link: https://github.com/devicetree-org/dt-schema/blob/cb53a16a1eb3e2169ce170c071e47940845ec26e/schemas/gpio/gpio-consumer.yaml#L20
-> > > > > > > > >
-> > > > > > > > > Fixes errors such as:
-> > > > > > > > >   OF: /palmbus@300000/gpio@600: could not find phandle
-> > > > > > > > >
-> > > > > > > > > Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
-> > > > > > > > > Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> > > > > > > > > Cc: Saravana Kannan <saravanak@google.com>
-> > > > > > > > > Cc: <stable@vger.kernel.org> # 5.5.x
-> > > > > > > > > ---
-> > > > > > > > >  drivers/of/property.c | 11 ++++++++++-
-> > > > > > > > >  1 file changed, 10 insertions(+), 1 deletion(-)
-> > > > > > > > >
-> > > > > > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > > > > > > > index 2046ae311322..1793303e84ac 100644
-> > > > > > > > > --- a/drivers/of/property.c
-> > > > > > > > > +++ b/drivers/of/property.c
-> > > > > > > > > @@ -1281,7 +1281,16 @@ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7", NULL)
-> > > > > > > > >  DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
-> > > > > > > > >  DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
-> > > > > > > > >  DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
-> > > > > > > > > -DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-> > > > > > > > > +
-> > > > > > > > > +static struct device_node *parse_gpios(struct device_node *np,
-> > > > > > > > > +                                      const char *prop_name, int index)
-> > > > > > > > > +{
-> > > > > > > > > +       if (!strcmp_suffix(prop_name, ",nr-gpios"))
-> > > > > > > > > +               return NULL;
-> > > > > > > >
-> > > > > > > > Ah I somehow missed this patch. This gives a blanked exception for
-> > > > > > > > vendor,nr-gpios. I'd prefer explicit exceptions for all the instances
-> > > > > > > > of ",nr-gpios" we are grandfathering in. Any future additions should
-> > > > > > > > be rejected. Can we do that please?
-> > > > > > > >
-> > > > > > > > Rob, you okay with making this list more explicit?
-> > > > > > >
-> > > > > > > Not the kernel's job IMO. A schema is the right way to handle that.
-> > > > > >
-> > > > > > Ok, that's fine by me. Btw, let's land this in driver-core? I've made
-> > > > > > changes there and this might cause conflicts. Not sure.
-> > > > >
-> > > > > It merges with linux-next fine. You'll need to resend this to Greg if
-> > > > > you want to do that.
-> > > > >
-> > > > > Reviewed-by: Rob Herring <robh@kernel.org>
-> > > >
-> > > > Hi Greg,
-> > > >
-> > > > Can you pull this into driver-core please?
-> > > Do you want me to re-spin on top of driver-core? The patch is
-> > > currently based on dt/next in robh/linux.git
-> >
-> > I did say you need to resend the patch to Greg, but since there's no
-> > movement on this and I have other things to send upstream, I've
-> > applied it.
-> 
-> :'(
-> 
-> If it's not too late, can we please drop it? I'm sure Greg would be
-> okay with picking this up.
 
-It's in Linus's tree, why does it matter who sends it in?
 
-{sigh}
+On Sat, 10 Apr 2021, Mitali Borkar wrote:
+
+> Fixed Comparison to NULL can be written as '!...' by replacing it with
+> simpler form i.e boolean expression. This makes code more readable alternative.
+> Reported by checkpatch.
+>
+> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> ---
+>  drivers/staging/rtl8192e/rtl819x_TSProc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+> index 65eac33aaa5b..476875125e87 100644
+> --- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
+> +++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+> @@ -269,12 +269,12 @@ static void MakeTSEntry(struct ts_common_info *pTsCommonInfo, u8 *Addr,
+>  {
+>  	u8	count;
+>
+> -	if (pTsCommonInfo == NULL)
+> +	if (!pTsCommonInfo)
+>  		return;
+>
+>  	memcpy(pTsCommonInfo->Addr, Addr, 6);
+>
+> -	if (pTSPEC != NULL)
+> +	if (pTSPEC)
+>  		memcpy((u8 *)(&(pTsCommonInfo->TSpec)), (u8 *)pTSPEC,
+>  		       sizeof(union tspec_body));
+>
+> @@ -328,7 +328,7 @@ bool GetTs(struct rtllib_device *ieee, struct ts_common_info **ppTS,
+>  	}
+>
+>  	*ppTS = SearchAdmitTRStream(ieee, Addr, UP, TxRxSelect);
+> -	if (*ppTS != NULL)
+> +	if (ppTS)
+
+You lost a * here.
+
+julia
+
+>  		return true;
+>
+>  	if (!bAddNewTs) {
+> --
+> 2.30.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHDnWpWztxeZospi%40kali.
+>
