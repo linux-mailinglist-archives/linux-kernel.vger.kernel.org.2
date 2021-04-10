@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C3335ABA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72B9135ABA3
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234558AbhDJHZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 03:25:14 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16515 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234453AbhDJHZE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 03:25:04 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FHRJk5xzLzNvPW;
-        Sat, 10 Apr 2021 15:21:58 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Sat, 10 Apr 2021
- 15:24:38 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linmiaohe@huawei.com>, <linfeilong@huawei.com>
-Subject: [PATCH v2 5/5] mm/hugetlb: remove unused variable pseudo_vma in remove_inode_hugepages()
-Date:   Sat, 10 Apr 2021 03:23:48 -0400
-Message-ID: <20210410072348.20437-6-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-In-Reply-To: <20210410072348.20437-1-linmiaohe@huawei.com>
-References: <20210410072348.20437-1-linmiaohe@huawei.com>
+        id S234441AbhDJH0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 03:26:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50828 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230235AbhDJH0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 03:26:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618039596; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yjZzbPPWgXhfJIj4h7rGByFGwcymMj9q3Ge4BPGca+k=;
+        b=fCSiSkzjE3C7mHOKwprZ06zOxaiXH5i4AebWdZtgLiv0uPW/lAcrcJEj1BIs/nlOoZ74eG
+        f3dq9ng3FJLr294v+ORxAdreMahYyju1zN36zEWvWsgbfzSJmB0Sx4CdXU7Jy+gqgK2OGi
+        qhdKuha/26jglfRF+kl/KTArr7VTPEo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BBA12AFDF;
+        Sat, 10 Apr 2021 07:26:36 +0000 (UTC)
+Date:   Sat, 10 Apr 2021 09:25:52 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH] mm/memory_hotplug: Make unpopulated zones PCP structures
+ unreachable during hot remove
+Message-ID: <YHFS5OXrbyN68KSO@dhcp22.suse.cz>
+References: <20210409120957.GM3697@techsingularity.net>
+ <YHBL0e8s+EesIyDl@dhcp22.suse.cz>
+ <YHBNDEAw1OqIWwb5@dhcp22.suse.cz>
+ <20210409134221.GO3697@techsingularity.net>
+ <YHBmxwH41WEHuVJj@dhcp22.suse.cz>
+ <20210409151259.GP3697@techsingularity.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409151259.GP3697@techsingularity.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The local variable pseudo_vma is not used anymore.
+On Fri 09-04-21 16:12:59, Mel Gorman wrote:
+[...]
+> If anything, the minimal "fix" is to simply delete IRQ disable/enable on
+> the grounds that IRQs protect nothing and assume the existing hotplug
+> paths guarantees the PCP cannot be used after zone_pcp_enable(). That
+> should be the case already because all the pages have been freed and
+> there is nothing to even put into the PCPs but I worried that the PCP
+> structure itself might still be reachable even if it's useless which is
+> why I freed the structure once they could not be reached via zonelists.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
----
- fs/hugetlbfs/inode.c | 3 ---
- 1 file changed, 3 deletions(-)
+OK. Let's do that for now and I will put a follow up on my todo list.
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index d81f52b87bd7..a2a42335e8fd 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -463,14 +463,11 @@ static void remove_inode_hugepages(struct inode *inode, loff_t lstart,
- 	struct address_space *mapping = &inode->i_data;
- 	const pgoff_t start = lstart >> huge_page_shift(h);
- 	const pgoff_t end = lend >> huge_page_shift(h);
--	struct vm_area_struct pseudo_vma;
- 	struct pagevec pvec;
- 	pgoff_t next, index;
- 	int i, freed = 0;
- 	bool truncate_op = (lend == LLONG_MAX);
- 
--	vma_init(&pseudo_vma, current->mm);
--	pseudo_vma.vm_flags = (VM_HUGETLB | VM_MAYSHARE | VM_SHARED);
- 	pagevec_init(&pvec);
- 	next = start;
- 	while (next < end) {
+Thanks!
 -- 
-2.19.1
-
+Michal Hocko
+SUSE Labs
