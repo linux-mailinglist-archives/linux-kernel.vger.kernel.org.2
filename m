@@ -2,82 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A686435AE49
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF4635AE53
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbhDJO2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:28:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234392AbhDJO2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:28:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8914D6115B;
-        Sat, 10 Apr 2021 14:28:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618064902;
-        bh=vk1fqmBpzYPSIfjHRbqJl6UNW9VB0opCtMSgs5Q7qEs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QlnlAOsbehlgX6YKs0PIZQQBoYZGJkv69VvcLxO1MLn1zwHouCpPecJVeKtMSHoEB
-         +HiVDvC0OIRDit54UsxNzIwqG2mezTwZkYH73EoHL3fB2znbp2GyIAlPtizicg9Lvt
-         meTi+NqAicp7sPjiMQRtaRzzuKy21PeBY1G4LjHE=
-Date:   Sat, 10 Apr 2021 16:28:19 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2] staging: rtl8723bs: remove unnecessary goto jumps
-Message-ID: <YHG2A4rJdl1uiZjV@kroah.com>
-References: <20210410141945.424238-1-hello@bryanbrattlof.com>
+        id S234907AbhDJO35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234825AbhDJO3v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 10:29:51 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF856C06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:29:35 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4FHcp53z4Gz9sWw; Sun, 11 Apr 2021 00:29:33 +1000 (AEST)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Daniel Axtens <dja@axtens.net>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <c95a648fdf75992c9d88f3c73cc23e7537fcf2ad.1615555354.git.christophe.leroy@csgroup.eu>
+References: <0ad4629c2d222019e82fcdfccc70d372beb4adf9.1615398265.git.christophe.leroy@csgroup.eu> <c95a648fdf75992c9d88f3c73cc23e7537fcf2ad.1615555354.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH v3 03/15] powerpc/align: Convert emulate_spe() to user_access_begin
+Message-Id: <161806492680.1467223.16788785953274402372.b4-ty@ellerman.id.au>
+Date:   Sun, 11 Apr 2021 00:28:46 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210410141945.424238-1-hello@bryanbrattlof.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 02:20:19PM +0000, Bryan Brattlof wrote:
-> The next instruction for both 'goto exit' jump statements is to
-> execute the exit jump instructions regardless. We can safely
-> remove all jump statements from __init rtw_drv_entry()
+On Fri, 12 Mar 2021 13:25:11 +0000 (UTC), Christophe Leroy wrote:
+> This patch converts emulate_spe() to using user_access_begin
+> logic.
 > 
-> Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
-> ---
-> Changes from:
->   v1: removed unnecessary edit of DBG_871X_LEVEL
+> Since commit 662bbcb2747c ("mm, sched: Allow uaccess in atomic with
+> pagefault_disable()"), might_fault() doesn't fire when called from
+> sections where pagefaults are disabled, which must be the case
+> when using _inatomic variants of __get_user and __put_user. So
+> the might_fault() in user_access_begin() is not a problem.
 > 
->  drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> index 9fd926e1698f..39b6d4b6dec4 100644
-> --- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> @@ -517,12 +517,8 @@ static int __init rtw_drv_entry(void)
->  	if (ret != 0) {
->  		sdio_drvpriv.drv_registered = false;
->  		rtw_ndev_notifier_unregister();
-> -		goto exit;
->  	}
->  
-> -	goto exit;
-> -
-> -exit:
->  	DBG_871X_LEVEL(_drv_always_, "module init ret =%d\n", ret);
->  	return ret;
->  }
-> @@ -540,6 +536,5 @@ static void __exit rtw_drv_halt(void)
->  	DBG_871X_LEVEL(_drv_always_, "module exit success\n");
->  }
->  
-> -
->  module_init(rtw_drv_entry);
->  module_exit(rtw_drv_halt);
+> [...]
 
-Any reason you removed this extra line?
+Applied to powerpc/next.
 
-thanks,
+[03/15] powerpc/align: Convert emulate_spe() to user_access_begin
+        https://git.kernel.org/powerpc/c/3fa3db32956d74c0784171ae0334685502bb169a
 
-greg k-h
+cheers
