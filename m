@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B1135AE2C
+	by mail.lfdr.de (Postfix) with ESMTP id 5276335AE2D
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235089AbhDJOWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54740 "EHLO
+        id S235094AbhDJOWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:22:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234941AbhDJOVV (ORCPT
+        with ESMTP id S234944AbhDJOVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:21:21 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8234C061343
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:05 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id r12so13058202ejr.5
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:05 -0700 (PDT)
+        Sat, 10 Apr 2021 10:21:22 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40758C061344
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:07 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id n2so13020198ejy.7
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bIfCpRzZUpXirgKl1gCFnYnBbKjxAWQCu96s2HjUGIE=;
-        b=N+XvGNzm8M9loYIWss15cm9NCPztCfXaLnmIErKUXufJyWPfh75M0LEv/vnLhqeQaN
-         G/0xcyhSmdsb+vgk0etpL4ro53iaZzub1M7RbQuwwKK//REHgLAQCFwTHko9pWR3C/Qk
-         VUogp7qW4homD6likv242aiATMkFjG2ySSJKqoZ0F8mQilnuWQdtyD+1bmfl1X9nw87g
-         G/ABHiNLxIih9W2ngFl74128DWetEN3nc1u6duKwoOtYEHbGA5Dg0E/BB00gVMCaIVBH
-         0j9ysAOfYAsXVSncZDM7a3DHHfoFNpR/aFSEN6E94w1UOxBKcM+8biAc8H7kPThopaFM
-         oFqA==
+        bh=70up8zMFHK98mBqYLU707HfdW2OG0jaycv4htN1s4V0=;
+        b=UxoIFR1bhd8vbmQC86UCMEjaVHHbGAuG3zr4mCh3EfoQ0v0Wf9Q+pZV91UBqBHlrPT
+         gSs4NNbuIR4UQZV9RoFLtlBvuoEDXZor+542UHpQ0B6ziCfDxQOyjHOIJAqQqcU1Z+sj
+         bi2ZUUvePoY4dwv/cufJ7awY+nQDdpFmQpbEXJBaV7viPMxzKX+j+teu01H8VqLgJ5PI
+         tOMNP9eRWE1LYeZ7OqoyLGrDJp4rAipDVABS5Bx7ppjWEbSUnWAnDkUEhGDfcGZMTEO8
+         gSP3DSPE2tH3cVsKYSEARJbhaiFoesH8x2sUcIzugNuF7CyDDPMPbtG0uHtNlNU59+uo
+         CTNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bIfCpRzZUpXirgKl1gCFnYnBbKjxAWQCu96s2HjUGIE=;
-        b=K3OK4R28rxjq+YiHDmV9OS1twhc9Kg2EeDqj3vtjnqWSsD3tF9i/P7K07jGckTdFz5
-         W+ZIo0eRxq5Pp7z4ygoN5OhAfkzuoapPdo52A7L+GORjzYbIh169zqtqVs3ab02X4D9V
-         ULcu2qUjnRxrh/lKHkmWQ3k0wjvwxtFanARC2CZU07/3ys1V4dS3h3+U+A8xqbxV5+L3
-         u5TkwcsaK6cd7rNYuiuZHy5Cq2JF18RmhwMEyYAmPVcXLedwXPOLMwnbxHSzNbApL+5y
-         WPM+dn+QolBoVt3Y56cJS/pYQRZLm0tWpCcqufDOk9t/W8ksTaCyTLa6fQMk0ca7V31+
-         TYtQ==
-X-Gm-Message-State: AOAM533bP2rN7T7BkoWdliDGd69HvV++TBPiaW0V22jngLuXGP6QHlbt
-        frq7lCZM6/YewKht11JHdqvDfx+Z3UhlpA==
-X-Google-Smtp-Source: ABdhPJxO82dvZHLf2ql9dCjZxCFbN+2l1MNQdLpOnmy7Lwg54GlCS3geTiRO1/YdKZo4MHFWUBudRQ==
-X-Received: by 2002:a17:906:489b:: with SMTP id v27mr20226261ejq.1.1618064464334;
-        Sat, 10 Apr 2021 07:21:04 -0700 (PDT)
+        bh=70up8zMFHK98mBqYLU707HfdW2OG0jaycv4htN1s4V0=;
+        b=rTRR4eyJrSAJleT2rC7j+1af3AS5P7z1wY6Oh+Mj0HTjAz/Tfw17V5OhsmM7JVIMtx
+         nyf5Hxazs56tfyhs0gtB4HEm0wmiAM+WUYEYG5mC/E8yzVfMNCr4qpazic89VdcSklpD
+         IHESzs3TJ05R8flDszguLePJg9kXta6GuARAefYGOeovGCXlFZ72vpgZkkY4H13oGaQ6
+         /uICyxSOUHNhGKSHU64yNzpj9WJLPIiWzI7Af81iJaNDBSkkn/C3aFY/D1cPQaEyJnry
+         cZ9brk70iUORvkaS5hHqMCLWqR23VNu6Mn5RzWJDMBBZgFaElfFFJW5BI0R0/nHMA4TW
+         /l4A==
+X-Gm-Message-State: AOAM531ObYzCcdN11x6KCinB0bHA1tEfwQeBSqiq7mkNY0iHyPMMRcca
+        QTnir55P1zLhXdGEdwGMImdGPv3YOA3rwg==
+X-Google-Smtp-Source: ABdhPJwd71jUymegSb9eC64dLSXqPTqTphaSVXSAJqPjQhwMfTFzxqvGxWWrMOjTdaD9pZ3iiw78Kg==
+X-Received: by 2002:a17:906:4015:: with SMTP id v21mr20929790ejj.433.1618064465775;
+        Sat, 10 Apr 2021 07:21:05 -0700 (PDT)
 Received: from agape ([5.171.81.28])
-        by smtp.gmail.com with ESMTPSA id c19sm3205259edu.20.2021.04.10.07.21.03
+        by smtp.gmail.com with ESMTPSA id gb22sm2686324ejc.78.2021.04.10.07.21.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 07:21:04 -0700 (PDT)
+        Sat, 10 Apr 2021 07:21:05 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 15/25] staging: rtl8723bs: fix comparison to null
-Date:   Sat, 10 Apr 2021 16:20:28 +0200
-Message-Id: <2c7557a465aeda7fb6989df30c6250f9ec56ebe1.1618064274.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 16/25] staging: rtl8723bs: put spaces around operators
+Date:   Sat, 10 Apr 2021 16:20:29 +0200
+Message-Id: <65b7cf4b1ae3cea25a316f3c9f56c697ee7be8af.1618064274.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1618064274.git.fabioaiuto83@gmail.com>
 References: <cover.1618064274.git.fabioaiuto83@gmail.com>
@@ -65,85 +65,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 fix following post-commit hook checkpatch issues:
 
-CHECK: Comparison to NULL could be written "!pmlmepriv->wps_probe_req_ie"
-348: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:1319:
-+			if (pmlmepriv->wps_probe_req_ie == NULL)
-
-CHECK: Comparison to NULL could be written "!dvobj"
-459: FILE: drivers/staging/rtl8723bs/os_dep/sdio_intf.c:184:
-+	if (dvobj == NULL)
-
-CHECK: Comparison to NULL could be written "!padapter"
-470: FILE: drivers/staging/rtl8723bs/os_dep/sdio_intf.c:231:
-+	if (padapter == NULL)
-
-CHECK: Comparison to NULL could be written "!padapter"
-481: FILE: drivers/staging/rtl8723bs/os_dep/sdio_intf.c:240:
-+	if (padapter == NULL)
-
-CHECK: Comparison to NULL could be written "!padapter"
-492: FILE: drivers/staging/rtl8723bs/os_dep/sdio_intf.c:256:
-+	if (padapter == NULL)
+CHECK: spaces preferred around that '+' (ctx:VxV)
+87: FILE: drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:746:
++	if ((_offset+_size_byte) > EFUSE_MAX_MAP_LEN)
+--
+CHECK: spaces preferred around that '+' (ctx:VxV)
+105: FILE: drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:847:
++	if ((_offset+_size_byte) > EFUSE_BT_MAP_LEN)
+--
+CHECK: spaces preferred around that '-' (ctx:VxV)
+133: FILE: drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:906:
++		if ((eFuse_Addr-1) < total)
+--
+CHECK: spaces preferred around that '|' (ctx:VxV)
+392: FILE: drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c:2485:
++	if (check_fwstate(pmlmepriv, (_FW_LINKED|WIFI_AP_STATE)) != true)
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
+ drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 6 +++---
  drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c | 2 +-
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c      | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+index 44cb4c5be501..00115a0c70be 100644
+--- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
++++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
+@@ -743,7 +743,7 @@ static void hal_ReadEFuse_WiFi(
+ 	/*  */
+ 	/*  Do NOT excess total size of EFuse table. Added by Roger, 2008.11.10. */
+ 	/*  */
+-	if ((_offset+_size_byte) > EFUSE_MAX_MAP_LEN)
++	if ((_offset + _size_byte) > EFUSE_MAX_MAP_LEN)
+ 		return;
+ 
+ 	efuseTbl = rtw_malloc(EFUSE_MAX_MAP_LEN);
+@@ -844,7 +844,7 @@ static void hal_ReadEFuse_BT(
+ 	/*  */
+ 	/*  Do NOT excess total size of EFuse table. Added by Roger, 2008.11.10. */
+ 	/*  */
+-	if ((_offset+_size_byte) > EFUSE_BT_MAP_LEN)
++	if ((_offset + _size_byte) > EFUSE_BT_MAP_LEN)
+ 		return;
+ 
+ 	efuseTbl = rtw_malloc(EFUSE_BT_MAP_LEN);
+@@ -903,7 +903,7 @@ static void hal_ReadEFuse_BT(
+ 			}
+ 		}
+ 
+-		if ((eFuse_Addr-1) < total)
++		if ((eFuse_Addr - 1) < total)
+ 			break;
+ 
+ 	}
 diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-index c85fd9e9e394..601a16074ee3 100644
+index 601a16074ee3..54c65c125c8c 100644
 --- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
 +++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
-@@ -1316,7 +1316,7 @@ static int rtw_cfg80211_set_probe_req_wpsp2pie(struct adapter *padapter, char *b
- 			}
+@@ -2482,7 +2482,7 @@ static int cfg80211_rtw_del_station(struct wiphy *wiphy, struct net_device *ndev
+ 	struct sta_priv *pstapriv = &padapter->stapriv;
+ 	const u8 *mac = params->mac;
  
- 			pmlmepriv->wps_probe_req_ie = rtw_malloc(wps_ielen);
--			if (pmlmepriv->wps_probe_req_ie == NULL)
-+			if (!pmlmepriv->wps_probe_req_ie)
- 				return -EINVAL;
+-	if (check_fwstate(pmlmepriv, (_FW_LINKED|WIFI_AP_STATE)) != true)
++	if (check_fwstate(pmlmepriv, (_FW_LINKED | WIFI_AP_STATE)) != true)
+ 		return -EINVAL;
  
- 			memcpy(pmlmepriv->wps_probe_req_ie, wps_ie, wps_ielen);
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-index 34c5eff02b2f..a8ef95ab14da 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-@@ -181,7 +181,7 @@ static struct dvobj_priv *sdio_dvobj_init(struct sdio_func *func)
- 	struct sdio_data *psdio;
- 
- 	dvobj = devobj_init();
--	if (dvobj == NULL)
-+	if (!dvobj)
- 		goto exit;
- 
- 	sdio_set_drvdata(func, dvobj);
-@@ -228,7 +228,7 @@ void rtw_set_hal_ops(struct adapter *padapter)
- 
- static void sd_intf_start(struct adapter *padapter)
- {
--	if (padapter == NULL)
-+	if (!padapter)
- 		return;
- 
- 	/*  hal dep */
-@@ -237,7 +237,7 @@ static void sd_intf_start(struct adapter *padapter)
- 
- static void sd_intf_stop(struct adapter *padapter)
- {
--	if (padapter == NULL)
-+	if (!padapter)
- 		return;
- 
- 	/*  hal dep */
-@@ -253,7 +253,7 @@ static struct adapter *rtw_sdio_if1_init(struct dvobj_priv *dvobj, const struct
- 	struct sdio_data *psdio = &dvobj->intf_data;
- 
- 	padapter = vzalloc(sizeof(*padapter));
--	if (padapter == NULL)
-+	if (!padapter)
- 		goto exit;
- 
- 	padapter->dvobj = dvobj;
+ 	if (!mac) {
 -- 
 2.20.1
 
