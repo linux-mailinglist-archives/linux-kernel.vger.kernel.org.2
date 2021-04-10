@@ -2,141 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E4F35AD68
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFABC35AD6B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234699AbhDJNDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:03:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37892 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234091AbhDJNC6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:02:58 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13B9C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:02:43 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id w18so9700126edc.0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:02:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Do6TOYC7++a6IT3LFrIbNRxGi7wBbVzvSmX3FLO0FdM=;
-        b=HU+wWxvizyxRF+Ep5QdHxWya1Iq41OOSwWEAJ3CM/e50CLK5mj0KZzaidwqcU4gjK9
-         Y2ipiTZ7bLwqlshB9tPJRoxlrCeaS/kyi2vuNjhnLNYtlro+v4fPFIy8sIapQ/hjSxgh
-         aGQ1N0ZgVqXQ1YBJPHsoerNgrFIzvlhGZ0+4gGt+UDBfZnN9hUE37O+Qx23GbeLGjotU
-         s14JGPwH2fO4KHJNPV/lOfuD8hgPYjQN1JnsEjuBKVVKHRp7K3QZARoPI7c2JSH8stPU
-         EGmqx3RnE3HpWTN85ZzS7wGjuOeYiQ/nV2DV3GBRGbdqyMOgVzqCmhWJL9/ikThAXw08
-         OO6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Do6TOYC7++a6IT3LFrIbNRxGi7wBbVzvSmX3FLO0FdM=;
-        b=f74ANQYWolttLxEIeeWMluFvT5r9UEj56GAYbNV6F0GP7iFHcKkEhZ2xFU0I77+skc
-         7Oik8vDlO42QIw5t5tC27hMKI5SZe+3DyqmWjxv4NPQgdfDKwBQ7B6MBLyMEuwIiNw5D
-         yCGHp/FGYBaKWpc9YBudO1azHX3NmP/5Zioo22wcpRPd3QBE1+j3OgUJu8hi0UsRnO2J
-         gNf6u13XWaDY1/04GHfJoNUrqhu/pc6kCWS1BSIZ0ohHj1T+iJyU7kAR3EJbonvKFKwu
-         fBFTcEezptTak7PURIRqEyVNcdAMYy0nzO2Wom5q5nzGpz/yrMB4muZXblkagsbM8Dfs
-         +dzA==
-X-Gm-Message-State: AOAM531/mseRFvpOshRwUUBABLHDj3UnwJB8CdnDpwswM/rjQSs0X6lD
-        b2VxBX1iygcs5lGvi+5/OpU=
-X-Google-Smtp-Source: ABdhPJx407YkiJEJt9B4XApmbe8vLTQuoNjU8hFa7bzAs8IAztyiNUNFbJeEGn10/Zb9a14sxT44DQ==
-X-Received: by 2002:a05:6402:614:: with SMTP id n20mr21433069edv.58.1618059761100;
-        Sat, 10 Apr 2021 06:02:41 -0700 (PDT)
-Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id bf14sm3081490edb.67.2021.04.10.06.02.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 06:02:40 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH 4/4] staging: rtl8723bs: Change the type and use of a variable
-Date:   Sat, 10 Apr 2021 15:02:39 +0200
-Message-ID: <2186059.xkuF2sVEJi@localhost.localdomain>
-In-Reply-To: <alpine.DEB.2.22.394.2104101410350.2975@hadrien>
-References: <20210410092232.15155-1-fmdefrancesco@gmail.com> <2763630.ZYQqkGPH9U@localhost.localdomain> <alpine.DEB.2.22.394.2104101410350.2975@hadrien>
+        id S234727AbhDJNGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 09:06:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234091AbhDJNGW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 09:06:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 235CF610E7;
+        Sat, 10 Apr 2021 13:06:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618059967;
+        bh=Nx+Az8uucARo5rt3kk1DkG1a9AVj6LLG/pm3AuITkTc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=B+Tz28WLLVVeR5HeyWbUyAr2DuCGJ7pQAj7EWMfIIhmXAtQvt6osvT31cSwkMCaDL
+         EYbb18WrUlC1ts6QCYLxh3+GmfzhTqUXdRt4NisPGE1OonIm4c/nnAQxN8kDPdfH5R
+         g+gqyS3eBOeMYx80WsCeouQKTfutoosdALoUcuy4=
+Date:   Sat, 10 Apr 2021 15:06:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: [GIT PULL] USB/Thunderbolt driver fixes for 5.12-rc7
+Message-ID: <YHGivAMSbiL2Y7je@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, April 10, 2021 2:12:28 PM CEST Julia Lawall wrote:
-> On Sat, 10 Apr 2021, Fabio M. De Francesco wrote:
-> > On Saturday, April 10, 2021 1:37:30 PM CEST Julia Lawall wrote:
-> > > > That variable has global scope and is assigned at least in:
-> > > What do you mean by global scope?  None of the following look like
-> > > references to global variables.
-> > > 
-> > > julia
-> > 
-> > I just mean that fw_current_in_ps_mode is a field of a struct in a .h
-> > file included everywhere in this driver and that the functions whom
-> > the following assignments belong to have not the "static" type
-> > modifier.
-> OK, but a field in a structure is not a variable, and this is not what
-> scope means.
->
-You're right, a field in a structure is not a variable.
-> 
-> int x;
-> 
-> outside of anything is a global variable (global scope).
-> 
-> int foo() {
->   int x;
->   ...
-> }
-> 
-> Here x is a local variable.  Its scope is the body of the function.
-> 
-> int foo() {
->   if (abc) {
->     int x;
->     ...
->   }
-> }
-> 
-> Here x is a local variable, but its scope is only in the if branch.
->
-And you're right again: I needed a little refresh of my knowledge of C.
+The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
 
-I've searched again in the code for the purpose of finding out if that 
-struct is initialized with global scope but I didn't find anything. I 
-didn't even find any dynamic allocation within functions that returns 
-pointers to that struct.
+  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
 
-Therefore, according to Greg's request, I'll delete that stupid 'if' 
-statement in the patch series v2 that I'm about to submit.
+are available in the Git repository at:
 
-I've really appreciated your help.
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.12-rc7
 
-Thanks,
+for you to fetch changes up to bc2f3e4c662841dc19f7e7efae87782b9f3c0831:
 
-Fabio
-> 
-> julia
-> 
-> > Thanks,
-> > 
-> > Fabio
-> > 
-> > > > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:368:
-> > > > pwrpriv->fw_current_in_ps_mode = false;
-> > > > 
-> > > > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:380:
-> > > > pwrpriv->fw_current_in_ps_mode = true;
-> > > > 
-> > > > drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:433:
-> > > > adapter_to_pwrctl(padapter)->fw_current_in_ps_mode = false;
-> > > > 
-> > > > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:981:
-> > > > pwrctrlpriv->fw_current_in_ps_mode = false;
+  Merge tag 'thunderbolt-for-v5.12-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt into usb-linus (2021-04-08 11:48:48 +0200)
 
+----------------------------------------------------------------
+USB/Thunderbolt fixes for 5.12-rc7
 
+Here are a few small USB and Thunderbolt driver fixes for 5.12-rc7 for
+reported issues:
+	- thunderbolt leaks and off-by-one fix
+	- cdnsp deque fix
+	- usbip fixes for syzbot-reported issues.
 
+all have been in linux-next with no reported problems.
 
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Dan Carpenter (2):
+      thunderbolt: Fix a leak in tb_retimer_add()
+      thunderbolt: Fix off by one in tb_port_find_retimer()
+
+Greg Kroah-Hartman (2):
+      Merge tag 'v5.12-rc5' of git://git.kernel.org/pub/scm/linux/kernel/git/peter.chen/usb into usb-linus
+      Merge tag 'thunderbolt-for-v5.12-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/westeri/thunderbolt into usb-linus
+
+Pawel Laszczak (1):
+      usb: cdnsp: Fixes issue with dequeuing requests after disabling endpoint
+
+Shuah Khan (4):
+      usbip: add sysfs_lock to synchronize sysfs code paths
+      usbip: stub-dev synchronize sysfs code paths
+      usbip: vudc synchronize sysfs code paths
+      usbip: synchronize event handler with sysfs code paths
+
+ drivers/thunderbolt/retimer.c    |  4 ++--
+ drivers/usb/cdns3/cdnsp-gadget.c |  4 ++++
+ drivers/usb/usbip/stub_dev.c     | 11 +++++++++--
+ drivers/usb/usbip/usbip_common.h |  3 +++
+ drivers/usb/usbip/usbip_event.c  |  2 ++
+ drivers/usb/usbip/vhci_hcd.c     |  1 +
+ drivers/usb/usbip/vhci_sysfs.c   | 30 +++++++++++++++++++++++++-----
+ drivers/usb/usbip/vudc_dev.c     |  1 +
+ drivers/usb/usbip/vudc_sysfs.c   |  5 +++++
+ 9 files changed, 52 insertions(+), 9 deletions(-)
