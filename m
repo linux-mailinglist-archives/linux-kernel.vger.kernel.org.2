@@ -2,189 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D98D35B043
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 22:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E843F35B044
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 22:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235052AbhDJUCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 16:02:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234439AbhDJUCC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 16:02:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B40C610A7;
-        Sat, 10 Apr 2021 20:01:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618084907;
-        bh=QIsgkPx0zC6WnVNpaFrrqpLcZJ+yIUv2rlH5fE2vQxU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bB/eI2KSAcyBefCFmhUKy1BOpyA28uYJ5adJ9teHYb2PvhAoNjHiQZfNipBqnPvW5
-         yjUfsAgxfLLgWm0TUVf9w76qESSyYn1hzhQtPL2AOtg4mjPBsxH6rMqribesj+mg83
-         79bqcI6bYTPeqdhiitMfu/yXMK93091hPsozIF2dt3Uf+WO764HiJ2owRuz6Ajx32c
-         YayAVY52RI+pfOMOy53FUEhlGOcRkajz8G/Ljr5EQV9/ySPgO8dgjTTthuYpBbfJlR
-         kSCWM5Pbsfbigl75JfZ+BqdviFrOfBOQYRvNNAFHOY8uuMf4VWMpO1PNgMPDVJCW7z
-         Mv+RUL2JYOXpA==
-Date:   Sat, 10 Apr 2021 23:01:42 +0300
-From:   Oded Gabbay <ogabbay@kernel.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [git pull] habanalabs pull request for kernel 5.13
-Message-ID: <20210410200142.GA336@CORE.localdomain>
+        id S235057AbhDJUDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 16:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234439AbhDJUDH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 16:03:07 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D844C06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 13:02:52 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id y20-20020a1c4b140000b029011f294095d3so6471746wma.3
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 13:02:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KQVc6ALPRczTIMmLPJFtRRr0DNOfBBNxvSVhyFFM4K4=;
+        b=hr0iJ1WtsIlMpe2hr16+8h88/1pin2I46eCM682iC5gJjB19XCUjyOBBMy+cIQvPcb
+         ok1gaC1AEfhOQ7r2myEaAwnmyPi9DbpyYGRKH+W/vigx48Cl7dT38alxbvtAEP+VM25o
+         MaCagMU5eLfWaN3SY0KwFadIMXf1RUFNDjywVjv5kx6Jsaqrrsj7TESduWcOXOuv6jfl
+         6g/JmiFVRPrDG1Z3L9hncbNzSxv2zjrlnCqKPiVV5qbWfLfDm7ytS6z0w+JAQ0GFaJdk
+         rkU9/m+W6Fy+CRFvcs6E20SdneoX2GfxQ1HHCRreZSRNdrJTRZ066f+jtcgrIuYLoW2O
+         JovQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KQVc6ALPRczTIMmLPJFtRRr0DNOfBBNxvSVhyFFM4K4=;
+        b=VAM5V7OMaB1a/psxUJ4DGflmQuhNmSFepFMbWEJZYupSzdtJHOd/7jdXeHa914Hac8
+         r+oJ0mBQl+hnjvRL5AsJwiiTe9YIgwmDv/hS+ltnnnss39EG+aiiHcUrqFkR023WMF7w
+         K6Zjvv23fln5fwM9qKNfZ9+jcyNEAjQuqBdoUz5LtHW3BikOg2sXGRYCO/xkWsUCbfuX
+         vYOXUeKArsUPZjQX1xG8IbMuvRQEBdPeSc3FpoXYdaaxZK12urplfRpfWla9poCxJd/F
+         6elKS8IchokYbkYJoQ89e5yxQYOnKACT96QNazS1Bh0911ZyPeKPibVBP9/EAs82AR2U
+         8enQ==
+X-Gm-Message-State: AOAM5308C/YYRNb+jifRLrpkn3TIXA12Nw+/SxfPUe3QNly7l4Hg89M3
+        FvA8y0VP6WoN2dfyoin072smPDb17iAYJEcJ83b4aQ==
+X-Google-Smtp-Source: ABdhPJzPg6vFeaJ5urVg1wxZjP90byCsCiZUy7mnevv/n5dldzigX7Hqf5xNy7cKaguyCo4LjODdsuEOR6oGSzPKIB8=
+X-Received: by 2002:a1c:c918:: with SMTP id f24mr19844443wmb.12.1618084970674;
+ Sat, 10 Apr 2021 13:02:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210405102008.25504-1-linmiaohe@huawei.com> <5ec0f24e-eac2-1e62-628b-757f8ce11dc2@huawei.com>
+ <CAOUHufYYjRgO0+3zD6OMn2m3u5qm6sFg5pWxNujnPMaK0hv4Qw@mail.gmail.com> <7e5ea991-f219-5b42-ee71-4ec4004ca550@huawei.com>
+In-Reply-To: <7e5ea991-f219-5b42-ee71-4ec4004ca550@huawei.com>
+From:   Yu Zhao <yuzhao@google.com>
+Date:   Sat, 10 Apr 2021 14:02:39 -0600
+Message-ID: <CAOUHufbZWC0+7bSko1zQAvqKbUUOF1fa_c33J5VrVphS2bvZ0Q@mail.gmail.com>
+Subject: Re: [PATCH] mm/frontswap: fix frontswap_register_ops() race with
+ swapon and swapoff
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, konrad.wilk@oracle.com,
+        Dan Streetman <ddstreet@ieee.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Sat, Apr 10, 2021 at 5:01 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+>
+> On 2021/4/10 18:42, Yu Zhao wrote:
+> > On Sat, Apr 10, 2021 at 1:30 AM Miaohe Lin <linmiaohe@huawei.com> wrote:
+> >>
+> >> Hi:
+> >> On 2021/4/5 18:20, Miaohe Lin wrote:
+> >>> frontswap_register_ops can race with swapon. Consider the following scene:
+> >>
+> >> Any comment or suggestion? Or is this race window too theoretical to fix?
+> >> Thanks.
+> >
+> > Let me run a stress test and get back to you (within a day or so).
+>
+> That's very kind of you. Many thanks!
 
-This is habanalabs pull request for the merge window of kernel 5.13.
-It contains changes and new features, support for new firmware.
-Details are in the tag.
+I'm still getting the following crash. Probably I should try the other
+series you sent earlier too?
 
-Thanks,
-Oded
+  BUG: unable to handle page fault for address: ffffaa7937d82000
+  RIP: 0010:scan_swap_map_slots+0x12b/0x7f0
+  Call Trace:
+  get_swap_pages+0x278/0x590
+   get_swap_page+0x1ab/0x280
+   add_to_swap+0x7d/0x130
+   shrink_page_list+0xf84/0x25f0
+   reclaim_pages+0x313/0x430
+  madvise_cold_or_pageout_pte_range+0x95c/0xaa0
+   walk_p4d_range+0x43f/0x790
+   walk_pgd_range+0xf1/0x150
+   __walk_page_range+0x6f/0x1b0
+   walk_page_range+0xbe/0x1e
+   do_madvise+0x271/0x720
 
-The following changes since commit b195b20b7145bcae22ad261abc52d68336f5e913:
-
-  Merge tag 'extcon-next-for-5.13' of git://git.kernel.org/pub/scm/linux/kernel/git/chanwoo/extcon into char-misc-next (2021-04-08 08:45:30 +0200)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/ogabbay/linux.git tags/misc-habanalabs-next-2021-04-10
-
-for you to fetch changes up to b575a7673e3d0396992fc72fce850723d39264e3:
-
-  habanalabs: print f/w boot unknown error (2021-04-09 14:10:32 +0300)
-
-----------------------------------------------------------------
-This tag contains habanalabs driver changes for v5.13:
-
-- Add support to reset device after the user closes the file descriptor.
-  Because we support a single user, we can reset the device (if needs to)
-  after a user closes its file descriptor to make sure the device is in
-  idle and clean state for the next user.
-
-- Add a new feature to allow the user to wait on interrupt. This is needed
-  for future ASICs
-
-- Replace GFP_ATOMIC with GFP_KERNEL wherever possible and add code to
-  support failure of allocating with GFP_ATOMIC.
-
-- Update code to support the latest firmware image:
-  - More security features are done in the firmware
-  - Remove hard-coded assumptions and replace them with values that are
-    sent to the firmware on loading.
-  - Print device unusable error
-  - Reset device in case the communication between driver and firmware
-    gets out of sync.
-  - Support new PCI device ids for secured GAUDI.
-
-- Expose current power draw through the INFO IOCTL.
-
-- Support resetting the device upon a request from the BMC (through F/W).
-
-- Always use only a single MSI in GAUDI, due to H/W limitation.
-
-- Improve data-path code by taking out code from spinlock protection.
-
-- Allow user to specify custom timeout per Command Submission.
-
-- Some enhancements to debugfs.
-
-- Various minor changes and improvements.
-
-----------------------------------------------------------------
-Alon Mizrahi (1):
-      habanalabs: add custom timeout flag per cs
-
-Bharat Jauhari (1):
-      habanalabs: move dram scrub to free sequence
-
-Koby Elbaz (2):
-      habanalabs: improve utilization calculation
-      habanalabs: support DEVICE_UNUSABLE error indication from FW
-
-Oded Gabbay (11):
-      habanalabs: reset after device is actually released
-      habanalabs: fail reset if device is not idle
-      habanalabs: reset_upon_device_release is for bring-up
-      habanalabs: print if device is used on FD close
-      habanalabs: change default CS timeout to 30 seconds
-      habanalabs: use correct define for 32-bit max value
-      habanalabs/gaudi: always use single-msi mode
-      habanalabs/gaudi: add debugfs to DMA from the device
-      habanalabs: remove the store jobs array from CS IOCTL
-      habanalabs: use strscpy instead of sprintf and strlcpy
-      habanalabs: print f/w boot unknown error
-
-Ofir Bitton (13):
-      habanalabs: add reset support when user closes FD
-      habanalabs: enable all IRQs for user interrupt support
-      habanalabs: wait for interrupt support
-      habanalabs: use a single FW loading bringup flag
-      habanalabs/gaudi: update extended async event header
-      habanalabs: replace GFP_ATOMIC with GFP_KERNEL
-      habanalabs: debugfs access to user mapped host addresses
-      habanalabs/gaudi: reset device upon BMC request
-      habanalabs/gaudi: unsecure TPC cfg status registers
-      habanalabs/gaudi: Update async events header
-      habanalabs: move relevant datapath work outside cs lock
-      habanalabs/gaudi: derive security status from pci id
-      habanalabs/gaudi: skip iATU if F/W security is enabled
-
-Ohad Sharabi (6):
-      habanalabs: reset device in case of sync error
-      habanalabs: skip DISABLE PCI packet to FW on heartbeat
-      habanalabs: update hl_boot_if.h
-      habanalabs: support legacy and new pll indexes
-      habanalabs: send dynamic msi-x indexes to f/w
-      habanalabs: update to latest F/W communication header
-
-Sagiv Ozeri (2):
-      habanalabs: support HW blocks vm show
-      habanalabs: return current power via INFO IOCTL
-
-Tomer Tayar (1):
-      habanalabs/gaudi: clear QM errors only if not in stop_on_err mode
-
-Yang Li (1):
-      habanalabs: Switch to using the new API kobj_to_dev()
-
-farah kassabri (3):
-      habanalabs: set max asid to 2
-      habanalabs: avoid soft lockup bug upon mapping error
-      habanalabs/gaudi: sync stream add protection to SOB reset flow
-
- .../ABI/testing/debugfs-driver-habanalabs          |  70 +++-
- drivers/misc/habanalabs/common/command_buffer.c    |  12 +-
- .../misc/habanalabs/common/command_submission.c    | 368 +++++++++++++++++----
- drivers/misc/habanalabs/common/context.c           |  14 +-
- drivers/misc/habanalabs/common/debugfs.c           | 224 +++++++++++--
- drivers/misc/habanalabs/common/device.c            | 221 ++++++-------
- drivers/misc/habanalabs/common/firmware_if.c       | 238 +++++++++++--
- drivers/misc/habanalabs/common/habanalabs.h        | 184 ++++++++---
- drivers/misc/habanalabs/common/habanalabs_drv.c    |  28 +-
- drivers/misc/habanalabs/common/habanalabs_ioctl.c  |  35 +-
- drivers/misc/habanalabs/common/hw_queue.c          |  10 +-
- drivers/misc/habanalabs/common/irq.c               |  56 ++++
- drivers/misc/habanalabs/common/memory.c            | 182 +++++++---
- drivers/misc/habanalabs/common/mmu/mmu.c           |   3 +
- drivers/misc/habanalabs/common/pci/pci.c           |  52 +++
- drivers/misc/habanalabs/common/sysfs.c             |  33 +-
- drivers/misc/habanalabs/gaudi/gaudi.c              | 357 +++++++++++++++++---
- drivers/misc/habanalabs/gaudi/gaudiP.h             |   3 +
- drivers/misc/habanalabs/gaudi/gaudi_security.c     |   8 -
- drivers/misc/habanalabs/goya/goya.c                | 140 +++++++-
- drivers/misc/habanalabs/goya/goyaP.h               |   2 +
- drivers/misc/habanalabs/include/common/cpucp_if.h  |  99 +++++-
- .../misc/habanalabs/include/common/hl_boot_if.h    | 219 ++++++++++++
- drivers/misc/habanalabs/include/gaudi/gaudi.h      |   2 +-
- .../habanalabs/include/gaudi/gaudi_async_events.h  |   2 +
- .../include/gaudi/gaudi_async_ids_map_extended.h   |  43 ++-
- .../misc/habanalabs/include/gaudi/gaudi_fw_if.h    |  14 -
- drivers/misc/habanalabs/include/goya/goya.h        |   2 +-
- .../habanalabs/include/goya/goya_async_events.h    |   1 +
- drivers/misc/habanalabs/include/goya/goya_fw_if.h  |  11 -
- include/uapi/misc/habanalabs.h                     |  77 +++--
- 31 files changed, 2193 insertions(+), 517 deletions(-)
+> >>> CPU1                                  CPU2
+> >>> ----                                  ----
+> >>> frontswap_register_ops
+> >>>   fill bitmap a
+> >>>   ops->init
+> >>>                                       sys_swapon
+> >>>                                         enable_swap_info
+> >>>                                           frontswap_init without new ops
+> >>>   add ops to frontswap_ops list
+> >>>   check if swap_active_head changed
+> >>>                                           add to swap_active_head
+> >>>
+> >>> So the frontswap_ops init is missed on the new swap device. Consider the
+> >>> another scene:
+> >>> CPU1                                    CPU2
+> >>> ----                                    ----
+> >>> frontswap_register_ops
+> >>>   fill bitmap a
+> >>>   ops->init
+> >>>   add ops to frontswap_ops list
+> >>>                                         sys_swapon
+> >>>                                           enable_swap_info
+> >>>                                             frontswap_init with new ops
+> >>>                                             add to swap_active_head
+> >>>   check if swap_active_head changed
+> >>>   ops->init for new swap device [twice!]
+> >>>
+> >>> The frontswap_ops init will be called two times on the new swap device this
+> >>> time. frontswap_register_ops can also race with swapoff. Consider the
+> >>> following scene:
+> >>>
+> >>> CPU1                                    CPU2
+> >>> ----                                    ----
+> >>>                                         sys_swapoff
+> >>>                                         removed from swap_active_head
+> >>> frontswap_register_ops
+> >>>   fill bitmap a
+> >>>   ops->init without swap device
+> >>>   add ops to frontswap_ops list
+> >>>                                             invalidate_area with new ops
+> >>>   check if swap_active_head changed
+> >>>
+> >>> We could call invalidate_area on a swap device under swapoff with frontswap
+> >>> is uninitialized yet. Fix all these by using swapon_mutex to guard against
+> >>> race with swapon and add swap_info_get_if_under_swapoff() to collect swap
+> >>> devices under swapoff.
+> >>>
+> >>> Fixes: d1dc6f1bcf1e ("frontswap: allow multiple backends")
+> >>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+> >>> ---
+> >>>  include/linux/swapfile.h |  2 ++
+> >>>  mm/frontswap.c           | 40 +++++++++++++++++-----------------------
+> >>>  mm/swapfile.c            | 13 ++++++++++++-
+> >>>  3 files changed, 31 insertions(+), 24 deletions(-)
+> >>>
+> >>> diff --git a/include/linux/swapfile.h b/include/linux/swapfile.h
+> >>> index e06febf62978..7ae15d917828 100644
+> >>> --- a/include/linux/swapfile.h
+> >>> +++ b/include/linux/swapfile.h
+> >>> @@ -9,8 +9,10 @@
+> >>>  extern spinlock_t swap_lock;
+> >>>  extern struct plist_head swap_active_head;
+> >>>  extern struct swap_info_struct *swap_info[];
+> >>> +extern struct mutex swapon_mutex;
+> >>>  extern int try_to_unuse(unsigned int, bool, unsigned long);
+> >>>  extern unsigned long generic_max_swapfile_size(void);
+> >>>  extern unsigned long max_swapfile_size(void);
+> >>> +extern struct swap_info_struct *swap_info_get_if_under_swapoff(int type);
+> >>>
+> >>>  #endif /* _LINUX_SWAPFILE_H */
+> >>> diff --git a/mm/frontswap.c b/mm/frontswap.c
+> >>> index 130e301c5ac0..c16bfc7550b5 100644
+> >>> --- a/mm/frontswap.c
+> >>> +++ b/mm/frontswap.c
+> >>> @@ -123,12 +123,26 @@ void frontswap_register_ops(struct frontswap_ops *ops)
+> >>>
+> >>>       bitmap_zero(a, MAX_SWAPFILES);
+> >>>       bitmap_zero(b, MAX_SWAPFILES);
+> >>> -
+> >>> +     mutex_lock(&swapon_mutex);
+> >>>       spin_lock(&swap_lock);
+> >>>       plist_for_each_entry(si, &swap_active_head, list) {
+> >>>               if (!WARN_ON(!si->frontswap_map))
+> >>>                       set_bit(si->type, a);
+> >>>       }
+> >>> +     /*
+> >>> +      * There might be some swap devices under swapoff, i.e. they are
+> >>> +      * removed from swap_active_head but frontswap_invalidate_area()
+> >>> +      * is not called yet due to swapon_mutex is held here. We must
+> >>> +      * collect these swap devices and call ops->init on them or they
+> >>> +      * might invalidate frontswap area while frontswap is uninitialized.
+> >>> +      */
+> >>> +     for_each_clear_bit(i, a, MAX_SWAPFILES) {
+> >>> +             si = swap_info_get_if_under_swapoff(i);
+> >>> +             if (!si || !si->frontswap_map)
+> >>> +                     continue;
+> >>> +             set_bit(si->type, b);
+> >>> +     }
+> >>> +     bitmap_or(a, a, b, MAX_SWAPFILES);
+> >>>       spin_unlock(&swap_lock);
+> >>>
+> >>>       /* the new ops needs to know the currently active swap devices */
+> >>> @@ -144,29 +158,9 @@ void frontswap_register_ops(struct frontswap_ops *ops)
+> >>>               ops->next = frontswap_ops;
+> >>>       } while (cmpxchg(&frontswap_ops, ops->next, ops) != ops->next);
+> >>>
+> >>> -     static_branch_inc(&frontswap_enabled_key);
+> >>> -
+> >>> -     spin_lock(&swap_lock);
+> >>> -     plist_for_each_entry(si, &swap_active_head, list) {
+> >>> -             if (si->frontswap_map)
+> >>> -                     set_bit(si->type, b);
+> >>> -     }
+> >>> -     spin_unlock(&swap_lock);
+> >>> +     mutex_unlock(&swapon_mutex);
+> >>>
+> >>> -     /*
+> >>> -      * On the very unlikely chance that a swap device was added or
+> >>> -      * removed between setting the "a" list bits and the ops init
+> >>> -      * calls, we re-check and do init or invalidate for any changed
+> >>> -      * bits.
+> >>> -      */
+> >>> -     if (unlikely(!bitmap_equal(a, b, MAX_SWAPFILES))) {
+> >>> -             for (i = 0; i < MAX_SWAPFILES; i++) {
+> >>> -                     if (!test_bit(i, a) && test_bit(i, b))
+> >>> -                             ops->init(i);
+> >>> -                     else if (test_bit(i, a) && !test_bit(i, b))
+> >>> -                             ops->invalidate_area(i);
+> >>> -             }
+> >>> -     }
+> >>> +     static_branch_inc(&frontswap_enabled_key);
+> >>>  }
+> >>>  EXPORT_SYMBOL(frontswap_register_ops);
+> >>>
+> >>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> >>> index 149e77454e3c..ee736533717f 100644
+> >>> --- a/mm/swapfile.c
+> >>> +++ b/mm/swapfile.c
+> >>> @@ -89,7 +89,7 @@ static DEFINE_SPINLOCK(swap_avail_lock);
+> >>>
+> >>>  struct swap_info_struct *swap_info[MAX_SWAPFILES];
+> >>>
+> >>> -static DEFINE_MUTEX(swapon_mutex);
+> >>> +DEFINE_MUTEX(swapon_mutex);
+> >>>
+> >>>  static DECLARE_WAIT_QUEUE_HEAD(proc_poll_wait);
+> >>>  /* Activity counter to indicate that a swapon or swapoff has occurred */
+> >>> @@ -2958,6 +2958,17 @@ __weak unsigned long max_swapfile_size(void)
+> >>>       return generic_max_swapfile_size();
+> >>>  }
+> >>>
+> >>> +struct swap_info_struct *swap_info_get_if_under_swapoff(int type)
+> >>> +{
+> >>> +     struct swap_info_struct *si = swap_type_to_swap_info(type);
+> >>> +
+> >>> +     if (!si || !si->swap_map)
+> >>> +             return NULL;
+> >>> +     if ((si->flags & SWP_USED) && !(si->flags & SWP_WRITEOK))
+> >>> +             return si;
+> >>> +     return NULL;
+> >>> +}
+> >>> +
+> >>>  static unsigned long read_swap_header(struct swap_info_struct *p,
+> >>>                                       union swap_header *swap_header,
+> >>>                                       struct inode *inode)
+> >>>
+> >>
+> >>
+> > .
+> >
+>
+>
