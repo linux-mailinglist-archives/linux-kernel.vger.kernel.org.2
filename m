@@ -2,65 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AF4A35B091
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 23:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73BFB35B094
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 23:12:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbhDJVIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 17:08:15 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:38718 "EHLO gloria.sntech.de"
+        id S235093AbhDJVNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 17:13:05 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:33428 "EHLO mail.ispras.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232659AbhDJVIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 17:08:10 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lVKpd-0001aH-0m; Sat, 10 Apr 2021 23:07:53 +0200
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ezequiel Garcia <ezequiel@collabora.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>, kernel@collabora.com
-Subject: Re: [PATCH] dt-bindings: pinctrl: rockchip: add RK3568 SoC support
-Date:   Sat, 10 Apr 2021 23:07:50 +0200
-Message-ID: <2189574.bB369e8A3T@diego>
-In-Reply-To: <20210410204500.18091-1-ezequiel@collabora.com>
-References: <20210410204500.18091-1-ezequiel@collabora.com>
+        id S232659AbhDJVMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 17:12:49 -0400
+Received: from localhost.localdomain (unknown [46.188.10.168])
+        by mail.ispras.ru (Postfix) with ESMTPSA id B9D1F40D403E;
+        Sat, 10 Apr 2021 21:12:28 +0000 (UTC)
+From:   Alexander Monakov <amonakov@ispras.ru>
+To:     linux-kernel@vger.kernel.org
+Cc:     Alexander Monakov <amonakov@ispras.ru>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Joerg Roedel <jroedel@suse.de>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH] iommu/amd: Fix extended features logging
+Date:   Sun, 11 Apr 2021 00:11:52 +0300
+Message-Id: <20210410211152.1938-1-amonakov@ispras.ru>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Samstag, 10. April 2021, 22:45:00 CEST schrieb Ezequiel Garcia:
-> Add RK3568/RK3566 SoC support to pinctrl.
-> 
-> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+print_iommu_info prints the EFR register and then the decoded list of
+features on a separate line:
 
-Reviewed-by: Heiko Stuebner <heiko@sntech.de>
+pci 0000:00:00.2: AMD-Vi: Extended features (0x206d73ef22254ade):
+ PPR X2APIC NX GT IA GA PC GA_vAPIC
 
-> ---
->  Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt
-> index d3eae61a340d..91fab614c381 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt
-> +++ b/Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt
-> @@ -33,6 +33,7 @@ Required properties for iomux controller:
->  		"rockchip,rk3328-pinctrl":  for Rockchip RK3328
->  		"rockchip,rk3368-pinctrl":  for Rockchip RK3368
->  		"rockchip,rk3399-pinctrl":  for Rockchip RK3399
-> +		"rockchip,rk3568-pinctrl":  for Rockchip RK3568
->  
->    - rockchip,grf: phandle referencing a syscon providing the
->  	 "general register files"
-> 
+The second line is emitted via 'pr_cont', which causes it to have a
+different ('warn') loglevel compared to the previous line ('info').
 
+Commit 9a295ff0ffc9 attempted to rectify this by removing the newline
+from the pci_info format string, but this doesn't work, as pci_info
+calls implicitly append a newline anyway.
 
+Restore the newline, and call pr_info with empty format string to set
+the loglevel for subsequent pr_cont calls. The same solution is used in
+EFI and uvesafb drivers.
 
+Fixes: 9a295ff0ffc9 ("iommu/amd: Print extended features in one line to fix divergent log levels")
+Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
+Cc: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Joerg Roedel <jroedel@suse.de>
+Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Cc: iommu@lists.linux-foundation.org
+---
+ drivers/iommu/amd/init.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index 596d0c413473..a25e241eff1c 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -1929,8 +1929,11 @@ static void print_iommu_info(void)
+ 		pci_info(pdev, "Found IOMMU cap 0x%hx\n", iommu->cap_ptr);
+ 
+ 		if (iommu->cap & (1 << IOMMU_CAP_EFR)) {
+-			pci_info(pdev, "Extended features (%#llx):",
++			pci_info(pdev, "Extended features (%#llx):\n",
+ 				 iommu->features);
++
++			pr_info("");
++
+ 			for (i = 0; i < ARRAY_SIZE(feat_str); ++i) {
+ 				if (iommu_feature(iommu, (1ULL << i)))
+ 					pr_cont(" %s", feat_str[i]);
+-- 
+2.30.0
 
