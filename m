@@ -2,147 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE51B35AD3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5F435AD4D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234551AbhDJMWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 08:22:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57372 "EHLO
+        id S234427AbhDJMei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 08:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234091AbhDJMV7 (ORCPT
+        with ESMTP id S234091AbhDJMeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 08:21:59 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 311CBC061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 05:21:45 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id d11so4265075wro.13
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 05:21:45 -0700 (PDT)
+        Sat, 10 Apr 2021 08:34:36 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8441DC061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 05:34:21 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id mj7-20020a17090b3687b029014d162a65b6so6324599pjb.2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 05:34:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=j1DeY1I2aLclFr3MrMe936qBKfvRMzQn/up+0QGkwrw=;
-        b=N9ph+I8koHgubaoJUVsrzMI9F+xy20Q0HyC0VsAzI8aj7DuR/gzYj++RtPW1GX5jg1
-         Ij3+foOPGPavDGrWnUL5bnMW2plKmCB7PWfGUUJWGODY86E6PQyb3p7Uu57SfrLyXbV5
-         VWVMr4n8xszs2ntdvQKOOD91enu4XP5qXGMe+SHBCUSFUKnnFAQ96mQkQCoYMfLDefMY
-         bDnTlgVnqrFqr9fCCcS9jlCshqlOkaTSgmMVohhRmyVCT/G4dzjid2egG2l9vOhAOOC7
-         5aBvSq+vtAH4QyT9nNXYR03M7qE3d1ZwKY3GWM1pSGcgx9jugHR6ngWGmeCKq/bu09n9
-         epcg==
+        bh=PXHn0JTgY+La3+5YIGKYFWelzukB7RedFElx6gczrqk=;
+        b=KPPCL8xefCVfIQ/eO0Gf7y0/Jx3dpw/yEh+nij8tebQlWjMY2IBKtk2rpnv3mSWkvq
+         24EnqrK6KwfPinNDIJZq5KlFIR/b9TlXxqIOfd8u8dfj4Kz0PJuq2bMYsyJcJI5wK/Ff
+         EvGmVWkoI9N21zSWE6ikaobNvPynGiKELZXS04ydxV3KZgJcrbNHZ6fcJTP9Qd3D6iAl
+         +MXGCZ5ojWEJE2lzPauji9RsbwFa77A135b9mCKlLC9EWM7ArZl7104lyxmF4DVI27yh
+         eHSIMi9BmYlHaOZnli5ao3t8ydxhwdm5fOAikLT4AorejTFNiitzaF8RcAHBn8IEURPR
+         zEDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=j1DeY1I2aLclFr3MrMe936qBKfvRMzQn/up+0QGkwrw=;
-        b=sAMTPSrek0PCfxNIGXTauW+zQbUs92E7pkJ13OWJBpWIJM5YSO57uQc5MB0AbwbBlW
-         X1MQr9NHFIH9Pt+EV8xfwn0CaIeXNH9H6i+d9UCJDKHVeSeaKzNbBPSei2pul/bUhtH5
-         zzHAad3zHkn4kEAwDII0M7wamsAPK2bdCYHCJ/3Xw7th9rgDDS04o/ks0t/sm5OFSLqx
-         Uayhfb96G5uSc/jrTxTbsFMS3CztdN2uhLIca8uigP4Zq/gxNsTeVHMLXvLAQ4XqHZ4D
-         x8nzmetvkk8RMVgc7aJM9M2ELWHcex1mZ2jNpBkB8dDRkzjh43RN5Cmobp2UlTUTnpiL
-         qRyQ==
-X-Gm-Message-State: AOAM530EgeE8u2c9Q2lBEbsGv802oayxKqF8rpQJmteTsNe5OI+I40Nf
-        ZweQ9nNVaBvV576MmbTfKDQ=
-X-Google-Smtp-Source: ABdhPJxwAnfjpX5VHN0cpskiynTWQKGuEmZPl489MrhRiqG+zYd8AE/VdyZlw/fkKjJOdJGmChQtWA==
-X-Received: by 2002:adf:d1cd:: with SMTP id b13mr22027021wrd.47.1618057303744;
-        Sat, 10 Apr 2021 05:21:43 -0700 (PDT)
-Received: from smtp.gmail.com (a95-92-181-29.cpe.netcabo.pt. [95.92.181.29])
-        by smtp.gmail.com with ESMTPSA id o14sm8023476wrc.3.2021.04.10.05.21.42
+        bh=PXHn0JTgY+La3+5YIGKYFWelzukB7RedFElx6gczrqk=;
+        b=aSJerJIRJ19vDklIa2A6Sa/NJYJ41EKM/sHd81qD8ELdYaF4tTw7s+ABoUGiHxaygg
+         KcIMr//almOwn2i0VS3+lpKRX6nAe9blHsCCOR43EynzNSYu0m4r75iegERVg1U8Q7JL
+         xQ9IHAVyPnHYjGnyMjmxefDz+rZErDVNbBpjpBu4F8CzHb2L8+xsNFU1/swmr2XtFlrZ
+         9pD0/+8Eu420eRFY7zdsOADTrj5eXBbdsoec8uijcjNK/lKYFC0oDY8i67CoiYGnsAQ6
+         Z64B8iEC+7Ps8flU5WsFElllfVyd1ClJhxi7kMaZc7yaaTseXBykFp1KIOuHXYzWL8r3
+         8+tA==
+X-Gm-Message-State: AOAM531NW3hGCV2MZdM2pFU7Gca20iBrKZNFbQlkXhJLU/VR1ExgHQAk
+        WEwyY+/KIpki7FDoLuxCwv8=
+X-Google-Smtp-Source: ABdhPJzwTMEdOsR0vy3cArPM/2aBvJDhgMNvXNE+UCI4/J7xEYgsSSDCbRVv3ksuHZYN1E6X62TwVA==
+X-Received: by 2002:a17:90a:4309:: with SMTP id q9mr18091539pjg.40.1618058060802;
+        Sat, 10 Apr 2021 05:34:20 -0700 (PDT)
+Received: from kali ([103.141.87.253])
+        by smtp.gmail.com with ESMTPSA id fs9sm5109138pjb.40.2021.04.10.05.34.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 05:21:43 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 09:21:34 -0300
-From:   Melissa Wen <melissa.srw@gmail.com>
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-Cc:     Sumera Priyadarsini <sylphrenadin@gmail.com>,
-        hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com,
-        airlied@linux.ie, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH V4 0/2] Add virtual hardware module
-Message-ID: <20210410122134.7dlbadm5blkm32zg@smtp.gmail.com>
-References: <cover.1617602076.git.sylphrenadin@gmail.com>
- <20210407101258.72261c5d@eldfell>
+        Sat, 10 Apr 2021 05:34:20 -0700 (PDT)
+Date:   Sat, 10 Apr 2021 18:04:11 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8192e: replace comparison
+ to NULL by bool
+Message-ID: <YHGbQ+y0Fplssz44@kali>
+References: <YHDnWpWztxeZospi@kali>
+ <alpine.DEB.2.22.394.2104101408100.2975@hadrien>
+ <YHGVvn8Yi0tWL3sa@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210407101258.72261c5d@eldfell>
+In-Reply-To: <YHGVvn8Yi0tWL3sa@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/07, Pekka Paalanen wrote:
-> On Mon, 5 Apr 2021 11:41:50 +0530
-> Sumera Priyadarsini <sylphrenadin@gmail.com> wrote:
-> 
-> > This patchset adds support for emulating virtual hardware with VKMS.
-> > The virtual hardware mode can be enabled by using the following command
-> > while loading the module:
-> >         sudo modprobe vkms enable_virtual_hw=1
-> 
-> Hi,
-> 
-> every time I see this cover letter subject, I start wondering "what is
-> this virtual hardware module, yet another one?" and then I read the
-> cover letter and realise it is about adding an option to VKMS.
-> 
-> The next time you revise this series, could you perhaps clarify the
-> subject?
-+1
-> 
-> The idea of having a mode where VKMS behaves like a virtual hardware
-> driver is good, IMO. I do think "vblank-less mode" describes it better
-> though, because I would assume things like USB display drivers to work
-> like this too, and VKMS is already a virtual driver anyway.
-> 
-> To clarify, as a userspace programmer what I would expect "vblank-less
-> mode" to be is that the DRM driver completes pageflips and modesets at
-> arbitrary times, perhaps always immediately or perhaps with a variable
-> delay that depends on how much processing is needed for the update.
-> Also vblank events do not fire and vblank counters do not advance. Is
-> this correct?
-> 
-yes. And I think this description should be clear in both the cover
-letter and also the commit message of the patch that add the module
-option to vkms.
-> 
-> Thanks,
-> pq
-> 
+On Sat, Apr 10, 2021 at 02:10:38PM +0200, Greg KH wrote:
+> On Sat, Apr 10, 2021 at 02:08:30PM +0200, Julia Lawall wrote:
 > > 
-> > The first patch is prep work for adding virtual_hw mode and refactors
-> > the plane composition in vkms by adding a helper function vkms_composer_common()
-> > which can be used for both vblank mode and virtual mode.
 > > 
-> > The second patch adds virtual hardware support as a module option. It
-> > adds new atomic helper functions for the virtual mode
-> > and modifies the existing atomic helpers for usage by the vblank mode
-> > This gives us two sets of drm_crtc_helper_funcs struct for both modes,
-> > making the code flow cleaner and easier to debug.
+> > On Sat, 10 Apr 2021, Mitali Borkar wrote:
 > > 
-> > This patchset has been tested with the igt tests- kms_writeback, kms_atomic,
-> > kms_lease, kms_flip, kms_pipe_get_crc and preserves results except for
-> > subtests related to crc reads and skips tests that rely on vertical
-> > blanking. This patchset must be tested after incorporating the
-> > igt-tests patch: https://lists.freedesktop.org/archives/igt-dev/2021-February/029355.html
-
-Sumera,
-
-Thanks for your patches.
-
-In addition to Pekka's comments, consider what I comment in each patch
-of the series for a next version.
-
-Best regards,
-
-Melissa
+> > > Fixed Comparison to NULL can be written as '!...' by replacing it with
+> > > simpler form i.e boolean expression. This makes code more readable alternative.
+> > > Reported by checkpatch.
+> > >
+> > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > > ---
+> > >  drivers/staging/rtl8192e/rtl819x_TSProc.c | 6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+> > > index 65eac33aaa5b..476875125e87 100644
+> > > --- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
+> > > +++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
+> > > @@ -269,12 +269,12 @@ static void MakeTSEntry(struct ts_common_info *pTsCommonInfo, u8 *Addr,
+> > >  {
+> > >  	u8	count;
+> > >
+> > > -	if (pTsCommonInfo == NULL)
+> > > +	if (!pTsCommonInfo)
+> > >  		return;
+> > >
+> > >  	memcpy(pTsCommonInfo->Addr, Addr, 6);
+> > >
+> > > -	if (pTSPEC != NULL)
+> > > +	if (pTSPEC)
+> > >  		memcpy((u8 *)(&(pTsCommonInfo->TSpec)), (u8 *)pTSPEC,
+> > >  		       sizeof(union tspec_body));
+> > >
+> > > @@ -328,7 +328,7 @@ bool GetTs(struct rtllib_device *ieee, struct ts_common_info **ppTS,
+> > >  	}
+> > >
+> > >  	*ppTS = SearchAdmitTRStream(ieee, Addr, UP, TxRxSelect);
+> > > -	if (*ppTS != NULL)
+> > > +	if (ppTS)
 > > 
-> > Sumera Priyadarsini (2):
-> >   drm/vkms: Refactor vkms_composer_worker() to prep for virtual_hw mode
-> >   drm/vkms: Add support for virtual hardware mode
-> > 
-> >  drivers/gpu/drm/vkms/vkms_composer.c | 88 +++++++++++++++++-----------
-> >  drivers/gpu/drm/vkms/vkms_crtc.c     | 51 +++++++++++-----
-> >  drivers/gpu/drm/vkms/vkms_drv.c      | 18 ++++--
-> >  drivers/gpu/drm/vkms/vkms_drv.h      |  4 ++
-> >  4 files changed, 109 insertions(+), 52 deletions(-)
-> > 
+> > You lost a * here.
 > 
+> Ugh, good catch.
+> 
+> Mitali, can you send me a fix-up patch for this, or do you want me to
+> drop your original patch from my tree?
+>
+Yes Sir, I am making corrections right now in this patch. Will send the
+fix up patch in an hour.
 
 
+> thanks,
+> 
+> greg k-h
