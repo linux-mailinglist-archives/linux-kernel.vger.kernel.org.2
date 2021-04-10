@@ -2,161 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1231B35AF94
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 20:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1848835AF9C
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 20:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234392AbhDJS16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 14:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234513AbhDJS1y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 14:27:54 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9DF5C06138B
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 11:27:38 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id w3so13664256ejc.4
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 11:27:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kHhLeejRCafLd1b38lNlB9DRMFKc8tcaJUOcirv3Ooo=;
-        b=LirYQ65VsI53h0KeKH0f834XSic/s38SLU/7BywMfLNrhws9tcg6zOhn8mpZDi4lQ7
-         Ui7ZUnQX1a9r5eS7sjBSbRZ2uYMoW5O7HqUUhcVkmhBh/aEIaa/0SV33BvMFmUSxX9Rl
-         bqQdH0zS2mf1vuVqUqoFqkr66P8uBX3NSmzPwubXK5qTNduMc5b5qTTqYexwEfDYZE8b
-         nzUCzqtPIHKFBS9mY9HlIuBjruNelDixyPOH5QQU5oIGfs5FwxjfCSxN4wtfzXXbmCUB
-         bPeJr5P7ZkOuSi2xTfPJJwT2bXofjtHW320TWP9ER7ppnpxY6lpS6AfiIwSLGyj3jm+7
-         HhNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kHhLeejRCafLd1b38lNlB9DRMFKc8tcaJUOcirv3Ooo=;
-        b=N5rtuSBCq4dQv8d8c52Zh1QkfWMcrRRiNi0DLxCJTKBYE6IwvZfPZPq3FWlp6SvIwK
-         GaSL3Az6NfhJF1oaRy1FE49RBwlm5v2u+rFzu6LTlB7Zasyyo+QEN0m8V04eXpFuDYnK
-         7GhVvWKhVM/rHgqj/04jTPGV+02Nu7r5xVVuh/ad7VxQYMXmSM4KbdZ83iIofo9xMyEP
-         3zEgoqp5wyP3QKQlyAQuYnQgTxdMByQIwQKir5i7ad2ls7shxHZZ3JYnq/lF+DRGDzIo
-         6CoF73SiPMUeaT6egGksnXHJvyJoIbW5EAFKL8Ln9qLC/lJtpREXq3WiLUrPyAX30ftS
-         TesA==
-X-Gm-Message-State: AOAM530f7FDmJ6xwFMplb/7kmTonhTBpLbdCHWH1U7nwV2Qew5P5lBxw
-        CZONneJybTbQtwrgG6PNaqaEJQ==
-X-Google-Smtp-Source: ABdhPJx0V2aCh2XNTn2Q3nZt+vNNiODmlAlAROTAsWvAgu7uGCCaBqDifF+3nlWpkGlVcihCmauAxg==
-X-Received: by 2002:a17:906:4c91:: with SMTP id q17mr21299868eju.0.1618079257332;
-        Sat, 10 Apr 2021 11:27:37 -0700 (PDT)
-Received: from enceladus (ppp-94-65-225-75.home.otenet.gr. [94.65.225.75])
-        by smtp.gmail.com with ESMTPSA id y6sm2926830ejw.83.2021.04.10.11.27.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 11:27:36 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 21:27:31 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <YHHuE7g73mZNrMV4@enceladus>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com>
- <20210410154824.GZ2531743@casper.infradead.org>
- <YHHPbQm2pn2ysth0@enceladus>
- <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+        id S234889AbhDJSfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 14:35:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234513AbhDJSfS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 14:35:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15DD361056;
+        Sat, 10 Apr 2021 18:35:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618079703;
+        bh=C7m35dBPZkTJGHIfRr1qfkEyGCGrSvUdD/3tqwQKAVI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OItV+ZvcUdehFguevYrNaezIiePtz8j2bxxXBTvHO7yKXVMVu0RqvqyEmqPSecIVi
+         /r7yKK1oQUALQvnt5MOo6s94xdWJGIEZglgQ38Xewmizk3D/W5LYfLChweo6/A1Tk7
+         1HZEoym8xX/1P67yiBsnh6VjqEkdezky3lCYLpSrW3UXQYohEOoJ9Y/pP3/KaMNN5Y
+         LKKKLP3lmM0aR8Si/K58JOhWzDMBNudPr1sIAxATgM/8dAK6mumaVcjrNOGcpKGKIa
+         EIzMMum3bpYVhwMTo5dkfMrhzWaO8/hqm+Jwlub6k0J1uMYO/pw2LJx/ZcSmFe3LNn
+         ATeePAVTOZmow==
+Date:   Sat, 10 Apr 2021 11:35:01 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mike Snitzer <snitzer@redhat.com>, kernel-team@android.com
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH] dm verity: fix unaligned block size
+Message-ID: <YHHv1dn9cP4mO7u+@google.com>
+References: <20210410160151.1224296-1-jaegeuk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+In-Reply-To: <20210410160151.1224296-1-jaegeuk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shakeel, 
+Sorry, this patch is totally wrong. Let me dig out more.
 
-On Sat, Apr 10, 2021 at 10:42:30AM -0700, Shakeel Butt wrote:
-> On Sat, Apr 10, 2021 at 9:16 AM Ilias Apalodimas
-> <ilias.apalodimas@linaro.org> wrote:
-> >
-> > Hi Matthew
-> >
-> > On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:
-> > > On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:
-> > > > This is needed by the page_pool to avoid recycling a page not allocated
-> > > > via page_pool.
-> > >
-> > > Is the PageType mechanism more appropriate to your needs?  It wouldn't
-> > > be if you use page->_mapcount (ie mapping it to userspace).
-> >
-> > Interesting!
-> > Please keep in mind this was written ~2018 and was stale on my branches for
-> > quite some time.  So back then I did try to use PageType, but had not free
-> > bits.  Looking at it again though, it's cleaned up.  So yes I think this can
-> > be much much cleaner.  Should we go and define a new PG_pagepool?
-> >
-> >
+On 04/10, Jaegeuk Kim wrote:
+> From: Jaegeuk Kim <jaegeuk@google.com>
 > 
-> Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> can not be used.
-
-Yes it can, since it's going to be used as your default allocator for
-payloads, which might end up on an SKB.
-So we have to keep the extra added field on struct page for our mark.
-Matthew had an intersting idea.  He suggested keeping it, but changing the 
-magic number, so it can't be a kernel address, but I'll let him follow 
-up on the details.
-
+> When f->roots is 2 and block size is 4096, it will gives unaligned block size
+> length in the scsi command like below. Let's allocate dm_bufio to set the block
+> size length to match IO chunk size.
 > 
-> There is a recent discussion [1] on memcg accounting of TCP RX
-> zerocopy and I am wondering if this work can somehow help in that
-> regard. I will take a look at the series.
+> E sd 0    : 0:0:0: [sda] tag#30 request not aligned to the logical block size
+> E blk_update_request: I/O error, dev sda, sector 10368424 op 0x0:(READ) flags 0x0 phys_seg 1 prio class 0
+> E device-mapper: verity-fec: 254:8: FEC 9244672: parity read failed (block 18056): -5
 > 
-
-I'll try having a look on this as well. The idea behind the patchset is to
-allow lower speed NICs that use the API already, gain recycling 'easily'.  
-Using page_pool for the driver comes with a penalty to begin with.
-Allocating pages instead of SKBs has a measurable difference. By enabling them
-to recycle they'll get better performance, since you skip the
-reallocation/remapping and only care for syncing the buffers correctly.
-
-> [1] https://lore.kernel.org/linux-mm/20210316013003.25271-1-arjunroy.kdev@gmail.com/
+> Fixes: ce1cca17381f ("dm verity: fix FEC for RS roots unaligned to block size")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+> ---
+>  drivers/md/dm-verity-fec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/md/dm-verity-fec.c b/drivers/md/dm-verity-fec.c
+> index 66f4c6398f67..656238131dd7 100644
+> --- a/drivers/md/dm-verity-fec.c
+> +++ b/drivers/md/dm-verity-fec.c
+> @@ -743,7 +743,7 @@ int verity_fec_ctr(struct dm_verity *v)
+>  	}
+>  
+>  	f->bufio = dm_bufio_client_create(f->dev->bdev,
+> -					  f->roots << SECTOR_SHIFT,
+> +					  1 << v->data_dev_block_bits,
+>  					  1, 0, NULL, NULL);
+>  	if (IS_ERR(f->bufio)) {
+>  		ti->error = "Cannot initialize FEC bufio client";
+> -- 
+> 2.31.1.295.g9ea45b61b8-goog
