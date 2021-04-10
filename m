@@ -2,211 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED50E35AC86
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:43:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2DAA35AC87
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:45:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234602AbhDJJnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 05:43:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
+        id S234624AbhDJJpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 05:45:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234507AbhDJJnm (ORCPT
+        with ESMTP id S229992AbhDJJpf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 05:43:42 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18397C061763
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:43:27 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id w18so9346290edc.0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:43:27 -0700 (PDT)
+        Sat, 10 Apr 2021 05:45:35 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5963FC061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:45:21 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id g5so5666178ejx.0
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:45:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VpR8JjIwnxm/ZAIy3uRS/88GZbMJ/pI4zWXZzyOtEU0=;
-        b=u3UlBGleT6AaiTDz8PaCtGYEAAhE8mlwZM9q+EASI59PTGNVBznJtHq8TXYLnCqomv
-         5eBDoAUiK0fPFVXQQtFEN7b/loVECqsyPWkcDX6sHtr63QG1mf2ZErrmStvQMKtVpuU/
-         NfrV5i65wHH4lyduJU2WWJXPGacGpoJHKjMNqJXsnSvPtvWsEyVRdWSV+fNGl4M0tNIN
-         JbdlE9EosjbxTYziOyQY+Yq3S1L2Qc0nUua9OrC9YwkD/KDkVqeQ7iHJd4UL4f+Iq1MZ
-         MB2PhERXiNJVfxFj1+EmOqusbEVXL1lM7AT9b6JhUR0rpFdQCtrGStLwMDyCPM/4fR36
-         XesQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=moesTed4SVvjaNssZNC/2a+G5e9IgTbR1YQQGq/nOzU=;
+        b=MWRDyMOnBOY9P85izdF6hnKFStsJyXxJ9F/MYorK3rfWvKQ+wJXuUxkBEBwL02H3jE
+         wa++ClxVuTMr+B+zcOVFWZAcfcGP21+VWc8xH31dXXK6+7drtQDapNjBwedSMDXkRWkB
+         XaitJhrrtRVDE2xGmYOfpA4TTalHHFEggMa/9OfI98KaIQDB/5v2OUitWBYjMbMlansU
+         VumQiVl8Wr6Wfkb7Zkkqo5HQXZV31HHpP+K19cRk5YwQo+DpzN6XL6WGqeGsMKBRlg9z
+         Qw9koEAffMF1fhc0l+w0shxSlZCyGB8XEwTyvQvf3tw1PAcBeMYlDmtRMDzHMGMKKslf
+         OE2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VpR8JjIwnxm/ZAIy3uRS/88GZbMJ/pI4zWXZzyOtEU0=;
-        b=OX6rBQWBivYc48jzUm0GL7DcNUOPM+gxA5TBM+MiziWrz+MYK/AJN1a49pkWxlAmmS
-         2ym6xcpYkZN7IHs/IzaSqk6u5m7Iw+EqZ5Fu1Tf1eaSRF0kqqAZMcnftVyXSb3SzAh/q
-         STGkLAPzooSg6Jesd2C2ctvwQZkheEQgTNm6Am3sRXOB4GLPB11KzVtS/9izrXMfsawb
-         bGlsGt4LlDfIyYbazeCd+i2WZJlCgP4EwZN1HSfVsN9UZOaZlt1tiYUINaGJxYBfYziT
-         nb6stjmtsuaCOw/aqYIW4pSBS+MBS4O7GG4CKg6/E5nrUQZXPJdgfkeAWzFLafAcyhFS
-         3GBw==
-X-Gm-Message-State: AOAM530xX4eICqEnHa7/yI/Wnyp7m1+jJAFw0reMwv9afcPyi7XXCFTx
-        zKQ2fETwD+s7n5M14XDGLLgzDLHN32Hd1eqrMiSQQA==
-X-Google-Smtp-Source: ABdhPJyJ1fcTpuG7v3v8uphQjkiGgkiqynDUZGQU3X2IrDiG7Ypir3QF9VWnE9iYXQLWULS+IwSa9++Aa5ZmojK34Rc=
-X-Received: by 2002:a05:6402:5113:: with SMTP id m19mr21551946edd.78.1618047805707;
- Sat, 10 Apr 2021 02:43:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=moesTed4SVvjaNssZNC/2a+G5e9IgTbR1YQQGq/nOzU=;
+        b=ZqZRhoVPVW95inSDBOzG4XUR3166XpoMXxmgxSmDsk39kqjyFqR3yLBy1/+hROcN6g
+         VHuGfnFW+MnSZCRWavKUZcqyXH2gg2k7rrefY1vmGxqomgcKJtRojbgT19BvcrhkK0JB
+         q5ZV60POw4J5knMQdueoI9zkY5Z1NXHczvkaT+HY6RxNRxqgD2sOcBaHho1uvPl9Rcn1
+         xfo8DkfmNusP59pWCyfWfvhTmcVcOxof6hfw83lfNhJ/qzB5Fg7x87bKYsz+VTnkQbeG
+         SRvJiliugn7P74vvGyBNDiGbNAump54NJ2CMCP4xbdswXjOd74rgk9T2+eBrId7t6TlW
+         dk5Q==
+X-Gm-Message-State: AOAM532ci627f2g8GeOlzD3t8hWkH2bw6OcfzJMZ5YYvzPaeG4fxj7/U
+        Gk3sYXpLafb3D6DuwGXYt60=
+X-Google-Smtp-Source: ABdhPJz1b2YxObuf6ixc8ARr8196K5I+q7NVJqfPK2KTgGRDUDS8KdYIDasUAwFQZEcLa4h/7ug0mA==
+X-Received: by 2002:a17:906:5413:: with SMTP id q19mr721766ejo.8.1618047920066;
+        Sat, 10 Apr 2021 02:45:20 -0700 (PDT)
+Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id j1sm2434983ejt.18.2021.04.10.02.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 02:45:19 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH v7 1/3] staging: rtl8723bs: Remove camelcase in several files
+Date:   Sat, 10 Apr 2021 11:45:18 +0200
+Message-ID: <3026831.3QyE5GyAct@localhost.localdomain>
+In-Reply-To: <YHFwkJlTNxQwPyN3@kroah.com>
+References: <20210410092232.15155-1-fmdefrancesco@gmail.com> <20210410092232.15155-2-fmdefrancesco@gmail.com> <YHFwkJlTNxQwPyN3@kroah.com>
 MIME-Version: 1.0
-References: <20210409095259.624577828@linuxfoundation.org>
-In-Reply-To: <20210409095259.624577828@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Sat, 10 Apr 2021 15:13:14 +0530
-Message-ID: <CA+G9fYvsxfoPyM7ew8e05bsQVsS24oNNz5epH-AxtJ42VHC1Og@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/13] 4.9.266-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Apr 2021 at 15:26, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
+On Saturday, April 10, 2021 11:32:00 AM CEST Greg KH wrote:
+> On Sat, Apr 10, 2021 at 11:22:29AM +0200, Fabio M. De Francesco wrote:
+> > Remove camelcase in bFwCurrentInPSMode, a variable used by code
+> > of several subdirectories/files of the driver. Issue detected by
+> > checkpatch.pl. Delete the unnecessary "b" (that stands for "byte") from
+> > the beginning of the name.
+> > 
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> 
+> Why is there a "v7" in this subject line, but not all the other lines?
+> 
+
+It's v7 because only this file (and not the others in the series had six 
+previous versions that you dropped. Please remind that it was already sent 
+alone (not in a series) several times. The changelog is in the body.
+
+Should I drop that "v7" and the changelog, and the send the patch series 
+anew?
+
+Please, I'm waiting your instructions on what to do.
+
+Thanks,
+
+Fabio
 >
-> This is the start of the stable review cycle for the 4.9.266 release.
-> There are 13 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.266-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
+> It should be in all of them, including the 0/X email, git format-patch
+> will create it automatically if you tell it to.
+> 
 > thanks,
->
+> 
 > greg k-h
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-## Build
-* kernel: 4.9.266-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.9.y
-* git commit: d263ac9a21bc26cb10dee0ee34109289ac518725
-* git describe: v4.9.265-14-gd263ac9a21bc
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
-65-14-gd263ac9a21bc
-
-## No regressions (compared to v4.9.265)
-
-## No fixes (compared to v4.9.265)
-
-## Test result summary
- total: 56309, pass: 46531, fail: 617, skip: 8921, xfail: 240,
-
-## Build Summary
-* arm: 96 total, 96 passed, 0 failed
-* arm64: 23 total, 23 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 13 total, 13 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 13 total, 13 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
