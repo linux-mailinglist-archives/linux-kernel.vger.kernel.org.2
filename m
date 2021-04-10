@@ -2,248 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCE835AB93
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7008335AB97
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 09:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234313AbhDJHF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 03:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46280 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhDJHF6 (ORCPT
+        id S234364AbhDJHKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 03:10:19 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:16560 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhDJHKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 03:05:58 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 959FDC061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 00:05:44 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id s8so4599616qve.16
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 00:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=dg+DEOFhZoTD7YuipHSWP7rFu7usavK/AqGGNE1MsEo=;
-        b=CqrubxNWGOqMFlWtCDFuYRI6BwZUxMbSwCv7+PwHNBuiJMSHErQvNPKR/lmbVirnET
-         Cwj1Niebl2pa4buq50GDRQqm7XaAnw6CiLu4zm49mqzc6PBXcxA941EJNLm+ujvY71l/
-         NPMko1wQE7sL8lOmkGR3Bb1SUu35/50R6kWzOTW8dMgbUJYyBVBEv/YmUUvbBm7KQ9dL
-         Cl3L4ajgl9YYDbJdpXTm9sUgEboY36TW8WZU6tqF8G+dpYg4tAPH97G76P33PMI0g9IR
-         cHXAxQu1Gt2aWM1EhJHMhIiGXs/io/FaD9b7iEVw0lVuS0iLozSf7/x96C8vu26klQAf
-         BPhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc
-         :content-transfer-encoding;
-        bh=dg+DEOFhZoTD7YuipHSWP7rFu7usavK/AqGGNE1MsEo=;
-        b=GBl6t0ZoKUe8vr2CFxFfChO63eymWFUWmp706uxi/buDuB6sqqJv50tIK26MH0MtAA
-         uon2XWwq4Bb4FFe8c++q+yTeft4pX0PHDJcqcooIxDnUPLQkNRZveObJz1duYh41N3YT
-         MNeT/Pv7kxGG1VPClmRKi6g+I0NXOQ7VYbw2bPQYH8Pu0ucUOe0RZ7zbVC9CbD8EODNq
-         zRtIOIcLdqZVuPwvCf2qlQ56VQ14Saf06O4tCXMjl9nUlvJOesNOaaimt1DXb70z4qsa
-         cNlOpNzIiXYo5koNGMAGVxoAmSCDpsjNrOFDPuC3w2YtjLbyXrnx+ZZ3AU9G+hcTQ20q
-         rI2g==
-X-Gm-Message-State: AOAM531EzxcI8YkLdoYeO6xGOywJGDQBBzz4N38GOjls8o6YmtV89Lmz
-        I5uafNLETYQGV105ppPGxwmZzxbaSYc/Tg==
-X-Google-Smtp-Source: ABdhPJyv/+jcJ6yI0cEvELtKheEfjqsjvXd0itiD/eULOlwWVf8f5xw+AYtcLhLzSmf9f6f6r4lhCc8eoQwJXQ==
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:f493:fef7:82d5:5e83])
- (user=davidgow job=sendgmr) by 2002:a0c:f74d:: with SMTP id
- e13mr18725327qvo.8.1618038343525; Sat, 10 Apr 2021 00:05:43 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 00:05:30 -0700
-Message-Id: <20210410070529.4113432-1-davidgow@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-Subject: [PATCH] Documentation: dev-tools: Add Testing Overview
-From:   David Gow <davidgow@google.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
+        Sat, 10 Apr 2021 03:10:16 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FHR0H5L6qz17Qw7;
+        Sat, 10 Apr 2021 15:07:43 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.162) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Sat, 10 Apr 2021
+ 15:09:48 +0800
+Subject: Re: [PATCH v5] ACPI / APEI: fix the regression of synchronous
+ external aborts occur in user-mode
+To:     James Morse <james.morse@arm.com>, Borislav Petkov <bp@alien8.de>
+References: <1607602177-1507-1-git-send-email-tanxiaofei@huawei.com>
+ <94a38a33-a949-3cce-d617-e1476912596e@huawei.com>
+ <CAJZ5v0hp49Jt6ZWMNUkEOmMST5eM60b8Nzz0wT4w1--zj-KPWw@mail.gmail.com>
+CC:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Tony Luck <tony.luck@intel.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>, linux-doc@vger.kernel.org,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Joerg Roedel <jroedel@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <3648791f-f9c5-858f-cf6e-e5954fad8019@huawei.com>
+Date:   Sat, 10 Apr 2021 15:09:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
+MIME-Version: 1.0
+In-Reply-To: <CAJZ5v0hp49Jt6ZWMNUkEOmMST5eM60b8Nzz0wT4w1--zj-KPWw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.192.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel now has a number of testing and debugging tools, and we've
-seen a bit of confusion about what the differences between them are.
+Hi James, Boris
 
-Add a basic documentation outlining the testing tools, when to use each,
-and how they interact.
+a friendly ping..
+any comments for this ?
 
-This is a pretty quick overview rather than the idealised "kernel
-testing guide" that'd probably be optimal, but given the number of times
-questions like "When do you use KUnit and when do you use Kselftest?"
-are being asked, it seemed worth at least having something. Hopefully
-this can form the basis for more detailed documentation later.
-
-Signed-off-by: David Gow <davidgow@google.com>
----
- Documentation/dev-tools/index.rst            |   3 +
- Documentation/dev-tools/testing-overview.rst | 102 +++++++++++++++++++
- 2 files changed, 105 insertions(+)
- create mode 100644 Documentation/dev-tools/testing-overview.rst
-
-diff --git a/Documentation/dev-tools/index.rst b/Documentation/dev-tools/in=
-dex.rst
-index 1b1cf4f5c9d9..f590e5860794 100644
---- a/Documentation/dev-tools/index.rst
-+++ b/Documentation/dev-tools/index.rst
-@@ -7,6 +7,8 @@ be used to work on the kernel. For now, the documents have =
-been pulled
- together without any significant effort to integrate them into a coherent
- whole; patches welcome!
-=20
-+A brief overview of testing-specific tools can be found in :doc:`testing-o=
-verview`.
-+
- .. class:: toc-title
-=20
- 	   Table of contents
-@@ -14,6 +16,7 @@ whole; patches welcome!
- .. toctree::
-    :maxdepth: 2
-=20
-+   testing-overview
-    coccinelle
-    sparse
-    kcov
-diff --git a/Documentation/dev-tools/testing-overview.rst b/Documentation/d=
-ev-tools/testing-overview.rst
-new file mode 100644
-index 000000000000..8452adcb8608
---- /dev/null
-+++ b/Documentation/dev-tools/testing-overview.rst
-@@ -0,0 +1,102 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+Kernel Testing Guide
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+
-+There are a number of different tools for testing the Linux kernel, so kno=
-wing
-+when to use each of them can be a challenge. This document provides a roug=
-h
-+overview of their differences, and how they fit together.
-+
-+
-+Writing and Running Tests
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-+
-+The bulk of kernel tests are written using either the :doc:`kselftest
-+<kselftest>` or :doc:`KUnit <kunit/index>` frameworks. These both provide
-+infrastructure to help make running tests and groups of tests easier, as w=
-ell
-+as providing helpers to aid in writing new tests.
-+
-+If you're looking to verify the behaviour of the Kernel =E2=80=94 particul=
-arly specific
-+parts of the kernel =E2=80=94 then you'll want to use `KUnit` or `kselftes=
-t`.
-+
-+
-+The Difference Between KUnit and kselftest
-+------------------------------------------
-+
-+:doc:`KUnit <kunit/index>` is an entirely in-kernel system for "white box"
-+testing: because test code is part of the kernel, it can access internal
-+structures and functions which aren't exposed to userspace.
-+
-+`KUnit` tests therefore are best written against small, self-contained par=
-ts
-+of the kernel, which can be tested in isolation. This aligns well with the
-+concept of Unit testing.
-+
-+For example, a KUnit test might test an individual kernel function (or eve=
-n a
-+single codepath through a function, such as an error handling case), rathe=
-r
-+than a feature as a whole.
-+
-+There is a KUnit test style guide which may give further pointers
-+
-+
-+:doc:`kselftest <kselftest>`, on the other hand, is largely implemented in
-+userspace, and tests are normal userspace scripts or programs.
-+
-+This makes it easier to write more complicated tests, or tests which need =
-to
-+manipulate the overall system state more (e.g., spawning processes, etc.).
-+However, it's not possible to call kernel functions directly unless they'r=
-e
-+exposed to userspace (by a syscall, device, filesystem, etc.) Some tests t=
-o
-+also provide a kernel module which is loaded by the test, though for tests
-+which run mostly or entirely within the kernel, `KUnit` may be the better =
-tool.
-+
-+`kselftest` is therefore suited well to tests of whole features, as these =
-will
-+expose an interface to userspace, which can be tested, but not implementat=
-ion
-+details. This aligns well with 'system' or 'end-to-end' testing.
-+
-+
-+Code Coverage Tools
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+The Linux Kernel supports two different code coverage mesurement tools. Th=
-ese
-+can be used to verify that a test is executing particular functions or lin=
-es
-+of code. This is useful for determining how much of the kernel is being te=
-sted,
-+and for finding corner-cases which are not covered by the appropriate test=
-.
-+
-+:doc:`kcov` is a feature which can be built in to the kernel to allow
-+capturing coverage on a per-task level. It's therefore useful for fuzzing =
-and
-+other situations where information about code executed during, for example=
-, a
-+single syscall is useful.
-+
-+:doc:`gcov` is GCC's coverage testing tool, which can be used with the ker=
-nel
-+to get global or per-module coverage. Unlike KCOV, it does not record per-=
-task
-+coverage. Coverage data can be read from debugfs, and interpreted using th=
-e
-+usual gcov tooling.
-+
-+
-+Sanitizers
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-+
-+The kernel also supports a number of sanitizers, which attempt to detect
-+classes of issues when the occur in a running kernel. These typically
-+look for undefined behaviour of some kind, such as invalid memory accesses=
-,
-+concurrency issues such as data races, or other undefined behaviour like
-+integer overflows.
-+
-+* :doc:`kmemleak` (Kmemleak) detects possible memory leaks.
-+* :doc:`kasan` detects invalid memory accesses such as out-of-bounds and
-+  use-after-free errors.
-+* :doc:`ubsan` detects behaviour that is undefined by the C standard, like
-+  integer overflows.
-+* :doc:`kcsan` detects data races.
-+* :doc:`kfence` is a low-overhead detector of memory issues, which is much
-+  faster than KASAN and can be used in production.
-+
-+These tools tend to test the kernel as a whole, and do not "pass" like
-+kselftest or KUnit tests. They can be combined with KUnit or kselftest by
-+running tests on a kernel with a sanitizer enabled: you can then be sure
-+that none of these errors are occurring during the test.
-+
-+Some of these sanitizers integrate with KUnit or kselftest and will
-+automatically fail tests if an issue is detected by a sanitizer.
-+
---=20
-2.31.1.295.g9ea45b61b8-goog
+On 2021/2/5 20:55, Rafael J. Wysocki wrote:
+> On Tue, Jan 26, 2021 at 2:32 PM tanxiaofei <tanxiaofei@huawei.com> wrote:
+>>
+>> @James
+>> Hi James, please help to review this patch. Thank you very much. :)
+>
+> James, Boris, any comments?
+>
+>> On 2020/12/10 20:09, Xiaofei Tan wrote:
+>>> After the commit 8fcc4ae6faf8 ("arm64: acpi: Make apei_claim_sea()
+>>> synchronise with APEI's irq work") applied, do_sea() return directly
+>>> for user-mode if apei_claim_sea() handled any error record. Therefore,
+>>> each error record reported by the user-mode SEA must be effectively
+>>> processed in APEI GHES driver.
+>>>
+>>> Currently, GHES driver only processes Memory Error Section.(Ignore PCIe
+>>> Error Section, as it has nothing to do with SEA). It is not enough.
+>>> Because ARM Processor Error could also be used for SEA in some hardware
+>>> platforms, such as Kunpeng9xx series. We can't ask them to switch to
+>>> use Memory Error Section for two reasons:
+>>> 1)The server was delivered to customers, and it will introduce
+>>> compatibility issue.
+>>> 2)It make sense to use ARM Processor Error Section. Because either
+>>> cache or memory errors could generate SEA when consumed by a processor.
+>>>
+>>> Do memory failure handling for ARM Processor Error Section just like
+>>> for Memory Error Section.
+>>>
+>>> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
+>>> ---
+>>> Changes since v4:
+>>> - 1. Change the patch name from " ACPI / APEI: do memory failure on the
+>>> physical address reported by ARM processor error section" to this
+>>> more proper one.
+>>> - 2. Add a comment in the code to tell why not filter out corrected
+>>> error in an uncorrected section.
+>>>
+>>> Changes since v3:
+>>> - Print unhandled error following James Morse's advice.
+>>>
+>>> Changes since v2:
+>>> - Updated commit log
+>>> ---
+>>>  drivers/acpi/apei/ghes.c | 76 +++++++++++++++++++++++++++++++++++++-----------
+>>>  1 file changed, 59 insertions(+), 17 deletions(-)
+>>>
+>>> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
+>>> index fce7ade..0893968 100644
+>>> --- a/drivers/acpi/apei/ghes.c
+>>> +++ b/drivers/acpi/apei/ghes.c
+>>> @@ -441,28 +441,35 @@ static void ghes_kick_task_work(struct callback_head *head)
+>>>       gen_pool_free(ghes_estatus_pool, (unsigned long)estatus_node, node_len);
+>>>  }
+>>>
+>>> -static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+>>> -                                    int sev)
+>>> +static bool ghes_do_memory_failure(u64 physical_addr, int flags)
+>>>  {
+>>>       unsigned long pfn;
+>>> -     int flags = -1;
+>>> -     int sec_sev = ghes_severity(gdata->error_severity);
+>>> -     struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+>>>
+>>>       if (!IS_ENABLED(CONFIG_ACPI_APEI_MEMORY_FAILURE))
+>>>               return false;
+>>>
+>>> -     if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+>>> -             return false;
+>>> -
+>>> -     pfn = mem_err->physical_addr >> PAGE_SHIFT;
+>>> +     pfn = PHYS_PFN(physical_addr);
+>>>       if (!pfn_valid(pfn)) {
+>>>               pr_warn_ratelimited(FW_WARN GHES_PFX
+>>>               "Invalid address in generic error data: %#llx\n",
+>>> -             mem_err->physical_addr);
+>>> +             physical_addr);
+>>>               return false;
+>>>       }
+>>>
+>>> +     memory_failure_queue(pfn, flags);
+>>> +     return true;
+>>> +}
+>>> +
+>>> +static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+>>> +                                    int sev)
+>>> +{
+>>> +     int flags = -1;
+>>> +     int sec_sev = ghes_severity(gdata->error_severity);
+>>> +     struct cper_sec_mem_err *mem_err = acpi_hest_get_payload(gdata);
+>>> +
+>>> +     if (!(mem_err->validation_bits & CPER_MEM_VALID_PA))
+>>> +             return false;
+>>> +
+>>>       /* iff following two events can be handled properly by now */
+>>>       if (sec_sev == GHES_SEV_CORRECTED &&
+>>>           (gdata->flags & CPER_SEC_ERROR_THRESHOLD_EXCEEDED))
+>>> @@ -470,14 +477,51 @@ static bool ghes_handle_memory_failure(struct acpi_hest_generic_data *gdata,
+>>>       if (sev == GHES_SEV_RECOVERABLE && sec_sev == GHES_SEV_RECOVERABLE)
+>>>               flags = 0;
+>>>
+>>> -     if (flags != -1) {
+>>> -             memory_failure_queue(pfn, flags);
+>>> -             return true;
+>>> -     }
+>>> +     if (flags != -1)
+>>> +             return ghes_do_memory_failure(mem_err->physical_addr, flags);
+>>>
+>>>       return false;
+>>>  }
+>>>
+>>> +static bool ghes_handle_arm_hw_error(struct acpi_hest_generic_data *gdata, int sev)
+>>> +{
+>>> +     struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+>>> +     struct cper_arm_err_info *err_info;
+>>> +     bool queued = false;
+>>> +     int sec_sev, i;
+>>> +
+>>> +     log_arm_hw_error(err);
+>>> +
+>>> +     sec_sev = ghes_severity(gdata->error_severity);
+>>> +     if (sev != GHES_SEV_RECOVERABLE || sec_sev != GHES_SEV_RECOVERABLE)
+>>> +             return false;
+>>> +
+>>> +     err_info = (struct cper_arm_err_info *) (err + 1);
+>>> +     for (i = 0; i < err->err_info_num; i++, err_info++) {
+>>> +             bool is_cache = (err_info->type == CPER_ARM_CACHE_ERROR);
+>>> +             bool has_pa = (err_info->validation_bits & CPER_ARM_INFO_VALID_PHYSICAL_ADDR);
+>>> +
+>>> +             /*
+>>> +              * The field (err_info->error_info & BIT(26)) is fixed to set to
+>>> +              * 1 in some old firmware of HiSilicon Kunpeng920. We assume that
+>>> +              * firmware won't mix corrected errors in an uncorrected section,
+>>> +              * and don't filter out 'corrected' error here.
+>>> +              */
+>>> +             if (!is_cache || !has_pa) {
+>>> +                     pr_warn_ratelimited(FW_WARN GHES_PFX
+>>> +                     "Unhandled processor error type %s\n",
+>>> +                     err_info->type < ARRAY_SIZE(cper_proc_error_type_strs) ?
+>>> +                     cper_proc_error_type_strs[err_info->type] : "unknown error");
+>>> +                     continue;
+>>> +             }
+>>> +
+>>> +             if (ghes_do_memory_failure(err_info->physical_fault_addr, 0))
+>>> +                     queued = true;
+>>> +     }
+>>> +
+>>> +     return queued;
+>>> +}
+>>> +
+>>>  /*
+>>>   * PCIe AER errors need to be sent to the AER driver for reporting and
+>>>   * recovery. The GHES severities map to the following AER severities and
+>>> @@ -605,9 +649,7 @@ static bool ghes_do_proc(struct ghes *ghes,
+>>>                       ghes_handle_aer(gdata);
+>>>               }
+>>>               else if (guid_equal(sec_type, &CPER_SEC_PROC_ARM)) {
+>>> -                     struct cper_sec_proc_arm *err = acpi_hest_get_payload(gdata);
+>>> -
+>>> -                     log_arm_hw_error(err);
+>>> +                     queued = ghes_handle_arm_hw_error(gdata, sev);
+>>>               } else {
+>>>                       void *err = acpi_hest_get_payload(gdata);
+>>>
+>>>
+>>
+>
+> .
+>
 
