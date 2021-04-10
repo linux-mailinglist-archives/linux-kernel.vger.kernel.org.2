@@ -2,103 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC3135AD89
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E0035AD8B
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234745AbhDJNVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
+        id S234752AbhDJNW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 09:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234262AbhDJNVP (ORCPT
+        with ESMTP id S234262AbhDJNWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:21:15 -0400
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA79C061762;
-        Sat, 10 Apr 2021 06:21:01 -0700 (PDT)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4FHbGz2nZ8z1s0B4;
-        Sat, 10 Apr 2021 15:20:59 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
-        by mail.m-online.net (Postfix) with ESMTP id 4FHbGz1hMrz1qqwx;
-        Sat, 10 Apr 2021 15:20:59 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
-        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
-        with ESMTP id mgvrU88JaMk4; Sat, 10 Apr 2021 15:20:57 +0200 (CEST)
-X-Auth-Info: W0f32ZT/85jov75Dav2mYoBVk+0+67dwybr4FQ8tpVk=
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Sat, 10 Apr 2021 15:20:57 +0200 (CEST)
-Subject: Re: [PATCH stable] gpiolib: Read "gpio-line-names" from a firmware
- node
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        stable@vger.kernel.org, Roman Guskov <rguskov@dh-electronics.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-References: <20210410090919.3157-1-brgl@bgdev.pl> <YHGVE1hMDUiK0P2A@kroah.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <e76d59f9-37ff-b31e-0131-113a1eedd786@denx.de>
-Date:   Sat, 10 Apr 2021 15:20:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Sat, 10 Apr 2021 09:22:23 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63FB3C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:22:08 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id l14so6812748ljb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:22:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:in-reply-to:references:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=8z6k0nvfMeU4+kk1Rlj4CMcpU7JmVD+ziX5/+jJBhDQ=;
+        b=N7GnLitV5N196BCTqGxrqXFzXSdskAuCGsI3KifrK8ySfQOIN7EcZEdAIX/tPf/kA5
+         Rkaf0NXtK5kVz2+NxvIU23ibAol/WspYlEmvjv9WAwfORpEaMLNAOkZYmLnPla37BcAO
+         IjbsVd7GmPvqZeDP4DUeAQ3EuMmZtHhmipkdXDekPncpLZ7A1Wzi1khMud3XjwmwN8m3
+         uYWLjZzhl6FtgD1E0RRn+sa73gQpL9LSvSLlInoUfEHckrcvNwT58MAchntNKhHFQn+3
+         A/Zs4aeDxGfWv0TeSjACP3SSTr7C7cqnTbYS1TQAzOJ6T1FNBdwUN1PhIoCeduAjUXOL
+         IuZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:in-reply-to:references
+         :from:date:message-id:subject:to:content-transfer-encoding;
+        bh=8z6k0nvfMeU4+kk1Rlj4CMcpU7JmVD+ziX5/+jJBhDQ=;
+        b=tIrLsSVDQ5oqE3hQetDNicoSfdz+U9wGivkyxnr2Hs+2m9ewmcg59p8f9PIYcGlWb8
+         pp2xgAahIUDEjgvzWEBeXCk4IRYdaJQzxx4XK6NPa1lsxZD7/0XJkAAh+GAGE4zxDMnh
+         iDsnbRO4SDW9CJyTKsAIQQ5KJb38qk59qnx8ZiHihX95xKTZmWFWgSqRsQoFCjh02eTU
+         zRgBOeOz0DUkJdBH8Cwk29H6lXD9aff2gM9KUqEoBg3u+/hiSgShh1eE5aAFbakJRPkE
+         gn/4L2in0M8gb5miwsTOUfRC0p50PU8zN6DdbBvJ3jkhAeJq1DQ4Ww3DSGhw6hWjvo1d
+         dZNA==
+X-Gm-Message-State: AOAM530NEn6W0szhXfVc3jGTC5cE0suy25rBFyLS0Y0eDuSgwSdwuzkd
+        PVj0lvOzkB9rhpac0DOjrDyDYpJGsMwb4NuhIA==
+X-Google-Smtp-Source: ABdhPJxeaqqnVniyxjUnOfIUpHBXzBWiC7cXIhXDSioi6j+A7kjk0ywtWutCU8VOSE7mDAMdqiHpxRThORHvVqA0VVE=
+X-Received: by 2002:a2e:580c:: with SMTP id m12mr1966023ljb.429.1618060926800;
+ Sat, 10 Apr 2021 06:22:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YHGVE1hMDUiK0P2A@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:ab3:1211:0:0:0:0:0 with HTTP; Sat, 10 Apr 2021 06:22:05
+ -0700 (PDT)
+Reply-To: moneygramdepromo@gmail.com
+In-Reply-To: <CAP2Ytb=syLK=0ttNTfbczBHYvEcwc-yqEJMxOjAWBVnX8ajKyw@mail.gmail.com>
+References: <CAP2Ytb=bdyZG1-Gev7Hmd0Ax_cxRnBdxLtkHLQ_xzkRweVherQ@mail.gmail.com>
+ <CAP2YtbnJNHYDDUbnnirr=riHhr5x93gmWLa5HOyDSnjHhYoDXQ@mail.gmail.com>
+ <CAP2YtbnxTamMdG+P3xYaN69+DVCEWcsLKLTQBn-tWgjCxAUd=Q@mail.gmail.com>
+ <CAP2Ytbm_vLn9oYwQ-+bxyQQC_SiPceG9=grTKKtzMNQ-E+Cacw@mail.gmail.com>
+ <CAP2Ytb=vTim3NY1Ce1AHWTPgrE9rdwUfpPrn2RACjeiKRVkDDg@mail.gmail.com>
+ <CAP2Ytbk1yYBxO-vq5hYFbrOJGYon+yFQoLqyuq1O5YwA2Qgodw@mail.gmail.com>
+ <CAP2YtbmAf1T6ZwvWiLJHkXDYuNLsDd8pbZ3YxyeKHzWKXseCyg@mail.gmail.com>
+ <CAP2Ytb=fRYKAwrbsYVaO1j0scBieALu8WF_FQfmvk4cPeNTszQ@mail.gmail.com> <CAP2Ytb=syLK=0ttNTfbczBHYvEcwc-yqEJMxOjAWBVnX8ajKyw@mail.gmail.com>
+From:   Alexander Holmes <chineduomor6@gmail.com>
+Date:   Sat, 10 Apr 2021 14:22:05 +0100
+Message-ID: <CAP2YtbmZtQQbiBN3E_Kg1G-ehqQ8F=WpVekVUg2qfSRjAPFL4g@mail.gmail.com>
+Subject: GOOD
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/10/21 2:07 PM, Greg Kroah-Hartman wrote:
-> On Sat, Apr 10, 2021 at 11:09:19AM +0200, Bartosz Golaszewski wrote:
->> From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>
->> On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
->> see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
->> pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
->> and iterates over all of its DT subnodes when registering each GPIO
->> bank gpiochip. Each gpiochip has:
->>
->>    - gpio_chip.parent = dev,
->>      where dev is the device node of the pin controller
->>    - gpio_chip.of_node = np,
->>      which is the OF node of the GPIO bank
->>
->> Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
->> i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
->>
->> The original code behaved correctly, as it extracted the "gpio-line-names"
->> from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
->>
->> To achieve the same behaviour, read property from the firmware node.
->>
->> Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
->> Cc: stable@vger.kernel.org
->> Reported-by: Marek Vasut <marex@denx.de>
->> Reported-by: Roman Guskov <rguskov@dh-electronics.com>
->> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->> Tested-by: Marek Vasut <marex@denx.de>
->> Reviewed-by: Marek Vasut <marex@denx.de>
->> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->> ---
->> Hi Greg,
->>
->> This patch somehow got lost and never made its way into stable. Could you
->> please apply it?
-> 
-> This has been added and removed more times than I can remember already.
-> 
-> Are you all _SURE_ this is safe for a stable kernel release?  Look in
-> the archives for complaints when we added this in the past.
+How are you today?
 
-I now tested this on stm32mp1, which was the original platform that got 
-affected by the problem this is supposed to fix, and I can confirm this 
-patch fixes the problem there.
+This is MoneyGram International Inc. we are contacting you concerning
+your winning fund $1.500, 000.00 USD; your e-mail won $1.500, 000.00
+dollars through Internet contest, and lottery bonus under MoneyGram
+International Inc. Worldwide. The lottery bonus is contesting once in
+a year, and we are doing it to promote this company MoneyGram
+International Inc. The last contest was made through the internet by
+people=E2=80=99s email worldwide, for example. USA, CANADA, RUSSIA, EUROPE,
+ASIA, AFRICA, UNITED KINGDOM, GERMANY, TOGO, SOUTH AFRICA, UAE,
+ETC...........................
 
-So for what it's worth
-Tested-by: Marek Vasut <marex@denx.de> # on stm32mp1
+We are contacting you because you are among the winning people and
+your winning code is [XHMG02639]. We have programmed your daily
+transfer payment at the minimum of =E2=82=AC4,500 Euros daily. Therefore yo=
+u
+are advised to contact branch office Togo, with your complete info,
+such as below.
+
+Your surname......................
+Your middle name..................
+Your name........................
+Your home address...............
+Your country........................
+Your phone number.................
+Your occupation/ your work...................
+Your passport or Identity Card copy.......................
+
+Kindly contact the MoneyGram Agent Mr. DENIS KODJO, Phone: +228
+79541985, via this email ( moneygramdepromo@gmail.com ) to release
+your first payment pick up information.
+
+Regards
+CEO: W. Alexander Holmes
