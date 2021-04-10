@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 427BE35AD23
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8627835AD27
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234604AbhDJMA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 08:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234091AbhDJMA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 08:00:28 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9997161165;
-        Sat, 10 Apr 2021 12:00:13 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=hot-poop.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1lVCHb-006hZH-9K; Sat, 10 Apr 2021 13:00:11 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: [PATCH] genirq/irqaction: Move dev_id and percpu_dev_id in a union
-Date:   Sat, 10 Apr 2021 13:00:08 +0100
-Message-Id: <20210410120008.3034091-1-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S234651AbhDJMCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 08:02:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231279AbhDJMCK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 08:02:10 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8102C061762;
+        Sat, 10 Apr 2021 05:01:55 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id p23so5874931ljn.0;
+        Sat, 10 Apr 2021 05:01:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ms7ohJBgjEkyiG1bcAusjToo4RkzhjMegDyZXWoaGwY=;
+        b=Veie/yYBQO6Wa+Tc0Iiev/WPDpWA7ig8xWc629ssJ4VZykMzc4KZ3/UATQFYix8VLl
+         Pya5fgUVRd+WleJx5sNVJlOPolEJiUwtyiKBvgrsooxRkjS/YDnLXvSZm7h0kuTxLJN6
+         3tLn7U35mll5kncpgm5iYK3Aj8DO2lAb0XQ2MzbF9EeRoSyaUn+BoFv7dd0776260Onx
+         6NLYau/aVuvfJAqXeyxVBz6rIqNVvcVHvbl1JwcI6TN3RUOxgMT4ju/Jfv7nj8xq+KkC
+         A3NYwV2mr2pM1jo2tv8+iR+9hPsdHi4tHqDnkPp3NCr6EIuaAzs+3wc8kxHysoojlikD
+         lQ/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ms7ohJBgjEkyiG1bcAusjToo4RkzhjMegDyZXWoaGwY=;
+        b=cLKGZw0qb2EwvTa/340j5MVbbSs/QMYW58ZIMS6Z8hSJ+owNZbKq74Z44DlUGNSPZN
+         dqU2N0b4LXgR5wUJnF77BgO5PWoLE2GArbtCK1pU4JV9zTs6Yc/gnAe2wq4pMcY+K9rS
+         JBcM+YyEll6lVuCFn1wRJXDZtbpm09aRCFP5CJdw0t6lcWzyEh6EMROT1I8UcPZwy/Uk
+         nGPFIPyWAyq3gJeuNloFtj8j2fcOjvj5mS2bwogKYnXBfkmOer2QK5UuTb7fCbmE3/Q6
+         4lDb/zreE2EDywl5U9HYYQaLh6MdaZ/HC1hGZw1WOk1gyfJ1CUlMaHrCAOYk7wqj7Ejl
+         cdWA==
+X-Gm-Message-State: AOAM533r4kVjwCbClmMzw0MrpiLSmyfYa5M2anPIth4BEyc7bdWh+aD4
+        RYheLSi3CV+n/rPwtt99paVmHW5/Z15KK9wyGBo=
+X-Google-Smtp-Source: ABdhPJzgxeVMzthaKfVBOM8IDFrjuTtQKMq5CCZxguGilgOrJ43rG4Hf1l28Yl++gOSrmhbQQYDpeM5hL3QObjeGjWc=
+X-Received: by 2002:a2e:87c6:: with SMTP id v6mr12155140ljj.490.1618056113408;
+ Sat, 10 Apr 2021 05:01:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20210410090919.3157-1-brgl@bgdev.pl> <YHFsp1Q0rcqQwz3t@kroah.com>
+In-Reply-To: <YHFsp1Q0rcqQwz3t@kroah.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sat, 10 Apr 2021 09:01:43 -0300
+Message-ID: <CAOMZO5AnHUVC-ESGSjXtqsaB0-5HP9hKkA7o0_k2dkm9d-+vHw@mail.gmail.com>
+Subject: Re: [PATCH stable] gpiolib: Read "gpio-line-names" from a firmware node
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable <stable@vger.kernel.org>, Marek Vasut <marex@denx.de>,
+        Roman Guskov <rguskov@dh-electronics.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dev_id and percpu_dev_id are mutually exclusive in struct irqaction,
-as they conceptually represent the same thing, only in a per-cpu
-fashion.
+Hi Greg,
 
-Move them into an anonymous union, saving a few bytes on the way.
+On Sat, Apr 10, 2021 at 6:15 AM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- include/linux/interrupt.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+> What is the git commit id of it in Linus's tree?
 
-diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
-index 967e25767153..4383ee033acf 100644
---- a/include/linux/interrupt.h
-+++ b/include/linux/interrupt.h
-@@ -109,8 +109,10 @@ typedef irqreturn_t (*irq_handler_t)(int, void *);
-  */
- struct irqaction {
- 	irq_handler_t		handler;
--	void			*dev_id;
--	void __percpu		*percpu_dev_id;
-+	union {
-+		void		*dev_id;
-+		void __percpu	*percpu_dev_id;
-+	};
- 	struct irqaction	*next;
- 	irq_handler_t		thread_fn;
- 	struct task_struct	*thread;
--- 
-2.30.2
+It is b41ba2ec54a70908067034f139aa23d0dd2985ce
 
+Thanks
