@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7506A35ADED
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:03:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBA035ADF0
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234837AbhDJODN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:03:13 -0400
-Received: from fgw23-7.mail.saunalahti.fi ([62.142.5.84]:53779 "EHLO
-        fgw23-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234548AbhDJODM (ORCPT
+        id S234857AbhDJODS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:03:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234839AbhDJODR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:03:12 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw23.mail.saunalahti.fi (Halon) with ESMTP
-        id 73771275-9a05-11eb-8ccd-005056bdfda7;
-        Sat, 10 Apr 2021 17:02:56 +0300 (EEST)
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v1 1/1] ACPI: scan: Utilize match_string() API
-Date:   Sat, 10 Apr 2021 17:02:53 +0300
-Message-Id: <20210410140253.1966892-1-andy.shevchenko@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Sat, 10 Apr 2021 10:03:17 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 045EBC06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:03:03 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lVECR-0000IE-DQ; Sat, 10 Apr 2021 16:02:59 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lVECQ-0008ND-RT; Sat, 10 Apr 2021 16:02:58 +0200
+Date:   Sat, 10 Apr 2021 16:02:58 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Clemens Gruber <clemens.gruber@pqgruber.com>,
+        linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v7 4/8] dt-bindings: pwm: Support new
+ PWM_STAGGERING_ALLOWED flag
+Message-ID: <20210410140258.aabqgpieooocznov@pengutronix.de>
+References: <20210406164140.81423-1-clemens.gruber@pqgruber.com>
+ <20210406164140.81423-4-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="et57x42kd5xy4kgt"
+Content-Disposition: inline
+In-Reply-To: <20210406164140.81423-4-clemens.gruber@pqgruber.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have already an API to match a string in the array of strings.
-Utilize it instead of open coded analogues.
 
-Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/acpi/scan.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+--et57x42kd5xy4kgt
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index b1d1f1a8ce69..bba6b529cf6c 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -756,27 +756,25 @@ static bool acpi_info_matches_ids(struct acpi_device_info *info,
- 				  const char * const ids[])
- {
- 	struct acpi_pnp_device_id_list *cid_list = NULL;
--	int i;
-+	int i, index;
- 
- 	if (!(info->valid & ACPI_VALID_HID))
- 		return false;
- 
-+	index = match_string(ids, -1, info->hardware_id.string);
-+	if (index >= 0)
-+		return true;
-+
- 	if (info->valid & ACPI_VALID_CID)
- 		cid_list = &info->compatible_id_list;
- 
--	for (i = 0; ids[i]; i++) {
--		int j;
-+	if (!cid_list)
-+		return false;
- 
--		if (!strcmp(info->hardware_id.string, ids[i]))
-+	for (i = 0; i < cid_list->count; i++) {
-+		index = match_string(ids, -1, cid_list->ids[i].string);
-+		if (index >= 0)
- 			return true;
--
--		if (!cid_list)
--			continue;
--
--		for (j = 0; j < cid_list->count; j++) {
--			if (!strcmp(cid_list->ids[j].string, ids[i]))
--				return true;
--		}
- 	}
- 
- 	return false;
--- 
-2.31.1
+Hello Rob,
 
+On Tue, Apr 06, 2021 at 06:41:36PM +0200, Clemens Gruber wrote:
+> Add the flag and corresponding documentation for the new PWM staggering
+> mode feature.
+>=20
+> Cc: Rob Herring <robh+dt@kernel.org>
+
+For now reviewing this patch is not necessary, we're discussing a better
+name for this flag.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--et57x42kd5xy4kgt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBxsA8ACgkQwfwUeK3K
+7AnAIQgAiT7KRuBByp/Ex26JJTcMRAYOhSYXy4GO9MLFfhM0GZu6Cbq9RmTKpxIA
+Bd2qVI3u8cemWP6i76JCtDPU9tv3FVgjDYRb+X34eoPIzyej/Ix/D1lijFK62cUS
+PgmgtsSnyQIqNDmL3PsrxAr51N9hAZ3v/f62hkHyuIgFppnqM/PKH6YF/Oia6YbL
+FY3NIirZdgcO7/BFqnZO/xL2nZxlyWwokzbJCCBIB29iWFwnwhRKC0Od82SLsAvw
+rkVngz1PhBTp3c9v4fTDMSiePgXkgn+YaX8yWkSuZVyGg064718wvhGzkIazN9tf
+QW8bDTyicCZdyXeJbtx1gL6+dYoFQQ==
+=CF1D
+-----END PGP SIGNATURE-----
+
+--et57x42kd5xy4kgt--
