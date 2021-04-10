@@ -2,135 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D4035A95D
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 02:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71EB035A963
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 02:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235221AbhDJAFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 20:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41174 "EHLO
+        id S235235AbhDJAH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 20:07:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235182AbhDJAFQ (ORCPT
+        with ESMTP id S235193AbhDJAHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 20:05:16 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23482C061762
-        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 17:05:03 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FHFcS3gNBz9sW4;
-        Sat, 10 Apr 2021 10:04:55 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1618013099;
-        bh=0UpzDyN9WxIPWbZ5xFLUOA/9nu8DvdJ3YDveQaB65Lw=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=F3EPpP2Ar/DYclLcROCWkVY7jkokRFDxbTVhGUC/mRVYPDfYPLoaI48lWsMEp8Tan
-         ABXD1uyDYlZkFEhjIHk+9/dW1vIcqF2X3J82j9R1v3XolWcXozlbXHbhGA5tTIWKs0
-         8PDpWyLcDxelKxnJAcdaLnx/tdzbMiBtckdiKlqTOAASAeeHnuKaj6c+dqV/7M4six
-         tWDygLG64Wttb5SpPfb1D9HaDZTqNl+S4vccn1VNlesVLfqS6Ek/XZ70HzgByCtw7D
-         zE9x/7L/sfVCSq6vY0mcj6MUQe66LtM4ySAzs7g3XNxRdAkfxBmnvUuY1eS7NnjGjF
-         X5I1woWwgLFnQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Xiongwei Song <sxwjean@me.com>, benh@kernel.crashing.org,
-        paulus@samba.org, oleg@redhat.com, npiggin@gmail.com,
-        aneesh.kumar@linux.ibm.com, ravi.bangoria@linux.ibm.com,
-        mikey@neuling.org, haren@linux.ibm.com, akpm@linux-foundation.org,
-        rppt@kernel.org, jniethe5@gmail.com, atrajeev@linux.vnet.ibm.com,
-        maddy@linux.ibm.com, peterz@infradead.org, kjain@linux.ibm.com,
-        kan.liang@linux.intel.com, aik@ozlabs.ru, alistair@popple.id.au,
-        pmladek@suse.com, john.ogness@linutronix.de
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-Subject: Re: [PATCH v3] powerpc/traps: Enhance readability for trap types
-In-Reply-To: <70ece993-12bd-335c-d246-914564eb51dd@csgroup.eu>
-References: <20210408140750.26832-1-sxwjean@me.com>
- <70ece993-12bd-335c-d246-914564eb51dd@csgroup.eu>
-Date:   Sat, 10 Apr 2021 10:04:49 +1000
-Message-ID: <874kgfdmxq.fsf@mpe.ellerman.id.au>
+        Fri, 9 Apr 2021 20:07:52 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916DBC061764
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 17:07:38 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id o16so8397363ljp.3
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 17:07:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wJNZvvQN4sPxM5wTrNOHML+RfF3Y8nDwxuD/Ny2pkH0=;
+        b=XzsZoxckL2/lWNBV343T7e8p1OP1MEHfrrQySw3QeHFDCqhKSGv5/ETPu7lgi9+czL
+         GCzTdNeJ/sv/szktTSmrR+2owxPBidWWcD6smgH2GCf10wu+l/4m1VF19xWl+Ip+jKLD
+         K3ASd9yBJP8nC/sqUXiJNPb9ltqdqFHATegBbiYog/mmJV/XgUf9NGrOm2OOBr3Q7FUe
+         1VGb0vo1Cwu5lWjTA+c7G8wgKFe9dw1cSOeyD/vvZL52W5BuLlgkL3qx0LRPCc5TVS1V
+         KJN/jbBMZ0u+ZiWmtlTs23MUBSHUYzcx61NGUwKFwZ0xrqON6F5TzDVxbVgCW5wzQL0l
+         TyDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wJNZvvQN4sPxM5wTrNOHML+RfF3Y8nDwxuD/Ny2pkH0=;
+        b=BASkaMNIVmKp+eMU5IJO1J8RmCR3mVwv9doc6xS9A2SnVVvkWHEIQteUn9kd1HlRWZ
+         JTDbej0Wd1xTOcqwwA50qGnKRRJ0u3xLt6v/temwG7TrClnPpbFCR+1Ce4bnYW44gxRT
+         rYC4RhiX+ixaCbkGOGUN2YciXKXRFszgaZlgich+MocMCtM8q0nUiS84RcZsMEwAuQJK
+         +kICgcKy9INCI8NKZM89fWIOO+4p6Hs6p9Id2b215n2YbXcr23topxVaBkqQpZexZRds
+         FE22z0Mvdk/0Yvlt3tsZ++UQ+2rYBhpyKj2qdGuSA05drLANRFozFfO3L2GPBr8NjHMZ
+         TpvA==
+X-Gm-Message-State: AOAM530ZO7Ay7jnsilsP7gCkiLtCbsabsnPpWY2rkH2Ik/iL4yX8zQiJ
+        RO8jPny/aP0MI7RhLE/C4cczR2aJFx63fF4vSta7LQ==
+X-Google-Smtp-Source: ABdhPJyi9BNKN/wSUa0cnqzp5rwoSw8W2ep8I9VXh2Adb4f1hRty42wJTvzb17wXiXq9jMTCp9/8ZZiGbZUTThq0SQQ=
+X-Received: by 2002:a2e:7001:: with SMTP id l1mr10693204ljc.200.1618013256948;
+ Fri, 09 Apr 2021 17:07:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210408195029.69974-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210408195029.69974-1-krzysztof.kozlowski@canonical.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 10 Apr 2021 02:07:26 +0200
+Message-ID: <CACRpkdYm0yG7mC0H7YwgQdPP1eT=GSkvHbohA7jc6LDsVPsZBQ@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: samsung: use 'int' for register masks in Exynos
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 08/04/2021 =C3=A0 16:07, Xiongwei Song a =C3=A9crit=C2=A0:
->> From: Xiongwei Song <sxwjean@gmail.com>
->>=20
->> Create a new header named traps.h, define macros to list ppc interrupt
->> types in traps.h, replace the reference of the trap hex values with these
->> macros.
-...
->> diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include=
-/asm/interrupt.h
->> index 7c633896d758..5ce9898bc9a6 100644
->> --- a/arch/powerpc/include/asm/interrupt.h
->> +++ b/arch/powerpc/include/asm/interrupt.h
->> @@ -8,6 +8,7 @@
->>   #include <asm/ftrace.h>
->>   #include <asm/kprobes.h>
->>   #include <asm/runlatch.h>
->> +#include <asm/traps.h>
->>=20=20=20
->>   struct interrupt_state {
->>   #ifdef CONFIG_PPC_BOOK3E_64
->> @@ -59,7 +60,7 @@ static inline void interrupt_enter_prepare(struct pt_r=
-egs *regs, struct interrup
->>   		 * CT_WARN_ON comes here via program_check_exception,
->>   		 * so avoid recursion.
->>   		 */
->> -		if (TRAP(regs) !=3D 0x700)
->> +		if (TRAP(regs) !=3D INTERRUPT_PROGRAM)
->>   			CT_WARN_ON(ct_state() !=3D CONTEXT_KERNEL);
->>   	}
->>   #endif
->> @@ -156,7 +157,8 @@ static inline void interrupt_nmi_enter_prepare(struc=
-t pt_regs *regs, struct inte
->>   	/* Don't do any per-CPU operations until interrupt state is fixed */
->>   #endif
->>   	/* Allow DEC and PMI to be traced when they are soft-NMI */
->> -	if (TRAP(regs) !=3D 0x900 && TRAP(regs) !=3D 0xf00 && TRAP(regs) !=3D =
-0x260) {
->> +	if (TRAP(regs) !=3D INTERRUPT_DECREMENTER &&
->> +	    TRAP(regs) !=3D INTERRUPT_PERFMON) {
+On Thu, Apr 8, 2021 at 9:50 PM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+
+> The Special Function Registers on all Exynos SoC, including ARM64, are
+> 32-bit wide, so entire driver uses matching functions like readl() or
+> writel().  On 64-bit ARM using unsigned long for register masks:
+> 1. makes little sense as immediately after bitwise operation it will be
+>    cast to 32-bit value when calling writel(),
+> 2. is actually error-prone because it might promote other operands to
+>    64-bit.
 >
-> I think too long names hinder readability, see later for suggestions.
+> Addresses-Coverity: Unintentional integer overflow
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+(...)
+> Please apply it directly, I don't have any patches for Samsung pinctrl
+> in my tree.
 
-I asked for the longer names :)
+OK! Patch applied!
 
-I think they make it easier for people who are less familiar with the
-architecture than us to make sense of the names.
-
-And there's only a couple of cases where it requires splitting a line,
-and they could be converted to use switch if we think it's a problem.
-
->> diff --git a/arch/powerpc/mm/fault.c b/arch/powerpc/mm/fault.c
->> index 0c0b1c2cfb49..641b3feef7ee 100644
->> --- a/arch/powerpc/mm/fault.c
->> +++ b/arch/powerpc/mm/fault.c
->> @@ -588,20 +589,24 @@ void __bad_page_fault(struct pt_regs *regs, int si=
-g)
->>   	/* kernel has accessed a bad area */
->>=20=20=20
->>   	switch (TRAP(regs)) {
->> -	case 0x300:
->> -	case 0x380:
->> -	case 0xe00:
->> +	case INTERRUPT_DATA_STORAGE:
->> +#ifdef CONFIG_PPC_BOOK3S
->> +	case INTERRUPT_DATA_SEGMENT:
->> +	case INTERRUPT_H_DATA_STORAGE:
->> +#endif
->
-> It would be better to avoid #ifdefs when none where necessary before.
-
-Yes I agree.
-
-I think these can all be avoided by defining most of the values
-regardless of what platform we're building for. Only the values that
-overlap need to be kept behind an ifdef.
-
-cheers
+Yours,
+Linus Walleij
