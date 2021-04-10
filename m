@@ -2,128 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C73E35ADBB
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCA735ADC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234666AbhDJNlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:41:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234180AbhDJNlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:41:07 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 775BC6044F;
-        Sat, 10 Apr 2021 13:40:49 +0000 (UTC)
-Date:   Sat, 10 Apr 2021 09:40:46 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-trace-devel@vger.kernel.org" 
-        <linux-trace-devel@vger.kernel.org>,
-        Linux-trace Users <linux-trace-users@vger.kernel.org>
-Cc:     Zamir SUN <sztsian@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, zsun@redhat.com,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Tzvetomir Stoyanov <tstoyanov@vmware.com>,
-        Yordan Karadzhov <ykaradzhov@vmware.com>,
-        Ben Hutchings <ben@decadent.org.uk>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Tony Jones <tonyj@suse.de>, John Kacur <jkacur@redhat.com>,
-        Clark Williams <williams@redhat.com>,
-        Al Stone <ahs3@debian.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Jes Sorensen <jes.sorensen@gmail.com>
-Subject: [ANNOUNCE] libtracefs 1.1.0
-Message-ID: <20210410094046.0a23f960@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234619AbhDJNro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 09:47:44 -0400
+Received: from fgw21-7.mail.saunalahti.fi ([62.142.5.82]:39136 "EHLO
+        fgw21-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234180AbhDJNrj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 09:47:39 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw21.mail.saunalahti.fi (Halon) with ESMTP
+        id 459d82f1-9a03-11eb-9eb8-005056bdd08f;
+        Sat, 10 Apr 2021 16:47:21 +0300 (EEST)
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devel@acpica.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>
+Subject: [PATCH v1 1/1] ACPI: bus: Introduce acpi_dev_get() and reuse it in ACPI code
+Date:   Sat, 10 Apr 2021 16:47:18 +0300
+Message-Id: <20210410134718.1942273-1-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm pleased to announce the new version of libtracefs library has been
-released:
+Introduce acpi_dev_get() to have a symmetrical API with acpi_dev_put()
+and reuse both in ACPI code under drivers/acpi folder.
 
-  libtracefs: 1.1.0
+While at it, use acpi_bus_put_acpi_device() in one place rather than above.
 
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+ drivers/acpi/device_sysfs.c | 4 ++--
+ drivers/acpi/glue.c         | 8 ++++----
+ drivers/acpi/scan.c         | 9 ++++-----
+ include/acpi/acpi_bus.h     | 6 ++++++
+ 4 files changed, 16 insertions(+), 11 deletions(-)
 
- https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/snapshot/libtracefs-1.1.0.tar.gz
- https://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git/
+diff --git a/drivers/acpi/device_sysfs.c b/drivers/acpi/device_sysfs.c
+index da4ff2a8b06a..35757c3c1b71 100644
+--- a/drivers/acpi/device_sysfs.c
++++ b/drivers/acpi/device_sysfs.c
+@@ -376,12 +376,12 @@ eject_store(struct device *d, struct device_attribute *attr,
+ 	if (ACPI_FAILURE(status) || !acpi_device->flags.ejectable)
+ 		return -ENODEV;
+ 
+-	get_device(&acpi_device->dev);
++	acpi_dev_get(acpi_device);
+ 	status = acpi_hotplug_schedule(acpi_device, ACPI_OST_EC_OSPM_EJECT);
+ 	if (ACPI_SUCCESS(status))
+ 		return count;
+ 
+-	put_device(&acpi_device->dev);
++	acpi_dev_put(acpi_device);
+ 	acpi_evaluate_ost(acpi_device->handle, ACPI_OST_EC_OSPM_EJECT,
+ 			  ACPI_OST_SC_NON_SPECIFIC_FAILURE, NULL);
+ 	return status == AE_NO_MEMORY ? -ENOMEM : -EAGAIN;
+diff --git a/drivers/acpi/glue.c b/drivers/acpi/glue.c
+index 36b24b0658cb..0715e3be99a0 100644
+--- a/drivers/acpi/glue.c
++++ b/drivers/acpi/glue.c
+@@ -190,7 +190,7 @@ int acpi_bind_one(struct device *dev, struct acpi_device *acpi_dev)
+ 	if (!acpi_dev)
+ 		return -EINVAL;
+ 
+-	get_device(&acpi_dev->dev);
++	acpi_dev_get(acpi_dev);
+ 	get_device(dev);
+ 	physical_node = kzalloc(sizeof(*physical_node), GFP_KERNEL);
+ 	if (!physical_node) {
+@@ -217,7 +217,7 @@ int acpi_bind_one(struct device *dev, struct acpi_device *acpi_dev)
+ 				goto err;
+ 
+ 			put_device(dev);
+-			put_device(&acpi_dev->dev);
++			acpi_dev_put(acpi_dev);
+ 			return 0;
+ 		}
+ 		if (pn->node_id == node_id) {
+@@ -257,7 +257,7 @@ int acpi_bind_one(struct device *dev, struct acpi_device *acpi_dev)
+  err:
+ 	ACPI_COMPANION_SET(dev, NULL);
+ 	put_device(dev);
+-	put_device(&acpi_dev->dev);
++	acpi_dev_put(acpi_dev);
+ 	return retval;
+ }
+ EXPORT_SYMBOL_GPL(acpi_bind_one);
+@@ -285,7 +285,7 @@ int acpi_unbind_one(struct device *dev)
+ 			ACPI_COMPANION_SET(dev, NULL);
+ 			/* Drop references taken by acpi_bind_one(). */
+ 			put_device(dev);
+-			put_device(&acpi_dev->dev);
++			acpi_dev_put(acpi_dev);
+ 			kfree(entry);
+ 			break;
+ 		}
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index ad2541c0aece..bba6b529cf6c 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -530,7 +530,7 @@ static void acpi_device_del_work_fn(struct work_struct *work_not_used)
+ 		 * used by the device.
+ 		 */
+ 		acpi_power_transition(adev, ACPI_STATE_D3_COLD);
+-		put_device(&adev->dev);
++		acpi_dev_put(adev);
+ 	}
+ }
+ 
+@@ -604,8 +604,7 @@ EXPORT_SYMBOL(acpi_bus_get_device);
+ 
+ static void get_acpi_device(void *dev)
+ {
+-	if (dev)
+-		get_device(&((struct acpi_device *)dev)->dev);
++	acpi_dev_get(dev);
+ }
+ 
+ struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle)
+@@ -615,7 +614,7 @@ struct acpi_device *acpi_bus_get_acpi_device(acpi_handle handle)
+ 
+ void acpi_bus_put_acpi_device(struct acpi_device *adev)
+ {
+-	put_device(&adev->dev);
++	acpi_dev_put(adev);
+ }
+ 
+ static struct acpi_device_bus_id *acpi_device_bus_id_match(const char *dev_id)
+@@ -2386,7 +2385,7 @@ int __init acpi_scan_init(void)
+ 			acpi_detach_data(acpi_root->handle,
+ 					 acpi_scan_drop_device);
+ 			acpi_device_del(acpi_root);
+-			put_device(&acpi_root->dev);
++			acpi_bus_put_acpi_device(acpi_root);
+ 			goto out;
+ 		}
+ 	}
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index 834b7a1f7405..b728173a6171 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -707,6 +707,12 @@ acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv);
+ 	     adev;							\
+ 	     adev = acpi_dev_get_next_match_dev(adev, hid, uid, hrv))
+ 
++static inline void acpi_dev_get(struct acpi_device *adev)
++{
++	if (adev)
++		get_device(&adev->dev);
++}
++
+ static inline void acpi_dev_put(struct acpi_device *adev)
+ {
+ 	put_device(&adev->dev);
+-- 
+2.31.1
 
-
-Changes since 1.0.2:
-
- - Depends on libtraceevent 1.2.0 or later
-
- - New APIs for opening and reading ftrace files
-    tracefs_instance_file_read_number()
-    tracefs_instance_file_open()
-
- - New APIs for enable / disable tracing
-    tracefs_trace_is_on()
-    tracefs_trace_on()
-    tracefs_trace_off()
-    tracefs_trace_on_get_fd()
-    tracefs_trace_on_fd()
-    tracefs_trace_off_fd()
-
- - New APIs for trace options
-    tracefs_option_set()
-    tracefs_option_clear()
-    tracefs_option_is_set()
-    tracefs_options_get_supported()
-    tracefs_option_is_supported()
-    tracefs_options_get_enabled()
-    tracefs_option_is_enabled()
-    tracefs_option_enable()
-    tracefs_option_diasble()
-    tracefs_option_name()
-    tracefs_option_id()
-    tarcefs_option_mask_is_set()
-
- - New APIs for getting existing trace instance
-    tracefs_instance_alloc()
-    tracefs_instance_get_trace_dir()
-
- - New APIs to set the filtering of functions
-    tracefs_function_filter()
-    tracefs_function_notrace()
-
- - New APIs to writing strings into the tracing buffer
-    tracefs_print_init()
-    tracefs_printf()
-    tracefs_vprintf()
-    tracefs_print_close()
-
- - New APIs to writing binary data into the tracing buffer
-    tracefs_binary_init()
-    tracefs_binary_write()
-    tracefs_binary_close()
-
- - tracefs_iterate_raw_events() now calls the callbacks in
-   time stamp sorted order (instead of calling all events in
-   a CPU buffer, then the next CPU buffer). Also fixed record->cpu
-   to match the CPU that's also passed to the callback, instead
-   of always being zero.
-
- - Loading of events with tracefs_local_events(),
-   tracefs_local_event_system() and tracefs_fill_local_events()
-   now pull in kallsyms, saved_cmdlines, and printk_format mappings
-   into the tep handler.
-
- - New API to reload the saved_cmdlines
-    tracefs_load_cmdlines()
-
- - Warnings now can be overwritten with tracefs_warning() and no
-   longer the too generic name warning()
-
- - All files opened in the library now are done so with O_CLOEXEC
-
- - Cleaner building and installation.
-
-
--- Steve
