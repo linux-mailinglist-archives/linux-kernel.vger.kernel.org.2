@@ -2,91 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B952A35AD66
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33E4F35AD68
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234667AbhDJNBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37478 "EHLO
+        id S234699AbhDJNDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 09:03:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234091AbhDJNBD (ORCPT
+        with ESMTP id S234091AbhDJNC6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:01:03 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9B72C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:00:47 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id b26so924373pfr.3
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:00:47 -0700 (PDT)
+        Sat, 10 Apr 2021 09:02:58 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F13B9C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:02:43 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id w18so9700126edc.0
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:02:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=UGb+/+QBTdjcmOPBbleKfKtPLJksnQcPm+n3W+gASt8=;
-        b=TNlJKk2QHf6DUMp1ExtSa9uXzuPXSFsvUI9AIaxi0RSotv+edjw4EGp2O2eWCE0oPj
-         /LPgHODBcQAisZRiC5RED/ojXSmMfIMNe7hUTeDeFF5aSHOs2dzW/aVWT2ziTXOVwccf
-         zKobpEx50W4hK9CacwVdZpXVDsZSiifnLbhbzKP5n5ExBeM9zGVQxgnLuI2o1vpzJoNB
-         WilMwRTNfeIr0uqY3RvKuHY4BRY7Y8Zs0n59P9C03385+fgVHUxkCpOum1fEXwq9/zx8
-         s+h0+UroOX1gOV7BR/OSsy+57K6/ttdxXte0qcyH6ItEoiIlfoai8+ufOgOxoiACG70K
-         3s6w==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Do6TOYC7++a6IT3LFrIbNRxGi7wBbVzvSmX3FLO0FdM=;
+        b=HU+wWxvizyxRF+Ep5QdHxWya1Iq41OOSwWEAJ3CM/e50CLK5mj0KZzaidwqcU4gjK9
+         Y2ipiTZ7bLwqlshB9tPJRoxlrCeaS/kyi2vuNjhnLNYtlro+v4fPFIy8sIapQ/hjSxgh
+         aGQ1N0ZgVqXQ1YBJPHsoerNgrFIzvlhGZ0+4gGt+UDBfZnN9hUE37O+Qx23GbeLGjotU
+         s14JGPwH2fO4KHJNPV/lOfuD8hgPYjQN1JnsEjuBKVVKHRp7K3QZARoPI7c2JSH8stPU
+         EGmqx3RnE3HpWTN85ZzS7wGjuOeYiQ/nV2DV3GBRGbdqyMOgVzqCmhWJL9/ikThAXw08
+         OO6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=UGb+/+QBTdjcmOPBbleKfKtPLJksnQcPm+n3W+gASt8=;
-        b=nQtuPcSIvmuS3/LA+w5BijKojoQO35aXibQLr0EUfy/3LSt+tTEPqKKDI4jVXxJfTP
-         zBIvhGG5aakO198rRdGrWrQ3n1tjLU7F9Jp+WvFi2AW80gA+HGrjRzHynEN6f/vO9A0m
-         Jkw5sjFazojsWflCQjm8cghGchTCIaLQljb95MDKl9zKbEJCL/48ANCmM6Kmsa3iIdb0
-         75j0W4NOOtUQrdwfZPI4NhtAJ3d8zXwtry1xvXlKGqWzVoJBxClElMin98KuIGro11g+
-         8tz9cteVHaqHo3GiwNK8m88J48jHyRHsCEKKAcnc+7+6nzbC9fCHK8vldbw0kiDoeh8i
-         iy+Q==
-X-Gm-Message-State: AOAM530JconzQM2jCbmn51yy+veNeqXCKgPjKWCc6mcEO6UPnFRTRVSb
-        rW1t0a3YXObraBRtZOcjZgQDrxwj5EsP7Q==
-X-Google-Smtp-Source: ABdhPJzYcgjyDUn60FRqPJgIQ5PQzJNmo6DputF6cIdX/GoHkLkoq0eh8PueuMkvs04lk4BB3wgyeQ==
-X-Received: by 2002:a63:3649:: with SMTP id d70mr17542761pga.1.1618059647127;
-        Sat, 10 Apr 2021 06:00:47 -0700 (PDT)
-Received: from kali ([106.195.15.71])
-        by smtp.gmail.com with ESMTPSA id 12sm1694822pfi.204.2021.04.10.06.00.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Do6TOYC7++a6IT3LFrIbNRxGi7wBbVzvSmX3FLO0FdM=;
+        b=f74ANQYWolttLxEIeeWMluFvT5r9UEj56GAYbNV6F0GP7iFHcKkEhZ2xFU0I77+skc
+         7Oik8vDlO42QIw5t5tC27hMKI5SZe+3DyqmWjxv4NPQgdfDKwBQ7B6MBLyMEuwIiNw5D
+         yCGHp/FGYBaKWpc9YBudO1azHX3NmP/5Zioo22wcpRPd3QBE1+j3OgUJu8hi0UsRnO2J
+         gNf6u13XWaDY1/04GHfJoNUrqhu/pc6kCWS1BSIZ0ohHj1T+iJyU7kAR3EJbonvKFKwu
+         fBFTcEezptTak7PURIRqEyVNcdAMYy0nzO2Wom5q5nzGpz/yrMB4muZXblkagsbM8Dfs
+         +dzA==
+X-Gm-Message-State: AOAM531/mseRFvpOshRwUUBABLHDj3UnwJB8CdnDpwswM/rjQSs0X6lD
+        b2VxBX1iygcs5lGvi+5/OpU=
+X-Google-Smtp-Source: ABdhPJx407YkiJEJt9B4XApmbe8vLTQuoNjU8hFa7bzAs8IAztyiNUNFbJeEGn10/Zb9a14sxT44DQ==
+X-Received: by 2002:a05:6402:614:: with SMTP id n20mr21433069edv.58.1618059761100;
+        Sat, 10 Apr 2021 06:02:41 -0700 (PDT)
+Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id bf14sm3081490edb.67.2021.04.10.06.02.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 06:00:46 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 18:30:38 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: [PATCH v2] staging: rtl8192e: fixed pointer error by adding '*'
-Message-ID: <YHGhdtldqAlRsPHT@kali>
+        Sat, 10 Apr 2021 06:02:40 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH 4/4] staging: rtl8723bs: Change the type and use of a variable
+Date:   Sat, 10 Apr 2021 15:02:39 +0200
+Message-ID: <2186059.xkuF2sVEJi@localhost.localdomain>
+In-Reply-To: <alpine.DEB.2.22.394.2104101410350.2975@hadrien>
+References: <20210410092232.15155-1-fmdefrancesco@gmail.com> <2763630.ZYQqkGPH9U@localhost.localdomain> <alpine.DEB.2.22.394.2104101410350.2975@hadrien>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="US-ASCII"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed Comparison to NULL can be written as '!...' by replacing it with
-simpler form i.e. boolean expression. This makes code more readable
-alternative.
-Reported by checkpatch.
+On Saturday, April 10, 2021 2:12:28 PM CEST Julia Lawall wrote:
+> On Sat, 10 Apr 2021, Fabio M. De Francesco wrote:
+> > On Saturday, April 10, 2021 1:37:30 PM CEST Julia Lawall wrote:
+> > > > That variable has global scope and is assigned at least in:
+> > > What do you mean by global scope?  None of the following look like
+> > > references to global variables.
+> > > 
+> > > julia
+> > 
+> > I just mean that fw_current_in_ps_mode is a field of a struct in a .h
+> > file included everywhere in this driver and that the functions whom
+> > the following assignments belong to have not the "static" type
+> > modifier.
+> OK, but a field in a structure is not a variable, and this is not what
+> scope means.
+>
+You're right, a field in a structure is not a variable.
+> 
+> int x;
+> 
+> outside of anything is a global variable (global scope).
+> 
+> int foo() {
+>   int x;
+>   ...
+> }
+> 
+> Here x is a local variable.  Its scope is the body of the function.
+> 
+> int foo() {
+>   if (abc) {
+>     int x;
+>     ...
+>   }
+> }
+> 
+> Here x is a local variable, but its scope is only in the if branch.
+>
+And you're right again: I needed a little refresh of my knowledge of C.
 
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
----
-Changes from v1:- added pointer to the function, which was missed during
-fixing v1.
+I've searched again in the code for the purpose of finding out if that 
+struct is initialized with global scope but I didn't find anything. I 
+didn't even find any dynamic allocation within functions that returns 
+pointers to that struct.
 
- drivers/staging/rtl8192e/rtl819x_TSProc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Therefore, according to Greg's request, I'll delete that stupid 'if' 
+statement in the patch series v2 that I'm about to submit.
 
-diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-index 4457c1acfbf6..78b5b4eaec5f 100644
---- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
-+++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-@@ -327,7 +327,7 @@ bool GetTs(struct rtllib_device *ieee, struct ts_common_info **ppTS,
- 	}
- 
- 	*ppTS = SearchAdmitTRStream(ieee, Addr, UP, TxRxSelect);
--	if (ppTS)
-+	if (*ppTS)
- 		return true;
- 
- 	if (!bAddNewTs) {
--- 
-2.30.2
+I've really appreciated your help.
+
+Thanks,
+
+Fabio
+> 
+> julia
+> 
+> > Thanks,
+> > 
+> > Fabio
+> > 
+> > > > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:368:
+> > > > pwrpriv->fw_current_in_ps_mode = false;
+> > > > 
+> > > > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:380:
+> > > > pwrpriv->fw_current_in_ps_mode = true;
+> > > > 
+> > > > drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:433:
+> > > > adapter_to_pwrctl(padapter)->fw_current_in_ps_mode = false;
+> > > > 
+> > > > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:981:
+> > > > pwrctrlpriv->fw_current_in_ps_mode = false;
+
+
+
 
