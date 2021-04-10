@@ -2,182 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3B235ACB6
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 12:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775D235ACB9
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 12:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhDJKTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 06:19:33 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:51934 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230060AbhDJKTc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 06:19:32 -0400
-Received: by mail-io1-f69.google.com with SMTP id s13so5497838iow.18
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 03:19:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=hgSXG9YBnaSp6Ilz4xmiRDkeX/YTSm22NjoFotcBRY8=;
-        b=C+/3GqmQ7mZDeSRnUyqKaRXT4va7fRLlmCLwGiLSDvs187955tQyGCYNHM1jCd/3Hg
-         wt7C1XQIdO570qUd30NMUmvxx1eVdo1Eof2zlnrX8jo25jJ+/EjZJ+U3jzoVaroCfYHC
-         NrCUYJ8vGHMeEJm4FLy1EwnTkqwmCtopAPju8eHCT/OkXq2vudbqNlXozP/by65kAwdK
-         uOVxziWvx8rww+eYu1x2g/4LL6YpoI4B5H2cIKicPz7QgYItu3d/hX9Bm375rI2fWykv
-         lhnFl4sOF6Q4afrTntg9lMpA4uueLp9cgrGm/jS+zF2ny1KBeEVzcrEaUbqAruix9zhW
-         /LqQ==
-X-Gm-Message-State: AOAM530HxzKMJdnh5T1qlIYUetoG/VfISLg711p6fjY6BygHmGObPgk9
-        Mg2Frg9fOFjvYFt4QmktGJAXFs9k/5v+CW7B/eT3eIbxCgLV
-X-Google-Smtp-Source: ABdhPJzN+SpBEPIBq7vts6GZVLRlUjiaiDY68lmVWNbRbvt+gnOlT5rwC4Q7qEaedrBqUrhUcpG49AMj3H2Bfk06nPoQGxlIKqJd
+        id S234453AbhDJKbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 06:31:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46450 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234091AbhDJKbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 06:31:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 26738610CC;
+        Sat, 10 Apr 2021 10:31:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618050689;
+        bh=XESUERAc0hZuhgJgKDt7VFq6TSKF+sm2dkhBnDr/gLw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=y1HUHEHEBqSXtQwqiEWSW+gpb7dyX+XMCwoWFjA6IFnarTYGmx7d/7+Va4HD9yQqw
+         +iTcpMgORyJJN9W+u33nTvc2AOsYg2WkM+tIe7fTX14oqQE9J6/XzJKIVaYs8bGTMU
+         hwtNpZ7jU7gweudRfDswBPdXfTRhzq2P20zoAz/U=
+Date:   Sat, 10 Apr 2021 12:31:27 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH 4/4] staging: rtl8723bs: Change the
+ type and use of a variable
+Message-ID: <YHF+f48MM6xEEv9R@kroah.com>
+References: <20210410092232.15155-1-fmdefrancesco@gmail.com>
+ <20210410092232.15155-5-fmdefrancesco@gmail.com>
+ <YHFwZCh+s7ymrsQN@kroah.com>
+ <24152421.bNubvhIgUM@localhost.localdomain>
 MIME-Version: 1.0
-X-Received: by 2002:a02:69c9:: with SMTP id e192mr1159544jac.143.1618049955851;
- Sat, 10 Apr 2021 03:19:15 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 03:19:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d8f55905bf9b9cbd@google.com>
-Subject: [syzbot] memory leak in skb_clone
-From:   syzbot <syzbot+1f68113fa907bf0695a8@syzkaller.appspotmail.com>
-To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org, stefan@datenfreihafen.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24152421.bNubvhIgUM@localhost.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Apr 10, 2021 at 11:56:48AM +0200, Fabio M. De Francesco wrote:
+> On Saturday, April 10, 2021 11:31:16 AM CEST Greg KH wrote:
+> > On Sat, Apr 10, 2021 at 11:22:32AM +0200, Fabio M. De Francesco wrote:
+> > > Change the type of fw_current_in_ps_mode from u8 to bool, because
+> > > it is used everywhere as a bool and, accordingly, it should be
+> > > declared as a bool. Shorten the controlling
+> > > expression of an 'if' statement.
+> > > 
+> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > ---
+> > > 
+> > >  drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
+> > >  drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
+> > >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/rtl8723bs/hal/hal_intf.c
+> > > b/drivers/staging/rtl8723bs/hal/hal_intf.c index
+> > > 96fe172ced8d..8dc4dd8c6d4c 100644
+> > > --- a/drivers/staging/rtl8723bs/hal/hal_intf.c
+> > > +++ b/drivers/staging/rtl8723bs/hal/hal_intf.c
+> > > @@ -348,7 +348,7 @@ void rtw_hal_dm_watchdog(struct adapter *padapter)
+> > > 
+> > >  void rtw_hal_dm_watchdog_in_lps(struct adapter *padapter)
+> > >  {
+> > > 
+> > > -	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode == true) 
+> {
+> > > +	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode) {
+> > > 
+> > >  		if (padapter->HalFunc.hal_dm_watchdog_in_lps)
+> > >  		
+> > >  			padapter-
+> >HalFunc.hal_dm_watchdog_in_lps(padapter); /* this
+> > >  			function caller is in interrupt context 
+> */>  	
+> > >  	}
+> > > 
+> > > diff --git a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> > > b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h index
+> > > 0a48f1653be5..0767dbb84199 100644
+> > > --- a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> > > +++ b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> > > @@ -203,7 +203,7 @@ struct pwrctrl_priv {
+> > > 
+> > >  	u8 LpsIdleCount;
+> > >  	u8 power_mgnt;
+> > >  	u8 org_power_mgnt;
+> > > 
+> > > -	u8 fw_current_in_ps_mode;
+> > > +	bool fw_current_in_ps_mode;
+> > > 
+> > >  	unsigned long	DelayLPSLastTimeStamp;
+> > >  	s32		pnp_current_pwr_state;
+> > >  	u8 pnp_bstop_trx;
+> > 
+> > If this is only checked, how can it ever be true?  Who ever sets this
+> > value?
+> >
+> You're right. It is not set, therefore the "if" control expression cannot 
+> ever be "true".
+> 
+> Can I delete this statement in a new patch? Or you prefer I send the whole 
+> series again with this change in patch 4/4?
 
-syzbot found the following issue on:
+Just delete the variable from the structure entirely and when it is
+used.
 
-HEAD commit:    17e7124a Merge tag '5.12-rc6-smb3' of git://git.samba.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11a62c6ad00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b8dbd3c72fdc7777
-dashboard link: https://syzkaller.appspot.com/bug?extid=1f68113fa907bf0695a8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=179321a6d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11922ba1d00000
+thanks,
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1f68113fa907bf0695a8@syzkaller.appspotmail.com
-
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-BUG: memory leak
-unreferenced object 0xffff88810f644600 (size 232):
-  comm "softirq", pid 0, jiffies 4294967032 (age 81.270s)
-  hex dump (first 32 bytes):
-    10 7d 4b 12 81 88 ff ff 10 7d 4b 12 81 88 ff ff  .}K......}K.....
-    00 00 00 00 00 00 00 00 40 7c 4b 12 81 88 ff ff  ........@|K.....
-  backtrace:
-    [<ffffffff83651d4a>] skb_clone+0xaa/0x2b0 net/core/skbuff.c:1496
-    [<ffffffff83fe1b80>] ieee802154_raw_deliver net/ieee802154/socket.c:369 [inline]
-    [<ffffffff83fe1b80>] ieee802154_rcv+0x100/0x340 net/ieee802154/socket.c:1070
-    [<ffffffff8367cc7a>] __netif_receive_skb_one_core+0x6a/0xa0 net/core/dev.c:5384
-    [<ffffffff8367cd07>] __netif_receive_skb+0x27/0xa0 net/core/dev.c:5498
-    [<ffffffff8367cdd9>] netif_receive_skb_internal net/core/dev.c:5603 [inline]
-    [<ffffffff8367cdd9>] netif_receive_skb+0x59/0x260 net/core/dev.c:5662
-    [<ffffffff83fe6302>] ieee802154_deliver_skb net/mac802154/rx.c:29 [inline]
-    [<ffffffff83fe6302>] ieee802154_subif_frame net/mac802154/rx.c:102 [inline]
-    [<ffffffff83fe6302>] __ieee802154_rx_handle_packet net/mac802154/rx.c:212 [inline]
-    [<ffffffff83fe6302>] ieee802154_rx+0x612/0x620 net/mac802154/rx.c:284
-    [<ffffffff83fe59a6>] ieee802154_tasklet_handler+0x86/0xa0 net/mac802154/main.c:35
-    [<ffffffff81232aab>] tasklet_action_common.constprop.0+0x5b/0x100 kernel/softirq.c:557
-    [<ffffffff846000bf>] __do_softirq+0xbf/0x2ab kernel/softirq.c:345
-    [<ffffffff81232f4c>] do_softirq kernel/softirq.c:248 [inline]
-    [<ffffffff81232f4c>] do_softirq+0x5c/0x80 kernel/softirq.c:235
-    [<ffffffff81232fc1>] __local_bh_enable_ip+0x51/0x60 kernel/softirq.c:198
-    [<ffffffff8367a9a4>] local_bh_enable include/linux/bottom_half.h:32 [inline]
-    [<ffffffff8367a9a4>] rcu_read_unlock_bh include/linux/rcupdate.h:745 [inline]
-    [<ffffffff8367a9a4>] __dev_queue_xmit+0x7f4/0xf60 net/core/dev.c:4221
-    [<ffffffff83fe2db4>] raw_sendmsg+0x1f4/0x2b0 net/ieee802154/socket.c:295
-    [<ffffffff8363af16>] sock_sendmsg_nosec net/socket.c:654 [inline]
-    [<ffffffff8363af16>] sock_sendmsg+0x56/0x80 net/socket.c:674
-    [<ffffffff8363deec>] __sys_sendto+0x15c/0x200 net/socket.c:1977
-    [<ffffffff8363dfb6>] __do_sys_sendto net/socket.c:1989 [inline]
-    [<ffffffff8363dfb6>] __se_sys_sendto net/socket.c:1985 [inline]
-    [<ffffffff8363dfb6>] __x64_sys_sendto+0x26/0x30 net/socket.c:1985
-
-BUG: memory leak
-unreferenced object 0xffff88810dae5200 (size 512):
-  comm "syz-executor749", pid 8387, jiffies 4294967560 (age 75.990s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff8364aeff>] kmalloc_reserve net/core/skbuff.c:353 [inline]
-    [<ffffffff8364aeff>] __alloc_skb+0xdf/0x280 net/core/skbuff.c:424
-    [<ffffffff836539e3>] __pskb_copy_fclone+0x73/0x330 net/core/skbuff.c:1601
-    [<ffffffff82ad4213>] __pskb_copy include/linux/skbuff.h:1167 [inline]
-    [<ffffffff82ad4213>] pskb_copy include/linux/skbuff.h:3191 [inline]
-    [<ffffffff82ad4213>] hwsim_hw_xmit+0xd3/0x140 drivers/net/ieee802154/mac802154_hwsim.c:132
-    [<ffffffff83fe63d7>] drv_xmit_async net/mac802154/driver-ops.h:16 [inline]
-    [<ffffffff83fe63d7>] ieee802154_tx+0xc7/0x190 net/mac802154/tx.c:83
-    [<ffffffff83fe65c8>] ieee802154_subif_start_xmit+0x58/0x70 net/mac802154/tx.c:132
-    [<ffffffff83679e31>] __netdev_start_xmit include/linux/netdevice.h:4825 [inline]
-    [<ffffffff83679e31>] netdev_start_xmit include/linux/netdevice.h:4839 [inline]
-    [<ffffffff83679e31>] xmit_one net/core/dev.c:3605 [inline]
-    [<ffffffff83679e31>] dev_hard_start_xmit+0xe1/0x330 net/core/dev.c:3621
-    [<ffffffff8371d125>] sch_direct_xmit+0x1c5/0x500 net/sched/sch_generic.c:313
-    [<ffffffff8371d661>] qdisc_restart net/sched/sch_generic.c:376 [inline]
-    [<ffffffff8371d661>] __qdisc_run+0x201/0x810 net/sched/sch_generic.c:384
-    [<ffffffff8367ad4f>] qdisc_run include/net/pkt_sched.h:136 [inline]
-    [<ffffffff8367ad4f>] qdisc_run include/net/pkt_sched.h:128 [inline]
-    [<ffffffff8367ad4f>] __dev_xmit_skb net/core/dev.c:3807 [inline]
-    [<ffffffff8367ad4f>] __dev_queue_xmit+0xb9f/0xf60 net/core/dev.c:4162
-    [<ffffffff83fe2db4>] raw_sendmsg+0x1f4/0x2b0 net/ieee802154/socket.c:295
-    [<ffffffff8363af16>] sock_sendmsg_nosec net/socket.c:654 [inline]
-    [<ffffffff8363af16>] sock_sendmsg+0x56/0x80 net/socket.c:674
-    [<ffffffff8363deec>] __sys_sendto+0x15c/0x200 net/socket.c:1977
-    [<ffffffff8363dfb6>] __do_sys_sendto net/socket.c:1989 [inline]
-    [<ffffffff8363dfb6>] __se_sys_sendto net/socket.c:1985 [inline]
-    [<ffffffff8363dfb6>] __x64_sys_sendto+0x26/0x30 net/socket.c:1985
-    [<ffffffff842ded2d>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<ffffffff84400068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff88810e079d00 (size 232):
-  comm "softirq", pid 0, jiffies 4294967560 (age 75.990s)
-  hex dump (first 32 bytes):
-    10 71 4b 12 81 88 ff ff 10 71 4b 12 81 88 ff ff  .qK......qK.....
-    00 00 00 00 00 00 00 00 40 70 4b 12 81 88 ff ff  ........@pK.....
-  backtrace:
-    [<ffffffff83651d4a>] skb_clone+0xaa/0x2b0 net/core/skbuff.c:1496
-    [<ffffffff83fe1b80>] ieee802154_raw_deliver net/ieee802154/socket.c:369 [inline]
-    [<ffffffff83fe1b80>] ieee802154_rcv+0x100/0x340 net/ieee802154/socket.c:1070
-    [<ffffffff8367cc7a>] __netif_receive_skb_one_core+0x6a/0xa0 net/core/dev.c:5384
-    [<ffffffff8367cd07>] __netif_receive_skb+0x27/0xa0 net/core/dev.c:5498
-    [<ffffffff8367cdd9>] netif_receive_skb_internal net/core/dev.c:5603 [inline]
-    [<ffffffff8367cdd9>] netif_receive_skb+0x59/0x260 net/core/dev.c:5662
-    [<ffffffff83fe6302>] ieee802154_deliver_skb net/mac802154/rx.c:29 [inline]
-    [<ffffffff83fe6302>] ieee802154_subif_frame net/mac802154/rx.c:102 [inline]
-    [<ffffffff83fe6302>] __ieee802154_rx_handle_packet net/mac802154/rx.c:212 [inline]
-    [<ffffffff83fe6302>] ieee802154_rx+0x612/0x620 net/mac802154/rx.c:284
-    [<ffffffff83fe59a6>] ieee802154_tasklet_handler+0x86/0xa0 net/mac802154/main.c:35
-    [<ffffffff81232aab>] tasklet_action_common.constprop.0+0x5b/0x100 kernel/softirq.c:557
-    [<ffffffff846000bf>] __do_softirq+0xbf/0x2ab kernel/softirq.c:345
-    [<ffffffff81232f4c>] do_softirq kernel/softirq.c:248 [inline]
-    [<ffffffff81232f4c>] do_softirq+0x5c/0x80 kernel/softirq.c:235
-    [<ffffffff81232fc1>] __local_bh_enable_ip+0x51/0x60 kernel/softirq.c:198
-    [<ffffffff8367a9a4>] local_bh_enable include/linux/bottom_half.h:32 [inline]
-    [<ffffffff8367a9a4>] rcu_read_unlock_bh include/linux/rcupdate.h:745 [inline]
-    [<ffffffff8367a9a4>] __dev_queue_xmit+0x7f4/0xf60 net/core/dev.c:4221
-    [<ffffffff83fe2db4>] raw_sendmsg+0x1f4/0x2b0 net/ieee802154/socket.c:295
-    [<ffffffff8363af16>] sock_sendmsg_nosec net/socket.c:654 [inline]
-    [<ffffffff8363af16>] sock_sendmsg+0x56/0x80 net/socket.c:674
-    [<ffffffff8363deec>] __sys_sendto+0x15c/0x200 net/socket.c:1977
-    [<ffffffff8363dfb6>] __do_sys_sendto net/socket.c:1989 [inline]
-    [<ffffffff8363dfb6>] __se_sys_sendto net/socket.c:1985 [inline]
-    [<ffffffff8363dfb6>] __x64_sys_sendto+0x26/0x30 net/socket.c:1985
-
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+greg k-h
