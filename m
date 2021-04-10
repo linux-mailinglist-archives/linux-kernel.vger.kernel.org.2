@@ -2,115 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A82D835ACAC
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 12:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9F535ACAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 12:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234512AbhDJKEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 06:04:04 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:30541
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229632AbhDJKEB (ORCPT
+        id S234386AbhDJKNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 06:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229943AbhDJKNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 06:04:01 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AqT1XlqvnrCDU3EQYrmf/fo157skDl9V00zAX?=
- =?us-ascii?q?/kB9WHVpW+afkN2jm+le6A/shF8qKRUdsP2JJaXoexjh3LFv5415B92fdSng/F?=
- =?us-ascii?q?ClNYRzqbblqgeAJwTb1spwkZhtaLJ/DtqYNykese/f7BOjG9gthPmrmZrJuc7k?=
- =?us-ascii?q?w31gTR5nZshbhm9EIz2WHUFsSA5NCYBRLuv+2uN8uzGidX4LB/7UOlA5WYH4y+?=
- =?us-ascii?q?HjqIjrelovCRIh9WC1/FGVwY+/Ilyj0hASXygn+9of2GLO+jaX2pme?=
-X-IronPort-AV: E=Sophos;i="5.82,210,1613430000"; 
-   d="scan'208";a="378277423"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 12:03:14 +0200
-Date:   Sat, 10 Apr 2021 12:03:14 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Julia Lawall <julia.lawall@inria.fr>
-cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH 4/4] staging: rtl8723bs: Change the
- type and use of a variable
-In-Reply-To: <alpine.DEB.2.22.394.2104101201130.2975@hadrien>
-Message-ID: <alpine.DEB.2.22.394.2104101202370.2975@hadrien>
-References: <20210410092232.15155-1-fmdefrancesco@gmail.com> <20210410092232.15155-5-fmdefrancesco@gmail.com> <YHFwZCh+s7ymrsQN@kroah.com> <alpine.DEB.2.22.394.2104101201130.2975@hadrien>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sat, 10 Apr 2021 06:13:04 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87548C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 03:12:50 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id x8so4210945ybx.2
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 03:12:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CARFTmdzvVOf8CR8k8TSb1Bj3En1zT2VabMkTx+vpaY=;
+        b=TDlQvmZUjGwNXEEdC49UUFP0nlWgNVZoZCpX1EVJDcg5cOECaKzX9/dCC0OHkrEvx4
+         woz3TqfsopHp4fGMFzPzvztvlcy2bUMpofjVo+v8y8/O4msdYmEeFD2y9FNpo5WLTGRD
+         2/GFlvWEtZ7gFkD3FIWzvn+bqNgHqtFDhg3iUkJbI9VB95sHFYa/cu7vb2Ku5JjRCJzl
+         He2PqTywv/q5pCsd5zdmG9OkjgLD/ZJ85ui3gqLLqJqMbFps/kiGUg4aZLRury5rZwKA
+         qWKPTLwlibYDdag1jPj3B5b6dOIRzvg93vZI5D/zpWGCFdWSi2BTEaE9+AXX4gKXHADz
+         bA8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CARFTmdzvVOf8CR8k8TSb1Bj3En1zT2VabMkTx+vpaY=;
+        b=JDz+Upd+gAB0eXU7oMPYV6iW8N1YE0vUtG+DCOQFXCi6FYbcq8teuhZ/k2Mn/zMqJh
+         s3Q7/eFdXEXamdV7qjtusGkvNmBSFsbeeCc2Z/pgyruaQLo6vIrg2Llrxj5VvzNQZ8AK
+         D/Fdk+66LaPkhSmc0VxnzpXs4NWWoM9wCULsIaHWflS9jM1LrdN2nrsTvyQn9VLm+sL8
+         ImR9Zm74hP/fTqU7Y1Hw29BwPjPXA+3SCBpkC1tEVl576d05ijFz8XuJ74Oe02E8ibBP
+         ijd5QjngyH2Sf4lYIoP9uReTddZW3st3RZU9fs/1Zp8eWj/3wg27/fiHlIK67G1ASq21
+         YUBQ==
+X-Gm-Message-State: AOAM532ETwzVUjskYcyLXwheOTerIi0LJQFYthlJjnJrerXy3VRiaOs6
+        2YPHvhhtcSyn2BTSO8hmDsnatalT3RqM1bmkmFW/6w==
+X-Google-Smtp-Source: ABdhPJykbc2kIdAnxojWnWmjTXLCoqiYIos3RQmPBSfwujcYI0ykjnGLqgi5HdHhuXcv19zMpV1TEG7oxIWIWF+Gpak=
+X-Received: by 2002:a25:7e01:: with SMTP id z1mr26393090ybc.253.1618049569299;
+ Sat, 10 Apr 2021 03:12:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210410095149.3708143-1-phil@philpotter.co.uk>
+In-Reply-To: <20210410095149.3708143-1-phil@philpotter.co.uk>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Sat, 10 Apr 2021 12:12:38 +0200
+Message-ID: <CANn89iJdoaC9P_Nd=BrXVRyMS43YOg-DX=VciDO89mH_JPVRTg@mail.gmail.com>
+Subject: Re: [PATCH] net: core: sk_buff: zero-fill skb->data in __alloc_skb function
+To:     Phillip Potter <phil@philpotter.co.uk>
+Cc:     davem@davemloft.net, kuba@kernel.org, willemb@google.com,
+        linmiaohe@huawei.com, linyunsheng@huawei.com, alobakin@pm.me,
+        elver@google.com, gnault@redhat.com, dseok.yi@samsung.com,
+        viro@zeniv.linux.org.uk, vladimir.oltean@nxp.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Apr 10, 2021 at 11:51 AM Phillip Potter <phil@philpotter.co.uk> wrote:
+>
+> Zero-fill skb->data in __alloc_skb function of net/core/skbuff.c,
+> up to start of struct skb_shared_info bytes. Fixes a KMSAN-found
+> uninit-value bug reported by syzbot at:
+> https://syzkaller.appspot.com/bug?id=abe95dc3e3e9667fc23b8d81f29ecad95c6f106f
+>
+> Reported-by: syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com
+> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+> ---
+>  net/core/skbuff.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index 785daff48030..9ac26cdb5417 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -215,6 +215,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
+>          * to allow max possible filling before reallocation.
+>          */
+>         size = SKB_WITH_OVERHEAD(ksize(data));
+> +       memset(data, 0, size);
+>         prefetchw(data + size);
 
 
-On Sat, 10 Apr 2021, Julia Lawall wrote:
+Certainly not.
 
->
->
-> On Sat, 10 Apr 2021, Greg KH wrote:
->
-> > On Sat, Apr 10, 2021 at 11:22:32AM +0200, Fabio M. De Francesco wrote:
-> > > Change the type of fw_current_in_ps_mode from u8 to bool, because
-> > > it is used everywhere as a bool and, accordingly, it should be
-> > > declared as a bool. Shorten the controlling
-> > > expression of an 'if' statement.
-> > >
-> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > ---
-> > >  drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
-> > >  drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
-> > >  2 files changed, 2 insertions(+), 2 deletions(-)
-> > >
-> > > diff --git a/drivers/staging/rtl8723bs/hal/hal_intf.c b/drivers/staging/rtl8723bs/hal/hal_intf.c
-> > > index 96fe172ced8d..8dc4dd8c6d4c 100644
-> > > --- a/drivers/staging/rtl8723bs/hal/hal_intf.c
-> > > +++ b/drivers/staging/rtl8723bs/hal/hal_intf.c
-> > > @@ -348,7 +348,7 @@ void rtw_hal_dm_watchdog(struct adapter *padapter)
-> > >
-> > >  void rtw_hal_dm_watchdog_in_lps(struct adapter *padapter)
-> > >  {
-> > > -	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode == true) {
-> > > +	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode) {
-> > >  		if (padapter->HalFunc.hal_dm_watchdog_in_lps)
-> > >  			padapter->HalFunc.hal_dm_watchdog_in_lps(padapter); /* this function caller is in interrupt context */
-> > >  	}
-> > > diff --git a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-> > > index 0a48f1653be5..0767dbb84199 100644
-> > > --- a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-> > > +++ b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-> > > @@ -203,7 +203,7 @@ struct pwrctrl_priv {
-> > >  	u8 LpsIdleCount;
-> > >  	u8 power_mgnt;
-> > >  	u8 org_power_mgnt;
-> > > -	u8 fw_current_in_ps_mode;
-> > > +	bool fw_current_in_ps_mode;
-> > >  	unsigned long	DelayLPSLastTimeStamp;
-> > >  	s32		pnp_current_pwr_state;
-> > >  	u8 pnp_bstop_trx;
-> >
-> > If this is only checked, how can it ever be true?  Who ever sets this
-> > value?
->
-> I think it's already updated everywhere with true and false, so there is
-> nothing to change.  But it would be good to make that clear in the log
-> message.
+There is a difference between kmalloc() and kzalloc()
 
-Oops, I was thinking of the field, not the local variable.
-If the field is never set, that seems like a big problem...
+Here you are basically silencing KMSAN and make it useless.
 
-julia
-
->
-> julia
->
-> >
-> > thanks,
-> >
-> > greg k-h
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHFwZCh%2Bs7ymrsQN%40kroah.com.
-> >
->
+Please fix the real issue, or stop using KMSAN if it bothers you.
