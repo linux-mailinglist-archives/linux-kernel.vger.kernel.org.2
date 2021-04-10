@@ -2,123 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5919C35ADD6
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BE735ADD9
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234653AbhDJN4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:56:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45340 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234262AbhDJN4G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:56:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0E986115A;
-        Sat, 10 Apr 2021 13:55:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618062952;
-        bh=+2oaVVdSbdeETRDIulQvK38BCijkBUmD2tjAHcVSdsw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SuO8zKbvO6RmTwaHb0OVkUNRTEQSLajmyzw7ginW5ncqdCFJnCduejDHqprdlDtoC
-         HGDMmSwWpnWrrHi8QZIa2lqxCvXGF/DX4b1YtyuABQJIaTfpQZHqqfb8VZ190JwQDs
-         TK+6OJP6gPcLizksUywX05PLggLetJaCeIe1zXAM=
-Date:   Sat, 10 Apr 2021 15:55:49 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Julia Lawall <julia.lawall@inria.fr>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        id S234764AbhDJN53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 09:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234377AbhDJN51 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 09:57:27 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B434C06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 06:57:13 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lVE6c-0008GH-JZ; Sat, 10 Apr 2021 15:56:58 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lVE6c-0007Dp-7b; Sat, 10 Apr 2021 15:56:58 +0200
+Date:   Sat, 10 Apr 2021 15:56:58 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH 4/4] staging: rtl8723bs: Change the
- type and use of a variable
-Message-ID: <YHGuZc2G/DVB8ZvE@kroah.com>
-References: <20210410092232.15155-1-fmdefrancesco@gmail.com>
- <2186059.xkuF2sVEJi@localhost.localdomain>
- <alpine.DEB.2.22.394.2104101524260.2975@hadrien>
- <3114102.qbl0ZuBMXl@localhost.localdomain>
+Subject: Re: [PATCH v3 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM
+ support
+Message-ID: <20210410135658.pf7eg5x5bdhndxkg@pengutronix.de>
+References: <20210409090709.1918021-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210409090709.1918021-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <YHBUjPjEpLYF/915@orome.fritz.box>
+ <20210409213455.6f25m4jyttqn75hf@toshiba.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yuj53qadwvlrvifp"
 Content-Disposition: inline
-In-Reply-To: <3114102.qbl0ZuBMXl@localhost.localdomain>
+In-Reply-To: <20210409213455.6f25m4jyttqn75hf@toshiba.co.jp>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 03:53:38PM +0200, Fabio M. De Francesco wrote:
-> On Saturday, April 10, 2021 3:24:43 PM CEST Julia Lawall wrote:
-> > On Sat, 10 Apr 2021, Fabio M. De Francesco wrote:
-> > > On Saturday, April 10, 2021 2:12:28 PM CEST Julia Lawall wrote:
-> > > > On Sat, 10 Apr 2021, Fabio M. De Francesco wrote:
-> > > > > On Saturday, April 10, 2021 1:37:30 PM CEST Julia Lawall wrote:
-> > > > > > > That variable has global scope and is assigned at least in:
-> > > > > > What do you mean by global scope?  None of the following look
-> > > > > > like
-> > > > > > references to global variables.
-> > > > > > 
-> > > > > > julia
-> > > > > 
-> > > > > I just mean that fw_current_in_ps_mode is a field of a struct in a
-> > > > > .h
-> > > > > file included everywhere in this driver and that the functions whom
-> > > > > the following assignments belong to have not the "static" type
-> > > > > modifier.
-> > > > 
-> > > > OK, but a field in a structure is not a variable, and this is not
-> > > > what
-> > > > scope means.
-> > > 
-> > > You're right, a field in a structure is not a variable.
-> > > 
-> > > > int x;
-> > > > 
-> > > > outside of anything is a global variable (global scope).
-> > > > 
-> > > > int foo() {
-> > > > 
-> > > >   int x;
-> > > >   ...
-> > > > 
-> > > > }
-> > > > 
-> > > > Here x is a local variable.  Its scope is the body of the function.
-> > > > 
-> > > > int foo() {
-> > > > 
-> > > >   if (abc) {
-> > > >   
-> > > >     int x;
-> > > >     ...
-> > > >   
-> > > >   }
-> > > > 
-> > > > }
-> > > > 
-> > > > Here x is a local variable, but its scope is only in the if branch.
-> > > 
-> > > And you're right again: I needed a little refresh of my knowledge of C.
-> > > 
-> > > I've searched again in the code for the purpose of finding out if that
-> > > struct is initialized with global scope but I didn't find anything. I
-> > > didn't even find any dynamic allocation within functions that returns
-> > > pointers to that struct.
-> > > 
-> > > Therefore, according to Greg's request, I'll delete that stupid 'if'
-> > > statement in the patch series v2 that I'm about to submit.
-> > 
-> > I'm really not clear on why the if should be deleted.
-> > 
-> > julia
-> >
-> I'm supposed to delete it because of the review made by Greg. In a couple 
-> of previous messages he wrote:
-> 
-> "If this is only checked, how can it ever be true?  Who ever sets this 
-> value?"
-> 
-> and then:
-> 
-> "Just delete the variable from the structure entirely and when it is
-> used.".
-> 
-> However, like you, I'm not sure yet.
 
-I don't think any of us are, try fixing up what you think is right and
-resend and we can go from there :)
+--yuj53qadwvlrvifp
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hello,
+
+On Sat, Apr 10, 2021 at 06:34:55AM +0900, Nobuhiro Iwamatsu wrote:
+> > > +static int visconti_pwm_remove(struct platform_device *pdev)
+> > > +{
+> > > +	struct visconti_pwm_chip *priv =3D platform_get_drvdata(pdev);
+> > > +
+> > > +	return pwmchip_remove(&priv->chip);
+> >=20
+> > I think Uwe would prefer this to be done separately because he's working
+> > towards removing the return value from pwmchip_remove() and if we start
+> > ignoring it in new drivers that will make life easier going forward.
+> >=20
+> > So this should just be:
+> >=20
+> > 	pwmchip_remove(&priv->chip);
+> >=20
+> > 	return 0;
+>=20
+> I understand your suggestion.
+> However, it looks like the pwmchip_remove() hasn't been updated yet.
+> I will wait for the update of pwmchip_remove.
+
+pwmchip_remove will always return 0 since b2c200e3f2fd which is in v5.3.
+So Thierry's suggestion is safe and indeed welcome.
+=20
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--yuj53qadwvlrvifp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBxrqcACgkQwfwUeK3K
+7An+hQgAj2qaimHxOZxUmLVDVonb3IXjlqjNIUaxsPEkWqsxkVe0Qft4EEJuw0zr
+XXHF54BLbK163akwKdlIiRbXBWr2wa8weVst/QyhjvLZC3SK1aarrxetSCt+ySFU
+Ujq0EerNvC8JR9Npxq2p3wwo5FgOMCzuPAfCVqH2YT7hpdEAj3IxtJS516rFeUFr
+L3mVCtN6IHxhsYbx74xaQ5aARALCw3CTOwNTFIXY3ash9u3Rq2MhiWMjTnpiwcge
+UsGOKlJkhauN6uUy7M2lBL0ccL2d/JZKVv1iKcBGdx8v4eH7HAWz5utoH60h+EEL
+XZa5gLu0WNXUnCi37W8DUQGL4xIzFQ==
+=3NT8
+-----END PGP SIGNATURE-----
+
+--yuj53qadwvlrvifp--
