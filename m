@@ -2,186 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190D735AF09
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 18:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F3C135AF0D
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 18:20:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234838AbhDJQRN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 12:17:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51450 "EHLO
+        id S234826AbhDJQVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 12:21:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234832AbhDJQRJ (ORCPT
+        with ESMTP id S234334AbhDJQU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 12:17:09 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77FEC06138B
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 09:16:52 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id n11-20020a05600c4f8bb029010e5cf86347so6506583wmq.1
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 09:16:52 -0700 (PDT)
+        Sat, 10 Apr 2021 12:20:59 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2D6C06138A;
+        Sat, 10 Apr 2021 09:20:44 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id w8so2820562pfn.9;
+        Sat, 10 Apr 2021 09:20:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZtZHBLTCs7MZ+oNP0mY9TjGEU/md/IA3GJQkuj80sew=;
-        b=Bp3G7rXdj30nXahmCb0DX42/GpQq1NqVzRF3U8dpNmLoLFw08YqVW0WmTFlQz+n48O
-         M2zywKwO2O5xxvb1z3UGKVFtAEDcrkDu8fWhD3WoVLSrFWHESGd3gWEfXxADH05sAM7O
-         wGaMz+7TbhLVVvc8C90tpPkoqpXDs0nzasfuK/ZtQfCl+zxDbsrTM93E9yzxqn2iXTco
-         YX2lZWxg+TldvU18p6YAWW/e3bw7NAvlwm3SHKK367vEwZzH9gKvwPrTcsdXyWMDg6qr
-         de5eOntFj7fjAPKLWzRfU+Z9V+yxdliPGzjBwyEc/fmcBy+1nxuTJ0czZ3m4q/pHEgr9
-         KwFw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=T/2OfzzxnxOCDxc5Ilck7Epb5dTCszeXwDU9tJLtUKc=;
+        b=JGjbNbMLLzkVqRq62QyonJjoR9WwRVFsF0oyMguSXQy4XNImhjTDh48Nl/hEZczEzu
+         Kz9bOAmYqHNTRB9N6V8YLhIdW602GBoWKGG4qC1V17db9B+4Mh7Zv6blRzmEi76Ge2GZ
+         y2vgTHxrNa9IAoHeco2Hiz++jezn/5ZRbE5AK5/ylBCVd+UNhxzMdzoqVCn64PquDSJB
+         Cp6Jpm/UaMaVvtp/dmbH8u6v5inm2NtjdW0K6m8OaSkf8xb+awZFazVgxVAxjlXZzgn4
+         zfYR2TNSd2FdbeGUZh/SB0neBaEfKz5fwcE2CHUuRtdDV6GdV3Ui2TvcXyhbUEPWU1t6
+         G0EA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZtZHBLTCs7MZ+oNP0mY9TjGEU/md/IA3GJQkuj80sew=;
-        b=KeS2+bZAKmJNcizxDCwLxgFhvlIMJT85KCGp9hvcU+/9uTPyKtCK9KwfdLVUEwPyTe
-         TwHFJcyBSDeUMTj8vlLJQn18pc5aAicQAhNS6L1WJs4u70JLTuINrqBg8cJ55te5+Nbx
-         O1skx+3d+9VSWEzPz0WzBcsJtJyKNa/kLjCZ0R5zUgZOrBKoaAEh6vgMx/dqI72Wnnqh
-         3xIRKmDUgjpQeH10DjQZsVzMoDgKaw28hBIqIzVATbZmaDZJqKzMNiU5dkmaTGgbfUi8
-         foDiO7P+KMPk4wDYKMFqGcgLA9/Bvs3moP6HrijnWJeX0/LGFYqKbkZ1yFp5p7nT9B3c
-         0coA==
-X-Gm-Message-State: AOAM532XMPDjZBDw3jJCDLmJt/74wxmNAg5vkU3JGrzP6n49f69Cted/
-        TPt6qJBRw8mq6TzMMN+m50JTIg==
-X-Google-Smtp-Source: ABdhPJzfo2oPB457fWxv/FRl0ytj31GVMTNjfB58hqzRB9Zc1TPw+2J3WRF+a+hA0AXzUFSSRq9MXw==
-X-Received: by 2002:a05:600c:3641:: with SMTP id y1mr13991903wmq.65.1618071411457;
-        Sat, 10 Apr 2021 09:16:51 -0700 (PDT)
-Received: from enceladus (ppp-94-65-225-75.home.otenet.gr. [94.65.225.75])
-        by smtp.gmail.com with ESMTPSA id m26sm8126680wmg.17.2021.04.10.09.16.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 09:16:50 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 19:16:45 +0300
-From:   Ilias Apalodimas <ilias.apalodimas@linaro.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Matteo Croce <mcroce@linux.microsoft.com>, netdev@vger.kernel.org,
-        linux-mm@kvack.org, Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <YHHPbQm2pn2ysth0@enceladus>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <20210409223801.104657-3-mcroce@linux.microsoft.com>
- <20210410154824.GZ2531743@casper.infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=T/2OfzzxnxOCDxc5Ilck7Epb5dTCszeXwDU9tJLtUKc=;
+        b=LLGA2W+lF5Bb7ZPKgCnv8oFgAJ9h3Mt1FRdm0uAsdtsP+Rhs5e7xOB7ZIpWR1r69PV
+         /o37wPOifJu1oVYPevrz43D+gVDIn0BMW7bahPAsRTUm+DlP5BJMh9OqLgM1l56b0R4w
+         PYrjDp63xGsh1pZW/RBhnZp7S/HKT6QM65v2NEV6d9eGlR9tHZXmlPEwrAv/YWyVOSDb
+         1oSHRT6qTpgpQw4+gKF1DiSg5ENXbDKhl2thwhpooPTI+H3oRMCnpFblbslZn7LhA7Fr
+         ycFhbMAzun2RZjK4VkUR167BKHZvDewOzncJX4s+v4oXdoC++iw0zDEOWEArWyIqn7uT
+         AHvQ==
+X-Gm-Message-State: AOAM530v62yATwjR0Y1iKeIer/A+L7CqXV2MP/ooVgBUOBgNPrAseauo
+        jv368dO1FEzAxiS+b5g4E5RagHo23zZd1OhDtoci0isWf2Q=
+X-Google-Smtp-Source: ABdhPJysfXNLMQ7FkAAnDg8NfcshdeP6IElWUUeqtmyMFGwMs/IKB9hx9lW/QzNPk6Aa+7YLaslAjMlPeHInIfaNbFU=
+X-Received: by 2002:a65:6645:: with SMTP id z5mr18024871pgv.273.1618071643867;
+ Sat, 10 Apr 2021 09:20:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210410154824.GZ2531743@casper.infradead.org>
+References: <cover.1617993776.git.lucas.p.stankus@gmail.com>
+In-Reply-To: <cover.1617993776.git.lucas.p.stankus@gmail.com>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Sat, 10 Apr 2021 19:20:32 +0300
+Message-ID: <CA+U=Dsq7EgSapyCmQfuFr+qyDGc=6wLWOruLrugsJsxbGTyBtg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] staging: iio: cdc: ad7746: remove platform_data in
+ favor of device tree bindings
+To:     Lucas Stankus <lucas.p.stankus@gmail.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Matthew 
+On Fri, Apr 9, 2021 at 9:50 PM Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
+>
+> This patch series aims to replace the platform_struct for the ad7746 driver
+> in favor of device tree bindings, creating the dt-bindings documentation in
+> the process.
+>
+> Since the header file was only used to define the struct and the excitation
+> level values, it was possible to remove the file entirely.
 
-On Sat, Apr 10, 2021 at 04:48:24PM +0100, Matthew Wilcox wrote:
-> On Sat, Apr 10, 2021 at 12:37:58AM +0200, Matteo Croce wrote:
-> > This is needed by the page_pool to avoid recycling a page not allocated
-> > via page_pool.
-> 
-> Is the PageType mechanism more appropriate to your needs?  It wouldn't
-> be if you use page->_mapcount (ie mapping it to userspace).
+From my side: I need to get better at understanding IIO and how to
+place some logic of devices into IIO,
+I don't know if there is a better approach at converting the current
+platform_data into DT/OF.
+Maybe Jonathan [or someone else] has some better ideas.
+Otherwise the overall approach looks fine from my side.
 
-Interesting!
-Please keep in mind this was written ~2018 and was stale on my branches for
-quite some time.  So back then I did try to use PageType, but had not free
-bits.  Looking at it again though, it's cleaned up.  So yes I think this can
-be much much cleaner.  Should we go and define a new PG_pagepool?
-
-
-Thanks!
-/Ilias
-> 
-> > Signed-off-by: Matteo Croce <mcroce@microsoft.com>
-> > ---
-> >  include/linux/mm_types.h | 1 +
-> >  include/net/page_pool.h  | 2 ++
-> >  net/core/page_pool.c     | 4 ++++
-> >  3 files changed, 7 insertions(+)
-> > 
-> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> > index 6613b26a8894..ef2d0d5f62e4 100644
-> > --- a/include/linux/mm_types.h
-> > +++ b/include/linux/mm_types.h
-> > @@ -101,6 +101,7 @@ struct page {
-> >  			 * 32-bit architectures.
-> >  			 */
-> >  			dma_addr_t dma_addr;
-> > +			unsigned long signature;
-> >  		};
-> >  		struct {	/* slab, slob and slub */
-> >  			union {
-> > diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> > index b5b195305346..b30405e84b5e 100644
-> > --- a/include/net/page_pool.h
-> > +++ b/include/net/page_pool.h
-> > @@ -63,6 +63,8 @@
-> >   */
-> >  #define PP_ALLOC_CACHE_SIZE	128
-> >  #define PP_ALLOC_CACHE_REFILL	64
-> > +#define PP_SIGNATURE		0x20210303
-> > +
-> >  struct pp_alloc_cache {
-> >  	u32 count;
-> >  	void *cache[PP_ALLOC_CACHE_SIZE];
-> > diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-> > index ad8b0707af04..2ae9b554ef98 100644
-> > --- a/net/core/page_pool.c
-> > +++ b/net/core/page_pool.c
-> > @@ -232,6 +232,8 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
-> >  		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
-> >  
-> >  skip_dma_map:
-> > +	page->signature = PP_SIGNATURE;
-> > +
-> >  	/* Track how many pages are held 'in-flight' */
-> >  	pool->pages_state_hold_cnt++;
-> >  
-> > @@ -302,6 +304,8 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
-> >  			     DMA_ATTR_SKIP_CPU_SYNC);
-> >  	page->dma_addr = 0;
-> >  skip_dma_unmap:
-> > +	page->signature = 0;
-> > +
-> >  	/* This may be the last page returned, releasing the pool, so
-> >  	 * it is not safe to reference pool afterwards.
-> >  	 */
-> > -- 
-> > 2.30.2
-> > 
+>
+> Lucas Stankus (3):
+>   dt-bindings: staging: iio: cdc: ad7746: add binding documentation for
+>     AD7746
+>   staging: iio: cdc: ad7746: use dt bindings to set the EXCx pins output
+>   staging: iio: cdc: ad7746: use dt binding to set the excitation level
+>
+>  .../bindings/iio/cdc/adi,ad7746.yaml          | 79 +++++++++++++++++++
+>  drivers/staging/iio/cdc/ad7746.c              | 43 +++++-----
+>  drivers/staging/iio/cdc/ad7746.h              | 28 -------
+>  3 files changed, 100 insertions(+), 50 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/iio/cdc/adi,ad7746.yaml
+>  delete mode 100644 drivers/staging/iio/cdc/ad7746.h
+>
+> --
+> 2.31.1
+>
