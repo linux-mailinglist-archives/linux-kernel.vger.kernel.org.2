@@ -2,163 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5070E35AB50
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 08:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3CA35AB53
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 08:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234272AbhDJGWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 02:22:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28811 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230235AbhDJGWe (ORCPT
+        id S234326AbhDJG1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 02:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231933AbhDJG1F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 02:22:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618035739;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nv0p4RXdpoXEf7jqWszTL6fVOOyMMq+6cdW6F9BHRE8=;
-        b=cDx2Kr02pDCs3CexD206x/O+ZbG6UBaC+1ppHR+0pnBNWVbzadgc24K/zMtt7o+pjBJ7SD
-        bhxDPMuft3DcGg7WsAYmal07EFa618wGU6fFKya8BrZNE5WVbApxPh2EJqJTcCPYurfeQO
-        d6zYBxc87mbw9eZzDdiadEH7Q6XsRtQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-H9vV9Gg_ME-THv76LsVBSA-1; Sat, 10 Apr 2021 02:22:12 -0400
-X-MC-Unique: H9vV9Gg_ME-THv76LsVBSA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B3FA4593C0;
-        Sat, 10 Apr 2021 06:22:08 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DD3276F968;
-        Sat, 10 Apr 2021 06:21:59 +0000 (UTC)
-Date:   Sat, 10 Apr 2021 08:21:58 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>, linux-mm@kvack.org,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        "David S. Miller" <davem@davemloft.net>, brouer@redhat.com,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: Bogus struct page layout on 32-bit
-Message-ID: <20210410082158.79ad09a6@carbon>
-In-Reply-To: <20210410024313.GX2531743@casper.infradead.org>
-References: <20210409185105.188284-3-willy@infradead.org>
-        <202104100656.N7EVvkNZ-lkp@intel.com>
-        <20210410024313.GX2531743@casper.infradead.org>
+        Sat, 10 Apr 2021 02:27:05 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F024C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 23:26:51 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id w23so8957190edx.7
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 23:26:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VYQgXA4JFzHDk4viq07HuvZNY7v6sV4QclOQl2M4hJ4=;
+        b=qcH4wxIKFlGWqwulCIsFTdVwfFB7gQRKvnLCxqAstLjPU9CvZJ0zZ21PhmY6Evsa70
+         J8XwlPvBpgRAwsE0T4yNCF2he+wafCKKNE1Fi6HpeHhrrTb16Yucdq0dbhcp0vDcA/Yr
+         4l0iXobIgTBnmUlbaAyTvKS+/QcLLKEEjK2lW1e6z4O0ECHzWAr/GnYtDBlXKyWIdYKv
+         BujpdK+3d2wRAms8hqboQXwbET6iGYwSiplkZc1xY563u4hbmz1Ui/u7OwX9BhSoiSai
+         /NWanFqpSNKNXEavDTDb03b+S7Mz5Jez30kmlJ5qq76wrXwYhUdn0EC/fwTvqEVIsjgu
+         B47Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VYQgXA4JFzHDk4viq07HuvZNY7v6sV4QclOQl2M4hJ4=;
+        b=cdVfwHfqaibLdAz5HPeX9C3G41okxnpfq1nuMoiwMlbduFqe9Kr205tY3m13aCgvuP
+         e4mUSKo9RkIce0viFf3P7SFfr2TNxSX8auNvSaoqcmDJW9GNQZr+LGeNHZqYQsfa9UcL
+         s8CFVZ9hYAPVr+Yq1MjeTJiDphQv+ESxmkQgXVQst+18vPvguzsV0w3taUM+GEGB//So
+         /RH6udSfXrgLiuVXQ3beB+3Xd7UyS66hZYju635GUrgOkcTkVK0rG26bGwf1iQpv/8Q1
+         mv/iyglEoCGKgHU1nBeiBaSatQdkaMBR7dS9Ru9y9gsVOO7KNZ+H3KYQUOJ5mXQjFOjM
+         kRTA==
+X-Gm-Message-State: AOAM531+uK1WaERXv88o5+6NGzkRYhflxmrcotfgikIjzZaUELV8iRJM
+        cM/ETbDtjZU56qYtvmcvoysHENpVLsIq0kv8jg+WTg==
+X-Google-Smtp-Source: ABdhPJyZc09whnLQOKOPu9DdP/CsG9zoNdsm/kuSHfd2Obk2KrHGgwtvq/xwYn8iT4NuHNKxlKWk+TxNTtgDBWpJWQ0=
+X-Received: by 2002:a50:eb92:: with SMTP id y18mr12700486edr.230.1618036009612;
+ Fri, 09 Apr 2021 23:26:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210409095305.397149021@linuxfoundation.org>
+In-Reply-To: <20210409095305.397149021@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 10 Apr 2021 11:56:38 +0530
+Message-ID: <CA+G9fYtfsjqkbH-fOiS5UX4U+7oeOk0sMDSke79GgUVVTfVNWw@mail.gmail.com>
+Subject: Re: [PATCH 5.11 00/45] 5.11.13-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Apr 2021 03:43:13 +0100
-Matthew Wilcox <willy@infradead.org> wrote:
+On Fri, 9 Apr 2021 at 15:32, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.11.13 release.
+> There are 45 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.11.13-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.11.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> On Sat, Apr 10, 2021 at 06:45:35AM +0800, kernel test robot wrote:
-> > >> include/linux/mm_types.h:274:1: error: static_assert failed due to requirement '__builtin_offsetof(struct page, lru) == __builtin_offsetof(struct folio, lru)' "offsetof(struct page, lru) == offsetof(struct folio, lru)"  
-> >    FOLIO_MATCH(lru, lru);
-> >    include/linux/mm_types.h:272:2: note: expanded from macro 'FOLIO_MATCH'
-> >            static_assert(offsetof(struct page, pg) == offsetof(struct folio, fl))  
-> 
-> Well, this is interesting.  pahole reports:
-> 
-> struct page {
->         long unsigned int          flags;                /*     0     4 */
->         /* XXX 4 bytes hole, try to pack */
->         union {
->                 struct {
->                         struct list_head lru;            /*     8     8 */
-> ...
-> struct folio {
->         union {
->                 struct {
->                         long unsigned int flags;         /*     0     4 */
->                         struct list_head lru;            /*     4     8 */
-> 
-> so this assert has absolutely done its job.
-> 
-> But why has this assert triggered?  Why is struct page layout not what
-> we thought it was?  Turns out it's the dma_addr added in 2019 by commit
-> c25fff7171be ("mm: add dma_addr_t to struct page").  On this particular
-> config, it's 64-bit, and ppc32 requires alignment to 64-bit.  So
-> the whole union gets moved out by 4 bytes.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Argh, good that you are catching this!
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> Unfortunately, we can't just fix this by putting an 'unsigned long pad'
-> in front of it.  It still aligns the entire union to 8 bytes, and then
-> it skips another 4 bytes after the pad.
-> 
-> We can fix it like this ...
-> 
-> +++ b/include/linux/mm_types.h
-> @@ -96,11 +96,12 @@ struct page {
->                         unsigned long private;
->                 };
->                 struct {        /* page_pool used by netstack */
-> +                       unsigned long _page_pool_pad;
+## Build
+* kernel: 5.11.13-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.11.y
+* git commit: ab8c60637a48fbff98e2c93fd1cba93172937f29
+* git describe: v5.11.12-46-gab8c60637a48
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
+.12-46-gab8c60637a48
 
-I'm fine with this pad.  Matteo is currently proposing[1] to add a 32-bit
-value after @dma_addr, and he could use this area instead.
+## No regressions (compared to v5.11.12)
 
-[1] https://lore.kernel.org/netdev/20210409223801.104657-3-mcroce@linux.microsoft.com/
+## No fixes (compared to v5.11.12)
 
-When adding/changing this, we need to make sure that it doesn't overlap
-member @index, because network stack use/check page_is_pfmemalloc().
-As far as my calculations this is safe to add.  I always try to keep an
-eye out for this, but I wonder if we could have a build check like yours.
+## Test result summary
+ total: 71163, pass: 59648, fail: 1495, skip: 9771, xfail: 249,
 
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 25 total, 25 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
 
->                         /**
->                          * @dma_addr: might require a 64-bit value even on
->                          * 32-bit architectures.
->                          */
-> -                       dma_addr_t dma_addr;
-> +                       dma_addr_t dma_addr __packed;
->                 };
->                 struct {        /* slab, slob and slub */
->                         union {
-> 
-> but I don't know if GCC is smart enough to realise that dma_addr is now
-> on an 8 byte boundary and it can use a normal instruction to access it,
-> or whether it'll do something daft like use byte loads to access it.
-> 
-> We could also do:
-> 
-> +                       dma_addr_t dma_addr __packed __aligned(sizeof(void *));
-> 
-> and I see pahole, at least sees this correctly:
-> 
->                 struct {
->                         long unsigned int _page_pool_pad; /*     4     4 */
->                         dma_addr_t dma_addr __attribute__((__aligned__(4))); /*     8     8 */
->                 } __attribute__((__packed__)) __attribute__((__aligned__(4)));  
-> 
-> This presumably affects any 32-bit architecture with a 64-bit phys_addr_t
-> / dma_addr_t.  Advice, please?
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
-I'm not sure that the 32-bit behavior is with 64-bit (dma) addrs.
-
-I don't have any 32-bit boards with 64-bit DMA.  Cc. Ivan, wasn't your
-board (572x ?) 32-bit with driver 'cpsw' this case (where Ivan added
-XDP+page_pool) ?
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+--
+Linaro LKFT
+https://lkft.linaro.org
