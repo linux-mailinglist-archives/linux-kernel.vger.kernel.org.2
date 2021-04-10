@@ -2,30 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9006035AE54
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D79635AE51
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234924AbhDJOaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:30:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
+        id S234876AbhDJO3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:29:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234920AbhDJO37 (ORCPT
+        with ESMTP id S234536AbhDJO3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:29:59 -0400
+        Sat, 10 Apr 2021 10:29:49 -0400
 Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70939C06138A
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:29:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8C88C06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:29:34 -0700 (PDT)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4FHcpF53B9z9sXH; Sun, 11 Apr 2021 00:29:41 +1000 (AEST)
+        id 4FHcp31Dnzz9sWT; Sun, 11 Apr 2021 00:29:31 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Cc:     kernel test robot <lkp@intel.com>,
-        Anton Blanchard <anton@samba.org>,
-        linuxppc-dev@lists.ozlabs.org
-In-Reply-To: <20210404192623.10697-1-rdunlap@infradead.org>
-References: <20210404192623.10697-1-rdunlap@infradead.org>
-Subject: Re: [PATCH v2] powerpc: iommu: fix build when neither PCI or IBMVIO is set
-Message-Id: <161806493809.1467223.11225410842334545249.b4-ty@ellerman.id.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+In-Reply-To: <e43d133bf52fa19e577f64f3a3a38cedc570377d.1617616601.git.christophe.leroy@csgroup.eu>
+References: <e43d133bf52fa19e577f64f3a3a38cedc570377d.1617616601.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/32: Remove powerpc specific definition of 'ptrdiff_t'
+Message-Id: <161806493833.1467223.5146603896377356295.b4-ty@ellerman.id.au>
 Date:   Sun, 11 Apr 2021 00:28:58 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -34,18 +35,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 4 Apr 2021 12:26:23 -0700, Randy Dunlap wrote:
-> When neither CONFIG_PCI nor CONFIG_IBMVIO is set/enabled, iommu.c has a
-> build error. The fault injection code is not useful in that kernel config,
-> so make the FAIL_IOMMU option depend on PCI || IBMVIO.
+On Mon, 5 Apr 2021 09:57:27 +0000 (UTC), Christophe Leroy wrote:
+> For unknown reason, old commit d27dfd388715 ("Import pre2.0.8")
+> changed 'ptrdiff_t' from 'int' to 'long'.
 > 
-> Prevents this build error (warning escalated to error):
-> ../arch/powerpc/kernel/iommu.c:178:30: error: 'fail_iommu_bus_notifier' defined but not used [-Werror=unused-variable]
->   178 | static struct notifier_block fail_iommu_bus_notifier = {
+> GCC expects it as 'int' really, and this leads to the following
+> warning when building KFENCE:
+> 
+>   CC      mm/kfence/report.o
+> In file included from ./include/linux/printk.h:7,
+>                  from ./include/linux/kernel.h:16,
+>                  from mm/kfence/report.c:10:
+> mm/kfence/report.c: In function 'kfence_report_error':
+> ./include/linux/kern_levels.h:5:18: warning: format '%td' expects argument of type 'ptrdiff_t', but argument 6 has type 'long int' [-Wformat=]
+>     5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
+>       |                  ^~~~~~
+> ./include/linux/kern_levels.h:11:18: note: in expansion of macro 'KERN_SOH'
+>    11 | #define KERN_ERR KERN_SOH "3" /* error conditions */
+>       |                  ^~~~~~~~
+> ./include/linux/printk.h:343:9: note: in expansion of macro 'KERN_ERR'
+>   343 |  printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
+>       |         ^~~~~~~~
+> mm/kfence/report.c:213:3: note: in expansion of macro 'pr_err'
+>   213 |   pr_err("Out-of-bounds %s at 0x%p (%luB %s of kfence-#%td):\n",
+>       |   ^~~~~~
+> 
+> [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc: iommu: fix build when neither PCI or IBMVIO is set
-      https://git.kernel.org/powerpc/c/b27dadecdf9102838331b9a0b41ffc1cfe288154
+[1/1] powerpc/32: Remove powerpc specific definition of 'ptrdiff_t'
+      https://git.kernel.org/powerpc/c/c46bbf5d2defae50d61ddf31502017ee8952af83
 
 cheers
