@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 931ED35AE78
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7439F35AE7F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234776AbhDJOoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:44:10 -0400
-Received: from ozlabs.org ([203.11.71.1]:60057 "EHLO ozlabs.org"
+        id S234759AbhDJOtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:49:05 -0400
+Received: from mga17.intel.com ([192.55.52.151]:65199 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234587AbhDJOoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:44:08 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FHd6d1rKxz9sVt;
-        Sun, 11 Apr 2021 00:43:53 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1618065833;
-        bh=/eP42BTmaH5j9syWdkGNscqVoeuxbCGIhn38imuuwU0=;
-        h=From:To:Cc:Subject:Date:From;
-        b=VXbjvpuhngUwFF2lpH+mmsnIMAN84ZzUkAb68S7HsjPA26uGZ5a9rHGBoJkSJKdyG
-         l7F7DpI4TR573D9CqGfS/9e6TGojvcZu3y0mRWTVfLCt4XXwNQEwwlHT5CLelw5i0u
-         DMeImR80o1Hlu6/JOFfmowIsYVPe0e3ogXhAuVB5DW+GmFGFeCTG1cyuAMbm9g0Cn6
-         y+OcX3va5bHiv1d63kk1QNuBllY4KPNCgHdb7FSo7eTtIh1AYhcjx8qj9vK/lcH/U/
-         f52Pvy19EZFWWPHC37Pv4JjvNfWu+0+dTWbb/GTPdC7JGFUE3NkJ2Dv2pJ5s01sAuU
-         hInE0YENXrSOA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.12-6 tag
-Date:   Sun, 11 Apr 2021 00:43:49 +1000
-Message-ID: <871rbidwt6.fsf@mpe.ellerman.id.au>
+        id S234392AbhDJOsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 10:48:54 -0400
+IronPort-SDR: CBeyzvuF8RjPoDaVEhu1HAiXO7sw11Z/0FaRJ9L2VpISwq6sCOHq+GSQCY9SKzR3ZFT6RrJgg8
+ ez18fnmljSww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9950"; a="174023925"
+X-IronPort-AV: E=Sophos;i="5.82,212,1613462400"; 
+   d="scan'208";a="174023925"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 07:48:32 -0700
+IronPort-SDR: /K0zYiG79dyb0W27hbgX9JJzhV7Dme9RiX8eF9yEmMPh2qk40XaXvo+imdoPtdSDpTqTjqXG/+
+ lcyFGsAMNxhQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,212,1613462400"; 
+   d="scan'208";a="520621770"
+Received: from lkp-server01.sh.intel.com (HELO 69d8fcc516b7) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 10 Apr 2021 07:48:29 -0700
+Received: from kbuild by 69d8fcc516b7 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lVEuS-000ITS-S4; Sat, 10 Apr 2021 14:48:28 +0000
+Date:   Sat, 10 Apr 2021 22:47:56 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     satya priya <skakit@codeaurora.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     kbuild-all@lists.01.org, Lee Jones <lee.jones@linaro.org>,
+        linux-rtc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH V2 3/4] dt-bindings: mfd: Convert pm8xxx bindings to yaml
+Message-ID: <202104102224.0snQfjaj-lkp@intel.com>
+References: <1617976766-7852-4-git-send-email-skakit@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1617976766-7852-4-git-send-email-skakit@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+Hi satya,
 
-Hi Linus,
+Thank you for the patch! Perhaps something to improve:
 
-Please pull some more powerpc fixes for 5.12:
+[auto build test WARNING on abelloni/rtc-next]
+[also build test WARNING on lee-mfd/for-mfd-next robh/for-next v5.12-rc6 next-20210409]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-The following changes since commit 53f1d31708f6240e4615b0927df31f182e389e2f:
+url:    https://github.com/0day-ci/linux/commits/satya-priya/Add-RTC-support-for-PMIC-PMK8350/20210409-220149
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/abelloni/linux.git rtc-next
+compiler: arm-linux-gnueabi-gcc (GCC) 9.3.0
+reproduce: make ARCH=arm dtbs_check
 
-  powerpc/mm/book3s64: Use the correct storage key value when calling H_PROTECT (2021-03-26 22:19:39 +1100)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.12-6
-
-for you to fetch changes up to 791f9e36599d94af5a76d3f74d04e16326761aae:
-
-  powerpc/vdso: Make sure vdso_wrapper.o is rebuilt everytime vdso.so is rebuilt (2021-04-02 00:18:09 +1100)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.12 #6
-
-Fix an oops triggered by ptrace when CONFIG_PPC_FPU_REGS=n.
-
-Fix an oops on sigreturn when the VDSO is unmapped on 32-bit.
-
-Fix vdso_wrapper.o not being rebuilt everytime vdso.so is rebuilt.
-
-Thanks to Christophe Leroy.
-
-- ------------------------------------------------------------------
-Christophe Leroy (3):
-      powerpc/ptrace: Don't return error when getting/setting FP regs without CONFIG_PPC_FPU_REGS
-      powerpc/signal32: Fix Oops on sigreturn with unmapped VDSO
-      powerpc/vdso: Make sure vdso_wrapper.o is rebuilt everytime vdso.so is rebuilt
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
 
- arch/powerpc/kernel/Makefile              |  4 ++++
- arch/powerpc/kernel/ptrace/Makefile       |  4 ++--
- arch/powerpc/kernel/ptrace/ptrace-decl.h  | 14 --------------
- arch/powerpc/kernel/ptrace/ptrace-fpu.c   | 10 ++++++++++
- arch/powerpc/kernel/ptrace/ptrace-novsx.c |  8 ++++++++
- arch/powerpc/kernel/ptrace/ptrace-view.c  |  2 --
- arch/powerpc/kernel/signal_32.c           | 20 ++++++++------------
- 7 files changed, 32 insertions(+), 30 deletions(-)
------BEGIN PGP SIGNATURE-----
+dtcheck warnings: (new ones prefixed by >>)
+   arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml: power-controller@2099000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml: power-controller@20a9000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml: power-controller@20b9000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml: sps-sic-non-secure@12100000: compatible: 'anyOf' conditional failed, one must be fixed:
+   	['syscon'] is too short
+   	'syscon' is not one of ['allwinner,sun8i-a83t-system-controller', 'allwinner,sun8i-h3-system-controller', 'allwinner,sun8i-v3s-system-controller', 'allwinner,sun50i-a64-system-controller', 'hisilicon,dsa-subctrl', 'hisilicon,hi6220-sramctrl', 'hisilicon,pcie-sas-subctrl', 'hisilicon,peri-subctrl', 'microchip,sparx5-cpu-syscon', 'mstar,msc313-pmsleep', 'rockchip,px30-qos', 'rockchip,rk3066-qos', 'rockchip,rk3288-qos', 'rockchip,rk3399-qos', 'samsung,exynos3-sysreg', 'samsung,exynos4-sysreg', 'samsung,exynos5-sysreg', 'samsung,exynos5433-sysreg']
+   	From schema: Documentation/devicetree/bindings/mfd/syscon.yaml
+>> arch/arm/boot/dts/qcom-apq8064-cm-qs600.dt.yaml: pmic@1: 'mpps@50' does not match any of the regexes: 'pinctrl-[0-9]+', 'rtc@[0-9a-f]+$'
+   	From schema: Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+   Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.9/dist-packages/dtschema/schemas/rtc/qcom-pm8xxx-rtc.yaml'
+--
+   arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml: power-controller@2099000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml: power-controller@20a9000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml: power-controller@20b9000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml: sps-sic-non-secure@12100000: compatible: 'anyOf' conditional failed, one must be fixed:
+   	['syscon'] is too short
+   	'syscon' is not one of ['allwinner,sun8i-a83t-system-controller', 'allwinner,sun8i-h3-system-controller', 'allwinner,sun8i-v3s-system-controller', 'allwinner,sun50i-a64-system-controller', 'hisilicon,dsa-subctrl', 'hisilicon,hi6220-sramctrl', 'hisilicon,pcie-sas-subctrl', 'hisilicon,peri-subctrl', 'microchip,sparx5-cpu-syscon', 'mstar,msc313-pmsleep', 'rockchip,px30-qos', 'rockchip,rk3066-qos', 'rockchip,rk3288-qos', 'rockchip,rk3399-qos', 'samsung,exynos3-sysreg', 'samsung,exynos4-sysreg', 'samsung,exynos5-sysreg', 'samsung,exynos5433-sysreg']
+   	From schema: Documentation/devicetree/bindings/mfd/syscon.yaml
+>> arch/arm/boot/dts/qcom-apq8064-ifc6410.dt.yaml: pmic@1: 'mpps@50' does not match any of the regexes: 'pinctrl-[0-9]+', 'rtc@[0-9a-f]+$'
+   	From schema: Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+   Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.9/dist-packages/dtschema/schemas/rtc/qcom-pm8xxx-rtc.yaml'
+--
+   arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml: power-controller@2099000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml: power-controller@20a9000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml: power-controller@20b9000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml: sps-sic-non-secure@12100000: compatible: 'anyOf' conditional failed, one must be fixed:
+   	['syscon'] is too short
+   	'syscon' is not one of ['allwinner,sun8i-a83t-system-controller', 'allwinner,sun8i-h3-system-controller', 'allwinner,sun8i-v3s-system-controller', 'allwinner,sun50i-a64-system-controller', 'hisilicon,dsa-subctrl', 'hisilicon,hi6220-sramctrl', 'hisilicon,pcie-sas-subctrl', 'hisilicon,peri-subctrl', 'microchip,sparx5-cpu-syscon', 'mstar,msc313-pmsleep', 'rockchip,px30-qos', 'rockchip,rk3066-qos', 'rockchip,rk3288-qos', 'rockchip,rk3399-qos', 'samsung,exynos3-sysreg', 'samsung,exynos4-sysreg', 'samsung,exynos5-sysreg', 'samsung,exynos5433-sysreg']
+   	From schema: Documentation/devicetree/bindings/mfd/syscon.yaml
+>> arch/arm/boot/dts/qcom-apq8064-sony-xperia-yuga.dt.yaml: pmic@1: 'mpps@50' does not match any of the regexes: 'pinctrl-[0-9]+', 'rtc@[0-9a-f]+$'
+   	From schema: Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+   Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.9/dist-packages/dtschema/schemas/rtc/qcom-pm8xxx-rtc.yaml'
+--
+   arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml: power-controller@2099000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml: power-controller@20a9000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml: power-controller@20b9000: '#power-domain-cells' is a required property
+   	From schema: Documentation/devicetree/bindings/power/power-domain.yaml
+   arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml: sps-sic-non-secure@12100000: compatible: 'anyOf' conditional failed, one must be fixed:
+   	['syscon'] is too short
+   	'syscon' is not one of ['allwinner,sun8i-a83t-system-controller', 'allwinner,sun8i-h3-system-controller', 'allwinner,sun8i-v3s-system-controller', 'allwinner,sun50i-a64-system-controller', 'hisilicon,dsa-subctrl', 'hisilicon,hi6220-sramctrl', 'hisilicon,pcie-sas-subctrl', 'hisilicon,peri-subctrl', 'microchip,sparx5-cpu-syscon', 'mstar,msc313-pmsleep', 'rockchip,px30-qos', 'rockchip,rk3066-qos', 'rockchip,rk3288-qos', 'rockchip,rk3399-qos', 'samsung,exynos3-sysreg', 'samsung,exynos4-sysreg', 'samsung,exynos5-sysreg', 'samsung,exynos5433-sysreg']
+   	From schema: Documentation/devicetree/bindings/mfd/syscon.yaml
+>> arch/arm/boot/dts/qcom-apq8064-asus-nexus7-flo.dt.yaml: pmic@1: 'mpps@50' does not match any of the regexes: 'pinctrl-[0-9]+', 'rtc@[0-9a-f]+$'
+   	From schema: Documentation/devicetree/bindings/mfd/qcom-pm8xxx.yaml
+   Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.9/dist-packages/dtschema/schemas/rtc/qcom-pm8xxx-rtc.yaml'
 
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmBxuXYACgkQUevqPMjh
-pYBgHQ//eM5IN34NKvsdcVEZatYDqIwMNL0w805XmFXcNHeUJ3HP6wf+R84L6zzi
-9reylRchDSGOO7qGDbhutDeCvtEO3hgqG+t60sraHEMD8bmzxy3cnidYBpL+SXCV
-AmI2hpTzv/qhTLLD85Q6A7jtA0QCJA+Qluw2cgWB44XbKsNX4tofXBMxCZC8tvmb
-/SBb2ccZQ1Q0ZkkQSnxuf/MV1h4m8+sOryc7iIbAlfW3Ag5xEj6UwUzpS8VJ0h/e
-WR6QRERZN5jwP9jMWVMo7zXw1Rw/vbN97hayUj3dk1QofLmAEOQMG8uPF43SKnAu
-3hdabHASC7apYbiN6DQWSh3waXZP5a/pWhMjHKvYEsEOJCxYXTXuI124fbB+QkSj
-v8VzKzoDCt4rh7H7wsY8lmqDjwrklEtRrdg0qaZ9seMG6+hWv/0iu30x3NLHLSLD
-pR1rhWRlgVNegT++sQlBdgYory4qrAhi6s+0tXWSEX86XqSNaQd9U3KZ4sBwlnAQ
-dgaPOQl5T3uY8kVWaSMadMT6IXVetkIBOiUOBUqNzeBKsEPAYj9Hs7FK402cuUT4
-O/KwqIeEuDcO6lLCznU81uapqOaGVbsPs/qcETCqyfJmzo8Us/slFmzCd3bvSm+a
-eIUUUyrgSAi3LjczjnOwjOXj0RId43/hMLkfrT0EZ138wwjHm7s=
-=2wh+
------END PGP SIGNATURE-----
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
