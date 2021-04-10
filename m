@@ -2,89 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 341F035AC0B
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7EF935AC0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 10:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234345AbhDJI5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 04:57:18 -0400
-Received: from mga09.intel.com ([134.134.136.24]:62656 "EHLO mga09.intel.com"
+        id S234298AbhDJI61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 04:58:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhDJI5R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 04:57:17 -0400
-IronPort-SDR: kDlqONX5av6UGb9bkJlGDPYPQTq7f7eXowsLnx2+p6pBy7asJQmW+0D+E/Qpd1rTYfyegcm5zV
- 6rp3GgbOW9Fw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9949"; a="194017797"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="194017797"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 01:57:02 -0700
-IronPort-SDR: UNAyZXiPJr5/1H27ai/RqICtqNQlQe19jgPWiHQfvM3tSHgjNkdgKG02aLFmOw4lAVw0BgSRZF
- e+bzSof/vO/Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="520554761"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by fmsmga001.fm.intel.com with ESMTP; 10 Apr 2021 01:56:56 -0700
-Subject: Re: [PATCH v17 2/2] ufs: sysfs: Resume the proper scsi device
-To:     Asutosh Das <asutoshd@codeaurora.org>, cang@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <cover.1617893198.git.asutoshd@codeaurora.org>
- <3f005b59d9d83c8a5cc7cb77b0c5b27c807d7430.1617893198.git.asutoshd@codeaurora.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <6784a588-b9ff-ebc5-8b34-785f5d3b04c5@intel.com>
-Date:   Sat, 10 Apr 2021 11:57:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229591AbhDJI6Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 04:58:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3442B610CD;
+        Sat, 10 Apr 2021 08:58:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618045091;
+        bh=MDEEwk4xA/g1bJh/pmzvQ0+agfOwNiIO6s3rDzG0Qto=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bPIa4aGlWfNtEkXQxsAdoz/WId69zqC0oZitbP9+tg0T//tW4WtZ44t8D1nC8zgAu
+         vB6WBG3pe0ic4WWXy+PrY7jjEYABBQkxsq/prU8n6YCaPvDmwZGOg3FYu8+0TODNX4
+         rMG8JYTVG18bq2RdgKN4s7f72Zma97HSygSgXxec=
+Date:   Sat, 10 Apr 2021 10:58:09 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ye Bin <yebin10@huawei.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next] char: xilinx_hwicap: use DEFINE_MUTEX() for mutex
+ lock
+Message-ID: <YHFooZWlC+PV1kV0@kroah.com>
+References: <20210409095136.2293754-1-yebin10@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <3f005b59d9d83c8a5cc7cb77b0c5b27c807d7430.1617893198.git.asutoshd@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409095136.2293754-1-yebin10@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/04/21 5:49 pm, Asutosh Das wrote:
-> Resumes the actual scsi device the unit descriptor of which
-> is being accessed instead of the hba alone.
+On Fri, Apr 09, 2021 at 05:51:36PM +0800, Ye Bin wrote:
+> mutex lock can be initialized automatically with DEFINE_MUTEX()
+> rather than explicitly calling mutex_init().
 > 
-> Reviewed-by: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 > ---
->  drivers/scsi/ufs/ufs-sysfs.c | 30 +++++++++++++++++-------------
->  1 file changed, 17 insertions(+), 13 deletions(-)
+>  drivers/char/xilinx_hwicap/xilinx_hwicap.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-> index d7c3cff..fa57bac 100644
-> --- a/drivers/scsi/ufs/ufs-sysfs.c
-> +++ b/drivers/scsi/ufs/ufs-sysfs.c
+> diff --git a/drivers/char/xilinx_hwicap/xilinx_hwicap.c b/drivers/char/xilinx_hwicap/xilinx_hwicap.c
+> index 067396bedf22..4d586233dfa4 100644
+> --- a/drivers/char/xilinx_hwicap/xilinx_hwicap.c
+> +++ b/drivers/char/xilinx_hwicap/xilinx_hwicap.c
+> @@ -111,7 +111,7 @@
+>  /* An array, which is set to true when the device is registered. */
+>  static DEFINE_MUTEX(hwicap_mutex);
+>  static bool probed_devices[HWICAP_DEVICES];
+> -static struct mutex icap_sem;
+> +static DEFINE_MUTEX(icap_sem);
+>  
+>  static struct class *icap_class;
+>  
+> @@ -857,7 +857,6 @@ static int __init hwicap_module_init(void)
+>  	int retval;
+>  
+>  	icap_class = class_create(THIS_MODULE, "xilinx_config");
+> -	mutex_init(&icap_sem);
+>  
+>  	devt = MKDEV(XHWICAP_MAJOR, XHWICAP_MINOR);
+>  	retval = register_chrdev_region(devt,
+> 
 
-<SNIP>
+What actually does this help out with?  Why is it wrong to explicitly
+call mutex_init() instead of a magic macro?
 
-> @@ -899,11 +899,15 @@ static ssize_t _pname##_show(struct device *dev,			\
->  	struct scsi_device *sdev = to_scsi_device(dev);			\
->  	struct ufs_hba *hba = shost_priv(sdev->host);			\
->  	u8 lun = ufshcd_scsi_to_upiu_lun(sdev->lun);			\
-> +	int ret;							\
->  	if (!ufs_is_valid_unit_desc_lun(&hba->dev_info, lun,		\
->  				_duname##_DESC_PARAM##_puname))		\
->  		return -EINVAL;						\
-> -	return ufs_sysfs_read_desc_param(hba, QUERY_DESC_IDN_##_duname,	\
-> +	scsi_autopm_get_device(sdev);					\
-> +	ret = ufs_sysfs_read_desc_param(hba, QUERY_DESC_IDN_##_duname,	\
->  		lun, _duname##_DESC_PARAM##_puname, buf, _size);	\
-> +	scsi_autopm_put_device(sdev);					\
-> +	return ret;							\
+What good are these changes causing?
 
-I am not sure why this change is needed.  It it is needed, please add
-a comment explaining.
+thanks,
 
+greg k-h
