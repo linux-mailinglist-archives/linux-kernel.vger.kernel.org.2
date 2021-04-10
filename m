@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632DA35ADEB
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7506A35ADED
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234822AbhDJOC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:02:57 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:56078
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234548AbhDJOCx (ORCPT
+        id S234837AbhDJODN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:03:13 -0400
+Received: from fgw23-7.mail.saunalahti.fi ([62.142.5.84]:53779 "EHLO
+        fgw23-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234548AbhDJODM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:02:53 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AGQapg6yZeNxmG+w+aj6AKrPwzb1zdoIgy1kn?=
- =?us-ascii?q?xilNYDZSddGVkN3roeQD2XbP+VIscVwphNzoAsK9aFzG85od2+MsFJekGDLroW?=
- =?us-ascii?q?65aLxlhLGC/xTFOwnTstFQzr1hda8WMqyUMXFfgdzh6Ae1V/YMqePmzImSie3T?=
- =?us-ascii?q?z2hgQGhRAsldxjx0BQqBHkp9SBMuP+tbKLOn+sFFqzC8EE54Uu2HABA+M9Trm8?=
- =?us-ascii?q?fGj9bPbxIAGnccmWuzpALt2frBHx+U0gx2aV5y6L0pmFKrrzDE?=
-X-IronPort-AV: E=Sophos;i="5.82,212,1613430000"; 
-   d="scan'208";a="378288277"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 16:02:38 +0200
-Date:   Sat, 10 Apr 2021 16:02:37 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Subject: Re: [Outreachy kernel] [PATCH v3] staging: rtl8192e: fixed pointer
- error by adding '*'
-In-Reply-To: <YHGvJxMhQ8nzHf6I@kali>
-Message-ID: <alpine.DEB.2.22.394.2104101602080.2975@hadrien>
-References: <YHGvJxMhQ8nzHf6I@kali>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sat, 10 Apr 2021 10:03:12 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw23.mail.saunalahti.fi (Halon) with ESMTP
+        id 73771275-9a05-11eb-8ccd-005056bdfda7;
+        Sat, 10 Apr 2021 17:02:56 +0300 (EEST)
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v1 1/1] ACPI: scan: Utilize match_string() API
+Date:   Sat, 10 Apr 2021 17:02:53 +0300
+Message-Id: <20210410140253.1966892-1-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+We have already an API to match a string in the array of strings.
+Utilize it instead of open coded analogues.
 
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+ drivers/acpi/scan.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-On Sat, 10 Apr 2021, Mitali Borkar wrote:
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index b1d1f1a8ce69..bba6b529cf6c 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -756,27 +756,25 @@ static bool acpi_info_matches_ids(struct acpi_device_info *info,
+ 				  const char * const ids[])
+ {
+ 	struct acpi_pnp_device_id_list *cid_list = NULL;
+-	int i;
++	int i, index;
+ 
+ 	if (!(info->valid & ACPI_VALID_HID))
+ 		return false;
+ 
++	index = match_string(ids, -1, info->hardware_id.string);
++	if (index >= 0)
++		return true;
++
+ 	if (info->valid & ACPI_VALID_CID)
+ 		cid_list = &info->compatible_id_list;
+ 
+-	for (i = 0; ids[i]; i++) {
+-		int j;
++	if (!cid_list)
++		return false;
+ 
+-		if (!strcmp(info->hardware_id.string, ids[i]))
++	for (i = 0; i < cid_list->count; i++) {
++		index = match_string(ids, -1, cid_list->ids[i].string);
++		if (index >= 0)
+ 			return true;
+-
+-		if (!cid_list)
+-			continue;
+-
+-		for (j = 0; j < cid_list->count; j++) {
+-			if (!strcmp(cid_list->ids[j].string, ids[i]))
+-				return true;
+-		}
+ 	}
+ 
+ 	return false;
+-- 
+2.31.1
 
-> Fixed pointer error by adding '*' to the function.
-> Reported by Julia.
-
-Actually, there is a proper tag for reported by, like Signed-off-by.  Look
-through the git history to see what to do.
-
-julia
-
->
-> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> ---
-> Changes from v2:- modified patch body but writing commit message
-> clearly.
-> Changes from v1:- added pointer to the function.
->
->  drivers/staging/rtl8192e/rtl819x_TSProc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/staging/rtl8192e/rtl819x_TSProc.c b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-> index 4457c1acfbf6..78b5b4eaec5f 100644
-> --- a/drivers/staging/rtl8192e/rtl819x_TSProc.c
-> +++ b/drivers/staging/rtl8192e/rtl819x_TSProc.c
-> @@ -327,7 +327,7 @@ bool GetTs(struct rtllib_device *ieee, struct ts_common_info **ppTS,
->  	}
->
->  	*ppTS = SearchAdmitTRStream(ieee, Addr, UP, TxRxSelect);
-> -	if (ppTS)
-> +	if (*ppTS)
->  		return true;
->
->  	if (!bAddNewTs) {
-> --
-> 2.30.2
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/YHGvJxMhQ8nzHf6I%40kali.
->
