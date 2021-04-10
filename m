@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3434D35AE39
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47B9C35AE3A
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:24:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbhDJOYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
+        id S234960AbhDJOYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 10:24:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235058AbhDJOVu (ORCPT
+        with ESMTP id S234932AbhDJOVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:21:50 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1AFBC06134D
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:19 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id g17so9042358edm.6
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:19 -0700 (PDT)
+        Sat, 10 Apr 2021 10:21:52 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1FCC06134F
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:21 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id n2so13020762ejy.7
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:21:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KH662KAlap1QpCcmNJTm3ptVnk0anldAtalYzgkYKck=;
-        b=t4YRtEi5AXIII2TAC+6ufPO0Rj/DHpue0eANEtN7GtpWiJ768LGX4nj3fX/Zbcj94/
-         0tWdN2fsHTx/FGNnSIptqSWnO36lbVSGK+pghJteKtLMFA8ihG1DZ81UV5Z5cKq9vEKB
-         m4Pm6qb4ca9zPh+JdLoYKrgG8+VdRFGJYT0wcb7R6SxW830daVg3ii4FeyIl1P1AkSzp
-         LnzXk9ifCcrfJxFOv5kRGDoSqCH84u18FI6n3k2dtwH/AeDEB9hvjji0ipF+CWRCrZnK
-         9V9L5DkK1tqBh+6hqhZefD5J7khSBLtzu3h0lLhCBq6cd+l/AIoWM3cq2i2fKDoDCGCP
-         oIxA==
+        bh=sXbSlvie1MvfgOkP1AW3USt/q0/wLLk8BtI55t52f4g=;
+        b=lFn8+kNftQ3UlKaoR50PF+v+EmY6zuhi90mKZnwAJPlgUu1bmC5wA1SrYgltETR74k
+         GYpk6Fk14aCZ5hiYeTXPdSX36s0v4g2B6jca+PBG240MNlKxGfwIBJPQ0JJSitfxYV6N
+         AL+kDzznoPXdDUgplwX33WkeIxTe4FVqEW66quO1DK7RS9OWJT3F67PAe3YvvJxinJDB
+         DuJHfxkRNrphkUV0mZoNrrlhmupXtLZOILsW5Exws9ks3/jgXyw8U9C1c7yIAL+221BV
+         aAY5dS6xd6kLRecsUVLRise05+m5E1QQ4hhf4WwxXggFU0fo1amsChUgBjIQaRYj0TXY
+         Q23g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KH662KAlap1QpCcmNJTm3ptVnk0anldAtalYzgkYKck=;
-        b=QzHD5TTpP4N2mZAz9J+2ccStXN+DE49SukG0IoH+GbajfTHaGKNEiP+jkVa594LlBC
-         ZoXKC/Y5P50B+grUbeCXj91QSEQ6yQMHwCGs/RwnKRYVvXikgIjX85h+WwPyF5TbJfuK
-         3bA/dFVwhwPHGh96vSHka5kgQD7nXP48xBdT9qfVJRAeyGiirjS04p10vbbZSEZyb1Wk
-         tL2MGo1AeaBngz57T91Vl0MoHzmq9PhSWyoka0LOjDp+UAlavSVich0j0Dlh8nlW2cf0
-         gak/K15N9a7EnGJeS4ZUJK2o5K5j4Su7/ESjya80ad/0YB1N9SqxMdsv3AcfSG0RD9eM
-         9h3Q==
-X-Gm-Message-State: AOAM532I+Q3e2c4O/2T5Klg0U84PJaqltDQVRuCyiZgqVlfLnprrVcpe
-        HYf8hPO8JZSfwkMPX0wz08czlb2Drs4zUw==
-X-Google-Smtp-Source: ABdhPJwuOEYys8mFTM6rRQZqKi30EbCt45//9AikiRQIQbh142r6kBKIshF/BWu1FY4D2UkfTIBnZw==
-X-Received: by 2002:a05:6402:1350:: with SMTP id y16mr21772951edw.309.1618064478362;
-        Sat, 10 Apr 2021 07:21:18 -0700 (PDT)
+        bh=sXbSlvie1MvfgOkP1AW3USt/q0/wLLk8BtI55t52f4g=;
+        b=A+yBiAarYqL58Dmsxrg8AwhWxHbx617uBXJBx1rOcXRO7UU6i/ZUZv9GJJGszY9fCC
+         kv5MwEpf4DKYF99SBWiEpnUYL4UeU12KNS8ack6IEs2AYxjeeysVItFQBo2jpxc+knzQ
+         iZ9XGCP7aFfkeUHNmIEckgJ7SHz90jbpGtfipCa81Z/Db9H/ZxjFHBTxsDEmvfF5YH+7
+         HgHHJ7RpdMeQdpL0r8isNFdPLRZFTi4u3iaI6ohOuE2HONIbS5Rq3R+o+dnjmaJgz8Tg
+         bNpJjpkxj5TlQyJe9F2qZs7Fq7kfHZ5g+q4FQQZPVmdelH970zkRZb7wQlfWm8b3rrUd
+         S7SA==
+X-Gm-Message-State: AOAM5332JH9IigLP6bpCDaEpEHBDtL1Yg2zImbGPm5g1rOs2D/YDdd5t
+        9FZDxEg3kmqrSocNBEjiLA/4Cb6XLrJh6Q==
+X-Google-Smtp-Source: ABdhPJz6WxUQDtmCTs3zDrUsGLWLIxtiatlj6B3m7Ap9aBqZftCOSmL4l5mVj+aYuKHy3ikM9s7d8w==
+X-Received: by 2002:a17:906:8392:: with SMTP id p18mr17025811ejx.132.1618064479796;
+        Sat, 10 Apr 2021 07:21:19 -0700 (PDT)
 Received: from agape ([5.171.81.28])
-        by smtp.gmail.com with ESMTPSA id x17sm2698593ejd.68.2021.04.10.07.21.17
+        by smtp.gmail.com with ESMTPSA id p7sm2056848eja.103.2021.04.10.07.21.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 07:21:18 -0700 (PDT)
+        Sat, 10 Apr 2021 07:21:19 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 24/25] staging: rtl8723bs: remove more unnecessary parentheses
-Date:   Sat, 10 Apr 2021 16:20:37 +0200
-Message-Id: <c730d2719cb2ed385dd55811d6e205c6c31f2355.1618064275.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 25/25] staging: rtl8723bs: remove more empty if blocks after DBG_8192C deletion
+Date:   Sat, 10 Apr 2021 16:20:38 +0200
+Message-Id: <99b111d2bac822b9dc7ff6e1cfd3d3efc62ef836.1618064275.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1618064274.git.fabioaiuto83@gmail.com>
 References: <cover.1618064274.git.fabioaiuto83@gmail.com>
@@ -63,99 +63,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove more unnecessary parentheses after
-DBG_8192C deletion.
+remove more empty if-blocks after DBG_8192C deletion.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- .../staging/rtl8723bs/hal/rtl8723b_hal_init.c | 21 ++++++++-----------
- .../staging/rtl8723bs/hal/rtl8723bs_recv.c    |  4 ++--
- 2 files changed, 11 insertions(+), 14 deletions(-)
+ drivers/staging/rtl8723bs/hal/sdio_halinit.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-index 6bf0cbb17b99..8d6ea8850556 100644
---- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-+++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-@@ -754,9 +754,8 @@ static void hal_ReadEFuse_WiFi(
+diff --git a/drivers/staging/rtl8723bs/hal/sdio_halinit.c b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
+index 049112a08776..2098384efe92 100644
+--- a/drivers/staging/rtl8723bs/hal/sdio_halinit.c
++++ b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
+@@ -882,8 +882,6 @@ static void CardDisableRTL8723BSdio(struct adapter *padapter)
  
- 	while (AVAILABLE_EFUSE_ADDR(eFuse_Addr)) {
- 		efuse_OneByteRead(padapter, eFuse_Addr++, &efuseHeader, bPseudoTest);
--		if (efuseHeader == 0xFF) {
-+		if (efuseHeader == 0xFF)
- 			break;
--		}
- 
- 		/*  Check PG header for section num. */
- 		if (EXT_HEADER(efuseHeader)) { /* extended header */
-@@ -1319,9 +1318,9 @@ static u8 hal_EfusePgCheckAvailableAddr(
- 	EFUSE_GetEfuseDefinition(padapter, efuseType, TYPE_AVAILABLE_EFUSE_BYTES_TOTAL, &max_available, bPseudoTest);
- 
- 	current_size = Efuse_GetCurrentSize(padapter, efuseType, bPseudoTest);
--	if (current_size >= max_available) {
-+	if (current_size >= max_available)
- 		return false;
+ 	/*  Run LPS WL RFOFF flow */
+ 	ret = HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_enter_lps_flow);
+-	if (ret == _FAIL) {
 -	}
-+
- 	return true;
+ 
+ 	/* 	==== Reset digital sequence   ====== */
+ 
+@@ -914,8 +912,6 @@ static void CardDisableRTL8723BSdio(struct adapter *padapter)
+ 	ret = false;
+ 	rtw_hal_set_hwreg(padapter, HW_VAR_APFM_ON_MAC, &bMacPwrCtrlOn);
+ 	ret = HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_card_disable_flow);
+-	if (!ret) {
+-	}
  }
  
-@@ -1469,14 +1468,13 @@ static u8 hal_EfusePgPacketWrite1ByteHeader(
- 		efuse_OneByteRead(padapter, efuse_addr, &tmp_header, bPseudoTest);
- 		if (tmp_header != 0xFF)
- 			break;
--		if (repeatcnt++ > EFUSE_REPEAT_THRESHOLD_) {
-+		if (repeatcnt++ > EFUSE_REPEAT_THRESHOLD_)
- 			return false;
--		}
-+
- 	} while (1);
- 
--	if (tmp_header != pg_header) {
-+	if (tmp_header != pg_header)
- 		return false;
--	}
- 
- 	*pAddr = efuse_addr;
- 
-@@ -1498,9 +1496,8 @@ static u8 hal_EfusePgPacketWrite2ByteHeader(
- 	EFUSE_GetEfuseDefinition(padapter, efuseType, TYPE_AVAILABLE_EFUSE_BYTES_BANK, &efuse_max_available_len, bPseudoTest);
- 
- 	efuse_addr = *pAddr;
--	if (efuse_addr >= efuse_max_available_len) {
-+	if (efuse_addr >= efuse_max_available_len)
- 		return false;
--	}
- 
- 	pg_header = ((pTargetPkt->offset & 0x07) << 5) | 0x0F;
- 
-@@ -3734,9 +3731,9 @@ void SetHwReg8723B(struct adapter *padapter, u8 variable, u8 *val)
- 	case HW_VAR_MACID_SLEEP:
- 		/*  Input is MACID */
- 		val32 = *(u32 *)val;
--		if (val32 > 31) {
-+		if (val32 > 31)
- 			break;
--		}
-+
- 		val8 = (u8)val32; /*  macid is between 0~31 */
- 
- 		val32 = rtw_read32(padapter, REG_MACID_SLEEP);
-diff --git a/drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c b/drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c
-index a69cc24c81c7..7c2680b6508c 100644
---- a/drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c
-+++ b/drivers/staging/rtl8723bs/hal/rtl8723bs_recv.c
-@@ -123,9 +123,9 @@ static void update_recvframe_phyinfo(union recv_frame *precvframe,
- 
- 	pstapriv = &padapter->stapriv;
- 	psta = rtw_get_stainfo(pstapriv, sa);
--	if (psta) {
-+	if (psta)
- 		pkt_info.station_id = psta->mac_id;
--	}
-+
- 	pkt_info.data_rate = pattrib->data_rate;
- 
- 	/* rtl8723b_query_rx_phy_status(precvframe, pphy_status); */
+ static u32 rtl8723bs_hal_deinit(struct adapter *padapter)
 -- 
 2.20.1
 
