@@ -2,205 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7FA35AA04
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 03:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2DA35AA06
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 03:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbhDJBwD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 9 Apr 2021 21:52:03 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59192 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229665AbhDJBwC (ORCPT
+        id S233912AbhDJBxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 9 Apr 2021 21:53:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhDJBxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 9 Apr 2021 21:52:02 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13A1nqDP008497;
-        Fri, 9 Apr 2021 18:51:29 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=VohXgyTubbH1Px/q87HiemKrrAlwObQnOXkba6IiUtU=;
- b=CLxfce8vVIZ2kXgOQl+pOXWVfntDxU7r7Yw74ommWKk+CArXVlisK7TLyROWsWuKZa0k
- v1yt8Lt7XnMbAk4NqHNZmsSjx+LWmimUiZrsmaswDzPbaY8RlFuHPCxwO9pCnhd+2oa7
- Z/raLGLDoYB27bwQrHUnZ5HDxHtjNvhFvdc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 37tcgbfc9k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 09 Apr 2021 18:51:29 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 9 Apr 2021 18:51:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=h6XOhXvsUsjoU/JtmfvkP/XjpVg20j4g96fVydD8VWUNHO+S8RY29YU4OCV/cA6GV8ImaQ5xdjoamj4/HZ1yiMF3AdG86xzj+NfYT1uc9cd8REu3RC/mtGWqSfKb1B8P4WaPTX75xvDPtr1nT7d76739xHOJQTOk4p000pDAbgC7ZJpRRLhyLeogk9SYUh+d9ja3r+qaaBipH88xszQMD2Af6jOPJrELLdH9tBq2hCF0AFhd21BUAGD/HG8LyyqgZ2NzQnKVyFytyy7jdtQmSM4Xt6OlIfh/20B2xNRrrIZX5vOv6FvCu2uS2i8P1sMXlSotmZIktL9V3X7sdhoipA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VohXgyTubbH1Px/q87HiemKrrAlwObQnOXkba6IiUtU=;
- b=d7gnrexdqYKdjl35C8zBXwHFTKiu2rUXgq+mn287oDgAEMky9GiJiUVns5XbtGC+PKv6AxT68cElA2mPhqjg2Mv4V1ZAQhu74Htwrjvmdotix+FsOGOc21MtH9qi0KsYL9aV+BsOPHS7Ejcw1acd11+QfMmPL1Yy6B/sDUCCBoHWzP6SLKNMLQO9OA5ejvyHfvz9MXs76meER15uafu5HVLkjPs27IBuc96NnOhxBMVuENDkhrtlWaSfLW7r2ToHpn3j0m7k1A7haMjQNb2Kg2lx9Ni34mJEagXNYIj5hI//KekZlmd+S9HR1BPQVqmzak9Ix+ykmI4SfUPoad6g9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BY5PR15MB4306.namprd15.prod.outlook.com (2603:10b6:a03:1b6::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3999.32; Sat, 10 Apr
- 2021 01:51:26 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::2c3d:df54:e11c:ee99]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::2c3d:df54:e11c:ee99%6]) with mapi id 15.20.4020.021; Sat, 10 Apr 2021
- 01:51:26 +0000
-Date:   Fri, 9 Apr 2021 18:51:20 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Waiman Long <longman@redhat.com>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>, Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>
-Subject: Re: [PATCH 0/5] mm/memcg: Reduce kmemcache memory accounting overhead
-Message-ID: <YHEEmGSVy3nl0obM@carbon.dhcp.thefacebook.com>
-References: <20210409231842.8840-1-longman@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210409231842.8840-1-longman@redhat.com>
-X-Originating-IP: [2620:10d:c090:400::5:29d8]
-X-ClientProxiedBy: MW4PR04CA0253.namprd04.prod.outlook.com
- (2603:10b6:303:88::18) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:29d8) by MW4PR04CA0253.namprd04.prod.outlook.com (2603:10b6:303:88::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Sat, 10 Apr 2021 01:51:24 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d9e5e453-9cfc-4e0d-5d24-08d8fbc326d7
-X-MS-TrafficTypeDiagnostic: BY5PR15MB4306:
-X-Microsoft-Antispam-PRVS: <BY5PR15MB430656B6AC0A837A2BCE61B8BE729@BY5PR15MB4306.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dzOuRJGuWIx2xHce3POleges4zYJ0ddcHlsH+r02ahjSyxCLX6Xdq2t3AEs1B4wbMF6uXEsGTm5UhS5ImLY5GV6jY9pp2AgFaSXHTEZ4zQ+LEEQWU/BY5Um3Hvrkomv686Ew1uqaVeP1Y7L+25o+fAq7+lmTQh87S3YsSY1o3qU5in2j9Ievbs30C9CK7OPlSkwro2c+EcdO64F95xz69KH1gpChSHoOtTOsyObR+gv/CduXqOVbRvysBIWd42VrnUnhx+V9EnCNUd/C99YLvCE+FHRYXzUIwDJI6jcjoE772Ns/u4/8jHvX4yYwUhP10FbXfsQ4b+feD/fUboGov4kxxdFXCC5M1gtxvvyrOs8GWv1o47wdgLoF8o7yWx3606d+OmaaE3biez8FUv+X3C3VNbGAxolRoZskWUaHmJ+2nUDV80ttRzm9dl/4FiiYElLZ1mm1CrukQt2DNpEqaSlbjqlQG0g2KZcfQE4J3mgh5G01w1ojoSCA/2Z9gPfHSuKNaZshO1e7oDRGC12RmCgX0hifKzEqfv+zuO299gEe6UHHsJ/YueL+byyexvHi3drbufOnkKLL/D5N5AN1SlTuaDIOObOxABd7GbjXENmPdxvvuJW/E1pa9ChF4KENJL9Rq3CNL9JF5BPMcLhed3E6KomDBoLYwDNy3oMaemr+OpQ7nW3mFKZYtGA269CO
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(346002)(136003)(396003)(366004)(478600001)(66946007)(16526019)(9686003)(966005)(86362001)(8676002)(8936002)(186003)(38100700002)(316002)(7696005)(4326008)(5660300002)(52116002)(55016002)(2906002)(15650500001)(66556008)(6916009)(7416002)(6506007)(66476007)(83380400001)(54906003)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?T6aAvmBusZVq9w5QxeEijzcvEDvKBYCSVx5zZPkxVXQDbwuPH5aOp8SCas6d?=
- =?us-ascii?Q?OHyPChGuwU7vwFLlG3hbuLogtFebeTgnq2j8WwHV0ZnCXubZUSFZl1wkydW1?=
- =?us-ascii?Q?rzH4aPAlwRwn/EvI9I/pzZjmVoB7JIoo3Z3nbCvq5EeF7McV91U4r8HntZxO?=
- =?us-ascii?Q?nSl2jZb0CzFE1sa/XyoLef/PLqVII29Q5v/VuLs/HDyVQHsPvHV892ygzhEh?=
- =?us-ascii?Q?VhbSEY/a8Tz5j9Oq6+jSZMfbqDNjX+WInikISCS3Oetddy9YamPChjVsrLHK?=
- =?us-ascii?Q?55EM8zrXZKbMQ/1vvbdIvcXm5t2BTGaNzXxOUjvmPZgREE3rhUu8l0D8GJzS?=
- =?us-ascii?Q?k1/gNBJekd9PQKMFVNtuQHj8FEJgq/onWPpewHNGeR2zBt4pbjnrulbqg3uf?=
- =?us-ascii?Q?RuWEZGkk4iReTcQITV5EMQreqVH7AdsgbFyzcbMOt/UcJbJlBhJkeCo48Q4x?=
- =?us-ascii?Q?L5Zn/jKj0IwtGdedo66VvInrxGAiQ095AuQql/3182XSmzW3W6gjuLsDGTpP?=
- =?us-ascii?Q?w9TuxhBxZ9zXRpj4OwHpe6iluAxTjYOosZ6omCzpG6d+U30wstAr5Qv7yaqu?=
- =?us-ascii?Q?KtoyhqXJZ+eXePMOeiXm7Xm4S6nTo2wKdLQt2i4vgELR+j1HmyMgabK20yO+?=
- =?us-ascii?Q?slDC2RP7CkGAxbT74QevvFMQ/ec2on4xZPyPsxTZaVwWPj5T+kDpEFd2ysMf?=
- =?us-ascii?Q?AvyZp29bHbgLs37ahk+LWCa4v71JksGQw6H/qbAGVQijtoEjYuRWFXq6vjX1?=
- =?us-ascii?Q?jOdMx44JCwg3fu4I34bvzESmGtdOo1iIuVXbl6IE90at1jjNQHbIPjmL3MYW?=
- =?us-ascii?Q?Bn4NBmK0Ydbm8nOOGbk2qVScnXh7QjRZVZ8/dyPdlXxydH1r/eZVdec3ogWP?=
- =?us-ascii?Q?otgj5+g9nHUjrRI+p/RnW2c3WdZ62/+3OG+45ZtKII1g6RVfxfmimVhdIp3I?=
- =?us-ascii?Q?zPvvgv1hB5L28hK5w5NgdWt8DKv5zrKHRUM28vFbECY4PgxXesKxlZ6twH/N?=
- =?us-ascii?Q?UVtNNv0XYkBJZILUfHNeo3zWQmmwF0scb+PxBOJ5Zb9vvTXcG6QadDnycvNB?=
- =?us-ascii?Q?Q7aqH7MSR58WpwQRi7k4qkwp3lK8NKVCkiyLjYBgINmz5IptBE2cfCDSqr4h?=
- =?us-ascii?Q?DiJzUdOiz87WE9MujeXCuQpISw4ekaQTvcNdmLZ0n8q13cByBu1a/mUC4raV?=
- =?us-ascii?Q?TyUM66EX2XrnjqzQWJGPu5BQ62tndh9kB0e6SDbmaOYPU4AVeb/TMgNGmbSf?=
- =?us-ascii?Q?R1BNxx3LIOBBCBGzgyF8I0froopgd8+R0XUPXgCd0mFGoVsXfnR9EWvg2Cym?=
- =?us-ascii?Q?TB6LulP7iptgiX+4pZ1O07f08+sOlWAVZbD0LzEJRxXXlg=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d9e5e453-9cfc-4e0d-5d24-08d8fbc326d7
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Apr 2021 01:51:26.4296
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +Y9t6pxv5MJuUsnUHxJa7iX8s0W6GOYYqcZTkvDtzjgTpd9rJkcxPSKdyiL2ddNt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB4306
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: LlgN-gfBGqaJ2CndYtavZgS_gONvq0Pc
-X-Proofpoint-ORIG-GUID: LlgN-gfBGqaJ2CndYtavZgS_gONvq0Pc
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 9 Apr 2021 21:53:16 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 771D1C061762
+        for <linux-kernel@vger.kernel.org>; Fri,  9 Apr 2021 18:53:02 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id g10so3584853plt.8
+        for <linux-kernel@vger.kernel.org>; Fri, 09 Apr 2021 18:53:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t4Awd4fPiAvwlf+bgIlyiVgf7fK7etlbIGsXRLOf2aI=;
+        b=Zknjhapm2MANoTRkGdvfQ4hfOmL2mh6zxWRjllrBKJaVUrz6IA/QOIbFbK05dkMm0B
+         RtXCoT7iKJqAs+vQCywoDV43/vOVTnR+pYDJT6/0Ksjedh7Ib3hVrq80L3k42gn604Xy
+         GMkPkeIqbyjQxfV7fTjpghumI8fOIA9L1djOw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=t4Awd4fPiAvwlf+bgIlyiVgf7fK7etlbIGsXRLOf2aI=;
+        b=Jar8UwKXOrGjJo8sW0GmPYlYpI9CGiqsuaywF9pv+e6cjkuLUf8ooafEdJfs4l/eZz
+         4dX8KezGuPPvZyfL/mNZg8Mn2sHYASObi7tuEtpwDfteQOOKfcYHKFHyCeE6hr/umzqM
+         3RHdiWn5lnCtexdZYzlgpgPA6+T5wmWYni81Fd0jzNpqzv3k7S1aYwq3mQyLbh+XI/o9
+         4mNYMZArnqlV34c4Po2+v8uGPnvy5C+yQgaO16dqHax3hdV1hyTx7ptO9c68+qUAWfx2
+         n9KKBnpCTJAcvJmCnq2pe/+DQY/M6VQJkz666yXTYGh4yrtw5JGcQh5qe5Oym78Vd8Wb
+         yJSw==
+X-Gm-Message-State: AOAM530jSdonWlP4ySJOoj1GF/Ucc29SkzT1Cpl9YvwFfQlc87cVdXZA
+        ddA0KSbVr5lkTW72hTMR4FyB8g==
+X-Google-Smtp-Source: ABdhPJyxxRhYhxILCrqDU65FmpoE8+r0ZxrtXiPTUfFIl9YEocC6YSWOZEbo43ry1B/rcgf1FTADiw==
+X-Received: by 2002:a17:90b:142:: with SMTP id em2mr16681847pjb.59.1618019582022;
+        Fri, 09 Apr 2021 18:53:02 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:5141:7881:7013:743b])
+        by smtp.gmail.com with ESMTPSA id n23sm3837962pgl.49.2021.04.09.18.53.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Apr 2021 18:53:01 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Young <dyoung@redhat.com>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Ingo Molnar <mingo@redhat.com>, Jessica Yu <jeyu@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>, kexec@lists.infradead.org,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sasha Levin <sashal@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vivek Goyal <vgoyal@redhat.com>, Will Deacon <will@kernel.org>,
+        x86@kernel.org, Christoph Hellwig <hch@infradead.org>,
+        peter enderborg <peter.enderborg@sony.com>
+Subject: [PATCH v4 00/13] Add build ID to stacktraces
+Date:   Fri,  9 Apr 2021 18:52:47 -0700
+Message-Id: <20210410015300.3764485-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-09_08:2021-04-09,2021-04-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- phishscore=0 bulkscore=0 mlxlogscore=807 mlxscore=0 adultscore=0
- suspectscore=0 clxscore=1011 malwarescore=0 priorityscore=1501 spamscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104100010
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 07:18:37PM -0400, Waiman Long wrote:
-> With the recent introduction of the new slab memory controller, we
-> eliminate the need for having separate kmemcaches for each memory
-> cgroup and reduce overall kernel memory usage. However, we also add
-> additional memory accounting overhead to each call of kmem_cache_alloc()
-> and kmem_cache_free().
-> 
-> For workloads that require a lot of kmemcache allocations and
-> de-allocations, they may experience performance regression as illustrated
-> in [1].
-> 
-> With a simple kernel module that performs repeated loop of 100,000,000
-> kmem_cache_alloc() and kmem_cache_free() of 64-byte object at module
-> init. The execution time to load the kernel module with and without
-> memory accounting were:
-> 
->   with accounting = 6.798s
->   w/o  accounting = 1.758s
-> 
-> That is an increase of 5.04s (287%). With this patchset applied, the
-> execution time became 4.254s. So the memory accounting overhead is now
-> 2.496s which is a 50% reduction.
+This series adds the kernel's build ID[1] to the stacktrace header printed
+in oops messages, warnings, etc. and the build ID for any module that
+appears in the stacktrace after the module name. The goal is to make the
+stacktrace more self-contained and descriptive by including the relevant
+build IDs in the kernel logs when something goes wrong. This can be used
+by post processing tools like script/decode_stacktrace.sh and kernel
+developers to easily locate the debug info associated with a kernel
+crash and line up what line and file things started falling apart at.
 
-Hi Waiman!
+To show how this can be used I've included a patch to
+decode_stacktrace.sh that downloads the debuginfo from a debuginfod
+server.
 
-Thank you for working on it, it's indeed very useful!
-A couple of questions:
-1) did your config included lockdep or not?
-2) do you have a (rough) estimation how much each change contributes
-   to the overall reduction?
+This also includes some patches to make the buildid.c file use more
+const arguments and consolidate logic into buildid.c from kdump. These
+are left to the end as they were mostly cleanup patches. I don't know
+who exactly maintains this so I guess Andrew is the best option to merge
+all this code.
 
-Thanks!
+Here's an example lkdtm stacktrace on arm64.
 
-> 
-> It was found that a major part of the memory accounting overhead
-> is caused by the local_irq_save()/local_irq_restore() sequences in
-> updating local stock charge bytes and vmstat array, at least in x86
-> systems. There are two such sequences in kmem_cache_alloc() and two
-> in kmem_cache_free(). This patchset tries to reduce the use of such
-> sequences as much as possible. In fact, it eliminates them in the common
-> case. Another part of this patchset to cache the vmstat data update in
-> the local stock as well which also helps.
-> 
-> [1] https://lore.kernel.org/linux-mm/20210408193948.vfktg3azh2wrt56t@gabell/T/#u
-> 
-> Waiman Long (5):
->   mm/memcg: Pass both memcg and lruvec to mod_memcg_lruvec_state()
->   mm/memcg: Introduce obj_cgroup_uncharge_mod_state()
->   mm/memcg: Cache vmstat data in percpu memcg_stock_pcp
->   mm/memcg: Separate out object stock data into its own struct
->   mm/memcg: Optimize user context object stock access
-> 
->  include/linux/memcontrol.h |  14 ++-
->  mm/memcontrol.c            | 198 ++++++++++++++++++++++++++++++++-----
->  mm/percpu.c                |   9 +-
->  mm/slab.h                  |  32 +++---
->  4 files changed, 195 insertions(+), 58 deletions(-)
-> 
-> -- 
-> 2.18.1
-> 
+ WARNING: CPU: 4 PID: 3255 at drivers/misc/lkdtm/bugs.c:83 lkdtm_WARNING+0x28/0x30 [lkdtm]
+ Modules linked in: lkdtm rfcomm algif_hash algif_skcipher af_alg xt_cgroup uinput xt_MASQUERADE
+ CPU: 4 PID: 3255 Comm: bash Not tainted 5.11 #3 aa23f7a1231c229de205662d5a9e0d4c580f19a1
+ Hardware name: Google Lazor (rev3+) with KB Backlight (DT)
+ pstate: 00400009 (nzcv daif +PAN -UAO -TCO BTYPE=--)
+ pc : lkdtm_WARNING+0x28/0x30 [lkdtm]
+ lr : lkdtm_do_action+0x24/0x40 [lkdtm]
+ sp : ffffffc0134fbca0
+ x29: ffffffc0134fbca0 x28: ffffff92d53ba240
+ x27: 0000000000000000 x26: 0000000000000000
+ x25: 0000000000000000 x24: ffffffe3622352c0
+ x23: 0000000000000020 x22: ffffffe362233366
+ x21: ffffffe3622352e0 x20: ffffffc0134fbde0
+ x19: 0000000000000008 x18: 0000000000000000
+ x17: ffffff929b6536fc x16: 0000000000000000
+ x15: 0000000000000000 x14: 0000000000000012
+ x13: ffffffe380ed892c x12: ffffffe381d05068
+ x11: 0000000000000000 x10: 0000000000000000
+ x9 : 0000000000000001 x8 : ffffffe362237000
+ x7 : aaaaaaaaaaaaaaaa x6 : 0000000000000000
+ x5 : 0000000000000000 x4 : 0000000000000001
+ x3 : 0000000000000008 x2 : ffffff93fef25a70
+ x1 : ffffff93fef15788 x0 : ffffffe3622352e0
+ Call trace:
+  lkdtm_WARNING+0x28/0x30 [lkdtm ed5019fdf5e53be37cb1ba7899292d7e143b259e]
+  direct_entry+0x16c/0x1b4 [lkdtm ed5019fdf5e53be37cb1ba7899292d7e143b259e]
+  full_proxy_write+0x74/0xa4
+  vfs_write+0xec/0x2e8
+  ksys_write+0x84/0xf0
+  __arm64_sys_write+0x24/0x30
+  el0_svc_common+0xf4/0x1c0
+  do_el0_svc_compat+0x28/0x3c
+  el0_svc_compat+0x10/0x1c
+  el0_sync_compat_handler+0xa8/0xcc
+  el0_sync_compat+0x178/0x180
+ ---[ end trace 3d95032303e59e68 ]---
+
+Changes from v3 (https://lore.kernel.org/r/20210331030520.3816265-1-swboyd@chromium.org):
+ * Fixed compilation warnings due to config changes
+ * Fixed kernel-doc on init_vmlinx_build_id()
+ * Totally removed add_build_id_vmcoreinfo()
+ * Added another printk format %pBb to help x86 print backtraces
+ * Some BUILD_BUG_ON() checks to make sure the buildid doesn't get bigger or smaller
+
+Changes from v2 (https://lore.kernel.org/r/20210324020443.1815557-1-swboyd@chromium.org):
+ * Renamed symbol printing function to indicate build IDness
+ * Put build ID information behind Kconfig knob
+ * Build ID for vmlinux is calculated in early init instead of on demand
+ * printk format is %pS[R]b
+
+Changes from v1 (https://lore.kernel.org/r/20210301174749.1269154-1-swboyd@chromium.org):
+ * New printk format %pSb and %pSr
+ * Return binary format instead of hex format string from build ID APIs
+ * Some new patches to cleanup buildid/decode_stacktrace.sh
+ * A new patch to decode_stacktrace.sh to parse output
+
+[1] https://fedoraproject.org/wiki/Releases/FeatureBuildId
+
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Baoquan He <bhe@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Dave Young <dyoung@redhat.com>
+Cc: Evan Green <evgreen@chromium.org>
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jessica Yu <jeyu@kernel.org>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: <kexec@lists.infradead.org>
+Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc: <linux-arm-kernel@lists.infradead.org>
+Cc: <linux-doc@vger.kernel.org>
+Cc: <linux-kernel@vger.kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Petr Mladek <pmladek@suse.com>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Sasha Levin <sashal@kernel.org>
+Cc: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Vivek Goyal <vgoyal@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: <x86@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>
+Cc: peter enderborg <peter.enderborg@sony.com>
+
+
+Stephen Boyd (13):
+  buildid: Only consider GNU notes for build ID parsing
+  buildid: Add API to parse build ID out of buffer
+  buildid: Stash away kernels build ID on init
+  dump_stack: Add vmlinux build ID to stack traces
+  module: Add printk formats to add module build ID to stacktraces
+  arm64: stacktrace: Use %pSb for backtrace printing
+  x86/dumpstack: Use %pSb/%pBb for backtrace printing
+  scripts/decode_stacktrace.sh: Support debuginfod
+  scripts/decode_stacktrace.sh: Silence stderr messages from
+    addr2line/nm
+  scripts/decode_stacktrace.sh: Indicate 'auto' can be used for base
+    path
+  buildid: Mark some arguments const
+  buildid: Fix kernel-doc notation
+  kdump: Use vmlinux_build_id to simplify
+
+ Documentation/core-api/printk-formats.rst | 11 +++
+ arch/arm64/kernel/stacktrace.c            |  2 +-
+ arch/x86/kernel/dumpstack.c               |  6 +-
+ include/linux/buildid.h                   |  4 +
+ include/linux/crash_core.h                |  7 +-
+ include/linux/kallsyms.h                  | 20 ++++-
+ include/linux/module.h                    |  6 +-
+ init/main.c                               |  1 +
+ kernel/crash_core.c                       | 50 +-----------
+ kernel/kallsyms.c                         | 95 ++++++++++++++++++-----
+ kernel/module.c                           | 24 +++++-
+ lib/Kconfig.debug                         | 11 +++
+ lib/buildid.c                             | 72 +++++++++++++----
+ lib/dump_stack.c                          | 13 +++-
+ lib/vsprintf.c                            |  8 +-
+ scripts/decode_stacktrace.sh              | 89 +++++++++++++++++----
+ 16 files changed, 304 insertions(+), 115 deletions(-)
+
+
+base-commit: a38fd8748464831584a19438cbb3082b5a2dab15
+-- 
+https://chromeos.dev
+
