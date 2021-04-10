@@ -2,114 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D52035AE9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 16:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCA535AEA1
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 17:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234875AbhDJO6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 10:58:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34472 "EHLO
+        id S234820AbhDJPAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 11:00:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234839AbhDJO6B (ORCPT
+        with ESMTP id S234519AbhDJPAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 10:58:01 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA48C06138A
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:57:47 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id q10so5999896pgj.2
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 07:57:47 -0700 (PDT)
+        Sat, 10 Apr 2021 11:00:36 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA12C06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 08:00:21 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id s15so9856264edd.4
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 08:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kTHysmRZ8s5smpNVRM3C08qgpRu8+4XsyWnC1M27hGc=;
-        b=XGXa15ZdfE/uvEjmYyqVg2CK70tcGiE1U1uAfjvWmmDx1O0MP+pbhPYC++Jd7x3T8x
-         7PgAAjA3Ue8AeLms10TODNA0IdSqNQitvW0qCq7pUNw9Q47BEJ1Hkpf5VebS1lKbhmdo
-         XYQ1c7so8dmeRKAMr4bfZNYNMFGpa+XF2MfAF2YyS0b5q9/DVz+BiKegoaFI/IC+Vqh+
-         j7oBq7kLr8sM/52nfYm6CubmmLMOwS6tsp7TGt3ENkPBnOM5JGffUDIKLGdZYaQZqw8F
-         +xPJ1BKYShTGUvzsoyJMziAqjnPfw6oxIICRGWAUUdR6Z8MyG/foeI1y39kPdGP9Pf7l
-         0IAg==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sMhLL/zmfb0UTfjF/sD2Sc2fOjk1wvP7x0u+3C18oCY=;
+        b=W59pRIcct6yXQX+TT3XK6OB0EQPzdKY93PYF/MoLTjbXvLETtuDWkvXb2RHDswlLlY
+         OTGMcF09BYPVmmu16v8IZzLbsIyf/Agm5TVRWPQdHnV91bQRFRHiOXKQ05c61/4r7ZZ4
+         o0/8cHxDNf/ZAVQEbuv8WmF5LWCk+SwEv1HbkyfUu4mu0BOtjTj+xgSC7bVElZ7eXB1W
+         Xw6v++W2bDtAS40BYAsCysTqYWHeP4n1hxb2VbFHU1xVpriIM4wbSkX1VCkG7UtMtWXY
+         a1s12/wTQS2bk/KbEMmwmP1uyX/k9smBqexOgLWBFbxsNd5nBnzI103StT4m5dCUA2OE
+         yntA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kTHysmRZ8s5smpNVRM3C08qgpRu8+4XsyWnC1M27hGc=;
-        b=iun91xmNsNIQ222jDYidKwDQAy5FUwdNmRpoy2E+coPveJctue5R8I9rwidUVBLEgE
-         kxyx700skrcQLZUGeU+AxOZ6lQMXzyN3bEFFJFZKMsu1H2mKQfEx+Ya7DkyMOtzFxyRe
-         P8FWz+o7I4jYOEllqSK41TY9kYQr8AiQ5z/gEWKw6g+rdsmpLJzGSpPz7s7/C1CcjW0j
-         Y4lExQpYqwO3NUeuPuzQ79eStBpmF52n8yCtMom4Y24R2AFxY48HA5SnHPe6DaiQV9v6
-         jyMJvuW9nk4jg6SbUQDJVefPHrtl0Q54FUJsXugBkVo3uaB2hUbJVFwczPZRHqAPKWlC
-         ClNA==
-X-Gm-Message-State: AOAM5303cNmHXeT+JbbtGXJE/ys2ttJOHvYL0tXNTDc2rbevv0Rm/Cj0
-        u5FamluoEwGSGIo5kn40OpaZjQ==
-X-Google-Smtp-Source: ABdhPJwax96dH52jyitXWUjYp46GrjWLRPC/v1nP4sxtNjZCRgfjCq2C7BjiNOtqcPh9lKZc2AQk4g==
-X-Received: by 2002:a63:c145:: with SMTP id p5mr17600808pgi.451.1618066666742;
-        Sat, 10 Apr 2021 07:57:46 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([116.206.101.232])
-        by smtp.gmail.com with ESMTPSA id e3sm5151417pfm.43.2021.04.10.07.57.43
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sMhLL/zmfb0UTfjF/sD2Sc2fOjk1wvP7x0u+3C18oCY=;
+        b=uUmkB37aZShgMJaku1WuejoqrciPMlgxQlW+a9FYrcDBAcDK5NiCwCLyTxoKDxTQbk
+         eUCYJkfghkHZySgrlSvxaIpq5Tl97O9uyB+1wQ9uH1oLvme7nbzX6C9J2f4FHaQsUVam
+         weIXLDfK4czA/SCS5SNiX6tY8VNGJqqjGac8iqzklp+Bv3M6IlRIzHBjoijWDhFHGur4
+         n2VpJYrTedqlk953DUjuz0XvVYfnA2oku1BfefZOGTDRhN+A5MVGygFzdocostJT5MxO
+         MJAHneTouJSsWAgsCoOORLdNU5DJcNdR7210l0DPNgsUIc+QzHviZu2lZQC2kPirjcne
+         A9Fw==
+X-Gm-Message-State: AOAM532zRQ4h/D8huqgSxPjlv8utLJDyLbdor0UUbX/ZwcpNMdbWi3On
+        ui0VtimHFWYijuD12Q6rMpQ=
+X-Google-Smtp-Source: ABdhPJw7FSWaqhkVVFBs/1LXOF8G6W3WYP6O8sO027EixpBG1DwLbnYg03RM1An6rLOGTKelp1cyKQ==
+X-Received: by 2002:a05:6402:4386:: with SMTP id o6mr23039910edc.307.1618066819873;
+        Sat, 10 Apr 2021 08:00:19 -0700 (PDT)
+Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id gb4sm2719494ejc.122.2021.04.10.08.00.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 07:57:45 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 22:57:41 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
+        Sat, 10 Apr 2021 08:00:19 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf session: Dump PERF_RECORD_TIME_CONV event
-Message-ID: <20210410145741.GA6012@leoy-ThinkPad-X240s>
-References: <20210410031930.18064-1-leo.yan@linaro.org>
- <9e100c55-16b1-090e-1e81-334a55bd4b15@intel.com>
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH v2 0/5] staging: rtl8723bs: Change
+Date:   Sat, 10 Apr 2021 17:00:03 +0200
+Message-Id: <20210410150008.5460-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e100c55-16b1-090e-1e81-334a55bd4b15@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adrian,
+Remove camelcase, correct misspelled words in comments, remove an unused
+variable, change the type of a variable and its use, change comparisons
+with 'true' in controlling expressions.
 
-On Sat, Apr 10, 2021 at 11:46:10AM +0300, Adrian Hunter wrote:
+Changes from v1: Fix a typo in subject of patch 1/5, add patch 5/5.
 
-[...]
+Fabio M. De Francesco (5):
+  staging: rtl8723bs: Remove camelcase in several files
+  staging: rtl8723bs: include: Fix misspelled words in comments
+  staging: rtl8723bs: core: Remove an unused variable
+  staging: rtl8723bs: Change the type and use of a variable
+  staging: rtl8723bs: core: Change a controlling expression
 
-> Hi Leo
-> 
-> I think there might be some more work related to this.
-> 
-> Pedantically, shouldn't you cater for backward compatibility and
-> not assume the following were in the perf.data file:
->                                                                                                                                            
->        __u64                    time_cycles;                                                                                                                                             
->        __u64                    time_mask;                                                                                                                                               
->        bool                     cap_user_time_zero;                                                                                                                                      
->        bool                     cap_user_time_short;   
-> 
-> That means checking the event size.
-> 
-> Also PERF_RECORD_TIME_CONV should have its own byte-swapper instead of  
-> perf_event__all64_swap() - also checking event size.
-> 
-> i.e. fixes for:
-> 
->   commit d110162cafc80dad0622cfd40f3113aebb77e1bb
->   Author: Leo Yan <leo.yan@linaro.org>
->   Date:   Mon Sep 14 19:53:09 2020 +0800
-> 
->     perf tsc: Support cap_user_time_short for event TIME_CONV
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      |  2 +-
+ .../staging/rtl8723bs/core/rtw_ieee80211.c    |  4 +--
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     |  2 +-
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c  | 18 +++++-----
+ drivers/staging/rtl8723bs/hal/hal_intf.c      |  2 +-
+ drivers/staging/rtl8723bs/hal/rtl8723b_dm.c   |  6 ++--
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |  2 +-
+ drivers/staging/rtl8723bs/hal/sdio_ops.c      | 14 ++++----
+ .../rtl8723bs/include/Hal8192CPhyReg.h        |  8 ++---
+ .../staging/rtl8723bs/include/basic_types.h   |  2 +-
+ drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
+ drivers/staging/rtl8723bs/include/hal_com.h   |  2 +-
+ .../staging/rtl8723bs/include/hal_com_reg.h   | 34 +++++++++----------
+ drivers/staging/rtl8723bs/include/hal_data.h  |  2 +-
+ .../staging/rtl8723bs/include/hal_pwr_seq.h   |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_cmd.h   |  6 ++--
+ drivers/staging/rtl8723bs/include/rtw_mlme.h  | 18 +++++-----
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_mp.h    |  2 +-
+ .../staging/rtl8723bs/include/rtw_pwrctrl.h   |  4 +--
+ drivers/staging/rtl8723bs/include/rtw_recv.h  |  4 +--
+ drivers/staging/rtl8723bs/include/rtw_xmit.h  |  2 +-
+ drivers/staging/rtl8723bs/include/sta_info.h  |  2 +-
+ drivers/staging/rtl8723bs/include/wifi.h      |  2 +-
+ 24 files changed, 71 insertions(+), 73 deletions(-)
 
-Indeed!  IIUC, should have three fixes with event size checking:
+-- 
+2.31.1
 
-- One fix for dumping TIME_CONV event;
-- One fix for byte-swapper (especially for bool values);
-- One fix for commit d110162cafc80dad0622cfd40f3113aebb77e1bb;
-
-Will follow up for the suggestions.  Thanks a lot for your insight
-review.
-
-Leo
