@@ -2,91 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0EA35AED5
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 17:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BDC35AEDB
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 17:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234863AbhDJP10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 11:27:26 -0400
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:39645 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234768AbhDJP1Z (ORCPT
+        id S234823AbhDJPd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 11:33:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234536AbhDJPd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 11:27:25 -0400
-Date:   Sat, 10 Apr 2021 15:27:02 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1618068428;
-        bh=zFaYA7o/vFomj+mE5w9U/463Jwtdduv9PSyc4Ur+rQk=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=P3Fb93P4jqk60HcCP22zxyI6Kp4F8OmF20WBPDmdYlSPTDFZkZquydkRvFr+fof0Y
-         LYHdixD/pT62qMZdKwIpYd5NRhz4wbfGvumgR0+lRQKuQXS2zF1iUzYNafjEODqXbr
-         9qvSAydxvDx3JcKXOGaYmaUgu3l7TGL9QWpKfcxyYzNzFFufoDob152wfi3cmdEVAY
-         1baXM1VEXfyyLi6rlTimmcooRHNMmm90ylw9mCT8UHDZesd2R9Szzs7MbqT1V3Qsf7
-         RIePllRsIDmCcwSzZq4YIOP4kVSRHsbtu3JuwnVxjT8n4hCn2HSZORoXFTcr98yPro
-         JfbwPEbXH9hZQ==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Bryan Brattlof <hello@bryanbrattlof.com>
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH v3] staging: rtl8723bs: remove unnecessary goto jumps
-Message-ID: <20210410152536.426047-1-hello@bryanbrattlof.com>
+        Sat, 10 Apr 2021 11:33:58 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C98AC06138A;
+        Sat, 10 Apr 2021 08:33:42 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id ay2so4172410plb.3;
+        Sat, 10 Apr 2021 08:33:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=XxbeESAJRhZnLZL/LShXrgElrZZDQU9QHhNsuZ6s6Ik=;
+        b=tXh6Q4aytgrygIrjNGZj0h5zOlcXpbs4KPr2IxheULO9GDh6+D5Jgvx37BGF0g57Pa
+         2hSj/pJGRm0wZSUvsfH/vL8x58EoDateIOFacLZ8LGESvi8cSDJG0JCL0bxhA1JsXtz5
+         ENYIEzEE+kz7J5qjANJBGl3yjAPXScAaQloWXYXtRCL8E7mjVwO320YAL0bWXsry1SSC
+         lYMeFOYDZ3IJGlCLrg6xVFYHHdMap139u7RmKnfhE+n+VDbhNSYuY6nCI6+cwjXYbJaK
+         pOMakMrcz2i7vHTddOwaY3gHzs1GA+WoJVX1Lx90zMneQREzh0+b2JQc5uv3+kdHf9bk
+         tNZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=XxbeESAJRhZnLZL/LShXrgElrZZDQU9QHhNsuZ6s6Ik=;
+        b=AqNPbG23xV5BMVfBlAHa7ghCPZRrvc/ywxNJCLggP/IHilafCwUjuq3XhPZ3XLR33J
+         bNVcAOyWMAgoe4c89X1uN18H5ulfyMgbn1Nz9UNELegeeWktAII5L1HHqaXwUmPnzdlv
+         ZbHoCCDBRPX5R6UNKuYL7NhUHp0rW+5LO6m7z+ThJONixrvWg/sXpWDJZyOgS0TQrkAF
+         BGfVS6Oj3VSjIJI0ETTgEem+Xls3ttoVk0OUoDAqhT695rSHZKMFz3S0I9PLHj4xmHqY
+         Lf05vCD4KdC1d8HNkRNrUxlA7BU8ZEFXOnSylv3duTEDrizY8hvLAcKfBuI2rfMO1s/z
+         uUhg==
+X-Gm-Message-State: AOAM5314sEcmeh6MBrbkX+KNFFCy2PmUwP7Un/7qUDSSln5r+dQ7l0Iw
+        MOtlTztMFCcEJGkUongCoXs=
+X-Google-Smtp-Source: ABdhPJzz2VYihh/wWH9Rb1ffCv0kE564F79OmYPIE9tlIcTjWZ8VR4q2DflBFpeQbzxt+2dM20Ufjw==
+X-Received: by 2002:a17:90a:8813:: with SMTP id s19mr19004148pjn.94.1618068821687;
+        Sat, 10 Apr 2021 08:33:41 -0700 (PDT)
+Received: from kali ([103.141.87.254])
+        by smtp.gmail.com with ESMTPSA id c16sm5032245pfc.112.2021.04.10.08.33.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 08:33:41 -0700 (PDT)
+Date:   Sat, 10 Apr 2021 21:03:33 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     clabbe@baylibre.com, mchehab@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: [PATCH v3 0/2] staging: media: zoran: aligned the code.
+Message-ID: <cover.1618066787.git.mitaliborkar810@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The next instruction for both 'goto exit' jump statements is to
-execute the exit jump instructions regardless. We can safely
-remove all jump statements from __init rtw_drv_entry()
+This patch fix the alignment of code in proper manner
 
-This will also remove the extra line-break before module_init()
-that checkpatch.pl was concerned with.
+Changes from v2:- Aligned the code using tabs.
+Changes from v1:- Aligned the code using tabs and readjusted the
+comments line.
 
-Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
----
-Changes from:
-  v1: removed unnecessary edit of DBG_871X_LEVEL
-  v2: elaborated on steps to remove a checkpatch.pl warning
+Mitali Borkar (2):
+  media: zoran: add spaces around '<<'
+  staging: media: zoran: align code appropriately
 
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 5 -----
- 1 file changed, 5 deletions(-)
+ drivers/staging/media/zoran/zr36057.h | 108 +++++++++++++-------------
+ 1 file changed, 54 insertions(+), 54 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging=
-/rtl8723bs/os_dep/sdio_intf.c
-index 9fd926e1698f..39b6d4b6dec4 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-@@ -517,12 +517,8 @@ static int __init rtw_drv_entry(void)
- =09if (ret !=3D 0) {
- =09=09sdio_drvpriv.drv_registered =3D false;
- =09=09rtw_ndev_notifier_unregister();
--=09=09goto exit;
- =09}
-=20
--=09goto exit;
--
--exit:
- =09DBG_871X_LEVEL(_drv_always_, "module init ret =3D%d\n", ret);
- =09return ret;
- }
-@@ -540,6 +536,5 @@ static void __exit rtw_drv_halt(void)
- =09DBG_871X_LEVEL(_drv_always_, "module exit success\n");
- }
-=20
--
- module_init(rtw_drv_entry);
- module_exit(rtw_drv_halt);
---=20
-2.27.0
-
+-- 
+2.30.2
 
