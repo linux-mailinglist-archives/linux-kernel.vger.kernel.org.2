@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F3C835AD25
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F109635AD29
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 14:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234431AbhDJMCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 08:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231279AbhDJMCE (ORCPT
+        id S234679AbhDJMCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 08:02:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56316 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231279AbhDJMCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 08:02:04 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83EBAC061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 05:01:48 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id bx20so8361140edb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 05:01:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+Y+rFLdZxttQk+x+XDqZN+DXOyaagZNtXVw+dsN8Xs4=;
-        b=JT5TMWYQc17RndU05frqUYMfr9OcULkN1aHQIhnHmyjL9iu/zVJFRL77ub+OMBnRYb
-         y8YVsIMovNSgkBKCO4Z/J6TIkYtPjrPw5IXbE1WNhib84mAKamGSULHDb5VOSTF8Ao2I
-         zD1zbUQ35s3Wcs2wxCVDX7wZFZiZBgNESCS7RvZwejTi5hFcIiYBxpesHTku3YyoBeXj
-         Zqp0+f+wMekiiatD70J8nK1HWOhBYl63IWj/vOszfsVsqGOOLhn9qdTRN5scVUcKh00Y
-         LeN6KT6rskVYNMEkqWriFmotZHyWRV8SDs2OrGXcrW7LKmDv9bT9YFtz8b4coQahrZh0
-         KsCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+Y+rFLdZxttQk+x+XDqZN+DXOyaagZNtXVw+dsN8Xs4=;
-        b=YU2+mAU1sJtX/VS80j/FnGo62KSvgEMSA/V4xzG9A9AqBG7X2vipsPoYmZlb1XOSzS
-         EvpDTU1osnb8gy79h65B4ZOkf++08nG3+Jb1pKgJrLVeGGgMCXD6Tfh+zsS8Meg4jys+
-         nxQuAKdxOEqAhhBpptE5b4oxQBG4JRAkfiXDw5Ot9eZ8hlHP4no9MfxeGvtRAvPZM8TO
-         EwDjIkAwRHKrTLeLgQ8nurvM4202I1eV+DzdYzC9R9LDeKQa61OwUWRQQRjskzBinlpS
-         9VNWecI+n6c+9de69uriPmDgQhVJtIye2fm4305NQuXGMm3DFv5bVsIEMliq3NkfHrq9
-         z1jA==
-X-Gm-Message-State: AOAM533gCwz1anOElCg1vxOP04SqQfSX8fx6HinLP9L8EU9idlTGeMQg
-        bGuvDF52oNHaY9aInYkN89yAfUGWDJxkECeT
-X-Google-Smtp-Source: ABdhPJzF9nLlltC6SajRODBWcL22JmGtRhIlV9ohq+aP0dVD2xp0NcvTjv2BZSAWYimwz+ycta9mEA==
-X-Received: by 2002:a05:6402:408:: with SMTP id q8mr21046748edv.201.1618056107273;
-        Sat, 10 Apr 2021 05:01:47 -0700 (PDT)
-Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id r19sm2582083ejr.55.2021.04.10.05.01.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 05:01:46 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        Sat, 10 Apr 2021 08:02:21 -0400
+Date:   Sat, 10 Apr 2021 12:02:04 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618056125;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n1T/Y7QFWKNq4nSX24N1lPYPb7RxrPrrcq+fFSziO5Q=;
+        b=qEYHMXpSYJWev6Z3n8Ek677qBaLaHoyO6F+InhTE9JaRT3Bpd/EY+3L5krxfamRZp6+kQk
+        Of9F6AXUF9gkAdVbQBhYef2+xjT43ysknJQVwNl15pX0wjww7w2vxG+2vG6ucu6d4shbos
+        PnRmzd6Nr/dDIsfGVt2lQTL/6KxcsPyK3axQYNFaCGEdcVjhK4eNOLPseOU11c6cGWytPE
+        UeCa7s2GNcTN3Kck+/u+k79rUnAl6tQ7WnhST95SNYQMnAYJi/DO1nIEnhGSqqFy9/UUpN
+        6PAFxkNnUQiBgc08htx0NMXr5FbdxO0M72xr50eXxbWrhfeCSVOVUDsKpXET3Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618056125;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n1T/Y7QFWKNq4nSX24N1lPYPb7RxrPrrcq+fFSziO5Q=;
+        b=uKlpdnWhHHJwPWv9OVM5w7n2ZCRg3PPHhD6oaljZTCo/OYTrKfr+BkCoafXrU4JEcedOOQ
+        Rys5GHeVBsQCsMBQ==
+From:   "tip-bot2 for Aditya Srivastava" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/platform/intel/quark: Fix incorrect
+ kernel-doc comment syntax in files
+Cc:     Aditya Srivastava <yashsri421@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Randy Dunlap <rdunlap@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH 4/4] staging: rtl8723bs: Change the type and use of a variable
-Date:   Sat, 10 Apr 2021 14:01:45 +0200
-Message-ID: <2763630.ZYQqkGPH9U@localhost.localdomain>
-In-Reply-To: <alpine.DEB.2.22.394.2104101334190.2975@hadrien>
-References: <20210410092232.15155-1-fmdefrancesco@gmail.com> <10115279.QsZogQpAqX@localhost.localdomain> <alpine.DEB.2.22.394.2104101334190.2975@hadrien>
+In-Reply-To: <20210330213022.28769-1-yashsri421@gmail.com>
+References: <20210330213022.28769-1-yashsri421@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="US-ASCII"
+Message-ID: <161805612484.29796.17285965963701960462.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, April 10, 2021 1:37:30 PM CEST Julia Lawall wrote:
-> > That variable has global scope and is assigned at least in:
-> What do you mean by global scope?  None of the following look like
-> references to global variables.
-> 
-> julia
-I just mean that fw_current_in_ps_mode is a field of a struct in a .h file 
-included everywhere in this driver and that the functions whom the 
-following assignments belong to have not the "static" type modifier.
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Thanks,
+Commit-ID:     0d6c8e1e246586b81cb4e6ab1a93a6d4a08a0cf9
+Gitweb:        https://git.kernel.org/tip/0d6c8e1e246586b81cb4e6ab1a93a6d4a08a0cf9
+Author:        Aditya Srivastava <yashsri421@gmail.com>
+AuthorDate:    Wed, 31 Mar 2021 03:00:22 +05:30
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 10 Apr 2021 13:59:25 +02:00
 
-Fabio
-> 
-> > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:368:
-> > pwrpriv->fw_current_in_ps_mode = false;
-> > 
-> > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:380:
-> > pwrpriv->fw_current_in_ps_mode = true;
-> > 
-> > drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:433:
-> > adapter_to_pwrctl(padapter)->fw_current_in_ps_mode = false;
-> > 
-> > drivers/staging/rtl8723bs/core/rtw_pwrctrl.c:981:
-> > pwrctrlpriv->fw_current_in_ps_mode = false;
+x86/platform/intel/quark: Fix incorrect kernel-doc comment syntax in files
 
+The opening comment mark '/**' is used for highlighting the beginning of
+kernel-doc comments.
+There are certain files in arch/x86/platform/intel-quark, which follow this
+syntax, but the content inside does not comply with kernel-doc.
+Such lines were probably not meant for kernel-doc parsing, but are parsed
+due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+causes unexpected warnings from kernel-doc.
 
+E.g., presence of kernel-doc like comment in the header lines for
+arch/x86/platform/intel-quark/imr.c causes these warnings:
+"warning: Function parameter or member 'fmt' not described in 'pr_fmt'"
+"warning: expecting prototype for c(). Prototype was for pr_fmt() instead"
 
+Similarly for arch/x86/platform/intel-quark/imr_selftest.c too.
 
+Provide a simple fix by replacing these occurrences with general comment
+format, i.e. '/*', to prevent kernel-doc from parsing it.
+
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Link: https://lore.kernel.org/r/20210330213022.28769-1-yashsri421@gmail.com
+
+---
+ arch/x86/platform/intel-quark/imr.c          | 2 +-
+ arch/x86/platform/intel-quark/imr_selftest.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/platform/intel-quark/imr.c b/arch/x86/platform/intel-quark/imr.c
+index 122e0f3..d3d4569 100644
+--- a/arch/x86/platform/intel-quark/imr.c
++++ b/arch/x86/platform/intel-quark/imr.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/**
++/*
+  * imr.c -- Intel Isolated Memory Region driver
+  *
+  * Copyright(c) 2013 Intel Corporation.
+diff --git a/arch/x86/platform/intel-quark/imr_selftest.c b/arch/x86/platform/intel-quark/imr_selftest.c
+index 570e306..761f368 100644
+--- a/arch/x86/platform/intel-quark/imr_selftest.c
++++ b/arch/x86/platform/intel-quark/imr_selftest.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/**
++/*
+  * imr_selftest.c -- Intel Isolated Memory Region self-test driver
+  *
+  * Copyright(c) 2013 Intel Corporation.
