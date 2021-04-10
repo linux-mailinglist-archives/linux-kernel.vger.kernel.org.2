@@ -2,79 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BDC35AEDB
+	by mail.lfdr.de (Postfix) with ESMTP id E923F35AEDC
 	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 17:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234823AbhDJPd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 11:33:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42220 "EHLO
+        id S234852AbhDJPeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 11:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234536AbhDJPd6 (ORCPT
+        with ESMTP id S234536AbhDJPeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 11:33:58 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C98AC06138A;
-        Sat, 10 Apr 2021 08:33:42 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id ay2so4172410plb.3;
-        Sat, 10 Apr 2021 08:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=XxbeESAJRhZnLZL/LShXrgElrZZDQU9QHhNsuZ6s6Ik=;
-        b=tXh6Q4aytgrygIrjNGZj0h5zOlcXpbs4KPr2IxheULO9GDh6+D5Jgvx37BGF0g57Pa
-         2hSj/pJGRm0wZSUvsfH/vL8x58EoDateIOFacLZ8LGESvi8cSDJG0JCL0bxhA1JsXtz5
-         ENYIEzEE+kz7J5qjANJBGl3yjAPXScAaQloWXYXtRCL8E7mjVwO320YAL0bWXsry1SSC
-         lYMeFOYDZ3IJGlCLrg6xVFYHHdMap139u7RmKnfhE+n+VDbhNSYuY6nCI6+cwjXYbJaK
-         pOMakMrcz2i7vHTddOwaY3gHzs1GA+WoJVX1Lx90zMneQREzh0+b2JQc5uv3+kdHf9bk
-         tNZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=XxbeESAJRhZnLZL/LShXrgElrZZDQU9QHhNsuZ6s6Ik=;
-        b=AqNPbG23xV5BMVfBlAHa7ghCPZRrvc/ywxNJCLggP/IHilafCwUjuq3XhPZ3XLR33J
-         bNVcAOyWMAgoe4c89X1uN18H5ulfyMgbn1Nz9UNELegeeWktAII5L1HHqaXwUmPnzdlv
-         ZbHoCCDBRPX5R6UNKuYL7NhUHp0rW+5LO6m7z+ThJONixrvWg/sXpWDJZyOgS0TQrkAF
-         BGfVS6Oj3VSjIJI0ETTgEem+Xls3ttoVk0OUoDAqhT695rSHZKMFz3S0I9PLHj4xmHqY
-         Lf05vCD4KdC1d8HNkRNrUxlA7BU8ZEFXOnSylv3duTEDrizY8hvLAcKfBuI2rfMO1s/z
-         uUhg==
-X-Gm-Message-State: AOAM5314sEcmeh6MBrbkX+KNFFCy2PmUwP7Un/7qUDSSln5r+dQ7l0Iw
-        MOtlTztMFCcEJGkUongCoXs=
-X-Google-Smtp-Source: ABdhPJzz2VYihh/wWH9Rb1ffCv0kE564F79OmYPIE9tlIcTjWZ8VR4q2DflBFpeQbzxt+2dM20Ufjw==
-X-Received: by 2002:a17:90a:8813:: with SMTP id s19mr19004148pjn.94.1618068821687;
-        Sat, 10 Apr 2021 08:33:41 -0700 (PDT)
-Received: from kali ([103.141.87.254])
-        by smtp.gmail.com with ESMTPSA id c16sm5032245pfc.112.2021.04.10.08.33.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 08:33:41 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 21:03:33 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     clabbe@baylibre.com, mchehab@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in
-Subject: [PATCH v3 0/2] staging: media: zoran: aligned the code.
-Message-ID: <cover.1618066787.git.mitaliborkar810@gmail.com>
+        Sat, 10 Apr 2021 11:34:00 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CCE9C06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 08:33:45 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f1aea005aa758d9575cf1c9.dip0.t-ipconnect.de [IPv6:2003:ec:2f1a:ea00:5aa7:58d9:575c:f1c9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E30F11EC0409;
+        Sat, 10 Apr 2021 17:33:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618068823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=JU+alkv88K3AjjKG+MMMv2hhK+iQ284WVJBIZRCDjo0=;
+        b=sNmzpVJFSF7X2weFcgRoe8TQVNxZj3AcD84Z1x3QZS9H4OfyVqGYB7sXKOg5RRB87p0PFn
+        Ep3sPN2Rt40xq9MTbiDFK8EHOsliB6UsXhzv0ik1WcqZIIEwvvnHrZ9DDtWRm8QcX4Nn6c
+        j03I92wuKT+JQN5bt66LIZ1lPRnH7WY=
+Date:   Sat, 10 Apr 2021 17:33:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Feng Tang <feng.tang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, rui.zhang@intel.com,
+        andi.kleen@intel.com, dave.hansen@intel.com, len.brown@intel.com
+Subject: [PATCH -v1.1] x86/msr: Block writes to certain MSRs unconditionally
+Message-ID: <20210410153338.GD21691@zn.tnic>
+References: <20210410121144.GC21691@zn.tnic>
+ <437BACC3-A1F7-4C65-80C7-98F6652A14E6@amacapital.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+In-Reply-To: <437BACC3-A1F7-4C65-80C7-98F6652A14E6@amacapital.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fix the alignment of code in proper manner
+On Sat, Apr 10, 2021 at 07:51:58AM -0700, Andy Lutomirski wrote:
+> Can you add STAR, CSTAR, LSTAR, SYSENTER*, SYSCALL*, and EFER please?
 
-Changes from v2:- Aligned the code using tabs.
-Changes from v1:- Aligned the code using tabs and readjusted the
-comments line.
+Sure.
 
-Mitali Borkar (2):
-  media: zoran: add spaces around '<<'
-  staging: media: zoran: align code appropriately
+---
 
- drivers/staging/media/zoran/zr36057.h | 108 +++++++++++++-------------
- 1 file changed, 54 insertions(+), 54 deletions(-)
+From: Borislav Petkov <bp@suse.de>
+Date: Sat, 10 Apr 2021 14:08:13 +0200
+
+There are a bunch of MSRs which luserspace has no business poking
+at, whatsoever. Add a ban list and put the TSC-related MSRs and the
+ring0-entry and features control MSRs in there. Issue a big juicy splat
+to catch offenders.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ arch/x86/kernel/msr.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
+index ed8ac6bcbafb..2435a619cd9f 100644
+--- a/arch/x86/kernel/msr.c
++++ b/arch/x86/kernel/msr.c
+@@ -78,6 +78,21 @@ static ssize_t msr_read(struct file *file, char __user *buf,
+ 	return bytes ? bytes : err;
+ }
+ 
++static const u32 msr_ban_list[] = {
++	MSR_IA32_TSC,
++	MSR_TSC_AUX,
++	MSR_IA32_TSC_ADJUST,
++	MSR_IA32_TSC_DEADLINE,
++	MSR_EFER,
++	MSR_STAR,
++	MSR_CSTAR,
++	MSR_LSTAR,
++	MSR_SYSCALL_MASK,
++	MSR_IA32_SYSENTER_CS,
++	MSR_IA32_SYSENTER_ESP,
++	MSR_IA32_SYSENTER_EIP,
++};
++
+ static int filter_write(u32 reg)
+ {
+ 	/*
+@@ -89,6 +104,16 @@ static int filter_write(u32 reg)
+ 	 * avoid saturating the ring buffer.
+ 	 */
+ 	static DEFINE_RATELIMIT_STATE(fw_rs, 30 * HZ, 1);
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(msr_ban_list); i++) {
++		if (msr_ban_list[i] != reg)
++			continue;
++
++		WARN_ONCE(1, "Blocked write to MSR 0x%x.\n", reg);
++
++		return -EINVAL;
++	}
+ 
+ 	switch (allow_writes) {
+ 	case MSR_WRITES_ON:  return 0;
+-- 
+2.29.2
 
 -- 
-2.30.2
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
