@@ -2,95 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F66935AC99
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DB0B35AC9F
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 12:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234405AbhDJJ5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 05:57:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhDJJ5b (ORCPT
+        id S232254AbhDJKAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 06:00:53 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:36559 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230060AbhDJKAt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 05:57:31 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894D6C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:57:17 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id sd23so3731272ejb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:57:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=sender:from:to:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=7S9q0YHwnnTroMuG465VKDIH1I2S+LS70kyJQrdJvBE=;
-        b=C255EywfRLks3GdA5bzqxhfR5GanjHOyPPzzpU7W/waJY52tweAlxgftLa06eKkrhv
-         ltkkfrH8w/NHIM8iUpf9qOiG0vNux9HobdS2/QOxQj+d7/SJI1fEUIpNq6s81FWi3hV8
-         qsrfHygwYMi9TXInlEDThkCi3DoeYezs2uG90iCnQPSNpzR7R76VkFKKp1hy5TJnTLuC
-         R8PMD669KyuC/JmIyLmOlz16CV3CcxIDb3SuLGgVr01gUYEHgPId1H8wffS9v+2hER/r
-         MsOlU3Hpmt0DOj/82vngQtfkNaYSYUGGKt032DNXmoKAYKtBhbRTjghDbc82InsMqAEg
-         GusA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:subject:message-id:date
-         :user-agent:mime-version:content-transfer-encoding:content-language;
-        bh=7S9q0YHwnnTroMuG465VKDIH1I2S+LS70kyJQrdJvBE=;
-        b=KHzdNqQbMCRHw1HGaVbdkCfY1FJ4W3Ofd7pXOkWhgh5Sf66DsgI66KeWMcsAqvw7Dk
-         7TWmpzALOwfb3OHloI5TAe1h+M15cfc9g6YOCVGgqXSwgSEv/mz3Id7BK+DjYXGphlO8
-         Rg4ufpwe+nnBncNqhsnjbKFAR0djrQ4rxe+HMb6gec4eQrGzHU0GVxW5ZzgChsgu6gYe
-         OPvv6LCgi4Si7tEsnb+H1BVd6QW/vCsKGDulbQMC3wkx0UaA0n3uChb5MFX2XzfuKTwO
-         UGeMeQe6nrAfcYAGCHENSs01VjpQ6UIwTgg8g/F+MVk8lmR4CP0tWmb77xLG8284Nydi
-         el3w==
-X-Gm-Message-State: AOAM531skandT7kR6NvpNkXKIHt/FzTcUX76YthNxobFa0MJhGqTxxjP
-        Q4czi+8s4nfarmHKfpGI9x77+ADmflmBlw==
-X-Google-Smtp-Source: ABdhPJyYWO6QO81O2S3Cwy+wjZGvdGMD2VKuByTj1gFiMNbUqayvetBQ1hNQ0d8XaODyJvlCk7tzDQ==
-X-Received: by 2002:a17:907:3c08:: with SMTP id gh8mr5943546ejc.439.1618048635459;
-        Sat, 10 Apr 2021 02:57:15 -0700 (PDT)
-Received: from ?IPv6:2001:16b8:20ac:ce11:c250:6a0c:6a8:28a1? (200116b820acce11c2506a0c06a828a1.dip.versatel-1u1.de. [2001:16b8:20ac:ce11:c250:6a0c:6a8:28a1])
-        by smtp.gmail.com with ESMTPSA id gt26sm1632328ejb.31.2021.04.10.02.57.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Apr 2021 02:57:15 -0700 (PDT)
-Sender: Malte Deiseroth <mdeiseroth88@googlemail.com>
-From:   Malte Deiseroth <msdeiseroth@gmx.net>
-X-Google-Original-From: Malte Deiseroth <mdeiseroth88@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Subject: Cant resume from sleep on 5.12-rcx regression?
-Message-ID: <5af07598-6baf-1228-b4d5-f9e87cabb43d@gmail.com>
-Date:   Sat, 10 Apr 2021 11:57:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Sat, 10 Apr 2021 06:00:49 -0400
+Received: from localhost.localdomain ([153.202.107.157])
+        by mwinf5d06 with ME
+        id qy0H2400Q3PnFJp03y0W2D; Sat, 10 Apr 2021 12:00:33 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 10 Apr 2021 12:00:33 +0200
+X-ME-IP: 153.202.107.157
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     Jimmy Assarsson <extja@kvaser.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v15 0/3] Introducing ETAS ES58X CAN USB interfaces
+Date:   Sat, 10 Apr 2021 18:59:45 +0900
+Message-Id: <20210410095948.233305-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey guys.
+Here comes the 15th iteration of the patch. This new version addresses
+the comments received from Marc (thanks again for the review!) and
+simplify the device probing by using .driver_info.
 
-I think, maybe I found a regression in 5.12.
+** Changelog **
 
-TLDK: Screen stays black after resume from sleep on kernel 5.12-rcx but 
-not on 5.11.12
+Changes in v15 (2021-04-10):
+  - Use of .driver_info to keep track of each device quirks (c.f. enum
+    es58x_driver_info).
+  - Replace es58x_netdev_queue_set_dql_min_limit() by
+    netdev_queue_set_dql_min_limit() which was recently added in
+    net-next.
+  - es58x_start_xmit: remove the recursive call.
+  - es58x_start_xmit: remove the memset zero of the urb
+    transfer_buffer in es58x_xmit(). Adjust the
+    es58{1_4,x_fd}_tx_can_msg() glue code accordingly to make sure
+    that all relevant fields are correctly initialised.
+  - es58x_start_xmit: directly update tx_head each time a packet is
+    queued in can.echo_skb[].
+  - Remove es58x_set_bittiming() and es58x_set_data_bittiming(). The
+    bittiming is now set when opening the channel.
+  - Shutdown the channel when a bus off event occurs. Remove the
+    es58x_reset() function which is not needed anymore after this
+    change.
+  - Cleanup of the {net,}dev_dbg() calls to make the driver less
+    verbose.
+  - Modify es58x_open(), es58x_close() and es58x_probe() in order to
+    release driver resources as much as possible when all the network
+    interfaces of the device are down.
+  - Other trivial changes (c.f. below link for details)
+Reference: https://lore.kernel.org/linux-can/20210321104103.213308-1-mailhol.vincent@wanadoo.fr/T/#m8ca804e9f53584b79acd236602403d5b82db1e6c
 
+Changes in v14 (2021-03-21):
+  - Rework the split into core support, es581_4, es58x_fd (cosmetic
+    change) so that es581_4.h and es58x_fd.h headers can be added in
+    one block.
+  - Add a fourth patch to introduce a helper function
+    es58x_netdev_queue_set_dql_min_limit() to set up dql minimum limit
+    (in parallel, I will try to have this merged in the network device
+    header)
+  - Remove unused function es58x_add_skb_idx(): leftover from the old
+    FIFO logic, should have been removed in v11.
+  - Fix memory leak in es58x_get_product_info(): buffer was not freed
+    in case of error in usb_sting().
+  - s/loopback/echo and s/self reception/echo: in the driver the terms
+    "loopback, self reception, and echo" were all used to designated
+    the same thing. Renamed structures, variables and comments
+    accordingly to make it more consistent.
+  - Remove CAN_CTRLMODE_LOOPBACK. The driver never supported this
+    feature. It was added due to a confusion with the echo skb.
+  - Use the new can_free_echo_skb() which return the frame_len.
+  - Do the statistics handling in es58x_rx_err_msg() even if kalloc()
+    fails.
+  - Replace array es58x_cmd_ret_desc[] by helper function
+    es58x_cmd_ret_desc().
+  - Other trivial changes (c.f. below link for details)
+Reference: https://lore.kernel.org/linux-can/50850e5f-87c6-505e-4398-babce3facb97@pengutronix.de/T/#mbcace9c13b19a504cd28d81591f983b95eb66657
 
-I compiler a 5.11.12 and a 5.12-rc6 Kernel on my  Ubuntu 20.10 T480 
-Laptop. With the 5.11.12 kernel I can safely boot and put the laptop 
-into sleep by closing its lid. Up on opening, everything works fine. 
-However with the 5.12-rc6 (I also tested on rc2 and r4) I can not do 
-this. After sleeping, the laptop wakes up, but the screen stays black. I 
-can still ssh into the machine and it works, but I also cant open any 
-ttys. I tried to gather some logs or any kind of information, but I 
-don't really know what I'm searching for.
+Changes in v13 (2021-03-19 by Marc Kleine-Budde):
+  - split the driver into 3 patches, so that it can be send via
+    mailing lists (core support, es581_4, es58x_fd)
+  - Remove the dql.min_limit settings
+  - typo and kernel doc fixes
+Reference: https://lore.kernel.org/linux-can/50850e5f-87c6-505e-4398-babce3facb97@pengutronix.de/T/#t
 
-My setup might be slightly out of the ordinary, as I have an dm-crypt 
-encrypted filesystem with an encrypted swap partition.
+Changes in v12 (2021-03-09):
+  - Rework the queue stop/wake management so that spinlocks are not
+    needed anymore.
+  - es58x_start_xmit(): check for valid SKB using
+    can_dropped_invalid_skb().
+  - Implemented TDC according to latest patches in linux-can-next.
+Reference: https://lore.kernel.org/linux-can/20210224002008.4158-1-mailhol.vincent@wanadoo.fr/T/#t
 
-I hope I'm not wasting anyone's time here, but from what I understand 
-about kernel development this should not happen.
+Changes in v11 (2021-01-23):
+  - Remove all WARN_ON() calls: these were use during development,
+    relevant tests are done not to trigger these.
+  - es58x_start_xmit(): added net_ratelimit() condition to prevent
+    spamming dmesg.
+  - add a new es58x_xmit_more() function and simplify the code of
+    es58x_start_xmit().
+  - Removed functions {es581_4,es58x_fd}_print_conf() which were only
+    there for debug.
+  - Additional comment for es58x_fd_param.bitrate_max.
+  - Make the device FIFO size a power of two and modify the echo_skb
+    indexes logic to prevent the use of spinlocks.
 
+Changes in v10 (2021-01-12):
+  - Rebased on linux-can-next/testing and modified according to latest
+    BQL patches.
+Reference: https://lore.kernel.org/linux-can/20210111141930.693847-1-mkl@pengutronix.de/T/#m5f99d4da8e8934a75f9481ecc3137b59f3762413
+  - Replaced __netdev_sent_queue() by netdev_sent_queue().
 
-All the best
+Changes in v9 (2021-01-09):
+  - es58x_start_xmit(): do not use skb anymore after the call of
+    can_put_echo_skb(). Rationale: can_put_echo_skb() calls
+    skb_clone() and thus the original skb gets consumed (i.e. use
+    after free issue).
+  - es58x_start_xmit(): Add a "drop_skb" label to free the skb when
+    errors occur.
 
-Malte Deiseroth
+Changes in v8 (2021-01-04):
+  - The driver requires CRC16. Modified Kconfig accordingly.
+
+Changes in v7 (2020-11-17):
+  - Fix compilation issue if CONFIG_BQL is not set.
+Reference: https://lkml.org/lkml/2020/11/15/163
+
+Changes in v6 (2020-11-15):
+  - Rebase the patch on the testing branch of linux-can-next.
+  - Rename the helper functions according latest changes
+    (e.g. can_cc_get_len() -> can_cc_dlc2len())
+  - Fix comments of enum es58x_physical_layer and enum
+    es58x_sync_edge.
+
+Changes in v5 (2020-11-07):
+  - Add support for DLC greater than 8.
+  - All other patches from the previous series were either accepted or
+    dismissed. As such, this is not a series any more but a single
+    patch.
+
+Changes in v4 (2020-10-17):
+  - Remove struct es58x_abstracted_can_frame.
+  - Fix formatting (spaces, comment style).
+  - Transform macros into static inline functions when possible.
+  - Fix the ctrlmode_supported flags in es581_4.c and removed
+    misleading comments in enum es58x_samples_per_bit.
+  - Rename enums according to the type.
+  - Remove function es58x_can_put_echo_skb().
+Reference: https://lkml.org/lkml/2020/10/10/53
+
+Changes in v3 (2020-10-03):
+  - Remove all the calls to likely() and unlikely().
+Reference: https://lkml.org/lkml/2020/9/30/995
+
+Changes in v2 (2020-09-30):
+  - Fixed -W1 warnings (v1 was tested with GCC -WExtra but not with -W1).
+
+v1 (2020-09-27):
+  - First release
+
+Vincent Mailhol (3):
+  can: etas_es58x: add core support for ETAS ES58X CAN USB interfaces
+  can: etas_es58x: add support for ETAS ES581.4 CAN USB interface
+  can: etas_es58x: add support for the ETAS ES58X_FD CAN USB interfaces
+
+ drivers/net/can/usb/Kconfig                 |   10 +
+ drivers/net/can/usb/Makefile                |    1 +
+ drivers/net/can/usb/etas_es58x/Makefile     |    3 +
+ drivers/net/can/usb/etas_es58x/es581_4.c    |  507 ++++
+ drivers/net/can/usb/etas_es58x/es581_4.h    |  207 ++
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 2301 +++++++++++++++++++
+ drivers/net/can/usb/etas_es58x/es58x_core.h |  700 ++++++
+ drivers/net/can/usb/etas_es58x/es58x_fd.c   |  562 +++++
+ drivers/net/can/usb/etas_es58x/es58x_fd.h   |  243 ++
+ 9 files changed, 4534 insertions(+)
+ create mode 100644 drivers/net/can/usb/etas_es58x/Makefile
+ create mode 100644 drivers/net/can/usb/etas_es58x/es581_4.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es581_4.h
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_core.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_core.h
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_fd.c
+ create mode 100644 drivers/net/can/usb/etas_es58x/es58x_fd.h
+
+-- 
+2.26.3
 
