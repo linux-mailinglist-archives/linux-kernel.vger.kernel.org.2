@@ -2,92 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A7D135AC92
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBA835AC98
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:57:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233943AbhDJJwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 05:52:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
+        id S234333AbhDJJ5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 05:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234433AbhDJJwG (ORCPT
+        with ESMTP id S229632AbhDJJ5F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 05:52:06 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3212C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:51:51 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id a6so7914951wrw.8
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:51:51 -0700 (PDT)
+        Sat, 10 Apr 2021 05:57:05 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB4AC061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:56:51 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id z1so9303797edb.8
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:56:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=15ioqRn6Fo545fxwUFF9JCSdykE1utM0Wbzea0PS/lI=;
-        b=DUaQJScvbKkaGH6B3Vx4t/g/QjX87xQS1im5Q1eY/4J+pfm+nzXhzwVd/Kz5MFdd/E
-         x9VZBDHqFNn/nL4z3vRBGL15J2Df+jmrbo2Iw3GKpKh912OgADO8XpJN+XFjqBQ74cFt
-         PV+TrHgaNUxs9hfZnLvibDWaS967mShOaS8q3Rr6oaiCg9UbIWD8PJD8eWyLVGzx/1V4
-         fs7e+yQarLPt+CLJo49vIfFsoCX4Kqzz3HDG60Ctjv39rgZk+03IqTpSjwdkERtx8i6z
-         PxBcq2MQPqalFbUJPPTCIr8smpsL2XZGrUxVpW6rofuccJy/ABgtrjKUIUt9Tgm2t7oe
-         1vqQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=R7rBJwvSAC/U1G/3zxbwR8KyBOKUXLbBfKOEweX//uY=;
+        b=NErw0TlHpG+ciy/hxMying/Srgf0B9zekhOJhuYaDR23UNAPrZEdMoXSrijuTarJET
+         5WMeRO26b30orBqbL9eYFdLuEV5UcnlYTInKiZiaqup4J9LWLq/SBoKdJpaFhHDHPzCU
+         fPFx9k0zEJ6HyxVRelnydGHG7ZOiAJ+EPwVoZHj03/UHHDtFleHXEokYwOCoN8ZoSuRJ
+         HKyTHpSrG/89jlzjEKiD8u6jH/L5OYfiStV6da+NAjsvzYBEHuwogdo2/7lidszjIXxQ
+         tksN3r0yIy+3q4+vZy5lZd9JbWFt4KAsbmMbGJDpdd3a7Qi95yV+OCH8RrpDbE6m5MT6
+         AVAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=15ioqRn6Fo545fxwUFF9JCSdykE1utM0Wbzea0PS/lI=;
-        b=D28YCaz6nptZvkdaharrsGyCIc28wQlxkGGQvPhAj3FxNajuPEKRjaE71OiJpRuK9/
-         mQBtpQWZMOux+KIrs7hEI/GJbNGZuaZxpwknex4s5vcpVjBKPua9qzbcNlHxvSR2v0QC
-         G9UAaFbXJFy+cByBddiYQ7xtstATOy/zxpq+UOwO/CXLOA+1v65/p+cDZQMU/EOSmdXf
-         ip87/LpO3LFaLEGlg56R+BFI32PXmLqrc83u/SPTeSVrWYFbThDPcVlVyZ7Xo7ShmwSQ
-         XOTWRqK8VxE7YxsR62soyppwYY6i1KH5Cc7pQ7jHCOzVhujJnx6sX8149/loXBlGhUi/
-         4fRw==
-X-Gm-Message-State: AOAM531NZJlhAuUpvbQsT23+yIA90rnPoD/knDMI6LwcfSQuNUdyBjBl
-        9XpaVd1J4R895fPBDXhmLxZpXw==
-X-Google-Smtp-Source: ABdhPJyTN5i5EroR3M7DHUs2wFQPU+62meiESddNXbvdJ4KK8ZR2T41u6Jb6tLz84EyV/EDXId7kbA==
-X-Received: by 2002:a5d:5152:: with SMTP id u18mr21196851wrt.289.1618048310745;
-        Sat, 10 Apr 2021 02:51:50 -0700 (PDT)
-Received: from localhost.localdomain (2.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.a.1.e.e.d.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:dfde:e1a0::2])
-        by smtp.gmail.com with ESMTPSA id h9sm7183469wmb.35.2021.04.10.02.51.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=R7rBJwvSAC/U1G/3zxbwR8KyBOKUXLbBfKOEweX//uY=;
+        b=gnEZ/PeJ21DcYls45Ojwq3lSDvnjbAjwFQmZSz+EzjTNGl7PJdcRn2nuWsiOtjH5t6
+         YeSHoNReiUzZn85396zTVwu/uGUzZvUlGoof5RiqrNZ6jrsCHCiD74L4uN5lY0g9WJuj
+         WOBs7H+FyucCcesfXRU3AOBhi2Y/8CbQ2WnZKZtPo7yU9WvxOu6Kxh079R0Q8FvMoqdU
+         VRHNX0nbv5TVJgcbgkSWWLYmAZudVITWANCyezGqm8KQMb+OjgAprjIweh28tPF5lzkA
+         idVYMwo5zU4UEUaLB1ZBv+UEl2byItvygIPYCWqHfHG06syakJEV3zjzsITKfy0XHki0
+         zO0A==
+X-Gm-Message-State: AOAM533d9xy9OvieAD9+mqIkkL7o+U7673bAN64lhGrYuX3LBXhHN1aE
+        rJe6F3PHAAKrK/BmRbsg1RU=
+X-Google-Smtp-Source: ABdhPJyq0zgm5wR9LvWiesZ3tQROh+rNBKo1IgyXHhG5GB+hK/nkqpnsHWeEj15Vyp2t3dAT1QQ8Eg==
+X-Received: by 2002:a05:6402:104c:: with SMTP id e12mr20648735edu.108.1618048609947;
+        Sat, 10 Apr 2021 02:56:49 -0700 (PDT)
+Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id p4sm2209078edr.43.2021.04.10.02.56.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Apr 2021 02:51:50 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, willemb@google.com, linmiaohe@huawei.com,
-        edumazet@google.com, linyunsheng@huawei.com, alobakin@pm.me,
-        elver@google.com, gnault@redhat.com, dseok.yi@samsung.com,
-        viro@zeniv.linux.org.uk, vladimir.oltean@nxp.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: core: sk_buff: zero-fill skb->data in __alloc_skb function
-Date:   Sat, 10 Apr 2021 10:51:49 +0100
-Message-Id: <20210410095149.3708143-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.30.2
+        Sat, 10 Apr 2021 02:56:49 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH 4/4] staging: rtl8723bs: Change the type and use of a variable
+Date:   Sat, 10 Apr 2021 11:56:48 +0200
+Message-ID: <24152421.bNubvhIgUM@localhost.localdomain>
+In-Reply-To: <YHFwZCh+s7ymrsQN@kroah.com>
+References: <20210410092232.15155-1-fmdefrancesco@gmail.com> <20210410092232.15155-5-fmdefrancesco@gmail.com> <YHFwZCh+s7ymrsQN@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zero-fill skb->data in __alloc_skb function of net/core/skbuff.c,
-up to start of struct skb_shared_info bytes. Fixes a KMSAN-found
-uninit-value bug reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=abe95dc3e3e9667fc23b8d81f29ecad95c6f106f
+On Saturday, April 10, 2021 11:31:16 AM CEST Greg KH wrote:
+> On Sat, Apr 10, 2021 at 11:22:32AM +0200, Fabio M. De Francesco wrote:
+> > Change the type of fw_current_in_ps_mode from u8 to bool, because
+> > it is used everywhere as a bool and, accordingly, it should be
+> > declared as a bool. Shorten the controlling
+> > expression of an 'if' statement.
+> > 
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> > 
+> >  drivers/staging/rtl8723bs/hal/hal_intf.c        | 2 +-
+> >  drivers/staging/rtl8723bs/include/rtw_pwrctrl.h | 2 +-
+> >  2 files changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/staging/rtl8723bs/hal/hal_intf.c
+> > b/drivers/staging/rtl8723bs/hal/hal_intf.c index
+> > 96fe172ced8d..8dc4dd8c6d4c 100644
+> > --- a/drivers/staging/rtl8723bs/hal/hal_intf.c
+> > +++ b/drivers/staging/rtl8723bs/hal/hal_intf.c
+> > @@ -348,7 +348,7 @@ void rtw_hal_dm_watchdog(struct adapter *padapter)
+> > 
+> >  void rtw_hal_dm_watchdog_in_lps(struct adapter *padapter)
+> >  {
+> > 
+> > -	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode == true) 
+{
+> > +	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode) {
+> > 
+> >  		if (padapter->HalFunc.hal_dm_watchdog_in_lps)
+> >  		
+> >  			padapter-
+>HalFunc.hal_dm_watchdog_in_lps(padapter); /* this
+> >  			function caller is in interrupt context 
+*/>  	
+> >  	}
+> > 
+> > diff --git a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> > b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h index
+> > 0a48f1653be5..0767dbb84199 100644
+> > --- a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> > +++ b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
+> > @@ -203,7 +203,7 @@ struct pwrctrl_priv {
+> > 
+> >  	u8 LpsIdleCount;
+> >  	u8 power_mgnt;
+> >  	u8 org_power_mgnt;
+> > 
+> > -	u8 fw_current_in_ps_mode;
+> > +	bool fw_current_in_ps_mode;
+> > 
+> >  	unsigned long	DelayLPSLastTimeStamp;
+> >  	s32		pnp_current_pwr_state;
+> >  	u8 pnp_bstop_trx;
+> 
+> If this is only checked, how can it ever be true?  Who ever sets this
+> value?
+>
+You're right. It is not set, therefore the "if" control expression cannot 
+ever be "true".
 
-Reported-by: syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- net/core/skbuff.c | 1 +
- 1 file changed, 1 insertion(+)
+Can I delete this statement in a new patch? Or you prefer I send the whole 
+series again with this change in patch 4/4?
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index 785daff48030..9ac26cdb5417 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -215,6 +215,7 @@ struct sk_buff *__alloc_skb(unsigned int size, gfp_t gfp_mask,
- 	 * to allow max possible filling before reallocation.
- 	 */
- 	size = SKB_WITH_OVERHEAD(ksize(data));
-+	memset(data, 0, size);
- 	prefetchw(data + size);
- 
- 	/*
--- 
-2.30.2
+Thanks,
+
+Fabio
+>
+> thanks,
+> 
+> greg k-h
+
+
+
 
