@@ -2,119 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CACF35AD7F
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D72CC35AD82
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 15:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234760AbhDJNQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 09:16:33 -0400
-Received: from mga12.intel.com ([192.55.52.136]:64539 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234262AbhDJNQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 09:16:30 -0400
-IronPort-SDR: ygiHZWxWLYCp4PxYRUkYNwnWhQwvO1KlKuQlqXG1SXwYe6wVgZDCmIlEv1+qja4ombxy/HZcM/
- G1Xz4zg/xkng==
-X-IronPort-AV: E=McAfee;i="6000,8403,9950"; a="173409214"
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="173409214"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 06:16:16 -0700
-IronPort-SDR: K9zar4f0vNOGus1eGQXEBDsrvlbQ2NnorowaLzI/5TOGNIA6PF243l/U4Mkiep86Z7go7fx+s8
- 60kNxwsxmwgg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,210,1613462400"; 
-   d="scan'208";a="388085254"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga007.fm.intel.com with ESMTP; 10 Apr 2021 06:16:15 -0700
-Received: from linux.intel.com (unknown [10.88.229.80])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S234663AbhDJNSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 09:18:30 -0400
+Received: from mail-out.m-online.net ([212.18.0.10]:52290 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234262AbhDJNS3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 09:18:29 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4FHbCm3ymZz1s2K6;
+        Sat, 10 Apr 2021 15:18:12 +0200 (CEST)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4FHbCm2vWBz1qqwx;
+        Sat, 10 Apr 2021 15:18:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id vHMAnVr03gwN; Sat, 10 Apr 2021 15:18:10 +0200 (CEST)
+X-Auth-Info: RGcXB+iopJ+4TeVqcxAEHEGJxp5Cx/Cne2UyxCPzL3A=
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 862245808EA;
-        Sat, 10 Apr 2021 06:16:12 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 21:16:09 +0800
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Richard Cochran <richardcochran@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v2 1/1] net: stmmac: Add support for external
- trigger timestamping
-Message-ID: <20210410131609.GA12931@linux.intel.com>
-References: <20210407170442.1641-1-vee.khee.wong@linux.intel.com>
- <20210409175004.2fceacdd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Sat, 10 Apr 2021 15:18:10 +0200 (CEST)
+Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware
+ node
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Roman Guskov <rguskov@dh-electronics.com>
+References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
+ <CAMRc=Mfye=O4mMiK01Q6Ok+ztSfMwMcrfaZSs+LhRxi=AM+C2w@mail.gmail.com>
+ <YE8z+ohM9abBs9SD@smile.fi.intel.com> <YE9YGGB+k7CsCNDI@smile.fi.intel.com>
+ <CAMRc=McLsamBwe8hSob11ustk2GUzOfYh7CcqNtxsM+6vgPENw@mail.gmail.com>
+ <YE9whHhaa2XavKfj@smile.fi.intel.com>
+ <CAMpxmJVUVhpcNOVQCB3p8tNpac5e5c7vRQS=-avA6Cuaag9eRw@mail.gmail.com>
+ <CAHp75VfsGn=dTo+f2MtssqWpuj_Sm+LHtTaM=7oW9g8riz4xTg@mail.gmail.com>
+ <5bf6771d-5783-0a40-5a72-7ddbb9c694aa@denx.de>
+ <CAMRc=Mf+syGC92=UBXjX96wrx5oVUyo8NhOj-zGu9CAPsPTbMQ@mail.gmail.com>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <f9a9699b-138c-b927-3f4d-e6b759c74db0@denx.de>
+Date:   Sat, 10 Apr 2021 15:18:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409175004.2fceacdd@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAMRc=Mf+syGC92=UBXjX96wrx5oVUyo8NhOj-zGu9CAPsPTbMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 05:50:04PM -0700, Jakub Kicinski wrote:
-> Other than the minor nit below LGTM. Let's give Richard one more day.
+On 4/10/21 11:06 AM, Bartosz Golaszewski wrote:
+> On Sat, Apr 10, 2021 at 2:46 AM Marek Vasut <marex@denx.de> wrote:
+>>
+>> On 3/15/21 6:04 PM, Andy Shevchenko wrote:
+>>> On Mon, Mar 15, 2021 at 6:49 PM Bartosz Golaszewski
+>>> <bgolaszewski@baylibre.com> wrote:
+>>>>
+>>>> On Mon, Mar 15, 2021 at 3:34 PM Andy Shevchenko
+>>>> <andriy.shevchenko@linux.intel.com> wrote:
+>>>>>
+>>>>> On Mon, Mar 15, 2021 at 03:04:37PM +0100, Bartosz Golaszewski wrote:
+>>>>>> On Mon, Mar 15, 2021 at 1:50 PM Andy Shevchenko
+>>>>>> <andriy.shevchenko@linux.intel.com> wrote:
+>>>>>>>
+>>>>>>> On Mon, Mar 15, 2021 at 12:16:26PM +0200, Andy Shevchenko wrote:
+>>>>>>>> On Mon, Mar 15, 2021 at 10:01:47AM +0100, Bartosz Golaszewski wrote:
+>>>>>>>>> On Fri, Mar 5, 2021 at 1:03 PM Andy Shevchenko
+>>>>>>>>> <andriy.shevchenko@linux.intel.com> wrote:
+>>>>>>>>
+>>>>>>>>> Unfortunately while this may fix the particular use-case on STM32, it
+>>>>>>>>> breaks all other users as the 'gpio-line-names' property doesn't live
+>>>>>>>>> on dev_fwnode(&gdev->dev) but on dev_fwnode(chip->parent).
+>>>>>>>>>
+>>>>>>>>> How about we first look for this property on the latter and only if
+>>>>>>>>> it's not present descend down to the former fwnode?
+>>>>>>>>
+>>>>>>>> Oops, I have tested on x86 and it worked the same way.
+>>>>>>>>
+>>>>>>>> Lemme check this, but I think the issue rather in ordering when we apply fwnode
+>>>>>>>> to the newly created device and when we actually retrieve gpio-line-names
+>>>>>>>> property.
+>>>>>>>
+>>>>>>> Hmm... I can't see how it's possible can be. Can you provide a platform name
+>>>>>>> and pointers to the DTS that has been broken by the change?
+>>>>>>>
+>>>>>>
+>>>>>> I noticed it with gpio-mockup (libgpiod tests failed on v5.12-rc3) and
+>>>>>> the WiP gpio-sim - but it's the same on most DT platforms. The node
+>>>>>> that contains the `gpio-line-names` is the one associated with the
+>>>>>> platform device passed to the GPIO driver. The gpiolib then creates
+>>>>>> another struct device that becomes the child of that node but it
+>>>>>> doesn't copy the parent's properties to it (nor should it).
+>>>>>>
+>>>>>> Every driver that reads device properties does it from the parent
+>>>>>> device, not the one in gdev - whether it uses of_, fwnode_ or generic
+>>>>>> device_ properties.
+>>>>>
+>>>>> What you are telling contradicts with the idea of copying parent's fwnode
+>>>>> (or OF node) in the current code.
+>>>>>
+>>>>
+>>>> Ha! While the OF node of the parent device is indeed assigned to the
+>>>> gdev's dev, the same isn't done in the core code for fwnodes and
+>>>> simulated chips don't have an associated OF node, so this is the
+>>>> culprit I suppose.
+>>>
+>>> Close, but not fully correct.
+>>> First of all it depends on the OF / ACPI / platform enumeration.
+>>> Second, we are talking about secondary fwnode in the case where it happens.
+>>>
+>>> I'm in the middle of debugging this, I'll come up with something soon I believe.
+>>
+>> Was there ever any follow up on this ?
+>>
+>> I would like to point out that on STM32MP1 in Linux 5.10.y, the
+>> gpio-line-names are still broken, and a revert of "gpiolib: generalize
+>> devprop_gpiochip_set_names() for device properties" is still necessary.
 > 
-> On Thu,  8 Apr 2021 01:04:42 +0800 Wong Vee Khee wrote:
-> > +static void timestamp_interrupt(struct stmmac_priv *priv)
-> > +{
-> > +	struct ptp_clock_event event;
-> > +	unsigned long flags;
-> > +	u32 num_snapshot;
-> > +	u32 ts_status;
-> > +	u32 tsync_int;
-> > +	u64 ptp_time;
-> > +	int i;
-> > +
-> > +	tsync_int = readl(priv->ioaddr + GMAC_INT_STATUS) & GMAC_INT_TSIE;
-> > +
-> > +	if (!tsync_int)
-> > +		return;
-> > +
-> > +	/* Read timestamp status to clear interrupt from either external
-> > +	 * timestamp or start/end of PPS.
-> > +	 */
-> > +	ts_status = readl(priv->ioaddr + GMAC_TIMESTAMP_STATUS);
-> > +
-> > +	if (priv->plat->ext_snapshot_en) {
-> 
-> Are you intending to add more code after this if? Otherwise you could
-> flip the condition and return early instead of having the extra level
-> of indentation.
->
+> Yes, Andy has fixed that in commit b41ba2ec54a7 ("gpiolib: Read
+> "gpio-line-names" from a firmware node") but for some reason this has
+> never made its way into stable. I'll resend it.
 
-Thanks fo the suggestion.
-There's no plan to add more code after this as per STMMAC features that
-required this interrupt. I will flip the condition.
-
-> > +		num_snapshot = (ts_status & GMAC_TIMESTAMP_ATSNS_MASK) >>
-> > +			       GMAC_TIMESTAMP_ATSNS_SHIFT;
-> > +
-> > +		for (i = 0; i < num_snapshot; i++) {
-> > +			spin_lock_irqsave(&priv->ptp_lock, flags);
-> > +			get_ptptime(priv->ptpaddr, &ptp_time);
-> > +			spin_unlock_irqrestore(&priv->ptp_lock, flags);
-> > +			event.type = PTP_CLOCK_EXTTS;
-> > +			event.index = 0;
-> > +			event.timestamp = ptp_time;
-> > +			ptp_clock_event(priv->ptp_clock, &event);
-> > +		}
-> > +	}
-> > +}
-> 
-> Not really related to this patch but how does stmmac set IRQF_SHARED
-> and yet not track if it indeed generated the interrupt? Isn't that
-> against the rules?
->
-
-Good point! Thanks for pointing that out. I looked at how STMMAC
-interrupt handlers are coded, and indeed there are no tracking. Will
-work on that and send as a seperate patch in near future.
-
-
+Yes, that's the missing one, thanks. With that picked, the mp1 is fine.
