@@ -2,142 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234D935AC1C
-	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCE1635AC1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 10 Apr 2021 11:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234285AbhDJJHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 05:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43920 "EHLO
+        id S234351AbhDJJIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 05:08:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhDJJHV (ORCPT
+        with ESMTP id S229591AbhDJJIS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 05:07:21 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34625C061762
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:07:07 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id u21so12239529ejo.13
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:07:07 -0700 (PDT)
+        Sat, 10 Apr 2021 05:08:18 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA653C061762
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:08:02 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id m3so9231294edv.5
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 02:08:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hy+D3/ugFm1KkPPIMlbprnQ9KcfX248Ahg/C6irnkTY=;
-        b=nF7C+vMIJPKBKEkRT0Sk6mQuo0/73O3fTO2I9RReSOmP3Yn/u3/aIXpBTrfQxisOeQ
-         sgE+WvoIidVWit4bowRRoL+UlTBD8lk8Spfsc1eTOty2M9JRDE+EDsdNgAHvrHVIEZrT
-         wArfqz4GWCHfgvOWXypAdzNBWj+A7Ux4BqA1QKxuczZueoladA3/SxhTibwrK4XUDv+j
-         ItIzSA9ut6Ht3GJfwfEKySVEdKMXg7ZcRBnngg8ySB0PpHhUMoxcK0U2ZNYzhsk3SoGP
-         978O+/tYWQeDPMJj81HQrsYXEazL96EmHJU47wAbcmxVrkAujKHu3cRfXwA1jvVeMFP1
-         URdw==
+         :cc:content-transfer-encoding;
+        bh=RdN7YkjdyQpf6iiNC2gA6eA2FYaZ/HS1hWiO5JvUgXw=;
+        b=Wa34Zl0cDudHtlBvNmen3pJkdksvotUKFYRm7DuyNpdMU1gsyXYqO4FXkAuGq5v5H+
+         4bL3R0mGOd0jwwUWiXTzvl0lCHOYZoJoPUAtKwbc89gkmLPTiLP6iagrfK5ryqqlSKwh
+         333SReDTSzjDfagekCo4QxliRrfsxz2xXvkISXE0rWbp/SMRO0y1kqrl5WOgS6XthUa6
+         ExlngeAn7VYvZHlu4B+935KYH4QedFqIIsyOIQWGzyaerqnM0DwUsiyoErxczfen2u6+
+         bszMUJrh6eiqNRD59KFeowVv/fH7jiMADvg2c1Dnv5zVt/0Z0nQ9brT28NrrBtmiUT5y
+         5RIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hy+D3/ugFm1KkPPIMlbprnQ9KcfX248Ahg/C6irnkTY=;
-        b=bkhL/ObAh7WAI89cs027JlzNPBcjVBj4OV9EXM+gyYgzMbKLOTEqgAZXrWAwTumsEL
-         pUQSkS8mmzFEgZ0yEkd6jj3JBpXmKY/+g4KOf4boq+sVkn2Axcj1U7eSNgpjuT1MHY0b
-         rvzy/jx2m4BN/9cBwscenfrFVoagcrurJPX9t6znVwJ6EFfB8/SXkhAmG2WnXTrC5jge
-         BM/BTE5IAQFFKAodX4YptcFdWOOSL+SwzhOz7U8L8YDNOaavSf6i4Z58ZvUMtzOt+LtI
-         R/lA0byCEOg5w+A/X/T5IshDmjy/96UTlTBqZ72MJHOUFHayhhlSEh7+sMMZNQPTMPMo
-         FAxg==
-X-Gm-Message-State: AOAM530dQ1iHbER9iNiny9lp38I+nmaYt6MjBjCZgB+QajpcunROxA56
-        bP5QGchunIkZcO0N4flmN9BoFUuGII9ketNnrov0iw==
-X-Google-Smtp-Source: ABdhPJxQL97e3eOy8ciUalzfu+CKlZpF68BngVVKjK0HdtGzdfE9vkWo5rY8Cm3NeFIW3Hk7NerBQwBC9hXMEPnyMKM=
-X-Received: by 2002:a17:907:294f:: with SMTP id et15mr4890236ejc.14.1618045625884;
- Sat, 10 Apr 2021 02:07:05 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RdN7YkjdyQpf6iiNC2gA6eA2FYaZ/HS1hWiO5JvUgXw=;
+        b=GPHFyuqyE9CEVLli+Kt/S0sxqWD+6WkjHxnef0EENxlcWfghx/q/4b8wz00owCCQ8y
+         7Gv9G29igpsYKqnnohW/QbkgH3uEVdvccqN+R4hCrezv4L75OeyuW4fqhJPklRTvlHda
+         QqGiG74kKY8U0nLQOxk7ACfwfRnfOkVQ5B9PMM9rfaFXrYPtpO1/mQ5G32uLESe3kVHx
+         1gaJqQTaOo7sjHGEHpgq3a/LGJ7TDOJQ7ZxeW7+ZC0r6cmTLxubJwI121t010yAx/cvf
+         j7O6eV9v9buCEWATGnyid+21DzqPnfhhlF+mD4dvj4mdUPgOLJCRPn+rcIC6QFRYphf0
+         ZTXA==
+X-Gm-Message-State: AOAM532+xtl/rGMRAgcEUOW8gL877UvSA7xMn52AHDWFEfKRYQl9Z+5W
+        IRRzO+fKW5Sk87NEKKT+SrKprNOYqvjaC383H5X0ug==
+X-Google-Smtp-Source: ABdhPJxUtrh9zQUuo+LYNfKjxSTA/5MyqWQwZH46l6Y4oAU7CJ0jIfauv2bWU74yPO0J3GRHMIqyYVbwk1SNAEiSSe4=
+X-Received: by 2002:a50:c3c2:: with SMTP id i2mr21142662edf.23.1618045681491;
+ Sat, 10 Apr 2021 02:08:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210305120240.42830-1-andriy.shevchenko@linux.intel.com>
- <CAMRc=Mfye=O4mMiK01Q6Ok+ztSfMwMcrfaZSs+LhRxi=AM+C2w@mail.gmail.com>
- <YE8z+ohM9abBs9SD@smile.fi.intel.com> <YE9YGGB+k7CsCNDI@smile.fi.intel.com>
- <CAMRc=McLsamBwe8hSob11ustk2GUzOfYh7CcqNtxsM+6vgPENw@mail.gmail.com>
- <YE9whHhaa2XavKfj@smile.fi.intel.com> <CAMpxmJVUVhpcNOVQCB3p8tNpac5e5c7vRQS=-avA6Cuaag9eRw@mail.gmail.com>
- <CAHp75VfsGn=dTo+f2MtssqWpuj_Sm+LHtTaM=7oW9g8riz4xTg@mail.gmail.com> <5bf6771d-5783-0a40-5a72-7ddbb9c694aa@denx.de>
-In-Reply-To: <5bf6771d-5783-0a40-5a72-7ddbb9c694aa@denx.de>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Sat, 10 Apr 2021 11:06:55 +0200
-Message-ID: <CAMRc=Mf+syGC92=UBXjX96wrx5oVUyo8NhOj-zGu9CAPsPTbMQ@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] gpiolib: Read "gpio-line-names" from a firmware node
-To:     Marek Vasut <marex@denx.de>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Roman Guskov <rguskov@dh-electronics.com>
+References: <20210409095301.525783608@linuxfoundation.org>
+In-Reply-To: <20210409095301.525783608@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 10 Apr 2021 14:37:49 +0530
+Message-ID: <CA+G9fYs3kDdR_3KwHQ7gaWAYXG5gRjsjBc9dZGWuvbciWdbC2w@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/18] 4.19.186-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 2:46 AM Marek Vasut <marex@denx.de> wrote:
+On Fri, 9 Apr 2021 at 15:27, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On 3/15/21 6:04 PM, Andy Shevchenko wrote:
-> > On Mon, Mar 15, 2021 at 6:49 PM Bartosz Golaszewski
-> > <bgolaszewski@baylibre.com> wrote:
-> >>
-> >> On Mon, Mar 15, 2021 at 3:34 PM Andy Shevchenko
-> >> <andriy.shevchenko@linux.intel.com> wrote:
-> >>>
-> >>> On Mon, Mar 15, 2021 at 03:04:37PM +0100, Bartosz Golaszewski wrote:
-> >>>> On Mon, Mar 15, 2021 at 1:50 PM Andy Shevchenko
-> >>>> <andriy.shevchenko@linux.intel.com> wrote:
-> >>>>>
-> >>>>> On Mon, Mar 15, 2021 at 12:16:26PM +0200, Andy Shevchenko wrote:
-> >>>>>> On Mon, Mar 15, 2021 at 10:01:47AM +0100, Bartosz Golaszewski wrote:
-> >>>>>>> On Fri, Mar 5, 2021 at 1:03 PM Andy Shevchenko
-> >>>>>>> <andriy.shevchenko@linux.intel.com> wrote:
-> >>>>>>
-> >>>>>>> Unfortunately while this may fix the particular use-case on STM32, it
-> >>>>>>> breaks all other users as the 'gpio-line-names' property doesn't live
-> >>>>>>> on dev_fwnode(&gdev->dev) but on dev_fwnode(chip->parent).
-> >>>>>>>
-> >>>>>>> How about we first look for this property on the latter and only if
-> >>>>>>> it's not present descend down to the former fwnode?
-> >>>>>>
-> >>>>>> Oops, I have tested on x86 and it worked the same way.
-> >>>>>>
-> >>>>>> Lemme check this, but I think the issue rather in ordering when we apply fwnode
-> >>>>>> to the newly created device and when we actually retrieve gpio-line-names
-> >>>>>> property.
-> >>>>>
-> >>>>> Hmm... I can't see how it's possible can be. Can you provide a platform name
-> >>>>> and pointers to the DTS that has been broken by the change?
-> >>>>>
-> >>>>
-> >>>> I noticed it with gpio-mockup (libgpiod tests failed on v5.12-rc3) and
-> >>>> the WiP gpio-sim - but it's the same on most DT platforms. The node
-> >>>> that contains the `gpio-line-names` is the one associated with the
-> >>>> platform device passed to the GPIO driver. The gpiolib then creates
-> >>>> another struct device that becomes the child of that node but it
-> >>>> doesn't copy the parent's properties to it (nor should it).
-> >>>>
-> >>>> Every driver that reads device properties does it from the parent
-> >>>> device, not the one in gdev - whether it uses of_, fwnode_ or generic
-> >>>> device_ properties.
-> >>>
-> >>> What you are telling contradicts with the idea of copying parent's fwnode
-> >>> (or OF node) in the current code.
-> >>>
-> >>
-> >> Ha! While the OF node of the parent device is indeed assigned to the
-> >> gdev's dev, the same isn't done in the core code for fwnodes and
-> >> simulated chips don't have an associated OF node, so this is the
-> >> culprit I suppose.
-> >
-> > Close, but not fully correct.
-> > First of all it depends on the OF / ACPI / platform enumeration.
-> > Second, we are talking about secondary fwnode in the case where it happens.
-> >
-> > I'm in the middle of debugging this, I'll come up with something soon I believe.
+> This is the start of the stable review cycle for the 4.19.186 release.
+> There are 18 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Was there ever any follow up on this ?
+> Responses should be made by Sun, 11 Apr 2021 09:52:52 +0000.
+> Anything received after that time might be too late.
 >
-> I would like to point out that on STM32MP1 in Linux 5.10.y, the
-> gpio-line-names are still broken, and a revert of "gpiolib: generalize
-> devprop_gpiochip_set_names() for device properties" is still necessary.
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.186-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Yes, Andy has fixed that in commit b41ba2ec54a7 ("gpiolib: Read
-"gpio-line-names" from a firmware node") but for some reason this has
-never made its way into stable. I'll resend it.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Bartosz
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.19.186-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.19.y
+* git commit: 6aba908ea95f2196c499c922cfae662412d5040a
+* git describe: v4.19.185-19-g6aba908ea95f
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.185-19-g6aba908ea95f
+
+## No regressions (compared to v4.19.185)
+
+## No fixes (compared to v4.19.185)
+
+## Test result summary
+ total: 67843, pass: 55043, fail: 1811, skip: 10773, xfail: 216,
+
+## Build Summary
+* arm: 96 total, 96 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 13 passed, 1 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 39 total, 39 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 15 total, 14 passed, 1 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
