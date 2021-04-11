@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DCF35B336
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CEF935B338
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:53:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235204AbhDKKsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 06:48:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50600 "EHLO mail.kernel.org"
+        id S235269AbhDKKx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 06:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229804AbhDKKsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 06:48:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84A29610C8;
-        Sun, 11 Apr 2021 10:48:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618138095;
-        bh=wjrS/KROvZgN4prWB2irrpi1jT+DNisYvdSKxbc6SrY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=soC0vgn7RguM2iT5XuRh1zNC+MHgqtA1WFFw52SCDo+ky06u+AUTeOiLPmwOvihRB
-         0Ai3sS/AdbwARbl2dL27ne/rxoPCcRsHNEUWZxSGurYLkTxBEcl6Vv6kTLn3CX59kR
-         JL+gYUCPtm3XYmHGJDylsmowqiMerWtRpFH/gLBNzGGoGrd7vJ2xdqRb0NNasVELlM
-         p9HyOZ7nBeG9upZ1eTVF1ClxhvQHzuNHS6NUXTOFmUr9ZnHVBRtQUsCN3aBj68y96P
-         F0Xz6j4l8H2qqMCyaqYehaXwzamJqHuOtY7cfqqq5NtL+gmMsTC04LIUB6atlXwQtL
-         t0is6A27yQmHg==
-Received: by pali.im (Postfix)
-        id 51E0686C; Sun, 11 Apr 2021 12:48:13 +0200 (CEST)
-Date:   Sun, 11 Apr 2021 12:48:13 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Sebastian Oechsle <setboolean@icloud.com>
-Cc:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: (dell-smm) Add Dell Latitude E7440 to fan
- control whitelist
-Message-ID: <20210411104813.pksg3un2o45m2evl@pali>
-References: <20210411095741.zmllsuc7pevdipvy@icloud.com>
+        id S235214AbhDKKxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 06:53:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05C5C60241;
+        Sun, 11 Apr 2021 10:53:35 +0000 (UTC)
+Date:   Sun, 11 Apr 2021 11:53:33 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: Re: [PATCH v4] kasan: remove redundant config option
+Message-ID: <20210411105332.GA23778@arm.com>
+References: <20210226012531.29231-1-walter-zh.wu@mediatek.com>
+ <CAAeHK+zyv1=kXtKAynnJN-77dwmPG4TXpJOLv_3W0nxXe5NjXA@mail.gmail.com>
+ <20210330223637.f3c73a78c64587e615d26766@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210411095741.zmllsuc7pevdipvy@icloud.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210330223637.f3c73a78c64587e615d26766@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday 11 April 2021 11:57:41 Sebastian Oechsle wrote:
-> Allow manual PWM control on Dell Latitude E7440.
-> 
-> Signed-off-by: Sebastian Oechsle <setboolean@icloud.com>
+Hi Andrew,
 
-Reviewed-by: Pali Rohár <pali@kernel.org>
+On Tue, Mar 30, 2021 at 10:36:37PM -0700, Andrew Morton wrote:
+> On Mon, 29 Mar 2021 16:54:26 +0200 Andrey Konovalov <andreyknvl@google.com> wrote:
+> > Looks like my patch "kasan: fix KASAN_STACK dependency for HW_TAGS"
+> > that was merged into 5.12-rc causes a build time warning:
+> > 
+> > include/linux/kasan.h:333:30: warning: 'CONFIG_KASAN_STACK' is not
+> > defined, evaluates to 0 [-Wundef]
+> > #if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > 
+> > The fix for it would either be reverting the patch (which would leave
+> > the initial issue unfixed) or applying this "kasan: remove redundant
+> > config option" patch.
+> > 
+> > Would it be possible to send this patch (with the fix-up you have in
+> > mm) for the next 5.12-rc?
+> > 
+> > Here are the required tags:
+> > 
+> > Fixes: d9b571c885a8 ("kasan: fix KASAN_STACK dependency for HW_TAGS")
+> > Cc: stable@vger.kernel.org
+> 
+> Got it, thanks.  I updated the changelog to mention the warning fix and
+> moved these ahead for a -rc merge.
 
-> 
-> Changes in v2:
-> - Fix spelling
-> - Fix format
-> ---
->  drivers/hwmon/dell-smm-hwmon.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-> index 73b9db9e3aab..2970892bed82 100644
-> --- a/drivers/hwmon/dell-smm-hwmon.c
-> +++ b/drivers/hwmon/dell-smm-hwmon.c
-> @@ -1210,6 +1210,14 @@ static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
->  		},
->  		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
->  	},
-> +	{
-> +		.ident = "Dell Latitude E7440",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Latitude E7440"),
-> +		},
-> +		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
-> +	},
->  	{ }
->  };
->  
-> -- 
-> 2.31.1
-> 
+Is there a chance this patch makes it into 5.12? I still get the warning
+with the latest Linus' tree (v5.12-rc6-408-g52e44129fba5) when enabling
+KASAN_HW_TAGS.
+
+Thanks.
+
+-- 
+Catalin
