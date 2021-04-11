@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544E935B389
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0356135B38C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235422AbhDKL2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 07:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233696AbhDKL2q (ORCPT
+        id S235434AbhDKLb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 07:31:26 -0400
+Received: from smtprelay0095.hostedemail.com ([216.40.44.95]:34308 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S233696AbhDKLbZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 07:28:46 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37D7C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 04:28:28 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id s7so9872450wru.6
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 04:28:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=J9dAOL1/x9OGCX8jNZyofTJTCoeUqrYdNX5IfEdOr5Y=;
-        b=CQ4aIESEHZLbrgLq3W2zlZMjm8FtTnlX1/lQxNBN2ovPDduyLwufYGK4tfR/U7Pb1R
-         GfR7p549duUStI4y5oqwDm51z1EFa3Jfi+EGKfRtVSWxKSXssjyLU+QwfbdslT7PttC9
-         wZ0NoN8Pd5NDfvQdVTZ/msGzep/A5SMx3JwMkB2g5Tmnbnb63OzYOZghILRA0TiXz9bm
-         C8X0oh5sGP4KG+RN0GfzwqXrlbmhCEeh3rHLQ4vRY/dd8Jkpf9t3tagYF2Hioeu2/vjj
-         VEZn7h63jGbw/7wElwSvxJu3SEg3MG57GKF5O2EcO5sf0izDe/Chl1daatWfjsT67Aod
-         v+ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=J9dAOL1/x9OGCX8jNZyofTJTCoeUqrYdNX5IfEdOr5Y=;
-        b=BkawEY0KoGKEYStWLzy2VM1F3O83KUdBkXI+hPjs7BcPNNBTU07w/zWHHTDL1ayTw0
-         BbD9blhIx5vxAcQXDRN8/vrK9ZfmXFSBtv2gcXFpsKYwAzbqpcQs+sfinzuSc7gMwFdz
-         CvgaAuelr+L71dUq27gpt8t+tbEoitfFppsVTsm+Vy6GA88nrZVJhSHaDxPuKkimjOLP
-         A/zSOkOmy3USSIik3CS7RvLyVf4BCWyAEltLYV/pCJTPHXcOHUAKCQNuYrOJqo6fAXmK
-         wwnCcfNdICNxqyycPtrU9AoJYUMvsg3Ya9xYckpNOpjrURGe/1AvhNqrX7PpDqtzklEh
-         ie4Q==
-X-Gm-Message-State: AOAM531Ews/n0dsSHEfv1vHJgtkYNQ6kvCJeWKbeuYSJUJkX5SeReJQd
-        Cm4LMRr5yE8koe9aiBozBDCoCs/4u8pyTQus
-X-Google-Smtp-Source: ABdhPJyijjrOlqRPTN5U9E2fOoqETSfRD6bEhlO7HreNF0LJ0tac6hFn4glfny66/s1Eg1hJALpjMg==
-X-Received: by 2002:a5d:4802:: with SMTP id l2mr26241365wrq.418.1618140507363;
-        Sun, 11 Apr 2021 04:28:27 -0700 (PDT)
-Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
-        by smtp.gmail.com with ESMTPSA id c12sm13209097wro.6.2021.04.11.04.28.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 04:28:26 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     davem@davemloft.net
-Cc:     kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, edumazet@google.com
-Subject: [PATCH] net: geneve: check skb is large enough for IPv4/IPv6 header
-Date:   Sun, 11 Apr 2021 12:28:24 +0100
-Message-Id: <20210411112824.1149-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.30.2
+        Sun, 11 Apr 2021 07:31:25 -0400
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id AC886181D2098;
+        Sun, 11 Apr 2021 11:31:08 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 32507315D79;
+        Sun, 11 Apr 2021 11:31:07 +0000 (UTC)
+Message-ID: <6fbc8d6b885771ad4e69fc6789d07fd2b66f01d5.camel@perches.com>
+Subject: Re: [PATCH] iommu/amd: Fix extended features logging
+From:   Joe Perches <joe@perches.com>
+To:     Alexander Monakov <amonakov@ispras.ru>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Joerg Roedel <jroedel@suse.de>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        iommu@lists.linux-foundation.org
+Date:   Sun, 11 Apr 2021 04:31:06 -0700
+In-Reply-To: <20210410211152.1938-1-amonakov@ispras.ru>
+References: <20210410211152.1938-1-amonakov@ispras.ru>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 32507315D79
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: gxjes4ah47oq6d917spxhf1rbfm9bpsm
+X-Rspamd-Server: rspamout04
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18gDYP58m9/GUiRCS+mgNCaIQI5Gz2Pa7s=
+X-HE-Tag: 1618140667-663278
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check within geneve_xmit_skb/geneve6_xmit_skb that sk_buff structure
-is large enough to include IPv4 or IPv6 header, and reject if not. The
-geneve_xmit_skb portion and overall idea was contributed by Eric Dumazet.
-Fixes a KMSAN-found uninit-value bug reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=abe95dc3e3e9667fc23b8d81f29ecad95c6f106f
+(cc'ing the printk maintainers)
 
-Suggested-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/net/geneve.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Sun, 2021-04-11 at 00:11 +0300, Alexander Monakov wrote:
+> print_iommu_info prints the EFR register and then the decoded list of
+> features on a separate line:
+> 
+> pci 0000:00:00.2: AMD-Vi: Extended features (0x206d73ef22254ade):
+>  PPR X2APIC NX GT IA GA PC GA_vAPIC
+> 
+> The second line is emitted via 'pr_cont', which causes it to have a
+> different ('warn') loglevel compared to the previous line ('info').
+> 
+> Commit 9a295ff0ffc9 attempted to rectify this by removing the newline
+> from the pci_info format string, but this doesn't work, as pci_info
+> calls implicitly append a newline anyway.
+> 
+> Restore the newline, and call pr_info with empty format string to set
+> the loglevel for subsequent pr_cont calls. The same solution is used in
+> EFI and uvesafb drivers.
+> 
+> Fixes: 9a295ff0ffc9 ("iommu/amd: Print extended features in one line to fix divergent log levels")
+> Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
+> Cc: Paul Menzel <pmenzel@molgen.mpg.de>
+> Cc: Joerg Roedel <jroedel@suse.de>
+> Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+> Cc: iommu@lists.linux-foundation.org
+> ---
+>  drivers/iommu/amd/init.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+> index 596d0c413473..a25e241eff1c 100644
+> --- a/drivers/iommu/amd/init.c
+> +++ b/drivers/iommu/amd/init.c
+> @@ -1929,8 +1929,11 @@ static void print_iommu_info(void)
+>  		pci_info(pdev, "Found IOMMU cap 0x%hx\n", iommu->cap_ptr);
+>  
+> 
+>  		if (iommu->cap & (1 << IOMMU_CAP_EFR)) {
+> -			pci_info(pdev, "Extended features (%#llx):",
+> +			pci_info(pdev, "Extended features (%#llx):\n",
+>  				 iommu->features);
+> +
+> +			pr_info("");
+> +
+>  			for (i = 0; i < ARRAY_SIZE(feat_str); ++i) {
+>  				if (iommu_feature(iommu, (1ULL << i)))
+>  					pr_cont(" %s", feat_str[i]);
 
-diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-index 5523f069b9a5..adfceb60f7f8 100644
---- a/drivers/net/geneve.c
-+++ b/drivers/net/geneve.c
-@@ -891,6 +891,9 @@ static int geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
- 	__be16 sport;
- 	int err;
- 
-+	if (!pskb_network_may_pull(skb, sizeof(struct iphdr)))
-+		return -EINVAL;
-+
- 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
- 	rt = geneve_get_v4_rt(skb, dev, gs4, &fl4, info,
- 			      geneve->cfg.info.key.tp_dst, sport);
-@@ -977,6 +980,9 @@ static int geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
- 	__be16 sport;
- 	int err;
- 
-+	if (!pskb_network_may_pull(skb, sizeof(struct ipv6hdr)))
-+		return -EINVAL;
-+
- 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
- 	dst = geneve_get_v6_dst(skb, dev, gs6, &fl6, info,
- 				geneve->cfg.info.key.tp_dst, sport);
--- 
-2.30.2
+This shouldn't be necessary.
+If this is true then a lot of output logging code broke.
+
+
 
