@@ -2,160 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B9635B2C1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4425635B2C4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235335AbhDKJbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 05:31:06 -0400
-Received: from smtp-17.italiaonline.it ([213.209.10.17]:48094 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235251AbhDKJbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 05:31:05 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([87.20.116.197])
-        by smtp-17.iol.local with ESMTPA
-        id VWQUl8Z9ptpGHVWQZlq0Q2; Sun, 11 Apr 2021 11:30:47 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1618133447; bh=lnTC5r1HNP48SU1+SuoBKaVTmVI6VQlC9Fb1r+iEXA0=;
-        h=From;
-        b=TgRAWRyHfAs+tuMKwoSIedDM/DVQtZOADjnEuZhQp6xnD9Ro3AKtIfOPkEi0KRrEh
-         yFXVqi1kY6meyCU9JcSy0kbO3rzIYZgkpA7+HBMhgcDRqmQ6T8e3qLSDoUhBhH1OWS
-         flLM5A1Z9NEc2oXpWB+SUR8NT0w70qvP/MG1J2R47g94A2F+baXQR2ljsVqiIIikXK
-         ye85ltHUJAmsbuc/SLwTSrlo3KfTHlDtAEnWtSmoAbJij5lKAKY+XPFSszuJeUswh2
-         LfGQV/a9gGgEhIc37sRbhuXtyvN3EEUjql+5z4caIQopssmhNxPTTvwL0pnOifp6IP
-         NPx9GEsISrF+w==
-X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=6072c1c7 cx=a_exe
- a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=RNOFN41U3FZ75c9ZyJUA:9
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Subject: [PATCH] serial: omap: fix rs485 half-duplex filtering
-Date:   Sun, 11 Apr 2021 11:30:41 +0200
-Message-Id: <20210411093041.3951-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfEa6BpK07ar+5PypdivtzLkcf9tCdCNVuhXAf6SmKkSYyFoFT4F9luJs5Y8bvw259OB/kt8BulLmT3cBOqDCTasrky4UU8HAwCQqmbM/BHlkoq+PgL7N
- ez5g5T1GkQNIqp4FL71z3Q4MCiJFEgzQSLVmLglD6yG3S5f32pu+x3z579MpMmxdWaCIBBZJj355z1yfdjbY483Fm2QEcEcjQ1yGZM+f3I/pNCxCO+LtqIHd
- E5yGuekGDa/L2cdI+DC8YhgamNxxRh+WO1l9Pe4v534DuTiOXuL0O5pgl5dMHAeb/ZsuoMMjAFAwh0LdAPKh2Qe2XFgd4pizLP6nPeg+LHlsQtVHuO3jXUYH
- b0/VR2rNuaRfM4hqA0aoZ9WwpM99ku6sax/crLE3vGDoO5Mq23I=
+        id S235315AbhDKJcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 05:32:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32982 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235005AbhDKJcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 05:32:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 012C0610E9;
+        Sun, 11 Apr 2021 09:32:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618133522;
+        bh=hHupB1eLGwjzMyzVCQyKhi+SnTMbneghjDlPD7+s43w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UOm/fIL1owj9+eeGLJOMYAAsUBLjDzNbFApOnRvT0wN1TmBCyAQLI3woIxJW7X0/I
+         JbcLQ0Y6kQB5lAgcuwNO3rNfO/q6tFEtC8Y9LjYfUt3Uffk5tq+PPRNttLOdFvGD0w
+         +EkUP111m/uJ0JHuFW/0XtQAzPQrmE2e76PFxNLwtJK9wgBFWHBBQ9RT74LM7OlsVi
+         o13IG5iSmPBLJJdU50J7SnEzpjiANVc0suXDp8lWdkCCFQwNkDbU7c7f0ogJRSwBzg
+         TgOU/brjYOLkLJYzfsWbq95hhNw7w9P1RLhOwK7hzELhoGYbGVSqCkLOt4etjsAbhI
+         ayvLfTvy+B+Og==
+Date:   Sun, 11 Apr 2021 12:31:58 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Raphael Norwitz <raphael.norwitz@nutanix.com>
+Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH v2] PCI: merge slot and bus reset implementations
+Message-ID: <YHLCDkFqS66xDdvY@unreal>
+References: <20210408182328.12323-1-raphael.norwitz@nutanix.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210408182328.12323-1-raphael.norwitz@nutanix.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Data received during half-duplex transmission must be filtered.
-If the target device responds quickly, emptying the FIFO at the end of
-the transmission can erase not only the echo characters but also part of
-the response message.
-By keeping the receive interrupt enabled even during transmission, it
-allows you to filter each echo character and only in a number equal to
-those transmitted.
-The issue was generated by a target device that started responding
-240us later having received a request in communication at 115200bps.
-Sometimes, some messages received by the target were missing some of the
-first bytes.
+On Thu, Apr 08, 2021 at 06:23:40PM +0000, Raphael Norwitz wrote:
+> Slot resets are bus resets with additional logic to prevent a device
+> from being removed during the reset. Currently slot and bus resets have
+> separate implementations in pci.c, complicating higher level logic. As
+> discussed on the mailing list, they should be combined into a generic
+> function which performs an SBR. This change adds a function,
+> pci_reset_bus_function(), which first attempts a slot reset and then
+> attempts a bus reset if -ENOTTY is returned, such that there is now a
+> single device agnostic function to perform an SBR.
+> 
+> This new function is also needed to add SBR reset quirks and therefore
+> is exposed in pci.h.
+> 
+> Link: https://lkml.org/lkml/2021/3/23/911
+> 
+> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
+> ---
+>  drivers/pci/pci.c   | 19 +++++++++++--------
+>  include/linux/pci.h |  1 +
+>  2 files changed, 12 insertions(+), 8 deletions(-)
+> 
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
-
----
-
- drivers/tty/serial/omap-serial.c | 38 +++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
-index 76b94d0ff586..9d17c52be2a6 100644
---- a/drivers/tty/serial/omap-serial.c
-+++ b/drivers/tty/serial/omap-serial.c
-@@ -159,6 +159,8 @@ struct uart_omap_port {
- 	u32			calc_latency;
- 	struct work_struct	qos_work;
- 	bool			is_suspending;
-+
-+	atomic_t		rs485_tx_filter_count;
- };
- 
- #define to_uart_omap_port(p) ((container_of((p), struct uart_omap_port, port)))
-@@ -328,19 +330,6 @@ static void serial_omap_stop_tx(struct uart_port *port)
- 		serial_out(up, UART_IER, up->ier);
- 	}
- 
--	if ((port->rs485.flags & SER_RS485_ENABLED) &&
--	    !(port->rs485.flags & SER_RS485_RX_DURING_TX)) {
--		/*
--		 * Empty the RX FIFO, we are not interested in anything
--		 * received during the half-duplex transmission.
--		 */
--		serial_out(up, UART_FCR, up->fcr | UART_FCR_CLEAR_RCVR);
--		/* Re-enable RX interrupts */
--		up->ier |= UART_IER_RLSI | UART_IER_RDI;
--		up->port.read_status_mask |= UART_LSR_DR;
--		serial_out(up, UART_IER, up->ier);
--	}
--
- 	pm_runtime_mark_last_busy(up->dev);
- 	pm_runtime_put_autosuspend(up->dev);
- }
-@@ -366,6 +355,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
- 		serial_out(up, UART_TX, up->port.x_char);
- 		up->port.icount.tx++;
- 		up->port.x_char = 0;
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-+			atomic_inc(&up->rs485_tx_filter_count);
-+
- 		return;
- 	}
- 	if (uart_circ_empty(xmit) || uart_tx_stopped(&up->port)) {
-@@ -377,6 +370,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
- 		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
- 		xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
- 		up->port.icount.tx++;
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-+			atomic_inc(&up->rs485_tx_filter_count);
-+
- 		if (uart_circ_empty(xmit))
- 			break;
- 	} while (--count > 0);
-@@ -420,7 +417,7 @@ static void serial_omap_start_tx(struct uart_port *port)
- 
- 	if ((port->rs485.flags & SER_RS485_ENABLED) &&
- 	    !(port->rs485.flags & SER_RS485_RX_DURING_TX))
--		serial_omap_stop_rx(port);
-+		atomic_set(&up->rs485_tx_filter_count, 0);
- 
- 	serial_omap_enable_ier_thri(up);
- 	pm_runtime_mark_last_busy(up->dev);
-@@ -491,8 +488,12 @@ static void serial_omap_rlsi(struct uart_omap_port *up, unsigned int lsr)
- 	 * Read one data character out to avoid stalling the receiver according
- 	 * to the table 23-246 of the omap4 TRM.
- 	 */
--	if (likely(lsr & UART_LSR_DR))
-+	if (likely(lsr & UART_LSR_DR)) {
- 		serial_in(up, UART_RX);
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
-+		    atomic_read(&up->rs485_tx_filter_count))
-+			atomic_dec(&up->rs485_tx_filter_count);
- 
- 	up->port.icount.rx++;
- 	flag = TTY_NORMAL;
-@@ -543,6 +544,13 @@ static void serial_omap_rdi(struct uart_omap_port *up, unsigned int lsr)
- 		return;
- 
- 	ch = serial_in(up, UART_RX);
-+	if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+	    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
-+	    atomic_read(&up->rs485_tx_filter_count)) {
-+		atomic_dec(&up->rs485_tx_filter_count);
-+		return;
-+	}
-+
- 	flag = TTY_NORMAL;
- 	up->port.icount.rx++;
- 
--- 
-2.17.1
-
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
