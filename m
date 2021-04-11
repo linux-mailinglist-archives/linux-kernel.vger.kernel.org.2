@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA89935B4AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:36:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D69835B4B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235281AbhDKNhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:37:07 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:32418 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233514AbhDKNhG (ORCPT
+        id S229804AbhDKNmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:42:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235338AbhDKNmd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:37:06 -0400
-Date:   Sun, 11 Apr 2021 13:36:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1618148208;
-        bh=S+1fGAVV8UQL2Dd8l3RggPscvGMHVfdyONCHp5RBFt4=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=czKFh2c9sv+IQ4oyKxhSmRTc3kFleH5nErGuc1aEg8oFWnZHqnsVy5XxHaHGEnOGs
-         sUflTx+qhKo9FTqB2AMjPxvuojTY/B3KUxjGOL6ZZB3dm5vJ1jpmnhQXh8meCIv/Es
-         +qjg0f7e2r9xw8bPlMsEJexDV1OhKkzlkDFw7ChpheU7gYDZB6x71IzpzJ0bju7WR+
-         zq1/Nmuh0uVJPQWHYipSga23BaeGqVtjdCfBjdHHC7VYRtO58ZMguEiQ4f7WHqxqhm
-         lZp+4iN2jIyUDYSuHpBy+/0ZERN7UjBxm8KK/uB6h06C2I4jGonquRY1Cs3EjMMkgc
-         TZLc/MmnT9cfg==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Bryan Brattlof <hello@bryanbrattlof.com>
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH v4] staging: rtl8723bs: remove unnecessary goto jumps
-Message-ID: <20210411133625.38195-1-hello@bryanbrattlof.com>
+        Sun, 11 Apr 2021 09:42:33 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6354FC06138B
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 06:42:17 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id c18so8698123iln.7
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 06:42:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jHOs/GUNj1A6ya3vcccNEUycGjR7OVNzCp35FYh45a8=;
+        b=L1RRQYC6N+Dgp4DoT7PRd517GDpNGGbtDzuZ9+qO0iXUwrd8RL0nk3BAmjHcOFMh/L
+         F58/rFW3gpuUbxOkb+NQDUNqI2Vd3qUINmwa5K/XHJOSyBC/3TDhRtaAwfXQ8f+4KIgh
+         LpKNRLly3IdatiwMfBXxgTcaR9FmlXDegyQSTfY5RJK5ZnCjwxxmIhR2c9nduL13eZcK
+         Habfk+eVF9R1w+FVnmdaQZYrgeDP17L4nvzNJZkJf2TqBDyeu/jllBXzntrXHxyerbBl
+         1+8r/iPAfKIviGsRx5iRDGpav4ASk2kzYQF0pnuXTf0wj5+r7wyM4BBuFE30AeOpbs3R
+         83Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jHOs/GUNj1A6ya3vcccNEUycGjR7OVNzCp35FYh45a8=;
+        b=qC0+B92pITUHDDyEFG20Gy/CWthjchhijb8iBc7BJLWP5V+QoR3jWCu7eA5moeTLwB
+         NFtYy8e7JUDCnj68YzXULD7x9ILq6p6dyIl0OHHArgTmdVI+eznJ3QqkidvkY1GcxTOc
+         az4/jg6SL4xlPAXAWEsW4N2KdfuZYAsy5oi3/UpH0e0WKLjyxHI1fuAZsS58kTgaijd7
+         tRBW3XGIm8kum9I9pbxXXi9LsODJ2Yb9AsKBqmyDyEGe/6w1LwNd/lv6JG5+jrYcNlpk
+         wq83lx0QWwQxAVPwaTtkt+dmoDR5Y/+ow0NwZzyixE3GAdXR/H/hNl6eis9+ZFEaxgwr
+         Vnmw==
+X-Gm-Message-State: AOAM532RKT2eJ2kS0ZZ57JvWOoOtCeh9CMraYBl+gA+2NLRR0iKfy1iE
+        Mui9n/ujBgVzr4KJquLqS5J4BxFd3d2q9A==
+X-Google-Smtp-Source: ABdhPJxuBaDdJ7m0Z1ESomTiIQVbmHZfCmZCK7Lzg4DEFwh75H0k+WYobd4D4EFPi3LJyDoysVg5gg==
+X-Received: by 2002:a05:6e02:20c5:: with SMTP id 5mr1869932ilq.14.1618148536684;
+        Sun, 11 Apr 2021 06:42:16 -0700 (PDT)
+Received: from [192.168.20.93] ([64.118.8.63])
+        by smtp.googlemail.com with ESMTPSA id b9sm4186165iof.54.2021.04.11.06.42.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Apr 2021 06:42:16 -0700 (PDT)
+Subject: Re: [PATCH net-next 4/7] net: ipa: ipa_stop() does not return an
+ error
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210409180722.1176868-1-elder@linaro.org>
+ <20210409180722.1176868-5-elder@linaro.org> <YHKYWCkPl5pucFZo@unreal>
+ <1f5c3d2c-f22a-ef5e-f282-fb2dec4479f3@linaro.org> <YHL5fwkYyHvQG2Z4@unreal>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <6e0c08a0-aebd-83b2-26b5-98f7d46d6b2b@linaro.org>
+Date:   Sun, 11 Apr 2021 08:42:15 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <YHL5fwkYyHvQG2Z4@unreal>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The next instruction for both 'goto exit' jump statements is to
-execute the exit jump instructions regardless. We can safely
-remove all jump statements from __init rtw_drv_entry()
+On 4/11/21 8:28 AM, Leon Romanovsky wrote:
+>> I think *not* checking an available return value is questionable
+>> practice.  I'd really rather have a build option for a
+>> "__need_not_check" tag and have "must_check" be the default.
+> __need_not_check == void ???
 
-Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
----
-Changes from:
-  v1: removed unnecessary edit of DBG_871X_LEVEL
-  v2: elaborated on steps to remove a checkpatch.pl warning
-  v3: separated checkpatch.pl fix into separate patch
+I'm not sure I understand your statement here, but...
 
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 4 ----
- 1 file changed, 4 deletions(-)
+My point is, I'd rather have things like printk() and
+strscpy() be marked with (an imaginary) __need_not_check,
+than the way things are, with only certain functions being
+marked __must_check.
 
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging=
-/rtl8723bs/os_dep/sdio_intf.c
-index 9fd926e1698f..2b61a4bdd8a1 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-@@ -517,12 +517,8 @@ static int __init rtw_drv_entry(void)
- =09if (ret !=3D 0) {
- =09=09sdio_drvpriv.drv_registered =3D false;
- =09=09rtw_ndev_notifier_unregister();
--=09=09goto exit;
- =09}
-=20
--=09goto exit;
--
--exit:
- =09DBG_871X_LEVEL(_drv_always_, "module init ret =3D%d\n", ret);
- =09return ret;
- }
---=20
-2.27.0
+In my view, if a function returns a value, all callers
+of that function ought to be checking it.  If the return
+value is not necessary it should be a void function if
+possible.
 
+I don't expect the world to change, but I just think the
+default should be "must check" rather than "check optional".
 
+					-Alex
