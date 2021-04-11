@@ -2,165 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AC135B2CD
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6F435B2CF
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235322AbhDKJjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 05:39:19 -0400
-Received: from smtp-17.italiaonline.it ([213.209.10.17]:44620 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229804AbhDKJjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 05:39:18 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([87.20.116.197])
-        by smtp-17.iol.local with ESMTPA
-        id VWYTl8bZQtpGHVWYXlq27L; Sun, 11 Apr 2021 11:39:01 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1618133941; bh=ID7z0ghRJGcMLBNI8gWtXJSotHesf24UhofLjYl2wx8=;
-        h=From;
-        b=UZ+wvpPuWwpZkSC0JUFedTWSOtYFoYVsablxjA2A+YzuTSr4cqGY+TYVhPlR1cykm
-         8/79L4VjHtIZDS/BFNSngOHEJPRM5rt6pXaAV1Qs2wHjrNCfj7BdqoKIGwKGX9KQ1Q
-         xZE7Yw4lWjicUaV6WSCr5axEy5PTbWfbBGUyodcGXvzbMcqSe2j0A+riAWUHwLdQWv
-         yOO3PzI5cWp0N+M4bXxS+Anm0/M+WWCeYKcyDIfJsY6nZI8bmKZnkEducW5lgGnCLd
-         4fj2hkklBAW4Tzcj9A5rkShoK8SMoHD0XfYTYggmPUz6em8ci7evylavEkelJH+tiU
-         2zw2ZM4XpCsWA==
-X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=6072c3b5 cx=a_exe
- a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
- a=RNOFN41U3FZ75c9ZyJUA:9
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
-Subject: [PATCH v2] serial: omap: fix rs485 half-duplex filtering
-Date:   Sun, 11 Apr 2021 11:38:55 +0200
-Message-Id: <20210411093855.1053-1-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-X-CMAE-Envelope: MS4xfK6aa9mZXnTp+boQAxFGXkxCvo5YQNqWCJGZ2IZNt4ryu072ADMDFiHmz2oxlejkrAvBwiRn7gydEVSJPYP7cWp8Yf3mcBTeARGwI7N2TiK+zgGjO2Km
- xgNJOWZX2LrjWEpFcrDcNC36yiFghFkoLyxtimOtunNunBcjmcFyqEyqrlY+vZgA8BVoqMw617leFNh2Mh/Rg7mpLD9v7KqT9w5Z7/TpTO8Ojh+XF0hHboLV
- tt4RVWyi/A9abZnjXiVEzTHTUtyd36B5lyssSOKC3qpm5XqilrMEN+5CTun+YOR0n4XliTpDa1tGf1ggIZqj/mLMJdQRMp/IlWwCaoKNrtTyFT2Ikhhq72AD
- ia2LyvfxbLB55GR7k8+eZq2nS9tm9athriHA/k57ulVR9d/rpXU=
+        id S235311AbhDKJlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 05:41:00 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:34830 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235267AbhDKJk7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 05:40:59 -0400
+Received: from zn.tnic (p200300ec2f23de002e7d52dd33d8f804.dip0.t-ipconnect.de [IPv6:2003:ec:2f23:de00:2e7d:52dd:33d8:f804])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7824F1EC0350;
+        Sun, 11 Apr 2021 11:40:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618134042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=CHl4jeX0ttoaB+n97ZavUjRTE8LvpyYYuduWXYDQ4GM=;
+        b=NoLiA/3SBAtfgzkSEvdCHVtIX0PJgTFA33YRXJQ7Wj1FOQ+m+xu48EykaOTQCE1Mz5kWc+
+        7i5lHIkfCXJsfEcKDAd8hb33UZvki71r0eZiGorWtRuRhQsmDHpaHZaumogouB6FPfkjAZ
+        6dR7aVLMe8FYea/ToJsPYeTy7D/almo=
+Date:   Sun, 11 Apr 2021 11:40:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Feng Tang <feng.tang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, rui.zhang@intel.com,
+        andi.kleen@intel.com, dave.hansen@intel.com, len.brown@intel.com
+Subject: Re: [PATCH] x86/msr: Block writes to certain MSRs unconditionally
+Message-ID: <20210411094040.GC14022@zn.tnic>
+References: <1617092747-15769-1-git-send-email-feng.tang@intel.com>
+ <87y2dq32xc.ffs@nanos.tec.linutronix.de>
+ <20210410094752.GB21691@zn.tnic>
+ <20210410121144.GC21691@zn.tnic>
+ <87r1jiug4e.fsf@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87r1jiug4e.fsf@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Data received during half-duplex transmission must be filtered.
-If the target device responds quickly, emptying the FIFO at the end of
-the transmission can erase not only the echo characters but also part of
-the response message.
-By keeping the receive interrupt enabled even during transmission, it
-allows you to filter each echo character and only in a number equal to
-those transmitted.
-The issue was generated by a target device that started responding
-240us later having received a request in communication at 115200bps.
-Sometimes, some messages received by the target were missing some of the
-first bytes.
+On Sat, Apr 10, 2021 at 11:52:17AM -0700, Andi Kleen wrote:
+> Have you ever seen any user programs actually write those MSRs?
+> I don't see why they ever would, it's not that they have any motivation
+> to do it (unlike SMM), and I don't know of any examples.
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
+You'd be surprised how much motivation people have to poke at random
+MSRs. Just browse some of those tools on github which think poking at
+MSRs is ok.
 
+> The whole MSR blocking seems more like a tilting at windmills
+> type effort.
 
----
+Nope, this is trying to salvage the current situation of people thinking
+it is a good idea to poke at random MSRs and develop all kinds of tools
+around it and then run those tools ontop of a kernel which pokes at
+those same MSRs.
 
-Changes in v2:
-- Fix compiling error
+It is not really hard to realize that touching resources in an
+unsynchronized way is a disaster waiting to happen. No matter how useful
+and how wonderful those tools are.
 
- drivers/tty/serial/omap-serial.c | 39 ++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 15 deletions(-)
+> But on a non locked down system fully accessible MSRs are really
+> useful for all kind of debugging and tuning, and anything that
+> prevents that is bad.
 
-diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
-index 76b94d0ff586..c0df22b7ea5e 100644
---- a/drivers/tty/serial/omap-serial.c
-+++ b/drivers/tty/serial/omap-serial.c
-@@ -159,6 +159,8 @@ struct uart_omap_port {
- 	u32			calc_latency;
- 	struct work_struct	qos_work;
- 	bool			is_suspending;
-+
-+	atomic_t		rs485_tx_filter_count;
- };
- 
- #define to_uart_omap_port(p) ((container_of((p), struct uart_omap_port, port)))
-@@ -328,19 +330,6 @@ static void serial_omap_stop_tx(struct uart_port *port)
- 		serial_out(up, UART_IER, up->ier);
- 	}
- 
--	if ((port->rs485.flags & SER_RS485_ENABLED) &&
--	    !(port->rs485.flags & SER_RS485_RX_DURING_TX)) {
--		/*
--		 * Empty the RX FIFO, we are not interested in anything
--		 * received during the half-duplex transmission.
--		 */
--		serial_out(up, UART_FCR, up->fcr | UART_FCR_CLEAR_RCVR);
--		/* Re-enable RX interrupts */
--		up->ier |= UART_IER_RLSI | UART_IER_RDI;
--		up->port.read_status_mask |= UART_LSR_DR;
--		serial_out(up, UART_IER, up->ier);
--	}
--
- 	pm_runtime_mark_last_busy(up->dev);
- 	pm_runtime_put_autosuspend(up->dev);
- }
-@@ -366,6 +355,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
- 		serial_out(up, UART_TX, up->port.x_char);
- 		up->port.icount.tx++;
- 		up->port.x_char = 0;
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-+			atomic_inc(&up->rs485_tx_filter_count);
-+
- 		return;
- 	}
- 	if (uart_circ_empty(xmit) || uart_tx_stopped(&up->port)) {
-@@ -377,6 +370,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
- 		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
- 		xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
- 		up->port.icount.tx++;
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
-+			atomic_inc(&up->rs485_tx_filter_count);
-+
- 		if (uart_circ_empty(xmit))
- 			break;
- 	} while (--count > 0);
-@@ -420,7 +417,7 @@ static void serial_omap_start_tx(struct uart_port *port)
- 
- 	if ((port->rs485.flags & SER_RS485_ENABLED) &&
- 	    !(port->rs485.flags & SER_RS485_RX_DURING_TX))
--		serial_omap_stop_rx(port);
-+		atomic_set(&up->rs485_tx_filter_count, 0);
- 
- 	serial_omap_enable_ier_thri(up);
- 	pm_runtime_mark_last_busy(up->dev);
-@@ -491,8 +488,13 @@ static void serial_omap_rlsi(struct uart_omap_port *up, unsigned int lsr)
- 	 * Read one data character out to avoid stalling the receiver according
- 	 * to the table 23-246 of the omap4 TRM.
- 	 */
--	if (likely(lsr & UART_LSR_DR))
-+	if (likely(lsr & UART_LSR_DR)) {
- 		serial_in(up, UART_RX);
-+		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
-+		    atomic_read(&up->rs485_tx_filter_count))
-+			atomic_dec(&up->rs485_tx_filter_count);
-+	}
- 
- 	up->port.icount.rx++;
- 	flag = TTY_NORMAL;
-@@ -543,6 +545,13 @@ static void serial_omap_rdi(struct uart_omap_port *up, unsigned int lsr)
- 		return;
- 
- 	ch = serial_in(up, UART_RX);
-+	if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
-+	    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
-+	    atomic_read(&up->rs485_tx_filter_count)) {
-+		atomic_dec(&up->rs485_tx_filter_count);
-+		return;
-+	}
-+
- 	flag = TTY_NORMAL;
- 	up->port.icount.rx++;
- 
+If you wanna do that, you can just as well patch your kernel.
+
+We're currently tainting the kernel on MSR writes and perhaps that's
+good enough for now but if some tool starts doing dumb crap and pokes at
+MSRs it should not be poking at and users start complaining because of
+it, I'm committing that.
+
 -- 
-2.17.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
