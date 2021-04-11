@@ -2,103 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D4135B498
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7208535B49B
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235535AbhDKN2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:28:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229804AbhDKN2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:28:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 668AA61042;
-        Sun, 11 Apr 2021 13:28:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618147715;
-        bh=PG4kqQZC0C6teZuojGxYzzZ517iaE42zQVnfJXJE7Lg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bb1DYdseG6I8texPAGMIOZRMeYi5JPI/p5TyxnzH6W1k6qERJvJ+BvrO59KkyXG4u
-         22yf+oV6a9tlW+qAwz0F+rTK8rtxr9hIEAvG0n74IVQYruThNYh3YtUOK3zF5clbm6
-         bqZ9Jh6YtpagCR/FQBQGgu1C9Om6U/ipafbS9XJ5XjyKFywvc3LgswN8JwnkAC0Owk
-         E9w02PkInBGMsHN8lC5gavEMt2PWpBbIPBApVUWK9jf+aWGgpfcoLRu5iMaMKJbF1W
-         12Kn1TlqYx8Skw6pPfNBwTctgvBMBns9Qe+Vm6OpHUAMuErFGGDxarePbhpvYOs7MU
-         sqSPHDA6/gSCw==
-Date:   Sun, 11 Apr 2021 16:28:31 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 4/7] net: ipa: ipa_stop() does not return an
- error
-Message-ID: <YHL5fwkYyHvQG2Z4@unreal>
-References: <20210409180722.1176868-1-elder@linaro.org>
- <20210409180722.1176868-5-elder@linaro.org>
- <YHKYWCkPl5pucFZo@unreal>
- <1f5c3d2c-f22a-ef5e-f282-fb2dec4479f3@linaro.org>
+        id S235603AbhDKNbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhDKNbF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 09:31:05 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9E7C061574;
+        Sun, 11 Apr 2021 06:30:49 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id s5so1921147qkj.5;
+        Sun, 11 Apr 2021 06:30:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k6XFIB4STIeXtLPIKFPXYzrdbDO2OgsIOJuX+w5wyAE=;
+        b=anclmgSV2jcPO2Cp8fkQyLx8f/b9dXBZOwQUN6QQDkiuf7TZ3WfD14EjAu9eEufzQn
+         TEfZ6hI4P9PAOdyHMPqc1O7s+YQNgxzoUwbQGljDia+c6aH/pZbJC+gXIsHai4MV87L7
+         OMF68r6oVcatfshSamARlMrRKTkUjtjSOmr/SLCvErXyDAlxiGff/j7HIar2d7CbiNrQ
+         D/Fr3dlOf5uZrLJrryYx0sz3YYZ9OH3sqOdRHifhHCAVV/Kpz90aQ+qa5xFgPEZMhrG3
+         Qzo2TClh5cUaYurrV3ga1c+XvXVQL+7krMTjb8W2GmOiqEFA3q2GJWX8FXx3mrhvJniD
+         fjEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=k6XFIB4STIeXtLPIKFPXYzrdbDO2OgsIOJuX+w5wyAE=;
+        b=F3WnJS8nY8+xrh01ZAQyuZh3CA/Z8XjXegw0SYt+T9wXx9pCP9590xoT6Y05q1wwfK
+         nZOi/N6zNqwkbgFJfd3xQdt06DUsLteFcoLTS5qOZqKp4hXlPzKlezQvFWMoRAAyS7ms
+         /15u9OCC5GQ3DvOUIGgXX4RI6ZdfHwfzps4OKDrRWD0OUCKgwwtj/TYBsACsj8dDsZlU
+         8V92q5EQWAEn1W5/Y+UxKvGcoSGw1iRtUDmW6wSzyuV0c7t7v0HP0O559XiCbDxn5hrE
+         +u2+1BsqBsAeB5P6vXWfz2Rf6TOeHeG5YAGajHwwZGxL+IpmpH9L6i176XqDeERux5Nj
+         yGzQ==
+X-Gm-Message-State: AOAM531mv5AxfaimEy0tZWkPcrGS9Wq3hQfVVApAP60EZCf/bYMzGfw5
+        fIOjSW6pugWWHY/8uu3B5IU=
+X-Google-Smtp-Source: ABdhPJy3fY5dm0l3x6k/JHAJaSkE66BIYn9D77v7Rq8BBYDfYP1HDeaOC5czXnZx+JZEi9RThCnGBA==
+X-Received: by 2002:a37:a442:: with SMTP id n63mr10290277qke.124.1618147848135;
+        Sun, 11 Apr 2021 06:30:48 -0700 (PDT)
+Received: from master-laptop.sparksnet (c-98-233-193-225.hsd1.md.comcast.net. [98.233.193.225])
+        by smtp.gmail.com with ESMTPSA id l17sm5734204qtk.60.2021.04.11.06.30.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Apr 2021 06:30:47 -0700 (PDT)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     Jianqun Xu <jay.xu@rock-chips.com>, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, linus.walleij@linaro.org,
+        heiko@sntech.de
+Cc:     linux-gpio@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Peter Geis <pgwipeout@gmail.com>
+Subject: [PATCH v2 0/7] gpio-rockchip driver
+Date:   Sun, 11 Apr 2021 09:30:23 -0400
+Message-Id: <20210411133030.1663936-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f5c3d2c-f22a-ef5e-f282-fb2dec4479f3@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 08:09:55AM -0500, Alex Elder wrote:
-> On 4/11/21 1:34 AM, Leon Romanovsky wrote:
-> > On Fri, Apr 09, 2021 at 01:07:19PM -0500, Alex Elder wrote:
-> >> In ipa_modem_stop(), if the modem netdev pointer is non-null we call
-> >> ipa_stop().  We check for an error and if one is returned we handle
-> >> it.  But ipa_stop() never returns an error, so this extra handling
-> >> is unnecessary.  Simplify the code in ipa_modem_stop() based on the
-> >> knowledge no error handling is needed at this spot.
-> >>
-> >> Signed-off-by: Alex Elder <elder@linaro.org>
-> >> ---
-> >>  drivers/net/ipa/ipa_modem.c | 18 ++++--------------
-> >>  1 file changed, 4 insertions(+), 14 deletions(-)
-> > 
-> > <...>
-> > 
-> >> +	/* Stop the queue and disable the endpoints if it's open */
-> >>  	if (netdev) {
-> >> -		/* Stop the queue and disable the endpoints if it's open */
-> >> -		ret = ipa_stop(netdev);
-> >> -		if (ret)
-> >> -			goto out_set_state;
-> >> -
-> >> +		(void)ipa_stop(netdev);
-> > 
-> > This void casting is not needed here and in more general case sometimes
-> > even be seen as a mistake, for example if the returned attribute declared
-> > as __must_check.
-> 
-> I accept your point but I feel like it's sort of a 50/50 thing.
-> 
-> I think *not* checking an available return value is questionable
-> practice.  I'd really rather have a build option for a
-> "__need_not_check" tag and have "must_check" be the default.
+Separate gpio driver from pinctrl driver, and support v2 controller.
 
-__need_not_check == void ???
+Tested on rk3566-quartz64 prototype board.
 
-> 
-> The void cast here says "I know this returns a result, but I am
-> intentionally not checking it."  If it had been __must_check I
-> would certainly have checked it.  
-> 
-> That being said, I don't really care that much, so I'll plan
-> to post version 2, which will drop this cast (I'll probably
-> add a comment though).
+Patch History:
+V2 - Rebase to latest linux-next.
 
-Thanks
+Tested-by: Peter Geis <pgwipeout@gmail.com>
 
-> 
-> Thanks.
-> 
-> 					-Alex
-> 
-> > 
-> > Thanks
-> > 
-> 
+Jianqun Xu (7):
+  pinctrl/rockchip: separate struct rockchip_pin_bank to a head file
+  pinctrl/pinctrl-rockchip.h: add pinctrl device to gpio bank struct
+  gpio: separate gpio driver from pinctrl-rockchip driver
+  gpio/rockchip: use struct rockchip_gpio_regs for gpio controller
+  gpio/rockchip: support next version gpio controller
+  gpio/rockchip: always enable clock for gpio controller
+  gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
+
+ drivers/gpio/Kconfig               |   8 +
+ drivers/gpio/Makefile              |   1 +
+ drivers/gpio/gpio-rockchip.c       | 758 ++++++++++++++++++++++++
+ drivers/pinctrl/pinctrl-rockchip.c | 911 +----------------------------
+ drivers/pinctrl/pinctrl-rockchip.h | 287 +++++++++
+ 5 files changed, 1073 insertions(+), 892 deletions(-)
+ create mode 100644 drivers/gpio/gpio-rockchip.c
+ create mode 100644 drivers/pinctrl/pinctrl-rockchip.h
+
+-- 
+2.25.1
+
