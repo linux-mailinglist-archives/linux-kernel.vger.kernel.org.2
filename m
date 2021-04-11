@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DFD035B51F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7342235B51A
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236114AbhDKNpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:45:19 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33388 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235655AbhDKNoD (ORCPT
+        id S236092AbhDKNpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235640AbhDKNoB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:44:03 -0400
+        Sun, 11 Apr 2021 09:44:01 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FEF1C06138E;
+        Sun, 11 Apr 2021 06:43:43 -0700 (PDT)
 Date:   Sun, 11 Apr 2021 13:43:24 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618148605;
+        s=2020; t=1618148604;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=jmAEvPFyqqGggxMpVNexwZI9hu6XYu26LoQIgrOQLmI=;
-        b=iPtaTRQFQLdH0c/VFz67fbo/jkjwJhrkeYBJNLaUK0htKLWZHtp+NkUzN1fKza3aFmpRDC
-        Hk7JSrd47idsZsSPntUxllNdKrLY7cKTVv7CVlLgkRRygLZ+o1gn/TC7Dw0eUzvSRkdNeu
-        RiAGasffpMAdaUhLD6J6H1sEWiYCH7j3biPsB4HVCp4jq/sDOFiu0q2ecWE+zuN+sqkkF/
-        Ou29gYbLpyqXO1bV2YyHATxxZMvmBi7VwF5vIokcc8gBpW/EPNUQ5JZ5TXto9NGU84q+R5
-        6g0CzP6dBIeVMPumLENQS66Scz8ag7FkuQSs20Fe1pFveo5Na2753Usy5TV4FQ==
+        bh=ZMZ/uP9aV6vCzCAxRrUBKHzJgOu6Z0w6CkG4kQ/V0Pc=;
+        b=rxwbp0ZVZ0oJSVCkRpdDZ4arFLJC5j5zX23a17zsz8+7On9EpLwJQ4Cjb9NKzepZdmPSMe
+        VhoQO0tX7OMZrnEXj81hUmZuf9F0GwBJQkDjp6ki2zSHH4OGU1LMNq9wla1s8pyIKNxVVm
+        oCH38zJlVWb1uYkNMmc4l4lhWptxcQYzjMP//dxDUyS38hKxCZ4DcEhaABH6cZbZDrxUj+
+        rCjUZRNtjce8sYUUqoIfD1lYdT/AC4j9p2NMEM95nZ28FfZlPyqF2p1nZboies+TFNkR12
+        JwO7MqlFoJOoBSyFMPjjgShAJrTwtCRD4RONWG0Q8Nn8DkiWLGBYhXBe9rEaJg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618148605;
+        s=2020e; t=1618148604;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=jmAEvPFyqqGggxMpVNexwZI9hu6XYu26LoQIgrOQLmI=;
-        b=b9Y2jvgdlhxRg7IEqsKho1lHfaZ8TP1liH+7Zl30Cx9K4DqxMAk+f/sxom3GZE8dx/w7K0
-        7Kf5wIV6KjQludDw==
+        bh=ZMZ/uP9aV6vCzCAxRrUBKHzJgOu6Z0w6CkG4kQ/V0Pc=;
+        b=8xGvzOvF5RFbAB47Qo8Tn/R73OtaC+g4hLO5A3XjKYT73nr1zmc+8SCwLSj4ZrFqO5rHYR
+        9XRovqsJsKhi6BAA==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Record TORTURE_KCONFIG_GDB_ARG in qemu-cmd
+Subject: [tip: core/rcu] torture: Extract kvm-test-1-run-qemu.sh from
+ kvm-test-1-run.sh
 Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161814860446.29796.2193811030979572881.tip-bot2@tip-bot2>
+Message-ID: <161814860414.29796.1022695471715477674.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,34 +55,336 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     cc45716e07a41233b7c0b2183b0a3e60b85192e0
-Gitweb:        https://git.kernel.org/tip/cc45716e07a41233b7c0b2183b0a3e60b85192e0
+Commit-ID:     d53f52d6fc220ba2074338ce6a91f837c7a7cba0
+Gitweb:        https://git.kernel.org/tip/d53f52d6fc220ba2074338ce6a91f837c7a7cba0
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 11 Feb 2021 16:19:29 -08:00
+AuthorDate:    Fri, 12 Feb 2021 14:00:05 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 22 Mar 2021 08:29:15 -07:00
+CommitterDate: Mon, 22 Mar 2021 08:29:16 -07:00
 
-torture: Record TORTURE_KCONFIG_GDB_ARG in qemu-cmd
+torture: Extract kvm-test-1-run-qemu.sh from kvm-test-1-run.sh
 
-When re-running old rcutorture builds, if the original run involved
-gdb, the re-run also needs to do so.  This commit therefore records the
-TORTURE_KCONFIG_GDB_ARG environment variable into the qemu-cmd file so
-that the re-run can access it.
+Currently, kvm-test-1-run.sh both builds and runs an rcutorture kernel,
+which is inconvenient when it is necessary to re-run an old run or to
+carry out a run on a remote system.  This commit therefore extracts the
+portion of kvm-test-1-run.sh that invoke qemu to actually run rcutorture
+and places it in kvm-test-1-run-qemu.sh.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh | 170 +++++++-
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh      | 127 +-----
+ 2 files changed, 171 insertions(+), 126 deletions(-)
+ create mode 100755 tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
 
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
+new file mode 100755
+index 0000000..6b0d71b
+--- /dev/null
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run-qemu.sh
+@@ -0,0 +1,170 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0+
++#
++# Carry out a kvm-based run for the specified qemu-cmd file, which might
++# have been generated by --build-only kvm.sh run.
++#
++# Usage: kvm-test-1-run-qemu.sh qemu-cmd-dir
++#
++# qemu-cmd-dir provides the directory containing qemu-cmd file.
++#	This is assumed to be of the form prefix/ds/scenario, where
++#	"ds" is the top-level date-stamped directory and "scenario"
++#	is the scenario name.  Any required adjustments to this file
++#	must have been made by the caller.  The shell-command comments
++#	at the end of the qemu-cmd file are not optional.
++#
++# Copyright (C) 2021 Facebook, Inc.
++#
++# Authors: Paul E. McKenney <paulmck@kernel.org>
++
++T=${TMPDIR-/tmp}/kvm-test-1-run-qemu.sh.$$
++trap 'rm -rf $T' 0
++mkdir $T
++
++resdir="$1"
++if ! test -d "$resdir"
++then
++	echo $0: Nonexistent directory: $resdir
++	exit 1
++fi
++if ! test -f "$resdir/qemu-cmd"
++then
++	echo $0: Nonexistent qemu-cmd file: $resdir/qemu-cmd
++	exit 1
++fi
++
++# Obtain settings from the qemu-cmd file.
++grep '^#' $resdir/qemu-cmd | sed -e 's/^# //' > $T/qemu-cmd-settings
++. $T/qemu-cmd-settings
++
++# Decorate qemu-cmd with redirection, backgrounding, and PID capture
++sed -e 's/$/ 2>\&1 \&/' < $resdir/qemu-cmd > $T/qemu-cmd
++echo 'echo $! > $resdir/qemu_pid' >> $T/qemu-cmd
++
++# In case qemu refuses to run...
++echo "NOTE: $QEMU either did not run or was interactive" > $resdir/console.log
++
++# Attempt to run qemu
++kstarttime=`gawk 'BEGIN { print systime() }' < /dev/null`
++( . $T/qemu-cmd; wait `cat  $resdir/qemu_pid`; echo $? > $resdir/qemu-retval ) &
++commandcompleted=0
++if test -z "$TORTURE_KCONFIG_GDB_ARG"
++then
++	sleep 10 # Give qemu's pid a chance to reach the file
++	if test -s "$resdir/qemu_pid"
++	then
++		qemu_pid=`cat "$resdir/qemu_pid"`
++		echo Monitoring qemu job at pid $qemu_pid
++	else
++		qemu_pid=""
++		echo Monitoring qemu job at yet-as-unknown pid
++	fi
++fi
++if test -n "$TORTURE_KCONFIG_GDB_ARG"
++then
++	base_resdir=`echo $resdir | sed -e 's/\.[0-9]\+$//'`
++	if ! test -f $base_resdir/vmlinux
++	then
++		base_resdir=/path/to
++	fi
++	echo Waiting for you to attach a debug session, for example: > /dev/tty
++	echo "    gdb $base_resdir/vmlinux" > /dev/tty
++	echo 'After symbols load and the "(gdb)" prompt appears:' > /dev/tty
++	echo "    target remote :1234" > /dev/tty
++	echo "    continue" > /dev/tty
++	kstarttime=`gawk 'BEGIN { print systime() }' < /dev/null`
++fi
++while :
++do
++	if test -z "$qemu_pid" -a -s "$resdir/qemu_pid"
++	then
++		qemu_pid=`cat "$resdir/qemu_pid"`
++	fi
++	kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
++	if test -z "$qemu_pid" || kill -0 "$qemu_pid" > /dev/null 2>&1
++	then
++		if test -n "$TORTURE_KCONFIG_GDB_ARG"
++		then
++			:
++		elif test $kruntime -ge $seconds || test -f "$resdir/../STOP.1"
++		then
++			break;
++		fi
++		sleep 1
++	else
++		commandcompleted=1
++		if test $kruntime -lt $seconds
++		then
++			echo Completed in $kruntime vs. $seconds >> $resdir/Warnings 2>&1
++			grep "^(qemu) qemu:" $resdir/kvm-test-1-run.sh.out >> $resdir/Warnings 2>&1
++			killpid="`sed -n "s/^(qemu) qemu: terminating on signal [0-9]* from pid \([0-9]*\).*$/\1/p" $resdir/Warnings`"
++			if test -n "$killpid"
++			then
++				echo "ps -fp $killpid" >> $resdir/Warnings 2>&1
++				ps -fp $killpid >> $resdir/Warnings 2>&1
++			fi
++		else
++			echo ' ---' `date`: "Kernel done"
++		fi
++		break
++	fi
++done
++if test -z "$qemu_pid" -a -s "$resdir/qemu_pid"
++then
++	qemu_pid=`cat "$resdir/qemu_pid"`
++fi
++if test $commandcompleted -eq 0 -a -n "$qemu_pid"
++then
++	if ! test -f "$resdir/../STOP.1"
++	then
++		echo Grace period for qemu job at pid $qemu_pid
++	fi
++	oldline="`tail $resdir/console.log`"
++	while :
++	do
++		if test -f "$resdir/../STOP.1"
++		then
++			echo "PID $qemu_pid killed due to run STOP.1 request" >> $resdir/Warnings 2>&1
++			kill -KILL $qemu_pid
++			break
++		fi
++		kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
++		if kill -0 $qemu_pid > /dev/null 2>&1
++		then
++			:
++		else
++			break
++		fi
++		must_continue=no
++		newline="`tail $resdir/console.log`"
++		if test "$newline" != "$oldline" && echo $newline | grep -q ' [0-9]\+us : '
++		then
++			must_continue=yes
++		fi
++		last_ts="`tail $resdir/console.log | grep '^\[ *[0-9]\+\.[0-9]\+]' | tail -1 | sed -e 's/^\[ *//' -e 's/\..*$//'`"
++		if test -z "$last_ts"
++		then
++			last_ts=0
++		fi
++		if test "$newline" != "$oldline" -a "$last_ts" -lt $((seconds + $TORTURE_SHUTDOWN_GRACE))
++		then
++			must_continue=yes
++		fi
++		if test $must_continue = no -a $kruntime -ge $((seconds + $TORTURE_SHUTDOWN_GRACE))
++		then
++			echo "!!! PID $qemu_pid hung at $kruntime vs. $seconds seconds" >> $resdir/Warnings 2>&1
++			kill -KILL $qemu_pid
++			break
++		fi
++		oldline=$newline
++		sleep 10
++	done
++elif test -z "$qemu_pid"
++then
++	echo Unknown PID, cannot kill qemu command
++fi
++
++# Tell the script that this run is done.
++rm -f $resdir/build.run
++
++parse-console.sh $resdir/console.log $title
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index eb5346b..5d9ac90 100755
+index 5d9ac90..f3d2ded 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -201,6 +201,7 @@ echo kernel here: `head -n 1 $testid_txt | sed -e 's/^Build directory: //'`  >> 
- echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_append $boot_args\" $TORTURE_QEMU_GDB_ARG > $resdir/qemu-cmd
- echo "# TORTURE_SHUTDOWN_GRACE=$TORTURE_SHUTDOWN_GRACE" >> $resdir/qemu-cmd
- echo "# seconds=$seconds" >> $resdir/qemu-cmd
-+echo "# TORTURE_KCONFIG_GDB_ARG=\"$TORTURE_KCONFIG_GDB_ARG\"" >> $resdir/qemu-cmd
+@@ -210,129 +210,4 @@ then
+ 	exit 0
+ fi
  
- if test -n "$TORTURE_BUILDONLY"
- then
+-# Decorate qemu-cmd with redirection, backgrounding, and PID capture
+-sed -e 's/$/ 2>\&1 \&/' < $resdir/qemu-cmd > $T/qemu-cmd
+-echo 'echo $! > $resdir/qemu_pid' >> $T/qemu-cmd
+-
+-# In case qemu refuses to run...
+-echo "NOTE: $QEMU either did not run or was interactive" > $resdir/console.log
+-
+-# Attempt to run qemu
+-kstarttime=`gawk 'BEGIN { print systime() }' < /dev/null`
+-( . $T/qemu-cmd; wait `cat  $resdir/qemu_pid`; echo $? > $resdir/qemu-retval ) &
+-commandcompleted=0
+-if test -z "$TORTURE_KCONFIG_GDB_ARG"
+-then
+-	sleep 10 # Give qemu's pid a chance to reach the file
+-	if test -s "$resdir/qemu_pid"
+-	then
+-		qemu_pid=`cat "$resdir/qemu_pid"`
+-		echo Monitoring qemu job at pid $qemu_pid
+-	else
+-		qemu_pid=""
+-		echo Monitoring qemu job at yet-as-unknown pid
+-	fi
+-fi
+-if test -n "$TORTURE_KCONFIG_GDB_ARG"
+-then
+-	echo Waiting for you to attach a debug session, for example: > /dev/tty
+-	echo "    gdb $base_resdir/vmlinux" > /dev/tty
+-	echo 'After symbols load and the "(gdb)" prompt appears:' > /dev/tty
+-	echo "    target remote :1234" > /dev/tty
+-	echo "    continue" > /dev/tty
+-	kstarttime=`gawk 'BEGIN { print systime() }' < /dev/null`
+-fi
+-while :
+-do
+-	if test -z "$qemu_pid" -a -s "$resdir/qemu_pid"
+-	then
+-		qemu_pid=`cat "$resdir/qemu_pid"`
+-	fi
+-	kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
+-	if test -z "$qemu_pid" || kill -0 "$qemu_pid" > /dev/null 2>&1
+-	then
+-		if test -n "$TORTURE_KCONFIG_GDB_ARG"
+-		then
+-			:
+-		elif test $kruntime -ge $seconds || test -f "$resdir/../STOP.1"
+-		then
+-			break;
+-		fi
+-		sleep 1
+-	else
+-		commandcompleted=1
+-		if test $kruntime -lt $seconds
+-		then
+-			echo Completed in $kruntime vs. $seconds >> $resdir/Warnings 2>&1
+-			grep "^(qemu) qemu:" $resdir/kvm-test-1-run.sh.out >> $resdir/Warnings 2>&1
+-			killpid="`sed -n "s/^(qemu) qemu: terminating on signal [0-9]* from pid \([0-9]*\).*$/\1/p" $resdir/Warnings`"
+-			if test -n "$killpid"
+-			then
+-				echo "ps -fp $killpid" >> $resdir/Warnings 2>&1
+-				ps -fp $killpid >> $resdir/Warnings 2>&1
+-			fi
+-		else
+-			echo ' ---' `date`: "Kernel done"
+-		fi
+-		break
+-	fi
+-done
+-if test -z "$qemu_pid" -a -s "$resdir/qemu_pid"
+-then
+-	qemu_pid=`cat "$resdir/qemu_pid"`
+-fi
+-if test $commandcompleted -eq 0 -a -n "$qemu_pid"
+-then
+-	if ! test -f "$resdir/../STOP.1"
+-	then
+-		echo Grace period for qemu job at pid $qemu_pid
+-	fi
+-	oldline="`tail $resdir/console.log`"
+-	while :
+-	do
+-		if test -f "$resdir/../STOP.1"
+-		then
+-			echo "PID $qemu_pid killed due to run STOP.1 request" >> $resdir/Warnings 2>&1
+-			kill -KILL $qemu_pid
+-			break
+-		fi
+-		kruntime=`gawk 'BEGIN { print systime() - '"$kstarttime"' }' < /dev/null`
+-		if kill -0 $qemu_pid > /dev/null 2>&1
+-		then
+-			:
+-		else
+-			break
+-		fi
+-		must_continue=no
+-		newline="`tail $resdir/console.log`"
+-		if test "$newline" != "$oldline" && echo $newline | grep -q ' [0-9]\+us : '
+-		then
+-			must_continue=yes
+-		fi
+-		last_ts="`tail $resdir/console.log | grep '^\[ *[0-9]\+\.[0-9]\+]' | tail -1 | sed -e 's/^\[ *//' -e 's/\..*$//'`"
+-		if test -z "$last_ts"
+-		then
+-			last_ts=0
+-		fi
+-		if test "$newline" != "$oldline" -a "$last_ts" -lt $((seconds + $TORTURE_SHUTDOWN_GRACE))
+-		then
+-			must_continue=yes
+-		fi
+-		if test $must_continue = no -a $kruntime -ge $((seconds + $TORTURE_SHUTDOWN_GRACE))
+-		then
+-			echo "!!! PID $qemu_pid hung at $kruntime vs. $seconds seconds" >> $resdir/Warnings 2>&1
+-			kill -KILL $qemu_pid
+-			break
+-		fi
+-		oldline=$newline
+-		sleep 10
+-	done
+-elif test -z "$qemu_pid"
+-then
+-	echo Unknown PID, cannot kill qemu command
+-fi
+-
+-# Tell the script that this run is done.
+-rm -f $resdir/build.run
+-
+-parse-console.sh $resdir/console.log $title
++kvm-test-1-run-qemu.sh $resdir
