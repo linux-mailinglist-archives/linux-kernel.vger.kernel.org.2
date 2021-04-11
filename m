@@ -2,117 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 428AC35B70F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 23:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBAE035B712
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 23:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235448AbhDKVlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 17:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbhDKVlY (ORCPT
+        id S235618AbhDKVoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 17:44:08 -0400
+Received: from angie.orcam.me.uk ([157.25.102.26]:38708 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231405AbhDKVoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 17:41:24 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C60C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 14:41:08 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id a85so7458175pfa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 14:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+fiWyB9PhZA7feIGTFUmyxbY9Jp7+5HLpxk5Rc5dRkU=;
-        b=Dlc6xfKWjgDIFi8sgGz/DQzY3fGMErdoWktMMh2I7bKW3HOC++m9k0hKMf1TpHKENW
-         3dT+5Xwy8YYs9vRD8qiBjSTAvNwC7fF6aMLSFr7vq1ygd/ZvhKbUGtHm+Y/Ns3biyx3a
-         roUGSfKjF/hmk77vyhAOs++JApJtogogA6TdoiNrUXcafNT3KnVCOtc/BZJPY+H1B3aq
-         ggNjA+QUya21b1PUEwecWpFw5K0As+ixltg6UopS+azSDbGsVzGHV602DQVEOxJGphgc
-         iG+Aj0vglgDYCO53mbd0njbjoLg7StSovqJSKFFDYM/4pUqHlXgIxs502CEB0e9ZZqgq
-         EG6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=+fiWyB9PhZA7feIGTFUmyxbY9Jp7+5HLpxk5Rc5dRkU=;
-        b=XZGua5HIBebX2I7jzZPiGV3Z6SUR6Sz3JLSOp9Y/V6d9msW7jY74YqDdYVeD1cTSCx
-         iuZZO19CiVu+XStPPQA33JkC6FBO5hhov26TB7wvfxv4jgn8vyc8C5UX5LnB2/2r1Bhg
-         C69wcPSELNgdVymb3QToI9WkdIQ1oXCqRHh/6bpUM9pdpZb1zcVLhPOfotBhE23LrRgN
-         ihGaH9ukgA6IvrwsPykEtbtkhOr57Bj9zvFxhEAAt/ztW2JEMh1aLSNhH9eUqVAv6mzJ
-         xddtBXdc1p0wpXJRajYKtk1A4DdYOmBsuBf9Ege91gIqDl2Wzps9AttLoWeWvJSXvg9m
-         ZQ/A==
-X-Gm-Message-State: AOAM5325jBX5CExHcZgT2MFDSJ45Ba6wXLkcVpLvPu6x4rBsbmtND8Kx
-        btWnDyARB3lF5BwA9AYU6LZQfw==
-X-Google-Smtp-Source: ABdhPJz+f0azA3WHUJPvxLvvsVHFC2p159IkByFsI6fDdDCKC6kai/pYaObykVjFOqOqGAHJoTg8lA==
-X-Received: by 2002:a65:5282:: with SMTP id y2mr24123536pgp.293.1618177267560;
-        Sun, 11 Apr 2021 14:41:07 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 92sm8635526pjz.7.2021.04.11.14.41.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 14:41:07 -0700 (PDT)
-Date:   Sun, 11 Apr 2021 14:41:07 -0700 (PDT)
-X-Google-Original-Date: Sun, 11 Apr 2021 14:40:50 PDT (-0700)
-Subject:     Re: [PATCH] implement flush_cache_vmap and flush_cache_vunmap for RISC-V
-In-Reply-To: <20210329015510.44110-1-liu@jiuyang.me>
-CC:     alex@ghiti.fr, liu@jiuyang.me, waterman@eecs.berkeley.edu,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, akpm@linux-foundation.org,
-        geert@linux-m68k.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     liu@jiuyang.me
-Message-ID: <mhng-92e28f5c-ced0-4a92-949f-0fd865c0bbf5@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Sun, 11 Apr 2021 17:44:07 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id BAD2692009C; Sun, 11 Apr 2021 23:43:48 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id B342192009B;
+        Sun, 11 Apr 2021 23:43:48 +0200 (CEST)
+Date:   Sun, 11 Apr 2021 23:43:48 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Greg KH <gregkh@linuxfoundation.org>
+cc:     Martin Hostettler <textshell@uchuujin.de>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        jirislaby@kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
+        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
+        b.zolnierkie@samsung.com, deller@gmx.de,
+        syzkaller-bugs@googlegroups.com,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        George Kennedy <george.kennedy@oracle.com>
+Subject: Re: [PATCH] vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
+In-Reply-To: <20200929171040.GB1351851@kroah.com>
+Message-ID: <alpine.DEB.2.21.2104112250310.65251@angie.orcam.me.uk>
+References: <000000000000226d3f05b02dd607@google.com> <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp> <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp> <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp> <20200927092701.GA1037755@PWN>
+ <4933b81b-9b1a-355b-df0e-9b31e8280ab9@i-love.sakura.ne.jp> <20200928175956.GF24673@neutronstar.dyndns.org> <100dfd3f-3415-80ae-a6cf-30d15f7ca49f@i-love.sakura.ne.jp> <20200929105203.GG24673@neutronstar.dyndns.org> <20200929165657.GS438822@phenom.ffwll.local>
+ <20200929171040.GB1351851@kroah.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 28 Mar 2021 18:55:09 PDT (-0700), liu@jiuyang.me wrote:
-> This patch implements flush_cache_vmap and flush_cache_vunmap for
-> RISC-V, since these functions might modify PTE. Without this patch,
-> SFENCE.VMA won't be added to related codes, which might introduce a bug
-> in some out-of-order micro-architecture implementations.
->
-> Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
-> ---
->  arch/riscv/include/asm/cacheflush.h | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/asm/cacheflush.h
-> index 23ff70350992..4adf25248c43 100644
-> --- a/arch/riscv/include/asm/cacheflush.h
-> +++ b/arch/riscv/include/asm/cacheflush.h
-> @@ -8,6 +8,14 @@
->
->  #include <linux/mm.h>
->
-> +/*
-> + * flush_cache_vmap and flush_cache_vunmap might modify PTE, needs SFENCE.VMA.
-> + * - flush_cache_vmap is invoked after map_kernel_range() has installed the page table entries.
-> + * - flush_cache_vunmap is invoked before unmap_kernel_range() deletes the page table entries
+On Tue, 29 Sep 2020, Greg KH wrote:
 
-These should have line breaks.
+> > > > >> VT_RESIZEX was introduced in Linux 1.3.3, but it is unclear that what
+> > > > >> comes to the "+ more" part, and I couldn't find a user of VT_RESIZEX.
+> > > > >>
+> > > > > 
+> > > > > It seems this is/was used by "svgatextmode" which seems to be at
+> > > > > http://www.ibiblio.org/pub/Linux/utils/console/
+> > > > > 
+> > > > > Not sure if that kind of software still has a chance to work nowadays.
+> > > > > 
+> > > > 
+> > > > Thanks for the information.
+> > > > 
+> > > > It seems that v.v_vlin = curr_textmode->VDisplay / (MOFLG_ISSET(curr_textmode, ATTR_DOUBLESCAN) ? 2 : 1)
+> > > > and v.v_clin = curr_textmode->FontHeight . Thus, v.v_clin is font's height and seems to be non-zero.
+> > > > But according to https://bugs.gentoo.org/19485 , people are using kernel framebuffer instead.
+> > > > 
+> > > 
+> > > Yes, this seems to be from pre framebuffer times.
+> > > 
+> > > Back in the days "svga" was the wording you got for "pokes svga card
+> > > hardware registers from userspace drivers". And textmode means font
+> > > rendering is done via (fixed function in those times) hardware scanout
+> > > engine. Of course having only to update 2 bytes per character was a huge
+> > > saving early on. Likely this is also before vesa VBE was reliable.
+> > > 
+> > > So i guess the point where this all starts going wrong allowing the X parts
+> > > of the api to be combined with FB based rendering at all? Sounds the only
+> > > user didn't use that combination and so it was never tested?
+> > > 
+> > > Then again, this all relates to hardware from 20 years ago...
+> > 
+> > Imo userspace modesetting should be burned down anywhere we can. We've
+> > gotten away with this in drivers/gpu by just seamlessly transitioning to
+> > kernel drivers.
+> > 
+> > Since th only userspace we've found seems to be able to cope if this ioctl
+> > doesn't do anything, my vote goes towards ripping it out completely and
+> > doing nothing in there. Only question is whether we should error or fail
+> > with a silent success: Former is safer, latter can avoid a few regression
+> > reports since the userspace tools keep "working", and usually people don't
+> > notice for stuff this old. It worked in drivers/gpu :-)
+> 
+> This patch just ignores the ioctl and keeps on going, so userspace
+> "shouldn't" notice it :)
+> 
+> And it's in linux-next now, so all should be good.
 
-> + */
-> +#define flush_cache_vmap(start, end) flush_tlb_all()
+ So it does trigger with vgacon and my old server, which I have started 
+experimenting with and for a start I have switched to a new kernel for an 
+unrelated purpose (now that I have relieved it from all its usual tasks 
+except for the last remaining one for which I haven't got the required 
+user software ported to the new system yet):
 
-We shouldn't need cache flushes for permission upgrades: the ISA allows 
-the old mappings to be visible until a fence, but the theory is that 
-window will be sort for reasonable architectures so the overhead of 
-flushing the entire TLB will overwhelm the extra faults.  There are a 
-handful of places where we preemptively flush, but those are generally 
-because we can't handle the faults correctly.
+"struct vt_consize"->v_vlin is ignored. Please report if you need this.
+"struct vt_consize"->v_clin is ignored. Please report if you need this.
 
-If you have some benchmark that demonstrates a performance issue on real 
-hardware here then I'm happy to talk about this further, but this 
-assumption is all over arch/riscv so I'd prefer to keep things 
-consistent for now.
+It continues using svgatextmode with its glass (CRT) VT to set my usual 
+80x37 text mode (720x576 pixel resolution) by manipulating the VGA clock 
+chip and the CRT controller appropriately for a nice refresh rate of 85Hz:
 
-> +#define flush_cache_vunmap(start, end) flush_tlb_all()
+Chipset = `TVGA8900', Textmode clock = 44.90 MHz, 80x37 chars, CharCell = 9x16. Refresh = 52.51kHz/84.7Hz.
 
-This one does seem necessary.
+ Indeed the piece of software became less usable around Y2K as clock chip 
+support stopped being added to svgatextmode for new video adapters, but 
+with the advent of LCD technology and its disregard for the refresh rate 
+previously driven by the pixel clock the program got its second life and I 
+have used it ever since with its plain VGA driver by just manipulating the 
+CRTC for the resolution required:
 
-> +
->  static inline void local_flush_icache_all(void)
->  {
->  	asm volatile ("fence.i" ::: "memory");
+Chipset = `VGA', Textmode clock = 28.32 MHz, 80x37 chars, CharCell = 9x16. Refresh = 31.47kHz/49.0Hz.
+
+(that would still work with a standard 800x600 SVGA CRT, but the refresh 
+rate would make anyone's eyes cry soon; with LCD it's just awesome, and 
+the VGA emulation of the actual graphics adapter turns it at the video 
+output into a 1600x1200 picture at the horizontal and vertical rates of 
+75KHz and 60Hz respectively, making the text produced on LCD outstanding 
+while showing about the right amount of it).
+
+ But I'm currently ~160km/100mi away from the server I have triggered this 
+message with, so I cannot easily check what's going on with its VT.  And I 
+can't fiddle with my production laptop (ThinkPad P51) I have with me that 
+I also use svgatextmode with so much as to reboot it with a new kernel 
+(plain Debian 4.19.16-1~bpo9+1 still here).
+
+ So what's the supposed impact of this change that prompted the inclusion 
+of the messages?  I can port svgatextmode (it's my own compilation anyway) 
+if that is required for it to continue working correctly, but I need to 
+understand the circumstances here.  I have failed to find a satisfactory 
+alternative solution to vgacon and svgatextmode; the main showstopper is 
+the IBM's hardware trick for a 9x16 character cell that I rely on.
+
+  Maciej
