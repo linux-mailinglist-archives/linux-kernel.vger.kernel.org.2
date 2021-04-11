@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3047835B404
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 14:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7163B35B40B
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 14:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235380AbhDKMNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 08:13:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20612 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229804AbhDKMNC (ORCPT
+        id S235440AbhDKMPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 08:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53080 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhDKMPN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 08:13:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618143164;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cd5a7MnBxaCycfDTV6DQTS58oQm03SFk+/qhnkSwHlw=;
-        b=QVHabn0DDofRJgpGNX7RdoMqyc1zKlZ2/IyTgQ6BQFZ6wcAYpgxVfeout3oegXm/YgTBbb
-        RmhZvl3Vy0osIfsyBlDC4COr8YJ+PXMU9uNrG6JiaOpW69bOEn8h1UV+Op81GcXIiDh6mP
-        ClwNp5kbR7g+/ge2kZusapp9pLymGt4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-248-r9GIkX2eOQKuVWu8pninBQ-1; Sun, 11 Apr 2021 08:12:42 -0400
-X-MC-Unique: r9GIkX2eOQKuVWu8pninBQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 141AD10053E6;
-        Sun, 11 Apr 2021 12:12:40 +0000 (UTC)
-Received: from [10.36.112.22] (ovpn-112-22.ams2.redhat.com [10.36.112.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 362465D6D3;
-        Sun, 11 Apr 2021 12:12:29 +0000 (UTC)
-Subject: Re: [PATCH v12 01/13] vfio: VFIO_IOMMU_SET_PASID_TABLE
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     eric.auger.pro@gmail.com, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, will@kernel.org, maz@kernel.org,
-        robin.murphy@arm.com, joro@8bytes.org, alex.williamson@redhat.com,
-        tn@semihalf.com, zhukeqian1@huawei.com,
-        jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        wangxingang5@huawei.com, jiangkunkun@huawei.com,
-        jean-philippe@linaro.org, zhangfei.gao@linaro.org,
-        zhangfei.gao@gmail.com, vivek.gautam@arm.com,
-        shameerali.kolothum.thodi@huawei.com, nicoleotsuka@gmail.com,
-        lushenming@huawei.com, vsethi@nvidia.com,
-        wanghaibin.wang@huawei.com
-References: <20210223210625.604517-1-eric.auger@redhat.com>
- <20210223210625.604517-2-eric.auger@redhat.com>
- <d0f254c3-0b63-e4d3-1f58-8940adc7c0bf@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <513f8129-7ddc-f19f-e25a-e2a4b6cbe593@redhat.com>
-Date:   Sun, 11 Apr 2021 14:12:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Sun, 11 Apr 2021 08:15:13 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A323AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 05:14:57 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id f8so11696478edd.11
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 05:14:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=ND1ABC4isPqUlNnqtYq+IVoMqwScJQsEGqTSQB/EfMY=;
+        b=q4sqqSDqpvChT0QeXshWvWtx7JBTWh/wvifDGT95IdIRu0CTSX1egyCqLWW1VUOAH2
+         p8Z6oJ369Q7x/vXi98EVot8Wv6aVRBx3vN2IGb5ab21s3OLu1HAGLh+NHmwXcGu8oaVQ
+         ng79XNl/dppTFSRsx4xeNa8tlPFZ3e8ussFIMoChQrDsISIbU4SN/Ycu80ybGIdHGPNf
+         +JS9R+qfk76byiYDPrNWP3C+g3pMGIJ/8j4udc7kVfHxkDF0rrecq1vcAJLLQkNVNgA9
+         +7v2DQgwmbrfNIAQebBqTXwxZjc3q79oVeuq/pNuwSSBf1cDmnOZGZGl3rq4/ywenm8N
+         O66w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=ND1ABC4isPqUlNnqtYq+IVoMqwScJQsEGqTSQB/EfMY=;
+        b=C/p5Myl3WwBaYElAmAi3yLmtlIYqHh0SLirRw7CqsIxO/Dj9CfrxwBN2nVL5tHFzEB
+         DcDwTqShIvHiJj1qNvfWhotHEBqGZ94u2H7By4IeiwecEescIm7HxPf5KmC+WYvaNJaY
+         U4XRoiy/0BUkbTwPRAcNlJJmIAoBXPoWQsxmLCjxn4bhFOzu1Z87FUCYuxWcRhxf1UcW
+         pD2drinXnqkUTxp22EEEbf3Vu4M4Dl5RrmrM0Ci5C0jPPg7iDlll6aanm16+mDf/qj9v
+         PYZlKGRGb+oBcC+U6BpXYyq8GtxL0P7c1iKUfSNPq4hcW53CeHOGLiTo9CMPBnKmTd/5
+         yT6g==
+X-Gm-Message-State: AOAM533GZOcAhQ3byh8yuR4MCeZ1vRuFp7kNj80KSw27Q8Brgajd9Xc2
+        xel8S5EKNJOvnNrZEpjbWW65tYMEcL8=
+X-Google-Smtp-Source: ABdhPJyfEVO0GRciOKc4JmGEAlyrAi4YH1RgqnbMkagYf+/Is0f4gwWary/qFGB772EeD62DwG1qEQ==
+X-Received: by 2002:a50:fd12:: with SMTP id i18mr19559048eds.137.1618143296473;
+        Sun, 11 Apr 2021 05:14:56 -0700 (PDT)
+Received: from gmail.com (2E8BA22B.catv.pool.telekom.hu. [46.139.162.43])
+        by smtp.gmail.com with ESMTPSA id e11sm1842588ejn.100.2021.04.11.05.14.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Apr 2021 05:14:55 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sun, 11 Apr 2021 14:14:53 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Will Deacon <will@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] locking fixes
+Message-ID: <20210411121453.GA1145123@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <d0f254c3-0b63-e4d3-1f58-8940adc7c0bf@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zenghui,
+Linus,
 
-On 4/7/21 11:33 AM, Zenghui Yu wrote:
-> Hi Eric,
-> 
-> On 2021/2/24 5:06, Eric Auger wrote:
->> +/*
->> + * VFIO_IOMMU_SET_PASID_TABLE - _IOWR(VFIO_TYPE, VFIO_BASE + 18,
->> + *            struct vfio_iommu_type1_set_pasid_table)
->> + *
->> + * The SET operation passes a PASID table to the host while the
->> + * UNSET operation detaches the one currently programmed. Setting
->> + * a table while another is already programmed replaces the old table.
-> 
-> It looks to me that this description doesn't match the IOMMU part.
+Please pull the latest locking/urgent git tree from:
 
-Yep that's misleanding.
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2021-04-11
 
-I replaced it by:
+   # HEAD: 6d48b7912cc72275dc7c59ff961c8bac7ef66a92 lockdep: Address clang -Wformat warning printing for %hd
 
- It is allowed to "SET" the table several times without un-setting as
- long as the table config does not stay IOMMU_PASID_CONFIG_TRANSLATE.
+Two minor fixes: one for a Clang warning, the other improves an
+ambiguous/confusing kernel log message.
 
-> 
-> [v14,05/13] iommu/smmuv3: Implement attach/detach_pasid_table
-> 
-> |    case IOMMU_PASID_CONFIG_TRANSLATE:
-> |        /* we do not support S1 <-> S1 transitions */
-> |        if (smmu_domain->s1_cfg.set)
-> |            goto out;
-> 
-> Maybe I've misread something?
-> 
-> 
-> Thanks,
-> Zenghui
-> 
+ Thanks,
 
-Thanks
+	Ingo
 
-Eric
+------------------>
+Arnd Bergmann (1):
+      lockdep: Address clang -Wformat warning printing for %hd
 
+Tetsuo Handa (1):
+      lockdep: Add a missing initialization hint to the "INFO: Trying to register non-static key" message
+
+
+ kernel/locking/lockdep.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index c6d0c1dc6253..f160f1c97ca1 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -705,7 +705,7 @@ static void print_lock_name(struct lock_class *class)
+ 
+ 	printk(KERN_CONT " (");
+ 	__print_lock_name(class);
+-	printk(KERN_CONT "){%s}-{%hd:%hd}", usage,
++	printk(KERN_CONT "){%s}-{%d:%d}", usage,
+ 			class->wait_type_outer ?: class->wait_type_inner,
+ 			class->wait_type_inner);
+ }
+@@ -930,7 +930,8 @@ static bool assign_lock_key(struct lockdep_map *lock)
+ 		/* Debug-check: all keys must be persistent! */
+ 		debug_locks_off();
+ 		pr_err("INFO: trying to register non-static key.\n");
+-		pr_err("the code is fine but needs lockdep annotation.\n");
++		pr_err("The code is fine but needs lockdep annotation, or maybe\n");
++		pr_err("you didn't initialize this object before use?\n");
+ 		pr_err("turning off the locking correctness validator.\n");
+ 		dump_stack();
+ 		return false;
