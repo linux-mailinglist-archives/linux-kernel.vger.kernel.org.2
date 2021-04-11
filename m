@@ -2,193 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53F2635B2D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2DA835B2D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235351AbhDKJnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 05:43:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55401 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235269AbhDKJnm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 05:43:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618134206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XOqiznYAiRVy/Amk28LrMWkmWtJUIVRZ/la5M97wHQ8=;
-        b=bt/+IqnGtxeH9Hil71V0OdHqglMeowwrIbjcjDnEXTsG+u39Hd++JzylnxkZmHQbtq61YP
-        ZMst7uo4B1U2TQ5nLxTCCqfsbcU4d3yxz1EVPx4Apy0k+NwbV11mo6jbVxuXlObDJtYMX6
-        qcKi2nUChBWPu4PL4Qa81rrrjMIkO3g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-571-iowazDUgNc61YX-AnGHs-A-1; Sun, 11 Apr 2021 05:43:21 -0400
-X-MC-Unique: iowazDUgNc61YX-AnGHs-A-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92CFA501FB;
-        Sun, 11 Apr 2021 09:43:18 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B66045D9D3;
-        Sun, 11 Apr 2021 09:43:10 +0000 (UTC)
-Date:   Sun, 11 Apr 2021 11:43:07 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Arnd Bergmann <arnd@kernel.org>, brouer@redhat.com,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
-Message-ID: <20210411114307.5087f958@carbon>
-In-Reply-To: <20210410205246.507048-2-willy@infradead.org>
-References: <20210410205246.507048-1-willy@infradead.org>
-        <20210410205246.507048-2-willy@infradead.org>
+        id S235362AbhDKJoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 05:44:14 -0400
+Received: from mga02.intel.com ([134.134.136.20]:19913 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235211AbhDKJoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 05:44:13 -0400
+IronPort-SDR: hUd9HZMhWRuU+iMyKjJZsbEYUsstSCGZmW1Yyo9Pp9lw7NdWSE7ZmDP93YWnt4rTPd8Kp5MA2R
+ GXBjxR0fi4+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9950"; a="181138360"
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="181138360"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 02:43:56 -0700
+IronPort-SDR: D1cTDnufVgI65eRBIpujC2iyU3V9t9RLufP2XKb5j6qAPIP4YA4bQkT2Z3gfs2kMQt7IdslEg4
+ qgPZ5yrxQhtQ==
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="416939619"
+Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 02:43:54 -0700
+From:   Tomas Winkler <tomas.winkler@intel.com>
+To:     Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>,
+        David E Box <david.e.box@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tamar Mashiah <tamar.mashiah@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tomas Winkler <tomas.winkler@intel.com>
+Subject: [PATCH v5] platform/x86: intel_pmc_core: export platform global reset bits via etr3 sysfs file
+Date:   Sun, 11 Apr 2021 12:43:44 +0300
+Message-Id: <20210411094344.2973757-1-tomas.winkler@intel.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Apr 2021 21:52:45 +0100
-"Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
+From: Tamar Mashiah <tamar.mashiah@intel.com>
 
-> 32-bit architectures which expect 8-byte alignment for 8-byte integers
-> and need 64-bit DMA addresses (arc, arm, mips, ppc) had their struct
-> page inadvertently expanded in 2019.  When the dma_addr_t was added,
-> it forced the alignment of the union to 8 bytes, which inserted a 4 byte
-> gap between 'flags' and the union.
-> 
-> We could fix this by telling the compiler to use a smaller alignment
-> for the dma_addr, but that seems a little fragile.  Instead, move the
-> 'flags' into the union.  That causes dma_addr to shift into the same
-> bits as 'mapping', so it would have to be cleared on free.  To avoid
-> this, insert three words of padding and use the same bits as ->index
-> and ->private, neither of which have to be cleared on free.
-> 
-> Fixes: c25fff7171be ("mm: add dma_addr_t to struct page")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  include/linux/mm_types.h | 38 ++++++++++++++++++++++++++------------
->  1 file changed, 26 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-> index 6613b26a8894..45c563e9b50e 100644
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -68,16 +68,22 @@ struct mem_cgroup;
->  #endif
->  
->  struct page {
-> -	unsigned long flags;		/* Atomic flags, some possibly
-> -					 * updated asynchronously */
->  	/*
-> -	 * Five words (20/40 bytes) are available in this union.
-> -	 * WARNING: bit 0 of the first word is used for PageTail(). That
-> -	 * means the other users of this union MUST NOT use the bit to
-> +	 * This union is six words (24 / 48 bytes) in size.
-> +	 * The first word is reserved for atomic flags, often updated
-> +	 * asynchronously.  Use the PageFoo() macros to access it.  Some
-> +	 * of the flags can be reused for your own purposes, but the
-> +	 * word as a whole often contains other information and overwriting
-> +	 * it will cause functions like page_zone() and page_node() to stop
-> +	 * working correctly.
-> +	 *
-> +	 * Bit 0 of the second word is used for PageTail(). That
-> +	 * means the other users of this union MUST leave the bit zero to
->  	 * avoid collision and false-positive PageTail().
->  	 */
->  	union {
->  		struct {	/* Page cache and anonymous pages */
-> +			unsigned long flags;
->  			/**
->  			 * @lru: Pageout list, eg. active_list protected by
->  			 * lruvec->lru_lock.  Sometimes used as a generic list
-> @@ -96,13 +102,14 @@ struct page {
->  			unsigned long private;
->  		};
->  		struct {	/* page_pool used by netstack */
-> -			/**
-> -			 * @dma_addr: might require a 64-bit value even on
-> -			 * 32-bit architectures.
-> -			 */
-> -			dma_addr_t dma_addr;
+During PCH (platform/board) manufacturing process a global platform
+reset has to be induced in order for the configuration changes take
+the effect upon following platform reset. This is an internal platform
+state and is not intended to be used in the regular platform resets.
+The setting is exposed via ETR3 (Extended Test Mode Register 3).
+After the manufacturing process is completed the register cannot be
+written anymore and is hardware locked.
+This setting was commonly done by accessing PMC registers via /dev/mem
+but due to security concerns /dev/mem access is much more restricted,
+hence the reason for exposing this setting via the dedicated sysfs
+interface.
+To prevent post manufacturing abuse the register is protected
+by hardware locking and the file is set to read-only mode via is_visible
+handler.
 
-The original intend of placing member @dma_addr here is that it overlap
-with @LRU (type struct list_head) which contains two pointers.  Thus, in
-case of CONFIG_ARCH_DMA_ADDR_T_64BIT=y on 32-bit architectures it would
-use both pointers.
+The register in MMIO space is defined for Cannon Lake and newer PCHs.
 
-Thinking more about this, this design is flawed as bit 0 of the first
-word is used for compound pages (see PageTail and @compound_head), is
-reserved.  We knew DMA addresses were aligned, thus we though this
-satisfied that need.  BUT for DMA_ADDR_T_64BIT=y on 32-bit arch the
-first word will contain the "upper" part of the DMA addr, which I don't
-think gives this guarantee.
+Cc: Hans de Goede <hdegoede@redhat.com>
+Cc: David E Box <david.e.box@intel.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Tamar Mashiah <tamar.mashiah@intel.com>
+Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+---
 
-I guess, nobody are using this combination?!?  I though we added this
-to satisfy TI (Texas Instrument) driver cpsw (code in
-drivers/net/ethernet/ti/cpsw*).  Thus, I assumed it was in use?
+V2:
+1. Add locking for reading the ET3 register  (Andy)
+2. Fix few style issues (Andy)
+V3:
+1. Resend
+v4:
+1. Fix return statement (Andy)
+2. Specify manufacturing process (Enrico)
+V5:
+1. Rename sysfs file to etr3 (Hans)
+2. Make file read only when register is locked (Hans)
+3. Add more info to sysfs ABI documentation 
 
+ .../ABI/testing/sysfs-platform-intel-pmc      |  20 ++++
+ MAINTAINERS                                   |   1 +
+ drivers/platform/x86/intel_pmc_core.c         | 113 ++++++++++++++++++
+ drivers/platform/x86/intel_pmc_core.h         |   6 +
+ 4 files changed, 140 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-intel-pmc
 
-> +			unsigned long _pp_flags;
-> +			unsigned long pp_magic;
-> +			unsigned long xmi;
-
-Matteo notice, I think intent is we can store xdp_mem_info in @xmi.
-
-> +			unsigned long _pp_mapping_pad;
-> +			dma_addr_t dma_addr;	/* might be one or two words */
->  		};
-
-Could you explain your intent here?
-I worry about @index.
-
-As I mentioned in other thread[1] netstack use page_is_pfmemalloc()
-(code copy-pasted below signature) which imply that the member @index
-have to be kept intact. In above, I'm unsure @index is untouched.
-
-[1] https://lore.kernel.org/lkml/20210410082158.79ad09a6@carbon/
+diff --git a/Documentation/ABI/testing/sysfs-platform-intel-pmc b/Documentation/ABI/testing/sysfs-platform-intel-pmc
+new file mode 100644
+index 000000000000..ef199af75ab0
+--- /dev/null
++++ b/Documentation/ABI/testing/sysfs-platform-intel-pmc
+@@ -0,0 +1,20 @@
++What:		/sys/devices/platform/<platform>/etr3
++Date:		Apr 2021
++KernelVersion:	5.13
++Contact:	"Tomas Winkler" <tomas.winkler@intel.com>
++Description:
++		The file exposes "Extended Test Mode Register 3" global
++		reset bits. The bits are used during an Intel platform
++		manufacturing process to indicate that consequent reset
++		of the platform is a "global reset". This type of reset
++		is required in order for manufacturing configurations
++		to take effect.
++
++		Display global reset setting bits for PMC.
++			* bit 31 - global reset is locked
++			* bit 20 - global reset is set
++		Writing bit 20 value to the etr3 will induce
++		a platform "global reset" upon consequent platform reset,
++		in case the register is not locked.
++		The "global reset bit" should be locked on a production
++		system and the file is in read-only mode.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7dd6b67f0f51..3e898660b5b4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9145,6 +9145,7 @@ M:	Rajneesh Bhardwaj <irenic.rajneesh@gmail.com>
+ M:	David E Box <david.e.box@intel.com>
+ L:	platform-driver-x86@vger.kernel.org
+ S:	Maintained
++F:	Documentation/ABI/testing/sysfs-platform-intel-pmc
+ F:	drivers/platform/x86/intel_pmc_core*
+ 
+ INTEL PMIC GPIO DRIVERS
+diff --git a/drivers/platform/x86/intel_pmc_core.c b/drivers/platform/x86/intel_pmc_core.c
+index b5888aeb4bcf..295c1891a9d5 100644
+--- a/drivers/platform/x86/intel_pmc_core.c
++++ b/drivers/platform/x86/intel_pmc_core.c
+@@ -401,6 +401,7 @@ static const struct pmc_reg_map cnp_reg_map = {
+ 	.pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
+ 	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
+ 	.ltr_ignore_max = CNP_NUM_IP_IGN_ALLOWED,
++	.etr3_offset = ETR3_OFFSET,
+ };
+ 
+ static const struct pmc_reg_map icl_reg_map = {
+@@ -418,6 +419,7 @@ static const struct pmc_reg_map icl_reg_map = {
+ 	.pm_cfg_offset = CNP_PMC_PM_CFG_OFFSET,
+ 	.pm_read_disable_bit = CNP_PMC_READ_DISABLE_BIT,
+ 	.ltr_ignore_max = ICL_NUM_IP_IGN_ALLOWED,
++	.etr3_offset = ETR3_OFFSET,
+ };
+ 
+ static const struct pmc_bit_map tgl_clocksource_status_map[] = {
+@@ -585,6 +587,7 @@ static const struct pmc_reg_map tgl_reg_map = {
+ 	.lpm_sts = tgl_lpm_maps,
+ 	.lpm_status_offset = TGL_LPM_STATUS_OFFSET,
+ 	.lpm_live_status_offset = TGL_LPM_LIVE_STATUS_OFFSET,
++	.etr3_offset = ETR3_OFFSET,
+ };
+ 
+ static inline u32 pmc_core_reg_read(struct pmc_dev *pmcdev, int reg_offset)
+@@ -603,6 +606,115 @@ static inline u64 pmc_core_adjust_slp_s0_step(struct pmc_dev *pmcdev, u32 value)
+ 	return (u64)value * pmcdev->map->slp_s0_res_counter_step;
+ }
+ 
++static int set_etr3(struct pmc_dev *pmcdev)
++{
++	const struct pmc_reg_map *map = pmcdev->map;
++	u32 reg;
++	int err;
++
++	if (!map->etr3_offset)
++		return -EOPNOTSUPP;
++
++	mutex_lock(&pmcdev->lock);
++
++	/* check if CF9 is locked */
++	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
++	if (reg & ETR3_CF9LOCK) {
++		err = -EACCES;
++		goto out_unlock;
++	}
++
++	/* write CF9 global reset bit */
++	reg |= ETR3_CF9GR;
++	pmc_core_reg_write(pmcdev, map->etr3_offset, reg);
++
++	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
++	if (!(reg & ETR3_CF9GR)) {
++		err = -EIO;
++		goto out_unlock;
++	}
++
++	err = 0;
++
++out_unlock:
++	mutex_unlock(&pmcdev->lock);
++	return err;
++}
++static umode_t etr3_is_visible(struct kobject *kobj,
++				struct attribute *attr,
++				int idx)
++{
++	struct device *dev = container_of(kobj, struct device, kobj);
++	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
++	const struct pmc_reg_map *map = pmcdev->map;
++	u32 reg;
++
++	mutex_lock(&pmcdev->lock);
++	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
++	mutex_unlock(&pmcdev->lock);
++
++	return reg & ETR3_CF9LOCK ? attr->mode & SYSFS_PREALLOC | 0444 : attr->mode;
++}
++
++static ssize_t etr3_show(struct device *dev,
++				 struct device_attribute *attr, char *buf)
++{
++	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
++	const struct pmc_reg_map *map = pmcdev->map;
++	u32 reg;
++
++	if (!map->etr3_offset)
++		return -EOPNOTSUPP;
++
++	mutex_lock(&pmcdev->lock);
++
++	reg = pmc_core_reg_read(pmcdev, map->etr3_offset);
++	reg &= ETR3_CF9GR | ETR3_CF9LOCK;
++
++	mutex_unlock(&pmcdev->lock);
++
++	return sysfs_emit(buf, "0x%08x", reg);
++}
++
++static ssize_t etr3_store(struct device *dev,
++				  struct device_attribute *attr,
++				  const char *buf, size_t len)
++{
++	struct pmc_dev *pmcdev = dev_get_drvdata(dev);
++	int err;
++	u32 reg;
++
++	err = kstrtouint(buf, 16, &reg);
++	if (err)
++		return err;
++
++	/* allow only CF9 writes */
++	if (reg != ETR3_CF9GR)
++		return -EINVAL;
++
++	err = set_etr3(pmcdev);
++	if (err)
++		return err;
++
++	return len;
++}
++static DEVICE_ATTR_RW(etr3);
++
++static struct attribute *pmc_attrs[] = {
++	&dev_attr_etr3.attr,
++	NULL
++};
++
++static const struct attribute_group pmc_attr_group = {
++	.attrs = pmc_attrs,
++	.is_visible = etr3_is_visible,
++};
++
++static const struct attribute_group *pmc_dev_groups[] = {
++	&pmc_attr_group,
++	NULL
++};
++
+ static int pmc_core_dev_state_get(void *data, u64 *val)
+ {
+ 	struct pmc_dev *pmcdev = data;
+@@ -1384,6 +1496,7 @@ static struct platform_driver pmc_core_driver = {
+ 		.name = "intel_pmc_core",
+ 		.acpi_match_table = ACPI_PTR(pmc_core_acpi_ids),
+ 		.pm = &pmc_core_pm_ops,
++		.dev_groups = pmc_dev_groups,
+ 	},
+ 	.probe = pmc_core_probe,
+ 	.remove = pmc_core_remove,
+diff --git a/drivers/platform/x86/intel_pmc_core.h b/drivers/platform/x86/intel_pmc_core.h
+index f33cd2c34835..98ebdfe57138 100644
+--- a/drivers/platform/x86/intel_pmc_core.h
++++ b/drivers/platform/x86/intel_pmc_core.h
+@@ -200,6 +200,11 @@ enum ppfear_regs {
+ #define TGL_LPM_STATUS_OFFSET			0x1C3C
+ #define TGL_LPM_LIVE_STATUS_OFFSET		0x1C5C
+ 
++/* Extended Test Mode Register 3 (CNL and later) */
++#define ETR3_OFFSET				0x1048
++#define ETR3_CF9GR				BIT(20)
++#define ETR3_CF9LOCK				BIT(31)
++
+ const char *tgl_lpm_modes[] = {
+ 	"S0i2.0",
+ 	"S0i2.1",
+@@ -263,6 +268,7 @@ struct pmc_reg_map {
+ 	const u32 lpm_residency_offset;
+ 	const u32 lpm_status_offset;
+ 	const u32 lpm_live_status_offset;
++	const u32 etr3_offset;
+ };
+ 
+ /**
 -- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
-/*
- * Return true only if the page has been allocated with
- * ALLOC_NO_WATERMARKS and the low watermark was not
- * met implying that the system is under some pressure.
- */
-static inline bool page_is_pfmemalloc(const struct page *page)
-{
-	/*
-	 * Page index cannot be this large so this must be
-	 * a pfmemalloc page.
-	 */
-	return page->index == -1UL;
-}
-
-/*
- * Only to be called by the page allocator on a freshly allocated
- * page.
- */
-static inline void set_page_pfmemalloc(struct page *page)
-{
-	page->index = -1UL;
-}
-
-static inline void clear_page_pfmemalloc(struct page *page)
-{
-	page->index = 0;
-}
+2.26.3
 
