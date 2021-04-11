@@ -2,111 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3F735B348
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54AC735B351
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235446AbhDKLFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 07:05:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235415AbhDKLF3 (ORCPT
+        id S235393AbhDKLNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 07:13:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41628 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233822AbhDKLNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 07:05:29 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C649DC06138B
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 04:05:12 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id ba6so11597390edb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 04:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JgR0CTRBES+JH0dRGw9EL1OLGpfiMEzltNQasd/GpYw=;
-        b=bq50PP137k3dGNY82HD9qOr1dABMX2TLzu7PaqFCvQm3BiGKf43yCJm1mGwllVPfdm
-         V/rTTLeMRC6oLG9J+0oagsRBQdQ7I8EiCH6FJw+7OL7zEz3VPrgZN8lmZp+dNyTqHYjT
-         6MPCJnbrD1HV50Ei4uzNHYk6YQ57qlUpCLFiAaVwzsayyXnIv/kqbHNldgxPVr1tPCbP
-         Q8tQh7EWRKYvLsAjUDfOoAue+pow/JylzmfCghh5yxTL4MtXdM2ZnKrpohpzj9sN5MuE
-         PfdaKDCqxS/wCGIkqgEDsQIQDQUaSc0hQ7WiuPhpsMjT84Jnq0az2N3gmNapwptqpe9m
-         AR5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JgR0CTRBES+JH0dRGw9EL1OLGpfiMEzltNQasd/GpYw=;
-        b=lvRmbkQTDY2SecwHqThHpWk+vHq84MxuKxwCPTwK+jztjfwKFlhjs7+O/8FFS6Z4m5
-         ueUinPiten5Ow6s5ozmKQz3gQxphK+U0EFrYlPIj2+m142O3edMynGE2/8ZaYSyn13eN
-         /9XD5UMAN070dTJgUsVLobQ2qQm8Abn15ucpdAeUHO0J79KXyjtk5PQD0Pydk0jcH9bB
-         gB9rIbw3xMZ5Qsxuq/siXtwskJOYTXvrhYCS83pJXmQoJ0e3elvU6zQSf21o2VKsLhV6
-         SHupwE31DK4TXw8x3zA7IEQQpkiJyf4ZNk65fl/3k2u/f6grX9Y28QDlAXgLTNJdGw0+
-         lQFw==
-X-Gm-Message-State: AOAM531mTO0Eh9lDjmXeG6Nl09xn7iyDw5dz5K0ZQibOJ2tlqbUZH1bW
-        Npuv8PBcfh3fx8mLWg4nZKY=
-X-Google-Smtp-Source: ABdhPJyJn1l8MqZZe2S/MIi+lhhNIrLHgh+ETMd2mTmvxxrupQoDDTH0k889dolXsTNWap4jdoL1zg==
-X-Received: by 2002:aa7:d2da:: with SMTP id k26mr11928787edr.156.1618139111532;
-        Sun, 11 Apr 2021 04:05:11 -0700 (PDT)
-Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id i2sm4577202edy.72.2021.04.11.04.05.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 04:05:11 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH v5 4/4] staging: rtl8723bs: Change controlling expressions
-Date:   Sun, 11 Apr 2021 13:04:58 +0200
-Message-Id: <20210411110458.15955-5-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210411110458.15955-1-fmdefrancesco@gmail.com>
-References: <20210411110458.15955-1-fmdefrancesco@gmail.com>
+        Sun, 11 Apr 2021 07:13:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618139575;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=VZ5ZgqkLKGzZ6mZcaLAP7WgqAO/FhHDbjCu61E17AlI=;
+        b=EPvZ9Edgvp/SK/fDwAuxSJg8akO/XnOUWtOExuy9AU117guzj46rVy036cojPLjaGRG200
+        X4Avge2VIlooLuwDe3nQcEWMvSSptjHVpA+syC7q7OD3iNf17p6qx5Q9gXse9FgImbXMsy
+        rvJ5Fgzq/5Rmf7ql1MVzUhdfSy/Csi4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-424-Lz5o6dudMNmUzPQlCMbKnQ-1; Sun, 11 Apr 2021 07:12:51 -0400
+X-MC-Unique: Lz5o6dudMNmUzPQlCMbKnQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 61CFD107ACC7;
+        Sun, 11 Apr 2021 11:12:48 +0000 (UTC)
+Received: from laptop.redhat.com (ovpn-112-22.ams2.redhat.com [10.36.112.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B064C100164A;
+        Sun, 11 Apr 2021 11:12:32 +0000 (UTC)
+From:   Eric Auger <eric.auger@redhat.com>
+To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        maz@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        alex.williamson@redhat.com, tn@semihalf.com, zhukeqian1@huawei.com
+Cc:     jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
+        wangxingang5@huawei.com, jean-philippe@linaro.org,
+        zhangfei.gao@linaro.org, zhangfei.gao@gmail.com,
+        vivek.gautam@arm.com, shameerali.kolothum.thodi@huawei.com,
+        yuzenghui@huawei.com, nicoleotsuka@gmail.com,
+        lushenming@huawei.com, vsethi@nvidia.com,
+        chenxiang66@hisilicon.com, vdumpa@nvidia.com,
+        jiangkunkun@huawei.com
+Subject: [PATCH v15 00/12] SMMUv3 Nested Stage Setup (IOMMU part)
+Date:   Sun, 11 Apr 2021 13:12:16 +0200
+Message-Id: <20210411111228.14386-1-eric.auger@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change controlling expressions within 'if' statements: don't compare
-with 'true'.
+SMMUv3 Nested Stage Setup (IOMMU part)
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+This series brings the IOMMU part of HW nested paging support
+in the SMMUv3. The VFIO part is submitted separately.
 
-Changes from v4: Write patch version number in 2/4.
-Changes from v3: Move changes of controlling expressions in patch 4/4.
-Changes from v2: Rewrite subject in patch 0/4; remove a patch from the
-series because it had alreay been applied (rtl8723bs: core: Remove an unused variable).
-Changes from v1: Fix a typo in subject of patch 1/5, add patch 5/5.
+This is based on Jean-Philippe's
+[PATCH v14 00/10] iommu: I/O page faults for SMMUv3
+https://www.spinics.net/lists/arm-kernel/msg886518.html
+(including the patches that were not pulled for 5.13)
 
- drivers/staging/rtl8723bs/core/rtw_cmd.c | 2 +-
- drivers/staging/rtl8723bs/hal/hal_intf.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+The IOMMU API is extended to support 2 new API functionalities:
+1) pass the guest stage 1 configuration
+2) pass stage 1 MSI bindings
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-index 32079e0f71d5..0297fbad7bce 100644
---- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -1507,7 +1507,7 @@ static void rtw_lps_change_dtim_hdl(struct adapter *padapter, u8 dtim)
- 	if (pwrpriv->dtim != dtim)
- 		pwrpriv->dtim = dtim;
- 
--	if ((pwrpriv->fw_current_in_ps_mode == true) && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
-+	if (pwrpriv->fw_current_in_ps_mode && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
- 		u8 ps_mode = pwrpriv->pwr_mode;
- 
- 		rtw_hal_set_hwreg(padapter, HW_VAR_H2C_FW_PWRMODE, (u8 *)(&ps_mode));
-diff --git a/drivers/staging/rtl8723bs/hal/hal_intf.c b/drivers/staging/rtl8723bs/hal/hal_intf.c
-index 96fe172ced8d..8dc4dd8c6d4c 100644
---- a/drivers/staging/rtl8723bs/hal/hal_intf.c
-+++ b/drivers/staging/rtl8723bs/hal/hal_intf.c
-@@ -348,7 +348,7 @@ void rtw_hal_dm_watchdog(struct adapter *padapter)
- 
- void rtw_hal_dm_watchdog_in_lps(struct adapter *padapter)
- {
--	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode == true) {
-+	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode) {
- 		if (padapter->HalFunc.hal_dm_watchdog_in_lps)
- 			padapter->HalFunc.hal_dm_watchdog_in_lps(padapter); /* this function caller is in interrupt context */
- 	}
+Then those capabilities gets implemented in the SMMUv3 driver.
+
+The virtualizer passes information through the VFIO user API
+which cascades them to the iommu subsystem. This allows the guest
+to own stage 1 tables and context descriptors (so-called PASID
+table) while the host owns stage 2 tables and main configuration
+structures (STE).
+
+Best Regards
+
+Eric
+
+This series can be found at:
+v5.12-rc6-jean-iopf-14-2stage-v15
+(including the VFIO part in its last version: v13)
+
+The VFIO series is sent separately.
+
+History:
+
+Previous version:
+https://github.com/eauger/linux/tree/v5.11-stallv12-2stage-v14
+
+v14 -> v15:
+- on S1 invalidation, always use CMDQ_OP_TLBI_NH_VA
+  independently on host ARM_SMMU_FEAT_E2H support (Zenghui)
+- remove  iommu/smmuv3: Accept configs with more than one
+  context descriptor
+- Remove spurious arm_smmu_cmdq_issue_sync in
+  IOMMU_INV_GRANU_ADDR cache invalidation (Zenghui)
+- dma-iommu.c changes induced by Zenghui's comments
+  including the locking rework
+- fix cache invalidation when guest uses RIL
+  and host does not support it (Chenxiang)
+- removed iommu/smmuv3: Accept configs with more than one
+  context descriptor (Zenghui, Shameer)
+- At this point I have kept the MSI binding API.
+
+v13 -> v14:
+- Took into account all received comments I think. Great
+  thanks to all the testers for their effort and sometimes
+  tentative fixes. I am really grateful to you!
+- numerous fixes including guest running in
+  noiommu, iommu.strict=0, iommu.passthrough=on,
+  enable_unsafe_noiommu_mode
+
+v12 -> v13:
+- fixed compilation issue with CONFIG_ARM_SMMU_V3_SVA
+  reported by Shameer. This urged me to revisit patch 4 into
+  iommu/smmuv3: Allow s1 and s2 configs to coexist where
+  s1_cfg and s2_cfg are not dynamically allocated anymore.
+  Instead I use a new set field in existing structs
+- fixed 2 others config checks
+- Updated "iommu/arm-smmu-v3: Maintain a SID->device structure"
+  according to the last version
+
+v11 -> v12:
+- rebase on top of v5.10-rc4
+
+
+Eric Auger (12):
+  iommu: Introduce attach/detach_pasid_table API
+  iommu: Introduce bind/unbind_guest_msi
+  iommu/smmuv3: Allow s1 and s2 configs to coexist
+  iommu/smmuv3: Get prepared for nested stage support
+  iommu/smmuv3: Implement attach/detach_pasid_table
+  iommu/smmuv3: Allow stage 1 invalidation with unmanaged ASIDs
+  iommu/smmuv3: Implement cache_invalidate
+  dma-iommu: Implement NESTED_MSI cookie
+  iommu/smmuv3: Nested mode single MSI doorbell per domain enforcement
+  iommu/smmuv3: Enforce incompatibility between nested mode and HW MSI
+    regions
+  iommu/smmuv3: Implement bind/unbind_guest_msi
+  iommu/smmuv3: report additional recoverable faults
+
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 463 ++++++++++++++++++--
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  14 +-
+ drivers/iommu/dma-iommu.c                   | 180 +++++++-
+ drivers/iommu/iommu.c                       | 106 +++++
+ include/linux/dma-iommu.h                   |  16 +
+ include/linux/iommu.h                       |  47 ++
+ include/uapi/linux/iommu.h                  |  54 +++
+ 7 files changed, 838 insertions(+), 42 deletions(-)
+
 -- 
-2.31.1
+2.26.3
 
