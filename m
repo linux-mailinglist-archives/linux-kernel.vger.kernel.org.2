@@ -2,45 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF0535B51D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3247935B51E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235478AbhDKNpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:45:14 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33390 "EHLO
+        id S236105AbhDKNpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:45:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33412 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235657AbhDKNoD (ORCPT
+        with ESMTP id S235663AbhDKNoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 11 Apr 2021 09:44:03 -0400
-Date:   Sun, 11 Apr 2021 13:43:24 -0000
+Date:   Sun, 11 Apr 2021 13:43:25 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1618148605;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Mry+5OR+hQ3Uho6nAOKbGWyCxZmjx5j4mjMGsKs1yxk=;
-        b=K+VJyjoj4fsu6uUL9wRPASB/za7mE9Xds2D2fRjFIym8Jq41ZKTICkrgc0yDggPsOCJ2ag
-        tZMcfzAwLygNLJ8vMV8Rz/s1RYBUmagNRNcHLY2ER6AxDVVbay2OPBMSHt2CR4ZqxAtVYx
-        RPTgLfpPzuEDJgQ27GwB4LTGDscST7RKnveftYvvZ5upWgWYFO0W62z5uy8Co+AiQF3Ivh
-        s4TIaJCKMkscDzJsoLkBpyik+3KV+WsXlwpxcR2KIizs6su9YhPyVwqveDN/cJAoGb9FQq
-        JzCeP17pwsC5/0AoYjKng8ew/V8fWEnXIvf5yiSKNz+TKCKOn8LFuJNCXHlMsQ==
+        bh=F4SWF7xTh05Y+D5HrSvDZK04z3UFSbbUytSDhTk6874=;
+        b=aRXlx4gV+b/zR6BoeyuJnrnNg22CczVyHAs7DI3vtGIwWnyghDnR1Z470VJxuynM4/0J39
+        bTxQMby2sv7hrXVhbyRpOE/NylEWuTB/d5Iq/fVRKkjws30G3IYZF55/4bx+zdRuccm3Vn
+        9xzxXARzsruX83XJaFlCSzF9nGSwR/IbC7mXsTVlwiDUWSScxzfOJIgcjDUIThQLLK6/NG
+        JVifKgAIjE2jK5PpBqBUi0f1vHC4J6dYG4RpcZW3LSq0mHnDxo8OVtdENzrUZpd5kGfsYG
+        BzwtUjptLjgYRYA4Iz5970GyWwZbhjlml1B6yMvt9LPQXFlkMFuwkXcBj1nQxQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1618148605;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=Mry+5OR+hQ3Uho6nAOKbGWyCxZmjx5j4mjMGsKs1yxk=;
-        b=2Bz/1Sw9kWJog59oel6KL5Mnv/KYOIp6wFkO4oJ0jk54La7UEFMSllRDOb2EUCjoYYfFpY
-        uNM0U2cFYaZGA2Dg==
+        bh=F4SWF7xTh05Y+D5HrSvDZK04z3UFSbbUytSDhTk6874=;
+        b=z+9llQwZ7tGKsPVhL1nk897PpsXXZjdhEbTATO7j8Gz2hm8uhEE93I9GwtEU2NBt79D0Gb
+        wKritcnFbX6tjLBw==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Abstract jitter.sh start/stop into scripts
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
+Subject: [tip: core/rcu] rcu: Provide polling interfaces for Tree RCU grace periods
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161814860478.29796.2152584259595748003.tip-bot2@tip-bot2>
+Message-ID: <161814860511.29796.5603206002698007045.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -51,120 +52,156 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     040accb3cd4ac4a8d151413f569b7ba6d918a19c
-Gitweb:        https://git.kernel.org/tip/040accb3cd4ac4a8d151413f569b7ba6d918a19c
+Commit-ID:     7abb18bd7567480e34f46d3512369ec49499064e
+Gitweb:        https://git.kernel.org/tip/7abb18bd7567480e34f46d3512369ec49499064e
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 11 Feb 2021 12:37:46 -08:00
+AuthorDate:    Thu, 25 Feb 2021 16:10:38 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 22 Mar 2021 08:28:34 -07:00
+CommitterDate: Mon, 22 Mar 2021 08:23:48 -07:00
 
-torture: Abstract jitter.sh start/stop into scripts
+rcu: Provide polling interfaces for Tree RCU grace periods
 
-This commit creates jitterstart.sh and jitterstop.sh scripts that handle
-the starting and stopping of the jitter.sh scripts.  These must be sourced
-using the bash "." command to allow the generated script to wait on the
-backgrounded jitter.sh scripts.
+There is a need for a non-blocking polling interface for RCU grace
+periods, so this commit supplies start_poll_synchronize_rcu() and
+poll_state_synchronize_rcu() for this purpose.  Note that the existing
+get_state_synchronize_rcu() may be used if future grace periods are
+inevitable (perhaps due to a later call_rcu() invocation).  The new
+start_poll_synchronize_rcu() is to be used if future grace periods
+might not otherwise happen.  Finally, poll_state_synchronize_rcu()
+provides a lockless check for a grace period having elapsed since
+the corresponding call to either of the get_state_synchronize_rcu()
+or start_poll_synchronize_rcu().
 
+As with get_state_synchronize_rcu(), the return value from either
+get_state_synchronize_rcu() or start_poll_synchronize_rcu() is passed in
+to a later call to either poll_state_synchronize_rcu() or the existing
+(might_sleep) cond_synchronize_rcu().
+
+[ paulmck: Remove redundant smp_mb() per Frederic Weisbecker feedback. ]
+[ Update poll_state_synchronize_rcu() docbook per Frederic Weisbecker feedback. ]
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/jitterstart.sh | 37 ++++++++++-
- tools/testing/selftests/rcutorture/bin/jitterstop.sh  | 23 ++++++-
- tools/testing/selftests/rcutorture/bin/kvm.sh         |  7 +--
- 3 files changed, 62 insertions(+), 5 deletions(-)
- create mode 100644 tools/testing/selftests/rcutorture/bin/jitterstart.sh
- create mode 100644 tools/testing/selftests/rcutorture/bin/jitterstop.sh
+ include/linux/rcutree.h |  2 +-
+ kernel/rcu/tree.c       | 75 ++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 70 insertions(+), 7 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/jitterstart.sh b/tools/testing/selftests/rcutorture/bin/jitterstart.sh
-new file mode 100644
-index 0000000..3d710ad
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/bin/jitterstart.sh
-@@ -0,0 +1,37 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# Start up the specified number of jitter.sh scripts in the background.
-+#
-+# Usage: . jitterstart.sh n jittering-dir duration [ sleepmax [ spinmax ] ]
-+#
-+# n: Number of jitter.sh scripts to start up.
-+# jittering-dir: Directory in which to put "jittering" file.
-+# duration: Time to run in seconds.
-+# sleepmax: Maximum microseconds to sleep, defaults to one second.
-+# spinmax: Maximum microseconds to spin, defaults to one millisecond.
-+#
-+# Copyright (C) 2021 Facebook, Inc.
-+#
-+# Authors: Paul E. McKenney <paulmck@kernel.org>
+diff --git a/include/linux/rcutree.h b/include/linux/rcutree.h
+index df578b7..b89b541 100644
+--- a/include/linux/rcutree.h
++++ b/include/linux/rcutree.h
+@@ -41,6 +41,8 @@ void rcu_momentary_dyntick_idle(void);
+ void kfree_rcu_scheduler_running(void);
+ bool rcu_gp_might_be_stalled(void);
+ unsigned long get_state_synchronize_rcu(void);
++unsigned long start_poll_synchronize_rcu(void);
++bool poll_state_synchronize_rcu(unsigned long oldstate);
+ void cond_synchronize_rcu(unsigned long oldstate);
+ 
+ void rcu_idle_enter(void);
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index da6f521..07e8122 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3774,8 +3774,8 @@ EXPORT_SYMBOL_GPL(synchronize_rcu);
+  * get_state_synchronize_rcu - Snapshot current RCU state
+  *
+  * Returns a cookie that is used by a later call to cond_synchronize_rcu()
+- * to determine whether or not a full grace period has elapsed in the
+- * meantime.
++ * or poll_state_synchronize_rcu() to determine whether or not a full
++ * grace period has elapsed in the meantime.
+  */
+ unsigned long get_state_synchronize_rcu(void)
+ {
+@@ -3789,13 +3789,76 @@ unsigned long get_state_synchronize_rcu(void)
+ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
+ 
+ /**
++ * start_poll_synchronize_rcu - Snapshot and start RCU grace period
++ *
++ * Returns a cookie that is used by a later call to cond_synchronize_rcu()
++ * or poll_state_synchronize_rcu() to determine whether or not a full
++ * grace period has elapsed in the meantime.  If the needed grace period
++ * is not already slated to start, notifies RCU core of the need for that
++ * grace period.
++ *
++ * Interrupts must be enabled for the case where it is necessary to awaken
++ * the grace-period kthread.
++ */
++unsigned long start_poll_synchronize_rcu(void)
++{
++	unsigned long flags;
++	unsigned long gp_seq = get_state_synchronize_rcu();
++	bool needwake;
++	struct rcu_data *rdp;
++	struct rcu_node *rnp;
 +
-+jitter_n=$1
-+if test -z "$jitter_n"
-+then
-+	echo jitterstart.sh: Missing count of jitter.sh scripts to start.
-+	exit 33
-+fi
-+jittering_dir=$2
-+if test -z "$jittering_dir"
-+then
-+	echo jitterstart.sh: Missing directory in which to place jittering file.
-+	exit 34
-+fi
-+shift
-+shift
++	lockdep_assert_irqs_enabled();
++	local_irq_save(flags);
++	rdp = this_cpu_ptr(&rcu_data);
++	rnp = rdp->mynode;
++	raw_spin_lock_rcu_node(rnp); // irqs already disabled.
++	needwake = rcu_start_this_gp(rnp, rdp, gp_seq);
++	raw_spin_unlock_irqrestore_rcu_node(rnp, flags);
++	if (needwake)
++		rcu_gp_kthread_wake();
++	return gp_seq;
++}
++EXPORT_SYMBOL_GPL(start_poll_synchronize_rcu);
 +
-+touch ${jittering_dir}/jittering
-+for ((jitter_i = 1; jitter_i <= $jitter_n; jitter_i++))
-+do
-+	jitter.sh $jitter_i "${jittering_dir}/jittering" "$@" &
-+done
-diff --git a/tools/testing/selftests/rcutorture/bin/jitterstop.sh b/tools/testing/selftests/rcutorture/bin/jitterstop.sh
-new file mode 100644
-index 0000000..576a4cf
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/bin/jitterstop.sh
-@@ -0,0 +1,23 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# Remove the "jittering" file, signaling the jitter.sh scripts to stop,
-+# then wait for them to terminate.
-+#
-+# Usage: . jitterstop.sh jittering-dir
-+#
-+# jittering-dir: Directory containing "jittering" file.
-+#
-+# Copyright (C) 2021 Facebook, Inc.
-+#
-+# Authors: Paul E. McKenney <paulmck@kernel.org>
++/**
++ * poll_state_synchronize_rcu - Conditionally wait for an RCU grace period
++ *
++ * @oldstate: return from call to get_state_synchronize_rcu() or start_poll_synchronize_rcu()
++ *
++ * If a full RCU grace period has elapsed since the earlier call from
++ * which oldstate was obtained, return @true, otherwise return @false.
++ * If @false is returned, it is the caller's responsibilty to invoke this
++ * function later on until it does return @true.  Alternatively, the caller
++ * can explicitly wait for a grace period, for example, by passing @oldstate
++ * to cond_synchronize_rcu() or by directly invoking synchronize_rcu().
++ *
++ * Yes, this function does not take counter wrap into account.
++ * But counter wrap is harmless.  If the counter wraps, we have waited for
++ * more than 2 billion grace periods (and way more on a 64-bit system!).
++ * Those needing to keep oldstate values for very long time periods
++ * (many hours even on 32-bit systems) should check them occasionally
++ * and either refresh them or set a flag indicating that the grace period
++ * has completed.
++ */
++bool poll_state_synchronize_rcu(unsigned long oldstate)
++{
++	if (rcu_seq_done(&rcu_state.gp_seq, oldstate)) {
++		smp_mb(); /* Ensure GP ends before subsequent accesses. */
++		return true;
++	}
++	return false;
++}
++EXPORT_SYMBOL_GPL(poll_state_synchronize_rcu);
 +
-+jittering_dir=$1
-+if test -z "$jittering_dir"
-+then
-+	echo jitterstop.sh: Missing directory in which to place jittering file.
-+	exit 34
-+fi
-+
-+rm -f ${jittering_dir}/jittering
-+wait
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index a2ee3f2..d6973e4 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -502,15 +502,12 @@ function dump(first, pastlast, batchnum)
- 	print "if test -n \"$needqemurun\""
- 	print "then"
- 	print "\techo ---- Starting kernels. `date` | tee -a " rd "log";
--	print "\ttouch " rd "jittering"
--	for (j = 0; j < njitter; j++)
--		print "\tjitter.sh " j " " rd "jittering " dur " " ja[2] " " ja[3] "&"
-+	print "\t. jitterstart.sh " njitter " " rd " " dur " " ja[2] " " ja[3]
- 	print "\twhile ls $runfiles > /dev/null 2>&1"
- 	print "\tdo"
- 	print "\t\t:"
- 	print "\tdone"
--	print "\trm -f " rd "jittering"
--	print "\twait"
-+	print "\t. jitterstop.sh " rd
- 	print "\techo ---- All kernel runs complete. `date` | tee -a " rd "log";
- 	print "else"
- 	print "\twait"
++/**
+  * cond_synchronize_rcu - Conditionally wait for an RCU grace period
+  *
+  * @oldstate: return value from earlier call to get_state_synchronize_rcu()
+  *
+  * If a full RCU grace period has elapsed since the earlier call to
+- * get_state_synchronize_rcu(), just return.  Otherwise, invoke
+- * synchronize_rcu() to wait for a full grace period.
++ * get_state_synchronize_rcu() or start_poll_synchronize_rcu(), just return.
++ * Otherwise, invoke synchronize_rcu() to wait for a full grace period.
+  *
+  * Yes, this function does not take counter wrap into account.  But
+  * counter wrap is harmless.  If the counter wraps, we have waited for
+@@ -3804,10 +3867,8 @@ EXPORT_SYMBOL_GPL(get_state_synchronize_rcu);
+  */
+ void cond_synchronize_rcu(unsigned long oldstate)
+ {
+-	if (!rcu_seq_done(&rcu_state.gp_seq, oldstate))
++	if (!poll_state_synchronize_rcu(oldstate))
+ 		synchronize_rcu();
+-	else
+-		smp_mb(); /* Ensure GP ends before subsequent accesses. */
+ }
+ EXPORT_SYMBOL_GPL(cond_synchronize_rcu);
+ 
