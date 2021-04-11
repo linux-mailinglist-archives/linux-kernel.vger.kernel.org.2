@@ -2,198 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0503F35B32C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A2935B330
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235166AbhDKKal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 06:30:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58670 "EHLO
+        id S235233AbhDKKdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 06:33:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhDKKaj (ORCPT
+        with ESMTP id S229804AbhDKKdp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 06:30:39 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99EB8C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 03:30:22 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id bx20so10379126edb.12
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 03:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=x3r2FyLHyY3w2SLbIC95IxoZj7WakC/+ymJzKCDyFVo=;
-        b=IF/DORTrw1iddbeufjNoavKZSL4pP53ubatlXQ7IGCwxjq3FE64a3JJPA1huLYvKwT
-         WXTOA7cdsQA9Q4TVFQz7zRkZsxWrvjTAWzbmMfdLym7n1xYQ1nJOjDRXPipEHXQab3nL
-         jsbR6UD5CndtKfZe9TYJfaaAMNFz5EDly5AMUmixX2P3ohFjyQ3gV8ZWO8DjCEY/EQrV
-         B0w+xTTxz9aCgddXvwQQXPocbf++gL1nn9ZtzXx/FnmNFFLEA0DSoPIZTig+8h51G1+F
-         HCwpdmNYza7efmpRLAkCTg+cKRCNPxWb1LAKfCwp1RSsHpQ7g+fHAXB3OpjyJhEFEGaI
-         X5RA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=x3r2FyLHyY3w2SLbIC95IxoZj7WakC/+ymJzKCDyFVo=;
-        b=E08KKVv+MI5JZObDf7B+VpDnsRGFYxs5XaGOujpbUnAWGUsR8wXjoLQ8fEV34epS5y
-         maBZN0a7rxvi6KtqR+MogBIAlZGC7IArpNufpM2iFbSK1UfdNnCsKBKyReF1EgeSRoOH
-         17iesNQXfKTiL8Uap+3ibI7vNICrILCTIazcfrBCsyzkd6RLLvZTZhSdj96NLlKznqnL
-         rh8qMFaUtFwl80DTNeLp66KhKt7kEEBmSQgjLyUGAvLR+2YPO9KnCOjAZ1zyK1XbfeF4
-         r3uqc6C/Y+RLTwJBKYJMgkjfe2wxUprdiIYs2XqpupD4kuHl5uM2TR9+RP6FB/bxzmbR
-         n4LA==
-X-Gm-Message-State: AOAM5303H3mdfiHWQ4WHA6xiQd6pKa6atdwM1qW/T9XvrnecAxSG2cFX
-        Sc+Olf+6AY0T8ihrdmrYLns=
-X-Google-Smtp-Source: ABdhPJxoIfJKouP2d4+1Rsnw5/pBAJEIPg7uLRuGFyUMaBpdSseXfXnhEBJwgq+OhEXoEO6qSNyS6A==
-X-Received: by 2002:aa7:dcc7:: with SMTP id w7mr24482602edu.255.1618137021184;
-        Sun, 11 Apr 2021 03:30:21 -0700 (PDT)
-Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id ay3sm4499894edb.2.2021.04.11.03.30.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 03:30:20 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH v3 4/4] staging: rtl8723bs: core: Change a controlling expression
-Date:   Sun, 11 Apr 2021 12:30:19 +0200
-Message-ID: <4476737.Uq5WOKsIPT@localhost.localdomain>
-In-Reply-To: <alpine.DEB.2.22.394.2104111209230.2854@hadrien>
-References: <20210411082908.31876-1-fmdefrancesco@gmail.com> <3322597.vpUxb0oOqP@localhost.localdomain> <alpine.DEB.2.22.394.2104111209230.2854@hadrien>
+        Sun, 11 Apr 2021 06:33:45 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B36C061574;
+        Sun, 11 Apr 2021 03:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5k6scgEO0Liw53Nd/CWv1w1ZPoYPba04K+Obtfiig/M=; b=UlE+P4Kkm1ME3C0ZL37PlH2Hnx
+        jnR+orvGDjexhh1QJxhvp4T6/QphMALkcuyrajBEyS7VaVALxvY7d7bPkkLauHaZNdhSagJLhtT+F
+        BkqNRS2cBSjC8xse6AgrMMiPAFkhXzauNOUrrSu23znATccsY56ohHTCRrzqjox4zNyhhdYk7TySL
+        5QbkG9h9z4Jphgv4bRVDtw7kv7WMN1OlvCgVBd0TQngSpYco1PVSB4RNyugOoo/k1O8AXx4Bb1duv
+        9o0DqdhbIBV/NEgsoipCkf930mj7BQhWStT0lYIoJJPMiFjtkG6i0+rRuyG+Nl3CoxLYUdizqdwdV
+        lH96aDRA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVXP4-002pvE-H5; Sun, 11 Apr 2021 10:33:19 +0000
+Date:   Sun, 11 Apr 2021 11:33:18 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Ivan Khoronzhuk <ivan.khoronzhuk@linaro.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
+Message-ID: <20210411103318.GC2531743@casper.infradead.org>
+References: <20210410205246.507048-1-willy@infradead.org>
+ <20210410205246.507048-2-willy@infradead.org>
+ <20210411114307.5087f958@carbon>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="US-ASCII"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210411114307.5087f958@carbon>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sunday, April 11, 2021 12:10:17 PM CEST Julia Lawall wrote:
-> On Sun, 11 Apr 2021, Fabio M. De Francesco wrote:
-> > On Sunday, April 11, 2021 11:51:32 AM CEST Julia Lawall wrote:
-> > > On Sun, 11 Apr 2021, Fabio M. De Francesco wrote:
-> > > > On Sunday, April 11, 2021 11:26:41 AM CEST Julia Lawall wrote:
-> > > > > On Sun, 11 Apr 2021, Fabio M. De Francesco wrote:
-> > > > > > Change a controlling expression within an 'if' statement: don't
-> > > > > > compare
-> > > > > > with 'true'.
-> > > > > > 
-> > > > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > > > > ---
-> > > > > > 
-> > > > > > Changes from v2: Rewrite subject in patch 0/4; remove a patch
-> > > > > > from
-> > > > > > the
-> > > > > > series because it had already been applied (rtl8723bs: core:
-> > > > > > Remove
-> > > > > > an
-> > > > > > unused variable). Changes from v1: Fix a typo in subject of
-> > > > > > patch
-> > > > > > 1/5,
-> > > > > > add patch 5/5.>
-> > > > > > 
-> > > > > >  drivers/staging/rtl8723bs/core/rtw_cmd.c | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > > b/drivers/staging/rtl8723bs/core/rtw_cmd.c index
-> > > > > > 32079e0f71d5..600366cb1aeb 100644
-> > > > > > --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > > +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > > @@ -1507,7 +1507,7 @@ static void
-> > > > > > rtw_lps_change_dtim_hdl(struct
-> > > > > > adapter *padapter, u8 dtim)>
-> > > > > > 
-> > > > > >  	if (pwrpriv->dtim != dtim)
-> > > > > >  	
-> > > > > >  		pwrpriv->dtim = dtim;
-> > > > > > 
-> > > > > > -	if ((pwrpriv->fw_current_in_ps_mode == true) && (pwrpriv-
-> > > > >
-> > > > >pwr_mode >
-> > > > >
-> > > > > > PS_MODE_ACTIVE)) { +	if ((pwrpriv->fw_current_in_ps_mode) 
-&&
-> > > > > > (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
-> > > > > 
-> > > > > The parentheses in the left argument of && can be dropped as
-> > > > > well.
-> > > > 
-> > > > What about the parentheses of the right argument? I'm not sure:
-> > > > does
-> > > > '>'
-> > > > have precedence over '&&'? Doesn't it?
-> > > 
-> > > On the right they are not actually needed either:
-> > So, I remembered well :)
-> > 
-> > > https://en.cppreference.com/w/c/language/operator_precedence
-> > 
-> > Very nice table. Thanks for the link.
-> > 
-> > > But you could look around in the code and see what people typically
-> > > do.
-> > > Perhaps one might find the parentheses more clear when there is a
-> > > binary
-> > > operator.  But when there is no binary operator, they could be more
-> > > confusing than useful.
-> > 
-> > When I look around in the code I see a lot of unnecessary parentheses.
-> > What people typically do is not always the right thing. I prefer to
-> > remove parentheses where they are redundant.
+On Sun, Apr 11, 2021 at 11:43:07AM +0200, Jesper Dangaard Brouer wrote:
+> On Sat, 10 Apr 2021 21:52:45 +0100
+> "Matthew Wilcox (Oracle)" <willy@infradead.org> wrote:
 > 
-> Not sure I was clear.  This driver seems to be very enthusiastic about
-> parentheses.  But perhaps check in other more mature parts of the
-> kernel.
->
-Sorry, I thought you were specifically referring to that file.
-
-I've run "grep" in ./kernel/locking and others mature parts of Linux. 
-You're right: experienced authors use parentheses when there are binary 
-operators. Therefore, I'll leave that right hand argument as is within 
-parentheses.
-
-Thanks again,
-
-Fabio
-> 
-> julia
-> 
-> > Thanks for your kind help,
+> > 32-bit architectures which expect 8-byte alignment for 8-byte integers
+> > and need 64-bit DMA addresses (arc, arm, mips, ppc) had their struct
+> > page inadvertently expanded in 2019.  When the dma_addr_t was added,
+> > it forced the alignment of the union to 8 bytes, which inserted a 4 byte
+> > gap between 'flags' and the union.
 > > 
-> > Fabio
+> > We could fix this by telling the compiler to use a smaller alignment
+> > for the dma_addr, but that seems a little fragile.  Instead, move the
+> > 'flags' into the union.  That causes dma_addr to shift into the same
+> > bits as 'mapping', so it would have to be cleared on free.  To avoid
+> > this, insert three words of padding and use the same bits as ->index
+> > and ->private, neither of which have to be cleared on free.
 > > 
-> > > julia
-> > > 
-> > > > Thanks,
-> > > > 
-> > > > Fabio
-> > > > 
-> > > > > julia
-> > > > > 
-> > > > > >  		u8 ps_mode = pwrpriv->pwr_mode;
-> > > > > >  		
-> > > > > >  		rtw_hal_set_hwreg(padapter, 
-HW_VAR_H2C_FW_PWRMODE,
-> > > > 
-> > > > (u8
-> > > > 
-> > > > > >  		*)(&ps_mode));
-> > > > > > 
-> > > > > > --
-> > > > > > 2.31.1
-> > > > > > 
-> > > > > > --
-> > > > > > You received this message because you are subscribed to the
-> > > > > > Google
-> > > > > > Groups "outreachy-kernel" group. To unsubscribe from this group
-> > > > > > and
-> > > > > > stop receiving emails from it, send an email to
-> > > > > > outreachy-kernel+unsubscribe@googlegroups.com. To view this
-> > > > > > discussion
-> > > > > > on the web visit
-> > > > > > https://groups.google.com/d/msgid/outreachy-kernel/202104110829
-> > > > > > 08.3
-> > > > > > 187
-> > > > > > 6-5-fmdefrancesco%40gmail.com.
+> > Fixes: c25fff7171be ("mm: add dma_addr_t to struct page")
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > ---
+> >  include/linux/mm_types.h | 38 ++++++++++++++++++++++++++------------
+> >  1 file changed, 26 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> > index 6613b26a8894..45c563e9b50e 100644
+> > --- a/include/linux/mm_types.h
+> > +++ b/include/linux/mm_types.h
+> > @@ -68,16 +68,22 @@ struct mem_cgroup;
+> >  #endif
+> >  
+> >  struct page {
+> > -	unsigned long flags;		/* Atomic flags, some possibly
+> > -					 * updated asynchronously */
+> >  	/*
+> > -	 * Five words (20/40 bytes) are available in this union.
+> > -	 * WARNING: bit 0 of the first word is used for PageTail(). That
+> > -	 * means the other users of this union MUST NOT use the bit to
+> > +	 * This union is six words (24 / 48 bytes) in size.
+> > +	 * The first word is reserved for atomic flags, often updated
+> > +	 * asynchronously.  Use the PageFoo() macros to access it.  Some
+> > +	 * of the flags can be reused for your own purposes, but the
+> > +	 * word as a whole often contains other information and overwriting
+> > +	 * it will cause functions like page_zone() and page_node() to stop
+> > +	 * working correctly.
+> > +	 *
+> > +	 * Bit 0 of the second word is used for PageTail(). That
+> > +	 * means the other users of this union MUST leave the bit zero to
+> >  	 * avoid collision and false-positive PageTail().
+> >  	 */
+> >  	union {
+> >  		struct {	/* Page cache and anonymous pages */
+> > +			unsigned long flags;
+> >  			/**
+> >  			 * @lru: Pageout list, eg. active_list protected by
+> >  			 * lruvec->lru_lock.  Sometimes used as a generic list
+> > @@ -96,13 +102,14 @@ struct page {
+> >  			unsigned long private;
+> >  		};
+> >  		struct {	/* page_pool used by netstack */
+> > -			/**
+> > -			 * @dma_addr: might require a 64-bit value even on
+> > -			 * 32-bit architectures.
+> > -			 */
+> > -			dma_addr_t dma_addr;
+> 
+> The original intend of placing member @dma_addr here is that it overlap
+> with @LRU (type struct list_head) which contains two pointers.  Thus, in
+> case of CONFIG_ARCH_DMA_ADDR_T_64BIT=y on 32-bit architectures it would
+> use both pointers.
+> 
+> Thinking more about this, this design is flawed as bit 0 of the first
+> word is used for compound pages (see PageTail and @compound_head), is
+> reserved.  We knew DMA addresses were aligned, thus we though this
+> satisfied that need.  BUT for DMA_ADDR_T_64BIT=y on 32-bit arch the
+> first word will contain the "upper" part of the DMA addr, which I don't
+> think gives this guarantee.
+> 
+> I guess, nobody are using this combination?!?  I though we added this
+> to satisfy TI (Texas Instrument) driver cpsw (code in
+> drivers/net/ethernet/ti/cpsw*).  Thus, I assumed it was in use?
 
+It may be in use, but we've got away with it?  It's relatively rare
+that this is going to bite us.  I think what has to happen is:
 
+page is mapped to userspace
+task calls get_user_page_fast(), loads the PTE
+<preempted>
+page is unmapped & freed
+page is reallocated to the page_pool
+page is DMA mapped to an address that happens to have that bit set
+<first task resumes>
+task looks for the compound_head() of that PTE, and attempts to bump
+the refcount.  *oops*
 
+If it has happened, would it have turned into a bug report?
+If we had seen such a bug report, would we have noticed it?
+
+> > +			unsigned long _pp_flags;
+> > +			unsigned long pp_magic;
+> > +			unsigned long xmi;
+> 
+> Matteo notice, I think intent is we can store xdp_mem_info in @xmi.
+
+Yep.
+
+> > +			unsigned long _pp_mapping_pad;
+> > +			dma_addr_t dma_addr;	/* might be one or two words */
+> >  		};
+> 
+> Could you explain your intent here?
+> I worry about @index.
+> 
+> As I mentioned in other thread[1] netstack use page_is_pfmemalloc()
+> (code copy-pasted below signature) which imply that the member @index
+> have to be kept intact. In above, I'm unsure @index is untouched.
+
+Argh, I read that piece of your message, and then promptly forgot about
+it.  I really don't like page_is_pfmemalloc() using the entirety of
+page->index for this.  How about we just do what slab does anyway
+and use PageActive for page_is_pfmemalloc()?
+
+Basically, we have three aligned dwords here.  We can either alias with
+@flags and the first word of @lru, or the second word of @lru and @mapping,
+or @index and @private.  @flags is a non-starter.  If we use @mapping,
+then you have to set it to NULL before you free it, and I'm not sure
+how easy that will be for you.  If that's trivial, then we could use
+the layout:
+
+	unsigned long _pp_flags;
+	unsigned long pp_magic;
+	union {
+		dma_addr_t dma_addr;    /* might be one or two words */
+		unsigned long _pp_align[2];
+	};
+	unsigned long pp_pfmemalloc;
+	unsigned long xmi;
 
