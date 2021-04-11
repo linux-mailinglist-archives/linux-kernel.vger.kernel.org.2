@@ -2,122 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B0935B0CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 01:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D0035B0D4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 02:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235103AbhDJXuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 19:50:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49560 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234975AbhDJXus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 19:50:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78CC8610A3;
-        Sat, 10 Apr 2021 23:50:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618098633;
-        bh=iVD3CjNy6yYEszr8NDiMzPyofOKr+RvlDojk8cOxdLY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=nBWF/rIsiGyAFj40XbNmmNgU3TWmE2ROdEAlahJ9HeBG4By//4y811FNJ2Wj+ZVrW
-         qHpfRNGrA7rPIzjpynktL+zKYADluxRr8qxcj9PwdFKF85ZZuBbIalt52R9fdYI9Sn
-         m3s32J4So43HsLbgX6K+mFoxnHLIAqvLPadOJyKFd8n/T4NPFQAjwvwyjHY1POFgDH
-         ojUyOwPRvR99GZOne9/jEhWbwEf528J0ZF6zya+Lx6liR/BqjEayPa56wW7pknotZI
-         J1SUDsMP//AzgElBRQo1qMZHPTE8sNWOnx16XqB2p6nVVMqfy3RZLZfPWuesyZR4HC
-         MFxMdyQY01Ghw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 3EFBA5C0C5F; Sat, 10 Apr 2021 16:50:33 -0700 (PDT)
-Date:   Sat, 10 Apr 2021 16:50:33 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com
-Subject: Re: [PATCH v7 clocksource 2/5] clocksource: Retry clock read if long
- delays detected
-Message-ID: <20210410235033.GU4510@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210402224828.GA3683@paulmck-ThinkPad-P72>
- <20210402224906.3912-2-paulmck@kernel.org>
- <87eefi4jm6.ffs@nanos.tec.linutronix.de>
+        id S234975AbhDKAM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 20:12:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234680AbhDKAM0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 20:12:26 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826E0C06138B;
+        Sat, 10 Apr 2021 17:12:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=c+1uiD+E+I3h5W0kFsTlgpmVK7goYpFQjg+5sNaZqp0=; b=MK3D2LBExv0el1yGut7joM9kXr
+        kEjsBBiAAYtSdglYxiUMnVjMelnR5apMs0XJf5yXv79GSVOJbMRs4jREaldm/XUlsC//91QzHaj3m
+        PwvR/iGl7EbrlxS9OAH26ZIUfumzETh5ENvDY6rr4jvXR4+q9GK7drruJrCwKIUys/MU09/HWvwz4
+        XC++YCmTaqq4jtYlXKIZsECMbRi9GaNZV0pImkyj5T6A3RITXY9js0TJe4jhhES458sjIgUuUgCbH
+        3QntrcZX1ueEK15awTDblyaY9uSETEC1gCUzLQ62X8v5SCTvTr8bS42LrNmYUXuFWsII7XrNUfZzL
+        wdrKbEyA==;
+Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVNhs-002Izl-T6; Sun, 11 Apr 2021 00:12:07 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-ia64@vger.kernel.org
+Subject: [PATCH] ia64: fix discontig.c section mismatches
+Date:   Sat, 10 Apr 2021 17:12:01 -0700
+Message-Id: <20210411001201.3069-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87eefi4jm6.ffs@nanos.tec.linutronix.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 10:41:21AM +0200, Thomas Gleixner wrote:
-> On Fri, Apr 02 2021 at 15:49, paulmck wrote:
-> > This commit therefore re-reads the watchdog clock on either side of
-> 
-> 'This commit' is not any better than 'This patch' and this sentence
-> makes no sense. I might be missing something, but how exactly does "the
-> commit" re-read the watchdog clock?
-> 
->  git grep 'This patch' Documentation/process/
+Fix IA64 discontig.c Section mismatch warnings.
 
-I will rework this.
+When CONFIG_SPARSEMEM=y and CONFIG_MEMORY_HOTPLUG=y, the functions
+computer_pernodesize() and scatter_node_data() should not be marked
+as __meminit because they are needed after init, on any memory
+hotplug event. Also, early_nr_cpus_node() is called by
+compute_pernodesize(), so early_nr_cpus_node() cannot be __meminit either.
 
-> > the read from the clock under test.  If the watchdog clock shows an
-> > +retry:
-> >  		local_irq_disable();
-> > -		csnow = cs->read(cs);
-> > -		clocksource_watchdog_inject_delay();
-> >  		wdnow = watchdog->read(watchdog);
-> > +		clocksource_watchdog_inject_delay();
-> > +		csnow = cs->read(cs);
-> > +		wdagain = watchdog->read(watchdog);
-> >  		local_irq_enable();
-> > +		delta = clocksource_delta(wdagain, wdnow, watchdog->mask);
-> > +		wdagain_nsec = clocksource_cyc2ns(delta, watchdog->mult, watchdog->shift);
-> 
-> That variable naming is confusing as hell. This is about the delta and
-> not about the second readout of the watchdog.
+WARNING: modpost: vmlinux.o(.text.unlikely+0x1612): Section mismatch in reference from the function arch_alloc_nodedata() to the function .meminit.text:compute_pernodesize()
+The function arch_alloc_nodedata() references
+the function __meminit compute_pernodesize().
+This is often because arch_alloc_nodedata lacks a __meminit
+annotation or the annotation of compute_pernodesize is wrong.
 
-How about wdagain_delta?
+WARNING: modpost: vmlinux.o(.text.unlikely+0x1692): Section mismatch in reference from the function arch_refresh_nodedata() to the function .meminit.text:scatter_node_data()
+The function arch_refresh_nodedata() references
+the function __meminit scatter_node_data().
+This is often because arch_refresh_nodedata lacks a __meminit
+annotation or the annotation of scatter_node_data is wrong.
 
-> > +		if (wdagain_nsec < 0 || wdagain_nsec > WATCHDOG_MAX_SKEW) {
-> 
-> How exactly is this going negative especially with clocksources which
-> have a limited bitwidth? See clocksource_delta().
+WARNING: modpost: vmlinux.o(.text.unlikely+0x1502): Section mismatch in reference from the function compute_pernodesize() to the function .meminit.text:early_nr_cpus_node()
+The function compute_pernodesize() references
+the function __meminit early_nr_cpus_node().
+This is often because compute_pernodesize lacks a __meminit 
+annotation or the annotation of early_nr_cpus_node is wrong.
 
-I thought that I had actually seen this happen, though it is of course
-quite possible that it was due to a bug in an early version of my changes.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Mike Rapoport <rppt@kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-ia64@vger.kernel.org
+---
+ arch/ia64/mm/discontig.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-What I will do is to remove the less-than comparison and test with
-a WARN_ON().  If that doesn't trigger, I will drop the WARN_ON().
-If it does trigger, I will figure out why.
-
-> > +			wderr_nsec = wdagain_nsec;
-> > +			if (nretries++ < max_read_retries)
-> > +				goto retry;
-> > +		}
-> > +		if (nretries)
-> > +			pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d\n",
-> > +				smp_processor_id(), watchdog->name, wderr_nsec, nretries);
-> 
-> Lacks curly braces around the pr_warn() simply because it's not a single
-> line. Breaks my parser :)
-
-OK, will fix.  ;-)
-
-> But if this ever happens to exceed max_read_retries, then what's the
-> point of continuing at all? The data is known to be crap already.
-
-If there are four delays in four consecutive attempts to read out the
-clocks -- with interrupts disabled -- then it is quite possible that the
-delay is actually caused by the attempt to read the clock.  In which case,
-marking the clock bad due to skew is a reasonable choice.
-
-On the other hand, if the four consecutive delays are caused by something
-like an NMI storm, then as you say, you have worse problems.
-
-								Thanx, Paul
-
-> >  		/* Clocksource initialized ? */
-> >  		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
-> 
-> Thanks,
-> 
->         tglx
+--- linux-next-20210409.orig/arch/ia64/mm/discontig.c
++++ linux-next-20210409/arch/ia64/mm/discontig.c
+@@ -95,7 +95,7 @@ static int __init build_node_maps(unsign
+  * acpi_boot_init() (which builds the node_to_cpu_mask array) hasn't been
+  * called yet.  Note that node 0 will also count all non-existent cpus.
+  */
+-static int __meminit early_nr_cpus_node(int node)
++static int early_nr_cpus_node(int node)
+ {
+ 	int cpu, n = 0;
+ 
+@@ -110,7 +110,7 @@ static int __meminit early_nr_cpus_node(
+  * compute_pernodesize - compute size of pernode data
+  * @node: the node id.
+  */
+-static unsigned long __meminit compute_pernodesize(int node)
++static unsigned long compute_pernodesize(int node)
+ {
+ 	unsigned long pernodesize = 0, cpus;
+ 
+@@ -367,7 +367,7 @@ static void __init reserve_pernode_space
+ 	}
+ }
+ 
+-static void __meminit scatter_node_data(void)
++static void scatter_node_data(void)
+ {
+ 	pg_data_t **dst;
+ 	int node;
