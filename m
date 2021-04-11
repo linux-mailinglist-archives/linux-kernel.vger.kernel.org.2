@@ -2,353 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40F835B12E
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 04:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A27E35B132
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 04:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235061AbhDKCgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 22:36:20 -0400
-Received: from mga07.intel.com ([134.134.136.100]:64892 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234680AbhDKCgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 22:36:18 -0400
-IronPort-SDR: Lk1CBbwCwLV/1d87rejUz/d0d9O3ssjViDZ20AvsbwjT0huP/Oug7LjS0YsWrfqX5sXdd7aUQM
- x7OmM4A2Rnug==
-X-IronPort-AV: E=McAfee;i="6000,8403,9950"; a="257955368"
-X-IronPort-AV: E=Sophos;i="5.82,213,1613462400"; 
-   d="scan'208";a="257955368"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 19:36:02 -0700
-IronPort-SDR: OBNnZuvHTQ3zFM55qKoM4WT6rh2M56qafI04Jq98npu94EN5hgzw+Z1zLe7GUoxZuoFAUagKjp
- wSKWyqj7w/WQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,213,1613462400"; 
-   d="scan'208";a="381123754"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 10 Apr 2021 19:36:02 -0700
-Received: from glass.png.intel.com (glass.png.intel.com [10.158.65.59])
-        by linux.intel.com (Postfix) with ESMTP id E3536580812;
-        Sat, 10 Apr 2021 19:35:58 -0700 (PDT)
-From:   Wong Vee Khee <vee.khee.wong@linux.intel.com>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     Voon Weifeng <weifeng.voon@intel.com>,
-        Ong Boon Leong <boon.leong.ong@intel.com>,
-        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org,
-        Richard Cochran <richardcochran@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v3 1/1] net: stmmac: Add support for external trigger timestamping
-Date:   Sun, 11 Apr 2021 10:40:28 +0800
-Message-Id: <20210411024028.14586-1-vee.khee.wong@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S235001AbhDKC42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 22:56:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234950AbhDKC40 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 10 Apr 2021 22:56:26 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 138CDC06138B;
+        Sat, 10 Apr 2021 19:56:11 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id t140so6725725pgb.13;
+        Sat, 10 Apr 2021 19:56:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h8aVGITkFnZdJUFZyLeM717/3kVXSiIqRZAvMjZr15k=;
+        b=cYz+eatAhkFH/2f4Hqcr+qqN5USaw6ASc58yCVenD8SxD6mkRGDBIf16w5CTMoXQMO
+         CiOpGdJgj6OODNMYm6V4tinXJGbn2R2n+m5LDbHvz2iDJZ6H8cpOeEw5p3zzXnsVeiD4
+         aGkUaEQ1t6scj1l1hWLycuirjvugrjV7GzAoGKKv5KvxYU9gY/nZsvcFVojMOp+SVCbm
+         vCvOX89tyAihV658oxoAhW+a0259dfb9GBxGteLa29BKuM2jJbmar9uYYoJlcHmoLXZ9
+         iB6cXIZ3OUVyqC0fMUByTkAlxFtM0GnCCKaBS13nbPi8ogmRwr6jdHZILlzWh/7fHbzR
+         sqAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=h8aVGITkFnZdJUFZyLeM717/3kVXSiIqRZAvMjZr15k=;
+        b=GsGvUkzcH6OidIsfL/nFxSwfVisOg85wpBBPtSZaYQ13WieQcwGGW782xBDA8stmY/
+         9/QWqMTyFYafTHzIVn0JuTzFFGywDyUgEMnVgAUV38V5MkrLQnGt2qbE0Kr2RVnNI9pa
+         SqUTwDsDFYBu8Z/VeodU6+4C32SHfsai+EMgzhu98joQ7DKlm+wIM5763MIi3rn5OVGt
+         98ZO6T75ACDQ/1Gt6SiDrsziwuhZn0pWjewItFbbyT/1m6HNcW1xiFXX+D22enUP2nOx
+         iODFYOjB2YxsNxm+WSZ1pBuvX7rSsSbc5hiaBnt9vpi6zMyEFfY9YilcE/lSnMHcxhSS
+         dddQ==
+X-Gm-Message-State: AOAM531EFheQ18KdbS7P/twi+0nUS7oXDxMRRL1fZInr2mMJOcXpAckY
+        Vr7mO/AQuQqW6vtdNfbA+UqFr3l/9ME=
+X-Google-Smtp-Source: ABdhPJxMDkglUU7qbyL5M9DcQV2TgN60Kb03gyz2GxGfm0vDv3hxPY/WLh3D8Tzz9DxigGLSNU2EWg==
+X-Received: by 2002:a63:eb49:: with SMTP id b9mr19766250pgk.318.1618109770346;
+        Sat, 10 Apr 2021 19:56:10 -0700 (PDT)
+Received: from dtor-ws.mtv.corp.google.com ([2620:15c:202:201:a9b4:ff60:6655:5c5f])
+        by smtp.gmail.com with ESMTPSA id fs3sm6207001pjb.30.2021.04.10.19.56.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 19:56:09 -0700 (PDT)
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] HID: hid-input: add mapping for emoji picker key
+Date:   Sat, 10 Apr 2021 19:56:05 -0700
+Message-Id: <20210411025606.2744875-1-dmitry.torokhov@gmail.com>
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tan Tee Min <tee.min.tan@intel.com>
+HUTRR101 added a new usage code for a key that is supposed to invoke and
+dismiss an emoji picker widget to assist users to locate and enter emojis.
 
-The Synopsis MAC controller supports auxiliary snapshot feature that
-allows user to store a snapshot of the system time based on an external
-event.
+This patch adds a new key definition KEY_EMOJI_PICKER and maps 0x0c/0x0d9
+usage code to this new keycode. Additionally hid-debug is adjusted to
+recognize this new usage code as well.
 
-This patch add supports to the above mentioned feature. Users will be
-able to triggered capturing the time snapshot from user-space using
-application such as testptp or any other applications that uses the
-PTP_EXTTS_REQUEST ioctl request.
-
-Cc: Richard Cochran <richardcochran@gmail.com>
-Signed-off-by: Tan Tee Min <tee.min.tan@intel.com>
-Co-developed-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 ---
-v2 -> v3:
-  - Flip ext_snapshot_en condition check for early return.
-v1 -> v2:
-  - Changed from pr_info() to netdev_dbg().
+ drivers/hid/hid-debug.c                | 1 +
+ drivers/hid/hid-input.c                | 3 +++
+ include/uapi/linux/input-event-codes.h | 1 +
+ 3 files changed, 5 insertions(+)
 
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c | 11 +++++
- drivers/net/ethernet/stmicro/stmmac/hwif.h    |  5 +++
- drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  3 ++
- .../ethernet/stmicro/stmmac/stmmac_hwtstamp.c | 41 +++++++++++++++++++
- .../net/ethernet/stmicro/stmmac/stmmac_main.c |  2 +
- .../net/ethernet/stmicro/stmmac/stmmac_ptp.c  | 39 +++++++++++++++++-
- .../net/ethernet/stmicro/stmmac/stmmac_ptp.h  |  1 +
- include/linux/stmmac.h                        |  2 +
- 8 files changed, 103 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-index 60566598d644..60e17fd24aba 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-intel.c
-@@ -296,6 +296,13 @@ static int intel_crosststamp(ktime_t *device,
+diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
+index d7eaf9100370..982737827b87 100644
+--- a/drivers/hid/hid-debug.c
++++ b/drivers/hid/hid-debug.c
+@@ -929,6 +929,7 @@ static const char *keys[KEY_MAX + 1] = {
+ 	[KEY_APPSELECT] = "AppSelect",
+ 	[KEY_SCREENSAVER] = "ScreenSaver",
+ 	[KEY_VOICECOMMAND] = "VoiceCommand",
++	[KEY_EMOJI_PICKER] = "EmojiPicker",
+ 	[KEY_BRIGHTNESS_MIN] = "BrightnessMin",
+ 	[KEY_BRIGHTNESS_MAX] = "BrightnessMax",
+ 	[KEY_BRIGHTNESS_AUTO] = "BrightnessAuto",
+diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
+index 236bccd37760..e982d8173c9c 100644
+--- a/drivers/hid/hid-input.c
++++ b/drivers/hid/hid-input.c
+@@ -963,6 +963,9 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
  
- 	intel_priv = priv->plat->bsp_priv;
- 
-+	/* Both internal crosstimestamping and external triggered event
-+	 * timestamping cannot be run concurrently.
-+	 */
-+	if (priv->plat->ext_snapshot_en)
-+		return -EBUSY;
+ 		case 0x0cd: map_key_clear(KEY_PLAYPAUSE);	break;
+ 		case 0x0cf: map_key_clear(KEY_VOICECOMMAND);	break;
 +
-+	mutex_lock(&priv->aux_ts_lock);
- 	/* Enable Internal snapshot trigger */
- 	acr_value = readl(ptpaddr + PTP_ACR);
- 	acr_value &= ~PTP_ACR_MASK;
-@@ -321,6 +328,7 @@ static int intel_crosststamp(ktime_t *device,
- 	acr_value = readl(ptpaddr + PTP_ACR);
- 	acr_value |= PTP_ACR_ATSFC;
- 	writel(acr_value, ptpaddr + PTP_ACR);
-+	mutex_unlock(&priv->aux_ts_lock);
- 
- 	/* Trigger Internal snapshot signal
- 	 * Create a rising edge by just toggle the GPO1 to low
-@@ -355,6 +363,8 @@ static int intel_crosststamp(ktime_t *device,
- 		*system = convert_art_to_tsc(art_time);
- 	}
- 
-+	/* Release the mutex */
-+	mutex_unlock(&priv->aux_ts_lock);
- 	system->cycles *= intel_priv->crossts_adj;
- 
- 	return 0;
-@@ -520,6 +530,7 @@ static int intel_mgbe_common_data(struct pci_dev *pdev,
- 	plat->mdio_bus_data->phy_mask |= 1 << INTEL_MGBE_XPCS_ADDR;
- 
- 	plat->int_snapshot_num = AUX_SNAPSHOT1;
-+	plat->ext_snapshot_num = AUX_SNAPSHOT0;
- 
- 	plat->has_crossts = true;
- 	plat->crosststamp = intel_crosststamp;
-diff --git a/drivers/net/ethernet/stmicro/stmmac/hwif.h b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-index 2b5022ef1e52..2cc91759b91f 100644
---- a/drivers/net/ethernet/stmicro/stmmac/hwif.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/hwif.h
-@@ -504,6 +504,8 @@ struct stmmac_ops {
- #define stmmac_fpe_irq_status(__priv, __args...) \
- 	stmmac_do_callback(__priv, mac, fpe_irq_status, __args)
- 
-+struct stmmac_priv;
++		case 0x0d9: map_key_clear(KEY_EMOJI_PICKER);	break;
 +
- /* PTP and HW Timer helpers */
- struct stmmac_hwtimestamp {
- 	void (*config_hw_tstamping) (void __iomem *ioaddr, u32 data);
-@@ -515,6 +517,7 @@ struct stmmac_hwtimestamp {
- 			       int add_sub, int gmac4);
- 	void (*get_systime) (void __iomem *ioaddr, u64 *systime);
- 	void (*get_ptptime)(void __iomem *ioaddr, u64 *ptp_time);
-+	void (*timestamp_interrupt)(struct stmmac_priv *priv);
- };
+ 		case 0x0e0: map_abs_clear(ABS_VOLUME);		break;
+ 		case 0x0e2: map_key_clear(KEY_MUTE);		break;
+ 		case 0x0e5: map_key_clear(KEY_BASSBOOST);	break;
+diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
+index ee93428ced9a..225ec87d4f22 100644
+--- a/include/uapi/linux/input-event-codes.h
++++ b/include/uapi/linux/input-event-codes.h
+@@ -611,6 +611,7 @@
+ #define KEY_VOICECOMMAND		0x246	/* Listening Voice Command */
+ #define KEY_ASSISTANT		0x247	/* AL Context-aware desktop assistant */
+ #define KEY_KBD_LAYOUT_NEXT	0x248	/* AC Next Keyboard Layout Select */
++#define KEY_EMOJI_PICKER	0x249	/* Show/hide emoji picker (HUTRR101) */
  
- #define stmmac_config_hw_tstamping(__priv, __args...) \
-@@ -531,6 +534,8 @@ struct stmmac_hwtimestamp {
- 	stmmac_do_void_callback(__priv, ptp, get_systime, __args)
- #define stmmac_get_ptptime(__priv, __args...) \
- 	stmmac_do_void_callback(__priv, ptp, get_ptptime, __args)
-+#define stmmac_timestamp_interrupt(__priv, __args...) \
-+	stmmac_do_void_callback(__priv, ptp, timestamp_interrupt, __args)
- 
- /* Helpers to manage the descriptors for chain and ring modes */
- struct stmmac_mode_ops {
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac.h b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-index c49debb62b05..abadcd8cdc41 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac.h
-@@ -239,6 +239,9 @@ struct stmmac_priv {
- 	int use_riwt;
- 	int irq_wake;
- 	spinlock_t ptp_lock;
-+	/* Mutex lock for Auxiliary Snapshots */
-+	struct mutex aux_ts_lock;
-+
- 	void __iomem *mmcaddr;
- 	void __iomem *ptpaddr;
- 	unsigned long active_vlans[BITS_TO_LONGS(VLAN_N_VID)];
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-index 113c51bcc0b5..f6bdd3cde824 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_hwtstamp.c
-@@ -12,8 +12,11 @@
- #include <linux/io.h>
- #include <linux/iopoll.h>
- #include <linux/delay.h>
-+#include <linux/ptp_clock_kernel.h>
- #include "common.h"
- #include "stmmac_ptp.h"
-+#include "dwmac4.h"
-+#include "stmmac.h"
- 
- static void config_hw_tstamping(void __iomem *ioaddr, u32 data)
- {
-@@ -163,6 +166,43 @@ static void get_ptptime(void __iomem *ptpaddr, u64 *ptp_time)
- 	*ptp_time = ns;
- }
- 
-+static void timestamp_interrupt(struct stmmac_priv *priv)
-+{
-+	struct ptp_clock_event event;
-+	unsigned long flags;
-+	u32 num_snapshot;
-+	u32 ts_status;
-+	u32 tsync_int;
-+	u64 ptp_time;
-+	int i;
-+
-+	tsync_int = readl(priv->ioaddr + GMAC_INT_STATUS) & GMAC_INT_TSIE;
-+
-+	if (!tsync_int)
-+		return;
-+
-+	/* Read timestamp status to clear interrupt from either external
-+	 * timestamp or start/end of PPS.
-+	 */
-+	ts_status = readl(priv->ioaddr + GMAC_TIMESTAMP_STATUS);
-+
-+	if (!priv->plat->ext_snapshot_en)
-+		return;
-+
-+	num_snapshot = (ts_status & GMAC_TIMESTAMP_ATSNS_MASK) >>
-+		       GMAC_TIMESTAMP_ATSNS_SHIFT;
-+
-+	for (i = 0; i < num_snapshot; i++) {
-+		spin_lock_irqsave(&priv->ptp_lock, flags);
-+		get_ptptime(priv->ptpaddr, &ptp_time);
-+		spin_unlock_irqrestore(&priv->ptp_lock, flags);
-+		event.type = PTP_CLOCK_EXTTS;
-+		event.index = 0;
-+		event.timestamp = ptp_time;
-+		ptp_clock_event(priv->ptp_clock, &event);
-+	}
-+}
-+
- const struct stmmac_hwtimestamp stmmac_ptp = {
- 	.config_hw_tstamping = config_hw_tstamping,
- 	.init_systime = init_systime,
-@@ -171,4 +211,5 @@ const struct stmmac_hwtimestamp stmmac_ptp = {
- 	.adjust_systime = adjust_systime,
- 	.get_systime = get_systime,
- 	.get_ptptime = get_ptptime,
-+	.timestamp_interrupt = timestamp_interrupt,
- };
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index 77285646c5fc..9e57bc3d00a3 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -4989,6 +4989,8 @@ static void stmmac_common_interrupt(struct stmmac_priv *priv)
- 			else
- 				netif_carrier_off(priv->dev);
- 		}
-+
-+		stmmac_timestamp_interrupt(priv, priv);
- 	}
- }
- 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-index b164ae22e35f..d668c33a0746 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.c
-@@ -135,9 +135,13 @@ static int stmmac_enable(struct ptp_clock_info *ptp,
- {
- 	struct stmmac_priv *priv =
- 	    container_of(ptp, struct stmmac_priv, ptp_clock_ops);
-+	void __iomem *ptpaddr = priv->ptpaddr;
-+	void __iomem *ioaddr = priv->hw->pcsr;
- 	struct stmmac_pps_cfg *cfg;
- 	int ret = -EOPNOTSUPP;
- 	unsigned long flags;
-+	u32 intr_value;
-+	u32 acr_value;
- 
- 	switch (rq->type) {
- 	case PTP_CLK_REQ_PEROUT:
-@@ -159,6 +163,37 @@ static int stmmac_enable(struct ptp_clock_info *ptp,
- 					     priv->systime_flags);
- 		spin_unlock_irqrestore(&priv->ptp_lock, flags);
- 		break;
-+	case PTP_CLK_REQ_EXTTS:
-+		priv->plat->ext_snapshot_en = on;
-+		mutex_lock(&priv->aux_ts_lock);
-+		acr_value = readl(ptpaddr + PTP_ACR);
-+		acr_value &= ~PTP_ACR_MASK;
-+		if (on) {
-+			/* Enable External snapshot trigger */
-+			acr_value |= priv->plat->ext_snapshot_num;
-+			acr_value |= PTP_ACR_ATSFC;
-+			netdev_dbg(priv->dev, "Auxiliary Snapshot %d enabled.\n",
-+				   priv->plat->ext_snapshot_num >>
-+				   PTP_ACR_ATSEN_SHIFT);
-+			/* Enable Timestamp Interrupt */
-+			intr_value = readl(ioaddr + GMAC_INT_EN);
-+			intr_value |= GMAC_INT_TSIE;
-+			writel(intr_value, ioaddr + GMAC_INT_EN);
-+
-+		} else {
-+			netdev_dbg(priv->dev, "Auxiliary Snapshot %d disabled.\n",
-+				   priv->plat->ext_snapshot_num >>
-+				   PTP_ACR_ATSEN_SHIFT);
-+			/* Disable Timestamp Interrupt */
-+			intr_value = readl(ioaddr + GMAC_INT_EN);
-+			intr_value &= ~GMAC_INT_TSIE;
-+			writel(intr_value, ioaddr + GMAC_INT_EN);
-+		}
-+		writel(acr_value, ptpaddr + PTP_ACR);
-+		mutex_unlock(&priv->aux_ts_lock);
-+		ret = 0;
-+		break;
-+
- 	default:
- 		break;
- 	}
-@@ -202,7 +237,7 @@ static struct ptp_clock_info stmmac_ptp_clock_ops = {
- 	.name = "stmmac ptp",
- 	.max_adj = 62500000,
- 	.n_alarm = 0,
--	.n_ext_ts = 0,
-+	.n_ext_ts = 0, /* will be overwritten in stmmac_ptp_register */
- 	.n_per_out = 0, /* will be overwritten in stmmac_ptp_register */
- 	.n_pins = 0,
- 	.pps = 0,
-@@ -237,8 +272,10 @@ void stmmac_ptp_register(struct stmmac_priv *priv)
- 		stmmac_ptp_clock_ops.max_adj = priv->plat->ptp_max_adj;
- 
- 	stmmac_ptp_clock_ops.n_per_out = priv->dma_cap.pps_out_num;
-+	stmmac_ptp_clock_ops.n_ext_ts = priv->dma_cap.aux_snapshot_n;
- 
- 	spin_lock_init(&priv->ptp_lock);
-+	mutex_init(&priv->aux_ts_lock);
- 	priv->ptp_clock_ops = stmmac_ptp_clock_ops;
- 
- 	priv->ptp_clock = ptp_clock_register(&priv->ptp_clock_ops,
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-index f88727ce4d30..53172a439810 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_ptp.h
-@@ -73,6 +73,7 @@
- #define	PTP_ACR_ATSEN1		BIT(5)	/* Auxiliary Snapshot 1 Enable */
- #define	PTP_ACR_ATSEN2		BIT(6)	/* Auxiliary Snapshot 2 Enable */
- #define	PTP_ACR_ATSEN3		BIT(7)	/* Auxiliary Snapshot 3 Enable */
-+#define	PTP_ACR_ATSEN_SHIFT	5	/* Auxiliary Snapshot shift */
- #define	PTP_ACR_MASK		GENMASK(7, 4)	/* Aux Snapshot Mask */
- #define	PMC_ART_VALUE0		0x01	/* PMC_ART[15:0] timer value */
- #define	PMC_ART_VALUE1		0x02	/* PMC_ART[31:16] timer value */
-diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index e338ef7abc00..97edb31d6310 100644
---- a/include/linux/stmmac.h
-+++ b/include/linux/stmmac.h
-@@ -238,6 +238,8 @@ struct plat_stmmacenet_data {
- 	struct pci_dev *pdev;
- 	bool has_crossts;
- 	int int_snapshot_num;
-+	int ext_snapshot_num;
-+	bool ext_snapshot_en;
- 	bool multi_msi_en;
- 	int msi_mac_vec;
- 	int msi_wol_vec;
+ #define KEY_BRIGHTNESS_MIN		0x250	/* Set Brightness to Minimum */
+ #define KEY_BRIGHTNESS_MAX		0x251	/* Set Brightness to Maximum */
 -- 
-2.25.1
+2.31.1.295.g9ea45b61b8-goog
 
