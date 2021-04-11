@@ -2,76 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F1EF35B224
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 09:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABEDC35B22A
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 09:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235012AbhDKHRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 03:17:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36192 "EHLO mail.kernel.org"
+        id S235038AbhDKHVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 03:21:46 -0400
+Received: from mga05.intel.com ([192.55.52.43]:46858 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229792AbhDKHRW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 03:17:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84C53600D3;
-        Sun, 11 Apr 2021 07:17:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618125426;
-        bh=p/UdKtXkSKul+gDd7EMlk5C+albZFshfM4t0+YC5LEY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NjDkBM97UXnMXoxVuluVyo0vn8G6qIxIPAcfOcof3mnlYaMttr0Sa1H4Y1xY00MGN
-         e69OpoBma3eUgkz5Hg/XFQ6bL8LK5enMGpWgekmF2egnvD8W+UgZZfjvQujrLz+NaN
-         CPH5z7u1PIo0iXQyvaWbrl2IXm8/OaUG4AjUHgE0=
-Date:   Sun, 11 Apr 2021 09:17:03 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH v2 0/5] staging: rtl8723bs: Change
-Message-ID: <YHKib/h08kR/hsQV@kroah.com>
-References: <20210410150008.5460-1-fmdefrancesco@gmail.com>
- <YHKZlqFy15QC9Mzz@kroah.com>
- <3154849.IkRRYng9eG@localhost.localdomain>
+        id S229792AbhDKHVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 03:21:45 -0400
+IronPort-SDR: DbF8OBuUunY58cCECaDKiza3nepIT5tDSnQ7AfkXZ053JQYQln0IetF7OTOliAZqITlQoqcZrM
+ nT7oiwmzVK9g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9950"; a="279290046"
+X-IronPort-AV: E=Sophos;i="5.82,213,1613462400"; 
+   d="scan'208";a="279290046"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 00:21:28 -0700
+IronPort-SDR: TpZUl78n1HerQ6d8MU2DjWqvE4kCXWjCsrXXKsgsjlBnf6LdrPX6JNNiN+dYTVptTLgQl6OwIP
+ Zkup/BQhZ2Og==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,213,1613462400"; 
+   d="scan'208";a="459756026"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.94])
+  by orsmga001.jf.intel.com with ESMTP; 11 Apr 2021 00:21:22 -0700
+Date:   Sun, 11 Apr 2021 15:21:21 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, rui.zhang@intel.com,
+        andi.kleen@intel.com, dave.hansen@intel.com, len.brown@intel.com
+Subject: Re: [RFC 1/2] x86/tsc: add a timer to make sure tsc_adjust is always
+ checked
+Message-ID: <20210411072121.GA81632@shbuild999.sh.intel.com>
+References: <1617092747-15769-1-git-send-email-feng.tang@intel.com>
+ <87y2dq32xc.ffs@nanos.tec.linutronix.de>
+ <20210410143804.GB22054@shbuild999.sh.intel.com>
+ <87blam2d0x.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3154849.IkRRYng9eG@localhost.localdomain>
+In-Reply-To: <87blam2d0x.ffs@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 09:11:43AM +0200, Fabio M. De Francesco wrote:
-> On Sunday, April 11, 2021 8:39:18 AM CEST Greg KH wrote:
-> > On Sat, Apr 10, 2021 at 05:00:03PM +0200, Fabio M. De Francesco wrote:
-> > > Remove camelcase, correct misspelled words in comments, remove an
-> > > unused
-> > > variable, change the type of a variable and its use, change comparisons
-> > > with 'true' in controlling expressions.
-> > > 
-> > > Changes from v1: Fix a typo in subject of patch 1/5, add patch 5/5.
-> > 
-> > The subject line above is very odd :(
+On Sat, Apr 10, 2021 at 08:46:38PM +0200, Thomas Gleixner wrote:
+> Feng,
+> 
+> On Sat, Apr 10 2021 at 22:38, Feng Tang wrote:
+> > On Sat, Apr 10, 2021 at 11:27:11AM +0200, Thomas Gleixner wrote:
+> >> > +static int __init start_sync_check_timer(void)
+> >> > +{
+> >> > +	if (!boot_cpu_has(X86_FEATURE_TSC_ADJUST))
+> >> > +		return 0;
+> >> > +
+> >> > +	timer_setup(&tsc_sync_check_timer, tsc_sync_check_timer_fn, 0);
+> >> > +	tsc_sync_check_timer.expires = jiffies + SYNC_CHECK_INTERVAL;
+> >> > +	add_timer(&tsc_sync_check_timer);
+> >> > +
+> >> > +	return 0;
+> >> > +}
+> >> > +late_initcall(start_sync_check_timer);
+> >> 
+> >> So right now, if someone adds 'tsc=reliable' on the kernel command line
+> >> then all of the watchdog checking, except for the idle enter TSC_ADJUST
+> >> check is disabled. The NOHZ full people are probably going to be pretty
+> >> unhappy about yet another unconditional timer they have to chase down.
+> >> 
+> >> So this needs some more thought.
 > >
-> True. I've just read the output of git format in /tmp and noticed that the 
-> line with the "subject" was broken in two different one. I think I had 
-> pressed return while editing.
+> > 'tsc=reliable' in cmdline will set 'tsc_clocksource_reliable' to 1, so
+> > we can skip starting this timer if 'tsc_clocksource_reliable==1' ?
 > 
-> I'm about to send that series again with v3.
+> Then we can just ignore that patch alltogether because of 2/2 doing:
 > 
-> In the while I noticed you sent a note to let me know that the you have  
-> added the patch titled "staging: rtl8723bs: core: Remove an unused 
-> variable" to your staging git tree. 
+> +	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
+> +	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
+> +	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
+> +	    nr_online_nodes <= 2)
+> +		tsc_clocksource_reliable = 1;
 > 
-> I think this could be a potential issue because the same patch is in the 
-> series that I have to send anew. I put that patch in the series because 
-> yesterday you wrote that the message with subject "Outreachy patches caught 
-> up on.", asking to rebase and resend.
+> ....
 > 
-> However, I'm about to send v3 of this patchset. I have no idea whether or 
-> not you will have problems in applying that. If you have problems with it, 
-> please let me know.
+> I said for a reason:
+ 
+Sorry, I missed that part and should have put more thought on it,
+which is much trickier than I thought.
 
-I will, please rebase your tree against mine, which should remove the
-one patch that I did apply already as you do not need to send it again.
+In the very first patch I set 'tsc_clocksource_reliable' to 1 to
+try reusing the logic of clearing CLOCK_SOURCE_MUST_VERIFY bit,
+and now we may need to decouple them.
 
-thanks,
+One thing I can think of now is something below:
 
-greg k-h
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index f70dffc..bfd013b 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -1177,6 +1177,12 @@ void mark_tsc_unstable(char *reason)
+ 
+ EXPORT_SYMBOL_GPL(mark_tsc_unstable);
+ 
++static void __init tsc_skip_watchdog_verify(void)
++{
++	clocksource_tsc_early.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
++	clocksource_tsc.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
++}
++
+ static void __init check_system_tsc_reliable(void)
+ {
+ #if defined(CONFIG_MGEODEGX1) || defined(CONFIG_MGEODE_LX) || defined(CONFIG_X86_GENERIC)
+@@ -1193,6 +1199,17 @@ static void __init check_system_tsc_reliable(void)
+ #endif
+ 	if (boot_cpu_has(X86_FEATURE_TSC_RELIABLE))
+ 		tsc_clocksource_reliable = 1;
++
++	/*
++	 * Ideally the socket number should be checked, but this is called
++	 * by tsc_init() which is in early boot phase and the socket numbers
++	 * may not be available. Use 'nr_online_nodes' as a fallback solution
++	 */
++	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
++	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
++	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
++	    nr_online_nodes <= 2)
++		tsc_skip_watchdog_verify();
+ }
+ 
+ /*
+@@ -1384,9 +1401,6 @@ static int __init init_tsc_clocksource(void)
+ 	if (tsc_unstable)
+ 		goto unreg;
+ 
+-	if (tsc_clocksource_reliable || no_tsc_watchdog)
+-		clocksource_tsc.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
+-
+ 	if (boot_cpu_has(X86_FEATURE_NONSTOP_TSC_S3))
+ 		clocksource_tsc.flags |= CLOCK_SOURCE_SUSPEND_NONSTOP;
+ 
+@@ -1524,7 +1538,7 @@ void __init tsc_init(void)
+ 	}
+ 
+ 	if (tsc_clocksource_reliable || no_tsc_watchdog)
+-		clocksource_tsc_early.flags &= ~CLOCK_SOURCE_MUST_VERIFY;
++		tsc_skip_watchdog_verify();
+ 
+ 	clocksource_register_khz(&clocksource_tsc_early, tsc_khz);
+ 	detect_art();
+
+Thanks,
+Feng
+
+> >> So this needs some more thought.
+> 
+> Thanks,
+> 
+>         tglx
