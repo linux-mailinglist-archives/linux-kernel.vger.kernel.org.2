@@ -2,103 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA7535B635
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 18:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E4935B63A
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 18:51:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236516AbhDKQuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 12:50:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55092 "EHLO mail.kernel.org"
+        id S236519AbhDKQvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 12:51:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235338AbhDKQug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 12:50:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C762460FE5;
-        Sun, 11 Apr 2021 16:50:19 +0000 (UTC)
+        id S233514AbhDKQvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 12:51:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 06AB2610A8;
+        Sun, 11 Apr 2021 16:51:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618159819;
-        bh=1Ci5YxD42EKGi80rC43qOW2PFb5jDJWWyWqsYef//xQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=oUt/lg+CyZ0KttvB8DND1zcIEeZQhMAk4e4YFMYngwX6AcivHpT+kQRmX5ze16dIb
-         4C+kpWzPdsbz3lAOICpuJq0EjHFGryrrBM/8lzWDE+H+YdLvQ+Svi4Lmj3YhrXt/Tu
-         pfE7XKS0d5eahfpgMnGdRWEomrBuG067Gj55lJRSNiEujphAX/5iBvMJFdDvRfUvbM
-         OqyS3CX4L7HXSSsqvg2FeIi4rx3/ncvJdvoVQv0PG+AorE5nMO0/aKIi93aQCpuPnE
-         eSaJ9bANGIm0WQPTze+y2A+xTcXWBwAMB4Wsag2Hib9mO9fUEBvAlQdanTiVcjCal8
-         iLpn3wiXQKalw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 9AF685C0A23; Sun, 11 Apr 2021 09:50:19 -0700 (PDT)
-Date:   Sun, 11 Apr 2021 09:50:19 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com
-Subject: Re: [PATCH v7 clocksource] Do not mark clocks unstable due to delays
- for v5.13
-Message-ID: <20210411165019.GA4510@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210402202929.GA22273@paulmck-ThinkPad-P72>
- <20210402203137.22479-1-paulmck@kernel.org>
- <87pmzc498v.ffs@nanos.tec.linutronix.de>
- <20210402224828.GA3683@paulmck-ThinkPad-P72>
- <87im4u4lft.ffs@nanos.tec.linutronix.de>
- <20210410232644.GT4510@paulmck-ThinkPad-P17-Gen-1>
- <875z0t2ilk.ffs@nanos.tec.linutronix.de>
+        s=k20201202; t=1618159877;
+        bh=hdSLHeSFPSGynlGflxt+p7hzQD3ysw8VuEPN1TxHROo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=u92ZNmVK9Okwh6sssywhSfccMkrhyVbN0i1TzFQL6ubJe69Tup7uioO2B9iqMd86R
+         PyZ0nIQIDEDoAUcp4VH3s3x2J9YyjO1zaUEf9DXia28SOTL+AZwrnhWgZObeZK35IP
+         Mworx49ICMEC1ZgjZOImQCDKTztZLllqG/G/tp0f0ABdVW6WKi7ogEnZtNlnYGmPa+
+         MD6EfRtXCYXjrj3jRMIr4dmsz4f0usPxap0g6auXFA0M/p8yMcdcHUVSzB1kZJoz1R
+         fipLWLnhth24IQWAQi0DnJ53iaGzHPfzM1CfxsJ9DLxzUApTJSn1eIRnqbr7xsq9Gx
+         f15Nu2dLaaTdA==
+Received: by mail-lf1-f41.google.com with SMTP id e14so4784903lfn.11;
+        Sun, 11 Apr 2021 09:51:16 -0700 (PDT)
+X-Gm-Message-State: AOAM531xR9iYLoORN5Al/aT6mir0j6YaM4qWplyHc268/ECE4C8dX72l
+        yfSBHPJKAWT+9Z86Mc1fetOTN2i/1DUWEoZY4C0=
+X-Google-Smtp-Source: ABdhPJwytlwOM+Rr5ik6o9Gt0Np/mypGW3IwYId67m7mmduUv1Bjo9G3FOhKEOOdYbF0Wmx6IQxmHYMGzhwXowpdgyc=
+X-Received: by 2002:ac2:4191:: with SMTP id z17mr5521549lfh.557.1618159875345;
+ Sun, 11 Apr 2021 09:51:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875z0t2ilk.ffs@nanos.tec.linutronix.de>
+References: <1617201040-83905-1-git-send-email-guoren@kernel.org>
+ <1617201040-83905-4-git-send-email-guoren@kernel.org> <CAJF2gTQRGWetpvvtXOn8_KzH8EQwL6VG02AoKBUWTkE69Xn6Kg@mail.gmail.com>
+In-Reply-To: <CAJF2gTQRGWetpvvtXOn8_KzH8EQwL6VG02AoKBUWTkE69Xn6Kg@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 12 Apr 2021 00:51:03 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQpmgzXb+oi3uHuQ5e1awS2AwOtm4XJo8ce6pVkuXst+Q@mail.gmail.com>
+Message-ID: <CAJF2gTQpmgzXb+oi3uHuQ5e1awS2AwOtm4XJo8ce6pVkuXst+Q@mail.gmail.com>
+Subject: Re: [PATCH v6 3/9] riscv: locks: Introduce ticket-based spinlock implementation
+To:     Guo Ren <guoren@kernel.org>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
+        openrisc@lists.librecores.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Anup Patel <anup@brainfault.org>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 12:58:31PM +0200, Thomas Gleixner wrote:
-> On Sat, Apr 10 2021 at 16:26, Paul E. McKenney wrote:
-> > On Sat, Apr 10, 2021 at 10:01:58AM +0200, Thomas Gleixner wrote:
-> >> On Fri, Apr 02 2021 at 15:48, Paul E. McKenney wrote:
-> >> I buy the vCPU preemption part and TBH guests should not have that
-> >> watchdog thing active at all for exactly this reason.
+On Mon, Apr 12, 2021 at 12:02 AM Guo Ren <guoren@kernel.org> wrote:
+>
+> On Wed, Mar 31, 2021 at 10:32 PM <guoren@kernel.org> wrote:
 > >
-> > Agreed, one approch is to enable the the clocksource watchdog only in
-> > the hypervisor, and have some action on the guests triggered when the
-> > host detects clock skew.
+> > From: Guo Ren <guoren@linux.alibaba.com>
 > >
-> > This works quite well, at least until something breaks in a way that
-> > messes up clock reads from the guest but not from the host.  And I
-> > am sure that any number of hardware guys will tell me that this just
-> > isn't possible, but if failing hardware operated according to their
-> > expectations, that hardware wouldn't be considered to be failing.
-> > Or it wouldn't be hardware, firmware, or clock-driver bringup, as the
-> > case may be.
-> 
-> Don't tell me. The fact that this code exists at all is a horror on it's
-> own.
-
-Let's just say that really I did consider the option of just disabling
-the watchdog for guest OSes, but it will likely be at least a few years
-before per-CPU hardware clocks regain my trust.  :-/
-
-> >> SMI, NMI injecting 62.5ms delay? If that happens then the performance of
-> >> the clocksource is the least of your worries.
+> > This patch introduces a ticket lock implementation for riscv, along the
+> > same lines as the implementation for arch/arm & arch/csky.
 > >
-> > I was kind of hoping that you would tell me why the skew must be all the
-> > way up to 62.5ms before the clock is disabled.  The watchdog currently
-> > is quite happy with more than 10% skew between clocks.
+> > We still use qspinlock as default.
 > >
-> > 100HZ clocks or some such?
-> 
-> Histerical raisins. When the clocksource watchdog was introduced it
-> replaced a x86 specific validation which was jiffies based. I have faint
-> memories that we wanted to have at least jiffies based checks preserved
-> in absence of other hardware, which had other problems and we gave up on
-> it. But obviously nobody thought about revisiting the threshold.
-> 
-> Yes, it's way too big. The slowest watchdog frequency on x86 is ~3.5 Mhz
-> (ACPI PMtimer). Don't know about the reference frequency on MIPS which
-> is the only other user of this.
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > Cc: Peter Zijlstra <peterz@infradead.org>
+> > Cc: Anup Patel <anup@brainfault.org>
+> > Cc: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  arch/riscv/Kconfig                      |  7 ++-
+> >  arch/riscv/include/asm/spinlock.h       | 84 +++++++++++++++++++++++++
+> >  arch/riscv/include/asm/spinlock_types.h | 17 +++++
+> >  3 files changed, 107 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index 67cc65ba1ea1..34d0276f01d5 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -34,7 +34,7 @@ config RISCV
+> >         select ARCH_WANT_FRAME_POINTERS
+> >         select ARCH_WANT_HUGE_PMD_SHARE if 64BIT
+> >         select ARCH_USE_QUEUED_RWLOCKS
+> > -       select ARCH_USE_QUEUED_SPINLOCKS
+> > +       select ARCH_USE_QUEUED_SPINLOCKS        if !RISCV_TICKET_LOCK
+> >         select ARCH_USE_QUEUED_SPINLOCKS_XCHG32
+> >         select CLONE_BACKWARDS
+> >         select CLINT_TIMER if !MMU
+> > @@ -344,6 +344,11 @@ config NEED_PER_CPU_EMBED_FIRST_CHUNK
+> >         def_bool y
+> >         depends on NUMA
+> >
+> > +config RISCV_TICKET_LOCK
+> > +       bool "Ticket-based spin-locking"
+> > +       help
+> > +         Say Y here to use ticket-based spin-locking.
+> > +
+> >  config RISCV_ISA_C
+> >         bool "Emit compressed instructions when building Linux"
+> >         default y
+> > diff --git a/arch/riscv/include/asm/spinlock.h b/arch/riscv/include/asm/spinlock.h
+> > index a557de67a425..90b7eaa950cf 100644
+> > --- a/arch/riscv/include/asm/spinlock.h
+> > +++ b/arch/riscv/include/asm/spinlock.h
+> > @@ -7,7 +7,91 @@
+> >  #ifndef _ASM_RISCV_SPINLOCK_H
+> >  #define _ASM_RISCV_SPINLOCK_H
+> >
+> > +#ifdef CONFIG_RISCV_TICKET_LOCK
+> > +#ifdef CONFIG_32BIT
+> > +#define __ASM_SLLIW "slli\t"
+> > +#define __ASM_SRLIW "srli\t"
+> > +#else
+> > +#define __ASM_SLLIW "slliw\t"
+> > +#define __ASM_SRLIW "srliw\t"
+> > +#endif
+> > +
+> > +/*
+> > + * Ticket-based spin-locking.
+> > + */
+> > +static inline void arch_spin_lock(arch_spinlock_t *lock)
+> > +{
+> > +       arch_spinlock_t lockval;
+> > +       u32 tmp;
+> > +
+> > +       asm volatile (
+> > +               "1:     lr.w    %0, %2          \n"
+> > +               "       mv      %1, %0          \n"
+> > +               "       addw    %0, %0, %3      \n"
+> > +               "       sc.w    %0, %0, %2      \n"
+> > +               "       bnez    %0, 1b          \n"
+> > +               : "=&r" (tmp), "=&r" (lockval), "+A" (lock->lock)
+> > +               : "r" (1 << TICKET_NEXT)
+> > +               : "memory");
+> > +
+> > +       smp_cond_load_acquire(&lock->tickets.owner,
+> > +                                       VAL == lockval.tickets.next);
+> It's wrong, blew is fixup:
+>
+> diff --git a/arch/csky/include/asm/spinlock.h b/arch/csky/include/asm/spinlock.h
+> index fe98ad8ece51..2be627ceb9df 100644
+> --- a/arch/csky/include/asm/spinlock.h
+> +++ b/arch/csky/include/asm/spinlock.h
+> @@ -27,7 +27,8 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
+>                 : "r"(p), "r"(ticket_next)
+>                 : "cc");
+>
+> -       smp_cond_load_acquire(&lock->tickets.owner,
+> +       if (lockval.owner != lockval.tickets.next)
+> +               smp_cond_load_acquire(&lock->tickets.owner,
+>                                         VAL == lockval.tickets.next);
+eh... plus __smp_acquire_fence:
 
-Whew!  I will try reducing the permitted skew.  My (perhaps naive) guess
-is that with the delay rejection, there is no reason that it cannot
-be decreased at least to 500us.  If that goes well, I will send along
-another patch.
+       if (lockval.owner != lockval.tickets.next)
+               smp_cond_load_acquire(&lock->tickets.owner,
+                                        VAL == lockval.tickets.next);
+       else
+               __smp_acquire_fence();
 
-							Thanx, Paul
+> > +}
+> > +
+> > +static inline int arch_spin_trylock(arch_spinlock_t *lock)
+> > +{
+> > +       u32 tmp, contended, res;
+> > +
+> > +       do {
+> > +               asm volatile (
+> > +               "       lr.w    %0, %3          \n"
+> > +               __ASM_SRLIW    "%1, %0, %5      \n"
+> > +               __ASM_SLLIW    "%2, %0, %5      \n"
+> > +               "       or      %1, %2, %1      \n"
+> > +               "       li      %2, 0           \n"
+> > +               "       sub     %1, %1, %0      \n"
+> > +               "       bnez    %1, 1f          \n"
+> > +               "       addw    %0, %0, %4      \n"
+> > +               "       sc.w    %2, %0, %3      \n"
+> > +               "1:                             \n"
+> > +               : "=&r" (tmp), "=&r" (contended), "=&r" (res),
+> > +                 "+A" (lock->lock)
+> > +               : "r" (1 << TICKET_NEXT), "I" (TICKET_NEXT)
+> > +               : "memory");
+> > +       } while (res);
+> > +
+> > +       if (!contended)
+> > +               __atomic_acquire_fence();
+> > +
+> > +       return !contended;
+> > +}
+> > +
+> > +static inline void arch_spin_unlock(arch_spinlock_t *lock)
+> > +{
+> > +       smp_store_release(&lock->tickets.owner, lock->tickets.owner + 1);
+> > +}
+> > +
+> > +static inline int arch_spin_value_unlocked(arch_spinlock_t lock)
+> > +{
+> > +       return lock.tickets.owner == lock.tickets.next;
+> > +}
+> > +
+> > +static inline int arch_spin_is_locked(arch_spinlock_t *lock)
+> > +{
+> > +       return !arch_spin_value_unlocked(READ_ONCE(*lock));
+> > +}
+> > +
+> > +static inline int arch_spin_is_contended(arch_spinlock_t *lock)
+> > +{
+> > +       struct __raw_tickets tickets = READ_ONCE(lock->tickets);
+> > +
+> > +       return (tickets.next - tickets.owner) > 1;
+> > +}
+> > +#define arch_spin_is_contended arch_spin_is_contended
+> > +#else /* CONFIG_RISCV_TICKET_LOCK */
+> >  #include <asm/qspinlock.h>
+> > +#endif /* CONFIG_RISCV_TICKET_LOCK */
+> > +
+> >  #include <asm/qrwlock.h>
+> >
+> >  #endif /* _ASM_RISCV_SPINLOCK_H */
+> > diff --git a/arch/riscv/include/asm/spinlock_types.h b/arch/riscv/include/asm/spinlock_types.h
+> > index d033a973f287..afbb19841d0f 100644
+> > --- a/arch/riscv/include/asm/spinlock_types.h
+> > +++ b/arch/riscv/include/asm/spinlock_types.h
+> > @@ -10,7 +10,24 @@
+> >  # error "please don't include this file directly"
+> >  #endif
+> >
+> > +#ifdef CONFIG_RISCV_TICKET_LOCK
+> > +#define TICKET_NEXT    16
+> > +
+> > +typedef struct {
+> > +       union {
+> > +               u32 lock;
+> > +               struct __raw_tickets {
+> > +                       /* little endian */
+> > +                       u16 owner;
+> > +                       u16 next;
+> > +               } tickets;
+> > +       };
+> > +} arch_spinlock_t;
+> > +
+> > +#define __ARCH_SPIN_LOCK_UNLOCKED      { { 0 } }
+> > +#else
+> >  #include <asm-generic/qspinlock_types.h>
+> > +#endif
+> >  #include <asm-generic/qrwlock_types.h>
+> >
+> >  #endif /* _ASM_RISCV_SPINLOCK_TYPES_H */
+> > --
+> > 2.17.1
+> >
+>
+>
+> --
+> Best Regards
+>  Guo Ren
+>
+> ML: https://lore.kernel.org/linux-csky/
+
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
