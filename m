@@ -2,86 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFEBA35B658
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 19:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABF6F35B65C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 19:51:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235868AbhDKRmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 13:42:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
+        id S235974AbhDKRnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 13:43:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233822AbhDKRmH (ORCPT
+        with ESMTP id S233822AbhDKRnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 13:42:07 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A26C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 10:41:49 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id g5so9774743ejx.0
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 10:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u9+q96TK9VMf/Mx9e4OxGt+pQceSuNr0TnGIlmL4TBw=;
-        b=SLXnMCA6lSvQ/t3X22xC8QjMk3XgUQWveaJOgAHqeosdtLKAT3sEAh+qTDI4eCw0UP
-         EFXK8S0qwufXkGzUOFxzEfrtvrO0Y7C3qWuGIHamFVGHw6PlWtZpKjdcE4y7K+oPC4C3
-         7pfvay3HYuNPlTcpq3+2LiJoRbyHKOAvzGI587fTFJT7hq/ctBNrUFMX5qhBmToMlg3R
-         hbRUKENMA6wp2SWlPc7ja/OoXKI0LQbctAwyp8DFzPYECNJfhFwWsgy/ytDOS6GtFmBb
-         7WxkHhcP1zP6EDArdo/v9DBWUNd2HPWCVrfTQ0Q/MV8IBwKnIzCvdBRjbKFhmCIkEri0
-         XYhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u9+q96TK9VMf/Mx9e4OxGt+pQceSuNr0TnGIlmL4TBw=;
-        b=HGVF2FmqEOxaiL09d61OTNMzRhOfplCGl0e/qOvWL5HAnMZlcl17B7D9vvxPcqdlYk
-         dwpE/8vUmkCn9RUPv6i2lXWA0VSDlCrfq2UCBkN4Mt8JmMqDMs0BMOzufxD5mHob1JkL
-         aKpKOaMT7Kru/JH+9S684xcjUW+LutQU1ZSj+rbx09cygIRRWzqxlo55VUnVXUZelIZg
-         R4VCPHBCvH7XlSvCotcIyVEDNIuYLu8JJZqQxQamuCeFybJTlgPMHuBPKf4SX9GhFbPM
-         BPZZYi8Ds8iGL96mLDw4gTmKD9Vx0IOfZ5uPMcBpWh47e4w/btG4uVvKkiwJuYHvmYOM
-         PAnQ==
-X-Gm-Message-State: AOAM533w6vIxtdHn0OHpzmk4SmZdmEfTkgNs0pDy8b/ndErg735aB6Pg
-        w7csTTl69FCmhS+/XAuSbUY=
-X-Google-Smtp-Source: ABdhPJyz7A2KWzHZwRd8VqW33YQDNERox46F1va+xJ366Hnux8Krn57JQmxEuwEr2r0FPhJjdb5TSg==
-X-Received: by 2002:a17:906:c0c8:: with SMTP id bn8mr23728409ejb.445.1618162907860;
-        Sun, 11 Apr 2021 10:41:47 -0700 (PDT)
-Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id cy5sm5166359edb.46.2021.04.11.10.41.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 10:41:47 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH] staging: rtl8192u: Remove variable set but not used
-Date:   Sun, 11 Apr 2021 19:41:43 +0200
-Message-Id: <20210411174143.31618-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Sun, 11 Apr 2021 13:43:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00D45C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 10:43:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=kAgzJlhbyWIXfrj43lqYLdnnq1g4NVB9wGiuobLD7Wg=; b=a1rq/DAz1kgztNkaEjD3zkx8eM
+        9HysTcgYRTnI56FoYltxOY/snPJWEAqJULsYxaOVnQbETJ7/BWEy8p/WD2z/nuVCy6bE+lxkIyasC
+        X1ww66VGlUu7jmXT4OyP2jnGwEB42C7ysuC1lycaDh050bL27l0/U7kCeCiacDyvSGHrVvAW0Pqz2
+        dZl/hHuW8K/PWMk2ed0VGaCBoCz9qPGeNrJTul3glAojZTkNuBRwjOdfnb1GXxXX6Vl0lD0dDnvmq
+        ecdM0RdBZHlQ0hdMxR+bOqvLm4YP5wOke3n8PiqqZ9AxznqjoHqWY5sHvyJLan1Z6pRg6ku4wsA7r
+        /jBE+W2A==;
+Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVe7I-003EwI-ED; Sun, 11 Apr 2021 17:43:25 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
+Subject: [PATCH] mm: eliminate "expecting prototype" kernel-doc warnings
+Date:   Sun, 11 Apr 2021 10:43:21 -0700
+Message-Id: <20210411174321.7013-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove variable "int ret" which is instantiated but not used.
+Fix stray kernel-doc warnings in mm/ due to mis-typed or missing
+function names.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Quietens these kernel-doc warnings:
+
+../mm/mmu_gather.c:264: warning: expecting prototype for tlb_gather_mmu(). Prototype was for __tlb_gather_mmu() instead
+../mm/oom_kill.c:180: warning: expecting prototype for Check whether unreclaimable slab amount is greater than(). Prototype was for should_dump_unreclaim_slab() instead
+../mm/shuffle.c:155: warning: expecting prototype for shuffle_free_memory(). Prototype was for __shuffle_free_memory() instead
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org
 ---
- drivers/staging/rtl8192u/r8192U_core.c | 1 -
- 1 file changed, 1 deletion(-)
+ mm/mmu_gather.c |    2 +-
+ mm/oom_kill.c   |    7 ++++---
+ mm/shuffle.c    |    2 +-
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
-index f48186a89fa1..30055de66239 100644
---- a/drivers/staging/rtl8192u/r8192U_core.c
-+++ b/drivers/staging/rtl8192u/r8192U_core.c
-@@ -902,7 +902,6 @@ static void rtl8192_hard_data_xmit(struct sk_buff *skb, struct net_device *dev,
- 				   int rate)
+--- linux-next-20210409.orig/mm/mmu_gather.c
++++ linux-next-20210409/mm/mmu_gather.c
+@@ -250,7 +250,7 @@ void tlb_flush_mmu(struct mmu_gather *tl
+ }
+ 
+ /**
+- * tlb_gather_mmu - initialize an mmu_gather structure for page-table tear-down
++ * __tlb_gather_mmu - initialize an mmu_gather structure for page-table tear-down
+  * @tlb: the mmu_gather structure to initialize
+  * @mm: the mm_struct of the target address space
+  * @fullmm: @mm is without users and we're going to destroy the full address
+--- linux-next-20210409.orig/mm/oom_kill.c
++++ linux-next-20210409/mm/oom_kill.c
+@@ -171,10 +171,11 @@ static bool oom_unkillable_task(struct t
+ }
+ 
+ /**
+- * Check whether unreclaimable slab amount is greater than
+- * all user memory(LRU pages).
++ * should_dump_unreclaim_slab - Check whether unreclaimable slab amount
++ * is greater than all user memory (LRU pages).
++ *
+  * dump_unreclaimable_slab() could help in the case that
+- * oom due to too much unreclaimable slab used by kernel.
++ * oom is due to too much unreclaimable slab used by kernel.
+ */
+ static bool should_dump_unreclaim_slab(void)
  {
- 	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
--	int ret;
- 	unsigned long flags;
- 	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
- 	u8 queue_index = tcb_desc->queue_index;
--- 
-2.31.1
-
+--- linux-next-20210409.orig/mm/shuffle.c
++++ linux-next-20210409/mm/shuffle.c
+@@ -148,7 +148,7 @@ void __meminit __shuffle_zone(struct zon
+ }
+ 
+ /**
+- * shuffle_free_memory - reduce the predictability of the page allocator
++ * __shuffle_free_memory - reduce the predictability of the page allocator
+  * @pgdat: node page data
+  */
+ void __meminit __shuffle_free_memory(pg_data_t *pgdat)
