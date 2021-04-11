@@ -2,173 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A00535B3E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4268835B3D2
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:50:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235563AbhDKLua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 07:50:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21240 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235655AbhDKLuF (ORCPT
+        id S235586AbhDKLsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 07:48:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235539AbhDKLsd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 07:50:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618141788;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0aSD6V877Q7HGWA4DO5hGFo60VEegdaef4o5r+M0zIE=;
-        b=YLz2Q+RYTgxGTgoLt8H+lJAZRuHBqoMzL/7yxmI23rPtKQI1reakfKMZf1TxV/vMl88dJC
-        ln1tu7EQKphucwFcBOUmyIrhp0cqAY8UW05w47NQYrVH+LlwxZuSftGntlQpAvcvPG2+Kp
-        Dn3glavJibAc2ImAf3NZxE4KWeOE04Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-c866b95IPdOWfDRSXpyyTw-1; Sun, 11 Apr 2021 07:49:47 -0400
-X-MC-Unique: c866b95IPdOWfDRSXpyyTw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9E03E10054F6;
-        Sun, 11 Apr 2021 11:49:44 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-112-22.ams2.redhat.com [10.36.112.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6BBC25C266;
-        Sun, 11 Apr 2021 11:49:36 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        maz@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
-        alex.williamson@redhat.com, tn@semihalf.com, zhukeqian1@huawei.com
-Cc:     jacob.jun.pan@linux.intel.com, yi.l.liu@intel.com,
-        wangxingang5@huawei.com, jean-philippe@linaro.org,
-        zhangfei.gao@linaro.org, zhangfei.gao@gmail.com,
-        vivek.gautam@arm.com, shameerali.kolothum.thodi@huawei.com,
-        yuzenghui@huawei.com, nicoleotsuka@gmail.com,
-        lushenming@huawei.com, vsethi@nvidia.com,
-        chenxiang66@hisilicon.com, vdumpa@nvidia.com,
-        jiangkunkun@huawei.com
-Subject: [PATCH v13 13/13] vfio/pci: Inject page response upon response region fill
-Date:   Sun, 11 Apr 2021 13:46:59 +0200
-Message-Id: <20210411114659.15051-14-eric.auger@redhat.com>
-In-Reply-To: <20210411114659.15051-1-eric.auger@redhat.com>
-References: <20210411114659.15051-1-eric.auger@redhat.com>
+        Sun, 11 Apr 2021 07:48:33 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ECF8C06138D;
+        Sun, 11 Apr 2021 04:48:03 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id p10so4891792pld.0;
+        Sun, 11 Apr 2021 04:48:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9P7a0UY91+IJ2YvqNRTmJKK8ciMYI7HhU1YDRiAkRTE=;
+        b=GXIndmUCtRUuhApQbzMudDFU+CWtxU33TsyFgIFYesrbXhQoblOgVe0CUCw5w+C55M
+         4or4hxEQ6FjSCispfldVSgR6cfaC7eGLCHmQ1fe21lfOUdLxMOIDTzd1UdRDA7sLAYg9
+         U1TFsRIzb7970bjwn36Jf6bRnM1rdiveohcv0ieIPb/GXU6nf1APk6qZqLgFf2qqLqHK
+         5UWGkkaMo2pIontJiHkVq7WEyXz7sTSYBclFS9HMCoOD2NMGHzqmUxWCzOlrsvQSoRXL
+         zBMokcciCdzPQd1HFn0r1qEVgeFemTlxKTySAOM3jClwjQcz/hiVr0TlZCeOcmHgbREV
+         U4yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9P7a0UY91+IJ2YvqNRTmJKK8ciMYI7HhU1YDRiAkRTE=;
+        b=lSE9z/X5yNRs6XcXgrdDL7wKsorsy9gZkRJ+1/gU7Le2K2l9OG7ZPdxsoEcVvIXDxK
+         GTDV7g4n389FqUchiMJaj7XzeG/n1jpi/Rtu/o4bf/Xw5Ga0DMGg2OrT74x5jF7edHVW
+         ZMVHNe4BqDSbvGKfTtOJYUbVQfn3BThXUfCy1rBlsaN1m/XMbup/EKsOwgBmUDrEAmY6
+         kqq3w/IxwzOGviwlsH7QhO2OOWwRc+z2rSb9vpg1cM92/bUGVcOjxtbakRxkJBMXH8Bs
+         KYTb2pZLb+x6G59evAjI+F7JVUyBJydIair6VPqe3ru8OJxdrKQ5NN0lJWA1SM9dpYc9
+         TfBA==
+X-Gm-Message-State: AOAM533HYxw0+F6dKlY2LfdmLz+4HVUBIp746qz9OK+Hz/0ir417bJRU
+        Eo6NTafuRYuHwcDUe3dQKV8=
+X-Google-Smtp-Source: ABdhPJy6Rco1W57hagQh8590YFsiCRXc+q6u88uF9uGa7RAThmtuaxtJlTW9DXFrdaoH7D1Dd3Rguw==
+X-Received: by 2002:a17:90a:8b07:: with SMTP id y7mr22624658pjn.78.1618141682962;
+        Sun, 11 Apr 2021 04:48:02 -0700 (PDT)
+Received: from kali ([103.141.87.254])
+        by smtp.gmail.com with ESMTPSA id k64sm8009159pgk.23.2021.04.11.04.47.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Apr 2021 04:48:02 -0700 (PDT)
+Date:   Sun, 11 Apr 2021 17:17:46 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>
+Cc:     clabbe@baylibre.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: Re: [PATCH v2] staging: media: zoran: remove and add '*' in
+ long(multi-line) comments
+Message-ID: <YHLh4vQvECHopNZX@kali>
+References: <YHAxQh9bfFeN337E@kali>
+ <9f8b3018-2b5e-2471-f5d4-bac03e4ab259@xs4all.nl>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9f8b3018-2b5e-2471-f5d4-bac03e4ab259@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the userspace increments the head of the page response
-buffer ring, let's push the response into the iommu layer.
-This is done through a workqueue that pops the responses from
-the ring buffer and increment the tail.
+On Fri, Apr 09, 2021 at 12:53:35PM +0200, Hans Verkuil wrote:
+> On 09/04/2021 12:49, Mitali Borkar wrote:
+> > Added '*' before every line inside long(multi-line) comments. Removed
+> > '*/' from end of the comment line and added to next line as per linux
+> > kernel coding style. Aligned '*' accordingly to make code neater.
+> > 
+> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > ---
+> > 
+> > Changes from v1:- Changes made in code according to linux kernel coding
+> > style for long(multi-line) comments.
+> > 
+> > drivers/staging/media/zoran/zr36050.c | 138 +++++++++++++++-----------
+> >  1 file changed, 81 insertions(+), 57 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/zoran/zr36050.c b/drivers/staging/media/zoran/zr36050.c
+> > index 663ac2b3434e..703064009c6b 100644
+> > --- a/drivers/staging/media/zoran/zr36050.c
+> > +++ b/drivers/staging/media/zoran/zr36050.c
+> > @@ -25,7 +25,8 @@
+> >  #include "videocodec.h"
+> >  
+> >  /* it doesn't make sense to have more than 20 or so,
+> 
+> The coding style says that /* is on a line of its own. So change that too.
+>
 
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
----
- drivers/vfio/pci/vfio_pci.c         | 40 +++++++++++++++++++++++++++++
- drivers/vfio/pci/vfio_pci_private.h |  7 +++++
- drivers/vfio/pci/vfio_pci_rdwr.c    |  1 +
- 3 files changed, 48 insertions(+)
+Sir, I have sent v3 patch for this two days ago and didnt received reply
+til now, should I resend that patch?
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 560b1a830726..bb4a0e1e39bf 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -552,6 +552,32 @@ static int vfio_pci_dma_fault_init(struct vfio_pci_device *vdev)
- 	return ret;
- }
- 
-+static void dma_response_inject(struct work_struct *work)
-+{
-+	struct vfio_pci_dma_fault_response_work *rwork =
-+		container_of(work, struct vfio_pci_dma_fault_response_work, inject);
-+	struct vfio_region_dma_fault_response *header = rwork->header;
-+	struct vfio_pci_device *vdev = rwork->vdev;
-+	struct iommu_page_response *resp;
-+	u32 tail, head, size;
-+
-+	mutex_lock(&vdev->fault_response_queue_lock);
-+
-+	tail = header->tail;
-+	head = header->head;
-+	size = header->nb_entries;
-+
-+	while (CIRC_CNT(head, tail, size) >= 1) {
-+		resp = (struct iommu_page_response *)(vdev->fault_response_pages + header->offset +
-+						tail * header->entry_size);
-+
-+		/* TODO: properly handle the return value */
-+		iommu_page_response(&vdev->pdev->dev, resp);
-+		header->tail = tail = (tail + 1) % size;
-+	}
-+	mutex_unlock(&vdev->fault_response_queue_lock);
-+}
-+
- #define DMA_FAULT_RESPONSE_RING_LENGTH 512
- 
- static int vfio_pci_dma_fault_response_init(struct vfio_pci_device *vdev)
-@@ -597,8 +623,22 @@ static int vfio_pci_dma_fault_response_init(struct vfio_pci_device *vdev)
- 	header->nb_entries = DMA_FAULT_RESPONSE_RING_LENGTH;
- 	header->offset = PAGE_SIZE;
- 
-+	vdev->response_work = kzalloc(sizeof(*vdev->response_work), GFP_KERNEL);
-+	if (!vdev->response_work)
-+		goto out;
-+	vdev->response_work->header = header;
-+	vdev->response_work->vdev = vdev;
-+
-+	/* launch the thread that will extract the response */
-+	INIT_WORK(&vdev->response_work->inject, dma_response_inject);
-+	vdev->dma_fault_response_wq =
-+		create_singlethread_workqueue("vfio-dma-fault-response");
-+	if (!vdev->dma_fault_response_wq)
-+		return -ENOMEM;
-+
- 	return 0;
- out:
-+	kfree(vdev->fault_response_pages);
- 	vdev->fault_response_pages = NULL;
- 	return ret;
- }
-diff --git a/drivers/vfio/pci/vfio_pci_private.h b/drivers/vfio/pci/vfio_pci_private.h
-index f7b1e7fb86e5..835fbb221dea 100644
---- a/drivers/vfio/pci/vfio_pci_private.h
-+++ b/drivers/vfio/pci/vfio_pci_private.h
-@@ -52,6 +52,12 @@ struct vfio_pci_irq_ctx {
- 	struct irq_bypass_producer	producer;
- };
- 
-+struct vfio_pci_dma_fault_response_work {
-+	struct work_struct inject;
-+	struct vfio_region_dma_fault_response *header;
-+	struct vfio_pci_device *vdev;
-+};
-+
- struct vfio_pci_device;
- struct vfio_pci_region;
- 
-@@ -146,6 +152,7 @@ struct vfio_pci_device {
- 	u8			*fault_pages;
- 	u8			*fault_response_pages;
- 	struct workqueue_struct *dma_fault_response_wq;
-+	struct vfio_pci_dma_fault_response_work *response_work;
- 	struct mutex		fault_queue_lock;
- 	struct mutex		fault_response_queue_lock;
- 	struct list_head	dummy_resources_list;
-diff --git a/drivers/vfio/pci/vfio_pci_rdwr.c b/drivers/vfio/pci/vfio_pci_rdwr.c
-index efde0793360b..78c494fe35cc 100644
---- a/drivers/vfio/pci/vfio_pci_rdwr.c
-+++ b/drivers/vfio/pci/vfio_pci_rdwr.c
-@@ -430,6 +430,7 @@ size_t vfio_pci_dma_fault_response_rw(struct vfio_pci_device *vdev, char __user
- 		mutex_lock(&vdev->fault_response_queue_lock);
- 		header->head = new_head;
- 		mutex_unlock(&vdev->fault_response_queue_lock);
-+		queue_work(vdev->dma_fault_response_wq, &vdev->response_work->inject);
- 	} else {
- 		if (copy_to_user(buf, base + pos, count))
- 			return -EFAULT;
--- 
-2.26.3
-
+> Regards,
+> 
+> 	Hans
+> 
+> > - * just to prevent some unwanted loops */
+> > + * just to prevent some unwanted loops
+> > + */
+> >  #define MAX_CODECS 20
+> >  
+> >  /* amount of chips attached via this driver */
+> > @@ -44,9 +45,10 @@ MODULE_PARM_DESC(debug, "Debug level (0-4)");
+> >  
+> >  /* =========================================================================
+> >   *  Local hardware I/O functions:
+> > -
+> > -   read/write via codec layer (registers are located in the master device)
+> > -   ========================================================================= */
+> > + *
+> > + *  read/write via codec layer (registers are located in the master device)
+> > + * =========================================================================
+> > + */
+> >  
+> >  /* read and write functions */
+> >  static u8 zr36050_read(struct zr36050 *ptr, u16 reg)
+> > @@ -81,9 +83,10 @@ static void zr36050_write(struct zr36050 *ptr, u16 reg, u8 value)
+> >  
+> >  /* =========================================================================
+> >   *  Local helper function:
+> > -
+> > -   status read
+> > -   ========================================================================= */
+> > + *
+> > + *  status read
+> > + * =========================================================================
+> > + */
+> >  
+> >  /* status is kept in datastructure */
+> >  static u8 zr36050_read_status1(struct zr36050 *ptr)
+> > @@ -96,9 +99,10 @@ static u8 zr36050_read_status1(struct zr36050 *ptr)
+> >  
+> >  /* =========================================================================
+> >   *  Local helper function:
+> > -
+> > -   scale factor read
+> > -   ========================================================================= */
+> > + *
+> > + *  scale factor read
+> > + * =========================================================================
+> > + */
+> >  
+> >  /* scale factor is kept in datastructure */
+> >  static u16 zr36050_read_scalefactor(struct zr36050 *ptr)
+> > @@ -113,9 +117,10 @@ static u16 zr36050_read_scalefactor(struct zr36050 *ptr)
+> >  
+> >  /* =========================================================================
+> >   *  Local helper function:
+> > -
+> > -   wait if codec is ready to proceed (end of processing) or time is over
+> > -   ========================================================================= */
+> > + *
+> > + *  wait if codec is ready to proceed (end of processing) or time is over
+> > + * =========================================================================
+> > + */
+> >  
+> >  static void zr36050_wait_end(struct zr36050 *ptr)
+> >  {
+> > @@ -134,9 +139,10 @@ static void zr36050_wait_end(struct zr36050 *ptr)
+> >  
+> >  /* =========================================================================
+> >   *  Local helper function:
+> > -
+> > -   basic test of "connectivity", writes/reads to/from memory the SOF marker
+> > -   ========================================================================= */
+> > + *
+> > + *  basic test of "connectivity", writes/reads to/from memory the SOF marker
+> > + * =========================================================================
+> > + */
+> >  
+> >  static int zr36050_basic_test(struct zr36050 *ptr)
+> >  {
+> > @@ -175,9 +181,10 @@ static int zr36050_basic_test(struct zr36050 *ptr)
+> >  
+> >  /* =========================================================================
+> >   *  Local helper function:
+> > -
+> > -   simple loop for pushing the init datasets
+> > -   ========================================================================= */
+> > + *
+> > + *  simple loop for pushing the init datasets
+> > + * =========================================================================
+> > + */
+> >  
+> >  static int zr36050_pushit(struct zr36050 *ptr, u16 startreg, u16 len, const char *data)
+> >  {
+> > @@ -193,14 +200,15 @@ static int zr36050_pushit(struct zr36050 *ptr, u16 startreg, u16 len, const char
+> >  
+> >  /* =========================================================================
+> >   *  Basic datasets:
+> > -
+> > -   jpeg baseline setup data (you find it on lots places in internet, or just
+> > -   extract it from any regular .jpg image...)
+> > -
+> > -   Could be variable, but until it's not needed it they are just fixed to save
+> > -   memory. Otherwise expand zr36050 structure with arrays, push the values to
+> > -   it and initialize from there, as e.g. the linux zr36057/60 driver does it.
+> > -   ========================================================================= */
+> > + *
+> > + *  jpeg baseline setup data (you find it on lots places in internet, or just
+> > + *  extract it from any regular .jpg image...)
+> > + *
+> > + *  Could be variable, but until it's not needed it they are just fixed to save
+> > + *  memory. Otherwise expand zr36050 structure with arrays, push the values to
+> > + *  it and initialize from there, as e.g. the linux zr36057/60 driver does it.
+> > + *  =========================================================================
+> > + */
+> >  
+> >  static const char zr36050_dqt[0x86] = {
+> >  	0xff, 0xdb,		//Marker: DQT
+> > @@ -295,15 +303,17 @@ static const char zr36050_decimation_v[8] = { 1, 1, 1, 0, 0, 0, 0, 0 };
+> >  
+> >  /* =========================================================================
+> >   *  Local helper functions:
+> > -
+> > -   calculation and setup of parameter-dependent JPEG baseline segments
+> > -   (needed for compression only)
+> > -   ========================================================================= */
+> > + *
+> > + *  calculation and setup of parameter-dependent JPEG baseline segments
+> > + *  (needed for compression only)
+> > + * =========================================================================
+> > + */
+> >  
+> >  /* ------------------------------------------------------------------------- */
+> >  
+> >  /* SOF (start of frame) segment depends on width, height and sampling ratio
+> > - *			 of each color component */
+> > + *			 of each color component
+> > + */
+> >  
+> >  static int zr36050_set_sof(struct zr36050 *ptr)
+> >  {
+> > @@ -334,7 +344,8 @@ static int zr36050_set_sof(struct zr36050 *ptr)
+> >  /* ------------------------------------------------------------------------- */
+> >  
+> >  /* SOS (start of scan) segment depends on the used scan components
+> > - *			of each color component */
+> > + *			of each color component
+> > + */
+> >  
+> >  static int zr36050_set_sos(struct zr36050 *ptr)
+> >  {
+> > @@ -379,12 +390,14 @@ static int zr36050_set_dri(struct zr36050 *ptr)
+> >  
+> >  /* =========================================================================
+> >   *  Setup function:
+> > + *
+> > + *  Setup compression/decompression of Zoran's JPEG processor
+> > + *  ( see also zoran 36050 manual )
+> > + *
+> > + *  ... sorry for the spaghetti code ...
+> > + * =========================================================================
+> > + */
+> >  
+> > -   Setup compression/decompression of Zoran's JPEG processor
+> > -   ( see also zoran 36050 manual )
+> > -
+> > -   ... sorry for the spaghetti code ...
+> > -   ========================================================================= */
+> >  static void zr36050_init(struct zr36050 *ptr)
+> >  {
+> >  	int sum = 0;
+> > @@ -420,7 +433,8 @@ static void zr36050_init(struct zr36050 *ptr)
+> >  		sum += zr36050_set_dri(ptr);
+> >  
+> >  		/* setup the fixed jpeg tables - maybe variable, though -
+> > -		 * (see table init section above) */
+> > +		 * (see table init section above)
+> > +		 */
+> >  		dprintk(3, "%s: write DQT, DHT, APP\n", ptr->name);
+> >  		sum += zr36050_pushit(ptr, ZR050_DQT_IDX,
+> >  				      sizeof(zr36050_dqt), zr36050_dqt);
+> > @@ -532,12 +546,15 @@ static void zr36050_init(struct zr36050 *ptr)
+> >  
+> >  /* =========================================================================
+> >   *  CODEC API FUNCTIONS
+> > -
+> > -   this functions are accessed by the master via the API structure
+> > -   ========================================================================= */
+> > + *
+> > + *  this functions are accessed by the master via the API structure
+> > + * =========================================================================
+> > + */
+> >  
+> >  /* set compression/expansion mode and launches codec -
+> > - *  this should be the last call from the master before starting processing */
+> > + *  this should be the last call from the master before starting processing
+> > + */
+> > +
+> >  static int zr36050_set_mode(struct videocodec *codec, int mode)
+> >  {
+> >  	struct zr36050 *ptr = (struct zr36050 *)codec->data;
+> > @@ -566,7 +583,8 @@ static int zr36050_set_video(struct videocodec *codec, const struct tvnorm *norm
+> >  		cap->decimation, cap->quality);
+> >  	/* if () return -EINVAL;
+> >  	 * trust the master driver that it knows what it does - so
+> > -	 * we allow invalid startx/y and norm for now ... */
+> > +	 * we allow invalid startx/y and norm for now ...
+> > +	 */
+> >  	ptr->width = cap->width / (cap->decimation & 0xff);
+> >  	ptr->height = cap->height / ((cap->decimation >> 8) & 0xff);
+> >  
+> > @@ -586,7 +604,8 @@ static int zr36050_set_video(struct videocodec *codec, const struct tvnorm *norm
+> >  	ptr->real_code_vol = size >> 3; /* in bytes */
+> >  
+> >  	/* Set max_block_vol here (previously in zr36050_init, moved
+> > - * here for consistency with zr36060 code */
+> > +	 * here for consistency with zr36060 code
+> > +	 */
+> >  	zr36050_write(ptr, ZR050_MBCV, ptr->max_block_vol);
+> >  
+> >  	return 0;
+> > @@ -643,7 +662,8 @@ static int zr36050_control(struct videocodec *codec, int type, int size, void *d
+> >  			return -EFAULT;
+> >  		ptr->total_code_vol = *ival;
+> >  		/* (Kieran Morrissey)
+> > -		 * code copied from zr36060.c to ensure proper bitrate */
+> > +		 * code copied from zr36060.c to ensure proper bitrate
+> > +		 */
+> >  		ptr->real_code_vol = (ptr->total_code_vol * 6) >> 3;
+> >  		break;
+> >  
+> > @@ -708,9 +728,10 @@ static int zr36050_control(struct videocodec *codec, int type, int size, void *d
+> >  
+> >  /* =========================================================================
+> >   *  Exit and unregister function:
+> > -
+> > -   Deinitializes Zoran's JPEG processor
+> > -   ========================================================================= */
+> > + *
+> > + *  Deinitializes Zoran's JPEG processor
+> > + * =========================================================================
+> > + */
+> >  
+> >  static int zr36050_unset(struct videocodec *codec)
+> >  {
+> > @@ -733,12 +754,13 @@ static int zr36050_unset(struct videocodec *codec)
+> >  
+> >  /* =========================================================================
+> >   *  Setup and registry function:
+> > -
+> > -   Initializes Zoran's JPEG processor
+> > -
+> > -   Also sets pixel size, average code size, mode (compr./decompr.)
+> > -   (the given size is determined by the processor with the video interface)
+> > -   ========================================================================= */
+> > + *
+> > + *  Initializes Zoran's JPEG processor
+> > + *
+> > + *  Also sets pixel size, average code size, mode (compr./decompr.)
+> > + *  (the given size is determined by the processor with the video interface)
+> > + * =========================================================================
+> > + */
+> >  
+> >  static int zr36050_setup(struct videocodec *codec)
+> >  {
+> > @@ -774,7 +796,8 @@ static int zr36050_setup(struct videocodec *codec)
+> >  	memcpy(ptr->v_samp_ratio, zr36050_decimation_v, 8);
+> >  
+> >  	ptr->bitrate_ctrl = 0;	/* 0 or 1 - fixed file size flag
+> > -				 * (what is the difference?) */
+> > +				 * (what is the difference?)
+> > +				 */
+> >  	ptr->mode = CODEC_DO_COMPRESSION;
+> >  	ptr->width = 384;
+> >  	ptr->height = 288;
+> > @@ -814,7 +837,8 @@ static const struct videocodec zr36050_codec = {
+> >  
+> >  /* =========================================================================
+> >   *  HOOK IN DRIVER AS KERNEL MODULE
+> > -   ========================================================================= */
+> > + * =========================================================================
+> > + */
+> >  
+> >  static int __init zr36050_init_module(void)
+> >  {
+> > 
+> 
