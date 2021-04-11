@@ -2,140 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4D3835B6F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 23:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FF535B6F4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 23:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235909AbhDKVHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 17:07:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235229AbhDKVHJ (ORCPT
+        id S235581AbhDKVIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 17:08:36 -0400
+Received: from smtprelay0075.hostedemail.com ([216.40.44.75]:36066 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S235005AbhDKVIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 17:07:09 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 579E5C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 14:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=KSOODlkgpdnRgt3LOWGEZg2uUc3EPHr5m9tZXVxjRAk=; b=NiTiiSIJO61ApgVCHeGhJh7DZx
-        xAZMDCNErqSTX2ryyGeaKI6xph6AWEMjADYyLtsQoJPAlM0e705Bv78LJNvzqKAqyBhPVksuRvU12
-        7Zr6v5c3ceLHEaQGVWTCctYNASExz07cq0iK8ndnuimCQM4zwPsAtz8pgcYblnW1NhBqsC06BeuBy
-        SYrGjs0oda9WYSDICfQXVZpcVfV0RvTx2OubOOK4QaKwgeRQCnJeEI6etzHBx3WDM30ROaaoy2f01
-        Wk4+/RsUO0FT7Kox6jMWtPKA8f7ZUErcjYSfvO8OKkBecKAKRAjvVivCNTuoVQ2jjxD23kYFa2vQm
-        iIPyyT0w==;
-Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVhI6-003Q7l-0W; Sun, 11 Apr 2021 21:06:46 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        Matthew Wilcox <willy@infradead.org>
-Subject: [PATCH v2] mm: eliminate "expecting prototype" kernel-doc warnings
-Date:   Sun, 11 Apr 2021 14:06:42 -0700
-Message-Id: <20210411210642.11362-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 11 Apr 2021 17:08:35 -0400
+Received: from omf16.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id EBD491DF1;
+        Sun, 11 Apr 2021 21:08:17 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf16.hostedemail.com (Postfix) with ESMTPA id 532C12550F1;
+        Sun, 11 Apr 2021 21:08:16 +0000 (UTC)
+Message-ID: <9a9246c417587f17009543f8048d5f9b7a2ed68f.camel@perches.com>
+Subject: Re: [PATCH] iommu/amd: Fix extended features logging
+From:   Joe Perches <joe@perches.com>
+To:     John Ogness <john.ogness@linutronix.de>,
+        Alexander Monakov <amonakov@ispras.ru>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Joerg Roedel <jroedel@suse.de>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Date:   Sun, 11 Apr 2021 14:08:14 -0700
+In-Reply-To: <87o8ekioo4.fsf@jogness.linutronix.de>
+References: <20210410211152.1938-1-amonakov@ispras.ru>
+         <e884200f-55a4-59b5-4311-964e6ddc94d1@molgen.mpg.de>
+         <alpine.LNX.2.20.13.2104111410340.11104@monopod.intra.ispras.ru>
+         <87o8ekioo4.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Server: rspamout03
+X-Rspamd-Queue-Id: 532C12550F1
+X-Spam-Status: No, score=0.10
+X-Stat-Signature: eagcefjgbbk7hk8ng65r7rhy6cygbpet
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/lZU62XoRvdiKemSYJQ3VV6E25IAI9M3o=
+X-HE-Tag: 1618175296-55556
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix stray kernel-doc warnings in mm/ due to mis-typed or missing
-function names.
+On Sun, 2021-04-11 at 21:52 +0200, John Ogness wrote:
+> I'd rather fix dev_info callers to allow pr_cont and then fix any code
+> that is using this workaround.
 
-Quietens these kernel-doc warnings:
+Assuming you mean all dev_<level>() uses, me too.
 
-../mm/mmu_gather.c:264: warning: expecting prototype for tlb_gather_mmu(). Prototype was for __tlb_gather_mmu() instead
-../mm/oom_kill.c:180: warning: expecting prototype for Check whether unreclaimable slab amount is greater than(). Prototype was for should_dump_unreclaim_slab() instead
-../mm/shuffle.c:155: warning: expecting prototype for shuffle_free_memory(). Prototype was for __shuffle_free_memory() instead
+> And if the print maintainers agree it is OK to encourage
+> pr_cont(LOGLEVEL "...") usage, then people should really start using
+> that if the loglevel on those pieces is important.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: Matthew Wilcox <willy@infradead.org>
----
-v2: Move/add kernel-doc in mmu_gather.c. Demote kernel-doc in oom_kill.c
-    and shuffle.c to normal comments. (All suggested by Matthew.)
+I have no stong feeling about the use of pr_cont(<KERN_LEVEL>
+as valuable or not.  I think it's just a trivial bit that
+could be somewhat useful when interleaving occurs.
 
- mm/mmu_gather.c |   29 +++++++++++++++++++----------
- mm/oom_kill.c   |    2 +-
- mm/shuffle.c    |    4 ++--
- 3 files changed, 22 insertions(+), 13 deletions(-)
+A somewhat better mechanism would be to have an explicit
+cookie use like:
 
---- linux-next-20210409.orig/mm/mmu_gather.c
-+++ linux-next-20210409/mm/mmu_gather.c
-@@ -249,16 +249,6 @@ void tlb_flush_mmu(struct mmu_gather *tl
- 	tlb_flush_mmu_free(tlb);
- }
- 
--/**
-- * tlb_gather_mmu - initialize an mmu_gather structure for page-table tear-down
-- * @tlb: the mmu_gather structure to initialize
-- * @mm: the mm_struct of the target address space
-- * @fullmm: @mm is without users and we're going to destroy the full address
-- *	    space (exit/execve)
-- *
-- * Called to initialize an (on-stack) mmu_gather structure for page-table
-- * tear-down from @mm.
-- */
- static void __tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm,
- 			     bool fullmm)
- {
-@@ -283,11 +273,30 @@ static void __tlb_gather_mmu(struct mmu_
- 	inc_tlb_flush_pending(tlb->mm);
- }
- 
-+/**
-+ * tlb_gather_mmu - initialize an mmu_gather structure for page-table tear-down
-+ * @tlb: the mmu_gather structure to initialize
-+ * @mm: the mm_struct of the target address space
-+ *
-+ * Called to initialize an (on-stack) mmu_gather structure for page-table
-+ * tear-down from @mm.
-+ */
- void tlb_gather_mmu(struct mmu_gather *tlb, struct mm_struct *mm)
- {
- 	__tlb_gather_mmu(tlb, mm, false);
- }
- 
-+/**
-+ * tlb_gather_mmu_fullmm - initialize an mmu_gather structure for page-table tear-down
-+ * @tlb: the mmu_gather structure to initialize
-+ * @mm: the mm_struct of the target address space
-+ *
-+ * In this case, @mm is without users and we're going to destroy the
-+ * full address space (exit/execve).
-+ *
-+ * Called to initialize an (on-stack) mmu_gather structure for page-table
-+ * tear-down from @mm.
-+ */
- void tlb_gather_mmu_fullmm(struct mmu_gather *tlb, struct mm_struct *mm)
- {
- 	__tlb_gather_mmu(tlb, mm, true);
---- linux-next-20210409.orig/mm/oom_kill.c
-+++ linux-next-20210409/mm/oom_kill.c
-@@ -170,7 +170,7 @@ static bool oom_unkillable_task(struct t
- 	return false;
- }
- 
--/**
-+/*
-  * Check whether unreclaimable slab amount is greater than
-  * all user memory(LRU pages).
-  * dump_unreclaimable_slab() could help in the case that
---- linux-next-20210409.orig/mm/shuffle.c
-+++ linux-next-20210409/mm/shuffle.c
-@@ -147,8 +147,8 @@ void __meminit __shuffle_zone(struct zon
- 	spin_unlock_irqrestore(&z->lock, flags);
- }
- 
--/**
-- * shuffle_free_memory - reduce the predictability of the page allocator
-+/*
-+ * __shuffle_free_memory - reduce the predictability of the page allocator
-  * @pgdat: node page data
-  */
- void __meminit __shuffle_free_memory(pg_data_t *pgdat)
+	cookie = printk_multipart_init(KERN_LEVEL, fmt, ...);
+	while (<condition>)
+		printk_multipart_cont(cookie, fmt, ...);
+	printk_multipark_end(cookie, fmt, ...);
+
+And separately, there should be a pr_debug_cont or equivalent.
+
+
