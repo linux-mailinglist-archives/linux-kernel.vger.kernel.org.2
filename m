@@ -2,253 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF33735B1E7
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 08:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1FD235B1EB
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 08:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234991AbhDKGZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 02:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhDKGZC (ORCPT
+        id S235106AbhDKG2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 02:28:25 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:37415 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235051AbhDKG2U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 02:25:02 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD47C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 23:24:47 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id z22-20020a17090a0156b029014d4056663fso5310577pje.0
-        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 23:24:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZU/zzhJUZ4M4YMsK8aEsYeoEHlx9HrupSDSHAYxx9F4=;
-        b=a0ap3PRI9gljeJVT0H1HyuuTzKbhoQlydNntQ6LkHaSSzuaJFL81AJO2AW+6bzjvaB
-         yTpY9tpX9glHTcp4igj27sTO8wIvFqdU6yKJYEIUmb56wS3W6EPERoxQ8rYPT+tO6zlV
-         yX2QtoMMu7kD691blmGz2jEUkU750xjlx34wI88Fo0B6MsFZb2Myu7Y7P3zaFLNZ6wEB
-         cEVtE1dIr9y2/qCYNSNA93+/Ro1sTncUeKRTnyBDv6ZgkmOenl9Pg6BDBxE4f1rXPf+c
-         j1Fqv5iKi6QtDkH06kSHR42SHi+4i+E5F7QhJxWC20KGoSxWOkQJRykwzYcqHPlSSHoc
-         CSGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZU/zzhJUZ4M4YMsK8aEsYeoEHlx9HrupSDSHAYxx9F4=;
-        b=lhuGkjrjsTkReAkvrsn3jOnOwVUuZUL72ihsMv22n5UAHjoOEmFI7Td21zSWxt44Av
-         I1DdfYcHtzlQhzmD3kdVA88mid+ppp2VQ00zxyPu2MBbfMUMhc3pHnDkH/1LF09e5sJz
-         T98X55FU3WWDk4zQUDj6/4qMZqoLnoJxaAqHCAnb+oqmZccxmPjp7tZ1md7BNndRMcev
-         NufRVxYhJWoMBng3uZ9tzeEzsrSJozn/fAEslgugcEzN9qiq08yc2s082YuIIEGAJQGV
-         NpX6slej2mBee6UkcNv3g6F4v8L9bmrNidFViZyuEtHGDyEy6b/oHTT+qffg44a0N0x8
-         algQ==
-X-Gm-Message-State: AOAM530lVgqDFcDxV228Ef0s6p04Il1Pp44ndDxdOYGJxZ35JQve0cUV
-        sVVcE3bQEsDl+2yPzUrrJvUf73vUb10cjb1UDZKQdA==
-X-Google-Smtp-Source: ABdhPJzWbIhNmiud0ovMQll9Xmo28fr5lNxq35QlvcIm31hsXGcAMqYnHwKnbcLhcB2Ls9XV79OQk+HXAdQrGbD5NzE=
-X-Received: by 2002:a17:90a:901:: with SMTP id n1mr22487174pjn.147.1618122286375;
- Sat, 10 Apr 2021 23:24:46 -0700 (PDT)
+        Sun, 11 Apr 2021 02:28:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1618122485; x=1649658485;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=cDgcFgdNfqAAPl0YGQrnLQzdkprNtFk3ycK2ciXghnE=;
+  b=L5agACOnqZXceXzHSOAfYQw5G/qhY6WaRVCbltKYHcHz3heyiSnQ9EMl
+   s/dEDe30UmLFatGuAAbmDTEXdsM+SUeGVttVmwFQPNOWh0ec/F0zfnXBL
+   blHwZ3l5hWTLqfPjd+u509UDCIq0XKrMp+7l7PCtynSAjNqt9eYR0Er/S
+   igZeoX54iikkRCjEoiOzAJyS0uhhfAQHpIwV3fMQ0aLiN8GtXFksOrZRF
+   ZGObR6gx9HmaYb3k4x5rKnN9XKkBEq/iVQJUlAHyL/ro4yU23RWYK18qt
+   PxmBf6IS7N9DACqHL3ynwEFDHk37NM+YyWgO42H+nA78w3MxcLhY+SA45
+   g==;
+IronPort-SDR: lOy1YnCcsK5fbfCcjjxzJWfeUpZ11OD0pR8RqfCC4bkKuJaPbuJkm9WcAq0T0U/4jrDSKR8Nuo
+ gaPB+5YYJTiC1q5Nrk8qnb0Dsb5oWG1dG7wkPK9pNE9rQjIUKRJq15CFJtkpnb1qTZUpd4dVyQ
+ bl6nIby8k7aLDO7E+4HAc5o+gBm8q8AA/k/XQbzPqrp4PvIZLWU5MFu4x2EkqsbdFnSN7u455X
+ K+6cyiVMDh9+sRNlp8/ljVk76MdbgXl0IeoOJDmarM3cHRnRARpJnepMEIt/x5dh/JuqnOtnJO
+ kcg=
+X-IronPort-AV: E=Sophos;i="5.82,213,1613404800"; 
+   d="scan'208";a="165243134"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 11 Apr 2021 14:27:45 +0800
+IronPort-SDR: agD7e+kdb4qPGVLzzRJuCLUuuNoSxWOAWP49u7gBs+HaWk30hEFyWbPff/5IVqRPFpNjojjuk4
+ BZ1WM7Qw6JUFQ+5D+T1Yo60JmIiJxcKRCiN03vQHG0BlE1z55w1gZugq1DpViWI7pMFjy8AFvq
+ E0e9y+qous7Mq0f8cFHymBPvIm/o7Cj2BVzFyRzC5qe+yuHYjn/G2JrmYWiuzei694Dcq14vAA
+ 6i5Eye5SHClfVtlrHnboCxbiMvulF8lIlx3tyjYm8ZD9zqwtkJw4pk8toEp7XMYfR0a3cnQxEz
+ Z5rpNx6Sa/Hz4aEIpNPNn3gz
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Apr 2021 23:08:43 -0700
+IronPort-SDR: /CqJo/Niae9YZ7duTp0J5aNzpNnd8YbF0CHpcjVf4TnVMh96jhXwOWYkfyC/qinNeLNTjYsOh7
+ qxEr5gmkfD4wfy1IItO25LIRUikORJd5z39RPCcakKez2EJzXUdU9OJ1jpqbwDn6bISk6rOcG/
+ LkE+aTksgMJ4VEmAOpmwSPGBIMyL1LNdOLiy+AUjNl7XVCkTf1irkpz3iLxPK0+yRHvQc/z+L+
+ uUthB9Qx78CKE58mbl5JyyqSq+ZM9FH7gSgpzdf/BBkGS539HfGeBZuWGHgiVIV8dxAmMCipS3
+ ojs=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip02.wdc.com with ESMTP; 10 Apr 2021 23:27:31 -0700
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
+        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v8 00/11] Add Host control mode to HPB
+Date:   Sun, 11 Apr 2021 09:27:10 +0300
+Message-Id: <20210411062721.10099-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210409122959.82264-1-songmuchun@bytedance.com>
- <20210409122959.82264-7-songmuchun@bytedance.com> <YHCHQHrCj6rH1sD3@cmpxchg.org>
-In-Reply-To: <YHCHQHrCj6rH1sD3@cmpxchg.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Sun, 11 Apr 2021 14:24:09 +0800
-Message-ID: <CAMZfGtUApSk35SYOxgnD8t_ryjVY9EOv58kQ_E1Qm5HkY7HZ3A@mail.gmail.com>
-Subject: Re: [External] Re: [RFC PATCH v2 06/18] mm: memcontrol: move the
- objcg infrastructure out of CONFIG_MEMCG_KMEM
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
-        shakeelb@google.com, vdavydov.dev@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
-        bsingharora@gmail.com, shy828301@gmail.com,
-        alex.shi@linux.alibaba.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 12:56 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Fri, Apr 09, 2021 at 08:29:47PM +0800, Muchun Song wrote:
-> > Because memory allocations pinning memcgs for a long time - it exists
-> > at a larger scale and is causing recurring problems in the real world:
-> > page cache doesn't get reclaimed for a long time, or is used by the
-> > second, third, fourth, ... instance of the same job that was restarted
-> > into a new cgroup every time. Unreclaimable dying cgroups pile up,
-> > waste memory, and make page reclaim very inefficient.
-> >
-> > We can convert LRU pages and most other raw memcg pins to the objcg
-> > direction to fix this problem, and then the page->memcg will always
-> > point to an object cgroup pointer.
-> >
-> > Therefore, the infrastructure of objcg no longer only serves
-> > CONFIG_MEMCG_KMEM. In this patch, we move the infrastructure of the
-> > objcg out of the scope of the CONFIG_MEMCG_KMEM so that the LRU pages
-> > can reuse it to charge pages.
->
-> Just an observation on this:
->
-> We actually may want to remove CONFIG_MEMCG_KMEM altogether at this
-> point. It used to be an optional feature, but nowadays it's not
-> configurable anymore, and always on unless slob is configured.
->
-> We've also added more than just slab accounting to it, like kernel
-> stack pages, and it all gets disabled on slob configs just because it
-> doesn't support slab object tracking.
->
-> We could probably replace CONFIG_MEMCG_KMEM with CONFIG_MEMCG in most
-> places, and add a couple of !CONFIG_SLOB checks in the slab callbacks.
->
-> But that's beyond the scope of your patch series, so I'm also okay
-> with this patch here.
->
-> > We know that the LRU pages are not accounted at the root level. But the
-> > page->memcg_data points to the root_mem_cgroup. So the page->memcg_data
-> > of the LRU pages always points to a valid pointer. But the root_mem_cgroup
-> > dose not have an object cgroup. If we use obj_cgroup APIs to charge the
-> > LRU pages, we should set the page->memcg_data to a root object cgroup. So
-> > we also allocate an object cgroup for the root_mem_cgroup and introduce
-> > root_obj_cgroup to cache its value just like root_mem_cgroup.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->
-> Overall, the patch makes sense to me. A few comments below:
->
-> > @@ -252,9 +253,14 @@ struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr)
-> >       return &container_of(vmpr, struct mem_cgroup, vmpressure)->css;
-> >  }
-> >
-> > -#ifdef CONFIG_MEMCG_KMEM
-> >  extern spinlock_t css_set_lock;
-> >
-> > +static inline bool obj_cgroup_is_root(struct obj_cgroup *objcg)
-> > +{
->   > +   return objcg == root_obj_cgroup;
-> > +}
->
-> This function, and by extension root_obj_cgroup, aren't used by this
-> patch. Please move them to the patch that adds users for them.
+v7 -> v8:
+ - restore Daejun atomic argument to ufshpb_get_req (v31)
+ - Add Daejun's Reviewed-by tag
 
-OK. Will do.
+v6 -> v7:
+ - attend CanG's comments
+ - add one more patch to transform set_dirty to iterate_rgn
+ - rebase on Daejun's v32
 
->
-> > @@ -298,6 +304,20 @@ static void obj_cgroup_release(struct percpu_ref *ref)
-> >       percpu_ref_exit(ref);
-> >       kfree_rcu(objcg, rcu);
-> >  }
-> > +#else
-> > +static void obj_cgroup_release(struct percpu_ref *ref)
-> > +{
-> > +     struct obj_cgroup *objcg = container_of(ref, struct obj_cgroup, refcnt);
-> > +     unsigned long flags;
-> > +
-> > +     spin_lock_irqsave(&css_set_lock, flags);
-> > +     list_del(&objcg->list);
-> > +     spin_unlock_irqrestore(&css_set_lock, flags);
-> > +
-> > +     percpu_ref_exit(ref);
-> > +     kfree_rcu(objcg, rcu);
-> > +}
-> > +#endif
->
-> Having two separate functions for if and else is good when the else
-> branch is a completely empty dummy function. In this case you end up
-> duplicating code, so it's better to have just one function and put the
-> ifdef around the nr_charged_bytes handling in it.
+v5 -> v6:
+ - attend CanG's comments
+ - rebase on Daejun's v29
 
-Make sense. I will rework the code here.
+v4 -> v5:
+ - attend Daejun's comments
+ - Control the number of inflight map requests
 
->
-> > @@ -318,10 +338,14 @@ static struct obj_cgroup *obj_cgroup_alloc(void)
-> >       return objcg;
-> >  }
-> >
-> > -static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
-> > -                               struct mem_cgroup *parent)
-> > +static void memcg_reparent_objcgs(struct mem_cgroup *memcg)
-> >  {
-> >       struct obj_cgroup *objcg, *iter;
-> > +     struct mem_cgroup *parent;
-> > +
-> > +     parent = parent_mem_cgroup(memcg);
-> > +     if (!parent)
-> > +             parent = root_mem_cgroup;
-> >
-> >       objcg = rcu_replace_pointer(memcg->objcg, NULL, true);
-> >
-> > @@ -342,6 +366,27 @@ static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
-> >       percpu_ref_kill(&objcg->refcnt);
-> >  }
-> >
-> > +static int memcg_obj_cgroup_alloc(struct mem_cgroup *memcg)
-> > +{
-> > +     struct obj_cgroup *objcg;
-> > +
-> > +     objcg = obj_cgroup_alloc();
-> > +     if (!objcg)
-> > +             return -ENOMEM;
-> > +
-> > +     objcg->memcg = memcg;
-> > +     rcu_assign_pointer(memcg->objcg, objcg);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void memcg_obj_cgroup_free(struct mem_cgroup *memcg)
-> > +{
-> > +     if (unlikely(memcg->objcg))
-> > +             memcg_reparent_objcgs(memcg);
-> > +}
->
-> It's confusing to have a 'free' function not free the object it's
-> called on.
->
-> But rather than search for a fitting name, I think it might be better
-> to just fold both of these short functions into their only callsites.
+v3 -> v4:
+ - rebase on Daejun's v25
 
-OK. Will do.
+v2 -> v3:
+ - Attend Greg's and Can's comments
+ - rebase on Daejun's v21
 
->
-> Also, since memcg->objcg is reparented, and the pointer cleared, on
-> offlining, when could this ever be non-NULL? This deserves a comment.
+v1 -> v2:
+ - attend Greg's and Daejun's comments
+ - add patch 9 making host mode parameters configurable
+ - rebase on Daejun's v19
 
-css_alloc() failed, offlining didn't happen. In this case, memcg->objcg
-could be non-NULL (Just like memcg_free_kmem() dose). I will move
-memcg_obj_cgroup_alloc() to the mem_cgroup_css_online() so that
-we do not need memcg_obj_cgroup_free.
 
->
-> > @@ -3444,7 +3489,6 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
-> >  #ifdef CONFIG_MEMCG_KMEM
-> >  static int memcg_online_kmem(struct mem_cgroup *memcg)
-> >  {
-> > -     struct obj_cgroup *objcg;
-> >       int memcg_id;
-> >
-> >       if (cgroup_memory_nokmem)
-> > @@ -3457,14 +3501,6 @@ static int memcg_online_kmem(struct mem_cgroup *memcg)
-> >       if (memcg_id < 0)
-> >               return memcg_id;
-> >
-> > -     objcg = obj_cgroup_alloc();
-> > -     if (!objcg) {
-> > -             memcg_free_cache_id(memcg_id);
-> > -             return -ENOMEM;
-> > -     }
-> > -     objcg->memcg = memcg;
-> > -     rcu_assign_pointer(memcg->objcg, objcg);
-> > -
-> >       static_branch_enable(&memcg_kmem_enabled_key);
-> >
-> >       memcg->kmemcg_id = memcg_id;
-> > @@ -3488,7 +3524,7 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
-> >       if (!parent)
-> >               parent = root_mem_cgroup;
-> >
-> > -     memcg_reparent_objcgs(memcg, parent);
-> > +     memcg_reparent_objcgs(memcg);
->
-> Since the objcg is no longer tied to kmem, this should move to
-> mem_cgroup_css_offline() instead.
+The HPB spec defines 2 control modes - device control mode and host
+control mode. In oppose to device control mode, in which the host obey
+to whatever recommendation received from the device - In host control
+mode, the host uses its own algorithms to decide which regions should
+be activated or inactivated.
 
-LGTM, will do.
+We kept the host managed heuristic simple and concise.
 
-Thanks for your all suggestions.
+Aside from adding a by-spec functionality, host control mode entails
+some further potential benefits: makes the hpb logic transparent and
+readable, while allow tuning / scaling its various parameters, and
+utilize system-wide info to optimize HPB potential.
+
+This series is based on Samsung's V32 device-control HPB2.0 driver
+
+This version was tested on Galaxy S20, and Xiaomi Mi10 pro.
+Your meticulous review and testing is mostly welcome and appreciated.
+
+Thanks,
+Avri
+
+Avri Altman (11):
+  scsi: ufshpb: Cache HPB Control mode on init
+  scsi: ufshpb: Add host control mode support to rsp_upiu
+  scsi: ufshpb: Transform set_dirty to iterate_rgn
+  scsi: ufshpb: Add reads counter
+  scsi: ufshpb: Make eviction depends on region's reads
+  scsi: ufshpb: Region inactivation in host mode
+  scsi: ufshpb: Add hpb dev reset response
+  scsi: ufshpb: Add "Cold" regions timer
+  scsi: ufshpb: Limit the number of inflight map requests
+  scsi: ufshpb: Add support for host control mode
+  scsi: ufshpb: Make host mode parameters configurable
+
+ Documentation/ABI/testing/sysfs-driver-ufs |  84 ++-
+ drivers/scsi/ufs/ufshcd.h                  |   2 +
+ drivers/scsi/ufs/ufshpb.c                  | 566 ++++++++++++++++++++-
+ drivers/scsi/ufs/ufshpb.h                  |  44 ++
+ 4 files changed, 661 insertions(+), 35 deletions(-)
+
+-- 
+2.25.1
+
