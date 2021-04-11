@@ -2,99 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 275D335B464
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07E0D35B466
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235552AbhDKM4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 08:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232223AbhDKM4v (ORCPT
+        id S235562AbhDKM5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 08:57:33 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:58021 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235261AbhDKM5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 08:56:51 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71BFC061574;
-        Sun, 11 Apr 2021 05:56:35 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id u17so15787923ejk.2;
-        Sun, 11 Apr 2021 05:56:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oynzuJfbEuJy5CAi4BYsSwCXKoAbx8chkskNNbIaZUc=;
-        b=dYSca6rnYbBivsWCz89w9cmwPA+/gQbdvnRkH3LP3Xt2PG8vA1nrwTlWSgtiHVp54y
-         MuBnlmeDmAPYAxsSyYXkF5qP1pm44CXfehQ7rq5ISNpGeAfHAyiUOMijiySqRbNihyoz
-         jpi49GGstN9GOQD/2DoU6tDk73dv288XLHVbHJEYGxr7BLcHSl6gC4whCBg8n3ZmAjKf
-         9bzVEP2sSqfxPtNx34Pe3DO1haBVbWCvZZBKhXQbyWH3pZq4ubMWix4hn/V+qfmPk4lJ
-         /+2EPirL3RzucUsgpgh8yp0W5fOUvPoYcnaWNy8tMDLRcHgZkN0nCB2ozFnyp+N4sp4/
-         QfMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oynzuJfbEuJy5CAi4BYsSwCXKoAbx8chkskNNbIaZUc=;
-        b=PaP475A2FOIDZV5PeTvYUiqmlz7x4AGpiV+awnGcRSWQ9U/5zH6KFp1MrmCEBAzeTs
-         1BOdTLu0eT/wazySED3t94rUnb5Ei3W/SF7+T1nVU24qwH10AXAfdQMo59dcwMvh6kl1
-         EQzIy5tsuMBHU9jtR7ZgkPfKKwCqqDcJMB77u3SgC9fJso16ix2HYAMbYBdmW6HxAjz2
-         65r9wAvrNRZ+Z9RFKCPpARY+iOTcCddKx5s7ahlJaCXKikaNkJcAEH2o6d48aVow5I42
-         zwear2+lmQqlD/HlTSOXGPC4/Pu85Io/CCymEEVj3Le9nBOhwMrq9fewCXoVgmn+NdB+
-         t1gw==
-X-Gm-Message-State: AOAM533p7uh0uiFsFpAD0aKcEtg/Mhxk/0jQMoiwvlapL7n5YizFk0Yc
-        yksMyjpOUA+t9jvW5Bk/AxBHKFCM7n4J+VX4dKg=
-X-Google-Smtp-Source: ABdhPJyCOx9h49w/ftcNHVbJ1EjPrtcZALSk0GTjju9d0oD0Y7686M5S3XPPhhPuxC/hhK2BNPGaA3pratg46098AMs=
-X-Received: by 2002:a17:906:b104:: with SMTP id u4mr23214266ejy.211.1618145794324;
- Sun, 11 Apr 2021 05:56:34 -0700 (PDT)
+        Sun, 11 Apr 2021 08:57:32 -0400
+Received: from localhost.localdomain ([90.126.11.170])
+        by mwinf5d63 with ME
+        id rQxE240053g7mfN03QxEy7; Sun, 11 Apr 2021 14:57:14 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 11 Apr 2021 14:57:14 +0200
+X-ME-IP: 90.126.11.170
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     james.schulman@cirrus.com, david.rhodes@cirrus.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] ASoC: cs35l36: Fix an error handling path in 'cs35l36_i2c_probe()'
+Date:   Sun, 11 Apr 2021 14:57:13 +0200
+Message-Id: <9fec48e75bc1d3c92626e6f6aca2344bda223379.1618145790.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210410164728.8096-1-krzysztof.kozlowski@canonical.com>
-In-Reply-To: <20210410164728.8096-1-krzysztof.kozlowski@canonical.com>
-From:   Alim Akhtar <alim.akhtar@gmail.com>
-Date:   Sun, 11 Apr 2021 18:25:58 +0530
-Message-ID: <CAGOxZ51PKMZoPyk-kidGRr7zNvADfjAJG8LtMMBOi0vn-KBsLA@mail.gmail.com>
-Subject: Re: [PATCH] iio: adc: exynos: drop unneeded variable assignment
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 10:18 PM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> The initialization of 'ret' variable in probe function is shortly after
-> overwritten.  This initialization is simply not used.
->
-> Addresses-Coverity: Unused value
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
-Thanks Krzysztof,
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+If 'devm_regmap_init_i2c()' fails, there is no need to goto err. We should
+return directly as already done by the surrounding error handling paths.
 
->  drivers/iio/adc/exynos_adc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/iio/adc/exynos_adc.c b/drivers/iio/adc/exynos_adc.c
-> index 784c10deeb1a..2d8e36408f0e 100644
-> --- a/drivers/iio/adc/exynos_adc.c
-> +++ b/drivers/iio/adc/exynos_adc.c
-> @@ -794,7 +794,7 @@ static int exynos_adc_probe(struct platform_device *pdev)
->         struct s3c2410_ts_mach_info *pdata = dev_get_platdata(&pdev->dev);
->         struct iio_dev *indio_dev = NULL;
->         bool has_ts = false;
-> -       int ret = -ENODEV;
-> +       int ret;
->         int irq;
->
->         indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(struct exynos_adc));
-> --
-> 2.25.1
->
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ sound/soc/codecs/cs35l36.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
+index 4451ca9f4916..a038bcec2d17 100644
+--- a/sound/soc/codecs/cs35l36.c
++++ b/sound/soc/codecs/cs35l36.c
+@@ -1721,7 +1721,7 @@ static int cs35l36_i2c_probe(struct i2c_client *i2c_client,
+ 	if (IS_ERR(cs35l36->regmap)) {
+ 		ret = PTR_ERR(cs35l36->regmap);
+ 		dev_err(dev, "regmap_init() failed: %d\n", ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+ 	cs35l36->num_supplies = ARRAY_SIZE(cs35l36_supplies);
 -- 
-Regards,
-Alim
+2.27.0
+
