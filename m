@@ -2,77 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37C9235B5E0
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 17:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F43E35B5E4
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 17:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235503AbhDKPVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 11:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36784 "EHLO
+        id S236331AbhDKP1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 11:27:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236021AbhDKPVw (ORCPT
+        with ESMTP id S235202AbhDKP1i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 11:21:52 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E32C06138B
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 08:21:35 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id x76so2157031ybe.5
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 08:21:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gZdYxGjM5vS4dJgv0fgZ/TigJ4XDAhlJO5G9vI9SLR4=;
-        b=KRh4TWatW1ReO35QFMWUqn4uWKKPMdqnAIEXI3QzH1AIRs9aGAFZuUpoOjd315Yf//
-         Sfk1ZSmQV4gNzmmECso56PaWuJWAUhP0u9cxrLR3XUHiuLXCsthZvUcFBAkBPjcQk/3m
-         rC1jBtnga/MCJVqAJtOWenSpoWW5VwdIbTHqVWl1tRcN9vvJj2bU8kpHD1T940txPZNZ
-         liMxNA/Drd+H7s/t6cyKWfuE2B2jKjfa7bnyiSDg/I1ZHmA43ue1RUQNVWrOZOGQyFNa
-         9fqzU3oPBe3l4acfG/HXixDuzcAHjFnJrWU2jkcqixydbhm7UnoSzCKlGY2PZdjEqMT5
-         YolA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gZdYxGjM5vS4dJgv0fgZ/TigJ4XDAhlJO5G9vI9SLR4=;
-        b=JIeHNnjECQeIHIVxeoblmT0nMAwGSKWGW3UUciaIADNxXHW8DoVFM0Q2x1166RrsaB
-         S85vKmHK+p7G1wyJfdTiKGUTL/Cc4ZSKSLF/yQQ4JwjFa+3ZbBQqfaHRsfdBP4HUMQb+
-         jDgaJRcBqsKt9JJWiPWbVvtLgemgyR/qx7lV8LmFRYY86MA2Yd6H+PxpWgDAGkyJDi5u
-         34W4C/yYYqHXDHkYnYkHLpZXMmKDWKjNrs8VnglaQJSstfChMXrUt+w+cftAQyXlr6+Z
-         L6qBoi9mffZOVTMxg97ZPVE8Yp6ojTLBIAAm+WzxhyiGojwF7InzpwNufQRD4YZF+6/C
-         1NQg==
-X-Gm-Message-State: AOAM531g0QTD7kXArs1K8ZziCBleiQMn7eNy/+2VidNbA8dK+TkRMZnD
-        DAiosyl26WUafYo0duBp2PivXd7/eadptL5VbMlfbw==
-X-Google-Smtp-Source: ABdhPJz8YH5NXe088h2/Zx8aB0WnSxN0iV//khlFG5X5+aDsg1oeDdChzJKeRT18LUlRAggNwvOmhH6NM/X/j53OkLs=
-X-Received: by 2002:a25:e89:: with SMTP id 131mr9205440ybo.132.1618154494670;
- Sun, 11 Apr 2021 08:21:34 -0700 (PDT)
+        Sun, 11 Apr 2021 11:27:38 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50CDEC061574;
+        Sun, 11 Apr 2021 08:27:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Message-Id:Date:Cc:To:From;
+        bh=ebf1CAV3KUSk9FUTqmssCnCWaxfYoafLGeA6On/g0AU=; b=utMbbmy4YvVqOiYZZqk1VAdfkt
+        lX/1faVsdbv3JeLGeRcS10t+UjdoDtMRKt3zSGCrCidB7WZU9U80Rb+5reFKa0/orOU6oNpEISqUn
+        YPIWGp8xvUUJhcYoEbv5AwSU8AvbPw9f7BH6ArP1hJGjNybzoaD/5aHeCTsdHzOVSEwTjaiIi9lal
+        cKC5F+GL9kp8oHxyDmzXdxIHN+LFlNQ8DZLCgOqXSoPuIATfzWtM+irm9YuTLMrGCKVs93HCA8GNV
+        jppNAxVcUdOhn1kqchrB91ZhkZ/FZUWWNgP0Xbg2tlX7SXtWvdzt21gSG9dM2kfS5aKryMqMkwGoq
+        dp/HdnHWKsSP4oqqAm3hNpXuEbu+dRwaMdXJschxRAyC+iuM6EQPXUVyMOh3a55WTuMsJmt5s8zpZ
+        eePFsi5t5JNlwCyjc2ExDYiGCRucleTL1lRzb9MV5fJtTKmnteR358EILvIdMuQJLNI+jvRQnKqyz
+        TFRymHJZ0SQRU9dYUimD1xIt;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1lVbza-0005ZF-4X; Sun, 11 Apr 2021 15:27:18 +0000
+From:   Stefan Metzmacher <metze@samba.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Stefan Metzmacher <metze@samba.org>, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
+Subject: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es' registers for io_threads
+Date:   Sun, 11 Apr 2021 17:27:05 +0200
+Message-Id: <20210411152705.2448053-1-metze@samba.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210411112824.1149-1-phil@philpotter.co.uk>
-In-Reply-To: <20210411112824.1149-1-phil@philpotter.co.uk>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Sun, 11 Apr 2021 17:21:23 +0200
-Message-ID: <CANn89iL43xRD6CYrJbUDoaXYhDQ+FAh5fAMn3d3LaDgi1uz9iQ@mail.gmail.com>
-Subject: Re: [PATCH] net: geneve: check skb is large enough for IPv4/IPv6 header
-To:     Phillip Potter <phil@philpotter.co.uk>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 1:28 PM Phillip Potter <phil@philpotter.co.uk> wrote:
->
-> Check within geneve_xmit_skb/geneve6_xmit_skb that sk_buff structure
-> is large enough to include IPv4 or IPv6 header, and reject if not. The
-> geneve_xmit_skb portion and overall idea was contributed by Eric Dumazet.
-> Fixes a KMSAN-found uninit-value bug reported by syzbot at:
-> https://syzkaller.appspot.com/bug?id=abe95dc3e3e9667fc23b8d81f29ecad95c6f106f
->
-> Suggested-by: Eric Dumazet <edumazet@google.com>
-> Reported-by: syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com
-> Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+This allows gdb attach to userspace processes using io-uring,
+which means that they have io_threads (PF_IO_WORKER), which appear
+just like normal as userspace threads.
 
-Signed-off-by: Eric Dumazet <edumazet@google.com>
+See the code comment for more details.
 
-Thanks !
+Fixes: 4727dc20e04 ("arch: setup PF_IO_WORKER threads like PF_KTHREAD")
+Signed-off-by: Stefan Metzmacher <metze@samba.org>
+cc: Linus Torvalds <torvalds@linux-foundation.org>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: linux-kernel@vger.kernel.org
+cc: io-uring@vger.kernel.org
+---
+ arch/x86/kernel/process.c | 49 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 9c214d7085a4..72120c4b7618 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -163,6 +163,55 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ 	/* Kernel thread ? */
+ 	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
+ 		memset(childregs, 0, sizeof(struct pt_regs));
++		/*
++		 * gdb sees all userspace threads,
++		 * including io threads (PF_IO_WORKER)!
++		 *
++		 * gdb uses:
++		 * PTRACE_PEEKUSR, offsetof (struct user_regs_struct, cs)
++		 *  returning with 0x33 (51) to detect 64 bit
++		 * and:
++		 * PTRACE_PEEKUSR, offsetof (struct user_regs_struct, ds)
++		 *  returning 0x2b (43) to detect 32 bit.
++		 *
++		 * GDB relies on that the kernel returns the
++		 * same values for all threads, which means
++		 * we don't zero these out.
++		 *
++		 * Note that CONFIG_X86_64 handles 'es' and 'ds'
++		 * differently, see the following above:
++		 *   savesegment(es, p->thread.es);
++		 *   savesegment(ds, p->thread.ds);
++		 * and the CONFIG_X86_64 version of get_segment_reg().
++		 *
++		 * Linus proposed something like this:
++		 * (https://lore.kernel.org/io-uring/CAHk-=whEObPkZBe4766DmR46-=5QTUiatWbSOaD468eTgYc1tg@mail.gmail.com/)
++		 *
++		 *   childregs->cs = __USER_CS;
++		 *   childregs->ss = __USER_DS;
++		 *   childregs->ds = __USER_DS;
++		 *   childregs->es = __USER_DS;
++		 *
++		 * might make sense (just do it unconditionally, rather than making it
++		 * special to PF_IO_WORKER).
++		 *
++		 * But that doesn't make gdb happy in all cases.
++		 *
++		 * While 32bit userspace on a 64bit kernel is legacy,
++		 * it's still useful to allow 32bit libraries or nss modules
++		 * use the same code as the 64bit version of that library, which
++		 * can use io-uring just fine.
++		 *
++		 * So we better just inherit the values from
++		 * the originating process instead of hardcoding
++		 * values, which would imply 64bit userspace.
++		 */
++		childregs->cs = current_pt_regs()->cs;
++		childregs->ss = current_pt_regs()->ss;
++#ifdef CONFIG_X86_32
++		childregs->ds = current_pt_regs()->ds;
++		childregs->es = current_pt_regs()->es;
++#endif
+ 		kthread_frame_init(frame, sp, arg);
+ 		return 0;
+ 	}
+-- 
+2.25.1
+
