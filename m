@@ -2,84 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0499E35B67F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 20:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41FEF35B685
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 20:12:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236033AbhDKSJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 14:09:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235284AbhDKSJD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 14:09:03 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2156C061574;
-        Sun, 11 Apr 2021 11:08:46 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id 20so1181805pll.7;
-        Sun, 11 Apr 2021 11:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sKrFE3t8TymorDM/FfsdzwawymvWqmwx1sIu4YG7cVs=;
-        b=fueG1Y8/2Yr9KdyvSKOCYPAheKlJvITdTvpIskmGqbimfv7ytSU6s0liRdzUeClvjN
-         gGse5CjBNj4VYGp7Vy00DrVqsw4BZEIQ1NKKo4w8R5VsEkRgbuu9eQ2wPQgwRhGYppM1
-         vEpnK260WKIVWv36rTFIUiJFYN6v3e1XRsnxPaMxNdlVsS4tibokZbzmRoY/4prkjmez
-         VF5mIpPFhhNhp94akiywjXUAL7WJfNapps3Y4Ck6jhREda2rEx0Q/bp8Ifk9PDfrBNFB
-         zXNvga9WBJLEP6ZhXSWBq3c2mqpIiPI2sgKKKtctb4Hh03orq8KPWejKXvDe7zHDUK6b
-         +mIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sKrFE3t8TymorDM/FfsdzwawymvWqmwx1sIu4YG7cVs=;
-        b=Z8IoC3fWlL8l4ogg1B/b0fzaniOmM4BjdRkpWQtECXfNST8nKjzMeDomTcG0O5TWpU
-         Xtz2MiXXc6FteDPv5wgkdAAo1yhQevHuEWHmgtaOKUbe1XTGNlJb7QZLK3wFH9AXqSzi
-         7oOnzqiKf/V4GPOc9pnQ5ndozGA0GT+u7om2c6M90N6brcmh6KU7OvyUXnTVTMxEa4Rq
-         tWZtrk7ysOzpKCM4T5pwRTj7unkAlIV7ChfKtfSfO8XXnrD+0Gf4WQzFRXFnIeREPvLT
-         tsI7p5LpERGlED7RYTGQl6ifCEfUMDi3kKonwzN9E573ZwYtFxfAxH+zzT2yXqR34Yxh
-         lMMQ==
-X-Gm-Message-State: AOAM532x9F6ivQRSWch4ae3GieGVUotIme2e1N/kYgODs/gyNdy+r+Qf
-        /gsbgmyn/104ufmj48HdQjCAsWfXQZOzWjd885E=
-X-Google-Smtp-Source: ABdhPJyT6O/qHsDNw4Rz7aqr1S1sh7Q8GP/FR5YMLxJoHYB4d1n2KREa+irqyorif/EklfYTiKqvXUkgLdWB/cuVndo=
-X-Received: by 2002:a17:90a:156:: with SMTP id z22mr26089612pje.181.1618164525827;
- Sun, 11 Apr 2021 11:08:45 -0700 (PDT)
+        id S235795AbhDKSKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 14:10:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58432 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233822AbhDKSKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 14:10:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3ED53AFCD;
+        Sun, 11 Apr 2021 18:10:37 +0000 (UTC)
+Subject: Re: [syzbot] general protection fault in drm_client_buffer_vunmap
+To:     syzbot <syzbot+10328e8428a896b65119@syzkaller.appspotmail.com>,
+        airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        igormtorrente@gmail.com, linux-kernel@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        syzkaller-bugs@googlegroups.com, ztong0001@gmail.com
+References: <000000000000c4cba105bfb126a1@google.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <b6d0039a-d605-2a91-ac00-2966291cfc16@suse.de>
+Date:   Sun, 11 Apr 2021 20:10:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210407182147.77221-1-puranjay12@gmail.com> <20210407182147.77221-3-puranjay12@gmail.com>
- <20210411155420.318e866e@jic23-huawei> <CAHp75VcQYLRJ-p4CWJyk3h0=nL=TqwEFAxkO+z1Nbg8=3Fchyg@mail.gmail.com>
-In-Reply-To: <CAHp75VcQYLRJ-p4CWJyk3h0=nL=TqwEFAxkO+z1Nbg8=3Fchyg@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 11 Apr 2021 21:08:29 +0300
-Message-ID: <CAHp75VfN5J747w6o=A2eng+9SV_2L-NH28O=sGRuxGz_oxPh-Q@mail.gmail.com>
-Subject: Re: [PATCH v4 2/2] iio: temperature: add driver support for ti tmp117
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Puranjay Mohan <puranjay12@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Hartmut Knaack <knaack.h@gmx.de>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <000000000000c4cba105bfb126a1@google.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ii1uA8SbKGnacI9yJQ5vuK86BGgASN8G0"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 9:07 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Sun, Apr 11, 2021 at 5:53 PM Jonathan Cameron <jic23@kernel.org> wrote:
-> > On Wed,  7 Apr 2021 23:51:47 +0530
-> > Puranjay Mohan <puranjay12@gmail.com> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ii1uA8SbKGnacI9yJQ5vuK86BGgASN8G0
+Content-Type: multipart/mixed; boundary="SsLLBMZChnh4BSylHImKZ5477u4oaUgdk";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: syzbot <syzbot+10328e8428a896b65119@syzkaller.appspotmail.com>,
+ airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+ igormtorrente@gmail.com, linux-kernel@vger.kernel.org,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+ syzkaller-bugs@googlegroups.com, ztong0001@gmail.com
+Message-ID: <b6d0039a-d605-2a91-ac00-2966291cfc16@suse.de>
+Subject: Re: [syzbot] general protection fault in drm_client_buffer_vunmap
+References: <000000000000c4cba105bfb126a1@google.com>
+In-Reply-To: <000000000000c4cba105bfb126a1@google.com>
 
-> Good point, but better is to use clamp_t(s16, ...) rather than explicit casting.
+--SsLLBMZChnh4BSylHImKZ5477u4oaUgdk
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Sorry, I meant clamp_t(int, ...) of course, otherwise it will give wrong values.
+#syz fix: drm/fb-helper: only unmap if buffer not null
 
-> I always consider explicit casting in C (and esp. in Linux kernel) is
-> a red flag. Should be really rarely needed.
+Am 11.04.21 um 14:01 schrieb syzbot:
+> #syz fix: drm/fb-helper: only unmap if buffer not null
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
 
+--SsLLBMZChnh4BSylHImKZ5477u4oaUgdk--
 
--- 
-With Best Regards,
-Andy Shevchenko
+--ii1uA8SbKGnacI9yJQ5vuK86BGgASN8G0
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmBzO5sFAwAAAAAACgkQlh/E3EQov+Do
+iA/6A63OiUqCl0TY+rWCEkigqR95XHyj5rG/PhluHcPBYkV4tOj55HGHdVYazKCSH0qI43rcFW/e
+JTMPpee1SwNXCcVlyl8W8b2rEJfI6hSl4FY9h8Qewy/MlLNv+HoMabhcfu/qEFwJ2OtBtyz82QJx
+z3sCMthyEDWp0TgQ8t5eOKW3/6dkrtaQYWxpGxiqLtQXakZI+4WY+Fak0frWSscWI+NGNBnbV0xP
+N2SxZZlInefPrspDKzgkcxhVmF2gozCU31PSRTgy3Iw7gXfb7S3QrzVyCJYfeqqL2QAu5pb9o+oz
+5IPL6T2xZIkFUJmvEyPNijOJvA8NPWQnoLN0NOknOoqNumyD6lCJ0Ra04tmy40l15dTUbrxTNnMV
+vJKGz68OtWCoyvvqhxHD72tvQI8zXXOlsFHf5tPjRTHYiiO2Bfs34WjrxiyV2NLZ0XcgUvUD9tcO
+lrs296P5ZXQ6j+/jCuKqCRNR+2DwgZNSMiSKb6dAiJW6uIVVW2sWQu17BO7xVGWvv+zIZCP6BbFG
+4m95zNEZ3E2Ajt/OtMvDRivh6PEsA2/HIDEfH4Nrl5DgSzieu6jAxhMYa2TtLbW7qsrB7gkaF8cx
+xzuJGfbhX1xx9Kx+aForK2IJWfwBdS4qNBDl+hzVREJwxKLEuhqEgKAifupBtJ9ZW1+cbrGVw9HP
+aVA=
+=r+LL
+-----END PGP SIGNATURE-----
+
+--ii1uA8SbKGnacI9yJQ5vuK86BGgASN8G0--
