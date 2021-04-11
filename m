@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E49835B29C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D01A735B2A1
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235259AbhDKJWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 05:22:01 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:23925 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235193AbhDKJWA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 05:22:00 -0400
-Received: from localhost.localdomain ([90.126.11.170])
-        by mwinf5d20 with ME
-        id rMMh2400e3g7mfN03MMhju; Sun, 11 Apr 2021 11:21:43 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 11 Apr 2021 11:21:43 +0200
-X-ME-IP: 90.126.11.170
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     njavali@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] scsi: qla2xxx: Re-use existing error handling path
-Date:   Sun, 11 Apr 2021 11:21:40 +0200
-Message-Id: <6973844a1532ec2dc8e86f3533362e79d78ed774.1618132821.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        id S235193AbhDKJ0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 05:26:03 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59764 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229804AbhDKJ0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 05:26:03 -0400
+Received: from zn.tnic (p200300ec2f23de002e7d52dd33d8f804.dip0.t-ipconnect.de [IPv6:2003:ec:2f23:de00:2e7d:52dd:33d8:f804])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 485DB1EC0283;
+        Sun, 11 Apr 2021 11:25:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618133146;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Gv2RXv40YjtCzlOZL0wWbh/CUOV9xLmCkRj2zzVplVk=;
+        b=B8TZtCk0Nin2Q4eI79aiGTGGpP+s2R8svFThA7abtKWL76U7xctlFBDSq+cfAdGljsSGv6
+        i7OA5v7e9ZrkNGER+WVJgA567/OUVNOYkvtOhL2SQMk01xwsXgCEayu7RrMqkPqO28cXbj
+        8Dy1ScCmlItYak7c0mCqZppR1Z4AEpQ=
+Date:   Sun, 11 Apr 2021 11:25:43 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jan Kiszka <jan.kiszka@web.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86 <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] x86: pat: Do not compile stubbed functions when
+ X86_PAT is off
+Message-ID: <20210411092543.GB14022@zn.tnic>
+References: <198c94a8-12ea-88e7-6f08-b3456473e5c3@siemens.com>
+ <87r1z6xxh5.fsf@nanos.tec.linutronix.de>
+ <a2788ff7-c524-52de-3f45-82613410f872@siemens.com>
+ <a9351615-7a0d-9d47-af65-d9e2fffe8192@siemens.com>
+ <802cefc7-b475-c6d6-ece7-8232d7f3891d@web.de>
+ <20210411091056.GA14022@zn.tnic>
+ <7c606ebd-e8d8-0853-bab5-5e77b1359dcc@web.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <7c606ebd-e8d8-0853-bab5-5e77b1359dcc@web.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to duplicate some code, use the existing error handling
-path to free some resources.
-This is more future-proof.
+On Sun, Apr 11, 2021 at 11:12:32AM +0200, Jan Kiszka wrote:
+> The patches are coming from downstream usage, yes,
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-The code above this hunk looks spurious to me.
+Ok, for the future, it would be good to mention that in the commit
+message so that a committer knows what they're for.
 
-It looks like an error handling path (i.e.
-"if (response_len > bsg_job->reply_payload.payload_len)")
-but returns 0, which is the initial value of 'ret'.
+> but I think the solutions are relevant cleanups for upstream as well.
 
-Shouldn't we have ret = -<something> here?
----
- drivers/scsi/qla2xxx/qla_bsg.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Yeah but you know that we generally don't do "preemptive" fixes like
+that. But those are small enough so I don't see a problem...
 
-diff --git a/drivers/scsi/qla2xxx/qla_bsg.c b/drivers/scsi/qla2xxx/qla_bsg.c
-index aef2f7cc89d3..d42b2ad84049 100644
---- a/drivers/scsi/qla2xxx/qla_bsg.c
-+++ b/drivers/scsi/qla2xxx/qla_bsg.c
-@@ -2585,8 +2585,8 @@ qla2x00_get_host_stats(struct bsg_job *bsg_job)
- 
- 	data = kzalloc(response_len, GFP_KERNEL);
- 	if (!data) {
--		kfree(req_data);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto host_stat_out;
- 	}
- 
- 	ret = qla2xxx_get_ini_stats(fc_bsg_to_shost(bsg_job), req_data->stat_type,
+Thx.
+
 -- 
-2.27.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
