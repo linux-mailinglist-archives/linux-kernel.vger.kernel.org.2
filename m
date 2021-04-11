@@ -2,95 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B272F35B121
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 03:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D049E35B124
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 04:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235043AbhDKBra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 10 Apr 2021 21:47:30 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16519 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234983AbhDKBr2 (ORCPT
+        id S235058AbhDKCDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 10 Apr 2021 22:03:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234944AbhDKCDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 10 Apr 2021 21:47:28 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FHvmj0YF1zPptN;
-        Sun, 11 Apr 2021 09:44:21 +0800 (CST)
-Received: from A190218597.china.huawei.com (10.47.74.167) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Sun, 11 Apr 2021 09:47:03 +0800
-From:   Salil Mehta <salil.mehta@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <salil.mehta@huawei.com>, <jesse.brandeburg@intel.com>,
-        <anthony.l.nguyen@intel.com>, <henry.w.tieman@intel.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <linuxarm@openeuler.org>
-Subject: [PATCH net] ice: Re-organizes reqstd/avail {R,T}XQ check/code for efficiency+readability
-Date:   Sun, 11 Apr 2021 02:45:30 +0100
-Message-ID: <20210411014530.25060-1-salil.mehta@huawei.com>
-X-Mailer: git-send-email 2.8.3
+        Sat, 10 Apr 2021 22:03:20 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA896C06138B;
+        Sat, 10 Apr 2021 19:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:MIME-Version
+        :Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=MrqRlFnmAr3VO2kikjWYwVGKANP+pM6Y3zXnpk6GwW8=; b=Hdd/T3rDjlbpPkMCZ/ZkI0S6KY
+        kkAhdJQDU4zp15e5pt8agS7t9W7+MsgWBMu5/uqMql/8hssQ9cBHWNOmXmunsD2DKpBlj/p1UU0C1
+        xZy/88ZaaIpdr2rv74Dcs827yaJvo19qczwUcNKOqLz8Aqkn1do7tY3NgbUEGXgcQW6UdPUaPC52u
+        yVVlWhBK0PasYSS0qETwTrsE/GNc2Uxa4Gs25f9u7OBHSieh44YlycpAb62HqxCJ26S/2t/0rDkNs
+        8tew6Up9SyItuU/DjKEmKscxCTKoGlDiA1PGVp73y1FfakQhhERJdJvHQNhxu73qQ+D7HoS91NB0c
+        xyMr6oyg==;
+Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVPRE-003mQP-M6; Sun, 11 Apr 2021 02:03:01 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org
+Subject: [PATCH RESENDbis] ia64: remove duplicate entries in generic_defconfig
+Date:   Sat, 10 Apr 2021 19:02:55 -0700
+Message-Id: <20210411020255.18052-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.47.74.167]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If user has explicitly requested the number of {R,T}XQs, then it is unnecessary
-to get the count of already available {R,T}XQs from the PF avail_{r,t}xqs
-bitmap. This value will get overriden by user specified value in any case.
+Fix ia64 generic_defconfig duplicate entries, as warned by:
 
-This patch does minor re-organization of the code for improving the flow and
-readabiltiy. This scope of improvement was found during the review of the ICE
-driver code.
+  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA:  => 58
+  + arch/ia64/configs/generic_defconfig: warning: override: reassigning to symbol ATA_PIIX:  => 59
 
-FYI, I could not test this change due to unavailability of the hardware. It
-would helpful if somebody can test this and provide Tested-by Tag. Many thanks!
+These 2 symbols still have the same value as in the removed lines.
 
-Fixes: 11b7551e096d ("ice: Implement ethtool ops for channels")
-Signed-off-by: Salil Mehta <salil.mehta@huawei.com>
+Fixes: c331649e6371 ("ia64: Use libata instead of the legacy ide driver in defconfigs")
+Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: linux-ia64@vger.kernel.org
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+#Cc: Fenghua Yu <fenghua.yu@intel.com>
 ---
- drivers/net/ethernet/intel/ice/ice_lib.c | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ arch/ia64/configs/generic_defconfig |    2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/ice/ice_lib.c b/drivers/net/ethernet/intel/ice/ice_lib.c
-index d13c7fc8fb0a..161e8dfe548c 100644
---- a/drivers/net/ethernet/intel/ice/ice_lib.c
-+++ b/drivers/net/ethernet/intel/ice/ice_lib.c
-@@ -161,12 +161,13 @@ static void ice_vsi_set_num_qs(struct ice_vsi *vsi, u16 vf_id)
- 
- 	switch (vsi->type) {
- 	case ICE_VSI_PF:
--		vsi->alloc_txq = min3(pf->num_lan_msix,
--				      ice_get_avail_txq_count(pf),
--				      (u16)num_online_cpus());
- 		if (vsi->req_txq) {
- 			vsi->alloc_txq = vsi->req_txq;
- 			vsi->num_txq = vsi->req_txq;
-+		} else {
-+			vsi->alloc_txq = min3(pf->num_lan_msix,
-+					 ice_get_avail_txq_count(pf),
-+					 (u16)num_online_cpus());
- 		}
- 
- 		pf->num_lan_tx = vsi->alloc_txq;
-@@ -175,12 +176,13 @@ static void ice_vsi_set_num_qs(struct ice_vsi *vsi, u16 vf_id)
- 		if (!test_bit(ICE_FLAG_RSS_ENA, pf->flags)) {
- 			vsi->alloc_rxq = 1;
- 		} else {
--			vsi->alloc_rxq = min3(pf->num_lan_msix,
--					      ice_get_avail_rxq_count(pf),
--					      (u16)num_online_cpus());
- 			if (vsi->req_rxq) {
- 				vsi->alloc_rxq = vsi->req_rxq;
- 				vsi->num_rxq = vsi->req_rxq;
-+			} else {
-+				vsi->alloc_rxq = min3(pf->num_lan_msix,
-+						 ice_get_avail_rxq_count(pf),
-+						 (u16)num_online_cpus());
- 			}
- 		}
- 
--- 
-2.17.1
-
+--- lnx-511-rc1.orig/arch/ia64/configs/generic_defconfig
++++ lnx-511-rc1/arch/ia64/configs/generic_defconfig
+@@ -55,8 +55,6 @@ CONFIG_CHR_DEV_SG=m
+ CONFIG_SCSI_FC_ATTRS=y
+ CONFIG_SCSI_SYM53C8XX_2=y
+ CONFIG_SCSI_QLOGIC_1280=y
+-CONFIG_ATA=y
+-CONFIG_ATA_PIIX=y
+ CONFIG_SATA_VITESSE=y
+ CONFIG_MD=y
+ CONFIG_BLK_DEV_MD=m
