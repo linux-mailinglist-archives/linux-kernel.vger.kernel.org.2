@@ -2,177 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7ED035B577
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD6535B57A
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:56:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236067AbhDKNvI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 11 Apr 2021 09:51:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236084AbhDKNuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:50:52 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3845610CB;
-        Sun, 11 Apr 2021 13:50:33 +0000 (UTC)
-Date:   Sun, 11 Apr 2021 14:50:55 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Lucas Stankus <lucas.p.stankus@gmail.com>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "Michael.Hennerich@analog.com" <Michael.Hennerich@analog.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 2/3] staging: iio: cdc: ad7746: use dt bindings to set
- the EXCx pins output
-Message-ID: <20210411145055.1a713319@jic23-huawei>
-In-Reply-To: <CAHp75VcMsMvSrbP3tkcivvd+s=8drqiCt-xmk+HxhLS87w6zYw@mail.gmail.com>
-References: <cover.1617993776.git.lucas.p.stankus@gmail.com>
-        <39486895e4e985d0220342f3accfd98a1e149ea7.1617993776.git.lucas.p.stankus@gmail.com>
-        <CAHp75Ve2NBMyQf7jw63a=4r135ShGEoRjZ+CUr36DC+gH39d7A@mail.gmail.com>
-        <CAHp75VcMsMvSrbP3tkcivvd+s=8drqiCt-xmk+HxhLS87w6zYw@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235814AbhDKNw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:52:28 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:36145 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235558AbhDKNwZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 09:52:25 -0400
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 13BDppYP012062;
+        Sun, 11 Apr 2021 22:51:51 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 13BDppYP012062
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618149111;
+        bh=Oyb30frvoJSVJ4PA2guHZ4mc1w6P1MMIsqtUqyXN1qI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=AoA4k+SHDjVBGNsMge6saSW+YFw10VzVGw1K4uf1qCh/DX4ahraNV2StPItKZYu9s
+         M+sOnNaLy3XL9llQCChZRX4sOp9doLyVGEyJYAOFgOFMOBwN+u0567NsOV6pGnAqng
+         xgC82BlQVl/EhfW/5EGJAdKGgQSvd7RXTcYF3xFk2Cq2SiWlCS6xYa+J9k+DKoc4BL
+         ysbswwHdyrOCswpsfr3qZdg1mcWOs7omEgcg8VrKl3WjkScl6FSXEa0uzhvREDcyaL
+         D0Z9pEZ+46qJpm6vxBFYBbELEhLq5Vtd702U+9fFxyOfmwTnjlN5kzinPGxmoLqxH2
+         YDjXeD/47zmkg==
+X-Nifty-SrcIP: [209.85.214.175]
+Received: by mail-pl1-f175.google.com with SMTP id y2so4952547plg.5;
+        Sun, 11 Apr 2021 06:51:51 -0700 (PDT)
+X-Gm-Message-State: AOAM532gcIcglvN/AAHGBypQm1A5JSmCr3P+FBlleZijSuVbuq7Mm9cH
+        jtnDbwxjj2nXuvPiByXHozOizstrPRhYWUyy7zo=
+X-Google-Smtp-Source: ABdhPJz2+27GG355vfAeOiMfDu8f8zi/pbFEOBa2SaEuW3UZLd+f3WWeJewJ9iWDmnS4NKDSueQw9GThh6DkzRSugeI=
+X-Received: by 2002:a17:902:b589:b029:e6:2875:aa4c with SMTP id
+ a9-20020a170902b589b02900e62875aa4cmr21888112pls.71.1618149110440; Sun, 11
+ Apr 2021 06:51:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210301141827.342315-1-masahiroy@kernel.org>
+In-Reply-To: <20210301141827.342315-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 11 Apr 2021 22:51:12 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARA9PZ_hv76FDn_LHE-JpOepdLW1w5=0_J6AckigX76HA@mail.gmail.com>
+Message-ID: <CAK7LNARA9PZ_hv76FDn_LHE-JpOepdLW1w5=0_J6AckigX76HA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] alpha: syscalls: switch to generic syscalltbl.sh
+To:     Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Apr 2021 13:05:14 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+On Mon, Mar 1, 2021 at 11:18 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> Many architectures duplicate similar shell scripts.
+>
+> This commit converts alpha to use scripts/syscalltbl.sh.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-> On Saturday, April 10, 2021, Andy Shevchenko <andy.shevchenko@gmail.com>
-> wrote:
-> 
-> >
-> >
-> > On Friday, April 9, 2021, Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
-> >  
-> >> Ditch platform_data fields in favor of device tree properties for
-> >> configuring EXCA and EXCB output.
-> >> This also removes the fields from the platform_data struct, since they're
-> >> not used anymore.  
-> >
-> >
-> > As far as I read the old code it’s possible to leave pins untouched, not
-> > anymore the case after this patch. What datasheet tells about it? Please
-> > elaborate in the commit message and add a Datasheet: tag as a reference.
-> >
-> >
-> >  
+Applied to linux-kbuild.
 
-Default is to have them disabled, so if you switch to separate -en
-vs -invert lack of either will correspond to the power on default
-and simplify things somewhat.
 
-> 
-> Okay, I see now. But can you simple use switch case or so, because
-> currently code is not so understandable from the first glance?
-> 
-> 
-> 
-> >  
-> >> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
-> >> ---
-> >>  drivers/staging/iio/cdc/ad7746.c | 33 +++++++++++++++++---------------
-> >>  drivers/staging/iio/cdc/ad7746.h |  4 ----
-> >>  2 files changed, 18 insertions(+), 19 deletions(-)
-> >>
-> >> diff --git a/drivers/staging/iio/cdc/ad7746.c
-> >> b/drivers/staging/iio/cdc/ad7746.c
-> >> index dfd71e99e872..63041b164dbe 100644
-> >> --- a/drivers/staging/iio/cdc/ad7746.c
-> >> +++ b/drivers/staging/iio/cdc/ad7746.c
-> >> @@ -677,8 +677,10 @@ static int ad7746_probe(struct i2c_client *client,
-> >>                         const struct i2c_device_id *id)
-> >>  {
-> >>         struct ad7746_platform_data *pdata = client->dev.platform_data;
-> >> +       struct device_node *np = client->dev.of_node;
-> >>         struct ad7746_chip_info *chip;
-> >>         struct iio_dev *indio_dev;
-> >> +       unsigned int exca_en, excb_en;
-> >>         unsigned char regval = 0;
-> >>         int ret = 0;
-> >>
-> >> @@ -703,26 +705,27 @@ static int ad7746_probe(struct i2c_client *client,
-> >>         indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
-> >>         indio_dev->modes = INDIO_DIRECT_MODE;
-> >>
-> >> -       if (pdata) {
-> >> -               if (pdata->exca_en) {
-> >> -                       if (pdata->exca_inv_en)
-> >> -                               regval |= AD7746_EXCSETUP_NEXCA;
-> >> -                       else
-> >> -                               regval |= AD7746_EXCSETUP_EXCA;
-> >> -               }
-> >> +       ret = of_property_read_u32(np, "adi,exca-output", &exca_en);
-> >> +       if (!ret && exca_en) {
-> >> +               if (exca_en == 1)
-> >> +                       regval |= AD7746_EXCSETUP_EXCA;
-> >> +               else
-> >> +                       regval |= AD7746_EXCSETUP_NEXCA;
-> >> +       }
-> >>
-> >> -               if (pdata->excb_en) {
-> >> -                       if (pdata->excb_inv_en)
-> >> -                               regval |= AD7746_EXCSETUP_NEXCB;
-> >> -                       else
-> >> -                               regval |= AD7746_EXCSETUP_EXCB;
-> >> -               }
-> >> +       ret = of_property_read_u32(np, "adi,excb-output", &excb_en);
-> >> +       if (!ret && excb_en) {
-> >> +               if (excb_en == 1)
-> >> +                       regval |= AD7746_EXCSETUP_EXCB;
-> >> +               else
-> >> +                       regval |= AD7746_EXCSETUP_NEXCB;
-> >> +       }
-> >>
-> >> +       if (pdata) {
-> >>                 regval |= AD7746_EXCSETUP_EXCLVL(pdata->exclvl);
-> >>         } else {
-> >>                 dev_warn(&client->dev, "No platform data? using
-> >> default\n");
-> >> -               regval = AD7746_EXCSETUP_EXCA | AD7746_EXCSETUP_EXCB |
-> >> -                       AD7746_EXCSETUP_EXCLVL(3);
-> >> +               regval = AD7746_EXCSETUP_EXCLVL(3);
-> >>         }
-> >>
-> >>         ret = i2c_smbus_write_byte_data(chip->client,
-> >> diff --git a/drivers/staging/iio/cdc/ad7746.h
-> >> b/drivers/staging/iio/cdc/ad7746.h
-> >> index 8bdbd732dbbd..6cae4ecf779e 100644
-> >> --- a/drivers/staging/iio/cdc/ad7746.h
-> >> +++ b/drivers/staging/iio/cdc/ad7746.h
-> >> @@ -19,10 +19,6 @@
-> >>
-> >>  struct ad7746_platform_data {
-> >>         unsigned char exclvl;   /*Excitation Voltage Level */
-> >> -       bool exca_en;           /* enables EXCA pin as the excitation
-> >> output */
-> >> -       bool exca_inv_en;       /* enables /EXCA pin as the excitation
-> >> output */
-> >> -       bool excb_en;           /* enables EXCB pin as the excitation
-> >> output */
-> >> -       bool excb_inv_en;       /* enables /EXCB pin as the excitation
-> >> output */
-> >>  };
-> >>
-> >>  #endif /* IIO_CDC_AD7746_H_ */
-> >> --
-> >> 2.31.1
-> >>
-> >>  
-> >
-> > --
-> > With Best Regards,
-> > Andy Shevchenko
-> >
-> >
-> >  
-> 
+> ---
+>
+>  arch/alpha/kernel/syscalls/Makefile      |  7 ++----
+>  arch/alpha/kernel/syscalls/syscalltbl.sh | 32 ------------------------
+>  arch/alpha/kernel/systbls.S              |  3 +--
+>  3 files changed, 3 insertions(+), 39 deletions(-)
+>  delete mode 100644 arch/alpha/kernel/syscalls/syscalltbl.sh
+>
+> diff --git a/arch/alpha/kernel/syscalls/Makefile b/arch/alpha/kernel/syscalls/Makefile
+> index 285aaba832d9..ad2492cb5568 100644
+> --- a/arch/alpha/kernel/syscalls/Makefile
+> +++ b/arch/alpha/kernel/syscalls/Makefile
+> @@ -7,7 +7,7 @@ _dummy := $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')       \
+>
+>  syscall := $(src)/syscall.tbl
+>  syshdr := $(srctree)/$(src)/syscallhdr.sh
+> -systbl := $(srctree)/$(src)/syscalltbl.sh
+> +systbl := $(srctree)/scripts/syscalltbl.sh
+>
+>  quiet_cmd_syshdr = SYSHDR  $@
+>        cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@'       \
+> @@ -16,10 +16,7 @@ quiet_cmd_syshdr = SYSHDR  $@
+>                    '$(syshdr_offset_$(basetarget))'
+>
+>  quiet_cmd_systbl = SYSTBL  $@
+> -      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' '$<' '$@'       \
+> -                  '$(systbl_abis_$(basetarget))'               \
+> -                  '$(systbl_abi_$(basetarget))'                \
+> -                  '$(systbl_offset_$(basetarget))'
+> +      cmd_systbl = $(CONFIG_SHELL) $(systbl) $< $@
+>
+>  $(uapi)/unistd_32.h: $(syscall) $(syshdr) FORCE
+>         $(call if_changed,syshdr)
+> diff --git a/arch/alpha/kernel/syscalls/syscalltbl.sh b/arch/alpha/kernel/syscalls/syscalltbl.sh
+> deleted file mode 100644
+> index 85d78d9309ad..000000000000
+> --- a/arch/alpha/kernel/syscalls/syscalltbl.sh
+> +++ /dev/null
+> @@ -1,32 +0,0 @@
+> -#!/bin/sh
+> -# SPDX-License-Identifier: GPL-2.0
+> -
+> -in="$1"
+> -out="$2"
+> -my_abis=`echo "($3)" | tr ',' '|'`
+> -my_abi="$4"
+> -offset="$5"
+> -
+> -emit() {
+> -       t_nxt="$1"
+> -       t_nr="$2"
+> -       t_entry="$3"
+> -
+> -       while [ $t_nxt -lt $t_nr ]; do
+> -               printf "__SYSCALL(%s, sys_ni_syscall, )\n" "${t_nxt}"
+> -               t_nxt=$((t_nxt+1))
+> -       done
+> -       printf "__SYSCALL(%s, %s, )\n" "${t_nxt}" "${t_entry}"
+> -}
+> -
+> -grep -E "^[0-9A-Fa-fXx]+[[:space:]]+${my_abis}" "$in" | sort -n | (
+> -       nxt=0
+> -       if [ -z "$offset" ]; then
+> -               offset=0
+> -       fi
+> -
+> -       while read nr abi name entry ; do
+> -               emit $((nxt+offset)) $((nr+offset)) $entry
+> -               nxt=$((nr+1))
+> -       done
+> -) > "$out"
+> diff --git a/arch/alpha/kernel/systbls.S b/arch/alpha/kernel/systbls.S
+> index 9704f22ed5e3..68f3e4f329eb 100644
+> --- a/arch/alpha/kernel/systbls.S
+> +++ b/arch/alpha/kernel/systbls.S
+> @@ -7,10 +7,9 @@
+>
+>  #include <asm/unistd.h>
+>
+> -#define __SYSCALL(nr, entry, nargs) .quad entry
+> +#define __SYSCALL(nr, entry) .quad entry
+>         .data
+>         .align 3
+>         .globl sys_call_table
+>  sys_call_table:
+>  #include <asm/syscall_table.h>
+> -#undef __SYSCALL
+> --
+> 2.27.0
+>
 
+
+-- 
+Best Regards
+Masahiro Yamada
