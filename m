@@ -2,161 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D60135B716
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 23:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F0F335B71B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 00:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235623AbhDKVyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 17:54:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235366AbhDKVyS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 17:54:18 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE85AC06138B
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 14:54:01 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id i9so11491474qka.2
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 14:54:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cs.unc.edu; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MtiFWw1lbP0fMU8IjBYDnw/l/xTMOINcMgt3bBeyFUQ=;
-        b=PG+ZhpbevqnFN02a353tQmKOg9Ymas6v9qIPtEg3btcid0JVUsvNaGkQ/9PqJtVijP
-         4+W6yPqIwQHOOxLvo339fUYtqfxp6+HEQq09hVLT6wnRgvzeWbJH6tuQh5UHp6gD5LIl
-         TZHSBqGGXa4dv2bqMTUhdlVRC0UgYCQVfnxxQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MtiFWw1lbP0fMU8IjBYDnw/l/xTMOINcMgt3bBeyFUQ=;
-        b=uQlmLRUH4gsolGxLDJSRzJF1hEmtSAar9u5aTg9i6ZRybjGrS9TNKQCQBsOuX5FvpW
-         /D7UzAMGBttKQszyeSV32ybdTdkIiXCD8hnwZlX8mryjmB3Pn8iIQm/LVC01DQsRabUJ
-         20lXSvvaYPNq6+AFD6hCzynk5U7dOvxa0rj/U8ojCCuXwK6Vu1eLWGAER1+8ggACi44a
-         XZzx9XC5vX/k4pM2bJD74c/CnSk1vubP9ezF+3Vg1eLDmicTcPCo5RGNC/kBbY63PxAL
-         uvVpnqCG0JbIzRdhdqLJWqR5YL9W14U8M7tyFJ+lhSifFL8dh+Q+894n6FfdJ1TMA9uy
-         zGHw==
-X-Gm-Message-State: AOAM533zvAcU9QM40N90XQfOyAsDDhfzp+Jz9U1VMb5BYOp37SPK2nSY
-        s78nIi/NQU6GXI4BTi0lnlczBiD3cWcmCs5XCpzGuzvZylmzOW0ukUwRbzvs0DnPGV7gXj27grz
-        hpUYRCoroVSswE8rczWFOnYcwpWHz8iVotmkv2F+y2Ry79btpFA37egTU0LIxcO+AqfKjcOrqIA
-        ==
-X-Google-Smtp-Source: ABdhPJxzdua/Yco8q7cKN9wvkxCZ3NrA33iW2N7vU1FSm0ELgCOm8coRE9ufmY8FF0zQd/JKs/FePA==
-X-Received: by 2002:a05:620a:56f:: with SMTP id p15mr933292qkp.102.1618178040526;
-        Sun, 11 Apr 2021 14:54:00 -0700 (PDT)
-Received: from [152.23.147.117] ([152.23.147.117])
-        by smtp.gmail.com with ESMTPSA id w4sm5895148qkd.94.2021.04.11.14.53.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Apr 2021 14:54:00 -0700 (PDT)
-Subject: Re: [RESEND,PATCH] fs/binfmt_elf: Fix regression limiting ELF program
- header size
-From:   Joshua Bakita <jbakita@cs.unc.edu>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201215034624.1887447-1-jbakita@cs.unc.edu>
- <7cba1c24-5034-53e1-6014-982973e66ea3@cs.unc.edu>
-Message-ID: <fbcd2886-d505-f14e-ad6b-c4b5fa77707e@cs.unc.edu>
-Date:   Sun, 11 Apr 2021 17:53:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <7cba1c24-5034-53e1-6014-982973e66ea3@cs.unc.edu>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S235717AbhDKWDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 18:03:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56252 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235284AbhDKWDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 18:03:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE6AD610CB;
+        Sun, 11 Apr 2021 22:03:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1618178599;
+        bh=xr7Bko3nkY/hQzyR34sArUT+yy4zsjhEp/ERlDlaFfw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ASNK5lYWJnV08hEwZiPrc6I7AoSedfw99O8NVwSHpYtW/sKTUrJtRS1uIZR9R6wnF
+         t038iXV/UBzK/JbJ/OAtnesctxvwAQ68TpuPYGu1G2sQbDxkDAosgxxY6G+aspKiwD
+         d9vdXulvY0qHJo7ky7gEeulX+VJurJteIqXR1/1w=
+Date:   Sun, 11 Apr 2021 15:03:16 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Andrey Konovalov <andreyknvl@google.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: Re: [PATCH v4] kasan: remove redundant config option
+Message-Id: <20210411150316.d60aa0b5174adf2370538809@linux-foundation.org>
+In-Reply-To: <20210411105332.GA23778@arm.com>
+References: <20210226012531.29231-1-walter-zh.wu@mediatek.com>
+        <CAAeHK+zyv1=kXtKAynnJN-77dwmPG4TXpJOLv_3W0nxXe5NjXA@mail.gmail.com>
+        <20210330223637.f3c73a78c64587e615d26766@linux-foundation.org>
+        <20210411105332.GA23778@arm.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sun, 11 Apr 2021 11:53:33 +0100 Catalin Marinas <catalin.marinas@arm.com> wrote:
 
-I'd greatly appreciate it if this patch would be reviewed. It's been 
-nearly 6 months since I first submitted it, there's clear evidence that 
-this regression effects real programs, and the fix is simple. If no 
-maintainers on this list have the time to review this change, I would 
-appreciate suggestions on alternative lists and/or maintainers who I 
-could reach out to instead.
+> Hi Andrew,
+> 
+> On Tue, Mar 30, 2021 at 10:36:37PM -0700, Andrew Morton wrote:
+> > On Mon, 29 Mar 2021 16:54:26 +0200 Andrey Konovalov <andreyknvl@google.com> wrote:
+> > > Looks like my patch "kasan: fix KASAN_STACK dependency for HW_TAGS"
+> > > that was merged into 5.12-rc causes a build time warning:
+> > > 
+> > > include/linux/kasan.h:333:30: warning: 'CONFIG_KASAN_STACK' is not
+> > > defined, evaluates to 0 [-Wundef]
+> > > #if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > > 
+> > > The fix for it would either be reverting the patch (which would leave
+> > > the initial issue unfixed) or applying this "kasan: remove redundant
+> > > config option" patch.
+> > > 
+> > > Would it be possible to send this patch (with the fix-up you have in
+> > > mm) for the next 5.12-rc?
+> > > 
+> > > Here are the required tags:
+> > > 
+> > > Fixes: d9b571c885a8 ("kasan: fix KASAN_STACK dependency for HW_TAGS")
+> > > Cc: stable@vger.kernel.org
+> > 
+> > Got it, thanks.  I updated the changelog to mention the warning fix and
+> > moved these ahead for a -rc merge.
+> 
+> Is there a chance this patch makes it into 5.12? I still get the warning
+> with the latest Linus' tree (v5.12-rc6-408-g52e44129fba5) when enabling
+> KASAN_HW_TAGS.
 
-Best,
-
-Joshua Bakita
-
-On 2/11/21 3:27 PM, Joshua Bakita wrote:
-> Hello all,
-> 
-> I raised this patch on #linuxfs on IRC, and I got asked if this actually 
-> effects real programs. To demonstrate that it does, I wrote up a simple 
-> C program which just does a table lookup of a prime number. The table is 
-> stored sparsely, so newer versions of GCC+LD automatically put each 
-> table entry in its own program section and segment. This results in over 
-> 100 ELF program header entries, which Linux since 3.19 will refuse to 
-> load with ENOEXEC due to the errant limit fixed in my patch. (The 
-> current broken limit is 73, whereas the manpage states a limit of 64k.)
-> 
-> My example program is available at 
-> https://www.cs.unc.edu/~jbakita/get_prime.c and should be built as gcc 
-> get_prime.c -o get_prime. I know this works with GCC 9.3.0 and LD 2.34 
-> (GCC 7.5.0 and LD 2.30 are too old). You can verify it built correctly 
-> by checking the "Number of program headers" as printed by readelf -h is 
-> at least 100.
-> 
-> I tried to keep this patch small to make it easy to review, but there 
-> are a few other bugs (like the 64KB limit) in the ELF loader. Would it 
-> be more helpful or make review easier to just fix all the bugs at once? 
-> This is my first kernel patch, and I'd really like to make it the first 
-> of many.
-> 
-> Best,
-> 
-> Joshua Bakita
-> 
-> On 12/14/20 10:46 PM, Joshua Bakita wrote:
->> Commit 6a8d38945cf4 ("binfmt_elf: Hoist ELF program header loading to a
->> function") merged load_elf_binary and load_elf_interp into
->> load_elf_phdrs. This change imposed a limit that the program headers of
->> all ELF binaries are smaller than ELF_MIN_ALIGN. This is a mistake for
->> two reasons:
->> 1. load_elf_binary previously had no such constraint, meaning that
->>     previously valid ELF program headers are now rejected by the 
->> kernel as
->>     oversize and invalid.
->> 2. The ELF interpreter's program headers should never have been 
->> limited to
->>     ELF_MIN_ALIGN (and previously PAGE_SIZE) in the first place. Commit
->>     057f54fbba73 ("Import 1.1.54") introduced this limit to the ELF
->>     interpreter alongside the initial ELF parsing support without any
->>     explanation.
->> This patch removes the ELF_MIN_ALIGN size constraint in favor of only
->> relying on an earlier check that the allocation will be less than 64KiB.
->> (It's worth mentioning that the 64KiB limit is also unnecessarily strict,
->> but that's not addressed here for simplicity. The ELF manpage says that
->> the program header size is supposed to have at most 64 thousand entries,
->> not less than 64 thousand bytes.)
->>
->> Fixes: 6a8d38945cf4 ("binfmt_elf: Hoist ELF program header loading to 
->> a function")
->> Signed-off-by: Joshua Bakita <jbakita@cs.unc.edu>
->> ---
->>   fs/binfmt_elf.c | 4 ----
->>   1 file changed, 4 deletions(-)
->>
->> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
->> index 2472af2798c7..55162056590f 100644
->> --- a/fs/binfmt_elf.c
->> +++ b/fs/binfmt_elf.c
->> @@ -412,15 +412,11 @@ static struct elf_phdr *load_elf_phdrs(struct 
->> elfhdr *elf_ex,
->>       /* Sanity check the number of program headers... */
->>       if (elf_ex->e_phnum < 1 ||
->>           elf_ex->e_phnum > 65536U / sizeof(struct elf_phdr))
->>           goto out;
->> -    /* ...and their total size. */
->>       size = sizeof(struct elf_phdr) * elf_ex->e_phnum;
->> -    if (size > ELF_MIN_ALIGN)
->> -        goto out;
->> -
->>       elf_phdata = kmalloc(size, GFP_KERNEL);
->>       if (!elf_phdata)
->>           goto out;
->>       /* Read in the program headers */
->>
+Trying.   We're still awaiting a tested fix for
+https://lkml.kernel.org/r/CA+fCnZf1ABrQg0dsxtoZa9zM1BSbLYq_Xbu+xi9cv8WAZxdC2g@mail.gmail.com
