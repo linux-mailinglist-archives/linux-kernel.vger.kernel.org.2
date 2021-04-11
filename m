@@ -2,159 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BCC35B494
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D4135B498
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235716AbhDKNKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235659AbhDKNKg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:10:36 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FB6C06138B;
-        Sun, 11 Apr 2021 06:10:20 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id g17so13025257ejp.8;
-        Sun, 11 Apr 2021 06:10:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=dP6M+sgZMuzTEGYj0l4EYUpeVr19klo1MRRCTxVz25w=;
-        b=Rg+cSuaVmSjmTDibRXA8sdjDBMrmUwzphxaFPKrw1KrQju6roHl6S0t7yrl1ggfoim
-         pk9SaOEmOJFDha66VLsFbuSLCehvUNxNnL9K1c5zu58KcNDHwLwpkkm7V2b4MUc0punt
-         ME5rm32kVABTRbJ9wP/07zWYQhbe/G/ctzn+E8ZdDJhXnly5j1dvxgY2aVaAP6ZM2yq7
-         so/h8ZGUhOEPL5Ov8NznDUVaWa7EV7qeR+wYrVPazpvpEBBWEWoCXaZNK84zoJ6QM3Gs
-         GlBwoP5grqECVRTUTygT3Dq3OBIwYBaFDCztrJZocFQNygNDCuQMaRsuDOsZkFA8/zTQ
-         +cbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=dP6M+sgZMuzTEGYj0l4EYUpeVr19klo1MRRCTxVz25w=;
-        b=Ayw00pZZ/5zj+TLZwowJwQxNcX30Aybkl2SHJYfM9vULU37xMBM2lxbv08slYe0X4G
-         Pft7xngTiNYnMgvUZThSYfbow7O0vl1eAvalpyP1Wj9l7nXLdaFCZUPrzUcMzVzbD5nx
-         7YuAk8+BZq+jckMch/16yXfctifJYd4WnIEBjaEHvmJ8qfV5oCOi26kqqVYiIwm6HO/z
-         URgibcqyNjMQxDw8lU8VHVo+yAwjqBts7NQr9905mONIzT+j3jC/145NjdgegcgvQv9+
-         wSXbD3c9rPHq2iHGGZ9ZL91PCyh7cdjeS8EWaidWNDeEyBEOzjqlieqiea9Ddkm+KJjg
-         yddA==
-X-Gm-Message-State: AOAM532wvIU2Yw+tP8SsqhKw0oSlHaukN66bsuqBY0W4OJp18yr4w29V
-        OkerHFWqrGAE99ZX95d7WkI=
-X-Google-Smtp-Source: ABdhPJzMrep/dqtmFqleBVmWlFLT358vORL48eeH9EjXxNOm5BPPYolk9ikhMRMe573T7MhPljHSFw==
-X-Received: by 2002:a17:906:b7ce:: with SMTP id fy14mr4002248ejb.261.1618146618908;
-        Sun, 11 Apr 2021 06:10:18 -0700 (PDT)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id w2sm3983520eju.71.2021.04.11.06.10.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 11 Apr 2021 06:10:18 -0700 (PDT)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     robh+dt@kernel.org, thierry.reding@gmail.com,
-        u.kleine-koenig@pengutronix.de, lee.jones@linaro.org,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/6] arm64: dts: rockchip: remove clock-names from pwm nodes
-Date:   Sun, 11 Apr 2021 15:10:07 +0200
-Message-Id: <20210411131007.21757-6-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210411131007.21757-1-jbx6244@gmail.com>
-References: <20210411131007.21757-1-jbx6244@gmail.com>
+        id S235535AbhDKN2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:28:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229804AbhDKN2v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 09:28:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 668AA61042;
+        Sun, 11 Apr 2021 13:28:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618147715;
+        bh=PG4kqQZC0C6teZuojGxYzzZ517iaE42zQVnfJXJE7Lg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bb1DYdseG6I8texPAGMIOZRMeYi5JPI/p5TyxnzH6W1k6qERJvJ+BvrO59KkyXG4u
+         22yf+oV6a9tlW+qAwz0F+rTK8rtxr9hIEAvG0n74IVQYruThNYh3YtUOK3zF5clbm6
+         bqZ9Jh6YtpagCR/FQBQGgu1C9Om6U/ipafbS9XJ5XjyKFywvc3LgswN8JwnkAC0Owk
+         E9w02PkInBGMsHN8lC5gavEMt2PWpBbIPBApVUWK9jf+aWGgpfcoLRu5iMaMKJbF1W
+         12Kn1TlqYx8Skw6pPfNBwTctgvBMBns9Qe+Vm6OpHUAMuErFGGDxarePbhpvYOs7MU
+         sqSPHDA6/gSCw==
+Date:   Sun, 11 Apr 2021 16:28:31 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 4/7] net: ipa: ipa_stop() does not return an
+ error
+Message-ID: <YHL5fwkYyHvQG2Z4@unreal>
+References: <20210409180722.1176868-1-elder@linaro.org>
+ <20210409180722.1176868-5-elder@linaro.org>
+ <YHKYWCkPl5pucFZo@unreal>
+ <1f5c3d2c-f22a-ef5e-f282-fb2dec4479f3@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1f5c3d2c-f22a-ef5e-f282-fb2dec4479f3@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A test with the command below gives this error:
+On Sun, Apr 11, 2021 at 08:09:55AM -0500, Alex Elder wrote:
+> On 4/11/21 1:34 AM, Leon Romanovsky wrote:
+> > On Fri, Apr 09, 2021 at 01:07:19PM -0500, Alex Elder wrote:
+> >> In ipa_modem_stop(), if the modem netdev pointer is non-null we call
+> >> ipa_stop().  We check for an error and if one is returned we handle
+> >> it.  But ipa_stop() never returns an error, so this extra handling
+> >> is unnecessary.  Simplify the code in ipa_modem_stop() based on the
+> >> knowledge no error handling is needed at this spot.
+> >>
+> >> Signed-off-by: Alex Elder <elder@linaro.org>
+> >> ---
+> >>  drivers/net/ipa/ipa_modem.c | 18 ++++--------------
+> >>  1 file changed, 4 insertions(+), 14 deletions(-)
+> > 
+> > <...>
+> > 
+> >> +	/* Stop the queue and disable the endpoints if it's open */
+> >>  	if (netdev) {
+> >> -		/* Stop the queue and disable the endpoints if it's open */
+> >> -		ret = ipa_stop(netdev);
+> >> -		if (ret)
+> >> -			goto out_set_state;
+> >> -
+> >> +		(void)ipa_stop(netdev);
+> > 
+> > This void casting is not needed here and in more general case sometimes
+> > even be seen as a mistake, for example if the returned attribute declared
+> > as __must_check.
+> 
+> I accept your point but I feel like it's sort of a 50/50 thing.
+> 
+> I think *not* checking an available return value is questionable
+> practice.  I'd really rather have a build option for a
+> "__need_not_check" tag and have "must_check" be the default.
 
-/arch/arm64/boot/dts/rockchip/rk3368-evb-act8846.dt.yaml:
-pwm@ff680030: clock-names: ['pwm'] is too short
+__need_not_check == void ???
 
-Devices with only one pwm clock use it to both
-to derive the functional clock for the device
-and as the bus clock. The driver does not need
-"clock-names" to get a handle, so remove them all.
+> 
+> The void cast here says "I know this returns a result, but I am
+> intentionally not checking it."  If it had been __must_check I
+> would certainly have checked it.  
+> 
+> That being said, I don't really care that much, so I'll plan
+> to post version 2, which will drop this cast (I'll probably
+> add a comment though).
 
-make ARCH=arm64 dtbs_check
-DT_SCHEMA_FILES=Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
+Thanks
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
- arch/arm64/boot/dts/rockchip/rk3368.dtsi | 4 ----
- arch/arm64/boot/dts/rockchip/rk3399.dtsi | 4 ----
- 2 files changed, 8 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3368.dtsi b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-index 61b0a2a90..7832e26a3 100644
---- a/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3368.dtsi
-@@ -561,7 +561,6 @@
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pwm0_pin>;
- 		clocks = <&cru PCLK_PWM1>;
--		clock-names = "pwm";
- 		status = "disabled";
- 	};
- 
-@@ -572,7 +571,6 @@
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pwm1_pin>;
- 		clocks = <&cru PCLK_PWM1>;
--		clock-names = "pwm";
- 		status = "disabled";
- 	};
- 
-@@ -581,7 +579,6 @@
- 		reg = <0x0 0xff680020 0x0 0x10>;
- 		#pwm-cells = <3>;
- 		clocks = <&cru PCLK_PWM1>;
--		clock-names = "pwm";
- 		status = "disabled";
- 	};
- 
-@@ -592,7 +589,6 @@
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pwm3_pin>;
- 		clocks = <&cru PCLK_PWM1>;
--		clock-names = "pwm";
- 		status = "disabled";
- 	};
- 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-index e93a5f320..6221b027e 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
-@@ -1185,7 +1185,6 @@
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pwm0_pin>;
- 		clocks = <&pmucru PCLK_RKPWM_PMU>;
--		clock-names = "pwm";
- 		status = "disabled";
- 	};
- 
-@@ -1196,7 +1195,6 @@
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pwm1_pin>;
- 		clocks = <&pmucru PCLK_RKPWM_PMU>;
--		clock-names = "pwm";
- 		status = "disabled";
- 	};
- 
-@@ -1207,7 +1205,6 @@
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pwm2_pin>;
- 		clocks = <&pmucru PCLK_RKPWM_PMU>;
--		clock-names = "pwm";
- 		status = "disabled";
- 	};
- 
-@@ -1218,7 +1215,6 @@
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pwm3a_pin>;
- 		clocks = <&pmucru PCLK_RKPWM_PMU>;
--		clock-names = "pwm";
- 		status = "disabled";
- 	};
- 
--- 
-2.11.0
-
+> 
+> Thanks.
+> 
+> 					-Alex
+> 
+> > 
+> > Thanks
+> > 
+> 
