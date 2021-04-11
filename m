@@ -2,144 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA7435B593
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 16:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 844A535B597
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 16:10:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235556AbhDKOFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 10:05:35 -0400
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:12603 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235455AbhDKOFd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 10:05:33 -0400
-Date:   Sun, 11 Apr 2021 14:05:07 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1618149915;
-        bh=O557wZuOyutkhxm660QDAP3vInKWKsr1zK3DiKxgzvM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=VU8RmlnGNDL9W4WNoI00O6ldYu/tpBzPi7yZwEAY0rbNi+bb3gyZNdXshS0rk7Ft2
-         rTFAedhg6ZDENScaQJTd9/cv2L0RYrdWVaPZRdbTL5YRbfFSxoawhDI8scpmW/C/Yh
-         ecwpHHAktZd0VltqoGvJLEmT9+a/0PZZFapf/1cc=
-To:     =?utf-8?Q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v4] platform/x86: add Gigabyte WMI temperature driver
-Message-ID: <TbKK4TuRhSBhlwBiK7ukHwt6r_NQeiHDAJc6rMAubISp3_isxu_iNOzcQ8VkJkGGrYQiVmQNwRV1vRUUxUB73Y1ddbXJLbN4qi5K1yKYsiA=@protonmail.com>
-In-Reply-To: <20210410181856.144988-1-linux@weissschuh.net>
-References: <6a096978-67ad-6def-6ed0-9ad38a460e95@redhat.com> <20210410181856.144988-1-linux@weissschuh.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+        id S235709AbhDKOKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 10:10:11 -0400
+Received: from mga02.intel.com ([134.134.136.20]:47659 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235407AbhDKOKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 10:10:10 -0400
+IronPort-SDR: UwakNE6MAzXbKForf4pCxUlpH8zWnzIU9okdHvCCiMf2F/JgUOP90QxxLst/riEtTOG1ozzY4t
+ YPmbeGn9KIvQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="181160627"
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="181160627"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 07:09:52 -0700
+IronPort-SDR: I7zlx+wuWsefyCXsX6iqeqy+4N13YuYt62IZ7TDa11ln4lSYYMbbPv9mWwWBhNDeIMKNE1Kc2Y
+ BdlhdkwqVhDg==
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="423440473"
+Received: from xumingcu-mobl.ccr.corp.intel.com ([10.249.169.220])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 07:09:50 -0700
+Message-ID: <51542423fbea44257e52cf3fdf879a891b53b951.camel@intel.com>
+Subject: Re: [PATCH] tools/power/x86/turbostat: Fix TCC offset bit mask
+From:   Zhang Rui <rui.zhang@intel.com>
+To:     Doug Smythies <dsmythies@telus.net>, Len Brown <lenb@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Date:   Sun, 11 Apr 2021 22:09:47 +0800
+In-Reply-To: <CAAYoRsXX74eDQ_vCdLnyNQhMutwE4TWMZsB7HeW5tu4kxVEFJQ@mail.gmail.com>
+References: <20210116170725.5245-1-dsmythies@telus.net>
+         <CAJvTdKm3h_msmu-NjTPY+09bLqyVL_-GCHnGFdNGdTcSZRP4zQ@mail.gmail.com>
+         <CAAYoRsVYejQRByDz78jbv5cMfd+ctT8N3YxfOBndW8FJiuk9MA@mail.gmail.com>
+         <CAJvTdKkpbFqDRL9BP3Ri0Yeb0VMXv79dr+C=ym2+GWMRZEEYpw@mail.gmail.com>
+         <CAAYoRsXX74eDQ_vCdLnyNQhMutwE4TWMZsB7HeW5tu4kxVEFJQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Sat, 2021-03-13 at 07:16 -0800, Doug Smythies wrote:
+> On Fri, Mar 12, 2021 at 2:16 PM Len Brown <lenb@kernel.org> wrote:
+> > 
+> > Doug,
+> > The offset works for control.
+> > 
+> > However, it is erroneous to use it for reporting of the actual
+> > temperature, like I did in turbostat.
+> 
+> Agreed.
+> I have been running with a correction for that for a while,
+> and as discussed on Rui's thread.
+> But this bit mask correction patch is still needed isn't it?
+> for this:
+> cpu4: MSR_IA32_TEMPERATURE_TARGET: 0x1a64100d (90 C) (100 default -
+> 10 offset)
+> which should be this:
+> cpu4: MSR_IA32_TEMPERATURE_TARGET: 0x1a64100d (74 C) (100 default -
+> 26 offset)
+> 
+> But yes, I do now see the field size is only 4 bits for some parts.
+
+As this is CPU specific, and we don't know which is which for all the
+CPUs, so it seems that we can have a white list for the ones that we
+care and have been verified.
+
+For the others, by default, we only show the raw value and default TCC
+activation temperature, like
+
+cpu4: MSR_IA32_TEMPERATURE_TARGET: 0x1a64100d (100 default )
+
+And this white list can be updated together with the one in the kernel
+tcc_offset_cooling driver.
+
+what do you think?
+
+thanks,
+rui
 
 
-2021. =C3=A1prilis 10., szombat 20:18 keltez=C3=A9ssel, Thomas Wei=C3=9Fsch=
-uh =C3=ADrta:
 
-> [...]
-> diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/g=
-igabyte-wmi.c
-> new file mode 100644
-> index 000000000000..c17e51fcf000
-> --- /dev/null
-> +++ b/drivers/platform/x86/gigabyte-wmi.c
-> @@ -0,0 +1,195 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + *  Copyright (C) 2021 Thomas Wei=C3=9Fschuh <thomas@weissschuh.net>
-> + */
-> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> +
-> +#include <linux/acpi.h>
-> +#include <linux/dmi.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/module.h>
-> +#include <linux/wmi.h>
-> +
-> +#define GIGABYTE_WMI_GUID=09"DEADBEEF-2001-0000-00A0-C90629100000"
-> +#define NUM_TEMPERATURE_SENSORS=096
-> +
-> +static bool force_load;
-> +module_param(force_load, bool, 0444);
-> +MODULE_PARM_DESC(force_load, "Force loading on unknown platform");
-> +
-> +static u8 usable_sensors_mask;
-> +
-> +enum gigabyte_wmi_commandtype {
-> +=09GIGABYTE_WMI_BUILD_DATE_QUERY       =3D   0x1,
-> +=09GIGABYTE_WMI_MAINBOARD_TYPE_QUERY   =3D   0x2,
-> +=09GIGABYTE_WMI_FIRMWARE_VERSION_QUERY =3D   0x4,
-> +=09GIGABYTE_WMI_MAINBOARD_NAME_QUERY   =3D   0x5,
-> +=09GIGABYTE_WMI_TEMPERATURE_QUERY      =3D 0x125,
-> +};
-> +
-> +struct gigabyte_wmi_args {
-> +=09u32 arg1;
-> +};
-> +
-> +static int gigabyte_wmi_perform_query(struct wmi_device *wdev,
-> +=09=09=09=09      enum gigabyte_wmi_commandtype command,
-> +=09=09=09=09      struct gigabyte_wmi_args *args, struct acpi_buffer *ou=
-t)
-> +{
-> +=09const struct acpi_buffer in =3D {
-> +=09=09.length =3D sizeof(*args),
-> +=09=09.pointer =3D args,
-> +=09};
-> +
-> +=09acpi_status ret =3D wmidev_evaluate_method(wdev, 0x0, command, &in, o=
-ut);
-> +
-> +=09if ACPI_FAILURE(ret)
+> 
+> ... Doug
+> 
+> > Thus, I'm going to revert the patch that added it's use in
+> > turbostat
+> > for the Temperature column.
+> > 
+> > thanks,
+> > -Len
+> > 
+> > On Fri, Mar 12, 2021 at 1:26 AM Doug Smythies <dsmythies@telus.net>
+> > wrote:
+> > > 
+> > > Hi Len,
+> > > 
+> > > 
+> > > thank you for your reply.
+> > > 
+> > > On Thu, Mar 11, 2021 at 3:19 PM Len Brown <lenb@kernel.org>
+> > > wrote:
+> > > > 
+> > > > Thanks for the close read, Doug.
+> > > > 
+> > > > This field size actually varies from system to system,
+> > > > but the reality is that the offset is never that big, and so
+> > > > the
+> > > > smaller mask is sufficient.
+> > > 
+> > > Disagree.
+> > > 
+> > > I want to use an offset of 26.
+> > > 
+> > > > Finally, this may all be moot, because there is discussion that
+> > > > using
+> > > > the offset this way is simply erroneous.
+> > > 
+> > > Disagree.
+> > > It works great.
+> > > As far as I know/recall I was the only person that responded to
+> > > Rui's thread
+> > > "thermal/intel: introduce tcc cooling driver" [1]
+> > > And, I spent quite a bit of time doing so.
+> > > However, I agree the response seems different between the two
+> > > systems
+> > > under test, Rui's and mine.
+> > > 
+> > > [1] https://marc.info/?l=linux-pm&m=161070345329806&w=2
+> > > 
+> > > >  stay tuned.
+> > > 
+> > > O.K.
+> > > 
+> > > ... Doug
+> > > > 
+> > > > -Len
+> > > > 
+> > > > 
+> > > > On Sat, Jan 16, 2021 at 12:07 PM Doug Smythies <
+> > > > doug.smythies@gmail.com> wrote:
+> > > > > 
+> > > > > The TCC offset mask is incorrect, resulting in
+> > > > > incorrect target temperature calculations, if
+> > > > > the offset is big enough to exceed the mask size.
+> > > > > 
+> > > > > Signed-off-by: Doug Smythies <dsmythies@telus.net>
+> > > > > ---
+> > > > >  tools/power/x86/turbostat/turbostat.c | 2 +-
+> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > 
+> > > > > diff --git a/tools/power/x86/turbostat/turbostat.c
+> > > > > b/tools/power/x86/turbostat/turbostat.c
+> > > > > index 389ea5209a83..d7acdd4d16c4 100644
+> > > > > --- a/tools/power/x86/turbostat/turbostat.c
+> > > > > +++ b/tools/power/x86/turbostat/turbostat.c
+> > > > > @@ -4823,7 +4823,7 @@ int read_tcc_activation_temp()
+> > > > > 
+> > > > >         target_c = (msr >> 16) & 0xFF;
+> > > > > 
+> > > > > -       offset_c = (msr >> 24) & 0xF;
+> > > > > +       offset_c = (msr >> 24) & 0x3F;
+> > > > > 
+> > > > >         tcc = target_c - offset_c;
+> > > > > 
+> > > > > --
+> > > > > 2.25.1
+> > > > > 
+> > > > 
+> > > > 
+> > > > --
+> > > > Len Brown, Intel Open Source Technology Center
+> > 
+> > 
+> > 
+> > --
+> > Len Brown, Intel Open Source Technology Center
 
-Please use `if (...)`.
-
-
-> +=09=09return -EIO;
-> +
-> +=09return 0;
-> +}
-> [...]
-> +static struct wmi_driver gigabyte_wmi_driver =3D {
-> +=09.driver =3D {
-> +=09=09.name =3D "gigabyte-wmi",
-> +=09},
-> +=09.id_table =3D gigabyte_wmi_id_table,
-> +=09.probe =3D gigabyte_wmi_probe,
-> +};
-> +module_wmi_driver(gigabyte_wmi_driver);
-> +
-> +MODULE_DEVICE_TABLE(wmi, gigabyte_wmi_id_table);
-> +MODULE_AUTHOR("Thomas Wei=C3=9Fschuh <thomas@weissschuh.net>");
-> +MODULE_DESCRIPTION("Gigabyte WMI temperature Driver");
-                                                ^
-It's a minor thing, but I think a lowercase 'd' would be better.
-
-
-> +MODULE_LICENSE("GPL");
->
-> base-commit: 144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
-> --
-> 2.31.1
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
