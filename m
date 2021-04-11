@@ -2,47 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2C1B35B55C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2CCE35B559
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:49:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236387AbhDKNsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:48:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33388 "EHLO
+        id S236384AbhDKNsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:48:37 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33034 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235915AbhDKNoY (ORCPT
+        with ESMTP id S235911AbhDKNoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 11 Apr 2021 09:44:24 -0400
 Date:   Sun, 11 Apr 2021 13:43:41 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618148622;
+        s=2020; t=1618148621;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=bWcXHtULmma/Hs3hOl6jyA/3/UrzQJWR8qWj3RECxIw=;
-        b=SJzxMxk7xF6s17dBmjnaMWV9dOsiWiedbS4/2pVmk0LTGPKGX/yUgrNATT9sdP2XtnOTFI
-        olJJ+na4kZJfasyP0x87WpoOYQ8mNd9cHHmhGG6P0a8iy0lQboGU13Qad9iF1lx7LgbJ6Y
-        vTSgyyRMMmQ22B2c00vn9L8ms6GNv/fWoQ4NWIRaKOAWjaakU56pxkA7J2dcwhpM2DE3Mb
-        S2oSfcJefpgN6VqStjrJ3KYeYrx3Pdhp7DXFbsEbuZJNLguTePvWPIQVkf5Hb5FV7c39Ll
-        UXJeUj4nI7vSZ04zREMgMSIokWPGdiCKO6fhBPXeQ5QWxpn2JHk/YQMS5udeyQ==
+        bh=lrRzlnORWci0ZimAhgFyoL5a8nWVcle3jqADVOBMR3Y=;
+        b=rIinKJ6X4bCo06YkJBPltMOXYidpASH7KcAKsVSCe2fTMFFOZIcEL/CWT4SJDgu/YpdwdW
+        xcegM3kJ+YExt4podvGiEe6pYTvSrBTPyw/O8yVveHizEkaUaS4JJ2EJlfcbFVjvV5n4fm
+        m4jXOjqfRtzx79htSPUmbYArzGh2bJdyCoWPJROja4DLjKV8JxAbTGs3ZjWp8GIiE6wwKj
+        R2w9aSJlhIYC259ByMuRFoOZmGYFttcPLPoNGYbIlEuELtlzjI05OWSxMvOU7tZ5diOvFh
+        Koh3M5bH9HYhggoxyeWYKzsh2nPO3ve3m4a9rwI8DHVceW5RkjNicxFN8QYsuA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618148622;
+        s=2020e; t=1618148621;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=bWcXHtULmma/Hs3hOl6jyA/3/UrzQJWR8qWj3RECxIw=;
-        b=oxMX++ouX0LqM1EMIFL6fBbOb13nTDjnJmNM6uo3f5huchBbzOEU8KMjP9d6MOlLEoAD6a
-        PB4YfzkrnYNehIAQ==
-From:   "tip-bot2 for Akira Yokosawa" <tip-bot2@linutronix.de>
+        bh=lrRzlnORWci0ZimAhgFyoL5a8nWVcle3jqADVOBMR3Y=;
+        b=6N0GMAORQZEZfZNGmquuHYXEVo8BDbsPX2bCtl3Mmd5kWqhUfKOHUt9IxCGxey8nsAMJEH
+        PmShmZ+st5vutYAA==
+From:   "tip-bot2 for Uladzislau Rezki (Sony)" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rculist: Replace reference to atomic_ops.rst
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Akira Yokosawa <akiyks@gmail.com>,
+Subject: [tip: core/rcu] kvfree_rcu: Directly allocate page for single-argument case
+Cc:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161814862179.29796.413703618256109229.tip-bot2@tip-bot2>
+Message-ID: <161814862113.29796.15693621303462252752.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -53,37 +52,121 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     5bb1369d4bea078dd1298dfc2c6ce781d9e34dde
-Gitweb:        https://git.kernel.org/tip/5bb1369d4bea078dd1298dfc2c6ce781d9e34dde
-Author:        Akira Yokosawa <akiyks@gmail.com>
-AuthorDate:    Sat, 16 Jan 2021 00:11:45 +09:00
+Commit-ID:     148e3731d124079a036b3acf780f3d35c1b9c0aa
+Gitweb:        https://git.kernel.org/tip/148e3731d124079a036b3acf780f3d35c1b9c0aa
+Author:        Uladzislau Rezki (Sony) <urezki@gmail.com>
+AuthorDate:    Wed, 20 Jan 2021 17:21:46 +01:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 08 Mar 2021 14:17:35 -08:00
+CommitterDate: Mon, 08 Mar 2021 14:18:07 -08:00
 
-rculist: Replace reference to atomic_ops.rst
+kvfree_rcu: Directly allocate page for single-argument case
 
-The hlist_nulls_for_each_entry_rcu() docbook header references the
-atomic_ops.rst file, which was removed in commit f0400a77ebdc ("atomic:
-Delete obsolete documentation").  This commit therefore substitutes a
-section in memory-barriers.txt discussing the use of barrier() in loops.
+Single-argument kvfree_rcu() must be invoked from sleepable contexts,
+so we can directly allocate pages.  Furthermmore, the fallback in case
+of page-allocation failure is the high-latency synchronize_rcu(), so it
+makes sense to do these page allocations from the fastpath, and even to
+permit limited sleeping within the allocator.
 
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+This commit therefore allocates if needed on the fastpath using
+GFP_KERNEL|__GFP_RETRY_MAYFAIL.  This also has the beneficial effect
+of leaving kvfree_rcu()'s per-CPU caches to the double-argument variant
+of kvfree_rcu(), given that the double-argument variant cannot directly
+invoke the allocator.
+
+[ paulmck: Add add_ptr_to_bulk_krc_lock header comment per Michal Hocko. ]
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rculist_nulls.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/tree.c | 42 ++++++++++++++++++++++++++----------------
+ 1 file changed, 26 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/rculist_nulls.h b/include/linux/rculist_nulls.h
-index ff3e947..d8afdb8 100644
---- a/include/linux/rculist_nulls.h
-+++ b/include/linux/rculist_nulls.h
-@@ -161,7 +161,7 @@ static inline void hlist_nulls_add_fake(struct hlist_nulls_node *n)
-  *
-  * The barrier() is needed to make sure compiler doesn't cache first element [1],
-  * as this loop can be restarted [2]
-- * [1] Documentation/core-api/atomic_ops.rst around line 114
-+ * [1] Documentation/memory-barriers.txt around line 1533
-  * [2] Documentation/RCU/rculist_nulls.rst around line 146
-  */
- #define hlist_nulls_for_each_entry_rcu(tpos, pos, head, member)			\
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index da6f521..1f8c980 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3493,37 +3493,50 @@ run_page_cache_worker(struct kfree_rcu_cpu *krcp)
+ 	}
+ }
+ 
++// Record ptr in a page managed by krcp, with the pre-krc_this_cpu_lock()
++// state specified by flags.  If can_alloc is true, the caller must
++// be schedulable and not be holding any locks or mutexes that might be
++// acquired by the memory allocator or anything that it might invoke.
++// Returns true if ptr was successfully recorded, else the caller must
++// use a fallback.
+ static inline bool
+-kvfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp, void *ptr)
++add_ptr_to_bulk_krc_lock(struct kfree_rcu_cpu **krcp,
++	unsigned long *flags, void *ptr, bool can_alloc)
+ {
+ 	struct kvfree_rcu_bulk_data *bnode;
+ 	int idx;
+ 
+-	if (unlikely(!krcp->initialized))
++	*krcp = krc_this_cpu_lock(flags);
++	if (unlikely(!(*krcp)->initialized))
+ 		return false;
+ 
+-	lockdep_assert_held(&krcp->lock);
+ 	idx = !!is_vmalloc_addr(ptr);
+ 
+ 	/* Check if a new block is required. */
+-	if (!krcp->bkvhead[idx] ||
+-			krcp->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
+-		bnode = get_cached_bnode(krcp);
+-		/* Switch to emergency path. */
++	if (!(*krcp)->bkvhead[idx] ||
++			(*krcp)->bkvhead[idx]->nr_records == KVFREE_BULK_MAX_ENTR) {
++		bnode = get_cached_bnode(*krcp);
++		if (!bnode && can_alloc) {
++			krc_this_cpu_unlock(*krcp, *flags);
++			bnode = (struct kvfree_rcu_bulk_data *)
++				__get_free_page(GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN);
++			*krcp = krc_this_cpu_lock(flags);
++		}
++
+ 		if (!bnode)
+ 			return false;
+ 
+ 		/* Initialize the new block. */
+ 		bnode->nr_records = 0;
+-		bnode->next = krcp->bkvhead[idx];
++		bnode->next = (*krcp)->bkvhead[idx];
+ 
+ 		/* Attach it to the head. */
+-		krcp->bkvhead[idx] = bnode;
++		(*krcp)->bkvhead[idx] = bnode;
+ 	}
+ 
+ 	/* Finally insert. */
+-	krcp->bkvhead[idx]->records
+-		[krcp->bkvhead[idx]->nr_records++] = ptr;
++	(*krcp)->bkvhead[idx]->records
++		[(*krcp)->bkvhead[idx]->nr_records++] = ptr;
+ 
+ 	return true;
+ }
+@@ -3561,8 +3574,6 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 		ptr = (unsigned long *) func;
+ 	}
+ 
+-	krcp = krc_this_cpu_lock(&flags);
+-
+ 	// Queue the object but don't yet schedule the batch.
+ 	if (debug_rcu_head_queue(ptr)) {
+ 		// Probable double kfree_rcu(), just leak.
+@@ -3570,12 +3581,11 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 			  __func__, head);
+ 
+ 		// Mark as success and leave.
+-		success = true;
+-		goto unlock_return;
++		return;
+ 	}
+ 
+ 	kasan_record_aux_stack(ptr);
+-	success = kvfree_call_rcu_add_ptr_to_bulk(krcp, ptr);
++	success = add_ptr_to_bulk_krc_lock(&krcp, &flags, ptr, !head);
+ 	if (!success) {
+ 		run_page_cache_worker(krcp);
+ 
