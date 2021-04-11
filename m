@@ -2,81 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F9135B2F1
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F109F35B2F5
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:06:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235379AbhDKKGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 06:06:00 -0400
-Received: from mr85p00im-ztdg06021801.me.com ([17.58.23.195]:57618 "EHLO
-        mr85p00im-ztdg06021801.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229804AbhDKKFk (ORCPT
+        id S235402AbhDKKGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 06:06:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43674 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235366AbhDKKGH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 06:05:40 -0400
-X-Greylist: delayed 459 seconds by postgrey-1.27 at vger.kernel.org; Sun, 11 Apr 2021 06:05:40 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com;
-        s=1a1hai; t=1618135065;
-        bh=QCAbgHJkS5myJMVGdfFVCZVIpCQ5c7NW+FDT6hRH450=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=QEoaVlG7D+mMLUiYKobdK4KhgwA2ci07SJ4Mz5M00wnHEc2L3HMfFuWB0NBECNCDs
-         9uzY62EeHlUmYF7OWxoRXVPwe9lCaz/Nsql9g0VzOKZvBR43rqt1Jwz7WBodY8L+Xn
-         YJlQV1mEZE1NO4IU9b4s3qpNzML+so2zhp6lrDlMvgvvkl5PvkavhdvoHgskpor8W2
-         vhwI9d+659e+mHVyHvkibrsuq2R+caV9x6yHUi5huYaKaeCYWzRGRzzF38YkqEhfX6
-         LrWwLH+4Erkg9OG3x+uACvNpFN4ANjoj5MyHwCnDjAR6UXI5fMZaxoyxQArVFaX5SY
-         rX27epDov68lw==
-Received: from icloud.com (dslb-090-186-183-050.090.186.pools.vodafone-ip.de [90.186.183.50])
-        by mr85p00im-ztdg06021801.me.com (Postfix) with ESMTPSA id 4D0091802FF;
-        Sun, 11 Apr 2021 09:57:44 +0000 (UTC)
-Date:   Sun, 11 Apr 2021 11:57:41 +0200
-From:   Sebastian Oechsle <setboolean@icloud.com>
-To:     pali@kernel.org
-Cc:     jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] hwmon: (dell-smm) Add Dell Latitude E7440 to fan control
- whitelist
-Message-ID: <20210411095741.zmllsuc7pevdipvy@icloud.com>
+        Sun, 11 Apr 2021 06:06:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618135551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MhHr3Cd5ZDKM5bg6lUgtgpxP7s+VM/Oo10g+H6b6Os0=;
+        b=a+3sPGmtIOxLyeOPh9KSnp53+MynC9DSKW8Ri/0ZDifr5XfR3lLeN5mzXTBJOFKZ8ywQeu
+        qtbApmq4+z+phofJrIRoQYDDoHnTMj2AUHpIRkpnacEg8E2YxAP+8TojFPcIHl3JOyACa6
+        WrcVb0tDl0jKOmQT8uPTLfvM+Iwyyhc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-6klkBEv5OCOBZMidoXHS7A-1; Sun, 11 Apr 2021 06:05:48 -0400
+X-MC-Unique: 6klkBEv5OCOBZMidoXHS7A-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 415DD10053EC;
+        Sun, 11 Apr 2021 10:05:41 +0000 (UTC)
+Received: from carbon (unknown [10.36.110.19])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 957FD14106;
+        Sun, 11 Apr 2021 10:05:18 +0000 (UTC)
+Date:   Sun, 11 Apr 2021 12:05:17 +0200
+From:   Jesper Dangaard Brouer <brouer@redhat.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
+        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
+Message-ID: <20210411120500.73c1cadb@carbon>
+In-Reply-To: <20210410193955.GA2531743@casper.infradead.org>
+References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
+        <20210409223801.104657-3-mcroce@linux.microsoft.com>
+        <20210410154824.GZ2531743@casper.infradead.org>
+        <YHHPbQm2pn2ysth0@enceladus>
+        <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
+        <YHHuE7g73mZNrMV4@enceladus>
+        <20210410193955.GA2531743@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-11_04:2021-04-09,2021-04-11 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2104110077
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow manual PWM control on Dell Latitude E7440.
+On Sat, 10 Apr 2021 20:39:55 +0100
+Matthew Wilcox <willy@infradead.org> wrote:
 
-Signed-off-by: Sebastian Oechsle <setboolean@icloud.com>
+> On Sat, Apr 10, 2021 at 09:27:31PM +0300, Ilias Apalodimas wrote:
+> > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
+> > > can not be used.  
+> > 
+> > Yes it can, since it's going to be used as your default allocator for
+> > payloads, which might end up on an SKB.
+> > So we have to keep the extra added field on struct page for our mark.
+> > Matthew had an intersting idea.  He suggested keeping it, but changing the 
+> > magic number, so it can't be a kernel address, but I'll let him follow 
+> > up on the details.  
+> 
+> Sure!  So, given the misalignment problem I discovered yesterday [1],
+> we probably want a page_pool page to look like:
+> 
+> unsigned long	flags;
+> unsigned long	pp_magic;
+> unsigned long	xmi;
+> unsigned long	_pp_mapping_pad;
+> dma_addr_t	dma_addr;	/* might be one or two words */
+> 
+> The only real restriction here is that pp_magic should not be a valid
+> pointer, and it must have the bottom bit clear.  I'd recommend something
+> like:
+> 
+> #define PP_MAGIC	(0x20 + POISON_POINTER_DELTA)
+> 
+> This leaves page->mapping as NULL, so you don't have to worry about
+> clearing it before free.
+>
+> [1] https://lore.kernel.org/linux-mm/20210410024313.GX2531743@casper.infradead.org/
 
-Changes in v2:
-- Fix spelling
-- Fix format
----
- drivers/hwmon/dell-smm-hwmon.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+I didn't see this, before asking[2] for explaining your intent.
+I still worry about page->index, see [2].
 
-diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-index 73b9db9e3aab..2970892bed82 100644
---- a/drivers/hwmon/dell-smm-hwmon.c
-+++ b/drivers/hwmon/dell-smm-hwmon.c
-@@ -1210,6 +1210,14 @@ static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
- 		},
- 		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
- 	},
-+	{
-+		.ident = "Dell Latitude E7440",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Latitude E7440"),
-+		},
-+		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
-+	},
- 	{ }
- };
- 
+[2] https://lore.kernel.org/netdev/20210411114307.5087f958@carbon/
+
 -- 
-2.31.1
+Best regards,
+  Jesper Dangaard Brouer
+  MSc.CS, Principal Kernel Engineer at Red Hat
+  LinkedIn: http://www.linkedin.com/in/brouer
 
