@@ -2,95 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B9935B2C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AC135B2CD
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235350AbhDKJck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 05:32:40 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:57283 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235005AbhDKJcj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 05:32:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618133543; h=Date: Message-Id: Cc: To: References:
- In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
- Content-Type: Sender; bh=ORlIUfijIrnSlUyjuvajmJtLvP0WXW8LZmX4NEH0q/4=;
- b=ItHAQQb4mAhuk3ySQ9pOgPGtMRom043UFBXRjSrCJNyGIMHaGTyUi1NbREk/WEuX9y2vGmcj
- qQsm1VWCcknLIVsuiGO9jHnUoc3sFV95v/MagqBCm3cFSb5Z0nNlWCwPAccob8S7RWhIdnJ7
- VrJ9R+m2Sfu86p9cLt9FPznPuCo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6072c21be0e9c9a6b6fcf1fe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 11 Apr 2021 09:32:11
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D8F1FC433C6; Sun, 11 Apr 2021 09:32:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DAE4EC433ED;
-        Sun, 11 Apr 2021 09:32:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DAE4EC433ED
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH net-next 3/5] iwlegacy: avoid -Wempty-body warning
-From:   Kalle Valo <kvalo@codeaurora.org>
-In-Reply-To: <20210322104343.948660-3-arnd@kernel.org>
-References: <20210322104343.948660-3-arnd@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     netdev@vger.kernel.org, Stanislaw Gruszka <stf_xl@wp.pl>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
-Message-Id: <20210411093211.D8F1FC433C6@smtp.codeaurora.org>
-Date:   Sun, 11 Apr 2021 09:32:11 +0000 (UTC)
+        id S235322AbhDKJjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 05:39:19 -0400
+Received: from smtp-17.italiaonline.it ([213.209.10.17]:44620 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229804AbhDKJjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 05:39:18 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([87.20.116.197])
+        by smtp-17.iol.local with ESMTPA
+        id VWYTl8bZQtpGHVWYXlq27L; Sun, 11 Apr 2021 11:39:01 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1618133941; bh=ID7z0ghRJGcMLBNI8gWtXJSotHesf24UhofLjYl2wx8=;
+        h=From;
+        b=UZ+wvpPuWwpZkSC0JUFedTWSOtYFoYVsablxjA2A+YzuTSr4cqGY+TYVhPlR1cykm
+         8/79L4VjHtIZDS/BFNSngOHEJPRM5rt6pXaAV1Qs2wHjrNCfj7BdqoKIGwKGX9KQ1Q
+         xZE7Yw4lWjicUaV6WSCr5axEy5PTbWfbBGUyodcGXvzbMcqSe2j0A+riAWUHwLdQWv
+         yOO3PzI5cWp0N+M4bXxS+Anm0/M+WWCeYKcyDIfJsY6nZI8bmKZnkEducW5lgGnCLd
+         4fj2hkklBAW4Tzcj9A5rkShoK8SMoHD0XfYTYggmPUz6em8ci7evylavEkelJH+tiU
+         2zw2ZM4XpCsWA==
+X-CNFS-Analysis: v=2.4 cv=Q7IXX66a c=1 sm=1 tr=0 ts=6072c3b5 cx=a_exe
+ a=AVqmXbCQpuNSdJmApS5GbQ==:117 a=AVqmXbCQpuNSdJmApS5GbQ==:17
+ a=RNOFN41U3FZ75c9ZyJUA:9
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org
+Subject: [PATCH v2] serial: omap: fix rs485 half-duplex filtering
+Date:   Sun, 11 Apr 2021 11:38:55 +0200
+Message-Id: <20210411093855.1053-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfK6aa9mZXnTp+boQAxFGXkxCvo5YQNqWCJGZ2IZNt4ryu072ADMDFiHmz2oxlejkrAvBwiRn7gydEVSJPYP7cWp8Yf3mcBTeARGwI7N2TiK+zgGjO2Km
+ xgNJOWZX2LrjWEpFcrDcNC36yiFghFkoLyxtimOtunNunBcjmcFyqEyqrlY+vZgA8BVoqMw617leFNh2Mh/Rg7mpLD9v7KqT9w5Z7/TpTO8Ojh+XF0hHboLV
+ tt4RVWyi/A9abZnjXiVEzTHTUtyd36B5lyssSOKC3qpm5XqilrMEN+5CTun+YOR0n4XliTpDa1tGf1ggIZqj/mLMJdQRMp/IlWwCaoKNrtTyFT2Ikhhq72AD
+ ia2LyvfxbLB55GR7k8+eZq2nS9tm9athriHA/k57ulVR9d/rpXU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arnd Bergmann <arnd@kernel.org> wrote:
+Data received during half-duplex transmission must be filtered.
+If the target device responds quickly, emptying the FIFO at the end of
+the transmission can erase not only the echo characters but also part of
+the response message.
+By keeping the receive interrupt enabled even during transmission, it
+allows you to filter each echo character and only in a number equal to
+those transmitted.
+The issue was generated by a target device that started responding
+240us later having received a request in communication at 115200bps.
+Sometimes, some messages received by the target were missing some of the
+first bytes.
 
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> There are a couple of warnings in this driver when building with W=1:
-> 
-> drivers/net/wireless/intel/iwlegacy/common.c: In function 'il_power_set_mode':
-> drivers/net/wireless/intel/iwlegacy/common.c:1195:60: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
->  1195 |                                 il->chain_noise_data.state);
->       |                                                            ^
-> drivers/net/wireless/intel/iwlegacy/common.c: In function 'il_do_scan_abort':
-> drivers/net/wireless/intel/iwlegacy/common.c:1343:57: error: suggest braces around empty body in an 'else' statement [-Werror=empty-body]
-> 
-> Change the empty debug macros to no_printk(), which avoids the
-> warnings and adds useful format string checks.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Acked-by: Stanislaw Gruszka <stf_xl@wp.pl>
+Signed-off-by: Dario Binacchi <dariobin@libero.it>
 
-Patch applied to wireless-drivers-next.git, thanks.
 
-fa9f5d0e0b45 iwlegacy: avoid -Wempty-body warning
+---
 
+Changes in v2:
+- Fix compiling error
+
+ drivers/tty/serial/omap-serial.c | 39 ++++++++++++++++++++------------
+ 1 file changed, 24 insertions(+), 15 deletions(-)
+
+diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
+index 76b94d0ff586..c0df22b7ea5e 100644
+--- a/drivers/tty/serial/omap-serial.c
++++ b/drivers/tty/serial/omap-serial.c
+@@ -159,6 +159,8 @@ struct uart_omap_port {
+ 	u32			calc_latency;
+ 	struct work_struct	qos_work;
+ 	bool			is_suspending;
++
++	atomic_t		rs485_tx_filter_count;
+ };
+ 
+ #define to_uart_omap_port(p) ((container_of((p), struct uart_omap_port, port)))
+@@ -328,19 +330,6 @@ static void serial_omap_stop_tx(struct uart_port *port)
+ 		serial_out(up, UART_IER, up->ier);
+ 	}
+ 
+-	if ((port->rs485.flags & SER_RS485_ENABLED) &&
+-	    !(port->rs485.flags & SER_RS485_RX_DURING_TX)) {
+-		/*
+-		 * Empty the RX FIFO, we are not interested in anything
+-		 * received during the half-duplex transmission.
+-		 */
+-		serial_out(up, UART_FCR, up->fcr | UART_FCR_CLEAR_RCVR);
+-		/* Re-enable RX interrupts */
+-		up->ier |= UART_IER_RLSI | UART_IER_RDI;
+-		up->port.read_status_mask |= UART_LSR_DR;
+-		serial_out(up, UART_IER, up->ier);
+-	}
+-
+ 	pm_runtime_mark_last_busy(up->dev);
+ 	pm_runtime_put_autosuspend(up->dev);
+ }
+@@ -366,6 +355,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
+ 		serial_out(up, UART_TX, up->port.x_char);
+ 		up->port.icount.tx++;
+ 		up->port.x_char = 0;
++		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
++		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
++			atomic_inc(&up->rs485_tx_filter_count);
++
+ 		return;
+ 	}
+ 	if (uart_circ_empty(xmit) || uart_tx_stopped(&up->port)) {
+@@ -377,6 +370,10 @@ static void transmit_chars(struct uart_omap_port *up, unsigned int lsr)
+ 		serial_out(up, UART_TX, xmit->buf[xmit->tail]);
+ 		xmit->tail = (xmit->tail + 1) & (UART_XMIT_SIZE - 1);
+ 		up->port.icount.tx++;
++		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
++		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX))
++			atomic_inc(&up->rs485_tx_filter_count);
++
+ 		if (uart_circ_empty(xmit))
+ 			break;
+ 	} while (--count > 0);
+@@ -420,7 +417,7 @@ static void serial_omap_start_tx(struct uart_port *port)
+ 
+ 	if ((port->rs485.flags & SER_RS485_ENABLED) &&
+ 	    !(port->rs485.flags & SER_RS485_RX_DURING_TX))
+-		serial_omap_stop_rx(port);
++		atomic_set(&up->rs485_tx_filter_count, 0);
+ 
+ 	serial_omap_enable_ier_thri(up);
+ 	pm_runtime_mark_last_busy(up->dev);
+@@ -491,8 +488,13 @@ static void serial_omap_rlsi(struct uart_omap_port *up, unsigned int lsr)
+ 	 * Read one data character out to avoid stalling the receiver according
+ 	 * to the table 23-246 of the omap4 TRM.
+ 	 */
+-	if (likely(lsr & UART_LSR_DR))
++	if (likely(lsr & UART_LSR_DR)) {
+ 		serial_in(up, UART_RX);
++		if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
++		    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
++		    atomic_read(&up->rs485_tx_filter_count))
++			atomic_dec(&up->rs485_tx_filter_count);
++	}
+ 
+ 	up->port.icount.rx++;
+ 	flag = TTY_NORMAL;
+@@ -543,6 +545,13 @@ static void serial_omap_rdi(struct uart_omap_port *up, unsigned int lsr)
+ 		return;
+ 
+ 	ch = serial_in(up, UART_RX);
++	if ((up->port.rs485.flags & SER_RS485_ENABLED) &&
++	    !(up->port.rs485.flags & SER_RS485_RX_DURING_TX) &&
++	    atomic_read(&up->rs485_tx_filter_count)) {
++		atomic_dec(&up->rs485_tx_filter_count);
++		return;
++	}
++
+ 	flag = TTY_NORMAL;
+ 	up->port.icount.rx++;
+ 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/patch/20210322104343.948660-3-arnd@kernel.org/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+2.17.1
 
