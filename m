@@ -2,90 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0CE35B386
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544E935B389
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235329AbhDKLWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 07:22:33 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:41428 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233696AbhDKLWc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 07:22:32 -0400
-Received: from monopod.intra.ispras.ru (unknown [10.10.3.121])
-        by mail.ispras.ru (Postfix) with ESMTPS id 2C31940D3BFF;
-        Sun, 11 Apr 2021 11:22:14 +0000 (UTC)
-Date:   Sun, 11 Apr 2021 14:22:14 +0300 (MSK)
-From:   Alexander Monakov <amonakov@ispras.ru>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-cc:     Joerg Roedel <jroedel@suse.de>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] iommu/amd: Fix extended features logging
-In-Reply-To: <e884200f-55a4-59b5-4311-964e6ddc94d1@molgen.mpg.de>
-Message-ID: <alpine.LNX.2.20.13.2104111410340.11104@monopod.intra.ispras.ru>
-References: <20210410211152.1938-1-amonakov@ispras.ru> <e884200f-55a4-59b5-4311-964e6ddc94d1@molgen.mpg.de>
-User-Agent: Alpine 2.20.13 (LNX 116 2015-12-14)
+        id S235422AbhDKL2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 07:28:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233696AbhDKL2q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 07:28:46 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37D7C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 04:28:28 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id s7so9872450wru.6
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 04:28:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J9dAOL1/x9OGCX8jNZyofTJTCoeUqrYdNX5IfEdOr5Y=;
+        b=CQ4aIESEHZLbrgLq3W2zlZMjm8FtTnlX1/lQxNBN2ovPDduyLwufYGK4tfR/U7Pb1R
+         GfR7p549duUStI4y5oqwDm51z1EFa3Jfi+EGKfRtVSWxKSXssjyLU+QwfbdslT7PttC9
+         wZ0NoN8Pd5NDfvQdVTZ/msGzep/A5SMx3JwMkB2g5Tmnbnb63OzYOZghILRA0TiXz9bm
+         C8X0oh5sGP4KG+RN0GfzwqXrlbmhCEeh3rHLQ4vRY/dd8Jkpf9t3tagYF2Hioeu2/vjj
+         VEZn7h63jGbw/7wElwSvxJu3SEg3MG57GKF5O2EcO5sf0izDe/Chl1daatWfjsT67Aod
+         v+ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J9dAOL1/x9OGCX8jNZyofTJTCoeUqrYdNX5IfEdOr5Y=;
+        b=BkawEY0KoGKEYStWLzy2VM1F3O83KUdBkXI+hPjs7BcPNNBTU07w/zWHHTDL1ayTw0
+         BbD9blhIx5vxAcQXDRN8/vrK9ZfmXFSBtv2gcXFpsKYwAzbqpcQs+sfinzuSc7gMwFdz
+         CvgaAuelr+L71dUq27gpt8t+tbEoitfFppsVTsm+Vy6GA88nrZVJhSHaDxPuKkimjOLP
+         A/zSOkOmy3USSIik3CS7RvLyVf4BCWyAEltLYV/pCJTPHXcOHUAKCQNuYrOJqo6fAXmK
+         wwnCcfNdICNxqyycPtrU9AoJYUMvsg3Ya9xYckpNOpjrURGe/1AvhNqrX7PpDqtzklEh
+         ie4Q==
+X-Gm-Message-State: AOAM531Ews/n0dsSHEfv1vHJgtkYNQ6kvCJeWKbeuYSJUJkX5SeReJQd
+        Cm4LMRr5yE8koe9aiBozBDCoCs/4u8pyTQus
+X-Google-Smtp-Source: ABdhPJyijjrOlqRPTN5U9E2fOoqETSfRD6bEhlO7HreNF0LJ0tac6hFn4glfny66/s1Eg1hJALpjMg==
+X-Received: by 2002:a5d:4802:: with SMTP id l2mr26241365wrq.418.1618140507363;
+        Sun, 11 Apr 2021 04:28:27 -0700 (PDT)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id c12sm13209097wro.6.2021.04.11.04.28.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Apr 2021 04:28:26 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     davem@davemloft.net
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, edumazet@google.com
+Subject: [PATCH] net: geneve: check skb is large enough for IPv4/IPv6 header
+Date:   Sun, 11 Apr 2021 12:28:24 +0100
+Message-Id: <20210411112824.1149-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Apr 2021, Paul Menzel wrote:
+Check within geneve_xmit_skb/geneve6_xmit_skb that sk_buff structure
+is large enough to include IPv4 or IPv6 header, and reject if not. The
+geneve_xmit_skb portion and overall idea was contributed by Eric Dumazet.
+Fixes a KMSAN-found uninit-value bug reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=abe95dc3e3e9667fc23b8d81f29ecad95c6f106f
 
-> > The second line is emitted via 'pr_cont', which causes it to have a
-> > different ('warn') loglevel compared to the previous line ('info').
-> > 
-> > Commit 9a295ff0ffc9 attempted to rectify this by removing the newline
-> > from the pci_info format string, but this doesn't work, as pci_info
-> > calls implicitly append a newline anyway.
-> 
-> Hmm, did I really screw that up during my testing? I am sorry about that.
-> 
-> I tried to wrap my head around, where the newline is implicitly appended, and
-> only found the definitions below.
-> 
->     include/linux/pci.h:#define pci_info(pdev, fmt, arg...)
-> dev_info(&(pdev)->dev, fmt, ##arg)
-> 
->     include/linux/dev_printk.h:#define dev_info(dev, fmt, ...)
-> \
->     include/linux/dev_printk.h:     _dev_info(dev, dev_fmt(fmt),
-> ##__VA_ARGS__)
-> 
->     include/linux/dev_printk.h:__printf(2, 3) __cold
->     include/linux/dev_printk.h:void _dev_info(const struct device *dev, const
-> char *fmt, ...);
-> 
->     include/linux/compiler_attributes.h:#define __printf(a, b)
-> __attribute__((__format__(printf, a, b)))
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot+2e406a9ac75bb71d4b7a@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ drivers/net/geneve.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Yeah, it's not obvious: it happens in kernel/printk/printk.c:vprintk_store
-where it does
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index 5523f069b9a5..adfceb60f7f8 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -891,6 +891,9 @@ static int geneve_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+ 	__be16 sport;
+ 	int err;
+ 
++	if (!pskb_network_may_pull(skb, sizeof(struct iphdr)))
++		return -EINVAL;
++
+ 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
+ 	rt = geneve_get_v4_rt(skb, dev, gs4, &fl4, info,
+ 			      geneve->cfg.info.key.tp_dst, sport);
+@@ -977,6 +980,9 @@ static int geneve6_xmit_skb(struct sk_buff *skb, struct net_device *dev,
+ 	__be16 sport;
+ 	int err;
+ 
++	if (!pskb_network_may_pull(skb, sizeof(struct ipv6hdr)))
++		return -EINVAL;
++
+ 	sport = udp_flow_src_port(geneve->net, skb, 1, USHRT_MAX, true);
+ 	dst = geneve_get_v6_dst(skb, dev, gs6, &fl6, info,
+ 				geneve->cfg.info.key.tp_dst, sport);
+-- 
+2.30.2
 
-	if (dev_info)
-		lflags |= LOG_NEWLINE;
-
-It doesn't seem to be documented; I think it prevents using pr_cont with
-"rich" printk facilities that go via _dev_info.
-
-I suspect it quietly changed in commit c313af145b9bc ("printk() - isolate
-KERN_CONT users from ordinary complete lines").
-
-> In the discussion *smpboot: CPU numbers printed as warning* [1] John wrote:
-> 
-> > It is supported to provide loglevels for CONT messages. The loglevel is
-> > then only used if the append fails:
-> > 
-> >     pr_cont(KERN_INFO "message part");
-> > 
-> > I don't know if we want to go down that path. But it is supported.
-
-Yeah, I saw that, but decided to go with the 'pr_info("")' solution, because
-it is less magic, and already used in two other drivers.
-
-pr_info("") will also prepend 'AMD-Vi:' to the feature list, which is nice.
-
-Best regards,
-Alexander
