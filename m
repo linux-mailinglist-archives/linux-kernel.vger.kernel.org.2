@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0356135B38C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E5235B38E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235434AbhDKLb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 07:31:26 -0400
-Received: from smtprelay0095.hostedemail.com ([216.40.44.95]:34308 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233696AbhDKLbZ (ORCPT
+        id S235449AbhDKLej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 07:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233696AbhDKLei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 07:31:25 -0400
-Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id AC886181D2098;
-        Sun, 11 Apr 2021 11:31:08 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 32507315D79;
-        Sun, 11 Apr 2021 11:31:07 +0000 (UTC)
-Message-ID: <6fbc8d6b885771ad4e69fc6789d07fd2b66f01d5.camel@perches.com>
-Subject: Re: [PATCH] iommu/amd: Fix extended features logging
-From:   Joe Perches <joe@perches.com>
-To:     Alexander Monakov <amonakov@ispras.ru>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Joerg Roedel <jroedel@suse.de>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        iommu@lists.linux-foundation.org
-Date:   Sun, 11 Apr 2021 04:31:06 -0700
-In-Reply-To: <20210410211152.1938-1-amonakov@ispras.ru>
-References: <20210410211152.1938-1-amonakov@ispras.ru>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 11 Apr 2021 07:34:38 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDCF0C061574;
+        Sun, 11 Apr 2021 04:34:21 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id p6so3278706wrn.9;
+        Sun, 11 Apr 2021 04:34:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KxOidUwJFl59zNURg0gtXwYaJwB9tMFuA2e5v9bizjA=;
+        b=qDqiye67OEdqlj9+bp401TeF952h8w4h9UVjd8mFDbQAeiCC800PHk/NDeLtuYXQIi
+         fntNpbqUki/uYFFMlKvFn0Tu13ySpAfxFBECOcb7yqn4KT0U3OOqxmeiHQQANRuqCzpf
+         Q64fTflkMgpK7BXHFtWMQA6b+ig2JzhjR0t5JXSmkmq9LDmQx3P7VfFhXORQdJo3cFT1
+         So1WYtz6wS8Xmyk9SNjClx7BRUMCcuwPG+vzcfYdlP20uRhHHjhvlfOV9MS5FTF8z/1Z
+         1bVvg6kV+EWEnQEdfniMbKyBCW7jgVJp8TZIfMIqfp7KAwRPn5g7M1a/GYdMa0JXA9ax
+         DPrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=KxOidUwJFl59zNURg0gtXwYaJwB9tMFuA2e5v9bizjA=;
+        b=oZJnGPMvCVFQnbYPA8/KIHEzLMBF4kwwtVKwPmOk4QV4w+/5q4cu3imOxqY1f9LYI4
+         CcCXR/Gnc0N4ibGod54PYfHTxkR1Iq8k27b/lwx9MWt2Hle8sr8t9RzWgLSs4JFTQmlP
+         JqkAVZSHIjacszPZ8DxZIj+w0pX8wW5ZwKeJ9yRnxyx6YooeBvp9TK45gQCa7cuEGbFf
+         o8iBfRpvfYevBm2PEGTD8Y/YpJqZlwYgpznGNEIo8OZ3jPkRgSFSVNRxrrvTqZxuH21t
+         E1BeZvUlZek8yUVu+txC7ncz4XxAVM1Vn2xb/XVI1A8Phnh1jB0USqaQu5l5tivGZIR+
+         SCWw==
+X-Gm-Message-State: AOAM530//aogSJGZcjHltqDLWdeEcf7SDY0NhWoEVJd2Ercq6+XAjh3C
+        OH//Qymw+cegQEHDZMpymcWpDPnJ7T0=
+X-Google-Smtp-Source: ABdhPJwGGfyfy4PmkxP7LYhI1ud5F6B6OE9MKtKBw1kagNekVukyYYQmRp2Vh7bYnHY+dUWvksh3sQ==
+X-Received: by 2002:a05:6000:1091:: with SMTP id y17mr50396wrw.270.1618140860698;
+        Sun, 11 Apr 2021 04:34:20 -0700 (PDT)
+Received: from xws.localdomain (p5487b63a.dip0.t-ipconnect.de. [84.135.182.58])
+        by smtp.gmail.com with ESMTPSA id 66sm4930727wmb.36.2021.04.11.04.34.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Apr 2021 04:34:20 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>
+Cc:     Maximilian Luz <luzmaximilian@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] HID: surface-hid: Fix integer endian conversion
+Date:   Sun, 11 Apr 2021 13:34:02 +0200
+Message-Id: <20210411113402.2594945-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 32507315D79
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: gxjes4ah47oq6d917spxhf1rbfm9bpsm
-X-Rspamd-Server: rspamout04
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18gDYP58m9/GUiRCS+mgNCaIQI5Gz2Pa7s=
-X-HE-Tag: 1618140667-663278
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(cc'ing the printk maintainers)
+We want to convert from 16 bit (unsigned) little endian values contained
+in a packed struct to CPU native endian values here, not the other way
+around. So replace cpu_to_le16() with get_unaligned_le16(), using the
+latter instead of le16_to_cpu() to acknowledge that we are reading from
+a packed struct.
 
-On Sun, 2021-04-11 at 00:11 +0300, Alexander Monakov wrote:
-> print_iommu_info prints the EFR register and then the decoded list of
-> features on a separate line:
-> 
-> pci 0000:00:00.2: AMD-Vi: Extended features (0x206d73ef22254ade):
->  PPR X2APIC NX GT IA GA PC GA_vAPIC
-> 
-> The second line is emitted via 'pr_cont', which causes it to have a
-> different ('warn') loglevel compared to the previous line ('info').
-> 
-> Commit 9a295ff0ffc9 attempted to rectify this by removing the newline
-> from the pci_info format string, but this doesn't work, as pci_info
-> calls implicitly append a newline anyway.
-> 
-> Restore the newline, and call pr_info with empty format string to set
-> the loglevel for subsequent pr_cont calls. The same solution is used in
-> EFI and uvesafb drivers.
-> 
-> Fixes: 9a295ff0ffc9 ("iommu/amd: Print extended features in one line to fix divergent log levels")
-> Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
-> Cc: Paul Menzel <pmenzel@molgen.mpg.de>
-> Cc: Joerg Roedel <jroedel@suse.de>
-> Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> Cc: iommu@lists.linux-foundation.org
-> ---
->  drivers/iommu/amd/init.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index 596d0c413473..a25e241eff1c 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -1929,8 +1929,11 @@ static void print_iommu_info(void)
->  		pci_info(pdev, "Found IOMMU cap 0x%hx\n", iommu->cap_ptr);
->  
-> 
->  		if (iommu->cap & (1 << IOMMU_CAP_EFR)) {
-> -			pci_info(pdev, "Extended features (%#llx):",
-> +			pci_info(pdev, "Extended features (%#llx):\n",
->  				 iommu->features);
-> +
-> +			pr_info("");
-> +
->  			for (i = 0; i < ARRAY_SIZE(feat_str); ++i) {
->  				if (iommu_feature(iommu, (1ULL << i)))
->  					pr_cont(" %s", feat_str[i]);
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: b05ff1002a5c ("HID: Add support for Surface Aggregator Module HID transport")
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+---
+ drivers/hid/surface-hid/surface_hid_core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-This shouldn't be necessary.
-If this is true then a lot of output logging code broke.
-
-
+diff --git a/drivers/hid/surface-hid/surface_hid_core.c b/drivers/hid/surface-hid/surface_hid_core.c
+index 7b27ec392232..5571e74abe91 100644
+--- a/drivers/hid/surface-hid/surface_hid_core.c
++++ b/drivers/hid/surface-hid/surface_hid_core.c
+@@ -168,9 +168,9 @@ int surface_hid_device_add(struct surface_hid_device *shid)
+ 
+ 	shid->hid->dev.parent = shid->dev;
+ 	shid->hid->bus = BUS_HOST;
+-	shid->hid->vendor = cpu_to_le16(shid->attrs.vendor);
+-	shid->hid->product = cpu_to_le16(shid->attrs.product);
+-	shid->hid->version = cpu_to_le16(shid->hid_desc.hid_version);
++	shid->hid->vendor = get_unaligned_le16(&shid->attrs.vendor);
++	shid->hid->product = get_unaligned_le16(&shid->attrs.product);
++	shid->hid->version = get_unaligned_le16(&shid->hid_desc.hid_version);
+ 	shid->hid->country = shid->hid_desc.country_code;
+ 
+ 	snprintf(shid->hid->name, sizeof(shid->hid->name), "Microsoft Surface %04X:%04X",
+-- 
+2.31.1
 
