@@ -2,103 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A44135B1D9
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 07:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB0FF35B1DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 07:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233387AbhDKFyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 01:54:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
+        id S234371AbhDKF4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 01:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhDKFyH (ORCPT
+        with ESMTP id S229792AbhDKF4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 01:54:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B2A6C06138B;
-        Sat, 10 Apr 2021 22:53:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=SaNBURFA0COj7csdi3RrmkJ1pw97mCX9cbVvlM/9+g8=; b=bIe+F5I1L6nn9iWW8iQEFhxYaD
-        Fuz75mOt8HRpbB44011Fsk4+wkhJ4o7BoEXeCszj2O0XcaBRL/yo1+ifZmveaYVSbyh0Wa/1NI5ZH
-        Un+n+36mLmLB1ZM4pYIAqbZv6m09IqwRO/kAlp8RzzGkqziFMmn78lcDKr8R7TBLZmuZblGjoDLcs
-        azM/+se24lDreM45gtgDRmHwOWe8zUJ683RZ2NPAJvypulwofA3jdzOVzlqxcvcwQM2yHC2oCK1Pa
-        3burDeVZtLCsJ/GJPltB8yTrovcsTBT4HJ/eW2iTPHCBYUARpolw7SOQKX5zaFQ3NdVvxurcPD5fE
-        0PJmb5jg==;
-Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVT2T-002cUV-HL; Sun, 11 Apr 2021 05:53:43 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org
-Subject: [PATCH RESEND] csky: change a Kconfig symbol name to fix e1000 build error
-Date:   Sat, 10 Apr 2021 22:53:35 -0700
-Message-Id: <20210411055335.7111-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 11 Apr 2021 01:56:22 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FB65C06138B
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 22:56:06 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id em21-20020a17090b0155b029014e204a81e6so606285pjb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 22:56:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=47LAm/7nJvsrQPJk4C7Ih4f1i+BgMIeGRCBMkiUmnX4=;
+        b=yi53V2JDvrURz5jGwTbhufezF4Tc2j2G3SWaCJa076RtUd6afzMHrWq4Xq/y20ki9R
+         4viLKX7FI3NUBa0Z2fwgZNfALH07fl5JdtxlghUiXbOrsEpzUnCaGstSmoOwsxDsPy1m
+         XcGb4ogNAmnR+eHrkuop/U4YifZc3mV8HqcVq9jUk80BHPy/8nbTZ6jeWxgOBEda2iwd
+         1Wr5mrX6hscztJS5zgwtoDpCyTdgIEJHgEYA9CF3e4BSvcLYQ3We+khx9tP3wMQCZumw
+         Od3eIbo4Hpp/LGRXqa0TNB9aK33xbPRqsBM7k/zGAAFgNTlJM5Ym3VAHLqV4ZdpYo50D
+         1Esg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=47LAm/7nJvsrQPJk4C7Ih4f1i+BgMIeGRCBMkiUmnX4=;
+        b=roIxM6eaDWQhF/QQABbnmakgzhWqlNtcWIpytqdy21pTr0d0mamgXjqxF0CFtYR43t
+         Vn467q+yX0/W8/+iZuA7Bm1rjlPCbBkyxsaWER8h/LtRTQixWR/PW5r6bbb7kDjtxfzE
+         GOQ3uyezQk5KbWydvpm7ZXmtqoDWSuABTaG5X+o3OT+z1OeyMJaAIFGyCAh/SS0xCa6R
+         gHGemWJOalXZa3FmDPE5kW215zER0c3Cf6zHwPa6VuoZkBBO9z9+4gmiRIoDc27exQpy
+         Xo1mCAGLtY1ceFeKXI8RuLEO1ostWUItWsmHY/cw8vNeSVqU9TPwQvLKDYgDcXh1g8aK
+         U3YA==
+X-Gm-Message-State: AOAM531qI5rhMn2ac4fEwoKNYpLoPRl8f6z1mg8hsbGkNqZF5YvwfFSK
+        RDqfgg0PESbTSWfArrhZ7cFv
+X-Google-Smtp-Source: ABdhPJxvo1xnUAWMhyv6R0S0hDuAv5tCn7GxQg3tlO3qYxRDrF2qRP5MKcawJPUklrhKRx3YYfLjiQ==
+X-Received: by 2002:a17:90b:e87:: with SMTP id fv7mr22029932pjb.27.1618120565642;
+        Sat, 10 Apr 2021 22:56:05 -0700 (PDT)
+Received: from thinkpad ([2409:4072:813:9a91:9cf0:36d8:f992:2089])
+        by smtp.gmail.com with ESMTPSA id g5sm6720022pfb.77.2021.04.10.22.56.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Apr 2021 22:56:04 -0700 (PDT)
+Date:   Sun, 11 Apr 2021 11:25:59 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     gregkh@linuxfoundation.org
+Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, jarvis.w.jiang@gmail.com,
+        loic.poulain@linaro.org
+Subject: MHI changes for v5.13
+Message-ID: <20210411055559.GA2068@thinkpad>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-e1000's #define of CONFIG_RAM_BASE conflicts with a Kconfig symbol in
-arch/csky/Kconfig.
-The symbol in e1000 has been around longer, so change arch/csky/
-to use DRAM_BASE instead of RAM_BASE to remove the conflict.
-(although e1000 is also a 2-line change)
+Hi Greg,
 
-Now build-tested.
+Here is the MHI Pull request for the v5.13 cycle. I stayed with the PR as the
+number patches got increased.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: intel-wired-lan@lists.osuosl.org
-Cc: Guo Ren <guoren@linux.alibaba.com>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: linux-csky@vger.kernel.org
-Acked-by: Guo Ren <guoren@kernel.org>
+Details are in the signed tag, please consider merging!
+
+Thanks,
+Mani
+
 ---
-Andrew, please merge.
 
-v2: Add Acked-by: Guo Ren
-    Has now been build-tested.
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
-IMO "CONFIG_" namespace should belong to Kconfig files, not
-individual drivers, but e1000 isn't the only driver that uses
-CONFIG_ symbols.
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
- arch/csky/Kconfig            |    2 +-
- arch/csky/include/asm/page.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+are available in the Git repository at:
 
---- linux-next-20210409.orig/arch/csky/include/asm/page.h
-+++ linux-next-20210409/arch/csky/include/asm/page.h
-@@ -28,7 +28,7 @@
- #define SSEG_SIZE	0x20000000
- #define LOWMEM_LIMIT	(SSEG_SIZE * 2)
- 
--#define PHYS_OFFSET_OFFSET (CONFIG_RAM_BASE & (SSEG_SIZE - 1))
-+#define PHYS_OFFSET_OFFSET (CONFIG_DRAM_BASE & (SSEG_SIZE - 1))
- 
- #ifndef __ASSEMBLY__
- 
---- linux-next-20210409.orig/arch/csky/Kconfig
-+++ linux-next-20210409/arch/csky/Kconfig
-@@ -314,7 +314,7 @@ config FORCE_MAX_ZONEORDER
- 	int "Maximum zone order"
- 	default "11"
- 
--config RAM_BASE
-+config DRAM_BASE
- 	hex "DRAM start addr (the same with memory-section in dts)"
- 	default 0x0
- 
+  git://git.kernel.org/pub/scm/linux/kernel/git/mani/mhi.git tags/mhi-for-v5.13
+
+for you to fetch changes up to a503d1628c9c341dc5e1a26272e38182dca3e823:
+
+  bus: mhi: fix typo in comments for struct mhi_channel_config (2021-04-09 18:48:22 +0530)
+
+----------------------------------------------------------------
+MHI changes for v5.13
+
+core:
+
+- Added support for Flash Programmer execution environment which allows the
+  host machine (like x86) to flash the modem firmware to NAND or eMMC in the
+  modem. The MHI bus will expose EDL channels (34, 35) and then the opensource
+  QDL tool [1] can be used to flash the firmware from the host.
+- Added an internal helper for polling the MHI registers with a retry interval.
+  This helper is used now to poll for the MHI ready state in MHI STATUS
+  register.
+- Various fixes for issues found during the bringup of SDX24/SDX55 based Quectel
+  and Telit modems.
+- Updates to the Execution environment handling for proper downloading of the
+  AMSS image from SBL (Secondary Bootloader) mode.
+- Added support for sending STOP channel command to the MHI device and also made
+  changes to the MHI core for proper handling of stop and restart.
+- Fixed the runtime_pm handling in the core by forcing the device to be in wake
+  mode until TX completion and allowing it to suspend for RX.
+- Added sanity checks for values read from the device to avoid crash if those
+  are corrupted somehow.
+- Fixed warnings generated by sparse (W=2)
+- Couple of kernel doc cleanups in mhi.h
+
+pci_generic:
+
+- Added support for runtime PM and generic PM
+- Added Firehose channels for flashing the firmware
+- Added support for modems such as Quectel EM1XXGR-L, SDX24, SDX65, Foxconn
+  T99W175 exposing relevant channels.
+
+[1] https://git.linaro.org/landing-teams/working/qualcomm/qdl.git
+
+----------------------------------------------------------------
+Bhaumik Bhatt (25):
+      bus: mhi: core: Add missing checks for MMIO register entries
+      bus: mhi: core: Destroy SBL devices when moving to mission mode
+      bus: mhi: core: Download AMSS image from appropriate function
+      bus: mhi: core: Process execution environment changes serially
+      bus: mhi: core: Update debug prints to include local device state
+      bus: mhi: Make firmware image optional for controller
+      bus: mhi: core: Rely on accurate method to determine EDL mode
+      bus: mhi: core: Wait for ready after an EDL firmware download
+      bus: mhi: core: Handle EDL mode entry appropriately
+      bus: mhi: core: Identify Flash Programmer as a mission mode use case
+      bus: mhi: core: Wait for MHI READY state in most scenarios
+      bus: mhi: core: Improve state strings for debug messages
+      bus: mhi: core: Introduce internal register poll helper function
+      bus: mhi: core: Move to polling method to wait for MHI ready
+      bus: mhi: core: Remove pre_init flag used for power purposes
+      bus: mhi: pci_generic: Add SDX65 based modem support
+      bus: mhi: core: Allow sending the STOP channel command
+      bus: mhi: core: Clear context for stopped channels from remove()
+      bus: mhi: core: Improvements to the channel handling state machine
+      bus: mhi: core: Update debug messages to use client device
+      bus: mhi: core: Hold device wake for channel update commands
+      bus: mhi: core: Clear configuration from channel context during reset
+      bus: mhi: core: Check channel execution environment before issuing reset
+      bus: mhi: core: Remove __ prefix for MHI channel unprepare function
+      bus: mhi: Improve documentation on channel transfer setup APIs
+
+Carl Yin (1):
+      bus: mhi: core: Add support for Flash Programmer execution environment
+
+Colin Ian King (1):
+      bus: mhi: core: remove redundant initialization of variables state and ee
+
+Fan Wu (1):
+      bus: mhi: core: Return EAGAIN if MHI ring is full
+
+Jarvis Jiang (2):
+      bus: mhi: pci_generic: Introduce Foxconn T99W175 support
+      bus: mhi: fix typo in comments for struct mhi_channel_config
+
+Jeffrey Hugo (3):
+      bus: mhi: core: Fix check for syserr at power_up
+      bus: mhi: core: Check state before processing power_down
+      bus: mhi: core: Sanity check values from remote device before use
+
+Loic Poulain (14):
+      bus: mhi: pci_generic: Parametrable element count for events
+      bus: mhi: pci_generic: Introduce quectel EM1XXGR-L support
+      bus: mhi: pci_generic: Add SDX24 based modem support
+      bus: mhi: pci_generic: No-Op for device_wake operations
+      bus: mhi: pci_generic: Use generic PCI power management
+      bus: mhi: pci_generic: Add support for runtime PM
+      bus: mhi: pci_generic: Remove WQ_MEM_RECLAIM flag from state workqueue
+      bus: mhi: core: Fix invalid error returning in mhi_queue
+      bus: mhi: core: Rename debugfs directory name
+      bus: mhi: Early MHI resume failure in non M3 state
+      bus: mhi: core: Fix MHI runtime_pm behavior
+      bus: mhi: pm: reduce PM state change verbosity
+      bus: mhi: pci_generic: Implement PCI shutdown callback
+      bus: mhi: pci_generic: Add FIREHOSE channels
+
+Manivannan Sadhasivam (2):
+      bus: mhi: pci_generic: Constify mhi_controller_config struct definitions
+      bus: mhi: core: Fix shadow declarations
+
+ drivers/bus/mhi/core/boot.c     |  64 ++++++------
+ drivers/bus/mhi/core/debugfs.c  |   2 +-
+ drivers/bus/mhi/core/init.c     |  72 +++++++------
+ drivers/bus/mhi/core/internal.h |  20 +++-
+ drivers/bus/mhi/core/main.c     | 416 +++++++++++++++++++++++++++++++++++++++++++++++++++-----------------------
+ drivers/bus/mhi/core/pm.c       | 119 ++++++++++++---------
+ drivers/bus/mhi/pci_generic.c   | 330 +++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ include/linux/mhi.h             |  28 +++--
+ 8 files changed, 775 insertions(+), 276 deletions(-)
