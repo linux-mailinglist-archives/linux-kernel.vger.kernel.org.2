@@ -2,148 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F109F35B2F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C5235B2F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235402AbhDKKGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 06:06:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43674 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235366AbhDKKGH (ORCPT
+        id S235409AbhDKKH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 06:07:58 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:26758 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235267AbhDKKH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 06:06:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618135551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MhHr3Cd5ZDKM5bg6lUgtgpxP7s+VM/Oo10g+H6b6Os0=;
-        b=a+3sPGmtIOxLyeOPh9KSnp53+MynC9DSKW8Ri/0ZDifr5XfR3lLeN5mzXTBJOFKZ8ywQeu
-        qtbApmq4+z+phofJrIRoQYDDoHnTMj2AUHpIRkpnacEg8E2YxAP+8TojFPcIHl3JOyACa6
-        WrcVb0tDl0jKOmQT8uPTLfvM+Iwyyhc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-589-6klkBEv5OCOBZMidoXHS7A-1; Sun, 11 Apr 2021 06:05:48 -0400
-X-MC-Unique: 6klkBEv5OCOBZMidoXHS7A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 415DD10053EC;
-        Sun, 11 Apr 2021 10:05:41 +0000 (UTC)
-Received: from carbon (unknown [10.36.110.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 957FD14106;
-        Sun, 11 Apr 2021 10:05:18 +0000 (UTC)
-Date:   Sun, 11 Apr 2021 12:05:17 +0200
-From:   Jesper Dangaard Brouer <brouer@redhat.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     brouer@redhat.com, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        netdev <netdev@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-rdma@vger.kernel.org,
-        bpf <bpf@vger.kernel.org>, Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v3 2/5] mm: add a signature in struct page
-Message-ID: <20210411120500.73c1cadb@carbon>
-In-Reply-To: <20210410193955.GA2531743@casper.infradead.org>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
-        <20210409223801.104657-3-mcroce@linux.microsoft.com>
-        <20210410154824.GZ2531743@casper.infradead.org>
-        <YHHPbQm2pn2ysth0@enceladus>
-        <CALvZod7UUxTavexGCzbKaK41LAW7mkfQrnDhFbjo-KvH9P6KsQ@mail.gmail.com>
-        <YHHuE7g73mZNrMV4@enceladus>
-        <20210410193955.GA2531743@casper.infradead.org>
+        Sun, 11 Apr 2021 06:07:57 -0400
+X-IronPort-AV: E=Sophos;i="5.82,214,1613430000"; 
+   d="scan'208";a="502615109"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 12:07:41 +0200
+Date:   Sun, 11 Apr 2021 12:07:40 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Mitali Borkar <mitaliborkar810@gmail.com>
+cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in
+Subject: Re: [Outreachy kernel] [PATCH v3 1/3] staging: rtl8192e: remove
+ parentheses around boolean expression
+In-Reply-To: <30a330377667aa5043a60ed3cdf1bbb37099631c.1618133351.git.mitaliborkar810@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2104111207000.2854@hadrien>
+References: <cover.1618133351.git.mitaliborkar810@gmail.com> <30a330377667aa5043a60ed3cdf1bbb37099631c.1618133351.git.mitaliborkar810@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Apr 2021 20:39:55 +0100
-Matthew Wilcox <willy@infradead.org> wrote:
 
-> On Sat, Apr 10, 2021 at 09:27:31PM +0300, Ilias Apalodimas wrote:
-> > > Can this page_pool be used for TCP RX zerocopy? If yes then PageType
-> > > can not be used.  
-> > 
-> > Yes it can, since it's going to be used as your default allocator for
-> > payloads, which might end up on an SKB.
-> > So we have to keep the extra added field on struct page for our mark.
-> > Matthew had an intersting idea.  He suggested keeping it, but changing the 
-> > magic number, so it can't be a kernel address, but I'll let him follow 
-> > up on the details.  
-> 
-> Sure!  So, given the misalignment problem I discovered yesterday [1],
-> we probably want a page_pool page to look like:
-> 
-> unsigned long	flags;
-> unsigned long	pp_magic;
-> unsigned long	xmi;
-> unsigned long	_pp_mapping_pad;
-> dma_addr_t	dma_addr;	/* might be one or two words */
-> 
-> The only real restriction here is that pp_magic should not be a valid
-> pointer, and it must have the bottom bit clear.  I'd recommend something
-> like:
-> 
-> #define PP_MAGIC	(0x20 + POISON_POINTER_DELTA)
-> 
-> This leaves page->mapping as NULL, so you don't have to worry about
-> clearing it before free.
+
+On Sun, 11 Apr 2021, Mitali Borkar wrote:
+
+> Removed unnecessary parentheses around '!xyz' boolean expression as '!' has higher
+> precedance than '||'
+
+The log message is too wide.  It should be at most around 70 characters
+wide, because git will indent it a little.
+
+julia
+
+
 >
-> [1] https://lore.kernel.org/linux-mm/20210410024313.GX2531743@casper.infradead.org/
-
-I didn't see this, before asking[2] for explaining your intent.
-I still worry about page->index, see [2].
-
-[2] https://lore.kernel.org/netdev/20210411114307.5087f958@carbon/
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Principal Kernel Engineer at Red Hat
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> ---
+>
+> Changes from v2:- Modified subject description.
+> Changes from v1:- Removed unnecessary parentheses around boolean expression.
+> Changes has been made in v2.
+>
+>  drivers/staging/rtl8192e/rtl819x_HTProc.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/staging/rtl8192e/rtl819x_HTProc.c b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+> index b1fa8e9a4f28..431202927036 100644
+> --- a/drivers/staging/rtl8192e/rtl819x_HTProc.c
+> +++ b/drivers/staging/rtl8192e/rtl819x_HTProc.c
+> @@ -276,7 +276,7 @@ void HTConstructCapabilityElement(struct rtllib_device *ieee, u8 *posHTCap,
+>  	struct rt_hi_throughput *pHT = ieee->pHTInfo;
+>  	struct ht_capab_ele *pCapELE = NULL;
+>
+> -	if ((!posHTCap) || (!pHT)) {
+> +	if (!posHTCap || !pHT) {
+>  		netdev_warn(ieee->dev,
+>  			    "%s(): posHTCap and pHTInfo are null\n", __func__);
+>  		return;
+> --
+> 2.30.2
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/30a330377667aa5043a60ed3cdf1bbb37099631c.1618133351.git.mitaliborkar810%40gmail.com.
+>
