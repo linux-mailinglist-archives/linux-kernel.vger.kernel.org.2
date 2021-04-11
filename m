@@ -2,63 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ADC135B1CE
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 07:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20B935B1D6
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 07:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232022AbhDKE6z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 00:58:55 -0400
-Received: from smtprelay0002.hostedemail.com ([216.40.44.2]:40202 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229452AbhDKE6z (ORCPT
+        id S234312AbhDKFiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 01:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229956AbhDKFiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 00:58:55 -0400
-Received: from omf13.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 7876E181D3028;
-        Sun, 11 Apr 2021 04:58:38 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf13.hostedemail.com (Postfix) with ESMTPA id 74CAB1124F5;
-        Sun, 11 Apr 2021 04:58:37 +0000 (UTC)
-Message-ID: <02ba29b5f196390a57f2d8b20dcf9a989fbaf2ed.camel@perches.com>
-Subject: Re: drivers/parport/parport_cs.c:147 parport_config() warn:
- inconsistent indenting
-From:   Joe Perches <joe@perches.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Sat, 10 Apr 2021 21:58:36 -0700
-In-Reply-To: <202104110202.486vI6NC-lkp@intel.com>
-References: <202104110202.486vI6NC-lkp@intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 11 Apr 2021 01:38:19 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F31FC06138B
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 22:38:03 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id d8so4650716plh.11
+        for <linux-kernel@vger.kernel.org>; Sat, 10 Apr 2021 22:38:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cgAD+2Nb2JOJjFZwnbACnpjZOW/zFycvAp8/3df7DPY=;
+        b=cuz0Au2QXG8fhErH3AfTOSYHsD+gIFbdCcOB0h574oKDLmARFTvqPTGBVpUX0IcvrQ
+         g7wQmLffrnYVoGggC+OGhNkRcfTkm1cWqfQ6Mem5qAtMU8jBl0L5pSSW7dWKTcaI0jUd
+         8tNiE0m/SQU3IzslT7sYKtBHVh5zAVAJQQ8Af/ggHKKSB9WPbd9XudD+MOxbeyDo/ZET
+         90c+PoH/UmZVXgT3xV6fXJZmoUbyT5/C1Y2+unLAmGmk+uefwdtz7t4a5ESbDkgbx6cO
+         I13sXTf2NIAkIRqCmhcRt+EBtnAuuNGKs8d4XUvZIFCOTBZaRkqwOesAWwx9x+T7MuUf
+         HAWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cgAD+2Nb2JOJjFZwnbACnpjZOW/zFycvAp8/3df7DPY=;
+        b=RCivvMbhwOncKw2hup1rqsE4SlTY2tus0uWM6YqBaHpMbm5lYGepKb7B4QcXuCxByc
+         5wdhOpewGqIRRdBSxhxcNsFNe2IqgUsW+R8Bw9XViy8YdDp2ZDwAmIgAQ83rDEbWZQbo
+         BgF6+Tm+G46KqvNTlrPIk/09BREUU5WDfJI3iAV8JD/i4Z77bEJi6Y7yrgC6LCC+lY5D
+         EdeMsGBahpsf6E3heTeokBaS9G8xusFTj5g+JzJTFENaUDLHKRQSXTlskXeXcSN2IKEE
+         Hj7aH7giXvKy8/hTXkK7QJ/TXJ/EDO5/7nB9gNSoRpkFgG9uWDbtmTwIFck5LZfPMwmN
+         IlLQ==
+X-Gm-Message-State: AOAM531sbu9b+YL9qN+4mUNRv9ejFZzpx2uYuhJO7HUiwwKjfN386fpE
+        aXPrLtiKN4A/ngp9ERHvloGTN2sNuVsqGOQu3SzQYQ==
+X-Google-Smtp-Source: ABdhPJwOLfxJ2QLvRIEhyvQbdZZ1zjB0OonB//U83Y9DhfQj6Dfxj+tt9z6tMR6zZtWkckfVgRJmL+Cc6Q2km5cTFN0=
+X-Received: by 2002:a17:90a:a895:: with SMTP id h21mr12221893pjq.13.1618119483172;
+ Sat, 10 Apr 2021 22:38:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.60
-X-Rspamd-Server: rspamout02
-X-Stat-Signature: cxix5njjbczxbyi6rgyznkhhxcf5qcat
-X-Rspamd-Queue-Id: 74CAB1124F5
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/agdpui/IVnB5oA71XbfWa8Y2v9x+rc2c=
-X-HE-Tag: 1618117117-401762
+References: <20210409122959.82264-1-songmuchun@bytedance.com>
+ <20210409122959.82264-5-songmuchun@bytedance.com> <YHB6FQ40Xn9E4psq@cmpxchg.org>
+In-Reply-To: <YHB6FQ40Xn9E4psq@cmpxchg.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sun, 11 Apr 2021 13:37:26 +0800
+Message-ID: <CAMZfGtVnmcuVqqg13pkL=72YwuyjVZDNE81-_d7S61e4a1kXGQ@mail.gmail.com>
+Subject: Re: [External] Re: [RFC PATCH v2 04/18] mm: memcontrol: simplify lruvec_holds_page_lru_lock
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     guro@fb.com, mhocko@kernel.org, akpm@linux-foundation.org,
+        shakeelb@google.com, vdavydov.dev@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        duanxiongchun@bytedance.com, fam.zheng@bytedance.com,
+        bsingharora@gmail.com, shy828301@gmail.com,
+        alex.shi@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-04-11 at 02:02 +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   d4961772226de3b48a395a26c076d450d7044c76
-> commit: decf26f6ec25dac868782dc1751623a87d147831 parport: Convert printk(KERN_<LEVEL> to pr_<level>(
-> date:   12 months ago
-> config: x86_64-randconfig-m001-20210410 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> smatch warnings:
-> drivers/parport/parport_cs.c:147 parport_config() warn: inconsistent indenting
+On Sat, Apr 10, 2021 at 12:00 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Fri, Apr 09, 2021 at 08:29:45PM +0800, Muchun Song wrote:
+> > We already have a helper lruvec_memcg() to get the memcg from lruvec, we
+> > do not need to do it ourselves in the lruvec_holds_page_lru_lock(). So use
+> > lruvec_memcg() instead. And if mem_cgroup_disabled() returns false, the
+> > page_memcg(page) (the LRU pages) cannot be NULL. So remove the odd logic
+> > of "memcg = page_memcg(page) ? : root_mem_cgroup". And use lruvec_pgdat
+> > to simplify the code. We can have a single definition for this function
+> > that works for !CONFIG_MEMCG, CONFIG_MEMCG + mem_cgroup_disabled() and
+> > CONFIG_MEMCG.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Looks good to me.
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-False positive.
-The whole thing is inconsistently indented. 
+Thanks for your review.
+
+>
+> If you haven't done so yet, please make sure to explicitly test with
+> all three config combinations, just because the dummy abstractions for
+> memcg disabled or compiled out tend to be paper thin and don't always
+> behave the way you might expect when you do more complicated things.
+
+I have tested. There is no problem. Thanks :-)
 
 
+>
+> Something like
+>
+> boot
+> echo sparsefile >/dev/null (> ram size to fill memory and reclaim)
+> echo 1 >/proc/sys/vm/compact_memory
+>
+> should exercise this new function in a couple of important scenarios.
