@@ -2,96 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D69835B4B0
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 726FC35B4D1
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhDKNmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:42:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43552 "EHLO
+        id S235824AbhDKNoM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:44:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235338AbhDKNmd (ORCPT
+        with ESMTP id S235541AbhDKNn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:42:33 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6354FC06138B
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 06:42:17 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id c18so8698123iln.7
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 06:42:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jHOs/GUNj1A6ya3vcccNEUycGjR7OVNzCp35FYh45a8=;
-        b=L1RRQYC6N+Dgp4DoT7PRd517GDpNGGbtDzuZ9+qO0iXUwrd8RL0nk3BAmjHcOFMh/L
-         F58/rFW3gpuUbxOkb+NQDUNqI2Vd3qUINmwa5K/XHJOSyBC/3TDhRtaAwfXQ8f+4KIgh
-         LpKNRLly3IdatiwMfBXxgTcaR9FmlXDegyQSTfY5RJK5ZnCjwxxmIhR2c9nduL13eZcK
-         Habfk+eVF9R1w+FVnmdaQZYrgeDP17L4nvzNJZkJf2TqBDyeu/jllBXzntrXHxyerbBl
-         1+8r/iPAfKIviGsRx5iRDGpav4ASk2kzYQF0pnuXTf0wj5+r7wyM4BBuFE30AeOpbs3R
-         83Nw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jHOs/GUNj1A6ya3vcccNEUycGjR7OVNzCp35FYh45a8=;
-        b=qC0+B92pITUHDDyEFG20Gy/CWthjchhijb8iBc7BJLWP5V+QoR3jWCu7eA5moeTLwB
-         NFtYy8e7JUDCnj68YzXULD7x9ILq6p6dyIl0OHHArgTmdVI+eznJ3QqkidvkY1GcxTOc
-         az4/jg6SL4xlPAXAWEsW4N2KdfuZYAsy5oi3/UpH0e0WKLjyxHI1fuAZsS58kTgaijd7
-         tRBW3XGIm8kum9I9pbxXXi9LsODJ2Yb9AsKBqmyDyEGe/6w1LwNd/lv6JG5+jrYcNlpk
-         wq83lx0QWwQxAVPwaTtkt+dmoDR5Y/+ow0NwZzyixE3GAdXR/H/hNl6eis9+ZFEaxgwr
-         Vnmw==
-X-Gm-Message-State: AOAM532RKT2eJ2kS0ZZ57JvWOoOtCeh9CMraYBl+gA+2NLRR0iKfy1iE
-        Mui9n/ujBgVzr4KJquLqS5J4BxFd3d2q9A==
-X-Google-Smtp-Source: ABdhPJxuBaDdJ7m0Z1ESomTiIQVbmHZfCmZCK7Lzg4DEFwh75H0k+WYobd4D4EFPi3LJyDoysVg5gg==
-X-Received: by 2002:a05:6e02:20c5:: with SMTP id 5mr1869932ilq.14.1618148536684;
-        Sun, 11 Apr 2021 06:42:16 -0700 (PDT)
-Received: from [192.168.20.93] ([64.118.8.63])
-        by smtp.googlemail.com with ESMTPSA id b9sm4186165iof.54.2021.04.11.06.42.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Apr 2021 06:42:16 -0700 (PDT)
-Subject: Re: [PATCH net-next 4/7] net: ipa: ipa_stop() does not return an
- error
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        Sun, 11 Apr 2021 09:43:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D82E9C061574;
+        Sun, 11 Apr 2021 06:43:26 -0700 (PDT)
+Date:   Sun, 11 Apr 2021 13:43:17 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618148598;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=1QUHtVmlFXjOkxj1y63PXJ4LjTRWS7UDXTsiJVceZD4=;
+        b=ObZY4e2SFRm3Vm+t9DXd7kUTTUNP/qfCdcaajKyNnVrHFEPHLL3cU0U49a6ICsVnmqn5Bs
+        dq80y9fKslFbh/VXB8Kh8IBvcBz1XU0GweePajPpTDgqn6vuVDU7atRu3PEOydx2hIKogM
+        PPt7EjpwOor0unqKYBtrd2PV8mMNIEphuWRo+PmMz3vgIkdr2wd9z1bTcgzQxKEzLZGbxf
+        Y+t7Y8S70QUbFk0AHbYutSLfZLxRwdPlq4+wrMLnUiTHkPGJPhl6aTWb/klPzqMvKXmb+9
+        eBikvaB2JEkgTlyYy+cYw+oTb4FSGYTN229uhOgaZAnWYODlRJII0olNlJiPIQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618148598;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=1QUHtVmlFXjOkxj1y63PXJ4LjTRWS7UDXTsiJVceZD4=;
+        b=XPMoAQSXPm5qUd32wmbm0wD7SIbB5b5WmCXQB4eBwia7RliD86jKHjI9VC1EI7fMPEZiPZ
+        LdggpzIIAFdTYqDw==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/rcu] rcutorture: Test start_poll_synchronize_rcu() and
+ poll_state_synchronize_rcu()
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210409180722.1176868-1-elder@linaro.org>
- <20210409180722.1176868-5-elder@linaro.org> <YHKYWCkPl5pucFZo@unreal>
- <1f5c3d2c-f22a-ef5e-f282-fb2dec4479f3@linaro.org> <YHL5fwkYyHvQG2Z4@unreal>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <6e0c08a0-aebd-83b2-26b5-98f7d46d6b2b@linaro.org>
-Date:   Sun, 11 Apr 2021 08:42:15 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YHL5fwkYyHvQG2Z4@unreal>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <161814859796.29796.9127729573091517038.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/11/21 8:28 AM, Leon Romanovsky wrote:
->> I think *not* checking an available return value is questionable
->> practice.  I'd really rather have a build option for a
->> "__need_not_check" tag and have "must_check" be the default.
-> __need_not_check == void ???
+The following commit has been merged into the core/rcu branch of tip:
 
-I'm not sure I understand your statement here, but...
+Commit-ID:     7ac3fdf099bf784794eb944e0ba5bb69867ca06d
+Gitweb:        https://git.kernel.org/tip/7ac3fdf099bf784794eb944e0ba5bb69867ca06d
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Thu, 25 Feb 2021 20:56:10 -08:00
+Committer:     Paul E. McKenney <paulmck@kernel.org>
+CommitterDate: Wed, 24 Mar 2021 17:17:38 -07:00
 
-My point is, I'd rather have things like printk() and
-strscpy() be marked with (an imaginary) __need_not_check,
-than the way things are, with only certain functions being
-marked __must_check.
+rcutorture: Test start_poll_synchronize_rcu() and poll_state_synchronize_rcu()
 
-In my view, if a function returns a value, all callers
-of that function ought to be checking it.  If the return
-value is not necessary it should be a void function if
-possible.
+This commit causes rcutorture to test the new start_poll_synchronize_rcu()
+and poll_state_synchronize_rcu() functions.  Because of the difficulty of
+determining the nature of a synchronous RCU grace (expedited or not),
+the test that insisted that poll_state_synchronize_rcu() detect an
+intervening synchronize_rcu() had to be dropped.
 
-I don't expect the world to change, but I just think the
-default should be "must check" rather than "check optional".
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/rcutorture.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-					-Alex
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 99657ff..956e6bf 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -494,6 +494,8 @@ static struct rcu_torture_ops rcu_ops = {
+ 	.sync		= synchronize_rcu,
+ 	.exp_sync	= synchronize_rcu_expedited,
+ 	.get_gp_state	= get_state_synchronize_rcu,
++	.start_gp_poll	= start_poll_synchronize_rcu,
++	.poll_gp_state	= poll_state_synchronize_rcu,
+ 	.cond_sync	= cond_synchronize_rcu,
+ 	.call		= call_rcu,
+ 	.cb_barrier	= rcu_barrier,
+@@ -1223,14 +1225,6 @@ rcu_torture_writer(void *arg)
+ 				WARN_ON_ONCE(1);
+ 				break;
+ 			}
+-			if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
+-				WARN_ONCE(rcu_torture_writer_state != RTWS_DEF_FREE &&
+-					  !cur_ops->poll_gp_state(cookie),
+-					  "%s: Cookie check 2 failed %s(%d) %lu->%lu\n",
+-					  __func__,
+-					  rcu_torture_writer_state_getname(),
+-					  rcu_torture_writer_state,
+-					  cookie, cur_ops->get_gp_state());
+ 		}
+ 		WRITE_ONCE(rcu_torture_current_version,
+ 			   rcu_torture_current_version + 1);
+@@ -1589,7 +1583,7 @@ static bool rcu_torture_one_read(struct torture_random_state *trsp, long myid)
+ 	preempt_enable();
+ 	if (cur_ops->get_gp_state && cur_ops->poll_gp_state)
+ 		WARN_ONCE(cur_ops->poll_gp_state(cookie),
+-			  "%s: Cookie check 3 failed %s(%d) %lu->%lu\n",
++			  "%s: Cookie check 2 failed %s(%d) %lu->%lu\n",
+ 			  __func__,
+ 			  rcu_torture_writer_state_getname(),
+ 			  rcu_torture_writer_state,
