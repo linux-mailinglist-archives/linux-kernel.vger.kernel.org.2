@@ -2,98 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B2435B675
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 20:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE4C35B67A
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 20:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235876AbhDKSB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 14:01:56 -0400
-Received: from mail.nic.cz ([217.31.204.67]:39192 "EHLO mail.nic.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235284AbhDKSBy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 14:01:54 -0400
-Received: from thinkpad (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id 7D44C140679;
-        Sun, 11 Apr 2021 20:01:36 +0200 (CEST)
-Date:   Sun, 11 Apr 2021 20:01:35 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        zhang kai <zhangkaiheb@126.com>,
-        Weilong Chen <chenweilong@huawei.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
-Message-ID: <20210411200135.35fb5985@thinkpad>
-In-Reply-To: <20210410133454.4768-1-ansuelsmth@gmail.com>
-References: <20210410133454.4768-1-ansuelsmth@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S235779AbhDKSIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 14:08:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235284AbhDKSH7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 14:07:59 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BD8C061574;
+        Sun, 11 Apr 2021 11:07:40 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id a85so7245907pfa.0;
+        Sun, 11 Apr 2021 11:07:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jEcbYX8Y08bH641l8oqV2fm1Zee8I5Yt330pQIjrzVk=;
+        b=pgYrJQULHlSnRawowMrMHD1vjVKyGInW9gfvEHYsWwQM8Mr4xTjOMBigglW3/iQ9dG
+         DW2f/ffyxMzB+/hksKSaYgkuN/gN9gRnF8yKuaVZtLHp+VV9niC4FdBet0Vk+bRTJNOP
+         qY6pggvzlbs8aCOxit3o+h5BADahAuwZJpw8OeZuZormFZ0e7KQ3QkH6Tt6vc3DbXDHi
+         axOM1mibDy/zuunSfLv+OdnXVzEH8X4d3/u6cL8AfgEllSe75XShqY9IH7g1VG3HoNjW
+         tcGftpvdXrbtmCa9sN3gFLKhimxnPWnsiZLzZIo2L55QphYULMR9/KjXuZDfd/jZuKbV
+         WRTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jEcbYX8Y08bH641l8oqV2fm1Zee8I5Yt330pQIjrzVk=;
+        b=laQamOeMZnyOV3+Q3NMqJmtf3uIaUA/UJUs279mYZC+2PbjHS4FF1LLQFXtXPXEViD
+         i6dRwPZAwoH9KdN3k+NaDtywqJTd5FobgW3X3lxG6/0HKG7CzXERTGBPoqs4fvnlJBeY
+         4QddSX19mK98/7oLFizsEcU1kTzzsGM1JlB1+rIR0SSF/3mHBZD6MoGvR2ZrBa9FCokY
+         4vjX6SRrxIfu/1ENsYewrUVXXCUFm0dbn3Jqu5YbbrwDIbS5Uf4wKlb97GN07Q+rniT7
+         7KJDPcYWzHzgbwrEY2JfBIgdSm0tbDMsLe4qu8G1v7XoxrMKWLnGUnycdQSTObaXXJpL
+         B2+w==
+X-Gm-Message-State: AOAM531J0Voncr50xp84fAFbwq8lyNrmEoHHjj7pfDNtnZ1PxyzIMz9N
+        qOO0NV0YkGvI6FNbcG8l4BrDHGYjWpM5txrukUY=
+X-Google-Smtp-Source: ABdhPJwkzlrouaFhCAJ7iLqKaaTDjIhbP3qlzq8AMegpU8mUaAcB9EY6MM44FCYn9Z2x5IstFiib/ie6d6/vfWTp7FU=
+X-Received: by 2002:a63:3e4b:: with SMTP id l72mr22714087pga.203.1618164459392;
+ Sun, 11 Apr 2021 11:07:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+References: <20210407182147.77221-1-puranjay12@gmail.com> <20210407182147.77221-3-puranjay12@gmail.com>
+ <20210411155420.318e866e@jic23-huawei>
+In-Reply-To: <20210411155420.318e866e@jic23-huawei>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 11 Apr 2021 21:07:22 +0300
+Message-ID: <CAHp75VcQYLRJ-p4CWJyk3h0=nL=TqwEFAxkO+z1Nbg8=3Fchyg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/2] iio: temperature: add driver support for ti tmp117
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Puranjay Mohan <puranjay12@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Apr 2021 15:34:46 +0200
-Ansuel Smith <ansuelsmth@gmail.com> wrote:
+On Sun, Apr 11, 2021 at 5:53 PM Jonathan Cameron <jic23@kernel.org> wrote:
+>
+> On Wed,  7 Apr 2021 23:51:47 +0530
+> Puranjay Mohan <puranjay12@gmail.com> wrote:
+>
+> > TMP117 is a Digital temperature sensor with integrated Non-Volatile memory.
+> > Add support for tmp117 driver in iio subsystem.
 
-> Hi,
-> this is a respin of the Marek series in hope that this time we can
-> finally make some progress with dsa supporting multi-cpu port.
-> 
-> This implementation is similar to the Marek series but with some tweaks.
-> This adds support for multiple-cpu port but leave the driver the
-> decision of the type of logic to use about assigning a CPU port to the
-> various port. The driver can also provide no preference and the CPU port
-> is decided using a round-robin way.
+...
 
-In the last couple of months I have been giving some thought to this
-problem, and came up with one important thing: if there are multiple
-upstream ports, it would make a lot of sense to dynamically reallocate
-them to each user port, based on which user port is actually used, and
-at what speed.
+> > +             off = clamp(val, S16_MIN, S16_MAX);
+>
+> With a C=1 W=1 build (sparse an lots of warnings) this causes problems because
+> the S16_MIN and S16_MAX are as you might imagine s16 values whereas val is
+> an int.  I've added casts to force S16_MIN and S16_MAX to ints as well.
 
-For example on Turris Omnia we have 2 CPU ports and 5 user ports. All
-ports support at most 1 Gbps. Round-robin would assign:
-  CPU port 0 - Port 0
-  CPU port 1 - Port 1
-  CPU port 0 - Port 2
-  CPU port 1 - Port 3
-  CPU port 0 - Port 4
+Good point, but better is to use clamp_t(s16, ...) rather than explicit casting.
+I always consider explicit casting in C (and esp. in Linux kernel) is
+a red flag. Should be really rarely needed.
 
-Now suppose that the user plugs ethernet cables only into ports 0 and 2,
-with 1, 3 and 4 free:
-  CPU port 0 - Port 0 (plugged)
-  CPU port 1 - Port 1 (free)
-  CPU port 0 - Port 2 (plugged)
-  CPU port 1 - Port 3 (free)
-  CPU port 0 - Port 4 (free)
+> > +             if (off == data->calibbias)
+> > +                     return 0;
 
-We end up in a situation where ports 0 and 2 share 1 Gbps bandwidth to
-CPU, and the second CPU port is not used at all.
-
-A mechanism for automatic reassignment of CPU ports would be ideal here.
-
-What do you guys think?
-
-Marek
+-- 
+With Best Regards,
+Andy Shevchenko
