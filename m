@@ -2,164 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FD735B735
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 00:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B73435B738
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 00:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235946AbhDKWWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 18:22:11 -0400
-Received: from smtprelay0128.hostedemail.com ([216.40.44.128]:53684 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S235005AbhDKWWJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 18:22:09 -0400
-Received: from omf04.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 3B5EF1801A773;
-        Sun, 11 Apr 2021 22:21:52 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf04.hostedemail.com (Postfix) with ESMTPA id 2902BD1513;
-        Sun, 11 Apr 2021 22:21:51 +0000 (UTC)
-Message-ID: <0362ad3912473d24e5927c0b54ed8fd3648c68a9.camel@perches.com>
-Subject: Re: [PATCH v2] iommu/amd: Fix extended features logging
-From:   Joe Perches <joe@perches.com>
-To:     Alexander Monakov <amonakov@ispras.ru>,
-        linux-kernel@vger.kernel.org
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
-        Joerg Roedel <jroedel@suse.de>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        iommu@lists.linux-foundation.org
-Date:   Sun, 11 Apr 2021 15:21:49 -0700
-In-Reply-To: <20210411211330.2252-1-amonakov@ispras.ru>
-References: <20210411211330.2252-1-amonakov@ispras.ru>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S235981AbhDKW2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 18:28:51 -0400
+Received: from ozlabs.org ([203.11.71.1]:47393 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235366AbhDKW2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 18:28:50 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FJRNF4BvSz9sW4;
+        Mon, 12 Apr 2021 08:28:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618180110;
+        bh=fP3GesCiOkWm3CBwoD72L76loWNr2ldZNLevrAelw5Q=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jNuKGQRq88iSVfPaLiCclsMjAr9MatCwEutLCJfaqiPq6m7WM9sJ5R1UTd7Hq4XSS
+         mTTOo0lXLRV+xErsnhWH8kxji82rQeAinZ72haIF0e4IvW4ul7AfE4i2oQs1L0wtfM
+         CGk7azY4fRnNOUSM1Dde3VItEWrAQe4+BtFMpoJVlGU9sc5toSQ2ZtbSAc37qYnqOv
+         gNT75pKdJ11WddoWficrS8C8f9NTB+nl0SvqZeSAKCkWHxRMDSg9U39GmG8MJwQPWr
+         bzb6veKwoVuIxss465yxqestfnd986lIB4jAoBaVAiCYBaE3B3jYpjV9/cyreUgEco
+         pq2Tg7EyBU0tA==
+Date:   Mon, 12 Apr 2021 08:28:28 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linux Crypto List <linux-crypto@vger.kernel.org>
+Cc:     Ayush Sawal <ayush.sawal@chelsio.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the crypto tree
+Message-ID: <20210412082828.2d7ff09f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 2902BD1513
-X-Spam-Status: No, score=0.10
-X-Stat-Signature: 9q8g74u5wmyjuhdqzmu6sgk8n19m8uoo
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19fWofgnuzzhGoeM7lXW+imT0hmBDHhTow=
-X-HE-Tag: 1618179711-799595
+Content-Type: multipart/signed; boundary="Sig_/J+96lH4tYICTK=sueM5b4q3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-12 at 00:13 +0300, Alexander Monakov wrote:
-> print_iommu_info prints the EFR register and then the decoded list of
-> features on a separate line:
-> 
-> pci 0000:00:00.2: AMD-Vi: Extended features (0x206d73ef22254ade):
->  PPR X2APIC NX GT IA GA PC GA_vAPIC
-> 
-> The second line is emitted via 'pr_cont', which causes it to have a
-> different ('warn') loglevel compared to the previous line ('info').
-> 
-> Commit 9a295ff0ffc9 attempted to rectify this by removing the newline
-> from the pci_info format string, but this doesn't work, as pci_info
-> calls implicitly append a newline anyway.
-> 
-> Printing the decoded features on the same line would make it quite long.
-> Instead, change pci_info() to pr_info() to omit PCI bus location info,
-> which is shown in the preceding message anyway. This results in:
-> 
-> pci 0000:00:00.2: AMD-Vi: Found IOMMU cap 0x40
-> AMD-Vi: Extended features (0x206d73ef22254ade): PPR X2APIC NX GT IA GA PC GA_vAPIC
-> AMD-Vi: Interrupt remapping enabled
-> 
-> Fixes: 9a295ff0ffc9 ("iommu/amd: Print extended features in one line to fix divergent log levels")
-> Link: https://lore.kernel.org/lkml/alpine.LNX.2.20.13.2104112326460.11104@monopod.intra.ispras.ru
-> Signed-off-by: Alexander Monakov <amonakov@ispras.ru>
-> Cc: Paul Menzel <pmenzel@molgen.mpg.de>
-> Cc: Joerg Roedel <jroedel@suse.de>
-> Cc: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-> Cc: iommu@lists.linux-foundation.org
-> ---
-> 
-> v2: avoid pr_info(""), change pci_info() to pr_info() for a nicer
-> solution
-> 
->  drivers/iommu/amd/init.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index 596d0c413473..62913f82a21f 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -1929,8 +1929,8 @@ static void print_iommu_info(void)
->  		pci_info(pdev, "Found IOMMU cap 0x%hx\n", iommu->cap_ptr);
->  
-> 
->  		if (iommu->cap & (1 << IOMMU_CAP_EFR)) {
-> -			pci_info(pdev, "Extended features (%#llx):",
-> -				 iommu->features);
-> +			pr_info("Extended features (%#llx):", iommu->features);
-> +
->  			for (i = 0; i < ARRAY_SIZE(feat_str); ++i) {
->  				if (iommu_feature(iommu, (1ULL << i)))
->  					pr_cont(" %s", feat_str[i]);
+--Sig_/J+96lH4tYICTK=sueM5b4q3
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-How about avoiding all of this by using a temporary buffer
-and a single pci_info.
+Hi all,
 
-Miscellanea:
-o Move the feat_str and i declarations into the if block for locality
+In commit
 
----
- drivers/iommu/amd/init.c | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+  36303413885e ("crypto: chelsio - Read rxchannel-id from firmware")
 
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 321f5906e6ed..0d219044726e 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -1943,30 +1943,37 @@ static int __init iommu_init_pci(struct amd_iommu *iommu)
- 
- static void print_iommu_info(void)
- {
--	static const char * const feat_str[] = {
--		"PreF", "PPR", "X2APIC", "NX", "GT", "[5]",
--		"IA", "GA", "HE", "PC"
--	};
- 	struct amd_iommu *iommu;
- 
- 	for_each_iommu(iommu) {
- 		struct pci_dev *pdev = iommu->dev;
--		int i;
- 
- 		pci_info(pdev, "Found IOMMU cap 0x%x\n", iommu->cap_ptr);
- 
- 		if (iommu->cap & (1 << IOMMU_CAP_EFR)) {
--			pci_info(pdev, "Extended features (%#llx):",
--				 iommu->features);
-+			static const char * const feat_str[] = {
-+				"PreF", "PPR", "X2APIC", "NX", "GT", "[5]",
-+				"IA", "GA", "HE", "PC"
-+			};
-+			int i;
-+			char features[128] = "";
-+			int len = 0;
-+
- 			for (i = 0; i < ARRAY_SIZE(feat_str); ++i) {
--				if (iommu_feature(iommu, (1ULL << i)))
--					pr_cont(" %s", feat_str[i]);
-+				if (!iommu_feature(iommu, BIT_ULL(i)))
-+					continue;
-+				len += scnprintf(features + len,
-+						 sizeof(features) - len,
-+						 " %s", feat_str[i]);
- 			}
- 
- 			if (iommu->features & FEATURE_GAM_VAPIC)
--				pr_cont(" GA_vAPIC");
-+				len += scnprintf(features + len,
-+						 sizeof(features) - len,
-+						 " %s", "GA_vPIC");
- 
--			pr_cont("\n");
-+			pci_info(pdev, "Extended features (%#llx):%s\n",
-+				 iommu->features, features);
- 		}
- 	}
- 	if (irq_remapping_enabled) {
+Fixes tag
 
+  Fixes: 567be3a5d227 ("crypto: chelsio - Use multiple txq/rxq per tfm to p=
+rocess the requests)
 
+has these problem(s):
+
+  - Subject has leading but no trailing quotes
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/J+96lH4tYICTK=sueM5b4q3
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBzeAwACgkQAVBC80lX
+0GxZQQf/SdbMaIksVBel+M7vfqNIaqcn0zCQrXsKtipyT2T+m3MFQtDP7ZSvThNP
+yRhW6mbVlq3nvfNk1yw83po1a+oCLaoV+iYEaAm0LzK+o71yTBKSmHD0m4DMu5Et
+X5t/POYQj6CX2Sxpns422sLDP3MZb2svdn/hM04ryaWA5wulxpgrMG31UzmhBXd2
+HvHTZpPjXbL/mU1w/TIJAe6vIgkUhLrq1bDlVKtphBUEkWr/XfazJKfsSgMLzoRw
+vtIew1xkjD7KHLdiZDTjdBo7iSUkunw7JYV4mcJoRBxLamxqUObahI/MnM3YxBBa
+ANOTL/YcwGoDur89Q+/2sM9hsTG1jA==
+=YmaW
+-----END PGP SIGNATURE-----
+
+--Sig_/J+96lH4tYICTK=sueM5b4q3--
