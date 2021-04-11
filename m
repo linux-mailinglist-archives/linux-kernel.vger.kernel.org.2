@@ -2,79 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712F135B343
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8442E35B344
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 13:06:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235239AbhDKLFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 07:05:17 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:43806 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231405AbhDKLFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 07:05:16 -0400
-Received: from loongson.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxvcjV13Jg6GgGAA--.8516S2;
-        Sun, 11 Apr 2021 19:04:53 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Fix strnlen_user access check
-Date:   Sun, 11 Apr 2021 19:04:52 +0800
-Message-Id: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxvcjV13Jg6GgGAA--.8516S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7JFyrJF47Xw4rAr4rJw4kCrg_yoWDZFX_Ca
-        y7tw4kCw4kJFW2v3ZrWr45Ary8G348Jr9Y9Fn5t34ak3sIyryUWFZ7JrsIqr4UuasFv3Wr
-        ZFWDJ3yfArnxKjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb28YjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
-        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr
-        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8KwCF04k2
-        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
-        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41l
-        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
-        AIcVCF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bOSoAUUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S235345AbhDKLFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 07:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231405AbhDKLFU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 07:05:20 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F72AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 04:05:03 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id l4so15486216ejc.10
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 04:05:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=az8q2odqAehv/6ccb9+lYFG/ANi2ZGKRpdq6W0qCMck=;
+        b=h157FVAEdsj22vfj8EhBEa/n516NW0gIl7o8+tw8rdFUvDIObwG7ab0F0McIFnlhWU
+         HkABfVBoQ6FHOSVgoRTXMgAUJIBJQolYbWyTpdji0iWbYNOE8vXpXSdH+HOaExRsP5Or
+         7cxTCcuPfmxB9K6X+FNJ671tqC6PQJqMlrZqnB4rBvcdclTM8ubwSbxrR0hV4nL7swNU
+         xo1ATP47vzutATXf6CQJkF/t5lQhjhs4BwZhEkFZfN3SBMMaS5cYOQuJRrhfKoEDf9oQ
+         D7+j4LXPTt/0ET4Oo8S+7+y5F5IKafEOIB1yuMr9KD9qdjF2T6I86OQaWL8L0eAW9DrV
+         paEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=az8q2odqAehv/6ccb9+lYFG/ANi2ZGKRpdq6W0qCMck=;
+        b=ZqmSkNnpiUdBaXVGs2QHhN6KS04iaU2O7r4Nqb4qcPaBWzgPyRrqRR1AUnkTCXiN6V
+         EFcjXlFDCAHXS666EOMcoeFgnOL2NPuOfCa8CTfWISZd072yu0H/wiV85lZL+XOhaf/q
+         WfIb1a3PX/17RX+ZCCXzBSGy/LgnbITtwUF8Eb1HSzGnnJrO9pPplMKrJdOkTvIPA09Z
+         aGupyZpllKCFp+kglMM9cT1Y//Gw31oB8n+6IDnOmPrcXuRE+EIXKgMjCJ7I0zxaBPB/
+         DzCs3V6NuBRguVIhH7E+ApOwhmPx23kyCexHUxklOPPw0xWl3Wlua6sRwWUwX6U1hBcI
+         0y7Q==
+X-Gm-Message-State: AOAM531y9orecHS6KrwDqcqTMkFmdb7rHTF9k+wIUV89wDnPwkFxwo36
+        eg+Qpf3X7Lefi2Bwd5ipxAI=
+X-Google-Smtp-Source: ABdhPJyGmIUcU9hMK8vtxrrVi1WWp4GtlJ7YQ0MLjun1KSanFzDmudqZFAm1ZSsEULXv84IutKFqTw==
+X-Received: by 2002:a17:906:b28c:: with SMTP id q12mr8781212ejz.284.1618139102222;
+        Sun, 11 Apr 2021 04:05:02 -0700 (PDT)
+Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id i2sm4577202edy.72.2021.04.11.04.05.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Apr 2021 04:05:01 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH v5 0/4] staging: rtl8723bs: Change several files of the driver
+Date:   Sun, 11 Apr 2021 13:04:54 +0200
+Message-Id: <20210411110458.15955-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs") brought a problem for
-strnlen_user(). Jump out when checking access_ok() with condition that
-(s + strlen(s)) < __UA_LIMIT <= (s + n). The old __strnlen_user_asm()
-just checked (ua_limit & s) without checking (ua_limit & (s + n)).
-Therefore, find strlen form s to __UA_LIMIT - 1 in that condition.
+Remove camelcase, correct misspelled words in comments, change 
+the type of a variable and its use, change comparisons with 'true'
+in controlling expressions.
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
- arch/mips/include/asm/uaccess.h | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+Changes from v4: Write patch version number in 2/4.
+Changes from v3: Move changes of controlling expressions in patch 4/4.
+Changes from v2: Rewrite subject in patch 0/4; remove a patch from the
+series because it had alreay been applied (rtl8723bs: core: Remove an unused variable).
+Changes from v1: Fix a typo in subject of patch 1/5, add patch 5/5.
 
-diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
-index 91bc7fb..85ba0c8 100644
---- a/arch/mips/include/asm/uaccess.h
-+++ b/arch/mips/include/asm/uaccess.h
-@@ -630,8 +630,15 @@ static inline long strnlen_user(const char __user *s, long n)
- {
- 	long res;
- 
--	if (!access_ok(s, n))
--		return -0;
-+	if (unlikely(n <= 0))
-+		return 0;
-+
-+	if (!access_ok(s, n)) {
-+		if (!access_ok(s, 0))
-+			return 0;
-+
-+		n = __UA_LIMIT - (unsigned long)s - 1;
-+	}
- 
- 	might_fault();
- 	__asm__ __volatile__(
+Fabio M. De Francesco (4):
+  staging: rtl8723bs: Remove camelcase in several files
+  staging: rtl8723bs: include: Fix misspelled words in comments
+  staging: rtl8723bs: include: Change the type of a variable
+  staging: rtl8723bs: Change controlling expressions
+
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      |  2 +-
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     |  2 +-
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c  | 18 +++++-----
+ drivers/staging/rtl8723bs/hal/hal_intf.c      |  2 +-
+ drivers/staging/rtl8723bs/hal/rtl8723b_dm.c   |  6 ++--
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |  2 +-
+ drivers/staging/rtl8723bs/hal/sdio_ops.c      | 14 ++++----
+ .../rtl8723bs/include/Hal8192CPhyReg.h        |  8 ++---
+ .../staging/rtl8723bs/include/basic_types.h   |  2 +-
+ drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
+ drivers/staging/rtl8723bs/include/hal_com.h   |  2 +-
+ .../staging/rtl8723bs/include/hal_com_reg.h   | 34 +++++++++----------
+ drivers/staging/rtl8723bs/include/hal_data.h  |  2 +-
+ .../staging/rtl8723bs/include/hal_pwr_seq.h   |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_cmd.h   |  6 ++--
+ drivers/staging/rtl8723bs/include/rtw_mlme.h  | 18 +++++-----
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_mp.h    |  2 +-
+ .../staging/rtl8723bs/include/rtw_pwrctrl.h   |  4 +--
+ drivers/staging/rtl8723bs/include/rtw_recv.h  |  4 +--
+ drivers/staging/rtl8723bs/include/rtw_xmit.h  |  2 +-
+ drivers/staging/rtl8723bs/include/sta_info.h  |  2 +-
+ drivers/staging/rtl8723bs/include/wifi.h      |  2 +-
+ 23 files changed, 70 insertions(+), 70 deletions(-)
+
 -- 
-2.1.0
+2.31.1
 
