@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CCE435B53E
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F7135B543
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236116AbhDKNqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:46:18 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33034 "EHLO
+        id S236198AbhDKNqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:46:39 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33470 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235768AbhDKNoG (ORCPT
+        with ESMTP id S235776AbhDKNoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:44:06 -0400
-Date:   Sun, 11 Apr 2021 13:43:33 -0000
+        Sun, 11 Apr 2021 09:44:07 -0400
+Date:   Sun, 11 Apr 2021 13:43:34 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618148613;
+        s=2020; t=1618148615;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=oPwodwl1UMmf8D0v6IBOBBtSB1TNwv+8zzrd2ZuD7UM=;
-        b=ZQFrcWtrUx2ZFZNDP6CtdfyBcK6Z6r0EqAQIb/IQOXq09EXaBNxLo6X9G8fV4c8E9pq920
-        TttZ/OhdFa+xDf3IF4VlZNAJMxbbEqBTjPOGfHydYUNxN4MkKa0uBy0Hz7prjrF9hJa4NO
-        UURclWGNheZe+nbuBUpg8hQg5rbVRdVN8OjYCST4EnfFYb6Tp5q7ycZbYuLOWEk9707lQ4
-        XdN4E3dapsNnDbnHgxGkGS0qvnma1Ka7+XVIC2Ft5o6yjgWCgAYK45YnawwnViBqfqm4Ja
-        mxeW6T1XawbuhnX9qP+zVJhsPZfsDziOUHH1OwOQakBCAc+55pBeOPEDV9VWGA==
+        bh=gYjMVYtwu/ILfMH4BR0WTCWHbGcFdo13jy157ARNEMs=;
+        b=JuIKFCjcodp2EJSDmWx/FH7ILdhFSHzYU69N09QcZpXoFxQwU/ga0OxxZG2vvIbTH/MIzz
+        GKLmS5IkyEyVQhFQASpAaBXj/8jHVN+GxIInz84y/o55jeA0XFeiNNG947oVqQad3Uvlpd
+        FIvzM6zg5BnA+6oUwZfyMi5r25Jytas/q1rMoYlM9UgLwcyp+tv7OPEp05749WJ4nK+5Cw
+        NHEST9RPzkbf2UZ7IMDGUkv/bJMH1cnrSdu8Xb12/5F3V1+lMPn5lj75K8WvDAT7ff0nPv
+        JUbBNI//a9NeBHL3zRDa2M2OxeVZasIVxbumb9bGOYd80jj30+yvY240dOQfSQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618148613;
+        s=2020e; t=1618148615;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=oPwodwl1UMmf8D0v6IBOBBtSB1TNwv+8zzrd2ZuD7UM=;
-        b=qR1FjgTb95T+WisXwwevzk9EeBG68tL+5ZtIDRUGUkH8rA/yFASRk/POpzXnrvEZwwvrV/
-        o9iJ3xcwFT5bbPDQ==
-From:   "tip-bot2 for Stephen Zhang" <tip-bot2@linutronix.de>
+        bh=gYjMVYtwu/ILfMH4BR0WTCWHbGcFdo13jy157ARNEMs=;
+        b=pRuTtdZTudav7O5sHbNnm7eqdEev3v+JsaMi8a9gGjruzvuOgA4tQP/1Ecyh8tX0HDhG1I
+        H/5HB+SH6o3SDdAQ==
+From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] torture: Replace torture_init_begin string with %s
-Cc:     Stephen Zhang <stephenzhangzsd@gmail.com>,
+Subject: [tip: core/rcu] torture: Make jitter.sh handle large systems
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161814861328.29796.17076373525240508511.tip-bot2@tip-bot2>
+Message-ID: <161814861450.29796.11179417291697971339.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -52,38 +52,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     4ac9de07b24f93a87ad38c497ad00fe2451203e7
-Gitweb:        https://git.kernel.org/tip/4ac9de07b24f93a87ad38c497ad00fe2451203e7
-Author:        Stephen Zhang <stephenzhangzsd@gmail.com>
-AuthorDate:    Sat, 23 Jan 2021 16:34:01 +08:00
+Commit-ID:     8126c57f00cea3502a017b7c76df1fac58f89e88
+Gitweb:        https://git.kernel.org/tip/8126c57f00cea3502a017b7c76df1fac58f89e88
+Author:        Paul E. McKenney <paulmck@kernel.org>
+AuthorDate:    Wed, 10 Feb 2021 13:25:58 -08:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
-CommitterDate: Mon, 08 Mar 2021 14:22:28 -08:00
+CommitterDate: Mon, 08 Mar 2021 14:21:41 -08:00
 
-torture: Replace torture_init_begin string with %s
+torture: Make jitter.sh handle large systems
 
-This commit replaces a hard-coded "torture_init_begin" string in
-a pr_alert() format with "%s" and __func__.
+The current jitter.sh script expects cpumask bits to fit into whatever
+the awk interpreter uses for an integer, which clearly does not hold for
+even medium-sized systems these days.  This means that on a large system,
+only the first 32 or 64 CPUs (depending) are subjected to jitter.sh
+CPU-time perturbations.  This commit therefore computes a given CPU's
+cpumask using text manipulation rather than arithmetic shifts.
 
-Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
+Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/torture.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ tools/testing/selftests/rcutorture/bin/jitter.sh | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/torture.c b/kernel/torture.c
-index 01e336f..0a315c3 100644
---- a/kernel/torture.c
-+++ b/kernel/torture.c
-@@ -816,9 +816,9 @@ bool torture_init_begin(char *ttype, int v)
- {
- 	mutex_lock(&fullstop_mutex);
- 	if (torture_type != NULL) {
--		pr_alert("torture_init_begin: Refusing %s init: %s running.\n",
--			 ttype, torture_type);
--		pr_alert("torture_init_begin: One torture test at a time!\n");
-+		pr_alert("%s: Refusing %s init: %s running.\n",
-+			  __func__, ttype, torture_type);
-+		pr_alert("%s: One torture test at a time!\n", __func__);
- 		mutex_unlock(&fullstop_mutex);
- 		return false;
- 	}
+diff --git a/tools/testing/selftests/rcutorture/bin/jitter.sh b/tools/testing/selftests/rcutorture/bin/jitter.sh
+index 188b864..3a856ec 100755
+--- a/tools/testing/selftests/rcutorture/bin/jitter.sh
++++ b/tools/testing/selftests/rcutorture/bin/jitter.sh
+@@ -67,10 +67,10 @@ do
+ 		srand(n + me + systime());
+ 		ncpus = split(cpus, ca);
+ 		curcpu = ca[int(rand() * ncpus + 1)];
+-		mask = lshift(1, curcpu);
+-		if (mask + 0 <= 0)
+-			mask = 1;
+-		printf("%#x\n", mask);
++		z = "";
++		for (i = 1; 4 * i <= curcpu; i++)
++			z = z "0";
++		print "0x" 2 ^ (curcpu % 4) z;
+ 	}' < /dev/null`
+ 	n=$(($n+1))
+ 	if ! taskset -p $cpumask $$ > /dev/null 2>&1
