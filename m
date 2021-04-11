@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3109835B26C
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 10:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3428E35B26D
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 10:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbhDKI2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 04:28:47 -0400
-Received: from mout.web.de ([212.227.15.3]:47191 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229804AbhDKI2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 04:28:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1618129701;
-        bh=2ckt1f+rI93dlvOrZNcI1/4dZNPyKFvyBbigdaF7+C4=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:References:Date:In-Reply-To;
-        b=NbR3G/QhqoVEds/ulzGvB5EOjYsAWITrBzpkLB+YuQH6loO4iiEv/TPRHqUOJGioN
-         L151xNO5j6ejePK6UmTCmiCKOx95HCrFhwathjjYvznxjE3RzfkdPtTJBALbDxA67N
-         jS6nsOMIR6UtuCEPQX99Ek39D0gXpqwuTqD/gAvs=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.10.10] ([88.215.87.53]) by smtp.web.de (mrweb001
- [213.165.67.108]) with ESMTPSA (Nemesis) id 0MGzFy-1lHhq32GjS-00DrNA; Sun, 11
- Apr 2021 10:22:21 +0200
-Subject: Re: [PATCH v2] x86: pat: Do not compile stubbed functions when
- X86_PAT is off
-From:   Jan Kiszka <jan.kiszka@web.de>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     x86 <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <198c94a8-12ea-88e7-6f08-b3456473e5c3@siemens.com>
- <87r1z6xxh5.fsf@nanos.tec.linutronix.de>
- <a2788ff7-c524-52de-3f45-82613410f872@siemens.com>
- <a9351615-7a0d-9d47-af65-d9e2fffe8192@siemens.com>
-Message-ID: <802cefc7-b475-c6d6-ece7-8232d7f3891d@web.de>
-Date:   Sun, 11 Apr 2021 10:22:19 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S235159AbhDKI3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 04:29:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231356AbhDKI3d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 04:29:33 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0A7C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 01:29:15 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id u21so15176963ejo.13
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 01:29:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jbd5H0UwYLbMR62cEsPc4FBrxl4fQyEDt4D7w7SlNtw=;
+        b=Xv+wlrWwbWGUutpihPJnRxfmD1h93HBgETHnKDs03pQmldV52gKO05pW6sz3C7biTv
+         K1mTrXxIAkBzz7G9vs1kg9aJm9sCLn+kH76GDBbkLpftIzSV56bNGbUoLZ5NdSoC3fZJ
+         UNnaP4ApddRQ4NgTYZR+p30Y5uC9Zi4QqzzmL1SJsvBZc9MnAB+s3bThHq1qIzHODgVf
+         7xvlmYG7upHGLnvRilaJDLRNub+8JkZYMLSobfhGwhtvQPEEryxAQ4OHikY30Wmztunw
+         TXtXp8yskYxwJQcOgiG+uwvMqdOqmdrIVlug47ZcVg34gUchpxzd2l7of34ao4NC6EwI
+         bUkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=jbd5H0UwYLbMR62cEsPc4FBrxl4fQyEDt4D7w7SlNtw=;
+        b=Vea72L2ky+dsmVoG8336emZBjP++WNDcrC1nK/ZXJJkA4sWHHf0gwUX3102hT5x2AS
+         S5lB2MuPUd71XaHJQVcNFCpuAg+ZvY7MkvqyRHWznwfobywvOPtaUUAzHUhB92ONVK67
+         QFLJHXs+NV+z1UnSGpqkPXz/T8kuheJbOimiz9THfUm/M+ABh6+2LdSaJ5zEVX3H8wMS
+         VMxL5V02F8aOQbTcltffYQ9TqYH04uWnFWzbg4vThyEwd6Zl5vTAMwFuwFKLiKZgOepp
+         K1ywkJ+WrRBw8U7Kut7oOmI/TeHV5KSKNVd0Hydkik6gPzLkMP/nor5RwgTZWc9KQsCq
+         n4Fg==
+X-Gm-Message-State: AOAM533xmefT//Je9cBo8qUTjFo6X2LPeongBLOn/r4xdtuwifJl1yQ4
+        Gvm8R4J1PZ5sOB/bkn0/QZU=
+X-Google-Smtp-Source: ABdhPJyNZirbhS9ukY9aKtE53LirNOwGRzkMtW5FM9oJo2ZMZMXY123Z07csy+YcgkKhcas4pr7UZQ==
+X-Received: by 2002:a17:906:9b2:: with SMTP id q18mr22788236eje.147.1618129754397;
+        Sun, 11 Apr 2021 01:29:14 -0700 (PDT)
+Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id hp12sm3682541ejc.46.2021.04.11.01.29.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Apr 2021 01:29:13 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH v3 0/4] staging: rtl8723bs: Change several files of the driver
+Date:   Sun, 11 Apr 2021 10:29:04 +0200
+Message-Id: <20210411082908.31876-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <a9351615-7a0d-9d47-af65-d9e2fffe8192@siemens.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7cUiODngEyb67AZXSzX9NnIuKfYRJl9/UAOm7HtTkJn1FFEVys/
- PfUMmTdaPUfIeSNIfGgiWwZsrmPIEn9DI95s1ENfEx9wRYMcN8OKJXC0dxIxDIPrzm9xusx
- NRolWA7vUay/7xgNFjrsR7BG+wqE6rdzaNuP0m8fROL0Iu0A15KyHfldkTrBn8gs7uHHKJw
- mek0sJ/GAVbCv/LLp61Ow==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WbgiMBI2ofQ=:L+N0ksEG3oJuKH38H67GEL
- Hsx78jVaUlea+YJ12cw+ulNOTxw3OhUAo9S9iwc0Qnru3Y25GEHD7kLz9jxeqCgC/O8YxV942
- ckUIYP9Js7d7wSPHK5j5jFCcJHH3ZkFdhYVIGnJtzfBI7vJAtntihRksenOpjWNVTbRe+WDdp
- VlY2/Su22m2L9vXGW5be55fhfaE/NFZKQQ2qg70ZpHN8rd3juZgA/uq2P8DRbcIbKTjX//0oo
- fTVOGWf/wh8a7dC3Bgu3UBKQnnPG82jJUR9tTfGtJMfBzpWvFcY8ctfgodmHkB+UR35w9p+qO
- 6eATdCYjFQl8oPfchdtL8dDKOCL1dAYleDjwp19ss7u0UvsExKwyjg4MT3slIk/fg6GottEls
- zkuDNrXiPzFWOcWLZLNIKLVFYRBhvWEqZ2IxERJ9qsuFm3/8pW+/lrateRf/u3ADZMi94XQ1f
- 0m6nYfZx3IPjOybu0Oz2bk+F3+ScU2Zd6fKqCk2n+IzaQm49ySPRtLy2H+DZJFtqrTVhoERG1
- ReTcJ4H+q08Yad4kehWixfxmI5B2WeH+AgmFFutrzgHmiFOszM5eZSisyjBtCKcLcgZAcRtby
- 0gS1+m9JIvziX+LQnburL5ryJ5v3szzd+SClAkgTaSyUbA0Y0CKe2N76UHwdf1biaXTBr9mwR
- x3YSoE5uhJZdKbvz67dsKMmgFGOOZN4QGyiyvjqZoVP9f+mZnJtjakXrPHiKtJLR4RYE3UMan
- K46VmdPZIL/ilG0A4cQaU/CNIbHBdjm7Uc8OSYkQJ7kzvsUet225DS+RBv2v1DUKM/l7EnxXq
- bAq8iy2LSL1UffRTs/V59YdP87oS1HJbXlm8bZh+LvayHYA2hWWLOnyorEpAar1Vopjq8h3od
- 6oqc6OjbWNmOUC33uAREoZvFyjPlI0lfXe+dvXXpNubF/lyYdCJKLorMYYalXs8fGjHcSfFH+
- t4uwX+Fz3ZHgxtqMLDg5sPiMbp1diQmZezodWm/sgtjT4f/4awniItMx4g1e6yDzE7D4qjtXD
- QS1ZrNwVdny2k1QHZ10r5n+0Sf5OSr+e9g+h81G4tBHGfyLyKty48Ew51+jTPuiBtPKXRSnw/
- g2IcBJ3tfTbYNzJ2mZcDY3W9A2hPxx1hgymQ1BjOFdMFSXT43iFq8R89uzq4xSQuG3pFc5GWG
- UA2hb6OuagYxFPxciB0DFZHsi06OnpY88rFX4bqPdxJT9FTZUSHJoeaif1aat28Ny9exk=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26.10.20 18:39, Jan Kiszka wrote:
-> From: Jan Kiszka <jan.kiszka@siemens.com>
->
-> Those are already provided by linux/io.h as stubs.
->
-> The conflict remains invisible until someone would pull linux/io.h into
-> memtype.c.
->
-> Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-> ---
->
-> Change in v2:
->  - correct commit message
->
->  arch/x86/mm/pat/memtype.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/arch/x86/mm/pat/memtype.c b/arch/x86/mm/pat/memtype.c
-> index 8f665c352bf0..41a4ac585af3 100644
-> --- a/arch/x86/mm/pat/memtype.c
-> +++ b/arch/x86/mm/pat/memtype.c
-> @@ -800,6 +800,7 @@ void memtype_free_io(resource_size_t start, resource=
-_size_t end)
->  	memtype_free(start, end);
->  }
->
-> +#ifdef CONFIG_X86_PAT
->  int arch_io_reserve_memtype_wc(resource_size_t start, resource_size_t s=
-ize)
->  {
->  	enum page_cache_mode type =3D _PAGE_CACHE_MODE_WC;
-> @@ -813,6 +814,7 @@ void arch_io_free_memtype_wc(resource_size_t start, =
-resource_size_t size)
->  	memtype_free_io(start, start + size);
->  }
->  EXPORT_SYMBOL(arch_io_free_memtype_wc);
-> +#endif
->
->  pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
->  				unsigned long size, pgprot_t vma_prot)
->
+Remove camelcase, correct misspelled words in comments, change 
+the type of a variable and its use, change comparisons with 'true'
+in controlling expressions.
 
-What happened to this?
+Changes from v2: Rewrite subject in patch 0/4; remove a patch from the
+series because it had alreay been applied (rtl8723bs: core: Remove an unused variable).
+Changes from v1: Fix a typo in subject of patch 1/5, add patch 5/5.
 
-Jan
+Fabio M. De Francesco (4):
+  staging: rtl8723bs: Remove camelcase in several files
+  staging: rtl8723bs: include: Fix misspelled words in comments
+  staging: rtl8723bs: Change the type and use of a variable
+  staging: rtl8723bs: core: Change a controlling expression
+
+ drivers/staging/rtl8723bs/core/rtw_cmd.c      |  2 +-
+ drivers/staging/rtl8723bs/core/rtw_mlme.c     |  2 +-
+ drivers/staging/rtl8723bs/core/rtw_pwrctrl.c  | 18 +++++-----
+ drivers/staging/rtl8723bs/hal/hal_intf.c      |  2 +-
+ drivers/staging/rtl8723bs/hal/rtl8723b_dm.c   |  6 ++--
+ .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |  2 +-
+ drivers/staging/rtl8723bs/hal/sdio_ops.c      | 14 ++++----
+ .../rtl8723bs/include/Hal8192CPhyReg.h        |  8 ++---
+ .../staging/rtl8723bs/include/basic_types.h   |  2 +-
+ drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
+ drivers/staging/rtl8723bs/include/hal_com.h   |  2 +-
+ .../staging/rtl8723bs/include/hal_com_reg.h   | 34 +++++++++----------
+ drivers/staging/rtl8723bs/include/hal_data.h  |  2 +-
+ .../staging/rtl8723bs/include/hal_pwr_seq.h   |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_cmd.h   |  6 ++--
+ drivers/staging/rtl8723bs/include/rtw_mlme.h  | 18 +++++-----
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_mp.h    |  2 +-
+ .../staging/rtl8723bs/include/rtw_pwrctrl.h   |  4 +--
+ drivers/staging/rtl8723bs/include/rtw_recv.h  |  4 +--
+ drivers/staging/rtl8723bs/include/rtw_xmit.h  |  2 +-
+ drivers/staging/rtl8723bs/include/sta_info.h  |  2 +-
+ drivers/staging/rtl8723bs/include/wifi.h      |  2 +-
+ 23 files changed, 70 insertions(+), 70 deletions(-)
+
+-- 
+2.31.1
+
