@@ -2,154 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 849AD35B2FE
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B65635B309
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235300AbhDKKKf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 06:10:35 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:26878 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231405AbhDKKKe (ORCPT
+        id S235276AbhDKKPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 06:15:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235194AbhDKKPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 06:10:34 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A2MK58Kx3yaGu9Fy5jZ9dKrPwlr1zdoIgy1kn?=
- =?us-ascii?q?xilNYDZSddGVkN3roeQD2XbP+VEscVwDufTFF6mEXH/GnKQe3aA9H5eHGDPntm?=
- =?us-ascii?q?yhMZ144eLZrgHINiXi+odmtJtIXLN5DLTLbWRSqebfzE2GH807wN+BmZrY4dv2?=
- =?us-ascii?q?63t2VwllZ+VBwm5Ce2SmO3Z7TgVHGpY1faD0jqEqyQaIQ2gdbciwGxA+Lo3+ju?=
- =?us-ascii?q?DLj57vbFonABMq+WC1/EqVwYP6CBSR01MiVSpOy94ZgBD4ujH+j5/T0M2T+1v5?=
- =?us-ascii?q?32/X448+oqqG9vJzQPONkdQObg/nggGuaIkJYdK/gAw=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,214,1613430000"; 
-   d="scan'208";a="502615288"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 12:10:17 +0200
-Date:   Sun, 11 Apr 2021 12:10:17 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-cc:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        Sun, 11 Apr 2021 06:15:34 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A10D1C061574;
+        Sun, 11 Apr 2021 03:15:18 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id i190so7223568pfc.12;
+        Sun, 11 Apr 2021 03:15:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=tALxIC5C2ozJfWNsDIYTLsxHNEVLmhYGZfg3+tBvepQ=;
+        b=pcIwI9/JrMck4W4DyRDkp3q5nIlxzt8vlMTzsb4ZuZfUu2HW7qYsKh4YsHn2GU7Uxs
+         J4MWVT7NgjfDG0Z0+Zcfd9H+wPqPiAbX0oZOFeW2q2JVsT3ajbtW6QxAanNcZe9yW7Ap
+         Pv8sR+m+ov9i5cR3/CGWJP5/khXkXQgX/ODfwhfROMUV3EIG+JSKju0TNt+IWxJ3SpKw
+         W9IqrvNnyDJ3FffeZPgqZMSMUis84bVdIFl9ax4lyOQokVw5k/7tvPTbkvJ+M77Z9b0G
+         m5oiCTa0LSFklMyWx2l/e0beJ1xaF8JYzg4R/P50/fGK/IlUK/JY6ZH63iUOgQRqW7+8
+         BZEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=tALxIC5C2ozJfWNsDIYTLsxHNEVLmhYGZfg3+tBvepQ=;
+        b=EXSHbOlClO4vWrA9C3Z7lKuvATxEjFJxvHHjo4H6ryL46qLRlHbmip9a4BTBGYBSK6
+         Jr2r+ZEVGFC2BYzlIlZw/tnchJZHuANmbuujibDuMH6QQ19V3qYs2fimBqScdkPXV6d7
+         gUjNiAX2QvvhrFqpJO+uIPO3Vqsq0AwGkX4ho5nIkRG+dqTug4m1hQ20xG+KjQfTDtuF
+         WJD1h+SPrdbpu12FI8teeBm2NHMm0/J7uypbPnt83tM/JZ+kjFfmTjxAVWOtvGnV+H9p
+         +8YwsWGRrx54swJIiiPE8f+FkPEfDVte4C2aswi0SWMjFyQRS/nfMqnw5EFuSWVzmrFx
+         tYpQ==
+X-Gm-Message-State: AOAM533wVVFidhj9MCljEUjAg5rDEMNqXab3iEG0SwbY3lp4pG8uGfGe
+        +pHO4r6eeBDAZm85xnttRHQ=
+X-Google-Smtp-Source: ABdhPJyqFYfuQYsq+4KmXf9iSGWkrm32tlH3p1ISbSyLvgz7MrM9S4IT6ni5rF1Gyc8xmC2hqi8JvQ==
+X-Received: by 2002:a63:6a41:: with SMTP id f62mr21043660pgc.428.1618136117998;
+        Sun, 11 Apr 2021 03:15:17 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:600d:a089:d8d9:c3e6:7914:c3d2])
+        by smtp.googlemail.com with ESMTPSA id gk20sm7607472pjb.17.2021.04.11.03.15.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Apr 2021 03:15:17 -0700 (PDT)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     bhelgaas@google.com
+Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
+        rdunlap@infradead.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-pci@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH v3 4/4] staging: rtl8723bs: core:
- Change a controlling expression
-In-Reply-To: <3322597.vpUxb0oOqP@localhost.localdomain>
-Message-ID: <alpine.DEB.2.22.394.2104111209230.2854@hadrien>
-References: <20210411082908.31876-1-fmdefrancesco@gmail.com> <2796632.fryDJISotm@localhost.localdomain> <alpine.DEB.2.22.394.2104111150010.2854@hadrien> <3322597.vpUxb0oOqP@localhost.localdomain>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: [PATCH] PCI: endpoint: fix incorrect kernel-doc comment syntax
+Date:   Sun, 11 Apr 2021 15:45:08 +0530
+Message-Id: <20210411101508.11065-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The opening comment mark '/**' is used for highlighting the beginning of
+kernel-doc comments.
+There are certain files in include/linux/pci*, which follow this syntax,
+but the content inside does not comply with kernel-doc.
+Such lines were probably not meant for kernel-doc parsing, but are parsed
+due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+causes unexpected warnings from kernel-doc.
 
+E.g., presence of kernel-doc like comment in include/linux/pci-ep-cfs.h at
+header causes this warnings by kernel-doc:
+"warning: expecting prototype for PCI Endpoint ConfigFS header file(). Prototype was for __LINUX_PCI_EP_CFS_H() instead"
 
-On Sun, 11 Apr 2021, Fabio M. De Francesco wrote:
+Similarly for other files too.
 
-> On Sunday, April 11, 2021 11:51:32 AM CEST Julia Lawall wrote:
-> > On Sun, 11 Apr 2021, Fabio M. De Francesco wrote:
-> > > On Sunday, April 11, 2021 11:26:41 AM CEST Julia Lawall wrote:
-> > > > On Sun, 11 Apr 2021, Fabio M. De Francesco wrote:
-> > > > > Change a controlling expression within an 'if' statement: don't
-> > > > > compare
-> > > > > with 'true'.
-> > > > >
-> > > > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > > > > ---
-> > > > >
-> > > > > Changes from v2: Rewrite subject in patch 0/4; remove a patch from
-> > > > > the
-> > > > > series because it had already been applied (rtl8723bs: core: Remove
-> > > > > an
-> > > > > unused variable). Changes from v1: Fix a typo in subject of patch
-> > > > > 1/5,
-> > > > > add patch 5/5.>
-> > > > >
-> > > > >  drivers/staging/rtl8723bs/core/rtw_cmd.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > b/drivers/staging/rtl8723bs/core/rtw_cmd.c index
-> > > > > 32079e0f71d5..600366cb1aeb 100644
-> > > > > --- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > +++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-> > > > > @@ -1507,7 +1507,7 @@ static void rtw_lps_change_dtim_hdl(struct
-> > > > > adapter *padapter, u8 dtim)>
-> > > > >
-> > > > >  	if (pwrpriv->dtim != dtim)
-> > > > >
-> > > > >  		pwrpriv->dtim = dtim;
-> > > > >
-> > > > > -	if ((pwrpriv->fw_current_in_ps_mode == true) && (pwrpriv-
-> > > >
-> > > >pwr_mode >
-> > > >
-> > > > > PS_MODE_ACTIVE)) { +	if ((pwrpriv->fw_current_in_ps_mode) &&
-> > > > > (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
-> > > >
-> > > > The parentheses in the left argument of && can be dropped as well.
-> > >
-> > > What about the parentheses of the right argument? I'm not sure: does
-> > > '>'
-> > > have precedence over '&&'? Doesn't it?
-> >
-> > On the right they are not actually needed either:
-> >
-> So, I remembered well :)
-> >
-> > https://en.cppreference.com/w/c/language/operator_precedence
-> >
-> Very nice table. Thanks for the link.
-> >
-> > But you could look around in the code and see what people typically do.
-> > Perhaps one might find the parentheses more clear when there is a binary
-> > operator.  But when there is no binary operator, they could be more
-> > confusing than useful.
-> >
-> When I look around in the code I see a lot of unnecessary parentheses.
-> What people typically do is not always the right thing. I prefer to remove
-> parentheses where they are redundant.
+Provide a simple fix by replacing such occurrences with general comment
+format, i.e. '/*', to prevent kernel-doc from parsing it.
 
-Not sure I was clear.  This driver seems to be very enthusiastic about
-parenttheses.  But perhaps check in other more mature parts of the kernel.
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+ include/linux/pci-ep-cfs.h | 2 +-
+ include/linux/pci-epc.h    | 2 +-
+ include/linux/pci-epf.h    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-julia
+diff --git a/include/linux/pci-ep-cfs.h b/include/linux/pci-ep-cfs.h
+index 662881335c7e..3e2140d7e31d 100644
+--- a/include/linux/pci-ep-cfs.h
++++ b/include/linux/pci-ep-cfs.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0+ */
+-/**
++/*
+  * PCI Endpoint ConfigFS header file
+  *
+  * Copyright (C) 2017 Texas Instruments
+diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
+index b82c9b100e97..80197a6df371 100644
+--- a/include/linux/pci-epc.h
++++ b/include/linux/pci-epc.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-/**
++/*
+  * PCI Endpoint *Controller* (EPC) header file
+  *
+  * Copyright (C) 2017 Texas Instruments
+diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
+index 6833e2160ef1..c43912b1d2d0 100644
+--- a/include/linux/pci-epf.h
++++ b/include/linux/pci-epf.h
+@@ -1,5 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+-/**
++/*
+  * PCI Endpoint *Function* (EPF) header file
+  *
+  * Copyright (C) 2017 Texas Instruments
+-- 
+2.17.1
 
->
-> Thanks for your kind help,
->
-> Fabio
-> >
-> > julia
-> >
-> > > Thanks,
-> > >
-> > > Fabio
-> > >
-> > > > julia
-> > > >
-> > > > >  		u8 ps_mode = pwrpriv->pwr_mode;
-> > > > >
-> > > > >  		rtw_hal_set_hwreg(padapter, HW_VAR_H2C_FW_PWRMODE,
-> > >
-> > > (u8
-> > >
-> > > > >  		*)(&ps_mode));
-> > > > >
-> > > > > --
-> > > > > 2.31.1
-> > > > >
-> > > > > --
-> > > > > You received this message because you are subscribed to the Google
-> > > > > Groups "outreachy-kernel" group. To unsubscribe from this group and
-> > > > > stop receiving emails from it, send an email to
-> > > > > outreachy-kernel+unsubscribe@googlegroups.com. To view this
-> > > > > discussion
-> > > > > on the web visit
-> > > > > https://groups.google.com/d/msgid/outreachy-kernel/20210411082908.3
-> > > > > 187
-> > > > > 6-5-fmdefrancesco%40gmail.com.
->
->
->
->
->
