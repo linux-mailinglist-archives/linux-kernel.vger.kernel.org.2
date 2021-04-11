@@ -2,105 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A552235B450
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 14:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 699B735B45E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235525AbhDKMkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 08:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235476AbhDKMkP (ORCPT
+        id S235457AbhDKMv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 08:51:29 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:46250 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhDKMv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 08:40:15 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D39E6C061574;
-        Sun, 11 Apr 2021 05:39:59 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id i3so10751912oik.7;
-        Sun, 11 Apr 2021 05:39:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VfBEA0/TCcfN0toecNQBMcZcbH1T58CPjc4GwqHtxYU=;
-        b=GPKwWiztX2XszBQOgWnk9WHZ4ZqHbBvuVVTQIktZwTFPseVslJFlblxTyQ7+tEV+Rh
-         mnaeA87HxycaXIlMt7K2fvesGnYMAPZ8qRgizl9BhZH+IYqenc8DnAHlrb1gFHfkcZhn
-         etyxaHrXPGXnxUKrbzWg+zMM3BG/S2EUE/GCoRSM6dwP3sUEjtiz4Rhs5qnD7Dws0yg7
-         OaX113ejwuntVUD3O/eOieeV8MiVYNRmRSq+HsjcZgxQFoBAOECZQc7L6Nngny3mE5fK
-         wdyOxvm8Q/8AwFeN+sLTx7wOAWc79TQRjtPdrkmj0sK9WvUhm+ntm6ENnq7d4uF05QAU
-         XnkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VfBEA0/TCcfN0toecNQBMcZcbH1T58CPjc4GwqHtxYU=;
-        b=DWliCP7XH2et5DRKfb8d5UBp8HdDUlBEfkkEVqSG6MCTpfv/i82BP3q7txBbq40BTC
-         Cu1JW+xMt+gHMsS7VIY71hDKX4MUNpd8pIjxw9ShhChV1lQf+0yMu78gRpG1DpNzhR+w
-         oTNgc9DA6Fsqny90SL3xirfUvbhdYfBCUaSnp2MhmKmHLIB0DpqqOph+RxV6IAuOIa0A
-         kiLtNt4zoxW/phgFfwEaSP9ngLjmXrcNz6JZYeHxzPvtmHyzCetGBDX23IrV2Ie0IzgD
-         SVDJOWyMrPeNKqf/tewyvPXvqR17CjHEMUXJ77iPckyfkUbo7dWBIFs6/j1bQ74tWMuQ
-         GgNQ==
-X-Gm-Message-State: AOAM5332PgmQt5eerJTeVr681vfTkAgzFG0HgBejd9Kxx2uzRiZ6iEq4
-        iE3i2+wA7fShzHa+guVerRg=
-X-Google-Smtp-Source: ABdhPJxeY/dmGDOpBojR/QO+0w0g/d2iF7IAPU8PQ1q6vfp7PmNap0f6GZaTA5JicXof9K4UM5Znhg==
-X-Received: by 2002:aca:ed95:: with SMTP id l143mr3562729oih.20.1618144799346;
-        Sun, 11 Apr 2021 05:39:59 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v6sm1622742ook.40.2021.04.11.05.39.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 11 Apr 2021 05:39:57 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 11 Apr 2021 05:39:56 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Sebastian Oechsle <setboolean@icloud.com>
-Cc:     pali@kernel.org, jdelvare@suse.com, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: (dell-smm) Add Dell Latitude E7440 to fan
- control whitelist
-Message-ID: <20210411123956.GA222996@roeck-us.net>
-References: <20210411095741.zmllsuc7pevdipvy@icloud.com>
+        Sun, 11 Apr 2021 08:51:27 -0400
+Received: from localhost.localdomain ([90.126.11.170])
+        by mwinf5d63 with ME
+        id rQr7240063g7mfN03Qr7CW; Sun, 11 Apr 2021 14:51:09 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 11 Apr 2021 14:51:09 +0200
+X-ME-IP: 90.126.11.170
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     james.schulman@cirrus.com, david.rhodes@cirrus.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH] ASoC: cs35l35: Fix an error handling path in 'cs35l35_i2c_probe()'
+Date:   Sun, 11 Apr 2021 14:51:06 +0200
+Message-Id: <15720439769ba94ffb65c90217392b0758b08f61.1618145369.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210411095741.zmllsuc7pevdipvy@icloud.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 11:57:41AM +0200, Sebastian Oechsle wrote:
-> Allow manual PWM control on Dell Latitude E7440.
-> 
-> Signed-off-by: Sebastian Oechsle <setboolean@icloud.com>
-> 
-> Changes in v2:
-> - Fix spelling
-> - Fix format
-> ---
+If 'devm_regmap_init_i2c()' fails, there is no need to goto err. We should
+return directly as already done by the surrounding error handling paths.
 
-Applied, but next time changelog goes here, please (after ---).
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ sound/soc/codecs/cs35l35.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Guenter
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index 55d529aa0011..7b9f5498f8a7 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -1488,7 +1488,7 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
+ 	if (IS_ERR(cs35l35->regmap)) {
+ 		ret = PTR_ERR(cs35l35->regmap);
+ 		dev_err(dev, "regmap_init() failed: %d\n", ret);
+-		goto err;
++		return ret;
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(cs35l35_supplies); i++)
+-- 
+2.27.0
 
->  drivers/hwmon/dell-smm-hwmon.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hwmon.c
-> index 73b9db9e3aab..2970892bed82 100644
-> --- a/drivers/hwmon/dell-smm-hwmon.c
-> +++ b/drivers/hwmon/dell-smm-hwmon.c
-> @@ -1210,6 +1210,14 @@ static struct dmi_system_id i8k_whitelist_fan_control[] __initdata = {
->  		},
->  		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
->  	},
-> +	{
-> +		.ident = "Dell Latitude E7440",
-> +		.matches = {
-> +			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Latitude E7440"),
-> +		},
-> +		.driver_data = (void *)&i8k_fan_control_data[I8K_FAN_34A3_35A3],
-> +	},
->  	{ }
->  };
->  
