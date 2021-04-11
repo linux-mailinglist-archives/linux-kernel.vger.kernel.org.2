@@ -2,93 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092CB35B5F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 17:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05A535B5F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 18:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236356AbhDKP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 11:59:13 -0400
-Received: from mail-pj1-f52.google.com ([209.85.216.52]:43778 "EHLO
-        mail-pj1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236267AbhDKP7L (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 11:59:11 -0400
-Received: by mail-pj1-f52.google.com with SMTP id x21-20020a17090a5315b029012c4a622e4aso5660664pjh.2;
-        Sun, 11 Apr 2021 08:58:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v5B/SxQlFrHLo+Ii4FhwOsO2iGqGZQI3Qni9NgWHOwA=;
-        b=s+X8kFgFjEUe3xgZZS7i6Fe+zjv9WWh4fPN6iv/vS/y9AvH2WaPBUiCVEefxfZgLX3
-         OySx7bRU/W160yFEZidVHVRfqBumCOzgd36JNyN6PoKrsys5B5jv49S4XFzM4kHVA2C/
-         jsVKjBMMiLuqig9dmvEST9jEIiYQVnsLsWU8GDo5OQrnhrt3YDpG4UAd//wO2+yrfNAW
-         OgY4Y5beMh7HO6k7ReCjYnFuSuLEZJrxXDijI0b5WeBI36tJO0oFsDlN+srUenw7BprH
-         tS9vQyGTWGe8vAFV4UWO26QgfdrEWucnJCpDc0nEwzZq5UvXsezlVFcyFRhx65X9qzaB
-         n99w==
-X-Gm-Message-State: AOAM532pGcCARdeLL1wE5PNYMnlZrtKd/D0Xp1a2r/PW4D00lU4N70m6
-        Aj70r52KEAfX0gI7g6tLsXuqfMIMhuo=
-X-Google-Smtp-Source: ABdhPJyK2adZtQk/OjYeR4ypZP0ipNQSXpvgS28NGUzoqoncHcOmb7mHAUFjXjUg9wBfeqt2vA6IpA==
-X-Received: by 2002:a17:90a:55ca:: with SMTP id o10mr23382029pjm.173.1618156734486;
-        Sun, 11 Apr 2021 08:58:54 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:7c41:980e:bfa1:bbb4? ([2601:647:4000:d7:7c41:980e:bfa1:bbb4])
-        by smtp.gmail.com with ESMTPSA id j3sm7224630pfc.49.2021.04.11.08.58.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Apr 2021 08:58:53 -0700 (PDT)
-Subject: Re: [PATCH] scsi: qla2xxx: Re-use existing error handling path
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        njavali@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <6973844a1532ec2dc8e86f3533362e79d78ed774.1618132821.git.christophe.jaillet@wanadoo.fr>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <f237fbd4-2ebf-0105-2a1a-93672cd446cb@acm.org>
-Date:   Sun, 11 Apr 2021 08:58:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236368AbhDKQBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 12:01:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47270 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236267AbhDKQBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 12:01:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 147C061041;
+        Sun, 11 Apr 2021 16:01:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618156884;
+        bh=bxyiUc7lO8RjWeGmFNt0Glxp3nNNC162o0D7XY+vRXg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ocbV3yCEonWttAc1zcbh4sFMlpL/8mLiYxvnPxd4vaNWUoxIUghQq/418Vd/8+OsQ
+         uJqpH09JX3FyCKp5XaQYZxmUsBFGWg8DBDqrZUYcGC9eTTDGDZ7Pv1fsnvFz66yY3l
+         CqFgPgBK9ODxn1O/DoS0JWKwm1nNfEok9TRCbissXEHtyCsrFX5+LauK+0HULFJudx
+         MheQDdG6dqOZZtISRGENS7K5+2Yo60vM8RzSwh/VaorG8/XaeVnWmZ6gy7/XASCyPB
+         iuDB+RBHMB+CmVctzSKyVDMGk7JOvcTcXfexy6bCgR4aqAXQUWdHhM9dc/xolI6hq+
+         ieCqE55bqcOfw==
+Received: by mail-lj1-f176.google.com with SMTP id m7so1467413ljp.10;
+        Sun, 11 Apr 2021 09:01:23 -0700 (PDT)
+X-Gm-Message-State: AOAM532GcTgYLIkxzPD48f/zGYs7pN/Gq6XkztodZshTDmn2P86SmLTU
+        JwHCkbiFGWU0dHcCIOW9BoedUCVZZ0aWyXvnE44=
+X-Google-Smtp-Source: ABdhPJy10CnI96Z9R6HlWIrVpcoYY10s7Y9maxlV3dOVr4CugIJl0sk8MNc8rkDLu53Ak6ongjwa0tUvq8SrIM/7luU=
+X-Received: by 2002:a05:651c:3c3:: with SMTP id f3mr15178457ljp.105.1618156882398;
+ Sun, 11 Apr 2021 09:01:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6973844a1532ec2dc8e86f3533362e79d78ed774.1618132821.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1617201040-83905-1-git-send-email-guoren@kernel.org> <1617201040-83905-5-git-send-email-guoren@kernel.org>
+In-Reply-To: <1617201040-83905-5-git-send-email-guoren@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Mon, 12 Apr 2021 00:01:10 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTT2Pe8o0wm1ohJE-A0HNjteiB6T3HMcH3Fdj7Tm7SSR8Q@mail.gmail.com>
+Message-ID: <CAJF2gTT2Pe8o0wm1ohJE-A0HNjteiB6T3HMcH3Fdj7Tm7SSR8Q@mail.gmail.com>
+Subject: Re: [PATCH v6 4/9] csky: locks: Optimize coding convention
+To:     Guo Ren <guoren@kernel.org>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
+        openrisc@lists.librecores.org,
+        sparclinux <sparclinux@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/11/21 2:21 AM, Christophe JAILLET wrote:
-> The code above this hunk looks spurious to me.
-> 
-> It looks like an error handling path (i.e.
-> "if (response_len > bsg_job->reply_payload.payload_len)")
-> but returns 0, which is the initial value of 'ret'.
-> 
-> Shouldn't we have ret = -<something> here?
-
-Hmm ... if I read that code path correctly it is on purpose that that
-code path returns 0 and error reporting happens by reporting the
-EXT_STATUS_BUFFER_TOO_SMALL error code to user space.
-
+On Wed, Mar 31, 2021 at 10:32 PM <guoren@kernel.org> wrote:
+>
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+>  - Using smp_cond_load_acquire in arch_spin_lock by Peter's
+>    advice.
+>  - Using __smp_acquire_fence in arch_spin_trylock
+>  - Using smp_store_release in arch_spin_unlock
+>
+> All above are just coding conventions and won't affect the
+> function.
+>
+> TODO in smp_cond_load_acquire for architecture:
+>  - current csky only has:
+>    lr.w val, <p0>
+>    sc.w <p0>. val2
+>    (Any other stores to p0 will let sc.w failed)
+>
+>  - But smp_cond_load_acquire need:
+>    lr.w val, <p0>
+>    wfe
+>    (Any stores to p0 will send the event to let wfe retired)
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Link: https://lore.kernel.org/linux-riscv/CAAhSdy1JHLUFwu7RuCaQ+RUWRBks2KsDva7EpRt8--4ZfofSUQ@mail.gmail.com/T/#m13adac285b7f51f4f879a5d6b65753ecb1a7524e
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
 > ---
->  drivers/scsi/qla2xxx/qla_bsg.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/qla2xxx/qla_bsg.c b/drivers/scsi/qla2xxx/qla_bsg.c
-> index aef2f7cc89d3..d42b2ad84049 100644
-> --- a/drivers/scsi/qla2xxx/qla_bsg.c
-> +++ b/drivers/scsi/qla2xxx/qla_bsg.c
-> @@ -2585,8 +2585,8 @@ qla2x00_get_host_stats(struct bsg_job *bsg_job)
->  
->  	data = kzalloc(response_len, GFP_KERNEL);
->  	if (!data) {
-> -		kfree(req_data);
-> -		return -ENOMEM;
-> +		ret = -ENOMEM;
-> +		goto host_stat_out;
->  	}
->  
->  	ret = qla2xxx_get_ini_stats(fc_bsg_to_shost(bsg_job), req_data->stat_type,
+>  arch/csky/include/asm/spinlock.h | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/csky/include/asm/spinlock.h b/arch/csky/include/asm/spinlock.h
+> index 69f5aa249c5f..69677167977a 100644
+> --- a/arch/csky/include/asm/spinlock.h
+> +++ b/arch/csky/include/asm/spinlock.h
+> @@ -26,10 +26,8 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
+>                 : "r"(p), "r"(ticket_next)
+>                 : "cc");
+>
+> -       while (lockval.tickets.next != lockval.tickets.owner)
+> -               lockval.tickets.owner = READ_ONCE(lock->tickets.owner);
+> -
+> -       smp_mb();
+> +       smp_cond_load_acquire(&lock->tickets.owner,
+> +                                       VAL == lockval.tickets.next);
+It's wrong, we should determine lockval before next read.
 
-Since the above looks good to me:
+Fixup:
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+diff --git a/arch/csky/include/asm/spinlock.h b/arch/csky/include/asm/spinlock.h
+index fe98ad8ece51..2be627ceb9df 100644
+--- a/arch/csky/include/asm/spinlock.h
++++ b/arch/csky/include/asm/spinlock.h
+@@ -27,7 +27,8 @@ static inline void arch_spin_lock(arch_spinlock_t *lock)
+                : "r"(p), "r"(ticket_next)
+                : "cc");
+
+-       smp_cond_load_acquire(&lock->tickets.owner,
++       if (lockval.owner != lockval.tickets.next)
++               smp_cond_load_acquire(&lock->tickets.owner,
+                                        VAL == lockval.tickets.next);
+
+>  }
+>
+>  static inline int arch_spin_trylock(arch_spinlock_t *lock)
+> @@ -55,15 +53,14 @@ static inline int arch_spin_trylock(arch_spinlock_t *lock)
+>         } while (!res);
+>
+>         if (!contended)
+> -               smp_mb();
+> +               __smp_acquire_fence();
+>
+>         return !contended;
+>  }
+>
+>  static inline void arch_spin_unlock(arch_spinlock_t *lock)
+>  {
+> -       smp_mb();
+> -       WRITE_ONCE(lock->tickets.owner, lock->tickets.owner + 1);
+> +       smp_store_release(&lock->tickets.owner, lock->tickets.owner + 1);
+>  }
+>
+>  static inline int arch_spin_value_unlocked(arch_spinlock_t lock)
+> --
+> 2.17.1
+>
+
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
