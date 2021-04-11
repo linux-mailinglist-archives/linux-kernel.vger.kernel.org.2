@@ -2,100 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEED35B4A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF85335B4A9
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235742AbhDKNbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235669AbhDKNbL (ORCPT
+        id S235454AbhDKNcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:32:08 -0400
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:63307 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235005AbhDKNcH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:31:11 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944A2C061574;
-        Sun, 11 Apr 2021 06:30:54 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id i9so10659683qka.2;
-        Sun, 11 Apr 2021 06:30:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2U0kajZpoqLNqZ697nPvtOzA3b5aXYBuZDP9zXOptDw=;
-        b=XrmlGe0RKfI6M+SGxspAXBfF+pUNxf0Jb1Hbtly2Bxs1u3Zivnl+D+d/JcJb0Uv6DA
-         nPWj/YzFxnKvSC6b5k274Khnr+jsw4FnwUUVl7TYfnxSkKsOpWT8bX4FBOUsTO1WaXXr
-         E9m/EHRxARiBHLpqSHc045e9XYFJm84LF9hssqEL7wbY4maDQhp9INOtIqq6XAfU3+Oz
-         aLpDhoWuTXUMJBeK56Xu1KRTdObhoOLujs6YZ8SolNyXXW//ELIWX1IdQU9x44HAiJJx
-         a/wOoNfAdLM/CZoWLsejKWMdwhWKMa9LUGwvebRU5HWS4xqZOFrmmwWf2KJaDuxYfNf3
-         O8iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2U0kajZpoqLNqZ697nPvtOzA3b5aXYBuZDP9zXOptDw=;
-        b=pBe98bzFqLCzRyWX2CA5iLT0H47Hqke70hka+plsTSpygndMSnHTExAU+3Iwt1czLf
-         UPd7t9Y/NcKs1jQwkzmtNmnM0U3BUHD4Z1+yV/FmCO1svpXipWjDt0kEDvVqjMVrSPdh
-         kP/WGVtnAvBEcnxs0+jiFu/43sty9ckNNMMPPOZCYDlK+wsjLJwtKSlo0wC/i2+Hiei6
-         Sh6pXNR7jC9/LsXizpOknrTzdGJ+Afs94NN7UzYBImAtgnr/iwGXzALbxabXwP12up8N
-         62gCGmZ1KQfjRGVRJULnGQL4niF1Mu5YyTaaA/xi7qRYweuFbHZkfr1O4IyjjduS0Vf3
-         miKw==
-X-Gm-Message-State: AOAM532nbeoeClWu7iVDWpXUaz5QYUMKBp5VR9PNYn+Rqoj4oZBtqL5w
-        /5wWEZtBxPICN+VojPdaVs5SbgQS5AFtJg==
-X-Google-Smtp-Source: ABdhPJx//vnD6C8CvtE8OrOMgGW3YUcdTG7jUI6nVveo24RsNJ7VvNZy4mWgjGmCsWXldhgrRrSXgw==
-X-Received: by 2002:a05:620a:13c3:: with SMTP id g3mr10501092qkl.377.1618147853794;
-        Sun, 11 Apr 2021 06:30:53 -0700 (PDT)
-Received: from master-laptop.sparksnet (c-98-233-193-225.hsd1.md.comcast.net. [98.233.193.225])
-        by smtp.gmail.com with ESMTPSA id l17sm5734204qtk.60.2021.04.11.06.30.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 06:30:53 -0700 (PDT)
-From:   Peter Geis <pgwipeout@gmail.com>
-To:     Jianqun Xu <jay.xu@rock-chips.com>, huangtao@rock-chips.com,
-        kever.yang@rock-chips.com, linus.walleij@linaro.org,
-        heiko@sntech.de
-Cc:     linux-gpio@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/7] gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
-Date:   Sun, 11 Apr 2021 09:30:30 -0400
-Message-Id: <20210411133030.1663936-8-pgwipeout@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210411133030.1663936-1-pgwipeout@gmail.com>
-References: <20210411133030.1663936-1-pgwipeout@gmail.com>
+        Sun, 11 Apr 2021 09:32:07 -0400
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 13BDVVVa024207;
+        Sun, 11 Apr 2021 22:31:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 13BDVVVa024207
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618147892;
+        bh=6YwTKBbNoleuwW/G8t5rDVU9qUR+RbEgL+hiFtrsKVs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=LkiGA8TvWpNqtWsDSinqFq7t+F9dy46aQ2rxTrd0R47jfQhHUQsMXUBZPZ9Sh6MAh
+         kNiUvQWFb0i31P1WcVgtKh6VVhz+3mTNPlwKNZ4o3GKboBsrbj3ub+wV31oV/xiLTq
+         6qzik8NAwcBO627UcZTRRfT7+H6aMATl0+Ng3V13GoJLdri2db2vXKWZCB/EhsnaFO
+         sQKvU6eYKlj6XsnsPxP7NgEiuCd8GeNWHVhvuf94ST5Xut7czUyl1xeMKSTuFtSOE3
+         LDWe6YOOuhbWeP+Xl8a2v8ATd19ek5fJIMZ+R7ZoAxs2D6kYOBzJtXMFQseeyxIcss
+         dF/hq/eCHKfpg==
+X-Nifty-SrcIP: [209.85.214.172]
+Received: by mail-pl1-f172.google.com with SMTP id y2so4938957plg.5;
+        Sun, 11 Apr 2021 06:31:32 -0700 (PDT)
+X-Gm-Message-State: AOAM533Oye4OhFGf/2vU5vTtXVtY8K/mwU+KLpmjvVAOEbFSP/79CwSN
+        0Y+iejjDT3AKejDxtf91OxHGoOJTqGc0ncPySnk=
+X-Google-Smtp-Source: ABdhPJz/zO015Um0WHBYZpS4w2WRTzh/PGFAlI18DvqL4z8DHDt3CzMo8Fo5G4kLOulICfjgNhq5KCF7teX2JheZRjc=
+X-Received: by 2002:a17:902:d645:b029:e8:ec90:d097 with SMTP id
+ y5-20020a170902d645b02900e8ec90d097mr21674078plh.47.1618147891413; Sun, 11
+ Apr 2021 06:31:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210104083221.21184-1-masahiroy@kernel.org> <CAK7LNARXy_puE7KZp2vjzn_KcW5uZ_ba3O5zFX46yGULjNhpZg@mail.gmail.com>
+ <202103011546.9AA6D832@keescook>
+In-Reply-To: <202103011546.9AA6D832@keescook>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 11 Apr 2021 22:30:54 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARMdf0ZGaH3VN8S56OH2-K+ZgWzH83FXSJ-=s3qCimYyA@mail.gmail.com>
+Message-ID: <CAK7LNARMdf0ZGaH3VN8S56OH2-K+ZgWzH83FXSJ-=s3qCimYyA@mail.gmail.com>
+Subject: Re: [PATCH] sysctl: use min() helper for namecmp()
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jianqun Xu <jay.xu@rock-chips.com>
+On Tue, Mar 2, 2021 at 8:47 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Sun, Feb 28, 2021 at 04:44:22PM +0900, Masahiro Yamada wrote:
+> > (CC: Andrew Morton)
+> >
+> > A friendly reminder.
+> >
+> >
+> > This is just a minor clean-up.
+> >
+> > If nobody picks it up,
+> > I hope perhaps Andrew Morton will do.
+> >
+> > This patch:
+> > https://lore.kernel.org/patchwork/patch/1360092/
+> >
+> >
+> >
+> >
+> >
+> > On Mon, Jan 4, 2021 at 5:33 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > >
+> > > Make it slightly readable by using min().
+> > >
+> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> Acked-by: Kees Cook <keescook@chromium.org>
+>
+> Feel free to take this via your tree Masahiro. Thanks!
+>
+> -Kees
+>
+> > > ---
+> > >
+> > >  fs/proc/proc_sysctl.c | 7 +------
+> > >  1 file changed, 1 insertion(+), 6 deletions(-)
+> > >
+> > > diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> > > index 317899222d7f..86341c0f0c40 100644
+> > > --- a/fs/proc/proc_sysctl.c
+> > > +++ b/fs/proc/proc_sysctl.c
+> > > @@ -94,14 +94,9 @@ static void sysctl_print_dir(struct ctl_dir *dir)
+> > >
+> > >  static int namecmp(const char *name1, int len1, const char *name2, int len2)
+> > >  {
+> > > -       int minlen;
+> > >         int cmp;
+> > >
+> > > -       minlen = len1;
+> > > -       if (minlen > len2)
+> > > -               minlen = len2;
+> > > -
+> > > -       cmp = memcmp(name1, name2, minlen);
+> > > +       cmp = memcmp(name1, name2, min(len1, len2));
+> > >         if (cmp == 0)
+> > >                 cmp = len1 - len2;
+> > >         return cmp;
+> > > --
+> > > 2.27.0
+> > >
+> >
+> >
+> > --
+> > Best Regards
+> > Masahiro Yamada
+>
+> --
+> Kees Cook
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> --
+> Kees Cook
 
-There has spin lock for irq set type already, so drop irq_gc_lock and
-irq_gc_unlock.
+Applied to linux-kbuild.
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
----
- drivers/gpio/gpio-rockchip.c | 2 --
- 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-rockchip.c b/drivers/gpio/gpio-rockchip.c
-index 048e7eecddba..c9c55614bbef 100644
---- a/drivers/gpio/gpio-rockchip.c
-+++ b/drivers/gpio/gpio-rockchip.c
-@@ -406,7 +406,6 @@ static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
- 		irq_set_handler_locked(d, handle_level_irq);
- 
- 	raw_spin_lock_irqsave(&bank->slock, flags);
--	irq_gc_lock(gc);
- 
- 	level = rockchip_gpio_readl(bank, bank->gpio_regs->int_type);
- 	polarity = rockchip_gpio_readl(bank, bank->gpio_regs->int_polarity);
-@@ -461,7 +460,6 @@ static int rockchip_irq_set_type(struct irq_data *d, unsigned int type)
- 	rockchip_gpio_writel(bank, level, bank->gpio_regs->int_type);
- 	rockchip_gpio_writel(bank, polarity, bank->gpio_regs->int_polarity);
- out:
--	irq_gc_unlock(gc);
- 	raw_spin_unlock_irqrestore(&bank->slock, flags);
- 
- 	return ret;
+
+
 -- 
-2.25.1
-
+Best Regards
+Masahiro Yamada
