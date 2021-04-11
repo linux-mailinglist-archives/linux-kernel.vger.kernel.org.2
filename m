@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0787335B65F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 19:51:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB2F35B667
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 19:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236006AbhDKRoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 13:44:15 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:43822 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233822AbhDKRoO (ORCPT
+        id S236057AbhDKRwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 13:52:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233822AbhDKRwN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 13:44:14 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3A/sAHzqox4kFOsYnWyKQfke0aV5v8LNV00zAX?=
- =?us-ascii?q?/kB9WHVpW+SCncGvg/gXkTfo4QxhGU0Is9aGJaWGXDfg7pZz+4YcJvOPWwPhtW?=
- =?us-ascii?q?uuIuhZnPff6hfnHDDz8fMY6Ld4f8FFeb/NJHVZreK/zwm8Dto6qePnzImEp8f7?=
- =?us-ascii?q?i01sQwZjdr16425CajqzP0VqSGB9dP4EPbeb4sJGoBitaTAsbsq9DmQYROSrnb?=
- =?us-ascii?q?P2vb78ehgcHVob7mC1/EaVwZHgFRzw5GZ8bxprwa0+tUDfmQ34+anLiYD09jb4?=
- =?us-ascii?q?13XPq7VbncKJ8KoJOOWoitIJbhXg4zzYLLhJfr2ZoXQSvuai8z8R4ZbxijIhJd?=
- =?us-ascii?q?k20nXKYwiO0FfQ8izhyitr0WPo01WCgXDuyPaJDg4SLspamMZkdQHE4FArp9F2?=
- =?us-ascii?q?3Mtwri+knr5aFwnJkii4x9WgbWAOqmOMunYpneMeiHZSOLFuHM4nkaUl8ElYEI?=
- =?us-ascii?q?gNEUvBgehNeoUAMOjm6O9SYRemaRnizxlS6eahWXk+BX69Mz4/k/aI2Dtblm0R?=
- =?us-ascii?q?9Tpo+OUjmB47hfUAYqgBz/jYM6huibFFRtIXa6U4Ou8bRsuxBAX2LC7kASa4IU?=
- =?us-ascii?q?fuE68OUki91qLf0fER4ueyEaZ4v6caqdDkcHd18UYvZkTlD8qQ0IZX/h2lehTD?=
- =?us-ascii?q?YR3djudE55Z4vbX4AIDsLTaIRBQPqqKb0pMiK/yeYPq1MI9bGLvYIXDwFZ1v1w?=
- =?us-ascii?q?nzMqMiU0U2YYkvttEyRl6U5vjTIonBvvDAfJ/oVcHQOAdhYW/5CmYOR3zIPc1F?=
- =?us-ascii?q?1EqsQXOQummoZ1rdPnfy+ppsHLOfxfEazLIRPpBB2zJl8GiR14WwJSVfvqs9cC?=
- =?us-ascii?q?JFUcHau5L+mmGy/WvB8mVuPV5XHi9ukcvdekIPoglPO1j/cLYdt7ykCClv4Ec?=
- =?us-ascii?q?=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,214,1613430000"; 
-   d="scan'208";a="502645845"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 19:43:57 +0200
-Date:   Sun, 11 Apr 2021 19:43:57 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-cc:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        Sun, 11 Apr 2021 13:52:13 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D3BC061574;
+        Sun, 11 Apr 2021 10:51:56 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id u21so16456100ejo.13;
+        Sun, 11 Apr 2021 10:51:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oNOTBqeY9jtjLSAON3lVQ6MLW31wXxn5D9F9gYPVVu4=;
+        b=XHkxF3IQa/hR8xLpG2YUvfZc8NOXCs1YKaI9qeXyRLrQbwabZW+AeoRcZzMeik7Uha
+         b1xoSzpM9bRFnRsVfEIV1wRWBZBzOyQ7rpX1tjdmfiNFFe9ikeB60lQfxD7I0UBopWRJ
+         3hRC5dN1aNZOZ+Jn1jP+r5h5fRIzgarYNn7TAccS7d/ELSZBr+zUZfYYxq0vmrUV2DKh
+         k8sU4l1KATHkG6wI9BU9djA5cVd5LpW2dxYG60z8XUcdchTzbhzniF2dDh2akL8+clAB
+         w2PtuyxrDPNUI2yTXo3cBcT/r2smPtVC4R/QcE6tIlZ+gGiFxxmM/gl2FZ5IXcJiwLEL
+         xPEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oNOTBqeY9jtjLSAON3lVQ6MLW31wXxn5D9F9gYPVVu4=;
+        b=nLHINOwsJK+ohPlXl7/skNv49KqIl0JNbugEsc9mnfbfXOVITMp/cVr5qBGbMUIwFs
+         +4YLG3zBOmocpIdDn7jY7pPZuE9vsc4V0XoHYoNtyH1KAA8vVfNkIwKeeUzwvcunYoZf
+         x/9IBPpQS6axldH1w2B+3wQGB8RESdtrMOWZgP8/eM9GVLFbC2VByEeU52GffaZx5s/f
+         qYkUuroH0eymgaYvmpoDgSDLSxe6MpL1VH/ViIM3DW/d30oLzF+JmeAemROsQqGQbiml
+         cKC+LR7pS955MDCP9UUuOElLkEuuxFfFEZ5fsD+E+PxDaEOle8z6qTD4mrAZhYqN1gg9
+         vZ6g==
+X-Gm-Message-State: AOAM531itKqTVBAu2pFoB5p2IFkxPBgarlYIQSYyCM9+oKatUJq7Cn/X
+        o1HuPRifIWwODyTe7RbZrZGt11nEKFRvtA==
+X-Google-Smtp-Source: ABdhPJz+72LDgeAexpDAcDks/cfETt22UrJuQG/bU2n3vf+A/D03Pw3IZkiQ5GXMql63ZZZJyuHLDQ==
+X-Received: by 2002:a17:906:4407:: with SMTP id x7mr23873759ejo.546.1618163515532;
+        Sun, 11 Apr 2021 10:51:55 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id n5sm4351187ejj.73.2021.04.11.10.51.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Apr 2021 10:51:55 -0700 (PDT)
+Subject: Re: [PATCH v2 3/7] gpio: separate gpio driver from pinctrl-rockchip
+ driver
+To:     Peter Geis <pgwipeout@gmail.com>,
+        Jianqun Xu <jay.xu@rock-chips.com>, huangtao@rock-chips.com,
+        kever.yang@rock-chips.com, linus.walleij@linaro.org,
+        heiko@sntech.de
+Cc:     linux-gpio@vger.kernel.org, linux-rockchip@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8192u: Remove variable
- set but not used
-In-Reply-To: <20210411174143.31618-1-fmdefrancesco@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2104111943230.11703@hadrien>
-References: <20210411174143.31618-1-fmdefrancesco@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+References: <20210411133030.1663936-1-pgwipeout@gmail.com>
+ <20210411133030.1663936-4-pgwipeout@gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <5308a59c-29e9-75a4-2c9a-4aeb3d37bf6e@gmail.com>
+Date:   Sun, 11 Apr 2021 19:51:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210411133030.1663936-4-pgwipeout@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+When I check "rockchip,gpio-bank" with YAML it turns out that
+rk3288-veyron-XXX has 'gpio-line-names' as 'extra' property.
+It is not defined in the "rockchip,pinctrl.txt" document, but in
+~/.local/lib/python3.5/site-packages/dtschema/schemas/gpio/gpio.yaml
 
-On Sun, 11 Apr 2021, Fabio M. De Francesco wrote:
+Where is that in use?
+In this driver or external?
+Can it be removed from mainline dts?
 
-> Remove variable "int ret" which is instantiated but not used.
+Johan
 
-instantiated -> declared?  I thought instantiated could mean initialized,
-but that doesn't seem to be the case.
+/arch/arm/boot/dts/rk3288-veyron-fievel.dt.yaml: gpio7@ff7e0000:
+'gpio-line-names' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema:
+/Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
 
-julia
-
->
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+On 4/11/21 3:30 PM, Peter Geis wrote:
+> From: Jianqun Xu <jay.xu@rock-chips.com>
+> 
+> Separate the gpio driver from the pinctrl driver.
+> 
+> Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
 > ---
->  drivers/staging/rtl8192u/r8192U_core.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
-> index f48186a89fa1..30055de66239 100644
-> --- a/drivers/staging/rtl8192u/r8192U_core.c
-> +++ b/drivers/staging/rtl8192u/r8192U_core.c
-> @@ -902,7 +902,6 @@ static void rtl8192_hard_data_xmit(struct sk_buff *skb, struct net_device *dev,
->  				   int rate)
->  {
->  	struct r8192_priv *priv = (struct r8192_priv *)ieee80211_priv(dev);
-> -	int ret;
->  	unsigned long flags;
->  	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb + MAX_DEV_ADDR_SIZE);
->  	u8 queue_index = tcb_desc->queue_index;
-> --
-> 2.31.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210411174143.31618-1-fmdefrancesco%40gmail.com.
->
