@@ -2,96 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94D2F35B44A
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 14:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478EC35B44E
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 14:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235304AbhDKMiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 08:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhDKMiG (ORCPT
+        id S235456AbhDKMjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 08:39:47 -0400
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:39574 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhDKMjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 08:38:06 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD6FC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 05:37:50 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id n2so15704378ejy.7
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 05:37:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VqHVuBSc6gFJz+YjclMf8Y/UcysXe9Kd0M+xdiqMWok=;
-        b=M7uMfXLLU53sc54MPj0tms3E1t3SrseGDE/wXsp3xLKinnSiGBqu4g2x85eKNpJAwy
-         aRWaXJ6EDO87zZHBARyNBi80rkUU4fygaKhs2Sgqdlmfhs7dtIFdePlZyI4PawWF+ZIH
-         85Bw8x0dM0MzAsjwDn4JNyZNW6LqVXy92KKIhplT8f4FHlUJcCjWTATru86ZS63+QAcP
-         SIJw88/A0XtixBE63WrFrv0UhvHObld/szD5JPuyCLgaZifj4hJkCiWi/Lca0GN9uJzE
-         LPCUDLz+UoPjmX+1bNnVgNKSRdY3V2agFRionIDQlJPM2+JIm2G+diSGgR1CeznnqVyB
-         80RQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=VqHVuBSc6gFJz+YjclMf8Y/UcysXe9Kd0M+xdiqMWok=;
-        b=GBKotz/iosmKWkJAiMpoDIoquqsIZGe0PBn7cEfx0Jjx/xEQhkAh2QDt8oQpS3bW/L
-         rtY/QaT7b48pdLHVOyV+EwWPDBvS+ZuJFG16oMKpLJgBb3bAa8VJGOiJMdekhmO0h+fQ
-         8tRLNCMkYR621gUNmBNLi/k9p5WsqW1zOHEs5eHrME2DIcP11sKy+U6F+SLSFzta3nns
-         on3VBmm6x3WbjOp3QMoeOnQbhrqDKaxL8V1l3B6yWmM37qo4DSVy2fMMbiW/5YhgHXmt
-         LdIEetRIOkNQB/mIroNaYTHfPrGK3AZPiv8HCGYZZj2uD88MhXjJWldpv1kudmz6kaEm
-         FVVg==
-X-Gm-Message-State: AOAM533UpJetUnyDSu2ZSioDtI+UwRLHbk7PvGzRp5aN9ku6xJfFZkRu
-        FJHbT+doNLW/ZhDhrxSw+uY=
-X-Google-Smtp-Source: ABdhPJxcF4Y38018a86w2OHTNtAqql3A1d+bA1yeuTdtbEB1187JZnmXBKVtp7kTbBVAwCb5vCJyiA==
-X-Received: by 2002:a17:906:2818:: with SMTP id r24mr23405031ejc.502.1618144668584;
-        Sun, 11 Apr 2021 05:37:48 -0700 (PDT)
-Received: from gmail.com (2E8BA22B.catv.pool.telekom.hu. [46.139.162.43])
-        by smtp.gmail.com with ESMTPSA id w2sm3944805eju.71.2021.04.11.05.37.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 05:37:48 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sun, 11 Apr 2021 14:37:46 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, akiyks@gmail.com, elver@google.com,
-        frederic@kernel.org, jiapeng.chong@linux.alibaba.com,
-        lukas.bulwahn@gmail.com, mchehab+huawei@kernel.org,
-        neeraju@codeaurora.org, paul.gortmaker@windriver.com,
-        sangmoon.kim@samsung.com, stephenzhangzsd@gmail.com,
-        urezki@gmail.com, zhouzhouyi@gmail.com, tglx@linutronix.de
-Subject: Re: [GIT PULL tip/core/rcu] RCU, LKMM, and KCSAN commits for v5.13
-Message-ID: <20210411123746.GA1099816@gmail.com>
-References: <20210331192934.GA8127@paulmck-ThinkPad-P72>
+        Sun, 11 Apr 2021 08:39:47 -0400
+Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 13BCdHBS028125;
+        Sun, 11 Apr 2021 21:39:17 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 13BCdHBS028125
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618144757;
+        bh=noTZWh4woocoSkvFec5Yy1Di/OLeNa5KJOE1I4yS2sY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=HSnpEIN5QxNoNgBLgJ0GVvoh38HlulN+lk/kVlrA1WlDGoMxnfiXlfsa+irdNo7rP
+         1ZgNfik6iyBnoQUnByjwCDwE2CJTSNSGuUb9gspOG8dDWtYEUGZ4fOHehrs11jggvv
+         gFggMS6R218lf4VyXbZIueob9zba2RbMeKfCDD9xjOg+//lgXwSJwWSngj9vypWQXY
+         GwsqF57VNWy7ngh/Vj7JTPzz6Nui66Kvk+RXIaa5MxUPdllHlxFCABTMeVMdj54EMU
+         hv5KLVdalfFmGTGTt8cboI3xxlrdQUa1uEhKoUvVEjanqsid07QyrS0h9bSOvl/RgO
+         V4vklu5IiEoVA==
+X-Nifty-SrcIP: [209.85.215.176]
+Received: by mail-pg1-f176.google.com with SMTP id h25so7265714pgm.3;
+        Sun, 11 Apr 2021 05:39:17 -0700 (PDT)
+X-Gm-Message-State: AOAM531zbI34WV9I0kTg6lzXobKtfUuhxxgc3aLfRe/pWjM4zHIa/jJg
+        QzcOZbne8jRgDIggz0z107ia7EiXD6A2+M3YXP4=
+X-Google-Smtp-Source: ABdhPJzTsCiahaDe7DD1NYRlUlSm1zmYl7UzW985Jxemp4EBqHvEnFFu93m15STC/xrYUG9xUIyXbH/IYfUHbeLwqc4=
+X-Received: by 2002:a05:6a00:2303:b029:249:b91e:72f0 with SMTP id
+ h3-20020a056a002303b0290249b91e72f0mr5753393pfh.80.1618144756513; Sun, 11 Apr
+ 2021 05:39:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331192934.GA8127@paulmck-ThinkPad-P72>
+References: <f6218ac526a04fa4d4406f935bcc4eb4a7df65c4.1617917438.git.msuchanek@suse.de>
+ <04385380bee4847a8541c35418ff266b82d9cc13.1617917438.git.msuchanek@suse.de>
+In-Reply-To: <04385380bee4847a8541c35418ff266b82d9cc13.1617917438.git.msuchanek@suse.de>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Sun, 11 Apr 2021 21:38:39 +0900
+X-Gmail-Original-Message-ID: <CAK7LNARLXZonwDp=nfYt4maJ0cdoErkREZzwY0Hd6-cKZ=Pd9A@mail.gmail.com>
+Message-ID: <CAK7LNARLXZonwDp=nfYt4maJ0cdoErkREZzwY0Hd6-cKZ=Pd9A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] MAINTAINERS: add pattern for dummy-tools.
+To:     Michal Suchanek <msuchanek@suse.de>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 9, 2021 at 6:31 AM Michal Suchanek <msuchanek@suse.de> wrote:
+>
+> scripts/get_maintainer.pl does not find a maintainer for new files
+> otherwise.
+>
+> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> ---
 
-* Paul E. McKenney <paulmck@kernel.org> wrote:
+Applied to linux-kbuild. Thanks.
 
-> Hello, Ingo!
-> 
-> This pull request contains changes for RCU, KCSAN, and LKMM.  You can
-> pull the entire group using branch for-mingo.  Or, if you prefer, you
-> can pull them separately, using for-mingo-rcu to pull the RCU changes,
-> for-mingo-kcsan to pull the KCSAN changes, and for-mingo-lkmm to pull
-> the LKMM changes.
-> 
-> The changes are as follows:
-> 
-> 1.	RCU updates (for-mingo-rcu):
 
-Pulled into tip:core/rcu.
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index c80ad735b384..ce631ec44e1a 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9690,6 +9690,7 @@ F:        scripts/*vmlinux*
+>  F:     scripts/Kbuild*
+>  F:     scripts/Makefile*
+>  F:     scripts/basic/
+> +F:     scripts/dummy-tools/
+>  F:     scripts/mk*
+>  F:     scripts/mod/
+>  F:     scripts/package/
+> --
+> 2.26.2
+>
 
-> 2.	Kernel concurrency sanitizer (KCSAN) updates from Marco Elver.
-> 
-> 3.	Linux-kernel memory model (LKMM) updates.
 
-Pulled into tip:locking/core.
-
-Thanks a lot Paul!
-
-	Ingo
+-- 
+Best Regards
+Masahiro Yamada
