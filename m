@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D5235B739
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 00:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DDEE35B73C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 00:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236010AbhDKW24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 18:28:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43270 "EHLO
+        id S236060AbhDKWed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 18:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235366AbhDKW24 (ORCPT
+        with ESMTP id S235366AbhDKWe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 18:28:56 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31585C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 15:28:39 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id g35so7878116pgg.9
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 15:28:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NL103HsN0FLtSC0bDkk0cKVEMZDZXWVDk3KCjvpyLsg=;
-        b=JRntyPFBVIaenW3MYt0SEjXz8mFFPhPnj1KcZs2ugZaRP5y8k+W1stlu/6fVvKvx3m
-         WZbR/L/phUEhsex1JyC/00jlyufHtgnn51gPrCh81724AK/uuIYW3WlgoYXT9Dv0U5L6
-         Y7Y2Q94KJA/fzaHWtE//AinMUjRweE2F55l079/XaLJT/L0oBtBY4e4SmWUktf8DD4U0
-         EnmtwdmWsAk2e0/JfDqu62TB3toJRz0Z6Z4nyEya7AQiYjt4nykVqwkOFc9VryhXjpHa
-         ad6txIJwmpSe3Z5CazDQzGOlsaVXPelugZxzu+xP5ngEgRvWnicbI1XUK+5V/+wnYwDU
-         so4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=NL103HsN0FLtSC0bDkk0cKVEMZDZXWVDk3KCjvpyLsg=;
-        b=jevGM8adI400GLF3p0hxmX5HKqN+3VboXKRdmC8ymbHxgoytTS2ED80wzcnd5DQ7xG
-         sPq2fdWNl1u22KSiu/WXR6hCnRUrOpMZ084udG8QoUWeozxp/7p7u9ozxsJALs/Ej7PF
-         VYxTV4o4sg81bEl7zK84N2AaqBgAIHetFzfiz5QlkvdQarR2+2zx/FSrwPuLW5OUOnJC
-         DKDFvLDCAMkGpKGX+drMyRphpI3ZrOcsdYPFScMEfVUgUc6txYAq2KU7hUSaIhGR+A5r
-         Mieb6+ap+gNvZ1VwXq8WpyZIw5zvPvW0pVqJy85+bjjNcj6s4c2SWK3+Pef/0bVTmBoo
-         BGTg==
-X-Gm-Message-State: AOAM533erzuJrENscs1HNKztChHClmqsQEOUekSQgs7E0ihzm7wdLcf5
-        iVFYkUSyaCTHj/76yrYqFPJpuA==
-X-Google-Smtp-Source: ABdhPJwh75ar/j8paxM9YzIOWuxm/rCiYRHozOlQyZ1WOu9vu4T0wL6pxR+AUFRP+0FiIpZwfqa30Q==
-X-Received: by 2002:a65:5849:: with SMTP id s9mr24542845pgr.309.1618180118609;
-        Sun, 11 Apr 2021 15:28:38 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id y193sm8307600pfc.72.2021.04.11.15.28.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 15:28:38 -0700 (PDT)
-Date:   Sun, 11 Apr 2021 15:28:38 -0700 (PDT)
-X-Google-Original-Date: Sun, 11 Apr 2021 15:28:36 PDT (-0700)
-Subject:     Re: [PATCH] samples/kprobes: Add riscv support
-In-Reply-To: <20210330020416.129505e6@xhacker>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        corbet@lwn.net, mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     jszhang3@mail.ustc.edu.cn
-Message-ID: <mhng-8e3addbd-903d-43ee-b16b-e81919583271@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Sun, 11 Apr 2021 18:34:27 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9127CC061574;
+        Sun, 11 Apr 2021 15:34:10 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FJRVj5VGqz9sVt;
+        Mon, 12 Apr 2021 08:34:05 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618180446;
+        bh=n6XSnOwkmj4T9SqjwoU/4Zw423XNVZqP8Xrb9+7iKUc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ep+X6V41bpsTjFj6ZRWZ2QrzGzUomreS14ojfozpuT7G1Q3uzhtPLOSVjT+QRf6JC
+         ukHM2dliMI8X7YQz06xb6626TYx0I6bAxkHG3PURkyItHC2pvytCWTsjG+OcCxH2zj
+         7uFcCP7x6jqp7REyAuCWjlKnxgN2eJ8LhgrPj5jmPe65vqtgBFMsccmxgTKulo5BMl
+         5DvOropVyEKLFvwxwZynlSps6BThJfUwbnI4gvZIPoaAJSEwLcal0UApHv8UsvUdm4
+         a60Fo+DVBJyvF0ffOax3NSDcV9NxYuasvWKMy++ZIXY0PEKCZksL+0/yAXgOs5YSAh
+         JAhYBe3zX1sBw==
+Date:   Mon, 12 Apr 2021 08:34:04 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Sowjanya Komatineni <skomatineni@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the block tree
+Message-ID: <20210412083404.2d0dcf7c@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/0ooZE6uvzegrzJGE+z19b+S";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 29 Mar 2021 11:04:16 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
-> From: Jisheng Zhang <jszhang@kernel.org>
->
-> Add riscv specific info dump in both handler_pre() and handler_post().
->
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  samples/kprobes/kprobe_example.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/samples/kprobes/kprobe_example.c b/samples/kprobes/kprobe_example.c
-> index 331dcf151532..c495664c0a9b 100644
-> --- a/samples/kprobes/kprobe_example.c
-> +++ b/samples/kprobes/kprobe_example.c
-> @@ -47,6 +47,10 @@ static int __kprobes handler_pre(struct kprobe *p, struct pt_regs *regs)
->  	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx, cpsr = 0x%lx\n",
->  		p->symbol_name, p->addr, (long)regs->ARM_pc, (long)regs->ARM_cpsr);
->  #endif
-> +#ifdef CONFIG_RISCV
-> +	pr_info("<%s> pre_handler: p->addr = 0x%p, pc = 0x%lx, status = 0x%lx\n",
-> +		p->symbol_name, p->addr, regs->epc, regs->status);
-> +#endif
->  #ifdef CONFIG_S390
->  	pr_info("<%s> pre_handler: p->addr, 0x%p, ip = 0x%lx, flags = 0x%lx\n",
->  		p->symbol_name, p->addr, regs->psw.addr, regs->flags);
-> @@ -80,6 +84,10 @@ static void __kprobes handler_post(struct kprobe *p, struct pt_regs *regs,
->  	pr_info("<%s> post_handler: p->addr = 0x%p, cpsr = 0x%lx\n",
->  		p->symbol_name, p->addr, (long)regs->ARM_cpsr);
->  #endif
-> +#ifdef CONFIG_RISCV
-> +	pr_info("<%s> post_handler: p->addr = 0x%p, status = 0x%lx\n",
-> +		p->symbol_name, p->addr, regs->status);
-> +#endif
->  #ifdef CONFIG_S390
->  	pr_info("<%s> pre_handler: p->addr, 0x%p, flags = 0x%lx\n",
->  		p->symbol_name, p->addr, regs->flags);
+--Sig_/0ooZE6uvzegrzJGE+z19b+S
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, this is on for-next.
+Hi all,
+
+Commit
+
+  6fa6517fe62e ("ata: ahci_tegra: call tegra_powergate_power_off only when =
+PM domain is not present")
+
+is missing a Signed-off-by from its author.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/0ooZE6uvzegrzJGE+z19b+S
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBzeVwACgkQAVBC80lX
+0Gy1fAf7Bb8piq6ParR+CeA4F1V7QkkHFg0vblGcf7oExtPDqq1IS5Sfxu84eAm1
+nzP7J/3WGlZdYMCskc0cuSR0kLvTw6zXc4x4iFXZojRe2aVNGfsIrwPY7H3IFmGe
+8QtYqtOvoGCTzqy6dj1R5NuO0fWQhB1Q2zCrhGuen927RUbDsgiIAcmpB9RS+2zY
+q54YeDnoVnIqahCx+Df0okuiroRCqd2qvctv7B0keF+NCJOQR5vwyUGcnnNRTtWU
+i4CQNdwoP82WA+vMRUcUYKsaqKVQ8asN9cCgHRVNM7dXek7Xe7m39WbvTpOP1QF3
+EiPJxC8TfSsD+uSfcX2c4Lzhjp6z6Q==
+=/HPy
+-----END PGP SIGNATURE-----
+
+--Sig_/0ooZE6uvzegrzJGE+z19b+S--
