@@ -2,80 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5762D35B235
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 09:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77D7535B238
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 09:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235020AbhDKHpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 03:45:30 -0400
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:16379 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229792AbhDKHp1 (ORCPT
+        id S235101AbhDKHpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 03:45:51 -0400
+Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:30723 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235070AbhDKHpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 03:45:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1618127111; x=1649663111;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=deDvm+/gIW+AgC4Z2vogfCHV0tnsxgDJvqBREMBMDPk=;
-  b=PCV50UQMdZGGJ6DWYnKK2N9XnCjatbZbe2jlAJ2GelstDsk7TVZerWxX
-   JnPeuLtfuUPPvrgQnTfkMNQWWK4m0KPx2JHrHIX9hRh31UwUwZupPulDR
-   ZIvvfOx2rXagA8tRRN7LV4ZjfCi6w01UVU9hT4PnXNbmGTJX3JgGSE3qf
-   gl3nX6KL4eXrSCK4Kxvcs5A8H1HFDQ0yeeWdgoe2rhSD+/mJiDHZBWw6S
-   9+libhSMo4QyKp/14X821cuyeys2Wd/kNf9G5rveB8BZGPrGnLK/fBSsM
-   LT42lx7+FtMzNLljerTwcird2COB7f75X6Pm2KmnWpS5agADUyM36OC8/
-   A==;
-IronPort-SDR: P6B/ic+g+PpJaHWjRXpPNl1PW8oQP9RDnrqNGTGCUV7eEZqdq3nn9qvfIEy6XGrLrIyRf2GyI/
- 3V1LuK1C0koZxIh6n+5Yt++XzzWnn5a0PANW4oMu3Qg9J5z6VyqKqOQ6EBL5fLIA/LJvDSEsFF
- WaF0qkfH9gahJXUCxIscheDlXZdtQL1seg8qDDTGAea0GP+41xNoiksiMn1SKR8d45yVirlrru
- RAARRhabcucmB8EYRIO3q1Zt7SXJ/lF8Q2dzrTxIuey6oeZuuadDrECaZcUj+FeUKHXvK3jMWC
- ZMY=
-X-IronPort-AV: E=Sophos;i="5.82,213,1613458800"; 
-   d="scan'208";a="50712150"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 11 Apr 2021 00:45:10 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sun, 11 Apr 2021 00:45:10 -0700
-Received: from atudor-ThinkPad-T470p.amer.actel.com (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Sun, 11 Apr 2021 00:45:07 -0700
-From:   Tudor Ambarus <tudor.ambarus@microchip.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>, <michael@walle.cc>,
-        <ycllin@mxic.com.tw>, <p.yadav@ti.com>, <vigneshr@ti.com>,
-        <masonccyang@mxic.com.tw>, <zhengxunli@mxic.com.tw>,
-        <juliensu@mxic.com.tw>
-CC:     <linux-mtd@lists.infradead.org>, <miquel.raynal@bootlin.com>,
-        <richard@nod.at>, <linux-kernel@vger.kernel.org>
-Subject: Re: (subset)[PATCH 0/2] mtd: spi-nor: macronix: mx25l51245g, mx66l51235l and mx66l51235f
-Date:   Sun, 11 Apr 2021 10:45:04 +0300
-Message-ID: <161812694422.37194.1007833046830132290.b4-ty@microchip.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210402082031.19055-1-tudor.ambarus@microchip.com>
-References: <20210402082031.19055-1-tudor.ambarus@microchip.com>
+        Sun, 11 Apr 2021 03:45:49 -0400
+Received: from localhost.localdomain ([90.126.11.170])
+        by mwinf5d26 with ME
+        id rKlX240043g7mfN03KlXi1; Sun, 11 Apr 2021 09:45:32 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 11 Apr 2021 09:45:32 +0200
+X-ME-IP: 90.126.11.170
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     pavel@ucw.cz, mallikarjunax.reddy@linux.intel.com
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] leds: lgm: Propagate error codes to the caller
+Date:   Sun, 11 Apr 2021 09:45:30 +0200
+Message-Id: <22e1f8245251f0ec297881942abfa2b00eff48d2.1618126878.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Apr 2021 11:20:29 +0300, Tudor Ambarus wrote:
-> mx25l51245g and mx66l51235l have the same flash ID. The flash
-> detection returns the first entry in the flash_info array that
-> matches the flash ID that was read, thus for the 0xc2201a ID,
-> mx25l51245g was always hit, introducing a regression for
-> mx66l51235l. Revert mx25l51245g addition. A solution for these
-> flashes to coexist was proposed.
-> 
-> [...]
+Do not always return -EINVAL in case of error in '__sso_led_dt_parse()'.
+Propagate the error code instead.
 
-Applied to spi-nor/next, thanks!
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/leds/blink/leds-lgm-sso.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-[1/2] Revert "mtd: spi-nor: macronix: Add support for mx25l51245g"
-      https://git.kernel.org/mtd/c/46094049a49b
-
-Best regards,
+diff --git a/drivers/leds/blink/leds-lgm-sso.c b/drivers/leds/blink/leds-lgm-sso.c
+index 7d5c9ca007d6..3da242d4ce7d 100644
+--- a/drivers/leds/blink/leds-lgm-sso.c
++++ b/drivers/leds/blink/leds-lgm-sso.c
+@@ -643,6 +643,7 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
+ 							      GPIOD_ASIS, NULL);
+ 		if (IS_ERR(led->gpiod)) {
+ 			dev_err(dev, "led: get gpio fail!\n");
++			ret = PTR_ERR(led->gpiod);
+ 			goto __dt_err;
+ 		}
+ 
+@@ -664,6 +665,7 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
+ 		ret = fwnode_property_read_u32(fwnode_child, "reg", &prop);
+ 		if (ret != 0 || prop >= SSO_LED_MAX_NUM) {
+ 			dev_err(dev, "invalid LED pin:%u\n", prop);
++			ret = ret ? ret : -EINVAL;
+ 			goto __dt_err;
+ 		}
+ 		desc->pin = prop;
+@@ -699,8 +701,10 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
+ 				desc->brightness = LED_FULL;
+ 		}
+ 
+-		if (sso_create_led(priv, led, fwnode_child))
++		if (sso_create_led(priv, led, fwnode_child)) {
++			ret = -EINVAL;
+ 			goto __dt_err;
++		}
+ 	}
+ 	fwnode_handle_put(fw_ssoled);
+ 
+@@ -713,7 +717,7 @@ __sso_led_dt_parse(struct sso_led_priv *priv, struct fwnode_handle *fw_ssoled)
+ 		sso_led_shutdown(led);
+ 	}
+ 
+-	return -EINVAL;
++	return ret;
+ }
+ 
+ static int sso_led_dt_parse(struct sso_led_priv *priv)
 -- 
-Tudor Ambarus <tudor.ambarus@microchip.com>
+2.27.0
+
