@@ -2,139 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF85335B4A9
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:31:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA89935B4AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235454AbhDKNcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:32:08 -0400
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:63307 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235005AbhDKNcH (ORCPT
+        id S235281AbhDKNhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:37:07 -0400
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:32418 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233514AbhDKNhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:32:07 -0400
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 13BDVVVa024207;
-        Sun, 11 Apr 2021 22:31:32 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 13BDVVVa024207
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1618147892;
-        bh=6YwTKBbNoleuwW/G8t5rDVU9qUR+RbEgL+hiFtrsKVs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=LkiGA8TvWpNqtWsDSinqFq7t+F9dy46aQ2rxTrd0R47jfQhHUQsMXUBZPZ9Sh6MAh
-         kNiUvQWFb0i31P1WcVgtKh6VVhz+3mTNPlwKNZ4o3GKboBsrbj3ub+wV31oV/xiLTq
-         6qzik8NAwcBO627UcZTRRfT7+H6aMATl0+Ng3V13GoJLdri2db2vXKWZCB/EhsnaFO
-         sQKvU6eYKlj6XsnsPxP7NgEiuCd8GeNWHVhvuf94ST5Xut7czUyl1xeMKSTuFtSOE3
-         LDWe6YOOuhbWeP+Xl8a2v8ATd19ek5fJIMZ+R7ZoAxs2D6kYOBzJtXMFQseeyxIcss
-         dF/hq/eCHKfpg==
-X-Nifty-SrcIP: [209.85.214.172]
-Received: by mail-pl1-f172.google.com with SMTP id y2so4938957plg.5;
-        Sun, 11 Apr 2021 06:31:32 -0700 (PDT)
-X-Gm-Message-State: AOAM533Oye4OhFGf/2vU5vTtXVtY8K/mwU+KLpmjvVAOEbFSP/79CwSN
-        0Y+iejjDT3AKejDxtf91OxHGoOJTqGc0ncPySnk=
-X-Google-Smtp-Source: ABdhPJz/zO015Um0WHBYZpS4w2WRTzh/PGFAlI18DvqL4z8DHDt3CzMo8Fo5G4kLOulICfjgNhq5KCF7teX2JheZRjc=
-X-Received: by 2002:a17:902:d645:b029:e8:ec90:d097 with SMTP id
- y5-20020a170902d645b02900e8ec90d097mr21674078plh.47.1618147891413; Sun, 11
- Apr 2021 06:31:31 -0700 (PDT)
+        Sun, 11 Apr 2021 09:37:06 -0400
+Date:   Sun, 11 Apr 2021 13:36:39 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1618148208;
+        bh=S+1fGAVV8UQL2Dd8l3RggPscvGMHVfdyONCHp5RBFt4=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=czKFh2c9sv+IQ4oyKxhSmRTc3kFleH5nErGuc1aEg8oFWnZHqnsVy5XxHaHGEnOGs
+         sUflTx+qhKo9FTqB2AMjPxvuojTY/B3KUxjGOL6ZZB3dm5vJ1jpmnhQXh8meCIv/Es
+         +qjg0f7e2r9xw8bPlMsEJexDV1OhKkzlkDFw7ChpheU7gYDZB6x71IzpzJ0bju7WR+
+         zq1/Nmuh0uVJPQWHYipSga23BaeGqVtjdCfBjdHHC7VYRtO58ZMguEiQ4f7WHqxqhm
+         lZp+4iN2jIyUDYSuHpBy+/0ZERN7UjBxm8KK/uB6h06C2I4jGonquRY1Cs3EjMMkgc
+         TZLc/MmnT9cfg==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Bryan Brattlof <hello@bryanbrattlof.com>
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: [PATCH v4] staging: rtl8723bs: remove unnecessary goto jumps
+Message-ID: <20210411133625.38195-1-hello@bryanbrattlof.com>
 MIME-Version: 1.0
-References: <20210104083221.21184-1-masahiroy@kernel.org> <CAK7LNARXy_puE7KZp2vjzn_KcW5uZ_ba3O5zFX46yGULjNhpZg@mail.gmail.com>
- <202103011546.9AA6D832@keescook>
-In-Reply-To: <202103011546.9AA6D832@keescook>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 11 Apr 2021 22:30:54 +0900
-X-Gmail-Original-Message-ID: <CAK7LNARMdf0ZGaH3VN8S56OH2-K+ZgWzH83FXSJ-=s3qCimYyA@mail.gmail.com>
-Message-ID: <CAK7LNARMdf0ZGaH3VN8S56OH2-K+ZgWzH83FXSJ-=s3qCimYyA@mail.gmail.com>
-Subject: Re: [PATCH] sysctl: use min() helper for namecmp()
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 2, 2021 at 8:47 AM Kees Cook <keescook@chromium.org> wrote:
->
-> On Sun, Feb 28, 2021 at 04:44:22PM +0900, Masahiro Yamada wrote:
-> > (CC: Andrew Morton)
-> >
-> > A friendly reminder.
-> >
-> >
-> > This is just a minor clean-up.
-> >
-> > If nobody picks it up,
-> > I hope perhaps Andrew Morton will do.
-> >
-> > This patch:
-> > https://lore.kernel.org/patchwork/patch/1360092/
-> >
-> >
-> >
-> >
-> >
-> > On Mon, Jan 4, 2021 at 5:33 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > >
-> > > Make it slightly readable by using min().
-> > >
-> > > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Acked-by: Kees Cook <keescook@chromium.org>
->
-> Feel free to take this via your tree Masahiro. Thanks!
->
-> -Kees
->
-> > > ---
-> > >
-> > >  fs/proc/proc_sysctl.c | 7 +------
-> > >  1 file changed, 1 insertion(+), 6 deletions(-)
-> > >
-> > > diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> > > index 317899222d7f..86341c0f0c40 100644
-> > > --- a/fs/proc/proc_sysctl.c
-> > > +++ b/fs/proc/proc_sysctl.c
-> > > @@ -94,14 +94,9 @@ static void sysctl_print_dir(struct ctl_dir *dir)
-> > >
-> > >  static int namecmp(const char *name1, int len1, const char *name2, int len2)
-> > >  {
-> > > -       int minlen;
-> > >         int cmp;
-> > >
-> > > -       minlen = len1;
-> > > -       if (minlen > len2)
-> > > -               minlen = len2;
-> > > -
-> > > -       cmp = memcmp(name1, name2, minlen);
-> > > +       cmp = memcmp(name1, name2, min(len1, len2));
-> > >         if (cmp == 0)
-> > >                 cmp = len1 - len2;
-> > >         return cmp;
-> > > --
-> > > 2.27.0
-> > >
-> >
-> >
-> > --
-> > Best Regards
-> > Masahiro Yamada
->
-> --
-> Kees Cook
->
-> Reviewed-by: Kees Cook <keescook@chromium.org>
->
-> --
-> Kees Cook
+The next instruction for both 'goto exit' jump statements is to
+execute the exit jump instructions regardless. We can safely
+remove all jump statements from __init rtw_drv_entry()
 
-Applied to linux-kbuild.
+Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+---
+Changes from:
+  v1: removed unnecessary edit of DBG_871X_LEVEL
+  v2: elaborated on steps to remove a checkpatch.pl warning
+  v3: separated checkpatch.pl fix into separate patch
+
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging=
+/rtl8723bs/os_dep/sdio_intf.c
+index 9fd926e1698f..2b61a4bdd8a1 100644
+--- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
++++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+@@ -517,12 +517,8 @@ static int __init rtw_drv_entry(void)
+ =09if (ret !=3D 0) {
+ =09=09sdio_drvpriv.drv_registered =3D false;
+ =09=09rtw_ndev_notifier_unregister();
+-=09=09goto exit;
+ =09}
+=20
+-=09goto exit;
+-
+-exit:
+ =09DBG_871X_LEVEL(_drv_always_, "module init ret =3D%d\n", ret);
+ =09return ret;
+ }
+--=20
+2.27.0
 
 
-
-
--- 
-Best Regards
-Masahiro Yamada
