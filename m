@@ -2,69 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4425635B2C4
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B9935B2C7
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235315AbhDKJcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 05:32:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32982 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235005AbhDKJcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 05:32:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 012C0610E9;
-        Sun, 11 Apr 2021 09:32:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618133522;
-        bh=hHupB1eLGwjzMyzVCQyKhi+SnTMbneghjDlPD7+s43w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UOm/fIL1owj9+eeGLJOMYAAsUBLjDzNbFApOnRvT0wN1TmBCyAQLI3woIxJW7X0/I
-         JbcLQ0Y6kQB5lAgcuwNO3rNfO/q6tFEtC8Y9LjYfUt3Uffk5tq+PPRNttLOdFvGD0w
-         +EkUP111m/uJ0JHuFW/0XtQAzPQrmE2e76PFxNLwtJK9wgBFWHBBQ9RT74LM7OlsVi
-         o13IG5iSmPBLJJdU50J7SnEzpjiANVc0suXDp8lWdkCCFQwNkDbU7c7f0ogJRSwBzg
-         TgOU/brjYOLkLJYzfsWbq95hhNw7w9P1RLhOwK7hzELhoGYbGVSqCkLOt4etjsAbhI
-         ayvLfTvy+B+Og==
-Date:   Sun, 11 Apr 2021 12:31:58 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Raphael Norwitz <raphael.norwitz@nutanix.com>
-Cc:     "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "ameynarkhede03@gmail.com" <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH v2] PCI: merge slot and bus reset implementations
-Message-ID: <YHLCDkFqS66xDdvY@unreal>
-References: <20210408182328.12323-1-raphael.norwitz@nutanix.com>
+        id S235350AbhDKJck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 05:32:40 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:57283 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235005AbhDKJcj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 05:32:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1618133543; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=ORlIUfijIrnSlUyjuvajmJtLvP0WXW8LZmX4NEH0q/4=;
+ b=ItHAQQb4mAhuk3ySQ9pOgPGtMRom043UFBXRjSrCJNyGIMHaGTyUi1NbREk/WEuX9y2vGmcj
+ qQsm1VWCcknLIVsuiGO9jHnUoc3sFV95v/MagqBCm3cFSb5Z0nNlWCwPAccob8S7RWhIdnJ7
+ VrJ9R+m2Sfu86p9cLt9FPznPuCo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 6072c21be0e9c9a6b6fcf1fe (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 11 Apr 2021 09:32:11
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D8F1FC433C6; Sun, 11 Apr 2021 09:32:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DAE4EC433ED;
+        Sun, 11 Apr 2021 09:32:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DAE4EC433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210408182328.12323-1-raphael.norwitz@nutanix.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next 3/5] iwlegacy: avoid -Wempty-body warning
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210322104343.948660-3-arnd@kernel.org>
+References: <20210322104343.948660-3-arnd@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     netdev@vger.kernel.org, Stanislaw Gruszka <stf_xl@wp.pl>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.5.2
+Message-Id: <20210411093211.D8F1FC433C6@smtp.codeaurora.org>
+Date:   Sun, 11 Apr 2021 09:32:11 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 06:23:40PM +0000, Raphael Norwitz wrote:
-> Slot resets are bus resets with additional logic to prevent a device
-> from being removed during the reset. Currently slot and bus resets have
-> separate implementations in pci.c, complicating higher level logic. As
-> discussed on the mailing list, they should be combined into a generic
-> function which performs an SBR. This change adds a function,
-> pci_reset_bus_function(), which first attempts a slot reset and then
-> attempts a bus reset if -ENOTTY is returned, such that there is now a
-> single device agnostic function to perform an SBR.
-> 
-> This new function is also needed to add SBR reset quirks and therefore
-> is exposed in pci.h.
-> 
-> Link: https://lkml.org/lkml/2021/3/23/911
-> 
-> Suggested-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> Signed-off-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
-> ---
->  drivers/pci/pci.c   | 19 +++++++++++--------
->  include/linux/pci.h |  1 +
->  2 files changed, 12 insertions(+), 8 deletions(-)
-> 
+Arnd Bergmann <arnd@kernel.org> wrote:
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> There are a couple of warnings in this driver when building with W=1:
+> 
+> drivers/net/wireless/intel/iwlegacy/common.c: In function 'il_power_set_mode':
+> drivers/net/wireless/intel/iwlegacy/common.c:1195:60: error: suggest braces around empty body in an 'if' statement [-Werror=empty-body]
+>  1195 |                                 il->chain_noise_data.state);
+>       |                                                            ^
+> drivers/net/wireless/intel/iwlegacy/common.c: In function 'il_do_scan_abort':
+> drivers/net/wireless/intel/iwlegacy/common.c:1343:57: error: suggest braces around empty body in an 'else' statement [-Werror=empty-body]
+> 
+> Change the empty debug macros to no_printk(), which avoids the
+> warnings and adds useful format string checks.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Acked-by: Stanislaw Gruszka <stf_xl@wp.pl>
+
+Patch applied to wireless-drivers-next.git, thanks.
+
+fa9f5d0e0b45 iwlegacy: avoid -Wempty-body warning
+
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210322104343.948660-3-arnd@kernel.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
