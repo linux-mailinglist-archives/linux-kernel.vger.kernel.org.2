@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D157D35B33B
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D53B35B33C
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235334AbhDKK4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 06:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
+        id S235339AbhDKK4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 06:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235284AbhDKK4d (ORCPT
+        with ESMTP id S235306AbhDKK4f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 06:56:33 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58E0CC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 03:56:17 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id m3so11582430edv.5
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 03:56:17 -0700 (PDT)
+        Sun, 11 Apr 2021 06:56:35 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90FDEC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 03:56:19 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id g17so10827576edm.6
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 03:56:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+4zeEDhj/6bplHZIkce/J3NwefaMphe98LpUDhfrwEQ=;
-        b=unPZnhKq8YCeesqsbbtHeT4tP0NfMptQcKrdEI1AIHyY1b6FwOAoPvibZOv2a5tQ5R
-         d7+c0gJn2YsdlZRNNPx01nZXCdsqjOAf39tX8RAK09Nt6zLDNhcsfTtSmfptZfYlFUx2
-         YnusVg45nzXj2AINGzBdh9RCW9fJgM16BWKb9ImASiq5gzIznheuPnArzbF7xzdsEYxy
-         4uLCr8kp1pyJy4gzwaOujo9M6A42ov+yb4Ux5dhw2OmJVVJlyDsRU/IkOAxCgni+2r8m
-         CGcReaWnWTXyRFhqLWvHmb3WpKCM7bC7fc31VORGNgVIKovVN5PeCWKgY//w+RDBFI/y
-         o/Qw==
+        bh=B3lNEkRWCQlFE4823y02WM8JSwY+DtafqTRIoBwU7tA=;
+        b=dCVb3SvlFN7vmlcP2Sz92rVMQHjy8vr3lYb4FyRevB/K0QeXgKlm2dzI8KPEMbPg1f
+         jWa+g0izkcRlQgevnv/P4b97bXXgRKfQGILIvQtEd3vMXRxLcyAc4d4DiMxn2rq4fy5f
+         KwNlORgcVnf8jJJPOH7hbFRkaz0zhwqjgdvFC5FevDFBgRYDfBTEZmdG8iUd5XeKm3fR
+         q+suvVC3N1m7KLAyzfR08HT859xD+rSu55M9qmunKO0tiLy1H0JnQYa+fRoGW7obS20W
+         I9+lJLv/54du4PBUp6Hlra1e05Y5kagAyp32zHMingrX6t0f2MZSw6UMFweGRoR5+lRu
+         42uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+4zeEDhj/6bplHZIkce/J3NwefaMphe98LpUDhfrwEQ=;
-        b=ajlOYHPsTWFLGjl1S9PIF2qlIrmE/F85DcjBzEr6bYZQ/t36DGUqDT2K/GI9xmUL10
-         eQnSKREE166Gc4tvJlv23btQ8ge5zrIMGSQJSEGHTo5QTO3lhZEmUS5vZldrqxsCdXoi
-         KCTfN7zUcV6jKL1voAX5pbn3qkFSRj7QFIEF02HDBuzIBKSnxRz+2ao6hER+uOEOks81
-         goJa1s+ctkwcRKn8kctOh8pDhO4JsEmULO9L7WjgdrmKHzGUqn7vVLSB+p3Tw7YUivT3
-         wGcs1RRFJYb8DhHuDooDaqhihOim7ydkQPu5u1qj5dZpbj/z6xBhshzlESP/QXcje7Gu
-         BAlA==
-X-Gm-Message-State: AOAM530EwUrUBuyfscLEi5WWNJtfBUQZ/siLyhabTCe0AH3FKZeRQkrZ
-        FYlzj/iy05O7DuYhimCr7yZJhhgtJ93cG0Xi
-X-Google-Smtp-Source: ABdhPJweYjcrPkZgmnfyZzjdbA3wAgV5K7uMl+Uc5fh48yeVuqYwHwkVi8lDX5W+IdFIcnsk2fYvlQ==
-X-Received: by 2002:aa7:cd07:: with SMTP id b7mr25343630edw.293.1618138576059;
-        Sun, 11 Apr 2021 03:56:16 -0700 (PDT)
+        bh=B3lNEkRWCQlFE4823y02WM8JSwY+DtafqTRIoBwU7tA=;
+        b=REnNWPGgSG3li4857cCVB8apaAH2XeJY91h+b6CAKahgjKIwu1D0vs36g5gFE1Fdyl
+         Dqq0f/KQI8ntiv+iGosMMK+8tT/Q4sHHxk6oYN1EHyaZP8hu1xB/A33s2vLLCYOaOo0u
+         JyqIocORVTyUxu7r6AdNiz4OE0KJ+U4O1Tw6Hm3kxYUK8L/6SuCupUM2BW/HPIUj5863
+         oRn1W1HOinaVKjTP9Zw4VqvOdf6EhbEILKtD8VP53dLhzlHKvAWfNe6M7IDu8Qr9Hy1X
+         DqO0oSu3pJ6LmCh7MrN9AjhmHrT4dB3rNk/CWepend7/dN2MbyaKAHsO8o5dKbWsiCL+
+         DJ+w==
+X-Gm-Message-State: AOAM532P+30yQcn6L45s08Dp/2gtP5hMAHKWhf2uYAin5oE3ie5kGc6e
+        GRcwHsnq+D5w/hiwfB54YkIE0diwGQ4La9Q+
+X-Google-Smtp-Source: ABdhPJynTNNIXeu8vpYIJmm80TBU9tkuNDhfsNw06kEE79c4w61JvjzOZlkzN0772usLm55hwL5ziQ==
+X-Received: by 2002:a05:6402:5244:: with SMTP id t4mr25382970edd.87.1618138578239;
+        Sun, 11 Apr 2021 03:56:18 -0700 (PDT)
 Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id f10sm4369100edd.29.2021.04.11.03.56.15
+        by smtp.gmail.com with ESMTPSA id f10sm4369100edd.29.2021.04.11.03.56.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 03:56:15 -0700 (PDT)
+        Sun, 11 Apr 2021 03:56:17 -0700 (PDT)
 From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
 To:     Greg KH <gregkh@linuxfoundation.org>,
         outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
 Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH v4 1/4] staging: rtl8723bs: Remove camelcase in several files
-Date:   Sun, 11 Apr 2021 12:56:05 +0200
-Message-Id: <20210411105608.12900-2-fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH 2/4] staging: rtl8723bs: include: Fix misspelled words in comments
+Date:   Sun, 11 Apr 2021 12:56:06 +0200
+Message-Id: <20210411105608.12900-3-fmdefrancesco@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210411105608.12900-1-fmdefrancesco@gmail.com>
 References: <20210411105608.12900-1-fmdefrancesco@gmail.com>
@@ -65,10 +65,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove camelcase in bFwCurrentInPSMode, a variable used by code
-of several subdirectories/files of the driver. Issue detected by
-checkpatch.pl. Delete the unnecessary "b" (that stands for "byte") from
-the beginning of the name.
+Correct misspelled words in comments of several files. Issue (largely)
+detected by checkpatch.pl.
 
 Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
@@ -78,261 +76,371 @@ Changes from v2: Rewrite subject in patch 0/4; remove a patch from the
 series because it had alreay been applied (rtl8723bs: core: Remove an unused variable).
 Changes from v1: Fix a typo in subject of patch 1/5, add patch 5/5.
 
- drivers/staging/rtl8723bs/core/rtw_cmd.c       |  2 +-
- drivers/staging/rtl8723bs/core/rtw_mlme.c      |  2 +-
- drivers/staging/rtl8723bs/core/rtw_pwrctrl.c   | 18 +++++++++---------
- drivers/staging/rtl8723bs/hal/hal_intf.c       |  2 +-
- drivers/staging/rtl8723bs/hal/rtl8723b_dm.c    |  6 +++---
- .../staging/rtl8723bs/hal/rtl8723b_hal_init.c  |  2 +-
- drivers/staging/rtl8723bs/hal/sdio_ops.c       | 14 +++++++-------
- .../staging/rtl8723bs/include/rtw_pwrctrl.h    |  2 +-
- 8 files changed, 24 insertions(+), 24 deletions(-)
+ .../rtl8723bs/include/Hal8192CPhyReg.h        |  8 ++---
+ .../staging/rtl8723bs/include/basic_types.h   |  2 +-
+ drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
+ drivers/staging/rtl8723bs/include/hal_com.h   |  2 +-
+ .../staging/rtl8723bs/include/hal_com_reg.h   | 34 +++++++++----------
+ drivers/staging/rtl8723bs/include/hal_data.h  |  2 +-
+ .../staging/rtl8723bs/include/hal_pwr_seq.h   |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_cmd.h   |  6 ++--
+ drivers/staging/rtl8723bs/include/rtw_mlme.h  | 18 +++++-----
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_mp.h    |  2 +-
+ .../staging/rtl8723bs/include/rtw_pwrctrl.h   |  2 +-
+ drivers/staging/rtl8723bs/include/rtw_recv.h  |  4 +--
+ drivers/staging/rtl8723bs/include/rtw_xmit.h  |  2 +-
+ drivers/staging/rtl8723bs/include/sta_info.h  |  2 +-
+ drivers/staging/rtl8723bs/include/wifi.h      |  2 +-
+ 16 files changed, 46 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-index e94eb1138cf1..32079e0f71d5 100644
---- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -1507,7 +1507,7 @@ static void rtw_lps_change_dtim_hdl(struct adapter *padapter, u8 dtim)
- 	if (pwrpriv->dtim != dtim)
- 		pwrpriv->dtim = dtim;
+diff --git a/drivers/staging/rtl8723bs/include/Hal8192CPhyReg.h b/drivers/staging/rtl8723bs/include/Hal8192CPhyReg.h
+index fb80901f0788..4b3a7c051630 100644
+--- a/drivers/staging/rtl8723bs/include/Hal8192CPhyReg.h
++++ b/drivers/staging/rtl8723bs/include/Hal8192CPhyReg.h
+@@ -34,7 +34,7 @@
+ /*--------------------------Define Parameters-------------------------------*/
  
--	if ((pwrpriv->bFwCurrentInPSMode == true) && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
-+	if ((pwrpriv->fw_current_in_ps_mode == true) && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
- 		u8 ps_mode = pwrpriv->pwr_mode;
+ /*  */
+-/*        8192S Regsiter offset definition */
++/*        8192S Register offset definition */
+ /*  */
  
- 		rtw_hal_set_hwreg(padapter, HW_VAR_H2C_FW_PWRMODE, (u8 *)(&ps_mode));
-diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme.c b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-index a7e40aaae2d9..895997868c81 100644
---- a/drivers/staging/rtl8723bs/core/rtw_mlme.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_mlme.c
-@@ -1684,7 +1684,7 @@ void rtw_dynamic_check_timer_handler(struct adapter *adapter)
- 	if (adapter->net_closed)
- 		return;
+ /*  */
+@@ -43,7 +43,7 @@
+ /*  2. 0x800/0x900/0xA00/0xC00/0xD00/0xE00 */
+ /*  3. RF register 0x00-2E */
+ /*  4. Bit Mask for BB/RF register */
+-/*  5. Other defintion for BB/RF R/W */
++/*  5. Other definition for BB/RF R/W */
+ /*  */
  
--	if ((adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
-+	if ((adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
- 		&& !(hal_btcoex_IsBtControlLps(adapter))
- 		) {
- 		u8 bEnterPS;
-diff --git a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-index 05e537cd4e48..364b96fe0a54 100644
---- a/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_pwrctrl.c
-@@ -365,7 +365,7 @@ void rtw_set_ps_mode(struct adapter *padapter, u8 ps_mode, u8 smart_ps, u8 bcn_a
- 			rtw_set_rpwm(padapter, PS_STATE_S4);
  
- 			rtw_hal_set_hwreg(padapter, HW_VAR_H2C_FW_PWRMODE, (u8 *)(&ps_mode));
--			pwrpriv->bFwCurrentInPSMode = false;
-+			pwrpriv->fw_current_in_ps_mode = false;
+@@ -137,7 +137,7 @@
+ #define		rFPGA0_AnalogParameter3		0x888	/*  Useless now */
+ #define		rFPGA0_AnalogParameter4		0x88c
  
- 			hal_btcoex_LpsNotify(padapter, ps_mode);
- 		}
-@@ -377,7 +377,7 @@ void rtw_set_ps_mode(struct adapter *padapter, u8 ps_mode, u8 smart_ps, u8 bcn_a
+-#define		rFPGA0_XA_LSSIReadBack		0x8a0	/*  Tranceiver LSSI Readback */
++#define		rFPGA0_XA_LSSIReadBack		0x8a0	/*  Transceiver LSSI Readback */
+ #define		rFPGA0_XB_LSSIReadBack		0x8a4
+ #define		rFPGA0_XC_LSSIReadBack		0x8a8
+ #define		rFPGA0_XD_LSSIReadBack		0x8ac
+@@ -206,7 +206,7 @@
+ #define		rOFDM0_TRSWIsolation		0xc0c
  
- 			hal_btcoex_LpsNotify(padapter, ps_mode);
+ #define		rOFDM0_XARxAFE			0xc10  /* RxIQ DC offset, Rx digital filter, DC notch filter */
+-#define		rOFDM0_XARxIQImbalance		0xc14  /* RxIQ imblance matrix */
++#define		rOFDM0_XARxIQImbalance		0xc14  /* RxIQ imbalance matrix */
+ #define		rOFDM0_XBRxAFE				0xc18
+ #define		rOFDM0_XBRxIQImbalance		0xc1c
+ #define		rOFDM0_XCRxAFE				0xc20
+diff --git a/drivers/staging/rtl8723bs/include/basic_types.h b/drivers/staging/rtl8723bs/include/basic_types.h
+index 76304086107a..57bb717327ce 100644
+--- a/drivers/staging/rtl8723bs/include/basic_types.h
++++ b/drivers/staging/rtl8723bs/include/basic_types.h
+@@ -187,7 +187,7 @@
+ 		); \
+ }
  
--			pwrpriv->bFwCurrentInPSMode = true;
-+			pwrpriv->fw_current_in_ps_mode = true;
- 			pwrpriv->pwr_mode = ps_mode;
- 			pwrpriv->smart_ps = smart_ps;
- 			pwrpriv->bcn_ant_mode = bcn_ant_mode;
-@@ -734,7 +734,7 @@ s32 rtw_register_task_alive(struct adapter *padapter, u32 task)
+-/*  Get the N-bytes aligment offset from the current length */
++/*  Get the N-bytes alignent offset from the current length */
+ #define N_BYTE_ALIGMENT(__Value, __Aligment) ((__Aligment == 1) ? (__Value) : (((__Value + __Aligment - 1) / __Aligment) * __Aligment))
  
- 	register_task_alive(pwrctrl, task);
+ #define TEST_FLAG(__Flag, __testFlag)		(((__Flag) & (__testFlag)) != 0)
+diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/staging/rtl8723bs/include/drv_types.h
+index 19da27fb5ddf..f1f588d38a60 100644
+--- a/drivers/staging/rtl8723bs/include/drv_types.h
++++ b/drivers/staging/rtl8723bs/include/drv_types.h
+@@ -424,7 +424,7 @@ struct adapter {
+ 	/* 	The driver will show up the desired channel number when this flag is 1. */
+ 	u8 bNotifyChannelChange;
  
--	if (pwrctrl->bFwCurrentInPSMode) {
-+	if (pwrctrl->fw_current_in_ps_mode) {
- 		if (pwrctrl->cpwm < pslv) {
- 			if (pwrctrl->cpwm < PS_STATE_S2)
- 				res = _FAIL;
-@@ -782,7 +782,7 @@ void rtw_unregister_task_alive(struct adapter *padapter, u32 task)
+-	/* pbuddystruct adapter is used only in  two inteface case, (iface_nums =2 in struct dvobj_priv) */
++	/* pbuddystruct adapter is used only in two interface case, (iface_nums =2 in struct dvobj_priv) */
+ 	/* PRIMARY ADAPTER's buddy is SECONDARY_ADAPTER */
+ 	/* SECONDARY_ADAPTER's buddy is PRIMARY_ADAPTER */
+ 	/* for iface_id > SECONDARY_ADAPTER(IFACE_ID1), refer to padapters[iface_id]  in struct dvobj_priv */
+diff --git a/drivers/staging/rtl8723bs/include/hal_com.h b/drivers/staging/rtl8723bs/include/hal_com.h
+index a1e1b76b5d8a..6bcc443d59fb 100644
+--- a/drivers/staging/rtl8723bs/include/hal_com.h
++++ b/drivers/staging/rtl8723bs/include/hal_com.h
+@@ -158,7 +158,7 @@
+ (rate == DESC_RATEVHTSS2MCS6) ? "VHTSS2MCS6" : \
+ (rate == DESC_RATEVHTSS2MCS7) ? "VHTSS2MCS7" : \
+ (rate == DESC_RATEVHTSS2MCS8) ? "VHTSS2MCS8" : \
+-(rate == DESC_RATEVHTSS2MCS9) ? "VHTSS2MCS9" : "UNKNOW"
++(rate == DESC_RATEVHTSS2MCS9) ? "VHTSS2MCS9" : "UNKNOWN"
  
- 	unregister_task_alive(pwrctrl, task);
  
--	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->bFwCurrentInPSMode) {
-+	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->fw_current_in_ps_mode) {
- 		if (pwrctrl->cpwm > pslv)
- 			if ((pslv >= PS_STATE_S2) || (pwrctrl->alives == 0))
- 				rtw_set_rpwm(padapter, pslv);
-@@ -819,7 +819,7 @@ s32 rtw_register_tx_alive(struct adapter *padapter)
+ enum{
+diff --git a/drivers/staging/rtl8723bs/include/hal_com_reg.h b/drivers/staging/rtl8723bs/include/hal_com_reg.h
+index 2cd18eb57244..b14585cb0233 100644
+--- a/drivers/staging/rtl8723bs/include/hal_com_reg.h
++++ b/drivers/staging/rtl8723bs/include/hal_com_reg.h
+@@ -768,14 +768,14 @@ Default: 00b.
+ #define IMR_BCNDMAINT3			BIT28		/*  Beacon DMA Interrupt 3 */
+ #define IMR_BCNDMAINT2			BIT27		/*  Beacon DMA Interrupt 2 */
+ #define IMR_BCNDMAINT1			BIT26		/*  Beacon DMA Interrupt 1 */
+-#define IMR_BCNDOK8				BIT25		/*  Beacon Queue DMA OK Interrup 8 */
+-#define IMR_BCNDOK7				BIT24		/*  Beacon Queue DMA OK Interrup 7 */
+-#define IMR_BCNDOK6				BIT23		/*  Beacon Queue DMA OK Interrup 6 */
+-#define IMR_BCNDOK5				BIT22		/*  Beacon Queue DMA OK Interrup 5 */
+-#define IMR_BCNDOK4				BIT21		/*  Beacon Queue DMA OK Interrup 4 */
+-#define IMR_BCNDOK3				BIT20		/*  Beacon Queue DMA OK Interrup 3 */
+-#define IMR_BCNDOK2				BIT19		/*  Beacon Queue DMA OK Interrup 2 */
+-#define IMR_BCNDOK1				BIT18		/*  Beacon Queue DMA OK Interrup 1 */
++#define IMR_BCNDOK8				BIT25		/*  Beacon Queue DMA OK Interrupt 8 */
++#define IMR_BCNDOK7				BIT24		/*  Beacon Queue DMA OK Interrupt 7 */
++#define IMR_BCNDOK6				BIT23		/*  Beacon Queue DMA OK Interrupt 6 */
++#define IMR_BCNDOK5				BIT22		/*  Beacon Queue DMA OK Interrupt 5 */
++#define IMR_BCNDOK4				BIT21		/*  Beacon Queue DMA OK Interrupt 4 */
++#define IMR_BCNDOK3				BIT20		/*  Beacon Queue DMA OK Interrupt 3 */
++#define IMR_BCNDOK2				BIT19		/*  Beacon Queue DMA OK Interrupt 2 */
++#define IMR_BCNDOK1				BIT18		/*  Beacon Queue DMA OK Interrupt 1 */
+ #define IMR_TIMEOUT2			BIT17		/*  Timeout interrupt 2 */
+ #define IMR_TIMEOUT1			BIT16		/*  Timeout interrupt 1 */
+ #define IMR_TXFOVW				BIT15		/*  Transmit FIFO Overflow */
+@@ -784,9 +784,9 @@ Default: 00b.
+ #define IMR_RXFOVW				BIT12		/*  Receive FIFO Overflow */
+ #define IMR_RDU					BIT11		/*  Receive Descriptor Unavailable */
+ #define IMR_ATIMEND				BIT10		/*  For 92C, ATIM Window End Interrupt. For 8723 and later ICs, it also means P2P CTWin End interrupt. */
+-#define IMR_BDOK				BIT9		/*  Beacon Queue DMA OK Interrup */
++#define IMR_BDOK				BIT9		/*  Beacon Queue DMA OK Interrupt */
+ #define IMR_HIGHDOK				BIT8		/*  High Queue DMA OK Interrupt */
+-#define IMR_TBDOK				BIT7		/*  Transmit Beacon OK interrup */
++#define IMR_TBDOK				BIT7		/*  Transmit Beacon OK interrupt */
+ #define IMR_MGNTDOK			BIT6		/*  Management Queue DMA OK Interrupt */
+ #define IMR_TBDER				BIT5		/*  For 92C, Transmit Beacon Error Interrupt */
+ #define IMR_BKDOK				BIT4		/*  AC_BK DMA OK Interrupt */
+@@ -956,13 +956,13 @@ Default: 00b.
+ #define IMR_BCNDMAINT3_88E		BIT23		/*  Beacon DMA Interrupt 3 */
+ #define IMR_BCNDMAINT2_88E		BIT22		/*  Beacon DMA Interrupt 2 */
+ #define IMR_BCNDMAINT1_88E		BIT21		/*  Beacon DMA Interrupt 1 */
+-#define IMR_BCNDOK7_88E			BIT20		/*  Beacon Queue DMA OK Interrup 7 */
+-#define IMR_BCNDOK6_88E			BIT19		/*  Beacon Queue DMA OK Interrup 6 */
+-#define IMR_BCNDOK5_88E			BIT18		/*  Beacon Queue DMA OK Interrup 5 */
+-#define IMR_BCNDOK4_88E			BIT17		/*  Beacon Queue DMA OK Interrup 4 */
+-#define IMR_BCNDOK3_88E			BIT16		/*  Beacon Queue DMA OK Interrup 3 */
+-#define IMR_BCNDOK2_88E			BIT15		/*  Beacon Queue DMA OK Interrup 2 */
+-#define IMR_BCNDOK1_88E			BIT14		/*  Beacon Queue DMA OK Interrup 1 */
++#define IMR_BCNDOK7_88E			BIT20		/*  Beacon Queue DMA OK Interrupt 7 */
++#define IMR_BCNDOK6_88E			BIT19		/*  Beacon Queue DMA OK Interrupt 6 */
++#define IMR_BCNDOK5_88E			BIT18		/*  Beacon Queue DMA OK Interrupt 5 */
++#define IMR_BCNDOK4_88E			BIT17		/*  Beacon Queue DMA OK Interrupt 4 */
++#define IMR_BCNDOK3_88E			BIT16		/*  Beacon Queue DMA OK Interrupt 3 */
++#define IMR_BCNDOK2_88E			BIT15		/*  Beacon Queue DMA OK Interrupt 2 */
++#define IMR_BCNDOK1_88E			BIT14		/*  Beacon Queue DMA OK Interrupt 1 */
+ #define IMR_ATIMEND_E_88E			BIT13		/*  ATIM Window End Extension for Win7 */
+ #define IMR_TXERR_88E				BIT11		/*  Tx Error Flag Interrupt Status, write 1 clear. */
+ #define IMR_RXERR_88E				BIT10		/*  Rx Error Flag INT Status, Write 1 clear */
+diff --git a/drivers/staging/rtl8723bs/include/hal_data.h b/drivers/staging/rtl8723bs/include/hal_data.h
+index df5c7b747498..babcb03a7c23 100644
+--- a/drivers/staging/rtl8723bs/include/hal_data.h
++++ b/drivers/staging/rtl8723bs/include/hal_data.h
+@@ -389,7 +389,7 @@ struct hal_com_data {
+ 	u8 OutEpQueueSel;
+ 	u8 OutEpNumber;
  
- 	register_task_alive(pwrctrl, XMIT_ALIVE);
+-	/*  2010/12/10 MH Add for USB aggreation mode dynamic shceme. */
++	/*  2010/12/10 MH Add for USB aggregation mode dynamic scheme. */
+ 	bool		UsbRxHighSpeedMode;
  
--	if (pwrctrl->bFwCurrentInPSMode) {
-+	if (pwrctrl->fw_current_in_ps_mode) {
- 		if (pwrctrl->cpwm < pslv) {
- 			if (pwrctrl->cpwm < PS_STATE_S2)
- 				res = _FAIL;
-@@ -864,7 +864,7 @@ s32 rtw_register_cmd_alive(struct adapter *padapter)
+ 	/*  2010/11/22 MH Add for slim combo debug mode selective. */
+diff --git a/drivers/staging/rtl8723bs/include/hal_pwr_seq.h b/drivers/staging/rtl8723bs/include/hal_pwr_seq.h
+index 0837506b6be8..0a2e60770668 100644
+--- a/drivers/staging/rtl8723bs/include/hal_pwr_seq.h
++++ b/drivers/staging/rtl8723bs/include/hal_pwr_seq.h
+@@ -14,7 +14,7 @@
+ 	4: LPS--Low Power State
+ 	5: SUS--Suspend
  
- 	register_task_alive(pwrctrl, CMD_ALIVE);
+-	The transision from different states are defined below
++	The transition from different states are defined below
+ 	TRANS_CARDEMU_TO_ACT
+ 	TRANS_ACT_TO_CARDEMU
+ 	TRANS_CARDEMU_TO_SUS
+diff --git a/drivers/staging/rtl8723bs/include/rtw_cmd.h b/drivers/staging/rtl8723bs/include/rtw_cmd.h
+index 87cbad525393..517ae3b51386 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_cmd.h
++++ b/drivers/staging/rtl8723bs/include/rtw_cmd.h
+@@ -136,7 +136,7 @@ enum {
+ 	RESET_SECURITYPRIV, /*  add for CONFIG_IEEE80211W, none 11w also can use */
+ 	FREE_ASSOC_RESOURCES, /*  add for CONFIG_IEEE80211W, none 11w also can use */
+ 	DM_IN_LPS_WK_CID,
+-	DM_RA_MSK_WK_CID, /* add for STA update RAMask when bandwith change. */
++	DM_RA_MSK_WK_CID, /* add for STA update RAMask when bandwidth change. */
+ 	BEAMFORMING_WK_CID,
+ 	LPS_CHANGE_DTIM_CID,
+ 	BTINFO_WK_CID,
+@@ -514,7 +514,7 @@ struct drvextra_cmd_parm {
+ 	unsigned char *pbuf;
+ };
  
--	if (pwrctrl->bFwCurrentInPSMode) {
-+	if (pwrctrl->fw_current_in_ps_mode) {
- 		if (pwrctrl->cpwm < pslv) {
- 			if (pwrctrl->cpwm < PS_STATE_S2)
- 				res = _FAIL;
-@@ -909,7 +909,7 @@ void rtw_unregister_tx_alive(struct adapter *padapter)
+-/*------------------- Below are used for RF/BB tunning ---------------------*/
++/*------------------- Below are used for RF/BB tuning ---------------------*/
  
- 	unregister_task_alive(pwrctrl, XMIT_ALIVE);
+ struct	getcountjudge_rsp {
+ 	u8 count_judge[MAX_RATES_LENGTH];
+@@ -567,7 +567,7 @@ struct RunInThread_param {
  
--	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->bFwCurrentInPSMode) {
-+	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->fw_current_in_ps_mode) {
- 		if (pwrctrl->cpwm > pslv)
- 			if ((pslv >= PS_STATE_S2) || (pwrctrl->alives == 0))
- 				rtw_set_rpwm(padapter, pslv);
-@@ -945,7 +945,7 @@ void rtw_unregister_cmd_alive(struct adapter *padapter)
+ Result:
+ 0x00: success
+-0x01: sucess, and check Response.
++0x01: success, and check Response.
+ 0x02: cmd ignored due to duplicated sequcne number
+ 0x03: cmd dropped due to invalid cmd code
+ 0x04: reserved.
+diff --git a/drivers/staging/rtl8723bs/include/rtw_mlme.h b/drivers/staging/rtl8723bs/include/rtw_mlme.h
+index 87a1fa8f347e..5deb73fe3885 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_mlme.h
++++ b/drivers/staging/rtl8723bs/include/rtw_mlme.h
+@@ -57,11 +57,11 @@
  
- 	unregister_task_alive(pwrctrl, CMD_ALIVE);
+ /* ifdef UNDER_MPTEST */
+ #define	WIFI_MP_STATE							0x00010000
+-#define	WIFI_MP_CTX_BACKGROUND				0x00020000	/*  in continous tx background */
+-#define	WIFI_MP_CTX_ST						0x00040000	/*  in continous tx with single-tone */
+-#define	WIFI_MP_CTX_BACKGROUND_PENDING	0x00080000	/*  pending in continous tx background due to out of skb */
+-#define	WIFI_MP_CTX_CCK_HW					0x00100000	/*  in continous tx */
+-#define	WIFI_MP_CTX_CCK_CS					0x00200000	/*  in continous tx with carrier suppression */
++#define	WIFI_MP_CTX_BACKGROUND				0x00020000	/*  in continuous tx background */
++#define	WIFI_MP_CTX_ST						0x00040000	/*  in continuous tx with single-tone */
++#define	WIFI_MP_CTX_BACKGROUND_PENDING	0x00080000	/*  pending in continuous tx background due to out of skb */
++#define	WIFI_MP_CTX_CCK_HW					0x00100000	/*  in continuous tx */
++#define	WIFI_MP_CTX_CCK_CS					0x00200000	/*  in continuous tx with carrier suppression */
+ #define   WIFI_MP_LPBK_STATE					0x00400000
+ /* endif */
  
--	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->bFwCurrentInPSMode) {
-+	if ((pwrctrl->pwr_mode != PS_MODE_ACTIVE) && pwrctrl->fw_current_in_ps_mode) {
- 		if (pwrctrl->cpwm > pslv) {
- 			if ((pslv >= PS_STATE_S2) || (pwrctrl->alives == 0))
- 				rtw_set_rpwm(padapter, pslv);
-@@ -978,7 +978,7 @@ void rtw_init_pwrctrl_priv(struct adapter *padapter)
- 	pwrctrlpriv->power_mgnt = padapter->registrypriv.power_mgnt;/*  PS_MODE_MIN; */
- 	pwrctrlpriv->bLeisurePs = pwrctrlpriv->power_mgnt != PS_MODE_ACTIVE;
+@@ -168,7 +168,7 @@ struct tx_provdisc_req_info {
+ 	u8 			benable;					/* 	This provision discovery request frame is trigger to send or not */
+ };
  
--	pwrctrlpriv->bFwCurrentInPSMode = false;
-+	pwrctrlpriv->fw_current_in_ps_mode = false;
+-struct rx_provdisc_req_info {	/* When peer device issue prov_disc_req first, we should store the following informations */
++struct rx_provdisc_req_info {	/* When peer device issue prov_disc_req first, we should store the following information */
+ 	u8			peerDevAddr[ETH_ALEN];		/*	Peer device address */
+ 	u8 			strconfig_method_desc_of_prov_disc_req[4];	/* 	description for the config method located in the provisioning discovery request frame. */
+ 																	/* 	The UI must know this information to know which config method the remote p2p device is requiring. */
+@@ -177,7 +177,7 @@ struct rx_provdisc_req_info {	/* When peer device issue prov_disc_req first, we
+ struct tx_nego_req_info {
+ 	u16 				peer_channel_num[2];		/* 	The channel number which the receiver stands. */
+ 	u8			peerDevAddr[ETH_ALEN];		/*	Peer device address */
+-	u8 			benable;					/* 	This negoitation request frame is trigger to send or not */
++	u8 			benable;					/* 	This negotiation request frame is trigger to send or not */
+ };
  
- 	pwrctrlpriv->rpwm = 0;
- 	pwrctrlpriv->cpwm = PS_STATE_S4;
-diff --git a/drivers/staging/rtl8723bs/hal/hal_intf.c b/drivers/staging/rtl8723bs/hal/hal_intf.c
-index bc9ae2088754..96fe172ced8d 100644
---- a/drivers/staging/rtl8723bs/hal/hal_intf.c
-+++ b/drivers/staging/rtl8723bs/hal/hal_intf.c
-@@ -348,7 +348,7 @@ void rtw_hal_dm_watchdog(struct adapter *padapter)
- 
- void rtw_hal_dm_watchdog_in_lps(struct adapter *padapter)
- {
--	if (adapter_to_pwrctl(padapter)->bFwCurrentInPSMode == true) {
-+	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode == true) {
- 		if (padapter->HalFunc.hal_dm_watchdog_in_lps)
- 			padapter->HalFunc.hal_dm_watchdog_in_lps(padapter); /* this function caller is in interrupt context */
- 	}
-diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c b/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c
-index c2e9e4a0be22..23be025ceb5b 100644
---- a/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c
-+++ b/drivers/staging/rtl8723bs/hal/rtl8723b_dm.c
-@@ -141,7 +141,7 @@ void rtl8723b_InitHalDm(struct adapter *Adapter)
- 
- void rtl8723b_HalDmWatchDog(struct adapter *Adapter)
- {
--	bool bFwCurrentInPSMode = false;
-+	bool fw_current_in_ps_mode = false;
- 	bool bFwPSAwake = true;
- 	u8 hw_init_completed = false;
- 	struct hal_com_data *pHalData = GET_HAL_DATA(Adapter);
-@@ -151,12 +151,12 @@ void rtl8723b_HalDmWatchDog(struct adapter *Adapter)
- 	if (hw_init_completed == false)
- 		goto skip_dm;
- 
--	bFwCurrentInPSMode = adapter_to_pwrctl(Adapter)->bFwCurrentInPSMode;
-+	fw_current_in_ps_mode = adapter_to_pwrctl(Adapter)->fw_current_in_ps_mode;
- 	rtw_hal_get_hwreg(Adapter, HW_VAR_FWLPS_RF_ON, (u8 *)(&bFwPSAwake));
- 
- 	if (
- 		(hw_init_completed == true) &&
--		((!bFwCurrentInPSMode) && bFwPSAwake)
-+		((!fw_current_in_ps_mode) && bFwPSAwake)
- 	) {
- 		/*  */
- 		/*  Calculate Tx/Rx statistics. */
-diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-index 8d6ea8850556..77f8353c5ce5 100644
---- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-+++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-@@ -428,7 +428,7 @@ void rtl8723b_InitializeFirmwareVars(struct adapter *padapter)
- 	struct hal_com_data *pHalData = GET_HAL_DATA(padapter);
- 
- 	/*  Init Fw LPS related. */
--	adapter_to_pwrctl(padapter)->bFwCurrentInPSMode = false;
-+	adapter_to_pwrctl(padapter)->fw_current_in_ps_mode = false;
- 
- 	/* Init H2C cmd. */
- 	rtw_write8(padapter, REG_HMETFR, 0x0f);
-diff --git a/drivers/staging/rtl8723bs/hal/sdio_ops.c b/drivers/staging/rtl8723bs/hal/sdio_ops.c
-index 701f1abbd0f0..b73c535308fa 100644
---- a/drivers/staging/rtl8723bs/hal/sdio_ops.c
-+++ b/drivers/staging/rtl8723bs/hal/sdio_ops.c
-@@ -170,7 +170,7 @@ static u32 sdio_read32(struct intf_hdl *intfhdl, u32 addr)
- 	if (
- 		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
- 		(!mac_pwr_ctrl_on) ||
--		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
-+		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
- 	) {
- 		err = sd_cmd52_read(intfhdl, ftaddr, 4, (u8 *)&le_tmp);
- 		return le32_to_cpu(le_tmp);
-@@ -216,7 +216,7 @@ static s32 sdio_readN(struct intf_hdl *intfhdl, u32 addr, u32 cnt, u8 *buf)
- 	if (
- 		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
- 		(!mac_pwr_ctrl_on) ||
--		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
-+		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
- 	)
- 		return sd_cmd52_read(intfhdl, ftaddr, cnt, buf);
- 
-@@ -283,7 +283,7 @@ static s32 sdio_write32(struct intf_hdl *intfhdl, u32 addr, u32 val)
- 	if (
- 		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
- 		(!mac_pwr_ctrl_on) ||
--		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
-+		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
- 	) {
- 		le_tmp = cpu_to_le32(val);
- 
-@@ -320,7 +320,7 @@ static s32 sdio_writeN(struct intf_hdl *intfhdl, u32 addr, u32 cnt, u8 *buf)
- 	if (
- 		((device_id == WLAN_IOREG_DEVICE_ID) && (offset < 0x100)) ||
- 		(!mac_pwr_ctrl_on) ||
--		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
-+		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
- 	)
- 		return sd_cmd52_write(intfhdl, ftaddr, cnt, buf);
- 
-@@ -551,7 +551,7 @@ s32 sdio_local_read(
- 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
- 	if (
- 		(!mac_pwr_ctrl_on) ||
--		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
-+		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
- 	)
- 		return sd_cmd52_read(intfhdl, addr, cnt, buf);
- 
-@@ -591,7 +591,7 @@ s32 sdio_local_write(
- 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
- 	if (
- 		(!mac_pwr_ctrl_on) ||
--		(adapter_to_pwrctl(adapter)->bFwCurrentInPSMode)
-+		(adapter_to_pwrctl(adapter)->fw_current_in_ps_mode)
- 	)
- 		return sd_cmd52_write(intfhdl, addr, cnt, buf);
- 
-@@ -640,7 +640,7 @@ static u32 sdio_local_cmd53_read4byte(struct adapter *adapter, u32 addr)
- 
- 	hal_sdio_get_cmd_addr_8723b(adapter, SDIO_LOCAL_DEVICE_ID, addr, &addr);
- 	rtw_hal_get_hwreg(adapter, HW_VAR_APFM_ON_MAC, &mac_pwr_ctrl_on);
--	if (!mac_pwr_ctrl_on || adapter_to_pwrctl(adapter)->bFwCurrentInPSMode) {
-+	if (!mac_pwr_ctrl_on || adapter_to_pwrctl(adapter)->fw_current_in_ps_mode) {
- 		sd_cmd52_read(intfhdl, addr, 4, (u8 *)&le_tmp);
- 		val = le32_to_cpu(le_tmp);
- 	} else {
+ struct group_id_info {
+@@ -228,9 +228,9 @@ struct wifidirect_info {
+ 	u8 				profileindex;	/* 	Used to point to the index of profileinfo array */
+ 	u8 				peer_operating_ch;
+ 	u8 				find_phase_state_exchange_cnt;
+-	u16 					device_password_id_for_nego;	/* 	The device password ID for group negotation */
++	u16 					device_password_id_for_nego;	/* 	The device password ID for group negotiation */
+ 	u8 				negotiation_dialog_token;
+-	u8				nego_ssid[WLAN_SSID_MAXLEN];	/*	SSID information for group negotitation */
++	u8				nego_ssid[WLAN_SSID_MAXLEN];	/*	SSID information for group negotiation */
+ 	u8 				nego_ssidlen;
+ 	u8 				p2p_group_ssid[WLAN_SSID_MAXLEN];
+ 	u8 				p2p_group_ssid_len;
+diff --git a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
+index 393eeecaf3a0..5e6cf63956b8 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
++++ b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
+@@ -112,7 +112,7 @@ extern unsigned char WMM_PARA_OUI[];
+ /*  Note: */
+ /* 	We just add new channel plan when the new channel plan is different from any of the following */
+ /* 	channel plan. */
+-/* 	If you just wnat to customize the acitions(scan period or join actions) about one of the channel plan, */
++/* 	If you just want to customize the actions(scan period or join actions) about one of the channel plan, */
+ /* 	customize them in rt_channel_info in the RT_CHANNEL_LIST. */
+ /*  */
+ enum {
+diff --git a/drivers/staging/rtl8723bs/include/rtw_mp.h b/drivers/staging/rtl8723bs/include/rtw_mp.h
+index 26dec21bf0f1..2788ad80b114 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_mp.h
++++ b/drivers/staging/rtl8723bs/include/rtw_mp.h
+@@ -101,7 +101,7 @@ struct mpt_context {
+ 	/*  For MP Tx Power index */
+ 	u8 	TxPwrLevel[2];	/*  rf-A, rf-B */
+ 	u32 		RegTxPwrLimit;
+-	/*  Content of RCR Regsiter for Mass Production Test. */
++	/*  Content of RCR Register for Mass Production Test. */
+ 	u32 		MptRCR;
+ 	/*  true if we only receive packets with specific pattern. */
+ 	bool			bMptFilterPattern;
 diff --git a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-index 2e739a17dd95..5450d20b44a6 100644
+index 5450d20b44a6..0a48f1653be5 100644
 --- a/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
 +++ b/drivers/staging/rtl8723bs/include/rtw_pwrctrl.h
-@@ -203,7 +203,7 @@ struct pwrctrl_priv {
- 	u8 LpsIdleCount;
- 	u8 power_mgnt;
- 	u8 org_power_mgnt;
--	u8 bFwCurrentInPSMode;
-+	u8 fw_current_in_ps_mode;
- 	unsigned long	DelayLPSLastTimeStamp;
- 	s32		pnp_current_pwr_state;
- 	u8 pnp_bstop_trx;
+@@ -112,7 +112,7 @@ enum rt_rf_power_state {
+ #define	RT_RF_OFF_LEVL_FREE_FW		BIT(4)	/*  FW free, re-download the FW */
+ #define	RT_RF_OFF_LEVL_FW_32K		BIT(5)	/*  FW in 32k */
+ #define	RT_RF_PS_LEVEL_ALWAYS_ASPM	BIT(6)	/*  Always enable ASPM and Clock Req in initialization. */
+-#define	RT_RF_LPS_DISALBE_2R			BIT(30)	/*  When LPS is on, disable 2R if no packet is received or transmittd. */
++#define	RT_RF_LPS_DISALBE_2R			BIT(30)	/*  When LPS is on, disable 2R if no packet is received or transmitted. */
+ #define	RT_RF_LPS_LEVEL_ASPM			BIT(31)	/*  LPS with ASPM */
+ 
+ #define	RT_IN_PS_LEVEL(ppsc, _PS_FLAG)		((ppsc->cur_ps_level & _PS_FLAG) ? true : false)
+diff --git a/drivers/staging/rtl8723bs/include/rtw_recv.h b/drivers/staging/rtl8723bs/include/rtw_recv.h
+index d007f90d02c3..9c3cdcc990fa 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_recv.h
++++ b/drivers/staging/rtl8723bs/include/rtw_recv.h
+@@ -132,7 +132,7 @@ struct rx_pkt_attrib	{
+ 	u8 order;
+ 	u8 privacy; /* in frame_ctrl field */
+ 	u8 bdecrypted;
+-	u8 encrypt; /* when 0 indicate no encrypt. when non-zero, indicate the encrypt algorith */
++	u8 encrypt; /* when 0 indicates no encryption; when non-zero, indicates the encryption algorithm */
+ 	u8 iv_len;
+ 	u8 icv_len;
+ 	u8 crc_err;
+@@ -227,7 +227,7 @@ struct recv_priv {
+ 
+ 	struct __queue	recv_buf_pending_queue;
+ 
+-	/* For display the phy informatiom */
++	/* For display the phy information */
+ 	u8 is_signal_dbg;	/*  for debug */
+ 	u8 signal_strength_dbg;	/*  for debug */
+ 
+diff --git a/drivers/staging/rtl8723bs/include/rtw_xmit.h b/drivers/staging/rtl8723bs/include/rtw_xmit.h
+index 73d020cfd0d1..e45753d17313 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_xmit.h
++++ b/drivers/staging/rtl8723bs/include/rtw_xmit.h
+@@ -142,7 +142,7 @@ struct pkt_attrib {
+ 	u32 pktlen;		/* the original 802.3 pkt raw_data len (not include ether_hdr data) */
+ 	u32 last_txcmdsz;
+ 	u8 nr_frags;
+-	u8 encrypt;	/* when 0 indicate no encrypt. when non-zero, indicate the encrypt algorith */
++	u8 encrypt;	/* when 0 indicates no encryption; when non-zero, indicates the encryption algorithm */
+ 	u8 iv_len;
+ 	u8 icv_len;
+ 	u8 iv[18];
+diff --git a/drivers/staging/rtl8723bs/include/sta_info.h b/drivers/staging/rtl8723bs/include/sta_info.h
+index abde3e3df988..69c377eeeaf0 100644
+--- a/drivers/staging/rtl8723bs/include/sta_info.h
++++ b/drivers/staging/rtl8723bs/include/sta_info.h
+@@ -329,7 +329,7 @@ struct	sta_priv {
+ 	 */
+ 	struct sta_info *sta_aid[NUM_STA];
+ 
+-	u16 sta_dz_bitmap;/* only support 15 stations, staion aid bitmap for sleeping sta. */
++	u16 sta_dz_bitmap;/* only support for 15 stations, aid bitmap for sleeping stations. */
+ 	u16 tim_bitmap;/* only support 15 stations, aid = 0~15 mapping bit0~bit15 */
+ 
+ 	u16 max_num_sta;
+diff --git a/drivers/staging/rtl8723bs/include/wifi.h b/drivers/staging/rtl8723bs/include/wifi.h
+index 69e714a6d87c..036cf57c65a9 100644
+--- a/drivers/staging/rtl8723bs/include/wifi.h
++++ b/drivers/staging/rtl8723bs/include/wifi.h
+@@ -678,7 +678,7 @@ struct ADDBA_request {
+ 
+ #define	P2P_PROVISION_TIMEOUT				5000	/* 	5 seconds timeout for sending the provision discovery request */
+ #define	P2P_CONCURRENT_PROVISION_TIMEOUT	3000	/* 	3 seconds timeout for sending the provision discovery request under concurrent mode */
+-#define	P2P_GO_NEGO_TIMEOUT					5000	/* 	5 seconds timeout for receiving the group negotation response */
++#define	P2P_GO_NEGO_TIMEOUT					5000	/* 	5 seconds timeout for receiving the group negotiation response */
+ #define	P2P_CONCURRENT_GO_NEGO_TIMEOUT		3000	/* 	3 seconds timeout for sending the negotiation request under concurrent mode */
+ #define	P2P_TX_PRESCAN_TIMEOUT				100		/* 	100ms */
+ #define	P2P_INVITE_TIMEOUT					5000	/* 	5 seconds timeout for sending the invitation request */
 -- 
 2.31.1
 
