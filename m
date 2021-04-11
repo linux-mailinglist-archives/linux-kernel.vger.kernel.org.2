@@ -2,177 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F54A35B57D
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:56:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA6335B584
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235859AbhDKNwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:52:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38122 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235558AbhDKNwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:52:44 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 02EF4610A6;
-        Sun, 11 Apr 2021 13:52:24 +0000 (UTC)
-Date:   Sun, 11 Apr 2021 14:52:45 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     Lucas Stankus <lucas.p.stankus@gmail.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 2/3] staging: iio: cdc: ad7746: use dt bindings to set
- the EXCx pins output
-Message-ID: <20210411145245.18698d61@jic23-huawei>
-In-Reply-To: <CA+U=DsqGG=NA9yHimRYuoSuBxupiqZ8JH-7FKThXj9J7D__U=A@mail.gmail.com>
-References: <cover.1617993776.git.lucas.p.stankus@gmail.com>
-        <39486895e4e985d0220342f3accfd98a1e149ea7.1617993776.git.lucas.p.stankus@gmail.com>
-        <CA+U=Dsot+p76kaCAecN+ORdhZ_u+Bw1J8oVKZYAjoexHgiazVg@mail.gmail.com>
-        <CA+U=DsqGG=NA9yHimRYuoSuBxupiqZ8JH-7FKThXj9J7D__U=A@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S235890AbhDKN5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:57:23 -0400
+Received: from conuserg-07.nifty.com ([210.131.2.74]:29173 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235338AbhDKN5V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 09:57:21 -0400
+Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 13BDtZpj024906;
+        Sun, 11 Apr 2021 22:55:36 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 13BDtZpj024906
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618149336;
+        bh=vS8e0SLZkCBy0RmRBkXW9rD3CCXXaiE+fv8+9wtNFcQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=T4auvfUkLCtH1xfy+3/BrGcOzcfBKdffBrAXk4ktteZcBCINybIlbpHd9u+FXgcif
+         RO7XzBcc9p98FwTRNy8JybHK2F1kD5uOTKziM8txSjy2xhfOkbGIf/yytdOE+0jpI8
+         KviylrePITI/U3uMXnTZgwZjolQgFonocj7FYZytyy/PjeAFIk4d+ZnlqNcz82TC5w
+         YlRMzOSoLaSCC1uOkHx7R065zcm6947UcUG2em5S3RDI+7PnZJcADDKJj5uN27osZQ
+         9HFOIw4qnFiaxSzmdf0tITxyKAxAA/2oJKzo5VUOhdMB6iiBQ1EhXsj3PC5YdEkMlh
+         RRIP4+C1tEq2Q==
+X-Nifty-SrcIP: [133.32.232.101]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Helge Deller <deller@gmx.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        linux-kernel@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        uclinux-h8-devel@lists.sourceforge.jp
+Subject: [PATCH] kbuild: use ?= to assign CROSS_COMPILE by arch-Makefile
+Date:   Sun, 11 Apr 2021 22:55:32 +0900
+Message-Id: <20210411135532.219797-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Apr 2021 19:15:39 +0300
-Alexandru Ardelean <ardeleanalex@gmail.com> wrote:
+Use ?= operator to let arch/*/Makefile to assign CROSS_COMPILE only
+when CROSS_COMPILE is undefined.
 
-> On Sat, Apr 10, 2021 at 7:12 PM Alexandru Ardelean
-> <ardeleanalex@gmail.com> wrote:
-> >
-> > On Fri, Apr 9, 2021 at 9:51 PM Lucas Stankus <lucas.p.stankus@gmail.com> wrote:  
-> > >
-> > > Ditch platform_data fields in favor of device tree properties for
-> > > configuring EXCA and EXCB output.
-> > > This also removes the fields from the platform_data struct, since they're
-> > > not used anymore.
-> > >
-> > > Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
-> > > ---
-> > >  drivers/staging/iio/cdc/ad7746.c | 33 +++++++++++++++++---------------
-> > >  drivers/staging/iio/cdc/ad7746.h |  4 ----
-> > >  2 files changed, 18 insertions(+), 19 deletions(-)
-> > >
-> > > diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-> > > index dfd71e99e872..63041b164dbe 100644
-> > > --- a/drivers/staging/iio/cdc/ad7746.c
-> > > +++ b/drivers/staging/iio/cdc/ad7746.c
-> > > @@ -677,8 +677,10 @@ static int ad7746_probe(struct i2c_client *client,
-> > >                         const struct i2c_device_id *id)
-> > >  {
-> > >         struct ad7746_platform_data *pdata = client->dev.platform_data;
-> > > +       struct device_node *np = client->dev.of_node;
-> > >         struct ad7746_chip_info *chip;
-> > >         struct iio_dev *indio_dev;
-> > > +       unsigned int exca_en, excb_en;
-> > >         unsigned char regval = 0;
-> > >         int ret = 0;
-> > >
-> > > @@ -703,26 +705,27 @@ static int ad7746_probe(struct i2c_client *client,
-> > >         indio_dev->num_channels = ARRAY_SIZE(ad7746_channels);
-> > >         indio_dev->modes = INDIO_DIRECT_MODE;
-> > >  
-> >
-> > [1]
-> >  
-> > > -       if (pdata) {
-> > > -               if (pdata->exca_en) {
-> > > -                       if (pdata->exca_inv_en)
-> > > -                               regval |= AD7746_EXCSETUP_NEXCA;
-> > > -                       else
-> > > -                               regval |= AD7746_EXCSETUP_EXCA;
-> > > -               }
-> > > +       ret = of_property_read_u32(np, "adi,exca-output", &exca_en);  
-> >
-> > maybe a better idea would be to use:
-> >
-> > device_property_read_u32(dev, .... )
-> > where:
-> > dev = client->dev.;
-> >
-> > this would make the driver a bit more friendly with both OF and ACPI
-> >  
-> > > +       if (!ret && exca_en) {
-> > > +               if (exca_en == 1)
-> > > +                       regval |= AD7746_EXCSETUP_EXCA;
-> > > +               else
-> > > +                       regval |= AD7746_EXCSETUP_NEXCA;
-> > > +       }
-> > >
-> > > -               if (pdata->excb_en) {
-> > > -                       if (pdata->excb_inv_en)
-> > > -                               regval |= AD7746_EXCSETUP_NEXCB;
-> > > -                       else
-> > > -                               regval |= AD7746_EXCSETUP_EXCB;
-> > > -               }
-> > > +       ret = of_property_read_u32(np, "adi,excb-output", &excb_en);
-> > > +       if (!ret && excb_en) {
-> > > +               if (excb_en == 1)
-> > > +                       regval |= AD7746_EXCSETUP_EXCB;
-> > > +               else
-> > > +                       regval |= AD7746_EXCSETUP_NEXCB;
-> > > +       }
-> > >
-> > > +       if (pdata) {
-> > >                 regval |= AD7746_EXCSETUP_EXCLVL(pdata->exclvl);
-> > >         } else {
-> > >                 dev_warn(&client->dev, "No platform data? using default\n");
-> > > -               regval = AD7746_EXCSETUP_EXCA | AD7746_EXCSETUP_EXCB |
-> > > -                       AD7746_EXCSETUP_EXCLVL(3);  
-> >
-> > This logic is problematic now.
-> > Because no matter what you're setting in the DT, it always gets
-> > overridden here because there is no platform data.
-> >
-> > Maybe a better idea is to do something like:
-> > if (!pdata)
-> >      regval = AD7746_EXCSETUP_EXCLVL(3);
-> >
-> > but this should be placed somewhere around [1]  
-> 
-> [ i can see that this logic will get corrected in the next patch]
-> to add here a bit: the idea of a patch is that it should try to not
-> introduce any [even temporary] breakage, even when it's in a series;
-> if a driver was already broken, then it should get fixed via it's own patch;
-> but no patch should introduce any breakages [if possible]
+This allows arch-Makefiles to drop the ifeq ($(CROSS_COMPILE),)
+conditional.
 
-The two patches are small enough I'd be fine with them being merged into one
-that avoiding any special handling.  Just add a note to the patch description
-to say that it was done in one patch for this reason.
+This slightly changes the behavior; the arch-Makefile previously
+overrode CROSS_COMPILE when CROSS_COMPILE has already been made empty
+via an environment variable as in 'export CROSS_COMPILE='.
 
-Jonathan
+With this commit, arch-Makefle will respect the user's environment
+set-up, which seems to be a more correct behavior.
 
-> 
-> >
-> >  
-> > > +               regval = AD7746_EXCSETUP_EXCLVL(3);
-> > >         }
-> > >
-> > >         ret = i2c_smbus_write_byte_data(chip->client,
-> > > diff --git a/drivers/staging/iio/cdc/ad7746.h b/drivers/staging/iio/cdc/ad7746.h
-> > > index 8bdbd732dbbd..6cae4ecf779e 100644
-> > > --- a/drivers/staging/iio/cdc/ad7746.h
-> > > +++ b/drivers/staging/iio/cdc/ad7746.h
-> > > @@ -19,10 +19,6 @@
-> > >
-> > >  struct ad7746_platform_data {
-> > >         unsigned char exclvl;   /*Excitation Voltage Level */
-> > > -       bool exca_en;           /* enables EXCA pin as the excitation output */
-> > > -       bool exca_inv_en;       /* enables /EXCA pin as the excitation output */
-> > > -       bool excb_en;           /* enables EXCB pin as the excitation output */
-> > > -       bool excb_inv_en;       /* enables /EXCB pin as the excitation output */
-> > >  };
-> > >
-> > >  #endif /* IIO_CDC_AD7746_H_ */
-> > > --
-> > > 2.31.1
-> > >  
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ arch/arc/Makefile    | 4 +---
+ arch/h8300/Makefile  | 4 +---
+ arch/m68k/Makefile   | 4 +---
+ arch/mips/Makefile   | 4 +---
+ arch/parisc/Makefile | 6 ++----
+ arch/sh/Makefile     | 4 +---
+ 6 files changed, 7 insertions(+), 19 deletions(-)
+
+diff --git a/arch/arc/Makefile b/arch/arc/Makefile
+index 4392c9c189c4..bd5a9daa3461 100644
+--- a/arch/arc/Makefile
++++ b/arch/arc/Makefile
+@@ -5,9 +5,7 @@
+ 
+ KBUILD_DEFCONFIG := haps_hs_smp_defconfig
+ 
+-ifeq ($(CROSS_COMPILE),)
+-CROSS_COMPILE := $(call cc-cross-prefix, arc-linux- arceb-linux-)
+-endif
++CROSS_COMPILE ?= $(call cc-cross-prefix, arc-linux- arceb-linux-)
+ 
+ cflags-y	+= -fno-common -pipe -fno-builtin -mmedium-calls -D__linux__
+ 
+diff --git a/arch/h8300/Makefile b/arch/h8300/Makefile
+index ba0f26cfad61..d6e466dbfc00 100644
+--- a/arch/h8300/Makefile
++++ b/arch/h8300/Makefile
+@@ -26,9 +26,7 @@ KBUILD_LDFLAGS += $(ldflags-y)
+ 
+ CHECKFLAGS += -msize-long
+ 
+-ifeq ($(CROSS_COMPILE),)
+-CROSS_COMPILE := $(call cc-cross-prefix, h8300-unknown-linux- h8300-linux-)
+-endif
++CROSS_COMPILE ?= $(call cc-cross-prefix, h8300-unknown-linux- h8300-linux-)
+ 
+ core-y	+= arch/$(ARCH)/kernel/ arch/$(ARCH)/mm/
+ core-y	+= arch/$(ARCH)/boot/dts/
+diff --git a/arch/m68k/Makefile b/arch/m68k/Makefile
+index ea14f2046fb4..79208ad7a355 100644
+--- a/arch/m68k/Makefile
++++ b/arch/m68k/Makefile
+@@ -17,10 +17,8 @@
+ KBUILD_DEFCONFIG := multi_defconfig
+ 
+ ifneq ($(SUBARCH),$(ARCH))
+-	ifeq ($(CROSS_COMPILE),)
+-		CROSS_COMPILE := $(call cc-cross-prefix, \
++	CROSS_COMPILE ?= $(call cc-cross-prefix, \
+ 			m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
+-	endif
+ endif
+ 
+ #
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index e71d587af49c..75e4e46532a4 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -51,9 +51,7 @@ UTS_MACHINE		:= mips64
+ endif
+ 
+ ifneq ($(SUBARCH),$(ARCH))
+-  ifeq ($(CROSS_COMPILE),)
+-    CROSS_COMPILE := $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
+-  endif
++  CROSS_COMPILE ?= $(call cc-cross-prefix, $(tool-archpref)-linux-  $(tool-archpref)-linux-gnu-  $(tool-archpref)-unknown-linux-gnu-)
+ endif
+ 
+ ifdef CONFIG_FUNCTION_GRAPH_TRACER
+diff --git a/arch/parisc/Makefile b/arch/parisc/Makefile
+index 7d9f71aa829a..62272cb3513c 100644
+--- a/arch/parisc/Makefile
++++ b/arch/parisc/Makefile
+@@ -42,12 +42,10 @@ endif
+ export LD_BFD
+ 
+ ifneq ($(SUBARCH),$(UTS_MACHINE))
+-	ifeq ($(CROSS_COMPILE),)
+-		CC_SUFFIXES = linux linux-gnu unknown-linux-gnu
+-		CROSS_COMPILE := $(call cc-cross-prefix, \
++	CC_SUFFIXES = linux linux-gnu unknown-linux-gnu
++	CROSS_COMPILE ?= $(call cc-cross-prefix, \
+ 			$(foreach a,$(CC_ARCHES), \
+ 			$(foreach s,$(CC_SUFFIXES),$(a)-$(s)-)))
+-	endif
+ endif
+ 
+ ifdef CONFIG_DYNAMIC_FTRACE
+diff --git a/arch/sh/Makefile b/arch/sh/Makefile
+index 3bcbf52fb30e..0e8277be362e 100644
+--- a/arch/sh/Makefile
++++ b/arch/sh/Makefile
+@@ -10,9 +10,7 @@
+ # for more details.
+ #
+ ifneq ($(SUBARCH),$(ARCH))
+-  ifeq ($(CROSS_COMPILE),)
+-    CROSS_COMPILE := $(call cc-cross-prefix, sh-linux- sh-linux-gnu- sh-unknown-linux-gnu-)
+-  endif
++  CROSS_COMPILE ?= $(call cc-cross-prefix, sh-linux- sh-linux-gnu- sh-unknown-linux-gnu-)
+ endif
+ 
+ KBUILD_DEFCONFIG	:= shx3_defconfig
+-- 
+2.27.0
 
