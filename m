@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F3D35B55F
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D02C35B561
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 15:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236437AbhDKNtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 09:49:11 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33442 "EHLO
+        id S236549AbhDKNt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 09:49:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33036 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235953AbhDKNod (ORCPT
+        with ESMTP id S235984AbhDKNoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 09:44:33 -0400
-Date:   Sun, 11 Apr 2021 13:43:44 -0000
+        Sun, 11 Apr 2021 09:44:37 -0400
+Date:   Sun, 11 Apr 2021 13:43:45 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618148624;
+        s=2020; t=1618148626;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=BVR+E1ujL8ah5KVCZfRjKKS6ZhUnHmUplGiXEKJHZJs=;
-        b=zM0nwpGTv2Kqyi1+HY+4QLdcD9yiyfDAcl/nBIAvPC0vRJftEQuM+f35ERgUaRV9WX1Swr
-        MMP0LvmM/PGnl9lYavwhrFAvtRF45np6sssG2CGGgnGhRXCjq3t/15ayIUBpNVw02BXyHn
-        0bJvWpYk2NNtYlBjRE4Sdh+0FGF7lBTnHEb0n7gJ/uuaRzIu2Fb/Nes/8PyBWJrbfLZHc3
-        5ah67yJ59ac3r6B4hr4c5flcpe0zyHTjbNzOAe9FApUNOFQ/6tadghspB6kV1ZaNeAA0Ww
-        K00UCQfQmVAcfDoM/jv7so9B5wTFbmQ/JPqiLyB4foKK1+Uoqwzjh8/gyxbWUw==
+        bh=RuSINVFcQ6jztcMyRgBU0XK6CE9+cMwoqeqNLZA30RY=;
+        b=CAXrI2mEw/c/aRtF0BDP7rarkYrpWYxasGwTDuCdHcnf0cR+z68CotEQA2fHDbYY3uQDte
+        On0DTk8BXcfMFGvbpMJ4YoaADbO8GyUPCxwfvJidpj23V7aNJlbfXNq4cMy+39YMXqkaf0
+        5dh/Lhr8IdftoNZWsRMGHB354DTxjv3iFat5dCCV1Y/uLD7zQKdw0BUHyVIBUXMbVLkweQ
+        ws4pSMRD3NmGUVMT1VTpvcpUHZyDtDNf5n4lhraPi6SrulzW5dXQ3f7W9Uh58ZFfk8iZia
+        maYQ69JEbulYT78sqNibcq/OoJx4f9qT3mAxACZuEwnGzbG4SKrt/srjSl7s5A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618148624;
+        s=2020e; t=1618148626;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=BVR+E1ujL8ah5KVCZfRjKKS6ZhUnHmUplGiXEKJHZJs=;
-        b=RqQlE6GLRM9PCjIO7CN7N6lxhzO+odRd+y5AnG5z6cufXDFa6g1B8HfeftgHnSgWEuBSA/
-        rCYX2IZ+Jm/N2DAg==
+        bh=RuSINVFcQ6jztcMyRgBU0XK6CE9+cMwoqeqNLZA30RY=;
+        b=hb3hN3+QfijG8NSVZUIKsbL+K3f29DWdR8B73kDV6YB1e4RF5Dnq525y0lmFIvfn1e+klS
+        HkfifbelPrT8NFAA==
 From:   "tip-bot2 for Paul Gortmaker" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/rcu] rcu: deprecate "all" option to rcu_nocbs=
+Subject: [tip: core/rcu] lib: bitmap: fold nbits into region struct
 Cc:     Yury Norov <yury.norov@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Paul Gortmaker <paul.gortmaker@windriver.com>, x86@kernel.org,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <161814862402.29796.123664795038375752.tip-bot2@tip-bot2>
+Message-ID: <161814862545.29796.7185603723669044280.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,69 +55,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the core/rcu branch of tip:
 
-Commit-ID:     3e70df91f961b9df7ab3c0ae1934bdf15454c536
-Gitweb:        https://git.kernel.org/tip/3e70df91f961b9df7ab3c0ae1934bdf15454c536
+Commit-ID:     9d7a3366b7028ae8dd16a0d7585cbf11b03b42a0
+Gitweb:        https://git.kernel.org/tip/9d7a3366b7028ae8dd16a0d7585cbf11b03b42a0
 Author:        Paul Gortmaker <paul.gortmaker@windriver.com>
-AuthorDate:    Sun, 21 Feb 2021 03:08:27 -05:00
+AuthorDate:    Sun, 21 Feb 2021 03:08:23 -05:00
 Committer:     Paul E. McKenney <paulmck@kernel.org>
 CommitterDate: Mon, 08 Mar 2021 14:16:58 -08:00
 
-rcu: deprecate "all" option to rcu_nocbs=
+lib: bitmap: fold nbits into region struct
 
-With the core bitmap support now accepting "N" as a placeholder for
-the end of the bitmap, "all" can be represented as "0-N" and has the
-advantage of not being specific to RCU (or any other subsystem).
-
-So deprecate the use of "all" by removing documentation references
-to it.  The support itself needs to remain for now, since we don't
-know how many people out there are using it currently, but since it
-is in an __init area anyway, it isn't worth losing sleep over.
+This will reduce parameter passing and enable using nbits as part
+of future dynamic region parameter parsing.
 
 Cc: Yury Norov <yury.norov@gmail.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Suggested-by: Yury Norov <yury.norov@gmail.com>
 Acked-by: Yury Norov <yury.norov@gmail.com>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 4 +---
- kernel/rcu/tree_plugin.h                        | 6 ++----
- 2 files changed, 3 insertions(+), 7 deletions(-)
+ lib/bitmap.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 0454572..83e2ef1 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4068,9 +4068,7 @@
- 				see CONFIG_RAS_CEC help text.
- 
- 	rcu_nocbs=	[KNL]
--			The argument is a cpu list, as described above,
--			except that the string "all" can be used to
--			specify every CPU on the system.
-+			The argument is a cpu list, as described above.
- 
- 			In kernels built with CONFIG_RCU_NOCB_CPU=y, set
- 			the specified list of CPUs to be no-callback CPUs.
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 2d60377..0b95562 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -1464,14 +1464,12 @@ static void rcu_cleanup_after_idle(void)
+diff --git a/lib/bitmap.c b/lib/bitmap.c
+index 75006c4..162e285 100644
+--- a/lib/bitmap.c
++++ b/lib/bitmap.c
+@@ -487,24 +487,24 @@ EXPORT_SYMBOL(bitmap_print_to_pagebuf);
  
  /*
-  * Parse the boot-time rcu_nocb_mask CPU list from the kernel parameters.
-- * The string after the "rcu_nocbs=" is either "all" for all CPUs, or a
-- * comma-separated list of CPUs and/or CPU ranges.  If an invalid list is
-- * given, a warning is emitted and all CPUs are offloaded.
-+ * If the list is invalid, a warning is emitted and all CPUs are offloaded.
+  * Region 9-38:4/10 describes the following bitmap structure:
+- * 0	   9  12    18			38
+- * .........****......****......****......
+- *	    ^  ^     ^			 ^
+- *      start  off   group_len	       end
++ * 0	   9  12    18			38	     N
++ * .........****......****......****..................
++ *	    ^  ^     ^			 ^	     ^
++ *      start  off   group_len	       end	 nbits
   */
- static int __init rcu_nocb_setup(char *str)
+ struct region {
+ 	unsigned int start;
+ 	unsigned int off;
+ 	unsigned int group_len;
+ 	unsigned int end;
++	unsigned int nbits;
+ };
+ 
+-static int bitmap_set_region(const struct region *r,
+-				unsigned long *bitmap, int nbits)
++static int bitmap_set_region(const struct region *r, unsigned long *bitmap)
  {
- 	alloc_bootmem_cpumask_var(&rcu_nocb_mask);
--	if (!strcasecmp(str, "all"))
-+	if (!strcasecmp(str, "all"))		/* legacy: use "0-N" instead */
- 		cpumask_setall(rcu_nocb_mask);
- 	else
- 		if (cpulist_parse(str, rcu_nocb_mask)) {
+ 	unsigned int start;
+ 
+-	if (r->end >= nbits)
++	if (r->end >= r->nbits)
+ 		return -ERANGE;
+ 
+ 	for (start = r->start; start <= r->end; start += r->group_len)
+@@ -640,7 +640,8 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+ 	struct region r;
+ 	long ret;
+ 
+-	bitmap_zero(maskp, nmaskbits);
++	r.nbits = nmaskbits;
++	bitmap_zero(maskp, r.nbits);
+ 
+ 	while (buf) {
+ 		buf = bitmap_find_region(buf);
+@@ -655,7 +656,7 @@ int bitmap_parselist(const char *buf, unsigned long *maskp, int nmaskbits)
+ 		if (ret)
+ 			return ret;
+ 
+-		ret = bitmap_set_region(&r, maskp, nmaskbits);
++		ret = bitmap_set_region(&r, maskp);
+ 		if (ret)
+ 			return ret;
+ 	}
