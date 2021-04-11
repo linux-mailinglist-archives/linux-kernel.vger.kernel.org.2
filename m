@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8808A35B286
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92A7135B28A
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 11:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235262AbhDKJCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 05:02:30 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:50525 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233822AbhDKJC3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 05:02:29 -0400
-Received: from localhost.localdomain ([90.126.11.170])
-        by mwinf5d20 with ME
-        id rM28240013g7mfN03M2824; Sun, 11 Apr 2021 11:02:10 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 11 Apr 2021 11:02:10 +0200
-X-ME-IP: 90.126.11.170
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     davem@davemloft.net, kuba@kernel.org, paul@crapouillou.net,
-        andrew@lunn.ch, gustavoars@kernel.org, paulburton@kernel.org,
-        Zubair.Kakakhel@imgtec.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] net: davicom: Fix regulator not turned off on failed probe
-Date:   Sun, 11 Apr 2021 11:02:08 +0200
-Message-Id: <88d396a107aad8059cabc3eb1f05f7d325287bf2.1618131620.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
+        id S235280AbhDKJDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 05:03:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52288 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235247AbhDKJDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 05:03:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 73EB3AEFB;
+        Sun, 11 Apr 2021 09:03:33 +0000 (UTC)
+Date:   Sun, 11 Apr 2021 11:03:32 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/urgent for v5.12-rc7
+Message-ID: <20210411090332.GA13409@zn.tnic>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the probe fails, we must disable the regulator that was previously
-enabled.
+Hi Linus,
 
-This patch is a follow-up to commit ac88c531a5b3
-("net: davicom: Fix regulator not turned off on failed probe") which missed
-one case.
+please pull two more urgent fixes (not gonna say "final" this time) from
+x86-land.
 
-Fixes: 7994fe55a4a2 ("dm9000: Add regulator and reset support to dm9000")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Thx.
+
 ---
- drivers/net/ethernet/davicom/dm9000.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/davicom/dm9000.c b/drivers/net/ethernet/davicom/dm9000.c
-index 252adfa5d837..8a9096aa85cd 100644
---- a/drivers/net/ethernet/davicom/dm9000.c
-+++ b/drivers/net/ethernet/davicom/dm9000.c
-@@ -1471,8 +1471,10 @@ dm9000_probe(struct platform_device *pdev)
- 
- 	/* Init network device */
- 	ndev = alloc_etherdev(sizeof(struct board_info));
--	if (!ndev)
--		return -ENOMEM;
-+	if (!ndev) {
-+		ret = -ENOMEM;
-+		goto out_regulator_disable;
-+	}
- 
- 	SET_NETDEV_DEV(ndev, &pdev->dev);
- 
+The following changes since commit e49d033bddf5b565044e2abe4241353959bc9120:
+
+  Linux 5.12-rc6 (2021-04-04 14:15:36 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.12-rc7
+
+for you to fetch changes up to 632a1c209b8773cb0119fe3aada9f1db14fa357c:
+
+  x86/traps: Correct exc_general_protection() and math_error() return paths (2021-04-09 13:45:09 +0200)
+
+----------------------------------------------------------------
+- Fix the vDSO exception handling return path to disable interrupts
+again.
+
+- A fix for the CE collector to return the proper return values to its
+callers which are used to convey what the collector has done with the
+error address.
+
+----------------------------------------------------------------
+Thomas Tai (1):
+      x86/traps: Correct exc_general_protection() and math_error() return paths
+
+William Roche (1):
+      RAS/CEC: Correct ce_add_elem()'s returned values
+
+ arch/x86/kernel/traps.c |  4 ++--
+ drivers/ras/cec.c       | 15 ++++++++++++---
+ 2 files changed, 14 insertions(+), 5 deletions(-)
+
 -- 
-2.27.0
+Regards/Gruss,
+    Boris.
 
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
