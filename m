@@ -2,138 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBAE035B712
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 23:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D60135B716
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 23:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235618AbhDKVoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 17:44:08 -0400
-Received: from angie.orcam.me.uk ([157.25.102.26]:38708 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231405AbhDKVoH (ORCPT
+        id S235623AbhDKVyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 17:54:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235366AbhDKVyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 17:44:07 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id BAD2692009C; Sun, 11 Apr 2021 23:43:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id B342192009B;
-        Sun, 11 Apr 2021 23:43:48 +0200 (CEST)
-Date:   Sun, 11 Apr 2021 23:43:48 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Greg KH <gregkh@linuxfoundation.org>
-cc:     Martin Hostettler <textshell@uchuujin.de>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        jirislaby@kernel.org, Peilin Ye <yepeilin.cs@gmail.com>,
-        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, deller@gmx.de,
-        syzkaller-bugs@googlegroups.com,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        George Kennedy <george.kennedy@oracle.com>
-Subject: Re: [PATCH] vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
-In-Reply-To: <20200929171040.GB1351851@kroah.com>
-Message-ID: <alpine.DEB.2.21.2104112250310.65251@angie.orcam.me.uk>
-References: <000000000000226d3f05b02dd607@google.com> <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp> <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp> <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp> <20200927092701.GA1037755@PWN>
- <4933b81b-9b1a-355b-df0e-9b31e8280ab9@i-love.sakura.ne.jp> <20200928175956.GF24673@neutronstar.dyndns.org> <100dfd3f-3415-80ae-a6cf-30d15f7ca49f@i-love.sakura.ne.jp> <20200929105203.GG24673@neutronstar.dyndns.org> <20200929165657.GS438822@phenom.ffwll.local>
- <20200929171040.GB1351851@kroah.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Sun, 11 Apr 2021 17:54:18 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE85AC06138B
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 14:54:01 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id i9so11491474qka.2
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 14:54:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cs.unc.edu; s=google;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=MtiFWw1lbP0fMU8IjBYDnw/l/xTMOINcMgt3bBeyFUQ=;
+        b=PG+ZhpbevqnFN02a353tQmKOg9Ymas6v9qIPtEg3btcid0JVUsvNaGkQ/9PqJtVijP
+         4+W6yPqIwQHOOxLvo339fUYtqfxp6+HEQq09hVLT6wnRgvzeWbJH6tuQh5UHp6gD5LIl
+         TZHSBqGGXa4dv2bqMTUhdlVRC0UgYCQVfnxxQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MtiFWw1lbP0fMU8IjBYDnw/l/xTMOINcMgt3bBeyFUQ=;
+        b=uQlmLRUH4gsolGxLDJSRzJF1hEmtSAar9u5aTg9i6ZRybjGrS9TNKQCQBsOuX5FvpW
+         /D7UzAMGBttKQszyeSV32ybdTdkIiXCD8hnwZlX8mryjmB3Pn8iIQm/LVC01DQsRabUJ
+         20lXSvvaYPNq6+AFD6hCzynk5U7dOvxa0rj/U8ojCCuXwK6Vu1eLWGAER1+8ggACi44a
+         XZzx9XC5vX/k4pM2bJD74c/CnSk1vubP9ezF+3Vg1eLDmicTcPCo5RGNC/kBbY63PxAL
+         uvVpnqCG0JbIzRdhdqLJWqR5YL9W14U8M7tyFJ+lhSifFL8dh+Q+894n6FfdJ1TMA9uy
+         zGHw==
+X-Gm-Message-State: AOAM533zvAcU9QM40N90XQfOyAsDDhfzp+Jz9U1VMb5BYOp37SPK2nSY
+        s78nIi/NQU6GXI4BTi0lnlczBiD3cWcmCs5XCpzGuzvZylmzOW0ukUwRbzvs0DnPGV7gXj27grz
+        hpUYRCoroVSswE8rczWFOnYcwpWHz8iVotmkv2F+y2Ry79btpFA37egTU0LIxcO+AqfKjcOrqIA
+        ==
+X-Google-Smtp-Source: ABdhPJxzdua/Yco8q7cKN9wvkxCZ3NrA33iW2N7vU1FSm0ELgCOm8coRE9ufmY8FF0zQd/JKs/FePA==
+X-Received: by 2002:a05:620a:56f:: with SMTP id p15mr933292qkp.102.1618178040526;
+        Sun, 11 Apr 2021 14:54:00 -0700 (PDT)
+Received: from [152.23.147.117] ([152.23.147.117])
+        by smtp.gmail.com with ESMTPSA id w4sm5895148qkd.94.2021.04.11.14.53.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 11 Apr 2021 14:54:00 -0700 (PDT)
+Subject: Re: [RESEND,PATCH] fs/binfmt_elf: Fix regression limiting ELF program
+ header size
+From:   Joshua Bakita <jbakita@cs.unc.edu>
+To:     viro@zeniv.linux.org.uk
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201215034624.1887447-1-jbakita@cs.unc.edu>
+ <7cba1c24-5034-53e1-6014-982973e66ea3@cs.unc.edu>
+Message-ID: <fbcd2886-d505-f14e-ad6b-c4b5fa77707e@cs.unc.edu>
+Date:   Sun, 11 Apr 2021 17:53:59 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <7cba1c24-5034-53e1-6014-982973e66ea3@cs.unc.edu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 29 Sep 2020, Greg KH wrote:
+Hello,
 
-> > > > >> VT_RESIZEX was introduced in Linux 1.3.3, but it is unclear that what
-> > > > >> comes to the "+ more" part, and I couldn't find a user of VT_RESIZEX.
-> > > > >>
-> > > > > 
-> > > > > It seems this is/was used by "svgatextmode" which seems to be at
-> > > > > http://www.ibiblio.org/pub/Linux/utils/console/
-> > > > > 
-> > > > > Not sure if that kind of software still has a chance to work nowadays.
-> > > > > 
-> > > > 
-> > > > Thanks for the information.
-> > > > 
-> > > > It seems that v.v_vlin = curr_textmode->VDisplay / (MOFLG_ISSET(curr_textmode, ATTR_DOUBLESCAN) ? 2 : 1)
-> > > > and v.v_clin = curr_textmode->FontHeight . Thus, v.v_clin is font's height and seems to be non-zero.
-> > > > But according to https://bugs.gentoo.org/19485 , people are using kernel framebuffer instead.
-> > > > 
-> > > 
-> > > Yes, this seems to be from pre framebuffer times.
-> > > 
-> > > Back in the days "svga" was the wording you got for "pokes svga card
-> > > hardware registers from userspace drivers". And textmode means font
-> > > rendering is done via (fixed function in those times) hardware scanout
-> > > engine. Of course having only to update 2 bytes per character was a huge
-> > > saving early on. Likely this is also before vesa VBE was reliable.
-> > > 
-> > > So i guess the point where this all starts going wrong allowing the X parts
-> > > of the api to be combined with FB based rendering at all? Sounds the only
-> > > user didn't use that combination and so it was never tested?
-> > > 
-> > > Then again, this all relates to hardware from 20 years ago...
-> > 
-> > Imo userspace modesetting should be burned down anywhere we can. We've
-> > gotten away with this in drivers/gpu by just seamlessly transitioning to
-> > kernel drivers.
-> > 
-> > Since th only userspace we've found seems to be able to cope if this ioctl
-> > doesn't do anything, my vote goes towards ripping it out completely and
-> > doing nothing in there. Only question is whether we should error or fail
-> > with a silent success: Former is safer, latter can avoid a few regression
-> > reports since the userspace tools keep "working", and usually people don't
-> > notice for stuff this old. It worked in drivers/gpu :-)
+I'd greatly appreciate it if this patch would be reviewed. It's been 
+nearly 6 months since I first submitted it, there's clear evidence that 
+this regression effects real programs, and the fix is simple. If no 
+maintainers on this list have the time to review this change, I would 
+appreciate suggestions on alternative lists and/or maintainers who I 
+could reach out to instead.
+
+Best,
+
+Joshua Bakita
+
+On 2/11/21 3:27 PM, Joshua Bakita wrote:
+> Hello all,
 > 
-> This patch just ignores the ioctl and keeps on going, so userspace
-> "shouldn't" notice it :)
+> I raised this patch on #linuxfs on IRC, and I got asked if this actually 
+> effects real programs. To demonstrate that it does, I wrote up a simple 
+> C program which just does a table lookup of a prime number. The table is 
+> stored sparsely, so newer versions of GCC+LD automatically put each 
+> table entry in its own program section and segment. This results in over 
+> 100 ELF program header entries, which Linux since 3.19 will refuse to 
+> load with ENOEXEC due to the errant limit fixed in my patch. (The 
+> current broken limit is 73, whereas the manpage states a limit of 64k.)
 > 
-> And it's in linux-next now, so all should be good.
-
- So it does trigger with vgacon and my old server, which I have started 
-experimenting with and for a start I have switched to a new kernel for an 
-unrelated purpose (now that I have relieved it from all its usual tasks 
-except for the last remaining one for which I haven't got the required 
-user software ported to the new system yet):
-
-"struct vt_consize"->v_vlin is ignored. Please report if you need this.
-"struct vt_consize"->v_clin is ignored. Please report if you need this.
-
-It continues using svgatextmode with its glass (CRT) VT to set my usual 
-80x37 text mode (720x576 pixel resolution) by manipulating the VGA clock 
-chip and the CRT controller appropriately for a nice refresh rate of 85Hz:
-
-Chipset = `TVGA8900', Textmode clock = 44.90 MHz, 80x37 chars, CharCell = 9x16. Refresh = 52.51kHz/84.7Hz.
-
- Indeed the piece of software became less usable around Y2K as clock chip 
-support stopped being added to svgatextmode for new video adapters, but 
-with the advent of LCD technology and its disregard for the refresh rate 
-previously driven by the pixel clock the program got its second life and I 
-have used it ever since with its plain VGA driver by just manipulating the 
-CRTC for the resolution required:
-
-Chipset = `VGA', Textmode clock = 28.32 MHz, 80x37 chars, CharCell = 9x16. Refresh = 31.47kHz/49.0Hz.
-
-(that would still work with a standard 800x600 SVGA CRT, but the refresh 
-rate would make anyone's eyes cry soon; with LCD it's just awesome, and 
-the VGA emulation of the actual graphics adapter turns it at the video 
-output into a 1600x1200 picture at the horizontal and vertical rates of 
-75KHz and 60Hz respectively, making the text produced on LCD outstanding 
-while showing about the right amount of it).
-
- But I'm currently ~160km/100mi away from the server I have triggered this 
-message with, so I cannot easily check what's going on with its VT.  And I 
-can't fiddle with my production laptop (ThinkPad P51) I have with me that 
-I also use svgatextmode with so much as to reboot it with a new kernel 
-(plain Debian 4.19.16-1~bpo9+1 still here).
-
- So what's the supposed impact of this change that prompted the inclusion 
-of the messages?  I can port svgatextmode (it's my own compilation anyway) 
-if that is required for it to continue working correctly, but I need to 
-understand the circumstances here.  I have failed to find a satisfactory 
-alternative solution to vgacon and svgatextmode; the main showstopper is 
-the IBM's hardware trick for a 9x16 character cell that I rely on.
-
-  Maciej
+> My example program is available at 
+> https://www.cs.unc.edu/~jbakita/get_prime.c and should be built as gcc 
+> get_prime.c -o get_prime. I know this works with GCC 9.3.0 and LD 2.34 
+> (GCC 7.5.0 and LD 2.30 are too old). You can verify it built correctly 
+> by checking the "Number of program headers" as printed by readelf -h is 
+> at least 100.
+> 
+> I tried to keep this patch small to make it easy to review, but there 
+> are a few other bugs (like the 64KB limit) in the ELF loader. Would it 
+> be more helpful or make review easier to just fix all the bugs at once? 
+> This is my first kernel patch, and I'd really like to make it the first 
+> of many.
+> 
+> Best,
+> 
+> Joshua Bakita
+> 
+> On 12/14/20 10:46 PM, Joshua Bakita wrote:
+>> Commit 6a8d38945cf4 ("binfmt_elf: Hoist ELF program header loading to a
+>> function") merged load_elf_binary and load_elf_interp into
+>> load_elf_phdrs. This change imposed a limit that the program headers of
+>> all ELF binaries are smaller than ELF_MIN_ALIGN. This is a mistake for
+>> two reasons:
+>> 1. load_elf_binary previously had no such constraint, meaning that
+>>     previously valid ELF program headers are now rejected by the 
+>> kernel as
+>>     oversize and invalid.
+>> 2. The ELF interpreter's program headers should never have been 
+>> limited to
+>>     ELF_MIN_ALIGN (and previously PAGE_SIZE) in the first place. Commit
+>>     057f54fbba73 ("Import 1.1.54") introduced this limit to the ELF
+>>     interpreter alongside the initial ELF parsing support without any
+>>     explanation.
+>> This patch removes the ELF_MIN_ALIGN size constraint in favor of only
+>> relying on an earlier check that the allocation will be less than 64KiB.
+>> (It's worth mentioning that the 64KiB limit is also unnecessarily strict,
+>> but that's not addressed here for simplicity. The ELF manpage says that
+>> the program header size is supposed to have at most 64 thousand entries,
+>> not less than 64 thousand bytes.)
+>>
+>> Fixes: 6a8d38945cf4 ("binfmt_elf: Hoist ELF program header loading to 
+>> a function")
+>> Signed-off-by: Joshua Bakita <jbakita@cs.unc.edu>
+>> ---
+>>   fs/binfmt_elf.c | 4 ----
+>>   1 file changed, 4 deletions(-)
+>>
+>> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+>> index 2472af2798c7..55162056590f 100644
+>> --- a/fs/binfmt_elf.c
+>> +++ b/fs/binfmt_elf.c
+>> @@ -412,15 +412,11 @@ static struct elf_phdr *load_elf_phdrs(struct 
+>> elfhdr *elf_ex,
+>>       /* Sanity check the number of program headers... */
+>>       if (elf_ex->e_phnum < 1 ||
+>>           elf_ex->e_phnum > 65536U / sizeof(struct elf_phdr))
+>>           goto out;
+>> -    /* ...and their total size. */
+>>       size = sizeof(struct elf_phdr) * elf_ex->e_phnum;
+>> -    if (size > ELF_MIN_ALIGN)
+>> -        goto out;
+>> -
+>>       elf_phdata = kmalloc(size, GFP_KERNEL);
+>>       if (!elf_phdata)
+>>           goto out;
+>>       /* Read in the program headers */
+>>
