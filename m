@@ -2,110 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1492E35B33E
-	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A83CC35B340
+	for <lists+linux-kernel@lfdr.de>; Sun, 11 Apr 2021 12:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235344AbhDKK4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 06:56:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
+        id S235293AbhDKK6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 06:58:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235381AbhDKK4k (ORCPT
+        with ESMTP id S235229AbhDKK6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 06:56:40 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D39C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 03:56:23 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id ba6so11580563edb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 03:56:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Q1npjWd8vdjVzI836QvD79nNpNz24IQNsqdLifo9GH0=;
-        b=f6xP84EIdrHfCpLbq2zehKVLF0fdPl/MmFhD3LPidsCDsrKXRqKIf/XUvdY6D7ZfqS
-         4WaNFTuqcO5IqI2pWyISAYeoRe5IHVptcbp9RvkbU8mGfvMlkwGx8Lx2m2w16j4MMUxZ
-         00gYkTcZ9YpTHk21ms9NUgm06UQt30BQYx39wisUHCOhw4uWJYIitpNy03Y/mps5ChIZ
-         PFpKTuMcKpAmDDU90O1rh2tL+3JnM101kmSNjzGR3sXPC2YTONnjvMHI1boQ+ruk/dYq
-         r8u2ZMLJvTEc4FTwlMJrR+kXcB5aSxE5cNxVvSMb5DtbvZE93omU1jhU6k57CdSfszDd
-         YtdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Q1npjWd8vdjVzI836QvD79nNpNz24IQNsqdLifo9GH0=;
-        b=lCOz79BhQxZrJBPRwayixcS/UPBGiwZxA4KRf5vpZDUhB56STJe8hr4FBUZPWFJ/WO
-         Ps5y5+nXhvAfu0SwFCu/fXRIeOWHUoEB2i8AsXuanrts2l0vwGWBH0JacnbPMk/p5A0V
-         t9MtNbjlERiM9JJtmozz/d/ZKSu/Ps8iRTQDDCtUMMJLCuKQ4JwR9y7iSE6pS9SJ4mWf
-         YVrY0sRZtSgsGJVK88g8yqfJ+SOHrwQCBEAOcxaeZWgNOtRsxqBki9FPs6HowJvnSU+H
-         M7aeEpOMvM/6aIWIbSwl9kTBzz/LgTRI0MnJD1IJE0GXB3BZ0DMnQb3qcHjN+6DHoQ1Q
-         8/DQ==
-X-Gm-Message-State: AOAM533e8PwdqNKBy5mLjNzDAPn1GxZINev84o7uCfKcPtHvrG6N4IUx
-        pKdf20hMgGLwJiWlau2fhug=
-X-Google-Smtp-Source: ABdhPJyt/f/XCCQ4jVqHM0MGNQwcU2nzXTp+mm1Ss+nSPSgWyBd8fPSTELDDYAczjdB429D4bl9kkQ==
-X-Received: by 2002:a05:6402:51c6:: with SMTP id r6mr24567953edd.278.1618138582343;
-        Sun, 11 Apr 2021 03:56:22 -0700 (PDT)
-Received: from localhost.localdomain (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id f10sm4369100edd.29.2021.04.11.03.56.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 03:56:21 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [Outreachy kernel] [PATCH v4 4/4] staging: rtl8723bs: Change controlling expressions
-Date:   Sun, 11 Apr 2021 12:56:08 +0200
-Message-Id: <20210411105608.12900-5-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210411105608.12900-1-fmdefrancesco@gmail.com>
-References: <20210411105608.12900-1-fmdefrancesco@gmail.com>
+        Sun, 11 Apr 2021 06:58:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EAD6C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 03:58:33 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618138711;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i9IFb43irFo++N1G97Ay7bqy0xrC2SvYxqEarZQIq1I=;
+        b=a50t4Lljcmx4u/n4R4s95mjjitD86u690YGBq3x811x/UgMGi/HJRcvE+WftsFA5Yv5qYS
+        O8SWjmIx22uiCKga58sgV5lBw/QDTxj5Z6V5AIJmTJiMd0AjCLZxaIjasEH+pGWGGWPHNH
+        nLyuedD672MOIE5aOScBKWgd+49KtZOs69OYevBwQg1imWx7AONmYGMl1MOCclUwQ6TWLm
+        KrgmB+qZ8TB931RSbJJTDjuIzTlGP8GZk1QihG6eG+1lxn4xtuFDudd2+NQ6JtsUk5X7zT
+        cO3Q6vXaJScQRDcpCqCc2n+I9niIgKz0+Q4PfMFgbbSAtXozH564WJZkmUwZYg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618138711;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i9IFb43irFo++N1G97Ay7bqy0xrC2SvYxqEarZQIq1I=;
+        b=igpePDEEzudDnf1SNaU3K28b+YvP2R/MtBzhAZqn9bMImEHn0HzGvrumOe5uTXmMjLOnJN
+        8GgqzhvEL6RMtBAw==
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com
+Subject: Re: [PATCH v7 clocksource] Do not mark clocks unstable due to delays for v5.13
+In-Reply-To: <20210410232644.GT4510@paulmck-ThinkPad-P17-Gen-1>
+References: <20210402202929.GA22273@paulmck-ThinkPad-P72> <20210402203137.22479-1-paulmck@kernel.org> <87pmzc498v.ffs@nanos.tec.linutronix.de> <20210402224828.GA3683@paulmck-ThinkPad-P72> <87im4u4lft.ffs@nanos.tec.linutronix.de> <20210410232644.GT4510@paulmck-ThinkPad-P17-Gen-1>
+Date:   Sun, 11 Apr 2021 12:58:31 +0200
+Message-ID: <875z0t2ilk.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change controlling expressions within 'if' statements: don't compare
-with 'true'.
+On Sat, Apr 10 2021 at 16:26, Paul E. McKenney wrote:
+> On Sat, Apr 10, 2021 at 10:01:58AM +0200, Thomas Gleixner wrote:
+>> On Fri, Apr 02 2021 at 15:48, Paul E. McKenney wrote:
+>> I buy the vCPU preemption part and TBH guests should not have that
+>> watchdog thing active at all for exactly this reason.
+>
+> Agreed, one approch is to enable the the clocksource watchdog only in
+> the hypervisor, and have some action on the guests triggered when the
+> host detects clock skew.
+>
+> This works quite well, at least until something breaks in a way that
+> messes up clock reads from the guest but not from the host.  And I
+> am sure that any number of hardware guys will tell me that this just
+> isn't possible, but if failing hardware operated according to their
+> expectations, that hardware wouldn't be considered to be failing.
+> Or it wouldn't be hardware, firmware, or clock-driver bringup, as the
+> case may be.
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+Don't tell me. The fact that this code exists at all is a horror on it's
+own.
 
-Changes from v3: Move changes of controlling expressions in patch 4/4.
-Changes from v2: Rewrite subject in patch 0/4; remove a patch from the
-series because it had alreay been applied (rtl8723bs: core: Remove an unused variable).
-Changes from v1: Fix a typo in subject of patch 1/5, add patch 5/5.
+>> SMI, NMI injecting 62.5ms delay? If that happens then the performance of
+>> the clocksource is the least of your worries.
+>
+> I was kind of hoping that you would tell me why the skew must be all the
+> way up to 62.5ms before the clock is disabled.  The watchdog currently
+> is quite happy with more than 10% skew between clocks.
+>
+> 100HZ clocks or some such?
 
- drivers/staging/rtl8723bs/core/rtw_cmd.c | 2 +-
- drivers/staging/rtl8723bs/hal/hal_intf.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Histerical raisins. When the clocksource watchdog was introduced it
+replaced a x86 specific validation which was jiffies based. I have faint
+memories that we wanted to have at least jiffies based checks preserved
+in absence of other hardware, which had other problems and we gave up on
+it. But obviously nobody thought about revisiting the threshold.
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_cmd.c b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-index 32079e0f71d5..0297fbad7bce 100644
---- a/drivers/staging/rtl8723bs/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_cmd.c
-@@ -1507,7 +1507,7 @@ static void rtw_lps_change_dtim_hdl(struct adapter *padapter, u8 dtim)
- 	if (pwrpriv->dtim != dtim)
- 		pwrpriv->dtim = dtim;
- 
--	if ((pwrpriv->fw_current_in_ps_mode == true) && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
-+	if (pwrpriv->fw_current_in_ps_mode && (pwrpriv->pwr_mode > PS_MODE_ACTIVE)) {
- 		u8 ps_mode = pwrpriv->pwr_mode;
- 
- 		rtw_hal_set_hwreg(padapter, HW_VAR_H2C_FW_PWRMODE, (u8 *)(&ps_mode));
-diff --git a/drivers/staging/rtl8723bs/hal/hal_intf.c b/drivers/staging/rtl8723bs/hal/hal_intf.c
-index 96fe172ced8d..8dc4dd8c6d4c 100644
---- a/drivers/staging/rtl8723bs/hal/hal_intf.c
-+++ b/drivers/staging/rtl8723bs/hal/hal_intf.c
-@@ -348,7 +348,7 @@ void rtw_hal_dm_watchdog(struct adapter *padapter)
- 
- void rtw_hal_dm_watchdog_in_lps(struct adapter *padapter)
- {
--	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode == true) {
-+	if (adapter_to_pwrctl(padapter)->fw_current_in_ps_mode) {
- 		if (padapter->HalFunc.hal_dm_watchdog_in_lps)
- 			padapter->HalFunc.hal_dm_watchdog_in_lps(padapter); /* this function caller is in interrupt context */
- 	}
--- 
-2.31.1
+Yes, it's way too big. The slowest watchdog frequency on x86 is ~3.5 Mhz
+(ACPI PMtimer). Don't know about the reference frequency on MIPS which
+is the only other user of this.
+
+Thanks,
+
+        tglx
 
