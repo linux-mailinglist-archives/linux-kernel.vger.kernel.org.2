@@ -2,161 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0910F35BA24
+	by mail.lfdr.de (Postfix) with ESMTP id A0C5535BA26
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 08:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhDLGfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 02:35:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51744 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229461AbhDLGfj (ORCPT
+        id S231397AbhDLGgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 02:36:22 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:45659 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229461AbhDLGgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 02:35:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618209321;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=O4EBv0iM8QkeGxL9/hee8qNtWhBLhiqd7BzISi5se0s=;
-        b=UcokLmqiJHipSpGzAe664bZluxogidWVPpcn6eioBsAuXi5yyj05tYX7tiM8pSjZhFfVDa
-        zDSwR8ql88QuaVmk2qfMgo2Rw1LmZz6ULPwwaBl6shWmEkMWIbRjdwrjNC5uxRd/hOmfPK
-        GeOEx16yYEbht2CCtxSb2DPCJg/JkMI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-188-ldkqjGUtMEGBC1_Pt9LsKA-1; Mon, 12 Apr 2021 02:35:15 -0400
-X-MC-Unique: ldkqjGUtMEGBC1_Pt9LsKA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CF52510054F6;
-        Mon, 12 Apr 2021 06:35:14 +0000 (UTC)
-Received: from wangxiaodeMacBook-Air.local (ovpn-13-232.pek2.redhat.com [10.72.13.232])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3DE141A86A;
-        Mon, 12 Apr 2021 06:35:08 +0000 (UTC)
-Subject: Re: [RFC PATCH] vdpa: mandate 1.0 device
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, parav@nvidia.com, elic@nvidia.com
-References: <20210408082648.20145-1-jasowang@redhat.com>
- <20210408115834-mutt-send-email-mst@kernel.org>
- <a6a4ab68-c958-7266-c67c-142960222b67@redhat.com>
- <20210409115343-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <42891807-cb24-5352-f8cb-798e9d1a1854@redhat.com>
-Date:   Mon, 12 Apr 2021 14:35:07 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.9.1
+        Mon, 12 Apr 2021 02:36:22 -0400
+X-UUID: 3524d26865e645e68404ccc338cea1b9-20210412
+X-UUID: 3524d26865e645e68404ccc338cea1b9-20210412
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 600615843; Mon, 12 Apr 2021 14:35:58 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 12 Apr 2021 14:35:50 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 12 Apr 2021 14:35:49 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Subject: [PATCH v1, 0/3] gamma set with cmdq
+Date:   Mon, 12 Apr 2021 14:35:44 +0800
+Message-ID: <1618209347-10816-1-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-In-Reply-To: <20210409115343-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 9B38F95F394A55B17AF54078330921F9F4A0C88959C336EC271FA7319CCD28762000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series are based on 5.12-rc2 and provide 3 patch
+to set gamma lut with cmdq
 
-在 2021/4/10 上午12:04, Michael S. Tsirkin 写道:
-> On Fri, Apr 09, 2021 at 12:47:55PM +0800, Jason Wang wrote:
->> 在 2021/4/8 下午11:59, Michael S. Tsirkin 写道:
->>> On Thu, Apr 08, 2021 at 04:26:48PM +0800, Jason Wang wrote:
->>>> This patch mandates 1.0 for vDPA devices. The goal is to have the
->>>> semantic of normative statement in the virtio spec and eliminate the
->>>> burden of transitional device for both vDPA bus and vDPA parent.
->>>>
->>>> uAPI seems fine since all the vDPA parent mandates
->>>> VIRTIO_F_ACCESS_PLATFORM which implies 1.0 devices.
->>>>
->>>> For legacy guests, it can still work since Qemu will mediate when
->>>> necessary (e.g doing the endian conversion).
->>>>
->>>> Signed-off-by: Jason Wang <jasowang@redhat.com>
->>> Hmm. If we do this, don't we still have a problem with
->>> legacy drivers which don't ack 1.0?
->>
->> Yes, but it's not something that is introduced in this commit. The legacy
->> driver never work ...
-> My point is this neither fixes or prevents this.
->
-> So my suggestion is to finally add ioctls along the lines
-> of PROTOCOL_FEATURES of vhost-user.
->
-> Then that one can have bits for legacy le, legacy be and modern.
->
-> BTW I looked at vhost-user and it does not look like that
-> has a solution for this problem either, right?
+Yongqiang Niu (3):
+  drm/mediatek: Separate aal module
+  arm64: dts: mt8183: refine aal compatible name
+  drm/mediatek: gamma set with cmdq
 
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi    |   3 +-
+ drivers/gpu/drm/mediatek/Makefile           |   3 +-
+ drivers/gpu/drm/mediatek/mtk_disp_aal.c     | 167 ++++++++++++++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_disp_drv.h     |  14 ++-
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c   |  11 +-
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c     |  18 +--
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c |  39 +------
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h |   8 +-
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c      |   8 +-
+ drivers/gpu/drm/mediatek/mtk_drm_drv.h      |   1 +
+ 10 files changed, 213 insertions(+), 59 deletions(-)
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_disp_aal.c
 
-Right.
-
-
->
->
->>> Note 1.0 affects ring endianness which is not mediated in QEMU
->>> so QEMU can't pretend to device guest is 1.0.
->>
->> Right, I plan to send patches to do mediation in the Qemu to unbreak legacy
->> drivers.
->>
->> Thanks
-> I frankly think we'll need PROTOCOL_FEATURES anyway, it's too useful ...
-> so why not teach drivers about it and be done with it? You can't emulate
-> legacy on modern in a cross endian situation because of vring
-> endian-ness ...
-
-
-So the problem still. This can only work when the hardware can support 
-legacy vring endian-ness.
-
-Consider:
-
-1) the leagcy driver support is non-normative in the spec
-2) support a transitional device in the kenrel may requires the hardware 
-support and a burden of kernel codes
-
-I'd rather simply drop the legacy driver support to have a simple and 
-easy abstarction in the kenrel. For legacy driver in the guest, 
-hypervisor is in charge of the mediation:
-
-1) config space access endian conversion
-2) using shadow virtqueue to change the endian in the vring
-
-Thanks
-
-
->
->
->>>
->>>
->>>
->>>
->>>> ---
->>>>    include/linux/vdpa.h | 6 ++++++
->>>>    1 file changed, 6 insertions(+)
->>>>
->>>> diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
->>>> index 0fefeb976877..cfde4ec999b4 100644
->>>> --- a/include/linux/vdpa.h
->>>> +++ b/include/linux/vdpa.h
->>>> @@ -6,6 +6,7 @@
->>>>    #include <linux/device.h>
->>>>    #include <linux/interrupt.h>
->>>>    #include <linux/vhost_iotlb.h>
->>>> +#include <uapi/linux/virtio_config.h>
->>>>    /**
->>>>     * vDPA callback definition.
->>>> @@ -317,6 +318,11 @@ static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
->>>>    {
->>>>            const struct vdpa_config_ops *ops = vdev->config;
->>>> +        /* Mandating 1.0 to have semantics of normative statements in
->>>> +         * the spec. */
->>>> +        if (!(features & BIT_ULL(VIRTIO_F_VERSION_1)))
->>>> +		return -EINVAL;
->>>> +
->>>>    	vdev->features_valid = true;
->>>>            return ops->set_features(vdev, features);
->>>>    }
->>>> -- 
->>>> 2.25.1
+-- 
+1.8.1.1.dirty
 
