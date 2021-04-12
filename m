@@ -2,142 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5D635C607
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:18:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F5235C610
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239353AbhDLMST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:18:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
+        id S239809AbhDLMUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238443AbhDLMSS (ORCPT
+        with ESMTP id S238443AbhDLMUI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:18:18 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F200C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:18:00 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id 12so12712453wrz.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
-         :date:mime-version;
-        bh=mD2WCI7vh6febNnOcdykE7h73ToD187sENDF2eGoMmA=;
-        b=CfxEjZWJUxvLwhhaaCuCP5Rm4NIpWDecw4S39zdkc7TruMwOO4Ve0TcplR5/cGlFnI
-         wJPSiUZ/1ZkCNBuDDPNviLxmJ5CAIyBz0yvHtrMRbJSKQELt+on2UW6Id3ZAbzqIcbPk
-         tkrtMYQTr31H3aQ+4g+qNsUib6gF/Q3r6A0DXv/7X5+fHpyn2fpwlFtE53RpE7hW5MM4
-         gSUlWLt4uhvCVuPOsuLE2basyeVS7dYQMCiwMV/bpGnDS+tQHkac4tNUECkMWHWdpE94
-         ZueDbngMvTdyQW00SPRhLsYlTnuyc5l70Lj0xvRJJ6BdgdxoGKVH4OttdelV21e9iHYm
-         cYcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:message-id:date:mime-version;
-        bh=mD2WCI7vh6febNnOcdykE7h73ToD187sENDF2eGoMmA=;
-        b=uI1nH9OsTjAtbLOIslio9OV89BJHn+oseGPo+7Ka64zln6tXKqt+kqWv1HN5oIbLH5
-         bxsSA791ErIt0s3K9z6jVpNACya1Bsyq4x+jgGCDV+ksZOHrBZwy09oH81hcihf/s12m
-         MTbX4IY0QExMnpSqsuiSbACpmFkjwjNRZIGpVEEceKGRFaak8s8emE8RE2SiYgOddwRU
-         NV61sn9Rwl2cJLkDCqoS0uAuNd4TIt6hA0JnDGGAVSno6S2oUh3CHWzRoxxHgvfBdJnz
-         zXBQ31yDcpbTeOsKsqulnKuUFPi2WrQ46sqTVeIhoPCUpXccv7H4WUWMzw36aRlLYjpf
-         0v1Q==
-X-Gm-Message-State: AOAM531aa4Sn1kVZ0a7uLbUdz1Hea1PhozQO0cAxZ3vqdNn4bjzyMp1v
-        51A48KCTVMVJ54UpAedtbDBdSQ==
-X-Google-Smtp-Source: ABdhPJwOJVOh8tgBiNxX6i8lAXohBmpkRch6okXtGKxI10P/KPtK3enB/wU+qF76pJm2M1i4jnJPoQ==
-X-Received: by 2002:adf:ea83:: with SMTP id s3mr7899651wrm.39.1618229879061;
-        Mon, 12 Apr 2021 05:17:59 -0700 (PDT)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id s21sm14984525wmc.10.2021.04.12.05.17.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 05:17:58 -0700 (PDT)
-References: <20210410111356.467340-1-jbrunet@baylibre.com>
- <20210410111356.467340-5-jbrunet@baylibre.com>
- <0c8c3b5d-891a-9bfa-3bbc-4982542df38a@linaro.org>
-User-agent: mu4e 1.4.10; emacs 27.2
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Stephen Boyd <sboyd@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] ASoC: lpass: use the clock provider API
-In-reply-to: <0c8c3b5d-891a-9bfa-3bbc-4982542df38a@linaro.org>
-Message-ID: <1jmtu38znu.fsf@starbuckisacylon.baylibre.com>
-Date:   Mon, 12 Apr 2021 14:17:57 +0200
+        Mon, 12 Apr 2021 08:20:08 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B293C061574;
+        Mon, 12 Apr 2021 05:19:50 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f052100338fe73c52330fca.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:2100:338f:e73c:5233:fca])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0B6F21EC036C;
+        Mon, 12 Apr 2021 14:19:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618229989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=kD7vbGhEK0qnsfsKWL7qZgyEpxDWyfq7hGq9uI0D3VU=;
+        b=LCsmTk8jVRXuAL6SekTZ2EL8U88N5RFH2nN88t/2o6trKZZQV6z0gvUOXcuvFc8lC79kO3
+        glnan1rZJ3fsG3HGVcgp9wNlUkDeqljeMENQn5hEelXJyV8F+Q3nE2MG8ucxfLownR9nwz
+        jvCSbSM6J5G3OEk7eFe9hFmfyx1d8V8=
+Date:   Mon, 12 Apr 2021 14:19:47 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Len Brown <lenb@kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        libc-alpha <libc-alpha@sourceware.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+Message-ID: <20210412121947.GC24283@zn.tnic>
+References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
+ <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
+ <CAJvTdK=Lqbzy6bs8qiE8MZ5LSzyZJ-FMUTcNPD4MxYJGEMBW3g@mail.gmail.com>
+ <CALCETrW_5QDSo2sfEjBZSJ=Q3EsXTc03Unztn0Rq1caxqwtWpw@mail.gmail.com>
+ <CAJvTdKkDUywOUxb8Toth-7d4U4_S_9_EYHO38XqAPKc2_MXtdA@mail.gmail.com>
+ <CALCETrXA-JzBWKdzBZJA8P+pPNKEkxNRPqLganWMpvm6KEUmCw@mail.gmail.com>
+ <CAJvTdK=RFei+b0W89ZTtqoiiR_M0wAJz_EuBTijgEHpacfZS7Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAJvTdK=RFei+b0W89ZTtqoiiR_M0wAJz_EuBTijgEHpacfZS7Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Apr 11, 2021 at 03:07:29PM -0400, Len Brown wrote:
+> If it is the program, how does it know that the library wants to use
+> what instructions?
+> 
+> If it is the library, then you have just changed XCR0 at run-time and
+> you expose breakage of the thread library that has computed XSAVE size.
 
-On Mon 12 Apr 2021 at 11:38, Srinivas Kandagatla <srinivas.kandagatla@linaro.org> wrote:
+So, when old programs which cannot possibly know about the arch_prctl()
+extension we're proposing here, link against that library, then that
+library should not be allowed to go use "fat" states.
 
-> Thanks Jerome for the patch,
->
->
-> On 10/04/2021 12:13, Jerome Brunet wrote:
->> Clock providers should be registered using the clk_hw API.
->> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
->> ---
->>   sound/soc/codecs/lpass-va-macro.c  | 2 +-
->>   sound/soc/codecs/lpass-wsa-macro.c | 9 +++------
->>   2 files changed, 4 insertions(+), 7 deletions(-)
->> diff --git a/sound/soc/codecs/lpass-va-macro.c
->> b/sound/soc/codecs/lpass-va-macro.c
->> index 5294c57b2cd4..56b887301172 100644
->> --- a/sound/soc/codecs/lpass-va-macro.c
->> +++ b/sound/soc/codecs/lpass-va-macro.c
->> @@ -1343,7 +1343,7 @@ static int va_macro_register_fsgen_output(struct va_macro *va)
->>   	if (ret)
->>   		return ret;
->>   -	return of_clk_add_provider(np, of_clk_src_simple_get, va->hw.clk);
->> +	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, &va->hw);
->
-> Now that we convert this to devm, You missed error path and driver remove
-> where we delete clk provider. This should be removed as well as part of
-> this patch.
+Unless the library can "tell" the process which links to it, that it
+has dynamically enlarged the save state. If it can and the process can
+handle that, then all is fine, save state gets enlarged dynamically and
+it all continues merrily.
 
-Indeed. I should not have switched to devm here - It was not really the
-purpose of the patch. Habits I guess.
+Also, in order for the library to use fat states, it needs to ask the
+kernel for such support - not CPUID - because the kernel is doing the
+state handling for everybody and doing all the CR4.OSXSAVE setup etc.
 
-Do you prefer I stick with devm (with the suggested fix) or revert to the
-no-devm way for the v2 ? It makes no difference to me TBH.
+Which also means that the kernel can help here by telling the library:
 
->
->
-> This applies to both wsa and va macro.
->
-> Thanks,
-> srini
->>   }
->>     static int va_macro_validate_dmic_sample_rate(u32 dmic_sample_rate,
->> diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
->> index e79a70386b4b..acb95e83c788 100644
->> --- a/sound/soc/codecs/lpass-wsa-macro.c
->> +++ b/sound/soc/codecs/lpass-wsa-macro.c
->> @@ -2337,10 +2337,9 @@ static const struct clk_ops swclk_gate_ops = {
->>   	.recalc_rate = swclk_recalc_rate,
->>   };
->>   -static struct clk *wsa_macro_register_mclk_output(struct wsa_macro
->> *wsa)
->> +static int wsa_macro_register_mclk_output(struct wsa_macro *wsa)
->>   {
->>   	struct device *dev = wsa->dev;
->> -	struct device_node *np = dev->of_node;
->>   	const char *parent_clk_name;
->>   	const char *clk_name = "mclk";
->>   	struct clk_hw *hw;
->> @@ -2358,11 +2357,9 @@ static struct clk *wsa_macro_register_mclk_output(struct wsa_macro *wsa)
->>   	hw = &wsa->hw;
->>   	ret = clk_hw_register(wsa->dev, hw);
->>   	if (ret)
->> -		return ERR_PTR(ret);
->> -
->> -	of_clk_add_provider(np, of_clk_src_simple_get, hw->clk);
->> +		return ret;
->>   -	return NULL;
->> +	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, hw);
->>   }
->>     static const struct snd_soc_component_driver wsa_macro_component_drv
->> = {
->> 
+- No, you cannot use fat states with this process because it hasn't
+called arch_prctl() so it cannot handle them properly.
 
+- Yes, this process allowes me to handle fat states for it so you can
+use those states and thus those instructions when doing operations for
+it.
+
+So the kernel becomes the arbiter in all this - as it should be - and
+then all should work fine.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
