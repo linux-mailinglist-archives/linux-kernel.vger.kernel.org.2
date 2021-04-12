@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F317E35C022
+	by mail.lfdr.de (Postfix) with ESMTP id 831B835C021
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240595AbhDLJKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:10:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44692 "EHLO mail.kernel.org"
+        id S240564AbhDLJKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:10:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46650 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239032AbhDLIzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:55:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0060A61262;
-        Mon, 12 Apr 2021 08:55:01 +0000 (UTC)
+        id S239035AbhDLIz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:55:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE3AB61221;
+        Mon, 12 Apr 2021 08:55:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217702;
-        bh=TilFfatGDQ8WsvWrUqOg9gPOx2fJy+GBEncMx4C+mAU=;
+        s=korg; t=1618217705;
+        bh=V2hcMgmu2Y/ijX7604LZBPS6XB3qLctl9kakacKj+zo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bT1oInWw3G28zB0jK6v2v8dlz5azJmvsSMZHqSB8u+QASxOBNhGJLReaPCK2H0W+u
-         FgBHNHQk7gpb98CfW1ldBqUVL5AcLuvvVbACWKDa9Mv20kEWvoQF+V/WDVqGn9I2uX
-         MQNuxnsOtRA2OEwBAUvOjS09OU+XMy7JnhXrbpCY=
+        b=wm4dTj0UwX3IGk1sqyDF3HU+bMgtwDXsCYNfMHXnt/shCDMC+utDbC4Dl+QF8VpV3
+         Ljcp4xuG4pqZgm6PXaTMv5UMyBPIYqGOmgJhjUsAMppbxIw/oXabjKOdwyxeU+bR+8
+         p769BuDD+rQeP7w4Bn1mh1y1AL+vrL2fsZS8rJeY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Richard Weinberger <richard@nod.at>,
+        Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 115/188] xfrm: Provide private skb extensions for segmented and hw offloaded ESP packets
-Date:   Mon, 12 Apr 2021 10:40:29 +0200
-Message-Id: <20210412084017.476445404@linuxfoundation.org>
+Subject: [PATCH 5.10 116/188] can: bcm/raw: fix msg_namelen values depending on CAN_REQUIRED_SIZE
+Date:   Mon, 12 Apr 2021 10:40:30 +0200
+Message-Id: <20210412084017.508406571@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -40,86 +42,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Klassert <steffen.klassert@secunet.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-[ Upstream commit c7dbf4c08868d9db89b8bfe8f8245ca61b01ed2f ]
+[ Upstream commit 9e9714742fb70467464359693a73b911a630226f ]
 
-Commit 94579ac3f6d0 ("xfrm: Fix double ESP trailer insertion in IPsec
-crypto offload.") added a XFRM_XMIT flag to avoid duplicate ESP trailer
-insertion on HW offload. This flag is set on the secpath that is shared
-amongst segments. This lead to a situation where some segments are
-not transformed correctly when segmentation happens at layer 3.
+Since commit f5223e9eee65 ("can: extend sockaddr_can to include j1939
+members") the sockaddr_can has been extended in size and a new
+CAN_REQUIRED_SIZE macro has been introduced to calculate the protocol
+specific needed size.
 
-Fix this by using private skb extensions for segmented and hw offloaded
-ESP packets.
+The ABI for the msg_name and msg_namelen has not been adapted to the
+new CAN_REQUIRED_SIZE macro for the other CAN protocols which leads to
+a problem when an existing binary reads the (increased) struct
+sockaddr_can in msg_name.
 
-Fixes: 94579ac3f6d0 ("xfrm: Fix double ESP trailer insertion in IPsec crypto offload.")
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: f5223e9eee65 ("can: extend sockaddr_can to include j1939 members")
+Reported-by: Richard Weinberger <richard@nod.at>
+Tested-by: Richard Weinberger <richard@nod.at>
+Acked-by: Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>
+Link: https://lore.kernel.org/linux-can/1135648123.112255.1616613706554.JavaMail.zimbra@nod.at/T/#t
+Link: https://lore.kernel.org/r/20210325125850.1620-1-socketcan@hartkopp.net
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/esp4_offload.c | 11 ++++++++++-
- net/ipv6/esp6_offload.c | 11 ++++++++++-
- net/xfrm/xfrm_device.c  |  2 --
- 3 files changed, 20 insertions(+), 4 deletions(-)
+ net/can/bcm.c | 10 ++++++----
+ net/can/raw.c | 14 ++++++++------
+ 2 files changed, 14 insertions(+), 10 deletions(-)
 
-diff --git a/net/ipv4/esp4_offload.c b/net/ipv4/esp4_offload.c
-index d5c0f5a2a551..5aa7344dbec7 100644
---- a/net/ipv4/esp4_offload.c
-+++ b/net/ipv4/esp4_offload.c
-@@ -314,8 +314,17 @@ static int esp_xmit(struct xfrm_state *x, struct sk_buff *skb,  netdev_features_
- 	ip_hdr(skb)->tot_len = htons(skb->len);
- 	ip_send_check(ip_hdr(skb));
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 0e5c37be4a2b..909b9e684e04 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -86,6 +86,8 @@ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Oliver Hartkopp <oliver.hartkopp@volkswagen.de>");
+ MODULE_ALIAS("can-proto-2");
  
--	if (hw_offload)
-+	if (hw_offload) {
-+		if (!skb_ext_add(skb, SKB_EXT_SEC_PATH))
-+			return -ENOMEM;
++#define BCM_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_ifindex)
 +
-+		xo = xfrm_offload(skb);
-+		if (!xo)
-+			return -EINVAL;
-+
-+		xo->flags |= XFRM_XMIT;
- 		return 0;
-+	}
+ /*
+  * easy access to the first 64 bit of can(fd)_frame payload. cp->data is
+  * 64 bit aligned so the offset has to be multiples of 8 which is ensured
+@@ -1292,7 +1294,7 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		/* no bound device as default => check msg_name */
+ 		DECLARE_SOCKADDR(struct sockaddr_can *, addr, msg->msg_name);
  
- 	err = esp_output_tail(x, skb, &esp);
- 	if (err)
-diff --git a/net/ipv6/esp6_offload.c b/net/ipv6/esp6_offload.c
-index f35203ab39f5..4af56affaafd 100644
---- a/net/ipv6/esp6_offload.c
-+++ b/net/ipv6/esp6_offload.c
-@@ -348,8 +348,17 @@ static int esp6_xmit(struct xfrm_state *x, struct sk_buff *skb,  netdev_features
+-		if (msg->msg_namelen < CAN_REQUIRED_SIZE(*addr, can_ifindex))
++		if (msg->msg_namelen < BCM_MIN_NAMELEN)
+ 			return -EINVAL;
  
- 	ipv6_hdr(skb)->payload_len = htons(len);
+ 		if (addr->can_family != AF_CAN)
+@@ -1534,7 +1536,7 @@ static int bcm_connect(struct socket *sock, struct sockaddr *uaddr, int len,
+ 	struct net *net = sock_net(sk);
+ 	int ret = 0;
  
--	if (hw_offload)
-+	if (hw_offload) {
-+		if (!skb_ext_add(skb, SKB_EXT_SEC_PATH))
-+			return -ENOMEM;
-+
-+		xo = xfrm_offload(skb);
-+		if (!xo)
-+			return -EINVAL;
-+
-+		xo->flags |= XFRM_XMIT;
- 		return 0;
-+	}
+-	if (len < CAN_REQUIRED_SIZE(*addr, can_ifindex))
++	if (len < BCM_MIN_NAMELEN)
+ 		return -EINVAL;
  
- 	err = esp6_output_tail(x, skb, &esp);
- 	if (err)
-diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
-index edf11893dbe8..6d6917b68856 100644
---- a/net/xfrm/xfrm_device.c
-+++ b/net/xfrm/xfrm_device.c
-@@ -134,8 +134,6 @@ struct sk_buff *validate_xmit_xfrm(struct sk_buff *skb, netdev_features_t featur
- 		return skb;
+ 	lock_sock(sk);
+@@ -1616,8 +1618,8 @@ static int bcm_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	sock_recv_ts_and_drops(msg, sk, skb);
+ 
+ 	if (msg->msg_name) {
+-		__sockaddr_check_size(sizeof(struct sockaddr_can));
+-		msg->msg_namelen = sizeof(struct sockaddr_can);
++		__sockaddr_check_size(BCM_MIN_NAMELEN);
++		msg->msg_namelen = BCM_MIN_NAMELEN;
+ 		memcpy(msg->msg_name, skb->cb, msg->msg_namelen);
  	}
  
--	xo->flags |= XFRM_XMIT;
--
- 	if (skb_is_gso(skb) && unlikely(x->xso.dev != dev)) {
- 		struct sk_buff *segs;
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 6ec8aa1d0da4..95113b0898b2 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -60,6 +60,8 @@ MODULE_LICENSE("Dual BSD/GPL");
+ MODULE_AUTHOR("Urs Thuermann <urs.thuermann@volkswagen.de>");
+ MODULE_ALIAS("can-proto-1");
+ 
++#define RAW_MIN_NAMELEN CAN_REQUIRED_SIZE(struct sockaddr_can, can_ifindex)
++
+ #define MASK_ALL 0
+ 
+ /* A raw socket has a list of can_filters attached to it, each receiving
+@@ -394,7 +396,7 @@ static int raw_bind(struct socket *sock, struct sockaddr *uaddr, int len)
+ 	int err = 0;
+ 	int notify_enetdown = 0;
+ 
+-	if (len < CAN_REQUIRED_SIZE(*addr, can_ifindex))
++	if (len < RAW_MIN_NAMELEN)
+ 		return -EINVAL;
+ 	if (addr->can_family != AF_CAN)
+ 		return -EINVAL;
+@@ -475,11 +477,11 @@ static int raw_getname(struct socket *sock, struct sockaddr *uaddr,
+ 	if (peer)
+ 		return -EOPNOTSUPP;
+ 
+-	memset(addr, 0, sizeof(*addr));
++	memset(addr, 0, RAW_MIN_NAMELEN);
+ 	addr->can_family  = AF_CAN;
+ 	addr->can_ifindex = ro->ifindex;
+ 
+-	return sizeof(*addr);
++	return RAW_MIN_NAMELEN;
+ }
+ 
+ static int raw_setsockopt(struct socket *sock, int level, int optname,
+@@ -731,7 +733,7 @@ static int raw_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	if (msg->msg_name) {
+ 		DECLARE_SOCKADDR(struct sockaddr_can *, addr, msg->msg_name);
+ 
+-		if (msg->msg_namelen < CAN_REQUIRED_SIZE(*addr, can_ifindex))
++		if (msg->msg_namelen < RAW_MIN_NAMELEN)
+ 			return -EINVAL;
+ 
+ 		if (addr->can_family != AF_CAN)
+@@ -824,8 +826,8 @@ static int raw_recvmsg(struct socket *sock, struct msghdr *msg, size_t size,
+ 	sock_recv_ts_and_drops(msg, sk, skb);
+ 
+ 	if (msg->msg_name) {
+-		__sockaddr_check_size(sizeof(struct sockaddr_can));
+-		msg->msg_namelen = sizeof(struct sockaddr_can);
++		__sockaddr_check_size(RAW_MIN_NAMELEN);
++		msg->msg_namelen = RAW_MIN_NAMELEN;
+ 		memcpy(msg->msg_name, skb->cb, msg->msg_namelen);
+ 	}
  
 -- 
 2.30.2
