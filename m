@@ -2,113 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B6A35CFAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4F3E35CFB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244447AbhDLRrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:47:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238523AbhDLRrR (ORCPT
+        id S243612AbhDLRsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:48:05 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:60419 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238523AbhDLRsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:47:17 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C30AC061574;
-        Mon, 12 Apr 2021 10:46:59 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id r9so21679471ejj.3;
-        Mon, 12 Apr 2021 10:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=kcD1QZqIuNz4WcBW32lQIKsKLiIqCZYBdkHqfOIUFEI=;
-        b=mRUWSOq7blVHzvZOrWQQkCCxuMIcervNYvtLYmwJNxD9rVCaKIF/tkMAJyYhq+q/bD
-         ESKaKgTS9+zv0fGFTqw2Zg3/cJere9z3Zq4lvCeArOZzltV66Zg6pppMq2dLjo0QLcTR
-         1Jw8gIigW3nrx6oCxFTIe+FjJBJIO9/qvS+8/hstrv3rw1m2+Uu5SpWTV/Plm2FPmjYn
-         AxpaGupni1BHY6hDX7bBd9b0pUJZ3S5oZmsvFxqsAYVOHs99s0gzQJzBR6EVuDbn/wpS
-         I6CifUateCQPDjfOr+zCfgAFCOH11yBgK5fKTret/DUeiLqAu1jBSTnzbGxZr6IXX2ol
-         K5jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=kcD1QZqIuNz4WcBW32lQIKsKLiIqCZYBdkHqfOIUFEI=;
-        b=I8c0XE4mAODd923U9VCm5lfmdBdRqe0Lyr4c9Dzy5wP2lB6+4vUdQ5a/MzC+0JniD+
-         Lp8x8a0Vwx18YBQV3h6PW34iIW/A1UkXRpuMzg70CGSs/dLbed1RjLOLlXPjEP24E6VD
-         NXfsiDyR82WNFeM3gBOGw/uBXFospTVfgNgkqNpjgXp8ZAf2NrwKSLoT0Jg0Zxl1gxSE
-         8CbrqdbfN3tu149gec4e3LNMBUhKIDGPmEkPnghbVt8Arg5JYZcLvUoHy9k2kYilRC2x
-         n1adzot0edrZu2/P3qJeFNtIVSZeS87AGlcP5qVcVR7RG5KMNBFhVBE+9dKtznkdUb8X
-         5ZcQ==
-X-Gm-Message-State: AOAM533iMA70BtOrVrsEi+u8Ijqu7OjK1x4yeoFxEFShKwmNlwF1VBDQ
-        0yKm6S2faWkhEOv1Xq7CB7o=
-X-Google-Smtp-Source: ABdhPJzYDlf+JATE3dqIq7o4nGa320QTdQUSu2KGIN4+fYrjh49df2KFnqEwNvrhUSQQrltDnOH/qQ==
-X-Received: by 2002:a17:906:3915:: with SMTP id f21mr7027865eje.256.1618249618090;
-        Mon, 12 Apr 2021 10:46:58 -0700 (PDT)
-Received: from ubuntu-laptop (ip5f5bec5d.dynamic.kabel-deutschland.de. [95.91.236.93])
-        by smtp.googlemail.com with ESMTPSA id w25sm7308133edq.66.2021.04.12.10.46.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 10:46:57 -0700 (PDT)
-Message-ID: <a70a17e3873f84681de379bde82d49ab96e70d21.camel@gmail.com>
-Subject: Re: [PATCH v3 2/2] mmc: core: Let sanitize not retry in case of
- timeout/failure
-From:   Bean Huo <huobean@gmail.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bean Huo <beanhuo@micron.com>
-Date:   Mon, 12 Apr 2021 19:46:56 +0200
-In-Reply-To: <CAPDyKFoT4YoG1wwHYXMMpXmq-ybLMh_qipzr5yKkWUY8Yt5q0A@mail.gmail.com>
-References: <20210402092432.25069-1-huobean@gmail.com>
-         <20210402092432.25069-3-huobean@gmail.com>
-         <CAPDyKFoT4YoG1wwHYXMMpXmq-ybLMh_qipzr5yKkWUY8Yt5q0A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Mon, 12 Apr 2021 13:48:03 -0400
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 0C67F22249;
+        Mon, 12 Apr 2021 19:47:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1618249662;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ACunbYYfUYQX2dQfrSBcq4Yxr9z2iAhwXNJmeYavID0=;
+        b=EHwgEODOPZY3i3DvMUC0DA3H0EinzUZaPq96BoCBx/hpsA4ESSlbZOieaK8tJyqesrb9Un
+        e9xZmNdlSP4kTnaFyWTzg9DJ4jn0ifgq4bGUCFFjXpmA2Tf8+vjS6TW/El0zn3/PkifVrj
+        mtBF6RQrViyJ2N+BnddeC321+MiZNgc=
+From:   Michael Walle <michael@walle.cc>
+To:     ath9k-devel@qca.qualcomm.com, UNGLinuxDriver@microchip.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, netdev@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-amlogic@lists.infradead.org, linux-oxnas@groups.io,
+        linux-omap@vger.kernel.org, linux-wireless@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-staging@lists.linux.dev
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Andreas Larsson <andreas@gaisler.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Joyce Ooi <joyce.ooi@intel.com>,
+        Chris Snook <chris.snook@gmail.com>,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        Madalin Bucur <madalin.bucur@nxp.com>,
+        Pantelis Antoniou <pantelis.antoniou@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Li Yang <leoyang.li@nxp.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vadym Kochan <vkochan@marvell.com>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bryan Whitehead <bryan.whitehead@microchip.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Byungho An <bh74.an@samsung.com>,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Wingman Kwok <w-kwok2@ti.com>,
+        Murali Karicheri <m-karicheri2@ti.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Stanislaw Gruszka <stf_xl@wp.pl>,
+        Helmut Schaa <helmut.schaa@googlemail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH net-next v4 0/2] of: net: support non-platform devices in of_get_mac_address()
+Date:   Mon, 12 Apr 2021 19:47:16 +0200
+Message-Id: <20210412174718.17382-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-12 at 09:50 +0200, Ulf Hansson wrote:
-> > diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> > index 8bfd4d95b386..9778093d7006 100644
-> > --- a/drivers/mmc/core/block.c
-> > +++ b/drivers/mmc/core/block.c
-> > @@ -836,7 +836,7 @@ static inline int mmc_blk_part_switch(struct
-> > mmc_card *card,
-> >                  ret = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
-> >                                   EXT_CSD_PART_CONFIG, part_config,
-> > -                                card->ext_csd.part_time);
-> > +                                card->ext_csd.part_time,
-> > MMC_CMD_RETRIES);
-> 
-> 
-> I would rather not change the mmc_switch() function definition, but
-> 
-> only __mmc_switch(). Just let mmc_switch() pass another in-parameter
-> 
-> (MMC_CMD_RETRIES) to __mmc_switch(), which means all callers of
-> 
-> mmc_switch() doesn't need to get changed, but only callers of
-> 
-> __mmc_switch().
-> 
-> 
-> 
-> [...]
-> 
-> 
-> 
-Hi Uffe,
-Good point, I will change it in the next version of this patch.
+of_get_mac_address() is commonly used to fetch the MAC address
+from the device tree. It also supports reading it from a NVMEM
+provider. But the latter is only possible for platform devices,
+because only platform devices are searched for a matching device
+node.
 
-thanks,
-Bean
+Add a second method to fetch the NVMEM cell by a device tree node
+instead of a "struct device".
 
-> Kind regards
-> 
-> Uffe
+Moreover, the NVMEM subsystem will return dynamically allocated
+data which has to be freed after use. Currently, this is handled
+by allocating a device resource manged buffer to store the MAC
+address. of_get_mac_address() then returns a pointer to this
+buffer. Without a device, this trick is not possible anymore.
+Thus, change the of_get_mac_address() API to have the caller
+supply a buffer.
+
+It was considered to use the network device to attach the buffer
+to, but then the order matters and netdev_register() has to be
+called before of_get_mac_address(). No driver does it this way.
+
+changes since v3:
+ - use memcpy() instead of ether_addr_copy() where appropriate.
+   Sometimes the destination is on the stack, thus the 2 byte
+   alignment requrement is not met.
+ - fix "return PTR_ERR(mac_addr)" as found by Dan Carpenter
+ - changed subject of patch 2/2, as suggested by Florian Fainelli
+
+changes since v2:
+ - fixed of_get_mac_addr_nvmem() signature, which was accidentially
+   fixed in patch 2/2 again
+
+changes since v1:
+ - fixed stmmac_probe_config_dt() for !CONFIG_OF
+ - added missing queue in patch subject
+
+Michael Walle (2):
+  of: net: pass the dst buffer to of_get_mac_address()
+  of: net: fix of_get_mac_addr_nvmem() for non-platform devices
+
+ arch/arm/mach-mvebu/kirkwood.c                |  3 +-
+ arch/powerpc/sysdev/tsi108_dev.c              |  5 +-
+ drivers/net/ethernet/aeroflex/greth.c         |  6 +-
+ drivers/net/ethernet/allwinner/sun4i-emac.c   | 10 +--
+ drivers/net/ethernet/altera/altera_tse_main.c |  7 +-
+ drivers/net/ethernet/arc/emac_main.c          |  8 +-
+ drivers/net/ethernet/atheros/ag71xx.c         |  7 +-
+ drivers/net/ethernet/broadcom/bcm4908_enet.c  |  7 +-
+ drivers/net/ethernet/broadcom/bcmsysport.c    |  7 +-
+ drivers/net/ethernet/broadcom/bgmac-bcma.c    | 10 +--
+ .../net/ethernet/broadcom/bgmac-platform.c    | 11 ++-
+ drivers/net/ethernet/cadence/macb_main.c      | 11 +--
+ .../net/ethernet/cavium/octeon/octeon_mgmt.c  |  8 +-
+ .../net/ethernet/cavium/thunder/thunder_bgx.c |  5 +-
+ drivers/net/ethernet/davicom/dm9000.c         | 10 +--
+ drivers/net/ethernet/ethoc.c                  |  6 +-
+ drivers/net/ethernet/ezchip/nps_enet.c        |  7 +-
+ drivers/net/ethernet/freescale/fec_main.c     |  7 +-
+ drivers/net/ethernet/freescale/fec_mpc52xx.c  |  7 +-
+ drivers/net/ethernet/freescale/fman/mac.c     |  9 +-
+ .../ethernet/freescale/fs_enet/fs_enet-main.c |  5 +-
+ drivers/net/ethernet/freescale/gianfar.c      |  8 +-
+ drivers/net/ethernet/freescale/ucc_geth.c     |  5 +-
+ drivers/net/ethernet/hisilicon/hisi_femac.c   |  7 +-
+ drivers/net/ethernet/hisilicon/hix5hd2_gmac.c |  7 +-
+ drivers/net/ethernet/lantiq_xrx200.c          |  7 +-
+ drivers/net/ethernet/marvell/mv643xx_eth.c    |  5 +-
+ drivers/net/ethernet/marvell/mvneta.c         |  6 +-
+ .../ethernet/marvell/prestera/prestera_main.c | 11 +--
+ drivers/net/ethernet/marvell/pxa168_eth.c     |  9 +-
+ drivers/net/ethernet/marvell/sky2.c           |  8 +-
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c   | 11 +--
+ drivers/net/ethernet/micrel/ks8851_common.c   |  7 +-
+ drivers/net/ethernet/microchip/lan743x_main.c |  5 +-
+ drivers/net/ethernet/nxp/lpc_eth.c            |  4 +-
+ drivers/net/ethernet/qualcomm/qca_spi.c       | 10 +--
+ drivers/net/ethernet/qualcomm/qca_uart.c      |  9 +-
+ drivers/net/ethernet/renesas/ravb_main.c      | 12 +--
+ drivers/net/ethernet/renesas/sh_eth.c         |  5 +-
+ .../ethernet/samsung/sxgbe/sxgbe_platform.c   | 13 +--
+ drivers/net/ethernet/socionext/sni_ave.c      | 10 +--
+ .../ethernet/stmicro/stmmac/dwmac-anarion.c   |  2 +-
+ .../stmicro/stmmac/dwmac-dwc-qos-eth.c        |  2 +-
+ .../ethernet/stmicro/stmmac/dwmac-generic.c   |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-imx.c   |  2 +-
+ .../stmicro/stmmac/dwmac-intel-plat.c         |  2 +-
+ .../ethernet/stmicro/stmmac/dwmac-ipq806x.c   |  2 +-
+ .../ethernet/stmicro/stmmac/dwmac-lpc18xx.c   |  2 +-
+ .../ethernet/stmicro/stmmac/dwmac-mediatek.c  |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-meson.c |  2 +-
+ .../ethernet/stmicro/stmmac/dwmac-meson8b.c   |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-oxnas.c |  2 +-
+ .../stmicro/stmmac/dwmac-qcom-ethqos.c        |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-rk.c    |  2 +-
+ .../ethernet/stmicro/stmmac/dwmac-socfpga.c   |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-sti.c   |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-stm32.c |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-sun8i.c |  2 +-
+ .../net/ethernet/stmicro/stmmac/dwmac-sunxi.c |  2 +-
+ .../ethernet/stmicro/stmmac/dwmac-visconti.c  |  2 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |  2 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c |  2 +-
+ .../ethernet/stmicro/stmmac/stmmac_platform.c | 14 +--
+ .../ethernet/stmicro/stmmac/stmmac_platform.h |  2 +-
+ drivers/net/ethernet/ti/am65-cpsw-nuss.c      | 19 ++---
+ drivers/net/ethernet/ti/cpsw.c                |  7 +-
+ drivers/net/ethernet/ti/cpsw_new.c            |  7 +-
+ drivers/net/ethernet/ti/davinci_emac.c        |  8 +-
+ drivers/net/ethernet/ti/netcp_core.c          |  7 +-
+ drivers/net/ethernet/wiznet/w5100-spi.c       |  8 +-
+ drivers/net/ethernet/wiznet/w5100.c           |  2 +-
+ drivers/net/ethernet/xilinx/ll_temac_main.c   |  8 +-
+ .../net/ethernet/xilinx/xilinx_axienet_main.c | 15 ++--
+ drivers/net/ethernet/xilinx/xilinx_emaclite.c |  8 +-
+ drivers/net/wireless/ath/ath9k/init.c         |  5 +-
+ drivers/net/wireless/mediatek/mt76/eeprom.c   |  9 +-
+ .../net/wireless/ralink/rt2x00/rt2x00dev.c    |  6 +-
+ drivers/of/of_net.c                           | 85 ++++++++++++-------
+ drivers/staging/octeon/ethernet.c             | 10 +--
+ drivers/staging/wfx/main.c                    |  7 +-
+ include/linux/of_net.h                        |  6 +-
+ include/net/dsa.h                             |  2 +-
+ net/dsa/dsa2.c                                |  2 +-
+ net/dsa/slave.c                               |  2 +-
+ net/ethernet/eth.c                            | 11 +--
+ 85 files changed, 243 insertions(+), 364 deletions(-)
+
+-- 
+2.20.1
 
