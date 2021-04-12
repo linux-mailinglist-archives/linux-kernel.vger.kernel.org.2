@@ -2,124 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4375535CED4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA4335CEC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343736AbhDLQuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:50:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345637AbhDLQrk (ORCPT
+        id S244777AbhDLQsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:48:55 -0400
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:30997 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343763AbhDLQoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:47:40 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30FFC0610E3;
-        Mon, 12 Apr 2021 09:42:02 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id w8so13941995lfr.0;
-        Mon, 12 Apr 2021 09:42:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=DmUEYaWbsAlR+VYhVgl0qhMHR79e89X0qZWa+1dURuI=;
-        b=OwwF0d5gKiPn94Gi8YtvHotVZxBa6/bCbLbig48/n4GX6hDvPHu+e9W3Hd0Nubbt7f
-         iS87rCkk+3vHISmhMlfTTL3HiQaqk1Q3RniZML/O4LlpsnYplRF2w+KdYTt5GhTd3Siy
-         WzzLeNdrfyXXNF7rdMRTcxguAMyYNtx9j7J2oGYriWZgK2P3odtHNTIstQ9tqoHQl+AJ
-         5VbBe7rxCuERkMgo4e6TNxxfqIB/KvCLFh+N0LRJv1Ag42sbd8RuQvID+/nr4XhQfOn3
-         itwOmIjBsFXwCx2pgMjlGJTg6XVii5ccpY3Qv3GasP0DJfudIiDnJpo2jeZ5nAAueFJH
-         Fi9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=DmUEYaWbsAlR+VYhVgl0qhMHR79e89X0qZWa+1dURuI=;
-        b=pFfr9Mz4Z4cFFEKE9im6uXCAUdr/rK7STHQTaNK0UAO2RYGgW8/vTGRDYCLTfC3UNL
-         SJxtORrYLxI7m9X+OtPjoicNvtWtrsaMQz/RZJZwds/LdpNDIvC9xVAt3vIQkBxX00uK
-         Mwp/t4Rhuq9/vT8XhjJNgBjxnnXVMERB5ZexqRyDJiMTRUpupSJE34W2qw8KBqbckSH+
-         RDtKQYW7F3sooEyt93jpGSrtMOkrifTYxvR9nypCl8iiikHIIumXcOUBYCfrgLeszAu8
-         eYtwk7KHjmaqpjzyj2wYQ0iyL3k+T4JElnBUmoOcba4F2gEVNaPcJyWxzgUV165Zp3nw
-         rLlg==
-X-Gm-Message-State: AOAM533zNH1UrYgX6kZdop18QcJ6kqwM4B8c5TxnihcZyxSQuYPJ+xen
-        qQSvAfzCyWPwQCsTUM0X8Bo=
-X-Google-Smtp-Source: ABdhPJw8vslTv3+VDRDH84DU9lTPyMzGBa2PuNznZmKZ0YjMwf68SPcqveSEVnaykL7QSD+/OcSQSQ==
-X-Received: by 2002:a05:6512:31ca:: with SMTP id j10mr20125220lfe.459.1618245721495;
-        Mon, 12 Apr 2021 09:42:01 -0700 (PDT)
-Received: from [192.168.1.11] ([94.103.229.90])
-        by smtp.gmail.com with ESMTPSA id q25sm1434770lfe.163.2021.04.12.09.42.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 09:42:00 -0700 (PDT)
-Message-ID: <dd04fe4401f5e516885798541b6ebb5b0e40892b.camel@gmail.com>
-Subject: Re: [PATCH] net: mac802154: fix WARNING in ieee802154_del_device
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Alexander Aring <alex.aring@gmail.com>
-Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-wpan - ML <linux-wpan@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        syzbot+bf8b5834b7ec229487ce@syzkaller.appspotmail.com
-Date:   Mon, 12 Apr 2021 19:41:58 +0300
-In-Reply-To: <CAB_54W7R6ZmMQQPscc04PhJsGu_uoaVqVx=PAiLrqb4nZqTWzw@mail.gmail.com>
-References: <20210412105851.24809-1-paskripkin@gmail.com>
-         <CAB_54W7R6ZmMQQPscc04PhJsGu_uoaVqVx=PAiLrqb4nZqTWzw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 
+        Mon, 12 Apr 2021 12:44:06 -0400
+Date:   Mon, 12 Apr 2021 16:43:31 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1618245812;
+        bh=bur6pDDgjXw6skXkwkUN9ZOYk+3Tg1KFD6dBSPnGAeY=;
+        h=Date:To:From:Reply-To:Subject:In-Reply-To:References:From;
+        b=l9jOGwG/5CoYVff8V7q5TX8HbZUX+omtZjQwP5pNTKJR2yuiTHx5ZNKnsSnfsXyAV
+         FvGW1jNoSmOlzeSe5V5/IM7rT07luS8vMMauGVYEyFf/inaAISgM2KUEaDQoRXn09O
+         U7EdlDkIOCEMDBYbka33WDTViGCxzdGVtu1VpYXj6GI1D5WmIZuFiRSnKrO0lLjHZK
+         fWuhD8K/R7DfBonjjUKKtFYNi58CguG5wm7AmIfuzNqV2+umb/S23n0+w0E7UrlMK/
+         mb2bhiO1v9zwf6eNPivufhY8jFqe8lnfiI886yi3HkuSQMXrg8QoBN2FEZkOiZxzPa
+         Uli54d2GOPsWw==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: NAK: [PATCH] staging: rtl8723bs: remove unnecessary adapter
+Message-ID: <20210412163414.5i53wyvguckj5uxz@bryanbrattlof.com>
+In-Reply-To: <20210412140054.27629-1-hello@bryanbrattlof.com>
+References: <20210412140054.27629-1-hello@bryanbrattlof.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Mon, Apr 12, 2021 at 02:01:49PM +0000, Bryan Brattlof wrote:
+>
+>The if2 adapter is defined in rtw_dvr_init() and in the dvobj_priv
+>structure but never used anywhere in the driver. This will remove all
+>definitions of if2
+>
+>Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+>---
+> drivers/staging/rtl8723bs/include/drv_types.h |  1 -
+> drivers/staging/rtl8723bs/os_dep/sdio_intf.c  | 10 ++++------
+> 2 files changed, 4 insertions(+), 7 deletions(-)
+>
+>diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/stagi=
+ng/rtl8723bs/include/drv_types.h
+>index cec8d5ac0e2e..35882dc2654e 100644
+>--- a/drivers/staging/rtl8723bs/include/drv_types.h
+>+++ b/drivers/staging/rtl8723bs/include/drv_types.h
+>@@ -269,7 +269,6 @@ struct cam_entry_cache {
+> struct dvobj_priv {
+> =09/*-------- below is common data --------*/
+> =09struct adapter *if1; /* PRIMARY_ADAPTER */
+>-=09struct adapter *if2; /* SECONDARY_ADAPTER */
+>
+> =09s32=09processing_dev_remove;
+>
+>diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/stagin=
+g/rtl8723bs/os_dep/sdio_intf.c
+>index 2b61a4bdd8a1..3545cb6ef886 100644
+>--- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+>+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+>@@ -381,7 +381,7 @@ static int rtw_drv_init(
+> =09const struct sdio_device_id *id)
+> {
+> =09int status =3D _FAIL;
+>-=09struct adapter *if1 =3D NULL, *if2 =3D NULL;
+>+=09struct adapter *if1 =3D NULL;
+> =09struct dvobj_priv *dvobj;
+>
+> =09dvobj =3D sdio_dvobj_init(func);
+>@@ -395,17 +395,15 @@ static int rtw_drv_init(
+> =09/* dev_alloc_name && register_netdev */
+> =09status =3D rtw_drv_register_netdev(if1);
+> =09if (status !=3D _SUCCESS)
+>-=09=09goto free_if2;
+>+=09=09goto free_if1;
+>
+> =09if (sdio_alloc_irq(dvobj) !=3D _SUCCESS)
+>-=09=09goto free_if2;
+>+=09=09goto free_if1;
+>
+> =09rtw_ndev_notifier_register();
+> =09status =3D _SUCCESS;
+>
+>-free_if2:
+>-=09if (status !=3D _SUCCESS && if2) {
+>-=09}
+>+free_if1:
+> =09if (status !=3D _SUCCESS && if1) {
+> =09=09rtw_sdio_if1_deinit(if1);
+> =09}
+>--=20
+>2.27.0
+>
 
-On Mon, 2021-04-12 at 07:45 -0400, Alexander Aring wrote:
-> Hi,
-> 
-> On Mon, 12 Apr 2021 at 06:58, Pavel Skripkin <paskripkin@gmail.com>
-> wrote:
-> > 
-> > syzbot reported WARNING in ieee802154_del_device. The problem
-> > was in uninitialized mutex. In case of NL802154_IFTYPE_MONITOR
-> > mutex won't be initialized, but ieee802154_del_device() accessing
-> > it.
-> > 
-> > Reported-by: syzbot+bf8b5834b7ec229487ce@syzkaller.appspotmail.com
-> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> > ---
-> >  net/mac802154/iface.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/net/mac802154/iface.c b/net/mac802154/iface.c
-> > index 1cf5ac09edcb..be8d2a02c882 100644
-> > --- a/net/mac802154/iface.c
-> > +++ b/net/mac802154/iface.c
-> > @@ -599,6 +599,7 @@ ieee802154_setup_sdata(struct
-> > ieee802154_sub_if_data *sdata,
-> > 
-> >                 break;
-> >         case NL802154_IFTYPE_MONITOR:
-> > +               mutex_init(&sdata->sec_mtx);
-> >                 sdata->dev->needs_free_netdev = true;
-> >                 sdata->dev->netdev_ops = &mac802154_monitor_ops;
-> >                 wpan_dev->promiscuous_mode = true;
-> 
-> yes that will fix the issue, but will let the user notify that
-> setting
-> any security setting is supported by monitors which is not the case.
-> There are patches around which should return -EOPNOTSUPP for
-> monitors.
-> However we might support it in future to let the kernel encrypt air
-> frames, but this isn't supported yet and the user should be aware
-> that
-> it isn't.
-> 
+Nack. There is a merge conflict when updating to next-20210412. I'll=20
+resend v2 after I resolve the conflict.
 
-Thank you for your feedback. I am still not familiar with net internals
-yet :) Next time I ll try to go deeper. Thanks!
-
-> - Alex
-
-With regards,
-Pavel Skripkin
-
+--
+~Bryan
 
