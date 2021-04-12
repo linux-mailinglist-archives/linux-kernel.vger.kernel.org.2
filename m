@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669F135B860
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9C4235B862
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 04:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236372AbhDLCAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 22:00:10 -0400
-Received: from ozlabs.org ([203.11.71.1]:55537 "EHLO ozlabs.org"
+        id S236383AbhDLCBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 22:01:55 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11707 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235543AbhDLCAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 22:00:09 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FJX430Z5bz9sW0;
-        Mon, 12 Apr 2021 11:59:46 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618192790;
-        bh=6KGoMZOipkjgLvY90G4k7+1g3YVKH18Rop0rlEB1lvU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=abOWwMf1zo+XbYWczVMv1RypWHkK7nzOmeOjLbq1tMqJTX730iRkeVip5Wo/iW+ok
-         e0P4GjZm2QmkSqI8z1kBwEL85zCjqUrFVpKres05n2mIm6w5fxnmEpe96SWGpu7nqP
-         LS/deU8zxMdrUfipUdFhGWVOStmPElCWbmJFaUgeVsbxG5w0ESSOup2I2fh9UfNs0z
-         Ee8qvDw7xqcWdTp0/6y8YWGIUqOAfaK2RiF57izPlgaxRsj41SsHh9YeCwBwREaY9N
-         FZnDcIg6472+emOZuHWmktoqlyRs5gfWgFQxorLY2bfdJyrAp1HvQZ8ZwnjDpEf53W
-         bFqEoyZOyGG4w==
-Date:   Mon, 12 Apr 2021 11:59:45 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Al Viro <viro@ZenIV.linux.org.uk>, David Sterba <dsterba@suse.cz>
-Cc:     David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: linux-next: manual merge of the vfs tree with the btrfs tree
-Message-ID: <20210412115945.2f2c3485@canb.auug.org.au>
+        id S235543AbhDLCBx (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 22:01:53 -0400
+IronPort-SDR: 9yroIMTLsRBYzKEhkx4nkWTu3DjzE5Y2LjMioZu+zsK/Cn/6pSfDF2naGPVPmDCmVjkLKXldVf
+ QoBHhecjmVsg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="214551143"
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="214551143"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 19:01:35 -0700
+IronPort-SDR: gQy0LhDHM+J5x278/CsruSjKQmU3l9RVn25wXZ4Vs9GurjDZGI3NQWaFizUdbjNlccMj0JM/gU
+ mDti7+eQy+bw==
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="451229238"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 19:01:33 -0700
+Subject: Re: [PATCH v3 11/27] perf pmu: Support 'cycles' and 'branches' inside
+ hybrid PMU
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210329070046.8815-1-yao.jin@linux.intel.com>
+ <20210329070046.8815-12-yao.jin@linux.intel.com> <YHBbJEKjE3DuPvZZ@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <a9a2f035-5b5a-be3c-af75-5fffee650a24@linux.intel.com>
+Date:   Mon, 12 Apr 2021 10:01:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gc6DPT+Gqa21ZyyF5kh5Jnp";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <YHBbJEKjE3DuPvZZ@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gc6DPT+Gqa21ZyyF5kh5Jnp
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Jiri,
 
-Hi all,
+On 4/9/2021 9:48 PM, Jiri Olsa wrote:
+> On Mon, Mar 29, 2021 at 03:00:30PM +0800, Jin Yao wrote:
+>> On hybrid platform, user may want to enable the hardware event
+>> only on one PMU. So following syntax is supported:
+>>
+>> cpu_core/<hardware event>/
+>> cpu_atom/<hardware event>/
+>>
+>>    # perf stat -e cpu_core/cpu-cycles/ -a -- sleep 1
+>>
+>>     Performance counter stats for 'system wide':
+>>
+>>             6,049,336      cpu_core/cpu-cycles/
+>>
+>>           1.003577042 seconds time elapsed
+>>
+>> It enables the event 'cpu-cycles' only on cpu_core pmu.
+>>
+>> But for 'cycles' and 'branches', the syntax doesn't work.
+> 
+> because the alias is not there.. but there's:
+>    cpu/cpu-cycles/
+>    cpu/branch-instructions/
+> 
+> doing the same thing..  what's wrong with that?
+> 
+> I have a feeling we discussed this in the previous
+> version.. did I give up? ;-)
+> 
 
-Today's linux-next merge of the vfs tree got a conflict in:
+Yes, we discussed this in previous threads. :)
 
-  fs/btrfs/ioctl.c
+Now I'm fine to keep the original behavior. Because the syntax 'cpu/cycles/' and 'cpu/branches/' are 
+not supported by current perf.
 
-between commit:
+> SNIP
+> 
+>> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
+>> index beff29981101..72e5ae5e868e 100644
+>> --- a/tools/perf/util/pmu.c
+>> +++ b/tools/perf/util/pmu.c
+>> @@ -916,6 +916,35 @@ static int pmu_max_precise(const char *name)
+>>   	return max_precise;
+>>   }
+>>   
+>> +static void perf_pmu__add_hybrid_aliases(struct list_head *head)
+>> +{
+>> +	static struct pmu_event pme_hybrid_fixup[] = {
+>> +		{
+>> +			.name = "cycles",
+>> +			.event = "event=0x3c",
+>> +		},
+>> +		{
+>> +			.name = "branches",
+>> +			.event = "event=0xc4",
+>> +		},
+>> +		{
+>> +			.name = 0,
+>> +			.event = 0,
+>> +		},
+> 
+> if you really need to access these 2 events with special name,
+> why not add it through the json.. let's not have yet another
+> place that defines aliases ... also this should be model specific
+> no?
+> 
 
-  2911da32d543 ("btrfs: use btrfs_inode_lock/btrfs_inode_unlock inode lock =
-helpers")
+Yes, defining in json is a good idea if we really need to support 'cpu/cycles/' and 'cpu/branches/'.
 
-from the btrfs tree and commit:
+Anyway, I will drop this patch in next version.
 
-  d9b32b140987 ("btrfs: convert to fileattr")
+Thanks
+Jin Yao
 
-from the vfs tree.
-
-I fixed it up (I used the vfs tree version (which removed inode_lock()
-in various places) and can carry the fix as necessary. This is now fixed
-as far as linux-next is concerned, but any non trivial conflicts should
-be mentioned to your upstream maintainer when your tree is submitted for
-merging.  You may also want to consider cooperating with the maintainer
-of the conflicting tree to minimise any particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gc6DPT+Gqa21ZyyF5kh5Jnp
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBzqZEACgkQAVBC80lX
-0Gy4Gwf/actIlV7I3h5Oi75NlBgId8+ZIutZImV5qau8DDdzTyIoESodNaPtJ+l5
-1fOOU6Xs5udfI7OlmmvfRIzCFufcg1StjECJ6NtssqaxmxXXFk2/YyHKI8ixxTPJ
-R8VoVsxB2UMWfLHapPU3+NKw5AHMc5k8TaBQkQNcfbVyX5/NXMwgRQO0cIZmmtjQ
-vGM1iCUv/pzSsWBeOS1VTw6Gl5BKtIomEztRq/whvC63TcjdAhdDzW9dJl0o5jQn
-ImTIl/Ig8tSfM3bG71G8AItk9l6tDm3/u3D2xORgeSCSEbgmJCYkZXIfJaLOStO2
-+4dc57jkkMGikIn6z1lhx79wks2jag==
-=S+LU
------END PGP SIGNATURE-----
-
---Sig_/gc6DPT+Gqa21ZyyF5kh5Jnp--
+> jirka
+> 
