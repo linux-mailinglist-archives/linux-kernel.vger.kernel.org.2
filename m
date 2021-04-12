@@ -2,194 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B88A335D2AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:47:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1D0B35D2B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240363AbhDLVrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 17:47:23 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41804 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238172AbhDLVrU (ORCPT
+        id S245745AbhDLVty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 17:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245392AbhDLVto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 17:47:20 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618264020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O3ghyb2W8BLIZ05yGXW2dF3hyTFm2kpNfuX26M7+CeU=;
-        b=0JND/f36w2AlnIm7iCrU9za65squcC+wrt1Q3PvUa6fd/cgtTG6U+dk5ATJq2PwANl5VU0
-        nCRl1q4YyzBri2+HCWXlYHhS7Ow9z1OobM6ynvLMup6SS6i0Icg4I8/BFmE5uNBH/xY5eH
-        l5GyYhl7/i2Mswr/70UimbZgyBB5qnlcoEFW1MFS1KSk39tlHH2ILhSM5bsjC7uxzr2X0p
-        EMgE1XQprhYKLymJqLHI4JNLbBwvLqLDlV/LMDNjgg6YpcabDdnobIcgIxnq4M9Uj2BhpW
-        e4aGx6QWPmGXSr6ICJr1+B3KJSvQlGF4kW+oo6AoCImjMSR9jcN6ewKfszb0Zw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618264020;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=O3ghyb2W8BLIZ05yGXW2dF3hyTFm2kpNfuX26M7+CeU=;
-        b=rcxiLqbVMct+y7fFhu/BCqI6vDfyqvCDbScwZAws9tJ0530I3iXq+ap64VCpHHWyCDnewO
-        M0+6US2qb8rZYBCQ==
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Subject: Re: [PATCH 02/11] mm/page_alloc: Convert per-cpu list protection to local_lock
-In-Reply-To: <20210412115612.GX3697@techsingularity.net>
-References: <20210407202423.16022-1-mgorman@techsingularity.net> <20210407202423.16022-3-mgorman@techsingularity.net> <YG7gV7yAEEjOcQZY@hirez.programming.kicks-ass.net> <20210408174244.GG3697@techsingularity.net> <YG/2scd9ADdrIyCM@hirez.programming.kicks-ass.net> <20210409075939.GJ3697@techsingularity.net> <YHAPOKPTgJcLuDJl@hirez.programming.kicks-ass.net> <20210409133256.GN3697@techsingularity.net> <YHCjK8OOhmxTbKu0@hirez.programming.kicks-ass.net> <20210412115612.GX3697@techsingularity.net>
-Date:   Mon, 12 Apr 2021 23:47:00 +0200
-Message-ID: <87lf9nyy3v.ffs@nanos.tec.linutronix.de>
+        Mon, 12 Apr 2021 17:49:44 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A51AC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 14:49:26 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id f17so16763124lfu.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 14:49:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=W9t0bWXPElaEb1YaSf5S5bNbS7I896kBixhyn7sSIcU=;
+        b=Py5R6gWiEi4+VzZN5iUGDXg7zkCfflE4o32Bl6/pu7JFW32sP50k83OubADPjAPnoQ
+         yyfz3qXc7gnixUYIAhE/Dj3zM0ZEeOJLsohFHzLyW9NtKSLWpdn5BTq9ZcsyWaINhzoK
+         M6kk19GGerSqL8LQpG6wR4yecKOGYgTA7sa4QEkB7E0rV9xPXYxyllJL66n1D6OFSfOm
+         4TXNmfVy60xwwu4TzlofV2cdm/xKF8/QUsLyVFDdn2WznUMRjm7GHiXk52ypJRligFz9
+         lqpjzl23hnKqhGPOJVMwlDM3lTJQFQGZwbnnMFcFZ56Lgm3fN81RRgkpYk4WobWHJy6X
+         VBBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=W9t0bWXPElaEb1YaSf5S5bNbS7I896kBixhyn7sSIcU=;
+        b=l+cb89NJC9Jm9thVYyhfwAbsDuANHQWD0N7rQXLDaMqBySzQAUdtmOXKWbrb66Nm1t
+         aXFIGU1MuSxlXD5+0xak5RBjX8sYGqlq47lr1IAj2rol7gazGBifC8sX/5gUbSOqFP8+
+         uXUlNfXf7VoeXX0y821noH3iFjt9KEpy4Nu26hjf+5i4jm0DAqqundb37SJJnz+KKw6a
+         6dgmN3W0/h+GeS7zxNSV0sEagv/t97EJaUeMxxwzXbw925usjwr0GaGTpUuEsTwQTFmK
+         iwpfNZN2zlvjNd+J8NU4GAbg0Vd5JGNUn2/0B+gNd4KVJet4JPBJUksEp13EP3kyUy1j
+         ndjg==
+X-Gm-Message-State: AOAM532pZGYGTMGTzdjJH10B7H8MTeZfeql9VG9INI8tceuNbsUmLn7r
+        mKDqlThqQZDq0X5XOAB2yYFgzkd4ZMHwRbJd
+X-Google-Smtp-Source: ABdhPJzTKdOqsPYjBhKMknaNiqORq2Bq4yMfuUbt1KLw6S1vcqY0JBv/SFrxY7PEr0TZfHtWF4PAdA==
+X-Received: by 2002:a19:3849:: with SMTP id d9mr1456955lfj.388.1618264164358;
+        Mon, 12 Apr 2021 14:49:24 -0700 (PDT)
+Received: from wkz-x280 (h-90-88.A259.priv.bahnhof.se. [212.85.90.88])
+        by smtp.gmail.com with ESMTPSA id a8sm2644579lfr.174.2021.04.12.14.49.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 14:49:23 -0700 (PDT)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Marek Behun <marek.behun@nic.cz>,
+        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        zhang kai <zhangkaiheb@126.com>,
+        Weilong Chen <chenweilong@huawei.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Di Zhu <zhudi21@huawei.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
+In-Reply-To: <20210412213402.vwvon2fdtzf4hnrt@skbuf>
+References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf> <878s5nllgs.fsf@waldekranz.com> <20210412213045.4277a598@thinkpad> <8735vvkxju.fsf@waldekranz.com> <20210412213402.vwvon2fdtzf4hnrt@skbuf>
+Date:   Mon, 12 Apr 2021 23:49:22 +0200
+Message-ID: <87zgy3jhr1.fsf@waldekranz.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12 2021 at 12:56, Mel Gorman wrote:
-> On Fri, Apr 09, 2021 at 08:55:39PM +0200, Peter Zijlstra wrote:
-> I'll update the changelog and comment accordingly. I'll decide later
-> whether to leave it or move the location of the lock at the end of the
-> series. If the patch is added, it'll either incur the double lookup (not
-> that expensive, might be optimised by the compiler) or come up with a
-> helper that takes the lock and returns the per-cpu structure. The double
-> lookup probably makes more sense initially because there are multiple
-> potential users of a helper that says "pin to CPU, lookup, lock and return
-> a per-cpu structure" for both IRQ-safe and IRQ-unsafe variants with the
-> associated expansion of the local_lock API. It might be better to introduce
-> such a helper with multiple users converted at the same time and there are
-> other local_lock users in preempt-rt that could do with upstreaming first.
+On Tue, Apr 13, 2021 at 00:34, Vladimir Oltean <olteanv@gmail.com> wrote:
+> On Mon, Apr 12, 2021 at 11:22:45PM +0200, Tobias Waldekranz wrote:
+>> On Mon, Apr 12, 2021 at 21:30, Marek Behun <marek.behun@nic.cz> wrote:
+>> > On Mon, 12 Apr 2021 14:46:11 +0200
+>> > Tobias Waldekranz <tobias@waldekranz.com> wrote:
+>> >
+>> >> I agree. Unless you only have a few really wideband flows, a LAG will
+>> >> typically do a great job with balancing. This will happen without the
+>> >> user having to do any configuration at all. It would also perform well
+>> >> in "router-on-a-stick"-setups where the incoming and outgoing port is
+>> >> the same.
+>> >
+>> > TLDR: The problem with LAGs how they are currently implemented is that
+>> > for Turris Omnia, basically in 1/16 of configurations the traffic would
+>> > go via one CPU port anyway.
+>> >
+>> >
+>> >
+>> > One potencial problem that I see with using LAGs for aggregating CPU
+>> > ports on mv88e6xxx is how these switches determine the port for a
+>> > packet: only the src and dst MAC address is used for the hash that
+>> > chooses the port.
+>> >
+>> > The most common scenario for Turris Omnia, for example, where we have 2
+>> > CPU ports and 5 user ports, is that into these 5 user ports the user
+>> > plugs 5 simple devices (no switches, so only one peer MAC address for
+>> > port). So we have only 5 pairs of src + dst MAC addresses. If we simply
+>> > fill the LAG table as it is done now, then there is 2 * 0.5^5 = 1/16
+>> > chance that all packets would go through one CPU port.
+>> >
+>> > In order to have real load balancing in this scenario, we would either
+>> > have to recompute the LAG mask table depending on the MAC addresses, or
+>> > rewrite the LAG mask table somewhat randomly periodically. (This could
+>> > be in theory offloaded onto the Z80 internal CPU for some of the
+>> > switches of the mv88e6xxx family, but not for Omnia.)
+>> 
+>> I thought that the option to associate each port netdev with a DSA
+>> master would only be used on transmit. Are you saying that there is a
+>> way to configure an mv88e6xxx chip to steer packets to different CPU
+>> ports depending on the incoming port?
+>> 
+>> The reason that the traffic is directed towards the CPU is that some
+>> kind of entry in the ATU says so, and the destination of that entry will
+>> either be a port vector or a LAG. Of those two, only the LAG will offer
+>> any kind of balancing. What am I missing?
+>> 
+>> Transmit is easy; you are already in the CPU, so you can use an
+>> arbitrarily fancy hashing algo/ebpf classifier/whatever to load balance
+>> in that case.
+>
+> Say a user port receives a broadcast frame. Based on your understanding
+> where user-to-CPU port assignments are used only for TX, which CPU port
+> should be selected by the switch for this broadcast packet, and by which
+> mechanism?
 
-We had such helpers in RT a while ago but it turned into an helper
-explosion pretty fast. But that was one of the early versions of local
-locks which could not be embedded into a per CPU data structure due to
-raisins (my stupidity).
+AFAIK, the only option available to you (again, if there is no LAG set
+up) is to statically choose one CPU port per entry. But hopefully Marek
+can teach me some new tricks!
 
-But with the more thought out approach of today we can have (+/- the
-obligatory naming bikeshedding):
+So for any known (since the broadcast address is loaded in the ATU it is
+known) destination (b/m/u-cast), you can only "load balance" based on
+the DA. You would also have to make sure that unknown unicast and
+unknown multicast is only allowed to egress one of the CPU ports.
 
---- a/include/linux/local_lock.h
-+++ b/include/linux/local_lock.h
-@@ -51,4 +51,35 @@
- #define local_unlock_irqrestore(lock, flags)			\
- 	__local_unlock_irqrestore(lock, flags)
- 
-+/**
-+ * local_lock_get_cpu_ptr - Acquire a per CPU local lock and return
-+ *			    a pointer to the per CPU data which
-+ *			    contains the local lock.
-+ * @pcp:	Per CPU data structure
-+ * @lock:	The local lock member of @pcp
-+ */
-+#define local_lock_get_cpu_ptr(pcp, lock)			\
-+	__local_lock_get_cpu_ptr(pcp, typeof(*(pcp)), lock)
-+
-+/**
-+ * local_lock_irq_get_cpu_ptr - Acquire a per CPU local lock, disable
-+ *				interrupts and return a pointer to the
-+ *				per CPU data which contains the local lock.
-+ * @pcp:	Per CPU data structure
-+ * @lock:	The local lock member of @pcp
-+ */
-+#define local_lock_irq_get_cpu_ptr(pcp, lock)			\
-+	__local_lock_irq_get_cpu_ptr(pcp, typeof(*(pcp)), lock)
-+
-+/**
-+ * local_lock_irqsave_get_cpu_ptr - Acquire a per CPU local lock, save and
-+ *				    disable interrupts and return a pointer to
-+ *				    the CPU data which contains the local lock.
-+ * @pcp:	Per CPU data structure
-+ * @lock:	The local lock member of @pcp
-+ * @flags:	Storage for interrupt flags
-+ */
-+#define local_lock_irqsave_get_cpu_ptr(pcp, lock, flags)	\
-+	__local_lock_irqsave_get_cpu_ptr(pcp, typeof(*(pcp)), lock, flags)
-+
- #endif
---- a/include/linux/local_lock_internal.h
-+++ b/include/linux/local_lock_internal.h
-@@ -91,3 +91,33 @@ static inline void local_lock_release(lo
- 		local_lock_release(this_cpu_ptr(lock));		\
- 		local_irq_restore(flags);			\
- 	} while (0)
-+
-+#define __local_lock_get_cpu_ptr(pcp, type, lock)		\
-+	({							\
-+		type *__pcp;					\
-+								\
-+		preempt_disable();				\
-+		__pcp = this_cpu_ptr(pcp);			\
-+		local_lock_acquire(&__pcp->lock);		\
-+		__pcp;						\
-+	})
-+
-+#define __local_lock_irq_get_cpu_ptr(pcp, type, lock)		\
-+	({							\
-+		type *__pcp;					\
-+								\
-+		local_irq_disable();				\
-+		__pcp = this_cpu_ptr(pcp);			\
-+		local_lock_acquire(&__pcp->lock);		\
-+		__pcp;						\
-+	})
-+
-+#define __local_lock_irqsave_get_cpu_ptr(pcp, type, lock, flags)\
-+	({							\
-+		type *__pcp;					\
-+								\
-+		local_irq_save(flags);				\
-+		__pcp = this_cpu_ptr(pcp);			\
-+		local_lock_acquire(&__pcp->lock);		\
-+		__pcp;						\
-+	})
-
-
-and RT will then change that to:
-
---- a/include/linux/local_lock_internal.h
-+++ b/include/linux/local_lock_internal.h
-@@ -96,7 +96,7 @@ static inline void local_lock_release(lo
- 	({							\
- 		type *__pcp;					\
- 								\
--		preempt_disable();				\
-+		ll_preempt_disable();				\
- 		__pcp = this_cpu_ptr(pcp);			\
- 		local_lock_acquire(&__pcp->lock);		\
- 		__pcp;						\
-@@ -106,7 +106,7 @@ static inline void local_lock_release(lo
- 	({							\
- 		type *__pcp;					\
- 								\
--		local_irq_disable();				\
-+		ll_local_irq_disable();				\
- 		__pcp = this_cpu_ptr(pcp);			\
- 		local_lock_acquire(&__pcp->lock);		\
- 		__pcp;						\
-@@ -116,7 +116,7 @@ static inline void local_lock_release(lo
- 	({							\
- 		type *__pcp;					\
- 								\
--		local_irq_save(flags);				\
-+		ll_local_irq_save(flags);			\
- 		__pcp = this_cpu_ptr(pcp);			\
- 		local_lock_acquire(&__pcp->lock);		\
- 		__pcp;						\
-
-
-where ll_xxx is defined as xxx for non-RT and on RT all of them
-get mapped to migrate_disable().
-
-Thoughts?
-
-Thanks,
-
-        tglx
+If you have a LAG OTOH, you could include all CPU ports in the port
+vectors of those same entries. The LAG mask would then do the final
+filtering so that you only send a single copy to the CPU.
