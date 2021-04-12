@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD9FC35C3E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6F835C32E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239315AbhDLKZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:25:18 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:37829 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239256AbhDLKZM (ORCPT
+        id S242020AbhDLJ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:58:12 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:37593 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244612AbhDLJ4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:25:12 -0400
-Received: from twspam01.aspeedtech.com (localhost [127.0.0.2] (may be forged))
-        by twspam01.aspeedtech.com with ESMTP id 13C9jhwX096735;
-        Mon, 12 Apr 2021 17:45:43 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 13C9iS0q096463;
-        Mon, 12 Apr 2021 17:44:29 +0800 (GMT-8)
-        (envelope-from billy_tsai@aspeedtech.com)
-Received: from BillyTsai-pc.aspeed.com (192.168.2.149) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 12 Apr
- 2021 17:54:51 +0800
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     <lee.jones@linaro.org>, <robh+dt@kernel.org>, <joel@jms.id.au>,
-        <andrew@aj.id.au>, <thierry.reding@gmail.com>,
-        <u.kleine-koenig@pengutronix.de>, <p.zabel@pengutronix.de>,
-        <billy_tasi@aspeedtech.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-aspeed@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pwm@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH 4/4] pwm: Add support for aspeed pwm controller
-Date:   Mon, 12 Apr 2021 17:54:57 +0800
-Message-ID: <20210412095457.15095-5-billy_tsai@aspeedtech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210412095457.15095-1-billy_tsai@aspeedtech.com>
-References: <20210412095457.15095-1-billy_tsai@aspeedtech.com>
+        Mon, 12 Apr 2021 05:56:22 -0400
+Received: from mail-wm1-f48.google.com ([209.85.128.48]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MrQR7-1lrm6z072V-00oWTe; Mon, 12 Apr 2021 11:55:58 +0200
+Received: by mail-wm1-f48.google.com with SMTP id k128so6426596wmk.4;
+        Mon, 12 Apr 2021 02:55:57 -0700 (PDT)
+X-Gm-Message-State: AOAM533r1rofXj88LVWJfah19XlDU6BtZ0B1yeutMbGESfkPn1Et7hVf
+        AIrdTACXZyzFyre5JlfjGvKg/BUppQ9zoWHcUJU=
+X-Google-Smtp-Source: ABdhPJzTfxxaxsVCZqgwljY94HrF+v5FbHKG19HOl8IGqXY6e9UlqBjrbb/hk/qI5QxcbCRl2V2ekh7/KCvv8xos6no=
+X-Received: by 2002:a7b:c14a:: with SMTP id z10mr3077982wmi.75.1618221357638;
+ Mon, 12 Apr 2021 02:55:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [192.168.2.149]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 13C9iS0q096463
+References: <20210412085545.2595431-1-hch@lst.de> <20210412085545.2595431-2-hch@lst.de>
+In-Reply-To: <20210412085545.2595431-2-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 12 Apr 2021 11:55:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2MSJarPMfJ8RrSKDMXte3KQec=+GQ-LzV6HB7-Nm1FcQ@mail.gmail.com>
+Message-ID: <CAK8P3a2MSJarPMfJ8RrSKDMXte3KQec=+GQ-LzV6HB7-Nm1FcQ@mail.gmail.com>
+Subject: Re: [PATCH 1/5] uapi: remove the unused HAVE_ARCH_STRUCT_FLOCK64 define
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:cQhKiyfxzUY6mYQRHUjOusziZyiZ2ECTHu0hWevLcqyEW8Ur3qo
+ MJ8Fmc6YsrzdC+sHyrk/5t1UF52iImlAYS/KBm5dnbPE75XGl9a62cUTIVY5m3X4evCOA9s
+ 2PYnWr4aV8aDF2PLQJiYCmCQn5kErMbNxRpMCVhJURPr32Xo0oCxjT0IHaHTk3gynHsX3di
+ lZdRgN3PWY0Wx8xYimvrA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:uC/Hyc4Vk1k=:+Wd3nZw1uJebz60gCPd265
+ PXuT1mRaIPDr01XZCfSLjAmewK6VGt+vkboVDxrmNWkuNM7WKUT6ekADhcQpoBrtpVFzQ5DaX
+ nrI9B/NbsL0qgkd00XB1NrDlteYOhm5HyLTMRIBMsruhea1AhkMqU3su44Tf0wyu1LhJElCkq
+ /PTJTE2RF6IKklSSiNT5qHGxCIr7Jj2Z0ZAmbry53T3vSjslalVOdxE173frdOACMogM6gyjU
+ dGKkNlN57I71RpJktBuo7y4g8Pc/ighN2BTVnofrcypcvbpAD2p4FunLpmHAWKznh76kAF+Gx
+ 2oflh5ys6Iv+HqsxCp8tRqS5NR0PXimFoVeJnXND0ZmKAOYixinfgHyhLYwvWnVRxvoFBVgyd
+ S6yM5OzdX4Iqy6/vKQ5qbaq0NZEFx5K3TOS7BXqUwe8ZP0FsQwCtkGBnSYhyQByFlgdeEvAf6
+ nDi9VMf9r4FwxNWuvrfFhG9Qd3ft5m5x0gg/ru/OPjEWHsYDjnjEOX3+O0SSVeJBK3aQINs7s
+ cn8cD6gzO8mMi5kmpU7vOlOutdu0lH/mn/WG6Ga14TqNahfIEt6qlWeV7ZNDYvzVBksgiDrzl
+ QHOIymPJGKy1z2A6UHrLeF/i0WmI3wlUUr
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the pwm controller which can be found at aspeed ast2600
-soc. This driver is part function of multi-funciton of device "pwm-tach
-controller".
+On Mon, Apr 12, 2021 at 10:55 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
----
- drivers/pwm/Kconfig  | 6 ++++++
- drivers/pwm/Makefile | 1 +
- 2 files changed, 7 insertions(+)
+The patch looks good, but I'd like to see a description for each one.
+How about:
 
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 63be5362fd3a..947ed642debe 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -42,6 +42,12 @@ config PWM_DEBUG
- 	  It is expected to introduce some runtime overhead and diagnostic
- 	  output to the kernel log, so only enable while working on a driver.
- 
-+config PWM_ASPEED_G6
-+	tristate "ASPEEDG6 PWM support"
-+	help
-+	  This driver provides support for ASPEED G6 PWM controllers.
-+
-+
- config PWM_AB8500
- 	tristate "AB8500 PWM support"
- 	depends on AB8500_CORE && ARCH_U8500
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index cbdcd55d69ee..4a74c68547bf 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_PWM)		+= core.o
- obj-$(CONFIG_PWM_SYSFS)		+= sysfs.o
-+obj-$(CONFIG_PWM_ASPEED_G6)	+= pwm-aspeed-g6.o
- obj-$(CONFIG_PWM_AB8500)	+= pwm-ab8500.o
- obj-$(CONFIG_PWM_ATMEL)		+= pwm-atmel.o
- obj-$(CONFIG_PWM_ATMEL_HLCDC_PWM)	+= pwm-atmel-hlcdc.o
--- 
-2.25.1
+| The check was added when Stephen Rothwell created the file, but
+| no architecture ever defined it.
 
+        Arnd
