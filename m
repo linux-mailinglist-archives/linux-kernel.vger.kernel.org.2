@@ -2,135 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5993335C594
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F67B35C59B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240571AbhDLLse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47474 "EHLO
+        id S240603AbhDLLt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238482AbhDLLs3 (ORCPT
+        with ESMTP id S238482AbhDLLtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:48:29 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E87C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 04:48:11 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id m7so4152591ljp.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 04:48:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MUFubz1j8LGr9ATXYl9u2QKnAieDNtMiSF5oBCM5mI0=;
-        b=a0rgbYleRMInpz530yuepu/ja7ke0KfZ9DzB26VrVHb8zOggeKazMMs8gcjko2zqSJ
-         +akGiprarmQnYtIUU+aMkcon92Qh7r7XlCdU77amFksT4gV8NVYQ4k2Xl2lxRwylCO6b
-         7DHq69AIYJXhAiaH6RTWDjQmzeHk1aBfqQe3xFUnSNRlSmoHlr2RRkpz9iqct4E9IYSa
-         2j0bcOU/xVjg3NAIS9MxbOCWTouLGHqOWFWDGASfUM936sBx+hTUbNAAR4XGY2YOlZd4
-         eE4M4vAYwWd44PxI3Z/T4qRiGQuSobRZqbPTULsYoV95sgNCc9QGBvIA4X6epHrfYAqB
-         aXVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MUFubz1j8LGr9ATXYl9u2QKnAieDNtMiSF5oBCM5mI0=;
-        b=LalJxg8VK7aQME8SJ6eDSNKyD/H3mZayA1UA5rDuU+nA5dGQnD50G9S1TK4tDAv/3n
-         I4fxfSb3NvBI8EcE8AiicYv63SW8N5JN+lWiUlqG3/PCkIXF/g9PwbvodhUIkPYxWyIb
-         qowuiS9DpO8jzeM8pga09E3efryz6Oe+nJ+a1cxJxl/TZB8OUEEU9Ubr9ULgSi3R6I03
-         rDGAQKwv3hfnrjZLLO7QYkh79FPX+QORXLFUlaGItEEmMPa5hOkVUPZU1OelbJaHcZhh
-         I910N9Bf0yazuq5mIjI9xtkcqzEbCQb0joJlwJ153/Hoes1eiN8KcznI+8bERB56fDqe
-         p/UQ==
-X-Gm-Message-State: AOAM532VUwTmkB7euorSyTs0R73uvBlL7jZq6jzC3Gnj/WwutDg06yJK
-        MOfu1McqzNF7PJHzm525h7M0aYLnhM452B7w947uRA==
-X-Google-Smtp-Source: ABdhPJwYJtFNwwe4zEqxGrjI2C/7Btg87W2JCrAV2iwsB4JfrUIONAlcTaXG99VcqsQ9SrZIoj6IM9uMZPKgZrU/Kno=
-X-Received: by 2002:a2e:7001:: with SMTP id l1mr17872999ljc.200.1618228090192;
- Mon, 12 Apr 2021 04:48:10 -0700 (PDT)
+        Mon, 12 Apr 2021 07:49:24 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320FEC061574;
+        Mon, 12 Apr 2021 04:49:06 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f052100338fe73c52330fca.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:2100:338f:e73c:5233:fca])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CA25B1EC03CA;
+        Mon, 12 Apr 2021 13:49:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618228145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=FsqrOL3l5LXEPwYfRPsXmq+eeLShFhFarzUk0hvvlG0=;
+        b=B7ny3B62ddp4Rk9c0HWBOD+i4Zx/bORdlsugtojTDtXwRStfe/qSS6rxXxfVcxYoz+/uxl
+        nlrT+HhncCm8oG5EjfR8q2w4GZtjWjI8QfF9pv05uoZ95A8kMxp/ng9sdxFAkXdKg7m6zo
+        LDHSnlHW38Ul7gG/H15bJWcQl1C5gfA=
+Date:   Mon, 12 Apr 2021 13:49:01 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [RFC Part1 PATCH 13/13] x86/kernel: add support to validate
+ memory when changing C-bit
+Message-ID: <20210412114901.GB24283@zn.tnic>
+References: <20210324164424.28124-1-brijesh.singh@amd.com>
+ <20210324164424.28124-14-brijesh.singh@amd.com>
 MIME-Version: 1.0
-References: <20210407034927.16882-1-dinghao.liu@zju.edu.cn>
- <20210411160720.037c405c@jic23-huawei> <CACRpkdYrRi3pa6Gw4_Q+P=WYbv-a27FHmOupKVv5s=yU53RFWA@mail.gmail.com>
- <20210412111506.0000653c@Huawei.com>
-In-Reply-To: <20210412111506.0000653c@Huawei.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 12 Apr 2021 13:47:58 +0200
-Message-ID: <CACRpkdY9sDbVSjBULg3tV-Zpr_Tizd4HKeTG-NjCjUru=94QYQ@mail.gmail.com>
-Subject: Re: [PATCH] iio: light: gp2ap002: Fix rumtime PM imbalance on error
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Kangjie Lu <kjlu@umn.edu>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210324164424.28124-14-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:16 PM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
+On Wed, Mar 24, 2021 at 11:44:24AM -0500, Brijesh Singh wrote:
+> @@ -161,3 +162,108 @@ void __init early_snp_set_memory_shared(unsigned long vaddr, unsigned long paddr
+>  	 /* Ask hypervisor to make the memory shared in the RMP table. */
+>  	early_snp_set_page_state(paddr, npages, SNP_PAGE_STATE_SHARED);
+>  }
+> +
+> +static int snp_page_state_vmgexit(struct ghcb *ghcb, struct snp_page_state_change *data)
 
-> An example would be the bmc150_magn driver which does exactly the
-> same call sequence as this one, but without the reference count increment
-> and decrement.  Basically I want to know if there is a problem in
-> those other drivers that is being protected against here!
+That function name definitely needs changing. The
+vmgexit_page_state_change() one too. They're currenty confusing as hell
+and I can't know what each one does without looking at its function
+body.
 
-The bmc150_magn driver does not look like I would have done it.
+> +{
+> +	struct snp_page_state_header *hdr;
+> +	int ret = 0;
+> +
+> +	hdr = &data->header;
+> +
+> +	/*
+> +	 * The hypervisor can return before processing all the entries, the loop below retries
+> +	 * until all the entries are processed.
+> +	 */
+> +	while (hdr->cur_entry <= hdr->end_entry) {
 
-That said, I think it works, because the only thing it is calling is
-bmc150_magn_set_power_mode() and that seems stateless,
-just poking some regmap bits. The state is tracked by the driver
-AFAICT and we don't need pm_runtime_get_noresume() because
-it doesn't really matter if the pm_runtime_suspend() callback
-gets called immediately or randomly out of sync with what we are
-doing from this point.
+This doesn't make any sense: snp_set_page_state() builds a "set" of
+pages to change their state in a loop and this one iterates *again* over
+*something* which I'm not even clear on what.
 
-I would anyways patch it like the gp2ap002 driver because it
-is easier to follow the code. Including using only runtime PM
-att setting SET_SYSTEM_SLEEP_PM_OPS() to the
-pm_runtime_force_suspend and pm_runtime_force_resume
-functions, everything just get so much easier when you use
-only one type of PM and not two orthogonal ones.
+Is something setting cur_entry to end_entry eventually?
 
-drivers/iio/light/bh1780.c
-should be a good example of how to do it idiomatically
-because it was reviewed by Ulf Hansson who knows this
-runtime PM stuff better than me.
+In any case, why not issue those page state changes one-by-one in
+snp_set_page_state() or is it possible that HV can do a couple of
+them in one go so you have to poke it here until it sets cur_entry ==
+end_entry?
 
-A sequence like this:
+> +		ghcb_set_sw_scratch(ghcb, (u64)__pa(data));
 
-   pm_runtime_get_noresume(&client->dev);
-   pm_runtime_set_active(&client->dev);
-   pm_runtime_enable(&client->dev);
-   pm_runtime_set_autosuspend_delay(&client->dev, 5000);
-   pm_runtime_use_autosuspend(&client->dev);
-   pm_runtime_put(&client->dev);
+Why do you have to call that here for every loop iteration...
 
-is very nice because you can clearly see that it will not race
-and after the last put() unless something happens the
-runtime suspend will kick in after 5000 ms.
+> +		ret = vmgexit_page_state_change(ghcb, data);
 
-Likewise when disabling:
+.... and in that function too?!
 
-    pm_runtime_get_sync(&client->dev);
-    pm_runtime_put_noidle(&client->dev);
-    pm_runtime_disable(&client->dev);
+> +		/* Page State Change VMGEXIT can pass error code through exit_info_2. */
+> +		if (ret || ghcb->save.sw_exit_info_2)
+> +			break;
+> +	}
+> +
+> +	return ret;
 
-same thing: crystal clear there are no races, the device is
-definately runtime resumed and we can proceed to
-shut down resources explicitly after this point.
+You don't need that ret variable - just return value directly.
 
-If you then add:
+> +}
+> +
+> +static void snp_set_page_state(unsigned long paddr, unsigned int npages, int op)
+> +{
+> +	unsigned long paddr_end, paddr_next;
+> +	struct snp_page_state_change *data;
+> +	struct snp_page_state_header *hdr;
+> +	struct snp_page_state_entry *e;
+> +	struct ghcb_state state;
+> +	struct ghcb *ghcb;
+> +	int ret, idx;
+> +
+> +	paddr = paddr & PAGE_MASK;
+> +	paddr_end = paddr + (npages << PAGE_SHIFT);
+> +
+> +	ghcb = sev_es_get_ghcb(&state);
 
-SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-                                pm_runtime_force_resume)
+That function can return NULL.
 
-Now you have ordinary sleep PM for free. It will just
-force the same suspend/resume callbacks and they are
-guaranteed to be race free.
+> +	data = (struct snp_page_state_change *)ghcb->shared_buffer;
+> +	hdr = &data->header;
+> +	e = &(data->entry[0]);
 
-This doesn't work for everyone but surprisingly often this is
-what you want.
+So
 
-Yours,
-Linus Walleij
+	e = data->entry;
+
+?
+
+> +	memset(data, 0, sizeof (*data));
+> +
+> +	for (idx = 0; paddr < paddr_end; paddr = paddr_next) {
+
+As before, a while loop pls.
+
+> +		int level = PG_LEVEL_4K;
+
+Why does this needs to happen on each loop iteration? It looks to me you
+wanna do below:
+
+	e->pagesize = X86_RMP_PG_LEVEL(PG_LEVEL_4K);
+
+instead.
+
+> +
+> +		/* If we cannot fit more request then issue VMGEXIT before going further.  */
+				   any more requests
+
+No "we" pls.
+
+
+> +		if (hdr->end_entry == (SNP_PAGE_STATE_CHANGE_MAX_ENTRY - 1)) {
+> +			ret = snp_page_state_vmgexit(ghcb, data);
+> +			if (ret)
+> +				goto e_fail;
+
+WARN
+
+> +
+> +			idx = 0;
+> +			memset(data, 0, sizeof (*data));
+> +			e = &(data->entry[0]);
+> +		}
+
+The order of the operations in this function looks weird: what you
+should do is:
+
+	- clear stuff, memset etc.
+	- build shared buffer
+	- issue vmgexit
+
+so that you don't have the memset and e reinit twice and the flow can
+be more clear and you don't have two snp_page_state_vmgexit() function
+calls when there's a trailing set of entries which haven't reached
+SNP_PAGE_STATE_CHANGE_MAX_ENTRY.
+
+Maybe a double-loop or so.
+
+...
+
+> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
+> index 16f878c26667..19ee18ddbc37 100644
+> --- a/arch/x86/mm/pat/set_memory.c
+> +++ b/arch/x86/mm/pat/set_memory.c
+> @@ -27,6 +27,8 @@
+>  #include <asm/proto.h>
+>  #include <asm/memtype.h>
+>  #include <asm/set_memory.h>
+> +#include <asm/mem_encrypt.h>
+> +#include <asm/sev-snp.h>
+>  
+>  #include "../mm_internal.h"
+>  
+> @@ -2001,8 +2003,25 @@ static int __set_memory_enc_dec(unsigned long addr, int numpages, bool enc)
+>  	 */
+>  	cpa_flush(&cpa, !this_cpu_has(X86_FEATURE_SME_COHERENT));
+>  
+> +	/*
+> +	 * To maintain the security gurantees of SEV-SNP guest invalidate the memory before
+> +	 * clearing the encryption attribute.
+> +	 */
+
+Align that comment on 80 cols, just like the rest of the comments do in
+this file. Below too.
+
+> +	if (sev_snp_active() && !enc) {
+
+Push that sev_snp_active() inside the function. Below too.
+
+> +		ret = snp_set_memory_shared(addr, numpages);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>  	ret = __change_page_attr_set_clr(&cpa, 1);
+>  
+> +	/*
+> +	 * Now that memory is mapped encrypted in the page table, validate the memory range before
+> +	 * we return from here.
+> +	 */
+> +	if (!ret && sev_snp_active() && enc)
+> +		ret = snp_set_memory_private(addr, numpages);
+> +
+>  	/*
+>  	 * After changing the encryption attribute, we need to flush TLBs again
+>  	 * in case any speculative TLB caching occurred (but no need to flush
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
