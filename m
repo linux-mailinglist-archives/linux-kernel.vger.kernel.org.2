@@ -2,109 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B7A35D3D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4795135D3DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:21:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344045AbhDLXS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:18:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42240 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243394AbhDLXS4 (ORCPT
+        id S1344068AbhDLXVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:21:17 -0400
+Received: from fgw20-7.mail.saunalahti.fi ([62.142.5.81]:33136 "EHLO
+        fgw20-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240208AbhDLXVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:18:56 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618269515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CiWcf1nZomYLBbBIwqNf2tsBQROh3k5oQlX0lyDq8eA=;
-        b=eLjoHM4z41hA93TnjSLtAD67LfTb1omZnt0U13r5rVqueTG6PqcMBM9Wc4iLgV+psancAF
-        z6VM0opvYk/UUCRPW5kCE9/+NCVcwRrAQzqCF71wD5PD8Q7xQ4NJ61ccWPLRuoYHvJAt+/
-        A8OpjLCgJ41EhaCpMewN2dg586N6PXVq6sN0cv7Fat0ERWBxyFzEh/VLT5+uywTZY8/CIc
-        bvP+SAV5ltpSJans/hgrSKZ0mWnsdIk39IbnjmVnwU7QQ6pH/Lb5V877MFf0awi7IF4GKU
-        ABrMnMa/epL26U4AzXpGhOC0PTOm3qEpf7pE6V11as+W4Z4MOP1Tk3tc7DbHMw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618269515;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CiWcf1nZomYLBbBIwqNf2tsBQROh3k5oQlX0lyDq8eA=;
-        b=EWA8R/Lkt7ovItCODSeoICjMQggqMsZcsu8SmH2trT2MrU7cnBXKiSwclEsYO0PSdr2blq
-        J2n0oSCwKTAklAAQ==
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com, bigeasy@linutronix.de,
-        hch@infradead.org, npiggin@kernel.dk
-Subject: Re: bl_list and lockdep
-In-Reply-To: <20210412221536.GQ1990290@dread.disaster.area>
-References: <20210406123343.1739669-1-david@fromorbit.com> <20210406123343.1739669-4-david@fromorbit.com> <20210406132834.GP2531743@casper.infradead.org> <20210406212253.GC1990290@dread.disaster.area> <874kgb1qcq.ffs@nanos.tec.linutronix.de> <20210412221536.GQ1990290@dread.disaster.area>
-Date:   Tue, 13 Apr 2021 01:18:35 +0200
-Message-ID: <87fszvytv8.ffs@nanos.tec.linutronix.de>
+        Mon, 12 Apr 2021 19:21:15 -0400
+Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
+        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
+        id ba24dc43-9be5-11eb-ba24-005056bd6ce9;
+        Tue, 13 Apr 2021 02:20:54 +0300 (EEST)
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devel@acpica.org
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Daniel Scally <djrscally@gmail.com>
+Subject: [PATCH v2 1/2] ACPI: utils: Document for_each_acpi_dev_match() macro
+Date:   Tue, 13 Apr 2021 02:20:51 +0300
+Message-Id: <20210412232052.2162107-1-andy.shevchenko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave,
+The macro requires to call acpi_dev_put() on each iteration.
+Due to this it doesn't tolerate sudden disappearence of the devices.
 
-On Tue, Apr 13 2021 at 08:15, Dave Chinner wrote:
-> On Mon, Apr 12, 2021 at 05:20:53PM +0200, Thomas Gleixner wrote:
->> On Wed, Apr 07 2021 at 07:22, Dave Chinner wrote:
->> > And, FWIW, I'm also aware of the problems that RT kernels have with
->> > the use of bit spinlocks and being unable to turn them into sleeping
->> > mutexes by preprocessor magic. I don't care about that either,
->> > because dentry cache...
->> 
->> In the dentry cache it's a non-issue.
->
-> Incorrect.
+Document all these nuances to prevent users blindly call it without
+understanding the possible issues.
 
-I'm impressed about your detailed knowledge of something you do not care
-about in the first place.
+While at it, add the note to the acpi_dev_get_next_match_dev() and
+advertise acpi_dev_put() instead of put_device() in the whole family
+of the helper functions.
 
->> RT does not have a problem with bit spinlocks per se, it depends on how
->> they are used and what nests inside. Most of them are just kept as bit
->> spinlocks because the lock held, and therefore preempt disabled times
->> are small and no other on RT conflicting operations happen inside.
->> 
->> In the case at hand this is going to be a problem because inode->i_lock
->> nests inside the bit spinlock and we can't make inode->i_lock a raw
->> spinlock because it protects way heavier weight code pathes as well.
->
-> Yes, that's exactly the "problem" I'm refering to. And I don't care,
-> precisely because, well, dentry cache....
->
-> THat is, the dcache calls wake_up_all() from under the
-> hlist_bl_lock() in __d_lookup_done(). That ends up in
-> __wake_up_common_lock() which takes a spin lock embedded inside a
-> wait_queue_head.  That's not a raw spinlock, either, so we already
-> have this "spinlock inside bit lock" situation with the dcache usage
-> of hlist_bl.
+Fixes: bf263f64e804 ("media: ACPI / bus: Add acpi_dev_get_next_match_dev() and helper macro")
+Cc: Daniel Scally <djrscally@gmail.com>
+Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+---
+v2:
+  fixed grammar (Rafael)
+  split unrelated fixes to a separate fix (Rafael)
+  Add FIXME (for now let's document and fix in the next cycle)
 
-Sure, but you are missing that RT solves that by substituting the
-wait_queue with a swait_queue, which does not suffer from that. But that
-can't be done for the inode::i_lock case for various reasons.
+ drivers/acpi/utils.c    |  8 ++++++--
+ include/acpi/acpi_bus.h | 14 ++++++++++++++
+ 2 files changed, 20 insertions(+), 2 deletions(-)
 
-> FYI, this dentry cache behaviour was added to the dentry cache in
-> 2016 by commit d9171b934526 ("parallel lookups machinery, part 4
-> (and last)"), so it's not like it's a new thing, either.
+diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+index 29080177cd83..60e46efc1bc8 100644
+--- a/drivers/acpi/utils.c
++++ b/drivers/acpi/utils.c
+@@ -846,7 +846,11 @@ EXPORT_SYMBOL(acpi_dev_present);
+  * Return the next match of ACPI device if another matching device was present
+  * at the moment of invocation, or NULL otherwise.
+  *
+- * The caller is responsible to call put_device() on the returned device.
++ * FIXME: The function does not tolerate the sudden disappearance of @adev, e.g.
++ * in the case of a hotplug event. That said, the caller should ensure that
++ * this will never happen.
++ *
++ * The caller is responsible for invoking acpi_dev_put() on the returned device.
+  *
+  * See additional information in acpi_dev_present() as well.
+  */
+@@ -875,7 +879,7 @@ EXPORT_SYMBOL(acpi_dev_get_next_match_dev);
+  * Return the first match of ACPI device if a matching device was present
+  * at the moment of invocation, or NULL otherwise.
+  *
+- * The caller is responsible to call put_device() on the returned device.
++ * The caller is responsible for invoking acpi_dev_put() on the returned device.
+  *
+  * See additional information in acpi_dev_present() as well.
+  */
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index d2f5afb04a0b..3a82faac5767 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -690,6 +690,20 @@ acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const cha
+ struct acpi_device *
+ acpi_dev_get_first_match_dev(const char *hid, const char *uid, s64 hrv);
+ 
++/**
++ * for_each_acpi_dev_match - iterate over ACPI devices that matching the criteria
++ * @adev: pointer to the matching ACPI device, NULL at the end of the loop
++ * @hid: Hardware ID of the device.
++ * @uid: Unique ID of the device, pass NULL to not check _UID
++ * @hrv: Hardware Revision of the device, pass -1 to not check _HRV
++ *
++ * The caller is responsible for invoking acpi_dev_put() on the returned device.
++ *
++ * FIXME: Due to above requirement there is a window that may invalidate @adev
++ * and next iteration will use a dangling pointer, e.g. in the case of a
++ * hotplug event. That said, the caller should ensure that this will never
++ * happen.
++ */
+ #define for_each_acpi_dev_match(adev, hid, uid, hrv)			\
+ 	for (adev = acpi_dev_get_first_match_dev(hid, uid, hrv);	\
+ 	     adev;							\
+-- 
+2.31.1
 
-Really? I wasn't aware of that. Thanks for the education.
-
-> If you want to make hlist_bl RT safe, then re-implement it behind
-> the scenes for RT enabled kernels. All it takes is more memory
-> usage for the hash table + locks, but that's something that non-RT
-> people should not be burdened with caring about....
-
-I'm well aware that anything outside of @fromorbit universe is not
-interesting to you, but I neverless want to take the opportunity to
-express my appreciation for your truly caring and collaborative attitude
-versus interests of others who unfortunately do no share that universe.
-
-Thanks,
-
-        tglx
