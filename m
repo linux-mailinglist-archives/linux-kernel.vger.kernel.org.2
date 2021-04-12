@@ -2,123 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DAD35D400
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F01335D403
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239073AbhDLXcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:32:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54960 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237567AbhDLXce (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:32:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21D656124B;
-        Mon, 12 Apr 2021 23:32:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618270335;
-        bh=0uMrbYXhVghS1XGwvYu8bCNVYs47UOJSfwhcnACCotA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FyzShQ8quSs3ANtgUnfm/YgGWz7koWMgXPaP5OS5O4uVYXA8zhbachkAI/uoEULej
-         hN/ilGJPrW3OA5kBYnCFoiDxz1RxWrIA9khAJu/MlGeE/qq6wacSXqb1zRv/sgLFrZ
-         BvXsTQjPwyylrrhPE1om0XOs+5+rws/aEJVB3kHL5OwnwuId9H918ni3n0JViZ1bB2
-         FCXBNEk7Kjo74Ek9Yvwfb4Nji4t/ieXp4KZsnY3qlC6JKXrp4Nxt3lT1kwKy05YRNX
-         vyxfnMIyAjsVulrsjrzhvu3TG8GzGtihONlsX09voZu+M90HlyujfIVxJsfs6x97sc
-         EHC7dCRBniBpA==
-Date:   Tue, 13 Apr 2021 01:32:12 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Ivan Bornyakov <i.bornyakov@metrotek.ru>
-Cc:     system@metrotek.ru, andrew@lunn.ch, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 1/2] net: phy: marvell-88x2222: check that link
- is operational
-Message-ID: <20210413013122.7fa0195f@thinkpad>
-In-Reply-To: <614b534f1661ecf1fff419e2f36eddfb0e6f066d.1618227910.git.i.bornyakov@metrotek.ru>
-References: <cover.1618227910.git.i.bornyakov@metrotek.ru>
-        <614b534f1661ecf1fff419e2f36eddfb0e6f066d.1618227910.git.i.bornyakov@metrotek.ru>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S239203AbhDLXey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237567AbhDLXeu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 19:34:50 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EF3C061574;
+        Mon, 12 Apr 2021 16:34:29 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso8000268pjb.3;
+        Mon, 12 Apr 2021 16:34:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wqp74zPj+0qXMPJcKJTmn90vgijZiCnI9bUJurDvp7w=;
+        b=ce5BIXG4IMzQwiHi+rCU2kmqs05VRlYn3YcNiuwoPZuRnlpjSTPaOMWbAIm6wn89t+
+         ILuJMfW/fNap0sZD5s5VcAPgLwATM+vZJqpiMzzWbwO3ToKyeDU1KP1P87zAJM0LHK99
+         x6WG6sKuOXvA6M9DkUPlEMh4JvH6xe/+/QuUiGUCVyRJlBAvR+zzzvzrCJN8O4Oq1c+M
+         n4JO/W1omlc8sqlTfsEBhdJ+UitFVSmsg94RCRpHDodwDyKgN0h64LJVbR/Ht4+87t6v
+         R+UJjOXa2bS3OpKrMNtTYxdFpXDg7XIqsP6+k6r5x7q1WJShuur4EdnumSHK1+xr/wg8
+         1uYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wqp74zPj+0qXMPJcKJTmn90vgijZiCnI9bUJurDvp7w=;
+        b=YmCmhofWViSac3rIzabEPLIzktk3QxBQ0ELiXtVX+IO5GD1y5YDjVb7bb0/cj21InG
+         AcmMTtRa6FyNvXAKsT/5VhbG+ZngxEKFVWrr6pzh3ABZmNKVcOovDNZxT6WG3PHskirH
+         5ocO5DVTPialIeTfmoRvY+s2lM7ih1ox6n8xYDnR5D/m/ywyEiOuuLV3G/FrfdKvVO/4
+         6RQU9xA5Xy8i0DdEia90wNipFaSX+nyVmGA8YDHBNqcijjzFO04g3j5QbP/vI1IqDBlM
+         ylLnaY1cO3ZEC0ZF3O0oj3HTrrnl5/wWTmeuDBoS39gQMl9lCU+cIfQyPLJOlg/oMks2
+         8t9A==
+X-Gm-Message-State: AOAM5327KyGzr/Vsqq0lrJCRhK2dWD4MDMCMF/hq/cKyem9zFffR0U0E
+        5WhZ6dvcpE+7SqqNeheeiYpWQVwkXkf04Vd524c=
+X-Google-Smtp-Source: ABdhPJxhYJnqgy/3ENdN0JcSOueLcv2r8UBBDsaWLgJp7Ajg0HSucFgYgWFA6QEHEwZJOBW7fxvCbQQA3jhq1ZZc3xk=
+X-Received: by 2002:a17:902:f545:b029:ea:c657:e307 with SMTP id
+ h5-20020a170902f545b02900eac657e307mr13484412plf.0.1618270469044; Mon, 12 Apr
+ 2021 16:34:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210329015206.17437-1-chris.packham@alliedtelesis.co.nz>
+ <20210329015206.17437-6-chris.packham@alliedtelesis.co.nz>
+ <CAHp75VfRXeeP0uQFDBUS6=n2TvG+_5=pe8rWp6BpbDNMz6=OSg@mail.gmail.com> <c9af3c98-7680-b7d1-a23b-f09c90e19b91@alliedtelesis.co.nz>
+In-Reply-To: <c9af3c98-7680-b7d1-a23b-f09c90e19b91@alliedtelesis.co.nz>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 13 Apr 2021 02:34:12 +0300
+Message-ID: <CAHp75Vfq38EqN4qQQnZB_m71sE=uj5vWbDdkdXX7C8kNoLwwOQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/6] i2c: mpc: use device managed APIs
+To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021 15:16:59 +0300
-Ivan Bornyakov <i.bornyakov@metrotek.ru> wrote:
+On Tue, Apr 13, 2021 at 2:21 AM Chris Packham
+<Chris.Packham@alliedtelesis.co.nz> wrote:
+> On 13/04/21 10:52 am, Andy Shevchenko wrote:
+> > On Mon, Mar 29, 2021 at 4:54 AM Chris Packham
+> > <chris.packham@alliedtelesis.co.nz> wrote:
+> >> Use device managed functions an clean up error handling.
+> > For the god sake how have you tested this?
+> > The patch is broken.
+> I've clearly missed the remove path in my testing. I was focused on the
+> interrupt bevhaviour not the probe/remove which I'll make sure to check
+> for the next round.
 
-> Some SFP modules uses RX_LOS for link indication. In such cases link
-> will be always up, even without cable connected. RX_LOS changes will
-> trigger link_up()/link_down() upstream operations. Thus, check that SFP
-> link is operational before actual read link status.
-> 
-> Signed-off-by: Ivan Bornyakov <i.bornyakov@metrotek.ru>
-> ---
->  drivers/net/phy/marvell-88x2222.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/drivers/net/phy/marvell-88x2222.c b/drivers/net/phy/marvell-88x2222.c
-> index eca8c2f20684..fb285ac741b2 100644
-> --- a/drivers/net/phy/marvell-88x2222.c
-> +++ b/drivers/net/phy/marvell-88x2222.c
-> @@ -51,6 +51,7 @@
->  struct mv2222_data {
->  	phy_interface_t line_interface;
->  	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported);
-> +	bool sfp_link;
->  };
->  
->  /* SFI PMA transmit enable */
-> @@ -148,6 +149,9 @@ static int mv2222_read_status(struct phy_device *phydev)
->  	phydev->speed = SPEED_UNKNOWN;
->  	phydev->duplex = DUPLEX_UNKNOWN;
->  
-> +	if (!priv->sfp_link)
-> +		return 0;
-> +
+Thanks. And you may also remove forward declaration of IDs and
+probably some other leftovers (Cc me for the next round, I'll help to
+review).
 
-So if SFP is not used at all, if this PHY is used in a different
-usecase, this function will always return 0? Is this correct?
 
->  	if (priv->line_interface == PHY_INTERFACE_MODE_10GBASER)
->  		link = mv2222_read_status_10g(phydev);
->  	else
-> @@ -446,9 +450,31 @@ static void mv2222_sfp_remove(void *upstream)
->  	linkmode_zero(priv->supported);
->  }
->  
-> +static void mv2222_sfp_link_up(void *upstream)
-> +{
-> +	struct phy_device *phydev = upstream;
-> +	struct mv2222_data *priv;
-> +
-> +	priv = (struct mv2222_data *)phydev->priv;
-> +
-> +	priv->sfp_link = true;
-> +}
-> +
-> +static void mv2222_sfp_link_down(void *upstream)
-> +{
-> +	struct phy_device *phydev = upstream;
-> +	struct mv2222_data *priv;
-> +
-> +	priv = (struct mv2222_data *)phydev->priv;
-
-This cast is redundant since the phydev->priv is (void*). You can cast
-(void*) to (struct ... *).
-
-You can also just use
-	struct mv2222_data *priv = phydev->priv;
-
-> +
-> +	priv->sfp_link = false;
-> +}
-> +
->  static const struct sfp_upstream_ops sfp_phy_ops = {
->  	.module_insert = mv2222_sfp_insert,
->  	.module_remove = mv2222_sfp_remove,
-> +	.link_up = mv2222_sfp_link_up,
-> +	.link_down = mv2222_sfp_link_down,
->  	.attach = phy_sfp_attach,
->  	.detach = phy_sfp_detach,
->  };
-
+-- 
+With Best Regards,
+Andy Shevchenko
