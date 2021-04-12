@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9CF35C230
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 042B135C235
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242724AbhDLJkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:40:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35860 "EHLO mail.kernel.org"
+        id S243039AbhDLJlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:41:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33550 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240975AbhDLJLS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:11:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C83436139B;
-        Mon, 12 Apr 2021 09:07:37 +0000 (UTC)
+        id S240980AbhDLJLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:11:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 860A9613B1;
+        Mon, 12 Apr 2021 09:07:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218458;
-        bh=puDH0v2Bwp0HsjoDdk8WYaseh7NrsXsHXSmI5v0n764=;
+        s=korg; t=1618218461;
+        bh=0OJSYjFmcQVR8Y+J6nqu6mWK+cmBCkQ7Sz9Ivf9TdQU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XNG7gqm4u3E1nS0c4IaE+sb69u5O/ORvV3XAIkcjUy+6eAbLTesRlj79z9g2XmkAQ
-         6sUujGKWm0yPuP2B8b9OJn3l6knV91cmnwzXrdjuC3V24s5aiG5rQFiWPNouunjvNL
-         lcrHpT1AaHmcSsHaHPJf1xUWET2FHs8iUAUTi5iM=
+        b=QsmaGezVvULP4wE02pvuvh82KSkIlDT89vvIBWXWXm97KC+Er5MtvdwVlQ3Njjc/y
+         IwpaM+phS06Y7707orRv+xTgoPDhABe2zFtk14i8ZQx7s6Ddl1dvtleZkqi4Ve0KOH
+         HkCNE41sgS46Xsfjb6MPlf9zSSuh9YWoCcL9ROU8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ilya Maximets <i.maximets@ovn.org>,
-        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 171/210] openvswitch: fix send of uninitialized stack memory in ct limit reply
-Date:   Mon, 12 Apr 2021 10:41:16 +0200
-Message-Id: <20210412084021.716851305@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 172/210] i2c: designware: Adjust bus_freq_hz when refuse high speed mode set
+Date:   Mon, 12 Apr 2021 10:41:17 +0200
+Message-Id: <20210412084021.750496958@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -41,45 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Maximets <i.maximets@ovn.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 4d51419d49930be2701c2633ae271b350397c3ca ]
+[ Upstream commit 5e729bc54bda705f64941008b018b4e41a4322bf ]
 
-'struct ovs_zone_limit' has more members than initialized in
-ovs_ct_limit_get_default_limit().  The rest of the memory is a random
-kernel stack content that ends up being sent to userspace.
+When hardware doesn't support High Speed Mode, we forget bus_freq_hz
+timing adjustment. This makes the timings and real registers being
+unsynchronized. Adjust bus_freq_hz when refuse high speed mode set.
 
-Fix that by using designated initializer that will clear all
-non-specified fields.
-
-Fixes: 11efd5cb04a1 ("openvswitch: Support conntrack zone limit")
-Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
-Acked-by: Tonghao Zhang <xiangxia.m.yue@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: b6e67145f149 ("i2c: designware: Enable high speed mode")
+Reported-by: "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/openvswitch/conntrack.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/i2c/busses/i2c-designware-master.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/openvswitch/conntrack.c b/net/openvswitch/conntrack.c
-index 5eddfe7bd391..2316efd6ace8 100644
---- a/net/openvswitch/conntrack.c
-+++ b/net/openvswitch/conntrack.c
-@@ -2032,10 +2032,10 @@ static int ovs_ct_limit_del_zone_limit(struct nlattr *nla_zone_limit,
- static int ovs_ct_limit_get_default_limit(struct ovs_ct_limit_info *info,
- 					  struct sk_buff *reply)
- {
--	struct ovs_zone_limit zone_limit;
--
--	zone_limit.zone_id = OVS_ZONE_LIMIT_DEFAULT_ZONE;
--	zone_limit.limit = info->default_limit;
-+	struct ovs_zone_limit zone_limit = {
-+		.zone_id = OVS_ZONE_LIMIT_DEFAULT_ZONE,
-+		.limit   = info->default_limit,
-+	};
- 
- 	return nla_put_nohdr(reply, sizeof(zone_limit), &zone_limit);
- }
+diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
+index d6425ad6e6a3..2871cf2ee8b4 100644
+--- a/drivers/i2c/busses/i2c-designware-master.c
++++ b/drivers/i2c/busses/i2c-designware-master.c
+@@ -129,6 +129,7 @@ static int i2c_dw_set_timings_master(struct dw_i2c_dev *dev)
+ 		if ((comp_param1 & DW_IC_COMP_PARAM_1_SPEED_MODE_MASK)
+ 			!= DW_IC_COMP_PARAM_1_SPEED_MODE_HIGH) {
+ 			dev_err(dev->dev, "High Speed not supported!\n");
++			t->bus_freq_hz = I2C_MAX_FAST_MODE_FREQ;
+ 			dev->master_cfg &= ~DW_IC_CON_SPEED_MASK;
+ 			dev->master_cfg |= DW_IC_CON_SPEED_FAST;
+ 			dev->hs_hcnt = 0;
 -- 
 2.30.2
 
