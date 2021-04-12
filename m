@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC9435BA91
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 527AF35BA94
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236775AbhDLHFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:05:50 -0400
-Received: from m32-153.88.com ([43.250.32.153]:28182 "EHLO email.cn"
+        id S236685AbhDLHHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:07:10 -0400
+Received: from m34-101.88.com ([104.250.34.101]:48985 "EHLO 88.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236711AbhDLHFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:05:48 -0400
+        id S236723AbhDLHHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 03:07:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=Date:From:To; bh=cY6qCoS6UBI2dqjQZgPt9DwEhAhGzi+d9/SmS
-        jDYL5U=; b=laOBwTN5ea5bFAZOppV3bZO8Y05i96OJCSoDoOX98+LcvNJ0NlQSo
-        JArlXaX6Lqua/oRZVSlNTb7Zg49EA5zKec7nWpEfKtCFKnGwYYLNWwI6nmKKxTpz
-        g5OzjDDilDoyygFjlkIWTvgztz7NKiZ8i91oDU2i2w9V/FKnQ1xAfE=
+        s=dkim; h=Date:From:To; bh=moVHyQAZ6oxVMQFeudqurqd9+jl+1rUPLRZAJ
+        cQBWjw=; b=KFEgSHm61mwojhs0eKBxnu6v4PF1YOTQYQatx5bBAu7hC/PuFvrPh
+        N/tbuRIhsltw2FzubzBzLslieQ+EYuKw6QxKkCovoj+aGN243F4do+FghKNZsomy
+        TdL/Bh0aRkW9UbacRPD82c1a/ff46rVkanMILEVEoljdKy1SRlXWzg=
 Received: from bobwxc.top (unknown [120.238.248.129])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgAXoiIx8XNgpC9rAA--.42426S2;
-        Mon, 12 Apr 2021 15:05:22 +0800 (CST)
-Date:   Mon, 12 Apr 2021 15:05:20 +0800
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgA3qtA98XNg3M1YAA--.2987S2;
+        Mon, 12 Apr 2021 15:05:35 +0800 (CST)
+Date:   Mon, 12 Apr 2021 15:05:33 +0800
 From:   Wu XiangCheng <bobwxc@email.cn>
 To:     Jonathan Corbet <corbet@lwn.net>
 Cc:     Alex Shi <alexs@kernel.org>,
@@ -28,8 +28,8 @@ Cc:     Alex Shi <alexs@kernel.org>,
         Tsugikazu Shibata <tshibata@ab.jp.nec.com>,
         SeongJae Park <sjpark@amazon.de>, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] scripts: Add new translation tool trslt.py
-Message-ID: <739961109b8ac8c71f10ac0dd5607cb2d38a9db8.1618208899.git.bobwxc@email.cn>
+Subject: [RFC 2/2] docs: doc-guide: Add document for scripts/trslt.py
+Message-ID: <374c192541187d9493e83f1f2a99e4b1ca83cf62.1618208899.git.bobwxc@email.cn>
 References: <cover.1618208899.git.bobwxc@email.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -37,11 +37,11 @@ Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <cover.1618208899.git.bobwxc@email.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CM-TRANSID: GiKnCgAXoiIx8XNgpC9rAA--.42426S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jw1DXrWrKF43tw4rCw1rWFg_yoW3CF4Upa
-        45K3WfAw4xCr10ywn3Gry5AF4fJrn7Ga17Zr92qrnayw4DKwn5KF43t3sIq34xGF4rXayj
-        qF1UtFWY9r42vw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgSb7Iv0xC_KF4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
+X-CM-TRANSID: LCKnCgA3qtA98XNg3M1YAA--.2987S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFW5ArykGr4DZrWrJF4ktFb_yoWfCF4rpF
+        98KFyxKasrJry7Ar1fGF47JF1fJFWxKw4UArn7twn3JFWqyryvyr47t3s3KF97Gry0vFWj
+        qa1jyFWUWr1UZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgSb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
         cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
         v20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2
         z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0x
@@ -52,297 +52,274 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3Jw1DXrWrKF43tw4rCw1rWFg_yoW3CF4Upa
         AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
         2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
         C2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
-        nUUI43ZEXa7IUUS_M3UUUUU==
+        nUUI43ZEXa7IUntxhJUUUUU==
 X-Originating-IP: [120.238.248.129]
 X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new translation tool scripts/trslt.py
-For
-- translation file help tool
-- translation corresponding version control
+Add document for new translation tool scripts/trslt.py
+and link it to doc-guide/index.rst
 
 Signed-off-by: Wu XiangCheng <bobwxc@email.cn>
 ---
- scripts/trslt.py | 267 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 267 insertions(+)
- create mode 100755 scripts/trslt.py
+ Documentation/doc-guide/index.rst |   1 +
+ Documentation/doc-guide/trslt.rst | 233 ++++++++++++++++++++++++++++++
+ 2 files changed, 234 insertions(+)
+ create mode 100644 Documentation/doc-guide/trslt.rst
 
-diff --git a/scripts/trslt.py b/scripts/trslt.py
-new file mode 100755
-index 000000000000..1acc6f2e69f3
+diff --git a/Documentation/doc-guide/index.rst b/Documentation/doc-guide/index.rst
+index 7c7d97784626..441722cdd3fc 100644
+--- a/Documentation/doc-guide/index.rst
++++ b/Documentation/doc-guide/index.rst
+@@ -12,6 +12,7 @@ How to write kernel documentation
+    parse-headers
+    contributing
+    maintainer-profile
++   trslt
+ 
+ .. only::  subproject and html
+ 
+diff --git a/Documentation/doc-guide/trslt.rst b/Documentation/doc-guide/trslt.rst
+new file mode 100644
+index 000000000000..df77c5a13500
 --- /dev/null
-+++ b/scripts/trslt.py
-@@ -0,0 +1,267 @@
-+#!/usr/bin/env python3
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# Kernel Documentation Translation File tool
-+# Document see: Documentation/doc-guide/trslt.rst
-+#
-+# Wu XiangCheng <bobwxc@email.cn>, 2021.
++++ b/Documentation/doc-guide/trslt.rst
+@@ -0,0 +1,233 @@
++.. SPDX-License-Identifier: GPL-2.0+
 +
-+import os
-+import argparse
-+import subprocess
++.. _trslt:
 +
-+# global verbose mode flag
-+VERBOSE_FLAG = False
++===========================================
++Kernel Documentation Translation File tool
++===========================================
 +
-+# change to source root dir
-+def cdpath():
-+    # at source ROOT
-+    if os.path.isdir("Documentation/translations") and os.path.isfile("MAINTAINERS"):
-+        return 0
-+    # at Documentation/
-+    elif os.path.isdir("translations") and os.path.isfile("../MAINTAINERS"):
-+        os.chdir("../")
-+        return 0
-+    # at Documentation/translation/
-+    elif os.path.isdir("zh_CN") and os.path.isfile("../../MAINTAINERS"):
-+        os.chdir("../../")
-+        return 0
-+    # at Documentation/translations/ll_NN/
-+    elif os.path.isdir("translations") == False and os.path.isdir("../../translations") and os.path.isfile("../../../MAINTAINERS"):
-+        os.chdir("../../../")
-+        return 0
-+    # anywhere else
-+    else:
-+        print("ERROR: Please run this script under linux kernel source ROOT dir")
-+        return -1
++:Author: Wu XiangCheng <bobwxc@email.cn>
 +
-+# argv
-+def arg():
-+    parser = argparse.ArgumentParser(
-+        description='Linux Kernel Documentation Translation File Tool')
-+    # file path
-+    parser.add_argument('file', help="specific file path")
-+    # verbose mode
-+    parser.add_argument('-v', '--verbose',
-+                        help="enable verbose mode",
-+                        action='store_true')
-+    # language choose
-+    parser.add_argument('-l', '--language',
-+                        help="choose translation language, default: zh_CN",
-+                        type=str,
-+                        choices=["it_IT", "ja_JP", "ko_KR", "zh_CN"],
-+                        default="zh_CN")
-+    # required action group
-+    ch = parser.add_mutually_exclusive_group(required=True)
-+    # \_ copy
-+    ch.add_argument('-c', '--copy',
-+                    help="copy a origin file to translation directory",
-+                    action='store_true')
-+    # \_ update
-+    ch.add_argument('-u', '--update',
-+                    help="get a translation file's update information",
-+                    action='store_true')
++This document is for ``scripts/trslt.py``.
 +
-+    argv_ = parser.parse_args()
++Motivation
++-----------
 +
-+    # modify global VERBOSE_FLAG
-+    if argv_.verbose:
-+        global VERBOSE_FLAG
-+        VERBOSE_FLAG = True
-+        print(argv_)
++For a long time, kernel documentation translations lacks a way to control the
++version corresponding to the source files. If you translate a file and then
++someone updates the source file, there will be a problem. It's hard to know
++which version the existing translation corresponds to, and even harder to sync
++them. The common way now is to check the date, but this is not exactly accurate,
++especially for documents that are often updated.
 +
-+    return argv_
++So, some translators write corresponding commit ID in the commit log for
++reference, it is a good way, but still a little troublesome.
 +
-+# get newest commit id of a origin doc file
-+def get_newest_commit(fp):
-+    cmd = "git log --format=oneline --no-merges "+fp
-+    p = subprocess.Popen(cmd,
-+                         shell=True,
-+                         stdout=subprocess.PIPE,
-+                         errors="replace")
-+    log = p.stdout.readline()
-+    commit_id = log[:log.find(' ')]
-+    return commit_id
++Thus, the purpose of ``trslt.py`` is to add a new annotating tag to the file to
++indicate the corresponding version of the source file::
 +
-+# add language special header
-+def la_head(fp, la):
-+    if la == "zh_CN":
-+        cfp = fp[0:14]+"translations/"+la+'/'+fp[14:]
-+        r = ".. include:: " + \
-+            os.path.relpath(
-+                "Documentation/translations/zh_CN/disclaimer-zh_CN.rst",
-+                cfp[0:cfp.rfind('/')]) + "\n\n"
-+        r += ":Original: "+fp+"\n\n"
-+        r += ".. translation_origin_commit: "+get_newest_commit(fp)+"\n\n"
-+        r += ":译者: 姓名 EnglishName <email@example.com>\n\n"
-+    else:
-+        r = ":Original: "+fp+"\n\n"
-+        r += ".. translation_origin_commit: "+get_newest_commit(fp)+"\n\n"
-+        r += ":Translator: Name <email@example.com>\n\n"
++	.. translation_origin_commit: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 +
-+    return r
++The script will automatically copy file and generate tag when creating new
++translation, and give update suggestions based on those tags when updating
++translations.
 +
-+# copy mode
-+def copy(fp, la):
-+    if os.path.isfile(fp) == False:
-+        return -2
++Dependency
++-----------
 +
-+    if fp.find("/translations/") != fp.rfind("/translations/"):
-+        print("WARNING: seems you are copying a file only exist in translations/ dir")
-+        return -3
++:Language: Python 3.x
 +
-+    f = open(fp, 'r')
-+    try:
-+        first = f.read(2048)
-+    except:
-+        print("ERROR: can not read file", fp)
-+        return -2
++:Python Libraries:
 +
-+    spdx_id = first.find(".. SPDX-License-Identifier: ")
-+    if spdx_id != -1:
-+        insert_id = first.find('\n', spdx_id)+1
-+        first = first[:insert_id]+'\n'+la_head(fp, la)+first[insert_id:]
-+    else:
-+        first = la_head(fp, la)+first
++ os
 +
-+    if fp[0:14] == "Documentation/":
-+        cfp = fp[0:14]+"translations/"+la+'/'+fp[14:]
++ argparse
 +
-+        if cfp[cfp.rfind('.'):] != ".rst":
-+            print("WARNING: this is not a rst file, may cause problems.",
-+                  "copy will continue, but please \033[31mcheck it!\033[0m")
++ subprocess
 +
-+        cfp_dir = cfp[0:cfp.rfind('/')]
++Usage
++------
 +
-+        if not os.path.exists(cfp_dir):
-+            os.makedirs(cfp_dir)
++``trslt.py`` comes with a help message:: 
 +
-+        if os.path.isfile(cfp):
-+            print("WARNING:\033[31m", cfp,
-+                  "\033[0mis existing, can not use copy, please try -u/--update!")
-+            return -3
++	➜ scripts/trslt.py -h                                                         
++	usage: trslt.py [-h] [-v] [-l {it_IT,ja_JP,ko_KR,zh_CN}] (-c | -u) file
++	
++	Linux Kernel Documentation Translation File Tool
++	
++	positional arguments:
++	  file                  specific file path
++	
++	optional arguments:
++	  -h, --help            show this help message and exit
++	  -v, --verbose         enable verbose mode
++	  -l {it_IT,ja_JP,ko_KR,zh_CN}, --language {it_IT,ja_JP,ko_KR,zh_CN}
++	                        choose translation language, default: zh_CN
++	  -c, --copy            copy a origin file to translation directory
++	  -u, --update          get a translation file's update information
 +
-+        cf = open(cfp, 'w')
-+        cf.write(first)
++We could learn some basic operation methods from this help message. See below
++for details.
 +
-+        while True:
-+            a = f.read(2048)
-+            if a != '':
-+                cf.write(a)
-+            else:
-+                break
++.. note::
 +
-+        cf.close()
-+        print("INFO: \033[32m" + cfp +
-+              "\033[0m has been created, please remember to edit it.")
-+    else:
-+        return -2
++	``trslt.py`` should be called in Linux kernel source **ROOT** directory or 
++	"Documentation/", "Documentation/translations/", "Documentation/translations/ll_NN/".
++	Anyway, don't worry, it will remind you when using a wrong directory.
 +
-+    return 0
++Verbose mode
++~~~~~~~~~~~~~
 +
-+# generete origin text diff file for update
-+def gen_diff(ofp, old_id):
-+    new_id = get_newest_commit(ofp)
-+    if old_id == new_id:
-+        return 1
++``-v, --verbose``
 +
-+    cmd = "git show "+old_id+".."+new_id+" "+ofp
-+    p = subprocess.Popen(cmd,
-+                         shell=True,
-+                         stdout=subprocess.PIPE,
-+                         errors="replace")
-+    log = p.stdout.read()
-+    log = cmd+"\n\n"+log
-+    return log
-+
-+# update mode
-+def update(fp, la):
-+    if os.path.isfile(fp) == False:
-+        return -2
-+    if fp.find("Documentation/translations/"+la) == -1:
-+        print("ERROR:", fp, "does not belong to", la, "translation!")
-+        return -3
-+
-+    # origin file path
-+    ofp = fp[:fp.find("translations/"+la)] + \
-+        fp[fp.find("translations/"+la)+14+len(la):]
-+
-+    if not os.path.isfile(ofp):
-+        print("ERROR: origin file",ofp,"does not exist or not a file")
-+        return -2
-+
-+    f = open(fp, 'r')
-+    try:
-+        first = f.read(3072)
-+    except:
-+        print("ERROR: can not read file", fp)
-+        return -2
-+
-+    commit_id = first.find("\n.. translation_origin_commit: ")
-+    if commit_id == -1:
-+        print("WARNING:", fp, "\033[31mdoes not have a translation_origin_commit tag,",
-+              "can not generate a diff file\033[0m, please add a tag if you want to update it.")
-+        print("\n\033[33m.. translation_origin_commit: " +
-+              get_newest_commit(ofp) + "\033[0m")
-+        return -4
-+    else:
-+        commit_id = commit_id+1  # '\n'
-+        commit_id = first[commit_id:first.find('\n', commit_id)]
-+        commit_id = commit_id[commit_id.find(' ')+1:]
-+        commit_id = commit_id[commit_id.find(' ')+1:]
-+
-+    diff = gen_diff(ofp, commit_id)
-+    if diff == 1:
-+        print("INFO:", ofp, "does not have any change since", commit_id)
-+    else:
-+        with open(fp+".diff", 'w') as d:
-+            d.write(diff)
-+        print("INFO: \033[32m"+fp+".diff\033[0m file has generated",)
-+        print("INFO: if you want to update " + fp +
-+              ", please \033[31mDo Not Forget\033[0m to update the translation_origin_commit tag.",
-+              "\n\n\033[33m.. translation_origin_commit: " +
-+              get_newest_commit(ofp) + "\033[0m")
-+
-+    return 0
-+
-+# main entry
-+def main():
-+    argv_ = arg()
-+
-+    # get file's abspath before cdpath
-+    file_path = os.path.abspath(argv_.file)
-+    if VERBOSE_FLAG:
-+        print(file_path)
-+
-+    if cdpath() != 0:
-+        return -1
-+
-+    # if file_path valid
-+    if file_path.find("Documentation") == -1:
-+        print("ERROR: file does not in Linux Kernel source Documentation")
-+        return -2
-+    elif os.path.isfile(file_path[file_path.find("Documentation"):]) == False:
-+        print("ERROR: file does not exist or not a file")
-+        return -2
-+    else:
-+        file_path = file_path[file_path.find("Documentation"):]
-+
-+        if VERBOSE_FLAG:
-+            print(file_path)
-+
-+    if argv_.copy:
-+        return copy(file_path, argv_.language)
-+    elif argv_.update:
-+        return update(file_path, argv_.language)
-+
-+    return 0
++As its name said, ``-v`` is used to turn on the verbose mode. Then will show
++more informations, something is better than nothing.
 +
 +
-+if __name__ == "__main__":
-+    exit_code = main()
-+    if VERBOSE_FLAG:
-+        if exit_code == 0:
-+            print("exit with code:\033[32m", exit_code, "\033[0m")
-+        else:
-+            print("exit with code:\033[31m", exit_code, "\033[0m")
-+    exit(exit_code)
++Choose language
++~~~~~~~~~~~~~~~~
++
++``-l, --language``
++
++As a translator, you need to select the language you prefer. And this script 
++also need to decide which language directory should be used.
++
++Simply give the language after ``-l``, like ``-l zh_CN``. If you do not give
++a choice, default is ``zh_CN``. 
++
++Now, we have four langugue(it_IT,ja_JP,ko_KR,zh_CN) to use, if you need others,
++please feel free to add it, only need to modify language choice list in
++``arg()`` of ``trslt.py`` and this document.
++
++Copy mode
++~~~~~~~~~~
++
++``-c, --copy``
++
++This action is used to copy a origin file to translation directory. If the file
++is existing, it will give a warning::
++
++	➜ scripts/trslt.py -c Documentation/admin-guide/perf-security.rst 
++	INFO: Documentation/translations/zh_CN/admin-guide/perf-security.rst has been created, please remember to edit it.
++
++	➜ scripts/trslt.py -c Documentation/admin-guide/perf-security.rst          
++	WARNING: Documentation/translations/zh_CN/admin-guide/perf-security.rst is existing, can not use copy, please try -u/--update!
++
++Also, it will auto add a commit-id tag and language special header::
++
++	:Original: Documentation/admin-guide/perf-security.rst
++
++	.. translation_origin_commit: a15cb2c1658417f9e8c7e84fe5d6ee0b63cbb9b0
++
++	:Translator: Name <email@example.com>
++
++The header could be used to include a unified declaration or localization tag.
++If you need a special header for your language, please modify ``la_head(fp, la)``
++in ``trslt.py``, simply add a ``elif`` condition.
++
++
++Update mode
++~~~~~~~~~~~~
++
++``-u, --update``
++
++This action is used to update a existing translation file. The translation file
++must have a commit-id tag for generating origin text diff file. If there is no
++commit-id tag or no need to update, it will remind you::
++
++	➜ scripts/trslt.py -u Documentation/translations/zh_CN/admin-guide/perf-security.rst
++	INFO: Documentation/translations/zh_CN/admin-guide/perf-security.rst.diff file has generated
++	INFO: if you want to update Documentation/translations/zh_CN/admin-guide/perf-security.rst, please Do Not Forget to update the translation_origin_commit tag. 
++
++	.. translation_origin_commit: a15cb2c1658417f9e8c7e84fe5d6ee0b63cbb9b0
++
++	➜ scripts/trslt.py -u Documentation/translations/zh_CN/admin-guide/perf-security.rst
++	INFO: Documentation/admin-guide/perf-security.rst does not have any change since a15cb2c1658417f9e8c7e84fe5d6ee0b63cbb9b0
++
++	➜ scripts/trslt.py -u Documentation/translations/zh_CN/admin-guide/index.rst 
++	WARNING: Documentation/translations/zh_CN/admin-guide/index.rst does not have a translation_origin_commit tag, can not generate a diff file, please add a tag if you want to update it.
++
++	.. translation_origin_commit: da514157c4f063527204adc8e9642a18a77fccc9
++
++.. important::
++
++	Please note, this action will auto generate a diff file, but it **will not
++	automatically add or change the commit-id**, only print it, you need to add
++	or change it by yourself!
++
++Workflow
++----------
++
++Describes two common workflows — start new and update existing.
++
++Start a new translation
++~~~~~~~~~~~~~~~~~~~~~~~~
++
++To start a new translation, please use ``-c`` action::
++
++	➜ scripts/trslt.py -c Documentation/any-file
++
++If it's ok, translation file created successfully::
++
++	INFO: Documentation/translations/ll_NN/any-file has been created, please remember to edit it.
++
++Then you can start translation work.
++
++Or, get a warning::
++
++	WARNING: Documentation/translations/ll_NN/any-file is existing, can not use copy, please try -u/--update!
++
++	WARNING: seems you are copying a file only exist in translations/ dir
++
++Or, get a error::
++
++	ERROR: file does not in Linux Kernel source Documentation
++
++Update a existing translation
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++
++To update a existing translation, please use ``-u`` action::
++
++	➜ scripts/trslt.py -u Documentation/translations/ll_NN/any-file
++
++If everything is ok, script will generate a diff file of origin text from the 
++commit-id tag's id to newest, and print the newset commit-id tag::
++
++	INFO: Documentation/translations/ll_NN/any-file.diff file has generated
++	INFO: if you want to update Documentation/translations/ll_NN/any-file, please Do Not Forget to update the translation_origin_commit tag. 
++
++	.. translation_origin_commit: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
++
++So simply take a look to diff and update translation, also do not forget to 
++modify commit-id tag.
++
++Or the translation no need to update::
++
++	INFO: Documentation/any-file does not have any change since xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
++
++If the translation file does not have a commit-id tag::
++
++	WARNING: Documentation/translations/ll_NN/any-file does not have a translation_origin_commit tag, can not generate a diff file, please add a tag if you want to update it.
++
++	.. translation_origin_commit: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
++
++Please add the tag by hand if you want to update it.
++
++If you give a wrong file::
++
++	ERROR: Documentation/any-file does not belong to ll_NN translation!
++
++Why the name?
++--------------
++
++``trslt.py`` — tr(an)sl(a)t(or).
++
++Issues
++-------
++
++If you find any problem, please report issues to Wu XiangCheng <bobwxc@email.cn>
++
++Thanks
++--------
++
++Will be completed after RFC.
 -- 
 2.20.1
 
