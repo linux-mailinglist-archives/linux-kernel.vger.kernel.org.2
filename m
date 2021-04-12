@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5313B35BD3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5BC35BD45
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238237AbhDLItN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:49:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39316 "EHLO mail.kernel.org"
+        id S238535AbhDLIuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:50:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237920AbhDLIqc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:46:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C897661261;
-        Mon, 12 Apr 2021 08:46:13 +0000 (UTC)
+        id S237987AbhDLIrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:47:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66CF9611F0;
+        Mon, 12 Apr 2021 08:46:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217174;
-        bh=kO2E0vSvri/q/aGGjNFCKIdR/saloXrxctn9XBnpA9c=;
+        s=korg; t=1618217204;
+        bh=/8jUO7xkaKdefi2LengujBqKyVbjMEW34qTtLHTxNCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kLpopw4sv4nbHPWPpGLekJzGOygnKwOtu6ADP7Evh3HuWMNto05JPUashOkBX3KNq
-         36SRvnlNmJugEcE5eiIGHO9c8A4NgYkDy3t/Rg2dr8h+P0vzQH632Z52T1eu2Tf4Tq
-         ILVhUYQK2wR7oYBQQ+TVu9FsEsT5xL4GTKkqhKHE=
+        b=ZLI7Y5YlZ0mUPagQR+KdmKqpti+YjClTSs3aYcwK3KnU5ivXXjTW96ofH0FjJvSoz
+         sMyQ1AWxjv/Fd5xjG7IkKmBwFLJ4H37RmLm13VyJ6jxJ2CMVoL96nPyyMPFt+oWMPn
+         su1YMGwTuuMcPhXM0cEzzdediQ9eyDR/74Uk8srU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Prasad Sodagudi <psodagud@quicinc.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
+        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
+        "Dmitry V. Levin" <ldv@altlinux.org>,
+        Oleg Nesterov <oleg@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 013/111] gcov: re-fix clang-11+ support
-Date:   Mon, 12 Apr 2021 10:39:51 +0200
-Message-Id: <20210412084004.658480415@linuxfoundation.org>
+Subject: [PATCH 5.4 014/111] ia64: fix user_stack_pointer() for ptrace()
+Date:   Mon, 12 Apr 2021 10:39:52 +0200
+Message-Id: <20210412084004.699559937@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -42,121 +42,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Sergei Trofimovich <slyfox@gentoo.org>
 
-commit 9562fd132985ea9185388a112e50f2a51557827d upstream.
+commit 7ad1e366167837daeb93d0bacb57dee820b0b898 upstream.
 
-LLVM changed the expected function signature for llvm_gcda_emit_function()
-in the clang-11 release.  Users of clang-11 or newer may have noticed
-their kernels producing invalid coverage information:
+ia64 has two stacks:
 
-  $ llvm-cov gcov -a -c -u -f -b <input>.gcda -- gcno=<input>.gcno
-  1 <func>: checksum mismatch, \
-    (<lineno chksum A>, <cfg chksum B>) != (<lineno chksum A>, <cfg chksum C>)
-  2 Invalid .gcda File!
-  ...
+ - memory stack (or stack), pointed at by by r12
 
-Fix up the function signatures so calling this function interprets its
-parameters correctly and computes the correct cfg checksum.  In
-particular, in clang-11, the additional checksum is no longer optional.
+ - register backing store (register stack), pointed at by
+   ar.bsp/ar.bspstore with complications around dirty
+   register frame on CPU.
 
-Link: https://reviews.llvm.org/rG25544ce2df0daa4304c07e64b9c8b0f7df60c11d
-Link: https://lkml.kernel.org/r/20210408184631.1156669-1-ndesaulniers@google.com
-Reported-by: Prasad Sodagudi <psodagud@quicinc.com>
-Tested-by: Prasad Sodagudi <psodagud@quicinc.com>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Cc: <stable@vger.kernel.org>	[5.4+]
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+In [1] Dmitry noticed that PTRACE_GET_SYSCALL_INFO returns the register
+stack instead memory stack.
 
+The bug comes from the fact that user_stack_pointer() and
+current_user_stack_pointer() don't return the same register:
+
+  ulong user_stack_pointer(struct pt_regs *regs) { return regs->ar_bspstore; }
+  #define current_user_stack_pointer() (current_pt_regs()->r12)
+
+The change gets both back in sync.
+
+I think ptrace(PTRACE_GET_SYSCALL_INFO) is the only affected user by
+this bug on ia64.
+
+The change fixes 'rt_sigreturn.gen.test' strace test where it was
+observed initially.
+
+Link: https://bugs.gentoo.org/769614 [1]
+Link: https://lkml.kernel.org/r/20210331084447.2561532-1-slyfox@gentoo.org
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+Reported-by: Dmitry V. Levin <ldv@altlinux.org>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/gcov/clang.c |   29 +++++++++++++++++++----------
- 1 file changed, 19 insertions(+), 10 deletions(-)
+ arch/ia64/include/asm/ptrace.h |    8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
---- a/kernel/gcov/clang.c
-+++ b/kernel/gcov/clang.c
-@@ -70,7 +70,9 @@ struct gcov_fn_info {
+--- a/arch/ia64/include/asm/ptrace.h
++++ b/arch/ia64/include/asm/ptrace.h
+@@ -54,8 +54,7 @@
  
- 	u32 ident;
- 	u32 checksum;
-+#if CONFIG_CLANG_VERSION < 110000
- 	u8 use_extra_checksum;
-+#endif
- 	u32 cfg_checksum;
- 
- 	u32 num_counters;
-@@ -145,10 +147,8 @@ void llvm_gcda_emit_function(u32 ident,
- 
- 	list_add_tail(&info->head, &current_info->functions);
- }
--EXPORT_SYMBOL(llvm_gcda_emit_function);
- #else
--void llvm_gcda_emit_function(u32 ident, u32 func_checksum,
--		u8 use_extra_checksum, u32 cfg_checksum)
-+void llvm_gcda_emit_function(u32 ident, u32 func_checksum, u32 cfg_checksum)
+ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
  {
- 	struct gcov_fn_info *info = kzalloc(sizeof(*info), GFP_KERNEL);
- 
-@@ -158,12 +158,11 @@ void llvm_gcda_emit_function(u32 ident,
- 	INIT_LIST_HEAD(&info->head);
- 	info->ident = ident;
- 	info->checksum = func_checksum;
--	info->use_extra_checksum = use_extra_checksum;
- 	info->cfg_checksum = cfg_checksum;
- 	list_add_tail(&info->head, &current_info->functions);
+-	/* FIXME: should this be bspstore + nr_dirty regs? */
+-	return regs->ar_bspstore;
++	return regs->r12;
  }
--EXPORT_SYMBOL(llvm_gcda_emit_function);
- #endif
-+EXPORT_SYMBOL(llvm_gcda_emit_function);
  
- void llvm_gcda_emit_arcs(u32 num_counters, u64 *counters)
- {
-@@ -293,11 +292,16 @@ int gcov_info_is_compatible(struct gcov_
- 		!list_is_last(&fn_ptr2->head, &info2->functions)) {
- 		if (fn_ptr1->checksum != fn_ptr2->checksum)
- 			return false;
-+#if CONFIG_CLANG_VERSION < 110000
- 		if (fn_ptr1->use_extra_checksum != fn_ptr2->use_extra_checksum)
- 			return false;
- 		if (fn_ptr1->use_extra_checksum &&
- 			fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
- 			return false;
-+#else
-+		if (fn_ptr1->cfg_checksum != fn_ptr2->cfg_checksum)
-+			return false;
-+#endif
- 		fn_ptr1 = list_next_entry(fn_ptr1, head);
- 		fn_ptr2 = list_next_entry(fn_ptr2, head);
- 	}
-@@ -529,17 +533,22 @@ static size_t convert_to_gcda(char *buff
+ static inline int is_syscall_success(struct pt_regs *regs)
+@@ -79,11 +78,6 @@ static inline long regs_return_value(str
+ 	unsigned long __ip = instruction_pointer(regs);			\
+ 	(__ip & ~3UL) + ((__ip & 3UL) << 2);				\
+ })
+-/*
+- * Why not default?  Because user_stack_pointer() on ia64 gives register
+- * stack backing store instead...
+- */
+-#define current_user_stack_pointer() (current_pt_regs()->r12)
  
- 	list_for_each_entry(fi_ptr, &info->functions, head) {
- 		u32 i;
--		u32 len = 2;
--
--		if (fi_ptr->use_extra_checksum)
--			len++;
- 
- 		pos += store_gcov_u32(buffer, pos, GCOV_TAG_FUNCTION);
--		pos += store_gcov_u32(buffer, pos, len);
-+#if CONFIG_CLANG_VERSION < 110000
-+		pos += store_gcov_u32(buffer, pos,
-+			fi_ptr->use_extra_checksum ? 3 : 2);
-+#else
-+		pos += store_gcov_u32(buffer, pos, 3);
-+#endif
- 		pos += store_gcov_u32(buffer, pos, fi_ptr->ident);
- 		pos += store_gcov_u32(buffer, pos, fi_ptr->checksum);
-+#if CONFIG_CLANG_VERSION < 110000
- 		if (fi_ptr->use_extra_checksum)
- 			pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
-+#else
-+		pos += store_gcov_u32(buffer, pos, fi_ptr->cfg_checksum);
-+#endif
- 
- 		pos += store_gcov_u32(buffer, pos, GCOV_TAG_COUNTER_BASE);
- 		pos += store_gcov_u32(buffer, pos, fi_ptr->num_counters * 2);
+   /* given a pointer to a task_struct, return the user's pt_regs */
+ # define task_pt_regs(t)		(((struct pt_regs *) ((char *) (t) + IA64_STK_OFFSET)) - 1)
 
 
