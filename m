@@ -2,206 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87E835C75B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D4B35C763
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238611AbhDLNTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:19:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31584 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238277AbhDLNTX (ORCPT
+        id S238989AbhDLNUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:20:04 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:5494 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237579AbhDLNUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:19:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618233545;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ZXD0Vjr7M6pXQoqoYaNJ9fIJMRtCGqZKUK6a7IbIAM=;
-        b=IfujdcitXd9kYzsj+8DDlnMxAEjGbadVBza3cHUTz9FUaG8Yd9XzCtltvTBh5btJ4Md062
-        e0XtzAvn94j3qcrWUUs9/h5aYJj1WyfjDRc2XzXDp1kM6+av/4bR/79iKg9neQZiE19BVq
-        x94D0YPCfff5/1n++f+Di2qy3WWhCgE=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-156-n-UQiMbEMFiXKOS9zyBW2Q-1; Mon, 12 Apr 2021 09:19:04 -0400
-X-MC-Unique: n-UQiMbEMFiXKOS9zyBW2Q-1
-Received: by mail-wr1-f70.google.com with SMTP id r12so5182204wrw.18
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 06:19:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=7ZXD0Vjr7M6pXQoqoYaNJ9fIJMRtCGqZKUK6a7IbIAM=;
-        b=LV9z9c5G5iiZ/qcGwkwNr0vg027c28fZD3NtDNMjxMfL+6ZK9jcE72zor/XMkTwh1D
-         uZy0ZTJEvH421uLp5PJ33NjQGVIbYmhorQQ+TAMKWMpxYN4XxpBcTAH8+xATXN2ue41o
-         Ll2CQBt1kIMzBMGJZT7/Uh4YKzlBKmmvhl4GfXER4RAVZew9TUrk3U0n85djmxEf0HGw
-         X9Fz6jfVHAFqnhmBS9sZLdx786bHvN61GrjjM1p/z/LFKUHVEshR/WIbSKlN2KrHsX5x
-         9Ul4jqk+MIf2IVCoRdlODQnZZHa0jLSIzTuojuyS1x4BK2YsfSNL2mNUlQwSSyvkhIXr
-         bDvg==
-X-Gm-Message-State: AOAM533DFusd8TtqfSmvJcgbN2C0OVbDz27GIs0oBUwTTnmcH+86rgF9
-        Dn5cTKWjyLOvSXFql7icrucWk+Z6BiyE+zscsmNzYL3+J9RHbkG5WWGkl58CZFyrzGUm2pDwXAn
-        CBbqGLD25GMCKhoPHED8HzGj7
-X-Received: by 2002:a5d:40c1:: with SMTP id b1mr14515996wrq.33.1618233542679;
-        Mon, 12 Apr 2021 06:19:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz7xYSMl1mhv7IAg348AjhAJnlfD0ElxtQIBjiZbX8gXBrQUGHbbh/j9IzPlcTzIMjQzJv+hg==
-X-Received: by 2002:a5d:40c1:: with SMTP id b1mr14515964wrq.33.1618233542418;
-        Mon, 12 Apr 2021 06:19:02 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c66cb.dip0.t-ipconnect.de. [91.12.102.203])
-        by smtp.gmail.com with ESMTPSA id c8sm14836856wmb.34.2021.04.12.06.19.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 06:19:02 -0700 (PDT)
-Subject: Re: [PATCH v3] drivers: introduce and use WANT_DMA_CMA for soft
- dependencies on DMA_CMA
-To:     Robin Murphy <robin.murphy@arm.com>, Arnd Bergmann <arnd@arndb.de>
-Cc:     Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        David Airlie <airlied@linux.ie>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Eric Anholt <eric@anholt.net>, Christoph Hellwig <hch@lst.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Joel Stanley <joel@jms.id.au>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        The etnaviv authors <etnaviv@lists.freedesktop.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Linux-MM <linux-mm@kvack.org>, Andrew Jeffery <andrew@aj.id.au>,
+        Mon, 12 Apr 2021 09:20:04 -0400
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13CDIDTg018924;
+        Mon, 12 Apr 2021 15:19:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=8R7d3CTMS2VKwKA9wDvlbwBP8USe1r/2dAXdVNGhj58=;
+ b=6fb+lsRSyKi7xpqxY5M+nTSIlLJpJIZIKGK8vAjyHYE0g+ipDxI7sK732PlF6x3LB7sr
+ JNODjUKwTXg6g3dMuq2EihQ7P/pe+jsI/jZimGi5QTngn/nDH9GE8OIXsuCsd/8mb4wQ
+ HAHxcaGP91cf/wYv96jatFG6NwFupwfb67+cFP0Dic26yKhQxGLQcIL+IiUO7nN5Zzjd
+ GWNDO5JeJapY/812tAvK+2tihqzfrAR0L1YTv4gaNk6J7kIagTRpGKv+qWiK2vz+nwQp
+ idIK+G1c+yIFS2IJBoXlQDrLDVrOCB16LIJmXkbW+tXHyLj6p9fnrYEWP3WjrX6EHfB+ Jg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 37v3a5nhak-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 15:19:30 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 25FBA10002A;
+        Mon, 12 Apr 2021 15:19:29 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 12DB1248EE1;
+        Mon, 12 Apr 2021 15:19:29 +0200 (CEST)
+Received: from lmecxl0566.lme.st.com (10.75.127.49) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 12 Apr
+ 2021 15:19:28 +0200
+Subject: Re: [Linux-stm32] [PATCH] serial: stm32: optimize spin lock usage
+To:     dillon min <dillon.minfei@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+CC:     <linux-serial@vger.kernel.org>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Lucas Stach <l.stach@pengutronix.de>
-References: <20210409112035.27221-1-david@redhat.com>
- <CAK8P3a31uKNcim0n99=yt3zjZ+LQSw4V4+8PS8daLsBdS0iSYg@mail.gmail.com>
- <53ec94ac-ffe3-d0bc-d081-3489fa03daa1@redhat.com>
- <34350446-0e0e-6947-40bd-fabdccdc835f@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <e996ca72-7857-ba50-0e7e-f0c3dab3a931@redhat.com>
-Date:   Mon, 12 Apr 2021 15:19:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        <jirislaby@kernel.org>, <linux-stm32@st-md-mailman.stormreply.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>
+References: <1618202061-8243-1-git-send-email-dillon.minfei@gmail.com>
+ <YHPgGI6EmTzmVH7g@kroah.com>
+ <CAL9mu0Lt-3_O7V5HLxd5Hbt9afx9ryBUzWqmsc+2n3SP7JS6ig@mail.gmail.com>
+ <YHQEA9jn5uXQCtrN@kroah.com>
+ <CAL9mu0+hi5eYEder1Mj2yjUN+eicJ9qG8Kr4GTC2mqfY405Jkg@mail.gmail.com>
+From:   Erwan LE RAY <erwan.leray@foss.st.com>
+Message-ID: <f3985d70-4f00-7442-de4e-e382b19e3e50@foss.st.com>
+Date:   Mon, 12 Apr 2021 15:19:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <34350446-0e0e-6947-40bd-fabdccdc835f@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAL9mu0+hi5eYEder1Mj2yjUN+eicJ9qG8Kr4GTC2mqfY405Jkg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.49]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-12_10:2021-04-12,2021-04-12 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.04.21 15:12, Robin Murphy wrote:
-> On 2021-04-09 14:39, David Hildenbrand wrote:
->> On 09.04.21 15:35, Arnd Bergmann wrote:
->>> On Fri, Apr 9, 2021 at 1:21 PM David Hildenbrand <david@redhat.com>
->>> wrote:
->>>>
->>>> Random drivers should not override a user configuration of core knobs
->>>> (e.g., CONFIG_DMA_CMA=n). Applicable drivers would like to use DMA_CMA,
->>>> which depends on CMA, if possible; however, these drivers also have to
->>>> tolerate if DMA_CMA is not available/functioning, for example, if no CMA
->>>> area for DMA_CMA use has been setup via "cma=X". In the worst case, the
->>>> driver cannot do it's job properly in some configurations.
->>>>
->>>> For example, commit 63f5677544b3 ("drm/etnaviv: select CMA and
->>>> DMA_CMA if
->>>> available") documents
->>>>           While this is no build dependency, etnaviv will only work
->>>> correctly
->>>>           on most systems if CMA and DMA_CMA are enabled. Select both
->>>> options
->>>>           if available to avoid users ending up with a non-working GPU
->>>> due to
->>>>           a lacking kernel config.
->>>> So etnaviv really wants to have DMA_CMA, however, can deal with some
->>>> cases
->>>> where it is not available.
->>>>
->>>> Let's introduce WANT_DMA_CMA and use it in most cases where drivers
->>>> select CMA/DMA_CMA, or depend on DMA_CMA (in a wrong way via CMA because
->>>> of recursive dependency issues).
->>>>
->>>> We'll assume that any driver that selects DRM_GEM_CMA_HELPER or
->>>> DRM_KMS_CMA_HELPER would like to use DMA_CMA if possible.
->>>>
->>>> With this change, distributions can disable CONFIG_CMA or
->>>> CONFIG_DMA_CMA, without it silently getting enabled again by random
->>>> drivers. Also, we'll now automatically try to enabled both, CONFIG_CMA
->>>> and CONFIG_DMA_CMA if they are unspecified and any driver is around that
->>>> selects WANT_DMA_CMA -- also implicitly via DRM_GEM_CMA_HELPER or
->>>> DRM_KMS_CMA_HELPER.
->>>>
->>>> For example, if any driver selects WANT_DMA_CMA and we do a
->>>> "make olddefconfig":
->>>>
->>>> 1. With "# CONFIG_CMA is not set" and no specification of
->>>>      "CONFIG_DMA_CMA"
->>>>
->>>> -> CONFIG_DMA_CMA won't be part of .config
->>>>
->>>> 2. With no specification of CONFIG_CMA or CONFIG_DMA_CMA
->>>>
->>>> Contiguous Memory Allocator (CMA) [Y/n/?] (NEW)
->>>> DMA Contiguous Memory Allocator (DMA_CMA) [Y/n/?] (NEW)
->>>>
->>>> 3. With "# CONFIG_CMA is not set" and "# CONFIG_DMA_CMA is not set"
->>>>
->>>> -> CONFIG_DMA_CMA will be removed from .config
->>>>
->>>> Note: drivers/remoteproc seems to be special; commit c51e882cd711
->>>> ("remoteproc/davinci: Update Kconfig to depend on DMA_CMA") explains
->>>> that
->>>> there is a real dependency to DMA_CMA for it to work; leave that
->>>> dependency
->>>> in place and don't convert it to a soft dependency.
->>>
->>> I don't think this dependency is fundamentally different from the others,
->>> though davinci machines tend to have less memory than a lot of the
->>> other machines, so it's more likely to fail without CMA.
->>>
+Hi Dillon,
+
+Thanks for your patch.
+
+Could you please elaborate the use case in your commit message ?
+
+Best Regards, Erwan.
+
+On 4/12/21 10:54 AM, dillon min wrote:
+> Hi Greg,
+> 
+> On Mon, Apr 12, 2021 at 4:25 PM Greg KH <gregkh@linuxfoundation.org> wrote:
 >>
->> I was also unsure - and Lucas had similar thoughts. If you want, I can
->> send a v4 also taking care of this.
+>> On Mon, Apr 12, 2021 at 02:50:20PM +0800, dillon min wrote:
+>>> Hi Greg，
+>>>
+>>> Thanks for the quick response, please ignore the last private mail.
+>>>
+>>> On Mon, Apr 12, 2021 at 1:52 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>>>>
+>>>> On Mon, Apr 12, 2021 at 12:34:21PM +0800, dillon.minfei@gmail.com wrote:
+>>>>> From: dillon min <dillon.minfei@gmail.com>
+>>>>>
+>>>>> To avoid potential deadlock in spin_lock usage, change to use
+>>>>> spin_lock_irqsave(), spin_unlock_irqrestore() in process(thread_fn) context.
+>>>>> spin_lock(), spin_unlock() under handler context.
+>>>>>
+>>>>> remove unused local_irq_save/restore call.
+>>>>>
+>>>>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+>>>>> ---
+>>>>> Was verified on stm32f469-disco board. need more test on stm32mp platform.
+>>>>>
+>>>>>   drivers/tty/serial/stm32-usart.c | 27 +++++++++++++++++----------
+>>>>>   1 file changed, 17 insertions(+), 10 deletions(-)
+>>>>>
+>>>>> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+>>>>> index b3675cf25a69..c4c859b34367 100644
+>>>>> --- a/drivers/tty/serial/stm32-usart.c
+>>>>> +++ b/drivers/tty/serial/stm32-usart.c
+>>>>> @@ -214,7 +214,7 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
+>>>>>        struct tty_port *tport = &port->state->port;
+>>>>>        struct stm32_port *stm32_port = to_stm32_port(port);
+>>>>>        const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+>>>>> -     unsigned long c;
+>>>>> +     unsigned long c, flags;
+>>>>>        u32 sr;
+>>>>>        char flag;
+>>>>>
+>>>>> @@ -276,9 +276,17 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
+>>>>>                uart_insert_char(port, sr, USART_SR_ORE, c, flag);
+>>>>>        }
+>>>>>
+>>>>> -     spin_unlock(&port->lock);
+>>>>> +     if (threaded)
+>>>>> +             spin_unlock_irqrestore(&port->lock, flags);
+>>>>> +     else
+>>>>> +             spin_unlock(&port->lock);
+>>>>
+>>>> You shouldn't have to check for this, see the other patches on the list
+>>>> recently that fixed this up to not be an issue for irq handlers.
+>>> Can you help to give more hints, or the commit id of the patch which
+>>> fixed this. thanks.
+>>>
+>>> I'm still confused with this.
+>>>
+>>> The stm32_usart_threaded_interrupt() is a kthread context, once
+>>> port->lock holds by this function, another serial interrupts raised,
+>>> such as USART_SR_TXE,stm32_usart_interrupt() can't get the lock,
+>>> there will be a deadlock. isn't it?
+>>>
+>>>   So, shouldn't I use spin_lock{_irqsave} according to the caller's context ?
+>>
+>> Please see 81e2073c175b ("genirq: Disable interrupts for force threaded
+>> handlers") for when threaded irq handlers have irqs disabled, isn't that
+>> the case you are trying to "protect" from here?
+>>
+>> Why is the "threaded" flag used at all?  The driver should not care.
+>>
+>> Also see 9baedb7baeda ("serial: imx: drop workaround for forced irq
+>> threading") in linux-next for an example of how this was fixed up in a
+>> serial driver.
+>>
+>> does that help?
+>>
+> Yes, it's really helpful. and 81e2073c175b should be highlighted in a doc.
+> In my past knowledge, we should care about hard irq & thread_fn lock conflict.
+> This patch has totally avoided patching code in the separate driver side.
+> thanks.
 > 
-> TBH I think it should all just be removed. DMA_CMA is effectively an
-> internal feature of the DMA API, and drivers which simply use the DMA
-> API shouldn't really be trying to assume *how* things might be allocated
-> at runtime - CMA is hardly the only way. Platform-level assumptions
-> about the presence or not of IOMMUs, memory carveouts, etc., and whether
-> it even matters - e.g. a device with a tiny LCD may only need display
-> buffers which still fit in a regular MAX_ORDER allocation - could go in
-> platform-specific configs, but I really don't think they belong at the
-> generic subsystem level.
+> I will just keep the changes in stm32_usart_console_write(), remove
+> these code in
+> thread_fn. update version 2 for you.
 > 
-> We already have various examples like I2S drivers that won't even probe
-> without a dmaengine provider being present, or host controller drivers
-> which are useless without their corresponding phy driver (and I'm
-> guessing you can probably also do higher-level things like include the
-> block layer but omit all filesystem drivers). I don't believe it's
-> Kconfig's job to try to guess whether a given configuration is *useful*,
-> only to enforce that's it's valid to build.
-
-That would mean: if it's not a built-time dependency, don't mention it 
-in Kconfig.
-
-If that were true, why do we have have defaults modeled in Kconfig then?
-
-IMHO, some part of Kconfig is to give you sane defaults.
-
--- 
-Thanks,
-
-David / dhildenb
-
+> thanks.
+> 
+> Dillon,
+>> thanks,
+>>
+>> greg k-h
+> _______________________________________________
+> Linux-stm32 mailing list
+> Linux-stm32@st-md-mailman.stormreply.com
+> https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
+> 
