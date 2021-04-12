@@ -2,171 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605AE35D16D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3B135D179
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238772AbhDLTs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:48:27 -0400
-Received: from mail-eopbgr770083.outbound.protection.outlook.com ([40.107.77.83]:40064
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237406AbhDLTsZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:48:25 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=As6UZPsoAolH82Hsih2BwuSbGGE0ntQyEANPYnVa3+ZRDjeC+JGUX3iTgaQQjB5QsamrXdJUfjntLqSDiejQH8qd1gMfH/vk+b3PlAtk0cjmFML7sNdzLGwjUhKG+yi304FIuo75To69VUJKgqo62nyfbFKjKlXl+tmLmNQWkCFDZEOtx5XATaTW2vZInzH35dcG+h6MB/NJyW+3K7rRVcfEEtRrlojtr4e2DK9Dqsr8Lo9zKWeGGhkstQgPmbgHx5ly9mjaRZDph2EJAyEdd6DImL7ekwFUjCuVXvd+2hsCjAPEAJkJ1gIR142v8eweso9mPPmcomBJmlBSX+6Xkg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vMFsE5kyHk8b/BTrnc+Jh1LeIka8vWE7qzvszbJdnIY=;
- b=mjlG+107amHOhvRAlhj5suxm7CaglliuMqzny0+S9OLLX8W/hwNq1+sXjUrT/JLNKCmThgilWHB+bpngqka2BjLMm253PrqGhSY16kpg7vymuUWKvRFBaSkeIxoAYWhUXDndEmplTLPp8MPeHCq+a2hor6CzlN/u15OfwGjOHUedUlj3ylvPCnRbQav95eXxXLqCXkQ27nMqcq/7Ouu9WsfRNvbrfqupnFJRXYtGXuG5FGczY7Shg1RMYb7dfUJtK5M4BfzDESakz5lub+4MJ47XzQ8WYJPZ35RQdulEblz6VDkbzEtOqm5k0emWQuSwMNmEBjAVPCPQHPc4xbBJ+g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vMFsE5kyHk8b/BTrnc+Jh1LeIka8vWE7qzvszbJdnIY=;
- b=elfZ7EUZl4sofAtDITy+IJAt8x6JXpMJMlAlpQ37MiDUPYpahWeXRqBC2927+ib1dNN8LMj7bvbDhjdXrb183x0aOabrNNAPcmcFY+Ue12JnK9yq5Hu+GAQzyHsqj6ifC2F5EvsKh3m4vDEh1a/RqP0VqGzh3Z2RxBZ9cKpjIPo=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN1PR12MB2415.namprd12.prod.outlook.com (2603:10b6:802:26::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Mon, 12 Apr
- 2021 19:47:59 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::1fb:7d59:2c24:615e]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::1fb:7d59:2c24:615e%6]) with mapi id 15.20.4020.022; Mon, 12 Apr 2021
- 19:47:59 +0000
-From:   Ashish Kalra <Ashish.Kalra@amd.com>
-To:     pbonzini@redhat.com
-Cc:     tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        joro@8bytes.org, bp@suse.de, thomas.lendacky@amd.com,
-        x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srutherford@google.com, seanjc@google.com,
-        venu.busireddy@oracle.com, brijesh.singh@amd.com,
-        kexec@lists.infradead.org
-Subject: [PATCH v12 13/13] x86/kvm: Add kexec support for SEV Live Migration.
-Date:   Mon, 12 Apr 2021 19:47:49 +0000
-Message-Id: <c349516d85d9e3fc7404d564ff81d7ebecc1162c.1618254007.git.ashish.kalra@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1618254007.git.ashish.kalra@amd.com>
-References: <cover.1618254007.git.ashish.kalra@amd.com>
-Content-Type: text/plain
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN7PR04CA0004.namprd04.prod.outlook.com
- (2603:10b6:806:f2::9) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+        id S238458AbhDLTv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:51:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49555 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237406AbhDLTv4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 15:51:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618257097;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5P/eSXvLeEKIrDEUii8lpIPiiq4SsVgbm3uyEQEEKf4=;
+        b=Ky68jKfxEgPpslZc1oSDAlVYMr4CJrkBvWoPx4BdzYHjEMcWQ4one/p18dOqUtaRjAtgPc
+        y42r+Jn7WnMZYqE1n9c/glHC0WCwV6Io7ZWyHEl8up6G+kUO1lgzZV103ZEMuM4J37uCAi
+        A6GY2jVZBWZi9mjHQtYVYuABq6tlQz0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-8-GIGo0jZvNCeHf2gpe1YExQ-1; Mon, 12 Apr 2021 15:51:34 -0400
+X-MC-Unique: GIGo0jZvNCeHf2gpe1YExQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A1B7664157;
+        Mon, 12 Apr 2021 19:51:32 +0000 (UTC)
+Received: from crecklin.bos.csb (unknown [10.10.115.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5729E1002388;
+        Mon, 12 Apr 2021 19:51:27 +0000 (UTC)
+Reply-To: crecklin@redhat.com
+Subject: Re: [PATCH v6 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     Simo Sorce <simo@redhat.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210412140932.31162-1-crecklin@redhat.com>
+ <YHSHPIXLhHjOu0jw@gmail.com>
+ <5795c815-7715-1ecb-dd83-65f3d18b9092@redhat.com>
+ <YHSdgV6LIqSVxk+i@gmail.com>
+ <CAMj1kXGZt8+5MVG-mNi67KsG8=4HCqEPs+RkrtzHusmCPFqSTg@mail.gmail.com>
+From:   Chris von Recklinghausen <crecklin@redhat.com>
+Organization: Red Hat
+Message-ID: <862c8208-5809-9726-7e22-7a16fcd30edd@redhat.com>
+Date:   Mon, 12 Apr 2021 15:51:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ashkalra_ubuntu_server.amd.com (165.204.77.1) by SN7PR04CA0004.namprd04.prod.outlook.com (2603:10b6:806:f2::9) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend Transport; Mon, 12 Apr 2021 19:47:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5c70c258-1d23-4b85-27b7-08d8fdebdfc2
-X-MS-TrafficTypeDiagnostic: SN1PR12MB2415:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SN1PR12MB241502C0F3EB6EEF869032208E709@SN1PR12MB2415.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: X97w1zOsn8k9dPw44sHZLVej/MdKKH++6KhTGngXkMoHKuBwwCwdlJTq/L2Q8rn5RW2Zt/SiDIaAeOWdzLjE2tzl5y8QGg4atcV118zSfkbYM2n5BuY35yQTAmc09o3V5kv6olBQfyHgc/hTAc0M4HMTgVbbafH0UsaECs4XcfSibPDM2gm2nCEaHMLbdSBlXoyc5HfjMBTuYkBrd6p4bSg0b2jFSJOaCmWjGPk4Vps7TYxVpmFq6TzDfo17sF0xQEavh3RzFGKRHcLQd3W5qL5BanelE74S8QGClSCJoWFw6C4F/OfcVjoG48YScKYFIm3uEYK+VBbVV37MquG7PHbrQkKf4oWNR8HdySjHQASs4CJS9+Vpn4vxUnJ9a8LYuUlunUaVWgN94APw4EjKJ1wrJ+RZ7SCIit8Z+bu1uC4TvXWmjibR4i9/QSWlnomyW4aRhZNKdN9ldJVJcYB/k6c7jHd4MxcJWfwLBV/oh5iHKohtE1UlJb0+QPkw1RieELjzcd2adv49Ud4oP9g27lMwBNPdWksspi1iz/I3dbmbUHoWpqrlbygx0K4PQ7mC+dszjOFf0c+nsyw70iTZOjuReaDQsNYvqkBAf87xc/W3i6U9Efk06vLq+xQm585bvjQZdVHyES5xmu0uOrOjIDWOJCZv7DwGHOhYi2XJSMU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(366004)(396003)(376002)(136003)(26005)(16526019)(186003)(86362001)(52116002)(6666004)(956004)(2616005)(2906002)(7696005)(6486002)(66946007)(66476007)(8676002)(7416002)(36756003)(6916009)(4326008)(478600001)(5660300002)(38350700002)(38100700002)(8936002)(316002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?SG8qyNU1gCMJIQoYXc1YdYhdDv5bhe0yFw9IdsO/9UhAPSdWlvPUDD4mn0fa?=
- =?us-ascii?Q?ftsgH1PeHd7yZBvHy+o38d0g3IQEABnpNoObfKTqSHp+xrbOjMQf6ZdxljPA?=
- =?us-ascii?Q?C+8SgQwv9e90nSyGyYfiX3rx5f6z+bLlRgyGzdUlV8NFbPTwfg291+eJb6VP?=
- =?us-ascii?Q?/pbAEoZt8dvMVBOdsq7jFgLmTKLK/+ZDcBIMomtzUb/ar3qMC+uz3h1OJ+TJ?=
- =?us-ascii?Q?WKOiAF2hn6STXyrI5voAqXTByYO3k89cFS6bka8DuTk0k0uFUJIL6SYFPhoi?=
- =?us-ascii?Q?on5cA5ZVWkUksyzlT3nByM9Y0kBGgTFIrZ5QplDujsIRceV/ZDO/I6rvXqA7?=
- =?us-ascii?Q?whskCboZLy6e9FxgkgI4iNtbTm8aaMf4XJ7IdfUFlLqRO9qk9BwFow4cGKn8?=
- =?us-ascii?Q?LgzaQ+ae+Guk1ED+4v08ooxjCioP3KXQuCfvwUFuMjj7sTVTqzcbeqqtZ9Qv?=
- =?us-ascii?Q?r9gn9802SO+5ts24Jw0mOxJKDyszB/+2eXFyKbXhbMJOnTLzpSUme8+DOBuH?=
- =?us-ascii?Q?BdYwjT/NabVNvPi5CmuM0eBxntaCZhRX6zOWsz6VqEihh2ctzrpdByU0gl04?=
- =?us-ascii?Q?HYeaFcguuVaNz+vNTxfv1UAMhcCJ3C5hR67wBsd22pilfkQxLBI4CYA0QD42?=
- =?us-ascii?Q?oDGNatwKGtIqHuQZTz0I47LEdQ9kdWZfsmYpgzFeS8xQrO14Eev5kVMHqhgL?=
- =?us-ascii?Q?SDcy4rg4Li+AUITNEbUtDJifE7hqbGJp6Z7T29jXzOTcBn3Vo0Li7wJlbgD4?=
- =?us-ascii?Q?vWtH1HVN/Bc0DTui9gKkG/1rB5ImjIjGmb0Q4Vxm8cFYxZEYPq/Yo+U4Ai89?=
- =?us-ascii?Q?oBWDfc4Gql25ofaQLLCroG6EVd18sigD1GKnzKRPDp2fKNND5VivHLFy3YvA?=
- =?us-ascii?Q?HWTGSZ1i6xUiHMI3ua4nzW/ZTvRnrQNEPmi7D0ShVk/0IdLzkgdHB8pBGGVv?=
- =?us-ascii?Q?0Wbu9IeNXhFek2sn2WoGdaqACAfmXODO01oYCNj7zbHAxVMxEQiJJbQ7ixW+?=
- =?us-ascii?Q?6dsbYtSoFqvnsEvdDI/LUPoHnZrXXurCPvu0pjFgeXjjIB0Ef3B7bE97Z/Nz?=
- =?us-ascii?Q?bjz1URx9sQZjbd8IwFlcRAtkgmoWyoOPAoplvbvcKhcfx9Dv0kBLl3VmUzKa?=
- =?us-ascii?Q?3Aj2XTJ0yiyg+aRQ8b51IL5+IoFZuVRHvCyO4rjFG3BncNqGoE3PaKTGmOcX?=
- =?us-ascii?Q?QxvC/V+nonYRfctQoRixAwwGyyQoS/UKDcnSDDhzDq8t0rrH5ZEuUbaB6Aqa?=
- =?us-ascii?Q?/f3znxQbdm0Ft2elAv+j5Q/MSYDxCfdLN+K1IyGsQm8WHMKdjRdCJD+cW3dI?=
- =?us-ascii?Q?NHA3h2Gri6ihmRW+6kOLQaz4?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c70c258-1d23-4b85-27b7-08d8fdebdfc2
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2021 19:47:59.4015
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lgzONNw0cC8DKx6QldL6boJBGcnSg4Xncte33uYVuZd5TIL6A7NfUIm1C1cpqH85T+As4WM+8nW1ojnbfx0Fgw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR12MB2415
+In-Reply-To: <CAMj1kXGZt8+5MVG-mNi67KsG8=4HCqEPs+RkrtzHusmCPFqSTg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ashish Kalra <ashish.kalra@amd.com>
+On 4/12/21 3:27 PM, Ard Biesheuvel wrote:
+> On Mon, 12 Apr 2021 at 21:20, Eric Biggers <ebiggers@kernel.org> wrote:
+>> On Mon, Apr 12, 2021 at 03:04:58PM -0400, Chris von Recklinghausen wrote:
+>>> On 4/12/21 1:45 PM, Eric Biggers wrote:
+>>>> On Mon, Apr 12, 2021 at 10:09:32AM -0400, Chris von Recklinghausen wrote:
+>>>>> Suspend fails on a system in fips mode because md5 is used for the e820
+>>>>> integrity check and is not available. Use crc32 instead.
+>>>>>
+>>>>> This patch changes the integrity check algorithm from md5 to crc32.
+>>>>>
+>>>>> The purpose of the integrity check is to detect possible differences
+>>>>> between the memory map used at the time when the hibernation image is
+>>>>> about to be loaded into memory and the memory map used at the image
+>>>>> creation time, because it is generally unsafe to load the image if the
+>>>>> current memory map doesn't match the one used when it was created. so
+>>>>> it is not intended as a cryptographic integrity check.
+>>>> This still doesn't actually explain why a non-cryptographic checksum is
+>>>> sufficient.  "Detection of possible differences" could very well require
+>>>> cryptographic authentication; it depends on whether malicious changes need to be
+>>>> detected or not.
+>>> Hi Eric,
+>>>
+>>> The cases that the commit comments for 62a03defeabd mention are the same as
+>>> for this patch, e.g.
+>>>
+>>>      1. Without this patch applied, it is possible that BIOS has
+>>>         provided an inconsistent memory map, but the resume kernel is still
+>>>         able to restore the image anyway(e.g, E820_RAM region is the superset
+>>>         of the previous one), although the system might be unstable. So this
+>>>         patch tries to treat any inconsistent e820 as illegal.
+>>>
+>>>      2. Another case is, this patch replies on comparing the e820_saved, but
+>>>         currently the e820_save might not be strictly the same across
+>>>         hibernation, even if BIOS has provided consistent e820 map - In
+>>>         theory mptable might modify the BIOS-provided e820_saved dynamically
+>>>         in early_reserve_e820_mpc_new, which would allocate a buffer from
+>>>         E820_RAM, and marks it from E820_RAM to E820_RESERVED).
+>>>         This is a potential and rare case we need to deal with in OS in
+>>>         the future.
+>>>
+>>> Maybe they should be added to the comments with this patch as well? In any
+>>> case, the above comments only mention detecting consequences of BIOS
+>>> issues/actions on the e820 map and not intrusions from attackers requiring
+>>> cryptographic protection. Does that seem to be a reasonable explanation to
+>>> you? If so I can add these to the commit comments.
+>>>
+>>> I'll make the other changes you suggest below.
+>>>
+>>> Thanks,
+>>>
+>> Those details are still missing the high-level point.  Is this just meant to
+>> detect non-malicious changes (presumably caused by BIOS bugs), or is it meant to
+>> detect malicious changes?  That's all that really needs to be mentioned.
+>>
+> This is not about BIOS bugs. Hibernation is deep suspend/resume
+> grafted onto cold boot, and it is perfectly legal for the firmware to
+> present a different memory map to the OS after a cold boot. It is
+> Linux that decides that it can restore the entire system state from a
+> swap file, and carry on as if the cold boot was just a [firmware
+> assisted] suspend/resume.
+>
+> So forging collisions is *not* a concern here. Let's avoid accidental
+> or malicious, as those adjectives seem to confuse some people. The
+> bottom line is that there is no need to protect against deliberate
+> attempts to hide the fact that the memory map has changed, and so
+> there is no reason to use cryptographic hashes here.
+>
+How about :
 
-Reset the host's shared pages list related to kernel
-specific page encryption status settings before we load a
-new kernel by kexec. We cannot reset the complete
-shared pages list here as we need to retain the
-UEFI/OVMF firmware specific settings.
+The check is intended to differentiate between a resume (which expects 
+an identical e820 map to the one saved in suspend), and a cold boot 
+(which need not have an identical e820 map to that saved in suspend if 
+any was done at all). It is not necessary here to protect against 
+deliberate attempts to hide the fact that the memory map has changed, so 
+crc32 is sufficient for detection.
 
-The host's shared pages list is maintained for the
-guest to keep track of all unencrypted guest memory regions,
-therefore we need to explicitly mark all shared pages as
-encrypted again before rebooting into the new guest kernel.
-
-Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
----
- arch/x86/kernel/kvm.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-index bcc82e0c9779..4ad3ed547ff1 100644
---- a/arch/x86/kernel/kvm.c
-+++ b/arch/x86/kernel/kvm.c
-@@ -39,6 +39,7 @@
- #include <asm/cpuidle_haltpoll.h>
- #include <asm/ptrace.h>
- #include <asm/svm.h>
-+#include <asm/e820/api.h>
- 
- DEFINE_STATIC_KEY_FALSE(kvm_async_pf_enabled);
- 
-@@ -384,6 +385,29 @@ static void kvm_pv_guest_cpu_reboot(void *unused)
- 	 */
- 	if (kvm_para_has_feature(KVM_FEATURE_PV_EOI))
- 		wrmsrl(MSR_KVM_PV_EOI_EN, 0);
-+	/*
-+	 * Reset the host's shared pages list related to kernel
-+	 * specific page encryption status settings before we load a
-+	 * new kernel by kexec. NOTE: We cannot reset the complete
-+	 * shared pages list here as we need to retain the
-+	 * UEFI/OVMF firmware specific settings.
-+	 */
-+	if (sev_live_migration_enabled & (smp_processor_id() == 0)) {
-+		int i;
-+		unsigned long nr_pages;
-+
-+		for (i = 0; i < e820_table->nr_entries; i++) {
-+			struct e820_entry *entry = &e820_table->entries[i];
-+
-+			if (entry->type != E820_TYPE_RAM)
-+				continue;
-+
-+			nr_pages = DIV_ROUND_UP(entry->size, PAGE_SIZE);
-+
-+			kvm_sev_hypercall3(KVM_HC_PAGE_ENC_STATUS,
-+					   entry->addr, nr_pages, 1);
-+		}
-+	}
- 	kvm_pv_disable_apf();
- 	kvm_disable_steal_time();
- }
--- 
-2.17.1
 
