@@ -2,110 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5557335B9C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 07:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 220C935B9DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 07:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhDLFPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 01:15:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229764AbhDLFPF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 01:15:05 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76869C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 22:14:48 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id w31-20020a9d36220000b02901f2cbfc9743so11700329otb.7
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 22:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kyfCrPJsGOPHeYAHRBpmqkFCyszA/k+gL/paXOUfjJ8=;
-        b=AQK3qXaFsnZNNx3qX4YDIFdybx8KeeBYrj4thSnuoAJxk+MHQDuNJBHZr6saGRYOOK
-         j68tce7vfVDhqJuNCqliJdnS9YydL5R0uCZ8HT/+u4A/HPaGrFaQBUFOo8FUECRZBHD7
-         NW2fBUAJ0bXMfurdZGnEuRcyejA/hcSLGob/aqUhYpGg/kIYOqBw7tPDvZfK/qiNKNC8
-         QxRZPfEEnCGmEssFZ1Fd1y+5o4zhj3A0Yu/wZc43wO/7FmObOHUBakRHfIw3KrOhiM41
-         aLs3yxSUV6iFIxLW80WCBxHz5hOkdM7Asf6HjPSobs1XZQiD4ZMl42bvVtCqhUzi4hSE
-         8WgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kyfCrPJsGOPHeYAHRBpmqkFCyszA/k+gL/paXOUfjJ8=;
-        b=d1MS6lXQ7dBeog35EoS+KdUTqIPPL/LQgAgLi9HQKW22EQNndDNcyk6qEIPl+1JuPg
-         it7UerAcUbVgs/egzy25wLj9M+KLW9skGjnEkctn5kbVRYDqnt3m+d1LhxunXF4XLpox
-         +2TaoszF880PJuOCTE9RbfaYlPtWXtyH2W4CnCvRRZSgeUJTlqWJtoE3S/6NN/UWn1tW
-         5zM8qt0LmO8l50kotoXPNJtU4/HclGWlj8SLeVklTverMYrIl1oZeP+rVGP8jBiN0Ubh
-         Tf+RvCVWuuR2Uv0DuE+tSnduOc8KF54PqXiB9fSzK3OUjT9joaUsBRQlvB4yps0sM6Za
-         faMQ==
-X-Gm-Message-State: AOAM532EIZHc3d9iW1w3PZmnLGB136cRiU7PivKC6erYpQ4NTEbzQ61H
-        UTp2VWh5ZOQooYnF6Uj7Syc=
-X-Google-Smtp-Source: ABdhPJy5RRYsCiinsxKkjKqUAJvixU69jANHNRbuHmdHfxL8qAD45p8qqZLdQCbtuVrNdY6VHnEIHA==
-X-Received: by 2002:a9d:7d91:: with SMTP id j17mr14518754otn.135.1618204487907;
-        Sun, 11 Apr 2021 22:14:47 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id w1sm1819302otq.75.2021.04.11.22.14.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 11 Apr 2021 22:14:47 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sun, 11 Apr 2021 22:14:45 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-Subject: Re: Linux 5.12-rc7
-Message-ID: <20210412051445.GA47322@roeck-us.net>
-References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S230084AbhDLFdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 01:33:01 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:34686 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229448AbhDLFcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 01:32:46 -0400
+Received: from localhost.localdomain (unknown [10.192.139.175])
+        by mail-app4 (Coremail) with SMTP id cS_KCgB3KURV23Ngj++1AA--.9781S4;
+        Mon, 12 Apr 2021 13:32:10 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [v2] iio: proximity: pulsedlight: Fix rumtime PM imbalance on error
+Date:   Mon, 12 Apr 2021 13:32:02 +0800
+Message-Id: <20210412053204.4889-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgB3KURV23Ngj++1AA--.9781S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GrWDuF4rZFWDtr1fAry7Jrb_yoWDXwc_Cr
+        nrtry0qr17C3y2kwsrA3WFqrWFkr90qF98Xr1ktF13Cryayr9a9ryktrZ8Aw45Xr48GryY
+        gF4xK3Z7Ar4IgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWU
+        GwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgUKBlZdtTUxDAAQst
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 03:41:18PM -0700, Linus Torvalds wrote:
-> Oh well. rc5 was big. rc6 was small. And now rc7 is big again. In
-> fact, it's the biggest rc7 (at least in number of commits) we've had
-> in the 5.x series.
-> 
-> It's mostly due to networking fixes (of which rc6 had none), and none
-> of them should be all that scary, but it's never great when we have
-> such a big rc. It's particularly annoying at the end of the release
-> window like this.
-> 
-> End result: I'm still waffling about the final 5.12 release.  The fact
-> that we have a big rc7 does make me think that I'll probably do an rc8
-> this time around. But it ends up depending a bit on how the upcoming
-> week goes, and if things are deathly quiet, I may end up deciding that
-> an rc8 doesn't really make sense.
-> 
-> So we'll see.
-> 
-> Anyway, networking (both core and drivers) is over half of the rc7
-> patch, with the rest being a fairly random collection of fixes all
-> over. We've got other driver updates (sound, rdma, scsi, usb..) some
-> fs fixes (io_uring, umount, btrfs, cifs, ocfs), minor arch fixes (arc,
-> arm, parisc, powerpc, s390, x86), and other misc fixes.
-> 
-> The shortlog is appended, although it's obviously not as nice and
-> small and readable as I'd have liked at this point in the release..
-> 
-> Please do test,
-> 
+When lidar_write_control() fails, a pairing PM usage counter
+decrement is needed to keep the counter balanced.
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 460 pass: 459 fail: 1
-Failed tests:
-	sh:rts7751r2dplus_defconfig:ata:net,virtio-net:rootfs
+Fixes: 4ac4e086fd8c5 ("iio: pulsedlight-lidar-lite: add runtime PM")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
 
-The failure bisects to commit 0f6925b3e8da ("virtio_net: Do not pull payload in
-skb->head"). It is a spurious problem - the test passes roughly every other
-time. When the failure is seen, udhcpc fails to get an IP address and aborts
-with SIGTERM. So far I have only seen this with the "sh" architecture.
+Changelog:
 
-Guenter
+v2: - Add the fix tag.
+---
+ drivers/iio/proximity/pulsedlight-lidar-lite-v2.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c b/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
+index c685f10b5ae4..cc206bfa09c7 100644
+--- a/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
++++ b/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
+@@ -160,6 +160,7 @@ static int lidar_get_measurement(struct lidar_data *data, u16 *reg)
+ 	ret = lidar_write_control(data, LIDAR_REG_CONTROL_ACQUIRE);
+ 	if (ret < 0) {
+ 		dev_err(&client->dev, "cannot send start measurement command");
++		pm_runtime_put_noidle(&client->dev);
+ 		return ret;
+ 	}
+ 
+-- 
+2.17.1
+
