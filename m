@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA08835C703
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1FF35C711
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:09:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241688AbhDLNIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:08:39 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39100 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241671AbhDLNIh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:08:37 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618232897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RZP2snCTh+JHrz4jVYis2HFOEGARSIstoiJmLjCAKk4=;
-        b=QKW4hQRupWaQcTUowFPpkIw22sdWiWlTC9gJAGEbG7PhCj/E03hPRY9WfCN7hHkvG76dJA
-        FyFbHs7S6QXuskXiSvUs+5JAGXP7Wr4P63+B40d5hh14jdYh1SaupLwAzAv3n9Y/bKV1oI
-        xkfQY9qG9E9QxMpb9x780uInsRzsYDMQQD979tatAjLEXvUWfM/BapCSa2nfIdfsJ6bH+9
-        M8LY3vrCyuLYCEeANi5mBsvgVDLasbYCOVwGsHHNQ/Y2N+bkSM4r5DVowIxLa7Mlw50qgF
-        rTv4WZWmk4dJXNqGERbJALKB54mnW2gIq3rWKudTBMZtWOoIP2ctWKWsT3gcJg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618232897;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RZP2snCTh+JHrz4jVYis2HFOEGARSIstoiJmLjCAKk4=;
-        b=jfbSSM8iJg/SKUfpsnt/j4wSzVJBCyKZ+kiRekypQN8QxUb27l+RWHY03+I11Kx8BfNWUr
-        NxKZbsuwMCu+OxDw==
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com
-Subject: Re: [PATCH v7 clocksource 3/5] clocksource: Check per-CPU clock synchronization when marked unstable
-In-Reply-To: <20210412042157.GA1889369@paulmck-ThinkPad-P17-Gen-1>
-References: <20210402224828.GA3683@paulmck-ThinkPad-P72> <20210402224906.3912-3-paulmck@kernel.org> <87blam4iqe.ffs@nanos.tec.linutronix.de> <20210411002020.GV4510@paulmck-ThinkPad-P17-Gen-1> <878s5p2jqv.ffs@nanos.tec.linutronix.de> <20210411164612.GZ4510@paulmck-ThinkPad-P17-Gen-1> <20210412042157.GA1889369@paulmck-ThinkPad-P17-Gen-1>
-Date:   Mon, 12 Apr 2021 15:08:16 +0200
-Message-ID: <87k0p71whr.ffs@nanos.tec.linutronix.de>
+        id S241757AbhDLNJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:09:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35786 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241738AbhDLNJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 09:09:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B5B26128A;
+        Mon, 12 Apr 2021 13:09:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618232975;
+        bh=XwUFNbernxh8G9/2E7N7iYvMgYs7Tdv6Yd/vyKkupO8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TfmW5LCEW4g0sWTGoOukXeLL8xBJwEkwCHSo38bx+pGmx19rTlWOLldHs+WpCEdgR
+         J1g1xsMcHFF1l9twWuibhyUtcgSHLtJFiEEE4KvxVXyLUAT810RQYm9TUZpWYhHoVv
+         43+I6EMXDqGPpvwYmgmiFYbP86y7xtPuOisWNzmktOTH2Pz0na754W7lAsPMkvlf15
+         QL1wVLVoIE0oLx1qtTcy6vePW/486nnNFZlt6caMHweNYl/Q+8H7q6jMspTyx69wXN
+         0oR1/ZQ0s1RTupXPTxt6XohGYQX+tqE0oxIblHY0Wn4Rl3j5h8H/h1RGwGjqCl6fHj
+         rJPGezzJm9Epg==
+Date:   Mon, 12 Apr 2021 14:09:14 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "agross@kernel.org" <agross@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+Subject: Re: [PATCH v4 3/7] regulator: IRQ based event/error notification
+ helpers
+Message-ID: <20210412130914.GA5379@sirena.org.uk>
+References: <cover.1617690965.git.matti.vaittinen@fi.rohmeurope.com>
+ <2b87b4637fde2225006cc122bc855efca0dcd7f1.1617692184.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAHp75VeoTVNDemV0qRA4BTVqOVfyR9UKGWhHgfeat8zVVGcu_Q@mail.gmail.com>
+ <55397166b1c4107efc2a013635f63af142d9b187.camel@fi.rohmeurope.com>
+ <CAHp75VeK+Oq9inOLcSSsq+FjaaPC5D=EMt4vLf97uR1BmpW2Zw@mail.gmail.com>
+ <42210c909c55f7672e4a4a9bfd34553a6f4c8146.camel@fi.rohmeurope.com>
+ <CAHp75VeX8H5E6GfVHxgu_6R+zbvmFV8fT9tO-nsm1nB3N4NF_A@mail.gmail.com>
+ <202104082015.4DADF9DC48@keescook>
+ <dbd6a71b1b907de004d23d2ea4b15045320f1ae1.camel@fi.rohmeurope.com>
+ <882c4561ebc20313098312bb9cfae60736d69475.camel@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gBBFr7Ir9EOA20Yy"
+Content-Disposition: inline
+In-Reply-To: <882c4561ebc20313098312bb9cfae60736d69475.camel@fi.rohmeurope.com>
+X-Cookie: Air is water with holes in it.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11 2021 at 21:21, Paul E. McKenney wrote:
-> On Sun, Apr 11, 2021 at 09:46:12AM -0700, Paul E. McKenney wrote:
->> So I need to is inline clocksource_verify_percpu_wq()
->> into clocksource_verify_percpu() and then move the call to
->> clocksource_verify_percpu() to __clocksource_watchdog_kthread(), right
->> before the existing call to list_del_init().  Will do!
->
-> Except that this triggers the WARN_ON_ONCE() in smp_call_function_single()
-> due to interrupts being disabled across that list_del_init().
->
-> Possibilities include:
->
-> 1.	Figure out why interrupts must be disabled only sometimes while
-> 	holding watchdog_lock, in the hope that they need not be across
-> 	the entire critical section for __clocksource_watchdog_kthread().
-> 	As in:
->
-> 		local_irq_restore(flags);
-> 		clocksource_verify_percpu(cs);
-> 		local_irq_save(flags);
->
-> 	Trying this first with lockdep enabled.  Might be spectacular.
 
-Yes, it's a possible deadlock against the watchdog timer firing ...
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The reason for irqsave is again historical AFAICT and nobody bothered to
-clean it up. spin_lock_bh() should be sufficient to serialize against
-the watchdog timer, though I haven't looked at all possible scenarios.
+On Mon, Apr 12, 2021 at 03:24:16PM +0300, Matti Vaittinen wrote:
 
-> 2.	Invoke clocksource_verify_percpu() from its original
-> 	location in clocksource_watchdog(), just before the call to
-> 	__clocksource_unstable().  This relies on the fact that
-> 	clocksource_watchdog() acquires watchdog_lock without
-> 	disabling interrupts.
+> Maybe this 'hardware protection, in-kernel, emergency HW saving
+> shutdown' - logic, should be pulled out of thermal_core.c (or at least
+> exported) for (other parts like) the regulators to use?
 
-That should be fine, but this might cause the softirq to 'run' for a
-very long time which is not pretty either.
+That sounds sensible.
 
-Aside of that, do we really need to check _all_ online CPUs? What you
-are trying to figure out is whether the wreckage is CPU local or global,
-right?
+--gBBFr7Ir9EOA20Yy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Wouldn't a shirt-sleeve approach of just querying _one_ CPU be good
-enough? Either the other CPU has the same wreckage, then it's global or
-it hasn't which points to a per CPU local issue.
+-----BEGIN PGP SIGNATURE-----
 
-Sure it does not catch the case where a subset (>1) of all CPUs is
-affected, but I'm not seing how that really buys us anything.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB0RnkACgkQJNaLcl1U
+h9Beggf/diaDjvhkVAUMvzAA1oX7AadNx6lHCjXXbm+NhdqiqkwQL1Vggq68u1ia
+FxDab79iVpDTE8OMzcVaPak2NUweYBKnzO27jZTgeGvmPuYJgCPym/KaEMYrJ2bi
+WJ/iu6qhoZtNEvvtzuNUG/MmKWsTmsSSVsHRdh9qrMX5X1DJMmSK/wLifS/oaFHu
+4XYZomClBkP/KtOcPiceEwZiMouGDMyA8jxGYonD+HbLc8mFObkWDdIwdop7oP/u
+idX7TwA+ZzDvwHtsBghyeebRJm3Itbm05wGRw3g+mwVH9DdQBDXvQG2BRA7lv38U
+oqnNZSLTsIgmnLutP117InScnrXWGQ==
+=g1QC
+-----END PGP SIGNATURE-----
 
-Thanks,
-
-        tglx
+--gBBFr7Ir9EOA20Yy--
