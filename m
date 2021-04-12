@@ -2,317 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE11C35CF51
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 084A835CF54
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243655AbhDLRUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239517AbhDLRT7 (ORCPT
+        id S243746AbhDLRUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:20:46 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60978 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239517AbhDLRUi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:19:59 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEF5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:19:41 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id d2so11663320ilm.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:19:41 -0700 (PDT)
+        Mon, 12 Apr 2021 13:20:38 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13CH56um088146;
+        Mon, 12 Apr 2021 17:20:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=xnuc9bWFW1Gdqt6VSZSJW68VZth7xXAS7S7ejeXN1QY=;
+ b=gut4ZB98yLy4joJFSzvJgtGOMNvFlaD5rX33OkxbCwwkdX3lrg1FjIfZLK8YGvhX8i4C
+ 24tAdjg09cMjYg0alUe8cw43cGKUljKvtr7pQ89nNtKOn3MQHkkzEfcgM+2Na2AfmIZ3
+ +xnUJPVOiFswN+XOtyReuTVPoFEJG9K2lhd2zlY2SaK1eMO3uThYkyiReFZHX76YOqdy
+ H89fkn95ko3q9Zy2+AYUswuSbaMvRAFU8Y50aJUdO7Xr9o543EkV22MxjUDch2fLgq9b
+ zPCVpQ04XN8/LKkZhAQgpXd6TwnUlj1QutNCaDwcaIwH3iVKRS15u1StsJPLO6XdZ5Jq uw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 37u4nncf6s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Apr 2021 17:20:03 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13CH6JIA102701;
+        Mon, 12 Apr 2021 17:20:02 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+        by userp3030.oracle.com with ESMTP id 37unxvp8ru-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Apr 2021 17:20:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kduTdb8j+hoUqWacAv3AIxFVHWk4VYRi1vjjRKCgN1La7DG93yqHCKHrQwdN5a5J9k5S/1ENSZaIwD/A+1zml/gHNUZr8WP3NJaEZCiX5iBDTm49AiEkzXSPZVy5ciA7zSTASlrcpuo54fP8qUHCB1TvLP92gWPUG8kyQPa+KOrvtb8sOOZ2sOBB/fCQfsyGqMGq/n8CGAqsCWAF5WcUaOP9Lc+yqW/zplW0iWt3xc/UsRigul0lBTp50l9xlV9TVG2Xl+imqZctncsLB6mLp79TVHgIk7JnX8T5khFoEftLHhr4Yk0YuRKcCrQH4QuhbezJAhVzHi4HLdxrMGnb8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xnuc9bWFW1Gdqt6VSZSJW68VZth7xXAS7S7ejeXN1QY=;
+ b=InYiN8hVbeP+fGp3PDeGsHSJkEeyYM6uiIzKt8+C5ZX+EoVZB0Q2Uy73Zff7n4n+d//RotbCGJYDB8PLVGSAFleNO3+llxazY1l9q5AQaCSkPOVwQYdA/07qxPHJJCdWu1/yPONKUlTQJa4tKKKOB1/38/obP7J+s0MULXtrwHcBz0Lw200mYd2q21chhMRzZrPxtotxUxhbk62wrquBXhl6j7/gNb4kHbQcid/qV2Ytd/xefW2GhO2n2b0DrZOr7JUAqLXBc4BzARsBLM0kvRYrEUBGrP21fdPKocqiPeLMobUSwIvLJPiDrh6jHJalMN9cKE5FPjIAPpz5/uSrZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Endm3ti5ptQAKud2TWKFQLinnf24qKN2RdmJDCOnQdA=;
-        b=OIP+TXCTgxu6rtl/59uKPlWfyOrQTxqDQEtOimkzEBLArbzTQFHoD7ZrQ8yhFLMoDF
-         nhdPf97Em+ackNtoLoW0pui5e763ZUzF8pDS9z/umBNUkfLQRONiyyeoX/o/4GYX1+HF
-         +9BAoVk6UYFGoySBjVWUd/A3JpQAC2Wovs/ZkkIcnBplyrlMp0KmaJpN8vQh6hr6shaB
-         rHtbEAfaOMyFv1D/yh7X2MAewepp6FOFPQfDmTRvHc0HXNQRWCXksxSoejf0p5NnIGyo
-         oCz8EaEXRYF4udT+a4daGU3xtPlRalqEs+G7NkqLAQhfIeeTkhgtf6EdNQ7QsCsno7Rc
-         2WUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Endm3ti5ptQAKud2TWKFQLinnf24qKN2RdmJDCOnQdA=;
-        b=DLpXOBydR0gXOAABp1CoreNCKf0Jo9IufqMlwJpxvDROOcn6DAWUpTKkGAyUQsre1b
-         xhTxo9IPNLWPmwaHNwtundyMy6rO4PSQ318u04Kn8WytPme02rfOmn6OfouUTMeNgcaH
-         xxwFvvp9hBga67OV106ojAOZbZvZ8AUVdkg/T7aVIhocTkyCh3HwYu5S+akfBZPgSJZp
-         lHbsSO27tWd33YfnzZqMgCD3KhUUSy6lNx9MPn/IhA8CbSFVbkGBADIgJ846Ts5ZlqZU
-         qkEyhTNohkIWn9Ubn0jGD+c4zi+67bpu3hnO2mS5o32dp6BPeohYO2U5/M3Bl7E+WUVZ
-         DBYQ==
-X-Gm-Message-State: AOAM5329/o2XitQYkXJs00PSn7rdGo+GsKj8xdmxZK/aLz2xYLuE7zX+
-        qAXcHg2860kJtPtclh6lvVw2rD6uzNpmSZuasumihA==
-X-Google-Smtp-Source: ABdhPJw3jw8Nexy7gZOYitweXO+7XDEU8stvOVE+oQepKkEXP9XT5UXiBPAXFGR/lKDTYskYhK/qsimzawC1ttIxn1g=
-X-Received: by 2002:a92:7f03:: with SMTP id a3mr24118702ild.203.1618247980865;
- Mon, 12 Apr 2021 10:19:40 -0700 (PDT)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xnuc9bWFW1Gdqt6VSZSJW68VZth7xXAS7S7ejeXN1QY=;
+ b=h/KlsneRFZDI716Jb2f5KNzfXa+9vVmokXkRvOKP/Yh51YXvrUDH9Slv3u4Lmpngca4kChOGyx44iq5QzekqE++NWMo1ZTuasdXLfj7UjBMiMH4Wr9sfH9xlOJLxB5Job5USH73jvBxE8KpoR0TH9W1tViHcsPyorPD84D9KkaQ=
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
+ by SJ0PR10MB4638.namprd10.prod.outlook.com (2603:10b6:a03:2d8::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Mon, 12 Apr
+ 2021 17:20:00 +0000
+Received: from BYAPR10MB3573.namprd10.prod.outlook.com
+ ([fe80::50bb:7b66:35ee:4a4]) by BYAPR10MB3573.namprd10.prod.outlook.com
+ ([fe80::50bb:7b66:35ee:4a4%7]) with mapi id 15.20.4020.022; Mon, 12 Apr 2021
+ 17:20:00 +0000
+Subject: Re: [PATCH 2/2] scsi: iscsi_tcp: Fix use-after-free in
+ iscsi_sw_tcp_host_get_param()
+To:     Wenchao Hao <haowenchao@huawei.com>, Lee Duncan <lduncan@suse.com>,
+        Chris Leech <cleech@redhat.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+Cc:     open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Wu Bo <wubo40@huawei.com>,
+        linfeilong@huawei.com
+References: <20210407012450.97754-1-haowenchao@huawei.com>
+ <20210407012450.97754-3-haowenchao@huawei.com>
+From:   Mike Christie <michael.christie@oracle.com>
+Message-ID: <719f91cb-769d-53c8-1b54-cb9ad38aba01@oracle.com>
+Date:   Mon, 12 Apr 2021 12:19:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
+In-Reply-To: <20210407012450.97754-3-haowenchao@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [73.88.28.6]
+X-ClientProxiedBy: DM6PR13CA0072.namprd13.prod.outlook.com
+ (2603:10b6:5:134::49) To BYAPR10MB3573.namprd10.prod.outlook.com
+ (2603:10b6:a03:11e::32)
 MIME-Version: 1.0
-References: <20200828081157.15748-1-zhukeqian1@huawei.com> <107696eb-755f-7807-a484-da63aad01ce4@huawei.com>
- <YGzxzsRlqouaJv6a@google.com>
-In-Reply-To: <YGzxzsRlqouaJv6a@google.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Mon, 12 Apr 2021 10:19:29 -0700
-Message-ID: <CANgfPd8g3o2mJZi8rtR6jBNeYJTNWR0LTEcD2PeNLJk9JTz4CQ@mail.gmail.com>
-Subject: Re: [RFC PATCH] KVM: x86: Support write protect huge pages lazily
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Keqian Zhu <zhukeqian1@huawei.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, wanghaibin.wang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [20.15.0.204] (73.88.28.6) by DM6PR13CA0072.namprd13.prod.outlook.com (2603:10b6:5:134::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.6 via Frontend Transport; Mon, 12 Apr 2021 17:19:58 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f3da4006-8140-4656-c172-08d8fdd73378
+X-MS-TrafficTypeDiagnostic: SJ0PR10MB4638:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR10MB4638957AAB3FB49EEF065740F1709@SJ0PR10MB4638.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: EZn5MqDQi7OpKwVsTm5J2koEWWz8w/xd8SBUiZI86++J85GueYErBcmlAcC9xsbTFTvikfTsAJIVnjspp5lk5U73iO5P+/evxTDO97s5UHIQAzGe1I2ATJxz5H5Kcd3hzR2+zYkUSy5naQds+WbpWOuc1D1YMitxq4uHhUZUp7Ipzkrn8A5KUT6qvljB1xqM1GpVtHSzayD6I2Kcupy2R+cSEG+70QOELNFq8ItXdY8xIxuvwrspQUFWaUXcoabicvGcgu8OeB1dt22DM3rmesNSaeQ8WKq0vEtYzGbc0xofs7wpkftQyMq2TkjG0qyFLHVzOtyLT1WFjSDlvbg71df6x+sCMM4F05GDc4HSHJLW52COCh7dkTOAPBzSbVNin5ZCw09gn45xIsP37A5rWmvzwLGtpTZnqU+rDw+jiAi2MXOeeu5KtMhbBxyBEdA+8qMekICSs6v4SdbzUQDWSSGRxs1WaIh30UmQyPuDqIGeWDLdgBZerKQm4xrIebBM+AEMwoXWRnL749vI098C/2yxWRCA9J82zufSoZ3WnU3FJ3WAcGbWx3PIF4xLvKCDuNDHOoyf5k3Quib0jJ7vVven6YudgwUGWXNm4+Fg3a0m4Vi0hP6B1rIbxThEiBdB/W1q5c/7NS7Y3VapkgmVMDnw2mV2rEj6F63yBMJdTnqlq/V2ThKiVi2iuMU1vtzjbSAa1ozeiHg1adZ3vZFwPQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(366004)(396003)(346002)(16576012)(5660300002)(53546011)(316002)(31686004)(2906002)(86362001)(4326008)(83380400001)(66556008)(110136005)(6636002)(6706004)(2616005)(16526019)(38100700002)(8936002)(956004)(66476007)(6486002)(31696002)(8676002)(26005)(478600001)(66946007)(36756003)(186003)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eFpyL0Vlbi9OUm9FTmlzK3dSN3FueVZuR29ZUTdPdnlWd2kwMWtyZG1vcE1M?=
+ =?utf-8?B?c3E0TXpsWlJORUpLR0x2WE5Rb0ZnUUJmQ3RDTXBzMVpJSGFDc1A3MS9NSjd3?=
+ =?utf-8?B?QURtU3lqc1hUVGIrSFJ3VVBBL0hscUtZRHRCdlMvRUxBUlVNQ0RyemxqZGc5?=
+ =?utf-8?B?MGZBRll5ZXV3RThOTWRNUkoyT00yMUlaMStzdXRzOWs4bkRRN1lVNTFkMGZD?=
+ =?utf-8?B?S3lwK1c3emJGQkJmUitGdGsrdnVKMmg3d2NEd1Fzb0ZXK1VBOGhKZ3V1NWI1?=
+ =?utf-8?B?VWxka1RzV1ZiRURtVnpjdXZoTUxOaWFFeFEvNExIWG1DYURjaDdmQVhvNit0?=
+ =?utf-8?B?N2M4eTlFdjNUK2Y2bm9HaElzVlFzUU5kdFJUQkI3dUw4eU0xYkprY2FYQ0wr?=
+ =?utf-8?B?M3B6L3k4ZTRRd2VnK2VsWlVpa1FxdUMyR2NvSnd6RlNCRjBUekRwb1dTMWlN?=
+ =?utf-8?B?NE94cXhkSVdmVjRNRjh5ZEswUi8xbFBXZjdBaUFIQnlHNnFtcEliL0xBSjlN?=
+ =?utf-8?B?UzY3b2tCVnptMTVmWmZITHc4NDdudDFQWWg0MVFXU3Nia3hmZ1E2Wm9ETm0r?=
+ =?utf-8?B?NHovM3ZIeVZ1L1kwcTl3RGtRUDhDT2xHL3pjNXZNcjV5dStwcVVWaWZnNkpH?=
+ =?utf-8?B?amxkN3g2OUlUQUxKdnJtZCtIZE9jZnVSZnFsckdNTVV2Y2hmaDdxSTUySWc0?=
+ =?utf-8?B?NFNNOVQva2ZRK3NzVmZPNFpCYlJDQ1hldGk4WFVFTHlkcWxPTmNnZG93cTB0?=
+ =?utf-8?B?Z1ppUDdjVkJMQnU3bUJTN2pEOGtGZDB4eXVxTGRNZ2pSZ3NqSDNoWW1EMDA2?=
+ =?utf-8?B?UXlDL0ZZQXZ1dHJ2cDlqWFF4Nmp6dUNzNndIOCsydHhXSld3QUhrSGwyeG1E?=
+ =?utf-8?B?VUkvcFpZTFo2OFM3cGYzWlBtVTk0YnI0YUgrUXdGNzRSQTRrQi9LejZWSjJG?=
+ =?utf-8?B?RnM2MmY2TVhpeE1TMSsxZU42UzZtWkdNTkxwZUlVQURYUE9xY2U2cWwxMnRW?=
+ =?utf-8?B?aXJKSkp3eTc5dG44dlRRUkNkRnhDckNiM1ZqaStpcGdlS0kzcXcrVDlIYkhE?=
+ =?utf-8?B?dXVVKzZweUZjRGRKZFdHRWw5UkhOdVhxRVB3dTc4M2tOcnNYM2dQSnJVUHRZ?=
+ =?utf-8?B?RWxIWHBmNHF0Zis2Tm5rSEZ4ZUptK1VYSUlaUHhac1VzM2RoTFQ0RGY0eFJi?=
+ =?utf-8?B?VDhNUWdKTFkvNy94emw1Qm8wQ2J0S1lCL244NDkwNzRPZ3RiWmJXYk5mNGRU?=
+ =?utf-8?B?dDQ5RU9lVFh3QjAwSGVTNUxHK0ZEMlFSM2xSeFRBTHBrVjgzSkNMRWtuR3hr?=
+ =?utf-8?B?cUxqd3pkYXdLbWh4cnQ4NFBRODZGU1FwbVBvdkJCZFlJY3lSaHhXclNZa3ov?=
+ =?utf-8?B?MUw1MklSNzhITmg0TEt5eDVqa0FPN0hNd3lCdzA3TlhURjU5QzBhNFZFUzRG?=
+ =?utf-8?B?V2cyenQwckxSbzRxWHRHd0xGNW1yaHpLQnNYRC9CaDF3M2Nha3VQUUNzYkZH?=
+ =?utf-8?B?VE1TTk9iWlM4VkI3UWswZitjbXM1bzZpV3JxK2JZVGlPK1M5YjIxQytsMENm?=
+ =?utf-8?B?TTJsM0Z4dHVrUkxxZlFGUUx1bkczUXozYVR0bFAyUTlBRmV3TjlpcmxvUzJO?=
+ =?utf-8?B?OWxNWGhQZVF6MVkzQ2pkMEJVUGhDbHcrK2hZNzhwOEVoWXVtaVY5cDd1Kzkw?=
+ =?utf-8?B?dmY5NDhZQ3ZaRnhxYXUxNzJGdE0yQ1VyblIrUkVlVWQvYXR6emRDNzFqbGFi?=
+ =?utf-8?Q?ipbHnZJLG3cDMhRb1Qazwi21Zki8Tz7Z04K2L3F?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f3da4006-8140-4656-c172-08d8fdd73378
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2021 17:19:59.9491
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tH3FNU18+6xmql891xbZ8Y/XpnKfSbU3vxQek8ibTi7xP3/pRFqtDugA1vDgMqTY/NhAjYXevx9TqB4Z1i5+ANWfW2COTXDTbks0U59I9xY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4638
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
+ spamscore=0 adultscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104120109
+X-Proofpoint-ORIG-GUID: MTX2-8jfj4oQGBm1I1cutLJbUPMAOJ0r
+X-Proofpoint-GUID: MTX2-8jfj4oQGBm1I1cutLJbUPMAOJ0r
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
+ clxscore=1015 lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104120109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 6, 2021 at 4:42 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> +Ben
->
-> On Tue, Apr 06, 2021, Keqian Zhu wrote:
-> > Hi Paolo,
-> >
-> > I plan to rework this patch and do full test. What do you think about this idea
-> > (enable dirty logging for huge pages lazily)?
->
-> Ben, don't you also have something similar (or maybe the exact opposite?) in the
-> hopper?  This sounds very familiar, but I can't quite connect the dots that are
-> floating around my head...
+On 4/6/21 8:24 PM, Wenchao Hao wrote:
+> iscsi_sw_tcp_host_get_param() would access struct iscsi_session, while
+> struct iscsi_session might be freed by session destroy flow in
+> iscsi_free_session(). This commit fix this condition by freeing session
+> after host has already been removed.
+> 
+> Signed-off-by: Wenchao Hao <haowenchao@huawei.com>
+> ---
+>  drivers/scsi/iscsi_tcp.c | 27 ++++++++++++++++++---------
+>  1 file changed, 18 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c
+> index dd33ce0e3737..d559abd3694c 100644
+> --- a/drivers/scsi/iscsi_tcp.c
+> +++ b/drivers/scsi/iscsi_tcp.c
+> @@ -839,6 +839,18 @@ iscsi_sw_tcp_conn_get_stats(struct iscsi_cls_conn *cls_conn,
+>  	iscsi_tcp_conn_get_stats(cls_conn, stats);
+>  }
+>  
+> +static void
+> +iscsi_sw_tcp_session_teardown(struct iscsi_cls_session *cls_session)
+> +{
+> +	struct Scsi_Host *shost = iscsi_session_to_shost(cls_session);
+> +
+> +	iscsi_session_destroy(cls_session);
+> +	iscsi_host_remove(shost);
+> +
+> +	iscsi_free_session(cls_session);
+> +	iscsi_host_free(shost);
+> +}
 
-Sorry for the late response, I was out of office last week.
+Can you add a comment about the iscsi_tcp dependency with the host
+and session or maybe convert ib_iser too?
 
-Yes, we have two relevant features I'd like to reconcile somehow:
-1.) Large page shattering - Instead of clearing a large TDP mapping,
-flushing the TLBs, then replacing it with an empty TDP page table, go
-straight from the large mapping to a fully pre-populated table. This
-is slightly slower because the table needs to be pre-populated, but it
-saves many vCPU page faults.
-2.) Eager page splitting - split all large mappings down to 4k when
-enabling dirty logging, using large page shattering. This makes
-enabling dirty logging much slower, but speeds up the first round (and
-later rounds) of gathering / clearing the dirty log and reduces the
-number of vCPU page faults. We've prefered to do this when enabling
-dirty logging because it's a little less perf-sensitive than the later
-passes where latency and convergence are critical.
-
-Large page shattering can happen in the NPT page fault handler or the
-thread enabling dirty logging / clearing the dirty log, so it's
-more-or-less orthogonal to this patch.
-
-Eager page splitting on the other hand takes the opposite approach to
-this patch, frontloading as much of the work to enable dirty logging
-as possible. Which approach is better is going to depend a lot on the
-guest workload, your live migration constraints, and how the
-user-space hypervisor makes use of KVM's growing number of dirty
-logging options. In our case, the time to migrate a VM is usually less
-of a concern than the performance degradation the guest experiences,
-so we want to do everything we can to minimize vCPU exits and exit
-latency.
-
-I think this is a reasonable change in principle if we're not write
-protecting 4k pages already, but it's hard to really validate all the
-performance implications. With this change we'd move pretty much all
-the work to the first pass of clearing the dirty log, which is
-probably an improvement since it's much more granular. The downside is
-that we do more work when we'd really like to be converging the dirty
-set as opposed to earlier when we know all pages are dirty anyway.
-
->
-> > PS: As dirty log of TDP MMU has been supported, I should add more code.
-> >
-> > On 2020/8/28 16:11, Keqian Zhu wrote:
-> > > Currently during enable dirty logging, if we're with init-all-set,
-> > > we just write protect huge pages and leave normal pages untouched,
-> > > for that we can enable dirty logging for these pages lazily.
-> > >
-> > > It seems that enable dirty logging lazily for huge pages is feasible
-> > > too, which not only reduces the time of start dirty logging, also
-> > > greatly reduces side-effect on guest when there is high dirty rate.
-
-The side effect on the guest would also be greatly reduced with large
-page shattering above.
-
-> > >
-> > > (These codes are not tested, for RFC purpose :-) ).
-> > >
-> > > Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
-> > > ---
-> > >  arch/x86/include/asm/kvm_host.h |  3 +-
-> > >  arch/x86/kvm/mmu/mmu.c          | 65 ++++++++++++++++++++++++++-------
-> > >  arch/x86/kvm/vmx/vmx.c          |  3 +-
-> > >  arch/x86/kvm/x86.c              | 22 +++++------
-> > >  4 files changed, 62 insertions(+), 31 deletions(-)
-> > >
-> > > diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> > > index 5303dbc5c9bc..201a068cf43d 100644
-> > > --- a/arch/x86/include/asm/kvm_host.h
-> > > +++ b/arch/x86/include/asm/kvm_host.h
-> > > @@ -1296,8 +1296,7 @@ void kvm_mmu_set_mask_ptes(u64 user_mask, u64 accessed_mask,
-> > >
-> > >  void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
-> > >  void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
-> > > -                                 struct kvm_memory_slot *memslot,
-> > > -                                 int start_level);
-> > > +                                 struct kvm_memory_slot *memslot);
-> > >  void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
-> > >                                const struct kvm_memory_slot *memslot);
-> > >  void kvm_mmu_slot_leaf_clear_dirty(struct kvm *kvm,
-> > > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > > index 43fdb0c12a5d..4b7d577de6cd 100644
-> > > --- a/arch/x86/kvm/mmu/mmu.c
-> > > +++ b/arch/x86/kvm/mmu/mmu.c
-> > > @@ -1625,14 +1625,45 @@ static bool __rmap_set_dirty(struct kvm *kvm, struct kvm_rmap_head *rmap_head)
-> > >  }
-> > >
-> > >  /**
-> > > - * kvm_mmu_write_protect_pt_masked - write protect selected PT level pages
-> > > + * kvm_mmu_write_protect_largepage_masked - write protect selected largepages
-> > >   * @kvm: kvm instance
-> > >   * @slot: slot to protect
-> > >   * @gfn_offset: start of the BITS_PER_LONG pages we care about
-> > >   * @mask: indicates which pages we should protect
-> > >   *
-> > > - * Used when we do not need to care about huge page mappings: e.g. during dirty
-> > > - * logging we do not have any such mappings.
-> > > + * @ret: true if all pages are write protected
-> > > + */
-> > > +static bool kvm_mmu_write_protect_largepage_masked(struct kvm *kvm,
-> > > +                               struct kvm_memory_slot *slot,
-> > > +                               gfn_t gfn_offset, unsigned long mask)
-> > > +{
-> > > +   struct kvm_rmap_head *rmap_head;
-> > > +   bool protected, all_protected;
-> > > +   gfn_t start_gfn = slot->base_gfn + gfn_offset;
-> > > +   int i;
-> > > +
-> > > +   all_protected = true;
-> > > +   while (mask) {
-> > > +           protected = false;
-> > > +           for (i = PG_LEVEL_2M; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
-> > > +                   rmap_head = __gfn_to_rmap(start_gfn + __ffs(mask), i, slot);
-> > > +                   protectd |= __rmap_write_protect(kvm, rmap_head, false);
-> > > +           }
-> > > +
-> > > +           all_protected &= protectd;
-> > > +           /* clear the first set bit */
-> > > +           mask &= mask - 1;
-
-I'm a little confused by the use of mask in this function. If
-gfn_offset is aligned to some multiple of 64, which I think it is, all
-the bits in the mask will be part of the same large page, so I don't
-think the mask adds anything.
-I'm also not sure this function compiles since I think the use of
-protectd above will result in an error.
-
-> > > +   }
-> > > +
-> > > +   return all_protected;
-> > > +}
-> > > +
-> > > +/**
-> > > + * kvm_mmu_write_protect_pt_masked - write protect selected PT level pages
-> > > + * @kvm: kvm instance
-> > > + * @slot: slot to protect
-> > > + * @gfn_offset: start of the BITS_PER_LONG pages we care about
-> > > + * @mask: indicates which pages we should protect
-> > >   */
-> > >  static void kvm_mmu_write_protect_pt_masked(struct kvm *kvm,
-> > >                                  struct kvm_memory_slot *slot,
-> > > @@ -1679,18 +1710,25 @@ EXPORT_SYMBOL_GPL(kvm_mmu_clear_dirty_pt_masked);
-> > >
-> > >  /**
-> > >   * kvm_arch_mmu_enable_log_dirty_pt_masked - enable dirty logging for selected
-> > > - * PT level pages.
-> > > - *
-> > > - * It calls kvm_mmu_write_protect_pt_masked to write protect selected pages to
-> > > - * enable dirty logging for them.
-> > > - *
-> > > - * Used when we do not need to care about huge page mappings: e.g. during dirty
-> > > - * logging we do not have any such mappings.
-> > > + * dirty pages.
-> > >   */
-> > >  void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
-> > >                             struct kvm_memory_slot *slot,
-> > >                             gfn_t gfn_offset, unsigned long mask)
-> > >  {
-> > > +   /*
-> > > +    * If we're with initial-all-set, huge pages are NOT
-> > > +    * write protected when we start dirty log, so we must
-> > > +    * write protect them here.
-> > > +    */
-> > > +   if (kvm_dirty_log_manual_protect_and_init_set(kvm)) {
-> > > +           if (kvm_mmu_write_protect_largepage_masked(kvm, slot,
-> > > +                                   gfn_offset, mask))
-> > > +                   return;
-> > > +   }
-> > > +
-> > > +   /* Then we can handle the 4K level pages */
-> > > +
-> > >     if (kvm_x86_ops.enable_log_dirty_pt_masked)
-> > >             kvm_x86_ops.enable_log_dirty_pt_masked(kvm, slot, gfn_offset,
-> > >                             mask);
-> > > @@ -5906,14 +5944,13 @@ static bool slot_rmap_write_protect(struct kvm *kvm,
-> > >  }
-> > >
-> > >  void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
-> > > -                                 struct kvm_memory_slot *memslot,
-> > > -                                 int start_level)
-> > > +                                 struct kvm_memory_slot *memslot)
-> > >  {
-> > >     bool flush;
-> > >
-> > >     spin_lock(&kvm->mmu_lock);
-> > > -   flush = slot_handle_level(kvm, memslot, slot_rmap_write_protect,
-> > > -                           start_level, KVM_MAX_HUGEPAGE_LEVEL, false);
-> > > +   flush = slot_handle_all_level(kvm, memslot, slot_rmap_write_protect,
-> > > +                                 false);
-> > >     spin_unlock(&kvm->mmu_lock);
-> > >
-> > >     /*
-> > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> > > index 819c185adf09..ba871c52ef8b 100644
-> > > --- a/arch/x86/kvm/vmx/vmx.c
-> > > +++ b/arch/x86/kvm/vmx/vmx.c
-> > > @@ -7538,8 +7538,7 @@ static void vmx_sched_in(struct kvm_vcpu *vcpu, int cpu)
-> > >  static void vmx_slot_enable_log_dirty(struct kvm *kvm,
-> > >                                  struct kvm_memory_slot *slot)
-> > >  {
-> > > -   if (!kvm_dirty_log_manual_protect_and_init_set(kvm))
-> > > -           kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
-> > > +   kvm_mmu_slot_leaf_clear_dirty(kvm, slot);
-> > >     kvm_mmu_slot_largepage_remove_write_access(kvm, slot);
-> > >  }
-> > >
-> > > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> > > index d39d6cf1d473..c31c32f1424b 100644
-> > > --- a/arch/x86/kvm/x86.c
-> > > +++ b/arch/x86/kvm/x86.c
-> > > @@ -10225,22 +10225,18 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
-> > >      * is enabled the D-bit or the W-bit will be cleared.
-> > >      */
-> > >     if (new->flags & KVM_MEM_LOG_DIRTY_PAGES) {
-> > > +           /*
-> > > +            * If we're with initial-all-set, we don't need
-> > > +            * to write protect any page because they're
-> > > +            * reported as dirty already.
-> > > +            */
-> > > +           if (kvm_dirty_log_manual_protect_and_init_set(kvm))
-> > > +                   return;
-> > > +
-> > >             if (kvm_x86_ops.slot_enable_log_dirty) {
-> > >                     kvm_x86_ops.slot_enable_log_dirty(kvm, new);
-> > >             } else {
-> > > -                   int level =
-> > > -                           kvm_dirty_log_manual_protect_and_init_set(kvm) ?
-> > > -                           PG_LEVEL_2M : PG_LEVEL_4K;
-> > > -
-> > > -                   /*
-> > > -                    * If we're with initial-all-set, we don't need
-> > > -                    * to write protect any small page because
-> > > -                    * they're reported as dirty already.  However
-> > > -                    * we still need to write-protect huge pages
-> > > -                    * so that the page split can happen lazily on
-> > > -                    * the first write to the huge page.
-> > > -                    */
-> > > -                   kvm_mmu_slot_remove_write_access(kvm, new, level);
-> > > +                   kvm_mmu_slot_remove_write_access(kvm, new);
-> > >             }
-> > >     } else {
-> > >             if (kvm_x86_ops.slot_disable_log_dirty)
-> > >
+ib_iser does the same session per host scheme and so if you were
+just scanning the code and going to make a API change, it's not
+really clear why the drivers do it differently.
