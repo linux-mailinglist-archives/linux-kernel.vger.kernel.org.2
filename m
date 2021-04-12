@@ -2,180 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC0935BA83
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855CA35BA89
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236753AbhDLHCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40734 "EHLO
+        id S236760AbhDLHDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:03:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236677AbhDLHCC (ORCPT
+        with ESMTP id S236705AbhDLHDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:02:02 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5FD6C06138C
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:01:44 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id x77so3100921oix.8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:01:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9eoMDF/wQXgBqcptxwajgyfKHfls18wSno0OgI96W1M=;
-        b=Z8VViXsU+J+0t/NeghxVqUCLlf+iJt7KQWTk4fn7J0Nqu3GKiTU3uJNBi11dErZRwT
-         qnV047UmDkOKJgZ2nIQStIbrlGb9jB10Xmbj7Mejny8Wh9w7qeKQqkHolxPkpkHbbbBD
-         aiS9/TWhgdvEiE4xcNmO7YFTO+uBl46QmeBMs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9eoMDF/wQXgBqcptxwajgyfKHfls18wSno0OgI96W1M=;
-        b=Cd1lo8GDsJgf+m8gc3+DnKDIxM5Vxxn8qIWP0yOwHm3TXCjuH00cxb6oGuEqiCIZSB
-         it99KKve8qcMrOQoQvksF/jdp1HU/6UnQm1N2mC0TNDosiCjJufIuZ58q2ZOjegeL+nK
-         n3Ey3JUCjBRMqNPGqklm7Yz+ykr7TX7dbuFdXIqi2wUdr4tasg49TI+Z9lWcH1t2COeV
-         84vJAYoLw3wG6dtA8h7h7vguxQpDdCL47OzGvyJpa57JeqJmVW+1KKYGG02GT+36D2aq
-         wPyun6DyBufir28xSUFWzsh4fz07sI6U5pNVQlERCf+BVzuUK8dMfv54LODFJBpUihpv
-         meRw==
-X-Gm-Message-State: AOAM5326pN9BWYQ4/TA6Z57yitvo74qV3nwbvcVfYepvjMgLfHAsESKd
-        V4IxETA2h+3ky00mjI5AuDiZMUVbOH9lCQzISlVOww==
-X-Google-Smtp-Source: ABdhPJzn5Y2JD1WWkuSgCEM5RLfbCHfU+wnK35eIswbiFH+SCiimFsZXPintcEeiw7HxTPKJ26KJl6K2LFSWL/9S3TA=
-X-Received: by 2002:aca:b646:: with SMTP id g67mr17522124oif.14.1618210904061;
- Mon, 12 Apr 2021 00:01:44 -0700 (PDT)
+        Mon, 12 Apr 2021 03:03:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0570EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:02:50 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lVqah-0002Yf-Kn; Mon, 12 Apr 2021 09:02:35 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lVqae-00059Z-JF; Mon, 12 Apr 2021 09:02:32 +0200
+Date:   Mon, 12 Apr 2021 09:02:32 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>, devicetree@vger.kernel.org,
+        linux-pwm@vger.kernel.org, punit1.agrawal@toshiba.co.jp,
+        yuji2.ishikawa@toshiba.co.jp, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] pwm: visconti: Add Toshiba Visconti SoC PWM
+ support
+Message-ID: <20210412070232.6q3cgqvuj53p4cmi@pengutronix.de>
+References: <20210409230837.1919744-1-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210409230837.1919744-3-nobuhiro1.iwamatsu@toshiba.co.jp>
+ <20210410135321.oissremqropvrpd3@pengutronix.de>
+ <20210412025536.i5chpp6sighunvfx@toshiba.co.jp>
 MIME-Version: 1.0
-References: <000000000000226d3f05b02dd607@google.com> <bbcef674-4ac6-c933-b55d-8961ada97f4c@i-love.sakura.ne.jp>
- <47907f77-b14b-b433-45c6-a315193f0c1a@i-love.sakura.ne.jp>
- <494395bc-a7dd-fdb1-8196-a236a266ef54@i-love.sakura.ne.jp>
- <20200927092701.GA1037755@PWN> <4933b81b-9b1a-355b-df0e-9b31e8280ab9@i-love.sakura.ne.jp>
- <20200928175956.GF24673@neutronstar.dyndns.org> <100dfd3f-3415-80ae-a6cf-30d15f7ca49f@i-love.sakura.ne.jp>
- <20200929105203.GG24673@neutronstar.dyndns.org> <20200929165657.GS438822@phenom.ffwll.local>
- <20200929171040.GB1351851@kroah.com> <alpine.DEB.2.21.2104112250310.65251@angie.orcam.me.uk>
- <CAHk-=wgF8e5i+9eeGu=CgWAagTPv-9UbkG7B6bR5jDe6kkkFZQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wgF8e5i+9eeGu=CgWAagTPv-9UbkG7B6bR5jDe6kkkFZQ@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Mon, 12 Apr 2021 09:01:32 +0200
-Message-ID: <CAKMK7uH4+SGr0=FDBiTsMg+iE1ztiuP2QBxsgcvHNhd38ocndg@mail.gmail.com>
-Subject: Re: [PATCH] vt_ioctl: make VT_RESIZEX behave like VT_RESIZE
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        syzbot <syzbot+b308f5fd049fbbc6e74f@syzkaller.appspotmail.com>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Helge Deller <deller@gmx.de>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Martin Hostettler <textshell@uchuujin.de>,
-        George Kennedy <george.kennedy@oracle.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Peilin Ye <yepeilin.cs@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="dbinp4a6o4qjki4w"
+Content-Disposition: inline
+In-Reply-To: <20210412025536.i5chpp6sighunvfx@toshiba.co.jp>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:15 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sun, Apr 11, 2021 at 2:43 PM Maciej W. Rozycki <macro@orcam.me.uk> wrote:
-> >
-> >  So it does trigger with vgacon and my old server, which I have started
-> > experimenting with and for a start I have switched to a new kernel for an
-> > unrelated purpose (now that I have relieved it from all its usual tasks
-> > except for the last remaining one for which I haven't got the required
-> > user software ported to the new system yet):
-> >
-> > "struct vt_consize"->v_vlin is ignored. Please report if you need this.
-> > "struct vt_consize"->v_clin is ignored. Please report if you need this.
->
-> Note that it's entirely possible that things continue to work well
-> despite this warning. It's unclear to me from your email if you
-> actually see any difference (and apparently you're not able to see it
-> right now due to not being close to the machine).
 
-Original search didn't turn up any users of VT_RESIZEX, this is the
-first. And looking at the source code I think we could outright remove
-support for VT_RESIZEX (but make it silent) and everything should keep
-working:
+--dbinp4a6o4qjki4w
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-        /*
-         * ALWAYS do a VT_RESIZE, even if we already did a VT_RESIZEX
-on a 1.3.3 or higher kernel,
-         * until those kernel programmers make this unambiguous
-         */
+On Mon, Apr 12, 2021 at 11:55:36AM +0900, Nobuhiro Iwamatsu wrote:
+> Hi Uwe,
+>=20
+> Thanks for your review.
+>=20
+> On Sat, Apr 10, 2021 at 03:53:21PM +0200, Uwe Kleine-K=F6nig wrote:
+> > Hello,
+> >=20
+> > just a few small details left to criticize ...
+> >=20
+> > On Sat, Apr 10, 2021 at 08:08:37AM +0900, Nobuhiro Iwamatsu wrote:
+> > > diff --git a/drivers/pwm/pwm-visconti.c b/drivers/pwm/pwm-visconti.c
+> > > new file mode 100644
+> > > index 000000000000..99d83f94ed86
+> > > --- /dev/null
+> > > +++ b/drivers/pwm/pwm-visconti.c
+> > > @@ -0,0 +1,188 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +/*
+> > > + * Toshiba Visconti pulse-width-modulation controller driver
+> > > + *
+> > > + * Copyright (c) 2020 TOSHIBA CORPORATION
+> > > + * Copyright (c) 2020 Toshiba Electronic Devices & Storage Corporati=
+on
+> > > + *
+> > > + * Authors: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+> > > + *
+> > > + */
+> > > +
+> > > +#include <linux/err.h>
+> > > +#include <linux/io.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/of_device.h>
+> > > +#include <linux/platform_device.h>
+> > > +#include <linux/pwm.h>
+> > > +
+> > > +#define PIPGM_PCSR(ch) (0x400 + 4 * (ch))
+> > > +#define PIPGM_PDUT(ch) (0x420 + 4 * (ch))
+> > > +#define PIPGM_PWMC(ch) (0x440 + 4 * (ch))
+> > > +
+> > > +#define PIPGM_PWMC_PWMACT		BIT(5)
+> > > +#define PIPGM_PWMC_CLK_MASK		GENMASK(1, 0)
+> > > +#define PIPGM_PWMC_POLARITY_MASK	GENMASK(5, 5)
+> > > +
+> > > +struct visconti_pwm_chip {
+> > > +	struct pwm_chip chip;
+> > > +	void __iomem *base;
+> > > +};
+> > > +
+> > > +static inline struct visconti_pwm_chip *to_visconti_chip(struct pwm_=
+chip *chip)
+> > > +{
+> > > +	return container_of(chip, struct visconti_pwm_chip, chip);
+> > > +}
+> > > +
+> > > +static int visconti_pwm_apply(struct pwm_chip *chip, struct pwm_devi=
+ce *pwm,
+> > > +			      const struct pwm_state *state)
+> > > +{
+> > > +	struct visconti_pwm_chip *priv =3D to_visconti_chip(chip);
+> > > +	u32 period, duty_cycle, pwmc0;
+> > > +
+> > > +	/*
+> > > +	 * pwmc is a 2-bit divider for the input clock running at 1 MHz.
+> > > +	 * When the settings of the PWM are modified, the new values are sh=
+adowed in hardware until
+> > > +	 * the period register (PCSR) is written and the currently running =
+period is completed. This
+> > > +	 * way the hardware switches atomically from the old setting to the=
+ new.
+> > > +	 * Also, disabling the hardware completes the currently running per=
+iod and keeps the output
+> > > +	 * at low level at all times.
+> >=20
+> > Can you please put a paragraph analogous to the one in pwm-sifive in the
+> > same format. This simplified keeping an overview about the oddities of
+> > the various supported chips.
+>=20
+> OK, I will check pwm-sifive's, and add.
+>=20
+> >=20
+> > > +	 */
+> > > +	if (!state->enabled) {
+> > > +		writel(0, priv->base + PIPGM_PCSR(pwm->hwpwm));
+> > > +		return 0;
+> > > +	}
+> > > +
+> > > [...]
+> > > +
+> > > +static void visconti_pwm_get_state(struct pwm_chip *chip, struct pwm=
+_device *pwm,
+> > > +				   struct pwm_state *state)
+> > > +{
+> > > +	struct visconti_pwm_chip *priv =3D chip_to_priv(chip);
+> > > +	u32 period, duty, pwmc0, pwmc0_clk;
+> > > +
+> > > +	period =3D readl(priv->base + PIPGM_PCSR(pwm->hwpwm));
+> > > +	if (period)
+> > > +		state->enabled =3D true;
+> > > +	else
+> > > +		state->enabled =3D false;
+> >=20
+> > If PIPGM_PCSR is 0 the hardware is still active and setting a new
+> > configuration completes the currently running period, right? Then I
+> > think having always state->enabled =3D true is a better match.
+>
+> If PIPGM_PCSR is 0, the hardware is stopped. Even if the settings of
+> other registers are written, the values of other registers will not work
+> unless PIPGM_PCSR is written.
 
-       if (do_VT_RESIZE(curr_textmode->cols, curr_textmode->rows,
-resize1x1)) sresize=TRUE;
+Correct me if I'm wrong, but how I understand it, PCSR is special as the
+other registers are shadow until PCSR is written. (And that is
+irrespective of which value is active in PCSR or what is written to
+PCSR.)
+=20
+> However, as a logic, if PIPGM_PCSR becomes 0, it is only
+> visconti_pwm_apply () in this driver,
+> so I think that this process should always be state-> enabled =3D true
+> as you pointed out.
+> I wil drop this, thanks.
 
-       if (check_kernel_version(1,3,3, "VT_RESIZEX"))
-         {
-           /*
-            * VDisplay must de divided by 2 for DoubleScan modes,
-            * or VT_RESIZEX will fail -- until someone fixes the kernel
-            * so it understands about doublescan modes.
-            */
-           if (do_VT_RESIZEX(curr_textmode->cols,
-                             curr_textmode->rows,
-                             curr_textmode->VDisplay /
-(MOFLG_ISSET(curr_textmode, ATTR_DOUBLESCAN) ? 2 : 1),
-                             curr_textmode->FontHeight,
-                             curr_textmode->HDisplay/8*curr_textmode->FontWidth,
-                             curr_textmode->FontWidth, resize1x1)) sresize=TRUE;
-         }
+For me the critical (and only) difference between "off" and
+"duty cycle =3D 0" is that when a new configuration is to be applied. In
+the "off" state a new period can (and should) start immediately, while
+with "duty_cycle =3D 0" the rising edge should be delayed until the
+currently running period is over.[1]
 
-The functions are just straightforward wrappers. There's also no cvs
-repo, changelog or old releases before 2000 that would shed some light
-on why this code even exists.
+So the thing to do here (IMHO) is:
 
-I think we can just tune down the pr_info_once to pr_debug and done.
-Maybe a comment about where the single user we're aware of is.
--Daniel
+Iff with PIPGM_PCSR =3D 0 configuring a new setting (that is finalized
+with writing a non-zero value to PIPGM_PCSR) completes the currently
+running period, then always assume the PWM as enabled.
 
->
-> The fact that v_vlin/v_clin are ignored doesn't necessarily mean that
-> they are different from what they were before, so the warning may be a
-> non-issue.
->
-> > It continues using svgatextmode with its glass (CRT) VT to set my usual
-> > 80x37 text mode (720x576 pixel resolution) by manipulating the VGA clock
-> > chip and the CRT controller appropriately for a nice refresh rate of 85Hz:
-> >
-> > Chipset = `TVGA8900', Textmode clock = 44.90 MHz, 80x37 chars, CharCell = 9x16. Refresh = 52.51kHz/84.7Hz.
->
-> That doesn't seem necessarily wrong to me.
->
-> >  So what's the supposed impact of this change that prompted the inclusion
-> > of the messages?
->
-> There _may_ be no impact at all apart from the messages.
->
-> The code _used_ to set the scan lines (v_vlin) and font height
-> (v_clin) from those numbers if they were non-zero, and now it just
-> ignores them and warns instead.
->
-> The code now just sets the font height from the actual font size when
-> the font is set. Which is honestly the only thing that ever made
-> sense. Trying to set it with v_clin is ignored, but it's entirely
-> possible - maybe even likely - that your user of VT_RESIZEX sets it to
-> the same values it already has.
->
-> Exactly because setting a font line number to anything else than the
-> font size isn't exactly sensible.
->
-> But if your screen looks different than it used to, that is obviously
-> interesting and says something actually changed (outside of the
-> message itself).
->
->            Linus
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+And so if the hardware is stopped and the counter is reset when 0 is
+written to PIPGM_PCSR, model that as enabled =3D false.
 
+Best regards
+Uwe
 
+[1] In practise this is more difficult because several PWMs don't
+complete periods in general. But the hardware under discussion luckily
+isn't one of these. And (worse) there are other hardware implementations
+where off doesn't emit an inactive level.
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--dbinp4a6o4qjki4w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmBz8IUACgkQwfwUeK3K
+7Anv+ggAgcYjZXZNUVrkCgcupmpCm3IMfKahkwjrc5xduTQHdRPMTqPrJhyuwF7a
+G8bOQ5pxUHH5MEqns/nG8HTPawjKDgy36NLfDdY7yDQdKT15PsvXkHD6wUydcXzd
+Hn41ovzjGJUi4bkqjI8iLwCARX6ypaKh66IVZ/yRjJA1B2FkCbqfRgE8PHu78NJd
+GU+OrhCgmXyJ5e7FAcfDn5dlMVTpHbzxyGouC8PXtCCFgC5YLy2+Ajp3Y2ldv5Qs
+ceQ7LOzHqJ4NsiBq74KTOUFo2lTMZW9kzLl/upBxEhh/7jLRlJHFmx4jyb/LJOKe
+V+HuRxtoXSlhoOcb2azTl12IPVESZw==
+=+9VN
+-----END PGP SIGNATURE-----
+
+--dbinp4a6o4qjki4w--
