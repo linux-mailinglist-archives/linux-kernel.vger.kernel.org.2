@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F96435CE83
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:54:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD7235CDF5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344290AbhDLQpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:45:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37276 "EHLO mail.kernel.org"
+        id S244720AbhDLQlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:41:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244991AbhDLQdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S244994AbhDLQdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 12:33:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF109613C2;
-        Mon, 12 Apr 2021 16:26:36 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33331613CF;
+        Mon, 12 Apr 2021 16:26:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618244797;
-        bh=uAAUyMljlcrTr7L/lCee6dkkMCsypVanYPJhHqDkpug=;
+        s=k20201202; t=1618244799;
+        bh=8HpKkNSRru0z8WcDe7S90lfAhdtFVrp/8hrFMhRpK2Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=muCagJ/UgaEpEoo4vGoT/dQBYQcBnENIkPROlq1cc5ROorINzZPtYUqFzJJlpMtrY
-         jX+uUVabFmA1wAEhO9Afj+PtYFGUXu1I/oZw6UqGi8f5y3Hotmi59QHmdS56L63Y0P
-         SZkbJln+vsACt2gQmSuomfGafWA5EpDGHl9F8/eqFnCkgu5M92KrdiR2wZFBsSkLin
-         Dl0llV+NfqwGnBumovoscjcRSIWabYGsIi4TNqn7qAjqjrdCm4356nusAj81bL7kwW
-         bITjYgxNZOYvmwq7aEJZ/+ZMXZ3gyeCTHlVFdChniQ0CFgHONw6wSrrO0loEBJw8Ne
-         hcTm6EcNQEmMw==
+        b=CRvmP+zSHkgmswk9ZXjJDHpDsyBD8qkOR1h+n5kmfft0k9anLCxOUj98vBwGwugDI
+         o8X3k+QEbYr8RGN0x/aENiJvz0jc2DzlrZqAySyom7rbYdeLZYcz2+a1nt0Ip2FYa+
+         QI93/oi9leQd7heUsTu+VtOy2a9Z0Rm9+7iud+JL/Z4dgptKRwH5X7NElp3qLBLHSO
+         XuP4gyFGZcV2O8orfk2mvp/FciKKy44oxzErwPwbmZPlXX0n3gmJZz2hlaIj28nZmT
+         eEhJ17ydmribk3NVYy9kAVfojhbd0SFn/WlKxBznjwt/smH8znX3VALyXxztcTEZS1
+         S51wxatEt42WA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 4.14 05/25] ARM: keystone: fix integer overflow warning
-Date:   Mon, 12 Apr 2021 12:26:10 -0400
-Message-Id: <20210412162630.315526-5-sashal@kernel.org>
+Cc:     Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 06/25] drivers: net: fix memory leak in atusb_probe
+Date:   Mon, 12 Apr 2021 12:26:11 -0400
+Message-Id: <20210412162630.315526-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210412162630.315526-1-sashal@kernel.org>
 References: <20210412162630.315526-1-sashal@kernel.org>
@@ -45,54 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 844b85dda2f569943e1e018fdd63b6f7d1d6f08e ]
+[ Upstream commit 6b9fbe16955152626557ec6f439f3407b7769941 ]
 
-clang warns about an impossible condition when building with 32-bit
-phys_addr_t:
+syzbot reported memory leak in atusb_probe()[1].
+The problem was in atusb_alloc_urbs().
+Since urb is anchored, we need to release the reference
+to correctly free the urb
 
-arch/arm/mach-keystone/keystone.c:79:16: error: result of comparison of constant 51539607551 with expression of type 'phys_addr_t' (aka 'unsigned int') is always false [-Werror,-Wtautological-constant-out-of-range-compare]
-            mem_end   > KEYSTONE_HIGH_PHYS_END) {
-            ~~~~~~~   ^ ~~~~~~~~~~~~~~~~~~~~~~
-arch/arm/mach-keystone/keystone.c:78:16: error: result of comparison of constant 34359738368 with expression of type 'phys_addr_t' (aka 'unsigned int') is always true [-Werror,-Wtautological-constant-out-of-range-compare]
-        if (mem_start < KEYSTONE_HIGH_PHYS_START ||
-            ~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~~~~~~~~~
+backtrace:
+    [<ffffffff82ba0466>] kmalloc include/linux/slab.h:559 [inline]
+    [<ffffffff82ba0466>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<ffffffff82ad3888>] atusb_alloc_urbs drivers/net/ieee802154/atusb.c:362 [inline][2]
+    [<ffffffff82ad3888>] atusb_probe+0x158/0x820 drivers/net/ieee802154/atusb.c:1038 [1]
 
-Change the temporary variable to a fixed-size u64 to avoid the warning.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Acked-by: Santosh Shilimkar <ssantosh@kernel.org>
-Link: https://lore.kernel.org/r/20210323131814.2751750-1-arnd@kernel.org'
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reported-by: syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-keystone/keystone.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ieee802154/atusb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/mach-keystone/keystone.c b/arch/arm/mach-keystone/keystone.c
-index 84613abf35a3..79ff5b953431 100644
---- a/arch/arm/mach-keystone/keystone.c
-+++ b/arch/arm/mach-keystone/keystone.c
-@@ -65,7 +65,7 @@ static void __init keystone_init(void)
- static long long __init keystone_pv_fixup(void)
- {
- 	long long offset;
--	phys_addr_t mem_start, mem_end;
-+	u64 mem_start, mem_end;
- 
- 	mem_start = memblock_start_of_DRAM();
- 	mem_end = memblock_end_of_DRAM();
-@@ -78,7 +78,7 @@ static long long __init keystone_pv_fixup(void)
- 	if (mem_start < KEYSTONE_HIGH_PHYS_START ||
- 	    mem_end   > KEYSTONE_HIGH_PHYS_END) {
- 		pr_crit("Invalid address space for memory (%08llx-%08llx)\n",
--		        (u64)mem_start, (u64)mem_end);
-+		        mem_start, mem_end);
- 		return 0;
+diff --git a/drivers/net/ieee802154/atusb.c b/drivers/net/ieee802154/atusb.c
+index 8e2cbc88df98..2c4274453c15 100644
+--- a/drivers/net/ieee802154/atusb.c
++++ b/drivers/net/ieee802154/atusb.c
+@@ -346,6 +346,7 @@ static int atusb_alloc_urbs(struct atusb *atusb, int n)
+ 			return -ENOMEM;
+ 		}
+ 		usb_anchor_urb(urb, &atusb->idle_urbs);
++		usb_free_urb(urb);
+ 		n--;
  	}
- 
+ 	return 0;
 -- 
 2.30.2
 
