@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1A235C730
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D99D35C735
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241861AbhDLNMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:12:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238974AbhDLNMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:12:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 08BDE610CA;
-        Mon, 12 Apr 2021 13:11:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618233108;
-        bh=Zanz5qvZw0cWJyNWZgIdn36zowK6B/3y64wJX8xDVA0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TGIPsFVMVdByjHtg3ZVGZQe83imde/ahXjWUUC0f52OPHnHSZdmq2u+i8uodJHcSN
-         WyCoJPZNRpVnItYzdn59iJesvqXUci73lG3JI+y6ZQ5NlYzxZCTDFrhfenfdhZW98v
-         6R3nbLNVw2sF29Gs/Ul5MCXioUPK3m3V4UwJptkWwuSjaL3YrXIbhmEN9zZ4hUF6fT
-         scp3MBlonnl38LasRQvpC+lwV+cmeIhsMNb8L5z0S0NLF2oBtygExcVYFneXtBhuIY
-         yMUHAr4Cwi3cIkHvy6lCQq4Jiq+bZYGb+d9T+lAVcZcnc0XEjrQzw/kIo/piJY8RUq
-         IOyKsRf3pJhlA==
-Date:   Mon, 12 Apr 2021 22:11:44 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        id S239364AbhDLNMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:12:18 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:49296 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241722AbhDLNMH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 09:12:07 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-107-jlA7rlBNM9W_p6yNzfFSUA-1; Mon, 12 Apr 2021 14:11:46 +0100
+X-MC-Unique: jlA7rlBNM9W_p6yNzfFSUA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 12 Apr 2021 14:11:45 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.012; Mon, 12 Apr 2021 14:11:45 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@arndb.de>
+CC:     Christoph Hellwig <hch@lst.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Liao Chang <liaochang1@huawei.com>
-Subject: Re: [PATCH] arm64: kprobes: Restore local irqflag if kprobes is
- cancelled
-Message-Id: <20210412221144.2da50e902df14cda0d86eeaa@kernel.org>
-In-Reply-To: <20210412174101.6bfb0594@xhacker.debian>
-References: <20210412174101.6bfb0594@xhacker.debian>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH 5/5] compat: consolidate the compat_flock{,64} definition
+Thread-Topic: [PATCH 5/5] compat: consolidate the compat_flock{,64} definition
+Thread-Index: AQHXL3nAXViKKuH90kqxIUkBtWSuL6qwmWXwgAATjVCAAACRAIAAKVLA
+Date:   Mon, 12 Apr 2021 13:11:45 +0000
+Message-ID: <0bef075082b244d2b7a5a140336a40d5@AcuMS.aculab.com>
+References: <20210412085545.2595431-1-hch@lst.de>
+ <20210412085545.2595431-6-hch@lst.de>
+ <15be19af19174c7692dd795297884096@AcuMS.aculab.com>
+ <5c3635a2b44a496b88d665e8686d9436@AcuMS.aculab.com>
+ <CAK8P3a1JZ=JerasdkntzX_ApaCF7C29ZS1E31aPQATOts0ZiLw@mail.gmail.com>
+In-Reply-To: <CAK8P3a1JZ=JerasdkntzX_ApaCF7C29ZS1E31aPQATOts0ZiLw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jisheng,
+RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAxMiBBcHJpbCAyMDIxIDEyOjI2DQo+IA0KPiBP
+biBNb24sIEFwciAxMiwgMjAyMSBhdCAxMjo1NCBQTSBEYXZpZCBMYWlnaHQgPERhdmlkLkxhaWdo
+dEBhY3VsYWIuY29tPiB3cm90ZToNCj4gPiBGcm9tOiBEYXZpZCBMYWlnaHQgPiBTZW50OiAxMiBB
+cHJpbCAyMDIxIDEwOjM3DQo+ID4gLi4uDQo+ID4gPiBJJ20gZ3Vlc3NpbmcgdGhhdCBjb21wYXRf
+cGlkX3QgaXMgMTYgYml0cz8NCj4gPiA+IFNvIHRoZSBuYXRpdmUgMzJiaXQgdmVyc2lvbiBoYXMg
+YW4gdW5uYW1lZCAyIGJ5dGUgc3RydWN0dXJlIHBhZC4NCj4gPiA+IFRoZSAncGFja2VkJyByZW1v
+dmVzIHRoaXMgcGFkIGZyb20gdGhlIGNvbXBhdCBzdHJ1Y3R1cmUuDQo+ID4gPg0KPiA+ID4gQUZB
+SUNUIChhcGFydCBmcm9tIG1pcHMpIHRoZSBfX0FSQ0hfQ09NUEFUX0ZMT0NLX1BBRCBpcyBqdXN0
+DQo+ID4gPiBhZGRpbmcgYW4gZXhwbGljaXQgcGFkIGZvciB0aGUgaW1wbGljaXQgcGFkIHRoZSBj
+b21waWxlcg0KPiA+ID4gd291bGQgZ2VuZXJhdGUgYmVjYXVzZSBjb21wYXRfcGlkX3QgaXMgMTYg
+Yml0cy4NCj4gPg0KPiA+IEkndmUganVzdCBsb29rZWQgYXQgdGhlIGhlYWRlci4NCj4gPiBjb21w
+YXRfcGlkX3QgaXMgMzIgYml0cy4NCj4gPiBTbyBMaW51eCBtdXN0IGhhdmUgZ2FpbmVkIDMyYml0
+IHBpZHMgYXQgc29tZSBlYXJsaWVyIHRpbWUuDQo+ID4gKEhpc3RvcmljYWxseSBVbml4IHBpZHMg
+d2VyZSAxNiBiaXQgLSBldmVuIG9uIDMyYml0IHN5c3RlbXMuKQ0KPiA+DQo+ID4gV2hpY2ggbWFr
+ZXMgdGhlIGV4cGxpY2l0IHBhZCBpbiAnc3BhcmMnIHJhdGhlciAnaW50ZXJlc3RpbmcnLg0KPiAN
+Cj4gSSBzYXcgaXQgd2FzIHRoZXJlIHNpbmNlIHRoZSBzcGFyYyBrZXJuZWwgc3VwcG9ydCBnb3Qg
+bWVyZ2VkIGluDQo+IGxpbnV4LTEuMywgcG9zc2libHkgY29waWVkIGZyb20gYW4gb2xkZXIgc3Vu
+b3MgdmVyc2lvbi4NCg0KV2hpY2ggaGFkIGEgMTZiaXQgcGlkIHdoZW4gSSB1c2VkIGl0Lg0KU28g
+dGhpcyBpcyBhIGJ1ZyBpbiB0aGUgc3BhcmMgbWVyZ2UhDQoNClRoZSBleHBsaWNpdCAnc2hvcnQn
+IHBhZCBjb3VsZCBiZSByZW1vdmVkIGZyb20gdGhlIDY0Yml0IHZhcmlhbnQNCmJlY2F1c2UgdGhl
+cmUgYXJlIGFsd2F5cyA0IGJ5dGVzIG9mIHBhZCBhZnRlciBsX3BpZC4NCkJ1dCBpdCBkb2VzIGV4
+dGVuZCB0aGUgYXBwbGljYXRpb24gc3RydWN0dXJlIG9uIDMyYml0IHNwYXJjIHNvIG11c3QNCnJl
+bWFpbiBpbiB0aGUgdWFwaSBoZWFkZXIuDQpJdCBkb2Vzbid0IG5lZWQgdG8gYmUgaW4gdGhlICdj
+b21wYXQnIGRlZmluaXRpb24uDQoNCj4gPiBvaCAtIGNvbXBhdF9sb2ZmX3QgaXMgb25seSB1c2Vk
+IGluIGEgY291cGxlIG9mIG90aGVyIHBsYWNlcy4NCj4gPiBuZWl0aGVyIGNhcmUgaW4gYW55IHdh
+eSBhYm91dCB0aGUgYWxpZ25tZW50Lg0KPiA+IChQcm92aWRlZCBnZXRfdXNlcigpIGRvZXNuJ3Qg
+ZmF1bHQgb24gYSA4bis0IGFsaWduZWQgYWRkcmVzcy4pDQo+IA0KPiBBaCByaWdodCwgSSBhbHNv
+IHNlZSB0aGF0IGFmdGVyIHRoaXMgc2VyaWVzIGl0J3Mgb25seSB1c2VkIGluIHRvIG90aGVyDQo+
+IHBsYWNlczogIGNvbXBhdF9yZXN1bWVfc3dhcF9hcmVhLCB3aGljaCBjb3VsZCBhbHNvIGxvc2Ug
+dGhlDQo+IF9fcGFja2VkIGFubm90YXRpb24sDQoNClRoYXQgc3RydWN0dXJlIGp1c3QgZGVmaW5l
+cyAwIGFuZCA4LCB0aGUgc3RydWN0dXJlIHNpemUgZG9lc24ndA0KbWF0dGVyIGFuZCB0aGUgb2Zm
+c2V0cyBhcmUgJ3Bhc3NlZCB0bycgZ2V0X3VzZXIoKSBzbyBieXRlDQphY2Nlc3NlcyBhcmVuJ3Qg
+cGVyZm9ybWVkLg0KDQo+IGFuZCBpbiB0aGUgZGVjbGFyYXRpb24gb2YNCj4gY29tcGF0X3N5c19z
+ZW5kZmlsZTY0LCB3aGVyZSBpdCBtYWtlcyBubyBkaWZmZXJlbmNlLg0KDQpXaGljaCBzaG91bGQg
+cHJvYmFibHkgdXNlIGdldF91c2VyKCkgcmF0aGVyIHRoYW4gY29weV9mcm9tX3VzZXIoKS4NCg0K
+QWx0aG91Z2ggc29tZSBhcmNoaXRlY3R1cmVzIG1heSBuZWVkIGZhbGxiYWNrIGNvZGUgZm9yDQpt
+aXNhbGlnbmVkIGdldF91c2VyKCkgPw0KT3IgaXMgdGhlcmUgYSBnZW5lcmFsICdjb3Agb3V0JyB0
+aGF0IHN0cnVjdHVyZXMgcGFzc2VkIHRvIHRoZQ0Ka2VybmVsIGFyZSByZXF1aXJlZCB0byBiZSBj
+b3JyZWN0bHkgYWxpZ25lZC4NClRoZXkgc2hvdWxkIGJlIGFsaWduZWQgdW5sZXNzIHRoZSBrZXJu
+ZWwgaXMgJ3BsYXlpbmcgZ2FtZXMnDQpsaWtlIHJlYWRpbmcgJ3N0cnVjdCBwb2xsZmQnIGFzIGEg
+NjRiaXQgaXRlbS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
+QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
+aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-On Mon, 12 Apr 2021 17:41:01 +0800
-Jisheng Zhang <Jisheng.Zhang@synaptics.com> wrote:
-
-> If instruction being single stepped caused a page fault, the kprobes
-> is cancelled to let the page fault handler continue as a normal page
-> fault. But the local irqflags are disabled so cpu will restore pstate
-> with DAIF masked. After pagefault is serviced, the kprobes is
-> triggerred again, we overwrite the saved_irqflag by calling
-> kprobes_save_local_irqflag(). NOTE, DAIF is masked in this new saved
-> irqflag. After kprobes is serviced, the cpu pstate is retored with
-> DAIF masked.
-> 
-> This patch is inspired by one patch for riscv from Liao Chang.
-
-Thanks for pointing it out. But I think kprobes_restore_local_irqflag()
-is also needed for kcb->kprobe_status == KPROBE_REENTER case...no.
-This is more complicated. In the reenter case, I think we have to retry
-the kpreprobe_fault_handler() with recovered previous kprobes so that
-it can handle page fault in its handler.
-
-Hmm, RISC-V and other code also needs same fix.
-
-Thank you,
-
-> 
-> Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-> ---
->  arch/arm64/kernel/probes/kprobes.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/probes/kprobes.c b/arch/arm64/kernel/probes/kprobes.c
-> index 66aac2881ba8..85645b2b0c7a 100644
-> --- a/arch/arm64/kernel/probes/kprobes.c
-> +++ b/arch/arm64/kernel/probes/kprobes.c
-> @@ -267,10 +267,12 @@ int __kprobes kprobe_fault_handler(struct pt_regs *regs, unsigned int fsr)
->  		if (!instruction_pointer(regs))
->  			BUG();
->  
-> -		if (kcb->kprobe_status == KPROBE_REENTER)
-> +		if (kcb->kprobe_status == KPROBE_REENTER) {
->  			restore_previous_kprobe(kcb);
-> -		else
-> +		} else {
-> +			kprobes_restore_local_irqflag(kcb, regs);
->  			reset_current_kprobe();
-> +		}
->  
->  		break;
->  	case KPROBE_HIT_ACTIVE:
-> -- 
-> 2.31.0
-> 
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
