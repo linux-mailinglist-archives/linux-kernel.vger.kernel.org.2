@@ -2,102 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8C435C2D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 477C535C2DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243294AbhDLJvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:51:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55816 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241373AbhDLJjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:39:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35CC761247;
-        Mon, 12 Apr 2021 09:38:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618220314;
-        bh=bqEtBdOkvB/DNRA6H4F+NMJ2qqkMlorwIcznImbrFYE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fnBUps08cY4sxYvkhOiMh0HQ+gZKylUsOD4F56PdgXp1BScQfaZ50rP4pzbdjkh42
-         RjOQd/o1+R03TqemMeFTM5igu+B1R5aBMH3F/dKRD4DUeshBkJMT/dBPd4Zzi99i1R
-         wMSrnCUmkgisZ4CUZuK4tJLqG02X2onJh6pUBbLik2ppj4qCmGS9dN4tX/jxkaXtvp
-         6kUaBfrLIiG/CLDu7gb9tMDPq1kPYq+/0wd/yYAPiCTygVIdmw5Ty099O+xhNUzrfT
-         /t3DwQiOuOSeGR+WD3/M8CJ7TC8tTyiP3ghSJD1URSjFtJgs2kUxYb3SUUXXGT26bo
-         MG2RKeKpVG/dw==
-Received: from johan by xi with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lVt1Y-0000Cr-Jo; Mon, 12 Apr 2021 11:38:28 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] USB: serial: ti_usb_3410_5052: drop drain delay for 3410
-Date:   Mon, 12 Apr 2021 11:38:15 +0200
-Message-Id: <20210412093815.736-5-johan@kernel.org>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210412093815.736-1-johan@kernel.org>
-References: <20210412093815.736-1-johan@kernel.org>
+        id S244217AbhDLJvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243483AbhDLJmU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:42:20 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF07C06136D
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:38:46 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id r9so19162454ejj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=l44rB0IYMxJ35sDa+nql8M4c9xSWgfebmgWtETnR9Rk=;
+        b=g8v5HrPpDcZWCi5z1Vikc+xanmXnwDGaCf7pb+6ERjYz5V/8ty8WRI45YWfGtoUhix
+         8YyfFlv7EMZtVtigcSpqkFq332BkhGZLyrw4O+kVCJR+kjRZm8q8cB6C9e0DMpS1JmTH
+         jztE0gSlOJZ4TrGt7xRiInCX4a7my9CGB3YNKjE8WcuypZZSQk8bVUWgUhK824gz2AR9
+         OKS48TuQYXQw8bsK2MZMkf9R8ffqcCqNLCSPaHTM0DvbFKO13LQUsSFVO3PklHaRP70X
+         Ehsvc3zyjyGt6TwhW3KCr5LzkUAT0bzU9eDSsmUCedyD/LdabECYtm6iR5AIHrCMfPYX
+         QcpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=l44rB0IYMxJ35sDa+nql8M4c9xSWgfebmgWtETnR9Rk=;
+        b=d0Cv+FI2Diu5dMd8np6+kOMC9qJ939CNggxoCxmRYfV9PtVHiiwZ/+T/hlLesZaI+L
+         /fN2f9voX36NEh2y8Xt1iAbAPNu+sq3wHwxDy5zd66B9+NUtBkgzNeH/+0Necj0lyn1F
+         x3QOFzxJAG+RumW0Wn0dq+O9fj2m7ERNOiXmsGmplfd5UI6oJCi5G5H9HEOOdelZqKV1
+         opxfeX5IEfVG+K32cURzlU/aBlOgdIpuR3f7UoGd1OjVQQh37M34LLbPJR4RR6eT1+zD
+         GUtwoXVnmkhpAGN1IqXB/jdi96N2h4QzZxNtWaYeauuMPLuliFmAEvDW1lDf6zByjtDW
+         uE2w==
+X-Gm-Message-State: AOAM5338iLB0F5i17Uzi3/MJ46d75Bo06tzhujls3/YMQWabhPX7koLP
+        4m1Ybj3gket9fTlvm6YpCOY+SPmQQpabKg==
+X-Google-Smtp-Source: ABdhPJyoKnOEf9yt/+OdqQdgKTrmiMUNMFKI8xCUhL1iNwpXrKhx02OazrbcOO2o7PPSGwWnyFqeMg==
+X-Received: by 2002:a17:907:3e92:: with SMTP id hs18mr25824934ejc.396.1618220325317;
+        Mon, 12 Apr 2021 02:38:45 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id h24sm5342077ejl.9.2021.04.12.02.38.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 12 Apr 2021 02:38:44 -0700 (PDT)
+Subject: Re: [PATCH 4/5] ASoC: lpass: use the clock provider API
+To:     Jerome Brunet <jbrunet@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Stephen Boyd <sboyd@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20210410111356.467340-1-jbrunet@baylibre.com>
+ <20210410111356.467340-5-jbrunet@baylibre.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <0c8c3b5d-891a-9bfa-3bbc-4982542df38a@linaro.org>
+Date:   Mon, 12 Apr 2021 10:38:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210410111356.467340-5-jbrunet@baylibre.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unlike the TUSB5052, the TUSB3410 has an LSR TEMT bit to tell if both
-the transmitter data and shift registers are empty.
+Thanks Jerome for the patch,
 
-Make sure to check also the shift register on TUSB3410 when waiting for
-the transmit buffer to drain during close and drop the time-based
-one-char delay which is otherwise needed (e.g. 90 ms at 110 bps).
 
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/serial/ti_usb_3410_5052.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+On 10/04/2021 12:13, Jerome Brunet wrote:
+> Clock providers should be registered using the clk_hw API.
+> 
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+>   sound/soc/codecs/lpass-va-macro.c  | 2 +-
+>   sound/soc/codecs/lpass-wsa-macro.c | 9 +++------
+>   2 files changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/lpass-va-macro.c b/sound/soc/codecs/lpass-va-macro.c
+> index 5294c57b2cd4..56b887301172 100644
+> --- a/sound/soc/codecs/lpass-va-macro.c
+> +++ b/sound/soc/codecs/lpass-va-macro.c
+> @@ -1343,7 +1343,7 @@ static int va_macro_register_fsgen_output(struct va_macro *va)
+>   	if (ret)
+>   		return ret;
+>   
+> -	return of_clk_add_provider(np, of_clk_src_simple_get, va->hw.clk);
+> +	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, &va->hw);
 
-diff --git a/drivers/usb/serial/ti_usb_3410_5052.c b/drivers/usb/serial/ti_usb_3410_5052.c
-index 8ed64115987f..d9bffb2de8bf 100644
---- a/drivers/usb/serial/ti_usb_3410_5052.c
-+++ b/drivers/usb/serial/ti_usb_3410_5052.c
-@@ -121,6 +121,7 @@
- #define TI_LSR_ERROR			0x0F
- #define TI_LSR_RX_FULL			0x10
- #define TI_LSR_TX_EMPTY			0x20
-+#define TI_LSR_TX_EMPTY_BOTH		0x40
- 
- /* Line control */
- #define TI_LCR_BREAK			0x40
-@@ -614,7 +615,8 @@ static int ti_port_probe(struct usb_serial_port *port)
- 	 * The TUSB5052 LSR does not tell when the transmitter shift register
- 	 * has emptied so add a one-character drain delay.
- 	 */
--	port->port.drain_delay = 1;
-+	if (!tport->tp_tdev->td_is_3410)
-+		port->port.drain_delay = 1;
- 
- 	return 0;
- }
-@@ -851,11 +853,20 @@ static int ti_chars_in_buffer(struct tty_struct *tty)
- static bool ti_tx_empty(struct usb_serial_port *port)
- {
- 	struct ti_port *tport = usb_get_serial_port_data(port);
-+	u8 lsr, mask;
- 	int ret;
--	u8 lsr;
-+
-+	/*
-+	 * TUSB5052 does not have the TEMT bit to tell if the shift register
-+	 * is empty.
-+	 */
-+	if (tport->tp_tdev->td_is_3410)
-+		mask = TI_LSR_TX_EMPTY_BOTH;
-+	else
-+		mask = TI_LSR_TX_EMPTY;
- 
- 	ret = ti_get_lsr(tport, &lsr);
--	if (!ret && !(lsr & TI_LSR_TX_EMPTY))
-+	if (!ret && !(lsr & mask))
- 		return false;
- 
- 	return true;
--- 
-2.26.3
+Now that we convert this to devm, You missed error path and driver 
+remove where we delete clk provider. This should be removed as well as 
+part of this patch.
 
+
+This applies to both wsa and va macro.
+
+Thanks,
+srini
+>   }
+>   
+>   static int va_macro_validate_dmic_sample_rate(u32 dmic_sample_rate,
+> diff --git a/sound/soc/codecs/lpass-wsa-macro.c b/sound/soc/codecs/lpass-wsa-macro.c
+> index e79a70386b4b..acb95e83c788 100644
+> --- a/sound/soc/codecs/lpass-wsa-macro.c
+> +++ b/sound/soc/codecs/lpass-wsa-macro.c
+> @@ -2337,10 +2337,9 @@ static const struct clk_ops swclk_gate_ops = {
+>   	.recalc_rate = swclk_recalc_rate,
+>   };
+>   
+> -static struct clk *wsa_macro_register_mclk_output(struct wsa_macro *wsa)
+> +static int wsa_macro_register_mclk_output(struct wsa_macro *wsa)
+>   {
+>   	struct device *dev = wsa->dev;
+> -	struct device_node *np = dev->of_node;
+>   	const char *parent_clk_name;
+>   	const char *clk_name = "mclk";
+>   	struct clk_hw *hw;
+> @@ -2358,11 +2357,9 @@ static struct clk *wsa_macro_register_mclk_output(struct wsa_macro *wsa)
+>   	hw = &wsa->hw;
+>   	ret = clk_hw_register(wsa->dev, hw);
+>   	if (ret)
+> -		return ERR_PTR(ret);
+> -
+> -	of_clk_add_provider(np, of_clk_src_simple_get, hw->clk);
+> +		return ret;
+>   
+> -	return NULL;
+> +	return devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, hw);
+>   }
+>   
+>   static const struct snd_soc_component_driver wsa_macro_component_drv = {
+> 
