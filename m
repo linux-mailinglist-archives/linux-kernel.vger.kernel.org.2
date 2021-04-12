@@ -2,293 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E42635C276
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:03:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963FE35C279
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240423AbhDLJon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:44:43 -0400
-Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:11642 "EHLO
-        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240637AbhDLJUC (ORCPT
+        id S241003AbhDLJpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:45:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239527AbhDLJVG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:20:02 -0400
-Received: from pps.filterd (m0170389.ppops.net [127.0.0.1])
-        by mx0a-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13C9Cetr013222;
-        Mon, 12 Apr 2021 05:19:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=smtpout1; bh=d2YeAzcMr5WXK8+Rz5JJ/XJQ38jVQ+th1Ygw2YKFiwc=;
- b=nIs60VuRwBOvEfy3dVMeueBh+2u7Em4goZdseRNqcV0l/1mw8ahLIzbeTpYJnC9XpQJC
- Th8OT2LD2u+M27C8vvf5DYWECZlvdaTm4iViRFLsN9h5TkoRbdn1Z4v+nTIuq9xdJBxA
- keppnZcf8mrs6osT4ZaVNBRqU+dnrj5B13ORm/ih9985Ai6OYfuVFfxuwtG+aXREsg6v
- BhWKJwN42XL71h6Y5zQbW9YbNNuYq4AreJ1fEL5SL3QaSe9LUZQWu45Yv7g/iuEBW/ch
- x3pi01tZpa49soqpjDjByaj4/+SqvPrx1SSWCmWFePq1aT7CZptvLE4iOW++XinQ1Esh Eg== 
-Received: from mx0b-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0a-00154904.pphosted.com with ESMTP id 37u81mvn5q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Apr 2021 05:19:45 -0400
-Received: from pps.filterd (m0090350.ppops.net [127.0.0.1])
-        by mx0b-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13C9AcgZ182680;
-        Mon, 12 Apr 2021 05:19:44 -0400
-Received: from ausxippc106.us.dell.com (AUSXIPPC106.us.dell.com [143.166.85.156])
-        by mx0b-00154901.pphosted.com with ESMTP id 37us87cvsw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Apr 2021 05:19:44 -0400
-X-LoopCount0: from 10.69.132.19
-X-PREM-Routing: D-Outbound
-X-IronPort-AV: E=Sophos;i="5.81,216,1610431200"; 
-   d="scan'208";a="689675310"
-From:   Perry Yuan <Perry.Yuan@dell.com>
-To:     pobrn@protonmail.com, pierre-louis.bossart@linux.intel.com,
-        oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
-        hdegoede@redhat.com, mgross@linux.intel.com
-Cc:     lgirdwood@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, Perry.Yuan@dell.com,
-        mario.limonciello@outlook.com, Dell.Client.Kernel@dell.com
-Subject: [PATCH v7 2/2] ASoC: rt715:add micmute led state control supports
-Date:   Mon, 12 Apr 2021 17:19:39 +0800
-Message-Id: <20210412091939.16036-1-Perry_Yuan@Dell.com>
-X-Mailer: git-send-email 2.19.2.windows.1
+        Mon, 12 Apr 2021 05:21:06 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E715BC06134A
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:20:09 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lVsjk-0005qq-Hq; Mon, 12 Apr 2021 11:20:04 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:3d5d:9164:44d1:db57])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id AFF9160CC68;
+        Mon, 12 Apr 2021 09:20:02 +0000 (UTC)
+Date:   Mon, 12 Apr 2021 11:20:01 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     linux-can@vger.kernel.org, Jimmy Assarsson <extja@kvaser.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Arunachalam Santhanam <arunachalam.santhanam@in.bosch.com>
+Subject: Re: [PATCH v15 0/3] Introducing ETAS ES58X CAN USB interfaces
+Message-ID: <20210412092001.7vp7dtbvsb6bgh2t@pengutronix.de>
+References: <20210410095948.233305-1-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-12_07:2021-04-12,2021-04-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- mlxlogscore=999 adultscore=0 clxscore=1015 bulkscore=0 spamscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104120061
-X-Proofpoint-GUID: U6PBAtD8Yi2iQ46VdReYOvrtRPQq2IYJ
-X-Proofpoint-ORIG-GUID: U6PBAtD8Yi2iQ46VdReYOvrtRPQq2IYJ
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 adultscore=0
- malwarescore=0 mlxlogscore=999 suspectscore=0 bulkscore=0 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104120061
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="lmvu7bpch25yya7y"
+Content-Disposition: inline
+In-Reply-To: <20210410095948.233305-1-mailhol.vincent@wanadoo.fr>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Perry Yuan <perry_yuan@dell.com>
 
-Some new Dell system is going to support audio internal micphone
-privacy setting from hardware level with micmute led state changing
-When micmute hotkey pressed by user, soft mute will need to be enabled
-firstly in case of pop noise, and codec driver need to react to mic
-mute event to EC(embedded controller) notifying that SW mute is completed
-Then EC will do the hardware mute physically within the timeout reached
+--lmvu7bpch25yya7y
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This patch allow codec rt715 and rt715 sdca driver to change the local micmute
-led state. Dell privacy led trigger driver will ack EC when micmute key pressed
-through this micphone led control interface like hda_generic provided
-ACPI method defined in dell-privacy micmute led trigger will be called
-for notifying the EC that software mute has been completed, then hardware
-audio circuit solution controlled by EC will switch the audio input source off/on
+On 10.04.2021 18:59:45, Vincent Mailhol wrote:
+> Here comes the 15th iteration of the patch. This new version addresses
+> the comments received from Marc (thanks again for the review!) and
+> simplify the device probing by using .driver_info.
 
-Signed-off-by: Perry Yuan <perry_yuan@dell.com>
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/=
+usb/etas_es58x/es58x_core.c
+index 35ba8af89b2e..7222b3b6ca46 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+@@ -1096,7 +1096,7 @@ static void es58x_increment_rx_errors(struct es58x_de=
+vice *es58x_dev)
+  *     be aligned.
+  *
+  * Sends the URB command to the device specific function. Manages the
+- * errors throwed back by those functions.
++ * errors thrown back by those functions.
+  */
+ static void es58x_handle_urb_cmd(struct es58x_device *es58x_dev,
+                                 const union es58x_urb_cmd *urb_cmd)
 
---------
-v5 -> v6:
-* addresed review comments from Jaroslav
-* add quirks for micmute led control as short term solution to control
-  micmute led state change
-* add comments for the invert checking
-v4 -> v5:
-* rebase to latest 5.12 rc4 upstream kernel
-v3 -> v4:
-* remove unused debug log
-* remove compile flag of DELL privacy
-* move the micmute_led to local from rt715_priv
-* when Jaroslav upstream his gerneric LED trigger driver,I will rebase
-  this patch,please consider merge this at first
-  https://lore.kernel.org/alsa-devel/20210211111400.1131020-1-perex@perex.cz/
-v2 -> v3:
-* simplify the patch to reuse some val value
-* add more detail to the commit info
-v1 -> v2:
-* fix some format issue
---------
----
- sound/soc/codecs/rt715-sdca.c | 42 ++++++++++++++++++++++++++++++++++
- sound/soc/codecs/rt715.c      | 43 +++++++++++++++++++++++++++++++++++
- 2 files changed, 85 insertions(+)
+I have applied to linux-can-next/testing with the above spell fix.
+Thanks for the steady work on this and all the other features.
 
-diff --git a/sound/soc/codecs/rt715-sdca.c b/sound/soc/codecs/rt715-sdca.c
-index 20528afbdc57..47dc31f7f3e3 100644
---- a/sound/soc/codecs/rt715-sdca.c
-+++ b/sound/soc/codecs/rt715-sdca.c
-@@ -11,12 +11,14 @@
- #include <linux/moduleparam.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
-+#include <linux/leds.h>
- #include <linux/pm_runtime.h>
- #include <linux/pm.h>
- #include <linux/soundwire/sdw.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- #include <linux/platform_device.h>
-+#include <linux/dmi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -344,6 +346,32 @@ static int rt715_sdca_get_volsw(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+static bool micmute_led_set;
-+static int  dmi_matched(const struct dmi_system_id *dmi)
-+{
-+	micmute_led_set = 1;
-+	return 1;
-+}
-+
-+/* Some systems will need to use this to trigger mic mute LED state changed */
-+static const struct dmi_system_id micmute_led_dmi_table[] = {
-+	{
-+		.callback = dmi_matched,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_MATCH(DMI_PRODUCT_SKU, "0A32"),
-+		},
-+	},
-+	{
-+		.callback = dmi_matched,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_MATCH(DMI_PRODUCT_SKU, "0A3E"),
-+		},
-+	},
-+	{},
-+};
-+
- static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
- 	struct snd_ctl_elem_value *ucontrol)
- {
-@@ -358,6 +386,7 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
- 	unsigned int mask = (1 << fls(max)) - 1;
- 	unsigned int invert = p->invert;
- 	int err;
-+	bool micmute_led;
- 
- 	for (i = 0; i < 4; i++) {
- 		if (ucontrol->value.integer.value[i] != rt715->kctl_switch_orig[i]) {
-@@ -394,6 +423,18 @@ static int rt715_sdca_put_volsw(struct snd_kcontrol *kcontrol,
- 			return err;
- 	}
- 
-+	/* Micmute LED state changed by muted/unmute switch
-+	 * to keep syncing with actual hardware mic mute led state
-+	 * invert will be checked to change the state switch
-+	 */
-+	if (invert && micmute_led_set) {
-+		if (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1])
-+			micmute_led = LED_OFF;
-+		else
-+			micmute_led = LED_ON;
-+		ledtrig_audio_set(LED_AUDIO_MICMUTE, micmute_led);
-+	}
-+
- 	return k_changed;
- }
- 
-@@ -1066,6 +1107,7 @@ int rt715_sdca_io_init(struct device *dev, struct sdw_slave *slave)
- 
- 	pm_runtime_mark_last_busy(&slave->dev);
- 	pm_runtime_put_autosuspend(&slave->dev);
-+	dmi_check_system(micmute_led_dmi_table);
- 
- 	return 0;
- }
-diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
-index 34c3357e943b..59d05b28f52e 100644
---- a/sound/soc/codecs/rt715.c
-+++ b/sound/soc/codecs/rt715.c
-@@ -13,6 +13,7 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
-+#include <linux/leds.h>
- #include <linux/pm_runtime.h>
- #include <linux/pm.h>
- #include <linux/soundwire/sdw.h>
-@@ -25,6 +26,7 @@
- #include <linux/of.h>
- #include <linux/of_gpio.h>
- #include <linux/of_device.h>
-+#include <linux/dmi.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
-@@ -70,6 +72,32 @@ static void rt715_get_gain(struct rt715_priv *rt715, unsigned int addr_h,
- 		pr_err("Failed to get L channel gain.\n");
- }
- 
-+static bool micmute_led_set;
-+static int  dmi_matched(const struct dmi_system_id *dmi)
-+{
-+	micmute_led_set = 1;
-+	return 1;
-+}
-+
-+/* Some systems will need to use this to trigger mic mute LED state changed */
-+static const struct dmi_system_id micmute_led_dmi_table[] = {
-+	{
-+		.callback = dmi_matched,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_MATCH(DMI_PRODUCT_SKU, "0A32"),
-+		},
-+	},
-+	{
-+		.callback = dmi_matched,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_MATCH(DMI_PRODUCT_SKU, "0A3E"),
-+		},
-+	},
-+	{},
-+};
-+
- /* For Verb-Set Amplifier Gain (Verb ID = 3h) */
- static int rt715_set_amp_gain_put(struct snd_kcontrol *kcontrol,
- 					struct snd_ctl_elem_value *ucontrol)
-@@ -88,6 +116,7 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol *kcontrol,
- 		RT715_SET_GAIN_MIX_ADC2_L};
- 	unsigned int addr_h, addr_l, val_h, val_ll, val_lr;
- 	unsigned int read_ll, read_rl, i, j, loop_cnt;
-+	bool micmute_led;
- 
- 	if (strstr(ucontrol->id.name, "Main Capture Switch") ||
- 		strstr(ucontrol->id.name, "Main Capture Volume"))
-@@ -185,6 +214,19 @@ static int rt715_set_amp_gain_put(struct snd_kcontrol *kcontrol,
- 	if (dapm->bias_level <= SND_SOC_BIAS_STANDBY)
- 		regmap_write(rt715->regmap,
- 				RT715_SET_AUDIO_POWER_STATE, AC_PWRST_D3);
-+
-+	/* Micmute LED state changed by muted/unmute switch
-+	 * to keep syncing with actual hardware mic mute led state
-+	 * invert will be checked to change the state switch
-+	 */
-+	if (mc->invert && micmute_led_set) {
-+		if (ucontrol->value.integer.value[0] || ucontrol->value.integer.value[1])
-+			micmute_led = LED_OFF;
-+		else
-+			micmute_led = LED_ON;
-+		ledtrig_audio_set(LED_AUDIO_MICMUTE, micmute_led);
-+	}
-+
- 	return 0;
- }
- 
-@@ -901,6 +943,7 @@ int rt715_io_init(struct device *dev, struct sdw_slave *slave)
- 
- 	pm_runtime_mark_last_busy(&slave->dev);
- 	pm_runtime_put_autosuspend(&slave->dev);
-+	dmi_check_system(micmute_led_dmi_table);
- 
- 	return 0;
- }
--- 
-2.25.1
+regards,
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--lmvu7bpch25yya7y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmB0ELwACgkQqclaivrt
+76k1EQf/bDNVY5jlsoDnEytekfBndAaWBeFbxyFEdA3ZvKPdxdl6OPR2P3oV+ZNx
+6xfRBahq1UecL4cdFjE9rILg3WEy66kImw/gS2mXJDehw0+d0bcYNGIv0BwbdAbQ
+vMQ+OtnoOMxdHy5LjC9s8wFxCbrVWwl28vEvsi4PHmhTnOEke3pDTN6Q9/y2noot
+RtE1dF8i6KwdKkaUsINmzNsu0a1mY1Jwh1u1giYaLhAWCHPV1bfX31VWnHQGaxv3
+k/u71Q/4dNuITI9yPf6rLmw2/iEF/oepG1+8EpS7ie+cBHyke3oTEwOKjC7EJ9zg
+MeMvuCjGSQaU0ahipgGhB307bs5FBg==
+=aGCF
+-----END PGP SIGNATURE-----
+
+--lmvu7bpch25yya7y--
