@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F79035BD9E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE34C35BD21
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238341AbhDLIwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40840 "EHLO mail.kernel.org"
+        id S238087AbhDLIrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:47:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237941AbhDLIrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:47:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB90D6109E;
-        Mon, 12 Apr 2021 08:47:21 +0000 (UTC)
+        id S237776AbhDLIqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:46:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E1B061279;
+        Mon, 12 Apr 2021 08:45:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217242;
-        bh=B4PgTDjKiioZnJQhiRe/WpWG0md/qOPb7yGRqTtR3/o=;
+        s=korg; t=1618217145;
+        bh=1QToRp4t/eGel+tKZM+X5YTXzHGnEJFgybPBj1GYK+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oy1NSKNsH9Nxd9IckGqrQm5GsCl4YdGzACcjCa5CrLWGWi+hRvO30HbTFyFmOU5oZ
-         trY2cmkiP2/dBuSLL6SUPyrT9nNl0JsPAR4PVuzi4yB7tAXea8qXcrSEqaAzO+lHuP
-         eehtsy6ELVMbGZ8V/QXRASL5gjfTcdYJr3dVFt/c=
+        b=cCZuKhDuoKPd//lYEOCU8umeT3zwXXZZna49ZDeqTNA6VoURN92ZMfbVlyNS7RXmi
+         gS3nnwbW1v8dxgBVURcSymn2lj4Hjk10XtkoxL1YVBu6xURqw/Ona6T4yacR+v/AEs
+         WuKIPX4hetl8qh5PJ0Yz1TkOtgswQTeZ3N4RSVPw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 011/111] net: dsa: lantiq_gswip: Let GSWIP automatically set the xMII clock
-Date:   Mon, 12 Apr 2021 10:39:49 +0200
-Message-Id: <20210412084004.592476418@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.4 012/111] drm/i915: Fix invalid access to ACPI _DSM objects
+Date:   Mon, 12 Apr 2021 10:39:50 +0200
+Message-Id: <20210412084004.629496834@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -41,47 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 3e6fdeb28f4c331acbd27bdb0effc4befd4ef8e8 upstream.
+commit b6a37a93c9ac3900987c79b726d0bb3699d8db4e upstream.
 
-The xMII interface clock depends on the PHY interface (MII, RMII, RGMII)
-as well as the current link speed. Explicitly configure the GSWIP to
-automatically select the appropriate xMII interface clock.
+intel_dsm_platform_mux_info() tries to parse the ACPI package data
+from _DSM for the debug information, but it assumes the fixed format
+without checking what values are stored in the elements actually.
+When an unexpected value is returned from BIOS, it may lead to GPF or
+NULL dereference, as reported recently.
 
-This fixes an issue seen by some users where ports using an external
-RMII or RGMII PHY were deaf (no RX or TX traffic could be seen). Most
-likely this is due to an "invalid" xMII clock being selected either by
-the bootloader or hardware-defaults.
+Add the checks of the contents in the returned values and skip the
+values for invalid cases.
 
-Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+v1->v2: Check the info contents before dereferencing, too
+
+BugLink: http://bugzilla.opensuse.org/show_bug.cgi?id=1184074
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210402082317.871-1-tiwai@suse.de
+(cherry picked from commit 337d7a1621c7f02af867229990ac67c97da1b53a)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/dsa/lantiq_gswip.c |    9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/i915/display/intel_acpi.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
---- a/drivers/net/dsa/lantiq_gswip.c
-+++ b/drivers/net/dsa/lantiq_gswip.c
-@@ -795,10 +795,15 @@ static int gswip_setup(struct dsa_switch
- 	/* Configure the MDIO Clock 2.5 MHz */
- 	gswip_mdio_mask(priv, 0xff, 0x09, GSWIP_MDIO_MDC_CFG1);
+--- a/drivers/gpu/drm/i915/display/intel_acpi.c
++++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+@@ -83,13 +83,31 @@ static void intel_dsm_platform_mux_info(
+ 		return;
+ 	}
  
--	/* Disable the xMII link */
--	for (i = 0; i < priv->hw_info->max_ports; i++)
-+	for (i = 0; i < priv->hw_info->max_ports; i++) {
-+		/* Disable the xMII link */
- 		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, i);
- 
-+		/* Automatically select the xMII interface clock */
-+		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_RATE_MASK,
-+				   GSWIP_MII_CFG_RATE_AUTO, i);
++	if (!pkg->package.count) {
++		DRM_DEBUG_DRIVER("no connection in _DSM\n");
++		return;
 +	}
 +
- 	/* enable special tag insertion on cpu port */
- 	gswip_switch_mask(priv, 0, GSWIP_FDMA_PCTRL_STEN,
- 			  GSWIP_FDMA_PCTRLp(cpu_port));
+ 	connector_count = &pkg->package.elements[0];
+ 	DRM_DEBUG_DRIVER("MUX info connectors: %lld\n",
+ 		  (unsigned long long)connector_count->integer.value);
+ 	for (i = 1; i < pkg->package.count; i++) {
+ 		union acpi_object *obj = &pkg->package.elements[i];
+-		union acpi_object *connector_id = &obj->package.elements[0];
+-		union acpi_object *info = &obj->package.elements[1];
++		union acpi_object *connector_id;
++		union acpi_object *info;
++
++		if (obj->type != ACPI_TYPE_PACKAGE || obj->package.count < 2) {
++			DRM_DEBUG_DRIVER("Invalid object for MUX #%d\n", i);
++			continue;
++		}
++
++		connector_id = &obj->package.elements[0];
++		info = &obj->package.elements[1];
++		if (info->type != ACPI_TYPE_BUFFER || info->buffer.length < 4) {
++			DRM_DEBUG_DRIVER("Invalid info for MUX obj #%d\n", i);
++			continue;
++		}
++
+ 		DRM_DEBUG_DRIVER("Connector id: 0x%016llx\n",
+ 			  (unsigned long long)connector_id->integer.value);
+ 		DRM_DEBUG_DRIVER("  port id: %s\n",
 
 
