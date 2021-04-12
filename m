@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 061C935B8AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 04:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 322E935B8B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 04:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236611AbhDLChB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 22:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
+        id S236633AbhDLCiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 22:38:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235857AbhDLChA (ORCPT
+        with ESMTP id S236623AbhDLCiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 22:37:00 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AA1CC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 19:36:43 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id l76so8239813pga.6
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 19:36:43 -0700 (PDT)
+        Sun, 11 Apr 2021 22:38:21 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F586C06138E
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 19:38:04 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id b139so6543534qkc.10
+        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 19:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pXGUTCuwQEYmj1uTHhPOB9cfdu3ZZBqB6U+/rfdEAR0=;
-        b=aP4RlfXUP3gMHGZUAbY0r962xDlEkBPZcayRWgzCUro9tXIvBJ3fPKESsBB0ldceKs
-         AmJH1tN7YVQ09KITLCK0ySl8D7JYfNUZrsmhSX33SiJ1+34zm7bJ27zw+z3GWA21eJGr
-         NFXHjuBe3yJWqsNEkwYNmTnmZEFs7bZZq6I8ftUkDJTw/GLSWVA3dtfrsS+jvGAfh/iI
-         gbyi77/Hp/T/d1030CYIiQnKc/89sk0EiLUFQaXtkk1UezkG+GQtbm0m751xV3as7EWj
-         rXECirW1OoNCA8vGawjDYS5jyoOLHfHZC5l0DOJzyJ0RV/QOC8Jv/x+vJpIow6aTyUeF
-         mZHA==
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TmSSElCK4cYcHvK5QFQubtH5iynsu2VpzHMHEgHy8BA=;
+        b=mbWzSh1p+trrWvmtrxYTsTS6r7o6U7fHTEwOt2citEUHclf1uB5FPBJiH6Uq16l2JV
+         7WuM8/9cc+Q9XA+OT8dgVf3al8k3AXpsDyC+v53R4+AnBjGFPwhPBmMep7dSG9qWwiPn
+         y2lOHpMaMhzoaGwBKLgF+AXBg5myeg5sNVvR2DhVPVJ4Y4d/nMyhUal2MZ4RnV0f35y9
+         O2ZdG6+rWoMod5Bi2v9MraiB0Ky4PpWQYtFh5Uhau9HcJmkvZROGHW6sCvLRbRmgS5im
+         07TfdfkFA6AVfyhc/SPPmM2Ee2RgKBFftH43pPgOwx8c+uyoIclHVSsQuVVlAXdF9IQg
+         6OgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pXGUTCuwQEYmj1uTHhPOB9cfdu3ZZBqB6U+/rfdEAR0=;
-        b=RA/zilLz6rDhvqYUGjWI5v9/oTyaTMWN6ntxCRVSBf+dh9OEc0kqzGdhwu0m4EwV1Y
-         7fIA3M+xCI9/Pm3Dw17h59bJU9EInMSlcSHFAykzOFKGJ143GzbLJ4+Hia2JiX7dIMAa
-         LywpgZSNn5AfNskBobBY6l9Ee5AlFEYA9f+CAjbD0xrtIsFAOuGi44SNmGIPEr4FwraK
-         igqymWwr7A24YQqtjgB6mrhqlkKYXWEUCoxQ8ZcjQvN88MvLUxT4aU+pRUHQ09v4i3ga
-         Ty9ad0EDrKdK8aWDnCqn2UKXtJx7NthtYtT7+GTWyAKJ0bItGrE2q93cuz9E+TtASq6U
-         m0GQ==
-X-Gm-Message-State: AOAM531mm/9fWrSHb3aB0viZq1LeUHJDb52Qhc1V28gtPfZe3hCsRBW8
-        HM1PFhBYB5cqTmYp/CeJ6R/XrA==
-X-Google-Smtp-Source: ABdhPJzb1E3KCGKLsAtn2eoYWgujQ33fMAWmRNqizdMU3kzh6KdnKp4++JGJFkl7CCK2Jik6xLUBBQ==
-X-Received: by 2002:a63:fd44:: with SMTP id m4mr24865907pgj.233.1618195002955;
-        Sun, 11 Apr 2021 19:36:42 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id w67sm9656066pgb.87.2021.04.11.19.36.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 11 Apr 2021 19:36:42 -0700 (PDT)
-Subject: Re: linux-next: Signed-off-by missing for commit in the block tree
-To:     Sowjanya Komatineni <skomatineni@nvidia.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210412083404.2d0dcf7c@canb.auug.org.au>
- <0aa24415-74c5-1adc-6e27-edf37285de4e@kernel.dk>
- <02ac7276-e3c7-79b2-b3b0-361bbb884d16@nvidia.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d2d4d147-65f5-a039-ac2b-ad2eff8c0db4@kernel.dk>
-Date:   Sun, 11 Apr 2021 20:36:40 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TmSSElCK4cYcHvK5QFQubtH5iynsu2VpzHMHEgHy8BA=;
+        b=AF3ymg2s4sRHDhSsKXXo6Oa5Cjvba1HDZNeZ/Tj8DL5vM5pYCxBIfSZA+3Twxi0Zmy
+         jEYab7MhibYmyAwophVNs4Zv5SoS3aBL+LCuMU0qR6hv3DjzomKh3MEF2MTeEr/a3yb1
+         sqnj85BcOoGkQCveKuyAJVcQBxxfLjPskCWPWsD+E0sBGroU8LZfDG4k6OxPwMlCFs9L
+         0wiWtmu1AGMu60YfBTiDYtaVEIJHJVeYSR5wczVXZymSEs0TJ/LqYxJ6CzwGkmJT+yML
+         wwRpJbbdwublEIHArT1Qx+httXeq31l/eFq1RRKj1iMKVXw3nwgmycjxjbNAmklL+AQW
+         r1mg==
+X-Gm-Message-State: AOAM531XBGGRSXlg9eNd5YAZFfIyE8WskuSXDrAMUVgf6JVBN2jjGl98
+        IA/HWITDA3PyY/VWGtH2gaBOjYoRoTInZSo2SHHudg==
+X-Google-Smtp-Source: ABdhPJwOWzULd337c8NuXMd1ABRPnJWVXcSMZ167cl2J0oTgGU5gvgRC+qgOHXrTrA96Yon0OE2bEBoQct1g2/W01Fo=
+X-Received: by 2002:a05:620a:1497:: with SMTP id w23mr24922931qkj.260.1618195083134;
+ Sun, 11 Apr 2021 19:38:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <02ac7276-e3c7-79b2-b3b0-361bbb884d16@nvidia.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210406092634.50465-1-greentime.hu@sifive.com> <161795835843.16967.18210803147557738620.b4-ty@arm.com>
+In-Reply-To: <161795835843.16967.18210803147557738620.b4-ty@arm.com>
+From:   Greentime Hu <greentime.hu@sifive.com>
+Date:   Mon, 12 Apr 2021 10:37:50 +0800
+Message-ID: <CAHCEehJajVGWnAwvX+Jg3_U=WNxaNq89Xq3uvcfcHzt04qNfMQ@mail.gmail.com>
+Subject: Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver support
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     jh80.chung@samsung.com, Zong Li <zong.li@sifive.com>,
+        robh+dt@kernel.org, vidyas@nvidia.com, alex.dewar90@gmail.com,
+        Erik Danie <erik.danie@sifive.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Stephen Boyd <sboyd@kernel.org>,
+        hayashi.kunihiko@socionext.com, hes@sifive.com,
+        khilman@baylibre.com, Philipp Zabel <p.zabel@pengutronix.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bjorn Helgaas <helgaas@kernel.org>, devicetree@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/11/21 8:26 PM, Sowjanya Komatineni wrote:
-> 
-> On 4/11/21 7:14 PM, Jens Axboe wrote:
->> On 4/11/21 4:34 PM, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Commit
->>>
->>>    6fa6517fe62e ("ata: ahci_tegra: call tegra_powergate_power_off only when PM domain is not present")
->>>
->>> is missing a Signed-off-by from its author.
->> Sowjana, please reply that you're OK with me adding your Signed-off-by to that
->> patch.
->>
-> Sorry I should have checked that. Thanks Jens. Sure I am OK with it.
+Lorenzo Pieralisi <lorenzo.pieralisi@arm.com> =E6=96=BC 2021=E5=B9=B44=E6=
+=9C=889=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=884:54=E5=AF=AB=E9=81=
+=93=EF=BC=9A
+>
+> On Tue, 6 Apr 2021 17:26:28 +0800, Greentime Hu wrote:
+> > This patchset includes SiFive FU740 PCIe host controller driver. We als=
+o
+> > add pcie_aux clock and pcie_power_on_reset controller to prci driver fo=
+r
+> > PCIe driver to use it.
+> >
+> > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon =
+R5
+> > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based o=
+n
+> > v5.11 Linux kernel.
+> >
+> > [...]
+>
+> Applied to pci/dwc [dropped patch 6], thanks!
+>
+> [1/6] clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
+>       https://git.kernel.org/lpieralisi/pci/c/f3ce593b1a
+> [2/6] clk: sifive: Use reset-simple in prci driver for PCIe driver
+>       https://git.kernel.org/lpieralisi/pci/c/0a78fcfd3d
+> [3/6] MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
+>       https://git.kernel.org/lpieralisi/pci/c/8bb1c66a90
+> [4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host controller
+>       https://git.kernel.org/lpieralisi/pci/c/b86d55c107
+> [5/6] PCI: fu740: Add SiFive FU740 PCIe host controller driver
+>       https://git.kernel.org/lpieralisi/pci/c/327c333a79
+>
+> Thanks,
+> Lorenzo
 
-Added, thanks.
+Hi Palmer,
 
--- 
-Jens Axboe
-
+Since the PCIE driver has been applied, would you please pick patch 6
+to RISC-V for-next tree?
+Thank you. :)
