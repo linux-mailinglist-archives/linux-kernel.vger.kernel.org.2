@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10FBC35C1E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3557F35C1EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:58:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240548AbhDLJgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:36:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36312 "EHLO mail.kernel.org"
+        id S241056AbhDLJgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:36:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240405AbhDLJKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:10:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48FE361248;
-        Mon, 12 Apr 2021 09:05:20 +0000 (UTC)
+        id S240447AbhDLJKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:10:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 037E561262;
+        Mon, 12 Apr 2021 09:05:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218320;
-        bh=xG8eqvY8nPXtL4fidfK4kCWjj0F+Rwqr98nfxRZ1qxU=;
+        s=korg; t=1618218323;
+        bh=iAZWnZA7BqLxRkTHkezonfcEU90K+fjwvi1PHQyOniE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HlqFaLbgJHiLckVroesGIZ7PjIwk2R9c7JH7AkbW/qQ/7CkVek5Hz18eHeeRqCajV
-         XrF7EEXf0Ukj3qzXEChqXno1hfl3TM5wfbOzhnEnTyl4nVT3mwSatJTTEh4Tv9Aul8
-         HCfwgLmh2ROSwvzc2Iki0YSEqe8YTglKqHq0xhNU=
+        b=q7zo8CyUgvHeMaqZVy3Ql2Gpmqfke5C1MEJJ9+2Ln3aK5VHqNkguaPmG5RmsQGSVO
+         /48AzQjNqiPLx7n6+ZDs40vfA84/pOXN5ijrzI6c7muoKFHBMjTpxOpSvqqObFregV
+         csW9JsStS+blV3Mv44nP13h+R6MMJLOIqZcJ6USs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Md Haris Iqbal <haris.iqbal@ionos.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Gioh Kim <gi-oh.kim@ionos.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
+        stable@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 153/210] RDMA/rtrs-clt: Close rtrs client conn before destroying rtrs clt session files
-Date:   Mon, 12 Apr 2021 10:40:58 +0200
-Message-Id: <20210412084021.084831657@linuxfoundation.org>
+Subject: [PATCH 5.11 154/210] drm/msm: Set drvdata to NULL when msm_drm_init() fails
+Date:   Mon, 12 Apr 2021 10:40:59 +0200
+Message-Id: <20210412084021.115588304@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -42,128 +44,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
+From: Stephen Boyd <swboyd@chromium.org>
 
-[ Upstream commit 7582207b1059129e59eb92026fca2cfc088a74fc ]
+[ Upstream commit 5620b135aea49a8f41c86aaecfcb1598a7774121 ]
 
-KASAN detected the following BUG:
+We should set the platform device's driver data to NULL here so that
+code doesn't assume the struct drm_device pointer is valid when it could
+have been destroyed. The lifetime of this pointer is managed by a kref
+but when msm_drm_init() fails we call drm_dev_put() on the pointer which
+will free the pointer's memory. This driver uses the component model, so
+there's sort of two "probes" in this file, one for the platform device
+i.e. msm_pdev_probe() and one for the component i.e. msm_drm_bind(). The
+msm_drm_bind() code is using the platform device's driver data to store
+struct drm_device so the two functions are intertwined.
 
-  BUG: KASAN: use-after-free in rtrs_clt_update_wc_stats+0x41/0x100 [rtrs_client]
-  Read of size 8 at addr ffff88bf2fb4adc0 by task swapper/0/0
+This relationship becomes a problem for msm_pdev_shutdown() when it
+tests the NULL-ness of the pointer to see if it should call
+drm_atomic_helper_shutdown(). The NULL test is a proxy check for if the
+pointer has been freed by kref_put(). If the drm_device has been
+destroyed, then we shouldn't call the shutdown helper, and we know that
+is the case if msm_drm_init() failed, therefore set the driver data to
+NULL so that this pointer liveness is tracked properly.
 
-  CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O      5.4.84-pserver #5.4.84-1+feature+linux+5.4.y+dbg+20201216.1319+b6b887b~deb10
-  Hardware name: Supermicro H8QG6/H8QG6, BIOS 3.00       09/04/2012
-  Call Trace:
-   <IRQ>
-   dump_stack+0x96/0xe0
-   print_address_description.constprop.4+0x1f/0x300
-   ? irq_work_claim+0x2e/0x50
-   __kasan_report.cold.8+0x78/0x92
-   ? rtrs_clt_update_wc_stats+0x41/0x100 [rtrs_client]
-   kasan_report+0x10/0x20
-   rtrs_clt_update_wc_stats+0x41/0x100 [rtrs_client]
-   rtrs_clt_rdma_done+0xb1/0x760 [rtrs_client]
-   ? lockdep_hardirqs_on+0x1a8/0x290
-   ? process_io_rsp+0xb0/0xb0 [rtrs_client]
-   ? mlx4_ib_destroy_cq+0x100/0x100 [mlx4_ib]
-   ? add_interrupt_randomness+0x1a2/0x340
-   __ib_process_cq+0x97/0x100 [ib_core]
-   ib_poll_handler+0x41/0xb0 [ib_core]
-   irq_poll_softirq+0xe0/0x260
-   __do_softirq+0x127/0x672
-   irq_exit+0xd1/0xe0
-   do_IRQ+0xa3/0x1d0
-   common_interrupt+0xf/0xf
-   </IRQ>
-  RIP: 0010:cpuidle_enter_state+0xea/0x780
-  Code: 31 ff e8 99 48 47 ff 80 7c 24 08 00 74 12 9c 58 f6 c4 02 0f 85 53 05 00 00 31 ff e8 b0 6f 53 ff e8 ab 4f 5e ff fb 8b 44 24 04 <85> c0 0f 89 f3 01 00 00 48 8d 7b 14 e8 65 1e 77 ff c7 43 14 00 00
-  RSP: 0018:ffffffffab007d58 EFLAGS: 00000246 ORIG_RAX: ffffffffffffffca
-  RAX: 0000000000000002 RBX: ffff88b803d69800 RCX: ffffffffa91a8298
-  RDX: 0000000000000007 RSI: dffffc0000000000 RDI: ffffffffab021414
-  RBP: ffffffffab6329e0 R08: 0000000000000002 R09: 0000000000000000
-  R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
-  R13: 000000bf39d82466 R14: ffffffffab632aa0 R15: ffffffffab632ae0
-   ? lockdep_hardirqs_on+0x1a8/0x290
-   ? cpuidle_enter_state+0xe5/0x780
-   cpuidle_enter+0x3c/0x60
-   do_idle+0x2fb/0x390
-   ? arch_cpu_idle_exit+0x40/0x40
-   ? schedule+0x94/0x120
-   cpu_startup_entry+0x19/0x1b
-   start_kernel+0x5da/0x61b
-   ? thread_stack_cache_init+0x6/0x6
-   ? load_ucode_amd_bsp+0x6f/0xc4
-   ? init_amd_microcode+0xa6/0xa6
-   ? x86_family+0x5/0x20
-   ? load_ucode_bsp+0x182/0x1fd
-   secondary_startup_64+0xa4/0xb0
-
-  Allocated by task 5730:
-   save_stack+0x19/0x80
-   __kasan_kmalloc.constprop.9+0xc1/0xd0
-   kmem_cache_alloc_trace+0x15b/0x350
-   alloc_sess+0xf4/0x570 [rtrs_client]
-   rtrs_clt_open+0x3b4/0x780 [rtrs_client]
-   find_and_get_or_create_sess+0x649/0x9d0 [rnbd_client]
-   rnbd_clt_map_device+0xd7/0xf50 [rnbd_client]
-   rnbd_clt_map_device_store+0x4ee/0x970 [rnbd_client]
-   kernfs_fop_write+0x141/0x240
-   vfs_write+0xf3/0x280
-   ksys_write+0xba/0x150
-   do_syscall_64+0x68/0x270
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-  Freed by task 5822:
-   save_stack+0x19/0x80
-   __kasan_slab_free+0x125/0x170
-   kfree+0xe7/0x3f0
-   kobject_put+0xd3/0x240
-   rtrs_clt_destroy_sess_files+0x3f/0x60 [rtrs_client]
-   rtrs_clt_close+0x3c/0x80 [rtrs_client]
-   close_rtrs+0x45/0x80 [rnbd_client]
-   rnbd_client_exit+0x10f/0x2bd [rnbd_client]
-   __x64_sys_delete_module+0x27b/0x340
-   do_syscall_64+0x68/0x270
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-When rtrs_clt_close is triggered, it iterates over all the present
-rtrs_clt_sess and triggers close on them. However, the call to
-rtrs_clt_destroy_sess_files is done before the rtrs_clt_close_conns. This
-is incorrect since during the initialization phase we allocate
-rtrs_clt_sess first, and then we go ahead and create rtrs_clt_con for it.
-
-If we free the rtrs_clt_sess structure before closing the rtrs_clt_con, it
-may so happen that an inflight IO completion would trigger the function
-rtrs_clt_rdma_done, which would lead to the above UAF case.
-
-Hence close the rtrs_clt_con connections first, and then trigger the
-destruction of session files.
-
-Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
-Link: https://lore.kernel.org/r/20210325153308.1214057-12-gi-oh.kim@ionos.com
-Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
-Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
-Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Fixes: 9d5cbf5fe46e ("drm/msm: add shutdown support for display platform_driver")
+Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Krishna Manikandan <mkrishn@codeaurora.org>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Message-Id: <20210325212822.3663144-1-swboyd@chromium.org>
+Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/msm/msm_drv.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-index 394c1f6822b9..ee37c5af3a8c 100644
---- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-+++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
-@@ -2735,8 +2735,8 @@ void rtrs_clt_close(struct rtrs_clt *clt)
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index a5c6b8c23336..196907689c82 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -570,6 +570,7 @@ err_free_priv:
+ 	kfree(priv);
+ err_put_drm_dev:
+ 	drm_dev_put(ddev);
++	platform_set_drvdata(pdev, NULL);
+ 	return ret;
+ }
  
- 	/* Now it is safe to iterate over all paths without locks */
- 	list_for_each_entry_safe(sess, tmp, &clt->paths_list, s.entry) {
--		rtrs_clt_destroy_sess_files(sess, NULL);
- 		rtrs_clt_close_conns(sess, true);
-+		rtrs_clt_destroy_sess_files(sess, NULL);
- 		kobject_put(&sess->kobj);
- 	}
- 	free_clt(clt);
 -- 
 2.30.2
 
