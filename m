@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45B235C12B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57A9735C013
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240490AbhDLJYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:24:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54754 "EHLO mail.kernel.org"
+        id S240146AbhDLJJz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:09:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239928AbhDLJBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:01:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5AFDE6137B;
-        Mon, 12 Apr 2021 09:00:03 +0000 (UTC)
+        id S238746AbhDLIyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:54:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB67061355;
+        Mon, 12 Apr 2021 08:52:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218003;
-        bh=JLGHY2VKMlQwFRZm7/9nUZus07HYt8BQyAVwSypsMmE=;
+        s=korg; t=1618217568;
+        bh=xPMfY9rYYc8/wV1y5ujmto9Q6t0sP9asxpzX3X6uuyQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nP9M6dCc1Kh0iZtbd3VyCITGfLU8C+YZ2Ag03/iCohTpgUc78GiPrsZZsDjDTPtND
-         0w2ZdQ13eNS3lVrXbYwbGkZ2CWGkITWafz8sOoQHZtjBsbBTxrDH2yXqW9+UyoN41X
-         F3ZtFylY9EfMNLbiTq50THk8CTOcaZLXzY3HUEng=
+        b=A7RvspYqNKtbTlofxgJMopd4eCYZeyZl4kfB73sR5VdBKWYEDGNE0t4QWGxZyVP6u
+         WlMUUKSaNKAJAWLjBlmjNbE33ogpLB2y5uRHCQ03Uu+L3ZwCR5ClrgM+esq2m9SzA+
+         ZjwwUsvariB4qI/w8D1s3Tz6ppW5RRXdDduPU+aY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH 5.11 035/210] of: property: fw_devlink: do not link ".*,nr-gpios"
+        stable@vger.kernel.org, Jack Qiu <jack.qiu@huawei.com>,
+        Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 026/188] fs: direct-io: fix missing sdio->boundary
 Date:   Mon, 12 Apr 2021 10:39:00 +0200
-Message-Id: <20210412084017.178125943@linuxfoundation.org>
+Message-Id: <20210412084014.523279728@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
-References: <20210412084016.009884719@linuxfoundation.org>
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+References: <20210412084013.643370347@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+From: Jack Qiu <jack.qiu@huawei.com>
 
-commit d473d32c2fbac2d1d7082c61899cfebd34eb267a upstream.
+commit df41872b68601059dd4a84858952dcae58acd331 upstream.
 
-[<vendor>,]nr-gpios property is used by some GPIO drivers[0] to indicate
-the number of GPIOs present on a system, not define a GPIO. nr-gpios is
-not configured by #gpio-cells and can't be parsed along with other
-"*-gpios" properties.
+I encountered a hung task issue, but not a performance one.  I run DIO
+on a device (need lba continuous, for example open channel ssd), maybe
+hungtask in below case:
 
-nr-gpios without the "<vendor>," prefix is not allowed by the DT
-spec[1], so only add exception for the ",nr-gpios" suffix and let the
-error message continue being printed for non-compliant implementations.
+  DIO:						Checkpoint:
+  get addr A(at boundary), merge into BIO,
+  no submit because boundary missing
+						flush dirty data(get addr A+1), wait IO(A+1)
+						writeback timeout, because DIO(A) didn't submit
+  get addr A+2 fail, because checkpoint is doing
 
-[0] nr-gpios is referenced in Documentation/devicetree/bindings/gpio:
- - gpio-adnp.txt
- - gpio-xgene-sb.txt
- - gpio-xlp.txt
- - snps,dw-apb-gpio.yaml
+dio_send_cur_page() may clear sdio->boundary, so prevent it from missing
+a boundary.
 
-[1] Link: https://github.com/devicetree-org/dt-schema/blob/cb53a16a1eb3e2169ce170c071e47940845ec26e/schemas/gpio/gpio-consumer.yaml#L20
-
-Fixes errors such as:
-  OF: /palmbus@300000/gpio@600: could not find phandle
-
-Fixes: 7f00be96f125 ("of: property: Add device link support for interrupt-parent, dmas and -gpio(s)")
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc: Saravana Kannan <saravanak@google.com>
-Cc: stable@vger.kernel.org # v5.5+
-Link: https://lore.kernel.org/r/20210405222540.18145-1-ilya.lipnitskiy@gmail.com
-Signed-off-by: Rob Herring <robh@kernel.org>
+Link: https://lkml.kernel.org/r/20210322042253.38312-1-jack.qiu@huawei.com
+Fixes: b1058b981272 ("direct-io: submit bio after boundary buffer is added to it")
+Signed-off-by: Jack Qiu <jack.qiu@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/of/property.c |   11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ fs/direct-io.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -1260,7 +1260,16 @@ DEFINE_SIMPLE_PROP(pinctrl7, "pinctrl-7"
- DEFINE_SIMPLE_PROP(pinctrl8, "pinctrl-8", NULL)
- DEFINE_SUFFIX_PROP(regulators, "-supply", NULL)
- DEFINE_SUFFIX_PROP(gpio, "-gpio", "#gpio-cells")
--DEFINE_SUFFIX_PROP(gpios, "-gpios", "#gpio-cells")
-+
-+static struct device_node *parse_gpios(struct device_node *np,
-+				       const char *prop_name, int index)
-+{
-+	if (!strcmp_suffix(prop_name, ",nr-gpios"))
-+		return NULL;
-+
-+	return parse_suffix_prop_cells(np, prop_name, index, "-gpios",
-+				       "#gpio-cells");
-+}
+--- a/fs/direct-io.c
++++ b/fs/direct-io.c
+@@ -810,6 +810,7 @@ submit_page_section(struct dio *dio, str
+ 		    struct buffer_head *map_bh)
+ {
+ 	int ret = 0;
++	int boundary = sdio->boundary;	/* dio_send_cur_page may clear it */
  
- static struct device_node *parse_iommu_maps(struct device_node *np,
- 					    const char *prop_name, int index)
+ 	if (dio->op == REQ_OP_WRITE) {
+ 		/*
+@@ -848,10 +849,10 @@ submit_page_section(struct dio *dio, str
+ 	sdio->cur_page_fs_offset = sdio->block_in_file << sdio->blkbits;
+ out:
+ 	/*
+-	 * If sdio->boundary then we want to schedule the IO now to
++	 * If boundary then we want to schedule the IO now to
+ 	 * avoid metadata seeks.
+ 	 */
+-	if (sdio->boundary) {
++	if (boundary) {
+ 		ret = dio_send_cur_page(dio, sdio, map_bh);
+ 		if (sdio->bio)
+ 			dio_bio_submit(dio, sdio);
 
 
