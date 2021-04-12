@@ -2,138 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37CBF35CF38
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99A1C35CF3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243573AbhDLRF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:05:29 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50528 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245261AbhDLRE6 (ORCPT
+        id S243633AbhDLRJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:09:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240644AbhDLRJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:04:58 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lVzzJ-00023K-IM; Mon, 12 Apr 2021 17:04:37 +0000
-Subject: Re: [PATCH][next] KEYS: trusted: Fix missing null return from kzalloc
- call
-To:     jejb@linux.ibm.com, Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210412160101.1627882-1-colin.king@canonical.com>
- <adeb7c73d0bb354f04f8117c5ccf6b006dfc15de.camel@linux.ibm.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <53fef8cf-0dd4-e4fe-260b-0f5ad25d9014@canonical.com>
-Date:   Mon, 12 Apr 2021 18:04:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 12 Apr 2021 13:09:02 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F19C061574;
+        Mon, 12 Apr 2021 10:08:44 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id n138so22637444lfa.3;
+        Mon, 12 Apr 2021 10:08:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z9yKLqiHk2kInh9XkjY0B3JWgb5a3H5BK5yAT5kVFoo=;
+        b=dwZtx3a8HY8JxAzp3P/Y+m2rO6juUSU2LwwkBQ0bdejB1w/uBt1TwaTTfNR7Z0Y1Oo
+         nEkNHNjJH9Sf/lYdefy+khZ0XSSHTwbbWZshd/dcPqqFWR15qs1OdalYQuabtyUEpobh
+         K3RHghqSa7I5GUjhB+A1riqUn4SjTVR+wS0R9o9nr6pIihoeWRXgLhBjfi+CwxNHto+4
+         1ftI+4rukuZvyOJhwXOdjCC46DOzQhYi2qLPwcrKKMNXkOgMNRnhhChiswpbwh8utyIt
+         NEhZEGknwhIN80LrRNfAZS65n7M/gHi2yysw4pxLcSr1/9DCCRfaiAyfvdSvj7ORQa0l
+         Su5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z9yKLqiHk2kInh9XkjY0B3JWgb5a3H5BK5yAT5kVFoo=;
+        b=JBYyijJD+tPMDU4UQbfnVaAAOvaBzNNoMDNWc3lzUcSXQkFBkLi1lW7sE7qAQiQXN/
+         E8o6xROdhhoelahiurwOz89GgSgg8T/Fjjwea4GpfcmLZ9jxTMov7uhK1llnUWe1dr/c
+         wA37ErEN+40ytitd5mJpq8GB40tFCzk4jthdgE+Gw+y5MPtcoffLMByI6B9qfVQdWz3h
+         KXXFtT//UR2ZRcTzETa5MGwM+oWY4MUecOWJRnR7llXX+DVceIcYZONoQpPCyXRtTTj3
+         nrmgHkT3j/fQ2v7cUSJV1CDjmoGD9LX/iXKZISFu5TiCOneKBC8L46wT0992+ySMNggc
+         463w==
+X-Gm-Message-State: AOAM531TV6c0LwxWJlC/atQ0crn+C2wf9+jnuq3C4lIneq9dsLficZJM
+        0F3In8OzXfI5H2sT2iZWckvRZ5jVVvWg4FF/mKY=
+X-Google-Smtp-Source: ABdhPJwdQOkGyTx6w7MDT1WWBesr2v3+MAbclsgUF8zQms6ncveFR/SBii9/xm4FK/lZ5PAQ0Y0I6LBuUm0hoNVFuFQ=
+X-Received: by 2002:a05:6512:3ba9:: with SMTP id g41mr839392lfv.38.1618247322990;
+ Mon, 12 Apr 2021 10:08:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <adeb7c73d0bb354f04f8117c5ccf6b006dfc15de.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CACkBjsa12CEHfT75J6M1Pqy9=6uGFvOX+vGHCa7yO-mqUN14FQ@mail.gmail.com>
+ <CACkBjsbcmt=+PFjEybaumg3Rp2peSyoyc_1McZmqT0zeKNUSCg@mail.gmail.com>
+In-Reply-To: <CACkBjsbcmt=+PFjEybaumg3Rp2peSyoyc_1McZmqT0zeKNUSCg@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 12 Apr 2021 10:08:31 -0700
+Message-ID: <CAADnVQL2kFqcsPnew4a2QSOP4cxm0Shd7=d0wdmzXLg+S-7KkQ@mail.gmail.com>
+Subject: Re: BUG: unable to handle kernel paging request in bpf_check
+To:     Hao Sun <sunhao.th@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/2021 17:48, James Bottomley wrote:
-> On Mon, 2021-04-12 at 17:01 +0100, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> The kzalloc call can return null with the GFP_KERNEL flag so
->> add a null check and exit via a new error exit label. Use the
->> same exit error label for another error path too.
->>
->> Addresses-Coverity: ("Dereference null return value")
->> Fixes: 830027e2cb55 ("KEYS: trusted: Add generic trusted keys
->> framework")
->> Signed-off-by: Colin Ian King <colin.king@canonical.com>
->> ---
->>  security/keys/trusted-keys/trusted_core.c | 6 ++++--
->>  1 file changed, 4 insertions(+), 2 deletions(-)
->>
->> diff --git a/security/keys/trusted-keys/trusted_core.c
->> b/security/keys/trusted-keys/trusted_core.c
->> index ec3a066a4b42..90774793f0b1 100644
->> --- a/security/keys/trusted-keys/trusted_core.c
->> +++ b/security/keys/trusted-keys/trusted_core.c
->> @@ -116,11 +116,13 @@ static struct trusted_key_payload
->> *trusted_payload_alloc(struct key *key)
->>  
->>  	ret = key_payload_reserve(key, sizeof(*p));
->>  	if (ret < 0)
->> -		return p;
->> +		goto err;
->>  	p = kzalloc(sizeof(*p), GFP_KERNEL);
->> +	if (!p)
->> +		goto err;
->>  
->>  	p->migratable = migratable;
->> -
->> +err:
->>  	return p;
-> 
-> This is clearly a code migration bug in 
-> 
-> commit 251c85bd106099e6f388a89e88e12d14de2c9cda
-> Author: Sumit Garg <sumit.garg@linaro.org>
-> Date:   Mon Mar 1 18:41:24 2021 +0530
-> 
->     KEYS: trusted: Add generic trusted keys framework
-> 
-> Which has for addition to trusted_core.c:
-> 
-> +static struct trusted_key_payload *trusted_payload_alloc(struct key
-> *key)
-> +{
-> +       struct trusted_key_payload *p = NULL;
-> +       int ret;
-> +
-> +       ret = key_payload_reserve(key, sizeof(*p));
-> +       if (ret < 0)
-> +               return p;
-> +       p = kzalloc(sizeof(*p), GFP_KERNEL);
-> +
-> +       p->migratable = migratable;
-> +
-> +       return p;
-> +}
-> 
-> And for trusted_tpm1.c:
-> 
-> -static struct trusted_key_payload *trusted_payload_alloc(struct key
-> *key)
-> -{
-> -       struct trusted_key_payload *p = NULL;
-> -       int ret;
-> -
-> -       ret = key_payload_reserve(key, sizeof *p);
-> -       if (ret < 0)
-> -               return p;
-> -       p = kzalloc(sizeof *p, GFP_KERNEL);
-> -       if (p)
-> -               p->migratable = 1; /* migratable by default */
-> -       return p;
-> -}
-> 
-> The trusted_tpm1.c code was correct and we got this bug introduced by
-> what should have been a simple cut and paste ... how did that happen? 
-> And therefore, how safe is the rest of the extraction into
-> trusted_core.c?
-> 
+On Mon, Apr 12, 2021 at 12:11 AM Hao Sun <sunhao.th@gmail.com> wrote:
+>
+> Besides, another similar bug occurred while fault injection was enabled.
+> ====
+> BUG: unable to handle kernel paging request in bpf_prog_alloc_no_stats
+> ========================================================
+> RAX: ffffffffffffffda RBX: 000000000059c080 RCX: 000000000047338d
+> RDX: 0000000000000078 RSI: 0000000020000300 RDI: 0000000000000005
+> RBP: 00007f7e3c38fc90 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
+> R13: 00007ffed3a1dd6f R14: 00007ffed3a1df10 R15: 00007f7e3c38fdc0
+> BUG: unable to handle page fault for address: ffff91f2077ed028
+> #PF: supervisor write access in kernel mode
+> #PF: error_code(0x0002) - not-present page
+> PGD 1810067 P4D 1810067 PUD 1915067 PMD 3b907067 PTE 0
+> Oops: 0002 [#1] SMP
+> CPU: 3 PID: 17344 Comm: executor Not tainted 5.12.0-rc6+ #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> 1.13.0-1ubuntu1.1 04/01/2014
+> RIP: 0010:bpf_prog_alloc_no_stats+0x251/0x6e0 kernel/bpf/core.c:94
 
-fortunately it gets caught by static analysis, but it does make me also
-concerned about what else has changed and how this gets through review.
-
-> James
-> 
-> 
-
+Both crashes don't make much sense.
+There are !null checks in both cases.
+I suspect it's a kmsan bug.
+Most likely kmsan_map_kernel_range_noflush is doing something wrong.
+No idea where that function lives. I don't see it in the kernel sources.
