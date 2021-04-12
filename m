@@ -2,143 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E8835C5E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:04:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE63F35C5E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:05:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240802AbhDLME1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237718AbhDLMEZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:04:25 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5FA5C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jE5PXGC65L/nbD8CH6oCJ9zdGMAFC2mSOx1780VgauQ=; b=i4AKSFTCTEfa0/T8S4eb+8QQRi
-        qO0fAGcQs2acJq6kASsjK3MgpbdSxG7zsU2IEczLyy7u2TcjngG9FHYEhE5f7UAVTSFEfPB4kKXPU
-        H/RVWDVpcST4CTO8r/j74uP/IN5shazvIB7a0IjoAZeS/+/JSuR5SAcbSesF/ugJTPHkNE8LT81kZ
-        +n8p4qluvWFGGE4Rx2DEOrGQsOA8PlLLLKPuMJP+0tnYZ919nDivL8MLSPOll866ySwnq8e34ie8I
-        ZkFOQHBYB5BamdFRLvPvMEKFSHlPcucec2dS4JnzWeM+Qj2AkAbKbjd7tDDWIa9lpOZ9oIgTMAuty
-        +dHpKWEg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVvIC-006djf-PN; Mon, 12 Apr 2021 12:03:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2598B300036;
-        Mon, 12 Apr 2021 14:03:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0B55720224202; Mon, 12 Apr 2021 14:03:47 +0200 (CEST)
-Date:   Mon, 12 Apr 2021 14:03:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, bigeasy@linutronix.de,
-        swood@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vincent.donnefort@arm.com, qais.yousef@arm.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] sched: Use cpu_dying() to fix balance_push vs
- hotplug-rollback
-Message-ID: <YHQ3Iy7QfL+0UoM0@hirez.programming.kicks-ass.net>
-References: <20210310145258.899619710@infradead.org>
- <20210310150109.259726371@infradead.org>
- <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me>
+        id S240829AbhDLMFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:05:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43610 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240815AbhDLMFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:05:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5C5561278;
+        Mon, 12 Apr 2021 12:04:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618229098;
+        bh=xdrYUH4/jDF35cvZx/pzEQSYElhm/upOwIxaqWCv2pY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Td6fSxOD8m8yQFA5BaZK/zIeZlOVgo3bJtV3gcLx1GEdMel67+RM9dBrPYoOJXyzg
+         jbWAAVLNXpt8SNaBPdUMWTvokXP/cpvnUJuOi5dNhMSoR9nvtPIYYRgsaqeuQbDmcD
+         xE1j2OjiAuyOzgNJATV00TwUOIll5aFoXAyCUnnA=
+Date:   Mon, 12 Apr 2021 14:04:55 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Samo Pogacnik <samo_pogacnik@t-2.net>,
+        Petr Mladek <pmladek@suse.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: How to handle concurrent access to /dev/ttyprintk ?
+Message-ID: <YHQ3Zy9gRdZsu77w@kroah.com>
+References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <YGx59PEq2Y015YdK@alley>
+ <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
+ <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
+ <YG24F9Kx+tjxhh8G@kroah.com>
+ <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
+ <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
+ <YHQkeZVs3pmyie9e@kroah.com>
+ <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <871rclu3jz.mognet@e113632-lin.i-did-not-set--mail-host-address--so-tickle-me>
+In-Reply-To: <32e75be6-6e9f-b33f-d585-13db220519da@i-love.sakura.ne.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 03:13:04PM +0000, Valentin Schneider wrote:
-> Peter Zijlstra <peterz@infradead.org> writes:
-> > @@ -7883,14 +7889,6 @@ int sched_cpu_deactivate(unsigned int cp
-> >  	set_cpu_active(cpu, false);
-> >  
-> >  	/*
-> > -	 * From this point forward, this CPU will refuse to run any task that
-> > -	 * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
-> > -	 * push those tasks away until this gets cleared, see
-> > -	 * sched_cpu_dying().
-> > -	 */
-> > -	balance_push_set(cpu, true);
-> > -
-> > -	/*
-> >  	 * We've cleared cpu_active_mask / set balance_push, wait for all
-> >  	 * preempt-disabled and RCU users of this state to go away such that
-> >  	 * all new such users will observe it.
-> > @@ -7910,6 +7908,14 @@ int sched_cpu_deactivate(unsigned int cp
-> >  	}
-> >  	rq_unlock_irqrestore(rq, &rf);
-> >  
-> > +	/*
-> > +	 * From this point forward, this CPU will refuse to run any task that
-> > +	 * is not: migrate_disable() or KTHREAD_IS_PER_CPU, and will actively
-> > +	 * push those tasks away until this gets cleared, see
-> > +	 * sched_cpu_dying().
-> > +	 */
-> > +	balance_push_set(cpu, true);
-> > +
+On Mon, Apr 12, 2021 at 08:25:27PM +0900, Tetsuo Handa wrote:
+> On 2021/04/12 19:44, Greg Kroah-Hartman wrote:
+> > And trying to "open exclusive only" just does not work, the kernel can
+> > not enforce that at all, sorry.  Any driver that you see trying to do
+> > that is trivial to work around in userspace, making the kernel code
+> > pointless.
 > 
-> AIUI with cpu_dying_mask being flipped before even entering
-> sched_cpu_deactivate(), we don't need this to be before the
-> synchronize_rcu() anymore; is there more than that to why you're punting it
-> back this side of it?
-
-I think it does does need to be like this, we need to clearly separate
-the active=true and balance_push_set(). If we were to somehow observe
-both balance_push_set() and active==false, we'd be in trouble.
-
-> >  #ifdef CONFIG_SCHED_SMT
-> >  	/*
-> >  	 * When going down, decrement the number of cores with SMT present.
+> You mean something like below cannot be used?
 > 
-> > @@ -8206,7 +8212,7 @@ void __init sched_init(void)
-> >  		rq->sd = NULL;
-> >  		rq->rd = NULL;
-> >  		rq->cpu_capacity = rq->cpu_capacity_orig = SCHED_CAPACITY_SCALE;
-> > -		rq->balance_callback = NULL;
-> > +		rq->balance_callback = &balance_push_callback;
-> >  		rq->active_balance = 0;
-> >  		rq->next_balance = jiffies;
-> >  		rq->push_cpu = 0;
-> > @@ -8253,6 +8259,7 @@ void __init sched_init(void)
-> >  
-> >  #ifdef CONFIG_SMP
-> >  	idle_thread_set_boot_cpu();
-> > +	balance_push_set(smp_processor_id(), false);
-> >  #endif
-> >  	init_sched_fair_class();
-> >
+> diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
+> index 6a0059e508e3..57200569918a 100644
+> --- a/drivers/char/ttyprintk.c
+> +++ b/drivers/char/ttyprintk.c
+> @@ -84,14 +84,26 @@ static int tpk_printk(const unsigned char *buf, int count)
+>  	return count;
+>  }
+>  
+> +static DEFINE_MUTEX(open_close_lock);
+
+Hah, nope, does not work at all!
+
+Think about sending an open file descriptor all around the system, or
+through a pipe, your "open only once" check does not prevent that at
+all.
+
+> > Like any tty port, if you have multiple accesses, all bets are off and
+> > hilarity ensues.  Just don't do that and expect things to be working
+> > well.
 > 
-> I don't get what these two changes do - the end result is the same as
-> before, no?
+> Since syzkaller is a fuzzer, syzkaller happily opens /dev/ttyprintk from
+> multiple threads. Should we update syzkaller to use CONFIG_TTY_PRINTK=n ?
 
-Not quite; we have to make sure the state of the offline CPUs matches
-that of a CPU that's been offlined. For consistency if nothing else, but
-it's actually important for a point below.
+Why?  Can you not hit the same tty code paths from any other tty driver
+being open multiple times?  Why is ttyprintk somehow "special" here?
 
-> Also, AIUI this patch covers the cpu_dying -> !cpu_dying rollback case
-> since balance_push gets numbed down by !cpu_dying. What about the other way
-> around (hot-plug failure + rollback)? We may have allowed !pcpu tasks on the
-> now-dying CPU, and we'd need to re-install the balance_push callback. 
+thanks,
 
-This is in fact handled. Note how the previous point initialized the
-offline CPU to have the push_callback installed.
-
-Also note how balance_push() re-instates itself unconditionally.
-
-So the thing is, we install the push callback on deactivate() and leave
-it in place until activate, it is always there, regardless what way
-we're moving.
-
-However, it is only effective whild going down, see the early exit.
+greg k-h
