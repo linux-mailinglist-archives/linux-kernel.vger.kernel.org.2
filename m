@@ -2,143 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D880335B830
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143A735B836
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236086AbhDLBed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 21:34:33 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:51123 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235543AbhDLBec (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 21:34:32 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C0D4A580424;
-        Sun, 11 Apr 2021 21:34:14 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Sun, 11 Apr 2021 21:34:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=BG5hllZBbXO/uaUx2ho6c9NeeDH0XaQ
-        6oWYDpW//0Ds=; b=kF6J7vJlfzPeJki4UBh4ni0qEwV1lpJbHHcYZAPVECpYBIS
-        UG38LvqvRbNJVHEyps6jp558YoerrJPco4D31+TIbffAZtuRSGALC3cQrlEkIV7F
-        W7Zeyl8OdGAeaqFlLbIO/JltoJHi+OClhehnx/yMxPy8HuIuRdX2T/eyUXIwAnZb
-        GZg3CUTTJE7QWJsA4sAmiRV+Hm6xiAzZzlvF0L525y4PDr02c2Yi9mrqxjPORsQa
-        J32GG3K1vzWi/ASdHFyZPm4mcRS6CBlDv7zPWsW2tG4PXG0ym3QwUTBHtk+GQJJn
-        7nLwKiOZj7Z8K33ApJoPxgDEoRUMq0kEdv0UGzQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=BG5hll
-        ZBbXO/uaUx2ho6c9NeeDH0XaQ6oWYDpW//0Ds=; b=G8BNco2N6IZ9Vm5RUcE29x
-        aMCp6xE7gGZxnkE72tX5/VULywfeW2gcpuYWWFrhCeV8ha5kwk9s7G9t/aD9bhXH
-        LBfkSDUne1tF/ygIT1Pq+aXZ1U0Lr2iIMNX/Yr8ock/cgVbJRcUCRh+fGvCCzQFc
-        nOnHCob/E4U13OKAoH1hufv8mXVxmPWRBHi4SMFiYrh37hWg8vZBAkFeIoFpbbM1
-        TzrXtyWy64AkaS8q5TDO5EVzL9iZ1OGO/jcCwed2PUcZ0bGHQ+//DmpNxggGeRz6
-        /vkOBDjFzA+BoNayVE1p04OoCeZU11uIYL5gXk8oBsPwhuCij4AJwmxQIrkEDMqw
-        ==
-X-ME-Sender: <xms:laNzYHYfkdm4xZkWh1ohaN-VgrO6EdUs-eRDUnzgjNu15oZHVLOZ-g>
-    <xme:laNzYGaFzKEe-bULTyvDc_hI3qKnFWN9sY8X_FtEoPwq3wmlgK67BUzdJ4y78RC3A
-    stri1S7EQBO5AJccA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekiedggeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
-    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
-    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
-    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:laNzYJ_IVgmsW7oVD2L_M2G9J-OlwJeiVWNlgNpYIMG4LBfUEFIOcQ>
-    <xmx:laNzYNqxqQvtE5pqmfQg71mk3Yq1ub6OTBQfDiOPAzmER8i7sSBubw>
-    <xmx:laNzYCpaRqoJazz3ANLOaVNL-Nfuu_Qp-0kAJcg8ZwT49Fy1VTWF2g>
-    <xmx:lqNzYHgjphF3n8_6Gp-wHXjnm_KPTVYBgNmZa_af57Vbu39evGVMmg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3B785A00079; Sun, 11 Apr 2021 21:34:13 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
-Mime-Version: 1.0
-Message-Id: <ba63f830-4758-49aa-a63e-f204a8eec1b4@www.fastmail.com>
-In-Reply-To: <CAK8P3a1HDQdbTAT4aRMLu-VFz720ynPqPHG5b22NZ5p5QfUqOw@mail.gmail.com>
-References: <20210319062752.145730-1-andrew@aj.id.au>
- <20210319062752.145730-16-andrew@aj.id.au>
- <CAK8P3a1HDQdbTAT4aRMLu-VFz720ynPqPHG5b22NZ5p5QfUqOw@mail.gmail.com>
-Date:   Mon, 12 Apr 2021 11:03:52 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Arnd Bergmann" <arnd@kernel.org>,
-        "Dmitry Torokhov" <dmitry.torokhov@gmail.com>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        "OpenBMC Maillist" <openbmc@lists.ozlabs.org>,
-        "Corey Minyard" <minyard@acm.org>, "Joel Stanley" <joel@jms.id.au>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        DTML <devicetree@vger.kernel.org>,
-        "Tomer Maimon" <tmaimon77@gmail.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "Avi Fishman" <avifishman70@gmail.com>,
-        "Patrick Venture" <venture@google.com>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Tali Perry" <tali.perry1@gmail.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        "Benjamin Fair" <benjaminfair@google.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v2_16/21]_ipmi:_kcs=5Fbmc:_Add_a_"raw"_character_de?=
- =?UTF-8?Q?vice_interface?=
-Content-Type: text/plain
+        id S236199AbhDLBov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 21:44:51 -0400
+Received: from mga09.intel.com ([134.134.136.24]:16117 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235543AbhDLBos (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 21:44:48 -0400
+IronPort-SDR: WP7ihIab611jDvhYJKrkOmidfX8AtLmhScRFE5eexnwiKN+fPquVtR/wVNy6j5exPqWAVmtETq
+ BGqcMwbhcelQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="194203436"
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="194203436"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 18:44:30 -0700
+IronPort-SDR: /TLdrKv6QNTpc9r6cNaJvN03c0rl7R1vpQvNcc+PWAqDmUej2sY+vRll5ALrrzHw6Wxu4tLV6A
+ 5a3AdkRs4etQ==
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="459970583"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 18:44:26 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     Tim Chen <tim.c.chen@linux.intel.com>, <akpm@linux-foundation.org>,
+        <hannes@cmpxchg.org>, <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>,
+        <vbabka@suse.cz>, <alex.shi@linux.alibaba.com>,
+        <willy@infradead.org>, <minchan@kernel.org>,
+        <richard.weiyang@gmail.com>, <hughd@google.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH 2/5] swap: fix do_swap_page() race with swapoff
+References: <20210408130820.48233-1-linmiaohe@huawei.com>
+        <20210408130820.48233-3-linmiaohe@huawei.com>
+        <7684b3de-2824-9b1f-f033-d4bc14f9e195@linux.intel.com>
+        <50d34b02-c155-bad7-da1f-03807ad31275@huawei.com>
+        <995a130b-f07a-4771-1fe3-477d2f3c1e8e@linux.intel.com>
+        <d2a26fb0-caef-04b7-e163-88bcda358b0d@huawei.com>
+Date:   Mon, 12 Apr 2021 09:44:23 +0800
+In-Reply-To: <d2a26fb0-caef-04b7-e163-88bcda358b0d@huawei.com> (Miaohe Lin's
+        message of "Sat, 10 Apr 2021 11:17:29 +0800")
+Message-ID: <87r1jgwa2w.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 9 Apr 2021, at 17:25, Arnd Bergmann wrote:
-> On Fri, Mar 19, 2021 at 7:31 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> >
-> > The existing IPMI chardev encodes IPMI behaviours as the name suggests.
-> > However, KCS devices are useful beyond IPMI (or keyboards), as they
-> > provide a means to generate IRQs and exchange arbitrary data between a
-> > BMC and its host system.
-> 
-> I only noticed the series after Joel asked about the DT changes on the arm
-> side. One question though:
-> 
-> How does this related to the drivers/input/serio/ framework that also talks
-> to the keyboard controller for things that are not keyboards?
+Miaohe Lin <linmiaohe@huawei.com> writes:
 
-I've taken a brief look and I feel they're somewhat closely related.
+> On 2021/4/10 1:17, Tim Chen wrote:
+>> 
+>> 
+>> On 4/9/21 1:42 AM, Miaohe Lin wrote:
+>>> On 2021/4/9 5:34, Tim Chen wrote:
+>>>>
+>>>>
+>>>> On 4/8/21 6:08 AM, Miaohe Lin wrote:
+>>>>> When I was investigating the swap code, I found the below possible race
+>>>>> window:
+>>>>>
+>>>>> CPU 1					CPU 2
+>>>>> -----					-----
+>>>>> do_swap_page
+>>>>>   synchronous swap_readpage
+>>>>>     alloc_page_vma
+>>>>> 					swapoff
+>>>>> 					  release swap_file, bdev, or ...
+>>>>
+>>>
+>>> Many thanks for quick review and reply!
+>>>
+>>>> Perhaps I'm missing something.  The release of swap_file, bdev etc
+>>>> happens after we have cleared the SWP_VALID bit in si->flags in destroy_swap_extents
+>>>> if I read the swapoff code correctly.
+>>> Agree. Let's look this more close:
+>>> CPU1								CPU2
+>>> -----								-----
+>>> swap_readpage
+>>>   if (data_race(sis->flags & SWP_FS_OPS)) {
+>>> 								swapoff
+>>> 								  p->swap_file = NULL;
+>>>     struct file *swap_file = sis->swap_file;
+>>>     struct address_space *mapping = swap_file->f_mapping;[oops!]
+>>> 								  ...
+>>> 								  p->flags = 0;
+>>>     ...
+>>>
+>>> Does this make sense for you?
+>> 
+>> p->swapfile = NULL happens after the 
+>> p->flags &= ~SWP_VALID, synchronize_rcu(), destroy_swap_extents() sequence in swapoff().
+>> 
+>> So I don't think the sequence you illustrated on CPU2 is in the right order.
+>> That said, without get_swap_device/put_swap_device in swap_readpage, you could
+>> potentially blow pass synchronize_rcu() on CPU2 and causes a problem.  so I think
+>> the problematic race looks something like the following:
+>> 
+>> 
+>> CPU1								CPU2
+>> -----								-----
+>> swap_readpage
+>>   if (data_race(sis->flags & SWP_FS_OPS)) {
+>> 								swapoff
+>> 								  p->flags = &= ~SWP_VALID;
+>> 								  ..
+>> 								  synchronize_rcu();
+>> 								  ..
+>> 								  p->swap_file = NULL;
+>>     struct file *swap_file = sis->swap_file;
+>>     struct address_space *mapping = swap_file->f_mapping;[oops!]
+>> 								  ...
+>>     ...
+>> 
+>
+> Agree. This is also what I meant to illustrate. And you provide a better one. Many thanks!
 
-It's plausible that we could wrangle the code so the Aspeed and Nuvoton 
-KCS drivers move under drivers/input/serio. If you squint, the i8042 
-serio device driver has similarities with what the Aspeed and Nuvoton 
-device drivers are providing to the KCS IPMI stack.
+For the pages that are swapped in through swap cache.  That isn't an
+issue.  Because the page is locked, the swap entry will be marked with
+SWAP_HAS_CACHE, so swapoff() cannot proceed until the page has been
+unlocked.
 
-Both the KCS IPMI and raw chardev I've implemented in this patch need 
-both read and write access to the status register (STR). serio could 
-potentially expose its value through serio_interrupt() using the 
-SERIO_OOB_DATA flag, but I haven't put any thought into it beyond this 
-sentence. We'd need some extra support for writing STR via the serio 
-API. I'm not sure that fits into the abstraction (unless we make 
-serio_write() take a flags argument?).
+So the race is for the fast path as follows,
 
-In that vein, the serio_raw interface is close to the functionality 
-that the raw chardev provides in this patch, though again serio_raw 
-lacks userspace access to STR. Flags are ignored in the ->interrupt() 
-callback so all values received via ->interrupt() are exposed as data. 
-The result is there's no way to take care of SERIO_OOB_DATA in the 
-read() path. Given that, I think we'd have to expose an ioctl() to 
-access the STR value after taking care of SERIO_OOB_DATA in 
-->interrupt().
+		if (data_race(si->flags & SWP_SYNCHRONOUS_IO) &&
+		    __swap_count(entry) == 1)
 
-I'm not sure where that lands us.
+I found it in your original patch description.  But please make it more
+explicit to reduce the potential confusing.
 
-Dmitry, any thoughts here?
-
-> Are these
-> separate communication channels on adjacent I/O ports, or does there
-> need to be some arbitration?
-
-As it stands there's no arbitration.
-
-Cheers,
-
-Andrew
+Best Regards,
+Huang, Ying
