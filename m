@@ -2,495 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36ECF35BB21
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B675C35BB23
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236934AbhDLHp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S236892AbhDLHqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236942AbhDLHp6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 03:45:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50434 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230510AbhDLHp4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:45:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DBACCAEB9;
-        Mon, 12 Apr 2021 07:45:37 +0000 (UTC)
-Subject: Re: [PATCH v4] drm/ast: Fixed CVE for DP501
-To:     KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     airlied@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
-        jenmin_yuan@aspeedtech.com, arc_sung@aspeedtech.com
-References: <bbe8ccfd-7e73-e1e6-32a5-f08f71c4ed3f@suse.de>
- <20210408093052.59782-1-kuohsiang_chou@aspeedtech.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <214f1451-2406-b298-e233-4939cae9e1f2@suse.de>
-Date:   Mon, 12 Apr 2021 09:45:36 +0200
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323C6C06138C
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:45:41 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id s16so7219553iog.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:45:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rYU4gbLeGAQPc5kjLRfVjCz/thSfTR7vClu5eRNAKVs=;
+        b=pyowjiPGf2w/246JdUtszTOP+JlnvdvqDq1euQF5Y1vDruWC9FrBmDKjHcKz0aphXC
+         uiU+kFZBkeIARVPcGCgxzE6yDzCD5gHhfmU5Z7EHc8RaDcigJYZwk5l7/jIObybPUylL
+         LYwXzn4teL8p7Yadf2nc8K23nVGREAtHfUGsYhU6531A0Ca6hau1Ka/4e+WC9T9BwWhk
+         vT6ajvuSzOxOZK4gd3k+ywzyLch7AZOvcWFwe4BDklJ4/aY/D0SYQm9AAXsRDPyCmphA
+         ctTUeitUfyYLRr0jwryT44bfvTlmPrWhvVt15GlTLguBWFqz0WTtX56sWwZI0tP5Df11
+         MI9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rYU4gbLeGAQPc5kjLRfVjCz/thSfTR7vClu5eRNAKVs=;
+        b=PxCJeqbNxh6h7dKR425pSfiSb+mdmtKSXOJL/5YpGU0N2sXGNgBtfpbpfJyNXBmWhJ
+         acW4u8l/jOUn6ct08+irsxLUAriQPYgV+kkXy+somAyNXnmy1OiL+uTPvX09ZpIED0Rv
+         TujiKy97WvLHf+2Zjhg9xOcdgU7uEG1GbXoLsp8i8F8rAU+mNu+SwCFxpR2X2xnZe+TJ
+         KWWKYjdt91AyUoA5BrZZKCntLZdhdIZix8WLUHyT93QatAm/17L7ti3fjhkPWUp23hEO
+         1KPMAGr/3cIzEe/KRvDl1RaQ/+82xeSLEdrnMqMh3YpKqKusHRauacxRcpBzmoeBdNHC
+         wC1w==
+X-Gm-Message-State: AOAM532Iz93dCBSuHa8arKbCGun+rEjIbLagOFPRu3DRi1BZ9K1bCxtQ
+        VvqClCoICmjLfYLhOdGVTIvovYrgD8j/bU8o
+X-Google-Smtp-Source: ABdhPJyzPIwAfz1B+C3mFdUnREI4S1utijqYga+TvACLWidNuWbqve+fwxg4SaEAVta8XHdz0UbxLQ==
+X-Received: by 2002:a02:b1ca:: with SMTP id u10mr26782374jah.99.1618213540056;
+        Mon, 12 Apr 2021 00:45:40 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id g8sm5174600iln.83.2021.04.12.00.45.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 00:45:39 -0700 (PDT)
+Subject: Re: [PATCH net-next 4/7] net: ipa: ipa_stop() does not return an
+ error
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, elder@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210409180722.1176868-1-elder@linaro.org>
+ <20210409180722.1176868-5-elder@linaro.org> <YHKYWCkPl5pucFZo@unreal>
+ <1f5c3d2c-f22a-ef5e-f282-fb2dec4479f3@linaro.org> <YHL5fwkYyHvQG2Z4@unreal>
+ <6e0c08a0-aebd-83b2-26b5-98f7d46d6b2b@linaro.org> <YHP2IKZ7pB+l4a6O@unreal>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <dcfa0fae-1321-1583-cb46-1665e1a4ea93@linaro.org>
+Date:   Mon, 12 Apr 2021 02:45:38 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210408093052.59782-1-kuohsiang_chou@aspeedtech.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="VcnD2jwTmNdIUU9f48otbblbxpMAsl7LO"
+In-Reply-To: <YHP2IKZ7pB+l4a6O@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---VcnD2jwTmNdIUU9f48otbblbxpMAsl7LO
-Content-Type: multipart/mixed; boundary="Zx9eX0PKvZJRIWFLspJrX21tGjobRKaVy";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc: airlied@redhat.com, airlied@linux.ie, daniel@ffwll.ch,
- jenmin_yuan@aspeedtech.com, arc_sung@aspeedtech.com
-Message-ID: <214f1451-2406-b298-e233-4939cae9e1f2@suse.de>
-Subject: Re: [PATCH v4] drm/ast: Fixed CVE for DP501
-References: <bbe8ccfd-7e73-e1e6-32a5-f08f71c4ed3f@suse.de>
- <20210408093052.59782-1-kuohsiang_chou@aspeedtech.com>
-In-Reply-To: <20210408093052.59782-1-kuohsiang_chou@aspeedtech.com>
-
---Zx9eX0PKvZJRIWFLspJrX21tGjobRKaVy
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Hi
-
-this patch produces a NULL-ptr deref as shown below. The chip is=20
-detected as AST 2100.
-
-Best regards
-Thomas
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-[   23.641896] BUG: KASAN: null-ptr-deref in=20
-ast_device_create.cold+0x137/0x210 [ast]
-
-[   23.642257] Read of size 8 at addr 0000000000000610 by task=20
-systemd-udevd/321
-
-[   23.642539]
-
-[   23.642696] CPU: 2 PID: 321 Comm: systemd-udevd Tainted: G=20
-  E     5.12.0-rc6-1-default+ #876
-
-[   23.643064] Hardware name: Sun Microsystems SUN FIRE X2270 M2/SUN=20
-FIRE X2270 M2, BIOS 2.05    07/01/2010
-
-[   23.643432] Call Trace:
-
-[   23.643622]  ? ast_device_create.cold+0x137/0x210 [ast]
-
-[   23.643898]  dump_stack+0xa5/0xdc
-
-[   23.644119]  kasan_report.cold+0x50/0x55
-
-[   23.644363]  ? ast_device_create.cold+0x137/0x210 [ast]
-
-[   23.644657]  ast_device_create.cold+0x137/0x210 [ast]
-
-[   23.644926]  ? devres_get+0xe5/0x160
-
-[   23.645152]  ? ast_detect_chip.isra.0+0x110/0x110 [ast]
-
-[   23.645474]  ast_pci_probe+0x4c/0x90 [ast]
-
-[   23.645734]  ? ast_kick_out_firmware_fb+0xd0/0xd0 [ast]
-
-[   23.646003]  local_pci_probe+0x74/0xc0
-
-[   23.646249]  pci_call_probe+0xb7/0x1d0
-
-[   23.646473]  ? pci_pm_suspend_noirq+0x440/0x440
-
-[   23.646773]  pci_device_probe+0x102/0x140
-
-[   23.646998]  ? driver_sysfs_add+0xe2/0x150
-
-[   23.647245]  really_probe+0x185/0x6c0
-
-[   23.647506]  driver_probe_device+0x13f/0x1d0
-
-[   23.647762]  device_driver_attach+0x114/0x120
-
-[   23.648010]  ? device_driver_attach+0x120/0x120
-
-[   23.648254]  __driver_attach+0xb0/0x1a0
-
-[   23.648497]  ? device_driver_attach+0x120/0x120
-
-[   23.648739]  bus_for_each_dev+0xdd/0x120
-
-[   23.648971]  ? subsys_dev_iter_exit+0x10/0x10
-
-[   23.649256]  bus_add_driver+0x1fb/0x2e0
-
-[   23.649514]  driver_register+0x10f/0x190
-
-[   23.649752]  ? 0xffffffffc05fd000
-
-[   23.649971]  do_one_initcall+0xbb/0x3a0
-
-[   23.650206]  ? trace_event_raw_event_initcall_finish+0x120/0x120
-
-[   23.650485]  ? mark_held_locks+0x23/0x90
-
-[   23.650718]  ? lock_is_held_type+0xe5/0x110
-
-[   23.650982]  ? rcu_read_lock_sched_held+0x3f/0x80
-
-[   23.651223]  ? kasan_unpoison+0x21/0x50
-
-[   23.651483]  do_init_module+0xfd/0x3c0
-
-[   23.651720]  load_module+0xcf2/0xd70
-
-[   23.651909]  ? layout_and_allocate+0x260/0x260
-
-[   23.652082]  ? seccomp_run_filters+0x97/0x1d0
-
-[   23.652309]  ? kernel_read_file_from_fd+0x4b/0x90
-
-[   23.652584]  __do_sys_finit_module+0xff/0x180
-
-[   23.652824]  ? __ia32_sys_init_module+0x40/0x40
-
-[   23.653198]  ? syscall_trace_enter.constprop.0+0x99/0x240
-
-[   23.653477]  do_syscall_64+0x33/0x80
-
-[   23.653693]  entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-[   23.653934] RIP: 0033:0x7f793ecc23dd
-
-[   23.654147] Code: c2 0c 00 0f 05 eb a9 66 0f 1f 44 00 00 f3 0f 1e fa=20
-48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f=20
-05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 63 7a 0c 00 f7 d8 64 89 01 48
-
-[   23.654749] RSP: 002b:00007ffdc09a08c8 EFLAGS: 00000246 ORIG_RAX:=20
-0000000000000139
-
-[   23.655092] RAX: ffffffffffffffda RBX: 000055e8dd73b8d0 RCX:=20
-00007f793ecc23dd
-
-[   23.655375] RDX: 0000000000000000 RSI: 00007f793ede33a3 RDI:=20
-0000000000000010
-
-[   23.655658] RBP: 0000000000020000 R08: 0000000000000000 R09:=20
-000055e8dd746750
-
-[   23.655941] R10: 0000000000000010 R11: 0000000000000246 R12:=20
-00007f793ede33a3
-
-[   23.656224] R13: 000055e8dd743ff0 R14: 0000000000000000 R15:=20
-000055e8dd746a80
-
-[   23.656603]=20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
-
-Am 08.04.21 um 11:30 schrieb KuoHsiang Chou:
-> [Bug][DP501]
-> If ASPEED P2A (PCI to AHB) bridge is disabled and disallowed for
-> CVE_2019_6260 item3, and then the monitor's EDID is unable read through=
-
-> Parade DP501.
-> The reason is the DP501's FW is mapped to BMC addressing space rather
-> than Host addressing space.
-> The resolution is that using "pci_iomap_range()" maps to DP501's FW tha=
-t
-> stored on the end of FB (Frame Buffer).
-> In this case, FrameBuffer reserves the last 2MB used for the image of
-> DP501.
->=20
-> Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
-> Reported-by: kernel test robot <lkp@intel.com>
-> ---
->   drivers/gpu/drm/ast/ast_dp501.c | 139 +++++++++++++++++++++++--------=
--
->   drivers/gpu/drm/ast/ast_drv.h   |  12 +++
->   drivers/gpu/drm/ast/ast_main.c  |   8 ++
->   3 files changed, 123 insertions(+), 36 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/ast/ast_dp501.c b/drivers/gpu/drm/ast/ast_=
-dp501.c
-> index 88121c0e0..cd93c44f2 100644
-> --- a/drivers/gpu/drm/ast/ast_dp501.c
-> +++ b/drivers/gpu/drm/ast/ast_dp501.c
-> @@ -189,6 +189,9 @@ bool ast_backup_fw(struct drm_device *dev, u8 *addr=
-, u32 size)
->   	u32 i, data;
->   	u32 boot_address;
->=20
-> +	if (ast->config_mode !=3D ast_use_p2a)
-> +		return false;
-> +
->   	data =3D ast_mindwm(ast, 0x1e6e2100) & 0x01;
->   	if (data) {
->   		boot_address =3D get_fw_base(ast);
-> @@ -207,6 +210,9 @@ static bool ast_launch_m68k(struct drm_device *dev)=
-
->   	u8 *fw_addr =3D NULL;
->   	u8 jreg;
->=20
-> +	if (ast->config_mode !=3D ast_use_p2a)
-> +		return false;
-> +
->   	data =3D ast_mindwm(ast, 0x1e6e2100) & 0x01;
->   	if (!data) {
->=20
-> @@ -271,25 +277,55 @@ u8 ast_get_dp501_max_clk(struct drm_device *dev)
->   	struct ast_private *ast =3D to_ast_private(dev);
->   	u32 boot_address, offset, data;
->   	u8 linkcap[4], linkrate, linklanes, maxclk =3D 0xff;
-> +	u32 *plinkcap;
->=20
-> -	boot_address =3D get_fw_base(ast);
-> -
-> -	/* validate FW version */
-> -	offset =3D 0xf000;
-> -	data =3D ast_mindwm(ast, boot_address + offset);
-> -	if ((data & 0xf0) !=3D 0x10) /* version: 1x */
-> -		return maxclk;
-> -
-> -	/* Read Link Capability */
-> -	offset  =3D 0xf014;
-> -	*(u32 *)linkcap =3D ast_mindwm(ast, boot_address + offset);
-> -	if (linkcap[2] =3D=3D 0) {
-> -		linkrate =3D linkcap[0];
-> -		linklanes =3D linkcap[1];
-> -		data =3D (linkrate =3D=3D 0x0a) ? (90 * linklanes) : (54 * linklanes=
-);
-> -		if (data > 0xff)
-> -			data =3D 0xff;
-> -		maxclk =3D (u8)data;
-> +	if (ast->config_mode =3D=3D ast_use_p2a) {
-> +		boot_address =3D get_fw_base(ast);
-> +
-> +		/* validate FW version */
-> +		offset =3D AST_DP501_GBL_VERSION;
-> +		data =3D ast_mindwm(ast, boot_address + offset);
-> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1) =
-/* version: 1x */
-> +			return maxclk;
-> +
-> +		/* Read Link Capability */
-> +		offset  =3D AST_DP501_LINKRATE;
-> +		plinkcap =3D (u32 *)linkcap;
-> +		*plinkcap  =3D ast_mindwm(ast, boot_address + offset);
-> +		if (linkcap[2] =3D=3D 0) {
-> +			linkrate =3D linkcap[0];
-> +			linklanes =3D linkcap[1];
-> +			data =3D (linkrate =3D=3D 0x0a) ? (90 * linklanes) : (54 * linklane=
-s);
-> +			if (data > 0xff)
-> +				data =3D 0xff;
-> +			maxclk =3D (u8)data;
-> +		}
-> +	} else {
-> +		if (!ast->dp501_fw_buf)
-> +			return AST_DP501_DEFAULT_DCLK;	/* 1024x768 as default */
-> +
-> +		/* dummy read */
-> +		offset =3D 0x0000;
-> +		data =3D readl(ast->dp501_fw_buf + offset);
-> +
-> +		/* validate FW version */
-> +		offset =3D AST_DP501_GBL_VERSION;
-> +		data =3D readl(ast->dp501_fw_buf + offset);
-> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1) =
-/* version: 1x */
-> +			return maxclk;
-> +
-> +		/* Read Link Capability */
-> +		offset =3D AST_DP501_LINKRATE;
-> +		plinkcap =3D (u32 *)linkcap;
-> +		*plinkcap =3D readl(ast->dp501_fw_buf + offset);
-> +		if (linkcap[2] =3D=3D 0) {
-> +			linkrate =3D linkcap[0];
-> +			linklanes =3D linkcap[1];
-> +			data =3D (linkrate =3D=3D 0x0a) ? (90 * linklanes) : (54 * linklane=
-s);
-> +			if (data > 0xff)
-> +				data =3D 0xff;
-> +			maxclk =3D (u8)data;
-> +		}
->   	}
->   	return maxclk;
->   }
-> @@ -298,26 +334,57 @@ bool ast_dp501_read_edid(struct drm_device *dev, =
-u8 *ediddata)
->   {
->   	struct ast_private *ast =3D to_ast_private(dev);
->   	u32 i, boot_address, offset, data;
-> +	u32 *pEDIDidx;
->=20
-> -	boot_address =3D get_fw_base(ast);
-> -
-> -	/* validate FW version */
-> -	offset =3D 0xf000;
-> -	data =3D ast_mindwm(ast, boot_address + offset);
-> -	if ((data & 0xf0) !=3D 0x10)
-> -		return false;
-> -
-> -	/* validate PnP Monitor */
-> -	offset =3D 0xf010;
-> -	data =3D ast_mindwm(ast, boot_address + offset);
-> -	if (!(data & 0x01))
-> -		return false;
-> +	if (ast->config_mode =3D=3D ast_use_p2a) {
-> +		boot_address =3D get_fw_base(ast);
->=20
-> -	/* Read EDID */
-> -	offset =3D 0xf020;
-> -	for (i =3D 0; i < 128; i +=3D 4) {
-> -		data =3D ast_mindwm(ast, boot_address + offset + i);
-> -		*(u32 *)(ediddata + i) =3D data;
-> +		/* validate FW version */
-> +		offset =3D AST_DP501_GBL_VERSION;
-> +		data =3D ast_mindwm(ast, boot_address + offset);
-> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1)
-> +			return false;
-> +
-> +		/* validate PnP Monitor */
-> +		offset =3D AST_DP501_PNPMONITOR;
-> +		data =3D ast_mindwm(ast, boot_address + offset);
-> +		if (!(data & AST_DP501_PNP_CONNECTED))
-> +			return false;
-> +
-> +		/* Read EDID */
-> +		offset =3D AST_DP501_EDID_DATA;
-> +		for (i =3D 0; i < 128; i +=3D 4) {
-> +			data =3D ast_mindwm(ast, boot_address + offset + i);
-> +			pEDIDidx =3D (u32 *)(ediddata + i);
-> +			*pEDIDidx =3D data;
-> +		}
-> +	} else {
-> +		if (!ast->dp501_fw_buf)
-> +			return false;
-> +
-> +		/* dummy read */
-> +		offset =3D 0x0000;
-> +		data =3D readl(ast->dp501_fw_buf + offset);
-> +
-> +		/* validate FW version */
-> +		offset =3D AST_DP501_GBL_VERSION;
-> +		data =3D readl(ast->dp501_fw_buf + offset);
-> +		if ((data & AST_DP501_FW_VERSION_MASK) !=3D AST_DP501_FW_VERSION_1)
-> +			return false;
-> +
-> +		/* validate PnP Monitor */
-> +		offset =3D AST_DP501_PNPMONITOR;
-> +		data =3D readl(ast->dp501_fw_buf + offset);
-> +		if (!(data & AST_DP501_PNP_CONNECTED))
-> +			return false;
-> +
-> +		/* Read EDID */
-> +		offset =3D AST_DP501_EDID_DATA;
-> +		for (i =3D 0; i < 128; i +=3D 4) {
-> +			data =3D readl(ast->dp501_fw_buf + offset + i);
-> +			pEDIDidx =3D (u32 *)(ediddata + i);
-> +			*pEDIDidx =3D data;
-> +		}
->   	}
->=20
->   	return true;
-> diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_dr=
-v.h
-> index e82ab8628..911f9f414 100644
-> --- a/drivers/gpu/drm/ast/ast_drv.h
-> +++ b/drivers/gpu/drm/ast/ast_drv.h
-> @@ -150,6 +150,7 @@ struct ast_private {
->=20
->   	void __iomem *regs;
->   	void __iomem *ioregs;
-> +	void __iomem *dp501_fw_buf;
->=20
->   	enum ast_chip chip;
->   	bool vga2_clone;
-> @@ -325,6 +326,17 @@ int ast_mode_config_init(struct ast_private *ast);=
-
->   #define AST_MM_ALIGN_SHIFT 4
->   #define AST_MM_ALIGN_MASK ((1 << AST_MM_ALIGN_SHIFT) - 1)
->=20
-> +#define AST_DP501_FW_VERSION_MASK	GENMASK(7, 4)
-> +#define AST_DP501_FW_VERSION_1		BIT(4)
-> +#define AST_DP501_PNP_CONNECTED		BIT(1)
-> +
-> +#define AST_DP501_DEFAULT_DCLK	65
-> +
-> +#define AST_DP501_GBL_VERSION	0xf000
-> +#define AST_DP501_PNPMONITOR	0xf010
-> +#define AST_DP501_LINKRATE	0xf014
-> +#define AST_DP501_EDID_DATA	0xf020
-> +
->   int ast_mm_init(struct ast_private *ast);
->=20
->   /* ast post */
-> diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_m=
-ain.c
-> index 0ac3c2039..dbf5224ab 100644
-> --- a/drivers/gpu/drm/ast/ast_main.c
-> +++ b/drivers/gpu/drm/ast/ast_main.c
-> @@ -450,6 +450,14 @@ struct ast_private *ast_device_create(const struct=20
-drm_driver *drv,
->   	if (ret)
->   		return ERR_PTR(ret);
->=20
-> +	/* map reserved buffer */
-> +	ast->dp501_fw_buf =3D NULL;
-> +	if (dev->vram_mm->vram_size < pci_resource_len(dev->pdev, 0)) {
-> +		ast->dp501_fw_buf =3D pci_iomap_range(dev->pdev, 0, dev->vram_mm->vr=
-am_size, 0);
-> +		if (!ast->dp501_fw_buf)
-> +			drm_info(dev, "failed to map reserved buffer!\n");
-> +	}
-> +
->   	ret =3D ast_mode_config_init(ast);
->   	if (ret)
->   		return ERR_PTR(ret);
-> --
-> 2.18.4
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---Zx9eX0PKvZJRIWFLspJrX21tGjobRKaVy--
-
---VcnD2jwTmNdIUU9f48otbblbxpMAsl7LO
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF4BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmBz+qAFAwAAAAAACgkQlh/E3EQov+Cp
-CA/3WpfOyy5hn4kAUyVPxODLYdiP/ePAhnQqhWXRWztJJsixqO4ffy55D9KfybZDIBdNTXdBqfRe
-S3MLfKPR27Qt5eMo+R+HqVrt1ia8o8TpbmwzmGCzOsaxkoHLQ7B8gQZ7BLUHdnrcAp6RobbTq+ox
-j8Fku+nF8+/OXB398VPVVhwhBIt7EZf3mU84+qX0gDW+oHkVmakGYtgyvp7rr/qGDTYhE27fKsJP
-7JfSJw5GOIe51OAcF4kVfH7AOIT8L6Irzh6sQO7OJwEuPnaVlV0w82obnryOvUgY7rIMsIyF/BNX
-m2Sdum51JcccP3n8EnQWeXWHXyKK3pPN/bx11faSkjreqzHq5oHt5r2RWV1VvI8aj9C8KRz12YuB
-3YVDsHyzSL8aGlKpJnd8RmUumEhGEPbufXLH/uyOCtXnewfHdx4X+t9CtTW4PqbSB1VITJzE/x/h
-0XChq7/CU1VkaapcGoRkAbU/QXg2kDMCYc1GaWcAtuiIp46R2W5fPSKrfEIVjxzz2uyMl+nFME82
-dGBRxUaCVO8OPC+1uHxkNYnV35C/B3swHr2q3Xoi593yh7QKoDrXDqeppUMv0zqJhmKUjz/NN//E
-khBe+c+G14XPFDcBMmUZglMIzrxoU7oTSgCWunGKFzLZUGgPcfecqSskD0sIjV6pXlFmFn9k8qlT
-4w==
-=+qyz
------END PGP SIGNATURE-----
-
---VcnD2jwTmNdIUU9f48otbblbxpMAsl7LO--
+On 4/12/21 2:26 AM, Leon Romanovsky wrote:
+> On Sun, Apr 11, 2021 at 08:42:15AM -0500, Alex Elder wrote:
+>> On 4/11/21 8:28 AM, Leon Romanovsky wrote:
+>>>> I think *not* checking an available return value is questionable
+>>>> practice.  I'd really rather have a build option for a
+>>>> "__need_not_check" tag and have "must_check" be the default.
+>>> __need_not_check == void ???
+>>
+>> I'm not sure I understand your statement here, but...
+> 
+> We are talking about the same thing. My point was that __need_not_check
+> is actually void. The API author was supposed to declare that by
+> declaring that function doesn't return anything.
+
+No, we are not.
+
+Functions like strcpy() return a value, but that value is almost
+never checked.  The returned value isn't an error, so there is
+no real need to check that return value.  This is the kind of
+thing I'm talking about that might be tagged __need_not_check.
+
+A function that returns a value for no reason should be void,
+I agree with that.
+
+In the ipa_stop() case, the value *must* be returned because
+it serves as an ->ndo_stop() function and has to adhere to
+that function prototype.  The point of the current patch
+was to simplify the code (defined privately in the current
+source file), given knowledge that it never returns an error.
+
+The compiler could ensure all calls to functions that return
+a value actually check the return value.  And because I think
+that's the best practice, I'd like to be able to run such a
+check in my code.  But there are always exceptions, and that
+would be the purpose of a __need_not_check tag.
+
+I don't think this is worthy of any more discussion.
+
+					-Alex
