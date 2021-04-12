@@ -2,79 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A39035CEA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:54:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098F935CDEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:52:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345475AbhDLQrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:47:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244289AbhDLQhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:37:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D39C613F4;
-        Mon, 12 Apr 2021 16:27:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618244870;
-        bh=cpXGB91uc3dbR5TYi49hhCnLQMQoZpJuph7uj5+A8/0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XSWtBiZKWh2wJ4G2fHgtI83e7iB9fsrqMu2ax91srJDpk8Y7U+6i/Tll//TDUzUlm
-         7vJN4iWwJzcxqk8gJjZBcr+uQuzeT1z8llnPvpAL3UqBxkcvgNBgcX62lSAncJQaRk
-         6ZHKUOl8VcmEBtYGFVluqS918goRz2+f9q25SEKtacl/519lcZeRfCRtd4HLiIqpbh
-         abLI3Fr1SAONoGOEjssfITa6k1TWsgeIvBZnNDe2AQBMVUs1Pq3uJAnQKekxve7/QD
-         j80R6SYdL0NAhQeSMSMby0r5D6wL0hDzdZdVYHMQ5XYo6pUq3oNPKzoAEU3Ep2GlYY
-         dgagKg/67x2rw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Alexander Aring <aahringo@redhat.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Sasha Levin <sashal@kernel.org>, linux-wpan@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 10/23] net: ieee802154: stop dump llsec keys for monitors
-Date:   Mon, 12 Apr 2021 12:27:23 -0400
-Message-Id: <20210412162736.316026-10-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412162736.316026-1-sashal@kernel.org>
-References: <20210412162736.316026-1-sashal@kernel.org>
+        id S244672AbhDLQkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244177AbhDLQc7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:32:59 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F1FC06135A
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:27:31 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lVzPI-0002Jm-Hm; Mon, 12 Apr 2021 18:27:24 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lVzPH-0001ZI-Vk; Mon, 12 Apr 2021 18:27:23 +0200
+Date:   Mon, 12 Apr 2021 18:27:23 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sven Van Asbroeck <TheSven73@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH v8 4/8] dt-bindings: pwm: Support new PWM_USAGE_POWER flag
+Message-ID: <20210412162723.7hlhgqp6wlfbkeky@pengutronix.de>
+References: <20210412132745.76609-1-clemens.gruber@pqgruber.com>
+ <20210412132745.76609-4-clemens.gruber@pqgruber.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xlhucg6eoih6yebb"
+Content-Disposition: inline
+In-Reply-To: <20210412132745.76609-4-clemens.gruber@pqgruber.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit fb3c5cdf88cd504ef11d59e8d656f4bc896c6922 ]
+--xlhucg6eoih6yebb
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This patch stops dumping llsec keys for monitors which we don't support
-yet. Otherwise we will access llsec mib which isn't initialized for
-monitors.
+On Mon, Apr 12, 2021 at 03:27:41PM +0200, Clemens Gruber wrote:
+> Add the flag and corresponding documentation for PWM_USAGE_POWER.
 
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210405003054.256017-4-aahringo@redhat.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/ieee802154/nl802154.c | 5 +++++
- 1 file changed, 5 insertions(+)
+My concern here in the previous round was that PWM_USAGE_POWER isn't a
+name that intuitively suggests its semantic. Do you disagree?
 
-diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
-index 746701424d79..36f2d44a8753 100644
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -1476,6 +1476,11 @@ nl802154_dump_llsec_key(struct sk_buff *skb, struct netlink_callback *cb)
- 	if (err)
- 		return err;
- 
-+	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR) {
-+		err = skb->len;
-+		goto out_err;
-+	}
-+
- 	if (!wpan_dev->netdev) {
- 		err = -EINVAL;
- 		goto out_err;
--- 
-2.30.2
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Clemens Gruber <clemens.gruber@pqgruber.com>
+> ---
+>  Documentation/devicetree/bindings/pwm/pwm.txt | 3 +++
+>  include/dt-bindings/pwm/pwm.h                 | 1 +
+>  2 files changed, 4 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm.txt b/Documentatio=
+n/devicetree/bindings/pwm/pwm.txt
+> index 084886bd721e..fe3a28f887c0 100644
+> --- a/Documentation/devicetree/bindings/pwm/pwm.txt
+> +++ b/Documentation/devicetree/bindings/pwm/pwm.txt
+> @@ -46,6 +46,9 @@ period in nanoseconds.
+>  Optionally, the pwm-specifier can encode a number of flags (defined in
+>  <dt-bindings/pwm/pwm.h>) in a third cell:
+>  - PWM_POLARITY_INVERTED: invert the PWM signal polarity
+> +- PWM_USAGE_POWER: Only care about the power output of the signal. This
+> +  allows drivers (if supported) to optimize the signals, for example to
+> +  improve EMI and reduce current spikes.
 
+IMHO there are too many open questions about which freedom this gives to
+the lowlevel driver. If the consumer requests .duty_cycle =3D 25ns +
+=2Eperiod =3D 100ns, can the driver provide .duty_cycle =3D 25s + .period =
+=3D
+100s which nominally has the same power output? Let's not introduce more
+ambiguity than there already is.
+
+This is a NAck.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--xlhucg6eoih6yebb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB0dOgACgkQwfwUeK3K
+7AkyoAgAj56WHSz3mbbQpQYJfzLAgaVxZH4sopRLrKgguHa/mEHhlxerTk239Pit
+0ePi/frDOR6+xWdP96WxYTIdivJ3+Tddpqgt+L6d9yu8S4DSRZwtrpU+3/DGjAhm
+TsTjV0Sj/xMb81vBwizQjFOyopsKEXHujAE4Y2+8CwtR7ns2m0L43hifWD8eaJKB
+WapPTzjH0CYZHOr0t6EbX0JQVqYNObZywx/1NRyyjjy8ypJ1Vt52mpuw35tmGL8r
+sC5Ur2byGV7thCkewB6ufCy6Ks50AIzdktrgaLMjOE2c8SL2Gg1HjWov1heOVUWq
+qNrgmb3zkNOEr4spJpdNiAbbLoQsRA==
+=V9Pw
+-----END PGP SIGNATURE-----
+
+--xlhucg6eoih6yebb--
