@@ -2,67 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8A135C773
+	by mail.lfdr.de (Postfix) with ESMTP id 7FE6335C772
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:20:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241228AbhDLNUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:20:34 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:37653 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239617AbhDLNU2 (ORCPT
+        id S240927AbhDLNUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:20:33 -0400
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:36704 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239497AbhDLNU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:20:28 -0400
-Received: by mail-oi1-f182.google.com with SMTP id k25so13388248oic.4;
-        Mon, 12 Apr 2021 06:20:10 -0700 (PDT)
+        Mon, 12 Apr 2021 09:20:27 -0400
+Received: by mail-ot1-f51.google.com with SMTP id i16-20020a9d68d00000b0290286edfdfe9eso2111500oto.3;
+        Mon, 12 Apr 2021 06:20:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=5n3lwv9EjfPJBx+21UO8C42pguWqHmFLoVLJG4Pmt/8=;
-        b=mUO4Tm/BauiG1P7td9TeoY1tkpLhT3ZV9oojGNA5z90atxO4o85V0Dq83FMVWfGPzH
-         enHwzcIFwLvYIFOu+ZRUCQ4faOBwuUnefZncZuWd9JDwG4dizIVofNRLyRp8qIroMsys
-         BnrqM+hOXeEmxVfVbu26HFJqvf9CSzp3Xc+2wk2w5hdhDOpowjLgaRKO97D346H9WvpR
-         KfyzSepG44W/UhOP9uhp1cEWbr4Cnta6xKj7k/o/tQxeoTfcGntPnVjkgFcRXJHGHqz8
-         48TMvPs48Qh5dwI+sx+qKtAPRvKrN7YbN3gSAENSrVpik2ErfIVN7QseVyUOGl0hBnL+
-         JuMA==
-X-Gm-Message-State: AOAM532e8owmAa7UCrmlZGFYibkDGLc1wenKrzSQ7nC57cnoB3CJYoGH
-        Z6TfbpMyFtYba9NFGcSkkg==
-X-Google-Smtp-Source: ABdhPJxkwQARah6Q/rf1DbNTOAJlUzHL9osoUKpq9VAyJPVrU6baUsVLQdOFRK5Og/wakyM83q8y4Q==
-X-Received: by 2002:a05:6808:b09:: with SMTP id s9mr19069272oij.36.1618233610277;
-        Mon, 12 Apr 2021 06:20:10 -0700 (PDT)
+        bh=dYxhQAY8YlcxGKlNHGF/hP5NWDkLdUTva1d6cdSahEY=;
+        b=RyW1OLcORFyk5k4H5bBL4st9cPLVyFPMSEpFymWn8g77I0faz1cZRba8ztasKBgqge
+         JR1hgcES5I4kHvZxtAjfW5Pn6Gdo8lQwqIThub37s4NCB5RUqrnSW21FOqQ3B+8kRfQF
+         c3cjbDy1L0d3wLH5KFn+fhELMuuXXwRNo/Inx84JTPdMZH47kSwlge26hTX9CbuppavD
+         zsZqzgO1nvIfY0rDVAwLuzHNCzDQhQJWUnR9jlTJtjO7MF89utsipO5J2a2TfuzvQNsD
+         pLm8KaTbtc4Wm4LkRV3aNDJSFtd8sCfD79UkRjqRHzQTqBPRnVdxKcu61zuMLMM2zWE8
+         ab4g==
+X-Gm-Message-State: AOAM532sCPCyyOoHTT4c9wh5/OMN7EugYAfy5gIq68mybTs1WFbFAswk
+        LxT94wUJqLqidpGy6GQK5A==
+X-Google-Smtp-Source: ABdhPJxhxoL8CK12YPgvZCZL8xP6K9HKbNKbkGZlmCfJuRRPe+eQJYpjJcVShovdD/GLmYsW+QKVOQ==
+X-Received: by 2002:a9d:6a91:: with SMTP id l17mr23666160otq.297.1618233608236;
+        Mon, 12 Apr 2021 06:20:08 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 3sm2636995otw.58.2021.04.12.06.20.08
+        by smtp.gmail.com with ESMTPSA id x13sm56421otg.57.2021.04.12.06.20.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 06:20:09 -0700 (PDT)
-Received: (nullmailer pid 3757980 invoked by uid 1000);
+        Mon, 12 Apr 2021 06:20:07 -0700 (PDT)
+Received: (nullmailer pid 3757976 invoked by uid 1000);
         Mon, 12 Apr 2021 13:20:00 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     u.kleine-koenig@pengutronix.de, devicetree@vger.kernel.org,
-        linux-aspeed@lists.ozlabs.org, andrew@aj.id.au,
-        linux-kernel@vger.kernel.org, billy_tasi@aspeedtech.com,
-        p.zabel@pengutronix.de, linux-pwm@vger.kernel.org, joel@jms.id.au,
-        thierry.reding@gmail.com, robh+dt@kernel.org,
-        BMC-SW@aspeedtech.com, linux-arm-kernel@lists.infradead.org,
-        lee.jones@linaro.org
-In-Reply-To: <20210412095457.15095-3-billy_tsai@aspeedtech.com>
-References: <20210412095457.15095-1-billy_tsai@aspeedtech.com> <20210412095457.15095-3-billy_tsai@aspeedtech.com>
-Subject: Re: [PATCH 2/4] dt-bindings: Add bindings for aspeed pwm
+To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Henrik Rydberg <rydberg@bitmath.org>,
+        =?utf-8?q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+In-Reply-To: <20210411114804.151754-3-giulio.benetti@benettiengineering.com>
+References: <20210408202137.GA1890401@robh.at.kernel.org> <20210411114804.151754-1-giulio.benetti@benettiengineering.com> <20210411114804.151754-3-giulio.benetti@benettiengineering.com>
+Subject: Re: [PATCH v5 2/3] dt-bindings: touchscreen: Add HY46XX bindings
 Date:   Mon, 12 Apr 2021 08:20:00 -0500
-Message-Id: <1618233600.223110.3757979.nullmailer@robh.at.kernel.org>
+Message-Id: <1618233600.204061.3757975.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021 17:54:55 +0800, Billy Tsai wrote:
-> This patch adds device bindings for aspeed pwm device which should be
-> the sub-node of aspeed,ast2600-pwm-tach.
+On Sun, 11 Apr 2021 13:48:03 +0200, Giulio Benetti wrote:
+> This adds device tree bindings for the Hycon HY46XX touchscreen series.
 > 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
 > ---
->  .../bindings/pwm/aspeed,ast2600-pwm.yaml      | 47 +++++++++++++++++++
->  1 file changed, 47 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
+> V1->V2:
+> As suggested by Rob Herring:
+> * fixed $id: address
+> * added "hycon," in front of every custom property
+> * changed all possible property to boolean type
+> * removed proximity-sensor-switch property since it's not handled in driver
+> V2->V3:
+> As suggested by Jonathan Neuschäfer:
+> * fixed some typo
+> * fixed description indentation
+> * improved boolean properties descriptions
+> * improved hycon,report-speed description
+> V3->V4:
+> * fixed binding compatible string in example as suggested by Jonathan Neuschäfer
+> V4->V5:
+> As suggested by Rob Herring:
+> * drop hycon- prefix from compatible
+> * use Hertz unit suffix for hycon,report-speed instead of u32
+> * set hycon,report-speed minimum to 1Hz, 0Hz make controller to do nothing
+> * change hycon,power-noise-enable property name to hycon,noise-filter-enable
+> * improve hycon,filter-data property description
+> * use generic touchscreen node name in example
+> ---
+>  .../input/touchscreen/hycon,hy46xx.yaml       | 119 ++++++++++++++++++
+>  MAINTAINERS                                   |   6 +
+>  2 files changed, 125 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -71,14 +91,20 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: Additional properties are not allowed ('pwm-cells' was unexpected)
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: Additional properties are not allowed ('pwm-cells' was unexpected)
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml: ignoring, error in schema: 
-warning: no schema found in file: ./Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
-Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.example.dt.yaml:0:0: /example-0/pwm_tach@1e610000: failed to match any schema with compatible: ['aspeed,ast2600-pwm-tach', 'simple-mfd', 'syscon']
-Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.example.dt.yaml:0:0: /example-0/pwm_tach@1e610000/pwm@0: failed to match any schema with compatible: ['aspeed,ast2600-pwm']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml: properties:hycon,report-speed: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+	Additional properties are not allowed ('minimum', 'maximum' were unexpected)
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml: properties:hycon,report-speed: 'oneOf' conditional failed, one must be fixed:
+		'enum' is a required property
+		'const' is a required property
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml: properties:hycon,report-speed: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml: ignoring, error in schema: properties: hycon,report-speed
+warning: no schema found in file: ./Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.example.dt.yaml:0:0: /example-0/i2c/touchscreen@1c: failed to match any schema with compatible: ['hycon,hy4633']
 
-See https://patchwork.ozlabs.org/patch/1465116
+See https://patchwork.ozlabs.org/patch/1464803
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
