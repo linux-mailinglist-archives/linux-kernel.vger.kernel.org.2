@@ -2,110 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C46135C4CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1382535C4CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240052AbhDLLPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:15:53 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38482 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238912AbhDLLPt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:15:49 -0400
-Date:   Mon, 12 Apr 2021 11:15:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618226130;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Zaz73R9w1GqcZ3cTQvrV66yQlVChE6T2iNlE1h9BHg=;
-        b=I+fVz3Ue+2r7baUlNIrNh2ke8fkboYoAzeowI8ZpZwTuZjzl86KvFvBO4F6rJRzLLdMvv4
-        p9aK3H6Wca9fbs/cTJWPjArx3J8ap+w6i8sd9WAh+au7V4h11VQvLdGZ0PDmsjamyvXwdn
-        dGsVYWoX4kVi/hLtXUUrVzj9RUZmjgFcY9Gnt6XwBRxRppbTiNY1qg+VvOoGYxCOqAkwmZ
-        VWe++NCUiR+JNGRq2NVn2zmECFBMOYL8FAA7COEBVIVJvdiqJTQHPiCcW/wxwejKHjbi0t
-        rwsrhHJ8rcbYwYHBdOAXFnVsdCHtw/Y7ct5+izWyRJO7quaCmWHPLojPPWOVQg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618226130;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Zaz73R9w1GqcZ3cTQvrV66yQlVChE6T2iNlE1h9BHg=;
-        b=YJPDvo5ZUfO9IgORMU6ifWpowpKhWzzPfXFUJkKC9hWQXggZcz+O+NWgaZ+TnL2eRRiW9Y
-        moPRApkYP7A3fhAw==
-From:   "tip-bot2 for Jan Kiszka" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/asm: Ensure asm/proto.h can be included stand-alone
-Cc:     Jan Kiszka <jan.kiszka@siemens.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <b76b4be3-cf66-f6b2-9a6c-3e7ef54f9845@web.de>
-References: <b76b4be3-cf66-f6b2-9a6c-3e7ef54f9845@web.de>
+        id S239390AbhDLLRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:17:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:47202 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237930AbhDLLRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 07:17:19 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC06131B;
+        Mon, 12 Apr 2021 04:17:01 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C3D783F694;
+        Mon, 12 Apr 2021 04:16:59 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 12:16:57 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     valentin.schneider@arm.com, tglx@linutronix.de, mingo@kernel.org,
+        bigeasy@linutronix.de, swood@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vincent.donnefort@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] cpumask: Introduce DYING mask
+Message-ID: <20210412111657.hu7hbaay2zxzdxm5@e107158-lin.cambridge.arm.com>
+References: <20210310145258.899619710@infradead.org>
+ <20210310150109.151441252@infradead.org>
+ <20210321193037.7o3mqcmwjthbos7n@e107158-lin>
+ <YHQnEgXFi3YAFvIP@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Message-ID: <161822612957.29796.15730791340399984286.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <YHQnEgXFi3YAFvIP@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On 04/12/21 12:55, Peter Zijlstra wrote:
+> On Sun, Mar 21, 2021 at 07:30:37PM +0000, Qais Yousef wrote:
+> > On 03/10/21 15:53, Peter Zijlstra wrote:
+> > > --- a/kernel/cpu.c
+> > > +++ b/kernel/cpu.c
+> > > @@ -160,6 +160,9 @@ static int cpuhp_invoke_callback(unsigne
+> > >  	int (*cb)(unsigned int cpu);
+> > >  	int ret, cnt;
+> > >  
+> > > +	if (bringup != !cpu_dying(cpu))
+> > 
+> > nit: this condition is hard to read
+> > 
+> > > +		set_cpu_dying(cpu, !bringup);
+> 
+> How's:
+> 
+> 	if (cpu_dying(cpu) != !bringup)
+> 		set_cpu_dying(cpu, !bringup);
 
-Commit-ID:     f7b21a0e41171d22296b897dac6e4c41d2a3643c
-Gitweb:        https://git.kernel.org/tip/f7b21a0e41171d22296b897dac6e4c41d2a=
-3643c
-Author:        Jan Kiszka <jan.kiszka@siemens.com>
-AuthorDate:    Sun, 11 Apr 2021 10:12:16 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 12 Apr 2021 13:12:46 +02:00
+Slightly better I suppose :)
 
-x86/asm: Ensure asm/proto.h can be included stand-alone
+> 
+> > since cpu_dying() will do cpumask_test_cpu(), are we saving  much if we
+> > unconditionally call set_cpu_dying(cpu, !bringup) which performs
+> > cpumask_{set, clear}_cpu()?
+> 
+> This is hotplug, it's all slow, endlessly rewriting that bit shouldn't
+> be a problem I suppose.
 
-Fix:
+True. Beside I doubt there's a performance hit really, cpu_dying() will read
+the bit in the cpumask anyway, unconditionally writing will be as fast since
+both will fetch the cacheline anyway?
 
-  ../arch/x86/include/asm/proto.h:14:30: warning: =E2=80=98struct task_struct=
-=E2=80=99 declared \
-    inside parameter list will not be visible outside of this definition or d=
-eclaration
-  long do_arch_prctl_64(struct task_struct *task, int option, unsigned long a=
-rg2);
-                               ^~~~~~~~~~~
+Regardless, not really a big deal. It's not really the hardest thing to stare
+at here ;-)
 
-  .../arch/x86/include/asm/proto.h:40:34: warning: =E2=80=98struct task_struc=
-t=E2=80=99 declared \
-    inside parameter list will not be visible outside of this definition or d=
-eclaration
-   long do_arch_prctl_common(struct task_struct *task, int option,
-                                    ^~~~~~~~~~~
+Thanks
 
-if linux/sched.h hasn't be included previously. This fixes a build error
-when this header is used outside of the kernel tree.
-
- [ bp: Massage commit message. ]
-
-Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/b76b4be3-cf66-f6b2-9a6c-3e7ef54f9845@web.de
----
- arch/x86/include/asm/proto.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
-index b6a9d51..8c5d191 100644
---- a/arch/x86/include/asm/proto.h
-+++ b/arch/x86/include/asm/proto.h
-@@ -4,6 +4,8 @@
-=20
- #include <asm/ldt.h>
-=20
-+struct task_struct;
-+
- /* misc architecture specific prototypes */
-=20
- void syscall_init(void);
+--
+Qais Yousef
