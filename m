@@ -2,292 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5A335C037
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E163935C029
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241112AbhDLJLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:11:47 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15666 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238415AbhDLI4X (ORCPT
+        id S240772AbhDLJK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37576 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238465AbhDLIzt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:56:23 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FJjF268nqznZBf;
-        Mon, 12 Apr 2021 16:53:10 +0800 (CST)
-Received: from huawei.com (10.67.165.24) by DGGEMS414-HUB.china.huawei.com
- (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Mon, 12 Apr 2021
- 16:55:52 +0800
-From:   Longfang Liu <liulongfang@huawei.com>
-To:     <alex.williamson@redhar.com>
-CC:     <cohuck@redhat.com>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <liulongfang@huawei.com>
-Subject: [RFC PATCH 3/3] vfio/hisilicom: add debugfs for driver
-Date:   Mon, 12 Apr 2021 16:53:16 +0800
-Message-ID: <1618217596-13621-4-git-send-email-liulongfang@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1618217596-13621-1-git-send-email-liulongfang@huawei.com>
-References: <1618217596-13621-1-git-send-email-liulongfang@huawei.com>
+        Mon, 12 Apr 2021 04:55:49 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82576C061574;
+        Mon, 12 Apr 2021 01:55:31 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id n4so10322801ili.8;
+        Mon, 12 Apr 2021 01:55:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LVJ7S4AbhmW2SReC6yCWbpFaYmnw9XX646YZrZZaOV4=;
+        b=XXv1K4Af5TNvlVNHsnj90rtwt0QnzPrSuI6dVY64A7rbxYfPyLgygUuiqCv8/6BwSm
+         QlUNslEIJilecqhOo/ND35gDq/xvLCwgeRRwiXlAYKBgujOnIi1FvUG4DgBt63U/XnAx
+         e8ae+YDHN0WOVTHusYIsilwc/pUPZTyb4usURljFnke7HMj3ntJ2MVgk3jVuj0uC/aql
+         DIFQNe7IeJLgLrnXhicnVFNZEyAN0iJ9cqsrLEcAulozFjDpdsykjA6yJqZedZpQ+wNV
+         q3RMyBO9WsUmowo8yaW51jk43/c3wBjDW3xjHHdcdlNEtbx1uGGRRoV9v4dluN+u6b70
+         L9jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LVJ7S4AbhmW2SReC6yCWbpFaYmnw9XX646YZrZZaOV4=;
+        b=ggSy6P/M0iUJRSqJdK5S02rH+304fiqm7HS7tzQnWolQYIOr7NKRMnfv6+0KqjD41b
+         bOquhLQMu0CzvmoaQ2+hEcpwZt9JjnFbLXpskCaHn/DDxDiXfn8m5OU1/lUMLrdkBy5P
+         LtkOYiAmmmS0e8X9LhazainiYHIYQU9ZNDlKK7ulS2fAcvVpaYbj6ctR1zTeLo6rHS7g
+         kSJnwG72Uguf2hNywNw+YmNKkxDlw8/8iZiAOILKy55N7ezpg5LxCup6Wg6VPE3S7HOq
+         Y0/8ZZrTRxaepg2MEStZb7f82T1OhZLhmTK9QUcMiKirg4DDFztRLVI/os9q0TPUsqEI
+         6hiQ==
+X-Gm-Message-State: AOAM532xDafMPAXrS6BxpoT0k7vVcm5lmunHxTVIopGfhgfyGEUSFpjP
+        Bey/s/mEv2n+k3p6tbGzUHkny04p/Q6sqh+nOE0=
+X-Google-Smtp-Source: ABdhPJzjvOSunZ3GFXhIDH+A2PRnZqLNajx99SY0l5RG/yhcKdxlkzSHA9lRYJ9e5NtH04cZ5o0zwI0TNaSspvdTwrc=
+X-Received: by 2002:a05:6e02:1526:: with SMTP id i6mr18857159ilu.270.1618217730575;
+ Mon, 12 Apr 2021 01:55:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-CFilter-Loop: Reflected
+References: <1618202061-8243-1-git-send-email-dillon.minfei@gmail.com>
+ <YHPgGI6EmTzmVH7g@kroah.com> <CAL9mu0Lt-3_O7V5HLxd5Hbt9afx9ryBUzWqmsc+2n3SP7JS6ig@mail.gmail.com>
+ <YHQEA9jn5uXQCtrN@kroah.com>
+In-Reply-To: <YHQEA9jn5uXQCtrN@kroah.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Mon, 12 Apr 2021 16:54:54 +0800
+Message-ID: <CAL9mu0+hi5eYEder1Mj2yjUN+eicJ9qG8Kr4GTC2mqfY405Jkg@mail.gmail.com>
+Subject: Re: [PATCH] serial: stm32: optimize spin lock usage
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jirislaby@kernel.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        linux-serial@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add debugfs debugging interface to live migration driver
+Hi Greg,
 
-Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-Reviewed-by: Zengtao <prime.zeng@hisilicon.com>
----
- drivers/vfio/pci/hisilicon/acc_vf_migration.c | 193 ++++++++++++++++++++++++++
- drivers/vfio/pci/hisilicon/acc_vf_migration.h |   2 +
- 2 files changed, 195 insertions(+)
+On Mon, Apr 12, 2021 at 4:25 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Apr 12, 2021 at 02:50:20PM +0800, dillon min wrote:
+> > Hi Greg=EF=BC=8C
+> >
+> > Thanks for the quick response, please ignore the last private mail.
+> >
+> > On Mon, Apr 12, 2021 at 1:52 PM Greg KH <gregkh@linuxfoundation.org> wr=
+ote:
+> > >
+> > > On Mon, Apr 12, 2021 at 12:34:21PM +0800, dillon.minfei@gmail.com wro=
+te:
+> > > > From: dillon min <dillon.minfei@gmail.com>
+> > > >
+> > > > To avoid potential deadlock in spin_lock usage, change to use
+> > > > spin_lock_irqsave(), spin_unlock_irqrestore() in process(thread_fn)=
+ context.
+> > > > spin_lock(), spin_unlock() under handler context.
+> > > >
+> > > > remove unused local_irq_save/restore call.
+> > > >
+> > > > Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> > > > ---
+> > > > Was verified on stm32f469-disco board. need more test on stm32mp pl=
+atform.
+> > > >
+> > > >  drivers/tty/serial/stm32-usart.c | 27 +++++++++++++++++----------
+> > > >  1 file changed, 17 insertions(+), 10 deletions(-)
+> > > >
+> > > > diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/=
+stm32-usart.c
+> > > > index b3675cf25a69..c4c859b34367 100644
+> > > > --- a/drivers/tty/serial/stm32-usart.c
+> > > > +++ b/drivers/tty/serial/stm32-usart.c
+> > > > @@ -214,7 +214,7 @@ static void stm32_usart_receive_chars(struct ua=
+rt_port *port, bool threaded)
+> > > >       struct tty_port *tport =3D &port->state->port;
+> > > >       struct stm32_port *stm32_port =3D to_stm32_port(port);
+> > > >       const struct stm32_usart_offsets *ofs =3D &stm32_port->info->=
+ofs;
+> > > > -     unsigned long c;
+> > > > +     unsigned long c, flags;
+> > > >       u32 sr;
+> > > >       char flag;
+> > > >
+> > > > @@ -276,9 +276,17 @@ static void stm32_usart_receive_chars(struct u=
+art_port *port, bool threaded)
+> > > >               uart_insert_char(port, sr, USART_SR_ORE, c, flag);
+> > > >       }
+> > > >
+> > > > -     spin_unlock(&port->lock);
+> > > > +     if (threaded)
+> > > > +             spin_unlock_irqrestore(&port->lock, flags);
+> > > > +     else
+> > > > +             spin_unlock(&port->lock);
+> > >
+> > > You shouldn't have to check for this, see the other patches on the li=
+st
+> > > recently that fixed this up to not be an issue for irq handlers.
+> > Can you help to give more hints, or the commit id of the patch which
+> > fixed this. thanks.
+> >
+> > I'm still confused with this.
+> >
+> > The stm32_usart_threaded_interrupt() is a kthread context, once
+> > port->lock holds by this function, another serial interrupts raised,
+> > such as USART_SR_TXE,stm32_usart_interrupt() can't get the lock,
+> > there will be a deadlock. isn't it?
+> >
+> >  So, shouldn't I use spin_lock{_irqsave} according to the caller's cont=
+ext ?
+>
+> Please see 81e2073c175b ("genirq: Disable interrupts for force threaded
+> handlers") for when threaded irq handlers have irqs disabled, isn't that
+> the case you are trying to "protect" from here?
+>
+> Why is the "threaded" flag used at all?  The driver should not care.
+>
+> Also see 9baedb7baeda ("serial: imx: drop workaround for forced irq
+> threading") in linux-next for an example of how this was fixed up in a
+> serial driver.
+>
+> does that help?
+>
+Yes, it's really helpful. and 81e2073c175b should be highlighted in a doc.
+In my past knowledge, we should care about hard irq & thread_fn lock confli=
+ct.
+This patch has totally avoided patching code in the separate driver side.
+thanks.
 
-diff --git a/drivers/vfio/pci/hisilicon/acc_vf_migration.c b/drivers/vfio/pci/hisilicon/acc_vf_migration.c
-index 45382c7..b0f7f09 100644
---- a/drivers/vfio/pci/hisilicon/acc_vf_migration.c
-+++ b/drivers/vfio/pci/hisilicon/acc_vf_migration.c
-@@ -16,6 +16,9 @@
- 
- #define VDM_OFFSET(x) offsetof(struct vfio_device_migration_info, x)
- void vfio_pci_hisilicon_acc_uninit(struct acc_vf_migration *acc_vf_dev);
-+static void vf_debugfs_exit(struct acc_vf_migration *acc_vf_dev);
-+static struct dentry *mig_debugfs_root;
-+static int mig_root_ref;
- 
- /* return 0 mailbox ready, -ETIMEDOUT hardware timeout */
- static int qm_wait_mb_ready(struct hisi_qm *qm)
-@@ -934,6 +937,193 @@ static const struct vfio_pci_regops vfio_pci_acc_regops = {
- 	.add_capability = acc_vf_migration_add_capability,
- };
- 
-+static ssize_t acc_vf_debug_read(struct file *filp, char __user *buffer,
-+			   size_t count, loff_t *pos)
-+{
-+	char buf[VFIO_DEV_DBG_LEN];
-+	int len;
-+
-+	len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+			"echo 0: test vf data store\n"
-+			"echo 1: test vf data writeback\n"
-+			"echo 2: test vf send mailbox\n"
-+			"echo 3: dump vf dev data\n"
-+			"echo 4: dump migration state\n");
-+
-+	return simple_read_from_buffer(buffer, count, pos, buf, len);
-+}
-+
-+static ssize_t acc_vf_debug_write(struct file *filp, const char __user *buffer,
-+			    size_t count, loff_t *pos)
-+{
-+	struct acc_vf_migration *acc_vf_dev = filp->private_data;
-+	struct device *dev = &acc_vf_dev->vf_dev->dev;
-+	struct hisi_qm *qm = acc_vf_dev->vf_qm;
-+	char tbuf[VFIO_DEV_DBG_LEN];
-+	unsigned long val;
-+	u64 data;
-+	int len, ret;
-+
-+	if (*pos)
-+		return 0;
-+
-+	if (count >= VFIO_DEV_DBG_LEN)
-+		return -ENOSPC;
-+
-+	len = simple_write_to_buffer(tbuf, VFIO_DEV_DBG_LEN - 1,
-+					pos, buffer, count);
-+	if (len < 0)
-+		return len;
-+	tbuf[len] = '\0';
-+	if (kstrtoul(tbuf, 0, &val))
-+		return -EFAULT;
-+
-+	switch (val) {
-+	case STATE_SAVE:
-+		ret = vf_qm_state_save(qm, acc_vf_dev);
-+		if (ret)
-+			return -EINVAL;
-+		break;
-+	case STATE_RESUME:
-+		ret = vf_qm_state_resume(qm, acc_vf_dev);
-+		if (ret)
-+			return -EINVAL;
-+		break;
-+	case MB_TEST:
-+		data = readl(qm->io_base + QM_MB_CMD_SEND_BASE);
-+		dev_info(dev, "debug mailbox addr: 0x%lx, mailbox val: 0x%llx\n",
-+			 (uintptr_t)qm->io_base, data);
-+		break;
-+	case MIG_DATA_DUMP:
-+		dev_info(dev, "dumped vf migration data:\n");
-+		print_hex_dump(KERN_INFO, "Mig Data:", DUMP_PREFIX_OFFSET,
-+				VFIO_DBG_LOG_LEN, 1,
-+				(unsigned char *)acc_vf_dev->vf_data,
-+				sizeof(struct acc_vf_data), false);
-+		break;
-+	case MIG_DEV_SHOW:
-+		if (!acc_vf_dev->mig_ctl)
-+			dev_info(dev, "migration region have release!\n");
-+		else
-+			dev_info(dev,
-+				 "device  state: %u\n"
-+				 "pending bytes: %llu\n"
-+				 "data   offset: %llu\n"
-+				 "data     size: %llu\n"
-+				 "data     addr: 0x%lx\n",
-+				 acc_vf_dev->mig_ctl->device_state,
-+				 acc_vf_dev->mig_ctl->pending_bytes,
-+				 acc_vf_dev->mig_ctl->data_offset,
-+				 acc_vf_dev->mig_ctl->data_size,
-+				 (uintptr_t)acc_vf_dev->vf_data);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return count;
-+}
-+
-+static const struct file_operations acc_vf_debug_fops = {
-+	.owner = THIS_MODULE,
-+	.open = simple_open,
-+	.read = acc_vf_debug_read,
-+	.write = acc_vf_debug_write,
-+};
-+
-+static ssize_t acc_vf_state_read(struct file *filp, char __user *buffer,
-+			   size_t count, loff_t *pos)
-+{
-+	struct acc_vf_migration *acc_vf_dev = filp->private_data;
-+	char buf[VFIO_DEV_DBG_LEN];
-+	u32 state;
-+	int len;
-+
-+	if (!acc_vf_dev->mig_ctl) {
-+		len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n", "Invalid\n");
-+	} else {
-+		state = acc_vf_dev->mig_ctl->device_state;
-+		switch (state) {
-+		case VFIO_DEVICE_STATE_RUNNING:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"RUNNING\n");
-+			break;
-+		case VFIO_DEVICE_STATE_SAVING | VFIO_DEVICE_STATE_RUNNING:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"SAVING and RUNNING\n");
-+			break;
-+		case VFIO_DEVICE_STATE_SAVING:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"SAVING\n");
-+			break;
-+		case VFIO_DEVICE_STATE_STOP:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"STOP\n");
-+			break;
-+		case VFIO_DEVICE_STATE_RESUMING:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"RESUMING\n");
-+			break;
-+		default:
-+			len = scnprintf(buf, VFIO_DEV_DBG_LEN, "%s\n",
-+				"Error\n");
-+		}
-+	}
-+
-+	return simple_read_from_buffer(buffer, count, pos, buf, len);
-+}
-+
-+static const struct file_operations acc_vf_state_fops = {
-+	.owner = THIS_MODULE,
-+	.open = simple_open,
-+	.read = acc_vf_state_read,
-+};
-+
-+static void vf_debugfs_init(struct acc_vf_migration *acc_vf_dev)
-+{
-+	char name[VFIO_DEV_DBG_LEN];
-+	int node_id;
-+
-+	if (!mig_root_ref)
-+		mig_debugfs_root = debugfs_create_dir("vfio_acc", NULL);
-+	mutex_lock(&acc_vf_dev->reflock);
-+	mig_root_ref++;
-+	mutex_unlock(&acc_vf_dev->reflock);
-+
-+	node_id = dev_to_node(&acc_vf_dev->vf_dev->dev);
-+	if (node_id < 0)
-+		node_id = 0;
-+
-+	if (acc_vf_dev->acc_type == HISI_SEC)
-+		scnprintf(name, VFIO_DEV_DBG_LEN, "sec_vf%d-%d",
-+			  node_id, acc_vf_dev->vf_id);
-+	else if (acc_vf_dev->acc_type == HISI_HPRE)
-+		scnprintf(name, VFIO_DEV_DBG_LEN, "hpre_vf%d-%d",
-+			  node_id, acc_vf_dev->vf_id);
-+	else
-+		scnprintf(name, VFIO_DEV_DBG_LEN, "zip_vf%d-%d",
-+			  node_id, acc_vf_dev->vf_id);
-+
-+	acc_vf_dev->debug_root = debugfs_create_dir(name, mig_debugfs_root);
-+
-+	debugfs_create_file("debug", 0644, acc_vf_dev->debug_root,
-+			      acc_vf_dev, &acc_vf_debug_fops);
-+	debugfs_create_file("state", 0444, acc_vf_dev->debug_root,
-+			      acc_vf_dev, &acc_vf_state_fops);
-+}
-+
-+static void vf_debugfs_exit(struct acc_vf_migration *acc_vf_dev)
-+{
-+	debugfs_remove_recursive(acc_vf_dev->debug_root);
-+
-+	mutex_lock(&acc_vf_dev->reflock);
-+	mig_root_ref--;
-+	mutex_unlock(&acc_vf_dev->reflock);
-+
-+	if (!mig_root_ref)
-+		debugfs_remove_recursive(mig_debugfs_root);
-+}
-+
- static int qm_acc_type_init(struct acc_vf_migration *acc_vf_dev)
- {
- 	struct pci_dev *pdev = acc_vf_dev->vf_dev;
-@@ -1137,6 +1327,8 @@ int vfio_pci_hisilicon_acc_init(struct vfio_pci_device *vdev)
- 		goto register_error;
- 	}
- 
-+	vf_debugfs_init(acc_vf_dev);
-+
- 	return 0;
- 
- register_error:
-@@ -1159,6 +1351,7 @@ void vfio_pci_hisilicon_acc_uninit(struct acc_vf_migration *acc_vf_dev)
- 	acc_vf_dev->regions = NULL;
- 	acc_vf_dev->num_regions = 0;
- 
-+	vf_debugfs_exit(acc_vf_dev);
- 	kfree(acc_vf_dev);
- }
- 
-diff --git a/drivers/vfio/pci/hisilicon/acc_vf_migration.h b/drivers/vfio/pci/hisilicon/acc_vf_migration.h
-index 26c79e4..38d4035 100644
---- a/drivers/vfio/pci/hisilicon/acc_vf_migration.h
-+++ b/drivers/vfio/pci/hisilicon/acc_vf_migration.h
-@@ -159,11 +159,13 @@ struct acc_vf_migration {
- 	struct hisi_qm			*vf_qm;
- 	int				vf_id;
- 	u8				acc_type;
-+	struct mutex			reflock;
- 
- 	struct vfio_device_migration_info *mig_ctl;
- 	struct acc_vf_data		*vf_data;
- 	struct vfio_pci_region		*regions;
- 	int				num_regions;
-+	struct dentry			*debug_root;
- };
- 
- #endif /* ACC_MIG_H */
--- 
-2.8.1
+I will just keep the changes in stm32_usart_console_write(), remove
+these code in
+thread_fn. update version 2 for you.
 
+thanks.
+
+Dillon,
+> thanks,
+>
+> greg k-h
