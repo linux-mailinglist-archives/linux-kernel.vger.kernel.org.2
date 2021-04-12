@@ -2,143 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00B8235D201
+	by mail.lfdr.de (Postfix) with ESMTP id 7C24B35D202
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 22:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238810AbhDLU3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 16:29:11 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:38540 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244334AbhDLU3F (ORCPT
+        id S242446AbhDLU3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 16:29:14 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:35684 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245750AbhDLU3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 16:29:05 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13CKOP34169282;
-        Mon, 12 Apr 2021 20:28:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=/Xwvsmvmt/0asfYePGq/z1BYP2CpGRhQ6wWueeodpK4=;
- b=gvdWcv/nAYJbAcZNbFtrDq0ws8hUYuVfpDe0+B7UDw43Bmo356oXvko162VWrHEsRGC1
- V0d40cUOdVnicEEUNamuXn2iMkdwBkawgdMPToWf9mY5KA+11MFFeFjZ40PlNAZE3zmO
- 6xlP8xuLc1KPFH5ytLoVYQ+qRTeyx90ltcXTBLum/1WKXuh4tizFe109TIEEkKIWj91j
- gvPpmGa6x7+fxNY3//+wD62UXe4+PbGagjQyN2lhHRM3LpDNbdyzXFLltKpxhd0nFB7t
- tJ8jfG8kbNbpmuKck3j33MzDq+MqfsF9cuHNsovCyEfeDxBa8WW+tdZ+WrfckoGvyIzd QA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 37u3ymcywn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Apr 2021 20:28:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13CKPcVl122218;
-        Mon, 12 Apr 2021 20:28:24 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 37unwxu8w2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Apr 2021 20:28:24 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 13CKSNoH129700;
-        Mon, 12 Apr 2021 20:28:23 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
-        by aserp3020.oracle.com with ESMTP id 37unwxu8vh-1;
-        Mon, 12 Apr 2021 20:28:23 +0000
-From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Cc:     saeed.mirzamohammadi@oracle.com, stable@vger.kernel.org,
-        Camille Lu <camille.lu@hpe.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5.4 v3 1/1] iommu/vt-d: Fix agaw for a supported 48 bit guest address width
-Date:   Mon, 12 Apr 2021 13:27:35 -0700
-Message-Id: <20210412202736.70765-1-saeed.mirzamohammadi@oracle.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 12 Apr 2021 16:29:10 -0400
+Received: by mail-ot1-f49.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so14081773oto.2;
+        Mon, 12 Apr 2021 13:28:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gmmbo3TN+g8o4ISTYa9CAt/6v37cqafsVydyODiNQ7o=;
+        b=G76AWklyf8AUuvhxMFa2RMXpL5nnbiW53XNYhkbWBDJSO77B54jn+2SvMZc8yK+/09
+         7lnljxurQ5UFpvt+ISnpBv2N1p4Rqwn2eeDmg8jAZuURJ73vkJcTjO/zz9wCezfeQj0R
+         3a60DOobujKL8bmogFlG+8czeZIWIGWWOdL+pQ5gOKsk6Bgl5x/r5iKKiqx5lQ29fDHR
+         lH0fOpxxgNyZBZDriDS0ZdqfSj1fqi6lM0Y+DBYbj0NB5FuzMELCiTH2BIEgTnGm/aNt
+         HTw4ssdZcn+hulWVtJ/B8Vj3CLrCMUfmpWV0WklDFC6Pt8ytMh6yIuQ6+kl8fiq78V5T
+         yMmA==
+X-Gm-Message-State: AOAM532iSEi8c/sYd+x2OiPX3MvimZs8193k5UeaOlDYLycqHY9cJvc2
+        YaWdrHhkxvZQ/+EBs4xTeQ==
+X-Google-Smtp-Source: ABdhPJxtch6LM4lIaaqORQ8JDSlz4d/MX0eMA45yfzohL4ty+Pm27CDjlNgIdUuhG6N65/W1aj4S3w==
+X-Received: by 2002:a9d:7a53:: with SMTP id z19mr1905158otm.40.1618259331867;
+        Mon, 12 Apr 2021 13:28:51 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p3sm2406087oif.53.2021.04.12.13.28.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 13:28:50 -0700 (PDT)
+Received: (nullmailer pid 120437 invoked by uid 1000);
+        Mon, 12 Apr 2021 20:28:49 -0000
+Date:   Mon, 12 Apr 2021 15:28:49 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-rockchip@lists.infradead.org, kernel@collabora.com
+Subject: Re: [PATCH] dt-bindings: pinctrl: rockchip: add RK3568 SoC support
+Message-ID: <20210412202849.GA120386@robh.at.kernel.org>
+References: <20210410204500.18091-1-ezequiel@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: FMQZKLXguiDeGYKpsD4VEXmaph966jqm
-X-Proofpoint-ORIG-GUID: FMQZKLXguiDeGYKpsD4VEXmaph966jqm
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 spamscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- bulkscore=0 phishscore=0 suspectscore=0 malwarescore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104120131
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210410204500.18091-1-ezequiel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IOMMU driver calculates the guest addressability for a DMA request
-based on the value of the mgaw reported from the IOMMU. However, this
-is a fused value and as mentioned in the spec, the guest width
-should be calculated based on the minimum of supported adjusted guest
-address width (SAGAW) and MGAW.
+On Sat, 10 Apr 2021 17:45:00 -0300, Ezequiel Garcia wrote:
+> Add RK3568/RK3566 SoC support to pinctrl.
+> 
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> ---
+>  Documentation/devicetree/bindings/pinctrl/rockchip,pinctrl.txt | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-This is from specification:
-"Guest addressability for a given DMA request is limited to the
-minimum of the value reported through this field and the adjusted
-guest address width of the corresponding page-table structure.
-(Adjusted guest address widths supported by hardware are reported
-through the SAGAW field)."
-
-This causes domain initialization to fail and following
-errors appear for EHCI PCI driver:
-
-[    2.486393] ehci-pci 0000:01:00.4: EHCI Host Controller
-[    2.486624] ehci-pci 0000:01:00.4: new USB bus registered, assigned bus
-number 1
-[    2.489127] ehci-pci 0000:01:00.4: DMAR: Allocating domain failed
-[    2.489350] ehci-pci 0000:01:00.4: DMAR: 32bit DMA uses non-identity
-mapping
-[    2.489359] ehci-pci 0000:01:00.4: can't setup: -12
-[    2.489531] ehci-pci 0000:01:00.4: USB bus 1 deregistered
-[    2.490023] ehci-pci 0000:01:00.4: init 0000:01:00.4 fail, -12
-[    2.490358] ehci-pci: probe of 0000:01:00.4 failed with error -12
-
-This issue happens when the value of the sagaw corresponds to a
-48-bit agaw. This fix updates the calculation of the agaw based on
-the minimum of IOMMU's sagaw value and MGAW.
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Tested-by: Camille Lu <camille.lu@hpe.com>
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-
----
-
-Change in v2:
-- Added cap_width to calculate AGAW based on the minimum value of MGAW and AGAW.
-
-Changes in v3:
-- Added Lu's Reviewed-by.
-- Added stable list.
----
- drivers/iommu/intel-iommu.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
-index 953d86ca6d2b..a2a03df97704 100644
---- a/drivers/iommu/intel-iommu.c
-+++ b/drivers/iommu/intel-iommu.c
-@@ -1853,7 +1853,7 @@ static inline int guestwidth_to_adjustwidth(int gaw)
- static int domain_init(struct dmar_domain *domain, struct intel_iommu *iommu,
- 		       int guest_width)
- {
--	int adjust_width, agaw;
-+	int adjust_width, agaw, cap_width;
- 	unsigned long sagaw;
- 	int err;
- 
-@@ -1867,8 +1867,9 @@ static int domain_init(struct dmar_domain *domain, struct intel_iommu *iommu,
- 	domain_reserve_special_ranges(domain);
- 
- 	/* calculate AGAW */
--	if (guest_width > cap_mgaw(iommu->cap))
--		guest_width = cap_mgaw(iommu->cap);
-+	cap_width = min_t(int, cap_mgaw(iommu->cap), agaw_to_width(iommu->agaw));
-+	if (guest_width > cap_width)
-+		guest_width = cap_width;
- 	domain->gaw = guest_width;
- 	adjust_width = guestwidth_to_adjustwidth(guest_width);
- 	agaw = width_to_agaw(adjust_width);
--- 
-2.27.0
-
+Acked-by: Rob Herring <robh@kernel.org>
