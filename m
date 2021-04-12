@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A489A35C3AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA09D35C3B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238641AbhDLKV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56554 "EHLO
+        id S238874AbhDLKWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238462AbhDLKVo (ORCPT
+        with ESMTP id S238489AbhDLKVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:21:44 -0400
+        Mon, 12 Apr 2021 06:21:49 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 883BEC06138E
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A027C06138F
         for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 03:21:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=KdPHWfYXq9Ys1chYnKudCe5+p5xQmIOr2vm8VTzE1CI=; b=GPqSMF7Ox4Rm4C0UHMzWxjLfY3
-        s5hClP3U18vXG/DOAG8sw4Pzjc4hiaddVcqGbfPF7T62CXj5OS4Qekw0Ngz+JLvUO62LTaUT+XjHk
-        1fNEFf0LZs8YzR5/7G/p1Ijzn6ZLxWwqmsUv89dpslEtX5U5qkiNWxlaMKObsa6+YE1UySEPKpW16
-        XmAmQ8+m8C3zOUy3a9sFIIhBlahmEEDdszwi2hLe4Dj0ptM+xZG+Abv9t3qHzo5mKhClfutlpR8u6
-        VUnBZPdP457huBwiVcfs//T5aMsGYsmzbWvCKrp3Nidc73aGmrhCVnxe8HFHpADjUD4JaOyoFZvUT
-        3YiBVwiA==;
+        bh=q70SvIsWRSi0y/IGTSrZkyVCZtoeNStuHXG3kerf80M=; b=ijp1uPyp+P9eTuNJojroqiDpNg
+        j1k2I7Co6EXHRBemvkZX24FDBKQ4gf5kJsNTSM/lA2jjhf+5gbzYxeEjmnEtXnc2hQwWwe9ywzr9j
+        bSyDi3GX3M1rLtAOl4eM6nPaMy6EH4sgeJLyqzYyFVQ2r4XZ7e8vmQVOivafC5n89diOFsk3gvFK+
+        hAlsxmb5X7yooHPo6la3r0qXXMyRPi3GHV3pVdCQz9RB/rkCEILpllpjpbC7GqJ65Igh+zVfiKdor
+        6NFwfCijQB/ywOoiIbXkX1ySV5IebSAjEDHIbBNrwdizeVpGctzH8dd20lIwcXP3ScmDZGLfkuMJV
+        jpSvO/kg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVtgj-004BDU-H8; Mon, 12 Apr 2021 10:21:01 +0000
+        id 1lVtgj-004BDV-HM; Mon, 12 Apr 2021 10:21:01 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D216D3002CA;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D14923002C4;
         Mon, 12 Apr 2021 12:20:59 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id D1B5629D8B774; Mon, 12 Apr 2021 12:20:58 +0200 (CEST)
-Message-ID: <20210412102001.485107586@infradead.org>
+        id D5C5129D8B775; Mon, 12 Apr 2021 12:20:58 +0200 (CEST)
+Message-ID: <20210412102001.548833671@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Apr 2021 12:14:28 +0200
+Date:   Mon, 12 Apr 2021 12:14:29 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
         vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
         rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
         joshdon@google.com, valentin.schneider@arm.com
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, greg@kroah.com,
-        linux@rasmusvillemoes.dk
-Subject: [PATCH v2 7/9] sched,debug: Convert sysctl sched_domains to debugfs
+        linux@rasmusvillemoes.dk,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2 8/9] sched: Move /proc/sched_debug to debugfs
 References: <20210412101421.609526370@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,347 +55,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stop polluting sysctl, move to debugfs for SCHED_DEBUG stuff.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sched/debug.c    |  255 +++++++++++-------------------------------------
- kernel/sched/sched.h    |    2 
- kernel/sched/topology.c |    1 
- 3 files changed, 60 insertions(+), 198 deletions(-)
+ kernel/sched/debug.c |   25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
 --- a/kernel/sched/debug.c
 +++ b/kernel/sched/debug.c
-@@ -299,6 +299,10 @@ static __init int sched_init_debug(void)
- 	debugfs_create_file("tunable_scaling", 0644, debugfs_sched, NULL, &sched_scaling_fops);
- 	debugfs_create_u32("migration_cost_ns", 0644, debugfs_sched, &sysctl_sched_migration_cost);
- 	debugfs_create_u32("nr_migrate", 0644, debugfs_sched, &sysctl_sched_nr_migrate);
+@@ -279,6 +279,20 @@ static const struct file_operations sche
+ 
+ __read_mostly bool sched_debug_enabled;
+ 
++static const struct seq_operations sched_debug_sops;
 +
-+	mutex_lock(&sched_domains_mutex);
-+	register_sched_domain_sysctl();
-+	mutex_unlock(&sched_domains_mutex);
- #endif
- 
- #ifdef CONFIG_NUMA_BALANCING
-@@ -316,229 +320,88 @@ late_initcall(sched_init_debug);
- 
- #ifdef CONFIG_SMP
- 
--#ifdef CONFIG_SYSCTL
--
--static struct ctl_table sd_ctl_dir[] = {
--	{
--		.procname	= "sched_domain",
--		.mode		= 0555,
--	},
--	{}
--};
--
--static struct ctl_table sd_ctl_root[] = {
--	{
--		.procname	= "kernel",
--		.mode		= 0555,
--		.child		= sd_ctl_dir,
--	},
--	{}
--};
--
--static struct ctl_table *sd_alloc_ctl_entry(int n)
--{
--	struct ctl_table *entry =
--		kcalloc(n, sizeof(struct ctl_table), GFP_KERNEL);
--
--	return entry;
--}
--
--static void sd_free_ctl_entry(struct ctl_table **tablep)
--{
--	struct ctl_table *entry;
--
--	/*
--	 * In the intermediate directories, both the child directory and
--	 * procname are dynamically allocated and could fail but the mode
--	 * will always be set. In the lowest directory the names are
--	 * static strings and all have proc handlers.
--	 */
--	for (entry = *tablep; entry->mode; entry++) {
--		if (entry->child)
--			sd_free_ctl_entry(&entry->child);
--		if (entry->proc_handler == NULL)
--			kfree(entry->procname);
--	}
--
--	kfree(*tablep);
--	*tablep = NULL;
--}
--
--static void
--set_table_entry(struct ctl_table *entry,
--		const char *procname, void *data, int maxlen,
--		umode_t mode, proc_handler *proc_handler)
--{
--	entry->procname = procname;
--	entry->data = data;
--	entry->maxlen = maxlen;
--	entry->mode = mode;
--	entry->proc_handler = proc_handler;
--}
-+static cpumask_var_t		sd_sysctl_cpus;
-+static struct dentry		*sd_dentry;
- 
--static int sd_ctl_doflags(struct ctl_table *table, int write,
--			  void *buffer, size_t *lenp, loff_t *ppos)
-+static int sd_flags_show(struct seq_file *m, void *v)
- {
--	unsigned long flags = *(unsigned long *)table->data;
--	size_t data_size = 0;
--	size_t len = 0;
--	char *tmp, *buf;
-+	unsigned long flags = *(unsigned int *)m->private;
- 	int idx;
- 
--	if (write)
--		return 0;
--
--	for_each_set_bit(idx, &flags, __SD_FLAG_CNT) {
--		char *name = sd_flag_debug[idx].name;
--
--		/* Name plus whitespace */
--		data_size += strlen(name) + 1;
--	}
--
--	if (*ppos > data_size) {
--		*lenp = 0;
--		return 0;
--	}
--
--	buf = kcalloc(data_size + 1, sizeof(*buf), GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--
- 	for_each_set_bit(idx, &flags, __SD_FLAG_CNT) {
--		char *name = sd_flag_debug[idx].name;
--
--		len += snprintf(buf + len, strlen(name) + 2, "%s ", name);
-+		seq_puts(m, sd_flag_debug[idx].name);
-+		seq_puts(m, " ");
- 	}
--
--	tmp = buf + *ppos;
--	len -= *ppos;
--
--	if (len > *lenp)
--		len = *lenp;
--	if (len)
--		memcpy(buffer, tmp, len);
--	if (len < *lenp) {
--		((char *)buffer)[len] = '\n';
--		len++;
--	}
--
--	*lenp = len;
--	*ppos += len;
--
--	kfree(buf);
-+	seq_puts(m, "\n");
- 
- 	return 0;
- }
- 
--static struct ctl_table *
--sd_alloc_ctl_domain_table(struct sched_domain *sd)
--{
--	struct ctl_table *table = sd_alloc_ctl_entry(9);
--
--	if (table == NULL)
--		return NULL;
--
--	set_table_entry(&table[0], "min_interval",	  &sd->min_interval,	    sizeof(long), 0644, proc_doulongvec_minmax);
--	set_table_entry(&table[1], "max_interval",	  &sd->max_interval,	    sizeof(long), 0644, proc_doulongvec_minmax);
--	set_table_entry(&table[2], "busy_factor",	  &sd->busy_factor,	    sizeof(int),  0644, proc_dointvec_minmax);
--	set_table_entry(&table[3], "imbalance_pct",	  &sd->imbalance_pct,	    sizeof(int),  0644, proc_dointvec_minmax);
--	set_table_entry(&table[4], "cache_nice_tries",	  &sd->cache_nice_tries,    sizeof(int),  0644, proc_dointvec_minmax);
--	set_table_entry(&table[5], "flags",		  &sd->flags,		    sizeof(int),  0444, sd_ctl_doflags);
--	set_table_entry(&table[6], "max_newidle_lb_cost", &sd->max_newidle_lb_cost, sizeof(long), 0644, proc_doulongvec_minmax);
--	set_table_entry(&table[7], "name",		  sd->name,	       CORENAME_MAX_SIZE, 0444, proc_dostring);
--	/* &table[8] is terminator */
--
--	return table;
--}
--
--static struct ctl_table *sd_alloc_ctl_cpu_table(int cpu)
-+static int sd_flags_open(struct inode *inode, struct file *file)
- {
--	struct ctl_table *entry, *table;
--	struct sched_domain *sd;
--	int domain_num = 0, i;
--	char buf[32];
--
--	for_each_domain(cpu, sd)
--		domain_num++;
--	entry = table = sd_alloc_ctl_entry(domain_num + 1);
--	if (table == NULL)
--		return NULL;
--
--	i = 0;
--	for_each_domain(cpu, sd) {
--		snprintf(buf, 32, "domain%d", i);
--		entry->procname = kstrdup(buf, GFP_KERNEL);
--		entry->mode = 0555;
--		entry->child = sd_alloc_ctl_domain_table(sd);
--		entry++;
--		i++;
--	}
--	return table;
-+	return single_open(file, sd_flags_show, inode->i_private);
- }
- 
--static cpumask_var_t		sd_sysctl_cpus;
--static struct ctl_table_header	*sd_sysctl_header;
-+static const struct file_operations sd_flags_fops = {
-+	.open		= sd_flags_open,
++static int sched_debug_open(struct inode *inode, struct file *filp)
++{
++	return seq_open(filp, &sched_debug_sops);
++}
++
++static const struct file_operations sched_debug_fops = {
++	.open		= sched_debug_open,
 +	.read		= seq_read,
 +	.llseek		= seq_lseek,
-+	.release	= single_release,
++	.release	= seq_release,
 +};
++
+ static struct dentry *debugfs_sched;
  
--void register_sched_domain_sysctl(void)
-+static void register_sd(struct sched_domain *sd, struct dentry *parent)
- {
--	static struct ctl_table *cpu_entries;
--	static struct ctl_table **cpu_idx;
--	static bool init_done = false;
--	char buf[32];
--	int i;
+ static __init int sched_init_debug(void)
+@@ -316,6 +330,8 @@ static __init int sched_init_debug(void)
+ 	debugfs_create_u32("scan_size_mb", 0644, numa, &sysctl_numa_balancing_scan_size);
+ #endif
+ 
++	debugfs_create_file("debug", 0444, debugfs_sched, NULL, &sched_debug_fops);
++
+ 	return 0;
+ }
+ late_initcall(sched_init_debug);
+@@ -854,15 +870,6 @@ static const struct seq_operations sched
+ 	.show		= sched_debug_show,
+ };
+ 
+-static int __init init_sched_debug_procfs(void)
+-{
+-	if (!proc_create_seq("sched_debug", 0444, NULL, &sched_debug_sops))
+-		return -ENOMEM;
+-	return 0;
+-}
 -
--	if (!cpu_entries) {
--		cpu_entries = sd_alloc_ctl_entry(num_possible_cpus() + 1);
--		if (!cpu_entries)
--			return;
-+#define SDM(type, mode, member)	\
-+	debugfs_create_##type(#member, mode, parent, &sd->member)
- 
--		WARN_ON(sd_ctl_dir[0].child);
--		sd_ctl_dir[0].child = cpu_entries;
--	}
-+	SDM(ulong, 0644, min_interval);
-+	SDM(ulong, 0644, max_interval);
-+	SDM(u64,   0644, max_newidle_lb_cost);
-+	SDM(u32,   0644, busy_factor);
-+	SDM(u32,   0644, imbalance_pct);
-+	SDM(u32,   0644, cache_nice_tries);
-+	SDM(str,   0444, name);
- 
--	if (!cpu_idx) {
--		struct ctl_table *e = cpu_entries;
-+#undef SDM
- 
--		cpu_idx = kcalloc(nr_cpu_ids, sizeof(struct ctl_table*), GFP_KERNEL);
--		if (!cpu_idx)
--			return;
-+	debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
-+}
- 
--		/* deal with sparse possible map */
--		for_each_possible_cpu(i) {
--			cpu_idx[i] = e;
--			e++;
--		}
--	}
-+void register_sched_domain_sysctl(void)
-+{
-+	int cpu, i;
- 
- 	if (!cpumask_available(sd_sysctl_cpus)) {
- 		if (!alloc_cpumask_var(&sd_sysctl_cpus, GFP_KERNEL))
- 			return;
--	}
+-__initcall(init_sched_debug_procfs);
 -
--	if (!init_done) {
--		init_done = true;
--		/* init to possible to not have holes in @cpu_entries */
- 		cpumask_copy(sd_sysctl_cpus, cpu_possible_mask);
- 	}
- 
--	for_each_cpu(i, sd_sysctl_cpus) {
--		struct ctl_table *e = cpu_idx[i];
-+	if (!sd_dentry)
-+		sd_dentry = debugfs_create_dir("domains", debugfs_sched);
- 
--		if (e->child)
--			sd_free_ctl_entry(&e->child);
-+	for_each_cpu(cpu, sd_sysctl_cpus) {
-+		struct sched_domain *sd;
-+		struct dentry *d_cpu;
-+		char buf[32];
-+
-+		snprintf(buf, sizeof(buf), "cpu%d", cpu);
-+		debugfs_remove(debugfs_lookup(buf, sd_dentry));
-+		d_cpu = debugfs_create_dir(buf, sd_dentry);
-+
-+		i = 0;
-+		for_each_domain(cpu, sd) {
-+			struct dentry *d_sd;
- 
--		if (!e->procname) {
--			snprintf(buf, 32, "cpu%d", i);
--			e->procname = kstrdup(buf, GFP_KERNEL);
-+			snprintf(buf, sizeof(buf), "domain%d", i);
-+			d_sd = debugfs_create_dir(buf, d_cpu);
-+
-+			register_sd(sd, d_sd);
-+			i++;
- 		}
--		e->mode = 0555;
--		e->child = sd_alloc_ctl_cpu_table(i);
- 
--		__cpumask_clear_cpu(i, sd_sysctl_cpus);
-+		__cpumask_clear_cpu(cpu, sd_sysctl_cpus);
- 	}
--
--	WARN_ON(sd_sysctl_header);
--	sd_sysctl_header = register_sysctl_table(sd_ctl_root);
- }
- 
- void dirty_sched_domain_sysctl(int cpu)
-@@ -547,13 +411,12 @@ void dirty_sched_domain_sysctl(int cpu)
- 		__cpumask_set_cpu(cpu, sd_sysctl_cpus);
- }
- 
--/* may be called multiple times per register */
- void unregister_sched_domain_sysctl(void)
- {
--	unregister_sysctl_table(sd_sysctl_header);
--	sd_sysctl_header = NULL;
-+	debugfs_remove(sd_dentry);
-+	sd_dentry = NULL;
- }
--#endif /* CONFIG_SYSCTL */
-+
- #endif /* CONFIG_SMP */
- 
- #ifdef CONFIG_FAIR_GROUP_SCHED
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1553,7 +1553,7 @@ static inline unsigned int group_first_c
- 
- extern int group_balance_cpu(struct sched_group *sg);
- 
--#if defined(CONFIG_SCHED_DEBUG) && defined(CONFIG_SYSCTL)
-+#ifdef CONFIG_SCHED_DEBUG
- void register_sched_domain_sysctl(void);
- void dirty_sched_domain_sysctl(int cpu);
- void unregister_sched_domain_sysctl(void);
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -2223,7 +2223,6 @@ int sched_init_domains(const struct cpum
- 		doms_cur = &fallback_doms;
- 	cpumask_and(doms_cur[0], cpu_map, housekeeping_cpumask(HK_FLAG_DOMAIN));
- 	err = build_sched_domains(doms_cur[0], NULL);
--	register_sched_domain_sysctl();
- 
- 	return err;
- }
+ #define __PS(S, F) SEQ_printf(m, "%-45s:%21Ld\n", S, (long long)(F))
+ #define __P(F) __PS(#F, F)
+ #define   P(F) __PS(#F, p->F)
 
 
