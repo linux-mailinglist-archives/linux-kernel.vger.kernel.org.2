@@ -2,142 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992F135D113
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23E8235D117
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245391AbhDLT31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:29:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36116 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236717AbhDLT30 (ORCPT
+        id S237583AbhDLTaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:30:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27928 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236935AbhDLTa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:29:26 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F68DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:29:08 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id z22so1797021plo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:29:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=c84g+o0c3EP7qqY5y8zkTye7ebMVv6LO6TcZMlT8scg=;
-        b=MeWYUwQCJeqI+FE4nsXwN8sTAeHI2Bqa5FyQWBDZL3ZbmHLDgvG6fJGcBJyLdSDaX+
-         a7KZww/47gwlUKO+UMrbw8CxOLHGGmTGda2zTXmjvdDMxi1yEvgqU8SfA6LePhbg4S/i
-         M6FseQ3+8tGIzx/GAk+aeuIg76l7Pz2AwEk9M=
+        Mon, 12 Apr 2021 15:30:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618255808;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g6Ynsmxxkwh+nxh0otIklQ6uU+PBKwuJrjfFSi5KMSM=;
+        b=FyFgGS4XmUTfRktJfTFad8vsZ3f0jOBN3kxMogDBowIH+juxha658TJLSjjLOUnFldvaGx
+        Arl2qtHH3a5g5Rrevx6t1VpdyQeRdyhEpyJW7qkWcTAMb4gp8vTRquIz4Gr/2QLx4Jb3s+
+        8pf6Y62TSYwX3bUDBfyRYSBn4BO7+lQ=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-578-h51obmqlNNuhrv_Hr9sUXA-1; Mon, 12 Apr 2021 15:30:07 -0400
+X-MC-Unique: h51obmqlNNuhrv_Hr9sUXA-1
+Received: by mail-qk1-f197.google.com with SMTP id x10so1573203qkm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:30:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=c84g+o0c3EP7qqY5y8zkTye7ebMVv6LO6TcZMlT8scg=;
-        b=FTFfwk6boU9eHS/FQR1CupfbTdjuO31GpIzYrCqhzKqQx11C36LGmVXtTa5rTU+2W2
-         mClOW2pkMYAw9uQcSrt1vblEzN00kEWt8hXFkSF/OJAga8NG7qmb+BgRG4DEbnXB+RRS
-         qseBL5OivIi1xvN6cl4k94Y6bbMjqKamGFDpO9Acpve4pHEBBYcIuU/XAVmX9GK0NRES
-         qGhhgvwHt9k8eGJ2qLUIH4xstyExz4yI4NTP69mUNEajp8ffPsK8IdyMtw9gcV+Eegso
-         Dy0HN6eLKh70PwzA42reehskL7/BBFJ+Zn0iGNnvkP9K5DpgF0rGQYefKlM9ccVvRhmJ
-         vY6g==
-X-Gm-Message-State: AOAM530ukA6JRr66/NM18X9JYRQEOYSBkojIwDJ8ETM5wac96HeZqk8n
-        F2nol/29+ENnSUGkjv7ooxjvLA==
-X-Google-Smtp-Source: ABdhPJx+kuUumalzsg7BgWOoYJotP9yFE6IfASB994orfa/PZgh98lAHvb4kQyvnpeflAxCV+/IndQ==
-X-Received: by 2002:a17:90b:4a04:: with SMTP id kk4mr857303pjb.68.1618255747581;
-        Mon, 12 Apr 2021 12:29:07 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:1d18:a339:7993:e548])
-        by smtp.gmail.com with ESMTPSA id t18sm12277282pgg.33.2021.04.12.12.29.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 12:29:07 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=g6Ynsmxxkwh+nxh0otIklQ6uU+PBKwuJrjfFSi5KMSM=;
+        b=oNmVvKvXh78YTtITk7KlxFg3NfKserIxzYSH/e8djPUtqHU6mRRe+Y6814rZ3UK6v+
+         +So8rIkKKQSwzzQ4u+MNKOFCLyDOm/8cxn309WjrtINkAOzG2oiGBVU3sJSBpdwpcZCw
+         b81N9N01eTnLJ7CSXC5XjyEiwp1wHgx6XPF1hUoTSf3XFwo+9K/SNmOoQS3t1YsC6gtF
+         Zkb7zgNlWDrE8GcRCiOcZ1l0xZjb8/jL9NnI8wpwRruq5Jk+VmKnIAExizdQcP3SuJBJ
+         csjn+O8GcBIh39V9vCacxnOHrtaEWbdNDX4//xontSj4v/Bra46XO9390On6d3bfwUXe
+         /5jQ==
+X-Gm-Message-State: AOAM530gqc+ueY5GcNwNqut5VsiGDGH6anxv3XEqAkbuEOm/+ijvEFaP
+        q7TitHu2eMky0pH8ycVuAxcR/I9XdhG7i3EYEeUMyd5eHVnl2Qtt1MuHRA2F6zFiywSr6lozGaL
+        8Wg1DZjR7RLh102LlZwD6zq1X
+X-Received: by 2002:a05:620a:133b:: with SMTP id p27mr30028338qkj.382.1618255806689;
+        Mon, 12 Apr 2021 12:30:06 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw/0ZhcohubWOy2Odk9W0Je22ttvn2Xb+0qT9mcE7do92RYBiLJoRTivziK/j0RC5FuoUOAEw==
+X-Received: by 2002:a05:620a:133b:: with SMTP id p27mr30028309qkj.382.1618255806482;
+        Mon, 12 Apr 2021 12:30:06 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id i22sm2868262qko.135.2021.04.12.12.30.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 12:30:06 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 3/5] mm/memcg: Cache vmstat data in percpu memcg_stock_pcp
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>
+References: <20210409231842.8840-1-longman@redhat.com>
+ <20210409231842.8840-4-longman@redhat.com>
+ <YHSP+U/I52zx/JWZ@carbon.dhcp.thefacebook.com>
+Message-ID: <16af80a2-30a0-06da-9fd1-8d5101398fb9@redhat.com>
+Date:   Mon, 12 Apr 2021 15:30:04 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <YHQ1yqVkweZeN5+1@smile.fi.intel.com>
-References: <20210410015300.3764485-1-swboyd@chromium.org> <20210410015300.3764485-6-swboyd@chromium.org> <YHQ1yqVkweZeN5+1@smile.fi.intel.com>
-Subject: Re: [PATCH v4 05/13] module: Add printk formats to add module build ID to stacktraces
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date:   Mon, 12 Apr 2021 12:29:05 -0700
-Message-ID: <161825574550.3764895.4387100574176584209@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+In-Reply-To: <YHSP+U/I52zx/JWZ@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Andy Shevchenko (2021-04-12 04:58:02)
-> On Fri, Apr 09, 2021 at 06:52:52PM -0700, Stephen Boyd wrote:
-> > Let's make kernel stacktraces easier to identify by including the build
-> > ID[1] of a module if the stacktrace is printing a symbol from a module.
-> > This makes it simpler for developers to locate a kernel module's full
-> > debuginfo for a particular stacktrace. Combined with
-> > scripts/decode_stracktrace.sh, a developer can download the matching
-> > debuginfo from a debuginfod[2] server and find the exact file and line
-> > number for the functions plus offsets in a stacktrace that match the
-> > module. This is especially useful for pstore crash debugging where the
-> > kernel crashes are recorded in something like console-ramoops and the
-> > recovery kernel/modules are different or the debuginfo doesn't exist on
-> > the device due to space concerns (the debuginfo can be too large for
-> > space limited devices).
-> >=20
-> > Originally, I put this on the %pS format, but that was quickly rejected
-> > given that %pS is used in other places such as ftrace where build IDs
-> > aren't meaningful. There was some discussions on the list to put every
-> > module build ID into the "Modules linked in:" section of the stacktrace
-> > message but that quickly becomes very hard to read once you have more
-> > than three or four modules linked in. It also provides too much
-> > information when we don't expect each module to be traversed in a
-> > stacktrace. Having the build ID for modules that aren't important just
-> > makes things messy. Splitting it to multiple lines for each module
-> > quickly explodes the number of lines printed in an oops too, possibly
-> > wrapping the warning off the console. And finally, trying to stash away
-> > each module used in a callstack to provide the ID of each symbol printed
-> > is cumbersome and would require changes to each architecture to stash
-> > away modules and return their build IDs once unwinding has completed.
-> >=20
-> > Instead, we opt for the simpler approach of introducing new printk
-> > formats '%pS[R]b' for "pointer symbolic backtrace with module build ID"
-> > and '%pBb' for "pointer backtrace with module build ID" and then
-> > updating the few places in the architecture layer where the stacktrace
-> > is printed to use this new format.
-> >=20
-> > Example:
->=20
-> Can you trim a bit the example, so we will see only important lines.
-> In such case you may provide "before" and "after" variants.
->=20
-> ...
->=20
-> > -     if (modname)
-> > -             len +=3D sprintf(buffer + len, " [%s]", modname);
-> > +     if (modname) {
-> > +             len +=3D sprintf(buffer + len, " [%s", modname);
->=20
-> > +             /* build ID should match length of sprintf below */
-> > +             BUILD_BUG_ON(BUILD_ID_SIZE_MAX !=3D 20);
->=20
-> First of all, why not static_assert() defined near to the actual macro?
+On 4/12/21 2:22 PM, Roman Gushchin wrote:
+> On Fri, Apr 09, 2021 at 07:18:40PM -0400, Waiman Long wrote:
+>> Before the new slab memory controller with per object byte charging,
+>> charging and vmstat data update happen only when new slab pages are
+>> allocated or freed. Now they are done with every kmem_cache_alloc()
+>> and kmem_cache_free(). This causes additional overhead for workloads
+>> that generate a lot of alloc and free calls.
+>>
+>> The memcg_stock_pcp is used to cache byte charge for a specific
+>> obj_cgroup to reduce that overhead. To further reducing it, this patch
+>> makes the vmstat data cached in the memcg_stock_pcp structure as well
+>> until it accumulates a page size worth of update or when other cached
+>> data change.
+> The idea makes total sense to me and also gives a hope to remove
+> byte-sized vmstats in the long-term.
+>
+>> On a 2-socket Cascade Lake server with instrumentation enabled and this
+>> patch applied, it was found that about 17% (946796 out of 5515184) of the
+>> time when __mod_obj_stock_state() is called leads to an actual call to
+>> mod_objcg_state() after initial boot. When doing parallel kernel build,
+>> the figure was about 16% (21894614 out of 139780628). So caching the
+>> vmstat data reduces the number of calls to mod_objcg_state() by more
+>> than 80%.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   mm/memcontrol.c | 78 +++++++++++++++++++++++++++++++++++++++++++------
+>>   mm/slab.h       | 26 +++++++----------
+>>   2 files changed, 79 insertions(+), 25 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index b19100c68aa0..539c3b632e47 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -2220,7 +2220,10 @@ struct memcg_stock_pcp {
+>>   
+>>   #ifdef CONFIG_MEMCG_KMEM
+>>   	struct obj_cgroup *cached_objcg;
+>> +	struct pglist_data *cached_pgdat;
+>>   	unsigned int nr_bytes;
+>> +	int vmstat_idx;
+>> +	int vmstat_bytes;
+>>   #endif
+> Because vmstat_idx can realistically take only 3 values (slab_reclaimable,
+> slab_unreclaimable and percpu), I wonder if it's better to have
+> vmstat_bytes[3] and save a bit more on the reduced number of flushes?
+> It must be an often case when a complex (reclaimable) kernel object has
+> non-reclaimable parts (e.g. kmallocs) or percpu counters.
+> If the difference will be too small, maybe the current form is better.
 
-Which macro? BUILD_ID_SIZE_MAX? I tried static_assert() and it didn't
-work for me but maybe I missed something. Why is static_assert()
-preferred?
+I have thought about that too. However, that will make the code more 
+complex. So I decided to cache just one for now. We can certainly play 
+around with caching more in a later patch.
 
->=20
-> > +             if (IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID) && add_buildid=
- && buildid)
-> > +                     len +=3D sprintf(buffer + len, " %20phN", buildid=
-);
->=20
->                         len +=3D sprintf(buffer + len, " %*phN", BUILD_ID=
-_SIZE_MAX, buildid);
->=20
+Cheers,
+Longman
 
-Are you suggesting to use sprintf format here so that the size is part
-of the printf? Sounds good to me. Thanks.
+
