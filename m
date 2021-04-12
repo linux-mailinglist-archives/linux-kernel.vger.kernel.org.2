@@ -2,153 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1820935C3B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A27F835C3B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237665AbhDLKWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:22:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48486 "EHLO mx2.suse.de"
+        id S238990AbhDLKW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:22:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238727AbhDLKWB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:22:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A9E95AFE2;
-        Mon, 12 Apr 2021 10:21:42 +0000 (UTC)
-Subject: Re: [PATCH 2/9] mm/page_alloc: Add a bulk page allocator
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-References: <20210325114228.27719-1-mgorman@techsingularity.net>
- <20210325114228.27719-3-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <28729c76-4e09-f860-0db1-9c79c8220683@suse.cz>
-Date:   Mon, 12 Apr 2021 12:21:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S238986AbhDLKWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 06:22:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 550316134F;
+        Mon, 12 Apr 2021 10:22:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618222925;
+        bh=uJJiofvCn1YyOHVdzJpT5k6jhpAFdOwokAiFuFAoabs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jXRedCTGmXBypQ7+CbP7cNSsslBauM+S2DOuSoEGdA+2nny1r1rhWbLB4qYo8XaYV
+         aDPtUjv9N4qfnZuurTFJgLrh9XXEziIvfRicZLpZZgH4ddONXke83oRXgwxMieOCgC
+         lTDi+mDgXcs8C7r2QfEZ7BrUS7BucItVMw5OHzNE=
+Date:   Mon, 12 Apr 2021 12:22:03 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8192u: Remove function
+Message-ID: <YHQfS3rb81ElJ6uQ@kroah.com>
+References: <20210411184813.22836-1-fmdefrancesco@gmail.com>
+ <YHQWG2f34jhA41lK@kroah.com>
+ <4388012.RVq5xMhMDq@linux.local>
 MIME-Version: 1.0
-In-Reply-To: <20210325114228.27719-3-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4388012.RVq5xMhMDq@linux.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/21 12:42 PM, Mel Gorman wrote:
-> This patch adds a new page allocator interface via alloc_pages_bulk,
-> and __alloc_pages_bulk_nodemask. A caller requests a number of pages
-> to be allocated and added to a list.
+On Mon, Apr 12, 2021 at 12:12:34PM +0200, Fabio M. De Francesco wrote:
+> On Monday, April 12, 2021 11:42:51 AM CEST Greg KH wrote:
+> > On Sun, Apr 11, 2021 at 08:48:13PM +0200, Fabio M. De Francesco wrote:
+> > > Remove cmpk_handle_query_config_rx() because it just initializes a
+> > > local
+> > > variable and then returns "void".
+> > > 
+> > > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > > ---
+> > > 
+> > >  drivers/staging/rtl8192u/r819xU_cmdpkt.c | 40 ------------------------
+> > >  1 file changed, 40 deletions(-)
+> > > 
+> > > diff --git a/drivers/staging/rtl8192u/r819xU_cmdpkt.c
+> > > b/drivers/staging/rtl8192u/r819xU_cmdpkt.c index
+> > > 4cece40a92f6..d5a54c2d3086 100644
+> > > --- a/drivers/staging/rtl8192u/r819xU_cmdpkt.c
+> > > +++ b/drivers/staging/rtl8192u/r819xU_cmdpkt.c
+> > > @@ -249,46 +249,6 @@ static void cmpk_handle_interrupt_status(struct
+> > > net_device *dev, u8 *pmsg)> 
+> > >  	DMESG("<---- cmpk_handle_interrupt_status()\n");
+> > >  
+> > >  }
+> > > 
+> > > -/*--------------------------------------------------------------------
+> > > --------- - * Function:    cmpk_handle_query_config_rx()
+> > > - *
+> > > - * Overview:    The function is responsible for extract the message
+> > > from - *		firmware. It will contain dedicated info in
+> > > - *		ws-06-0063-rtl8190-command-packet-specification. 
+> Please
+> > > - *		refer to chapter "Beacon State Element".
+> > > - *
+> > > - * Input:       u8    *pmsg	-	Message Pointer of the 
+> command packet.
+> > > - *
+> > > - * Output:      NONE
+> > > - *
+> > > - * Return:      NONE
+> > > - *
+> > > - * Revised History:
+> > > - *  When		Who	Remark
+> > > - *  05/12/2008		amy	Create Version 0 porting from 
+> windows code.
+> > > - *
+> > > -
+> > > *---------------------------------------------------------------------
+> > > ------ - */
+> > > -static void cmpk_handle_query_config_rx(struct net_device *dev, u8
+> > > *pmsg) -{
+> > > -	struct cmpk_query_cfg	rx_query_cfg;
+> > > -
+> > > -	/* 1. Extract TX feedback info from RFD to temp structure 
+> buffer. */
+> > > -	/* It seems that FW use big endian(MIPS) and DRV use little 
+> endian in
+> > > -	 * windows OS. So we have to read the content byte by byte or
+> > > transfer
+> > > -	 * endian type before copy the message copy.
+> > > -	 */
+> > > -	rx_query_cfg.cfg_action		= (pmsg[4] & 0x80) >> 7;
+> > > -	rx_query_cfg.cfg_type		= (pmsg[4] & 0x60) >> 5;
+> > > -	rx_query_cfg.cfg_size		= (pmsg[4] & 0x18) >> 3;
+> > > -	rx_query_cfg.cfg_page		= (pmsg[6] & 0x0F) >> 0;
+> > > -	rx_query_cfg.cfg_offset		= pmsg[7];
+> > > -	rx_query_cfg.value		= (pmsg[8]  << 24) | 
+> (pmsg[9]  << 16) |
+> > > -					  (pmsg[10] <<  8) 
+> | (pmsg[11] <<  0);
+> > > -	rx_query_cfg.mask		= (pmsg[12] << 24) | 
+> (pmsg[13] << 16) |
+> > > -					  (pmsg[14] <<  8) 
+> | (pmsg[15] <<  0);
+> > > -}
+> > > -
+> > > 
+> > >  /*--------------------------------------------------------------------
+> > >  --------->  
+> > >   * Function:	cmpk_count_tx_status()
+> > >   *
+> > 
+> > Always test-build your patches as they can not break the build.  You
+> > obviously did not do that here, why not?
+> >
+> I can't see that where the build of rtl8192u is broken. 
+> The following lines are from the compilation log:
 > 
-> The API is not guaranteed to return the requested number of pages and
-> may fail if the preferred allocation zone has limited free memory, the
-> cpuset changes during the allocation or page debugging decides to fail
-> an allocation. It's up to the caller to request more pages in batch
-> if necessary.
+> git/kernels/staging> make -j8 drivers/staging/rtl8192u/
+>  [...]
+>  CC [M]  drivers/staging/rtl8192u/r819xU_cmdpkt.o
+>  CC [M]  drivers/staging/rtl8192u/r819xU_cmdpkt.o
+>  [...]
+>  LD [M]  drivers/staging/rtl8192u/r8192u_usb.o
 > 
-> Note that this implementation is not very efficient and could be improved
-> but it would require refactoring. The intent is to make it available early
-> to determine what semantics are required by different callers. Once the
-> full semantics are nailed down, it can be refactored.
+> No errors are reported.
 > 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->  include/linux/gfp.h |  11 +++++
->  mm/page_alloc.c     | 118 ++++++++++++++++++++++++++++++++++++++++++++
->  2 files changed, 129 insertions(+)
-> 
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index 0a88f84b08f4..4a304fd39916 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -518,6 +518,17 @@ static inline int arch_make_page_accessible(struct page *page)
->  struct page *__alloc_pages(gfp_t gfp, unsigned int order, int preferred_nid,
->  		nodemask_t *nodemask);
->  
-> +int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-> +				nodemask_t *nodemask, int nr_pages,
-> +				struct list_head *list);
-> +
-> +/* Bulk allocate order-0 pages */
-> +static inline unsigned long
-> +alloc_pages_bulk(gfp_t gfp, unsigned long nr_pages, struct list_head *list)
-> +{
-> +	return __alloc_pages_bulk(gfp, numa_mem_id(), NULL, nr_pages, list);
-> +}
-> +
->  /*
->   * Allocate pages, preferring the node given as nid. The node must be valid and
->   * online. For more general interface, see alloc_pages_node().
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 8a3e13277e22..eb547470a7e4 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -4965,6 +4965,124 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
->  	return true;
->  }
->  
-> +/*
-> + * __alloc_pages_bulk - Allocate a number of order-0 pages to a list
-> + * @gfp: GFP flags for the allocation
-> + * @preferred_nid: The preferred NUMA node ID to allocate from
-> + * @nodemask: Set of nodes to allocate from, may be NULL
-> + * @nr_pages: The number of pages desired on the list
-> + * @page_list: List to store the allocated pages
-> + *
-> + * This is a batched version of the page allocator that attempts to
-> + * allocate nr_pages quickly and add them to a list.
-> + *
-> + * Returns the number of pages on the list.
-> + */
-> +int __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
-> +			nodemask_t *nodemask, int nr_pages,
-> +			struct list_head *page_list)
-> +{
-> +	struct page *page;
-> +	unsigned long flags;
-> +	struct zone *zone;
-> +	struct zoneref *z;
-> +	struct per_cpu_pages *pcp;
-> +	struct list_head *pcp_list;
-> +	struct alloc_context ac;
-> +	gfp_t alloc_gfp;
-> +	unsigned int alloc_flags;
+> What am I missing?
 
-Was going to complain that this is not set to ALLOC_WMARK_LOW. Must be faster
-next time...
+The function is used elsewhere in this file :(
 
-> +	int allocated = 0;
-> +
-> +	if (WARN_ON_ONCE(nr_pages <= 0))
-> +		return 0;
-> +
-> +	/* Use the single page allocator for one page. */
-> +	if (nr_pages == 1)
-> +		goto failed;
-> +
-> +	/* May set ALLOC_NOFRAGMENT, fragmentation will return 1 page. */
-
-I don't understand this comment. Only alloc_flags_nofragment() sets this flag
-and we don't use it here?
-
-> +	gfp &= gfp_allowed_mask;
-> +	alloc_gfp = gfp;
-> +	if (!prepare_alloc_pages(gfp, 0, preferred_nid, nodemask, &ac, &alloc_gfp, &alloc_flags))
-> +		return 0;
-> +	gfp = alloc_gfp;
-> +
-> +	/* Find an allowed local zone that meets the high watermark. */
-
-Should it say "low watermark"?
-
-Vlastimil
