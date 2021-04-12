@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA10535BD83
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BE835BD90
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238220AbhDLIwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:52:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40572 "EHLO mail.kernel.org"
+        id S238298AbhDLIwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:52:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238059AbhDLIr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:47:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4277B6135F;
-        Mon, 12 Apr 2021 08:47:11 +0000 (UTC)
+        id S238072AbhDLIrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:47:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E360961263;
+        Mon, 12 Apr 2021 08:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217231;
-        bh=HhsN8e56+DUXzwGRd4QuvcrbozfoA16U1c4+/jkeuqQ=;
+        s=korg; t=1618217234;
+        bh=A6NMrUo9PzqV0g+b+1ZLkVLe2KvddtC4M4PTT5zRk5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l4ehLurOMVfjyM64eUGOm5jx9nbq3A22BGiYrHs0DPdoPE3jhKUBYgMyl3fopiiKD
-         Vo82+XI/TH3HV9ZNw5/2LLoABSBXGTwUqZzU1fhfi3sAZ+CcfPwWD6r2/25dMq0j9J
-         UUwFLjd6QRp7VT9F0HCn+UbpAzN00KnSfQu6eswQ=
+        b=Cv1QkSUzQ8lFr45VAPGAV7GArAkJsp1I0F+igKhB6PsjYYJePayZ+f2y9NKzUjsjo
+         t+w82B4VnfLEKi3Hw1EgyrIvrdEw9BCoBvif2hZhI1j56z9sfWfzol4lzTuSz6vpSq
+         LzcPHNeqVlYBUP7nnr5mTYMWra7qQ5IQCFyuRrpE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Qiu <jack.qiu@huawei.com>,
-        Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 017/111] fs: direct-io: fix missing sdio->boundary
-Date:   Mon, 12 Apr 2021 10:39:55 +0200
-Message-Id: <20210412084004.798189546@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Helge Deller <deller@gmx.de>
+Subject: [PATCH 5.4 018/111] parisc: parisc-agp requires SBA IOMMU driver
+Date:   Mon, 12 Apr 2021 10:39:56 +0200
+Message-Id: <20210412084004.830138154@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -41,58 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jack Qiu <jack.qiu@huawei.com>
+From: Helge Deller <deller@gmx.de>
 
-commit df41872b68601059dd4a84858952dcae58acd331 upstream.
+commit 9054284e8846b0105aad43a4e7174ca29fffbc44 upstream.
 
-I encountered a hung task issue, but not a performance one.  I run DIO
-on a device (need lba continuous, for example open channel ssd), maybe
-hungtask in below case:
+Add a dependency to the SBA IOMMU driver to avoid:
+ERROR: modpost: "sba_list" [drivers/char/agp/parisc-agp.ko] undefined!
 
-  DIO:						Checkpoint:
-  get addr A(at boundary), merge into BIO,
-  no submit because boundary missing
-						flush dirty data(get addr A+1), wait IO(A+1)
-						writeback timeout, because DIO(A) didn't submit
-  get addr A+2 fail, because checkpoint is doing
-
-dio_send_cur_page() may clear sdio->boundary, so prevent it from missing
-a boundary.
-
-Link: https://lkml.kernel.org/r/20210322042253.38312-1-jack.qiu@huawei.com
-Fixes: b1058b981272 ("direct-io: submit bio after boundary buffer is added to it")
-Signed-off-by: Jack Qiu <jack.qiu@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/direct-io.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/char/agp/Kconfig |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/direct-io.c
-+++ b/fs/direct-io.c
-@@ -848,6 +848,7 @@ submit_page_section(struct dio *dio, str
- 		    struct buffer_head *map_bh)
- {
- 	int ret = 0;
-+	int boundary = sdio->boundary;	/* dio_send_cur_page may clear it */
+--- a/drivers/char/agp/Kconfig
++++ b/drivers/char/agp/Kconfig
+@@ -125,7 +125,7 @@ config AGP_HP_ZX1
  
- 	if (dio->op == REQ_OP_WRITE) {
- 		/*
-@@ -886,10 +887,10 @@ submit_page_section(struct dio *dio, str
- 	sdio->cur_page_fs_offset = sdio->block_in_file << sdio->blkbits;
- out:
- 	/*
--	 * If sdio->boundary then we want to schedule the IO now to
-+	 * If boundary then we want to schedule the IO now to
- 	 * avoid metadata seeks.
- 	 */
--	if (sdio->boundary) {
-+	if (boundary) {
- 		ret = dio_send_cur_page(dio, sdio, map_bh);
- 		if (sdio->bio)
- 			dio_bio_submit(dio, sdio);
+ config AGP_PARISC
+ 	tristate "HP Quicksilver AGP support"
+-	depends on AGP && PARISC && 64BIT
++	depends on AGP && PARISC && 64BIT && IOMMU_SBA
+ 	help
+ 	  This option gives you AGP GART support for the HP Quicksilver
+ 	  AGP bus adapter on HP PA-RISC machines (Ok, just on the C8000
 
 
