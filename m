@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A5D35C134
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6772135BEAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241075AbhDLJZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:25:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54840 "EHLO mail.kernel.org"
+        id S239872AbhDLJB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:01:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238591AbhDLJB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:01:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0C4E61249;
-        Mon, 12 Apr 2021 09:00:27 +0000 (UTC)
+        id S238337AbhDLIwa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:52:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A198E6124A;
+        Mon, 12 Apr 2021 08:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218028;
-        bh=df6Rd755LKm4Brq3oACAw5MjiDAk5KfTbpVgDpAeEkM=;
+        s=korg; t=1618217487;
+        bh=Os2eMfap6Li10iuYEB7IpMWQI78Y7AdLLCg/JsE547Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YuJauujnPQqwhCsIyz1X7jRH5SyQ0vf6bwIC7DcOrclOzWT7t39BYS7nQsJIxcN1g
-         n9s65J/ZIfOd03O+zj6f8Im3B3M9jvjSds/A2ehXGQuAUhdas7SRz59MCaTilaHHDZ
-         saM/7ShnOIm0cBz7VITQD+IKHaTay2rKGA7Fk6Yk=
+        b=U2Kv6lVylwPrJh0NO/0NE7pWpOlTDjOIiFDGrudU7XKMDB3Yg0eeBlSb7IeGjE7Rz
+         Uz15D2kAsj9JSiSxsgOd4NDiAK2FbpJajl8emSz9rfExSEeyuuc6HjC2haU/JW5+VR
+         hHH37GEMVYPb2LVScdi8ry+jtiDliU+u/D8GnMTw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bruce Allan <bruce.w.allan@intel.com>,
+        stable@vger.kernel.org, Fabio Pricoco <fabio.pricoco@intel.com>,
         Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.11 043/210] ice: fix memory allocation call
+Subject: [PATCH 5.10 034/188] ice: Increase control queue timeout
 Date:   Mon, 12 Apr 2021 10:39:08 +0200
-Message-Id: <20210412084017.445667227@linuxfoundation.org>
+Message-Id: <20210412084014.783845651@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
-References: <20210412084016.009884719@linuxfoundation.org>
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+References: <20210412084013.643370347@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,33 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bruce Allan <bruce.w.allan@intel.com>
+From: Fabio Pricoco <fabio.pricoco@intel.com>
 
-commit 59df14f9cc2326bd6432d60eca0df8201d9d3d4b upstream.
+commit f88c529ac77b3c21819d2cf1dfcfae1937849743 upstream.
 
-Fix the order of number of array members and member size parameters in a
-*calloc() call.
+250 msec timeout is insufficient for some AQ commands. Advice from FW
+team was to increase the timeout. Increase to 1 second.
 
-Fixes: b3c3890489f6 ("ice: avoid unnecessary single-member variable-length structs")
-Signed-off-by: Bruce Allan <bruce.w.allan@intel.com>
+Fixes: 7ec59eeac804 ("ice: Add support for control queues")
+Signed-off-by: Fabio Pricoco <fabio.pricoco@intel.com>
 Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ice/ice_common.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/intel/ice/ice_controlq.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/ethernet/intel/ice/ice_common.c
-+++ b/drivers/net/ethernet/intel/ice/ice_common.c
-@@ -717,8 +717,8 @@ static enum ice_status ice_cfg_fw_log(st
+--- a/drivers/net/ethernet/intel/ice/ice_controlq.h
++++ b/drivers/net/ethernet/intel/ice/ice_controlq.h
+@@ -31,8 +31,8 @@ enum ice_ctl_q {
+ 	ICE_CTL_Q_MAILBOX,
+ };
  
- 			if (!data) {
- 				data = devm_kcalloc(ice_hw_to_dev(hw),
--						    sizeof(*data),
- 						    ICE_AQC_FW_LOG_ID_MAX,
-+						    sizeof(*data),
- 						    GFP_KERNEL);
- 				if (!data)
- 					return ICE_ERR_NO_MEMORY;
+-/* Control Queue timeout settings - max delay 250ms */
+-#define ICE_CTL_Q_SQ_CMD_TIMEOUT	2500  /* Count 2500 times */
++/* Control Queue timeout settings - max delay 1s */
++#define ICE_CTL_Q_SQ_CMD_TIMEOUT	10000 /* Count 10000 times */
+ #define ICE_CTL_Q_SQ_CMD_USEC		100   /* Check every 100usec */
+ #define ICE_CTL_Q_ADMIN_INIT_TIMEOUT	10    /* Count 10 times */
+ #define ICE_CTL_Q_ADMIN_INIT_MSEC	100   /* Check every 100msec */
 
 
