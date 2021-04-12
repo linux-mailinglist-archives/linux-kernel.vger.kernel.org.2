@@ -2,116 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A85E535C95A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB89D35C958
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242667AbhDLPCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:02:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36696 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241539AbhDLPCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:02:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE7CF61287;
-        Mon, 12 Apr 2021 15:01:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618239715;
-        bh=5UW8HbUYX4iQh5QgJmFd1pvxwupAcZPnuAATxqfNAFU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OfcOrgnTKmxGMezf+WFS5sQyG4IWu3kkwTPNpUv54N8/2HZ+HATh/SoOPe6mh2Vg4
-         U1y2TQ7PtukxURrHYMOuuIY5fZTYiMGJ3CK78/h/ZAwGzjuhYcYJtlIyArICPmsGWF
-         a4JisaiRtlT7FQThYA8B/mRKAscgCvD3HhhSOXku+1bau/Pib0xTPczbibkV9BIHBa
-         TKSh8Vbqvmf0s0aP2FmeuYY6ZyY2V8XezUqSC0yqifBEOY4+VZ9yqYTvZpOyAv+mLT
-         /cymuEDEr0KugPWh7HGjA1RE2DgmMbc88OROI/wm+6XepcVb0l/d3U7kfMv4Dmk8s7
-         LjXDJqRibTgQw==
-Received: by pali.im (Postfix)
-        id 12E71687; Mon, 12 Apr 2021 17:01:52 +0200 (CEST)
-Date:   Mon, 12 Apr 2021 17:01:52 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: marvell: fix detection of PHY on Topaz switches
-Message-ID: <20210412150152.pbz5zt7mu3aefbrx@pali>
-References: <20210412121430.20898-1-pali@kernel.org>
- <YHRH2zWsYkv/yjYz@lunn.ch>
- <20210412133447.fyqkavrs5r5wbino@pali>
- <YHRcu+dNKE7xC8EG@lunn.ch>
+        id S242629AbhDLPCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:02:14 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39756 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238739AbhDLPCM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:02:12 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618239713;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ukvl3N7Zt1GUDMaWqR9cBlw29fbNim9SwpindRDnR0Y=;
+        b=o//Hi/1equhXjFYn4D23i+bmbjZ6vjB5u1JRXniR9X4+9imQ1sIxhxTamkDGxeB10V0RDn
+        68y/VcGQ7hJw+snjOluCRaDjThDzG8s8MJRt1VYdrYyRaKLPOatPt5R8seegeiEbnWjNuT
+        LX3J4PBIGRAmLe3AjrZUc7Am3912dYTmX2wZEeyAmuQfoNBtlemplh+Xzn4aQEMOA3PPhn
+        UHppNEPJWTOlgIaltdgs/8OBrH7Ur/bV2Scg7a+bXCVUMDyUNmdbb7pfI+YY/+DL6CkMf6
+        QqXwMQZyJwKFot0lFxueGhB5p0tCNC78Nv6sfKtUJq5LAY4Tb+G8ehEhDch7ZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618239713;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ukvl3N7Zt1GUDMaWqR9cBlw29fbNim9SwpindRDnR0Y=;
+        b=OD2GkfVLY61w715PXyoHwObCTRRwaLJCDdK3I72qmPGz4YW4ONO3Gz5Im9xvR2R/gRLPvo
+        5WeQp12TAoh5zuCg==
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     neilb@suse.de, peterz@infradead.org, mingo@redhat.com,
+        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
+        bigeasy@linutronix.de, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/17] locking: Add split_lock
+In-Reply-To: <20210412144525.GM2531743@casper.infradead.org>
+References: <20210409025131.4114078-3-willy@infradead.org> <87blaj1sqf.ffs@nanos.tec.linutronix.de> <20210412144525.GM2531743@casper.infradead.org>
+Date:   Mon, 12 Apr 2021 17:01:53 +0200
+Message-ID: <877dl71r8e.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YHRcu+dNKE7xC8EG@lunn.ch>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday 12 April 2021 16:44:11 Andrew Lunn wrote:
-> On Mon, Apr 12, 2021 at 03:34:47PM +0200, Pali Rohár wrote:
-> > On Monday 12 April 2021 15:15:07 Andrew Lunn wrote:
-> > > > +static u16 mv88e6xxx_physid_for_family(enum mv88e6xxx_family family);
-> > > > +
-> > > 
-> > > No forward declaration please. Move the code around. It is often best
-> > > to do that in a patch which just moves code, no other changes. It
-> > > makes it easier to review.
-> > 
-> > Avoiding forward declaration would mean to move about half of source
-> > code. mv88e6xxx_physid_for_family depends on mv88e6xxx_table which
-> > depends on all _ops structures which depends on all lot of other
-> > functions.
-> 
-> So this is basically what you are trying to do:
-> 
-> diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-> index 903d619e08ed..ef4dbcb052b7 100644
-> --- a/drivers/net/dsa/mv88e6xxx/chip.c
-> +++ b/drivers/net/dsa/mv88e6xxx/chip.c
-> @@ -3026,6 +3026,18 @@ static int mv88e6xxx_setup(struct dsa_switch *ds)
->         return err;
->  }
->  
-> +static const enum mv88e6xxx_model family_model_table[] = {
-> +       [MV88E6XXX_FAMILY_6095] = MV88E6XXX_PORT_SWITCH_ID_PROD_6095,
-> +       [MV88E6XXX_FAMILY_6097] = MV88E6XXX_PORT_SWITCH_ID_PROD_6097,
-> +       [MV88E6XXX_FAMILY_6185] = MV88E6XXX_PORT_SWITCH_ID_PROD_6185,
-> +       [MV88E6XXX_FAMILY_6250] = MV88E6XXX_PORT_SWITCH_ID_PROD_6250,
-> +       [MV88E6XXX_FAMILY_6320] = MV88E6XXX_PORT_SWITCH_ID_PROD_6320,
-> +       [MV88E6XXX_FAMILY_6341] = MV88E6XXX_PORT_SWITCH_ID_PROD_6341,
-> +       [MV88E6XXX_FAMILY_6351] = MV88E6XXX_PORT_SWITCH_ID_PROD_6351,
-> +       [MV88E6XXX_FAMILY_6352] = MV88E6XXX_PORT_SWITCH_ID_PROD_6352,
-> +       [MV88E6XXX_FAMILY_6390] = MV88E6XXX_PORT_SWITCH_ID_PROD_6390,
-> +};
+On Mon, Apr 12 2021 at 15:45, Matthew Wilcox wrote:
+> On Mon, Apr 12, 2021 at 04:29:28PM +0200, Thomas Gleixner wrote:
+>> On Fri, Apr 09 2021 at 03:51, Matthew Wilcox wrote:
+>> > Bitlocks do not currently participate in lockdep.  Conceptually, a
+>> > bit_spinlock is a split lock, eg across each bucket in a hash table.
+>> > The struct split_lock gives us somewhere to record the lockdep_map.
+>> 
+>> I like the concept, but the name is strange. The only purpose of 
+>> 
+>> > +struct split_lock {
+>> > +#ifdef CONFIG_DEBUG_LOCK_ALLOC
+>> > +	struct lockdep_map dep_map;
+>> > +#endif
+>> > +};
+>> 
+>> is to have a place to stick the lockdep map into. So it's not a lock
+>> construct as the name suggests, it's just auxiliary data when lockdep is
+>> enabled.
+>
+> That's the implementation _today_, but conceptually, it's a single lock.
+> I was thinking that for non-RT, we could put a qspinlock in there for a
+> thread to spin on if the bit is contended.  It'd need a bit of ingenuity
+> to make sure that a thread unlocking a bitlock made sure that a thread
+> spinning on the qspinlock saw the wakeup, but it should be doable.
 
-Ok, no problem. I can change it in this way. I just thought that if
-prod_id is already defined for every model in mv88e6xxx_table[] table I
-could reuse it, instead of duplicating it...
+Ah, that's what you have in mind.
 
-Anyway, now I'm looking at phy/marvell.c driver again and it supports
-only 88E6341 and 88E6390 families from whole 88E63xxx range.
+> Anyway, from the point of view of the user, they should be declaring
+> "this is the lock", not "this is the lock tracking structure", right?
+>
+>> I know you hinted that RT could make use of that data structure and the
+>> fact that it's mandatory for the various lock functions, but that's not
+>> really feasible if this is related to a hash with a bit spinlock per
+>> bucket as the data structure is hash global.
+>> 
+>> Sure, we can do pointer math to find out the bucket index and do
+>> something from there, but I'm not sure whether that really helps. Need
+>> to stare at the remaining few places where bit spinlocks are an issue on
+>> RT.
+>
+> I obviously don't understand exactly what the RT patchset does.  My
+> thinking was that you could handle the bit locks like rw sems, and
+> sacrifice the scalability of per-bucket-lock for the determinism of
+> a single PI lock.
 
-So do we need to define for now table for more than
-MV88E6XXX_FAMILY_6341 and MV88E6XXX_FAMILY_6390 entries?
+That'd suck for most bit spinlocks where the lock is just protecting
+minimal hashlist operations and these preeempt disabled protections are
+actually shorter than the overhead of a heavier lock.
 
-> +
->  static int mv88e6xxx_mdio_read(struct mii_bus *bus, int phy, int reg)
->  {
->         struct mv88e6xxx_mdio_bus *mdio_bus = bus->priv;
-> @@ -3056,7 +3068,7 @@ static int mv88e6xxx_mdio_read(struct mii_bus *bus, int phy, int reg)
->                          * a PHY,
->                          */
->                         if (!(val & 0x3f0))
-> -                               val |= MV88E6XXX_PORT_SWITCH_ID_PROD_6390 >> 4;
-> +                               val |= family_model_table[chip->info->family] >> 4;
->         }
-> 
-> and it compiles. No forward declarations needed. It is missing all the
-> error checking etc, but i don't see why that should change the
-> dependencies.
-> 
-> 	Andrew
+For situations where the bit spinlock was actually an issue (long
+traversals or such) in older kernel versions we just bit the bullet and
+bloated the hash data structure with an actual spinlock and had some
+wrappers to hide the mess from the actual code. That still preserved the
+scalability while making the lock held section preemptible which we
+obviously cannot have with real bit spinlocks even on RT.
+
+But your idea of having a qspinlock for the contended case might
+actually be something which might be worth to exploit RT wise -
+obviously not with a qspinlock :) - but conceptually.
+
+Need to think more about it.
+
+Thanks,
+
+        tglx
