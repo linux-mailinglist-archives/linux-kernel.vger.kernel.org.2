@@ -2,139 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65E4C35CF99
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 636DA35CF9B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244122AbhDLRmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:42:06 -0400
-Received: from mga03.intel.com ([134.134.136.65]:28457 "EHLO mga03.intel.com"
+        id S244241AbhDLRnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:43:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47564 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238649AbhDLRmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:42:05 -0400
-IronPort-SDR: TDHSBR1HeWKHYMPSKBf7byDc4TuQC5AP9bV+nRtgmFPaT+kARw4Gk7FKF+IUUUIACoX+8yQEGs
- SNP6B/jVy6+g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194276228"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="194276228"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 10:41:46 -0700
-IronPort-SDR: 0+Ip22y9x2IL5Rv+7mQQP04rLPAGoGitSlHG76msZHZ8uJTklhG1gqh3fcOp8C7gxJ/dyoyHyV
- hMAvQKeEuOIw==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="531963624"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 10:41:43 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lW0Z9-003WWF-Pt; Mon, 12 Apr 2021 20:41:39 +0300
-Date:   Mon, 12 Apr 2021 20:41:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
-Subject: Re: [PATCH v1 6/7] mfd: lpc_ich: Add support for pinctrl in non-ACPI
- system
-Message-ID: <YHSGU1fOa1AWYJGr@smile.fi.intel.com>
-References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
- <20210308122020.57071-7-andriy.shevchenko@linux.intel.com>
- <20210412180106.7dc524e8@md1za8fc.ad001.siemens.net>
- <YHR6njWCHn77v7lQ@smile.fi.intel.com>
- <20210412192714.617d18b0@md1za8fc.ad001.siemens.net>
+        id S243735AbhDLRnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 13:43:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7E6A9AF10;
+        Mon, 12 Apr 2021 17:43:19 +0000 (UTC)
+Subject: Re: [PATCH 01/11] mm/page_alloc: Split per cpu page lists and zone
+ stats
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+References: <20210407202423.16022-1-mgorman@techsingularity.net>
+ <20210407202423.16022-2-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <81cf880c-826e-6bbf-3af0-22d7aa2d3075@suse.cz>
+Date:   Mon, 12 Apr 2021 19:43:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412192714.617d18b0@md1za8fc.ad001.siemens.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210407202423.16022-2-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 07:27:14PM +0200, Henning Schild wrote:
-> Am Mon, 12 Apr 2021 19:51:42 +0300
-> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
-> > On Mon, Apr 12, 2021 at 06:01:06PM +0200, Henning Schild wrote:
-> > > Am Mon, 8 Mar 2021 14:20:19 +0200
-> > > schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
+On 4/7/21 10:24 PM, Mel Gorman wrote:
+> @@ -6691,7 +6697,7 @@ static __meminit void zone_pcp_init(struct zone *zone)
+>  	 * relies on the ability of the linker to provide the
+>  	 * offset of a (static) per cpu variable into the per cpu area.
+>  	 */
+> -	zone->pageset = &boot_pageset;
+> +	zone->per_cpu_pageset = &boot_pageset;
 
-...
+I don't see any &boot_zonestats assignment here in zone_pcp_init() or its
+caller(s), which seems strange, as zone_pcp_reset() does it.
 
-> > > > +#define APL_GPIO_NORTH_OFFSET		0xc50000
-> > > > +#define APL_GPIO_NORTH_SIZE		0x76c  
-> > > 
-> > > drivers/pinctrl/intel/pinctrl-broxton.c:653
-> > > BXT_COMMUNITY(0, 77),
-> > >   
-> > > > +#define APL_GPIO_WEST_OFFSET		0xc70000
-> > > > +#define APL_GPIO_WEST_SIZE		0x674  
-> > > 
-> > > All these sizes correlate with 4 magic numbers from pinctrl-broxton.
-> > > 
-> > > SIZE - 0x500 (pad_base?) - 4 (no clue) / 8
-> > > 
-> > > It might be worth basing both numbers on a define and giving the
-> > > magic numbers some names.  
-> > 
-> > I didn't get this, sorry. The numbers above just precise sizes of the
-> > resources. Actually they all one page anyway, so, I can drop magic of
-> > SIZEs and leave only offsets.
-> 
-> That precise size is also in the broxton driver, i think. Say we did
-> have
-> 
-> #define BXT_NORTH_COUNT 77
-> #define PAD_BASE 0x500
-> 
-> in some central place
-> 
-> then we could use
-> 
-> size = 0x500 + 8 * BXT_NORTH_COUNT + 4 (no clue what that is)
-> 
-> the same pattern would work for all those sizes and their
-> BXT_COMMUNITY(0, XX) counterparts
-> 
-> So the real size seems to be a function of the magic numbers in
-> BXT_COMMUNITY(0, XX)
-> 
-> Or simply take one page as you say.
+>  	zone->pageset_high = BOOT_PAGESET_HIGH;
+>  	zone->pageset_batch = BOOT_PAGESET_BATCH;
+>  
+> @@ -8954,17 +8960,19 @@ void zone_pcp_reset(struct zone *zone)
+>  {
+>  	unsigned long flags;
+>  	int cpu;
+> -	struct per_cpu_pageset *pset;
+> +	struct per_cpu_zonestat *pzstats;
+>  
+>  	/* avoid races with drain_pages()  */
+>  	local_irq_save(flags);
+> -	if (zone->pageset != &boot_pageset) {
+> +	if (zone->per_cpu_pageset != &boot_pageset) {
+>  		for_each_online_cpu(cpu) {
+> -			pset = per_cpu_ptr(zone->pageset, cpu);
+> -			drain_zonestat(zone, pset);
+> +			pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
+> +			drain_zonestat(zone, pzstats);
+>  		}
+> -		free_percpu(zone->pageset);
+> -		zone->pageset = &boot_pageset;
+> +		free_percpu(zone->per_cpu_pageset);
+> +		free_percpu(zone->per_cpu_zonestats);
+> +		zone->per_cpu_pageset = &boot_pageset;
+> +		zone->per_cpu_zonestats = &boot_zonestats;
 
-No, not this way. We are really trying hard *not* to put *that* magic into
-the code. Just FYI that SIZEs I have calculated myself, but these SIZEs
-are *not* the same as the ones used in pinctrl-broxton *semantically*.
+^ here
 
-One if for resource provider, one is for consumer. They are simply different
-in this sense.
-
-> > > But all this seems like duplication of pinctrl-broxton, maybe the
-> > > pinctrl driver should unhide the p2sb ...  
-> > 
-> > Definitely should not. It's not a business of the pin control driver
-> > to know how it has to be instantiated (or from what data). These
-> > offsets belong to the platform description and since firmware hides
-> > the device without given an appropriate ACPI device node, we have
-> > only one choice (assuming firmware is carved in stone) -- board files.
-> > 
-> > P2SB on the other hand is a slice of many (independent) devices.
-> > There is no "proper" place to unhide it except some core part of x86
-> > / PCI.
-> 
-> Got it, still the fact that there are 4 regions/communities is also part
-> of the broxton driver so there is duplication.
-
-See above. I guess here is a misunderstanding behind meaning of the (same)
-numbers in different parts. Technically we may unify them, but it will be
-a layering violation.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+>  	}
+>  	local_irq_restore(flags);
+>  }
