@@ -2,99 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24F5235C610
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CDEC35C612
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239809AbhDLMUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54434 "EHLO
+        id S240235AbhDLMVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:21:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238443AbhDLMUI (ORCPT
+        with ESMTP id S238720AbhDLMVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:20:08 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B293C061574;
-        Mon, 12 Apr 2021 05:19:50 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f052100338fe73c52330fca.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:2100:338f:e73c:5233:fca])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0B6F21EC036C;
-        Mon, 12 Apr 2021 14:19:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618229989;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=kD7vbGhEK0qnsfsKWL7qZgyEpxDWyfq7hGq9uI0D3VU=;
-        b=LCsmTk8jVRXuAL6SekTZ2EL8U88N5RFH2nN88t/2o6trKZZQV6z0gvUOXcuvFc8lC79kO3
-        glnan1rZJ3fsG3HGVcgp9wNlUkDeqljeMENQn5hEelXJyV8F+Q3nE2MG8ucxfLownR9nwz
-        jvCSbSM6J5G3OEk7eFe9hFmfyx1d8V8=
-Date:   Mon, 12 Apr 2021 14:19:47 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Len Brown <lenb@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-Message-ID: <20210412121947.GC24283@zn.tnic>
-References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
- <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
- <CAJvTdK=Lqbzy6bs8qiE8MZ5LSzyZJ-FMUTcNPD4MxYJGEMBW3g@mail.gmail.com>
- <CALCETrW_5QDSo2sfEjBZSJ=Q3EsXTc03Unztn0Rq1caxqwtWpw@mail.gmail.com>
- <CAJvTdKkDUywOUxb8Toth-7d4U4_S_9_EYHO38XqAPKc2_MXtdA@mail.gmail.com>
- <CALCETrXA-JzBWKdzBZJA8P+pPNKEkxNRPqLganWMpvm6KEUmCw@mail.gmail.com>
- <CAJvTdK=RFei+b0W89ZTtqoiiR_M0wAJz_EuBTijgEHpacfZS7Q@mail.gmail.com>
+        Mon, 12 Apr 2021 08:21:16 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08236C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:20:57 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id u4so15085944ljo.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:20:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PW2tJ+i50r3GZvO9hXoGixPdBLKy6QF6WoK9w4ZiWEw=;
+        b=k99cHCRXDS0heQM0do2dQFauy+7PehPq5U+PN+oYE4vGzRxcyvtxZ1mBQUlWy5yV+P
+         vODiXkuvk/cqA2trl+JW4SAvcGBACJ3T9hZziMpee+8DadVlQ8SRlhIx2rDtHBWUONRt
+         ae3sfETNdVL3c35F9IOWLs+AKUkrGv2cKM3JZC34A56KR3E7bM/Wc4VbqsF99Jt4akFa
+         Cs6j0bOD6eo80WXkZGHPKzxVRwnknAYwZFD459OXI2vXQFeVy6mGZ2CNFTAVBzvOy5gS
+         pdpxU/L79PoH+cazqNm/a9BTg0kkSS83iSPtMalflqP/xthGNTvgYvrZJcb3fa7EOsSh
+         BmcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PW2tJ+i50r3GZvO9hXoGixPdBLKy6QF6WoK9w4ZiWEw=;
+        b=OrhSulYY3YEUo/VO00gLmJJmxAIchdxZ0CKC8ginMYn5CBhXbApHxhT9yxa9pkSLsM
+         zk69zTFZHug8lw6Pkbl/lEIU2gyvu32AcT2n8lhN5Mvho3n2Xo3STEkAOJlLea0+uzA0
+         6Dh125vgTx0ZqFms9J3ix3WLcvC/7xAdmU7Zjwr5RIjlN1lRGaKG5eUXVw2n4Ds5cZdM
+         ytbpk4CPmrjf6mch8gXokET9zeVjymlJNek5jQbPbcf67RxJIgLxVxWrnit4/N+TrPL7
+         5nKvKe5Z8YDV/QImcsh/+KgpqjKR7FmfW28XydMyiH6bOYyr5Ei202UVvEABontswV4V
+         Zw4A==
+X-Gm-Message-State: AOAM530SimmF6NaA19zg+4tFOhvJkqO5B1fgJ3O/87n16Gc8v4jJHoFK
+        NaTAuMEcpSCXUnvQCPjY5us/lXrUB4SCs/uy5AM=
+X-Google-Smtp-Source: ABdhPJzCDLJAYVXTeY0F2bwgCewQGXxF6Mx6uv0OI/lItrZiDGTAJi80NodImhtOhdi3PINZzjee4P9xijB4tYO/yfE=
+X-Received: by 2002:a2e:581a:: with SMTP id m26mr18452385ljb.33.1618230055542;
+ Mon, 12 Apr 2021 05:20:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAJvTdK=RFei+b0W89ZTtqoiiR_M0wAJz_EuBTijgEHpacfZS7Q@mail.gmail.com>
+References: <20210412070819.23493-1-ruifeng.zhang0110@gmail.com> <87y2dnn3gw.mognet@arm.com>
+In-Reply-To: <87y2dnn3gw.mognet@arm.com>
+From:   Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
+Date:   Mon, 12 Apr 2021 20:20:26 +0800
+Message-ID: <CAG7+-3MsjuChoEOj11VAMX9W61UY6MmphkxWDF=-_R1A8sfvpA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] arm: topology: parse the topology from the dt
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux@armlinux.org.uk, sudeep.holla@arm.com,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, a.p.zijlstra@chello.nl,
+        dietmar.eggemann@arm.com, mingo@kernel.org,
+        ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 03:07:29PM -0400, Len Brown wrote:
-> If it is the program, how does it know that the library wants to use
-> what instructions?
-> 
-> If it is the library, then you have just changed XCR0 at run-time and
-> you expose breakage of the thread library that has computed XSAVE size.
+Valentin Schneider <valentin.schneider@arm.com> =E4=BA=8E2021=E5=B9=B44=E6=
+=9C=8812=E6=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=887:32=E5=86=99=E9=81=
+=93=EF=BC=9A
+>
+>
+> Hi,
+>
+> On 12/04/21 15:08, Ruifeng Zhang wrote:
+> > From: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
+> >
+> > The arm topology still parse from the MPIDR, but it is incomplete.  Whe=
+n
+> > the armv8.3 cpu runs in aarch32 mode, it will parse out the wrong topol=
+ogy.
+> >
+> > armv7 (A7) mpidr is:
+> > [11:8]      [7:2]       [1:0]
+> > cluster     reserved    cpu
+> >
+> > armv8.3 (A55) mpidr is:
+> > [23:16]     [15:8]      [7:0]
+> > cluster     cpu         thread
+> >
+> > For compatibility to keep the function of get capacity from default
+> > cputype, renamed arm parse_dt_topology to get_cputype_capacity and dele=
+te
+> > related logic of parse from dt.
+> > Arm using the same parse_dt_topology function as arm64.
+> >
+> > The arm device boot step is to look for the default cputype and get cpu
+> > capacity firstly. Then parse the topology and capacity from dt to repla=
+ce
+> > default values.
+> >
+>
+> I'm afraid I don't get it.
+>
+> CONFIG_COMPAT lets you run 32-bit stuff at EL0, but the kernel is still
+> arm64. So if you take your armv8.3 system, the topology parsed by the
+> kernel will be the same regardless of CONFIG_COMPAT.
+>
+> Could you elaborate on what problem you are trying to fix here?
 
-So, when old programs which cannot possibly know about the arch_prctl()
-extension we're proposing here, link against that library, then that
-library should not be allowed to go use "fat" states.
+There is a armv8.3 cpu which should work normally both on aarch64 and aarch=
+32.
+The MPIDR has been written to the chip register in armv8.3 format.
+For example,
+core0: 0000000080000000
+core1: 0000000080000100
+core2: 0000000080000200
+...
 
-Unless the library can "tell" the process which links to it, that it
-has dynamically enlarged the save state. If it can and the process can
-handle that, then all is fine, save state gets enlarged dynamically and
-it all continues merrily.
+Its cpu topology can be parsed normally on aarch64 mode (both
+userspace and kernel work on arm64).
 
-Also, in order for the library to use fat states, it needs to ask the
-kernel for such support - not CPUID - because the kernel is doing the
-state handling for everybody and doing all the CR4.OSXSAVE setup etc.
+The problem is when it working on aarch32 mode (both userspace and
+kernel work on arm 32-bit), the cpu topology
+will parse error because of the format is different between armv7 and armv8=
+.3.
+The arm 32-bit driver, arch/arm/kernel/topology will parse the MPIDR
+and store to the topology with armv7,
+and the result is all cpu core_id is 0, the bit[1:0] of armv7 MPIDR format.
 
-Which also means that the kernel can help here by telling the library:
-
-- No, you cannot use fat states with this process because it hasn't
-called arch_prctl() so it cannot handle them properly.
-
-- Yes, this process allowes me to handle fat states for it so you can
-use those states and thus those instructions when doing operations for
-it.
-
-So the kernel becomes the arbiter in all this - as it should be - and
-then all should work fine.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+In addition, I think arm should also allow customers to configure cpu
+topologies via DT.
