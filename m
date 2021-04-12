@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F08235BE8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E976535C118
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239148AbhDLI7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:59:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43194 "EHLO mail.kernel.org"
+        id S239017AbhDLJVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:21:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238794AbhDLIut (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:50:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 48DD061019;
-        Mon, 12 Apr 2021 08:50:31 +0000 (UTC)
+        id S239817AbhDLJBY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:01:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B67961284;
+        Mon, 12 Apr 2021 08:59:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217431;
-        bh=bs6zqPTMkrvoNg910H6N+vc6hFdTmrBJ1bBAqvZ+AeQ=;
+        s=korg; t=1618217964;
+        bh=Nc6Rfly5SvvWUza6ZLhx8slyRFUcmVCJiKioxGl2ltA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U1B7axGtf2AEE98m9Lf1t1XrPT3JSOKfwrvNCqyK/J/Bx9COnlcemFUqs1MR5iUCk
-         fJiGBmcQ+rF4BZ8+W5rpcamDckc0S6qHxNW1UQsuupDu2ue+zvkJ7MHeg276Sa3sPj
-         fuse0guIEMwD5cgx4F/bjMHKoziqiULY1HM6HOfk=
+        b=byE0MamxdNOQVHBMjcIiaFzklQgfTPPPGCeaB56Xnpaakzh5vJ6yEJJVguP47BtyT
+         k9AlCYHFePa6MXkwHAX4dRlyssnmMP0lIoisWBWQp8vA8lGxGYRoXVK9VI76vGlQW4
+         rmTHG/QIrNdkL6f+oG4iKCUeiGm2zoQR3zM3sMnY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luca Fancellu <luca.fancellu@arm.com>,
-        Julien Grall <jgrall@amazon.com>, Wei Liu <wei.liu@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [PATCH 5.10 013/188] xen/evtchn: Change irq_info lock to raw_spinlock_t
+        stable@vger.kernel.org, xinhui pan <xinhui.pan@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.11 022/210] drm/amdgpu: Fix size overflow
 Date:   Mon, 12 Apr 2021 10:38:47 +0200
-Message-Id: <20210412084014.100323512@linuxfoundation.org>
+Message-Id: <20210412084016.751526558@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
+References: <20210412084016.009884719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,80 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Fancellu <luca.fancellu@arm.com>
+From: xinhui pan <xinhui.pan@amd.com>
 
-commit d120198bd5ff1d41808b6914e1eb89aff937415c upstream.
+commit 1b0b6e939f112949089e32ec89fd27796677263a upstream.
 
-Unmask operation must be called with interrupt disabled,
-on preempt_rt spin_lock_irqsave/spin_unlock_irqrestore
-don't disable/enable interrupts, so use raw_* implementation
-and change lock variable in struct irq_info from spinlock_t
-to raw_spinlock_t
+ttm->num_pages is uint32. Hit overflow when << PAGE_SHIFT directly
 
+Fixes: 230c079fdcf4 ("drm/ttm: make num_pages uint32_t")
+Signed-off-by: xinhui pan <xinhui.pan@amd.com>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Fixes: 25da4618af24 ("xen/events: don't unmask an event channel when an eoi is pending")
-Signed-off-by: Luca Fancellu <luca.fancellu@arm.com>
-Reviewed-by: Julien Grall <jgrall@amazon.com>
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
-Link: https://lore.kernel.org/r/20210406105105.10141-1-luca.fancellu@arm.com
-Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/xen/events/events_base.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -108,7 +108,7 @@ struct irq_info {
- 	unsigned short eoi_cpu; /* EOI must happen on this cpu-1 */
- 	unsigned int irq_epoch; /* If eoi_cpu valid: irq_epoch of event */
- 	u64 eoi_time;           /* Time in jiffies when to EOI. */
--	spinlock_t lock;
-+	raw_spinlock_t lock;
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -907,7 +907,7 @@ static int amdgpu_ttm_tt_pin_userptr(str
  
- 	union {
- 		unsigned short virq;
-@@ -280,7 +280,7 @@ static int xen_irq_info_common_setup(str
- 	info->evtchn = evtchn;
- 	info->cpu = cpu;
- 	info->mask_reason = EVT_MASK_REASON_EXPLICIT;
--	spin_lock_init(&info->lock);
-+	raw_spin_lock_init(&info->lock);
- 
- 	ret = set_evtchn_to_irq(evtchn, irq);
- 	if (ret < 0)
-@@ -432,28 +432,28 @@ static void do_mask(struct irq_info *inf
- {
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&info->lock, flags);
-+	raw_spin_lock_irqsave(&info->lock, flags);
- 
- 	if (!info->mask_reason)
- 		mask_evtchn(info->evtchn);
- 
- 	info->mask_reason |= reason;
- 
--	spin_unlock_irqrestore(&info->lock, flags);
-+	raw_spin_unlock_irqrestore(&info->lock, flags);
- }
- 
- static void do_unmask(struct irq_info *info, u8 reason)
- {
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&info->lock, flags);
-+	raw_spin_lock_irqsave(&info->lock, flags);
- 
- 	info->mask_reason &= ~reason;
- 
- 	if (!info->mask_reason)
- 		unmask_evtchn(info->evtchn);
- 
--	spin_unlock_irqrestore(&info->lock, flags);
-+	raw_spin_unlock_irqrestore(&info->lock, flags);
- }
- 
- #ifdef CONFIG_X86
+ 	/* Allocate an SG array and squash pages into it */
+ 	r = sg_alloc_table_from_pages(ttm->sg, ttm->pages, ttm->num_pages, 0,
+-				      ttm->num_pages << PAGE_SHIFT,
++				      (u64)ttm->num_pages << PAGE_SHIFT,
+ 				      GFP_KERNEL);
+ 	if (r)
+ 		goto release_sg;
 
 
