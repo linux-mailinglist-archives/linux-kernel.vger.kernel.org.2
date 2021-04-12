@@ -2,217 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5136E35B7DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 02:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A6EA35B7E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236225AbhDLAz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 20:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235388AbhDLAz4 (ORCPT
+        id S236028AbhDLBFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 21:05:01 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5126 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235323AbhDLBFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 20:55:56 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A118C061574;
-        Sun, 11 Apr 2021 17:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=muzQgvMbWiB+qCG5peNj017kfJ/xeW6UXxHnnXZVDyw=; b=PylK84hPe591LzpDK0rrkdrjOs
-        1kCuxFTs89VZlnv9gmoOia+RzDHJz57UjvhdidtJ/1BiNaHSLVcvBRkpVUl3VzR5HlZ0QzfsyTXsT
-        dDwxFfp9nuhQYzFtVdYdHVpFl9PwEf8nXVk5IVszQ04v67GcnALz58OU5WvQrFm43sPJCEtBgyzbR
-        WHi05GHUXTOSwuMPKYlUMnARjKqX/c3qp/KrHHqO52OsUSvfRlKdUoBMpGMkGk3SiTFD+ujUOY5vS
-        2nAZbfQ2wo+fdT+7Q3gqOLFd+V5z3OA1xtOx1SviEmR9AqDm/dMulJ+LcDzAl4/gKEzW6IiZjo8KD
-        kCZr7erA==;
-Received: from [2601:1c0:6280:3f0::e0e1] (helo=smtpauth.infradead.org)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVkrU-003eYL-EO; Mon, 12 Apr 2021 00:55:34 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>,
-        linux-security-module@vger.kernel.org
-Subject: [PATCH] security: commoncap: clean up kernel-doc comments
-Date:   Sun, 11 Apr 2021 17:55:28 -0700
-Message-Id: <20210412005528.3326-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sun, 11 Apr 2021 21:05:00 -0400
+Received: from dggeml405-hub.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4FJVp16GyHzYVpt;
+        Mon, 12 Apr 2021 09:02:33 +0800 (CST)
+Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
+ dggeml405-hub.china.huawei.com (10.3.17.49) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 12 Apr 2021 09:04:37 +0800
+Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Mon, 12 Apr
+ 2021 09:04:37 +0800
+Subject: Re: [PATCH net v3] net: sched: fix packet stuck problem for lockless
+ qdisc
+To:     Juergen Gross <jgross@suse.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
+        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
+        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
+        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
+        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
+        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
+        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
+        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
+        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
+        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
+        <alexander.duyck@gmail.com>, Jiri Kosina <JKosina@suse.com>
+References: <1616641991-14847-1-git-send-email-linyunsheng@huawei.com>
+ <eb0e44fe-bbe0-75ba-fd16-cbf4638e1c0d@suse.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <c0e6bb67-1f60-b784-0baa-4a942b0f1f1e@huawei.com>
+Date:   Mon, 12 Apr 2021 09:04:37 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <eb0e44fe-bbe0-75ba-fd16-cbf4638e1c0d@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggeme708-chm.china.huawei.com (10.1.199.104) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix kernel-doc notation in commoncap.c.
+On 2021/4/9 13:31, Juergen Gross wrote:
+> On 25.03.21 04:13, Yunsheng Lin wrote:
+>> Lockless qdisc has below concurrent problem:
+>>      cpu0                 cpu1
+>>       .                     .
+>> q->enqueue                 .
+>>       .                     .
+>> qdisc_run_begin()          .
+>>       .                     .
+>> dequeue_skb()              .
+>>       .                     .
+>> sch_direct_xmit()          .
+>>       .                     .
+>>       .                q->enqueue
+>>       .             qdisc_run_begin()
+>>       .            return and do nothing
+>>       .                     .
+>> qdisc_run_end()            .
+>>
+>> cpu1 enqueue a skb without calling __qdisc_run() because cpu0
+>> has not released the lock yet and spin_trylock() return false
+>> for cpu1 in qdisc_run_begin(), and cpu0 do not see the skb
+>> enqueued by cpu1 when calling dequeue_skb() because cpu1 may
+>> enqueue the skb after cpu0 calling dequeue_skb() and before
+>> cpu0 calling qdisc_run_end().
+>>
+>> Lockless qdisc has below another concurrent problem when
+>> tx_action is involved:
+>>
+>> cpu0(serving tx_action)     cpu1             cpu2
+>>            .                   .                .
+>>            .              q->enqueue            .
+>>            .            qdisc_run_begin()       .
+>>            .              dequeue_skb()         .
+>>            .                   .            q->enqueue
+>>            .                   .                .
+>>            .             sch_direct_xmit()      .
+>>            .                   .         qdisc_run_begin()
+>>            .                   .       return and do nothing
+>>            .                   .                .
+>>   clear __QDISC_STATE_SCHED    .                .
+>>   qdisc_run_begin()            .                .
+>>   return and do nothing        .                .
+>>            .                   .                .
+>>            .            qdisc_run_end()         .
+>>
+>> This patch fixes the above data race by:
+>> 1. Get the flag before doing spin_trylock().
+>> 2. If the first spin_trylock() return false and the flag is not
+>>     set before the first spin_trylock(), Set the flag and retry
+>>     another spin_trylock() in case other CPU may not see the new
+>>     flag after it releases the lock.
+>> 3. reschedule if the flags is set after the lock is released
+>>     at the end of qdisc_run_end().
+>>
+>> For tx_action case, the flags is also set when cpu1 is at the
+>> end if qdisc_run_end(), so tx_action will be rescheduled
+>> again to dequeue the skb enqueued by cpu2.
+>>
+>> Only clear the flag before retrying a dequeuing when dequeuing
+>> returns NULL in order to reduce the overhead of the above double
+>> spin_trylock() and __netif_schedule() calling.
+>>
+>> The performance impact of this patch, tested using pktgen and
+>> dummy netdev with pfifo_fast qdisc attached:
+>>
+>>   threads  without+this_patch   with+this_patch      delta
+>>      1        2.61Mpps            2.60Mpps           -0.3%
+>>      2        3.97Mpps            3.82Mpps           -3.7%
+>>      4        5.62Mpps            5.59Mpps           -0.5%
+>>      8        2.78Mpps            2.77Mpps           -0.3%
+>>     16        2.22Mpps            2.22Mpps           -0.0%
+>>
+>> Fixes: 6b3ba9146fe6 ("net: sched: allow qdiscs to handle locking")
+>> Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+> 
+> I have a setup which is able to reproduce the issue quite reliably:
+> 
+> In a Xen guest I'm mounting 8 NFS shares and run sysbench fileio on
+> each of them. The average latency reported by sysbench is well below
+> 1 msec, but at least once per hour I get latencies in the minute
+> range.
+> 
+> With this patch I don't see these high latencies any longer (test
+> is running for more than 20 hours now).
+> 
+> So you can add my:
+> 
+> Tested-by: Juergen Gross <jgross@suse.com>
 
-Use correct (matching) function name in comments as in code.
-Use correct function argument names in kernel-doc comments.
-Use kernel-doc's "Return:" format for function return values.
+Hi, Juergen
 
-Fixes these kernel-doc warnings:
+Thanks for the testing.
 
-../security/commoncap.c:1206: warning: expecting prototype for cap_task_ioprio(). Prototype was for cap_task_setioprio() instead
-../security/commoncap.c:1219: warning: expecting prototype for cap_task_ioprio(). Prototype was for cap_task_setnice() instead
+With the simulated test case suggested by Michal, I still has some
+potential issue to debug, hopefully will send out new version in
+this week.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Serge Hallyn <serge@hallyn.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: linux-security-module@vger.kernel.org
----
- security/commoncap.c |   50 +++++++++++++++++++++++++++--------------
- 1 file changed, 33 insertions(+), 17 deletions(-)
+Also, is it possible to run your testcase any longer? I think "72 hours"
+would be enough to testify that it fixes the problem completely:)
 
---- linux-next-20210409.orig/security/commoncap.c
-+++ linux-next-20210409/security/commoncap.c
-@@ -50,7 +50,7 @@ static void warn_setuid_and_fcaps_mixed(
- /**
-  * cap_capable - Determine whether a task has a particular effective capability
-  * @cred: The credentials to use
-- * @ns:  The user namespace in which we need the capability
-+ * @targ_ns:  The user namespace in which we need the capability
-  * @cap: The capability to check for
-  * @opts: Bitmask of options defined in include/linux/security.h
-  *
-@@ -289,7 +289,7 @@ int cap_capset(struct cred *new,
-  * affects the security markings on that inode, and if it is, should
-  * inode_killpriv() be invoked or the change rejected.
-  *
-- * Returns 1 if security.capability has a value, meaning inode_killpriv()
-+ * Return: 1 if security.capability has a value, meaning inode_killpriv()
-  * is required, 0 otherwise, meaning inode_killpriv() is not required.
-  */
- int cap_inode_need_killpriv(struct dentry *dentry)
-@@ -315,7 +315,7 @@ int cap_inode_need_killpriv(struct dentr
-  * permissions. On non-idmapped mounts or if permission checking is to be
-  * performed on the raw inode simply passs init_user_ns.
-  *
-- * Returns 0 if successful, -ve on error.
-+ * Return: 0 if successful, -ve on error.
-  */
- int cap_inode_killpriv(struct user_namespace *mnt_userns, struct dentry *dentry)
- {
-@@ -532,7 +532,7 @@ static bool validheader(size_t size, con
-  * permissions. On non-idmapped mounts or if permission checking is to be
-  * performed on the raw inode simply passs init_user_ns.
-  *
-- * If all is ok, we return the new size, on error return < 0.
-+ * Return: On success, return the new size; on error, return < 0.
-  */
- int cap_convert_nscap(struct user_namespace *mnt_userns, struct dentry *dentry,
- 		      const void **ivalue, size_t size)
-@@ -881,7 +881,9 @@ static inline bool nonroot_raised_pE(str
-  *
-  * Set up the proposed credentials for a new execution context being
-  * constructed by execve().  The proposed creds in @bprm->cred is altered,
-- * which won't take effect immediately.  Returns 0 if successful, -ve on error.
-+ * which won't take effect immediately.
-+ *
-+ * Return: 0 if successful, -ve on error.
-  */
- int cap_bprm_creds_from_file(struct linux_binprm *bprm, struct file *file)
- {
-@@ -1117,7 +1119,9 @@ static inline void cap_emulate_setxuid(s
-  * @flags: Indications of what has changed
-  *
-  * Fix up the results of setuid() call before the credential changes are
-- * actually applied, returning 0 to grant the changes, -ve to deny them.
-+ * actually applied.
-+ *
-+ * Return: 0 to grant the changes, -ve to deny them.
-  */
- int cap_task_fix_setuid(struct cred *new, const struct cred *old, int flags)
- {
-@@ -1187,7 +1191,9 @@ static int cap_safe_nice(struct task_str
-  * @p: The task to affect
-  *
-  * Detemine if the requested scheduler policy change is permitted for the
-- * specified task, returning 0 if permission is granted, -ve if denied.
-+ * specified task.
-+ *
-+ * Return: 0 if permission is granted, -ve if denied.
-  */
- int cap_task_setscheduler(struct task_struct *p)
- {
-@@ -1195,12 +1201,14 @@ int cap_task_setscheduler(struct task_st
- }
- 
- /**
-- * cap_task_ioprio - Detemine if I/O priority change is permitted
-+ * cap_task_setioprio - Detemine if I/O priority change is permitted
-  * @p: The task to affect
-  * @ioprio: The I/O priority to set
-  *
-  * Detemine if the requested I/O priority change is permitted for the specified
-- * task, returning 0 if permission is granted, -ve if denied.
-+ * task.
-+ *
-+ * Return: 0 if permission is granted, -ve if denied.
-  */
- int cap_task_setioprio(struct task_struct *p, int ioprio)
- {
-@@ -1208,12 +1216,14 @@ int cap_task_setioprio(struct task_struc
- }
- 
- /**
-- * cap_task_ioprio - Detemine if task priority change is permitted
-+ * cap_task_setnice - Detemine if task priority change is permitted
-  * @p: The task to affect
-  * @nice: The nice value to set
-  *
-  * Detemine if the requested task priority change is permitted for the
-- * specified task, returning 0 if permission is granted, -ve if denied.
-+ * specified task.
-+ *
-+ * Return: 0 if permission is granted, -ve if denied.
-  */
- int cap_task_setnice(struct task_struct *p, int nice)
- {
-@@ -1243,12 +1253,15 @@ static int cap_prctl_drop(unsigned long
- /**
-  * cap_task_prctl - Implement process control functions for this security module
-  * @option: The process control function requested
-- * @arg2, @arg3, @arg4, @arg5: The argument data for this function
-+ * @arg2: The argument data for this function
-+ * @arg3: The argument data for this function
-+ * @arg4: The argument data for this function
-+ * @arg5: The argument data for this function
-  *
-  * Allow process control functions (sys_prctl()) to alter capabilities; may
-  * also deny access to other functions not otherwise implemented here.
-  *
-- * Returns 0 or +ve on success, -ENOSYS if this function is not implemented
-+ * Return: 0 or +ve on success, -ENOSYS if this function is not implemented
-  * here, other -ve on error.  If -ENOSYS is returned, sys_prctl() and other LSM
-  * modules will consider performing the function.
-  */
-@@ -1383,7 +1396,9 @@ int cap_task_prctl(int option, unsigned
-  * @pages: The size of the mapping
-  *
-  * Determine whether the allocation of a new virtual mapping by the current
-- * task is permitted, returning 1 if permission is granted, 0 if not.
-+ * task is permitted.
-+ *
-+ * Return: 1 if permission is granted, 0 if not.
-  */
- int cap_vm_enough_memory(struct mm_struct *mm, long pages)
- {
-@@ -1396,14 +1411,15 @@ int cap_vm_enough_memory(struct mm_struc
- 	return cap_sys_admin;
- }
- 
--/*
-+/**
-  * cap_mmap_addr - check if able to map given addr
-  * @addr: address attempting to be mapped
-  *
-  * If the process is attempting to map memory below dac_mmap_min_addr they need
-  * CAP_SYS_RAWIO.  The other parameters to this function are unused by the
-- * capability security module.  Returns 0 if this mapping should be allowed
-- * -EPERM if not.
-+ * capability security module.
-+ *
-+ * Return: 0 if this mapping should be allowed or -EPERM if not.
-  */
- int cap_mmap_addr(unsigned long addr)
- {
+
+
+> 
+> 
+> Juergen
+
