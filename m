@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5629335BFEE
+	by mail.lfdr.de (Postfix) with ESMTP id F081A35BFF0
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239608AbhDLJHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:07:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44692 "EHLO mail.kernel.org"
+        id S239331AbhDLJH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:07:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238976AbhDLIzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:55:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C6EB61384;
-        Mon, 12 Apr 2021 08:54:12 +0000 (UTC)
+        id S238977AbhDLIzR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:55:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 913296109E;
+        Mon, 12 Apr 2021 08:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217652;
-        bh=KvbV4Xi6yZCrI6/Z9HrsgWJ2Mbg/UPJM2HXTUuUU21M=;
+        s=korg; t=1618217655;
+        bh=CvVmPVqnJ+w81agaM2fusPVb/ES3z8QArRvyRl+rS8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2GTxovVoI6YlzpTNbv3bvU09+IzCOF/HrAC6lV0jdJXzh5pt5z+Cg0+HOOFyKZMIj
-         qNnRiGDFlVx9WSUfK+tnzfGTeW4RsmIrjSZUKYZ3GYGPOeeacX7WvnLuQ07bwJD9fp
-         5pW22Wk4Ow/Ln9b23Kc67XWxNIeui22NGdTbo56k=
+        b=g5mvJwdoqy5iZzTU1TU+lxkddvzPgikaEYSS0z1LQpAToO9lD/8T/Pn6QKsUcJ/FM
+         8E5QWhacBtAf6iDHPAe2mfo5yK5Az9c9rg34Z0Z769u0ams0P2cW8ESLSLVOwZMsKI
+         gCuugQvQkf9bv4tGPGFns4a2g9t+a/xPcw/3zIV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eyal Birger <eyal.birger@gmail.com>,
-        Sabrina Dubroca <sd@queasysnail.net>,
+        stable@vger.kernel.org,
+        Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>,
         Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 094/188] xfrm: interface: fix ipv4 pmtu check to honor ip header df
-Date:   Mon, 12 Apr 2021 10:40:08 +0200
-Message-Id: <20210412084016.775485850@linuxfoundation.org>
+Subject: [PATCH 5.10 095/188] xfrm: Use actual socket sk instead of skb socket for xfrm_output_resume
+Date:   Mon, 12 Apr 2021 10:40:09 +0200
+Message-Id: <20210412084016.806638854@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -41,46 +41,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eyal Birger <eyal.birger@gmail.com>
+From: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
 
-[ Upstream commit 8fc0e3b6a8666d656923d214e4dc791e9a17164a ]
+[ Upstream commit 9ab1265d52314fce1b51e8665ea6dbc9ac1a027c ]
 
-Frag needed should only be sent if the header enables DF.
+A situation can occur where the interface bound to the sk is different
+to the interface bound to the sk attached to the skb. The interface
+bound to the sk is the correct one however this information is lost inside
+xfrm_output2 and instead the sk on the skb is used in xfrm_output_resume
+instead. This assumes that the sk bound interface and the bound interface
+attached to the sk within the skb are the same which can lead to lookup
+failures inside ip_route_me_harder resulting in the packet being dropped.
 
-This fix allows packets larger than MTU to pass the xfrm interface
-and be fragmented after encapsulation, aligning behavior with
-non-interface xfrm.
+We have an l2tp v3 tunnel with ipsec protection. The tunnel is in the
+global VRF however we have an encapsulated dot1q tunnel interface that
+is within a different VRF. We also have a mangle rule that marks the
+packets causing them to be processed inside ip_route_me_harder.
 
-Fixes: f203b76d7809 ("xfrm: Add virtual xfrm interfaces")
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-Reviewed-by: Sabrina Dubroca <sd@queasysnail.net>
+Prior to commit 31c70d5956fc ("l2tp: keep original skb ownership") this
+worked fine as the sk attached to the skb was changed from the dot1q
+encapsulated interface to the sk for the tunnel which meant the interface
+bound to the sk and the interface bound to the skb were identical.
+Commit 46d6c5ae953c ("netfilter: use actual socket sk rather than skb sk
+when routing harder") fixed some of these issues however a similar
+problem existed in the xfrm code.
+
+Fixes: 31c70d5956fc ("l2tp: keep original skb ownership")
+Signed-off-by: Evan Nimmo <evan.nimmo@alliedtelesis.co.nz>
 Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_interface.c | 3 +++
- 1 file changed, 3 insertions(+)
+ include/net/xfrm.h     |  2 +-
+ net/ipv4/ah4.c         |  2 +-
+ net/ipv4/esp4.c        |  2 +-
+ net/ipv6/ah6.c         |  2 +-
+ net/ipv6/esp6.c        |  2 +-
+ net/xfrm/xfrm_output.c | 10 +++++-----
+ 6 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/net/xfrm/xfrm_interface.c b/net/xfrm/xfrm_interface.c
-index 9b8e292a7c6a..e9ce23343f5c 100644
---- a/net/xfrm/xfrm_interface.c
-+++ b/net/xfrm/xfrm_interface.c
-@@ -305,6 +305,8 @@ xfrmi_xmit2(struct sk_buff *skb, struct net_device *dev, struct flowi *fl)
+diff --git a/include/net/xfrm.h b/include/net/xfrm.h
+index b2a06f10b62c..bfbc7810df94 100644
+--- a/include/net/xfrm.h
++++ b/include/net/xfrm.h
+@@ -1557,7 +1557,7 @@ int xfrm_trans_queue_net(struct net *net, struct sk_buff *skb,
+ int xfrm_trans_queue(struct sk_buff *skb,
+ 		     int (*finish)(struct net *, struct sock *,
+ 				   struct sk_buff *));
+-int xfrm_output_resume(struct sk_buff *skb, int err);
++int xfrm_output_resume(struct sock *sk, struct sk_buff *skb, int err);
+ int xfrm_output(struct sock *sk, struct sk_buff *skb);
  
- 			icmpv6_ndo_send(skb, ICMPV6_PKT_TOOBIG, 0, mtu);
- 		} else {
-+			if (!(ip_hdr(skb)->frag_off & htons(IP_DF)))
-+				goto xmit;
- 			icmp_ndo_send(skb, ICMP_DEST_UNREACH, ICMP_FRAG_NEEDED,
- 				      htonl(mtu));
- 		}
-@@ -313,6 +315,7 @@ xfrmi_xmit2(struct sk_buff *skb, struct net_device *dev, struct flowi *fl)
- 		return -EMSGSIZE;
+ #if IS_ENABLED(CONFIG_NET_PKTGEN)
+diff --git a/net/ipv4/ah4.c b/net/ipv4/ah4.c
+index d99e1be94019..36ed85bf2ad5 100644
+--- a/net/ipv4/ah4.c
++++ b/net/ipv4/ah4.c
+@@ -141,7 +141,7 @@ static void ah_output_done(struct crypto_async_request *base, int err)
  	}
  
-+xmit:
- 	xfrmi_scrub_packet(skb, !net_eq(xi->net, dev_net(dev)));
- 	skb_dst_set(skb, dst);
- 	skb->dev = tdev;
+ 	kfree(AH_SKB_CB(skb)->tmp);
+-	xfrm_output_resume(skb, err);
++	xfrm_output_resume(skb->sk, skb, err);
+ }
+ 
+ static int ah_output(struct xfrm_state *x, struct sk_buff *skb)
+diff --git a/net/ipv4/esp4.c b/net/ipv4/esp4.c
+index a3271ec3e162..4b834bbf95e0 100644
+--- a/net/ipv4/esp4.c
++++ b/net/ipv4/esp4.c
+@@ -279,7 +279,7 @@ static void esp_output_done(struct crypto_async_request *base, int err)
+ 		    x->encap && x->encap->encap_type == TCP_ENCAP_ESPINTCP)
+ 			esp_output_tail_tcp(x, skb);
+ 		else
+-			xfrm_output_resume(skb, err);
++			xfrm_output_resume(skb->sk, skb, err);
+ 	}
+ }
+ 
+diff --git a/net/ipv6/ah6.c b/net/ipv6/ah6.c
+index 440080da805b..080ee7f44c64 100644
+--- a/net/ipv6/ah6.c
++++ b/net/ipv6/ah6.c
+@@ -316,7 +316,7 @@ static void ah6_output_done(struct crypto_async_request *base, int err)
+ 	}
+ 
+ 	kfree(AH_SKB_CB(skb)->tmp);
+-	xfrm_output_resume(skb, err);
++	xfrm_output_resume(skb->sk, skb, err);
+ }
+ 
+ static int ah6_output(struct xfrm_state *x, struct sk_buff *skb)
+diff --git a/net/ipv6/esp6.c b/net/ipv6/esp6.c
+index 2b804fcebcc6..4071cb7c7a15 100644
+--- a/net/ipv6/esp6.c
++++ b/net/ipv6/esp6.c
+@@ -314,7 +314,7 @@ static void esp_output_done(struct crypto_async_request *base, int err)
+ 		    x->encap && x->encap->encap_type == TCP_ENCAP_ESPINTCP)
+ 			esp_output_tail_tcp(x, skb);
+ 		else
+-			xfrm_output_resume(skb, err);
++			xfrm_output_resume(skb->sk, skb, err);
+ 	}
+ }
+ 
+diff --git a/net/xfrm/xfrm_output.c b/net/xfrm/xfrm_output.c
+index a7ab19353313..b81ca117dac7 100644
+--- a/net/xfrm/xfrm_output.c
++++ b/net/xfrm/xfrm_output.c
+@@ -503,22 +503,22 @@ out:
+ 	return err;
+ }
+ 
+-int xfrm_output_resume(struct sk_buff *skb, int err)
++int xfrm_output_resume(struct sock *sk, struct sk_buff *skb, int err)
+ {
+ 	struct net *net = xs_net(skb_dst(skb)->xfrm);
+ 
+ 	while (likely((err = xfrm_output_one(skb, err)) == 0)) {
+ 		nf_reset_ct(skb);
+ 
+-		err = skb_dst(skb)->ops->local_out(net, skb->sk, skb);
++		err = skb_dst(skb)->ops->local_out(net, sk, skb);
+ 		if (unlikely(err != 1))
+ 			goto out;
+ 
+ 		if (!skb_dst(skb)->xfrm)
+-			return dst_output(net, skb->sk, skb);
++			return dst_output(net, sk, skb);
+ 
+ 		err = nf_hook(skb_dst(skb)->ops->family,
+-			      NF_INET_POST_ROUTING, net, skb->sk, skb,
++			      NF_INET_POST_ROUTING, net, sk, skb,
+ 			      NULL, skb_dst(skb)->dev, xfrm_output2);
+ 		if (unlikely(err != 1))
+ 			goto out;
+@@ -534,7 +534,7 @@ EXPORT_SYMBOL_GPL(xfrm_output_resume);
+ 
+ static int xfrm_output2(struct net *net, struct sock *sk, struct sk_buff *skb)
+ {
+-	return xfrm_output_resume(skb, 1);
++	return xfrm_output_resume(sk, skb, 1);
+ }
+ 
+ static int xfrm_output_gso(struct net *net, struct sock *sk, struct sk_buff *skb)
 -- 
 2.30.2
 
