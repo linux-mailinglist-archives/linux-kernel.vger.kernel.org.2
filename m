@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86FB035BD03
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F55635BDAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237757AbhDLIq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:46:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36784 "EHLO mail.kernel.org"
+        id S238253AbhDLIw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:52:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237743AbhDLIpa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:45:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5A4661241;
-        Mon, 12 Apr 2021 08:45:11 +0000 (UTC)
+        id S237609AbhDLIrp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:47:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3BCA61245;
+        Mon, 12 Apr 2021 08:47:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217112;
-        bh=4VVm9y++9rer+i+n8D01n73eXQadiW3fQQ7xMwOaVXA=;
+        s=korg; t=1618217247;
+        bh=WSeefSsqMuG3Mr5UAE3ee/lBTH5oOweGMA1tlOQK5ew=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nO/XElE2XEdzdTAuaZKGlihomdr693H4zr6zMybqQAQfsSu25eqg2LG+qKtF6Qua5
-         Fsi7+PqHATeiNevXwANQa0dwgO6OtnJQ8ENAgFXUZDu1jeM8FJb/ommGiAIKYNHwEu
-         sKmWGr9vYqHPH/wkt8APqWvlMih6dc6FzAR6mlqM=
+        b=H4t6wRT7AutqHhcYSOykmZ38pbRi8oPX0uYxD3C0oOl3V4IiUiX9rQnUdzN9v9JES
+         57q4JoICu9kA8inPf7LgTLUJLR551OFfp7qpxPNWHy8i+2CztnC+AqulH/WjeWljMG
+         ++zGb1LxePlgSIRJxKBcjgPOsIF/CtnP1OTUIl10=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Brown <broonie@kernel.org>,
+        =?UTF-8?q?Oliver=20St=C3=A4bler?= <oliver.staebler@bytesatwork.ch>,
+        Fabio Estevam <festevam@gmail.com>,
+        Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 30/66] regulator: bd9571mwv: Fix AVS and DVFS voltage range
-Date:   Mon, 12 Apr 2021 10:40:36 +0200
-Message-Id: <20210412083959.103109476@linuxfoundation.org>
+Subject: [PATCH 5.4 059/111] arm64: dts: imx8mm/q: Fix pad control of SD1_DATA0
+Date:   Mon, 12 Apr 2021 10:40:37 +0200
+Message-Id: <20210412084006.227578624@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-References: <20210412083958.129944265@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,48 +42,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Oliver Stäbler <oliver.staebler@bytesatwork.ch>
 
-[ Upstream commit 3b6e7088afc919f5b52e4d2de8501ad34d35b09b ]
+[ Upstream commit 5cfad4f45806f6f898b63b8c77cea7452c704cb3 ]
 
-According to Table 30 ("DVFS_MoniVDAC [6:0] Setting Table") in the
-BD9571MWV-M Datasheet Rev. 002, the valid voltage range is 600..1100 mV
-(settings 0x3c..0x6e).  While the lower limit is taken into account (by
-setting regulator_desc.linear_min_sel to 0x3c), the upper limit is not.
+Fix address of the pad control register
+(IOMUXC_SW_PAD_CTL_PAD_SD1_DATA0) for SD1_DATA0_GPIO2_IO2.  This seems
+to be a typo but it leads to an exception when pinctrl is applied due to
+wrong memory address access.
 
-Fix this by reducing regulator_desc.n_voltages from 0x80 to 0x6f.
-
-Fixes: e85c5a153fe237f2 ("regulator: Add ROHM BD9571MWV-M PMIC regulator driver")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20210312130242.3390038-2-geert+renesas@glider.be
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Oliver Stäbler <oliver.staebler@bytesatwork.ch>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Fixes: c1c9d41319c3 ("dt-bindings: imx: Add pinctrl binding doc for imx8mm")
+Fixes: 748f908cc882 ("arm64: add basic DTS for i.MX8MQ")
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/bd9571mwv-regulator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/regulator/bd9571mwv-regulator.c b/drivers/regulator/bd9571mwv-regulator.c
-index 274c5ed7cd73..713730757b14 100644
---- a/drivers/regulator/bd9571mwv-regulator.c
-+++ b/drivers/regulator/bd9571mwv-regulator.c
-@@ -132,7 +132,7 @@ static struct regulator_ops vid_ops = {
- 
- static struct regulator_desc regulators[] = {
- 	BD9571MWV_REG("VD09", "vd09", VD09, avs_ops, 0, 0x7f,
--		      0x80, 600000, 10000, 0x3c),
-+		      0x6f, 600000, 10000, 0x3c),
- 	BD9571MWV_REG("VD18", "vd18", VD18, vid_ops, BD9571MWV_VD18_VID, 0xf,
- 		      16, 1625000, 25000, 0),
- 	BD9571MWV_REG("VD25", "vd25", VD25, vid_ops, BD9571MWV_VD25_VID, 0xf,
-@@ -141,7 +141,7 @@ static struct regulator_desc regulators[] = {
- 		      11, 2800000, 100000, 0),
- 	BD9571MWV_REG("DVFS", "dvfs", DVFS, reg_ops,
- 		      BD9571MWV_DVFS_MONIVDAC, 0x7f,
--		      0x80, 600000, 10000, 0x3c),
-+		      0x6f, 600000, 10000, 0x3c),
- };
- 
- #ifdef CONFIG_PM_SLEEP
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h b/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
+index cffa8991880d..93b44efdbc52 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
++++ b/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
+@@ -124,7 +124,7 @@
+ #define MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD                                     0x0A4 0x30C 0x000 0x0 0x0
+ #define MX8MM_IOMUXC_SD1_CMD_GPIO2_IO1                                      0x0A4 0x30C 0x000 0x5 0x0
+ #define MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0                                 0x0A8 0x310 0x000 0x0 0x0
+-#define MX8MM_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x31  0x000 0x5 0x0
++#define MX8MM_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x310 0x000 0x5 0x0
+ #define MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1                                 0x0AC 0x314 0x000 0x0 0x0
+ #define MX8MM_IOMUXC_SD1_DATA1_GPIO2_IO3                                    0x0AC 0x314 0x000 0x5 0x0
+ #define MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2                                 0x0B0 0x318 0x000 0x0 0x0
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h b/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
+index b94b02080a34..68e8fa172974 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
++++ b/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
+@@ -130,7 +130,7 @@
+ #define MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD                                     0x0A4 0x30C 0x000 0x0 0x0
+ #define MX8MQ_IOMUXC_SD1_CMD_GPIO2_IO1                                      0x0A4 0x30C 0x000 0x5 0x0
+ #define MX8MQ_IOMUXC_SD1_DATA0_USDHC1_DATA0                                 0x0A8 0x310 0x000 0x0 0x0
+-#define MX8MQ_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x31  0x000 0x5 0x0
++#define MX8MQ_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x310 0x000 0x5 0x0
+ #define MX8MQ_IOMUXC_SD1_DATA1_USDHC1_DATA1                                 0x0AC 0x314 0x000 0x0 0x0
+ #define MX8MQ_IOMUXC_SD1_DATA1_GPIO2_IO3                                    0x0AC 0x314 0x000 0x5 0x0
+ #define MX8MQ_IOMUXC_SD1_DATA2_USDHC1_DATA2                                 0x0B0 0x318 0x000 0x0 0x0
 -- 
 2.30.2
 
