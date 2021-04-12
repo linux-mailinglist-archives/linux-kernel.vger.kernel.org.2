@@ -2,89 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E6C35D2EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF4D35D2E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343645AbhDLWOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 18:14:22 -0400
-Received: from gate.crashing.org ([63.228.1.57]:60708 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243890AbhDLWOG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 18:14:06 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 13CM8MKP012708;
-        Mon, 12 Apr 2021 17:08:22 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 13CM8MWJ012707;
-        Mon, 12 Apr 2021 17:08:22 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 12 Apr 2021 17:08:22 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] powerpc/atomics: Use immediate operand when possible
-Message-ID: <20210412220821.GN26583@gate.crashing.org>
-References: <09da6fec57792d6559d1ea64e00be9870b02dab4.1617896018.git.christophe.leroy@csgroup.eu> <9f50b5fadeb090553e5c2fae025052d04d52f3c7.1617896018.git.christophe.leroy@csgroup.eu>
-Mime-Version: 1.0
+        id S1343619AbhDLWIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 18:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237058AbhDLWIy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 18:08:54 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E65A8C061574;
+        Mon, 12 Apr 2021 15:08:35 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id k25so15030826oic.4;
+        Mon, 12 Apr 2021 15:08:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LO2TGBHXas1iDiXMBTZ94KDDGXgAdJmH/NPuH5OoAA4=;
+        b=UofG9adk8NUssqbTs6zHTQlkMpGgOMy7P5GKI2FVNxxBzSkDdQwoo1vLzsr9/2VWov
+         QWzif5lEhI/twtqEaNFPZQbmmSz04+4atk7r7wfOcvD6Rk2AbvKAitugAik8Ra30T3Dw
+         tCI538i4D/tPCUvuiC9zuU6I4FM/4MevwFWca+MY5chi5iDB0V8qG0iVk+kumy5VOGsz
+         FaNVtIo+BmgQuNherX1TXmSot42vknzAeI0oI2kSuN6YHwGhb5j6sVOuas167Ra6XyOr
+         1JHeH7MqF8bjltuefRDH81hFZa6+UJmeq99P2OdacVVq9i86Sp4TFMnUjgkxMV9MxMmM
+         movQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LO2TGBHXas1iDiXMBTZ94KDDGXgAdJmH/NPuH5OoAA4=;
+        b=nixWFvEjpNNcY3iyPlcSO7qo3DthOOZUvfg/cVCS6tkGWBrxDPd32JX6KnigyaEm2P
+         XiMZ8Js73UtTsV/gvO0pfTIi1w1CNfscPlv95SNzPJWIDqMDRsxs4DcoJ4+g63hPX4UD
+         7Yxvqy4iKOZUIq0ncisrPTg/H5+I+jByeC5LLXlY8TXv9edPDaUwXDcA47Zk4Z6zEXxb
+         kwXotPFx9jETsWdXQ8roqkJXwdnans8VcpO6qhQq8A7mci7MWCal2tCn7mw19+p82zsh
+         owRPzLzCwN9erzrmye6XcpSwDqh7du7qaOlBqd59htZu4oSxdAXhiIabvTSr5by6x+n2
+         am8w==
+X-Gm-Message-State: AOAM530GV2RZarq65hn6U4YnEmFF/XOUAUpn3SlLjnJYJhXEoWtQvQtj
+        l1eGtp2tyQeRJLmql6TXOVU=
+X-Google-Smtp-Source: ABdhPJxb4XtdODHyRZuWKpxkzoAUvWaMdWV8aKQfJtarrtPJ8d0Zx4/VT60STGT0h+5Jma1pFSDkKQ==
+X-Received: by 2002:aca:de06:: with SMTP id v6mr976470oig.91.1618265315396;
+        Mon, 12 Apr 2021 15:08:35 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 68sm2932591otc.54.2021.04.12.15.08.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 12 Apr 2021 15:08:34 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Mon, 12 Apr 2021 15:08:33 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 000/111] 5.4.112-rc1 review
+Message-ID: <20210412220833.GB182151@roeck-us.net>
+References: <20210412084004.200986670@linuxfoundation.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9f50b5fadeb090553e5c2fae025052d04d52f3c7.1617896018.git.christophe.leroy@csgroup.eu>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Mon, Apr 12, 2021 at 10:39:38AM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.112 release.
+> There are 111 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 14 Apr 2021 08:39:44 +0000.
+> Anything received after that time might be too late.
+> 
 
-On Thu, Apr 08, 2021 at 03:33:45PM +0000, Christophe Leroy wrote:
-> +#define ATOMIC_OP(op, asm_op, dot, sign)				\
->  static __inline__ void atomic_##op(int a, atomic_t *v)			\
->  {									\
->  	int t;								\
->  									\
->  	__asm__ __volatile__(						\
->  "1:	lwarx	%0,0,%3		# atomic_" #op "\n"			\
-> -	#asm_op " %0,%2,%0\n"						\
-> +	#asm_op "%I2" dot " %0,%0,%2\n"					\
->  "	stwcx.	%0,0,%3 \n"						\
->  "	bne-	1b\n"							\
-> -	: "=&r" (t), "+m" (v->counter)					\
-> -	: "r" (a), "r" (&v->counter)					\
-> +	: "=&b" (t), "+m" (v->counter)					\
-> +	: "r"#sign (a), "r" (&v->counter)				\
->  	: "cc");							\
->  }									\
+Build results:
+	total: 157 pass: 157 fail: 0
+Qemu test results:
+	total: 432 pass: 432 fail: 0
 
-You need "b" (instead of "r") only for "addi".  You can use "addic"
-instead, which clobbers XER[CA], but *all* inline asm does, so that is
-not a downside here (it is also not slower on any CPU that matters).
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-> @@ -238,14 +238,14 @@ static __inline__ int atomic_fetch_add_unless(atomic_t *v, int a, int u)
->  "1:	lwarx	%0,0,%1		# atomic_fetch_add_unless\n\
->  	cmpw	0,%0,%3 \n\
->  	beq	2f \n\
-> -	add	%0,%2,%0 \n"
-> +	add%I2	%0,%0,%2 \n"
->  "	stwcx.	%0,0,%1 \n\
->  	bne-	1b \n"
->  	PPC_ATOMIC_EXIT_BARRIER
-> -"	subf	%0,%2,%0 \n\
-> +"	sub%I2	%0,%0,%2 \n\
->  2:"
-> -	: "=&r" (t)
-> -	: "r" (&v->counter), "r" (a), "r" (u)
-> +	: "=&b" (t)
-> +	: "r" (&v->counter), "rI" (a), "r" (u)
->  	: "cc", "memory");
-
-Same here.
-
-Nice patches!
-
-Acked-by: Segher Boessenkool <segher@kernel.crashing.org>
-
-
-Segher
+Guenter
