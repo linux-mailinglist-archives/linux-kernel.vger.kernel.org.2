@@ -2,145 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F6F035CA9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E6735CAA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243198AbhDLQBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:01:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243189AbhDLQBj (ORCPT
+        id S243189AbhDLQCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:02:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44900 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238937AbhDLQCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:01:39 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E72DC06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:01:20 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id t23-20020a0568301e37b02901b65ab30024so13264405otr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5CtEYzn7kIwgucylcxTz9N8ey3nUOdntfUbQ88bxuCE=;
-        b=f+N61ZZEKv3sMaFIhuG/mjI1//fMUJZYO6yOBVZ7MxDa5r9bneo8QNZeQfgypRXxbP
-         wtlu0EOAlLpFfy/BCPC+mA4AqQCbsc6Y0Zl5kQi0SXblVNBu2tXIw2LnuHYj/aFeu1N3
-         +ki+1g/DMJfJJuskmsATMHwApEASlmvK14N05xaldnD6YzT6nvcM3nOLWOKdy5dOVCgR
-         weqmJs6fUcUh46L712+j+AjrwdAU4oEJ9bYTF0C/WKUN0nj4/nnL2qRASYugOlljNA7l
-         3h1YcRSZ0eXcR0su+rxeWTFzIQzS84j17GFIidQvOCx6J6+QfVUKBBpsvf2XZ8/NvsNy
-         ngXA==
+        Mon, 12 Apr 2021 12:02:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618243332;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=78X0OYDfE/7+/Hlen2MBzJuZuksJMmznz4Te2YiIK6g=;
+        b=M1aeNpe2wYHCAVXiXcUa2SahmZCC/nJbZdvzrjcbzmRKru22QWW7TNBUPfAQG5eb2U6JPp
+        re80Pm+Q7tFg5pCsbgdiYZKbXqVPllLPD0cpoYCkTq88k0Hs7eq9rvOrnJPq5kOgkR/1oY
+        dLgxZdfFri/eZDYTwVHewMnLHAqKhw4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-260-cvzrOsxKNyWkf_7cRZAm1A-1; Mon, 12 Apr 2021 12:02:10 -0400
+X-MC-Unique: cvzrOsxKNyWkf_7cRZAm1A-1
+Received: by mail-wr1-f72.google.com with SMTP id x18so6209483wrt.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:02:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5CtEYzn7kIwgucylcxTz9N8ey3nUOdntfUbQ88bxuCE=;
-        b=sqJSM51iH/DgTbuWcz5VnvHbqidZ3Zy5XDFDUGf16QUptwqPmpJkrW0Uzzu8/WrVYc
-         ikq5nSBh99ssDKKD+2QN0iPMYN2tDQ1Gzej1fmaV6dTcOqa3iNzraKUSv4vPzaZkop/P
-         /dgqpBhOVvV2bij6SIm7AebidJ5rvoorkPRr+KnZLzsmeK6e+WhIf31lZaYzfPcymoE1
-         85t4+8g1jha8nodAtLHtQGrbMMnr/uy4hGAC7DuXd8DdlEouPGKLB/GINFKgt2yWLaX4
-         oH6BqR93kxKbqn1e30/jZkfvQ1mlxHQUXmYYjb31ETknpsGE50WiDLYoTX1rxTTxcZnb
-         u5zw==
-X-Gm-Message-State: AOAM533iZyeF5e3OzGo/ArjJa8T9/Uy7xDvDodLOga0ZY0oOEP0ne/5l
-        gAJ6pHbpdJ44cHPRdyomZyQmHQ==
-X-Google-Smtp-Source: ABdhPJwS38KMUVg12cbP/tOlpohlU/ohYYS3v7TQUu9ZHOsy/jn9DdfMfY39UoC8kf+BB65AOqhl0A==
-X-Received: by 2002:a9d:7003:: with SMTP id k3mr24903296otj.351.1618243278839;
-        Mon, 12 Apr 2021 09:01:18 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id f8sm2730348otp.71.2021.04.12.09.01.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 09:01:18 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 11:01:16 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linusw@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nishanth Menon <nm@ti.com>, Tero Kristo <kristo@kernel.org>,
-        SoC Team <soc@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: New 'make dtbs_check W=1' warnings
-Message-ID: <20210412160116.GA904837@yoga>
-References: <CAK8P3a1L8rWpR5b66v6Su8-m7-scA0wZQr_g_4KnV4dnrky6ZA@mail.gmail.com>
- <CAMuHMdWY0aGoAw6QfF5PQRFNFwAzNP9cmFCjbKnsSbHsMz45fQ@mail.gmail.com>
- <CAK8P3a3EaaTGvAYvffbf7AF-iaC05yMShdnTc2QMcKQGZv7N8Q@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=78X0OYDfE/7+/Hlen2MBzJuZuksJMmznz4Te2YiIK6g=;
+        b=CdCONWQtlAZjLCcWVKIrnQUdVrjgQLXqgkonHpxdWvwZqRD222x1Bng7Ud/EXJjakc
+         92IgjoH7S7OrnAcMsh4gXLqvWVUOQ2lypospsphjMXbjQWADFyuLiORlS6XdZ+fzupxr
+         5NKjllVt2mTVWmAfpqWQW8hG3Dvzsh4A+TZ/Gh3xNszqRjy7rNlNvBU8adgh8Pb2HYzO
+         gbU7bfIFrQixhYu1mwyspwKlkLzt00sJZaVLk7/B2GB82SHaIoCWhvl0NYCybx+VHI0z
+         3oj+WYxg7KZ9xjr8zIVVAr88UxDJPaQP/Fi5OpiYcfU+CbPqfcrD82uIIAe5upTcHOlz
+         1f3g==
+X-Gm-Message-State: AOAM531p1+t2/oqANb9J5jTtHw6c78ll9dKa2jfyvnCei4xt5KJQEuOA
+        wB3l3tBOWI2I81/zGcSd/d5JPUSvPnLAfIxf7Mb5EZTQE8OS/4EsNrB0J0GLP0EaDHlzp2ktH0d
+        gET50Ogxeo8EG7DA4E14yizlf0GcAH/x9j23SbS1v17EktiLl5bsJaxytuLwtzuJ6D+mA0VFo
+X-Received: by 2002:a5d:4584:: with SMTP id p4mr3809789wrq.383.1618243329120;
+        Mon, 12 Apr 2021 09:02:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzS9w1z1n9yjWbp5Jp8RHXvNAVH1prig0Za5BI1pIb58C3NvGBrdnTP1V5Unu8Jv0gTQySv9g==
+X-Received: by 2002:a5d:4584:: with SMTP id p4mr3809750wrq.383.1618243328840;
+        Mon, 12 Apr 2021 09:02:08 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c66cb.dip0.t-ipconnect.de. [91.12.102.203])
+        by smtp.gmail.com with ESMTPSA id v7sm16331006wrs.2.2021.04.12.09.02.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 09:02:08 -0700 (PDT)
+Subject: Re: [PATCH v2 resend] mm/memory_hotplug: Make unpopulated zones PCP
+ structures unreachable during hot remove
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210412120842.GY3697@techsingularity.net>
+ <d4e4c3e4-7d47-d634-4374-4cf1e55c7895@suse.cz>
+ <20210412140852.GZ3697@techsingularity.net>
+ <a0d73ce0-b2bd-1928-539d-39cb9da9bf1f@redhat.com>
+ <20210412152737.GB3697@techsingularity.net>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <9ecdd427-8eee-c3c8-414f-501f62245585@redhat.com>
+Date:   Mon, 12 Apr 2021 18:02:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3EaaTGvAYvffbf7AF-iaC05yMShdnTc2QMcKQGZv7N8Q@mail.gmail.com>
+In-Reply-To: <20210412152737.GB3697@techsingularity.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12 Apr 08:14 CDT 2021, Arnd Bergmann wrote:
-
-> On Mon, Apr 12, 2021 at 1:32 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Thu, Apr 8, 2021 at 5:08 PM Arnd Bergmann <arnd@kernel.org> wrote:
+On 12.04.21 17:27, Mel Gorman wrote:
+> On Mon, Apr 12, 2021 at 04:12:11PM +0200, David Hildenbrand wrote:
+>>> After v1 of the patch, the race was reduced to the point between the
+>>> zone watermark check and the rmqueue_pcplist but yes, it still existed.
+>>> Closing it completely was either complex or expensive. Setting
+>>> zone->pageset = &boot_pageset before the free would shrink the race
+>>> further but that still leaves a potential memory ordering issue.
+>>>
+>>> While fixable, it's either complex, expensive or both so yes, just leaving
+>>> the pageset structures in place would be much more straight-forward
+>>> assuming the structures were not allocated in the zone that is being
+>>> hot-removed. As things stand, I had trouble even testing zone hot-remove
+>>> as there was always a few pages left behind and I did not chase down
+>>> why.
+>>
+>> Can you elaborate? I can reliably trigger zone present pages going to 0 by
+>> just hotplugging a DIMM, onlining the memory block devices to the MOVABLE
+>> zone, followed by offlining the memory block again.
+>>
 > 
-> > >
-> > > For this merge window, I don't think any of them are show-stoppers (Rob, let me
-> > > know if you disagree), but in the long run we may want to gradually enforce
-> > > a rule about not merging changes that introduce any new warnings, in order to
-> > > have a chance of cleaning up the existing ones.
-> >
-> > This may not be as simple as it sounds, as DT binding updates typically
-> > follow a different path than DTS(i) updates.  DT bindings updates may be
-> > picked up by a subsystem maintainer, by Rob, or by the platform
-> > maintainer.
-> 
-> I checked out the bindings from linux-next, which seems to have covered
-> most of these. Sometimes it pays off to be lazy and merge them after
-> everyone else.
-> 
-> > For trivial updates (e.g. adding a compatible value, and sometimes
-> > extending a limit), a DTS(i) update may be accepted by the platform
-> > maintainer before the corresponding DT binding update.  The latter may
-> > even be merged one or more kernel revisions later, especially when
-> > involving subsystems that are not traditionally rooted into platforms
-> > using DT.
-> >
-> > Of course we could mention any expected warning regressions in our pull
-> > requests for soc.
-> 
-> Right, that would certainly help. Some maintainers send all binding
-> updates both to the driver maintainers and to the soc tree, along
-> with the other changes that only go into one tree. That is of course
-> also more work on your side, but it solves the problem entirely.
-> 
+> For the machine I was testing on, I tried offlining all memory within
+> a zone on a NUMA machine. Even if I used movable_zone to create a zone
+> or numa=fake to create multiple fake nodes and zones, there was always
+> either reserved or pinned pages preventing the full zone being removed.
 
-So the same binding patch is picked up both in the driver and soc tree?
-I was expecting that to cause (harmless) conflicts when things arrive in
-Linus' merge queue?
+What can happen is that memblock allocations are still placed into the 
+MOVABLE zone -- even with "movablenode" IIRC.
 
-Or are you saying people go the length to create immutable branches for
-each binding?
+Memory hot(un)plug is usually best tested in QEMU via pc-dimm devices.
 
+-- 
+Thanks,
 
-I'm curious because it's fairly often that we introduce clocks,
-interconnects etc where the macros from the dt bindings includes aren't
-available for another release (so we use numerical constants and then go
-back and fix them up later).
+David / dhildenb
 
-Regards,
-Bjorn
-
-> > > renesas/r8a774a1-beacon-rzg2m-kit.dt.yaml: csi2@feaa0000: ports:
-> > > 'port@0' is a required property
-> >
-> > [...]
-> >
-> > I've replied to these as a response to your PR reply, see
-> > https://lore.kernel.org/linux-renesas-soc/CAMuHMdWHLnXgBSjP7VKUdx-YNr9rSKFkE5Ge5q_tarU6HP9Lhw@mail.gmail.com/
-> 
-> Ok, thanks.
-> 
->       Arnd
