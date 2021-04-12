@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9337B35BC87
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B65835BDEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:56:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237527AbhDLIng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:43:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34944 "EHLO mail.kernel.org"
+        id S238116AbhDLI4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:56:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237493AbhDLInV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:43:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B0C57611F0;
-        Mon, 12 Apr 2021 08:43:01 +0000 (UTC)
+        id S238457AbhDLItz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:49:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 715766125F;
+        Mon, 12 Apr 2021 08:48:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618216982;
-        bh=e71fwFmFZmS8AjnjosGQeCNNIl6ytjvQ2rak1nkU3EM=;
+        s=korg; t=1618217338;
+        bh=f4S7kv1Yr06FeGh7tleKoX/IiDEAYoDTl2zrP6EAEIc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xoo0b8PkaNfdMGPNdf2AUE0xsyzNarYfDvjrj0Aqg8B507FXr+/JlNFbjmB5bfZaH
-         dNNUxyOfK1CMiMjXEGTRxOFOrJmLNgc6xq6eHaGMVyFq5z/n5sKbLpAdqjQCGR/3DG
-         TzOyPBZkm1APN1Di6okTfACwUlUEIJzSMKPPL0Hw=
+        b=k8CV+y9Qy9UtQe8TNWj7UevqNaybr9BEYvu102zDXzZ32p4hZ0Z5xNxd0ZN3ET1xY
+         g46bEeoGDb+dkqB53fEbpDJTXBOkvyU4ILL6u39+3r2mPBwkjUanLtWmquomDxdPLk
+         RWr8WynvruH/uUe+urxKt/q37isdZtSKk9KeUsjo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Klaus Kudielka <klaus.kudielka@gmail.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Wolfram Sang <wsa@kernel.org>, stable@kernel.org
-Subject: [PATCH 4.19 26/66] i2c: turn recovery error on init to debug
+        stable@vger.kernel.org, Eryk Rybak <eryk.roch.rybak@intel.com>,
+        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
+        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 054/111] i40e: Fix kernel oops when i40e driver removes VFs
 Date:   Mon, 12 Apr 2021 10:40:32 +0200
-Message-Id: <20210412083958.978438750@linuxfoundation.org>
+Message-Id: <20210412084006.062638851@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-References: <20210412083958.129944265@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +43,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Eryk Rybak <eryk.roch.rybak@intel.com>
 
-commit e409a6a3e0690efdef9b8a96197bc61ff117cfaf upstream.
+[ Upstream commit 347b5650cd158d1d953487cc2bec567af5c5bf96 ]
 
-In some configurations, recovery is optional. So, don't throw an error
-when it is not used because e.g. pinctrl settings for recovery are not
-provided. Reword the message and make it debug output.
+Fix the reason of kernel oops when i40e driver removed VFs.
+Added new __I40E_VFS_RELEASING state to signalize releasing
+process by PF, that it makes possible to exit of reset VF procedure.
+Without this patch, it is possible to suspend the VFs reset by
+releasing VFs resources procedure. Retrying the reset after the
+timeout works on the freed VF memory causing a kernel oops.
 
-Reported-by: Klaus Kudielka <klaus.kudielka@gmail.com>
-Tested-by: Klaus Kudielka <klaus.kudielka@gmail.com>
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Cc: stable@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: d43d60e5eb95 ("i40e: ensure reset occurs when disabling VF")
+Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
+Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
+Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/i2c-core-base.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/intel/i40e/i40e.h             | 1 +
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 9 +++++++++
+ 2 files changed, 10 insertions(+)
 
---- a/drivers/i2c/i2c-core-base.c
-+++ b/drivers/i2c/i2c-core-base.c
-@@ -262,13 +262,14 @@ EXPORT_SYMBOL_GPL(i2c_recover_bus);
- static void i2c_init_recovery(struct i2c_adapter *adap)
+diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
+index 678e4190b8a8..e571c6116c4b 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e.h
++++ b/drivers/net/ethernet/intel/i40e/i40e.h
+@@ -152,6 +152,7 @@ enum i40e_state_t {
+ 	__I40E_VIRTCHNL_OP_PENDING,
+ 	__I40E_RECOVERY_MODE,
+ 	__I40E_VF_RESETS_DISABLED,	/* disable resets during i40e_remove */
++	__I40E_VFS_RELEASING,
+ 	/* This must be last as it determines the size of the BITMAP */
+ 	__I40E_STATE_SIZE__,
+ };
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index 5acd599d6b9a..e56107305486 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -137,6 +137,7 @@ void i40e_vc_notify_vf_reset(struct i40e_vf *vf)
+  **/
+ static inline void i40e_vc_disable_vf(struct i40e_vf *vf)
  {
- 	struct i2c_bus_recovery_info *bri = adap->bus_recovery_info;
--	char *err_str;
-+	char *err_str, *err_level = KERN_ERR;
++	struct i40e_pf *pf = vf->pf;
+ 	int i;
  
- 	if (!bri)
+ 	i40e_vc_notify_vf_reset(vf);
+@@ -147,6 +148,11 @@ static inline void i40e_vc_disable_vf(struct i40e_vf *vf)
+ 	 * ensure a reset.
+ 	 */
+ 	for (i = 0; i < 20; i++) {
++		/* If PF is in VFs releasing state reset VF is impossible,
++		 * so leave it.
++		 */
++		if (test_bit(__I40E_VFS_RELEASING, pf->state))
++			return;
+ 		if (i40e_reset_vf(vf, false))
+ 			return;
+ 		usleep_range(10000, 20000);
+@@ -1506,6 +1512,8 @@ void i40e_free_vfs(struct i40e_pf *pf)
+ 
+ 	if (!pf->vf)
  		return;
++
++	set_bit(__I40E_VFS_RELEASING, pf->state);
+ 	while (test_and_set_bit(__I40E_VF_DISABLE, pf->state))
+ 		usleep_range(1000, 2000);
  
- 	if (!bri->recover_bus) {
--		err_str = "no recover_bus() found";
-+		err_str = "no suitable method provided";
-+		err_level = KERN_DEBUG;
- 		goto err;
+@@ -1563,6 +1571,7 @@ void i40e_free_vfs(struct i40e_pf *pf)
+ 		}
  	}
- 
-@@ -298,7 +299,7 @@ static void i2c_init_recovery(struct i2c
- 
- 	return;
-  err:
--	dev_err(&adap->dev, "Not using recovery: %s\n", err_str);
-+	dev_printk(err_level, &adap->dev, "Not using recovery: %s\n", err_str);
- 	adap->bus_recovery_info = NULL;
+ 	clear_bit(__I40E_VF_DISABLE, pf->state);
++	clear_bit(__I40E_VFS_RELEASING, pf->state);
  }
  
+ #ifdef CONFIG_PCI_IOV
+-- 
+2.30.2
+
 
 
