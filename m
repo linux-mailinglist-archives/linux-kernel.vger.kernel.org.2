@@ -2,543 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FCF35D22E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 22:43:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8DC35D233
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 22:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238428AbhDLUml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 16:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbhDLUmk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 16:42:40 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2533C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 13:42:20 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id t22so10345815pgu.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 13:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Psh+UPiev6cgaSTWXKHBX7O1HqA3S9jFAt33RXeOlkw=;
-        b=Hgg2v0PdRfr/hS/UsnbIB91G+lI2f+u/QY6jrPSIAflfMJuwbwlk0AyH1yZEwJz7u5
-         LAUvSy3TofBVsA4/ARzd8eG4aYOH2TzGK3ySv4P/VY0rQ7LzeOayGe3QS9OfxEU37qjI
-         /i2eE9flYTT0r92DFuq763V0ALzBpmMogotW3+pbfUt5y/x+DPnR5db99KTx5FURL6HL
-         wlVY52tdV6Q6L/da48ZNFPHzL2DAEv0RxGkZlgaWjUNgsTWphJP2faT27f/Uo8ZHNxYr
-         gE370PRcLG4lBXJeQyaEW8ax7DsOGB/IH11AlDCvfuAFjfHXPC+Cq9EpG+6XUIdZgW6D
-         SXVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Psh+UPiev6cgaSTWXKHBX7O1HqA3S9jFAt33RXeOlkw=;
-        b=DSkTftJ2hk2IuU5D1NbKb/PPM56gVdVupcmTpAdDEeP3yTuzVO5IOAAFn5BPfXysSx
-         ycb+nzVAl0L2cRw5dmO97bO45sJc2hV2hhmg/B5KQtsaljkqIOKvIjIsI+d35ZuKVEZa
-         FuF4OGorV1l+G+DEBgmuWqrwzFnxq1qE2E0WCdSv0U09hAAjiE4solc2zyF052n61BOg
-         I9vvE6Dbq3xGzZfwfcUuyiouX2i6CeZIZJbTmS4kwcpX/lo5sceclOKwIQvuT54ROknj
-         A2vXW2FSnXQPt1SVhqNT8QC5Rq52uKAVIn1K+mg1+4ehJehMAY+xK7R3lLXLiUzTHCTi
-         wjag==
-X-Gm-Message-State: AOAM532tPa/nPnCBsFoJi4DVZfhAY2ImSyNXb8TW1H3cimxc87dVQsDH
-        +P3CPvnydnG7+pzRy4EjXicN2J2EdBwm3ds8jr8jsw==
-X-Google-Smtp-Source: ABdhPJzWiaypWjU7+8VU0oU926UbT6w2nhOF6mfnWyp9aAcUjB9WVuI7E/4eyI3nRAJ3QCVhZfGhkYdEM3JfJr/BsRM=
-X-Received: by 2002:a63:e509:: with SMTP id r9mr29288250pgh.384.1618260139728;
- Mon, 12 Apr 2021 13:42:19 -0700 (PDT)
+        id S238831AbhDLUoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 16:44:15 -0400
+Received: from mail-dm6nam10on2139.outbound.protection.outlook.com ([40.107.93.139]:52096
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238563AbhDLUoN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 16:44:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L/yPvKv/dfCLU6xFTOF4wpta+fO0zGfim+WXqkhNDb41/YDKM/BdZxeRQnyfXWcaZE+c3+dAFX5XlnnHzn8NBH7xxOoOUcCMDWlkv+2md8e+PFkrBG2/7EU7dA0CxZ76fOyiK6pG78gbbTsSYI831KRw4pYnHVJyHiCtmcUcjJF75RWE2b+B069hGU0N4BOdc0bAHTuZk5t6hbVVP1qnUKp8BNv0B70BNN9NkoGeBfTm0obZ+HG4TWEH24c5N+CXgu6CUroiCPbS8xMfBpWfr9ISyCZsKxbL6UFB6P/je+NeaQLcYz+vFOV4GChrcxBB3piGHMJvxFFLiZ47DdvHfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=piQ4IcIlv2gdBIcNnc1WphQXH0ptjtRXxTDm3J2WgeM=;
+ b=BdH61Y5Ky3VgrXmXBerqCEH4RT8yQiOKj4nT7Df9bE3XCFQklY4i7Fs993G2f/rTRdMgZydglkH6HIqN/hFztjU4jExGxBMogTpuZ+K1bJLo1HxrlVPgDTxfMcep27JXRm6x2sJS2k/1zIvn66vj6G12IV6wI0E0JVJskHXcj9bMl/WGJkFk5ILoIFQzmmeZVEge/2wC9+4XPui9jXZZaxs6rzL6DT64bZOC+5RjIypnFHP39axiUyEqCWae35w+uRZ2v3aZLBAzt1O0bgnItUA9D5OfqMgmKl3RI5JSYh5uE4duuCk07Hmmo+EWY3MVxoMjiL4J5NLbCRMW3TCRDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=piQ4IcIlv2gdBIcNnc1WphQXH0ptjtRXxTDm3J2WgeM=;
+ b=g8oac+0Qy2bFa2L0NURMRls4UKD2P/EgXTMAhZ4a81+EG7Qa8RjY+QpUgtVIrMvzyB1OWLZE74AenSfNHkIOXFcV/ATrqIyVJjQF4pBAwIA446DFM6GwlUs39/YHLoqg/Jvgi+r3D9V2/4YPQaZvP0lsWsan32DZX0gOQQ8NeZg=
+Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
+ (2603:10b6:302:10::24) by MWHPR21MB0751.namprd21.prod.outlook.com
+ (2603:10b6:300:76::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.2; Mon, 12 Apr
+ 2021 20:43:53 +0000
+Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
+ ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
+ ([fe80::5548:cbd8:43cd:aa3d%6]) with mapi id 15.20.4065.005; Mon, 12 Apr 2021
+ 20:43:53 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Wei Liu <liuwe@microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "bernd@petrovitsch.priv.at" <bernd@petrovitsch.priv.at>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        Shachar Raindel <shacharr@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: RE: [PATCH v4 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Thread-Topic: [PATCH v4 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Thread-Index: AQHXL8icok+TxRuwHk2RzEnwF60u5qqxWR8A
+Date:   Mon, 12 Apr 2021 20:43:52 +0000
+Message-ID: <MW2PR2101MB08921AE42035E49BABB19C19BF709@MW2PR2101MB0892.namprd21.prod.outlook.com>
+References: <20210412023455.45594-1-decui@microsoft.com>
+ <20210412112109.145faac8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210412112109.145faac8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=53b59c0c-60e1-483f-96dd-85bcc846cf2a;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-12T20:42:24Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [2601:600:8b00:6b90:6473:731a:ac25:3e78]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: fb9e4bff-ee52-4044-12fa-08d8fdf3af2a
+x-ms-traffictypediagnostic: MWHPR21MB0751:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR21MB075106165B1246CBBDE120B8BF709@MWHPR21MB0751.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WCxeCFqfgW8ATnTxOWDHQp2vUdmvyKGVAbpr/4Thf40Os5VPVwVov3vXKEYlkd8AH76CsZMpchhzv9y6/LSqMyvwlDoAhTabUDJT0Wh1MJJffgqa3VnSKC0NODVXan/KA1zZGdY1y87mbruUNsq47WPHONS/Sk4ZfxgNj4cDjfEe074qZHDhLG3UoMn+7QXtYC3nZT818NxzuaUKCFfhkjQOBMAIhY8yWPCWm1RBFkPee4n6i5nCH4YmZoe9IUVN0LI3LDdotq4hfrV+2727SwGhSGnaojwIQ15dPIY3usQsMF18ShyoC4aazRHAa08fIZIrZohSL53HzyIu2AMmy8iMxEGgJh5sOwxN2mofX7MOnUPxxpFNDFPCKnzXrul2mlEhhUssqdATrcBiaXl5CkNgXf+Jmo65wAvef9ZT6fKi9F7mLqnlMkxXAPKNk5plyn3NH4Y3OqUlgLH1r4rI5X6c9XkdqfA86pvOaLyBCVAuS5S1W0qzLk4atRXHUtRpRu2Hf5oA2V3pCJBSGEuEoYbD5vHFQgr5RHEH89Ytil6kT4iBTBkqzTJhxrUGz9pKU0Dmq14Rxsk2x8LEf1xbs9MJag1RcYkdf01CO7IGGsQ=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(136003)(396003)(376002)(366004)(47530400004)(10290500003)(7416002)(83380400001)(478600001)(86362001)(8990500004)(7696005)(82950400001)(8676002)(9686003)(55016002)(82960400001)(66476007)(66946007)(54906003)(6506007)(64756008)(316002)(38100700002)(6916009)(66556008)(2906002)(5660300002)(52536014)(33656002)(66446008)(4326008)(186003)(71200400001)(76116006)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?+k+o64vN5/e9fHQ/FJ6qjaSbNH0aYkoXEvaFRF5tQq3otj6nYbldUJqFdCvp?=
+ =?us-ascii?Q?DSkcAEgrp9+sCJQXnU9pCPpnHxS660CuyCPj1OQkI6053/yr8C8Yj3CqnQWk?=
+ =?us-ascii?Q?FU0LCzca+Bi+5JZQKvGUjuHX2kyU6TZsh0XEHa/T3EPOdr/e9f5d9zUqzllO?=
+ =?us-ascii?Q?2J6JrjF0J4h1/RinU3zdLiv2lDTfWSaHHL8ajIKzXXF3DNAX73eFK7tddDoH?=
+ =?us-ascii?Q?WdpnqF0xgJjakYdmrIPlArlHGDzzwHa//igjcPxJ08GP/3ifkaLDDpt7xnRW?=
+ =?us-ascii?Q?6LkLi3gQZ24FQSLCzvAHoUyQSsCN7Y3zZCmlpZYFVgwgcFBIYNCNQdoXKB3w?=
+ =?us-ascii?Q?LuoFXEEUC4S0hu48olTdpnD67DO0OSqRAyLma47UyGq7qugEBtIXlmu/yJfv?=
+ =?us-ascii?Q?Ug+R3PaGTFaBkJRz7kSW4TK9F8aa5rvOWg/erzuyPmWxBU+OShFoFi4zfp35?=
+ =?us-ascii?Q?jrnX3bJriatQLjXFh13tfPrpO3PTx9rIyFtldVPN0LJaR7Kxs4bqybE+YpyM?=
+ =?us-ascii?Q?oK1fx6ijj8bGJMvbmLoe/PSgeV8Ml9tkJCllQsu13BbAdV3cOCsbrEN9hOUt?=
+ =?us-ascii?Q?3wShVxGbyG8CBW3gUI1rgCtC0zMOy5sfWyRIhakNhG6s8WLChe6OjBzciAnn?=
+ =?us-ascii?Q?K7dNXhQrlqKrpjQTvF0FVQ70lo3L0+vq3GMNwVn24WYoWckS9ZXGkt9eXmrV?=
+ =?us-ascii?Q?VStuMuAS76ByqzEVauSYQhTJfL3PX3ARAquPLXdvRhTvtowbQD+4cNfjqgg2?=
+ =?us-ascii?Q?JGgg7rx+HCUxFkjMuFzadnDaRzSekIam5kMvzX7xv8C98e9BTE0IfYqlb8B8?=
+ =?us-ascii?Q?UUfj9R7vZtcRVJuFO5PjeaDZChakXk+TuWHM4sBMmyheOYMCwgw59aHyxh/i?=
+ =?us-ascii?Q?648AgaS3gjvt+Y6THrmeNaDw602PEne0bltg5fLnfdXf1oaMlqRuKUH4xW1g?=
+ =?us-ascii?Q?PhzUN/AtsJMXfMbCaqTyNpDVzqi0dkHd1g3dG/VyRbyzaUIDpU8M536ZeG1N?=
+ =?us-ascii?Q?JQRzb8C/7l6CceKSTkCUzEnaKFwb69Led3XuqH9j8YdVZ70RZKQ0oGR39L4f?=
+ =?us-ascii?Q?8QdYL+vMYz8dqxnVgMNu5VoGN6PC/rOJOMk28RsKxqtcvalnz9P1oQ+tg8ew?=
+ =?us-ascii?Q?KWCPyyRBL8FeM4phXS1JscEfB3qafNJfPO3Xfv1mS883TtVmIXefRCap/Z8z?=
+ =?us-ascii?Q?l3rUM2mkx8bF0hW7T+RaNbMZ1ik7T3NuD/+vQypvsLgQo3Km2OX7OZcQJsF9?=
+ =?us-ascii?Q?ExOg7ZYaWtzR+MHmYdL2KZSCzd+ZNQbpeOnLXmUXpXYnpdKhGKzQeG2oPLnD?=
+ =?us-ascii?Q?U99FKGsrZjM5jvTLeL0i+yXY89Un7VmAXzrxz16AZ60HKzqcOeawd0i8wbrN?=
+ =?us-ascii?Q?puCBrP7Ni/Z4U+mr8tR2u7ze1UyT?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20210409180105.3825069-1-dlatypov@google.com> <CABVgOSnjE8PBF9TyBRtX26i1t51=XCy6x=rg8C-Hv-zyvc7D6w@mail.gmail.com>
- <CAGS_qxrEt=nLSMx7Vvs5qw0jjMTiv4G1Jt4Y-JtptSGa4DQSBw@mail.gmail.com>
-In-Reply-To: <CAGS_qxrEt=nLSMx7Vvs5qw0jjMTiv4G1Jt4Y-JtptSGa4DQSBw@mail.gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Mon, 12 Apr 2021 13:42:08 -0700
-Message-ID: <CAFd5g46wYJZc9gm28UVSCr3aErufUx9fvPwJ2MiRxecqGMfxPQ@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kunit: add tips for running KUnit
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: fb9e4bff-ee52-4044-12fa-08d8fdf3af2a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2021 20:43:52.9676
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FG2MkIivJY7EFRiIB3WBNhOyeIz3eBc6gj6sHOQw3hNo15DKfZMsWVVz6htcyfX0s6RLN4ZlTvxvXeeFxmWjdA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0751
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:27 AM Daniel Latypov <dlatypov@google.com> wrote:
->
-> hOn Fri, Apr 9, 2021 at 9:10 PM David Gow <davidgow@google.com> wrote:
-> >
-> > Thanks for writing this: it's good to have these things documented at last!
-> >
-> > There are definitely a few things this document points out which still
-> > need deciding, which does make this document lean a bit into "design
-> > discussion" territory in a few of the notes. This doesn't bother me --
-> > it's an accurate description of the state of things -- but I wouldn't
-> > want this documentation held up too long because of these sorts of
-> > TODOs (and can definitely see how having too many of them might
-> > discourage KUnit use a bit). Particularly things like the
-> > ".kunitconfig" fragment file feature stuff: I feel that's something
-> > better discussed on patches adding/using the feature than in the
-> > documentation / reviews of the documentation, so I'd rather drop or
-> > simplify those '..note:'s than bokeshed about it here (something I'm a
-> > little guilty of below).
->
-> I don't think we'll actually make progress on any of those in the near
-> future though.
-> So I figured it'd be best to accurately represent the state of the
-> world ~somewhere.
->
-> But it did feel a bit strange to do it here, so I'm not against removing it.
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: Monday, April 12, 2021 11:21 AM
+> ...=20
+> On Sun, 11 Apr 2021 19:34:55 -0700 Dexuan Cui wrote:
+> > +	for (i =3D 0; i < ANA_INDIRECT_TABLE_SIZE; i++)
+> > +		apc->indir_table[i] =3D i % apc->num_queues;
+>=20
+> ethtool_rxfh_indir_default()
 
-I actually like the accurate and upfront way that you spelled these things out.
+Will use ethtool_rxfh_indir_default().
 
-> > Otherwise, a few minor comments and nitpicks:
-> >
-> > -- David
-> >
-> > On Sat, Apr 10, 2021 at 2:01 AM Daniel Latypov <dlatypov@google.com> wrote:
-> > >
-> > > This is long overdue.
-> > >
-> > > There are several things that aren't nailed down (in-tree
-> > > .kunitconfig's), or partially broken (GCOV on UML), but having them
-> > > documented, warts and all, is better than having nothing.
-> > >
-> > > This covers a bunch of the more recent features
-> > > * kunit_filter_glob
-> > > * kunit.py run --kunitconfig
-> > > * kunit.py run --alltests
-> > > * slightly more detail on building tests as modules
-> > > * CONFIG_KUNIT_DEBUGFS
-> > >
-> > > By my count, the only headline features now not mentioned are the KASAN
-> > > integration and KernelCI json output support (kunit.py run --json).
-> > >
-> > > And then it also discusses how to get code coverage reports under UML
-> > > and non-UML since this is a question people have repeatedly asked.
-> > >
-> > > Non-UML coverage collection is no differnt from normal, but we should
-> > > probably explicitly call thsi out.
-> >
-> > Nit: typos in 'different' and 'this'.
-> Fixed.
-> >
-> > >
-> > > As for UML, I was able to get it working again with two small hacks.*
-> > > E.g. with CONFIG_KUNIT=y && CONFIG_KUNIT_ALL_TESTS=y
-> > >   Overall coverage rate:
-> > >     lines......: 15.1% (18294 of 120776 lines)
-> > >     functions..: 16.8% (1860 of 11050 functions)
-> > >
-> > > *Switching to use gcc/gcov-6 and not using uml_abort().
-> > > I've documented these hacks in "Notes" but left TODOs for
-> > > brendanhiggins@google.com who tracked down the runtime issue in GCC.
-> > > To be clear: these are not issues specific to KUnit, but rather to UML.
-> >
-> > (We should probably note where uml_abort() needs to be replaced if
-> > we're mentioning this, though doing so below in the more detailed
-> > section may be more useful.)
->
-> Updated to
-> *Using gcc/gcov-6 and not using uml_abort() in os_dump_core().
->
-> I figured we'd be more precise in the documentation itself.
->
-> >
-> > >
-> > > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > > ---
-> > >  Documentation/dev-tools/kunit/index.rst       |   1 +
-> > >  .../dev-tools/kunit/running_tips.rst          | 278 ++++++++++++++++++
-> > >  Documentation/dev-tools/kunit/start.rst       |   2 +
-> > >  3 files changed, 281 insertions(+)
-> > >  create mode 100644 Documentation/dev-tools/kunit/running_tips.rst
-> > >
-> > > diff --git a/Documentation/dev-tools/kunit/index.rst b/Documentation/dev-tools/kunit/index.rst
-> > > index 848478838347..7f7cf8d2ab20 100644
-> > > --- a/Documentation/dev-tools/kunit/index.rst
-> > > +++ b/Documentation/dev-tools/kunit/index.rst
-> > > @@ -14,6 +14,7 @@ KUnit - Unit Testing for the Linux Kernel
-> > >         style
-> > >         faq
-> > >         tips
-> > > +       running_tips
-> > >
-> > >  What is KUnit?
-> > >  ==============
-> > > diff --git a/Documentation/dev-tools/kunit/running_tips.rst b/Documentation/dev-tools/kunit/running_tips.rst
-> > > new file mode 100644
-> > > index 000000000000..d38e665e530f
-> > > --- /dev/null
-> > > +++ b/Documentation/dev-tools/kunit/running_tips.rst
-> > > @@ -0,0 +1,278 @@
-> > > +.. SPDX-License-Identifier: GPL-2.0
-> > > +
-> > > +============================
-> > > +Tips For Running KUnit Tests
-> > > +============================
-> > > +
-> > > +Using ``kunit.py run`` ("kunit tool")
-> > > +=====================================
-> > > +
-> > > +Running from any directory
-> > > +--------------------------
-> > > +
-> > > +It can be handy to create a bash function like:
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +       function run_kunit() {
-> > > +         ( cd "$(git rev-parse --show-toplevel)" && ./tools/testing/kunit/kunit.py run $@ )
-> > > +       }
-> > > +
-> > > +.. note::
-> > > +       Early versions of ``kunit.py`` (before 5.6) didn't work unless run from
-> > > +       the kernel root, hence the use of a subshell and ``cd``.
-> > > +
-> > > +Running a subset of tests
-> > > +-------------------------
-> > > +
-> > > +``kunit.py run`` accepts an optional glob argument to filter tests. Currently
-> > > +this only matches against suite names, but this may change in the future.
-> > > +
-> > > +Say that we wanted to run the sysctl tests, we could do so via:
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +       $ echo -e 'CONFIG_KUNIT=y\nCONFIG_KUNIT_ALL_TESTS=y' > .kunit/.kunitconfig
-> > > +       $ ./tools/testing/kunit/kunit.py run 'sysctl*'
-> > > +
-> > > +We're paying the cost of building more tests than we need this way, but it's
-> > > +easier than fiddling with ``.kunitconfig`` files or commenting out
-> > > +``kunit_suite``'s.
-> > > +
-> > > +However, if we wanted to define a set of tests in a less ad hoc way, the next
-> > > +tip is useful.
-> > > +
-> > > +Defining a set of tests
-> > > +-----------------------
-> > > +
-> > > +``kunit.py run`` (along with ``build``, and ``config``) supports a
-> > > +``--kunitconfig`` flag. So if you have a set of tests that you want to run on a
-> > > +regular basis (especially if they have other dependencies), you can create a
-> > > +specific ``.kunitconfig`` for them.
-> > > +
-> > > +E.g. kunit has own for its tests:
-> >
-> > Nit: 'one' for its tests (or 'its own' for its tests?)
-> Fixed, meant to be "one"
-> >
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +       $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit/.kunitconfig
-> > > +
-> > > +Alternatively, if you're following the convention of naming your
-> > > +file ``.kunitconfig``, you can just pass in the dir, e.g.
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +       $ ./tools/testing/kunit/kunit.py run --kunitconfig=lib/kunit
-> > > +
-> > > +.. note::
-> > > +       This is a relatively new feature (5.12+) so we don't have any
-> > > +       conventions yet about on what files should be checked in versus just
-> > > +       kept around locally. But if the tests don't have any dependencies
-> > > +       (beyond ``CONFIG_KUNIT``), it's probably not worth writing and
-> > > +       maintaining a ``.kunitconfig`` fragment.  Running with
-> > > +       ``CONFIG_KUNIT_ALL_TESTS=y`` is probably easier.
-> >
-> > I think the rule of thumb for checked-in .kunitconfig files should be
-> > an explicit endorsement by the maintainer that these are the tests for
-> > a particular subsystem.
->
-> Hmm, I'm not sure we want to prescribe a granularity here.
-> If we had something like a "How-to-Test-Cmd" in MAINTAINERS, I'd feel
-> more justified in doing so.
->
-> But atm, I feel the line should be "use it if it's useful, check it in
-> if you think it's useful to 'enough' other people."
+> > +	err =3D mana_cfg_vport_steering(apc, rx, true, update_hash, update_ta=
+b);
+> > +	return err;
+>=20
+> return mana_...
+>=20
+> please fix everywhere.
 
-I think that's fine.
+Will fix this one, and will review if there is any similar issue.
 
-> > > +
-> > > +.. note::
-> > > +       Having ``.kunitconfig`` fragments in a parent and child directory is
-> > > +       iffy. There's discussion about adding an "import" statement in these
-> > > +       files to make it possible to have a top-level config run tests from all
-> > > +       child directories. But that would mean ``.kunitconfig`` files are no
-> > > +       longer just simple .config fragments.
-> > > +
-> > > +       One alternative would be to have kunit tool recursively combine configs
-> > > +       automagically, but tests could theoretically depend on incompatible
-> > > +       options, so handling that would be tricky.
-> > > +
-> > > +Running with ``allyesconfig``
-> > > +-----------------------------
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +       $ ./tools/testing/kunit/kunit.py run --alltests
-> > > +
-> > > +This will try and use ``allyesconfig``, or rather ``allyesconfig`` with a list
-> > Excessively pedantic nit: 'try to use'
-> Done.
->
-> > > +of UML-incompatible configs turned off. That list is maintained in
-> > > +``tools/testing/kunit/configs/broken_on_uml.config``.
-> > > +
-> > > +.. note::
-> > > +       This will take a *lot* longer to run and might be broken from time to
-> > > +       time, especially on -next. It's not recommended to use this unless you
-> > > +       need to or are morbidly curious.
-> >
-> > Given that it's been the plan to run this for KernelCI, I'm not sure
-> > we should discourage it in general to quite this
-> > extent. I think it is broken at the moment, though, so that's
-> > nevertheless worth noting.
->
-> It was broken for me when I tried as I was writing this up, haven't
-> checked again yet.
-> I think until KernelCI uses it regularly, it's not going to be as easy
-> to keep it working.
->
-> So IMO,
-> * KernelCI and other automation should try and use it
-> * we shouldn't necessarily encourage a human to go and try it at this time
->   * or maybe never: this basically eliminates one of the biggest
-> selling points: the fast edit/compile/test cycle that KUnit on UML
-> has.
->
-> So how about something like:
->
-> This will take a *lot* longer to run and might be broken from time to time.
-> You'll probably be better off just building and running the tests you
-> care about if you need to do so more than once.
+> > +	netif_set_real_num_tx_queues(ndev, apc->num_queues);
+> > +
+> > +	err =3D mana_add_rx_queues(apc, ndev);
+> > +	if (err)
+> > +		goto destroy_vport;
+> > +
+> > +	apc->rss_state =3D apc->num_queues > 1 ? TRI_STATE_TRUE :
+> TRI_STATE_FALSE;
+> > +
+> > +	netif_set_real_num_rx_queues(ndev, apc->num_queues);
+>=20
+> netif_set_real_num_.. can fail.
 
-Sounds good to me.
+Will fix the error handling.
 
-> > > +
-> > > +Generating code coverage reports under UML
-> > > +------------------------------------------
-> > > +
-> > > +.. note::
-> > > +       TODO(brendanhiggins@google.com): There are various issues with UML and
-> > > +       versions of gcc 7 and up. You're likely to run into missing ``.gcda``
-> > > +       files or compile errors. We know one `faulty GCC commit
-> > > +       <https://github.com/gcc-mirror/gcc/commit/8c9434c2f9358b8b8bad2c1990edf10a21645f9d>`_
-> > > +       but not how we'd go about getting this fixed. The compile errors still
-> > > +       need some investigation.
-> > > +
-> > > +.. note::
-> > > +       TODO(brendanhiggins@google.com): for recent versions of Linux
-> > > +       (5.10-5.12, maybe earlier), there's a bug with gcov counters not being
-> > > +       flushed in UML. This translates to very low (<1%) reported coverage. This is
-> > > +       related to the above issue and can be worked around by replacing the
-> > > +       one call to ``uml_abort()`` with a plain ``exit()``.
-> >
-> > Can we be more specific than 'the one call' here? I know there is only
-> > one call, but maybe noting that it's in arch/um/os-Linux/util.c will
-> > make this clearer.
->
-> Yeah, here's only one call, so I thought leaving it more vague in case
-> the file gets renamed or w/e would be safer.
->
-> But yeah, if adding something more here makes it more clear, I can do that.
-> Hmm, looks like the function that calls it, os_dump_core(void) is
-> currently unique.
-> Thoughts on referring to that instead of the filename (I'm not sure
-> that either is meaningfully less likely to change)?
->
-> >
-> > > +
-> > > +
-> > > +This is different from the "normal" way of getting coverage information that is
-> > > +documented in Documentation/dev-tools/gcov.rst.
-> > > +
-> > > +Instead of enabling ``CONFIG_GCOV_KERNEL=y``, we can set these options:
-> > > +
-> > > +.. code-block:: none
-> > > +
-> > > +       CONFIG_DEBUG_KERNEL=y
-> > > +       CONFIG_DEBUG_INFO=y
-> > > +       CONFIG_GCOV=y
-> > > +
-> > > +
-> > > +Putting it together into a copy-pastable sequence of commands:
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +       # Append coverage options to the current config
-> > > +       $ echo -e "CONFIG_DEBUG_KERNEL=y\nCONFIG_DEBUG_INFO=y\nCONFIG_GCOV=y" >> .kunit/.kunitconfig
-> > > +       $ ./tools/testing/kunit/kunit.py run
-> > > +       # Extract the coverage information from the build dir (.kunit/)
-> > > +       $ lcov -t "my_kunit_tests" -o coverage.info -c -d .kunit/
-> > > +
-> > > +       # From here on, it's the same process as with CONFIG_GCOV_KERNEL=y
-> > > +       # E.g. can generate an HTML report in a tmp dir like so:
-> > > +       $ genhtml -o /tmp/coverage_html coverage.info
-> > > +
-> > > +
-> > > +If your installed version of gcc doesn't work, you can tweak the steps:
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +       # need to edit tools/testing/kunit/kunit_kernel.py to call make with 'CC=/usr/bin/gcc-6'
-> > > +       $ $EDITOR tools/testing/kunit/kunit_kernel.py
-> > > +
-> > > +       $ lcov -t "my_kunit_tests" -o coverage.info -c -d .kunit/ --gcov-tool=/usr/bin/gcov-6
-> > > +
-> > > +
-> > > +Running tests manually
-> > > +======================
-> > > +
-> > > +Running tests without using ``kunit.py run`` is also an important use case.
-> > > +Currently it's your only option if you want to test on architectures other than
-> > > +UML.
-> > > +
-> > > +As running the tests under UML is fairly straightforward (configure and compile
-> > > +the kernel, run the ``./linux`` binary), this section will focus on testing
-> > > +non-UML architectures.
-> > > +
-> > > +
-> > > +Running built-in tests
-> > > +----------------------
-> > > +
-> > > +When setting tests to ``=y``, the tests will run as part of boot and print
-> > > +results to dmesg in TAP format. So you just need to add your tests to your
-> > > +``.config``, build and boot your kernel as normal.
-> > > +
-> > > +So if we compiled our kernel with:
-> > > +
-> > > +.. code-block:: none
-> > > +
-> > > +       CONFIG_KUNIT=y
-> > > +       CONFIG_KUNIT_EXAMPLE_TEST=y
-> > > +
-> > > +Then we'd see output like this in dmesg signaling the test ran and passed:
-> > > +
-> > > +.. code-block:: none
-> > > +
-> > > +       TAP version 14
-> > > +       1..1
-> > > +           # Subtest: example
-> > > +           1..1
-> > > +           # example_simple_test: initializing
-> > > +           ok 1 - example_simple_test
-> > > +       ok 1 - example
-> > > +
-> > > +Running tests as modules
-> > > +------------------------
-> > > +
-> > > +Depending on the tests, you can build them as loadable modules.
-> > > +
-> > > +For example, we'd change the config options from before to
-> > > +
-> > > +.. code-block:: none
-> > > +
-> > > +       CONFIG_KUNIT=y
-> > > +       CONFIG_KUNIT_EXAMPLE_TEST=m
-> > > +
-> > > +Then after booting into our kernel, we can run the test via
-> > > +
-> > > +.. code-block:: none
-> > > +
-> > > +       $ modprobe kunit-example-test
-> > > +
-> > > +This will then cause it to print TAP output to stdout.
-> > > +
-> > > +.. note::
-> > > +       The ``modprobe`` will *not* have a non-zero exit code if any test
-> > > +       failed (as of 5.13). But ``kunit.py parse`` would, see below.
-> > > +
-> > > +.. note::
-> > > +       You can set ``CONFIG_KUNIT=m`` as well, however, some features will not
-> > > +       work and thus some tests might break. Ideally tests would specify they
-> > > +       depend on ``KUNIT=y`` in their ``Kconfig``'s, but this is an edge case
-> > > +       most test authors won't think about.
-> > > +       As of 5.13, the only difference is that ``current->kunit_test`` will
-> > > +       not exist.
-> > > +
-> > > +Pretty-printing results
-> > > +-----------------------
-> > > +
-> > > +You can use ``kunit.py parse`` to parse dmesg for test output and print out
-> > > +results in the same familiar format that ``kunit.py run`` does.
-> >
-> > This also should work for the debugfs files below, so maybe reword
-> > this to either mention that or not explicitly mention dmesg above.
->
-> This won't work, actually :/
-> `kunit.py parse` expects a TAP version header, which doesn't get shown
-> in debugfs.
->
-> It'll just print out the "no tests run!" message.
+> > +	rtnl_lock();
+> > +
+> > +	netdev_lockdep_set_classes(ndev);
+> > +
+> > +	ndev->hw_features =3D NETIF_F_SG | NETIF_F_IP_CSUM |
+> NETIF_F_IPV6_CSUM;
+> > +	ndev->hw_features |=3D NETIF_F_RXCSUM;
+> > +	ndev->hw_features |=3D NETIF_F_TSO | NETIF_F_TSO6;
+> > +	ndev->hw_features |=3D NETIF_F_RXHASH;
+> > +	ndev->features =3D ndev->hw_features;
+> > +	ndev->vlan_features =3D 0;
+> > +
+> > +	err =3D register_netdevice(ndev);
+> > +	if (err) {
+> > +		netdev_err(ndev, "Unable to register netdev.\n");
+> > +		goto destroy_vport;
+> > +	}
+> > +
+> > +	rtnl_unlock();
+> > +
+> > +	return 0;
+> > +destroy_vport:
+> > +	rtnl_unlock();
+>=20
+> Why do you take rtnl_lock() explicitly around this code?
 
-Oh, I forgot about that. We need to fix that. Whoops.
+It looks like there is no good reason, and I guess we just copied
+the code from netvsc_probe(), where the RTNL lock is indeed
+explicitly needed.
 
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +       $ ./tools/testing/kunit/kunit.py parse /var/log/dmesg
-> > > +
-> > > +
-> > > +Retrieving per suite results
-> > > +----------------------------
-> > > +
-> > > +Regardless of how you're running your tests, you can enable
-> > > +``CONFIG_KUNIT_DEBUGFS`` to expose per-suite TAP-formatted results:
-> > > +
-> > > +.. code-block:: none
-> > > +
-> > > +       CONFIG_KUNIT=y
-> > > +       CONFIG_KUNIT_EXAMPLE_TEST=m
-> > > +       CONFIG_KUNIT_DEBUGFS=y
-> > > +
-> > > +The results for each suite will be exposed under
-> > > +``/sys/kernel/debug/kunit/<suite>/results``.
-> > > +So using our example config:
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +       $ modprobe kunit-example-test > /dev/null
-> > > +       $ cat /sys/kernel/debug/kunit/example/results
-> > > +       ... <TAP output> ...
-> > > +
-> > > +       # After removing the module, the corresponding files will go away
-> > > +       $ modprobe -r kunit-example-test
-> > > +       $ cat /sys/kernel/debug/kunit/example/results
-> > > +       /sys/kernel/debug/kunit/example/results: No such file or directory
-> > > +
-> > > +Generating code coverage reports
-> > > +--------------------------------
-> > > +
-> > > +See Documentation/dev-tools/gcov.rst for details on how to do this.
-> > > +
-> > > +The only vaguely KUnit-specific advice here is that you probably want to build
-> > > +your tests as modules. That way you can isolate the coverage from tests from
-> > > +other code executed during boot, e.g.
-> > > +
-> > > +.. code-block:: bash
-> > > +
-> > > +       # Reset coverage counters before running the test.
-> > > +       $ echo 0 > /sys/kernel/debug/gcov/reset
-> > > +       $ modprobe kunit-example-test
-> > > diff --git a/Documentation/dev-tools/kunit/start.rst b/Documentation/dev-tools/kunit/start.rst
-> > > index 0e65cabe08eb..aa56d7ca6bfb 100644
-> > > --- a/Documentation/dev-tools/kunit/start.rst
-> > > +++ b/Documentation/dev-tools/kunit/start.rst
-> > > @@ -236,5 +236,7 @@ Next Steps
-> > >  ==========
-> > >  *   Check out the :doc:`tips` page for tips on
-> > >      writing idiomatic KUnit tests.
-> > > +*   Check out the :doc:`running_tips` page for tips on
-> > > +    how to make running KUnit tests easier.
-> > >  *   Optional: see the :doc:`usage` page for a more
-> > >      in-depth explanation of KUnit.
-> > >
-> > > base-commit: de2fcb3e62013738f22bbb42cbd757d9a242574e
-> > > --
-> > > 2.31.1.295.g9ea45b61b8-goog
-> > >
+Will change to directly use register_netdev(), which gets and
+release the RTNL lock automatically.
+
+> > +static int mana_set_channels(struct net_device *ndev,
+> > +			     struct ethtool_channels *channels)
+> > +{
+> > +	struct ana_port_context *apc =3D netdev_priv(ndev);
+> > +	unsigned int new_count;
+> > +	unsigned int old_count;
+> > +	int err, err2;
+> > +
+> > +	new_count =3D channels->combined_count;
+> > +	old_count =3D apc->num_queues;
+> > +
+> > +	if (new_count < 1 || new_count > apc->max_queues ||
+> > +	    channels->rx_count || channels->tx_count ||
+> channels->other_count)
+>=20
+> All these checks should be done by the core already.
+>=20
+> > +		return -EINVAL;
+> > +
+> > +	if (new_count =3D=3D old_count)
+> > +		return 0;
+>=20
+> And so is this one.
+
+Will change the code to avoid unnecessary checking.
+
+Thanks,
+Dexuan
