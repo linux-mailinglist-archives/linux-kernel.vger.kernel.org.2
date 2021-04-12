@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EE835C05A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBC835BE99
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237879AbhDLJM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:12:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49000 "EHLO mail.kernel.org"
+        id S239425AbhDLJAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:00:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238731AbhDLI5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:57:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E18536109E;
-        Mon, 12 Apr 2021 08:56:27 +0000 (UTC)
+        id S238402AbhDLIto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:49:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CE2A61243;
+        Mon, 12 Apr 2021 08:48:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217788;
-        bh=h/E3/eSN70dveWVnv125Bc17TEw0NwoT78li7FhZbN4=;
+        s=korg; t=1618217321;
+        bh=qLAsV6EnQZ410mfAvXEaP21dJEdJ6verPYq8REvQuYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S7vIMPiFHo1lDvLdVii3N9e75zpqDCndTCAuw8G1Js2PX6d+S2paMjNROO/yNpBJr
-         ovHnHg6g4Jt5ZlhVgw7x6JT8/i9VITNMqerhCUMoPfaMRrFsqNY1dN5/E3MzAyt5OW
-         Y8E65ZDyEvzILFNjI/HA52yvX0IBKidehEItM/3Q=
+        b=u/uTaMkF/x9iKjo1cbcIzJBnGOLT47OGattnKuxbe6goHll0x4vNHR6OGwgmFA83e
+         jFG8RNCpV7pyZhWRlAbwOOT8UVp2+2Y19CEgD0Xb7aZX6pGDP8Zuexf+RJbGJY6PJs
+         qgAzfeaaIlHIQ2VIDqolxSTldQAJKV9uw2exQsTg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Lukasz Bartosik <lb@semihalf.com>,
         Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 146/188] clk: fix invalid usage of list cursor in register
-Date:   Mon, 12 Apr 2021 10:41:00 +0200
-Message-Id: <20210412084018.479273518@linuxfoundation.org>
+Subject: [PATCH 5.4 083/111] clk: fix invalid usage of list cursor in unregister
+Date:   Mon, 12 Apr 2021 10:41:01 +0200
+Message-Id: <20210412084007.026729988@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,13 +43,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lukasz Bartosik <lb@semihalf.com>
 
-[ Upstream commit 8d3c0c01cb2e36b2bf3c06a82b18b228d0c8f5d0 ]
+[ Upstream commit 7045465500e465b09f09d6e5bdc260a9f1aab97b ]
 
 Fix invalid usage of a list_for_each_entry cursor in
-clk_notifier_register(). When list is empty or if the list
+clk_notifier_unregister(). When list is empty or if the list
 is completely traversed (without breaking from the loop on one
 of the entries) then the list cursor does not point to a valid
-entry and therefore should not be used.
+entry and therefore should not be used. The patch fixes a logical
+bug that hasn't been seen in pratice however it is analogus
+to the bug fixed in clk_notifier_register().
 
 The issue was dicovered when running 5.12-rc1 kernel on x86_64
 with KASAN enabled:
@@ -68,59 +70,76 @@ Call Trace:
  ? clk_notifier_register+0xab/0x230
  clk_notifier_register+0xab/0x230
  dw8250_probe+0xc01/0x10d4
-...
-Memory state around the buggy address:
- ffffffffa0d10480: 00 00 00 00 00 03 f9 f9 f9 f9 f9 f9 00 00 00 00
- ffffffffa0d10500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9
->ffffffffa0d10580: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
-                      ^
- ffffffffa0d10600: 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9 00 00 00 00
- ffffffffa0d10680: 00 00 00 00 00 00 00 00 f9 f9 f9 f9 00 00 00 00
- ==================================================================
+ ...
+ Memory state around the buggy address:
+  ffffffffa0d10480: 00 00 00 00 00 03 f9 f9 f9 f9 f9 f9 00 00 00 00
+  ffffffffa0d10500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9
+ >ffffffffa0d10580: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
+                          ^
+  ffffffffa0d10600: 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9 00 00 00 00
+  ffffffffa0d10680: 00 00 00 00 00 00 00 00 f9 f9 f9 f9 00 00 00 00
+  ==================================================================
 
 Fixes: b2476490ef11 ("clk: introduce the common clock framework")
 Reported-by: Lukasz Majczak <lma@semihalf.com>
 Signed-off-by: Lukasz Bartosik <lb@semihalf.com>
-Link: https://lore.kernel.org/r/20210401225149.18826-1-lb@semihalf.com
+Link: https://lore.kernel.org/r/20210401225149.18826-2-lb@semihalf.com
 Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ drivers/clk/clk.c | 30 +++++++++++++-----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index f83dac54ed85..dae090124263 100644
+index 5db91903d02b..6ff87cd86712 100644
 --- a/drivers/clk/clk.c
 +++ b/drivers/clk/clk.c
-@@ -4262,20 +4262,19 @@ int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
- 	/* search the list of notifiers for this clk */
- 	list_for_each_entry(cn, &clk_notifier_list, node)
- 		if (cn->clk == clk)
+@@ -4188,32 +4188,28 @@ EXPORT_SYMBOL_GPL(clk_notifier_register);
+  */
+ int clk_notifier_unregister(struct clk *clk, struct notifier_block *nb)
+ {
+-	struct clk_notifier *cn = NULL;
+-	int ret = -EINVAL;
++	struct clk_notifier *cn;
++	int ret = -ENOENT;
+ 
+ 	if (!clk || !nb)
+ 		return -EINVAL;
+ 
+ 	clk_prepare_lock();
+ 
+-	list_for_each_entry(cn, &clk_notifier_list, node)
+-		if (cn->clk == clk)
 -			break;
-+			goto found;
+-
+-	if (cn->clk == clk) {
+-		ret = srcu_notifier_chain_unregister(&cn->notifier_head, nb);
++	list_for_each_entry(cn, &clk_notifier_list, node) {
++		if (cn->clk == clk) {
++			ret = srcu_notifier_chain_unregister(&cn->notifier_head, nb);
  
- 	/* if clk wasn't in the notifier list, allocate new clk_notifier */
--	if (cn->clk != clk) {
--		cn = kzalloc(sizeof(*cn), GFP_KERNEL);
--		if (!cn)
--			goto out;
-+	cn = kzalloc(sizeof(*cn), GFP_KERNEL);
-+	if (!cn)
-+		goto out;
+-		clk->core->notifier_count--;
++			clk->core->notifier_count--;
  
--		cn->clk = clk;
--		srcu_init_notifier_head(&cn->notifier_head);
-+	cn->clk = clk;
-+	srcu_init_notifier_head(&cn->notifier_head);
+-		/* XXX the notifier code should handle this better */
+-		if (!cn->notifier_head.head) {
+-			srcu_cleanup_notifier_head(&cn->notifier_head);
+-			list_del(&cn->node);
+-			kfree(cn);
++			/* XXX the notifier code should handle this better */
++			if (!cn->notifier_head.head) {
++				srcu_cleanup_notifier_head(&cn->notifier_head);
++				list_del(&cn->node);
++				kfree(cn);
++			}
++			break;
+ 		}
+-
+-	} else {
+-		ret = -ENOENT;
+ 	}
  
--		list_add(&cn->node, &clk_notifier_list);
--	}
-+	list_add(&cn->node, &clk_notifier_list);
- 
-+found:
- 	ret = srcu_notifier_chain_register(&cn->notifier_head, nb);
- 
- 	clk->core->notifier_count++;
+ 	clk_prepare_unlock();
 -- 
 2.30.2
 
