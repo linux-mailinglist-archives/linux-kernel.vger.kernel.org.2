@@ -2,80 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA4735C672
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:40:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4630B35C674
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241191AbhDLMlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:41:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238587AbhDLMlH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:41:07 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9495C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:40:49 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id g66-20020a1c39450000b0290125d187ba22so6308507wma.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:40:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mDtDoRs+7JTKmRSNbYm/eoC5RrOrbwKn07hGic3mdK8=;
-        b=rWpSopbfXoidRd+rBu8OzHyrQSkM/8rg+DbhCxV40cfP343hyJOaPcMVGstU61R6HS
-         FB2FfC6o7MQv9Scm43yyGbYMY4eDR26hRa7lMtjQLsMj0aVRtGpPFCTMjzSkZPHGqM1C
-         ludoR4jQjsaAzQvje06u04ytzHvzkLSKkLIzF523OkzNQV+Rabg4BSNY0koV6kmI7yNj
-         9SD/NpA1ohOrGv6jkWGVx/5bXWbyWWLoybs3/aoWgy0fg8yvFSNAWCQGT7Q9AXj8TRdd
-         7+IcHxNf0ahsCTBp2Q9vjkz9Vp7+xAVUYZpzrHyZxK08kFePpDl8i6RiyFmnFRdlLme2
-         PUlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mDtDoRs+7JTKmRSNbYm/eoC5RrOrbwKn07hGic3mdK8=;
-        b=Qn4qBB0A5xlF5xKT5OOXEfEJ3OHiI5BmjdEJEkF9XxWfVIFxTu8AS3p6BrYapxNGyT
-         DN0d0mc6tEMyTYWKuczq3ya7DlK0DyU/6s1SroqO3Ey9W3/EVHBMMJKkkbbxZGLVy+dv
-         E5k/CYx0Zps860oDjhhPmZ5RoOOSFHxtjrvAJaxL/B6AHXhWRa/hUOvmbPE48WGCBrzh
-         ME4NVWFGUmf8eEEvo0AbSHSUKaZlHCsHk2YeqUOBvAX80S+8WbMiTJwrm64q6vQYHAVr
-         CODAHywYlWYhWmfGDynHxyERpROXvduVphj3ExD/mJ1b/8e02qBYmafeTPGCp0eJjQuz
-         llUg==
-X-Gm-Message-State: AOAM533avV4ZIQUYOxqB8nTH5MBFnzffNNq/z24IsYJrBmzMpA4ZCJcW
-        TAVAdINBTepeX0XaXzUunA/PFNMJ/olGnhXuPcM=
-X-Google-Smtp-Source: ABdhPJwwzJV0JxFgyJYKPbig9riaMMb4hkRQqbS7qviEMxuCuPwShBYC81dKvxPFisExlNuFbUS1LVEVUA3QZEcTxAM=
-X-Received: by 2002:a7b:c003:: with SMTP id c3mr26208794wmb.59.1618231248564;
- Mon, 12 Apr 2021 05:40:48 -0700 (PDT)
+        id S241205AbhDLMl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:41:27 -0400
+Received: from mga02.intel.com ([134.134.136.20]:61701 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238587AbhDLMlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:41:25 -0400
+IronPort-SDR: 6UzKYUIJhXWLzmLWeE1H5LrEnou4hYfQu+LM/HJYrJpy1zIuRRMhDXNhyHQ16BTPf12ThDVTGj
+ M8OcOR1wPmRA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9952"; a="181304130"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="181304130"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 05:41:06 -0700
+IronPort-SDR: KUdyBN42O6vDNYNhS4kpcrulY+1eKnyCgPkZ5ZI/O/50WIA6gWvlX2dd2wd4rIIQp6/8gQ+QJT
+ Fel5FIyGPkCg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="521168519"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 12 Apr 2021 05:41:04 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 12 Apr 2021 15:41:03 +0300
+Date:   Mon, 12 Apr 2021 15:41:03 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg KH <greg@kroah.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the usb tree
+Message-ID: <YHQ/37TDNUy5JfV4@kuha.fi.intel.com>
+References: <20210412213655.3776e15e@canb.auug.org.au>
+ <YHQ+oMm7sKKQuWGJ@kroah.com>
 MIME-Version: 1.0
-References: <1617957240-53633-1-git-send-email-tiantao6@hisilicon.com>
- <CAGngYiVfattJKO7npMHTagxNfzU-B=rP3FoZ89_yzy-c=Zw2RQ@mail.gmail.com> <44f55f42-cb52-f705-c40a-6d5c1844f56b@huawei.com>
-In-Reply-To: <44f55f42-cb52-f705-c40a-6d5c1844f56b@huawei.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Mon, 12 Apr 2021 08:40:36 -0400
-Message-ID: <CAGngYiV2dH4nLkFocyL4YkYkL3qu_kyB5ELZbWLeFMjjsFRpwQ@mail.gmail.com>
-Subject: Re: [PATCH] staging: fieldbus: simplify devm_anybuss_host_common_probe
-To:     "tiantao (H)" <tiantao6@huawei.com>
-Cc:     Tian Tao <tiantao6@hisilicon.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHQ+oMm7sKKQuWGJ@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 9:14 PM tiantao (H) <tiantao6@huawei.com> wrote:
->
-> What about doing it like this?
->
-> -static void host_release(struct device *dev, void *res)
-> +static void host_release(void *res)
->   {
-> -       struct anybuss_host **dr = res;
-> -
-> -       anybuss_host_common_remove(*dr);
-> +       anybuss_host_common_remove(res);
->   }
+On Mon, Apr 12, 2021 at 02:35:44PM +0200, Greg KH wrote:
+> On Mon, Apr 12, 2021 at 09:36:55PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > After merging the usb tree, today's linux-next build (x86_64 almodconfig
+> > modules_install) failed like this:
+> > 
+> > depmod: ERROR: Cycle detected: usbcore -> typec -> usbcore
+> > depmod: ERROR: Found 2 modules in dependency cycles!
+> > 
+> > Caused by commit
+> > 
+> >   63cd78617350 ("usb: Link the ports to the connectors they are attached to")
+> > 
+> > I have reverted that commit for today.
+> 
+> Ugh, good catch, odd that 0-day didn't catch that :(
+> 
+> I'll go revert it in my tree as well.  Heikki, can you send a fixed up
+> version when you get a chance?
 
-That looks like it could work. Can you resend as a "proper" patch,
-please? To tell the versions apart, simply specify [PATCH v1] [PATCH
-v2] etc in the patch title/subject line. Then below the patch's "---
-line", add the version history.
+Sure thing.
+
+thanks,
+
+-- 
+heikki
