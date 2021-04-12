@@ -2,238 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0DEE35BC45
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A0A35BC48
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237370AbhDLIfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237350AbhDLIfh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:35:37 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB5A6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 01:35:19 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id z16so8818683pga.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 01:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oy3vCShT4qGlsrqxre4fAKoGNAUMuJSSk8YitEMNRKc=;
-        b=qjBasBO2nrGlfcxtfNYu2EfDOpNBcjO2CBXgqi/o4Tr+mhCoTlNrS6vS5xeJT4O41O
-         xcRk0MYyynCi3/55wqRF/RD1lK/nSYiWWwggsw6wU+yl+OSI7tzM5WpAzIfNhUOaVI37
-         xMiGTjkpOmI+CzqD3u+XjNB0lKqLkp95QS91JIgo7qOIPYFAiV6A/zgi53mXCv0oj/Li
-         0KBTymnYL7KkrMY3UYUZYw3nuYgsJtmZieVoSUdByjQs4SQW9bKMfzQKB780p4c+M12c
-         X6jj9Nff27Gt0k9FKVEpPXU7WKsvs/m3RvpcJHqDypsNzYkd7/NMJE/O/TpM89QBMWtm
-         EfBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oy3vCShT4qGlsrqxre4fAKoGNAUMuJSSk8YitEMNRKc=;
-        b=CgmQW73SfHpqdN6dOdV7XNqLdIn1sTVkXjul/N40nqb3xS79YllEDUn0n/qFa92pLJ
-         MpyLex3linyAygZu4lrmfWRKuOBczMR6gAoDN1Hmy36tilCAUbcrFoqrCu75s4qVg8JK
-         j1ZZYkGj1PSd4t7sa8i/eDOWUNztUOQgclurTEydF6gL7SKq4j59g+NF+xli0GC1b9DQ
-         HomuoaEokiQ3gXE04ehMe0ZlS9SqpiXYR2JoZmoSlDyfdecYn6UKEIlesu49+8Np7rk+
-         D3ejUNV9KXW+zitNSR3F2mCEmzMr6IhU3p2D+fgRVFgNW3ij+9G0UTsx0lxEAxfrA+TH
-         OWIA==
-X-Gm-Message-State: AOAM533HhEsS8QySQk95aJHv57NUqGqlAFok/F+EMg1SuX47ASLD5dPK
-        I39LkNLFwC0ECZg5VfHkLnpNuQ==
-X-Google-Smtp-Source: ABdhPJxPRWcPtLP+iUoPFUhgm3oSDFZhPLwRbx/DlN+KIEy4hBIKaWB7gzolz10PsrKaWS4IX3DAVQ==
-X-Received: by 2002:a65:4006:: with SMTP id f6mr25971228pgp.108.1618216519438;
-        Mon, 12 Apr 2021 01:35:19 -0700 (PDT)
-Received: from localhost ([116.206.101.232])
-        by smtp.gmail.com with ESMTPSA id c14sm9073565pfj.46.2021.04.12.01.35.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 01:35:19 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Steve MacLean <Steve.MacLean@Microsoft.com>,
-        Yonatan Goldschmidt <yonatan.goldschmidt@granulate.io>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 3/3] perf session: Dump PERF_RECORD_TIME_CONV event
-Date:   Mon, 12 Apr 2021 16:34:59 +0800
-Message-Id: <20210412083459.462817-4-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210412083459.462817-1-leo.yan@linaro.org>
-References: <20210412083459.462817-1-leo.yan@linaro.org>
+        id S237385AbhDLIfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:35:54 -0400
+Received: from mail-mw2nam08on2130.outbound.protection.outlook.com ([40.107.101.130]:47520
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237350AbhDLIfv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:35:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TchIH39emyxG+PEIoAldyBDcZ4y75gLE1xwTd21isWFM0SZ08N/Z+QtDskUAduFtO2ruHqyaLa6nSdjeg0WJhz7biIp5HldslaSgKFDt6TtKe1MTOYeIEeS+xD2lIE1LrBnZkOw1Wz0de+VzHsVtQcqYDrYG9c269PyHgu6kTZF8f+SS9p1oBOQfeiXHSfcEUHkzmfNQk5qeO/4QBrrIpkOUeBOCy8w17xU6sMuMWCAGZGsgy8VoK06+D+QTEfic18X6w6K1z51rdhjdkZ8fAjluub+wJZqF/mVC2oRG86lmOTpniQZz3Zz8mcalrwTkIAYcJCVH8Slq/VlFxSCGoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UZI94hHnGZqxgOMxnl8Et2AK29cHRN+NQykRoVlr3fk=;
+ b=dxUS9F2K16jxktGhF4Wcs7R0uQM25DxtwlRIfszq5/Nw8M2/EIZFKR08GsD3L56nLCpftkCwSTcq5tfi6+L4/PpfdpC7jiSHuq6f/6UoQYcDVqZlf9tEufoGQpoZbYBCRCRBl1up/4AyssfTPX/hfV4BAuZHMJJ3lzzP4mhMJlrGMwF6d+txn/IR3N1PbbTkp2aSn+ob0A3KolpVlaOEUGEqn/lEB9alnVF3wCJAopE9iXngEbPidfHMiCBWdSuycXwiRcqqp/hw7Im9k2/9WVmUSnE3mR6OWpkibDgVn4wVrfCjGRMp/vvdUzAMKKoTsGwvWnaxC8XPdPMa+XWCqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UZI94hHnGZqxgOMxnl8Et2AK29cHRN+NQykRoVlr3fk=;
+ b=JrMzg7abxQ8+PW+tBPFNoXSL1fBhsvhyWClZfcibOOGLpuLtFqoINGXEuFZYg1EFWIoKNaGz1dfeRHgh4nc+lGaMPQcMA7MF0WsY6n3CQ/2XqIrU6XgNk+5w8U9BnHzFtcMPSfoxZ8QIhaS0IUvub7yW4DIId+2eDj2K05GzbEM=
+Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
+ (2603:10b6:302:10::24) by MWHPR21MB0142.namprd21.prod.outlook.com
+ (2603:10b6:300:78::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.4; Mon, 12 Apr
+ 2021 08:35:32 +0000
+Received: from MW2PR2101MB0892.namprd21.prod.outlook.com
+ ([fe80::5548:cbd8:43cd:aa3d]) by MW2PR2101MB0892.namprd21.prod.outlook.com
+ ([fe80::5548:cbd8:43cd:aa3d%6]) with mapi id 15.20.4042.010; Mon, 12 Apr 2021
+ 08:35:32 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Leon Romanovsky <leon@kernel.org>
+CC:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Wei Liu <liuwe@microsoft.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "bernd@petrovitsch.priv.at" <bernd@petrovitsch.priv.at>,
+        "rdunlap@infradead.org" <rdunlap@infradead.org>,
+        Shachar Raindel <shacharr@microsoft.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
+Subject: RE: [PATCH v4 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Thread-Topic: [PATCH v4 net-next] net: mana: Add a driver for Microsoft Azure
+ Network Adapter (MANA)
+Thread-Index: AQHXL2/zok+TxRuwHk2RzEnwF60u5qqwht+g
+Date:   Mon, 12 Apr 2021 08:35:32 +0000
+Message-ID: <MW2PR2101MB08920145C271FCEF8D337BE2BF709@MW2PR2101MB0892.namprd21.prod.outlook.com>
+References: <20210412023455.45594-1-decui@microsoft.com>
+ <YHP6s2zagD67Xr0z@unreal>
+In-Reply-To: <YHP6s2zagD67Xr0z@unreal>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=526e3c65-3877-4cfd-888e-135257d4baba;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-04-12T08:07:25Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=microsoft.com;
+x-originating-ip: [2601:600:8b00:6b90:6473:731a:ac25:3e78]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: db2a4a2f-a0c6-4287-3553-08d8fd8defc4
+x-ms-traffictypediagnostic: MWHPR21MB0142:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR21MB014245FD353673FE8B7978ACBF709@MWHPR21MB0142.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: P3AxOMo9WCqBT8f941TbWmYdaozZkioW/dSw9l97Bo+RXyDR1ZVMxfCIPfCu0vggHqkQSmUFs6JHGAOl6sC6Mf9c95YKQKtvs1klpnZ589Lghn1NH8SOTAfWr8ZNCuNZdo05Jrm7oVDtY8mugZ7dUlcm4brbqFZyFC2XdSCyeDSAxvSODTpaVJ6LTKdW66Z8tFjps8Myd0ba7q2xfG4eTodX6LvEE57tkOsaTCucRspfGy9rKCykyDKI1CqQuN+I55RfeVRl4dwU5LPSYNthGUJUueifOosVkNfV/z5If4CI1P1V1GNsH1tEIKQIjE9s/bhGgZWUQX+uojtgALlUnlCAHkCO4lDjReusMRPM6db9Dr40XAXaNdx3NsC5b9vSkDEdq8FRgAti7Q4Y5Z4+s/aQoBPV0tVCQvwCqCGRTrKqJ2TmIoJ//zvInkr0q53dsKmduwqRhzyRk8GOijJPI8txr9nSVSDx+3usSL/JPP1z8uRhdWoNnAwEFQwxz7XdAfGBhoqm7hEXFXAvNY0gDb4cLt8DmPrLov3TSN9fZQzMLjDHialOpTzUdj2jbxFNJqW9Fuv04V7kSMg3NL3DW0noXDx9BfaKMVDG37vV12A=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB0892.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(39860400002)(366004)(136003)(47530400004)(83380400001)(66946007)(71200400001)(10290500003)(478600001)(7416002)(186003)(82960400001)(54906003)(2906002)(5660300002)(53546011)(82950400001)(66476007)(4326008)(86362001)(66556008)(38100700002)(316002)(66446008)(55016002)(8676002)(9686003)(64756008)(6916009)(8936002)(33656002)(6506007)(52536014)(76116006)(8990500004)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?r1WlxYqRbNgtsL038W4tj3enR7dNAVYxMBhKQOWeWJ3H6ORtG5UliKHYZ7ap?=
+ =?us-ascii?Q?N0Kt+R6tVbn7LvAHL1yLMDO7+/MwoxV6OSr8QfZy5/VoRdf4r5XxzqkoY2X/?=
+ =?us-ascii?Q?qrtuGuyEOhdTj38ICpVKH4lMSyqbWqV51op9/q/3pdorAwt4PzneLq4PFbff?=
+ =?us-ascii?Q?cJJrlpRGIYJN3Imc1B+K/1NhFUMHSfDOOPkbX7taWD5yzxH+T1Ql3kcYd5BV?=
+ =?us-ascii?Q?l+dS0W77jxyCT+me/Afii8sxTFNPMvcG/V8BZOsjaCwGJoATuB1dvI9B4fkh?=
+ =?us-ascii?Q?q8RLmEoQQy/5NMyDPX5CT/R7m1KC1KoiB5BPkQSsRDqqT6RHRYxRH/Xs/1RJ?=
+ =?us-ascii?Q?4jj9/qwNXPhxlJKPlRP1kzrUC2ibuVxujo+x1tAmdHsRNyOJKRkLLy7cC9db?=
+ =?us-ascii?Q?O48ScvVHjUFGwTTOkLffsl71eleKHSMrlRPLDU2rehDMtEqH6NyQDjIUR8i9?=
+ =?us-ascii?Q?+MdQmDGNg9ylNp8Lnka4pmWPP9anHCZ65T5WhLK6MApa1cNPTP6ULZmztd+l?=
+ =?us-ascii?Q?NdGoGj4bffkUtqmMk8p/gvyBsaDiqtuoaIqTC6y91ZhtpA0oxL7LJXwuK0V7?=
+ =?us-ascii?Q?2zAq1cfpIAS/Yf3P9l2nUbVdSC83f4JIAwXkZsH9iSK/4o+MAcBNyWKETxRs?=
+ =?us-ascii?Q?FWYG7y3aj1ok2anDtLtP0/hMaTx86DadBuZ72f66h/ZPbgqJQznD0ck20dKI?=
+ =?us-ascii?Q?QgGsamK5+EgfPVEX6eLbRkuTFEG8Ri4PGjGhY9qm+JIIqbDkrZU1zJe2ZGiW?=
+ =?us-ascii?Q?5Qz4rqMytFx63Z1RLoGtwWF17+k0iq2ixdXr8DcNqPukBBXylyIFgUMDO/te?=
+ =?us-ascii?Q?FPQ+4pwkcB4WCQVXodL0Q4uzRCacoWxX8JTrp/Q54TFd9F2IWBHjge6QkJlu?=
+ =?us-ascii?Q?DzS7X0U79NJ/ffDVkjNgCDMY4sXtUtQ1T7I3+BU2PkEM6tBAgCoXbClUpeFs?=
+ =?us-ascii?Q?YnBjcRh7cM3E9w6KHdrl9jb9NLj37DyD1iy1jIE3UDgfSV/GTNKWOMmKd7MM?=
+ =?us-ascii?Q?i2Mf2uDL/AWsfrHQPfE8ujbgY26nbTivyqzLMUWczXN3jtwpQ1e7Srs1orLU?=
+ =?us-ascii?Q?48fzHdbKyOnm/5uk3s1XnSmdu818wnpRsY45SgWHCPcCMNiavJug+t1xWH5p?=
+ =?us-ascii?Q?qjBAKbll1X1+EAbmiKEsIekOLvNS/UNOY3KCWSqriJgG3y3SWD61g3h2oKF3?=
+ =?us-ascii?Q?BNGTF7FE7nve8LoT1zXewsJxZ2glTKe92yZA4WqnDBhlfphY4FVJYb9mnTYP?=
+ =?us-ascii?Q?Mi8CWI0yx6ha/ZgMUiPmfYCk/zt8yieBbmSigNTTurIbCsfUWqOsT6w3hnqa?=
+ =?us-ascii?Q?Jp0nh47JzpUtBnD/j1i4KF8/D4VGZkbEHe/Kj0qdMC3zsUNG60NW0yOSRckU?=
+ =?us-ascii?Q?qWzQSnmWqC+dieqbgFxPD4NhM4Bq?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB0892.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: db2a4a2f-a0c6-4287-3553-08d8fd8defc4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2021 08:35:32.7174
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: q8k/wl8s9MVi3M5SqGN1Ig2qcNpS7uapjYkhEB3IVmw9W0lCsjPST3R2JdSwhJGuO34Yhe00J9Zb6+MPhw92OA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR21MB0142
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now perf tool uses the common stub function process_event_op2_stub() for
-dumping TIME_CONV event, thus it doesn't output the clock parameters
-contained in the event.
+> From: Leon Romanovsky <leon@kernel.org>
+> Sent: Monday, April 12, 2021 12:46 AM
+> To: Dexuan Cui <decui@microsoft.com>
+> > ...
+> > +#define ANA_MAJOR_VERSION	0
+> > +#define ANA_MINOR_VERSION	1
+> > +#define ANA_MICRO_VERSION	1
+>=20
+> Please don't introduce drier versions.
 
-This patch adds the callback function for dumping the hardware clock
-parameters in TIME_CONV event.
+This is not the usual "driver version", though it's called  "drv version" :=
+-)
+As you can see, the driver does not use the macro MODULE_VERSION().
 
-Before:
+Here the "drv version" actually means the version of the VF-to-PF protocol,
+with which the Azure Network Adapter ethernet NIC driver (i.e. the VF drive=
+r)
+talks to the PF driver.  The protocol version determines the formats of the
+messages that are sent from the VF driver to the PF driver, e.g. query the
+MAC address, create Send/Receive queues, configure RSS, etc.
 
-  # perf report -D
+Currently the protocol versin is 0.1.1 You may ask why it's called
+"drv version" rather than "protocol version" -- it's because the PF driver
+calls it that way, so I think here the VF driver may as well use the same
+name. BTW, the "drv ver" info is passed to the PF driver in the below
+function:
 
-  0x978 [0x38]: event: 79
-  .
-  . ... raw event: size 56 bytes
-  .  0000:  4f 00 00 00 00 00 38 00 15 00 00 00 00 00 00 00  O.....8.........
-  .  0010:  00 00 40 01 00 00 00 00 86 89 0b bf df ff ff ff  ..@........<BF><DF><FF><FF><FF>
-  .  0020:  d1 c1 b2 39 03 00 00 00 ff ff ff ff ff ff ff 00  <D1><C1><B2>9....<FF><FF><FF><FF><FF><FF><FF>.
-  .  0030:  01 01 00 00 00 00 00 00                          ........
+static int mana_query_client_cfg(struct ana_context *ac, u32 drv_major_ver,
+                                 u32 drv_minor_ver, u32 drv_micro_ver,
+                                 u16 *max_num_vports)
+{
+        struct gdma_context *gc =3D ac->gdma_dev->gdma_context;
+        struct ana_query_client_cfg_resp resp =3D {};
+        struct ana_query_client_cfg_req req =3D {};
+        struct device *dev =3D gc->dev;
+        int err =3D 0;
 
-  0 0 0x978 [0x38]: PERF_RECORD_TIME_CONV
-  : unhandled!
+        mana_gd_init_req_hdr(&req.hdr, ANA_QUERY_CLIENT_CONFIG,
+                             sizeof(req), sizeof(resp));
+        req.drv_major_ver =3D drv_major_ver;
+        req.drv_minor_ver =3D drv_minor_ver;
+        req.drv_micro_ver =3D drv_micro_ver;
 
-  [...]
+        err =3D mana_send_request(ac, &req, sizeof(req), &resp, sizeof(resp=
+));
 
-After:
-
-  # perf report -D
-
-  0x978 [0x38]: event: 79
-  .
-  . ... raw event: size 56 bytes
-  .  0000:  4f 00 00 00 00 00 38 00 15 00 00 00 00 00 00 00  O.....8.........
-  .  0010:  00 00 40 01 00 00 00 00 86 89 0b bf df ff ff ff  ..@........<BF><DF><FF><FF><FF>
-  .  0020:  d1 c1 b2 39 03 00 00 00 ff ff ff ff ff ff ff 00  <D1><C1><B2>9....<FF><FF><FF><FF><FF><FF><FF>.
-  .  0030:  01 01 00 00 00 00 00 00                          ........
-
-  0 0 0x978 [0x38]: PERF_RECORD_TIME_CONV
-  ... Time Shift      21
-  ... Time Muliplier  20971520
-  ... Time Zero       18446743935180835206
-  ... Time Cycles     13852918225
-  ... Time Mask       0xffffffffffffff
-  ... Cap Time Zero   1
-  ... Cap Time Short  1
-  : unhandled!
-
-  [...]
-
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- tools/perf/util/session.c | 13 ++++++++++++-
- tools/perf/util/tsc.c     | 31 +++++++++++++++++++++++++++++++
- tools/perf/util/tsc.h     |  4 ++++
- 3 files changed, 47 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index afca3d5fc851..19a0b2bc5f33 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -29,6 +29,7 @@
- #include "thread-stack.h"
- #include "sample-raw.h"
- #include "stat.h"
-+#include "tsc.h"
- #include "ui/progress.h"
- #include "../perf.h"
- #include "arch/common.h"
-@@ -451,6 +452,16 @@ static int process_stat_round_stub(struct perf_session *perf_session __maybe_unu
- 	return 0;
- }
- 
-+static int process_event_time_conv_stub(struct perf_session *perf_session __maybe_unused,
-+					union perf_event *event)
-+{
-+	if (dump_trace)
-+		perf_event__fprintf_time_conv(event, stdout);
-+
-+	dump_printf(": unhandled!\n");
-+	return 0;
-+}
-+
- static int perf_session__process_compressed_event_stub(struct perf_session *session __maybe_unused,
- 						       union perf_event *event __maybe_unused,
- 						       u64 file_offset __maybe_unused)
-@@ -532,7 +543,7 @@ void perf_tool__fill_defaults(struct perf_tool *tool)
- 	if (tool->stat_round == NULL)
- 		tool->stat_round = process_stat_round_stub;
- 	if (tool->time_conv == NULL)
--		tool->time_conv = process_event_op2_stub;
-+		tool->time_conv = process_event_time_conv_stub;
- 	if (tool->feature == NULL)
- 		tool->feature = process_event_op2_stub;
- 	if (tool->compressed == NULL)
-diff --git a/tools/perf/util/tsc.c b/tools/perf/util/tsc.c
-index 62b4c75c966c..e2a2c63e5189 100644
---- a/tools/perf/util/tsc.c
-+++ b/tools/perf/util/tsc.c
-@@ -1,5 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <errno.h>
-+#include <inttypes.h>
-+#include <string.h>
- 
- #include <linux/compiler.h>
- #include <linux/perf_event.h>
-@@ -110,3 +112,32 @@ u64 __weak rdtsc(void)
- {
- 	return 0;
- }
-+
-+size_t perf_event__fprintf_time_conv(union perf_event *event, FILE *fp)
-+{
-+	struct perf_record_time_conv *tc = (struct perf_record_time_conv *)event;
-+	size_t ret;
-+
-+	ret  = fprintf(fp, "\n... Time Shift      %" PRI_lu64 "\n", tc->time_shift);
-+	ret += fprintf(fp, "... Time Muliplier  %" PRI_lu64 "\n", tc->time_mult);
-+	ret += fprintf(fp, "... Time Zero       %" PRI_lu64 "\n", tc->time_zero);
-+
-+	/*
-+	 * The event TIME_CONV was extended for the fields from "time_cycles"
-+	 * when supported cap_user_time_short, for backward compatibility,
-+	 * checks the event size and prints these extended fields if these
-+	 * fields are contained in the perf data file.
-+	 */
-+	if (tc->header.size > ((void *)&tc->time_cycles - (void *)tc)) {
-+		ret += fprintf(fp, "... Time Cycles     %" PRI_lu64 "\n",
-+			       tc->time_cycles);
-+		ret += fprintf(fp, "... Time Mask       %#" PRI_lx64 "\n",
-+			       tc->time_mask);
-+		ret += fprintf(fp, "... Cap Time Zero   %" PRId32 "\n",
-+			       tc->cap_user_time_zero);
-+		ret += fprintf(fp, "... Cap Time Short  %" PRId32 "\n",
-+			       tc->cap_user_time_short);
-+	}
-+
-+	return ret;
-+}
-diff --git a/tools/perf/util/tsc.h b/tools/perf/util/tsc.h
-index 72a15419f3b3..7d83a31732a7 100644
---- a/tools/perf/util/tsc.h
-+++ b/tools/perf/util/tsc.h
-@@ -4,6 +4,8 @@
- 
- #include <linux/types.h>
- 
-+#include "event.h"
-+
- struct perf_tsc_conversion {
- 	u16 time_shift;
- 	u32 time_mult;
-@@ -24,4 +26,6 @@ u64 perf_time_to_tsc(u64 ns, struct perf_tsc_conversion *tc);
- u64 tsc_to_perf_time(u64 cyc, struct perf_tsc_conversion *tc);
- u64 rdtsc(void);
- 
-+size_t perf_event__fprintf_time_conv(union perf_event *event, FILE *fp);
-+
- #endif // __PERF_TSC_H
--- 
-2.25.1
+Thanks,
+Dexuan
 
