@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A2D35D34A
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:42:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7058535D352
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343784AbhDLWl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 18:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50134 "EHLO
+        id S244501AbhDLWns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 18:43:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238901AbhDLWly (ORCPT
+        with ESMTP id S238901AbhDLWnr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 18:41:54 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0519AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 15:41:35 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id n8so24070620lfh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 15:41:34 -0700 (PDT)
+        Mon, 12 Apr 2021 18:43:47 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6404C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 15:43:28 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id t22so6830802ply.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 15:43:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/iPFYpM8U8YAYL+pLbcF7F940OQ0/rVhVKPimki0rlo=;
-        b=jv0622WMCHjGaPjH2D8hxMJXGW2oB6dQIxWdckkLvueqiZgtyGLe4ubIOLTcuOpQYW
-         inGGnz0iyBqJVZy5JJS3dFJr8Rmqb3fWsUXBYvvpoEJlKZlRhwPgu49AVJ23U+okpaHd
-         wpr4g5YBylr/rCPN1QkR7rUdZblYbqUpw1uNwhGx7id33AGJJIzK3Slc8F8GCvdJfDTA
-         Qk8jdxjB64UyHDbjYG9zE1Yt9ixTz2RPR9cH6j63S2kBCdWFqFal9ZQcs/+JzJCZdRWi
-         +z/LvGsdKIcDUiunTXtrhh5lyDd3RGtuxmfUNqpaV+Nqev1vbWVfKssPH2Ic+7oUWLtA
-         0Q4w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LC3H1cpiJHCBM+DlZ2l4WxoB82Db8dlZgy3XW4iJx9k=;
+        b=MruJg+xuFzaCytSuuv12vMblzQ7q5GzuCNFQGcXm+Nt1n0/BwllA6IzRBNEJfkPUFp
+         AV6TMTGTvKWCJj+yl+J4zzuhWSgZ9GyY2jNqkKR6gRxOhlJFnTkl8g8axTdSR4j+edTX
+         oE9mdIlsknxxUQT0/Z908lxQ05Dv0f/JULOMHTPTBvQQCQFE0TbcPNjDzooOgtEs4tl4
+         Ko0JzSNHOJCz50R47sGq+nEiYnuCliROrrWM5su1fPVKFtl1sHxaiR9kxxAs0uUbvcr1
+         xRQliwJO05PcRTOWdZXgMrGuK3Ejx2TEBUGySdj7T3FZ8mW+7fsfClLGtQVN1HakKk1k
+         DiMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/iPFYpM8U8YAYL+pLbcF7F940OQ0/rVhVKPimki0rlo=;
-        b=cGDEpUrixY5ElcAALmgJ3JhNgxAKQGosWhCQYFF99pPVgpEXZ3ethdrsV2nb4aEFRp
-         Rak8+uRtewWc3oVwOtmLHrBPoF3UI9y/H9VlimOWp7MHJMhLXlbmD8GUwnmaTIw3HCTJ
-         J/fQWAtBTXhU9g+S3Wao8PDPx8NzC33DHpoxZQwbssnGTgkBeBbTGmQMQQ6rUMXRjb1+
-         s1866faibx6bUPFatReW7Rz8JArzi8Tb/M24aIoegdc8cv7N09PhmW97PUsrkLZTJ9tx
-         cFxQI1brYPbx6WMKY0EhXeik07M3Qe5x602m8ZS0nk0PtYZCpDOH3aiAoiZn8l3XRzUQ
-         TjHA==
-X-Gm-Message-State: AOAM5329kNXKTEk/aZ6uILxTJYNrhYpzE9RN7v6JlodSapZFyltLC/Pq
-        dNO25X/0L0D8jIngWZHxmATWx3b2PaHetWTO8V2avQ==
-X-Google-Smtp-Source: ABdhPJzg1qPbVONMsmRIB7R4rxaliajn6pTRcvSuzCIrtTpHQF1qTkrw43RuBDGnhY/t9NmT+ycuJTh27+DQXa0NSv0=
-X-Received: by 2002:a19:ac09:: with SMTP id g9mr3896720lfc.547.1618267293232;
- Mon, 12 Apr 2021 15:41:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210412214210.6e1ecca9cdc5.I24459763acf0591d5e6b31c7e3a59890d802f79c@changeid>
-In-Reply-To: <20210412214210.6e1ecca9cdc5.I24459763acf0591d5e6b31c7e3a59890d802f79c@changeid>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 12 Apr 2021 15:41:21 -0700
-Message-ID: <CAKwvOd=HiYvFAO5BKuvx8=N9aCC88ukOTrwZkDQzuQUbqK4g_w@mail.gmail.com>
-Subject: Re: [PATCH] gcov: clang: fix clang-11+ build
-To:     Johannes Berg <johannes@sipsolutions.net>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LC3H1cpiJHCBM+DlZ2l4WxoB82Db8dlZgy3XW4iJx9k=;
+        b=kIcq6nY6f+u2Sn7y0InjyvpWAYlOgeb6KlycqUSoZQvoPZrVRG2tkw1QAtdq/ScIIA
+         WGyk18cWgDimK1GWl4p+guG2NyE3khZHiIgo0cZp5Y/lWZSlCvRntM88s9zNFlIvdWqc
+         HY9tTtuqsoUOgwMGHZVWQKMO1pAKVei+ZgYuubNLVAqKt3EzcXAHKXb8XdWqeZFX5M24
+         yprxwy1KT4UHkh3Mi0jeE59Uu70EF6rRsvH2274FMnPrjwlEp10MX68PGAWy5jUnETgq
+         XqOi7arojF6hvpjaaM/U1qjDJtuhQXkKn8nK7KMI++YRDBGsOZSIBLF1xxmgathgaerB
+         L8Mw==
+X-Gm-Message-State: AOAM531s++a9Fs4yd+G3dpbvjZwdZO3d0SvJkIkGnqTVE4mLddFx2aCR
+        gjCxH9z4h/J1DRe6hj8V14hI+DBsX7fkRTs=
+X-Google-Smtp-Source: ABdhPJwN10UL2cdw3PwNpnbgdfVEgC35BRL0gAtn7CD1Gdwxrf1MoEjZe0CkpRgEUYHu3ff4Ofz0vw==
+X-Received: by 2002:a17:90b:1e50:: with SMTP id pi16mr1514048pjb.24.1618267407516;
+        Mon, 12 Apr 2021 15:43:27 -0700 (PDT)
+Received: from localhost.localdomain (h175-177-040-153.catv02.itscom.jp. [175.177.40.153])
+        by smtp.gmail.com with ESMTPSA id l25sm13365373pgu.72.2021.04.12.15.43.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 15:43:27 -0700 (PDT)
+From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
+To:     linux-mm@kvack.org, Tony Luck <tony.luck@intel.com>,
+        Aili Yao <yaoaili@kingsoft.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johannes Berg <johannes.berg@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/3] mm,hwpoison: fix sending SIGBUS for Action Required MCE
+Date:   Tue, 13 Apr 2021 07:43:17 +0900
+Message-Id: <20210412224320.1747638-1-nao.horiguchi@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:42 PM Johannes Berg
-<johannes@sipsolutions.net> wrote:
->
-> From: Johannes Berg <johannes.berg@intel.com>
->
-> With clang-11+, the code is broken due to my kvmalloc() conversion
-> (which predated the clang-11 support code) leaving one vmalloc()
-> in place. Fix that.
->
-> Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-> ---
-> This fixes a clang-11 build issue reported against current
-> linux-next since the clang-11+ support landed in v5.12-rc5
+Hi,
 
-Thanks for the patch, and noticing the breakage so quickly.  I
-recently added GCOV to our CI, but I've been fighting enough fires
-this morning that I haven't had time to check this particular build!
+I wrote this patchset to materialize what I think is the current
+allowable solution mentioned by the previous discussion [1].
+I simply borrowed Tony's mutex patch and Aili's return code patch,
+then I queued another one to find error virtual address in the best
+effort manner.  I know that this is not a perfect solution, but
+should work for some typical case.
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+My simple testing showed this patchset seems to work as intended,
+but if you have the related testcases, could you please test and
+let me have some feedback?
 
-> and my kvmalloc() conversion patch is in akpm/linux-next.
-> I guess this should be folded into
->
->   gcov: use kvmalloc()
->
-> If desired, I can send a combined patch instead.
-> ---
->  kernel/gcov/clang.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/gcov/clang.c b/kernel/gcov/clang.c
-> index 04a65443005d..d43ffd0c5ddb 100644
-> --- a/kernel/gcov/clang.c
-> +++ b/kernel/gcov/clang.c
-> @@ -368,7 +368,7 @@ static struct gcov_fn_info *gcov_fn_info_dup(struct gcov_fn_info *fn)
->         INIT_LIST_HEAD(&fn_dup->head);
->
->         cv_size = fn->num_counters * sizeof(fn->counters[0]);
-> -       fn_dup->counters = vmalloc(cv_size);
-> +       fn_dup->counters = kvmalloc(cv_size, GFP_KERNEL);
->         if (!fn_dup->counters) {
->                 kfree(fn_dup);
->                 return NULL;
-> --
-> 2.30.2
->
-
-
--- 
 Thanks,
-~Nick Desaulniers
+Naoya Horiguchi
+
+[1]: https://lore.kernel.org/linux-mm/20210331192540.2141052f@alex-virtual-machine/
+---
+Summary:
+
+Aili Yao (1):
+      mm,hwpoison: return -EHWPOISON when page already
+
+Naoya Horiguchi (1):
+      mm,hwpoison: add kill_accessing_process() to find error virtual address
+
+Tony Luck (1):
+      mm/memory-failure: Use a mutex to avoid memory_failure() races
+
+ arch/x86/kernel/cpu/mce/core.c |  13 +++-
+ include/linux/swapops.h        |   5 ++
+ mm/memory-failure.c            | 166 ++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 178 insertions(+), 6 deletions(-)
