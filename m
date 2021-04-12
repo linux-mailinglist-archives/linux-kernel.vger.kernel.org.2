@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8FD235C034
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5432B35C0E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241044AbhDLJL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:11:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49588 "EHLO mail.kernel.org"
+        id S241901AbhDLJRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:17:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238229AbhDLI4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:56:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3B5861243;
-        Mon, 12 Apr 2021 08:56:00 +0000 (UTC)
+        id S239248AbhDLI7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:59:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF3656124A;
+        Mon, 12 Apr 2021 08:57:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217761;
-        bh=E4On03olDXlXaD6Da4m40Fka5Ezpp6tXS7AB3kXFs14=;
+        s=korg; t=1618217880;
+        bh=zEs6qZ4263wSVrtfbUIoIe90QZ4xax8D8J7RVOG9M5s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cg7NEZAx4g4euB7Lhp0BuPD/JDibJfbFhPwqw1XfC+M66qrLb5bE1C6J1kvjkSN7K
-         K2dceQWTOxdEjjBVDCUljJpeDXIxWLiWo36g2bHcpsklH1vaZaHZ8+EP3JFXibfWav
-         gL5s81hwEt1zuIgax/UjmTzdKcFVX6mJTXscIMiM=
+        b=RVH1tew2oLkgzsSL2TkVDv3shT3pfM6s2FNOwbSKyLZEI9XDF9tFOs3sPcpDAZZah
+         tsfAfJW8WgwwzWeV8PGGArMWKNC8KGlygw5cAIFQigxmts/4HFXbZtgmF+HEiG/vxa
+         NQKpB6Ob5B0yC9TOnflvSDu2MHgFKRnXRBPx8Raw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        =?UTF-8?q?H=C3=A5kon=20Bugge?= <haakon.bugge@oracle.com>,
+        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 134/188] net/rds: Fix a use after free in rds_message_map_pages
-Date:   Mon, 12 Apr 2021 10:40:48 +0200
-Message-Id: <20210412084018.096557943@linuxfoundation.org>
+Subject: [PATCH 5.10 135/188] xdp: fix xdp_return_frame() kernel BUG throw for page_pool memory model
+Date:   Mon, 12 Apr 2021 10:40:49 +0200
+Message-Id: <20210412084018.127006852@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -41,40 +41,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Ong Boon Leong <boon.leong.ong@intel.com>
 
-[ Upstream commit bdc2ab5c61a5c07388f4820ff21e787b4dfd1ced ]
+[ Upstream commit 622d13694b5f048c01caa7ba548498d9880d4cb0 ]
 
-In rds_message_map_pages, the rm is freed by rds_message_put(rm).
-But rm is still used by rm->data.op_sg in return value.
+xdp_return_frame() may be called outside of NAPI context to return
+xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
+napi_direct = false. For page_pool memory model, __xdp_return() calls
+xdp_return_frame_no_direct() unconditionally and below false negative
+kernel BUG throw happened under preempt-rt build:
 
-My patch assigns ERR_CAST(rm->data.op_sg) to err before the rm is
-freed to avoid the uaf.
+[  430.450355] BUG: using smp_processor_id() in preemptible [00000000] code: modprobe/3884
+[  430.451678] caller is __xdp_return+0x1ff/0x2e0
+[  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E     5.12.0-rc2+ #45
 
-Fixes: 7dba92037baf3 ("net/rds: Use ERR_PTR for rds_message_alloc_sgs()")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Reviewed-by: Håkon Bugge <haakon.bugge@oracle.com>
+Changes in v2:
+ - This patch fixes the issue by making xdp_return_frame_no_direct() is
+   only called if napi_direct = true, as recommended for better by
+   Jesper Dangaard Brouer. Thanks!
+
+Fixes: 2539650fadbf ("xdp: Helpers for disabling napi_direct of xdp_return_frame")
+Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/rds/message.c | 3 ++-
+ net/core/xdp.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/rds/message.c b/net/rds/message.c
-index 071a261fdaab..799034e0f513 100644
---- a/net/rds/message.c
-+++ b/net/rds/message.c
-@@ -347,8 +347,9 @@ struct rds_message *rds_message_map_pages(unsigned long *page_addrs, unsigned in
- 	rm->data.op_nents = DIV_ROUND_UP(total_len, PAGE_SIZE);
- 	rm->data.op_sg = rds_message_alloc_sgs(rm, num_sgs);
- 	if (IS_ERR(rm->data.op_sg)) {
-+		void *err = ERR_CAST(rm->data.op_sg);
- 		rds_message_put(rm);
--		return ERR_CAST(rm->data.op_sg);
-+		return err;
- 	}
- 
- 	for (i = 0; i < rm->data.op_nents; ++i) {
+diff --git a/net/core/xdp.c b/net/core/xdp.c
+index d900cebc0acd..b8d7fa47d293 100644
+--- a/net/core/xdp.c
++++ b/net/core/xdp.c
+@@ -349,7 +349,8 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
+ 		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
+ 		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
+ 		page = virt_to_head_page(data);
+-		napi_direct &= !xdp_return_frame_no_direct();
++		if (napi_direct && xdp_return_frame_no_direct())
++			napi_direct = false;
+ 		page_pool_put_full_page(xa->page_pool, page, napi_direct);
+ 		rcu_read_unlock();
+ 		break;
 -- 
 2.30.2
 
