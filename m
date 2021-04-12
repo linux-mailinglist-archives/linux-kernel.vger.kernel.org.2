@@ -2,180 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93D035BE90
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2373B35BE97
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239259AbhDLI7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:59:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56297 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238097AbhDLIrt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:47:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618217249;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+ZVzewdg79RzKFsnnpj3toO21U2g5cN2oMm8eONJYHY=;
-        b=J8rsO5dXvzCFlWjwK5h0bjoSsjLBgovY9Oeb191zVNoScFbR0elUw2vPuawKm9yHrb7ODT
-        qKIs7Lu7//7FfQSuLZc7LSGxcO1n2lfDeY+TjSgVTxceLAAqAxqOSZGtvSCRBPr5lLrisW
-        63vAitL7U+8fQ7t2pTwOMIjWGAcAIwM=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-593-3IC6GzGoP_aXuKCuUJ_RAA-1; Mon, 12 Apr 2021 04:47:28 -0400
-X-MC-Unique: 3IC6GzGoP_aXuKCuUJ_RAA-1
-Received: by mail-wr1-f71.google.com with SMTP id z6so5709948wrh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 01:47:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=+ZVzewdg79RzKFsnnpj3toO21U2g5cN2oMm8eONJYHY=;
-        b=UFf+sThDmmHtQW+V0DqP6mE29kMIIDhSCWmywJEezi999bqdKQRtduEuRi6f82jogb
-         RnKyZhhmq5CdRIg8IsK3Kkuw+GsGqHQ0CGc16EmrTNYbGPLOPcA6QGIN7ttdYcBNzOKc
-         vsPgFEZ8kL4pm9fH8zlaNtR8/Wp7Agii6wQmAuPBw0CTXvdPZLuymNphviaLsoJAX4fy
-         bhTyqFnYr6dsQO8QGS8I04yWYetFji1C6O2SazlYAtNVq220Hbkn4waLjo4isiQmf1t0
-         A5ThEbfOErz650ztecGEOM94Xp0bSZ2RbKYVBUpc+knFTDnw4jLU8h1EaY2/rgDuZpQo
-         Os+Q==
-X-Gm-Message-State: AOAM53376Qyt2H4ISEjJoRX3f+WFHwb9XtZCM8Il7jEeCyzi3zDbr6x3
-        lGr1Bj9nOzxD7CvS+T7EsY57I8qpk/c13m9QtAv5ykKM0k3pyGDbhi2dApDTUAgI9VAgh/dJ7qC
-        S4Kv66Pg/7+JRImVcCz9sEpmb
-X-Received: by 2002:a05:600c:4482:: with SMTP id e2mr619414wmo.121.1618217247180;
-        Mon, 12 Apr 2021 01:47:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxx4EM0F3QJf++u7/wgOu5mPjOoaJFUsv/zcyrlmWMxAjz9nri7Al51/O7Rz2gFFz2XuY2fYQ==
-X-Received: by 2002:a05:600c:4482:: with SMTP id e2mr619402wmo.121.1618217246983;
-        Mon, 12 Apr 2021 01:47:26 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c66cb.dip0.t-ipconnect.de. [91.12.102.203])
-        by smtp.gmail.com with ESMTPSA id g5sm15937930wrq.30.2021.04.12.01.47.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 01:47:26 -0700 (PDT)
-To:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
-        akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org,
-        "linuxppc-dev @ lists . ozlabs . org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <1618199302-29335-1-git-send-email-anshuman.khandual@arm.com>
- <09284b9a-cfe1-fc49-e1f6-3cf0c1b74c76@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH V2] mm/page_alloc: Ensure that HUGETLB_PAGE_ORDER is less
- than MAX_ORDER
-Message-ID: <162877dd-e6ba-d465-d301-2956bb034429@redhat.com>
-Date:   Mon, 12 Apr 2021 10:47:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S239386AbhDLJAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:00:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36784 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238328AbhDLItb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:49:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D155F61379;
+        Mon, 12 Apr 2021 08:48:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618217313;
+        bh=eLznHwvEfmec088sW414tCcwJZyAy1dqSqy3r+pI7zc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uey+W82dISxV0CSUCEiP+7gx9QuEZBJfcRoFlSMpkmrDlRAJJ0xVAOCsY94BkROLO
+         zR/I466PgDid3faek70DuVNVg7noHojv66W6cwsIyY2yvu9Lt2qRuc9nGzCIxgZBXn
+         b+pFwRet18DXS13aa8a0O4MFYM9FTwIPGTmzP+TKLFSBeZqwLd+xPrXiLpfNkZam//
+         nTLqalOsrHTkSgYJ0euxXxHf96MAHZTKfV0Uyr+Q3gmjq/OvXQUq6zhW/U9m2u5Nji
+         FvCPzYE1fW7fbdBhJcyx8lAQrFqUby6/4TW+Qu7SCI6vP9Tw1jB9lcRoTkvaxiDZxi
+         iOtWMOODr0mgA==
+Received: by mail-wr1-f48.google.com with SMTP id a6so12023710wrw.8;
+        Mon, 12 Apr 2021 01:48:32 -0700 (PDT)
+X-Gm-Message-State: AOAM532eWGV1hrPeuH8JRUJZ3NwfO5LXvWL3KOuKwK1eC7rK6S6szAGj
+        ExltV7g47vRwzoDHS11IYRaUMbgTSbFR/zbyazI=
+X-Google-Smtp-Source: ABdhPJwdOphNG/NExZknsy5yMxBCnGZA+q7EKNOchQAgxbs01jSI9QEePmT+lsicnZYJB8nH9FG1BOhyUFdSoL2u8ew=
+X-Received: by 2002:adf:c70b:: with SMTP id k11mr30918454wrg.165.1618217311367;
+ Mon, 12 Apr 2021 01:48:31 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <09284b9a-cfe1-fc49-e1f6-3cf0c1b74c76@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210319062752.145730-1-andrew@aj.id.au> <20210319062752.145730-16-andrew@aj.id.au>
+ <CAK8P3a1HDQdbTAT4aRMLu-VFz720ynPqPHG5b22NZ5p5QfUqOw@mail.gmail.com> <ba63f830-4758-49aa-a63e-f204a8eec1b4@www.fastmail.com>
+In-Reply-To: <ba63f830-4758-49aa-a63e-f204a8eec1b4@www.fastmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 12 Apr 2021 10:48:14 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3RXr5CR7DJgD9rEkN8owpPxXRgzRnPB_5LuQcHkzc4LA@mail.gmail.com>
+Message-ID: <CAK8P3a3RXr5CR7DJgD9rEkN8owpPxXRgzRnPB_5LuQcHkzc4LA@mail.gmail.com>
+Subject: Re: [PATCH v2 16/21] ipmi: kcs_bmc: Add a "raw" character device interface
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        openipmi-developer@lists.sourceforge.net,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Corey Minyard <minyard@acm.org>, Joel Stanley <joel@jms.id.au>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Benjamin Fair <benjaminfair@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.04.21 10:06, Anshuman Khandual wrote:
-> + linuxppc-dev@lists.ozlabs.org
-> + linux-ia64@vger.kernel.org
-> 
-> On 4/12/21 9:18 AM, Anshuman Khandual wrote:
->> pageblock_order must always be less than MAX_ORDER, otherwise it might lead
->> to an warning during boot. A similar problem got fixed on arm64 platform
->> with the commit 79cc2ed5a716 ("arm64/mm: Drop THP conditionality from
->> FORCE_MAX_ZONEORDER"). Assert the above condition before HUGETLB_PAGE_ORDER
->> gets assigned as pageblock_order. This will help detect the problem earlier
->> on platforms where HUGETLB_PAGE_SIZE_VARIABLE is enabled.
->>
->> Cc: David Hildenbrand <david@redhat.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: linux-mm@kvack.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->> Changes in V2:
->>
->> - Changed WARN_ON() to BUILD_BUG_ON() per David
->>
->> Changes in V1:
->>
->> https://patchwork.kernel.org/project/linux-mm/patch/1617947717-2424-1-git-send-email-anshuman.khandual@arm.com/
->>
->>   mm/page_alloc.c | 11 +++++++++--
->>   1 file changed, 9 insertions(+), 2 deletions(-)
->>
->> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->> index cfc72873961d..19283bff4bec 100644
->> --- a/mm/page_alloc.c
->> +++ b/mm/page_alloc.c
->> @@ -6875,10 +6875,17 @@ void __init set_pageblock_order(void)
->>   	if (pageblock_order)
->>   		return;
->>   
->> -	if (HPAGE_SHIFT > PAGE_SHIFT)
->> +	if (HPAGE_SHIFT > PAGE_SHIFT) {
->> +		/*
->> +		 * pageblock_order must always be less than
->> +		 * MAX_ORDER. So does HUGETLB_PAGE_ORDER if
->> +		 * that is being assigned here.
->> +		 */
->> +		BUILD_BUG_ON(HUGETLB_PAGE_ORDER >= MAX_ORDER);
-> 
-> Unfortunately the build test fails on both the platforms (powerpc and ia64)
-> which subscribe HUGETLB_PAGE_SIZE_VARIABLE and where this check would make
-> sense. I some how overlooked the cross compile build failure that actually
-> detected this problem.
-> 
-> But wondering why this assert is not holding true ? and how these platforms
-> do not see the warning during boot (or do they ?) at mm/vmscan.c:1092 like
-> arm64 did.
-> 
-> static int __fragmentation_index(unsigned int order, struct contig_page_info *info)
-> {
->          unsigned long requested = 1UL << order;
-> 
->          if (WARN_ON_ONCE(order >= MAX_ORDER))
->                  return 0;
-> ....
-> 
-> Can pageblock_order really exceed MAX_ORDER - 1 ?
+On Mon, Apr 12, 2021 at 3:33 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> On Fri, 9 Apr 2021, at 17:25, Arnd Bergmann wrote:
+> > On Fri, Mar 19, 2021 at 7:31 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > >
+> > > The existing IPMI chardev encodes IPMI behaviours as the name suggests.
+> > > However, KCS devices are useful beyond IPMI (or keyboards), as they
+> > > provide a means to generate IRQs and exchange arbitrary data between a
+> > > BMC and its host system.
+> >
+> > I only noticed the series after Joel asked about the DT changes on the arm
+> > side. One question though:
+> >
+> > How does this related to the drivers/input/serio/ framework that also talks
+> > to the keyboard controller for things that are not keyboards?
+>
+> I've taken a brief look and I feel they're somewhat closely related.
+>
+> It's plausible that we could wrangle the code so the Aspeed and Nuvoton
+> KCS drivers move under drivers/input/serio. If you squint, the i8042
+> serio device driver has similarities with what the Aspeed and Nuvoton
+> device drivers are providing to the KCS IPMI stack.
 
-Ehm, for now I was under the impression that such configurations 
-wouldn't exist.
+After looking some more into it, I finally understood that the two are
+rather complementary. While the  drivers/char/ipmi/kcs_bmc.c
+is the other (bmc) end of drivers/char/ipmi/ipmi_kcs_sm.c, it seems
+that the proposed kcs_bmc_cdev_raw.c interface would be
+what corresponds to the other side of
+drivers/input/serio/i8042.c+userio.c. Then again, these are also on
+separate ports (0x60 for the keyboard controller, 0xca2 for the BMC
+KCS), so they would never actually talk to one another.
 
-And originally, HUGETLB_PAGE_SIZE_VARIABLE was introduced to handle 
-hugepage sizes that all *smaller* than MAX_ORDER - 1: See d9c234005227 
-("Do not depend on MAX_ORDER when grouping pages by mobility")
+> Both the KCS IPMI and raw chardev I've implemented in this patch need
+> both read and write access to the status register (STR). serio could
+> potentially expose its value through serio_interrupt() using the
+> SERIO_OOB_DATA flag, but I haven't put any thought into it beyond this
+> sentence. We'd need some extra support for writing STR via the serio
+> API. I'm not sure that fits into the abstraction (unless we make
+> serio_write() take a flags argument?).
+>
+> In that vein, the serio_raw interface is close to the functionality
+> that the raw chardev provides in this patch, though again serio_raw
+> lacks userspace access to STR. Flags are ignored in the ->interrupt()
+> callback so all values received via ->interrupt() are exposed as data.
+> The result is there's no way to take care of SERIO_OOB_DATA in the
+> read() path. Given that, I think we'd have to expose an ioctl() to
+> access the STR value after taking care of SERIO_OOB_DATA in
+> ->interrupt().
+>
+> I'm not sure where that lands us.
 
+Based on what I looked up, I think you can just forget about my original
+question. We have two separate interfaces that use an Intel 8042-style
+protocol, but they don't really interact.
 
-However, looking into init_cma_reserved_pageblock():
-
-	if (pageblock_order >= MAX_ORDER) {
-		i = pageblock_nr_pages;
-		...
-	}
-
-
-But it's kind of weird, isn't it? Let's assume we have MAX_ORDER - 1 
-correspond to 4 MiB and pageblock_order correspond to 8 MiB.
-
-Sure, we'd be grouping pages in 8 MiB chunks, however, we cannot even 
-allocate 8 MiB chunks via the buddy. So only alloc_contig_range() could 
-really grab them (IOW: gigantic pages).
-
-Further, we have code like deferred_free_range(), where we end up 
-calling __free_pages_core()->...->__free_one_page() with 
-pageblock_order. Wouldn't we end up setting the buddy order to something 
- > MAX_ORDER -1 on that path?
-
-Having pageblock_order > MAX_ORDER feels wrong and looks shaky.
-
--- 
-Thanks,
-
-David / dhildenb
-
+      Arnd
