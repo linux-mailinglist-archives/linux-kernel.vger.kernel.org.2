@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57ED035BCD0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA7E35BCD4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237740AbhDLIp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:45:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36784 "EHLO mail.kernel.org"
+        id S237606AbhDLIpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:45:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237684AbhDLIoj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:44:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A457A61244;
-        Mon, 12 Apr 2021 08:44:20 +0000 (UTC)
+        id S237689AbhDLIol (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:44:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F1D661220;
+        Mon, 12 Apr 2021 08:44:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217061;
-        bh=8XOWMIPBmbKHHSR25LAe+Vbq5bi2Pt9pxj3t3k7/gQA=;
+        s=korg; t=1618217063;
+        bh=d8R7nMj6KP+mpfLiCn1fDgndFFAKueE9aOLYz4HVNDo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cOYc3sLO2yKTxIvIjdKrWqLmJnvMdu1X3ps8rUe5rGwW8PDbz7xLtPtu/jOx/yiB0
-         cocrEs8a2hmkrYbp52oBi2Z9bxbnkOREPQr24H3udMabMBze8bDxPqOVHZnCDR8mbw
-         8vuSkfIoaVYW/VgpgHlOWjYr2H2tov558rt+yVcI=
+        b=PVxLPQvRvirds3NZIGzpP2lYJW+OsTgjtUcmjmoSeJpfo2Q4OLvbGtp6/YooXbXrt
+         FpLL9QaIfOugVlGwt+4dP2DpqFbonf6Oq6WvYH2GPf9VlDpnyXGuOn3b4udAczshfJ
+         RbtlNtqC1e2kUkQZifTFzrlKwc+Z3XmOW8OjZEdg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com,
+        syzbot+91adee8d9ebb9193d22d@syzkaller.appspotmail.com,
         Pavel Skripkin <paskripkin@gmail.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 55/66] drivers: net: fix memory leak in atusb_probe
-Date:   Mon, 12 Apr 2021 10:41:01 +0200
-Message-Id: <20210412083959.905504178@linuxfoundation.org>
+Subject: [PATCH 4.19 56/66] drivers: net: fix memory leak in peak_usb_create_dev
+Date:   Mon, 12 Apr 2021 10:41:02 +0200
+Message-Id: <20210412083959.937343436@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
 References: <20210412083958.129944265@linuxfoundation.org>
@@ -43,36 +43,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 6b9fbe16955152626557ec6f439f3407b7769941 upstream.
+commit a0b96b4a62745397aee662670cfc2157bac03f55 upstream.
 
-syzbot reported memory leak in atusb_probe()[1].
-The problem was in atusb_alloc_urbs().
-Since urb is anchored, we need to release the reference
-to correctly free the urb
+syzbot reported memory leak in peak_usb.
+The problem was in case of failure after calling
+->dev_init()[2] in peak_usb_create_dev()[1]. The data
+allocated int dev_init() wasn't freed, so simple
+->dev_free() call fix this problem.
 
 backtrace:
-    [<ffffffff82ba0466>] kmalloc include/linux/slab.h:559 [inline]
-    [<ffffffff82ba0466>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
-    [<ffffffff82ad3888>] atusb_alloc_urbs drivers/net/ieee802154/atusb.c:362 [inline][2]
-    [<ffffffff82ad3888>] atusb_probe+0x158/0x820 drivers/net/ieee802154/atusb.c:1038 [1]
+    [<0000000079d6542a>] kmalloc include/linux/slab.h:552 [inline]
+    [<0000000079d6542a>] kzalloc include/linux/slab.h:682 [inline]
+    [<0000000079d6542a>] pcan_usb_fd_init+0x156/0x210 drivers/net/can/usb/peak_usb/pcan_usb_fd.c:868   [2]
+    [<00000000c09f9057>] peak_usb_create_dev drivers/net/can/usb/peak_usb/pcan_usb_core.c:851 [inline] [1]
+    [<00000000c09f9057>] peak_usb_probe+0x389/0x490 drivers/net/can/usb/peak_usb/pcan_usb_core.c:949
 
-Reported-by: syzbot+28a246747e0a465127f3@syzkaller.appspotmail.com
+Reported-by: syzbot+91adee8d9ebb9193d22d@syzkaller.appspotmail.com
 Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ieee802154/atusb.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ieee802154/atusb.c
-+++ b/drivers/net/ieee802154/atusb.c
-@@ -368,6 +368,7 @@ static int atusb_alloc_urbs(struct atusb
- 			return -ENOMEM;
- 		}
- 		usb_anchor_urb(urb, &atusb->idle_urbs);
-+		usb_free_urb(urb);
- 		n--;
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+@@ -864,7 +864,7 @@ static int peak_usb_create_dev(const str
+ 	if (dev->adapter->dev_set_bus) {
+ 		err = dev->adapter->dev_set_bus(dev, 0);
+ 		if (err)
+-			goto lbl_unregister_candev;
++			goto adap_dev_free;
  	}
+ 
+ 	/* get device number early */
+@@ -876,6 +876,10 @@ static int peak_usb_create_dev(const str
+ 
  	return 0;
+ 
++adap_dev_free:
++	if (dev->adapter->dev_free)
++		dev->adapter->dev_free(dev);
++
+ lbl_unregister_candev:
+ 	unregister_candev(netdev);
+ 
 
 
