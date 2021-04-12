@@ -2,141 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5219035C681
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03DE935C68A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241266AbhDLMoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:44:10 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38844 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241239AbhDLMoE (ORCPT
+        id S241063AbhDLMqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237283AbhDLMqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:44:04 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618231425;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9RuZZ4YV+l/Us1m/Gl2I6gMNQ53ylhCIs4MIYcNu8BU=;
-        b=MruXWSjJepNb9KkoQUa+lcI+0juAUt8HZ2X957HwSkNGAm/DN3lU1Y5cizzDlj2UFmARy8
-        tSZAFvJIUMlazms/oMivAw0j2SBVBBcMOOqF25CWVJ9qaBa7uMNqhOrBNkq1okxAZrePCt
-        QBpF//hntSRN6FXDIqGjqjmdzBaKRMZrkTRoCAU+jkBkG06TZ79WxRxjQkdLRgKTtzqId/
-        rB5tybsxlr8fcp8IZKYLd681qVpsh0e95eOKSMvFldeusmf4GgeRjyUxMPuAmRK1ASfFDt
-        ZsxSOXR+xKRQSQOCjtYtMQK3pMc/M91iXUnkCc3LmEBgAraBu2Ch4qLxM1rYSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618231425;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9RuZZ4YV+l/Us1m/Gl2I6gMNQ53ylhCIs4MIYcNu8BU=;
-        b=yZc/jQ5gj6CXcOugItpqnX2WdyhWZIkock/eHfAL8/F0oScfCQJMBcbvI18/HD7fhTVD2V
-        PBpovqvVcH+A2yAQ==
-To:     =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] genirq: reduce irqdebug bouncing cachelines
-In-Reply-To: <2dae4501-6f01-1b32-4b69-1dfc94c93425@kaod.org>
-References: <20210402132037.574661-1-npiggin@gmail.com> <87im4u2vxx.ffs@nanos.tec.linutronix.de> <2dae4501-6f01-1b32-4b69-1dfc94c93425@kaod.org>
-Date:   Mon, 12 Apr 2021 14:43:45 +0200
-Message-ID: <87wnt71xmm.ffs@nanos.tec.linutronix.de>
+        Mon, 12 Apr 2021 08:46:10 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B546DC061574;
+        Mon, 12 Apr 2021 05:45:52 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id e8-20020a17090a7288b029014e51f5a6baso1743775pjg.2;
+        Mon, 12 Apr 2021 05:45:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3NkHK9dlRLO9E11vKDI3by0BzQKmIoCdtqsiovYik5Y=;
+        b=ipk8DwdYIM+Lp82DorQ0slg4Pzo/r2oPaPaTi5pIFNe1/ELqHN5WVqqpvKrp5agVi7
+         Gx1ksSa8tqNrGMYoNsPhPZhSaOD31ER84MBkAiY/652qpkOz8FUKaRflCcPolsuJqaQ6
+         rpOqq2YPaucNEYx0RI65wb2mHKvNL3vYqF3r+qsPlOeAkAyS0RI4sC5PlltLhW5BvjV5
+         2YyEfVsbdSgTiO+zWf6Uqxse1uXsX26RbE/T3jMRoRW5y5Qecg7fKOkxb3dgCm5JrQay
+         DJlJtoybuhS1gJpZIz/YYAwCbb9okPIrZzrTJMpW3c2pTAjLeSgZ9UizoxTHQ57bJlxT
+         inrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3NkHK9dlRLO9E11vKDI3by0BzQKmIoCdtqsiovYik5Y=;
+        b=hY7P2oShCj5lmdunElDk1OOB12kU/Llsp/MAG9LSGOuhAX9i1ClXHOBCPM70W7INr+
+         2gIVv3y2eLT4fCp15dAxthy2Kp/hm3O/XQP9OjF05Ks+R2hzqbsgk7KxdROp0eEseRCT
+         4oNDW51Kr9P1AoppVFNnX6V2IVGNVJGCBXfy9f1ocALrjBLfzO471osmLsY0T9X5RVoy
+         +RTZuK8pDPcyx18JHTV8FgKKSaIQGFWl+43sXmbu8QKX5MSiDR+nzG7uIKJD9JIVAJfD
+         2eeu85k16adCzJCEJEi7TWoc88loaolRxXc2nQQFoOjBDW7YzASVrHL8hgpA11tzYwgR
+         Qzfw==
+X-Gm-Message-State: AOAM530NvBwC31Gjzf1/Rax2gxHGbuALXMbAGU+8uYz/jvmil/5rDydh
+        dk4dNjpJCA1VUOHPqi1VcSg=
+X-Google-Smtp-Source: ABdhPJxM44dz/V1i30xDBVDqbT6VanKYzhUL0fhLrUPPDqvvU5QpP5gH3Y+gZ2QcPWSxTrR/n+W9AA==
+X-Received: by 2002:a17:902:8344:b029:ea:fc89:fa72 with SMTP id z4-20020a1709028344b02900eafc89fa72mr4649548pln.45.1618231552084;
+        Mon, 12 Apr 2021 05:45:52 -0700 (PDT)
+Received: from kali ([103.141.87.253])
+        by smtp.gmail.com with ESMTPSA id i22sm11367148pgj.90.2021.04.12.05.45.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 05:45:51 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 18:15:42 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     Hans Verkuil <hverkuil@xs4all.nl>, narmstrong@baylibre.com,
+        mchehab@kernel.org, gregkh@linuxfoundation.org,
+        khilman@baylibre.com, jbrunet@baylibre.com,
+        martin.blumenstingl@googlemail.com
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in, linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH v2] staging: media: meson: vdec: declare u32 as const and
+ static const
+Message-ID: <YHRA9i+BjveJOUvn@kali>
+References: <YHIDufKhTEeuxyl5@kali>
+ <88d04746-717d-5a7a-7ea7-67cf6c95aba9@xs4all.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <88d04746-717d-5a7a-7ea7-67cf6c95aba9@xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-C=C3=A9dric,
-
-On Mon, Apr 12 2021 at 11:06, C=C3=A9dric Le Goater wrote:
-> On 4/10/21 1:58 PM, Thomas Gleixner wrote:
->> --- a/kernel/irq/spurious.c
->> +++ b/kernel/irq/spurious.c
->> @@ -274,7 +274,7 @@ void note_interrupt(struct irq_desc *des
->>  	unsigned int irq;
->>=20=20
->>  	if (desc->istate & IRQS_POLL_INPROGRESS ||
->> -	    irq_settings_is_polled(desc))
->> +	    irq_settings_is_polled(desc) | irq_settings_no_debug(desc))
+On Mon, Apr 12, 2021 at 11:17:22AM +0200, Hans Verkuil wrote:
+> On 10/04/2021 21:59, Mitali Borkar wrote:
+> > Declared 32 bit unsigned int as static constant inside a function and
+> > replaced u32[] {x,y} as canvas1, canvas2 in codec_mpeg12.c
+> > This indicates the value of canvas indexes will remain constant throughout execution.
+> > Replaced u32 reg_base and u32 reg_name with const u32 reg_base and const
+> > u32 reg_name as it will contain data/registry bases to write static
+> > const indexes declared above and will keep track of of contiguos
+> > registers after each reg_base.
+> > This makes code look better, neater. It improves readability.
+> > 
+> > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > ---
+> >  drivers/staging/media/meson/vdec/codec_mpeg12.c | 5 +++--
+> 
+> Also change drivers/staging/media/meson/vdec/codec_h264.c.
+> 
+> It's a nice improvement, so let's do this for both callers of amvdec_set_canvases().
 >
-> Shouldn't it be '||' instead  ?
+I have done chnages in codec_h264.c Now, should I send that as new
+patch?
 
-It could. But that's intentionally '|'. Why?
-
-Because that lets the compiler merge the bit checks into one and
-therefore spares one conditional branch.
-
->>  		return;
->>=20=20
->>  	if (bad_action_ret(action_ret)) {
->>=20
->
-> We could test irq_settings_no_debug() directly under handle_nested_irq()=
-=20
-> and handle_irq_event_percpu() to avoid calling note_interrupt(), just=20
-> like we do for noirqdebug.
-
-We can do that, but then we should not just make it:
-
-   if (!irqnodebug && !irq_settings_no_debug(desc))
-   	note_interrupt(...);
-
-Instead have only one condition:
-
-   if (!irq_settings_no_debug(desc))
-   	note_interrupt(...);
-
-See the uncompiled delta patch below.
-
-Thanks,
-
-        tglx
----
---- a/kernel/irq/manage.c
-+++ b/kernel/irq/manage.c
-@@ -1690,6 +1690,9 @@ static int
- 				irq_settings_set_no_debug(desc);
- 		}
-=20
-+		if (noirqdebug)
-+			irq_settings_set_no_debug(desc);
-+
- 		if (new->flags & IRQF_ONESHOT)
- 			desc->istate |=3D IRQS_ONESHOT;
-=20
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -274,7 +274,7 @@ void note_interrupt(struct irq_desc *des
- 	unsigned int irq;
-=20
- 	if (desc->istate & IRQS_POLL_INPROGRESS ||
--	    irq_settings_is_polled(desc) | irq_settings_no_debug(desc))
-+	    irq_settings_is_polled(desc))
- 		return;
-=20
- 	if (bad_action_ret(action_ret)) {
---- a/kernel/irq/chip.c
-+++ b/kernel/irq/chip.c
-@@ -481,7 +481,7 @@ void handle_nested_irq(unsigned int irq)
- 	for_each_action_of_desc(desc, action)
- 		action_ret |=3D action->thread_fn(action->irq, action->dev_id);
-=20
--	if (!noirqdebug)
-+	if (!irq_settings_no_debug(desc))
- 		note_interrupt(desc, action_ret);
-=20
- 	raw_spin_lock_irq(&desc->lock);
---- a/kernel/irq/handle.c
-+++ b/kernel/irq/handle.c
-@@ -197,7 +197,7 @@ irqreturn_t handle_irq_event_percpu(stru
-=20
- 	add_interrupt_randomness(desc->irq_data.irq, flags);
-=20
--	if (!noirqdebug)
-+	if (!irq_settings_no_debug(desc))
- 		note_interrupt(desc, retval);
- 	return retval;
- }
+> Regards,
+> 
+> 	Hans
+> 
+> >  drivers/staging/media/meson/vdec/vdec_helpers.c | 2 +-
+> >  drivers/staging/media/meson/vdec/vdec_helpers.h | 2 +-
+> >  3 files changed, 5 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/staging/media/meson/vdec/codec_mpeg12.c b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+> > index 21e93a13356c..861d8584f22f 100644
+> > --- a/drivers/staging/media/meson/vdec/codec_mpeg12.c
+> > +++ b/drivers/staging/media/meson/vdec/codec_mpeg12.c
+> > @@ -65,6 +65,8 @@ static int codec_mpeg12_start(struct amvdec_session *sess)
+> >  	struct amvdec_core *core = sess->core;
+> >  	struct codec_mpeg12 *mpeg12;
+> >  	int ret;
+> > +	static const u32 canvas1[] = { AV_SCRATCH_0, 0 };
+> > +	static const u32 canvas2[] = { 8, 0 }
+> >  
+> >  	mpeg12 = kzalloc(sizeof(*mpeg12), GFP_KERNEL);
+> >  	if (!mpeg12)
+> > @@ -80,8 +82,7 @@ static int codec_mpeg12_start(struct amvdec_session *sess)
+> >  		goto free_mpeg12;
+> >  	}
+> >  
+> > -	ret = amvdec_set_canvases(sess, (u32[]){ AV_SCRATCH_0, 0 },
+> > -				  (u32[]){ 8, 0 });
+> > +	ret = amvdec_set_canvases(sess, canvas1, canvas2);
+> >  	if (ret)
+> >  		goto free_workspace;
+> >  
+> > diff --git a/drivers/staging/media/meson/vdec/vdec_helpers.c b/drivers/staging/media/meson/vdec/vdec_helpers.c
+> > index 7f07a9175815..df5c27266c44 100644
+> > --- a/drivers/staging/media/meson/vdec/vdec_helpers.c
+> > +++ b/drivers/staging/media/meson/vdec/vdec_helpers.c
+> > @@ -177,7 +177,7 @@ static int set_canvas_nv12m(struct amvdec_session *sess,
+> >  }
+> >  
+> >  int amvdec_set_canvases(struct amvdec_session *sess,
+> > -			u32 reg_base[], u32 reg_num[])
+> > +			const u32 reg_base[], const u32 reg_num[])
+> >  {
+> >  	struct v4l2_m2m_buffer *buf;
+> >  	u32 pixfmt = sess->pixfmt_cap;
+> > diff --git a/drivers/staging/media/meson/vdec/vdec_helpers.h b/drivers/staging/media/meson/vdec/vdec_helpers.h
+> > index cfaed52ab526..ace8897c34fe 100644
+> > --- a/drivers/staging/media/meson/vdec/vdec_helpers.h
+> > +++ b/drivers/staging/media/meson/vdec/vdec_helpers.h
+> > @@ -17,7 +17,7 @@
+> >   * @reg_num: number of contiguous registers after each reg_base (including it)
+> >   */
+> >  int amvdec_set_canvases(struct amvdec_session *sess,
+> > -			u32 reg_base[], u32 reg_num[]);
+> > +			const u32 reg_base[], const u32 reg_num[]);
+> >  
+> >  /* Helpers to read/write to the various IPs (DOS, PARSER) */
+> >  u32 amvdec_read_dos(struct amvdec_core *core, u32 reg);
+> > 
+> 
