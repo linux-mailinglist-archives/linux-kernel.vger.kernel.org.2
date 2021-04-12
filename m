@@ -2,147 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632FE35C623
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3771235C627
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:24:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240434AbhDLMYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:24:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39708 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238378AbhDLMX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:23:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BF645AE5C;
-        Mon, 12 Apr 2021 12:23:39 +0000 (UTC)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Steve Wise <swise@opengridcomputing.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Leon Romanovsky <leon@kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Daniel Wagner <dwagner@suse.de>
-Subject: [PATCH] nvme: Drop WQ_MEM_RECLAIM flag from core workqueues
-Date:   Mon, 12 Apr 2021 14:23:30 +0200
-Message-Id: <20210412122330.5166-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
+        id S240886AbhDLMYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:24:47 -0400
+Received: from mail-lj1-f172.google.com ([209.85.208.172]:42822 "EHLO
+        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240245AbhDLMYp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:24:45 -0400
+Received: by mail-lj1-f172.google.com with SMTP id l22so7743374ljc.9;
+        Mon, 12 Apr 2021 05:24:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc
+         :in-reply-to:references:mime-version:date:user-agent
+         :content-transfer-encoding;
+        bh=5PHG89rkHmtJu5sjeUoGT1FTEcW/fFE95LEXIAesfmA=;
+        b=Hx8/r/C/Vjj1KvpHowxonVLON7SDT3jnLCtpA1V800HksR9zcpDZPhrM5GFYnAUs3R
+         s8lgoHTaPI46Ro0WDk9WDwnk+5MjulHOGgMygoxLX9bgzsEZJZ+WfgxmIdewieOnap7E
+         xpDNmBGStJ5vowEzHuFHiaGt8uzAoigy5jMNKVdO7ef7LTkxy70UqAxNJObNTCA3eaQl
+         y4FXq7xbmGDO+GX+prd7URP12xKypJuo4ambvzcTMTu2g3OAWQ/D/IwC+jO8Yj0wa41g
+         ZqbvZR7FhdCDwmoRdBLmnI6FlZ9Sm3RujhA4nGZDIUp28Kzw14H5ighIqeNZhJ9K30O+
+         US+A==
+X-Gm-Message-State: AOAM531b+mo4vYmUBbAsSKz4IvdSg7acGbM9hzDD4Fb2oEbHv2oELvsj
+        uX/lUMj9s0NDX/+dF+GPKeo=
+X-Google-Smtp-Source: ABdhPJz+wZQrXWFGN32X3FcPKz0599Hnf7JphhvJy0mUmk0MZJyizU/mixod1C8XADcLGi19XpK7qg==
+X-Received: by 2002:a2e:588:: with SMTP id 130mr15431771ljf.28.1618230266591;
+        Mon, 12 Apr 2021 05:24:26 -0700 (PDT)
+Received: from dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi (dc7vkhyyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::6])
+        by smtp.gmail.com with ESMTPSA id m6sm1203846lfu.308.2021.04.12.05.24.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 05:24:25 -0700 (PDT)
+Message-ID: <882c4561ebc20313098312bb9cfae60736d69475.camel@fi.rohmeurope.com>
+Subject: Re: [PATCH v4 3/7] regulator: IRQ based event/error notification
+ helpers
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Reply-To: matti.vaittinen@fi.rohmeurope.com
+To:     Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     "agross@kernel.org" <agross@kernel.org>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+In-Reply-To: <dbd6a71b1b907de004d23d2ea4b15045320f1ae1.camel@fi.rohmeurope.com>
+References: <cover.1617690965.git.matti.vaittinen@fi.rohmeurope.com>
+         <2b87b4637fde2225006cc122bc855efca0dcd7f1.1617692184.git.matti.vaittinen@fi.rohmeurope.com>
+         <CAHp75VeoTVNDemV0qRA4BTVqOVfyR9UKGWhHgfeat8zVVGcu_Q@mail.gmail.com>
+         <55397166b1c4107efc2a013635f63af142d9b187.camel@fi.rohmeurope.com>
+         <CAHp75VeK+Oq9inOLcSSsq+FjaaPC5D=EMt4vLf97uR1BmpW2Zw@mail.gmail.com>
+         <42210c909c55f7672e4a4a9bfd34553a6f4c8146.camel@fi.rohmeurope.com>
+         <CAHp75VeX8H5E6GfVHxgu_6R+zbvmFV8fT9tO-nsm1nB3N4NF_A@mail.gmail.com>
+         <202104082015.4DADF9DC48@keescook>
+         <dbd6a71b1b907de004d23d2ea4b15045320f1ae1.camel@fi.rohmeurope.com>
+Content-Type: text/plain; charset="UTF-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Date:   Mon, 12 Apr 2021 15:24:16 +0300
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the WQ_MEM_RECLAIM flag as it is not needed and introduces
-warnings.
 
-The documentation says "all wq which might be used in the memory
-reclaim paths MUST have this flag set. The wq is guaranteed to have at
-least one execution context regardless of memory pressure."
+On Fri, 2021-04-09 at 10:08 +0300, Matti Vaittinen wrote:
+> On Thu, 2021-04-08 at 20:20 -0700, Kees Cook wrote:
+> > On Wed, Apr 07, 2021 at 03:50:15PM +0300, Andy Shevchenko wrote:
+> > > On Wed, Apr 7, 2021 at 12:49 PM Vaittinen, Matti
+> > > <Matti.Vaittinen@fi.rohmeurope.com> wrote:
+> > > > On Wed, 2021-04-07 at 12:10 +0300, Andy Shevchenko wrote:
+> > > > > On Wed, Apr 7, 2021 at 8:02 AM Matti Vaittinen
+> > > > > <matti.vaittinen@fi.rohmeurope.com> wrote:
+> > > > > > On Wed, 2021-04-07 at 01:44 +0300, Andy Shevchenko wrote:
+> > > > > > > On Tuesday, April 6, 2021, Matti Vaittinen <
+> > > > > > > matti.vaittinen@fi.rohmeurope.com> wrote:
+> > > > > > > > +       BUG();
+> > > > > > > > +}
+> > 
+> > This, though, are you sure you want to use BUG()? Linus gets upset
+> > about
+> > such things:
+> > https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
+> > 
+> 
+> I see. I am unsure of what would be the best action in the regulator
+> case we are handling here. To give the context, we assume here a
+> situation where power has gone out of regulation and the hardware is
+> probably failing. First countermeasure to protect what is left of HW
+> is
+> to shut-down the failing regulator. BUG() was called here as a last
+> resort if shutting the power via regulator interface was not
+> implemented or working.
+> 
+> Eg, we try to take what ever last measure we can to minimize the HW
+> damage - and BUG() was used for this in the qcom driver where I stole
+> the idea. Judging the comment related to BUG() in asm-generic/bug.h
+> 
+> /*
+>  * Don't use BUG() or BUG_ON() unless there's really no way out; one
+>  
+> * example might be detecting data structure corruption in the middle
+>  *
+> of an operation that can't be backed out of.  If the (sub)system
+>  * can
+> somehow continue operating, perhaps with reduced functionality,
+>  * it's
+> probably not BUG-worthy.
+>  *
+>  * If you're tempted to BUG(), think
+> again:  is completely giving up
+>  * really the *only* solution?  There
+> are usually better options, where
+>  * users don't need to reboot ASAP and
+> can mostly shut down cleanly.
+>  */
+> https://elixir.bootlin.com/linux/v5.12-rc6/source/include/asm-generic/bug.h#L55
+> 
+> this really might be valid use-case.
+> 
+> To me the real question is what happens after the BUG() - and if
+> there
+> is any generic handling or if it is platform/board specific? Does it
+> actually have any chance to save the HW?
+> 
+> Mark already pointed that we might need to figure a way to punt a
+> "failing event" to the user-space to initiate better "safety
+> shutdown".
+> Such event does not currently exist so I think the main use-case here
+> is to do logging and potentially prevent enabling any further actions
+> in the failing HW.
+> 
+> So - any better suggestions?
+> 
 
-By setting WQ_MEM_RECLAIM the threads are ready be running during
-early init. The claim it guarantees at least one execution context
-regardless of memory pressure is not supported by the implementation.
+Maybe we should take same approach as is taken in thermal_core? Quoting
+the thermal documentation:
 
-As the nvme core does not depend on early init we can remove the
-WQ_MEM_RECLAIM flag. This resolves a warning in the rdma path:
+"On an event of critical trip temperature crossing. Thermal
+framework             
+allows the system to shutdown gracefully by calling
+orderly_poweroff().          
+In the event of a failure of orderly_poweroff() to shut down the
+system          
+we are in danger of keeping the system alive at undesirably
+high                 
+temperatures. To mitigate this high risk scenario we program a
+work              
+queue to fire after a pre-determined number of seconds to
+start                  
+an emergency shutdown of the device using the
+kernel_power_off()                 
+function. In case kernel_power_off() fails then
+finally                          
+emergency_restart() is called in the worst case."
 
-  WQ_MEM_RECLAIM nvme-wq:nvme_rdma_reconnect_ctrl_work [nvme_rdma]
-  is flushing !WQ_MEM_RECLAIM ib_addr:process_one_req [ib_core]
+Maybe this 'hardware protection, in-kernel, emergency HW saving
+shutdown' - logic, should be pulled out of thermal_core.c (or at least
+exported) for (other parts like) the regulators to use?
 
-There were several attempts to address these kind of warnings and but
-it still persist:
+I don't like the idea relying in the user-space to be in shape it can
+handle the situation. I may be mistaken but I think a quick action
+might be required. Hence the in-kernel handling does not sound so bad
+to me.
 
-  39baf10310e6 ("IB/core: Fix use workqueue without WQ_MEM_RECLAIM")
-  cb93e597779e ("cm: Don't allocate ib_cm workqueue with WQ_MEM_RECLAIM")
-  c669ccdc50c2 ("nvme: queue ns scanning and async request from nvme_wq")
+I am open to all education and suggestions. Meanwhile I am planning to
+just convert the BUG() to WARN(). I don't claim I know how BUG() is
+implemented on each platform - but my understanding is that it does not
+guarantee any power to be cut but just halts the calling process(?). I
+guess this does not guarantee what happens next - maybe it even keeps
+the power enabled and end up just deadlocking the system by reserved
+locks? I think thermal guys have been pondering this scenario for
+severe temperature protection shutdown so I would like to hear your
+opinions.
 
-Also a review of the nvme jobs shows nvme_wq and nvme_reset_wq gets
-jobs posted which do memory allocation:
 
- - nvme_wq
-
-   nvme_scan_work()
-     nvme_scan_ns_list()
-       ns_list = kzalloc(..., GFP_KERNEL);
-   [...]
-
- - nvme_reset_wq
-
-   nvme_reset_work()
-     nvme_pci_configure_admin_queue()
-       nvme_alloc_queue()
-         dma_alloc_coherent(..., GFP_KERNEL)
-
-   nvme_rdma_reset_ctrl_work()
-     nvme_rdma_setup_ctrl()
-       (see above)
-
-   nvme_reset_ctrl_work()
-     nvme_tcp_setup_ctrl()
-       nvme_tcp_configure_admin_queue()
-         nvme_tcp_alloc_queue()
-           sock_create()
-   [...]
-
-nvme_delete_wq doesn't run any job which allocates memory, the system
-still depends on nvme_wq/nvme_reset_wq making progress.
-
- - nvme_delete_wq
-
-   nvme_fc_ctrl_connectivity_loss()
-     nvme_delete_ctrl()
-   nvme_fc_unregister_remoteport
-     nvme_delete_ctrl()
-   nvme_fc_reconnect_or_delete()
-     nvme_delete_ctrl()
-   nvme_rdma_reconnect_or_remove()
-     nvme_delete_ctrl()
-   nvme_tcp_reconnect_or_remove()
-     nvme_delete_ctrl()
-
-   nvme_delete_ctrl_work()
-     flush_work(&ctrl->reset_work)
-     flush_work(&ctrl->async_event_work)
-     cancel_work_sync(&ctrl->fw_act_work)
-     ...
-
-That means we either have WQ_MEM_RECLAIM set on all wq or non.
-
-Link: https://patchwork.kernel.org/project/linux-rdma/patch/5f5a1e4e90f3625cea57ffa79fc0e5bcb7efe09d.1548963371.git.swise@opengridcomputing.com/
-
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- drivers/nvme/host/core.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 11fca6459812..ab0d00ddf03f 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -4810,17 +4810,17 @@ static int __init nvme_core_init(void)
- 	_nvme_check_size();
- 
- 	nvme_wq = alloc_workqueue("nvme-wq",
--			WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_SYSFS, 0);
-+			WQ_UNBOUND | WQ_SYSFS, 0);
- 	if (!nvme_wq)
- 		goto out;
- 
- 	nvme_reset_wq = alloc_workqueue("nvme-reset-wq",
--			WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_SYSFS, 0);
-+			WQ_UNBOUND | WQ_SYSFS, 0);
- 	if (!nvme_reset_wq)
- 		goto destroy_wq;
- 
- 	nvme_delete_wq = alloc_workqueue("nvme-delete-wq",
--			WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_SYSFS, 0);
-+			WQ_UNBOUND | WQ_SYSFS, 0);
- 	if (!nvme_delete_wq)
- 		goto destroy_reset_wq;
- 
--- 
-2.29.2
+Best Regards
+Matti Vaittinen
 
