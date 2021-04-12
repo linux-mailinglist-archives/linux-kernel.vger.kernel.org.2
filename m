@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886EB35C3AC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48B735C3AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238576AbhDLKVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
+        id S238520AbhDLKVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238399AbhDLKVi (ORCPT
+        with ESMTP id S238277AbhDLKVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:21:38 -0400
+        Mon, 12 Apr 2021 06:21:35 -0400
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527A1C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 03:21:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DACF5C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 03:21:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=Fv0Hp6YOu3I6PIOVHt+bSMWXijjvmgCmnmdsY4Y28Ng=; b=YZP4z0JzL7LNp8KiFalQzJZZCf
-        JPbgWfEnJtwoAPiWQOmG2zWoyn5dl5cg1yWOPfqxzSWpzIb2FvwmqBCawduvLh9owBTkj52eXBPpM
-        zTc34XSCmshMDIsoraUnow0vgTdlOTiZcKtrL8xqO8LO8Us5WCyIbXeEa6TLvO/OCQe4jxTe8BSJ+
-        /HEipe7BR0/jQptTbwDMiq0hiPNzm08XCgO+bZxjj/Qkz55WEWOzNZS6Wgr48CRLfEvH0uS/7BEHv
-        vOxrwqr+/4zw7HKoDj/eG/iKLr2R8TLZBBdDKmZ+7TpebaXrDI722ZlcQJSlIiim3gWGcLDo0qgkG
-        OT3vvv8g==;
+        bh=suS2jhvKqcy3Sty7ScVC2iQKhuVPP5ZHHrLkCTVIKh0=; b=lmKqqzdiyZ0bAv8wrscI8iApb7
+        lUQRcv7lhrWH5XQZA2LmPwl/w6k/hx567Bj93okroeITBnnPIoNxSmHJNeaQ+Q/WMEyazFrFw1Uf1
+        UvWX0wDfANycyVxU9V0EBRI+vuITEfMIL/FPNGAm6vDYEu/pQdRDPVABJ9UfRwQT8xSqXmMJhWcNv
+        0R7N419wWxIIggkBDI+TerjZClhh9xXsjTJIcWTYSXLTIo0WVTJveG8hye6G7mp1lY3OyMz9At9M9
+        O4JLPMalE38epQjzAcD/7yYxs+rSGJCxDXkSUe3N9YqgC8ZsSuhPwY6syPvJXf5k0YRh1ccsdVtgj
+        HtPKcFrw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVtgj-006QVI-HA; Mon, 12 Apr 2021 10:21:01 +0000
+        id 1lVtgj-006QVJ-Hf; Mon, 12 Apr 2021 10:21:01 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D13AC3002C1;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D136630026E;
         Mon, 12 Apr 2021 12:20:59 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id C8EB129D8B772; Mon, 12 Apr 2021 12:20:58 +0200 (CEST)
-Message-ID: <20210412102001.353833279@infradead.org>
+        id CD2D029D8B773; Mon, 12 Apr 2021 12:20:58 +0200 (CEST)
+Message-ID: <20210412102001.415407080@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Apr 2021 12:14:26 +0200
+Date:   Mon, 12 Apr 2021 12:14:27 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
         vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
         rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
         joshdon@google.com, valentin.schneider@arm.com
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org, greg@kroah.com,
-        linux@rasmusvillemoes.dk
-Subject: [PATCH v2 5/9] sched,preempt: Move preempt_dynamic to debug.c
+        linux@rasmusvillemoes.dk,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH v2 6/9] debugfs: Implement debugfs_create_str()
 References: <20210412101421.609526370@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,220 +55,162 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the #ifdef SCHED_DEBUG bits to kernel/sched/debug.c in order to
-collect all the debugfs bits.
+Implement debugfs_create_str() to easily display names and such in
+debugfs.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/sched/core.c  |   77 +--------------------------------------------------
- kernel/sched/debug.c |   67 +++++++++++++++++++++++++++++++++++++++++++-
- kernel/sched/sched.h |   11 +++++--
- 3 files changed, 78 insertions(+), 77 deletions(-)
+ fs/debugfs/file.c       |   91 ++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/debugfs.h |   17 ++++++++
+ 2 files changed, 108 insertions(+)
 
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5371,9 +5371,9 @@ enum {
- 	preempt_dynamic_full,
- };
- 
--static int preempt_dynamic_mode = preempt_dynamic_full;
-+int preempt_dynamic_mode = preempt_dynamic_full;
- 
--static int sched_dynamic_mode(const char *str)
-+int sched_dynamic_mode(const char *str)
- {
- 	if (!strcmp(str, "none"))
- 		return preempt_dynamic_none;
-@@ -5387,7 +5387,7 @@ static int sched_dynamic_mode(const char
- 	return -EINVAL;
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -865,6 +865,97 @@ struct dentry *debugfs_create_bool(const
  }
+ EXPORT_SYMBOL_GPL(debugfs_create_bool);
  
--static void sched_dynamic_update(int mode)
-+void sched_dynamic_update(int mode)
- {
- 	/*
- 	 * Avoid {NONE,VOLUNTARY} -> FULL transitions from ever ending up in
-@@ -5444,79 +5444,8 @@ static int __init setup_preempt_mode(cha
- }
- __setup("preempt=", setup_preempt_mode);
- 
--#ifdef CONFIG_SCHED_DEBUG
--
--static ssize_t sched_dynamic_write(struct file *filp, const char __user *ubuf,
--				   size_t cnt, loff_t *ppos)
--{
--	char buf[16];
--	int mode;
--
--	if (cnt > 15)
--		cnt = 15;
--
--	if (copy_from_user(&buf, ubuf, cnt))
--		return -EFAULT;
--
--	buf[cnt] = 0;
--	mode = sched_dynamic_mode(strstrip(buf));
--	if (mode < 0)
--		return mode;
--
--	sched_dynamic_update(mode);
--
--	*ppos += cnt;
--
--	return cnt;
--}
--
--static int sched_dynamic_show(struct seq_file *m, void *v)
--{
--	static const char * preempt_modes[] = {
--		"none", "voluntary", "full"
--	};
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(preempt_modes); i++) {
--		if (preempt_dynamic_mode == i)
--			seq_puts(m, "(");
--		seq_puts(m, preempt_modes[i]);
--		if (preempt_dynamic_mode == i)
--			seq_puts(m, ")");
--
--		seq_puts(m, " ");
--	}
--
--	seq_puts(m, "\n");
--	return 0;
--}
--
--static int sched_dynamic_open(struct inode *inode, struct file *filp)
--{
--	return single_open(filp, sched_dynamic_show, NULL);
--}
--
--static const struct file_operations sched_dynamic_fops = {
--	.open		= sched_dynamic_open,
--	.write		= sched_dynamic_write,
--	.read		= seq_read,
--	.llseek		= seq_lseek,
--	.release	= single_release,
--};
--
--extern struct dentry *debugfs_sched;
--
--static __init int sched_init_debug_dynamic(void)
--{
--	debugfs_create_file("sched_preempt", 0644, debugfs_sched, NULL, &sched_dynamic_fops);
--	return 0;
--}
--late_initcall(sched_init_debug_dynamic);
--
--#endif /* CONFIG_SCHED_DEBUG */
- #endif /* CONFIG_PREEMPT_DYNAMIC */
- 
--
- /*
-  * This is the entry point to schedule() from kernel preemption
-  * off of irq context.
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -215,9 +215,71 @@ static const struct file_operations sche
- 
- #endif /* SMP */
- 
-+#ifdef CONFIG_PREEMPT_DYNAMIC
-+
-+static ssize_t sched_dynamic_write(struct file *filp, const char __user *ubuf,
-+				   size_t cnt, loff_t *ppos)
++ssize_t debugfs_read_file_str(struct file *file, char __user *user_buf,
++			      size_t count, loff_t *ppos)
 +{
-+	char buf[16];
-+	int mode;
++	struct dentry *dentry = F_DENTRY(file);
++	char *str, *copy = NULL;
++	int copy_len, len;
++	ssize_t ret;
 +
-+	if (cnt > 15)
-+		cnt = 15;
++	ret = debugfs_file_get(dentry);
++	if (unlikely(ret))
++		return ret;
 +
-+	if (copy_from_user(&buf, ubuf, cnt))
-+		return -EFAULT;
-+
-+	buf[cnt] = 0;
-+	mode = sched_dynamic_mode(strstrip(buf));
-+	if (mode < 0)
-+		return mode;
-+
-+	sched_dynamic_update(mode);
-+
-+	*ppos += cnt;
-+
-+	return cnt;
-+}
-+
-+static int sched_dynamic_show(struct seq_file *m, void *v)
-+{
-+	static const char * preempt_modes[] = {
-+		"none", "voluntary", "full"
-+	};
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(preempt_modes); i++) {
-+		if (preempt_dynamic_mode == i)
-+			seq_puts(m, "(");
-+		seq_puts(m, preempt_modes[i]);
-+		if (preempt_dynamic_mode == i)
-+			seq_puts(m, ")");
-+
-+		seq_puts(m, " ");
++	str = *(char **)file->private_data;
++	len = strlen(str) + 1;
++	copy = kmalloc(len, GFP_KERNEL);
++	if (!copy) {
++		debugfs_file_put(dentry);
++		return -ENOMEM;
 +	}
 +
-+	seq_puts(m, "\n");
-+	return 0;
++	copy_len = strscpy(copy, str, len);
++	debugfs_file_put(dentry);
++	if (copy_len < 0) {
++		kfree(copy);
++		return copy_len;
++	}
++
++	copy[copy_len] = '\n';
++
++	ret = simple_read_from_buffer(user_buf, count, ppos, copy, copy_len);
++	kfree(copy);
++
++	return ret;
 +}
 +
-+static int sched_dynamic_open(struct inode *inode, struct file *filp)
++static ssize_t debugfs_write_file_str(struct file *file, const char __user *user_buf,
++				      size_t count, loff_t *ppos)
 +{
-+	return single_open(filp, sched_dynamic_show, NULL);
++	/* This is really only for read-only strings */
++	return -EINVAL;
 +}
 +
-+static const struct file_operations sched_dynamic_fops = {
-+	.open		= sched_dynamic_open,
-+	.write		= sched_dynamic_write,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
++static const struct file_operations fops_str = {
++	.read =		debugfs_read_file_str,
++	.write =	debugfs_write_file_str,
++	.open =		simple_open,
++	.llseek =	default_llseek,
 +};
 +
-+#endif /* CONFIG_PREEMPT_DYNAMIC */
++static const struct file_operations fops_str_ro = {
++	.read =		debugfs_read_file_str,
++	.open =		simple_open,
++	.llseek =	default_llseek,
++};
 +
- __read_mostly bool sched_debug_enabled;
- 
--struct dentry *debugfs_sched;
-+static struct dentry *debugfs_sched;
- 
- static __init int sched_init_debug(void)
++static const struct file_operations fops_str_wo = {
++	.write =	debugfs_write_file_str,
++	.open =		simple_open,
++	.llseek =	default_llseek,
++};
++
++/**
++ * debugfs_create_str - create a debugfs file that is used to read and write a string value
++ * @name: a pointer to a string containing the name of the file to create.
++ * @mode: the permission that the file should have
++ * @parent: a pointer to the parent dentry for this file.  This should be a
++ *          directory dentry if set.  If this parameter is %NULL, then the
++ *          file will be created in the root of the debugfs filesystem.
++ * @value: a pointer to the variable that the file should read to and write
++ *         from.
++ *
++ * This function creates a file in debugfs with the given name that
++ * contains the value of the variable @value.  If the @mode variable is so
++ * set, it can be read from, and written to.
++ *
++ * This function will return a pointer to a dentry if it succeeds.  This
++ * pointer must be passed to the debugfs_remove() function when the file is
++ * to be removed (no automatic cleanup happens if your module is unloaded,
++ * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
++ * returned.
++ *
++ * If debugfs is not enabled in the kernel, the value ERR_PTR(-ENODEV) will
++ * be returned.
++ */
++void debugfs_create_str(const char *name, umode_t mode,
++			struct dentry *parent, char **value)
++{
++	debugfs_create_mode_unsafe(name, mode, parent, value, &fops_str,
++				   &fops_str_ro, &fops_str_wo);
++}
++
+ static ssize_t read_file_blob(struct file *file, char __user *user_buf,
+ 			      size_t count, loff_t *ppos)
  {
-@@ -227,6 +289,9 @@ static __init int sched_init_debug(void)
+--- a/include/linux/debugfs.h
++++ b/include/linux/debugfs.h
+@@ -128,6 +128,8 @@ void debugfs_create_atomic_t(const char
+ 			     struct dentry *parent, atomic_t *value);
+ struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+ 				  struct dentry *parent, bool *value);
++void debugfs_create_str(const char *name, umode_t mode,
++			struct dentry *parent, char **value);
  
- 	debugfs_create_file("features", 0644, debugfs_sched, NULL, &sched_feat_fops);
- 	debugfs_create_bool("debug_enabled", 0644, debugfs_sched, &sched_debug_enabled);
-+#ifdef CONFIG_PREEMPT_DYNAMIC
-+	debugfs_create_file("preempt", 0644, debugfs_sched, NULL, &sched_dynamic_fops);
-+#endif
+ struct dentry *debugfs_create_blob(const char *name, umode_t mode,
+ 				  struct dentry *parent,
+@@ -156,6 +158,9 @@ ssize_t debugfs_read_file_bool(struct fi
+ ssize_t debugfs_write_file_bool(struct file *file, const char __user *user_buf,
+ 				size_t count, loff_t *ppos);
  
- 	debugfs_create_u32("latency_ns", 0644, debugfs_sched, &sysctl_sched_latency);
- 	debugfs_create_u32("min_granularity_ns", 0644, debugfs_sched, &sysctl_sched_min_granularity);
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -2733,5 +2733,12 @@ static inline bool is_per_cpu_kthread(st
++ssize_t debugfs_read_file_str(struct file *file, char __user *user_buf,
++			      size_t count, loff_t *ppos);
++
+ #else
+ 
+ #include <linux/err.h>
+@@ -297,6 +302,11 @@ static inline struct dentry *debugfs_cre
+ 	return ERR_PTR(-ENODEV);
  }
+ 
++static inline void debugfs_create_str(const char *name, umode_t mode,
++				      struct dentry *parent,
++				      char **value)
++{ }
++
+ static inline struct dentry *debugfs_create_blob(const char *name, umode_t mode,
+ 				  struct dentry *parent,
+ 				  struct debugfs_blob_wrapper *blob)
+@@ -347,6 +357,13 @@ static inline ssize_t debugfs_write_file
+ {
+ 	return -ENODEV;
+ }
++
++static inline ssize_t debugfs_read_file_str(struct file *file,
++					    char __user *user_buf,
++					    size_t count, loff_t *ppos)
++{
++	return -ENODEV;
++}
+ 
  #endif
  
--void swake_up_all_locked(struct swait_queue_head *q);
--void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
-+extern void swake_up_all_locked(struct swait_queue_head *q);
-+extern void __prepare_to_swait(struct swait_queue_head *q, struct swait_queue *wait);
-+
-+#ifdef CONFIG_PREEMPT_DYNAMIC
-+extern int preempt_dynamic_mode;
-+extern int sched_dynamic_mode(const char *str);
-+extern void sched_dynamic_update(int mode);
-+#endif
-+
 
 
