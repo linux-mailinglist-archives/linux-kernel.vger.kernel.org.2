@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8B135BBA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9855C35BBA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237167AbhDLIFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:05:55 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:3401 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237144AbhDLIFw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:05:52 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 12 Apr 2021 01:05:34 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 12 Apr 2021 01:05:32 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 12 Apr 2021 13:35:11 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id 3DC3121936; Mon, 12 Apr 2021 13:35:10 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, swboyd@chromium.org,
-        bjorn.andersson@linaro.org,
-        Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH v5] media: venus : hfi: add venus image info into smem
-Date:   Mon, 12 Apr 2021 13:35:08 +0530
-Message-Id: <1618214708-28711-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S237190AbhDLIF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:05:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:40376 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237171AbhDLIF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:05:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0D0231B;
+        Mon, 12 Apr 2021 01:05:38 -0700 (PDT)
+Received: from [10.163.72.17] (unknown [10.163.72.17])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 340B23F73B;
+        Mon, 12 Apr 2021 01:05:36 -0700 (PDT)
+Subject: Re: [PATCH V2] mm/page_alloc: Ensure that HUGETLB_PAGE_ORDER is less
+ than MAX_ORDER
+To:     linux-mm@kvack.org, akpm@linux-foundation.org
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        "linuxppc-dev @ lists . ozlabs . org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>
+References: <1618199302-29335-1-git-send-email-anshuman.khandual@arm.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <09284b9a-cfe1-fc49-e1f6-3cf0c1b74c76@arm.com>
+Date:   Mon, 12 Apr 2021 13:36:10 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <1618199302-29335-1-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fill fw version info into smem to be printed as part of
-soc info.
++ linuxppc-dev@lists.ozlabs.org
++ linux-ia64@vger.kernel.org
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/media/platform/Kconfig               |  2 +-
- drivers/media/platform/qcom/venus/hfi_msgs.c | 20 ++++++++++++++++++--
- 2 files changed, 19 insertions(+), 3 deletions(-)
+On 4/12/21 9:18 AM, Anshuman Khandual wrote:
+> pageblock_order must always be less than MAX_ORDER, otherwise it might lead
+> to an warning during boot. A similar problem got fixed on arm64 platform
+> with the commit 79cc2ed5a716 ("arm64/mm: Drop THP conditionality from
+> FORCE_MAX_ZONEORDER"). Assert the above condition before HUGETLB_PAGE_ORDER
+> gets assigned as pageblock_order. This will help detect the problem earlier
+> on platforms where HUGETLB_PAGE_SIZE_VARIABLE is enabled.
+> 
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> Changes in V2:
+> 
+> - Changed WARN_ON() to BUILD_BUG_ON() per David
+> 
+> Changes in V1:
+> 
+> https://patchwork.kernel.org/project/linux-mm/patch/1617947717-2424-1-git-send-email-anshuman.khandual@arm.com/
+> 
+>  mm/page_alloc.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index cfc72873961d..19283bff4bec 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -6875,10 +6875,17 @@ void __init set_pageblock_order(void)
+>  	if (pageblock_order)
+>  		return;
+>  
+> -	if (HPAGE_SHIFT > PAGE_SHIFT)
+> +	if (HPAGE_SHIFT > PAGE_SHIFT) {
+> +		/*
+> +		 * pageblock_order must always be less than
+> +		 * MAX_ORDER. So does HUGETLB_PAGE_ORDER if
+> +		 * that is being assigned here.
+> +		 */
+> +		BUILD_BUG_ON(HUGETLB_PAGE_ORDER >= MAX_ORDER);
 
-diff --git a/drivers/media/platform/Kconfig b/drivers/media/platform/Kconfig
-index fd1831e..9c75e88 100644
---- a/drivers/media/platform/Kconfig
-+++ b/drivers/media/platform/Kconfig
-@@ -543,7 +543,7 @@ config VIDEO_TI_VPE_DEBUG
- 
- config VIDEO_QCOM_VENUS
- 	tristate "Qualcomm Venus V4L2 encoder/decoder driver"
--	depends on VIDEO_DEV && VIDEO_V4L2
-+	depends on VIDEO_DEV && VIDEO_V4L2 && QCOM_SMEM
- 	depends on (ARCH_QCOM && IOMMU_DMA) || COMPILE_TEST
- 	select QCOM_MDT_LOADER if ARCH_QCOM
- 	select QCOM_SCM if ARCH_QCOM
-diff --git a/drivers/media/platform/qcom/venus/hfi_msgs.c b/drivers/media/platform/qcom/venus/hfi_msgs.c
-index 06a1908..9f856a6 100644
---- a/drivers/media/platform/qcom/venus/hfi_msgs.c
-+++ b/drivers/media/platform/qcom/venus/hfi_msgs.c
-@@ -6,6 +6,7 @@
- #include <linux/hash.h>
- #include <linux/list.h>
- #include <linux/slab.h>
-+#include <linux/soc/qcom/smem.h>
- #include <media/videobuf2-v4l2.h>
- 
- #include "core.h"
-@@ -14,6 +15,10 @@
- #include "hfi_msgs.h"
- #include "hfi_parser.h"
- 
-+#define SMEM_IMG_VER_TBL 469
-+#define VER_STR_SZ	128
-+#define SMEM_IMG_OFFSET_VENUS (14 * 128)
-+
- static void event_seq_changed(struct venus_core *core, struct venus_inst *inst,
- 			      struct hfi_msg_event_notify_pkt *pkt)
- {
-@@ -239,15 +244,26 @@ static void
- sys_get_prop_image_version(struct device *dev,
- 			   struct hfi_msg_sys_property_info_pkt *pkt)
- {
-+	u8 *smem_tbl_ptr;
-+	u8 *img_ver;
- 	int req_bytes;
-+	size_t smem_blk_sz;
- 
- 	req_bytes = pkt->hdr.size - sizeof(*pkt);
- 
--	if (req_bytes < 128 || !pkt->data[1] || pkt->num_properties > 1)
-+	if (req_bytes < VER_STR_SZ || !pkt->data[1] || pkt->num_properties > 1)
- 		/* bad packet */
- 		return;
- 
--	dev_dbg(dev, VDBGL "F/W version: %s\n", (u8 *)&pkt->data[1]);
-+	img_ver = (u8 *)&pkt->data[1];
-+
-+	dev_dbg(dev, VDBGL "F/W version: %s\n", img_ver);
-+
-+	smem_tbl_ptr = qcom_smem_get(QCOM_SMEM_HOST_ANY,
-+		SMEM_IMG_VER_TBL, &smem_blk_sz);
-+	if (smem_tbl_ptr && smem_blk_sz >= SMEM_IMG_OFFSET_VENUS + VER_STR_SZ)
-+		memcpy(smem_tbl_ptr + SMEM_IMG_OFFSET_VENUS,
-+		       img_ver, VER_STR_SZ);
- }
- 
- static void hfi_sys_property_info(struct venus_core *core,
--- 
-2.7.4
+Unfortunately the build test fails on both the platforms (powerpc and ia64)
+which subscribe HUGETLB_PAGE_SIZE_VARIABLE and where this check would make
+sense. I some how overlooked the cross compile build failure that actually
+detected this problem.
 
+But wondering why this assert is not holding true ? and how these platforms
+do not see the warning during boot (or do they ?) at mm/vmscan.c:1092 like
+arm64 did.
+
+static int __fragmentation_index(unsigned int order, struct contig_page_info *info)
+{
+        unsigned long requested = 1UL << order;
+
+        if (WARN_ON_ONCE(order >= MAX_ORDER))
+                return 0;
+....
+
+Can pageblock_order really exceed MAX_ORDER - 1 ?
+
+>  		order = HUGETLB_PAGE_ORDER;
+> -	else
+> +	} else {
+>  		order = MAX_ORDER - 1;
+> +	}
+>  
+>  	/*
+>  	 * Assume the largest contiguous order of interest is a huge page.
+> 
