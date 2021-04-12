@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4630B35C674
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:41:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7183C35C6BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241205AbhDLMl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:41:27 -0400
-Received: from mga02.intel.com ([134.134.136.20]:61701 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238587AbhDLMlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:41:25 -0400
-IronPort-SDR: 6UzKYUIJhXWLzmLWeE1H5LrEnou4hYfQu+LM/HJYrJpy1zIuRRMhDXNhyHQ16BTPf12ThDVTGj
- M8OcOR1wPmRA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9952"; a="181304130"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="181304130"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 05:41:06 -0700
-IronPort-SDR: KUdyBN42O6vDNYNhS4kpcrulY+1eKnyCgPkZ5ZI/O/50WIA6gWvlX2dd2wd4rIIQp6/8gQ+QJT
- Fel5FIyGPkCg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="521168519"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 12 Apr 2021 05:41:04 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 12 Apr 2021 15:41:03 +0300
-Date:   Mon, 12 Apr 2021 15:41:03 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Greg KH <greg@kroah.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the usb tree
-Message-ID: <YHQ/37TDNUy5JfV4@kuha.fi.intel.com>
-References: <20210412213655.3776e15e@canb.auug.org.au>
- <YHQ+oMm7sKKQuWGJ@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YHQ+oMm7sKKQuWGJ@kroah.com>
+        id S241496AbhDLMuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:50:24 -0400
+Received: from smtp-good-out-4.t-2.net ([93.103.246.70]:58932 "EHLO
+        smtp-good-out-4.t-2.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238534AbhDLMuX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:50:23 -0400
+X-Greylist: delayed 483 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Apr 2021 08:50:22 EDT
+Received: from smtp-1.t-2.net (smtp-1.t-2.net [IPv6:2a01:260:1:4::1e])
+        by smtp-good-out-4.t-2.net (Postfix) with ESMTP id 4FJpK41DD6z1VPs;
+        Mon, 12 Apr 2021 14:42:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-2.net;
+        s=smtp-out-2; t=1618231320;
+        bh=an0I2Pi77+7RFQeYVkdJg3pvIoAezOsYDpfl+GxO9Q0=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=r3XN6zbfILHQ+PiBr06WKJ3LmzmL/v92jsxQW7h6stnXhR4VYzk42A+hzdfadJRu4
+         cYnYIR3wqM+XRq6W+aFY5A6jZZT3KA1Z9DrboBzULiBanHqpP8ApipR0e7irrufr/U
+         +rwCPbJm4x9A/Lna4BH+6k9HKxndqsD1F54jvsAw=
+Received: from localhost (localhost [127.0.0.1])
+        by smtp-1.t-2.net (Postfix) with ESMTP id 4FJpK413JKzTmgvW;
+        Mon, 12 Apr 2021 14:42:00 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at t-2.net
+Received: from smtp-1.t-2.net ([127.0.0.1])
+        by localhost (smtp-1.t-2.net [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id z6KjXUtJEyly; Mon, 12 Apr 2021 14:41:59 +0200 (CEST)
+Received: from hpg3.u2up.net (89-212-91-172.static.t-2.net [89.212.91.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp-1.t-2.net (Postfix) with ESMTPS;
+        Mon, 12 Apr 2021 14:41:28 +0200 (CEST)
+Message-ID: <ed5347ee800216fbbcb119ee3b5ad3070797fd1e.camel@t-2.net>
+Subject: Re: How to handle concurrent access to /dev/ttyprintk ?
+From:   Samo =?UTF-8?Q?Poga=C4=8Dnik?= <samo_pogacnik@t-2.net>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Petr Mladek <pmladek@suse.com>, Jiri Slaby <jirislaby@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Date:   Mon, 12 Apr 2021 14:41:27 +0200
+In-Reply-To: <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
+References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+         <YGx59PEq2Y015YdK@alley>
+         <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
+         <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
+         <YG24F9Kx+tjxhh8G@kroah.com>
+         <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
+         <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 02:35:44PM +0200, Greg KH wrote:
-> On Mon, Apr 12, 2021 at 09:36:55PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > After merging the usb tree, today's linux-next build (x86_64 almodconfig
-> > modules_install) failed like this:
-> > 
-> > depmod: ERROR: Cycle detected: usbcore -> typec -> usbcore
-> > depmod: ERROR: Found 2 modules in dependency cycles!
-> > 
-> > Caused by commit
-> > 
-> >   63cd78617350 ("usb: Link the ports to the connectors they are attached to")
-> > 
-> > I have reverted that commit for today.
+Dne 12.04.2021 (pon) ob 19:39 +0900 je Tetsuo Handa napisal(a):
+> What is the intended usage of /dev/ttyprintk ?
 > 
-> Ugh, good catch, odd that 0-day didn't catch that :(
-> 
-> I'll go revert it in my tree as well.  Heikki, can you send a fixed up
-> version when you get a chance?
 
-Sure thing.
+The intended use of 'ttyprintk' is to redirect console to /dev/ttyprintk
+via the TIOCCONS ioctl. After successfull redirection, all console
+messages get "merged" with kernel messages and as such automatically processed
+(stored/transferred) by the syslog service for example.
 
-thanks,
+best regards, Samo
 
--- 
-heikki
+
