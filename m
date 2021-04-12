@@ -2,111 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27C935C670
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA4735C672
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241124AbhDLMkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:40:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51360 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238587AbhDLMki (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:40:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 976F3AC6A;
-        Mon, 12 Apr 2021 12:40:19 +0000 (UTC)
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210412120842.GY3697@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v2 resend] mm/memory_hotplug: Make unpopulated zones PCP
- structures unreachable during hot remove
-Message-ID: <d4e4c3e4-7d47-d634-4374-4cf1e55c7895@suse.cz>
-Date:   Mon, 12 Apr 2021 14:40:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S241191AbhDLMlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238587AbhDLMlH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:41:07 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9495C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:40:49 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id g66-20020a1c39450000b0290125d187ba22so6308507wma.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:40:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mDtDoRs+7JTKmRSNbYm/eoC5RrOrbwKn07hGic3mdK8=;
+        b=rWpSopbfXoidRd+rBu8OzHyrQSkM/8rg+DbhCxV40cfP343hyJOaPcMVGstU61R6HS
+         FB2FfC6o7MQv9Scm43yyGbYMY4eDR26hRa7lMtjQLsMj0aVRtGpPFCTMjzSkZPHGqM1C
+         ludoR4jQjsaAzQvje06u04ytzHvzkLSKkLIzF523OkzNQV+Rabg4BSNY0koV6kmI7yNj
+         9SD/NpA1ohOrGv6jkWGVx/5bXWbyWWLoybs3/aoWgy0fg8yvFSNAWCQGT7Q9AXj8TRdd
+         7+IcHxNf0ahsCTBp2Q9vjkz9Vp7+xAVUYZpzrHyZxK08kFePpDl8i6RiyFmnFRdlLme2
+         PUlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mDtDoRs+7JTKmRSNbYm/eoC5RrOrbwKn07hGic3mdK8=;
+        b=Qn4qBB0A5xlF5xKT5OOXEfEJ3OHiI5BmjdEJEkF9XxWfVIFxTu8AS3p6BrYapxNGyT
+         DN0d0mc6tEMyTYWKuczq3ya7DlK0DyU/6s1SroqO3Ey9W3/EVHBMMJKkkbbxZGLVy+dv
+         E5k/CYx0Zps860oDjhhPmZ5RoOOSFHxtjrvAJaxL/B6AHXhWRa/hUOvmbPE48WGCBrzh
+         ME4NVWFGUmf8eEEvo0AbSHSUKaZlHCsHk2YeqUOBvAX80S+8WbMiTJwrm64q6vQYHAVr
+         CODAHywYlWYhWmfGDynHxyERpROXvduVphj3ExD/mJ1b/8e02qBYmafeTPGCp0eJjQuz
+         llUg==
+X-Gm-Message-State: AOAM533avV4ZIQUYOxqB8nTH5MBFnzffNNq/z24IsYJrBmzMpA4ZCJcW
+        TAVAdINBTepeX0XaXzUunA/PFNMJ/olGnhXuPcM=
+X-Google-Smtp-Source: ABdhPJwwzJV0JxFgyJYKPbig9riaMMb4hkRQqbS7qviEMxuCuPwShBYC81dKvxPFisExlNuFbUS1LVEVUA3QZEcTxAM=
+X-Received: by 2002:a7b:c003:: with SMTP id c3mr26208794wmb.59.1618231248564;
+ Mon, 12 Apr 2021 05:40:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210412120842.GY3697@techsingularity.net>
-Content-Type:   text/plain; charset=US-ASCII
-Content-Language: en-US
-Content-Transfer-Encoding: 7BIT
+References: <1617957240-53633-1-git-send-email-tiantao6@hisilicon.com>
+ <CAGngYiVfattJKO7npMHTagxNfzU-B=rP3FoZ89_yzy-c=Zw2RQ@mail.gmail.com> <44f55f42-cb52-f705-c40a-6d5c1844f56b@huawei.com>
+In-Reply-To: <44f55f42-cb52-f705-c40a-6d5c1844f56b@huawei.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Mon, 12 Apr 2021 08:40:36 -0400
+Message-ID: <CAGngYiV2dH4nLkFocyL4YkYkL3qu_kyB5ELZbWLeFMjjsFRpwQ@mail.gmail.com>
+Subject: Re: [PATCH] staging: fieldbus: simplify devm_anybuss_host_common_probe
+To:     "tiantao (H)" <tiantao6@huawei.com>
+Cc:     Tian Tao <tiantao6@hisilicon.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 2:08 PM, Mel Gorman wrote:
-> zone_pcp_reset allegedly protects against a race with drain_pages
-> using local_irq_save but this is bogus. local_irq_save only operates
-> on the local CPU. If memory hotplug is running on CPU A and drain_pages
-> is running on CPU B, disabling IRQs on CPU A does not affect CPU B and
-> offers no protection.
-> 
-> This patch deletes IRQ disable/enable on the grounds that IRQs protect
-> nothing and assumes the existing hotplug paths guarantees the PCP cannot be
-> used after zone_pcp_enable(). That should be the case already because all
-> the pages have been freed and there is no page to put on the PCP lists.
-> 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+On Sun, Apr 11, 2021 at 9:14 PM tiantao (H) <tiantao6@huawei.com> wrote:
+>
+> What about doing it like this?
+>
+> -static void host_release(struct device *dev, void *res)
+> +static void host_release(void *res)
+>   {
+> -       struct anybuss_host **dr = res;
+> -
+> -       anybuss_host_common_remove(*dr);
+> +       anybuss_host_common_remove(res);
+>   }
 
-Yeah the irq disabling here is clearly bogus, so:
-
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-But I think Michal has a point that we might best leave the pagesets around, by
-a future change. I'm have some doubts that even with your reordering of the
-reset/destroy after zonelist rebuild in v1 they cant't be reachable. We have no
-protection between zonelist rebuild and zonelist traversal, and that's why we
-just leave pgdats around.
-
-So I can imagine a task racing with memory hotremove might see watermarks as ok
-in get_page_from_freelist() for the zone and proceeds to try_this_zone:, then
-gets stalled/scheduled out while hotremove rebuilds the zonelist and destroys
-the pcplists, then the first task is resumed and proceeds with rmqueue_pcplist().
-
-So that's very rare thus not urgent, and this patch doesn't make it less rare so
-not a reason to block it.
-
-> ---
-> Resending for email address correction and adding lists
-> 
-> Changelog since v1
-> o Minimal fix
-> 
->  mm/page_alloc.c | 4 ----
->  1 file changed, 4 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 5e8aedb64b57..9bf0db982f14 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8952,12 +8952,9 @@ void zone_pcp_enable(struct zone *zone)
->  
->  void zone_pcp_reset(struct zone *zone)
->  {
-> -	unsigned long flags;
->  	int cpu;
->  	struct per_cpu_pageset *pset;
->  
-> -	/* avoid races with drain_pages()  */
-> -	local_irq_save(flags);
->  	if (zone->pageset != &boot_pageset) {
->  		for_each_online_cpu(cpu) {
->  			pset = per_cpu_ptr(zone->pageset, cpu);
-> @@ -8966,7 +8963,6 @@ void zone_pcp_reset(struct zone *zone)
->  		free_percpu(zone->pageset);
->  		zone->pageset = &boot_pageset;
->  	}
-> -	local_irq_restore(flags);
->  }
->  
->  #ifdef CONFIG_MEMORY_HOTREMOVE
-> 
-
+That looks like it could work. Can you resend as a "proper" patch,
+please? To tell the versions apart, simply specify [PATCH v1] [PATCH
+v2] etc in the patch title/subject line. Then below the patch's "---
+line", add the version history.
