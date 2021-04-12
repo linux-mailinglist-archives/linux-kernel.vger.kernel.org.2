@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BC335BBB8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 462A435BBBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237141AbhDLIJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:09:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55512 "EHLO
+        id S237171AbhDLIJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:09:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236808AbhDLIJ0 (ORCPT
+        with ESMTP id S237179AbhDLIJf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:09:26 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4E62C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 01:09:08 -0700 (PDT)
+        Mon, 12 Apr 2021 04:09:35 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445D5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 01:09:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=DVIe+4d9I+G/am9Q3PISMJopYc/lkfgh9KdMieTh7Y0=; b=m6p33ZtUeh8y5beGxwx6STY+bL
-        nMh8lFYg+sp9LP+GWzHHPhf+kjX0C9yaDplOYNSWj2fT1R51JhCnkXrA5tuwVtwpHAuUeDGHzkiMY
-        xtg897nAI0LowhlXyL1NUeztXMipuT/XDBLLayK7Y+FiyAGLUQJWaGqP+oAwH34DgAQKva1Wc9aTG
-        5DLJ70goPvpnRkUYERmAtO8lNrO+umO1D+TlV4mLSC76p8CH/ZSuO+6g7h0yqKACDo17PP0ZDN7CU
-        yx+3YC/1Hmcu5ObrWma/HrptEIu3LQERKl7yQxuJhkVA+NTwfgnHTQnGYpF5cHRHRcVKde0T/X5JU
-        yYwP99kw==;
+        bh=OtIPE7LdX+QBKK2tSqSr9/uYg2L3KF1qrgrA2x1fPJU=; b=Wu1I1vXFc6dGqQYFarxc8bK06Z
+        Km2Pr+jwqQnttpzYUbE7RzxcmP+jqsL1r4g9+WKNlXWUx6AZhWfGvqlybyVpkz/ezIvV9k9lYtf9O
+        W+YPJfUsHf8VfwtRK3kABW9KX2uiytcBvcR/K7XX2/XPWeOUHmJb0tYFs23aUlVZgq8U5UGakAHJt
+        Ys9Ao6rc2EtVEme7dy1Vh2i3iPxrEFdBLEArAgjcH3ulGRsrfEAr43PiPB8w8EBlERdGpKdzxUOWa
+        6Ssq6pYqqh+++0luSnKiSkLi6GwsqvySfVv0Lza4l5oi59GGVvBxU5OtdzdInLFNlEOvRtA8csp+d
+        CT0XxotA==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVrck-0063yC-Oe; Mon, 12 Apr 2021 08:08:46 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVrcl-003yd7-5P; Mon, 12 Apr 2021 08:08:49 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7BD63300222;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7DE8230022D;
         Mon, 12 Apr 2021 10:08:44 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 3262620224231; Mon, 12 Apr 2021 10:08:44 +0200 (CEST)
-Message-ID: <20210412080611.568192782@infradead.org>
+        id 347FB25F2152E; Mon, 12 Apr 2021 10:08:44 +0200 (CEST)
+Message-ID: <20210412080611.635125063@infradead.org>
 User-Agent: quilt/0.66
-Date:   Mon, 12 Apr 2021 10:00:13 +0200
+Date:   Mon, 12 Apr 2021 10:00:14 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     akpm@linux-foundation.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
@@ -48,7 +48,7 @@ Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
         rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
         intel-gfx@lists.freedesktop.org, linux-mm@kvack.org,
         keescook@chromium.org, hch@lst.de
-Subject: [PATCH 1/7] mm: Unexport apply_to_existing_page_range()
+Subject: [PATCH 2/7] xen/gntdev,x86: Remove apply_to_page_range() use from module
 References: <20210412080012.357146277@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,25 +56,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no modular in-tree users, remove the EXPORT.
+Instead of relying on apply_to_page_range() being available to
+modules, move its use into core kernel code and export it's
+application.
 
-This is an unsafe function in that it gives direct access to the
-page-tables.
+NOTE: ideally we do: use_ptemod = !auto_translate_physmap &&
+gnttab_map_avail_bits and remove this hack.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- mm/memory.c |    1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/include/asm/xen/page.h |    2 ++
+ arch/x86/xen/mmu.c              |   26 ++++++++++++++++++++++++++
+ drivers/xen/gntdev.c            |   23 +----------------------
+ 3 files changed, 29 insertions(+), 22 deletions(-)
 
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2558,7 +2558,6 @@ int apply_to_existing_page_range(struct
- {
- 	return __apply_to_page_range(mm, addr, size, fn, data, false);
+--- a/arch/x86/include/asm/xen/page.h
++++ b/arch/x86/include/asm/xen/page.h
+@@ -370,4 +370,6 @@ static inline unsigned long xen_get_swio
+ 	return __get_free_pages(__GFP_NOWARN, order);
  }
--EXPORT_SYMBOL_GPL(apply_to_existing_page_range);
  
- /*
-  * handle_pte_fault chooses page fault handler according to an entry which was
++extern void xen_set_grant_as_special(struct vm_area_struct *vma);
++
+ #endif /* _ASM_X86_XEN_PAGE_H */
+--- a/arch/x86/xen/mmu.c
++++ b/arch/x86/xen/mmu.c
+@@ -51,3 +51,29 @@ int xen_unmap_domain_gfn_range(struct vm
+ 	return -EINVAL;
+ }
+ EXPORT_SYMBOL_GPL(xen_unmap_domain_gfn_range);
++
++static int set_grant_ptes_as_special(pte_t *pte, unsigned long addr, void *data)
++{
++	set_pte_at(current->mm, addr, pte, pte_mkspecial(*pte));
++	return 0;
++}
++
++void xen_set_grant_as_special(struct vm_area_struct *vma)
++{
++	if (xen_feature(XENFEAT_gnttab_map_avail_bits))
++		return;
++
++	/*
++	 * If the PTEs were not made special by the grant map
++	 * hypercall, do so here.
++	 *
++	 * This is racy since the mapping is already visible
++	 * to userspace but userspace should be well-behaved
++	 * enough to not touch it until the mmap() call
++	 * returns.
++	 */
++	apply_to_page_range(vma->vm_mm, vma->vm_start,
++			    vma->vm_end - vma->vm_start,
++			    set_grant_ptes_as_special, NULL);
++}
++EXPORT_SYMBOL_GPL(xen_set_grant_as_special);
+--- a/drivers/xen/gntdev.c
++++ b/drivers/xen/gntdev.c
+@@ -278,14 +278,6 @@ static int find_grant_ptes(pte_t *pte, u
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_X86
+-static int set_grant_ptes_as_special(pte_t *pte, unsigned long addr, void *data)
+-{
+-	set_pte_at(current->mm, addr, pte, pte_mkspecial(*pte));
+-	return 0;
+-}
+-#endif
+-
+ int gntdev_map_grant_pages(struct gntdev_grant_map *map)
+ {
+ 	int i, err = 0;
+@@ -1040,20 +1032,7 @@ static int gntdev_mmap(struct file *flip
+ 			goto out_put_map;
+ 	} else {
+ #ifdef CONFIG_X86
+-		/*
+-		 * If the PTEs were not made special by the grant map
+-		 * hypercall, do so here.
+-		 *
+-		 * This is racy since the mapping is already visible
+-		 * to userspace but userspace should be well-behaved
+-		 * enough to not touch it until the mmap() call
+-		 * returns.
+-		 */
+-		if (!xen_feature(XENFEAT_gnttab_map_avail_bits)) {
+-			apply_to_page_range(vma->vm_mm, vma->vm_start,
+-					    vma->vm_end - vma->vm_start,
+-					    set_grant_ptes_as_special, NULL);
+-		}
++		xen_set_grant_as_special(vma);
+ #endif
+ 	}
+ 
 
 
