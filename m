@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A24735C80A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9906F35C810
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241533AbhDLN7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238985AbhDLN7H (ORCPT
+        id S242061AbhDLN7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:59:33 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:56280 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238985AbhDLN7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:59:07 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7E18C061574;
-        Mon, 12 Apr 2021 06:58:49 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id c6so9937021qtc.1;
-        Mon, 12 Apr 2021 06:58:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=SJw/FCmBKIoHaZdn5FSsuIC5fqSzcrzjPH5C6swmKnU=;
-        b=C5aRJDDnSepZQj02FKN5Pt1KjVS4QcitMncok9+1+VXGcl4U+zNMyE/CDSRFpGnNsg
-         o8dtkR1O04Y64hBWrt5sW/Nxa5Off34WPhS5p461086smlNV/vwnJsOUx4J7pQtBGQOd
-         NkMgtFWEdPC0F8wB6kggZFshNy1S6HsSGEFnTPbS7DSq5T3BsF6icZi+xK30DjKjl7zQ
-         eo2QFX6aBpyvkf3kceseTWQn+6j1S5NtJjIVGYP/0e6fcDPDcpWTWyYZbjFGFjmIMTz2
-         7N4nAj2qT2Cexa0gIpNzQ1RRo2lWRaw+BzDHCjmIzA2lq0mlUCuWqH9cfs/9YtWEPP7/
-         6OUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=SJw/FCmBKIoHaZdn5FSsuIC5fqSzcrzjPH5C6swmKnU=;
-        b=WrCdHY/uvjaZBduDF0tvVgmA2KNoAuH2tUUmf/XSXsaRobf1is6vi+P8YYpp+SeRKW
-         TmigoE+aPyDKYYr0xDrrNpyYPs9mNx7DuL5a95btckbgiHKEdhUOeOJH0nYA64msrg2j
-         tD7TQREgSwmFLlc+wCay7fYQadrt0kYhPc7pqhXHZx/Xa3DKcOSg5UiQ9j363uyvk4hD
-         hPjkKJfj0Wrtdl42Kohv9RNUDqENUGSyQjv0Dd0lTVbboBuGq0KNxZ1RVwjs6yVqeEsm
-         0MwNqyDwk36N1phWDxfva9N9npTA6L3/F4xyDC9UKN+2vqyXXfmAMt9HDFOQWcR8k7Wn
-         BClA==
-X-Gm-Message-State: AOAM5338zg/Db/+KcF9RXDwYMnxT/PCsjOKCDH16FR9qQmNHjo779fat
-        o+NN1uG8V/s38SMG/x+LKxE=
-X-Google-Smtp-Source: ABdhPJzAomUhFof9b0BEGxLSk7wwbcJ/y8uBh3McRsLXAyxNCVB/Ux0Yj05t8t+JBWvFn6wFSJqjjg==
-X-Received: by 2002:a05:622a:486:: with SMTP id p6mr26013241qtx.98.1618235929094;
-        Mon, 12 Apr 2021 06:58:49 -0700 (PDT)
-Received: from ?IPv6:2001:1284:f016:a037:476a:dfcd:f18f:9ad5? ([2001:1284:f016:a037:476a:dfcd:f18f:9ad5])
-        by smtp.gmail.com with ESMTPSA id q125sm8018087qkf.68.2021.04.12.06.58.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 06:58:48 -0700 (PDT)
-Message-ID: <7457fd4eb5afbf66b3a6f2fed4dd1e440e6ed422.camel@gmail.com>
-Subject: Re: [Outreachy kernel][PATCH 1/4 v2] staging: media: omap4iss:
- Replace macro function by static inline function in file iss.c
-From:   ascordeiro <alinesantanacordeiro@gmail.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Date:   Mon, 12 Apr 2021 10:58:45 -0300
-In-Reply-To: <YHRNzq3h3LEp3Dgc@pendragon.ideasonboard.com>
-References: <cover.1618231618.git.alinesantanacordeiro@gmail.com>
-         <e302566a3d9e5180ab27eb2c2824fd1b678a6d99.1618231618.git.alinesantanacordeiro@gmail.com>
-         <YHRNzq3h3LEp3Dgc@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        Mon, 12 Apr 2021 09:59:30 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13CDYJqD089060;
+        Mon, 12 Apr 2021 09:59:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=pp1;
+ bh=I1xA9fWP2JmdBLLvaqDSq+m+noRiKWAJdZxVpnmKDns=;
+ b=sPUs5pZT2isL3u8zLcv4x/SPnOlxbFY8OIWZJRAQrG7KhOCE6Ej5jaDu6B9LPFjFYOZh
+ 7B34vXLlU1Rz+JYYekmVYIbMYNGTu8t+LZ0yj7HV7PE/NHO2R/eL7g7QgzPBaG/K/YMs
+ 1clQmA/d3e6ujiQPOX6Y8fDWJ9Mo/jU7tIb3QtwIE4q69SwobEPtta3CXmAXf7vxZQNI
+ kyUKjMfpBwakyXNtFo7VP6+GbNZt/7bWsOw54GcEJfnxL2ZGdr74eR/kKpWbpWfei/HU
+ drjzCuJ4HUP4XlmEZdU6AlxFloxrdiJQ77+5ED9bHtqoOgUxp35NwEC4g5tPIignbAIh hQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37vkdfsvxh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 09:59:11 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13CDvvVp013283;
+        Mon, 12 Apr 2021 13:59:09 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 37u3n8sv4g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 13:59:09 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13CDx6VU49807676
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Apr 2021 13:59:06 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0823B42041;
+        Mon, 12 Apr 2021 13:59:06 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A241142042;
+        Mon, 12 Apr 2021 13:59:05 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 12 Apr 2021 13:59:05 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Narendra K <narendra_k@dell.com>
+Cc:     Viktor Mihajlovski <mihajlov@linux.ibm.com>,
+        Stefan Raspl <raspl@linux.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        linux-netdev@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: =?UTF-8?q?=5BPATCH=200/1=5D=20Use=20of=20/sys/bus/pci/devices/=E2=80=A6/index=20for=20non-SMBIOS=20platforms?=
+Date:   Mon, 12 Apr 2021 15:59:04 +0200
+Message-Id: <20210412135905.1434249-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: TstaIQiXbtlWMLpJanMJ3PdnICOXAcz1
+X-Proofpoint-ORIG-GUID: TstaIQiXbtlWMLpJanMJ3PdnICOXAcz1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-12_10:2021-04-12,2021-04-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 phishscore=0 mlxlogscore=999 impostorscore=0
+ adultscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0 spamscore=0
+ bulkscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104120091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em seg, 2021-04-12 às 16:40 +0300, Laurent Pinchart escreveu:
-> While testing on a device isn't a requirement as you can't be
-> expected
-> to have the necessary hardware, changes are expected to be at least
-> compile-tested before being submitted.
+Hi Narendra, Hi All,
 
-Hi Laurent,
+According to Documentation/ABI/testing/sysfs-bus-pci you are responsible
+for the index device attribute that is used by systemd to create network
+interface names.
 
-I thought recompiling the kernel would be enough in this case.
-I recompiled it in native Ubuntu 16.04 without errors.
+Now we would like to reuse this attribute for firmware provided PCI
+device index numbers on the s390 architecture which doesn't have
+SMBIOS/DMI nor ACPI. All code changes are within our architecture
+specific code but I'd like to get some Acks for this reuse. I've sent an
+RFC version of this patch on 15th of March with the subject:
 
-Thank you for the feedback.
-Aline
+   s390/pci: expose a PCI device's UID as its index
+
+but got no response. Would it be okay to re-use this attribute for
+essentially the same purpose but with index numbers provided by
+a different platform mechanism? I think this would be cleaner than
+further proliferation of /sys/bus/pci/devices/<dev>/xyz_index
+attributes and allows re-use of the existing userspace infrastructure.
+
+Thanks,
+Niklas Schnelle
+
+Niklas Schnelle (1):
+  s390/pci: expose a PCI device's UID as its index
+
+ Documentation/ABI/testing/sysfs-bus-pci | 11 +++++---
+ arch/s390/pci/pci_sysfs.c               | 35 +++++++++++++++++++++++++
+ 2 files changed, 42 insertions(+), 4 deletions(-)
+
+-- 
+2.25.1
 
