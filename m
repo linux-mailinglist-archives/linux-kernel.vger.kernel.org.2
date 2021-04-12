@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5F3B35BD29
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE88D35BD2B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237981AbhDLIs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:48:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37324 "EHLO mail.kernel.org"
+        id S238129AbhDLIs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:48:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38786 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237851AbhDLIqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:46:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 296986109E;
-        Mon, 12 Apr 2021 08:45:49 +0000 (UTC)
+        id S237739AbhDLIqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:46:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5C5E611F0;
+        Mon, 12 Apr 2021 08:45:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217150;
-        bh=09ooUlwISxVla7TfWvf2JNWFhCcK81tqCeJIgvfv0gM=;
+        s=korg; t=1618217153;
+        bh=Vwq7OBOcX4w2Lv7VcddRMMu7QdRGViyEXU4JYQjLerI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TuiLERD701IhQ5OnzuZfsa3kbzUGl+cwgANZOx/ch8spTjE4bhnbYP7ORAPQDGoiC
-         lT87eUpVRgPD2LFpfBy1kJJat63SdAqCVoZpZz/mE7a7SPh3rb3EqHi8VcV2RuO/Cm
-         uD4Pe2ojOrrM3Zje/VRFk4RHWjcfdEflI/GG7P7U=
+        b=ufnUAky/+rdjEEgLJpdFkhAt/V0lNumltM400BFkhcFlVUoSVDkTtiWIP2wI22+aT
+         VuXwjRdGNG90Y6mETIg1t8ehZgNTQFcc8+DheKcPO30wZ5GAWTH3+ivizVSfAAY6iQ
+         M8kwguUs3iyqsUxe0uIZT4mOkPg877f3D0LtUues=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fabio Pricoco <fabio.pricoco@intel.com>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Jacek=20Bu=C5=82atek?= <jacekx.bulatek@intel.com>,
+        Haiyue Wang <haiyue.wang@intel.com>,
         Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.4 022/111] ice: Increase control queue timeout
-Date:   Mon, 12 Apr 2021 10:40:00 +0200
-Message-Id: <20210412084004.961222235@linuxfoundation.org>
+Subject: [PATCH 5.4 023/111] ice: Fix for dereference of NULL pointer
+Date:   Mon, 12 Apr 2021 10:40:01 +0200
+Message-Id: <20210412084005.000554881@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -40,34 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabio Pricoco <fabio.pricoco@intel.com>
+From: Jacek Bułatek <jacekx.bulatek@intel.com>
 
-commit f88c529ac77b3c21819d2cf1dfcfae1937849743 upstream.
+commit 7a91d3f02b04b2fb18c2dfa8b6c4e5a40a2753f5 upstream.
 
-250 msec timeout is insufficient for some AQ commands. Advice from FW
-team was to increase the timeout. Increase to 1 second.
+Add handling of allocation fault for ice_vsi_list_map_info.
 
-Fixes: 7ec59eeac804 ("ice: Add support for control queues")
-Signed-off-by: Fabio Pricoco <fabio.pricoco@intel.com>
+Also *fi should not be NULL pointer, it is a reference to raw
+data field, so remove this variable and use the reference
+directly.
+
+Fixes: 9daf8208dd4d ("ice: Add support for switch filter programming")
+Signed-off-by: Jacek Bułatek <jacekx.bulatek@intel.com>
+Co-developed-by: Haiyue Wang <haiyue.wang@intel.com>
+Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
 Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ice/ice_controlq.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_switch.c |   12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
---- a/drivers/net/ethernet/intel/ice/ice_controlq.h
-+++ b/drivers/net/ethernet/intel/ice/ice_controlq.h
-@@ -31,8 +31,8 @@ enum ice_ctl_q {
- 	ICE_CTL_Q_MAILBOX,
- };
+--- a/drivers/net/ethernet/intel/ice/ice_switch.c
++++ b/drivers/net/ethernet/intel/ice/ice_switch.c
+@@ -1279,6 +1279,9 @@ ice_add_update_vsi_list(struct ice_hw *h
+ 			ice_create_vsi_list_map(hw, &vsi_handle_arr[0], 2,
+ 						vsi_list_id);
  
--/* Control Queue timeout settings - max delay 250ms */
--#define ICE_CTL_Q_SQ_CMD_TIMEOUT	2500  /* Count 2500 times */
-+/* Control Queue timeout settings - max delay 1s */
-+#define ICE_CTL_Q_SQ_CMD_TIMEOUT	10000 /* Count 10000 times */
- #define ICE_CTL_Q_SQ_CMD_USEC		100   /* Check every 100usec */
++		if (!m_entry->vsi_list_info)
++			return ICE_ERR_NO_MEMORY;
++
+ 		/* If this entry was large action then the large action needs
+ 		 * to be updated to point to FWD to VSI list
+ 		 */
+@@ -2266,6 +2269,7 @@ ice_vsi_uses_fltr(struct ice_fltr_mgmt_l
+ 	return ((fm_entry->fltr_info.fltr_act == ICE_FWD_TO_VSI &&
+ 		 fm_entry->fltr_info.vsi_handle == vsi_handle) ||
+ 		(fm_entry->fltr_info.fltr_act == ICE_FWD_TO_VSI_LIST &&
++		 fm_entry->vsi_list_info &&
+ 		 (test_bit(vsi_handle, fm_entry->vsi_list_info->vsi_map))));
+ }
  
- struct ice_ctl_q_ring {
+@@ -2338,14 +2342,12 @@ ice_add_to_vsi_fltr_list(struct ice_hw *
+ 		return ICE_ERR_PARAM;
+ 
+ 	list_for_each_entry(fm_entry, lkup_list_head, list_entry) {
+-		struct ice_fltr_info *fi;
+-
+-		fi = &fm_entry->fltr_info;
+-		if (!fi || !ice_vsi_uses_fltr(fm_entry, vsi_handle))
++		if (!ice_vsi_uses_fltr(fm_entry, vsi_handle))
+ 			continue;
+ 
+ 		status = ice_add_entry_to_vsi_fltr_list(hw, vsi_handle,
+-							vsi_list_head, fi);
++							vsi_list_head,
++							&fm_entry->fltr_info);
+ 		if (status)
+ 			return status;
+ 	}
 
 
