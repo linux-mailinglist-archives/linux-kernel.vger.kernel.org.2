@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E326135C0D8
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8F935C0D6
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241679AbhDLJRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:17:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49260 "EHLO mail.kernel.org"
+        id S241626AbhDLJQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:16:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239163AbhDLI7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:59:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1120761243;
-        Mon, 12 Apr 2021 08:57:33 +0000 (UTC)
+        id S239150AbhDLI7T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:59:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DB0C6124C;
+        Mon, 12 Apr 2021 08:57:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217854;
-        bh=B3Z+kegQ/q0iCRikUQByQLt78kbiA/6W0nX6/k83WJg=;
+        s=korg; t=1618217857;
+        bh=B6lBmkJc9AGNNM626ehx8HKi/VCxD74uQiqmG5rhVgI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J3ieWZ2RylELCJFgjLQ1RE9+IXNHlRBg99yPOW6cerXZukMwSYBI5YAD0Q5tVKDC6
-         sOGNsiRZbbfvBgoWE6KfP9pLr7mg/h8gqKHdNzTEjxnwEne0Ca++Y+bkNklssNwk5i
-         ATY2m6pIqmwnxoRRMBna/s+1RTt3pZGqHSJwiQN0=
+        b=pE/D8pwxSUVj+tGtBQ/J6wJ2oxebkABBoiOcqXPOwHYTeu6Co0iJMRpDwcAbVvOSu
+         STi+fM988PuJ0uLNikiigj5lQ3uks6JkfPGn+i9oLo8h1+aZ9ACFZvv67McvnVaxzz
+         W2KOFvgSCn1sMQksfEz7zPSkq0rEfLcvHxwtp5K8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eli Cohen <elic@nvidia.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 168/188] vdpa/mlx5: Fix wrong use of bit numbers
-Date:   Mon, 12 Apr 2021 10:41:22 +0200
-Message-Id: <20210412084019.220334209@linuxfoundation.org>
+        stable@vger.kernel.org, William Roche <william.roche@oracle.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.10 169/188] RAS/CEC: Correct ce_add_elem()s returned values
+Date:   Mon, 12 Apr 2021 10:41:23 +0200
+Message-Id: <20210412084019.250214213@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -41,50 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eli Cohen <elic@nvidia.com>
+From: William Roche <william.roche@oracle.com>
 
-[ Upstream commit 4b454a82418dd76d8c0590bb3f7a99a63ea57dc5 ]
+commit 3a62583c2853b0ab37a57dde79decea210b5fb89 upstream.
 
-VIRTIO_F_VERSION_1 is a bit number. Use BIT_ULL() with mask
-conditionals.
+ce_add_elem() uses different return values to signal a result from
+adding an element to the collector. Commit in Fixes: broke the case
+where the element being added is not found in the array. Correct that.
 
-Also, in mlx5_vdpa_is_little_endian() use BIT_ULL for consistency with
-the rest of the code.
+ [ bp: Rewrite commit message, add kernel-doc comments. ]
 
-Fixes: 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
-Link: https://lore.kernel.org/r/20210408091047.4269-5-elic@nvidia.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Acked-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: de0e0624d86f ("RAS/CEC: Check count_threshold unconditionally")
+Signed-off-by: William Roche <william.roche@oracle.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/1617722939-29670-1-git-send-email-william.roche@oracle.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/ras/cec.c |   15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index 545160ee2a62..65cfbd377130 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -805,7 +805,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
- 	MLX5_SET(virtio_q, vq_ctx, event_qpn_or_msix, mvq->fwqp.mqp.qpn);
- 	MLX5_SET(virtio_q, vq_ctx, queue_size, mvq->num_ent);
- 	MLX5_SET(virtio_q, vq_ctx, virtio_version_1_0,
--		 !!(ndev->mvdev.actual_features & VIRTIO_F_VERSION_1));
-+		 !!(ndev->mvdev.actual_features & BIT_ULL(VIRTIO_F_VERSION_1)));
- 	MLX5_SET64(virtio_q, vq_ctx, desc_addr, mvq->desc_addr);
- 	MLX5_SET64(virtio_q, vq_ctx, used_addr, mvq->device_addr);
- 	MLX5_SET64(virtio_q, vq_ctx, available_addr, mvq->driver_addr);
-@@ -1535,7 +1535,7 @@ static void teardown_virtqueues(struct mlx5_vdpa_net *ndev)
- static inline bool mlx5_vdpa_is_little_endian(struct mlx5_vdpa_dev *mvdev)
- {
- 	return virtio_legacy_is_little_endian() ||
--		(mvdev->actual_features & (1ULL << VIRTIO_F_VERSION_1));
-+		(mvdev->actual_features & BIT_ULL(VIRTIO_F_VERSION_1));
+--- a/drivers/ras/cec.c
++++ b/drivers/ras/cec.c
+@@ -309,11 +309,20 @@ static bool sanity_check(struct ce_array
+ 	return ret;
  }
  
- static __virtio16 cpu_to_mlx5vdpa16(struct mlx5_vdpa_dev *mvdev, u16 val)
--- 
-2.30.2
-
++/**
++ * cec_add_elem - Add an element to the CEC array.
++ * @pfn:	page frame number to insert
++ *
++ * Return values:
++ * - <0:	on error
++ * -  0:	on success
++ * - >0:	when the inserted pfn was offlined
++ */
+ static int cec_add_elem(u64 pfn)
+ {
+ 	struct ce_array *ca = &ce_arr;
++	int count, err, ret = 0;
+ 	unsigned int to = 0;
+-	int count, ret = 0;
+ 
+ 	/*
+ 	 * We can be called very early on the identify_cpu() path where we are
+@@ -330,8 +339,8 @@ static int cec_add_elem(u64 pfn)
+ 	if (ca->n == MAX_ELEMS)
+ 		WARN_ON(!del_lru_elem_unlocked(ca));
+ 
+-	ret = find_elem(ca, pfn, &to);
+-	if (ret < 0) {
++	err = find_elem(ca, pfn, &to);
++	if (err < 0) {
+ 		/*
+ 		 * Shift range [to-end] to make room for one more element.
+ 		 */
 
 
