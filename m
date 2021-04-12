@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF7335C7B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7F535C7B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241811AbhDLNbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:31:14 -0400
-Received: from netsrv01.beckhoff.com ([62.159.14.10]:56826 "EHLO
-        netsrv01.beckhoff.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241975AbhDLNao (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:30:44 -0400
-Received: from 10.1.0.27 by netsrv01.beckhoff.com (Tls12, Aes256, Sha384,
- DiffieHellmanEllipticKey256); Mon, 12 Apr 2021 13:30:26 GMT
-Received: from localhost.localdomain (172.17.204.1) by NT-Mail02.beckhoff.com
- (10.1.0.27) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 12 Apr 2021
- 15:30:22 +0200
-From:   Steffen Dirkwinkel <linux-kernel-dev@beckhoff.com>
-CC:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
-Subject: [PATCH v2] platform/x86: pmc_atom: Match all Beckhoff Automation baytrail boards with critclk_systems DMI table
-Date:   Mon, 12 Apr 2021 15:30:06 +0200
-Message-ID: <20210412133006.397679-1-linux-kernel-dev@beckhoff.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <CAHp75VeTK9TstuRCqOkVit9U7sV7TA_xcTQ1yZPGfLdZSt7_Gg@mail.gmail.com>
-References: <CAHp75VeTK9TstuRCqOkVit9U7sV7TA_xcTQ1yZPGfLdZSt7_Gg@mail.gmail.com>
+        id S241229AbhDLNbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:31:17 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:48306 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241807AbhDLNbA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 09:31:00 -0400
+Received: from [95.90.166.74] (helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lVwe5-0002K0-Lw; Mon, 12 Apr 2021 15:30:29 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Peter Geis <pgwipeout@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
+        Tao Huang <huangtao@rock-chips.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rockchip@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/7] gpio-rockchip driver
+Date:   Mon, 12 Apr 2021 15:30:28 +0200
+Message-ID: <2004066.IobQ9Gjlxr@diego>
+In-Reply-To: <CAHp75Ve=1EbJ1qOjnTLKOwvv-UKLfxMHS-UUp=ET0zoJ9fV=ng@mail.gmail.com>
+References: <20210411133030.1663936-1-pgwipeout@gmail.com> <CAHp75Ve=1EbJ1qOjnTLKOwvv-UKLfxMHS-UUp=ET0zoJ9fV=ng@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.17.204.1]
-X-OLX-Disclaimer: Done
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
+Am Montag, 12. April 2021, 14:13:37 CEST schrieb Andy Shevchenko:
+> On Sun, Apr 11, 2021 at 4:35 PM Peter Geis <pgwipeout@gmail.com> wrote:
+> >
+> > Separate gpio driver from pinctrl driver, and support v2 controller.
+> >
+> > Tested on rk3566-quartz64 prototype board.
+> 
+> Can you give a bit more context?
+> Usually separation means that hardware is represented by two different
+> IP blocks that are (almost) independent to each other. Was it the case
+> on the original platforms? Do you have different pin controller (or
+> it's absent completely) on some new / old platform?
 
-pmc_plt_clk* clocks are used for ethernet controllers, so need to stay
-turned on. This adds the affected board family to critclk_systems DMI
-table, so the clocks are marked as CLK_CRITICAL and not turned off.
+They are separate on all Rockchip SoCs.
 
-This replaces the previously listed boards with a match for the whole
-device family CBxx63. CBxx63 matches only baytrail devices.
-There are new affected boards that would otherwise need to be listed.
-There are unaffected boards in the family, but having the clocks
-turned on is not an issue.
+I.e. the pinconfig (muxing, pulls, etc) is done via some registers inside
+the "General Register Files" [area for misc registers]
+and control for the gpio functionality is done in separate blocks
+for each bank.
 
-Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
----
- drivers/platform/x86/pmc_atom.c | 28 ++--------------------------
- 1 file changed, 2 insertions(+), 26 deletions(-)
+Lumping that stuff together into one driver, was a design-mistake
+from younger-me back in 2013 ;-)
 
-diff --git a/drivers/platform/x86/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
-index ca684ed760d1..a9d2a4b98e57 100644
---- a/drivers/platform/x86/pmc_atom.c
-+++ b/drivers/platform/x86/pmc_atom.c
-@@ -393,34 +393,10 @@ static const struct dmi_system_id critclk_systems[] = {
- 	},
- 	{
- 		/* pmc_plt_clk* - are used for ethernet controllers */
--		.ident = "Beckhoff CB3163",
-+		.ident = "Beckhoff Baytrail",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
--			DMI_MATCH(DMI_BOARD_NAME, "CB3163"),
--		},
--	},
--	{
--		/* pmc_plt_clk* - are used for ethernet controllers */
--		.ident = "Beckhoff CB4063",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
--			DMI_MATCH(DMI_BOARD_NAME, "CB4063"),
--		},
--	},
--	{
--		/* pmc_plt_clk* - are used for ethernet controllers */
--		.ident = "Beckhoff CB6263",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
--			DMI_MATCH(DMI_BOARD_NAME, "CB6263"),
--		},
--	},
--	{
--		/* pmc_plt_clk* - are used for ethernet controllers */
--		.ident = "Beckhoff CB6363",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
--			DMI_MATCH(DMI_BOARD_NAME, "CB6363"),
-+			DMI_MATCH(DMI_PRODUCT_FAMILY, "CBxx63"),
- 		},
- 	},
- 	{
--- 
-2.31.1
+
+Heiko
+
+> >
+> > Patch History:
+> > V2 - Rebase to latest linux-next.
+> >
+> > Tested-by: Peter Geis <pgwipeout@gmail.com>
+> >
+> > Jianqun Xu (7):
+> >   pinctrl/rockchip: separate struct rockchip_pin_bank to a head file
+> >   pinctrl/pinctrl-rockchip.h: add pinctrl device to gpio bank struct
+> >   gpio: separate gpio driver from pinctrl-rockchip driver
+> >   gpio/rockchip: use struct rockchip_gpio_regs for gpio controller
+> >   gpio/rockchip: support next version gpio controller
+> >   gpio/rockchip: always enable clock for gpio controller
+> >   gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
+> >
+> >  drivers/gpio/Kconfig               |   8 +
+> >  drivers/gpio/Makefile              |   1 +
+> >  drivers/gpio/gpio-rockchip.c       | 758 ++++++++++++++++++++++++
+> >  drivers/pinctrl/pinctrl-rockchip.c | 911 +----------------------------
+> >  drivers/pinctrl/pinctrl-rockchip.h | 287 +++++++++
+> >  5 files changed, 1073 insertions(+), 892 deletions(-)
+> >  create mode 100644 drivers/gpio/gpio-rockchip.c
+> >  create mode 100644 drivers/pinctrl/pinctrl-rockchip.h
+> >
+> > --
+> > 2.25.1
+> >
+> 
+> 
+> 
+
+
+
+
