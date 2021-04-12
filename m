@@ -2,141 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A923F35CCCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B9435CCB3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244874AbhDLQbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:31:20 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:33074 "EHLO lizzard.sbs.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244256AbhDLQZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:25:31 -0400
-Received: from mail1.sbs.de (mail1.sbs.de [192.129.41.35])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 13CGOrbd017425
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Apr 2021 18:24:53 +0200
-Received: from md1za8fc.ad001.siemens.net ([139.22.41.180])
-        by mail1.sbs.de (8.15.2/8.15.2) with ESMTP id 13CGHbNR028068;
-        Mon, 12 Apr 2021 18:17:37 +0200
-Date:   Mon, 12 Apr 2021 18:17:36 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-watchdog@vger.kernel.org,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v3 3/4] watchdog: simatic-ipc-wdt: add new driver for
- Siemens Industrial PCs
-Message-ID: <20210412181736.6b18f667@md1za8fc.ad001.siemens.net>
-In-Reply-To: <610b566d-10a8-fa6b-145d-db7a453f97cf@roeck-us.net>
-References: <20210329174928.18816-1-henning.schild@siemens.com>
-        <20210329174928.18816-4-henning.schild@siemens.com>
-        <ffdfe9a9-ab17-18af-300e-062b79d132f3@metux.net>
-        <20210412173531.4140e461@md1za8fc.ad001.siemens.net>
-        <610b566d-10a8-fa6b-145d-db7a453f97cf@roeck-us.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S244704AbhDLQa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243313AbhDLQZH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:25:07 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A6869C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=kspMpVWA8RdaDQw/ELkzB8D1gwcI58BWj8
+        lpK1+dMAw=; b=JlbU+pF1wd04/Ehk57s4QvIE6OVhtORqwI/+LF/idRyPCfrUYq
+        ooLtSocatCCxk2eXp5scBclx6Ec+OPoHf46bfxjS//h4M4auwaFMA8y4gw3d+7Ss
+        3AWvKpEd5wAvrB+NMQ4ZU68LqHFqYYHA9GWjx28Db8Cy+vc94OemXU3k8=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygA3PKQWdHRgqUDLAA--.44789S2;
+        Tue, 13 Apr 2021 00:23:51 +0800 (CST)
+Date:   Tue, 13 Apr 2021 00:18:48 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, Anup Patel <anup@brainfault.org>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 08/10] riscv: bpf: Avoid breaking W^X on RV64
+Message-ID: <20210413001848.157891f1@xhacker>
+In-Reply-To: <20210413001110.7209bae6@xhacker>
+References: <20210413001110.7209bae6@xhacker>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygA3PKQWdHRgqUDLAA--.44789S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFy3Cw1DXF1xGF4fXw1DKFg_yoWfXwc_C3
+        WxJFyxWw1rtr48Zw4DWFWFyr1Syw4rCF4kuFn3Zry2ka98uF17tF95t342qry7Zry09r97
+        WryfX3yIqw4avjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4AYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU8aYLP
+        UUUUU==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mon, 12 Apr 2021 09:06:10 -0700
-schrieb Guenter Roeck <linux@roeck-us.net>:
+From: Jisheng Zhang <jszhang@kernel.org>
 
-> On 4/12/21 8:35 AM, Henning Schild wrote:
-> > Am Thu, 1 Apr 2021 18:15:41 +0200
-> > schrieb "Enrico Weigelt, metux IT consult" <lkml@metux.net>:
-> >   
-> >> On 29.03.21 19:49, Henning Schild wrote:
-> >>
-> >> Hi,
-> >>  
-> >>> This driver adds initial support for several devices from Siemens.
-> >>> It is based on a platform driver introduced in an earlier commit.
-> >>>    
-> >>
-> >> Where does the wdt actually come from ?
-> >>
-> >> Is it in the SoC ? (which SoC exactly). SoC-builtin wdt is a
-> >> pretty usual case.
-> >>
-> >> Or some external chip ?
-> >>
-> >> The code smells a bit like two entirely different wdt's that just
-> >> have some similarities. If that's the case, I'd rather split it
-> >> into two separate drivers and let the parent driver (board file)
-> >> instantiate the correct one.  
-> > 
-> > In fact they are the same watchdog device. The only difference is
-> > the "secondary enable" which controls whether the watchdog causes a
-> > reboot or just raises an alarm. The alarm feature is not even
-> > implemented in the given driver, we just enable that secondary
-> > enable regardless. 
-> 
-> Confusing statement; I can't parse "we just enable that secondary
-> enable regardless". What secondary enable do you enable ?
->
-> The code says "set safe_en_n so we are not just WDIOF_ALARMONLY",
-> which suggests that it disables the alarm feature, and does make
-> sense.
+bpf_jit_binary_lock_ro() in core not only set RO but also set EXEC
+permission when JIT is done, so no need to allocate RWX from the
+beginning, and it's not safe.
 
-Yes go with the second statement. But the alarm is the default after
-boot, and turning it off needs to be done with p2sb gpio on the 427.
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
+ arch/riscv/net/bpf_jit_comp64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index b44ff52f84a6..1c61a82a2856 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -1153,7 +1153,7 @@ void *bpf_jit_alloc_exec(unsigned long size)
+ {
+ 	return __vmalloc_node_range(size, PAGE_SIZE, BPF_JIT_REGION_START,
+ 				    BPF_JIT_REGION_END, GFP_KERNEL,
+-				    PAGE_KERNEL_EXEC, 0, NUMA_NO_NODE,
++				    PAGE_KERNEL, 0, NUMA_NO_NODE,
+ 				    __builtin_return_address(0));
+ }
  
-> > In one range of devices (227E) that second enable is part of a
-> > pio-based control register. On the other range (427E) it
-> > unfortunately is a P2SB gpio, which gets us right into the
-> > discussion we have around the LEDs.
-> > With that i have my doubts that two drivers would be the way to go,
-> > most likely not. 
-> >   
-> 
-> Reading the code again, I agree. Still, you'll need to sort out how
-> to determine if the watchdog or the LED driver should be enabled,
-> and how to access the gpio port. The GPIO pin detection and use
-> for 427E is a bit awkward.
+-- 
+2.31.0
 
-Yes it is awkward, and that is exactly the discussion happening for the
-LEDs. Using generic GPIO code, the mail was more to Andy as i am hoping
-he might help me connect the dots here. On the other hand i wanted wdt
-discussions in the wdt thread, and not talk about that one gpio-pin in
-the LED thread.
-
-regards,
-Henning
-
-> Thanks,
-> Guenter
-> 
-> > Only that i have no clue which pinctrl driver should be used here.
-> > My guess is "sunrisepoint" because the CPUs are "SkyLake" i.e.
-> > i5-6442EQ, i3-6102E
-> > And "grep INT344B /sys/firmware/acpi/tables/DSDT" matches. I booted
-> > a kernel patched with the series from Andy but the
-> > "pinctrl-sunrisepoint" does not seem to even claim the memory.
-> > Still trying to understand how to make use of these pinctrl drivers
-> > they are in place but i lack example users (drivers). If they
-> > should be available in sysfs, i might be looking at the wrong place
-> > ... /sys/class/gpio/ does not list anything
-> > 
-> > regards,
-> > Henning
-> > 
-> > 
-> >   
-> >>
-> >> --mtx
-> >>  
-> >   
-> 
 
