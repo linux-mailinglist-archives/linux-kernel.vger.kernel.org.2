@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042B135C235
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C35135C233
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243039AbhDLJlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:41:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33550 "EHLO mail.kernel.org"
+        id S242993AbhDLJlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:41:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240980AbhDLJLT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:11:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 860A9613B1;
-        Mon, 12 Apr 2021 09:07:40 +0000 (UTC)
+        id S240984AbhDLJLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:11:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 257F5613AD;
+        Mon, 12 Apr 2021 09:07:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218461;
-        bh=0OJSYjFmcQVR8Y+J6nqu6mWK+cmBCkQ7Sz9Ivf9TdQU=;
+        s=korg; t=1618218463;
+        bh=pVA0Qb5ZTGEkOb6cYmFWkQ0YdOSVcEhyp3g8m9oOVAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QsmaGezVvULP4wE02pvuvh82KSkIlDT89vvIBWXWXm97KC+Er5MtvdwVlQ3Njjc/y
-         IwpaM+phS06Y7707orRv+xTgoPDhABe2zFtk14i8ZQx7s6Ddl1dvtleZkqi4Ve0KOH
-         HkCNE41sgS46Xsfjb6MPlf9zSSuh9YWoCcL9ROU8=
+        b=Qu70VD4pbWsDJPDFk3PzdQQ2Jrm1g32RUHYEGykiTi5R8KOedhpX8wzJxQmUJ3M/g
+         ejFTW/Vik5epoDygBvzbq758truNYE++ES43xWhHLVvcWzmHMowbdtpszIInQdlElI
+         wNovJG2iDeWE0NqN79GJ4X32QRtEjKsv/ju1vBIw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 172/210] i2c: designware: Adjust bus_freq_hz when refuse high speed mode set
-Date:   Mon, 12 Apr 2021 10:41:17 +0200
-Message-Id: <20210412084021.750496958@linuxfoundation.org>
+        stable@vger.kernel.org, Luca Coelho <luciano.coelho@intel.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 173/210] iwlwifi: fix 11ax disabled bit in the regulatory capability flags
+Date:   Mon, 12 Apr 2021 10:41:18 +0200
+Message-Id: <20210412084021.781886979@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -41,36 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Luca Coelho <luciano.coelho@intel.com>
 
-[ Upstream commit 5e729bc54bda705f64941008b018b4e41a4322bf ]
+[ Upstream commit 07cc40fec9a85e669ea12e161a438d2cbd76f1ed ]
 
-When hardware doesn't support High Speed Mode, we forget bus_freq_hz
-timing adjustment. This makes the timings and real registers being
-unsynchronized. Adjust bus_freq_hz when refuse high speed mode set.
+When version 2 of the regulatory capability flags API was implemented,
+the flag to disable 11ax was defined as bit 13, but this was later
+changed and the bit remained as bit 10, like in version 1.  This was
+never changed in the driver, so we were checking for the wrong bit in
+newer devices.  Fix it.
 
-Fixes: b6e67145f149 ("i2c: designware: Enable high speed mode")
-Reported-by: "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Reviewed-by: Barry Song <song.bao.hua@hisilicon.com>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Fixes: e27c506a985c ("iwlwifi: regulatory: regulatory capabilities api change")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/iwlwifi.20210326125611.6d28516b59cd.Id0248d5e4662695254f49ce37b0268834ed52918@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-designware-master.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-designware-master.c b/drivers/i2c/busses/i2c-designware-master.c
-index d6425ad6e6a3..2871cf2ee8b4 100644
---- a/drivers/i2c/busses/i2c-designware-master.c
-+++ b/drivers/i2c/busses/i2c-designware-master.c
-@@ -129,6 +129,7 @@ static int i2c_dw_set_timings_master(struct dw_i2c_dev *dev)
- 		if ((comp_param1 & DW_IC_COMP_PARAM_1_SPEED_MODE_MASK)
- 			!= DW_IC_COMP_PARAM_1_SPEED_MODE_HIGH) {
- 			dev_err(dev->dev, "High Speed not supported!\n");
-+			t->bus_freq_hz = I2C_MAX_FAST_MODE_FREQ;
- 			dev->master_cfg &= ~DW_IC_CON_SPEED_MASK;
- 			dev->master_cfg |= DW_IC_CON_SPEED_FAST;
- 			dev->hs_hcnt = 0;
+diff --git a/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c b/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
+index 720193d16539..7da193a12871 100644
+--- a/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
++++ b/drivers/net/wireless/intel/iwlwifi/iwl-nvm-parse.c
+@@ -232,7 +232,7 @@ enum iwl_reg_capa_flags_v2 {
+ 	REG_CAPA_V2_MCS_9_ALLOWED	= BIT(6),
+ 	REG_CAPA_V2_WEATHER_DISABLED	= BIT(7),
+ 	REG_CAPA_V2_40MHZ_ALLOWED	= BIT(8),
+-	REG_CAPA_V2_11AX_DISABLED	= BIT(13),
++	REG_CAPA_V2_11AX_DISABLED	= BIT(10),
+ };
+ 
+ /*
 -- 
 2.30.2
 
