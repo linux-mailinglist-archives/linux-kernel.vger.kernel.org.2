@@ -2,58 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD8735C9CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05AF235C9D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242863AbhDLPZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:25:38 -0400
-Received: from one.firstfloor.org ([193.170.194.197]:45758 "EHLO
-        one.firstfloor.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242755AbhDLPZd (ORCPT
+        id S240483AbhDLP2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:28:01 -0400
+Received: from outbound-smtp45.blacknight.com ([46.22.136.57]:51549 "EHLO
+        outbound-smtp45.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237512AbhDLP16 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:25:33 -0400
-Received: by one.firstfloor.org (Postfix, from userid 503)
-        id 1343086BFB; Mon, 12 Apr 2021 17:25:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firstfloor.org;
-        s=mail; t=1618241113;
-        bh=xUt6fto8lahvrjxdR5wc/WBuC4njw9UvLYhRUh/F7vk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Tq20uzkBH5OB7bq3S6TcwCJtRtjrWOnBdObDzdrBHsZXkpI8wgupelktONUR5eOYn
-         G2VB/9Jok/plWseR3LtKoA5ovNvPKnHfsWmiLyhGOneZmRwf9fgq00zJ/2oA/wJEVY
-         a1M7K3NLz4zkPcxk7SPLXWKbBmOuoiFEJJ5bmUcQ=
-Date:   Mon, 12 Apr 2021 08:25:12 -0700
-From:   Andi Kleen <andi@firstfloor.org>
-To:     "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
-        <liuxiangdong5@huawei.com>
-Cc:     Like Xu <like.xu@linux.intel.com>, andi@firstfloor.org,
-        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
-        Xiexiangyou <xiexiangyou@huawei.com>, kan.liang@linux.intel.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wei.w.wang@intel.com, x86@kernel.org,
-        "Xu, Like" <like.xu@intel.com>
-Subject: Re: [PATCH v4 01/16] perf/x86/intel: Add x86_pmu.pebs_vmx for Ice
- Lake Servers
-Message-ID: <20210412152511.igvdfilnuv6ed6hi@two.firstfloor.org>
-References: <20210329054137.120994-2-like.xu@linux.intel.com>
- <606BD46F.7050903@huawei.com>
- <18597e2b-3719-8d0d-9043-e9dbe39496a2@intel.com>
- <60701165.3060000@huawei.com>
- <1ba15937-ee3d-157a-e891-981fed8b414d@linux.intel.com>
- <60742E82.5010607@huawei.com>
+        Mon, 12 Apr 2021 11:27:58 -0400
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp45.blacknight.com (Postfix) with ESMTPS id 8C9C0FBC0D
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:27:39 +0100 (IST)
+Received: (qmail 25959 invoked from network); 12 Apr 2021 15:27:39 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Apr 2021 15:27:39 -0000
+Date:   Mon, 12 Apr 2021 16:27:37 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Alexander Duyck <alexanderduyck@fb.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 resend] mm/memory_hotplug: Make unpopulated zones PCP
+ structures unreachable during hot remove
+Message-ID: <20210412152737.GB3697@techsingularity.net>
+References: <20210412120842.GY3697@techsingularity.net>
+ <d4e4c3e4-7d47-d634-4374-4cf1e55c7895@suse.cz>
+ <20210412140852.GZ3697@techsingularity.net>
+ <a0d73ce0-b2bd-1928-539d-39cb9da9bf1f@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <60742E82.5010607@huawei.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <a0d73ce0-b2bd-1928-539d-39cb9da9bf1f@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> The reason why soft lockup happens may be the unmapped EPT pages. So, do we
-> have a way to map all gpa
-> before we use pebs on Skylake?
+On Mon, Apr 12, 2021 at 04:12:11PM +0200, David Hildenbrand wrote:
+> > After v1 of the patch, the race was reduced to the point between the
+> > zone watermark check and the rmqueue_pcplist but yes, it still existed.
+> > Closing it completely was either complex or expensive. Setting
+> > zone->pageset = &boot_pageset before the free would shrink the race
+> > further but that still leaves a potential memory ordering issue.
+> > 
+> > While fixable, it's either complex, expensive or both so yes, just leaving
+> > the pageset structures in place would be much more straight-forward
+> > assuming the structures were not allocated in the zone that is being
+> > hot-removed. As things stand, I had trouble even testing zone hot-remove
+> > as there was always a few pages left behind and I did not chase down
+> > why.
+>
+> Can you elaborate? I can reliably trigger zone present pages going to 0 by
+> just hotplugging a DIMM, onlining the memory block devices to the MOVABLE
+> zone, followed by offlining the memory block again.
+> 
 
-Can you configure a VT-d device, that will implicitly pin all pages for the
-IOMMU. I *think* that should be enough for testing.
+For the machine I was testing on, I tried offlining all memory within
+a zone on a NUMA machine. Even if I used movable_zone to create a zone
+or numa=fake to create multiple fake nodes and zones, there was always
+either reserved or pinned pages preventing the full zone being removed.
 
--Andi
+-- 
+Mel Gorman
+SUSE Labs
