@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F4C35C02E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E36535BE92
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240907AbhDLJLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:11:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49206 "EHLO mail.kernel.org"
+        id S239303AbhDLI7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:59:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39972 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238305AbhDLI4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:56:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60F7561207;
-        Mon, 12 Apr 2021 08:55:44 +0000 (UTC)
+        id S237985AbhDLIs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:48:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08F5B61284;
+        Mon, 12 Apr 2021 08:47:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217745;
-        bh=R6lu/8AYsWJZd8e9Cj2tsa066UK2Gt0HYcjTaKtl83M=;
+        s=korg; t=1618217267;
+        bh=33yqbiSyRWtXCWyehEDkdn9FyGizVISYTM3mKO0zM38=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qa4xmS6ZA/LUL53KRrv6Qf9DbBbs2sjT7EQGZXlkY4iZ9saolws8R9sH4J2uB1+x/
-         ACdfZGrtAb7OIM4bcgZo5OoUJT6cqJNUILUvrTO8c7GvSDeXeXCjAXsE8lEA37XsQz
-         tKVWXCWSwIDzp9YhwqL8jh1zHp3hP7BnZGPHRKxc=
+        b=sASpFhHrMltZ7Z4/92VUNdTM4FMy+UsT1Ui6iK1guDxRMUQHs0GIVYIa6Znni3sWA
+         6AkUuw6qt5RQ9+IgC5wgfOcSOqYPjooCnFGR35w7Cm1QJLyP+lO2OyyXzYonVST5S8
+         1xTCiRMoQLjRgKKF7+tMXpihNsalomIwXzaElkQU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 128/188] net: phy: broadcom: Only advertise EEE for supported modes
+Subject: [PATCH 5.4 064/111] ARM: dts: imx6: pbab01: Set vmmc supply for both SD interfaces
 Date:   Mon, 12 Apr 2021 10:40:42 +0200
-Message-Id: <20210412084017.905056771@linuxfoundation.org>
+Message-Id: <20210412084006.391737253@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,54 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Fainelli <f.fainelli@gmail.com>
+From: Stefan Riedmueller <s.riedmueller@phytec.de>
 
-[ Upstream commit c056d480b40a68f2520ccc156c7fae672d69d57d ]
+[ Upstream commit f57011e72f5fe0421ec7a812beb1b57bdf4bb47f ]
 
-We should not be advertising EEE for modes that we do not support,
-correct that oversight by looking at the PHY device supported linkmodes.
+Setting the vmmc supplies is crucial since otherwise the supplying
+regulators get disabled and the SD interfaces are no longer powered
+which leads to system failures if the system is booted from that SD
+interface.
 
-Fixes: 99cec8a4dda2 ("net: phy: broadcom: Allow enabling or disabling of EEE")
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 1e44d3f880d5 ("ARM i.MX6Q: dts: Enable I2C1 with EEPROM and PMIC on Phytec phyFLEX-i.MX6 Ouad module")
+Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/phy/bcm-phy-lib.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+ arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/phy/bcm-phy-lib.c b/drivers/net/phy/bcm-phy-lib.c
-index ef6825b30323..b72e11ca974f 100644
---- a/drivers/net/phy/bcm-phy-lib.c
-+++ b/drivers/net/phy/bcm-phy-lib.c
-@@ -328,7 +328,7 @@ EXPORT_SYMBOL_GPL(bcm_phy_enable_apd);
+diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
+index bc43c75f1745..6678b97b1007 100644
+--- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
+@@ -432,6 +432,7 @@
+ 	pinctrl-0 = <&pinctrl_usdhc2>;
+ 	cd-gpios = <&gpio1 4 GPIO_ACTIVE_LOW>;
+ 	wp-gpios = <&gpio1 2 GPIO_ACTIVE_HIGH>;
++	vmmc-supply = <&vdd_sd1_reg>;
+ 	status = "disabled";
+ };
  
- int bcm_phy_set_eee(struct phy_device *phydev, bool enable)
- {
--	int val;
-+	int val, mask = 0;
- 
- 	/* Enable EEE at PHY level */
- 	val = phy_read_mmd(phydev, MDIO_MMD_AN, BRCM_CL45VEN_EEE_CONTROL);
-@@ -347,10 +347,17 @@ int bcm_phy_set_eee(struct phy_device *phydev, bool enable)
- 	if (val < 0)
- 		return val;
- 
-+	if (linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseT_Full_BIT,
-+			      phydev->supported))
-+		mask |= MDIO_EEE_1000T;
-+	if (linkmode_test_bit(ETHTOOL_LINK_MODE_100baseT_Full_BIT,
-+			      phydev->supported))
-+		mask |= MDIO_EEE_100TX;
-+
- 	if (enable)
--		val |= (MDIO_EEE_100TX | MDIO_EEE_1000T);
-+		val |= mask;
- 	else
--		val &= ~(MDIO_EEE_100TX | MDIO_EEE_1000T);
-+		val &= ~mask;
- 
- 	phy_write_mmd(phydev, MDIO_MMD_AN, BCM_CL45VEN_EEE_ADV, (u32)val);
- 
+@@ -441,5 +442,6 @@
+ 		     &pinctrl_usdhc3_cdwp>;
+ 	cd-gpios = <&gpio1 27 GPIO_ACTIVE_LOW>;
+ 	wp-gpios = <&gpio1 29 GPIO_ACTIVE_HIGH>;
++	vmmc-supply = <&vdd_sd0_reg>;
+ 	status = "disabled";
+ };
 -- 
 2.30.2
 
