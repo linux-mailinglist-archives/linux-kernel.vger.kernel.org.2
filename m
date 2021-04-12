@@ -2,184 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883D835D17E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2335435D182
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236851AbhDLTxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:53:53 -0400
-Received: from mga05.intel.com ([192.55.52.43]:63047 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238833AbhDLTxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:53:51 -0400
-IronPort-SDR: U9iXzaahhK5JhZLeT9ngInav8rh4ZbVoEyBtEnKVqkUR/jTnNUODLgsD7t8Gg8RSdNhYkxrUEU
- yCiLogAxmK+g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="279568497"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="279568497"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 12:53:32 -0700
-IronPort-SDR: au/7fwydeoE18kSP84F0l6cDE4CSCmgFlGFy8K2pir46/rhJ7Yvs6AEvahP8wlKbc9rVqHkQXC
- xYlYPD73OM2g==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="521317920"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.251.8.207])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 12:53:32 -0700
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v9 1/1] mfd: intel-m10-bmc: support for MAX10 BMC Secure Updates
-Date:   Mon, 12 Apr 2021 12:53:28 -0700
-Message-Id: <20210412195329.241357-2-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210412195329.241357-1-russell.h.weight@intel.com>
-References: <20210412195329.241357-1-russell.h.weight@intel.com>
+        id S245370AbhDLTx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:53:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245360AbhDLTx4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 15:53:56 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF1AC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:53:36 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id 20so3003570pll.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:53:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lohhSZFnccGy8jGa7QsIGJ/XDmBANUFVxrmI+3Kxbmc=;
+        b=gLuCRPomfgXVwaBM17qd3/jC44Igsbt8WKgl4XvpZ1GivlizY8xNMgmq3LpV0orNVf
+         QRlsDYxDXcAWNh9LTSTY+k6DgWFzxnoS6/fI6e50qGwCnKlfPutiNGac7YsAKgaqDdcl
+         GfPatf4ArWO3dzi4/u3Ky0dtmQPuAhnWSmcHwLW4Bt00QfaPpNkLdEhDIMOSaWhfnM9X
+         AORpvC2Jme2Ge6RwjJFPEOP91o/siangMmSE1OlUWTMKcmsGQ3ls3xFvWCNn1O+3jTo1
+         MUsimmcWqSeG5aobnlTjYRqqidI8IYK+HpIhXHL4I6K8KJ4+HUWu0vQ1L+N6fmrnEMJw
+         43fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lohhSZFnccGy8jGa7QsIGJ/XDmBANUFVxrmI+3Kxbmc=;
+        b=dNLctJRXTMXuh9Sn/g/LxJqcfAAuHAVz2ZCIeIqmtKbRLk+ZIDNxn3d2aqfoepP7Ue
+         lAv4io+eQIfVtKyTWcNxBlKSwVObQ2TZSKOHecqYJa2RXMnG+ZNH0Bw4UNNmY7GFQs8x
+         3rCO6CT21oG1VJCmsJdhoMVBxgDv9RewMnLoJCCAd2jNpcdMcY5Cq7P84HnETvh2tEZ6
+         eIQwBUnibFyJRgaXtKUm8Jm3u+QaAADd17Et5Hokdz09V1PHruOeGK7ETUEgYWQX07Tk
+         SaU5HMsy7svg/rTy5b8Jj/OX9KdR7gusbB7c6DD3Nt87N/tsDzL9RJaLRb0PdonSUHD7
+         teWw==
+X-Gm-Message-State: AOAM531uFKKXowixrE3kRR5HTm0QEPmJ5Gm6FoYVT1ztrsqeWSu+Lc7j
+        rAIg+3zBcoTcAVhUHa6jWTeQYg==
+X-Google-Smtp-Source: ABdhPJzLvlP63bgMOBlYnFI7oM1829T9k+AQhynPrAGgacI8MdN24SvJnYMQRGsImsy8fWnSZL3Y1g==
+X-Received: by 2002:a17:90a:2807:: with SMTP id e7mr872172pjd.202.1618257215898;
+        Mon, 12 Apr 2021 12:53:35 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id x30sm12391335pgl.39.2021.04.12.12.53.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 12:53:34 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 13:53:31 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Andy Gross <agross@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 5/7] rpmsg: char: Introduce a rpmsg driver for the rpmsg
+ char device
+Message-ID: <20210412195331.GA582352@xps15>
+References: <20210323122737.23035-1-arnaud.pouliquen@foss.st.com>
+ <20210323122737.23035-6-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210323122737.23035-6-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add macros and definitions required by the MAX10 BMC
-Secure Update driver.
+On Tue, Mar 23, 2021 at 01:27:35PM +0100, Arnaud Pouliquen wrote:
+> A rpmsg char device allows to probe the endpoint device on a remote name
+> service announcement.
+> 
+> With this patch the /dev/rpmsgX interface is created either by a user
+> application or by the remote firmware.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/rpmsg/rpmsg_char.c | 58 +++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 57 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> index 7f6d46078179..69e774edb74b 100644
+> --- a/drivers/rpmsg/rpmsg_char.c
+> +++ b/drivers/rpmsg/rpmsg_char.c
+> @@ -28,6 +28,8 @@
+>  
+>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
+>  
+> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
+> +
+>  static dev_t rpmsg_major;
+>  
+>  static DEFINE_IDA(rpmsg_ept_ida);
+> @@ -405,13 +407,67 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
+>  }
+>  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
+>  
+> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+> +{
+> +	struct rpmsg_channel_info chinfo;
+> +	struct rpmsg_eptdev *eptdev;
+> +
+> +	if (!rpdev->ept)
+> +		return -EINVAL;
+> +
+> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
+> +	chinfo.src = rpdev->src;
+> +	chinfo.dst = rpdev->dst;
+> +
+> +	eptdev = __rpmsg_chrdev_create_eptdev(rpdev, &rpdev->dev, chinfo, NULL);
+> +	if (IS_ERR(eptdev))
+> +		return PTR_ERR(eptdev);
+> +
+> +	/* Set the private field of the default endpoint to retrieve context on callback. */
+> +	rpdev->ept->priv = eptdev;
+> +
+> +	return 0;
+> +}
+> +
+> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
+> +{
+> +	int ret;
+> +
+> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_destroy_eptdev);
+> +	if (ret)
+> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
+> +}
+> +
+> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
+> +	{ .name	= RPMSG_CHAR_DEVNAME },
+> +	{ },
+> +};
+> +
+> +static struct rpmsg_driver rpmsg_chrdev_driver = {
+> +	.probe = rpmsg_chrdev_probe,
+> +	.remove = rpmsg_chrdev_remove,
+> +	.id_table = rpmsg_chrdev_id_table,
+> +	.callback = rpmsg_ept_cb,
+> +	.drv = {
+> +		.name = "rpmsg_chrdev",
+> +	},
+> +};
+> +
+>  static int rpmsg_chrdev_init(void)
+>  {
+>  	int ret;
+>  
+>  	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg");
+> -	if (ret < 0)
+> +	if (ret < 0) {
+>  		pr_err("rpmsg: failed to allocate char dev region\n");
+> +		return ret;
+> +	}
+> +
+> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
+> +	if (ret < 0) {
+> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
+> +		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+> +	}
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-Acked-by: Lee Jones <lee.jones@linaro.org>
----
-v9:
-  - Rebased on next-20210412
-v8:
-  - Previously patch 1/6 in "Intel MAX10 BMC Secure Update Driver"
-  - Rebased on next-20210121
-v7:
-  - No change
-v6:
-  - No change
-v5:
-  - Renamed USER_FLASH_COUNT to STAGING_FLASH_COUNT
-v4:
-  - No change
-v3:
-  - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure
-    Update driver"
-  - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
-    underlying functions will be called directly.
-v2:
-  - These functions and macros were previously distributed among
-    the patches that needed them. They are now grouped together
-    in a single patch containing changes to the Intel MAX10 BMC
-    driver.
-  - Added DRBL_ prefix to some definitions
-  - Some address definitions were moved here from the .c files that
-    use them.
----
- include/linux/mfd/intel-m10-bmc.h | 85 +++++++++++++++++++++++++++++++
- 1 file changed, 85 insertions(+)
+Function unregister_rpmsg_driver() has to be called in rpmsg_chrdev_exit().
 
-diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
-index c4eb38c13eda..f0044b14136e 100644
---- a/include/linux/mfd/intel-m10-bmc.h
-+++ b/include/linux/mfd/intel-m10-bmc.h
-@@ -16,6 +16,9 @@
- #define M10BMC_FLASH_END		0x1fffffff
- #define M10BMC_MEM_END			M10BMC_FLASH_END
- 
-+#define M10BMC_STAGING_BASE		0x18000000
-+#define M10BMC_STAGING_SIZE		0x3800000
-+
- /* Register offset of system registers */
- #define NIOS2_FW_VERSION		0x0
- #define M10BMC_MAC_LOW			0x10
-@@ -33,6 +36,88 @@
- #define M10BMC_VER_PCB_INFO_MSK		GENMASK(31, 24)
- #define M10BMC_VER_LEGACY_INVALID	0xffffffff
- 
-+/* Secure update doorbell register, in system register region */
-+#define M10BMC_DOORBELL			0x400
-+
-+/* Authorization Result register, in system register region */
-+#define M10BMC_AUTH_RESULT		0x404
-+
-+/* Doorbell register fields */
-+#define DRBL_RSU_REQUEST		BIT(0)
-+#define DRBL_RSU_PROGRESS		GENMASK(7, 4)
-+#define DRBL_HOST_STATUS		GENMASK(11, 8)
-+#define DRBL_RSU_STATUS			GENMASK(23, 16)
-+#define DRBL_PKVL_EEPROM_LOAD_SEC	BIT(24)
-+#define DRBL_PKVL1_POLL_EN		BIT(25)
-+#define DRBL_PKVL2_POLL_EN		BIT(26)
-+#define DRBL_CONFIG_SEL			BIT(28)
-+#define DRBL_REBOOT_REQ			BIT(29)
-+#define DRBL_REBOOT_DISABLED		BIT(30)
-+
-+/* Progress states */
-+#define RSU_PROG_IDLE			0x0
-+#define RSU_PROG_PREPARE		0x1
-+#define RSU_PROG_READY			0x3
-+#define RSU_PROG_AUTHENTICATING		0x4
-+#define RSU_PROG_COPYING		0x5
-+#define RSU_PROG_UPDATE_CANCEL		0x6
-+#define RSU_PROG_PROGRAM_KEY_HASH	0x7
-+#define RSU_PROG_RSU_DONE		0x8
-+#define RSU_PROG_PKVL_PROM_DONE		0x9
-+
-+/* Device and error states */
-+#define RSU_STAT_NORMAL			0x0
-+#define RSU_STAT_TIMEOUT		0x1
-+#define RSU_STAT_AUTH_FAIL		0x2
-+#define RSU_STAT_COPY_FAIL		0x3
-+#define RSU_STAT_FATAL			0x4
-+#define RSU_STAT_PKVL_REJECT		0x5
-+#define RSU_STAT_NON_INC		0x6
-+#define RSU_STAT_ERASE_FAIL		0x7
-+#define RSU_STAT_WEAROUT		0x8
-+#define RSU_STAT_NIOS_OK		0x80
-+#define RSU_STAT_USER_OK		0x81
-+#define RSU_STAT_FACTORY_OK		0x82
-+#define RSU_STAT_USER_FAIL		0x83
-+#define RSU_STAT_FACTORY_FAIL		0x84
-+#define RSU_STAT_NIOS_FLASH_ERR		0x85
-+#define RSU_STAT_FPGA_FLASH_ERR		0x86
-+
-+#define HOST_STATUS_IDLE		0x0
-+#define HOST_STATUS_WRITE_DONE		0x1
-+#define HOST_STATUS_ABORT_RSU		0x2
-+
-+#define rsu_prog(doorbell)	FIELD_GET(DRBL_RSU_PROGRESS, doorbell)
-+#define rsu_stat(doorbell)	FIELD_GET(DRBL_RSU_STATUS, doorbell)
-+
-+/* interval 100ms and timeout 5s */
-+#define NIOS_HANDSHAKE_INTERVAL_US	(100 * 1000)
-+#define NIOS_HANDSHAKE_TIMEOUT_US	(5 * 1000 * 1000)
-+
-+/* RSU PREP Timeout (2 minutes) to erase flash staging area */
-+#define RSU_PREP_INTERVAL_MS		100
-+#define RSU_PREP_TIMEOUT_MS		(2 * 60 * 1000)
-+
-+/* RSU Complete Timeout (40 minutes) for full flash update */
-+#define RSU_COMPLETE_INTERVAL_MS	1000
-+#define RSU_COMPLETE_TIMEOUT_MS		(40 * 60 * 1000)
-+
-+/* Addresses for security related data in FLASH */
-+#define BMC_REH_ADDR	0x17ffc004
-+#define BMC_PROG_ADDR	0x17ffc000
-+#define BMC_PROG_MAGIC	0x5746
-+
-+#define SR_REH_ADDR	0x17ffd004
-+#define SR_PROG_ADDR	0x17ffd000
-+#define SR_PROG_MAGIC	0x5253
-+
-+#define PR_REH_ADDR	0x17ffe004
-+#define PR_PROG_ADDR	0x17ffe000
-+#define PR_PROG_MAGIC	0x5250
-+
-+/* Address of 4KB inverted bit vector containing staging area FLASH count */
-+#define STAGING_FLASH_COUNT	0x17ffb000
-+
- /**
-  * struct intel_m10bmc - Intel MAX 10 BMC parent driver data structure
-  * @dev: this device
--- 
-2.25.1
-
+>  
+>  	return ret;
+>  }
+> -- 
+> 2.17.1
+> 
