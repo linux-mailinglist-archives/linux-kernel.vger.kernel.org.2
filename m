@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8282235BE8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F109235C114
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239186AbhDLI7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:59:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43304 "EHLO mail.kernel.org"
+        id S239878AbhDLJVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:21:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238812AbhDLIuw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:50:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AEF116109E;
-        Mon, 12 Apr 2021 08:50:33 +0000 (UTC)
+        id S239824AbhDLJBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:01:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B92DB61285;
+        Mon, 12 Apr 2021 08:59:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217434;
-        bh=xP7z3D3xVMshlpGHETo/ZM6PXFeJURpMtgodQtBDOm4=;
+        s=korg; t=1618217967;
+        bh=SnwYnGka7j4RriaJYqaMrWjTNiuHrEOFGObR5dEbsDg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RMw902rvPn1aEX3COXmcOZivC2phtX8sqo9nKQHskj5trtinZMtA1NqstDjJLUc8R
-         jLN2bZu32ZPnu7qhqLaJdrkj9jjr35hzSh5nYG5nqv4fafexIk0vUoIWMUx6p6Zgcr
-         w4tO/6L2oM17hw7zK8Mj6h3S+PSrqEngYzfkgjVg=
+        b=tL0eSygj2hEvMRbMXq0XrLL6eOcaO0TLp6080a4lW2wrWRLiFEjQOmwrRX1K4houh
+         4fZYF7aRzxflBl9+gThsjtIVxAT4waKWnZPis2sZy10c8nenLx7TghtroXaTLWrJ7w
+         68puwDidjTSjrfcEkH4FIdrBawQj3U2G/x4bJxiI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Muhammad Usama Anjum <musamaanjum@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 014/188] net: ipv6: check for validity before dereferencing cfg->fc_nlinfo.nlh
+        stable@vger.kernel.org, Konstantin Kharlamov <Hi-Angel@yandex.ru>,
+        Evan Quan <evan.quan@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.11 023/210] drm/amdgpu/smu7: fix CAC setting on TOPAZ
 Date:   Mon, 12 Apr 2021 10:38:48 +0200
-Message-Id: <20210412084014.130845201@linuxfoundation.org>
+Message-Id: <20210412084016.782455983@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
+References: <20210412084016.009884719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,39 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Muhammad Usama Anjum <musamaanjum@gmail.com>
+From: Alex Deucher <alexander.deucher@amd.com>
 
-commit 864db232dc7036aa2de19749c3d5be0143b24f8f upstream.
+commit cdcc108a2aced5f9cbc45920e29bf49819e5477f upstream.
 
-nlh is being checked for validtity two times when it is dereferenced in
-this function. Check for validity again when updating the flags through
-nlh pointer to make the dereferencing safe.
+We need to enable MC CAC for mclk switching to work.
 
-CC: <stable@vger.kernel.org>
-Addresses-Coverity: ("NULL pointer dereference")
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: d765129a719f ("drm/amd/pm: correct sclk/mclk dpm enablement")
+Bug: https://gitlab.freedesktop.org/drm/amd/-/issues/1561
+Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
+Reviewed-by: Evan Quan <evan.quan@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/route.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -5203,9 +5203,11 @@ static int ip6_route_multipath_add(struc
- 		 * nexthops have been replaced by first new, the rest should
- 		 * be added to it.
- 		 */
--		cfg->fc_nlinfo.nlh->nlmsg_flags &= ~(NLM_F_EXCL |
--						     NLM_F_REPLACE);
--		cfg->fc_nlinfo.nlh->nlmsg_flags |= NLM_F_CREATE;
-+		if (cfg->fc_nlinfo.nlh) {
-+			cfg->fc_nlinfo.nlh->nlmsg_flags &= ~(NLM_F_EXCL |
-+							     NLM_F_REPLACE);
-+			cfg->fc_nlinfo.nlh->nlmsg_flags |= NLM_F_CREATE;
-+		}
- 		nhn++;
- 	}
+--- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
++++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+@@ -1224,7 +1224,8 @@ static int smu7_enable_sclk_mclk_dpm(str
+ 		    (hwmgr->chip_id == CHIP_POLARIS10) ||
+ 		    (hwmgr->chip_id == CHIP_POLARIS11) ||
+ 		    (hwmgr->chip_id == CHIP_POLARIS12) ||
+-		    (hwmgr->chip_id == CHIP_TONGA))
++		    (hwmgr->chip_id == CHIP_TONGA) ||
++		    (hwmgr->chip_id == CHIP_TOPAZ))
+ 			PHM_WRITE_FIELD(hwmgr->device, MC_SEQ_CNTL_3, CAC_EN, 0x1);
+ 
  
 
 
