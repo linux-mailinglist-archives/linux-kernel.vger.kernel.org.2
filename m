@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7230135CEB9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB0F35CEC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:56:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244214AbhDLQsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:48:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54484 "EHLO
+        id S244537AbhDLQsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344433AbhDLQjy (ORCPT
+        with ESMTP id S245760AbhDLQl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:39:54 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67A47C061232
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:31:37 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id 7so14724194qka.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:31:37 -0700 (PDT)
+        Mon, 12 Apr 2021 12:41:56 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7683EC06123B;
+        Mon, 12 Apr 2021 09:32:27 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id s14so2080895pjl.5;
+        Mon, 12 Apr 2021 09:32:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=V39vJ8+XVZOqX4DC+GK6mHC3DoQ8P1rhNExHTLfMMDQ=;
-        b=uiYtZ1u5gdlXqwa4kFIKxKi1xzGWk5yJe1/Qd7SHyDkWQq7UOP0ZwHhsSF7Jkhvb5S
-         KbazOecqj+jVITras+qBfh9rnLwJhx48YzLmRVqLILlz0KIwNSau9tre/w2Q6dq5IQVr
-         MBKlXG7ZRn171tNrCiM2vi2phMyqKWuLJseGEozK2h63hx3w4KGOHS9KtA+yaqwfS3u7
-         PZGd7ScQwI6tZC5gDbH9QEt9Px1Gxk32WvDKpK9AfpUib/MprbthIOBULf7ahcNWmEQa
-         KnVTxkWI43E6XK3F7nzB7vTOWB8pXM8upSJkpFToLvM7JMjbs66szOkweu24a/3OWcnI
-         AjLQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8z+/ms9HXXuc1u59TPf3kgky3kvFQaPstoWisAaXMAg=;
+        b=GheD5xk6FCX0Y3/HoHa1l6VnTCdijSOTbozl3pVjfAakw4z8Yx4yOk5DkGxIGMAsns
+         sqCXNRWBgE/wFdwUAstG39HV71yl0aiKw/UfJR98CnqAQYvrUqY2b4V26E8w7xu+B3os
+         TN0R0pPyWAo9NwepW36QyckWHZokzXBsmX6kVl8VCxVviPy0ZksmtWYp0F/YNnpMaykK
+         nkEU2ITHRX5rt9tdCGEanffiie6HJzBxWPTzC3nvx7wmpfZxR2Ydpa05LMtXDHyE+sjZ
+         eqE94OaG+Y6bnoF8ee1Pleh1cqlJPoiWaWlxCfabUsqLQRT1C9vLeEX9LqQ7eZHZTfNz
+         pO1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=V39vJ8+XVZOqX4DC+GK6mHC3DoQ8P1rhNExHTLfMMDQ=;
-        b=FqIKunuRNLnlXN46GQ3y5Ulcq0YSKaVcGu8GarYCI4ljc4qIdjmfSNK3PreqLvO0NC
-         FvERUGo23QaiZ7GiCdS3bB67WbdCSljP+a5iXgcnXDQLDes/jKfORVl0l7BcU1fd8vjU
-         HmRF5er6fJRLTiAXYPUxql4vUDwxcYuCPSVVjfc+L0o8jX+dAeMo9G6YgmGEGl114COY
-         KeXlhvcgW1XUQJ+ZiKSs+/ZDUcyLgADq3A/Jwe4k+b0vC7K+VmDS0P1JbLPW0lc1g7gK
-         zUI8lkITOSRAwac+DWQfYoaYqRD1Nc3njKCyqauV5ivRdxBp9cV98F5KwXwIth3C8nEy
-         QJwQ==
-X-Gm-Message-State: AOAM531zGZKFJFKR31SAr09BQr3zmRkcWDU51klB4FfUjAzK53baIq6U
-        m9VfObg5s6Wr04VH2n56QwzWOSePivX1vORUAfBcxfVf54njqg==
-X-Google-Smtp-Source: ABdhPJzodwso6LxIhV15Rw93CnWB+kC+2pa/49ZcK4vho4iGkN5DQnTRTjwWMTzkTlPfisGvmYCs3LGlXD7MxAIZngc=
-X-Received: by 2002:a25:4244:: with SMTP id p65mr10068345yba.452.1618245096298;
- Mon, 12 Apr 2021 09:31:36 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8z+/ms9HXXuc1u59TPf3kgky3kvFQaPstoWisAaXMAg=;
+        b=DMJ32vlGWkIsNEF7S/+1wVricCNtDb9qvi4Dmt2lZlko1G2qUL+jeGpKNvL0zP/xTs
+         xhl+igUsHjmjZIpCOG5bDe4p8TW5gREc+iehoykDchMagUeUFFKRgz+iyATOLtugeTCT
+         RQgPg4IjVrVIZPB4k3dttfvm7h7nkREjDytK/Vf4KcQAlkPPhI4Mrecq6oOpPGpme29z
+         Isznf4RVR3DqEGB58hx4ln0sdeX+IODYhjAhQth9wglMbQRqpzIxh0UZ3jSXOP5hzQk4
+         Jzl4GxyyFDLgTBpUx2Znyxzvf9b+TvbIvlwTqAI69Z7m1UGZPab+h7xt0PC4TpKy36+b
+         Xuqg==
+X-Gm-Message-State: AOAM530wE0f9PdWCwU6sSbZNYRoi29SBfPn8UgIewkCA7ptC6N5IdVy0
+        r2dRLOAtW8fiC2Mc6YFJz3c=
+X-Google-Smtp-Source: ABdhPJwhcgI9IeGvhjgoT4tAqP4AX2pjomksj/ek+5xymVy4vfiUsqxODG3qwUQsULA7bFo5zMt0aQ==
+X-Received: by 2002:a17:90a:8815:: with SMTP id s21mr29369762pjn.200.1618245146911;
+        Mon, 12 Apr 2021 09:32:26 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id e11sm9725487pfv.48.2021.04.12.09.32.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 09:32:26 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 19:32:11 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Marek Behun <marek.behun@nic.cz>,
+        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        zhang kai <zhangkaiheb@126.com>,
+        Weilong Chen <chenweilong@huawei.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Di Zhu <zhudi21@huawei.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
+Message-ID: <20210412163211.jrqtwwz2f7ftyli6@skbuf>
+References: <20210410133454.4768-1-ansuelsmth@gmail.com>
+ <20210411200135.35fb5985@thinkpad>
+ <20210411185017.3xf7kxzzq2vefpwu@skbuf>
+ <20210412150045.929508-1-dqfext@gmail.com>
 MIME-Version: 1.0
-References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
- <20210412051445.GA47322@roeck-us.net> <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
-In-Reply-To: <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 12 Apr 2021 18:31:25 +0200
-Message-ID: <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com>
-Subject: Re: Linux 5.12-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412150045.929508-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 6:28 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sun, Apr 11, 2021 at 10:14 PM Guenter Roeck <linux@roeck-us.net> wrote:
+On Mon, Apr 12, 2021 at 11:00:45PM +0800, DENG Qingfang wrote:
+> On Sun, Apr 11, 2021 at 09:50:17PM +0300, Vladimir Oltean wrote:
 > >
-> > Qemu test results:
-> >         total: 460 pass: 459 fail: 1
-> > Failed tests:
-> >         sh:rts7751r2dplus_defconfig:ata:net,virtio-net:rootfs
+> > So I'd be tempted to say 'tough luck' if all your ports are not up, and
+> > the ones that are are assigned statically to the same CPU port. It's a
+> > compromise between flexibility and simplicity, and I would go for
+> > simplicity here. That's the most you can achieve with static assignment,
+> > just put the CPU ports in a LAG if you want better dynamic load balancing
+> > (for details read on below).
 > >
-> > The failure bisects to commit 0f6925b3e8da ("virtio_net: Do not pull payload in
-> > skb->head"). It is a spurious problem - the test passes roughly every other
-> > time. When the failure is seen, udhcpc fails to get an IP address and aborts
-> > with SIGTERM. So far I have only seen this with the "sh" architecture.
 >
-> Hmm. Let's add in some more of the people involved in that commit, and
-> also netdev.
->
-> Nothing in there looks like it should have any interaction with
-> architecture, so that "it happens on sh" sounds odd, but maybe it's
-> some particular interaction with the qemu environment.
+> Many switches such as mv88e6xxx only support MAC DA/SA load balancing,
+> which make it not ideal in router application (Router WAN <--> ISP BRAS
+> traffic will always have the same DA/SA and thus use only one port).
 
-Yes, maybe.
-
-I spent few hours on this, and suspect a buggy memcpy() implementation
-on SH, but this was not conclusive.
-
-By pulling one extra byte, the problem goes away.
-
-Strange thing is that the udhcpc process does not go past sendto().
+Is this supposed to make a difference? Choose a better switch vendor!
