@@ -2,79 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AE235C4DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B3435C4E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240201AbhDLLTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:19:25 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:36499 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S240149AbhDLLTW (ORCPT
+        id S240239AbhDLLUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:20:12 -0400
+Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:55723 "EHLO
+        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240213AbhDLLUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:19:22 -0400
-X-UUID: e673663cd0be4a1f9990bcf5c4d377a5-20210412
-X-UUID: e673663cd0be4a1f9990bcf5c4d377a5-20210412
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 675409523; Mon, 12 Apr 2021 19:19:02 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 12 Apr 2021 19:19:00 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 12 Apr 2021 19:18:59 +0800
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Dennis YC Hsieh <dennis-yc.hsieh@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH v2, 5/5] arm64: dts: mediatek: mt8183: add gce information for mmsys
-Date:   Mon, 12 Apr 2021 19:18:45 +0800
-Message-ID: <1618226325-31927-6-git-send-email-yongqiang.niu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1618226325-31927-1-git-send-email-yongqiang.niu@mediatek.com>
-References: <1618226325-31927-1-git-send-email-yongqiang.niu@mediatek.com>
+        Mon, 12 Apr 2021 07:20:11 -0400
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id 29817BEBF8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:19:53 +0100 (IST)
+Received: (qmail 30339 invoked from network); 12 Apr 2021 11:19:52 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Apr 2021 11:19:52 -0000
+Date:   Mon, 12 Apr 2021 12:19:51 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+Subject: Re: [PATCH 2/9] mm/page_alloc: Add a bulk page allocator
+Message-ID: <20210412111951.GW3697@techsingularity.net>
+References: <20210325114228.27719-1-mgorman@techsingularity.net>
+ <20210325114228.27719-3-mgorman@techsingularity.net>
+ <28729c76-4e09-f860-0db1-9c79c8220683@suse.cz>
+ <20210412105938.GU3697@techsingularity.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: A949A3E313513098C068FE411A1BB43FF59D9B07B3085647713E6C5DA369DAB92000:8
-X-MTK:  N
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20210412105938.GU3697@techsingularity.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add gce information for mmsys
+On Mon, Apr 12, 2021 at 11:59:38AM +0100, Mel Gorman wrote:
+> > I don't understand this comment. Only alloc_flags_nofragment() sets this flag
+> > and we don't use it here?
+> > 
+> 
+> It's there as a reminder that there are non-obvious consequences
+> to ALLOC_NOFRAGMENT that may affect the bulk allocation success
+> rate. __rmqueue_fallback will only select pageblock_order pages and if that
+> fails, we fall into the slow path that allocates a single page. I didn't
+> deal with it because it was not obvious that it's even relevant but I bet
+> in 6 months time, I'll forget that ALLOC_NOFRAGMENT may affect success
+> rates without the comment. I'm waiting for a bug that can trivially trigger
+> a case with a meaningful workload where the success rate is poor enough to
+> affect latency before adding complexity. Ideally by then, the allocation
+> paths would be unified a bit better.
+> 
 
-Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8183.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+So this needs better clarification. ALLOC_NOFRAGMENT is not a
+problem at the moment but at one point during development, it was a
+non-obvious potential problem. If the paths are unified, ALLOC_NOFRAGMENT
+*potentially* becomes a problem depending on how it's done and it needs
+careful consideration. For example, it could be part unified by moving
+the alloc_flags_nofragment() call into prepare_alloc_pages because in
+__alloc_pages, it always happens and it looks like an obvious partial
+unification. Hence the comment "May set ALLOC_NOFRAGMENT" because I wanted
+a reminder in case I "fixed" this in 6 months time and forgot the downside.
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-index bc89283..e3a8b10 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-@@ -983,6 +983,9 @@
- 			compatible = "mediatek,mt8183-mmsys", "syscon";
- 			reg = <0 0x14000000 0 0x1000>;
- 			#clock-cells = <1>;
-+			mboxes = <&gce 0 CMDQ_THR_PRIO_HIGHEST 1>,
-+				 <&gce 1 CMDQ_THR_PRIO_HIGHEST 1>;
-+			mediatek,gce-client-reg = <&gce SUBSYS_1400XXXX 0 0x1000>;
- 		};
- 
- 		ovl0: ovl@14008000 {
 -- 
-1.8.1.1.dirty
-
+Mel Gorman
+SUSE Labs
