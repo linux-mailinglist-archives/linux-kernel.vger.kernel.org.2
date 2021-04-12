@@ -2,81 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C8635CEB6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C4A35CD35
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345822AbhDLQsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:48:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245261AbhDLQiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:38:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96ED6613F5;
-        Mon, 12 Apr 2021 16:28:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618244887;
-        bh=euhgjXXNkcJQSNvxv39bc/OD0d1Z462dRZgO34zmjR8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uvAH4Sh2kt6msQQw0tki+PSIiebkDOSSdBmTHujjqtGihPFRhwV3DocMC5MVSuevY
-         xvXgItE9mCj6OU0SfWSb949FAP5Mpr2O53JC8puWgCDYXEtfmZNvozaXgBgRKs9g/q
-         uDCkEEMhN+ERVlvlda7qsIeWwiIA1LBfJ/MrEQHe5KHA1C3OTpenmuGE21jvdbxKxt
-         0H+x78RZ4N+mg4XdkBZeBQbgMRRAExc8Ilq0xSvMoG5hxquwxFTESDVQF8igsNbc3O
-         NNTt5lyMx5IfQ51/u/z7uWIMywRshqZOayHLdvtaPQ2VXYkzehjMCBzr7SYTXrzqoA
-         ImIbM4htFfrAA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Du Cheng <ducheng2@gmail.com>,
-        syzbot+5f9392825de654244975@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 23/23] cfg80211: remove WARN_ON() in cfg80211_sme_connect
-Date:   Mon, 12 Apr 2021 12:27:36 -0400
-Message-Id: <20210412162736.316026-23-sashal@kernel.org>
+        id S245652AbhDLQe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:34:57 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49697 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243998AbhDLQ20 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:28:26 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lVzPw-00086R-Sy; Mon, 12 Apr 2021 16:28:04 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     "Michael S . Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] vdpa/mlx5: Fix resource leak of mgtdev due to incorrect kfree
+Date:   Mon, 12 Apr 2021 17:28:04 +0100
+Message-Id: <20210412162804.1628738-1-colin.king@canonical.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412162736.316026-1-sashal@kernel.org>
-References: <20210412162736.316026-1-sashal@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Du Cheng <ducheng2@gmail.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 1b5ab825d9acc0f27d2f25c6252f3526832a9626 ]
+Static analysis is reporting a memory leak on mgtdev, it appears
+that the wrong object is being kfree'd. Fix this by kfree'ing
+mgtdev rather than mdev.
 
-A WARN_ON(wdev->conn) would trigger in cfg80211_sme_connect(), if multiple
-send_msg(NL80211_CMD_CONNECT) system calls are made from the userland, which
-should be anticipated and handled by the wireless driver. Remove this WARN_ON()
-to prevent kernel panic if kernel is configured to "panic_on_warn".
-
-Bug reported by syzbot.
-
-Reported-by: syzbot+5f9392825de654244975@syzkaller.appspotmail.com
-Signed-off-by: Du Cheng <ducheng2@gmail.com>
-Link: https://lore.kernel.org/r/20210407162756.6101-1-ducheng2@gmail.com
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Addresses-Coverity: ("Resource leak")
+Fixes: c8a2d4c73e70 ("vdpa/mlx5: Enable user to add/delete vdpa device")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- net/wireless/sme.c | 2 +-
+ drivers/vdpa/mlx5/net/mlx5_vnet.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/wireless/sme.c b/net/wireless/sme.c
-index 18b4a652cf41..784f1ee24e59 100644
---- a/net/wireless/sme.c
-+++ b/net/wireless/sme.c
-@@ -507,7 +507,7 @@ static int cfg80211_sme_connect(struct wireless_dev *wdev,
- 	if (wdev->current_bss)
- 		return -EALREADY;
+diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+index 10c5fef3c020..25533db01f5f 100644
+--- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
++++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+@@ -2089,7 +2089,7 @@ static int mlx5v_probe(struct auxiliary_device *adev,
+ 	return 0;
  
--	if (WARN_ON(wdev->conn))
-+	if (wdev->conn)
- 		return -EINPROGRESS;
+ reg_err:
+-	kfree(mdev);
++	kfree(mgtdev);
+ 	return err;
+ }
  
- 	wdev->conn = kzalloc(sizeof(*wdev->conn), GFP_KERNEL);
 -- 
 2.30.2
 
