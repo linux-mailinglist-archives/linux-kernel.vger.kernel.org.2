@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFFB335C1DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3E435C1E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239873AbhDLJfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:35:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35860 "EHLO mail.kernel.org"
+        id S240769AbhDLJff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:35:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240264AbhDLJKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:10:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66B7561367;
-        Mon, 12 Apr 2021 09:05:01 +0000 (UTC)
+        id S240276AbhDLJKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:10:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23CE861357;
+        Mon, 12 Apr 2021 09:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218301;
-        bh=nV6cDdDfbq8HajpWX5guinvcqfILy0DZoAitaaRFBjU=;
+        s=korg; t=1618218304;
+        bh=XkWQH0JZJaOWxsomESMVOk3wBKLuqadd0bKkF2txe6w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YBopafI8pVsf+z7sp3J3V7GpxZv6NeRUAq1TknimIkQRsM8TNRThVToNG6DTSUNr8
-         OaXUaxjcTjvHE8hKLBEWy6x3WyZacHfB43g4cV1QrF67j+sVo62A6DNqghZ3EpkZq3
-         sWhqy3mYEIm3Z9Ymbdl0C6hJvEn1XazFAr5XBH2A=
+        b=xcS+9625M6J/yk5qNuEj2sNkSgBZfsfhWb3azdjDa6M1wEBClr2SY2T+WUTlq+OKi
+         EF+F2kY3iEFJF82sBJHCsQ3CzdBpj2nuyIA1Dg0yDLGfCS4xS3pPwWC0sBUhXZs/93
+         QBiwpOM+K1tSsLNFVnCBJlmk+nr8bjqv9YEsPtvo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Jurgens <danielj@mellanox.com>,
-        Parav Pandit <parav@nvidia.com>,
+        stable@vger.kernel.org, Tariq Toukan <tariqt@nvidia.com>,
+        Maxim Mikityanskiy <maximmi@mellanox.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 146/210] net/mlx5: Dont request more than supported EQs
-Date:   Mon, 12 Apr 2021 10:40:51 +0200
-Message-Id: <20210412084020.857453432@linuxfoundation.org>
+Subject: [PATCH 5.11 147/210] net/mlx5e: Guarantee room for XSK wakeup NOP on async ICOSQ
+Date:   Mon, 12 Apr 2021 10:40:52 +0200
+Message-Id: <20210412084020.889942065@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -41,55 +41,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Jurgens <danielj@mellanox.com>
+From: Tariq Toukan <tariqt@nvidia.com>
 
-[ Upstream commit a7b76002ae78cd230ee652ccdfedf21aa94fcecc ]
+[ Upstream commit 3ff3874fa0b261ef74f2bfb008a82ab1601c11eb ]
 
-Calculating the number of compeltion EQs based on the number of
-available IRQ vectors doesn't work now that all async EQs share one IRQ.
-Thus the max number of EQs can be exceeded on systems with more than
-approximately 256 CPUs. Take this into account when calculating the
-number of available completion EQs.
+XSK wakeup flow triggers an IRQ by posting a NOP WQE and hitting
+the doorbell on the async ICOSQ.
+It maintains its state so that it doesn't issue another NOP WQE
+if it has an outstanding one already.
 
-Fixes: 81bfa206032a ("net/mlx5: Use a single IRQ for all async EQs")
-Signed-off-by: Daniel Jurgens <danielj@mellanox.com>
-Reviewed-by: Parav Pandit <parav@nvidia.com>
+For this flow to work properly, the NOP post must not fail.
+Make sure to reserve room for the NOP WQE in all WQE posts to the
+async ICOSQ.
+
+Fixes: 8d94b590f1e4 ("net/mlx5e: Turn XSK ICOSQ into a general asynchronous one")
+Fixes: 1182f3659357 ("net/mlx5e: kTLS, Add kTLS RX HW offload support")
+Fixes: 0419d8c9d8f8 ("net/mlx5e: kTLS, Add kTLS RX resync support")
+Signed-off-by: Tariq Toukan <tariqt@nvidia.com>
+Reviewed-by: Maxim Mikityanskiy <maximmi@mellanox.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/eq.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en.h  |  1 +
+ .../net/ethernet/mellanox/mlx5/core/en/txrx.h |  6 ++++++
+ .../mellanox/mlx5/core/en_accel/ktls_rx.c     | 18 +++++++---------
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 21 ++++++++++++++++++-
+ 4 files changed, 34 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index fc0afa03d407..b5f48efebd71 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -928,13 +928,24 @@ void mlx5_core_eq_free_irqs(struct mlx5_core_dev *dev)
- 	mutex_unlock(&table->lock);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en.h b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+index f258f2f9b8cf..9061a30a93bc 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en.h
+@@ -510,6 +510,7 @@ struct mlx5e_icosq {
+ 	struct mlx5_wq_cyc         wq;
+ 	void __iomem              *uar_map;
+ 	u32                        sqn;
++	u16                        reserved_room;
+ 	unsigned long              state;
+ 
+ 	/* control path */
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
+index 4880f2179273..05d673e5289d 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/txrx.h
+@@ -434,4 +434,10 @@ static inline u16 mlx5e_stop_room_for_wqe(u16 wqe_size)
+ 	return wqe_size * 2 - 1;
  }
  
-+#ifdef CONFIG_INFINIBAND_ON_DEMAND_PAGING
-+#define MLX5_MAX_ASYNC_EQS 4
-+#else
-+#define MLX5_MAX_ASYNC_EQS 3
-+#endif
++static inline bool mlx5e_icosq_can_post_wqe(struct mlx5e_icosq *sq, u16 wqe_size)
++{
++	u16 room = sq->reserved_room + mlx5e_stop_room_for_wqe(wqe_size);
 +
- int mlx5_eq_table_create(struct mlx5_core_dev *dev)
++	return mlx5e_wqc_has_room_for(&sq->wq, sq->cc, sq->pc, room);
++}
+ #endif
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
+index d06532d0baa4..c0bd4e55ed8c 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ktls_rx.c
+@@ -137,11 +137,10 @@ post_static_params(struct mlx5e_icosq *sq,
  {
- 	struct mlx5_eq_table *eq_table = dev->priv.eq_table;
-+	int num_eqs = MLX5_CAP_GEN(dev, max_num_eqs) ?
-+		      MLX5_CAP_GEN(dev, max_num_eqs) :
-+		      1 << MLX5_CAP_GEN(dev, log_max_eq);
- 	int err;
+ 	struct mlx5e_set_tls_static_params_wqe *wqe;
+ 	struct mlx5e_icosq_wqe_info wi;
+-	u16 pi, num_wqebbs, room;
++	u16 pi, num_wqebbs;
  
- 	eq_table->num_comp_eqs =
--		mlx5_irq_get_num_comp(eq_table->irq_table);
-+		min_t(int,
-+		      mlx5_irq_get_num_comp(eq_table->irq_table),
-+		      num_eqs - MLX5_MAX_ASYNC_EQS);
+ 	num_wqebbs = MLX5E_TLS_SET_STATIC_PARAMS_WQEBBS;
+-	room = mlx5e_stop_room_for_wqe(num_wqebbs);
+-	if (unlikely(!mlx5e_wqc_has_room_for(&sq->wq, sq->cc, sq->pc, room)))
++	if (unlikely(!mlx5e_icosq_can_post_wqe(sq, num_wqebbs)))
+ 		return ERR_PTR(-ENOSPC);
  
- 	err = create_async_eqs(dev);
- 	if (err) {
+ 	pi = mlx5e_icosq_get_next_pi(sq, num_wqebbs);
+@@ -168,11 +167,10 @@ post_progress_params(struct mlx5e_icosq *sq,
+ {
+ 	struct mlx5e_set_tls_progress_params_wqe *wqe;
+ 	struct mlx5e_icosq_wqe_info wi;
+-	u16 pi, num_wqebbs, room;
++	u16 pi, num_wqebbs;
+ 
+ 	num_wqebbs = MLX5E_TLS_SET_PROGRESS_PARAMS_WQEBBS;
+-	room = mlx5e_stop_room_for_wqe(num_wqebbs);
+-	if (unlikely(!mlx5e_wqc_has_room_for(&sq->wq, sq->cc, sq->pc, room)))
++	if (unlikely(!mlx5e_icosq_can_post_wqe(sq, num_wqebbs)))
+ 		return ERR_PTR(-ENOSPC);
+ 
+ 	pi = mlx5e_icosq_get_next_pi(sq, num_wqebbs);
+@@ -277,17 +275,15 @@ resync_post_get_progress_params(struct mlx5e_icosq *sq,
+ 
+ 	buf->priv_rx = priv_rx;
+ 
+-	BUILD_BUG_ON(MLX5E_KTLS_GET_PROGRESS_WQEBBS != 1);
+-
+ 	spin_lock_bh(&sq->channel->async_icosq_lock);
+ 
+-	if (unlikely(!mlx5e_wqc_has_room_for(&sq->wq, sq->cc, sq->pc, 1))) {
++	if (unlikely(!mlx5e_icosq_can_post_wqe(sq, MLX5E_KTLS_GET_PROGRESS_WQEBBS))) {
+ 		spin_unlock_bh(&sq->channel->async_icosq_lock);
+ 		err = -ENOSPC;
+ 		goto err_dma_unmap;
+ 	}
+ 
+-	pi = mlx5e_icosq_get_next_pi(sq, 1);
++	pi = mlx5e_icosq_get_next_pi(sq, MLX5E_KTLS_GET_PROGRESS_WQEBBS);
+ 	wqe = MLX5E_TLS_FETCH_GET_PROGRESS_PARAMS_WQE(sq, pi);
+ 
+ #define GET_PSV_DS_CNT (DIV_ROUND_UP(sizeof(*wqe), MLX5_SEND_WQE_DS))
+@@ -307,7 +303,7 @@ resync_post_get_progress_params(struct mlx5e_icosq *sq,
+ 
+ 	wi = (struct mlx5e_icosq_wqe_info) {
+ 		.wqe_type = MLX5E_ICOSQ_WQE_GET_PSV_TLS,
+-		.num_wqebbs = 1,
++		.num_wqebbs = MLX5E_KTLS_GET_PROGRESS_WQEBBS,
+ 		.tls_get_params.buf = buf,
+ 	};
+ 	icosq_fill_wi(sq, pi, &wi);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+index b6324d11a008..7bb189e65628 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
+@@ -1058,6 +1058,7 @@ static int mlx5e_alloc_icosq(struct mlx5e_channel *c,
+ 
+ 	sq->channel   = c;
+ 	sq->uar_map   = mdev->mlx5e_res.bfreg.map;
++	sq->reserved_room = param->stop_room;
+ 
+ 	param->wq.db_numa_node = cpu_to_node(c->cpu);
+ 	err = mlx5_wq_cyc_create(mdev, &param->wq, sqc_wq, wq, &sq->wq_ctrl);
+@@ -2299,6 +2300,24 @@ void mlx5e_build_icosq_param(struct mlx5e_priv *priv,
+ 	mlx5e_build_ico_cq_param(priv, log_wq_size, &param->cqp);
+ }
+ 
++static void mlx5e_build_async_icosq_param(struct mlx5e_priv *priv,
++					  struct mlx5e_params *params,
++					  u8 log_wq_size,
++					  struct mlx5e_sq_param *param)
++{
++	void *sqc = param->sqc;
++	void *wq = MLX5_ADDR_OF(sqc, sqc, wq);
++
++	mlx5e_build_sq_param_common(priv, param);
++
++	/* async_icosq is used by XSK only if xdp_prog is active */
++	if (params->xdp_prog)
++		param->stop_room = mlx5e_stop_room_for_wqe(1); /* for XSK NOP */
++	MLX5_SET(sqc, sqc, reg_umr, MLX5_CAP_ETH(priv->mdev, reg_umr_sq));
++	MLX5_SET(wq, wq, log_wq_sz, log_wq_size);
++	mlx5e_build_ico_cq_param(priv, log_wq_size, &param->cqp);
++}
++
+ void mlx5e_build_xdpsq_param(struct mlx5e_priv *priv,
+ 			     struct mlx5e_params *params,
+ 			     struct mlx5e_sq_param *param)
+@@ -2347,7 +2366,7 @@ static void mlx5e_build_channel_param(struct mlx5e_priv *priv,
+ 	mlx5e_build_sq_param(priv, params, &cparam->txq_sq);
+ 	mlx5e_build_xdpsq_param(priv, params, &cparam->xdp_sq);
+ 	mlx5e_build_icosq_param(priv, icosq_log_wq_sz, &cparam->icosq);
+-	mlx5e_build_icosq_param(priv, async_icosq_log_wq_sz, &cparam->async_icosq);
++	mlx5e_build_async_icosq_param(priv, params, async_icosq_log_wq_sz, &cparam->async_icosq);
+ }
+ 
+ int mlx5e_open_channels(struct mlx5e_priv *priv,
 -- 
 2.30.2
 
