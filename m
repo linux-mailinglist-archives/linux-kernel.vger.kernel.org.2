@@ -2,210 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E0C35D3C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:15:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF67635D3C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244332AbhDLXOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:14:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
+        id S244442AbhDLXQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242062AbhDLXOm (ORCPT
+        with ESMTP id S241881AbhDLXQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:14:42 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F596C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:14:23 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id 12so24002091lfq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:14:23 -0700 (PDT)
+        Mon, 12 Apr 2021 19:16:57 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B2DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:16:39 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id 30so7202427qva.9
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:16:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/duzMH/OTq6aaOv0cDTj1fS9M5eKwgWI2Ns6h3aePII=;
-        b=NQ1YkeyiLSUMD3jWDiGlc6wYoFZTbrTUVCYIGGrWuZqu87Dn3X0VLGDBLQwLx7pKwu
-         /JEpw2GxwEpZJiN7Q2hten9sbEV8lUkUN+HGTSj6WXhrUuK4B/ihsvysUzvp6jN1jrOT
-         iJOX1wVmhk9ANkOmQy8M20dshGYkGVBzEgfR5cUuHTT4hRCKlNliYyge/CWCKShmjy9/
-         0Wj2cykBVj6158M/fVwGueo1LTOzMAieRuPpe9Z2ULeCJfKHVWWN8hSkkaIQr+03gLIi
-         6bBbSqVV8/rNNlgMQ0QmCKi0Fs1IQQ6y0IbuwxbQbvKveEwvx7N+AQeCyMcOGKq+n/kv
-         uP7Q==
+        bh=uUysqPcVScshCWNmq+4LaopyuP9HdeVJMmV1VT6XP+Y=;
+        b=W75v1fZMpylDD7xLu+nJdgkNAIo3NBSGzAF6M2JoZ2TF94FTH630yBz0iWXBFC+8ck
+         nUL/us/eFm9pk0sZH7Rb8smdKe6v8UuY7EeDTLW5Hk9gncCQKyY1txlul6ubstOrpQHp
+         XDdwETVySNZJiR31vKJlwbc1e1h8p2SG8XhFk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/duzMH/OTq6aaOv0cDTj1fS9M5eKwgWI2Ns6h3aePII=;
-        b=C44Tku7GoH6I+fcsi36H+aueyWNVAS1x5cmS1PM2GKqWbX3YSV1FRWoZfTB9HlW833
-         DRlgY+BlklAn9Fte7sNitFe6ZlQCFJ3Gma58UV/hPPOYUdvEJEStB36FXwLIAfccuTPf
-         ByMcYTyXl2Kp+eC5ATWQ+N2IvCoRCXNrzp3wKbGJQIwVZcK3/8uc2CXJs39S/dqO9NH1
-         qDHXmOeJPuutKbu1q6+RV2nWC05YZF/v+yc77S+PYLLeVADC+p3+fwPovAvIQ//nuunt
-         5HdJonvaIemEBE6YlTP7M93w4JmGDJYM5p4eQSvXxDuzkLVw2BeKAr8v1KCgE42mRG+x
-         Be6A==
-X-Gm-Message-State: AOAM531rpoxoiwh31XjgLyuhKThf7f2RT4KN7iUfYdYdPhtWifCzJP89
-        zr0zko0FIr503B+ooZyg31mtee37Q4+A/PT7ushrxg==
-X-Google-Smtp-Source: ABdhPJzCyBQTUhS/VAijry16x1b+ynmJqq7HaLNObZMA41fFqdeUQTFoHoDT9JU3LYprSh+tTD9AYd0xB5Q0T/v2HzY=
-X-Received: by 2002:a05:6512:3703:: with SMTP id z3mr20217180lfr.358.1618269261596;
- Mon, 12 Apr 2021 16:14:21 -0700 (PDT)
+        bh=uUysqPcVScshCWNmq+4LaopyuP9HdeVJMmV1VT6XP+Y=;
+        b=fQrMtLCD5Ln13oUtv2Wq9GxlHYAj0ayA+YXoHuC8OIzMmutd9uHS/sqvb5ldWZB/OJ
+         sdmWOcWKWq+Bp9FwGM+b3C00aSIBcTrwC4moM41iUEkPEBwYYzPcZy/fEheY8j8NISba
+         GidKzlrXpYlGIJs3o2jEPNXJsJInUg3K3OY3x85GlOZVZzBxIAvfNi/9b9aA7RABrKX8
+         Rruun5Xu4Yjod/lQZ+KrY4KmRZ/5NdaKAvz3OdwCwuXcEn5nMEeR7shQn4hHHtcrxEYJ
+         f3ABama+fwvTbBqJhzeddTHaHb797H6KQBVMAb3npXUpH/vO8shHnGbxZcE402rnyWL6
+         9YCQ==
+X-Gm-Message-State: AOAM532pac0FfdLT+tErwTZ0ahY6Xgg6Z9z3w6znSH4Ad1vHsuC2unhp
+        eyuwpGMv0tptIkL6u/VwnccX2G8AFQ7qYA==
+X-Google-Smtp-Source: ABdhPJyvf4p/7xKuAXLHUMYmFaTR0FiUN2ygMf8CUKOrSHXdhLvTfrqYPbR+MKvpY9gqvVU9qkdA3A==
+X-Received: by 2002:ad4:498d:: with SMTP id t13mr23774664qvx.49.1618269398188;
+        Mon, 12 Apr 2021 16:16:38 -0700 (PDT)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id k126sm9011605qkb.4.2021.04.12.16.16.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 16:16:38 -0700 (PDT)
+Received: by mail-yb1-f179.google.com with SMTP id z1so16057716ybf.6
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:16:37 -0700 (PDT)
+X-Received: by 2002:a05:6902:4c3:: with SMTP id v3mr7697541ybs.276.1618269392732;
+ Mon, 12 Apr 2021 16:16:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210412225503.15119-1-longman@redhat.com> <20210412225503.15119-6-longman@redhat.com>
- <CALvZod6_dOKfnhprpzoFNmC2cLu1F35dNZvnu-DHTNOxYmeq2g@mail.gmail.com>
-In-Reply-To: <CALvZod6_dOKfnhprpzoFNmC2cLu1F35dNZvnu-DHTNOxYmeq2g@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 12 Apr 2021 16:14:10 -0700
-Message-ID: <CALvZod4CUMOBOkC8NjXXJ_qu3kvhcw+zrux+c516BMcAuHTcuA@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] mm/memcg: Optimize user context object stock access
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+References: <20210315133924.v2.1.I601a051cad7cfd0923e55b69ef7e5748910a6096@changeid>
+In-Reply-To: <20210315133924.v2.1.I601a051cad7cfd0923e55b69ef7e5748910a6096@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Mon, 12 Apr 2021 16:16:21 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=ViWgXzudGAiVLakaKuGK_gEnUxQ8nOkZjCrxQHjdGx9w@mail.gmail.com>
+Message-ID: <CAD=FV=ViWgXzudGAiVLakaKuGK_gEnUxQ8nOkZjCrxQHjdGx9w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: Add "dmic_clk_en" for sc7180-trogdor-coachz
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Ajit Pandey <ajitp@codeaurora.org>,
+        Judy Hsiao <judyhsiao@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 4:10 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Mon, Apr 12, 2021 at 3:55 PM Waiman Long <longman@redhat.com> wrote:
-> >
-> > Most kmem_cache_alloc() calls are from user context. With instrumentation
-> > enabled, the measured amount of kmem_cache_alloc() calls from non-task
-> > context was about 0.01% of the total.
-> >
-> > The irq disable/enable sequence used in this case to access content
-> > from object stock is slow.  To optimize for user context access, there
-> > are now two object stocks for task context and interrupt context access
-> > respectively.
-> >
-> > The task context object stock can be accessed after disabling preemption
-> > which is cheap in non-preempt kernel. The interrupt context object stock
-> > can only be accessed after disabling interrupt. User context code can
-> > access interrupt object stock, but not vice versa.
-> >
-> > The mod_objcg_state() function is also modified to make sure that memcg
-> > and lruvec stat updates are done with interrupted disabled.
-> >
-> > The downside of this change is that there are more data stored in local
-> > object stocks and not reflected in the charge counter and the vmstat
-> > arrays.  However, this is a small price to pay for better performance.
-> >
-> > Signed-off-by: Waiman Long <longman@redhat.com>
-> > Acked-by: Roman Gushchin <guro@fb.com>
-> > ---
-> >  mm/memcontrol.c | 73 +++++++++++++++++++++++++++++++++++++++----------
-> >  1 file changed, 59 insertions(+), 14 deletions(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 69f728383efe..29f2df76644a 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -2229,7 +2229,8 @@ struct obj_stock {
-> >  struct memcg_stock_pcp {
-> >         struct mem_cgroup *cached; /* this never be root cgroup */
-> >         unsigned int nr_pages;
-> > -       struct obj_stock obj;
-> > +       struct obj_stock task_obj;
-> > +       struct obj_stock irq_obj;
-> >
-> >         struct work_struct work;
-> >         unsigned long flags;
-> > @@ -2254,11 +2255,48 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
-> >  }
-> >  #endif
-> >
-> > +/*
-> > + * Most kmem_cache_alloc() calls are from user context. The irq disable/enable
-> > + * sequence used in this case to access content from object stock is slow.
-> > + * To optimize for user context access, there are now two object stocks for
-> > + * task context and interrupt context access respectively.
-> > + *
-> > + * The task context object stock can be accessed by disabling preemption only
-> > + * which is cheap in non-preempt kernel. The interrupt context object stock
-> > + * can only be accessed after disabling interrupt. User context code can
-> > + * access interrupt object stock, but not vice versa.
-> > + */
-> >  static inline struct obj_stock *current_obj_stock(void)
-> >  {
-> >         struct memcg_stock_pcp *stock = this_cpu_ptr(&memcg_stock);
-> >
-> > -       return &stock->obj;
-> > +       return in_task() ? &stock->task_obj : &stock->irq_obj;
-> > +}
-> > +
-> > +#define get_obj_stock(flags)                           \
-> > +({                                                     \
-> > +       struct memcg_stock_pcp *stock;                  \
-> > +       struct obj_stock *obj_stock;                    \
-> > +                                                       \
-> > +       if (in_task()) {                                \
-> > +               preempt_disable();                      \
-> > +               (flags) = -1L;                          \
-> > +               stock = this_cpu_ptr(&memcg_stock);     \
->
-> The above line was missing in the previous version.
->
-> > +               obj_stock = &stock->task_obj;           \
-> > +       } else {                                        \
-> > +               local_irq_save(flags);                  \
-> > +               stock = this_cpu_ptr(&memcg_stock);     \
-> > +               obj_stock = &stock->irq_obj;            \
-> > +       }                                               \
-> > +       obj_stock;                                      \
-> > +})
-> > +
-> > +static inline void put_obj_stock(unsigned long flags)
-> > +{
-> > +       if (flags == -1L)
-> > +               preempt_enable();
-> > +       else
-> > +               local_irq_restore(flags);
-> >  }
-> >
-> >  /**
-> > @@ -2327,7 +2365,9 @@ static void drain_local_stock(struct work_struct *dummy)
-> >         local_irq_save(flags);
-> >
-> >         stock = this_cpu_ptr(&memcg_stock);
-> > -       drain_obj_stock(&stock->obj);
-> > +       drain_obj_stock(&stock->irq_obj);
-> > +       if (in_task())
-> > +               drain_obj_stock(&stock->task_obj);
-> >         drain_stock(stock);
-> >         clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
-> >
-> > @@ -3183,7 +3223,7 @@ static inline void mod_objcg_state(struct obj_cgroup *objcg,
-> >         memcg = obj_cgroup_memcg(objcg);
-> >         if (pgdat)
-> >                 lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> > -       __mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
-> > +       mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
-> >         rcu_read_unlock();
-> >  }
-> >
-> > @@ -3193,7 +3233,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
-> >         unsigned long flags;
-> >         bool ret = false;
-> >
-> > -       local_irq_save(flags);
-> > +       stock = get_obj_stock(flags);
-> >
-> >         stock = current_obj_stock();
->
-> The above is redundant.
->
+Bjorn,
 
-After cleanup you can add:
+On Mon, Mar 15, 2021 at 1:39 PM Douglas Anderson <dianders@chromium.org> wrote:
+>
+> This was present downstream. Add upstream too. NOTE: upstream I
+> managed to get some sort of halfway state and got one pinctrl entry in
+> the coachz-r1 device tree. Remove that as part of this since it's now
+> in the dtsi.
+>
+> Cc: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Cc: Ajit Pandey <ajitp@codeaurora.org>
+> Cc: Judy Hsiao <judyhsiao@chromium.org>
+> Cc: Cheng-Yi Chiang <cychiang@chromium.org>
+> Cc: Stephen Boyd <swboyd@chromium.org>
+> Cc: Matthias Kaehlcke <mka@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> This applies atop the patch ("arm64: dts: qcom: Add sound node for
+> sc7180-trogdor-coachz") [1].
+>
+> NOTE: downstream this property was present in each of the board
+> revisions. There's actually no longer any reason for this and I'll
+> shortly post a downstream patch to fix this.
+>
+> [1] https://lore.kernel.org/r/20210313054654.11693-3-srivasam@codeaurora.org/
+>
+> Changes in v2:
+> - Remove the pinctrl from the -r1
+>
+>  .../boot/dts/qcom/sc7180-trogdor-coachz-r1.dts   | 13 -------------
+>  .../boot/dts/qcom/sc7180-trogdor-coachz.dtsi     | 16 ++++++++++++++++
+>  2 files changed, 16 insertions(+), 13 deletions(-)
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+I guess this patch missed the boat for 5.13? Can it get queued up for
+5.14 whenever that happens?
+
+Thanks!
+
+-Doug
