@@ -2,128 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E62DD35C61E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:22:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 632FE35C623
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239581AbhDLMWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:22:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240434AbhDLMWU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:22:20 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D864BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:22:00 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id n138so21089463lfa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:22:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7jGUYvG/VpC5dfomQS+f5L/i07bp1VPDdzETKNMiL1s=;
-        b=uNsHyYk5XOw/ru9fHS2JRlmrhXQ0+AH9AV4jC/P07+q/ZsjeP37Tys7h6eX17FaC1+
-         uH/cXTES6FoGYRsFVqMuAdP/DBfXpCD0Cr18XAmq24G+F+YM2rVFRtxpSL6qmZMMLsV8
-         qUYUhkltcPYAYYlIjSRZgMN/MCoVmwrRxmCa9PabGe/iH/3lSd3wcTUDeoccI6DAlEjM
-         2CTFkuk/mNxyhEU5E2/XYrtcGbpwtRtBTHweAibeOYRnXkSdfLy1Cq128NB4aViM2bw6
-         B9XkKp5ItdmBJxb8he1i/MOxSHXPYNm0CjJ1KXh4fJKALspIqwG1cagCnmyo/11bJjtG
-         Qpqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7jGUYvG/VpC5dfomQS+f5L/i07bp1VPDdzETKNMiL1s=;
-        b=OPZVbIZwJl4RIslEFCtxeS4Q6f3lMKBZM9+V9/WOzsdJ+KsRkKpwaL1Vk2gVAQdTYW
-         s95J7cXKJfS7cGrEIgIRbMRmfXdEsXXEcK7698WrsOcXAWxfd8dzmcrGneHMA0DyMxyQ
-         qliR6vHpEpE8xECXdsGoqaaJ4IUSb/QLuJjjlQqtUSwyEeKXYUwa1p/YFqhL0nCmGnxb
-         LyKGCWH/FsCYCUGRBjP7lH2Lz5hk04/nv7HkZo4lQYomOTRMvkhDGiREqakf29WaG0TY
-         uHeosPrZRJLqva+IHsrpEbh7d1WbVwGT0zAG4PeTgwyNy/q+c/At4tTOhFFpCiZE7bON
-         usGg==
-X-Gm-Message-State: AOAM531CG5OqHZtcmiVC3iGgz1xuDC/mmMmftFELP0evBsNiGeB3qTLG
-        YMfwNrrl5b2pDPQxx3MFzN8Fs7eQ+8qpjqJ05b2Dpg==
-X-Google-Smtp-Source: ABdhPJw2aczAxT3OpeQMNApU63p9MloiCGzJo7fc9SRJVYCTmf+bpXSpLlMv8XcfNWJvJIoL1nWNrMoLVT0Eit/FZ1c=
-X-Received: by 2002:a19:4082:: with SMTP id n124mr17935716lfa.154.1618230119272;
- Mon, 12 Apr 2021 05:21:59 -0700 (PDT)
+        id S240434AbhDLMYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:24:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39708 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238378AbhDLMX6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:23:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BF645AE5C;
+        Mon, 12 Apr 2021 12:23:39 +0000 (UTC)
+From:   Daniel Wagner <dwagner@suse.de>
+To:     linux-nvme@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Steve Wise <swise@opengridcomputing.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Leon Romanovsky <leon@kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH] nvme: Drop WQ_MEM_RECLAIM flag from core workqueues
+Date:   Mon, 12 Apr 2021 14:23:30 +0200
+Message-Id: <20210412122330.5166-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <1617341874-1205-1-git-send-email-ego@linux.vnet.ibm.com>
- <20210412062436.GB2633526@linux.vnet.ibm.com> <20210412093722.GS3697@techsingularity.net>
-In-Reply-To: <20210412093722.GS3697@techsingularity.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 12 Apr 2021 14:21:47 +0200
-Message-ID: <CAKfTPtDX-p=gWAVgYzLNCNuQ2e=QP2pTeMs=BmNBo31fpGKxrg@mail.gmail.com>
-Subject: Re: [RFC/PATCH] powerpc/smp: Add SD_SHARE_PKG_RESOURCES flag to MC sched-domain
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Rik van Riel <riel@surriel.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Anton Blanchard <anton@ozlabs.org>,
-        Parth Shah <parth@linux.ibm.com>,
-        Vaidyanathan Srinivasan <svaidy@linux.vnet.ibm.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021 at 11:37, Mel Gorman <mgorman@techsingularity.net> wrote:
->
-> On Mon, Apr 12, 2021 at 11:54:36AM +0530, Srikar Dronamraju wrote:
-> > * Gautham R. Shenoy <ego@linux.vnet.ibm.com> [2021-04-02 11:07:54]:
-> >
-> > >
-> > > To remedy this, this patch proposes that the LLC be moved to the MC
-> > > level which is a group of cores in one half of the chip.
-> > >
-> > >       SMT (SMT4) --> MC (Hemisphere)[LLC] --> DIE
-> > >
-> >
-> > I think marking Hemisphere as a LLC in a P10 scenario is a good idea.
-> >
-> > > While there is no cache being shared at this level, this is still the
-> > > level where some amount of cache-snooping takes place and it is
-> > > relatively faster to access the data from the caches of the cores
-> > > within this domain. With this change, we no longer see regressions on
-> > > P10 for applications which require single threaded performance.
-> >
-> > Peter, Valentin, Vincent, Mel, etal
-> >
-> > On architectures where we have multiple levels of cache access latencies
-> > within a DIE, (For example: one within the current LLC or SMT core and the
-> > other at MC or Hemisphere, and finally across hemispheres), do you have any
-> > suggestions on how we could handle the same in the core scheduler?
+Drop the WQ_MEM_RECLAIM flag as it is not needed and introduces
+warnings.
 
-I would say that SD_SHARE_PKG_RESOURCES is there for that and doesn't
-only rely on cache
+The documentation says "all wq which might be used in the memory
+reclaim paths MUST have this flag set. The wq is guaranteed to have at
+least one execution context regardless of memory pressure."
 
-> >
->
-> Minimally I think it would be worth detecting when there are multiple
-> LLCs per node and detecting that in generic code as a static branch. In
-> select_idle_cpu, consider taking two passes -- first on the LLC domain
-> and if no idle CPU is found then taking a second pass if the search depth
+By setting WQ_MEM_RECLAIM the threads are ready be running during
+early init. The claim it guarantees at least one execution context
+regardless of memory pressure is not supported by the implementation.
 
-We have done a lot of changes to reduce and optimize the fast path and
-I don't think re adding another layer  in the fast path makes sense as
-you will end up unrolling the for_each_domain behind some
-static_banches.
+As the nvme core does not depend on early init we can remove the
+WQ_MEM_RECLAIM flag. This resolves a warning in the rdma path:
 
-SD_SHARE_PKG_RESOURCES should be set to the last level where we can
-efficiently move task between CPUs at wakeup
+  WQ_MEM_RECLAIM nvme-wq:nvme_rdma_reconnect_ctrl_work [nvme_rdma]
+  is flushing !WQ_MEM_RECLAIM ib_addr:process_one_req [ib_core]
 
-> allows within the node with the LLC CPUs masked out. While there would be
-> a latency hit because cache is not shared, it would still be a CPU local
-> to memory that is idle. That would potentially be beneficial on Zen*
-> as well without having to introduce new domains in the topology hierarchy.
+There were several attempts to address these kind of warnings and but
+it still persist:
 
-What is the current sched_domain topology description for zen ?
+  39baf10310e6 ("IB/core: Fix use workqueue without WQ_MEM_RECLAIM")
+  cb93e597779e ("cm: Don't allocate ib_cm workqueue with WQ_MEM_RECLAIM")
+  c669ccdc50c2 ("nvme: queue ns scanning and async request from nvme_wq")
 
->
-> --
-> Mel Gorman
-> SUSE Labs
+Also a review of the nvme jobs shows nvme_wq and nvme_reset_wq gets
+jobs posted which do memory allocation:
+
+ - nvme_wq
+
+   nvme_scan_work()
+     nvme_scan_ns_list()
+       ns_list = kzalloc(..., GFP_KERNEL);
+   [...]
+
+ - nvme_reset_wq
+
+   nvme_reset_work()
+     nvme_pci_configure_admin_queue()
+       nvme_alloc_queue()
+         dma_alloc_coherent(..., GFP_KERNEL)
+
+   nvme_rdma_reset_ctrl_work()
+     nvme_rdma_setup_ctrl()
+       (see above)
+
+   nvme_reset_ctrl_work()
+     nvme_tcp_setup_ctrl()
+       nvme_tcp_configure_admin_queue()
+         nvme_tcp_alloc_queue()
+           sock_create()
+   [...]
+
+nvme_delete_wq doesn't run any job which allocates memory, the system
+still depends on nvme_wq/nvme_reset_wq making progress.
+
+ - nvme_delete_wq
+
+   nvme_fc_ctrl_connectivity_loss()
+     nvme_delete_ctrl()
+   nvme_fc_unregister_remoteport
+     nvme_delete_ctrl()
+   nvme_fc_reconnect_or_delete()
+     nvme_delete_ctrl()
+   nvme_rdma_reconnect_or_remove()
+     nvme_delete_ctrl()
+   nvme_tcp_reconnect_or_remove()
+     nvme_delete_ctrl()
+
+   nvme_delete_ctrl_work()
+     flush_work(&ctrl->reset_work)
+     flush_work(&ctrl->async_event_work)
+     cancel_work_sync(&ctrl->fw_act_work)
+     ...
+
+That means we either have WQ_MEM_RECLAIM set on all wq or non.
+
+Link: https://patchwork.kernel.org/project/linux-rdma/patch/5f5a1e4e90f3625cea57ffa79fc0e5bcb7efe09d.1548963371.git.swise@opengridcomputing.com/
+
+Signed-off-by: Daniel Wagner <dwagner@suse.de>
+---
+ drivers/nvme/host/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index 11fca6459812..ab0d00ddf03f 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -4810,17 +4810,17 @@ static int __init nvme_core_init(void)
+ 	_nvme_check_size();
+ 
+ 	nvme_wq = alloc_workqueue("nvme-wq",
+-			WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_SYSFS, 0);
++			WQ_UNBOUND | WQ_SYSFS, 0);
+ 	if (!nvme_wq)
+ 		goto out;
+ 
+ 	nvme_reset_wq = alloc_workqueue("nvme-reset-wq",
+-			WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_SYSFS, 0);
++			WQ_UNBOUND | WQ_SYSFS, 0);
+ 	if (!nvme_reset_wq)
+ 		goto destroy_wq;
+ 
+ 	nvme_delete_wq = alloc_workqueue("nvme-delete-wq",
+-			WQ_UNBOUND | WQ_MEM_RECLAIM | WQ_SYSFS, 0);
++			WQ_UNBOUND | WQ_SYSFS, 0);
+ 	if (!nvme_delete_wq)
+ 		goto destroy_reset_wq;
+ 
+-- 
+2.29.2
+
