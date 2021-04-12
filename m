@@ -2,171 +2,401 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36A035D0C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:06:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BCC35D0C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236972AbhDLTGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:06:52 -0400
-Received: from mail-co1nam11on2042.outbound.protection.outlook.com ([40.107.220.42]:55073
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236839AbhDLTGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:06:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=THCGG4z5Hv2dDZ4BrQ2JC+IRFaWimfaVrW4aIEGdPBl1+LMZYsrahj81C0ePgI59e22pHHyDdktK2Houwh6SR9+dJs/cZwngSfbeKpgHEIOnjlp4bxuLLyTQyiYhW3FyBaVIgloYZogp2kFRNcZmHjhjBUbwIIuWllJZ0iw0OC9UfaMonL2ZjYf3aIR0muBLkqdvisk6b7v1/6kWtyU69l28fZY9F2GwNxuSiqFIALfsFN+Y/fu/P41L0NFJbGZpfH6i+pQDUIsBhQ4Ljak5zcUppSWjwoO/DI9i+mIe2QQ5ILwE13+b6SW8xns4jU5H9DGp9DyWKaQxZbUX/hHrGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AsCsHVaLb8Lc3tX5ttjfVbe+p8TxXyI5VcwSxGS5hjg=;
- b=fEQQLoBaGqBc6xcxwbSFaMsuQtoCtrOuYxRnBkVvekAKjnQWtr8Go6cyyEyQIHdM8wcsw5Wn6TNeUNVirvNY3ZklO1oftIs/s+jG74arne4ksCG2APGD+5y8no/9+btIifqHejlTZCS75ZDY4AtopPzeaJ1UHb2jjpEcd3O36wKkiPzncZELajK+9eioY6VohaFj8vlVW6SkMl/V82ZQGaJigafFpopfJaFpX5tWzbzn1JJact80pNOzeKSDuOYN+GG9t6MtYOpYBGYxFu3jktBzwcnI2+cGfg9z+1gxqnCVr2PkHjoM2IOMIlXt5sHySVY5CTFh3n9JK5UoLcxXFw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linux.intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AsCsHVaLb8Lc3tX5ttjfVbe+p8TxXyI5VcwSxGS5hjg=;
- b=L33lqhe/p9b1236FfoUoBcjuuFBSFnULY4kfdQct2SUFLXjFXjES1NDJXiJpuw+jFJ1drdJ0VtRJs+345KsfuU8lyLCzryHg84A7Qq3Dedv/drYAeBIrm7ftDRn2kNCRU7rA7J/9Tf/8GBYDAIsbnQNlXx3rwCJrfDT97GLxnlvyfsg3f1E0pAXigSKlG0pQ7gVJkkpxbiFBXNfFzqEQed0jVjGoWg5qLZygjYzTwQe4j536OjVgoILdG+qAAdirRckLa51gCkCisBKp43GWVRBa2Xny4/+NkVrBMCNr380P3DpjF0ZVTE3kHSc0ihLuPco/1AnQZi8PlP77Gz8d/w==
-Received: from DM5PR15CA0030.namprd15.prod.outlook.com (2603:10b6:4:4b::16) by
- MN2PR12MB3406.namprd12.prod.outlook.com (2603:10b6:208:c9::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4020.21; Mon, 12 Apr 2021 19:06:29 +0000
-Received: from DM6NAM11FT010.eop-nam11.prod.protection.outlook.com
- (2603:10b6:4:4b:cafe::a5) by DM5PR15CA0030.outlook.office365.com
- (2603:10b6:4:4b::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17 via Frontend
- Transport; Mon, 12 Apr 2021 19:06:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT010.mail.protection.outlook.com (10.13.172.222) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4020.17 via Frontend Transport; Mon, 12 Apr 2021 19:06:29 +0000
-Received: from treble.plattner.fun (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 12 Apr
- 2021 19:06:28 +0000
-Subject: Re: [Nouveau] [PATCH v2] ALSA: hda: Continue to probe when codec
- probe fails
-To:     Roy Spliet <nouveau@spliet.org>, Lukas Wunner <lukas@wunner.de>
-CC:     Karol Herbst <kherbst@redhat.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        nouveau <nouveau@lists.freedesktop.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        <tiwai@suse.com>, Alex Deucher <alexander.deucher@amd.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Mike Rapoport <rppt@kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        open list <linux-kernel@vger.kernel.org>
-References: <CAAd53p6Ef2zFX_t3y1c6O7BmHnxYGtGSfgzXAMQSom1ainWXzg@mail.gmail.com>
- <s5hsg85n2km.wl-tiwai@suse.de> <s5hmtydn0yg.wl-tiwai@suse.de>
- <CAAd53p6MMFh=HCNF9pyrJc9hVMZWFe7_8MvBcBHVWARqHU_TTA@mail.gmail.com>
- <s5h7dpfk06y.wl-tiwai@suse.de>
- <CAAd53p53w0H6tsb4JgQtFTkYinniicTYBs2uk7tc=heP2dM_Cw@mail.gmail.com>
- <CAKb7UvjWX7xbwMKtnad5EVy16nY1M-A13YJeRWyUwHzemcVswA@mail.gmail.com>
- <CAAd53p4=bSX26QzsPyV1sxADiuVn2sowWyb5JFDoPZQ+ZYoCzA@mail.gmail.com>
- <CACO55tsPx_UC3OPf9Hq9sGdnZg9jH1+B0zOi6EAxTZ13E1tf7A@mail.gmail.com>
- <d01e375f-bf16-a005-ec66-0910956cc616@spliet.org>
- <20210410192314.GB16240@wunner.de>
- <bddba2ca-15d5-7fd3-5b64-f4ba7e179ec0@spliet.org>
-From:   Aaron Plattner <aplattner@nvidia.com>
-X-Nvconfidentiality: public
-Message-ID: <81b2a8c7-5b0b-b8fa-fbed-f164128de7a3@nvidia.com>
-Date:   Mon, 12 Apr 2021 12:06:27 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-MIME-Version: 1.0
-In-Reply-To: <bddba2ca-15d5-7fd3-5b64-f4ba7e179ec0@spliet.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e8c0cace-b1c5-4466-7c69-08d8fde613fd
-X-MS-TrafficTypeDiagnostic: MN2PR12MB3406:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB340650AA121698337DB672EDCD709@MN2PR12MB3406.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jWsJoa3VvrtGILD9VnaEynscIvaXaSJnJNz3S0103wTsOS8RyaJrlFIsamJJDzqYK9wLl5ZCqyC43rudutLT+aWvxJXhamkc9/I1Dt87KIAdQKPshOgdOkOsjMjTG025PEa+OiR9j2n6AVCvVatzGGZZEQGdYF2YsvdwbDzzInucYyCwCprCbOUKG2+dS4tUIrDb7kl2daN55wqhfk5fznyEBdtvF0mjxiHndT4D4Wuz+v8u2vVxscsxFbdgseF/MsaOVjJhtD/QIh5iRBu78c4/3XduPqUlbt1s7ecKflUQScEtCQcDTsYjQoijahyAWhDLcUkWjIO6fYcpjI9d8ZAyEx1lzZIDFcggHxrtovglpmK1grXJSHapPKObmxZLNd+3kJWCg8NXplr+JzBGshr7l/kLT+L84PxiqJyMxWfrKJewWszcoRHzKJQ1rIFtwssVu//heMumqHOcdDbxtxbEfu40oKm1SrUMi2fosiec+6Qa6Wv9IW1j96YMO7WXtF1zXeENffgQvlmMhj4A5UkBsqWm4PZRmu/lArT4CDyXdl/63Zk97Ay5ke/SAqhy6/BrCxCeN5zDSyoWQHtIXmo8ChLHEwT1iTLicn4NYI14FRjupcBY/SOtpbrdgUK8D3MPRn3PmzNvSNonXa3bNNDwBbjPrLt2GrQnEnSYLrVwvLEduL4EWIn5FWlbEZZddR3xHiO8SojYVztF1vMT16+TgdIvLiEzaTEb4jnaqhw7klHYKn98DxGz33iid4W4suwxpKR8EUkwaLSk9hW6dQ==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(46966006)(36840700001)(31686004)(110136005)(16526019)(8676002)(86362001)(70206006)(316002)(478600001)(7636003)(186003)(8936002)(2906002)(82310400003)(36906005)(966005)(82740400003)(53546011)(36756003)(7416002)(83380400001)(26005)(336012)(54906003)(47076005)(2616005)(31696002)(5660300002)(70586007)(4326008)(356005)(36860700001)(426003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2021 19:06:29.1540
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e8c0cace-b1c5-4466-7c69-08d8fde613fd
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT010.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3406
+        id S244359AbhDLTHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236951AbhDLTHk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 15:07:40 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1947C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:07:21 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id 79so3073226qkm.20
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:07:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=GP0uQOWuZC4yKUThQFQmP+tagiFr5yBnomFO6I9xraE=;
+        b=Ty/POhvt/DR1E2FsFGUtNSt2yi79G3157Wh6MWJN+MIRW6iBH07LdRsbQZjCOxKFIE
+         YTiZ3XpLGtFvxTJhwqd85n46dFJtWnNPF6lpzMhP1xn+rbLlnXxKME6cQr5HpBHjwYHI
+         thkWtRxUmQrzeUZ/hj/FUmgAP3MiuukryCdQ3M9piSgbEda7mW4waiVZl4X4jM2w+rL8
+         zzGexglQkc9TojMhr1MP8JZmi7rH4QanNXBjVItkyIMGG6vldzZGvm0r6WgqfYdlzdpX
+         l3YG8qPQ6Aps6vjx9zAz3pt6u3n0yyr5FLdHQzc/k8shHImlaL7hRXO21JHqhgO4x8XR
+         dkOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=GP0uQOWuZC4yKUThQFQmP+tagiFr5yBnomFO6I9xraE=;
+        b=IhG9CNqNvDRoWPuld4jY9Xctoy4jj6OIS9xrcAyMM/8Ticnq1SpqavQXz6o0p6buW/
+         PJ5vGnBlxv1feQvWDlYTPzoWnps2cknvHVBhugt3cttu8mphnoDuG3U3r4lqAWX4eA2q
+         8YJnXQX3NS2tdRaL2rhkY8SCnJ4d0HlP96iMYIzifYbPal35A98dobejkOHAqp01Yz4H
+         6kl4Py+RSCfuDndQLh0C4M1iYq15C4a9PMqWehYoHFPfLf5BezqpNv0VnoDyVvEFU6xr
+         H9JBb/SOc9BtS1JtUL+PR+uhFKPfNC3JSx0NEM6mToov0XarP+TsG5EPpAFIoFUwqsMd
+         l4PA==
+X-Gm-Message-State: AOAM533BiyhUsBoFePEb3zxiBFYr5gsId8dK5gWrslWK8Miz2k2zGmDp
+        Jbkk6kqS2k9WzZ/3dKioZPBT0XFsPKT9MQ==
+X-Google-Smtp-Source: ABdhPJwnh7b8rTXSdhsxe3kY7kpYpL5B02W+sQgMkw2klrgzYNkI5h+FsT8yiTiXQtbvWp4HLE87cyTUY4czOg==
+X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:15d:2869:c8a:b222])
+ (user=dlatypov job=sendgmr) by 2002:a05:6214:7e6:: with SMTP id
+ bp6mr9760187qvb.37.1618254441104; Mon, 12 Apr 2021 12:07:21 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 12:07:15 -0700
+Message-Id: <20210412190715.555883-1-dlatypov@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
+Subject: [PATCH v5] lib: add basic KUnit test for lib/math
+From:   Daniel Latypov <dlatypov@google.com>
+To:     andriy.shevchenko@linux.intel.com
+Cc:     brendanhiggins@google.com, davidgow@google.com,
+        linux-kernel@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, skhan@linuxfoundation.org,
+        Daniel Latypov <dlatypov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/10/21 1:48 PM, Roy Spliet wrote:
-> Op 10-04-2021 om 20:23 schreef Lukas Wunner:
->> On Sat, Apr 10, 2021 at 04:51:27PM +0100, Roy Spliet wrote:
->>> Can I ask someone with more
->>> technical knowledge of snd_hda_intel and vgaswitcheroo to brainstorm 
->>> about
->>> the possible challenges of nouveau taking matters into its own hand 
->>> rather
->>> than keeping this PCI quirk around?
->>
->> It sounds to me like the HDA is not powered if no cable is plugged in.
->> What is reponsible then for powering it up or down, firmware code on
->> the GPU or in the host's BIOS?
-> 
-> Sometimes the BIOS, but definitely unconditionally the PCI quirk code: 
-> https://github.com/torvalds/linux/blob/master/drivers/pci/quirks.c#L5289
-> 
-> (CC Aaron Plattner)
+Add basic test coverage for files that don't require any config options:
+* part of math.h (what seem to be the most commonly used macros)
+* gcd.c
+* lcm.c
+* int_sqrt.c
+* reciprocal_div.c
+(Ignored int_pow.c since it's a simple textbook algorithm.)
 
-My basic understanding is that the audio function stops responding 
-whenever the graphics function is powered off. So the requirement here 
-is that the audio driver can't try to talk to the audio function while 
-the graphics function is asleep, and must trigger a graphics function 
-wakeup before trying to communicate with the audio function. I think 
-there are also requirements about the audio function needing to be awake 
-when the graphics driver is updating the ELD, but I'm not sure.
+These tests aren't particularly interesting, but they
+* provide short and simple examples of parameterized tests
+* provide a place to add tests for any new files in this dir
+* are written so adding new test cases to cover edge cases should be easy
+  * looking at code coverage, we hit all the branches in the .c files
 
-This is harder on Windows because the audio driver lives in its own 
-little world doing its own thing but on Linux we can do better.
+Signed-off-by: Daniel Latypov <dlatypov@google.com>
+---
+Changes since v4:
+* add in test cases for some math.h macros (abs, round_up/round_down,
+  div_round_down/closest)
+* use parameterized testing less to keep things terser
 
->> Ideally, we should try to find out how to control HDA power from the
->> operating system rather than trying to cooperate with whatever firmware
->> is doing.  If we have that capability, the OS should power the HDA up
->> and down as it sees fit.
+Changes since v3:
+* fix `checkpatch.pl --strict` warnings
+* add test cases for gcd(0,0) and lcm(0,0)
+* minor: don't test both gcd(a,b) and gcd(b,a) when a == b
 
-After system boot, I don't think there's any firmware involved, but I'm 
-not super familiar with the low-level details and it's possible the 
-situation changed since I last looked at it.
+Changes since v2: mv math_test.c => math_kunit.c
 
-I think the problem with having nouveau write this quirk is that the 
-kernel will need to re-probe the PCI device to notice that it has 
-suddenly become a multi-function device with an audio function, and 
-hotplug the audio driver. I originally looked into trying to do that but 
-it was tricky because the PCI subsystem didn't really have a mechanism 
-for a single-function device to become a multi-function device on the 
-fly and it seemed easier to enable it early on during bus enumeration. 
-That way the kernel sees both functions all the time without anything 
-else having to be special about this configuration.
+Changes since v1:
+* Rebase and rewrite to use the new parameterized testing support.
+* misc: fix overflow in literal and inline int_sqrt format string.
+* related: commit 1f0e943df68a ("Documentation: kunit: provide guidance
+for testing many inputs") was merged explaining the patterns shown here.
+  * there's an in-flight patch to update it for parameterized testing.
 
--- Aaron
+v1: https://lore.kernel.org/lkml/20201019224556.3536790-1-dlatypov@google.com/
+---
+ lib/math/Kconfig      |   5 +
+ lib/math/Makefile     |   2 +
+ lib/math/math_kunit.c | 264 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 271 insertions(+)
+ create mode 100644 lib/math/math_kunit.c
 
->> Thanks,
->>
->> Lukas
+diff --git a/lib/math/Kconfig b/lib/math/Kconfig
+index f19bc9734fa7..6ba8680439c1 100644
+--- a/lib/math/Kconfig
++++ b/lib/math/Kconfig
+@@ -15,3 +15,8 @@ config PRIME_NUMBERS
+ 
+ config RATIONAL
+ 	bool
++
++config MATH_KUNIT_TEST
++	tristate "KUnit test for lib/math" if !KUNIT_ALL_TESTS
++	default KUNIT_ALL_TESTS
++	depends on KUNIT
+diff --git a/lib/math/Makefile b/lib/math/Makefile
+index be6909e943bd..30abb7a8d564 100644
+--- a/lib/math/Makefile
++++ b/lib/math/Makefile
+@@ -4,3 +4,5 @@ obj-y += div64.o gcd.o lcm.o int_pow.o int_sqrt.o reciprocal_div.o
+ obj-$(CONFIG_CORDIC)		+= cordic.o
+ obj-$(CONFIG_PRIME_NUMBERS)	+= prime_numbers.o
+ obj-$(CONFIG_RATIONAL)		+= rational.o
++
++obj-$(CONFIG_MATH_KUNIT_TEST)	+= math_kunit.o
+diff --git a/lib/math/math_kunit.c b/lib/math/math_kunit.c
+new file mode 100644
+index 000000000000..80a087a32884
+--- /dev/null
++++ b/lib/math/math_kunit.c
+@@ -0,0 +1,264 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Simple KUnit suite for math helper funcs that are always enabled.
++ *
++ * Copyright (C) 2020, Google LLC.
++ * Author: Daniel Latypov <dlatypov@google.com>
++ */
++
++#include <kunit/test.h>
++#include <linux/gcd.h>
++#include <linux/kernel.h>
++#include <linux/lcm.h>
++#include <linux/reciprocal_div.h>
++
++static void abs_test(struct kunit *test)
++{
++	KUNIT_EXPECT_EQ(test, abs('\0'), '\0');
++	KUNIT_EXPECT_EQ(test, abs('a'), 'a');
++	KUNIT_EXPECT_EQ(test, abs(-'a'), 'a');
++
++	/* The expression in the macro is actually promoted to an int. */
++	KUNIT_EXPECT_EQ(test, abs((short)0),  0);
++	KUNIT_EXPECT_EQ(test, abs((short)42),  42);
++	KUNIT_EXPECT_EQ(test, abs((short)-42),  42);
++
++	KUNIT_EXPECT_EQ(test, abs(0),  0);
++	KUNIT_EXPECT_EQ(test, abs(42),  42);
++	KUNIT_EXPECT_EQ(test, abs(-42),  42);
++
++	KUNIT_EXPECT_EQ(test, abs(0L), 0L);
++	KUNIT_EXPECT_EQ(test, abs(42L), 42L);
++	KUNIT_EXPECT_EQ(test, abs(-42L), 42L);
++
++	KUNIT_EXPECT_EQ(test, abs(0LL), 0LL);
++	KUNIT_EXPECT_EQ(test, abs(42LL), 42LL);
++	KUNIT_EXPECT_EQ(test, abs(-42LL), 42LL);
++
++	/* Unsigned types get casted to signed. */
++	KUNIT_EXPECT_EQ(test, abs(0ULL), 0LL);
++	KUNIT_EXPECT_EQ(test, abs(42ULL), 42LL);
++}
++
++static void int_sqrt_test(struct kunit *test)
++{
++	KUNIT_EXPECT_EQ(test, int_sqrt(0UL), 0UL);
++	KUNIT_EXPECT_EQ(test, int_sqrt(1UL), 1UL);
++	KUNIT_EXPECT_EQ(test, int_sqrt(4UL), 2UL);
++	KUNIT_EXPECT_EQ(test, int_sqrt(5UL), 2UL);
++	KUNIT_EXPECT_EQ(test, int_sqrt(8UL), 2UL);
++	KUNIT_EXPECT_EQ(test, int_sqrt(1UL << 30), 1UL << 15);
++}
++
++static void round_up_test(struct kunit *test)
++{
++	KUNIT_EXPECT_EQ(test, round_up(0, 1), 0);
++	KUNIT_EXPECT_EQ(test, round_up(1, 2), 2);
++	KUNIT_EXPECT_EQ(test, round_up(3, 2), 4);
++	KUNIT_EXPECT_EQ(test, round_up((1 << 30) - 1, 2), 1 << 30);
++	KUNIT_EXPECT_EQ(test, round_up((1 << 30) - 1, 1 << 29), 1 << 30);
++}
++
++static void round_down_test(struct kunit *test)
++{
++	KUNIT_EXPECT_EQ(test, round_down(0, 1), 0);
++	KUNIT_EXPECT_EQ(test, round_down(1, 2), 0);
++	KUNIT_EXPECT_EQ(test, round_down(3, 2), 2);
++	KUNIT_EXPECT_EQ(test, round_down((1 << 30) - 1, 2), (1 << 30) - 2);
++	KUNIT_EXPECT_EQ(test, round_down((1 << 30) - 1, 1 << 29), 1 << 29);
++}
++
++static void div_round_up_test(struct kunit *test)
++{
++	KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(0, 1), 0);
++	KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(20, 10), 2);
++	KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 10), 3);
++	KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 20), 2);
++	KUNIT_EXPECT_EQ(test, DIV_ROUND_UP(21, 99), 1);
++}
++
++static void div_round_closest_test(struct kunit *test)
++{
++	KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(0, 1), 0);
++	KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(20, 10), 2);
++	KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(21, 10), 2);
++	KUNIT_EXPECT_EQ(test, DIV_ROUND_CLOSEST(25, 10), 3);
++}
++
++/* Generic test case for unsigned long inputs. */
++struct test_case {
++	unsigned long a, b;
++	unsigned long result;
++};
++
++static struct test_case gcd_cases[] = {
++	{
++		.a = 0, .b = 0,
++		.result = 0,
++	},
++	{
++		.a = 0, .b = 1,
++		.result = 1,
++	},
++	{
++		.a = 2, .b = 2,
++		.result = 2,
++	},
++	{
++		.a = 2, .b = 4,
++		.result = 2,
++	},
++	{
++		.a = 3, .b = 5,
++		.result = 1,
++	},
++	{
++		.a = 3 * 9, .b = 3 * 5,
++		.result = 3,
++	},
++	{
++		.a = 3 * 5 * 7, .b = 3 * 5 * 11,
++		.result = 15,
++	},
++	{
++		.a = 1 << 21,
++		.b = (1 << 21) - 1,
++		.result = 1,
++	},
++};
++
++KUNIT_ARRAY_PARAM(gcd, gcd_cases, NULL);
++
++static void gcd_test(struct kunit *test)
++{
++	const char *message_fmt = "gcd(%lu, %lu)";
++	const struct test_case *test_param = test->param_value;
++
++	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
++			    gcd(test_param->a, test_param->b),
++			    message_fmt, test_param->a,
++			    test_param->b);
++
++	if (test_param->a == test_param->b)
++		return;
++
++	/* gcd(a,b) == gcd(b,a) */
++	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
++			    gcd(test_param->b, test_param->a),
++			    message_fmt, test_param->b,
++			    test_param->a);
++}
++
++static struct test_case lcm_cases[] = {
++	{
++		.a = 0, .b = 0,
++		.result = 0,
++	},
++	{
++		.a = 0, .b = 1,
++		.result = 0,
++	},
++	{
++		.a = 1, .b = 2,
++		.result = 2,
++	},
++	{
++		.a = 2, .b = 2,
++		.result = 2,
++	},
++	{
++		.a = 3 * 5, .b = 3 * 7,
++		.result = 3 * 5 * 7,
++	},
++};
++
++KUNIT_ARRAY_PARAM(lcm, lcm_cases, NULL);
++
++static void lcm_test(struct kunit *test)
++{
++	const char *message_fmt = "lcm(%lu, %lu)";
++	const struct test_case *test_param = test->param_value;
++
++	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
++			    lcm(test_param->a, test_param->b),
++			    message_fmt, test_param->a,
++			    test_param->b);
++
++	if (test_param->a == test_param->b)
++		return;
++
++	/* lcm(a,b) == lcm(b,a) */
++	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
++			    lcm(test_param->b, test_param->a),
++			    message_fmt, test_param->b,
++			    test_param->a);
++}
++
++struct u32_test_case {
++	u32 a, b;
++	u32 result;
++};
++
++static struct u32_test_case reciprocal_div_cases[] = {
++	{
++		.a = 0, .b = 1,
++		.result = 0,
++	},
++	{
++		.a = 42, .b = 20,
++		.result = 2,
++	},
++	{
++		.a = 42, .b = 9999,
++		.result = 0,
++	},
++	{
++		.a = (1 << 16), .b = (1 << 14),
++		.result = 1 << 2,
++	},
++};
++
++KUNIT_ARRAY_PARAM(reciprocal_div, reciprocal_div_cases, NULL);
++
++static void reciprocal_div_test(struct kunit *test)
++{
++	const struct u32_test_case *test_param = test->param_value;
++	struct reciprocal_value rv = reciprocal_value(test_param->b);
++
++	KUNIT_EXPECT_EQ_MSG(test, test_param->result,
++			    reciprocal_divide(test_param->a, rv),
++			    "reciprocal_divide(%u, %u)",
++			    test_param->a, test_param->b);
++}
++
++static void reciprocal_scale_test(struct kunit *test)
++{
++	KUNIT_EXPECT_EQ(test, reciprocal_scale(0u, 100), 0u);
++	KUNIT_EXPECT_EQ(test, reciprocal_scale(1u, 100), 0u);
++	KUNIT_EXPECT_EQ(test, reciprocal_scale(1u << 4, 1 << 28), 1u);
++	KUNIT_EXPECT_EQ(test, reciprocal_scale(1u << 16, 1 << 28), 1u << 12);
++	KUNIT_EXPECT_EQ(test, reciprocal_scale(~0u, 1 << 28), (1u << 28) - 1);
++}
++
++static struct kunit_case math_test_cases[] = {
++	KUNIT_CASE(abs_test),
++	KUNIT_CASE(int_sqrt_test),
++	KUNIT_CASE(round_up_test),
++	KUNIT_CASE(round_down_test),
++	KUNIT_CASE(div_round_up_test),
++	KUNIT_CASE(div_round_closest_test),
++	KUNIT_CASE_PARAM(gcd_test, gcd_gen_params),
++	KUNIT_CASE_PARAM(lcm_test, lcm_gen_params),
++	KUNIT_CASE_PARAM(reciprocal_div_test, reciprocal_div_gen_params),
++	KUNIT_CASE(reciprocal_scale_test),
++	{}
++};
++
++static struct kunit_suite math_test_suite = {
++	.name = "lib-math",
++	.test_cases = math_test_cases,
++};
++
++kunit_test_suites(&math_test_suite);
++
++MODULE_LICENSE("GPL v2");
+
+base-commit: 4fa56ad0d12e24df768c98bffe9039f915d1bc02
+-- 
+2.31.1.295.g9ea45b61b8-goog
+
