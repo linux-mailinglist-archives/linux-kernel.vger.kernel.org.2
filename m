@@ -2,82 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EE735B91F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DA635B931
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 06:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236695AbhDLDsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 23:48:04 -0400
-Received: from foss.arm.com ([217.140.110.172]:34980 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236541AbhDLDr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 23:47:57 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A7EF331B;
-        Sun, 11 Apr 2021 20:47:39 -0700 (PDT)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.72.70])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id F29143F694;
-        Sun, 11 Apr 2021 20:47:37 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2] mm/page_alloc: Ensure that HUGETLB_PAGE_ORDER is less than MAX_ORDER
-Date:   Mon, 12 Apr 2021 09:18:22 +0530
-Message-Id: <1618199302-29335-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S229547AbhDLEDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 00:03:19 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:48339 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229448AbhDLEDP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 00:03:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UVD1aq6_1618200171;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVD1aq6_1618200171)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 12 Apr 2021 12:02:56 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     bp@alien8.de
+Cc:     davem@davemloft.net, linux-ide@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] ide-cd: remove useless variable
+Date:   Mon, 12 Apr 2021 12:02:51 +0800
+Message-Id: <1618200171-54914-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pageblock_order must always be less than MAX_ORDER, otherwise it might lead
-to an warning during boot. A similar problem got fixed on arm64 platform
-with the commit 79cc2ed5a716 ("arm64/mm: Drop THP conditionality from
-FORCE_MAX_ZONEORDER"). Assert the above condition before HUGETLB_PAGE_ORDER
-gets assigned as pageblock_order. This will help detect the problem earlier
-on platforms where HUGETLB_PAGE_SIZE_VARIABLE is enabled.
+Fix the following gcc warning:
 
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+drivers/ide/ide-cd_ioctl.c:212:6: warning: variable ‘stat’ set but not
+used [-Wunused-but-set-variable].
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
-Changes in V2:
+ drivers/ide/ide-cd_ioctl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-- Changed WARN_ON() to BUILD_BUG_ON() per David
-
-Changes in V1:
-
-https://patchwork.kernel.org/project/linux-mm/patch/1617947717-2424-1-git-send-email-anshuman.khandual@arm.com/
-
- mm/page_alloc.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index cfc72873961d..19283bff4bec 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6875,10 +6875,17 @@ void __init set_pageblock_order(void)
- 	if (pageblock_order)
- 		return;
+diff --git a/drivers/ide/ide-cd_ioctl.c b/drivers/ide/ide-cd_ioctl.c
+index 011eab9..22ec8b7 100644
+--- a/drivers/ide/ide-cd_ioctl.c
++++ b/drivers/ide/ide-cd_ioctl.c
+@@ -209,7 +209,6 @@ int ide_cdrom_select_speed(struct cdrom_device_info *cdi, int speed)
+ 	ide_drive_t *drive = cdi->handle;
+ 	struct cdrom_info *cd = drive->driver_data;
+ 	u8 buf[ATAPI_CAPABILITIES_PAGE_SIZE];
+-	int stat;
+ 	unsigned char cmd[BLK_MAX_CDB];
  
--	if (HPAGE_SHIFT > PAGE_SHIFT)
-+	if (HPAGE_SHIFT > PAGE_SHIFT) {
-+		/*
-+		 * pageblock_order must always be less than
-+		 * MAX_ORDER. So does HUGETLB_PAGE_ORDER if
-+		 * that is being assigned here.
-+		 */
-+		BUILD_BUG_ON(HUGETLB_PAGE_ORDER >= MAX_ORDER);
- 		order = HUGETLB_PAGE_ORDER;
--	else
-+	} else {
- 		order = MAX_ORDER - 1;
-+	}
+ 	if (speed == 0)
+@@ -230,7 +229,7 @@ int ide_cdrom_select_speed(struct cdrom_device_info *cdi, int speed)
+ 		cmd[5] = speed & 0xff;
+ 	}
  
- 	/*
- 	 * Assume the largest contiguous order of interest is a huge page.
+-	stat = ide_cd_queue_pc(drive, cmd, 0, NULL, NULL, NULL, 0, 0);
++	ide_cd_queue_pc(drive, cmd, 0, NULL, NULL, NULL, 0, 0);
+ 
+ 	if (!ide_cdrom_get_capabilities(drive, buf)) {
+ 		ide_cdrom_update_speed(drive, buf);
 -- 
-2.20.1
+1.8.3.1
 
