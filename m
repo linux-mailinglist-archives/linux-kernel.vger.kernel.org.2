@@ -2,115 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4D935C96C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB9C35C970
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242550AbhDLPIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:08:48 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:53490 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237526AbhDLPIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:08:46 -0400
-Received: from zn.tnic (p200300ec2f052100b992cfc3eab27929.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:2100:b992:cfc3:eab2:7929])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8F7B51EC0249;
-        Mon, 12 Apr 2021 17:08:25 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618240105;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=MerdwYZHv9X7XzBa8kEPrV7U0nq5j/1focuz0dTDD9Q=;
-        b=cx1Swk17PXnXih63cbor4U4n3xX+AHAM+rNWd3fRiakUGd0nO4mAeoiIjYrvBmANJXs3me
-        tybcoA1fRJNXe2VA8Kb3z94eQIyr6SIIIZj2nzVO0FsVeap4Du5kKvlH1mu0xKzvmC1Jc/
-        ttqvfipF5QjY16i/XCc5PHnOKH/j45s=
-Date:   Mon, 12 Apr 2021 17:08:24 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-Message-ID: <20210412150824.GF24283@zn.tnic>
-References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
- <87lf9nk2ku.fsf@oldenburg.str.redhat.com>
- <20210412143139.GE24283@zn.tnic>
- <878s5nk1pk.fsf@oldenburg.str.redhat.com>
+        id S242740AbhDLPJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:09:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242650AbhDLPJG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:09:06 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78061C061574;
+        Mon, 12 Apr 2021 08:08:48 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id l76so9606478pga.6;
+        Mon, 12 Apr 2021 08:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=7c5hbFDJuzW8IbaNLbCCwK5N29exubinPApJnJHDfR0=;
+        b=ITLLe2DYMYPMeZVGTkOR3bOoGfykAoYj/bQy2kCNye+lBUJ4XaLgFBgV6f2/yXfdd7
+         oFAVX0mQPwwymASavuDGXYqCdTXy47ZVJ/xlr9FH+qYoJ0kyvIHWC7SglHHDqrO50knq
+         erVGGF9AYHklUu3pGvXTBSIB1dK/wjQF3ksPtYKoYc3UTmIXSSS5oIwQ8EYvT/rFv2Qw
+         B9VpY9yz26CcM80Jg4PDwvFix5CNjmrPsjA+feH4HFT9yDVUE0HBsePWEfP2D1E6A0BC
+         k9hnIqKMl0A/k7zYjwFsYK0ENESXfAjEks0+fqqa79661PTy2kc8s1fOcLNn/eQCZcR7
+         09Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=7c5hbFDJuzW8IbaNLbCCwK5N29exubinPApJnJHDfR0=;
+        b=hGpyIUrv/oH2nPeRq8EExspcIGJ2/gpDgR5extAG9pFMMdqkfeBP6ryoxCjpKN/uAX
+         TUFnwvEcXqWkWJOBju+Qj6c+4cNOXX3em8W4A5XPkZI6pZtqIkKnu/Re/eqV/7qHAGE0
+         XAa+XWbno47nsLJ9ncso0QlSk9KJQjIzQtlgUC+5MzDwlJPr7//AQfIepl8T+bOasgRA
+         IGyb3HuXcFYlpIPhlAbkZdcAbvbTwbdUbhVlDKIozzoQ5s129Wbz73HoD+LZtQhcspFQ
+         IstokF54F90OEuUch9ynJi0+PREDM1/Bp0njtNNoBJiDDSfuw7BCXD9NP/oW9HtCuIWJ
+         FeNw==
+X-Gm-Message-State: AOAM532QQJoca1jA5OwRPt7LvgupfsAaG+uBOpi0WnMpDB5MTHMAske7
+        suu6fwC7Nn4iLn6QAcalNBmF+2B+PsjW4+kX
+X-Google-Smtp-Source: ABdhPJz7KRLv1g9bRdFHzT6lp7tQwKP2uj+NoPFEntDd1eukLWRlre8tS73iPaLZc+mPS/pqqEeSxQ==
+X-Received: by 2002:aa7:91d1:0:b029:1fe:2a02:73b9 with SMTP id z17-20020aa791d10000b02901fe2a0273b9mr25310238pfa.2.1618240125830;
+        Mon, 12 Apr 2021 08:08:45 -0700 (PDT)
+Received: from localhost.localdomain ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id k13sm8406233pji.14.2021.04.12.08.08.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 08:08:45 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [RFC v4 net-next 1/4] net: phy: add MediaTek PHY driver
+Date:   Mon, 12 Apr 2021 23:08:36 +0800
+Message-Id: <20210412150836.929610-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210412070449.Horde.wg9CWXW8V9o0P-heKYtQpVh@www.vdorst.com>
+References: <20210412034237.2473017-1-dqfext@gmail.com> <20210412034237.2473017-2-dqfext@gmail.com> <20210412070449.Horde.wg9CWXW8V9o0P-heKYtQpVh@www.vdorst.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <878s5nk1pk.fsf@oldenburg.str.redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 04:38:15PM +0200, Florian Weimer wrote:
-> Yes, that's why we have the XGETBV handshake.  I was imprecise.  It's
-> CPUID + XGETBV of course.  Or even AT_HWCAP2 (for FSGSBASE).
-
-Ok, that sounds better. So looking at glibc sources, I see something
-like this:
-
-init_cpu_features
-|-> update_usable
- |-> CPU_FEATURE_SET_USABLE (cpu_features, XGETBV_ECX_1);
-
-so I'm guessing this happens when the library gets loaded per process,
-right?
-
-Which means, once the detection has taken place and the library has
-gotten XCR0, it is going to use it and won't re-ask the kernel or so?
-
-I.e., I'm trying to imagine how a per-process thing would work at all.
-If at all.
-
-And this sounds especially "fun":
-
-> Code that installs a signal handler often does not have control on
-> which thread an asynchronous signal is delivered, or which code it
-> interrupts.
-
-In my simplistic approach I'm thinking about something along the lines
-of:
-
-Library: hey kernel, can you handle AVX512?
-Kernel: yes
-Library: ok, I will use that in the signal handler
-
-And since kernel has said yes, kernel is going to take care of handling
-AVX512 state and library can assume that.
-
-All those old processes which cannot be recompiled, for them I guess the
-kernel should have to say no.
-
-Dunno how much sense that makes...
-
-> > And the CPUID-faulting thing would solve stuff like that because then
-> > the kernel can *actually* get involved into answering something where it
-> > has a say in, too.
+On Mon, Apr 12, 2021 at 07:04:49AM +0000, René van Dorst wrote:
+> Hi Qingfang,
+> > +static void mtk_phy_config_init(struct phy_device *phydev)
+> > +{
+> > +	/* Disable EEE */
+> > +	phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, 0);
 > 
-> But why wouldn't we use a syscall or an entry in the auxiliary vector
-> for that?  Why fault a potentially performance-critical instruction?
+> For my EEE patch I changed this line to:
+> 
+> genphy_config_eee_advert(phydev);
+> 
+> So PHY EEE part is setup properly at boot, instead enable it manual via
+> ethtool.
+> This function also takes the DTS parameters "eee-broken-xxxx" in to account
+> while
+i> setting-up the PHY.
 
-Oh sure, CPUID faulting was just an example. I think the intent is to
-have this important aspect of userspace asking the kernel first what
-kind of features it can handle and then do accordingly.
+Thanks, I'm now testing with it.
 
-IOW, legacy stuff can work unchanged and new libraries and kernels can
-support fancier features and bigger buffers.
-
-Methinks.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> > +
+> > +	/* Enable HW auto downshift */
+> > +	phy_modify_paged(phydev, MTK_PHY_PAGE_EXTENDED, 0x14, 0, BIT(4));
