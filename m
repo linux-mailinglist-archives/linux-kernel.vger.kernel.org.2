@@ -2,115 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE3635D0FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A390635D102
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237112AbhDLTY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:24:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21799 "EHLO
+        id S237149AbhDLTZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:25:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23775 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236944AbhDLTY6 (ORCPT
+        by vger.kernel.org with ESMTP id S237119AbhDLTZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:24:58 -0400
+        Mon, 12 Apr 2021 15:25:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618255479;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=mimecast20190719; t=1618255495;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sanhxa5ocEIGPBDgrv4bLnJCXX7YJObbafoCV8epdlU=;
-        b=fPa9YtVv4Jvi1eQfzPlwx9/jc/Y5hZd7Iy/6YgQWr6PevBeVd0o5HgkSjYogSqRkZa6GgF
-        YAmfvVXM8kenvQfTU4HaW6lamxyyJsGGJPmHO2xcqTLqBVeaa6TBecrfK52zJOVqqW+JsF
-        CDLQzlU8UmKSRzuxNg+ZIanfwdXYd9w=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-449-09PQfohdOuWiSyJ56MErVA-1; Mon, 12 Apr 2021 15:24:38 -0400
-X-MC-Unique: 09PQfohdOuWiSyJ56MErVA-1
-Received: by mail-qv1-f72.google.com with SMTP id p2so8602896qvi.6
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:24:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=sanhxa5ocEIGPBDgrv4bLnJCXX7YJObbafoCV8epdlU=;
-        b=LfFATt1pXn+d6pm8g7hSTvAQXmc9h66z2aC2ZDoKYyA7MdVFDZiM91wvDlmCq6UyOj
-         KrOsq4XTi3QhRjJjOIFQ5aqga0O9fQkglqMb5r5SKuLfx/105UyHoknCFOGmFBOCiJXN
-         7DbpqsDMN5qVnOpl1D/oSd7hXCWcoixzOtYBXZZ0OPyFedrlb25+71W1oSCrG/l9wmD5
-         EY/w630MjMn++sdNnHxlpsjKUORDno3z5ScqXwJowwgdupV1C42wDFZyIMcKXL/fGLtl
-         c5rCTjPRnJ7SqDP2SXEJkzpptGckpGKsFjmA6qiqi7ZXoZLtIkKYjBJXwAmZl/ySjKZB
-         1xug==
-X-Gm-Message-State: AOAM531ZF57XkQJIBFCQmdw/+T6Y19Z+/pBLz0WPRRbRThiSzbo97oYt
-        P2bjrtO2u/wgrRmdXFosTzkDihNjeYxzrEQhICFx42hJuTaFqikQpYljnmzu0MrPqS7fUxgwHjU
-        Q2Fu4NPq3bXCdz1tKOSzlMOyZ
-X-Received: by 2002:ac8:744f:: with SMTP id h15mr4553115qtr.45.1618255477533;
-        Mon, 12 Apr 2021 12:24:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJypxJ4IHG0spUFGr+zDp4lXxDXYblWKgo86ypm7XV/jlKk/dJt2ZRAKrs03KzxuMIa0UgEhQg==
-X-Received: by 2002:ac8:744f:: with SMTP id h15mr4553086qtr.45.1618255477371;
-        Mon, 12 Apr 2021 12:24:37 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id h14sm8039561qtx.64.2021.04.12.12.24.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 12:24:36 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 1/5] mm/memcg: Pass both memcg and lruvec to
- mod_memcg_lruvec_state()
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>
-References: <20210409231842.8840-1-longman@redhat.com>
- <20210409231842.8840-2-longman@redhat.com>
- <YHSLp8bTQGovNLTu@carbon.dhcp.thefacebook.com>
-Message-ID: <8a188990-325e-bf89-37ae-f0b29481b738@redhat.com>
-Date:   Mon, 12 Apr 2021 15:24:34 -0400
+        bh=xRcnQlpmgJ+Hp6K8twIMFMCvKaEL2r/LHLx6k73WseU=;
+        b=CDpYCjYcaYXlWaktLkjtSn4OlX2pC0vy1/9rtcdsbssnkezGZl1KH0dnt5wVdp7DEb1xd3
+        XpsiTIbtxtSYJZa8SoXlJoknx3jEpdPnCI8PDWegJnjQoG/Cj9n55KpFI6I5eiM13qh/AJ
+        el6AAytIwVo0xNVmZmN9sXXbEQ3FBt0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-95-MugNV17kOVSv_7lHHq0Q0w-1; Mon, 12 Apr 2021 15:24:52 -0400
+X-MC-Unique: MugNV17kOVSv_7lHHq0Q0w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48245107ACED;
+        Mon, 12 Apr 2021 19:24:51 +0000 (UTC)
+Received: from crecklin.bos.csb (unknown [10.10.115.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7AEAE5D6D1;
+        Mon, 12 Apr 2021 19:24:46 +0000 (UTC)
+Reply-To: crecklin@redhat.com
+Subject: Re: [PATCH v6 1/1] use crc32 instead of md5 for hibernation e820
+ integrity check
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
+        decui@microsoft.com, linux-pm@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210412140932.31162-1-crecklin@redhat.com>
+ <YHSHPIXLhHjOu0jw@gmail.com>
+ <5795c815-7715-1ecb-dd83-65f3d18b9092@redhat.com>
+ <YHSdgV6LIqSVxk+i@gmail.com>
+From:   Chris von Recklinghausen <crecklin@redhat.com>
+Organization: Red Hat
+Message-ID: <68196954-97a0-1383-d01b-81441409ac38@redhat.com>
+Date:   Mon, 12 Apr 2021 15:24:45 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <YHSLp8bTQGovNLTu@carbon.dhcp.thefacebook.com>
+In-Reply-To: <YHSdgV6LIqSVxk+i@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 2:04 PM, Roman Gushchin wrote:
-> On Fri, Apr 09, 2021 at 07:18:38PM -0400, Waiman Long wrote:
->> The caller of mod_memcg_lruvec_state() has both memcg and lruvec readily
->> available. So both of them are now passed to mod_memcg_lruvec_state()
->> and __mod_memcg_lruvec_state(). The __mod_memcg_lruvec_state() is
->> updated to allow either of the two parameters to be set to null. This
->> makes mod_memcg_lruvec_state() equivalent to mod_memcg_state() if lruvec
->> is null.
-> This patch seems to be correct, but it's a bit hard to understand why
-> it's required without looking into the rest of the series. Can you, please,
-> add a couple of words about it? E.g. we need it to handle stats which do not
-> exist on the lruvec level...
+On 4/12/21 3:20 PM, Eric Biggers wrote:
+> On Mon, Apr 12, 2021 at 03:04:58PM -0400, Chris von Recklinghausen wrote:
+>> On 4/12/21 1:45 PM, Eric Biggers wrote:
+>>> On Mon, Apr 12, 2021 at 10:09:32AM -0400, Chris von Recklinghausen wrote:
+>>>> Suspend fails on a system in fips mode because md5 is used for the e820
+>>>> integrity check and is not available. Use crc32 instead.
+>>>>
+>>>> This patch changes the integrity check algorithm from md5 to crc32.
+>>>>
+>>>> The purpose of the integrity check is to detect possible differences
+>>>> between the memory map used at the time when the hibernation image is
+>>>> about to be loaded into memory and the memory map used at the image
+>>>> creation time, because it is generally unsafe to load the image if the
+>>>> current memory map doesn't match the one used when it was created. so
+>>>> it is not intended as a cryptographic integrity check.
+>>> This still doesn't actually explain why a non-cryptographic checksum is
+>>> sufficient.  "Detection of possible differences" could very well require
+>>> cryptographic authentication; it depends on whether malicious changes need to be
+>>> detected or not.
+>> Hi Eric,
+>>
+>> The cases that the commit comments for 62a03defeabd mention are the same as
+>> for this patch, e.g.
+>>
+>>      1. Without this patch applied, it is possible that BIOS has
+>>         provided an inconsistent memory map, but the resume kernel is still
+>>         able to restore the image anyway(e.g, E820_RAM region is the superset
+>>         of the previous one), although the system might be unstable. So this
+>>         patch tries to treat any inconsistent e820 as illegal.
+>>
+>>      2. Another case is, this patch replies on comparing the e820_saved, but
+>>         currently the e820_save might not be strictly the same across
+>>         hibernation, even if BIOS has provided consistent e820 map - In
+>>         theory mptable might modify the BIOS-provided e820_saved dynamically
+>>         in early_reserve_e820_mpc_new, which would allocate a buffer from
+>>         E820_RAM, and marks it from E820_RAM to E820_RESERVED).
+>>         This is a potential and rare case we need to deal with in OS in
+>>         the future.
+>>
+>> Maybe they should be added to the comments with this patch as well? In any
+>> case, the above comments only mention detecting consequences of BIOS
+>> issues/actions on the e820 map and not intrusions from attackers requiring
+>> cryptographic protection. Does that seem to be a reasonable explanation to
+>> you? If so I can add these to the commit comments.
+>>
+>> I'll make the other changes you suggest below.
+>>
+>> Thanks,
+>>
+> Those details are still missing the high-level point.  Is this just meant to
+> detect non-malicious changes (presumably caused by BIOS bugs), or is it meant to
+> detect malicious changes?  That's all that really needs to be mentioned.
+
+
+Ok, I'll say the intent is to detect non-malicious changes presumably 
+from BIOS issues.
+
+Thanks,
+
+Chris
+
 >
-> Otherwise,
-> Acked-by: Roman Gushchin <guro@fb.com>
-
-Good point. Will update the commit log to indicate the change is needed 
-for the subsequent patch.
-
-Cheers,
-Longman
-
+> - Eric
+>
 
