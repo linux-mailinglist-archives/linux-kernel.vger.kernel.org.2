@@ -2,67 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B57C35B8FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4197D35B901
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236555AbhDLDkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 23:40:40 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:41044 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235366AbhDLDke (ORCPT
+        id S236584AbhDLDnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 23:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235366AbhDLDnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 23:40:34 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UVCP-NX_1618198809;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UVCP-NX_1618198809)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 12 Apr 2021 11:40:15 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     edubezval@gmail.com
-Cc:     j-keerthy@ti.com, rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        amitk@kernel.org, linux-pm@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] thermal: ti-soc-thermal: remove useless variable
-Date:   Mon, 12 Apr 2021 11:40:08 +0800
-Message-Id: <1618198808-22556-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sun, 11 Apr 2021 23:43:05 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BC2AC061574;
+        Sun, 11 Apr 2021 20:42:47 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id m18so3419699plc.13;
+        Sun, 11 Apr 2021 20:42:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TbV7aHs7TaIhyV0H0KiEJQJbVjhXqA5DKHSoe6+ECPw=;
+        b=P49so0HJzAqTv6dJXeU7iuIOm7fDFNyyZSoqpw0IGgN2WT+OcbM9TVUJvnSps2D6FV
+         ocO0sEZhJJMEU8qIE/a51GoTocEhwzbbkMoH0Cbmf+i9p+bbVlTM5qiDzKSJ37wOZC3+
+         2pUZyv/F3wPJPIoqSvt0bd2RN12rfYLYmzhOb5YGyAoZm8uFGpsriEsX+57HU1yUB7Iy
+         mI8w5yu0620bLR90MrBddwfrU7ye/05QYa9LKIlsWV9iWDE99DJJVsYSU6B4PcYuMQgd
+         59B/WiVnFR7obFfZ8ZEmiSr7tMKT1M3t95asjWXeRUB4DUBYPIf4toqvDlwXT924+iyM
+         MxrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TbV7aHs7TaIhyV0H0KiEJQJbVjhXqA5DKHSoe6+ECPw=;
+        b=KlLoM1XB/RfsU4dOM6OJRi3FjJNM6vipRL3mqTCIGi2zpA3rH76u8S5jKAZ0odnKdz
+         ZYAp+hMr+V04IG4mEbpdqSyFWjngnfpU2KLs/583bIvyoVANsqL5RHdGn1X024LUMxYn
+         AD4/YZvaxoyItO6Q4zdcAFrgx7YrZEYPY/5I5D1h6Ur8ou0WWSrYtYs37eyS8FaX9WzA
+         /dQUb9jSM+xSuBH/4aegm0X+vDhe3HYVHQlC+/ndWJMC9jlE2HyrR2o5l4tFAGrV9VTq
+         v3TxDP/yPUCuY7C2byIMZyQzGCXm7KCysCFncLev/HLUvuSOgqfu0tG5ayGNZMMtM0J1
+         1CTQ==
+X-Gm-Message-State: AOAM532UTslK+fyHjsj/AJAYWSWiptnHw/y6uZAO9LsjpM3YUgYhATTB
+        9uoiJUrmN7C7kd+c3I0TQlk=
+X-Google-Smtp-Source: ABdhPJwdVRYU3h0l1OFzieG7ZRMhsfTOWmdz910QyVB1NKZu1Di8amy5CJ8Q0tY3NgFMgooSH6PiMQ==
+X-Received: by 2002:a17:90b:390f:: with SMTP id ob15mr1860487pjb.100.1618198967574;
+        Sun, 11 Apr 2021 20:42:47 -0700 (PDT)
+Received: from localhost.localdomain ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id v22sm5387185pff.105.2021.04.11.20.42.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Apr 2021 20:42:46 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        =?UTF-8?q?Ren=C3=A9=20van=20Dorst?= <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [RFC v4 net-next 0/4] MT7530 interrupt support
+Date:   Mon, 12 Apr 2021 11:42:33 +0800
+Message-Id: <20210412034237.2473017-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following gcc warning:
+Add support for MT7530 interrupt controller.
 
-drivers/thermal/ti-soc-thermal/ti-bandgap.c:1146:7: warning: variable
-‘val’ set but not used [-Wunused-but-set-variable].
+DENG Qingfang (4):
+  net: phy: add MediaTek PHY driver
+  net: dsa: mt7530: add interrupt support
+  dt-bindings: net: dsa: add MT7530 interrupt controller binding
+  staging: mt7621-dts: enable MT7530 interrupt controller
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/thermal/ti-soc-thermal/ti-bandgap.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ .../devicetree/bindings/net/dsa/mt7530.txt    |   6 +
+ drivers/net/dsa/Kconfig                       |   1 +
+ drivers/net/dsa/mt7530.c                      | 266 ++++++++++++++++--
+ drivers/net/dsa/mt7530.h                      |  20 +-
+ drivers/net/phy/Kconfig                       |   5 +
+ drivers/net/phy/Makefile                      |   1 +
+ drivers/net/phy/mediatek.c                    | 111 ++++++++
+ drivers/staging/mt7621-dts/mt7621.dtsi        |   4 +
+ 8 files changed, 385 insertions(+), 29 deletions(-)
+ create mode 100644 drivers/net/phy/mediatek.c
 
-diff --git a/drivers/thermal/ti-soc-thermal/ti-bandgap.c b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-index 8a3646e..2df0e09 100644
---- a/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-+++ b/drivers/thermal/ti-soc-thermal/ti-bandgap.c
-@@ -1143,13 +1143,12 @@ static int ti_bandgap_restore_ctxt(struct ti_bandgap *bgp)
- 	for (i = 0; i < bgp->conf->sensor_count; i++) {
- 		struct temp_sensor_registers *tsr;
- 		struct temp_sensor_regval *rval;
--		u32 val = 0;
- 
- 		rval = &bgp->regval[i];
- 		tsr = bgp->conf->sensors[i].registers;
- 
- 		if (TI_BANDGAP_HAS(bgp, COUNTER))
--			val = ti_bandgap_readl(bgp, tsr->bgap_counter);
-+			ti_bandgap_readl(bgp, tsr->bgap_counter);
- 
- 		if (TI_BANDGAP_HAS(bgp, TSHUT_CONFIG))
- 			ti_bandgap_writel(bgp, rval->tshut_threshold,
 -- 
-1.8.3.1
+2.25.1
 
