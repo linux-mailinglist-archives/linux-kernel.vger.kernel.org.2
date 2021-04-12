@@ -2,159 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 411E535B7F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1416135B7F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236373AbhDLBPG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 21:15:06 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17308 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236248AbhDLBPF (ORCPT
+        id S236397AbhDLBPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 21:15:18 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15661 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235835AbhDLBPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 21:15:05 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FJW1V4y3Zz9ygF;
-        Mon, 12 Apr 2021 09:12:30 +0800 (CST)
-Received: from [127.0.0.1] (10.40.188.144) by DGGEMS403-HUB.china.huawei.com
- (10.3.19.203) with Microsoft SMTP Server id 14.3.498.0; Mon, 12 Apr 2021
- 09:14:37 +0800
-Subject: Re: [PATCH] staging: fieldbus: simplify
- devm_anybuss_host_common_probe
-To:     Sven Van Asbroeck <thesven73@gmail.com>,
-        Tian Tao <tiantao6@hisilicon.com>
-CC:     Greg KH <gregkh@linuxfoundation.org>,
-        <linux-staging@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <1617957240-53633-1-git-send-email-tiantao6@hisilicon.com>
- <CAGngYiVfattJKO7npMHTagxNfzU-B=rP3FoZ89_yzy-c=Zw2RQ@mail.gmail.com>
-From:   "tiantao (H)" <tiantao6@huawei.com>
-Message-ID: <44f55f42-cb52-f705-c40a-6d5c1844f56b@huawei.com>
-Date:   Mon, 12 Apr 2021 09:14:37 +0800
+        Sun, 11 Apr 2021 21:15:17 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FJW135L2yzpXH7;
+        Mon, 12 Apr 2021 09:12:07 +0800 (CST)
+Received: from [10.67.102.118] (10.67.102.118) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 12 Apr 2021 09:14:52 +0800
+Subject: Re: [PATCH v2] USB:ohci:fix ohci interruption problem
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     <gregkh@linuxfoundation.org>, <mathias.nyman@intel.com>,
+        <liudongdong3@huawei.com>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kong.kongxinwei@hisilicon.com>,
+        <yisen.zhuang@huawei.com>
+References: <1617954422-36617-1-git-send-email-liulongfang@huawei.com>
+ <20210409150744.GB1333284@rowland.harvard.edu>
+From:   liulongfang <liulongfang@huawei.com>
+Message-ID: <ced54f8a-bc17-c3a6-80b8-1664647527e7@huawei.com>
+Date:   Mon, 12 Apr 2021 09:14:52 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAGngYiVfattJKO7npMHTagxNfzU-B=rP3FoZ89_yzy-c=Zw2RQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.40.188.144]
+In-Reply-To: <20210409150744.GB1333284@rowland.harvard.edu>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.118]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-在 2021/4/9 19:58, Sven Van Asbroeck 写道:
-> Hello Tian, thank you for the contribution. See below.
->
-> On Fri, Apr 9, 2021 at 4:33 AM Tian Tao <tiantao6@hisilicon.com> wrote:
->> Use devm_add_action_or_reset() instead of devres_alloc() and
->> devres_add(), which works the same. This will simplify the
->> code. There is no functional changes.
+On 2021/4/9 23:07, Alan Stern wrote:
+> On Fri, Apr 09, 2021 at 03:47:02PM +0800, Longfang Liu wrote:
+>> The operating method of the system entering S4 sleep mode:
+>> echo reboot > /sys/power/disk
+>> echo disk > /sys/power/state
 >>
->> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
+>> When OHCI enters the S4 sleep state, check the log and find that
+>> the USB sleep process will call check_root_hub_suspend() and
+>> ohci_bus_suspend() instead ohci_suspend() and ohci_bus_suspend(),
+>> which will cause the OHCI interrupt to not be closed.
+>>
+>> At this time, if just one device interrupt is reported. the
+>> driver will not process and close this device interrupt. It will cause
+>> the entire system to be stuck during sleep, causing the device to
+>> fail to respond.
+>>
+>> When the abnormal interruption reaches 100,000 times, the system will
+>> forcibly close the interruption and make the device unusable.
+>>
+>> Because the root cause of the problem is that ohci_suspend is not
+>> called to perform normal interrupt shutdown operations when the system
+>> enters S4 sleep mode.
+>>
+>> Therefore, our solution is to specify freeze interface in this mode to
+>> perform normal suspend_common() operations, and call ohci_suspend()
+>> after check_root_hub_suspend() is executed through the suspend_common()
+>> operation.
+>>
+>> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
 >> ---
->>   drivers/staging/fieldbus/anybuss/host.c | 20 ++++++++------------
->>   1 file changed, 8 insertions(+), 12 deletions(-)
 >>
->> diff --git a/drivers/staging/fieldbus/anybuss/host.c b/drivers/staging/fieldbus/anybuss/host.c
->> index 549cb7d5..2924e68 100644
->> --- a/drivers/staging/fieldbus/anybuss/host.c
->> +++ b/drivers/staging/fieldbus/anybuss/host.c
->> @@ -1406,7 +1406,7 @@ void anybuss_host_common_remove(struct anybuss_host *host)
->>   }
->>   EXPORT_SYMBOL_GPL(anybuss_host_common_remove);
+>> Changes in V2:
+>> 	- Modify comment and patch version information.
+> 
+> Please, instead of sending the same incorrect patch over and over again, 
+> spend some time figuring out what is really going wrong.  I have already 
+> explained why this patch is not the right thing to do.
+> 
+> You have to determine why the poweroff callback in hcd-pci.c (which 
+> points to hcd_pci_suspend) isn't getting called.  That's the real 
+> explanation for your problem.
+> 
+> Alan Stern
+> 
+
+Ok! I need to analyze the PCI device sleep and wake process to see
+why it will not be called.
+Thanks,
+Longfang.
+>> Changes in V1:
+>> 	- Call suspend_common by adding the hcd_pci_freeze function turn off
+>> 	the interrupt instead of adding a shutdown operation in ohci_bus_suspend
+>> 	to turn off the interrupt.
 >>
->> -static void host_release(struct device *dev, void *res)
->> +static void host_release(void *res)
->>   {
->>          struct anybuss_host **dr = res;
-> You're expecting a double pointer as the argument here...
-
-What about doing it like this?
-
-diff --git a/drivers/staging/fieldbus/anybuss/host.c 
-b/drivers/staging/fieldbus/anybuss/host.c
-index 549cb7d5..c97df91 100644
---- a/drivers/staging/fieldbus/anybuss/host.c
-+++ b/drivers/staging/fieldbus/anybuss/host.c
-@@ -1406,32 +1406,26 @@ void anybuss_host_common_remove(struct 
-anybuss_host *host)
-  }
-  EXPORT_SYMBOL_GPL(anybuss_host_common_remove);
-
--static void host_release(struct device *dev, void *res)
-+static void host_release(void *res)
-  {
--       struct anybuss_host **dr = res;
--
--       anybuss_host_common_remove(*dr);
-+       anybuss_host_common_remove(res);
-  }
-
-  struct anybuss_host * __must_check
-  devm_anybuss_host_common_probe(struct device *dev,
-                                const struct anybuss_ops *ops)
-  {
--       struct anybuss_host **dr;
-         struct anybuss_host *host;
--
--       dr = devres_alloc(host_release, sizeof(struct anybuss_host *),
--                         GFP_KERNEL);
--       if (!dr)
--               return ERR_PTR(-ENOMEM);
-+       int ret;
-
-         host = anybuss_host_common_probe(dev, ops);
--       if (IS_ERR(host)) {
--               devres_free(dr);
-+       if (IS_ERR(host))
-                 return host;
--       }
--       *dr = host;
--       devres_add(dev, dr);
-+
-+       ret = devm_add_action_or_reset(dev, host_release, host);
-+       if (ret)
-+               return ERR_PTR(ret);
-+
-         return host;
-  }
-
->
->> @@ -1417,21 +1417,17 @@ struct anybuss_host * __must_check
->>   devm_anybuss_host_common_probe(struct device *dev,
->>                                 const struct anybuss_ops *ops)
->>   {
->> -       struct anybuss_host **dr;
->>          struct anybuss_host *host;
->> -
->> -       dr = devres_alloc(host_release, sizeof(struct anybuss_host *),
->> -                         GFP_KERNEL);
->> -       if (!dr)
->> -               return ERR_PTR(-ENOMEM);
->> +       int ret;
+>>  drivers/usb/core/hcd-pci.c | 7 ++++++-
+>>  1 file changed, 6 insertions(+), 1 deletion(-)
 >>
->>          host = anybuss_host_common_probe(dev, ops);
->> -       if (IS_ERR(host)) {
->> -               devres_free(dr);
->> +       if (IS_ERR(host))
->>                  return host;
->> -       }
->> -       *dr = host;
->> -       devres_add(dev, dr);
+>> diff --git a/drivers/usb/core/hcd-pci.c b/drivers/usb/core/hcd-pci.c
+>> index 1547aa6..c5844a3 100644
+>> --- a/drivers/usb/core/hcd-pci.c
+>> +++ b/drivers/usb/core/hcd-pci.c
+>> @@ -509,6 +509,11 @@ static int resume_common(struct device *dev, int event)
+>>  
+>>  #ifdef	CONFIG_PM_SLEEP
+>>  
+>> +static int hcd_pci_freeze(struct device *dev)
+>> +{
+>> +	return suspend_common(dev, device_may_wakeup(dev));
+>> +}
 >> +
->> +       ret = devm_add_action_or_reset(dev, host_release, host);
-> ... yet you pass in a single pointer here. Is that going to work?
->
->> +       if (ret)
->> +               return ERR_PTR(ret);
->> +
->>          return host;
->>   }
->>   EXPORT_SYMBOL_GPL(devm_anybuss_host_common_probe);
->> --
->> 2.7.4
+>>  static int hcd_pci_suspend(struct device *dev)
+>>  {
+>>  	return suspend_common(dev, device_may_wakeup(dev));
+>> @@ -605,7 +610,7 @@ const struct dev_pm_ops usb_hcd_pci_pm_ops = {
+>>  	.suspend_noirq	= hcd_pci_suspend_noirq,
+>>  	.resume_noirq	= hcd_pci_resume_noirq,
+>>  	.resume		= hcd_pci_resume,
+>> -	.freeze		= check_root_hub_suspended,
+>> +	.freeze		= hcd_pci_freeze,
+>>  	.freeze_noirq	= check_root_hub_suspended,
+>>  	.thaw_noirq	= NULL,
+>>  	.thaw		= NULL,
+>> -- 
+>> 2.8.1
 >>
 > .
->
-
+> 
