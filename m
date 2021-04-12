@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4851135BC8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFE5335BC8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237540AbhDLInm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:43:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34804 "EHLO mail.kernel.org"
+        id S237500AbhDLIno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:43:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237497AbhDLInW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:43:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43EC360241;
-        Mon, 12 Apr 2021 08:43:04 +0000 (UTC)
+        id S237509AbhDLInZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:43:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C06661221;
+        Mon, 12 Apr 2021 08:43:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618216984;
-        bh=/N3hSQfc35q2PupKakidvz8lrSIWzrpqg6I3nnRTn1Y=;
+        s=korg; t=1618216987;
+        bh=u8MCoY1lSzPeSr7Un5qYDvfw7e+lUZ0+4Z6XeDGkDeg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R3hf9Ql4HCV5N75Oy+V9XFVGiuhi1UPRJLQ6nr8qL+RyxXkc2dOzrB6bpcEy7j1aY
-         MVfY/5fACtc97j7jNG519GttWUpKmmENVcBpl2R6JwrnmOAQ/ep9Q9G70sl91iUj7f
-         LAKUIC1jXTaZIE+PYZS91/fJaED20SotTznYmme4=
+        b=MkC6969rilZTo9JBJRkusajikVeDmlVD277DgmLA3WgLGFcWtla7i/F1e91gam6CJ
+         5q/fX1F9QLfI3ObXjMFLOj7Xr/qrbbAHQsjNJ3NMHy7dgLSw61i/mICfoljRMXKv0s
+         pwsEAQvNTLIeL0ROC5Rh7c/Of21fxHQvZ8NMQa/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuya Kusakabe <yuya.kusakabe@gmail.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jason Wang <jasowang@redhat.com>,
+        stable@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Eric Dumazet <edumazet@google.com>,
         "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 27/66] virtio_net: Add XDP meta data support
-Date:   Mon, 12 Apr 2021 10:40:33 +0200
-Message-Id: <20210412083959.009036799@linuxfoundation.org>
+Subject: [PATCH 4.19 28/66] virtio_net: Do not pull payload in skb->head
+Date:   Mon, 12 Apr 2021 10:40:34 +0200
+Message-Id: <20210412083959.037627043@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
 References: <20210412083958.129944265@linuxfoundation.org>
@@ -42,185 +44,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuya Kusakabe <yuya.kusakabe@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 503d539a6e417b018616bf3060e0b5814fafce47 ]
+[ Upstream commit 0f6925b3e8da0dbbb52447ca8a8b42b371aac7db ]
 
-Implement support for transferring XDP meta data into skb for
-virtio_net driver; before calling into the program, xdp.data_meta points
-to xdp.data, where on program return with pass verdict, we call
-into skb_metadata_set().
+Xuan Zhuo reported that commit 3226b158e67c ("net: avoid 32 x truesize
+under-estimation for tiny skbs") brought  a ~10% performance drop.
 
-Tested with the script at
-https://github.com/higebu/virtio_net-xdp-metadata-test.
+The reason for the performance drop was that GRO was forced
+to chain sk_buff (using skb_shinfo(skb)->frag_list), which
+uses more memory but also cause packet consumers to go over
+a lot of overhead handling all the tiny skbs.
 
-Signed-off-by: Yuya Kusakabe <yuya.kusakabe@gmail.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+It turns out that virtio_net page_to_skb() has a wrong strategy :
+It allocates skbs with GOOD_COPY_LEN (128) bytes in skb->head, then
+copies 128 bytes from the page, before feeding the packet to GRO stack.
+
+This was suboptimal before commit 3226b158e67c ("net: avoid 32 x truesize
+under-estimation for tiny skbs") because GRO was using 2 frags per MSS,
+meaning we were not packing MSS with 100% efficiency.
+
+Fix is to pull only the ethernet header in page_to_skb()
+
+Then, we change virtio_net_hdr_to_skb() to pull the missing
+headers, instead of assuming they were already pulled by callers.
+
+This fixes the performance regression, but could also allow virtio_net
+to accept packets with more than 128bytes of headers.
+
+Many thanks to Xuan Zhuo for his report, and his tests/help.
+
+Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
+Reported-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Link: https://www.spinics.net/lists/netdev/msg731397.html
+Co-Developed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: virtualization@lists.linux-foundation.org
 Acked-by: Jason Wang <jasowang@redhat.com>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Link: https://lore.kernel.org/bpf/20200225033212.437563-2-yuya.kusakabe@gmail.com
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c | 52 ++++++++++++++++++++++++----------------
- 1 file changed, 32 insertions(+), 20 deletions(-)
+ drivers/net/virtio_net.c   | 10 +++++++---
+ include/linux/virtio_net.h | 14 +++++++++-----
+ 2 files changed, 16 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index d41d5f63f211..0b1c6a8906b9 100644
+index 0b1c6a8906b9..06ddf009f833 100644
 --- a/drivers/net/virtio_net.c
 +++ b/drivers/net/virtio_net.c
-@@ -383,7 +383,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
- 				   struct receive_queue *rq,
- 				   struct page *page, unsigned int offset,
- 				   unsigned int len, unsigned int truesize,
--				   bool hdr_valid)
-+				   bool hdr_valid, unsigned int metasize)
- {
- 	struct sk_buff *skb;
- 	struct virtio_net_hdr_mrg_rxbuf *hdr;
-@@ -405,6 +405,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
- 	else
- 		hdr_padded_len = sizeof(struct padded_vnet_hdr);
+@@ -413,9 +413,13 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+ 	offset += hdr_padded_len;
+ 	p += hdr_padded_len;
  
-+	/* hdr_valid means no XDP, so we can copy the vnet header */
- 	if (hdr_valid)
- 		memcpy(hdr, p, hdr_len);
- 
-@@ -417,6 +418,11 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
- 		copy = skb_tailroom(skb);
+-	copy = len;
+-	if (copy > skb_tailroom(skb))
+-		copy = skb_tailroom(skb);
++	/* Copy all frame if it fits skb->head, otherwise
++	 * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
++	 */
++	if (len <= skb_tailroom(skb))
++		copy = len;
++	else
++		copy = ETH_HLEN + metasize;
  	skb_put_data(skb, p, copy);
  
-+	if (metasize) {
-+		__skb_pull(skb, metasize);
-+		skb_metadata_set(skb, metasize);
-+	}
+ 	if (metasize) {
+diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+index a1829139ff4a..8f48264f5dab 100644
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -65,14 +65,18 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
+ 	skb_reset_mac_header(skb);
+ 
+ 	if (hdr->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
+-		u16 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
+-		u16 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
++		u32 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
++		u32 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
++		u32 needed = start + max_t(u32, thlen, off + sizeof(__sum16));
 +
- 	len -= copy;
- 	offset += copy;
++		if (!pskb_may_pull(skb, needed))
++			return -EINVAL;
  
-@@ -462,10 +468,6 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
- 	struct virtio_net_hdr_mrg_rxbuf *hdr;
- 	int err;
+ 		if (!skb_partial_csum_set(skb, start, off))
+ 			return -EINVAL;
  
--	/* virtqueue want to use data area in-front of packet */
--	if (unlikely(xdpf->metasize > 0))
--		return -EOPNOTSUPP;
--
- 	if (unlikely(xdpf->headroom < vi->hdr_len))
- 		return -EOVERFLOW;
- 
-@@ -656,6 +658,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 	unsigned int delta = 0;
- 	struct page *xdp_page;
- 	int err;
-+	unsigned int metasize = 0;
- 
- 	len -= vi->hdr_len;
- 	stats->bytes += len;
-@@ -695,8 +698,8 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 
- 		xdp.data_hard_start = buf + VIRTNET_RX_PAD + vi->hdr_len;
- 		xdp.data = xdp.data_hard_start + xdp_headroom;
--		xdp_set_data_meta_invalid(&xdp);
- 		xdp.data_end = xdp.data + len;
-+		xdp.data_meta = xdp.data;
- 		xdp.rxq = &rq->xdp_rxq;
- 		orig_data = xdp.data;
- 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
-@@ -707,6 +710,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 			/* Recalculate length in case bpf program changed it */
- 			delta = orig_data - xdp.data;
- 			len = xdp.data_end - xdp.data;
-+			metasize = xdp.data - xdp.data_meta;
- 			break;
- 		case XDP_TX:
- 			stats->xdp_tx++;
-@@ -752,6 +756,9 @@ static struct sk_buff *receive_small(struct net_device *dev,
- 		memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
- 	} /* keep zeroed vnet hdr since packet was changed by bpf */
- 
-+	if (metasize)
-+		skb_metadata_set(skb, metasize);
-+
- err:
- 	return skb;
- 
-@@ -772,8 +779,8 @@ static struct sk_buff *receive_big(struct net_device *dev,
- 				   struct virtnet_rq_stats *stats)
- {
- 	struct page *page = buf;
--	struct sk_buff *skb = page_to_skb(vi, rq, page, 0, len,
--					  PAGE_SIZE, true);
-+	struct sk_buff *skb =
-+		page_to_skb(vi, rq, page, 0, len, PAGE_SIZE, true, 0);
- 
- 	stats->bytes += len - vi->hdr_len;
- 	if (unlikely(!skb))
-@@ -805,6 +812,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 	unsigned int truesize;
- 	unsigned int headroom = mergeable_ctx_to_headroom(ctx);
- 	int err;
-+	unsigned int metasize = 0;
- 
- 	head_skb = NULL;
- 	stats->bytes += len - vi->hdr_len;
-@@ -851,8 +859,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 		data = page_address(xdp_page) + offset;
- 		xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
- 		xdp.data = data + vi->hdr_len;
--		xdp_set_data_meta_invalid(&xdp);
- 		xdp.data_end = xdp.data + (len - vi->hdr_len);
-+		xdp.data_meta = xdp.data;
- 		xdp.rxq = &rq->xdp_rxq;
- 
- 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
-@@ -860,24 +868,27 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 
- 		switch (act) {
- 		case XDP_PASS:
-+			metasize = xdp.data - xdp.data_meta;
-+
- 			/* recalculate offset to account for any header
--			 * adjustments. Note other cases do not build an
--			 * skb and avoid using offset
-+			 * adjustments and minus the metasize to copy the
-+			 * metadata in page_to_skb(). Note other cases do not
-+			 * build an skb and avoid using offset
- 			 */
--			offset = xdp.data -
--					page_address(xdp_page) - vi->hdr_len;
-+			offset = xdp.data - page_address(xdp_page) -
-+				 vi->hdr_len - metasize;
- 
--			/* recalculate len if xdp.data or xdp.data_end were
--			 * adjusted
-+			/* recalculate len if xdp.data, xdp.data_end or
-+			 * xdp.data_meta were adjusted
- 			 */
--			len = xdp.data_end - xdp.data + vi->hdr_len;
-+			len = xdp.data_end - xdp.data + vi->hdr_len + metasize;
- 			/* We can only create skb based on xdp_page. */
- 			if (unlikely(xdp_page != page)) {
- 				rcu_read_unlock();
- 				put_page(page);
--				head_skb = page_to_skb(vi, rq, xdp_page,
--						       offset, len,
--						       PAGE_SIZE, false);
-+				head_skb = page_to_skb(vi, rq, xdp_page, offset,
-+						       len, PAGE_SIZE, false,
-+						       metasize);
- 				return head_skb;
+ 		p_off = skb_transport_offset(skb) + thlen;
+-		if (p_off > skb_headlen(skb))
++		if (!pskb_may_pull(skb, p_off))
+ 			return -EINVAL;
+ 	} else {
+ 		/* gso packets without NEEDS_CSUM do not set transport_offset.
+@@ -102,14 +106,14 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
  			}
- 			break;
-@@ -933,7 +944,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
- 		goto err_skb;
+ 
+ 			p_off = keys.control.thoff + thlen;
+-			if (p_off > skb_headlen(skb) ||
++			if (!pskb_may_pull(skb, p_off) ||
+ 			    keys.basic.ip_proto != ip_proto)
+ 				return -EINVAL;
+ 
+ 			skb_set_transport_header(skb, keys.control.thoff);
+ 		} else if (gso_type) {
+ 			p_off = thlen;
+-			if (p_off > skb_headlen(skb))
++			if (!pskb_may_pull(skb, p_off))
+ 				return -EINVAL;
+ 		}
  	}
- 
--	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog);
-+	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
-+			       metasize);
- 	curr_skb = head_skb;
- 
- 	if (unlikely(!curr_skb))
 -- 
 2.30.2
 
