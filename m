@@ -2,181 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E63D35C329
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4DD35C315
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239071AbhDLJ5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244083AbhDLJyu (ORCPT
+        id S237509AbhDLJ5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:57:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58907 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241395AbhDLJxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:54:50 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9A8C06138F;
-        Mon, 12 Apr 2021 02:50:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=0UfDA/sQr+zdmclT4Oo7p8kfTePhSR650tmaVpnrbDI=; b=AOqjZOIof8IP30HVfsW8bXXL8
-        nzxyKvCBKJhnEgQ9wyWD5qe2q3ipakjbGmjlReIW4Vh2YxDnxakEJbfpFkj6I/wi9P0QVKErT4jPV
-        KaH3i+2e6izA7HLnGgYyFzAWAUeL3CX1zYeGTUZABjowWTE2uovBdjqDranMyrmATUMEqZm85pwCb
-        /EtTc0DrX7hhZrjABT3rU8eeCUZOLaOSRh3h01TC7MqptZx4ehquIEAquGuu+oSKYvF2K5fiXNltw
-        iMrRZT7iQkiRtb1zhkQFzEcDVmYn9oX3bATpvkDTVy8NzNV29WGwrBQIoUdO1O5r5b7QENp27iWwm
-        E0baPHxrg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52330)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lVtCy-0004Qr-MJ; Mon, 12 Apr 2021 10:50:17 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lVtCw-00079M-6r; Mon, 12 Apr 2021 10:50:14 +0100
-Date:   Mon, 12 Apr 2021 10:50:14 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     "Radu Pirea (NXP OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] phy: nxp-c45: add driver for tja1103
-Message-ID: <20210412095012.GJ1463@shell.armlinux.org.uk>
-References: <20210409184106.264463-1-radu-nicolae.pirea@oss.nxp.com>
+        Mon, 12 Apr 2021 05:53:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618221165;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=50xPjNRYwkB4O0C//G0YJK7rbJ/9YSCi+4Syr5FFbG8=;
+        b=X/qELho/J0PNtlb+lpsfHVb13x5Nni2QE2DNC2YIJpUxfWZTejHTH7HxfEobHxSNS2Akhs
+        CNmk94dDrMsvKZQrHCL7b6YETV2aB664S1joaST7CpaMUoQF4IDS2h33mCpBEBnjROiiNi
+        8LLwap/EDxZkegdIw0z8xJgnEVR3A2I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-476-SU0GMsnZNS-H2JQ8A7xDTw-1; Mon, 12 Apr 2021 05:52:41 -0400
+X-MC-Unique: SU0GMsnZNS-H2JQ8A7xDTw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7F7E8107ACC7;
+        Mon, 12 Apr 2021 09:52:39 +0000 (UTC)
+Received: from localhost (ovpn-13-33.pek2.redhat.com [10.72.13.33])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7FDBF100238C;
+        Mon, 12 Apr 2021 09:52:34 +0000 (UTC)
+Date:   Mon, 12 Apr 2021 17:52:31 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     "H. Peter Anvin" <hpa@zytor.com>,
+        Lianbo Jiang <lijiang@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, x86@kernel.org,
+        ardb@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dvhart@infradead.org, andy@infradead.org,
+        kexec@lists.infradead.org, dyoung@redhat.com
+Subject: Re: [PATCH] x86/efi: Do not release sub-1MB memory regions when the
+ crashkernel option is specified
+Message-ID: <20210412095231.GC4282@MiWiFi-R3L-srv>
+References: <20210412011347.GA4282@MiWiFi-R3L-srv>
+ <8FAA2A0E-0A09-4308-B936-CDD2C0568BAE@amacapital.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210409184106.264463-1-radu-nicolae.pirea@oss.nxp.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8FAA2A0E-0A09-4308-B936-CDD2C0568BAE@amacapital.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 09:41:06PM +0300, Radu Pirea (NXP OSS) wrote:
-> +#define B100T1_PMAPMD_CTL		0x0834
-> +#define B100T1_PMAPMD_CONFIG_EN		BIT(15)
-> +#define B100T1_PMAPMD_MASTER		BIT(14)
-> +#define MASTER_MODE			(B100T1_PMAPMD_CONFIG_EN | B100T1_PMAPMD_MASTER)
-> +#define SLAVE_MODE			(B100T1_PMAPMD_CONFIG_EN)
-> +
-> +#define DEVICE_CONTROL			0x0040
-> +#define DEVICE_CONTROL_RESET		BIT(15)
-> +#define DEVICE_CONTROL_CONFIG_GLOBAL_EN	BIT(14)
-> +#define DEVICE_CONTROL_CONFIG_ALL_EN	BIT(13)
-> +#define RESET_POLL_NS			(250 * NSEC_PER_MSEC)
-> +
-> +#define PHY_CONTROL			0x8100
-> +#define PHY_CONFIG_EN			BIT(14)
-> +#define PHY_START_OP			BIT(0)
-> +
-> +#define PHY_CONFIG			0x8108
-> +#define PHY_CONFIG_AUTO			BIT(0)
-> +
-> +#define SIGNAL_QUALITY			0x8320
-> +#define SQI_VALID			BIT(14)
-> +#define SQI_MASK			GENMASK(2, 0)
-> +#define MAX_SQI				SQI_MASK
-> +
-> +#define CABLE_TEST			0x8330
-> +#define CABLE_TEST_ENABLE		BIT(15)
-> +#define CABLE_TEST_START		BIT(14)
-> +#define CABLE_TEST_VALID		BIT(13)
-> +#define CABLE_TEST_OK			0x00
-> +#define CABLE_TEST_SHORTED		0x01
-> +#define CABLE_TEST_OPEN			0x02
-> +#define CABLE_TEST_UNKNOWN		0x07
-> +
-> +#define PORT_CONTROL			0x8040
-> +#define PORT_CONTROL_EN			BIT(14)
-> +
-> +#define PORT_INFRA_CONTROL		0xAC00
-> +#define PORT_INFRA_CONTROL_EN		BIT(14)
-> +
-> +#define VND1_RXID			0xAFCC
-> +#define VND1_TXID			0xAFCD
-> +#define ID_ENABLE			BIT(15)
-> +
-> +#define ABILITIES			0xAFC4
-> +#define RGMII_ID_ABILITY		BIT(15)
-> +#define RGMII_ABILITY			BIT(14)
-> +#define RMII_ABILITY			BIT(10)
-> +#define REVMII_ABILITY			BIT(9)
-> +#define MII_ABILITY			BIT(8)
-> +#define SGMII_ABILITY			BIT(0)
-> +
-> +#define MII_BASIC_CONFIG		0xAFC6
-> +#define MII_BASIC_CONFIG_REV		BIT(8)
-> +#define MII_BASIC_CONFIG_SGMII		0x9
-> +#define MII_BASIC_CONFIG_RGMII		0x7
-> +#define MII_BASIC_CONFIG_RMII		0x5
-> +#define MII_BASIC_CONFIG_MII		0x4
-> +
-> +#define SYMBOL_ERROR_COUNTER		0x8350
-> +#define LINK_DROP_COUNTER		0x8352
-> +#define LINK_LOSSES_AND_FAILURES	0x8353
-> +#define R_GOOD_FRAME_CNT		0xA950
-> +#define R_BAD_FRAME_CNT			0xA952
-> +#define R_RXER_FRAME_CNT		0xA954
-> +#define RX_PREAMBLE_COUNT		0xAFCE
-> +#define TX_PREAMBLE_COUNT		0xAFCF
-> +#define RX_IPG_LENGTH			0xAFD0
-> +#define TX_IPG_LENGTH			0xAFD1
-> +#define COUNTERS_EN			BIT(15)
-> +
-> +#define CLK_25MHZ_PS_PERIOD		40000UL
-> +#define PS_PER_DEGREE			(CLK_25MHZ_PS_PERIOD / 360)
-> +#define MIN_ID_PS			8222U
-> +#define MAX_ID_PS			11300U
+On 04/11/21 at 06:49pm, Andy Lutomirski wrote:
+> 
+> 
+> > On Apr 11, 2021, at 6:14 PM, Baoquan He <bhe@redhat.com> wrote:
+> > 
+> > ﻿On 04/09/21 at 07:59pm, H. Peter Anvin wrote:
+> >> Why don't we do this unconditionally? At the very best we gain half a megabyte of memory (except the trampoline, which has to live there, but it is only a few kilobytes.)
+> > 
+> > This is a great suggestion, thanks. I think we can fix it in this way to
+> > make code simpler. Then the specific caring of real mode in
+> > efi_free_boot_services() can be removed too.
+> > 
+> 
+> This whole situation makes me think that the code is buggy before and buggy after.
+> 
+> The issue here (I think) is that various pieces of code want to reserve specific pieces of otherwise-available low memory for their own nefarious uses. I don’t know *why* crash kernel needs this, but that doesn’t matter too much.
 
-Maybe include some prefix as to which MMD each of these registers is
-located?
+Kdump kernel also need go through real mode code path during bootup. It
+is not different than normal kernel except that it skips the firmware
+resetting. So kdump kernel needs low 1M as system RAM just as normal
+kernel does. Here we reserve the whole low 1M with memblock_reserve()
+to avoid any later kernel or driver data reside in this area. Otherwise,
+we need dump the content of this area to vmcore. As we know, when crash
+happened, the old memory of 1st kernel should be untouched until vmcore
+dumping read out its content. Meanwhile, kdump kernel need reuse low 1M.
+In the past, we used a back up region to copy out the low 1M area, and
+map the back up region into the low 1M area in vmcore elf file. In
+6f599d84231fd27 ("x86/kdump: Always reserve the low 1M when the crashkernel
+option is specified"), we changed to lock the whole low 1M to avoid
+writting any kernel data into, like this we can skip this area when
+dumping vmcore.
 
-> +static bool nxp_c45_can_sleep(struct phy_device *phydev)
-> +{
-> +	int reg;
-> +
-> +	reg = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_STAT1);
-> +	if (reg < 0)
-> +		return false;
-> +
-> +	return !!(reg & MDIO_STAT1_LPOWERABLE);
-> +}
+Above is why we try to memblock reserve the whole low 1M. We don't want
+to use it, just don't want anyone to use it in 1st kernel.
 
-This looks like it could be useful as a generic helper function -
-nothing in this function is specific to this PHY.
+> 
+> I propose that the right solution is to give low-memory-reserving code paths two chances to do what they need: once at the very beginning and once after EFI boot services are freed.
+> 
+> Alternatively, just reserve *all* otherwise unused sub 1M memory up front, then release it right after releasing boot services, and then invoke the special cases exactly once.
 
-> +static int nxp_c45_resume(struct phy_device *phydev)
-> +{
-> +	int reg;
-> +
-> +	if (!nxp_c45_can_sleep(phydev))
-> +		return -EOPNOTSUPP;
-> +
-> +	reg = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_CTRL1);
-> +	reg &= ~MDIO_CTRL1_LPOWER;
-> +	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_CTRL1, reg);
-> +
-> +	return 0;
-> +}
-> +
-> +static int nxp_c45_suspend(struct phy_device *phydev)
-> +{
-> +	int reg;
-> +
-> +	if (!nxp_c45_can_sleep(phydev))
-> +		return -EOPNOTSUPP;
-> +
-> +	reg = phy_read_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_CTRL1);
-> +	reg |= MDIO_CTRL1_LPOWER;
-> +	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_CTRL1, reg);
-> +
-> +	return 0;
-> +}
+I am not sure if I got both suggested ways clearly. They look a little
+complicated in our case. As I explained at above, we want the whole low
+1M locked up, not one piece or some pieces of it.
 
-These too look like potential generic helper functions.
+> 
+> In either case, the result is that the crashkernel mess gets unified with the trampoline mess.  One way the result is called twice and needs to be more careful, and the other way it’s called only once.
+> 
+> Just skipping freeing boot services seems wrong.  It doesn’t unmap boot services, and skipping that is incorrect, I think. And it seems to result in a bogus memory map in which the system thinks that some crashkernel memory is EFI memory instead.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+I like hpa's thought to lock the whole low 1M unconditionally since only
+a few KB except of trampoline area is there. Rethinking about it, doing
+it in can_free_region() may be risky because efi memory region could
+cross the 1M boundary, e.g [640K, 100M] with type of
+EFI_BOOT_SERVICES_CODE|EFI_BOOT_SERVICES_DATA, it could cause loss of memory.
+Just a wild guess, not very sure if the 1M boundary corssing can really
+happen. efi_reserve_boot_services() won't split regions.
+
+If moving efi_reserve_boot_services() after reserve_real_mode() is not
+accepted, maybe we can call efi_mem_reserve(0, 1M) just as
+efi_esrt_init() has done.
+
