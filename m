@@ -2,100 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 228BF35D0EC
+	by mail.lfdr.de (Postfix) with ESMTP id BA06D35D0EE
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245191AbhDLTVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:21:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237286AbhDLTU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:20:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D493961355;
-        Mon, 12 Apr 2021 19:20:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618255236;
-        bh=us+Qc1vT3f53J+ggtKPb/+ymp1HxiNch+u06FxUBXUY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=H0X16zKxKe1LhLzjb8sgtgoVRLivxcOvs85HWh8i3MZXStYMc6bJiG/IEnuSMsBtB
-         honZi1B21HE09B6pMjjWxMemocS7T98zi1ELFCMl2i722cft2u5QaHP9OTVp2wGN8K
-         +yKw1nFdN6FuyeQi75xUk5qmBfms3Ea7urByzkz6hJLRvp7e2vkO3TpjekzMzAjw6h
-         Wlv/eTjgNx/11YByBp15yrd6lyqGFT7dppOn6D0cOSPQznN8HAzndO6H2g7yyP2Ig7
-         Cm+tYGAP4mlbDqfrQ9A8m4QT5vpUz6diV5WrKf47BaxLc4QTHwL3DxrtqY2iIA+bJz
-         Y5ZSVNVrQuvGQ==
-Date:   Mon, 12 Apr 2021 12:20:33 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Chris von Recklinghausen <crecklin@redhat.com>
-Cc:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
-        decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-Message-ID: <YHSdgV6LIqSVxk+i@gmail.com>
-References: <20210412140932.31162-1-crecklin@redhat.com>
- <YHSHPIXLhHjOu0jw@gmail.com>
- <5795c815-7715-1ecb-dd83-65f3d18b9092@redhat.com>
+        id S245211AbhDLTVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:21:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46837 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S245201AbhDLTVL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 15:21:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618255253;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=oFjHc+GCztqPmJltFlAlQEb4vymDlpph7ymGuFpnTz8=;
+        b=cUU0C334tXxqNdBDs4vJ+4JayPJujnKNRSzU0gLmm2WQ0Av4ztmej+av9zVOqxir+Wyc/2
+        bbuMAf8kgwvvkkxNWycVkMAMPTgbIy/VCtNV/XOkNIHn/JuwnX1HtQD57OZRe20aMEQmRq
+        yXlJHspNypfE/tlJOHmZzd8dEvxGpLU=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-72-shwCBBC4NhiTMiQ2n994tw-1; Mon, 12 Apr 2021 15:20:51 -0400
+X-MC-Unique: shwCBBC4NhiTMiQ2n994tw-1
+Received: by mail-qt1-f198.google.com with SMTP id 11so7396833qtz.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:20:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=oFjHc+GCztqPmJltFlAlQEb4vymDlpph7ymGuFpnTz8=;
+        b=JZ8kjfS6mWvqBItZAoED0VzJazyNWTMftI+G0sSOUbJSnq89p3v9pGGuU12FBr3WIU
+         fOI7omP5gkoIohYysiIhCvVd/uqAO0MV7kFShuCDi6qsnh/C5VjaqUwrL1iQ7/wfKUWc
+         /MbbE4Iw5PUHShcuf/dDL4mScAa8r0xARxLLucXtuf0qN/gNLV0v+KREJ3fyz19f+V31
+         4MHvrl5CHjRYrkEuBgBfDWDLaq8CZoLEcBNVZSWKFH4KfsskLqWquA/doo2eGjr5hrbI
+         +UmubIMbPgSHHxF8hvKx16vYphpxWealCDrMNhk3JzgZWZN8Syi7IbV7r9yl4h061JoV
+         wRQA==
+X-Gm-Message-State: AOAM531DtfGV89tsJzHmeI8mlCFF0N3q9gXQzSNDnLL6mIK3vyouIXhQ
+        /N+wHFwZjVItmvqY4060qOlmj6KsnZ40SavtYz8oDWo2zR+e2RmIQrX+6tz5yr28hyVpJnlG0NC
+        dEdIhToaACI6TL18an3RBmxdy
+X-Received: by 2002:ac8:5054:: with SMTP id h20mr533142qtm.34.1618255251307;
+        Mon, 12 Apr 2021 12:20:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxDbd5Q9VPCdBtbn+afvB7rGxG6E+MDv4mz/Eiy7TeaQZPVd2IbxALEjPVWVlfoC0zobURBsg==
+X-Received: by 2002:ac8:5054:: with SMTP id h20mr533111qtm.34.1618255251103;
+        Mon, 12 Apr 2021 12:20:51 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id y29sm8531386qtm.13.2021.04.12.12.20.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 12:20:50 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 0/5] mm/memcg: Reduce kmemcache memory accounting overhead
+To:     Roman Gushchin <guro@fb.com>, Waiman Long <llong@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>
+References: <20210409231842.8840-1-longman@redhat.com>
+ <YHEEmGSVy3nl0obM@carbon.dhcp.thefacebook.com>
+ <51ea6b09-b7ee-36e9-a500-b7141bd3a42b@redhat.com>
+ <YHSHqmxyu1DkAMYR@carbon.dhcp.thefacebook.com>
+Message-ID: <339bd1b0-681c-61fa-210b-59f1542431e2@redhat.com>
+Date:   Mon, 12 Apr 2021 15:20:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5795c815-7715-1ecb-dd83-65f3d18b9092@redhat.com>
+In-Reply-To: <YHSHqmxyu1DkAMYR@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 03:04:58PM -0400, Chris von Recklinghausen wrote:
-> On 4/12/21 1:45 PM, Eric Biggers wrote:
-> > On Mon, Apr 12, 2021 at 10:09:32AM -0400, Chris von Recklinghausen wrote:
-> > > Suspend fails on a system in fips mode because md5 is used for the e820
-> > > integrity check and is not available. Use crc32 instead.
-> > > 
-> > > This patch changes the integrity check algorithm from md5 to crc32.
-> > > 
-> > > The purpose of the integrity check is to detect possible differences
-> > > between the memory map used at the time when the hibernation image is
-> > > about to be loaded into memory and the memory map used at the image
-> > > creation time, because it is generally unsafe to load the image if the
-> > > current memory map doesn't match the one used when it was created. so
-> > > it is not intended as a cryptographic integrity check.
-> > This still doesn't actually explain why a non-cryptographic checksum is
-> > sufficient.  "Detection of possible differences" could very well require
-> > cryptographic authentication; it depends on whether malicious changes need to be
-> > detected or not.
-> 
-> Hi Eric,
-> 
-> The cases that the commit comments for 62a03defeabd mention are the same as
-> for this patch, e.g.
-> 
->     1. Without this patch applied, it is possible that BIOS has
->        provided an inconsistent memory map, but the resume kernel is still
->        able to restore the image anyway(e.g, E820_RAM region is the superset
->        of the previous one), although the system might be unstable. So this
->        patch tries to treat any inconsistent e820 as illegal.
-> 
->     2. Another case is, this patch replies on comparing the e820_saved, but
->        currently the e820_save might not be strictly the same across
->        hibernation, even if BIOS has provided consistent e820 map - In
->        theory mptable might modify the BIOS-provided e820_saved dynamically
->        in early_reserve_e820_mpc_new, which would allocate a buffer from
->        E820_RAM, and marks it from E820_RAM to E820_RESERVED).
->        This is a potential and rare case we need to deal with in OS in
->        the future.
-> 
-> Maybe they should be added to the comments with this patch as well? In any
-> case, the above comments only mention detecting consequences of BIOS
-> issues/actions on the e820 map and not intrusions from attackers requiring
-> cryptographic protection. Does that seem to be a reasonable explanation to
-> you? If so I can add these to the commit comments.
-> 
-> I'll make the other changes you suggest below.
-> 
-> Thanks,
-> 
+On 4/12/21 1:47 PM, Roman Gushchin wrote:
+> On Mon, Apr 12, 2021 at 10:03:13AM -0400, Waiman Long wrote:
+>> On 4/9/21 9:51 PM, Roman Gushchin wrote:
+>>> On Fri, Apr 09, 2021 at 07:18:37PM -0400, Waiman Long wrote:
+>>>> With the recent introduction of the new slab memory controller, we
+>>>> eliminate the need for having separate kmemcaches for each memory
+>>>> cgroup and reduce overall kernel memory usage. However, we also add
+>>>> additional memory accounting overhead to each call of kmem_cache_alloc()
+>>>> and kmem_cache_free().
+>>>>
+>>>> For workloads that require a lot of kmemcache allocations and
+>>>> de-allocations, they may experience performance regression as illustrated
+>>>> in [1].
+>>>>
+>>>> With a simple kernel module that performs repeated loop of 100,000,000
+>>>> kmem_cache_alloc() and kmem_cache_free() of 64-byte object at module
+>>>> init. The execution time to load the kernel module with and without
+>>>> memory accounting were:
+>>>>
+>>>>     with accounting = 6.798s
+>>>>     w/o  accounting = 1.758s
+>>>>
+>>>> That is an increase of 5.04s (287%). With this patchset applied, the
+>>>> execution time became 4.254s. So the memory accounting overhead is now
+>>>> 2.496s which is a 50% reduction.
+>>> Hi Waiman!
+>>>
+>>> Thank you for working on it, it's indeed very useful!
+>>> A couple of questions:
+>>> 1) did your config included lockdep or not?
+>> The test kernel is based on a production kernel config and so lockdep isn't
+>> enabled.
+>>> 2) do you have a (rough) estimation how much each change contributes
+>>>      to the overall reduction?
+>> I should have a better breakdown of the effect of individual patches. I
+>> rerun the benchmarking module with turbo-boosting disabled to reduce
+>> run-to-run variation. The execution times were:
+>>
+>> Before patch: time = 10.800s (with memory accounting), 2.848s (w/o
+>> accounting), overhead = 7.952s
+>> After patch 2: time = 9.140s, overhead = 6.292s
+>> After patch 3: time = 7.641s, overhead = 4.793s
+>> After patch 5: time = 6.801s, overhead = 3.953s
+> Thank you! If there will be v2, I'd include this information into commit logs.
 
-Those details are still missing the high-level point.  Is this just meant to
-detect non-malicious changes (presumably caused by BIOS bugs), or is it meant to
-detect malicious changes?  That's all that really needs to be mentioned.
+Yes, I am planning to send out v2 with these information in the 
+cover-letter. I am just waiting a bit to see if there are more feedback.
 
-- Eric
+-Longman
+
+>
+>> Patches 1 & 4 are preparatory patches that should affect performance.
+>>
+>> So the memory accounting overhead was reduced by about half.
+
+BTW, the benchmark that I used is kind of the best case behavior as it 
+as all updates are to the percpu stocks. Real workloads will likely to 
+have a certain amount of update to the memcg charges and vmstats. So the 
+performance benefit will be less.
+
+Cheers,
+Longman
+
+
