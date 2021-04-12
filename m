@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B6935C961
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B9B35C990
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241347AbhDLPFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:05:49 -0400
-Received: from mail-oi1-f173.google.com ([209.85.167.173]:37873 "EHLO
-        mail-oi1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238723AbhDLPFr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:05:47 -0400
-Received: by mail-oi1-f173.google.com with SMTP id k25so13736527oic.4;
-        Mon, 12 Apr 2021 08:05:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hxjUXN8xFC+DQ9a25MnzMvjtux0+RBvtyUOiP9ULVt0=;
-        b=V7Dt0AeYKyi2Etnyy8QE1+7gYuOXzACCPUawrAp3MPj9ONOPQ3E7eY/SPTrfBgOyMu
-         gCxFcbOzRA0PjJkrgpqVCB8knR02dEyfe/hiT3qATGDiXCs5AKLNZ7RXI/cQ3fYy+CJO
-         9a880Rdu6djxytujjmPsvXJuoNPRaBncPfBa5tARTnmmhBnfHkjK696fNfNXcIKtvxb+
-         QUpf99ajYQruOMqM72CuHNj6Z+ip0XY3YCFlq9OudCvjeY5rbjNrkOsOJahOZtp1j3AR
-         VSG+aDZTx4xg52E0nfNZsWE8mcKL6ohBizYag9HMFfVQLPnk6QhV9iU0WoMs0L1iZmju
-         QS8A==
-X-Gm-Message-State: AOAM532y8ags0d0iKvjBUH0AlvAd7rvSuaOAxNzQrR/+MArfh7q0Xdp7
-        XYesfEIh/mpN1FTOtbwK2w==
-X-Google-Smtp-Source: ABdhPJxlNew1mE8fC8S2Vq6hl71EGrcSJ2hYqBDF+xbknl+yYIzHcPB8pzdC4o6wCN34VEqcEA5Gmg==
-X-Received: by 2002:aca:ab44:: with SMTP id u65mr6463220oie.173.1618239928938;
-        Mon, 12 Apr 2021 08:05:28 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s1sm23143oij.37.2021.04.12.08.05.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 08:05:28 -0700 (PDT)
-Received: (nullmailer pid 3898179 invoked by uid 1000);
-        Mon, 12 Apr 2021 15:05:27 -0000
-Date:   Mon, 12 Apr 2021 10:05:27 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     devicetree@vger.kernel.org, Henrik Rydberg <rydberg@bitmath.org>,
-        linux-input@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/3] dt-bindings: Add Hycon Technology vendor prefix
-Message-ID: <20210412150527.GA3897939@robh.at.kernel.org>
-References: <20210408202137.GA1890401@robh.at.kernel.org>
- <20210411114804.151754-1-giulio.benetti@benettiengineering.com>
- <20210411114804.151754-2-giulio.benetti@benettiengineering.com>
+        id S240368AbhDLPRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:17:11 -0400
+Received: from elvis.franken.de ([193.175.24.41]:45480 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S242681AbhDLPRI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:17:08 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lVyIy-0006wH-01; Mon, 12 Apr 2021 17:16:48 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D651DC02C4; Mon, 12 Apr 2021 17:05:29 +0200 (CEST)
+Date:   Mon, 12 Apr 2021 17:05:29 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Paul Burton <paulburton@kernel.org>, Tom Rini <trini@konsulko.com>,
+        Simon Glass <sjg@chromium.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: generic: Update node names to avoid unit addresses
+Message-ID: <20210412150529.GB23632@alpha.franken.de>
+References: <20210409174734.GJ1310@bill-the-cat>
+ <20210409192128.3998606-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210411114804.151754-2-giulio.benetti@benettiengineering.com>
+In-Reply-To: <20210409192128.3998606-1-nathan@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Apr 2021 13:48:02 +0200, Giulio Benetti wrote:
-> Update Documentation/devicetree/bindings/vendor-prefixes.yaml to
-> include "hycon" as a vendor prefix for "Hycon Technology".
-> Company website: https://www.hycontek.com/
+On Fri, Apr 09, 2021 at 12:21:28PM -0700, Nathan Chancellor wrote:
+> With the latest mkimage from U-Boot 2021.04, the generic defconfigs no
+> longer build, failing with:
 > 
-> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
-> Reviewed-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> /usr/bin/mkimage: verify_header failed for FIT Image support with exit code 1
+> 
+> This is expected after the linked U-Boot commits because '@' is
+> forbidden in the node names due to the way that libfdt treats nodes with
+> the same prefix but different unit addresses.
+> 
+> Switch the '@' in the node name to '-'. Drop the unit addresses from the
+> hash and kernel child nodes because there is only one node so they do
+> not need to have a number to differentiate them.
+> 
+> Cc: stable@vger.kernel.org
+> Link: https://source.denx.de/u-boot/u-boot/-/commit/79af75f7776fc20b0d7eb6afe1e27c00fdb4b9b4
+> Link: https://source.denx.de/u-boot/u-boot/-/commit/3f04db891a353f4b127ed57279279f851c6b4917
+> Suggested-by: Simon Glass <sjg@chromium.org>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+>  arch/mips/generic/board-boston.its.S   | 10 +++++-----
+>  arch/mips/generic/board-jaguar2.its.S  | 16 ++++++++--------
+>  arch/mips/generic/board-luton.its.S    |  8 ++++----
+>  arch/mips/generic/board-ni169445.its.S | 10 +++++-----
+>  arch/mips/generic/board-ocelot.its.S   | 20 ++++++++++----------
+>  arch/mips/generic/board-serval.its.S   |  8 ++++----
+>  arch/mips/generic/board-xilfpga.its.S  | 10 +++++-----
+>  arch/mips/generic/vmlinux.its.S        | 10 +++++-----
+>  8 files changed, 46 insertions(+), 46 deletions(-)
 
+applied to mips-next.
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
+Thomas.
 
-If a tag was not added on purpose, please state why and what changed.
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
