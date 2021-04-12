@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 443F335C36C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:12:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DF335C370
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238568AbhDLKKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:10:11 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16901 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238643AbhDLKH3 (ORCPT
+        id S239325AbhDLKMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:12:15 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:48300 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239401AbhDLKLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:07:29 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FJkrD3ZtdzlXMT;
-        Mon, 12 Apr 2021 18:05:16 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.179.202) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 12 Apr 2021 18:06:59 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        alsa-devel <alsa-devel@alsa-project.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Subject: [PATCH v3 2/2] ASoC: dt-bindings: renesas, rsnd: Clear warning 'ports' does not match any of the regexes
-Date:   Mon, 12 Apr 2021 18:06:38 +0800
-Message-ID: <20210412100638.3349-3-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210412100638.3349-1-thunder.leizhen@huawei.com>
-References: <20210412100638.3349-1-thunder.leizhen@huawei.com>
+        Mon, 12 Apr 2021 06:11:14 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AKVLbDq5jqzvyzHwlgwPXwZCBI+orLtY04lQ7?=
+ =?us-ascii?q?vn1ZYxY9SKClvuqpm+kW0gKxtS0YX2sulcvFFK6LR37d8pAd2/h1AZ6JWg76tG?=
+ =?us-ascii?q?y0aLxz9IeK+UyDJwTS/vNQvJ0KT4FQE9v1ZGIRse/b502CH88k0J279smT69v2?=
+ =?us-ascii?q?61dIYUVUZ7p77wF/YzzrcXFeYAVdH5I2GN69y6N8yAaIQngcYsSlCnRtZYGqm/?=
+ =?us-ascii?q?TxmJ3rehIADRI8gTPusRqT9LX4HxKEty1/bxpzwKwv+WWAswv16rTLiYDD9jbg?=
+ =?us-ascii?q?1nTe55kTpd35ytErPr3rtuEpLFzX5zqAVcBEU72GsCtdmpDJ1H8a1P/WoxkhOM?=
+ =?us-ascii?q?xv63TeOkGNyCGdvzXd7A=3D=3D?=
+X-IronPort-AV: E=Sophos;i="5.82,216,1613430000"; 
+   d="scan'208";a="502749185"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 12:10:54 +0200
+Date:   Mon, 12 Apr 2021 12:10:54 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     tawahpeggy <tawahpeggy98@gmail.com>
+cc:     Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] Staging: Remove line to fix checkpatch
+ error
+In-Reply-To: <20210411204933.GA3524@peggy-Lenovo-V130-15IKB>
+Message-ID: <alpine.DEB.2.22.394.2104121208530.6734@hadrien>
+References: <20210411204933.GA3524@peggy-Lenovo-V130-15IKB>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.179.202]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, if there are more than two ports, or if there is only one port
-but other properties(such as "#address-cells") is required, these ports
-are placed under the "ports" node. So add the schema of property "ports".
-
-Otherwise, warnings similar to the following will be reported:
-arch/arm64/boot/dts/renesas/r8a774a1-beacon-rzg2m-kit.dt.yaml: \
-sound@ec500000: 'ports' does not match any of the regexes: \
-'^rcar_sound,ctu$', '^rcar_sound,dai$', '^rcar_sound,dvc$', ...
-
-A given binding should just use 'ports' or 'port' depending on it's need.
-Both are not allowed at the same time. The check is done in "allOf".
-
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- .../devicetree/bindings/sound/renesas,rsnd.yaml      | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-index 384191ee497f534..32b10fc3789eeac 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.yaml
-@@ -115,6 +115,12 @@ properties:
-     $ref: audio-graph-port.yaml#
-     unevaluatedProperties: false
- 
-+  ports:
-+    $ref: /schemas/graph.yaml#/properties/ports
-+    patternProperties:
-+      '^port@[0-9]':
-+        $ref: audio-graph-port.yaml#
-+
- # use patternProperties to avoid naming "xxx,yyy" issue
- patternProperties:
-   "^rcar_sound,dvc$":
-@@ -258,6 +264,12 @@ required:
-   - "#sound-dai-cells"
- 
- allOf:
-+  - if:
-+      required:
-+        - ports
-+    then:
-+      properties:
-+        port: false
-   - if:
-       properties:
-         compatible:
--- 
-2.26.0.106.g9fadedd
 
 
+On Sun, 11 Apr 2021, tawahpeggy wrote:
+
+> remove one empty line.CHECK: Please don't use multiple blank lines
+
+Did something go wrong with the patch generation?  You say that you are
+removing one line, but the diff information looks like you are adding a
+file.  Normally a patch has only the changed lines and a few lines before
+and after.
+
+> Signed-off-by: tawahpeggy <tawahpeggy98@gmail.com>
+
+You need to put your real name when contributing to the Linux kernel.
+
+For example, I would put:
+
+Julia Lawall <julia.lawall@inria.fr>
+
+julia
+
+>
+> ---
+>  drivers/staging/comedi/comedi_pcmcia.mod.c | 1 -
+>  1 file changed, 0 insertion(+), 1 deletion(-)
+>  create mode 100644 drivers/staging/comedi/comedi_pcmcia.mod.c
+>
+> diff --git a/drivers/staging/comedi/comedi_pcmcia.mod.c b/drivers/staging/comedi/comedi_pcmcia.mod.c
+> index 0904b8765afs96..3984db1a39c8
+> --- /dev/null
+> +++ b/drivers/staging/comedi/comedi_pcmcia.mod.c
+> @@ -0,0 +1,31 @@
+> #include <linux/module.h>
+> #define INCLUDE_VERMAGIC
+> #include <linux/build-salt.h>
+> #include <linux/vermagic.h>
+> #include <linux/compiler.h>
+>
+> BUILD_SALT;
+>
+> MODULE_INFO(vermagic, VERMAGIC_STRING);
+> MODULE_INFO(name, KBUILD_MODNAME);
+>
+> __visible struct module __this_module
+> __section(".gnu.linkonce.this_module") = {
+> 	.name = KBUILD_MODNAME,
+> 	.init = init_module,
+> #ifdef CONFIG_MODULE_UNLOAD
+> 	.exit = cleanup_module,
+> #endif
+> 	.arch = MODULE_ARCH_INIT,
+> };
+>
+> #ifdef CONFIG_RETPOLINE
+> MODULE_INFO(retpoline, "Y");
+> #endif
+>
+> MODULE_INFO(staging, "Y");
+>
+> MODULE_INFO(depends, "pcmcia,comedi");
+>
+> -
+> MODULE_INFO(srcversion, "ED971F2E01020DFA2B04486");
+> --
+> 2.17.1
+> h-Hartman <gregkh@linuxfoundation.org>
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210411204933.GA3524%40peggy-Lenovo-V130-15IKB.
+>
