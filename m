@@ -2,146 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AAAA35CF47
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8133435CF49
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243316AbhDLROl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:14:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
+        id S240702AbhDLRPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239517AbhDLROk (ORCPT
+        with ESMTP id S243509AbhDLRPS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:14:40 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3E5C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:14:22 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id w8so6132628pfn.9
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:14:22 -0700 (PDT)
+        Mon, 12 Apr 2021 13:15:18 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49B6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:14:59 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id o5so15034089qkb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:14:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ydRFGqWZoOMmHPzi9Kd+th3dU1QxHl+sPyXpHEV+QeQ=;
-        b=XdlRqLMkQiuCk8Zhx3LA0oOzNjfory7c6gLmqIYqzl3kw9F6HnKvDKb10zKA+/ujRc
-         9x0mh3NdAgfwygmggaWv9z6KLNX1SuRYGrrQvMiqKWdKHDFCr+bbjX872R0Nlwc7nBp9
-         BOFVKMHsaSPuOx/VFNSBeAXVly/IHcUKtOiBpVYTnlLg8yR2b0IwmyRE79tsgc1DZoAU
-         loVe4wf1X01/3yM0bZqxkk8JuXRd4+PaSdSlinJevZPMTw4C1CybQXANPNtkfVtbjETq
-         ODwPw2WHT8UQP0zDXxc5Z8uz8XJuNpFy/ekYXBfOb5N/N3ou5jq2WAOwbes19dTkDxF4
-         nP0g==
+        bh=mztj3YmmozSjsP7YF+63NXvn93gX18LsCcbiTCMKvuY=;
+        b=AgXmby4EVK1M9TaU93B0tvhyMIuWu1mucIXPlFBgZh+Uei4TlJqKcr4+2w0hcxhqKg
+         Ni687E83GTPBCZY6MUE7ZFFPAPV7SaFYPuEoWz3bq6lrWz8yJ43FT8cjzI1l69D3n+ij
+         pwLRZDACu8Y/WOnVkI7/P1+TuM8HbDZ0ZIOLIUQCKPu5nPz2p3+WLDs5FOrehowpd++b
+         XMd3QZJdoCGZb+owWdzYXdfRV/LiuxOIcP9e2S8qMoJH/5VgqgPxksHCuoK4O4ZKwHTC
+         6eArC8aBWrX9Jt4uLHQqqV7uR4wkMEcD7SY+laxxtsqUyIvZ3Zr/esGFEuOGWZEt2kz3
+         LMsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ydRFGqWZoOMmHPzi9Kd+th3dU1QxHl+sPyXpHEV+QeQ=;
-        b=XJqcSiQW0Vo+aEED7ZnByczUY/1/uirhwflNqpNlzKdZXscvbYHeUqDfqCT86NkfRw
-         +rkMfymiDUFY2ePiJpwiM+UxXyi5Cp2xmXaUYVTXUQxI5fQPU2RUTwSoqjzjohHXDmEB
-         P0Uy6tWSqdNvBN3BnpF6QnM+PYXn8uir3Ig8C/0Nbdof97BrufrECMFUOAWKgO8Ujg1z
-         UUQP/3PBORe86c8cZwb3BPg1McYYJK+RUepGXZu0XgOXUJ0s/EvaRy7U2DCFgMl705Ja
-         3NqIyNeeRFTHOpfYtGKqvn/VkxH7FasDtg6rWEr+V9ZAn+1T8lfca26RNa+p0q0sOLg7
-         0y9w==
-X-Gm-Message-State: AOAM533eIzIPIDsGdR5ExHolbtlpdTK0w9U082DoEL+GKuxq2Gmap3UW
-        s751vKoqYK0eNDmz+rcVs+ebqQ==
-X-Google-Smtp-Source: ABdhPJxtukySt/qUYDnP4g7urzG6Ivq4gpQx5CpMO1HXJYv5VO3SKUXUu0NMz2g1a5qQTTZv6iEICA==
-X-Received: by 2002:aa7:8d8a:0:b029:1f8:aa27:7203 with SMTP id i10-20020aa78d8a0000b02901f8aa277203mr25599322pfr.64.1618247661565;
-        Mon, 12 Apr 2021 10:14:21 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id t19sm10604062pfg.38.2021.04.12.10.14.20
+        bh=mztj3YmmozSjsP7YF+63NXvn93gX18LsCcbiTCMKvuY=;
+        b=WS8BeT/AYxGZpeLyMW72BqB4HlGTVsBHKVXRJ4niDibSBe474usZlMvOnS4QLMe3iF
+         AhdPmcnM1vE/V1MwJtq736q08vBIR34lBbv6GDYSzFC0W968M4qoRDXKTzcNtluHoz2r
+         2zu/lR7lxqYoWjCwxWWQ/UmDrgIH6OaXzk1kYEbPM3fCXuJ2x/dspRemxI635l+y9xUb
+         xyLp2PBG3Rs0ChO28GiVTo5w+J0RaIPNyqVBwgc5Y/QKYwnYqLqtnwBrAkAxnJ1pqGdq
+         gTiWCEM0ca+t1ZFn9bEH8I0Vb5kT9fVJW+LM1p14Z8HDxVZTr5oRzMlDqIwXKemY3Hfd
+         HSrg==
+X-Gm-Message-State: AOAM533VgqqBwnw+OtGMFu1pNCFrytkPgKfM5iJXRTLa3dAhbre9qlF/
+        BRlDn5Wlu/iQTa+cJjb18xRWuQ==
+X-Google-Smtp-Source: ABdhPJzvnpOuvYh0cOa1StH86GYB6t9o7Bd+ieLigHO1L6X8LfilAKfKSk5JVsXaFyfgTECudYTAhA==
+X-Received: by 2002:a37:63ce:: with SMTP id x197mr13758669qkb.341.1618247698869;
+        Mon, 12 Apr 2021 10:14:58 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id z7sm8156745qkf.136.2021.04.12.10.14.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 10:14:21 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 17:14:17 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Len Brown <lenb@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        libc-alpha <libc-alpha@sourceware.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-Message-ID: <YHR/6fnpe/sAASPs@google.com>
-References: <CAJvTdK=evAofQRcmt_iwtYx2f_wTGUDpXzvjuiVwgZZ6BZV_Qg@mail.gmail.com>
- <E8BCA270-4F23-4E1B-BAD6-917DBE36F5F6@amacapital.net>
- <CAJvTdK=Lqbzy6bs8qiE8MZ5LSzyZJ-FMUTcNPD4MxYJGEMBW3g@mail.gmail.com>
- <CALCETrW_5QDSo2sfEjBZSJ=Q3EsXTc03Unztn0Rq1caxqwtWpw@mail.gmail.com>
- <CAJvTdKkDUywOUxb8Toth-7d4U4_S_9_EYHO38XqAPKc2_MXtdA@mail.gmail.com>
- <CALCETrXA-JzBWKdzBZJA8P+pPNKEkxNRPqLganWMpvm6KEUmCw@mail.gmail.com>
- <CAJvTdK=RFei+b0W89ZTtqoiiR_M0wAJz_EuBTijgEHpacfZS7Q@mail.gmail.com>
+        Mon, 12 Apr 2021 10:14:58 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 13:14:57 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, mhocko@kernel.org,
+        akpm@linux-foundation.org, shakeelb@google.com,
+        vdavydov.dev@gmail.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, duanxiongchun@bytedance.com,
+        fam.zheng@bytedance.com, bsingharora@gmail.com,
+        shy828301@gmail.com, alex.shi@linux.alibaba.com
+Subject: Re: [RFC PATCH v2 00/18] Use obj_cgroup APIs to charge the LRU pages
+Message-ID: <YHSAETyyXMkygPhn@cmpxchg.org>
+References: <20210409122959.82264-1-songmuchun@bytedance.com>
+ <YHD/itVJlgzE2uXm@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJvTdK=RFei+b0W89ZTtqoiiR_M0wAJz_EuBTijgEHpacfZS7Q@mail.gmail.com>
+In-Reply-To: <YHD/itVJlgzE2uXm@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021, Len Brown wrote:
-> On Fri, Apr 9, 2021 at 5:44 PM Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > On Fri, Apr 9, 2021 at 1:53 PM Len Brown <lenb@kernel.org> wrote:
-> > >
-> > > On Wed, Mar 31, 2021 at 6:45 PM Andy Lutomirski <luto@kernel.org> wrote:
-> > > >
-> > > > On Wed, Mar 31, 2021 at 3:28 PM Len Brown <lenb@kernel.org> wrote:
-> > > > > We've also established that when running in a VMM, every update to
-> > > > > XCR0 causes a VMEXIT.
-> > > >
-> > > > This is true, it sucks, and Intel could fix it going forward.
-> > >
-> > > What hardware fix do you suggest?
-> > > If a guest is permitted to set XCR0 bits without notifying the VMM,
-> > > what happens when it sets bits that the VMM doesn't know about?
-> >
-> > The VM could have a mask of allowed XCR0 bits that don't exist.
-> >
-> > TDX solved this problem *somehow* -- XSETBV doesn't (visibly?) exit on
-> > TDX.  Surely plain VMX could fix it too.
+On Fri, Apr 09, 2021 at 06:29:46PM -0700, Roman Gushchin wrote:
+> On Fri, Apr 09, 2021 at 08:29:41PM +0800, Muchun Song wrote:
+> > Since the following patchsets applied. All the kernel memory are charged
+> > with the new APIs of obj_cgroup.
+> > 
+> > 	[v17,00/19] The new cgroup slab memory controller
+> > 	[v5,0/7] Use obj_cgroup APIs to charge kmem pages
+> > 
+> > But user memory allocations (LRU pages) pinning memcgs for a long time -
+> > it exists at a larger scale and is causing recurring problems in the real
+> > world: page cache doesn't get reclaimed for a long time, or is used by the
+> > second, third, fourth, ... instance of the same job that was restarted into
+> > a new cgroup every time. Unreclaimable dying cgroups pile up, waste memory,
+> > and make page reclaim very inefficient.
+> > 
+> > We can convert LRU pages and most other raw memcg pins to the objcg direction
+> > to fix this problem, and then the LRU pages will not pin the memcgs.
+> > 
+> > This patchset aims to make the LRU pages to drop the reference to memory
+> > cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
+> > of the dying cgroups will not increase if we run the following test script.
+> > 
+> > ```bash
+> > #!/bin/bash
+> > 
+> > cat /proc/cgroups | grep memory
+> > 
+> > cd /sys/fs/cgroup/memory
+> > 
+> > for i in range{1..500}
+> > do
+> > 	mkdir test
+> > 	echo $$ > test/cgroup.procs
+> > 	sleep 60 &
+> > 	echo $$ > cgroup.procs
+> > 	echo `cat test/cgroup.procs` > cgroup.procs
+> > 	rmdir test
+> > done
+> > 
+> > cat /proc/cgroups | grep memory
+> > ```
+> > 
+> > Patch 1 aims to fix page charging in page replacement.
+> > Patch 2-5 are code cleanup and simplification.
+> > Patch 6-18 convert LRU pages pin to the objcg direction.
+> > 
+> > Any comments are welcome. Thanks.
 > 
-> There are two cases.
+> Indeed the problem exists for a long time and it would be nice to fix it.
+> However I'm against merging the patchset in the current form (there are some
+> nice fixes/clean-ups, which can/must be applied independently). Let me explain
+> my concerns:
 > 
-> 1. Hardware that exists today and in the foreseeable future.
+> Back to the new slab controller discussion obj_cgroup was suggested by Johannes
+> as a union of two concepts:
+> 1) reparenting (basically an auto-pointer to a memcg in c++ terms)
+> 2) byte-sized accounting
 > 
-> VM modification of XCR0 results in VMEXIT to VMM.
-> The VMM sees bits set by the guest, and so it can accept what
-> it supports, or send the VM a fault for non-support.
-> 
-> Here it is not possible for the VMM to change XCR0 without the VMM knowing.
-> 
-> 2. Future Hardware that allows guests to write XCR0 w/o VMEXIT.
-> 
-> Not sure I follow your proposal.
-> 
-> Yes, the VM effectively has a mask of what is supported,
-> because it can issue CPUID.
-> 
-> The VMM virtualizes CPUID, and needs to know it must not
-> expose to the VM any state features it doesn't support.
-> Also, the VMM needs to audit XCR0 before it uses XSAVE,
-> else the guest could attack or crash the VMM through
-> buffer overrun.
+> I was initially against this union because I anticipated that the reparenting
+> part will be useful separately. And the time told it was true.
 
-The VMM already needs to context switch XCR0 and XSS, so this is a non-issue.
+"The idea of moving stocks and leftovers to the memcg_ptr/obj_cgroup
+level is really good."
 
-> Is this what you suggest?
+https://lore.kernel.org/lkml/20191025200020.GA8325@castle.DHCP.thefacebook.com/
 
-Yar.  In TDX, XSETBV exits, but only to the TDX module.  I.e. TDX solves the
-problem in software by letting the VMM tell the TDX module what features the
-guest can set in XCR0/XSS via the XFAM (Extended Features Allowed Mask).
+If you recall, the main concern was how the byte charging interface
+was added to the existing page charging interface, instead of being
+layered on top of it. I suggested to do that and, since there was no
+other user for the indirection pointer, just include it in the API.
 
-But, that software "fix" can also be pushed into ucode, e.g. add an XFAM VMCS
-field, the guest can set any XCR0 bits that are '1' in VMCS.XFAM without exiting.
+It made sense at the time, and you seemed to agree. But I also agree
+it makes sense to factor it out now that more users are materializing.
 
-Note, SGX has similar functionality in the form of XFRM (XSAVE-Feature Request
-Mask).  The enclave author can specify what features will be enabled in XCR0
-when the enclave is running.  Not that relevant, other than to reinforce that
-this is a solvable problem.
+> I still think obj_cgroup API must be significantly reworked before being
+> applied outside of the kmem area: reparenting part must be separated
+> and moved to the cgroup core level to be used not only in the memcg
+> context but also for other controllers, which are facing similar problems.
+> Spilling obj_cgroup API in the current form over all memcg code will
+> make it more complicated and will delay it, given the amount of changes
+> and the number of potential code conflicts.
+> 
+> I'm working on the generalization of obj_cgroup API (as described above)
+> and expect to have some patches next week.
 
-> If yes, what do you suggest in the years between now and when
-> that future hardware and VMM exist?
+Yeah, splitting the byte charging API from the reference API and
+making the latter cgroup-generic makes sense. I'm looking forward to
+your patches.
 
-Burn some patch space? :-)
+And yes, the conflicts between that work and Muchun's patches would be
+quite large. However, most of them would come down to renames, since
+the access rules and refcounting sites will remain the same, so it
+shouldn't be too bad to rebase Muchun's patches on yours. And we can
+continue reviewing his patches for correctness for now.
+
+Thanks
