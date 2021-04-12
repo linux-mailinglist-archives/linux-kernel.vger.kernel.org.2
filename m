@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B6635BAE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:38:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8DA035BAEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236886AbhDLHiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
+        id S236901AbhDLHjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:39:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236866AbhDLHiP (ORCPT
+        with ESMTP id S236892AbhDLHjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:38:15 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799E0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:37:57 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso6297888wmi.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:37:57 -0700 (PDT)
+        Mon, 12 Apr 2021 03:39:00 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE40FC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:38:42 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id 12so11808254wrz.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:38:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=HIQ9nS2DnwZgvR48t9GVmzUOt4mImx9+3jm/clQDwpY=;
-        b=cWpYm91kNjsIFJodtiZmsOpVNs3il+ZXETTnXX8FYTbNjt/YnEDz7l8TGVlqci8noK
-         kiYpaX84LNH9skbYeNm0eE4EUUTX9zw3O/rw1+qUoReok79wn3Mcv4D0ufyiHY8/nLeQ
-         OegF6lPT4+buI/vCT6lkfoT2MBb5/atv2wAH0udUTCCdq8Dgw2W31t7SJyLYwv3zdffC
-         I8/RvEPPyc/6MLm8e5mw7eimkWoLQDFw3Pc2Witwk1eb0PUs0dLkVTC/ZQ1PPm/4mqiF
-         mxEAm7SGvNzXs/HFqf3MCRrf0eznlYMwv4JVKxmjhfozh01iYlI6L82AIoMWejUOXYOf
-         u8/w==
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8Ba8vkc1BfSZosx3uGhz1pPY/j875HME7u94kJO8dVU=;
+        b=0x8a4/DegqzPKaTGbhPHvPJhPWy/aa5JytZrFbsC8wsCwIBTtA1WnY5EWX3FzqxELy
+         EYTgKov9wazo9LP0UvtmbsB21XV7dVMFd2HWIuZo+cUsrrib+UIVKeMrWPfymIe5RzrH
+         BN2Rhz1OIvsXP/3jiip/xT9TAAqOJlNqt9oArDXXvdqxCIhVsNHfLf/uzd91d7h47PMz
+         QI4rp6aRpSc43K1z5S56aTRvX3vzegYSRyX7ES6ZRMNrqbncQMxt1sDbsJeVVQ89/MZO
+         S5azl9liCp4shlG2+3ZS+rpHsORfgKadr5osWlhs2dt2c9vnYmnVULm6mv18nqYDruAI
+         UOMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=HIQ9nS2DnwZgvR48t9GVmzUOt4mImx9+3jm/clQDwpY=;
-        b=BCqgITflLh9edNAL1VMGE0nyw42ElIFmHlWqoYqKq8UgC1JQnbqWoOhIRN3yDJ3FdI
-         fTmQIyMryZfgKud+/YD9+G41/Cnib70dQf37jhewSjyNiTjiT0GZUoxGSslw35X0HWtS
-         vaUobyGghEd1biLmC5uF6QvL2974YCFyVWrVMB7SyhgqIXZZKAakIxuyB+PxoE59KcEz
-         glqcbi17kYYf9G9icTkv8mbLXvo2oo7mlv5QTwup6vu4C8+5tht7U12jpTHYskcMyQ6B
-         I4jovjQCvk5oRdEEwzqnrGLBIZ9Ydp3BmX42QRr+PbGOm7dFSBrosyKBPnd9egsRP9zf
-         gB0Q==
-X-Gm-Message-State: AOAM531AFivHCRree24aDLrPGtt7o5QNMCUW3LtiMxVDS1YL2rwoZk/3
-        zAEiqNz+lMAChLb3OvxFb2SAeA==
-X-Google-Smtp-Source: ABdhPJwjS/qzIbhP6Zi3YtFpCzdnzG3pyEYGlKEP/6TmD6q9pko48oi0coPJ+NgMiMrgN0VAVE6f+A==
-X-Received: by 2002:a7b:c195:: with SMTP id y21mr2482976wmi.178.1618213076201;
-        Mon, 12 Apr 2021 00:37:56 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id o5sm13676490wmc.44.2021.04.12.00.37.55
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8Ba8vkc1BfSZosx3uGhz1pPY/j875HME7u94kJO8dVU=;
+        b=XhtkGSajDvA1z5UxhwWXLg1yvgTtbdjoomrlTa7ZM9KMaTB0VPGtpxU68oAool4Abk
+         JsXeRxFkoyq0zoptkP7nIk78YL07V6f4A9f1dF3aki+XVC+LzRbHPHjooUfglCrnfoSi
+         I7S1Q8hRuI0M+xQbms8/CE1VmHFHgEpx/TP3WZ3OFzfihvYnza4KWA0N8+LHPEwnRTrS
+         udkbeLfaDCUVHCMi3by+7RWdZzzoa/ghuauC3JOaNqbfg3peAak0RkIH8W0fHVnRNm0/
+         LPs5Gv8v+h6XYcuuw2urJAlR8bL00Fs+hQj3SUW+Hnj0r1vLqxYJh7raPmHpDWkEBuBG
+         0blQ==
+X-Gm-Message-State: AOAM531F634ohKCd9enCX7ihJ7P/tw4gG/TQ3LPCL6agTVSIbkzz0RLk
+        +LHbLpFbyfjG+u14hD+ReBWJ+eta9gsTQ6f5VP0=
+X-Google-Smtp-Source: ABdhPJzNN7fVoaZnxbco4trv/zzU5GvG94C3eALL0Sf+45NIZ9FIrtRyn1CXac5tVYi+dTm6fHT22w==
+X-Received: by 2002:adf:e402:: with SMTP id g2mr30527861wrm.1.1618213120778;
+        Mon, 12 Apr 2021 00:38:40 -0700 (PDT)
+Received: from localhost.localdomain (2.0.5.1.1.6.3.8.5.c.c.3.f.b.d.3.0.0.0.0.6.1.f.d.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:df16:0:3dbf:3cc5:8361:1502])
+        by smtp.gmail.com with ESMTPSA id y31sm14500431wmp.46.2021.04.12.00.38.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 00:37:55 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 08:37:54 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Bob Peterson <rpeterso@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        cluster-devel <cluster-devel@redhat.com>
-Subject: Re: [PATCH 00/18] Rid W=1 warnings from GFS2
-Message-ID: <20210412073754.GA4869@dell>
-References: <20210326091151.311647-1-lee.jones@linaro.org>
- <20210406091126.GT2916463@dell>
- <468723920.4255981.1617709446972.JavaMail.zimbra@redhat.com>
- <20210406115434.GU2916463@dell>
- <CAHc6FU4bH91pWgFMytuvhgkr9YJs_VdggZdjEC6EwQJ-9Jj+3Q@mail.gmail.com>
+        Mon, 12 Apr 2021 00:38:40 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     tytso@mit.edu
+Cc:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] fs: ext4: mballoc: amend goto to cleanup groupinfo memory correctly
+Date:   Mon, 12 Apr 2021 08:38:37 +0100
+Message-Id: <20210412073837.1686-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHc6FU4bH91pWgFMytuvhgkr9YJs_VdggZdjEC6EwQJ-9Jj+3Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 09 Apr 2021, Andreas Gruenbacher wrote:
+When flexible block groups are enabled on a filesystem, and there are
+too many log groups per flexible block group, goto err_freebuddy rather
+than err_freesgi within ext4_mb_init_backend. Cleanup code for new_inode
+and successive executions of ext4_mb_add_groupinfo in the previous loop
+is then correctly run. Fixes memory leak reported by syzbot at:
+https://syzkaller.appspot.com/bug?extid=aa12d6106ea4ca1b6aae
 
-> Hi Lee,
-> 
-> On Tue, Apr 6, 2021 at 1:54 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > These have been on the list for a couple of weeks now.
-> 
-> thanks for your fixes, I've gone through them now. I've fixed up some
-> comments instead of "demoting" them to make the patch somewhat less
-> destructive, and I found a few more minor issues along the way. Those
-> changes are now all in the following commit:
-> 
->   https://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git/commit/?id=c551f66c5dfef
+Reported-by: syzbot+aa12d6106ea4ca1b6aae@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+---
+ fs/ext4/mballoc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-You squashed all of the changes across all of the files into
-one-big-patch (tm)?  I haven't seen anyone do that for years.
-Hopefully none of it needs reverting or bisecting!
-
-Anyway, thanks for merging.
-
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index a02fadf4fc84..d24cb3dc79ff 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2715,7 +2715,7 @@ static int ext4_mb_init_backend(struct super_block *sb)
+ 		 */
+ 		if (sbi->s_es->s_log_groups_per_flex >= 32) {
+ 			ext4_msg(sb, KERN_ERR, "too many log groups per flexible block group");
+-			goto err_freesgi;
++			goto err_freebuddy;
+ 		}
+ 		sbi->s_mb_prefetch = min_t(uint, 1 << sbi->s_es->s_log_groups_per_flex,
+ 			BLK_MAX_SEGMENT_SIZE >> (sb->s_blocksize_bits - 9));
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.30.2
+
