@@ -2,179 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32C0135CED8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3AE35CEFD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244495AbhDLQvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:51:05 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17222 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244698AbhDLQtG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:49:06 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13CGYX1n153949;
-        Mon, 12 Apr 2021 12:48:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=yK3wcz6HfMKRr+Anv1JaZYvMeKi8LZVmm3oJn9Nm67k=;
- b=Mzg4WZ6ps4U6AK9Y4eQAIsOY3JL7iEJhS7hCATAalpARQnpMAUTsTS8FPlQSWXN75u9l
- YBBvArEhnOgFPxzwBpBzD54Rx3EZ3NvAZ1m2uClnz9WvFc6OAJOXCOLKLy4viVhtEL6l
- IrtfGE3WNl0ZMt4/19rXPjJ9viDlmUjHi3E4CKdNHqUuuZnzV/RnZnZaG+Vc9MKL6Xxp
- hI7kNHOOahXigG/yzCRRECUHAqAjTX8vcZYuFCWfuHGn7RoLWoUZb4ZydBi+a3OAzXuv
- Vy1rLpSvtGLwmgj1xWlD9TN7BUEzxxj80mST1srvl+D1IXyYV4Z18wBCYJX/J2kZ+HLV Nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37vjtt97y5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Apr 2021 12:48:24 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13CGZGAU160201;
-        Mon, 12 Apr 2021 12:48:23 -0400
-Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 37vjtt97xw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Apr 2021 12:48:23 -0400
-Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
-        by ppma04wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13CGlsPB019257;
-        Mon, 12 Apr 2021 16:48:23 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma04wdc.us.ibm.com with ESMTP id 37u3n9spgx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Apr 2021 16:48:23 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13CGmMfo61407758
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Apr 2021 16:48:22 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 086277805C;
-        Mon, 12 Apr 2021 16:48:22 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CAFFD7805E;
-        Mon, 12 Apr 2021 16:48:19 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.85.203.222])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 12 Apr 2021 16:48:19 +0000 (GMT)
-Message-ID: <adeb7c73d0bb354f04f8117c5ccf6b006dfc15de.camel@linux.ibm.com>
-Subject: Re: [PATCH][next] KEYS: trusted: Fix missing null return from
- kzalloc call
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Colin King <colin.king@canonical.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 12 Apr 2021 09:48:18 -0700
-In-Reply-To: <20210412160101.1627882-1-colin.king@canonical.com>
-References: <20210412160101.1627882-1-colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S243951AbhDLQ5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:57:11 -0400
+Received: from mga03.intel.com ([134.134.136.65]:24006 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244368AbhDLQwI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:52:08 -0400
+IronPort-SDR: TivuLrmIPHMibLHdrWvTJ5MtKwUno963G6TSY83nCi/Kn/b2+arhdck0i4S2PJcpHWrJs9OD4K
+ gpzhclO4/nyg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194265471"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="194265471"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 09:51:49 -0700
+IronPort-SDR: +2NDBeYEuHbsavSRhE/tlGBPSLVIVHBRrCwkuKGbUmKbsK6u1IrgYxOipgX2+rd3iw5icwxp1X
+ OqyhIjlOOXkg==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="450051426"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 09:51:46 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lVzmo-003Vvq-Jk; Mon, 12 Apr 2021 19:51:42 +0300
+Date:   Mon, 12 Apr 2021 19:51:42 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
+Subject: Re: [PATCH v1 6/7] mfd: lpc_ich: Add support for pinctrl in non-ACPI
+ system
+Message-ID: <YHR6njWCHn77v7lQ@smile.fi.intel.com>
+References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+ <20210308122020.57071-7-andriy.shevchenko@linux.intel.com>
+ <20210412180106.7dc524e8@md1za8fc.ad001.siemens.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: lwvJeeXsjtjq2GtvbjWudOdZYnX9b8u3
-X-Proofpoint-ORIG-GUID: sdwC6w6xF5MD7wQIQbzEaD3PM4KA4XWi
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-12_11:2021-04-12,2021-04-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- priorityscore=1501 impostorscore=0 suspectscore=0 bulkscore=0 adultscore=0
- mlxscore=0 mlxlogscore=999 clxscore=1011 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104120106
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412180106.7dc524e8@md1za8fc.ad001.siemens.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-04-12 at 17:01 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Mon, Apr 12, 2021 at 06:01:06PM +0200, Henning Schild wrote:
+> Am Mon, 8 Mar 2021 14:20:19 +0200
+> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
 > 
-> The kzalloc call can return null with the GFP_KERNEL flag so
-> add a null check and exit via a new error exit label. Use the
-> same exit error label for another error path too.
+> > From: Tan Jui Nee <jui.nee.tan@intel.com>
+> > 
+> > Add support for non-ACPI systems, such as system that uses
+> > Advanced Boot Loader (ABL) whereby a platform device has to be created
+> > in order to bind with pin control and GPIO.
+> > 
+> > At the moment, Intel Apollo Lake In-Vehicle Infotainment (IVI) system
+> > requires a driver to hide and unhide P2SB to lookup P2SB BAR and pass
+> > the PCI BAR address to GPIO.
+
+...
+
+> > +/* Offset data for Apollo Lake GPIO controllers */
+> > +#define APL_GPIO_SOUTHWEST_OFFSET	0xc00000
+> > +#define APL_GPIO_SOUTHWEST_SIZE		0x654
+> > +#define APL_GPIO_NORTHWEST_OFFSET	0xc40000
+> > +#define APL_GPIO_NORTHWEST_SIZE		0x764
+> > +#define APL_GPIO_NORTH_OFFSET		0xc50000
+> > +#define APL_GPIO_NORTH_SIZE		0x76c
 > 
-> Addresses-Coverity: ("Dereference null return value")
-> Fixes: 830027e2cb55 ("KEYS: trusted: Add generic trusted keys
-> framework")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  security/keys/trusted-keys/trusted_core.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> drivers/pinctrl/intel/pinctrl-broxton.c:653
+> BXT_COMMUNITY(0, 77),
 > 
-> diff --git a/security/keys/trusted-keys/trusted_core.c
-> b/security/keys/trusted-keys/trusted_core.c
-> index ec3a066a4b42..90774793f0b1 100644
-> --- a/security/keys/trusted-keys/trusted_core.c
-> +++ b/security/keys/trusted-keys/trusted_core.c
-> @@ -116,11 +116,13 @@ static struct trusted_key_payload
-> *trusted_payload_alloc(struct key *key)
->  
->  	ret = key_payload_reserve(key, sizeof(*p));
->  	if (ret < 0)
-> -		return p;
-> +		goto err;
->  	p = kzalloc(sizeof(*p), GFP_KERNEL);
-> +	if (!p)
-> +		goto err;
->  
->  	p->migratable = migratable;
-> -
-> +err:
->  	return p;
+> > +#define APL_GPIO_WEST_OFFSET		0xc70000
+> > +#define APL_GPIO_WEST_SIZE		0x674
+> 
+> All these sizes correlate with 4 magic numbers from pinctrl-broxton.
+> 
+> SIZE - 0x500 (pad_base?) - 4 (no clue) / 8
+> 
+> It might be worth basing both numbers on a define and giving the magic
+> numbers some names.
 
-This is clearly a code migration bug in 
+I didn't get this, sorry. The numbers above just precise sizes of the
+resources. Actually they all one page anyway, so, I can drop magic of SIZEs and
+leave only offsets.
 
-commit 251c85bd106099e6f388a89e88e12d14de2c9cda
-Author: Sumit Garg <sumit.garg@linaro.org>
-Date:   Mon Mar 1 18:41:24 2021 +0530
+> But all this seems like duplication of pinctrl-broxton, maybe the
+> pinctrl driver should unhide the p2sb ...
 
-    KEYS: trusted: Add generic trusted keys framework
+Definitely should not. It's not a business of the pin control driver to know
+how it has to be instantiated (or from what data). These offsets belong to the
+platform description and since firmware hides the device without given an
+appropriate ACPI device node, we have only one choice (assuming firmware is
+carved in stone) -- board files.
 
-Which has for addition to trusted_core.c:
+P2SB on the other hand is a slice of many (independent) devices. There is no
+"proper" place to unhide it except some core part of x86 / PCI.
 
-+static struct trusted_key_payload *trusted_payload_alloc(struct key
-*key)
-+{
-+       struct trusted_key_payload *p = NULL;
-+       int ret;
-+
-+       ret = key_payload_reserve(key, sizeof(*p));
-+       if (ret < 0)
-+               return p;
-+       p = kzalloc(sizeof(*p), GFP_KERNEL);
-+
-+       p->migratable = migratable;
-+
-+       return p;
-+}
 
-And for trusted_tpm1.c:
-
--static struct trusted_key_payload *trusted_payload_alloc(struct key
-*key)
--{
--       struct trusted_key_payload *p = NULL;
--       int ret;
--
--       ret = key_payload_reserve(key, sizeof *p);
--       if (ret < 0)
--               return p;
--       p = kzalloc(sizeof *p, GFP_KERNEL);
--       if (p)
--               p->migratable = 1; /* migratable by default */
--       return p;
--}
-
-The trusted_tpm1.c code was correct and we got this bug introduced by
-what should have been a simple cut and paste ... how did that happen? 
-And therefore, how safe is the rest of the extraction into
-trusted_core.c?
-
-James
+-- 
+With Best Regards,
+Andy Shevchenko
 
 
