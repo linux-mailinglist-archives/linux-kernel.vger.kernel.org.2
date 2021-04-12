@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4571C35C00A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02ACB35C007
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239545AbhDLJJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:09:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45430 "EHLO mail.kernel.org"
+        id S239185AbhDLJI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:08:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47812 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239010AbhDLIzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239011AbhDLIzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 04:55:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2744D60241;
-        Mon, 12 Apr 2021 08:54:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C01CE61247;
+        Mon, 12 Apr 2021 08:54:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217683;
-        bh=nD1wYYd8GyeP2whV1NZOh4o2J55w3Drtk2N/AHn7La4=;
+        s=korg; t=1618217686;
+        bh=jQBx3/5I1CRRTRDB7nEkFUVk7+XYHv83qCpq3pAo3QQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Gb0UWpLqslT2iUO8ItYgp3ezloraDq9i32LlHmaSkEqSN1/NGjQJk9dZ3vFQit+o
-         HRCoqT9KNnG3NCxMwm4yIftoo1ZWmh6Id61Yq3Mt+f4WqB5OYnev4rXZi0rCmjGiTV
-         8lCuqv4HUaBKzuVc39Ue7aKa629mqexM/AY12ROc=
+        b=B0IPL2Ob6ESTM2/F6b/rZ4jZSRAMV2LikA03aNxij7nVEj5tr512RgRbpEdjD76X+
+         B3loWzzfCLu4WFHR0e6OOtb/8EKLbYXjwWSJ1g8R+hEJ/UirMivA57LpM0x7ucK+oK
+         Fg0zVVJ6C7ZIWM0DS5owox8Zw0Jny4smu49pJTDc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
+        stable@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 108/188] hostfs: fix memory handling in follow_link()
-Date:   Mon, 12 Apr 2021 10:40:22 +0200
-Message-Id: <20210412084017.232221816@linuxfoundation.org>
+Subject: [PATCH 5.10 109/188] amd-xgbe: Update DMA coherency values
+Date:   Mon, 12 Apr 2021 10:40:23 +0200
+Message-Id: <20210412084017.265139515@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -39,53 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-[ Upstream commit 7f6c411c9b50cfab41cc798e003eff27608c7016 ]
+[ Upstream commit d75135082698140a26a56defe1bbc1b06f26a41f ]
 
-1) argument should not be freed in any case - the caller already has
-it as ->s_fs_info (and uses it a lot afterwards)
-2) allocate readlink buffer with kmalloc() - the caller has no way
-to tell if it's got that (on absolute symlink) or a result of
-kasprintf().  Sure, for SLAB and SLUB kfree() works on results of
-kmem_cache_alloc(), but that's not documented anywhere, might change
-in the future *and* is already not true for SLOB.
+Based on the IOMMU configuration, the current cache control settings can
+result in possible coherency issues. The hardware team has recommended
+new settings for the PCI device path to eliminate the issue.
 
-Fixes: 52b209f7b848 ("get rid of hostfs_read_inode()")
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Fixes: 6f595959c095 ("amd-xgbe: Adjust register settings to improve performance")
+Signed-off-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/hostfs/hostfs_kern.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/amd/xgbe/xgbe.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index c070c0d8e3e9..d4e360234579 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -142,7 +142,7 @@ static char *follow_link(char *link)
- 	char *name, *resolved, *end;
- 	int n;
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe.h b/drivers/net/ethernet/amd/xgbe/xgbe.h
+index ba8321ec1ee7..3305979a9f7c 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe.h
++++ b/drivers/net/ethernet/amd/xgbe/xgbe.h
+@@ -180,9 +180,9 @@
+ #define XGBE_DMA_SYS_AWCR	0x30303030
  
--	name = __getname();
-+	name = kmalloc(PATH_MAX, GFP_KERNEL);
- 	if (!name) {
- 		n = -ENOMEM;
- 		goto out_free;
-@@ -171,12 +171,11 @@ static char *follow_link(char *link)
- 		goto out_free;
- 	}
+ /* DMA cache settings - PCI device */
+-#define XGBE_DMA_PCI_ARCR	0x00000003
+-#define XGBE_DMA_PCI_AWCR	0x13131313
+-#define XGBE_DMA_PCI_AWARCR	0x00000313
++#define XGBE_DMA_PCI_ARCR	0x000f0f0f
++#define XGBE_DMA_PCI_AWCR	0x0f0f0f0f
++#define XGBE_DMA_PCI_AWARCR	0x00000f0f
  
--	__putname(name);
--	kfree(link);
-+	kfree(name);
- 	return resolved;
- 
-  out_free:
--	__putname(name);
-+	kfree(name);
- 	return ERR_PTR(n);
- }
- 
+ /* DMA channel interrupt modes */
+ #define XGBE_IRQ_MODE_EDGE	0
 -- 
 2.30.2
 
