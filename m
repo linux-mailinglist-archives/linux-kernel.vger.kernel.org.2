@@ -2,71 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110C635BAC4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803C235BAC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236709AbhDLHYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:24:41 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:46769 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhDLHYg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:24:36 -0400
-Received: by mail-vs1-f50.google.com with SMTP id l8so6134290vsj.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:24:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FmbDoSu36cdmvIZoh4wOCjXx71TJWIKmYq1MspstesE=;
-        b=tnHwbYWUy4DqdT90rraHlFzE2MvE/TjHCHYieKj//OSYNxJBoS+5U5VfcQ/80zAclI
-         tk0IaDoP+XI0IRJ05M3e4wB73Zpa/YeB52wDYqcB7fONGIsqwdPtNfBb8MNwRCqPbBKQ
-         E7wAHrB65fdrHho2m8xQF8SUUA9WPib6LOgPhwwSeXZMpAiCdZaYEcwZji9prWnYqQOZ
-         LLUFlV2KGeGRVxPu1QgHliCPTRGZ1xPxbnEsat9Mla06pRQZv+zswnhWP6GHMHOI9FqY
-         kROQ4orkHl1WihNDLZJ6JLMsptbnm4e/2NOXL42bcC5yIYWa9y4q4Ob/3OqNMtiUoCf2
-         xHkg==
-X-Gm-Message-State: AOAM531ytZZMqJsSl51F9swUx0nulINMHDd5DLiC5cDM5Gkfd6q55bbf
-        364aE4kwvugfKAXOP7qX+bUE47ea1jrpRFVYAjA=
-X-Google-Smtp-Source: ABdhPJyXvju3Gh46hIymtaF0bLVlri9nme00VpTKYLyTfyTcneCf1cRs3OF/wpAAWpUyarp4Dr3Cfksto2s45SL1BDM=
-X-Received: by 2002:a67:f5ca:: with SMTP id t10mr18164600vso.40.1618212258056;
- Mon, 12 Apr 2021 00:24:18 -0700 (PDT)
+        id S236799AbhDLHZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:25:13 -0400
+Received: from mga01.intel.com ([192.55.52.88]:13015 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230510AbhDLHZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 03:25:11 -0400
+IronPort-SDR: U9ZatO4MvkqWlifDt9H94SBGcTu7lt2Zo2ZyOpWjR9mqDaO47nZqf18mCUO9s2V15MR7xPUMBF
+ d3epiS2MKTfQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="214592458"
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="214592458"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 00:24:54 -0700
+IronPort-SDR: B9SU3wecjSe4accQUXOvGF+Iorh6vcLJJBTEy3kxZJASuwb0+V61dr3jxnQ6wrQkEILhccp2TO
+ X/IJmGgNVlAg==
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="417264247"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 00:24:50 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
+        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
+        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
+        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
+References: <20210408130820.48233-1-linmiaohe@huawei.com>
+        <20210408130820.48233-2-linmiaohe@huawei.com>
+        <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Date:   Mon, 12 Apr 2021 15:24:48 +0800
+In-Reply-To: <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com> (Ying Huang's
+        message of "Mon, 12 Apr 2021 11:30:54 +0800")
+Message-ID: <87zgy4ufr3.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <20210407200032.764445-1-Liam.Howlett@Oracle.com>
-In-Reply-To: <20210407200032.764445-1-Liam.Howlett@Oracle.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Apr 2021 09:24:06 +0200
-Message-ID: <CAMuHMdVM5XFnxbF=q2KH_1NRx5iyosb1xQ3co1VBakSmRgiNpw@mail.gmail.com>
-Subject: Re: [PATCH] arch/m68k/kernel/sys_m68k: Add missing mmap_read_lock()
- to sys_cacheflush()
-To:     Liam Howlett <liam.howlett@oracle.com>
-Cc:     "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Laurent Dufour <ldufour@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Michel Lespinasse <walken@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 7, 2021 at 10:00 PM Liam Howlett <liam.howlett@oracle.com> wrote:
-> When the superuser flushes the entire cache, the mmap_read_lock() is not
-> taken, but mmap_read_unlock() is called.  Add the missing
-> mmap_read_lock() call.
+"Huang, Ying" <ying.huang@intel.com> writes:
+
+> Miaohe Lin <linmiaohe@huawei.com> writes:
 >
-> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+>> We will use percpu-refcount to serialize against concurrent swapoff. This
+>> patch adds the percpu_ref support for later fixup.
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  include/linux/swap.h |  2 ++
+>>  mm/swapfile.c        | 25 ++++++++++++++++++++++---
+>>  2 files changed, 24 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 144727041e78..849ba5265c11 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
+>>   * The in-memory structure used to track swap areas.
+>>   */
+>>  struct swap_info_struct {
+>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
+>>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>>  	signed short	prio;		/* swap priority of this type */
+>>  	struct plist_node list;		/* entry in swap_active_head */
+>> @@ -260,6 +261,7 @@ struct swap_info_struct {
+>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+>>  	struct file *swap_file;		/* seldom referenced */
+>>  	unsigned int old_block_size;	/* seldom referenced */
+>> +	struct completion comp;		/* seldom referenced */
+>>  #ifdef CONFIG_FRONTSWAP
+>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
+>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index 149e77454e3c..724173cd7d0c 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -39,6 +39,7 @@
+>>  #include <linux/export.h>
+>>  #include <linux/swap_slots.h>
+>>  #include <linux/sort.h>
+>> +#include <linux/completion.h>
+>>  
+>>  #include <asm/tlbflush.h>
+>>  #include <linux/swapops.h>
+>> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
+>>  	spin_unlock(&si->lock);
+>>  }
+>>  
+>> +static void swap_users_ref_free(struct percpu_ref *ref)
+>> +{
+>> +	struct swap_info_struct *si;
+>> +
+>> +	si = container_of(ref, struct swap_info_struct, users);
+>> +	complete(&si->comp);
+>> +	percpu_ref_exit(&si->users);
+>
+> Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
+> get_swap_device(), better to add comments there.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v5.13 branch.
+I just noticed that the comments of percpu_ref_tryget_live() says,
 
-Gr{oetje,eeting}s,
+ * This function is safe to call as long as @ref is between init and exit.
 
-                        Geert
+While we need to call get_swap_device() almost at any time, so it's
+better to avoid to call percpu_ref_exit() at all.  This will waste some
+memory, but we need to follow the API definition to avoid potential
+issues in the long term.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+And we need to call percpu_ref_init() before insert the swap_info_struct
+into the swap_info[].
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>> +}
+>> +
+>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
+>>  {
+>>  	struct swap_cluster_info *ci = si->cluster_info;
+>> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
+>>  	 * between get/put_swap_device() if SWP_VALID bit is set
+>>  	 */
+>> -	synchronize_rcu();
+>> +	percpu_ref_reinit(&p->users);
+>
+> Although the effect is same, I think it's better to use
+> percpu_ref_resurrect() here to improve code readability.
+
+Check the original commit description for commit eb085574a752 "mm, swap:
+fix race between swapoff and some swap operations" and discussion email
+thread as follows again,
+
+https://lore.kernel.org/linux-mm/20171219053650.GB7829@linux.vnet.ibm.com/
+
+I found that the synchronize_rcu() here is to avoid to call smp_rmb() or
+smp_load_acquire() in get_swap_device().  Now we will use
+percpu_ref_tryget_live() in get_swap_device(), so we will need to add
+the necessary memory barrier, or make sure percpu_ref_tryget_live() has
+ACQUIRE semantics.  Per my understanding, we need to change
+percpu_ref_tryget_live() for that.
+
+>>  	spin_lock(&swap_lock);
+>>  	spin_lock(&p->lock);
+>>  	_enable_swap_info(p);
+>> @@ -2621,11 +2631,13 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
+>>  	spin_unlock(&p->lock);
+>>  	spin_unlock(&swap_lock);
+>> +
+>> +	percpu_ref_kill(&p->users);
+>>  	/*
+>>  	 * wait for swap operations protected by get/put_swap_device()
+>>  	 * to complete
+>>  	 */
+>> -	synchronize_rcu();
+>> +	wait_for_completion(&p->comp);
+>
+> Better to move percpu_ref_kill() after the comments.  And maybe revise
+> the comments.
+
+After reading the original commit description as above, I found that we
+need synchronize_rcu() here to protect the accessing to the swap cache
+data structure.  Because there's call_rcu() during percpu_ref_kill(), it
+appears OK to keep the synchronize_rcu() here.  And we need to revise
+the comments to make it clear what is protected by which operation.
+
+Best Regards,
+Huang, Ying
+
+[snip]
