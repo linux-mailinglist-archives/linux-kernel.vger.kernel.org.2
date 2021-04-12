@@ -2,443 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8BB135BA79
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 08:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BB6F35BA7C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 08:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236624AbhDLG70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 02:59:26 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:13519 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhDLG7W (ORCPT
+        id S236744AbhDLG7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 02:59:46 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16443 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhDLG7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 02:59:22 -0400
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 11 Apr 2021 23:59:05 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 11 Apr 2021 23:59:02 -0700
-X-QCInternal: smtphost
-Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 12 Apr 2021 12:28:45 +0530
-Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
-        id E927421913; Mon, 12 Apr 2021 12:28:44 +0530 (IST)
-From:   Dikshita Agarwal <dikshita@codeaurora.org>
-To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
-Subject: [PATCH] media: venus: Enable low power setting for encoder
-Date:   Mon, 12 Apr 2021 12:28:43 +0530
-Message-Id: <1618210723-2310-1-git-send-email-dikshita@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 12 Apr 2021 02:59:43 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FJfgB2YnMzqTMK;
+        Mon, 12 Apr 2021 14:57:10 +0800 (CST)
+Received: from [10.174.176.162] (10.174.176.162) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 12 Apr 2021 14:59:21 +0800
+Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
+        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
+        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
+        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210408130820.48233-1-linmiaohe@huawei.com>
+ <20210408130820.48233-2-linmiaohe@huawei.com>
+ <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <87e0c968-f203-eaac-8993-0ae5d9abfd45@huawei.com>
+Date:   Mon, 12 Apr 2021 14:59:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the FW to run in low power for encoder
-to accommodate more session without losing much on quality.
+On 2021/4/12 11:30, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+> 
+>> We will use percpu-refcount to serialize against concurrent swapoff. This
+>> patch adds the percpu_ref support for later fixup.
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  include/linux/swap.h |  2 ++
+>>  mm/swapfile.c        | 25 ++++++++++++++++++++++---
+>>  2 files changed, 24 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 144727041e78..849ba5265c11 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -240,6 +240,7 @@ struct swap_cluster_list {
+>>   * The in-memory structure used to track swap areas.
+>>   */
+>>  struct swap_info_struct {
+>> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
+>>  	unsigned long	flags;		/* SWP_USED etc: see above */
+>>  	signed short	prio;		/* swap priority of this type */
+>>  	struct plist_node list;		/* entry in swap_active_head */
+>> @@ -260,6 +261,7 @@ struct swap_info_struct {
+>>  	struct block_device *bdev;	/* swap device or bdev of swap file */
+>>  	struct file *swap_file;		/* seldom referenced */
+>>  	unsigned int old_block_size;	/* seldom referenced */
+>> +	struct completion comp;		/* seldom referenced */
+>>  #ifdef CONFIG_FRONTSWAP
+>>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
+>>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
+>> diff --git a/mm/swapfile.c b/mm/swapfile.c
+>> index 149e77454e3c..724173cd7d0c 100644
+>> --- a/mm/swapfile.c
+>> +++ b/mm/swapfile.c
+>> @@ -39,6 +39,7 @@
+>>  #include <linux/export.h>
+>>  #include <linux/swap_slots.h>
+>>  #include <linux/sort.h>
+>> +#include <linux/completion.h>
+>>  
+>>  #include <asm/tlbflush.h>
+>>  #include <linux/swapops.h>
+>> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
+>>  	spin_unlock(&si->lock);
+>>  }
+>>  
+>> +static void swap_users_ref_free(struct percpu_ref *ref)
+>> +{
+>> +	struct swap_info_struct *si;
+>> +
+>> +	si = container_of(ref, struct swap_info_struct, users);
+>> +	complete(&si->comp);
+>> +	percpu_ref_exit(&si->users);
+> 
+> Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
+> get_swap_device(), better to add comments there.
 
-Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
----
- drivers/media/platform/qcom/venus/core.h           |   6 ++
- drivers/media/platform/qcom/venus/helpers.c        |   2 +
- drivers/media/platform/qcom/venus/hfi_helper.h     |  10 +-
- drivers/media/platform/qcom/venus/hfi_platform.c   |  16 +++
- drivers/media/platform/qcom/venus/hfi_platform.h   |   4 +
- .../media/platform/qcom/venus/hfi_platform_v4.c    |  28 ++++--
- .../media/platform/qcom/venus/hfi_platform_v6.c    |  28 ++++--
- drivers/media/platform/qcom/venus/pm_helpers.c     | 108 ++++++++++++++++++---
- 8 files changed, 167 insertions(+), 35 deletions(-)
+Will do.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 9451e54..9b5031f 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -257,6 +257,7 @@ struct clock_data {
- 	unsigned long freq;
- 	unsigned long vpp_freq;
- 	unsigned long vsp_freq;
-+	unsigned long low_power_freq;
- };
- 
- #define to_venus_buffer(ptr)	container_of(ptr, struct venus_buffer, vb)
-@@ -280,6 +281,10 @@ struct venus_ts_metadata {
- 	struct v4l2_timecode tc;
- };
- 
-+enum venus_inst_modes {
-+	VENUS_LOW_POWER = BIT(0),
-+};
-+
- /**
-  * struct venus_inst - holds per instance parameters
-  *
-@@ -400,6 +405,7 @@ struct venus_inst {
- 	unsigned int pic_struct;
- 	bool next_buf_last;
- 	bool drain_active;
-+	enum venus_inst_modes flags;
- };
- 
- #define IS_V1(core)	((core)->res->hfi_version == HFI_VERSION_1XX)
-diff --git a/drivers/media/platform/qcom/venus/helpers.c b/drivers/media/platform/qcom/venus/helpers.c
-index 76ece2f..c6b6a30 100644
---- a/drivers/media/platform/qcom/venus/helpers.c
-+++ b/drivers/media/platform/qcom/venus/helpers.c
-@@ -1566,6 +1566,8 @@ int venus_helper_session_init(struct venus_inst *inst)
- 								  session_type);
- 	inst->clk_data.vsp_freq = hfi_platform_get_codec_vsp_freq(version, codec,
- 								  session_type);
-+	inst->clk_data.low_power_freq = hfi_platform_get_codec_lp_freq(version, codec,
-+								       session_type);
- 
- 	return 0;
- }
-diff --git a/drivers/media/platform/qcom/venus/hfi_helper.h b/drivers/media/platform/qcom/venus/hfi_helper.h
-index 6b524c7..5621cdb 100644
---- a/drivers/media/platform/qcom/venus/hfi_helper.h
-+++ b/drivers/media/platform/qcom/venus/hfi_helper.h
-@@ -412,9 +412,6 @@
- #define HFI_BUFFER_MODE_RING			0x1000002
- #define HFI_BUFFER_MODE_DYNAMIC			0x1000003
- 
--#define HFI_VENC_PERFMODE_MAX_QUALITY		0x1
--#define HFI_VENC_PERFMODE_POWER_SAVE		0x2
--
- /*
-  * HFI_PROPERTY_SYS_COMMON_START
-  * HFI_DOMAIN_BASE_COMMON + HFI_ARCH_COMMON_OFFSET + 0x0000
-@@ -815,6 +812,13 @@ struct hfi_framesize {
- 	u32 height;
- };
- 
-+#define HFI_VENC_PERFMODE_MAX_QUALITY		0x1
-+#define HFI_VENC_PERFMODE_POWER_SAVE		0x2
-+
-+struct hfi_perf_mode {
-+	u32 video_perf_mode;
-+};
-+
- #define VIDC_CORE_ID_DEFAULT	0
- #define VIDC_CORE_ID_1		1
- #define VIDC_CORE_ID_2		2
-diff --git a/drivers/media/platform/qcom/venus/hfi_platform.c b/drivers/media/platform/qcom/venus/hfi_platform.c
-index 8f47804..f5b4e1f 100644
---- a/drivers/media/platform/qcom/venus/hfi_platform.c
-+++ b/drivers/media/platform/qcom/venus/hfi_platform.c
-@@ -50,6 +50,22 @@ hfi_platform_get_codec_vsp_freq(enum hfi_version version, u32 codec, u32 session
- 	return freq;
- }
- 
-+unsigned long
-+hfi_platform_get_codec_lp_freq(enum hfi_version version, u32 codec, u32 session_type)
-+{
-+	const struct hfi_platform *plat;
-+	unsigned long freq = 0;
-+
-+	plat = hfi_platform_get(version);
-+	if (!plat)
-+		return 0;
-+
-+	if (plat->codec_lp_freq)
-+		freq = plat->codec_lp_freq(session_type, codec);
-+
-+	return freq;
-+}
-+
- u8 hfi_platform_num_vpp_pipes(enum hfi_version version)
- {
- 	const struct hfi_platform *plat;
-diff --git a/drivers/media/platform/qcom/venus/hfi_platform.h b/drivers/media/platform/qcom/venus/hfi_platform.h
-index 3819bb2..2dbe608 100644
---- a/drivers/media/platform/qcom/venus/hfi_platform.h
-+++ b/drivers/media/platform/qcom/venus/hfi_platform.h
-@@ -43,11 +43,13 @@ struct hfi_platform_codec_freq_data {
- 	u32 session_type;
- 	unsigned long vpp_freq;
- 	unsigned long vsp_freq;
-+	unsigned long low_power_freq;
- };
- 
- struct hfi_platform {
- 	unsigned long (*codec_vpp_freq)(u32 session_type, u32 codec);
- 	unsigned long (*codec_vsp_freq)(u32 session_type, u32 codec);
-+	unsigned long (*codec_lp_freq)(u32 session_type, u32 codec);
- 	void (*codecs)(u32 *enc_codecs, u32 *dec_codecs, u32 *count);
- 	const struct hfi_plat_caps *(*capabilities)(unsigned int *entries);
- 	u8 (*num_vpp_pipes)(void);
-@@ -63,5 +65,7 @@ unsigned long hfi_platform_get_codec_vpp_freq(enum hfi_version version, u32 code
- 					      u32 session_type);
- unsigned long hfi_platform_get_codec_vsp_freq(enum hfi_version version, u32 codec,
- 					      u32 session_type);
-+unsigned long hfi_platform_get_codec_lp_freq(enum hfi_version version, u32 codec,
-+					     u32 session_type);
- u8 hfi_platform_num_vpp_pipes(enum hfi_version version);
- #endif
-diff --git a/drivers/media/platform/qcom/venus/hfi_platform_v4.c b/drivers/media/platform/qcom/venus/hfi_platform_v4.c
-index 3848bb6..3f7f527 100644
---- a/drivers/media/platform/qcom/venus/hfi_platform_v4.c
-+++ b/drivers/media/platform/qcom/venus/hfi_platform_v4.c
-@@ -262,14 +262,14 @@ static void get_codecs(u32 *enc_codecs, u32 *dec_codecs, u32 *count)
- }
- 
- static const struct hfi_platform_codec_freq_data codec_freq_data[] =  {
--	{ V4L2_PIX_FMT_H264, VIDC_SESSION_TYPE_ENC, 675, 10 },
--	{ V4L2_PIX_FMT_HEVC, VIDC_SESSION_TYPE_ENC, 675, 10 },
--	{ V4L2_PIX_FMT_VP8, VIDC_SESSION_TYPE_ENC, 675, 10 },
--	{ V4L2_PIX_FMT_MPEG2, VIDC_SESSION_TYPE_DEC, 200, 10 },
--	{ V4L2_PIX_FMT_H264, VIDC_SESSION_TYPE_DEC, 200, 10 },
--	{ V4L2_PIX_FMT_HEVC, VIDC_SESSION_TYPE_DEC, 200, 10 },
--	{ V4L2_PIX_FMT_VP8, VIDC_SESSION_TYPE_DEC, 200, 10 },
--	{ V4L2_PIX_FMT_VP9, VIDC_SESSION_TYPE_DEC, 200, 10 },
-+	{ V4L2_PIX_FMT_H264, VIDC_SESSION_TYPE_ENC, 675, 10, 320 },
-+	{ V4L2_PIX_FMT_HEVC, VIDC_SESSION_TYPE_ENC, 675, 10, 320 },
-+	{ V4L2_PIX_FMT_VP8, VIDC_SESSION_TYPE_ENC, 675, 10, 320 },
-+	{ V4L2_PIX_FMT_MPEG2, VIDC_SESSION_TYPE_DEC, 200, 10, 200 },
-+	{ V4L2_PIX_FMT_H264, VIDC_SESSION_TYPE_DEC, 200, 10, 200 },
-+	{ V4L2_PIX_FMT_HEVC, VIDC_SESSION_TYPE_DEC, 200, 10, 200 },
-+	{ V4L2_PIX_FMT_VP8, VIDC_SESSION_TYPE_DEC, 200, 10, 200 },
-+	{ V4L2_PIX_FMT_VP9, VIDC_SESSION_TYPE_DEC, 200, 10, 200 },
- };
- 
- static const struct hfi_platform_codec_freq_data *
-@@ -311,9 +311,21 @@ static unsigned long codec_vsp_freq(u32 session_type, u32 codec)
- 	return 0;
- }
- 
-+static unsigned long codec_lp_freq(u32 session_type, u32 codec)
-+{
-+	const struct hfi_platform_codec_freq_data *data;
-+
-+	data = get_codec_freq_data(session_type, codec);
-+	if (data)
-+		return data->low_power_freq;
-+
-+	return 0;
-+}
-+
- const struct hfi_platform hfi_plat_v4 = {
- 	.codec_vpp_freq = codec_vpp_freq,
- 	.codec_vsp_freq = codec_vsp_freq,
-+	.codec_lp_freq = codec_lp_freq,
- 	.codecs = get_codecs,
- 	.capabilities = get_capabilities,
- };
-diff --git a/drivers/media/platform/qcom/venus/hfi_platform_v6.c b/drivers/media/platform/qcom/venus/hfi_platform_v6.c
-index 2278be1..15d0dc8 100644
---- a/drivers/media/platform/qcom/venus/hfi_platform_v6.c
-+++ b/drivers/media/platform/qcom/venus/hfi_platform_v6.c
-@@ -262,14 +262,14 @@ static void get_codecs(u32 *enc_codecs, u32 *dec_codecs, u32 *count)
- }
- 
- static const struct hfi_platform_codec_freq_data codec_freq_data[] = {
--	{ V4L2_PIX_FMT_H264, VIDC_SESSION_TYPE_ENC, 675, 25 },
--	{ V4L2_PIX_FMT_HEVC, VIDC_SESSION_TYPE_ENC, 675, 25 },
--	{ V4L2_PIX_FMT_VP8, VIDC_SESSION_TYPE_ENC, 675, 60 },
--	{ V4L2_PIX_FMT_MPEG2, VIDC_SESSION_TYPE_DEC, 200, 25 },
--	{ V4L2_PIX_FMT_H264, VIDC_SESSION_TYPE_DEC, 200, 25 },
--	{ V4L2_PIX_FMT_HEVC, VIDC_SESSION_TYPE_DEC, 200, 25 },
--	{ V4L2_PIX_FMT_VP8, VIDC_SESSION_TYPE_DEC, 200, 60 },
--	{ V4L2_PIX_FMT_VP9, VIDC_SESSION_TYPE_DEC, 200, 60 },
-+	{ V4L2_PIX_FMT_H264, VIDC_SESSION_TYPE_ENC, 675, 25, 320 },
-+	{ V4L2_PIX_FMT_HEVC, VIDC_SESSION_TYPE_ENC, 675, 25, 320 },
-+	{ V4L2_PIX_FMT_VP8, VIDC_SESSION_TYPE_ENC, 675, 60, 320 },
-+	{ V4L2_PIX_FMT_MPEG2, VIDC_SESSION_TYPE_DEC, 200, 25, 200 },
-+	{ V4L2_PIX_FMT_H264, VIDC_SESSION_TYPE_DEC, 200, 25, 200 },
-+	{ V4L2_PIX_FMT_HEVC, VIDC_SESSION_TYPE_DEC, 200, 25, 200 },
-+	{ V4L2_PIX_FMT_VP8, VIDC_SESSION_TYPE_DEC, 200, 60, 200 },
-+	{ V4L2_PIX_FMT_VP9, VIDC_SESSION_TYPE_DEC, 200, 60, 200 },
- };
- 
- static const struct hfi_platform_codec_freq_data *
-@@ -311,6 +311,17 @@ static unsigned long codec_vsp_freq(u32 session_type, u32 codec)
- 	return 0;
- }
- 
-+static unsigned long codec_lp_freq(u32 session_type, u32 codec)
-+{
-+	const struct hfi_platform_codec_freq_data *data;
-+
-+	data = get_codec_freq_data(session_type, codec);
-+	if (data)
-+		return data->low_power_freq;
-+
-+	return 0;
-+}
-+
- static u8 num_vpp_pipes(void)
- {
- 	return 4;
-@@ -319,6 +330,7 @@ static u8 num_vpp_pipes(void)
- const struct hfi_platform hfi_plat_v6 = {
- 	.codec_vpp_freq = codec_vpp_freq,
- 	.codec_vsp_freq = codec_vsp_freq,
-+	.codec_lp_freq = codec_lp_freq,
- 	.codecs = get_codecs,
- 	.capabilities = get_capabilities,
- 	.num_vpp_pipes = num_vpp_pipes,
-diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index 43c4e3d..a3f3e31 100644
---- a/drivers/media/platform/qcom/venus/pm_helpers.c
-+++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -492,8 +492,50 @@ static int poweron_coreid(struct venus_core *core, unsigned int coreid_mask)
- 	return 0;
- }
- 
-+static inline int power_save_mode_enable(struct venus_inst *inst,
-+					 bool enable)
-+{
-+	struct venc_controls *enc_ctr = &inst->controls.enc;
-+	const u32 ptype = HFI_PROPERTY_CONFIG_VENC_PERF_MODE;
-+	u32 venc_mode;
-+	int ret = 0;
-+
-+	if (inst->session_type != VIDC_SESSION_TYPE_ENC)
-+		return 0;
-+
-+	if (enc_ctr->bitrate_mode == V4L2_MPEG_VIDEO_BITRATE_MODE_CQ)
-+		enable = false;
-+
-+	venc_mode = enable ? HFI_VENC_PERFMODE_POWER_SAVE :
-+		HFI_VENC_PERFMODE_MAX_QUALITY;
-+
-+	ret = hfi_session_set_property(inst, ptype, &venc_mode);
-+	if (ret)
-+		return ret;
-+
-+	inst->flags = enable ? inst->flags | VENUS_LOW_POWER :
-+		inst->flags & ~VENUS_LOW_POWER;
-+
-+	return ret;
-+}
-+
-+static int move_core_to_power_save_mode(struct venus_core *core,
-+					u32 core_id)
-+{
-+	struct venus_inst *inst = NULL;
-+
-+	mutex_lock(&core->lock);
-+	list_for_each_entry(inst, &core->instances, list) {
-+		if (inst->clk_data.core_id == core_id &&
-+		    inst->session_type == VIDC_SESSION_TYPE_ENC)
-+			power_save_mode_enable(inst, true);
-+	}
-+	mutex_unlock(&core->lock);
-+	return 0;
-+}
-+
- static void
--min_loaded_core(struct venus_inst *inst, u32 *min_coreid, u32 *min_load)
-+min_loaded_core(struct venus_inst *inst, u32 *min_coreid, u32 *min_load, bool low_power)
- {
- 	u32 mbs_per_sec, load, core1_load = 0, core2_load = 0;
- 	u32 cores_max = core_num_max(inst);
-@@ -511,7 +553,14 @@ min_loaded_core(struct venus_inst *inst, u32 *min_coreid, u32 *min_load)
- 		if (inst_pos->state != INST_START)
- 			continue;
- 
--		vpp_freq = inst_pos->clk_data.vpp_freq;
-+		if (inst->session_type == VIDC_SESSION_TYPE_DEC)
-+			vpp_freq = inst_pos->clk_data.vpp_freq;
-+		else if (inst->session_type == VIDC_SESSION_TYPE_ENC)
-+			vpp_freq = low_power ? inst_pos->clk_data.vpp_freq :
-+				inst_pos->clk_data.low_power_freq;
-+		else
-+			continue;
-+
- 		coreid = inst_pos->clk_data.core_id;
- 
- 		mbs_per_sec = load_per_instance(inst_pos);
-@@ -543,9 +592,11 @@ static int decide_core(struct venus_inst *inst)
- {
- 	const u32 ptype = HFI_PROPERTY_CONFIG_VIDEOCORES_USAGE;
- 	struct venus_core *core = inst->core;
--	u32 min_coreid, min_load, inst_load;
-+	u32 min_coreid, min_load, cur_inst_load;
-+	u32 min_lp_coreid, min_lp_load, cur_inst_lp_load;
- 	struct hfi_videocores_usage_type cu;
- 	unsigned long max_freq;
-+	int ret = 0;
- 
- 	if (legacy_binding) {
- 		if (inst->session_type == VIDC_SESSION_TYPE_DEC)
-@@ -559,23 +610,43 @@ static int decide_core(struct venus_inst *inst)
- 	if (inst->clk_data.core_id != VIDC_CORE_ID_DEFAULT)
- 		return 0;
- 
--	inst_load = load_per_instance(inst);
--	inst_load *= inst->clk_data.vpp_freq;
--	max_freq = core->res->freq_tbl[0].freq;
-+	cur_inst_load = load_per_instance(inst);
-+	cur_inst_load *= inst->clk_data.vpp_freq;
-+	/*TODO : divide this inst->load by work_route */
- 
--	min_loaded_core(inst, &min_coreid, &min_load);
-+	cur_inst_lp_load = load_per_instance(inst);
-+	cur_inst_lp_load *= inst->clk_data.low_power_freq;
-+	/*TODO : divide this inst->load by work_route */
- 
--	if ((inst_load + min_load) > max_freq) {
--		dev_warn(core->dev, "HW is overloaded, needed: %u max: %lu\n",
--			 inst_load, max_freq);
-+	max_freq = core->res->freq_tbl[0].freq;
-+
-+	min_loaded_core(inst, &min_coreid, &min_load, false);
-+	min_loaded_core(inst, &min_lp_coreid, &min_lp_load, true);
-+
-+	if (cur_inst_load + min_load <= max_freq) {
-+		inst->clk_data.core_id = min_coreid;
-+		cu.video_core_enable_mask = min_coreid;
-+	} else if (cur_inst_lp_load + min_load <= max_freq) {
-+		/* Move current instance to LP and return */
-+		inst->clk_data.core_id = min_coreid;
-+		cu.video_core_enable_mask = min_coreid;
-+		power_save_mode_enable(inst, true);
-+	} else if (cur_inst_lp_load + min_lp_load <= max_freq) {
-+		/* Move all instances to LP mode and return */
-+		inst->clk_data.core_id = min_lp_coreid;
-+		cu.video_core_enable_mask = min_lp_coreid;
-+		move_core_to_power_save_mode(core, min_lp_coreid);
-+	} else {
-+		dev_warn(core->dev, "HW can't support this load");
- 		return -EINVAL;
- 	}
- 
--	inst->clk_data.core_id = min_coreid;
--	cu.video_core_enable_mask = min_coreid;
--
- done:
--	return hfi_session_set_property(inst, ptype, &cu);
-+	ret = hfi_session_set_property(inst, ptype, &cu);
-+	if (ret)
-+		return ret;
-+
-+	return ret;
- }
- 
- static int acquire_core(struct venus_inst *inst)
-@@ -936,7 +1007,7 @@ static int core_power_v4(struct device *dev, int on)
- static unsigned long calculate_inst_freq(struct venus_inst *inst,
- 					 unsigned long filled_len)
- {
--	unsigned long vpp_freq = 0, vsp_freq = 0;
-+	unsigned long vpp_freq_per_mb = 0, vpp_freq = 0, vsp_freq = 0;
- 	u32 fps = (u32)inst->fps;
- 	u32 mbs_per_sec;
- 
-@@ -945,7 +1016,12 @@ static unsigned long calculate_inst_freq(struct venus_inst *inst,
- 	if (inst->state != INST_START)
- 		return 0;
- 
--	vpp_freq = mbs_per_sec * inst->clk_data.vpp_freq;
-+	if (inst->session_type == VIDC_SESSION_TYPE_ENC)
-+		vpp_freq_per_mb = inst->flags & VENUS_LOW_POWER ?
-+			inst->clk_data.low_power_freq :
-+			inst->clk_data.vpp_freq;
-+
-+	vpp_freq = mbs_per_sec * vpp_freq_per_mb;
- 	/* 21 / 20 is overhead factor */
- 	vpp_freq += vpp_freq / 20;
- 	vsp_freq = mbs_per_sec * inst->clk_data.vsp_freq;
--- 
-2.7.4
+> 
+>> +}
+>> +
+>>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
+>>  {
+>>  	struct swap_cluster_info *ci = si->cluster_info;
+>> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
+>>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
+>>  	 * between get/put_swap_device() if SWP_VALID bit is set
+>>  	 */
+>> -	synchronize_rcu();
+>> +	percpu_ref_reinit(&p->users);
+> 
+> Although the effect is same, I think it's better to use
+> percpu_ref_resurrect() here to improve code readability.
+> 
 
+Agree.
+
+>>  	spin_lock(&swap_lock);
+>>  	spin_lock(&p->lock);
+>>  	_enable_swap_info(p);
+>> @@ -2621,11 +2631,13 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+>>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
+>>  	spin_unlock(&p->lock);
+>>  	spin_unlock(&swap_lock);
+>> +
+>> +	percpu_ref_kill(&p->users);
+>>  	/*
+>>  	 * wait for swap operations protected by get/put_swap_device()
+>>  	 * to complete
+>>  	 */
+>> -	synchronize_rcu();
+>> +	wait_for_completion(&p->comp);
+> 
+> Better to move percpu_ref_kill() after the comments.  And maybe revise
+> the comments.
+
+Will do.
+
+> 
+>>  
+>>  	flush_work(&p->discard_work);
+>>  
+>> @@ -3132,7 +3144,7 @@ static bool swap_discardable(struct swap_info_struct *si)
+>>  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>  {
+>>  	struct swap_info_struct *p;
+>> -	struct filename *name;
+>> +	struct filename *name = NULL;
+>>  	struct file *swap_file = NULL;
+>>  	struct address_space *mapping;
+>>  	int prio;
+>> @@ -3163,6 +3175,12 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>  
+>>  	INIT_WORK(&p->discard_work, swap_discard_work);
+>>  
+>> +	init_completion(&p->comp);
+>> +	error = percpu_ref_init(&p->users, swap_users_ref_free,
+>> +				PERCPU_REF_INIT_DEAD, GFP_KERNEL);
+>> +	if (unlikely(error))
+>> +		goto bad_swap;
+>> +
+>>  	name = getname(specialfile);
+>>  	if (IS_ERR(name)) {
+>>  		error = PTR_ERR(name);
+>> @@ -3356,6 +3374,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>>  bad_swap_unlock_inode:
+>>  	inode_unlock(inode);
+>>  bad_swap:
+>> +	percpu_ref_exit(&p->users);
+> 
+> Usually the resource freeing order matches their allocating order
+> reversely.  So, if there's no special reason, please follow that rule.
+> 
+
+My oversight. Will fix it in V2.
+
+> Best Regards,
+> Huang, Ying
+> 
+>>  	free_percpu(p->percpu_cluster);
+>>  	p->percpu_cluster = NULL;
+>>  	free_percpu(p->cluster_next_cpu);
+> .
+> 
+
+Many thanks for review and nice suggestion! :)
