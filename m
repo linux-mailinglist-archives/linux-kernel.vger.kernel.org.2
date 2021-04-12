@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B3735C077
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCE835BE9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239837AbhDLJN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:13:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49206 "EHLO mail.kernel.org"
+        id S239442AbhDLJAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:00:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238525AbhDLI5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:57:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C24261278;
-        Mon, 12 Apr 2021 08:56:35 +0000 (UTC)
+        id S238429AbhDLItr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:49:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 337566135A;
+        Mon, 12 Apr 2021 08:48:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217796;
+        s=korg; t=1618217326;
         bh=jnUE0CaMOYiyxx0A85k2dEb6Q3912c1bB9IlNE7W4bU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zdQAa5tvsbW2VRBm6Cm37G9zZwVWC8M+GfPNXWUWtTh8UsyDQzupjbk5GUgFuEPTd
-         38oAdyAeGKqZjVj1Emx/Jd8fSGlz5WqaUYBbX/FY1lCp9oigDTJTGmyMvTnez9truF
-         1/x5HPlBLz9IqhTtYvtVJLRpUBqGQ3hJw/BMBzvA=
+        b=GglbFrC+AXE3lyMUGtimNlS8nCMfsTRNikZj5nyR2ovC+hc/iRThyg42QMaHQRKaQ
+         LimELUUu6BPgTW4DIwcSi5LolxDQP28u7GcbgDO2Cu7kFOUUY1Nf2s1IFxUKqPP2HU
+         5BZKHztbfMRTCdIeTycSo8W2UGxhAISPvluID2Q8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,12 +27,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ilya Leoshkevich <iii@linux.ibm.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 149/188] s390/cpcmd: fix inline assembly register clobbering
+Subject: [PATCH 5.4 085/111] s390/cpcmd: fix inline assembly register clobbering
 Date:   Mon, 12 Apr 2021 10:41:03 +0200
-Message-Id: <20210412084018.572639359@linuxfoundation.org>
+Message-Id: <20210412084007.087884494@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
