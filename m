@@ -2,92 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A3735BBE5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D91635BBED
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237185AbhDLIPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:15:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56810 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236973AbhDLIPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:15:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F7FB600EF;
-        Mon, 12 Apr 2021 08:15:18 +0000 (UTC)
-Date:   Mon, 12 Apr 2021 09:15:15 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Walter Wu <walter-zh.wu@mediatek.com>
-Subject: Re: [PATCH v4] kasan: remove redundant config option
-Message-ID: <20210412081515.GB2060@arm.com>
-References: <20210226012531.29231-1-walter-zh.wu@mediatek.com>
- <CAAeHK+zyv1=kXtKAynnJN-77dwmPG4TXpJOLv_3W0nxXe5NjXA@mail.gmail.com>
- <20210330223637.f3c73a78c64587e615d26766@linux-foundation.org>
- <20210411105332.GA23778@arm.com>
- <20210411150316.d60aa0b5174adf2370538809@linux-foundation.org>
+        id S237227AbhDLIRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:17:03 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:30755 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236973AbhDLIQy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:16:54 -0400
+X-Greylist: delayed 65972 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Apr 2021 04:16:53 EDT
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 13C8GChR010666;
+        Mon, 12 Apr 2021 17:16:13 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 13C8GChR010666
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1618215373;
+        bh=uDdOFoatKT+5zEWWAiJzJLrdDEXYwLFG1mwLVDQeZSg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ChatkEem71FPJE1307DkBwk3EPN3NFOpzdXEboxnGfQ3DRCYX8wc4wg9Ihk3ndQb5
+         RFUazZAR9nNmJcwhJIvJV1T/Y12+8RCbGkYJS64SQ4g9fDYtJcIid3UnlN7jRZW5mM
+         kq1Foetoi6isuFQcp4M4PW8YDsrCiy/AG++mRyyu+VyqPU+XT7xVrfFVC15QVKq+Gg
+         ZEEhMg0jObJB08TbnX2+tovpffpLkluDGnNlPElN+JT2E6fLFzYMT73bi/H4crUpGS
+         6tUqPA9Cy1ovNGsl09vTE+KpBs9rVQtDOWRJQoKwEJIVh3sTj0Duu5nOEkUsMABc1C
+         LUgQh95SyPgNw==
+X-Nifty-SrcIP: [209.85.210.174]
+Received: by mail-pf1-f174.google.com with SMTP id i190so8693841pfc.12;
+        Mon, 12 Apr 2021 01:16:12 -0700 (PDT)
+X-Gm-Message-State: AOAM532Yadje13LzX39f3A1PiCPxysZBZm2ANqEF+d+B8/U4bPiygaNi
+        JNkJdTi0GDu/i5jiIDLelNunET8kKZLqVNZynEo=
+X-Google-Smtp-Source: ABdhPJwQIkyZ0y/uMUlvB54CDG4omqvVnzcbv+RlS3hqxhdudrm8EDbUg9sZzv6Fn9SFbxY9GFmI5rHOYOeaY6T9tTM=
+X-Received: by 2002:a63:181c:: with SMTP id y28mr26531445pgl.175.1618215372220;
+ Mon, 12 Apr 2021 01:16:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210411150316.d60aa0b5174adf2370538809@linux-foundation.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210411135532.219797-1-masahiroy@kernel.org> <CAMuHMdUtqSv6PUfLtuGoBSgqqM4CkwSkT3nKstXRKN1tuXrQ_g@mail.gmail.com>
+In-Reply-To: <CAMuHMdUtqSv6PUfLtuGoBSgqqM4CkwSkT3nKstXRKN1tuXrQ_g@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 12 Apr 2021 17:15:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATozxbhq1Q4HtiOrE87KKFEmdC7Hfp-biXYG1e_eFzHvw@mail.gmail.com>
+Message-ID: <CAK7LNATozxbhq1Q4HtiOrE87KKFEmdC7Hfp-biXYG1e_eFzHvw@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: use ?= to assign CROSS_COMPILE by arch-Makefile
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Helge Deller <deller@gmx.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        "moderated list:H8/300 ARCHITECTURE" 
+        <uclinux-h8-devel@lists.sourceforge.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 03:03:16PM -0700, Andrew Morton wrote:
-> On Sun, 11 Apr 2021 11:53:33 +0100 Catalin Marinas <catalin.marinas@arm.com> wrote:
-> > On Tue, Mar 30, 2021 at 10:36:37PM -0700, Andrew Morton wrote:
-> > > On Mon, 29 Mar 2021 16:54:26 +0200 Andrey Konovalov <andreyknvl@google.com> wrote:
-> > > > Looks like my patch "kasan: fix KASAN_STACK dependency for HW_TAGS"
-> > > > that was merged into 5.12-rc causes a build time warning:
-> > > > 
-> > > > include/linux/kasan.h:333:30: warning: 'CONFIG_KASAN_STACK' is not
-> > > > defined, evaluates to 0 [-Wundef]
-> > > > #if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-> > > > 
-> > > > The fix for it would either be reverting the patch (which would leave
-> > > > the initial issue unfixed) or applying this "kasan: remove redundant
-> > > > config option" patch.
-> > > > 
-> > > > Would it be possible to send this patch (with the fix-up you have in
-> > > > mm) for the next 5.12-rc?
-> > > > 
-> > > > Here are the required tags:
-> > > > 
-> > > > Fixes: d9b571c885a8 ("kasan: fix KASAN_STACK dependency for HW_TAGS")
-> > > > Cc: stable@vger.kernel.org
-> > > 
-> > > Got it, thanks.  I updated the changelog to mention the warning fix and
-> > > moved these ahead for a -rc merge.
-> > 
-> > Is there a chance this patch makes it into 5.12? I still get the warning
-> > with the latest Linus' tree (v5.12-rc6-408-g52e44129fba5) when enabling
-> > KASAN_HW_TAGS.
-> 
-> Trying.   We're still awaiting a tested fix for
-> https://lkml.kernel.org/r/CA+fCnZf1ABrQg0dsxtoZa9zM1BSbLYq_Xbu+xi9cv8WAZxdC2g@mail.gmail.com
+On Mon, Apr 12, 2021 at 4:44 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Yamada-san,
+>
+> On Sun, Apr 11, 2021 at 3:56 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> > Use ?= operator to let arch/*/Makefile to assign CROSS_COMPILE only
+> > when CROSS_COMPILE is undefined.
+> >
+> > This allows arch-Makefiles to drop the ifeq ($(CROSS_COMPILE),)
+> > conditional.
+> >
+> > This slightly changes the behavior; the arch-Makefile previously
+> > overrode CROSS_COMPILE when CROSS_COMPILE has already been made empty
+> > via an environment variable as in 'export CROSS_COMPILE='.
+> >
+> > With this commit, arch-Makefle will respect the user's environment
+> > set-up, which seems to be a more correct behavior.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> Thanks for your patch!
+>
+> > ---
+> >
+> >  arch/arc/Makefile    | 4 +---
+> >  arch/h8300/Makefile  | 4 +---
+> >  arch/m68k/Makefile   | 4 +---
+> >  arch/mips/Makefile   | 4 +---
+> >  arch/parisc/Makefile | 6 ++----
+> >  arch/sh/Makefile     | 4 +---
+>
+> What about arch/xtensa/Makefile?
+>
+> > --- a/arch/m68k/Makefile
+> > +++ b/arch/m68k/Makefile
+> > @@ -17,10 +17,8 @@
+> >  KBUILD_DEFCONFIG := multi_defconfig
+> >
+> >  ifneq ($(SUBARCH),$(ARCH))
+> > -       ifeq ($(CROSS_COMPILE),)
+> > -               CROSS_COMPILE := $(call cc-cross-prefix, \
+> > +       CROSS_COMPILE ?= $(call cc-cross-prefix, \
+> >                         m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
+> > -       endif
+> >  endif
+>
+> This does not seem to work as expected: my standard build scripts
+> (using "make ARCH=m68k") no longer pick up the cross-compiler,
+> but fall back to the native compiler, thus breaking the build.
 
-Thanks Andrew. I didn't realise it was sent and then dropped.
 
-However, we should decouple (or rather reorder) the two patches. There's
-no functional dependency between removing the redundant config option (a
-fix for an existing commit) and adding support for KASAN_SW_TAGS with
-gcc-11, only a conflict in scripts/Makefile.kasan. Walter's original
-patch applies on top of vanilla 5.12-rc3:
+Agh, sorry, this patch does not work
+because the top Makefile exports CROSS_COMPILE.
 
-https://lkml.kernel.org/r/20210226012531.29231-1-walter-zh.wu@mediatek.com
+export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS
+CROSS_COMPILE LD CC
+
+
+
+Removing CROSS_COMPILE from that makes ?= work,
+but it would break other parts.
+
+
+Please ignore this patch.
+
+
+
+
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
+
+
 
 -- 
-Catalin
+Best Regards
+Masahiro Yamada
