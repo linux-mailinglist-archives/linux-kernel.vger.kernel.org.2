@@ -2,35 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D745635BC7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A7335BDA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237470AbhDLInQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:43:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34702 "EHLO mail.kernel.org"
+        id S238360AbhDLIwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:52:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237461AbhDLInK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:43:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F267D61244;
-        Mon, 12 Apr 2021 08:42:51 +0000 (UTC)
+        id S237961AbhDLIrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:47:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BB5261220;
+        Mon, 12 Apr 2021 08:47:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618216972;
-        bh=nD1XbmUtLI57bRf4xzb+SI/BIIQnh6f3jKjJJIW1DMg=;
+        s=korg; t=1618217244;
+        bh=DCGLNL5MGQoMwnj+YKTBIU/N7b/v65L1+GoKMYbTwBo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1D6OmBy9+Yv+1g2keQon7PbadRGbbPpQt2pPiLlInfCD4/cDiViD7vJK5Ihi4juuP
-         gwBOG1xq0tsOJXzjvQVpH+trI8t9jz41rUEsC8a4RyUpo9W4woFQsUinz9W1gVtKgo
-         3waVK3GCtoZdGsUbduZRsiXQWTxbFHCErWm+xpJE=
+        b=GJIKwBLcg0RLQi7fDW6Dk9LZlDD3HFFx8zNVTULTyho5sacQC9MSVU9rXGZilYMX0
+         GWLE00VEITU3mho1fIJmI+BcqvE4gKPDHEwE7+SsVCo8Vg2PtSQEOSlOH3UH35jDnS
+         kVOvXBap1JsJs0QdYVA2e0h3aTlrsqeIavioWJV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
-        syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 22/66] usbip: add sysfs_lock to synchronize sysfs code paths
+        stable@vger.kernel.org,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 050/111] ASoC: SOF: Intel: HDA: fix core status verification
 Date:   Mon, 12 Apr 2021 10:40:28 +0200
-Message-Id: <20210412083958.846056989@linuxfoundation.org>
+Message-Id: <20210412084005.924638987@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-References: <20210412083958.129944265@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,149 +44,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 
-commit 4e9c93af7279b059faf5bb1897ee90512b258a12 upstream.
+[ Upstream commit 927280909fa7d8e61596800d82f18047c6cfbbe4 ]
 
-Fuzzing uncovered race condition between sysfs code paths in usbip
-drivers. Device connect/disconnect code paths initiated through
-sysfs interface are prone to races if disconnect happens during
-connect and vice versa.
+When checking for enabled cores it isn't enough to check that
+some of the requested cores are running, we have to check that
+all of them are.
 
-This problem is common to all drivers while it can be reproduced easily
-in vhci_hcd. Add a sysfs_lock to usbip_device struct to protect the paths.
-
-Use this in vhci_hcd to protect sysfs paths. For a complete fix, usip_host
-and usip-vudc drivers and the event handler will have to use this lock to
-protect the paths. These changes will be done in subsequent patches.
-
-Cc: stable@vger.kernel.org
-Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/b6568f7beae702bbc236a545d3c020106ca75eac.1616807117.git.skhan@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 747503b1813a ("ASoC: SOF: Intel: Add Intel specific HDA DSP HW operations")
+Reviewed-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210322163728.16616-2-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/usbip/usbip_common.h |    3 +++
- drivers/usb/usbip/vhci_hcd.c     |    1 +
- drivers/usb/usbip/vhci_sysfs.c   |   30 +++++++++++++++++++++++++-----
- 3 files changed, 29 insertions(+), 5 deletions(-)
+ sound/soc/sof/intel/hda-dsp.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
---- a/drivers/usb/usbip/usbip_common.h
-+++ b/drivers/usb/usbip/usbip_common.h
-@@ -263,6 +263,9 @@ struct usbip_device {
- 	/* lock for status */
- 	spinlock_t lock;
+diff --git a/sound/soc/sof/intel/hda-dsp.c b/sound/soc/sof/intel/hda-dsp.c
+index d4c7160717c7..06715b3d8c31 100644
+--- a/sound/soc/sof/intel/hda-dsp.c
++++ b/sound/soc/sof/intel/hda-dsp.c
+@@ -192,10 +192,17 @@ bool hda_dsp_core_is_enabled(struct snd_sof_dev *sdev,
  
-+	/* mutex for synchronizing sysfs store paths */
-+	struct mutex sysfs_lock;
+ 	val = snd_sof_dsp_read(sdev, HDA_DSP_BAR, HDA_DSP_REG_ADSPCS);
+ 
+-	is_enable = (val & HDA_DSP_ADSPCS_CPA_MASK(core_mask)) &&
+-		    (val & HDA_DSP_ADSPCS_SPA_MASK(core_mask)) &&
+-		    !(val & HDA_DSP_ADSPCS_CRST_MASK(core_mask)) &&
+-		    !(val & HDA_DSP_ADSPCS_CSTALL_MASK(core_mask));
++#define MASK_IS_EQUAL(v, m, field) ({	\
++	u32 _m = field(m);		\
++	((v) & _m) == _m;		\
++})
 +
- 	int sockfd;
- 	struct socket *tcp_socket;
- 
---- a/drivers/usb/usbip/vhci_hcd.c
-+++ b/drivers/usb/usbip/vhci_hcd.c
-@@ -1101,6 +1101,7 @@ static void vhci_device_init(struct vhci
- 	vdev->ud.side   = USBIP_VHCI;
- 	vdev->ud.status = VDEV_ST_NULL;
- 	spin_lock_init(&vdev->ud.lock);
-+	mutex_init(&vdev->ud.sysfs_lock);
- 
- 	INIT_LIST_HEAD(&vdev->priv_rx);
- 	INIT_LIST_HEAD(&vdev->priv_tx);
---- a/drivers/usb/usbip/vhci_sysfs.c
-+++ b/drivers/usb/usbip/vhci_sysfs.c
-@@ -185,6 +185,8 @@ static int vhci_port_disconnect(struct v
- 
- 	usbip_dbg_vhci_sysfs("enter\n");
- 
-+	mutex_lock(&vdev->ud.sysfs_lock);
++	is_enable = MASK_IS_EQUAL(val, core_mask, HDA_DSP_ADSPCS_CPA_MASK) &&
++		MASK_IS_EQUAL(val, core_mask, HDA_DSP_ADSPCS_SPA_MASK) &&
++		!(val & HDA_DSP_ADSPCS_CRST_MASK(core_mask)) &&
++		!(val & HDA_DSP_ADSPCS_CSTALL_MASK(core_mask));
 +
- 	/* lock */
- 	spin_lock_irqsave(&vhci->lock, flags);
- 	spin_lock(&vdev->ud.lock);
-@@ -195,6 +197,7 @@ static int vhci_port_disconnect(struct v
- 		/* unlock */
- 		spin_unlock(&vdev->ud.lock);
- 		spin_unlock_irqrestore(&vhci->lock, flags);
-+		mutex_unlock(&vdev->ud.sysfs_lock);
++#undef MASK_IS_EQUAL
  
- 		return -EINVAL;
- 	}
-@@ -205,6 +208,8 @@ static int vhci_port_disconnect(struct v
- 
- 	usbip_event_add(&vdev->ud, VDEV_EVENT_DOWN);
- 
-+	mutex_unlock(&vdev->ud.sysfs_lock);
-+
- 	return 0;
- }
- 
-@@ -349,30 +354,36 @@ static ssize_t attach_store(struct devic
- 	else
- 		vdev = &vhci->vhci_hcd_hs->vdev[rhport];
- 
-+	mutex_lock(&vdev->ud.sysfs_lock);
-+
- 	/* Extract socket from fd. */
- 	socket = sockfd_lookup(sockfd, &err);
- 	if (!socket) {
- 		dev_err(dev, "failed to lookup sock");
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 	if (socket->type != SOCK_STREAM) {
- 		dev_err(dev, "Expecting SOCK_STREAM - found %d",
- 			socket->type);
- 		sockfd_put(socket);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 
- 	/* create threads before locking */
- 	tcp_rx = kthread_create(vhci_rx_loop, &vdev->ud, "vhci_rx");
- 	if (IS_ERR(tcp_rx)) {
- 		sockfd_put(socket);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 	tcp_tx = kthread_create(vhci_tx_loop, &vdev->ud, "vhci_tx");
- 	if (IS_ERR(tcp_tx)) {
- 		kthread_stop(tcp_rx);
- 		sockfd_put(socket);
--		return -EINVAL;
-+		err = -EINVAL;
-+		goto unlock_mutex;
- 	}
- 
- 	/* get task structs now */
-@@ -397,7 +408,8 @@ static ssize_t attach_store(struct devic
- 		 * Will be retried from userspace
- 		 * if there's another free port.
- 		 */
--		return -EBUSY;
-+		err = -EBUSY;
-+		goto unlock_mutex;
- 	}
- 
- 	dev_info(dev, "pdev(%u) rhport(%u) sockfd(%d)\n",
-@@ -422,7 +434,15 @@ static ssize_t attach_store(struct devic
- 
- 	rh_port_connect(vdev, speed);
- 
-+	dev_info(dev, "Device attached\n");
-+
-+	mutex_unlock(&vdev->ud.sysfs_lock);
-+
- 	return count;
-+
-+unlock_mutex:
-+	mutex_unlock(&vdev->ud.sysfs_lock);
-+	return err;
- }
- static DEVICE_ATTR_WO(attach);
- 
+ 	dev_dbg(sdev->dev, "DSP core(s) enabled? %d : core_mask %x\n",
+ 		is_enable, core_mask);
+-- 
+2.30.2
+
 
 
