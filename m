@@ -2,168 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C59035BA98
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:08:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040AB35BA96
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:08:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236790AbhDLHIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:08:55 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:40948 "EHLO loongson.cn"
+        id S236777AbhDLHIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:08:50 -0400
+Received: from mail-bn7nam10on2081.outbound.protection.outlook.com ([40.107.92.81]:52769
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236774AbhDLHIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:08:51 -0400
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxLcnU8XNgIgEHAA--.9126S3;
-        Mon, 12 Apr 2021 15:08:05 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Fix strnlen_user access check
-To:     Jinyang He <hejinyang@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
- <cbe5e79b-ee6c-5c59-0051-28e4d1152666@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <1634fae6-4a39-0e60-2cd1-b41ee4bc3996@loongson.cn>
-Date:   Mon, 12 Apr 2021 15:08:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <cbe5e79b-ee6c-5c59-0051-28e4d1152666@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S236672AbhDLHIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 03:08:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FqPV51Ikm25X9Fgld92Zu4bWpSn/nJeDQCUEx7De4MKEEUYCHbHlkXW2VV62QG98vogbPN3hgGngR1K6aHEKHKbsNK4NZ4e8S3QtKlGJ3lro1HgSqH6muqiLsOiH5zR+2zMtbcE3pc4v1c3n2kdnwngIOgy76TAI2XaWcpw+8W0lUULfRUGz/iNsJCSJZl/PwLKir/WWsD/d8EWpURyYm/+C+BWYBpB8pSs/sIDPmMxL8a+YLrKewdx4o71pACXP83XzIGG1SxKVJaVtRBROjy+MyanJKEeyo20xiTPrlvxuhEetaj4WNCMnbVP7DYKmY2/l2nFOxh7WpE91DUQkNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jYeMy7JMc+3/DVrStAyOW6mC50f9Pv9mydUCwpPprkE=;
+ b=gDie6Vwe4yId+oE2a4ea5TUF9bfGWby8oNEPTwWuKj5xJgbWhj6S+j6gcTnWExnH0l/FftpgmY5r/uIndFOg1iwAbw9OIVfrEl24lcHylyPG6rPuUNkiULbbenvUvDjBh5PMZS422n5pZCN4xStRz2xM+WiNsIAaD/oD0Kk0TmxzYSO+VL8vjFI/ELlCa/NP+o0hl3W4Y6h8vsnsc9LH9UgdVaSZmvx/puc+XbBj/aRqHJm3lzf5lqAjq4WkWaK2y07NZ8npBNkSHKA5JG0y/q2tPyz1OBxgRyzhRyQmAdkYU+QYx2w2P2l43pmVYV/4gRt/62UgsWl9o6NBRv08jA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jYeMy7JMc+3/DVrStAyOW6mC50f9Pv9mydUCwpPprkE=;
+ b=kUDowaUKKHaVLL9BS6d9bNXMWAnDF1ULr/NZP55EBNVVsdPlj9U0xpkDiKYrdvttYArIJ6WUOlBqYWrjF1beqe43uDWbOi5J5vFqU9mUZawA2eLFB+0CODxRxrvGJOOeT664XMZs36Df/u9zovBpCEe0jYRZ43isM860KUVnGtE=
+Authentication-Results: jiuyang.me; dkim=none (message not signed)
+ header.d=none;jiuyang.me; dmarc=none action=none header.from=synaptics.com;
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com (2603:10b6:a03:219::16)
+ by SJ0PR03MB5920.namprd03.prod.outlook.com (2603:10b6:a03:2d6::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.21; Mon, 12 Apr
+ 2021 07:08:25 +0000
+Received: from BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72]) by BY5PR03MB5345.namprd03.prod.outlook.com
+ ([fe80::8569:341f:4bc6:5b72%8]) with mapi id 15.20.4020.022; Mon, 12 Apr 2021
+ 07:08:25 +0000
+Date:   Mon, 12 Apr 2021 15:08:17 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Jiuyang Liu <liu@jiuyang.me>
+Cc:     Alex Ghiti <alex@ghiti.fr>, Palmer Dabbelt <palmer@dabbelt.com>,
+        Andrew Waterman <waterman@eecs.berkeley.edu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] implement flush_cache_vmap for RISC-V
+Message-ID: <20210412150817.33f49be8@xhacker.debian>
+In-Reply-To: <20210412000531.12249-1-liu@jiuyang.me>
+References: <20210412000531.12249-1-liu@jiuyang.me>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxLcnU8XNgIgEHAA--.9126S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxCrykKryruFWfWw1fCFW3Wrg_yoWrJrW3pF
-        Z3AFnIkFs5KrWxCa42y392gFyrGr45Gr1vgw12gw1rZan8Z3W8JrWfKrn0934kJF4kAa4I
-        9FyxJwn8uw4jv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvG14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
-        bIxvr21lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
-        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
-        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
-        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjfU8J5oDUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Originating-IP: [192.147.44.204]
+X-ClientProxiedBy: SJ0PR03CA0052.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::27) To BY5PR03MB5345.namprd03.prod.outlook.com
+ (2603:10b6:a03:219::16)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (192.147.44.204) by SJ0PR03CA0052.namprd03.prod.outlook.com (2603:10b6:a03:33e::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.16 via Frontend Transport; Mon, 12 Apr 2021 07:08:23 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 820b690b-013c-474e-ed3c-08d8fd81c404
+X-MS-TrafficTypeDiagnostic: SJ0PR03MB5920:
+X-Microsoft-Antispam-PRVS: <SJ0PR03MB59205AB793EF9687C9CE9132ED709@SJ0PR03MB5920.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0GM//3I7cLbfvIMqcjwkH6GSn6YNkGJlcEBsmG+E/sipPItnzVc+b4XCY4cUcAtVy9KrZQPpbT0TIOURiv81HwQkN8pgMvxjO7SF9H4wMwL3eI1JchlkhYNmuL6w6Hssm00vCeS45O1OKV91UZ6mReYszeVlhkdyt5o10//5dZefuFBH7CwSHaQHrKMku2CeKQpyxXSF/qf+U1iDqgy+isM5OURjyYWIrXwyOGQ5OBI2Y7Jn4Gu2eTowNyg0ZHE3fz+dD59i9uHtS1IYTn8QbD8BuiQb8d0rtX0Zqr4RXgQ7euzeGzLmm+JWlgqsypBAlGcqYkyZanj9d7fj/Kz8Be8Cvciy4uP4CQVKeiMy9nqOa35P6dQMEeVSjOf3j7A6nR5i90tlXaL0/ly99eReTBSI3h0DB3UXomnRJmP24J9eUHFeHgu+wlSQHPAjX9a4KlB1jaj9dS0gPm63opyX5SONyOEEoVBnD03lOc8pOgMBjuGwWri1CAJwGg0xTgcW6gTi6vgDR9pb2+whxqDeaFmEpIk8CY/seV8IClNPk88Lir4zMuo9LrifPPxcZ+zuRm9OG3rzcZLDKPz3rKlhMEHYMAgK3s91vMZyuGJhZiovUljo3Zsk0I+Uu0fXXM8XLYGYGC5IS4nJvS0Z0IEKFnaz+sqe20KiKQ6OkIcZLwU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR03MB5345.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(39850400004)(346002)(396003)(366004)(1076003)(16526019)(5660300002)(6916009)(4326008)(2906002)(55016002)(7696005)(6506007)(8676002)(26005)(38350700002)(6666004)(66556008)(66476007)(54906003)(66946007)(52116002)(186003)(7416002)(956004)(316002)(478600001)(38100700002)(86362001)(9686003)(8936002)(83380400001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?zhIHM93S93ebo42MS83QwAfeNk7oRy93MdlTtVCBBdR8i4Yfv2OXnKcM8+/T?=
+ =?us-ascii?Q?9LF4gQO9xQI+UHUS2KF2Aap/0GoFL9GCe4e4lvrGI36vM3y++7tG3Nmv3ljb?=
+ =?us-ascii?Q?9LAYzXQEUVVKQ/f/cCgjk/y9k1ZI4ObzQdi2BgD0jPGzeAYfxKFy7laT8LKX?=
+ =?us-ascii?Q?Jow7+1bmecYqiKRmV5FSNnERcgKyiqGX0NzlE7DacvhktXVvL1wWtFF9e0vx?=
+ =?us-ascii?Q?A21lAsAUDbSncziy4LgZKk5skWesWgL/z2ROgUT7BMmW2BYe6xxGYPRuc0dZ?=
+ =?us-ascii?Q?0wO4UeKjlUv+MvjRhZB3wejtmgCj3ewTztgVe5ICZ79DLreY7Dm0BukcFp2o?=
+ =?us-ascii?Q?X7aBuAVj3Mz/EwXi94GDTvhIlwqtzmm5P1yk1XIv5f+ggbuv3oz/4UKUc+/L?=
+ =?us-ascii?Q?KiNkN1sALlI1c4cZvUl4GguyZ4MpS9ts6niX0aWG+ot8jc2pbutvIlya7wXa?=
+ =?us-ascii?Q?Vtf8/4iNpptx+JErhK/cI+hXKr3R8wtILNLgNIprM/5YLBjsFKFgEFpAzZlw?=
+ =?us-ascii?Q?tZrNICMRswYgvn3bewN4k2Hr4PxdadlouBKb4V/VdGoeVIWTWhJ/EuOQ6c7H?=
+ =?us-ascii?Q?3ENKVgMd3QTDV6Bm9HzPfz6W/re9ke/9lMz8udShP8HTtMKbzjV+0Frnecv4?=
+ =?us-ascii?Q?UuMWs994xGKbPcOp0sGzyjyIwPLrAzIZTO2yrjvhoHOsTJ0DnvsC6+uljaCE?=
+ =?us-ascii?Q?IjZvInPCACECPjlOTrTNKPzSmk270+Yxl82lyXweVtRTBWeYYrYd+ZCQ3PEh?=
+ =?us-ascii?Q?Yc1zteDAoB/uG+O6+dXA7iRm/tJ3Bb1t6z4UGhsCD4l7z3feMaXvFzKVmlMH?=
+ =?us-ascii?Q?ZidNcks83omb9n8uFltQLabvBSu4clLGLIBiX6J36F2F3hiJcTXfEC2Q2LBD?=
+ =?us-ascii?Q?PSoB/klFfvu2MsYpaTvMYf/V3fjvmv1/FAqxMzIBijuW8bdv8H9N/ZLtZh7e?=
+ =?us-ascii?Q?tjf9amCBHI8ix30AIU36+4a50kMFd3yydQpP+ZNK+460+G5pQKeOMdqRQEnA?=
+ =?us-ascii?Q?i5wI6R61lIA7ZeNBUhScRvMgPNi0tnBOyu/cma3DtKw6Ud2luhMBq1kKRmvP?=
+ =?us-ascii?Q?Z2fhnkBLUYS0H9fN8wLNkUlevAQ0P/H0i5p4hLK2Uhhq8yCxwU+FkyUr2fvq?=
+ =?us-ascii?Q?elWZdF8oIdRfLIsxStS0VygjtGENFUYifasrrqiWZJvT1o4TkCDaa1e//lwj?=
+ =?us-ascii?Q?3hQ50XaOdg/CCEyoFxmp8DO8FHbkmPKcdWq5xaeHXTYrmGw5z08rXBsUAkhH?=
+ =?us-ascii?Q?A1rxdLsOp3yrs+9WouiIz3Dhp/QRtv7SPSDyzbEQ2g9kU9DHa1A4XGJu1MfI?=
+ =?us-ascii?Q?mabgY8oYvk7OVjKQ7lyaBN1s?=
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 820b690b-013c-474e-ed3c-08d8fd81c404
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR03MB5345.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2021 07:08:25.6968
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: zpGnqFDqTCvdWymxGw6EVL+trwX0j0EcNe629XBYX788SAawugap/leA0MssmO4csn/icSJdrt1gODJ6YexcRQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR03MB5920
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/12/2021 11:02 AM, Tiezhu Yang wrote:
-> On 04/11/2021 07:04 PM, Jinyang He wrote:
->> Commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs") brought a problem for
->> strnlen_user(). Jump out when checking access_ok() with condition that
->> (s + strlen(s)) < __UA_LIMIT <= (s + n). The old __strnlen_user_asm()
->> just checked (ua_limit & s) without checking (ua_limit & (s + n)).
->> Therefore, find strlen form s to __UA_LIMIT - 1 in that condition.
->>
->> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
->> ---
->>   arch/mips/include/asm/uaccess.h | 11 +++++++++--
->>   1 file changed, 9 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/mips/include/asm/uaccess.h 
->> b/arch/mips/include/asm/uaccess.h
->> index 91bc7fb..85ba0c8 100644
->> --- a/arch/mips/include/asm/uaccess.h
->> +++ b/arch/mips/include/asm/uaccess.h
->> @@ -630,8 +630,15 @@ static inline long strnlen_user(const char 
->> __user *s, long n)
->>   {
->>       long res;
->>   -    if (!access_ok(s, n))
->> -        return -0;
->> +    if (unlikely(n <= 0))
->> +        return 0;
->> +
->> +    if (!access_ok(s, n)) {
->> +        if (!access_ok(s, 0))
->> +            return 0;
->> +
->> +        n = __UA_LIMIT - (unsigned long)s - 1;
->> +    }
->>         might_fault();
->>       __asm__ __volatile__(
->
-> The following simple changes are OK to fix this issue?
->
-> diff --git a/arch/mips/include/asm/uaccess.h 
-> b/arch/mips/include/asm/uaccess.h
-> index 91bc7fb..eafc99b 100644
-> --- a/arch/mips/include/asm/uaccess.h
-> +++ b/arch/mips/include/asm/uaccess.h
-> @@ -630,8 +630,8 @@ static inline long strnlen_user(const char __user 
-> *s, long n)
->  {
->         long res;
->
-> -       if (!access_ok(s, n))
-> -               return -0;
-> +       if (!access_ok(s, 1))
-> +               return 0;
->
->         might_fault();
->         __asm__ __volatile__(
->
-> Thanks,
-> Tiezhu
->
+Hi Jiuyang,
 
-Hi all,
+On Mon, 12 Apr 2021 00:05:30 +0000 Jiuyang Liu <liu@jiuyang.me> wrote:
 
-Here is some detail info about background and analysis process,
-I hope it is useful to understand this issue.
 
-When update kernel with the latest mips-next, we can not login through a
-graphical interface, this is because drm radeon GPU driver does not work,
-we can not see the boot message "[drm] radeon kernel modesetting enabled."
-through the serial console.
+> 
+> This patch implements flush_cache_vmap for RISC-V, since it modifies PTE.
+> Without this patch, SFENCE.VMA won't be added to related codes, which
+> might introduce a bug in the out-of-order micro-architecture
+> implementations.
+> 
+> Signed-off-by: Jiuyang Liu <liu@jiuyang.me>
+> Reviewed-by: Alexandre Ghiti <alex@ghiti.fr>
+> Reviewed-by: Palmer Dabbelt <palmer@dabbelt.com>
 
-drivers/gpu/drm/radeon/radeon_drv.c
-static int __init radeon_module_init(void)
-{
-         [...]
-         DRM_INFO("radeon kernel modesetting enabled.\n");
-         [...]
-}
+IIRC, Palmer hasn't given this Reviewed-by tag.
 
-I use git bisect to find commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs")
-is the first bad commit:
+> ---
 
-  $ git bisect log
-  git bisect start
-  # good: [666c1fc90cd82184624d4cc5d124c66025f89a47] mips: bmips: 
-bcm63268: populate device tree nodes
-  git bisect good 666c1fc90cd82184624d4cc5d124c66025f89a47
-  # bad: [e86e75596623e1ce5d784db8214687326712a8ae] MIPS: octeon: Add 
-__raw_copy_[from|to|in]_user symbols
-  git bisect bad e86e75596623e1ce5d784db8214687326712a8ae
-  # good: [45deb5faeb9e02951361ceba5ffee721745661c3] MIPS: uaccess: 
-Remove get_fs/set_fs call sites
-  git bisect good 45deb5faeb9e02951361ceba5ffee721745661c3
-  # bad: [5e65c52ec716af6e8f51dacdaeb4a4d872249af1] MIPS: Loongson64: 
-Use _CACHE_UNCACHED instead of _CACHE_UNCACHED_ACCELERATED
-  git bisect bad 5e65c52ec716af6e8f51dacdaeb4a4d872249af1
-  # bad: [04324f44cb69a03fdc8f2ee52386a4fdf6a0043b] MIPS: Remove 
-get_fs/set_fs
-  git bisect bad 04324f44cb69a03fdc8f2ee52386a4fdf6a0043b
-  # first bad commit: [04324f44cb69a03fdc8f2ee52386a4fdf6a0043b] MIPS: 
-Remove get_fs/set_fs
+Could you plz add version and changes? IIRC, this is the v3.
 
-I analysis and test the changes in the above first bad commit and find out
-the following obvious difference which leads to the login issue.
+>  arch/riscv/include/asm/cacheflush.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/riscv/include/asm/cacheflush.h b/arch/riscv/include/asm/cacheflush.h
+> index 23ff70350992..3fd528badc35 100644
+> --- a/arch/riscv/include/asm/cacheflush.h
+> +++ b/arch/riscv/include/asm/cacheflush.h
+> @@ -30,6 +30,12 @@ static inline void flush_dcache_page(struct page *page)
+>  #define flush_icache_user_page(vma, pg, addr, len) \
+>         flush_icache_mm(vma->vm_mm, 0)
+> 
+> +/*
+> + * flush_cache_vmap is invoked after map_kernel_range() has installed the page
+> + * table entries, which modifies PTE, SFENCE.VMA should be inserted.
 
-arch/mips/include/asm/uaccess.h
-static inline long strnlen_user(const char __user *s, long n)
-{
-         [...]
-         if (!access_ok(s, n))
-                 return -0;
-         [...]
-}
+Just my humble opinion, flush_cache_vmap() may not be necessary. vmalloc_fault
+can take care of this, and finally sfence.vma is inserted in related path.
 
-Thanks,
-Tiezhu
+Regards
 
+> + */
+> +#define flush_cache_vmap(start, end) flush_tlb_all()
+> +
+>  #ifndef CONFIG_SMP
+> 
+>  #define flush_icache_all() local_flush_icache_all()
+> --
+> 2.31.1
