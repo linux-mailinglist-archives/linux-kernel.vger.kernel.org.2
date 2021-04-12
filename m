@@ -2,93 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C8235C854
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6E935C85C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:08:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242201AbhDLOIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:08:10 -0400
-Received: from mga14.intel.com ([192.55.52.115]:40962 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242140AbhDLOIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:08:07 -0400
-IronPort-SDR: mygq9Ag+MqqtGbnrypqnBzeTS2xrgZIsqP9mNq0OPJu+uFNlEyXIFsT1uSo/oxiX5tAPVd4NDu
- w2xl26uhKXOw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="193760847"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="193760847"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 07:07:48 -0700
-IronPort-SDR: BGhmllKTW9Z6NxJaTifkLifZqnSkdcO9scHaBTB25wRZoe5QphRb0LEbp2FL3UNZKlNiKHbYCP
- nPUCxGNhF57w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="599997938"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 12 Apr 2021 07:07:44 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 8AF161D2; Mon, 12 Apr 2021 17:08:00 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Drew Fustini <drew@beagleboard.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Thierry Reding <treding@nvidia.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Cc:     Vladimir Zapolskiy <vz@mleia.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Daniel Mack <daniel@zonque.org>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>
-Subject: [PATCH v1 3/3] pinctrl: Add PIN_CONFIG_MODE_PWM to enum pin_config_param
-Date:   Mon, 12 Apr 2021 17:07:41 +0300
-Message-Id: <20210412140741.39946-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412140741.39946-1-andriy.shevchenko@linux.intel.com>
-References: <20210412140741.39946-1-andriy.shevchenko@linux.intel.com>
+        id S242209AbhDLOI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:08:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242140AbhDLOIz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 10:08:55 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98E2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 07:08:36 -0700 (PDT)
+Received: from [2a02:fe0:c700:2:559d:4a7b:2050:4789] (port=57558)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C@lam-norge.net>)
+        id 1lVxEr-0005bZ-5G
+        for linux-kernel@vger.kernel.org; Mon, 12 Apr 2021 16:08:29 +0200
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@lam-norge.net>
+Subject: Fair Pay Drink?
+Message-ID: <70620403-1da3-5599-5615-6ad78fd5d43b@lam-norge.net>
+Date:   Mon, 12 Apr 2021 16:08:27 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems that we will have more and more pin controllers that support
-PWM function on the (selected) pins. Due to it being a part of pin
-controller IP the idea is to have some code that will switch the mode
-and attach the corresponding driver, for example, via using it as
-a library. Meanwhile, put a corresponding item to the pin_config_param
-enumerator.
+So basically Windows was based on the pub catalog of nix.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/pinctrl/pinconf-generic.h | 2 ++
- 1 file changed, 2 insertions(+)
+To get a good nix system, we separate the drink from the OS.
 
-diff --git a/include/linux/pinctrl/pinconf-generic.h b/include/linux/pinctrl/pinconf-generic.h
-index 189e701832ea..e18ab3d5908f 100644
---- a/include/linux/pinctrl/pinconf-generic.h
-+++ b/include/linux/pinctrl/pinconf-generic.h
-@@ -80,6 +80,7 @@ struct pinctrl_map;
-  *	operation, if several modes of operation are supported these can be
-  *	passed in the argument on a custom form, else just use argument 1
-  *	to indicate low power mode, argument 0 turns low power mode off.
-+ * @PIN_CONFIG_MODE_PWM: this will configure the pin for PWM
-  * @PIN_CONFIG_OUTPUT_ENABLE: this will enable the pin's output mode
-  * 	without driving a value there. For most platforms this reduces to
-  * 	enable the output buffers and then let the pin controller current
-@@ -125,6 +126,7 @@ enum pin_config_param {
- 	PIN_CONFIG_INPUT_SCHMITT,
- 	PIN_CONFIG_INPUT_SCHMITT_ENABLE,
- 	PIN_CONFIG_MODE_LOW_POWER,
-+	PIN_CONFIG_MODE_PWM,
- 	PIN_CONFIG_OUTPUT_ENABLE,
- 	PIN_CONFIG_OUTPUT,
- 	PIN_CONFIG_PERSIST_STATE,
--- 
-2.30.2
+I suggest b6 Cider, apple blackcurrant, based on the partycustoms I grew 
+up with, which afterall I should base a product on, suiting a good OS 
+aswell.
 
+: https://www.youtube.com/channel/UCtneL5MyJSURptIpRhHJzXw
+
+Serenity,
+Ywe.
