@@ -2,100 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92E4F35BC04
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E96635BC0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:25:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237295AbhDLIXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:23:16 -0400
-Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:45832 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237091AbhDLIXN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:23:13 -0400
-Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id D126DE5;
-        Mon, 12 Apr 2021 01:22:55 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com D126DE5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1618215775;
-        bh=HJdBJDNgUONeECqTexzrkugjzVR76e6uToFT5Qmyats=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=arrfH05ETUVzgHvXgnMIjDle7PSxIocQoHQw66vyuxvK84vhdHKWPaCkHGXCOINvc
-         e2blUERQA1nBfM02P5m0A8t93nHXBprUG0bvCOBktVZg/6LW1kTZ0Zw1WbtrgVCXoD
-         h3dta9rT/imQVCF/lceEzulpLLYGy4aW902VyPrQ=
-Received: from [10.230.42.155] (unknown [10.230.42.155])
-        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 2B6EF1874BD;
-        Mon, 12 Apr 2021 01:22:49 -0700 (PDT)
-Subject: Re: [PATCH 2/2] brcmfmac: support parse country code map from DT
-To:     Shawn Guo <shawn.guo@linaro.org>, Kalle Valo <kvalo@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com
-References: <20210408113022.18180-1-shawn.guo@linaro.org>
- <20210408113022.18180-3-shawn.guo@linaro.org>
-From:   Arend van Spriel <arend.vanspriel@broadcom.com>
-Message-ID: <82182ad8-c728-d313-047c-79478c9ee85f@broadcom.com>
-Date:   Mon, 12 Apr 2021 10:22:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S237090AbhDLI0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:26:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236920AbhDLI0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:26:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F372C611C9;
+        Mon, 12 Apr 2021 08:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618215942;
+        bh=o2FA/cIfp81ieww6cQ4V8vdIeDnkjNOcliiu7ETQHpk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DHnMsNneetAzNDdLcS/md0lm9nlFNbK5iX6CMGjtvhvCkGUXfhTDBvSbjuuVA7ZKF
+         qj8b8plBSB1bCVGVKT3k1hD1GZPdAYg+zHdgMjyGxf84Un7uA5Qw46RoIFDoTwhm1J
+         4acu6SGUE6kN+llel9jRLE7HGsVR6ayGkJ7OmNcM=
+Date:   Mon, 12 Apr 2021 10:25:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     dillon min <dillon.minfei@gmail.com>
+Cc:     jirislaby@kernel.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        linux-serial@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] serial: stm32: optimize spin lock usage
+Message-ID: <YHQEA9jn5uXQCtrN@kroah.com>
+References: <1618202061-8243-1-git-send-email-dillon.minfei@gmail.com>
+ <YHPgGI6EmTzmVH7g@kroah.com>
+ <CAL9mu0Lt-3_O7V5HLxd5Hbt9afx9ryBUzWqmsc+2n3SP7JS6ig@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210408113022.18180-3-shawn.guo@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL9mu0Lt-3_O7V5HLxd5Hbt9afx9ryBUzWqmsc+2n3SP7JS6ig@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08-04-2021 13:30, Shawn Guo wrote:
-> With any regulatory domain requests coming from either user space or
-> 802.11 IE (Information Element), the country is coded in ISO3166
-> standard.  It needs to be translated to firmware country code and
-> revision with the mapping info in settings->country_codes table.
-> Support populate country_codes table by parsing the mapping from DT.
-
-one more thing though...
-
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> ---
->   .../wireless/broadcom/brcm80211/brcmfmac/of.c | 53 +++++++++++++++++++
->   1 file changed, 53 insertions(+)
+On Mon, Apr 12, 2021 at 02:50:20PM +0800, dillon min wrote:
+> Hi Greg，
 > 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> index a7554265f95f..ea5c7f434c2c 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> @@ -12,12 +12,61 @@
->   #include "common.h"
->   #include "of.h"
->   
-> +static int brcmf_of_get_country_codes(struct device *dev,
-> +				      struct brcmf_mp_device *settings)
-> +{
+> Thanks for the quick response, please ignore the last private mail.
+> 
+> On Mon, Apr 12, 2021 at 1:52 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Mon, Apr 12, 2021 at 12:34:21PM +0800, dillon.minfei@gmail.com wrote:
+> > > From: dillon min <dillon.minfei@gmail.com>
+> > >
+> > > To avoid potential deadlock in spin_lock usage, change to use
+> > > spin_lock_irqsave(), spin_unlock_irqrestore() in process(thread_fn) context.
+> > > spin_lock(), spin_unlock() under handler context.
+> > >
+> > > remove unused local_irq_save/restore call.
+> > >
+> > > Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> > > ---
+> > > Was verified on stm32f469-disco board. need more test on stm32mp platform.
+> > >
+> > >  drivers/tty/serial/stm32-usart.c | 27 +++++++++++++++++----------
+> > >  1 file changed, 17 insertions(+), 10 deletions(-)
+> > >
+> > > diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+> > > index b3675cf25a69..c4c859b34367 100644
+> > > --- a/drivers/tty/serial/stm32-usart.c
+> > > +++ b/drivers/tty/serial/stm32-usart.c
+> > > @@ -214,7 +214,7 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
+> > >       struct tty_port *tport = &port->state->port;
+> > >       struct stm32_port *stm32_port = to_stm32_port(port);
+> > >       const struct stm32_usart_offsets *ofs = &stm32_port->info->ofs;
+> > > -     unsigned long c;
+> > > +     unsigned long c, flags;
+> > >       u32 sr;
+> > >       char flag;
+> > >
+> > > @@ -276,9 +276,17 @@ static void stm32_usart_receive_chars(struct uart_port *port, bool threaded)
+> > >               uart_insert_char(port, sr, USART_SR_ORE, c, flag);
+> > >       }
+> > >
+> > > -     spin_unlock(&port->lock);
+> > > +     if (threaded)
+> > > +             spin_unlock_irqrestore(&port->lock, flags);
+> > > +     else
+> > > +             spin_unlock(&port->lock);
+> >
+> > You shouldn't have to check for this, see the other patches on the list
+> > recently that fixed this up to not be an issue for irq handlers.
+> Can you help to give more hints, or the commit id of the patch which
+> fixed this. thanks.
+> 
+> I'm still confused with this.
+> 
+> The stm32_usart_threaded_interrupt() is a kthread context, once
+> port->lock holds by this function, another serial interrupts raised,
+> such as USART_SR_TXE,stm32_usart_interrupt() can't get the lock,
+> there will be a deadlock. isn't it?
+> 
+>  So, shouldn't I use spin_lock{_irqsave} according to the caller's context ?
 
-[...]
+Please see 81e2073c175b ("genirq: Disable interrupts for force threaded
+handlers") for when threaded irq handlers have irqs disabled, isn't that
+the case you are trying to "protect" from here?
 
-> +		/* String format e.g. US-Q2-86 */
-> +		strncpy(cce->iso3166, map, 2);
-> +		strncpy(cce->cc, map + 3, 2);
-> +
-> +		ret = kstrtos32(map + 6, 10, &cce->rev);
-> +		if (ret < 0)
-> +			dev_warn(dev, "failed to read rev of map %s: %d",
-> +				 cce->iso3166, ret);
+Why is the "threaded" flag used at all?  The driver should not care.
 
-Do we need a stronger validation of the string format, eg. use sscanf or 
-strstr. Would also be nice to have brcmf_dbg(INFO, ...) here to print 
-the entry.
+Also see 9baedb7baeda ("serial: imx: drop workaround for forced irq
+threading") in linux-next for an example of how this was fixed up in a
+serial driver.
 
-Regards,
-Arend
+does that help?
+
+thanks,
+
+greg k-h
