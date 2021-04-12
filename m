@@ -2,127 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F66435CED5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32C0135CED8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343795AbhDLQuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345717AbhDLQrs (ORCPT
+        id S244495AbhDLQvF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:51:05 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:17222 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244698AbhDLQtG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:47:48 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859A2C061342
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:47:21 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id 7so14836241qka.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:47:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8w9EURUSJ/JlzH1y4R+2PQ2Woxija1EBoUQCQMeXIhk=;
-        b=Y8VPlPzKH66v2WroMYwSo+VqXKTtIovqXmBxaR88iNXTknh/KKaMSLvqwXsRat50wb
-         yD9jTZtrbKJCdBP6P4CZ03nPpfD0SAF81QcX/UECPZQZ0bWmlKODyyVSivXdoZKmRxuP
-         6APSXxsq6EtWmhYE1Ns92R+l8j/Solvv09wg64P+eMXzwOiIRDP8tXOiLbQgaRaRSdfQ
-         r80xWyx/5PtBJCQJT/njtfZNZ9kUGbZqkJqZOzVnIcnkw1qTlhElP2Xa3X7h4oU6LHWy
-         0HwFUg2oluEWJC6CNw2uA4lJu5SFVGMQsVaQZgzO2+wpzS5IeAah0LZ2wN/8Ugn0aG8B
-         xK3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8w9EURUSJ/JlzH1y4R+2PQ2Woxija1EBoUQCQMeXIhk=;
-        b=qDKI3Njgx/VTSuNVwi64f8+OpacG6yu0GPEGPMQOnKQTJIoomwnfEHVb8b81BkL+Dh
-         tGCaG0SZh71tpumoXS1SBAO8umZKP0+p+AYVkakcnRMxZ04zdnmhyXp52kRSPu+b86VY
-         dlaLOk6oZxN1bU3VNJFJS44I74l+k+F2aZ8V9Ok+9TA52mps9Mc0n5l7Ie0lFnv+Uku3
-         GIkHnkCeAW2WuvuQl2gSAYSoVdmHzcPcRUzBpzkvncbo69OPKMEeYeAGZVAWIB8EN7LM
-         weRXMC0J0Ls0lsFX2gM35dN2x/IlEm5Dx4p++ledrdBaXGuhKqsCR5X951Zy27Jdf4UP
-         1h/A==
-X-Gm-Message-State: AOAM530Dyodeqct90oVm9i7BeR5T+IzA5Gn8aes9bc6jijJq4JHuC4pP
-        gTJWinLh9uSJ6zR5AzyDiOrwuuAwDBK24kPy71Jm7w==
-X-Google-Smtp-Source: ABdhPJz9fBvbM4XHx1uojO8mBo3giiBwXBSUd5XBxlO6lGGJeZqumr+MM9otn8fqTpoUMRG3aT5MrZr6iB1Be3zOJrc=
-X-Received: by 2002:a05:6902:4d2:: with SMTP id v18mr38476903ybs.303.1618246039093;
- Mon, 12 Apr 2021 09:47:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wiHGchP=V=a4DbDN+imjGEc=2nvuLQVoeNXNxjpU1T8pg@mail.gmail.com>
- <20210412051445.GA47322@roeck-us.net> <CAHk-=whYcwWgSPxuu8FxZ2i_cG7kw82m-Hbj0-67C6dk1Wb0tQ@mail.gmail.com>
- <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com>
-In-Reply-To: <CANn89iK2aUESa6DSG=Y4Y9tPmPW2weE05AVpxnDbqYwQjFM2Vw@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 12 Apr 2021 18:47:07 +0200
-Message-ID: <CANn89i+sYS_x8D5hASKNgmc-k3P7B9JGY9mU1aBwhqHuAkwnBQ@mail.gmail.com>
-Subject: Re: Linux 5.12-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>
+        Mon, 12 Apr 2021 12:49:06 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13CGYX1n153949;
+        Mon, 12 Apr 2021 12:48:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=yK3wcz6HfMKRr+Anv1JaZYvMeKi8LZVmm3oJn9Nm67k=;
+ b=Mzg4WZ6ps4U6AK9Y4eQAIsOY3JL7iEJhS7hCATAalpARQnpMAUTsTS8FPlQSWXN75u9l
+ YBBvArEhnOgFPxzwBpBzD54Rx3EZ3NvAZ1m2uClnz9WvFc6OAJOXCOLKLy4viVhtEL6l
+ IrtfGE3WNl0ZMt4/19rXPjJ9viDlmUjHi3E4CKdNHqUuuZnzV/RnZnZaG+Vc9MKL6Xxp
+ hI7kNHOOahXigG/yzCRRECUHAqAjTX8vcZYuFCWfuHGn7RoLWoUZb4ZydBi+a3OAzXuv
+ Vy1rLpSvtGLwmgj1xWlD9TN7BUEzxxj80mST1srvl+D1IXyYV4Z18wBCYJX/J2kZ+HLV Nw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37vjtt97y5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 12:48:24 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 13CGZGAU160201;
+        Mon, 12 Apr 2021 12:48:23 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37vjtt97xw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 12:48:23 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13CGlsPB019257;
+        Mon, 12 Apr 2021 16:48:23 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma04wdc.us.ibm.com with ESMTP id 37u3n9spgx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 16:48:23 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13CGmMfo61407758
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Apr 2021 16:48:22 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 086277805C;
+        Mon, 12 Apr 2021 16:48:22 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CAFFD7805E;
+        Mon, 12 Apr 2021 16:48:19 +0000 (GMT)
+Received: from jarvis.int.hansenpartnership.com (unknown [9.85.203.222])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 12 Apr 2021 16:48:19 +0000 (GMT)
+Message-ID: <adeb7c73d0bb354f04f8117c5ccf6b006dfc15de.camel@linux.ibm.com>
+Subject: Re: [PATCH][next] KEYS: trusted: Fix missing null return from
+ kzalloc call
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Colin King <colin.king@canonical.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 12 Apr 2021 09:48:18 -0700
+In-Reply-To: <20210412160101.1627882-1-colin.king@canonical.com>
+References: <20210412160101.1627882-1-colin.king@canonical.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: lwvJeeXsjtjq2GtvbjWudOdZYnX9b8u3
+X-Proofpoint-ORIG-GUID: sdwC6w6xF5MD7wQIQbzEaD3PM4KA4XWi
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-12_11:2021-04-12,2021-04-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 suspectscore=0 bulkscore=0 adultscore=0
+ mlxscore=0 mlxlogscore=999 clxscore=1011 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104120106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 6:31 PM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Mon, Apr 12, 2021 at 6:28 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > On Sun, Apr 11, 2021 at 10:14 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > >
-> > > Qemu test results:
-> > >         total: 460 pass: 459 fail: 1
-> > > Failed tests:
-> > >         sh:rts7751r2dplus_defconfig:ata:net,virtio-net:rootfs
-> > >
-> > > The failure bisects to commit 0f6925b3e8da ("virtio_net: Do not pull payload in
-> > > skb->head"). It is a spurious problem - the test passes roughly every other
-> > > time. When the failure is seen, udhcpc fails to get an IP address and aborts
-> > > with SIGTERM. So far I have only seen this with the "sh" architecture.
-> >
-> > Hmm. Let's add in some more of the people involved in that commit, and
-> > also netdev.
-> >
-> > Nothing in there looks like it should have any interaction with
-> > architecture, so that "it happens on sh" sounds odd, but maybe it's
-> > some particular interaction with the qemu environment.
->
-> Yes, maybe.
->
-> I spent few hours on this, and suspect a buggy memcpy() implementation
-> on SH, but this was not conclusive.
->
-> By pulling one extra byte, the problem goes away.
->
-> Strange thing is that the udhcpc process does not go past sendto().
+On Mon, 2021-04-12 at 17:01 +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The kzalloc call can return null with the GFP_KERNEL flag so
+> add a null check and exit via a new error exit label. Use the
+> same exit error label for another error path too.
+> 
+> Addresses-Coverity: ("Dereference null return value")
+> Fixes: 830027e2cb55 ("KEYS: trusted: Add generic trusted keys
+> framework")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  security/keys/trusted-keys/trusted_core.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/security/keys/trusted-keys/trusted_core.c
+> b/security/keys/trusted-keys/trusted_core.c
+> index ec3a066a4b42..90774793f0b1 100644
+> --- a/security/keys/trusted-keys/trusted_core.c
+> +++ b/security/keys/trusted-keys/trusted_core.c
+> @@ -116,11 +116,13 @@ static struct trusted_key_payload
+> *trusted_payload_alloc(struct key *key)
+>  
+>  	ret = key_payload_reserve(key, sizeof(*p));
+>  	if (ret < 0)
+> -		return p;
+> +		goto err;
+>  	p = kzalloc(sizeof(*p), GFP_KERNEL);
+> +	if (!p)
+> +		goto err;
+>  
+>  	p->migratable = migratable;
+> -
+> +err:
+>  	return p;
 
-This is the patch working around the issue. Unfortunately I was not
-able to root-cause it (I really suspect something on SH)
+This is clearly a code migration bug in 
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 0824e6999e49957f7aaf7c990f6259792d42f32b..fd890a951beea03bdf24406809042666eb972655
-100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -408,11 +408,17 @@ static struct sk_buff *page_to_skb(struct
-virtnet_info *vi,
+commit 251c85bd106099e6f388a89e88e12d14de2c9cda
+Author: Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon Mar 1 18:41:24 2021 +0530
 
-        /* Copy all frame if it fits skb->head, otherwise
-         * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
-+        *
-+        * Apparently, pulling only the Ethernet Header triggers a bug
-on qemu-system-sh4.
-+        * Since GRO aggregation really cares of IPv4/IPv6, pull 20 bytes
-+        * more to work around this bug : These 20 bytes can not belong
-+        * to UDP/TCP payload.
-+        * As a bonus, this makes GRO slightly faster for IPv4 (one less copy).
-         */
-        if (len <= skb_tailroom(skb))
-                copy = len;
-        else
--               copy = ETH_HLEN + metasize;
-+               copy = ETH_HLEN + sizeof(struct iphdr) + metasize;
-        skb_put_data(skb, p, copy);
+    KEYS: trusted: Add generic trusted keys framework
 
-        if (metasize) {
+Which has for addition to trusted_core.c:
+
++static struct trusted_key_payload *trusted_payload_alloc(struct key
+*key)
++{
++       struct trusted_key_payload *p = NULL;
++       int ret;
++
++       ret = key_payload_reserve(key, sizeof(*p));
++       if (ret < 0)
++               return p;
++       p = kzalloc(sizeof(*p), GFP_KERNEL);
++
++       p->migratable = migratable;
++
++       return p;
++}
+
+And for trusted_tpm1.c:
+
+-static struct trusted_key_payload *trusted_payload_alloc(struct key
+*key)
+-{
+-       struct trusted_key_payload *p = NULL;
+-       int ret;
+-
+-       ret = key_payload_reserve(key, sizeof *p);
+-       if (ret < 0)
+-               return p;
+-       p = kzalloc(sizeof *p, GFP_KERNEL);
+-       if (p)
+-               p->migratable = 1; /* migratable by default */
+-       return p;
+-}
+
+The trusted_tpm1.c code was correct and we got this bug introduced by
+what should have been a simple cut and paste ... how did that happen? 
+And therefore, how safe is the rest of the extraction into
+trusted_core.c?
+
+James
+
+
