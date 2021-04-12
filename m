@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60FAD35C880
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DA535C884
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240972AbhDLOSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:18:34 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:55966 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S237579AbhDLOS3 (ORCPT
+        id S241019AbhDLOTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241920AbhDLOTM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:18:29 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13CE3Nof183803;
-        Mon, 12 Apr 2021 10:17:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=t0nkKZ1tFc78oeNoAs6TRGwPCsk81OARjmNHFCq3Gds=;
- b=LIIxFjtgjHd5ao8VrEcKlCqs9Lb2BDu5unuwP2AlMJq3qu4ZAY6gYHmvPWBFqlvwpweb
- p+j/isSdxuU+fYvFW4xzj5VI37RNr/JSusa6SSfJ2zXThqhNYbbvNv3TmuPj7kiEh+RU
- piQ6SKW1TOAUayJN0IRd8Ht8iYyYoi71r79nxRbOFN0unHU9crRzYs3LZBKSlrrLWiGr
- I9YzwEW2piKktyJspMpBBecc0Py3gk4yYz8D6IMpPIJtjmJXzzSharRCLf/48iuRMf23
- R1UHWHldOXx5IEbKEq91+NwhTUns93AkCVw4VLKBNBD5kW4k9qBpZpLv4nfz4ss5MGBi wA== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 37usn5xhqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Apr 2021 10:17:57 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13CECu0q020523;
-        Mon, 12 Apr 2021 14:17:57 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma03dal.us.ibm.com with ESMTP id 37u3n8vvdp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Apr 2021 14:17:57 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13CEHtsj58327366
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Apr 2021 14:17:55 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D639E6A04F;
-        Mon, 12 Apr 2021 14:17:55 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1F12E6A047;
-        Mon, 12 Apr 2021 14:17:53 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.199.37.91])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 12 Apr 2021 14:17:52 +0000 (GMT)
-Subject: Re: [PATCH -next] powerpc/perf: Make symbol 'isa207_pmu_format_attr'
- static
-To:     Bixuan Cui <cuibixuan@huawei.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-References: <20210409090119.59444-1-cuibixuan@huawei.com>
-From:   kajoljain <kjain@linux.ibm.com>
-Message-ID: <55248414-7fde-d156-ca0b-3f2d867d7861@linux.ibm.com>
-Date:   Mon, 12 Apr 2021 19:47:51 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 12 Apr 2021 10:19:12 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C93C061574;
+        Mon, 12 Apr 2021 07:18:54 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id r13so2933419pjf.2;
+        Mon, 12 Apr 2021 07:18:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=gE1tFWhSzbHqAI5X9ftQT0mEeaEBuCfbMLq9XJpCJgo=;
+        b=kAr42R2krMprDasFsl+izamVChxE+LZ8Vd0aPw47+CCHoupj1Qgnq68hh9kaimTv7F
+         37gTXi1cEh+NQk9l6uzuQrdIhj/8ScTKyLBVwYcOjRw9TDXI0peJmFyFq4ikp5qLPnzX
+         fXZA72Vq8jWSg0VH0W7sfejshHq75rG60XhYxtyYvEwAThHqqIsFMZN6YEOUwTQWUuzh
+         IIDTwHv7zQfSZXfOsovIERUgBePRT/8dJFfoWIc0HkJ8n5vCTJyCVaBu8e9rntDVYWXZ
+         7nu29nmtdJzotxfPnQeWQ4tMZ6IxdL9d3i/LmtAqO7DlXrbp5Pj3xdetRHlCrKt+lMP3
+         gANg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=gE1tFWhSzbHqAI5X9ftQT0mEeaEBuCfbMLq9XJpCJgo=;
+        b=B61F0fapGFPD3fMkMMjpcGhSVKY7D56G2oBvXaGIGCdAY6wBHIxHwiDakOUnzek1Rh
+         UUZLDjy3S3sKISwsi1wjEgG7r+kjoHbcjNLyTWYXGyJ2QtAAoxlc1opU/vr1raq9C0wl
+         h4z1ZXXT+E7U2KOY8OMku5Uvb4+E677XMYMmH6KTd5JQnOsdOgpkmZe2pQXZ5ykazaeq
+         FvHIO8pp6LpVhhn6FfEFbmKtUpoZxOk4lllNFs63GhfFc03rE8FAWrq3rxIvDKOOm8N9
+         Vq1XVLqJTTozM04XGb1SQT7F2kjAgsMYKz69nY0Xj0nXd6m0CbiJXbp3UR4i8IzFdCwj
+         2oQA==
+X-Gm-Message-State: AOAM5335nPm6T112wR7qoo97BJMd9ayNHGqoThH4Ag5a+D22oTo5sioE
+        LCNHFSn56PP43A5bNuFiq7C5h08fSJ9Epg==
+X-Google-Smtp-Source: ABdhPJy1IOQSh91XC3ctGh4jru7zmv9U5bKzAJBmvP804WFF9A+NhYzJx1RaM2WGdTkFa91OwV6kOg==
+X-Received: by 2002:a17:902:ac89:b029:e6:d199:29ac with SMTP id h9-20020a170902ac89b02900e6d19929acmr26586468plr.46.1618237134354;
+        Mon, 12 Apr 2021 07:18:54 -0700 (PDT)
+Received: from kali ([103.141.87.254])
+        by smtp.gmail.com with ESMTPSA id gb15sm11274248pjb.32.2021.04.12.07.18.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 07:18:54 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 19:48:45 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     narmstrong@baylibre.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, khilman@baylibre.com,
+        jbrunet@baylibre.com, martin.blumenstingl@googlemail.com
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in, linux-amlogic@lists.infradead.org
+Subject: Subject: [PATCH] staging: media: meson: vdec: declare u32 as static
+ const
+Message-ID: <YHRWxeXA9m+Gt+e+@kali>
 MIME-Version: 1.0
-In-Reply-To: <20210409090119.59444-1-cuibixuan@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: dTT67JJJ8bj9V22NmDJVRGX7DdcGLoHB
-X-Proofpoint-ORIG-GUID: dTT67JJJ8bj9V22NmDJVRGX7DdcGLoHB
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-12_10:2021-04-12,2021-04-12 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- clxscore=1015 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
- malwarescore=0 suspectscore=0 mlxscore=0 adultscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104120096
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Declared 32 bit unsigned int as static constant inside a function and
+replaced u32[] {x,y} as canvas3, canvas4 in codec_h264.c
+This indicates the value of canvas indexes will remain constant throughout execution.
 
+Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+---
+ drivers/staging/media/meson/vdec/codec_h264.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-On 4/9/21 2:31 PM, Bixuan Cui wrote:
-> The sparse tool complains as follows:
-> 
-> arch/powerpc/perf/isa207-common.c:24:18: warning:
->  symbol 'isa207_pmu_format_attr' was not declared. Should it be static?
-> 
-> This symbol is not used outside of isa207-common.c, so this
-> commit marks it static.
+diff --git a/drivers/staging/media/meson/vdec/codec_h264.c b/drivers/staging/media/meson/vdec/codec_h264.c
+index c61128fc4bb9..ea86e9e1c447 100644
+--- a/drivers/staging/media/meson/vdec/codec_h264.c
++++ b/drivers/staging/media/meson/vdec/codec_h264.c
+@@ -287,10 +287,10 @@ static void codec_h264_resume(struct amvdec_session *sess)
+ 	struct amvdec_core *core = sess->core;
+ 	struct codec_h264 *h264 = sess->priv;
+ 	u32 mb_width, mb_height, mb_total;
++	static const u32[] canvas3 = { ANCO_CANVAS_ADDR, 0 };
++	static const u32[] canvas4 = { 24, 0 };
+ 
+-	amvdec_set_canvases(sess,
+-			    (u32[]){ ANC0_CANVAS_ADDR, 0 },
+-			    (u32[]){ 24, 0 });
++	amvdec_set_canvases(sess, canvas3, canvas4);
+ 
+ 	dev_dbg(core->dev, "max_refs = %u; actual_dpb_size = %u\n",
+ 		h264->max_refs, sess->num_dst_bufs);
+-- 
+2.30.2
 
-Patch looks good to me.
-
-Reviewed-by: Kajol Jain<kjain@linux.ibm.com>
-
-Thanks,
-Kajol Jain
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
-> ---
->  arch/powerpc/perf/isa207-common.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/powerpc/perf/isa207-common.c b/arch/powerpc/perf/isa207-common.c
-> index e4f577da33d8..487f9e914b5c 100644
-> --- a/arch/powerpc/perf/isa207-common.c
-> +++ b/arch/powerpc/perf/isa207-common.c
-> @@ -21,7 +21,7 @@ PMU_FORMAT_ATTR(thresh_stop,	"config:32-35");
->  PMU_FORMAT_ATTR(thresh_start,	"config:36-39");
->  PMU_FORMAT_ATTR(thresh_cmp,	"config:40-49");
->  
-> -struct attribute *isa207_pmu_format_attr[] = {
-> +static struct attribute *isa207_pmu_format_attr[] = {
->  	&format_attr_event.attr,
->  	&format_attr_pmcxsel.attr,
->  	&format_attr_mark.attr,
-> 
