@@ -2,77 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C84035C8BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CC935C8C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242002AbhDLO3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:29:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39590 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241820AbhDLO3r (ORCPT
+        id S242292AbhDLOaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:30:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241296AbhDLOaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:29:47 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618237768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=ir1a5pcI6hvlmi/+nshHENDS+iFVrw4hNYIaGGZaApE=;
-        b=diyQzeR72OWGCKCir1W9aPmtuSDrzArSDaa6eC9Z+YrGao/lsVUswKO+40MuNF3NeCGJE5
-        gBINLwSBR/CHhJMoc/fJEqf1rR4Tj3h37jbrzMS0iT+A+xgP8XiNcJFFuAfP7ixxFdEjMY
-        xg2VMI+Sv8FKiUlcv6nIh435mG9u5YjzQqplMWDSRzC13W0ZrVBPBr5qYQTTB6pU/90pLI
-        uVkAGpZ3xW7QHpJ5xhIYK7N80AU/2ZpzRtDe7mdjaIVR3ElwLfw71cwKbh/hc48vf6VUka
-        EQ2UTl9NxycaUhgOyFdWvLe9RMffWsHRFp2zEP80KVKwqY5EP11Xkux2dRl4Ng==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618237768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=ir1a5pcI6hvlmi/+nshHENDS+iFVrw4hNYIaGGZaApE=;
-        b=U8xbT79vc3nF9bEXGZyBC8oZfldj63wGrLLptGk+q6pzp9V033nDwga0O6E4rZaTH2BKz8
-        TzhkTkE9xXdGDPAg==
-To:     "Matthew Wilcox \(Oracle\)" <willy@infradead.org>
-Cc:     neilb@suse.de, peterz@infradead.org, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        bigeasy@linutronix.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/17] locking: Add split_lock
-In-Reply-To: <20210409025131.4114078-3-willy@infradead.org>
-Date:   Mon, 12 Apr 2021 16:29:28 +0200
-Message-ID: <87blaj1sqf.ffs@nanos.tec.linutronix.de>
+        Mon, 12 Apr 2021 10:30:11 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE905C06174A;
+        Mon, 12 Apr 2021 07:29:53 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id r13so2949061pjf.2;
+        Mon, 12 Apr 2021 07:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tKKcJsInlPqpfcFDpQt6bNttFP8cv3zMw+nHpvpdxuE=;
+        b=T6ww3nDrZI5sxtE+ufOahTQ4WPxiy+Gzu+qA5iJQ4rE3l0r9k43GF0Bh+p1yOXxqza
+         f+d45JZi72IoqYHbzV8y9QHbaFURzSvZSUyL05T+xivYN12j84BMjirB5qLJTAbaYvul
+         tjS4gZzljNJXxAe1Rz1jSOdt18LyPPZtpi8Ovl2YQnOHdsX9d+jK8qIrBsnEmS7ozdbN
+         JXibGXtnRBAgfdVO85fjIL4ErfXAzlbgn4MdrzSEOXfN2bPWHXFJSy54wT4sycvT0XC0
+         8TWIcrRn6AunL2q7oAdFmTUjtJXXm0Pig/HcD8JZWtxFAd5qVwgakKE2SDHjBJZpscbm
+         ODRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tKKcJsInlPqpfcFDpQt6bNttFP8cv3zMw+nHpvpdxuE=;
+        b=Szhoy4WJlrxCzndC5mCvwNbqsDNiTYhRXsOvjT5k/YihcotjHPyWn+rgP4JYm659Ke
+         PZFgc8u6CT//wZ/CLXB6zK9xeQtj8XPorpC6tm5MrjaMIT4N3VFgcG8xMqTCmBTJuOUn
+         4+JgkuLSSjw/+FhaxdoZppNx5zznoSmJAT+o4BpblatKce6v4Y2ejVwk10AS/K1dNvZG
+         0pWbZgNf6wxyVrTlbNtu4yzrTVTSLC7SO2OG2vI7gZSni/Et1tWYKHQqaGzVwBXR/Sa2
+         Hw//mTbcYfCbd2M0YeguayDNBeO6l25sp98GQ6wl/MhpHB9cGb1KotNg6KwYawD8gqDv
+         tA2Q==
+X-Gm-Message-State: AOAM532KA+SjbuHLMNaKOPg4d0nqVkNX6zrXPJ3Ut1YeTgNSBfXuo7fa
+        TATKU9/HoyVh6BQbT3z9kys=
+X-Google-Smtp-Source: ABdhPJxBRYhkbeLMLQQUz+zvf+lASZDN4Ft87LNynMBa/pXYyZ3WhXB6LZZpew/h3AT920zAoEAZ3A==
+X-Received: by 2002:a17:902:106:b029:e8:de25:4a1d with SMTP id 6-20020a1709020106b02900e8de254a1dmr26971190plb.7.1618237793240;
+        Mon, 12 Apr 2021 07:29:53 -0700 (PDT)
+Received: from kali ([103.141.87.253])
+        by smtp.gmail.com with ESMTPSA id r1sm11410647pjo.26.2021.04.12.07.29.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 07:29:52 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 19:59:29 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: Re: [Outreachy kernel] Re: [PATCH 2/6] staging: media: intel-ipu3:
+ preferred __aligned(size) over __attribute__aligned(size)
+Message-ID: <YHRZSYmHfXTh/S39@kali>
+References: <cover.1618180659.git.mitaliborkar810@gmail.com>
+ <f618f1fe2d13417ebed185da392fb48811593a9f.1618180660.git.mitaliborkar810@gmail.com>
+ <20210412094315.GJ3@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412094315.GJ3@paasikivi.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09 2021 at 03:51, Matthew Wilcox wrote:
-> Bitlocks do not currently participate in lockdep.  Conceptually, a
-> bit_spinlock is a split lock, eg across each bucket in a hash table.
-> The struct split_lock gives us somewhere to record the lockdep_map.
+On Mon, Apr 12, 2021 at 12:43:15PM +0300, Sakari Ailus wrote:
+> Hi Mitali,
+> 
+> On Mon, Apr 12, 2021 at 04:38:59AM +0530, Mitali Borkar wrote:
+> > This patch fixes the warning identified by checkpatch.pl by replacing
+> > __attribute__aligned(size) with __aligned(size)
+> 
+> Same comments on this than the 1st patch.
+> 
+> It's a staging driver so even if this is a user space header, it's not
+> under include/uapi/linux.
+>
+Sir, I am not able to understandd what you are trying to say in this. As you
+mentioned in patch 1/6, I removed and added header where BIT() macro under 
+apprpriate userpace, but what should I modify in this patch?
 
-I like the concept, but the name is strange. The only purpose of 
-
-> +struct split_lock {
-> +#ifdef CONFIG_DEBUG_LOCK_ALLOC
-> +	struct lockdep_map dep_map;
-> +#endif
-> +};
-
-is to have a place to stick the lockdep map into. So it's not a lock
-construct as the name suggests, it's just auxiliary data when lockdep is
-enabled.
-
-I know you hinted that RT could make use of that data structure and the
-fact that it's mandatory for the various lock functions, but that's not
-really feasible if this is related to a hash with a bit spinlock per
-bucket as the data structure is hash global.
-
-Sure, we can do pointer math to find out the bucket index and do
-something from there, but I'm not sure whether that really helps. Need
-to stare at the remaining few places where bit spinlocks are an issue on
-RT.
-
-Thanks,
-
-        tglx
-
-
+> -- 
+> Kind regards,
+> 
+> Sakari Ailus
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210412094315.GJ3%40paasikivi.fi.intel.com.
