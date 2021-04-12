@@ -2,214 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E50F135CF07
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:00:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5A535CF04
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244518AbhDLRAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:00:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243312AbhDLQ6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:58:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D6846044F;
-        Mon, 12 Apr 2021 16:57:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618246678;
-        bh=sdU3cgfUDnFfzqGGQFtft9NLZO685MLYNHXNxC/BcoI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Czd5G7rmjwveftUBGqePMs4vO54hxIXX/ydVgO7WpQEYd81h0KyOWHzTs0S//Ii2o
-         eSJOsWZidSENVs53JuRH1ABYquUkXFp9/khG+Q2isB3He95WWSoyYCva+Sl+BXI+Pj
-         4l9JLdGZYoiWAcAcY3vQgjDg9mnareNnvRcFG8NjGjCTvX6qHeBCe40vbCTmKK3qqj
-         3EQej9eXE4vr2YGZ+H9OVzcb9RYHzuu3DKGk/jgAF8kFmWCEhbT9BKkHO9BziVHiG9
-         z9TSS/7YAiXfMwvdNQ31RDpD9E/jr8MptsBBERxlybuMWpOVxF8R60i+e8oggaeE14
-         i2kRiB/pORFQg==
-Received: by pali.im (Postfix)
-        id 6CD67687; Mon, 12 Apr 2021 18:57:56 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] net: phy: marvell: fix detection of PHY on Topaz switches
-Date:   Mon, 12 Apr 2021 18:57:39 +0200
-Message-Id: <20210412165739.27277-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210412121430.20898-1-pali@kernel.org>
-References: <20210412121430.20898-1-pali@kernel.org>
+        id S244862AbhDLQ6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:58:53 -0400
+Received: from vulcan.natalenko.name ([104.207.131.136]:35522 "EHLO
+        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245165AbhDLQ6D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:58:03 -0400
+Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 634EBA2AF72;
+        Mon, 12 Apr 2021 18:57:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1618246662;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LdFy/WsqRV13J/Bu3JnHBX56utssyQ/cLHJjiDA2rn8=;
+        b=nIE3wXy40y37nIc2Un3HjB7AQJvoP7Qc319exCQqFUEdkwyLzw2pPDCaKy4U121T4Q4Zoh
+        YylzeRA+iPNTnNBnlX2vI8p/PpmNum9fp7l6yyX7gXnbUG0abahjpzyb812z9ImBw3oQBQ
+        KWqzXh3Nqa8B/g++6JxiFDN2KmpTR/s=
+Date:   Mon, 12 Apr 2021 18:57:41 +0200
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     chukaiping <chukaiping@baidu.com>
+Cc:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm/compaction:let proactive compaction order configurable
+Message-ID: <20210412165741.shqududzlfhge7ff@spock.localdomain>
+References: <1618218330-50591-1-git-send-email-chukaiping@baidu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618218330-50591-1-git-send-email-chukaiping@baidu.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit fee2d546414d ("net: phy: marvell: mv88e6390 temperature
-sensor reading"), Linux reports the temperature of Topaz hwmon as
-constant -75°C.
+Hello.
 
-This is because switches from the Topaz family (88E6141 / 88E6341) have
-the address of the temperature sensor register different from Peridot.
+On Mon, Apr 12, 2021 at 05:05:30PM +0800, chukaiping wrote:
+> Currently the proactive compaction order is fixed to
+> COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
+> normal 4KB memory, but it's too high for the machines with small
+> normal memory, for example the machines with most memory configured
+> as 1GB hugetlbfs huge pages. In these machines the max order of
+> free pages is often below 9, and it's always below 9 even with hard
+> compaction. This will lead to proactive compaction be triggered very
+> frequently. In these machines we only care about order of 3 or 4.
+> This patch export the oder to proc and let it configurable
+> by user, and the default value is still COMPACTION_HPAGE_ORDER.
+> 
+> Signed-off-by: chukaiping <chukaiping@baidu.com>
+> ---
+>  include/linux/compaction.h |    1 +
+>  kernel/sysctl.c            |   10 ++++++++++
+>  mm/compaction.c            |    7 ++++---
+>  3 files changed, 15 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+> index ed4070e..151ccd1 100644
+> --- a/include/linux/compaction.h
+> +++ b/include/linux/compaction.h
+> @@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
+>  #ifdef CONFIG_COMPACTION
+>  extern int sysctl_compact_memory;
+>  extern unsigned int sysctl_compaction_proactiveness;
+> +extern unsigned int sysctl_compaction_order;
+>  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+>  			void *buffer, size_t *length, loff_t *ppos);
+>  extern int sysctl_extfrag_threshold;
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 62fbd09..277df31 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -114,6 +114,7 @@
+>  static int __maybe_unused neg_one = -1;
+>  static int __maybe_unused two = 2;
+>  static int __maybe_unused four = 4;
+> +static int __maybe_unused ten = 10;
 
-This address is instead compatible with 88E1510 PHYs, as was used for
-Topaz before the above mentioned commit.
+^^ does the upper limit have to be hard-coded like this?
 
-Create a new mapping table between switch family and PHY ID for families
-which don't have a model number. And define PHY IDs for Topaz and Peridot
-families.
+>  static unsigned long zero_ul;
+>  static unsigned long one_ul = 1;
+>  static unsigned long long_max = LONG_MAX;
+> @@ -2871,6 +2872,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
+>  		.extra2		= &one_hundred,
+>  	},
+>  	{
+> +		.procname       = "compaction_order",
+> +		.data           = &sysctl_compaction_order,
+> +		.maxlen         = sizeof(sysctl_compaction_order),
+> +		.mode           = 0644,
+> +		.proc_handler   = proc_dointvec_minmax,
+> +		.extra1         = SYSCTL_ZERO,
 
-Create a new PHY ID and a new PHY driver for Topaz's internal PHY.
-The only difference from Peridot's PHY driver is the HWMON probing
-method.
+I wonder what happens if this knob is set to 0. Have you tested such a
+corner case?
 
-Prior this change Topaz's internal PHY is detected by kernel as:
+> +		.extra2         = &ten,
+> +	},
+> +	{
+>  		.procname	= "extfrag_threshold",
+>  		.data		= &sysctl_extfrag_threshold,
+>  		.maxlen		= sizeof(int),
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index e04f447..a192996 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1925,16 +1925,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
+>  
+>  /*
+>   * A zone's fragmentation score is the external fragmentation wrt to the
+> - * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
+> + * sysctl_compaction_order. It returns a value in the range [0, 100].
+>   */
+>  static unsigned int fragmentation_score_zone(struct zone *zone)
+>  {
+> -	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
+> +	return extfrag_for_order(zone, sysctl_compaction_order);
+>  }
+>  
+>  /*
+>   * A weighted zone's fragmentation score is the external fragmentation
+> - * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
+> + * wrt to the sysctl_compaction_order scaled by the zone's size. It
+>   * returns a value in the range [0, 100].
+>   *
+>   * The scaling factor ensures that proactive compaction focuses on larger
+> @@ -2666,6 +2666,7 @@ static void compact_nodes(void)
+>   * background. It takes values in the range [0, 100].
+>   */
+>  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
+> +unsigned int __read_mostly sysctl_compaction_order = COMPACTION_HPAGE_ORDER;
+>  
+>  /*
+>   * This is the entry point for compacting all nodes via
+> -- 
+> 1.7.1
+> 
 
-  PHY [...] driver [Marvell 88E6390] (irq=63)
-
-And afterwards as:
-
-  PHY [...] driver [Marvell 88E6341 Family] (irq=63)
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-BugLink: https://github.com/globalscaletechnologies/linux/issues/1
-Fixes: fee2d546414d ("net: phy: marvell: mv88e6390 temperature sensor reading")
-Reviewed-by: Marek Behún <kabel@kernel.org>
----
-Changes since v1:
-* create direct mapping table between family and prod_id which avoid need
-  to use of forward declaration and simplify implementation
-* fill mapping table only for Topaz and Peridot families
----
- drivers/net/dsa/mv88e6xxx/chip.c | 30 +++++++++++++-----------------
- drivers/net/phy/marvell.c        | 32 +++++++++++++++++++++++++++++---
- include/linux/marvell_phy.h      |  5 +++--
- 3 files changed, 45 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
-index 903d619e08ed..e08bf9377140 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3026,10 +3026,17 @@ static int mv88e6xxx_setup(struct dsa_switch *ds)
- 	return err;
- }
- 
-+/* prod_id for switch families which do not have a PHY model number */
-+static const u16 family_prod_id_table[] = {
-+	[MV88E6XXX_FAMILY_6341] = MV88E6XXX_PORT_SWITCH_ID_PROD_6341,
-+	[MV88E6XXX_FAMILY_6390] = MV88E6XXX_PORT_SWITCH_ID_PROD_6390,
-+};
-+
- static int mv88e6xxx_mdio_read(struct mii_bus *bus, int phy, int reg)
- {
- 	struct mv88e6xxx_mdio_bus *mdio_bus = bus->priv;
- 	struct mv88e6xxx_chip *chip = mdio_bus->chip;
-+	u16 prod_id;
- 	u16 val;
- 	int err;
- 
-@@ -3040,23 +3047,12 @@ static int mv88e6xxx_mdio_read(struct mii_bus *bus, int phy, int reg)
- 	err = chip->info->ops->phy_read(chip, bus, phy, reg, &val);
- 	mv88e6xxx_reg_unlock(chip);
- 
--	if (reg == MII_PHYSID2) {
--		/* Some internal PHYs don't have a model number. */
--		if (chip->info->family != MV88E6XXX_FAMILY_6165)
--			/* Then there is the 6165 family. It gets is
--			 * PHYs correct. But it can also have two
--			 * SERDES interfaces in the PHY address
--			 * space. And these don't have a model
--			 * number. But they are not PHYs, so we don't
--			 * want to give them something a PHY driver
--			 * will recognise.
--			 *
--			 * Use the mv88e6390 family model number
--			 * instead, for anything which really could be
--			 * a PHY,
--			 */
--			if (!(val & 0x3f0))
--				val |= MV88E6XXX_PORT_SWITCH_ID_PROD_6390 >> 4;
-+	/* Some internal PHYs don't have a model number. */
-+	if (reg == MII_PHYSID2 && !(val & 0x3f0) &&
-+	    chip->info->family < ARRAY_SIZE(family_prod_id_table)) {
-+		prod_id = family_prod_id_table[chip->info->family];
-+		if (prod_id)
-+			val |= prod_id >> 4;
- 	}
- 
- 	return err ? err : val;
-diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
-index e26a5d663f8a..8018ddf7f316 100644
---- a/drivers/net/phy/marvell.c
-+++ b/drivers/net/phy/marvell.c
-@@ -3021,9 +3021,34 @@ static struct phy_driver marvell_drivers[] = {
- 		.get_stats = marvell_get_stats,
- 	},
- 	{
--		.phy_id = MARVELL_PHY_ID_88E6390,
-+		.phy_id = MARVELL_PHY_ID_88E6341_FAMILY,
- 		.phy_id_mask = MARVELL_PHY_ID_MASK,
--		.name = "Marvell 88E6390",
-+		.name = "Marvell 88E6341 Family",
-+		/* PHY_GBIT_FEATURES */
-+		.flags = PHY_POLL_CABLE_TEST,
-+		.probe = m88e1510_probe,
-+		.config_init = marvell_config_init,
-+		.config_aneg = m88e6390_config_aneg,
-+		.read_status = marvell_read_status,
-+		.config_intr = marvell_config_intr,
-+		.handle_interrupt = marvell_handle_interrupt,
-+		.resume = genphy_resume,
-+		.suspend = genphy_suspend,
-+		.read_page = marvell_read_page,
-+		.write_page = marvell_write_page,
-+		.get_sset_count = marvell_get_sset_count,
-+		.get_strings = marvell_get_strings,
-+		.get_stats = marvell_get_stats,
-+		.get_tunable = m88e1540_get_tunable,
-+		.set_tunable = m88e1540_set_tunable,
-+		.cable_test_start = marvell_vct7_cable_test_start,
-+		.cable_test_tdr_start = marvell_vct5_cable_test_tdr_start,
-+		.cable_test_get_status = marvell_vct7_cable_test_get_status,
-+	},
-+	{
-+		.phy_id = MARVELL_PHY_ID_88E6390_FAMILY,
-+		.phy_id_mask = MARVELL_PHY_ID_MASK,
-+		.name = "Marvell 88E6390 Family",
- 		/* PHY_GBIT_FEATURES */
- 		.flags = PHY_POLL_CABLE_TEST,
- 		.probe = m88e6390_probe,
-@@ -3107,7 +3132,8 @@ static struct mdio_device_id __maybe_unused marvell_tbl[] = {
- 	{ MARVELL_PHY_ID_88E1540, MARVELL_PHY_ID_MASK },
- 	{ MARVELL_PHY_ID_88E1545, MARVELL_PHY_ID_MASK },
- 	{ MARVELL_PHY_ID_88E3016, MARVELL_PHY_ID_MASK },
--	{ MARVELL_PHY_ID_88E6390, MARVELL_PHY_ID_MASK },
-+	{ MARVELL_PHY_ID_88E6341_FAMILY, MARVELL_PHY_ID_MASK },
-+	{ MARVELL_PHY_ID_88E6390_FAMILY, MARVELL_PHY_ID_MASK },
- 	{ MARVELL_PHY_ID_88E1340S, MARVELL_PHY_ID_MASK },
- 	{ MARVELL_PHY_ID_88E1548P, MARVELL_PHY_ID_MASK },
- 	{ }
-diff --git a/include/linux/marvell_phy.h b/include/linux/marvell_phy.h
-index 52b1610eae68..c544b70dfbd2 100644
---- a/include/linux/marvell_phy.h
-+++ b/include/linux/marvell_phy.h
-@@ -28,11 +28,12 @@
- /* Marvel 88E1111 in Finisar SFP module with modified PHY ID */
- #define MARVELL_PHY_ID_88E1111_FINISAR	0x01ff0cc0
- 
--/* The MV88e6390 Ethernet switch contains embedded PHYs. These PHYs do
-+/* These Ethernet switch families contain embedded PHYs, but they do
-  * not have a model ID. So the switch driver traps reads to the ID2
-  * register and returns the switch family ID
-  */
--#define MARVELL_PHY_ID_88E6390		0x01410f90
-+#define MARVELL_PHY_ID_88E6341_FAMILY	0x01410f41
-+#define MARVELL_PHY_ID_88E6390_FAMILY	0x01410f90
- 
- #define MARVELL_PHY_FAMILY_ID(id)	((id) >> 4)
- 
 -- 
-2.20.1
-
+  Oleksandr Natalenko (post-factum)
