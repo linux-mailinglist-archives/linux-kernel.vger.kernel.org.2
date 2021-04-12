@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E00E35BB5A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12E535BB5C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237143AbhDLHwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51834 "EHLO
+        id S237045AbhDLHw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:52:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237045AbhDLHww (ORCPT
+        with ESMTP id S237147AbhDLHwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:52:52 -0400
-Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BE2DC06138C
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:52:35 -0700 (PDT)
-Received: by mail-vk1-xa33.google.com with SMTP id i2so2652064vka.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:52:35 -0700 (PDT)
+        Mon, 12 Apr 2021 03:52:55 -0400
+Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F143AC06138C
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:52:37 -0700 (PDT)
+Received: by mail-vs1-xe29.google.com with SMTP id b18so995988vso.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:52:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NJ+eWTN1Q7nm78NrogVg2zBz7YfAz3X1yFeBCHiZpzk=;
-        b=u+uP91a3a2c4GTsoSDhAvKYvbriIpEZ2jFQOtBcjzejehhsIdSvmAxYdaqGYz33ZIw
-         MAS7AaNqfFaFRWhWFOPV0AIqS8qzbGpPH82YiSht1YSNOPlxfg+GUYVSs0mLcKfFz8cy
-         S81gkoQmZiTPOaTB0e4aqSSyE5KVvS6il/4MP0VrMS1qrvGbixf9Suq16SsZ7LmWyfSM
-         z/ztNqoTk9iE/x2ubWluk9gvEqkiu5j3oFzG6HKTR8VhC6LptsTiqotKdf9tTyx3ns0b
-         xxAe+ncoYiIm4G9j435TNfi8NMOF3dXoSslHBvmJP5cf2JzQdQnHLkFIZJz+L+QyEvfc
-         rOdg==
+         :cc:content-transfer-encoding;
+        bh=UryxrO6clAQ+gSWPF8aTxV/VWh5eKXZIooN3CCW0R4g=;
+        b=TuDxfi1mXRUdhJSc3QJpNmZ8vGtbRzg8k2p2+0RRPD1K5s7IhlkIIPMOtxtyuAsU7v
+         8cR4i98UmepF5NZmKf0d5X1zzczYr2hrXxmZEN7PgkZ5r6+IM+rRLdkNTJFrCfLA0y/x
+         COhUHWky1wfHQJJnnSoVq+1he/7ZvJRcKrSdBuf6uLUvZAqqOIOe0FvFRvY9Unj5Ty51
+         LSLH2DBMMk/hzPSCgv0ZkmtQY0wnCaok0XPYsAsq+RlxxLVWplIBxyxw2FzYWKoZ5dr8
+         ynZ+bforMuTdLnwIbdxZOxMPf2GKeFsl2kwl3iqg4dXrjFYRbE/xGNA+QXwF6OkI3EMH
+         YxkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NJ+eWTN1Q7nm78NrogVg2zBz7YfAz3X1yFeBCHiZpzk=;
-        b=s8dD59vBJj3QQkIeTStofl15qjd/6Ful4wLHntLy8YzaZC+nY3M24kCCUb9pTk2+xI
-         JD3HvB3uLxwDf8GpK9FHlrqMiFLK9A8mk9rl6Dmyqtv+2dCoMu/Xd3ciyMj8rliaQBgM
-         e3kgnWJX/gLmgiEYHsjH+kVKTbSfRpiMh6nnIKyG2yaKGTvqcgzNuPRgAAjSVLXfcS/F
-         rXgnCdAwYvidirMHgNTDdT8aN/IqICcAoht4AqvO1XI6XFc8pH7E6B/Kr7sD8t/rVeLG
-         zbJ1OuBjEaq+S5OKYFj7OOdMdPYNG89e9VvnHEnwJNln8rGWsRKLegcv+1c8OhP1IRkV
-         dVbg==
-X-Gm-Message-State: AOAM530mSjOJMfLpXYfiz+zIIskj/l9dz1xqALwNenvFuM1g8jIe3mJZ
-        12csXFXDqt1ceA3r45jZEz7K27XFcpPPLPuuPZTrFw==
-X-Google-Smtp-Source: ABdhPJxAM5JJdumQOf3mj8Dh3QL6EsDV0dnoXm5y4BSr9fbSHnIXG7aJnOR7+d9FBW8eW1JViaps98UjbkjUOtEFAgY=
-X-Received: by 2002:a1f:8d14:: with SMTP id p20mr406050vkd.6.1618213954214;
- Mon, 12 Apr 2021 00:52:34 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UryxrO6clAQ+gSWPF8aTxV/VWh5eKXZIooN3CCW0R4g=;
+        b=mfFDqDPJtxJfVzox34AVtdWPIDQHjpNBV79apLqs9bP4jlXnm3JQai0RWosVtVPSHX
+         G6eo5PFM0O1y8A9vP2Ps4baMrjX0b1kzR3CZRn5HhOBsf9hnj8eB1ZYsv6hDw7I7MeNf
+         MScPMSL8W6BZLIpVxYgpfgr+D8S51u7aqawqXD4UqPcGx+zdw/17DYLs5m+Syw3oQe85
+         HyUz6IptIWGNzFWMambIc5mnVaDBGWXWSk0OVCJYAaxKZ6URQWhHSoLw5K0Dwa3Bvw9P
+         ZIA3bwD24Jb+adjPOrQWoDLCASBZa95kiVglpn8MkyCa4AIRNzF3edx781qDCxNpcx3k
+         +e8A==
+X-Gm-Message-State: AOAM533DaHFyT7U0wnvDSqy/6bf7TgOGI8r19fpQVexu/sJ2QTas/wOA
+        k9lJfwkgz4g6aqYeiECmdRw11RKMwa8o0AiRlqGG8JuRlGE=
+X-Google-Smtp-Source: ABdhPJzWl7Po07WGGfuJIiEPv1l3UTq9CYPhDiXD0mbXnG84E2RBmxoc8zaKS/4Vy8JG/5vNIvERv/uPJgB2vIgM8IE=
+X-Received: by 2002:a67:fd48:: with SMTP id g8mr11938720vsr.55.1618213957148;
+ Mon, 12 Apr 2021 00:52:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210402092432.25069-1-huobean@gmail.com> <20210402092432.25069-2-huobean@gmail.com>
-In-Reply-To: <20210402092432.25069-2-huobean@gmail.com>
+References: <1617357231-93064-1-git-send-email-yang.lee@linux.alibaba.com>
+In-Reply-To: <1617357231-93064-1-git-send-email-yang.lee@linux.alibaba.com>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 12 Apr 2021 09:51:57 +0200
-Message-ID: <CAPDyKFr-nNkpgjSojaRAOAEBPD3foi2GTJ=6EcyoEe89HQm61w@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] mmc: core: Pass down user specified timeout value
- to sanitize
-To:     Bean Huo <huobean@gmail.com>
-Cc:     "Shimoda, Yoshihiro" <yoshihiro.shimoda.uh@renesas.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bean Huo <beanhuo@micron.com>
+Date:   Mon, 12 Apr 2021 09:52:00 +0200
+Message-ID: <CAPDyKFrptDsdyUoJaSz9F1iYgW_02Kj6ay5X+oFCmJp2Hg=RWQ@mail.gmail.com>
+Subject: Re: [PATCH] mmc: moxart: Remove unused variable 'dma_time' and 'pio_time'
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2 Apr 2021 at 11:24, Bean Huo <huobean@gmail.com> wrote:
+On Fri, 2 Apr 2021 at 11:53, Yang Li <yang.lee@linux.alibaba.com> wrote:
 >
-> From: Bean Huo <beanhuo@micron.com>
+> Fixes the following W=3D1 kernel build warning(s):
 >
-> As the density increases, the 4-minute timeout value for
-> sanitize is no longer feasible. At the same time, devices
-> of different densities have different timeout values, and it is
-> difficult to obtain a unified standard timeout value. Therefore,
-> it is better to pass down user-specified sanitize timeout value.
+> drivers/mmc/host/moxart-mmc.c:257:7: warning: variable =E2=80=98dma_time=
+=E2=80=99 set
+> but not used
+> drivers/mmc/host/moxart-mmc.c:395:7: warning: variable =E2=80=98pio_time=
+=E2=80=99 set
+> but not used
 >
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
 Applied for next, thanks!
 
@@ -83,67 +81,60 @@ Uffe
 
 
 > ---
->  drivers/mmc/core/block.c   | 2 +-
->  drivers/mmc/core/mmc_ops.c | 7 +++++--
->  drivers/mmc/core/mmc_ops.h | 2 +-
->  3 files changed, 7 insertions(+), 4 deletions(-)
+>  drivers/mmc/host/moxart-mmc.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
 >
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index fe5892d30778..8bfd4d95b386 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -539,7 +539,7 @@ static int __mmc_blk_ioctl_cmd(struct mmc_card *card, struct mmc_blk_data *md,
->
->         if ((MMC_EXTRACT_INDEX_FROM_ARG(cmd.arg) == EXT_CSD_SANITIZE_START) &&
->             (cmd.opcode == MMC_SWITCH))
-> -               return mmc_sanitize(card);
-> +               return mmc_sanitize(card, idata->ic.cmd_timeout_ms);
->
->         mmc_wait_for_req(card->host, &mrq);
->
-> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-> index f413474f0f80..ccca067db993 100644
-> --- a/drivers/mmc/core/mmc_ops.c
-> +++ b/drivers/mmc/core/mmc_ops.c
-> @@ -1010,7 +1010,7 @@ int mmc_cmdq_disable(struct mmc_card *card)
->  }
->  EXPORT_SYMBOL_GPL(mmc_cmdq_disable);
->
-> -int mmc_sanitize(struct mmc_card *card)
-> +int mmc_sanitize(struct mmc_card *card, unsigned int timeout_ms)
+> diff --git a/drivers/mmc/host/moxart-mmc.c b/drivers/mmc/host/moxart-mmc.=
+c
+> index 89bff4e..bde2988 100644
+> --- a/drivers/mmc/host/moxart-mmc.c
+> +++ b/drivers/mmc/host/moxart-mmc.c
+> @@ -257,7 +257,6 @@ static void moxart_dma_complete(void *param)
+>  static void moxart_transfer_dma(struct mmc_data *data, struct moxart_hos=
+t *host)
 >  {
->         struct mmc_host *host = card->host;
->         int err;
-> @@ -1020,12 +1020,15 @@ int mmc_sanitize(struct mmc_card *card)
->                 return -EOPNOTSUPP;
->         }
+>         u32 len, dir_slave;
+> -       long dma_time;
+>         struct dma_async_tx_descriptor *desc =3D NULL;
+>         struct dma_chan *dma_chan;
 >
-> +       if (!timeout_ms)
-> +               timeout_ms = MMC_SANITIZE_TIMEOUT_MS;
-> +
->         pr_debug("%s: Sanitize in progress...\n", mmc_hostname(host));
+> @@ -294,8 +293,8 @@ static void moxart_transfer_dma(struct mmc_data *data=
+, struct moxart_host *host)
 >
->         mmc_retune_hold(host);
+>         data->bytes_xfered +=3D host->data_remain;
 >
->         err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_SANITIZE_START,
-> -                        1, MMC_SANITIZE_TIMEOUT_MS);
-> +                        1, timeout_ms);
->         if (err)
->                 pr_err("%s: Sanitize failed err=%d\n", mmc_hostname(host), err);
+> -       dma_time =3D wait_for_completion_interruptible_timeout(
+> -                  &host->dma_complete, host->timeout);
+> +       wait_for_completion_interruptible_timeout(&host->dma_complete,
+> +                                                 host->timeout);
 >
-> diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
-> index 632009260e51..1ed0d0375780 100644
-> --- a/drivers/mmc/core/mmc_ops.h
-> +++ b/drivers/mmc/core/mmc_ops.h
-> @@ -46,7 +46,7 @@ void mmc_run_bkops(struct mmc_card *card);
->  int mmc_flush_cache(struct mmc_card *card);
->  int mmc_cmdq_enable(struct mmc_card *card);
->  int mmc_cmdq_disable(struct mmc_card *card);
-> -int mmc_sanitize(struct mmc_card *card);
-> +int mmc_sanitize(struct mmc_card *card, unsigned int timeout_ms);
+>         dma_unmap_sg(dma_chan->device->dev,
+>                      data->sg, data->sg_len,
+> @@ -395,7 +394,6 @@ static void moxart_prepare_data(struct moxart_host *h=
+ost)
+>  static void moxart_request(struct mmc_host *mmc, struct mmc_request *mrq=
+)
+>  {
+>         struct moxart_host *host =3D mmc_priv(mmc);
+> -       long pio_time;
+>         unsigned long flags;
+>         u32 status;
 >
->  #endif
+> @@ -431,8 +429,8 @@ static void moxart_request(struct mmc_host *mmc, stru=
+ct mmc_request *mrq)
+>                         spin_unlock_irqrestore(&host->lock, flags);
 >
+>                         /* PIO transfers start from interrupt. */
+> -                       pio_time =3D wait_for_completion_interruptible_ti=
+meout(
+> -                                  &host->pio_complete, host->timeout);
+> +                       wait_for_completion_interruptible_timeout(&host->=
+pio_complete,
+> +                                                                 host->t=
+imeout);
+>
+>                         spin_lock_irqsave(&host->lock, flags);
+>                 }
 > --
-> 2.25.1
+> 1.8.3.1
 >
