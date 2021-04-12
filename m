@@ -2,151 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5A535CF04
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E303935CF0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244862AbhDLQ6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:58:53 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:35522 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245165AbhDLQ6D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:58:03 -0400
-Received: from localhost (kaktus.kanapka.ml [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 634EBA2AF72;
-        Mon, 12 Apr 2021 18:57:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1618246662;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=LdFy/WsqRV13J/Bu3JnHBX56utssyQ/cLHJjiDA2rn8=;
-        b=nIE3wXy40y37nIc2Un3HjB7AQJvoP7Qc319exCQqFUEdkwyLzw2pPDCaKy4U121T4Q4Zoh
-        YylzeRA+iPNTnNBnlX2vI8p/PpmNum9fp7l6yyX7gXnbUG0abahjpzyb812z9ImBw3oQBQ
-        KWqzXh3Nqa8B/g++6JxiFDN2KmpTR/s=
-Date:   Mon, 12 Apr 2021 18:57:41 +0200
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     chukaiping <chukaiping@baidu.com>
-Cc:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm/compaction:let proactive compaction order configurable
-Message-ID: <20210412165741.shqududzlfhge7ff@spock.localdomain>
-References: <1618218330-50591-1-git-send-email-chukaiping@baidu.com>
+        id S244560AbhDLRB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:01:28 -0400
+Received: from mga18.intel.com ([134.134.136.126]:33850 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243585AbhDLRA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 13:00:28 -0400
+IronPort-SDR: KLijf7P1KIbvylLEDq91OhGqUZp80T/6UQkFW9hp4UJb15LoHdQiNY18vWYeUj0tuVM3IkG+F3
+ gUiUnKYIQ16w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="181754710"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="181754710"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 09:59:12 -0700
+IronPort-SDR: vksfThiOB1ACjlncEiNsVbTqUMwQvTiV9+4N802d0CeSxE/1KvVvd7sxGejzGejXmCf1oPjxdP
+ lyfku2W0Y8BA==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="450053256"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 09:59:08 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lVztx-003W0m-HV; Mon, 12 Apr 2021 19:59:05 +0300
+Date:   Mon, 12 Apr 2021 19:59:05 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
+Subject: Re: [PATCH v1 6/7] mfd: lpc_ich: Add support for pinctrl in non-ACPI
+ system
+Message-ID: <YHR8Wd5oShhTricb@smile.fi.intel.com>
+References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+ <20210308122020.57071-7-andriy.shevchenko@linux.intel.com>
+ <20210412180106.7dc524e8@md1za8fc.ad001.siemens.net>
+ <20210412184001.2fc359c1@md1za8fc.ad001.siemens.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1618218330-50591-1-git-send-email-chukaiping@baidu.com>
+In-Reply-To: <20210412184001.2fc359c1@md1za8fc.ad001.siemens.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
-
-On Mon, Apr 12, 2021 at 05:05:30PM +0800, chukaiping wrote:
-> Currently the proactive compaction order is fixed to
-> COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
-> normal 4KB memory, but it's too high for the machines with small
-> normal memory, for example the machines with most memory configured
-> as 1GB hugetlbfs huge pages. In these machines the max order of
-> free pages is often below 9, and it's always below 9 even with hard
-> compaction. This will lead to proactive compaction be triggered very
-> frequently. In these machines we only care about order of 3 or 4.
-> This patch export the oder to proc and let it configurable
-> by user, and the default value is still COMPACTION_HPAGE_ORDER.
+On Mon, Apr 12, 2021 at 06:40:01PM +0200, Henning Schild wrote:
+> Tan or Andy,
 > 
-> Signed-off-by: chukaiping <chukaiping@baidu.com>
-> ---
->  include/linux/compaction.h |    1 +
->  kernel/sysctl.c            |   10 ++++++++++
->  mm/compaction.c            |    7 ++++---
->  3 files changed, 15 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-> index ed4070e..151ccd1 100644
-> --- a/include/linux/compaction.h
-> +++ b/include/linux/compaction.h
-> @@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
->  #ifdef CONFIG_COMPACTION
->  extern int sysctl_compact_memory;
->  extern unsigned int sysctl_compaction_proactiveness;
-> +extern unsigned int sysctl_compaction_order;
->  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
->  			void *buffer, size_t *length, loff_t *ppos);
->  extern int sysctl_extfrag_threshold;
-> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> index 62fbd09..277df31 100644
-> --- a/kernel/sysctl.c
-> +++ b/kernel/sysctl.c
-> @@ -114,6 +114,7 @@
->  static int __maybe_unused neg_one = -1;
->  static int __maybe_unused two = 2;
->  static int __maybe_unused four = 4;
-> +static int __maybe_unused ten = 10;
+> maybe you can point me to a user of that patch. I guess there might be
+> an out-of-tree driver or userland code on how to use the GPIOs from
+> there.
 
-^^ does the upper limit have to be hard-coded like this?
+I'm confused. User of this patch is pinctrl-broxton driver.
+It's in upstream.
 
->  static unsigned long zero_ul;
->  static unsigned long one_ul = 1;
->  static unsigned long long_max = LONG_MAX;
-> @@ -2871,6 +2872,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
->  		.extra2		= &one_hundred,
->  	},
->  	{
-> +		.procname       = "compaction_order",
-> +		.data           = &sysctl_compaction_order,
-> +		.maxlen         = sizeof(sysctl_compaction_order),
-> +		.mode           = 0644,
-> +		.proc_handler   = proc_dointvec_minmax,
-> +		.extra1         = SYSCTL_ZERO,
+Using GPIOs from it is something as done in a few drivers already
+(Assuming we have no resources described in the ACPI). I.e. you need to
+register in board file the GPIO mapping table with help of
+devm_acpi_dev_add_driver_gpios() and use one of gpiod_get() family of functions
+to request it.
 
-I wonder what happens if this knob is set to 0. Have you tested such a
-corner case?
+In case of LEDs you simple describe GPIO device name in lookup table and
+that's it. The drivers/platform/x86/pcengines-apuv2.c not the best but
+will give you an idea how to use "leds-gpio" driver in board files.
 
-> +		.extra2         = &ten,
-> +	},
-> +	{
->  		.procname	= "extfrag_threshold",
->  		.data		= &sysctl_extfrag_threshold,
->  		.maxlen		= sizeof(int),
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index e04f447..a192996 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1925,16 +1925,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
->  
->  /*
->   * A zone's fragmentation score is the external fragmentation wrt to the
-> - * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
-> + * sysctl_compaction_order. It returns a value in the range [0, 100].
->   */
->  static unsigned int fragmentation_score_zone(struct zone *zone)
->  {
-> -	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
-> +	return extfrag_for_order(zone, sysctl_compaction_order);
->  }
->  
->  /*
->   * A weighted zone's fragmentation score is the external fragmentation
-> - * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
-> + * wrt to the sysctl_compaction_order scaled by the zone's size. It
->   * returns a value in the range [0, 100].
->   *
->   * The scaling factor ensures that proactive compaction focuses on larger
-> @@ -2666,6 +2666,7 @@ static void compact_nodes(void)
->   * background. It takes values in the range [0, 100].
->   */
->  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
-> +unsigned int __read_mostly sysctl_compaction_order = COMPACTION_HPAGE_ORDER;
->  
->  /*
->   * This is the entry point for compacting all nodes via
-> -- 
-> 1.7.1
-> 
+
+> Feel free to send directly to me in case it is not published anywhere
+> and should not yet be on the list, i could just use it for inspiration.
+> A driver will likely be GPL anyways.
 
 -- 
-  Oleksandr Natalenko (post-factum)
+With Best Regards,
+Andy Shevchenko
+
+
