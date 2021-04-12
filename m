@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C2A35CA60
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:47:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B9735CA62
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243012AbhDLPsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240489AbhDLPsG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:48:06 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06405C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:47:48 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id a6so13460307wrw.8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:47:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=y/5Z50hT8XgUDXDqADXHmHcFjdRyH1Ew3g+vGI2YvHI=;
-        b=MFST10U88/SHQi3NPS+LstwNQOXwSVV1pw36E6Y62at+1lwNrnRsNZu+IEXozYTYlj
-         a4E+/HxXPI1DC1LJLJsgjQncch5hfZkxsgX/kio/wyHMOI3u0b1Xv9TNUWxkP2aRmNls
-         yEuOb01G14f8+Kwi8t9kVJpzVBINWLO/2UT7RRZFif51kEB/3YCKJRU7KW2sl0jLiKzG
-         257E26rDNlHD/K+4BogMQ9xqwD9qMoZx6ruyzLCFypjJCnVikjIEEtLF2ZdFG+SeqbZg
-         OWUeJn16xlg2H0DYZL9HR5U3rILKNS7GiNx6v7H6ArdrAJnIjLmQlI8NSVGX66y9i+bc
-         0VGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=y/5Z50hT8XgUDXDqADXHmHcFjdRyH1Ew3g+vGI2YvHI=;
-        b=tJRS56gr4Nf0bOZ6g3oVBizm2FIg4P4Qt+4OgwSFt+Ih46FHv/vdU3c8sqktvyV7vF
-         gtZBUdQo8FHOaHG5Ez7oLYfYtdpE60+fJSQAGN//hNm6NVPI6YIXARyfRtzG/ZUxt2tC
-         ghgjwJSrTnNLLIIwcfNtckEd1LPhVJAVuXINVkXqIBUdJkJiZTpAj276tIoiiDGaAUye
-         OzGSTRoMD62q48jJI501/pz8Jz4Mg2LBUPU01DIFIUWknqYVnipEk/1wmEfXjS0KPxEq
-         dRe+0a2bMoDQDHZZ+OuNenSYxR8kolVjg/IvdBOjJ9OmoGR1lArbly4kOSb3i4E+ekt4
-         8qDQ==
-X-Gm-Message-State: AOAM532bAVZpkV+OVqdmvntLSvb+rd+nNUKM2ynrZ4vh3lje27pL5BxK
-        CByP5D5gZ0KVUck8j/ThaZlgFg==
-X-Google-Smtp-Source: ABdhPJzUvkIkCj0rMsw6OaH+49uNILOkPp6qGZpZMBcKowl9s74T5zr9/moXsBUJQOdNSGxyVS/srQ==
-X-Received: by 2002:a05:6000:1acd:: with SMTP id i13mr31725469wry.48.1618242466693;
-        Mon, 12 Apr 2021 08:47:46 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:4c21:b00e:ff79:bf20? ([2a01:e0a:90c:e290:4c21:b00e:ff79:bf20])
-        by smtp.gmail.com with ESMTPSA id t19sm1522421wmq.14.2021.04.12.08.47.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 08:47:46 -0700 (PDT)
-Subject: Re: [PATCH v3 3/3] MAINTAINERS: add it66121 HDMI bridge driver entry
-From:   Neil Armstrong <narmstrong@baylibre.com>
-To:     a.hajda@samsung.com, Laurent.pinchart@ideasonboard.com,
-        paul@crapouillou.net, robert.foss@linaro.org
-Cc:     jonas@kwiboo.se, jernej.skrabec@siol.net,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Phong LE <ple@baylibre.com>
-References: <20210412154648.3719153-1-narmstrong@baylibre.com>
- <20210412154648.3719153-4-narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <bb9196e3-e2d0-e44b-0cf1-cb469ea2edd7@baylibre.com>
-Date:   Mon, 12 Apr 2021 17:47:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S243076AbhDLPse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:48:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239633AbhDLPs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:48:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 796BD61246;
+        Mon, 12 Apr 2021 15:48:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618242489;
+        bh=8vRE2sT1b6eDattSfR7ri5RJ2qCaH8JeKxz5WPXcorU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pnSJay4zP25POtLTscvF2z5mWetO++/0dMpHer+DMUKEUVwLkOsg9fAeauFaOWt+o
+         9ZijoYP72WrFmWFWd+9i7OY8W4gnkqWJ+ym8y46O1HtNI/cqJAq1lTa8/nx7prTSTD
+         UEZRNVvKvX0ZF1qQe0UStduK5A9dx2opS5KESYQKPc1C8/g2Gu7AsmL7TZbi4S84Pq
+         l4XKVJHE/iC8j+8nMDA4/HHdwCFx0MYQRh/ROFPM54W6yQgpUl3YJr3/Qg4o6WCH9r
+         /uvaXow8wvo6R64UVeoxH80ng7tM0v0D+20L/tlEEZd4MUp6SbHtenpLNqSVLTBY0n
+         AfJ3bJSnM63mg==
+Date:   Mon, 12 Apr 2021 08:48:08 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v4][next] xfs: Replace one-element arrays with
+ flexible-array members
+Message-ID: <20210412154808.GA1670408@magnolia>
+References: <20210412135611.GA183224@embeddedor>
+ <20210412152906.GA1075717@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210412154648.3719153-4-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412152906.GA1075717@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/2021 17:46, Neil Armstrong wrote:
-> From: Phong LE <ple@baylibre.com>
+On Mon, Apr 12, 2021 at 04:29:06PM +0100, Christoph Hellwig wrote:
+> > Below are the results of running xfstests for "all" with the following
+> > configuration in local.config:
 > 
-> Add Neil Armstrong and myself as maintainers
+> ...
 > 
-> Signed-off-by: Phong LE <ple@baylibre.com>
+> > Other tests might need to be run in order to verify everything is working
+> > as expected. For such tests, the intervention of the maintainers might be
+> > needed.
+> 
+> This is a little weird for a commit log.  If you want to show results
+> this would be something that goes into a cover letter.
 
-Obviously:
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Agreed, please don't post fstests output in the commit message.
 
-> ---
->  MAINTAINERS | 8 ++++++++
->  1 file changed, 8 insertions(+)
+> > +/*
+> > + * Calculates the size of structure xfs_efi_log_format followed by an
+> > + * array of n number of efi_extents elements.
+> > + */
+> > +static inline size_t
+> > +sizeof_efi_log_format(size_t n)
+> > +{
+> > +	return struct_size((struct xfs_efi_log_format *)0, efi_extents, n);
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 9ae8444c96b4..ff6450c83049 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -9515,6 +9515,14 @@ Q:	http://patchwork.linuxtv.org/project/linux-media/list/
->  T:	git git://linuxtv.org/anttip/media_tree.git
->  F:	drivers/media/tuners/it913x*
->  
-> +ITE IT66121 HDMI BRIDGE DRIVER
-> +M:	Phong LE <ple@baylibre.com>
-> +M:	Neil Armstrong <narmstrong@baylibre.com>
-> +S:	Maintained
-> +F:	drivers/gpu/drm/bridge/ite-it66121.c
-> +T:	git git://anongit.freedesktop.org/drm/drm-misc
-> +F:	Documentation/devicetree/bindings/display/bridge/ite,it66121.yaml
-> +
->  IVTV VIDEO4LINUX DRIVER
->  M:	Andy Walls <awalls@md.metrocast.net>
->  L:	linux-media@vger.kernel.org
-> 
+> These helpers are completely silly.  Just keep the existing open code
+> version using sizeof with the one-off removed.
 
+A couple of revisions ago I specifically asked Gustavo to create these
+'silly' sizeof helpers to clean up...
+
+> > -					(sizeof(struct xfs_efd_log_item) +
+> > -					(XFS_EFD_MAX_FAST_EXTENTS - 1) *
+> > -					sizeof(struct xfs_extent)),
+> > -					0, 0, NULL);
+> > +					 struct_size((struct xfs_efd_log_item *)0,
+> > +					 efd_format.efd_extents,
+> > +					 XFS_EFD_MAX_FAST_EXTENTS),
+
+...these even uglier multiline statements.  I was also going to ask for
+these kmem cache users to get cleaned up.  I'd much rather look at:
+
+	xfs_efi_zone = kmem_cache_create("xfs_efi_item",
+				sizeof_xfs_efi(XFS_EFI_MAX_FAST_EXTENTS), 0);
+	if (!xfs_efi_zone)
+		goto the_drop_zone;
+
+even if it means another static inline.
+
+--D
+
+> > +					 0, 0, NULL);
+> >  	if (!xfs_efd_zone)
+> >  		goto out_destroy_buf_item_zone;
+> >  
+> >  	xfs_efi_zone = kmem_cache_create("xfs_efi_item",
+> > -					 (sizeof(struct xfs_efi_log_item) +
+> > -					 (XFS_EFI_MAX_FAST_EXTENTS - 1) *
+> > -					 sizeof(struct xfs_extent)),
+> > +					 struct_size((struct xfs_efi_log_item *)0,
+> > +					 efi_format.efi_extents,
+> > +					 XFS_EFI_MAX_FAST_EXTENTS),
+> 
+> Same here.  And this obsfucated version also adds completely pointless
+> overly long lines while making the code unreadable.
