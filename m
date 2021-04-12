@@ -2,147 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE0A35C778
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEA035C77E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:25:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239439AbhDLNX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:23:59 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:50583 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237277AbhDLNX6 (ORCPT
+        id S241077AbhDLNZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:25:49 -0400
+Received: from mail.netfilter.org ([217.70.188.207]:48284 "EHLO
+        mail.netfilter.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237277AbhDLNZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:23:58 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UVKeteB_1618233816;
-Received: from 30.39.250.122(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UVKeteB_1618233816)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 12 Apr 2021 21:23:37 +0800
-Subject: Re: [PATCH v2 1/2] fuse: Fix possible deadlock when writing back
- dirty pages
-To:     miklos@szeredi.hu
-Cc:     tao.peng@linux.alibaba.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-Message-ID: <f72f28cd-06b5-fb84-c7ce-ad1a3d14c016@linux.alibaba.com>
-Date:   Mon, 12 Apr 2021 21:23:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 12 Apr 2021 09:25:44 -0400
+Received: from us.es (unknown [90.77.255.23])
+        by mail.netfilter.org (Postfix) with ESMTPSA id 3069B62C0E;
+        Mon, 12 Apr 2021 15:25:01 +0200 (CEST)
+Date:   Mon, 12 Apr 2021 15:25:22 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+Message-ID: <20210412132522.GA1302@salvia>
+References: <20210412150416.4465b518@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <807bb470f90bae5dcd80a29020d38f6b5dd6ef8e.1616826872.git.baolin.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="W/nzBZO5zC0uMSeA"
+Content-Disposition: inline
+In-Reply-To: <20210412150416.4465b518@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miklos,
 
-ÔÚ 2021/3/27 14:36, Baolin Wang Ð´µÀ:
-> We can meet below deadlock scenario when writing back dirty pages, and
-> writing files at the same time. The deadlock scenario can be reproduced
-> by:
-> 
-> - A writeback worker thread A is trying to write a bunch of dirty pages by
-> fuse_writepages(), and the fuse_writepages() will lock one page (named page 1),
-> add it into rb_tree with setting writeback flag, and unlock this page 1,
-> then try to lock next page (named page 2).
-> 
-> - But at the same time a file writing can be triggered by another process B,
-> to write several pages by fuse_perform_write(), the fuse_perform_write()
-> will lock all required pages firstly, then wait for all writeback pages
-> are completed by fuse_wait_on_page_writeback().
-> 
-> - Now the process B can already lock page 1 and page 2, and wait for page 1
-> waritehack is completed (page 1 is under writeback set by process A). But
-> process A can not complete the writeback of page 1, since it is still
-> waiting for locking page 2, which was locked by process B already.
-> 
-> A deadlock is occurred.
-> 
-> To fix this issue, we should make sure each page writeback is completed
-> after lock the page in fuse_fill_write_pages() separately, and then write
-> them together when all pages are stable.
-> 
-> [1450578.772896] INFO: task kworker/u259:6:119885 blocked for more than 120 seconds.
-> [1450578.796179] kworker/u259:6  D    0 119885      2 0x00000028
-> [1450578.796185] Workqueue: writeback wb_workfn (flush-0:78)
-> [1450578.796188] Call trace:
-> [1450578.798804]  __switch_to+0xd8/0x148
-> [1450578.802458]  __schedule+0x280/0x6a0
-> [1450578.806112]  schedule+0x34/0xe8
-> [1450578.809413]  io_schedule+0x20/0x40
-> [1450578.812977]  __lock_page+0x164/0x278
-> [1450578.816718]  write_cache_pages+0x2b0/0x4a8
-> [1450578.820986]  fuse_writepages+0x84/0x100 [fuse]
-> [1450578.825592]  do_writepages+0x58/0x108
-> [1450578.829412]  __writeback_single_inode+0x48/0x448
-> [1450578.834217]  writeback_sb_inodes+0x220/0x520
-> [1450578.838647]  __writeback_inodes_wb+0x50/0xe8
-> [1450578.843080]  wb_writeback+0x294/0x3b8
-> [1450578.846906]  wb_do_writeback+0x2ec/0x388
-> [1450578.850992]  wb_workfn+0x80/0x1e0
-> [1450578.854472]  process_one_work+0x1bc/0x3f0
-> [1450578.858645]  worker_thread+0x164/0x468
-> [1450578.862559]  kthread+0x108/0x138
-> [1450578.865960] INFO: task doio:207752 blocked for more than 120 seconds.
-> [1450578.888321] doio            D    0 207752 207740 0x00000000
-> [1450578.888329] Call trace:
-> [1450578.890945]  __switch_to+0xd8/0x148
-> [1450578.894599]  __schedule+0x280/0x6a0
-> [1450578.898255]  schedule+0x34/0xe8
-> [1450578.901568]  fuse_wait_on_page_writeback+0x8c/0xc8 [fuse]
-> [1450578.907128]  fuse_perform_write+0x240/0x4e0 [fuse]
-> [1450578.912082]  fuse_file_write_iter+0x1dc/0x290 [fuse]
-> [1450578.917207]  do_iter_readv_writev+0x110/0x188
-> [1450578.921724]  do_iter_write+0x90/0x1c8
-> [1450578.925598]  vfs_writev+0x84/0xf8
-> [1450578.929071]  do_writev+0x70/0x110
-> [1450578.932552]  __arm64_sys_writev+0x24/0x30
-> [1450578.936727]  el0_svc_common.constprop.0+0x80/0x1f8
-> [1450578.941694]  el0_svc_handler+0x30/0x80
-> [1450578.945606]  el0_svc+0x10/0x14
-> 
-> Suggested-by: Peng Tao <tao.peng@linux.alibaba.com>
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Do you have any comments for this patch set? Thanks.
+On Mon, Apr 12, 2021 at 03:04:16PM +1000, Stephen Rothwell wrote:
+> Hi all,
+>=20
+> After merging the net-next tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+>=20
+> In file included from include/asm-generic/bug.h:20,
+>                  from arch/x86/include/asm/bug.h:93,
+>                  from include/linux/bug.h:5,
+>                  from include/linux/mmdebug.h:5,
+>                  from include/linux/gfp.h:5,
+>                  from include/linux/umh.h:4,
+>                  from include/linux/kmod.h:9,
+>                  from net/bridge/netfilter/ebtables.c:14:
+> net/bridge/netfilter/ebtables.c: In function '__ebt_find_table':
+> net/bridge/netfilter/ebtables.c:1248:33: error: 'struct netns_xt' has no =
+member named 'tables'
+>  1248 |  list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
+>       |                                 ^
+> include/linux/kernel.h:708:26: note: in definition of macro 'container_of'
+>   708 |  void *__mptr =3D (void *)(ptr);     \
+>       |                          ^~~
+> include/linux/list.h:522:2: note: in expansion of macro 'list_entry'
+>   522 |  list_entry((ptr)->next, type, member)
+>       |  ^~~~~~~~~~
+> include/linux/list.h:628:13: note: in expansion of macro 'list_first_entr=
+y'
+>   628 |  for (pos =3D list_first_entry(head, typeof(*pos), member); \
+>       |             ^~~~~~~~~~~~~~~~
+> net/bridge/netfilter/ebtables.c:1248:2: note: in expansion of macro 'list=
+_for_each_entry'
+>  1248 |  list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
+>       |  ^~~~~~~~~~~~~~~~~~~
+> In file included from <command-line>:
+> net/bridge/netfilter/ebtables.c:1248:33: error: 'struct netns_xt' has no =
+member named 'tables'
+>  1248 |  list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
+>       |                                 ^
+> include/linux/compiler_types.h:300:9: note: in definition of macro '__com=
+piletime_assert'
+>   300 |   if (!(condition))     \
+>       |         ^~~~~~~~~
+> include/linux/compiler_types.h:320:2: note: in expansion of macro '_compi=
+letime_assert'
+>   320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COU=
+NTER__)
+>       |  ^~~~~~~~~~~~~~~~~~~
+> include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime=
+_assert'
+>    39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), m=
+sg)
+>       |                                     ^~~~~~~~~~~~~~~~~~
+> include/linux/kernel.h:709:2: note: in expansion of macro 'BUILD_BUG_ON_M=
+SG'
+>   709 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+>       |  ^~~~~~~~~~~~~~~~
+> include/linux/kernel.h:709:20: note: in expansion of macro '__same_type'
+>   709 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+>       |                    ^~~~~~~~~~~
+> include/linux/list.h:511:2: note: in expansion of macro 'container_of'
+>   511 |  container_of(ptr, type, member)
+>       |  ^~~~~~~~~~~~
+> include/linux/list.h:522:2: note: in expansion of macro 'list_entry'
+>   522 |  list_entry((ptr)->next, type, member)
+>       |  ^~~~~~~~~~
+> include/linux/list.h:628:13: note: in expansion of macro 'list_first_entr=
+y'
+>   628 |  for (pos =3D list_first_entry(head, typeof(*pos), member); \
+>       |             ^~~~~~~~~~~~~~~~
+> net/bridge/netfilter/ebtables.c:1248:2: note: in expansion of macro 'list=
+_for_each_entry'
+>  1248 |  list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
+>       |  ^~~~~~~~~~~~~~~~~~~
+> net/bridge/netfilter/ebtables.c:1248:33: error: 'struct netns_xt' has no =
+member named 'tables'
+>  1248 |  list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
+>       |                                 ^
+> include/linux/compiler_types.h:300:9: note: in definition of macro '__com=
+piletime_assert'
+>   300 |   if (!(condition))     \
+>       |         ^~~~~~~~~
+> include/linux/compiler_types.h:320:2: note: in expansion of macro '_compi=
+letime_assert'
+>   320 |  _compiletime_assert(condition, msg, __compiletime_assert_, __COU=
+NTER__)
+>       |  ^~~~~~~~~~~~~~~~~~~
+> include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime=
+_assert'
+>    39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), m=
+sg)
+>       |                                     ^~~~~~~~~~~~~~~~~~
+> include/linux/kernel.h:709:2: note: in expansion of macro 'BUILD_BUG_ON_M=
+SG'
+>   709 |  BUILD_BUG_ON_MSG(!__same_type(*(ptr), ((type *)0)->member) && \
+>       |  ^~~~~~~~~~~~~~~~
+> include/linux/kernel.h:710:6: note: in expansion of macro '__same_type'
+>   710 |     !__same_type(*(ptr), void),   \
+>       |      ^~~~~~~~~~~
+> include/linux/list.h:511:2: note: in expansion of macro 'container_of'
+>   511 |  container_of(ptr, type, member)
+>       |  ^~~~~~~~~~~~
+> include/linux/list.h:522:2: note: in expansion of macro 'list_entry'
+>   522 |  list_entry((ptr)->next, type, member)
+>       |  ^~~~~~~~~~
+> include/linux/list.h:628:13: note: in expansion of macro 'list_first_entr=
+y'
+>   628 |  for (pos =3D list_first_entry(head, typeof(*pos), member); \
+>       |             ^~~~~~~~~~~~~~~~
+> net/bridge/netfilter/ebtables.c:1248:2: note: in expansion of macro 'list=
+_for_each_entry'
+>  1248 |  list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
+>       |  ^~~~~~~~~~~~~~~~~~~
+> In file included from include/linux/preempt.h:11,
+>                  from include/linux/spinlock.h:51,
+>                  from include/linux/mmzone.h:8,
+>                  from include/linux/gfp.h:6,
+>                  from include/linux/umh.h:4,
+>                  from include/linux/kmod.h:9,
+>                  from net/bridge/netfilter/ebtables.c:14:
+> net/bridge/netfilter/ebtables.c:1248:33: error: 'struct netns_xt' has no =
+member named 'tables'
+>  1248 |  list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
+>       |                                 ^
+> include/linux/list.h:619:20: note: in definition of macro 'list_entry_is_=
+head'
+>   619 |  (&pos->member =3D=3D (head))
+>       |                    ^~~~
+> net/bridge/netfilter/ebtables.c:1248:2: note: in expansion of macro 'list=
+_for_each_entry'
+>  1248 |  list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
+>       |  ^~~~~~~~~~~~~~~~~~~
+>=20
+> Caused by commit
+>=20
+>   5b53951cfc85 ("netfilter: ebtables: use net_generic infra")
+>=20
+> interacting with commit
+>=20
+>   7ee3c61dcd28 ("netfilter: bridge: add pre_exit hooks for ebtable unregi=
+stration")
+>=20
+> from the netfilter tree.
+>=20
+> I have applied the following merge fix patch for today:
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Mon, 12 Apr 2021 14:58:20 +1000
+> Subject: [PATCH] merger fix for "netfilter: bridge: add pre_exit hooks for
+>  ebtable unregistration"
 
-> ---
-> Changes from v1:
->   - Use fuse_wait_on_page_writeback() instead to wait for page stable.
-> ---
->   fs/fuse/file.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-> index 8cccecb..9a30093 100644
-> --- a/fs/fuse/file.c
-> +++ b/fs/fuse/file.c
-> @@ -1101,9 +1101,6 @@ static ssize_t fuse_send_write_pages(struct fuse_io_args *ia,
->   	unsigned int offset, i;
->   	int err;
->   
-> -	for (i = 0; i < ap->num_pages; i++)
-> -		fuse_wait_on_page_writeback(inode, ap->pages[i]->index);
-> -
->   	fuse_write_args_fill(ia, ff, pos, count);
->   	ia->write.in.flags = fuse_write_flags(iocb);
->   	if (fm->fc->handle_killpriv_v2 && !capable(CAP_FSETID))
-> @@ -1140,6 +1137,7 @@ static ssize_t fuse_fill_write_pages(struct fuse_args_pages *ap,
->   				     unsigned int max_pages)
->   {
->   	struct fuse_conn *fc = get_fuse_conn(mapping->host);
-> +	struct inode *inode = mapping->host;
->   	unsigned offset = pos & (PAGE_SIZE - 1);
->   	size_t count = 0;
->   	int err;
-> @@ -1166,6 +1164,8 @@ static ssize_t fuse_fill_write_pages(struct fuse_args_pages *ap,
->   		if (!page)
->   			break;
->   
-> +		fuse_wait_on_page_writeback(inode, page->index);
-> +
->   		if (mapping_writably_mapped(mapping))
->   			flush_dcache_page(page);
->   
-> 
+Thanks.
+
+I'll include this merge conflict in my next pull request.
+
+--W/nzBZO5zC0uMSeA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEFEKqOX9jqZmzwkCc1GSBvS7ZkBkFAmB0Sj8ACgkQ1GSBvS7Z
+kBm5qxAAw9lgQx7PmEXw7+Ji1y8xQZgXtahCa+Ze2PLxCIPkREzsrTats5EdGJRb
+PpGUCraQh2r8YB2xdAGaAaBGmGa2WRBgDriRYbGtQwMLmBy6ICnD7z5u734aHEhK
+7sYyJK/HK+ZuPxB0YdXX/djFJz0IiIAKZIyMRk1ZLU9wR9IIKTlmXyOLQ+H6Z7E8
+ORNML/q13F6zuVeEOM02j4TPDxcpv26mDlp6Of4IwybTXEvsF4Mpim8NaFNZamcg
+e30rx6V5JT+5VVfgkFuXl72E0Zc2n7ia4TakDGzLnNnu9w/lUL8b2Ox+d9o3H3xS
+BqPWRectRHW5LyUHuPQ1tu85pvdOcAHXaFKX8cbFh18SfUA86/fnlUWo55GpRBTW
+o0b+6wYdoUZNNeBn86FwtlC0muRkArdTTyLdDOXOG01nAHQbQqtNZtRWVYh64E1r
+D5htL4tutvJ+pcAXg9vsGFI5puIIp3YB9usOiHQOIPiDnC0Kd8eU+1qDdZ9DOm9N
+fEoiEuwg7ejfkFScJVkwb9fQDnSD3vCYNVFFRJGOyghE7pbIp+6Sa4OZOExpDCsm
+qp+6WynLkYks4KuivoBpdSjTdelQ44FHovIC0TzaBA+jjm4kmX7znaKM7FvUsZSz
+fD5sWPWntxX8UYrXv84/q72qMYi1KFwu7sJJ8ecKztzukUs9jXo=
+=sY+L
+-----END PGP SIGNATURE-----
+
+--W/nzBZO5zC0uMSeA--
