@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3C435CFCE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:50:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EA0035CFD6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:51:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244486AbhDLRvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238145AbhDLRvD (ORCPT
+        id S244669AbhDLRv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:51:57 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:35555 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238145AbhDLRvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:51:03 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3B05C061574;
-        Mon, 12 Apr 2021 10:50:45 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id u7so4971990plr.6;
-        Mon, 12 Apr 2021 10:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vwbL4QRbaiGgEYe9k+zFEy0jCzquekkCtISTZ5hdDOk=;
-        b=j8umMGjAxiKoTM1jGIYYc0gyXOgiKu4CYpr1wk1DcgtdPIZyquXBG0U5EFwdvSWq0b
-         8U6WTc8V60qYjr04uCntTJ4IWG78i0EAyvmD/ZWu5Rp3balhYYqEOW6106KfJR25ub1J
-         q0pCLszIlRERr+s4MCFkXNCYWHaMjQdloStUeCo8YvRWFz5QfczsbPC9/NkJNizjnKY3
-         JmtaRP1qBzIeZKx1u6CE6U/qWcZlhKSBEiogguv5jbF5qUNxHGlzon9u3HE7a3oSrgUH
-         pwb++LXl2n1uer6QVhLCDHdSrchS/KFSXu6UnSx/YwI79po3ihueIXPkvriYeu0WgLv6
-         TaSA==
+        Mon, 12 Apr 2021 13:51:55 -0400
+Received: by mail-ot1-f47.google.com with SMTP id v24-20020a9d69d80000b02901b9aec33371so13635072oto.2;
+        Mon, 12 Apr 2021 10:51:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vwbL4QRbaiGgEYe9k+zFEy0jCzquekkCtISTZ5hdDOk=;
-        b=UrXFrxCYuvYFD+wXrRRCPaVErAB/rDWmeWnn9unY20Xo96ByyBtzJIEijt3kBhwAqK
-         FLxUy2vsa16Sr7hYfET8wr9xJaBFKQ+yV0vMa1CPFGuLT5mc1S3uJEsk2e//WNtzMBmR
-         +c9PzgIkZ9DdoT/8zQCx2Skb1Qz4j9ETaxgtSVO5in46l2YbJJ2H8yz+NkvlHFWCVnfj
-         k9if6hGxvABv+6GcARNvgK6pwILpdBBKX7INWCStTXTMcn1di6/dd2/0x3p2zNNjV3Aq
-         WPnbh5l5pEavTovZxMPh2F99JgmsxsJSxZxCQrGaz+JWdaX59CYZQOCiR1gxRIHJ/9JR
-         vCBA==
-X-Gm-Message-State: AOAM531bAcop2BdekNeJ5ouwmTiI8R8hwIKn3SWnv2BseT+/t+zMZgeP
-        9OYrXNVwz7QMUFjtUj7V22CGQ/ZqcnCmUaQpeFekxGTJrn0oWg==
-X-Google-Smtp-Source: ABdhPJx5QFQezry52L9uci0iZ8P+FSLGeRciIi6In8JMFZOPWAFdCf4ug6Fih6aajEZ6zmM0S3RxpYy0MPNjfVqDTgA=
-X-Received: by 2002:a17:90a:156:: with SMTP id z22mr338036pje.181.1618249845121;
- Mon, 12 Apr 2021 10:50:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Ea0wwblc4jIaUkhNsCQ47PE+8gSD1cmdNSdI/VVXgz4=;
+        b=M5cSKXn6xFv1MGOOg2Ok/TvmkvWZm9c5oust5OgN1YVre34g70qhlZiYR78p8gCOrT
+         7f3Qfqu5J1pvMzZuXo+7KtLDG4xvxuH5YDhCQdSwVLOIuWxAV1+6Cl86JYsFSJEMukVp
+         DETnz/RE02wBJuUuHW52eKyS3YOrqnIXXFMX2fbKOY2irofjTeOsvOW3Yu2ppGmThaE+
+         VyDBpZf6vUlf9Qyd4ee8GMPC1eUe2D7QxX4GTkgYtJ+wKqEJ8NynJWW8HaQoXuDO90u5
+         jxDqxqSvQEU/bu0f2kq7L8Lzxb6eWkJrGkmLdDhCK3Ag9LojkfqIvXhP+qNV+fiH6Kdr
+         fVwA==
+X-Gm-Message-State: AOAM530w+w1HfVf7Nb/eav6AwZ1NByalVSkpqMjOFc1NvAldofryLO65
+        h52n0VjGeCtu3zTIiEwLYg==
+X-Google-Smtp-Source: ABdhPJwKbxwTVUrZdMdU9k0p+Wsk4lVs9GvzycQRqjvxXm32f7UEUb2pz9nQfnBVTu6enLeSzHeDVw==
+X-Received: by 2002:a9d:4911:: with SMTP id e17mr3767679otf.38.1618249896643;
+        Mon, 12 Apr 2021 10:51:36 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h23sm2748216ots.0.2021.04.12.10.51.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 10:51:35 -0700 (PDT)
+Received: (nullmailer pid 4110980 invoked by uid 1000);
+        Mon, 12 Apr 2021 17:51:34 -0000
+Date:   Mon, 12 Apr 2021 12:51:34 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Chandrasekar Ramakrishnan <rcsekar@samsung.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Sriram Dash <sriram.dash@samsung.com>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-phy@lists.infradead.org
+Subject: Re: [PATCH 3/4] dt-bindings: net: can: Document transceiver
+ implementation as phy
+Message-ID: <20210412175134.GA4109207@robh.at.kernel.org>
+References: <20210409134056.18740-1-a-govindraju@ti.com>
+ <20210409134056.18740-4-a-govindraju@ti.com>
 MIME-Version: 1.0
-References: <20210410131304.1858623-1-andy.shevchenko@gmail.com> <CAJZ5v0jJoWnnx7ce82trnzsnBTMEDf1oXwFBDc0RUj-=p7hjLQ@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jJoWnnx7ce82trnzsnBTMEDf1oXwFBDc0RUj-=p7hjLQ@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 12 Apr 2021 20:50:28 +0300
-Message-ID: <CAHp75Vc3e4FcqKMn3YGGK+sNXLi5UqUL75_GcF-27hyn+iZp9Q@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] ACPI: utils: Document for_each_acpi_dev_match() macro
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Daniel Scally <djrscally@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210409134056.18740-4-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 8:27 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Sat, Apr 10, 2021 at 3:29 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > The macro requires to call acpi_dev_put() on each iteration.
-> > Due to this it doesn't tolerate sudden disappearence of the devices.
+On Fri, Apr 09, 2021 at 07:10:53PM +0530, Aswath Govindraju wrote:
+> From: Faiz Abbas <faiz_abbas@ti.com>
+> 
+> Some transceivers need a configuration step (for example, pulling the
+> standby or enable lines) for them to start sending messages. The
+> transceiver can be implemented as a phy with the configuration done in the
+> phy driver. The bit rate limitation can the be obtained by the driver using
+> the phy node.
+> 
+> Document the above implementation in the bosch mcan bindings
+> 
+> Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> index 798fa5fb7bb2..2c01899b1a3e 100644
+> --- a/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/bosch,m_can.yaml
+> @@ -109,6 +109,12 @@ properties:
+>    can-transceiver:
+>      $ref: can-transceiver.yaml#
+>  
+> +  phys:
+> +    minItems: 1
 
-And should be "disappearance" :-)
+maxItems: 1
 
-> >
-> > Document all these nuances to prevent users blindly call it without
-> > understanding the possible issues.
-> >
-> > While at it, add the note to the acpi_dev_get_next_match_dev() and
-> > advertise acpi_dev_put() instead of put_device() in the whole family
-> > of the helper functions.
+> +
+> +  phy-names:
+> +    const: can_transceiver
 
-Thanks for reviewing this, I'll address all in v2.
+Kind of a pointless name. You don't really need a name if there's a 
+single entry.
 
--- 
-With Best Regards,
-Andy Shevchenko
+> +
+>  required:
+>    - compatible
+>    - reg
+> -- 
+> 2.17.1
+> 
