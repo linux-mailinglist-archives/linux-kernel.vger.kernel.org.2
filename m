@@ -2,169 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E33635BB39
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:49:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAC935BB56
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237089AbhDLHtw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:49:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237081AbhDLHtv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:49:51 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B71EBC06138C
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:49:33 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id n138so19887284lfa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:49:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qFK3ymFR+8IkY/EyN1emVbVTfc7jJvlULyoMvBmBots=;
-        b=Soa1RlqoeN2pveBDhZJ7t62minjfgT/bCsZg0/EBGI558bQ/bao3frHXP0Rz7qclWJ
-         XlL0cuJODa1mwy5dDSETOj5ECqGIfCVjJ14QfQ6C5VOOVsvvjSbiWgX64VQqQHkhUMIC
-         eOC6tA7GhvnTU36knNTYZi4yN5tdqRic44hco=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qFK3ymFR+8IkY/EyN1emVbVTfc7jJvlULyoMvBmBots=;
-        b=iYTeLsUZgmEgly0zQWhp88ZKFoaOo+/dPedJdI04T/mwHeqMxLyyGIi/M7fkRVx+oL
-         JKlDM88cVlUHpRKCSzHDhE0+FMtAWs+vtrXTxdrOb3PDkgNvFoD/PfG+K/qZmNqZ5v6w
-         S5bvjYVNjhDbkfRKTUaiySaTNM4mthlOepR8XaX6t7u/RhnVNBi2FluIlEqbO1au4RS5
-         7ma2vfle2/x6rLMg7qN368Y4KdsjNtwKv9zTaHX+A7lOMjH/2uEEugPUS2NRiUsRgq0o
-         0+a7TPH8cunc/+xlmS3ONcy5GXKTUnVDIMckDc7w7Lk2WM4PFATVZacQP3MGoMIi6Sev
-         R1RA==
-X-Gm-Message-State: AOAM533CPvDEZ0zVvKkLHTlPLOI2fKvI4sMGTwzq+2Mb5KzvxJFofA4q
-        lZAlPVcNHDjLuthKfhHkfq4WOXAXQ4SefqZ+txUUsA==
-X-Google-Smtp-Source: ABdhPJwBRSVhNhw4No6L7/vBHycAOzfNc3erh48gevSjcRU17HxBGnY6Rhiut8kw7o9Ldf5DIb/dwWKFzUtR20neYAw=
-X-Received: by 2002:ac2:59c2:: with SMTP id x2mr4535970lfn.407.1618213771658;
- Mon, 12 Apr 2021 00:49:31 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210409065115.11054-1-alex@ghiti.fr> <3500f3cb-b660-5bbc-ae8d-0c9770e4a573@ghiti.fr>
- <be575094-badf-bac7-1629-36808ca530cc@redhat.com> <c4e78916-7e4c-76db-47f6-4dda3f09c871@ghiti.fr>
- <YHBEsDuEvPAnL8Vb@linux.ibm.com> <e7e87306-bb04-2d4f-7e7f-aabd40dccb3b@redhat.com>
- <YHBdzPsHantT9r8t@linux.ibm.com> <CAM4kBBKyHSYz+NNDpT=fWseWccsQ4HZ3teBc01jYT2g8j7Ze2A@mail.gmail.com>
- <ec1117a5-63fa-f800-1193-b5737eee6150@ghiti.fr>
-In-Reply-To: <ec1117a5-63fa-f800-1193-b5737eee6150@ghiti.fr>
-From:   Vitaly Wool <vitaly.wool@konsulko.com>
-Date:   Mon, 12 Apr 2021 09:49:20 +0200
-Message-ID: <CAM4kBBKijvZrpZPw4JLwdx+w+NEz4ceEwDSYh5xPgrqZx5Xkjw@mail.gmail.com>
-Subject: Re: [PATCH v7] RISC-V: enable XIP
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Mike Rapoport <rppt@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-arch@vger.kernel.org,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S237136AbhDLHwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:52:24 -0400
+Received: from m12-13.163.com ([220.181.12.13]:55905 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237110AbhDLHwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 03:52:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=G/6Z4nNqZYq7RUqhry
+        lTggPskhrSTLLuKMTwylozwN8=; b=Pd9HUn5gUA4b5cO5VygQjnTLjN3HdtVAbt
+        1/AwKWWC6sMw7oP/zTJbjb2a9QO4VpEAL4Gk3S1wSvuDSn4TIVpN+XwMonoOCM+l
+        CCrzwyiobo2NF3oiFanGrOkv2ih8+sF9VPG48vU6oyJE39hskcdsjXAhlUn37+x0
+        7J1aneeSg=
+Received: from localhost.localdomain (unknown [14.17.22.36])
+        by smtp9 (Coremail) with SMTP id DcCowAA3Huux+3Ng4SZBFg--.46650S3;
+        Mon, 12 Apr 2021 15:50:10 +0800 (CST)
+From:   ultrachin@163.com
+To:     linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, Chen Xiaoguang <xiaoggchen@tencent.com>,
+        Chen He <heddchen@tencent.com>
+Subject: [PATCH] mm: optimize memory allocation
+Date:   Mon, 12 Apr 2021 15:49:53 +0800
+Message-Id: <1618213793-17741-1-git-send-email-ultrachin@163.com>
+X-Mailer: git-send-email 1.8.3.1
+X-CM-TRANSID: DcCowAA3Huux+3Ng4SZBFg--.46650S3
+X-Coremail-Antispam: 1Uf129KBjvJXoW3Jr43Gw17Ar4DXF1rWFW3ZFb_yoWxuryrpF
+        sxJ3Z3Aw4rArWrGrsxKFWq934rZ3WkXFZ5A3y7Jw48X343tw1jyFnrGFy8AFy8GFZ7Jry3
+        GF45tw1kGa1DAaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j5PEfUUUUU=
+X-Originating-IP: [14.17.22.36]
+X-CM-SenderInfo: xxow2thfkl0qqrwthudrp/1tbivxJyWFWBtZlafgAAsb
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 7:12 AM Alex Ghiti <alex@ghiti.fr> wrote:
->
-> Le 4/9/21 =C3=A0 10:42 AM, Vitaly Wool a =C3=A9crit :
-> > On Fri, Apr 9, 2021 at 3:59 PM Mike Rapoport <rppt@linux.ibm.com> wrote=
-:
-> >>
-> >> On Fri, Apr 09, 2021 at 02:46:17PM +0200, David Hildenbrand wrote:
-> >>>>>> Also, will that memory properly be exposed in the resource tree as
-> >>>>>> System RAM (e.g., /proc/iomem) ? Otherwise some things (/proc/kcor=
-e)
-> >>>>>> won't work as expected - the kernel won't be included in a dump.
-> >>>> Do we really need a XIP kernel to included in kdump?
-> >>>> And does not it sound weird to expose flash as System RAM in /proc/i=
-omem? ;-)
-> >>>
-> >>> See my other mail, maybe we actually want something different.
-> >>>
-> >>>>
-> >>>>> I have just checked and it does not appear in /proc/iomem.
-> >>>>>
-> >>>>> Ok your conclusion would be to have struct page, I'm going to imple=
-ment this
-> >>>>> version then using memblock as you described.
-> >>>>
-> >>>> I'm not sure this is required. With XIP kernel text never gets into =
-RAM, so
-> >>>> it does not seem to require struct page.
-> >>>>
-> >>>> XIP by definition has some limitations relatively to "normal" operat=
-ion,
-> >>>> so lack of kdump could be one of them.
-> >>>
-> >>> I agree.
-> >>>
-> >>>>
-> >>>> I might be wrong, but IMHO, artificially creating a memory map for p=
-art of
-> >>>> flash would cause more problems in the long run.
-> >>>
-> >>> Can you elaborate?
-> >>
-> >> Nothing particular, just a gut feeling. Usually, when you force someth=
-ing
-> >> it comes out the wrong way later.
-> >
-> > It's possible still that MTD_XIP is implemented allowing to write to
-> > the flash used for XIP. While flash is being written, memory map
-> > doesn't make sense at all. I can't come up with a real life example
-> > when it can actually lead to problems but it is indeed weird when
-> > System RAM suddenly becomes unreadable. I really don't think exposing
-> > it in /proc/iomem is a good idea.
-> >
-> >>>> BTW, how does XIP account the kernel text on other architectures tha=
-t
-> >>>> implement it?
-> >>>
-> >>> Interesting point, I thought XIP would be something new on RISC-V (we=
-ll, at
-> >>> least to me :) ). If that concept exists already, we better mimic wha=
-t
-> >>> existing implementations do.
-> >>
-> >> I had quick glance at ARM, it seems that kernel text does not have mem=
-ory
-> >> map and does not show up in System RAM.
-> >
-> > Exactly, and I believe ARM64 won't do that too when it gets its own
-> > XIP support (which is underway).
-> >
->
->
-> memmap does not seem necessary and ARM/ARM64 do not use it.
->
-> But if someone tries to get a struct page from a physical address that
-> lies in flash, as mentioned by David, that could lead to silent
-> corruptions if something exists at the address where the struct page
-> should be. And it is hard to know which features in the kernel depends
-> on that.
->
-> Regarding SPARSEMEM, the vmemmap lies in its own region so that's
-> unlikely to happen, so we will catch those invalid accesses (and that's
-> what I observed on riscv).
->
-> But for FLATMEM, memmap is in the linear mapping, then that could very
-> likely happen silently.
->
-> Could a simple solution be to force SPARSEMEM for those XIP kernels ?
-> Then wrong things could happen, but we would see those and avoid
-> spending hours to debug :)
->
-> I will at least send a v8 to remove the pfn_valid modifications for
-> FLATMEM that now returns true to pfn in flash.
+From: Chen Xiaoguang <xiaoggchen@tencent.com>
 
-That sounds good to me. I am not very keen on spending 200K on struct
-pages for flash (we can think of this as of an option but I would
-definitely like to have the option to compile it out in the end), so
-let's remove pfn_valid and fix things that will eventually break, if
-some.
+Check memory cgroup limit before allocating real memory. This may
+improve performance especially in slow path when memory allocation
+exceeds cgroup limitation.
 
-Best regards,
-   Vitaly
+Signed-off-by: Chen Xiaoguang <xiaoggchen@tencent.com>
+Signed-off-by: Chen He <heddchen@tencent.com>
+---
+ include/linux/memcontrol.h | 30 ++++++++++++++++++++++--------
+ mm/memcontrol.c            | 34 ++++++++++++++++------------------
+ mm/page_alloc.c            | 24 +++++++++++++++++-------
+ 3 files changed, 55 insertions(+), 33 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0c04d39..59bb3ba 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1583,8 +1583,9 @@ static inline void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
+ #endif
+ 
+ #ifdef CONFIG_MEMCG_KMEM
+-int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
+-void __memcg_kmem_uncharge_page(struct page *page, int order);
++int __memcg_kmem_charge_page(struct mem_cgroup *memcg, gfp_t gfp, int order);
++void __memcg_kmem_uncharge_page(struct page *page, int order,
++				struct mem_cgroup *memcg);
+ 
+ struct obj_cgroup *get_obj_cgroup_from_current(void);
+ 
+@@ -1610,18 +1611,30 @@ static inline bool memcg_kmem_enabled(void)
+ 	return static_branch_likely(&memcg_kmem_enabled_key);
+ }
+ 
++extern struct mem_cgroup *get_mem_cgroup_from_current(void);
++
+ static inline int memcg_kmem_charge_page(struct page *page, gfp_t gfp,
+ 					 int order)
+ {
+-	if (memcg_kmem_enabled())
+-		return __memcg_kmem_charge_page(page, gfp, order);
+-	return 0;
++	struct mem_cgroup *memcg;
++	int ret = 0;
++
++	memcg = get_mem_cgroup_from_current();
++	if (memcg && memcg_kmem_enabled() && !mem_cgroup_is_root(memcg)) {
++		ret = __memcg_kmem_charge_page(memcg, gfp, order);
++		if (!ret) {
++			page->memcg_data = (unsigned long)memcg | MEMCG_DATA_KMEM;
++			return 0;
++		}
++		css_put(&memcg->css);
++	}
++	return ret;
+ }
+ 
+ static inline void memcg_kmem_uncharge_page(struct page *page, int order)
+ {
+ 	if (memcg_kmem_enabled())
+-		__memcg_kmem_uncharge_page(page, order);
++		__memcg_kmem_uncharge_page(page, order, NULL);
+ }
+ 
+ /*
+@@ -1647,13 +1660,14 @@ static inline void memcg_kmem_uncharge_page(struct page *page, int order)
+ {
+ }
+ 
+-static inline int __memcg_kmem_charge_page(struct page *page, gfp_t gfp,
++static inline int __memcg_kmem_charge_page(struct mem_cgroup *memcg, gfp_t gfp,
+ 					   int order)
+ {
+ 	return 0;
+ }
+ 
+-static inline void __memcg_kmem_uncharge_page(struct page *page, int order)
++static inline void __memcg_kmem_uncharge_page(struct page *page, int order,
++					    struct mem_cgroup *memcg)
+ {
+ }
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e064ac0d..8df57b7 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1085,7 +1085,7 @@ static __always_inline bool memcg_kmem_bypass(void)
+ /**
+  * If active memcg is set, do not fallback to current->mm->memcg.
+  */
+-static __always_inline struct mem_cgroup *get_mem_cgroup_from_current(void)
++struct mem_cgroup *get_mem_cgroup_from_current(void)
+ {
+ 	if (memcg_kmem_bypass())
+ 		return NULL;
+@@ -3113,21 +3113,11 @@ static void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int nr_page
+  *
+  * Returns 0 on success, an error code on failure.
+  */
+-int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
++int __memcg_kmem_charge_page(struct mem_cgroup *memcg, gfp_t gfp, int order)
+ {
+-	struct mem_cgroup *memcg;
+-	int ret = 0;
++	int ret;
+ 
+-	memcg = get_mem_cgroup_from_current();
+-	if (memcg && !mem_cgroup_is_root(memcg)) {
+-		ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
+-		if (!ret) {
+-			page->memcg_data = (unsigned long)memcg |
+-				MEMCG_DATA_KMEM;
+-			return 0;
+-		}
+-		css_put(&memcg->css);
+-	}
++	ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
+ 	return ret;
+ }
+ 
+@@ -3136,17 +3126,25 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
+  * @page: page to uncharge
+  * @order: allocation order
+  */
+-void __memcg_kmem_uncharge_page(struct page *page, int order)
++void __memcg_kmem_uncharge_page(struct page *page, int order,
++		struct mem_cgroup *memcg_in)
+ {
+-	struct mem_cgroup *memcg = page_memcg(page);
++	struct mem_cgroup *memcg;
+ 	unsigned int nr_pages = 1 << order;
+ 
++	if (page)
++		memcg = page_memcg(page);
++	else
++		memcg = memcg_in;
++
+ 	if (!memcg)
+ 		return;
+ 
+-	VM_BUG_ON_PAGE(mem_cgroup_is_root(memcg), page);
++	if (page)
++		VM_BUG_ON_PAGE(mem_cgroup_is_root(memcg), page);
+ 	__memcg_kmem_uncharge(memcg, nr_pages);
+-	page->memcg_data = 0;
++	if (page)
++		page->memcg_data = 0;
+ 	css_put(&memcg->css);
+ }
+ 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index cfc7287..c3d1d0c 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -1230,7 +1230,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
+ 		 * Untie memcg state and reset page's owner
+ 		 */
+ 		if (memcg_kmem_enabled() && PageMemcgKmem(page))
+-			__memcg_kmem_uncharge_page(page, order);
++			__memcg_kmem_uncharge_page(page, order, NULL);
+ 		reset_page_owner(page, order);
+ 		return false;
+ 	}
+@@ -1260,7 +1260,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
+ 	if (PageMappingFlags(page))
+ 		page->mapping = NULL;
+ 	if (memcg_kmem_enabled() && PageMemcgKmem(page))
+-		__memcg_kmem_uncharge_page(page, order);
++		__memcg_kmem_uncharge_page(page, order, NULL);
+ 	if (check_free)
+ 		bad += check_free_page(page);
+ 	if (bad)
+@@ -4976,6 +4976,8 @@ struct page *
+ 	unsigned int alloc_flags = ALLOC_WMARK_LOW;
+ 	gfp_t alloc_mask; /* The gfp_t that was actually used for allocation */
+ 	struct alloc_context ac = { };
++	struct mem_cgroup *memcg;
++	bool charged = false;
+ 
+ 	/*
+ 	 * There are several places where we assume that the order value is sane
+@@ -4987,6 +4989,15 @@ struct page *
+ 	}
+ 
+ 	gfp_mask &= gfp_allowed_mask;
++	memcg = get_mem_cgroup_from_current();
++	if (memcg && memcg_kmem_enabled() && (gfp_mask & __GFP_ACCOUNT) &&
++	    !mem_cgroup_is_root(memcg)) {
++		if (unlikely(__memcg_kmem_charge_page(memcg, gfp_mask, order) != 0)) {
++			css_put(&memcg->css);
++			return NULL;
++		}
++		charged = true;
++	}
+ 	alloc_mask = gfp_mask;
+ 	if (!prepare_alloc_pages(gfp_mask, order, preferred_nid, nodemask, &ac, &alloc_mask, &alloc_flags))
+ 		return NULL;
+@@ -5020,11 +5031,10 @@ struct page *
+ 	page = __alloc_pages_slowpath(alloc_mask, order, &ac);
+ 
+ out:
+-	if (memcg_kmem_enabled() && (gfp_mask & __GFP_ACCOUNT) && page &&
+-	    unlikely(__memcg_kmem_charge_page(page, gfp_mask, order) != 0)) {
+-		__free_pages(page, order);
+-		page = NULL;
+-	}
++	if (page && charged)
++		page->memcg_data = (unsigned long)memcg | MEMCG_DATA_KMEM;
++	else if (charged)
++		__memcg_kmem_uncharge_page(NULL, order, memcg);
+ 
+ 	trace_mm_page_alloc(page, order, alloc_mask, ac.migratetype);
+ 
+-- 
+1.8.3.1
+
+
