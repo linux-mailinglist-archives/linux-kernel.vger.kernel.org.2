@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8535335C227
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F5BF35C259
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242073AbhDLJkI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:40:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34282 "EHLO mail.kernel.org"
+        id S243903AbhDLJnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:43:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240869AbhDLJLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240872AbhDLJLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 05:11:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BAC561379;
-        Mon, 12 Apr 2021 09:07:01 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53FCB6008E;
+        Mon, 12 Apr 2021 09:07:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218422;
-        bh=ycZ+K1QVjJVrFHKx6vy53aD6c9O5+ao7tn+zuFkruNw=;
+        s=korg; t=1618218424;
+        bh=UEbnMEt+P4kp+Cgag4XEiNs1RzBV3lHuzyORmmHvXd4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qDcpZb1BC2PX9x5N/tTcWLWwvL7mZuOh/bedjF1etgxi0pFTNL97gwWEOhYM7jEpA
-         JcNMF2SNtGvIAJPQOzF2JXjoO193Imp69XtT/EwPhNfJVOG8L2GqhDp0USWKZUClhR
-         uJr0VpABhDHgCxN19etfaALmq9deW5YxbWkH5NEE=
+        b=A4Bd0fl4S3CF8zN5jZOJHzsW2LbldsakWQZK2DozP+uvAyAYPU/bjGGRrtRcpmg/w
+         Y0qQqz+UtBRCaKph+QZ2PlH/Z+8wNLIrGvcqtqMsJKXXDnM2bOMJGr41uxSumcG2Ft
+         +vwgnvKwOV1xZ+f8LmPCFX1ZM1npiJw+E8DACai0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 5.11 192/210] lockdep: Address clang -Wformat warning printing for %hd
-Date:   Mon, 12 Apr 2021 10:41:37 +0200
-Message-Id: <20210412084022.410153507@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 193/210] dt-bindings: net: ethernet-controller: fix typo in NVMEM
+Date:   Mon, 12 Apr 2021 10:41:38 +0200
+Message-Id: <20210412084022.447168993@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -39,43 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Rafał Miłecki <rafal@milecki.pl>
 
-commit 6d48b7912cc72275dc7c59ff961c8bac7ef66a92 upstream.
+commit af9d316f3dd6d1385fbd1631b5103e620fc4298a upstream.
 
-Clang doesn't like format strings that truncate a 32-bit
-value to something shorter:
+The correct property name is "nvmem-cell-names". This is what:
+1. Was originally documented in the ethernet.txt
+2. Is used in DTS files
+3. Matches standard syntax for phandles
+4. Linux net subsystem checks for
 
-  kernel/locking/lockdep.c:709:4: error: format specifies type 'short' but the argument has type 'int' [-Werror,-Wformat]
-
-In this case, the warning is a slightly questionable, as it could realize
-that both class->wait_type_outer and class->wait_type_inner are in fact
-8-bit struct members, even though the result of the ?: operator becomes an
-'int'.
-
-However, there is really no point in printing the number as a 16-bit
-'short' rather than either an 8-bit or 32-bit number, so just change
-it to a normal %d.
-
-Fixes: de8f5e4f2dc1 ("lockdep: Introduce wait-type checks")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210322115531.3987555-1-arnd@kernel.org
+Fixes: 9d3de3c58347 ("dt-bindings: net: Add YAML schemas for the generic Ethernet options")
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/locking/lockdep.c |    2 +-
+ Documentation/devicetree/bindings/net/ethernet-controller.yaml |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -705,7 +705,7 @@ static void print_lock_name(struct lock_
+--- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
++++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
+@@ -49,7 +49,7 @@ properties:
+     description:
+       Reference to an nvmem node for the MAC address
  
- 	printk(KERN_CONT " (");
- 	__print_lock_name(class);
--	printk(KERN_CONT "){%s}-{%hd:%hd}", usage,
-+	printk(KERN_CONT "){%s}-{%d:%d}", usage,
- 			class->wait_type_outer ?: class->wait_type_inner,
- 			class->wait_type_inner);
- }
+-  nvmem-cells-names:
++  nvmem-cell-names:
+     const: mac-address
+ 
+   phy-connection-type:
 
 
