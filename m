@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF7935BCE9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0EF35BE78
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237882AbhDLIqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:46:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36784 "EHLO mail.kernel.org"
+        id S238956AbhDLI6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:58:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237747AbhDLIpI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:45:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0EF9961246;
-        Mon, 12 Apr 2021 08:44:49 +0000 (UTC)
+        id S238708AbhDLIu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:50:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DEEC8611F0;
+        Mon, 12 Apr 2021 08:50:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217090;
-        bh=LO7YwfIm5hEC50Aj+yN9I5w4WLEye4vQ50dCqVN9Zfs=;
+        s=korg; t=1618217411;
+        bh=7khwu2IG/1lnTGfD54GNj/hWdGYeQlKlWGEELSEg1Nc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fi9sMRp4Kx8nc98qu8XETFcjdEJ9A8GpEdb+JPmPsX7wl0iLhmYLQ/Vo1mwYTFTYl
-         Jooc4IlbTL5e9Z59QtqZ5KhXNhTOD6AcuD+i8gY9Fdj4dC5kx6YAbsifr8ftEybVCU
-         nlNLTzSKub4GFBmSewiIReKjl9X4Sgkva4FLOE0w=
+        b=YKu7emLZspIJwwprmLjfaBGErmE50scgz7uGOzHCxBIDCog4wzA1Aj5A+QJwzuktj
+         Ye6VoWbyyak6LMAA/9Kxh9lYH5LXSVpMuSa2fOaUWCunT6EkoNNHwGgjPOREH0Qt0K
+         vWHiRFvvNtOxgXQjGQ+WwwCXPmYXZ+kZrE0x7Dho=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+cde43a581a8e5f317bc2@syzkaller.appspotmail.com,
-        Alexander Aring <aahringo@redhat.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH 4.19 65/66] net: ieee802154: stop dump llsec params for monitors
-Date:   Mon, 12 Apr 2021 10:41:11 +0200
-Message-Id: <20210412084000.229034468@linuxfoundation.org>
+        stable@vger.kernel.org, William Roche <william.roche@oracle.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.4 094/111] RAS/CEC: Correct ce_add_elem()s returned values
+Date:   Mon, 12 Apr 2021 10:41:12 +0200
+Message-Id: <20210412084007.383311692@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-References: <20210412083958.129944265@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,38 +39,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: William Roche <william.roche@oracle.com>
 
-commit 1534efc7bbc1121e92c86c2dabebaf2c9dcece19 upstream.
+commit 3a62583c2853b0ab37a57dde79decea210b5fb89 upstream.
 
-This patch stops dumping llsec params for monitors which we don't support
-yet. Otherwise we will access llsec mib which isn't initialized for
-monitors.
+ce_add_elem() uses different return values to signal a result from
+adding an element to the collector. Commit in Fixes: broke the case
+where the element being added is not found in the array. Correct that.
 
-Reported-by: syzbot+cde43a581a8e5f317bc2@syzkaller.appspotmail.com
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210405003054.256017-16-aahringo@redhat.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+ [ bp: Rewrite commit message, add kernel-doc comments. ]
+
+Fixes: de0e0624d86f ("RAS/CEC: Check count_threshold unconditionally")
+Signed-off-by: William Roche <william.roche@oracle.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/1617722939-29670-1-git-send-email-william.roche@oracle.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ieee802154/nl802154.c |    5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/ras/cec.c |   15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -836,8 +836,13 @@ nl802154_send_iface(struct sk_buff *msg,
- 		goto nla_put_failure;
+--- a/drivers/ras/cec.c
++++ b/drivers/ras/cec.c
+@@ -309,11 +309,20 @@ static bool sanity_check(struct ce_array
+ 	return ret;
+ }
  
- #ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
-+	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR)
-+		goto out;
-+
- 	if (nl802154_get_llsec_params(msg, rdev, wpan_dev) < 0)
- 		goto nla_put_failure;
-+
-+out:
- #endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
++/**
++ * cec_add_elem - Add an element to the CEC array.
++ * @pfn:	page frame number to insert
++ *
++ * Return values:
++ * - <0:	on error
++ * -  0:	on success
++ * - >0:	when the inserted pfn was offlined
++ */
+ int cec_add_elem(u64 pfn)
+ {
+ 	struct ce_array *ca = &ce_arr;
++	int count, err, ret = 0;
+ 	unsigned int to = 0;
+-	int count, ret = 0;
  
- 	genlmsg_end(msg, hdr);
+ 	/*
+ 	 * We can be called very early on the identify_cpu() path where we are
+@@ -330,8 +339,8 @@ int cec_add_elem(u64 pfn)
+ 	if (ca->n == MAX_ELEMS)
+ 		WARN_ON(!del_lru_elem_unlocked(ca));
+ 
+-	ret = find_elem(ca, pfn, &to);
+-	if (ret < 0) {
++	err = find_elem(ca, pfn, &to);
++	if (err < 0) {
+ 		/*
+ 		 * Shift range [to-end] to make room for one more element.
+ 		 */
 
 
