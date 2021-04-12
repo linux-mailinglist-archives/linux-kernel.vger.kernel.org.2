@@ -2,104 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E5835D41E
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C2035D424
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344196AbhDLXqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:46:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59592 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237290AbhDLXqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:46:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5CB6061278;
-        Mon, 12 Apr 2021 23:45:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618271149;
-        bh=QRIInDklK16Ym/43NY2Bvzrh8ZTmiRAiyJRfrUabGpk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=XFpiTYrmI2eNTJprFnnSFChlZDgqgDu1IHOvc7YS45+kb5dxAOGzw8PGt7y8GyQGD
-         0HGvbNrRlZplIxqPYpzYT/XbQMEn4DUDzHgdVFeBPPDbDTMY3ps4ulDCzrdA9GBjHQ
-         vOkKDZ2WJaaqK+RcE4GITJ3r2BGxab4E8Bqgj2N9UrefkFF+D1+W7pS4pGKeSzU+cT
-         1kdtDxQgXqvdBRZkC3QWY5V8s0Jnk1yexmtnoqjGRl7LXGWQ8imR4I5HmEYYP3RsV5
-         i6RO+ffz1CCjDL928gs7O3FKN8sk4MQndgoYNHWKFHL7ETVQJLlu7SU0jyFRp+H0Nu
-         kZdFH/yWp38NA==
-Date:   Tue, 13 Apr 2021 01:45:45 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: marvell: fix detection of PHY on Topaz
- switches
-Message-ID: <20210413014545.1bb4601e@thinkpad>
-In-Reply-To: <20210412163829.kp7feb3yhzymukg2@pali>
-References: <20210412121430.20898-1-pali@kernel.org>
-        <YHRH2zWsYkv/yjYz@lunn.ch>
-        <20210412133447.fyqkavrs5r5wbino@pali>
-        <YHRcu+dNKE7xC8EG@lunn.ch>
-        <20210412150152.pbz5zt7mu3aefbrx@pali>
-        <YHRoEfGi3/l3K6iF@lunn.ch>
-        <20210412155239.chgrne7uzvlrac2e@pali>
-        <YHRxcyezvUij82bl@lunn.ch>
-        <20210412163829.kp7feb3yhzymukg2@pali>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        id S1344200AbhDLXqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:46:38 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:56881 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237290AbhDLXqg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 19:46:36 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 62113580449;
+        Mon, 12 Apr 2021 19:46:17 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 12 Apr 2021 19:46:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=fmEbaEZe+KED5JiPxN0DVWg/HvQWdbc
+        FjVOEUztK2NI=; b=Vx/AVcRxxdiZfCzmg6HH9s7fTRcRO2A7YIjLyLaYe8qYr0r
+        BS6egDBjdLmYM34p470HJr5LqP5KoInLDDwqdcamk5MRSrxO7dAhMPAMUDC0dhjh
+        vJPcgIwiLG8KOJ3uKA0GTGu1jcMQaOMSnd2WrYuTHIQZVsAWFGqkwBRXNlti55x/
+        6ugOqakXKGxkr0fFLfkKWrDXxcxOVi08DvlZS08DU0g+kMkvrqeAYCT7meuT5hdW
+        cOoZaNo0ceLqWTSGPHWkpxqHpGYT21VoEfaKHBFdWelkIXGtvA0GWL6pRx9n2reQ
+        6kULJBJilakY/lES25nZKfX1V5Pxebr9HcJga0Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=fmEbaE
+        Ze+KED5JiPxN0DVWg/HvQWdbcFjVOEUztK2NI=; b=RCRlZHDVBmLjCH2Y7LqZJ+
+        LPMZ6zfYSA6N9BRlHWDS80Td69J2sFZ47v0FrYjGX9CByF1tu62RmXm7qpQJoCd9
+        lyFdYNdzNHNXMTeMxpri2aLsG94InMhJ8JdMtTYuYL8jgwgeI3B/KHx/1h7FXxwW
+        GFXGj/30mGVdydc6aQu8SVDfHYocr+6I1EzEpM+MqorxoGRXWXNhvEDsz/DFvSXa
+        rYE3E5TnGUmIZZ4eTJZgl8j6ujkfUb41tPfnYSTWk7WZo5HbgTE0bvvQIlBDdV1N
+        ceo9eazaMv36UwCVQ0aDxCcUePl6VUptDzGA6jyNVzZzVveA5t4xIBSb2wGGWApw
+        ==
+X-ME-Sender: <xms:yNt0YDKsHdDMWdXB67vih2mzvrdYlOcCvVQwdzWrwLB92pCjtohLGg>
+    <xme:yNt0YHJZZadPM5R8veYmJ54Ch37QTHIf99pdhSUG5UX_33jbc44ne40lbbkqNDNhY
+    p-7h1o0hS8xbEO2Pw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekkedgvdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:yNt0YLvZ-5yk3agrT9YWtjZWTZ1n12af9CvsRTw7iYChxJE0LfGbCQ>
+    <xmx:yNt0YMYiIUT79Zr8a0tOPJ1Qwj4euwq3Id7w13GBk2gsc9l4e3s7GA>
+    <xmx:yNt0YKZ2JcYj0a965dlZZV-2elCkGC4TFQDZ2oRzO8p2l2IKDdo0bg>
+    <xmx:ydt0YHTKgXOM0oSWC70tTjSLyk9flINctzDvB8B_VuS-YFOxXGuOWQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 38211A00492; Mon, 12 Apr 2021 19:46:16 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <e2d7268b-bdaf-45bf-bb21-a5b9f7e985a4@www.fastmail.com>
+In-Reply-To: <CAK8P3a3RXr5CR7DJgD9rEkN8owpPxXRgzRnPB_5LuQcHkzc4LA@mail.gmail.com>
+References: <20210319062752.145730-1-andrew@aj.id.au>
+ <20210319062752.145730-16-andrew@aj.id.au>
+ <CAK8P3a1HDQdbTAT4aRMLu-VFz720ynPqPHG5b22NZ5p5QfUqOw@mail.gmail.com>
+ <ba63f830-4758-49aa-a63e-f204a8eec1b4@www.fastmail.com>
+ <CAK8P3a3RXr5CR7DJgD9rEkN8owpPxXRgzRnPB_5LuQcHkzc4LA@mail.gmail.com>
+Date:   Tue, 13 Apr 2021 09:15:55 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Arnd Bergmann" <arnd@kernel.org>
+Cc:     "Dmitry Torokhov" <dmitry.torokhov@gmail.com>,
+        openipmi-developer@lists.sourceforge.net,
+        "OpenBMC Maillist" <openbmc@lists.ozlabs.org>,
+        "Corey Minyard" <minyard@acm.org>, "Joel Stanley" <joel@jms.id.au>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        DTML <devicetree@vger.kernel.org>,
+        "Tomer Maimon" <tmaimon77@gmail.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "Avi Fishman" <avifishman70@gmail.com>,
+        "Patrick Venture" <venture@google.com>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Tali Perry" <tali.perry1@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Lee Jones" <lee.jones@linaro.org>,
+        "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        "Benjamin Fair" <benjaminfair@google.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v2_16/21]_ipmi:_kcs=5Fbmc:_Add_a_"raw"_character_de?=
+ =?UTF-8?Q?vice_interface?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021 18:38:29 +0200
-Pali Roh=C3=A1r <pali@kernel.org> wrote:
 
-> On Monday 12 April 2021 18:12:35 Andrew Lunn wrote:
-> > On Mon, Apr 12, 2021 at 05:52:39PM +0200, Pali Roh=C3=A1r wrote: =20
-> > > On Monday 12 April 2021 17:32:33 Andrew Lunn wrote: =20
-> > > > > Anyway, now I'm looking at phy/marvell.c driver again and it supp=
-orts
-> > > > > only 88E6341 and 88E6390 families from whole 88E63xxx range.
-> > > > >=20
-> > > > > So do we need to define for now table for more than
-> > > > > MV88E6XXX_FAMILY_6341 and MV88E6XXX_FAMILY_6390 entries? =20
-> > > >=20
-> > > > Probably not. I've no idea if the 6393 has an ID, so to be safe you
-> > > > should add that. Assuming it has a family of its own. =20
-> > >=20
-> > > So what about just?
-> > >=20
-> > > 	if (reg =3D=3D MII_PHYSID2 && !(val & 0x3f0)) {
-> > > 		if (chip->info->family =3D=3D MV88E6XXX_FAMILY_6341)
-> > > 			val |=3D MV88E6XXX_PORT_SWITCH_ID_PROD_6341 >> 4;
-> > > 		else if (chip->info->family =3D=3D MV88E6XXX_FAMILY_6390)
-> > > 			val |=3D MV88E6XXX_PORT_SWITCH_ID_PROD_6390 >> 4;
-> > > 	} =20
-> >=20
-> > As i said, i expect the 6393 also has no ID. And i recently found out
-> > Marvell have some automotive switches, 88Q5xxx which are actually
-> > based around the same IP and could be added to this driver. They also
-> > might not have an ID. I suspect this list is going to get longer, so
-> > having it table driven will make that simpler, less error prone.
-> >=20
-> >      Andrew =20
->=20
-> Ok, I will use table but I fill it only with Topaz (6341) and Peridot
-> (6390) which was there before as I do not have 6393 switch for testing.
->=20
-> If you or anybody else has 6393 unit for testing, please extend then
-> table.
 
-6393 PHYs report PHY ID 0x002b0808, I.e. no model number.
+On Mon, 12 Apr 2021, at 18:18, Arnd Bergmann wrote:
+> On Mon, Apr 12, 2021 at 3:33 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > On Fri, 9 Apr 2021, at 17:25, Arnd Bergmann wrote:
+> > > On Fri, Mar 19, 2021 at 7:31 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > > >
+> > > > The existing IPMI chardev encodes IPMI behaviours as the name suggests.
+> > > > However, KCS devices are useful beyond IPMI (or keyboards), as they
+> > > > provide a means to generate IRQs and exchange arbitrary data between a
+> > > > BMC and its host system.
+> > >
+> > > I only noticed the series after Joel asked about the DT changes on the arm
+> > > side. One question though:
+> > >
+> > > How does this related to the drivers/input/serio/ framework that also talks
+> > > to the keyboard controller for things that are not keyboards?
+> >
+> > I've taken a brief look and I feel they're somewhat closely related.
+> >
+> > It's plausible that we could wrangle the code so the Aspeed and Nuvoton
+> > KCS drivers move under drivers/input/serio. If you squint, the i8042
+> > serio device driver has similarities with what the Aspeed and Nuvoton
+> > device drivers are providing to the KCS IPMI stack.
+> 
+> After looking some more into it, I finally understood that the two are
+> rather complementary. While the  drivers/char/ipmi/kcs_bmc.c
+> is the other (bmc) end of drivers/char/ipmi/ipmi_kcs_sm.c, it seems
+> that the proposed kcs_bmc_cdev_raw.c interface would be
+> what corresponds to the other side of
+> drivers/input/serio/i8042.c+userio.c.
 
-I now realize that I did not implement this for 6393, these PHYs are
-detected as
-  mv88e6085 ... PHY [...] driver [Generic PHY] (irq=3DPOLL)
+Right. I guess the question is should we be splitting kernel subsystems 
+along host/bmc lines? Doesn't feel intuitive, it's all Linux, but maybe 
+we can consolidate in the future if it makes sense?
 
-And it seems that this temperature sensor is different from 1510, 6341
-and 6390 :) I will look into this and send a patch.
+> Then again, these are also on
+> separate ports (0x60 for the keyboard controller, 0xca2 for the BMC
+> KCS), so they would never actually talk to one another.
 
-Marek
+Well, sort of I guess. On Power systems we don't use the keyboard 
+controller for IPMI or keyboards, so we're just kinda exploiting the 
+hardware for our own purposes.
+
+> 
+> > Both the KCS IPMI and raw chardev I've implemented in this patch need
+> > both read and write access to the status register (STR). serio could
+> > potentially expose its value through serio_interrupt() using the
+> > SERIO_OOB_DATA flag, but I haven't put any thought into it beyond this
+> > sentence. We'd need some extra support for writing STR via the serio
+> > API. I'm not sure that fits into the abstraction (unless we make
+> > serio_write() take a flags argument?).
+> >
+> > In that vein, the serio_raw interface is close to the functionality
+> > that the raw chardev provides in this patch, though again serio_raw
+> > lacks userspace access to STR. Flags are ignored in the ->interrupt()
+> > callback so all values received via ->interrupt() are exposed as data.
+> > The result is there's no way to take care of SERIO_OOB_DATA in the
+> > read() path. Given that, I think we'd have to expose an ioctl() to
+> > access the STR value after taking care of SERIO_OOB_DATA in
+> > ->interrupt().
+> >
+> > I'm not sure where that lands us.
+> 
+> Based on what I looked up, I think you can just forget about my original
+> question. We have two separate interfaces that use an Intel 8042-style
+> protocol, but they don't really interact.
+
+Right, this is still true given Power doesn't care for keyboards or 
+IPMI via the keyboard controllers; the two still don't interact.
+
+Andrew
