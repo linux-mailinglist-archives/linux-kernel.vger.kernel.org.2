@@ -2,211 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 267BB35C6C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCC635C6C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241100AbhDLMyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:54:33 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:32980 "EHLO mail.hallyn.com"
+        id S241262AbhDLMzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:55:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:49950 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238259AbhDLMyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:54:32 -0400
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id 05ECE91C; Mon, 12 Apr 2021 07:54:12 -0500 (CDT)
-Date:   Mon, 12 Apr 2021 07:54:12 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Serge Hallyn <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH] security: commoncap: clean up kernel-doc comments
-Message-ID: <20210412125412.GA30881@mail.hallyn.com>
-References: <20210412005528.3326-1-rdunlap@infradead.org>
+        id S240333AbhDLMzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:55:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 82EA51FB;
+        Mon, 12 Apr 2021 05:55:03 -0700 (PDT)
+Received: from [10.37.12.6] (unknown [10.37.12.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E9C53F73B;
+        Mon, 12 Apr 2021 05:55:00 -0700 (PDT)
+Subject: Re: [PATCH RESEND v1 1/4] lib/vdso: Mark do_hres_timens() and
+ do_coarse_timens() __always_inline()
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dima@arista.com, avagin@gmail.com, arnd@arndb.de,
+        tglx@linutronix.de, luto@kernel.org, linux-arch@vger.kernel.org
+References: <cover.1617209141.git.christophe.leroy@csgroup.eu>
+ <90dcf45ebadfd5a07f24241551c62f619d1cb930.1617209142.git.christophe.leroy@csgroup.eu>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <8b42e769-2f17-e2b4-4d2a-b86c4e412598@arm.com>
+Date:   Mon, 12 Apr 2021 13:54:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412005528.3326-1-rdunlap@infradead.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <90dcf45ebadfd5a07f24241551c62f619d1cb930.1617209142.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 05:55:28PM -0700, Randy Dunlap wrote:
-> Fix kernel-doc notation in commoncap.c.
-> 
-> Use correct (matching) function name in comments as in code.
-> Use correct function argument names in kernel-doc comments.
-> Use kernel-doc's "Return:" format for function return values.
-> 
-> Fixes these kernel-doc warnings:
-> 
-> ../security/commoncap.c:1206: warning: expecting prototype for cap_task_ioprio(). Prototype was for cap_task_setioprio() instead
-> ../security/commoncap.c:1219: warning: expecting prototype for cap_task_ioprio(). Prototype was for cap_task_setnice() instead
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Serge Hallyn <serge@hallyn.com>
 
-Reviewed-by: Serge Hallyn <serge@hallyn.com>
 
-thanks,
--serge
+On 3/31/21 5:48 PM, Christophe Leroy wrote:
+> In the same spirit as commit c966533f8c6c ("lib/vdso: Mark do_hres()
+> and do_coarse() as __always_inline"), mark do_hres_timens() and
+> do_coarse_timens() __always_inline.
+> 
+> The measurement below in on a non timens process, ie on the fastest path.
+> 
+> On powerpc32, without the patch:
+> 
+> clock-gettime-monotonic-raw:    vdso: 1155 nsec/call
+> clock-gettime-monotonic-coarse:    vdso: 813 nsec/call
+> clock-gettime-monotonic:    vdso: 1076 nsec/call
+> 
+> With the patch:
+> 
+> clock-gettime-monotonic-raw:    vdso: 1100 nsec/call
+> clock-gettime-monotonic-coarse:    vdso: 667 nsec/call
+> clock-gettime-monotonic:    vdso: 1025 nsec/call
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-> Cc: James Morris <jmorris@namei.org>
-> Cc: linux-security-module@vger.kernel.org
+Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+
 > ---
->  security/commoncap.c |   50 +++++++++++++++++++++++++++--------------
->  1 file changed, 33 insertions(+), 17 deletions(-)
+>  lib/vdso/gettimeofday.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-> --- linux-next-20210409.orig/security/commoncap.c
-> +++ linux-next-20210409/security/commoncap.c
-> @@ -50,7 +50,7 @@ static void warn_setuid_and_fcaps_mixed(
->  /**
->   * cap_capable - Determine whether a task has a particular effective capability
->   * @cred: The credentials to use
-> - * @ns:  The user namespace in which we need the capability
-> + * @targ_ns:  The user namespace in which we need the capability
->   * @cap: The capability to check for
->   * @opts: Bitmask of options defined in include/linux/security.h
->   *
-> @@ -289,7 +289,7 @@ int cap_capset(struct cred *new,
->   * affects the security markings on that inode, and if it is, should
->   * inode_killpriv() be invoked or the change rejected.
->   *
-> - * Returns 1 if security.capability has a value, meaning inode_killpriv()
-> + * Return: 1 if security.capability has a value, meaning inode_killpriv()
->   * is required, 0 otherwise, meaning inode_killpriv() is not required.
->   */
->  int cap_inode_need_killpriv(struct dentry *dentry)
-> @@ -315,7 +315,7 @@ int cap_inode_need_killpriv(struct dentr
->   * permissions. On non-idmapped mounts or if permission checking is to be
->   * performed on the raw inode simply passs init_user_ns.
->   *
-> - * Returns 0 if successful, -ve on error.
-> + * Return: 0 if successful, -ve on error.
->   */
->  int cap_inode_killpriv(struct user_namespace *mnt_userns, struct dentry *dentry)
+> diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
+> index 2919f1698140..c6f6dee08746 100644
+> --- a/lib/vdso/gettimeofday.c
+> +++ b/lib/vdso/gettimeofday.c
+> @@ -46,8 +46,8 @@ static inline bool vdso_cycles_ok(u64 cycles)
+>  #endif
+>  
+>  #ifdef CONFIG_TIME_NS
+> -static int do_hres_timens(const struct vdso_data *vdns, clockid_t clk,
+> -			  struct __kernel_timespec *ts)
+> +static __always_inline int do_hres_timens(const struct vdso_data *vdns, clockid_t clk,
+> +					  struct __kernel_timespec *ts)
 >  {
-> @@ -532,7 +532,7 @@ static bool validheader(size_t size, con
->   * permissions. On non-idmapped mounts or if permission checking is to be
->   * performed on the raw inode simply passs init_user_ns.
->   *
-> - * If all is ok, we return the new size, on error return < 0.
-> + * Return: On success, return the new size; on error, return < 0.
->   */
->  int cap_convert_nscap(struct user_namespace *mnt_userns, struct dentry *dentry,
->  		      const void **ivalue, size_t size)
-> @@ -881,7 +881,9 @@ static inline bool nonroot_raised_pE(str
->   *
->   * Set up the proposed credentials for a new execution context being
->   * constructed by execve().  The proposed creds in @bprm->cred is altered,
-> - * which won't take effect immediately.  Returns 0 if successful, -ve on error.
-> + * which won't take effect immediately.
-> + *
-> + * Return: 0 if successful, -ve on error.
->   */
->  int cap_bprm_creds_from_file(struct linux_binprm *bprm, struct file *file)
->  {
-> @@ -1117,7 +1119,9 @@ static inline void cap_emulate_setxuid(s
->   * @flags: Indications of what has changed
->   *
->   * Fix up the results of setuid() call before the credential changes are
-> - * actually applied, returning 0 to grant the changes, -ve to deny them.
-> + * actually applied.
-> + *
-> + * Return: 0 to grant the changes, -ve to deny them.
->   */
->  int cap_task_fix_setuid(struct cred *new, const struct cred *old, int flags)
->  {
-> @@ -1187,7 +1191,9 @@ static int cap_safe_nice(struct task_str
->   * @p: The task to affect
->   *
->   * Detemine if the requested scheduler policy change is permitted for the
-> - * specified task, returning 0 if permission is granted, -ve if denied.
-> + * specified task.
-> + *
-> + * Return: 0 if permission is granted, -ve if denied.
->   */
->  int cap_task_setscheduler(struct task_struct *p)
->  {
-> @@ -1195,12 +1201,14 @@ int cap_task_setscheduler(struct task_st
+>  	const struct vdso_data *vd = __arch_get_timens_vdso_data();
+>  	const struct timens_offset *offs = &vdns->offset[clk];
+> @@ -97,8 +97,8 @@ static __always_inline const struct vdso_data *__arch_get_timens_vdso_data(void)
+>  	return NULL;
 >  }
 >  
->  /**
-> - * cap_task_ioprio - Detemine if I/O priority change is permitted
-> + * cap_task_setioprio - Detemine if I/O priority change is permitted
->   * @p: The task to affect
->   * @ioprio: The I/O priority to set
->   *
->   * Detemine if the requested I/O priority change is permitted for the specified
-> - * task, returning 0 if permission is granted, -ve if denied.
-> + * task.
-> + *
-> + * Return: 0 if permission is granted, -ve if denied.
->   */
->  int cap_task_setioprio(struct task_struct *p, int ioprio)
+> -static int do_hres_timens(const struct vdso_data *vdns, clockid_t clk,
+> -			  struct __kernel_timespec *ts)
+> +static __always_inline int do_hres_timens(const struct vdso_data *vdns, clockid_t clk,
+> +					  struct __kernel_timespec *ts)
 >  {
-> @@ -1208,12 +1216,14 @@ int cap_task_setioprio(struct task_struc
+>  	return -EINVAL;
+>  }
+> @@ -159,8 +159,8 @@ static __always_inline int do_hres(const struct vdso_data *vd, clockid_t clk,
 >  }
 >  
->  /**
-> - * cap_task_ioprio - Detemine if task priority change is permitted
-> + * cap_task_setnice - Detemine if task priority change is permitted
->   * @p: The task to affect
->   * @nice: The nice value to set
->   *
->   * Detemine if the requested task priority change is permitted for the
-> - * specified task, returning 0 if permission is granted, -ve if denied.
-> + * specified task.
-> + *
-> + * Return: 0 if permission is granted, -ve if denied.
->   */
->  int cap_task_setnice(struct task_struct *p, int nice)
+>  #ifdef CONFIG_TIME_NS
+> -static int do_coarse_timens(const struct vdso_data *vdns, clockid_t clk,
+> -			    struct __kernel_timespec *ts)
+> +static __always_inline int do_coarse_timens(const struct vdso_data *vdns, clockid_t clk,
+> +					    struct __kernel_timespec *ts)
 >  {
-> @@ -1243,12 +1253,15 @@ static int cap_prctl_drop(unsigned long
->  /**
->   * cap_task_prctl - Implement process control functions for this security module
->   * @option: The process control function requested
-> - * @arg2, @arg3, @arg4, @arg5: The argument data for this function
-> + * @arg2: The argument data for this function
-> + * @arg3: The argument data for this function
-> + * @arg4: The argument data for this function
-> + * @arg5: The argument data for this function
->   *
->   * Allow process control functions (sys_prctl()) to alter capabilities; may
->   * also deny access to other functions not otherwise implemented here.
->   *
-> - * Returns 0 or +ve on success, -ENOSYS if this function is not implemented
-> + * Return: 0 or +ve on success, -ENOSYS if this function is not implemented
->   * here, other -ve on error.  If -ENOSYS is returned, sys_prctl() and other LSM
->   * modules will consider performing the function.
->   */
-> @@ -1383,7 +1396,9 @@ int cap_task_prctl(int option, unsigned
->   * @pages: The size of the mapping
->   *
->   * Determine whether the allocation of a new virtual mapping by the current
-> - * task is permitted, returning 1 if permission is granted, 0 if not.
-> + * task is permitted.
-> + *
-> + * Return: 1 if permission is granted, 0 if not.
->   */
->  int cap_vm_enough_memory(struct mm_struct *mm, long pages)
->  {
-> @@ -1396,14 +1411,15 @@ int cap_vm_enough_memory(struct mm_struc
->  	return cap_sys_admin;
+>  	const struct vdso_data *vd = __arch_get_timens_vdso_data();
+>  	const struct vdso_timestamp *vdso_ts = &vd->basetime[clk];
+> @@ -188,8 +188,8 @@ static int do_coarse_timens(const struct vdso_data *vdns, clockid_t clk,
+>  	return 0;
 >  }
->  
-> -/*
-> +/**
->   * cap_mmap_addr - check if able to map given addr
->   * @addr: address attempting to be mapped
->   *
->   * If the process is attempting to map memory below dac_mmap_min_addr they need
->   * CAP_SYS_RAWIO.  The other parameters to this function are unused by the
-> - * capability security module.  Returns 0 if this mapping should be allowed
-> - * -EPERM if not.
-> + * capability security module.
-> + *
-> + * Return: 0 if this mapping should be allowed or -EPERM if not.
->   */
->  int cap_mmap_addr(unsigned long addr)
+>  #else
+> -static int do_coarse_timens(const struct vdso_data *vdns, clockid_t clk,
+> -			    struct __kernel_timespec *ts)
+> +static __always_inline int do_coarse_timens(const struct vdso_data *vdns, clockid_t clk,
+> +					    struct __kernel_timespec *ts)
 >  {
+>  	return -1;
+>  }
+> 
+
+-- 
+Regards,
+Vincenzo
