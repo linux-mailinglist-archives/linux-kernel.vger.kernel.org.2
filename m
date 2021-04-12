@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1474A35C248
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 339E635C1F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243490AbhDLJmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:42:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34724 "EHLO mail.kernel.org"
+        id S241144AbhDLJhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:37:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240466AbhDLJKT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:10:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EE7261286;
-        Mon, 12 Apr 2021 09:05:41 +0000 (UTC)
+        id S240472AbhDLJKU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:10:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0E45461356;
+        Mon, 12 Apr 2021 09:05:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218341;
-        bh=Uml8lBs8mbcuKsNkLY6GOCN37CVSsJZ9u0Cfl7oZalI=;
+        s=korg; t=1618218344;
+        bh=JNvWAmtHSnkOxNZ4UtEVIm+druCrHLCnIH8U8MUn8zk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hAd5GkfLViI6HsKGOIzv48pcGDHqHvPz1Ed1zf7pEqMshbwEfPloP3tiLcarmUTul
-         HC38nRx2Blx0blkgblhDr+YPBZFShuNzwpQqPPYR4qH9wta47VqISwR8A8OCVhA+T7
-         ISvwl2kQNFSOUrPWoaRiTowQ4Mfo2QJV3aF+IR3A=
+        b=O/zEkzXVRatNIc70lPhbrZPSWnPAwAq0PTfhYOMNL3P9oZgJr7O/oFOTDpibXro42
+         TP1I5CAkpXIPa5qhLyyt5zKshLRUkplt6vU8ZWB65ErAOYOKbOAW3NQ4b/3SzrNNPp
+         5HkBDXVOh9qdint/IH4zUCO7nfG2LlGbdBPCe6po=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Akhil P Oommen <akhilpo@codeaurora.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
+        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
         Rob Clark <robdclark@chromium.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 160/210] drm/msm: a6xx: fix version check for the A650 SQE microcode
-Date:   Mon, 12 Apr 2021 10:41:05 +0200
-Message-Id: <20210412084021.346978935@linuxfoundation.org>
+Subject: [PATCH 5.11 161/210] drm/msm/disp/dpu1: program 3d_merge only if block is attached
+Date:   Mon, 12 Apr 2021 10:41:06 +0200
+Message-Id: <20210412084021.389542114@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -43,53 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From: Kalyan Thota <kalyan_t@codeaurora.org>
 
-[ Upstream commit 6ddbfa1f5adbd5dea14ff66778ca58257f09f17d ]
+[ Upstream commit 12aca1ce9ee33af3751aec5e55a5900747cbdd4b ]
 
-I suppose the microcode version check for a650 is incorrect. It checks
-for the version 1.95, while the firmware released have major version of 0:
-0.91 (vulnerable), 0.99 (fixing the issue).
+Update the 3d merge as active in the data path only if
+the hw block is selected in the configuration.
 
-Lower version requirements to accept firmware 0.99.
-
-Fixes: 8490f02a3ca4 ("drm/msm: a6xx: Make sure the SQE microcode is safe")
-Cc: Akhil P Oommen <akhilpo@codeaurora.org>
-Cc: Jordan Crouse <jcrouse@codeaurora.org>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Acked-by: Jordan Crouse <jordan@cosmicpenguin.net>
-Message-Id: <20210331140223.3771449-1-dmitry.baryshkov@linaro.org>
+Reported-by: Stephen Boyd <swboyd@chromium.org>
+Fixes: 73bfb790ac78 ("msm:disp:dpu1: setup display datapath for SC7180 target")
+Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+Message-Id: <1617364493-13518-1-git-send-email-kalyan_t@codeaurora.org>
 Signed-off-by: Rob Clark <robdclark@chromium.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-index e7a8442b59af..a676811ef69d 100644
---- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-+++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
-@@ -566,17 +566,17 @@ static bool a6xx_ucode_check_version(struct a6xx_gpu *a6xx_gpu,
- 	}  else {
- 		/*
- 		 * a650 tier targets don't need whereami but still need to be
--		 * equal to or newer than 1.95 for other security fixes
-+		 * equal to or newer than 0.95 for other security fixes
- 		 */
- 		if (adreno_is_a650(adreno_gpu)) {
--			if ((buf[0] & 0xfff) >= 0x195) {
-+			if ((buf[0] & 0xfff) >= 0x095) {
- 				ret = true;
- 				goto out;
- 			}
+diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+index 8981cfa9dbc3..92e6f1b94738 100644
+--- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
++++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c
+@@ -496,7 +496,9 @@ static void dpu_hw_ctl_intf_cfg_v1(struct dpu_hw_ctl *ctx,
  
- 			DRM_DEV_ERROR(&gpu->pdev->dev,
- 				"a650 SQE ucode is too old. Have version %x need at least %x\n",
--				buf[0] & 0xfff, 0x195);
-+				buf[0] & 0xfff, 0x095);
- 		}
+ 	DPU_REG_WRITE(c, CTL_TOP, mode_sel);
+ 	DPU_REG_WRITE(c, CTL_INTF_ACTIVE, intf_active);
+-	DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE, BIT(cfg->merge_3d - MERGE_3D_0));
++	if (cfg->merge_3d)
++		DPU_REG_WRITE(c, CTL_MERGE_3D_ACTIVE,
++			      BIT(cfg->merge_3d - MERGE_3D_0));
+ }
  
- 		/*
+ static void dpu_hw_ctl_intf_cfg(struct dpu_hw_ctl *ctx,
 -- 
 2.30.2
 
