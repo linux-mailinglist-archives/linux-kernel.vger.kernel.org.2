@@ -2,91 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536FD35C6FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE26935C701
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241660AbhDLNGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:06:06 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:32972 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241655AbhDLNGD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:06:03 -0400
-Received: from zn.tnic (p200300ec2f052100338fe73c52330fca.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:2100:338f:e73c:5233:fca])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 98C921EC03A0;
-        Mon, 12 Apr 2021 15:05:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618232743;
+        id S241669AbhDLNIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:08:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53756 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239409AbhDLNIa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 09:08:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618232892;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=t5OPFg3BlJZVYDrFe4E03BZrpdCr/WXWjwTH1yDJrU8=;
-        b=DByvbxIo8cF2XQWnCk3SvDu9G+PWCG9n5Hepw/e66gd7Cq4DPBsaCMw9spqnMEQf7wZfqe
-        949QomuG/TukIlvPPqeEe6m/WskcbXd1lIBtSd1JD0B1GncZxzXZDM6IekTMuYZbCOaot+
-        +YpjWsvKUF7mE7ttofdPQERqG+xUDYw=
-Date:   Mon, 12 Apr 2021 15:05:42 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        ak@linux.intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [RFC Part1 PATCH 13/13] x86/kernel: add support to validate
- memory when changing C-bit
-Message-ID: <20210412130542.GD24283@zn.tnic>
-References: <20210324164424.28124-1-brijesh.singh@amd.com>
- <20210324164424.28124-14-brijesh.singh@amd.com>
- <20210412114901.GB24283@zn.tnic>
- <f9a69ad8-54bb-70f1-d606-6497e5753bb0@amd.com>
+         in-reply-to:in-reply-to:references:references;
+        bh=otGT/idIYaxyQ7GR4T+PhiVlu9+JXsCYqF5tB9i4mYo=;
+        b=T1CBMK7sopdEEp0/F2MVuPbc4h5HrjiPqt658NhZbIy8KfFh19XL2cjm4uDRXvryKv7Iaq
+        qwq5KZ+y2zDW/dHR2f7hcJUe/NSmEyPAk14EYQDl+XRhD9CD4LWriBh8PDfe9SYroTZzMR
+        b44u6wf6d8OkdpC4H6PLfSY+MCjS3Rc=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-155-2_Gg_thiMYecPZ34xKHFBQ-1; Mon, 12 Apr 2021 09:08:08 -0400
+X-MC-Unique: 2_Gg_thiMYecPZ34xKHFBQ-1
+Received: by mail-qv1-f69.google.com with SMTP id b20so7603727qvf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 06:08:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=otGT/idIYaxyQ7GR4T+PhiVlu9+JXsCYqF5tB9i4mYo=;
+        b=ax+heraVFpsW7YC8yuHDmZ9jUZL1q2lVw6exzrpWE2O5nBhAc+0rLjSZ2+gmG4UKIb
+         ey6zJbiqZ+EDxJZMfWsNq83gKH35JWcT3qtKNSX5SBrLCTpBsS+6gjX7aD0uPyWAEoRS
+         T424CMuFNVSijao+fNmCYDu5Im0iGBH7jhAGfJ3flE7ziJ1cdEdtt7Cx9nw0nzL6x2TK
+         lgC9UQqDmV58BGRueR+jZhzWafQv0Q61uRYvRM98Mum3BYFAIH7G2W+7X0DnxyqbWPTo
+         qkcDqvNyWrXYXCuyeG9beLmTOkyVsC35VKbws4DuUuj0bx8+RJWdzW9PZCdrtu1wMYm8
+         Z+1A==
+X-Gm-Message-State: AOAM5321nA6hCkVOupZaaVlKRBN4uS9Xpc5bt0kgg7l7YrDEvx08AY3D
+        mZ7/0Ksqs7NUXeE+On9Vcr1xMHmlGO9LYwQMzL6f7YmUwEuSbR9V5Cim11mPGjEW64qUneds0+1
+        wc7zT2cXaMsGaGTWY0epK2tPr11mLrxZGift/MvhN
+X-Received: by 2002:a05:622a:18a:: with SMTP id s10mr25054264qtw.237.1618232887805;
+        Mon, 12 Apr 2021 06:08:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzpDbXPx+FlN6dvGLpYb9ZDLeRek2ScHceimDqA8UHWpGvuZxuyVO1rvL/0EfsADt564xwPyEGhhUOwcZ1L+j4=
+X-Received: by 2002:a05:622a:18a:: with SMTP id s10mr25054238qtw.237.1618232887553;
+ Mon, 12 Apr 2021 06:08:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f9a69ad8-54bb-70f1-d606-6497e5753bb0@amd.com>
+References: <20210412214730.2dbbcdff@canb.auug.org.au>
+In-Reply-To: <20210412214730.2dbbcdff@canb.auug.org.au>
+From:   Miklos Szeredi <mszeredi@redhat.com>
+Date:   Mon, 12 Apr 2021 15:07:56 +0200
+Message-ID: <CAOssrKdAmeVK_uwLCDo_ZT52vOzxSU9X=orgzU6RB088L6OdKA@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the vfs tree
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 07:55:01AM -0500, Brijesh Singh wrote:
-> The cur_entry is updated by the hypervisor. While building the psc
-> buffer the guest sets the cur_entry=0 and the end_entry point to the
-> last valid entry. The cur_entry is incremented by the hypervisor after
-> it successfully processes one 4K page. As per the spec, the hypervisor
-> could get interrupted in middle of the page state change and cur_entry
-> allows the guest to resume the page state change from the point where it
-> was interrupted.
+Hi Al,
 
-This is non-obvious and belongs in a comment above it. Otherwise it
-looks weird.
+Fixed fileattr branch pushed to:
 
-> Since we can get interrupted while executing the PSC so just to be safe
-> I re-initialized the scratch scratch area with our buffer instead of
-> relying on old values.
+  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git fileattr_v6
 
-Ditto.
+Thanks,
+Miklos
 
-> As per the spec the caller must check that the cur_entry > end_entry to
-> determine whether all the entries are processed. If not then retry the
-> state change. The hypervisor will skip the previously processed entries.
-> The snp_page_state_vmgexit() is implemented to return only after all the
-> entries are changed.
+On Mon, Apr 12, 2021 at 1:47 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> After merging the vfs tree, today's linux-next build (htmldocs) produced
+> this warning:
+>
+> Documentation/filesystems/locking.rst:113: WARNING: Malformed table.
+> Text in column margin in table line 24.
+>
+> ============    =============================================
+> ops             i_rwsem(inode)
+> ============    =============================================
+> lookup:         shared
+> create:         exclusive
+> link:           exclusive (both)
+> mknod:          exclusive
+> symlink:        exclusive
+> mkdir:          exclusive
+> unlink:         exclusive (both)
+> rmdir:          exclusive (both)(see below)
+> rename:         exclusive (all) (see below)
+> readlink:       no
+> get_link:       no
+> setattr:        exclusive
+> permission:     no (may not block if called in rcu-walk mode)
+> get_acl:        no
+> getattr:        no
+> listxattr:      no
+> fiemap:         no
+> update_time:    no
+> atomic_open:    shared (exclusive if O_CREAT is set in open flags)
+> tmpfile:        no
+> fileattr_get:   no or exclusive
+> fileattr_set:   exclusive
+> ============    =============================================
+>
+> Introduced by commit
+>
+>   10a489bbff3e ("vfs: add fileattr ops")
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
-Ditto.
-
-This whole mechanism of what the guest does and what the HV does, needs
-to be explained in a bigger comment somewhere around there so that it is
-clear what's going on.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
