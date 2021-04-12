@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 685BC35C0E7
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7BE35C0E6
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242022AbhDLJRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:17:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49000 "EHLO mail.kernel.org"
+        id S242003AbhDLJRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:17:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239551AbhDLJAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:00:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 202D461385;
-        Mon, 12 Apr 2021 08:58:14 +0000 (UTC)
+        id S239561AbhDLJAn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:00:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A8186120F;
+        Mon, 12 Apr 2021 08:58:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217895;
-        bh=m6Oub1k2Wh9ly8HF3jtsbb4Ph6qu7WqCG1PZbwA4cWw=;
+        s=korg; t=1618217898;
+        bh=4trjmpS7ibTSaI8FY44gXs6d7APbhSqm82axIYI7A/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wbFhpHzW3iYK2RKQGpJtfQEXLUyd5RLrEzGMof4OxzhjBUBaIcRBeyPLlFmFms6TE
-         OwbuguSdLEiUsB0O/Pf0RQlmLAs8zzlmsnhAN795BZ+GDEQr0fLMPDZYsHLZjJiwE6
-         DOcI7cBtUPaC1ZAJh9AeCp59L6dwSeogyld8WP3o=
+        b=lFftER5fCCfd1GkIdh1cMPiKK582DmgRkyEddtCLw+WQNU3mFNm31RTlAoG2VYn5E
+         qtbljQCeFB7fLFf24DySLQu6gsCAVheKBUhhmNiBUVeLvEVwrDnk5lG2yBWDlViuLF
+         UbAhwhk7jEFizuCetVwENm4dbJLX/63WoTzqTpvI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com,
+        syzbot+cde43a581a8e5f317bc2@syzkaller.appspotmail.com,
         Alexander Aring <aahringo@redhat.com>,
         Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH 5.10 186/188] net: ieee802154: forbid monitor for del llsec seclevel
-Date:   Mon, 12 Apr 2021 10:41:40 +0200
-Message-Id: <20210412084019.803048666@linuxfoundation.org>
+Subject: [PATCH 5.10 187/188] net: ieee802154: stop dump llsec params for monitors
+Date:   Mon, 12 Apr 2021 10:41:41 +0200
+Message-Id: <20210412084019.833704503@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -43,32 +43,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Aring <aahringo@redhat.com>
 
-commit 9dde130937e95b72adfae64ab21d6e7e707e2dac upstream.
+commit 1534efc7bbc1121e92c86c2dabebaf2c9dcece19 upstream.
 
-This patch forbids to del llsec seclevel for monitor interfaces which we
-don't support yet. Otherwise we will access llsec mib which isn't
-initialized for monitors.
+This patch stops dumping llsec params for monitors which we don't support
+yet. Otherwise we will access llsec mib which isn't initialized for
+monitors.
 
-Reported-by: syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com
+Reported-by: syzbot+cde43a581a8e5f317bc2@syzkaller.appspotmail.com
 Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210405003054.256017-15-aahringo@redhat.com
+Link: https://lore.kernel.org/r/20210405003054.256017-16-aahringo@redhat.com
 Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ieee802154/nl802154.c |    3 +++
- 1 file changed, 3 insertions(+)
+ net/ieee802154/nl802154.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
 --- a/net/ieee802154/nl802154.c
 +++ b/net/ieee802154/nl802154.c
-@@ -2092,6 +2092,9 @@ static int nl802154_del_llsec_seclevel(s
- 	struct wpan_dev *wpan_dev = dev->ieee802154_ptr;
- 	struct ieee802154_llsec_seclevel sl;
+@@ -820,8 +820,13 @@ nl802154_send_iface(struct sk_buff *msg,
+ 		goto nla_put_failure;
  
+ #ifdef CONFIG_IEEE802154_NL802154_EXPERIMENTAL
 +	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR)
-+		return -EOPNOTSUPP;
++		goto out;
 +
- 	if (!info->attrs[NL802154_ATTR_SEC_LEVEL] ||
- 	    llsec_parse_seclevel(info->attrs[NL802154_ATTR_SEC_LEVEL],
- 				 &sl) < 0)
+ 	if (nl802154_get_llsec_params(msg, rdev, wpan_dev) < 0)
+ 		goto nla_put_failure;
++
++out:
+ #endif /* CONFIG_IEEE802154_NL802154_EXPERIMENTAL */
+ 
+ 	genlmsg_end(msg, hdr);
 
 
