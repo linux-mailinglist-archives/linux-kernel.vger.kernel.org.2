@@ -2,241 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C0835D09E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:53:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7187E35D0A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbhDLSxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 14:53:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhDLSxp (ORCPT
+        id S245006AbhDLSyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 14:54:07 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:7110 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229879AbhDLSyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 14:53:45 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7ACCC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 11:53:26 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id h19-20020a9d64130000b02902875a567768so2796900otl.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 11:53:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=q2c2bk4hAZv4IyXDtl2zFlaq8cOREJUwdyV+adc37xQ=;
-        b=ahRnXFg+qJQ/5cQIanHCUpnM9kuddJNfB3qXIvfYI8qhgZcW6xNoRw2daO6UzD+w0K
-         JA0bRZaZH15rZo6d1ICZFXSDWA4WaJvNbRMO8YBpJxPpykFr8t6nIK+W6kNi4iIzMg9A
-         V13LO+HVJylG5O1b6RDkj85aRq+K5emT97phWu0yo/lAdx1rcThuKAlGeIH2Aa0nOgAd
-         XyIk/cj9On6bshY1BxOqVLszek6lt3r1xuPheWgFKog95pwAWOtLMj3erJt/WE9mIrAc
-         gw5N/8yR5OYEZdblsRDxzyxisMMraqJtoJByH1Fr45Bj6pOkC2SxToQ73w9oyHqTdSPg
-         qbUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=q2c2bk4hAZv4IyXDtl2zFlaq8cOREJUwdyV+adc37xQ=;
-        b=T9nOBNngS9Ygtbl5dyroUiR/cvKZEV8XsFQBkCsB0CinzsqCo43H1EQCs0Dzy8GSKY
-         ZgEkegWS8OrIik1qobREv1BnFJEEcU8UsgCM0BVlPi71jmyzkEs1wsElDxmPsaJp4TLg
-         VEBDo+KMRogLwwYIlh/gMybn8iC5lI7E+e1RGe6nmiY+qTaBWG3PbvOqD2yhL/VcQvJZ
-         40ZveuE6Uj/Us319AH/y9F9d2ls3p8eRHUzE5iME7JxI7w3jKK6xcsCXXurOX1QAncUn
-         BNZmGnGCo3GMDkVPW3O4g0BifU8nWtHxZ02SLGSl09H7ASSL3sbeGm9yJG6JHIC6AThk
-         RLyA==
-X-Gm-Message-State: AOAM530FZukHKWjKq8tf6bGpea3z+Y3NcKUHQL9ZPgPsPq+Q8mmCYKtI
-        jRY//dCMHWiigVTMISDwj/Xw1C2/6DPaZPNyHczGew==
-X-Google-Smtp-Source: ABdhPJymT0/XuxJEv3V6pf63kR+k0XtHJ2ohWWNDUrFefR6PqXGWKyVFM7EOI2TMjTDJIUXpgDuvoXkyE8WlU2DxbrU=
-X-Received: by 2002:a05:6830:22c3:: with SMTP id q3mr24732558otc.56.1618253606238;
- Mon, 12 Apr 2021 11:53:26 -0700 (PDT)
+        Mon, 12 Apr 2021 14:54:06 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 13CIrNBT017702;
+        Mon, 12 Apr 2021 11:53:31 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=vpX9TYwH70BjUfCH2KyC4LurozlX0Q4cO4JSOqSJ9Wc=;
+ b=kqsd2dnXjE0q7e+XK0COTmPYm1zz1+ryBQZppeHKEyPO8rMzDMET9JJm/n2rUxuGRvc3
+ 50ak7muECB0asmLt3leBbuahoRTw6HuiBxcKuLqCeXzUAxxV3AyeF6ikU7qFLMLpYpKH
+ VbWSON7LfgCVkWtgX0wrv5ek7uu+AZ8eWDw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0001303.ppops.net with ESMTP id 37vkb2tvug-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 12 Apr 2021 11:53:31 -0700
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 12 Apr 2021 11:53:29 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CC1et89XdZAgIyspyp+7q75JaasaicVK38ocCExbZhcs0+BbrQ7ZQ/wBRK/NyzfOx6HabXktQ1bC9AFhBG8QpDEDQxMiqU1HlT1DAJAq2FzLOkcE9rfK/IlESlVT/vsmKiPtKAIbPdXEQKiIC0Wd6mEXc5xaTTTidA3ktQWaPdI52kDcV5+6tqslrBAhwd9FlSp2PEcpAh7FJ2eOeNWw4kd1DwJbRrkrtQIZO6Ucjo5Ek/jadcOowdAtwDI34FPnxoiPMk2P6a6GudRnHs9aJ5I5h19fbqNJWerZlYhkoWbaX9zCaTatOvagxDMlyl/uBdCf7bGZcXPTIJw+vBldsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vpX9TYwH70BjUfCH2KyC4LurozlX0Q4cO4JSOqSJ9Wc=;
+ b=bNZ3P2W6Fw33rzcYPwnppQ8ZdyEhDfAQZerEqQVW9yvomdBJ2M4XyzhjLtpfL3uA3/KpS/gGeMsfgksWej8wv8RXxmyNZF1fgFfJYBFjDxYFl7OP3shpY493QcNPpPKiu2GRKg/o113cVrf7E3mpEglCCcXdZicCfXzS7NyzcmrZB2EQ7rH6G7rjl5xZ11kjzHgJkiNceTTllo7K5UmoTjdUrU/VcsRuaq37KwQnlh/8Olxmx/89BlRexWkGdmxkSkxdUgK3k1vG3OD99Ll0RrPzgVAkkii8fngsR5E5EobSCY0bDptj/0F3wnQAM9LvbMiybWImr+2npQx03hmE9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by SJ0PR15MB4501.namprd15.prod.outlook.com (2603:10b6:a03:376::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Mon, 12 Apr
+ 2021 18:53:28 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::2c3d:df54:e11c:ee99]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::2c3d:df54:e11c:ee99%6]) with mapi id 15.20.4020.022; Mon, 12 Apr 2021
+ 18:53:28 +0000
+Date:   Mon, 12 Apr 2021 11:53:24 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Waiman Long <longman@redhat.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>, Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>
+Subject: Re: [PATCH 4/5] mm/memcg: Separate out object stock data into its
+ own struct
+Message-ID: <YHSXJAwYusgP/0xx@carbon.dhcp.thefacebook.com>
+References: <20210409231842.8840-1-longman@redhat.com>
+ <20210409231842.8840-5-longman@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210409231842.8840-5-longman@redhat.com>
+X-Originating-IP: [2620:10d:c090:400::5:3051]
+X-ClientProxiedBy: MWHPR21CA0065.namprd21.prod.outlook.com
+ (2603:10b6:300:db::27) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-References: <20210406183112.1150657-1-jiang.wang@bytedance.com>
- <1D46A084-5B77-4803-8B5F-B2F36541DA10@vmware.com> <CAP_N_Z-KFUYZc7p1z_-9nb9CvjtyGFkgkX1PEbh-SgKbX_snQw@mail.gmail.com>
- <20210412140437.6k3zxw2cv4p54lvm@steredhat>
-In-Reply-To: <20210412140437.6k3zxw2cv4p54lvm@steredhat>
-From:   "Jiang Wang ." <jiang.wang@bytedance.com>
-Date:   Mon, 12 Apr 2021 11:53:15 -0700
-Message-ID: <CAP_N_Z9yi96YDW3gJdCFrPJpNhwpJnaT8gruk7JJSsBne8J-8Q@mail.gmail.com>
-Subject: Re: Re: [RFC] vsock: add multiple transports support for dgram
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     Jorgen Hansen <jhansen@vmware.com>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "cong.wang@bytedance.com" <cong.wang@bytedance.com>,
-        "duanxiongchun@bytedance.com" <duanxiongchun@bytedance.com>,
-        "xieyongji@bytedance.com" <xieyongji@bytedance.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:3051) by MWHPR21CA0065.namprd21.prod.outlook.com (2603:10b6:300:db::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.1 via Frontend Transport; Mon, 12 Apr 2021 18:53:27 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b708aaf7-3cdf-42c8-9b11-08d8fde442a1
+X-MS-TrafficTypeDiagnostic: SJ0PR15MB4501:
+X-Microsoft-Antispam-PRVS: <SJ0PR15MB450118F51A393B03437EF9A4BE709@SJ0PR15MB4501.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0NkiwADFpRRa3M254RzCLt/VZkPyK5mvTj+U0JWwZSs0RxxKBAuPD39qoyrDcABvQCH5Kiq6ShrSHRJhiiUMMl38O3DA2hG6/9oCVoS7AHAIw6Aj+JBuqYf+imL1qzlGdQl4iPYb049ENQkaWycIvUbRXItSm4wTNb3u/JxAV7nBnY72IMU9q+cLQ9VK0axqw9byIBhpVG6NbcXBzPOumc0qtjtrYNSKT9MjJKtrrkXexWDUxdTCo1N3wSnXo9uE8t3Thi72rUpxaqG/ktFGvfNrbqrReUcrRKabKDd8dTVatujHl3hlXOZfPxBoHRePHXubqB4ULiAIcCE4yEOdadf05Bi+nQavzEzRB4f/2mY/rKK1DFW5CIgnfKGawTc4fr1vEFyUnANPTORFA1LqNTBWXIdnV3vmzPuA1xpDxenozeNz073wwvtt9bHowkIT+7hPJjQccyJ/rCqgI2v2MQAQLFQKoASDPp2aOLqHjNpvSRfr7bMDOFFqe5cl9lFOIAH7cP48fzryQq5CM+0Qy6Pi4sRDYoGyJHYmTlcyReOnelu5DZnoKHeTl3gUW9iCX1/qb1x9fr0gM5yd4DLFPER6s0GD7F/5y3WEwLVm9n4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(39860400002)(136003)(376002)(7416002)(4326008)(66556008)(86362001)(8936002)(186003)(66946007)(66476007)(16526019)(8676002)(9686003)(478600001)(38100700002)(54906003)(55016002)(316002)(6506007)(52116002)(6916009)(7696005)(4744005)(2906002)(6666004)(5660300002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?1tMuuvwrq/pdEQGv4di1JlgjS7Q9kj4pS2er3jSOMLK6nW5P2ux4T9XqfrNh?=
+ =?us-ascii?Q?sKAZXW3R2V0p7ImVqCGA5svBlKcKNIMxDM1AsLlh4YKZiOp9hPz49IrV0MLX?=
+ =?us-ascii?Q?Wp5fIY/RsCtUvjhc6qSTdtzeOLqoFT3usl3DpSvdiajynpYNVM83wzMRu3nU?=
+ =?us-ascii?Q?1mz4JWWb8AqCo0n3XYD1dGWi3F3H4Yg4VG1OLwt6HViZ9Pzm/NhUvgH4mozw?=
+ =?us-ascii?Q?5ksOaHTnlGkahPJu6ikOEobXnrFtSh57UVNf0hz+RTqdTlj6cOOISH8I138Z?=
+ =?us-ascii?Q?5LSN/GenG+p5CMu197GPLqC1nHdo8j0fFjBPgR4gyNNJUpEBSDNZkD/jnuuW?=
+ =?us-ascii?Q?KfymzC3ZbJbSZC7VKlhonOvymFxtt9/14LB8hlNXUblw+7rB/D+V1N5SJZFK?=
+ =?us-ascii?Q?wvTt9bbYZKWN0NaO7MM7xNw+rGY/yRZ3xi8KgLy8LZyz4mQWSmYkX38wsShz?=
+ =?us-ascii?Q?vqfhbsgZadntN7LUrQ0UZ4HfR8DM/Iz7mqjrHZSUT/JaSpXHR1cx09yMHD1I?=
+ =?us-ascii?Q?WBrTrJhNggaCtmdrKAU1+YsYpDggVhORpGozpzP+nmQjIXQ8a23Eo366iq42?=
+ =?us-ascii?Q?xX9p5G20UKad1Ud01M2HR5FxB5cwdTL5oCnuriL211JAXmCGoe/pekCMvjXP?=
+ =?us-ascii?Q?NS2Le6gjbg3gTq30wKL30AIampHXKlX+kCX9xatet4WKzwJzErNUBTWYItU9?=
+ =?us-ascii?Q?3YNp89fwgdkq7eeNf39AfBP+8drv8ST/sZqXDGWkfdsuCf0MW2oFUrjY0+fF?=
+ =?us-ascii?Q?7StWeaeeLZSenQi1XJgz7tMEn4V08Xu04G+y9p2sAhj/vdV9/MWJUxmNqisO?=
+ =?us-ascii?Q?Gy5dvj/fs0cfQ++wNeZgiJufua7aoVR35UX7bWDfP2+6yFveSBocoMHwYYLR?=
+ =?us-ascii?Q?V8PhaZ1L904GQ4StKXYrKM+nEahrqAUDbgCBAYdPFHHU+rkfecN4rSTXWn+K?=
+ =?us-ascii?Q?6+rysxzxH+BkVSnsXJnMwKVzAvx5yRpi3eSjSL2LdUxLbgHzE4z0EpxhQRXC?=
+ =?us-ascii?Q?ZXmEHNUq9U/HwYNBT3lbXThBrZGKA9/Z7+M00+jQL4Zcf55uG+pL/h4LSaaE?=
+ =?us-ascii?Q?UIjNwPBe3jVanb3K/A0uUTZevPbkOKYsUTnEdJM/jLlpTuSH/pWCoXuITVAa?=
+ =?us-ascii?Q?iyKfz1W5dp0Mv9pbFb2yGnGQai4sH48JrirOgyHaoV3Yhj3vKroQ1pACXq8s?=
+ =?us-ascii?Q?4uBDzOOO+/ZDHFLl+/AKW/q6UkbpnclEFqwBXaCueg+Eu6jiDg+wGeFer4GK?=
+ =?us-ascii?Q?LNM5p/zhAhmbVOYPlJpyIwTcXHgqiZqE9GLCZJPwHgOjc176/3Hno1/J82Pe?=
+ =?us-ascii?Q?LIPqMj8snZ+Xh6eLCrXK1omE1qRougrHlNX9bULYxpoY0w=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: b708aaf7-3cdf-42c8-9b11-08d8fde442a1
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2021 18:53:28.7381
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: P5geoufSybkemb3JIbjPsUv1C76jyHrzswjZJEoKqZ4F2y0pV54wpFwALBD7KKLz
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR15MB4501
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: Fh1Ogptnc5LXKpsDI0qgAuZ6pCvwX0yY
+X-Proofpoint-GUID: Fh1Ogptnc5LXKpsDI0qgAuZ6pCvwX0yY
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-12_11:2021-04-12,2021-04-12 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ suspectscore=0 mlxlogscore=782 priorityscore=1501 lowpriorityscore=0
+ mlxscore=0 bulkscore=0 spamscore=0 clxscore=1015 impostorscore=0
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104120119
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 7:04 AM Stefano Garzarella <sgarzare@redhat.com> wr=
-ote:
->
-> Hi Jiang,
-> thanks for re-starting the multi-transport support for dgram!
+On Fri, Apr 09, 2021 at 07:18:41PM -0400, Waiman Long wrote:
+> The object stock data stored in struct memcg_stock_pcp are independent
+> of the other page based data stored there. Separating them out into
+> their own struct to highlight the independency.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-No problem.
+Acked-by: Roman Gushchin <guro@fb.com>
 
-> On Wed, Apr 07, 2021 at 11:25:36AM -0700, Jiang Wang . wrote:
-> >On Wed, Apr 7, 2021 at 2:51 AM Jorgen Hansen <jhansen@vmware.com> wrote:
-> >>
-> >>
-> >> > On 6 Apr 2021, at 20:31, Jiang Wang <jiang.wang@bytedance.com> wrote=
-:
-> >> >
-> >> > From: "jiang.wang" <jiang.wang@bytedance.com>
-> >> >
-> >> > Currently, only VMCI supports dgram sockets. To supported
-> >> > nested VM use case, this patch removes transport_dgram and
-> >> > uses transport_g2h and transport_h2g for dgram too.
->
-> I agree on this part, I think that's the direction to go.
-> transport_dgram was added as a shortcut.
-
-Got it.
-
-> >>
-> >> Could you provide some background for introducing this change - are yo=
-u
-> >> looking at introducing datagrams for a different transport? VMCI datag=
-rams
-> >> already support the nested use case,
-> >
-> >Yes, I am trying to introduce datagram for virtio transport. I wrote a
-> >spec patch for
-> >virtio dgram support and also a code patch, but the code patch is still =
-WIP.
-> >When I wrote this commit message, I was thinking nested VM is the same a=
-s
-> >multiple transport support. But now, I realize they are different.
-> >Nested VMs may use
-> >the same virtualization layer(KVM on KVM), or different virtualization l=
-ayers
-> >(KVM on ESXi). Thanks for letting me know that VMCI already supported ne=
-sted
-> >use cases. I think you mean VMCI on VMCI, right?
-> >
-> >> but if we need to support multiple datagram
-> >> transports we need to rework how we administer port assignment for dat=
-agrams.
-> >> One specific issue is that the vmci transport won=E2=80=99t receive an=
-y datagrams for a
-> >> port unless the datagram socket has already been assigned the vmci tra=
-nsport
-> >> and the port bound to the underlying VMCI device (see below for more d=
-etails).
-> >>
-> >I see.
-> >
-> >> > The transport is assgined when sending every packet and
-> >> > receiving every packet on dgram sockets.
-> >>
-> >> Is the intent that the same datagram socket can be used for sending pa=
-ckets both
-> >> In the host to guest, and the guest to directions?
-> >
-> >Nope. One datagram socket will only send packets to one direction, eithe=
-r to the
-> >host or to the guest. My above description is wrong. When sending packet=
-s, the
-> >transport is assigned with the first packet (with auto_bind).
->
-> I'm not sure this is right.
-> The auto_bind on the first packet should only assign a local port to the
-> socket, but does not affect the transport to be used.
->
-> A user could send one packet to the nested guest and another to the host
-> using the same socket, or am I wrong?
-
-OK. I think you are right.
-
-> >
-> >The problem is when receiving packets. The listener can bind to the
-> >VMADDR_CID_ANY
-> >address. Then it is unclear which transport we should use. For stream
-> >sockets, there will be a new socket for each connection, and transport
-> >can be decided
-> >at that time. For datagram sockets, I am not sure how to handle that.
->
-> yes, this I think is the main problem, but maybe the sender one is even
-> more complicated.
->
-> Maybe we should remove the 1:1 association we have now between vsk and
-> transport.
-
-Yes, I thought about that too. One idea is to define two transports in vsk.
-For sending pkt, we can pick the right transport when we get the packet, li=
-ke
-in virtio_transport_send_pkt_info(). For receiving pkts, we have to check
-and call both
-transports dequeue callbacks if the local cid is CID_ANY.
-
-> At least for DGRAM, for connected sockets I think the association makes
-> sense.
-
-Yeah. For a connected socket, we will only use one transport.
-
-> >For VMCI, does the same transport can be used for both receiving from
-> >host and from
-> >the guest?
->
-> Yes, they're registered at different times, but it's the same transport.
->
-> >
-> >For virtio, the h2g and g2h transports are different,, so we have to
-> >choose
-> >one of them. My original thought is to wait until the first packet
-> >arrives.
-> >
-> >Another idea is that we always bind to host addr and use h2g
-> >transport because I think that might
-> >be more common. If a listener wants to recv packets from the host, then
-> >it
-> >should bind to the guest addr instead of CID_ANY.
->
-> Yes, I remember we discussed this idea, this would simplify the
-> receiving, but there is still the issue of a user wanting to receive
-> packets from both the nested guest and the host.
-
-OK. Agree.
-
-> >Any other suggestions?
-> >
->
-> I think one solution could be to remove the 1:1 association between
-> DGRAM socket and transport.
->
-> IIUC VMCI creates a skb for each received packet and queues it through
-> sk_receive_skb() directly in the struct sock.
->
-> Then the .dgram_dequeue() callback dequeues them using
-> skb_recv_datagram().
->
-> We can move these parts in the vsock core, and create some helpers to
-> allow the transports to enqueue received DGRAM packets in the same way
-> (and with the same format) directly in the struct sock.
->
-
-I agree to use skbs (and move them to vscok core). We have another use case
-which will need to use skb. But I am not sure how this helps with multiple
-transport cases. Each transport has a dgram_dequeue callback. So we still
-need to let vsk have multiple transports somehow. Could you elaborate how
-using skb help with multiple transport support? Will that be similar to wha=
-t I
-mentioned above? Thanks.
-
-Regards,
-
-Jiang
-
-> What do you think?
->
-> Thanks,
-> Stefano
->
