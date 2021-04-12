@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED0D35BFEC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0555735BFE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239541AbhDLJH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:07:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45752 "EHLO mail.kernel.org"
+        id S239494AbhDLJHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:07:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238950AbhDLIzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238953AbhDLIzP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 04:55:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 65CBE61245;
-        Mon, 12 Apr 2021 08:53:59 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F696611F0;
+        Mon, 12 Apr 2021 08:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217639;
-        bh=gB6iw2cS9Chcd5wTRK8PzIP2+AxCD5NxckM1uy+yQnM=;
+        s=korg; t=1618217642;
+        bh=2BGQsi997HdkgGL/+2Am4uEYTXNtRcBxjfVe8HzGGN8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KyJ38UpWOUxY3d7Vuo4bDp53XJJQRS8G2uGYyFTGNVM8jrNKmmvcB1y5owrz0RYJ5
-         sj+lFxEJ2e/apIKxUCS042WQRxtV0elJETxkQfaW4Eo8ae3BnitznJgpL/ZhbLzSaJ
-         74M+okTFzZ3DJnXYTjWuXE2lji8kw1d6JCwvBK6M=
+        b=ugsQcA7qcx7Wd3RgMGAt/mXhB0Yai8QpZ2gkYPWTpaDeBCTXET7P94qYsdwiHvzPo
+         f24A94ZONXzYPdf1DtchFqFBS2babpQqf5/p1MYudafRYzuWulLONwgtEDcdlVUzKD
+         uhvaY1ws7Vbp/0ape/W2R82xXhtYmUrb/fInxBSo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ben Gardon <bgardon@google.com>,
-        Sean Christopherson <seanjc@google.com>,
+        stable@vger.kernel.org, seanjc@google.com,
         Paolo Bonzini <pbonzini@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 089/188] KVM: x86/mmu: Dont allow TDP MMU to yield when recovering NX pages
-Date:   Mon, 12 Apr 2021 10:40:03 +0200
-Message-Id: <20210412084016.606911470@linuxfoundation.org>
+Subject: [PATCH 5.10 090/188] KVM: x86/mmu: preserve pending TLB flush across calls to kvm_tdp_mmu_zap_sp
+Date:   Mon, 12 Apr 2021 10:40:04 +0200
+Message-Id: <20210412084016.642064570@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -41,115 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
 
-[ Upstream commit 33a3164161fc86b9cc238f7f2aa2ccb1d5559b1c ]
+[ Upstream commit 315f02c60d9425b38eb8ad7f21b8a35e40db23f9 ]
 
-Prevent the TDP MMU from yielding when zapping a gfn range during NX
-page recovery.  If a flush is pending from a previous invocation of the
-zapping helper, either in the TDP MMU or the legacy MMU, but the TDP MMU
-has not accumulated a flush for the current invocation, then yielding
-will release mmu_lock with stale TLB entries.
+Right now, if a call to kvm_tdp_mmu_zap_sp returns false, the caller
+will skip the TLB flush, which is wrong.  There are two ways to fix
+it:
 
-That being said, this isn't technically a bug fix in the current code, as
-the TDP MMU will never yield in this case.  tdp_mmu_iter_cond_resched()
-will yield if and only if it has made forward progress, as defined by the
-current gfn vs. the last yielded (or starting) gfn.  Because zapping a
-single shadow page is guaranteed to (a) find that page and (b) step
-sideways at the level of the shadow page, the TDP iter will break its loop
-before getting a chance to yield.
+- since kvm_tdp_mmu_zap_sp will not yield and therefore will not flush
+  the TLB itself, we could change the call to kvm_tdp_mmu_zap_sp to
+  use "flush |= ..."
 
-But that is all very, very subtle, and will break at the slightest sneeze,
-e.g. zapping while holding mmu_lock for read would break as the TDP MMU
-wouldn't be guaranteed to see the present shadow page, and thus could step
-sideways at a lower level.
+- or we can chain the flush argument through kvm_tdp_mmu_zap_sp down
+  to __kvm_tdp_mmu_zap_gfn_range.  Note that kvm_tdp_mmu_zap_sp will
+  neither yield nor flush, so flush would never go from true to
+  false.
 
-Cc: Ben Gardon <bgardon@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20210325200119.1359384-4-seanjc@google.com>
-[Add lockdep assertion. - Paolo]
+This patch does the former to simplify application to stable kernels,
+and to make it further clearer that kvm_tdp_mmu_zap_sp will not flush.
+
+Cc: seanjc@google.com
+Fixes: 048f49809c526 ("KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping")
+Cc: <stable@vger.kernel.org> # 5.10.x: 048f49809c: KVM: x86/mmu: Ensure TLBs are flushed for TDP MMU during NX zapping
+Cc: <stable@vger.kernel.org> # 5.10.x: 33a3164161: KVM: x86/mmu: Don't allow TDP MMU to yield when recovering NX pages
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu/mmu.c     |  6 ++----
- arch/x86/kvm/mmu/tdp_mmu.c |  5 +++--
- arch/x86/kvm/mmu/tdp_mmu.h | 18 +++++++++++++++++-
- 3 files changed, 22 insertions(+), 7 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 354f9926a183..defdd717e9da 100644
+index defdd717e9da..15717a28b212 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5973,7 +5973,6 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
- 	unsigned int ratio;
- 	LIST_HEAD(invalid_list);
- 	bool flush = false;
--	gfn_t gfn_end;
- 	ulong to_zap;
- 
- 	rcu_idx = srcu_read_lock(&kvm->srcu);
-@@ -5994,9 +5993,8 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
- 				      struct kvm_mmu_page,
+@@ -5994,7 +5994,7 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
  				      lpage_disallowed_link);
  		WARN_ON_ONCE(!sp->lpage_disallowed);
--		if (sp->tdp_mmu_page)
--			gfn_end = sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level);
--			flush = kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn, gfn_end);
-+		if (sp->tdp_mmu_page) {
-+			flush = kvm_tdp_mmu_zap_sp(kvm, sp);
+ 		if (sp->tdp_mmu_page) {
+-			flush = kvm_tdp_mmu_zap_sp(kvm, sp);
++			flush |= kvm_tdp_mmu_zap_sp(kvm, sp);
  		} else {
  			kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list);
  			WARN_ON_ONCE(sp->lpage_disallowed);
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index f534c0a15f2b..61c00f8631f1 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -495,13 +495,14 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
-  * SPTEs have been cleared and a TLB flush is needed before releasing the
-  * MMU lock.
-  */
--bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end)
-+bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end,
-+				 bool can_yield)
- {
- 	struct kvm_mmu_page *root;
- 	bool flush = false;
- 
- 	for_each_tdp_mmu_root_yield_safe(kvm, root)
--		flush = zap_gfn_range(kvm, root, start, end, true, flush);
-+		flush = zap_gfn_range(kvm, root, start, end, can_yield, flush);
- 
- 	return flush;
- }
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index cbbdbadd1526..a7a3f6db263d 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -12,7 +12,23 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t root);
- hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
- void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root);
- 
--bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end);
-+bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end,
-+				 bool can_yield);
-+static inline bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start,
-+					     gfn_t end)
-+{
-+	return __kvm_tdp_mmu_zap_gfn_range(kvm, start, end, true);
-+}
-+static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
-+{
-+	gfn_t end = sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level);
-+
-+	/*
-+	 * Don't allow yielding, as the caller may have pending pages to zap
-+	 * on the shadow MMU.
-+	 */
-+	return __kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn, end, false);
-+}
- void kvm_tdp_mmu_zap_all(struct kvm *kvm);
- 
- int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
 -- 
 2.30.2
 
