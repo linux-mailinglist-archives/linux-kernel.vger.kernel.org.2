@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571C335BD5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C61A35BD73
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237880AbhDLIvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:51:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
+        id S237988AbhDLIvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:51:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237900AbhDLIrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:47:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF24C61246;
-        Mon, 12 Apr 2021 08:46:58 +0000 (UTC)
+        id S237903AbhDLIrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:47:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 454C36124A;
+        Mon, 12 Apr 2021 08:47:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217219;
-        bh=kyNMQWNUVWzlRPfJeM+O0r4v4xNKRyFd/vCsPJf4Lz4=;
+        s=korg; t=1618217221;
+        bh=ZxU4s7HI7eldop9FIWtxryWtK3ah0B1XrF/2c+X6yHU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S8P6ruSpiOcFRr+FqviIDM88BXsCzMIBtGstNYCcDKEXYySVu4M1/pP3zqcsJk/A0
-         2nF/8bPr3GnX9EzNQTSNZynoOpYuDNOcyPvAObG8nRuuW1jgT5tXBXHMKJS+FlKOz9
-         huU6Oz709DG2KsFsxDTtCCxxLCEzz2DbBzxFdb0M=
+        b=tt1B1WkGeuAr3Z1IhiTX7x5tuECqOnsfhvJUU53a4KrydQCfTxtV+VZL+SSGfWuoL
+         3UKNVVhhRcW0lHZUgN9exgYmE/WMJX2GMsvNpKRjmoEik+1o1zYjyATvBMM+s3EgSp
+         Vh3rEkI22ixTTR8EakfX6oA9ujB6egG9K/7Tq2iM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Brown <broonie@kernel.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 046/111] regulator: bd9571mwv: Fix AVS and DVFS voltage range
-Date:   Mon, 12 Apr 2021 10:40:24 +0200
-Message-Id: <20210412084005.781475135@linuxfoundation.org>
+Subject: [PATCH 5.4 047/111] net: xfrm: Localize sequence counter per network namespace
+Date:   Mon, 12 Apr 2021 10:40:25 +0200
+Message-Id: <20210412084005.817070193@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -41,48 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Ahmed S. Darwish <a.darwish@linutronix.de>
 
-[ Upstream commit 3b6e7088afc919f5b52e4d2de8501ad34d35b09b ]
+[ Upstream commit e88add19f68191448427a6e4eb059664650a837f ]
 
-According to Table 30 ("DVFS_MoniVDAC [6:0] Setting Table") in the
-BD9571MWV-M Datasheet Rev. 002, the valid voltage range is 600..1100 mV
-(settings 0x3c..0x6e).  While the lower limit is taken into account (by
-setting regulator_desc.linear_min_sel to 0x3c), the upper limit is not.
+A sequence counter write section must be serialized or its internal
+state can get corrupted. The "xfrm_state_hash_generation" seqcount is
+global, but its write serialization lock (net->xfrm.xfrm_state_lock) is
+instantiated per network namespace. The write protection is thus
+insufficient.
 
-Fix this by reducing regulator_desc.n_voltages from 0x80 to 0x6f.
+To provide full protection, localize the sequence counter per network
+namespace instead. This should be safe as both the seqcount read and
+write sections access data exclusively within the network namespace. It
+also lays the foundation for transforming "xfrm_state_hash_generation"
+data type from seqcount_t to seqcount_LOCKNAME_t in further commits.
 
-Fixes: e85c5a153fe237f2 ("regulator: Add ROHM BD9571MWV-M PMIC regulator driver")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20210312130242.3390038-2-geert+renesas@glider.be
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: b65e3d7be06f ("xfrm: state: add sequence count to detect hash resizes")
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/bd9571mwv-regulator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/net/netns/xfrm.h |  4 +++-
+ net/xfrm/xfrm_state.c    | 10 +++++-----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/regulator/bd9571mwv-regulator.c b/drivers/regulator/bd9571mwv-regulator.c
-index e690c2ce5b3c..25e33028871c 100644
---- a/drivers/regulator/bd9571mwv-regulator.c
-+++ b/drivers/regulator/bd9571mwv-regulator.c
-@@ -124,7 +124,7 @@ static const struct regulator_ops vid_ops = {
- 
- static const struct regulator_desc regulators[] = {
- 	BD9571MWV_REG("VD09", "vd09", VD09, avs_ops, 0, 0x7f,
--		      0x80, 600000, 10000, 0x3c),
-+		      0x6f, 600000, 10000, 0x3c),
- 	BD9571MWV_REG("VD18", "vd18", VD18, vid_ops, BD9571MWV_VD18_VID, 0xf,
- 		      16, 1625000, 25000, 0),
- 	BD9571MWV_REG("VD25", "vd25", VD25, vid_ops, BD9571MWV_VD25_VID, 0xf,
-@@ -133,7 +133,7 @@ static const struct regulator_desc regulators[] = {
- 		      11, 2800000, 100000, 0),
- 	BD9571MWV_REG("DVFS", "dvfs", DVFS, reg_ops,
- 		      BD9571MWV_DVFS_MONIVDAC, 0x7f,
--		      0x80, 600000, 10000, 0x3c),
-+		      0x6f, 600000, 10000, 0x3c),
+diff --git a/include/net/netns/xfrm.h b/include/net/netns/xfrm.h
+index 59f45b1e9dac..b59d73d529ba 100644
+--- a/include/net/netns/xfrm.h
++++ b/include/net/netns/xfrm.h
+@@ -72,7 +72,9 @@ struct netns_xfrm {
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	struct dst_ops		xfrm6_dst_ops;
+ #endif
+-	spinlock_t xfrm_state_lock;
++	spinlock_t		xfrm_state_lock;
++	seqcount_t		xfrm_state_hash_generation;
++
+ 	spinlock_t xfrm_policy_lock;
+ 	struct mutex xfrm_cfg_mutex;
  };
+diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
+index 61fd0569d393..1423e2b7cb42 100644
+--- a/net/xfrm/xfrm_state.c
++++ b/net/xfrm/xfrm_state.c
+@@ -44,7 +44,6 @@ static void xfrm_state_gc_task(struct work_struct *work);
+  */
  
- #ifdef CONFIG_PM_SLEEP
+ static unsigned int xfrm_state_hashmax __read_mostly = 1 * 1024 * 1024;
+-static __read_mostly seqcount_t xfrm_state_hash_generation = SEQCNT_ZERO(xfrm_state_hash_generation);
+ static struct kmem_cache *xfrm_state_cache __ro_after_init;
+ 
+ static DECLARE_WORK(xfrm_state_gc_work, xfrm_state_gc_task);
+@@ -140,7 +139,7 @@ static void xfrm_hash_resize(struct work_struct *work)
+ 	}
+ 
+ 	spin_lock_bh(&net->xfrm.xfrm_state_lock);
+-	write_seqcount_begin(&xfrm_state_hash_generation);
++	write_seqcount_begin(&net->xfrm.xfrm_state_hash_generation);
+ 
+ 	nhashmask = (nsize / sizeof(struct hlist_head)) - 1U;
+ 	odst = xfrm_state_deref_prot(net->xfrm.state_bydst, net);
+@@ -156,7 +155,7 @@ static void xfrm_hash_resize(struct work_struct *work)
+ 	rcu_assign_pointer(net->xfrm.state_byspi, nspi);
+ 	net->xfrm.state_hmask = nhashmask;
+ 
+-	write_seqcount_end(&xfrm_state_hash_generation);
++	write_seqcount_end(&net->xfrm.xfrm_state_hash_generation);
+ 	spin_unlock_bh(&net->xfrm.xfrm_state_lock);
+ 
+ 	osize = (ohashmask + 1) * sizeof(struct hlist_head);
+@@ -1058,7 +1057,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
+ 
+ 	to_put = NULL;
+ 
+-	sequence = read_seqcount_begin(&xfrm_state_hash_generation);
++	sequence = read_seqcount_begin(&net->xfrm.xfrm_state_hash_generation);
+ 
+ 	rcu_read_lock();
+ 	h = xfrm_dst_hash(net, daddr, saddr, tmpl->reqid, encap_family);
+@@ -1171,7 +1170,7 @@ out:
+ 	if (to_put)
+ 		xfrm_state_put(to_put);
+ 
+-	if (read_seqcount_retry(&xfrm_state_hash_generation, sequence)) {
++	if (read_seqcount_retry(&net->xfrm.xfrm_state_hash_generation, sequence)) {
+ 		*err = -EAGAIN;
+ 		if (x) {
+ 			xfrm_state_put(x);
+@@ -2588,6 +2587,7 @@ int __net_init xfrm_state_init(struct net *net)
+ 	net->xfrm.state_num = 0;
+ 	INIT_WORK(&net->xfrm.state_hash_work, xfrm_hash_resize);
+ 	spin_lock_init(&net->xfrm.xfrm_state_lock);
++	seqcount_init(&net->xfrm.xfrm_state_hash_generation);
+ 	return 0;
+ 
+ out_byspi:
 -- 
 2.30.2
 
