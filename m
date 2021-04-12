@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7B835BC81
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A0C35BC84
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237508AbhDLInZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:43:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34804 "EHLO mail.kernel.org"
+        id S237494AbhDLIn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:43:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237469AbhDLInQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:43:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C55FD60241;
-        Mon, 12 Apr 2021 08:42:56 +0000 (UTC)
+        id S237477AbhDLInR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:43:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59DD061244;
+        Mon, 12 Apr 2021 08:42:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618216977;
-        bh=PFW91EuFBXrqOQKneQUMS7TP1qinbNVO15aALWS0ssE=;
+        s=korg; t=1618216979;
+        bh=p2OwqxFHSKfHPF7Uh5dxXGlLivSDO5iVmkwk2ean3h4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OE6dRtmoWhVWztBi+6e62w16H6E6xDE4hKti7ZHaC3YNcBAu96ARHGFx3Fs3jF/Zz
-         fDTQGx7QixrNVrU6GCCxeX0aYYPcVBMJJ3bYIZYLPwOZMSQt7lCPk0AOa+SR3h20UX
-         6oh0fL9/yDXuFWFI4wfeCsLdB2x1uQeXo7vvL9sQ=
+        b=T8DuZ+DpCk/C0nyS8x4ucs7oSX73lEVb1Aaz92v2EkYAdcJ88urr02RFWe4AIMo2C
+         RKetnlFN8MaueKN1AHkdhzuLN+E+UKPdm8XpwRujqQO39ccIV2Ft13EmTkL52gZuHM
+         sH0CiHROa1zYpZ+9E7uW/+ZXAaCDG1dvB+PFIiHM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
         syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
-Subject: [PATCH 4.19 24/66] usbip: vudc synchronize sysfs code paths
-Date:   Mon, 12 Apr 2021 10:40:30 +0200
-Message-Id: <20210412083958.910341200@linuxfoundation.org>
+Subject: [PATCH 4.19 25/66] usbip: synchronize event handler with sysfs code paths
+Date:   Mon, 12 Apr 2021 10:40:31 +0200
+Message-Id: <20210412083958.938940755@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
 References: <20210412083958.129944265@linuxfoundation.org>
@@ -41,69 +41,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit bd8b82042269a95db48074b8bb400678dbac1815 upstream.
+commit 363eaa3a450abb4e63bd6e3ad79d1f7a0f717814 upstream.
 
 Fuzzing uncovered race condition between sysfs code paths in usbip
 drivers. Device connect/disconnect code paths initiated through
 sysfs interface are prone to races if disconnect happens during
 connect and vice versa.
 
-Use sysfs_lock to protect sysfs paths in vudc.
+Use sysfs_lock to synchronize event handler with sysfs paths
+in usbip drivers.
 
 Cc: stable@vger.kernel.org
 Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
 Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Link: https://lore.kernel.org/r/caabcf3fc87bdae970509b5ff32d05bb7ce2fb15.1616807117.git.skhan@linuxfoundation.org
+Link: https://lore.kernel.org/r/c5c8723d3f29dfe3d759cfaafa7dd16b0dfe2918.1616807117.git.skhan@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/usbip/vudc_dev.c   |    1 +
- drivers/usb/usbip/vudc_sysfs.c |    5 +++++
- 2 files changed, 6 insertions(+)
+ drivers/usb/usbip/usbip_event.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/drivers/usb/usbip/vudc_dev.c
-+++ b/drivers/usb/usbip/vudc_dev.c
-@@ -571,6 +571,7 @@ static int init_vudc_hw(struct vudc *udc
- 	init_waitqueue_head(&udc->tx_waitq);
+--- a/drivers/usb/usbip/usbip_event.c
++++ b/drivers/usb/usbip/usbip_event.c
+@@ -70,6 +70,7 @@ static void event_handler(struct work_st
+ 	while ((ud = get_event()) != NULL) {
+ 		usbip_dbg_eh("pending event %lx\n", ud->event);
  
- 	spin_lock_init(&ud->lock);
-+	mutex_init(&ud->sysfs_lock);
- 	ud->status = SDEV_ST_AVAILABLE;
- 	ud->side = USBIP_VUDC;
++		mutex_lock(&ud->sysfs_lock);
+ 		/*
+ 		 * NOTE: shutdown must come first.
+ 		 * Shutdown the device.
+@@ -90,6 +91,7 @@ static void event_handler(struct work_st
+ 			ud->eh_ops.unusable(ud);
+ 			unset_event(ud, USBIP_EH_UNUSABLE);
+ 		}
++		mutex_unlock(&ud->sysfs_lock);
  
---- a/drivers/usb/usbip/vudc_sysfs.c
-+++ b/drivers/usb/usbip/vudc_sysfs.c
-@@ -113,6 +113,7 @@ static ssize_t usbip_sockfd_store(struct
- 		dev_err(dev, "no device");
- 		return -ENODEV;
+ 		wake_up(&ud->eh_waitq);
  	}
-+	mutex_lock(&udc->ud.sysfs_lock);
- 	spin_lock_irqsave(&udc->lock, flags);
- 	/* Don't export what we don't have */
- 	if (!udc->driver || !udc->pullup) {
-@@ -188,6 +189,8 @@ static ssize_t usbip_sockfd_store(struct
- 
- 		wake_up_process(udc->ud.tcp_rx);
- 		wake_up_process(udc->ud.tcp_tx);
-+
-+		mutex_unlock(&udc->ud.sysfs_lock);
- 		return count;
- 
- 	} else {
-@@ -208,6 +211,7 @@ static ssize_t usbip_sockfd_store(struct
- 	}
- 
- 	spin_unlock_irqrestore(&udc->lock, flags);
-+	mutex_unlock(&udc->ud.sysfs_lock);
- 
- 	return count;
- 
-@@ -217,6 +221,7 @@ unlock_ud:
- 	spin_unlock_irq(&udc->ud.lock);
- unlock:
- 	spin_unlock_irqrestore(&udc->lock, flags);
-+	mutex_unlock(&udc->ud.sysfs_lock);
- 
- 	return ret;
- }
 
 
