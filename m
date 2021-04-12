@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0495C35C6A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDB235C6AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241429AbhDLMrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:47:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54470 "EHLO mx2.suse.de"
+        id S241459AbhDLMsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:48:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241374AbhDLMrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:47:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A676EAFEF;
-        Mon, 12 Apr 2021 12:46:53 +0000 (UTC)
-Date:   Mon, 12 Apr 2021 14:46:52 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] kbuild: dummy-tools: Add elfedit.
-Message-ID: <20210412124652.GT6564@kitsune.suse.cz>
-References: <f6218ac526a04fa4d4406f935bcc4eb4a7df65c4.1617917438.git.msuchanek@suse.de>
- <CAK7LNAR-zdHLpp7eQ_PUG6PQMKUKh2m0b80NGSxnxuXhjyT=3g@mail.gmail.com>
- <20210411101829.GR6564@kitsune.suse.cz>
- <CAK7LNASycuqb2wyizXgVs4aN33LOrxCBikLbSXs+anWJ0-SW_Q@mail.gmail.com>
+        id S241264AbhDLMsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:48:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 95D1261287;
+        Mon, 12 Apr 2021 12:47:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618231671;
+        bh=7ffJOh7fZyJDcpKY7y4QF2GC9OUlZzK6/eFDMH4zVpE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ky2chopvPWn4Zl+Sk7prcCuU5j+8oeENGvuwJuqKFaoZPkfdTVgOA9UtZ3ogQTCCc
+         61Q96Gxm8JWp+Rx5fjvvfAZ5S8Q5+eJT7nXnVDrSqxPyP23fcIlHN+QHzyN3aBX/71
+         ugMQ9083Ffve0vHT4bWw1b2lWuKNnQomkAxCyuzwlBQQysTqV1BnX4ws+loJ2B7ylo
+         VeaLG1MAr7PQUGIo3qDpxO0B0gVzuIbGeKaRfCKcU0q0nx6N158STNjiuYliqcQWGa
+         2oX+pDB8ltUMKuYXPpqGNtSyLtwvPCSrBgvTKuylnr0mW5DXX7G2zmZeGV1RIqR6fB
+         AnHxSeirHtVrA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lVvyj-00025f-9M; Mon, 12 Apr 2021 14:47:46 +0200
+Date:   Mon, 12 Apr 2021 14:47:45 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     gregkh@linuxfoundation.org, Alan Stern <stern@rowland.harvard.edu>,
+        penghao <penghao@uniontech.com>,
+        Stefan Ursella <stefan.ursella@wolfvision.net>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Oliver Neukum <oneukum@suse.com>,
+        Tomasz =?utf-8?Q?Meresi=C5=84ski?= <tomasz@meresinski.eu>,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] USB: Add LPM quirk for Lenovo ThinkPad USB-C Dock Gen2
+ Ethernet
+Message-ID: <YHRBcYM/mbtIQdpN@hovoldconsulting.com>
+References: <20210412123754.779304-1-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNASycuqb2wyizXgVs4aN33LOrxCBikLbSXs+anWJ0-SW_Q@mail.gmail.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+In-Reply-To: <20210412123754.779304-1-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 08:37:03PM +0900, Masahiro Yamada wrote:
-> On Sun, Apr 11, 2021 at 7:18 PM Michal Suchánek <msuchanek@suse.de> wrote:
-> >
-> > On Sun, Apr 11, 2021 at 03:12:40AM +0900, Masahiro Yamada wrote:
-> > > On Fri, Apr 9, 2021 at 6:31 AM Michal Suchanek <msuchanek@suse.de> wrote:
-> > > >
-> > > > elfedit is used in Makefile
-> > > >
-> > > >  Makefile:GCC_TOOLCHAIN_DIR := $(dir $(shell which $(CROSS_COMPILE)elfedit))
-> > > >
-> > > > which causes this error getting printed
-> > > >
-> > > >  which: no elfedit in (./scripts/dummy-tools)
-> > >
-> > >
-> > > I am OK with this patch, but how did you reproduce it?
-> >
-> > make ARCH=arm CROSS_COMPILE=scripts/dummy-tools/ allmodconfig
-> >
-> > it possibly depends on the config you already have, too.
-> >
-> > Thanks
-> >
-> > Michal
+On Mon, Apr 12, 2021 at 08:37:52PM +0800, Kai-Heng Feng wrote:
+> This is another branded 8153 device that doesn't work well with LPM
+> enabled:
+> [ 400.597506] r8152 5-1.1:1.0 enx482ae3a2a6f0: Tx status -71
 > 
+> So disable LPM to resolve the issue.
+> BugLink: https://bugs.launchpad.net/bugs/1922651
 > 
-> Maybey, are you working on linux-next?
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+>  drivers/usb/core/quirks.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> 
-> [1]
-> $ git checkout  add74f8473^
-> $ make ARCH=arm CROSS_COMPILE=scripts/dummy-tools/ allmodconfig
-> 
-> [2]
-> $ git checkout  add74f8473
-> $ make ARCH=arm CROSS_COMPILE=scripts/dummy-tools/ allmodconfig
+> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+> index 76ac5d6555ae..dfedb51cf832 100644
+> --- a/drivers/usb/core/quirks.c
+> +++ b/drivers/usb/core/quirks.c
+> @@ -434,6 +434,9 @@ static const struct usb_device_id usb_quirk_list[] = {
+>  	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
+>  			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
+>  
+> +	/* Lenovo ThinkPad USB-C Dock Gen2 Ethernet (RTL8153 GigE) */
+> +	{ USB_DEVICE(0x17ef, 0xa387), .driver_info = USB_QUIRK_NO_LPM },
+> +
+>  	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
+>  	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
+>  			USB_QUIRK_DISCONNECT_SUSPEND },
 
-Indeed, the rust support is the cause of the issue:
+Please keep the entries sorted by VID/PID.
 
-add74f8473c5ca7d8947c760ff355df991a259bb (HEAD) Rust support
-0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b (tag: v5.12-rc4, s390/master,
-s390/linux/master) Linux 5.12-rc4
-
-While v5.12-rc4 is OK add74f8473 produces the error.
-
-There is additional issue that I noticed: dummy tools does not work
-seamlessly with O=
-
-$ make CROSS_COMPILE=$(pwd)/scripts/dummy-tools/ O=/scratch/ppc64/ V=1 ARCH=powerpc allmodconfig > /dev/null
-which: no elfedit in (/home/michal/linux-2.6/scripts/dummy-tools)
-
-$ make CROSS_COMPILE=scripts/dummy-tools/ O=/scratch/ppc64/ V=1 ARCH=powerpc allmodconfig > /dev/null
-which: no elfedit in (./scripts/dummy-tools)
-scripts/Kconfig.include:39: compiler 'scripts/dummy-tools/gcc' not found
-make[2]: *** [/home/michal/linux-2.6/scripts/kconfig/Makefile:63:
-allmodconfig] Error 1
-make[1]: *** [/home/michal/linux-2.6/Makefile:636: allmodconfig] Error 2
-make: *** [Makefile:222: __sub-make] Error 2
-
-Perhaps linking dummy-tools into the target directory would be a good
-idea?
-
-Thanks
-
-Michal
-
+Johan
