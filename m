@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 357DA35C0D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAE935C0D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241538AbhDLJQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:16:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48976 "EHLO mail.kernel.org"
+        id S241572AbhDLJQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:16:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239043AbhDLI7C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:59:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BEA1861369;
-        Mon, 12 Apr 2021 08:57:21 +0000 (UTC)
+        id S239117AbhDLI7N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:59:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00C6161249;
+        Mon, 12 Apr 2021 08:57:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217842;
-        bh=V1OlOY5U2Rw1k7ZX8DzfHThSuCDmT3epTak46REhlDk=;
+        s=korg; t=1618217847;
+        bh=QxmsrCTn/9n1/8aQBFIoSviyTKNO6UzZHOjKMK600qc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tncneYtNyrht+MmsAbdHaCjmzIYXvDNO7z03WqGzZ2+/ZUOYhREzPo1KxxbBkOKrV
-         gHIqXpA6l2ZzL6Ok18GOIO5xxNlMPJ+1GREb0ZBRK7YjoiLdyVftWfdefW+4WnbtPf
-         AdlOT2bMCxd5zu153WNJzIKBF9992x5u1S1Uig30=
+        b=apRYVeDa/xj64F1UKa77pWal3+xGfUHlStEwNyBGeGi16VdNHDLKntPEGJZBY9SM5
+         u1XafpGKs7BFJPnD6fOxWV7Eba3gNOdZMzgu+NnwBf3+YDgv2PQB6qaTWMhP7dJ7a0
+         O04y/1vm6NQCrfNbJCyaZirrGf+Vh4r8Za/WEypg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dom Cobley <popcornmix@gmail.com>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Grzegorz Siwik <grzegorz.siwik@intel.com>,
+        Dave Switzer <david.switzer@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 164/188] drm/vc4: crtc: Reduce PV fifo threshold on hvs4
-Date:   Mon, 12 Apr 2021 10:41:18 +0200
-Message-Id: <20210412084019.086654852@linuxfoundation.org>
+Subject: [PATCH 5.10 165/188] i40e: Fix parameters in aq_get_phy_register()
+Date:   Mon, 12 Apr 2021 10:41:19 +0200
+Message-Id: <20210412084019.117776085@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -40,62 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dom Cobley <popcornmix@gmail.com>
+From: Grzegorz Siwik <grzegorz.siwik@intel.com>
 
-[ Upstream commit eb9dfdd1ed40357b99a4201c8534c58c562e48c9 ]
+[ Upstream commit b2d0efc4be7ed320e33eaa9b6dd6f3f6011ffb8e ]
 
-Experimentally have found PV on hvs4 reports fifo full
-error with expected settings and does not with one less
+Change parameters order in aq_get_phy_register() due to wrong
+statistics in PHY reported by ethtool. Previously all PHY statistics were
+exactly the same for all interfaces
+Now statistics are reported correctly - different for different interfaces
 
-This appears as:
-[drm:drm_atomic_helper_wait_for_flip_done] *ERROR* [CRTC:82:crtc-3] flip_done timed out
-
-with bit 10 of PV_STAT set "HVS driving pixels when the PV FIFO is full"
-
-Fixes: c8b75bca92cb ("drm/vc4: Add KMS support for Raspberry Pi.")
-Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20210318161328.1471556-3-maxime@cerno.tech
+Fixes: 0514db37dd78 ("i40e: Extend PHY access with page change flag")
+Signed-off-by: Grzegorz Siwik <grzegorz.siwik@intel.com>
+Tested-by: Dave Switzer <david.switzer@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/vc4/vc4_crtc.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index 482219fb4db2..1d2416d466a3 100644
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -210,6 +210,7 @@ static u32 vc4_get_fifo_full_level(struct vc4_crtc *vc4_crtc, u32 format)
- {
- 	const struct vc4_crtc_data *crtc_data = vc4_crtc_to_vc4_crtc_data(vc4_crtc);
- 	const struct vc4_pv_data *pv_data = vc4_crtc_to_vc4_pv_data(vc4_crtc);
-+	struct vc4_dev *vc4 = to_vc4_dev(vc4_crtc->base.dev);
- 	u32 fifo_len_bytes = pv_data->fifo_depth;
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+index 849e38be69ff..31d48a85cfaf 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
+@@ -5285,7 +5285,7 @@ static int i40e_get_module_eeprom(struct net_device *netdev,
  
- 	/*
-@@ -238,6 +239,22 @@ static u32 vc4_get_fifo_full_level(struct vc4_crtc *vc4_crtc, u32 format)
- 		if (crtc_data->hvs_output == 5)
- 			return 32;
- 
-+		/*
-+		 * It looks like in some situations, we will overflow
-+		 * the PixelValve FIFO (with the bit 10 of PV stat being
-+		 * set) and stall the HVS / PV, eventually resulting in
-+		 * a page flip timeout.
-+		 *
-+		 * Displaying the video overlay during a playback with
-+		 * Kodi on an RPi3 seems to be a great solution with a
-+		 * failure rate around 50%.
-+		 *
-+		 * Removing 1 from the FIFO full level however
-+		 * seems to completely remove that issue.
-+		 */
-+		if (!vc4->hvs->hvs5)
-+			return fifo_len_bytes - 3 * HVS_FIFO_LATENCY_PIX - 1;
-+
- 		return fifo_len_bytes - 3 * HVS_FIFO_LATENCY_PIX;
- 	}
- }
+ 		status = i40e_aq_get_phy_register(hw,
+ 				I40E_AQ_PHY_REG_ACCESS_EXTERNAL_MODULE,
+-				true, addr, offset, &value, NULL);
++				addr, true, offset, &value, NULL);
+ 		if (status)
+ 			return -EIO;
+ 		data[i] = value;
 -- 
 2.30.2
 
