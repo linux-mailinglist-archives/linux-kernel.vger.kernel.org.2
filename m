@@ -2,171 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2335435D182
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6075035D185
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245370AbhDLTx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:53:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245360AbhDLTx4 (ORCPT
+        id S239226AbhDLTz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:55:57 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:48696 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238889AbhDLTz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:53:56 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FF1AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:53:36 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id 20so3003570pll.7
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:53:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lohhSZFnccGy8jGa7QsIGJ/XDmBANUFVxrmI+3Kxbmc=;
-        b=gLuCRPomfgXVwaBM17qd3/jC44Igsbt8WKgl4XvpZ1GivlizY8xNMgmq3LpV0orNVf
-         QRlsDYxDXcAWNh9LTSTY+k6DgWFzxnoS6/fI6e50qGwCnKlfPutiNGac7YsAKgaqDdcl
-         GfPatf4ArWO3dzi4/u3Ky0dtmQPuAhnWSmcHwLW4Bt00QfaPpNkLdEhDIMOSaWhfnM9X
-         AORpvC2Jme2Ge6RwjJFPEOP91o/siangMmSE1OlUWTMKcmsGQ3ls3xFvWCNn1O+3jTo1
-         MUsimmcWqSeG5aobnlTjYRqqidI8IYK+HpIhXHL4I6K8KJ4+HUWu0vQ1L+N6fmrnEMJw
-         43fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lohhSZFnccGy8jGa7QsIGJ/XDmBANUFVxrmI+3Kxbmc=;
-        b=dNLctJRXTMXuh9Sn/g/LxJqcfAAuHAVz2ZCIeIqmtKbRLk+ZIDNxn3d2aqfoepP7Ue
-         lAv4io+eQIfVtKyTWcNxBlKSwVObQ2TZSKOHecqYJa2RXMnG+ZNH0Bw4UNNmY7GFQs8x
-         3rCO6CT21oG1VJCmsJdhoMVBxgDv9RewMnLoJCCAd2jNpcdMcY5Cq7P84HnETvh2tEZ6
-         eIQwBUnibFyJRgaXtKUm8Jm3u+QaAADd17Et5Hokdz09V1PHruOeGK7ETUEgYWQX07Tk
-         SaU5HMsy7svg/rTy5b8Jj/OX9KdR7gusbB7c6DD3Nt87N/tsDzL9RJaLRb0PdonSUHD7
-         teWw==
-X-Gm-Message-State: AOAM531uFKKXowixrE3kRR5HTm0QEPmJ5Gm6FoYVT1ztrsqeWSu+Lc7j
-        rAIg+3zBcoTcAVhUHa6jWTeQYg==
-X-Google-Smtp-Source: ABdhPJzLvlP63bgMOBlYnFI7oM1829T9k+AQhynPrAGgacI8MdN24SvJnYMQRGsImsy8fWnSZL3Y1g==
-X-Received: by 2002:a17:90a:2807:: with SMTP id e7mr872172pjd.202.1618257215898;
-        Mon, 12 Apr 2021 12:53:35 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id x30sm12391335pgl.39.2021.04.12.12.53.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 12:53:34 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 13:53:31 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Andy Gross <agross@kernel.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH 5/7] rpmsg: char: Introduce a rpmsg driver for the rpmsg
- char device
-Message-ID: <20210412195331.GA582352@xps15>
-References: <20210323122737.23035-1-arnaud.pouliquen@foss.st.com>
- <20210323122737.23035-6-arnaud.pouliquen@foss.st.com>
+        Mon, 12 Apr 2021 15:55:56 -0400
+Received: from [192.168.254.32] (unknown [47.187.223.33])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D9CC020B8000;
+        Mon, 12 Apr 2021 12:55:36 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D9CC020B8000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1618257337;
+        bh=h2gvJ5oqXftarQ16pvd9FutkrlcdXEhDOKLCNzGzJQ0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Qob3oXb5+R1rog4vksif5LZhrGvetrYNRzhrXhIBDtM0KVtPP51ISu5FlyThZA03t
+         OnQ9oqE2cgFhgN5SZFrTTOoK/L/wNTTtiwSocCAswt0d9SmVCLPb96E8wWZyA6U4du
+         3lj2SzQRCinCdoNr+PbXitPVpvRd8KzUeE+yny6o=
+Subject: Re: [RFC PATCH v2 0/4] arm64: Implement stack trace reliability
+ checks
+To:     Mark Brown <broonie@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
+ <20210405204313.21346-1-madvenka@linux.microsoft.com>
+ <20210409120859.GA51636@C02TD0UTHF1T.local>
+ <20210409213741.kqmwyajoppuqrkge@treble>
+ <20210412173617.GE5379@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <d92ec07e-81e1-efb8-b417-d1d8a211ef7f@linux.microsoft.com>
+Date:   Mon, 12 Apr 2021 14:55:35 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210323122737.23035-6-arnaud.pouliquen@foss.st.com>
+In-Reply-To: <20210412173617.GE5379@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Mar 23, 2021 at 01:27:35PM +0100, Arnaud Pouliquen wrote:
-> A rpmsg char device allows to probe the endpoint device on a remote name
-> service announcement.
-> 
-> With this patch the /dev/rpmsgX interface is created either by a user
-> application or by the remote firmware.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/rpmsg/rpmsg_char.c | 58 +++++++++++++++++++++++++++++++++++++-
->  1 file changed, 57 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> index 7f6d46078179..69e774edb74b 100644
-> --- a/drivers/rpmsg/rpmsg_char.c
-> +++ b/drivers/rpmsg/rpmsg_char.c
-> @@ -28,6 +28,8 @@
->  
->  #define RPMSG_DEV_MAX	(MINORMASK + 1)
->  
-> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
-> +
->  static dev_t rpmsg_major;
->  
->  static DEFINE_IDA(rpmsg_ept_ida);
-> @@ -405,13 +407,67 @@ int rpmsg_chrdev_create_eptdev(struct rpmsg_device *rpdev, struct device *parent
->  }
->  EXPORT_SYMBOL(rpmsg_chrdev_create_eptdev);
->  
-> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
-> +{
-> +	struct rpmsg_channel_info chinfo;
-> +	struct rpmsg_eptdev *eptdev;
-> +
-> +	if (!rpdev->ept)
-> +		return -EINVAL;
-> +
-> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
-> +	chinfo.src = rpdev->src;
-> +	chinfo.dst = rpdev->dst;
-> +
-> +	eptdev = __rpmsg_chrdev_create_eptdev(rpdev, &rpdev->dev, chinfo, NULL);
-> +	if (IS_ERR(eptdev))
-> +		return PTR_ERR(eptdev);
-> +
-> +	/* Set the private field of the default endpoint to retrieve context on callback. */
-> +	rpdev->ept->priv = eptdev;
-> +
-> +	return 0;
-> +}
-> +
-> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
-> +{
-> +	int ret;
-> +
-> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_destroy_eptdev);
-> +	if (ret)
-> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
-> +}
-> +
-> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
-> +	{ .name	= RPMSG_CHAR_DEVNAME },
-> +	{ },
-> +};
-> +
-> +static struct rpmsg_driver rpmsg_chrdev_driver = {
-> +	.probe = rpmsg_chrdev_probe,
-> +	.remove = rpmsg_chrdev_remove,
-> +	.id_table = rpmsg_chrdev_id_table,
-> +	.callback = rpmsg_ept_cb,
-> +	.drv = {
-> +		.name = "rpmsg_chrdev",
-> +	},
-> +};
-> +
->  static int rpmsg_chrdev_init(void)
->  {
->  	int ret;
->  
->  	ret = alloc_chrdev_region(&rpmsg_major, 0, RPMSG_DEV_MAX, "rpmsg");
-> -	if (ret < 0)
-> +	if (ret < 0) {
->  		pr_err("rpmsg: failed to allocate char dev region\n");
-> +		return ret;
-> +	}
-> +
-> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
-> +	if (ret < 0) {
-> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
-> +		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> +	}
 
-Function unregister_rpmsg_driver() has to be called in rpmsg_chrdev_exit().
 
->  
->  	return ret;
->  }
-> -- 
-> 2.17.1
+On 4/12/21 12:36 PM, Mark Brown wrote:
+> On Fri, Apr 09, 2021 at 04:37:41PM -0500, Josh Poimboeuf wrote:
+>> On Fri, Apr 09, 2021 at 01:09:09PM +0100, Mark Rutland wrote:
 > 
+>>> Further, I believe all the special cases are assembly functions, and
+>>> most of those are already in special sections to begin with. I reckon
+>>> it'd be simpler and more robust to reject unwinding based on the
+>>> section. If we need to unwind across specific functions in those
+>>> sections, we could opt-in with some metadata. So e.g. we could reject
+>>> all functions in ".entry.text", special casing the EL0 entry functions
+>>> if necessary.
+> 
+>> Couldn't this also end up being somewhat fragile?  Saying "certain
+>> sections are deemed unreliable" isn't necessarily obvious to somebody
+>> who doesn't already know about it, and it could be overlooked or
+>> forgotten over time.  And there's no way to enforce it stays that way.
+> 
+> Anything in this area is going to have some opportunity for fragility
+> and missed assumptions somewhere.  I do find the idea of using the
+> SYM_CODE annotations that we already have and use for other purposes to
+> flag code that we don't expect to be suitable for reliable unwinding
+> appealing from that point of view.  It's pretty clear at the points
+> where they're used that they're needed, even with a pretty surface level
+> review, and the bit actually pushing things into a section is going to
+> be in a single place where the macro is defined.  That seems relatively
+> robust as these things go, it seems no worse than our reliance on
+> SYM_FUNC to create BTI annotations.  Missing those causes oopses when we
+> try to branch to the function.
+> 
+
+OK. Just so I am clear on the whole picture, let me state my understanding so far.
+Correct me if I am wrong.
+
+1. We are hoping that we can convert a significant number of SYM_CODE functions to
+   SYM_FUNC functions by providing them with a proper FP prolog and epilog so that
+   we can get objtool coverage for them. These don't need any blacklisting.
+
+2. If we can locate the pt_regs structures created on the stack cleanly for EL1
+   exceptions, etc, then we can handle those cases in the unwinder without needing
+   any black listing.
+
+   I have a solution for this in version 3 that does it without encoding the FP or
+   matching values on the stack. I have addressed all of the objections so far on
+   that count. I will send the patch series out soon.
+
+3. We are going to assume that the reliable unwinder is only for livepatch purposes
+   and will only be invoked on a task that is not currently running. The task either
+   voluntarily gave up the CPU or was pre-empted. We can safely ignore all SYM_CODE
+   functions that will never voluntarily give up the CPU. They can only be pre-empted
+   and pre-emption is already handled in (2). We don't need to blacklist any of these
+   functions.
+
+4. So, the only functions that will need blacklisting are the remaining SYM_CODE functions
+   that might give up the CPU voluntarily. At this point, I am not even sure how
+   many of these will exist. One hopes that all of these would have ended up as
+   SYM_FUNC functions in (1).
+
+So, IMHO, placing code in a black listed section should be the last step and not the first
+one. This also satisfies Mark Rutland's requirement that no one muck with the entry text
+while he is sorting out that code.
+
+I suggest we do (3) first. Then, review the assembly functions to do (1). Then, review the
+remaining ones to see which ones must be blacklisted, if any.
+
+Do you agree?
+
+Madhavan
