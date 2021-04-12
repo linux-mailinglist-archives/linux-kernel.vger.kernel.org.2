@@ -2,92 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFD135C3C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:22:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B81D35C3C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238973AbhDLKXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:23:05 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:26305 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239020AbhDLKXB (ORCPT
+        id S239153AbhDLKXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238442AbhDLKX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:23:01 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-128-DnwYs6UTM2mO74AA5I6jBQ-1; Mon, 12 Apr 2021 11:22:40 +0100
-X-MC-Unique: DnwYs6UTM2mO74AA5I6jBQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 12 Apr 2021 11:22:38 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.012; Mon, 12 Apr 2021 11:22:38 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>
-CC:     linux-arch <linux-arch@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Helge Deller <deller@gmx.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: RE: consolidate the flock uapi definitions
-Thread-Topic: consolidate the flock uapi definitions
-Thread-Index: AQHXL4M0xqfui6+bp0WfMrJF+xIqXKqwqyrg
-Date:   Mon, 12 Apr 2021 10:22:38 +0000
-Message-ID: <16c471554aa5424fbe2f6a4fd60bd662@AcuMS.aculab.com>
-References: <20210412085545.2595431-1-hch@lst.de>
- <CAK8P3a38qgkjkh4+fDKp4TufL+2_W-quZBFK9pJFf7wXP=84xQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a38qgkjkh4+fDKp4TufL+2_W-quZBFK9pJFf7wXP=84xQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Mon, 12 Apr 2021 06:23:29 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB12C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 03:23:09 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id bx20so13244873edb.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 03:23:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aDYfwXOX7CXJC5km5DlusEFEF+Nl5xWOkbGcpQvebPk=;
+        b=dpot/PDuWTxI0+YsjLFgYLzDEj6vgBZZXMNrC5eNX2r5KNR9iKUMwbnVJ3BjT1vNex
+         wSvgO0xYpng6v2cvxlxxCRq11pcF/DE7hoSDUMbKXRYT5KekR45y2Nq3ysC2ZIpwD60A
+         x+KcjDBwQquu8oosqncOGLRy67S0T+CGgm5HKD0eYbk3vjCK16gkdUWxSGGMFA3Gw2th
+         ddF2dtSOkIIa4diivQ++lhGNuGwicsn/6RariSY8/whcfMdjuc+3Z34zZ9WM2DMKn7WP
+         fzyFLCHBvMhd4M8K/hPezvjDvD0xXIUs4cBCHSOoMqUHN0fT7ioOasbstn/+FxMfg4Ey
+         Q+bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aDYfwXOX7CXJC5km5DlusEFEF+Nl5xWOkbGcpQvebPk=;
+        b=PxizssdnFnryEZ17hctixHwwh4bO1Lm87Su1hBiIlYInnrcw4Ze0oj67Tdq0AjNezk
+         csLZf+jjMfDjpO8qrtGxxxgRfbLUsvIEblcDUFU+ZQDectQ1SI1cTbxdW0RFyC5eOUAV
+         mXQsEnwzNTBoveptIrDFPGdALwCULEV2sjYWG9QS7DubvTRERht8ULFvJfXvf677eYwh
+         AedpGZcC67mDHUHXjlV0sYTIhSYK8pSiTXldN3EuUW4h9Ij+JMmg0Q+kxvqXCaRkzc6o
+         O3RGL+7FS924F292v0EY427WIIAvXOjyPbo+g7z596Xqqv1p04FnWw2uvHDJphUs4uMd
+         4Fjw==
+X-Gm-Message-State: AOAM5334+CeWZdd5uESl2Mmkmv602EVfR656lo+ZdKQ4gmBi1OnUiEVX
+        LMI3jB9cvAjMPgD8QmNM+Ho=
+X-Google-Smtp-Source: ABdhPJzcBYWukqy9abedu05uFLTelTQXauXhdaT4/d0FJPiqlSsW5qbhAnCE5YHP5PV2lJdpDCi/2g==
+X-Received: by 2002:a05:6402:2691:: with SMTP id w17mr21565207edd.81.1618222988753;
+        Mon, 12 Apr 2021 03:23:08 -0700 (PDT)
+Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id w13sm6134925edc.81.2021.04.12.03.23.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 03:23:08 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8192u: Remove variable set but not used
+Date:   Mon, 12 Apr 2021 12:23:07 +0200
+Message-ID: <269706412.I7xuoi7Q6o@linux.local>
+In-Reply-To: <YHQTY4fGJfsdSjXL@kroah.com>
+References: <20210411174143.31618-1-fmdefrancesco@gmail.com> <YHQTY4fGJfsdSjXL@kroah.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAxMiBBcHJpbCAyMDIxIDExOjA0DQo+IA0KPiBP
-biBNb24sIEFwciAxMiwgMjAyMSBhdCAxMDo1NSBBTSBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxz
-dC5kZT4gd3JvdGU6DQo+ID4NCj4gPiBIaSBhbGwsDQo+ID4NCj4gPiBjdXJyZW50bHkgd2UgZGVh
-bCB3aXRoIHRoZSBzbGlnaHQgZGlmZmVyZW50cyBpbiB0aGUgdmFyaW91cyBhcmNoaXRlY3R1cmUN
-Cj4gPiB2YXJpYW50cyBvZiB0aGUgZmxvY2sgYW5kIGZsb2NrNjQgc3R1Y3R1cmVzIGluIGEgdmVy
-eSBjcnVmdCB3YXkuICBUaGlzDQo+ID4gc2VyaWVzIHN3aXRjaGVzIHRvIGp1c3QgdXNlIHNtYWxs
-IGFyY2ggaG9va3MgYW5kIGRlZmluZSB0aGUgcmVzdCBpbg0KPiA+IGFzbS1nZW5lcmljIGFuZCBs
-aW51eC9jb21wYXQuaCBpbnN0ZWFkLg0KPiANCj4gTmljZSBjbGVhbnVwLiBJIGNhbiBtZXJnZSBp
-dCB0aHJvdWdoIHRoZSBhc20tZ2VuZXJpYyB0cmVlIGlmIHlvdSBsaWtlLA0KPiB0aG91Z2ggaXQn
-cyBhIGxpdHRsZSBsYXRlIGp1c3QgYWhlYWQgb2YgdGhlIG1lcmdlIHdpbmRvdy4NCj4gDQo+IEkg
-d291bGQgbm90IHdhbnQgdG8gY2hhbmdlIHRoZSBjb21wYXRfbG9mZl90IGRlZmluaXRpb24gdG8g
-Y29tcGF0X3M2NA0KPiB0byBhdm9pZCB0aGUgcGFkZGluZyBhdCB0aGlzIHRpbWUsIHRob3VnaCB0
-aGF0IG1pZ2h0IGJlIGEgdXNlZnVsIGNsZWFudXANCj4gZm9yIGEgZnV0dXJlIGN5Y2xlLg0KDQpJ
-cyB4ODYgdGhlIG9ubHkgYXJjaGl0ZWN0dXJlIHRoYXQgaGFzIDMyYml0IGFuZCA2NGJpdCB2YXJp
-YW50cyB3aGVyZQ0KdGhlIDMyYml0IHZhcmlhbnQgYWxpZ25zIDY0Yml0IGl0ZW1zIG9uIDMyYml0
-IGJvdW5kYXJpZXM/DQoNCkkndmUganVzdCBjaGVja2VkIE1JUFMgYW5kIEFSTSwgYW5kIEknbSBm
-YWlybHkgc3VyZSBzcGFyYyA2NGJpdA0KYWxpZ25zIHRoZW0uDQoNCkFyZSB0aGVyZSBhbnkgb3Ro
-ZXJzPw0KDQpNaWdodCBhbHNvIGJlIGludGVyZXN0aW5nIHRvIGNoZWNrIHdoZXRoZXIgY29tcGF0
-X2xvZmZfdCBnZXRzDQp1c2VkIGFueXdoZXJlIGVsc2UgLSB3aGVyZSB0aGUgeDY0LTY0IGNvbXBh
-dCBjb2RlIHdpbGwgZ2V0IGl0DQp3cm9uZy4NCg0KSVNUTSB0aGF0IGZpeGluZyBjb21wYXRfbG9m
-Zl90IHNob3VsZG4ndCBoYXZlIGFueSBmYWxsb3V0Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJl
-ZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXlu
-ZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Monday, April 12, 2021 11:31:15 AM CEST Greg KH wrote:
+> On Sun, Apr 11, 2021 at 07:41:43PM +0200, Fabio M. De Francesco wrote:
+> > Remove variable "int ret" which is instantiated but not used.
+> > 
+> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> > ---
+> > 
+> >  drivers/staging/rtl8192u/r8192U_core.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/drivers/staging/rtl8192u/r8192U_core.c
+> > b/drivers/staging/rtl8192u/r8192U_core.c index
+> > f48186a89fa1..30055de66239 100644
+> > --- a/drivers/staging/rtl8192u/r8192U_core.c
+> > +++ b/drivers/staging/rtl8192u/r8192U_core.c
+> > @@ -902,7 +902,6 @@ static void rtl8192_hard_data_xmit(struct sk_buff
+> > *skb, struct net_device *dev,> 
+> >  				   int rate)
+> >  
+> >  {
+> >  
+> >  	struct r8192_priv *priv = (struct r8192_priv 
+*)ieee80211_priv(dev);
+> > 
+> > -	int ret;
+> > 
+> >  	unsigned long flags;
+> >  	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb +
+> >  	MAX_DEV_ADDR_SIZE); u8 queue_index = tcb_desc->queue_index;
+> 
+> Did you test-build this patch?
+>
+Sorry, I don't know why I forgot to test it.
+I realized that this morning when I read a message from the kernel test 
+robot.
+I'll be more careful with future patches.
+
+Thanks,
+
+Fabio
+
+
+
 
