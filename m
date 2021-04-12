@@ -2,105 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7262F35C877
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:17:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB9C35C87A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239612AbhDLORQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:17:16 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39512 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237579AbhDLORP (ORCPT
+        id S240512AbhDLORr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:17:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9962 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237579AbhDLORp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:17:15 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618237016;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nhAvEHNMMXwBbl3AWVuFy78vV6aJxv0n7jBXDQx7qCM=;
-        b=WOSecj2/dGuF+I+G4E1TrDQZBCZhcUxYJHWHpD5sWreQ8w1Fkwz8QcGWehdVtcAGS4lhtB
-        KvNgTZDpDWKJrzKCr3bcZ51oBPZmzetMApkovyFGExrpU6I/OIeTfoCOtQk+7q8cMCNiFB
-        pE7Vu38ZzubyIJf3Wkt/MIZOeoZGyv+Vp8xMYYQ7yPfoe5Do93dRMmiXTn95rS4y1meApP
-        e2ml7ynw6M32KZgNrEOvbzhB5QCMfo8t+0evy5m4zwcTJbbUFUTr05dUJpa4KySH9QoeRZ
-        X19FPikCnA1iMLC0WCwooYVbogOyPgRylICB044IzROhNAv0zyPXIddLomnuEQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618237016;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nhAvEHNMMXwBbl3AWVuFy78vV6aJxv0n7jBXDQx7qCM=;
-        b=M11xPhPUpPugUMrxBEOpRFyaA6n2k7bPPG+FoD2hZZnGs+ozu2ncwGucLn5bnXveAfLcIF
-        cwNKoSbVinDpdmDA==
-To:     "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>,
-        linux-tip-commits@vger.kernel.org
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [tip: core/rcu] softirq: Don't try waking ksoftirqd before it has been spawned
-In-Reply-To: <161814860838.29796.15260901429057690999.tip-bot2@tip-bot2>
-References: <161814860838.29796.15260901429057690999.tip-bot2@tip-bot2>
-Date:   Mon, 12 Apr 2021 16:16:55 +0200
-Message-ID: <87czuz1tbc.ffs@nanos.tec.linutronix.de>
+        Mon, 12 Apr 2021 10:17:45 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13CE4OmC077556;
+        Mon, 12 Apr 2021 10:17:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=xYI2ryD7+6+zZPCZSb2a1k0FN7PgIpuHg4iXW30jUmA=;
+ b=cFFXtn+sshacxABE5RyC9TXqBm8Slr4gRd+j/p+4BYnP7r7SspzvdumkJNvg7Iq6Yv5V
+ ijtvHF+DMowucbKAWEJ0zHcpRShnIZB0wtFgOI5fypiDj+TlMi1b258xNAkQt1jF+B9j
+ +aY9nuXccBqHsR6flwSwnwoeLUiCLrKoVQQoNKiTEE8/yFrQt20JT4VIf5MJZUC9EH2s
+ rOWZVqX/Mk3ahT+RCRWRkCpn7S9HNCdrqHCCEPXo2ffvrAt1qJyQ28jUhTfyMF/4YZ/H
+ 0y3GMqXz8KpL7qel07AfDIrdUTsc05vcpGkINb+6lf/47Fgxi2L6dY+lvK0wOr8ire9a ow== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 37vkdjtgfd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 10:17:17 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 13CECEhP017254;
+        Mon, 12 Apr 2021 14:17:16 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma05wdc.us.ibm.com with ESMTP id 37u3n9gp1c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 14:17:16 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 13CEHFC632178478
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Apr 2021 14:17:15 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41C7B6A054;
+        Mon, 12 Apr 2021 14:17:15 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8404A6A047;
+        Mon, 12 Apr 2021 14:17:12 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.37.91])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 12 Apr 2021 14:17:12 +0000 (GMT)
+Subject: Re: [PATCH -next] powerpc/perf/hv-24x7: Make some symbols static
+To:     Bixuan Cui <cuibixuan@huawei.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "Gautham R. Shenoy" <ego@linux.vnet.ibm.com>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <20210409090124.59492-1-cuibixuan@huawei.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <8187bbd0-e626-d113-3449-58eea5b13571@linux.ibm.com>
+Date:   Mon, 12 Apr 2021 19:47:10 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210409090124.59492-1-cuibixuan@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ucZArozQ-G-GjPWGdqTxemrzaX2UmuFE
+X-Proofpoint-GUID: ucZArozQ-G-GjPWGdqTxemrzaX2UmuFE
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-12_10:2021-04-12,2021-04-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ phishscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011 spamscore=0
+ malwarescore=0 bulkscore=0 impostorscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104120096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11 2021 at 13:43, tip-bot wrote:
-> The following commit has been merged into the core/rcu branch of tip:
->
-> Commit-ID:     1c0c4bc1ceb580851b2d76fdef9712b3bdae134b
-> Gitweb:        https://git.kernel.org/tip/1c0c4bc1ceb580851b2d76fdef9712b3bdae134b
-> Author:        Paul E. McKenney <paulmck@kernel.org>
-> AuthorDate:    Fri, 12 Feb 2021 16:20:40 -08:00
-> Committer:     Paul E. McKenney <paulmck@kernel.org>
-> CommitterDate: Mon, 15 Mar 2021 13:51:48 -07:00
->
-> softirq: Don't try waking ksoftirqd before it has been spawned
->
-> If there is heavy softirq activity, the softirq system will attempt
-> to awaken ksoftirqd and will stop the traditional back-of-interrupt
-> softirq processing.  This is all well and good, but only if the
-> ksoftirqd kthreads already exist, which is not the case during early
-> boot, in which case the system hangs.
->
-> One reproducer is as follows:
->
-> tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 2 --configs "TREE03" --kconfig "CONFIG_DEBUG_LOCK_ALLOC=y CONFIG_PROVE_LOCKING=y CONFIG_NO_HZ_IDLE=y CONFIG_HZ_PERIODIC=n" --bootargs "threadirqs=1" --trust-make
->
-> This commit therefore adds a couple of existence checks for ksoftirqd
-> and forces back-of-interrupt softirq processing when ksoftirqd does not
-> yet exist.  With this change, the above test passes.
 
-Color me confused. I did not follow the discussion around this
-completely, but wasn't it agreed on that this rcu torture muck can wait
-until the threads are brought up?
 
-> diff --git a/kernel/softirq.c b/kernel/softirq.c
-> index 9908ec4..bad14ca 100644
-> --- a/kernel/softirq.c
-> +++ b/kernel/softirq.c
-> @@ -211,7 +211,7 @@ static inline void invoke_softirq(void)
->  	if (ksoftirqd_running(local_softirq_pending()))
->  		return;
->  
-> -	if (!force_irqthreads) {
-> +	if (!force_irqthreads || !__this_cpu_read(ksoftirqd)) {
->  #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
->  		/*
->  		 * We can safely execute softirq on the current stack if
+On 4/9/21 2:31 PM, Bixuan Cui wrote:
+> The sparse tool complains as follows:
+> 
+> arch/powerpc/perf/hv-24x7.c:229:1: warning:
+>  symbol '__pcpu_scope_hv_24x7_txn_flags' was not declared. Should it be static?
+> arch/powerpc/perf/hv-24x7.c:230:1: warning:
+>  symbol '__pcpu_scope_hv_24x7_txn_err' was not declared. Should it be static?
+> arch/powerpc/perf/hv-24x7.c:236:1: warning:
+>  symbol '__pcpu_scope_hv_24x7_hw' was not declared. Should it be static?
+> arch/powerpc/perf/hv-24x7.c:244:1: warning:
+>  symbol '__pcpu_scope_hv_24x7_reqb' was not declared. Should it be static?
+> arch/powerpc/perf/hv-24x7.c:245:1: warning:
+>  symbol '__pcpu_scope_hv_24x7_resb' was not declared. Should it be static?
+> 
+> This symbol is not used outside of hv-24x7.c, so this
+> commit marks it static.
 
-This still breaks RT which forces force_irqthreads to a compile time
-const which makes the compiler optimize out the direct invocation.
+Patch looks good to me.
 
-Surely RT can work around that, but how is that rcu torture muck
-supposed to work then? We're back to square one then.
+Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
 
 Thanks,
+Kajol jain
 
-        tglx
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
+> ---
+>  arch/powerpc/perf/hv-24x7.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/powerpc/perf/hv-24x7.c b/arch/powerpc/perf/hv-24x7.c
+> index e5eb33255066..1816f560a465 100644
+> --- a/arch/powerpc/perf/hv-24x7.c
+> +++ b/arch/powerpc/perf/hv-24x7.c
+> @@ -226,14 +226,14 @@ static struct attribute_group event_long_desc_group = {
+>  
+>  static struct kmem_cache *hv_page_cache;
+>  
+> -DEFINE_PER_CPU(int, hv_24x7_txn_flags);
+> -DEFINE_PER_CPU(int, hv_24x7_txn_err);
+> +static DEFINE_PER_CPU(int, hv_24x7_txn_flags);
+> +static DEFINE_PER_CPU(int, hv_24x7_txn_err);
+>  
+>  struct hv_24x7_hw {
+>  	struct perf_event *events[255];
+>  };
+>  
+> -DEFINE_PER_CPU(struct hv_24x7_hw, hv_24x7_hw);
+> +static DEFINE_PER_CPU(struct hv_24x7_hw, hv_24x7_hw);
+>  
+>  /*
+>   * request_buffer and result_buffer are not required to be 4k aligned,
+> @@ -241,8 +241,8 @@ DEFINE_PER_CPU(struct hv_24x7_hw, hv_24x7_hw);
+>   * the simplest way to ensure that.
+>   */
+>  #define H24x7_DATA_BUFFER_SIZE	4096
+> -DEFINE_PER_CPU(char, hv_24x7_reqb[H24x7_DATA_BUFFER_SIZE]) __aligned(4096);
+> -DEFINE_PER_CPU(char, hv_24x7_resb[H24x7_DATA_BUFFER_SIZE]) __aligned(4096);
+> +static DEFINE_PER_CPU(char, hv_24x7_reqb[H24x7_DATA_BUFFER_SIZE]) __aligned(4096);
+> +static DEFINE_PER_CPU(char, hv_24x7_resb[H24x7_DATA_BUFFER_SIZE]) __aligned(4096);
+>  
+>  static unsigned int max_num_requests(int interface_version)
+>  {
+> 
