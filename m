@@ -2,105 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FBC35BBF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1926335BBF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:19:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237236AbhDLISu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:18:50 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:32852 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236973AbhDLISr (ORCPT
+        id S237263AbhDLIT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:19:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60839 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237078AbhDLITY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:18:47 -0400
-Received: from mail-lf1-f71.google.com ([209.85.167.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1lVrm8-0002Df-4Z
-        for linux-kernel@vger.kernel.org; Mon, 12 Apr 2021 08:18:28 +0000
-Received: by mail-lf1-f71.google.com with SMTP id 26so4245628lfp.19
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 01:18:28 -0700 (PDT)
+        Mon, 12 Apr 2021 04:19:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618215546;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xJgn3g7ogKt5V6b/6xvZZCO2WGaaJCBspvi1WlJo2ZE=;
+        b=BmqIkCzEGFtaHoL42wQWb9VnwL6oXSo7DLTQoEcECLMqWdLyZ6NY0l0Iaue6dmMm2duDjr
+        AVLdHJKq8I/O2M6ZRzha5ZHs8/tSspk5yCdkp1DU9wtbkbbVvpwuYgUMpCoumY7PgUSM63
+        Vyv7WGgVh3Hs/vXfQbNLaLqIxt/L/ow=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-pAnmf9xiPOSjMxGeJWG9PA-1; Mon, 12 Apr 2021 04:19:03 -0400
+X-MC-Unique: pAnmf9xiPOSjMxGeJWG9PA-1
+Received: by mail-ej1-f71.google.com with SMTP id jt26so3562012ejc.18
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 01:19:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X6cn2oRdv5Lr/xBRjd88otZL6Tx1HK5wsUDmmEldJ28=;
-        b=QSA2B0yIpZ5hFt1DrKyXwn1R4JmTQsbT8RKXL5KcYNzkqNzKPgYXAqE+1ccY7ES8FV
-         kF3mf54iX/4XskTX8/r+AFtF8sPGGy5GNyPZyZ46TzW+IJZOG0TMJP29628FDZwzNyvT
-         +f1Yurz56l1U5tXtZZdoe8rlCvlJLCEKS2HU/aF9IV31GdrmPfII2a7x/0kEWBzkcXsH
-         mbGDKthtGJDtoWwzUovJZk1X+Og8mY0Rwg1gn1EvWYgvrPVomdUXd6R+g93NzdnIYSo3
-         ehAvf49d1SEO+fLjKBQMOaKLcwZ0QpEPh3vGXMyfHPYZQ4fgdQu4Hboi7mRA/6vDVVf/
-         HE2Q==
-X-Gm-Message-State: AOAM5328TV0yO7Y2yiw54CRI4DnwGD9rszLVXB0yppgRsanW9GrrnIb8
-        BxmEJdMIWrTuo/t3DAS2yr8/ImqzyuiW/q9H2zLonJ12CpTHKvrDNTjEJHexdLAN9+n7AFLSEE4
-        W9O97f1svikSXtkJveIK74DiZcJiqbGrt4m87dcV8tRI/m/7ZE0a8fu4KUQ==
-X-Received: by 2002:a05:6512:ac2:: with SMTP id n2mr4900382lfu.194.1618215507578;
-        Mon, 12 Apr 2021 01:18:27 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwctJkxS2lm45kAjd/Rroz41Jy7K/rew1CnZxhVwsgOB13URqXK6in0B0bYD4OvLR4GYj8e3MfxhS54iSzL6J8=
-X-Received: by 2002:a05:6512:ac2:: with SMTP id n2mr4900369lfu.194.1618215507298;
- Mon, 12 Apr 2021 01:18:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xJgn3g7ogKt5V6b/6xvZZCO2WGaaJCBspvi1WlJo2ZE=;
+        b=eRqhgLaw7xWDDhuK4ecMEh3MNdYwW8a7Ml4tkCVsO84P8aGF0xSyuvSu/q/NXDuzrl
+         RuCHo+c8Icdvt2HDJj+RcDMzyhD1Jx+YdfpFgL4jMxEXqtM0r9tnwl9ioaJzphTSjdiU
+         GLSlrRmSj8yeFXlJaANxPCWFp+0rGg2A70uU3/tJd3b0oHVEdVDxclEGhXg7X4r0kiNM
+         lnTvQWTKqFlnefs5Ci6G09lIV4LgAns/CMuAVDAfVecR3kOKnRcl68xr/Qookg7Wda/u
+         zBRZOiimb/KlwgCqnoVOj4VeLeBTtfjFIykX/CnLLI5MB9Swnh3+91BwvPCzZs9mSaue
+         Nqmg==
+X-Gm-Message-State: AOAM533EMD4sO1LMxJ4AHV/iK03WaHh9Z05VJgGz5c0ezEQQQDlUo0pA
+        gEJgLINfbaV5Yb82WiLqJZMeSRjbogsRsmc/DiLetw3JutX6HiMfgRzyXDHt5rILW4V6bEbBSf7
+        ZUW5tMSwLAeDK/rpKc24fd9Jm
+X-Received: by 2002:a17:906:2808:: with SMTP id r8mr17703900ejc.140.1618215542211;
+        Mon, 12 Apr 2021 01:19:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwBU/GPnTLafg+51MT/N1zJPs8q0egQivnnyULLF6QWNsMSlyND5OuEZ/l/Y8KbZi9Vck2WWQ==
+X-Received: by 2002:a17:906:2808:: with SMTP id r8mr17703884ejc.140.1618215541979;
+        Mon, 12 Apr 2021 01:19:01 -0700 (PDT)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id a12sm5932454edx.91.2021.04.12.01.19.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 01:19:01 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 10:18:58 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Laurent Vivier <lvivier@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>, kvm@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xie Yongji <xieyongji@bytedance.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>
+Subject: Re: [PATCH v4 00/14] vdpa: add vdpa simulator for block device
+Message-ID: <20210412081858.wpoitvzyj474yp7s@steredhat>
+References: <20210315163450.254396-1-sgarzare@redhat.com>
 MIME-Version: 1.0
-References: <20210329052339.20882-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20210329052339.20882-1-kai.heng.feng@canonical.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Mon, 12 Apr 2021 16:18:16 +0800
-Message-ID: <CAAd53p7fBKadTdsWZOe4O8ZuQDS6BCmkuA1ettZC7vxAxNw7Bw@mail.gmail.com>
-Subject: Re: [PATCH v2] PCI: Disable D3cold support on Intel XMM7360
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210315163450.254396-1-sgarzare@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 1:23 PM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> On some platforms, the root port for Intel XMM7360 WWAN supports D3cold.
-> When the root port is put to D3cold by system suspend or runtime
-> suspend, attempt to systems resume or runtime resume will freeze the
-> laptop for a while, then it automatically shuts down.
->
-> The root cause is unclear for now, as the Intel XMM7360 doesn't have a
-> driver yet.
->
-> So disable D3cold for XMM7360 as a workaround, until proper device
-> driver is in place.
->
-> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212419
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Hi Michael,
+do you think this series is in an acceptable state to be queued for the 
+next merge window?
 
-A gentle ping...
+All patches should be already acked by Jason, let me know if I need to 
+change anything.
 
-> ---
-> v2:
->  - Add comment.
+Thanks,
+Stefano
+
+On Mon, Mar 15, 2021 at 05:34:36PM +0100, Stefano Garzarella wrote:
+>v4:
+>- added support for iproute2 vdpa management tool in vdpa_sim_blk
+>- removed get/set_config patches
+>  - 'vdpa: add return value to get_config/set_config callbacks'
+>  - 'vhost/vdpa: remove vhost_vdpa_config_validate()'
+>- added get_config_size() patches
+>  - 'vdpa: add get_config_size callback in vdpa_config_ops'
+>  - 'vhost/vdpa: use get_config_size callback in vhost_vdpa_config_validate()'
 >
->  drivers/pci/quirks.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+>v3: https://lore.kernel.org/lkml/20210204172230.85853-1-sgarzare@redhat.com/
+>v2: https://lore.kernel.org/lkml/20210128144127.113245-1-sgarzare@redhat.com/
+>v1: https://lore.kernel.org/lkml/93f207c0-61e6-3696-f218-e7d7ea9a7c93@redhat.com/
 >
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index 653660e3ba9e..c48b0b4a4164 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -5612,3 +5612,16 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
->  }
->  DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
->                                PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
-> +
-> +/*
-> + * Device [8086:7360]
-> + * When it resumes from D3cold, system freeze and shutdown happens.
-> + * Currently there's no driver for XMM7360, so add it as a PCI quirk.
-> + * https://bugzilla.kernel.org/show_bug.cgi?id=212419
-> + */
-> +static void pci_fixup_no_d3cold(struct pci_dev *pdev)
-> +{
-> +       pci_info(pdev, "disable D3cold\n");
-> +       pci_d3cold_disable(pdev);
-> +}
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x7360, pci_fixup_no_d3cold);
-> --
-> 2.30.2
+>This series is the second part of the v1 linked above. The first part with
+>refactoring of vdpa_sim has already been merged.
 >
+>The patches are based on Max Gurtovoy's work and extend the block simulator to
+>have a ramdisk behaviour.
+>
+>As mentioned in the v1 there was 2 issues and I fixed them in this series:
+>1. The identical mapping in the IOMMU used until now in vdpa_sim created issues
+>   when mapping different virtual pages with the same physical address.
+>   Fixed by patch "vdpa_sim: use iova module to allocate IOVA addresses"
+>
+>2. There was a race accessing the IOMMU between the vdpasim_blk_work() and the
+>   device driver that map/unmap DMA regions. Fixed by patch "vringh: add
+>   'iotlb_lock' to synchronize iotlb accesses"
+>
+>I used the Xie's patch coming from VDUSE series to allow vhost-vdpa to use
+>block devices, and I added get_config_size() callback to allow any device
+>in vhost-vdpa.
+>
+>The series also includes small fixes for vringh, vdpa, and vdpa_sim that I
+>discovered while implementing and testing the block simulator.
+>
+>Thanks for your feedback,
+>Stefano
+>
+>Max Gurtovoy (1):
+>  vdpa: add vdpa simulator for block device
+>
+>Stefano Garzarella (12):
+>  vdpa_sim: use iova module to allocate IOVA addresses
+>  vringh: add 'iotlb_lock' to synchronize iotlb accesses
+>  vringh: reset kiov 'consumed' field in __vringh_iov()
+>  vringh: explain more about cleaning riov and wiov
+>  vringh: implement vringh_kiov_advance()
+>  vringh: add vringh_kiov_length() helper
+>  vdpa_sim: cleanup kiovs in vdpasim_free()
+>  vdpa: add get_config_size callback in vdpa_config_ops
+>  vhost/vdpa: use get_config_size callback in
+>    vhost_vdpa_config_validate()
+>  vdpa_sim_blk: implement ramdisk behaviour
+>  vdpa_sim_blk: handle VIRTIO_BLK_T_GET_ID
+>  vdpa_sim_blk: add support for vdpa management tool
+>
+>Xie Yongji (1):
+>  vhost/vdpa: Remove the restriction that only supports virtio-net
+>    devices
+>
+> drivers/vdpa/vdpa_sim/vdpa_sim.h     |   2 +
+> include/linux/vdpa.h                 |   4 +
+> include/linux/vringh.h               |  19 +-
+> drivers/vdpa/ifcvf/ifcvf_main.c      |   6 +
+> drivers/vdpa/mlx5/net/mlx5_vnet.c    |   6 +
+> drivers/vdpa/vdpa_sim/vdpa_sim.c     | 127 ++++++----
+> drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 338 +++++++++++++++++++++++++++
+> drivers/vdpa/virtio_pci/vp_vdpa.c    |   8 +
+> drivers/vhost/vdpa.c                 |  15 +-
+> drivers/vhost/vringh.c               |  69 ++++--
+> drivers/vdpa/Kconfig                 |   8 +
+> drivers/vdpa/vdpa_sim/Makefile       |   1 +
+> 12 files changed, 529 insertions(+), 74 deletions(-)
+> create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+>
+>-- 
+>2.30.2
+>
+>_______________________________________________
+>Virtualization mailing list
+>Virtualization@lists.linux-foundation.org
+>https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+>
+
