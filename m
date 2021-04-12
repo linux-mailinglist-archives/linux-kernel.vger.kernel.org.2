@@ -2,78 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B3435C4E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE3F35C4EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240239AbhDLLUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:20:12 -0400
-Received: from outbound-smtp32.blacknight.com ([81.17.249.64]:55723 "EHLO
-        outbound-smtp32.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240213AbhDLLUL (ORCPT
+        id S240119AbhDLLVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238194AbhDLLVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:20:11 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp32.blacknight.com (Postfix) with ESMTPS id 29817BEBF8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:19:53 +0100 (IST)
-Received: (qmail 30339 invoked from network); 12 Apr 2021 11:19:52 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Apr 2021 11:19:52 -0000
-Date:   Mon, 12 Apr 2021 12:19:51 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: Re: [PATCH 2/9] mm/page_alloc: Add a bulk page allocator
-Message-ID: <20210412111951.GW3697@techsingularity.net>
-References: <20210325114228.27719-1-mgorman@techsingularity.net>
- <20210325114228.27719-3-mgorman@techsingularity.net>
- <28729c76-4e09-f860-0db1-9c79c8220683@suse.cz>
- <20210412105938.GU3697@techsingularity.net>
+        Mon, 12 Apr 2021 07:21:32 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04255C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 04:21:15 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id cu16so4464189pjb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 04:21:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=WxFymkv1ReyBJIeSaYrMs9DALjw4Mde+TrIX6jgLR/A=;
+        b=mU02UGTjy8WnCsjIBrTuIdTn6VlqvZ+TcMx+l0IwFrOl68I2/iT2qnUK59+L+c18SG
+         LOk3jHz2BHBojlwRkGyI+xuG8DytqRFsGORbGwB4Goq9WkKGj9N0CLoixBP57ynJ016j
+         zR0+bqhD21knLMjMDtKYigqFhm8j1YS9RyxHjM6RtMc/kWsvJVL00x2uytee5b8HVPnm
+         ABNXOajLAsefIgB+eLgyv0WkxyGBlApPQ2GXuJ/rW3aN2sjhjOdrUJyvzjbJfErJ+5rk
+         lZSCXJFS0B4Kmav7Rejy0gysYbEmu7iLqbbPThVLIPO87Uh2HDznmjq/AgRxfHBlFw7F
+         GVEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=WxFymkv1ReyBJIeSaYrMs9DALjw4Mde+TrIX6jgLR/A=;
+        b=Q2r9XcrWyx1JlH8YM64bZfsG8fGqbomXxiXEGJrvwlu4jrzqJaK4BYM/06bY+yHE8+
+         tfbcGUBahzMpd4OekNASRyE21xvHwOQPKEbV58kDBWZ1f9cfNBfr6b17yiuSF8xcznU1
+         3/uUypUjd6xve5lfhksgDLEGkIyu5TT/yI5qvoDey6SyvglJ+MRrVDidU2XoIccykOo4
+         eGOALRPLzLvLm0vwe36Nnrps7TWsJ1LaK8MxWYRYzW11DFb7KUbP0z3drR814sEV6IT9
+         Zfu3d+DPF9CaUPS8e/9DAp3W6ZEYLsDLk3A6fkKoExe3KGyKUwpkAmYnUkAv8rh+DHKS
+         f51g==
+X-Gm-Message-State: AOAM531XW2I53qVgo2rk+N2X1x5YSSRq4tx2GQLB9OpWD5fkT1S59qUm
+        gQ/xB94lGKmifSNl9Bv1ZWc8wf9J0Afvvg==
+X-Google-Smtp-Source: ABdhPJzyMLeks7DbKTOd7eb7WQ/+Dtg+kzaWIqBjAyQyPkg/gUWgXCf69NKP97rYLTZoADhDeCfnzw==
+X-Received: by 2002:a17:902:b70e:b029:e6:cef9:6486 with SMTP id d14-20020a170902b70eb02900e6cef96486mr26555304pls.18.1618226474418;
+        Mon, 12 Apr 2021 04:21:14 -0700 (PDT)
+Received: from kali ([103.141.87.253])
+        by smtp.gmail.com with ESMTPSA id d20sm9635615pfn.166.2021.04.12.04.21.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 04:21:13 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 16:51:06 +0530
+From:   Mitali Borkar <mitaliborkar810@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
+Subject: [PATCH v4 0/3] staging: rtl8192e: cleanup patchset for style issues
+Message-ID: <cover.1618224838.git.mitaliborkar810@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210412105938.GU3697@techsingularity.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 11:59:38AM +0100, Mel Gorman wrote:
-> > I don't understand this comment. Only alloc_flags_nofragment() sets this flag
-> > and we don't use it here?
-> > 
-> 
-> It's there as a reminder that there are non-obvious consequences
-> to ALLOC_NOFRAGMENT that may affect the bulk allocation success
-> rate. __rmqueue_fallback will only select pageblock_order pages and if that
-> fails, we fall into the slow path that allocates a single page. I didn't
-> deal with it because it was not obvious that it's even relevant but I bet
-> in 6 months time, I'll forget that ALLOC_NOFRAGMENT may affect success
-> rates without the comment. I'm waiting for a bug that can trivially trigger
-> a case with a meaningful workload where the success rate is poor enough to
-> affect latency before adding complexity. Ideally by then, the allocation
-> paths would be unified a bit better.
-> 
+Changes from v3:- Changed subject line to match prefix on the patches.
+[PATCH v3 1/3]:- No changes.
+[PATCH v3 2/3]:- No changes.
+[PATCH V3 3/3]:- No changes.
 
-So this needs better clarification. ALLOC_NOFRAGMENT is not a
-problem at the moment but at one point during development, it was a
-non-obvious potential problem. If the paths are unified, ALLOC_NOFRAGMENT
-*potentially* becomes a problem depending on how it's done and it needs
-careful consideration. For example, it could be part unified by moving
-the alloc_flags_nofragment() call into prepare_alloc_pages because in
-__alloc_pages, it always happens and it looks like an obvious partial
-unification. Hence the comment "May set ALLOC_NOFRAGMENT" because I wanted
-a reminder in case I "fixed" this in 6 months time and forgot the downside.
+Changes from v2:-
+[PATCH v2 1/3]:- Modified subject description. Changes has been made in
+v3.
+[PATCH v2 2/3]:- No changes.
+[PATCH v2 3/3]:- Rectified spelling mistake in subject description.
+Changes has been made in v3.
+
+Changes from v1:-
+[PATCH 1/3]:- Removed unnecessary parentheses around boolean expression.
+Changes has been made in v2.
+[PATCH 2/3]:- No changes.
+[PATCH 3/3]:- No changes.
+
+Mitali Borkar (6):
+  staging: rtl8192e: remove parentheses around boolean expression
+  staging: rtl8192e: remove unnecessary ftrace-like logging
+  staging: rtl8192e: remove unnecessary parentheses
+
+ drivers/staging/rtl8192e/rtl819x_HTProc.c     |  18 ++-
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
 -- 
-Mel Gorman
-SUSE Labs
+2.30.2
+
