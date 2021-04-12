@@ -2,38 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBC1D35BD7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA10535BD83
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238205AbhDLIv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38340 "EHLO mail.kernel.org"
+        id S238220AbhDLIwA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:52:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238047AbhDLIrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:47:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 074206124C;
-        Mon, 12 Apr 2021 08:47:05 +0000 (UTC)
+        id S238059AbhDLIr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:47:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4277B6135F;
+        Mon, 12 Apr 2021 08:47:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217226;
-        bh=2iUfIGXM5vEfOxaYAahgYQr4W9HehDTzGP/q1Qt8J7k=;
+        s=korg; t=1618217231;
+        bh=HhsN8e56+DUXzwGRd4QuvcrbozfoA16U1c4+/jkeuqQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SEO9LMC07FfGaTVQBo26f6zIAT/+99eYViXS7U0Y+1fE8s6rnJR0dntjx5R8wVsCy
-         qcKxwJZrZ042kvnn9a+iZURiRoOwD/lZZyYuzryYWlpdD1Q/Q+6Rzidunik+XKBAMI
-         sr9M6IkZ082nuWvZaa3iKvcR4mX6iYBA/niTBFLY=
+        b=l4ehLurOMVfjyM64eUGOm5jx9nbq3A22BGiYrHs0DPdoPE3jhKUBYgMyl3fopiiKD
+         Vo82+XI/TH3HV9ZNw5/2LLoABSBXGTwUqZzU1fhfi3sAZ+CcfPwWD6r2/25dMq0j9J
+         UUwFLjd6QRp7VT9F0HCn+UbpAzN00KnSfQu6eswQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Rapoport <rppt@linux.ibm.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Greentime Hu <green.hu@gmail.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Nick Hu <nickhu@andestech.com>,
-        Vincent Chen <deanbo422@gmail.com>,
+        stable@vger.kernel.org, Jack Qiu <jack.qiu@huawei.com>,
+        Jan Kara <jack@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 015/111] nds32: flush_dcache_page: use page_mapping_file to avoid races with swapoff
-Date:   Mon, 12 Apr 2021 10:39:53 +0200
-Message-Id: <20210412084004.733578027@linuxfoundation.org>
+Subject: [PATCH 5.4 017/111] fs: direct-io: fix missing sdio->boundary
+Date:   Mon, 12 Apr 2021 10:39:55 +0200
+Message-Id: <20210412084004.798189546@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -45,47 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+From: Jack Qiu <jack.qiu@huawei.com>
 
-commit a3a8833dffb7e7329c2586b8bfc531adb503f123 upstream.
+commit df41872b68601059dd4a84858952dcae58acd331 upstream.
 
-Commit cb9f753a3731 ("mm: fix races between swapoff and flush dcache")
-updated flush_dcache_page implementations on several architectures to
-use page_mapping_file() in order to avoid races between page_mapping()
-and swapoff().
+I encountered a hung task issue, but not a performance one.  I run DIO
+on a device (need lba continuous, for example open channel ssd), maybe
+hungtask in below case:
 
-This update missed arch/nds32 and there is a possibility of a race
-there.
+  DIO:						Checkpoint:
+  get addr A(at boundary), merge into BIO,
+  no submit because boundary missing
+						flush dirty data(get addr A+1), wait IO(A+1)
+						writeback timeout, because DIO(A) didn't submit
+  get addr A+2 fail, because checkpoint is doing
 
-Replace page_mapping() with page_mapping_file() in nds32 implementation
-of flush_dcache_page().
+dio_send_cur_page() may clear sdio->boundary, so prevent it from missing
+a boundary.
 
-Link: https://lkml.kernel.org/r/20210330175126.26500-1-rppt@kernel.org
-Fixes: cb9f753a3731 ("mm: fix races between swapoff and flush dcache")
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Acked-by: Greentime Hu <green.hu@gmail.com>
-Cc: Huang Ying <ying.huang@intel.com>
-Cc: Nick Hu <nickhu@andestech.com>
-Cc: Vincent Chen <deanbo422@gmail.com>
+Link: https://lkml.kernel.org/r/20210322042253.38312-1-jack.qiu@huawei.com
+Fixes: b1058b981272 ("direct-io: submit bio after boundary buffer is added to it")
+Signed-off-by: Jack Qiu <jack.qiu@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
 Cc: <stable@vger.kernel.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/nds32/mm/cacheflush.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/direct-io.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/arch/nds32/mm/cacheflush.c
-+++ b/arch/nds32/mm/cacheflush.c
-@@ -239,7 +239,7 @@ void flush_dcache_page(struct page *page
+--- a/fs/direct-io.c
++++ b/fs/direct-io.c
+@@ -848,6 +848,7 @@ submit_page_section(struct dio *dio, str
+ 		    struct buffer_head *map_bh)
  {
- 	struct address_space *mapping;
+ 	int ret = 0;
++	int boundary = sdio->boundary;	/* dio_send_cur_page may clear it */
  
--	mapping = page_mapping(page);
-+	mapping = page_mapping_file(page);
- 	if (mapping && !mapping_mapped(mapping))
- 		set_bit(PG_dcache_dirty, &page->flags);
- 	else {
+ 	if (dio->op == REQ_OP_WRITE) {
+ 		/*
+@@ -886,10 +887,10 @@ submit_page_section(struct dio *dio, str
+ 	sdio->cur_page_fs_offset = sdio->block_in_file << sdio->blkbits;
+ out:
+ 	/*
+-	 * If sdio->boundary then we want to schedule the IO now to
++	 * If boundary then we want to schedule the IO now to
+ 	 * avoid metadata seeks.
+ 	 */
+-	if (sdio->boundary) {
++	if (boundary) {
+ 		ret = dio_send_cur_page(dio, sdio, map_bh);
+ 		if (sdio->bio)
+ 			dio_bio_submit(dio, sdio);
 
 
