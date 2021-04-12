@@ -2,34 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 853DB35BEA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E947C35C126
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239743AbhDLJBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:01:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45114 "EHLO mail.kernel.org"
+        id S240351AbhDLJXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:23:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238284AbhDLIv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:51:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40DEC6127B;
-        Mon, 12 Apr 2021 08:51:13 +0000 (UTC)
+        id S239886AbhDLJBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:01:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17F696135A;
+        Mon, 12 Apr 2021 08:59:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217473;
-        bh=6+aRNBCFQWKWh+PdEciLR1R9ATN1N/W9+yByr8P9lU8=;
+        s=korg; t=1618217987;
+        bh=/8jUO7xkaKdefi2LengujBqKyVbjMEW34qTtLHTxNCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pqsxrKFfnFMWAOAI7L0rsb8/Vpqv9hsFR3va+dRjJQFzQ2I6MoaoxRvLaJj3/AfSs
-         R68SzALV2LK2pMzXQqXAYipcyjH3fsHNKtdvk2RDRfFmdd2obUxy0z7FwvPsDOUxLG
-         oi3/cWPzWHDO5ddU1a8Wf2nfLBDU3X/1M2W08R54=
+        b=BDYdHGAm2kLUeQaKqXO3YgXKPNMRVAsuo9SVm7Ymubd6YgYVKD3cnQLcGXspZ9FkM
+         Ogl7thqPoSwRS1IBO3Hz3jc2WJfE9vSf01u8Pn+PXAIsE+ntlXOW2jGjAtlL5zBGS+
+         2Qi2kIT4buh7qERwBQwhGNUWATuY7S3FGupMYlvI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 5.10 021/188] LOOKUP_MOUNTPOINT: we are cleaning "jumped" flag too late
+        stable@vger.kernel.org, Sergei Trofimovich <slyfox@gentoo.org>,
+        "Dmitry V. Levin" <ldv@altlinux.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.11 030/210] ia64: fix user_stack_pointer() for ptrace()
 Date:   Mon, 12 Apr 2021 10:38:55 +0200
-Message-Id: <20210412084014.358736084@linuxfoundation.org>
+Message-Id: <20210412084017.007653607@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
+References: <20210412084016.009884719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -38,46 +42,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Sergei Trofimovich <slyfox@gentoo.org>
 
-commit 4f0ed93fb92d3528c73c80317509df3f800a222b upstream.
+commit 7ad1e366167837daeb93d0bacb57dee820b0b898 upstream.
 
-That (and traversals in case of umount .) should be done before
-complete_walk().  Either a braino or mismerge damage on queue
-reorders - either way, I should've spotted that much earlier.
+ia64 has two stacks:
 
-Fucked-up-by: Al Viro <viro@zeniv.linux.org.uk>
-X-Paperbag: Brown
-Fixes: 161aff1d93ab "LOOKUP_MOUNTPOINT: fold path_mountpointat() into path_lookupat()"
-Cc: stable@vger.kernel.org # v5.7+
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+ - memory stack (or stack), pointed at by by r12
+
+ - register backing store (register stack), pointed at by
+   ar.bsp/ar.bspstore with complications around dirty
+   register frame on CPU.
+
+In [1] Dmitry noticed that PTRACE_GET_SYSCALL_INFO returns the register
+stack instead memory stack.
+
+The bug comes from the fact that user_stack_pointer() and
+current_user_stack_pointer() don't return the same register:
+
+  ulong user_stack_pointer(struct pt_regs *regs) { return regs->ar_bspstore; }
+  #define current_user_stack_pointer() (current_pt_regs()->r12)
+
+The change gets both back in sync.
+
+I think ptrace(PTRACE_GET_SYSCALL_INFO) is the only affected user by
+this bug on ia64.
+
+The change fixes 'rt_sigreturn.gen.test' strace test where it was
+observed initially.
+
+Link: https://bugs.gentoo.org/769614 [1]
+Link: https://lkml.kernel.org/r/20210331084447.2561532-1-slyfox@gentoo.org
+Signed-off-by: Sergei Trofimovich <slyfox@gentoo.org>
+Reported-by: Dmitry V. Levin <ldv@altlinux.org>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/namei.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/ia64/include/asm/ptrace.h |    8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
---- a/fs/namei.c
-+++ b/fs/namei.c
-@@ -2328,16 +2328,16 @@ static int path_lookupat(struct nameidat
- 	while (!(err = link_path_walk(s, nd)) &&
- 	       (s = lookup_last(nd)) != NULL)
- 		;
-+	if (!err && unlikely(nd->flags & LOOKUP_MOUNTPOINT)) {
-+		err = handle_lookup_down(nd);
-+		nd->flags &= ~LOOKUP_JUMPED; // no d_weak_revalidate(), please...
-+	}
- 	if (!err)
- 		err = complete_walk(nd);
+--- a/arch/ia64/include/asm/ptrace.h
++++ b/arch/ia64/include/asm/ptrace.h
+@@ -54,8 +54,7 @@
  
- 	if (!err && nd->flags & LOOKUP_DIRECTORY)
- 		if (!d_can_lookup(nd->path.dentry))
- 			err = -ENOTDIR;
--	if (!err && unlikely(nd->flags & LOOKUP_MOUNTPOINT)) {
--		err = handle_lookup_down(nd);
--		nd->flags &= ~LOOKUP_JUMPED; // no d_weak_revalidate(), please...
--	}
- 	if (!err) {
- 		*path = nd->path;
- 		nd->path.mnt = NULL;
+ static inline unsigned long user_stack_pointer(struct pt_regs *regs)
+ {
+-	/* FIXME: should this be bspstore + nr_dirty regs? */
+-	return regs->ar_bspstore;
++	return regs->r12;
+ }
+ 
+ static inline int is_syscall_success(struct pt_regs *regs)
+@@ -79,11 +78,6 @@ static inline long regs_return_value(str
+ 	unsigned long __ip = instruction_pointer(regs);			\
+ 	(__ip & ~3UL) + ((__ip & 3UL) << 2);				\
+ })
+-/*
+- * Why not default?  Because user_stack_pointer() on ia64 gives register
+- * stack backing store instead...
+- */
+-#define current_user_stack_pointer() (current_pt_regs()->r12)
+ 
+   /* given a pointer to a task_struct, return the user's pt_regs */
+ # define task_pt_regs(t)		(((struct pt_regs *) ((char *) (t) + IA64_STK_OFFSET)) - 1)
 
 
