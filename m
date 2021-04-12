@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CFB35C142
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BC4235C171
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241665AbhDLJ0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:26:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54804 "EHLO mail.kernel.org"
+        id S241420AbhDLJ0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:26:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239060AbhDLJCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:02:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 885F86127C;
-        Mon, 12 Apr 2021 09:01:02 +0000 (UTC)
+        id S238873AbhDLJCF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:02:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D81026124A;
+        Mon, 12 Apr 2021 09:00:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218063;
-        bh=x6E4TYrgcigrbiUwGlIFjCzFJXizusV0EoPNiDuunRA=;
+        s=korg; t=1618218049;
+        bh=w+PxuqOC3vUL2355P89OaKtemLF/CIDL+6Gu93niXGE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iV/mj5pWzeBmIg68qWHROBci+PkXRHJ2Y+TWQnUfgNKtKUcGMduIqPw/kmxregpRE
-         pFeL/CUCad1mPIXWfv0Cm+z7s/0QO3oAjoACegDVxeqd7iS61mYkmMqNjpcRFgiZ32
-         CUg1XO6ie5CfSHMuguvo0W55ALx68QjNzFGvsv98=
+        b=GfnEJ3FPmbYwBSS+Q3cgg1cP0u5qiqXBpnPOJa26zklqbVjZF7pL2lDcsloYcoRDC
+         miwtrNtoHqLPWnFNAYg9I6XgeD4jVab8I39UaSixgov9g2BXnhHxPFSydG1wuyej4/
+         61nR4d7NLZBH9iBZ7cdpgGcWJxIX2fL2MevXr2ag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.11 012/210] selinux: fix cond_list corruption when changing booleans
-Date:   Mon, 12 Apr 2021 10:38:37 +0200
-Message-Id: <20210412084016.419635282@linuxfoundation.org>
+        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 017/210] net: dsa: lantiq_gswip: Dont use PHY auto polling
+Date:   Mon, 12 Apr 2021 10:38:42 +0200
+Message-Id: <20210412084016.575401489@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -39,215 +42,317 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Mosnacek <omosnace@redhat.com>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-commit d8f5f0ea5b86300390b026b6c6e7836b7150814a upstream.
+commit 3e9005be87777afc902b9f5497495898202d335d upstream.
 
-Currently, duplicate_policydb_cond_list() first copies the whole
-conditional avtab and then tries to link to the correct entries in
-cond_dup_av_list() using avtab_search(). However, since the conditional
-avtab may contain multiple entries with the same key, this approach
-often fails to find the right entry, potentially leading to wrong rules
-being activated/deactivated when booleans are changed.
+PHY auto polling on the GSWIP hardware can be used so link changes
+(speed, link up/down, etc.) can be detected automatically. Internally
+GSWIP reads the PHY's registers for this functionality. Based on this
+automatic detection GSWIP can also automatically re-configure it's port
+settings. Unfortunately this auto polling (and configuration) mechanism
+seems to cause various issues observed by different people on different
+devices:
+- FritzBox 7360v2: the two Gbit/s ports (connected to the two internal
+  PHY11G instances) are working fine but the two Fast Ethernet ports
+  (using an AR8030 RMII PHY) are completely dead (neither RX nor TX are
+  received). It turns out that the AR8030 PHY sets the BMSR_ESTATEN bit
+  as well as the ESTATUS_1000_TFULL and ESTATUS_1000_XFULL bits. This
+  makes the PHY auto polling state machine (rightfully?) think that the
+  established link speed (when the other side is Gbit/s capable) is
+  1Gbit/s.
+- None of the Ethernet ports on the Zyxel P-2812HNU-F1 (two are
+  connected to the internal PHY11G GPHYs while the other three are
+  external RGMII PHYs) are working. Neither RX nor TX traffic was
+  observed. It is not clear which part of the PHY auto polling state-
+  machine caused this.
+- FritzBox 7412 (only one LAN port which is connected to one of the
+  internal GPHYs running in PHY22F / Fast Ethernet mode) was seeing
+  random disconnects (link down events could be seen). Sometimes all
+  traffic would stop after such disconnect. It is not clear which part
+  of the PHY auto polling state-machine cauased this.
+- TP-Link TD-W9980 (two ports are connected to the internal GPHYs
+  running in PHY11G / Gbit/s mode, the other two are external RGMII
+  PHYs) was affected by similar issues as the FritzBox 7412 just without
+  the "link down" events
 
-To fix this, instead start with an empty conditional avtab and add the
-individual entries one-by-one while building the new av_lists. This
-approach leads to the correct result, since each entry is present in the
-av_lists exactly once.
+Switch to software based configuration instead of PHY auto polling (and
+letting the GSWIP hardware configure the ports automatically) for the
+following link parameters:
+- link up/down
+- link speed
+- full/half duplex
+- flow control (RX / TX pause)
 
-The issue can be reproduced with Fedora policy as follows:
+After a big round of manual testing by various people (who helped test
+this on OpenWrt) it turns out that this fixes all reported issues.
 
-    # sesearch -s ftpd_t -t public_content_rw_t -c dir -p create -A
-    allow ftpd_t non_security_file_type:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write }; [ ftpd_full_access ]:True
-    allow ftpd_t public_content_rw_t:dir { add_name create link remove_name rename reparent rmdir setattr unlink watch watch_reads write }; [ ftpd_anon_write ]:True
-    # setsebool ftpd_anon_write=off ftpd_connect_all_unreserved=off ftpd_connect_db=off ftpd_full_access=off
+Additionally it can be considered more future proof because any
+"quirk" which is implemented for a PHY on the driver side can now be
+used with the GSWIP hardware as well because Linux is in control of the
+link parameters.
 
-On fixed kernels, the sesearch output is the same after the setsebool
-command:
+As a nice side-effect this also solves a problem where fixed-links were
+not supported previously because we were relying on the PHY auto polling
+mechanism, which cannot work for fixed-links as there's no PHY from
+where it can read the registers. Configuring the link settings on the
+GSWIP ports means that we now use the settings from device-tree also for
+ports with fixed-links.
 
-    # sesearch -s ftpd_t -t public_content_rw_t -c dir -p create -A
-    allow ftpd_t non_security_file_type:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write }; [ ftpd_full_access ]:True
-    allow ftpd_t public_content_rw_t:dir { add_name create link remove_name rename reparent rmdir setattr unlink watch watch_reads write }; [ ftpd_anon_write ]:True
-
-While on the broken kernels, it will be different:
-
-    # sesearch -s ftpd_t -t public_content_rw_t -c dir -p create -A
-    allow ftpd_t non_security_file_type:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write }; [ ftpd_full_access ]:True
-    allow ftpd_t non_security_file_type:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write }; [ ftpd_full_access ]:True
-    allow ftpd_t non_security_file_type:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write }; [ ftpd_full_access ]:True
-
-While there, also simplify the computation of nslots. This changes the
-nslots values for nrules 2 or 3 to just two slots instead of 4, which
-makes the sequence more consistent.
-
+Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+Fixes: 3e6fdeb28f4c33 ("net: dsa: lantiq_gswip: Let GSWIP automatically set the xMII clock")
 Cc: stable@vger.kernel.org
-Fixes: c7c556f1e81b ("selinux: refactor changing booleans")
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/selinux/ss/avtab.c       |   86 +++++++++++---------------------------
- security/selinux/ss/avtab.h       |    2 
- security/selinux/ss/conditional.c |   12 ++---
- 3 files changed, 32 insertions(+), 68 deletions(-)
+ drivers/net/dsa/lantiq_gswip.c |  185 +++++++++++++++++++++++++++++++++++------
+ 1 file changed, 159 insertions(+), 26 deletions(-)
 
---- a/security/selinux/ss/avtab.c
-+++ b/security/selinux/ss/avtab.c
-@@ -308,24 +308,10 @@ void avtab_init(struct avtab *h)
- 	h->mask = 0;
- }
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -190,6 +190,23 @@
+ #define GSWIP_PCE_DEFPVID(p)		(0x486 + ((p) * 0xA))
  
--int avtab_alloc(struct avtab *h, u32 nrules)
-+static int avtab_alloc_common(struct avtab *h, u32 nslot)
- {
--	u32 shift = 0;
--	u32 work = nrules;
--	u32 nslot;
--
--	if (nrules == 0)
--		goto avtab_alloc_out;
--
--	while (work) {
--		work  = work >> 1;
--		shift++;
--	}
--	if (shift > 2)
--		shift = shift - 2;
--	nslot = 1 << shift;
--	if (nslot > MAX_AVTAB_HASH_BUCKETS)
--		nslot = MAX_AVTAB_HASH_BUCKETS;
-+	if (!nslot)
-+		return 0;
+ #define GSWIP_MAC_FLEN			0x8C5
++#define GSWIP_MAC_CTRL_0p(p)		(0x903 + ((p) * 0xC))
++#define  GSWIP_MAC_CTRL_0_PADEN		BIT(8)
++#define  GSWIP_MAC_CTRL_0_FCS_EN	BIT(7)
++#define  GSWIP_MAC_CTRL_0_FCON_MASK	0x0070
++#define  GSWIP_MAC_CTRL_0_FCON_AUTO	0x0000
++#define  GSWIP_MAC_CTRL_0_FCON_RX	0x0010
++#define  GSWIP_MAC_CTRL_0_FCON_TX	0x0020
++#define  GSWIP_MAC_CTRL_0_FCON_RXTX	0x0030
++#define  GSWIP_MAC_CTRL_0_FCON_NONE	0x0040
++#define  GSWIP_MAC_CTRL_0_FDUP_MASK	0x000C
++#define  GSWIP_MAC_CTRL_0_FDUP_AUTO	0x0000
++#define  GSWIP_MAC_CTRL_0_FDUP_EN	0x0004
++#define  GSWIP_MAC_CTRL_0_FDUP_DIS	0x000C
++#define  GSWIP_MAC_CTRL_0_GMII_MASK	0x0003
++#define  GSWIP_MAC_CTRL_0_GMII_AUTO	0x0000
++#define  GSWIP_MAC_CTRL_0_GMII_MII	0x0001
++#define  GSWIP_MAC_CTRL_0_GMII_RGMII	0x0002
+ #define GSWIP_MAC_CTRL_2p(p)		(0x905 + ((p) * 0xC))
+ #define GSWIP_MAC_CTRL_2_MLEN		BIT(3) /* Maximum Untagged Frame Lnegth */
  
- 	h->htable = kvcalloc(nslot, sizeof(void *), GFP_KERNEL);
- 	if (!h->htable)
-@@ -333,59 +319,37 @@ int avtab_alloc(struct avtab *h, u32 nru
+@@ -653,16 +670,13 @@ static int gswip_port_enable(struct dsa_
+ 			  GSWIP_SDMA_PCTRLp(port));
  
- 	h->nslot = nslot;
- 	h->mask = nslot - 1;
+ 	if (!dsa_is_cpu_port(ds, port)) {
+-		u32 macconf = GSWIP_MDIO_PHY_LINK_AUTO |
+-			      GSWIP_MDIO_PHY_SPEED_AUTO |
+-			      GSWIP_MDIO_PHY_FDUP_AUTO |
+-			      GSWIP_MDIO_PHY_FCONTX_AUTO |
+-			      GSWIP_MDIO_PHY_FCONRX_AUTO |
+-			      (phydev->mdio.addr & GSWIP_MDIO_PHY_ADDR_MASK);
 -
--avtab_alloc_out:
--	pr_debug("SELinux: %d avtab hash slots, %d rules.\n",
--	       h->nslot, nrules);
- 	return 0;
- }
- 
--int avtab_duplicate(struct avtab *new, struct avtab *orig)
-+int avtab_alloc(struct avtab *h, u32 nrules)
- {
--	int i;
--	struct avtab_node *node, *tmp, *tail;
--
--	memset(new, 0, sizeof(*new));
-+	int rc;
-+	u32 nslot = 0;
- 
--	new->htable = kvcalloc(orig->nslot, sizeof(void *), GFP_KERNEL);
--	if (!new->htable)
--		return -ENOMEM;
--	new->nslot = orig->nslot;
--	new->mask = orig->mask;
--
--	for (i = 0; i < orig->nslot; i++) {
--		tail = NULL;
--		for (node = orig->htable[i]; node; node = node->next) {
--			tmp = kmem_cache_zalloc(avtab_node_cachep, GFP_KERNEL);
--			if (!tmp)
--				goto error;
--			tmp->key = node->key;
--			if (tmp->key.specified & AVTAB_XPERMS) {
--				tmp->datum.u.xperms =
--					kmem_cache_zalloc(avtab_xperms_cachep,
--							GFP_KERNEL);
--				if (!tmp->datum.u.xperms) {
--					kmem_cache_free(avtab_node_cachep, tmp);
--					goto error;
--				}
--				tmp->datum.u.xperms = node->datum.u.xperms;
--			} else
--				tmp->datum.u.data = node->datum.u.data;
--
--			if (tail)
--				tail->next = tmp;
--			else
--				new->htable[i] = tmp;
--
--			tail = tmp;
--			new->nel++;
-+	if (nrules != 0) {
-+		u32 shift = 1;
-+		u32 work = nrules >> 3;
-+		while (work) {
-+			work >>= 1;
-+			shift++;
- 		}
-+		nslot = 1 << shift;
-+		if (nslot > MAX_AVTAB_HASH_BUCKETS)
-+			nslot = MAX_AVTAB_HASH_BUCKETS;
+-		gswip_mdio_w(priv, macconf, GSWIP_MDIO_PHYp(port));
+-		/* Activate MDIO auto polling */
+-		gswip_mdio_mask(priv, 0, BIT(port), GSWIP_MDIO_MDC_CFG0);
++		u32 mdio_phy = 0;
 +
-+		rc = avtab_alloc_common(h, nslot);
-+		if (rc)
-+			return rc;
++		if (phydev)
++			mdio_phy = phydev->mdio.addr & GSWIP_MDIO_PHY_ADDR_MASK;
++
++		gswip_mdio_mask(priv, GSWIP_MDIO_PHY_ADDR_MASK, mdio_phy,
++				GSWIP_MDIO_PHYp(port));
  	}
  
-+	pr_debug("SELinux: %d avtab hash slots, %d rules.\n", nslot, nrules);
  	return 0;
--error:
--	avtab_destroy(new);
--	return -ENOMEM;
+@@ -675,14 +689,6 @@ static void gswip_port_disable(struct ds
+ 	if (!dsa_is_user_port(ds, port))
+ 		return;
+ 
+-	if (!dsa_is_cpu_port(ds, port)) {
+-		gswip_mdio_mask(priv, GSWIP_MDIO_PHY_LINK_DOWN,
+-				GSWIP_MDIO_PHY_LINK_MASK,
+-				GSWIP_MDIO_PHYp(port));
+-		/* Deactivate MDIO auto polling */
+-		gswip_mdio_mask(priv, BIT(port), 0, GSWIP_MDIO_MDC_CFG0);
+-	}
+-
+ 	gswip_switch_mask(priv, GSWIP_FDMA_PCTRL_EN, 0,
+ 			  GSWIP_FDMA_PCTRLp(port));
+ 	gswip_switch_mask(priv, GSWIP_SDMA_PCTRL_EN, 0,
+@@ -806,20 +812,31 @@ static int gswip_setup(struct dsa_switch
+ 	gswip_switch_w(priv, BIT(cpu_port), GSWIP_PCE_PMAP2);
+ 	gswip_switch_w(priv, BIT(cpu_port), GSWIP_PCE_PMAP3);
+ 
+-	/* disable PHY auto polling */
++	/* Deactivate MDIO PHY auto polling. Some PHYs as the AR8030 have an
++	 * interoperability problem with this auto polling mechanism because
++	 * their status registers think that the link is in a different state
++	 * than it actually is. For the AR8030 it has the BMSR_ESTATEN bit set
++	 * as well as ESTATUS_1000_TFULL and ESTATUS_1000_XFULL. This makes the
++	 * auto polling state machine consider the link being negotiated with
++	 * 1Gbit/s. Since the PHY itself is a Fast Ethernet RMII PHY this leads
++	 * to the switch port being completely dead (RX and TX are both not
++	 * working).
++	 * Also with various other PHY / port combinations (PHY11G GPHY, PHY22F
++	 * GPHY, external RGMII PEF7071/7072) any traffic would stop. Sometimes
++	 * it would work fine for a few minutes to hours and then stop, on
++	 * other device it would no traffic could be sent or received at all.
++	 * Testing shows that when PHY auto polling is disabled these problems
++	 * go away.
++	 */
+ 	gswip_mdio_w(priv, 0x0, GSWIP_MDIO_MDC_CFG0);
++
+ 	/* Configure the MDIO Clock 2.5 MHz */
+ 	gswip_mdio_mask(priv, 0xff, 0x09, GSWIP_MDIO_MDC_CFG1);
+ 
+-	for (i = 0; i < priv->hw_info->max_ports; i++) {
+-		/* Disable the xMII link */
++	/* Disable the xMII link */
++	for (i = 0; i < priv->hw_info->max_ports; i++)
+ 		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, i);
+ 
+-		/* Automatically select the xMII interface clock */
+-		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_RATE_MASK,
+-				   GSWIP_MII_CFG_RATE_AUTO, i);
+-	}
+-
+ 	/* enable special tag insertion on cpu port */
+ 	gswip_switch_mask(priv, 0, GSWIP_FDMA_PCTRL_STEN,
+ 			  GSWIP_FDMA_PCTRLp(cpu_port));
+@@ -1469,6 +1486,112 @@ unsupported:
+ 	return;
+ }
+ 
++static void gswip_port_set_link(struct gswip_priv *priv, int port, bool link)
++{
++	u32 mdio_phy;
++
++	if (link)
++		mdio_phy = GSWIP_MDIO_PHY_LINK_UP;
++	else
++		mdio_phy = GSWIP_MDIO_PHY_LINK_DOWN;
++
++	gswip_mdio_mask(priv, GSWIP_MDIO_PHY_LINK_MASK, mdio_phy,
++			GSWIP_MDIO_PHYp(port));
 +}
 +
-+int avtab_alloc_dup(struct avtab *new, const struct avtab *orig)
++static void gswip_port_set_speed(struct gswip_priv *priv, int port, int speed,
++				 phy_interface_t interface)
 +{
-+	return avtab_alloc_common(new, orig->nslot);
++	u32 mdio_phy = 0, mii_cfg = 0, mac_ctrl_0 = 0;
++
++	switch (speed) {
++	case SPEED_10:
++		mdio_phy = GSWIP_MDIO_PHY_SPEED_M10;
++
++		if (interface == PHY_INTERFACE_MODE_RMII)
++			mii_cfg = GSWIP_MII_CFG_RATE_M50;
++		else
++			mii_cfg = GSWIP_MII_CFG_RATE_M2P5;
++
++		mac_ctrl_0 = GSWIP_MAC_CTRL_0_GMII_MII;
++		break;
++
++	case SPEED_100:
++		mdio_phy = GSWIP_MDIO_PHY_SPEED_M100;
++
++		if (interface == PHY_INTERFACE_MODE_RMII)
++			mii_cfg = GSWIP_MII_CFG_RATE_M50;
++		else
++			mii_cfg = GSWIP_MII_CFG_RATE_M25;
++
++		mac_ctrl_0 = GSWIP_MAC_CTRL_0_GMII_MII;
++		break;
++
++	case SPEED_1000:
++		mdio_phy = GSWIP_MDIO_PHY_SPEED_G1;
++
++		mii_cfg = GSWIP_MII_CFG_RATE_M125;
++
++		mac_ctrl_0 = GSWIP_MAC_CTRL_0_GMII_RGMII;
++		break;
++	}
++
++	gswip_mdio_mask(priv, GSWIP_MDIO_PHY_SPEED_MASK, mdio_phy,
++			GSWIP_MDIO_PHYp(port));
++	gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_RATE_MASK, mii_cfg, port);
++	gswip_switch_mask(priv, GSWIP_MAC_CTRL_0_GMII_MASK, mac_ctrl_0,
++			  GSWIP_MAC_CTRL_0p(port));
++}
++
++static void gswip_port_set_duplex(struct gswip_priv *priv, int port, int duplex)
++{
++	u32 mac_ctrl_0, mdio_phy;
++
++	if (duplex == DUPLEX_FULL) {
++		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FDUP_EN;
++		mdio_phy = GSWIP_MDIO_PHY_FDUP_EN;
++	} else {
++		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FDUP_DIS;
++		mdio_phy = GSWIP_MDIO_PHY_FDUP_DIS;
++	}
++
++	gswip_switch_mask(priv, GSWIP_MAC_CTRL_0_FDUP_MASK, mac_ctrl_0,
++			  GSWIP_MAC_CTRL_0p(port));
++	gswip_mdio_mask(priv, GSWIP_MDIO_PHY_FDUP_MASK, mdio_phy,
++			GSWIP_MDIO_PHYp(port));
++}
++
++static void gswip_port_set_pause(struct gswip_priv *priv, int port,
++				 bool tx_pause, bool rx_pause)
++{
++	u32 mac_ctrl_0, mdio_phy;
++
++	if (tx_pause && rx_pause) {
++		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FCON_RXTX;
++		mdio_phy = GSWIP_MDIO_PHY_FCONTX_EN |
++			   GSWIP_MDIO_PHY_FCONRX_EN;
++	} else if (tx_pause) {
++		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FCON_TX;
++		mdio_phy = GSWIP_MDIO_PHY_FCONTX_EN |
++			   GSWIP_MDIO_PHY_FCONRX_DIS;
++	} else if (rx_pause) {
++		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FCON_RX;
++		mdio_phy = GSWIP_MDIO_PHY_FCONTX_DIS |
++			   GSWIP_MDIO_PHY_FCONRX_EN;
++	} else {
++		mac_ctrl_0 = GSWIP_MAC_CTRL_0_FCON_NONE;
++		mdio_phy = GSWIP_MDIO_PHY_FCONTX_DIS |
++			   GSWIP_MDIO_PHY_FCONRX_DIS;
++	}
++
++	gswip_switch_mask(priv, GSWIP_MAC_CTRL_0_FCON_MASK,
++			  mac_ctrl_0, GSWIP_MAC_CTRL_0p(port));
++	gswip_mdio_mask(priv,
++			GSWIP_MDIO_PHY_FCONTX_MASK |
++			GSWIP_MDIO_PHY_FCONRX_MASK,
++			mdio_phy, GSWIP_MDIO_PHYp(port));
++}
++
+ static void gswip_phylink_mac_config(struct dsa_switch *ds, int port,
+ 				     unsigned int mode,
+ 				     const struct phylink_link_state *state)
+@@ -1525,6 +1648,9 @@ static void gswip_phylink_mac_link_down(
+ 	struct gswip_priv *priv = ds->priv;
+ 
+ 	gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, port);
++
++	if (!dsa_is_cpu_port(ds, port))
++		gswip_port_set_link(priv, port, false);
  }
  
- void avtab_hash_eval(struct avtab *h, char *tag)
---- a/security/selinux/ss/avtab.h
-+++ b/security/selinux/ss/avtab.h
-@@ -89,7 +89,7 @@ struct avtab {
- 
- void avtab_init(struct avtab *h);
- int avtab_alloc(struct avtab *, u32);
--int avtab_duplicate(struct avtab *new, struct avtab *orig);
-+int avtab_alloc_dup(struct avtab *new, const struct avtab *orig);
- struct avtab_datum *avtab_search(struct avtab *h, struct avtab_key *k);
- void avtab_destroy(struct avtab *h);
- void avtab_hash_eval(struct avtab *h, char *tag);
---- a/security/selinux/ss/conditional.c
-+++ b/security/selinux/ss/conditional.c
-@@ -605,7 +605,6 @@ static int cond_dup_av_list(struct cond_
- 			struct cond_av_list *orig,
- 			struct avtab *avtab)
+ static void gswip_phylink_mac_link_up(struct dsa_switch *ds, int port,
+@@ -1536,6 +1662,13 @@ static void gswip_phylink_mac_link_up(st
  {
--	struct avtab_node *avnode;
- 	u32 i;
+ 	struct gswip_priv *priv = ds->priv;
  
- 	memset(new, 0, sizeof(*new));
-@@ -615,10 +614,11 @@ static int cond_dup_av_list(struct cond_
- 		return -ENOMEM;
- 
- 	for (i = 0; i < orig->len; i++) {
--		avnode = avtab_search_node(avtab, &orig->nodes[i]->key);
--		if (WARN_ON(!avnode))
--			return -EINVAL;
--		new->nodes[i] = avnode;
-+		new->nodes[i] = avtab_insert_nonunique(avtab,
-+						       &orig->nodes[i]->key,
-+						       &orig->nodes[i]->datum);
-+		if (!new->nodes[i])
-+			return -ENOMEM;
- 		new->len++;
- 	}
- 
-@@ -630,7 +630,7 @@ static int duplicate_policydb_cond_list(
- {
- 	int rc, i, j;
- 
--	rc = avtab_duplicate(&newp->te_cond_avtab, &origp->te_cond_avtab);
-+	rc = avtab_alloc_dup(&newp->te_cond_avtab, &origp->te_cond_avtab);
- 	if (rc)
- 		return rc;
++	if (!dsa_is_cpu_port(ds, port)) {
++		gswip_port_set_link(priv, port, true);
++		gswip_port_set_speed(priv, port, speed, interface);
++		gswip_port_set_duplex(priv, port, duplex);
++		gswip_port_set_pause(priv, port, tx_pause, rx_pause);
++	}
++
+ 	gswip_mii_mask_cfg(priv, 0, GSWIP_MII_CFG_EN, port);
+ }
  
 
 
