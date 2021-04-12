@@ -2,69 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0DB35D29C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:31:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1DD635D29F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241233AbhDLVac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 17:30:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57734 "EHLO mail.kernel.org"
+        id S244301AbhDLVbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 17:31:13 -0400
+Received: from mga18.intel.com ([134.134.136.126]:55318 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240321AbhDLVa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 17:30:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0B00461278;
-        Mon, 12 Apr 2021 21:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618263009;
-        bh=eRKU69GIdF6szFcVc7ExlIOkRKSVezN5BsHcoTBujrM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=UU/uiBz2vYA1Vfk+8hh12+YAgD0rhHDeUiUCZ4/Fk7YF2o3BNUu1m8S8B2Oa8QZMU
-         arNW2O25XxshgWRzfUS1ffEatYEiKQT+5slMTd37j7PUPtz45BsADDXKvXSZyNvs2j
-         31YqHiKiE9Uxftp0OKJkjbaCsQ1YRjoFjOw3qVzbFVpgVfa7SM7yN5f9TzMVlUb2YW
-         Ki3iqx3oDC/DT53aKgoKRKqQrJWbMCdeJeHPPQZ7g7VNHRrDN4IxwZbJcA5fYR8HKx
-         hksoUhcdWFeTDyXl7Di1gzXA3FL5CKmAgymqPTNULdFWNhbI8g2enIINgx0Se+5Kcx
-         gdWyk6Aal5jGA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id F258560BD8;
-        Mon, 12 Apr 2021 21:30:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S239392AbhDLVbH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 17:31:07 -0400
+IronPort-SDR: +Pj0XN/gmUusSFMMw0xiWQPRlOqifM1+pKmCrZPJfoOJCm1KxtritVwuaMGkF11Xr/Peafp0cy
+ uJYb52h3nwZA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="181799803"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="181799803"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 14:30:47 -0700
+IronPort-SDR: K63XHryXXzqS080UzD9jLi5X/KJ+TvajITlty1evV0jVGd5CoC+5/xXQVpdeeqYZPoTLS37FlO
+ gKxxb+o9az6g==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="600125623"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 14:30:45 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 8F1E0200E8;
+        Tue, 13 Apr 2021 00:30:43 +0300 (EEST)
+Date:   Tue, 13 Apr 2021 00:30:43 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
+Cc:     hverkuil@xs4all.nl, mchehab@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [PATCH] staging: media: atomisp: i2c: align line break to match
+ with open parenthesis
+Message-ID: <20210412213043.GP3@paasikivi.fi.intel.com>
+References: <20210412134301.11587-1-martinsdecarvalhobeatriz@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2] net: phy: marvell: fix detection of PHY on Topaz switches
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161826300898.30008.38457086565901106.git-patchwork-notify@kernel.org>
-Date:   Mon, 12 Apr 2021 21:30:08 +0000
-References: <20210412165739.27277-1-pali@kernel.org>
-In-Reply-To: <20210412165739.27277-1-pali@kernel.org>
-To:     =?utf-8?b?UGFsaSBSb2jDoXIgPHBhbGlAa2VybmVsLm9yZz4=?=@ci.codeaurora.org
-Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        kabel@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412134301.11587-1-martinsdecarvalhobeatriz@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi Beatriz,
 
-This patch was applied to netdev/net.git (refs/heads/master):
+Thanks for the patch.
 
-On Mon, 12 Apr 2021 18:57:39 +0200 you wrote:
-> Since commit fee2d546414d ("net: phy: marvell: mv88e6390 temperature
-> sensor reading"), Linux reports the temperature of Topaz hwmon as
-> constant -75°C.
+On Mon, Apr 12, 2021 at 02:43:01PM +0100, Beatriz Martins de Carvalho wrote:
+> Aligns line break with the remaining function arguments
+> to the open parenthesis.
+> Issue found by checkpatch in file atomisp-gc2235.c
 > 
-> This is because switches from the Topaz family (88E6141 / 88E6341) have
-> the address of the temperature sensor register different from Peridot.
-> 
-> [...]
+> Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
 
-Here is the summary with links:
-  - [v2] net: phy: marvell: fix detection of PHY on Topaz switches
-    https://git.kernel.org/netdev/net/c/1fe976d308ac
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+-- 
+Sakari Ailus
