@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1011D35C70D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C850935C715
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241736AbhDLNJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:09:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241719AbhDLNJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:09:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7487610CA;
-        Mon, 12 Apr 2021 13:09:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618232970;
-        bh=L3N68V2eqg7gh+TZ25IVywa5xY3+wRDh60JE2ZwBUkM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fN7ebk2LpV6guxWoT8wq2ePE/7dh5iBu3WzFAu+Jz657ynNGQ/+erfvkiSBESEnoA
-         znvdasyQ2qGqacznxHrU0arlN0r1SjVY8AuI/T3roEtLlNnPDJMiz4r9xSBXJBjjLq
-         jAdOACXzBdR9GMMoHFKE+eZQ31wsVoVE+IuD8kZj4j7gK7C3sHNb9b1DWg1dEKd6kz
-         pMQnTND2cJ5xWBoIQBCkZ4CN9bSHwEbGAZgiTjXlS762Cmu5P7jF2+LNsITzach6hV
-         TRN33GJKtMYtb6b6cvo0IR4Coy6KJTb4TVDib1vvv3zNJ5SQ5OpDilc8N6I2HoXQbU
-         pv6a72BwltilQ==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lVwJh-00028s-17; Mon, 12 Apr 2021 15:09:25 +0200
-Date:   Mon, 12 Apr 2021 15:09:25 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     gregkh@linuxfoundation.org, Alan Stern <stern@rowland.harvard.edu>,
-        penghao <penghao@uniontech.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Jonathan Cox <jonathan@jdcox.net>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        Tomasz =?utf-8?Q?Meresi=C5=84ski?= <tomasz@meresinski.eu>,
-        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] USB: Add LPM quirk for Lenovo ThinkPad USB-C Dock
- Gen2 Ethernet
-Message-ID: <YHRGhQ51LeouoWEv@hovoldconsulting.com>
-References: <20210412130521.782373-1-kai.heng.feng@canonical.com>
+        id S241788AbhDLNKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:10:05 -0400
+Received: from wforward5-smtp.messagingengine.com ([64.147.123.35]:50317 "EHLO
+        wforward5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S241762AbhDLNKD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 09:10:03 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailforward.west.internal (Postfix) with ESMTP id DD56F166C;
+        Mon, 12 Apr 2021 09:09:43 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Mon, 12 Apr 2021 09:09:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=HvfGYkD6c6q5bKKXX
+        v71mYB4LVLkTvCXjY38JwER9zY=; b=IrmYYw3lKD9YPFcY2YObOjK5hmSskK1No
+        0Pi4pNblwsWnnkPrVssJO2q/n2ekOtwhLKj0sBZG3J0pudk2S1rZva27+rU1uc7o
+        nXofXjBsUzQ7a1sKJeqLAluYIeVfa20lWlOl5GvCRJi7FTQ300iVg4AGhDG1Szmi
+        USX5p8jfP94K2I5o2iFnvgIXWMyjhCpZqO8hCHzvSSh5NMxyhpU973b2PffQbQKL
+        nX10/wh3nbsbd9Mc5gPvxegPomaTckCUozd9ubX5BLWhrLFoKrDYLMa4Lb75g4mP
+        MgRpkndHPnvdpQpuMbfGFb1BP40EuslaoBTCeQLT0Cp+gnADOeoZA==
+X-ME-Sender: <xms:lEZ0YHe8qRFjKHSNjMJnOzRgSQpAXkIWDHipsTyK_nA7a1IKBaPKjg>
+    <xme:lEZ0YNNEQjxdWdqQrSJExg7FmdtHd_gjauaN9DcO_ghePDO42TI2Zcr4lN7XUmbg5
+    WcgkyRPhzD3DHoLfAg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekjedgiedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghvihguucfg
+    ughmohhnughsohhnuceouggrvhhiugdrvggumhhonhgushhonhesohhrrggtlhgvrdgtoh
+    hmqeenucggtffrrghtthgvrhhnpefhfedtieevleetueeukeffvdfffeeigfdtvdffgeei
+    tdegfeffleeihfevtdekfeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppe
+    ekuddrudekjedrvdeirddvfeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghm
+    pehmrghilhhfrhhomhepuggrvhhiugdrvggumhhonhgushhonhesohhrrggtlhgvrdgtoh
+    hm
+X-ME-Proxy: <xmx:lEZ0YAg48ZU9ihscVRcu6m6i2D1stiUbgNLMMSRyEEQpXIl3tmztdA>
+    <xmx:lEZ0YI93T2xtGgtKXKMUp9vfCXEMlTq9BJqGK1lQqB4qvKmYRpy4sQ>
+    <xmx:lEZ0YDsmWPmrgibhE6RawTpfXHPRGnD5xwOIM7IE9b7jwbLmjsCgmw>
+    <xmx:l0Z0YOmuyhVczSt0b4dC3noOkcatOAJfgkzg36sp1vsuNxj9n7iQQMXjfKcGycPi>
+Received: from disaster-area.hh.sledj.net (disaster-area.hh.sledj.net [81.187.26.238])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A83D91080067;
+        Mon, 12 Apr 2021 09:09:39 -0400 (EDT)
+Received: from localhost (disaster-area.hh.sledj.net [local])
+        by disaster-area.hh.sledj.net (OpenSMTPD) with ESMTPA id d55ec073;
+        Mon, 12 Apr 2021 13:09:38 +0000 (UTC)
+From:   David Edmondson <david.edmondson@oracle.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Edmondson <david.edmondson@oracle.com>
+Subject: [PATCH 0/6] KVM: x86: Make the cause of instruction emulation available to user-space
+Date:   Mon, 12 Apr 2021 14:09:31 +0100
+Message-Id: <20210412130938.68178-1-david.edmondson@oracle.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412130521.782373-1-kai.heng.feng@canonical.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 09:05:20PM +0800, Kai-Heng Feng wrote:
-> This is another branded 8153 device that doesn't work well with LPM
-> enabled:
-> [ 400.597506] r8152 5-1.1:1.0 enx482ae3a2a6f0: Tx status -71
-> 
-> So disable LPM to resolve the issue.
-> 
-> BugLink: https://bugs.launchpad.net/bugs/1922651
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
-> v2:
->  - Put the quirk in the right order.
+Instruction emulation happens for a variety of reasons, yet on error
+we have no idea exactly what triggered it. Add a cause of emulation to
+the various originators and pass it upstream when emulation fails.
 
-Seriously... You sent the exact same patch again. Still not ordered.
+Joao originally produced the patches but is busy with other things and
+I wanted to use it, so picked it up.
 
-> 
->  drivers/usb/core/quirks.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-> index 76ac5d6555ae..dfedb51cf832 100644
-> --- a/drivers/usb/core/quirks.c
-> +++ b/drivers/usb/core/quirks.c
-> @@ -434,6 +434,9 @@ static const struct usb_device_id usb_quirk_list[] = {
->  	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
->  			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
->  
-> +	/* Lenovo ThinkPad USB-C Dock Gen2 Ethernet (RTL8153 GigE) */
-> +	{ USB_DEVICE(0x17ef, 0xa387), .driver_info = USB_QUIRK_NO_LPM },
-> +
->  	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
->  	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
->  			USB_QUIRK_DISCONNECT_SUSPEND },
+Tested by reverting commit 51b958e5aeb1e18c00332e0b37c5d4e95a3eff84
+("KVM: x86: clflushopt should be treated as a no-op by emulation")
+then running the test included in
+https://lore.kernel.org/r/20201118121129.6276-1-david.edmondson@oracle.com.
 
-Johan
+Joao Martins (6):
+  KVM: x86: add an emulation_reason to x86_emulate_instruction()
+  KVM: x86: pass emulation_reason to handle_emulation_failure()
+  KVM: x86: add emulation_reason to kvm_emulate_instruction()
+  KVM: x86: pass a proper reason to kvm_emulate_instruction()
+  KVM: SVM: pass a proper reason in kvm_emulate_instruction()
+  KVM: VMX: pass a proper reason in kvm_emulate_instruction()
+
+ arch/x86/include/asm/kvm_host.h | 27 +++++++++++++++++++++++--
+ arch/x86/kvm/mmu/mmu.c          |  4 ++--
+ arch/x86/kvm/svm/avic.c         |  3 ++-
+ arch/x86/kvm/svm/svm.c          | 26 +++++++++++++-----------
+ arch/x86/kvm/vmx/vmx.c          | 17 ++++++++--------
+ arch/x86/kvm/x86.c              | 35 ++++++++++++++++++++++-----------
+ arch/x86/kvm/x86.h              |  3 ++-
+ 7 files changed, 78 insertions(+), 37 deletions(-)
+
+-- 
+2.30.2
+
