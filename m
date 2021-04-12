@@ -2,64 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04FF35C2FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1102D35C306
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239389AbhDLJxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:53:41 -0400
-Received: from mga17.intel.com ([192.55.52.151]:47615 "EHLO mga17.intel.com"
+        id S242979AbhDLJyX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:54:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239344AbhDLJnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:43:43 -0400
-IronPort-SDR: ePJBnDqDQjSsiqlHH35aqMK4bxBrHlX7MzT2oUnQKJWdHRujx36z29mPje2aJyPu7AP+iwC9T2
- 7yY7QRqEpEUQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="174249796"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="174249796"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 02:43:19 -0700
-IronPort-SDR: VCrbbVR0BJ7lcAnXo7QHY+Nl502/GPsmYphg6/+QYkkyJ9Df+auE7UcC97H/r6oqpsT7y4a3BO
- 4io/GSUSCvwQ==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="611304700"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 02:43:17 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 7773D205AA;
-        Mon, 12 Apr 2021 12:43:15 +0300 (EEST)
-Date:   Mon, 12 Apr 2021 12:43:15 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Mitali Borkar <mitaliborkar810@gmail.com>
-Cc:     bingbu.cao@intel.com, tian.shu.qiu@intel.com, mchehab@kernel.org,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: Re: [PATCH 2/6] staging: media: intel-ipu3: preferred
- __aligned(size) over __attribute__aligned(size)
-Message-ID: <20210412094315.GJ3@paasikivi.fi.intel.com>
-References: <cover.1618180659.git.mitaliborkar810@gmail.com>
- <f618f1fe2d13417ebed185da392fb48811593a9f.1618180660.git.mitaliborkar810@gmail.com>
+        id S239702AbhDLJo0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:44:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 047A16120B;
+        Mon, 12 Apr 2021 09:44:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618220648;
+        bh=dUn3RpHAGg64ypL7+r7XbIHX+Y/jL4UbUArvirEgV+c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lRtnxc5C9AyLKZxt/EGWzKOG0W48kqL8Z/yJEHKwNZ1onNLJvv1x6YZ2loVXy8Oll
+         E5lkLtH+MiT2Nx3f72XPbQhRBTRWo342TKckP2ZD5UkY8SVg9hzIT5LSxxX31fxHMC
+         ci0KHcp6pmST2AhynRUj7BVpj/kGTB7xjR7oxRLsBRHqRLn3cDZnNz4ddyUIjMyX7E
+         VyOppe8O7x9juCytP/ypuPTSmhIcoIjTftsKmmyhtpCzbYyH73QjC7gkfHWCqqx+fT
+         0CBPM5PFbNM9mjpXmhtASmmx4jZlm5f44VFhgmCyYcx6jEk0lcXI77tMJ/tRi5oVSS
+         SMJKUwPoR7jWw==
+Date:   Mon, 12 Apr 2021 15:14:04 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Logan Gunthorpe <logang@deltatee.com>, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: plx_dma: add a missing put_device() on error
+ path
+Message-ID: <YHQWZKTTjum45ucy@vkoul-mobl.Dlink>
+References: <YFnq/0IQzixtAbC1@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f618f1fe2d13417ebed185da392fb48811593a9f.1618180660.git.mitaliborkar810@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YFnq/0IQzixtAbC1@mwanda>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mitali,
+On 23-03-21, 16:19, Dan Carpenter wrote:
+> Add a missing put_device(&pdev->dev) if the call to
+> dma_async_device_register(dma); fails.
 
-On Mon, Apr 12, 2021 at 04:38:59AM +0530, Mitali Borkar wrote:
-> This patch fixes the warning identified by checkpatch.pl by replacing
-> __attribute__aligned(size) with __aligned(size)
-
-Same comments on this than the 1st patch.
-
-It's a staging driver so even if this is a user space header, it's not
-under include/uapi/linux.
+Applied, thanks
 
 -- 
-Kind regards,
-
-Sakari Ailus
+~Vinod
