@@ -2,193 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D7735C6D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA42035C6D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241456AbhDLM4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:56:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:50006 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241413AbhDLM4p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:56:45 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDA50D6E;
-        Mon, 12 Apr 2021 05:56:26 -0700 (PDT)
-Received: from [10.37.12.6] (unknown [10.37.12.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BEDEF3F73B;
-        Mon, 12 Apr 2021 05:56:24 -0700 (PDT)
-Subject: Re: [PATCH RESEND v1 2/4] lib/vdso: Add vdso_data pointer as input to
- __arch_get_timens_vdso_data()
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        dima@arista.com, avagin@gmail.com, arnd@arndb.de,
-        tglx@linutronix.de, luto@kernel.org, linux-arch@vger.kernel.org
-References: <cover.1617209141.git.christophe.leroy@csgroup.eu>
- <539c4204b1baa77c55f758904a1ea239abbc7a5c.1617209142.git.christophe.leroy@csgroup.eu>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <d3f27278-b555-ad6b-c3a3-573774ec486e@arm.com>
-Date:   Mon, 12 Apr 2021 13:56:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S241490AbhDLM5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:57:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239454AbhDLM5a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:57:30 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD380C061574;
+        Mon, 12 Apr 2021 05:57:12 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id g15so13115428qkl.4;
+        Mon, 12 Apr 2021 05:57:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=x7tmmZHrCVQE02Px5t5c/UG1yYUMoOazF7ZKUu9ZpuU=;
+        b=bG0J3T9h0gD7RFwfNzKPHOpVtBGHDC9e4xfbvB/QjXJZsoROBH322oIhWOFt5ydN0P
+         1anCaW9cFkl95K0dNa+EbRMXAoPlXdrJx/e+se+pX2glviRXmq3OhrFFPY51YvC3ajn+
+         83hUxE2xXl9vp1qfzUjp8D0oX2JYcx+LW89E6owH8J/SATk7ABbi7x0yPotpnPoYT1tp
+         Qx/gClqyN/42t0LjlexgVS5y1uBh4ECm545BJhY0d/VMPNO4GjoPgZ8Cl41UFTzUeyPg
+         9RKFFB17yrw2osPKw+yR5EFHYdcJjyI1SYsI62WeNfQtNeTavOvnyTfcLSc1/76Lt8xs
+         zhPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=x7tmmZHrCVQE02Px5t5c/UG1yYUMoOazF7ZKUu9ZpuU=;
+        b=AUIrLpPX6M8olIYDs7WNtb4izya8dGpGGjc3nhZVMkYJZZcLdTZmOp74ftbwcTCtkA
+         fwkzOWqakUdxfq3sLoz20K1/LV9HNHOJzJBrwdI+vyQantYe2l3ihYCq5RIJ9MsfKote
+         BAMiQp/NK6P/8ybTfM6DY/s4iV5hU4TAC7DpDdwDgvR+f5qOpFmSM8LF83IfvwkhDRUe
+         8pz+KMYSStJMlEOF6NM0CpmFwUzinmzhwVGpqLGJTewYn49kS7kNQLGPd9koDWHx5SAo
+         1E0Sk9Sr9P6TzoXxumzmO7vJpVTdm3mT095XexLFyPFfMZgVvW6NzOTy2Sar0REi251Y
+         4G/A==
+X-Gm-Message-State: AOAM531Iilkc9qG3/ER8frID/upD6LH3JrZ0UU/3sqmp2AR1W4IR3OaO
+        xW5EN/m5/NxFz93ZG9baatY=
+X-Google-Smtp-Source: ABdhPJyQpNi3IhdSeoFbNulAoOEdI449xVECFe4I0yY38UdmVEZ6p6nM/pmt1/u/ctp7QN3XPnZ+Fg==
+X-Received: by 2002:a05:620a:1592:: with SMTP id d18mr4863797qkk.329.1618232232193;
+        Mon, 12 Apr 2021 05:57:12 -0700 (PDT)
+Received: from focaruja ([2001:1284:f016:a037:476a:dfcd:f18f:9ad5])
+        by smtp.gmail.com with ESMTPSA id t198sm3824160qke.44.2021.04.12.05.57.11
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 12 Apr 2021 05:57:11 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 09:57:09 -0300
+From:   Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: [Outreachy kernel][PATCH 1/4 v2] staging: media: omap4iss: Replace
+ macro function by static inline function in file iss.c
+Message-ID: <e302566a3d9e5180ab27eb2c2824fd1b678a6d99.1618231618.git.alinesantanacordeiro@gmail.com>
+References: <cover.1618231618.git.alinesantanacordeiro@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <539c4204b1baa77c55f758904a1ea239abbc7a5c.1617209142.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1618231618.git.alinesantanacordeiro@gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replace macro function by static inline function.
+Issue suggested by Julia.
 
+Signed-off-by: Aline Santana Cordeiro <alinesantanacordeiro@gmail.com>
+---
 
-On 3/31/21 5:48 PM, Christophe Leroy wrote:
-> For the same reason as commit e876f0b69dc9 ("lib/vdso: Allow
-> architectures to provide the vdso data pointer"), powerpc wants to
-> avoid calculation of relative position to code.
-> 
-> As the timens_vdso_data is next page to vdso_data, provide
-> vdso_data pointer to __arch_get_timens_vdso_data() in order
-> to ease the calculation on powerpc in following patches.
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Changes since v1:
+ - Insert file path in commit message
 
-Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+ drivers/staging/media/omap4iss/iss.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-> ---
->  arch/arm64/include/asm/vdso/compat_gettimeofday.h |  3 ++-
->  arch/arm64/include/asm/vdso/gettimeofday.h        |  2 +-
->  arch/s390/include/asm/vdso/gettimeofday.h         |  3 ++-
->  arch/x86/include/asm/vdso/gettimeofday.h          |  3 ++-
->  lib/vdso/gettimeofday.c                           | 15 +++++++++------
->  5 files changed, 16 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/vdso/compat_gettimeofday.h b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
-> index 7508b0ac1d21..ecb6fd4c3c64 100644
-> --- a/arch/arm64/include/asm/vdso/compat_gettimeofday.h
-> +++ b/arch/arm64/include/asm/vdso/compat_gettimeofday.h
-> @@ -155,7 +155,8 @@ static __always_inline const struct vdso_data *__arch_get_vdso_data(void)
->  }
->  
->  #ifdef CONFIG_TIME_NS
-> -static __always_inline const struct vdso_data *__arch_get_timens_vdso_data(void)
-> +static __always_inline
-> +const struct vdso_data *__arch_get_timens_vdso_data(const struct vdso_data *vd)
->  {
->  	const struct vdso_data *ret;
->  
-> diff --git a/arch/arm64/include/asm/vdso/gettimeofday.h b/arch/arm64/include/asm/vdso/gettimeofday.h
-> index 631ab1281633..de86230a9436 100644
-> --- a/arch/arm64/include/asm/vdso/gettimeofday.h
-> +++ b/arch/arm64/include/asm/vdso/gettimeofday.h
-> @@ -100,7 +100,7 @@ const struct vdso_data *__arch_get_vdso_data(void)
->  
->  #ifdef CONFIG_TIME_NS
->  static __always_inline
-> -const struct vdso_data *__arch_get_timens_vdso_data(void)
-> +const struct vdso_data *__arch_get_timens_vdso_data(const struct vdso_data *vd)
->  {
->  	return _timens_data;
->  }
-> diff --git a/arch/s390/include/asm/vdso/gettimeofday.h b/arch/s390/include/asm/vdso/gettimeofday.h
-> index ed89ef742530..383c53c3dddd 100644
-> --- a/arch/s390/include/asm/vdso/gettimeofday.h
-> +++ b/arch/s390/include/asm/vdso/gettimeofday.h
-> @@ -68,7 +68,8 @@ long clock_getres_fallback(clockid_t clkid, struct __kernel_timespec *ts)
->  }
->  
->  #ifdef CONFIG_TIME_NS
-> -static __always_inline const struct vdso_data *__arch_get_timens_vdso_data(void)
-> +static __always_inline
-> +const struct vdso_data *__arch_get_timens_vdso_data(const struct vdso_data *vd)
->  {
->  	return _timens_data;
->  }
-> diff --git a/arch/x86/include/asm/vdso/gettimeofday.h b/arch/x86/include/asm/vdso/gettimeofday.h
-> index df01d7349d79..1936f21ed8cd 100644
-> --- a/arch/x86/include/asm/vdso/gettimeofday.h
-> +++ b/arch/x86/include/asm/vdso/gettimeofday.h
-> @@ -58,7 +58,8 @@ extern struct ms_hyperv_tsc_page hvclock_page
->  #endif
->  
->  #ifdef CONFIG_TIME_NS
-> -static __always_inline const struct vdso_data *__arch_get_timens_vdso_data(void)
-> +static __always_inline
-> +const struct vdso_data *__arch_get_timens_vdso_data(const struct vdso_data *vd)
->  {
->  	return __timens_vdso_data;
->  }
-> diff --git a/lib/vdso/gettimeofday.c b/lib/vdso/gettimeofday.c
-> index c6f6dee08746..ce2f69552003 100644
-> --- a/lib/vdso/gettimeofday.c
-> +++ b/lib/vdso/gettimeofday.c
-> @@ -49,13 +49,15 @@ static inline bool vdso_cycles_ok(u64 cycles)
->  static __always_inline int do_hres_timens(const struct vdso_data *vdns, clockid_t clk,
->  					  struct __kernel_timespec *ts)
->  {
-> -	const struct vdso_data *vd = __arch_get_timens_vdso_data();
-> +	const struct vdso_data *vd;
->  	const struct timens_offset *offs = &vdns->offset[clk];
->  	const struct vdso_timestamp *vdso_ts;
->  	u64 cycles, last, ns;
->  	u32 seq;
->  	s64 sec;
->  
-> +	vd = vdns - (clk == CLOCK_MONOTONIC_RAW ? CS_RAW : CS_HRES_COARSE);
-> +	vd = __arch_get_timens_vdso_data(vd);
->  	if (clk != CLOCK_MONOTONIC_RAW)
->  		vd = &vd[CS_HRES_COARSE];
->  	else
-> @@ -92,7 +94,8 @@ static __always_inline int do_hres_timens(const struct vdso_data *vdns, clockid_
->  	return 0;
->  }
->  #else
-> -static __always_inline const struct vdso_data *__arch_get_timens_vdso_data(void)
-> +static __always_inline
-> +const struct vdso_data *__arch_get_timens_vdso_data(const struct vdso_data *vd)
->  {
->  	return NULL;
->  }
-> @@ -162,7 +165,7 @@ static __always_inline int do_hres(const struct vdso_data *vd, clockid_t clk,
->  static __always_inline int do_coarse_timens(const struct vdso_data *vdns, clockid_t clk,
->  					    struct __kernel_timespec *ts)
->  {
-> -	const struct vdso_data *vd = __arch_get_timens_vdso_data();
-> +	const struct vdso_data *vd = __arch_get_timens_vdso_data(vdns);
->  	const struct vdso_timestamp *vdso_ts = &vd->basetime[clk];
->  	const struct timens_offset *offs = &vdns->offset[clk];
->  	u64 nsec;
-> @@ -310,7 +313,7 @@ __cvdso_gettimeofday_data(const struct vdso_data *vd,
->  	if (unlikely(tz != NULL)) {
->  		if (IS_ENABLED(CONFIG_TIME_NS) &&
->  		    vd->clock_mode == VDSO_CLOCKMODE_TIMENS)
-> -			vd = __arch_get_timens_vdso_data();
-> +			vd = __arch_get_timens_vdso_data(vd);
->  
->  		tz->tz_minuteswest = vd[CS_HRES_COARSE].tz_minuteswest;
->  		tz->tz_dsttime = vd[CS_HRES_COARSE].tz_dsttime;
-> @@ -333,7 +336,7 @@ __cvdso_time_data(const struct vdso_data *vd, __kernel_old_time_t *time)
->  
->  	if (IS_ENABLED(CONFIG_TIME_NS) &&
->  	    vd->clock_mode == VDSO_CLOCKMODE_TIMENS)
-> -		vd = __arch_get_timens_vdso_data();
-> +		vd = __arch_get_timens_vdso_data(vd);
->  
->  	t = READ_ONCE(vd[CS_HRES_COARSE].basetime[CLOCK_REALTIME].sec);
->  
-> @@ -363,7 +366,7 @@ int __cvdso_clock_getres_common(const struct vdso_data *vd, clockid_t clock,
->  
->  	if (IS_ENABLED(CONFIG_TIME_NS) &&
->  	    vd->clock_mode == VDSO_CLOCKMODE_TIMENS)
-> -		vd = __arch_get_timens_vdso_data();
-> +		vd = __arch_get_timens_vdso_data(vd);
->  
->  	/*
->  	 * Convert the clockid to a bitmask and use it to check which
-> 
-
+diff --git a/drivers/staging/media/omap4iss/iss.c b/drivers/staging/media/omap4iss/iss.c
+index c89f268a..3bbc39e 100644
+--- a/drivers/staging/media/omap4iss/iss.c
++++ b/drivers/staging/media/omap4iss/iss.c
+@@ -27,22 +27,24 @@
+ #include "iss.h"
+ #include "iss_regs.h"
+ 
+-#define ISS_PRINT_REGISTER(iss, name)\
+-	dev_dbg(iss->dev, "###ISS " #name "=0x%08x\n", \
+-		iss_reg_read(iss, OMAP4_ISS_MEM_TOP, ISS_##name))
++static inline iss_print_register(iss, name)
++{
++	dev_dbg(iss->dev, "###ISS " #name "=0x%08x\n",
++		iss_reg_read(iss, OMAP4_ISS_MEM_TOP, ISS_##name));
++}
+ 
+ static void iss_print_status(struct iss_device *iss)
+ {
+ 	dev_dbg(iss->dev, "-------------ISS HL Register dump-------------\n");
+ 
+-	ISS_PRINT_REGISTER(iss, HL_REVISION);
+-	ISS_PRINT_REGISTER(iss, HL_SYSCONFIG);
+-	ISS_PRINT_REGISTER(iss, HL_IRQSTATUS(5));
+-	ISS_PRINT_REGISTER(iss, HL_IRQENABLE_SET(5));
+-	ISS_PRINT_REGISTER(iss, HL_IRQENABLE_CLR(5));
+-	ISS_PRINT_REGISTER(iss, CTRL);
+-	ISS_PRINT_REGISTER(iss, CLKCTRL);
+-	ISS_PRINT_REGISTER(iss, CLKSTAT);
++	iss_print_register(iss, HL_REVISION);
++	iss_print_register(iss, HL_SYSCONFIG);
++	iss_print_register(iss, HL_IRQSTATUS(5));
++	iss_print_register(iss, HL_IRQENABLE_SET(5));
++	iss_print_register(iss, HL_IRQENABLE_CLR(5));
++	iss_print_register(iss, CTRL);
++	iss_print_register(iss, CLKCTRL);
++	iss_print_register(iss, CLKSTAT);
+ 
+ 	dev_dbg(iss->dev, "-----------------------------------------------\n");
+ }
 -- 
-Regards,
-Vincenzo
+2.7.4
+
