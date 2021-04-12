@@ -2,133 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07B1135C26D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8102735C269
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238817AbhDLJnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:43:55 -0400
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:35899 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S242026AbhDLJR7 (ORCPT
+        id S238589AbhDLJnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:43:43 -0400
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:10334 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242037AbhDLJSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:17:59 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id Vsh9l4ds1MxedVshClcWf2; Mon, 12 Apr 2021 11:17:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1618219057; bh=Q1WZNfMjfd81Sw0tEZCD6aKfvpmjF/TsYGs4OFIOV90=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=o+/G/vwvsxmiN6f9yPpXnexKz/biPXZQl/+q892dF7qwphl7qU7rMSNrkay5sYpmY
-         EiBXWrQ4kCGqRas76lMzhtLD84rQmBkKsY6jzbxOP8D43FEKi634GKRzFDUpp3Rnv9
-         v7l53TByppykUspP8DbzfNCTVzS+RSY70u2AKjW39vL4uqzY8b1nMYi13rfLAYGpFD
-         /vrSaVeIVi1j525TMHSY5pwjlNVrkiQunNBXLcrALw0J8AbD80AeYRjCvEU6pUO7/g
-         EnGxIn8SR6pfEWuI+k9aads8Cqqr5VgDgStsbvRBxNwfdiBcLyL0cGg7/Ep3UeMOup
-         sLwdMicOoo1jQ==
-Subject: Re: [PATCH v2] staging: media: meson: vdec: declare u32 as const and
- static const
-To:     Mitali Borkar <mitaliborkar810@gmail.com>, narmstrong@baylibre.com,
-        mchehab@kernel.org, gregkh@linuxfoundation.org,
-        khilman@baylibre.com, jbrunet@baylibre.com,
-        martin.blumenstingl@googlemail.com
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in, linux-amlogic@lists.infradead.org
-References: <YHIDufKhTEeuxyl5@kali>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <88d04746-717d-5a7a-7ea7-67cf6c95aba9@xs4all.nl>
-Date:   Mon, 12 Apr 2021 11:17:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        Mon, 12 Apr 2021 05:18:00 -0400
+Received: from pps.filterd (m0170396.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13C9C02f004737;
+        Mon, 12 Apr 2021 05:17:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=smtpout1;
+ bh=KFIFE8UJy90Y2MVElNIAftsv7/F8+aOXBzc+KxnEAe0=;
+ b=u9JI5YdyNvu3aWdTbk+UkbK6GmZsK6qBTiZXhU0X1CyaG7tFM5HQRyFKEEuRw34yDSbp
+ IhdpYtzNxwd41sUIYMTRzgcEUvb2zAqkGphb1jIUzXwC0ZmugoAQGiL64VXqvwldunqp
+ vgRIKpGnKdurXRsVB9qAksWAu0To6CLhMaBpB1gIe82qLP9q3qzECZzHBgekz0c297N7
+ kK7wd9B3MrTId2wAk/Pqcp0EW4OoiQirK/Tt+NQrWKStme60Rch5uaLnZh0Par/TBSSZ
+ uiv/5iOc2hE17HjllVe9lrlYVEVhjH/eLqPdM6JM9QOGArml5Fm+z/xhqRfBMTWHvund TQ== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0b-00154904.pphosted.com with ESMTP id 37u7v0mmxg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 05:17:41 -0400
+Received: from pps.filterd (m0142693.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13C99owG016440;
+        Mon, 12 Apr 2021 05:17:40 -0400
+Received: from ausxippc110.us.dell.com (AUSXIPPC110.us.dell.com [143.166.85.200])
+        by mx0a-00154901.pphosted.com with ESMTP id 37uryjw0ub-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Apr 2021 05:17:40 -0400
+X-LoopCount0: from 10.69.132.19
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.81,216,1610431200"; 
+   d="scan'208";a="1076903885"
+From:   Perry Yuan <Perry.Yuan@dell.com>
+To:     pobrn@protonmail.com, pierre-louis.bossart@linux.intel.com,
+        oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
+        hdegoede@redhat.com, mgross@linux.intel.com
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, Perry.Yuan@dell.com,
+        mario.limonciello@outlook.com, Dell.Client.Kernel@dell.com
+Subject: [PATCH v7 0/2] hardware-privacy-implementation-for-dell-laptop
+Date:   Mon, 12 Apr 2021 17:17:23 +0800
+Message-Id: <20210412091725.7820-1-Perry_Yuan@Dell.com>
+X-Mailer: git-send-email 2.19.2.windows.1
 MIME-Version: 1.0
-In-Reply-To: <YHIDufKhTEeuxyl5@kali>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfBXMnifIVjZ62y0VHvnBJNSP+hYxNbiNOZUfNetfEJgBcv5GMZ7getv0zN6yKyIx13mzQ7aTrYqwCmTTMLYyK7NQCiI56Mim4l4qN7U1OJEtPirTxTaG
- wAIJSK62f+3rEUKw6xbtNv93Z77fl7qctwlLxqDe/ABpVE3pcRpcNdMFZovtEeo+aq1rBpa/w26EwT0OhPBPZA4A8uyyVCN6U4t7nCy69kzZHrjV88ZyihYT
- nTWyeUBWznOsD99N+Dn/DWVtt+XGQ59EpzKaYyLvnG5kGOSdNGVCL4nZprNPI0dqkoZZQ+sVfCgFiaPDHfsipka8aV8WLWoP8V1WIlkZ8Ab62W7YsVYaQ3iO
- ansPPfKTP4dfu8bD+NIMZb6vWnjsNYwWo4faIFL1SSjvcpDCu/m82sq5S2aA0a2n/2G9W/t6z3cIkeyVMXyr/drugGue6ygTa3dtYumausj7yBx2EhGaj9LG
- EbX73dVXhEcsdkUwsESaJjcVx4quNChI25SjjPB3ol3wmWm6RbfO8xs6Zht/yWosh3ksT4xs9eE7f2tQ3uYfGa8XgXlY4iSeYdVzPpARdpFkuVXzsxTWaxX7
- hcsVUTO77rgfsjK0ekHUKUwzthrqK00iSKv2LEGjkA/6/YVG1NDn9tMCPbJVjKFqtgm5eKjBGTFcbJhOiVYIIUR2
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-12_07:2021-04-12,2021-04-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 impostorscore=0 spamscore=0 mlxscore=0 phishscore=0
+ lowpriorityscore=0 clxscore=1015 bulkscore=0 suspectscore=0
+ mlxlogscore=999 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104060000 definitions=main-2104120061
+X-Proofpoint-GUID: FsjAz0f_QX2unDCXAF6AzZNpanvzwN0U
+X-Proofpoint-ORIG-GUID: FsjAz0f_QX2unDCXAF6AzZNpanvzwN0U
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 suspectscore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 adultscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104120061
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/04/2021 21:59, Mitali Borkar wrote:
-> Declared 32 bit unsigned int as static constant inside a function and
-> replaced u32[] {x,y} as canvas1, canvas2 in codec_mpeg12.c
-> This indicates the value of canvas indexes will remain constant throughout execution.
-> Replaced u32 reg_base and u32 reg_name with const u32 reg_base and const
-> u32 reg_name as it will contain data/registry bases to write static
-> const indexes declared above and will keep track of of contiguos
-> registers after each reg_base.
-> This makes code look better, neater. It improves readability.
-> 
-> Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> ---
->  drivers/staging/media/meson/vdec/codec_mpeg12.c | 5 +++--
+From: Perry Yuan <perry_yuan@dell.com>
 
-Also change drivers/staging/media/meson/vdec/codec_h264.c.
+Hi All,
+This patch set is a new driver for Dell mobile platform that has the
+hardware privacy feature including micmute,camera mute.
 
-It's a nice improvement, so let's do this for both callers of amvdec_set_canvases().
+For micmute led control, the hotkey is Fn + F4, it is a hardware based
+mute state, and new privacy will prevent micphone void input from
+hardware layer, any application cannot get voice data when micmute
+activated.
 
-Regards,
+Camera mute use a new hardware design to control the camrea shutter.
+When video is muted, no OS application should be functionally able to
+capture images of the person/environment in front of the system
 
-	Hans
+Older history:
+[1]https://patchwork.kernel.org/project/platform-driver-x86/patch/20201228132855.17544-1-Perry_Yuan@Dell.com/
+[2]https://patchwork.kernel.org/project/alsa-devel/patch/20201103125859.8759-1-Perry_Yuan@Dell.com/#23733605
+[3]https://www.spinics.net/lists/alsa-devel/msg120537.html
+[4]https://github.com/thesofproject/linux/pull/2660
+[5]https://github.com/thesofproject/linux/issues/2496
 
->  drivers/staging/media/meson/vdec/vdec_helpers.c | 2 +-
->  drivers/staging/media/meson/vdec/vdec_helpers.h | 2 +-
->  3 files changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/media/meson/vdec/codec_mpeg12.c b/drivers/staging/media/meson/vdec/codec_mpeg12.c
-> index 21e93a13356c..861d8584f22f 100644
-> --- a/drivers/staging/media/meson/vdec/codec_mpeg12.c
-> +++ b/drivers/staging/media/meson/vdec/codec_mpeg12.c
-> @@ -65,6 +65,8 @@ static int codec_mpeg12_start(struct amvdec_session *sess)
->  	struct amvdec_core *core = sess->core;
->  	struct codec_mpeg12 *mpeg12;
->  	int ret;
-> +	static const u32 canvas1[] = { AV_SCRATCH_0, 0 };
-> +	static const u32 canvas2[] = { 8, 0 }
->  
->  	mpeg12 = kzalloc(sizeof(*mpeg12), GFP_KERNEL);
->  	if (!mpeg12)
-> @@ -80,8 +82,7 @@ static int codec_mpeg12_start(struct amvdec_session *sess)
->  		goto free_mpeg12;
->  	}
->  
-> -	ret = amvdec_set_canvases(sess, (u32[]){ AV_SCRATCH_0, 0 },
-> -				  (u32[]){ 8, 0 });
-> +	ret = amvdec_set_canvases(sess, canvas1, canvas2);
->  	if (ret)
->  		goto free_workspace;
->  
-> diff --git a/drivers/staging/media/meson/vdec/vdec_helpers.c b/drivers/staging/media/meson/vdec/vdec_helpers.c
-> index 7f07a9175815..df5c27266c44 100644
-> --- a/drivers/staging/media/meson/vdec/vdec_helpers.c
-> +++ b/drivers/staging/media/meson/vdec/vdec_helpers.c
-> @@ -177,7 +177,7 @@ static int set_canvas_nv12m(struct amvdec_session *sess,
->  }
->  
->  int amvdec_set_canvases(struct amvdec_session *sess,
-> -			u32 reg_base[], u32 reg_num[])
-> +			const u32 reg_base[], const u32 reg_num[])
->  {
->  	struct v4l2_m2m_buffer *buf;
->  	u32 pixfmt = sess->pixfmt_cap;
-> diff --git a/drivers/staging/media/meson/vdec/vdec_helpers.h b/drivers/staging/media/meson/vdec/vdec_helpers.h
-> index cfaed52ab526..ace8897c34fe 100644
-> --- a/drivers/staging/media/meson/vdec/vdec_helpers.h
-> +++ b/drivers/staging/media/meson/vdec/vdec_helpers.h
-> @@ -17,7 +17,7 @@
->   * @reg_num: number of contiguous registers after each reg_base (including it)
->   */
->  int amvdec_set_canvases(struct amvdec_session *sess,
-> -			u32 reg_base[], u32 reg_num[]);
-> +			const u32 reg_base[], const u32 reg_num[]);
->  
->  /* Helpers to read/write to the various IPs (DOS, PARSER) */
->  u32 amvdec_read_dos(struct amvdec_core *core, u32 reg);
-> 
+Perry Yuan (2):
+  platform/x86: dell-privacy: Add support for Dell hardware privacy
+  ASoC: rt715:add micmute led state control supports
+
+ .../testing/sysfs-platform-dell-privacy-wmi   |  55 +++
+ drivers/platform/x86/dell/Kconfig             |  14 +
+ drivers/platform/x86/dell/Makefile            |   1 +
+ drivers/platform/x86/dell/dell-laptop.c       |  23 +-
+ drivers/platform/x86/dell/dell-privacy-wmi.c  | 394 ++++++++++++++++++
+ drivers/platform/x86/dell/dell-privacy-wmi.h  |  23 +
+ drivers/platform/x86/dell/dell-wmi.c          |   8 +-
+ sound/soc/codecs/rt715-sdca.c                 |  42 ++
+ sound/soc/codecs/rt715.c                      |  43 ++
+ 9 files changed, 596 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi
+ create mode 100644 drivers/platform/x86/dell/dell-privacy-wmi.c
+ create mode 100644 drivers/platform/x86/dell/dell-privacy-wmi.h
+
+-- 
+2.25.1
 
