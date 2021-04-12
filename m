@@ -2,154 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F2035CFE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C3535CFE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243843AbhDLR6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:58:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44322 "EHLO
+        id S244089AbhDLR7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:59:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239858AbhDLR6S (ORCPT
+        with ESMTP id S239949AbhDLR7a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:58:18 -0400
-Received: from mail-vk1-xa29.google.com (mail-vk1-xa29.google.com [IPv6:2607:f8b0:4864:20::a29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F116C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:57:59 -0700 (PDT)
-Received: by mail-vk1-xa29.google.com with SMTP id u200so473220vku.3
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:57:59 -0700 (PDT)
+        Mon, 12 Apr 2021 13:59:30 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19C40C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:59:11 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id h10so16116593edt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:59:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wQwEibf/qRDlUg9g4tQhhRSZ449db5ajiJyiNZmODrg=;
-        b=NF0WMlfkqU4i3PEuQLAlg8Jd2mtSsBq+sKarvmeiuUTGAvkyhbK9Iw5aiCTfcy0uPG
-         bpHx67m4h2KPDkvSQKdgd45Gm8JHGlQiPisYhnD3cl1kz47m6e6Q2pqY5xs9si4fGOOU
-         kazpYOw/y1GFkfZiA+tXBLbOXLGzuW/7/rtOI=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H/wwcGG3rNXNsZQgkGk7QbLfEu6ULkdlrYbUXwHoD98=;
+        b=kHnoF8nNrf8iq5HdVKMzM6b8YJRKVAxeWL8MlhUNzfwMdNjyfM7Y3PIDrGZCFh5n6V
+         DZbSRNWF0jfw3Zoa9SsLWtYsTMI8m5/eP0usAF7P7Edv6LRPahDNLgTdVfZhPqg7DKOo
+         adNPHS1OvMS5ShLem6OUVzK7BVf8soeRc6HXeekSJEbPTA0Mn82Huo92OyCaOuF9+kTM
+         oHeqt0CUmj19qdQMvrqY8K8cA2kInXmE1nyZo8uPpcby9ebsLzgrGpxLuViHra7/MtSv
+         dOgMVlomqvf14hrxLqYc9jJIQHx3MUcmQH7xU9X6xKdZILuAfNrD/4ya964yV+piI2YZ
+         vZKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wQwEibf/qRDlUg9g4tQhhRSZ449db5ajiJyiNZmODrg=;
-        b=GsZ7McWcZDDpHcLwzJiwExlkjGR1Y4fGWnGORfI+94v85umDuoRFlzMVwYGGyv/FOt
-         y3azEGJrD0RrA4rU0eoncNQvfZbrU0ixIE9o6E3vp2H9ZmTnNmrRYDBoew4QMdfEH9Jh
-         P8fnS2DZexPSGTiPU0VkMpPZaJ7GTOeRstwEWaTuOWbZQpw80T3Ifb/WHwUNfjfD8bBi
-         2XEAvJ1xjL1kyEnTEIQoc2RsUWUp/s318oZFqP34ntCeoABSeIRA+YuVIOp4d+XN2Wup
-         Iqc78NKaFwfdB56Fn7OXZ+yr8yMpVxQks2qJmE1DJv2xtH51z1qcJvSvGxnd5K6rMOrk
-         c1xg==
-X-Gm-Message-State: AOAM533ddqX6WW8HmOxMzoBCcOTPreehqYuQ7k/x3eyvNzNcFwRXS2E0
-        ADLnh+mFD8VU67D5dZff4tFWaLtFRfrp9MVh
-X-Google-Smtp-Source: ABdhPJwi/tj1cpV2lJ/yavfVP2W0y8odFVFrQttJ7KALHikTLGm85kTu4GVZwu9+6PQdZnTq4cDX4Q==
-X-Received: by 2002:a1f:53c7:: with SMTP id h190mr21079083vkb.19.1618250278128;
-        Mon, 12 Apr 2021 10:57:58 -0700 (PDT)
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
-        by smtp.gmail.com with ESMTPSA id c129sm1254665vkb.21.2021.04.12.10.57.57
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 10:57:57 -0700 (PDT)
-Received: by mail-vs1-f47.google.com with SMTP id x14so2406951vsc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:57:57 -0700 (PDT)
-X-Received: by 2002:a67:f595:: with SMTP id i21mr20935076vso.16.1618250277111;
- Mon, 12 Apr 2021 10:57:57 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=H/wwcGG3rNXNsZQgkGk7QbLfEu6ULkdlrYbUXwHoD98=;
+        b=SVCL1mAybYuE2BTJWW//r+J4c1D8qy5wjHJmBbzNLUaPkneE1336tpyH1s+G+WYzX2
+         uebYxbgAfMy1eHIY/j0Zvzx3gCiuM/HKP+S+dz0VtxjQ7PmPjmW+nR9K4AZqJ1cHSLNh
+         zFAerN6ithJesTtJf7POk/XMSXPXP0Gf6fN+ibsYxmcCeM9ni0t5dRJTV4zKAXDRVs63
+         i5ZG+SVc6RytC+BrazsRAbV+fgc+CB6tZrBGwEOihq+tmhxFF1a4nxrlZVMW/xhgNvGy
+         qalDbjGnFT7uy81qcYaPKqX6aSvmFn2DQWJfiCrGRDv9WGjgzdx3djTDfycHIjgpF5GJ
+         jBCQ==
+X-Gm-Message-State: AOAM531BhXVt9PxG0z+Q/tfXlhQkYKrm8qyWFkFUjuxMjC1KOtsuiRXO
+        2f48RMBA8uJJBkijWQlPekY=
+X-Google-Smtp-Source: ABdhPJxCJ9iMV8FrvfO4lMKc6BT20x0Fb6U0Bynd/YCdqCBulg8m2X3/kbdnTX84qd1TJezlVRYspQ==
+X-Received: by 2002:a05:6402:2054:: with SMTP id bc20mr17256693edb.334.1618250348558;
+        Mon, 12 Apr 2021 10:59:08 -0700 (PDT)
+Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
+        by smtp.gmail.com with ESMTPSA id gz20sm6300534ejc.25.2021.04.12.10.59.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 10:59:08 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     outreachy-kernel@googlegroups.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [Outreachy kernel] [PATCH 0/2] Remove spaces and blank lines  
+Date:   Mon, 12 Apr 2021 19:59:01 +0200
+Message-Id: <20210412175903.17819-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1618190463-12993-1-git-send-email-johnny.chuang.emc@gmail.com> <CA+jURcu2a91quZc+gto=HixCH+O_V+fPVdKrO_9HvR2pcu9RmQ@mail.gmail.com>
-In-Reply-To: <CA+jURcu2a91quZc+gto=HixCH+O_V+fPVdKrO_9HvR2pcu9RmQ@mail.gmail.com>
-From:   Harry Cutts <hcutts@chromium.org>
-Date:   Mon, 12 Apr 2021 10:57:46 -0700
-X-Gmail-Original-Message-ID: <CA+jURcsvVSzjc2Mm=-pgG+fMhpj3VeT0+YeSjgWfYqe=Ga9_Vw@mail.gmail.com>
-Message-ID: <CA+jURcsvVSzjc2Mm=-pgG+fMhpj3VeT0+YeSjgWfYqe=Ga9_Vw@mail.gmail.com>
-Subject: Re: [PATCH v2] HID: i2c-hid: Skip ELAN power-on command after reset
-To:     Johnny Chuang <johnny.chuang.emc@gmail.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-input <linux-input@vger.kernel.org>,
-        Johnny Chuang <johnny.chuang@emc.com.tw>,
-        James Chen <james.chen@emc.com.tw>,
-        Jennifer Tsai <jennifer.tsai@emc.com.tw>,
-        Paul Liang <paul.liang@emc.com.tw>,
-        Jeff Chuang <jeff.chuang@emc.com.tw>,
-        Douglas Anderson <dianders@chromium.org>,
-        Jingle <jingle.wu@emc.com.tw>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Apr 2021 at 10:56, Harry Cutts <hcutts@chromium.org> wrote:
->
-> On Sun, 11 Apr 2021 at 18:21, Johnny Chuang <johnny.chuang.emc@gmail.com> wrote:
-> >
-> > Previous commit 43b7029f475e ("HID: i2c-hid:
-> > Send power-on command after reset"), it fixed issue for SIS touchscreen.
-> >
-> > For ELAN touchscreen, we found our boot code of IC was not flexible enough
-> > to receive and handle this command.
-> > Once the FW main code of our controller is crashed for some reason,
-> > the controller could not be enumerated successfully to be recognized
-> > by the system host. therefore, it lost touch functionality.
-> >
-> > Add quirk for skip send power-on command after reset.
-> > It will impact to ELAN touchscreen and touchpad on HID over I2C projects.
-> >
-> > Signed-off-by: Johnny Chuang <johnny.chuang.emc@gmail.com>
->
-> It's probably a good idea to add a Fixes: tag, like so:
->
->     Fixes: 43b7029f475e ("HID: i2c-hid: Send power-on command after reset")
->
-> Other than that,
->
-> Reviewed-by: Harry Cutts <hcutts@chromium.org>
->
-> Harry Cutts
-> Chrome OS Touch/Input team
->
-> > ---
-> > Changes in v2:
-> >     - move comment to quirk entry
-> > ---
-> >  drivers/hid/i2c-hid/i2c-hid-core.c | 10 +++++++++-
-> >  1 file changed, 9 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-> > index 9993133..957d865 100644
-> > --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> > +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> > @@ -45,6 +45,7 @@
-> >  #define I2C_HID_QUIRK_BOGUS_IRQ                        BIT(4)
-> >  #define I2C_HID_QUIRK_RESET_ON_RESUME          BIT(5)
-> >  #define I2C_HID_QUIRK_BAD_INPUT_SIZE           BIT(6)
-> > +#define I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET    BIT(7)
-> >
-> >
-> >  /* flags */
-> > @@ -178,6 +179,12 @@ static const struct i2c_hid_quirks {
-> >                  I2C_HID_QUIRK_RESET_ON_RESUME },
-> >         { USB_VENDOR_ID_ITE, I2C_DEVICE_ID_ITE_LENOVO_LEGION_Y720,
-> >                 I2C_HID_QUIRK_BAD_INPUT_SIZE },
-> > +/*
-> > + * Sending the wakeup after reset actually break ELAN touchscreen controller
-> > + * Add I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET to skip wakeup after reset
-> > + */
+Removed spaces before tabs and multiple blank lines from Hal8723BReg.h
+for readability improvement. Issues detected by checkpatch.pl.
 
-...though, just spotted, you should indent the comment.
+Fabio M. De Francesco (2):
+  staging: rtl8723bs: hal Remove spaces before tabs
+  staging: rtl8723bs: hal: Remove multiple blank lines
 
-> > +       { USB_VENDOR_ID_ELAN, HID_ANY_ID,
-> > +                I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET },
-> >         { 0, 0 }
-> >  };
-> >
-> > @@ -461,7 +468,8 @@ static int i2c_hid_hwreset(struct i2c_client *client)
-> >         }
-> >
-> >         /* At least some SIS devices need this after reset */
-> > -       ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
-> > +       if (!(ihid->quirks & I2C_HID_QUIRK_NO_WAKEUP_AFTER_RESET))
-> > +               ret = i2c_hid_set_power(client, I2C_HID_PWR_ON);
-> >
-> >  out_unlock:
-> >         mutex_unlock(&ihid->reset_lock);
-> > --
-> > 2.7.4
-> >
+ drivers/staging/rtl8723bs/hal/Hal8723BReg.h | 43 +++++++++------------
+ 1 file changed, 18 insertions(+), 25 deletions(-)
+
+-- 
+2.31.1
+
