@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7FA35BF57
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32A235C12D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:29:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239970AbhDLJEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:04:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44106 "EHLO mail.kernel.org"
+        id S240538AbhDLJYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:24:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238773AbhDLIyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:54:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66DBD61262;
-        Mon, 12 Apr 2021 08:52:50 +0000 (UTC)
+        id S239932AbhDLJBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:01:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1955E6137A;
+        Mon, 12 Apr 2021 09:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217570;
-        bh=HrXDfkWLAHgBhHLX7G021lONn/NQRWIvuhj/m7t7rMg=;
+        s=korg; t=1618218009;
+        bh=Pssl+L1Ni8KwTl834n12ZJfzUk4qjK5DT37VcSCaQfE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iujc37XeOK1SsUOa9mvet3S/dEDBF5ObR3tG1spJBZq8aSOXQN2eS/0OtORZx8A1P
-         Hok/HZDXnv7V2N68JLGw+K1B0V9f5yFpcTlSrtiB5SaJSh0t6t0UqQh5jqdQjtrqb0
-         67lpvxbVVi9vMhrxoCkOh4h7QmM9dsDLS7EX+eNQ=
+        b=HtbshmBukeh6ovmB6y/Sa7dkB46Z4KqNiQpepJND8DNoTJbeitGicOTREb8dgj0DS
+         Wnb3qahM0kl+LUcbF4RH6y0CgZEfY5xT75P5DtV3XMETiYcZdqdtKDWhmtcIGqXGjy
+         tF0LIHMM9LoY6MYFnKjKA2jWmkk0I/vLUWGaNvUs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Kubecek <mkubecek@suse.cz>,
-        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 027/188] ethtool: fix incorrect datatype in set_eee ops
-Date:   Mon, 12 Apr 2021 10:39:01 +0200
-Message-Id: <20210412084014.553443840@linuxfoundation.org>
+        stable@vger.kernel.org, Liam Beguin <liambeguin@gmail.com>,
+        Helge Deller <deller@gmx.de>, Gao Xiang <hsiangkao@redhat.com>
+Subject: [PATCH 5.11 037/210] parisc: avoid a warning on u8 cast for cmpxchg on u8 pointers
+Date:   Mon, 12 Apr 2021 10:39:02 +0200
+Message-Id: <20210412084017.247885238@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
+References: <20210412084016.009884719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +39,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+From: Gao Xiang <hsiangkao@redhat.com>
 
-commit 63cf32389925e234d166fb1a336b46de7f846003 upstream.
+commit 4d752e5af63753ab5140fc282929b98eaa4bd12e upstream.
 
-The member 'tx_lpi_timer' is defined with __u32 datatype in the ethtool
-header file. Hence, we should use ethnl_update_u32() in set_eee ops.
+commit b344d6a83d01 ("parisc: add support for cmpxchg on u8 pointers")
+can generate a sparse warning ("cast truncates bits from constant
+value"), which has been reported several times [1] [2] [3].
 
-Fixes: fd77be7bd43c ("ethtool: set EEE settings with EEE_SET request")
-Cc: <stable@vger.kernel.org> # 5.10.x
-Cc: Michal Kubecek <mkubecek@suse.cz>
-Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+The original code worked as expected, but anyway, let silence such
+sparse warning as what others did [4].
+
+[1] https://lore.kernel.org/r/202104061220.nRMBwCXw-lkp@intel.com
+[2] https://lore.kernel.org/r/202012291914.T5Agcn99-lkp@intel.com
+[3] https://lore.kernel.org/r/202008210829.KVwn7Xeh%25lkp@intel.com
+[4] https://lore.kernel.org/r/20210315131512.133720-2-jacopo+renesas@jmondi.org
+Cc: Liam Beguin <liambeguin@gmail.com>
+Cc: Helge Deller <deller@gmx.de>
+Cc: stable@vger.kernel.org # v5.8+
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+Signed-off-by: Helge Deller <deller@gmx.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ethtool/eee.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/parisc/include/asm/cmpxchg.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ethtool/eee.c
-+++ b/net/ethtool/eee.c
-@@ -169,8 +169,8 @@ int ethnl_set_eee(struct sk_buff *skb, s
- 	ethnl_update_bool32(&eee.eee_enabled, tb[ETHTOOL_A_EEE_ENABLED], &mod);
- 	ethnl_update_bool32(&eee.tx_lpi_enabled,
- 			    tb[ETHTOOL_A_EEE_TX_LPI_ENABLED], &mod);
--	ethnl_update_bool32(&eee.tx_lpi_timer, tb[ETHTOOL_A_EEE_TX_LPI_TIMER],
--			    &mod);
-+	ethnl_update_u32(&eee.tx_lpi_timer, tb[ETHTOOL_A_EEE_TX_LPI_TIMER],
-+			 &mod);
- 	ret = 0;
- 	if (!mod)
- 		goto out_ops;
+--- a/arch/parisc/include/asm/cmpxchg.h
++++ b/arch/parisc/include/asm/cmpxchg.h
+@@ -72,7 +72,7 @@ __cmpxchg(volatile void *ptr, unsigned l
+ #endif
+ 	case 4: return __cmpxchg_u32((unsigned int *)ptr,
+ 				     (unsigned int)old, (unsigned int)new_);
+-	case 1: return __cmpxchg_u8((u8 *)ptr, (u8)old, (u8)new_);
++	case 1: return __cmpxchg_u8((u8 *)ptr, old & 0xff, new_ & 0xff);
+ 	}
+ 	__cmpxchg_called_with_bad_pointer();
+ 	return old;
 
 
