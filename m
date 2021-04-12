@@ -2,121 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6075035D185
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F55835D18C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:58:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239226AbhDLTz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:55:57 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:48696 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238889AbhDLTz4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:55:56 -0400
-Received: from [192.168.254.32] (unknown [47.187.223.33])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D9CC020B8000;
-        Mon, 12 Apr 2021 12:55:36 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D9CC020B8000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1618257337;
-        bh=h2gvJ5oqXftarQ16pvd9FutkrlcdXEhDOKLCNzGzJQ0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Qob3oXb5+R1rog4vksif5LZhrGvetrYNRzhrXhIBDtM0KVtPP51ISu5FlyThZA03t
-         OnQ9oqE2cgFhgN5SZFrTTOoK/L/wNTTtiwSocCAswt0d9SmVCLPb96E8wWZyA6U4du
-         3lj2SzQRCinCdoNr+PbXitPVpvRd8KzUeE+yny6o=
-Subject: Re: [RFC PATCH v2 0/4] arm64: Implement stack trace reliability
- checks
-To:     Mark Brown <broonie@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
- <20210405204313.21346-1-madvenka@linux.microsoft.com>
- <20210409120859.GA51636@C02TD0UTHF1T.local>
- <20210409213741.kqmwyajoppuqrkge@treble>
- <20210412173617.GE5379@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <d92ec07e-81e1-efb8-b417-d1d8a211ef7f@linux.microsoft.com>
-Date:   Mon, 12 Apr 2021 14:55:35 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S245402AbhDLT5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:57:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38830 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237613AbhDLT5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 15:57:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4814B61206;
+        Mon, 12 Apr 2021 19:57:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618257443;
+        bh=lIhzNbCU8bE0h1h5jlI8gRg6GfQbTrvNYsJ1jHFdpZ8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=uSswateWXHs6l2ezKctq9PInExFqDVxyzc7yTtn8+eDHhaHZYVuDTKPZtprDJbnF0
+         lDTdMDZf3ktkBtdeYzAMyxSOCDCZRQxfAsd48F/IXoRy7dBGMQYu3fHiXB2EBMCpel
+         ilD42TrYz7VRtCMyfeOV15Dd8/ARACPZJPlewguBuEOdzrERNiJ7wCrW8R4mYI7gzr
+         ZcswAqoTdD99WrG+8UNoLxeK0QQbiPHNTNOcRUaWD0+Itx2m4sSEkdrV1vn1NDiQaN
+         iO7C3GU741eov9U+0gupgbjaF1aKTlgGpLnMOMGA41dK4r2S86N9eKaC2G0nv25hEK
+         mzmuRLxCLmXpw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 017E45C0382; Mon, 12 Apr 2021 12:57:22 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 12:57:22 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com
+Subject: Re: [PATCH v7 clocksource 3/5] clocksource: Check per-CPU clock
+ synchronization when marked unstable
+Message-ID: <20210412195722.GG4510@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210402224828.GA3683@paulmck-ThinkPad-P72>
+ <20210402224906.3912-3-paulmck@kernel.org>
+ <87blam4iqe.ffs@nanos.tec.linutronix.de>
+ <20210411002020.GV4510@paulmck-ThinkPad-P17-Gen-1>
+ <878s5p2jqv.ffs@nanos.tec.linutronix.de>
+ <20210411164612.GZ4510@paulmck-ThinkPad-P17-Gen-1>
+ <20210412042157.GA1889369@paulmck-ThinkPad-P17-Gen-1>
+ <87k0p71whr.ffs@nanos.tec.linutronix.de>
+ <20210412182049.GE4510@paulmck-ThinkPad-P17-Gen-1>
+ <87y2dnz644.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210412173617.GE5379@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87y2dnz644.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/12/21 12:36 PM, Mark Brown wrote:
-> On Fri, Apr 09, 2021 at 04:37:41PM -0500, Josh Poimboeuf wrote:
->> On Fri, Apr 09, 2021 at 01:09:09PM +0100, Mark Rutland wrote:
+On Mon, Apr 12, 2021 at 08:54:03PM +0200, Thomas Gleixner wrote:
+> Paul,
 > 
->>> Further, I believe all the special cases are assembly functions, and
->>> most of those are already in special sections to begin with. I reckon
->>> it'd be simpler and more robust to reject unwinding based on the
->>> section. If we need to unwind across specific functions in those
->>> sections, we could opt-in with some metadata. So e.g. we could reject
->>> all functions in ".entry.text", special casing the EL0 entry functions
->>> if necessary.
+> On Mon, Apr 12 2021 at 11:20, Paul E. McKenney wrote:
+> > On Mon, Apr 12, 2021 at 03:08:16PM +0200, Thomas Gleixner wrote:
+> >> The reason for irqsave is again historical AFAICT and nobody bothered to
+> >> clean it up. spin_lock_bh() should be sufficient to serialize against
+> >> the watchdog timer, though I haven't looked at all possible scenarios.
+> >
+> > Though if BH is disabled, there is not so much advantage to
+> > invoking it from __clocksource_watchdog_kthread().  Might as
+> > well just invoke it directly from clocksource_watchdog().
+> >
+> >> > 2.	Invoke clocksource_verify_percpu() from its original
+> >> > 	location in clocksource_watchdog(), just before the call to
+> >> > 	__clocksource_unstable().  This relies on the fact that
+> >> > 	clocksource_watchdog() acquires watchdog_lock without
+> >> > 	disabling interrupts.
+> >> 
+> >> That should be fine, but this might cause the softirq to 'run' for a
+> >> very long time which is not pretty either.
+> >> 
+> >> Aside of that, do we really need to check _all_ online CPUs? What you
+> >> are trying to figure out is whether the wreckage is CPU local or global,
+> >> right?
+> >> 
+> >> Wouldn't a shirt-sleeve approach of just querying _one_ CPU be good
+> >> enough? Either the other CPU has the same wreckage, then it's global or
+> >> it hasn't which points to a per CPU local issue.
+> >> 
+> >> Sure it does not catch the case where a subset (>1) of all CPUs is
+> >> affected, but I'm not seing how that really buys us anything.
+> >
+> > Good point!  My thought is to randomly pick eight CPUs to keep the
+> > duration reasonable while having a good chance of hitting "interesting"
+> > CPU choices in multicore and multisocket systems.
+> >
+> > However, if a hard-to-reproduce problem occurred, it would be good to take
+> > the hit and scan all the CPUs.  Additionally, there are some workloads
+> > for which the switch from TSC to HPET is fatal anyway due to increased
+> > overhead.  For these workloads, the full CPU scan is no additional pain.
+> >
+> > So I am thinking in terms of a default that probes eight randomly selected
+> > CPUs without worrying about duplicates (as in there would be some chance
+> > that fewer CPUs would actually be probed), but with a boot-time flag
+> > that does all CPUs.  I would add the (default) random selection as a
+> > separate patch.
 > 
->> Couldn't this also end up being somewhat fragile?  Saying "certain
->> sections are deemed unreliable" isn't necessarily obvious to somebody
->> who doesn't already know about it, and it could be overlooked or
->> forgotten over time.  And there's no way to enforce it stays that way.
+> You can't do without making it complex, right? Keep it simple is not an
+> option for a RCU hacker it seems :)
+
+But it was simple!  It just hit all the CPUs.
+
+However, you (quite rightly) pointed out that this simple approach had
+a few shortcomings.  ;-)
+
+> > I will send a new series out later today, Pacific Time.
 > 
-> Anything in this area is going to have some opportunity for fragility
-> and missed assumptions somewhere.  I do find the idea of using the
-> SYM_CODE annotations that we already have and use for other purposes to
-> flag code that we don't expect to be suitable for reliable unwinding
-> appealing from that point of view.  It's pretty clear at the points
-> where they're used that they're needed, even with a pretty surface level
-> review, and the bit actually pushing things into a section is going to
-> be in a single place where the macro is defined.  That seems relatively
-> robust as these things go, it seems no worse than our reliance on
-> SYM_FUNC to create BTI annotations.  Missing those causes oopses when we
-> try to branch to the function.
-> 
+> Can you do me a favour and send it standalone and not as yet another
+> reply to this existing thread maze. A trivial lore link to the previous
+> version gives enough context.
 
-OK. Just so I am clear on the whole picture, let me state my understanding so far.
-Correct me if I am wrong.
+Will do!
 
-1. We are hoping that we can convert a significant number of SYM_CODE functions to
-   SYM_FUNC functions by providing them with a proper FP prolog and epilog so that
-   we can get objtool coverage for them. These don't need any blacklisting.
+Of course, it turns out that lockdep also doesn't like waited-on
+smp_call_function_single() invocations from timer handlers,
+so I am currently looking at other options for dealing with that
+potential use-after-free.  I am starting to like the looks of "only set
+CLOCK_SOURCE_VERIFY_PERCPU on statically allocated clocksource structures
+and let KASAN enforce this restriction", but I have not quite given up
+on making it more general.
 
-2. If we can locate the pt_regs structures created on the stack cleanly for EL1
-   exceptions, etc, then we can handle those cases in the unwinder without needing
-   any black listing.
-
-   I have a solution for this in version 3 that does it without encoding the FP or
-   matching values on the stack. I have addressed all of the objections so far on
-   that count. I will send the patch series out soon.
-
-3. We are going to assume that the reliable unwinder is only for livepatch purposes
-   and will only be invoked on a task that is not currently running. The task either
-   voluntarily gave up the CPU or was pre-empted. We can safely ignore all SYM_CODE
-   functions that will never voluntarily give up the CPU. They can only be pre-empted
-   and pre-emption is already handled in (2). We don't need to blacklist any of these
-   functions.
-
-4. So, the only functions that will need blacklisting are the remaining SYM_CODE functions
-   that might give up the CPU voluntarily. At this point, I am not even sure how
-   many of these will exist. One hopes that all of these would have ended up as
-   SYM_FUNC functions in (1).
-
-So, IMHO, placing code in a black listed section should be the last step and not the first
-one. This also satisfies Mark Rutland's requirement that no one muck with the entry text
-while he is sorting out that code.
-
-I suggest we do (3) first. Then, review the assembly functions to do (1). Then, review the
-remaining ones to see which ones must be blacklisted, if any.
-
-Do you agree?
-
-Madhavan
+							Thanx, Paul
