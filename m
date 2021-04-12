@@ -2,61 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576B235C6B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:49:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 723DB35C698
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241307AbhDLMtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:49:16 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:17313 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240790AbhDLMtO (ORCPT
+        id S241329AbhDLMqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:46:38 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:54470 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S241296AbhDLMqe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:49:14 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FJpQQ22WLz9y8s;
-        Mon, 12 Apr 2021 20:46:38 +0800 (CST)
-Received: from mdc.huawei.com (10.175.112.208) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 12 Apr 2021 20:48:45 +0800
-From:   Chen Jun <chenjun102@huawei.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     <tglx@linutronix.de>, <richardcochran@gmail.com>,
-        <johnstul@us.ibm.com>, <rui.xiang@huawei.com>
-Subject: [PATCH] time: Fix overwrite err unexpected in clock_adjtime32
-Date:   Mon, 12 Apr 2021 12:45:51 +0000
-Message-ID: <20210412124552.50213-1-chenjun102@huawei.com>
-X-Mailer: git-send-email 2.9.4
+        Mon, 12 Apr 2021 08:46:34 -0400
+X-UUID: d925d6448db841f391f54f2237976e25-20210412
+X-UUID: d925d6448db841f391f54f2237976e25-20210412
+Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
+        (envelope-from <irui.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 282938753; Mon, 12 Apr 2021 20:46:13 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 12 Apr 2021 20:46:11 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 12 Apr 2021 20:46:10 +0800
+From:   Irui Wang <irui.wang@mediatek.com>
+To:     Alexandre Courbot <acourbot@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Tzung-Bi Shih <tzungbi@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Longfei Wang <longfei.wang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Irui Wang <irui.wang@mediatek.com>, <yong.wu@mediatek.com>,
+        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <linux-mediatek@lists.infradead.org>
+Subject: [PATCH v3,3/6] media: mtk-vcodec: Support 4GB~8GB range iova space for venc
+Date:   Mon, 12 Apr 2021 20:45:52 +0800
+Message-ID: <20210412124555.26897-4-irui.wang@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210412124555.26897-1-irui.wang@mediatek.com>
+References: <20210412124555.26897-1-irui.wang@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.175.112.208]
-X-CFilter-Loop: Reflected
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the correct error is covered by put_old_timex32.
+Use the dma_set_mask_and_coherent helper to set venc
+DMA bit mask to support 4GB~8GB range iova space.
 
-Fixes: f1f1d5ebd10f ("posix-timers: Introduce a syscall for clock tuning.")
-Signed-off-by: Chen Jun <chenjun102@huawei.com>
+Signed-off-by: Irui Wang <irui.wang@mediatek.com>
 ---
- kernel/time/posix-timers.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
-index bf540f5a..dd5697d 100644
---- a/kernel/time/posix-timers.c
-+++ b/kernel/time/posix-timers.c
-@@ -1191,8 +1191,8 @@ SYSCALL_DEFINE2(clock_adjtime32, clockid_t, which_clock,
+diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+index 7d7b8cfc2cc5..26b089e81213 100644
+--- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
++++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc_drv.c
+@@ -361,6 +361,9 @@ static int mtk_vcodec_probe(struct platform_device *pdev)
+ 		goto err_event_workq;
+ 	}
  
- 	err = do_clock_adjtime(which_clock, &ktx);
- 
--	if (err >= 0)
--		err = put_old_timex32(utp, &ktx);
-+	if (err >= 0 && put_old_timex32(utp, &ktx))
-+		return -EFAULT;
- 
- 	return err;
- }
++	if (of_get_property(pdev->dev.of_node, "dma-ranges", NULL))
++		dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
++
+ 	ret = video_register_device(vfd_enc, VFL_TYPE_VIDEO, 1);
+ 	if (ret) {
+ 		mtk_v4l2_err("Failed to register video device");
 -- 
-2.9.4
+2.25.1
 
