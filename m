@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5432B35C0E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 160CE35C04A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241901AbhDLJRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:17:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48830 "EHLO mail.kernel.org"
+        id S238415AbhDLJML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:12:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48902 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239248AbhDLI7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:59:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF3656124A;
-        Mon, 12 Apr 2021 08:57:59 +0000 (UTC)
+        id S238108AbhDLI4w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:56:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7939761355;
+        Mon, 12 Apr 2021 08:56:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217880;
-        bh=zEs6qZ4263wSVrtfbUIoIe90QZ4xax8D8J7RVOG9M5s=;
+        s=korg; t=1618217783;
+        bh=7G0J9gmIuJspoIiUIgDw7b+wRAXxVHZNTcHnRHVZlec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RVH1tew2oLkgzsSL2TkVDv3shT3pfM6s2FNOwbSKyLZEI9XDF9tFOs3sPcpDAZZah
-         tsfAfJW8WgwwzWeV8PGGArMWKNC8KGlygw5cAIFQigxmts/4HFXbZtgmF+HEiG/vxa
-         NQKpB6Ob5B0yC9TOnflvSDu2MHgFKRnXRBPx8Raw=
+        b=p3f/Weg7XYtVOYKHhRh49b+wKqeum/0KssLD8eAOsvvOKY4BArhR8nAfYiSWfRdYi
+         RGLOQ78sIrMori97R1O0JrHJ03zww8pc0udPXkEipmanbynO1U3wZ3NcHmTHFbYafI
+         Swwbl2r7yBthubpvR7abvYQrFKkLZD42oa3lup+8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 135/188] xdp: fix xdp_return_frame() kernel BUG throw for page_pool memory model
-Date:   Mon, 12 Apr 2021 10:40:49 +0200
-Message-Id: <20210412084018.127006852@linuxfoundation.org>
+Subject: [PATCH 5.10 136/188] soc/fsl: qbman: fix conflicting alignment attributes
+Date:   Mon, 12 Apr 2021 10:40:50 +0200
+Message-Id: <20210412084018.164719291@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -41,48 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ong Boon Leong <boon.leong.ong@intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 622d13694b5f048c01caa7ba548498d9880d4cb0 ]
+[ Upstream commit 040f31196e8b2609613f399793b9225271b79471 ]
 
-xdp_return_frame() may be called outside of NAPI context to return
-xdpf back to page_pool. xdp_return_frame() calls __xdp_return() with
-napi_direct = false. For page_pool memory model, __xdp_return() calls
-xdp_return_frame_no_direct() unconditionally and below false negative
-kernel BUG throw happened under preempt-rt build:
+When building with W=1, gcc points out that the __packed attribute
+on struct qm_eqcr_entry conflicts with the 8-byte alignment
+attribute on struct qm_fd inside it:
 
-[  430.450355] BUG: using smp_processor_id() in preemptible [00000000] code: modprobe/3884
-[  430.451678] caller is __xdp_return+0x1ff/0x2e0
-[  430.452111] CPU: 0 PID: 3884 Comm: modprobe Tainted: G     U      E     5.12.0-rc2+ #45
+drivers/soc/fsl/qbman/qman.c:189:1: error: alignment 1 of 'struct qm_eqcr_entry' is less than 8 [-Werror=packed-not-aligned]
 
-Changes in v2:
- - This patch fixes the issue by making xdp_return_frame_no_direct() is
-   only called if napi_direct = true, as recommended for better by
-   Jesper Dangaard Brouer. Thanks!
+I assume that the alignment attribute is the correct one, and
+that qm_eqcr_entry cannot actually be unaligned in memory,
+so add the same alignment on the outer struct.
 
-Fixes: 2539650fadbf ("xdp: Helpers for disabling napi_direct of xdp_return_frame")
-Signed-off-by: Ong Boon Leong <boon.leong.ong@intel.com>
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: c535e923bb97 ("soc/fsl: Introduce DPAA 1.x QMan device driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20210323131530.2619900-1-arnd@kernel.org'
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/xdp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/soc/fsl/qbman/qman.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/core/xdp.c b/net/core/xdp.c
-index d900cebc0acd..b8d7fa47d293 100644
---- a/net/core/xdp.c
-+++ b/net/core/xdp.c
-@@ -349,7 +349,8 @@ static void __xdp_return(void *data, struct xdp_mem_info *mem, bool napi_direct,
- 		/* mem->id is valid, checked in xdp_rxq_info_reg_mem_model() */
- 		xa = rhashtable_lookup(mem_id_ht, &mem->id, mem_id_rht_params);
- 		page = virt_to_head_page(data);
--		napi_direct &= !xdp_return_frame_no_direct();
-+		if (napi_direct && xdp_return_frame_no_direct())
-+			napi_direct = false;
- 		page_pool_put_full_page(xa->page_pool, page, napi_direct);
- 		rcu_read_unlock();
- 		break;
+diff --git a/drivers/soc/fsl/qbman/qman.c b/drivers/soc/fsl/qbman/qman.c
+index 9888a7061873..feb97470699d 100644
+--- a/drivers/soc/fsl/qbman/qman.c
++++ b/drivers/soc/fsl/qbman/qman.c
+@@ -186,7 +186,7 @@ struct qm_eqcr_entry {
+ 	__be32 tag;
+ 	struct qm_fd fd;
+ 	u8 __reserved3[32];
+-} __packed;
++} __packed __aligned(8);
+ #define QM_EQCR_VERB_VBIT		0x80
+ #define QM_EQCR_VERB_CMD_MASK		0x61	/* but only one value; */
+ #define QM_EQCR_VERB_CMD_ENQUEUE	0x01
 -- 
 2.30.2
 
