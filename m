@@ -2,115 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3A635CF95
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E4C35CF99
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243973AbhDLRkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238649AbhDLRkV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:40:21 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A59BC061574;
-        Mon, 12 Apr 2021 10:40:03 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id c123so10247143qke.1;
-        Mon, 12 Apr 2021 10:40:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=iHFqjFCRbV77geF1NfusgD5m4a0gjV5MYV0QS53h8i8=;
-        b=KOqc3a1bNp8/Hs41BsrMrrQ8Kyer4kA12jgbjBEKZh5rzx4lDzkVAF7YCobsN1c9fR
-         VXHmAY+FQcMskTdOKlsGF32JJ1fkKnLTrkChYYJW2JfBH6kScW1zUOrl16P35sT7Im8E
-         8qXOy0E5xNA2LanIUcx0JkZ8nCOend0LPtrK/G7WdAy7cqJU5K8L47w1/ELoJjvYG3Qa
-         YCTl8z6s2tCAe6Q+NnJp4jeuv1tNbzBSMBS7iltqvTbylO+SVqnPlztC0Hhmy+0fuAtP
-         qytQkVV+6nybDpv+SaFiHgrrDc+26zyHfGe0/yYw989WNofcTiR2v7wKQAj1uOc96O/V
-         7D+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=iHFqjFCRbV77geF1NfusgD5m4a0gjV5MYV0QS53h8i8=;
-        b=nRdwiEJcwPffwdiAQofaMRlW+IezLfRE/PQ5WkCWL/YbfIfOWYipqGuUQjM0aOA58q
-         Chhfd5Gy+cSq+40OhZonYjjknh4QVZ72skoWSkIeIzXSLWyOKxHKi7lchdAy2hcJB2O1
-         9k5A/2cFxbOspfph1iR74ktf7hhAxm5j2B/pRq+oOXt1kK6egTG5mEV4FRMhCGuLnh/p
-         12IZYnQMEYbvIx3OeWmRBXHQIF1LUEAX39X2imLigTzBiCe5l+WhgXuw+KPu/Me9iHvc
-         2WZcvEIahafptYBcTP4OdaDNWGZzTRY7tYtAxG4ubZMCUSxbcOdONTtd5MdDmDCbzZRp
-         rkQQ==
-X-Gm-Message-State: AOAM533CK35J8mXJ+mS//I0IiOce0Z6Yje/P+RxVNeZhDVUFVCzL0UDB
-        B3i6SIRoS5k0YYlcRGEiNUk=
-X-Google-Smtp-Source: ABdhPJy1fojLalaL/ckKGfFP68UfWntnQL/g+7TYjjdzqNuyqH0vzUY7jbc/9nDyia3Zp/Xxclx35w==
-X-Received: by 2002:a05:620a:1645:: with SMTP id c5mr27581347qko.63.1618249202608;
-        Mon, 12 Apr 2021 10:40:02 -0700 (PDT)
-Received: from ?IPv6:2001:1284:f016:a037:29a:1b49:fcb:5776? ([2001:1284:f016:a037:29a:1b49:fcb:5776])
-        by smtp.gmail.com with ESMTPSA id h7sm4597183qtj.15.2021.04.12.10.39.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 10:40:02 -0700 (PDT)
-Message-ID: <53dad29aee8925b3377d48b4c97b06ba6d05de43.camel@gmail.com>
-Subject: Re: [Outreachy kernel][PATCH 1/4 v2] staging: media: omap4iss:
- Replace macro function by static inline function in file iss.c
-From:   ascordeiro <alinesantanacordeiro@gmail.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Date:   Mon, 12 Apr 2021 14:39:58 -0300
-In-Reply-To: <alpine.DEB.2.22.394.2104121935590.19780@hadrien>
-References: <cover.1618231618.git.alinesantanacordeiro@gmail.com>
-          <e302566a3d9e5180ab27eb2c2824fd1b678a6d99.1618231618.git.alinesantanacordeiro@gmail.com>
-          <YHRNzq3h3LEp3Dgc@pendragon.ideasonboard.com>
-          <7457fd4eb5afbf66b3a6f2fed4dd1e440e6ed422.camel@gmail.com>
-         <YHRjPpMVVrhTF7Tc@pendragon.ideasonboard.com>
-         <babb019f0950cf11857a4bcf20a572f2eace1777.camel@gmail.com>
-         <alpine.DEB.2.22.394.2104121935590.19780@hadrien>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (by Flathub.org) 
+        id S244122AbhDLRmG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:42:06 -0400
+Received: from mga03.intel.com ([134.134.136.65]:28457 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238649AbhDLRmF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 13:42:05 -0400
+IronPort-SDR: TDHSBR1HeWKHYMPSKBf7byDc4TuQC5AP9bV+nRtgmFPaT+kARw4Gk7FKF+IUUUIACoX+8yQEGs
+ SNP6B/jVy6+g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194276228"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="194276228"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 10:41:46 -0700
+IronPort-SDR: 0+Ip22y9x2IL5Rv+7mQQP04rLPAGoGitSlHG76msZHZ8uJTklhG1gqh3fcOp8C7gxJ/dyoyHyV
+ hMAvQKeEuOIw==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="531963624"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 10:41:43 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lW0Z9-003WWF-Pt; Mon, 12 Apr 2021 20:41:39 +0300
+Date:   Mon, 12 Apr 2021 20:41:39 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Henning Schild <henning.schild@siemens.com>
+Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Jean Delvare <jdelvare@suse.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Tan Jui Nee <jui.nee.tan@intel.com>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Jonathan Yong <jonathan.yong@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
+        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
+Subject: Re: [PATCH v1 6/7] mfd: lpc_ich: Add support for pinctrl in non-ACPI
+ system
+Message-ID: <YHSGU1fOa1AWYJGr@smile.fi.intel.com>
+References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
+ <20210308122020.57071-7-andriy.shevchenko@linux.intel.com>
+ <20210412180106.7dc524e8@md1za8fc.ad001.siemens.net>
+ <YHR6njWCHn77v7lQ@smile.fi.intel.com>
+ <20210412192714.617d18b0@md1za8fc.ad001.siemens.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412192714.617d18b0@md1za8fc.ad001.siemens.net>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em seg, 2021-04-12 às 19:36 +0200, Julia Lawall escreveu:
-> 
-> 
-> On Mon, 12 Apr 2021, ascordeiro wrote:
-> 
-> > Em seg, 2021-04-12 às 18:11 +0300, Laurent Pinchart escreveu:
-> > > Hi Aline,
-> > > 
-> > > On Mon, Apr 12, 2021 at 10:58:45AM -0300, ascordeiro wrote:
-> > > > Em seg, 2021-04-12 às 16:40 +0300, Laurent Pinchart escreveu:
-> > > > > While testing on a device isn't a requirement as you can't be
-> > > > > expected
-> > > > > to have the necessary hardware, changes are expected to be at
-> > > > > least
-> > > > > compile-tested before being submitted.
-> > > > 
-> > > > Hi Laurent,
-> > > > 
-> > > > I thought recompiling the kernel would be enough in this case.
-> > > > I recompiled it in native Ubuntu 16.04 without errors.
-> > > 
-> > > Did it compile the driver you modified ?
-> > > 
-> > I'm sorry, It didn't. I forgot to enable the option to compile the
-> > driver as a module in "make menuconfig" and now I'm seeing the
-> > problems
-> > I generated.
-> 
-> You can easily compile a single file using make path/foo.o and a
-> single
-> directory using make path/.
-> 
-> julia
+On Mon, Apr 12, 2021 at 07:27:14PM +0200, Henning Schild wrote:
+> Am Mon, 12 Apr 2021 19:51:42 +0300
+> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
+> > On Mon, Apr 12, 2021 at 06:01:06PM +0200, Henning Schild wrote:
+> > > Am Mon, 8 Mar 2021 14:20:19 +0200
+> > > schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
 
-Ok! I'll do that from now on.
+...
 
-Thank you for the help,
-Aline
+> > > > +#define APL_GPIO_NORTH_OFFSET		0xc50000
+> > > > +#define APL_GPIO_NORTH_SIZE		0x76c  
+> > > 
+> > > drivers/pinctrl/intel/pinctrl-broxton.c:653
+> > > BXT_COMMUNITY(0, 77),
+> > >   
+> > > > +#define APL_GPIO_WEST_OFFSET		0xc70000
+> > > > +#define APL_GPIO_WEST_SIZE		0x674  
+> > > 
+> > > All these sizes correlate with 4 magic numbers from pinctrl-broxton.
+> > > 
+> > > SIZE - 0x500 (pad_base?) - 4 (no clue) / 8
+> > > 
+> > > It might be worth basing both numbers on a define and giving the
+> > > magic numbers some names.  
+> > 
+> > I didn't get this, sorry. The numbers above just precise sizes of the
+> > resources. Actually they all one page anyway, so, I can drop magic of
+> > SIZEs and leave only offsets.
+> 
+> That precise size is also in the broxton driver, i think. Say we did
+> have
+> 
+> #define BXT_NORTH_COUNT 77
+> #define PAD_BASE 0x500
+> 
+> in some central place
+> 
+> then we could use
+> 
+> size = 0x500 + 8 * BXT_NORTH_COUNT + 4 (no clue what that is)
+> 
+> the same pattern would work for all those sizes and their
+> BXT_COMMUNITY(0, XX) counterparts
+> 
+> So the real size seems to be a function of the magic numbers in
+> BXT_COMMUNITY(0, XX)
+> 
+> Or simply take one page as you say.
+
+No, not this way. We are really trying hard *not* to put *that* magic into
+the code. Just FYI that SIZEs I have calculated myself, but these SIZEs
+are *not* the same as the ones used in pinctrl-broxton *semantically*.
+
+One if for resource provider, one is for consumer. They are simply different
+in this sense.
+
+> > > But all this seems like duplication of pinctrl-broxton, maybe the
+> > > pinctrl driver should unhide the p2sb ...  
+> > 
+> > Definitely should not. It's not a business of the pin control driver
+> > to know how it has to be instantiated (or from what data). These
+> > offsets belong to the platform description and since firmware hides
+> > the device without given an appropriate ACPI device node, we have
+> > only one choice (assuming firmware is carved in stone) -- board files.
+> > 
+> > P2SB on the other hand is a slice of many (independent) devices.
+> > There is no "proper" place to unhide it except some core part of x86
+> > / PCI.
+> 
+> Got it, still the fact that there are 4 regions/communities is also part
+> of the broxton driver so there is duplication.
+
+See above. I guess here is a misunderstanding behind meaning of the (same)
+numbers in different parts. Technically we may unify them, but it will be
+a layering violation.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
