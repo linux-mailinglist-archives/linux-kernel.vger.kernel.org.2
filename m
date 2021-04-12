@@ -2,63 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 556F235C52C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16ED735C530
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:31:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240431AbhDLLbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:31:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43650 "EHLO
+        id S240413AbhDLLbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240111AbhDLLbK (ORCPT
+        with ESMTP id S240441AbhDLLbN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:31:10 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58A36C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 04:30:53 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id t22so5874744ply.1
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 04:30:53 -0700 (PDT)
+        Mon, 12 Apr 2021 07:31:13 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15263C06138C
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 04:30:56 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id d10so9108779pgf.12
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 04:30:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=plw2ysi1W+MGJ3Nv2bWluJ2xI5lpxZozWa9eFpnjZ5Q=;
-        b=K7b4lhCYYCq3BNYpzasyGmq5uEfqbaqHnLFERlhZ5hqt5p4MVmTq5gwRtf4E/y4XB3
-         BVyRaF6lWT/7Z0C5ho+WBuzSevWpH9hvgJEITs5K2HwBiIBfNS5mrFYivE82Bv8ugm/7
-         rn47xU+dBy6pU34+rHXd0Bp4nIAt/TiVfyQBo=
+        bh=L/J0PuGsoQ9jKaU7QDPzGYAqcrZkxGOtbfN36+E+p8I=;
+        b=jxUM1Vlcs9HJZ+XkiurdTz3RLTTchqy8JW4keBeGimx/NgdkjzIga2gTMja8jtvpFl
+         IOKgDwG9Y+ek4G6T7/+j8mL7dekkWw2fjK6HFnrzMnznTrQM0TDK6YVlOA1Q179cYHCU
+         t7JDL2nkctQpW0yNdQ200MfR/ugZQmOgXdMkQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=plw2ysi1W+MGJ3Nv2bWluJ2xI5lpxZozWa9eFpnjZ5Q=;
-        b=lsATE3n1EnYaS/kvnI5MsKMV6KXhJgToY5k+lHbPrDvyiQ0XsqC/04Vj3f7xN2GjsT
-         dNZ64grTV2FqmUVnu5wilkumBS4PKP6g/iqN83iPcONImQbVhJuUed2JVaRoyR9a8wrK
-         RvKH5RiMMurIy3I9SVmOdLhyiiVJhxBryddhc4tXS7+yPkM4arOo+Kfv74KZUjU25ekv
-         Kdsyo8AyGhr0bhWUMNKSviuJwydt1AGTib3e5Ch2WXjSUbzj2MqJrvpr1pdYT0mp6OAn
-         LnzqwvYwNEvn6QFmAA2GENJY0HGEh3v9L475H9x2R9oqJB+kwjaagCQefn5RRuplE2Ur
-         gfBg==
-X-Gm-Message-State: AOAM530xOAq/QUM2srfdXV9HmqdVa3dLLdNlWmt/mSW8r02eB18ZyGjf
-        kIb61uAtwPdyyelQ8zmNLo096A==
-X-Google-Smtp-Source: ABdhPJwT7DYTlzqRpAsyxz1h0QIsVCtFYKwpiPQKZDkGO/R5hzNL7pHVeZUda/idsEfLKTSC3rztmA==
-X-Received: by 2002:a17:90a:a103:: with SMTP id s3mr28756864pjp.158.1618227052905;
-        Mon, 12 Apr 2021 04:30:52 -0700 (PDT)
+        bh=L/J0PuGsoQ9jKaU7QDPzGYAqcrZkxGOtbfN36+E+p8I=;
+        b=CA0a8eitRScpsLoQ9P/stT3xDPOC6mDbRj37nZYlLp0KUygzoabSjorNcRXYBUKL8A
+         v1uC9mmtByVmz7C6y/ofgLyDJHGulymPlReKawFV5qcsWFR4zcDCrA3DlBSDmP+Gbh5J
+         AVH6IaAwuIbGxT35A0X5E1UVn7kzgP7+78VN+F3wHkvyVf7nSNLQGbGL+NO6gZp4Usm6
+         spBth+vMKlSjo2n7w48sgi6nnFz0oKeNt/DyEjM8qj9aayruCp/Yyj5E+5hKW+kMMRY0
+         hReb8GfSPcpam2bxRmRo+AKMtsMuC535qGTj9GjmpEGtntuaYKspHRJLtLdhUxbBylFo
+         P6lA==
+X-Gm-Message-State: AOAM533hbQS4oILXysDLYdLY1u1R/dYRd+mdI7mR1RcW/JAF+svP91Zf
+        sywPBHfDx5vFcNvwg4QwhuDflw==
+X-Google-Smtp-Source: ABdhPJxQcccsa6WuSwNP51GClJBEn2bgeJsPTj66sKqeSR86avKgeV0NuXCxoRd16rao6y8rnjK0jw==
+X-Received: by 2002:a62:754c:0:b029:242:22d1:58af with SMTP id q73-20020a62754c0000b029024222d158afmr23588812pfc.11.1618227055652;
+        Mon, 12 Apr 2021 04:30:55 -0700 (PDT)
 Received: from ikjn-p920.tpe.corp.google.com ([2401:fa00:1:b:32f1:1e05:984e:e039])
-        by smtp.gmail.com with ESMTPSA id 129sm1572413pfv.159.2021.04.12.04.30.50
+        by smtp.gmail.com with ESMTPSA id 129sm1572413pfv.159.2021.04.12.04.30.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 04:30:52 -0700 (PDT)
+        Mon, 12 Apr 2021 04:30:55 -0700 (PDT)
 From:   Ikjoon Jang <ikjn@chromium.org>
 To:     linux-input@vger.kernel.org, devicetree@vger.kernel.org
 Cc:     Hsin-Yi Wang <hsinyi@chromium.org>,
         Dmitry Torokhov <dtor@chromium.org>,
         Nicolas Boichat <drinkcat@chromium.org>,
         Ikjoon Jang <ikjn@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/2] mfd: google,cros-ec: add DT bindings for a baseboard's switch device
-Date:   Mon, 12 Apr 2021 19:30:19 +0800
-Message-Id: <20210412113020.2724134-2-ikjn@chromium.org>
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 2/2] HID: google: Add of_match table to Whiskers switch device.
+Date:   Mon, 12 Apr 2021 19:30:20 +0800
+Message-Id: <20210412113020.2724134-3-ikjn@chromium.org>
 X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
 In-Reply-To: <20210412113020.2724134-1-ikjn@chromium.org>
 References: <20210412113020.2724134-1-ikjn@chromium.org>
@@ -68,56 +67,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is for ChromeOS tablets which have a 'cros_cbas' switch device
-in the "Whiskers" base board. This device can be instantiated only by
-device tree on ARM platforms. ChromeOS EC doesn't provide a way to
-probe the device.
+Add a device tree match table for "cros-cbas" switch device.
 
 Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+Reviewed-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Acked-by: Jiri Kosina <jkosina@suse.cz>
 
 ---
 
-Changes in v4:
-Define cros-cbase bindings inside google,cros-ec.yaml instead of
-a seperated binding document.
+(no changes since v1)
 
- .../devicetree/bindings/mfd/google,cros-ec.yaml  | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+Please note that v3 was submitted in 28 Oct 2019, 1.5yrs ago.
+Link(v2): https://patchwork.kernel.org/project/linux-input/patch/20191021030158.32464-1-ikjn@chromium.org/
 
-diff --git a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-index 76bf16ee27ec..c76809cd9f7f 100644
---- a/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-+++ b/Documentation/devicetree/bindings/mfd/google,cros-ec.yaml
-@@ -127,6 +127,18 @@ patternProperties:
-     type: object
-     $ref: "/schemas/extcon/extcon-usbc-cros-ec.yaml#"
+---
+ drivers/hid/hid-google-hammer.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/hid/hid-google-hammer.c b/drivers/hid/hid-google-hammer.c
+index d9319622da44..be4f9f3dbbba 100644
+--- a/drivers/hid/hid-google-hammer.c
++++ b/drivers/hid/hid-google-hammer.c
+@@ -17,6 +17,7 @@
+ #include <linux/hid.h>
+ #include <linux/leds.h>
+ #include <linux/module.h>
++#include <linux/of.h>
+ #include <linux/platform_data/cros_ec_commands.h>
+ #include <linux/platform_data/cros_ec_proto.h>
+ #include <linux/platform_device.h>
+@@ -272,12 +273,21 @@ static const struct acpi_device_id cbas_ec_acpi_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(acpi, cbas_ec_acpi_ids);
  
-+  "^cbas$":
-+    type: object
-+    properties:
-+      compatible:
-+        const: google,cros-cbas
-+    required:
-+      - compatible
-+    additionalProperties: false
-+    description:
-+      This device is used to signal when a detachable base is attached
-+      to a Chrome OS tablet.
++#ifdef CONFIG_OF
++static const struct of_device_id cbas_ec_of_match[] = {
++	{ .compatible = "google,cros-cbas" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, cbas_ec_of_match);
++#endif
 +
- required:
-   - compatible
- 
-@@ -180,6 +192,10 @@ examples:
-             interrupts = <99 0>;
-             interrupt-parent = <&gpio7>;
-             spi-max-frequency = <5000000>;
-+
-+            base_detection: cbas {
-+                compatible = "google,cros-cbas";
-+            };
-         };
-     };
- 
+ static struct platform_driver cbas_ec_driver = {
+ 	.probe = cbas_ec_probe,
+ 	.remove = cbas_ec_remove,
+ 	.driver = {
+ 		.name = "cbas_ec",
+ 		.acpi_match_table = ACPI_PTR(cbas_ec_acpi_ids),
++		.of_match_table = of_match_ptr(cbas_ec_of_match),
+ 		.pm = &cbas_ec_pm_ops,
+ 	},
+ };
 -- 
 2.31.1.295.g9ea45b61b8-goog
 
