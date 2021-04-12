@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D6935BCE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53A1835BE76
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237871AbhDLIqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:46:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37260 "EHLO mail.kernel.org"
+        id S238386AbhDLI6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237468AbhDLIpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:45:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A883C61241;
-        Mon, 12 Apr 2021 08:44:44 +0000 (UTC)
+        id S238685AbhDLIuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:50:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B917861221;
+        Mon, 12 Apr 2021 08:50:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217085;
-        bh=6ckTbPMMaDUT4z/zGAWEqSYIUtGsOiCjYlVqascaMcs=;
+        s=korg; t=1618217406;
+        bh=jBRUFglnNdw0KOfhuM7z0W/o1JViC7DrVEDwILNlN7s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KwTYx5MU539MF+H8pM3SN5P4XI+lNUTRAU0JHVyJEAoP9KQZe1uxo+kV5zI111+jG
-         pz/P/23EmvqNFJnQtO9x68v2eFpbO/R6TmF27NEbVChTG6+T7SUfoMbp6YXrjR2r4I
-         Cbj7TcJMJrDpBlk/a6wrXjih0Rj/VbdvU4ehZDx4=
+        b=yDV7/O1QRBV3fIDNp5y6y62mSeReYy7S42qrkYtKKZXub3xfnUEQrVi0IDjrcZC/h
+         kQXOn0nn6PGMWsLsniMKOjCSFE3L3qMc6MFULRc5TB3CqfIyIsfOv8v1ILvHxcEzxh
+         iN6X/T1wkPt60BYUbkdUp8oXuC268H366t97FCf0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+8b6719da8a04beeafcc3@syzkaller.appspotmail.com,
-        Alexander Aring <aahringo@redhat.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH 4.19 63/66] net: ieee802154: forbid monitor for set llsec params
-Date:   Mon, 12 Apr 2021 10:41:09 +0200
-Message-Id: <20210412084000.161986840@linuxfoundation.org>
+        stable@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 092/111] RDMA/cxgb4: check for ipv6 address properly while destroying listener
+Date:   Mon, 12 Apr 2021 10:41:10 +0200
+Message-Id: <20210412084007.314202382@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-References: <20210412083958.129944265@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,33 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Potnuri Bharat Teja <bharat@chelsio.com>
 
-commit 88c17855ac4291fb462e13a86b7516773b6c932e upstream.
+[ Upstream commit 603c4690b01aaffe3a6c3605a429f6dac39852ae ]
 
-This patch forbids to set llsec params for monitor interfaces which we
-don't support yet.
+ipv6 bit is wrongly set by the below which causes fatal adapter lookup
+engine errors for ipv4 connections while destroying a listener.  Fix it to
+properly check the local address for ipv6.
 
-Reported-by: syzbot+8b6719da8a04beeafcc3@syzkaller.appspotmail.com
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210405003054.256017-3-aahringo@redhat.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3408be145a5d ("RDMA/cxgb4: Fix adapter LE hash errors while destroying ipv6 listening server")
+Link: https://lore.kernel.org/r/20210331135715.30072-1-bharat@chelsio.com
+Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ieee802154/nl802154.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/hw/cxgb4/cm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -1402,6 +1402,9 @@ static int nl802154_set_llsec_params(str
- 	u32 changed = 0;
- 	int ret;
- 
-+	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR)
-+		return -EOPNOTSUPP;
-+
- 	if (info->attrs[NL802154_ATTR_SEC_ENABLED]) {
- 		u8 enabled;
- 
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index 3c78f8c32d12..535ee41ee421 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -3616,7 +3616,8 @@ int c4iw_destroy_listen(struct iw_cm_id *cm_id)
+ 		c4iw_init_wr_wait(ep->com.wr_waitp);
+ 		err = cxgb4_remove_server(
+ 				ep->com.dev->rdev.lldi.ports[0], ep->stid,
+-				ep->com.dev->rdev.lldi.rxq_ids[0], true);
++				ep->com.dev->rdev.lldi.rxq_ids[0],
++				ep->com.local_addr.ss_family == AF_INET6);
+ 		if (err)
+ 			goto done;
+ 		err = c4iw_wait_for_reply(&ep->com.dev->rdev, ep->com.wr_waitp,
+-- 
+2.30.2
+
 
 
