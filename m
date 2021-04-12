@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C58835BDCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7B835BC81
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238441AbhDLIyD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:54:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40892 "EHLO mail.kernel.org"
+        id S237508AbhDLInZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:43:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238264AbhDLItS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:49:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CC816128A;
-        Mon, 12 Apr 2021 08:48:27 +0000 (UTC)
+        id S237469AbhDLInQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:43:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C55FD60241;
+        Mon, 12 Apr 2021 08:42:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217308;
-        bh=4cSzsEVemC/UV8DH69wccv8vc2Pq2VJ3z7LdQ636hWU=;
+        s=korg; t=1618216977;
+        bh=PFW91EuFBXrqOQKneQUMS7TP1qinbNVO15aALWS0ssE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AOpkaG/brn/WPv760Xyis8ffczFmgvALP74M1w5jpKfiZ9es3/tHLrY8iFa3bxpHG
-         LlObIhCYVzos3W6C0QcqsUDXp70VYCeGZwiR9tEh0hTP8cDVRFhJaLk2FarJ9TsdIg
-         uTlKYqgg/3ryojxQb0w8Tu+UEHaf4yVnpqMuKSYg=
+        b=OE6dRtmoWhVWztBi+6e62w16H6E6xDE4hKti7ZHaC3YNcBAu96ARHGFx3Fs3jF/Zz
+         fDTQGx7QixrNVrU6GCCxeX0aYYPcVBMJJ3bYIZYLPwOZMSQt7lCPk0AOa+SR3h20UX
+         6oh0fL9/yDXuFWFI4wfeCsLdB2x1uQeXo7vvL9sQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 052/111] xfrm: Fix NULL pointer dereference on policy lookup
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 24/66] usbip: vudc synchronize sysfs code paths
 Date:   Mon, 12 Apr 2021 10:40:30 +0200
-Message-Id: <20210412084005.999865658@linuxfoundation.org>
+Message-Id: <20210412083958.910341200@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
-References: <20210412084004.200986670@linuxfoundation.org>
+In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
+References: <20210412083958.129944265@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +39,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Klassert <steffen.klassert@secunet.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-[ Upstream commit b1e3a5607034aa0a481c6f69a6893049406665fb ]
+commit bd8b82042269a95db48074b8bb400678dbac1815 upstream.
 
-When xfrm interfaces are used in combination with namespaces
-and ESP offload, we get a dst_entry NULL pointer dereference.
-This is because we don't have a dst_entry attached in the ESP
-offloading case and we need to do a policy lookup before the
-namespace transition.
+Fuzzing uncovered race condition between sysfs code paths in usbip
+drivers. Device connect/disconnect code paths initiated through
+sysfs interface are prone to races if disconnect happens during
+connect and vice versa.
 
-Fix this by expicit checking of skb_dst(skb) before accessing it.
+Use sysfs_lock to protect sysfs paths in vudc.
 
-Fixes: f203b76d78092 ("xfrm: Add virtual xfrm interfaces")
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: stable@vger.kernel.org
+Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/caabcf3fc87bdae970509b5ff32d05bb7ce2fb15.1616807117.git.skhan@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/xfrm.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/usb/usbip/vudc_dev.c   |    1 +
+ drivers/usb/usbip/vudc_sysfs.c |    5 +++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-index c00b9ae71ae4..614f19bbad74 100644
---- a/include/net/xfrm.h
-+++ b/include/net/xfrm.h
-@@ -1098,7 +1098,7 @@ static inline int __xfrm_policy_check2(struct sock *sk, int dir,
- 		return __xfrm_policy_check(sk, ndir, skb, family);
+--- a/drivers/usb/usbip/vudc_dev.c
++++ b/drivers/usb/usbip/vudc_dev.c
+@@ -571,6 +571,7 @@ static int init_vudc_hw(struct vudc *udc
+ 	init_waitqueue_head(&udc->tx_waitq);
  
- 	return	(!net->xfrm.policy_count[dir] && !secpath_exists(skb)) ||
--		(skb_dst(skb)->flags & DST_NOPOLICY) ||
-+		(skb_dst(skb) && (skb_dst(skb)->flags & DST_NOPOLICY)) ||
- 		__xfrm_policy_check(sk, ndir, skb, family);
+ 	spin_lock_init(&ud->lock);
++	mutex_init(&ud->sysfs_lock);
+ 	ud->status = SDEV_ST_AVAILABLE;
+ 	ud->side = USBIP_VUDC;
+ 
+--- a/drivers/usb/usbip/vudc_sysfs.c
++++ b/drivers/usb/usbip/vudc_sysfs.c
+@@ -113,6 +113,7 @@ static ssize_t usbip_sockfd_store(struct
+ 		dev_err(dev, "no device");
+ 		return -ENODEV;
+ 	}
++	mutex_lock(&udc->ud.sysfs_lock);
+ 	spin_lock_irqsave(&udc->lock, flags);
+ 	/* Don't export what we don't have */
+ 	if (!udc->driver || !udc->pullup) {
+@@ -188,6 +189,8 @@ static ssize_t usbip_sockfd_store(struct
+ 
+ 		wake_up_process(udc->ud.tcp_rx);
+ 		wake_up_process(udc->ud.tcp_tx);
++
++		mutex_unlock(&udc->ud.sysfs_lock);
+ 		return count;
+ 
+ 	} else {
+@@ -208,6 +211,7 @@ static ssize_t usbip_sockfd_store(struct
+ 	}
+ 
+ 	spin_unlock_irqrestore(&udc->lock, flags);
++	mutex_unlock(&udc->ud.sysfs_lock);
+ 
+ 	return count;
+ 
+@@ -217,6 +221,7 @@ unlock_ud:
+ 	spin_unlock_irq(&udc->ud.lock);
+ unlock:
+ 	spin_unlock_irqrestore(&udc->lock, flags);
++	mutex_unlock(&udc->ud.sysfs_lock);
+ 
+ 	return ret;
  }
- 
--- 
-2.30.2
-
 
 
