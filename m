@@ -2,48 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7587D35CA66
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:50:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B99935CA69
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:50:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243022AbhDLPuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44416 "EHLO
+        id S243117AbhDLPur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:50:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238197AbhDLPuP (ORCPT
+        with ESMTP id S243042AbhDLPuj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:50:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FFBC061574;
-        Mon, 12 Apr 2021 08:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=YhGIt0sp1LY+6+VL5MEGyfiB4ctSoL5NXivfGSoUSKM=; b=Q/Cg+araSzz6KZwB65pIW4cNUk
-        Fn4IvUyKE82k+UK0rI6dCOGJLqKEP1gdvkBUy7wTCPEF2i1I2alndNxLL8Bam5Ad29Ad4rGZ8566b
-        4oxuuVgA9nVLfPNWe2WltOicBm7/kQuRYlfR+7ZWoyUnz6LU8m/TNK+p/HBPXtOX2w6njN4xRJLlm
-        yprVHI3SSYaPsfSyg7r8yJPV50zRLtDv0CFNYuDWz8FRe4ejo9EVZbjxMhg4kKtUFtnI3yDiCGMet
-        dSTsmSaQZFabd8K7wXtZMfoLzSUO7tNRPuAzoX8k5oQRp/5u5xqQPSZ3FwAZ/jrrciGGT+KllphIF
-        MNQbsTPQ==;
-Received: from [2601:1c0:6280:3f0::e0e1]
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVyoy-0079wL-QS; Mon, 12 Apr 2021 15:49:54 +0000
-Subject: Re: linux-next: Tree for Apr 9 (x86 boot problem)
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        X86 ML <x86@kernel.org>
-References: <20210409215103.03999588@canb.auug.org.au>
- <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org>
- <YHPlTifk6jST5auY@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <aa83b81e-a03d-b835-6b45-01efc7e08dce@infradead.org>
-Date:   Mon, 12 Apr 2021 08:49:49 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 12 Apr 2021 11:50:39 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE38AC06138C
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:50:21 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id a21so796486oib.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NZYZrqYCNCv2bxpNxPSl3nXWCQe4Fvp0PwQSK0b1hpU=;
+        b=Vx5mpzCj+enoGx9KqcYEWgEiZhKJWzoqSUtR72eSgqZtcWN2ie+bYKb8MbLhjQRfM6
+         qi1Dy0regakn0YcVsX5B9cGxYuAq3tDrFjwVp1DPcWASoXPSniF0Mv7BKr/CPQmr0yU9
+         FFKABGEFgXaEFRuqUrTX+iEl6xvNJuRBCqHv6j9B+VRqNmX19gVn76JmwDAQqS0bUUN4
+         RKSNOqQC4XgBif+68UagaWV8p+YicdH8v3bKF8rjZFqWH2i74qsek+wy3ElqA2Uvc9NI
+         Cue4rBg3IVwo1TGS8CSWF00s1Z0W7oMecfJnU+7uxdDzfikV3sb+iskWOOIk0xY2w1Xq
+         H/XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NZYZrqYCNCv2bxpNxPSl3nXWCQe4Fvp0PwQSK0b1hpU=;
+        b=Gdu/wyu0IhTRUOxYYlrs7dsOYMELP8I4on6U5TdpYQGzdcNbC9ae9G/wu6piz5LljX
+         c+5L7m3XRbAhPJRCFHXQROaN79FwrAEfMNijMLKE+Dv0EkRE6awHocAPKbbLfQ7vZIyV
+         Hg18Gxo83NkpEiNkDpqLMVoJEqAv0t1qo6GcsINFZYBHJpyVMFwZ/4lj96cOFNPW760J
+         IcGZSmp4xh2+rCppIeK4BbXeCawH5P/3hYqPSA4kB1Mqvx/yxcJs6gdtamM+C0ZwzYnj
+         eAqrcEaF6m8chEnP07a+2htFu7OOHqiurY3+yZfLL/6QWQcfytloGvpuPg59FdKK9ox9
+         1rDg==
+X-Gm-Message-State: AOAM533OOsnhlqS/8mJ+RMVzdleiwsnHosVYWX64NDRKrFPqgUkwdEUQ
+        azbzc4lC65XYYIU96kQ6mvxzNg==
+X-Google-Smtp-Source: ABdhPJzxSaAxYZ9t5xAi07FjyuqSb0/GV2NeW6bl4Gr0VuUqXKbbceEq2bqv5yehZXeYnstbJSoo9w==
+X-Received: by 2002:aca:f30b:: with SMTP id r11mr10894310oih.133.1618242621027;
+        Mon, 12 Apr 2021 08:50:21 -0700 (PDT)
+Received: from [192.168.1.30] ([207.135.233.147])
+        by smtp.gmail.com with ESMTPSA id p3sm2803640otk.9.2021.04.12.08.50.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 08:50:19 -0700 (PDT)
+Subject: Re: [PATCH V12 0/3] Charge loop device i/o to issuing cgroup
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+References: <20210402191638.3249835-1-schatzberg.dan@gmail.com>
+ <YHRrJ9V6ivpH2QUN@cmpxchg.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <072a9ad4-b63e-e540-9314-f3e3763111f5@kernel.dk>
+Date:   Mon, 12 Apr 2021 09:50:17 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <YHPlTifk6jST5auY@kernel.org>
+In-Reply-To: <YHRrJ9V6ivpH2QUN@cmpxchg.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -51,94 +84,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/11/21 11:14 PM, Mike Rapoport wrote:
-> Hi Randy,
+On 4/12/21 9:45 AM, Johannes Weiner wrote:
+> It looks like all feedback has been addressed and there hasn't been
+> any new activity on it in a while.
 > 
-> On Sun, Apr 11, 2021 at 07:41:37PM -0700, Randy Dunlap wrote:
->> On 4/9/21 4:51 AM, Stephen Rothwell wrote:
->>> Hi all,
->>>
->>> Changes since 20210408:
->>>
->>
->> Hi,
->>
->> I cannot boot linux-next 20210408 nor 20210409 on an antique
->> x86_64 laptop (Toshiba Portege).
->>
->> After many failed tests, I finally resorted to git bisect,
->> which led me to:
->>
->> # bad: [4c674481dcf9974834b96622fa4b079c176f36f9] x86/setup: Merge several reservations of start of memory
->> git bisect bad 4c674481dcf9974834b96622fa4b079c176f36f9
->>
->>
->> I reverted both of these patches and the laptop boots successfully:
->>
->> commit a799c2bd29d19c565f37fa038b31a0a1d44d0e4d
->> Author: Mike Rapoport <rppt@kernel.org>
->> Date:   Tue Mar 2 12:04:05 2021 +0200
->>
->>     x86/setup: Consolidate early memory reservations
->>
->> &&
->>
->> commit 4c674481dcf9974834b96622fa4b079c176f36f9
->> Author: Mike Rapoport <rppt@kernel.org>
->> Date:   Tue Mar 2 12:04:06 2021 +0200
->>
->>     x86/setup: Merge several reservations of start of memory
->>
->>
->> There is no (zero, nil) console display when I try to boot
->> next 0408 or 0409. I connected a USB serial debug cable and
->> booted with earlyprintk=dbgp,keep and still got nothing.
->>
->> The attached boot log is linux-next 20210409 minus the 2 patches
->> listed above.
->>
->> Mike- what data would you like to see?
-> 
-> Huh, with no console this would be fun :)
-> For now the only idea I have is to "bisect" the changes and move
-> reservations one by one back to their original place until the system boots
-> again. 
-> 
-> I'd start with trim_snb_memory() since it's surely needed on your laptop
-> and quite likely it is a NOP on other systems.
-> 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index 776fc9b3fafe..dfca9d6b1aa6 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -746,8 +746,6 @@ static void __init early_reserve_memory(void)
->  
->  	reserve_ibft_region();
->  	reserve_bios_regions();
-> -
-> -	trim_snb_memory();
->  }
->  
->  /*
-> @@ -1081,6 +1079,8 @@ void __init setup_arch(char **cmdline_p)
->  
->  	reserve_real_mode();
->  
-> +	trim_snb_memory();
-> +
->  	init_mem_mapping();
->  
->  	idt_setup_early_pf();
->  
->> -- 
+> As per the suggestion last time [1], Andrew, Jens, could this go
+> through the -mm tree to deal with the memcg conflicts?
 
-Hi Mike,
-That works fine.
-Can you provide another/next step?
+Yep, I think that would make it the most painless for everyone.
 
-If not, I'll try a few things.
+Dan/Andrew, you can add my Acked-by to the series.
 
-thanks.
 -- 
-~Randy
+Jens Axboe
 
