@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F01335D403
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9DDC35D405
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239203AbhDLXey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:34:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237567AbhDLXeu (ORCPT
+        id S239026AbhDLXib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:38:31 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:55061 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237567AbhDLXia (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:34:50 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92EF3C061574;
-        Mon, 12 Apr 2021 16:34:29 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso8000268pjb.3;
-        Mon, 12 Apr 2021 16:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wqp74zPj+0qXMPJcKJTmn90vgijZiCnI9bUJurDvp7w=;
-        b=ce5BIXG4IMzQwiHi+rCU2kmqs05VRlYn3YcNiuwoPZuRnlpjSTPaOMWbAIm6wn89t+
-         ILuJMfW/fNap0sZD5s5VcAPgLwATM+vZJqpiMzzWbwO3ToKyeDU1KP1P87zAJM0LHK99
-         x6WG6sKuOXvA6M9DkUPlEMh4JvH6xe/+/QuUiGUCVyRJlBAvR+zzzvzrCJN8O4Oq1c+M
-         n4JO/W1omlc8sqlTfsEBhdJ+UitFVSmsg94RCRpHDodwDyKgN0h64LJVbR/Ht4+87t6v
-         R+UJjOXa2bS3OpKrMNtTYxdFpXDg7XIqsP6+k6r5x7q1WJShuur4EdnumSHK1+xr/wg8
-         1uYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wqp74zPj+0qXMPJcKJTmn90vgijZiCnI9bUJurDvp7w=;
-        b=YmCmhofWViSac3rIzabEPLIzktk3QxBQ0ELiXtVX+IO5GD1y5YDjVb7bb0/cj21InG
-         AcmMTtRa6FyNvXAKsT/5VhbG+ZngxEKFVWrr6pzh3ABZmNKVcOovDNZxT6WG3PHskirH
-         5ocO5DVTPialIeTfmoRvY+s2lM7ih1ox6n8xYDnR5D/m/ywyEiOuuLV3G/FrfdKvVO/4
-         6RQU9xA5Xy8i0DdEia90wNipFaSX+nyVmGA8YDHBNqcijjzFO04g3j5QbP/vI1IqDBlM
-         ylLnaY1cO3ZEC0ZF3O0oj3HTrrnl5/wWTmeuDBoS39gQMl9lCU+cIfQyPLJOlg/oMks2
-         8t9A==
-X-Gm-Message-State: AOAM5327KyGzr/Vsqq0lrJCRhK2dWD4MDMCMF/hq/cKyem9zFffR0U0E
-        5WhZ6dvcpE+7SqqNeheeiYpWQVwkXkf04Vd524c=
-X-Google-Smtp-Source: ABdhPJxhYJnqgy/3ENdN0JcSOueLcv2r8UBBDsaWLgJp7Ajg0HSucFgYgWFA6QEHEwZJOBW7fxvCbQQA3jhq1ZZc3xk=
-X-Received: by 2002:a17:902:f545:b029:ea:c657:e307 with SMTP id
- h5-20020a170902f545b02900eac657e307mr13484412plf.0.1618270469044; Mon, 12 Apr
- 2021 16:34:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210329015206.17437-1-chris.packham@alliedtelesis.co.nz>
- <20210329015206.17437-6-chris.packham@alliedtelesis.co.nz>
- <CAHp75VfRXeeP0uQFDBUS6=n2TvG+_5=pe8rWp6BpbDNMz6=OSg@mail.gmail.com> <c9af3c98-7680-b7d1-a23b-f09c90e19b91@alliedtelesis.co.nz>
-In-Reply-To: <c9af3c98-7680-b7d1-a23b-f09c90e19b91@alliedtelesis.co.nz>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 13 Apr 2021 02:34:12 +0300
-Message-ID: <CAHp75Vfq38EqN4qQQnZB_m71sE=uj5vWbDdkdXX7C8kNoLwwOQ@mail.gmail.com>
-Subject: Re: [PATCH v2 5/6] i2c: mpc: use device managed APIs
-To:     Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 12 Apr 2021 19:38:30 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.west.internal (Postfix) with ESMTP id 11E6E1A1E;
+        Mon, 12 Apr 2021 19:38:11 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 12 Apr 2021 19:38:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=rs+CMVSq1IMzDicnOc3HJ7GexWkfQde
+        TZ0h6vZF00Ao=; b=fTQA1ulm96fXRCSUmZQn345kH1+ACTCX1Hqu6PWZ9Et8srw
+        Nyen9qCbo0adg/nc/0dXsYY7tCe6KSGdowg1XVr6Ycxs0JDHg1JsZ5oVOHAUbLIy
+        99mc3I6QyCGRsBPFoMxJwxMQEIGinOYeKKMzdJI5LsjDoqgdmYGqa1dRn+dYQCIP
+        2nUm2rTcqyFAJ+KWcdcxeIVJ6fISwAIp7EgiQ/mfAhs/aWFFlgpGvYnLyjxKkB4+
+        B5nGpvmUBPGY9RWctdEnYrrPvHZSQbnxrFPOCkaptWkahh0qWpaV4eyqAus7WZe7
+        +6ZtM9U80KfaQOfiyJ6H8kak+01ZTTXpv8mVCJA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=rs+CMV
+        Sq1IMzDicnOc3HJ7GexWkfQdeTZ0h6vZF00Ao=; b=U/QkrDg5yoPsJwNtMq2gjj
+        GCSJA2zr2DdcrY1lcB4y/EaBaPVThhB85nXrwFXgiLSAhbbhFCOhVZv/iaeM3e+G
+        WbQ474kaWLCJO6xGXS1e5PY6EGUDFvoq+IhWjzvFE+QgOEjkLMMeBLwDEC1cHxhT
+        HiFSyNF2r9Uvn9j2X+i5movGiD/WqESnJOu2iDdZPRIcAW6QSGySiAPVG36WT7F+
+        XVXhFM26GqQ01L+OtmFRCOXsQPWaSJ/8fUrYqXlZcRYj13C1HwlzWkfxt3SutQLX
+        b4zckSzJt2i8rrgsoJRso9m2RGzHiwZBo+x34y+TvKMtjj/Td6F2uMBp7zTiOW6Q
+        ==
+X-ME-Sender: <xms:4Nl0YNedyTglQvPF84v975xVpzrmWdp5isVR3lQm907dL2KEIjxocA>
+    <xme:4Nl0YLN60Y38isv8zfNPcqCZI9RA5n5DXrWfmfId5DnO17RlkHOjyDqBpU_tsgwck
+    nOAvFmpQUt63OJ_PA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekkedgvdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:4Nl0YGho0uT6g_SSlWZCEIWvB6dvwf0jnC0riQM0JDz6G3SGXw8fiA>
+    <xmx:4Nl0YG9QJyyTIKLve8NNZTb6BC16beRe8Qm4rCi7xm58JIRifxWe-w>
+    <xmx:4Nl0YJu9mMMPV46-dIaQkKAC0egCLyGDLQ-foJ8F1OOat1hptaqufw>
+    <xmx:4tl0YNgmRs8fTvXp7cI9sHzomD62GXywWFVnV1m-5_UVWuR0aWa5jA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id BD9A2A00492; Mon, 12 Apr 2021 19:38:08 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <85b5abef-7c7a-4157-a13e-6ba85f463703@www.fastmail.com>
+In-Reply-To: <20210412034712.16778-4-zev@bewilderbeest.net>
+References: <20210412034712.16778-1-zev@bewilderbeest.net>
+ <20210412034712.16778-4-zev@bewilderbeest.net>
+Date:   Tue, 13 Apr 2021 09:07:48 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Zev Weiss" <zev@bewilderbeest.net>,
+        "Joel Stanley" <joel@jms.id.au>
+Cc:     openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Jiri Slaby" <jslaby@suse.com>, linux-serial@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH_v6_3/4]_serial:_8250=5Faspeed=5Fvuart:_add_aspeed,l?=
+ =?UTF-8?Q?pc-io-reg_and_aspeed,lpc-interrupts_DT_properties?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 2:21 AM Chris Packham
-<Chris.Packham@alliedtelesis.co.nz> wrote:
-> On 13/04/21 10:52 am, Andy Shevchenko wrote:
-> > On Mon, Mar 29, 2021 at 4:54 AM Chris Packham
-> > <chris.packham@alliedtelesis.co.nz> wrote:
-> >> Use device managed functions an clean up error handling.
-> > For the god sake how have you tested this?
-> > The patch is broken.
-> I've clearly missed the remove path in my testing. I was focused on the
-> interrupt bevhaviour not the probe/remove which I'll make sure to check
-> for the next round.
-
-Thanks. And you may also remove forward declaration of IDs and
-probably some other leftovers (Cc me for the next round, I'll help to
-review).
 
 
--- 
-With Best Regards,
-Andy Shevchenko
+On Mon, 12 Apr 2021, at 13:17, Zev Weiss wrote:
+> These allow describing all the Aspeed VUART attributes currently
+> available via sysfs.  aspeed,lpc-interrupts provides a replacement for
+> the deprecated aspeed,sirq-polarity-sense property.
+> 
+> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
