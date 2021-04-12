@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42D335CA75
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A98E735CA7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243139AbhDLPvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:51:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242809AbhDLPvX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:51:23 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DF7C06174A
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:51:04 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 12so22057531lfq.13
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jXdDtDVkOliHR0wKt8o4xOp+hVyUebs5k6d6U80wmt4=;
-        b=caAQ4Xqg3sQpXpGaPNU3gKD7/UtnjwdhKAtTaqk6OAPLz6XqnT2JJIRntD7Xo7/K9F
-         9Uze7K7jgVp9YNlmci2T07wzH6iQWrk+KTChEXZtVUcgMPlTqiGfCtQyExMN3RCaBNlU
-         r3gk9p6TrZEHgs+aBrSlqaWZjux7xtU1Ml1dFps1vFQeJDdkRHM2uZKddjni+P37e0A7
-         Dd4j8BViFagxn40TtOl79/kk9ps0I/pPMz8qJ8qkA0WKCny7QuwcCqKUFGQJAY0cEaVT
-         1kIY2G4ii+zqIlQgDlq513nOi6v7A0qNOa0mRYFLP5FsDXuMXFkV+1jLK8SEo/JBXW7X
-         itog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jXdDtDVkOliHR0wKt8o4xOp+hVyUebs5k6d6U80wmt4=;
-        b=bw/1JSMi21Fp91THI8wVMS1CYnF48OVyT3VTPPVpcGQf5PA3uxnbdT9Iii/zzOk/Ey
-         u9AsuTz0zppxWZUcYk4dyh9lPAL1JM1hD1YdWAuHh33BfvwaHJQSko1Kj8PE379FZyE7
-         C1pJ700V3AkdekKmlkaT3ApqSd+QSaZL0Ed8/RPUQLZIAczVZv3azHvomA7//0PPjyJy
-         FNRkUCZYFCHlDYhvH5Oxuhi6YUCSMtAPEQqwADdeg6JxkDuW6Bg5tClNsBcQaSwEC1ju
-         qx3fjQGaO0NtpEV3iSyllQVUpXTXx8cPEufavL0QdR3suXnzdrTo6HTRnkAeXjTM1QKn
-         BdDw==
-X-Gm-Message-State: AOAM530bQcfHywQdb33t9GDqwoEiO0BgZjTg3cADnbHdIqm9LWsYTToZ
-        sD20NUYXxrjqCRMRuFggeQRnxEMofC0CX6Zfy31sLA==
-X-Google-Smtp-Source: ABdhPJy/6xYW52zIk5X9L64R1+sYa7h1XRl+uzYrZVCer2D1jTMm+sFt+n0v5v9OKyJBaCPZPiLkgW53BuZLiIEZybU=
-X-Received: by 2002:a05:6512:34c7:: with SMTP id w7mr18952307lfr.83.1618242663210;
- Mon, 12 Apr 2021 08:51:03 -0700 (PDT)
+        id S243164AbhDLPxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:53:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240489AbhDLPxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:53:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C49006124C;
+        Mon, 12 Apr 2021 15:52:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618242763;
+        bh=APl4ltoCaeAX320Wz7C3DT47Uhr03SEhnnO+/Oi4vsY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hVbeTbsK+UPbYADeqoXS+4cks4edwWgjyPeTb08ATlCqepQSYtGWQRK81CnMkH3u4
+         01wTagc5WXzgVCmp+tUkYJjxJNSi6ZNDfuqQiFnCHHWq9XVwSOTA0On5DWYECxylrL
+         f9WWEJr9TZ299jN8Wy0h5IIlio/FmSVFhGYT1HKJLzyEsYal7Q9xzPf88w+toDj7RE
+         xrQrFZhkc+V0fcb66XSJkDm9IOgAkN3rR681o+zAr8oUW8I4/oJWT1AtHmFUyB34YH
+         9dLqx7LNqGkFbkiI8eiRcob8Ky0LPuNaYUXU37/VYxPg73c0Vai2rRKtR3Dor/CdJ2
+         /ok/JMy/HTgMg==
+Received: by pali.im (Postfix)
+        id 28B38687; Mon, 12 Apr 2021 17:52:40 +0200 (CEST)
+Date:   Mon, 12 Apr 2021 17:52:39 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: marvell: fix detection of PHY on Topaz switches
+Message-ID: <20210412155239.chgrne7uzvlrac2e@pali>
+References: <20210412121430.20898-1-pali@kernel.org>
+ <YHRH2zWsYkv/yjYz@lunn.ch>
+ <20210412133447.fyqkavrs5r5wbino@pali>
+ <YHRcu+dNKE7xC8EG@lunn.ch>
+ <20210412150152.pbz5zt7mu3aefbrx@pali>
+ <YHRoEfGi3/l3K6iF@lunn.ch>
 MIME-Version: 1.0
-References: <20210409231842.8840-1-longman@redhat.com> <20210409231842.8840-3-longman@redhat.com>
-In-Reply-To: <20210409231842.8840-3-longman@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 12 Apr 2021 08:50:51 -0700
-Message-ID: <CALvZod5m_J4z0sZrd72yftXhYF9PmtJDfRKDK9WVSMvo7PP6uw@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mm/memcg: Introduce obj_cgroup_uncharge_mod_state()
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YHRoEfGi3/l3K6iF@lunn.ch>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 9, 2021 at 4:19 PM Waiman Long <longman@redhat.com> wrote:
->
-> In memcg_slab_free_hook()/pcpu_memcg_free_hook(), obj_cgroup_uncharge()
-> is followed by mod_objcg_state()/mod_memcg_state(). Each of these
-> function call goes through a separate irq_save/irq_restore cycle. That
-> is inefficient.  Introduce a new function obj_cgroup_uncharge_mod_state()
-> that combines them with a single irq_save/irq_restore cycle.
->
-> Signed-off-by: Waiman Long <longman@redhat.com>
+On Monday 12 April 2021 17:32:33 Andrew Lunn wrote:
+> > Anyway, now I'm looking at phy/marvell.c driver again and it supports
+> > only 88E6341 and 88E6390 families from whole 88E63xxx range.
+> > 
+> > So do we need to define for now table for more than
+> > MV88E6XXX_FAMILY_6341 and MV88E6XXX_FAMILY_6390 entries?
+> 
+> Probably not. I've no idea if the 6393 has an ID, so to be safe you
+> should add that. Assuming it has a family of its own.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+So what about just?
+
+	if (reg == MII_PHYSID2 && !(val & 0x3f0)) {
+		if (chip->info->family == MV88E6XXX_FAMILY_6341)
+			val |= MV88E6XXX_PORT_SWITCH_ID_PROD_6341 >> 4;
+		else if (chip->info->family == MV88E6XXX_FAMILY_6390)
+			val |= MV88E6XXX_PORT_SWITCH_ID_PROD_6390 >> 4;
+	}
