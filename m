@@ -2,194 +2,729 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 084A835CF54
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:20:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 754F735CF5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:24:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243746AbhDLRUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:20:46 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60978 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239517AbhDLRUi (ORCPT
+        id S244024AbhDLRYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:24:20 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2838 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241403AbhDLRYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:20:38 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13CH56um088146;
-        Mon, 12 Apr 2021 17:20:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=xnuc9bWFW1Gdqt6VSZSJW68VZth7xXAS7S7ejeXN1QY=;
- b=gut4ZB98yLy4joJFSzvJgtGOMNvFlaD5rX33OkxbCwwkdX3lrg1FjIfZLK8YGvhX8i4C
- 24tAdjg09cMjYg0alUe8cw43cGKUljKvtr7pQ89nNtKOn3MQHkkzEfcgM+2Na2AfmIZ3
- +xnUJPVOiFswN+XOtyReuTVPoFEJG9K2lhd2zlY2SaK1eMO3uThYkyiReFZHX76YOqdy
- H89fkn95ko3q9Zy2+AYUswuSbaMvRAFU8Y50aJUdO7Xr9o543EkV22MxjUDch2fLgq9b
- zPCVpQ04XN8/LKkZhAQgpXd6TwnUlj1QutNCaDwcaIwH3iVKRS15u1StsJPLO6XdZ5Jq uw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 37u4nncf6s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Apr 2021 17:20:03 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 13CH6JIA102701;
-        Mon, 12 Apr 2021 17:20:02 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
-        by userp3030.oracle.com with ESMTP id 37unxvp8ru-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Apr 2021 17:20:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kduTdb8j+hoUqWacAv3AIxFVHWk4VYRi1vjjRKCgN1La7DG93yqHCKHrQwdN5a5J9k5S/1ENSZaIwD/A+1zml/gHNUZr8WP3NJaEZCiX5iBDTm49AiEkzXSPZVy5ciA7zSTASlrcpuo54fP8qUHCB1TvLP92gWPUG8kyQPa+KOrvtb8sOOZ2sOBB/fCQfsyGqMGq/n8CGAqsCWAF5WcUaOP9Lc+yqW/zplW0iWt3xc/UsRigul0lBTp50l9xlV9TVG2Xl+imqZctncsLB6mLp79TVHgIk7JnX8T5khFoEftLHhr4Yk0YuRKcCrQH4QuhbezJAhVzHi4HLdxrMGnb8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xnuc9bWFW1Gdqt6VSZSJW68VZth7xXAS7S7ejeXN1QY=;
- b=InYiN8hVbeP+fGp3PDeGsHSJkEeyYM6uiIzKt8+C5ZX+EoVZB0Q2Uy73Zff7n4n+d//RotbCGJYDB8PLVGSAFleNO3+llxazY1l9q5AQaCSkPOVwQYdA/07qxPHJJCdWu1/yPONKUlTQJa4tKKKOB1/38/obP7J+s0MULXtrwHcBz0Lw200mYd2q21chhMRzZrPxtotxUxhbk62wrquBXhl6j7/gNb4kHbQcid/qV2Ytd/xefW2GhO2n2b0DrZOr7JUAqLXBc4BzARsBLM0kvRYrEUBGrP21fdPKocqiPeLMobUSwIvLJPiDrh6jHJalMN9cKE5FPjIAPpz5/uSrZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xnuc9bWFW1Gdqt6VSZSJW68VZth7xXAS7S7ejeXN1QY=;
- b=h/KlsneRFZDI716Jb2f5KNzfXa+9vVmokXkRvOKP/Yh51YXvrUDH9Slv3u4Lmpngca4kChOGyx44iq5QzekqE++NWMo1ZTuasdXLfj7UjBMiMH4Wr9sfH9xlOJLxB5Job5USH73jvBxE8KpoR0TH9W1tViHcsPyorPD84D9KkaQ=
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com (2603:10b6:a03:11e::32)
- by SJ0PR10MB4638.namprd10.prod.outlook.com (2603:10b6:a03:2d8::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.18; Mon, 12 Apr
- 2021 17:20:00 +0000
-Received: from BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::50bb:7b66:35ee:4a4]) by BYAPR10MB3573.namprd10.prod.outlook.com
- ([fe80::50bb:7b66:35ee:4a4%7]) with mapi id 15.20.4020.022; Mon, 12 Apr 2021
- 17:20:00 +0000
-Subject: Re: [PATCH 2/2] scsi: iscsi_tcp: Fix use-after-free in
- iscsi_sw_tcp_host_get_param()
-To:     Wenchao Hao <haowenchao@huawei.com>, Lee Duncan <lduncan@suse.com>,
-        Chris Leech <cleech@redhat.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>
-Cc:     open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Wu Bo <wubo40@huawei.com>,
-        linfeilong@huawei.com
-References: <20210407012450.97754-1-haowenchao@huawei.com>
- <20210407012450.97754-3-haowenchao@huawei.com>
-From:   Mike Christie <michael.christie@oracle.com>
-Message-ID: <719f91cb-769d-53c8-1b54-cb9ad38aba01@oracle.com>
-Date:   Mon, 12 Apr 2021 12:19:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-In-Reply-To: <20210407012450.97754-3-haowenchao@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [73.88.28.6]
-X-ClientProxiedBy: DM6PR13CA0072.namprd13.prod.outlook.com
- (2603:10b6:5:134::49) To BYAPR10MB3573.namprd10.prod.outlook.com
- (2603:10b6:a03:11e::32)
+        Mon, 12 Apr 2021 13:24:18 -0400
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FJwM80zs5z67nYQ;
+        Tue, 13 Apr 2021 01:14:12 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 12 Apr 2021 19:23:58 +0200
+Received: from [10.47.11.100] (10.47.11.100) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 12 Apr
+ 2021 18:23:57 +0100
+Subject: Re: [PATCH v2 1/2] drivers/perf: hisi: Add driver for HiSilicon PCIe
+ PMU
+To:     "liuqi (BA)" <liuqi115@huawei.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Zhangshaokun <zhangshaokun@hisilicon.com>
+References: <1617959157-22956-1-git-send-email-liuqi115@huawei.com>
+ <1617959157-22956-2-git-send-email-liuqi115@huawei.com>
+ <4cae4206-aa50-f111-2f6f-d035bc36856e@huawei.com>
+ <9c577f11-46e7-55a0-95e8-6c3376077049@huawei.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <fb795e51-ce01-e976-ac09-d3f384307623@huawei.com>
+Date:   Mon, 12 Apr 2021 18:21:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [20.15.0.204] (73.88.28.6) by DM6PR13CA0072.namprd13.prod.outlook.com (2603:10b6:5:134::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4042.6 via Frontend Transport; Mon, 12 Apr 2021 17:19:58 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f3da4006-8140-4656-c172-08d8fdd73378
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4638:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SJ0PR10MB4638957AAB3FB49EEF065740F1709@SJ0PR10MB4638.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EZn5MqDQi7OpKwVsTm5J2koEWWz8w/xd8SBUiZI86++J85GueYErBcmlAcC9xsbTFTvikfTsAJIVnjspp5lk5U73iO5P+/evxTDO97s5UHIQAzGe1I2ATJxz5H5Kcd3hzR2+zYkUSy5naQds+WbpWOuc1D1YMitxq4uHhUZUp7Ipzkrn8A5KUT6qvljB1xqM1GpVtHSzayD6I2Kcupy2R+cSEG+70QOELNFq8ItXdY8xIxuvwrspQUFWaUXcoabicvGcgu8OeB1dt22DM3rmesNSaeQ8WKq0vEtYzGbc0xofs7wpkftQyMq2TkjG0qyFLHVzOtyLT1WFjSDlvbg71df6x+sCMM4F05GDc4HSHJLW52COCh7dkTOAPBzSbVNin5ZCw09gn45xIsP37A5rWmvzwLGtpTZnqU+rDw+jiAi2MXOeeu5KtMhbBxyBEdA+8qMekICSs6v4SdbzUQDWSSGRxs1WaIh30UmQyPuDqIGeWDLdgBZerKQm4xrIebBM+AEMwoXWRnL749vI098C/2yxWRCA9J82zufSoZ3WnU3FJ3WAcGbWx3PIF4xLvKCDuNDHOoyf5k3Quib0jJ7vVven6YudgwUGWXNm4+Fg3a0m4Vi0hP6B1rIbxThEiBdB/W1q5c/7NS7Y3VapkgmVMDnw2mV2rEj6F63yBMJdTnqlq/V2ThKiVi2iuMU1vtzjbSAa1ozeiHg1adZ3vZFwPQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB3573.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(136003)(366004)(396003)(346002)(16576012)(5660300002)(53546011)(316002)(31686004)(2906002)(86362001)(4326008)(83380400001)(66556008)(110136005)(6636002)(6706004)(2616005)(16526019)(38100700002)(8936002)(956004)(66476007)(6486002)(31696002)(8676002)(26005)(478600001)(66946007)(36756003)(186003)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?eFpyL0Vlbi9OUm9FTmlzK3dSN3FueVZuR29ZUTdPdnlWd2kwMWtyZG1vcE1M?=
- =?utf-8?B?c3E0TXpsWlJORUpLR0x2WE5Rb0ZnUUJmQ3RDTXBzMVpJSGFDc1A3MS9NSjd3?=
- =?utf-8?B?QURtU3lqc1hUVGIrSFJ3VVBBL0hscUtZRHRCdlMvRUxBUlVNQ0RyemxqZGc5?=
- =?utf-8?B?MGZBRll5ZXV3RThOTWRNUkoyT00yMUlaMStzdXRzOWs4bkRRN1lVNTFkMGZD?=
- =?utf-8?B?S3lwK1c3emJGQkJmUitGdGsrdnVKMmg3d2NEd1Fzb0ZXK1VBOGhKZ3V1NWI1?=
- =?utf-8?B?VWxka1RzV1ZiRURtVnpjdXZoTUxOaWFFeFEvNExIWG1DYURjaDdmQVhvNit0?=
- =?utf-8?B?N2M4eTlFdjNUK2Y2bm9HaElzVlFzUU5kdFJUQkI3dUw4eU0xYkprY2FYQ0wr?=
- =?utf-8?B?M3B6L3k4ZTRRd2VnK2VsWlVpa1FxdUMyR2NvSnd6RlNCRjBUekRwb1dTMWlN?=
- =?utf-8?B?NE94cXhkSVdmVjRNRjh5ZEswUi8xbFBXZjdBaUFIQnlHNnFtcEliL0xBSjlN?=
- =?utf-8?B?UzY3b2tCVnptMTVmWmZITHc4NDdudDFQWWg0MVFXU3Nia3hmZ1E2Wm9ETm0r?=
- =?utf-8?B?NHovM3ZIeVZ1L1kwcTl3RGtRUDhDT2xHL3pjNXZNcjV5dStwcVVWaWZnNkpH?=
- =?utf-8?B?amxkN3g2OUlUQUxKdnJtZCtIZE9jZnVSZnFsckdNTVV2Y2hmaDdxSTUySWc0?=
- =?utf-8?B?NFNNOVQva2ZRK3NzVmZPNFpCYlJDQ1hldGk4WFVFTHlkcWxPTmNnZG93cTB0?=
- =?utf-8?B?Z1ppUDdjVkJMQnU3bUJTN2pEOGtGZDB4eXVxTGRNZ2pSZ3NqSDNoWW1EMDA2?=
- =?utf-8?B?UXlDL0ZZQXZ1dHJ2cDlqWFF4Nmp6dUNzNndIOCsydHhXSld3QUhrSGwyeG1E?=
- =?utf-8?B?VUkvcFpZTFo2OFM3cGYzWlBtVTk0YnI0YUgrUXdGNzRSQTRrQi9LejZWSjJG?=
- =?utf-8?B?RnM2MmY2TVhpeE1TMSsxZU42UzZtWkdNTkxwZUlVQURYUE9xY2U2cWwxMnRW?=
- =?utf-8?B?aXJKSkp3eTc5dG44dlRRUkNkRnhDckNiM1ZqaStpcGdlS0kzcXcrVDlIYkhE?=
- =?utf-8?B?dXVVKzZweUZjRGRKZFdHRWw5UkhOdVhxRVB3dTc4M2tOcnNYM2dQSnJVUHRZ?=
- =?utf-8?B?RWxIWHBmNHF0Zis2Tm5rSEZ4ZUptK1VYSUlaUHhac1VzM2RoTFQ0RGY0eFJi?=
- =?utf-8?B?VDhNUWdKTFkvNy94emw1Qm8wQ2J0S1lCL244NDkwNzRPZ3RiWmJXYk5mNGRU?=
- =?utf-8?B?dDQ5RU9lVFh3QjAwSGVTNUxHK0ZEMlFSM2xSeFRBTHBrVjgzSkNMRWtuR3hr?=
- =?utf-8?B?cUxqd3pkYXdLbWh4cnQ4NFBRODZGU1FwbVBvdkJCZFlJY3lSaHhXclNZa3ov?=
- =?utf-8?B?MUw1MklSNzhITmg0TEt5eDVqa0FPN0hNd3lCdzA3TlhURjU5QzBhNFZFUzRG?=
- =?utf-8?B?V2cyenQwckxSbzRxWHRHd0xGNW1yaHpLQnNYRC9CaDF3M2Nha3VQUUNzYkZH?=
- =?utf-8?B?VE1TTk9iWlM4VkI3UWswZitjbXM1bzZpV3JxK2JZVGlPK1M5YjIxQytsMENm?=
- =?utf-8?B?TTJsM0Z4dHVrUkxxZlFGUUx1bkczUXozYVR0bFAyUTlBRmV3TjlpcmxvUzJO?=
- =?utf-8?B?OWxNWGhQZVF6MVkzQ2pkMEJVUGhDbHcrK2hZNzhwOEVoWXVtaVY5cDd1Kzkw?=
- =?utf-8?B?dmY5NDhZQ3ZaRnhxYXUxNzJGdE0yQ1VyblIrUkVlVWQvYXR6emRDNzFqbGFi?=
- =?utf-8?Q?ipbHnZJLG3cDMhRb1Qazwi21Zki8Tz7Z04K2L3F?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3da4006-8140-4656-c172-08d8fdd73378
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB3573.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2021 17:19:59.9491
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: tH3FNU18+6xmql891xbZ8Y/XpnKfSbU3vxQek8ibTi7xP3/pRFqtDugA1vDgMqTY/NhAjYXevx9TqB4Z1i5+ANWfW2COTXDTbks0U59I9xY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR10MB4638
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- spamscore=0 adultscore=0 phishscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2104120109
-X-Proofpoint-ORIG-GUID: MTX2-8jfj4oQGBm1I1cutLJbUPMAOJ0r
-X-Proofpoint-GUID: MTX2-8jfj4oQGBm1I1cutLJbUPMAOJ0r
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9952 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 priorityscore=1501
- clxscore=1015 lowpriorityscore=0 spamscore=0 impostorscore=0 bulkscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2104120109
+In-Reply-To: <9c577f11-46e7-55a0-95e8-6c3376077049@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.11.100]
+X-ClientProxiedBy: lhreml739-chm.china.huawei.com (10.201.108.189) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/6/21 8:24 PM, Wenchao Hao wrote:
-> iscsi_sw_tcp_host_get_param() would access struct iscsi_session, while
-> struct iscsi_session might be freed by session destroy flow in
-> iscsi_free_session(). This commit fix this condition by freeing session
-> after host has already been removed.
+On 12/04/2021 14:34, liuqi (BA) wrote:
 > 
-> Signed-off-by: Wenchao Hao <haowenchao@huawei.com>
-> ---
->  drivers/scsi/iscsi_tcp.c | 27 ++++++++++++++++++---------
->  1 file changed, 18 insertions(+), 9 deletions(-)
+> Hi John,
 > 
-> diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c
-> index dd33ce0e3737..d559abd3694c 100644
-> --- a/drivers/scsi/iscsi_tcp.c
-> +++ b/drivers/scsi/iscsi_tcp.c
-> @@ -839,6 +839,18 @@ iscsi_sw_tcp_conn_get_stats(struct iscsi_cls_conn *cls_conn,
->  	iscsi_tcp_conn_get_stats(cls_conn, stats);
->  }
->  
-> +static void
-> +iscsi_sw_tcp_session_teardown(struct iscsi_cls_session *cls_session)
-> +{
-> +	struct Scsi_Host *shost = iscsi_session_to_shost(cls_session);
-> +
-> +	iscsi_session_destroy(cls_session);
-> +	iscsi_host_remove(shost);
-> +
-> +	iscsi_free_session(cls_session);
-> +	iscsi_host_free(shost);
-> +}
+> Thanks for reviewing this.
+> On 2021/4/9 18:22, John Garry wrote:
+>> On 09/04/2021 10:05, Qi Liu wrote:
+>>> PCIe PMU Root Complex Integrated End Point(RCiEP) device is supported
+>>> to sample bandwidth, latency, buffer occupation etc.
+>>>
+>>> Each PMU RCiEP device monitors multiple Root Ports, and each RCiEP is
+>>> registered as a PMU in /sys/bus/event_source/devices, so users can
+>>> select target PMU, and use filter to do further sets.
 
-Can you add a comment about the iscsi_tcp dependency with the host
-and session or maybe convert ib_iser too?
+side note: it would be good to mention what baseline the series is based 
+on in the cover letter
 
-ib_iser does the same session per host scheme and so if you were
-just scanning the code and going to make a API change, it's not
-really clear why the drivers do it differently.
+>>>
+>>> Filtering options contains:
+>>> event        - select the event.
+>>> subevent     - select the subevent.
+>>> port         - select target Root Ports. Information of Root Ports
+>>>                  are shown under sysfs.
+>>> bdf          - select requester_id of target EP device.
+>>> trig_len     - set trigger condition for starting event statistics.
+>>> trigger_mode - set trigger mode. 0 means starting to statistic when
+>>>                  bigger than trigger condition, and 1 means smaller.
+>>> thr_len      - set threshold for statistics.
+>>> thr_mode     - set threshold mode. 0 means count when bigger than
+>>>                  threshold, and 1 means smaller.
+>>>
+>>> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+>>> ---
+>>>    MAINTAINERS                                |    6 +
+>>>    drivers/perf/Kconfig                       |    2 +
+>>>    drivers/perf/Makefile                      |    1 +
+>>>    drivers/perf/pci/Kconfig                   |   16 +
+>>>    drivers/perf/pci/Makefile                  |    2 +
+>>>    drivers/perf/pci/hisilicon/Makefile        |    5 +
+>>>    drivers/perf/pci/hisilicon/hisi_pcie_pmu.c | 1011
+>>> ++++++++++++++++++++++++++++
+>>>    include/linux/cpuhotplug.h                 |    1 +
+>>>    8 files changed, 1044 insertions(+)
+>>>    create mode 100644 drivers/perf/pci/Kconfig
+>>>    create mode 100644 drivers/perf/pci/Makefile
+>>>    create mode 100644 drivers/perf/pci/hisilicon/Makefile
+>>>    create mode 100644 drivers/perf/pci/hisilicon/hisi_pcie_pmu.c
+>>>
+>>> diff --git a/MAINTAINERS b/MAINTAINERS
+>>> index 3353de0..46c7861 100644
+>>> --- a/MAINTAINERS
+>>> +++ b/MAINTAINERS
+>>> @@ -8023,6 +8023,12 @@ W:    http://www.hisilicon.com
+>>>    F:    Documentation/admin-guide/perf/hisi-pmu.rst
+>>>    F:    drivers/perf/hisilicon
+>>> +HISILICON PCIE PMU DRIVER
+>>> +M:    Qi Liu <liuqi115@huawei.com>
+>>> +S:    Maintained
+>>> +F:    Documentation/admin-guide/perf/hisi-pcie-pmu.rst
+>>
+>> nit: this does not exist yet...
+>>
+> thanks, I'll move this add-maintainer-part to the second patch.
+
+that's why I advocate the documentation first :)
+
+>>> +F:    drivers/perf/pci/hisilicon/hisi_pcie_pmu.c
+>>> +
+>>>    HISILICON QM AND ZIP Controller DRIVER
+>>>    M:    Zhou Wang <wangzhou1@hisilicon.com>
+>>>    L:    linux-crypto@vger.kernel.org
+>>> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+>>> index 3075cf1..99d4760 100644
+>>> --- a/drivers/perf/Kconfig
+>>> +++ b/drivers/perf/Kconfig
+>>> @@ -139,4 +139,6 @@ config ARM_DMC620_PMU
+>>>    source "drivers/perf/hisilicon/Kconfig"
+>>> +source "drivers/perf/pci/Kconfig"
+>>> +
+>>>    endmenu
+>>> diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
+>>> index 5260b11..1208c08 100644
+>>> --- a/drivers/perf/Makefile
+>>> +++ b/drivers/perf/Makefile
+>>> @@ -14,3 +14,4 @@ obj-$(CONFIG_THUNDERX2_PMU) += thunderx2_pmu.o
+>>>    obj-$(CONFIG_XGENE_PMU) += xgene_pmu.o
+>>>    obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
+>>>    obj-$(CONFIG_ARM_DMC620_PMU) += arm_dmc620_pmu.o
+>>> +obj-y += pci/
+>>> diff --git a/drivers/perf/pci/Kconfig b/drivers/perf/pci/Kconfig
+>>> new file mode 100644
+>>> index 0000000..a119486
+>>> --- /dev/null
+>>> +++ b/drivers/perf/pci/Kconfig
+>>> @@ -0,0 +1,16 @@
+>>> +# SPDX-License-Identifier: GPL-2.0-only
+>>> +#
+>>> +# PCIe Performance Monitor Drivers
+>>> +#
+>>> +menu "PCIe Performance Monitor"
+>>> +
+>>> +config HISI_PCIE_PMU
+>>> +    tristate "HiSilicon PCIE PERF PMU"
+>>> +    depends on ARM64 && PCI && HISI_PMU
+>>
+>> What from HISI_PMU is needed? I couldn't find anything here
+> The event_sysfs_show() and format_sysfs_show() function of
+> hisi_uncore_pmu.h can be reused in hisi_pcie_pmu.c, So I add path in
+> Makefile and include "hisi_uncore_pmu.h".
+
+Right, but it would be nice to be able to build this under COMPILE_TEST. 
+CONFIG_HISI_PMU cannot be built under COMPILE_TEST, so nice to not 
+depend on it.
+
+So you could put hisi_event_sysfs_show() as a static inline in 
+hisi_uncore_pmu.h, so the dependency can be removed
+
+Having said that, there is nothing really hisi specific in those 
+functions like hisi_event_sysfs_show().
+
+Can't we just create generic functions here?
+
+hisi_event_sysfs_show() == cci400_pmu_cycle_event_show() == 
+xgene_pmu_event_show()
+
+> 
+>>
+>>> +    help
+>>> +      Provide support for HiSilicon PCIe performance monitoring unit
+>>> (PMU)
+>>> +      RCiEP devices.
+>>> +      Adds the PCIe PMU into perf events system for monitoring latency,
+>>> +      bandwidth etc.
+>>> +
+
+
+
+
+
+>>> +#define HISI_PCIE_CHECK_EVENTS(name, list)             \
+>>
+>> "check" in a function name is too vague, as it does not imply any
+>> side-effect from calling this function.
+>>
+>> And I think "build" or similar would be good to be included in the macro
+>> name.
+>>
+>>> +    static inline bool is_##name##_event(u32 idx)                  \
+>>
+>> why inline?
+>>
+>>> +
+>>> {                                                                   \
+>>> +        if ((idx >= list[0] && idx <= list[1]) || idx == list[2])  \
+>>> +            return true;                                        \
+>>> +        return false;                                               \
+>>
+>> isn't this just:
+>> {
+>>       return (idx >= list[0] && idx <= list[1]) || idx == list[2])
+>> }
+> 
+> thanks, will address in next version.
+>>
+>>> +    }
+>>> +
+>>> +/*
+>>> + * The first element of event list is minimum index of TL-layer events
+>>> + * and the second element is maximum index. The third element is index
+>>> + * of a DL-layer event.
+>>> + */
+>>> +static const u32 bw_events_list[] = {0x04, 0x08, 0x84};
+>>> +static const u32 latency_events_list[] = {0x10, 0x15, 0x85};
+>>> +static const u32 bus_util_events_list[] = {0x20, 0x24, 0x09};
+>>> +static const u32 buf_util_events_list[] = {0x28, 0x2a, 0x33};
+>>> +
+>>> +HISI_PCIE_CHECK_EVENTS(bw, bw_events_list);
+>>> +HISI_PCIE_CHECK_EVENTS(latency, latency_events_list);
+>>> +HISI_PCIE_CHECK_EVENTS(bus_util, bus_util_events_list);
+>>> +HISI_PCIE_CHECK_EVENTS(buf_util, buf_util_events_list);
+>>
+>> Surely the macro can be fixed such that you need to have:
+>> HISI_PCIE_CHECK_EVENTS(buf_util);
+>>
+> will address in next version.
+>>
+>>> +
+>>> +static ssize_t hisi_pcie_cpumask_show(struct device *dev,
+>>> +                      struct device_attribute *attr, char *buf)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(dev_get_drvdata(dev));
+>>> +
+>>> +    return cpumap_print_to_pagebuf(true, buf, &pcie_pmu->cpumask);
+>>> +}
+>>> +
+>>> +static ssize_t hisi_pcie_identifier_show(struct device *dev,
+>>> +                     struct device_attribute *attr,
+>>> +                     char *buf)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(dev_get_drvdata(dev));
+>>> +
+>>> +    return sysfs_emit(buf, "0x%x\n", pcie_pmu->identifier);
+>>> +}
+>>> +
+>>> +static ssize_t hisi_pcie_bus_show(struct device *dev,
+>>> +                  struct device_attribute *attr, char *buf)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(dev_get_drvdata(dev));
+>>> +
+>>> +    return sysfs_emit(buf, "0x%02x\n", PCI_BUS_NUM(pcie_pmu->bdf_min));
+>>> +}
+>>> +
+>>> +static void hisi_pcie_parse_data(struct hisi_pcie_pmu *pcie_pmu, u32
+>>> reg_off,
+>>
+>> hisi_pcie_parse_data() name is way too vague. I mean, parse what data?
+>>
+>> is there is some standard format register we use for various data types,
+>> then make that clear please
+> Seems that we only have lower_32_bits() but do not have lower_16_bits().
+> perhaps we could change the function name to hisi_pcie_parse_reg_value()?
+
+ok, so even that name is better.
+
+> 
+>>
+>>> +                   u16 *arg0, u16 *arg1)
+>>> +{
+>>> +    u32 val = readl(pcie_pmu->base + reg_off);
+>>> +
+>>> +    *arg0 = val & 0xffff;
+>>> +    *arg1 = (val & 0xffff0000) >> 16;
+>>> +}
+>>> +
+>>> +static u32 hisi_pcie_pmu_get_offset(u32 offset, u32 idx)
+>>> +{
+>>> +    return offset + HISI_PCIE_REG_STEP * idx;
+>>> +}
+>>> +
+>>> +static u32 hisi_pcie_pmu_readl(struct hisi_pcie_pmu *pcie_pmu, u32
+>>> reg_offset,
+>>> +                   u32 idx)
+>>> +{
+>>> +    u32 offset = hisi_pcie_pmu_get_offset(reg_offset, idx);
+>>> +
+>>> +    return readl(pcie_pmu->base + offset);
+>>> +}
+>>> +
+>>> +static void hisi_pcie_pmu_writel(struct hisi_pcie_pmu *pcie_pmu, u32
+>>> reg_offset,
+>>> +                 u32 idx, u32 val)
+>>> +{
+>>> +    u32 offset = hisi_pcie_pmu_get_offset(reg_offset, idx);
+>>> +
+>>> +    writel(val, pcie_pmu->base + offset);
+>>> +}
+>>> +
+>>> +static u64 hisi_pcie_pmu_readq(struct hisi_pcie_pmu *pcie_pmu, u32
+>>> reg_offset,
+>>> +                   u32 idx)
+>>> +{
+>>> +    u32 offset = hisi_pcie_pmu_get_offset(reg_offset, idx);
+>>> +
+>>> +    return readq(pcie_pmu->base + offset);
+>>> +}
+>>> +
+>>> +static void hisi_pcie_pmu_writeq(struct hisi_pcie_pmu *pcie_pmu, u32
+>>> reg_offset,
+>>> +                 u32 idx, u64 val)
+>>> +{
+>>> +    u32 offset = hisi_pcie_pmu_get_offset(reg_offset, idx);
+>>> +
+>>> +    writeq(val, pcie_pmu->base + offset);
+>>> +}
+>>> +
+>>> +static u64 hisi_pcie_pmu_get_event(struct perf_event *event)
+>>
+>> that function name is too vague
+>>
+>>> +{
+>>> +    return FIELD_PREP(HISI_PCIE_EVENT_M, hisi_pcie_get_event(event)) |
+>>> +           FIELD_PREP(HISI_PCIE_SUBEVENT_M,
+>>> hisi_pcie_get_subevent(event));
+>>> +}
+>>> +
+>>> +static u64 hisi_pcie_pmu_get_target(struct perf_event *event)
+>>
+>> same here
+>>
+>>> +{
+>>> +    u64 port, val;
+>>> +
+>>> +    port = hisi_pcie_get_port(event);
+>>> +    if (port) {
+>>> +        val = FIELD_PREP(HISI_PCIE_TARGET_M, port);
+>>> +    } else {
+>>> +        val = FIELD_PREP(HISI_PCIE_TARGET_M, hisi_pcie_get_bdf(event));
+>>> +        val |= HISI_PCIE_TARGET_EN;
+>>> +    }
+>>> +
+>>> +    return val;
+>>> +}
+>>> +
+>>> +static u64 hisi_pcie_pmu_get_trigger(struct perf_event *event)
+>>
+>> and here
+>>
+>> what you really seem to be doing is getting the formatted fields for the
+>> register
+>>
+>>
+>> Having all these call-once functions seem to make life a bit more
+>> difficult...
+>>
+> Do you mean config all the filters in one function?, will fix it, thanks.
+
+Yes, I would suggest one function
+
+> 
+>>> +{
+>>> +    u64 trig_len, val;
+>>> +
+>>> +    trig_len = hisi_pcie_get_trig_len(event);
+>>> +    if (!trig_len)
+>>> +        return 0;
+>>> +
+>>> +    val = FIELD_PREP(HISI_PCIE_TRIG_M, trig_len);
+>>> +    val |= FIELD_PREP(HISI_PCIE_TRIG_MODE_M,
+>>> +              hisi_pcie_get_trig_mode(event));
+>>> +    val |= HISI_PCIE_TRIG_EN;
+>>> +
+>>> +    return val;
+>>> +}
+>>> +
+>>> +static u64 hisi_pcie_pmu_get_thr(struct perf_event *event)
+>>> +{
+>>> +    u64 thr_len, val;
+>>> +
+>>> +    thr_len = hisi_pcie_get_thr_len(event);
+>>> +    if (!thr_len)
+>>> +        return 0;
+>>> +
+>>> +    val = FIELD_PREP(HISI_PCIE_THR_M, thr_len);
+>>> +    val |= FIELD_PREP(HISI_PCIE_THR_MODE_M,
+>>> hisi_pcie_get_thr_mode(event));
+>>> +    val |= HISI_PCIE_THR_EN;
+>>> +
+>>> +    return val;
+>>> +}
+>>> +
+>>> +static void hisi_pcie_pmu_config_filter(struct perf_event *event)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>>> +    struct hw_perf_event *hwc = &event->hw;
+>>> +    u32 idx = hwc->idx;
+>>> +    u64 val;
+>>> +
+>>> +    val = HISI_PCIE_DEFAULT_SET;
+>>> +    val |= hisi_pcie_pmu_get_event(event);
+>>> +    val |= hisi_pcie_pmu_get_target(event);
+>>> +    val |= hisi_pcie_pmu_get_trigger(event);
+>>> +    val |= hisi_pcie_pmu_get_thr(event);
+>>> +    hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, idx, val);
+>>> +}
+>>> +
+>>> +static void hisi_pcie_pmu_clear_filter(struct perf_event *event)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>>> +    struct hw_perf_event *hwc = &event->hw;
+>>> +
+>>> +    hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, hwc->idx,
+>>> +                 HISI_PCIE_DEFAULT_SET);
+>>> +}
+>>> +
+>>> +static bool hisi_pcie_pmu_valid_port(struct hisi_pcie_pmu *pcie_pmu,
+>>> u16 bdf)
+>>> +{
+>>> +    return bdf <= pcie_pmu->bdf_max && bdf >= pcie_pmu->bdf_min;
+>>
+>> nit: it is standard to have:
+>>
+>>       if (x >= min && x <= max)
+>>
+>> i.e. have min on the left
+>>
+>> 2nd nit: it is passed bdf, yet "port" is in the name
+>>
+> will fix the function, bdf means the BDF of Root Port, I'll use rp_bdf
+> in bext version to describe it.
+
+ok
+
+>>
+>>> +}
+>>> +
+>>> +static bool hisi_pcie_pmu_valid_requester_id(struct hisi_pcie_pmu
+>>> *pcie_pmu,
+>>> +                        u32 bdf)
+>>> +{
+>>> +    struct pci_dev *root_port, *pdev;
+>>> +
+>>> +    pdev =
+>>> pci_get_domain_bus_and_slot(pci_domain_nr(pcie_pmu->pdev->bus),
+>>> +                       PCI_BUS_NUM(bdf),
+>>> +                       GET_PCI_DEVFN(bdf));
+>>> +    if (!pdev)
+>>> +        return false;
+>>> +
+>>> +    root_port = pcie_find_root_port(pdev);
+>>> +    if (!root_port)
+>>> +        return false;
+>>> +
+>>> +    pci_dev_put(pdev);
+>>> +    return hisi_pcie_pmu_valid_port(pcie_pmu, pci_dev_id(root_port));
+>>> +}
+>>> +
+>>> +static bool hisi_pcie_pmu_valid_filter(struct perf_event *event,
+>>> +                       struct hisi_pcie_pmu *pcie_pmu)
+>>> +{
+>>> +    u32 subev_idx = hisi_pcie_get_subevent(event);
+>>> +    u32 event_idx = hisi_pcie_get_event(event);
+>>> +    u32 requester_id = hisi_pcie_get_bdf(event);
+>>> +
+>>> +    if (subev_idx > HISI_PCIE_SUBEVENT_MAX ||
+>>> +        event_idx > HISI_PCIE_EVENT_MAX) {
+>>> +        pci_err(pcie_pmu->pdev,
+>>> +            "Max event index and max subevent index is: %d, %d.\n",
+>>> +            HISI_PCIE_EVENT_MAX, HISI_PCIE_SUBEVENT_MAX);
+>>
+>> if this is just going to be fed back to userspace, I don't see why we
+>> need a kernel log
+>>
+>> and the only caller also triggers an error message, which I doubt is needed
+>>
+> Print out the HISI_PCIE_EVENT_MAX and HISI_PCIE_SUBEVENT_MAX here may be
+> more convenient for users to get the right value.
+> If you this is redundant I'll remove it. :)
+
+Don't we already tell this to userspace?
+
+>>> +        return false;
+>>> +    }
+>>> +
+>>> +    if (hisi_pcie_get_thr_len(event) > HISI_PCIE_THR_MAX_VAL)
+>>> +        return false;
+>>> +
+>>> +    if (hisi_pcie_get_trig_len(event) > HISI_PCIE_TRIG_MAX_VAL)
+>>> +        return false;
+>>> +
+>>> +    if (requester_id) {
+>>> +        if (!hisi_pcie_pmu_valid_requester_id(pcie_pmu, requester_id)) {
+>>> +            pci_err(pcie_pmu->pdev, "Invalid requester id.\n");
+>>
+>> see previous comments
+>>
+>>> +            return false;
+>>> +        }
+>>> +    }
+>>> +
+>>> +    return true;
+>>> +}
+>>> +
+>>> +static bool hisi_pcie_pmu_validate_event_group(struct perf_event *event)
+>>> +{
+>>> +    struct perf_event *sibling, *leader = event->group_leader;
+>>> +    int counters = 1;
+>>> +
+>>> +    if (!is_software_event(leader)) {
+>>> +        if (leader->pmu != event->pmu)
+>>> +            return false;
+>>> +
+>>> +        if (leader != event)
+>>> +            counters++;
+>>> +    }
+>>> +
+>>> +    for_each_sibling_event(sibling, event->group_leader) {
+>>> +        if (is_software_event(sibling))
+>>> +            continue;
+>>> +
+>>> +        if (sibling->pmu != event->pmu)
+>>> +            return false;
+>>> +
+>>> +        counters++;
+>>> +    }
+>>> +
+>>> +    return counters <= HISI_PCIE_MAX_COUNTERS;
+>>> +}
+>>> +
+>>> +static int hisi_pcie_pmu_event_init(struct perf_event *event)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>>> +
+>>> +    event->cpu = cpumask_first(&pcie_pmu->cpumask);
+>>> +
+>>> +    if (event->attr.type != event->pmu->type)
+>>> +        return -ENOENT;
+>>> +
+>>> +    /* Sampling is not supported. */
+>>> +    if (is_sampling_event(event) || event->attach_state &
+>>> PERF_ATTACH_TASK)
+>>> +        return -EOPNOTSUPP;
+>>> +
+>>> +    /* Per-task mode is not supported. */
+>>> +    if (event->cpu < 0)
+>>
+>> cpumask_first() gives an unsigned int - this can never happen
+
+please fix this!
+
+>>
+>>> +        return -EINVAL;
+>>> +
+>>> +    if (!hisi_pcie_pmu_valid_filter(event, pcie_pmu)) {
+>>> +        pci_err(pcie_pmu->pdev, "Invalid filter!\n");
+>>> +        return -EINVAL;
+>>> +    }
+>>> +
+>>> +    if (!hisi_pcie_pmu_validate_event_group(event))
+>>> +        return -EINVAL;
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static u64 hisi_pcie_pmu_process_data(struct perf_event *event, u64 val,
+
+
+
+>>> +
+>>> +static void hisi_pcie_pmu_disable_int(struct hisi_pcie_pmu *pcie_pmu,
+>>> +                      struct hw_perf_event *hwc)
+>>> +{
+>>> +    u32 idx = hwc->idx;
+>>> +
+>>> +    hisi_pcie_pmu_writel(pcie_pmu, HISI_PCIE_INT_MASK, idx, 1);
+>>> +}
+>>> +
+>>> +static void hisi_pcie_pmu_reset_counter(struct hisi_pcie_pmu *pcie_pmu,
+>>> +                    struct hw_perf_event *hwc)
+>>> +{
+>>> +    u32 idx = hwc->idx;
+>>> +
+>>> +    hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, idx,
+>>> +                 HISI_PCIE_RESET_CNT);
+>>> +    hisi_pcie_pmu_writeq(pcie_pmu, HISI_PCIE_EVENT_CTRL, idx,
+>>> +                 HISI_PCIE_DEFAULT_SET);
+>>> +}
+>>> +
+>>> +static void hisi_pcie_pmu_start(struct perf_event *event, int flags)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>>> +    struct hw_perf_event *hwc = &event->hw;
+>>> +    struct hw_perf_event_extra *hwc_ext;
+>>> +    u64 prev_cnt, prev_cnt_ext;
+>>> +
+>>> +    hwc_ext = &hwc->extra_reg;
+>>> +    if (WARN_ON_ONCE(!(hwc->state & PERF_HES_STOPPED)))
+>>> +        return;
+>>> +
+>>> +    WARN_ON_ONCE(!(hwc->state & PERF_HES_UPTODATE));
+>>> +    hwc->state = 0;
+>>> +
+>>> +    hisi_pcie_pmu_config_filter(event);
+>>> +    hisi_pcie_pmu_enable_counter(pcie_pmu, hwc);
+>>> +    hisi_pcie_pmu_enable_int(pcie_pmu, hwc);
+>>> +    hisi_pcie_pmu_set_period(event);
+>>> +
+>>> +    if (flags & PERF_EF_RELOAD) {
+>>> +        prev_cnt = local64_read(&hwc->prev_count);
+>>> +        prev_cnt_ext = hwc_ext->config;
+>>> +        hisi_pcie_pmu_write_counter(event, prev_cnt, prev_cnt_ext);
+>>> +    }
+>>> +
+>>> +    perf_event_update_userpage(event);
+>>> +}
+>>> +
+>>> +static void hisi_pcie_pmu_stop(struct perf_event *event, int flags)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>>> +    struct hw_perf_event *hwc = &event->hw;
+>>> +
+>>> +    hisi_pcie_pmu_read(event);
+>>
+>> why do this - it just reads a register? and so why not check the return
+>> value?
+>>
+> hisi_pcie_pmu_read() is a void function, perhaps I should use
+> hisi_pcie_pmu_update_counter().
+
+I am not sure what your intention is with calling hisi_pcie_pmu_read(), 
+so cannot advise
+
+>>> +    hisi_pcie_pmu_disable_int(pcie_pmu, hwc);
+>>> +    hisi_pcie_pmu_disable_counter(pcie_pmu, hwc);
+>>> +    hisi_pcie_pmu_clear_filter(event);
+>>> +    WARN_ON_ONCE(hwc->state & PERF_HES_STOPPED);
+>>> +    hwc->state |= PERF_HES_STOPPED;
+>>> +
+>>> +    if (hwc->state & PERF_HES_UPTODATE)
+>>> +        return;
+>>> +
+>>> +    hwc->state |= PERF_HES_UPTODATE;
+>>> +}
+>>> +
+>>> +static int hisi_pcie_pmu_add(struct perf_event *event, int flags)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = to_pcie_pmu(event->pmu);
+>>> +    struct hw_perf_event *hwc = &event->hw;
+>>> +    int idx;
+>>> +
+>>> +    hwc->state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
+>>> +    idx = hisi_pcie_pmu_get_event_idx(pcie_pmu);
+>>> +    if (idx < 0)
+>>> +        return idx;
+>>> +
+>>> +    hwc->idx = idx;
+>>> +    pcie_pmu->hw_events[idx] = event;
+>>> +
+>>> +    /* Reset PMC to avoid interference caused by previous statistic. */
+
+
+
+>>> +
+>>> +static void hisi_pcie_pmu_irq_unregister(struct pci_dev *pdev,
+>>> +                     struct hisi_pcie_pmu *pcie_pmu)
+>>> +{
+>>> +    free_irq(pcie_pmu->irq, pcie_pmu);
+>>> +    pci_free_irq_vectors(pdev);
+>>> +}
+>>> +
+>>> +static int hisi_pcie_pmu_online_cpu(unsigned int cpu, struct
+>>> hlist_node *node)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node,
+>>> +                     struct hisi_pcie_pmu, node);
+>>> +
+>>> +    if (cpumask_empty(&pcie_pmu->cpumask)) {
+>>> +        cpumask_set_cpu(cpu, &pcie_pmu->cpumask);
+>>> +        WARN_ON(irq_set_affinity_hint(pcie_pmu->irq, cpumask_of(cpu)));
+>>> +    }
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
+>>> +static int hisi_pcie_pmu_offline_cpu(unsigned int cpu, struct
+>>> hlist_node *node)
+>>> +{
+>>> +    struct hisi_pcie_pmu *pcie_pmu = hlist_entry_safe(node,
+>>> +                     struct hisi_pcie_pmu, node);
+>>> +    unsigned int target;
+>>> +
+>>> +    if (!cpumask_test_and_clear_cpu(cpu, &pcie_pmu->cpumask))
+>>
+>> I do wonder why we even need maintain pcie_pmu->cpumask
+>>
+>> Can't we just use cpu_online_mask as appropiate instead?
+
+?
+
+>>
+>>> +        return 0;
+>>> +
+>>> +    /* Choose a new CPU from all online cpus. */
+>>> +    target = cpumask_any_but(cpu_online_mask, cpu);
+>>> +    if (target >= nr_cpu_ids)
+>>> +        return 0;
+>>> +
+>>> +    perf_pmu_migrate_context(&pcie_pmu->pmu, cpu, target);
+>>> +    WARN_ON(irq_set_affinity_hint(pcie_pmu->irq, cpumask_of(target)));
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +
