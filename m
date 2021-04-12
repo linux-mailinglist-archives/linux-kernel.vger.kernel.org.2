@@ -2,154 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA5C35D3A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD36035D3B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245187AbhDLXDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:03:45 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:48912 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243068AbhDLXDo (ORCPT
+        id S1344014AbhDLXEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:04:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1343968AbhDLXDv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:03:44 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id B9AD41F453CD
-Received: by jupiter.universe (Postfix, from userid 1000)
-        id E19464800C8; Tue, 13 Apr 2021 01:03:21 +0200 (CEST)
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH 2/6] ARM: dts: ux500: Fix interrupt cells
-Date:   Tue, 13 Apr 2021 01:03:16 +0200
-Message-Id: <20210412230320.382885-3-sebastian.reichel@collabora.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412230320.382885-1-sebastian.reichel@collabora.com>
-References: <20210412230320.382885-1-sebastian.reichel@collabora.com>
+        Mon, 12 Apr 2021 19:03:51 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8A8C06138D
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:03:31 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id x13so13969233lfr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:03:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rzJqdflF0WnnM2sRHImKq0cVYdyTkByzLc0YHSLjXyw=;
+        b=l2UdhHrElVUDwH0hdCZbLmqJp9H1jOKWmea9EvpaCTnJg5biZnZtb90GZq56pXCyuL
+         qlITzfF7jqj7p3Lwo2BljksTyDdQntYdb2F6iYN5MWSe2I78ThxWhzTPYt12pd8zQkZa
+         EsBPugLlm71CgY1zGZO46yoGkv140ySoB1/dNn2mPuYmBbgjUZjiqnjW7qyaohgtvdR2
+         kr+fqLblcbKMouw1xITBfF2HuH64dkNcLLgG42WRVITR+ju2d1jxzzyHn+t6WSrO9u4W
+         wtr8cSWu9xge+Hw9P0frVBFEToUDcRKjbOKQNbzfpoNK6N7K/sIMT7uakUFRPOaQuiIR
+         Qx7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rzJqdflF0WnnM2sRHImKq0cVYdyTkByzLc0YHSLjXyw=;
+        b=fF3BfqomhCvajqZVwihoDd61Q8JE3g6CZfu3xqbfpZ/utlZTscaexkyG4HzlJlnPWJ
+         Z+xkFYgol2p8ewOlX/avEojeJ/rc9aLFq+/Zu90bmfwCX2waHxJQ3xi/e7tp7jChBlkQ
+         /2pDiEpB12x/8XRYjrBzraAPW8MB2voxfWbD3pKn/w3ZFNBnNsB0OJqXWKjpM5Umbd8R
+         QfvtFg+SGjP79LlkkmLz3QYiEN5KIaQrMtev+tlDqRBzML6CRfSPEerv77ZyaNMKjPvh
+         tQfwXfeSBzQyLwDLQVIrKfFzT0mhtpvAw9KMN6LVDxbIJWx7i0x/zUIu7mljhgyThx39
+         rNpA==
+X-Gm-Message-State: AOAM530Gh5lY1R3t02sD5KJdoGsDB1yABW2kkyhX+42UUlhe0QBBe79G
+        FhtomJwpLgtH5FwWCRtl0Gv1DZyNtR163LEKD3tS7Q==
+X-Google-Smtp-Source: ABdhPJypa+SCYj5GmItj2Oq0Gj8dAsBY2KumHy25BwOc82qYcbNQS57CLoBVC+4YQ/b431aq9+tnXL+0VywTirWSHok=
+X-Received: by 2002:a19:3804:: with SMTP id f4mr21292851lfa.117.1618268609686;
+ Mon, 12 Apr 2021 16:03:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210412225503.15119-1-longman@redhat.com> <20210412225503.15119-4-longman@redhat.com>
+In-Reply-To: <20210412225503.15119-4-longman@redhat.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 12 Apr 2021 16:03:17 -0700
+Message-ID: <CALvZod7hBvbnF3G_Hxbu3Xmfzdip_BGAh0Nr86vvN2d9xBTaSg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm/memcg: Cache vmstat data in percpu memcg_stock_pcp
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix interrupt cells in DT AB8500/AB8505 source files. The
-compiled DTB files will stay the same.
+On Mon, Apr 12, 2021 at 3:55 PM Waiman Long <longman@redhat.com> wrote:
+>
+> Before the new slab memory controller with per object byte charging,
+> charging and vmstat data update happen only when new slab pages are
+> allocated or freed. Now they are done with every kmem_cache_alloc()
+> and kmem_cache_free(). This causes additional overhead for workloads
+> that generate a lot of alloc and free calls.
+>
+> The memcg_stock_pcp is used to cache byte charge for a specific
+> obj_cgroup to reduce that overhead. To further reducing it, this patch
+> makes the vmstat data cached in the memcg_stock_pcp structure as well
+> until it accumulates a page size worth of update or when other cached
+> data change.
+>
+> On a 2-socket Cascade Lake server with instrumentation enabled and this
+> patch applied, it was found that about 17% (946796 out of 5515184) of the
+> time when __mod_obj_stock_state() is called leads to an actual call to
+> mod_objcg_state() after initial boot. When doing parallel kernel build,
+> the figure was about 16% (21894614 out of 139780628). So caching the
+> vmstat data reduces the number of calls to mod_objcg_state() by more
+> than 80%.
+>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
----
- arch/arm/boot/dts/ste-ab8500.dtsi | 26 +++++++++++++-------------
- arch/arm/boot/dts/ste-ab8505.dtsi | 22 +++++++++++-----------
- 2 files changed, 24 insertions(+), 24 deletions(-)
-
-diff --git a/arch/arm/boot/dts/ste-ab8500.dtsi b/arch/arm/boot/dts/ste-ab8500.dtsi
-index 4fd09997a2b9..5c5a5a2dadfc 100644
---- a/arch/arm/boot/dts/ste-ab8500.dtsi
-+++ b/arch/arm/boot/dts/ste-ab8500.dtsi
-@@ -42,15 +42,15 @@ ab8500_gpio: ab8500-gpio {
- 
- 				ab8500-rtc {
- 					compatible = "stericsson,ab8500-rtc";
--					interrupts = <17 IRQ_TYPE_LEVEL_HIGH
--						      18 IRQ_TYPE_LEVEL_HIGH>;
-+					interrupts = <17 IRQ_TYPE_LEVEL_HIGH>,
-+						     <18 IRQ_TYPE_LEVEL_HIGH>;
- 					interrupt-names = "60S", "ALARM";
- 				};
- 
- 				gpadc: ab8500-gpadc {
- 					compatible = "stericsson,ab8500-gpadc";
--					interrupts = <32 IRQ_TYPE_LEVEL_HIGH
--						      39 IRQ_TYPE_LEVEL_HIGH>;
-+					interrupts = <32 IRQ_TYPE_LEVEL_HIGH>,
-+						     <39 IRQ_TYPE_LEVEL_HIGH>;
- 					interrupt-names = "HW_CONV_END", "SW_CONV_END";
- 					vddadc-supply = <&ab8500_ldo_tvout_reg>;
- 					#address-cells = <1>;
-@@ -219,13 +219,13 @@ ab8500_chargalg {
- 
- 				ab8500_usb {
- 					compatible = "stericsson,ab8500-usb";
--					interrupts = < 90 IRQ_TYPE_LEVEL_HIGH
--						       96 IRQ_TYPE_LEVEL_HIGH
--						       14 IRQ_TYPE_LEVEL_HIGH
--						       15 IRQ_TYPE_LEVEL_HIGH
--						       79 IRQ_TYPE_LEVEL_HIGH
--						       74 IRQ_TYPE_LEVEL_HIGH
--						       75 IRQ_TYPE_LEVEL_HIGH>;
-+					interrupts = <90 IRQ_TYPE_LEVEL_HIGH>,
-+						     <96 IRQ_TYPE_LEVEL_HIGH>,
-+						     <14 IRQ_TYPE_LEVEL_HIGH>,
-+						     <15 IRQ_TYPE_LEVEL_HIGH>,
-+						     <79 IRQ_TYPE_LEVEL_HIGH>,
-+						     <74 IRQ_TYPE_LEVEL_HIGH>,
-+						     <75 IRQ_TYPE_LEVEL_HIGH>;
- 					interrupt-names = "ID_WAKEUP_R",
- 							  "ID_WAKEUP_F",
- 							  "VBUS_DET_F",
-@@ -242,8 +242,8 @@ ab8500_usb {
- 
- 				ab8500-ponkey {
- 					compatible = "stericsson,ab8500-poweron-key";
--					interrupts = <6 IRQ_TYPE_LEVEL_HIGH
--						      7 IRQ_TYPE_LEVEL_HIGH>;
-+					interrupts = <6 IRQ_TYPE_LEVEL_HIGH>,
-+						     <7 IRQ_TYPE_LEVEL_HIGH>;
- 					interrupt-names = "ONKEY_DBF", "ONKEY_DBR";
- 				};
- 
-diff --git a/arch/arm/boot/dts/ste-ab8505.dtsi b/arch/arm/boot/dts/ste-ab8505.dtsi
-index cc045b2fc217..3380afa74c14 100644
---- a/arch/arm/boot/dts/ste-ab8505.dtsi
-+++ b/arch/arm/boot/dts/ste-ab8505.dtsi
-@@ -39,8 +39,8 @@ ab8505_gpio: ab8505-gpio {
- 
- 				ab8500-rtc {
- 					compatible = "stericsson,ab8500-rtc";
--					interrupts = <17 IRQ_TYPE_LEVEL_HIGH
--						      18 IRQ_TYPE_LEVEL_HIGH>;
-+					interrupts = <17 IRQ_TYPE_LEVEL_HIGH>,
-+						     <18 IRQ_TYPE_LEVEL_HIGH>;
- 					interrupt-names = "60S", "ALARM";
- 				};
- 
-@@ -182,13 +182,13 @@ ab8500_chargalg {
- 
- 				ab8500_usb: ab8500_usb {
- 					compatible = "stericsson,ab8500-usb";
--					interrupts = < 90 IRQ_TYPE_LEVEL_HIGH
--						       96 IRQ_TYPE_LEVEL_HIGH
--						       14 IRQ_TYPE_LEVEL_HIGH
--						       15 IRQ_TYPE_LEVEL_HIGH
--						       79 IRQ_TYPE_LEVEL_HIGH
--						       74 IRQ_TYPE_LEVEL_HIGH
--						       75 IRQ_TYPE_LEVEL_HIGH>;
-+					interrupts = <90 IRQ_TYPE_LEVEL_HIGH>,
-+						     <96 IRQ_TYPE_LEVEL_HIGH>,
-+						     <14 IRQ_TYPE_LEVEL_HIGH>,
-+						     <15 IRQ_TYPE_LEVEL_HIGH>,
-+						     <79 IRQ_TYPE_LEVEL_HIGH>,
-+						     <74 IRQ_TYPE_LEVEL_HIGH>,
-+						     <75 IRQ_TYPE_LEVEL_HIGH>;
- 					interrupt-names = "ID_WAKEUP_R",
- 							  "ID_WAKEUP_F",
- 							  "VBUS_DET_F",
-@@ -205,8 +205,8 @@ ab8500_usb: ab8500_usb {
- 
- 				ab8500-ponkey {
- 					compatible = "stericsson,ab8500-poweron-key";
--					interrupts = <6 IRQ_TYPE_LEVEL_HIGH
--						      7 IRQ_TYPE_LEVEL_HIGH>;
-+					interrupts = <6 IRQ_TYPE_LEVEL_HIGH>,
-+						     <7 IRQ_TYPE_LEVEL_HIGH>;
- 					interrupt-names = "ONKEY_DBF", "ONKEY_DBR";
- 				};
- 
--- 
-2.30.2
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
