@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9A1935BD2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C056535BD33
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238122AbhDLIsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:48:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36784 "EHLO mail.kernel.org"
+        id S237738AbhDLIsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:48:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237742AbhDLIqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:46:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B9ED61221;
-        Mon, 12 Apr 2021 08:45:55 +0000 (UTC)
+        id S237870AbhDLIqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:46:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C30E460241;
+        Mon, 12 Apr 2021 08:45:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217155;
-        bh=0cNbOnMZ16XEOZeaAzI8EuJMGfTvpS7aRU4XQGG5wrY=;
+        s=korg; t=1618217158;
+        bh=urTewkelueKf87IFPUJZ6KsdD65I9pZgommqkAyqZVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2RWG7HaLQ3rLW1y/GcudSKdKsnDfBOSMRpBJ4kRhLOpVT0fjpiIErWMI2Hjf9xUJ5
-         g3A+rhSsDDiQUyzZn5RPfDGpFkrKkS+K5MVlNO8qZzHc6OxTLu6s1Xek1eXwkU3C1s
-         L4uY82VUmqtbokMpaY08FpPEDaJqaFtj+tp4doIA=
+        b=vg3XVEkuCl5cBbP/Ct0rA4c68cSvURTjxrT4QsEPuhL6Efji++qyQpc0MTvDZRN9h
+         OVYvZbRvLTLd67ociipewoXj6PM/gK+F/ZliJ5mgm0pNK/y0rClImLm3THjvtNItnX
+         qm4h48GIY5EU8AbULzNh3Qb/G8bSQnYhHfMuVqmM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Malz <robertx.malz@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.4 024/111] ice: Cleanup fltr list in case of allocation issues
-Date:   Mon, 12 Apr 2021 10:40:02 +0200
-Message-Id: <20210412084005.033164092@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 025/111] net: hso: fix null-ptr-deref during tty device unregistration
+Date:   Mon, 12 Apr 2021 10:40:03 +0200
+Message-Id: <20210412084005.064661473@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -40,44 +41,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Robert Malz <robertx.malz@intel.com>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit b7eeb52721fe417730fc5adc5cbeeb5fe349ab26 upstream.
+commit 8a12f8836145ffe37e9c8733dce18c22fb668b66 upstream.
 
-When ice_remove_vsi_lkup_fltr is called, by calling
-ice_add_to_vsi_fltr_list local copy of vsi filter list
-is created. If any issues during creation of vsi filter
-list occurs it up for the caller to free already
-allocated memory. This patch ensures proper memory
-deallocation in these cases.
+Multiple ttys try to claim the same the minor number causing a double
+unregistration of the same device. The first unregistration succeeds
+but the next one results in a null-ptr-deref.
 
-Fixes: 80d144c9ac82 ("ice: Refactor switch rule management structures and functions")
-Signed-off-by: Robert Malz <robertx.malz@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+The get_free_serial_index() function returns an available minor number
+but doesn't assign it immediately. The assignment is done by the caller
+later. But before this assignment, calls to get_free_serial_index()
+would return the same minor number.
+
+Fix this by modifying get_free_serial_index to assign the minor number
+immediately after one is found to be and rename it to obtain_minor()
+to better reflect what it does. Similary, rename set_serial_by_index()
+to release_minor() and modify it to free up the minor number of the
+given hso_serial. Every obtain_minor() should have corresponding
+release_minor() call.
+
+Fixes: 72dc1c096c705 ("HSO: add option hso driver")
+Reported-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
+Tested-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ice/ice_switch.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/usb/hso.c |   33 ++++++++++++---------------------
+ 1 file changed, 12 insertions(+), 21 deletions(-)
 
---- a/drivers/net/ethernet/intel/ice/ice_switch.c
-+++ b/drivers/net/ethernet/intel/ice/ice_switch.c
-@@ -2665,7 +2665,7 @@ ice_remove_vsi_lkup_fltr(struct ice_hw *
- 					  &remove_list_head);
- 	mutex_unlock(rule_lock);
- 	if (status)
--		return;
-+		goto free_fltr_list;
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -611,7 +611,7 @@ static struct hso_serial *get_serial_by_
+ 	return serial;
+ }
  
- 	switch (lkup) {
- 	case ICE_SW_LKUP_MAC:
-@@ -2688,6 +2688,7 @@ ice_remove_vsi_lkup_fltr(struct ice_hw *
- 		break;
+-static int get_free_serial_index(void)
++static int obtain_minor(struct hso_serial *serial)
+ {
+ 	int index;
+ 	unsigned long flags;
+@@ -619,8 +619,10 @@ static int get_free_serial_index(void)
+ 	spin_lock_irqsave(&serial_table_lock, flags);
+ 	for (index = 0; index < HSO_SERIAL_TTY_MINORS; index++) {
+ 		if (serial_table[index] == NULL) {
++			serial_table[index] = serial->parent;
++			serial->minor = index;
+ 			spin_unlock_irqrestore(&serial_table_lock, flags);
+-			return index;
++			return 0;
+ 		}
+ 	}
+ 	spin_unlock_irqrestore(&serial_table_lock, flags);
+@@ -629,15 +631,12 @@ static int get_free_serial_index(void)
+ 	return -1;
+ }
+ 
+-static void set_serial_by_index(unsigned index, struct hso_serial *serial)
++static void release_minor(struct hso_serial *serial)
+ {
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&serial_table_lock, flags);
+-	if (serial)
+-		serial_table[index] = serial->parent;
+-	else
+-		serial_table[index] = NULL;
++	serial_table[serial->minor] = NULL;
+ 	spin_unlock_irqrestore(&serial_table_lock, flags);
+ }
+ 
+@@ -2230,6 +2229,7 @@ static int hso_stop_serial_device(struct
+ static void hso_serial_tty_unregister(struct hso_serial *serial)
+ {
+ 	tty_unregister_device(tty_drv, serial->minor);
++	release_minor(serial);
+ }
+ 
+ static void hso_serial_common_free(struct hso_serial *serial)
+@@ -2253,24 +2253,22 @@ static void hso_serial_common_free(struc
+ static int hso_serial_common_create(struct hso_serial *serial, int num_urbs,
+ 				    int rx_size, int tx_size)
+ {
+-	int minor;
+ 	int i;
+ 
+ 	tty_port_init(&serial->port);
+ 
+-	minor = get_free_serial_index();
+-	if (minor < 0)
++	if (obtain_minor(serial))
+ 		goto exit2;
+ 
+ 	/* register our minor number */
+ 	serial->parent->dev = tty_port_register_device_attr(&serial->port,
+-			tty_drv, minor, &serial->parent->interface->dev,
++			tty_drv, serial->minor, &serial->parent->interface->dev,
+ 			serial->parent, hso_serial_dev_groups);
+-	if (IS_ERR(serial->parent->dev))
++	if (IS_ERR(serial->parent->dev)) {
++		release_minor(serial);
+ 		goto exit2;
++	}
+ 
+-	/* fill in specific data for later use */
+-	serial->minor = minor;
+ 	serial->magic = HSO_SERIAL_MAGIC;
+ 	spin_lock_init(&serial->serial_lock);
+ 	serial->num_rx_urbs = num_urbs;
+@@ -2668,9 +2666,6 @@ static struct hso_device *hso_create_bul
+ 
+ 	serial->write_data = hso_std_serial_write_data;
+ 
+-	/* and record this serial */
+-	set_serial_by_index(serial->minor, serial);
+-
+ 	/* setup the proc dirs and files if needed */
+ 	hso_log_port(hso_dev);
+ 
+@@ -2727,9 +2722,6 @@ struct hso_device *hso_create_mux_serial
+ 	serial->shared_int->ref_count++;
+ 	mutex_unlock(&serial->shared_int->shared_int_lock);
+ 
+-	/* and record this serial */
+-	set_serial_by_index(serial->minor, serial);
+-
+ 	/* setup the proc dirs and files if needed */
+ 	hso_log_port(hso_dev);
+ 
+@@ -3114,7 +3106,6 @@ static void hso_free_interface(struct us
+ 			cancel_work_sync(&serial_table[i]->async_get_intf);
+ 			hso_serial_tty_unregister(serial);
+ 			kref_put(&serial_table[i]->ref, hso_serial_ref_free);
+-			set_serial_by_index(i, NULL);
+ 		}
  	}
  
-+free_fltr_list:
- 	list_for_each_entry_safe(fm_entry, tmp, &remove_list_head, list_entry) {
- 		list_del(&fm_entry->list_entry);
- 		devm_kfree(ice_hw_to_dev(hw), fm_entry);
 
 
