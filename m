@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9965B35C5CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DCE335C5D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240785AbhDLL62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:58:28 -0400
-Received: from mga07.intel.com ([134.134.136.100]:56834 "EHLO mga07.intel.com"
+        id S240502AbhDLMAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:00:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42254 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239202AbhDLL61 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:58:27 -0400
-IronPort-SDR: 9vSVJyOOVXgDfekoe8ZVOgc7CKWyo/W0xNZ4oIwRnyNy6br2UTkLUn33HyOo4pOXMmORFB9wXI
- Z5aP2BEno+5Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="258147864"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="258147864"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 04:58:09 -0700
-IronPort-SDR: rKHGOAXFMcA0XwI4I3cgEJDjg/9sWLOEEzeWWEaJPwbwG/rVdc+ElNjgm9OZdFIbjetr/DOitf
- n+j7KKGOkrHA==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="443033483"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 04:58:06 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lVvCc-003RkA-Vz; Mon, 12 Apr 2021 14:58:02 +0300
-Date:   Mon, 12 Apr 2021 14:58:02 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-doc@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH v4 05/13] module: Add printk formats to add module build
- ID to stacktraces
-Message-ID: <YHQ1yqVkweZeN5+1@smile.fi.intel.com>
-References: <20210410015300.3764485-1-swboyd@chromium.org>
- <20210410015300.3764485-6-swboyd@chromium.org>
+        id S238448AbhDLMAO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:00:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9AAEEAE5C;
+        Mon, 12 Apr 2021 11:59:55 +0000 (UTC)
+Date:   Mon, 12 Apr 2021 13:59:52 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH V2 4/6] mm: Drop redundant
+ ARCH_ENABLE_[HUGEPAGE|THP]_MIGRATION
+Message-ID: <20210412115952.GC27818@linux>
+References: <1617259448-22529-1-git-send-email-anshuman.khandual@arm.com>
+ <1617259448-22529-5-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210410015300.3764485-6-swboyd@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1617259448-22529-5-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 06:52:52PM -0700, Stephen Boyd wrote:
-> Let's make kernel stacktraces easier to identify by including the build
-> ID[1] of a module if the stacktrace is printing a symbol from a module.
-> This makes it simpler for developers to locate a kernel module's full
-> debuginfo for a particular stacktrace. Combined with
-> scripts/decode_stracktrace.sh, a developer can download the matching
-> debuginfo from a debuginfod[2] server and find the exact file and line
-> number for the functions plus offsets in a stacktrace that match the
-> module. This is especially useful for pstore crash debugging where the
-> kernel crashes are recorded in something like console-ramoops and the
-> recovery kernel/modules are different or the debuginfo doesn't exist on
-> the device due to space concerns (the debuginfo can be too large for
-> space limited devices).
+On Thu, Apr 01, 2021 at 12:14:06PM +0530, Anshuman Khandual wrote:
+> ARCH_ENABLE_[HUGEPAGE|THP]_MIGRATION configs have duplicate definitions on
+> platforms that subscribe them. Drop these reduntant definitions and instead
+> just select them appropriately.
 > 
-> Originally, I put this on the %pS format, but that was quickly rejected
-> given that %pS is used in other places such as ftrace where build IDs
-> aren't meaningful. There was some discussions on the list to put every
-> module build ID into the "Modules linked in:" section of the stacktrace
-> message but that quickly becomes very hard to read once you have more
-> than three or four modules linked in. It also provides too much
-> information when we don't expect each module to be traversed in a
-> stacktrace. Having the build ID for modules that aren't important just
-> makes things messy. Splitting it to multiple lines for each module
-> quickly explodes the number of lines printed in an oops too, possibly
-> wrapping the warning off the console. And finally, trying to stash away
-> each module used in a callstack to provide the ID of each symbol printed
-> is cumbersome and would require changes to each architecture to stash
-> away modules and return their build IDs once unwinding has completed.
-> 
-> Instead, we opt for the simpler approach of introducing new printk
-> formats '%pS[R]b' for "pointer symbolic backtrace with module build ID"
-> and '%pBb' for "pointer backtrace with module build ID" and then
-> updating the few places in the architecture layer where the stacktrace
-> is printed to use this new format.
-> 
-> Example:
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> Cc: Paul Mackerras <paulus@samba.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: x86@kernel.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linuxppc-dev@lists.ozlabs.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Acked-by: Catalin Marinas <catalin.marinas@arm.com> (arm64)
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-Can you trim a bit the example, so we will see only important lines.
-In such case you may provide "before" and "after" variants.
+Hi Anshuman, 
 
-...
+X86 needs fixing, see below:
 
-> -	if (modname)
-> -		len += sprintf(buffer + len, " [%s]", modname);
-> +	if (modname) {
-> +		len += sprintf(buffer + len, " [%s", modname);
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 503d8b2e8676..10702ef1eb57 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -60,8 +60,10 @@ config X86
+>  	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
+>  	select ARCH_32BIT_OFF_T			if X86_32
+>  	select ARCH_CLOCKSOURCE_INIT
+> +	select ARCH_ENABLE_HUGEPAGE_MIGRATION if x86_64 && HUGETLB_PAGE && MIGRATION
+>  	select ARCH_ENABLE_MEMORY_HOTPLUG if X86_64 || (X86_32 && HIGHMEM)
+>  	select ARCH_ENABLE_MEMORY_HOTREMOVE if MEMORY_HOTPLUG
+> +	select ARCH_ENABLE_THP_MIGRATION if x86_64 && TRANSPARENT_HUGEPAGE
 
-> +		/* build ID should match length of sprintf below */
-> +		BUILD_BUG_ON(BUILD_ID_SIZE_MAX != 20);
-
-First of all, why not static_assert() defined near to the actual macro?
-
-> +		if (IS_ENABLED(CONFIG_STACKTRACE_BUILD_ID) && add_buildid && buildid)
-> +			len += sprintf(buffer + len, " %20phN", buildid);
-
-			len += sprintf(buffer + len, " %*phN", BUILD_ID_SIZE_MAX, buildid);
-
-?
+you need s/x86_64/X86_64/, otherwise we are left with no migration :-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Oscar Salvador
+SUSE L3
