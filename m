@@ -2,62 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE95A35C349
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 648F935C34F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238946AbhDLKDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:03:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39916 "EHLO mail.kernel.org"
+        id S238983AbhDLKEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:04:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58094 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244866AbhDLKBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:01:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1BC0611AD;
-        Mon, 12 Apr 2021 10:00:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618221643;
-        bh=oEF9mbnEEuaF1uVd7dfYALcUg0tUYr9MY7WTmXTncQs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tcvZauxF0ZP353i48NdHx0ILLHsMjn1VJwBLaFNTc58okTQurhNa/tvYLAzqV1HUn
-         himXZ/LYjimxCbBaEHYvuXad5TSrRYnrb7SF0amZcxOSBI46bR21whPHkyFPOIFFQp
-         mUrJyiYmKqG46t/L7pwQZF+cLfARH7ElKBcMrfkI0ClVQ4x84noVgKl08dFSBtmabn
-         282w2FMbc1as+Q0gCPYRqkyiQf8/XFNvbVNKZ+ni+b8gYyVtvm8CVCn1AWHlwuVVoZ
-         hLZWOzyDANpt9NbwmRQvk9MUNXkTW1AerCWCiNlf4cjmTsKYo4v8eS6ugu3iBRMljc
-         OnsOGlc3NrULA==
-Received: from johan by xi with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lVtMz-0001NY-3n; Mon, 12 Apr 2021 12:00:37 +0200
-Date:   Mon, 12 Apr 2021 12:00:37 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Pho Tran <photranvan0712@gmail.com>, Hung.Nguyen@silabs.com,
-        Tung.Pham@silabs.com, USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/2] USB: serial: cp210x: provide gpio valid mask
-Message-ID: <YHQaRb7bOYc+H8Fh@hovoldconsulting.com>
-References: <20210409155216.31867-1-johan@kernel.org>
- <CAHp75Vds=yXk3yYMh1yyDb0o_YyVTh3-6iKh8rYKwYHORebdkQ@mail.gmail.com>
+        id S244976AbhDLKCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 06:02:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 72338AF1A;
+        Mon, 12 Apr 2021 10:01:53 +0000 (UTC)
+Subject: Re: [PATCH 1/9] mm/page_alloc: Rename alloced to allocated
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-Net <netdev@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-NFS <linux-nfs@vger.kernel.org>
+References: <20210325114228.27719-1-mgorman@techsingularity.net>
+ <20210325114228.27719-2-mgorman@techsingularity.net>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <e820c36f-dc05-08be-611e-f37123f14b1a@suse.cz>
+Date:   Mon, 12 Apr 2021 12:01:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vds=yXk3yYMh1yyDb0o_YyVTh3-6iKh8rYKwYHORebdkQ@mail.gmail.com>
+In-Reply-To: <20210325114228.27719-2-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 07:23:11PM +0300, Andy Shevchenko wrote:
-> On Fri, Apr 9, 2021 at 6:52 PM Johan Hovold <johan@kernel.org> wrote:
-> >
-> > Use the new GPIO valid-mask feature to inform gpiolib which pins are
-> > available for use instead of handling that in a request callback.
-> >
-> > This also allows user space to figure out which pins are available
-> > through the chardev interface without having to request each pin in
-> > turn.
+On 3/25/21 12:42 PM, Mel Gorman wrote:
+> Review feedback of the bulk allocator twice found problems with "alloced"
+> being a counter for pages allocated. The naming was based on the API name
+> "alloc" and was based on the idea that verbal communication about malloc
+> tends to use the fake word "malloced" instead of the fake word mallocated.
+> To be consistent, this preparation patch renames alloced to allocated
+> in rmqueue_bulk so the bulk allocator and per-cpu allocator use similar
+> names when the bulk allocator is introduced.
 > 
-> Thanks! I like the series.
-> Independently on reaction on my comments:
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-Thanks for reviewing. Now applied.
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-Johan
+> ---
+>  mm/page_alloc.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index dfa9af064f74..8a3e13277e22 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -2908,7 +2908,7 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+>  			unsigned long count, struct list_head *list,
+>  			int migratetype, unsigned int alloc_flags)
+>  {
+> -	int i, alloced = 0;
+> +	int i, allocated = 0;
+>  
+>  	spin_lock(&zone->lock);
+>  	for (i = 0; i < count; ++i) {
+> @@ -2931,7 +2931,7 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+>  		 * pages are ordered properly.
+>  		 */
+>  		list_add_tail(&page->lru, list);
+> -		alloced++;
+> +		allocated++;
+>  		if (is_migrate_cma(get_pcppage_migratetype(page)))
+>  			__mod_zone_page_state(zone, NR_FREE_CMA_PAGES,
+>  					      -(1 << order));
+> @@ -2940,12 +2940,12 @@ static int rmqueue_bulk(struct zone *zone, unsigned int order,
+>  	/*
+>  	 * i pages were removed from the buddy list even if some leak due
+>  	 * to check_pcp_refill failing so adjust NR_FREE_PAGES based
+> -	 * on i. Do not confuse with 'alloced' which is the number of
+> +	 * on i. Do not confuse with 'allocated' which is the number of
+>  	 * pages added to the pcp list.
+>  	 */
+>  	__mod_zone_page_state(zone, NR_FREE_PAGES, -(i << order));
+>  	spin_unlock(&zone->lock);
+> -	return alloced;
+> +	return allocated;
+>  }
+>  
+>  #ifdef CONFIG_NUMA
+> 
+
