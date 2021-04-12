@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02F7C35C534
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6135935C535
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240454AbhDLLcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:32:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49214 "EHLO mx2.suse.de"
+        id S240469AbhDLLc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:32:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:47650 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237792AbhDLLcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:32:17 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1022BAE20;
-        Mon, 12 Apr 2021 11:31:59 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id C89371F2B62; Mon, 12 Apr 2021 13:31:58 +0200 (CEST)
-Date:   Mon, 12 Apr 2021 13:31:58 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>, linux-kernel@vger.kernel.org,
-        jack@suse.com, linux-ext4@vger.kernel.org, tytso@mit.edu
-Subject: Re: More KCSAN data-race Reports
-Message-ID: <20210412113158.GA4679@quack2.suse.cz>
-References: <CACkBjsYrsp5LekZciBjSbnJLHvBwQF3YM5TiKEMPeUX-D_DaSA@mail.gmail.com>
- <20210412090212.GA31090@quack2.suse.cz>
- <CACkBjsYuWeJNYTGUhBVszgiUVOrMdEZ=qcmDtEk97BEtm4ggSA@mail.gmail.com>
+        id S237792AbhDLLcV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 07:32:21 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CDDA731B;
+        Mon, 12 Apr 2021 04:32:02 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3EDEC3F694;
+        Mon, 12 Apr 2021 04:32:01 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Ruifeng Zhang <ruifeng.zhang0110@gmail.com>, linux@armlinux.org.uk,
+        sudeep.holla@arm.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, a.p.zijlstra@chello.nl,
+        dietmar.eggemann@arm.com, mingo@kernel.org,
+        ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] arm: topology: parse the topology from the dt
+In-Reply-To: <20210412070819.23493-1-ruifeng.zhang0110@gmail.com>
+References: <20210412070819.23493-1-ruifeng.zhang0110@gmail.com>
+Date:   Mon, 12 Apr 2021 12:31:59 +0100
+Message-ID: <87y2dnn3gw.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACkBjsYuWeJNYTGUhBVszgiUVOrMdEZ=qcmDtEk97BEtm4ggSA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 12-04-21 18:42:58, Hao Sun wrote:
-> Jan Kara <jack@suse.cz> 于2021年4月12日周一 下午5:02写道：
-> >
-> > Hello,
-> >
-> > On Sun 11-04-21 11:42:05, Hao Sun wrote:
-> > > Since the last KCSAN report[1], I found two more KCSAN reports that
-> > > Syzbot had not reported.
-> > > Not sure if they are valid bugs, I hope the stack information in
-> > > reports can help you locate the problem.
-> > > Kernel config can be found in the attachment.
-> >
-> > Do we have symbolic decoding of the traces below? Because involved
-> > functions are really big so it's difficult to guess what KCSAN is
-> > complaining about... At least I wasn't able to guess it after looking into
-> > the stacktraces for a while.
-> >
-> Sorry, the log processing module of Fuzzer still has some logic bugs,
-> only some of the symbolized reports are stored in the disk.
-> Interestingly, however, the read-write end that causes data racing in
-> both reports are in the same location (fs/jbd2/commit.c:443), and this
-> information should help locate the problem.
-> 
-> Partial symbolized report 1:
-> ==================================================================
-> BUG: KCSAN: data-race in ext4_mark_iloc_dirty / jbd2_journal_commit_transaction
-> read-write to 0xffff88804451d800 of 8 bytes by task 4821 on cpu 1:
->  jbd2_journal_commit_transaction+0x222/0x3200 fs/jbd2/commit.c:443
->  kjournald2+0x253/0x470 fs/jbd2/journal.c:213
->  kthread+0x1f0/0x220 kernel/kthread.c:292
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-OK, that is:
-	journal->j_flags |= JBD2_FULL_COMMIT_ONGOING;
+Hi,
 
-So likely this is a complaint about j_flags update vs j_flags check race
-(we check for JBD2_ABORT flag) all around the code.
+On 12/04/21 15:08, Ruifeng Zhang wrote:
+> From: Ruifeng Zhang <ruifeng.zhang1@unisoc.com>
+>
+> The arm topology still parse from the MPIDR, but it is incomplete.  When
+> the armv8.3 cpu runs in aarch32 mode, it will parse out the wrong topology.
+>
+> armv7 (A7) mpidr is:
+> [11:8]      [7:2]       [1:0]
+> cluster     reserved    cpu
+>
+> armv8.3 (A55) mpidr is:
+> [23:16]     [15:8]      [7:0]
+> cluster     cpu         thread
+>
+> For compatibility to keep the function of get capacity from default
+> cputype, renamed arm parse_dt_topology to get_cputype_capacity and delete
+> related logic of parse from dt.
+> Arm using the same parse_dt_topology function as arm64.
+>
+> The arm device boot step is to look for the default cputype and get cpu
+> capacity firstly. Then parse the topology and capacity from dt to replace
+> default values.
+>
 
-So again this is harmless unless the compiler plays some devilish tricks
-and doesn't store bogus intermediate values in j_flags during RMW
-operations. Not sure how to deal with this one. Just putting data_race()
-here doesn't seem right - if the compiler does something unexpected, we are
-indeed in trouble. Maybe using bitops for j_flags would be beneficial for
-other reasons as well as silencing KCSAN. But it needs more thought.
+I'm afraid I don't get it.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+CONFIG_COMPAT lets you run 32-bit stuff at EL0, but the kernel is still
+arm64. So if you take your armv8.3 system, the topology parsed by the
+kernel will be the same regardless of CONFIG_COMPAT.
+
+Could you elaborate on what problem you are trying to fix here?
