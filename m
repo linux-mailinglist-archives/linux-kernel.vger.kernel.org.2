@@ -2,179 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69FA535B8F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8306F35B8F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236430AbhDLDbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 23:31:39 -0400
-Received: from mga09.intel.com ([134.134.136.24]:53566 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235366AbhDLDbh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 23:31:37 -0400
-IronPort-SDR: 0ukDDaNAh/+Y0Hy07hI2q/KgUptjSWq/Y2JE/YXwh4fkiLm0EXnUVcONI1VvIIt0k57/V4kd5B
- vOoosKpolrig==
-X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="194214130"
-X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
-   d="scan'208";a="194214130"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 20:30:59 -0700
-IronPort-SDR: Q8HjgPHaqEtlpMrqQfI0O8jMEibBYK91zautCNPZK5d813piMOSSX4qc52aBx/fODeBBs7F4Ye
- mfNIg232OR6w==
-X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
-   d="scan'208";a="423611895"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 20:30:56 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
-        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
-        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
-        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
-        <20210408130820.48233-2-linmiaohe@huawei.com>
-Date:   Mon, 12 Apr 2021 11:30:54 +0800
-In-Reply-To: <20210408130820.48233-2-linmiaohe@huawei.com> (Miaohe Lin's
-        message of "Thu, 8 Apr 2021 09:08:16 -0400")
-Message-ID: <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S236553AbhDLDfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 23:35:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235366AbhDLDfx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 23:35:53 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21A5AC061574;
+        Sun, 11 Apr 2021 20:35:36 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id p12so8315865pgj.10;
+        Sun, 11 Apr 2021 20:35:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zz+Tw8OZ3h7FdO/ul6ahr3fJRsNT7ZFl+jHU8Ix627M=;
+        b=hJX/Cz6KrB1hU5cib883UIgJBzkAo9o8JX5imTz9nYkdP+Iqq7YtsxE5UXIFQh/BSR
+         /ggY5hkWhJvEDsRm0sGuYzB0ZaA0zflppUuLGOY/gLj1zHV2D1bxHtj9JX5yGMsYlmZ4
+         8AL3/Qb365VKWuqJ5DDbzbT9c0k7IlFqAGzg2RPka4MmTpZkVm9PB+D9/ZAWo26ESI14
+         QFfQdDPnGsc2ZffFSRqLUBzPZPBJMS1GJNJo0IlvadvvgeHLD7WKpvkkf48ZScXNRfpD
+         03FmXgYGA6y/JFioY7AOPHZPPXR8zyvTW3B6TJf+McaOHjCPMZnJoekGCgOFg+CJ42Lp
+         o/Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zz+Tw8OZ3h7FdO/ul6ahr3fJRsNT7ZFl+jHU8Ix627M=;
+        b=JnFTjr8fRbmcfiE89mFcMWGc289Dq45s1x8IEJtr1Qbi0CReCi8qkb0enbvyvW9O2t
+         sNokWYbT1lmiuBdImSxZyRnm+y7y2uvSwQ5yO8gYSLBPpdc3us8qu/0OM9AAF1vCUGi3
+         enIdM2FW0vDiWdroKgXiunrAg3pfmBbT6t5sg790R/4RMGly+WExk/aPDdonhkTqheAk
+         0g+KOEulrtPioWptZGRTku1xoTLzA8f8rgty57O8lPg7UQcWrwuQjF6bMWcleluDYfzL
+         rbOzEmKEh7iBTsj44Exj3MZgU5uQp8tmLyl3BbAAhtJ+QITmPFLKe3nFdv0eqteMaFqW
+         GSEQ==
+X-Gm-Message-State: AOAM530ZD35tpOD3ldn8Rzwo7gfrDVNiw3ueowCfPsQSQURAzxdme4O6
+        zj6JqljObcwo1MWOaQs0blo=
+X-Google-Smtp-Source: ABdhPJw1wQKv2uLnE5vNX/a7O0otJiXPhGwvtuN1P0B0PVQrbPKQDL2UrR+i6JFovtugH+hnotEHcw==
+X-Received: by 2002:aa7:904b:0:b029:24d:5447:1270 with SMTP id n11-20020aa7904b0000b029024d54471270mr2415897pfo.38.1618198535662;
+        Sun, 11 Apr 2021 20:35:35 -0700 (PDT)
+Received: from localhost.localdomain ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id y3sm8426547pfg.145.2021.04.11.20.35.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 11 Apr 2021 20:35:34 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     netdev@vger.kernel.org,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        zhang kai <zhangkaiheb@126.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Di Zhu <zhudi21@huawei.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 1/3] net: dsa: allow for multiple CPU ports
+Date:   Mon, 12 Apr 2021 11:35:25 +0800
+Message-Id: <20210412033525.2472820-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210410133454.4768-2-ansuelsmth@gmail.com>
+References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210410133454.4768-2-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Miaohe Lin <linmiaohe@huawei.com> writes:
+On Sat, Apr 10, 2021 at 03:34:47PM +0200, Ansuel Smith wrote:
+> Allow for multiple CPU ports in a DSA switch tree. By default the first
+> CPU port is assigned mimic the original assignement logic. A DSA driver
+> can define a function to declare a preferred CPU port based on the
+> provided port. If the function doesn't have a preferred port the CPU
+> port is assigned using a round-robin way starting from the last assigned
+> CPU port.
+> Examples:
+> There are two CPU port but no port_get_preferred_cpu is provided:
+> - The old logic is used. Every port is assigned to the first cpu port.
+> There are two CPU port but the port_get_preferred_cpu return -1:
+> - The port is assigned using a round-robin way since no preference is
+>   provided.
+> There are two CPU port and the port_get_preferred_cpu define only one
+> port and the rest with -1: (wan port with CPU1 and the rest no
+> preference)
+>   lan1 <-> eth0
+>   lan2 <-> eth1
+>   lan3 <-> eth0
+>   lan4 <-> eth1
+>   wan  <-> eth1
+> There are two CPU port and the port_get_preferred assign a preference
+> for every port: (wan port with CPU1 everything else CPU0)
+>   lan1 <-> eth0
+>   lan2 <-> eth0
+>   lan3 <-> eth0
+>   lan4 <-> eth0
+>   wan  <-> eth1
 
-> We will use percpu-refcount to serialize against concurrent swapoff. This
-> patch adds the percpu_ref support for later fixup.
->
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  include/linux/swap.h |  2 ++
->  mm/swapfile.c        | 25 ++++++++++++++++++++++---
->  2 files changed, 24 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 144727041e78..849ba5265c11 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -240,6 +240,7 @@ struct swap_cluster_list {
->   * The in-memory structure used to track swap areas.
->   */
->  struct swap_info_struct {
-> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
->  	unsigned long	flags;		/* SWP_USED etc: see above */
->  	signed short	prio;		/* swap priority of this type */
->  	struct plist_node list;		/* entry in swap_active_head */
-> @@ -260,6 +261,7 @@ struct swap_info_struct {
->  	struct block_device *bdev;	/* swap device or bdev of swap file */
->  	struct file *swap_file;		/* seldom referenced */
->  	unsigned int old_block_size;	/* seldom referenced */
-> +	struct completion comp;		/* seldom referenced */
->  #ifdef CONFIG_FRONTSWAP
->  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
->  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
-> diff --git a/mm/swapfile.c b/mm/swapfile.c
-> index 149e77454e3c..724173cd7d0c 100644
-> --- a/mm/swapfile.c
-> +++ b/mm/swapfile.c
-> @@ -39,6 +39,7 @@
->  #include <linux/export.h>
->  #include <linux/swap_slots.h>
->  #include <linux/sort.h>
-> +#include <linux/completion.h>
->  
->  #include <asm/tlbflush.h>
->  #include <linux/swapops.h>
-> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
->  	spin_unlock(&si->lock);
->  }
->  
-> +static void swap_users_ref_free(struct percpu_ref *ref)
-> +{
-> +	struct swap_info_struct *si;
-> +
-> +	si = container_of(ref, struct swap_info_struct, users);
-> +	complete(&si->comp);
-> +	percpu_ref_exit(&si->users);
+So, drivers will read the name of every port and decide which CPU port
+does it use?
 
-Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
-get_swap_device(), better to add comments there.
-
-> +}
-> +
->  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
->  {
->  	struct swap_cluster_info *ci = si->cluster_info;
-> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
->  	 * Guarantee swap_map, cluster_info, etc. fields are valid
->  	 * between get/put_swap_device() if SWP_VALID bit is set
->  	 */
-> -	synchronize_rcu();
-> +	percpu_ref_reinit(&p->users);
-
-Although the effect is same, I think it's better to use
-percpu_ref_resurrect() here to improve code readability.
-
->  	spin_lock(&swap_lock);
->  	spin_lock(&p->lock);
->  	_enable_swap_info(p);
-> @@ -2621,11 +2631,13 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
->  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
->  	spin_unlock(&p->lock);
->  	spin_unlock(&swap_lock);
-> +
-> +	percpu_ref_kill(&p->users);
->  	/*
->  	 * wait for swap operations protected by get/put_swap_device()
->  	 * to complete
->  	 */
-> -	synchronize_rcu();
-> +	wait_for_completion(&p->comp);
-
-Better to move percpu_ref_kill() after the comments.  And maybe revise
-the comments.
-
->  
->  	flush_work(&p->discard_work);
->  
-> @@ -3132,7 +3144,7 @@ static bool swap_discardable(struct swap_info_struct *si)
->  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->  {
->  	struct swap_info_struct *p;
-> -	struct filename *name;
-> +	struct filename *name = NULL;
->  	struct file *swap_file = NULL;
->  	struct address_space *mapping;
->  	int prio;
-> @@ -3163,6 +3175,12 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->  
->  	INIT_WORK(&p->discard_work, swap_discard_work);
->  
-> +	init_completion(&p->comp);
-> +	error = percpu_ref_init(&p->users, swap_users_ref_free,
-> +				PERCPU_REF_INIT_DEAD, GFP_KERNEL);
-> +	if (unlikely(error))
-> +		goto bad_swap;
-> +
->  	name = getname(specialfile);
->  	if (IS_ERR(name)) {
->  		error = PTR_ERR(name);
-> @@ -3356,6 +3374,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->  bad_swap_unlock_inode:
->  	inode_unlock(inode);
->  bad_swap:
-> +	percpu_ref_exit(&p->users);
-
-Usually the resource freeing order matches their allocating order
-reversely.  So, if there's no special reason, please follow that rule.
-
-Best Regards,
-Huang, Ying
-
->  	free_percpu(p->percpu_cluster);
->  	p->percpu_cluster = NULL;
->  	free_percpu(p->cluster_next_cpu);
+> 
+> Signed-off-by: Marek Behún <marek.behun@nic.cz>
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
