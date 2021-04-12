@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ADC235C22B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F367435C22A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242243AbhDLJka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:40:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34454 "EHLO mail.kernel.org"
+        id S242189AbhDLJkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:40:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240891AbhDLJLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240892AbhDLJLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 05:11:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 292736139F;
-        Mon, 12 Apr 2021 09:07:12 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA7F16137E;
+        Mon, 12 Apr 2021 09:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218432;
-        bh=n5WJa8ngEv7bEquikRAerBZToMl/YvbocI+gERKY1hI=;
+        s=korg; t=1618218435;
+        bh=Gjr8Seg0OoD2QzfVpvreFqk5jUpQHCuSQfh1C4zy/as=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d8XbyaseH5t6zvMRdwCy/HCHQ4ZSvi3XEN4ckIAHnPBMPLDNgBmMih+5sd32JIumB
-         fye/AZGUdOSB4dxjgf7SMKISMEswOp4CjTZhR6jmjOuyTnyIVD0bY6PlSeklGt3Oz4
-         Y8q1JZg2/t5DoPck2J/eeRrlODEIZNsrqvRoQ2OA=
+        b=m44QChQ+eJfpyf0RA3BP+2fSdjRZqM3C0kMh9A9WdSa7zMeTkRvufAo21Zrj3wXdy
+         DZDSaX+e9ssD/X7w5yGrwv1S/WOAQl8sQ2WOM2S1jjnoixR4XPml/VhN4N1W5iUIGS
+         7NClphgb94iHfJCEX5PnjkNbsOJLMON9CZ0LkzAw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Tai <thomas.tai@oracle.com>,
-        Borislav Petkov <bp@suse.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>
-Subject: [PATCH 5.11 195/210] x86/traps: Correct exc_general_protection() and math_error() return paths
-Date:   Mon, 12 Apr 2021 10:41:40 +0200
-Message-Id: <20210412084022.506578942@linuxfoundation.org>
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Roman Guskov <rguskov@dh-electronics.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 5.11 196/210] gpiolib: Read "gpio-line-names" from a firmware node
+Date:   Mon, 12 Apr 2021 10:41:41 +0200
+Message-Id: <20210412084022.537703636@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -40,55 +41,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Tai <thomas.tai@oracle.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 632a1c209b8773cb0119fe3aada9f1db14fa357c upstream.
+commit b41ba2ec54a70908067034f139aa23d0dd2985ce upstream.
 
-Commit
+On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
+see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
+pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
+and iterates over all of its DT subnodes when registering each GPIO
+bank gpiochip. Each gpiochip has:
 
-  334872a09198 ("x86/traps: Attempt to fixup exceptions in vDSO before signaling")
+  - gpio_chip.parent = dev,
+    where dev is the device node of the pin controller
+  - gpio_chip.of_node = np,
+    which is the OF node of the GPIO bank
 
-added return statements which bypass calling cond_local_irq_disable().
+Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
+i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
 
-According to
+The original code behaved correctly, as it extracted the "gpio-line-names"
+from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
 
-  ca4c6a9858c2 ("x86/traps: Make interrupt enable/disable symmetric in C code"),
+To achieve the same behaviour, read property from the firmware node.
 
-cond_local_irq_disable() is needed because the asm return code no longer
-disables interrupts. Follow the existing code as an example to use "goto
-exit" instead of "return" statement.
-
- [ bp: Massage commit message. ]
-
-Fixes: 334872a09198 ("x86/traps: Attempt to fixup exceptions in vDSO before signaling")
-Signed-off-by: Thomas Tai <thomas.tai@oracle.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Alexandre Chartre <alexandre.chartre@oracle.com>
-Link: https://lkml.kernel.org/r/1617902914-83245-1-git-send-email-thomas.tai@oracle.com
+Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
+Reported-by: Marek Vasut <marex@denx.de>
+Reported-by: Roman Guskov <rguskov@dh-electronics.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Marek Vasut <marex@denx.de>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/traps.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpio/gpiolib.c |   12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -556,7 +556,7 @@ DEFINE_IDTENTRY_ERRORCODE(exc_general_pr
- 		tsk->thread.trap_nr = X86_TRAP_GP;
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -365,22 +365,18 @@ static int gpiochip_set_desc_names(struc
+  *
+  * Looks for device property "gpio-line-names" and if it exists assigns
+  * GPIO line names for the chip. The memory allocated for the assigned
+- * names belong to the underlying software node and should not be released
++ * names belong to the underlying firmware node and should not be released
+  * by the caller.
+  */
+ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+ {
+ 	struct gpio_device *gdev = chip->gpiodev;
+-	struct device *dev = chip->parent;
++	struct fwnode_handle *fwnode = dev_fwnode(&gdev->dev);
+ 	const char **names;
+ 	int ret, i;
+ 	int count;
  
- 		if (fixup_vdso_exception(regs, X86_TRAP_GP, error_code, 0))
--			return;
-+			goto exit;
+-	/* GPIO chip may not have a parent device whose properties we inspect. */
+-	if (!dev)
+-		return 0;
+-
+-	count = device_property_string_array_count(dev, "gpio-line-names");
++	count = fwnode_property_string_array_count(fwnode, "gpio-line-names");
+ 	if (count < 0)
+ 		return 0;
  
- 		show_signal(tsk, SIGSEGV, "", desc, regs, error_code);
- 		force_sig(SIGSEGV);
-@@ -1057,7 +1057,7 @@ static void math_error(struct pt_regs *r
- 		goto exit;
+@@ -394,7 +390,7 @@ static int devprop_gpiochip_set_names(st
+ 	if (!names)
+ 		return -ENOMEM;
  
- 	if (fixup_vdso_exception(regs, trapnr, 0, 0))
--		return;
-+		goto exit;
- 
- 	force_sig_fault(SIGFPE, si_code,
- 			(void __user *)uprobe_get_trap_addr(regs));
+-	ret = device_property_read_string_array(dev, "gpio-line-names",
++	ret = fwnode_property_read_string_array(fwnode, "gpio-line-names",
+ 						names, count);
+ 	if (ret < 0) {
+ 		dev_warn(&gdev->dev, "failed to read GPIO line names\n");
 
 
