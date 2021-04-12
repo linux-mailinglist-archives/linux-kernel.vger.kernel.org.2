@@ -2,111 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DBE35BA81
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C1435BAA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236752AbhDLHAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:00:36 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:52057 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236692AbhDLHAc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:00:32 -0400
-Received: by mail-io1-f72.google.com with SMTP id s13so8079822iow.18
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:00:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=a8MjXdSruPWsNT6YKlOq40bkg1Bt0LxN86WBiQWj0DY=;
-        b=oaAWTJkJbIm8qMy4NExo0PErU+rgb78islCj5aWvxly9eMMxewKgHSn/mLSViLdsuw
-         iUXjJHXFjE1+HpoD1UM6XaU4zjUqtNySG7+08tFhUks4QOgrR+F6O9oHg0Akhf4CDvMz
-         wKG0BRMvyo42L7bHk5cqi/nVdImY4c3nr2SR/j3QiXfLUBcVcgVP77Mz7bPKXfsY5nIY
-         zKfMjT7DRvU543OOZ03ZD7gkwBmHLQt1y5ISMR7zUFukSddMhTfIug1J4IFRcgl+ECZ6
-         p4eZ9dFAlKGCmQFfWx8YGD303ToJ7HJmG+ia8kreEGOJerH1+Pb8cuCoqnypqcPWI2vA
-         Ep8w==
-X-Gm-Message-State: AOAM532FvmAnzrVHRoMPhH44zrweeKG8qykvNJpa3eXm0e8tvz/mqhhw
-        gpXXTYD8lH85c0n5NOFRbx8Eruz1DqVnByjowhJrHBRqzsQJ
-X-Google-Smtp-Source: ABdhPJyYX7RRly5jRUCsB2jM4ji+pnoUuRRRuQXwlLySlY5Ug0xTtFw36aUjVAVKNxphyrVzmWPvkAoAlrCvbIl9aKgF0DHkB4iu
+        id S236827AbhDLHN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:13:29 -0400
+Received: from cpanel.siel.si ([46.19.9.99]:57416 "EHLO cpanel.siel.si"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229581AbhDLHN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 03:13:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=norik.com;
+         s=default; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=mO+22My/KZ+sO11KQeqXh3U98CwWZ/+qWW87gDzziJM=; b=nO+HHQBA/Sf3eyEGDf1ctEkTmd
+        K9pyXgK+hOy4NE6TRVV7SbsmxnlGziJCdLABNiyDCLuG7TM9MdeJAxJNfvjK+/5TVOU8pJJNgnKZj
+        z3/UBy83eYIqbtIM2mTYcOA8I/xM5e/H5tRpgw4HBqjF7Wlnw4HyozWvGV1iX/u4jxXipx5PeUlbA
+        LZTqHb/mdG9zdjWaKLLhL89uauyPTixr9954uTZ6N+SQCAi5hW72WH8wQpwELFr+x/gvbu9d6tv+s
+        3lK70li57/E14bbOTrakgA0aRrIXRKyK+90rmnMipRvlMkpI0TZRTPIblpwlF1phNQgX04/Vvac7Y
+        TJjuX90g==;
+Received: from [89.212.21.243] (port=47212 helo=localhost.localdomain)
+        by cpanel.siel.si with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <primoz.fiser@norik.com>)
+        id 1lVq08-00GDwe-DM; Mon, 12 Apr 2021 08:24:48 +0200
+From:   Primoz Fiser <primoz.fiser@norik.com>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Primoz Fiser <primoz.fiser@norik.com>
+Subject: [PATCH] ARM: dts: imx6: phyFLEX: Fix UART hardware flow control
+Date:   Mon, 12 Apr 2021 08:24:49 +0200
+Message-Id: <20210412062450.1430199-1-primoz.fiser@norik.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a5e:cb4c:: with SMTP id h12mr20880277iok.183.1618210815240;
- Mon, 12 Apr 2021 00:00:15 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 00:00:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d06f2605bfc110e4@google.com>
-Subject: [syzbot] WARNING in smk_set_cipso (2)
-From:   syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>
-To:     casey@schaufler-ca.com, jmorris@namei.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, serge@hallyn.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cpanel.siel.si
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - norik.com
+X-Get-Message-Sender-Via: cpanel.siel.si: authenticated_id: primoz.fiser@norik.com
+X-Authenticated-Sender: cpanel.siel.si: primoz.fiser@norik.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Serial interface uart3 on phyFLEX board is capable of 5-wire connection
+including signals RTS and CTS for hardware flow control.
 
-syzbot found the following issue on:
+Fix signals UART3_CTS_B and UART3_RTS_B padmux assignments and add
+missing property "uart-has-rtscts" to allow serial interface to be
+configured and used with the hardware flow control.
 
-HEAD commit:    7d900724 Merge tag 'for-5.12-rc6-tag' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1462c619d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f91155ccddaf919c
-dashboard link: https://syzkaller.appspot.com/bug?extid=77c53db50c9fff774e8e
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=132c59a1d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13acf5e9d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8372 at mm/page_alloc.c:4985 __alloc_pages_nodemask+0x44e/0x500 mm/page_alloc.c:5029
-Modules linked in:
-CPU: 1 PID: 8372 Comm: syz-executor118 Not tainted 5.12.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__alloc_pages_nodemask+0x44e/0x500 mm/page_alloc.c:5029
-Code: 00 48 ba 00 00 00 00 00 fc ff df e9 fb fd ff ff 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 06 fe ff ff e8 97 67 09 00 e9 fc fd ff ff <0f> 0b e9 15 fe ff ff 44 89 ed a9 00 00 08 00 75 11 81 e5 7f ff ff
-RSP: 0018:ffffc90001e2fba0 EFLAGS: 00010246
-RAX: ffffc90001e2fba8 RBX: ffffc90001e2fbd4 RCX: 0000000000000000
-RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90001e2fbd0
-RBP: 0000000000000000 R08: dffffc0000000000 R09: ffffc90001e2fba8
-R10: fffff520003c5f7a R11: 0000000000000000 R12: 0000000000f0ff80
-R13: 0000000000040cc0 R14: 1ffff920003c5f7a R15: 000000000000000c
-FS:  0000000001eb9300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020003314 CR3: 0000000012ba3000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- alloc_pages include/linux/gfp.h:561 [inline]
- kmalloc_order+0x41/0x170 mm/slab_common.c:902
- kmalloc_order_trace+0x15/0x70 mm/slab_common.c:918
- kmalloc_large include/linux/slab.h:483 [inline]
- __kmalloc_track_caller+0x26d/0x390 mm/slub.c:4554
- memdup_user_nul+0x26/0xf0 mm/util.c:260
- smk_set_cipso+0xff/0x6f0 security/smack/smackfs.c:859
- vfs_write+0x220/0xab0 fs/read_write.c:603
- ksys_write+0x11b/0x220 fs/read_write.c:658
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ee59
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffddac6bda8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee59
-RDX: 0000000000f0ff7f RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 0000000000402e40 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402ed0
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-
-
+Signed-off-by: Primoz Fiser <primoz.fiser@norik.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
+index f28a96fcf23e..3f262e8ebf7f 100644
+--- a/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-phytec-pfla02.dtsi
+@@ -316,8 +316,8 @@ pinctrl_uart3: uart3grp {
+ 			fsl,pins = <
+ 				MX6QDL_PAD_EIM_D24__UART3_TX_DATA	0x1b0b1
+ 				MX6QDL_PAD_EIM_D25__UART3_RX_DATA	0x1b0b1
+-				MX6QDL_PAD_EIM_D30__UART3_RTS_B		0x1b0b1
+-				MX6QDL_PAD_EIM_D31__UART3_CTS_B		0x1b0b1
++				MX6QDL_PAD_EIM_D31__UART3_RTS_B		0x1b0b1
++				MX6QDL_PAD_EIM_D30__UART3_CTS_B		0x1b0b1
+ 			>;
+ 		};
+ 
+@@ -404,6 +404,7 @@ &reg_soc {
+ &uart3 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart3>;
++	uart-has-rtscts;
+ 	status = "disabled";
+ };
+ 
+-- 
+2.25.1
+
