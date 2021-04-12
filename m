@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD2035BAE3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B6635BAE6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236809AbhDLHhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        id S236886AbhDLHiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:38:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbhDLHhW (ORCPT
+        with ESMTP id S236866AbhDLHiP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:37:22 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20CA3C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:37:05 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id d12so12517874oiw.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:37:05 -0700 (PDT)
+        Mon, 12 Apr 2021 03:38:15 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799E0C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:37:57 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id t5-20020a1c77050000b029010e62cea9deso6297888wmi.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:37:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ObdGU65M/fnAKtrmSC1hHUrnCEDTl7tLsUN7Hou/Kx4=;
-        b=yN8W8ckWqJqQfldppJ47OT5b2E4pKRK0BLlhP9fLIJ6osYzKw34KRwccZexV0QgwM1
-         GArPGikPnzqoRDfbCWlOcQggDwnVl4LBSoOae+jeLMQxWicJ5rRR9vlyv0F60liBnF4o
-         s7FR16D6Enp+X5ouGsncFZhsLMx1FB7+9nTaf8H5K7I6aZFTdQJKvFgk6mqSU8LFTh0G
-         a1XJeCH8+CZnkDvnL8FLWwMi9Gw9Mu58Iq0iQYkmRBRk6EwH3eIPaLUSkZd7xhP8cRam
-         JzTbPreggEOCYI90uhDidgzHErm83HptfmSHtI/CsSLaP2KhDZk+Wl7WccZq4Vfj3Dkx
-         IA1g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=HIQ9nS2DnwZgvR48t9GVmzUOt4mImx9+3jm/clQDwpY=;
+        b=cWpYm91kNjsIFJodtiZmsOpVNs3il+ZXETTnXX8FYTbNjt/YnEDz7l8TGVlqci8noK
+         kiYpaX84LNH9skbYeNm0eE4EUUTX9zw3O/rw1+qUoReok79wn3Mcv4D0ufyiHY8/nLeQ
+         OegF6lPT4+buI/vCT6lkfoT2MBb5/atv2wAH0udUTCCdq8Dgw2W31t7SJyLYwv3zdffC
+         I8/RvEPPyc/6MLm8e5mw7eimkWoLQDFw3Pc2Witwk1eb0PUs0dLkVTC/ZQ1PPm/4mqiF
+         mxEAm7SGvNzXs/HFqf3MCRrf0eznlYMwv4JVKxmjhfozh01iYlI6L82AIoMWejUOXYOf
+         u8/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ObdGU65M/fnAKtrmSC1hHUrnCEDTl7tLsUN7Hou/Kx4=;
-        b=V88MHxAYwWNquAEsXsRTxSX4uzCKU8+oNWZE4z+rfjgoK6paGSQiX2u1OOWbdZNYrN
-         6K5XaC9dg1j5tzfJ0z2iKTAVcNDOaKonTltwIFTHV1UDAtj1sA2GpIxIqs0lh/CNWBhb
-         cmkJ+bs8P09gg+ZHaz6QD/X/F8FybFEhWvfMU8yDk9QkThMjcJUeNgSKvMhJvWt1eZBu
-         v+VxHr5VmTqZQMvmjgI90RiEkaNJdwfoop2KbAluLa2I9tNH9DvajYoxI+fGgCFnNs0r
-         fdLpYw7FuYjIMWzI4/RqDKnbgNgrVDY2Hki6VYH9MCgdqeFGuCQAdRfFZOM3DoyE6Kca
-         okvw==
-X-Gm-Message-State: AOAM5333nL71Lu04mPTU6EDWDNRQf13iCvmlyPHOu6ZKTLIwJfAyBtZd
-        sbk5kp2pREB2K/OOuM9tmMJib7+V0a1uD0SQkRqQ9g==
-X-Google-Smtp-Source: ABdhPJwqZrl08pY1ljWFD6WA4HQ/JP26Wif5Q1ip3Uj1c2U/7+WmBGT8kDRPDfOC8cS7cVYteDGgL3e/yDFAvH8Nfzo=
-X-Received: by 2002:aca:7c4:: with SMTP id 187mr18620213oih.47.1618213024537;
- Mon, 12 Apr 2021 00:37:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=HIQ9nS2DnwZgvR48t9GVmzUOt4mImx9+3jm/clQDwpY=;
+        b=BCqgITflLh9edNAL1VMGE0nyw42ElIFmHlWqoYqKq8UgC1JQnbqWoOhIRN3yDJ3FdI
+         fTmQIyMryZfgKud+/YD9+G41/Cnib70dQf37jhewSjyNiTjiT0GZUoxGSslw35X0HWtS
+         vaUobyGghEd1biLmC5uF6QvL2974YCFyVWrVMB7SyhgqIXZZKAakIxuyB+PxoE59KcEz
+         glqcbi17kYYf9G9icTkv8mbLXvo2oo7mlv5QTwup6vu4C8+5tht7U12jpTHYskcMyQ6B
+         I4jovjQCvk5oRdEEwzqnrGLBIZ9Ydp3BmX42QRr+PbGOm7dFSBrosyKBPnd9egsRP9zf
+         gB0Q==
+X-Gm-Message-State: AOAM531AFivHCRree24aDLrPGtt7o5QNMCUW3LtiMxVDS1YL2rwoZk/3
+        zAEiqNz+lMAChLb3OvxFb2SAeA==
+X-Google-Smtp-Source: ABdhPJwjS/qzIbhP6Zi3YtFpCzdnzG3pyEYGlKEP/6TmD6q9pko48oi0coPJ+NgMiMrgN0VAVE6f+A==
+X-Received: by 2002:a7b:c195:: with SMTP id y21mr2482976wmi.178.1618213076201;
+        Mon, 12 Apr 2021 00:37:56 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id o5sm13676490wmc.44.2021.04.12.00.37.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 00:37:55 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 08:37:54 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        cluster-devel <cluster-devel@redhat.com>
+Subject: Re: [PATCH 00/18] Rid W=1 warnings from GFS2
+Message-ID: <20210412073754.GA4869@dell>
+References: <20210326091151.311647-1-lee.jones@linaro.org>
+ <20210406091126.GT2916463@dell>
+ <468723920.4255981.1617709446972.JavaMail.zimbra@redhat.com>
+ <20210406115434.GU2916463@dell>
+ <CAHc6FU4bH91pWgFMytuvhgkr9YJs_VdggZdjEC6EwQJ-9Jj+3Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <3150feb19421ca6b15202c853215f8b40fe35567.1617615067.git.Rijo-john.Thomas@amd.com>
-In-Reply-To: <3150feb19421ca6b15202c853215f8b40fe35567.1617615067.git.Rijo-john.Thomas@amd.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Mon, 12 Apr 2021 09:36:53 +0200
-Message-ID: <CAHUa44Gga=k3indU8FC3X5xE=6RnKEDNeZBDWeJzm47-Spm0QA@mail.gmail.com>
-Subject: Re: [PATCH v2] tee: amdtee: unload TA only when its refcount becomes 0
-To:     Rijo Thomas <Rijo-john.Thomas@amd.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
-        Mythri Pandeshwara krishna <mythri.pandeshwarakrishna@amd.com>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHc6FU4bH91pWgFMytuvhgkr9YJs_VdggZdjEC6EwQJ-9Jj+3Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 5, 2021 at 11:43 AM Rijo Thomas <Rijo-john.Thomas@amd.com> wrote:
->
-> Same Trusted Application (TA) can be loaded in multiple TEE contexts.
->
-> If it is a single instance TA, the TA should not get unloaded from AMD
-> Secure Processor, while it is still in use in another TEE context.
->
-> Therefore reference count TA and unload it when the count becomes zero.
->
-> Fixes: 757cc3e9ff1d ("tee: add AMD-TEE driver")
-> Reviewed-by: Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
-> Signed-off-by: Rijo Thomas <Rijo-john.Thomas@amd.com>
-> ---
-> v2:
->  * Unload TA if get_ta_refcount() fails
->
->  drivers/tee/amdtee/amdtee_private.h | 13 ++++
->  drivers/tee/amdtee/call.c           | 94 ++++++++++++++++++++++++++---
->  drivers/tee/amdtee/core.c           | 15 +++--
->  3 files changed, 106 insertions(+), 16 deletions(-)
+On Fri, 09 Apr 2021, Andreas Gruenbacher wrote:
 
-Looks good to me. Please address Dan's comment.
+> Hi Lee,
+> 
+> On Tue, Apr 6, 2021 at 1:54 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > > > These have been on the list for a couple of weeks now.
+> 
+> thanks for your fixes, I've gone through them now. I've fixed up some
+> comments instead of "demoting" them to make the patch somewhat less
+> destructive, and I found a few more minor issues along the way. Those
+> changes are now all in the following commit:
+> 
+>   https://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git/commit/?id=c551f66c5dfef
 
-Cheers,
-Jens
+You squashed all of the changes across all of the files into
+one-big-patch (tm)?  I haven't seen anyone do that for years.
+Hopefully none of it needs reverting or bisecting!
+
+Anyway, thanks for merging.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
