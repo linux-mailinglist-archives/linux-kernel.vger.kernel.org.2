@@ -2,106 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE7835D1D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 22:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C547235D1E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 22:22:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238324AbhDLUOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 16:14:46 -0400
-Received: from mail-wr1-f44.google.com ([209.85.221.44]:47035 "EHLO
-        mail-wr1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237307AbhDLUOo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 16:14:44 -0400
-Received: by mail-wr1-f44.google.com with SMTP id c15so5250848wro.13;
-        Mon, 12 Apr 2021 13:14:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z92rtPihB/PVDuKi0eES4Biw0NIjfY+hn1ygMacOhy8=;
-        b=GBnPTsQXwe5XTcvDzF0OD0YE1/hvR9jXrtkxvf4CkoslBGskxF9bOBiTyjCRrpt0od
-         kjKPN9zluevk5ZFOGeTyzADIYGc2osZsmT6gzV/q2+BNJvbscNMxAT34y9D3upWzuivh
-         xftXAt8D+rOj62zf6loGSjKWoMd+4UfczvT0YQXtC2bGfrXQ/8fBU0tPiI3TBWiXNslG
-         r3YAbxwgogZAN3bpX4BvduzpXt3YImug0RSH7TCvFIkRF93gFzHZG0s9iHBqTCa9gugu
-         prLnu2F2kPo0xYP631r9PiaZA/xbQAb09qemK2+aBKko2o8qBX8kqWBJZp4wpFdwD41N
-         sxVQ==
-X-Gm-Message-State: AOAM531IBOaQdwgnkF0a72E1la5du8rhRowbI/X4pzZaxtErspTj9yiO
-        lGRWjpKNXng2movOIKKVB9Q=
-X-Google-Smtp-Source: ABdhPJwM2Cp0dd0jYY/ic5wltnj6odHl7XohCWY3V1Iljex7jjw0eFyvOJtluZCne1tiHI54d/vIQg==
-X-Received: by 2002:a05:6000:120b:: with SMTP id e11mr4630505wrx.299.1618258465495;
-        Mon, 12 Apr 2021 13:14:25 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id e13sm19787044wrg.72.2021.04.12.13.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 13:14:25 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 20:14:23 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Siddharth Chandrasekaran <sidcha@amazon.de>
-Cc:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Alexander Graf <graf@amazon.com>,
-        Evgeny Iakovlev <eyakovl@amazon.de>,
-        Liran Alon <liran@amazon.com>,
-        Ioannis Aslanidis <iaslan@amazon.de>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH v2 4/4] KVM: hyper-v: Advertise support for fast XMM
- hypercalls
-Message-ID: <20210412201423.rfpykzfgpmjh6ydy@liuwe-devbox-debian-v2>
-References: <cover.1618244920.git.sidcha@amazon.de>
- <5ec20918b06cad17cb43f04be212c5e21c18caea.1618244920.git.sidcha@amazon.de>
+        id S245586AbhDLUUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 16:20:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44888 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237307AbhDLUU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 16:20:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DCA0F61350;
+        Mon, 12 Apr 2021 20:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618258808;
+        bh=hDc03qdDcRaLTGdQJtn+mUwRRaNWd6iE0dt5Sd4a71Q=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Db7CGVessknQvEfm2YOz9P2q37Zdl6URhFa9UII2Qyw1D+hZcQ4oHsoC0w503mKer
+         XfBQiPL6iTPI9X07U96RUBLIg8vyjS2DWBJzsTCnzSAktVDAnxK9FjLmVkm5ABPeJb
+         yd5OkMVAmRcaujphByYXildBF0fJSignXvKdztd1Pt0QV6Y7rwC99GwuqMEtoO/fQ8
+         M2njUr+HARXIc12Yi8tjK8pPXC4op4ch+NZvQfEBHZkM+0EctsPQbwO5L+TbsE8G+f
+         sk2UktC8LORo+9SB6RpcKwLfgXXYCYxVZ4pUd6gPwsBUGiJPGwtGrZiP2N3bha5SCC
+         VHk8qlSQk1Eiw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CDC15600E8;
+        Mon, 12 Apr 2021 20:20:08 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ec20918b06cad17cb43f04be212c5e21c18caea.1618244920.git.sidcha@amazon.de>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] cxgb4: Fix unintentional sign extension issues
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161825880883.1346.7456912721949180791.git-patchwork-notify@kernel.org>
+Date:   Mon, 12 Apr 2021 20:20:08 +0000
+References: <20210409110857.637409-1-colin.king@canonical.com>
+In-Reply-To: <20210409110857.637409-1-colin.king@canonical.com>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     rajur@chelsio.com, davem@davemloft.net, kuba@kernel.org,
+        rahul.lakkireddy@chelsio.com, kumaras@chelsio.com,
+        ganeshgr@chelsio.com, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 07:00:17PM +0200, Siddharth Chandrasekaran wrote:
-> Now that all extant hypercalls that can use XMM registers (based on
-> spec) for input/outputs are patched to support them, we can start
-> advertising this feature to guests.
-> 
-> Cc: Alexander Graf <graf@amazon.com>
-> Cc: Evgeny Iakovlev <eyakovl@amazon.de>
-> Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
-> ---
->  arch/x86/include/asm/hyperv-tlfs.h | 7 ++++++-
->  arch/x86/kvm/hyperv.c              | 2 ++
->  2 files changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/hyperv-tlfs.h b/arch/x86/include/asm/hyperv-tlfs.h
-> index e6cd3fee562b..716f12be411e 100644
-> --- a/arch/x86/include/asm/hyperv-tlfs.h
-> +++ b/arch/x86/include/asm/hyperv-tlfs.h
-> @@ -52,7 +52,7 @@
->   * Support for passing hypercall input parameter block via XMM
->   * registers is available
->   */
-> -#define HV_X64_HYPERCALL_PARAMS_XMM_AVAILABLE		BIT(4)
-> +#define HV_X64_HYPERCALL_XMM_INPUT_AVAILABLE		BIT(4)
->  /* Support for a virtual guest idle state is available */
->  #define HV_X64_GUEST_IDLE_STATE_AVAILABLE		BIT(5)
->  /* Frequency MSRs available */
-> @@ -61,6 +61,11 @@
->  #define HV_FEATURE_GUEST_CRASH_MSR_AVAILABLE		BIT(10)
->  /* Support for debug MSRs available */
->  #define HV_FEATURE_DEBUG_MSRS_AVAILABLE			BIT(11)
-> +/*
-> + * Support for returning hypercall ouput block via XMM
+Hello:
 
-"output"
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-Wei.
+On Fri,  9 Apr 2021 12:08:57 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The shifting of the u8 integers f->fs.nat_lip[] by 24 bits to
+> the left will be promoted to a 32 bit signed int and then
+> sign-extended to a u64. In the event that the top bit of the u8
+> is set then all then all the upper 32 bits of the u64 end up as
+> also being set because of the sign-extension. Fix this by
+> casting the u8 values to a u64 before the 24 bit left shift.
+> 
+> [...]
+
+Here is the summary with links:
+  - cxgb4: Fix unintentional sign extension issues
+    https://git.kernel.org/netdev/net-next/c/dd2c79677375
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
