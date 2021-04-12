@@ -2,66 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B6C35C491
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5252235C493
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239885AbhDLLA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:00:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51930 "EHLO mail.kernel.org"
+        id S239920AbhDLLAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:00:52 -0400
+Received: from mga04.intel.com ([192.55.52.120]:33680 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239843AbhDLLAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:00:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C9EC61241;
-        Mon, 12 Apr 2021 11:00:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618225204;
-        bh=jrTLLq4qjpyYrWKjrn65QbFhsZS8WXKdFzH9fVWjqdU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2ANK3GpXNP3bnczL5TmSXLhkF56yedowok02NvL6G1Uph4GQ/Y4v8APc/xvscbhFZ
-         f3U5pZK1SvH1TqrJkFBxGC+h4ARhKxNB2D69UAQ9FU3z4d0G1JLGXFjjW5b2UArKU+
-         5udk95e2ClJrK8t0dtyjkUK223TYwsx/m/2luTpQ=
-Date:   Mon, 12 Apr 2021 13:00:02 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Oliver Neukum <oneukum@suse.com>
-Subject: Re: [PATCH 12/12] USB: cdc-acm: add more Maxlinear/Exar models to
- ignore list
-Message-ID: <YHQoMmdS+RqyytU4@kroah.com>
-References: <20210412095557.1213-1-johan@kernel.org>
- <20210412095557.1213-13-johan@kernel.org>
+        id S239890AbhDLLAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 07:00:42 -0400
+IronPort-SDR: mueUXr1tte38fCGcx6Oc02xQvnvFNeLxNPpQHR/EYbiLgNly7xOCypLHeMpW37enI4A41H7/k1
+ /T/MBrQTTQLw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="192031795"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="192031795"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 04:00:23 -0700
+IronPort-SDR: +S8E8BV1Dc2BzlBF8/6WPnhbTKYz9r1ME7efkhsT8jHc1YwtQorbKlYV2MeEezTE1fmx7imL74
+ OF5Ro7iqytCA==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="599933660"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 04:00:19 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 6EF60203D0;
+        Mon, 12 Apr 2021 14:00:17 +0300 (EEST)
+Date:   Mon, 12 Apr 2021 14:00:17 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Mitali Borkar <mitaliborkar810@gmail.com>, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
+        mitali_s@me.iitr.ac.in, laurent.pinchart@ideasonboard.com
+Subject: Re: [PATCH 1/6] staging: media: intel-ipu3: replace bit shifts with
+ BIT() macro
+Message-ID: <20210412110017.GM3@paasikivi.fi.intel.com>
+References: <cover.1618180659.git.mitaliborkar810@gmail.com>
+ <cc7b827a3264f08cedb76adddd16a34df48f935f.1618180659.git.mitaliborkar810@gmail.com>
+ <20210412094230.GI3@paasikivi.fi.intel.com>
+ <YHQXty07oAP1L0W9@kroah.com>
+ <20210412104435.GL3@paasikivi.fi.intel.com>
+ <YHQnOJ2t0+q65La2@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210412095557.1213-13-johan@kernel.org>
+In-Reply-To: <YHQnOJ2t0+q65La2@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 11:55:57AM +0200, Johan Hovold wrote:
-> From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Mon, Apr 12, 2021 at 12:55:52PM +0200, Greg KH wrote:
+> On Mon, Apr 12, 2021 at 01:44:35PM +0300, Sakari Ailus wrote:
+> > Hi Greg,
+> > 
+> > On Mon, Apr 12, 2021 at 11:49:43AM +0200, Greg KH wrote:
+> > > On Mon, Apr 12, 2021 at 12:42:30PM +0300, Sakari Ailus wrote:
+> > > > Hi Mitali,
+> > > > 
+> > > > On Mon, Apr 12, 2021 at 04:38:39AM +0530, Mitali Borkar wrote:
+> > > > > Added #include <linux/bitops.h> and replaced bit shifts by BIT() macro.
+> > > > > This BIT() macro from linux/bitops.h is used to define IPU3_UAPI_GRID_Y_START_EN
+> > > > > and IPU3_UAPI_AWB_RGBS_THR_B_* bitmask.
+> > > > > Use of macro is better and neater. It maintains consistency.
+> > > > > Reported by checkpatch.
+> > > > > 
+> > > > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
+> > > > > ---
+> > > > >  drivers/staging/media/ipu3/include/intel-ipu3.h | 7 ++++---
+> > > > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > > > index edd8edda0647..589d5ccee3a7 100644
+> > > > > --- a/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > > > +++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
+> > > > > @@ -5,6 +5,7 @@
+> > > > >  #define __IPU3_UAPI_H
+> > > > >  
+> > > > >  #include <linux/types.h>
+> > > > > +#include <linux/bitops.h>
+> > > > >  
+> > > > >  /* from /drivers/staging/media/ipu3/include/videodev2.h */
+> > > > >  
+> > > > > @@ -22,11 +23,11 @@
+> > > > >  #define IPU3_UAPI_MAX_BUBBLE_SIZE			10
+> > > > >  
+> > > > >  #define IPU3_UAPI_GRID_START_MASK			((1 << 12) - 1)
+> > > > > -#define IPU3_UAPI_GRID_Y_START_EN			(1 << 15)
+> > > > > +#define IPU3_UAPI_GRID_Y_START_EN			BIT(15)
+> > > > 
+> > > > This header is used in user space where you don't have the BIT() macro.
+> > > 
+> > > If that is true, why is it not in a "uapi" subdir within this driver?
+> > > 
+> > > Otherwise it is not obvious at all that this is the case :(
+> > 
+> > It defines an interface towards the user space and the argument has been a
+> > staging driver shouldn't be doing that (for the lack of ABI stability),
+> > hence leaving it where it is currently.
 > 
-> Now that the xr_serial got support for other models, add their USB IDs
-> as well.
+> I think we are talking past each other here...
 > 
-> The Maxlinear/Exar USB UARTs can be used in either ACM mode using the
-> cdc-acm driver or in "custom driver" mode in which further features such
-> as hardware and software flow control, GPIO control and in-band
-> line-status reporting are available.
+> If you have a userspace api, then put that in a .h file that has a
+> "uapi" in the path.  Just because you have this in a staging driver does
+> not mean you should not have such a thing, otherwise you are going to
+> constantly fight against people sending you patches like this as there
+> is no obvious way to determine this.
 > 
-> In ACM mode the device always enables RTS/CTS flow control, something
-> which could prevent transmission in case the CTS input isn't wired up
-> correctly.
-> 
-> Ensure that cdc_acm will not bind to these devices if the custom
-> USB-serial driver is enabled.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> Link: https://lore.kernel.org/r/5155887a764cbc11f8da0217fe08a24a77d120b4.1616571453.git.mchehab+huawei@kernel.org
-> [ johan: rewrite commit message, clean up entries ]
-> Cc: Oliver Neukum <oneukum@suse.com>
-> Signed-off-by: Johan Hovold <johan@kernel.org>
+> So how about moving this file to:
+> 	drivers/staging/media/ipu3/include/uapi/intel-ipu3.h
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Ah, sure! I'll send a patch.
+
+-- 
+Sakari Ailus
