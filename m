@@ -2,99 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B0335C957
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 329F135C9CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242619AbhDLPBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:01:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241302AbhDLPBM (ORCPT
+        id S242873AbhDLPZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:25:53 -0400
+Received: from gateway23.websitewelcome.com ([192.185.49.184]:12942 "EHLO
+        gateway23.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S242869AbhDLPZq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:01:12 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEDEC061574;
-        Mon, 12 Apr 2021 08:00:54 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id t22so6184378ply.1;
-        Mon, 12 Apr 2021 08:00:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=0hXhggls3SsdmeEdICPiR/mw1VhFjhbR9Aip2rqIyO4=;
-        b=Lt7Kkeff+wv/0Sl+wVWKVeQuDdCJsddS3WDO/HsC7ExIVOTCGMqJ53FXjfq4eVyIym
-         pJKnIVc+O4MisoROlRvAQc9NAQzobVbiuCLk8GHwE0ttLYCB9ML5VAUxiWar0OEdMzSU
-         Uug2+3qMemrFi7/VGW3QUlvsRZoHX9avflweqAQH5yvxQOujn6/iGvKT4SijR7zil+rl
-         x6/AnREpIPbZ1Tq4MrunHSc+prLscYWUtde56wIbn1BgTik89FOU279kyA7PoX9eb6bz
-         JbcxqyrzcN/t8Y3V33W6VdpUYoBuSQOFi/EhMzNq5Lj15Ikg9oM4Hkx/+4hOH7byY3Lq
-         5asw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=0hXhggls3SsdmeEdICPiR/mw1VhFjhbR9Aip2rqIyO4=;
-        b=EzrIIZYgmw6VOSLHt4dpTqb8cP6VvFac+SLAbw/x+Gz8Yo1mXUdJ5UYhQoktxTodp8
-         Nd0qnBUbU2OG35d8cruxFG1xnWKqNkemx7m6gknNxzmlpY54Ym/KygvlWwMEWWem+Rr7
-         8Y7+x1wi5on/QfqGQTUeZyCVQvHp7UnROlgSPIvGRo8mJCaLM+wADIOWjYO7GiWWzWlR
-         y9ixGtvgYNHYWA8B7iPf/qZgfTuNw8O1pEIHVP5ZrLSvoQGJLb7Wg50KRGiUJXWs7Yr0
-         KvFAH81x6GevRA9JAGj/ZDBguImMwGnL503BLGiqIqUIgFmotUFD9zLIcd5IWK5Yh4PZ
-         yNKA==
-X-Gm-Message-State: AOAM532Di8n9Jk0cZz1PfA0xhjXun8Ud+Uo7gQThxdbYejOnbaguwe0I
-        bUMXSlDKGI0SYDV+HdmTPxdKoyY/Sr+9WTlU
-X-Google-Smtp-Source: ABdhPJyN89fUbcwYmwo8tfuHo+uILoVx2ouA4h+2bcTXZPQh0cGMV43Wr4ZOUK3zn/geNKDM7piASA==
-X-Received: by 2002:a17:90b:3892:: with SMTP id mu18mr27963088pjb.7.1618239654319;
-        Mon, 12 Apr 2021 08:00:54 -0700 (PDT)
-Received: from localhost.localdomain ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id y19sm12255982pge.50.2021.04.12.08.00.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 08:00:53 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Marek Behun <marek.behun@nic.cz>,
-        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        zhang kai <zhangkaiheb@126.com>,
-        Weilong Chen <chenweilong@huawei.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
-Date:   Mon, 12 Apr 2021 23:00:45 +0800
-Message-Id: <20210412150045.929508-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210411185017.3xf7kxzzq2vefpwu@skbuf>
-References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf>
+        Mon, 12 Apr 2021 11:25:46 -0400
+Received: from cm10.websitewelcome.com (cm10.websitewelcome.com [100.42.49.4])
+        by gateway23.websitewelcome.com (Postfix) with ESMTP id 2DE221FFFE
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 10:00:23 -0500 (CDT)
+Received: from gator4166.hostgator.com ([108.167.133.22])
+        by cmsmtp with SMTP
+        id Vy34lEqOyL7DmVy34lUFU0; Mon, 12 Apr 2021 10:00:23 -0500
+X-Authority-Reason: nr=8
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=t7LOC9owvXRtFsyjnP+iXmIc7wAN+Zvl5JA/yeIs57M=; b=TBl1ZLtDiWY7NZ0bs+OU2XS6J8
+        5k8LlZ4yaxccY3UMNjFaYbWjRFcMmTcwhzqw73b+M2lBPSNBupZC2qdO0rF5+HjNEVlCJixhP770I
+        pMvfLll8oshr9TyjZqrhdnjIfDRn9BLmwle9olEOSpmKurdku/8TwMhlVNPdHnaxrAyynpSVevKkh
+        p5b4iw6nFv0xhwcJO+OrhqpDcZIdbeJSA4vL9dtE0T6EPawPIhFqGG55CrX1n8AZdPzkbxow8b26O
+        0Zj7waPUJLIfFONj72SwC0mEKBFbSyCYd03xbEyFkCC/jpfg9+t2frBxTCv7vraBjUu8dT8kY945S
+        7A0rpqNA==;
+Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:60454 helo=[192.168.15.8])
+        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <gustavo@embeddedor.com>)
+        id 1lVy34-000Cgt-Ab; Mon, 12 Apr 2021 10:00:22 -0500
+Subject: Re: [PATCH][next] media: siano: Fix multiple out-of-bounds warnings
+ in smscore_load_firmware_family2()
+From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+References: <20210311021947.GA129388@embeddedor>
+ <b0e46b46-db9a-7e3d-cadb-e3855c68373e@embeddedor.com>
+Message-ID: <91073669-7a9b-9909-baa5-d4ddd814aa35@embeddedor.com>
+Date:   Mon, 12 Apr 2021 10:00:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <b0e46b46-db9a-7e3d-cadb-e3855c68373e@embeddedor.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - embeddedor.com
+X-BWhitelist: no
+X-Source-IP: 187.162.31.110
+X-Source-L: No
+X-Exim-ID: 1lVy34-000Cgt-Ab
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:60454
+X-Source-Auth: gustavo@embeddedor.com
+X-Email-Count: 5
+X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
+X-Local-Domain: yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 09:50:17PM +0300, Vladimir Oltean wrote:
-> 
-> So I'd be tempted to say 'tough luck' if all your ports are not up, and
-> the ones that are are assigned statically to the same CPU port. It's a
-> compromise between flexibility and simplicity, and I would go for
-> simplicity here. That's the most you can achieve with static assignment,
-> just put the CPU ports in a LAG if you want better dynamic load balancing
-> (for details read on below).
-> 
+Hi all,
 
-Many switches such as mv88e6xxx only support MAC DA/SA load balancing,
-which make it not ideal in router application (Router WAN <--> ISP BRAS
-traffic will always have the same DA/SA and thus use only one port).
+Friendly ping: who can take this, please?
+
+Thanks
+--
+Gustavo
+
+On 3/26/21 11:30, Gustavo A. R. Silva wrote:
+> Hi all,
+> 
+> Friendly ping: who can take this, please?
+> 
+> Thanks
+> --
+> Gustavo
+> 
+> On 3/10/21 20:19, Gustavo A. R. Silva wrote:
+>> Rename struct sms_msg_data4 to sms_msg_data5 and increase the size of
+>> its msg_data array from 4 to 5 elements. Notice that at some point
+>> the 5th element of msg_data is being accessed in function
+>> smscore_load_firmware_family2():
+>>
+>> 1006                 trigger_msg->msg_data[4] = 4; /* Task ID */
+>>
+>> Also, there is no need for the object _trigger_msg_ of type struct
+>> sms_msg_data *, when _msg_ can be used, directly. Notice that msg_data
+>> in struct sms_msg_data is a one-element array, which causes multiple
+>> out-of-bounds warnings when accessing beyond its first element
+>> in function smscore_load_firmware_family2():
+>>
+>>  992                 struct sms_msg_data *trigger_msg =                                                  
+>>  993                         (struct sms_msg_data *) msg;                                                
+>>  994                                                                                                     
+>>  995                 pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");                               
+>>  996                 SMS_INIT_MSG(&msg->x_msg_header,                                                    
+>>  997                                 MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,                                     
+>>  998                                 sizeof(struct sms_msg_hdr) +                                        
+>>  999                                 sizeof(u32) * 5);                                                   
+>> 1000                                                                                                     
+>> 1001                 trigger_msg->msg_data[0] = firmware->start_address;                                 
+>> 1002                                         /* Entry point */                                           
+>> 1003                 trigger_msg->msg_data[1] = 6; /* Priority */                                        
+>> 1004                 trigger_msg->msg_data[2] = 0x200; /* Stack size */                                  
+>> 1005                 trigger_msg->msg_data[3] = 0; /* Parameter */                                       
+>> 1006                 trigger_msg->msg_data[4] = 4; /* Task ID */ 
+>>
+>> even when enough dynamic memory is allocated for _msg_:
+>>
+>>  929         /* PAGE_SIZE buffer shall be enough and dma aligned */
+>>  930         msg = kmalloc(PAGE_SIZE, GFP_KERNEL | coredev->gfp_buf_flags);
+>>
+>> but as _msg_ is casted to (struct sms_msg_data *):
+>>
+>>  992                 struct sms_msg_data *trigger_msg =
+>>  993                         (struct sms_msg_data *) msg;
+>>
+>> the out-of-bounds warnings are actually valid and should be addressed.
+>>
+>> Fix this by declaring object _msg_ of type struct sms_msg_data5 *,
+>> which contains a 5-elements array, instead of just 4. And use
+>> _msg_ directly, instead of creating object trigger_msg.
+>>
+>> This helps with the ongoing efforts to enable -Warray-bounds by fixing
+>> the following warnings:
+>>
+>>   CC [M]  drivers/media/common/siano/smscoreapi.o
+>> drivers/media/common/siano/smscoreapi.c: In function ‘smscore_load_firmware_family2’:
+>> drivers/media/common/siano/smscoreapi.c:1003:24: warning: array subscript 1 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>  1003 |   trigger_msg->msg_data[1] = 6; /* Priority */
+>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>   619 |  u32 msg_data[1];
+>>       |      ^~~~~~~~
+>> drivers/media/common/siano/smscoreapi.c:1004:24: warning: array subscript 2 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>  1004 |   trigger_msg->msg_data[2] = 0x200; /* Stack size */
+>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>   619 |  u32 msg_data[1];
+>>       |      ^~~~~~~~
+>> drivers/media/common/siano/smscoreapi.c:1005:24: warning: array subscript 3 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>  1005 |   trigger_msg->msg_data[3] = 0; /* Parameter */
+>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>   619 |  u32 msg_data[1];
+>>       |      ^~~~~~~~
+>> drivers/media/common/siano/smscoreapi.c:1006:24: warning: array subscript 4 is above array bounds of ‘u32[1]’ {aka ‘unsigned int[1]’} [-Warray-bounds]
+>>  1006 |   trigger_msg->msg_data[4] = 4; /* Task ID */
+>>       |   ~~~~~~~~~~~~~~~~~~~~~^~~
+>> In file included from drivers/media/common/siano/smscoreapi.c:12:
+>> drivers/media/common/siano/smscoreapi.h:619:6: note: while referencing ‘msg_data’
+>>   619 |  u32 msg_data[1];
+>>       |      ^~~~~~~~
+>>
+>> Fixes: 018b0c6f8acb ("[media] siano: make load firmware logic to work with newer firmwares")
+>> Co-developed-by: Kees Cook <keescook@chromium.org>
+>> Signed-off-by: Kees Cook <keescook@chromium.org>
+>> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>> ---
+>>  drivers/media/common/siano/smscoreapi.c | 22 +++++++++-------------
+>>  drivers/media/common/siano/smscoreapi.h |  4 ++--
+>>  2 files changed, 11 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/media/common/siano/smscoreapi.c b/drivers/media/common/siano/smscoreapi.c
+>> index 410cc3ac6f94..bceaf91faa15 100644
+>> --- a/drivers/media/common/siano/smscoreapi.c
+>> +++ b/drivers/media/common/siano/smscoreapi.c
+>> @@ -908,7 +908,7 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
+>>  					 void *buffer, size_t size)
+>>  {
+>>  	struct sms_firmware *firmware = (struct sms_firmware *) buffer;
+>> -	struct sms_msg_data4 *msg;
+>> +	struct sms_msg_data5 *msg;
+>>  	u32 mem_address,  calc_checksum = 0;
+>>  	u32 i, *ptr;
+>>  	u8 *payload = firmware->payload;
+>> @@ -989,24 +989,20 @@ static int smscore_load_firmware_family2(struct smscore_device_t *coredev,
+>>  		goto exit_fw_download;
+>>  
+>>  	if (coredev->mode == DEVICE_MODE_NONE) {
+>> -		struct sms_msg_data *trigger_msg =
+>> -			(struct sms_msg_data *) msg;
+>> -
+>>  		pr_debug("sending MSG_SMS_SWDOWNLOAD_TRIGGER_REQ\n");
+>>  		SMS_INIT_MSG(&msg->x_msg_header,
+>>  				MSG_SMS_SWDOWNLOAD_TRIGGER_REQ,
+>> -				sizeof(struct sms_msg_hdr) +
+>> -				sizeof(u32) * 5);
+>> +				sizeof(*msg));
+>>  
+>> -		trigger_msg->msg_data[0] = firmware->start_address;
+>> +		msg->msg_data[0] = firmware->start_address;
+>>  					/* Entry point */
+>> -		trigger_msg->msg_data[1] = 6; /* Priority */
+>> -		trigger_msg->msg_data[2] = 0x200; /* Stack size */
+>> -		trigger_msg->msg_data[3] = 0; /* Parameter */
+>> -		trigger_msg->msg_data[4] = 4; /* Task ID */
+>> +		msg->msg_data[1] = 6; /* Priority */
+>> +		msg->msg_data[2] = 0x200; /* Stack size */
+>> +		msg->msg_data[3] = 0; /* Parameter */
+>> +		msg->msg_data[4] = 4; /* Task ID */
+>>  
+>> -		rc = smscore_sendrequest_and_wait(coredev, trigger_msg,
+>> -					trigger_msg->x_msg_header.msg_length,
+>> +		rc = smscore_sendrequest_and_wait(coredev, msg,
+>> +					msg->x_msg_header.msg_length,
+>>  					&coredev->trigger_done);
+>>  	} else {
+>>  		SMS_INIT_MSG(&msg->x_msg_header, MSG_SW_RELOAD_EXEC_REQ,
+>> diff --git a/drivers/media/common/siano/smscoreapi.h b/drivers/media/common/siano/smscoreapi.h
+>> index 4a6b9f4c44ac..f8789ee0d554 100644
+>> --- a/drivers/media/common/siano/smscoreapi.h
+>> +++ b/drivers/media/common/siano/smscoreapi.h
+>> @@ -624,9 +624,9 @@ struct sms_msg_data2 {
+>>  	u32 msg_data[2];
+>>  };
+>>  
+>> -struct sms_msg_data4 {
+>> +struct sms_msg_data5 {
+>>  	struct sms_msg_hdr x_msg_header;
+>> -	u32 msg_data[4];
+>> +	u32 msg_data[5];
+>>  };
+>>  
+>>  struct sms_data_download {
+>>
