@@ -2,79 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5321835B8D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9EF35B8E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235718AbhDLDQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 23:16:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235229AbhDLDQD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 23:16:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EFF2C6120C;
-        Mon, 12 Apr 2021 03:15:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618197346;
-        bh=MEBeMSZwCLiNgtETaZdBAHcB6oSiuhP7OTq68o+q6qU=;
-        h=References:In-Reply-To:Reply-To:From:Date:Subject:To:Cc:From;
-        b=AsixbbEfcJQeCUBLhHHdSKb4PsstJcAjesgFqQSgsFfoutKECCR4Eaxp1XEQ9J4MA
-         UpncmUnFRscfoXy9LObT8q5ZtMr00QUTYo5HqsA51O4xxcnUFgycv8ukBAJ5kFwvfW
-         GCdyem1GHPp0ihDFB2JDxIlJo6h9TCeoEphym4XnjjKYbXr1+DB/tf3/nn4/FIgsrp
-         5KZhWuPZBY5UzZ6L04IG4wzh7/FHm/HK7NcQFTzGO3VU/e5qqW2epzr/SWXh1M8eKr
-         KEfd/QXi92cRRaJnwMRfay1AmRuKd8B6DLQjxLIW43EzBCca9X45Xck6pqrw9kaOHE
-         l3+6JLRj3CCMg==
-Received: by mail-lj1-f176.google.com with SMTP id a36so2722916ljq.8;
-        Sun, 11 Apr 2021 20:15:45 -0700 (PDT)
-X-Gm-Message-State: AOAM532rxptN0jr3QjYBlmz38QYBe9WQVVCeUHXPk3sRT6g5+zZgk+yL
-        3BhKQsSkbTeUM1jmANC7MkIS9HVWtmUm67Dw8OU=
-X-Google-Smtp-Source: ABdhPJxY40eVzTueYOpnHIuI8SLf2FP95b6CadyqCzVZkmgU4iiNPf4qkbkYSduLZMay54CJOUuttMeYEXCIdAuFf4o=
-X-Received: by 2002:a2e:2f03:: with SMTP id v3mr11027054ljv.463.1618197344265;
- Sun, 11 Apr 2021 20:15:44 -0700 (PDT)
+        id S236080AbhDLDSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 23:18:17 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16522 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235095AbhDLDSP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 23:18:15 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FJYky441qzPqGT;
+        Mon, 12 Apr 2021 11:15:06 +0800 (CST)
+Received: from [10.174.176.162] (10.174.176.162) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 12 Apr 2021 11:17:54 +0800
+Subject: Re: [PATCH 4/5] mm/swap_state: fix potential faulted in race in
+ swap_ra_info()
+To:     "Huang, Ying" <ying.huang@intel.com>
+CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
+        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
+        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
+        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+References: <20210408130820.48233-1-linmiaohe@huawei.com>
+ <20210408130820.48233-5-linmiaohe@huawei.com>
+ <874kgfyh85.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <d88fbae4-20f5-0c7f-1c9b-b814b87ab222@huawei.com>
+ <87v98swcd6.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <55611ebf-e608-87df-c86a-e6a19bab96ca@huawei.com>
+Date:   Mon, 12 Apr 2021 11:17:54 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210411131007.21757-1-jbx6244@gmail.com> <20210411131007.21757-3-jbx6244@gmail.com>
-In-Reply-To: <20210411131007.21757-3-jbx6244@gmail.com>
-Reply-To: wens@kernel.org
-From:   Chen-Yu Tsai <wens@kernel.org>
-Date:   Mon, 12 Apr 2021 11:15:35 +0800
-X-Gmail-Original-Message-ID: <CAGb2v67s7a4GARfAnROKS40kaYQpdW_qWX=HX6GU09jV9wrbXw@mail.gmail.com>
-Message-ID: <CAGb2v67s7a4GARfAnROKS40kaYQpdW_qWX=HX6GU09jV9wrbXw@mail.gmail.com>
-Subject: Re: [PATCH v2 3/6] ARM: dts: rockchip: remove interrupts properties
- from pwm nodes rv1108.dtsi
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        linux-pwm@vger.kernel.org, devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87v98swcd6.fsf@yhuang6-desk1.ccr.corp.intel.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.162]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 9:11 PM Johan Jonker <jbx6244@gmail.com> wrote:
->
-> A test with the command below gives this error:
->
-> /arch/arm/boot/dts/rv1108-evb.dt.yaml:
-> pwm@10280000: 'interrupts' does not match any of the regexes:
-> 'pinctrl-[0-9]+'
->
-> "interrupts" is an undocumented property, so remove them
-> from pwm nodes in rv1108.dtsi.
->
-> make ARCH=arm dtbs_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
->
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+On 2021/4/12 8:55, Huang, Ying wrote:
+> Miaohe Lin <linmiaohe@huawei.com> writes:
+> 
+>> On 2021/4/9 16:50, Huang, Ying wrote:
+>>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>>>
+>>>> While we released the pte lock, somebody else might faulted in this pte.
+>>>> So we should check whether it's swap pte first to guard against such race
+>>>> or swp_type would be unexpected. And we can also avoid some unnecessary
+>>>> readahead cpu cycles possibly.
+>>>>
+>>>> Fixes: ec560175c0b6 ("mm, swap: VMA based swap readahead")
+>>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>>> ---
+>>>>  mm/swap_state.c | 13 +++++++++----
+>>>>  1 file changed, 9 insertions(+), 4 deletions(-)
+>>>>
+>>>> diff --git a/mm/swap_state.c b/mm/swap_state.c
+>>>> index 709c260d644a..3bf0d0c297bc 100644
+>>>> --- a/mm/swap_state.c
+>>>> +++ b/mm/swap_state.c
+>>>> @@ -724,10 +724,10 @@ static void swap_ra_info(struct vm_fault *vmf,
+>>>>  {
+>>>>  	struct vm_area_struct *vma = vmf->vma;
+>>>>  	unsigned long ra_val;
+>>>> -	swp_entry_t entry;
+>>>> +	swp_entry_t swap_entry;
+>>>>  	unsigned long faddr, pfn, fpfn;
+>>>>  	unsigned long start, end;
+>>>> -	pte_t *pte, *orig_pte;
+>>>> +	pte_t *pte, *orig_pte, entry;
+>>>>  	unsigned int max_win, hits, prev_win, win, left;
+>>>>  #ifndef CONFIG_64BIT
+>>>>  	pte_t *tpte;
+>>>> @@ -742,8 +742,13 @@ static void swap_ra_info(struct vm_fault *vmf,
+>>>>  
+>>>>  	faddr = vmf->address;
+>>>>  	orig_pte = pte = pte_offset_map(vmf->pmd, faddr);
+>>>> -	entry = pte_to_swp_entry(*pte);
+>>>> -	if ((unlikely(non_swap_entry(entry)))) {
+>>>> +	entry = *pte;
+>>>> +	if (unlikely(!is_swap_pte(entry))) {
+>>>> +		pte_unmap(orig_pte);
+>>>> +		return;
+>>>> +	}
+>>>> +	swap_entry = pte_to_swp_entry(entry);
+>>>> +	if ((unlikely(non_swap_entry(swap_entry)))) {
+>>>>  		pte_unmap(orig_pte);
+>>>>  		return;
+>>>>  	}
+>>>
+>>> This isn't a real issue.  entry or swap_entry isn't used in this
+>>
+>> Agree. It seems the entry or swap_entry here is just used for check whether
+>> pte is still valid swap_entry.
+> 
+> If you check the git history, you will find that the check has been
+> necessary before.  Because the function is used earlier in
+> do_swap_page() at that time.
+> 
 
-Given that the interrupts were specified, meaning they are wired up in hardware,
-shouldn't the solution be to add the interrupts property to the binding instead?
+I see. Many thanks for explanation. :)
 
-After all, the device tree describes the actual hardware, not just what the
-implementations need.
+> Best Regards,
+> Huang, Ying
+> .
+> 
 
-ChenYu
