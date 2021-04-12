@@ -2,133 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E68A35C366
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905E535C356
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239956AbhDLKHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:07:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241264AbhDLKFc (ORCPT
+        id S239309AbhDLKG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:06:27 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:42681 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239693AbhDLKER (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:05:32 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64037C06134C;
-        Mon, 12 Apr 2021 03:03:30 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id h10so14306449edt.13;
-        Mon, 12 Apr 2021 03:03:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IecIer/Daj67JEJVhH+GPnEHHlaRlGiwgqpp2Q/YAIU=;
-        b=ln51gpRQqxs+aXEIsek0esHSItFg0Webv0LPtRTD2g0FmtU/iQPUd8sThf8D1iSel4
-         zwDkLyxXl4ytJMdasEVWhqEWwXgWLXzop/l06D5GK7a/ylDCpdbEQEgvURJ25qsVQ2Fn
-         /poXqgd6Gt0ZQK0VFY0dI3zwm35FeEgziFPsNKjYp9WdANyrO+PsLjAm7bSAA+s0Obsg
-         OemRwl/0IkyD8QMUYfUJLaErOm2jBvnEDkcyxGmcWYNjNQqEt4AMOTDQuQSEa5RePELp
-         t/iVc+YmVP/esBqgvjg+x8qM/w+81EGkWhvFsXSCmN7uwvJ2OR5WoY8V6wRuCwMjYIpe
-         7mwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IecIer/Daj67JEJVhH+GPnEHHlaRlGiwgqpp2Q/YAIU=;
-        b=eWQt2wjbgP4/IEIqbLXAjTO7g0O3zVViHXL751+Imym+HXAlCq3prC8HZ/oQ/fBtkX
-         83Bba6slPf0/RTyZ3dGa1s3bK89HnlSPDpKTvzcqRlmTsb3elmdc7lFXuawbFFjlJwDA
-         AQWsk25tsyiDt8ILn6JJ0Rfr9F91TRLSGPllAa4jLMYfnsH8YkCkAcbxoz1kC6pUDJ1x
-         9iRRZV69wM9fj+sJjeL4D+WuVtYnlChQurSEsuq3kk6cfYH/RWgiIX791Qz5VORba4Gu
-         R5jS7Tj6se922bwG0YEdu0j9fXtV4sjcEBaixJJP1fDdLAxSHFam85SkrOHHBYYXsCzy
-         9gsA==
-X-Gm-Message-State: AOAM532Rl+CBfTIo2Y9UsO6WqlllEDDWvtv2XRBtYaluKwOl9wNicVGT
-        hiok7lylVsxLvMbAYPe1kBwxkMB7B708Dw==
-X-Google-Smtp-Source: ABdhPJwsC2fOcR1VpuH/xWkjRQVk4aT58cqY4kGqC/1+OKqjTFeg+noo1vbd2uJIVw1TFGySTfCM+w==
-X-Received: by 2002:a05:6402:11c9:: with SMTP id j9mr28456381edw.348.1618221809192;
-        Mon, 12 Apr 2021 03:03:29 -0700 (PDT)
-Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id w25sm6172320edq.66.2021.04.12.03.03.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 03:03:28 -0700 (PDT)
-Subject: Re: [PATCH v2 3/6] ARM: dts: rockchip: remove interrupts properties
- from pwm nodes rv1108.dtsi
-To:     wens@kernel.org
-Cc:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210411131007.21757-1-jbx6244@gmail.com>
- <20210411131007.21757-3-jbx6244@gmail.com>
- <CAGb2v67s7a4GARfAnROKS40kaYQpdW_qWX=HX6GU09jV9wrbXw@mail.gmail.com>
-From:   Johan Jonker <jbx6244@gmail.com>
-Message-ID: <31b5ff50-afe5-b446-7d3c-943d148814d8@gmail.com>
-Date:   Mon, 12 Apr 2021 12:03:26 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        Mon, 12 Apr 2021 06:04:17 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MuVOM-1loFLz01qc-00rWKb; Mon, 12 Apr 2021 12:03:57 +0200
+Received: by mail-wm1-f44.google.com with SMTP id k128so6440219wmk.4;
+        Mon, 12 Apr 2021 03:03:56 -0700 (PDT)
+X-Gm-Message-State: AOAM531QjEsrwvzo/ViQ7GZGLyabLL5Js0s9lXjecqMatmBYUrfhHuFF
+        SzbAsw1huoXQb1ksna+WznNd6KJvx3GhtZTGezI=
+X-Google-Smtp-Source: ABdhPJz1GJVeZO+sIN2KpJ8Wn8donSpdvAqFqtcymRYAYBYot2xnOavBT3UwXj8nuP92Z994bQxnP3scv1qVkv9AVF0=
+X-Received: by 2002:a7b:c245:: with SMTP id b5mr25489890wmj.120.1618221836576;
+ Mon, 12 Apr 2021 03:03:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAGb2v67s7a4GARfAnROKS40kaYQpdW_qWX=HX6GU09jV9wrbXw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210412085545.2595431-1-hch@lst.de>
+In-Reply-To: <20210412085545.2595431-1-hch@lst.de>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 12 Apr 2021 12:03:40 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a38qgkjkh4+fDKp4TufL+2_W-quZBFK9pJFf7wXP=84xQ@mail.gmail.com>
+Message-ID: <CAK8P3a38qgkjkh4+fDKp4TufL+2_W-quZBFK9pJFf7wXP=84xQ@mail.gmail.com>
+Subject: Re: consolidate the flock uapi definitions
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Dps70YksbRgOOYYzitLBwIiCvjUaqq0PzQS+9jryUR6sjkSkzVi
+ Z5OdoVhP6elJGW3hcIXNuO1pVfwf0DY2PQq2XGmGGpGQf0h3WYfeQNSzz4RyoAzn2nLUdi3
+ HLXh4VNf//zZZY+ByCodtcDxii+Ub+aXpmA1MEz/PcbTvEmqetuufSlyyeC9Nx+tG2meNjd
+ 8OfTdzjQDEOdC3hGC8npA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JhsavkM/5Ss=:zkobLlRXkmjwTPYUdZkJDb
+ mSXH7ktDlvbeTu7s4XAi+ZEsVEIGoyifakHVvcjbyMDUUyK2xA9M02Pl/BwMO3V2HaNxWHt7z
+ 8U9qseI2Klq3RHfhWG26prOb4sr4W6389IdnAsBejgdHDXQD/PRwrfXTEYKKz/Z2E7zWmCu4c
+ sHcOwsuK/eiePNjk0Qxa97bMfRVKxBXL0L/OkzTiZoclCu6nIeVtrHUGh3liWhJKEVDOBxd1M
+ BA+MiE61AYUn/GGSVqEPHlYOtF4nl0q6Mau9R715BKfSmZG5RnX7eu2BODFsAp57J4ishaFu7
+ viaB4JWPJuaCQWIGkYV9i3HkWX5N3mc9oZS8hFuRTx7INh3piBzlbT0S7Z9P9vHSwd6lb/Lhn
+ r960oHG3wwPcZ/ZNyc5kq684fblqsxyHkdstht2U3CAiMesJCap/F7Cu8GraDA3H3Qs7Ocwnz
+ ibs7wtfqsiy+31P1CJM+UBD38kMz1JKVfDn2e9vTtXKaDGkIdG3pxYe98rvuujxFgRWYSJItU
+ Fc+5ChUDNRSqhhYtXNWsbcxlstvJKRF/iTkjJuyqHn+wlhvUnhLxMk1hqcWAtgRwu8zL+nDJr
+ lOnhA2dVZfA5LQTR6ITJLp2MA17khRjqCA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 5:15 AM, Chen-Yu Tsai wrote:
-> On Sun, Apr 11, 2021 at 9:11 PM Johan Jonker <jbx6244@gmail.com> wrote:
->>
->> A test with the command below gives this error:
->>
->> /arch/arm/boot/dts/rv1108-evb.dt.yaml:
->> pwm@10280000: 'interrupts' does not match any of the regexes:
->> 'pinctrl-[0-9]+'
->>
->> "interrupts" is an undocumented property, so remove them
->> from pwm nodes in rv1108.dtsi.
->>
->> make ARCH=arm dtbs_check
->> DT_SCHEMA_FILES=Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
->>
->> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> 
-> Given that the interrupts were specified, meaning they are wired up in hardware,
-> shouldn't the solution be to add the interrupts property to the binding instead?
-> 
-> After all, the device tree describes the actual hardware, not just what the
-> implementations need.
-> 
-> ChenYu
-> 
+On Mon, Apr 12, 2021 at 10:55 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Hi all,
+>
+> currently we deal with the slight differents in the various architecture
+> variants of the flock and flock64 stuctures in a very cruft way.  This
+> series switches to just use small arch hooks and define the rest in
+> asm-generic and linux/compat.h instead.
 
-Hi,
+Nice cleanup. I can merge it through the asm-generic tree if you like,
+though it's a little late just ahead of the merge window.
 
-The question of what to do with it was asked in version 1, but no answer
-was given, so I made a proposal.
-The device tree description should be complete, but also as lean as
-possible. If someone manages to sneak in undocumented properties without
-reason then the ultimate consequence should be removal I think.
+I would not want to change the compat_loff_t definition to compat_s64
+to avoid the padding at this time, though that might be a useful cleanup
+for a future cycle.
 
-Not sure about the (missing?) rv1108 TRM, but for rk3328 the interrupt
-is used for:
-
-PWM_INTSTS 0x0040 W 0x00000000 Interrupt Status Register
-  Channel Interrupt Polarity Flag
-    This bit is used in capture mode in order to identify the
-    transition of the input waveform when interrupt is generated.
-  Channel Interrupt Status
-    Interrupt generated
-
-PWM_INT_EN 0x0044 W 0x00000000 Interrupt Enable Register
-  Channel Interrupt Enable
-
-Is there any current realistic use/setup for it to convince rob+dt this
-should be added to pwm-rockchip.yaml?
-
-The rk3328 interrupt rkpwm_int seems shared between channels, but only
-included to pwm3. What is the proper way for that?
-
-Johan
+        Arnd
