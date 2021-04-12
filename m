@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1785D35C255
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF3C35C218
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243806AbhDLJnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:43:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34712 "EHLO mail.kernel.org"
+        id S240727AbhDLJip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:38:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240708AbhDLJKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240711AbhDLJKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 05:10:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC1E0613A7;
-        Mon, 12 Apr 2021 09:06:28 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2694661399;
+        Mon, 12 Apr 2021 09:06:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218389;
-        bh=on9LE10NcRX2a3fn8VBAG/aq0VTV1KB3TLpSG7YI/Fo=;
+        s=korg; t=1618218391;
+        bh=Kaos9SeP0VK6v2fwMShndvFyrwxzJeGIcucirlpOanE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NY7iWqYVJY2Zd93+e38/v2a5mQPsq3TX1SsfxKGNeV0KS+VJCzh7NbIH3ccrHj4r1
-         WyMthKQvrneuXMhsGZVD3PySAKLhwafg57Mhd2/hQNwtRp37yzXf+EcCO/1otgioeU
-         fA1P6kZEuXI8pd5uzGYOPZSpYm38LD49j25WpHv4=
+        b=WqORKUz1MxjajvyE0mFtI2oigOzdlRh8D++Yjxcnh7MKqpKqfeA4imhHhrPlSzMYx
+         2PX6MAnHAdQRh8V4y7LgUlgr7VBt40nli9pyr3AJRoINU9qjfRbUmetsxQhIouaBe0
+         7k93PF5rCJlCqcbCxqmKuHcpCCUR+holQ+o2nxkI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Moshe Shemesh <moshe@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 180/210] net/mlx5: Fix PPLM register mapping
-Date:   Mon, 12 Apr 2021 10:41:25 +0200
-Message-Id: <20210412084022.005219377@linuxfoundation.org>
+Subject: [PATCH 5.11 181/210] net/mlx5: Fix PBMC register mapping
+Date:   Mon, 12 Apr 2021 10:41:26 +0200
+Message-Id: <20210412084022.043633201@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -43,34 +43,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit ce28f0fd670ddffcd564ce7119bdefbaf08f02d3 ]
+[ Upstream commit 534b1204ca4694db1093b15cf3e79a99fcb6a6da ]
 
-Add reserved mapping to cover all the register in order to avoid
-setting arbitrary values to newer FW which implements the reserved
-fields.
+Add reserved mapping to cover all the register in order to avoid setting
+arbitrary values to newer FW which implements the reserved fields.
 
-Fixes: a58837f52d43 ("net/mlx5e: Expose FEC feilds and related capability bit")
+Fixes: 50b4a3c23646 ("net/mlx5: PPTB and PBMC register firmware command support")
 Signed-off-by: Aya Levin <ayal@nvidia.com>
 Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/mlx5/mlx5_ifc.h | 2 ++
- 1 file changed, 2 insertions(+)
+ include/linux/mlx5/mlx5_ifc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
-index def58d333357..443dda54d851 100644
+index 443dda54d851..6370ba10f1fd 100644
 --- a/include/linux/mlx5/mlx5_ifc.h
 +++ b/include/linux/mlx5/mlx5_ifc.h
-@@ -8769,6 +8769,8 @@ struct mlx5_ifc_pplm_reg_bits {
+@@ -10108,7 +10108,7 @@ struct mlx5_ifc_pbmc_reg_bits {
  
- 	u8         fec_override_admin_100g_2x[0x10];
- 	u8         fec_override_admin_50g_1x[0x10];
-+
-+	u8         reserved_at_140[0x140];
+ 	struct mlx5_ifc_bufferx_reg_bits buffer[10];
+ 
+-	u8         reserved_at_2e0[0x40];
++	u8         reserved_at_2e0[0x80];
  };
  
- struct mlx5_ifc_ppcnt_reg_bits {
+ struct mlx5_ifc_qtct_reg_bits {
 -- 
 2.30.2
 
