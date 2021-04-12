@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8441835BCA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45FB435BCBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237519AbhDLIoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:44:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35682 "EHLO mail.kernel.org"
+        id S237633AbhDLIpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:45:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237561AbhDLInx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:43:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4625D61221;
-        Mon, 12 Apr 2021 08:43:35 +0000 (UTC)
+        id S237665AbhDLIoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:44:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EE396109E;
+        Mon, 12 Apr 2021 08:44:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217015;
-        bh=yZ4RDwF4eYw0HNvFN02ubTvSDkJz0zTvxg86LRgDtec=;
+        s=korg; t=1618217045;
+        bh=K7l++CqPG8padr7r6Czqcp9HTLlK7tgJKEVOsOkTFWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CC4NDmrQUuqWmrrXWWzo4g5n5cT545LrhwADdAExEEhikSM4Iv81sEAjpZisP0a9N
-         9jNgU5B0htnPTM+pqW3oSMJOAGsbfDqujajRZlweXG7LuPJMZSvbITDn8jjE3YERen
-         Ub5qSSwJPY4oCeeQ7SUArB7iPTh+JV/TAWdQL7S0=
+        b=2gsvMiuNqOq68bxGmOFF+mc/M3v+4ef0+YS/lBs/hfsdiLsm/yh0MvbXaDJriztqB
+         zxxh4fm+V3SfJ0BW7im0t4MzCGDVxCWOK6gqROhzr+2FhIBjw1gpsOm69I5nEk5EQK
+         vxGRCxZAjAgEjS4vSDRwkmdTyo4xZAbCryaI3LQo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 31/66] net: xfrm: Localize sequence counter per network namespace
-Date:   Mon, 12 Apr 2021 10:40:37 +0200
-Message-Id: <20210412083959.133534415@linuxfoundation.org>
+Subject: [PATCH 4.19 32/66] ASoC: wm8960: Fix wrong bclk and lrclk with pll enabled for some chips
+Date:   Mon, 12 Apr 2021 10:40:38 +0200
+Message-Id: <20210412083959.164654649@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
 References: <20210412083958.129944265@linuxfoundation.org>
@@ -41,102 +41,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahmed S. Darwish <a.darwish@linutronix.de>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit e88add19f68191448427a6e4eb059664650a837f ]
+[ Upstream commit 16b82e75c15a7dbd564ea3654f3feb61df9e1e6f ]
 
-A sequence counter write section must be serialized or its internal
-state can get corrupted. The "xfrm_state_hash_generation" seqcount is
-global, but its write serialization lock (net->xfrm.xfrm_state_lock) is
-instantiated per network namespace. The write protection is thus
-insufficient.
+The input MCLK is 12.288MHz, the desired output sysclk is 11.2896MHz
+and sample rate is 44100Hz, with the configuration pllprescale=2,
+postscale=sysclkdiv=1, some chip may have wrong bclk
+and lrclk output with pll enabled in master mode, but with the
+configuration pllprescale=1, postscale=2, the output clock is correct.
 
-To provide full protection, localize the sequence counter per network
-namespace instead. This should be safe as both the seqcount read and
-write sections access data exclusively within the network namespace. It
-also lays the foundation for transforming "xfrm_state_hash_generation"
-data type from seqcount_t to seqcount_LOCKNAME_t in further commits.
+>From Datasheet, the PLL performs best when f2 is between
+90MHz and 100MHz when the desired sysclk output is 11.2896MHz
+or 12.288MHz, so sysclkdiv = 2 (f2/8) is the best choice.
 
-Fixes: b65e3d7be06f ("xfrm: state: add sequence count to detect hash resizes")
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+So search available sysclk_divs from 2 to 1 other than from 1 to 2.
+
+Fixes: 84fdc00d519f ("ASoC: codec: wm9860: Refactor PLL out freq search")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/1616150926-22892-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/net/netns/xfrm.h |  4 +++-
- net/xfrm/xfrm_state.c    | 10 +++++-----
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/codecs/wm8960.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/netns/xfrm.h b/include/net/netns/xfrm.h
-index 9991e5ef52cc..fbfa59801454 100644
---- a/include/net/netns/xfrm.h
-+++ b/include/net/netns/xfrm.h
-@@ -70,7 +70,9 @@ struct netns_xfrm {
- #if IS_ENABLED(CONFIG_IPV6)
- 	struct dst_ops		xfrm6_dst_ops;
- #endif
--	spinlock_t xfrm_state_lock;
-+	spinlock_t		xfrm_state_lock;
-+	seqcount_t		xfrm_state_hash_generation;
-+
- 	spinlock_t xfrm_policy_lock;
- 	struct mutex xfrm_cfg_mutex;
- };
-diff --git a/net/xfrm/xfrm_state.c b/net/xfrm/xfrm_state.c
-index 84dea0ad1666..44acc724122b 100644
---- a/net/xfrm/xfrm_state.c
-+++ b/net/xfrm/xfrm_state.c
-@@ -41,7 +41,6 @@ static void xfrm_state_gc_task(struct work_struct *work);
-  */
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index c4c00297ada6..88e869d16714 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -710,7 +710,13 @@ int wm8960_configure_pll(struct snd_soc_component *component, int freq_in,
+ 	best_freq_out = -EINVAL;
+ 	*sysclk_idx = *dac_idx = *bclk_idx = -1;
  
- static unsigned int xfrm_state_hashmax __read_mostly = 1 * 1024 * 1024;
--static __read_mostly seqcount_t xfrm_state_hash_generation = SEQCNT_ZERO(xfrm_state_hash_generation);
- static struct kmem_cache *xfrm_state_cache __ro_after_init;
- 
- static DECLARE_WORK(xfrm_state_gc_work, xfrm_state_gc_task);
-@@ -137,7 +136,7 @@ static void xfrm_hash_resize(struct work_struct *work)
- 	}
- 
- 	spin_lock_bh(&net->xfrm.xfrm_state_lock);
--	write_seqcount_begin(&xfrm_state_hash_generation);
-+	write_seqcount_begin(&net->xfrm.xfrm_state_hash_generation);
- 
- 	nhashmask = (nsize / sizeof(struct hlist_head)) - 1U;
- 	odst = xfrm_state_deref_prot(net->xfrm.state_bydst, net);
-@@ -153,7 +152,7 @@ static void xfrm_hash_resize(struct work_struct *work)
- 	rcu_assign_pointer(net->xfrm.state_byspi, nspi);
- 	net->xfrm.state_hmask = nhashmask;
- 
--	write_seqcount_end(&xfrm_state_hash_generation);
-+	write_seqcount_end(&net->xfrm.xfrm_state_hash_generation);
- 	spin_unlock_bh(&net->xfrm.xfrm_state_lock);
- 
- 	osize = (ohashmask + 1) * sizeof(struct hlist_head);
-@@ -965,7 +964,7 @@ xfrm_state_find(const xfrm_address_t *daddr, const xfrm_address_t *saddr,
- 
- 	to_put = NULL;
- 
--	sequence = read_seqcount_begin(&xfrm_state_hash_generation);
-+	sequence = read_seqcount_begin(&net->xfrm.xfrm_state_hash_generation);
- 
- 	rcu_read_lock();
- 	h = xfrm_dst_hash(net, daddr, saddr, tmpl->reqid, encap_family);
-@@ -1076,7 +1075,7 @@ out:
- 	if (to_put)
- 		xfrm_state_put(to_put);
- 
--	if (read_seqcount_retry(&xfrm_state_hash_generation, sequence)) {
-+	if (read_seqcount_retry(&net->xfrm.xfrm_state_hash_generation, sequence)) {
- 		*err = -EAGAIN;
- 		if (x) {
- 			xfrm_state_put(x);
-@@ -2406,6 +2405,7 @@ int __net_init xfrm_state_init(struct net *net)
- 	net->xfrm.state_num = 0;
- 	INIT_WORK(&net->xfrm.state_hash_work, xfrm_hash_resize);
- 	spin_lock_init(&net->xfrm.xfrm_state_lock);
-+	seqcount_init(&net->xfrm.xfrm_state_hash_generation);
- 	return 0;
- 
- out_byspi:
+-	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
++	/*
++	 * From Datasheet, the PLL performs best when f2 is between
++	 * 90MHz and 100MHz, the desired sysclk output is 11.2896MHz
++	 * or 12.288MHz, then sysclkdiv = 2 is the best choice.
++	 * So search sysclk_divs from 2 to 1 other than from 1 to 2.
++	 */
++	for (i = ARRAY_SIZE(sysclk_divs) - 1; i >= 0; --i) {
+ 		if (sysclk_divs[i] == -1)
+ 			continue;
+ 		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
 -- 
 2.30.2
 
