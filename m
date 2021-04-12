@@ -2,294 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7625235BAA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2482D35BAAA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:15:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236815AbhDLHLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42822 "EHLO
+        id S236833AbhDLHPc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:15:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhDLHLi (ORCPT
+        with ESMTP id S229581AbhDLHP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:11:38 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD375C061574;
-        Mon, 12 Apr 2021 00:11:20 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id w8so3532688plg.9;
-        Mon, 12 Apr 2021 00:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ppdiEWGNg0vMhgLnO1iUl3C7FGroJ7Uxfmw4PhKvKaA=;
-        b=a1IC0BLoF/J8pmYkIyQkvfI6WbNIG86JPMSPfDLvJyuQsP4Lrd/nAKmBTRFbL09cBS
-         Qj0VBfcy81XImQDiozKi6yAdreJq8L1fcNbNFxkG29W3kG/Tq6m8bZ5WoPHJyCIgpm76
-         e2FyW+0Jy+nLwkkLAvI/5/M5Jce0m+vWkVIYnWjd0HPsp144OIckziqkXnJTfSzmNPh9
-         BcR8oEd6EXGuUj7QC0j5snqpGFWxChHm6yC7HJRgBqVr5fNhaxODT30AoL5tfVchcoMx
-         UATsqe2atOuFNl2vXpd+R/di/1eqsQ6QJhbz/cyqDIyH68ZXkzSCZngA7DT3FGfQWLLJ
-         IfcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ppdiEWGNg0vMhgLnO1iUl3C7FGroJ7Uxfmw4PhKvKaA=;
-        b=UO4F9M1ve4XoFBuGr7IAcfgqpIfIPfmk38m7Q/aA7IEeGmG1GZdCqDVf5bqpWQV3L7
-         3JC2NvucQqI1PAUJMLpV9W0/UuJDWWBtowmyAB0lty/3+N130ADTpYiHE+qExgEvpmGL
-         WTPSrUf5pvq7jxLPuZB804mNTgKYzlzzQVxCh27j63WE7lmGOJ0ce9a8XhMtgpSVlk2b
-         0rk286hFjX8K0wRrkkpSq4DWtTAhbtL3m5tWDq9IA1uMeeNFsWd4hyQjU4D6jexhmtde
-         AYkISrt8Bv59wM2l7/dJ8wrL6MQzWGX7jtQudyawjEAHNq9CEwI47R5gG/N4ByRStSIT
-         ZvSA==
-X-Gm-Message-State: AOAM530Q9H9YR1IXDMODBXongVkoiD4R7bLlGUGsryqLfCvwSg7btWFY
-        1NNmFO/EH+Nb6BUKPWNUQ8F3L4MlkTGYjGFEiQ==
-X-Google-Smtp-Source: ABdhPJztHd7ROeKEi95CD/PyFXTwQvREz5hPZeca9seo1vNducxZ29SSYXSl3unYh39hsJeTxrs+YwxVKMvU14sDlrw=
-X-Received: by 2002:a17:90a:714a:: with SMTP id g10mr20397142pjs.57.1618211480419;
- Mon, 12 Apr 2021 00:11:20 -0700 (PDT)
+        Mon, 12 Apr 2021 03:15:29 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99707C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:15:11 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618211708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VdRBl/Hc8oxjJjZID5EuedD1AhqEQU8Ej3s/0QRRD+o=;
+        b=vxt9eiKf9KD5fd7yNE8V7UD7/2mPVfPm2pMx9jWYgGHZs4bkmK4JjaJ02HhlWTSo9Bc+bQ
+        r8pF0Iv8G6PwwzpWTFH4K+oti01YaVQTA3mvAhwbX59xVgxiWEa1Fi2cNdepho8MxCQil/
+        RQEriaasBJ+hoiHUalO3Z6WRs0811+W1G4mkQ2gDw/ZQ4uvLuJsKuzX2votnMVZ30ivrex
+        dScEutBKh/2kY9mQEQqhBma1jk87ykjCKg3SH8x6Qy4o5/DG4+ZShvFvupDSkTNKGIu41x
+        XQfrHaje9dcBTXE+fApOZ/iYmPCIVfOigjTKa1E2ufQs5fprORi/RgP/QxCmRg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618211708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VdRBl/Hc8oxjJjZID5EuedD1AhqEQU8Ej3s/0QRRD+o=;
+        b=1R3KZ5gt8SRjTeOEpaZwvADPiBRc+aMtWv1mW6uP7zi+gIy+hfMHZ/PEhp2WWwtnIsmth1
+        4QfGkFh6YRZ8WADg==
+To:     Fenghua Yu <fenghua.yu@intel.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Ravi V Shankar <ravi.v.shankar@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>, x86 <x86@kernel.org>
+Subject: Re: [PATCH v5 2/3] x86/bus_lock: Handle #DB for bus lock
+In-Reply-To: <YGe/IwJSNHnuhU2d@otcwcpicx3.sc.intel.com>
+References: <20210313054910.2503968-1-fenghua.yu@intel.com> <20210313054910.2503968-3-fenghua.yu@intel.com> <871rca6dbp.fsf@nanos.tec.linutronix.de> <YFUjVwBg133LN+kS@otcwcpicx3.sc.intel.com> <878s6iatdf.fsf@nanos.tec.linutronix.de> <YGe/IwJSNHnuhU2d@otcwcpicx3.sc.intel.com>
+Date:   Mon, 12 Apr 2021 09:15:08 +0200
+Message-ID: <8735vw2cub.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <CACkBjsa12CEHfT75J6M1Pqy9=6uGFvOX+vGHCa7yO-mqUN14FQ@mail.gmail.com>
-In-Reply-To: <CACkBjsa12CEHfT75J6M1Pqy9=6uGFvOX+vGHCa7yO-mqUN14FQ@mail.gmail.com>
-From:   Hao Sun <sunhao.th@gmail.com>
-Date:   Mon, 12 Apr 2021 15:11:18 +0800
-Message-ID: <CACkBjsbcmt=+PFjEybaumg3Rp2peSyoyc_1McZmqT0zeKNUSCg@mail.gmail.com>
-Subject: Re: BUG: unable to handle kernel paging request in bpf_check
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        davem@davemloft.net, kuba@kernel.org, hawk@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: multipart/mixed; boundary="00000000000076950b05bfc1384a"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---00000000000076950b05bfc1384a
-Content-Type: text/plain; charset="UTF-8"
+On Sat, Apr 03 2021 at 01:04, Fenghua Yu wrote:
+> On Sat, Mar 20, 2021 at 01:42:52PM +0100, Thomas Gleixner wrote:
+>> On Fri, Mar 19 2021 at 22:19, Fenghua Yu wrote:
+>> And even with throttling the injection rate further down to 25k per
+>> second the impact on the workload is still significant in the 10% range.
+>
+> Thank you for your insight!
+>
+> So I can change the ratelimit to system wide and call usleep_range()
+> to sleep: 
+>                while (!__ratelimit(&global_bld_ratelimit))
+>                        usleep_range(1000000 / bld_ratelimit,
+>                                     1000000 / bld_ratelimit);
+>
+> The max bld_ratelimit is 1000,000/s because the max sleeping time is 1
+> usec.
 
-Besides, another similar bug occurred while fault injection was enabled.
-====
-BUG: unable to handle kernel paging request in bpf_prog_alloc_no_stats
-========================================================
-RAX: ffffffffffffffda RBX: 000000000059c080 RCX: 000000000047338d
-RDX: 0000000000000078 RSI: 0000000020000300 RDI: 0000000000000005
-RBP: 00007f7e3c38fc90 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
-R13: 00007ffed3a1dd6f R14: 00007ffed3a1df10 R15: 00007f7e3c38fdc0
-BUG: unable to handle page fault for address: ffff91f2077ed028
-#PF: supervisor write access in kernel mode
-#PF: error_code(0x0002) - not-present page
-PGD 1810067 P4D 1810067 PUD 1915067 PMD 3b907067 PTE 0
-Oops: 0002 [#1] SMP
-CPU: 3 PID: 17344 Comm: executor Not tainted 5.12.0-rc6+ #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.13.0-1ubuntu1.1 04/01/2014
-RIP: 0010:bpf_prog_alloc_no_stats+0x251/0x6e0 kernel/bpf/core.c:94
-Code: 45 b0 4c 8d 78 28 4d 8b a5 20 03 00 00 41 8b 85 a8 0f 00 00 89
-45 c8 48 83 7d a8 00 0f 85 2e 03 00 00 4c 89 ff e8 4f 18 60 00 <4c> 89
-20 4d 85 e4 0f 85 27 03 00 00 49 89 1f 4d 85 e4 74 0c 49 f7
-RSP: 0018:ffff89f2077cfaa8 EFLAGS: 00010286
-RAX: ffff91f2077ed028 RBX: 0000096680024de8 RCX: ffff91f2077ed028
-RDX: ffff99f2077ed028 RSI: 0000000000000008 RDI: ffff89f2077ed028
-RBP: ffff89f2077cfb28 R08: ffffd7eb8000000f R09: ffff888b7ffd3000
-R10: 000000000000037a R11: 0000000000000000 R12: 0000000000000000
-R13: ffff888b1465aad8 R14: 0000000004c30000 R15: ffff89f2077ed028
-FS:  00007f7e3c390700(0000) GS:ffff888b7fd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff91f2077ed028 CR3: 0000000044802004 CR4: 0000000000770ee0
-PKRU: 55555554
-Call Trace:
- bpf_prog_alloc+0x74/0x310 kernel/bpf/core.c:119
- bpf_prog_load kernel/bpf/syscall.c:2162 [inline]
- __do_sys_bpf+0x11af3/0x17290 kernel/bpf/syscall.c:4393
- __se_sys_bpf+0x8e/0xa0 kernel/bpf/syscall.c:4351
- __x64_sys_bpf+0x4a/0x70 kernel/bpf/syscall.c:4351
- do_syscall_64+0xa2/0x120 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x47338d
-Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f7e3c38fc58 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 000000000059c080 RCX: 000000000047338d
-RDX: 0000000000000078 RSI: 0000000020000300 RDI: 0000000000000005
-RBP: 00007f7e3c38fc90 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
-R13: 00007ffed3a1dd6f R14: 00007ffed3a1df10 R15: 00007f7e3c38fdc0
-Modules linked in:
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-CR2: ffff91f2077ed028
----[ end trace bc1de9e0e1b51e8c ]---
-RIP: 0010:bpf_prog_alloc_no_stats+0x251/0x6e0 kernel/bpf/core.c:94
-Code: 45 b0 4c 8d 78 28 4d 8b a5 20 03 00 00 41 8b 85 a8 0f 00 00 89
-45 c8 48 83 7d a8 00 0f 85 2e 03 00 00 4c 89 ff e8 4f 18 60 00 <4c> 89
-20 4d 85 e4 0f 85 27 03 00 00 49 89 1f 4d 85 e4 74 0c 49 f7
-RSP: 0018:ffff89f2077cfaa8 EFLAGS: 00010286
-RAX: ffff91f2077ed028 RBX: 0000096680024de8 RCX: ffff91f2077ed028
-RDX: ffff99f2077ed028 RSI: 0000000000000008 RDI: ffff89f2077ed028
-RBP: ffff89f2077cfb28 R08: ffffd7eb8000000f R09: ffff888b7ffd3000
-R10: 000000000000037a R11: 0000000000000000 R12: 0000000000000000
-R13: ffff888b1465aad8 R14: 0000000004c30000 R15: ffff89f2077ed028
-FS:  00007f7e3c390700(0000) GS:ffff888b7fd00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffff91f2077ed028 CR3: 0000000044802004 CR4: 0000000000770ee0
-PKRU: 55555554
+Maximum sleep time is 1usec?
 
-The following system call sequence (Syzlang format) can reproduce the crash:
-# {Threaded:false Collide:false Repeat:true RepeatTimes:0 Procs:1
-Slowdown:1 Sandbox:none Fault:true FaultCall:0 FaultNth:4 Leak:false
-NetInjection:true NetDevices:true NetReset:true Cgroups:true
-BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:true USB:true
-VhciInjection:true Wifi:true IEEE802154:true Sysctl:true
-UseTmpDir:true HandleSegv:true Repro:false Trace:false}
+> The min bld_ratelimit is 1/s.
 
-bpf$BPF_PROG_WITH_BTFID_LOAD(0x5, &(0x7f0000000300)=@bpf_ext={0x1c,
-0x8, &(0x7f00000001c0)=@raw=[@initr0={0x18, 0x0, 0x0, 0x0,
-0x4953b92f0467cc49, 0x0, 0x0, 0x0, 0xdbd689758db6b4a7}, @func={0x85,
-0x0, 0x1, 0x0, 0x1}, @exit, @generic={0xd3c15618b9efaeff, 0x0, 0x0,
-0x0, 0xc0fc52df13f3fbec}, @map_val={0x18, 0x0, 0x2, 0x0, 0x0, 0x0,
-0x0, 0x0, 0xf7a72204b1b46d92}, @jmp], &(0x7f0000000200)='GPL\x00',
-0x0, 0x0, 0x0, 0x0, 0x9, [], 0x0, 0x0, 0x0, 0x8, 0x0, 0x0, 0x10, 0x0,
-0x0, 0x0, 0x0}, 0x78)
+Again. This does not make sense at all. 1Mio bus lock events per second
+are way beyond the point where the machine does anything else than being
+stuck in buslocks.
 
-Using syz-execprog can run this reproduction program directly:
- ./syz-execprog -repeat 0 -procs 1 -slowdown 1 -fault_call 0
--fault_nth 4 -enable tun -enable netdev -enable resetnet -enable
-cgroups -enable binfmt-misc -enable close_fds -enable devlinkpci
--enable usb -enable vhci -enable wifi -enable ieee802154 -enable
-sysctl repro.prog
+Aside of that why are you trying to make this throttling in any way
+accurate? It does not matter at all, really. Limit reached, put it to
+sleep for some time and be done with it. No point in trying to be clever
+for no value.
 
---00000000000076950b05bfc1384a
-Content-Type: application/octet-stream; name=log
-Content-Disposition: attachment; filename=log
-Content-Transfer-Encoding: base64
-Content-ID: <f_kne9bmpm0>
-X-Attachment-Id: f_kne9bmpm0
+Thanks,
 
-WyAgODIwLjQ1OTg2Ml0gRkFVTFRfSU5KRUNUSU9OOiBmb3JjaW5nIGEgZmFpbHVyZS4NClsgIDgy
-MC40NTk4NjJdIG5hbWUgZmFpbHNsYWIsIGludGVydmFsIDEsIHByb2JhYmlsaXR5IDAsIHNwYWNl
-IDAsIHRpbWVzIDANClsgIDgyMC40NjA4MzldIENQVTogMyBQSUQ6IDE3MzQ0IENvbW06IGV4ZWN1
-dG9yIE5vdCB0YWludGVkIDUuMTIuMC1yYzYrICMxDQpbICA4MjAuNDYxNDY5XSBIYXJkd2FyZSBu
-YW1lOiBRRU1VIFN0YW5kYXJkIFBDIChpNDQwRlggKyBQSUlYLCAxOTk2KSwgQklPUyAxLjEzLjAt
-MXVidW50dTEuMSAwNC8wMS8yMDE0DQpbICA4MjAuNDYyMjY5XSBDYWxsIFRyYWNlOg0KWyAgODIw
-LjQ2MjUwOV0gIGR1bXBfc3RhY2srMHgxZmYvMHgyNzUNClsgIDgyMC40NjI4NzZdICBzaG91bGRf
-ZmFpbCsweDhiMC8weDlkMA0KWyAgODIwLjQ2MzMyNl0gIF9fc2hvdWxkX2ZhaWxzbGFiKzB4MWY0
-LzB4MjkwDQpbICA4MjAuNDYzNzQ1XSAgc2hvdWxkX2ZhaWxzbGFiKzB4MjkvMHg3MA0KWyAgODIw
-LjQ2NDEyM10gIF9fa21hbGxvYysweGJjLzB4NTYwDQpbICA4MjAuNDY0NDgyXSAgPyBrY2FsbG9j
-KzB4MWUvMHgzMA0KWyAgODIwLjQ2NDgwM10gID8ga21zYW5fZ2V0X21ldGFkYXRhKzB4MTFkLzB4
-MTgwDQpbICA4MjAuNDY1MjIyXSAga2NhbGxvYysweDFlLzB4MzANClsgIDgyMC40NjU1NDNdICBr
-bXNhbl9tYXBfa2VybmVsX3JhbmdlX25vZmx1c2grMHhhNy8weDIzMA0KWyAgODIwLjQ2NjAzOF0g
-IF9fdm1hbGxvY19ub2RlX3JhbmdlKzB4YWQzLzB4MTFhMA0KWyAgODIwLjQ2NjQ5NF0gIF9fdm1h
-bGxvYysweDEyZi8weDE0MA0KWyAgODIwLjQ2Njg1N10gID8gYnBmX3Byb2dfYWxsb2Nfbm9fc3Rh
-dHMrMHhhNi8weDZlMA0KWyAgODIwLjQ2NzI5Nl0gID8gYnBmX3Byb2dfYWxsb2Nfbm9fc3RhdHMr
-MHhhNi8weDZlMA0KWyAgODIwLjQ2ODI1M10gIGJwZl9wcm9nX2FsbG9jX25vX3N0YXRzKzB4YTYv
-MHg2ZTANClsgIDgyMC40Njg3MjFdICA/IHNlY3VyaXR5X2NhcGFibGUrMHgxY2IvMHgyMjANClsg
-IDgyMC40NjkyOTddICA/IGttc2FuX2dldF9tZXRhZGF0YSsweDExZC8weDE4MA0KWyAgODIwLjQ2
-OTcxMF0gIGJwZl9wcm9nX2FsbG9jKzB4NzQvMHgzMTANClsgIDgyMC40NzAwNzRdICA/IGttc2Fu
-X2dldF9zaGFkb3dfb3JpZ2luX3B0cisweDg0LzB4YjANClsgIDgyMC40NzA1NTVdICBfX2RvX3N5
-c19icGYrMHgxMWFmMy8weDE3MjkwDQpbICA4MjAuNDcxMDYxXSAgPyBfX21zYW5faW5zdHJ1bWVu
-dF9hc21fc3RvcmUrMHgyMi8weDEzMA0KWyAgODIwLjQ3MjA2Nl0gID8gdmZzX3dyaXRlKzB4ZTQw
-LzB4MTcwMA0KWyAgODIwLjQ3MjU3NF0gID8ga21zYW5fZ2V0X21ldGFkYXRhKzB4MTFkLzB4MTgw
-DQpbICA4MjAuNDczMTkzXSAgPyBrbXNhbl9nZXRfbWV0YWRhdGErMHgxMWQvMHgxODANClsgIDgy
-MC40NzM3NDRdICA/IGZwdXQrMHg1Mi8weDI3MA0KWyAgODIwLjQ3NDExMl0gID8ga21zYW5fZ2V0
-X21ldGFkYXRhKzB4MTFkLzB4MTgwDQpbICA4MjAuNDc0NTIwXSAgPyBrbXNhbl9nZXRfbWV0YWRh
-dGErMHgxMWQvMHgxODANClsgIDgyMC40NzQ5MjhdICA/IGttc2FuX2dldF9zaGFkb3dfb3JpZ2lu
-X3B0cisweDg0LzB4YjANClsgIDgyMC40NzUzODJdICA/IF9fbXNhbl9tZXRhZGF0YV9wdHJfZm9y
-X3N0b3JlXzQrMHgxMy8weDIwDQpbICA4MjAuNDc1ODcwXSAgX19zZV9zeXNfYnBmKzB4OGUvMHhh
-MA0KWyAgODIwLjQ3NjIxMF0gIF9feDY0X3N5c19icGYrMHg0YS8weDcwDQpbICA4MjAuNDc2NTUy
-XSAgZG9fc3lzY2FsbF82NCsweGEyLzB4MTIwDQpbICA4MjAuNDc2OTAwXSAgZW50cnlfU1lTQ0FM
-TF82NF9hZnRlcl9od2ZyYW1lKzB4NDQvMHhhZQ0KWyAgODIwLjQ3NzM1OV0gUklQOiAwMDMzOjB4
-NDczMzhkDQpbICA4MjAuNDc3Nzk0XSBDb2RlOiAwMiBiOCBmZiBmZiBmZiBmZiBjMyA2NiAwZiAx
-ZiA0NCAwMCAwMCBmMyAwZiAxZSBmYSA0OCA4OSBmOCA0OCA4OSBmNyA0OCA4OSBkNiA0OCA4OSBj
-YSA0ZCA4OSBjMiA0ZCA4OSBjOCA0YyA4YiA0YyAyNCAwOCAwZiAwNSA8NDg+IDNkIDAxIGYwIGZm
-IGZmIDczIDAxIGMzIDQ4IGM3IGMxIGJjIGZmIGZmIGZmIGY3IGQ4IDY0IDg5IDAxIDQ4DQpbICA4
-MjAuNDc5Mjc1XSBSU1A6IDAwMmI6MDAwMDdmN2UzYzM4ZmM1OCBFRkxBR1M6IDAwMDAwMjQ2IE9S
-SUdfUkFYOiAwMDAwMDAwMDAwMDAwMTQxDQpbICA4MjAuNDc5OTY0XSBSQVg6IGZmZmZmZmZmZmZm
-ZmZmZGEgUkJYOiAwMDAwMDAwMDAwNTljMDgwIFJDWDogMDAwMDAwMDAwMDQ3MzM4ZA0KWyAgODIw
-LjQ4MDU5M10gUkRYOiAwMDAwMDAwMDAwMDAwMDc4IFJTSTogMDAwMDAwMDAyMDAwMDMwMCBSREk6
-IDAwMDAwMDAwMDAwMDAwMDUNClsgIDgyMC40ODExNzNdIFJCUDogMDAwMDdmN2UzYzM4ZmM5MCBS
-MDg6IDAwMDAwMDAwMDAwMDAwMDAgUjA5OiAwMDAwMDAwMDAwMDAwMDAwDQpbICA4MjAuNDgxODIw
-XSBSMTA6IDAwMDAwMDAwMDAwMDAwMDAgUjExOiAwMDAwMDAwMDAwMDAwMjQ2IFIxMjogMDAwMDAw
-MDAwMDAwMDAwNA0KWyAgODIwLjQ4MjgyNF0gUjEzOiAwMDAwN2ZmZWQzYTFkZDZmIFIxNDogMDAw
-MDdmZmVkM2ExZGYxMCBSMTU6IDAwMDA3ZjdlM2MzOGZkYzANClsgIDgyMC40ODM4NzddIEJVRzog
-dW5hYmxlIHRvIGhhbmRsZSBwYWdlIGZhdWx0IGZvciBhZGRyZXNzOiBmZmZmOTFmMjA3N2VkMDI4
-DQpbICA4MjAuNDg0NDI0XSAjUEY6IHN1cGVydmlzb3Igd3JpdGUgYWNjZXNzIGluIGtlcm5lbCBt
-b2RlDQpbICA4MjAuNDg0ODMwXSAjUEY6IGVycm9yX2NvZGUoMHgwMDAyKSAtIG5vdC1wcmVzZW50
-IHBhZ2UNClsgIDgyMC40ODUyMjhdIFBHRCAxODEwMDY3IFA0RCAxODEwMDY3IFBVRCAxOTE1MDY3
-IFBNRCAzYjkwNzA2NyBQVEUgMA0KWyAgODIwLjQ4NTgyOF0gT29wczogMDAwMiBbIzFdIFNNUA0K
-WyAgODIwLjQ4NjA5OV0gQ1BVOiAzIFBJRDogMTczNDQgQ29tbTogZXhlY3V0b3IgTm90IHRhaW50
-ZWQgNS4xMi4wLXJjNisgIzENClsgIDgyMC40ODY2MTRdIEhhcmR3YXJlIG5hbWU6IFFFTVUgU3Rh
-bmRhcmQgUEMgKGk0NDBGWCArIFBJSVgsIDE5OTYpLCBCSU9TIDEuMTMuMC0xdWJ1bnR1MS4xIDA0
-LzAxLzIwMTQNClsgIDgyMC40ODczMzNdIFJJUDogMDAxMDpicGZfcHJvZ19hbGxvY19ub19zdGF0
-cysweDI1MS8weDZlMA0KWyAgODIwLjQ4Nzg5MV0gQ29kZTogNDUgYjAgNGMgOGQgNzggMjggNGQg
-OGIgYTUgMjAgMDMgMDAgMDAgNDEgOGIgODUgYTggMGYgMDAgMDAgODkgNDUgYzggNDggODMgN2Qg
-YTggMDAgMGYgODUgMmUgMDMgMDAgMDAgNGMgODkgZmYgZTggNGYgMTggNjAgMDAgPDRjPiA4OSAy
-MCA0ZCA4NSBlNCAwZiA4NSAyNyAwMyAwMCAwMCA0OSA4OSAxZiA0ZCA4NSBlNCA3NCAwYyA0OSBm
-Nw0KWyAgODIwLjQ4OTI5M10gUlNQOiAwMDE4OmZmZmY4OWYyMDc3Y2ZhYTggRUZMQUdTOiAwMDAx
-MDI4Ng0KWyAgODIwLjQ4OTgwMl0gUkFYOiBmZmZmOTFmMjA3N2VkMDI4IFJCWDogMDAwMDA5NjY4
-MDAyNGRlOCBSQ1g6IGZmZmY5MWYyMDc3ZWQwMjgNClsgIDgyMC40OTAzOTddIFJEWDogZmZmZjk5
-ZjIwNzdlZDAyOCBSU0k6IDAwMDAwMDAwMDAwMDAwMDggUkRJOiBmZmZmODlmMjA3N2VkMDI4DQpb
-ICA4MjAuNDkwOTc3XSBSQlA6IGZmZmY4OWYyMDc3Y2ZiMjggUjA4OiBmZmZmZDdlYjgwMDAwMDBm
-IFIwOTogZmZmZjg4OGI3ZmZkMzAwMA0KWyAgODIwLjQ5MTUzM10gUjEwOiAwMDAwMDAwMDAwMDAw
-MzdhIFIxMTogMDAwMDAwMDAwMDAwMDAwMCBSMTI6IDAwMDAwMDAwMDAwMDAwMDANClsgIDgyMC40
-OTIxMTVdIFIxMzogZmZmZjg4OGIxNDY1YWFkOCBSMTQ6IDAwMDAwMDAwMDRjMzAwMDAgUjE1OiBm
-ZmZmODlmMjA3N2VkMDI4DQpbICA4MjAuNDkyNzEzXSBGUzogIDAwMDA3ZjdlM2MzOTA3MDAoMDAw
-MCkgR1M6ZmZmZjg4OGI3ZmQwMDAwMCgwMDAwKSBrbmxHUzowMDAwMDAwMDAwMDAwMDAwDQpbICA4
-MjAuNDkzMzg0XSBDUzogIDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUw
-MDMzDQpbICA4MjAuNDkzODcxXSBDUjI6IGZmZmY5MWYyMDc3ZWQwMjggQ1IzOiAwMDAwMDAwMDQ0
-ODAyMDA0IENSNDogMDAwMDAwMDAwMDc3MGVlMA0KWyAgODIwLjQ5NDQ2Ml0gUEtSVTogNTU1NTU1
-NTQNClsgIDgyMC40OTQ3MTddIENhbGwgVHJhY2U6DQpbICA4MjAuNDk0OTQ1XSAgYnBmX3Byb2df
-YWxsb2MrMHg3NC8weDMxMA0KWyAgODIwLjQ5NTMwNF0gID8ga21zYW5fZ2V0X3NoYWRvd19vcmln
-aW5fcHRyKzB4ODQvMHhiMA0KWyAgODIwLjQ5NTc2NF0gIF9fZG9fc3lzX2JwZisweDExYWYzLzB4
-MTcyOTANClsgIDgyMC40OTYxMjFdICA/IF9fbXNhbl9pbnN0cnVtZW50X2FzbV9zdG9yZSsweDIy
-LzB4MTMwDQpbICA4MjAuNDk2NTc3XSAgPyB2ZnNfd3JpdGUrMHhlNDAvMHgxNzAwDQpbICA4MjAu
-NDk2OTMzXSAgPyBrbXNhbl9nZXRfbWV0YWRhdGErMHgxMWQvMHgxODANClsgIDgyMC40OTczNjJd
-ICA/IGttc2FuX2dldF9tZXRhZGF0YSsweDExZC8weDE4MA0KWyAgODIwLjQ5Nzg5OV0gID8gZnB1
-dCsweDUyLzB4MjcwDQpbICA4MjAuNDk4MjUwXSAgPyBrbXNhbl9nZXRfbWV0YWRhdGErMHgxMWQv
-MHgxODANClsgIDgyMC40OTg2NThdICA/IGttc2FuX2dldF9tZXRhZGF0YSsweDExZC8weDE4MA0K
-WyAgODIwLjQ5OTA4OF0gID8ga21zYW5fZ2V0X3NoYWRvd19vcmlnaW5fcHRyKzB4ODQvMHhiMA0K
-WyAgODIwLjQ5OTU0M10gID8gX19tc2FuX21ldGFkYXRhX3B0cl9mb3Jfc3RvcmVfNCsweDEzLzB4
-MjANClsgIDgyMC41MDAxMjJdICBfX3NlX3N5c19icGYrMHg4ZS8weGEwDQpbICA4MjAuNTAwNDg5
-XSAgX194NjRfc3lzX2JwZisweDRhLzB4NzANClsgIDgyMC41MDA4ODBdICBkb19zeXNjYWxsXzY0
-KzB4YTIvMHgxMjANClsgIDgyMC41MDEyNzldICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJh
-bWUrMHg0NC8weGFlDQpbICA4MjAuNTAxNzM3XSBSSVA6IDAwMzM6MHg0NzMzOGQNClsgIDgyMC41
-MDIwMzhdIENvZGU6IDAyIGI4IGZmIGZmIGZmIGZmIGMzIDY2IDBmIDFmIDQ0IDAwIDAwIGYzIDBm
-IDFlIGZhIDQ4IDg5IGY4IDQ4IDg5IGY3IDQ4IDg5IGQ2IDQ4IDg5IGNhIDRkIDg5IGMyIDRkIDg5
-IGM4IDRjIDhiIDRjIDI0IDA4IDBmIDA1IDw0OD4gM2QgMDEgZjAgZmYgZmYgNzMgMDEgYzMgNDgg
-YzcgYzEgYmMgZmYgZmYgZmYgZjcgZDggNjQgODkgMDEgNDgNClsgIDgyMC41MDM1MTddIFJTUDog
-MDAyYjowMDAwN2Y3ZTNjMzhmYzU4IEVGTEFHUzogMDAwMDAyNDYgT1JJR19SQVg6IDAwMDAwMDAw
-MDAwMDAxNDENClsgIDgyMC41MDQxNjRdIFJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDAw
-MDAwMDA1OWMwODAgUkNYOiAwMDAwMDAwMDAwNDczMzhkDQpbICA4MjAuNTA0NzE4XSBSRFg6IDAw
-MDAwMDAwMDAwMDAwNzggUlNJOiAwMDAwMDAwMDIwMDAwMzAwIFJESTogMDAwMDAwMDAwMDAwMDAw
-NQ0KWyAgODIwLjUwNTMxM10gUkJQOiAwMDAwN2Y3ZTNjMzhmYzkwIFIwODogMDAwMDAwMDAwMDAw
-MDAwMCBSMDk6IDAwMDAwMDAwMDAwMDAwMDANClsgIDgyMC41MDU4NzddIFIxMDogMDAwMDAwMDAw
-MDAwMDAwMCBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAwMDAwMDAwMDAwMDAwMDA0DQpbICA4
-MjAuNTA2NDM5XSBSMTM6IDAwMDA3ZmZlZDNhMWRkNmYgUjE0OiAwMDAwN2ZmZWQzYTFkZjEwIFIx
-NTogMDAwMDdmN2UzYzM4ZmRjMA0KWyAgODIwLjUwNzAxNV0gTW9kdWxlcyBsaW5rZWQgaW46DQpb
-ICA4MjAuNTA3MzI1XSBEdW1waW5nIGZ0cmFjZSBidWZmZXI6DQpbICA4MjAuNTA3NzQzXSAgICAo
-ZnRyYWNlIGJ1ZmZlciBlbXB0eSkNClsgIDgyMC41MDgwMzRdIENSMjogZmZmZjkxZjIwNzdlZDAy
-OA0KWyAgODIwLjUwODMzNF0gLS0tWyBlbmQgdHJhY2UgYmMxZGU5ZTBlMWI1MWU4YyBdLS0tDQpb
-ICA4MjAuNTA4Njk5XSBSSVA6IDAwMTA6YnBmX3Byb2dfYWxsb2Nfbm9fc3RhdHMrMHgyNTEvMHg2
-ZTANClsgIDgyMC41MDkxNjddIENvZGU6IDQ1IGIwIDRjIDhkIDc4IDI4IDRkIDhiIGE1IDIwIDAz
-IDAwIDAwIDQxIDhiIDg1IGE4IDBmIDAwIDAwIDg5IDQ1IGM4IDQ4IDgzIDdkIGE4IDAwIDBmIDg1
-IDJlIDAzIDAwIDAwIDRjIDg5IGZmIGU4IDRmIDE4IDYwIDAwIDw0Yz4gODkgMjAgNGQgODUgZTQg
-MGYgODUgMjcgMDMgMDAgMDAgNDkgODkgMWYgNGQgODUgZTQgNzQgMGMgNDkgZjcNClsgIDgyMC41
-MTA1MzhdIFJTUDogMDAxODpmZmZmODlmMjA3N2NmYWE4IEVGTEFHUzogMDAwMTAyODYNClsgIDgy
-MC41MTA5ODNdIFJBWDogZmZmZjkxZjIwNzdlZDAyOCBSQlg6IDAwMDAwOTY2ODAwMjRkZTggUkNY
-OiBmZmZmOTFmMjA3N2VkMDI4DQpbICA4MjAuNTExNTQ3XSBSRFg6IGZmZmY5OWYyMDc3ZWQwMjgg
-UlNJOiAwMDAwMDAwMDAwMDAwMDA4IFJESTogZmZmZjg5ZjIwNzdlZDAyOA0KWyAgODIwLjUxMjEw
-Nl0gUkJQOiBmZmZmODlmMjA3N2NmYjI4IFIwODogZmZmZmQ3ZWI4MDAwMDAwZiBSMDk6IGZmZmY4
-ODhiN2ZmZDMwMDANClsgIDgyMC41MTI2NjNdIFIxMDogMDAwMDAwMDAwMDAwMDM3YSBSMTE6IDAw
-MDAwMDAwMDAwMDAwMDAgUjEyOiAwMDAwMDAwMDAwMDAwMDAwDQpbICA4MjAuNTEzMjA2XSBSMTM6
-IGZmZmY4ODhiMTQ2NWFhZDggUjE0OiAwMDAwMDAwMDA0YzMwMDAwIFIxNTogZmZmZjg5ZjIwNzdl
-ZDAyOA0KWyAgODIwLjUxMzcyM10gRlM6ICAwMDAwN2Y3ZTNjMzkwNzAwKDAwMDApIEdTOmZmZmY4
-ODhiN2ZkMDAwMDAoMDAwMCkga25sR1M6MDAwMDAwMDAwMDAwMDAwMA0KWyAgODIwLjUxNDMzNF0g
-Q1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1MDAzMw0KWyAgODIw
-LjUxNDc2MV0gQ1IyOiBmZmZmOTFmMjA3N2VkMDI4IENSMzogMDAwMDAwMDA0NDgwMjAwNCBDUjQ6
-IDAwMDAwMDAwMDA3NzBlZTANClsgIDgyMC41MTUyNjZdIFBLUlU6IDU1NTU1NTU0DQpbICA4MjAu
-NTE1NDg0XSBLZXJuZWwgcGFuaWMgLSBub3Qgc3luY2luZzogRmF0YWwgZXhjZXB0aW9uDQpbICA4
-MjAuNTE2MDM4XSBEdW1waW5nIGZ0cmFjZSBidWZmZXI6DQpbICA4MjAuNTE2MzI5XSAgICAoZnRy
-YWNlIGJ1ZmZlciBlbXB0eSkNClsgIDgyMC41MTY2MDhdIEtlcm5lbCBPZmZzZXQ6IDB4N2EwMDAw
-MCBmcm9tIDB4ZmZmZmZmZmY4MTAwMDAwMCAocmVsb2NhdGlvbiByYW5nZTogMHhmZmZmZmZmZjgw
-MDAwMDAwLTB4ZmZmZmZmZmZiZmZmZmZmZikNClsgIDgyMC41MTc0MzRdIFJlYm9vdGluZyBpbiAx
-IHNlY29uZHMuLg0K
---00000000000076950b05bfc1384a--
+        tglx
