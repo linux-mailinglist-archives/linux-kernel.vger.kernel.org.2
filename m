@@ -2,131 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F8B35D17B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BF335D17F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:56:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238793AbhDLTwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:52:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23472 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236851AbhDLTwj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:52:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618257141;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kEsyK2g9kHom6z8QSkc+1WTaBxF4g3Yjct+1jOELHcQ=;
-        b=c7/00ltqNSiQ6PdHoLaTZCAA9SicKWInj97K/N2PXeYifFT7Ifj06YuEk3JTGCsAKlnAmM
-        J7FZ3IfwlTnZFExY1NvIy9LA03x5qtjHNYJI7h/ofvYbyBPFby47+axjDasV27gDXr8ySf
-        VPaKfW78+E7vor96BN8d4fJykT41D8o=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-169-bNppWzHtPWmzMak_IS6HNg-1; Mon, 12 Apr 2021 15:52:07 -0400
-X-MC-Unique: bNppWzHtPWmzMak_IS6HNg-1
-Received: by mail-qt1-f199.google.com with SMTP id m8so7457576qtp.14
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:52:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=kEsyK2g9kHom6z8QSkc+1WTaBxF4g3Yjct+1jOELHcQ=;
-        b=Jf2+IpCvKM6xK7Yre64vEsZlEUGNcgQXxNP+3pOptNqctvPgELD/1itbS6gdbN8SE0
-         bRDDlCtAYUrf8DtaqZ9RYlhLEgraRoo71aQmD/tbnCYYZzklSvi8w82ZTqIkR4M+NGXz
-         SlME1x8gMt7GHkgR1An+BinSiiuLnq+xMqnMsePwa+KGCPpoDm+swSeLUl5PELuBEmhw
-         cYrbFrpPRbtnhywfnRim/C2gSkmlb61DGvFrw6gPw/b8WATPUnnsZC3GN5haMBWkuOYU
-         QfMVMZpz2C/aA+VIiZM5PDwKdcg+AIl92af11PgkIq51lg5nrFf67cQIaTSxTP724aTH
-         q8IQ==
-X-Gm-Message-State: AOAM530Hb56MM9c01H2873twhQsCMHHNcTEg7cKh1jsZR5xFYpyiOLrL
-        yCeCEUtpVcSZuy9kSmkHWnK3W9dqzxiGsElx2tsL3l5Iv57PTvARbIWRcIhChf1m63oCXly0a5n
-        z1yyWN7BfftPeT1EvDNmxjDps
-X-Received: by 2002:a05:620a:132a:: with SMTP id p10mr3286745qkj.165.1618257127137;
-        Mon, 12 Apr 2021 12:52:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyKH+lNuLlL7aD09WaoehTTXPuqbCVRZbhiAmNL0Qw6hKshPAX2h5hY1AbftX2FVtoNOxOIkQ==
-X-Received: by 2002:a05:620a:132a:: with SMTP id p10mr3286713qkj.165.1618257126892;
-        Mon, 12 Apr 2021 12:52:06 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id j129sm8652011qkf.110.2021.04.12.12.52.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 12:52:06 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 0/5] mm/memcg: Reduce kmemcache memory accounting overhead
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>
-References: <20210409231842.8840-1-longman@redhat.com>
- <YHSZ6X/DvgddiZBi@carbon.dhcp.thefacebook.com>
-Message-ID: <74f8abd9-9efc-3ded-e8cb-8e3465873383@redhat.com>
-Date:   Mon, 12 Apr 2021 15:51:52 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S245356AbhDLTxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:53:55 -0400
+Received: from mga05.intel.com ([192.55.52.43]:63047 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238796AbhDLTxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 15:53:51 -0400
+IronPort-SDR: pm81zIzjKcjfRZDViLx08aorgO13eRcZxF3Me+x4Volw8u29Tiq7UhqB+IEZdl0qVO5JvSNMkk
+ 5Zs8EaEy6NAA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="279568495"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="279568495"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 12:53:32 -0700
+IronPort-SDR: Ce3Uc/BIqQYjNgGATogvofAa13JUDrvlwnr0QbOO1K3EUCHCHqTvNK5XqLDuzMOxA5S5c/kZkG
+ d5MjSS8Z0H9g==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="521317917"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.251.8.207])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 12:53:31 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     lee.jones@linaro.org, linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v9 0/1] Intel MAX10 BMC Macros for Secure Update
+Date:   Mon, 12 Apr 2021 12:53:27 -0700
+Message-Id: <20210412195329.241357-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YHSZ6X/DvgddiZBi@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 3:05 PM, Roman Gushchin wrote:
-> On Fri, Apr 09, 2021 at 07:18:37PM -0400, Waiman Long wrote:
->> With the recent introduction of the new slab memory controller, we
->> eliminate the need for having separate kmemcaches for each memory
->> cgroup and reduce overall kernel memory usage. However, we also add
->> additional memory accounting overhead to each call of kmem_cache_alloc()
->> and kmem_cache_free().
->>
->> For workloads that require a lot of kmemcache allocations and
->> de-allocations, they may experience performance regression as illustrated
->> in [1].
->>
->> With a simple kernel module that performs repeated loop of 100,000,000
->> kmem_cache_alloc() and kmem_cache_free() of 64-byte object at module
->> init. The execution time to load the kernel module with and without
->> memory accounting were:
->>
->>    with accounting = 6.798s
->>    w/o  accounting = 1.758s
->>
->> That is an increase of 5.04s (287%). With this patchset applied, the
->> execution time became 4.254s. So the memory accounting overhead is now
->> 2.496s which is a 50% reduction.
-> Btw, there were two recent independent report about benchmark results
-> regression caused by the introduction of the per-object accounting:
-> 1) Xing reported a hackbench regression:
-> https://lkml.org/lkml/2021/1/13/1277
-> 2) Masayoshi reported a pgbench regression:
-> https://www.spinics.net/lists/linux-mm/msg252540.html
->
-> I wonder if you can run them (or at least one) and attach the result
-> to the series? It would be very helpful.
+This patch was previously patch 1 of 6 in the patch-series entitled
+"Intel MAX10 BMC Secure Update Driver". This is the only patch in
+the series that is subject to conflicts with other ongoing changes
+and is separated here to simplify maintenance of the patchset.
 
-Actually, it was a bug reported filed by Masayoshi-san that triggered me 
-to work on reducing the memory accounting overhead. He is also in the cc 
-line and so is aware of that. I will cc Xing in my v2 patch.
+This patch creates a number of macro definitions that are required
+for the Intel MAX10 BMC Secure Update Driver.
 
-Cheers,
-Longman
+Changelog v8 -> v9:
+  - Rebased on next-20210412
+Changelog v7 -> v8:
+  - Rebased on next-20210121
+  - Separated out from patchset: "Intel MAX10 BMC Secure Update Driver"
+Changelog v6 -> v7:
+  - No change
+Changelog v5 -> v6:
+  - No change
+Changelog v4 -> v5:
+  - Renamed USER_FLASH_COUNT to STAGING_FLASH_COUNT
+Changelog v3 -> v4:
+  - No change
+Changelog v2 -> v3:
+  - Changed "MAX10 BMC Secure Engine driver" to "MAX10 BMC Secure
+    Update driver"
+  - Removed wrapper functions (m10bmc_raw_*, m10bmc_sys_*). The
+    underlying functions will be called directly.
+Changelog v1 -> v2:
+  - These functions and macros were previously distributed among
+    the patches that needed them. They are now grouped together
+    in a single patch containing changes to the Intel MAX10 BMC
+    driver.
+  - Added DRBL_ prefix to some definitions
+  - Some address definitions were moved here from the .c files that
+    use them.
 
+Russ Weight (1):
+  mfd: intel-m10-bmc: support for MAX10 BMC Secure Updates
+
+ include/linux/mfd/intel-m10-bmc.h | 85 +++++++++++++++++++++++++++++++
+ 1 file changed, 85 insertions(+)
+
+-- 
+2.25.1
 
