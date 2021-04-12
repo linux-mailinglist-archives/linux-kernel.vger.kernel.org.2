@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05AF235C9D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4F835C9D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:29:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240483AbhDLP2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:28:01 -0400
-Received: from outbound-smtp45.blacknight.com ([46.22.136.57]:51549 "EHLO
-        outbound-smtp45.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237512AbhDLP16 (ORCPT
+        id S242688AbhDLP32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241183AbhDLP31 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:27:58 -0400
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp45.blacknight.com (Postfix) with ESMTPS id 8C9C0FBC0D
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:27:39 +0100 (IST)
-Received: (qmail 25959 invoked from network); 12 Apr 2021 15:27:39 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Apr 2021 15:27:39 -0000
-Date:   Mon, 12 Apr 2021 16:27:37 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 resend] mm/memory_hotplug: Make unpopulated zones PCP
- structures unreachable during hot remove
-Message-ID: <20210412152737.GB3697@techsingularity.net>
-References: <20210412120842.GY3697@techsingularity.net>
- <d4e4c3e4-7d47-d634-4374-4cf1e55c7895@suse.cz>
- <20210412140852.GZ3697@techsingularity.net>
- <a0d73ce0-b2bd-1928-539d-39cb9da9bf1f@redhat.com>
+        Mon, 12 Apr 2021 11:29:27 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50371C061574;
+        Mon, 12 Apr 2021 08:29:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mfGd7IdvphAsvIi/1CcWLKElOLtr8R1Sz6OZc2D1oss=; b=KsckI0GV46bB3x1jMMvW2bROBW
+        lvJX1Ie2dGH9u7C08dTB7bvov0Ai0xeRbpTyxj+n1Hab1wNtuA8mjVzRxWv3HUUR2TUpRorbDrkD9
+        sx5+TT1VdNE5lS1mI99ou7aDhGfJxVuyfe+C8FTckZ0I0mdoHxARk7qTWylm8p6IUcbYGfVaP5F2c
+        dtgfAdwUpqfbwU53LWwpf0NQ+VvPKHW3yV8U3kZm1ivwuM72yRKV3hJq5t08sD456iW/dBt03Bv9e
+        1X6UQRjEzVQJA657opYmuD/O9EJiV/t4SLntWYj1pp44rviKClryCd0rV93kj5yYNA8/sVM5qibXI
+        zD01kCDQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVyUs-004WGl-OO; Mon, 12 Apr 2021 15:29:06 +0000
+Date:   Mon, 12 Apr 2021 16:29:06 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v4][next] xfs: Replace one-element arrays with
+ flexible-array members
+Message-ID: <20210412152906.GA1075717@infradead.org>
+References: <20210412135611.GA183224@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a0d73ce0-b2bd-1928-539d-39cb9da9bf1f@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210412135611.GA183224@embeddedor>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 04:12:11PM +0200, David Hildenbrand wrote:
-> > After v1 of the patch, the race was reduced to the point between the
-> > zone watermark check and the rmqueue_pcplist but yes, it still existed.
-> > Closing it completely was either complex or expensive. Setting
-> > zone->pageset = &boot_pageset before the free would shrink the race
-> > further but that still leaves a potential memory ordering issue.
-> > 
-> > While fixable, it's either complex, expensive or both so yes, just leaving
-> > the pageset structures in place would be much more straight-forward
-> > assuming the structures were not allocated in the zone that is being
-> > hot-removed. As things stand, I had trouble even testing zone hot-remove
-> > as there was always a few pages left behind and I did not chase down
-> > why.
->
-> Can you elaborate? I can reliably trigger zone present pages going to 0 by
-> just hotplugging a DIMM, onlining the memory block devices to the MOVABLE
-> zone, followed by offlining the memory block again.
-> 
+> Below are the results of running xfstests for "all" with the following
+> configuration in local.config:
 
-For the machine I was testing on, I tried offlining all memory within
-a zone on a NUMA machine. Even if I used movable_zone to create a zone
-or numa=fake to create multiple fake nodes and zones, there was always
-either reserved or pinned pages preventing the full zone being removed.
+...
 
--- 
-Mel Gorman
-SUSE Labs
+> Other tests might need to be run in order to verify everything is working
+> as expected. For such tests, the intervention of the maintainers might be
+> needed.
+
+This is a little weird for a commit log.  If you want to show results
+this would be something that goes into a cover letter.
+
+> +/*
+> + * Calculates the size of structure xfs_efi_log_format followed by an
+> + * array of n number of efi_extents elements.
+> + */
+> +static inline size_t
+> +sizeof_efi_log_format(size_t n)
+> +{
+> +	return struct_size((struct xfs_efi_log_format *)0, efi_extents, n);
+
+These helpers are completely silly.  Just keep the existing open code
+version using sizeof with the one-off removed.
+
+> -					(sizeof(struct xfs_efd_log_item) +
+> -					(XFS_EFD_MAX_FAST_EXTENTS - 1) *
+> -					sizeof(struct xfs_extent)),
+> -					0, 0, NULL);
+> +					 struct_size((struct xfs_efd_log_item *)0,
+> +					 efd_format.efd_extents,
+> +					 XFS_EFD_MAX_FAST_EXTENTS),
+> +					 0, 0, NULL);
+>  	if (!xfs_efd_zone)
+>  		goto out_destroy_buf_item_zone;
+>  
+>  	xfs_efi_zone = kmem_cache_create("xfs_efi_item",
+> -					 (sizeof(struct xfs_efi_log_item) +
+> -					 (XFS_EFI_MAX_FAST_EXTENTS - 1) *
+> -					 sizeof(struct xfs_extent)),
+> +					 struct_size((struct xfs_efi_log_item *)0,
+> +					 efi_format.efi_extents,
+> +					 XFS_EFI_MAX_FAST_EXTENTS),
+
+Same here.  And this obsfucated version also adds completely pointless
+overly long lines while making the code unreadable.
