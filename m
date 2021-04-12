@@ -2,70 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E803C35C2EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D75035C2D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244474AbhDLJwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:52:42 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:51902 "EHLO mail.skyhub.de"
+        id S242703AbhDLJun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:50:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238266AbhDLJht (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:37:49 -0400
-Received: from zn.tnic (p200300ec2f0521005a03b79cec231ba7.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:2100:5a03:b79c:ec23:1ba7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D23B91EC0283;
-        Mon, 12 Apr 2021 11:37:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1618220248;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=7iVljervZjDqz9AaJl4SR3GBbEmbAb3i5CdiLL2u+rg=;
-        b=e7Mcjvv0Ky2ydmdDgBdhLmgfdYA8MkRdKVEWil1RMc9wMGZrm6lmxlJExF/yMDPjTcB1F3
-        UUlujeGbVSLSyPndW1GLsOuVoN4q9g7LRfveX9iDwa6acjvFtbkF44niW9PM3xcxBYX39J
-        pnbULRwUmzgdjB2/qNK68adSHepepb8=
-Date:   Mon, 12 Apr 2021 11:37:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Feng Tang <feng.tang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Len Brown <len.brown@intel.com>
-Subject: Re: [PATCH] x86/msr: Block writes to certain MSRs unconditionally
-Message-ID: <20210412093728.GA24283@zn.tnic>
-References: <20210411164342.GL3762101@tassilo.jf.intel.com>
- <C7F7BE8D-562B-4BC3-A209-8EDD7DAF0AAA@amacapital.net>
- <20210411170357.GD14022@zn.tnic>
- <CALCETrX-WvuK0hC21Zes6auU9gM702wd0fV2FyP9ha-ma3=71g@mail.gmail.com>
+        id S241346AbhDLJiB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:38:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B31B26121E;
+        Mon, 12 Apr 2021 09:37:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618220263;
+        bh=uBEBWCvKhDMQP4UP/TvSZxCggBLXt3IfEwGxtJ1Rg6w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=y+9Oxn25Slqjyi6P1Wetic+CokPt+pAZ3c4VmQlOpj1MHuqU+HoxKCDfhtE53JKOi
+         M7nJTq2gpRXNc8xq0Ys/OD1xQ7qQ1A7FuVEwQVqSBtLOrsduAQZD30SQiTnQ1z1Nqc
+         jkEMafIyVtu5L3f2dS6f6fCbwnWIycX1O1MMqgAA=
+Date:   Mon, 12 Apr 2021 11:37:40 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH v5 0/4] staging: rtl8723bs: Change
+ several files of the driver
+Message-ID: <YHQU5NNLOGO///39@kroah.com>
+References: <20210411110458.15955-1-fmdefrancesco@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrX-WvuK0hC21Zes6auU9gM702wd0fV2FyP9ha-ma3=71g@mail.gmail.com>
+In-Reply-To: <20210411110458.15955-1-fmdefrancesco@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 04:21:21PM -0700, Andy Lutomirski wrote:
-> https://bugs.winehq.org/show_bug.cgi?id=33275#c19
+On Sun, Apr 11, 2021 at 01:04:54PM +0200, Fabio M. De Francesco wrote:
+> Remove camelcase, correct misspelled words in comments, change 
+> the type of a variable and its use, change comparisons with 'true'
+> in controlling expressions.
 > 
-> I sure hope no one is still doing this.
+> Changes from v4: Write patch version number in 2/4.
+> Changes from v3: Move changes of controlling expressions in patch 4/4.
+> Changes from v2: Rewrite subject in patch 0/4; remove a patch from the
+> series because it had alreay been applied (rtl8723bs: core: Remove an unused variable).
+> Changes from v1: Fix a typo in subject of patch 1/5, add patch 5/5.
 
-Aha, IRET with rFLAGS.NT set. At least it is only an ad-hoc program to
-fix this particular issue and I hope too it hasn't propagated somewhere
-else.
+I'll take this, but the subject here is a bit odd, and obvious :)
 
-Thx.
+thanks,
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+greg k-h
