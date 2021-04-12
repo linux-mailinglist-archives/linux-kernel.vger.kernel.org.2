@@ -2,148 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADB0335C5F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF9935C5F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240856AbhDLMMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:12:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52734 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237718AbhDLMMX (ORCPT
+        id S240860AbhDLMON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:14:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237718AbhDLMOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:12:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618229525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0FRzHQeGmtY+XVUG66yYZyx5FvjaCGGmC0HzyI2rdPI=;
-        b=bDWVKZcsde2MBqrwJuFwgyMJmNMUB/SWmYDTmP4dNg6gnxsYusXr3a/FrqIbN2QIER3Nux
-        ezqlX5VTB00+4htWPZSF97itE1RajQyEI24w73g2WpPCtPDQBoRJo1+9ye3/+ialUN1H07
-        lXVY9e/ANhfYqCBoOdtHRCNO3BEq84c=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-560-ca5EtTAQNA2aKMqE9bvH5w-1; Mon, 12 Apr 2021 08:12:03 -0400
-X-MC-Unique: ca5EtTAQNA2aKMqE9bvH5w-1
-Received: by mail-wr1-f71.google.com with SMTP id n16so514568wrm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:12:03 -0700 (PDT)
+        Mon, 12 Apr 2021 08:14:11 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87B5C061574;
+        Mon, 12 Apr 2021 05:13:53 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id n38so9090193pfv.2;
+        Mon, 12 Apr 2021 05:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tUjJiri9YyaJc6srfMwGPp1nWAKWEpVo3zCwAOYEKG4=;
+        b=c+yAMsRK0xCk48r24NmKEcLCqt2b+Gql9/RTM2H7Aolj3jNru5A3PrvR4sJoQPlTqe
+         eWM76540qp+mCofxH8DXqkhJhSUGAWCo3cOYMRkSvA5ik+u4LaLHrPNe7nHwSRUhx9xX
+         z6Utlj6ilaTQfa/1c4aJn36pfOggcQX5bsrwYKro5MrRGCSmTsYjyV/cXF3BRyt3wHWM
+         P2pVlSuY3U5VoM33mVshdGu56L9aDabwcGO041T1ou/tFvmdzQfWizH9aaUJnMlVKLMx
+         hF3gpM10Gcj5/h5UcpKXqXCTuGEPvin2DLFlfw2D8nNgLcpsHAl/6Bjn/G0z/ozJ5NND
+         ZKcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0FRzHQeGmtY+XVUG66yYZyx5FvjaCGGmC0HzyI2rdPI=;
-        b=OD1H39m7eYh/9yy5THFiay5vLp9eVwE3ghh2QRIWn0gv2l9JnK52DhNIhxG4nd+S0Y
-         bd/TgzaaJo3mcLsfqgebkf85o9Lcz+Fc9mSHzMgvdaouwZe+9Ilx1WMvdCEI+RXg12HI
-         9m0/6ufMKTjL4A8NqXte1/Tx1X5aXC7tZ91Cx8nJnHBzZuCGc3/4OtsDr66ygV1hE3qz
-         6UXNdYrVa2v4kCcmIBjWRK4hOSMLgW2ubc58q1WoUF9HV3FMSGFQ6R/4UAYUg9pAwxCQ
-         ZcwrPNSSilP1FPUAVDZAIMGTSkliGZAVUGvzGgqNI8pnFRvv/nELQHAjQ4UCWfEgBaMz
-         grew==
-X-Gm-Message-State: AOAM531oqSLUyaZ5O/aNIcx9bJHfGs3bY6ZzF+OCAGZRZHw3amoUPHCm
-        e26gKEL+YD8nyxmw2Tv+HVqbMt85f+jS9Mjd9LF0HDH/YTsyUKJsm1rxzDyXvrmckjYTIUYk1De
-        vOhigrKm75tmAoeIY8/zvOYbXjnyg7lVu7Ea8rpb88QeE8RqM0Sp9nqQ6nKewNQhaIiCItR58
-X-Received: by 2002:a7b:c399:: with SMTP id s25mr13435848wmj.97.1618229522170;
-        Mon, 12 Apr 2021 05:12:02 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwYZAtdTsObf6yw+wYcFlQHOUQ+18hDCXWnhJGBtobevOjPB+PEmrF69HFwFDCNdrLVtjorow==
-X-Received: by 2002:a7b:c399:: with SMTP id s25mr13435816wmj.97.1618229521866;
-        Mon, 12 Apr 2021 05:12:01 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c66cb.dip0.t-ipconnect.de. [91.12.102.203])
-        by smtp.gmail.com with ESMTPSA id n9sm7053945wmo.27.2021.04.12.05.12.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 05:12:01 -0700 (PDT)
-Subject: Re: [PATCH v2 resend] mm/memory_hotplug: Make unpopulated zones PCP
- structures unreachable during hot remove
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Oscar Salvador <osalvador@suse.de>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210412120842.GY3697@techsingularity.net>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <b2696b77-9fe0-714f-6bdd-efc267974cfa@redhat.com>
-Date:   Mon, 12 Apr 2021 14:12:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tUjJiri9YyaJc6srfMwGPp1nWAKWEpVo3zCwAOYEKG4=;
+        b=NqjL3Rzx0WXguqa9IKL93OtjuBYZaj7ZyJOdxZFgW/HEW4dWXlrdUl1IkoZTfTaARc
+         OELtUgyEkVjNiJ6qln9BsBZxQjhIpNkCYi8dI5m2oQ52S/kANnAFASQ/MdtBdJMnLqSN
+         9RvegNNXRL12vAEG8NJ37xPMM9uY1NWLb5G7CTTSt6gPbEk7eBjdg60aqRDQSjN7wqr2
+         yazLy7nI3XpExCBdgI6ta0Q/Qw4wBg/3XK7DQEpTo44E0i+ieBoEQf+5B4H/EFKCI8vZ
+         9l1cfVdMR7Ov01Ivk54UV5uO8b1XGbHDxlUIiq8QluAEV5vyyavKf4eYL3E0VZqwkgWF
+         c8+g==
+X-Gm-Message-State: AOAM533uCe1PmOPunnmLdzhtMnrpolTifnxIY/6mq2MHTYowNfLQhYfB
+        AAkfHxbBVYwz9gt8hG/PKsZkVZpUJjl6a3LPpiU=
+X-Google-Smtp-Source: ABdhPJzgpbIwME8lAynQqiqHAqfqPf5U2S87pcob/1mHc7tiplwVn7Cw9nu9qC7ZUdx7trHcV+n8ax8bqS/fjrcu2pM=
+X-Received: by 2002:a63:c48:: with SMTP id 8mr26212373pgm.74.1618229633387;
+ Mon, 12 Apr 2021 05:13:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210412120842.GY3697@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210411133030.1663936-1-pgwipeout@gmail.com>
+In-Reply-To: <20210411133030.1663936-1-pgwipeout@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 12 Apr 2021 15:13:37 +0300
+Message-ID: <CAHp75Ve=1EbJ1qOjnTLKOwvv-UKLfxMHS-UUp=ET0zoJ9fV=ng@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] gpio-rockchip driver
+To:     Peter Geis <pgwipeout@gmail.com>
+Cc:     Jianqun Xu <jay.xu@rock-chips.com>,
+        Tao Huang <huangtao@rock-chips.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-rockchip@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12.04.21 14:08, Mel Gorman wrote:
-> zone_pcp_reset allegedly protects against a race with drain_pages
-> using local_irq_save but this is bogus. local_irq_save only operates
-> on the local CPU. If memory hotplug is running on CPU A and drain_pages
-> is running on CPU B, disabling IRQs on CPU A does not affect CPU B and
-> offers no protection.
-> 
-> This patch deletes IRQ disable/enable on the grounds that IRQs protect
-> nothing and assumes the existing hotplug paths guarantees the PCP cannot be
-> used after zone_pcp_enable(). That should be the case already because all
-> the pages have been freed and there is no page to put on the PCP lists.
-> 
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
-> ---
-> Resending for email address correction and adding lists
-> 
-> Changelog since v1
-> o Minimal fix
-> 
->   mm/page_alloc.c | 4 ----
->   1 file changed, 4 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 5e8aedb64b57..9bf0db982f14 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8952,12 +8952,9 @@ void zone_pcp_enable(struct zone *zone)
->   
->   void zone_pcp_reset(struct zone *zone)
->   {
-> -	unsigned long flags;
->   	int cpu;
->   	struct per_cpu_pageset *pset;
->   
-> -	/* avoid races with drain_pages()  */
-> -	local_irq_save(flags);
->   	if (zone->pageset != &boot_pageset) {
->   		for_each_online_cpu(cpu) {
->   			pset = per_cpu_ptr(zone->pageset, cpu);
-> @@ -8966,7 +8963,6 @@ void zone_pcp_reset(struct zone *zone)
->   		free_percpu(zone->pageset);
->   		zone->pageset = &boot_pageset;
->   	}
-> -	local_irq_restore(flags);
->   }
->   
->   #ifdef CONFIG_MEMORY_HOTREMOVE
-> 
+On Sun, Apr 11, 2021 at 4:35 PM Peter Geis <pgwipeout@gmail.com> wrote:
+>
+> Separate gpio driver from pinctrl driver, and support v2 controller.
+>
+> Tested on rk3566-quartz64 prototype board.
 
-This was originally introduced by 340175b7d14d ("mm/hotplug: free 
-zone->pageset when a zone becomes empty").
+Can you give a bit more context?
+Usually separation means that hardware is represented by two different
+IP blocks that are (almost) independent to each other. Was it the case
+on the original platforms? Do you have different pin controller (or
+it's absent completely) on some new / old platform?
 
-I wonder why it was ever added. Could it be that drain_pages() could 
-have been called from an interrupt handler (e.g., on concurrent CPU 
-hotunplug of the current CPU?) back then while we are just about to 
-remove it ourselves?
+>
+> Patch History:
+> V2 - Rebase to latest linux-next.
+>
+> Tested-by: Peter Geis <pgwipeout@gmail.com>
+>
+> Jianqun Xu (7):
+>   pinctrl/rockchip: separate struct rockchip_pin_bank to a head file
+>   pinctrl/pinctrl-rockchip.h: add pinctrl device to gpio bank struct
+>   gpio: separate gpio driver from pinctrl-rockchip driver
+>   gpio/rockchip: use struct rockchip_gpio_regs for gpio controller
+>   gpio/rockchip: support next version gpio controller
+>   gpio/rockchip: always enable clock for gpio controller
+>   gpio/rockchip: drop irq_gc_lock/irq_gc_unlock for irq set type
+>
+>  drivers/gpio/Kconfig               |   8 +
+>  drivers/gpio/Makefile              |   1 +
+>  drivers/gpio/gpio-rockchip.c       | 758 ++++++++++++++++++++++++
+>  drivers/pinctrl/pinctrl-rockchip.c | 911 +----------------------------
+>  drivers/pinctrl/pinctrl-rockchip.h | 287 +++++++++
+>  5 files changed, 1073 insertions(+), 892 deletions(-)
+>  create mode 100644 drivers/gpio/gpio-rockchip.c
+>  create mode 100644 drivers/pinctrl/pinctrl-rockchip.h
+>
+> --
+> 2.25.1
+>
 
-Anyhow, if we need some protection after setting the zone unpopulated 
-(setting present_pages = 0), it doesn't seem like disabling local IRQs 
-is the right thing to do.
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-Thanks,
-
-David / dhildenb
-
+With Best Regards,
+Andy Shevchenko
