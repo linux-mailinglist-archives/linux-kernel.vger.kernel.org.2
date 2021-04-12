@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68A7935BC5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC9B35BC75
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236811AbhDLImf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:42:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33644 "EHLO mail.kernel.org"
+        id S237412AbhDLInE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:43:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34456 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229581AbhDLImc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:42:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1147D6109E;
-        Mon, 12 Apr 2021 08:42:13 +0000 (UTC)
+        id S237429AbhDLInC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:43:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CDCA360241;
+        Mon, 12 Apr 2021 08:42:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618216934;
-        bh=CtL/8G9P2obenZOVCjycKM3xYIEifjeuazudU1KrhCQ=;
+        s=korg; t=1618216964;
+        bh=0G2t/u4UGpcS50sYNbUfPHmfD+IG25lvJtbd9qHARL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QCTYZPpyynINub3VmCfqxiZ+jBMHZ3tAv73GC07818mBFVzVgwMc+0uNvcaGBcpdP
-         2sQm5EXGJJHUrW4o2DP1aTqUfTTxxm3ILIBQb5c4cCRbt8dsBZ+jcJWjgGuG9kfFfD
-         w13NDG0/T1Mgnv6H7BOn8Q150gX9Uo5PtymNuDlE=
+        b=O7/Z6s4lc8J/5usGVrgrTrLUOydVfeDvKHCqiMXq1XbWwyRjX+TuT4SttPD2Wx5Ak
+         7V51u8I1tTKOIMLmfS+Qm5rxMpDxhiWd1ECSKGx9k7acGS8XfFuXiqUJTxIFlcXw6V
+         KtrpHJapdSK0MHSEDlSspBmnAmQhK2lya2T49Dn8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonas Holmberg <jonashg@axis.com>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.19 01/66] ALSA: aloop: Fix initialization of controls
-Date:   Mon, 12 Apr 2021 10:40:07 +0200
-Message-Id: <20210412083958.178443857@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.19 02/66] ASoC: intel: atom: Stop advertising non working S24LE support
+Date:   Mon, 12 Apr 2021 10:40:08 +0200
+Message-Id: <20210412083958.209682279@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
 References: <20210412083958.129944265@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,51 +41,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonas Holmberg <jonashg@axis.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 168632a495f49f33a18c2d502fc249d7610375e9 upstream.
+commit aa65bacdb70e549a81de03ec72338e1047842883 upstream.
 
-Add a control to the card before copying the id so that the numid field
-is initialized in the copy. Otherwise the numid field of active_id,
-format_id, rate_id and channels_id will be the same (0) and
-snd_ctl_notify() will not queue the events properly.
+The SST firmware's media and deep-buffer inputs are hardcoded to
+S16LE, the corresponding DAIs don't have a hw_params callback and
+their prepare callback also does not take the format into account.
 
-Signed-off-by: Jonas Holmberg <jonashg@axis.com>
-Reviewed-by: Jaroslav Kysela <perex@perex.cz>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210407075428.2666787-1-jonashg@axis.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+So far the advertising of non working S24LE support has not caused
+issues because pulseaudio defaults to S16LE, but changing pulse-audio's
+config to use S24LE will result in broken sound.
+
+Pipewire is replacing pulse now and pipewire prefers S24LE over S16LE
+when available, causing the problem of the broken S24LE support to
+come to the surface now.
+
+Cc: stable@vger.kernel.org
+BugLink: https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/866
+Fixes: 098c2cd281409 ("ASoC: Intel: Atom: add 24-bit support for media playback and capture")
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210324132711.216152-2-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/drivers/aloop.c |   11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst-mfld-platform-pcm.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/sound/drivers/aloop.c
-+++ b/sound/drivers/aloop.c
-@@ -1047,6 +1047,14 @@ static int loopback_mixer_new(struct loo
- 					return -ENOMEM;
- 				kctl->id.device = dev;
- 				kctl->id.subdevice = substr;
-+
-+				/* Add the control before copying the id so that
-+				 * the numid field of the id is set in the copy.
-+				 */
-+				err = snd_ctl_add(card, kctl);
-+				if (err < 0)
-+					return err;
-+
- 				switch (idx) {
- 				case ACTIVE_IDX:
- 					setup->active_id = kctl->id;
-@@ -1063,9 +1071,6 @@ static int loopback_mixer_new(struct loo
- 				default:
- 					break;
- 				}
--				err = snd_ctl_add(card, kctl);
--				if (err < 0)
--					return err;
- 			}
- 		}
- 	}
+--- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
++++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
+@@ -508,14 +508,14 @@ static struct snd_soc_dai_driver sst_pla
+ 		.channels_min = SST_STEREO,
+ 		.channels_max = SST_STEREO,
+ 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ 	.capture = {
+ 		.stream_name = "Headset Capture",
+ 		.channels_min = 1,
+ 		.channels_max = 2,
+ 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ },
+ {
+@@ -526,7 +526,7 @@ static struct snd_soc_dai_driver sst_pla
+ 		.channels_min = SST_STEREO,
+ 		.channels_max = SST_STEREO,
+ 		.rates = SNDRV_PCM_RATE_44100|SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE,
+ 	},
+ },
+ {
 
 
