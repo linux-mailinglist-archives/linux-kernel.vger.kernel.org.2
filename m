@@ -2,111 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C740A35C9FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:33:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0DB35CA5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242736AbhDLPdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:33:25 -0400
-Received: from foss.arm.com ([217.140.110.172]:53680 "EHLO foss.arm.com"
+        id S243133AbhDLPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:47:20 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:54248 "EHLO lizzard.sbs.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238770AbhDLPdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:33:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DBFA111FB;
-        Mon, 12 Apr 2021 08:33:05 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EDB73F694;
-        Mon, 12 Apr 2021 08:33:04 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Ruifeng Zhang <ruifeng.zhang0110@gmail.com>
-Cc:     linux@armlinux.org.uk, sudeep.holla@arm.com,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, a.p.zijlstra@chello.nl,
-        dietmar.eggemann@arm.com, mingo@kernel.org,
-        ruifeng.zhang1@unisoc.com, nianfu.bai@unisoc.com,
-        linux-arm-kernel@lists.infradead.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] arm: topology: parse the topology from the dt
-In-Reply-To: <CAG7+-3MsjuChoEOj11VAMX9W61UY6MmphkxWDF=-_R1A8sfvpA@mail.gmail.com>
-References: <20210412070819.23493-1-ruifeng.zhang0110@gmail.com> <87y2dnn3gw.mognet@arm.com> <CAG7+-3MsjuChoEOj11VAMX9W61UY6MmphkxWDF=-_R1A8sfvpA@mail.gmail.com>
-Date:   Mon, 12 Apr 2021 16:32:57 +0100
-Message-ID: <87tuobmsba.mognet@arm.com>
+        id S243040AbhDLPrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:47:16 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 13CFkQqf031101
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Apr 2021 17:46:26 +0200
+Received: from md1za8fc.ad001.siemens.net ([139.22.41.180])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 13CFZWJi006717;
+        Mon, 12 Apr 2021 17:35:32 +0200
+Date:   Mon, 12 Apr 2021 17:35:31 +0200
+From:   Henning Schild <henning.schild@siemens.com>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <platform-driver-x86@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v3 3/4] watchdog: simatic-ipc-wdt: add new driver for
+ Siemens Industrial PCs
+Message-ID: <20210412173531.4140e461@md1za8fc.ad001.siemens.net>
+In-Reply-To: <ffdfe9a9-ab17-18af-300e-062b79d132f3@metux.net>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+        <20210329174928.18816-4-henning.schild@siemens.com>
+        <ffdfe9a9-ab17-18af-300e-062b79d132f3@metux.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/04/21 20:20, Ruifeng Zhang wrote:
-> There is a armv8.3 cpu which should work normally both on aarch64 and aarch32.
-> The MPIDR has been written to the chip register in armv8.3 format.
-> For example,
-> core0: 0000000080000000
-> core1: 0000000080000100
-> core2: 0000000080000200
-> ...
->
-> Its cpu topology can be parsed normally on aarch64 mode (both
-> userspace and kernel work on arm64).
->
-> The problem is when it working on aarch32 mode (both userspace and
-> kernel work on arm 32-bit),
+Am Thu, 1 Apr 2021 18:15:41 +0200
+schrieb "Enrico Weigelt, metux IT consult" <lkml@metux.net>:
 
-I didn't know using aarch32 elsewhere than EL0 was something actually being
-used. Do you deploy this somewhere, or do you use it for testing purposes?
+> On 29.03.21 19:49, Henning Schild wrote:
+> 
+> Hi,
+> 
+> > This driver adds initial support for several devices from Siemens.
+> > It is based on a platform driver introduced in an earlier commit.  
+> 
+> Where does the wdt actually come from ?
+> 
+> Is it in the SoC ? (which SoC exactly). SoC-builtin wdt is a pretty 
+> usual case.
+> 
+> Or some external chip ?
+> 
+> The code smells a bit like two entirely different wdt's that just have
+> some similarities. If that's the case, I'd rather split it into two
+> separate drivers and let the parent driver (board file) instantiate
+> the correct one.
 
-> the cpu topology
-> will parse error because of the format is different between armv7 and armv8.3.
-> The arm 32-bit driver, arch/arm/kernel/topology will parse the MPIDR
-> and store to the topology with armv7,
-> and the result is all cpu core_id is 0, the bit[1:0] of armv7 MPIDR format.
->
+In fact they are the same watchdog device. The only difference is the
+"secondary enable" which controls whether the watchdog causes a reboot
+or just raises an alarm. The alarm feature is not even implemented in
+the given driver, we just enable that secondary enable regardless.
 
-I'm not fluent at all in armv7 (or most aarch32 compat mode stuff), but
-I couldn't find anything about MPIDR format differences:
+In one range of devices (227E) that second enable is part of a
+pio-based control register. On the other range (427E) it unfortunately
+is a P2SB gpio, which gets us right into the discussion we have around
+the LEDs.
+With that i have my doubts that two drivers would be the way to go,
+most likely not. 
 
-  DDI 0487G.a G8.2.113
-  """
-  AArch32 System register MPIDR bits [31:0] are architecturally mapped to
-  AArch64 System register MPIDR_EL1[31:0].
-  """
+Only that i have no clue which pinctrl driver should be used here. My
+guess is "sunrisepoint" because the CPUs are "SkyLake" i.e. i5-6442EQ,
+i3-6102E
+And "grep INT344B /sys/firmware/acpi/tables/DSDT" matches. I booted a
+kernel patched with the series from Andy but the "pinctrl-sunrisepoint"
+does not seem to even claim the memory. Still trying to understand how
+to make use of these pinctrl drivers they are in place but i lack
+example users (drivers). If they should be available in sysfs, i might
+be looking at the wrong place ... /sys/class/gpio/ does not list
+anything
 
-Peeking at some armv7 doc and arm/kernel/topology.c the layout really looks
-just the same, i.e. for both of them, with your example of:
+regards,
+Henning
 
-  core0: 0000000080000000
-  core1: 0000000080000100
-  core2: 0000000080000200
-  ...
 
-we'll get:
 
-  |       | aff2 | aff1 | aff0 |
-  |-------+------+------+------|
-  | Core0 |    0 |    0 |    0 |
-  | Core1 |    0 |    1 |    0 |
-  | Core2 |    0 |    2 |    0 |
-      ...
+> 
+> --mtx
+> 
 
-Now, arm64 doesn't fallback to MPIDR for topology information anymore since
-
-  3102bc0e6ac7 ("arm64: topology: Stop using MPIDR for topology information")
-
-so without DT we would get:
-  |       | package_id | core_id |
-  |-------+------------+---------|
-  | Core0 |          0 |       0 |
-  | Core1 |          0 |       1 |
-  | Core2 |          0 |       2 |
-
-Whereas with an arm kernel we'll end up parsing MPIDR as:
-  |       | package_id | core_id |
-  |-------+------------+---------|
-  | Core0 |          0 |       0 |
-  | Core1 |          1 |       0 |
-  | Core2 |          2 |       0 |
-
-Did I get this right? Is this what you're observing?
-
-> In addition, I think arm should also allow customers to configure cpu
-> topologies via DT.
