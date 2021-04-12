@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A776035C8FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8597535C8C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242585AbhDLOjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:39:37 -0400
-Received: from mga09.intel.com ([134.134.136.24]:29202 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242520AbhDLOjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:39:09 -0400
-IronPort-SDR: 30QvuMokkmX/YRSBBKI+mU90SNTaoYU5LzNXm211WXIGBV+DFzRhRFFA0XkhQDHeDxWKl9VQPf
- vCvSUcSQK5pw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194318035"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="194318035"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 07:38:39 -0700
-IronPort-SDR: Ni1l97AUkOVayfL1Akf57AVEbDpo7n6pdXdcKbM5vY6cFMqGY7ovcAZYA5ZhG85+VVs+24o3bG
- r4FcexGDZr1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="398392905"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga002.jf.intel.com with ESMTP; 12 Apr 2021 07:38:39 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
-        namhyung@kernel.org, jolsa@redhat.com, ak@linux.intel.com,
-        yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
-        adrian.hunter@intel.com, ricardo.neri-calderon@linux.intel.com,
-        Zhang Rui <rui.zhang@intel.com>
-Subject: [PATCH V6 25/25] perf/x86/rapl: Add support for Intel Alder Lake
-Date:   Mon, 12 Apr 2021 07:31:05 -0700
-Message-Id: <1618237865-33448-26-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1618237865-33448-1-git-send-email-kan.liang@linux.intel.com>
-References: <1618237865-33448-1-git-send-email-kan.liang@linux.intel.com>
+        id S242250AbhDLOcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:32:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237806AbhDLOcB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 10:32:01 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC96C061574;
+        Mon, 12 Apr 2021 07:31:43 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f052100b992cfc3eab27929.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:2100:b992:cfc3:eab2:7929])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 859EB1EC03A0;
+        Mon, 12 Apr 2021 16:31:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618237901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Drxp9AwmCgzA/Iszpvwrzfn9ABJRPDxoumDeD2kDwN0=;
+        b=Q7DrDWatKFZgNJBHP4Qx/QznmbVTPC09Oxn/rLikYikgm5ESUgyZ9nv+jmO5tKlGpYu9Ba
+        4BNTO9HquC5hp9c/AbTXnzd3Bz1o/F5bTf828MHOEK9nZD2LXxQIQ+UieBuwn0pk4GBZep
+        j/3SmxTJ6kkkyWwd8fdnJ40mROyoVuk=
+Date:   Mon, 12 Apr 2021 16:31:39 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+Message-ID: <20210412143139.GE24283@zn.tnic>
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+ <87lf9nk2ku.fsf@oldenburg.str.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <87lf9nk2ku.fsf@oldenburg.str.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Rui <rui.zhang@intel.com>
+On Mon, Apr 12, 2021 at 04:19:29PM +0200, Florian Weimer wrote:
+> Maybe we could have done this in 2016 when I reported this for the first
+> time.  Now it is too late, as more and more software is using
+> CPUID-based detection for AVX-512.
 
-Alder Lake RAPL support is the same as previous Sky Lake.
-Add Alder Lake model for RAPL.
+So as I said on another mail today, I don't think a library should rely
+solely on CPUID-based detection of features especially if those features
+need kernel support too. IOW, it should ask whether the kernel can
+handle those too, first.
 
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Zhang Rui <rui.zhang@intel.com>
----
- arch/x86/events/rapl.c | 2 ++
- 1 file changed, 2 insertions(+)
+And the CPUID-faulting thing would solve stuff like that because then
+the kernel can *actually* get involved into answering something where it
+has a say in, too.
 
-diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
-index f42a704..84a1042 100644
---- a/arch/x86/events/rapl.c
-+++ b/arch/x86/events/rapl.c
-@@ -800,6 +800,8 @@ static const struct x86_cpu_id rapl_model_match[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(ICELAKE_X,		&model_hsx),
- 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE_L,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(COMETLAKE,		&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		&model_skl),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		&model_skl),
- 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	&model_spr),
- 	X86_MATCH_VENDOR_FAM(AMD,	0x17,		&model_amd_fam17h),
- 	X86_MATCH_VENDOR_FAM(HYGON,	0x18,		&model_amd_fam17h),
+Thx.
+
 -- 
-2.7.4
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
