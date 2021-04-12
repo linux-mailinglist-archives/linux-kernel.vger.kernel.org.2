@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF3435C00C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F317E35C022
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239857AbhDLJJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:09:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44464 "EHLO mail.kernel.org"
+        id S240595AbhDLJKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:10:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239024AbhDLIzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:55:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BDE161207;
-        Mon, 12 Apr 2021 08:54:59 +0000 (UTC)
+        id S239032AbhDLIzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:55:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0060A61262;
+        Mon, 12 Apr 2021 08:55:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217699;
-        bh=jgcchRaluWdfefFgcWzhdgFzO/l9Na4FFH4ScjZaTZ8=;
+        s=korg; t=1618217702;
+        bh=TilFfatGDQ8WsvWrUqOg9gPOx2fJy+GBEncMx4C+mAU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nefSCE6J1DF02MAL2Lil/XQQa0Vgm0ENQVV45rTYvpc1sSpG9IYJUxWPVByw+7lHe
-         LByr/IK3eFXOapCCpCceHSjUBwJTtIbOWT9vHn9WFCYat8pwp5XTVcGYtEfdTII+af
-         wS0F3fn2M3uqrCs9qDQTqrAKoabp2nUgw5PMMNGA=
+        b=bT1oInWw3G28zB0jK6v2v8dlz5azJmvsSMZHqSB8u+QASxOBNhGJLReaPCK2H0W+u
+         FgBHNHQk7gpb98CfW1ldBqUVL5AcLuvvVbACWKDa9Mv20kEWvoQF+V/WDVqGn9I2uX
+         MQNuxnsOtRA2OEwBAUvOjS09OU+XMy7JnhXrbpCY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Oliver=20St=C3=A4bler?= <oliver.staebler@bytesatwork.ch>,
-        Fabio Estevam <festevam@gmail.com>,
-        Rob Herring <robh@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 114/188] arm64: dts: imx8mm/q: Fix pad control of SD1_DATA0
-Date:   Mon, 12 Apr 2021 10:40:28 +0200
-Message-Id: <20210412084017.445069592@linuxfoundation.org>
+Subject: [PATCH 5.10 115/188] xfrm: Provide private skb extensions for segmented and hw offloaded ESP packets
+Date:   Mon, 12 Apr 2021 10:40:29 +0200
+Message-Id: <20210412084017.476445404@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -42,53 +40,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Stäbler <oliver.staebler@bytesatwork.ch>
+From: Steffen Klassert <steffen.klassert@secunet.com>
 
-[ Upstream commit 5cfad4f45806f6f898b63b8c77cea7452c704cb3 ]
+[ Upstream commit c7dbf4c08868d9db89b8bfe8f8245ca61b01ed2f ]
 
-Fix address of the pad control register
-(IOMUXC_SW_PAD_CTL_PAD_SD1_DATA0) for SD1_DATA0_GPIO2_IO2.  This seems
-to be a typo but it leads to an exception when pinctrl is applied due to
-wrong memory address access.
+Commit 94579ac3f6d0 ("xfrm: Fix double ESP trailer insertion in IPsec
+crypto offload.") added a XFRM_XMIT flag to avoid duplicate ESP trailer
+insertion on HW offload. This flag is set on the secpath that is shared
+amongst segments. This lead to a situation where some segments are
+not transformed correctly when segmentation happens at layer 3.
 
-Signed-off-by: Oliver Stäbler <oliver.staebler@bytesatwork.ch>
-Reviewed-by: Fabio Estevam <festevam@gmail.com>
-Acked-by: Rob Herring <robh@kernel.org>
-Fixes: c1c9d41319c3 ("dt-bindings: imx: Add pinctrl binding doc for imx8mm")
-Fixes: 748f908cc882 ("arm64: add basic DTS for i.MX8MQ")
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+Fix this by using private skb extensions for segmented and hw offloaded
+ESP packets.
+
+Fixes: 94579ac3f6d0 ("xfrm: Fix double ESP trailer insertion in IPsec crypto offload.")
+Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h | 2 +-
- arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ net/ipv4/esp4_offload.c | 11 ++++++++++-
+ net/ipv6/esp6_offload.c | 11 ++++++++++-
+ net/xfrm/xfrm_device.c  |  2 --
+ 3 files changed, 20 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h b/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
-index 5ccc4cc91959..a003e6af3353 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-pinfunc.h
-@@ -124,7 +124,7 @@
- #define MX8MM_IOMUXC_SD1_CMD_USDHC1_CMD                                     0x0A4 0x30C 0x000 0x0 0x0
- #define MX8MM_IOMUXC_SD1_CMD_GPIO2_IO1                                      0x0A4 0x30C 0x000 0x5 0x0
- #define MX8MM_IOMUXC_SD1_DATA0_USDHC1_DATA0                                 0x0A8 0x310 0x000 0x0 0x0
--#define MX8MM_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x31  0x000 0x5 0x0
-+#define MX8MM_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x310 0x000 0x5 0x0
- #define MX8MM_IOMUXC_SD1_DATA1_USDHC1_DATA1                                 0x0AC 0x314 0x000 0x0 0x0
- #define MX8MM_IOMUXC_SD1_DATA1_GPIO2_IO3                                    0x0AC 0x314 0x000 0x5 0x0
- #define MX8MM_IOMUXC_SD1_DATA2_USDHC1_DATA2                                 0x0B0 0x318 0x000 0x0 0x0
-diff --git a/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h b/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
-index b94b02080a34..68e8fa172974 100644
---- a/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
-+++ b/arch/arm64/boot/dts/freescale/imx8mq-pinfunc.h
-@@ -130,7 +130,7 @@
- #define MX8MQ_IOMUXC_SD1_CMD_USDHC1_CMD                                     0x0A4 0x30C 0x000 0x0 0x0
- #define MX8MQ_IOMUXC_SD1_CMD_GPIO2_IO1                                      0x0A4 0x30C 0x000 0x5 0x0
- #define MX8MQ_IOMUXC_SD1_DATA0_USDHC1_DATA0                                 0x0A8 0x310 0x000 0x0 0x0
--#define MX8MQ_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x31  0x000 0x5 0x0
-+#define MX8MQ_IOMUXC_SD1_DATA0_GPIO2_IO2                                    0x0A8 0x310 0x000 0x5 0x0
- #define MX8MQ_IOMUXC_SD1_DATA1_USDHC1_DATA1                                 0x0AC 0x314 0x000 0x0 0x0
- #define MX8MQ_IOMUXC_SD1_DATA1_GPIO2_IO3                                    0x0AC 0x314 0x000 0x5 0x0
- #define MX8MQ_IOMUXC_SD1_DATA2_USDHC1_DATA2                                 0x0B0 0x318 0x000 0x0 0x0
+diff --git a/net/ipv4/esp4_offload.c b/net/ipv4/esp4_offload.c
+index d5c0f5a2a551..5aa7344dbec7 100644
+--- a/net/ipv4/esp4_offload.c
++++ b/net/ipv4/esp4_offload.c
+@@ -314,8 +314,17 @@ static int esp_xmit(struct xfrm_state *x, struct sk_buff *skb,  netdev_features_
+ 	ip_hdr(skb)->tot_len = htons(skb->len);
+ 	ip_send_check(ip_hdr(skb));
+ 
+-	if (hw_offload)
++	if (hw_offload) {
++		if (!skb_ext_add(skb, SKB_EXT_SEC_PATH))
++			return -ENOMEM;
++
++		xo = xfrm_offload(skb);
++		if (!xo)
++			return -EINVAL;
++
++		xo->flags |= XFRM_XMIT;
+ 		return 0;
++	}
+ 
+ 	err = esp_output_tail(x, skb, &esp);
+ 	if (err)
+diff --git a/net/ipv6/esp6_offload.c b/net/ipv6/esp6_offload.c
+index f35203ab39f5..4af56affaafd 100644
+--- a/net/ipv6/esp6_offload.c
++++ b/net/ipv6/esp6_offload.c
+@@ -348,8 +348,17 @@ static int esp6_xmit(struct xfrm_state *x, struct sk_buff *skb,  netdev_features
+ 
+ 	ipv6_hdr(skb)->payload_len = htons(len);
+ 
+-	if (hw_offload)
++	if (hw_offload) {
++		if (!skb_ext_add(skb, SKB_EXT_SEC_PATH))
++			return -ENOMEM;
++
++		xo = xfrm_offload(skb);
++		if (!xo)
++			return -EINVAL;
++
++		xo->flags |= XFRM_XMIT;
+ 		return 0;
++	}
+ 
+ 	err = esp6_output_tail(x, skb, &esp);
+ 	if (err)
+diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
+index edf11893dbe8..6d6917b68856 100644
+--- a/net/xfrm/xfrm_device.c
++++ b/net/xfrm/xfrm_device.c
+@@ -134,8 +134,6 @@ struct sk_buff *validate_xmit_xfrm(struct sk_buff *skb, netdev_features_t featur
+ 		return skb;
+ 	}
+ 
+-	xo->flags |= XFRM_XMIT;
+-
+ 	if (skb_is_gso(skb) && unlikely(x->xso.dev != dev)) {
+ 		struct sk_buff *segs;
+ 
 -- 
 2.30.2
 
