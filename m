@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B9A35BABF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0788D35BAC0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236863AbhDLHVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:21:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236677AbhDLHVh (ORCPT
+        id S236786AbhDLHW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:22:59 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:16444 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229771AbhDLHW6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:21:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6164DC061574;
-        Mon, 12 Apr 2021 00:21:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=2GY8B3E9p9XFXMEoh2odBgadQRN5Wiz6I5Q9Yv3e8yw=; b=u0zO3p4f/cWozEFmf3kUc73ucs
-        GpMLq26ixLj+AZXZEkcljuWx0RCSOfaPWdOZndbNOCa8d7XmYcbUQTdl4nBaTWLd5gY3pgM7OtBJS
-        RAQUOp9IfaZ1Amoha/+y0YFHRklIfWLWPyR5DvR8FzTeKW1RDpGwgyssOm5famY2cLNKs/lXleKlW
-        +wGgPHukkQ1y2rvvG3h24UB/WSiBNhyOiI4nw0e7jHVvvucyXVNDfGJf0AWx04l4CQPbkWuP0U+/L
-        ybfFH7PIGyH6BX5PQWDTBACi4IkgaT/C6DFvw3TH9p7/td00N7Kvq1NMnHwzT1TbWum9no+Zbs27v
-        +yQDSK9Q==;
-Received: from [2601:1c0:6280:3f0::e0e1]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVqsl-003vcw-R1; Mon, 12 Apr 2021 07:21:16 +0000
-Subject: Re: mmotm 2021-04-11-20-47 uploaded (fs/io_uring.c)
-To:     akpm@linux-foundation.org, broonie@kernel.org, mhocko@suse.cz,
-        sfr@canb.auug.org.au, linux-next@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, mm-commits@vger.kernel.org,
-        axboe <axboe@kernel.dk>
-References: <20210412034813.EK9k9%akpm@linux-foundation.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <34ed89e1-683e-7c12-ceb0-f5b71148a8a7@infradead.org>
-Date:   Mon, 12 Apr 2021 00:21:11 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        Mon, 12 Apr 2021 03:22:58 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FJgB02XXjzqTCZ;
+        Mon, 12 Apr 2021 15:20:24 +0800 (CST)
+Received: from [10.67.102.248] (10.67.102.248) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 12 Apr 2021 15:22:29 +0800
+Subject: Re: [PATCH v7] perf annotate: Fix sample events lost in stdio mode
+From:   Yang Jihong <yangjihong1@huawei.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Yao Jin <yao.jin@linux.intel.com>, <gustavoars@kernel.org>,
+        <mliska@suse.cz>, linux-kernel <linux-kernel@vger.kernel.org>,
+        <zhangjinhao2@huawei.com>, Namhyung Kim <namhyung@kernel.org>
+References: <20210319123527.173883-1-yangjihong1@huawei.com>
+ <33ba152e-b8ef-3057-744a-51cb8c478ff2@huawei.com>
+ <CAM9d7cjT-Q8RBprzG=hwdxrgVpzf3RwECuJ1UvbQYpQ47migbg@mail.gmail.com>
+ <YF3OXfzl7FEV50Ir@kernel.org>
+ <27703989-e510-c964-2af7-ef0a5611f8cf@huawei.com>
+ <CAM9d7chhFnYyUv++RzJRXomHq0vZN2LrbCAOBPg67MDeg6saOw@mail.gmail.com>
+ <555b7a2d-13c8-e840-e62b-cf0ad7d084a9@huawei.com>
+Message-ID: <12d269ad-80f9-3893-f3c4-d12fcdbfecda@huawei.com>
+Date:   Mon, 12 Apr 2021 15:22:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210412034813.EK9k9%akpm@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <555b7a2d-13c8-e840-e62b-cf0ad7d084a9@huawei.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.102.248]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/11/21 8:48 PM, akpm@linux-foundation.org wrote:
-> The mm-of-the-moment snapshot 2021-04-11-20-47 has been uploaded to
-> 
->    https://www.ozlabs.org/~akpm/mmotm/
-> 
-> mmotm-readme.txt says
-> 
-> README for mm-of-the-moment:
-> 
-> https://www.ozlabs.org/~akpm/mmotm/
-> 
-> This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> more than once a week.
-> 
-> You will need quilt to apply these patches to the latest Linus release (5.x
-> or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated in
-> https://ozlabs.org/~akpm/mmotm/series
-> 
-> The file broken-out.tar.gz contains two datestamp files: .DATE and
-> .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss,
-> followed by the base kernel version against which this patch series is to
-> be applied.
-> 
-> This tree is partially included in linux-next.  To see which patches are
-> included in linux-next, consult the `series' file.  Only the patches
-> within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included in
-> linux-next.
+Hello, Arnaldo,
 
-on i386:
-# CONFIG_BLOCK is not set
+On 2021/3/31 10:18, Yang Jihong wrote:
+> Hello, Namhyung  and Arnaldo,
+> 
+> On 2021/3/30 15:26, Namhyung Kim wrote:
+>> Hi Yang and Arnaldo,
+>>
+>> On Sat, Mar 27, 2021 at 11:16 AM Yang Jihong <yangjihong1@huawei.com> 
+>> wrote:
+>>> On 2021/3/26 20:06, Arnaldo Carvalho de Melo wrote:
+>>>> So it seems to be working, what am I missing? Is this strictly non
+>>>> group related?
+>>>>
+>>> Yes, it is non group related.
+>>> This problem occurs only when different events need to be recorded at
+>>> the same time, i.e.:
+>>> perf record -e branch-misses -e branch-instructions -a sleep 1
+>>>
+>>> The output results of perf script and perf annotate do not match.
+>>> Some events are not output in perf annotate.
+>>
+>> Yeah I think it's related to sort keys.  The code works with a single
+>> hist_entry for each event and symbol.  But the default sort key
+>> creates multiple entries for different threads and it causes the
+>> confusion.
+>>
+> Yes, After revome zfree from hists__find_annotations, the output of perf 
+> annotate is repeated, which is related to sort keys.
+> 
+> The original problem is that notes->src may correspond to multiple 
+> sample events. Therefore, we cannot simply zfree notes->src to avoid 
+> repeated output.
+> 
+> Arnaldo, is there any problem with this patch? :)
+> 
+> Thanks,
+> Yang
+>> Thanks,
+>> Namhyung
+>> .
+>>
+PING :)
+Is there any problem with this patch that needs to be modified?
 
-../fs/io_uring.c: In function ‘kiocb_done’:
-../fs/io_uring.c:2766:7: error: implicit declaration of function ‘io_resubmit_prep’; did you mean ‘io_put_req’? [-Werror=implicit-function-declaration]
-   if (io_resubmit_prep(req)) {
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Thanks,
+Yang
