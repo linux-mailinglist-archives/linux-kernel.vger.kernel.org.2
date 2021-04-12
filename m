@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD5C735D3EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:27:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141AD35D3F4
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344117AbhDLX0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:26:42 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:38568 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237531AbhDLX0k (ORCPT
+        id S1344136AbhDLX2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:28:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40133 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244732AbhDLX2S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:26:40 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 35783891AE;
-        Tue, 13 Apr 2021 11:26:20 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1618269980;
-        bh=3IMOVN8icpdbOTHo2f+OJ4zZ310NYB3vCcF69OODyTc=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=PCq4121uaIjpeX8wl/35Ka22Ov8P9l14tF0IimsBJ12bphEcw77/W7X4wonW8vwyZ
-         BBuNKyEs85TqZpYxMhinm+Gef6+pnpwbcoT2zgC9OHvEKQ22M7+L3QevXV0wGUvbVY
-         wgxPciHjby3Vt5iZ88E/lqIRwsOi8jsrvPuVKwhsRLpTOlNwSx1IqVKIBBiWJ8sKgK
-         a2cQHvjq0+fIt92ZKL/c+cWzOY+oT5hpgWpidNa2kIJYiaFtasodqOaIj0mqi1XUrR
-         hHQz+GLHAwTd00jVRsJswDjpbte5ttZHF3b3iK088ExcGHUS8Svh6I0JIGJDRgx5/i
-         FRQWmVJZQvtDA==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B6074d71c0001>; Tue, 13 Apr 2021 11:26:20 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 13 Apr 2021 11:26:19 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.012; Tue, 13 Apr 2021 11:26:19 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 5/6] i2c: mpc: use device managed APIs
-Thread-Topic: [PATCH v2 5/6] i2c: mpc: use device managed APIs
-Thread-Index: AQHXJD4hPkOAx7p/C0SxShLnf1dXjKqwy3IAgAAIIgCAAAE/AA==
-Date:   Mon, 12 Apr 2021 23:26:18 +0000
-Message-ID: <c85dcf3e-f63e-8e9f-d977-18a4b6e21328@alliedtelesis.co.nz>
-References: <20210329015206.17437-1-chris.packham@alliedtelesis.co.nz>
- <20210329015206.17437-6-chris.packham@alliedtelesis.co.nz>
- <CAHp75VfRXeeP0uQFDBUS6=n2TvG+_5=pe8rWp6BpbDNMz6=OSg@mail.gmail.com>
- <c9af3c98-7680-b7d1-a23b-f09c90e19b91@alliedtelesis.co.nz>
-In-Reply-To: <c9af3c98-7680-b7d1-a23b-f09c90e19b91@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
+        Mon, 12 Apr 2021 19:28:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618270079;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=B3MciDovAET7AdKaJb34X6uAEc0eUn8r5vV5LysAEI0=;
+        b=Fz1YrF9QH8bw1O9dsL3Biwn7wRVd9ycfDrSFrSVjxNPLrd6MLrUDcl6rNulzV5VfDRTICw
+        9pDi9qxEYYGmacx6cE+Nrr11b9wPBChP3qzf7eFsPVxT5bj+v9BmrhiYjngAbHEX0z3AAu
+        PNbulcSPdfoKYBoI6iO6tMgIPKYeUYY=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-350-bmmwlZyEMv2gGs497nqK8w-1; Mon, 12 Apr 2021 19:27:56 -0400
+X-MC-Unique: bmmwlZyEMv2gGs497nqK8w-1
+Received: by mail-qk1-f199.google.com with SMTP id 79so3491958qkm.20
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:27:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B3MciDovAET7AdKaJb34X6uAEc0eUn8r5vV5LysAEI0=;
+        b=a6ux8mIiqE9d6DsrB8CPYMij/FmBknmbo5VFEcykp6JeLM806W4HC7olTFYEo9oN42
+         aGtDnHRm7njyUr2mSQOXgqdCMv0GlVg6QkKn23B+tUXvvosDLlol1Wx3zQ6U6s3OMi4x
+         TsKePn95BfjgZDIOsw5wmUvE1S8aBKbxbLJ4mQiMZaf6g6YIUPwcvWBKhEHWVJ5Fs3N4
+         5bPyCs3wwshUkuvt4TuAZ7KTkYrm48/I/Tz6E7ps++PoNE4Ycl8QE4ezvJb2zviwBcw/
+         pLglnOpkAtJJoPJmDju5gzEmXotJCrwNXalN4A3PLu4pu+q5utK80hpFBOqc4Cduc1UG
+         pxdQ==
+X-Gm-Message-State: AOAM531ap86kK0KHF3fTO+tj5ynbtMzulPULxZmnUtabAvKIXCqw2wS7
+        dGMhNrH/CHl6o3CIb1g8O1UJZQeZ27WwrPFHJC+PKJC5B4qO0QduhOGBJ2GSchRiY2t4rJK9sp2
+        TCVDw5nPXNs4WN3bs0FR2Vvup
+X-Received: by 2002:ac8:4899:: with SMTP id i25mr15885739qtq.59.1618270075672;
+        Mon, 12 Apr 2021 16:27:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9oKrYFJovLvCdWOPw1lzMa5WybRJob4vZYvb0D1NdJvR0XacKd6O0BbBXdl435m22pa3oug==
+X-Received: by 2002:ac8:4899:: with SMTP id i25mr15885710qtq.59.1618270075445;
+        Mon, 12 Apr 2021 16:27:55 -0700 (PDT)
+Received: from xz-x1.redhat.com (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
+        by smtp.gmail.com with ESMTPSA id y29sm8958925qtm.13.2021.04.12.16.27.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 16:27:54 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Andrea Arcangeli <aarcange@redhat.com>, peterx@redhat.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Axel Rasmussen <axelrasmussen@google.com>
+Subject: [PATCH v2 0/5] userfaultfd/selftests: A few cleanups
+Date:   Mon, 12 Apr 2021 19:27:48 -0400
+Message-Id: <20210412232753.1012412-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
 Content-Type: text/plain; charset="utf-8"
-Content-ID: <AD9A65E038D64948B760A68AA0DF1D6D@atlnz.lc>
-Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=NaGYKFL4 c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=IkcTkHD0fZMA:10 a=3YhXtTcJ-WEA:10 a=qlBYXRN-yFhSvp3jyXMA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQpPbiAxMy8wNC8yMSAxMToyMSBhbSwgQ2hyaXMgUGFja2hhbSB3cm90ZToNCj4NCj4gT24gMTMv
-MDQvMjEgMTA6NTIgYW0sIEFuZHkgU2hldmNoZW5rbyB3cm90ZToNCj4+IE9uIE1vbiwgTWFyIDI5
-LCAyMDIxIGF0IDQ6NTQgQU0gQ2hyaXMgUGFja2hhbQ0KPj4gPGNocmlzLnBhY2toYW1AYWxsaWVk
-dGVsZXNpcy5jby5uej4gd3JvdGU6DQo+Pj4gVXNlIGRldmljZSBtYW5hZ2VkIGZ1bmN0aW9ucyBh
-biBjbGVhbiB1cCBlcnJvciBoYW5kbGluZy4NCj4+IEZvciB0aGUgZ29kIHNha2UgaG93IGhhdmUg
-eW91IHRlc3RlZCB0aGlzPw0KPj4gVGhlIHBhdGNoIGlzIGJyb2tlbi4NCj4gSSd2ZSBjbGVhcmx5
-IG1pc3NlZCB0aGUgcmVtb3ZlIHBhdGggaW4gbXkgdGVzdGluZy4gSSB3YXMgZm9jdXNlZCBvbiAN
-Cj4gdGhlIGludGVycnVwdCBiZXZoYXZpb3VyIG5vdCB0aGUgcHJvYmUvcmVtb3ZlIHdoaWNoIEkn
-bGwgbWFrZSBzdXJlIHRvIA0KPiBjaGVjayBmb3IgdGhlIG5leHQgcm91bmQuDQoNClNob3VsZCBJ
-IHNlbmQgYSByZXZlcnQgb3IgbGVhdmUgaXQgZm9yIFdvbGZyYW0/DQo=
+v2:=0D
+- rebase to v5.12-rc7-mmots-2021-04-11-20-49=0D
+- collect r-bs from Axel=0D
+=0D
+I wanted to cleanup userfaultfd.c fault handling for a long time. If it's n=
+ot=0D
+cleaned, when the new code grows the file it'll also grow the size that nee=
+ds=0D
+to be cleaned...  This is my attempt to cleanup the userfaultfd selftest on=
+=0D
+fault handling, to use an err() macro instead of either fprintf() or perror=
+()=0D
+then another exit() call.=0D
+=0D
+The huge cleanup is done in the last patch.  The first 4 patches are some o=
+ther=0D
+standalone cleanups for the same file, so I put them together.=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (5):=0D
+  userfaultfd/selftests: Use user mode only=0D
+  userfaultfd/selftests: Remove the time() check on delayed uffd=0D
+  userfaultfd/selftests: Dropping VERIFY check in locking_thread=0D
+  userfaultfd/selftests: Only dump counts if mode enabled=0D
+  userfaultfd/selftests: Unify error handling=0D
+=0D
+ tools/testing/selftests/vm/userfaultfd.c | 649 ++++++++---------------=0D
+ 1 file changed, 208 insertions(+), 441 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
+
