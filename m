@@ -2,99 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3181335C340
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9153335C343
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244361AbhDLKAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:00:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244819AbhDLJ4n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:56:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 022E661367;
-        Mon, 12 Apr 2021 09:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618221379;
-        bh=quKD0m9fXHZbBoOyEC6sAtv2Nx7CdwbfN9wIuomHiHg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kdnob56X0uGEG/Fi/aOv0sPtqc9rYi652HJz8wwyM2+9m2RR9BjbnigBEjZI6iIA5
-         k5AYxmmvRv7v4fKqFC6bQ3pSl1Wi1v8fZTIEWIJ4COwvGLBDG5PuLyTqWKPVQDqso4
-         1E2jJwoeCHUVTOkHaV5wl7yHQqXz+k8vbloBeiAjHfCnEtN4Y8612rCruXgOxnk9A7
-         5e+413xfjqXPfsAzXSpbJAjwkLC6AKEbeLRJ8wpsXRbW5Cs7y2/ObXBsGW4lksmQ1M
-         CpWpJl78eAfu+CBuzQbdd2FfwezDGbxyjp/rrRrC5Vls0Pf5q1PadDDmKtWc7LmmNa
-         OwELyC4JEGcFw==
-Received: from johan by xi with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1lVtIj-0000L6-HU; Mon, 12 Apr 2021 11:56:13 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Oliver Neukum <oneukum@suse.com>
-Subject: [PATCH 12/12] USB: cdc-acm: add more Maxlinear/Exar models to ignore list
-Date:   Mon, 12 Apr 2021 11:55:57 +0200
-Message-Id: <20210412095557.1213-13-johan@kernel.org>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210412095557.1213-1-johan@kernel.org>
-References: <20210412095557.1213-1-johan@kernel.org>
+        id S238168AbhDLKDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:03:22 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:37773 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239992AbhDLJ5A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:57:00 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 73077E0006;
+        Mon, 12 Apr 2021 09:56:35 +0000 (UTC)
+Date:   Mon, 12 Apr 2021 11:57:14 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Eugen Hristev <eugen.hristev@microchip.com>
+Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 28/30] dt-bindings: media: atmel: add microchip-xisc
+ binding
+Message-ID: <20210412095714.uivebcatgazzq5ae@uno.localdomain>
+References: <20210405155105.162529-1-eugen.hristev@microchip.com>
+ <20210405155105.162529-29-eugen.hristev@microchip.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210405155105.162529-29-eugen.hristev@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Hi Eugene,
 
-Now that the xr_serial got support for other models, add their USB IDs
-as well.
+On Mon, Apr 05, 2021 at 06:51:03PM +0300, Eugen Hristev wrote:
+> Add bindings for the microchip xisc, a driver based on atmel-isc.
+> It shares common code with atmel-isc, but the xisc is the next generation
+> ISC which is present on sama7g5 product.
+> It has an enhanced pipeline, additional modules, formats, and it supports
+> not only parallel sensors, but also serial sensors, by connecting to a demux
+> endpoint present on sama7g5.
+> One of the key points for creating a new binding is the clocking scheme, as
+> atmel-isc requires 3 mandatory clocks, the microchip-xisc requires a single
+> input clock.
+>
+> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
+> ---
+>
+> Hello Rob, all,
+>
+> I did not convert this yet to yaml because I would like first your feedback
+> if the binding is good.
+> If it's fine I will convert both this new binding and the old atmel-isc
+> to yaml.
+>
+> Thanks for your feedback,
+> Eugen
+>
+>  .../bindings/media/microchip-xisc.txt         | 64 +++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/microchip-xisc.txt
+>
+> diff --git a/Documentation/devicetree/bindings/media/microchip-xisc.txt b/Documentation/devicetree/bindings/media/microchip-xisc.txt
+> new file mode 100644
+> index 000000000000..080a357ed84d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/microchip-xisc.txt
+> @@ -0,0 +1,64 @@
+> +Microchip eXtended Image Sensor Controller (XISC)
+> +----------------------------------------------
+> +
+> +Required properties for XISC:
+> +- compatible
+> +	Must be "microchip,sama7g5-xisc".
+> +- reg
+> +	Physical base address and length of the registers set for the device.
+> +- interrupts
+> +	Should contain IRQ line for the XISC.
+> +- clocks
+> +	List of clock specifiers, corresponding to entries in
+> +	the clock-names property;
+> +	Please refer to clock-bindings.txt.
+> +- clock-names
+> +	Required elements: "hclock".
+> +	This is the clock that clocks the sensor controller, and is usually
+> +	fed from the clock tree. It is used for the internal controller logic.
+> +- #clock-cells
+> +	Should be 0.
+> +- clock-output-names
+> +	Should be "isc-mck".
+> +- pinctrl-names, pinctrl-0
+> +	Please refer to pinctrl-bindings.txt.
+> +
+> +Optional properties for XISC:
+> +- microchip,mipi-mode;
+> +	As the XISC is usually connected to a demux/bridge, the XISC receives
+> +	the same type of input, however, it should be aware of the type of
+> +	signals received. The mipi-mode enables different internal handling
+> +	of the data and clock lines.
 
-The Maxlinear/Exar USB UARTs can be used in either ACM mode using the
-cdc-acm driver or in "custom driver" mode in which further features such
-as hardware and software flow control, GPIO control and in-band
-line-status reporting are available.
+What does 'mipi-mode' do to a component that has an parallel receiver ?
 
-In ACM mode the device always enables RTS/CTS flow control, something
-which could prevent transmission in case the CTS input isn't wired up
-correctly.
+> +
+> +XISC supports a single port node with internal parallel bus.
+> +It should contain one 'port' child node with child 'endpoint' node.
+> +Please refer to the bindings defined in
+> +Documentation/devicetree/bindings/media/video-interfaces.txt.
+> +
+> +This endpoint has to be connected to a bridge that acts as a demux from either
+> +a serial interface or acts as a simple direct bridge to a parallel sensor.
+> +
+> +Example:
+> +xisc: xisc@e1408000 {
+> +	compatible = "microchip,sama7g5-isc";
+> +	reg = <0xe1408000 0x2000>;
+> +	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	clocks = <&pmc PMC_TYPE_PERIPHERAL 56>;
+> +	clock-names = "hclock";
+> +	#clock-cells = <0>;
+> +	clock-output-names = "isc-mck";
+> +	microchip,mipi-mode;
+> +
+> +	port@1 {
+> +		reg = <1>;
+> +		xisc_in: endpoint {
+> +		bus-width = <12>;
+> +		hsync-active = <1>;
+> +		vsync-active = <1>;
+> +		remote-endpoint = <&csi2dc_out>;
+nit: indentation
 
-Ensure that cdc_acm will not bind to these devices if the custom
-USB-serial driver is enabled.
+Have you consided using bus-type property ? As that's a new binding I
+would consider making it mandatory, and to modify the DT parsinga
+routine accordingly to remove auto-guessing, which according to my
+understanding is almost 'deprecated' ?
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Link: https://lore.kernel.org/r/5155887a764cbc11f8da0217fe08a24a77d120b4.1616571453.git.mchehab+huawei@kernel.org
-[ johan: rewrite commit message, clean up entries ]
-Cc: Oliver Neukum <oneukum@suse.com>
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/usb/class/cdc-acm.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
-index 337ffced9c40..434539b13a70 100644
---- a/drivers/usb/class/cdc-acm.c
-+++ b/drivers/usb/class/cdc-acm.c
-@@ -1903,9 +1903,17 @@ static const struct usb_device_id acm_ids[] = {
- #endif
- 
- #if IS_ENABLED(CONFIG_USB_SERIAL_XR)
--	{ USB_DEVICE(0x04e2, 0x1410),   /* Ignore XR21V141X USB to Serial converter */
--	.driver_info = IGNORE_DEVICE,
--	},
-+	{ USB_DEVICE(0x04e2, 0x1400), .driver_info = IGNORE_DEVICE },
-+	{ USB_DEVICE(0x04e2, 0x1401), .driver_info = IGNORE_DEVICE },
-+	{ USB_DEVICE(0x04e2, 0x1402), .driver_info = IGNORE_DEVICE },
-+	{ USB_DEVICE(0x04e2, 0x1403), .driver_info = IGNORE_DEVICE },
-+	{ USB_DEVICE(0x04e2, 0x1410), .driver_info = IGNORE_DEVICE },
-+	{ USB_DEVICE(0x04e2, 0x1411), .driver_info = IGNORE_DEVICE },
-+	{ USB_DEVICE(0x04e2, 0x1412), .driver_info = IGNORE_DEVICE },
-+	{ USB_DEVICE(0x04e2, 0x1414), .driver_info = IGNORE_DEVICE },
-+	{ USB_DEVICE(0x04e2, 0x1420), .driver_info = IGNORE_DEVICE },
-+	{ USB_DEVICE(0x04e2, 0x1422), .driver_info = IGNORE_DEVICE },
-+	{ USB_DEVICE(0x04e2, 0x1424), .driver_info = IGNORE_DEVICE },
- #endif
- 
- 	/*Samsung phone in firmware update mode */
--- 
-2.26.3
-
+> +		};
+> +	};
+> +};
+> +
+> --
+> 2.25.1
+>
