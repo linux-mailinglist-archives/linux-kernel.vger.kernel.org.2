@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47A535C13B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7FC35C00F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241227AbhDLJZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:25:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54842 "EHLO mail.kernel.org"
+        id S240010AbhDLJJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:09:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238685AbhDLJCD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:02:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6AB5361364;
-        Mon, 12 Apr 2021 09:00:35 +0000 (UTC)
+        id S238118AbhDLIxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:53:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B732C61263;
+        Mon, 12 Apr 2021 08:51:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218036;
-        bh=6WhtDRnOx+luKjdBZddiilI2i56QvlJBe9nqm2P11C8=;
+        s=korg; t=1618217495;
+        bh=yjcgSVbPV9yPz4BnHuFpjepjGUIL73RsTudylucoQKk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TTmnjb9YQx3mZsBA7hKJAR1/z/6gFa/XtSxpObX2io+j8Fkcsx8ybH7yjQcERly61
-         Wi5a1K22ivBhnTGcDESSUl20EVFAlmnbIpQpE8GAf8SuFmdNiwEiA4LWT77XTw79D4
-         hwbI6fbb1818XKOt6/Ly5OTH7QeSjYC2S3pjOPos=
+        b=ck3mHiQeaQ3JgPzfEUzmrfWJ5dQqzqlwDJEt7f2a16j53IO9eCGCbHpkM4KVhNuIY
+         fr5ZWSoliUyFJqFBQNMz5VuvFk92s/UXKoZCo3aYP3iv7vtOtQI3IMkyJ4pAAWo5iN
+         VGIRred8GonKVUIlg55j1MBtUuZjmqkgq8kPJZj8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
+        stable@vger.kernel.org, Dave Ertman <david.m.ertman@intel.com>,
         Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.11 046/210] ice: Use port number instead of PF ID for WoL
+Subject: [PATCH 5.10 037/188] ice: remove DCBNL_DEVRESET bit from PF state
 Date:   Mon, 12 Apr 2021 10:39:11 +0200
-Message-Id: <20210412084017.542886926@linuxfoundation.org>
+Message-Id: <20210412084014.879865361@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
-References: <20210412084016.009884719@linuxfoundation.org>
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+References: <20210412084013.643370347@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,88 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+From: Dave Ertman <david.m.ertman@intel.com>
 
-commit 3176551979b92b02756979c0f1e2d03d1fc82b1e upstream.
+commit 741b7b743bbcb5a3848e4e55982064214f900d2f upstream.
 
-As per the spec, the WoL control word read from the NVM should be
-interpreted as port numbers, and not PF numbers. So when checking
-if WoL supported, use the port number instead of the PF ID.
+The original purpose of the ICE_DCBNL_DEVRESET was to protect
+the driver during DCBNL device resets.  But, the flow for
+DCBNL device resets now consists of only calls up the stack
+such as dev_close() and dev_open() that will result in NDO calls
+to the driver.  These will be handled with state changes from the
+stack.  Also, there is a problem of the dev_close and dev_open
+being blocked by checks for reset in progress also using the
+ICE_DCBNL_DEVRESET bit.
 
-Also, ice_is_wol_supported doesn't really need a pointer to the pf
-struct, but just needs a pointer to the hw instance.
+Since the ICE_DCBNL_DEVRESET bit is not necessary for protecting
+the driver from DCBNL device resets and it is actually blocking
+changes coming from the DCBNL interface, remove the bit from the
+PF state and don't block driver function based on DCBNL reset in
+progress.
 
-Fixes: 769c500dcc1e ("ice: Add advanced power mgmt for WoL")
-Signed-off-by: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+Fixes: b94b013eb626 ("ice: Implement DCBNL support")
+Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
 Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ice/ice.h         |    2 +-
- drivers/net/ethernet/intel/ice/ice_ethtool.c |    4 ++--
- drivers/net/ethernet/intel/ice/ice_main.c    |    9 ++++-----
- 3 files changed, 7 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/intel/ice/ice.h        |    1 -
+ drivers/net/ethernet/intel/ice/ice_dcb_nl.c |    2 --
+ drivers/net/ethernet/intel/ice/ice_lib.c    |    1 -
+ 3 files changed, 4 deletions(-)
 
 --- a/drivers/net/ethernet/intel/ice/ice.h
 +++ b/drivers/net/ethernet/intel/ice/ice.h
-@@ -585,7 +585,7 @@ int ice_schedule_reset(struct ice_pf *pf
- void ice_print_link_msg(struct ice_vsi *vsi, bool isup);
- const char *ice_stat_str(enum ice_status stat_err);
- const char *ice_aq_str(enum ice_aq_err aq_err);
--bool ice_is_wol_supported(struct ice_pf *pf);
-+bool ice_is_wol_supported(struct ice_hw *hw);
- int
- ice_fdir_write_fltr(struct ice_pf *pf, struct ice_fdir_fltr *input, bool add,
- 		    bool is_tun);
---- a/drivers/net/ethernet/intel/ice/ice_ethtool.c
-+++ b/drivers/net/ethernet/intel/ice/ice_ethtool.c
-@@ -3472,7 +3472,7 @@ static void ice_get_wol(struct net_devic
- 		netdev_warn(netdev, "Wake on LAN is not supported on this interface!\n");
+@@ -194,7 +194,6 @@ enum ice_state {
+ 	__ICE_NEEDS_RESTART,
+ 	__ICE_PREPARED_FOR_RESET,	/* set by driver when prepared */
+ 	__ICE_RESET_OICR_RECV,		/* set by driver after rcv reset OICR */
+-	__ICE_DCBNL_DEVRESET,		/* set by dcbnl devreset */
+ 	__ICE_PFR_REQ,			/* set by driver and peers */
+ 	__ICE_CORER_REQ,		/* set by driver and peers */
+ 	__ICE_GLOBR_REQ,		/* set by driver and peers */
+--- a/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
++++ b/drivers/net/ethernet/intel/ice/ice_dcb_nl.c
+@@ -18,12 +18,10 @@ static void ice_dcbnl_devreset(struct ne
+ 	while (ice_is_reset_in_progress(pf->state))
+ 		usleep_range(1000, 2000);
  
- 	/* Get WoL settings based on the HW capability */
--	if (ice_is_wol_supported(pf)) {
-+	if (ice_is_wol_supported(&pf->hw)) {
- 		wol->supported = WAKE_MAGIC;
- 		wol->wolopts = pf->wol_ena ? WAKE_MAGIC : 0;
- 	} else {
-@@ -3492,7 +3492,7 @@ static int ice_set_wol(struct net_device
- 	struct ice_vsi *vsi = np->vsi;
- 	struct ice_pf *pf = vsi->back;
- 
--	if (vsi->type != ICE_VSI_PF || !ice_is_wol_supported(pf))
-+	if (vsi->type != ICE_VSI_PF || !ice_is_wol_supported(&pf->hw))
- 		return -EOPNOTSUPP;
- 
- 	/* only magic packet is supported */
---- a/drivers/net/ethernet/intel/ice/ice_main.c
-+++ b/drivers/net/ethernet/intel/ice/ice_main.c
-@@ -3512,15 +3512,14 @@ static int ice_init_interrupt_scheme(str
+-	set_bit(__ICE_DCBNL_DEVRESET, pf->state);
+ 	dev_close(netdev);
+ 	netdev_state_change(netdev);
+ 	dev_open(netdev, NULL);
+ 	netdev_state_change(netdev);
+-	clear_bit(__ICE_DCBNL_DEVRESET, pf->state);
  }
  
  /**
-- * ice_is_wol_supported - get NVM state of WoL
-- * @pf: board private structure
-+ * ice_is_wol_supported - check if WoL is supported
-+ * @hw: pointer to hardware info
-  *
-  * Check if WoL is supported based on the HW configuration.
-  * Returns true if NVM supports and enables WoL for this port, false otherwise
-  */
--bool ice_is_wol_supported(struct ice_pf *pf)
-+bool ice_is_wol_supported(struct ice_hw *hw)
+--- a/drivers/net/ethernet/intel/ice/ice_lib.c
++++ b/drivers/net/ethernet/intel/ice/ice_lib.c
+@@ -2944,7 +2944,6 @@ err_vsi:
+ bool ice_is_reset_in_progress(unsigned long *state)
  {
--	struct ice_hw *hw = &pf->hw;
- 	u16 wol_ctrl;
- 
- 	/* A bit set to 1 in the NVM Software Reserved Word 2 (WoL control
-@@ -3529,7 +3528,7 @@ bool ice_is_wol_supported(struct ice_pf
- 	if (ice_read_sr_word(hw, ICE_SR_NVM_WOL_CFG, &wol_ctrl))
- 		return false;
- 
--	return !(BIT(hw->pf_id) & wol_ctrl);
-+	return !(BIT(hw->port_info->lport) & wol_ctrl);
- }
- 
- /**
+ 	return test_bit(__ICE_RESET_OICR_RECV, state) ||
+-	       test_bit(__ICE_DCBNL_DEVRESET, state) ||
+ 	       test_bit(__ICE_PFR_REQ, state) ||
+ 	       test_bit(__ICE_CORER_REQ, state) ||
+ 	       test_bit(__ICE_GLOBR_REQ, state);
 
 
