@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134D235C023
+	by mail.lfdr.de (Postfix) with ESMTP id A96FD35C025
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240633AbhDLJKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:10:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44464 "EHLO mail.kernel.org"
+        id S240684AbhDLJKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:10:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239076AbhDLIze (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:55:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A84D160241;
-        Mon, 12 Apr 2021 08:55:15 +0000 (UTC)
+        id S239085AbhDLIzm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:55:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 784C561243;
+        Mon, 12 Apr 2021 08:55:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217716;
-        bh=NVn1Bh8Jj5naMznwxoRD3JVNXnKAuTiarNUyiFAbH9k=;
+        s=korg; t=1618217718;
+        bh=b6jP2esBCvWfvUUmVvrzymXsei9WXhVfRMlVzkY32mw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AXHLFXGPj606m/LKYv275ELVYmw7MAtkLhEv7tCpY0/0u7a96qvIv8iklIyTLvnCt
-         zA2HfK+9Ts1k96eo6GOZc4BtqKLrG7+BgN7OK3ezG2AiNVeeAcF2IKWiq+HdcpMbXM
-         PV0Qb0d6LBEpf+nuXhRVcCcNoMcweWPRf50Qd0LQ=
+        b=1fgaXpEiVUNJsApRoRS82ORWBSrHiw2blAUhN2y2ujRL7WUDYTz2u3mIFAkCAnsxU
+         Mlaiizr/Bz1EVyra7X3mappRweQs7KOmaW19LhJb8js69+7uwkGETwMFMt0ZTP4h7p
+         uxJvOoXVk2VSxKXviRRW06bXdOKilOpytSiURBRE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        stable@vger.kernel.org, Claudiu Manoil <claudiu.manoil@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 119/188] ethernet: myri10ge: Fix a use after free in myri10ge_sw_tso
-Date:   Mon, 12 Apr 2021 10:40:33 +0200
-Message-Id: <20210412084017.609447378@linuxfoundation.org>
+Subject: [PATCH 5.10 120/188] gianfar: Handle error code at MAC address change
+Date:   Mon, 12 Apr 2021 10:40:34 +0200
+Message-Id: <20210412084017.640892289@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -40,38 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Claudiu Manoil <claudiu.manoil@nxp.com>
 
-[ Upstream commit 63415767a2446136372e777cde5bb351f21ec21d ]
+[ Upstream commit bff5b62585123823842833ab20b1c0a7fa437f8c ]
 
-In myri10ge_sw_tso, the skb_list_walk_safe macro will set
-(curr) = (segs) and (next) = (curr)->next. If status!=0 is true,
-the memory pointed by curr and segs will be free by dev_kfree_skb_any(curr).
-But later, the segs is used by segs = segs->next and causes a uaf.
+Handle return error code of eth_mac_addr();
 
-As (next) = (curr)->next, my patch replaces seg->next to next.
-
-Fixes: 536577f36ff7a ("net: myri10ge: use skb_list_walk_safe helper for gso segments")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Fixes: 3d23a05c75c7 ("gianfar: Enable changing mac addr when if up")
+Signed-off-by: Claudiu Manoil <claudiu.manoil@nxp.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/myricom/myri10ge/myri10ge.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/freescale/gianfar.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-index 1634ca6d4a8f..c84c8bf2bc20 100644
---- a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-+++ b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-@@ -2897,7 +2897,7 @@ static netdev_tx_t myri10ge_sw_tso(struct sk_buff *skb,
- 			dev_kfree_skb_any(curr);
- 			if (segs != NULL) {
- 				curr = segs;
--				segs = segs->next;
-+				segs = next;
- 				curr->next = NULL;
- 				dev_kfree_skb_any(segs);
- 			}
+diff --git a/drivers/net/ethernet/freescale/gianfar.c b/drivers/net/ethernet/freescale/gianfar.c
+index 4fab2ee5bbf5..e4d9c4c640e5 100644
+--- a/drivers/net/ethernet/freescale/gianfar.c
++++ b/drivers/net/ethernet/freescale/gianfar.c
+@@ -364,7 +364,11 @@ static void gfar_set_mac_for_addr(struct net_device *dev, int num,
+ 
+ static int gfar_set_mac_addr(struct net_device *dev, void *p)
+ {
+-	eth_mac_addr(dev, p);
++	int ret;
++
++	ret = eth_mac_addr(dev, p);
++	if (ret)
++		return ret;
+ 
+ 	gfar_set_mac_for_addr(dev, 0, dev->dev_addr);
+ 
 -- 
 2.30.2
 
