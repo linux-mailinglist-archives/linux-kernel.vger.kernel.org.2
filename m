@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F6635BC6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94D4B35BD4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237407AbhDLImy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:42:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34124 "EHLO mail.kernel.org"
+        id S237920AbhDLIu7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:50:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237374AbhDLIms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:42:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20FFB611F0;
-        Mon, 12 Apr 2021 08:42:29 +0000 (UTC)
+        id S238022AbhDLIrM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:47:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECB1A60241;
+        Mon, 12 Apr 2021 08:46:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618216950;
-        bh=D/HvxFYjZJ/ANAhaqPehwJ3N5Iqsp0HOSQFW644kqmM=;
+        s=korg; t=1618217214;
+        bh=Z5yp3c1JKRaDWcp/FAKciNoNk4fIeyswpLIHlDudOWQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dymr480TSAVK7piCtopngrUwWnJG4flPjDji0EC06dbLnpYTN9SKKinvzbMKkXkB8
-         4q3IojeU0Dul2EMEkz71xkn0VBOfb+W+hZw2wtvsPYLmGL+yPG239QWb/1k7frrIv6
-         riCMZ6Y0iF1hxDbreVpWcA5qMWdGBCCXmBMbP68M=
+        b=UsI7D3YQXpM9Rf1PJPTZ3WoLoCKhbnPS6CA7M7+bZRxip0aTlJ4HDWWBwU9vkp+8l
+         hG9xR4VojJ6kPMXcWoPpYfHRAT05JjQX22KKCatTertlaKApjYRLNxAz4kV/hbAbDb
+         kFfW/mZ+tYrX2zL4aqX8ZkXd3JtIo+YKDWePdO/U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        Rui Salvaterra <rsalvaterra@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        linux-arm-kernel@lists.infradead.org, Andrew Lunn <andrew@lunn.ch>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH 4.19 15/66] ARM: dts: turris-omnia: configure LED[2]/INTn pin as interrupt pin
-Date:   Mon, 12 Apr 2021 10:40:21 +0200
-Message-Id: <20210412083958.622107640@linuxfoundation.org>
+        stable@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 044/111] net: dsa: lantiq_gswip: Configure all remaining GSWIP_MII_CFG bits
+Date:   Mon, 12 Apr 2021 10:40:22 +0200
+Message-Id: <20210412084005.718187166@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-References: <20210412083958.129944265@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,53 +42,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Behún <kabel@kernel.org>
+From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
-commit a26c56ae67fa9fbb45a8a232dcd7ebaa7af16086 upstream.
+commit 4b5923249b8fa427943b50b8f35265176472be38 upstream.
 
-Use the `marvell,reg-init` DT property to configure the LED[2]/INTn pin
-of the Marvell 88E1514 ethernet PHY on Turris Omnia into interrupt mode.
+There are a few more bits in the GSWIP_MII_CFG register for which we
+did rely on the boot-loader (or the hardware defaults) to set them up
+properly.
 
-Without this the pin is by default in LED[2] mode, and the Marvell PHY
-driver configures LED[2] into "On - Link, Blink - Activity" mode.
+For some external RMII PHYs we need to select the GSWIP_MII_CFG_RMII_CLK
+bit and also we should un-set it for non-RMII PHYs. The
+GSWIP_MII_CFG_RMII_CLK bit is ignored for other PHY connection modes.
 
-This fixes the issue where the pca9538 GPIO/interrupt controller (which
-can't mask interrupts in HW) received too many interrupts and after a
-time started ignoring the interrupt with error message:
-  IRQ 71: nobody cared
+The GSWIP IP also supports in-band auto-negotiation for RGMII PHYs when
+the GSWIP_MII_CFG_RGMII_IBS bit is set. Clear this bit always as there's
+no known hardware which uses this (so it is not tested yet).
 
-There is a work in progress to have the Marvell PHY driver support
-parsing PHY LED nodes from OF and registering the LEDs as Linux LED
-class devices. Once this is done the PHY driver can also automatically
-set the pin into INTn mode if it does not find LED[2] in OF.
+Clear the xMII isolation bit when set at initialization time if it was
+previously set by the bootloader. Not doing so could lead to no traffic
+(neither RX nor TX) on a port with this bit set.
 
-Until then, though, we fix this via `marvell,reg-init` DT property.
+While here, also add the GSWIP_MII_CFG_RESET bit. We don't need to
+manage it because this bit is self-clearning when set. We still add it
+here to get a better overview of the GSWIP_MII_CFG register.
 
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Reported-by: Rui Salvaterra <rsalvaterra@gmail.com>
-Fixes: 26ca8b52d6e1 ("ARM: dts: add support for Turris Omnia")
-Cc: Uwe Kleine-König <uwe@kleine-koenig.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: Andrew Lunn <andrew@lunn.ch>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: <stable@vger.kernel.org>
-Tested-by: Rui Salvaterra <rsalvaterra@gmail.com>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
+Cc: stable@vger.kernel.org
+Suggested-by: Hauke Mehrtens <hauke@hauke-m.de>
+Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+[ Updated after the upstream commit 3e9005be87777 required some changes
+  for Linux 5.4 ]
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/armada-385-turris-omnia.dts |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/dsa/lantiq_gswip.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
---- a/arch/arm/boot/dts/armada-385-turris-omnia.dts
-+++ b/arch/arm/boot/dts/armada-385-turris-omnia.dts
-@@ -236,6 +236,7 @@
- 		status = "okay";
- 		compatible = "ethernet-phy-id0141.0DD1", "ethernet-phy-ieee802.3-c22";
- 		reg = <1>;
-+		marvell,reg-init = <3 18 0 0x4985>;
+diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
+index e0f5d406e6c0..dc75e798dbff 100644
+--- a/drivers/net/dsa/lantiq_gswip.c
++++ b/drivers/net/dsa/lantiq_gswip.c
+@@ -93,8 +93,12 @@
  
- 		/* irq is connected to &pcawan pin 7 */
- 	};
+ /* GSWIP MII Registers */
+ #define GSWIP_MII_CFGp(p)		(0x2 * (p))
++#define  GSWIP_MII_CFG_RESET		BIT(15)
+ #define  GSWIP_MII_CFG_EN		BIT(14)
++#define  GSWIP_MII_CFG_ISOLATE		BIT(13)
+ #define  GSWIP_MII_CFG_LDCLKDIS		BIT(12)
++#define  GSWIP_MII_CFG_RGMII_IBS	BIT(8)
++#define  GSWIP_MII_CFG_RMII_CLK		BIT(7)
+ #define  GSWIP_MII_CFG_MODE_MIIP	0x0
+ #define  GSWIP_MII_CFG_MODE_MIIM	0x1
+ #define  GSWIP_MII_CFG_MODE_RMIIP	0x2
+@@ -817,9 +821,11 @@ static int gswip_setup(struct dsa_switch *ds)
+ 	/* Configure the MDIO Clock 2.5 MHz */
+ 	gswip_mdio_mask(priv, 0xff, 0x09, GSWIP_MDIO_MDC_CFG1);
+ 
+-	/* Disable the xMII link */
++	/* Disable the xMII interface and clear it's isolation bit */
+ 	for (i = 0; i < priv->hw_info->max_ports; i++)
+-		gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_EN, 0, i);
++		gswip_mii_mask_cfg(priv,
++				   GSWIP_MII_CFG_EN | GSWIP_MII_CFG_ISOLATE,
++				   0, i);
+ 
+ 	/* enable special tag insertion on cpu port */
+ 	gswip_switch_mask(priv, 0, GSWIP_FDMA_PCTRL_STEN,
+@@ -1594,6 +1600,9 @@ static void gswip_phylink_mac_config(struct dsa_switch *ds, int port,
+ 		break;
+ 	case PHY_INTERFACE_MODE_RMII:
+ 		miicfg |= GSWIP_MII_CFG_MODE_RMIIM;
++
++		/* Configure the RMII clock as output: */
++		miicfg |= GSWIP_MII_CFG_RMII_CLK;
+ 		break;
+ 	case PHY_INTERFACE_MODE_RGMII:
+ 	case PHY_INTERFACE_MODE_RGMII_ID:
+@@ -1606,7 +1615,11 @@ static void gswip_phylink_mac_config(struct dsa_switch *ds, int port,
+ 			"Unsupported interface: %d\n", state->interface);
+ 		return;
+ 	}
+-	gswip_mii_mask_cfg(priv, GSWIP_MII_CFG_MODE_MASK, miicfg, port);
++
++	gswip_mii_mask_cfg(priv,
++			   GSWIP_MII_CFG_MODE_MASK | GSWIP_MII_CFG_RMII_CLK |
++			   GSWIP_MII_CFG_RGMII_IBS | GSWIP_MII_CFG_LDCLKDIS,
++			   miicfg, port);
+ 
+ 	gswip_port_set_speed(priv, port, state->speed, state->interface);
+ 	gswip_port_set_duplex(priv, port, state->duplex);
+-- 
+2.30.2
+
 
 
