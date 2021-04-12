@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED6B535C27A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2785A35C274
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241553AbhDLJpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:45:03 -0400
-Received: from netsrv01.beckhoff.com ([62.159.14.10]:59547 "EHLO
-        netsrv01.beckhoff.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238945AbhDLJVE (ORCPT
+        id S240076AbhDLJoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:44:30 -0400
+Received: from [119.249.100.41] ([119.249.100.41]:28474 "EHLO
+        dbl-sys-mailin02.dbl01.baidu.com" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S240354AbhDLJTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:21:04 -0400
-X-Greylist: delayed 899 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Apr 2021 05:21:03 EDT
-Received: from 10.1.0.27 by netsrv01.beckhoff.com (Tls12, Aes256, Sha384,
- DiffieHellmanEllipticKey256); Mon, 12 Apr 2021 09:05:47 GMT
-Received: from localhost.localdomain (172.17.204.1) by NT-Mail02.beckhoff.com
- (10.1.0.27) with Microsoft SMTP Server (TLS) id 14.3.498.0; Mon, 12 Apr 2021
- 11:05:43 +0200
-From:   Steffen Dirkwinkel <linux-kernel-dev@beckhoff.com>
-CC:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
-Subject: [PATCH] platform/x86: pmc_atom: Match all Beckhoff Automation baytrail boards with critclk_systems DMI table
-Date:   Mon, 12 Apr 2021 11:04:31 +0200
-Message-ID: <20210412090430.167463-1-linux-kernel-dev@beckhoff.com>
-X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.17.204.1]
-X-OLX-Disclaimer: Done
-To:     unlisted-recipients:; (no To-header on input)
+        Mon, 12 Apr 2021 05:19:37 -0400
+X-Greylist: delayed 809 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Apr 2021 05:19:36 EDT
+Received: from bjhw-sys-rpm015653cc5.bjhw.baidu.com (bjhw-sys-rpm015653cc5.bjhw.baidu.com [10.227.53.39])
+        by dbl-sys-mailin02.dbl01.baidu.com (Postfix) with ESMTP id 057A72F00C0A;
+        Mon, 12 Apr 2021 17:05:31 +0800 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by bjhw-sys-rpm015653cc5.bjhw.baidu.com (Postfix) with ESMTP id ECB9693B61;
+        Mon, 12 Apr 2021 17:05:30 +0800 (CST)
+From:   chukaiping <chukaiping@baidu.com>
+To:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH] mm/compaction:let proactive compaction order configurable
+Date:   Mon, 12 Apr 2021 17:05:30 +0800
+Message-Id: <1618218330-50591-1-git-send-email-chukaiping@baidu.com>
+X-Mailer: git-send-email 1.7.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
+Currently the proactive compaction order is fixed to
+COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
+normal 4KB memory, but it's too high for the machines with small
+normal memory, for example the machines with most memory configured
+as 1GB hugetlbfs huge pages. In these machines the max order of
+free pages is often below 9, and it's always below 9 even with hard
+compaction. This will lead to proactive compaction be triggered very
+frequently. In these machines we only care about order of 3 or 4.
+This patch export the oder to proc and let it configurable
+by user, and the default value is still COMPACTION_HPAGE_ORDER.
 
-pmc_plt_clk* clocks are used for ethernet controllers so need to stay
-turned on. This adds the affected board family to critclk_systems DMI
-table so the clocks are marked as CLK_CRITICAL and not turned off.
-
-This replaces the previosly listed boards with a match for the whole
-device family. There are new affected boards that would otherwise need
-to be listed. There are only few unaffected boards in the family and
-having the clocks turned on is not an issue on those.
-
-Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
-Signed-off-by: Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
+Signed-off-by: chukaiping <chukaiping@baidu.com>
 ---
- drivers/platform/x86/pmc_atom.c | 28 ++--------------------------
- 1 file changed, 2 insertions(+), 26 deletions(-)
+ include/linux/compaction.h |    1 +
+ kernel/sysctl.c            |   10 ++++++++++
+ mm/compaction.c            |    7 ++++---
+ 3 files changed, 15 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/platform/x86/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
-index ca684ed760d1..a9d2a4b98e57 100644
---- a/drivers/platform/x86/pmc_atom.c
-+++ b/drivers/platform/x86/pmc_atom.c
-@@ -393,34 +393,10 @@ static const struct dmi_system_id critclk_systems[] = {
+diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+index ed4070e..151ccd1 100644
+--- a/include/linux/compaction.h
++++ b/include/linux/compaction.h
+@@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
+ #ifdef CONFIG_COMPACTION
+ extern int sysctl_compact_memory;
+ extern unsigned int sysctl_compaction_proactiveness;
++extern unsigned int sysctl_compaction_order;
+ extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+ 			void *buffer, size_t *length, loff_t *ppos);
+ extern int sysctl_extfrag_threshold;
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 62fbd09..277df31 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -114,6 +114,7 @@
+ static int __maybe_unused neg_one = -1;
+ static int __maybe_unused two = 2;
+ static int __maybe_unused four = 4;
++static int __maybe_unused ten = 10;
+ static unsigned long zero_ul;
+ static unsigned long one_ul = 1;
+ static unsigned long long_max = LONG_MAX;
+@@ -2871,6 +2872,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
+ 		.extra2		= &one_hundred,
  	},
  	{
- 		/* pmc_plt_clk* - are used for ethernet controllers */
--		.ident = "Beckhoff CB3163",
-+		.ident = "Beckhoff Baytrail",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
--			DMI_MATCH(DMI_BOARD_NAME, "CB3163"),
--		},
--	},
--	{
--		/* pmc_plt_clk* - are used for ethernet controllers */
--		.ident = "Beckhoff CB4063",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
--			DMI_MATCH(DMI_BOARD_NAME, "CB4063"),
--		},
--	},
--	{
--		/* pmc_plt_clk* - are used for ethernet controllers */
--		.ident = "Beckhoff CB6263",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
--			DMI_MATCH(DMI_BOARD_NAME, "CB6263"),
--		},
--	},
--	{
--		/* pmc_plt_clk* - are used for ethernet controllers */
--		.ident = "Beckhoff CB6363",
--		.matches = {
--			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
--			DMI_MATCH(DMI_BOARD_NAME, "CB6363"),
-+			DMI_MATCH(DMI_PRODUCT_FAMILY, "CBxx63"),
- 		},
- 	},
- 	{
++		.procname       = "compaction_order",
++		.data           = &sysctl_compaction_order,
++		.maxlen         = sizeof(sysctl_compaction_order),
++		.mode           = 0644,
++		.proc_handler   = proc_dointvec_minmax,
++		.extra1         = SYSCTL_ZERO,
++		.extra2         = &ten,
++	},
++	{
+ 		.procname	= "extfrag_threshold",
+ 		.data		= &sysctl_extfrag_threshold,
+ 		.maxlen		= sizeof(int),
+diff --git a/mm/compaction.c b/mm/compaction.c
+index e04f447..a192996 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1925,16 +1925,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
+ 
+ /*
+  * A zone's fragmentation score is the external fragmentation wrt to the
+- * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
++ * sysctl_compaction_order. It returns a value in the range [0, 100].
+  */
+ static unsigned int fragmentation_score_zone(struct zone *zone)
+ {
+-	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
++	return extfrag_for_order(zone, sysctl_compaction_order);
+ }
+ 
+ /*
+  * A weighted zone's fragmentation score is the external fragmentation
+- * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
++ * wrt to the sysctl_compaction_order scaled by the zone's size. It
+  * returns a value in the range [0, 100].
+  *
+  * The scaling factor ensures that proactive compaction focuses on larger
+@@ -2666,6 +2666,7 @@ static void compact_nodes(void)
+  * background. It takes values in the range [0, 100].
+  */
+ unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
++unsigned int __read_mostly sysctl_compaction_order = COMPACTION_HPAGE_ORDER;
+ 
+ /*
+  * This is the entry point for compacting all nodes via
 -- 
-2.31.1
+1.7.1
+
