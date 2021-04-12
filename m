@@ -2,132 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F0235C42D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:39:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C142035C42E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:39:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239411AbhDLKjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:39:31 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:51059 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239343AbhDLKja (ORCPT
+        id S238317AbhDLKkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237554AbhDLKj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:39:30 -0400
-Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 13CAdAfF031521;
-        Mon, 12 Apr 2021 19:39:10 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp);
- Mon, 12 Apr 2021 19:39:10 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 13CAdAKa031517
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Mon, 12 Apr 2021 19:39:10 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: How to handle concurrent access to /dev/ttyprintk ?
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     Samo Pogacnik <samo_pogacnik@t-2.net>
-Cc:     Petr Mladek <pmladek@suse.com>, Jiri Slaby <jirislaby@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
- <YGx59PEq2Y015YdK@alley>
- <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
- <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
- <YG24F9Kx+tjxhh8G@kroah.com>
- <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
-Message-ID: <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
-Date:   Mon, 12 Apr 2021 19:39:04 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+        Mon, 12 Apr 2021 06:39:59 -0400
+Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C3EC061574;
+        Mon, 12 Apr 2021 03:39:41 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id DC0313ED8B;
+        Mon, 12 Apr 2021 12:39:37 +0200 (CEST)
+Subject: Re: [PATCH] brcmfmac: Add support for BCM43596 PCIe Wi-Fi
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        marijn.suijten@somainline.org,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210307113550.7720-1-konrad.dybcio@somainline.org>
+ <5e7b575a-7820-3d10-8617-36911d49f4a9@broadcom.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <754923af-407e-05f8-148e-4c2a3faf42ab@somainline.org>
+Date:   Mon, 12 Apr 2021 12:39:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <5e7b575a-7820-3d10-8617-36911d49f4a9@broadcom.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-What is the intended usage of /dev/ttyprintk ?
-
-It seems that drivers/char/ttyprintk.c was not designed to be opened by
-multiple processes. As a result, syzbot can trigger tty_warn() flooding
-enough to fire khungtaskd warning due to tty_port_close().
-
-Do we need to allow concurrent access to /dev/ttyprintk ?
-If we can't change /dev/ttyprintk exclusively open()able by only
-one thread, how to handle concurrent access to /dev/ttyprintk ?
-
-On 2021/04/07 23:24, Tetsuo Handa wrote:
-> On 2021/04/07 22:48, Greg Kroah-Hartman wrote:
->>> By the way, as soon as applying this patch, I guess that syzkaller starts
->>> generating hung task reports because /dev/ttyprintk can trivially trigger
->>> flood of
->>>
->>>   tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
->>>            port->count);
->>>
->>> message, and adding
->>>
->>>   if (strcmp(tty_driver_name(tty), "ttyprintk"))
+Il 12/04/21 10:36, Arend van Spriel ha scritto:
+> On 07-03-2021 12:35, Konrad Dybcio wrote:
+>> Add support for BCM43596 dual-band AC chip, found in
+>> SONY Xperia X Performance, XZ and XZs smartphones (and
+>> *possibly* other devices from other manufacturers).
+>> The chip doesn't require any special handling and seems to work
+>> just fine OOTB.
 >>
->> Odd, how can ttyprintk() generate that mess?
+>> PCIe IDs taken from: 
+>> https://github.com/sonyxperiadev/kernel/commit/9e43fefbac8e43c3d7792e73ca52a052dd86d7e3.patch 
+>>
 > 
-> So far three tests and results:
+> I don't see 4359 firmware in linux-firmware repo so what are you using?
 > 
->   https://groups.google.com/g/syzkaller-bugs/c/yRLYijD2tbw/m/WifLgadvAAAJ
->   https://groups.google.com/g/syzkaller-bugs/c/yRLYijD2tbw/m/w2_MiMmAAAAJ
->   https://groups.google.com/g/syzkaller-bugs/c/yRLYijD2tbw/m/hfsQqSOPAAAJ
-> 
-> Patch https://syzkaller.appspot.com/x/patch.diff?x=145e4c9ad00000 generated
-> console output https://syzkaller.appspot.com/x/log.txt?x=162f9fced00000 .
-> 
-> Patch https://syzkaller.appspot.com/x/patch.diff?x=14839931d00000 did not
-> flood the console output enough to fire khungtaskd.
-> 
-> Maybe it is because /dev/ttyprintk can be opened/closed by multiple processes
-> without serialization?
-> 
-> Running
-> 
->   for i in $(seq 1 100); do sleep 1 > /dev/ttyprintk & done
-> 
-> results in
-> 
->   tty_port_close_start: tty->count = 1 port count = 100
-> 
-> . If tty_port_open() from tpk_open() can do
-> 
->   spin_lock_irq(&port->lock);
->   ++port->count;
->   spin_unlock_irq(&port->lock);
-> 
-> when tty_port_close_start() from tty_port_close() from tpk_close() is doing
-> 
->   spin_lock_irqsave(&port->lock, flags);
->   if (tty->count == 1 && port->count != 1) {
->     tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
->              port->count);
->     port->count = 1;
->   }
->   if (--port->count < 0) {
->     tty_warn(tty, "%s: bad port count (%d)\n", __func__,
->              port->count);
->     port->count = 0;
->   }
-> 
->   if (port->count) {
->     spin_unlock_irqrestore(&port->lock, flags);
->     return 0;
->   }
->   spin_unlock_irqrestore(&port->lock, flags);
-> 
-> , what prevents port->count from getting larger than 1 ?
-> 
+> Regards,
+> Arend
 
+Hi Arend,
+
+we are using firmwares that come with our specific Sony devices, as we 
+couldn't find any generic one.
+Pushing firmwares around is something that we tend to be careful about 
+because, as you know, they are usually covered with proprietary licenses 
+and such.
+
+If anyone from Broadcom can help us by pushing "generic" firmwares for 
+this chip on linux-firmware, we would largely appreciate that.
+
+Yours,
+- Angelo
