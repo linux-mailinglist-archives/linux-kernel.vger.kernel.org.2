@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE9035CF89
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:34:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F42335CF8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:35:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243566AbhDLRfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:35:12 -0400
-Received: from mga14.intel.com ([192.55.52.115]:59905 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239298AbhDLRfL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:35:11 -0400
-IronPort-SDR: +rCKRX1l6hIpehkJeu6ro5WmhqNSUhY7y58mihrx1tzNoiAxrFvkEbFAwEOeY/46w0ClH4qdXr
- 1gS0tv4gAfRw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="193804990"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="193804990"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 10:34:53 -0700
-IronPort-SDR: VgP71Ev+CcKJ5sC+DXWVvwvpybjKlEAKWOxSqwfG0chYSKxuZ4aoZdud530kY6M2Lv5o3cSZ8T
- y0CDpI8rlRKg==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="460255052"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 10:34:49 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lW0ST-003WRL-KB; Mon, 12 Apr 2021 20:34:45 +0300
-Date:   Mon, 12 Apr 2021 20:34:45 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Henning Schild <henning.schild@siemens.com>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Tan Jui Nee <jui.nee.tan@intel.com>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Jonathan Yong <jonathan.yong@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-pci@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Peter Tyser <ptyser@xes-inc.com>, hdegoede@redhat.com
-Subject: Re: [PATCH v1 6/7] mfd: lpc_ich: Add support for pinctrl in non-ACPI
- system
-Message-ID: <YHSEtc1660b+qXKG@smile.fi.intel.com>
-References: <20210308122020.57071-1-andriy.shevchenko@linux.intel.com>
- <20210308122020.57071-7-andriy.shevchenko@linux.intel.com>
- <20210412180106.7dc524e8@md1za8fc.ad001.siemens.net>
- <20210412184001.2fc359c1@md1za8fc.ad001.siemens.net>
- <YHR8Wd5oShhTricb@smile.fi.intel.com>
- <20210412191653.0a53985d@md1za8fc.ad001.siemens.net>
+        id S243634AbhDLRfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:35:39 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:37672 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239298AbhDLRfi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 13:35:38 -0400
+Received: by mail-oi1-f174.google.com with SMTP id k25so14226278oic.4;
+        Mon, 12 Apr 2021 10:35:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GQ/lurYpXN3VwQox6aFUpBiN7VUzu07uS3TQtD1HRNQ=;
+        b=FC65Nj0IL7OVtsEPDR+fSyxHmDBK58U0k0lwWq1d1DJ7XeBo2gBSpkmxi5UXSNWlQf
+         w2ZtS0WMMh/nz7ALNP4O+j4oxV4Fs4OA5oI7Vf69PaRPBKlWhQwZMxSO6ROH+0ykTzJD
+         sg0coVWxFMqah10npgeN9K+wOxy5Tcr4aWCk/mZQdwbUDTECpcVycW1trbBcXrZskTOA
+         dwhk4SCwThnsTMZ26Vp+4aO6VlfRjeK5MgqxxkJGX4hfez3UFviRj5U5uY+ztUlnR/yJ
+         qEzEMprxUCpUNe/mwe3oXoKbw3Sk3+evIjUzS690tJQnHoUCVs6zcTPNllbgOKat6L2V
+         CfFA==
+X-Gm-Message-State: AOAM532hvYCGS2g9yUAs0oTGRf0aSr0rheo0hDCcpnufayVlN80CM50K
+        9D376rksrKOrA5lLvJ13lYN7qpmCzQUnFvqKlIs=
+X-Google-Smtp-Source: ABdhPJwDErsXU1nN5NgQZy/6xypurKvi7xkp48Z2sQ4Me3Mi5BK9mGAQY3+apKxWpP1CtlLt9EDMIFpFgYfdCPW5KEY=
+X-Received: by 2002:aca:5fc3:: with SMTP id t186mr185906oib.69.1618248920250;
+ Mon, 12 Apr 2021 10:35:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412191653.0a53985d@md1za8fc.ad001.siemens.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210410140253.1966892-1-andy.shevchenko@gmail.com>
+In-Reply-To: <20210410140253.1966892-1-andy.shevchenko@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 12 Apr 2021 19:35:09 +0200
+Message-ID: <CAJZ5v0gFiLgEeBCuhn1cKMA=G-+_Z+VLDa0OnagU+d4Vgn-Gmw@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] ACPI: scan: Utilize match_string() API
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 07:16:53PM +0200, Henning Schild wrote:
-> Am Mon, 12 Apr 2021 19:59:05 +0300
-> schrieb Andy Shevchenko <andriy.shevchenko@linux.intel.com>:
-> > On Mon, Apr 12, 2021 at 06:40:01PM +0200, Henning Schild wrote:
-> > > Tan or Andy,
-> > > 
-> > > maybe you can point me to a user of that patch. I guess there might
-> > > be an out-of-tree driver or userland code on how to use the GPIOs
-> > > from there.  
-> > 
-> > I'm confused. User of this patch is pinctrl-broxton driver.
-> > It's in upstream.
-> 
-> Should this appear in /sys/class/gpio as chip so that pins can be
-> exported?
+On Sat, Apr 10, 2021 at 4:02 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> We have already an API to match a string in the array of strings.
+> Utilize it instead of open coded analogues.
+>
+> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> ---
+>  drivers/acpi/scan.c | 22 ++++++++++------------
+>  1 file changed, 10 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index b1d1f1a8ce69..bba6b529cf6c 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -756,27 +756,25 @@ static bool acpi_info_matches_ids(struct acpi_device_info *info,
+>                                   const char * const ids[])
+>  {
+>         struct acpi_pnp_device_id_list *cid_list = NULL;
+> -       int i;
+> +       int i, index;
+>
+>         if (!(info->valid & ACPI_VALID_HID))
+>                 return false;
+>
+> +       index = match_string(ids, -1, info->hardware_id.string);
+> +       if (index >= 0)
+> +               return true;
+> +
+>         if (info->valid & ACPI_VALID_CID)
+>                 cid_list = &info->compatible_id_list;
+>
+> -       for (i = 0; ids[i]; i++) {
+> -               int j;
+> +       if (!cid_list)
+> +               return false;
+>
+> -               if (!strcmp(info->hardware_id.string, ids[i]))
+> +       for (i = 0; i < cid_list->count; i++) {
+> +               index = match_string(ids, -1, cid_list->ids[i].string);
+> +               if (index >= 0)
+>                         return true;
+> -
+> -               if (!cid_list)
+> -                       continue;
+> -
+> -               for (j = 0; j < cid_list->count; j++) {
+> -                       if (!strcmp(cid_list->ids[j].string, ids[i]))
+> -                               return true;
+> -               }
+>         }
+>
+>         return false;
+> --
 
-No. Sysfs interface is deprecated. It should appear as /dev/gpiochip0 or so.
-
-> That is what i tried and failed with.
-> 
-> > Using GPIOs from it is something as done in a few drivers already
-> > (Assuming we have no resources described in the ACPI). I.e. you need
-> > to register in board file the GPIO mapping table with help of
-> > devm_acpi_dev_add_driver_gpios() and use one of gpiod_get() family of
-> > functions to request it.
-> > 
-> > In case of LEDs you simple describe GPIO device name in lookup table
-> > and that's it. The drivers/platform/x86/pcengines-apuv2.c not the
-> > best but will give you an idea how to use "leds-gpio" driver in board
-> > files.
-> 
-> I am aware of that driver and had a look at it. In order to figure out
-> the arguments for the macros/functions i was hoping for userland gpio
-> "export", but maybe that does not work here ...
-> For now i will assume that it does not show up in sysfs and can maybe
-> still be used, and try to build on top.
-
-Just switch to use libgpiod and associated tools / bindings in user space.
-Sysfs ABI is not being developed anymore.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Applied as 5.13 material, thanks!
