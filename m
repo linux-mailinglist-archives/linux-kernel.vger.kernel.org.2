@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E9D35D353
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0B635D354
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343798AbhDLWnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 18:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50554 "EHLO
+        id S1343812AbhDLWny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 18:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238901AbhDLWnt (ORCPT
+        with ESMTP id S238901AbhDLWnv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 18:43:49 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7258C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 15:43:30 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id p16so3201916plf.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 15:43:30 -0700 (PDT)
+        Mon, 12 Apr 2021 18:43:51 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67872C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 15:43:33 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id kk2-20020a17090b4a02b02900c777aa746fso7944794pjb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 15:43:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JkA3Ny2V6Qq9Dk3aSySw7xYrKKcRmImrxlIoiSgIjQ0=;
-        b=X0R7t1a+/vUebM2KusNVgIyrf8ZQZp4ygxUvDy25rGxEtvJoLMDsHRy7aV1gFRm/wk
-         NM5SL9lNBEg7xDvdaBfI05WJqBVaArAYzFx5PMGvhQ5sEkph/y8LEjcXZStSlTqB2Xej
-         XqaytIGgnAlq2YhnsXpj+uu0h1YWIE2qVUwrtrVWtKn9q9exriujEzk8rvqkz2mOwQuN
-         +9mL+t1FV8qrKEJHe/TBJgLUA+fqpY6vGIjUCQULhxghq2pxhqpGoz6aPe6gILzvEIJ0
-         msoxnEDFV+G5c0zmVQLP3NhTVz4ca+9EmUwwP3rwHFWLzuxkbdjTnqjPGDcGuBFcDzpp
-         E2DA==
+        bh=+eLCTporA8diA9+4AwwE0Qpo+13q5cqafF4gWgDZDZA=;
+        b=f/HYbNRLsApenom0NFRbF9JdUXkmoFwxcRf6BNOXYUII4ox16vyEHHeI6wxMAPi0Gq
+         C3Uv9pW8IY5/cYsfSHcKeS0HXJZiKFUiCi3r+DZXg1ZmG6w5NcIFEE5o+cpNmAesCwtm
+         Rqy/VkoEfacLhP2zBOCA3hjpRJ2a/rAbtiz8huTKx1WT62yutctCdJ6XNr5yaMz7wBb7
+         aIKRheBotsTFfaSb4IEluArWWfySIPI13A2cU4XdSUlpEjqDgyOwHsScSatylhPLNM+F
+         K8MhiLvUU+5o0yDouHqYdeL/uwuxIHWkvY6x09CV4FinCKkCAQVdaZ/DPsWAgxnosXwT
+         V1og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JkA3Ny2V6Qq9Dk3aSySw7xYrKKcRmImrxlIoiSgIjQ0=;
-        b=sXy/zCnYJM/6YuhTygT0j2N6mVmAHTRcMYJ305oetNIGyEE0d8gNsomWg/X96cNDTa
-         VVWftJuh65uaiAgo7u8OeVApiUCQp3YUTRk3ND6OPbajXOhsCcBz6kM6e37gvxe6rFRv
-         sqR+gz1BgzHh9A9h6D/WOjhMpXe/RWBOsO1Mpd/EtZuRLhrgP+szwtEYiI0t18h1un8J
-         xiAsgmIccZtLaekldcniWbrnY0PrEZzSsm2/d5hPXU8+/Tq7axf9LuaAizI920P6LHw7
-         Fc6O293KHgg5nxZIqGD/nkMYUhOgK7hS7yTbgNBJxJiDUlJmBWhtdSLfsRhpo6LkIran
-         D05A==
-X-Gm-Message-State: AOAM531sK2TYCzIYwVaDNxUakI8R1LA2ra3Kh1I4wiRivOPriEzTIxe6
-        sclPaFtBQpJyDkhK0BHWeA==
-X-Google-Smtp-Source: ABdhPJykwz0wDYo5DwqyUPL0KJ+J6h8Y3bmJ5iNVsNLoy4vJCeDpgEL+MWPvo4ds3wa3fN4u8f0dXA==
-X-Received: by 2002:a17:90b:4b8c:: with SMTP id lr12mr1556254pjb.124.1618267410185;
-        Mon, 12 Apr 2021 15:43:30 -0700 (PDT)
+        bh=+eLCTporA8diA9+4AwwE0Qpo+13q5cqafF4gWgDZDZA=;
+        b=WaeTx4XhjY6N2MVX8u+1TCuY8TenHoUYQvu7fnv0VkL6vNgXtuU1NCNTib4G4vUX4Y
+         1LnBoWlo67u5Dm1sf212eM5Hb+lUx6/jcEyb04RA/s9i96XO0DPj5fjsGSwpJPZ0oYrt
+         ArHsiqGMcyT1WmL+ONtZXYNLLiRr8BXehNr+g662iBDhMUguNsXhdcR1tMkkew9VFXN4
+         TfxSovAS9PUHoI2X/f4qKM1J4UsFPTKR1btZeu1tKwSOgGBDaNAfE6ifDnMyc0igwygt
+         mnwL1I53a0/a4TsmGRDEHjQLcOnuM4Yr3jAWPbkEbK3UUMBLNoDjeF7DCC0H52RZ77Eb
+         gZpQ==
+X-Gm-Message-State: AOAM531b5UmLvJyd2MrKkvOknyMWxJwjg/j3HynhP7vQftyaPVm6ZsAV
+        HnJzKhGDjxi0saA6XRaD7g==
+X-Google-Smtp-Source: ABdhPJxIkwcM/K0oArvegDYbDl0TUq2BZZovmIRLlI/eji+k5V+qSKF/qUJPjmgKVVWaOVZcY0wx9g==
+X-Received: by 2002:a17:902:8f89:b029:ea:ea23:a02c with SMTP id z9-20020a1709028f89b02900eaea23a02cmr8991008plo.71.1618267413002;
+        Mon, 12 Apr 2021 15:43:33 -0700 (PDT)
 Received: from localhost.localdomain (h175-177-040-153.catv02.itscom.jp. [175.177.40.153])
-        by smtp.gmail.com with ESMTPSA id l25sm13365373pgu.72.2021.04.12.15.43.27
+        by smtp.gmail.com with ESMTPSA id l25sm13365373pgu.72.2021.04.12.15.43.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 15:43:29 -0700 (PDT)
+        Mon, 12 Apr 2021 15:43:32 -0700 (PDT)
 From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
 To:     linux-mm@kvack.org, Tony Luck <tony.luck@intel.com>,
         Aili Yao <yaoaili@kingsoft.com>
@@ -58,9 +58,9 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Andy Lutomirski <luto@kernel.org>,
         Naoya Horiguchi <naoya.horiguchi@nec.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1 1/3] mm/memory-failure: Use a mutex to avoid memory_failure() races
-Date:   Tue, 13 Apr 2021 07:43:18 +0900
-Message-Id: <20210412224320.1747638-2-nao.horiguchi@gmail.com>
+Subject: [PATCH v1 2/3] mm,hwpoison: return -EHWPOISON when page already
+Date:   Tue, 13 Apr 2021 07:43:19 +0900
+Message-Id: <20210412224320.1747638-3-nao.horiguchi@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210412224320.1747638-1-nao.horiguchi@gmail.com>
 References: <20210412224320.1747638-1-nao.horiguchi@gmail.com>
@@ -70,106 +70,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Luck <tony.luck@intel.com>
+From: Aili Yao <yaoaili@kingsoft.com>
 
-There can be races when multiple CPUs consume poison from the same
-page. The first into memory_failure() atomically sets the HWPoison
-page flag and begins hunting for tasks that map this page. Eventually
-it invalidates those mappings and may send a SIGBUS to the affected
-tasks.
+When the page is already poisoned, another memory_failure() call in the
+same page now returns 0, meaning OK. For nested memory mce handling, this
+behavior may lead to one mce looping, Example:
 
-But while all that work is going on, other CPUs see a "success"
-return code from memory_failure() and so they believe the error
-has been handled and continue executing.
+1. When LCME is enabled, and there are two processes A && B running on
+different core X && Y separately, which will access one same page, then
+the page corrupted when process A access it, a MCE will be rasied to
+core X and the error process is just underway.
 
-Fix by wrapping most of the internal parts of memory_failure() in
-a mutex.
+2. Then B access the page and trigger another MCE to core Y, it will also
+do error process, it will see TestSetPageHWPoison be true, and 0 is
+returned.
 
-Signed-off-by: Tony Luck <tony.luck@intel.com>
+3. The kill_me_maybe will check the return:
+
+    1244 static void kill_me_maybe(struct callback_head *cb)
+    1245 {
+    ...
+    1254         if (!memory_failure(p->mce_addr >> PAGE_SHIFT, flags) &&
+    1255             !(p->mce_kflags & MCE_IN_KERNEL_COPYIN)) {
+    1256                 set_mce_nospec(p->mce_addr >> PAGE_SHIFT, p->mce_whole_page);
+    1257                 sync_core();
+    1258                 return;
+    1259         }
+    ...
+    1267 }
+
+4. The error process for B will end, and may nothing happened if
+kill-early is not set, The process B will re-excute instruction and get
+into mce again and then loop happens. And also the set_mce_nospec()
+here is not proper, may refer to commit fd0e786d9d09 ("x86/mm,
+mm/hwpoison: Don't unconditionally unmap kernel 1:1 pages").
+
+For other cases which care the return value of memory_failure() should
+check why they want to process a memory error which have already been
+processed. This behavior seems reasonable.
+
+Signed-off-by: Aili Yao <yaoaili@kingsoft.com>
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 ---
- mm/memory-failure.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+ mm/memory-failure.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git v5.12-rc5/mm/memory-failure.c v5.12-rc5_patched/mm/memory-failure.c
-index 24210c9bd843..c1509f4b565e 100644
+index c1509f4b565e..368ef77e01f9 100644
 --- v5.12-rc5/mm/memory-failure.c
 +++ v5.12-rc5_patched/mm/memory-failure.c
-@@ -1381,6 +1381,8 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
- 	return rc;
- }
- 
-+static DEFINE_MUTEX(mf_mutex);
-+
- /**
-  * memory_failure - Handle memory failure of a page.
-  * @pfn: Page Number of the corrupted page
-@@ -1424,12 +1426,18 @@ int memory_failure(unsigned long pfn, int flags)
- 		return -ENXIO;
+@@ -1228,7 +1228,7 @@ static int memory_failure_hugetlb(unsigned long pfn, int flags)
+ 	if (TestSetPageHWPoison(head)) {
+ 		pr_err("Memory failure: %#lx: already hardware poisoned\n",
+ 		       pfn);
+-		return 0;
++		return -EHWPOISON;
  	}
  
-+	mutex_lock(&mf_mutex);
-+
- try_again:
--	if (PageHuge(p))
--		return memory_failure_hugetlb(pfn, flags);
-+	if (PageHuge(p)) {
-+		res = memory_failure_hugetlb(pfn, flags);
-+		goto out2;
-+	}
-+
- 	if (TestSetPageHWPoison(p)) {
+ 	num_poisoned_pages_inc();
+@@ -1438,7 +1438,7 @@ int memory_failure(unsigned long pfn, int flags)
  		pr_err("Memory failure: %#lx: already hardware poisoned\n",
  			pfn);
-+		mutex_unlock(&mf_mutex);
- 		return 0;
+ 		mutex_unlock(&mf_mutex);
+-		return 0;
++		return -EHWPOISON;
  	}
  
-@@ -1463,9 +1471,11 @@ int memory_failure(unsigned long pfn, int flags)
- 				res = MF_FAILED;
- 			}
- 			action_result(pfn, MF_MSG_BUDDY, res);
-+			mutex_unlock(&mf_mutex);
- 			return res == MF_RECOVERED ? 0 : -EBUSY;
- 		} else {
- 			action_result(pfn, MF_MSG_KERNEL_HIGH_ORDER, MF_IGNORED);
-+			mutex_unlock(&mf_mutex);
- 			return -EBUSY;
- 		}
- 	}
-@@ -1473,6 +1483,7 @@ int memory_failure(unsigned long pfn, int flags)
- 	if (PageTransHuge(hpage)) {
- 		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
- 			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
-+			mutex_unlock(&mf_mutex);
- 			return -EBUSY;
- 		}
- 		VM_BUG_ON_PAGE(!page_count(p), p);
-@@ -1517,6 +1528,7 @@ int memory_failure(unsigned long pfn, int flags)
- 		num_poisoned_pages_dec();
- 		unlock_page(p);
- 		put_page(p);
-+		mutex_unlock(&mf_mutex);
- 		return 0;
- 	}
- 	if (hwpoison_filter(p)) {
-@@ -1524,6 +1536,7 @@ int memory_failure(unsigned long pfn, int flags)
- 			num_poisoned_pages_dec();
- 		unlock_page(p);
- 		put_page(p);
-+		mutex_unlock(&mf_mutex);
- 		return 0;
- 	}
- 
-@@ -1559,6 +1572,8 @@ int memory_failure(unsigned long pfn, int flags)
- 	res = identify_page_state(pfn, p, page_flags);
- out:
- 	unlock_page(p);
-+out2:
-+	mutex_unlock(&mf_mutex);
- 	return res;
- }
- EXPORT_SYMBOL_GPL(memory_failure);
+ 	orig_head = hpage = compound_head(p);
 -- 
 2.25.1
 
