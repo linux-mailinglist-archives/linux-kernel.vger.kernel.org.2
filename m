@@ -2,99 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B99935CA69
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42D335CA75
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:51:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243117AbhDLPur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:50:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44510 "EHLO
+        id S243139AbhDLPvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243042AbhDLPuj (ORCPT
+        with ESMTP id S242809AbhDLPvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:50:39 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE38AC06138C
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:50:21 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id a21so796486oib.10
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:50:21 -0700 (PDT)
+        Mon, 12 Apr 2021 11:51:23 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2DF7C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:51:04 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 12so22057531lfq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:51:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=NZYZrqYCNCv2bxpNxPSl3nXWCQe4Fvp0PwQSK0b1hpU=;
-        b=Vx5mpzCj+enoGx9KqcYEWgEiZhKJWzoqSUtR72eSgqZtcWN2ie+bYKb8MbLhjQRfM6
-         qi1Dy0regakn0YcVsX5B9cGxYuAq3tDrFjwVp1DPcWASoXPSniF0Mv7BKr/CPQmr0yU9
-         FFKABGEFgXaEFRuqUrTX+iEl6xvNJuRBCqHv6j9B+VRqNmX19gVn76JmwDAQqS0bUUN4
-         RKSNOqQC4XgBif+68UagaWV8p+YicdH8v3bKF8rjZFqWH2i74qsek+wy3ElqA2Uvc9NI
-         Cue4rBg3IVwo1TGS8CSWF00s1Z0W7oMecfJnU+7uxdDzfikV3sb+iskWOOIk0xY2w1Xq
-         H/XQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jXdDtDVkOliHR0wKt8o4xOp+hVyUebs5k6d6U80wmt4=;
+        b=caAQ4Xqg3sQpXpGaPNU3gKD7/UtnjwdhKAtTaqk6OAPLz6XqnT2JJIRntD7Xo7/K9F
+         9Uze7K7jgVp9YNlmci2T07wzH6iQWrk+KTChEXZtVUcgMPlTqiGfCtQyExMN3RCaBNlU
+         r3gk9p6TrZEHgs+aBrSlqaWZjux7xtU1Ml1dFps1vFQeJDdkRHM2uZKddjni+P37e0A7
+         Dd4j8BViFagxn40TtOl79/kk9ps0I/pPMz8qJ8qkA0WKCny7QuwcCqKUFGQJAY0cEaVT
+         1kIY2G4ii+zqIlQgDlq513nOi6v7A0qNOa0mRYFLP5FsDXuMXFkV+1jLK8SEo/JBXW7X
+         itog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=NZYZrqYCNCv2bxpNxPSl3nXWCQe4Fvp0PwQSK0b1hpU=;
-        b=Gdu/wyu0IhTRUOxYYlrs7dsOYMELP8I4on6U5TdpYQGzdcNbC9ae9G/wu6piz5LljX
-         c+5L7m3XRbAhPJRCFHXQROaN79FwrAEfMNijMLKE+Dv0EkRE6awHocAPKbbLfQ7vZIyV
-         Hg18Gxo83NkpEiNkDpqLMVoJEqAv0t1qo6GcsINFZYBHJpyVMFwZ/4lj96cOFNPW760J
-         IcGZSmp4xh2+rCppIeK4BbXeCawH5P/3hYqPSA4kB1Mqvx/yxcJs6gdtamM+C0ZwzYnj
-         eAqrcEaF6m8chEnP07a+2htFu7OOHqiurY3+yZfLL/6QWQcfytloGvpuPg59FdKK9ox9
-         1rDg==
-X-Gm-Message-State: AOAM533OOsnhlqS/8mJ+RMVzdleiwsnHosVYWX64NDRKrFPqgUkwdEUQ
-        azbzc4lC65XYYIU96kQ6mvxzNg==
-X-Google-Smtp-Source: ABdhPJzxSaAxYZ9t5xAi07FjyuqSb0/GV2NeW6bl4Gr0VuUqXKbbceEq2bqv5yehZXeYnstbJSoo9w==
-X-Received: by 2002:aca:f30b:: with SMTP id r11mr10894310oih.133.1618242621027;
-        Mon, 12 Apr 2021 08:50:21 -0700 (PDT)
-Received: from [192.168.1.30] ([207.135.233.147])
-        by smtp.gmail.com with ESMTPSA id p3sm2803640otk.9.2021.04.12.08.50.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 08:50:19 -0700 (PDT)
-Subject: Re: [PATCH V12 0/3] Charge loop device i/o to issuing cgroup
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jXdDtDVkOliHR0wKt8o4xOp+hVyUebs5k6d6U80wmt4=;
+        b=bw/1JSMi21Fp91THI8wVMS1CYnF48OVyT3VTPPVpcGQf5PA3uxnbdT9Iii/zzOk/Ey
+         u9AsuTz0zppxWZUcYk4dyh9lPAL1JM1hD1YdWAuHh33BfvwaHJQSko1Kj8PE379FZyE7
+         C1pJ700V3AkdekKmlkaT3ApqSd+QSaZL0Ed8/RPUQLZIAczVZv3azHvomA7//0PPjyJy
+         FNRkUCZYFCHlDYhvH5Oxuhi6YUCSMtAPEQqwADdeg6JxkDuW6Bg5tClNsBcQaSwEC1ju
+         qx3fjQGaO0NtpEV3iSyllQVUpXTXx8cPEufavL0QdR3suXnzdrTo6HTRnkAeXjTM1QKn
+         BdDw==
+X-Gm-Message-State: AOAM530bQcfHywQdb33t9GDqwoEiO0BgZjTg3cADnbHdIqm9LWsYTToZ
+        sD20NUYXxrjqCRMRuFggeQRnxEMofC0CX6Zfy31sLA==
+X-Google-Smtp-Source: ABdhPJy/6xYW52zIk5X9L64R1+sYa7h1XRl+uzYrZVCer2D1jTMm+sFt+n0v5v9OKyJBaCPZPiLkgW53BuZLiIEZybU=
+X-Received: by 2002:a05:6512:34c7:: with SMTP id w7mr18952307lfr.83.1618242663210;
+ Mon, 12 Apr 2021 08:51:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210409231842.8840-1-longman@redhat.com> <20210409231842.8840-3-longman@redhat.com>
+In-Reply-To: <20210409231842.8840-3-longman@redhat.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 12 Apr 2021 08:50:51 -0700
+Message-ID: <CALvZod5m_J4z0sZrd72yftXhYF9PmtJDfRKDK9WVSMvo7PP6uw@mail.gmail.com>
+Subject: Re: [PATCH 2/5] mm/memcg: Introduce obj_cgroup_uncharge_mod_state()
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         Muchun Song <songmuchun@bytedance.com>,
-        Yang Shi <shy828301@gmail.com>,
         Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
         Alexander Duyck <alexander.h.duyck@linux.intel.com>,
         Wei Yang <richard.weiyang@gmail.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-References: <20210402191638.3249835-1-schatzberg.dan@gmail.com>
- <YHRrJ9V6ivpH2QUN@cmpxchg.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <072a9ad4-b63e-e540-9314-f3e3763111f5@kernel.dk>
-Date:   Mon, 12 Apr 2021 09:50:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <YHRrJ9V6ivpH2QUN@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Masayoshi Mizuma <msys.mizuma@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 9:45 AM, Johannes Weiner wrote:
-> It looks like all feedback has been addressed and there hasn't been
-> any new activity on it in a while.
-> 
-> As per the suggestion last time [1], Andrew, Jens, could this go
-> through the -mm tree to deal with the memcg conflicts?
+On Fri, Apr 9, 2021 at 4:19 PM Waiman Long <longman@redhat.com> wrote:
+>
+> In memcg_slab_free_hook()/pcpu_memcg_free_hook(), obj_cgroup_uncharge()
+> is followed by mod_objcg_state()/mod_memcg_state(). Each of these
+> function call goes through a separate irq_save/irq_restore cycle. That
+> is inefficient.  Introduce a new function obj_cgroup_uncharge_mod_state()
+> that combines them with a single irq_save/irq_restore cycle.
+>
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Yep, I think that would make it the most painless for everyone.
-
-Dan/Andrew, you can add my Acked-by to the series.
-
--- 
-Jens Axboe
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
