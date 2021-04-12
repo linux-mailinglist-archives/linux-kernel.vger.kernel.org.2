@@ -2,149 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9153335C343
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFD935C344
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238168AbhDLKDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:03:22 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:37773 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239992AbhDLJ5A (ORCPT
+        id S238706AbhDLKD3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:03:29 -0400
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:65342 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S244424AbhDLKAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:57:00 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id 73077E0006;
-        Mon, 12 Apr 2021 09:56:35 +0000 (UTC)
-Date:   Mon, 12 Apr 2021 11:57:14 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Eugen Hristev <eugen.hristev@microchip.com>
-Cc:     devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 28/30] dt-bindings: media: atmel: add microchip-xisc
- binding
-Message-ID: <20210412095714.uivebcatgazzq5ae@uno.localdomain>
-References: <20210405155105.162529-1-eugen.hristev@microchip.com>
- <20210405155105.162529-29-eugen.hristev@microchip.com>
+        Mon, 12 Apr 2021 06:00:30 -0400
+Received: from wanjb-KLV-WX9.. (unknown [123.131.141.119])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id 5C287400351;
+        Mon, 12 Apr 2021 18:00:10 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Michael Neuling <mikey@neuling.org>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        linuxppc-dev@lists.ozlabs.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] powerpc: alignment: Remove unneeded variables
+Date:   Mon, 12 Apr 2021 17:59:21 +0800
+Message-Id: <20210412095923.3916-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210405155105.162529-29-eugen.hristev@microchip.com>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGUJDHlYaGB5NH0lKQ0hIT0lVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PRQ6Szo*DD8JSx88MAkpEgsc
+        CDxPFDZVSlVKTUpDSUlKTUpKSU9LVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlK
+        SUhVSkhKVUpPSlVKSkJZV1kIAVlBTElCQzcG
+X-HM-Tid: 0a78c58636eed991kuws5c287400351
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eugene,
+Fix coccicheck warning:
 
-On Mon, Apr 05, 2021 at 06:51:03PM +0300, Eugen Hristev wrote:
-> Add bindings for the microchip xisc, a driver based on atmel-isc.
-> It shares common code with atmel-isc, but the xisc is the next generation
-> ISC which is present on sama7g5 product.
-> It has an enhanced pipeline, additional modules, formats, and it supports
-> not only parallel sensors, but also serial sensors, by connecting to a demux
-> endpoint present on sama7g5.
-> One of the key points for creating a new binding is the clocking scheme, as
-> atmel-isc requires 3 mandatory clocks, the microchip-xisc requires a single
-> input clock.
->
-> Signed-off-by: Eugen Hristev <eugen.hristev@microchip.com>
-> ---
->
-> Hello Rob, all,
->
-> I did not convert this yet to yaml because I would like first your feedback
-> if the binding is good.
-> If it's fine I will convert both this new binding and the old atmel-isc
-> to yaml.
->
-> Thanks for your feedback,
-> Eugen
->
->  .../bindings/media/microchip-xisc.txt         | 64 +++++++++++++++++++
->  1 file changed, 64 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/microchip-xisc.txt
->
-> diff --git a/Documentation/devicetree/bindings/media/microchip-xisc.txt b/Documentation/devicetree/bindings/media/microchip-xisc.txt
-> new file mode 100644
-> index 000000000000..080a357ed84d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/microchip-xisc.txt
-> @@ -0,0 +1,64 @@
-> +Microchip eXtended Image Sensor Controller (XISC)
-> +----------------------------------------------
-> +
-> +Required properties for XISC:
-> +- compatible
-> +	Must be "microchip,sama7g5-xisc".
-> +- reg
-> +	Physical base address and length of the registers set for the device.
-> +- interrupts
-> +	Should contain IRQ line for the XISC.
-> +- clocks
-> +	List of clock specifiers, corresponding to entries in
-> +	the clock-names property;
-> +	Please refer to clock-bindings.txt.
-> +- clock-names
-> +	Required elements: "hclock".
-> +	This is the clock that clocks the sensor controller, and is usually
-> +	fed from the clock tree. It is used for the internal controller logic.
-> +- #clock-cells
-> +	Should be 0.
-> +- clock-output-names
-> +	Should be "isc-mck".
-> +- pinctrl-names, pinctrl-0
-> +	Please refer to pinctrl-bindings.txt.
-> +
-> +Optional properties for XISC:
-> +- microchip,mipi-mode;
-> +	As the XISC is usually connected to a demux/bridge, the XISC receives
-> +	the same type of input, however, it should be aware of the type of
-> +	signals received. The mipi-mode enables different internal handling
-> +	of the data and clock lines.
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:539:5-7:
+Unneeded variable: "rc". Return "0" on line 562
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:567:5-7:
+Unneeded variable: "rc". Return "0" on line 580
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:585:5-7:
+Unneeded variable: "rc". Return "0" on line 594
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:600:5-7:
+Unneeded variable: "rc". Return "0" on line 611
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:416:5-7:
+Unneeded variable: "rc". Return "0" on line 470
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:475:5-7:
+Unneeded variable: "rc". Return "0" on line 485
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:490:5-7:
+Unneeded variable: "rc". Return "0" on line 506
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:511:5-7:
+Unneeded variable: "rc". Return "0" on line 534
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:331:5-7:
+Unneeded variable: "rc". Return "0" on line 344
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:349:5-7:
+Unneeded variable: "rc". Return "0" on line 360
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:365:5-7:
+Unneeded variable: "rc". Return "0" on line 392
+./tools/testing/selftests/powerpc/alignment/alignment_handler.c:397:5-7:
+Unneeded variable: "rc". Return "0" on line 411
 
-What does 'mipi-mode' do to a component that has an parallel receiver ?
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ .../powerpc/alignment/alignment_handler.c     | 48 +++++--------------
+ 1 file changed, 12 insertions(+), 36 deletions(-)
 
-> +
-> +XISC supports a single port node with internal parallel bus.
-> +It should contain one 'port' child node with child 'endpoint' node.
-> +Please refer to the bindings defined in
-> +Documentation/devicetree/bindings/media/video-interfaces.txt.
-> +
-> +This endpoint has to be connected to a bridge that acts as a demux from either
-> +a serial interface or acts as a simple direct bridge to a parallel sensor.
-> +
-> +Example:
-> +xisc: xisc@e1408000 {
-> +	compatible = "microchip,sama7g5-isc";
-> +	reg = <0xe1408000 0x2000>;
-> +	interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	clocks = <&pmc PMC_TYPE_PERIPHERAL 56>;
-> +	clock-names = "hclock";
-> +	#clock-cells = <0>;
-> +	clock-output-names = "isc-mck";
-> +	microchip,mipi-mode;
-> +
-> +	port@1 {
-> +		reg = <1>;
-> +		xisc_in: endpoint {
-> +		bus-width = <12>;
-> +		hsync-active = <1>;
-> +		vsync-active = <1>;
-> +		remote-endpoint = <&csi2dc_out>;
-nit: indentation
+diff --git a/tools/testing/selftests/powerpc/alignment/alignment_handler.c b/tools/testing/selftests/powerpc/alignment/alignment_handler.c
+index c25cf7cd45e9..48bfb7b36d84 100644
+--- a/tools/testing/selftests/powerpc/alignment/alignment_handler.c
++++ b/tools/testing/selftests/powerpc/alignment/alignment_handler.c
+@@ -328,8 +328,6 @@ static bool can_open_cifile(void)
+ 
+ int test_alignment_handler_vsx_206(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap(PPC_FEATURE_ARCH_2_06));
+ 
+@@ -341,13 +339,11 @@ int test_alignment_handler_vsx_206(void)
+ 	STORE_VSX_XFORM_TEST(stxvd2x);
+ 	STORE_VSX_XFORM_TEST(stxvw4x);
+ 	STORE_VSX_XFORM_TEST(stxsdx);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_vsx_207(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap2(PPC_FEATURE2_ARCH_2_07));
+ 
+@@ -357,13 +353,11 @@ int test_alignment_handler_vsx_207(void)
+ 	LOAD_VSX_XFORM_TEST(lxsiwzx);
+ 	STORE_VSX_XFORM_TEST(stxsspx);
+ 	STORE_VSX_XFORM_TEST(stxsiwx);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_vsx_300(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 
+ 	SKIP_IF(!have_hwcap2(PPC_FEATURE2_ARCH_3_00));
+@@ -389,13 +383,11 @@ int test_alignment_handler_vsx_300(void)
+ 	STORE_VSX_XFORM_TEST(stxvx);
+ 	STORE_VSX_XFORM_TEST(stxvl);
+ 	STORE_VSX_XFORM_TEST(stxvll);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_vsx_prefix(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap2(PPC_FEATURE2_ARCH_3_1));
+ 
+@@ -408,13 +400,11 @@ int test_alignment_handler_vsx_prefix(void)
+ 	STORE_VSX_8LS_PREFIX_TEST(PSTXSSP, 0);
+ 	STORE_VSX_8LS_PREFIX_TEST(PSTXV0, 0);
+ 	STORE_VSX_8LS_PREFIX_TEST(PSTXV1, 1);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_integer(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 
+ 	printf("Integer\n");
+@@ -467,13 +457,11 @@ int test_alignment_handler_integer(void)
+ 	STORE_DFORM_TEST(stmw);
+ #endif
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_integer_206(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap(PPC_FEATURE_ARCH_2_06));
+ 
+@@ -482,13 +470,11 @@ int test_alignment_handler_integer_206(void)
+ 	LOAD_XFORM_TEST(ldbrx);
+ 	STORE_XFORM_TEST(stdbrx);
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_integer_prefix(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap2(PPC_FEATURE2_ARCH_3_1));
+ 
+@@ -503,13 +489,11 @@ int test_alignment_handler_integer_prefix(void)
+ 	STORE_MLS_PREFIX_TEST(PSTH);
+ 	STORE_MLS_PREFIX_TEST(PSTW);
+ 	STORE_8LS_PREFIX_TEST(PSTD);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_vmx(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap(PPC_FEATURE_HAS_ALTIVEC));
+ 
+@@ -531,13 +515,11 @@ int test_alignment_handler_vmx(void)
+ 	STORE_VMX_XFORM_TEST(stvehx);
+ 	STORE_VMX_XFORM_TEST(stvewx);
+ 	STORE_VMX_XFORM_TEST(stvxl);
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_fp(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 
+ 	printf("Floating point\n");
+@@ -559,13 +541,11 @@ int test_alignment_handler_fp(void)
+ 	STORE_FLOAT_XFORM_TEST(stfsux);
+ 	STORE_FLOAT_XFORM_TEST(stfiwx);
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_fp_205(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap(PPC_FEATURE_ARCH_2_05));
+ 
+@@ -577,13 +557,11 @@ int test_alignment_handler_fp_205(void)
+ 	STORE_FLOAT_DFORM_TEST(stfdp);
+ 	STORE_FLOAT_XFORM_TEST(stfdpx);
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ int test_alignment_handler_fp_206(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap(PPC_FEATURE_ARCH_2_06));
+ 
+@@ -591,14 +569,12 @@ int test_alignment_handler_fp_206(void)
+ 
+ 	LOAD_FLOAT_XFORM_TEST(lfiwzx);
+ 
+-	return rc;
++	return 0;
+ }
+ 
+ 
+ int test_alignment_handler_fp_prefix(void)
+ {
+-	int rc = 0;
+-
+ 	SKIP_IF(!can_open_cifile());
+ 	SKIP_IF(!have_hwcap2(PPC_FEATURE2_ARCH_3_1));
+ 
+@@ -608,7 +584,7 @@ int test_alignment_handler_fp_prefix(void)
+ 	LOAD_FLOAT_MLS_PREFIX_TEST(PLFD);
+ 	STORE_FLOAT_MLS_PREFIX_TEST(PSTFS);
+ 	STORE_FLOAT_MLS_PREFIX_TEST(PSTFD);
+-	return rc;
++	return 0;
+ }
+ 
+ void usage(char *prog)
+-- 
+2.30.2
 
-Have you consided using bus-type property ? As that's a new binding I
-would consider making it mandatory, and to modify the DT parsinga
-routine accordingly to remove auto-guessing, which according to my
-understanding is almost 'deprecated' ?
-
-> +		};
-> +	};
-> +};
-> +
-> --
-> 2.25.1
->
