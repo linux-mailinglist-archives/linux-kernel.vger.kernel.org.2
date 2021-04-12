@@ -2,37 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD92935C128
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A89135BF4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238380AbhDLJXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54638 "EHLO mail.kernel.org"
+        id S238191AbhDLJDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:03:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239905AbhDLJBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:01:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7AD3C61379;
-        Mon, 12 Apr 2021 09:00:00 +0000 (UTC)
+        id S238745AbhDLIyc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:54:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 11F4B61356;
+        Mon, 12 Apr 2021 08:52:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218001;
-        bh=HrXDfkWLAHgBhHLX7G021lONn/NQRWIvuhj/m7t7rMg=;
+        s=korg; t=1618217565;
+        bh=AvMi+IRON0l3uZaPQFFZbksXVi7ECjJ1Eo7iSxkWVys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P21mu7hYVvdKoJo8XULr/67sMBemqdOoXyURmrKUpaLxdfXT260H5PovSy9o/CzP5
-         PAVXJKGUF3HicOEGkjuAb/K8HrIH+Q1zjI2rvfUOnN2lxNFxUCj+/ZqcR07fL7KTn8
-         NgfB2H3veB5XfZFgjljbmQ3ErC+yZ8BgsFjB8Ycs=
+        b=PGSmlFHaTj4T2xTXp4eGqkAdjK+S6xrF675shPe/rjhg3cZR9Q/yQIue7mhFrsFlp
+         Kf18HZicz2Vqr+J7KAWcsqVVZ3Nul4y66ekF1/MgSwdkJxxtdZvs49ywb547zen4Y9
+         clROuhAvzcKOlldDnOXEI/bF0JCy3MWPcdVOoq60=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Kubecek <mkubecek@suse.cz>,
-        Wong Vee Khee <vee.khee.wong@linux.intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.11 034/210] ethtool: fix incorrect datatype in set_eee ops
+        stable@vger.kernel.org, Wengang Wang <wen.gang.wang@oracle.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Mark Fasheh <mark@fasheh.com>,
+        Joel Becker <jlbec@evilplan.org>,
+        Junxiao Bi <junxiao.bi@oracle.com>,
+        Changwei Ge <gechangwei@live.cn>, Gang He <ghe@suse.com>,
+        Jun Piao <piaojun@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.10 025/188] ocfs2: fix deadlock between setattr and dio_end_io_write
 Date:   Mon, 12 Apr 2021 10:38:59 +0200
-Message-Id: <20210412084017.147653974@linuxfoundation.org>
+Message-Id: <20210412084014.493220766@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
-References: <20210412084016.009884719@linuxfoundation.org>
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+References: <20210412084013.643370347@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,37 +46,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wong Vee Khee <vee.khee.wong@linux.intel.com>
+From: Wengang Wang <wen.gang.wang@oracle.com>
 
-commit 63cf32389925e234d166fb1a336b46de7f846003 upstream.
+commit 90bd070aae6c4fb5d302f9c4b9c88be60c8197ec upstream.
 
-The member 'tx_lpi_timer' is defined with __u32 datatype in the ethtool
-header file. Hence, we should use ethnl_update_u32() in set_eee ops.
+The following deadlock is detected:
 
-Fixes: fd77be7bd43c ("ethtool: set EEE settings with EEE_SET request")
-Cc: <stable@vger.kernel.org> # 5.10.x
-Cc: Michal Kubecek <mkubecek@suse.cz>
-Signed-off-by: Wong Vee Khee <vee.khee.wong@linux.intel.com>
-Reviewed-by: Jakub Kicinski <kuba@kernel.org>
-Reviewed-by: Michal Kubecek <mkubecek@suse.cz>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+  truncate -> setattr path is waiting for pending direct IO to be done (inode->i_dio_count become zero) with inode->i_rwsem held (down_write).
+
+  PID: 14827  TASK: ffff881686a9af80  CPU: 20  COMMAND: "ora_p005_hrltd9"
+   #0  __schedule at ffffffff818667cc
+   #1  schedule at ffffffff81866de6
+   #2  inode_dio_wait at ffffffff812a2d04
+   #3  ocfs2_setattr at ffffffffc05f322e [ocfs2]
+   #4  notify_change at ffffffff812a5a09
+   #5  do_truncate at ffffffff812808f5
+   #6  do_sys_ftruncate.constprop.18 at ffffffff81280cf2
+   #7  sys_ftruncate at ffffffff81280d8e
+   #8  do_syscall_64 at ffffffff81003949
+   #9  entry_SYSCALL_64_after_hwframe at ffffffff81a001ad
+
+dio completion path is going to complete one direct IO (decrement
+inode->i_dio_count), but before that it hung at locking inode->i_rwsem:
+
+   #0  __schedule+700 at ffffffff818667cc
+   #1  schedule+54 at ffffffff81866de6
+   #2  rwsem_down_write_failed+536 at ffffffff8186aa28
+   #3  call_rwsem_down_write_failed+23 at ffffffff8185a1b7
+   #4  down_write+45 at ffffffff81869c9d
+   #5  ocfs2_dio_end_io_write+180 at ffffffffc05d5444 [ocfs2]
+   #6  ocfs2_dio_end_io+85 at ffffffffc05d5a85 [ocfs2]
+   #7  dio_complete+140 at ffffffff812c873c
+   #8  dio_aio_complete_work+25 at ffffffff812c89f9
+   #9  process_one_work+361 at ffffffff810b1889
+  #10  worker_thread+77 at ffffffff810b233d
+  #11  kthread+261 at ffffffff810b7fd5
+  #12  ret_from_fork+62 at ffffffff81a0035e
+
+Thus above forms ABBA deadlock.  The same deadlock was mentioned in
+upstream commit 28f5a8a7c033 ("ocfs2: should wait dio before inode lock
+in ocfs2_setattr()").  It seems that that commit only removed the
+cluster lock (the victim of above dead lock) from the ABBA deadlock
+party.
+
+End-user visible effects: Process hang in truncate -> ocfs2_setattr path
+and other processes hang at ocfs2_dio_end_io_write path.
+
+This is to fix the deadlock itself.  It removes inode_lock() call from
+dio completion path to remove the deadlock and add ip_alloc_sem lock in
+setattr path to synchronize the inode modifications.
+
+[wen.gang.wang@oracle.com: remove the "had_alloc_lock" as suggested]
+  Link: https://lkml.kernel.org/r/20210402171344.1605-1-wen.gang.wang@oracle.com
+
+Link: https://lkml.kernel.org/r/20210331203654.3911-1-wen.gang.wang@oracle.com
+Signed-off-by: Wengang Wang <wen.gang.wang@oracle.com>
+Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
+Cc: Mark Fasheh <mark@fasheh.com>
+Cc: Joel Becker <jlbec@evilplan.org>
+Cc: Junxiao Bi <junxiao.bi@oracle.com>
+Cc: Changwei Ge <gechangwei@live.cn>
+Cc: Gang He <ghe@suse.com>
+Cc: Jun Piao <piaojun@huawei.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ethtool/eee.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ocfs2/aops.c |   11 +----------
+ fs/ocfs2/file.c |    8 ++++++--
+ 2 files changed, 7 insertions(+), 12 deletions(-)
 
---- a/net/ethtool/eee.c
-+++ b/net/ethtool/eee.c
-@@ -169,8 +169,8 @@ int ethnl_set_eee(struct sk_buff *skb, s
- 	ethnl_update_bool32(&eee.eee_enabled, tb[ETHTOOL_A_EEE_ENABLED], &mod);
- 	ethnl_update_bool32(&eee.tx_lpi_enabled,
- 			    tb[ETHTOOL_A_EEE_TX_LPI_ENABLED], &mod);
--	ethnl_update_bool32(&eee.tx_lpi_timer, tb[ETHTOOL_A_EEE_TX_LPI_TIMER],
--			    &mod);
-+	ethnl_update_u32(&eee.tx_lpi_timer, tb[ETHTOOL_A_EEE_TX_LPI_TIMER],
-+			 &mod);
- 	ret = 0;
- 	if (!mod)
- 		goto out_ops;
+--- a/fs/ocfs2/aops.c
++++ b/fs/ocfs2/aops.c
+@@ -2295,7 +2295,7 @@ static int ocfs2_dio_end_io_write(struct
+ 	struct ocfs2_alloc_context *meta_ac = NULL;
+ 	handle_t *handle = NULL;
+ 	loff_t end = offset + bytes;
+-	int ret = 0, credits = 0, locked = 0;
++	int ret = 0, credits = 0;
+ 
+ 	ocfs2_init_dealloc_ctxt(&dealloc);
+ 
+@@ -2306,13 +2306,6 @@ static int ocfs2_dio_end_io_write(struct
+ 	    !dwc->dw_orphaned)
+ 		goto out;
+ 
+-	/* ocfs2_file_write_iter will get i_mutex, so we need not lock if we
+-	 * are in that context. */
+-	if (dwc->dw_writer_pid != task_pid_nr(current)) {
+-		inode_lock(inode);
+-		locked = 1;
+-	}
+-
+ 	ret = ocfs2_inode_lock(inode, &di_bh, 1);
+ 	if (ret < 0) {
+ 		mlog_errno(ret);
+@@ -2393,8 +2386,6 @@ out:
+ 	if (meta_ac)
+ 		ocfs2_free_alloc_context(meta_ac);
+ 	ocfs2_run_deallocs(osb, &dealloc);
+-	if (locked)
+-		inode_unlock(inode);
+ 	ocfs2_dio_free_write_ctx(inode, dwc);
+ 
+ 	return ret;
+--- a/fs/ocfs2/file.c
++++ b/fs/ocfs2/file.c
+@@ -1244,22 +1244,24 @@ int ocfs2_setattr(struct dentry *dentry,
+ 				goto bail_unlock;
+ 			}
+ 		}
++		down_write(&OCFS2_I(inode)->ip_alloc_sem);
+ 		handle = ocfs2_start_trans(osb, OCFS2_INODE_UPDATE_CREDITS +
+ 					   2 * ocfs2_quota_trans_credits(sb));
+ 		if (IS_ERR(handle)) {
+ 			status = PTR_ERR(handle);
+ 			mlog_errno(status);
+-			goto bail_unlock;
++			goto bail_unlock_alloc;
+ 		}
+ 		status = __dquot_transfer(inode, transfer_to);
+ 		if (status < 0)
+ 			goto bail_commit;
+ 	} else {
++		down_write(&OCFS2_I(inode)->ip_alloc_sem);
+ 		handle = ocfs2_start_trans(osb, OCFS2_INODE_UPDATE_CREDITS);
+ 		if (IS_ERR(handle)) {
+ 			status = PTR_ERR(handle);
+ 			mlog_errno(status);
+-			goto bail_unlock;
++			goto bail_unlock_alloc;
+ 		}
+ 	}
+ 
+@@ -1272,6 +1274,8 @@ int ocfs2_setattr(struct dentry *dentry,
+ 
+ bail_commit:
+ 	ocfs2_commit_trans(osb, handle);
++bail_unlock_alloc:
++	up_write(&OCFS2_I(inode)->ip_alloc_sem);
+ bail_unlock:
+ 	if (status && inode_locked) {
+ 		ocfs2_inode_unlock_tracker(inode, 1, &oh, had_lock);
 
 
