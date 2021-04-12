@@ -2,85 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 611CB35CD40
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C625835CEA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:54:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245438AbhDLQeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:34:22 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60586 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S244343AbhDLQ1t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:27:49 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13CGQIJT029160;
-        Mon, 12 Apr 2021 18:27:25 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=5KDL4+wCL/RdEldQijS3CgPsT7I4YVF6zQxSMq/morU=;
- b=ugOAcuft2aUQCAUioP4D+MJ41O+4Ho7dnag/F0nzVxrCpIZavKbbkAQ7nm23WBRhnNBB
- Wf7oXeV3qx6dr+IPnEdVpSflHpLK/YAwdKQeV8jCkIFgHtkKClLPiu2vc4CmILhI51Rv
- 295hQK/v4ps8EAlHOtEfriwo2hBkEFrmPShztjb84AjL5sDxrYnwfXyPJaD3PnIxkmLZ
- ARfcPKBq0V9AFXkEmx1/mC1lmJLQ/tC33+bC/gszIpRfhGvvmahpb86z6brb4Ojhda3E
- dIxK2dS/kDm3GIDE9rXYWDLEu7DeV4SUW3QTSPDNjTF5qFXNmht7b3OA6iCtmfdBAGMs kg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 37vrp58dsx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 12 Apr 2021 18:27:25 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 777AD10002A;
-        Mon, 12 Apr 2021 18:27:25 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 66253232C79;
-        Mon, 12 Apr 2021 18:27:25 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.49) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 12 Apr
- 2021 18:27:25 +0200
-Subject: Re: [Linux-stm32] [RESEND PATCH 0/3] MAINTAINERS: update
- STMicroelectronics email
-To:     Arnd Bergmann <arnd@arndb.de>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        SoC Team <soc@kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210216074929.29033-1-patrice.chotard@foss.st.com>
- <1cd91834-6df8-a655-a3b1-0e16f5fe470d@foss.st.com>
- <52c32145-7f29-8944-58dc-dc2fb406ffb0@foss.st.com>
- <CAK8P3a1upDuztHd0pH_dM+OpMp8WtiMPAZN8p=9xxtCSVJGZMw@mail.gmail.com>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <2a3edcb1-df18-fed9-c91c-1e014033004c@foss.st.com>
-Date:   Mon, 12 Apr 2021 18:27:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1345496AbhDLQrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:47:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244513AbhDLQh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:37:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE654613EC;
+        Mon, 12 Apr 2021 16:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618244871;
+        bh=CdciPnGCjQHz/s6U0m4C9OppoCGXYrfiUbQmNnmrSns=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=h2dgOB0O4tYPqfYAo+nXJQ//QrvFSgzy+8u4/BDi2kTgYDYVNvkVIfte+T/PxFg3h
+         Us1z0Ewsd+mzXvj7jcm4m2pxZEkfXmZkynXXuDxFwILtAywhsJDrEBwtBL6/5ndfF1
+         pAnthqvTSgc8tDz6VEF3qKFKvMbxAs0B1I9DUCTSkWm2LQDkRoREX/igbWhrsfIgRe
+         eBF8vK6N0GoFzh8+QBC0Z5rq0kDzd/zqa4lNKPZA46Ks5cynIYdXVTM0ghMOdB5Cl7
+         Qh+9bkRP/2JXB5iltX1RzddKhAvH/H7pmeGcvfGvbScjlLydOG8CcuggBItUdMYqf8
+         zTHbF2qyKku0A==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Alexander Aring <aahringo@redhat.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Sasha Levin <sashal@kernel.org>, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 11/23] net: ieee802154: stop dump llsec devs for monitors
+Date:   Mon, 12 Apr 2021 12:27:24 -0400
+Message-Id: <20210412162736.316026-11-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210412162736.316026-1-sashal@kernel.org>
+References: <20210412162736.316026-1-sashal@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1upDuztHd0pH_dM+OpMp8WtiMPAZN8p=9xxtCSVJGZMw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.49]
-X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-04-12_11:2021-04-12,2021-04-12 signatures=0
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Alexander Aring <aahringo@redhat.com>
 
+[ Upstream commit 5582d641e6740839c9b83efd1fbf9bcd00b6f5fc ]
 
-On 4/12/21 3:48 PM, Arnd Bergmann wrote:
-> On Mon, Apr 12, 2021 at 12:19 PM Patrice CHOTARD
-> <patrice.chotard@foss.st.com> wrote:
->>
->> Hi
->>
->> I think this series has been forgotten, any chance to see it merged into v5.13 ?
-> 
-> It's in -rc7, but it appears that my email reply went missing when I merged it.
-> 
->       Arnd
-> 
+This patch stops dumping llsec devs for monitors which we don't support
+yet. Otherwise we will access llsec mib which isn't initialized for
+monitors.
 
-Perfect, thanks for confirmation ;-) 
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Link: https://lore.kernel.org/r/20210405003054.256017-7-aahringo@redhat.com
+Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/ieee802154/nl802154.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Patrice
+diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
+index 36f2d44a8753..19a900292f20 100644
+--- a/net/ieee802154/nl802154.c
++++ b/net/ieee802154/nl802154.c
+@@ -1651,6 +1651,11 @@ nl802154_dump_llsec_dev(struct sk_buff *skb, struct netlink_callback *cb)
+ 	if (err)
+ 		return err;
+ 
++	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR) {
++		err = skb->len;
++		goto out_err;
++	}
++
+ 	if (!wpan_dev->netdev) {
+ 		err = -EINVAL;
+ 		goto out_err;
+-- 
+2.30.2
+
