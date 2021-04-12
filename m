@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0855235BC72
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571C335BD5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237428AbhDLInB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:43:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34264 "EHLO mail.kernel.org"
+        id S237880AbhDLIvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:51:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237412AbhDLIm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:42:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63A54611F0;
-        Mon, 12 Apr 2021 08:42:38 +0000 (UTC)
+        id S237900AbhDLIrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:47:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF24C61246;
+        Mon, 12 Apr 2021 08:46:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618216958;
-        bh=GapSnziyoNykp8bsRduBgImD1eNCZhBiqHYLL5VvxQo=;
+        s=korg; t=1618217219;
+        bh=kyNMQWNUVWzlRPfJeM+O0r4v4xNKRyFd/vCsPJf4Lz4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gqm9W0fCvrE5dIFli7oqz5NDbldu+OWAkYoNqfcfGzRmbxbIXVz1QBWSIC8N346j1
-         5dsLXjIDiK0n1A5VmdMvPdbBdddBgqcUJULN2OLFbqmN02L/Q26N5IkbQfNGIn+ZS9
-         9IOYOUOc1LaTqPdmQ2yuu8gLjcjq+mcof+/01684=
+        b=S8P6ruSpiOcFRr+FqviIDM88BXsCzMIBtGstNYCcDKEXYySVu4M1/pP3zqcsJk/A0
+         2nF/8bPr3GnX9EzNQTSNZynoOpYuDNOcyPvAObG8nRuuW1jgT5tXBXHMKJS+FlKOz9
+         huU6Oz709DG2KsFsxDTtCCxxLCEzz2DbBzxFdb0M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 18/66] net: hso: fix null-ptr-deref during tty device unregistration
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 046/111] regulator: bd9571mwv: Fix AVS and DVFS voltage range
 Date:   Mon, 12 Apr 2021 10:40:24 +0200
-Message-Id: <20210412083958.723261908@linuxfoundation.org>
+Message-Id: <20210412084005.781475135@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-References: <20210412083958.129944265@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,143 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anirudh Rayabharam <mail@anirudhrb.com>
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-commit 8a12f8836145ffe37e9c8733dce18c22fb668b66 upstream.
+[ Upstream commit 3b6e7088afc919f5b52e4d2de8501ad34d35b09b ]
 
-Multiple ttys try to claim the same the minor number causing a double
-unregistration of the same device. The first unregistration succeeds
-but the next one results in a null-ptr-deref.
+According to Table 30 ("DVFS_MoniVDAC [6:0] Setting Table") in the
+BD9571MWV-M Datasheet Rev. 002, the valid voltage range is 600..1100 mV
+(settings 0x3c..0x6e).  While the lower limit is taken into account (by
+setting regulator_desc.linear_min_sel to 0x3c), the upper limit is not.
 
-The get_free_serial_index() function returns an available minor number
-but doesn't assign it immediately. The assignment is done by the caller
-later. But before this assignment, calls to get_free_serial_index()
-would return the same minor number.
+Fix this by reducing regulator_desc.n_voltages from 0x80 to 0x6f.
 
-Fix this by modifying get_free_serial_index to assign the minor number
-immediately after one is found to be and rename it to obtain_minor()
-to better reflect what it does. Similary, rename set_serial_by_index()
-to release_minor() and modify it to free up the minor number of the
-given hso_serial. Every obtain_minor() should have corresponding
-release_minor() call.
-
-Fixes: 72dc1c096c705 ("HSO: add option hso driver")
-Reported-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
-Tested-by: syzbot+c49fe6089f295a05e6f8@syzkaller.appspotmail.com
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: e85c5a153fe237f2 ("regulator: Add ROHM BD9571MWV-M PMIC regulator driver")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20210312130242.3390038-2-geert+renesas@glider.be
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/hso.c |   33 ++++++++++++---------------------
- 1 file changed, 12 insertions(+), 21 deletions(-)
+ drivers/regulator/bd9571mwv-regulator.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/usb/hso.c
-+++ b/drivers/net/usb/hso.c
-@@ -625,7 +625,7 @@ static struct hso_serial *get_serial_by_
- 	return serial;
- }
+diff --git a/drivers/regulator/bd9571mwv-regulator.c b/drivers/regulator/bd9571mwv-regulator.c
+index e690c2ce5b3c..25e33028871c 100644
+--- a/drivers/regulator/bd9571mwv-regulator.c
++++ b/drivers/regulator/bd9571mwv-regulator.c
+@@ -124,7 +124,7 @@ static const struct regulator_ops vid_ops = {
  
--static int get_free_serial_index(void)
-+static int obtain_minor(struct hso_serial *serial)
- {
- 	int index;
- 	unsigned long flags;
-@@ -633,8 +633,10 @@ static int get_free_serial_index(void)
- 	spin_lock_irqsave(&serial_table_lock, flags);
- 	for (index = 0; index < HSO_SERIAL_TTY_MINORS; index++) {
- 		if (serial_table[index] == NULL) {
-+			serial_table[index] = serial->parent;
-+			serial->minor = index;
- 			spin_unlock_irqrestore(&serial_table_lock, flags);
--			return index;
-+			return 0;
- 		}
- 	}
- 	spin_unlock_irqrestore(&serial_table_lock, flags);
-@@ -643,15 +645,12 @@ static int get_free_serial_index(void)
- 	return -1;
- }
+ static const struct regulator_desc regulators[] = {
+ 	BD9571MWV_REG("VD09", "vd09", VD09, avs_ops, 0, 0x7f,
+-		      0x80, 600000, 10000, 0x3c),
++		      0x6f, 600000, 10000, 0x3c),
+ 	BD9571MWV_REG("VD18", "vd18", VD18, vid_ops, BD9571MWV_VD18_VID, 0xf,
+ 		      16, 1625000, 25000, 0),
+ 	BD9571MWV_REG("VD25", "vd25", VD25, vid_ops, BD9571MWV_VD25_VID, 0xf,
+@@ -133,7 +133,7 @@ static const struct regulator_desc regulators[] = {
+ 		      11, 2800000, 100000, 0),
+ 	BD9571MWV_REG("DVFS", "dvfs", DVFS, reg_ops,
+ 		      BD9571MWV_DVFS_MONIVDAC, 0x7f,
+-		      0x80, 600000, 10000, 0x3c),
++		      0x6f, 600000, 10000, 0x3c),
+ };
  
--static void set_serial_by_index(unsigned index, struct hso_serial *serial)
-+static void release_minor(struct hso_serial *serial)
- {
- 	unsigned long flags;
- 
- 	spin_lock_irqsave(&serial_table_lock, flags);
--	if (serial)
--		serial_table[index] = serial->parent;
--	else
--		serial_table[index] = NULL;
-+	serial_table[serial->minor] = NULL;
- 	spin_unlock_irqrestore(&serial_table_lock, flags);
- }
- 
-@@ -2244,6 +2243,7 @@ static int hso_stop_serial_device(struct
- static void hso_serial_tty_unregister(struct hso_serial *serial)
- {
- 	tty_unregister_device(tty_drv, serial->minor);
-+	release_minor(serial);
- }
- 
- static void hso_serial_common_free(struct hso_serial *serial)
-@@ -2267,24 +2267,22 @@ static void hso_serial_common_free(struc
- static int hso_serial_common_create(struct hso_serial *serial, int num_urbs,
- 				    int rx_size, int tx_size)
- {
--	int minor;
- 	int i;
- 
- 	tty_port_init(&serial->port);
- 
--	minor = get_free_serial_index();
--	if (minor < 0)
-+	if (obtain_minor(serial))
- 		goto exit2;
- 
- 	/* register our minor number */
- 	serial->parent->dev = tty_port_register_device_attr(&serial->port,
--			tty_drv, minor, &serial->parent->interface->dev,
-+			tty_drv, serial->minor, &serial->parent->interface->dev,
- 			serial->parent, hso_serial_dev_groups);
--	if (IS_ERR(serial->parent->dev))
-+	if (IS_ERR(serial->parent->dev)) {
-+		release_minor(serial);
- 		goto exit2;
-+	}
- 
--	/* fill in specific data for later use */
--	serial->minor = minor;
- 	serial->magic = HSO_SERIAL_MAGIC;
- 	spin_lock_init(&serial->serial_lock);
- 	serial->num_rx_urbs = num_urbs;
-@@ -2677,9 +2675,6 @@ static struct hso_device *hso_create_bul
- 
- 	serial->write_data = hso_std_serial_write_data;
- 
--	/* and record this serial */
--	set_serial_by_index(serial->minor, serial);
--
- 	/* setup the proc dirs and files if needed */
- 	hso_log_port(hso_dev);
- 
-@@ -2736,9 +2731,6 @@ struct hso_device *hso_create_mux_serial
- 	serial->shared_int->ref_count++;
- 	mutex_unlock(&serial->shared_int->shared_int_lock);
- 
--	/* and record this serial */
--	set_serial_by_index(serial->minor, serial);
--
- 	/* setup the proc dirs and files if needed */
- 	hso_log_port(hso_dev);
- 
-@@ -3123,7 +3115,6 @@ static void hso_free_interface(struct us
- 			cancel_work_sync(&serial_table[i]->async_get_intf);
- 			hso_serial_tty_unregister(serial);
- 			kref_put(&serial_table[i]->ref, hso_serial_ref_free);
--			set_serial_by_index(i, NULL);
- 		}
- 	}
- 
+ #ifdef CONFIG_PM_SLEEP
+-- 
+2.30.2
+
 
 
