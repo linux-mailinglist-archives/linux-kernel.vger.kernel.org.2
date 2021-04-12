@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C0435C952
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B0335C957
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242521AbhDLPBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:01:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29034 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S241302AbhDLPBJ (ORCPT
+        id S242619AbhDLPBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241302AbhDLPBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:01:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618239651;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VNdKS9KNgagmrHQvjGL4Hvng5mswnO3U1Do4oQAu2Vo=;
-        b=jGpegdS6PZyVEdyOPRxtAtWWWar8fLcNilulJ8GL+MIap76ueVXtUOdLsKK6DhT5JpwdTT
-        tseYRdPAiHeBc7DeoczbmrBN2TlTQvJUkh8i3Xj3UCTsoPVdrwaMbr3neVjXRKHHTjE+Mz
-        sHwzQxT8KVmD8mXiXhlwVTyGxxypIQM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-290-zHNgWqTNMCqnuTnLJSnPSQ-1; Mon, 12 Apr 2021 11:00:47 -0400
-X-MC-Unique: zHNgWqTNMCqnuTnLJSnPSQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E157108C317;
-        Mon, 12 Apr 2021 15:00:43 +0000 (UTC)
-Received: from laptop.redhat.com (ovpn-113-253.ams2.redhat.com [10.36.113.253])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 95F165D6D1;
-        Mon, 12 Apr 2021 15:00:39 +0000 (UTC)
-From:   Eric Auger <eric.auger@redhat.com>
-To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, maz@kernel.org,
-        alexandru.elisei@arm.com, suzuki.poulose@arm.com,
-        james.morse@arm.com
-Cc:     drjones@redhat.com, gshan@redhat.com
-Subject: [PATCH] KVM: arm/arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST read
-Date:   Mon, 12 Apr 2021 17:00:34 +0200
-Message-Id: <20210412150034.29185-1-eric.auger@redhat.com>
+        Mon, 12 Apr 2021 11:01:12 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBEDEC061574;
+        Mon, 12 Apr 2021 08:00:54 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id t22so6184378ply.1;
+        Mon, 12 Apr 2021 08:00:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=0hXhggls3SsdmeEdICPiR/mw1VhFjhbR9Aip2rqIyO4=;
+        b=Lt7Kkeff+wv/0Sl+wVWKVeQuDdCJsddS3WDO/HsC7ExIVOTCGMqJ53FXjfq4eVyIym
+         pJKnIVc+O4MisoROlRvAQc9NAQzobVbiuCLk8GHwE0ttLYCB9ML5VAUxiWar0OEdMzSU
+         Uug2+3qMemrFi7/VGW3QUlvsRZoHX9avflweqAQH5yvxQOujn6/iGvKT4SijR7zil+rl
+         x6/AnREpIPbZ1Tq4MrunHSc+prLscYWUtde56wIbn1BgTik89FOU279kyA7PoX9eb6bz
+         JbcxqyrzcN/t8Y3V33W6VdpUYoBuSQOFi/EhMzNq5Lj15Ikg9oM4Hkx/+4hOH7byY3Lq
+         5asw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=0hXhggls3SsdmeEdICPiR/mw1VhFjhbR9Aip2rqIyO4=;
+        b=EzrIIZYgmw6VOSLHt4dpTqb8cP6VvFac+SLAbw/x+Gz8Yo1mXUdJ5UYhQoktxTodp8
+         Nd0qnBUbU2OG35d8cruxFG1xnWKqNkemx7m6gknNxzmlpY54Ym/KygvlWwMEWWem+Rr7
+         8Y7+x1wi5on/QfqGQTUeZyCVQvHp7UnROlgSPIvGRo8mJCaLM+wADIOWjYO7GiWWzWlR
+         y9ixGtvgYNHYWA8B7iPf/qZgfTuNw8O1pEIHVP5ZrLSvoQGJLb7Wg50KRGiUJXWs7Yr0
+         KvFAH81x6GevRA9JAGj/ZDBguImMwGnL503BLGiqIqUIgFmotUFD9zLIcd5IWK5Yh4PZ
+         yNKA==
+X-Gm-Message-State: AOAM532Di8n9Jk0cZz1PfA0xhjXun8Ud+Uo7gQThxdbYejOnbaguwe0I
+        bUMXSlDKGI0SYDV+HdmTPxdKoyY/Sr+9WTlU
+X-Google-Smtp-Source: ABdhPJyN89fUbcwYmwo8tfuHo+uILoVx2ouA4h+2bcTXZPQh0cGMV43Wr4ZOUK3zn/geNKDM7piASA==
+X-Received: by 2002:a17:90b:3892:: with SMTP id mu18mr27963088pjb.7.1618239654319;
+        Mon, 12 Apr 2021 08:00:54 -0700 (PDT)
+Received: from localhost.localdomain ([138.197.212.246])
+        by smtp.gmail.com with ESMTPSA id y19sm12255982pge.50.2021.04.12.08.00.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 08:00:53 -0700 (PDT)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Marek Behun <marek.behun@nic.cz>,
+        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        zhang kai <zhangkaiheb@126.com>,
+        Weilong Chen <chenweilong@huawei.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Di Zhu <zhudi21@huawei.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
+Date:   Mon, 12 Apr 2021 23:00:45 +0800
+Message-Id: <20210412150045.929508-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210411185017.3xf7kxzzq2vefpwu@skbuf>
+References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When reading the base address of the a REDIST region
-through KVM_VGIC_V3_ADDR_TYPE_REDIST we expect the
-redistributor region list to be populated with a single
-element.
+On Sun, Apr 11, 2021 at 09:50:17PM +0300, Vladimir Oltean wrote:
+> 
+> So I'd be tempted to say 'tough luck' if all your ports are not up, and
+> the ones that are are assigned statically to the same CPU port. It's a
+> compromise between flexibility and simplicity, and I would go for
+> simplicity here. That's the most you can achieve with static assignment,
+> just put the CPU ports in a LAG if you want better dynamic load balancing
+> (for details read on below).
+> 
 
-However list_first_entry() expects the list to be non empty.
-Instead we should use list_first_entry_or_null which effectively
-returns NULL if the list is empty.
-
-Fixes: dbd9733ab674 ("KVM: arm/arm64: Replace the single rdist region by a list")
-Cc: <Stable@vger.kernel.org> # v4.18+
-Signed-off-by: Eric Auger <eric.auger@redhat.com>
-Reported-by: Gavin Shan <gshan@redhat.com>
----
- arch/arm64/kvm/vgic/vgic-kvm-device.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/arm64/kvm/vgic/vgic-kvm-device.c b/arch/arm64/kvm/vgic/vgic-kvm-device.c
-index 44419679f91a..5eaede3e3b5a 100644
---- a/arch/arm64/kvm/vgic/vgic-kvm-device.c
-+++ b/arch/arm64/kvm/vgic/vgic-kvm-device.c
-@@ -87,8 +87,8 @@ int kvm_vgic_addr(struct kvm *kvm, unsigned long type, u64 *addr, bool write)
- 			r = vgic_v3_set_redist_base(kvm, 0, *addr, 0);
- 			goto out;
- 		}
--		rdreg = list_first_entry(&vgic->rd_regions,
--					 struct vgic_redist_region, list);
-+		rdreg = list_first_entry_or_null(&vgic->rd_regions,
-+						 struct vgic_redist_region, list);
- 		if (!rdreg)
- 			addr_ptr = &undef_value;
- 		else
--- 
-2.26.3
-
+Many switches such as mv88e6xxx only support MAC DA/SA load balancing,
+which make it not ideal in router application (Router WAN <--> ISP BRAS
+traffic will always have the same DA/SA and thus use only one port).
