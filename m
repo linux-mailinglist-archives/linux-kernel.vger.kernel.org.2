@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF2F35C99B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39AE35C9A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242759AbhDLPUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:20:05 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:59991 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239412AbhDLPUA (ORCPT
+        id S242800AbhDLPVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:21:13 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39890 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241439AbhDLPVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:20:00 -0400
-Received: from marcel-macbook.holtmann.net (p5b3d235a.dip0.t-ipconnect.de [91.61.35.90])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 4CF9CCED18;
-        Mon, 12 Apr 2021 17:27:24 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH 2/2] Bluetooth: btusb: Add support for Lite-On Mediatek
- Chip
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210412150627.31913-2-mark-yw.chen@mediatek.com>
-Date:   Mon, 12 Apr 2021 17:19:39 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>, chris.lu@mediatek.com,
-        will-cy.lee@mediatek.com, sean.wang@mediatek.com,
-        linux-bluetooth@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        rex-bc.chen@mediatek.com
-Content-Transfer-Encoding: 7bit
-Message-Id: <46F67AC4-3B14-475F-9B7A-D11C4ABCFCCD@holtmann.org>
-References: <20210412150627.31913-1-mark-yw.chen@mediatek.com>
- <20210412150627.31913-2-mark-yw.chen@mediatek.com>
-To:     Mark Chen <Mark-YW.Chen@mediatek.com>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Mon, 12 Apr 2021 11:21:12 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618240853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=28Rr5+Qrcl4XZ0tZdNBk5TXZkCeBMrqsuTo/v1rfjAY=;
+        b=Zvgw+mqfQ++qlV1vkbxie1Nh65pR9tSYvjG2Z9ZY+1ghvYnCGpwjACgSm94H5oWbyHoR/l
+        wEBUmaKxSQT/8QZRTisxl4CbB2h9c4EL4TP+UT0JnfYiBLsT56a/hFGzaburdz/F38wh68
+        yQ287l0Dbdtyw8ZMJ1aZofCsUffnHRxNmuYvmyoHUs5uo6A5iM/Pa8U2iLnsJ0VxUCvlFH
+        rwjgKeeT72UgZk5kIq5futfVqhTHsGebqVwcLHDEcjaA/gdujhFHHXo6p1IqTWGTPHJ1wV
+        HudgEw+GWMHeRAWxN8uItYCgEsh2Ca50LbFC2bPru53erIlOrX4vqAC500ryXA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618240853;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=28Rr5+Qrcl4XZ0tZdNBk5TXZkCeBMrqsuTo/v1rfjAY=;
+        b=d/0WU7g/UW69zxuFDoQi1zeazHTJOyd2wTsJS2aPl4v1CU8MtD7yvbD0o9pyzF+S7JGq1l
+        2bxckYqmPR6AmPBQ==
+To:     Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com, bigeasy@linutronix.de,
+        hch@infradead.org, npiggin@kernel.dk
+Subject: Re: bl_list and lockdep
+In-Reply-To: <20210406212253.GC1990290@dread.disaster.area>
+References: <20210406123343.1739669-1-david@fromorbit.com> <20210406123343.1739669-4-david@fromorbit.com> <20210406132834.GP2531743@casper.infradead.org> <20210406212253.GC1990290@dread.disaster.area>
+Date:   Mon, 12 Apr 2021 17:20:53 +0200
+Message-ID: <874kgb1qcq.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+Dave,
 
-> Add support for Lite-On Mediatek Chip (MT7921)
-> Lite On VID = 04CA.
-> 
-> * /sys/kernel/debug/usb/devices
-> T:  Bus=01 Lev=03 Prnt=04 Port=01 Cnt=02 Dev#=  8 Spd=480  MxCh= 0
-> D:  Ver= 2.10 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
-> P:  Vendor=04ca ProdID=3802 Rev= 1.00
-> S:  Manufacturer=MediaTek Inc.
-> S:  Product=Wireless_Device
-> S:  SerialNumber=000000000
-> C:* #Ifs= 3 Cfg#= 1 Atr=e0 MxPwr=100mA
-> A:  FirstIf#= 0 IfCount= 3 Cls=e0(wlcon) Sub=01 Prot=01
-> I:* If#= 0 Alt= 0 #EPs= 3 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=81(I) Atr=03(Int.) MxPS=  16 Ivl=125us
-> E:  Ad=82(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> E:  Ad=02(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
-> I:* If#= 1 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   0 Ivl=1ms
-> I:  If#= 1 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=   9 Ivl=1ms
-> I:  If#= 1 Alt= 2 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  17 Ivl=1ms
-> I:  If#= 1 Alt= 3 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  25 Ivl=1ms
-> I:  If#= 1 Alt= 4 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  33 Ivl=1ms
-> I:  If#= 1 Alt= 5 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  49 Ivl=1ms
-> I:  If#= 1 Alt= 6 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=btusb
-> E:  Ad=83(I) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-> E:  Ad=03(O) Atr=01(Isoc) MxPS=  63 Ivl=1ms
-> I:* If#= 2 Alt= 0 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-> E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
-> E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
-> I:  If#= 2 Alt= 1 #EPs= 2 Cls=e0(wlcon) Sub=01 Prot=01 Driver=(none)
-> E:  Ad=8a(I) Atr=03(Int.) MxPS=  64 Ivl=125us
-> E:  Ad=0a(O) Atr=03(Int.) MxPS=  64 Ivl=125us
-> 
-> Signed-off-by: mark-yw.chen <mark-yw.chen@mediatek.com>
-> ---
-> drivers/bluetooth/btusb.c | 5 +++++
-> 1 file changed, 5 insertions(+)
+On Wed, Apr 07 2021 at 07:22, Dave Chinner wrote:
+> On Tue, Apr 06, 2021 at 02:28:34PM +0100, Matthew Wilcox wrote:
+>> On Tue, Apr 06, 2021 at 10:33:43PM +1000, Dave Chinner wrote:
+>> > +++ b/fs/inode.c
+>> > @@ -57,8 +57,7 @@
+>> >  
+>> >  static unsigned int i_hash_mask __read_mostly;
+>> >  static unsigned int i_hash_shift __read_mostly;
+>> > -static struct hlist_head *inode_hashtable __read_mostly;
+>> > -static __cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_hash_lock);
+>> > +static struct hlist_bl_head *inode_hashtable __read_mostly;
+>> 
+>> I'm a little concerned that we're losing a lockdep map here.  
+>> 
+>> Nobody seems to have done this for list_bl yet, and I'd be reluctant
+>> to gate your patch on "Hey, Dave, solve this problem nobody else has
+>> done yet".
+>
+> I really don't care about lockdep. Adding lockdep support to
+> hlist_bl is somebody else's problem - I'm just using infrastructure
+> that already exists. Also, the dentry cache usage of hlist_bl is
+> vastly more complex and so if lockdep coverage was really necessary,
+> it would have already been done....
+>
+> And, FWIW, I'm also aware of the problems that RT kernels have with
+> the use of bit spinlocks and being unable to turn them into sleeping
+> mutexes by preprocessor magic. I don't care about that either,
+> because dentry cache...
 
-patch has been applied to bluetooth-next tree.
+In the dentry cache it's a non-issue.
 
-Regards
+RT does not have a problem with bit spinlocks per se, it depends on how
+they are used and what nests inside. Most of them are just kept as bit
+spinlocks because the lock held, and therefore preempt disabled times
+are small and no other on RT conflicting operations happen inside.
 
-Marcel
+In the case at hand this is going to be a problem because inode->i_lock
+nests inside the bit spinlock and we can't make inode->i_lock a raw
+spinlock because it protects way heavier weight code pathes as well.
+
+Thanks,
+
+        tglx
+
 
