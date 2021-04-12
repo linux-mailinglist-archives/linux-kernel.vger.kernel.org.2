@@ -2,195 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BB6F35BA7C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 08:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77DBE35BA81
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:00:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236744AbhDLG7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 02:59:46 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16443 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhDLG7n (ORCPT
+        id S236752AbhDLHAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:00:36 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:52057 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236692AbhDLHAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 02:59:43 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FJfgB2YnMzqTMK;
-        Mon, 12 Apr 2021 14:57:10 +0800 (CST)
-Received: from [10.174.176.162] (10.174.176.162) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 12 Apr 2021 14:59:21 +0800
-Subject: Re: [PATCH 1/5] mm/swapfile: add percpu_ref support for swap
-To:     "Huang, Ying" <ying.huang@intel.com>
-CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
-        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
-        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
-        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
-        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210408130820.48233-1-linmiaohe@huawei.com>
- <20210408130820.48233-2-linmiaohe@huawei.com>
- <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <87e0c968-f203-eaac-8993-0ae5d9abfd45@huawei.com>
-Date:   Mon, 12 Apr 2021 14:59:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 12 Apr 2021 03:00:32 -0400
+Received: by mail-io1-f72.google.com with SMTP id s13so8079822iow.18
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:00:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=a8MjXdSruPWsNT6YKlOq40bkg1Bt0LxN86WBiQWj0DY=;
+        b=oaAWTJkJbIm8qMy4NExo0PErU+rgb78islCj5aWvxly9eMMxewKgHSn/mLSViLdsuw
+         iUXjJHXFjE1+HpoD1UM6XaU4zjUqtNySG7+08tFhUks4QOgrR+F6O9oHg0Akhf4CDvMz
+         wKG0BRMvyo42L7bHk5cqi/nVdImY4c3nr2SR/j3QiXfLUBcVcgVP77Mz7bPKXfsY5nIY
+         zKfMjT7DRvU543OOZ03ZD7gkwBmHLQt1y5ISMR7zUFukSddMhTfIug1J4IFRcgl+ECZ6
+         p4eZ9dFAlKGCmQFfWx8YGD303ToJ7HJmG+ia8kreEGOJerH1+Pb8cuCoqnypqcPWI2vA
+         Ep8w==
+X-Gm-Message-State: AOAM532FvmAnzrVHRoMPhH44zrweeKG8qykvNJpa3eXm0e8tvz/mqhhw
+        gpXXTYD8lH85c0n5NOFRbx8Eruz1DqVnByjowhJrHBRqzsQJ
+X-Google-Smtp-Source: ABdhPJyYX7RRly5jRUCsB2jM4ji+pnoUuRRRuQXwlLySlY5Ug0xTtFw36aUjVAVKNxphyrVzmWPvkAoAlrCvbIl9aKgF0DHkB4iu
 MIME-Version: 1.0
-In-Reply-To: <87fszww55d.fsf@yhuang6-desk1.ccr.corp.intel.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.162]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a5e:cb4c:: with SMTP id h12mr20880277iok.183.1618210815240;
+ Mon, 12 Apr 2021 00:00:15 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 00:00:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d06f2605bfc110e4@google.com>
+Subject: [syzbot] WARNING in smk_set_cipso (2)
+From:   syzbot <syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com>
+To:     casey@schaufler-ca.com, jmorris@namei.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/12 11:30, Huang, Ying wrote:
-> Miaohe Lin <linmiaohe@huawei.com> writes:
-> 
->> We will use percpu-refcount to serialize against concurrent swapoff. This
->> patch adds the percpu_ref support for later fixup.
->>
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> ---
->>  include/linux/swap.h |  2 ++
->>  mm/swapfile.c        | 25 ++++++++++++++++++++++---
->>  2 files changed, 24 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/linux/swap.h b/include/linux/swap.h
->> index 144727041e78..849ba5265c11 100644
->> --- a/include/linux/swap.h
->> +++ b/include/linux/swap.h
->> @@ -240,6 +240,7 @@ struct swap_cluster_list {
->>   * The in-memory structure used to track swap areas.
->>   */
->>  struct swap_info_struct {
->> +	struct percpu_ref users;	/* serialization against concurrent swapoff */
->>  	unsigned long	flags;		/* SWP_USED etc: see above */
->>  	signed short	prio;		/* swap priority of this type */
->>  	struct plist_node list;		/* entry in swap_active_head */
->> @@ -260,6 +261,7 @@ struct swap_info_struct {
->>  	struct block_device *bdev;	/* swap device or bdev of swap file */
->>  	struct file *swap_file;		/* seldom referenced */
->>  	unsigned int old_block_size;	/* seldom referenced */
->> +	struct completion comp;		/* seldom referenced */
->>  #ifdef CONFIG_FRONTSWAP
->>  	unsigned long *frontswap_map;	/* frontswap in-use, one bit per page */
->>  	atomic_t frontswap_pages;	/* frontswap pages in-use counter */
->> diff --git a/mm/swapfile.c b/mm/swapfile.c
->> index 149e77454e3c..724173cd7d0c 100644
->> --- a/mm/swapfile.c
->> +++ b/mm/swapfile.c
->> @@ -39,6 +39,7 @@
->>  #include <linux/export.h>
->>  #include <linux/swap_slots.h>
->>  #include <linux/sort.h>
->> +#include <linux/completion.h>
->>  
->>  #include <asm/tlbflush.h>
->>  #include <linux/swapops.h>
->> @@ -511,6 +512,15 @@ static void swap_discard_work(struct work_struct *work)
->>  	spin_unlock(&si->lock);
->>  }
->>  
->> +static void swap_users_ref_free(struct percpu_ref *ref)
->> +{
->> +	struct swap_info_struct *si;
->> +
->> +	si = container_of(ref, struct swap_info_struct, users);
->> +	complete(&si->comp);
->> +	percpu_ref_exit(&si->users);
-> 
-> Because percpu_ref_exit() is used, we cannot use percpu_ref_tryget() in
-> get_swap_device(), better to add comments there.
+Hello,
 
-Will do.
+syzbot found the following issue on:
 
-> 
->> +}
->> +
->>  static void alloc_cluster(struct swap_info_struct *si, unsigned long idx)
->>  {
->>  	struct swap_cluster_info *ci = si->cluster_info;
->> @@ -2500,7 +2510,7 @@ static void enable_swap_info(struct swap_info_struct *p, int prio,
->>  	 * Guarantee swap_map, cluster_info, etc. fields are valid
->>  	 * between get/put_swap_device() if SWP_VALID bit is set
->>  	 */
->> -	synchronize_rcu();
->> +	percpu_ref_reinit(&p->users);
-> 
-> Although the effect is same, I think it's better to use
-> percpu_ref_resurrect() here to improve code readability.
-> 
+HEAD commit:    7d900724 Merge tag 'for-5.12-rc6-tag' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1462c619d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f91155ccddaf919c
+dashboard link: https://syzkaller.appspot.com/bug?extid=77c53db50c9fff774e8e
+compiler:       Debian clang version 11.0.1-2
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=132c59a1d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13acf5e9d00000
 
-Agree.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+77c53db50c9fff774e8e@syzkaller.appspotmail.com
 
->>  	spin_lock(&swap_lock);
->>  	spin_lock(&p->lock);
->>  	_enable_swap_info(p);
->> @@ -2621,11 +2631,13 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
->>  	p->flags &= ~SWP_VALID;		/* mark swap device as invalid */
->>  	spin_unlock(&p->lock);
->>  	spin_unlock(&swap_lock);
->> +
->> +	percpu_ref_kill(&p->users);
->>  	/*
->>  	 * wait for swap operations protected by get/put_swap_device()
->>  	 * to complete
->>  	 */
->> -	synchronize_rcu();
->> +	wait_for_completion(&p->comp);
-> 
-> Better to move percpu_ref_kill() after the comments.  And maybe revise
-> the comments.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8372 at mm/page_alloc.c:4985 __alloc_pages_nodemask+0x44e/0x500 mm/page_alloc.c:5029
+Modules linked in:
+CPU: 1 PID: 8372 Comm: syz-executor118 Not tainted 5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x44e/0x500 mm/page_alloc.c:5029
+Code: 00 48 ba 00 00 00 00 00 fc ff df e9 fb fd ff ff 89 f9 80 e1 07 80 c1 03 38 c1 0f 8c 06 fe ff ff e8 97 67 09 00 e9 fc fd ff ff <0f> 0b e9 15 fe ff ff 44 89 ed a9 00 00 08 00 75 11 81 e5 7f ff ff
+RSP: 0018:ffffc90001e2fba0 EFLAGS: 00010246
+RAX: ffffc90001e2fba8 RBX: ffffc90001e2fbd4 RCX: 0000000000000000
+RDX: 0000000000000028 RSI: 0000000000000000 RDI: ffffc90001e2fbd0
+RBP: 0000000000000000 R08: dffffc0000000000 R09: ffffc90001e2fba8
+R10: fffff520003c5f7a R11: 0000000000000000 R12: 0000000000f0ff80
+R13: 0000000000040cc0 R14: 1ffff920003c5f7a R15: 000000000000000c
+FS:  0000000001eb9300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020003314 CR3: 0000000012ba3000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ alloc_pages include/linux/gfp.h:561 [inline]
+ kmalloc_order+0x41/0x170 mm/slab_common.c:902
+ kmalloc_order_trace+0x15/0x70 mm/slab_common.c:918
+ kmalloc_large include/linux/slab.h:483 [inline]
+ __kmalloc_track_caller+0x26d/0x390 mm/slub.c:4554
+ memdup_user_nul+0x26/0xf0 mm/util.c:260
+ smk_set_cipso+0xff/0x6f0 security/smack/smackfs.c:859
+ vfs_write+0x220/0xab0 fs/read_write.c:603
+ ksys_write+0x11b/0x220 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x43ee59
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffddac6bda8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee59
+RDX: 0000000000f0ff7f RSI: 0000000000000000 RDI: 0000000000000003
+RBP: 0000000000402e40 R08: 0000000000000000 R09: 0000000000400488
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402ed0
+R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
 
-Will do.
 
-> 
->>  
->>  	flush_work(&p->discard_work);
->>  
->> @@ -3132,7 +3144,7 @@ static bool swap_discardable(struct swap_info_struct *si)
->>  SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->>  {
->>  	struct swap_info_struct *p;
->> -	struct filename *name;
->> +	struct filename *name = NULL;
->>  	struct file *swap_file = NULL;
->>  	struct address_space *mapping;
->>  	int prio;
->> @@ -3163,6 +3175,12 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->>  
->>  	INIT_WORK(&p->discard_work, swap_discard_work);
->>  
->> +	init_completion(&p->comp);
->> +	error = percpu_ref_init(&p->users, swap_users_ref_free,
->> +				PERCPU_REF_INIT_DEAD, GFP_KERNEL);
->> +	if (unlikely(error))
->> +		goto bad_swap;
->> +
->>  	name = getname(specialfile);
->>  	if (IS_ERR(name)) {
->>  		error = PTR_ERR(name);
->> @@ -3356,6 +3374,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
->>  bad_swap_unlock_inode:
->>  	inode_unlock(inode);
->>  bad_swap:
->> +	percpu_ref_exit(&p->users);
-> 
-> Usually the resource freeing order matches their allocating order
-> reversely.  So, if there's no special reason, please follow that rule.
-> 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-My oversight. Will fix it in V2.
-
-> Best Regards,
-> Huang, Ying
-> 
->>  	free_percpu(p->percpu_cluster);
->>  	p->percpu_cluster = NULL;
->>  	free_percpu(p->cluster_next_cpu);
-> .
-> 
-
-Many thanks for review and nice suggestion! :)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
