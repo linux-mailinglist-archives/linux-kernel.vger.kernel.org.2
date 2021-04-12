@@ -2,87 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E9B35C69F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576B235C6B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241366AbhDLMqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:46:44 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:33919 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S239992AbhDLMqg (ORCPT
+        id S241307AbhDLMtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:49:16 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:17313 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240790AbhDLMtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:46:36 -0400
-X-UUID: 6feca018001e43a1b81ede7cb9650847-20210412
-X-UUID: 6feca018001e43a1b81ede7cb9650847-20210412
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <irui.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1224037321; Mon, 12 Apr 2021 20:46:14 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 12 Apr 2021 20:46:09 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 12 Apr 2021 20:46:07 +0800
-From:   Irui Wang <irui.wang@mediatek.com>
-To:     Alexandre Courbot <acourbot@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Maoguang Meng <maoguang.meng@mediatek.com>,
-        Longfei Wang <longfei.wang@mediatek.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Irui Wang <irui.wang@mediatek.com>, <yong.wu@mediatek.com>,
-        <linux-media@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <linux-mediatek@lists.infradead.org>
-Subject: [PATCH v3,2/6] dt-bindings: media: mtk-vcodec: Add dma-ranges property
-Date:   Mon, 12 Apr 2021 20:45:51 +0800
-Message-ID: <20210412124555.26897-3-irui.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210412124555.26897-1-irui.wang@mediatek.com>
-References: <20210412124555.26897-1-irui.wang@mediatek.com>
+        Mon, 12 Apr 2021 08:49:14 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FJpQQ22WLz9y8s;
+        Mon, 12 Apr 2021 20:46:38 +0800 (CST)
+Received: from mdc.huawei.com (10.175.112.208) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 12 Apr 2021 20:48:45 +0800
+From:   Chen Jun <chenjun102@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <tglx@linutronix.de>, <richardcochran@gmail.com>,
+        <johnstul@us.ibm.com>, <rui.xiang@huawei.com>
+Subject: [PATCH] time: Fix overwrite err unexpected in clock_adjtime32
+Date:   Mon, 12 Apr 2021 12:45:51 +0000
+Message-ID: <20210412124552.50213-1-chenjun102@huawei.com>
+X-Mailer: git-send-email 2.9.4
 MIME-Version: 1.0
 Content-Type: text/plain
-X-TM-SNTS-SMTP: 7A245EEF486F4D984B2C3822463F9071D1DE909E28870D326F70B646EA8206E62000:8
-X-MTK:  N
+X-Originating-IP: [10.175.112.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mt8192 iommu support 0~16GB iova. We separate it to four banks:
-0~4G; 4G~8G; 8G~12G; 12G~16G.
+the correct error is covered by put_old_timex32.
 
-The "dma-ranges" could be used to adjust the bank we locate.
-If we don't set this property. The default range always is 0~4G.
-
-Here we don't have actual bus/parent concept here.  And the iova
-requirement is for our HW. Thus put the property in our node.
-
-Signed-off-by: Irui Wang <irui.wang@mediatek.com>
+Fixes: f1f1d5ebd10f ("posix-timers: Introduce a syscall for clock tuning.")
+Signed-off-by: Chen Jun <chenjun102@huawei.com>
 ---
- Documentation/devicetree/bindings/media/mediatek-vcodec.txt | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/time/posix-timers.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-index 06db6837cefd..b7801e3c354a 100644
---- a/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-+++ b/Documentation/devicetree/bindings/media/mediatek-vcodec.txt
-@@ -22,6 +22,8 @@ Required properties:
- - iommus : should point to the respective IOMMU block with master port as
-   argument, see Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
-   for details.
-+- dma-ranges : describes how the physical address space of the IOMMU maps
-+  to memory.
- One of the two following nodes:
- - mediatek,vpu : the node of the video processor unit, if using VPU.
- - mediatek,scp : the node of the SCP unit, if using SCP.
+diff --git a/kernel/time/posix-timers.c b/kernel/time/posix-timers.c
+index bf540f5a..dd5697d 100644
+--- a/kernel/time/posix-timers.c
++++ b/kernel/time/posix-timers.c
+@@ -1191,8 +1191,8 @@ SYSCALL_DEFINE2(clock_adjtime32, clockid_t, which_clock,
+ 
+ 	err = do_clock_adjtime(which_clock, &ktx);
+ 
+-	if (err >= 0)
+-		err = put_old_timex32(utp, &ktx);
++	if (err >= 0 && put_old_timex32(utp, &ktx))
++		return -EFAULT;
+ 
+ 	return err;
+ }
 -- 
-2.25.1
+2.9.4
 
