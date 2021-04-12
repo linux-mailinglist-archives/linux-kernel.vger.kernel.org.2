@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78E7535C033
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC33235BE96
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241021AbhDLJLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:11:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48564 "EHLO mail.kernel.org"
+        id S239368AbhDLI76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:59:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238162AbhDLI4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:56:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D64261247;
-        Mon, 12 Apr 2021 08:55:57 +0000 (UTC)
+        id S238203AbhDLItJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:49:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 32D1561244;
+        Mon, 12 Apr 2021 08:48:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217758;
-        bh=y9BdYH5Ih/9IU/eOavv8X8ywaqOgYZNk2Ct53NI6eP4=;
+        s=korg; t=1618217282;
+        bh=MnI+9fE6VTBDu3UKgDD3NzQG18TlUV0nGW52GX46jYA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fxuy/edS8XwzC234QiTCo7K34Iwn4qnqgEtL6VBdsjLpi8hMNBxpmhFZrjoKAHOWe
-         A4pE8iZ+uqmrcztOVY5Il4DHPICsST4CyEnn0Vfb3MfbRZb76J8bFUwE0iJn4bsNeE
-         LUTRFqXYFh5T/Q3IMg6GgXze/YE2McdoAzDj/YTU=
+        b=vcLY7o1uvEcIQl9InQWNQm8I18MLHS6gbOAfvDU6j98VlFNWI4ihch+Cx6hzAB3zE
+         Hzs36FwV7Ym9TEuS86DdEMB7yopJ+mzBXvukE9b2QzLl09cX81MO3WN5AOlyVE5YL8
+         6qFBBvSxvIA3qKh7+/0flf6fqpNQi936kR6cGQi0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Jurgens <danielj@mellanox.com>,
-        Parav Pandit <parav@nvidia.com>,
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 133/188] net/mlx5: Dont request more than supported EQs
+Subject: [PATCH 5.4 069/111] net/mlx5e: Fix ethtool indication of connector type
 Date:   Mon, 12 Apr 2021 10:40:47 +0200
-Message-Id: <20210412084018.060444740@linuxfoundation.org>
+Message-Id: <20210412084006.561907822@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,55 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Jurgens <danielj@mellanox.com>
+From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit a7b76002ae78cd230ee652ccdfedf21aa94fcecc ]
+[ Upstream commit 3211434dfe7a66fcf55e43961ea524b78336c04c ]
 
-Calculating the number of compeltion EQs based on the number of
-available IRQ vectors doesn't work now that all async EQs share one IRQ.
-Thus the max number of EQs can be exceeded on systems with more than
-approximately 256 CPUs. Take this into account when calculating the
-number of available completion EQs.
+Use connector_type read from PTYS register when it's valid, based on
+corresponding capability bit.
 
-Fixes: 81bfa206032a ("net/mlx5: Use a single IRQ for all async EQs")
-Signed-off-by: Daniel Jurgens <danielj@mellanox.com>
-Reviewed-by: Parav Pandit <parav@nvidia.com>
+Fixes: 5b4793f81745 ("net/mlx5e: Add support for reading connector type from PTYS")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Eran Ben Elisha <eranbe@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/eq.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 22 +++++++++----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-index 8ebfe782f95e..ccd53a7a2b80 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
-@@ -926,13 +926,24 @@ void mlx5_core_eq_free_irqs(struct mlx5_core_dev *dev)
- 	mutex_unlock(&table->lock);
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index e09b4a96a1d5..e3dc2cbdc9f6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -700,11 +700,11 @@ static int get_fec_supported_advertised(struct mlx5_core_dev *dev,
+ 	return 0;
  }
  
-+#ifdef CONFIG_INFINIBAND_ON_DEMAND_PAGING
-+#define MLX5_MAX_ASYNC_EQS 4
-+#else
-+#define MLX5_MAX_ASYNC_EQS 3
-+#endif
-+
- int mlx5_eq_table_create(struct mlx5_core_dev *dev)
+-static void ptys2ethtool_supported_advertised_port(struct ethtool_link_ksettings *link_ksettings,
+-						   u32 eth_proto_cap,
+-						   u8 connector_type, bool ext)
++static void ptys2ethtool_supported_advertised_port(struct mlx5_core_dev *mdev,
++						   struct ethtool_link_ksettings *link_ksettings,
++						   u32 eth_proto_cap, u8 connector_type)
  {
- 	struct mlx5_eq_table *eq_table = dev->priv.eq_table;
-+	int num_eqs = MLX5_CAP_GEN(dev, max_num_eqs) ?
-+		      MLX5_CAP_GEN(dev, max_num_eqs) :
-+		      1 << MLX5_CAP_GEN(dev, log_max_eq);
- 	int err;
+-	if ((!connector_type && !ext) || connector_type >= MLX5E_CONNECTOR_TYPE_NUMBER) {
++	if (!MLX5_CAP_PCAM_FEATURE(mdev, ptys_connector_type)) {
+ 		if (eth_proto_cap & (MLX5E_PROT_MASK(MLX5E_10GBASE_CR)
+ 				   | MLX5E_PROT_MASK(MLX5E_10GBASE_SR)
+ 				   | MLX5E_PROT_MASK(MLX5E_40GBASE_CR4)
+@@ -836,9 +836,9 @@ static int ptys2connector_type[MLX5E_CONNECTOR_TYPE_NUMBER] = {
+ 		[MLX5E_PORT_OTHER]              = PORT_OTHER,
+ 	};
  
- 	eq_table->num_comp_eqs =
--		mlx5_irq_get_num_comp(eq_table->irq_table);
-+		min_t(int,
-+		      mlx5_irq_get_num_comp(eq_table->irq_table),
-+		      num_eqs - MLX5_MAX_ASYNC_EQS);
+-static u8 get_connector_port(u32 eth_proto, u8 connector_type, bool ext)
++static u8 get_connector_port(struct mlx5_core_dev *mdev, u32 eth_proto, u8 connector_type)
+ {
+-	if ((connector_type || ext) && connector_type < MLX5E_CONNECTOR_TYPE_NUMBER)
++	if (MLX5_CAP_PCAM_FEATURE(mdev, ptys_connector_type))
+ 		return ptys2connector_type[connector_type];
  
- 	err = create_async_eqs(dev);
- 	if (err) {
+ 	if (eth_proto &
+@@ -937,11 +937,11 @@ int mlx5e_ethtool_get_link_ksettings(struct mlx5e_priv *priv,
+ 			 link_ksettings);
+ 
+ 	eth_proto_oper = eth_proto_oper ? eth_proto_oper : eth_proto_cap;
+-
+-	link_ksettings->base.port = get_connector_port(eth_proto_oper,
+-						       connector_type, ext);
+-	ptys2ethtool_supported_advertised_port(link_ksettings, eth_proto_admin,
+-					       connector_type, ext);
++	connector_type = connector_type < MLX5E_CONNECTOR_TYPE_NUMBER ?
++			 connector_type : MLX5E_PORT_UNKNOWN;
++	link_ksettings->base.port = get_connector_port(mdev, eth_proto_oper, connector_type);
++	ptys2ethtool_supported_advertised_port(mdev, link_ksettings, eth_proto_admin,
++					       connector_type);
+ 	get_lp_advertising(mdev, eth_proto_lp, link_ksettings);
+ 
+ 	if (an_status == MLX5_AN_COMPLETE)
 -- 
 2.30.2
 
