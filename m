@@ -2,112 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9855C35BBA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0931135BBC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237190AbhDLIF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:05:59 -0400
-Received: from foss.arm.com ([217.140.110.172]:40376 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237171AbhDLIF4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:05:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0D0231B;
-        Mon, 12 Apr 2021 01:05:38 -0700 (PDT)
-Received: from [10.163.72.17] (unknown [10.163.72.17])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 340B23F73B;
-        Mon, 12 Apr 2021 01:05:36 -0700 (PDT)
-Subject: Re: [PATCH V2] mm/page_alloc: Ensure that HUGETLB_PAGE_ORDER is less
- than MAX_ORDER
-To:     linux-mm@kvack.org, akpm@linux-foundation.org
-Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
-        "linuxppc-dev @ lists . ozlabs . org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>
-References: <1618199302-29335-1-git-send-email-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <09284b9a-cfe1-fc49-e1f6-3cf0c1b74c76@arm.com>
-Date:   Mon, 12 Apr 2021 13:36:10 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237260AbhDLIKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:10:11 -0400
+Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:42742 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237244AbhDLIKJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:10:09 -0400
+Received: from bld-lvn-bcawlan-34.lvn.broadcom.net (bld-lvn-bcawlan-34.lvn.broadcom.net [10.75.138.137])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id C02D6E5;
+        Mon, 12 Apr 2021 01:09:51 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com C02D6E5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1618214991;
+        bh=yCmWe9dBWtm2jBQb8Zp5DEdyYQSVpG8V2elCrTJrN/8=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ZHWW58J37yln06ZUkr0Ur/8G5b/qgWLfUUmlgxfitW2VCxTbczMOs88Ntu22uu0iM
+         OInheEO4rSRHBd+G6Fn/j7nvpzy+CRi4I5efyWFyfy7iHyHIzgtXSrUaVeGjRMRxkW
+         uuja/JO4bALP55eNnPw2DrQ0axrY9hSIWrrUgh6Q=
+Received: from [10.230.42.155] (unknown [10.230.42.155])
+        by bld-lvn-bcawlan-34.lvn.broadcom.net (Postfix) with ESMTPSA id 2711F1874BD;
+        Mon, 12 Apr 2021 01:09:45 -0700 (PDT)
+Subject: Re: [PATCH 2/2] brcmfmac: support parse country code map from DT
+To:     Shawn Guo <shawn.guo@linaro.org>, Kalle Valo <kvalo@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com
+References: <20210408113022.18180-1-shawn.guo@linaro.org>
+ <20210408113022.18180-3-shawn.guo@linaro.org>
+From:   Arend van Spriel <arend.vanspriel@broadcom.com>
+Message-ID: <b2e07b41-a83e-5b5d-be1d-7a3e8493abd6@broadcom.com>
+Date:   Mon, 12 Apr 2021 10:09:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <1618199302-29335-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210408113022.18180-3-shawn.guo@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ linuxppc-dev@lists.ozlabs.org
-+ linux-ia64@vger.kernel.org
+On 08-04-2021 13:30, Shawn Guo wrote:
+> With any regulatory domain requests coming from either user space or
+> 802.11 IE (Information Element), the country is coded in ISO3166
+> standard.  It needs to be translated to firmware country code and
+> revision with the mapping info in settings->country_codes table.
+> Support populate country_codes table by parsing the mapping from DT.
 
-On 4/12/21 9:18 AM, Anshuman Khandual wrote:
-> pageblock_order must always be less than MAX_ORDER, otherwise it might lead
-> to an warning during boot. A similar problem got fixed on arm64 platform
-> with the commit 79cc2ed5a716 ("arm64/mm: Drop THP conditionality from
-> FORCE_MAX_ZONEORDER"). Assert the above condition before HUGETLB_PAGE_ORDER
-> gets assigned as pageblock_order. This will help detect the problem earlier
-> on platforms where HUGETLB_PAGE_SIZE_VARIABLE is enabled.
-> 
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+comment below, but you may add...
+
+Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 > ---
-> Changes in V2:
+>   .../wireless/broadcom/brcm80211/brcmfmac/of.c | 53 +++++++++++++++++++
+>   1 file changed, 53 insertions(+)
 > 
-> - Changed WARN_ON() to BUILD_BUG_ON() per David
-> 
-> Changes in V1:
-> 
-> https://patchwork.kernel.org/project/linux-mm/patch/1617947717-2424-1-git-send-email-anshuman.khandual@arm.com/
-> 
->  mm/page_alloc.c | 11 +++++++++--
->  1 file changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index cfc72873961d..19283bff4bec 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -6875,10 +6875,17 @@ void __init set_pageblock_order(void)
->  	if (pageblock_order)
->  		return;
->  
-> -	if (HPAGE_SHIFT > PAGE_SHIFT)
-> +	if (HPAGE_SHIFT > PAGE_SHIFT) {
-> +		/*
-> +		 * pageblock_order must always be less than
-> +		 * MAX_ORDER. So does HUGETLB_PAGE_ORDER if
-> +		 * that is being assigned here.
-> +		 */
-> +		BUILD_BUG_ON(HUGETLB_PAGE_ORDER >= MAX_ORDER);
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> index a7554265f95f..ea5c7f434c2c 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
 
-Unfortunately the build test fails on both the platforms (powerpc and ia64)
-which subscribe HUGETLB_PAGE_SIZE_VARIABLE and where this check would make
-sense. I some how overlooked the cross compile build failure that actually
-detected this problem.
+[...]
 
-But wondering why this assert is not holding true ? and how these platforms
-do not see the warning during boot (or do they ?) at mm/vmscan.c:1092 like
-arm64 did.
+> @@ -47,6 +96,10 @@ void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
+>   	    !of_device_is_compatible(np, "brcm,bcm4329-fmac"))
+>   		return;
+>   
+> +	ret = brcmf_of_get_country_codes(dev, settings);
+> +	if (ret)
+> +		dev_warn(dev, "failed to get OF country code map\n");
 
-static int __fragmentation_index(unsigned int order, struct contig_page_info *info)
-{
-        unsigned long requested = 1UL << order;
-
-        if (WARN_ON_ONCE(order >= MAX_ORDER))
-                return 0;
-....
-
-Can pageblock_order really exceed MAX_ORDER - 1 ?
-
->  		order = HUGETLB_PAGE_ORDER;
-> -	else
-> +	} else {
->  		order = MAX_ORDER - 1;
-> +	}
->  
->  	/*
->  	 * Assume the largest contiguous order of interest is a huge page.
-> 
+First of all I prefer to use brcmf_err and add ret value to the print 
+message " (err=%d)\n". Another thing is that this mapping is not only 
+applicable for SDIO devices so you may consider doing this for other bus 
+types as well which requires a bit more rework here.
