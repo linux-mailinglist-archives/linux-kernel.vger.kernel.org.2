@@ -2,128 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C4335C5BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF7E35C5C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:56:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240584AbhDLLzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:55:18 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:28197 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240419AbhDLLzQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:55:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1618228499; h=Content-Type: MIME-Version: Message-ID:
- In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
- bh=vdPB/4mlyh2rNRzqrJP2XjppQ3JehxA6cUhYVRcwhQc=; b=gMgx3FM+c7tIl9I6FEbjSRxE9Bl4M024Zu/MWM+hdAA45amouWooJr+DT1UeVHnYOUuKcZZR
- gVMi4NBBDnTgou0rUFteSd05YCXYZVYO73N3Gg+YZGWsPz2feWCmfFm8qZoFaWvG8Z+mbhp2
- jid/zWAdcCKSLLuaDKhwOqw2f0I=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6074350d03cfff34528bdc3e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 12 Apr 2021 11:54:53
- GMT
-Sender: kvalo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 29BEEC43463; Mon, 12 Apr 2021 11:54:53 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kvalo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D3890C433C6;
-        Mon, 12 Apr 2021 11:54:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D3890C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
-From:   Kalle Valo <kvalo@codeaurora.org>
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com
-Subject: Re: [PATCH 1/2] dt-binding: bcm43xx-fmac: add optional brcm,ccode-map
-References: <20210408113022.18180-1-shawn.guo@linaro.org>
-        <20210408113022.18180-2-shawn.guo@linaro.org>
-        <87k0p9mewt.fsf@codeaurora.org> <20210412012528.GB15093@dragon>
-Date:   Mon, 12 Apr 2021 14:54:46 +0300
-In-Reply-To: <20210412012528.GB15093@dragon> (Shawn Guo's message of "Mon, 12
-        Apr 2021 09:25:29 +0800")
-Message-ID: <87im4rlnuh.fsf@codeaurora.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
+        id S240679AbhDLL4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:56:35 -0400
+Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:36491 "EHLO
+        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239932AbhDLL4d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 07:56:33 -0400
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id F0E211C533D
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:56:13 +0100 (IST)
+Received: (qmail 16475 invoked from network); 12 Apr 2021 11:56:13 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Apr 2021 11:56:13 -0000
+Date:   Mon, 12 Apr 2021 12:56:12 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux-RT-Users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: [PATCH 02/11] mm/page_alloc: Convert per-cpu list protection to
+ local_lock
+Message-ID: <20210412115612.GX3697@techsingularity.net>
+References: <20210407202423.16022-1-mgorman@techsingularity.net>
+ <20210407202423.16022-3-mgorman@techsingularity.net>
+ <YG7gV7yAEEjOcQZY@hirez.programming.kicks-ass.net>
+ <20210408174244.GG3697@techsingularity.net>
+ <YG/2scd9ADdrIyCM@hirez.programming.kicks-ass.net>
+ <20210409075939.GJ3697@techsingularity.net>
+ <YHAPOKPTgJcLuDJl@hirez.programming.kicks-ass.net>
+ <20210409133256.GN3697@techsingularity.net>
+ <YHCjK8OOhmxTbKu0@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <YHCjK8OOhmxTbKu0@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shawn Guo <shawn.guo@linaro.org> writes:
+On Fri, Apr 09, 2021 at 08:55:39PM +0200, Peter Zijlstra wrote:
+> On Fri, Apr 09, 2021 at 02:32:56PM +0100, Mel Gorman wrote:
+> > That said, there are some curious users already.
+> > fs/squashfs/decompressor_multi_percpu.c looks like it always uses the
+> > local_lock in CPU 0's per-cpu structure instead of stabilising a per-cpu
+> > pointer. 
+> 
+> I'm not sure how you read that.
+> 
+> You're talking about this:
+> 
+>   local_lock(&msblk->stream->lock);
+> 
+> right? Note that msblk->stream is a per-cpu pointer, so
+> &msblk->stream->lock is that same per-cpu pointer with an offset on.
+> 
+> The whole think relies on:
+> 
+> 	&per_cpu_ptr(msblk->stream, cpu)->lock == per_cpu_ptr(&msblk->stream->lock, cpu)
+> 
+> Which is true because the lhs:
+> 
+> 	(local_lock_t *)((msblk->stream + per_cpu_offset(cpu)) + offsetof(struct squashfs_stream, lock))
+> 
+> and the rhs:
+> 
+> 	(local_lock_t *)((msblk->stream + offsetof(struct squashfs_stream, lock)) + per_cpu_offset(cpu))
+> 
+> are identical, because addition is associative.
+> 
 
-> On Sun, Apr 11, 2021 at 10:57:54AM +0300, Kalle Valo wrote:
->> Shawn Guo <shawn.guo@linaro.org> writes:
->> 
->> > Add optional brcm,ccode-map property to support translation from ISO3166
->> > country code to brcmfmac firmware country code and revision.
->> >
->> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
->> > ---
->> >  .../devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt | 7 +++++++
->> >  1 file changed, 7 insertions(+)
->> >
->> > diff --git a/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt b/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
->> > index cffb2d6876e3..a65ac4384c04 100644
->> > --- a/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
->> > +++ b/Documentation/devicetree/bindings/net/wireless/brcm,bcm43xx-fmac.txt
->> > @@ -15,6 +15,12 @@ Optional properties:
->> >  	When not specified the device will use in-band SDIO interrupts.
->> >   - interrupt-names : name of the out-of-band interrupt, which must be set
->> >  	to "host-wake".
->> > + - brcm,ccode-map : multiple strings for translating ISO3166 country code to
->> > +	brcmfmac firmware country code and revision.  Each string must be in
->> > +	format "AA-BB-num" where:
->> > +	  AA is the ISO3166 country code which must be 2 characters.
->> > +	  BB is the firmware country code which must be 2 characters.
->> > +	  num is the revision number which must fit into signed integer.
->> >  
->> >  Example:
->> >  
->> > @@ -34,5 +40,6 @@ mmc3: mmc@1c12000 {
->> >  		interrupt-parent = <&pio>;
->> >  		interrupts = <10 8>; /* PH10 / EINT10 */
->> >  		interrupt-names = "host-wake";
->> > +		brcm,ccode-map = "JP-JP-78", "US-Q2-86";
->> 
->> The commit log does not answer "Why?". Why this needs to be in device
->> tree and, for example, not hard coded in the driver?
->
-> Thanks for the comment, Kalle.  Actually, this is something I need some
-> input from driver maintainers.  I can see this country code mapping
-> table is chipset specific, and can be hard coded in driver per chip id
-> and revision.  But on the other hand, it makes some sense to have this
-> table in device tree, as the country code that need to be supported
-> could be a device specific configuration.
+Ok, I think I see and understand now, I didn't follow far enough down
+into the macro magic and missed this observation so thanks for your
+patience. The page allocator still incurs a double lookup of the per
+cpu offsets but it should work for both the current local_lock_irq
+implementation and the one in preempt-rt because the task will be pinned
+to the CPU by either preempt_disable, migrate_disable or IRQ disable
+depending on the local_lock implementation and kernel configuration.
 
-Could be? Does such a use case exist at the moment or are just guessing
-future needs?
+I'll update the changelog and comment accordingly. I'll decide later
+whether to leave it or move the location of the lock at the end of the
+series. If the patch is added, it'll either incur the double lookup (not
+that expensive, might be optimised by the compiler) or come up with a
+helper that takes the lock and returns the per-cpu structure. The double
+lookup probably makes more sense initially because there are multiple
+potential users of a helper that says "pin to CPU, lookup, lock and return
+a per-cpu structure" for both IRQ-safe and IRQ-unsafe variants with the
+associated expansion of the local_lock API. It might be better to introduce
+such a helper with multiple users converted at the same time and there are
+other local_lock users in preempt-rt that could do with upstreaming first.
 
-From what I have learned so far I think this kind of data should be in
-the driver, but of course I might be missing something.
+> > drivers/block/zram/zcomp.c appears to do the same although for
+> > at least one of the zcomp_stream_get() callers, the CPU is pinned for
+> > other reasons (bit spin lock held). I think it happens to work anyway
+> > but it's weird and I'm not a fan.
+> 
+> Same thing.
+
+Yep.
 
 -- 
-https://patchwork.kernel.org/project/linux-wireless/list/
-
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+Mel Gorman
+SUSE Labs
