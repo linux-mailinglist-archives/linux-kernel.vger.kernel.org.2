@@ -2,74 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA72F35BE72
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:58:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CA235BCB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238920AbhDLI6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:58:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238649AbhDLIuP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:50:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFB8961241;
-        Mon, 12 Apr 2021 08:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217398;
-        bh=RHzyIgaGm2DC/Wcqj0hopcLkts+WRN+1fd++KMxCzyA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tHqytLaecdxMIkH3e7gMqwa4oE7jNGr+tIHU3v7V30zAU8lrnIIauVKg+aNQgsJYB
-         +b5H1cUphvOvkGEgNOsVXqLMLONlzdMCvND/euDciltWYH+myepCoiseZxWj5E4+tJ
-         UX03mdta7drE2Q1iRYzy1BxJsdfVPEKB1J4//EGU=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Salvatore Bonaccorso <carnil@debian.org>,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Aurelien Aptel <aaptel@suse.com>,
-        Steve French <stfrench@microsoft.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 111/111] Revert "cifs: Set CIFS_MOUNT_USE_PREFIX_PATH flag on setting cifs_sb->prepath."
-Date:   Mon, 12 Apr 2021 10:41:29 +0200
-Message-Id: <20210412084007.967910521@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
-References: <20210412084004.200986670@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S237681AbhDLIoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:44:38 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2831 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237599AbhDLIoG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:44:06 -0400
+Received: from fraeml705-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FJhsv5GGBz688MV;
+        Mon, 12 Apr 2021 16:36:35 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml705-chm.china.huawei.com (10.206.15.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Mon, 12 Apr 2021 10:43:46 +0200
+Received: from localhost (10.47.93.73) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 12 Apr
+ 2021 09:43:45 +0100
+Date:   Mon, 12 Apr 2021 09:42:19 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+CC:     Bjorn Helgaas <bhelgaas@google.com>, Rob Herring <robh@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Marc Zyngier <maz@kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Jassi Brar" <jaswinder.singh@linaro.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Subject: Re: [PATCH v10 1/3] PCI: portdrv: Add pcie_port_service_get_irq()
+ function
+Message-ID: <20210412094219.000031ca@Huawei.com>
+In-Reply-To: <1617985338-19648-2-git-send-email-hayashi.kunihiko@socionext.com>
+References: <1617985338-19648-1-git-send-email-hayashi.kunihiko@socionext.com>
+        <1617985338-19648-2-git-send-email-hayashi.kunihiko@socionext.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.93.73]
+X-ClientProxiedBy: lhreml713-chm.china.huawei.com (10.201.108.64) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Sat, 10 Apr 2021 01:22:16 +0900
+Kunihiko Hayashi <hayashi.kunihiko@socionext.com> wrote:
 
-This reverts commit a2c5e4a083a7e24b35b3eb808b760af6de15bac2 which is
-commit a738c93fb1c17e386a09304b517b1c6b2a6a5a8b upstream.
+> Add pcie_port_service_get_irq() that returns the virtual IRQ number
+> for specified portdrv service.
 
-It is reported to cause problems in older kernels, so revert it for now
-until we can figure it out...
+Trivial comment inline.
 
-Reported-by: Salvatore Bonaccorso <carnil@debian.org>
-Link: https://lore.kernel.org/r/YG7r0UaivWZL762N@eldamar.lan
-Cc: Shyam Prasad N <sprasad@microsoft.com>
-Cc: Aurelien Aptel <aaptel@suse.com>
-Cc: Steve French <stfrench@microsoft.com>
-Cc: Sasha Levin <sashal@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- fs/cifs/connect.c |    1 -
- 1 file changed, 1 deletion(-)
+> 
+> Cc: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> ---
+>  drivers/pci/pcie/portdrv.h      |  1 +
+>  drivers/pci/pcie/portdrv_core.c | 16 ++++++++++++++++
+>  2 files changed, 17 insertions(+)
+> 
+> diff --git a/drivers/pci/pcie/portdrv.h b/drivers/pci/pcie/portdrv.h
+> index 2ff5724..628a3de 100644
+> --- a/drivers/pci/pcie/portdrv.h
+> +++ b/drivers/pci/pcie/portdrv.h
+> @@ -144,4 +144,5 @@ static inline void pcie_pme_interrupt_enable(struct pci_dev *dev, bool en) {}
+>  #endif /* !CONFIG_PCIE_PME */
+>  
+>  struct device *pcie_port_find_device(struct pci_dev *dev, u32 service);
+> +int pcie_port_service_get_irq(struct pci_dev *dev, u32 service);
+>  #endif /* _PORTDRV_H_ */
+> diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
+> index e1fed664..b60f0f3 100644
+> --- a/drivers/pci/pcie/portdrv_core.c
+> +++ b/drivers/pci/pcie/portdrv_core.c
+> @@ -477,7 +477,22 @@ struct device *pcie_port_find_device(struct pci_dev *dev,
+>  }
+>  EXPORT_SYMBOL_GPL(pcie_port_find_device);
+>  
+> +/*
 
---- a/fs/cifs/connect.c
-+++ b/fs/cifs/connect.c
-@@ -4198,7 +4198,6 @@ int cifs_setup_cifs_sb(struct smb_vol *p
- 		cifs_sb->prepath = kstrdup(pvolume_info->prepath, GFP_KERNEL);
- 		if (cifs_sb->prepath == NULL)
- 			return -ENOMEM;
--		cifs_sb->mnt_cifs_flags |= CIFS_MOUNT_USE_PREFIX_PATH;
- 	}
- 
- 	return 0;
+/**
 
+this is kernel-doc style, so why not mark it as such?
+
+
+> + * pcie_port_service_get_irq - get irq of the service
+> + * @dev: PCI Express port the service is associated with
+> + * @service: For the service to find
+> + *
+> + * Get IRQ number associated with given service on a pci_dev.
+> + */
+> +int pcie_port_service_get_irq(struct pci_dev *dev, u32 service)
+> +{
+> +	struct pcie_device *pciedev;
+> +
+> +	pciedev = to_pcie_device(pcie_port_find_device(dev, service));
+> +
+> +	return pciedev->irq;
+> +}
+> +
+>  /**
+>   * pcie_port_device_remove - unregister PCI Express port service devices
+>   * @dev: PCI Express port the service devices to unregister are associated with
 
