@@ -2,92 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E1B35C7DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CDF535C7EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241991AbhDLNnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237043AbhDLNni (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:43:38 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0341CC061574;
-        Mon, 12 Apr 2021 06:43:20 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id g18-20020a7bc4d20000b0290116042cfdd8so8748501wmk.4;
-        Mon, 12 Apr 2021 06:43:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NycMU0cz3kJfBn80ZlCBYweE/JLtLsmBXUcJn2/DB0g=;
-        b=ZSNuqAESESzRNHrvcezSyPa8BAQkVixnafp2tzGO0dkZJ1EEUb8Wl/KCJX7e6j4jCG
-         cKHd+NpbLjIZNNPbMqA7rW0fd4C+Ojc7tUQiSjdY3aB6WaklUf5Lvjxvp33rObgYMZfo
-         KH33N3HrMQ1jwSbupofwA1/GhJdtsFAQpK17Psf3rNAM482IAXLbwwmBWeIsC7auKjBN
-         VWa4ltBhdfq6cEpNWW4v282jdZlgnyU/tjK2oiebHrnRHnIomET3eSPKFhk+3bPo56rc
-         aqai6Mo7EK7wJYm7qRijOAPLm36+oHlOSMvur3bltweo72qIP2meJR+HvR8IHI/GrMjC
-         sqZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NycMU0cz3kJfBn80ZlCBYweE/JLtLsmBXUcJn2/DB0g=;
-        b=MsbhDWBGcp31DBvDhM3mfYgiMtJcdrvfdhWnTHKCqr99DNIXudCBQnIFtCEXgRFViE
-         mmo2k+W6jkjDpEwmaBPfQJYXH4KLlidmnQpiR1y+UTBWne9TZXUc9DhM9JDmC28w/wsP
-         SboWH7Wc8tY9PX6ROi/04O9Pv0H4ghIXXTR6IacA1ve68/B9/4EVvUXxfIrQyKDkgFIi
-         y1cBUatvFBI3+PnOQn2T0iXHgJTtOCqtoneWfKdRDNWum/8/CxhgQmV+Zim0p8xNLWQV
-         YuMZpYuPoweJgLBvVeKgAQhwG6pGebzgDJdveuzGJRzRchfFAb9qCnIuYKaNu7nnk4ET
-         fFqA==
-X-Gm-Message-State: AOAM531tPEGOn2LuDgfOExro5gltUTSL/Pgdh1lL79rRhLa21nvFZznB
-        YFObYiOch1/xcQ1uHi/rnsZXeA8lPRS/3g==
-X-Google-Smtp-Source: ABdhPJwcSkVXUE7+Gw9X9xA2TbXb4xDJcYCcBeUJDeOR+rci23+7/1ux6sGk/mjaEAZajumf+kFwVg==
-X-Received: by 2002:a05:600c:4f13:: with SMTP id l19mr25592568wmq.89.1618234998788;
-        Mon, 12 Apr 2021 06:43:18 -0700 (PDT)
-Received: from bcarvalho-Ubuntu.lan ([2001:818:de85:7e00:813f:b20e:675a:834d])
-        by smtp.gmail.com with ESMTPSA id f6sm9313922wmf.28.2021.04.12.06.43.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 06:43:18 -0700 (PDT)
-From:   Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-To:     hverkuil@xs4all.nl, mchehab@kernel.org,
-        sakari.ailus@linux.intel.com, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Cc:     Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
-Subject: [PATCH] staging: media: atomisp: i2c: align line break to match with open parenthesis
-Date:   Mon, 12 Apr 2021 14:43:01 +0100
-Message-Id: <20210412134301.11587-1-martinsdecarvalhobeatriz@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S241958AbhDLNsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:48:30 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:44114 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237043AbhDLNs2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 09:48:28 -0400
+Received: from [10.130.0.55] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Cx6cl7T3RgBzQHAA--.13657S3;
+        Mon, 12 Apr 2021 21:47:39 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Fix strnlen_user access check
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Jinyang He <hejinyang@loongson.cn>
+Message-ID: <0a09783b-7522-5cf2-9014-39783aaacbdc@loongson.cn>
+Date:   Mon, 12 Apr 2021 21:47:39 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Cx6cl7T3RgBzQHAA--.13657S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw17XFWxCFWUAF4ktw1UKFg_yoW8GrykpF
+        s5Aa1kGF4DKryfAasFyrWUXFy5Gws8Gr1F93y7Kr1kZF4qq3W3tr4Skr1qv3yxJFZaka4x
+        uFyftrn5uw1jv3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvIb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26F4j6r4UJw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY
+        02Avz4vE14v_Xr4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y
+        6r17MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+        14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+        9x07brUUbUUUUU=
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Aligns line break with the remaining function arguments
-to the open parenthesis.
-Issue found by checkpatch in file atomisp-gc2235.c
+On 04/11/2021 07:04 PM, Jinyang He wrote:
+> Commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs") brought a problem for
+> strnlen_user(). Jump out when checking access_ok() with condition that
+> (s + strlen(s)) < __UA_LIMIT <= (s + n). The old __strnlen_user_asm()
+> just checked (ua_limit & s) without checking (ua_limit & (s + n)).
+> Therefore, find strlen form s to __UA_LIMIT - 1 in that condition.
+>
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> ---
+>   arch/mips/include/asm/uaccess.h | 11 +++++++++--
+>   1 file changed, 9 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+> index 91bc7fb..85ba0c8 100644
+> --- a/arch/mips/include/asm/uaccess.h
+> +++ b/arch/mips/include/asm/uaccess.h
+> @@ -630,8 +630,15 @@ static inline long strnlen_user(const char __user *s, long n)
+>   {
+>   	long res;
+>   
+> -	if (!access_ok(s, n))
+> -		return -0;
+> +	if (unlikely(n <= 0))
+> +		return 0;
+> +
+> +	if (!access_ok(s, n)) {
+> +		if (!access_ok(s, 0))
+> +			return 0;
+> +
+> +		n = __UA_LIMIT - (unsigned long)s - 1;
+Sorry for here and it should be ~__UA_LIMIT...
+earlier discussed:
+https://patchwork.kernel.org/project/linux-mips/patch/1618139092-4018-1-git-send-email-hejinyang@loongson.cn/#24107107
 
-Signed-off-by: Beatriz Martins de Carvalho <martinsdecarvalhobeatriz@gmail.com>
----
- drivers/staging/media/atomisp/i2c/atomisp-gc2235.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hope other comment. :-)
 
-diff --git a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-index 78147ffb6099..6ba4a8adff7c 100644
---- a/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-+++ b/drivers/staging/media/atomisp/i2c/atomisp-gc2235.c
-@@ -171,8 +171,8 @@ static int __gc2235_buf_reg_array(struct i2c_client *client,
- }
- 
- static int __gc2235_write_reg_is_consecutive(struct i2c_client *client,
--	struct gc2235_write_ctrl *ctrl,
--	const struct gc2235_reg *next)
-+					     struct gc2235_write_ctrl *ctrl,
-+					     const struct gc2235_reg *next)
- {
- 	if (ctrl->index == 0)
- 		return 1;
--- 
-2.25.1
+Jinyang
+
+> +	}
+>   
+>   	might_fault();
+>   	__asm__ __volatile__(
 
