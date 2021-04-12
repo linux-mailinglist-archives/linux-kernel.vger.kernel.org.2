@@ -2,83 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6BF35C42C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:39:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F0235C42D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239349AbhDLKj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:39:29 -0400
-Received: from netsrv01.beckhoff.com ([62.159.14.10]:53880 "EHLO
-        netsrv01.beckhoff.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239220AbhDLKjY (ORCPT
+        id S239411AbhDLKjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:39:31 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:51059 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239343AbhDLKja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:39:24 -0400
-Received: from 172.17.5.170 by netsrv01.beckhoff.com (Tls12, Aes256, Sha384,
- DiffieHellmanEllipticKey256); Mon, 12 Apr 2021 10:39:07 GMT
-Received: from ex01.beckhoff.com (172.17.2.168) by ex04.beckhoff.com
- (172.17.5.170) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2242.4; Mon, 12 Apr
- 2021 12:39:03 +0200
-Received: from ex01.beckhoff.com ([fe80::8caa:afd3:30d9:a097]) by
- ex01.beckhoff.com ([fe80::8caa:afd3:30d9:a097%7]) with mapi id
- 15.01.2242.004; Mon, 12 Apr 2021 12:39:03 +0200
-From:   linux-kernel-dev <linux-kernel-dev@beckhoff.com>
-To:     "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>
-CC:     "hdegoede@redhat.com" <hdegoede@redhat.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] platform/x86: pmc_atom: Match all Beckhoff Automation
- baytrail boards with critclk_systems DMI table
-Thread-Topic: [PATCH] platform/x86: pmc_atom: Match all Beckhoff Automation
- baytrail boards with critclk_systems DMI table
-Thread-Index: AQHXL4BPaMnkOe6iy0OPHOeVEHiMsqqwj5SA
-Date:   Mon, 12 Apr 2021 10:39:03 +0000
-Message-ID: <f406a5a6c6bfe0e458925821b6830e9dc5a151c1.camel@beckhoff.com>
-References: <20210412090430.167463-1-linux-kernel-dev@beckhoff.com>
-         <CAHp75VfLQBDv-Bcj5=Ksv6kp2XH2v8msDvNjsdj6=WZiCk=Q9w@mail.gmail.com>
-In-Reply-To: <CAHp75VfLQBDv-Bcj5=Ksv6kp2XH2v8msDvNjsdj6=WZiCk=Q9w@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [188.136.117.151]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <43D189DD6A60F143BCB75E120EABFEA1@beckhoff.com>
-Content-Transfer-Encoding: base64
+        Mon, 12 Apr 2021 06:39:30 -0400
+Received: from fsav105.sakura.ne.jp (fsav105.sakura.ne.jp [27.133.134.232])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 13CAdAfF031521;
+        Mon, 12 Apr 2021 19:39:10 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav105.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp);
+ Mon, 12 Apr 2021 19:39:10 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav105.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 13CAdAKa031517
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 12 Apr 2021 19:39:10 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: How to handle concurrent access to /dev/ttyprintk ?
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+To:     Samo Pogacnik <samo_pogacnik@t-2.net>
+Cc:     Petr Mladek <pmladek@suse.com>, Jiri Slaby <jirislaby@kernel.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20210403041444.4081-1-penguin-kernel@I-love.SAKURA.ne.jp>
+ <YGx59PEq2Y015YdK@alley>
+ <3c15d32f-c568-7f6f-fa7e-af4deb9b49f9@i-love.sakura.ne.jp>
+ <d78ae8da-16e9-38d9-e274-048c54e24360@i-love.sakura.ne.jp>
+ <YG24F9Kx+tjxhh8G@kroah.com>
+ <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
+Message-ID: <cd213843-45fe-2eac-4943-0906ab8d272b@i-love.sakura.ne.jp>
+Date:   Mon, 12 Apr 2021 19:39:04 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <051b550c-1cdd-6503-d2b7-0877bf0578fc@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gTW8sIDIwMjEtMDQtMTIgYXQgMTI6NDMgKzAzMDAsIEFuZHkgU2hldmNoZW5rbyB3cm90ZToN
-Cj4NCj4gT24gTW9uLCBBcHIgMTIsIDIwMjEgYXQgMTI6MjkgUE0gU3RlZmZlbiBEaXJrd2lua2Vs
-DQo+IDxsaW51eC1rZXJuZWwtZGV2QGJlY2tob2ZmLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBGcm9t
-OiBTdGVmZmVuIERpcmt3aW5rZWwgPHMuZGlya3dpbmtlbEBiZWNraG9mZi5jb20+DQo+ID4NCj4g
-PiBwbWNfcGx0X2NsayogY2xvY2tzIGFyZSB1c2VkIGZvciBldGhlcm5ldCBjb250cm9sbGVycyBz
-byBuZWVkIHRvIHN0YXkNCj4gPiB0dXJuZWQgb24uIFRoaXMgYWRkcyB0aGUgYWZmZWN0ZWQgYm9h
-cmQgZmFtaWx5IHRvIGNyaXRjbGtfc3lzdGVtcyBETUkNCj4gPiB0YWJsZSBzbyB0aGUgY2xvY2tz
-IGFyZSBtYXJrZWQgYXMgQ0xLX0NSSVRJQ0FMIGFuZCBub3QgdHVybmVkIG9mZi4NCj4gPg0KPiA+
-IFRoaXMgcmVwbGFjZXMgdGhlIHByZXZpb3NseSBsaXN0ZWQgYm9hcmRzIHdpdGggYSBtYXRjaCBm
-b3IgdGhlIHdob2xlDQo+DQo+ICIuLi5wcmV2aW91c2x5Li4uIg0KdGhhbmtzDQoNCj4NCj4gPiBk
-ZXZpY2UgZmFtaWx5LiBUaGVyZSBhcmUgbmV3IGFmZmVjdGVkIGJvYXJkcyB0aGF0IHdvdWxkIG90
-aGVyd2lzZSBuZWVkDQo+ID4gdG8gYmUgbGlzdGVkLiBUaGVyZSBhcmUgb25seSBmZXcgdW5hZmZl
-Y3RlZCBib2FyZHMgaW4gdGhlIGZhbWlseSBhbmQNCj4NCj4gIi4uLm9ubHkgYSBmZXcuLi4iDQp3
-aWxsIGRyb3AgdGhlIHBocmFzZQ0KDQo+DQo+ID4gaGF2aW5nIHRoZSBjbG9ja3MgdHVybmVkIG9u
-IGlzIG5vdCBhbiBpc3N1ZSBvbiB0aG9zZS4NCj4NCj4gIi4uLm5vdCBhbiBpc3N1ZS4iDQpOb3Qg
-YW4gaXNzdWUgZm9yIHRoZXNlIGluZHVzdHJpYWwgUENzIGFzIHNsZWVwIGlzIGFuIHVudXN1YWwg
-dXNlIGNhc2UuDQpIYXZpbmcgbm8gZXRoZXJuZXQgYWZ0ZXIgYm9vdC9zbGVlcCBpcyB3b3JzZS4N
-Cg0KPg0KPiA+IEZpeGVzOiA2NDhlOTIxODg4YWQgKCJjbGs6IHg4NjogU3RvcCBtYXJraW5nIGNs
-b2NrcyBhcyBDTEtfSVNfQ1JJVElDQUwiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IFN0ZWZmZW4gRGly
-a3dpbmtlbCA8cy5kaXJrd2lua2VsQGJlY2tob2ZmLmNvbT4NCj4NCj4gSSdtIGFmcmFpZCBpdCdz
-IGEgYml0IHRvbyBtdWNoLiBJcyB0aGVyZSBhbnkgZ3VhcmFudGVlIGFsbCB0aGUgYm9hcmRzDQo+
-IGJhc2VkIG9uIHg4NiB3aWxsIGJlIEJheXRyYWlsIG9ubHk/DQo+DQpTb3JyeSwgSSBndWVzcyBJ
-IHNob3VsZCBtYWtlIHRoaXMgY2xlYXJlciBpbiB0aGUgbWVzc2FnZS4NCkFsbCBib2FyZHMgd2l0
-aCAiQ0J4eDYzIiBhcmUgQmF5dHJhaWwuDQoNCg0KPiAtLQ0KPiBXaXRoIEJlc3QgUmVnYXJkcywN
-Cj4gQW5keSBTaGV2Y2hlbmtvDQo+DQoNCkJlY2tob2ZmIEF1dG9tYXRpb24gR21iSCAmIENvLiBL
-RyB8IE1hbmFnaW5nIERpcmVjdG9yOiBEaXBsLiBQaHlzLiBIYW5zIEJlY2tob2ZmIFJlZ2lzdGVy
-ZWQgb2ZmaWNlOiBWZXJsLCBHZXJtYW55IHwgUmVnaXN0ZXIgY291cnQ6IEd1ZXRlcnNsb2ggSFJB
-IDcwNzUNCg0K
+What is the intended usage of /dev/ttyprintk ?
+
+It seems that drivers/char/ttyprintk.c was not designed to be opened by
+multiple processes. As a result, syzbot can trigger tty_warn() flooding
+enough to fire khungtaskd warning due to tty_port_close().
+
+Do we need to allow concurrent access to /dev/ttyprintk ?
+If we can't change /dev/ttyprintk exclusively open()able by only
+one thread, how to handle concurrent access to /dev/ttyprintk ?
+
+On 2021/04/07 23:24, Tetsuo Handa wrote:
+> On 2021/04/07 22:48, Greg Kroah-Hartman wrote:
+>>> By the way, as soon as applying this patch, I guess that syzkaller starts
+>>> generating hung task reports because /dev/ttyprintk can trivially trigger
+>>> flood of
+>>>
+>>>   tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
+>>>            port->count);
+>>>
+>>> message, and adding
+>>>
+>>>   if (strcmp(tty_driver_name(tty), "ttyprintk"))
+>>
+>> Odd, how can ttyprintk() generate that mess?
+> 
+> So far three tests and results:
+> 
+>   https://groups.google.com/g/syzkaller-bugs/c/yRLYijD2tbw/m/WifLgadvAAAJ
+>   https://groups.google.com/g/syzkaller-bugs/c/yRLYijD2tbw/m/w2_MiMmAAAAJ
+>   https://groups.google.com/g/syzkaller-bugs/c/yRLYijD2tbw/m/hfsQqSOPAAAJ
+> 
+> Patch https://syzkaller.appspot.com/x/patch.diff?x=145e4c9ad00000 generated
+> console output https://syzkaller.appspot.com/x/log.txt?x=162f9fced00000 .
+> 
+> Patch https://syzkaller.appspot.com/x/patch.diff?x=14839931d00000 did not
+> flood the console output enough to fire khungtaskd.
+> 
+> Maybe it is because /dev/ttyprintk can be opened/closed by multiple processes
+> without serialization?
+> 
+> Running
+> 
+>   for i in $(seq 1 100); do sleep 1 > /dev/ttyprintk & done
+> 
+> results in
+> 
+>   tty_port_close_start: tty->count = 1 port count = 100
+> 
+> . If tty_port_open() from tpk_open() can do
+> 
+>   spin_lock_irq(&port->lock);
+>   ++port->count;
+>   spin_unlock_irq(&port->lock);
+> 
+> when tty_port_close_start() from tty_port_close() from tpk_close() is doing
+> 
+>   spin_lock_irqsave(&port->lock, flags);
+>   if (tty->count == 1 && port->count != 1) {
+>     tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
+>              port->count);
+>     port->count = 1;
+>   }
+>   if (--port->count < 0) {
+>     tty_warn(tty, "%s: bad port count (%d)\n", __func__,
+>              port->count);
+>     port->count = 0;
+>   }
+> 
+>   if (port->count) {
+>     spin_unlock_irqrestore(&port->lock, flags);
+>     return 0;
+>   }
+>   spin_unlock_irqrestore(&port->lock, flags);
+> 
+> , what prevents port->count from getting larger than 1 ?
+> 
 
