@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B65835BDEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:56:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0ACC35BDF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:56:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238116AbhDLI4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:56:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
+        id S238275AbhDLI4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:56:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238457AbhDLItz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238460AbhDLItz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 04:49:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 715766125F;
-        Mon, 12 Apr 2021 08:48:58 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BF7A061220;
+        Mon, 12 Apr 2021 08:49:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217338;
-        bh=f4S7kv1Yr06FeGh7tleKoX/IiDEAYoDTl2zrP6EAEIc=;
+        s=korg; t=1618217341;
+        bh=eCT4XfdWQT7cD/mHkwI4t5VeBUC8QrmNaP8hpcHFXvc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k8CV+y9Qy9UtQe8TNWj7UevqNaybr9BEYvu102zDXzZ32p4hZ0Z5xNxd0ZN3ET1xY
-         g46bEeoGDb+dkqB53fEbpDJTXBOkvyU4ILL6u39+3r2mPBwkjUanLtWmquomDxdPLk
-         RWr8WynvruH/uUe+urxKt/q37isdZtSKk9KeUsjo=
+        b=CDw4+En5mM08/yGIITEVGT9GB5mASYqSahjEAW5w9Ln/fvg5S08vDD+X7TryuJU1d
+         OyqOZmBKoE3IxkF3PBAReRxLvbX6tG6/+cDJrwAtgg8Kiye68tjYLwdVolDLS19L8a
+         m7XfdDNRl2/L11dGkNMypJ0EAn/mdUscKR2At2Ec=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eryk Rybak <eryk.roch.rybak@intel.com>,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Konrad Jankowski <konrad0.jankowski@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 054/111] i40e: Fix kernel oops when i40e driver removes VFs
-Date:   Mon, 12 Apr 2021 10:40:32 +0200
-Message-Id: <20210412084006.062638851@linuxfoundation.org>
+Subject: [PATCH 5.4 055/111] hostfs: Use kasprintf() instead of fixed buffer formatting
+Date:   Mon, 12 Apr 2021 10:40:33 +0200
+Message-Id: <20210412084006.093780735@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -43,82 +41,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eryk Rybak <eryk.roch.rybak@intel.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 347b5650cd158d1d953487cc2bec567af5c5bf96 ]
+[ Upstream commit b58c4e96192ee7c47d5c67853b1557306cfa0e7f ]
 
-Fix the reason of kernel oops when i40e driver removed VFs.
-Added new __I40E_VFS_RELEASING state to signalize releasing
-process by PF, that it makes possible to exit of reset VF procedure.
-Without this patch, it is possible to suspend the VFs reset by
-releasing VFs resources procedure. Retrying the reset after the
-timeout works on the freed VF memory causing a kernel oops.
+Improve readability and maintainability by replacing a hardcoded string
+allocation and formatting by the use of the kasprintf() helper.
 
-Fixes: d43d60e5eb95 ("i40e: ensure reset occurs when disabling VF")
-Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e.h             | 1 +
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 9 +++++++++
- 2 files changed, 10 insertions(+)
+ fs/hostfs/hostfs_kern.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
-index 678e4190b8a8..e571c6116c4b 100644
---- a/drivers/net/ethernet/intel/i40e/i40e.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e.h
-@@ -152,6 +152,7 @@ enum i40e_state_t {
- 	__I40E_VIRTCHNL_OP_PENDING,
- 	__I40E_RECOVERY_MODE,
- 	__I40E_VF_RESETS_DISABLED,	/* disable resets during i40e_remove */
-+	__I40E_VFS_RELEASING,
- 	/* This must be last as it determines the size of the BITMAP */
- 	__I40E_STATE_SIZE__,
- };
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-index 5acd599d6b9a..e56107305486 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
-@@ -137,6 +137,7 @@ void i40e_vc_notify_vf_reset(struct i40e_vf *vf)
-  **/
- static inline void i40e_vc_disable_vf(struct i40e_vf *vf)
+diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
+index 5a7eb0c79839..4f5d857f6ecb 100644
+--- a/fs/hostfs/hostfs_kern.c
++++ b/fs/hostfs/hostfs_kern.c
+@@ -139,8 +139,8 @@ static char *inode_name(struct inode *ino)
+ 
+ static char *follow_link(char *link)
  {
-+	struct i40e_pf *pf = vf->pf;
- 	int i;
+-	int len, n;
+ 	char *name, *resolved, *end;
++	int n;
  
- 	i40e_vc_notify_vf_reset(vf);
-@@ -147,6 +148,11 @@ static inline void i40e_vc_disable_vf(struct i40e_vf *vf)
- 	 * ensure a reset.
- 	 */
- 	for (i = 0; i < 20; i++) {
-+		/* If PF is in VFs releasing state reset VF is impossible,
-+		 * so leave it.
-+		 */
-+		if (test_bit(__I40E_VFS_RELEASING, pf->state))
-+			return;
- 		if (i40e_reset_vf(vf, false))
- 			return;
- 		usleep_range(10000, 20000);
-@@ -1506,6 +1512,8 @@ void i40e_free_vfs(struct i40e_pf *pf)
+ 	name = __getname();
+ 	if (!name) {
+@@ -164,15 +164,13 @@ static char *follow_link(char *link)
+ 		return name;
  
- 	if (!pf->vf)
- 		return;
-+
-+	set_bit(__I40E_VFS_RELEASING, pf->state);
- 	while (test_and_set_bit(__I40E_VF_DISABLE, pf->state))
- 		usleep_range(1000, 2000);
+ 	*(end + 1) = '\0';
+-	len = strlen(link) + strlen(name) + 1;
  
-@@ -1563,6 +1571,7 @@ void i40e_free_vfs(struct i40e_pf *pf)
- 		}
+-	resolved = kmalloc(len, GFP_KERNEL);
++	resolved = kasprintf(GFP_KERNEL, "%s%s", link, name);
+ 	if (resolved == NULL) {
+ 		n = -ENOMEM;
+ 		goto out_free;
  	}
- 	clear_bit(__I40E_VF_DISABLE, pf->state);
-+	clear_bit(__I40E_VFS_RELEASING, pf->state);
- }
  
- #ifdef CONFIG_PCI_IOV
+-	sprintf(resolved, "%s%s", link, name);
+ 	__putname(name);
+ 	kfree(link);
+ 	return resolved;
+@@ -918,18 +916,16 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
+ 	sb->s_d_op = &simple_dentry_operations;
+ 	sb->s_maxbytes = MAX_LFS_FILESIZE;
+ 
+-	/* NULL is printed as <NULL> by sprintf: avoid that. */
++	/* NULL is printed as '(null)' by printf(): avoid that. */
+ 	if (req_root == NULL)
+ 		req_root = "";
+ 
+ 	err = -ENOMEM;
+ 	sb->s_fs_info = host_root_path =
+-		kmalloc(strlen(root_ino) + strlen(req_root) + 2, GFP_KERNEL);
++		kasprintf(GFP_KERNEL, "%s/%s", root_ino, req_root);
+ 	if (host_root_path == NULL)
+ 		goto out;
+ 
+-	sprintf(host_root_path, "%s/%s", root_ino, req_root);
+-
+ 	root_inode = new_inode(sb);
+ 	if (!root_inode)
+ 		goto out;
 -- 
 2.30.2
 
