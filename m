@@ -2,130 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B470B35C458
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 349AD35C45F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239659AbhDLKtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:49:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44488 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237929AbhDLKtj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:49:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1618224560; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S239635AbhDLKuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:50:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55462 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S239190AbhDLKt7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 06:49:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618224580;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y3nWrWViWarEokL29oGWFlAfkjkUJE9MTrNl0iKBD4M=;
-        b=iazxBz9y39JUxT0qYbRCWlWacub+aN8E+OF5PwpMp3XYR7fk1Y89jH05DbfB9yZTlgznn6
-        Fa0yFGQz0FO7Ij6sjXFzSX3P5cKCD/CmrBIrY9zgvVCZaAx3l6m624mYvnxAmbjGxiWANL
-        a/wz3IsjUw2mxO+V8c8nxw2mlTdisq4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6983CB250;
-        Mon, 12 Apr 2021 10:49:20 +0000 (UTC)
-Date:   Mon, 12 Apr 2021 12:49:19 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Alexander Monakov <amonakov@ispras.ru>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        Joerg Roedel <jroedel@suse.de>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] iommu/amd: Fix extended features logging
-Message-ID: <YHQlr5XTvlqxXnvX@alley>
-References: <20210410211152.1938-1-amonakov@ispras.ru>
- <e884200f-55a4-59b5-4311-964e6ddc94d1@molgen.mpg.de>
- <alpine.LNX.2.20.13.2104111410340.11104@monopod.intra.ispras.ru>
- <87o8ekioo4.fsf@jogness.linutronix.de>
+        bh=m7zx2DsEs4Cu6I9lqZm7M12U1186tw3UcCmKjVshQ18=;
+        b=YTDoFpO8RWycaydJ+cTwWolVqw5Y8P8IIR/SA6oqTPfau1uHw2c8KAWjYK5Eex9cfQKvT6
+        QdXAkd3rCLGF+azQpGRtvUxdusaIBIOdGQ8aISUjvMX0HmuTljT6nXk7JlDvCbPgYDicK6
+        QwX95OS6cf9L6GEH8ygIOKCHc4+tDHg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-583-bficfnE7OxmJU2h3iHiSHQ-1; Mon, 12 Apr 2021 06:49:36 -0400
+X-MC-Unique: bficfnE7OxmJU2h3iHiSHQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A0DC087A826;
+        Mon, 12 Apr 2021 10:49:34 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-13-229.pek2.redhat.com [10.72.13.229])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6326560BD8;
+        Mon, 12 Apr 2021 10:49:24 +0000 (UTC)
+Subject: Re: [PATCH] x86/efi: Do not release sub-1MB memory regions when the
+ crashkernel option is specified
+To:     Baoquan He <bhe@redhat.com>, Andy Lutomirski <luto@amacapital.net>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, x86@kernel.org,
+        ardb@kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dvhart@infradead.org, andy@infradead.org,
+        kexec@lists.infradead.org, dyoung@redhat.com
+References: <20210412011347.GA4282@MiWiFi-R3L-srv>
+ <8FAA2A0E-0A09-4308-B936-CDD2C0568BAE@amacapital.net>
+ <20210412095231.GC4282@MiWiFi-R3L-srv>
+From:   lijiang <lijiang@redhat.com>
+Message-ID: <8b3807cc-41a0-9032-e586-1fa38e6d2203@redhat.com>
+Date:   Mon, 12 Apr 2021 18:49:21 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8ekioo4.fsf@jogness.linutronix.de>
+In-Reply-To: <20210412095231.GC4282@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 2021-04-11 21:52:59, John Ogness wrote:
-> On 2021-04-11, Alexander Monakov <amonakov@ispras.ru> wrote:
-> >>> The second line is emitted via 'pr_cont', which causes it to have a
-> >>> different ('warn') loglevel compared to the previous line ('info').
-> >>> 
-> >>> Commit 9a295ff0ffc9 attempted to rectify this by removing the newline
-> >>> from the pci_info format string, but this doesn't work, as pci_info
-> >>> calls implicitly append a newline anyway.
-> >> 
-> >> Hmm, did I really screw that up during my testing? I am sorry about that.
-> >> 
-> >> I tried to wrap my head around, where the newline is implicitly appended, and
-> >> only found the definitions below.
-> >> 
-> > Yeah, it's not obvious: it happens in kernel/printk/printk.c:vprintk_store
-> > where it does
-> >
-> > 	if (dev_info)
-> > 		lflags |= LOG_NEWLINE;
-> >
-> > It doesn't seem to be documented; I think it prevents using pr_cont with
-> > "rich" printk facilities that go via _dev_info.
-> >
-> > I suspect it quietly changed in commit c313af145b9bc ("printk() - isolate
-> > KERN_CONT users from ordinary complete lines").
+Thank you for the comment, H. Peter, Andy and Baoquan.
+
+在 2021年04月12日 17:52, Baoquan He 写道:
+> On 04/11/21 at 06:49pm, Andy Lutomirski wrote:
+>>
+>>
+>>> On Apr 11, 2021, at 6:14 PM, Baoquan He <bhe@redhat.com> wrote:
+>>>
+>>> ﻿On 04/09/21 at 07:59pm, H. Peter Anvin wrote:
+>>>> Why don't we do this unconditionally? At the very best we gain half a megabyte of memory (except the trampoline, which has to live there, but it is only a few kilobytes.)
+>>>
+>>> This is a great suggestion, thanks. I think we can fix it in this way to
+>>> make code simpler. Then the specific caring of real mode in
+>>> efi_free_boot_services() can be removed too.
+>>>
+>>
+>> This whole situation makes me think that the code is buggy before and buggy after.
+>>
+>> The issue here (I think) is that various pieces of code want to reserve specific pieces of otherwise-available low memory for their own nefarious uses. I don’t know *why* crash kernel needs this, but that doesn’t matter too much.
 > 
-> Yes, this behavior has been around for a while. I see no reason why it
-> should be that way. These days printk does not care if there is dev_info
-> included or not.
-
-It seems that it has been this way since the dev_info was
-introduced. It was called "dict" at that time. See
-
-	if (buflen && (!cont || dict)) {
-		/* no continuation; flush existing buffer */
-		log_store(facility, buflevel, NULL, 0, buf, buflen);
-
-in the commit 7ff9554bb578ba02166071d2d ("printk: convert byte-buffer
-to variable-length record buffer").
-
-I am not sure why. Well, dev_printk() previously printed the extra
-information for every piece. See, the commit c4e00daaa96d3a0786f
-("driver-core: extend dev_printk() to pass structured data").
-
-
-> > Yeah, I saw that, but decided to go with the 'pr_info("")' solution, because
-> > it is less magic, and already used in two other drivers.
+> Kdump kernel also need go through real mode code path during bootup. It
+> is not different than normal kernel except that it skips the firmware
+> resetting. So kdump kernel needs low 1M as system RAM just as normal
+> kernel does. Here we reserve the whole low 1M with memblock_reserve()
+> to avoid any later kernel or driver data reside in this area. Otherwise,
+> we need dump the content of this area to vmcore. As we know, when crash
+> happened, the old memory of 1st kernel should be untouched until vmcore
+> dumping read out its content. Meanwhile, kdump kernel need reuse low 1M.
+> In the past, we used a back up region to copy out the low 1M area, and
+> map the back up region into the low 1M area in vmcore elf file. In
+> 6f599d84231fd27 ("x86/kdump: Always reserve the low 1M when the crashkernel
+> option is specified"), we changed to lock the whole low 1M to avoid
+> writting any kernel data into, like this we can skip this area when
+> dumping vmcore.
 > 
-> Note that what I was suggesting was to fix a different issue: If the
-> pr_cont() caller is interrupted by another printk user, then the
-> following pr_cont() calls will use the default loglevel. By explicitly
-> specifying the loglevel in pr_cont(), you can be sure that those pieces
-> get the desired loglevel, even if those pieces get separated off because
-> of an interrupting printk user.
+> Above is why we try to memblock reserve the whole low 1M. We don't want
+> to use it, just don't want anyone to use it in 1st kernel.
 > 
-> So even if we fix dev_info to allow pr_cont continuation, it still may
-> be desirable to specify the loglevel in the pr_cont pieces.
+>>
+>> I propose that the right solution is to give low-memory-reserving code paths two chances to do what they need: once at the very beginning and once after EFI boot services are freed.
+>>
+>> Alternatively, just reserve *all* otherwise unused sub 1M memory up front, then release it right after releasing boot services, and then invoke the special cases exactly once.
 > 
-> > pr_info("") will also prepend 'AMD-Vi:' to the feature list, which is
-> > nice.
+
+After EFI boot services are freed, I'm worried that it's a bit late. All sub-1M memory regions need to be reserved early as soon as possible.
+
+> I am not sure if I got both suggested ways clearly. They look a little
+> complicated in our case. As I explained at above, we want the whole low
+> 1M locked up, not one piece or some pieces of it.
 > 
-> I'd rather fix dev_info callers to allow pr_cont and then fix any code
-> that is using this workaround.
+>>
+>> In either case, the result is that the crashkernel mess gets unified with the trampoline mess.  One way the result is called twice and needs to be more careful, and the other way it’s called only once.
+>>
+
+That may still have a chance to allocate memory from sub-1M regions at some point, because EFI boot services will be freed after EFI enters virtual mode, it looks late.
+
+>> Just skipping freeing boot services seems wrong.  It doesn’t unmap boot services, and skipping that is incorrect, I think. And it seems to result in a bogus memory map in which the system thinks that some crashkernel memory is EFI memory instead.
 > 
-> And if the print maintainers agree it is OK to encourage
-> pr_cont(LOGLEVEL "...") usage, then people should really start using
-> that if the loglevel on those pieces is important.
+> I like hpa's thought to lock the whole low 1M unconditionally since only
+> a few KB except of trampoline area is there. Rethinking about it, doing
+> it in can_free_region() may be risky because efi memory region could
+> cross the 1M boundary, e.g [640K, 100M] with type of
+> EFI_BOOT_SERVICES_CODE|EFI_BOOT_SERVICES_DATA, it could cause loss of memory.
 
-To be sure. We would need to repeat also the dev_info() information
-in the continuous piece.
+Theoretically, yes. But so far I haven't seen the situation of crossing the 1M boundary.
 
-By other words. The clean solution would be:
+Thanks.
+Lianbo
 
-   + remove the automatic newline in
-     kernel/printk/printk.c:vprintk_store
+> Just a wild guess, not very sure if the 1M boundary corssing can really
+> happen. efi_reserve_boot_services() won't split regions.
+> 
+> If moving efi_reserve_boot_services() after reserve_real_mode() is not
+> accepted, maybe we can call efi_mem_reserve(0, 1M) just as
+> efi_esrt_init() has done.
+> 
 
-   + create wrappers, for example, dev_cont_info()
-
-Best Regards,
-Petr
