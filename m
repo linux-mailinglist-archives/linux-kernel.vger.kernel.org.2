@@ -2,61 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA46435D04C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 030BE35D051
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244857AbhDLS0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 14:26:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236716AbhDLS0G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 14:26:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C278461350;
-        Mon, 12 Apr 2021 18:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618251947;
-        bh=ZN2vqozDRocKnahAkvqi8qAJMlrIbH7pnklh3KTzCug=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=qjK4UxJWzyhi0NTymYkgIzhvCvB5buzE5A355/uBLGkUutWRt8cKXC9bjEWcM9+X4
-         x9akBLS80H1RD2iNCHiq6pPl8uJkJg7nnk8PyUCImqbbcLZKt6HDtQ3F3AiUBodFYQ
-         iS3Hmov6cqXlWH7eeSJhGmTgwChsQqBYWYcDnZ303AEuSZr48Tgz/8x7QKxAmvQDU3
-         x9x0aGiJuKmifEfvEn/mxPkeiAo19orkqXlIW2c8gzFNEin65/Iahj+YW/Yempr3qG
-         9XdAZPAhnYep1tXPWbittWI/9SA2KSJilmKbzym0uijplC7h5d+rjhMomGi2Usp3Jf
-         JI7/V3NC8IV3Q==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id AE17560BD8;
-        Mon, 12 Apr 2021 18:25:47 +0000 (UTC)
-Subject: Re: [git pull] m68knommu fix for v5.12-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <274538fc-42c0-e425-53a8-6a2f0234aae1@linux-m68k.org>
-References: <274538fc-42c0-e425-53a8-6a2f0234aae1@linux-m68k.org>
-X-PR-Tracked-List-Id: <linux-m68k.vger.kernel.org>
-X-PR-Tracked-Message-Id: <274538fc-42c0-e425-53a8-6a2f0234aae1@linux-m68k.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.12-rc7
-X-PR-Tracked-Commit-Id: d2bd44c4c05d043fb65cfdf26c54e6d8b94a4b41
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 89698becf06d341a700913c3d89ce2a914af69a2
-Message-Id: <161825194765.14899.11975799559047537024.pr-tracker-bot@kernel.org>
-Date:   Mon, 12 Apr 2021 18:25:47 +0000
-To:     Greg Ungerer <gerg@linux-m68k.org>
-Cc:     torvalds@linux-foundation.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
+        id S244893AbhDLS0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 14:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236888AbhDLS0s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 14:26:48 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2659C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 11:26:29 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id q10so10056202pgj.2
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 11:26:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=04YF3M1vfRP/894Mkgtm7cFlhBMi621lrF3NTwGcvuo=;
+        b=BwVBTRBsJxDqmmlOtB8bmKlBhQXbtnALtN8305m2UQPPu7O8SOqsfety1GQWN46GdQ
+         Mk199hVidSasf6I9HMs7rUz40Jhhrnlca20rU38slO3ihLmxc0yUwI5l3Bo4WtT35NxC
+         ggJ56+58XC1xnByQLAY087TVb4iG7ep1bHi+ZAwHlBUSEiexv9COfEJDIybuRifwqc0h
+         vPfZqT4DFdjV6LTSrPvKzvDzN/LYaLY7NtvzBFLqS4zvKwlDoCUWPcBWEfSgQdUuoFYz
+         QgoVVY5nnFStxxLDQN29Yc84m/Il7lckWG30UR70JawzZ0SlKX1qPWjzIyUxOzbBII7p
+         FJGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=04YF3M1vfRP/894Mkgtm7cFlhBMi621lrF3NTwGcvuo=;
+        b=K1nRRSY4zIYGCwcqRJBdTAR49mWCYapZh5fte63bC+vA3SqfoPCsd1ySL3zw6Ipcs1
+         rFdaP7czlttLnfvhq1EWW5MY0VQohdLQD5A+hW2NHGc7YqZQicEjt09KjCFoJ368YQI0
+         2uAI66d6oYl4LEb6RZL3DH8THoqBfok3Vw0/Yr6LfYA1OTzDKp+eTykwtfALa1xiY/TI
+         RlUKMNcsHzr1M1wDiJco2mHi+H9/CupRSReZSOB6OhMu5vtlwfE7RMTMk8J34O3FxN4S
+         c42ISeiiBCTR6GaAzzBCLrGpY9EPalYEdYtD9F48xVJrzw3tkWIFuOCRinXxea6xjAk7
+         yyZQ==
+X-Gm-Message-State: AOAM532cbHv7nOWQbnVrUOIh9wrnaCBSBmj0aKRlTR+6suOTOcPFCxJy
+        OYFHEW2i9Y+lj412VQ6+rxzqRA==
+X-Google-Smtp-Source: ABdhPJwHnUtr4YGb6WMKANB8mpeGESvy7nopkF745LSGgBg5SipI+mqZd1NXLZQTEZYkbp3D1i+FlQ==
+X-Received: by 2002:aa7:8389:0:b029:209:da1c:17b5 with SMTP id u9-20020aa783890000b0290209da1c17b5mr26072167pfm.29.1618251989325;
+        Mon, 12 Apr 2021 11:26:29 -0700 (PDT)
+Received: from [2620:15c:17:3:7835:226e:b31b:6f48] ([2620:15c:17:3:7835:226e:b31b:6f48])
+        by smtp.gmail.com with ESMTPSA id n4sm10676856pfu.45.2021.04.12.11.26.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 11:26:28 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 11:26:27 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+To:     chukaiping <chukaiping@baidu.com>
+cc:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm/compaction:let proactive compaction order
+ configurable
+In-Reply-To: <1618218330-50591-1-git-send-email-chukaiping@baidu.com>
+Message-ID: <e57c2db3-11f-4d1b-b5cc-8a9e112af34@google.com>
+References: <1618218330-50591-1-git-send-email-chukaiping@baidu.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 12 Apr 2021 11:13:57 +1000:
+On Mon, 12 Apr 2021, chukaiping wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.12-rc7
+> Currently the proactive compaction order is fixed to
+> COMPACTION_HPAGE_ORDER(9), it's OK in most machines with lots of
+> normal 4KB memory, but it's too high for the machines with small
+> normal memory, for example the machines with most memory configured
+> as 1GB hugetlbfs huge pages. In these machines the max order of
+> free pages is often below 9, and it's always below 9 even with hard
+> compaction. This will lead to proactive compaction be triggered very
+> frequently. In these machines we only care about order of 3 or 4.
+> This patch export the oder to proc and let it configurable
+> by user, and the default value is still COMPACTION_HPAGE_ORDER.
+> 
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/89698becf06d341a700913c3d89ce2a914af69a2
+I'm curious why you have proactive compaction enabled at all in this case?
 
-Thank you!
+The order-9 threshold is likely to optimize for hugepage availability, but 
+in your setup it appears that's not a goal.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+So what benefit does proactive compaction provide if only done for order-3 
+or order-4?
+
+> Signed-off-by: chukaiping <chukaiping@baidu.com>
+> ---
+>  include/linux/compaction.h |    1 +
+>  kernel/sysctl.c            |   10 ++++++++++
+>  mm/compaction.c            |    7 ++++---
+>  3 files changed, 15 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+> index ed4070e..151ccd1 100644
+> --- a/include/linux/compaction.h
+> +++ b/include/linux/compaction.h
+> @@ -83,6 +83,7 @@ static inline unsigned long compact_gap(unsigned int order)
+>  #ifdef CONFIG_COMPACTION
+>  extern int sysctl_compact_memory;
+>  extern unsigned int sysctl_compaction_proactiveness;
+> +extern unsigned int sysctl_compaction_order;
+>  extern int sysctl_compaction_handler(struct ctl_table *table, int write,
+>  			void *buffer, size_t *length, loff_t *ppos);
+>  extern int sysctl_extfrag_threshold;
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 62fbd09..277df31 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -114,6 +114,7 @@
+>  static int __maybe_unused neg_one = -1;
+>  static int __maybe_unused two = 2;
+>  static int __maybe_unused four = 4;
+> +static int __maybe_unused ten = 10;
+>  static unsigned long zero_ul;
+>  static unsigned long one_ul = 1;
+>  static unsigned long long_max = LONG_MAX;
+> @@ -2871,6 +2872,15 @@ int proc_do_static_key(struct ctl_table *table, int write,
+>  		.extra2		= &one_hundred,
+>  	},
+>  	{
+> +		.procname       = "compaction_order",
+> +		.data           = &sysctl_compaction_order,
+> +		.maxlen         = sizeof(sysctl_compaction_order),
+> +		.mode           = 0644,
+> +		.proc_handler   = proc_dointvec_minmax,
+> +		.extra1         = SYSCTL_ZERO,
+> +		.extra2         = &ten,
+> +	},
+> +	{
+>  		.procname	= "extfrag_threshold",
+>  		.data		= &sysctl_extfrag_threshold,
+>  		.maxlen		= sizeof(int),
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index e04f447..a192996 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -1925,16 +1925,16 @@ static bool kswapd_is_running(pg_data_t *pgdat)
+>  
+>  /*
+>   * A zone's fragmentation score is the external fragmentation wrt to the
+> - * COMPACTION_HPAGE_ORDER. It returns a value in the range [0, 100].
+> + * sysctl_compaction_order. It returns a value in the range [0, 100].
+>   */
+>  static unsigned int fragmentation_score_zone(struct zone *zone)
+>  {
+> -	return extfrag_for_order(zone, COMPACTION_HPAGE_ORDER);
+> +	return extfrag_for_order(zone, sysctl_compaction_order);
+>  }
+>  
+>  /*
+>   * A weighted zone's fragmentation score is the external fragmentation
+> - * wrt to the COMPACTION_HPAGE_ORDER scaled by the zone's size. It
+> + * wrt to the sysctl_compaction_order scaled by the zone's size. It
+>   * returns a value in the range [0, 100].
+>   *
+>   * The scaling factor ensures that proactive compaction focuses on larger
+> @@ -2666,6 +2666,7 @@ static void compact_nodes(void)
+>   * background. It takes values in the range [0, 100].
+>   */
+>  unsigned int __read_mostly sysctl_compaction_proactiveness = 20;
+> +unsigned int __read_mostly sysctl_compaction_order = COMPACTION_HPAGE_ORDER;
+>  
+>  /*
+>   * This is the entry point for compacting all nodes via
+> -- 
+> 1.7.1
+> 
+> 
