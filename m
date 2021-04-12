@@ -2,149 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D91635BBED
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0FBC35BBF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:18:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237227AbhDLIRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:17:03 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:30755 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236973AbhDLIQy (ORCPT
+        id S237236AbhDLISu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:18:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:32852 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236973AbhDLISr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:16:54 -0400
-X-Greylist: delayed 65972 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Apr 2021 04:16:53 EDT
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 13C8GChR010666;
-        Mon, 12 Apr 2021 17:16:13 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 13C8GChR010666
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1618215373;
-        bh=uDdOFoatKT+5zEWWAiJzJLrdDEXYwLFG1mwLVDQeZSg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ChatkEem71FPJE1307DkBwk3EPN3NFOpzdXEboxnGfQ3DRCYX8wc4wg9Ihk3ndQb5
-         RFUazZAR9nNmJcwhJIvJV1T/Y12+8RCbGkYJS64SQ4g9fDYtJcIid3UnlN7jRZW5mM
-         kq1Foetoi6isuFQcp4M4PW8YDsrCiy/AG++mRyyu+VyqPU+XT7xVrfFVC15QVKq+Gg
-         ZEEhMg0jObJB08TbnX2+tovpffpLkluDGnNlPElN+JT2E6fLFzYMT73bi/H4crUpGS
-         6tUqPA9Cy1ovNGsl09vTE+KpBs9rVQtDOWRJQoKwEJIVh3sTj0Duu5nOEkUsMABc1C
-         LUgQh95SyPgNw==
-X-Nifty-SrcIP: [209.85.210.174]
-Received: by mail-pf1-f174.google.com with SMTP id i190so8693841pfc.12;
-        Mon, 12 Apr 2021 01:16:12 -0700 (PDT)
-X-Gm-Message-State: AOAM532Yadje13LzX39f3A1PiCPxysZBZm2ANqEF+d+B8/U4bPiygaNi
-        JNkJdTi0GDu/i5jiIDLelNunET8kKZLqVNZynEo=
-X-Google-Smtp-Source: ABdhPJwQIkyZ0y/uMUlvB54CDG4omqvVnzcbv+RlS3hqxhdudrm8EDbUg9sZzv6Fn9SFbxY9GFmI5rHOYOeaY6T9tTM=
-X-Received: by 2002:a63:181c:: with SMTP id y28mr26531445pgl.175.1618215372220;
- Mon, 12 Apr 2021 01:16:12 -0700 (PDT)
+        Mon, 12 Apr 2021 04:18:47 -0400
+Received: from mail-lf1-f71.google.com ([209.85.167.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1lVrm8-0002Df-4Z
+        for linux-kernel@vger.kernel.org; Mon, 12 Apr 2021 08:18:28 +0000
+Received: by mail-lf1-f71.google.com with SMTP id 26so4245628lfp.19
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 01:18:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X6cn2oRdv5Lr/xBRjd88otZL6Tx1HK5wsUDmmEldJ28=;
+        b=QSA2B0yIpZ5hFt1DrKyXwn1R4JmTQsbT8RKXL5KcYNzkqNzKPgYXAqE+1ccY7ES8FV
+         kF3mf54iX/4XskTX8/r+AFtF8sPGGy5GNyPZyZ46TzW+IJZOG0TMJP29628FDZwzNyvT
+         +f1Yurz56l1U5tXtZZdoe8rlCvlJLCEKS2HU/aF9IV31GdrmPfII2a7x/0kEWBzkcXsH
+         mbGDKthtGJDtoWwzUovJZk1X+Og8mY0Rwg1gn1EvWYgvrPVomdUXd6R+g93NzdnIYSo3
+         ehAvf49d1SEO+fLjKBQMOaKLcwZ0QpEPh3vGXMyfHPYZQ4fgdQu4Hboi7mRA/6vDVVf/
+         HE2Q==
+X-Gm-Message-State: AOAM5328TV0yO7Y2yiw54CRI4DnwGD9rszLVXB0yppgRsanW9GrrnIb8
+        BxmEJdMIWrTuo/t3DAS2yr8/ImqzyuiW/q9H2zLonJ12CpTHKvrDNTjEJHexdLAN9+n7AFLSEE4
+        W9O97f1svikSXtkJveIK74DiZcJiqbGrt4m87dcV8tRI/m/7ZE0a8fu4KUQ==
+X-Received: by 2002:a05:6512:ac2:: with SMTP id n2mr4900382lfu.194.1618215507578;
+        Mon, 12 Apr 2021 01:18:27 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwctJkxS2lm45kAjd/Rroz41Jy7K/rew1CnZxhVwsgOB13URqXK6in0B0bYD4OvLR4GYj8e3MfxhS54iSzL6J8=
+X-Received: by 2002:a05:6512:ac2:: with SMTP id n2mr4900369lfu.194.1618215507298;
+ Mon, 12 Apr 2021 01:18:27 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210411135532.219797-1-masahiroy@kernel.org> <CAMuHMdUtqSv6PUfLtuGoBSgqqM4CkwSkT3nKstXRKN1tuXrQ_g@mail.gmail.com>
-In-Reply-To: <CAMuHMdUtqSv6PUfLtuGoBSgqqM4CkwSkT3nKstXRKN1tuXrQ_g@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 12 Apr 2021 17:15:35 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATozxbhq1Q4HtiOrE87KKFEmdC7Hfp-biXYG1e_eFzHvw@mail.gmail.com>
-Message-ID: <CAK7LNATozxbhq1Q4HtiOrE87KKFEmdC7Hfp-biXYG1e_eFzHvw@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: use ?= to assign CROSS_COMPILE by arch-Makefile
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Helge Deller <deller@gmx.de>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        arcml <linux-snps-arc@lists.infradead.org>,
-        "moderated list:H8/300 ARCHITECTURE" 
-        <uclinux-h8-devel@lists.sourceforge.jp>
+References: <20210329052339.20882-1-kai.heng.feng@canonical.com>
+In-Reply-To: <20210329052339.20882-1-kai.heng.feng@canonical.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Mon, 12 Apr 2021 16:18:16 +0800
+Message-ID: <CAAd53p7fBKadTdsWZOe4O8ZuQDS6BCmkuA1ettZC7vxAxNw7Bw@mail.gmail.com>
+Subject: Re: [PATCH v2] PCI: Disable D3cold support on Intel XMM7360
+To:     Bjorn Helgaas <bhelgaas@google.com>
+Cc:     "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 4:44 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Mon, Mar 29, 2021 at 1:23 PM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
 >
-> Hi Yamada-san,
+> On some platforms, the root port for Intel XMM7360 WWAN supports D3cold.
+> When the root port is put to D3cold by system suspend or runtime
+> suspend, attempt to systems resume or runtime resume will freeze the
+> laptop for a while, then it automatically shuts down.
 >
-> On Sun, Apr 11, 2021 at 3:56 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> > Use ?= operator to let arch/*/Makefile to assign CROSS_COMPILE only
-> > when CROSS_COMPILE is undefined.
-> >
-> > This allows arch-Makefiles to drop the ifeq ($(CROSS_COMPILE),)
-> > conditional.
-> >
-> > This slightly changes the behavior; the arch-Makefile previously
-> > overrode CROSS_COMPILE when CROSS_COMPILE has already been made empty
-> > via an environment variable as in 'export CROSS_COMPILE='.
-> >
-> > With this commit, arch-Makefle will respect the user's environment
-> > set-up, which seems to be a more correct behavior.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> The root cause is unclear for now, as the Intel XMM7360 doesn't have a
+> driver yet.
 >
-> Thanks for your patch!
+> So disable D3cold for XMM7360 as a workaround, until proper device
+> driver is in place.
 >
-> > ---
-> >
-> >  arch/arc/Makefile    | 4 +---
-> >  arch/h8300/Makefile  | 4 +---
-> >  arch/m68k/Makefile   | 4 +---
-> >  arch/mips/Makefile   | 4 +---
-> >  arch/parisc/Makefile | 6 ++----
-> >  arch/sh/Makefile     | 4 +---
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=212419
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+
+A gentle ping...
+
+> ---
+> v2:
+>  - Add comment.
 >
-> What about arch/xtensa/Makefile?
+>  drivers/pci/quirks.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
 >
-> > --- a/arch/m68k/Makefile
-> > +++ b/arch/m68k/Makefile
-> > @@ -17,10 +17,8 @@
-> >  KBUILD_DEFCONFIG := multi_defconfig
-> >
-> >  ifneq ($(SUBARCH),$(ARCH))
-> > -       ifeq ($(CROSS_COMPILE),)
-> > -               CROSS_COMPILE := $(call cc-cross-prefix, \
-> > +       CROSS_COMPILE ?= $(call cc-cross-prefix, \
-> >                         m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
-> > -       endif
-> >  endif
->
-> This does not seem to work as expected: my standard build scripts
-> (using "make ARCH=m68k") no longer pick up the cross-compiler,
-> but fall back to the native compiler, thus breaking the build.
-
-
-Agh, sorry, this patch does not work
-because the top Makefile exports CROSS_COMPILE.
-
-export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS
-CROSS_COMPILE LD CC
-
-
-
-Removing CROSS_COMPILE from that makes ?= work,
-but it would break other parts.
-
-
-Please ignore this patch.
-
-
-
-
-> Gr{oetje,eeting}s,
->
->                         Geert
->
+> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> index 653660e3ba9e..c48b0b4a4164 100644
+> --- a/drivers/pci/quirks.c
+> +++ b/drivers/pci/quirks.c
+> @@ -5612,3 +5612,16 @@ static void apex_pci_fixup_class(struct pci_dev *pdev)
+>  }
+>  DECLARE_PCI_FIXUP_CLASS_HEADER(0x1ac1, 0x089a,
+>                                PCI_CLASS_NOT_DEFINED, 8, apex_pci_fixup_class);
+> +
+> +/*
+> + * Device [8086:7360]
+> + * When it resumes from D3cold, system freeze and shutdown happens.
+> + * Currently there's no driver for XMM7360, so add it as a PCI quirk.
+> + * https://bugzilla.kernel.org/show_bug.cgi?id=212419
+> + */
+> +static void pci_fixup_no_d3cold(struct pci_dev *pdev)
+> +{
+> +       pci_info(pdev, "disable D3cold\n");
+> +       pci_d3cold_disable(pdev);
+> +}
+> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, 0x7360, pci_fixup_no_d3cold);
 > --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 2.30.2
 >
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
-
-
-
--- 
-Best Regards
-Masahiro Yamada
