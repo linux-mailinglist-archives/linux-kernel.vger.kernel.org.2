@@ -2,189 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71A5535C246
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0A735C254
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243439AbhDLJmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:42:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35162 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240457AbhDLJKT (ORCPT
+        id S243783AbhDLJnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240722AbhDLJKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:10:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618218601;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kyicAu7oSAEk0C9a5jN90ftzS5kBZ/R9XW19N/Po9Jw=;
-        b=AeVf2AcQ9ULKZfXryTBvsztQH33PEz45199eRWTkgQIq6IlO73RkuWBj2tGzLlAlaFDhsD
-        y4nOv07I+/ywoLi32QNjOQbfvk/VBxMxeZtUYGLX5oNeqWjB8EwCV3PaZILsYBIagJTk8Z
-        lahA33OzX6GYa5FdI4wf+EGhKfMvYbY=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-19-uDIRms9WO_iCrN3nMR3-Bw-1; Mon, 12 Apr 2021 05:09:59 -0400
-X-MC-Unique: uDIRms9WO_iCrN3nMR3-Bw-1
-Received: by mail-wr1-f69.google.com with SMTP id f3so5737000wrt.14
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:09:59 -0700 (PDT)
+        Mon, 12 Apr 2021 05:10:54 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA059C06138E
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:10:21 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id f29so8882785pgm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:10:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3QeA4bIK5GaZsi48yUhmbO7fOznvzIDvWJ10aqKKUg0=;
+        b=vt2TktJL6sP6xFjdFxGR7uglI/UC0Owncgl8oyIgcTZouxROhQ4JVSQBQ4nDOL/4Qj
+         I8slMZbYCulDkKW2d+RvBuWslqB0rQ9oQ0Q3uOyhPTlaw6kaNamGmyqxKFmp79aZJtWH
+         0HwAxCww3+LRgwE4Y3/RdPoNUHfydxxQzUxPlMF8C0C1l5OArPdsi5zWFbgUv+SZbPMV
+         GhBS2qouSqcjPaz3ed9eeIROs6d/FECR31NybBYArkfO9Ffr9OkTD/bUE6rGGvQbhToH
+         WKmoOYCrtdKmQgpkacR5WWXXkZrdi5v5uS4w3fk3XaUvAa1gqSy6ExTgfugTODb7dxbH
+         xJXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=kyicAu7oSAEk0C9a5jN90ftzS5kBZ/R9XW19N/Po9Jw=;
-        b=Gv71WRuJgFpmDwLYqSvjkyO6yqFvibvgszhNaEAjmUy6uZQGJ+pYeOIcOtbzBw80ZJ
-         VNd6ySOGBDsCasSS6uz6Oi8W7M4wFKYYltWiS2SAgu6zRn6tgOlgGbsrlOG0qS/NDb9M
-         sf6Y021afoPipaqtPuZqYvuworBA4mrBy36qmrwI2pXgtnkaNO8vC0aydcb+OLKz20kP
-         FPpINPQSJzqMmZn59IDwGAGuJe9uJcQ3TXvCx4Km229fEp1ER/1uYM92VCa86l834tIt
-         kBvNWxsgE4jzGyzhlCcNYPG8zXrijar2KrHDUxHDRDc5Gvj+0GfYXlOT3fG8Bk0FlmAA
-         v17Q==
-X-Gm-Message-State: AOAM533TOIIiU1ivICeGY3XqPZn2gm8GuC6604hA6CkXLOE0Qivs6qBx
-        oUxfetE8d7kwXW6cyD2xXWfKCP7zFoi1j5aIQqh6qq1LKaKOimfjaSAfIJa9yqVfLLqWlatvCH7
-        ZBs3F9RT6P1kPzmNtCByxlgAH
-X-Received: by 2002:a5d:6242:: with SMTP id m2mr30112999wrv.384.1618218598395;
-        Mon, 12 Apr 2021 02:09:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwZzSRbut/AX4w/Z5NhgIRjmTIwNxBhovmSFPqcLv7H3F7+4A+7w4uyjzxQf5ifybjKSZNlgg==
-X-Received: by 2002:a5d:6242:: with SMTP id m2mr30112985wrv.384.1618218598234;
-        Mon, 12 Apr 2021 02:09:58 -0700 (PDT)
-Received: from redhat.com ([2a10:8006:2281:0:1994:c627:9eac:1825])
-        by smtp.gmail.com with ESMTPSA id u2sm17041666wmm.5.2021.04.12.02.09.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3QeA4bIK5GaZsi48yUhmbO7fOznvzIDvWJ10aqKKUg0=;
+        b=kAbdmUE1L0PMOTxlDznjx06Ce5XGmLNXz2GYqtBI1dVWNH3fAluZ1ubxT1pvCPg1+V
+         jGhNHXrJGBny5A63tB3A5msWaWVmQf7gCTRG7vOGYXsYmo7jevCqL17sgk9WGluSNsf6
+         dR80O34J73Y/XDRb30flBTEzOu4ltmyiqo95omfCOCl7EAfF7ec32CzP3RJ93zh4ppCe
+         AsfZpaZI1Es0/NVgj2fAIE/oh6ogAW24dRpZhbgrlWwnQXGEd3j23IkIrLB1VXZM+dKv
+         gAWW5mnbVhaFjAoqhTVw2aDT+6PDMT2KAQCDiASxlpwqmCshy0hKgERKsdxlkJqE5xyM
+         vZvg==
+X-Gm-Message-State: AOAM531v/0J9en9HcdHujRfjgRuWaJOZWtiI5f0ZLW2LbVod5m0V3Lny
+        p2zfq83DLwf1RnFhjjOtHs/mUw==
+X-Google-Smtp-Source: ABdhPJx0D8tER8JD0nOmci8alet46I5dGHvx0NScfJNBsS9ElKisGVU5VVvwo9X10yefzRdfZOZiaA==
+X-Received: by 2002:a63:77cf:: with SMTP id s198mr25996394pgc.252.1618218621208;
+        Mon, 12 Apr 2021 02:10:21 -0700 (PDT)
+Received: from localhost ([116.206.101.232])
+        by smtp.gmail.com with ESMTPSA id l10sm9231324pfc.125.2021.04.12.02.10.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 02:09:57 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 05:09:55 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, parav@nvidia.com, elic@nvidia.com
-Subject: Re: [RFC PATCH] vdpa: mandate 1.0 device
-Message-ID: <20210412050730-mutt-send-email-mst@kernel.org>
-References: <20210408082648.20145-1-jasowang@redhat.com>
- <20210408115834-mutt-send-email-mst@kernel.org>
- <a6a4ab68-c958-7266-c67c-142960222b67@redhat.com>
- <20210409115343-mutt-send-email-mst@kernel.org>
- <42891807-cb24-5352-f8cb-798e9d1a1854@redhat.com>
+        Mon, 12 Apr 2021 02:10:20 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Al Grant <Al.Grant@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        James Clark <James.Clark@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v4 0/6] perf arm-spe: Enable timestamp
+Date:   Mon, 12 Apr 2021 17:10:00 +0800
+Message-Id: <20210412091006.468557-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <42891807-cb24-5352-f8cb-798e9d1a1854@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 02:35:07PM +0800, Jason Wang wrote:
-> 
-> 在 2021/4/10 上午12:04, Michael S. Tsirkin 写道:
-> > On Fri, Apr 09, 2021 at 12:47:55PM +0800, Jason Wang wrote:
-> > > 在 2021/4/8 下午11:59, Michael S. Tsirkin 写道:
-> > > > On Thu, Apr 08, 2021 at 04:26:48PM +0800, Jason Wang wrote:
-> > > > > This patch mandates 1.0 for vDPA devices. The goal is to have the
-> > > > > semantic of normative statement in the virtio spec and eliminate the
-> > > > > burden of transitional device for both vDPA bus and vDPA parent.
-> > > > > 
-> > > > > uAPI seems fine since all the vDPA parent mandates
-> > > > > VIRTIO_F_ACCESS_PLATFORM which implies 1.0 devices.
-> > > > > 
-> > > > > For legacy guests, it can still work since Qemu will mediate when
-> > > > > necessary (e.g doing the endian conversion).
-> > > > > 
-> > > > > Signed-off-by: Jason Wang <jasowang@redhat.com>
-> > > > Hmm. If we do this, don't we still have a problem with
-> > > > legacy drivers which don't ack 1.0?
-> > > 
-> > > Yes, but it's not something that is introduced in this commit. The legacy
-> > > driver never work ...
-> > My point is this neither fixes or prevents this.
-> > 
-> > So my suggestion is to finally add ioctls along the lines
-> > of PROTOCOL_FEATURES of vhost-user.
-> > 
-> > Then that one can have bits for legacy le, legacy be and modern.
-> > 
-> > BTW I looked at vhost-user and it does not look like that
-> > has a solution for this problem either, right?
-> 
-> 
-> Right.
-> 
-> 
-> > 
-> > 
-> > > > Note 1.0 affects ring endianness which is not mediated in QEMU
-> > > > so QEMU can't pretend to device guest is 1.0.
-> > > 
-> > > Right, I plan to send patches to do mediation in the Qemu to unbreak legacy
-> > > drivers.
-> > > 
-> > > Thanks
-> > I frankly think we'll need PROTOCOL_FEATURES anyway, it's too useful ...
-> > so why not teach drivers about it and be done with it? You can't emulate
-> > legacy on modern in a cross endian situation because of vring
-> > endian-ness ...
-> 
-> 
-> So the problem still. This can only work when the hardware can support
-> legacy vring endian-ness.
-> 
-> Consider:
-> 
-> 1) the leagcy driver support is non-normative in the spec
-> 2) support a transitional device in the kenrel may requires the hardware
-> support and a burden of kernel codes
-> 
-> I'd rather simply drop the legacy driver support
+This patch set is to enable timestamp for Arm SPE trace.  It reads out
+TSC parameters from the TIME_CONV event, the parameters are used for
+conversion between timer counter and kernel time and which is applied
+for Arm SPE samples.
+
+This version dropped the change for adding hardware clock parameters
+into auxtrace info, alternatively, it utilizes the TIME_CONV event to
+extract the clock parameters which is used for timestamp calculation.
+
+This patch set can be clearly applied on perf/core branch with:
+
+  commit 2c0cb9f56020 ("perf test: Add a shell test for 'perf stat --bpf-counters' new option")
+
+Ths patch series has been tested on Hisilicon D06 platform.
+
+Changes from v3:
+* Let to be backwards-compatible for TIME_CONV event (Adrian).
+
+Changes from v2:
+* Changed to use TIME_CONV event for extracting clock parameters (Al).
+
+Changes from v1:
+* Rebased patch series on the latest perf/core branch;
+* Fixed the patch for dumping TSC parameters to support both the
+  older and new auxtrace info format.
 
 
-My point is this patch does not drop legacy support. It merely mandates
-modern support.
+Leo Yan (6):
+  perf arm-spe: Remove unused enum value ARM_SPE_PER_CPU_MMAPS
+  perf arm-spe: Save clock parameters from TIME_CONV event
+  perf arm-spe: Convert event kernel time to counter value
+  perf arm-spe: Assign kernel time to synthesized event
+  perf arm-spe: Bail out if the trace is later than perf event
+  perf arm-spe: Don't wait for PERF_RECORD_EXIT event
 
-> to have a simple and easy
-> abstarction in the kenrel. For legacy driver in the guest, hypervisor is in
-> charge of the mediation:
-> 
-> 1) config space access endian conversion
-> 2) using shadow virtqueue to change the endian in the vring
-> 
-> Thanks
+ tools/perf/util/arm-spe.c | 74 +++++++++++++++++++++++++++++++++------
+ tools/perf/util/arm-spe.h |  1 -
+ 2 files changed, 64 insertions(+), 11 deletions(-)
 
-I'd like to avoid shadow virtqueue hacks if at all possible.
-Last I checked performance wasn't much better than just emulating
-virtio in software.
-
-> 
-> > 
-> > 
-> > > > 
-> > > > 
-> > > > 
-> > > > 
-> > > > > ---
-> > > > >    include/linux/vdpa.h | 6 ++++++
-> > > > >    1 file changed, 6 insertions(+)
-> > > > > 
-> > > > > diff --git a/include/linux/vdpa.h b/include/linux/vdpa.h
-> > > > > index 0fefeb976877..cfde4ec999b4 100644
-> > > > > --- a/include/linux/vdpa.h
-> > > > > +++ b/include/linux/vdpa.h
-> > > > > @@ -6,6 +6,7 @@
-> > > > >    #include <linux/device.h>
-> > > > >    #include <linux/interrupt.h>
-> > > > >    #include <linux/vhost_iotlb.h>
-> > > > > +#include <uapi/linux/virtio_config.h>
-> > > > >    /**
-> > > > >     * vDPA callback definition.
-> > > > > @@ -317,6 +318,11 @@ static inline int vdpa_set_features(struct vdpa_device *vdev, u64 features)
-> > > > >    {
-> > > > >            const struct vdpa_config_ops *ops = vdev->config;
-> > > > > +        /* Mandating 1.0 to have semantics of normative statements in
-> > > > > +         * the spec. */
-> > > > > +        if (!(features & BIT_ULL(VIRTIO_F_VERSION_1)))
-> > > > > +		return -EINVAL;
-> > > > > +
-> > > > >    	vdev->features_valid = true;
-> > > > >            return ops->set_features(vdev, features);
-> > > > >    }
-> > > > > -- 
-> > > > > 2.25.1
+-- 
+2.25.1
 
