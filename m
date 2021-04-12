@@ -2,150 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 260F335BBE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:16:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A3735BBE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237216AbhDLIQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:16:16 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:16899 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236973AbhDLIQN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:16:13 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FJhMw1t9czkhbB;
-        Mon, 12 Apr 2021 16:14:04 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 12 Apr 2021 16:15:44 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>, Yi Chen <chenyi77@huawei.com>
-Subject: [PATCH v3] f2fs: fix to keep isolation of atomic write
-Date:   Mon, 12 Apr 2021 16:15:12 +0800
-Message-ID: <20210412081512.103592-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        id S237185AbhDLIPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:15:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236973AbhDLIPi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:15:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F7FB600EF;
+        Mon, 12 Apr 2021 08:15:18 +0000 (UTC)
+Date:   Mon, 12 Apr 2021 09:15:15 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Konovalov <andreyknvl@gmail.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: Re: [PATCH v4] kasan: remove redundant config option
+Message-ID: <20210412081515.GB2060@arm.com>
+References: <20210226012531.29231-1-walter-zh.wu@mediatek.com>
+ <CAAeHK+zyv1=kXtKAynnJN-77dwmPG4TXpJOLv_3W0nxXe5NjXA@mail.gmail.com>
+ <20210330223637.f3c73a78c64587e615d26766@linux-foundation.org>
+ <20210411105332.GA23778@arm.com>
+ <20210411150316.d60aa0b5174adf2370538809@linux-foundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210411150316.d60aa0b5174adf2370538809@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Yi Chen reported, there is a potential race case described as below:
+On Sun, Apr 11, 2021 at 03:03:16PM -0700, Andrew Morton wrote:
+> On Sun, 11 Apr 2021 11:53:33 +0100 Catalin Marinas <catalin.marinas@arm.com> wrote:
+> > On Tue, Mar 30, 2021 at 10:36:37PM -0700, Andrew Morton wrote:
+> > > On Mon, 29 Mar 2021 16:54:26 +0200 Andrey Konovalov <andreyknvl@google.com> wrote:
+> > > > Looks like my patch "kasan: fix KASAN_STACK dependency for HW_TAGS"
+> > > > that was merged into 5.12-rc causes a build time warning:
+> > > > 
+> > > > include/linux/kasan.h:333:30: warning: 'CONFIG_KASAN_STACK' is not
+> > > > defined, evaluates to 0 [-Wundef]
+> > > > #if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
+> > > > 
+> > > > The fix for it would either be reverting the patch (which would leave
+> > > > the initial issue unfixed) or applying this "kasan: remove redundant
+> > > > config option" patch.
+> > > > 
+> > > > Would it be possible to send this patch (with the fix-up you have in
+> > > > mm) for the next 5.12-rc?
+> > > > 
+> > > > Here are the required tags:
+> > > > 
+> > > > Fixes: d9b571c885a8 ("kasan: fix KASAN_STACK dependency for HW_TAGS")
+> > > > Cc: stable@vger.kernel.org
+> > > 
+> > > Got it, thanks.  I updated the changelog to mention the warning fix and
+> > > moved these ahead for a -rc merge.
+> > 
+> > Is there a chance this patch makes it into 5.12? I still get the warning
+> > with the latest Linus' tree (v5.12-rc6-408-g52e44129fba5) when enabling
+> > KASAN_HW_TAGS.
+> 
+> Trying.   We're still awaiting a tested fix for
+> https://lkml.kernel.org/r/CA+fCnZf1ABrQg0dsxtoZa9zM1BSbLYq_Xbu+xi9cv8WAZxdC2g@mail.gmail.com
 
-Thread A			Thread B
-- f2fs_ioc_start_atomic_write
-				- mkwrite
-				 - set_page_dirty
-				  - f2fs_set_page_private(page, 0)
- - set_inode_flag(FI_ATOMIC_FILE)
-				- mkwrite same page
-				 - set_page_dirty
-				  - f2fs_register_inmem_page
-				   - f2fs_set_page_private(ATOMIC_WRITTEN_PAGE)
-				     failed due to PagePrivate flag has been set
-				   - list_add_tail
-				- truncate_inode_pages
-				 - f2fs_invalidate_page
-				  - clear page private but w/o remove it from
-				    inmem_list
-				 - set page->mapping to NULL
-- f2fs_ioc_commit_atomic_write
- - __f2fs_commit_inmem_pages
-   - __revoke_inmem_pages
-    - f2fs_put_page panic as page->mapping is NULL
+Thanks Andrew. I didn't realise it was sent and then dropped.
 
-The root cause is we missed to keep isolation of atomic write in the case
-of start_atomic_write vs mkwrite, let start_atomic_write helds i_mmap_sem
-lock to avoid this issue.
+However, we should decouple (or rather reorder) the two patches. There's
+no functional dependency between removing the redundant config option (a
+fix for an existing commit) and adding support for KASAN_SW_TAGS with
+gcc-11, only a conflict in scripts/Makefile.kasan. Walter's original
+patch applies on top of vanilla 5.12-rc3:
 
-Reported-by: Yi Chen <chenyi77@huawei.com>
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
-v3:
-- rebase to last dev branch
-- update commit message because this patch fixes a different racing issue
-of atomic write
- fs/f2fs/file.c    | 3 +++
- fs/f2fs/segment.c | 6 ++++++
- 2 files changed, 9 insertions(+)
+https://lkml.kernel.org/r/20210226012531.29231-1-walter-zh.wu@mediatek.com
 
-diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-index d697c8900fa7..6284b2f4a60b 100644
---- a/fs/f2fs/file.c
-+++ b/fs/f2fs/file.c
-@@ -2054,6 +2054,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
- 		goto out;
- 
- 	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-+	down_write(&F2FS_I(inode)->i_mmap_sem);
- 
- 	/*
- 	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
-@@ -2064,6 +2065,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
- 			  inode->i_ino, get_dirty_pages(inode));
- 	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
- 	if (ret) {
-+		up_write(&F2FS_I(inode)->i_mmap_sem);
- 		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- 		goto out;
- 	}
-@@ -2077,6 +2079,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
- 	/* add inode in inmem_list first and set atomic_file */
- 	set_inode_flag(inode, FI_ATOMIC_FILE);
- 	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
-+	up_write(&F2FS_I(inode)->i_mmap_sem);
- 	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
- 
- 	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 0cb1ca88d4aa..78c8342f52fd 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -325,6 +325,7 @@ void f2fs_drop_inmem_pages(struct inode *inode)
- 	struct f2fs_inode_info *fi = F2FS_I(inode);
- 
- 	do {
-+		down_write(&F2FS_I(inode)->i_mmap_sem);
- 		mutex_lock(&fi->inmem_lock);
- 		if (list_empty(&fi->inmem_pages)) {
- 			fi->i_gc_failures[GC_FAILURE_ATOMIC] = 0;
-@@ -339,11 +340,13 @@ void f2fs_drop_inmem_pages(struct inode *inode)
- 			spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
- 
- 			mutex_unlock(&fi->inmem_lock);
-+			up_write(&F2FS_I(inode)->i_mmap_sem);
- 			break;
- 		}
- 		__revoke_inmem_pages(inode, &fi->inmem_pages,
- 						true, false, true);
- 		mutex_unlock(&fi->inmem_lock);
-+		up_write(&F2FS_I(inode)->i_mmap_sem);
- 	} while (1);
- }
- 
-@@ -468,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
- 	f2fs_balance_fs(sbi, true);
- 
- 	down_write(&fi->i_gc_rwsem[WRITE]);
-+	down_write(&F2FS_I(inode)->i_mmap_sem);
- 
- 	f2fs_lock_op(sbi);
- 	set_inode_flag(inode, FI_ATOMIC_COMMIT);
-@@ -479,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
- 	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
- 
- 	f2fs_unlock_op(sbi);
-+
-+	up_write(&F2FS_I(inode)->i_mmap_sem);
- 	up_write(&fi->i_gc_rwsem[WRITE]);
- 
- 	return err;
 -- 
-2.29.2
-
+Catalin
