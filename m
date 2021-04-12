@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0ACC35BDF4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4851135BC8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238275AbhDLI4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:56:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38340 "EHLO mail.kernel.org"
+        id S237540AbhDLInm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:43:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34804 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238460AbhDLItz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:49:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF7A061220;
-        Mon, 12 Apr 2021 08:49:00 +0000 (UTC)
+        id S237497AbhDLInW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:43:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43EC360241;
+        Mon, 12 Apr 2021 08:43:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217341;
-        bh=eCT4XfdWQT7cD/mHkwI4t5VeBUC8QrmNaP8hpcHFXvc=;
+        s=korg; t=1618216984;
+        bh=/N3hSQfc35q2PupKakidvz8lrSIWzrpqg6I3nnRTn1Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CDw4+En5mM08/yGIITEVGT9GB5mASYqSahjEAW5w9Ln/fvg5S08vDD+X7TryuJU1d
-         OyqOZmBKoE3IxkF3PBAReRxLvbX6tG6/+cDJrwAtgg8Kiye68tjYLwdVolDLS19L8a
-         m7XfdDNRl2/L11dGkNMypJ0EAn/mdUscKR2At2Ec=
+        b=R3hf9Ql4HCV5N75Oy+V9XFVGiuhi1UPRJLQ6nr8qL+RyxXkc2dOzrB6bpcEy7j1aY
+         MVfY/5fACtc97j7jNG519GttWUpKmmENVcBpl2R6JwrnmOAQ/ep9Q9G70sl91iUj7f
+         LAKUIC1jXTaZIE+PYZS91/fJaED20SotTznYmme4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Yuya Kusakabe <yuya.kusakabe@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jason Wang <jasowang@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 055/111] hostfs: Use kasprintf() instead of fixed buffer formatting
+Subject: [PATCH 4.19 27/66] virtio_net: Add XDP meta data support
 Date:   Mon, 12 Apr 2021 10:40:33 +0200
-Message-Id: <20210412084006.093780735@linuxfoundation.org>
+Message-Id: <20210412083959.009036799@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
-References: <20210412084004.200986670@linuxfoundation.org>
+In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
+References: <20210412083958.129944265@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,72 +42,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Yuya Kusakabe <yuya.kusakabe@gmail.com>
 
-[ Upstream commit b58c4e96192ee7c47d5c67853b1557306cfa0e7f ]
+[ Upstream commit 503d539a6e417b018616bf3060e0b5814fafce47 ]
 
-Improve readability and maintainability by replacing a hardcoded string
-allocation and formatting by the use of the kasprintf() helper.
+Implement support for transferring XDP meta data into skb for
+virtio_net driver; before calling into the program, xdp.data_meta points
+to xdp.data, where on program return with pass verdict, we call
+into skb_metadata_set().
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Tested with the script at
+https://github.com/higebu/virtio_net-xdp-metadata-test.
+
+Signed-off-by: Yuya Kusakabe <yuya.kusakabe@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Jason Wang <jasowang@redhat.com>
+Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Link: https://lore.kernel.org/bpf/20200225033212.437563-2-yuya.kusakabe@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/hostfs/hostfs_kern.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ drivers/net/virtio_net.c | 52 ++++++++++++++++++++++++----------------
+ 1 file changed, 32 insertions(+), 20 deletions(-)
 
-diff --git a/fs/hostfs/hostfs_kern.c b/fs/hostfs/hostfs_kern.c
-index 5a7eb0c79839..4f5d857f6ecb 100644
---- a/fs/hostfs/hostfs_kern.c
-+++ b/fs/hostfs/hostfs_kern.c
-@@ -139,8 +139,8 @@ static char *inode_name(struct inode *ino)
- 
- static char *follow_link(char *link)
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index d41d5f63f211..0b1c6a8906b9 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -383,7 +383,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+ 				   struct receive_queue *rq,
+ 				   struct page *page, unsigned int offset,
+ 				   unsigned int len, unsigned int truesize,
+-				   bool hdr_valid)
++				   bool hdr_valid, unsigned int metasize)
  {
--	int len, n;
- 	char *name, *resolved, *end;
-+	int n;
+ 	struct sk_buff *skb;
+ 	struct virtio_net_hdr_mrg_rxbuf *hdr;
+@@ -405,6 +405,7 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+ 	else
+ 		hdr_padded_len = sizeof(struct padded_vnet_hdr);
  
- 	name = __getname();
- 	if (!name) {
-@@ -164,15 +164,13 @@ static char *follow_link(char *link)
- 		return name;
++	/* hdr_valid means no XDP, so we can copy the vnet header */
+ 	if (hdr_valid)
+ 		memcpy(hdr, p, hdr_len);
  
- 	*(end + 1) = '\0';
--	len = strlen(link) + strlen(name) + 1;
+@@ -417,6 +418,11 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+ 		copy = skb_tailroom(skb);
+ 	skb_put_data(skb, p, copy);
  
--	resolved = kmalloc(len, GFP_KERNEL);
-+	resolved = kasprintf(GFP_KERNEL, "%s%s", link, name);
- 	if (resolved == NULL) {
- 		n = -ENOMEM;
- 		goto out_free;
++	if (metasize) {
++		__skb_pull(skb, metasize);
++		skb_metadata_set(skb, metasize);
++	}
++
+ 	len -= copy;
+ 	offset += copy;
+ 
+@@ -462,10 +468,6 @@ static int __virtnet_xdp_xmit_one(struct virtnet_info *vi,
+ 	struct virtio_net_hdr_mrg_rxbuf *hdr;
+ 	int err;
+ 
+-	/* virtqueue want to use data area in-front of packet */
+-	if (unlikely(xdpf->metasize > 0))
+-		return -EOPNOTSUPP;
+-
+ 	if (unlikely(xdpf->headroom < vi->hdr_len))
+ 		return -EOVERFLOW;
+ 
+@@ -656,6 +658,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 	unsigned int delta = 0;
+ 	struct page *xdp_page;
+ 	int err;
++	unsigned int metasize = 0;
+ 
+ 	len -= vi->hdr_len;
+ 	stats->bytes += len;
+@@ -695,8 +698,8 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 
+ 		xdp.data_hard_start = buf + VIRTNET_RX_PAD + vi->hdr_len;
+ 		xdp.data = xdp.data_hard_start + xdp_headroom;
+-		xdp_set_data_meta_invalid(&xdp);
+ 		xdp.data_end = xdp.data + len;
++		xdp.data_meta = xdp.data;
+ 		xdp.rxq = &rq->xdp_rxq;
+ 		orig_data = xdp.data;
+ 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
+@@ -707,6 +710,7 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 			/* Recalculate length in case bpf program changed it */
+ 			delta = orig_data - xdp.data;
+ 			len = xdp.data_end - xdp.data;
++			metasize = xdp.data - xdp.data_meta;
+ 			break;
+ 		case XDP_TX:
+ 			stats->xdp_tx++;
+@@ -752,6 +756,9 @@ static struct sk_buff *receive_small(struct net_device *dev,
+ 		memcpy(skb_vnet_hdr(skb), buf, vi->hdr_len);
+ 	} /* keep zeroed vnet hdr since packet was changed by bpf */
+ 
++	if (metasize)
++		skb_metadata_set(skb, metasize);
++
+ err:
+ 	return skb;
+ 
+@@ -772,8 +779,8 @@ static struct sk_buff *receive_big(struct net_device *dev,
+ 				   struct virtnet_rq_stats *stats)
+ {
+ 	struct page *page = buf;
+-	struct sk_buff *skb = page_to_skb(vi, rq, page, 0, len,
+-					  PAGE_SIZE, true);
++	struct sk_buff *skb =
++		page_to_skb(vi, rq, page, 0, len, PAGE_SIZE, true, 0);
+ 
+ 	stats->bytes += len - vi->hdr_len;
+ 	if (unlikely(!skb))
+@@ -805,6 +812,7 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 	unsigned int truesize;
+ 	unsigned int headroom = mergeable_ctx_to_headroom(ctx);
+ 	int err;
++	unsigned int metasize = 0;
+ 
+ 	head_skb = NULL;
+ 	stats->bytes += len - vi->hdr_len;
+@@ -851,8 +859,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 		data = page_address(xdp_page) + offset;
+ 		xdp.data_hard_start = data - VIRTIO_XDP_HEADROOM + vi->hdr_len;
+ 		xdp.data = data + vi->hdr_len;
+-		xdp_set_data_meta_invalid(&xdp);
+ 		xdp.data_end = xdp.data + (len - vi->hdr_len);
++		xdp.data_meta = xdp.data;
+ 		xdp.rxq = &rq->xdp_rxq;
+ 
+ 		act = bpf_prog_run_xdp(xdp_prog, &xdp);
+@@ -860,24 +868,27 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 
+ 		switch (act) {
+ 		case XDP_PASS:
++			metasize = xdp.data - xdp.data_meta;
++
+ 			/* recalculate offset to account for any header
+-			 * adjustments. Note other cases do not build an
+-			 * skb and avoid using offset
++			 * adjustments and minus the metasize to copy the
++			 * metadata in page_to_skb(). Note other cases do not
++			 * build an skb and avoid using offset
+ 			 */
+-			offset = xdp.data -
+-					page_address(xdp_page) - vi->hdr_len;
++			offset = xdp.data - page_address(xdp_page) -
++				 vi->hdr_len - metasize;
+ 
+-			/* recalculate len if xdp.data or xdp.data_end were
+-			 * adjusted
++			/* recalculate len if xdp.data, xdp.data_end or
++			 * xdp.data_meta were adjusted
+ 			 */
+-			len = xdp.data_end - xdp.data + vi->hdr_len;
++			len = xdp.data_end - xdp.data + vi->hdr_len + metasize;
+ 			/* We can only create skb based on xdp_page. */
+ 			if (unlikely(xdp_page != page)) {
+ 				rcu_read_unlock();
+ 				put_page(page);
+-				head_skb = page_to_skb(vi, rq, xdp_page,
+-						       offset, len,
+-						       PAGE_SIZE, false);
++				head_skb = page_to_skb(vi, rq, xdp_page, offset,
++						       len, PAGE_SIZE, false,
++						       metasize);
+ 				return head_skb;
+ 			}
+ 			break;
+@@ -933,7 +944,8 @@ static struct sk_buff *receive_mergeable(struct net_device *dev,
+ 		goto err_skb;
  	}
  
--	sprintf(resolved, "%s%s", link, name);
- 	__putname(name);
- 	kfree(link);
- 	return resolved;
-@@ -918,18 +916,16 @@ static int hostfs_fill_sb_common(struct super_block *sb, void *d, int silent)
- 	sb->s_d_op = &simple_dentry_operations;
- 	sb->s_maxbytes = MAX_LFS_FILESIZE;
+-	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog);
++	head_skb = page_to_skb(vi, rq, page, offset, len, truesize, !xdp_prog,
++			       metasize);
+ 	curr_skb = head_skb;
  
--	/* NULL is printed as <NULL> by sprintf: avoid that. */
-+	/* NULL is printed as '(null)' by printf(): avoid that. */
- 	if (req_root == NULL)
- 		req_root = "";
- 
- 	err = -ENOMEM;
- 	sb->s_fs_info = host_root_path =
--		kmalloc(strlen(root_ino) + strlen(req_root) + 2, GFP_KERNEL);
-+		kasprintf(GFP_KERNEL, "%s/%s", root_ino, req_root);
- 	if (host_root_path == NULL)
- 		goto out;
- 
--	sprintf(host_root_path, "%s/%s", root_ino, req_root);
--
- 	root_inode = new_inode(sb);
- 	if (!root_inode)
- 		goto out;
+ 	if (unlikely(!curr_skb))
 -- 
 2.30.2
 
