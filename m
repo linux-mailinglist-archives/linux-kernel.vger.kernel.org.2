@@ -2,64 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4271F35C49F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:03:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC3235C4A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:05:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239987AbhDLLDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:03:19 -0400
-Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:35841 "EHLO
-        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239834AbhDLLDQ (ORCPT
+        id S239834AbhDLLFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237440AbhDLLFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:03:16 -0400
-Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
-        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id 5BD8F1C523D
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 12:02:57 +0100 (IST)
-Received: (qmail 19040 invoked from network); 12 Apr 2021 11:02:57 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 12 Apr 2021 11:02:57 -0000
-Date:   Mon, 12 Apr 2021 12:02:55 +0100
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-Subject: [PATCH] mm/page_alloc: Add a bulk page allocator -fix -fix -fix
-Message-ID: <20210412110255.GV3697@techsingularity.net>
+        Mon, 12 Apr 2021 07:05:21 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3A55C061574;
+        Mon, 12 Apr 2021 04:05:02 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a7so19591686eju.1;
+        Mon, 12 Apr 2021 04:05:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=V5dAFJoIeEivVJOccQwSPrrQGKQJ4TPKYt0s4Azreuk=;
+        b=WpZOT4czFb+ue9BhLqO4BESVZOKjpFHKWUuMOcecZg/Zux/ABOGfnDTuefIrNX4e1z
+         e07IpVVvfD61lTV/eywC0cIkd42hFcy1gQ6rqxf8YxsszKXU+zvU942Pnyt7+QlUrrP2
+         G+CHfI2pK1x9oXCham+hXnZyV45UjSuIxRuwxeN/AxTtdFTEwFycJRw09wTUrlryB1VK
+         mhC7ISCEIX6pWyFg91bHeQpZ3ig/qjHOnzpBJaL2aN3rn0MT83TN/zHkFOOLBcqWE5vc
+         dyLcCZBebyEdNHG8wVRtuIXxpi642tHJekUW4v3N/9s3BXl2uhy77Z+9E838TIrhDcxG
+         bO7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=V5dAFJoIeEivVJOccQwSPrrQGKQJ4TPKYt0s4Azreuk=;
+        b=SeVW7AeVBZRpn14uCJprRDdmBKjZVkDBR/1wu3onVBwdgrOQ2uucHX+uYTI3ohXF6u
+         oesxvGXj2hsrFRyIF877FmK+U14X/VJUXpRyRrhdjZgh9E0BTXvOFDZBAnzfoLcQofUY
+         +onKYtKvPPnZ16jQbU3TQSke8sGItncEFsez1/eciHMmpaY5mndO9wQV4HX6XoUtMtES
+         /L/k5btYDiFNfkvikCws/FUsa/cp7uJe8UUMnGvBHLunvpatZCbyVS7jWwQJ0tkbK9Vl
+         qPRFl0tTrS+BVzNZP8Zsl2N7afKZzPFiDsjZPjHRzGiT1Hp4txMn2x6HHGSo5CUkI1X5
+         CiHA==
+X-Gm-Message-State: AOAM5302STRk/iKNXOOtjK/2tJa4Y1Zg6ogQjah4LM3gESE33IgbpLE0
+        KeWFzG5ynO/emHLv/7V8ylA5Fr6P0QDrWQ==
+X-Google-Smtp-Source: ABdhPJyrVvWEYe2udlW1YYznobtl8vNAIfN1JQMcOPAuk2XUccouqVMNk50JwIdog8Ndgw2sIaLukA==
+X-Received: by 2002:a17:906:5487:: with SMTP id r7mr26039455ejo.550.1618225501490;
+        Mon, 12 Apr 2021 04:05:01 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id a9sm6327241eds.33.2021.04.12.04.05.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 04:05:01 -0700 (PDT)
+Subject: Re: [PATCH v2 3/6] ARM: dts: rockchip: remove interrupts properties
+ from pwm nodes rv1108.dtsi
+To:     wens@kernel.org
+Cc:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>, linux-pwm@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210411131007.21757-1-jbx6244@gmail.com>
+ <20210411131007.21757-3-jbx6244@gmail.com>
+ <CAGb2v67s7a4GARfAnROKS40kaYQpdW_qWX=HX6GU09jV9wrbXw@mail.gmail.com>
+ <31b5ff50-afe5-b446-7d3c-943d148814d8@gmail.com>
+ <CAGb2v65+A402jCPVRJdDBdxqAEYOJmFTkKB4LJCvnW89hXb8QA@mail.gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <20b7c702-9412-93b4-3174-e8633bc413d7@gmail.com>
+Date:   Mon, 12 Apr 2021 13:04:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAGb2v65+A402jCPVRJdDBdxqAEYOJmFTkKB4LJCvnW89hXb8QA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Vlastimil Babka noted that a comment is wrong, fix it. This is the third
-fix to the mmotm patch mm-page_alloc-add-a-bulk-page-allocator.patch.
+On 4/12/21 12:33 PM, Chen-Yu Tsai wrote:
+> On Mon, Apr 12, 2021 at 6:03 PM Johan Jonker <jbx6244@gmail.com> wrote:
+>>
+>> On 4/12/21 5:15 AM, Chen-Yu Tsai wrote:
+>>> On Sun, Apr 11, 2021 at 9:11 PM Johan Jonker <jbx6244@gmail.com> wrote:
+>>>>
+>>>> A test with the command below gives this error:
+>>>>
+>>>> /arch/arm/boot/dts/rv1108-evb.dt.yaml:
+>>>> pwm@10280000: 'interrupts' does not match any of the regexes:
+>>>> 'pinctrl-[0-9]+'
+>>>>
+>>>> "interrupts" is an undocumented property, so remove them
+>>>> from pwm nodes in rv1108.dtsi.
+>>>>
+>>>> make ARCH=arm dtbs_check
+>>>> DT_SCHEMA_FILES=Documentation/devicetree/bindings/pwm/pwm-rockchip.yaml
+>>>>
+>>>> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+>>>
+>>> Given that the interrupts were specified, meaning they are wired up in hardware,
+>>> shouldn't the solution be to add the interrupts property to the binding instead?
+>>>
+>>> After all, the device tree describes the actual hardware, not just what the
+>>> implementations need.
+>>>
+>>> ChenYu
+>>>
+>>
+>> Hi,
+>>
+>> The question of what to do with it was asked in version 1, but no answer
+>> was given, so I made a proposal.
+>> The device tree description should be complete, but also as lean as
+>> possible. If someone manages to sneak in undocumented properties without
+>> reason then the ultimate consequence should be removal I think.
+>>
+>> Not sure about the (missing?) rv1108 TRM, but for rk3328 the interrupt
+>> is used for:
+>>
+>> PWM_INTSTS 0x0040 W 0x00000000 Interrupt Status Register
+>>   Channel Interrupt Polarity Flag
+>>     This bit is used in capture mode in order to identify the
+>>     transition of the input waveform when interrupt is generated.
+>>   Channel Interrupt Status
+>>     Interrupt generated
+>>
+>> PWM_INT_EN 0x0044 W 0x00000000 Interrupt Enable Register
+>>   Channel Interrupt Enable
+>>
+>> Is there any current realistic use/setup for it to convince rob+dt this
+>> should be added to pwm-rockchip.yaml?
 
-Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
----
- mm/page_alloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Found:
+pwm3 combined with ir uses a irq. Keep that as it is for now.
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 1c67c99603a3..c62862071e6a 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5067,7 +5067,7 @@ unsigned long __alloc_pages_bulk(gfp_t gfp, int preferred_nid,
- 		return 0;
- 	gfp = alloc_gfp;
- 
--	/* Find an allowed local zone that meets the high watermark. */
-+	/* Find an allowed local zone that meets the low watermark. */
- 	for_each_zone_zonelist_nodemask(zone, z, ac.zonelist, ac.highest_zoneidx, ac.nodemask) {
- 		unsigned long mark;
- 
+https://github.com/rockchip-linux/kernel/blob/develop-4.19/drivers/input/remotectl/rockchip_pwm_remotectl.c
+
+> 
+> Well, the PWM core has capture support, and pwm-sti implements it with
+> interrupt support, so I guess there's at least a legitimate case for
+> adding that to the binding. Whether someone has an actual use case for
+> it and adds code to implement it is another story.
+> 
+>> The rk3328 interrupt rkpwm_int seems shared between channels, but only
+>> included to pwm3. What is the proper way for that?
+> 
+> I guess the bigger question is why was the PWM controller split into
+> four device nodes, instead of just one encompassing the whole block.
+> Now we'd have to introduce a new binding to support capture mode and
+> interrupts.
+> 
+> In that case I agree with dropping the interrupts for now, as it just
+> won't fit. But I would add this additional information to the commit
+> message.
+
+Will wait with adding "interrupts" to pwm-rockchip.yaml till someone
+makes a solution for the whole block. Convert only current
+document/binding to reduce notifications.
+
+For Heiko: patch 3 + 5 can go in the garbage bin:
+[PATCH v2 3/6] ARM: dts: rockchip: remove interrupts properties from pwm
+nodes rv1108.dtsi
+[PATCH v2 5/6] arm64: dts: rockchip: remove interrupts properties from
+pwm nodes rk3328.dtsi
+
+Johan
+
+> 
+> 
+> Regards
+> ChenYu
+> 
+
