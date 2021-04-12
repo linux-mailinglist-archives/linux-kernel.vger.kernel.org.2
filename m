@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24FD035C141
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6424935BE8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241627AbhDLJ0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:26:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54754 "EHLO mail.kernel.org"
+        id S239108AbhDLI7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:59:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239006AbhDLJCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:02:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C16E6127B;
-        Mon, 12 Apr 2021 09:00:56 +0000 (UTC)
+        id S238755AbhDLIuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:50:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 22EBB60241;
+        Mon, 12 Apr 2021 08:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218057;
-        bh=rbE1gKqUIkmoKQ7TMI/BKg9sUOTR7TsuwZhTio0Zbf4=;
+        s=korg; t=1618217426;
+        bh=x6E4TYrgcigrbiUwGlIFjCzFJXizusV0EoPNiDuunRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wMnyPuwsaDMK2MuC64SUk4O1AEKvdw+uAzX5oBwa7l55mx5x0z1KcbQIu0rlWpw79
-         4+y3hOJbQHZrClf6eX4+qq05akM/pq2CYKQO1bW4BWlNY0anuzwYD2raGdxrv5Wchu
-         QQS96qYUuP6ffiETJljh0pwIllhBp8Z4kmzsao7M=
+        b=teAt1nO9IUsyud42pQLYPBohD9H0KSqM03ADNWNfa6LidrPXOORdg2+GzTB3EL2Hz
+         xPv1lXwAxaf0TsOrtk9RGbCk0ytaUYs7EPeoBUgpG8aD9M9QaSNmhrYRoe89ILV+2q
+         ZLF7XKLMpqZfYMY6BfPzTH5wM5oSm74l+xcr+zpg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.11 020/210] ACPI: processor: Fix build when CONFIG_ACPI_PROCESSOR=m
+        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
+        Paul Moore <paul@paul-moore.com>
+Subject: [PATCH 5.10 011/188] selinux: fix cond_list corruption when changing booleans
 Date:   Mon, 12 Apr 2021 10:38:45 +0200
-Message-Id: <20210412084016.681016549@linuxfoundation.org>
+Message-Id: <20210412084014.039733562@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
-References: <20210412084016.009884719@linuxfoundation.org>
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+References: <20210412084013.643370347@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,107 +39,215 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
+From: Ondrej Mosnacek <omosnace@redhat.com>
 
-commit fa26d0c778b432d3d9814ea82552e813b33eeb5c upstream.
+commit d8f5f0ea5b86300390b026b6c6e7836b7150814a upstream.
 
-Commit 8cdddd182bd7 ("ACPI: processor: Fix CPU0 wakeup in
-acpi_idle_play_dead()") tried to fix CPU0 hotplug breakage by copying
-wakeup_cpu0() + start_cpu0() logic from hlt_play_dead()//mwait_play_dead()
-into acpi_idle_play_dead(). The problem is that these functions are not
-exported to modules so when CONFIG_ACPI_PROCESSOR=m build fails.
+Currently, duplicate_policydb_cond_list() first copies the whole
+conditional avtab and then tries to link to the correct entries in
+cond_dup_av_list() using avtab_search(). However, since the conditional
+avtab may contain multiple entries with the same key, this approach
+often fails to find the right entry, potentially leading to wrong rules
+being activated/deactivated when booleans are changed.
 
-The issue could've been fixed by exporting both wakeup_cpu0()/start_cpu0()
-(the later from assembly) but it seems putting the whole pattern into a
-new function and exporting it instead is better.
+To fix this, instead start with an empty conditional avtab and add the
+individual entries one-by-one while building the new av_lists. This
+approach leads to the correct result, since each entry is present in the
+av_lists exactly once.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 8cdddd182bd7 ("CPI: processor: Fix CPU0 wakeup in acpi_idle_play_dead()")
-Cc: <stable@vger.kernel.org> # 5.10+
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+The issue can be reproduced with Fedora policy as follows:
+
+    # sesearch -s ftpd_t -t public_content_rw_t -c dir -p create -A
+    allow ftpd_t non_security_file_type:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write }; [ ftpd_full_access ]:True
+    allow ftpd_t public_content_rw_t:dir { add_name create link remove_name rename reparent rmdir setattr unlink watch watch_reads write }; [ ftpd_anon_write ]:True
+    # setsebool ftpd_anon_write=off ftpd_connect_all_unreserved=off ftpd_connect_db=off ftpd_full_access=off
+
+On fixed kernels, the sesearch output is the same after the setsebool
+command:
+
+    # sesearch -s ftpd_t -t public_content_rw_t -c dir -p create -A
+    allow ftpd_t non_security_file_type:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write }; [ ftpd_full_access ]:True
+    allow ftpd_t public_content_rw_t:dir { add_name create link remove_name rename reparent rmdir setattr unlink watch watch_reads write }; [ ftpd_anon_write ]:True
+
+While on the broken kernels, it will be different:
+
+    # sesearch -s ftpd_t -t public_content_rw_t -c dir -p create -A
+    allow ftpd_t non_security_file_type:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write }; [ ftpd_full_access ]:True
+    allow ftpd_t non_security_file_type:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write }; [ ftpd_full_access ]:True
+    allow ftpd_t non_security_file_type:dir { add_name create getattr ioctl link lock open read remove_name rename reparent rmdir search setattr unlink watch watch_reads write }; [ ftpd_full_access ]:True
+
+While there, also simplify the computation of nslots. This changes the
+nslots values for nrules 2 or 3 to just two slots instead of 4, which
+makes the sequence more consistent.
+
+Cc: stable@vger.kernel.org
+Fixes: c7c556f1e81b ("selinux: refactor changing booleans")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/smp.h    |    2 +-
- arch/x86/kernel/smpboot.c     |   26 ++++++++++++--------------
- drivers/acpi/processor_idle.c |    4 +---
- 3 files changed, 14 insertions(+), 18 deletions(-)
+ security/selinux/ss/avtab.c       |   86 +++++++++++---------------------------
+ security/selinux/ss/avtab.h       |    2 
+ security/selinux/ss/conditional.c |   12 ++---
+ 3 files changed, 32 insertions(+), 68 deletions(-)
 
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -132,7 +132,7 @@ void native_play_dead(void);
- void play_dead_common(void);
- void wbinvd_on_cpu(int cpu);
- int wbinvd_on_all_cpus(void);
--bool wakeup_cpu0(void);
-+void cond_wakeup_cpu0(void);
- 
- void native_smp_send_reschedule(int cpu);
- void native_send_call_func_ipi(const struct cpumask *mask);
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1659,13 +1659,17 @@ void play_dead_common(void)
- 	local_irq_disable();
+--- a/security/selinux/ss/avtab.c
++++ b/security/selinux/ss/avtab.c
+@@ -308,24 +308,10 @@ void avtab_init(struct avtab *h)
+ 	h->mask = 0;
  }
  
--bool wakeup_cpu0(void)
-+/**
-+ * cond_wakeup_cpu0 - Wake up CPU0 if needed.
-+ *
-+ * If NMI wants to wake up CPU0, start CPU0.
-+ */
-+void cond_wakeup_cpu0(void)
+-int avtab_alloc(struct avtab *h, u32 nrules)
++static int avtab_alloc_common(struct avtab *h, u32 nslot)
  {
- 	if (smp_processor_id() == 0 && enable_start_cpu0)
--		return true;
+-	u32 shift = 0;
+-	u32 work = nrules;
+-	u32 nslot;
 -
--	return false;
-+		start_cpu0();
- }
-+EXPORT_SYMBOL_GPL(cond_wakeup_cpu0);
+-	if (nrules == 0)
+-		goto avtab_alloc_out;
+-
+-	while (work) {
+-		work  = work >> 1;
+-		shift++;
+-	}
+-	if (shift > 2)
+-		shift = shift - 2;
+-	nslot = 1 << shift;
+-	if (nslot > MAX_AVTAB_HASH_BUCKETS)
+-		nslot = MAX_AVTAB_HASH_BUCKETS;
++	if (!nslot)
++		return 0;
  
- /*
-  * We need to flush the caches before going to sleep, lest we have
-@@ -1734,11 +1738,8 @@ static inline void mwait_play_dead(void)
- 		__monitor(mwait_ptr, 0, 0);
- 		mb();
- 		__mwait(eax, 0);
--		/*
--		 * If NMI wants to wake up CPU0, start CPU0.
--		 */
--		if (wakeup_cpu0())
--			start_cpu0();
+ 	h->htable = kvcalloc(nslot, sizeof(void *), GFP_KERNEL);
+ 	if (!h->htable)
+@@ -333,59 +319,37 @@ int avtab_alloc(struct avtab *h, u32 nru
+ 
+ 	h->nslot = nslot;
+ 	h->mask = nslot - 1;
+-
+-avtab_alloc_out:
+-	pr_debug("SELinux: %d avtab hash slots, %d rules.\n",
+-	       h->nslot, nrules);
+ 	return 0;
+ }
+ 
+-int avtab_duplicate(struct avtab *new, struct avtab *orig)
++int avtab_alloc(struct avtab *h, u32 nrules)
+ {
+-	int i;
+-	struct avtab_node *node, *tmp, *tail;
+-
+-	memset(new, 0, sizeof(*new));
++	int rc;
++	u32 nslot = 0;
+ 
+-	new->htable = kvcalloc(orig->nslot, sizeof(void *), GFP_KERNEL);
+-	if (!new->htable)
+-		return -ENOMEM;
+-	new->nslot = orig->nslot;
+-	new->mask = orig->mask;
+-
+-	for (i = 0; i < orig->nslot; i++) {
+-		tail = NULL;
+-		for (node = orig->htable[i]; node; node = node->next) {
+-			tmp = kmem_cache_zalloc(avtab_node_cachep, GFP_KERNEL);
+-			if (!tmp)
+-				goto error;
+-			tmp->key = node->key;
+-			if (tmp->key.specified & AVTAB_XPERMS) {
+-				tmp->datum.u.xperms =
+-					kmem_cache_zalloc(avtab_xperms_cachep,
+-							GFP_KERNEL);
+-				if (!tmp->datum.u.xperms) {
+-					kmem_cache_free(avtab_node_cachep, tmp);
+-					goto error;
+-				}
+-				tmp->datum.u.xperms = node->datum.u.xperms;
+-			} else
+-				tmp->datum.u.data = node->datum.u.data;
+-
+-			if (tail)
+-				tail->next = tmp;
+-			else
+-				new->htable[i] = tmp;
+-
+-			tail = tmp;
+-			new->nel++;
++	if (nrules != 0) {
++		u32 shift = 1;
++		u32 work = nrules >> 3;
++		while (work) {
++			work >>= 1;
++			shift++;
+ 		}
++		nslot = 1 << shift;
++		if (nslot > MAX_AVTAB_HASH_BUCKETS)
++			nslot = MAX_AVTAB_HASH_BUCKETS;
 +
-+		cond_wakeup_cpu0();
++		rc = avtab_alloc_common(h, nslot);
++		if (rc)
++			return rc;
  	}
- }
  
-@@ -1749,11 +1750,8 @@ void hlt_play_dead(void)
- 
- 	while (1) {
- 		native_halt();
--		/*
--		 * If NMI wants to wake up CPU0, start CPU0.
--		 */
--		if (wakeup_cpu0())
--			start_cpu0();
++	pr_debug("SELinux: %d avtab hash slots, %d rules.\n", nslot, nrules);
+ 	return 0;
+-error:
+-	avtab_destroy(new);
+-	return -ENOMEM;
++}
 +
-+		cond_wakeup_cpu0();
- 	}
++int avtab_alloc_dup(struct avtab *new, const struct avtab *orig)
++{
++	return avtab_alloc_common(new, orig->nslot);
  }
  
---- a/drivers/acpi/processor_idle.c
-+++ b/drivers/acpi/processor_idle.c
-@@ -544,9 +544,7 @@ static int acpi_idle_play_dead(struct cp
- 			return -ENODEV;
+ void avtab_hash_eval(struct avtab *h, char *tag)
+--- a/security/selinux/ss/avtab.h
++++ b/security/selinux/ss/avtab.h
+@@ -89,7 +89,7 @@ struct avtab {
  
- #if defined(CONFIG_X86) && defined(CONFIG_HOTPLUG_CPU)
--		/* If NMI wants to wake up CPU0, start CPU0. */
--		if (wakeup_cpu0())
--			start_cpu0();
-+		cond_wakeup_cpu0();
- #endif
+ void avtab_init(struct avtab *h);
+ int avtab_alloc(struct avtab *, u32);
+-int avtab_duplicate(struct avtab *new, struct avtab *orig);
++int avtab_alloc_dup(struct avtab *new, const struct avtab *orig);
+ struct avtab_datum *avtab_search(struct avtab *h, struct avtab_key *k);
+ void avtab_destroy(struct avtab *h);
+ void avtab_hash_eval(struct avtab *h, char *tag);
+--- a/security/selinux/ss/conditional.c
++++ b/security/selinux/ss/conditional.c
+@@ -605,7 +605,6 @@ static int cond_dup_av_list(struct cond_
+ 			struct cond_av_list *orig,
+ 			struct avtab *avtab)
+ {
+-	struct avtab_node *avnode;
+ 	u32 i;
+ 
+ 	memset(new, 0, sizeof(*new));
+@@ -615,10 +614,11 @@ static int cond_dup_av_list(struct cond_
+ 		return -ENOMEM;
+ 
+ 	for (i = 0; i < orig->len; i++) {
+-		avnode = avtab_search_node(avtab, &orig->nodes[i]->key);
+-		if (WARN_ON(!avnode))
+-			return -EINVAL;
+-		new->nodes[i] = avnode;
++		new->nodes[i] = avtab_insert_nonunique(avtab,
++						       &orig->nodes[i]->key,
++						       &orig->nodes[i]->datum);
++		if (!new->nodes[i])
++			return -ENOMEM;
+ 		new->len++;
  	}
+ 
+@@ -630,7 +630,7 @@ static int duplicate_policydb_cond_list(
+ {
+ 	int rc, i, j;
+ 
+-	rc = avtab_duplicate(&newp->te_cond_avtab, &origp->te_cond_avtab);
++	rc = avtab_alloc_dup(&newp->te_cond_avtab, &origp->te_cond_avtab);
+ 	if (rc)
+ 		return rc;
  
 
 
