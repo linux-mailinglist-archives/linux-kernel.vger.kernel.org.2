@@ -2,199 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3FD35D3BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E0C35D3C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:15:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244261AbhDLXOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57272 "EHLO
+        id S244332AbhDLXOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243680AbhDLXOP (ORCPT
+        with ESMTP id S242062AbhDLXOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:14:15 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A322C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:13:56 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id p23so13651228ljn.0
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:13:56 -0700 (PDT)
+        Mon, 12 Apr 2021 19:14:42 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F596C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:14:23 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 12so24002091lfq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:14:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=43L1TmoC0o/WoYVrJNkztVPgj9lsKn+w1wvXb0t9ND0=;
-        b=s8zravPsbqkaJM0CP7dtGXsar3TTR1vsAUZcbw+1fswlHymAZw4MNMLC9vJpMA2eM9
-         2R+5sB8DQanYW6hzDtwYUXDBr8z8O6fm0oSlhl+qlSVuD77oLC1kx9i3hOp+csxGUjM3
-         DmMRHph/jvSHRswTTstkeopP0pWh4Wj5gXEFR8w7h0PVNV1XffmiV0oUeA4BFTi36/yC
-         X6TFbn/CgoiSlEv9VI8pU6JKCT90+j44WEoKy8Y2y5x+PUC5zKtdn90KMRMAKYzjoPsY
-         15ZG3RHncoimJfw7U4LpIxs81SIyRDDZvLdCVzUgNGKP341ohCOZJ/JEoNxfRQnojtV1
-         SVUg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/duzMH/OTq6aaOv0cDTj1fS9M5eKwgWI2Ns6h3aePII=;
+        b=NQ1YkeyiLSUMD3jWDiGlc6wYoFZTbrTUVCYIGGrWuZqu87Dn3X0VLGDBLQwLx7pKwu
+         /JEpw2GxwEpZJiN7Q2hten9sbEV8lUkUN+HGTSj6WXhrUuK4B/ihsvysUzvp6jN1jrOT
+         iJOX1wVmhk9ANkOmQy8M20dshGYkGVBzEgfR5cUuHTT4hRCKlNliYyge/CWCKShmjy9/
+         0Wj2cykBVj6158M/fVwGueo1LTOzMAieRuPpe9Z2ULeCJfKHVWWN8hSkkaIQr+03gLIi
+         6bBbSqVV8/rNNlgMQ0QmCKi0Fs1IQQ6y0IbuwxbQbvKveEwvx7N+AQeCyMcOGKq+n/kv
+         uP7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=43L1TmoC0o/WoYVrJNkztVPgj9lsKn+w1wvXb0t9ND0=;
-        b=bfi3KAICt6vUQMuDc1+7fkJ4rotueL2PDuGTVJKR/SUeDMy3AFLnF5X7VMOhcrOe3p
-         +4k28IPhyxdSxUkclEjOLdB/dkpQYlBwZDcJu910sD0outdMP0Xlw3vfGebfmUdhd4b1
-         f+OoklZJ38JFnWrOIQe1oFBmvTIsAiC+SWWvAci66/S6AXg4bB6C1fKXAlSHVei0vf40
-         ihovWH69HskUbEggwkHgthKSckX6VHJUDg8orIwhfwphTNe/r6NNLgEik3vnMFvMo3RT
-         K8NdpUVf3y0t8hQ3J53ODYnQjV0AUnCsXJxEm7hASlzZXkmnx6KKPDJSKc+o+QUN6t1n
-         yroA==
-X-Gm-Message-State: AOAM532BgyBoveJpElkOr4D6931oGZSE/VBjO9fJPfhpyEZlpJ0m5ccU
-        Ansmnv3i79YRnZfnmFsxuAKU5nmGH6Sjrq0f
-X-Google-Smtp-Source: ABdhPJzO/Oj8VIOs2UvRnEnQ0hruWLctA76syg0/2xzlr+i2E5aS3nYSibh87yRu+flGLj3Gy/AJlQ==
-X-Received: by 2002:a05:651c:211a:: with SMTP id a26mr19159766ljq.373.1618269234447;
-        Mon, 12 Apr 2021 16:13:54 -0700 (PDT)
-Received: from wkz-x280 (h-90-88.A259.priv.bahnhof.se. [212.85.90.88])
-        by smtp.gmail.com with ESMTPSA id x207sm2636738lff.92.2021.04.12.16.13.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 16:13:54 -0700 (PDT)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Marek Behun <marek.behun@nic.cz>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        zhang kai <zhangkaiheb@126.com>,
-        Weilong Chen <chenweilong@huawei.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
-In-Reply-To: <87r1jfje26.fsf@waldekranz.com>
-References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf> <878s5nllgs.fsf@waldekranz.com> <20210412213045.4277a598@thinkpad> <8735vvkxju.fsf@waldekranz.com> <20210412235054.73754df9@thinkpad> <87wnt7jgzk.fsf@waldekranz.com> <20210413005518.2f9b9cef@thinkpad> <87r1jfje26.fsf@waldekranz.com>
-Date:   Tue, 13 Apr 2021 01:13:53 +0200
-Message-ID: <87o8ejjdu6.fsf@waldekranz.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/duzMH/OTq6aaOv0cDTj1fS9M5eKwgWI2Ns6h3aePII=;
+        b=C44Tku7GoH6I+fcsi36H+aueyWNVAS1x5cmS1PM2GKqWbX3YSV1FRWoZfTB9HlW833
+         DRlgY+BlklAn9Fte7sNitFe6ZlQCFJ3Gma58UV/hPPOYUdvEJEStB36FXwLIAfccuTPf
+         ByMcYTyXl2Kp+eC5ATWQ+N2IvCoRCXNrzp3wKbGJQIwVZcK3/8uc2CXJs39S/dqO9NH1
+         qDHXmOeJPuutKbu1q6+RV2nWC05YZF/v+yc77S+PYLLeVADC+p3+fwPovAvIQ//nuunt
+         5HdJonvaIemEBE6YlTP7M93w4JmGDJYM5p4eQSvXxDuzkLVw2BeKAr8v1KCgE42mRG+x
+         Be6A==
+X-Gm-Message-State: AOAM531rpoxoiwh31XjgLyuhKThf7f2RT4KN7iUfYdYdPhtWifCzJP89
+        zr0zko0FIr503B+ooZyg31mtee37Q4+A/PT7ushrxg==
+X-Google-Smtp-Source: ABdhPJzCyBQTUhS/VAijry16x1b+ynmJqq7HaLNObZMA41fFqdeUQTFoHoDT9JU3LYprSh+tTD9AYd0xB5Q0T/v2HzY=
+X-Received: by 2002:a05:6512:3703:: with SMTP id z3mr20217180lfr.358.1618269261596;
+ Mon, 12 Apr 2021 16:14:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210412225503.15119-1-longman@redhat.com> <20210412225503.15119-6-longman@redhat.com>
+ <CALvZod6_dOKfnhprpzoFNmC2cLu1F35dNZvnu-DHTNOxYmeq2g@mail.gmail.com>
+In-Reply-To: <CALvZod6_dOKfnhprpzoFNmC2cLu1F35dNZvnu-DHTNOxYmeq2g@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 12 Apr 2021 16:14:10 -0700
+Message-ID: <CALvZod4CUMOBOkC8NjXXJ_qu3kvhcw+zrux+c516BMcAuHTcuA@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] mm/memcg: Optimize user context object stock access
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>,
+        Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 01:09, Tobias Waldekranz <tobias@waldekranz.com> wrote:
-> On Tue, Apr 13, 2021 at 00:55, Marek Behun <marek.behun@nic.cz> wrote:
->> On Tue, 13 Apr 2021 00:05:51 +0200
->> Tobias Waldekranz <tobias@waldekranz.com> wrote:
->>
->>> On Mon, Apr 12, 2021 at 23:50, Marek Behun <marek.behun@nic.cz> wrote:
->>> > On Mon, 12 Apr 2021 23:22:45 +0200
->>> > Tobias Waldekranz <tobias@waldekranz.com> wrote:
->>> >  
->>> >> On Mon, Apr 12, 2021 at 21:30, Marek Behun <marek.behun@nic.cz> wrote:  
->>> >> > On Mon, 12 Apr 2021 14:46:11 +0200
->>> >> > Tobias Waldekranz <tobias@waldekranz.com> wrote:
->>> >> >    
->>> >> >> I agree. Unless you only have a few really wideband flows, a LAG will
->>> >> >> typically do a great job with balancing. This will happen without the
->>> >> >> user having to do any configuration at all. It would also perform well
->>> >> >> in "router-on-a-stick"-setups where the incoming and outgoing port is
->>> >> >> the same.    
->>> >> >
->>> >> > TLDR: The problem with LAGs how they are currently implemented is that
->>> >> > for Turris Omnia, basically in 1/16 of configurations the traffic would
->>> >> > go via one CPU port anyway.
->>> >> >
->>> >> >
->>> >> >
->>> >> > One potencial problem that I see with using LAGs for aggregating CPU
->>> >> > ports on mv88e6xxx is how these switches determine the port for a
->>> >> > packet: only the src and dst MAC address is used for the hash that
->>> >> > chooses the port.
->>> >> >
->>> >> > The most common scenario for Turris Omnia, for example, where we have 2
->>> >> > CPU ports and 5 user ports, is that into these 5 user ports the user
->>> >> > plugs 5 simple devices (no switches, so only one peer MAC address for
->>> >> > port). So we have only 5 pairs of src + dst MAC addresses. If we simply
->>> >> > fill the LAG table as it is done now, then there is 2 * 0.5^5 = 1/16
->>> >> > chance that all packets would go through one CPU port.
->>> >> >
->>> >> > In order to have real load balancing in this scenario, we would either
->>> >> > have to recompute the LAG mask table depending on the MAC addresses, or
->>> >> > rewrite the LAG mask table somewhat randomly periodically. (This could
->>> >> > be in theory offloaded onto the Z80 internal CPU for some of the
->>> >> > switches of the mv88e6xxx family, but not for Omnia.)    
->>> >> 
->>> >> I thought that the option to associate each port netdev with a DSA
->>> >> master would only be used on transmit. Are you saying that there is a
->>> >> way to configure an mv88e6xxx chip to steer packets to different CPU
->>> >> ports depending on the incoming port?
->>> >>
->>> >> The reason that the traffic is directed towards the CPU is that some
->>> >> kind of entry in the ATU says so, and the destination of that entry will
->>> >> either be a port vector or a LAG. Of those two, only the LAG will offer
->>> >> any kind of balancing. What am I missing?  
->>> >
->>> > Via port vectors you can "load balance" by ports only, i.e. input port X  
->>> > -> trasmit via CPU port Y.  
->>> 
->>> How is this done? In a case where there is no bridging between the
->>> ports, then I understand. Each port could have its own FID. But if you
->>> have this setup...
->>> 
->>>    br0    wan
->>>    / \
->>> lan0 lan1
->>> 
->>> lan0 and lan1 would use the same FID. So how could you say that frames
->>> from lan0 should go to cpu0 and frames from lan1 should go to cpu1 if
->>> the DA is the same? What would be the content of the ATU in a setup
->>> like that?
->>> 
->>> > When using LAGs, you are load balancing via hash(src MAC | dst mac)
->>> > only. This is better in some ways. But what I am saying is that if the
->>> > LAG mask table is static, as it is now implemented in mv88e6xxx code,
->>> > then for many scenarios there is a big probability of no load balancing
->>> > at all. For Turris Omnia for example there is 6.25% probability that
->>> > the switch chip will send all traffic to the CPU via one CPU port.
->>> > This is because the switch chooses the LAG port only from the hash of
->>> > dst+src MAC address. (By the 1/16 = 6.25% probability I mean that for
->>> > cca 1 in 16 customers, the switch would only use one port when sending
->>> > data to the CPU).
->>> >
->>> > The round robin solution here is therefore better in this case.  
->>> 
->>> I agree that it would be better in that case. I just do not get how you
->>> get the switch to do it for you.
->>
->> I thought that this is configured in the mv88e6xxx_port_vlan() function.
->> For each port, you specify via which ports data can egress.
->> So for ports 0, 2, 4 you can enable CPU port 0, and for ports 1 and 3
->> CPU port 1.
+On Mon, Apr 12, 2021 at 4:10 PM Shakeel Butt <shakeelb@google.com> wrote:
 >
-> Ahh I see. Well the port based VLANs are just an isolation mechanism. So
-> with a setup like this...
+> On Mon, Apr 12, 2021 at 3:55 PM Waiman Long <longman@redhat.com> wrote:
+> >
+> > Most kmem_cache_alloc() calls are from user context. With instrumentation
+> > enabled, the measured amount of kmem_cache_alloc() calls from non-task
+> > context was about 0.01% of the total.
+> >
+> > The irq disable/enable sequence used in this case to access content
+> > from object stock is slow.  To optimize for user context access, there
+> > are now two object stocks for task context and interrupt context access
+> > respectively.
+> >
+> > The task context object stock can be accessed after disabling preemption
+> > which is cheap in non-preempt kernel. The interrupt context object stock
+> > can only be accessed after disabling interrupt. User context code can
+> > access interrupt object stock, but not vice versa.
+> >
+> > The mod_objcg_state() function is also modified to make sure that memcg
+> > and lruvec stat updates are done with interrupted disabled.
+> >
+> > The downside of this change is that there are more data stored in local
+> > object stocks and not reflected in the charge counter and the vmstat
+> > arrays.  However, this is a small price to pay for better performance.
+> >
+> > Signed-off-by: Waiman Long <longman@redhat.com>
+> > Acked-by: Roman Gushchin <guro@fb.com>
+> > ---
+> >  mm/memcontrol.c | 73 +++++++++++++++++++++++++++++++++++++++----------
+> >  1 file changed, 59 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index 69f728383efe..29f2df76644a 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -2229,7 +2229,8 @@ struct obj_stock {
+> >  struct memcg_stock_pcp {
+> >         struct mem_cgroup *cached; /* this never be root cgroup */
+> >         unsigned int nr_pages;
+> > -       struct obj_stock obj;
+> > +       struct obj_stock task_obj;
+> > +       struct obj_stock irq_obj;
+> >
+> >         struct work_struct work;
+> >         unsigned long flags;
+> > @@ -2254,11 +2255,48 @@ static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
+> >  }
+> >  #endif
+> >
+> > +/*
+> > + * Most kmem_cache_alloc() calls are from user context. The irq disable/enable
+> > + * sequence used in this case to access content from object stock is slow.
+> > + * To optimize for user context access, there are now two object stocks for
+> > + * task context and interrupt context access respectively.
+> > + *
+> > + * The task context object stock can be accessed by disabling preemption only
+> > + * which is cheap in non-preempt kernel. The interrupt context object stock
+> > + * can only be accessed after disabling interrupt. User context code can
+> > + * access interrupt object stock, but not vice versa.
+> > + */
+> >  static inline struct obj_stock *current_obj_stock(void)
+> >  {
+> >         struct memcg_stock_pcp *stock = this_cpu_ptr(&memcg_stock);
+> >
+> > -       return &stock->obj;
+> > +       return in_task() ? &stock->task_obj : &stock->irq_obj;
+> > +}
+> > +
+> > +#define get_obj_stock(flags)                           \
+> > +({                                                     \
+> > +       struct memcg_stock_pcp *stock;                  \
+> > +       struct obj_stock *obj_stock;                    \
+> > +                                                       \
+> > +       if (in_task()) {                                \
+> > +               preempt_disable();                      \
+> > +               (flags) = -1L;                          \
+> > +               stock = this_cpu_ptr(&memcg_stock);     \
 >
->     cpu0 cpu1 lan0 lan1
-> cpu0           x
-> cpu1                x
-> lan0 x              x
-> lan1      x    x
+> The above line was missing in the previous version.
 >
-> ...you could get the isolation in place. But you will still lookup the
-> DA in the ATU, and there you will find a destination of either cpu0 or
-> cpu1. So for one of the ports, the destination will be outside of its
-> port based VLAN. Once the vectors are ANDed together, it is left with no
-> valid port to egress through, and the packet is dropped.
+> > +               obj_stock = &stock->task_obj;           \
+> > +       } else {                                        \
+> > +               local_irq_save(flags);                  \
+> > +               stock = this_cpu_ptr(&memcg_stock);     \
+> > +               obj_stock = &stock->irq_obj;            \
+> > +       }                                               \
+> > +       obj_stock;                                      \
+> > +})
+> > +
+> > +static inline void put_obj_stock(unsigned long flags)
+> > +{
+> > +       if (flags == -1L)
+> > +               preempt_enable();
+> > +       else
+> > +               local_irq_restore(flags);
+> >  }
+> >
+> >  /**
+> > @@ -2327,7 +2365,9 @@ static void drain_local_stock(struct work_struct *dummy)
+> >         local_irq_save(flags);
+> >
+> >         stock = this_cpu_ptr(&memcg_stock);
+> > -       drain_obj_stock(&stock->obj);
+> > +       drain_obj_stock(&stock->irq_obj);
+> > +       if (in_task())
+> > +               drain_obj_stock(&stock->task_obj);
+> >         drain_stock(stock);
+> >         clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
+> >
+> > @@ -3183,7 +3223,7 @@ static inline void mod_objcg_state(struct obj_cgroup *objcg,
+> >         memcg = obj_cgroup_memcg(objcg);
+> >         if (pgdat)
+> >                 lruvec = mem_cgroup_lruvec(memcg, pgdat);
+> > -       __mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
+> > +       mod_memcg_lruvec_state(memcg, lruvec, idx, nr);
+> >         rcu_read_unlock();
+> >  }
+> >
+> > @@ -3193,7 +3233,7 @@ static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+> >         unsigned long flags;
+> >         bool ret = false;
+> >
+> > -       local_irq_save(flags);
+> > +       stock = get_obj_stock(flags);
+> >
+> >         stock = current_obj_stock();
 >
->> Am I wrong? I confess that I did not understand this into the most fine
->> details, so it is entirely possible that I am missing something
->> important and am completely wrong. Maybe this cannot be done.
+> The above is redundant.
 >
-> I really doubt that it can be done. Not in any robust way at
-> least. Happy to be proven wrong though! :)
 
-I think I figured out why it "works" for you. Since the CPU address is
-never added to the ATU, traffic for it is treated as unknown. Thanks to
-that, it flooded and the isolation brings it together. As soon as
-mv88e6xxx starts making use of Vladimirs offloading of host addresses
-though, I suspect this will fall apart.
+After cleanup you can add:
+
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
