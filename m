@@ -2,107 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B9735CA62
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7587D35CA66
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243076AbhDLPse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:48:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239633AbhDLPs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:48:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 796BD61246;
-        Mon, 12 Apr 2021 15:48:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618242489;
-        bh=8vRE2sT1b6eDattSfR7ri5RJ2qCaH8JeKxz5WPXcorU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pnSJay4zP25POtLTscvF2z5mWetO++/0dMpHer+DMUKEUVwLkOsg9fAeauFaOWt+o
-         9ZijoYP72WrFmWFWd+9i7OY8W4gnkqWJ+ym8y46O1HtNI/cqJAq1lTa8/nx7prTSTD
-         UEZRNVvKvX0ZF1qQe0UStduK5A9dx2opS5KESYQKPc1C8/g2Gu7AsmL7TZbi4S84Pq
-         l4XKVJHE/iC8j+8nMDA4/HHdwCFx0MYQRh/ROFPM54W6yQgpUl3YJr3/Qg4o6WCH9r
-         /uvaXow8wvo6R64UVeoxH80ng7tM0v0D+20L/tlEEZd4MUp6SbHtenpLNqSVLTBY0n
-         AfJ3bJSnM63mg==
-Date:   Mon, 12 Apr 2021 08:48:08 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v4][next] xfs: Replace one-element arrays with
- flexible-array members
-Message-ID: <20210412154808.GA1670408@magnolia>
-References: <20210412135611.GA183224@embeddedor>
- <20210412152906.GA1075717@infradead.org>
+        id S243022AbhDLPuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:50:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238197AbhDLPuP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:50:15 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FFBC061574;
+        Mon, 12 Apr 2021 08:49:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=YhGIt0sp1LY+6+VL5MEGyfiB4ctSoL5NXivfGSoUSKM=; b=Q/Cg+araSzz6KZwB65pIW4cNUk
+        Fn4IvUyKE82k+UK0rI6dCOGJLqKEP1gdvkBUy7wTCPEF2i1I2alndNxLL8Bam5Ad29Ad4rGZ8566b
+        4oxuuVgA9nVLfPNWe2WltOicBm7/kQuRYlfR+7ZWoyUnz6LU8m/TNK+p/HBPXtOX2w6njN4xRJLlm
+        yprVHI3SSYaPsfSyg7r8yJPV50zRLtDv0CFNYuDWz8FRe4ejo9EVZbjxMhg4kKtUFtnI3yDiCGMet
+        dSTsmSaQZFabd8K7wXtZMfoLzSUO7tNRPuAzoX8k5oQRp/5u5xqQPSZ3FwAZ/jrrciGGT+KllphIF
+        MNQbsTPQ==;
+Received: from [2601:1c0:6280:3f0::e0e1]
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVyoy-0079wL-QS; Mon, 12 Apr 2021 15:49:54 +0000
+Subject: Re: linux-next: Tree for Apr 9 (x86 boot problem)
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>
+References: <20210409215103.03999588@canb.auug.org.au>
+ <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org>
+ <YHPlTifk6jST5auY@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <aa83b81e-a03d-b835-6b45-01efc7e08dce@infradead.org>
+Date:   Mon, 12 Apr 2021 08:49:49 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412152906.GA1075717@infradead.org>
+In-Reply-To: <YHPlTifk6jST5auY@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 04:29:06PM +0100, Christoph Hellwig wrote:
-> > Below are the results of running xfstests for "all" with the following
-> > configuration in local.config:
+On 4/11/21 11:14 PM, Mike Rapoport wrote:
+> Hi Randy,
 > 
-> ...
+> On Sun, Apr 11, 2021 at 07:41:37PM -0700, Randy Dunlap wrote:
+>> On 4/9/21 4:51 AM, Stephen Rothwell wrote:
+>>> Hi all,
+>>>
+>>> Changes since 20210408:
+>>>
+>>
+>> Hi,
+>>
+>> I cannot boot linux-next 20210408 nor 20210409 on an antique
+>> x86_64 laptop (Toshiba Portege).
+>>
+>> After many failed tests, I finally resorted to git bisect,
+>> which led me to:
+>>
+>> # bad: [4c674481dcf9974834b96622fa4b079c176f36f9] x86/setup: Merge several reservations of start of memory
+>> git bisect bad 4c674481dcf9974834b96622fa4b079c176f36f9
+>>
+>>
+>> I reverted both of these patches and the laptop boots successfully:
+>>
+>> commit a799c2bd29d19c565f37fa038b31a0a1d44d0e4d
+>> Author: Mike Rapoport <rppt@kernel.org>
+>> Date:   Tue Mar 2 12:04:05 2021 +0200
+>>
+>>     x86/setup: Consolidate early memory reservations
+>>
+>> &&
+>>
+>> commit 4c674481dcf9974834b96622fa4b079c176f36f9
+>> Author: Mike Rapoport <rppt@kernel.org>
+>> Date:   Tue Mar 2 12:04:06 2021 +0200
+>>
+>>     x86/setup: Merge several reservations of start of memory
+>>
+>>
+>> There is no (zero, nil) console display when I try to boot
+>> next 0408 or 0409. I connected a USB serial debug cable and
+>> booted with earlyprintk=dbgp,keep and still got nothing.
+>>
+>> The attached boot log is linux-next 20210409 minus the 2 patches
+>> listed above.
+>>
+>> Mike- what data would you like to see?
 > 
-> > Other tests might need to be run in order to verify everything is working
-> > as expected. For such tests, the intervention of the maintainers might be
-> > needed.
+> Huh, with no console this would be fun :)
+> For now the only idea I have is to "bisect" the changes and move
+> reservations one by one back to their original place until the system boots
+> again. 
 > 
-> This is a little weird for a commit log.  If you want to show results
-> this would be something that goes into a cover letter.
-
-Agreed, please don't post fstests output in the commit message.
-
-> > +/*
-> > + * Calculates the size of structure xfs_efi_log_format followed by an
-> > + * array of n number of efi_extents elements.
-> > + */
-> > +static inline size_t
-> > +sizeof_efi_log_format(size_t n)
-> > +{
-> > +	return struct_size((struct xfs_efi_log_format *)0, efi_extents, n);
+> I'd start with trim_snb_memory() since it's surely needed on your laptop
+> and quite likely it is a NOP on other systems.
 > 
-> These helpers are completely silly.  Just keep the existing open code
-> version using sizeof with the one-off removed.
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index 776fc9b3fafe..dfca9d6b1aa6 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -746,8 +746,6 @@ static void __init early_reserve_memory(void)
+>  
+>  	reserve_ibft_region();
+>  	reserve_bios_regions();
+> -
+> -	trim_snb_memory();
+>  }
+>  
+>  /*
+> @@ -1081,6 +1079,8 @@ void __init setup_arch(char **cmdline_p)
+>  
+>  	reserve_real_mode();
+>  
+> +	trim_snb_memory();
+> +
+>  	init_mem_mapping();
+>  
+>  	idt_setup_early_pf();
+>  
+>> -- 
 
-A couple of revisions ago I specifically asked Gustavo to create these
-'silly' sizeof helpers to clean up...
+Hi Mike,
+That works fine.
+Can you provide another/next step?
 
-> > -					(sizeof(struct xfs_efd_log_item) +
-> > -					(XFS_EFD_MAX_FAST_EXTENTS - 1) *
-> > -					sizeof(struct xfs_extent)),
-> > -					0, 0, NULL);
-> > +					 struct_size((struct xfs_efd_log_item *)0,
-> > +					 efd_format.efd_extents,
-> > +					 XFS_EFD_MAX_FAST_EXTENTS),
+If not, I'll try a few things.
 
-...these even uglier multiline statements.  I was also going to ask for
-these kmem cache users to get cleaned up.  I'd much rather look at:
+thanks.
+-- 
+~Randy
 
-	xfs_efi_zone = kmem_cache_create("xfs_efi_item",
-				sizeof_xfs_efi(XFS_EFI_MAX_FAST_EXTENTS), 0);
-	if (!xfs_efi_zone)
-		goto the_drop_zone;
-
-even if it means another static inline.
-
---D
-
-> > +					 0, 0, NULL);
-> >  	if (!xfs_efd_zone)
-> >  		goto out_destroy_buf_item_zone;
-> >  
-> >  	xfs_efi_zone = kmem_cache_create("xfs_efi_item",
-> > -					 (sizeof(struct xfs_efi_log_item) +
-> > -					 (XFS_EFI_MAX_FAST_EXTENTS - 1) *
-> > -					 sizeof(struct xfs_extent)),
-> > +					 struct_size((struct xfs_efi_log_item *)0,
-> > +					 efi_format.efi_extents,
-> > +					 XFS_EFI_MAX_FAST_EXTENTS),
-> 
-> Same here.  And this obsfucated version also adds completely pointless
-> overly long lines while making the code unreadable.
