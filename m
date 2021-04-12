@@ -2,87 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E45235BA05
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 08:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A26A35BA0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 08:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230367AbhDLGLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 02:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhDLGL2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 02:11:28 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE82C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 23:11:11 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id k8so8559066pgf.4
-        for <linux-kernel@vger.kernel.org>; Sun, 11 Apr 2021 23:11:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=IYqQaJDmst//9bdnYVVyaSBsB447C8sYHCRi8q6qoSo=;
-        b=W12j8BWHXgpL0vM/RczGUl98h72QC2rDYB2oFoqBObmeShy6F1t2KdJpuh1rkZaLTy
-         T9vj6Rq3gKnLGfRtO1SReFA0QoPC6S011LhsgckVjgM2KZ+XHlYTh0TeIy6HIJdBk9e3
-         dpc/x5nRU/MOkMPrsuOhfTtauaMDrVIIWBfyi0qWDRURsoHkJZgz0wzxmQb0/6uaHSQh
-         VJk7bz3qrMJCb6Yaclo7nbOJ2A7BiXPBmFPIFgDCHpgdYxk3o4XtgiHoxQ/ZiccKGflA
-         cExbgrWVLC3ukRoK4VFVKAll+jDa+FVRz9I/JCaw4LCr8ep7Mlm/xoVPP0b0LThdz1X+
-         sQuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=IYqQaJDmst//9bdnYVVyaSBsB447C8sYHCRi8q6qoSo=;
-        b=Vm3dFsZDHGfFDdnE33iDkWfR9GjJoADotRGsiMgRcy5cvnPT+UTONAcGIHKgERkEOp
-         TqFvBhJSBvSx8j9K4EbzwTuEpTIFk/agxEmMRaJJG8vmwwvsWaDhjxw2tGu4V/JSca2z
-         6ArZLX7zLkwTKo/qy/UoQybZheTWQXOPYaAMenrJjqagN+Q7HQIZp0ATvEFSkXGUPGS1
-         cypkwzAW9qIabLy5Dhi+uzHhzgDeLcmRJ4IlvT0gasU3BzBGPiGAuvihjf0riX4b87v2
-         VyVNr+RlI9VChMKPuoYlfYPEGV7NJjtaG7f+pFCJKXLTZ+2t5mGLUTK/EW5F9E5hSC9J
-         0dmQ==
-X-Gm-Message-State: AOAM531SSbcjV4I9dtJEX+9IILQ1t6N8PA8ljbKURLz6kCvDICL28jAb
-        qhnVxipoMN1h/6Cfa+soI8w=
-X-Google-Smtp-Source: ABdhPJwfL47PPkhOmo5lvnsX2ttVihNr5nOth4H5yuMT/EHGfsD7lYdBLDOO+q23eRkOAiQnB0L1mQ==
-X-Received: by 2002:a63:3dc7:: with SMTP id k190mr26403045pga.181.1618207870533;
-        Sun, 11 Apr 2021 23:11:10 -0700 (PDT)
-Received: from kali ([103.141.87.254])
-        by smtp.gmail.com with ESMTPSA id a25sm4251251pfo.27.2021.04.11.23.11.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 23:11:10 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 11:40:53 +0530
-From:   Mitali Borkar <mitaliborkar810@gmail.com>
-To:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com, mitali_s@me.iitr.ac.in
-Subject: [PATCH] staging: rtl8188eu: replaced msleep() by usleep_range()
-Message-ID: <YHPkbTPPra2isn5e@kali>
+        id S230354AbhDLGPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 02:15:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229461AbhDLGPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 02:15:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A8B36120F;
+        Mon, 12 Apr 2021 06:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618208085;
+        bh=E+b7283Wm9/rGSWiBvNRtCwIi/weLnjjRP42+kszteQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DeuR/OWuMp2UNsCKyj7eiTgiBotONVtXrgoDaoMZAnIS/Np/DPBAxFFCkQZ7Gy7j6
+         MNg2ZKYWqYSSHKWVY0Q8bxwHtUdu8oMlQ2ybr0orMV1G0su9+me4goOnL0w6EIBIhr
+         Y0xAEN9p1lpHIJHzB7Av+/Ap85AKvu62P5DdsMScQ4T8QsU07XUjaDEgy6rqdHV5nD
+         6suE/vcRfqBKH7xMNCxq7vJlhrZc1P+NWv9pth5sL29L4zwNdFud8WhDhVNS/3YUfT
+         CBl/FZZ19ZMVRaiH1k70s05WSD5Rn6A4tyIGzgT9bIjz3SRH3o06OBv+sR5euAsvYq
+         /sUgnQKMWgZmg==
+Date:   Mon, 12 Apr 2021 09:14:38 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>
+Subject: Re: linux-next: Tree for Apr 9 (x86 boot problem)
+Message-ID: <YHPlTifk6jST5auY@kernel.org>
+References: <20210409215103.03999588@canb.auug.org.au>
+ <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <f67d3e03-af90-f790-baf4-8d412fe055af@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed the warning:-msleep < 20ms can sleep for up to 20ms by replacing
-msleep(unsigned long msecs) by usleep_range(unsigned long min, unsigned long max)
-in usecs as msleep(1ms~20ms) can sleep for upto 20 ms.
+Hi Randy,
 
-Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
----
- drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Sun, Apr 11, 2021 at 07:41:37PM -0700, Randy Dunlap wrote:
+> On 4/9/21 4:51 AM, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Changes since 20210408:
+> > 
+> 
+> Hi,
+> 
+> I cannot boot linux-next 20210408 nor 20210409 on an antique
+> x86_64 laptop (Toshiba Portege).
+> 
+> After many failed tests, I finally resorted to git bisect,
+> which led me to:
+> 
+> # bad: [4c674481dcf9974834b96622fa4b079c176f36f9] x86/setup: Merge several reservations of start of memory
+> git bisect bad 4c674481dcf9974834b96622fa4b079c176f36f9
+> 
+> 
+> I reverted both of these patches and the laptop boots successfully:
+> 
+> commit a799c2bd29d19c565f37fa038b31a0a1d44d0e4d
+> Author: Mike Rapoport <rppt@kernel.org>
+> Date:   Tue Mar 2 12:04:05 2021 +0200
+> 
+>     x86/setup: Consolidate early memory reservations
+> 
+> &&
+> 
+> commit 4c674481dcf9974834b96622fa4b079c176f36f9
+> Author: Mike Rapoport <rppt@kernel.org>
+> Date:   Tue Mar 2 12:04:06 2021 +0200
+> 
+>     x86/setup: Merge several reservations of start of memory
+> 
+> 
+> There is no (zero, nil) console display when I try to boot
+> next 0408 or 0409. I connected a USB serial debug cable and
+> booted with earlyprintk=dbgp,keep and still got nothing.
+> 
+> The attached boot log is linux-next 20210409 minus the 2 patches
+> listed above.
+> 
+> Mike- what data would you like to see?
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-index 50d3c3631be0..6afbb5bf8118 100644
---- a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
-@@ -5396,7 +5396,7 @@ u8 tx_beacon_hdl(struct adapter *padapter, unsigned char *pbuf)
- 			return H2C_SUCCESS;
+Huh, with no console this would be fun :)
+For now the only idea I have is to "bisect" the changes and move
+reservations one by one back to their original place until the system boots
+again. 
+
+I'd start with trim_snb_memory() since it's surely needed on your laptop
+and quite likely it is a NOP on other systems.
+
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 776fc9b3fafe..dfca9d6b1aa6 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -746,8 +746,6 @@ static void __init early_reserve_memory(void)
  
- 		if ((pstapriv->tim_bitmap & BIT(0)) && (psta_bmc->sleepq_len > 0)) {
--			msleep(10);/*  10ms, ATIM(HIQ) Windows */
-+			usleep_range(10000 , 20000);/*  10ms, ATIM(HIQ) Windows */
- 			spin_lock_bh(&psta_bmc->sleep_q.lock);
+ 	reserve_ibft_region();
+ 	reserve_bios_regions();
+-
+-	trim_snb_memory();
+ }
  
- 			xmitframe_phead = get_list_head(&psta_bmc->sleep_q);
+ /*
+@@ -1081,6 +1079,8 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	reserve_real_mode();
+ 
++	trim_snb_memory();
++
+ 	init_mem_mapping();
+ 
+ 	idt_setup_early_pf();
+ 
+> -- 
+> ~Randy
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+
 -- 
-2.30.2
-
+Sincerely yours,
+Mike.
