@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8F735C8F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:39:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3755035C8FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242432AbhDLOjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:39:20 -0400
-Received: from mga09.intel.com ([134.134.136.24]:29207 "EHLO mga09.intel.com"
+        id S242656AbhDLOjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:39:25 -0400
+Received: from mga09.intel.com ([134.134.136.24]:29202 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242413AbhDLOiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:38:52 -0400
-IronPort-SDR: wMACbVQO1n85B4i8WXS/dHIsuxidAvSGdaueyLoBaGTBhpJ8PHk00dysi/7RySBUnivxpDkX6g
- uh3yB4bhTYLw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194318010"
+        id S242452AbhDLOi6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 10:38:58 -0400
+IronPort-SDR: qJcvdQYQTQs4aPhngq/8txC1OM8L7dGEBRzaPYAFRiV/19c4iwT9fxUkBUfGXfr1UolkdHBI1E
+ UDZg/wyC1lEw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194318016"
 X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="194318010"
+   d="scan'208";a="194318016"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 07:38:31 -0700
-IronPort-SDR: 7MmbiVU0zgFU1kzbJtfxesWNW7xYNGm9Pf0XAaQCfs1VqBwNeAca4nmDoS024YLDCaWmEs8JCm
- bozYupqg0WSA==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 07:38:33 -0700
+IronPort-SDR: BrIc6Ev4g+VNpA7ZewBAKmQRTYlxw/j5GnBN8rtWQ+F7ylM8X4tTI67PhIAIMOz31zaxgZrpUj
+ nmkZ8MLhrzow==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="398392849"
+   d="scan'208";a="398392854"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga002.jf.intel.com with ESMTP; 12 Apr 2021 07:38:31 -0700
+  by orsmga002.jf.intel.com with ESMTP; 12 Apr 2021 07:38:33 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
@@ -33,9 +33,9 @@ Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
         yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
         adrian.hunter@intel.com, ricardo.neri-calderon@linux.intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V6 18/25] perf/x86/intel: Add attr_update for Hybrid PMUs
-Date:   Mon, 12 Apr 2021 07:30:58 -0700
-Message-Id: <1618237865-33448-19-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V6 19/25] perf/x86: Support filter_match callback
+Date:   Mon, 12 Apr 2021 07:30:59 -0700
+Message-Id: <1618237865-33448-20-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1618237865-33448-1-git-send-email-kan.liang@linux.intel.com>
 References: <1618237865-33448-1-git-send-email-kan.liang@linux.intel.com>
@@ -45,161 +45,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The attribute_group for Hybrid PMUs should be different from the
-previous
-cpu PMU. For example, cpumask is required for a Hybrid PMU. The PMU type
-should be included in the event and format attribute.
-
-Add hybrid_attr_update for the Hybrid PMU.
-Check the PMU type in is_visible() function. Only display the event or
-format for the matched Hybrid PMU.
+Implement filter_match callback for X86, which check whether an event is
+schedulable on the current CPU.
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/core.c | 120 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 114 insertions(+), 6 deletions(-)
+ arch/x86/events/core.c       | 10 ++++++++++
+ arch/x86/events/perf_event.h |  1 +
+ 2 files changed, 11 insertions(+)
 
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 4881209..ba24638 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -5118,6 +5118,106 @@ static const struct attribute_group *attr_update[] = {
- 	NULL,
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index ba3736c..8fc45b8 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2642,6 +2642,14 @@ static int x86_pmu_aux_output_match(struct perf_event *event)
+ 	return 0;
+ }
+ 
++static int x86_pmu_filter_match(struct perf_event *event)
++{
++	if (x86_pmu.filter_match)
++		return x86_pmu.filter_match(event);
++
++	return 1;
++}
++
+ static struct pmu pmu = {
+ 	.pmu_enable		= x86_pmu_enable,
+ 	.pmu_disable		= x86_pmu_disable,
+@@ -2669,6 +2677,8 @@ static struct pmu pmu = {
+ 	.check_period		= x86_pmu_check_period,
+ 
+ 	.aux_output_match	= x86_pmu_aux_output_match,
++
++	.filter_match		= x86_pmu_filter_match,
  };
  
-+static bool is_attr_for_this_pmu(struct kobject *kobj, struct attribute *attr)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct x86_hybrid_pmu *pmu =
-+		container_of(dev_get_drvdata(dev), struct x86_hybrid_pmu, pmu);
-+	struct perf_pmu_events_hybrid_attr *pmu_attr =
-+		container_of(attr, struct perf_pmu_events_hybrid_attr, attr.attr);
-+
-+	return pmu->cpu_type & pmu_attr->pmu_type;
-+}
-+
-+static umode_t hybrid_events_is_visible(struct kobject *kobj,
-+					struct attribute *attr, int i)
-+{
-+	return is_attr_for_this_pmu(kobj, attr) ? attr->mode : 0;
-+}
-+
-+static inline int hybrid_find_supported_cpu(struct x86_hybrid_pmu *pmu)
-+{
-+	int cpu = cpumask_first(&pmu->supported_cpus);
-+
-+	return (cpu >= nr_cpu_ids) ? -1 : cpu;
-+}
-+
-+static umode_t hybrid_tsx_is_visible(struct kobject *kobj,
-+				     struct attribute *attr, int i)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct x86_hybrid_pmu *pmu =
-+		 container_of(dev_get_drvdata(dev), struct x86_hybrid_pmu, pmu);
-+	int cpu = hybrid_find_supported_cpu(pmu);
-+
-+	return (cpu >= 0) && is_attr_for_this_pmu(kobj, attr) && cpu_has(&cpu_data(cpu), X86_FEATURE_RTM) ? attr->mode : 0;
-+}
-+
-+static umode_t hybrid_format_is_visible(struct kobject *kobj,
-+					struct attribute *attr, int i)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct x86_hybrid_pmu *pmu =
-+		container_of(dev_get_drvdata(dev), struct x86_hybrid_pmu, pmu);
-+	struct perf_pmu_format_hybrid_attr *pmu_attr =
-+		container_of(attr, struct perf_pmu_format_hybrid_attr, attr.attr);
-+	int cpu = hybrid_find_supported_cpu(pmu);
-+
-+	return (cpu >= 0) && (pmu->cpu_type & pmu_attr->pmu_type) ? attr->mode : 0;
-+}
-+
-+static struct attribute_group hybrid_group_events_td  = {
-+	.name		= "events",
-+	.is_visible	= hybrid_events_is_visible,
-+};
-+
-+static struct attribute_group hybrid_group_events_mem = {
-+	.name		= "events",
-+	.is_visible	= hybrid_events_is_visible,
-+};
-+
-+static struct attribute_group hybrid_group_events_tsx = {
-+	.name		= "events",
-+	.is_visible	= hybrid_tsx_is_visible,
-+};
-+
-+static struct attribute_group hybrid_group_format_extra = {
-+	.name		= "format",
-+	.is_visible	= hybrid_format_is_visible,
-+};
-+
-+static ssize_t intel_hybrid_get_attr_cpus(struct device *dev,
-+					  struct device_attribute *attr,
-+					  char *buf)
-+{
-+	struct x86_hybrid_pmu *pmu =
-+		container_of(dev_get_drvdata(dev), struct x86_hybrid_pmu, pmu);
-+
-+	return cpumap_print_to_pagebuf(true, buf, &pmu->supported_cpus);
-+}
-+
-+static DEVICE_ATTR(cpus, S_IRUGO, intel_hybrid_get_attr_cpus, NULL);
-+static struct attribute *intel_hybrid_cpus_attrs[] = {
-+	&dev_attr_cpus.attr,
-+	NULL,
-+};
-+
-+static struct attribute_group hybrid_group_cpus = {
-+	.attrs		= intel_hybrid_cpus_attrs,
-+};
-+
-+static const struct attribute_group *hybrid_attr_update[] = {
-+	&hybrid_group_events_td,
-+	&hybrid_group_events_mem,
-+	&hybrid_group_events_tsx,
-+	&group_caps_gen,
-+	&group_caps_lbr,
-+	&hybrid_group_format_extra,
-+	&group_default,
-+	&hybrid_group_cpus,
-+	NULL,
-+};
-+
- static struct attribute *empty_attrs;
+ void arch_perf_update_userpage(struct perf_event *event,
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 4d94ec9..0051c87 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -880,6 +880,7 @@ struct x86_pmu {
  
- static void intel_pmu_check_num_counters(int *num_counters,
-@@ -5861,14 +5961,22 @@ __init int intel_pmu_init(void)
+ 	int (*aux_output_match) (struct perf_event *event);
  
- 	snprintf(pmu_name_str, sizeof(pmu_name_str), "%s", name);
- 
-+	if (!is_hybrid()) {
-+		group_events_td.attrs  = td_attr;
-+		group_events_mem.attrs = mem_attr;
-+		group_events_tsx.attrs = tsx_attr;
-+		group_format_extra.attrs = extra_attr;
-+		group_format_extra_skl.attrs = extra_skl_attr;
- 
--	group_events_td.attrs  = td_attr;
--	group_events_mem.attrs = mem_attr;
--	group_events_tsx.attrs = tsx_attr;
--	group_format_extra.attrs = extra_attr;
--	group_format_extra_skl.attrs = extra_skl_attr;
-+		x86_pmu.attr_update = attr_update;
-+	} else {
-+		hybrid_group_events_td.attrs  = td_attr;
-+		hybrid_group_events_mem.attrs = mem_attr;
-+		hybrid_group_events_tsx.attrs = tsx_attr;
-+		hybrid_group_format_extra.attrs = extra_attr;
- 
--	x86_pmu.attr_update = attr_update;
-+		x86_pmu.attr_update = hybrid_attr_update;
-+	}
- 
- 	intel_pmu_check_num_counters(&x86_pmu.num_counters,
- 				     &x86_pmu.num_counters_fixed,
++	int (*filter_match)(struct perf_event *event);
+ 	/*
+ 	 * Hybrid support
+ 	 *
 -- 
 2.7.4
 
