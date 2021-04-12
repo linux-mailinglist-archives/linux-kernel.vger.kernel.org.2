@@ -2,188 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 916AD35C912
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3731E35C915
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:44:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242372AbhDLOm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237806AbhDLOmz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:42:55 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0341C061574;
-        Mon, 12 Apr 2021 07:42:37 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id k25so13659413oic.4;
-        Mon, 12 Apr 2021 07:42:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BdL2Bl3OdEVaQkVLdSf4RVtPLNSnjJM/67/5nMKHpco=;
-        b=kNWQEKREOyHh0FVvQ5EzwTtZznf3crjiTsNR0fFAUwImHx7Aw2BHukALXwInEsR9Wo
-         9jKXzqUl0UjHrxk2XcadHt5kQgJ8aTHEj73RoYjR51pj0eHfdTj1hstrlIBrhWua3Mj0
-         uTaFvL73/KdxkNRCo3927Jby5ff0AwIj531/GVGFjzg2hcrII4tXyJ/++9PT1io/q1o7
-         QiCGJTPzqMhMUb57pdDG8M+ZTSD4EtyJD24K0A6C+d8UvggO8Du+6V9dxT1iSQGi34P1
-         9zqRPHmQqSaJCMY7z02Eix1am2zpEOKqpN9hAfJHROXVkcGvUmiIUCs0q3y7lx31eO9a
-         B9zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=BdL2Bl3OdEVaQkVLdSf4RVtPLNSnjJM/67/5nMKHpco=;
-        b=SrEeLqC7Mu1WHqJNNhI/qxTdwq68tL60HpCemUqMGoLmFIbc4hkUIQHE0CZr9XZp7D
-         AF92cY536H+4l1BwH975BUjQ9+LQsTdBsXm6AzMqgMrenDvfXKv/Zwkd7kgi0lbLaR+A
-         NcFk7zY83Xu2uN+82oll84Fkgm3GoYz1b/m8qd8+K87/YCexR5cB14ngpgaSrKmS8Bg7
-         xsRqpwOIe5ZMD5T9gjHY52dihCXLwRGqt0J39HZzEfyXt8cM3o41nSe3/oDYPtn/3NEG
-         kMTF88clVT3XazT9ZtyfYxUuBy/tFstFnc9erXZqKOC/A7mT7qbp1MHvryldWiXFJYjX
-         G+tA==
-X-Gm-Message-State: AOAM5313E1I7OLwTYA2TwYUq0KIlTKOuw+S0dEm5ttKfyvkVOmKil8s5
-        xjQYvPyWtRQHV9Kag8NXZfQ00E8Z6G4=
-X-Google-Smtp-Source: ABdhPJzfBLGMp2huehJEM2BcZthjAkrQXVWexUgQPSSs8Ao02JpHjRdWWjenXhTAMTHNmJElO8gzGw==
-X-Received: by 2002:aca:1909:: with SMTP id l9mr19430424oii.144.1618238557175;
-        Mon, 12 Apr 2021 07:42:37 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x3sm2783610otj.8.2021.04.12.07.42.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 12 Apr 2021 07:42:36 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v1] watchdog: add new parameter to start the watchdog on
- module insertion
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>
-References: <20210409093434.2089459-1-f.suligoi@asem.it>
- <e44f3366-cb12-7d7c-fe77-20b5bfea620d@roeck-us.net>
- <98f7ca84e44e4625b54e1aecef88f238@asem.it>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <444e0f7e-c937-49a4-d960-549e70a8390d@roeck-us.net>
-Date:   Mon, 12 Apr 2021 07:42:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S242268AbhDLOog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:44:36 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:45618 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237806AbhDLOod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 10:44:33 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lVxnP-00GHIZ-Vo; Mon, 12 Apr 2021 16:44:11 +0200
+Date:   Mon, 12 Apr 2021 16:44:11 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: marvell: fix detection of PHY on Topaz switches
+Message-ID: <YHRcu+dNKE7xC8EG@lunn.ch>
+References: <20210412121430.20898-1-pali@kernel.org>
+ <YHRH2zWsYkv/yjYz@lunn.ch>
+ <20210412133447.fyqkavrs5r5wbino@pali>
 MIME-Version: 1.0
-In-Reply-To: <98f7ca84e44e4625b54e1aecef88f238@asem.it>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210412133447.fyqkavrs5r5wbino@pali>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 1:29 AM, Flavio Suligoi wrote:
-> Hi Guenter,
+On Mon, Apr 12, 2021 at 03:34:47PM +0200, Pali Rohár wrote:
+> On Monday 12 April 2021 15:15:07 Andrew Lunn wrote:
+> > > +static u16 mv88e6xxx_physid_for_family(enum mv88e6xxx_family family);
+> > > +
+> > 
+> > No forward declaration please. Move the code around. It is often best
+> > to do that in a patch which just moves code, no other changes. It
+> > makes it easier to review.
 > 
-> ...
-> 
->> On 4/9/21 2:34 AM, Flavio Suligoi wrote:
->>> The new parameter "start_enabled" starts the watchdog at the same time
->>> of the module insertion.
->>> This feature is very useful in embedded systems, to avoid cases where
->>> the system hangs before reaching userspace.
->>>
->>> This function can be also enabled in the kernel config, so can be
->>> used when the watchdog driver is build as built-in.
->>>
->>> This parameter involves the "core" section of the watchdog driver;
->>> in this way it is common for all the watchdog hardware implementations.
->>>
->>> Note: to use only for watchdog drivers which doesn't support this
->>>       parameter by itself.
->>>
->>> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
->>> ---
->>>  Documentation/watchdog/watchdog-parameters.rst |  5 +++++
->>>  drivers/watchdog/Kconfig                       | 14 ++++++++++++++
->>>  drivers/watchdog/watchdog_core.c               | 12 ++++++++++++
->>>  3 files changed, 31 insertions(+)
->>>
->>> diff --git a/Documentation/watchdog/watchdog-parameters.rst
->> b/Documentation/watchdog/watchdog-parameters.rst
->>> index 223c99361a30..623fd064df91 100644
->>> --- a/Documentation/watchdog/watchdog-parameters.rst
->>> +++ b/Documentation/watchdog/watchdog-parameters.rst
->>> @@ -21,6 +21,11 @@ watchdog core:
->>>  	timeout. Setting this to a non-zero value can be useful to ensure that
->>>  	either userspace comes up properly, or the board gets reset and allows
->>>  	fallback logic in the bootloader to try something else.
->>> +    start_enabled:
->>> +	Watchdog is started on module insertion. This option can be also
->>> +	selected by kernel config (default=kernel config parameter).
->>> +	Use only for watchdog drivers which doesn't support this parameter
->>> +	by itself.
->>
->> Why ?
-> 
-> There are two drivers with an analogous feature (pnx833x_wdt and
-> omap_wdt) and it is important not to enable the watchdog twice.
-> 
-Why ?
+> Avoiding forward declaration would mean to move about half of source
+> code. mv88e6xxx_physid_for_family depends on mv88e6xxx_table which
+> depends on all _ops structures which depends on all lot of other
+> functions.
 
-> Ok, I can substitute the sentence: " Use only for watchdog drivers
-> which doesn't support this parameter itself." with another one, like:
-> "If the driver supports this feature by itself, be carefully not to enable
-> the watchdog twice".
-> 
-> What do you think?
-> 
+So this is basically what you are trying to do:
 
-I am still missing the explanation _why_ it would be important not to enable
-a watchdog twice. Why does it matter ? What is the difference ?
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index 903d619e08ed..ef4dbcb052b7 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -3026,6 +3026,18 @@ static int mv88e6xxx_setup(struct dsa_switch *ds)
+        return err;
+ }
+ 
++static const enum mv88e6xxx_model family_model_table[] = {
++       [MV88E6XXX_FAMILY_6095] = MV88E6XXX_PORT_SWITCH_ID_PROD_6095,
++       [MV88E6XXX_FAMILY_6097] = MV88E6XXX_PORT_SWITCH_ID_PROD_6097,
++       [MV88E6XXX_FAMILY_6185] = MV88E6XXX_PORT_SWITCH_ID_PROD_6185,
++       [MV88E6XXX_FAMILY_6250] = MV88E6XXX_PORT_SWITCH_ID_PROD_6250,
++       [MV88E6XXX_FAMILY_6320] = MV88E6XXX_PORT_SWITCH_ID_PROD_6320,
++       [MV88E6XXX_FAMILY_6341] = MV88E6XXX_PORT_SWITCH_ID_PROD_6341,
++       [MV88E6XXX_FAMILY_6351] = MV88E6XXX_PORT_SWITCH_ID_PROD_6351,
++       [MV88E6XXX_FAMILY_6352] = MV88E6XXX_PORT_SWITCH_ID_PROD_6352,
++       [MV88E6XXX_FAMILY_6390] = MV88E6XXX_PORT_SWITCH_ID_PROD_6390,
++};
++
+ static int mv88e6xxx_mdio_read(struct mii_bus *bus, int phy, int reg)
+ {
+        struct mv88e6xxx_mdio_bus *mdio_bus = bus->priv;
+@@ -3056,7 +3068,7 @@ static int mv88e6xxx_mdio_read(struct mii_bus *bus, int phy, int reg)
+                         * a PHY,
+                         */
+                        if (!(val & 0x3f0))
+-                               val |= MV88E6XXX_PORT_SWITCH_ID_PROD_6390 >> 4;
++                               val |= family_model_table[chip->info->family] >> 4;
+        }
 
-If there is a concern that the start function should not be called on an already
-running watchdog, the code could check for that and ensure that WDOG_HW_RUNNING
-is not already set before enabling it. That would probably make sense anyway.
-But adding a limitation/restriction like the above, which is not enforceable,
-is not a good idea. How would the common user know if a watchdog is already
-running (eg because it was started in BIOS/ROMMON) ?
+and it compiles. No forward declarations needed. It is missing all the
+error checking etc, but i don't see why that should change the
+dependencies.
 
-Thanks,
-Guenter
+	Andrew
