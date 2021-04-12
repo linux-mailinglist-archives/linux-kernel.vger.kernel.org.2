@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A571635BD23
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36ACC35BD07
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237572AbhDLIr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:47:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38398 "EHLO mail.kernel.org"
+        id S237990AbhDLIrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:47:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237634AbhDLIp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:45:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 021E76125F;
-        Mon, 12 Apr 2021 08:45:38 +0000 (UTC)
+        id S237793AbhDLIpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:45:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1908E6124C;
+        Mon, 12 Apr 2021 08:45:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217139;
-        bh=Z6ZjAmFkSw+pemnNntJoY6uvYpYx22InNvuUPMQtpMs=;
+        s=korg; t=1618217117;
+        bh=AdoQ38MBmprPvGcxgKXcjYRjkvnJr3ncsTjgYD25fAc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EA2Ml/rMrOMwuHLg46PDTcyK3qpSxJzjcTZZLyvmrAviit7nNUfcjVdw2KBcoRDqE
-         IL69+tl044GAQeDMzWPv4QH8tiCYm7Pz/kn4Jo+FyD8Hc3RMksLLvLVY6sERLDVeI+
-         3fofRltDItY1WL+izlGCgiVyHTTa3Vi6TqE62YzI=
+        b=nr5mxy+cR1QpjEEcu0+wKuP6fiZsScqnP8iBYbawnxzSpKLnkY5oMQpo69GTUD2ch
+         zK+sqVIp75+jYJasPv5qPteC9KA/Pt5TmHAaifeExTB8xht5wDzfjFwfgyrNI4gv7e
+         Mjf4LfCd8TrQhti2uUIfQ1giqkbP98B3QkC5nm84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luca Fancellu <luca.fancellu@arm.com>,
-        Julien Grall <jgrall@amazon.com>, Wei Liu <wei.liu@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Subject: [PATCH 5.4 009/111] xen/evtchn: Change irq_info lock to raw_spinlock_t
-Date:   Mon, 12 Apr 2021 10:39:47 +0200
-Message-Id: <20210412084004.521866469@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Muhammad Usama Anjum <musamaanjum@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.4 010/111] net: ipv6: check for validity before dereferencing cfg->fc_nlinfo.nlh
+Date:   Mon, 12 Apr 2021 10:39:48 +0200
+Message-Id: <20210412084004.561631412@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -40,83 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luca Fancellu <luca.fancellu@arm.com>
+From: Muhammad Usama Anjum <musamaanjum@gmail.com>
 
-commit d120198bd5ff1d41808b6914e1eb89aff937415c upstream.
+commit 864db232dc7036aa2de19749c3d5be0143b24f8f upstream.
 
-Unmask operation must be called with interrupt disabled,
-on preempt_rt spin_lock_irqsave/spin_unlock_irqrestore
-don't disable/enable interrupts, so use raw_* implementation
-and change lock variable in struct irq_info from spinlock_t
-to raw_spinlock_t
+nlh is being checked for validtity two times when it is dereferenced in
+this function. Check for validity again when updating the flags through
+nlh pointer to make the dereferencing safe.
 
-Cc: stable@vger.kernel.org
-Fixes: 25da4618af24 ("xen/events: don't unmask an event channel when an eoi is pending")
-Signed-off-by: Luca Fancellu <luca.fancellu@arm.com>
-Reviewed-by: Julien Grall <jgrall@amazon.com>
-Reviewed-by: Wei Liu <wei.liu@kernel.org>
-Link: https://lore.kernel.org/r/20210406105105.10141-1-luca.fancellu@arm.com
-Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+CC: <stable@vger.kernel.org>
+Addresses-Coverity: ("NULL pointer dereference")
+Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/xen/events/events_base.c     |   10 +++++-----
- drivers/xen/events/events_internal.h |    2 +-
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ net/ipv6/route.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/drivers/xen/events/events_base.c
-+++ b/drivers/xen/events/events_base.c
-@@ -222,7 +222,7 @@ static int xen_irq_info_common_setup(str
- 	info->evtchn = evtchn;
- 	info->cpu = cpu;
- 	info->mask_reason = EVT_MASK_REASON_EXPLICIT;
--	spin_lock_init(&info->lock);
-+	raw_spin_lock_init(&info->lock);
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -5183,9 +5183,11 @@ static int ip6_route_multipath_add(struc
+ 		 * nexthops have been replaced by first new, the rest should
+ 		 * be added to it.
+ 		 */
+-		cfg->fc_nlinfo.nlh->nlmsg_flags &= ~(NLM_F_EXCL |
+-						     NLM_F_REPLACE);
+-		cfg->fc_nlinfo.nlh->nlmsg_flags |= NLM_F_CREATE;
++		if (cfg->fc_nlinfo.nlh) {
++			cfg->fc_nlinfo.nlh->nlmsg_flags &= ~(NLM_F_EXCL |
++							     NLM_F_REPLACE);
++			cfg->fc_nlinfo.nlh->nlmsg_flags |= NLM_F_CREATE;
++		}
+ 		nhn++;
+ 	}
  
- 	ret = set_evtchn_to_irq(evtchn, irq);
- 	if (ret < 0)
-@@ -374,28 +374,28 @@ static void do_mask(struct irq_info *inf
- {
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&info->lock, flags);
-+	raw_spin_lock_irqsave(&info->lock, flags);
- 
- 	if (!info->mask_reason)
- 		mask_evtchn(info->evtchn);
- 
- 	info->mask_reason |= reason;
- 
--	spin_unlock_irqrestore(&info->lock, flags);
-+	raw_spin_unlock_irqrestore(&info->lock, flags);
- }
- 
- static void do_unmask(struct irq_info *info, u8 reason)
- {
- 	unsigned long flags;
- 
--	spin_lock_irqsave(&info->lock, flags);
-+	raw_spin_lock_irqsave(&info->lock, flags);
- 
- 	info->mask_reason &= ~reason;
- 
- 	if (!info->mask_reason)
- 		unmask_evtchn(info->evtchn);
- 
--	spin_unlock_irqrestore(&info->lock, flags);
-+	raw_spin_unlock_irqrestore(&info->lock, flags);
- }
- 
- #ifdef CONFIG_X86
---- a/drivers/xen/events/events_internal.h
-+++ b/drivers/xen/events/events_internal.h
-@@ -45,7 +45,7 @@ struct irq_info {
- 	unsigned short eoi_cpu;	/* EOI must happen on this cpu */
- 	unsigned int irq_epoch;	/* If eoi_cpu valid: irq_epoch of event */
- 	u64 eoi_time;		/* Time in jiffies when to EOI. */
--	spinlock_t lock;
-+	raw_spinlock_t lock;
- 
- 	union {
- 		unsigned short virq;
 
 
