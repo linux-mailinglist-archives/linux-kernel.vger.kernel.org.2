@@ -2,95 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0963235D432
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0471235D439
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243427AbhDLXzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:55:11 -0400
-Received: from mail.nic.cz ([217.31.204.67]:58582 "EHLO mail.nic.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237250AbhDLXzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:55:10 -0400
-Received: from thinkpad (unknown [IPv6:2a0e:b107:ae1:0:3e97:eff:fe61:c680])
-        by mail.nic.cz (Postfix) with ESMTPSA id 949C0140655;
-        Tue, 13 Apr 2021 01:54:50 +0200 (CEST)
-Date:   Tue, 13 Apr 2021 01:54:50 +0200
-From:   Marek Behun <marek.behun@nic.cz>
-To:     Tobias Waldekranz <tobias@waldekranz.com>
-Cc:     Vladimir Oltean <olteanv@gmail.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        zhang kai <zhangkaiheb@126.com>,
-        Weilong Chen <chenweilong@huawei.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
-Message-ID: <20210413015450.1ae597da@thinkpad>
-In-Reply-To: <87o8ejjdu6.fsf@waldekranz.com>
-References: <20210410133454.4768-1-ansuelsmth@gmail.com>
-        <20210411200135.35fb5985@thinkpad>
-        <20210411185017.3xf7kxzzq2vefpwu@skbuf>
-        <878s5nllgs.fsf@waldekranz.com>
-        <20210412213045.4277a598@thinkpad>
-        <8735vvkxju.fsf@waldekranz.com>
-        <20210412235054.73754df9@thinkpad>
-        <87wnt7jgzk.fsf@waldekranz.com>
-        <20210413005518.2f9b9cef@thinkpad>
-        <87r1jfje26.fsf@waldekranz.com>
-        <87o8ejjdu6.fsf@waldekranz.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S239709AbhDLX6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:58:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40362 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238263AbhDLX6Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 19:58:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618271877;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=fk8f62xjqnl3mv3ljyxxc5ev3FlVYq11HMKlMY+I2mI=;
+        b=bKMDXmtQUNLwEAPA+/Iw8zheAt0uvZRDnTX/sIbCVDPuh8U4KUWlL/VcaHpxW+UBw8wpIm
+        IrEmpiat3SlzrUj8KxljfurZbZetD/jDX5p4D0xhaW4d6uCeFB9Io/WAlYwbh6wzCjDh+l
+        DNYbIKDH4AAnJgxZVJIBvZYQ2eWtpYg=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-eJyiahxuOPesDHetXcU52A-1; Mon, 12 Apr 2021 19:57:55 -0400
+X-MC-Unique: eJyiahxuOPesDHetXcU52A-1
+Received: by mail-qt1-f198.google.com with SMTP id h26so209117qtm.13
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:57:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fk8f62xjqnl3mv3ljyxxc5ev3FlVYq11HMKlMY+I2mI=;
+        b=AZlgiP3iiIDwl5B+AdVqHTPWbaj8vTEI8CJEz5RZ8dnT+vMDjnyJS4KrsSbTE3RPmu
+         //D9oO7novIuqQIYOrRM44OXAsOdwhx6JfKCUTjsiFAYOysKjY0X6BdObEEv02McSHqq
+         0aWsfRknWVUvmYIEzDypKJ8sbS8WyNKO4BRsVYZfRKDqlOt20VH7PWckUDwQXjVFqWsI
+         ASFREHIkc4aYiGtdKrG1I1wQhgaSimRbtPeh/6j7DFurmL0ByXZTHAIzjpGfDKiBEqxg
+         rfLS6tm/IVGVWTe9+310tDk5GageXjwgPOhdRNOogweGQO/x2t5KqnJRZYg8Q1rbQbzu
+         a5Ig==
+X-Gm-Message-State: AOAM5319EG8VbUtBH15JNZufGZT9M7NrQV7Ji90raED+7dMcqIihw2r0
+        T68QJdOCASkMP0OruZ5+v+arJyJXygc/JBFtEyY+hjAMYF0eWhY/ckQIPqva5yPjlFLeI7uhaAk
+        DM9Ufeeuz64c+G4Osubwxee/q
+X-Received: by 2002:ac8:5bd0:: with SMTP id b16mr27256746qtb.265.1618271875253;
+        Mon, 12 Apr 2021 16:57:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyINLu5vRRG0SiDZ5ReSE5VIP4sHwe9BnqH3/WUUNCWDJZ4MX4YNqZ5FmXfacMqWYulpB87ZQ==
+X-Received: by 2002:ac8:5bd0:: with SMTP id b16mr27256724qtb.265.1618271875002;
+        Mon, 12 Apr 2021 16:57:55 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
+        by smtp.gmail.com with ESMTPSA id n6sm8421251qtx.22.2021.04.12.16.57.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 16:57:54 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 19:57:52 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Colascione <dancol@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH 2/9] userfaultfd/shmem: combine
+ shmem_{mcopy_atomic,mfill_zeropage}_pte
+Message-ID: <20210412235752.GC1002612@xz-x1>
+References: <20210408234327.624367-1-axelrasmussen@google.com>
+ <20210408234327.624367-3-axelrasmussen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-100.0 required=5.9 tests=SHORTCIRCUIT,
-        USER_IN_WELCOMELIST,USER_IN_WHITELIST shortcircuit=ham
-        autolearn=disabled version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.nic.cz
-X-Virus-Scanned: clamav-milter 0.102.2 at mail
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210408234327.624367-3-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021 01:13:53 +0200
-Tobias Waldekranz <tobias@waldekranz.com> wrote:
-
-> > ...you could get the isolation in place. But you will still lookup the
-> > DA in the ATU, and there you will find a destination of either cpu0 or
-> > cpu1. So for one of the ports, the destination will be outside of its
-> > port based VLAN. Once the vectors are ANDed together, it is left with no
-> > valid port to egress through, and the packet is dropped.
-> >  
-> >> Am I wrong? I confess that I did not understand this into the most fine
-> >> details, so it is entirely possible that I am missing something
-> >> important and am completely wrong. Maybe this cannot be done.  
-> >
-> > I really doubt that it can be done. Not in any robust way at
-> > least. Happy to be proven wrong though! :)  
+On Thu, Apr 08, 2021 at 04:43:20PM -0700, Axel Rasmussen wrote:
+> Previously, we did a dance where we had one calling path in
+> userfaultfd.c (mfill_atomic_pte), but then we split it into two in
+> shmem_fs.h (shmem_{mcopy_atomic,mfill_zeropage}_pte), and then rejoined
+> into a single shared function in shmem.c (shmem_mfill_atomic_pte).
 > 
-> I think I figured out why it "works" for you. Since the CPU address is
-> never added to the ATU, traffic for it is treated as unknown. Thanks to
-> that, it flooded and the isolation brings it together. As soon as
-> mv88e6xxx starts making use of Vladimirs offloading of host addresses
-> though, I suspect this will fall apart.
+> This is all a bit overly complex. Just call the single combined shmem
+> function directly, allowing us to clean up various branches,
+> boilerplate, etc.
+> 
+> While we're touching this function, two other small cleanup changes:
+> - offset is equivalent to pgoff, so we can get rid of offset entirely.
+> - Split two VM_BUG_ON cases into two statements. This means the line
+>   number reported when the BUG is hit specifies exactly which condition
+>   was true.
 
-Hmm :( This is bad news. I would really like to make it balance via
-input ports. The LAG balancing for this usecase is simply unacceptable,
-since the switch puts so little information into the hash function.
+(For my own preference, I'll avoid touching the latter one)
 
-I will look into this, maybe ask some follow-up questions.
+> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  include/linux/shmem_fs.h | 15 +++++-------
+>  mm/shmem.c               | 52 +++++++++++++---------------------------
+>  mm/userfaultfd.c         | 10 +++-----
+>  3 files changed, 25 insertions(+), 52 deletions(-)
+> 
+> diff --git a/include/linux/shmem_fs.h b/include/linux/shmem_fs.h
+> index d82b6f396588..919e36671fe6 100644
+> --- a/include/linux/shmem_fs.h
+> +++ b/include/linux/shmem_fs.h
+> @@ -122,21 +122,18 @@ static inline bool shmem_file(struct file *file)
+>  extern bool shmem_charge(struct inode *inode, long pages);
+>  extern void shmem_uncharge(struct inode *inode, long pages);
+>  
+> +#ifdef CONFIG_USERFAULTFD
+>  #ifdef CONFIG_SHMEM
+>  extern int shmem_mcopy_atomic_pte(struct mm_struct *dst_mm, pmd_t *dst_pmd,
+>  				  struct vm_area_struct *dst_vma,
+>  				  unsigned long dst_addr,
+>  				  unsigned long src_addr,
 
-Marek
+Not a problem of your patch, but it's just that we passed in odd src_addr
+values into mfill_atomic_pte() for zeropage case because we loop on src_addr in
+__mcopy_atomic()...  Then it'll further passed into shmem_mcopy_atomic_pte()
+now after this patch (as shmem_mfill_zeropage_pte() probably only did one thing
+good which is to clear src_addr).  Not a big deal, though.
+
+All the rest looks sane to me.
+
+Reviewed-by: Peter Xu <peterx@redhat.com>
+
+I'll wait to look at the selftests since in all cases they should be prone to
+rebase (either based on the v2 cleanup I posted, or you'd need to post without
+err() - then I can rebase again), so I figured maybe I just read the new
+version.
+
+Thanks,
+
+-- 
+Peter Xu
+
