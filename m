@@ -2,136 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D17C35C298
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2224D35C29E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241850AbhDLJqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:46:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241658AbhDLJal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:30:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5138161209;
-        Mon, 12 Apr 2021 09:30:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618219823;
-        bh=WaL4dBUXjfT8rASmI+q10qscE5UnuzaJkLoxDaL8/wc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2gscKo63FYh/GFa1acBa/D+w92KL8kgaWb2QhFEBTlrXIOm5vulDcVbkBawwQ7Jk1
-         12zqUGcfb9O1gGGhAcWo8p4k36S4jumhF6BJVIJJ+NwAArGwYoxlGp97GchzvSIU+j
-         1Z6nCyFNEEGyMn5cHBk8Vu1hCDfobzHH6K/ANHBY=
-Date:   Mon, 12 Apr 2021 11:30:21 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     tawahpeggy <tawahpeggy98@gmail.com>
-Cc:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Staging: Remove line to fix checkpatch error
-Message-ID: <YHQTLYM38lZ5yJgg@kroah.com>
-References: <20210411204933.GA3524@peggy-Lenovo-V130-15IKB>
+        id S238178AbhDLJq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:46:28 -0400
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:14118 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240030AbhDLJcI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:32:08 -0400
+Received: from pps.filterd (m0170395.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13C9Sd25017917;
+        Mon, 12 Apr 2021 05:30:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=smtpout1;
+ bh=ZQhy74bNIhyQX3BffEBoeZLI4XEGKyKBJi+4Lmuayqo=;
+ b=ABpMKnI/63VPBgR7txVAvYhGMMEjJFrX8AdwW5cIQ9gozUu0x44S9JksiYOIK0LjfPgs
+ z5GyPKSjIZZcF1HHskPvPUIkjGkKK+C/m/gNpYK2tbNJeqBnIpzfJA2a6mxztzh92/og
+ 1kHyyZqI2fWgQOxEnExWymnEJ21mTwGTyqrs9Z1+LXiXb3DoVuJdzqaoQ5IOTRyxM2po
+ zjv7mssn4E8pJFgM6ndzyqTC4fY9nrupIGczgEJjEVSDnoK1GdhPkVHNKAms9IH/7r1f
+ LFxzTDsWqzsRNuKk9D4M31l6PqpTXoDHJQ4pWZYsPwybWQXGZEFxvL1sNnWHhFsnLRRT gg== 
+Received: from mx0a-00154901.pphosted.com (mx0b-00154901.pphosted.com [67.231.157.37])
+        by mx0b-00154904.pphosted.com with ESMTP id 37u8pqmkmj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 12 Apr 2021 05:30:28 -0400
+Received: from pps.filterd (m0089484.ppops.net [127.0.0.1])
+        by mx0b-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 13C9PI68079040;
+        Mon, 12 Apr 2021 05:30:27 -0400
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2106.outbound.protection.outlook.com [104.47.55.106])
+        by mx0b-00154901.pphosted.com with ESMTP id 37usb9n9r8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Apr 2021 05:30:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hyZ3UFVCx8+OHD7NKyfiBOnlm5LpKRkMfco4YhvX9kuocNHUslsfNDNNy8dw7k3Lfj/1SLkXeukSVZLEIfQf5UyeO/+jQJkDyf+MLh4cd9DdJRTUTt0e3r7G9kz3gs57axhu/ApmmTH8P42LUq1B48zjekpB0bWaXfM/FqAcARaJvYXNUJBouaLQZ4HLKuSeCUsKOQhuHrdIhWOQ+7l2Nwrr6RvD/6/uTPyOP7en1gBOP2TYVlrZejDXYOtXXX3bJDAB2mMvReeRCn5KL2rJ75HE4OtFpBwqiUtMp3gbuAvHcyNl408qADhO11zPkCBTKjWGA9UMADUdvOyqqWBQKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZQhy74bNIhyQX3BffEBoeZLI4XEGKyKBJi+4Lmuayqo=;
+ b=jRQYE5FwKlDbsVln+CAYtOEIyVu9kKQmEE/7Ai9mRHI7dgid8VGH0GGWMGmPpWMNdPabx2tLLjLH/xDJVVktr2kGhNGK5adNrckfaBhvqmD6g96T+Rle5vwWwQVoho6xZD1XvSgWDVV19P/rlyphLP5rzXylHgv4lU8IO9KUbesqN2sq/mR9UTX8wHX/8syreRGynOycSr99l0IVYHtK9KL5lQIk5Yheti5+WD7BSzuT2OMwAsODVyGNJdvtHanS+RTkiBdgXH2AT26Xc55A0zaYyDl+JSb7SSWuAq/wAZpdeWg3HE55wFU3SfOX2Kt8QGKhWLXinKgFYfFwLLhhVw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
+ dkim=pass header.d=dell.com; arc=none
+Received: from SJ0PR19MB4528.namprd19.prod.outlook.com (2603:10b6:a03:28a::6)
+ by BY5PR19MB3940.namprd19.prod.outlook.com (2603:10b6:a03:227::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4020.17; Mon, 12 Apr
+ 2021 09:30:23 +0000
+Received: from SJ0PR19MB4528.namprd19.prod.outlook.com
+ ([fe80::8863:ccf2:c6a:d43a]) by SJ0PR19MB4528.namprd19.prod.outlook.com
+ ([fe80::8863:ccf2:c6a:d43a%9]) with mapi id 15.20.4020.022; Mon, 12 Apr 2021
+ 09:30:23 +0000
+From:   "Yuan, Perry" <Perry.Yuan@dell.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     "pobrn@protonmail.com" <pobrn@protonmail.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>,
+        "oder_chiou@realtek.com" <oder_chiou@realtek.com>,
+        "perex@perex.cz" <perex@perex.cz>,
+        "tiwai@suse.com" <tiwai@suse.com>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "mario.limonciello@outlook.com" <mario.limonciello@outlook.com>,
+        Dell Client Kernel <Dell.Client.Kernel@dell.com>
+Subject: RE: [PATCH v6 2/2] ASoC: rt715:add micmute led state control supports
+Thread-Topic: [PATCH v6 2/2] ASoC: rt715:add micmute led state control
+ supports
+Thread-Index: AQHXKS0KHFZqF0PjHEmTWK9BqS/Ml6qpL1wAgAd6TAA=
+Date:   Mon, 12 Apr 2021 09:30:23 +0000
+Message-ID: <SJ0PR19MB4528CC82A09AE20669BC26D084709@SJ0PR19MB4528.namprd19.prod.outlook.com>
+References: <20210404083159.1620-1-Perry_Yuan@Dell.com>
+ <20210407151534.GE5510@sirena.org.uk>
+In-Reply-To: <20210407151534.GE5510@sirena.org.uk>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Perry_Yuan@Dell.com;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2021-04-12T09:30:19.8010512Z;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=2818970d-d27a-4239-9b5e-e2cd033b40a9;
+ MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=Dell.com;
+x-originating-ip: [163.244.246.214]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cd8d3b5a-cecb-4839-b55b-08d8fd959960
+x-ms-traffictypediagnostic: BY5PR19MB3940:
+x-ld-processed: 945c199a-83a2-4e80-9f8c-5a91be5752dd,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR19MB3940E526FE2F5987B166D12C84709@BY5PR19MB3940.namprd19.prod.outlook.com>
+x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: W2gWm/VRyqWjTbj4gVhToc8Vs8VAy0N1zkOt4dgfmx5qit9p0qp3VaOkulJvdFS4uwJBJSYmH8TdmCZU6XDjgLCxP3F5QZRmgGskb8aIKSQmDwIorZhbufk4atA6nnzYMXRIXo/jKnMyfsN/9XVJ+iB/jWFuDAKg8e99y6DvJ2V6Y9hLazCBwxjwojVOvYzleEiAfymLVqGp9aeYcsJiAcbydhylcmAtWY8dqUanxDDOA09FFd2eWk7bOCoyJi7M5nUxzawAHrRRIHlMFWxY7KKRuELU3Phm6u2WNWdZp9eEEg5VgKRAghQcS3t62hFeKTPr8Yejfg44wpAAhzkNb/U1geqYe+M5vZq83AEL248WP8PZwmU4mzupqOqyZk012TQTwd6aw/ljqDUzxgcMZ+t5wFUUBJYs4slrlR21/FaA04eOYJhgiB/+lhfLLy0GYvBmrNE4AGI8d/5xWzufZz75/xQU8+zt6ci/WG35xUUuh5uZrQSM8+RB8DRjdNKzzU1LYU6av0IiLXv9IU2TffYy5xg/LzTy7FIsuvAOOFo9A30eWEi7X1BB9/j1CuUbH5qZs3G9ssY2sqXlNJkL2b2aHMW3eA5WzCXKfozpxfY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR19MB4528.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(366004)(376002)(346002)(136003)(7696005)(478600001)(66446008)(7416002)(4326008)(8676002)(55016002)(107886003)(38100700002)(66556008)(64756008)(9686003)(2906002)(8936002)(53546011)(33656002)(86362001)(26005)(66476007)(83380400001)(6916009)(5660300002)(71200400001)(52536014)(45080400002)(6506007)(54906003)(316002)(76116006)(186003)(66946007)(786003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SjJiL1M3ZmgvSVI5UlBaS1haVUl0bUJQQjQ5dXo0MVZSWHVYMHNacFE2WkJE?=
+ =?utf-8?B?cURRQitaOVpoTk15ZHMyd0RKdndTdTZoZHFkL01pZVZpcjFuZCtHb0dpdXJJ?=
+ =?utf-8?B?SXh3V3l5MzlOY2ltcUxLMGs2bVEwYlBuVFpqRVFxTkRaVW80NzY1TnF6MzBH?=
+ =?utf-8?B?aVl0R0pNeEQ3ZjFUNkdNSjFzR28zcGdwbE85cGlUQnMzRnpydDVEUnVvcW5a?=
+ =?utf-8?B?cVpDdXgvem9WUThLaENsZUo1MHdHYWVpdUU3allGQzNNVjY0MzdHUGpqRnFX?=
+ =?utf-8?B?Yk04R2tYdEZEeFNXMElpVW1rQisyTjZWQjVjWmVoMHFrRkpuczMvMWdWNFpw?=
+ =?utf-8?B?dU9MaUVPMWxNazhzNis3bFRLdXk1cHlSR3dLdTBCaXB2NE4xcnpLTHFsQ0Jk?=
+ =?utf-8?B?RDUvOElNc2drMDZySHRacjlST0I5bjVVOEY3RWx2Z0tCWTZXck5aMmkzOGg0?=
+ =?utf-8?B?cmtMZC85Qmh5MU1URFI4ZkQyZ1JzemFha3FpZktDeVk4M0xvb0pMRGlWVlNw?=
+ =?utf-8?B?UzUvU0pLY0NSUDVRL3BGbjJCdExzdTdXMFBkYTFSbTRsYzd4Y2NYYVlHK2FM?=
+ =?utf-8?B?blhVbzZTbHVKRGNjRjJKSlRpcnJMQVpaaG05Y3lEVkFzem5iTjh6ei9YZ2RI?=
+ =?utf-8?B?dHFtVXhuYTNrM0tYMGR6bnlvNk4yUFRtMWQ4QWFwR25ZL3E0WEdNTUoxaFNo?=
+ =?utf-8?B?MmxtdllzYVBGR1Fnc2w1aGxpUE9xN2pGdEMyN0ZzdHF5K0dud3BrM2tEOGFF?=
+ =?utf-8?B?L2JSQnFyUzFzTmViVG1xZFRmbkVCU1diT0tRamdYYVBCV2pwQzRqK0xnUDcv?=
+ =?utf-8?B?Q0tJUmkyMjFQSU11blZqallNZkIzNDR0VWtkV1lzN2N2aVJEZjRxVnUyRzky?=
+ =?utf-8?B?STVhT2lGa05LZXhybm1BZmFDcFBEUWd1RjF3RUNodVFMYVlpNGVGQ3dpN3Zx?=
+ =?utf-8?B?SzZxWnBURVVwR3N4K3R6aERBTU1YRVVYYS9OMTRoYlQzRDNaWUYvQytWbnBI?=
+ =?utf-8?B?ZTFuNmRScGVzb2tWOC9wZ3hoamRCMHY4SGlIWjBQMlYvWHpPeCtFSFdXeWFG?=
+ =?utf-8?B?WXEvUDY0NC9zaG16SE1LOG5LSzVxUThTbm1DcjNKaG1rSDJFcTgrNThRV3Zl?=
+ =?utf-8?B?dTJxaWVqckhmWWpZMS9sNWxQUXFUSnA3RVJWb2Q3aENNWVBVendZRVVIYmx3?=
+ =?utf-8?B?MVFTbGlaMEZtcUZCTzMydzVPRkdNcDNrWDNVR1RLOWFOZTlra3dhaE1uOXkx?=
+ =?utf-8?B?cEhLc0F3K09HNUVqTTlXTGJOdWFIOXFoVW5iVzlPSmdnQnJSS3RSQWZhclhJ?=
+ =?utf-8?B?NTEweThaRHpMVXMwU29UdDlZMW4vT3pxZW00YTlaVEdGLzBBQW1RYk96WDA1?=
+ =?utf-8?B?dWhSU1ZlZDIyYnpLZTFXUGI2REc0VWU4UjNwc2taVmRPT1RYUWo3Z2xkNHE1?=
+ =?utf-8?B?L24rZFlDWWRkZjdsWGp4ZVVtMjJ5Wi9XbTZ3ZHRrY1doL0VqaDFwbXRQWUpG?=
+ =?utf-8?B?MTd2K0lVUVRCdWx6SnUxY1RjNm1jSHRsbnRzVVRRRy9rWTlBbkZ5VzNGWGdS?=
+ =?utf-8?B?cUZJdkN4cWNuZWt1Sy91NU8wVm03d2NPRi9kQTZHa210Q1M2aU5Md0JOWXA3?=
+ =?utf-8?B?Wm1WbGcxN28vZk1TcEI3dkpBUU5FbFJsbE5YMHVURGk3TnF1NmxJS1ZTZ282?=
+ =?utf-8?B?Y2syTWdDVXRReGdMRS82YXBCUWdYazNoekRoUExQbTNQOXVQSGJ6S2x6V0Na?=
+ =?utf-8?Q?6k+1sVhbzyT+5Wix8cpYhjFBkCQOWbnSswNkACb?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210411204933.GA3524@peggy-Lenovo-V130-15IKB>
+X-OriginatorOrg: Dell.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR19MB4528.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cd8d3b5a-cecb-4839-b55b-08d8fd959960
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Apr 2021 09:30:23.7295
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: cNwu8k9tJth/4rrwfrzpAbTHQXfHpmNHI4y4AHy8P44RnCsiMlhh3TUzcrr2mKHHhCjdlpmcOqkm28T5HQQEUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR19MB3940
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-04-12_07:2021-04-12,2021-04-12 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 suspectscore=0 bulkscore=0 malwarescore=0
+ lowpriorityscore=0 impostorscore=0 spamscore=0 adultscore=0 clxscore=1011
+ mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2104120062
+X-Proofpoint-ORIG-GUID: Bsyj4TsRPPnTT24C62v9wxZy28NzA3kk
+X-Proofpoint-GUID: Bsyj4TsRPPnTT24C62v9wxZy28NzA3kk
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0 mlxscore=0
+ spamscore=0 phishscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2104120062
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 04:49:38PM -0400, tawahpeggy wrote:
-> remove one empty line.CHECK: Please don't use multiple blank lines
-> 
-> Signed-off-by: tawahpeggy <tawahpeggy98@gmail.com>
-> 
-> ---
->  drivers/staging/comedi/comedi_pcmcia.mod.c | 1 -
->  1 file changed, 0 insertion(+), 1 deletion(-)
->  create mode 100644 drivers/staging/comedi/comedi_pcmcia.mod.c
-> 
-> diff --git a/drivers/staging/comedi/comedi_pcmcia.mod.c b/drivers/staging/comedi/comedi_pcmcia.mod.c
-> index 0904b8765afs96..3984db1a39c8
-> --- /dev/null
-> +++ b/drivers/staging/comedi/comedi_pcmcia.mod.c
-> @@ -0,0 +1,31 @@
-> #include <linux/module.h>
-> #define INCLUDE_VERMAGIC
-> #include <linux/build-salt.h>
-> #include <linux/vermagic.h>
-> #include <linux/compiler.h>
-> 
-> BUILD_SALT;
-> 
-> MODULE_INFO(vermagic, VERMAGIC_STRING);
-> MODULE_INFO(name, KBUILD_MODNAME);
-> 
-> __visible struct module __this_module
-> __section(".gnu.linkonce.this_module") = {
-> 	.name = KBUILD_MODNAME,
-> 	.init = init_module,
-> #ifdef CONFIG_MODULE_UNLOAD
-> 	.exit = cleanup_module,
-> #endif
-> 	.arch = MODULE_ARCH_INIT,
-> };
-> 
-> #ifdef CONFIG_RETPOLINE
-> MODULE_INFO(retpoline, "Y");
-> #endif
-> 
-> MODULE_INFO(staging, "Y");
-> 
-> MODULE_INFO(depends, "pcmcia,comedi");
-> 
-> -  
-> MODULE_INFO(srcversion, "ED971F2E01020DFA2B04486");
-> -- 
-> 2.17.1
-
-Hi,
-
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
-
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- Your patch did many different things all at once, making it difficult
-  to review.  All Linux kernel patches need to only do one thing at a
-  time.  If you need to do multiple things (such as clean up all coding
-  style issues in a file/driver), do it in a sequence of patches, each
-  one doing only one thing.  This will make it easier to review the
-  patches to ensure that they are correct, and to help alleviate any
-  merge issues that larger patches can cause.
-
-- You did not specify a description of why the patch is needed, or
-  possibly, any description at all, in the email body.  Please read the
-  section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what is needed in order to
-  properly describe the change.
-
-- You did not write a descriptive Subject: for the patch, allowing Greg,
-  and everyone else, to know what this patch is all about.  Please read
-  the section entitled "The canonical patch format" in the kernel file,
-  Documentation/SubmittingPatches for what a proper Subject: line should
-  look like.
-
-- It looks like you did not use your "real" name for the patch on either
-  the Signed-off-by: line, or the From: line (both of which have to
-  match).  Please read the kernel file, Documentation/SubmittingPatches
-  for how to do this correctly.
-
-- Your patch does not match the description at all.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+SGkgTWFyazoNCg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IE1hcmsg
+QnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4NCj4gU2VudDogMjAyMeW5tDTmnIg35pelIDIzOjE2
+DQo+IFRvOiBZdWFuLCBQZXJyeQ0KPiBDYzogcG9icm5AcHJvdG9ubWFpbC5jb207IHBpZXJyZS1s
+b3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbTsNCj4gb2Rlcl9jaGlvdUByZWFsdGVrLmNvbTsg
+cGVyZXhAcGVyZXguY3o7IHRpd2FpQHN1c2UuY29tOw0KPiBoZGVnb2VkZUByZWRoYXQuY29tOyBt
+Z3Jvc3NAbGludXguaW50ZWwuY29tOyBMaW1vbmNpZWxsbywgTWFyaW87DQo+IGxnaXJkd29vZEBn
+bWFpbC5jb207IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgbGludXgtDQo+IGtlcm5lbEB2
+Z2VyLmtlcm5lbC5vcmc7IHBsYXRmb3JtLWRyaXZlci14ODZAdmdlci5rZXJuZWwub3JnOw0KPiBt
+YXJpby5saW1vbmNpZWxsb0BvdXRsb29rLmNvbTsgRGVsbCBDbGllbnQgS2VybmVsDQo+IFN1Ympl
+Y3Q6IFJlOiBbUEFUQ0ggdjYgMi8yXSBBU29DOiBydDcxNTphZGQgbWljbXV0ZSBsZWQgc3RhdGUg
+Y29udHJvbA0KPiBzdXBwb3J0cw0KPiANCj4gT24gU3VuLCBBcHIgMDQsIDIwMjEgYXQgMDQ6MzE6
+NTlQTSArMDgwMCwgUGVycnkgWXVhbiB3cm90ZToNCj4gDQo+ID4gK3N0YXRpYyBib29sIG1pY211
+dGVfbGVkX3NldDsNCj4gPiArc3RhdGljIGludCAgZG1pX21hdGNoZWQoY29uc3Qgc3RydWN0IGRt
+aV9zeXN0ZW1faWQgKmRtaSkgew0KPiA+ICsJbWljbXV0ZV9sZWRfc2V0ID0gMTsNCj4gPiArCXJl
+dHVybiAxOw0KPiA+ICt9DQo+IA0KPiBUaGlzIGlzbid0IGhvdyB3ZSB1c3VhbGx5IHJlY29yZCBE
+TUkgcXVpcmtzLCB1c3VhbGx5IHdlJ2QgcXVlcnkgb25jZSBvbiBwcm9iZQ0KPiBhbmQgc3RvcmUg
+dGhlIGRhdGEgaW4gdGhlIGRyaXZlciBkYXRhIHN0cnVjdCAtIHNlZSBvdGhlciB1c2VycyBmb3Ig
+ZXhhbXBsZXMuDQo+IA0KPiA+IEBAIC0zNTgsNiArMzg4LDcgQEAgc3RhdGljIGludCBydDcxNV9z
+ZGNhX3B1dF92b2xzdyhzdHJ1Y3Qgc25kX2tjb250cm9sDQo+ICprY29udHJvbCwNCj4gPiAgCXVu
+c2lnbmVkIGludCBtYXNrID0gKDEgPDwgZmxzKG1heCkpIC0gMTsNCj4gDQo+ID4gKwlkbWlfY2hl
+Y2tfc3lzdGVtKG1pY211dGVfbGVkX2RtaV90YWJsZSk7DQo+ID4gKwlpZiAoaW52ZXJ0ICYmIG1p
+Y211dGVfbGVkX3NldCkgew0KPiANCj4gVGhpcyBjaGVjayBmb3IgaW52ZXJ0IGlzIG9kZCBhbmQg
+Y291bGQgcHJvYmFibHkgdXNlIGEgY29tbWVudC4NCg0KVGhhbmtzIGZvciB5b3VyIHJldmlldy4N
+CkkgYWRkIG9uZSBzaG9ydCBjb21tZW50cyBmb3IgdGhlIHJlYXNvbiBpbiBWNyBwYXRjaC4NCkkg
+dHJpZWQgbm90IHRvIHVzZSB0aGUgaW52ZXJ0ICwgdGhlIExFRCBzdGF0ZSBhbmQgbXV0ZSBzdGF0
+ZSB3aWxsIGJlIG5vdCBtYXRjaGluZw0KU28gaXQgaGFzIHRvIHVzZSB0aGUgaW52ZXJ0IHRvIGNo
+ZWNrIGlmIHRoZSBtdXRlIHN0YXRlIGNoYW5nZWQuIFRoZW4gbm90aWZpeSB0aGUgbGVkIHRyaWdn
+ZXIgZHJpdmVyIHRvIHNldCB0aGUgbmV3IGxlZCBzdGF0ZS4NCg0KUGVycnkNCg==
