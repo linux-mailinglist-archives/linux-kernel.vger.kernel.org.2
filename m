@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E20335C1DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FEA35C1DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240726AbhDLJfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:35:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35772 "EHLO mail.kernel.org"
+        id S240681AbhDLJez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:34:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240235AbhDLJKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240238AbhDLJKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 12 Apr 2021 05:10:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 275256138B;
-        Mon, 12 Apr 2021 09:04:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E381061386;
+        Mon, 12 Apr 2021 09:04:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218293;
-        bh=XUXlz7XLflIylKMKSTVByxQ2kVi6HZ6HjlSFrfkaIHs=;
+        s=korg; t=1618218296;
+        bh=8W7i6D/xr8S/QPe2JElxfNaYlPRN3nB1NO+xxOAzBX0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wnv0HDSveDopFC1RZmaPqGffFggyz0QwtpTuELX++TIEA/+ZJHOMetRW4uUwic9Wb
-         Ve/dadt35tTS7x+GAV/dovlyMhQydQfJIrzW08LsF+Zl8aswqQbsGjdcKMPAvRyFsJ
-         p2f6Ksof1f/UnI/wxc9eLNwJUJKz+cLm7oL15ixU=
+        b=QD+j7ZDTKHVUtXU4STpPAeLRuPQpPVqXkB2XZBUVxnesq2J9B22y/I2gYGMd5bUUk
+         bi5pLF9HWu0e/7vVPYzONNclV5uI7BN5oqzgF/vqugyFTqKMuGUzW11/oC9SHkMy9i
+         0Pbi3XW1J99cPj1kWTTm/e/KOzKfwjyWb6SNFC9s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Dickman <maord@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Roi Dayan <roid@nvidia.com>,
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Eran Ben Elisha <eranbe@nvidia.com>,
         Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 144/210] net/mlx5: Delete auxiliary bus driver eth-rep first
-Date:   Mon, 12 Apr 2021 10:40:49 +0200
-Message-Id: <20210412084020.793562538@linuxfoundation.org>
+Subject: [PATCH 5.11 145/210] net/mlx5e: Fix ethtool indication of connector type
+Date:   Mon, 12 Apr 2021 10:40:50 +0200
+Message-Id: <20210412084020.823825909@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -42,46 +41,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Dickman <maord@nvidia.com>
+From: Aya Levin <ayal@nvidia.com>
 
-[ Upstream commit 1f90aedfb496ccccf862c7b7c0889af20c2fc61a ]
+[ Upstream commit 3211434dfe7a66fcf55e43961ea524b78336c04c ]
 
-Delete auxiliary bus drivers flow deletes the eth driver
-first and then the eth-reps driver but eth-reps devices resources
-are depend on eth device.
+Use connector_type read from PTYS register when it's valid, based on
+corresponding capability bit.
 
-Fixed by changing the delete order of auxiliary bus drivers to delete
-the eth-rep driver first and after it the eth driver.
-
-Fixes: 601c10c89cbb ("net/mlx5: Delete custom device management logic")
-Signed-off-by: Maor Dickman <maord@nvidia.com>
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Roi Dayan <roid@nvidia.com>
+Fixes: 5b4793f81745 ("net/mlx5e: Add support for reading connector type from PTYS")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Eran Ben Elisha <eranbe@nvidia.com>
 Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/dev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  | 22 +++++++++----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/dev.c b/drivers/net/ethernet/mellanox/mlx5/core/dev.c
-index b051417ede67..9153c9bda96f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/dev.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/dev.c
-@@ -191,12 +191,12 @@ static bool is_ib_supported(struct mlx5_core_dev *dev)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+index c9d01e705ab2..d3d532fdf04e 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_ethtool.c
+@@ -747,11 +747,11 @@ static int get_fec_supported_advertised(struct mlx5_core_dev *dev,
+ 	return 0;
  }
  
- enum {
--	MLX5_INTERFACE_PROTOCOL_ETH_REP,
- 	MLX5_INTERFACE_PROTOCOL_ETH,
-+	MLX5_INTERFACE_PROTOCOL_ETH_REP,
+-static void ptys2ethtool_supported_advertised_port(struct ethtool_link_ksettings *link_ksettings,
+-						   u32 eth_proto_cap,
+-						   u8 connector_type, bool ext)
++static void ptys2ethtool_supported_advertised_port(struct mlx5_core_dev *mdev,
++						   struct ethtool_link_ksettings *link_ksettings,
++						   u32 eth_proto_cap, u8 connector_type)
+ {
+-	if ((!connector_type && !ext) || connector_type >= MLX5E_CONNECTOR_TYPE_NUMBER) {
++	if (!MLX5_CAP_PCAM_FEATURE(mdev, ptys_connector_type)) {
+ 		if (eth_proto_cap & (MLX5E_PROT_MASK(MLX5E_10GBASE_CR)
+ 				   | MLX5E_PROT_MASK(MLX5E_10GBASE_SR)
+ 				   | MLX5E_PROT_MASK(MLX5E_40GBASE_CR4)
+@@ -887,9 +887,9 @@ static int ptys2connector_type[MLX5E_CONNECTOR_TYPE_NUMBER] = {
+ 		[MLX5E_PORT_OTHER]              = PORT_OTHER,
+ 	};
  
-+	MLX5_INTERFACE_PROTOCOL_IB,
- 	MLX5_INTERFACE_PROTOCOL_IB_REP,
- 	MLX5_INTERFACE_PROTOCOL_MPIB,
--	MLX5_INTERFACE_PROTOCOL_IB,
+-static u8 get_connector_port(u32 eth_proto, u8 connector_type, bool ext)
++static u8 get_connector_port(struct mlx5_core_dev *mdev, u32 eth_proto, u8 connector_type)
+ {
+-	if ((connector_type || ext) && connector_type < MLX5E_CONNECTOR_TYPE_NUMBER)
++	if (MLX5_CAP_PCAM_FEATURE(mdev, ptys_connector_type))
+ 		return ptys2connector_type[connector_type];
  
- 	MLX5_INTERFACE_PROTOCOL_VNET,
- };
+ 	if (eth_proto &
+@@ -990,11 +990,11 @@ int mlx5e_ethtool_get_link_ksettings(struct mlx5e_priv *priv,
+ 			 data_rate_oper, link_ksettings);
+ 
+ 	eth_proto_oper = eth_proto_oper ? eth_proto_oper : eth_proto_cap;
+-
+-	link_ksettings->base.port = get_connector_port(eth_proto_oper,
+-						       connector_type, ext);
+-	ptys2ethtool_supported_advertised_port(link_ksettings, eth_proto_admin,
+-					       connector_type, ext);
++	connector_type = connector_type < MLX5E_CONNECTOR_TYPE_NUMBER ?
++			 connector_type : MLX5E_PORT_UNKNOWN;
++	link_ksettings->base.port = get_connector_port(mdev, eth_proto_oper, connector_type);
++	ptys2ethtool_supported_advertised_port(mdev, link_ksettings, eth_proto_admin,
++					       connector_type);
+ 	get_lp_advertising(mdev, eth_proto_lp, link_ksettings);
+ 
+ 	if (an_status == MLX5_AN_COMPLETE)
 -- 
 2.30.2
 
