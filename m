@@ -2,133 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F00D35D2BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DC535D2C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343550AbhDLVwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 17:52:54 -0400
-Received: from mga07.intel.com ([134.134.136.100]:39873 "EHLO mga07.intel.com"
+        id S1343548AbhDLVx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 17:53:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238235AbhDLVwt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 17:52:49 -0400
-IronPort-SDR: tVVVDg3BtGV/RqLK7k90l7HA+CvLRUhB6pTXKhIZJogHfbR9CUMOeMLtJkAiZ8LXoi9tOQ6H4h
- NK/v6Voge4pw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="258258469"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="258258469"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 14:52:30 -0700
-IronPort-SDR: Ugajkcg4kpyTgldYpmDYHk1wsdq5uz1gdmgJUT5RCDufOQ7/9YWsf2RVDDq2Rorp/Qk2GWDif4
- bHd0BlTbXuog==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="532037371"
-Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.209.61.192])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 14:52:29 -0700
-Date:   Mon, 12 Apr 2021 14:52:29 -0700
-From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
-To:     kerneljasonxing@gmail.com
-Cc:     anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, hawk@kernel.org,
-        john.fastabend@gmail.com, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, kpsingh@kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        Jason Xing <xingwanli@kuaishou.com>,
-        Shujin Li <lishujin@kuaishou.com>
-Subject: Re: [PATCH] i40e: fix the panic when running bpf in xdpdrv mode
-Message-ID: <20210412145229.00003e5d@intel.com>
-In-Reply-To: <20210412065759.2907-1-kerneljasonxing@gmail.com>
-References: <20210412065759.2907-1-kerneljasonxing@gmail.com>
-X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+        id S238235AbhDLVxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 17:53:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A27E61220;
+        Mon, 12 Apr 2021 21:53:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618264415;
+        bh=ZIZgJKwfVBJrstNIymJVrVmHSmffZAW87wBEKIznNVM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=SIfwuGOcMaV7JjISjp4xsAw5n0OfXXOjOidUoy4hl0QT7AJuHvkZuWk1fFOvbblvq
+         7JsW3/nQxgUCNEDKaDmHtqHWvVr9Sx0ixIk5DdIHG1lN0XhzsJvbFlv0ZDg3YFyLPM
+         /Z1SQdmxr3H5SyR2h7uPJ6Lv6yc5R/mqzTjvIlfggOV69qr1VeGTbSXrlSeeagHXSw
+         A2OmkFEyEgfbEaO8tsebR6Gkr7Dglt2YXWoYvzROEyBipx6N8UOuEQ4jCbS/QwkrI6
+         XsI8fIZULwxO0ENOlCUbSw3Dq7RtK7/za0z5tKLYoEg2u7/2G0d9D83u+dQheRNtNE
+         9NSNPgt9ebu1w==
+Date:   Mon, 12 Apr 2021 16:53:33 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     bhelgaas@google.com, lorenzo.pieralisi@arm.com,
+        amurray@thegoodpenguin.co.uk, robh@kernel.org,
+        jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+        Krishna Thota <kthota@nvidia.com>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Matthew Wilcox <willy@infradead.org>
+Subject: Re: Device driver location for the PCIe root port's DMA engine
+Message-ID: <20210412215333.GA2144302@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d840687e-bfd7-71b4-e8f0-37c971d3d414@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kerneljasonxing@gmail.com wrote:
+[+cc Matthew for portdrv comment]
 
-> From: Jason Xing <xingwanli@kuaishou.com>
+On Mon, Apr 12, 2021 at 10:31:02PM +0530, Vidya Sagar wrote:
+> Hi
+> I'm starting this mail to seek advice on the best approach to be taken to
+> add support for the driver of the PCIe root port's DMA engine.
+> To give some background, Tegra194's PCIe IPs are dual-mode PCIe IPs i.e.
+> they work either in the root port mode or in the endpoint mode based on the
+> boot time configuration.
+> Since the PCIe hardware IP as such is the same for both (RP and EP) modes,
+> the DMA engine sub-system of the PCIe IP is also made available to both
+> modes of operation.
+> Typically, the DMA engine is seen only in the endpoint mode, and that DMA
+> engine’s configuration registers are made available to the host through one
+> of its BARs.
+> In the situation that we have here, where there is a DMA engine present as
+> part of the root port, the DMA engine isn’t a typical general-purpose DMA
+> engine in the sense that it can’t have both source and destination addresses
+> targeting external memory addresses.
+> RP’s DMA engine, while doing a write operation,
+> would always fetch data (i.e. source) from local memory and write it to the
+> remote memory over PCIe link (i.e. destination would be the BAR of an
+> endpoint)
+> whereas while doing a read operation,
+> would always fetch/read data (i.e. source) from a remote memory over the
+> PCIe link and write it to the local memory.
 > 
-> Re: [PATCH] i40e: fix the panic when running bpf in xdpdrv mode
-
-Please use netdev style subject lines when patching net kernel to
-indicate which kernel tree this is targeted at, "net" or "net-next"
-[PATCH net v2] i40e: ...
-
-> Fix this by add more rules to calculate the value of @rss_size_max which
-
-Fix this panic by adding ...
-
-> could be used in allocating the queues when bpf is loaded, which, however,
-> could cause the failure and then triger the NULL pointer of vsi->rx_rings.
-
-trigger
-
-> Prio to this fix, the machine doesn't care about how many cpus are online
-> and then allocates 256 queues on the machine with 32 cpus online
-> actually.
+> I see that there are at least two ways we can have a driver for this DMA
+> engine.
+> a) DMA engine driver as one of the port service drivers
+> 	Since the DMA engine is a part of the root port hardware itself (although
+> it is not part of the standard capabilities of the root port), it is one of
+> the options to have the driver for the DMA engine go as one of the port
+> service drivers (along with AER, PME, hot-plug, etc...). Based on Vendor-ID
+> and Device-ID matching runtime, either it gets binded/enabled (like in the
+> case of Tegra194) or it doesn't.
+> b) DMA engine driver as a platform driver
+> 	The DMA engine hardware can be described as a sub-node under the PCIe
+> controller's node in the device tree and a separate platform driver can be
+> written to work with it.
 > 
-> Once the load of bpf begins, the log will go like this "failed to get
-> tracking for 256 queues for VSI 0 err -12" and this "setup of MAIN VSI
-> failed".
-> 
-> Thus, I attach the key information of the crash-log here.
-> 
-> BUG: unable to handle kernel NULL pointer dereference at
-> 0000000000000000
-> RIP: 0010:i40e_xdp+0xdd/0x1b0 [i40e]
-> Call Trace:
-> [2160294.717292]  ? i40e_reconfig_rss_queues+0x170/0x170 [i40e]
-> [2160294.717666]  dev_xdp_install+0x4f/0x70
-> [2160294.718036]  dev_change_xdp_fd+0x11f/0x230
-> [2160294.718380]  ? dev_disable_lro+0xe0/0xe0
-> [2160294.718705]  do_setlink+0xac7/0xe70
-> [2160294.719035]  ? __nla_parse+0xed/0x120
-> [2160294.719365]  rtnl_newlink+0x73b/0x860
-> 
-> Signed-off-by: Jason Xing <xingwanli@kuaishou.com>
-> Signed-off-by: Shujin Li <lishujin@kuaishou.com>
+> I’m inclined to have the DMA engine driver as a port service driver as it
+> makes it cleaner and also in line with the design philosophy (the way I
+> understood it) of the port service drivers.
+> Please let me know your thoughts on this.
 
-if you send to "net" - I suspect you should supply a Fixes: line, above
-the sign-offs.
-In this case however, this bug has been here since the beginning of the
-driver, but the patch will easily apply, so please supply
+Personally I'm not a fan of the port service driver model.  It creates
+additional struct devices for things that are not separate devices.
+And it creates a parallel hierarchy in /sys/bus/pci_express/devices/
+that I think does not accurately model the hardware.
 
-Fixes: 41c445ff0f48 ("i40e: main driver core")
+The existing port services (AER, DPC, hotplug, etc) are things the
+device advertises via the PCI Capabilities defined by the generic PCIe
+spec, and in my opinion the support for them should be directly part
+of the PCI core and activated when the relevant Capability is present.
 
-> ---
->  drivers/net/ethernet/intel/i40e/i40e_main.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> index 521ea9d..4e9a247 100644
-> --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-> +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-> @@ -11867,6 +11867,7 @@ static int i40e_sw_init(struct i40e_pf *pf)
->  {
->  	int err = 0;
->  	int size;
-> +	u16 pow;
->  
->  	/* Set default capability flags */
->  	pf->flags = I40E_FLAG_RX_CSUM_ENABLED |
-> @@ -11885,6 +11886,11 @@ static int i40e_sw_init(struct i40e_pf *pf)
->  	pf->rss_table_size = pf->hw.func_caps.rss_table_size;
->  	pf->rss_size_max = min_t(int, pf->rss_size_max,
->  				 pf->hw.func_caps.num_tx_qp);
-> +
-> +	/* find the next higher power-of-2 of num cpus */
-> +	pow = roundup_pow_of_two(num_online_cpus());
-> +	pf->rss_size_max = min_t(int, pf->rss_size_max, pow);
-> +
+The DMA engine is different -- this is device-specific functionality
+and I think the obvious way to discover it and bind a driver to it is
+via the PCI Vendor and Device ID.
 
-The fix itself is fine, and is correct as far as I can tell, thank you
-for sending the patch!
+This *is* complicated by the fact that you can't just use
+pci_register_driver() to claim functionality implemented in Root Ports
+or Switch Ports because portdrv binds to them before you have a
+chance.  I think that's a defect in the portdrv design.  The usual
+workaround is to use pci_get_device(), which has its own issues (it's
+ugly, it's outside the normal driver binding model, doesn't work
+nicely with hotplug or udev, doesn't coordinate with other drivers
+using the same device, etc).  There are many examples of this in the
+EDAC code.
 
->  	if (pf->hw.func_caps.rss) {
->  		pf->flags |= I40E_FLAG_RSS_ENABLED;
->  		pf->alloc_rss_size = min_t(int, pf->rss_size_max,
-
-
+Bjorn
