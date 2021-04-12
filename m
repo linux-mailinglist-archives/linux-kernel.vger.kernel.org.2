@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE6335C772
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 210A335C767
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240927AbhDLNUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:20:33 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:36704 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239497AbhDLNU1 (ORCPT
+        id S239292AbhDLNUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:20:22 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:41628 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237579AbhDLNUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:20:27 -0400
-Received: by mail-ot1-f51.google.com with SMTP id i16-20020a9d68d00000b0290286edfdfe9eso2111500oto.3;
-        Mon, 12 Apr 2021 06:20:08 -0700 (PDT)
+        Mon, 12 Apr 2021 09:20:20 -0400
+Received: by mail-ot1-f49.google.com with SMTP id v19-20020a0568300913b029028423b78c2dso4126786ott.8;
+        Mon, 12 Apr 2021 06:20:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=dYxhQAY8YlcxGKlNHGF/hP5NWDkLdUTva1d6cdSahEY=;
-        b=RyW1OLcORFyk5k4H5bBL4st9cPLVyFPMSEpFymWn8g77I0faz1cZRba8ztasKBgqge
-         JR1hgcES5I4kHvZxtAjfW5Pn6Gdo8lQwqIThub37s4NCB5RUqrnSW21FOqQ3B+8kRfQF
-         c3cjbDy1L0d3wLH5KFn+fhELMuuXXwRNo/Inx84JTPdMZH47kSwlge26hTX9CbuppavD
-         zsZqzgO1nvIfY0rDVAwLuzHNCzDQhQJWUnR9jlTJtjO7MF89utsipO5J2a2TfuzvQNsD
-         pLm8KaTbtc4Wm4LkRV3aNDJSFtd8sCfD79UkRjqRHzQTqBPRnVdxKcu61zuMLMM2zWE8
-         ab4g==
-X-Gm-Message-State: AOAM532sCPCyyOoHTT4c9wh5/OMN7EugYAfy5gIq68mybTs1WFbFAswk
-        LxT94wUJqLqidpGy6GQK5A==
-X-Google-Smtp-Source: ABdhPJxhxoL8CK12YPgvZCZL8xP6K9HKbNKbkGZlmCfJuRRPe+eQJYpjJcVShovdD/GLmYsW+QKVOQ==
-X-Received: by 2002:a9d:6a91:: with SMTP id l17mr23666160otq.297.1618233608236;
-        Mon, 12 Apr 2021 06:20:08 -0700 (PDT)
+        bh=SWhRtPYE2Qb9obCTbikr+1CM4i2vpSQ+VMTPtfvzZNs=;
+        b=LPGLJ476UMDbOBZqMcjuGhuPJOat9HWa86OEEfOY86GAPDFSavu6IPbiP/u4IsSfwA
+         ruxTTAoTf3ii73qbSmU7Up6sgrpDsnQUovJydAwd6AyEsb3tJCbG/6l2AEc9WB9oGHww
+         bEjpORZ6JD68t6gWhs5Be3Scaj7wCquPy3yDUZwAutZYBGYRP0WmeuNEeOTRlU28Esvi
+         jcodnzZtKuqbh/bM2zhQr6RXUOzYfwXe11QptTpyW5Gvq65Vmhux/RZ2M/fsfIFGmmWr
+         AHfguwsevmSR3S1TYp2MQBDiuGCElProA9C7zXgLxMdXUYBOsnBT4+kmYGqs7icTdIze
+         cmHg==
+X-Gm-Message-State: AOAM5331hctrDbTOjV9KKT+W+eIzST1tvAAcOGXlnAlvu2wQs+g5k7PC
+        BmG2nC/IvhOsR+Rk7RFLKw==
+X-Google-Smtp-Source: ABdhPJyePONeCKFc6ooyOa218SIoc9sXLaUQnTNuMGmsRUIyZTDc2dB/Kn7vT3B7XVOUX3TBOjAl+Q==
+X-Received: by 2002:a9d:d0d:: with SMTP id 13mr22895544oti.134.1618233602092;
+        Mon, 12 Apr 2021 06:20:02 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x13sm56421otg.57.2021.04.12.06.20.06
+        by smtp.gmail.com with ESMTPSA id o23sm2706131otp.45.2021.04.12.06.20.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 06:20:07 -0700 (PDT)
-Received: (nullmailer pid 3757976 invoked by uid 1000);
+        Mon, 12 Apr 2021 06:20:01 -0700 (PDT)
+Received: (nullmailer pid 3757971 invoked by uid 1000);
         Mon, 12 Apr 2021 13:20:00 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Giulio Benetti <giulio.benetti@benettiengineering.com>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Henrik Rydberg <rydberg@bitmath.org>,
-        =?utf-8?q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-In-Reply-To: <20210411114804.151754-3-giulio.benetti@benettiengineering.com>
-References: <20210408202137.GA1890401@robh.at.kernel.org> <20210411114804.151754-1-giulio.benetti@benettiengineering.com> <20210411114804.151754-3-giulio.benetti@benettiengineering.com>
-Subject: Re: [PATCH v5 2/3] dt-bindings: touchscreen: Add HY46XX bindings
+To:     Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
+Cc:     git@xilinx.com, linux-kernel@vger.kernel.org,
+        michal.simek@xilinx.com, kuba@kernel.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        netdev@vger.kernel.org, davem@davemloft.net, vkoul@kernel.org
+In-Reply-To: <1617992002-38028-2-git-send-email-radhey.shyam.pandey@xilinx.com>
+References: <1617992002-38028-1-git-send-email-radhey.shyam.pandey@xilinx.com> <1617992002-38028-2-git-send-email-radhey.shyam.pandey@xilinx.com>
+Subject: Re: [RFC PATCH 1/3] dt-bindings: net: xilinx_axienet: convert bindings document to yaml
 Date:   Mon, 12 Apr 2021 08:20:00 -0500
-Message-Id: <1618233600.204061.3757975.nullmailer@robh.at.kernel.org>
+Message-Id: <1618233600.182122.3757970.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Apr 2021 13:48:03 +0200, Giulio Benetti wrote:
-> This adds device tree bindings for the Hycon HY46XX touchscreen series.
+On Fri, 09 Apr 2021 23:43:20 +0530, Radhey Shyam Pandey wrote:
+> Convert the bindings document for Xilinx AXI Ethernet Subsystem
+> from txt to yaml. No changes to existing binding description.
 > 
-> Signed-off-by: Giulio Benetti <giulio.benetti@benettiengineering.com>
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@xilinx.com>
 > ---
-> V1->V2:
-> As suggested by Rob Herring:
-> * fixed $id: address
-> * added "hycon," in front of every custom property
-> * changed all possible property to boolean type
-> * removed proximity-sensor-switch property since it's not handled in driver
-> V2->V3:
-> As suggested by Jonathan Neuschäfer:
-> * fixed some typo
-> * fixed description indentation
-> * improved boolean properties descriptions
-> * improved hycon,report-speed description
-> V3->V4:
-> * fixed binding compatible string in example as suggested by Jonathan Neuschäfer
-> V4->V5:
-> As suggested by Rob Herring:
-> * drop hycon- prefix from compatible
-> * use Hertz unit suffix for hycon,report-speed instead of u32
-> * set hycon,report-speed minimum to 1Hz, 0Hz make controller to do nothing
-> * change hycon,power-noise-enable property name to hycon,noise-filter-enable
-> * improve hycon,filter-data property description
-> * use generic touchscreen node name in example
+> Pending: Fix below remaining dt_binding_check warning:
+> 
+> ethernet@40c00000: 'device_type' does not match any of
+> the regexes: 'pinctrl-[0-9]+
 > ---
->  .../input/touchscreen/hycon,hy46xx.yaml       | 119 ++++++++++++++++++
->  MAINTAINERS                                   |   6 +
->  2 files changed, 125 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+>  .../devicetree/bindings/net/xilinx_axienet.txt     |  80 -----------
+>  .../devicetree/bindings/net/xilinx_axienet.yaml    | 147 +++++++++++++++++++++
+>  MAINTAINERS                                        |   1 +
+>  3 files changed, 148 insertions(+), 80 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/net/xilinx_axienet.txt
+>  create mode 100644 Documentation/devicetree/bindings/net/xilinx_axienet.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
@@ -91,20 +76,10 @@ on your patch (DT_CHECKER_FLAGS is new in v5.13):
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml: properties:hycon,report-speed: 'oneOf' conditional failed, one must be fixed:
-	'type' is a required property
-	Additional properties are not allowed ('minimum', 'maximum' were unexpected)
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml: properties:hycon,report-speed: 'oneOf' conditional failed, one must be fixed:
-		'enum' is a required property
-		'const' is a required property
-	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml: properties:hycon,report-speed: 'oneOf' conditional failed, one must be fixed:
-		'$ref' is a required property
-		'allOf' is a required property
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml: ignoring, error in schema: properties: hycon,report-speed
-warning: no schema found in file: ./Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
-Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.example.dt.yaml:0:0: /example-0/i2c/touchscreen@1c: failed to match any schema with compatible: ['hycon,hy4633']
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/xilinx_axienet.example.dt.yaml: ethernet@40c00000: 'device_type' does not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/net/xilinx_axienet.yaml
 
-See https://patchwork.ozlabs.org/patch/1464803
+See https://patchwork.ozlabs.org/patch/1464502
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
