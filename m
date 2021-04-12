@@ -2,108 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C3835C818
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0130535C81C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:03:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241069AbhDLOCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:02:16 -0400
-Received: from mail2.protonmail.ch ([185.70.40.22]:27625 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239173AbhDLOCO (ORCPT
+        id S242068AbhDLODj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:03:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53497 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238998AbhDLODi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:02:14 -0400
-Date:   Mon, 12 Apr 2021 14:01:49 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1618236113;
-        bh=03onwTU9Um31w8Mfn6QH4RSR6w5lr0DBC+K+sh5MACQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=JzW5GAgMQtt7/FbwM8bH6zxd6LxgBLViXP9kO8fg5WuTonXWwVI/yF7vdUzd8OJ4o
-         z9or4fvT2bmubghYlJgO14bbPqCrqrC6d0odNWYIU1o4+uTt/SaABJCuL+iV/RtKNY
-         55Ct8IEGyPR59bM7lMyUl8ReGBliDx6zhZJgExQ/fH5mPdz09p2vCOnZVNauRjfKv8
-         qTr0j6ExqlpDRU550J/Ch5Yes8mNt+LRBu/OjAZovmFxI1fCT8nsHyiyslzGzTg/VD
-         FoWQXPusv3JoGiD+fT6PXllzAD03B2Mi3TDQPfXQ8qJ82LblYghHocrJY2Oin2G3dT
-         Rl34KktR+1Ywg==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Bryan Brattlof <hello@bryanbrattlof.com>
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH] staging: rtl8723bs: remove unnecessary adapter
-Message-ID: <20210412140054.27629-1-hello@bryanbrattlof.com>
+        Mon, 12 Apr 2021 10:03:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618236200;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SUFKvDRszZ9E49AwoslD+yXNYOfmw6oJnUv4+bKBZOM=;
+        b=W45c4zAXXx1GatkmynpAcbZadOeg6cHV6Hlkm54yZzNJYupu2J/pCb+hF/B0JOK13f9FlN
+        3bBpQwJ2JOP/TXWHLCAwRldft+tERJqT9kLi91BRkXOaBddi+gws/OuF7VFwq5gCN5bL9t
+        4b+oqWspzUd+RNf0oJJ42+GVCMMOIaQ=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-482-7IHnsiRNNeiONHb6sBOs8g-1; Mon, 12 Apr 2021 10:03:18 -0400
+X-MC-Unique: 7IHnsiRNNeiONHb6sBOs8g-1
+Received: by mail-qk1-f199.google.com with SMTP id u5so8790976qkj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 07:03:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=SUFKvDRszZ9E49AwoslD+yXNYOfmw6oJnUv4+bKBZOM=;
+        b=KJbEwPMxTHnIHuGgJQJaHqMdxMvlkOfi4/cenhRebSgRxLrmzaamyy2bAWShBZRkrT
+         TdpVjdLuJywhFSVaqr5qMDCEYqeMrrIUPc7xdi87cLkEUkedAaTo66Zh5nlRez8l7/hp
+         NgeH5cuqvALVpoxlH21Rfy7FlB0410BJajFSIq+wKh8l+GncdHPgsXxgrQfKdrG9yzby
+         wVM+nQG4t/52I7bsNSOUpEETrJjn5nEG7QiuAQRqQz/DqC+Kk02rKpvpw0kLOvUBOGXu
+         s8XlaL+IrAgu2beUz5VKTEdRV8Y+R2UWajGuR5Ho5AYAYDTMvyXH9LWvnvYqdy7ZX+S6
+         Qc7A==
+X-Gm-Message-State: AOAM533ZHO9Oi5lqGSP69KbFmnvKSyhMOsJ8D2104QyGh7PhPxbp/GoV
+        jLCwKzR4CnwJEM4ELFu5SfF+wJDEC1Wm4fE1OpW4BMN7qu4qlyvmYe31M6cnIVGSMZCEHWRtTND
+        g07el6aG63AYtmQOioL6jj1Y6
+X-Received: by 2002:a05:620a:22ea:: with SMTP id p10mr26976851qki.27.1618236198078;
+        Mon, 12 Apr 2021 07:03:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/m+RE4YGY3sRkMrggCvOCM/P16DqLnvzQHNIcSVq31/bvEQGmYIuoSTu7OcWz0fSglKSnDA==
+X-Received: by 2002:a05:620a:22ea:: with SMTP id p10mr26976813qki.27.1618236197806;
+        Mon, 12 Apr 2021 07:03:17 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id i12sm7764843qkl.49.2021.04.12.07.03.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 07:03:14 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 0/5] mm/memcg: Reduce kmemcache memory accounting overhead
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Masayoshi Mizuma <msys.mizuma@gmail.com>
+References: <20210409231842.8840-1-longman@redhat.com>
+ <YHEEmGSVy3nl0obM@carbon.dhcp.thefacebook.com>
+Message-ID: <51ea6b09-b7ee-36e9-a500-b7141bd3a42b@redhat.com>
+Date:   Mon, 12 Apr 2021 10:03:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <YHEEmGSVy3nl0obM@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The if2 adapter is defined in rtw_dvr_init() and in the dvobj_priv
-structure but never used anywhere in the driver. This will remove all
-definitions of if2
+On 4/9/21 9:51 PM, Roman Gushchin wrote:
+> On Fri, Apr 09, 2021 at 07:18:37PM -0400, Waiman Long wrote:
+>> With the recent introduction of the new slab memory controller, we
+>> eliminate the need for having separate kmemcaches for each memory
+>> cgroup and reduce overall kernel memory usage. However, we also add
+>> additional memory accounting overhead to each call of kmem_cache_alloc()
+>> and kmem_cache_free().
+>>
+>> For workloads that require a lot of kmemcache allocations and
+>> de-allocations, they may experience performance regression as illustrated
+>> in [1].
+>>
+>> With a simple kernel module that performs repeated loop of 100,000,000
+>> kmem_cache_alloc() and kmem_cache_free() of 64-byte object at module
+>> init. The execution time to load the kernel module with and without
+>> memory accounting were:
+>>
+>>    with accounting = 6.798s
+>>    w/o  accounting = 1.758s
+>>
+>> That is an increase of 5.04s (287%). With this patchset applied, the
+>> execution time became 4.254s. So the memory accounting overhead is now
+>> 2.496s which is a 50% reduction.
+> Hi Waiman!
+>
+> Thank you for working on it, it's indeed very useful!
+> A couple of questions:
+> 1) did your config included lockdep or not?
+The test kernel is based on a production kernel config and so lockdep 
+isn't enabled.
+> 2) do you have a (rough) estimation how much each change contributes
+>     to the overall reduction?
 
-Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
----
- drivers/staging/rtl8723bs/include/drv_types.h |  1 -
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c  | 10 ++++------
- 2 files changed, 4 insertions(+), 7 deletions(-)
+I should have a better breakdown of the effect of individual patches. I 
+rerun the benchmarking module with turbo-boosting disabled to reduce 
+run-to-run variation. The execution times were:
 
-diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/stagin=
-g/rtl8723bs/include/drv_types.h
-index cec8d5ac0e2e..35882dc2654e 100644
---- a/drivers/staging/rtl8723bs/include/drv_types.h
-+++ b/drivers/staging/rtl8723bs/include/drv_types.h
-@@ -269,7 +269,6 @@ struct cam_entry_cache {
- struct dvobj_priv {
- =09/*-------- below is common data --------*/
- =09struct adapter *if1; /* PRIMARY_ADAPTER */
--=09struct adapter *if2; /* SECONDARY_ADAPTER */
-=20
- =09s32=09processing_dev_remove;
-=20
-diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging=
-/rtl8723bs/os_dep/sdio_intf.c
-index 2b61a4bdd8a1..3545cb6ef886 100644
---- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-+++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-@@ -381,7 +381,7 @@ static int rtw_drv_init(
- =09const struct sdio_device_id *id)
- {
- =09int status =3D _FAIL;
--=09struct adapter *if1 =3D NULL, *if2 =3D NULL;
-+=09struct adapter *if1 =3D NULL;
- =09struct dvobj_priv *dvobj;
-=20
- =09dvobj =3D sdio_dvobj_init(func);
-@@ -395,17 +395,15 @@ static int rtw_drv_init(
- =09/* dev_alloc_name && register_netdev */
- =09status =3D rtw_drv_register_netdev(if1);
- =09if (status !=3D _SUCCESS)
--=09=09goto free_if2;
-+=09=09goto free_if1;
-=20
- =09if (sdio_alloc_irq(dvobj) !=3D _SUCCESS)
--=09=09goto free_if2;
-+=09=09goto free_if1;
-=20
- =09rtw_ndev_notifier_register();
- =09status =3D _SUCCESS;
-=20
--free_if2:
--=09if (status !=3D _SUCCESS && if2) {
--=09}
-+free_if1:
- =09if (status !=3D _SUCCESS && if1) {
- =09=09rtw_sdio_if1_deinit(if1);
- =09}
---=20
-2.27.0
+Before patch: time = 10.800s (with memory accounting), 2.848s (w/o 
+accounting), overhead = 7.952s
+After patch 2: time = 9.140s, overhead = 6.292s
+After patch 3: time = 7.641s, overhead = 4.793s
+After patch 5: time = 6.801s, overhead = 3.953s
 
+Patches 1 & 4 are preparatory patches that should affect performance.
+
+So the memory accounting overhead was reduced by about half.
+
+Cheers,
+Longman
 
