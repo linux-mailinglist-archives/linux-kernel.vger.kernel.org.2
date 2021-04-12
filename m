@@ -2,82 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 686AC35B85A
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669F135B860
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236245AbhDLByu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 21:54:50 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:16437 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235543AbhDLByq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 21:54:46 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FJWvJ5xxlzwRFQ;
-        Mon, 12 Apr 2021 09:52:12 +0800 (CST)
-Received: from [10.67.77.175] (10.67.77.175) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Mon, 12 Apr 2021
- 09:54:20 +0800
-Subject: Re: [PATCH] fs/buffer.c: Delete redundant uptodate check for buffer
-To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Yang Guo <guoyang2@huawei.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <1617260222-13797-1-git-send-email-zhangshaokun@hisilicon.com>
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-Message-ID: <d89bd95c-df22-9edd-e48e-0ac19cf1590b@hisilicon.com>
-Date:   Mon, 12 Apr 2021 09:54:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236372AbhDLCAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 22:00:10 -0400
+Received: from ozlabs.org ([203.11.71.1]:55537 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235543AbhDLCAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 22:00:09 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FJX430Z5bz9sW0;
+        Mon, 12 Apr 2021 11:59:46 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618192790;
+        bh=6KGoMZOipkjgLvY90G4k7+1g3YVKH18Rop0rlEB1lvU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=abOWwMf1zo+XbYWczVMv1RypWHkK7nzOmeOjLbq1tMqJTX730iRkeVip5Wo/iW+ok
+         e0P4GjZm2QmkSqI8z1kBwEL85zCjqUrFVpKres05n2mIm6w5fxnmEpe96SWGpu7nqP
+         LS/deU8zxMdrUfipUdFhGWVOStmPElCWbmJFaUgeVsbxG5w0ESSOup2I2fh9UfNs0z
+         Ee8qvDw7xqcWdTp0/6y8YWGIUqOAfaK2RiF57izPlgaxRsj41SsHh9YeCwBwREaY9N
+         FZnDcIg6472+emOZuHWmktoqlyRs5gfWgFQxorLY2bfdJyrAp1HvQZ8ZwnjDpEf53W
+         bFqEoyZOyGG4w==
+Date:   Mon, 12 Apr 2021 11:59:45 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Al Viro <viro@ZenIV.linux.org.uk>, David Sterba <dsterba@suse.cz>
+Cc:     David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: linux-next: manual merge of the vfs tree with the btrfs tree
+Message-ID: <20210412115945.2f2c3485@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <1617260222-13797-1-git-send-email-zhangshaokun@hisilicon.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.77.175]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/gc6DPT+Gqa21ZyyF5kh5Jnp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Andrew Morton
+--Sig_/gc6DPT+Gqa21ZyyF5kh5Jnp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/4/1 14:57, Shaokun Zhang wrote:
-> From: Yang Guo <guoyang2@huawei.com>
-> 
-> The buffer uptodate state has been checked in function set_buffer_uptodate,
-> there is no need use buffer_uptodate before calling set_buffer_uptodate and
-> delete it.
-> 
-> Cc: Alexander Viro <viro@zeniv.linux.org.uk> 
-> Signed-off-by: Yang Guo <guoyang2@huawei.com>
-> Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
-> ---
->  fs/buffer.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index 673cfbef9eec..2c0d0b3f3203 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -2055,8 +2055,7 @@ int __block_write_begin_int(struct page *page, loff_t pos, unsigned len,
->  		block_end = block_start + blocksize;
->  		if (block_end <= from || block_start >= to) {
->  			if (PageUptodate(page)) {
-> -				if (!buffer_uptodate(bh))
-> -					set_buffer_uptodate(bh);
-> +				set_buffer_uptodate(bh);
->  			}
->  			continue;
->  		}
-> @@ -2088,8 +2087,7 @@ int __block_write_begin_int(struct page *page, loff_t pos, unsigned len,
->  			}
->  		}
->  		if (PageUptodate(page)) {
-> -			if (!buffer_uptodate(bh))
-> -				set_buffer_uptodate(bh);
-> +			set_buffer_uptodate(bh);
->  			continue; 
->  		}
->  		if (!buffer_uptodate(bh) && !buffer_delay(bh) &&
-> 
+Hi all,
+
+Today's linux-next merge of the vfs tree got a conflict in:
+
+  fs/btrfs/ioctl.c
+
+between commit:
+
+  2911da32d543 ("btrfs: use btrfs_inode_lock/btrfs_inode_unlock inode lock =
+helpers")
+
+from the btrfs tree and commit:
+
+  d9b32b140987 ("btrfs: convert to fileattr")
+
+from the vfs tree.
+
+I fixed it up (I used the vfs tree version (which removed inode_lock()
+in various places) and can carry the fix as necessary. This is now fixed
+as far as linux-next is concerned, but any non trivial conflicts should
+be mentioned to your upstream maintainer when your tree is submitted for
+merging.  You may also want to consider cooperating with the maintainer
+of the conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/gc6DPT+Gqa21ZyyF5kh5Jnp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBzqZEACgkQAVBC80lX
+0Gy4Gwf/actIlV7I3h5Oi75NlBgId8+ZIutZImV5qau8DDdzTyIoESodNaPtJ+l5
+1fOOU6Xs5udfI7OlmmvfRIzCFufcg1StjECJ6NtssqaxmxXXFk2/YyHKI8ixxTPJ
+R8VoVsxB2UMWfLHapPU3+NKw5AHMc5k8TaBQkQNcfbVyX5/NXMwgRQO0cIZmmtjQ
+vGM1iCUv/pzSsWBeOS1VTw6Gl5BKtIomEztRq/whvC63TcjdAhdDzW9dJl0o5jQn
+ImTIl/Ig8tSfM3bG71G8AItk9l6tDm3/u3D2xORgeSCSEbgmJCYkZXIfJaLOStO2
++4dc57jkkMGikIn6z1lhx79wks2jag==
+=S+LU
+-----END PGP SIGNATURE-----
+
+--Sig_/gc6DPT+Gqa21ZyyF5kh5Jnp--
