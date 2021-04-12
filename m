@@ -2,105 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F42335CF8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC04935CF8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243634AbhDLRfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:35:39 -0400
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:37672 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239298AbhDLRfi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:35:38 -0400
-Received: by mail-oi1-f174.google.com with SMTP id k25so14226278oic.4;
-        Mon, 12 Apr 2021 10:35:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GQ/lurYpXN3VwQox6aFUpBiN7VUzu07uS3TQtD1HRNQ=;
-        b=FC65Nj0IL7OVtsEPDR+fSyxHmDBK58U0k0lwWq1d1DJ7XeBo2gBSpkmxi5UXSNWlQf
-         w2ZtS0WMMh/nz7ALNP4O+j4oxV4Fs4OA5oI7Vf69PaRPBKlWhQwZMxSO6ROH+0ykTzJD
-         sg0coVWxFMqah10npgeN9K+wOxy5Tcr4aWCk/mZQdwbUDTECpcVycW1trbBcXrZskTOA
-         dwhk4SCwThnsTMZ26Vp+4aO6VlfRjeK5MgqxxkJGX4hfez3UFviRj5U5uY+ztUlnR/yJ
-         qEzEMprxUCpUNe/mwe3oXoKbw3Sk3+evIjUzS690tJQnHoUCVs6zcTPNllbgOKat6L2V
-         CfFA==
-X-Gm-Message-State: AOAM532hvYCGS2g9yUAs0oTGRf0aSr0rheo0hDCcpnufayVlN80CM50K
-        9D376rksrKOrA5lLvJ13lYN7qpmCzQUnFvqKlIs=
-X-Google-Smtp-Source: ABdhPJwDErsXU1nN5NgQZy/6xypurKvi7xkp48Z2sQ4Me3Mi5BK9mGAQY3+apKxWpP1CtlLt9EDMIFpFgYfdCPW5KEY=
-X-Received: by 2002:aca:5fc3:: with SMTP id t186mr185906oib.69.1618248920250;
- Mon, 12 Apr 2021 10:35:20 -0700 (PDT)
+        id S243651AbhDLRg5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:36:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238649AbhDLRgz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 13:36:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07C7A61261;
+        Mon, 12 Apr 2021 17:36:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618248997;
+        bh=FOcBq5IiHKnDW5iAmHjvkIgTdRN/vg5ZmjJEZHBQ+sU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kJAkGDGqU2OmXTWeqLdQ3ZfMRrr4N/bxHFBU6oI7MOVFmqWF7DRm4JC2PP01Y6GIH
+         kIBp0Jb2NZIhcL9SeNZHP5kGOZbXgxWdLpDjkATaQMJA1vhyR+Y3+MM+i0iPJTFFgM
+         f7/vzgdmzqaCzRwXmguV1R5ofDZXUXhK7KWMlbN1pn37MdWNlO8Ow4U4DnEMdNzwxx
+         Y8MZbvvFfMGlYK9hQU2AJKO1S2qHkR1yMPsqt+e5NYGjAGTotj1Cyr9YTnYEO8Hvu+
+         sK4Sn+PMhRRky1mmm30/gGx2EhmSFFOpFCtHUpofGqQlK+dRiCrSadVnj4719IT5O/
+         WZJV2SKKfN/tQ==
+Date:   Mon, 12 Apr 2021 18:36:17 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>, madvenka@linux.microsoft.com,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH v2 0/4] arm64: Implement stack trace reliability
+ checks
+Message-ID: <20210412173617.GE5379@sirena.org.uk>
+References: <705993ccb34a611c75cdae0a8cb1b40f9b218ebd>
+ <20210405204313.21346-1-madvenka@linux.microsoft.com>
+ <20210409120859.GA51636@C02TD0UTHF1T.local>
+ <20210409213741.kqmwyajoppuqrkge@treble>
 MIME-Version: 1.0
-References: <20210410140253.1966892-1-andy.shevchenko@gmail.com>
-In-Reply-To: <20210410140253.1966892-1-andy.shevchenko@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 12 Apr 2021 19:35:09 +0200
-Message-ID: <CAJZ5v0gFiLgEeBCuhn1cKMA=G-+_Z+VLDa0OnagU+d4Vgn-Gmw@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] ACPI: scan: Utilize match_string() API
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="8vCeF2GUdMpe9ZbK"
+Content-Disposition: inline
+In-Reply-To: <20210409213741.kqmwyajoppuqrkge@treble>
+X-Cookie: Air is water with holes in it.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 10, 2021 at 4:02 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> We have already an API to match a string in the array of strings.
-> Utilize it instead of open coded analogues.
->
-> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> ---
->  drivers/acpi/scan.c | 22 ++++++++++------------
->  1 file changed, 10 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index b1d1f1a8ce69..bba6b529cf6c 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -756,27 +756,25 @@ static bool acpi_info_matches_ids(struct acpi_device_info *info,
->                                   const char * const ids[])
->  {
->         struct acpi_pnp_device_id_list *cid_list = NULL;
-> -       int i;
-> +       int i, index;
->
->         if (!(info->valid & ACPI_VALID_HID))
->                 return false;
->
-> +       index = match_string(ids, -1, info->hardware_id.string);
-> +       if (index >= 0)
-> +               return true;
-> +
->         if (info->valid & ACPI_VALID_CID)
->                 cid_list = &info->compatible_id_list;
->
-> -       for (i = 0; ids[i]; i++) {
-> -               int j;
-> +       if (!cid_list)
-> +               return false;
->
-> -               if (!strcmp(info->hardware_id.string, ids[i]))
-> +       for (i = 0; i < cid_list->count; i++) {
-> +               index = match_string(ids, -1, cid_list->ids[i].string);
-> +               if (index >= 0)
->                         return true;
-> -
-> -               if (!cid_list)
-> -                       continue;
-> -
-> -               for (j = 0; j < cid_list->count; j++) {
-> -                       if (!strcmp(cid_list->ids[j].string, ids[i]))
-> -                               return true;
-> -               }
->         }
->
->         return false;
-> --
 
-Applied as 5.13 material, thanks!
+--8vCeF2GUdMpe9ZbK
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Apr 09, 2021 at 04:37:41PM -0500, Josh Poimboeuf wrote:
+> On Fri, Apr 09, 2021 at 01:09:09PM +0100, Mark Rutland wrote:
+
+> > Further, I believe all the special cases are assembly functions, and
+> > most of those are already in special sections to begin with. I reckon
+> > it'd be simpler and more robust to reject unwinding based on the
+> > section. If we need to unwind across specific functions in those
+> > sections, we could opt-in with some metadata. So e.g. we could reject
+> > all functions in ".entry.text", special casing the EL0 entry functions
+> > if necessary.
+
+> Couldn't this also end up being somewhat fragile?  Saying "certain
+> sections are deemed unreliable" isn't necessarily obvious to somebody
+> who doesn't already know about it, and it could be overlooked or
+> forgotten over time.  And there's no way to enforce it stays that way.
+
+Anything in this area is going to have some opportunity for fragility
+and missed assumptions somewhere.  I do find the idea of using the
+SYM_CODE annotations that we already have and use for other purposes to
+flag code that we don't expect to be suitable for reliable unwinding
+appealing from that point of view.  It's pretty clear at the points
+where they're used that they're needed, even with a pretty surface level
+review, and the bit actually pushing things into a section is going to
+be in a single place where the macro is defined.  That seems relatively
+robust as these things go, it seems no worse than our reliance on
+SYM_FUNC to create BTI annotations.  Missing those causes oopses when we
+try to branch to the function.
+
+--8vCeF2GUdMpe9ZbK
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmB0hRAACgkQJNaLcl1U
+h9DMHwf+KB+Zd6w5uaq7CyPt8R3d9OSaoTNTS4qTwkA67lnsewK8sU+vsvUuYqDU
+BSH8HZGIW7X8I2GLwfZ16ByBDiOwp+kFszvgmZBUxqJE8UVHFXnkqpqOAclNvLYZ
+c+SSwra2ySfLzZhTyeb6ZLbs5gsDkhLXHFM4K0QEMw8NGLnzXZu5u5EKWzmwwkkW
+riHhGIj/5h4AInrIL4lt1A18Xl2OCwHje2FJtO5JUaooF7sZrL9p5xhwL9Po1BkL
+hYg3DvD2gzF3T6dLos/HmVo+Rokc29DLFhMLjcMDrPtFB77svgVdp7vAHOCNpy15
+LUx0nHMZo72C9P4fkDBM4jFqOP55VA==
+=5gSu
+-----END PGP SIGNATURE-----
+
+--8vCeF2GUdMpe9ZbK--
