@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE88D35BD2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9A1935BD2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238129AbhDLIs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:48:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38786 "EHLO mail.kernel.org"
+        id S238122AbhDLIsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:48:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237739AbhDLIqL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:46:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5C5E611F0;
-        Mon, 12 Apr 2021 08:45:52 +0000 (UTC)
+        id S237742AbhDLIqN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:46:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B9ED61221;
+        Mon, 12 Apr 2021 08:45:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217153;
-        bh=Vwq7OBOcX4w2Lv7VcddRMMu7QdRGViyEXU4JYQjLerI=;
+        s=korg; t=1618217155;
+        bh=0cNbOnMZ16XEOZeaAzI8EuJMGfTvpS7aRU4XQGG5wrY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ufnUAky/+rdjEEgLJpdFkhAt/V0lNumltM400BFkhcFlVUoSVDkTtiWIP2wI22+aT
-         VuXwjRdGNG90Y6mETIg1t8ehZgNTQFcc8+DheKcPO30wZ5GAWTH3+ivizVSfAAY6iQ
-         M8kwguUs3iyqsUxe0uIZT4mOkPg877f3D0LtUues=
+        b=2RWG7HaLQ3rLW1y/GcudSKdKsnDfBOSMRpBJ4kRhLOpVT0fjpiIErWMI2Hjf9xUJ5
+         g3A+rhSsDDiQUyzZn5RPfDGpFkrKkS+K5MVlNO8qZzHc6OxTLu6s1Xek1eXwkU3C1s
+         L4uY82VUmqtbokMpaY08FpPEDaJqaFtj+tp4doIA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Jacek=20Bu=C5=82atek?= <jacekx.bulatek@intel.com>,
-        Haiyue Wang <haiyue.wang@intel.com>,
+        stable@vger.kernel.org, Robert Malz <robertx.malz@intel.com>,
         Tony Brelinski <tonyx.brelinski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.4 023/111] ice: Fix for dereference of NULL pointer
-Date:   Mon, 12 Apr 2021 10:40:01 +0200
-Message-Id: <20210412084005.000554881@linuxfoundation.org>
+Subject: [PATCH 5.4 024/111] ice: Cleanup fltr list in case of allocation issues
+Date:   Mon, 12 Apr 2021 10:40:02 +0200
+Message-Id: <20210412084005.033164092@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -42,64 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jacek Bułatek <jacekx.bulatek@intel.com>
+From: Robert Malz <robertx.malz@intel.com>
 
-commit 7a91d3f02b04b2fb18c2dfa8b6c4e5a40a2753f5 upstream.
+commit b7eeb52721fe417730fc5adc5cbeeb5fe349ab26 upstream.
 
-Add handling of allocation fault for ice_vsi_list_map_info.
+When ice_remove_vsi_lkup_fltr is called, by calling
+ice_add_to_vsi_fltr_list local copy of vsi filter list
+is created. If any issues during creation of vsi filter
+list occurs it up for the caller to free already
+allocated memory. This patch ensures proper memory
+deallocation in these cases.
 
-Also *fi should not be NULL pointer, it is a reference to raw
-data field, so remove this variable and use the reference
-directly.
-
-Fixes: 9daf8208dd4d ("ice: Add support for switch filter programming")
-Signed-off-by: Jacek Bułatek <jacekx.bulatek@intel.com>
-Co-developed-by: Haiyue Wang <haiyue.wang@intel.com>
-Signed-off-by: Haiyue Wang <haiyue.wang@intel.com>
+Fixes: 80d144c9ac82 ("ice: Refactor switch rule management structures and functions")
+Signed-off-by: Robert Malz <robertx.malz@intel.com>
 Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/ice/ice_switch.c |   12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/net/ethernet/intel/ice/ice_switch.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 --- a/drivers/net/ethernet/intel/ice/ice_switch.c
 +++ b/drivers/net/ethernet/intel/ice/ice_switch.c
-@@ -1279,6 +1279,9 @@ ice_add_update_vsi_list(struct ice_hw *h
- 			ice_create_vsi_list_map(hw, &vsi_handle_arr[0], 2,
- 						vsi_list_id);
+@@ -2665,7 +2665,7 @@ ice_remove_vsi_lkup_fltr(struct ice_hw *
+ 					  &remove_list_head);
+ 	mutex_unlock(rule_lock);
+ 	if (status)
+-		return;
++		goto free_fltr_list;
  
-+		if (!m_entry->vsi_list_info)
-+			return ICE_ERR_NO_MEMORY;
-+
- 		/* If this entry was large action then the large action needs
- 		 * to be updated to point to FWD to VSI list
- 		 */
-@@ -2266,6 +2269,7 @@ ice_vsi_uses_fltr(struct ice_fltr_mgmt_l
- 	return ((fm_entry->fltr_info.fltr_act == ICE_FWD_TO_VSI &&
- 		 fm_entry->fltr_info.vsi_handle == vsi_handle) ||
- 		(fm_entry->fltr_info.fltr_act == ICE_FWD_TO_VSI_LIST &&
-+		 fm_entry->vsi_list_info &&
- 		 (test_bit(vsi_handle, fm_entry->vsi_list_info->vsi_map))));
- }
- 
-@@ -2338,14 +2342,12 @@ ice_add_to_vsi_fltr_list(struct ice_hw *
- 		return ICE_ERR_PARAM;
- 
- 	list_for_each_entry(fm_entry, lkup_list_head, list_entry) {
--		struct ice_fltr_info *fi;
--
--		fi = &fm_entry->fltr_info;
--		if (!fi || !ice_vsi_uses_fltr(fm_entry, vsi_handle))
-+		if (!ice_vsi_uses_fltr(fm_entry, vsi_handle))
- 			continue;
- 
- 		status = ice_add_entry_to_vsi_fltr_list(hw, vsi_handle,
--							vsi_list_head, fi);
-+							vsi_list_head,
-+							&fm_entry->fltr_info);
- 		if (status)
- 			return status;
+ 	switch (lkup) {
+ 	case ICE_SW_LKUP_MAC:
+@@ -2688,6 +2688,7 @@ ice_remove_vsi_lkup_fltr(struct ice_hw *
+ 		break;
  	}
+ 
++free_fltr_list:
+ 	list_for_each_entry_safe(fm_entry, tmp, &remove_list_head, list_entry) {
+ 		list_del(&fm_entry->list_entry);
+ 		devm_kfree(ice_hw_to_dev(hw), fm_entry);
 
 
