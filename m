@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB9C35C970
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FE0C35C974
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242740AbhDLPJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35352 "EHLO
+        id S242651AbhDLPKj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:10:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242650AbhDLPJG (ORCPT
+        with ESMTP id S241009AbhDLPKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:09:06 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78061C061574;
-        Mon, 12 Apr 2021 08:08:48 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id l76so9606478pga.6;
-        Mon, 12 Apr 2021 08:08:48 -0700 (PDT)
+        Mon, 12 Apr 2021 11:10:36 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4CEAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:10:18 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id b17so9616567pgh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:10:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=7c5hbFDJuzW8IbaNLbCCwK5N29exubinPApJnJHDfR0=;
-        b=ITLLe2DYMYPMeZVGTkOR3bOoGfykAoYj/bQy2kCNye+lBUJ4XaLgFBgV6f2/yXfdd7
-         oFAVX0mQPwwymASavuDGXYqCdTXy47ZVJ/xlr9FH+qYoJ0kyvIHWC7SglHHDqrO50knq
-         erVGGF9AYHklUu3pGvXTBSIB1dK/wjQF3ksPtYKoYc3UTmIXSSS5oIwQ8EYvT/rFv2Qw
-         B9VpY9yz26CcM80Jg4PDwvFix5CNjmrPsjA+feH4HFT9yDVUE0HBsePWEfP2D1E6A0BC
-         k9hnIqKMl0A/k7zYjwFsYK0ENESXfAjEks0+fqqa79661PTy2kc8s1fOcLNn/eQCZcR7
-         09Tw==
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=li5yO3ci0EdtyivxU0FpvQYUbBKVnudD0U4lu+FaRh0=;
+        b=NGJFfwIZyS0imURzuBF05ohtiBtg34GQq4kGYX/62PKwtlFdBEVYFNTa5Zi1/6cRZ6
+         or5SOK/xSJ5R4rD28Ua7hSopdjvFZpBFlkSJSDjecQxz+qvumCUF0IE6HAQ4UsItak7L
+         IyQPPlA/1sXPoGklQurc7fLPFjUWYOeO68I1dwBY6zbOcAqMpZDk12f6oh0wkpWF152t
+         jEsLmzCn+k2xMf6xA8Nxei9itkcnPnIfy6peNFiF3umtLXsTzXb9EHLBifvTLgMAxX/U
+         xjoekDWz2ELRh/ysQ1cXZu51PhefpUH/jK+xOEDdcfxQvLUA7KxtemAcepmqfXVM0wPa
+         6BYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=7c5hbFDJuzW8IbaNLbCCwK5N29exubinPApJnJHDfR0=;
-        b=hGpyIUrv/oH2nPeRq8EExspcIGJ2/gpDgR5extAG9pFMMdqkfeBP6ryoxCjpKN/uAX
-         TUFnwvEcXqWkWJOBju+Qj6c+4cNOXX3em8W4A5XPkZI6pZtqIkKnu/Re/eqV/7qHAGE0
-         XAa+XWbno47nsLJ9ncso0QlSk9KJQjIzQtlgUC+5MzDwlJPr7//AQfIepl8T+bOasgRA
-         IGyb3HuXcFYlpIPhlAbkZdcAbvbTwbdUbhVlDKIozzoQ5s129Wbz73HoD+LZtQhcspFQ
-         IstokF54F90OEuUch9ynJi0+PREDM1/Bp0njtNNoBJiDDSfuw7BCXD9NP/oW9HtCuIWJ
-         FeNw==
-X-Gm-Message-State: AOAM532QQJoca1jA5OwRPt7LvgupfsAaG+uBOpi0WnMpDB5MTHMAske7
-        suu6fwC7Nn4iLn6QAcalNBmF+2B+PsjW4+kX
-X-Google-Smtp-Source: ABdhPJz7KRLv1g9bRdFHzT6lp7tQwKP2uj+NoPFEntDd1eukLWRlre8tS73iPaLZc+mPS/pqqEeSxQ==
-X-Received: by 2002:aa7:91d1:0:b029:1fe:2a02:73b9 with SMTP id z17-20020aa791d10000b02901fe2a0273b9mr25310238pfa.2.1618240125830;
-        Mon, 12 Apr 2021 08:08:45 -0700 (PDT)
-Received: from localhost.localdomain ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id k13sm8406233pji.14.2021.04.12.08.08.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 08:08:45 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [RFC v4 net-next 1/4] net: phy: add MediaTek PHY driver
-Date:   Mon, 12 Apr 2021 23:08:36 +0800
-Message-Id: <20210412150836.929610-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210412070449.Horde.wg9CWXW8V9o0P-heKYtQpVh@www.vdorst.com>
-References: <20210412034237.2473017-1-dqfext@gmail.com> <20210412034237.2473017-2-dqfext@gmail.com> <20210412070449.Horde.wg9CWXW8V9o0P-heKYtQpVh@www.vdorst.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=li5yO3ci0EdtyivxU0FpvQYUbBKVnudD0U4lu+FaRh0=;
+        b=AgZmz57ZNl+RzoUQIt8aBO/l5Kk04kpzqtcb9rs0PjN1Xo/2t6f0E8P47AuNicYSLE
+         sEPQGplJ0y7ze03G0qZyQerxIn8BT5Rgft6Y1+E6e0i7khvJBIUbm1uclL7FNZywjiyd
+         vNt2KNroIp6jaOC8QsHLUd0vUgCVWI0TuViSr8uvgHtwjvQXQZQNKlEInzRBM2QTdRWz
+         Dx6HvY6IWJ202OtX7jL0ZPAzueozTslyaiDTb3dGMDO1oVFdvNnvPZ1Fee9nFG7eKWzD
+         rDSe+6s+33Smm7r1Pc/jIqa10K43LyOmFmJ6d0tsLJKEBvhyjj+qYgXLHV/WMbExNKgo
+         TRng==
+X-Gm-Message-State: AOAM530Rex2wA8bX25598kWt3Wr3IDRB1axVOeZzZCzE5Vdc7rHZjNXG
+        rtyRuKu2xbHBFPg9xiJOcZiFBw==
+X-Google-Smtp-Source: ABdhPJw4Z9a0+E3LK/tLCB54UgB6olpIiC2jeODE0O0qpJFi4bjSHZhl+QTFflJbHHJNTng03JQWCw==
+X-Received: by 2002:a63:3e06:: with SMTP id l6mr27221422pga.140.1618240218355;
+        Mon, 12 Apr 2021 08:10:18 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:3129:54c1:fe68:a222? ([2601:646:c200:1ef2:3129:54c1:fe68:a222])
+        by smtp.gmail.com with ESMTPSA id q14sm12798351pgt.54.2021.04.12.08.10.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Apr 2021 08:10:17 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+Date:   Mon, 12 Apr 2021 08:10:15 -0700
+Message-Id: <27CD4C77-E58A-4AC1-8415-3E57BE0F3663@amacapital.net>
+References: <878s5nk1pk.fsf@oldenburg.str.redhat.com>
+Cc:     Borislav Petkov <bp@alien8.de>, Andy Lutomirski <luto@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        libc-alpha@sourceware.org, Rich Felker <dalias@libc.org>,
+        Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+In-Reply-To: <878s5nk1pk.fsf@oldenburg.str.redhat.com>
+To:     Florian Weimer <fweimer@redhat.com>
+X-Mailer: iPhone Mail (18D70)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 07:04:49AM +0000, René van Dorst wrote:
-> Hi Qingfang,
-> > +static void mtk_phy_config_init(struct phy_device *phydev)
-> > +{
-> > +	/* Disable EEE */
-> > +	phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, 0);
-> 
-> For my EEE patch I changed this line to:
-> 
-> genphy_config_eee_advert(phydev);
-> 
-> So PHY EEE part is setup properly at boot, instead enable it manual via
-> ethtool.
-> This function also takes the DTS parameters "eee-broken-xxxx" in to account
-> while
-i> setting-up the PHY.
 
-Thanks, I'm now testing with it.
 
-> 
-> > +
-> > +	/* Enable HW auto downshift */
-> > +	phy_modify_paged(phydev, MTK_PHY_PAGE_EXTENDED, 0x14, 0, BIT(4));
+> On Apr 12, 2021, at 7:38 AM, Florian Weimer <fweimer@redhat.com> wrote:
+>=20
+> =EF=BB=BF* Borislav Petkov:
+>=20
+>>> On Mon, Apr 12, 2021 at 04:19:29PM +0200, Florian Weimer wrote:
+>>> Maybe we could have done this in 2016 when I reported this for the first=
+
+>>> time.  Now it is too late, as more and more software is using
+>>> CPUID-based detection for AVX-512.
+>>=20
+>> So as I said on another mail today, I don't think a library should rely
+>> solely on CPUID-based detection of features especially if those features
+>> need kernel support too. IOW, it should ask whether the kernel can
+>> handle those too, first.
+>=20
+> Yes, that's why we have the XGETBV handshake.  I was imprecise.  It's
+> CPUID + XGETBV of course.  Or even AT_HWCAP2 (for FSGSBASE).
+>=20
+>> And the CPUID-faulting thing would solve stuff like that because then
+>> the kernel can *actually* get involved into answering something where it
+>> has a say in, too.
+>=20
+> But why wouldn't we use a syscall or an entry in the auxiliary vector
+> for that?  Why fault a potentially performance-critical instruction?
+>=20
+
+CPUID is horrifically slow in various virt scenarios. If user code needs to s=
+erialize, use IRET or SERIALIZE.=
