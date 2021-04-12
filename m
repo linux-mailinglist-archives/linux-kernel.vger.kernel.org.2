@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0DB35CA5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7533935CA04
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243133AbhDLPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:47:20 -0400
-Received: from lizzard.sbs.de ([194.138.37.39]:54248 "EHLO lizzard.sbs.de"
+        id S242770AbhDLPgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:36:35 -0400
+Received: from mga18.intel.com ([134.134.136.126]:26609 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243040AbhDLPrQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:47:16 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 13CFkQqf031101
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Apr 2021 17:46:26 +0200
-Received: from md1za8fc.ad001.siemens.net ([139.22.41.180])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 13CFZWJi006717;
-        Mon, 12 Apr 2021 17:35:32 +0200
-Date:   Mon, 12 Apr 2021 17:35:31 +0200
-From:   Henning Schild <henning.schild@siemens.com>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     <linux-kernel@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <platform-driver-x86@vger.kernel.org>,
-        <linux-watchdog@vger.kernel.org>,
-        Srikanth Krishnakar <skrishnakar@gmail.com>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Pavel Machek <pavel@ucw.cz>
-Subject: Re: [PATCH v3 3/4] watchdog: simatic-ipc-wdt: add new driver for
- Siemens Industrial PCs
-Message-ID: <20210412173531.4140e461@md1za8fc.ad001.siemens.net>
-In-Reply-To: <ffdfe9a9-ab17-18af-300e-062b79d132f3@metux.net>
-References: <20210329174928.18816-1-henning.schild@siemens.com>
-        <20210329174928.18816-4-henning.schild@siemens.com>
-        <ffdfe9a9-ab17-18af-300e-062b79d132f3@metux.net>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S238352AbhDLPgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:36:32 -0400
+IronPort-SDR: bhZ94Z/eUF9NDPTns3YklvoxCceqELAraKDtAFvDZaX9hAdmwYNLTUpQrsaPKFA2ppOHN7QW3z
+ hc18GlX4DdeA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="181739465"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="181739465"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 08:36:13 -0700
+IronPort-SDR: cJf7K9OObX3J6F42v6XRTyTOMgYBGdgKm//Og/Eis3gfuy7SfnBK+St1KXO6p0zwLWcrZ+eOSE
+ cmi2+K23D3pA==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="521230652"
+Received: from nmafzal-mobl.amr.corp.intel.com (HELO [10.209.42.102]) ([10.209.42.102])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 08:36:12 -0700
+Subject: Re: [PATCH v2 0/3] x86/sgx: eextend ioctl
+To:     Raoul Strackx <raoul.strackx@fortanix.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <da7ae1e7-59b8-63db-a9f1-607b4e529639@fortanix.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <a05d07dc-1623-012c-5120-e30f64decae7@intel.com>
+Date:   Mon, 12 Apr 2021 08:36:12 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <da7ae1e7-59b8-63db-a9f1-607b4e529639@fortanix.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Thu, 1 Apr 2021 18:15:41 +0200
-schrieb "Enrico Weigelt, metux IT consult" <lkml@metux.net>:
+On 4/12/21 1:59 AM, Raoul Strackx wrote:
+> This patch set adds a new ioctl to enable userspace to execute EEXTEND
+> leaf functions per 256 bytes of enclave memory. With this patch in place,
+> Linux will be able to build all valid SGXv1 enclaves.
 
-> On 29.03.21 19:49, Henning Schild wrote:
-> 
-> Hi,
-> 
-> > This driver adds initial support for several devices from Siemens.
-> > It is based on a platform driver introduced in an earlier commit.  
-> 
-> Where does the wdt actually come from ?
-> 
-> Is it in the SoC ? (which SoC exactly). SoC-builtin wdt is a pretty 
-> usual case.
-> 
-> Or some external chip ?
-> 
-> The code smells a bit like two entirely different wdt's that just have
-> some similarities. If that's the case, I'd rather split it into two
-> separate drivers and let the parent driver (board file) instantiate
-> the correct one.
-
-In fact they are the same watchdog device. The only difference is the
-"secondary enable" which controls whether the watchdog causes a reboot
-or just raises an alarm. The alarm feature is not even implemented in
-the given driver, we just enable that secondary enable regardless.
-
-In one range of devices (227E) that second enable is part of a
-pio-based control register. On the other range (427E) it unfortunately
-is a P2SB gpio, which gets us right into the discussion we have around
-the LEDs.
-With that i have my doubts that two drivers would be the way to go,
-most likely not. 
-
-Only that i have no clue which pinctrl driver should be used here. My
-guess is "sunrisepoint" because the CPUs are "SkyLake" i.e. i5-6442EQ,
-i3-6102E
-And "grep INT344B /sys/firmware/acpi/tables/DSDT" matches. I booted a
-kernel patched with the series from Andy but the "pinctrl-sunrisepoint"
-does not seem to even claim the memory. Still trying to understand how
-to make use of these pinctrl drivers they are in place but i lack
-example users (drivers). If they should be available in sysfs, i might
-be looking at the wrong place ... /sys/class/gpio/ does not list
-anything
-
-regards,
-Henning
-
-
-
-> 
-> --mtx
-> 
+This didn't cover why we need a *NEW* ABI for this instead of relaxing
+the page alignment rules in the existing one.
 
