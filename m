@@ -2,75 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B266B35C23F
+	by mail.lfdr.de (Postfix) with ESMTP id 4195C35C23E
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243248AbhDLJlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        id S243234AbhDLJlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:41:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239667AbhDLJIE (ORCPT
+        with ESMTP id S239699AbhDLJID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:08:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324C2C061342
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:04:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6g0DaWseFgockDKrCtuXPfAoZ1Ief9G/pC6oIUd+GKc=; b=tq8xayhWK/YAKa33COZCV97WFb
-        jW8R4qQnCxMRanhJJBy+8VaR2H20wQrqNiFhimLxm9QcD9glNTYt+KvSxnduflYtB1RbCFKATsRJp
-        hrjrxBgQ+NiwUOthKF1K5L0D8i9D8dRHipRlMOs6dcm+TbcOqAEH+k7XQ57EZyc7SgmkPeXm54cRG
-        fRWasA8mpeoQA9iauG6E+4s//KrMkalfKJHTUoMa3Aq2kBEYwUZC3BGnCmSqkZpXmXgbUQZXXrKbX
-        TZtcFubXVKp36Y+6THgXP7hdD9xZc6KjryU/IAUOoAG55Dkow1qi0W2NZOlRSOXiJugU7DjN0YKgg
-        y+bAFqNw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lVsSq-00435H-6m; Mon, 12 Apr 2021 09:02:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4DC76300036;
-        Mon, 12 Apr 2021 11:02:35 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E61752022420C; Mon, 12 Apr 2021 11:02:34 +0200 (CEST)
-Date:   Mon, 12 Apr 2021 11:02:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, x86@kernel.org,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, chris@chris-wilson.co.uk,
-        intel-gfx@lists.freedesktop.org, linux-mm@kvack.org,
-        keescook@chromium.org
-Subject: Re: [PATCH 3/7] xen/gntdev: Remove apply_to_page_range() use from
- module
-Message-ID: <YHQMqsyXXHwIx7w1@hirez.programming.kicks-ass.net>
-References: <20210412080012.357146277@infradead.org>
- <20210412080611.702979288@infradead.org>
- <20210412082721.GC4372@lst.de>
+        Mon, 12 Apr 2021 05:08:03 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006B8C0612F0;
+        Mon, 12 Apr 2021 02:04:00 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0521005111e44f1de5d8d9.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:2100:5111:e44f:1de5:d8d9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1A0991EC0283;
+        Mon, 12 Apr 2021 11:03:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618218239;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=kqo/mEUIsgFPHBTwQoVjSeQqRbssq21btEFfXBtvsr4=;
+        b=EtKz2ZFa0W88PxJQCHryW4MKQUBS0KHf+/xCfjisBI+HBLR31VZcSaGoBwuaQCUaf0FO4h
+        2BFLPiupU5T8m9A/oke/T3qU53AnQ4Sa/W6AUle3gejyJ7A6dIijeSKs4F3lmbA0v89imU
+        tmLPbF8rezcH6a5xI5kRTeS8oNYlKp0=
+From:   Borislav Petkov <bp@alien8.de>
+To:     "David S. Miller" <davem@davemloft.net>
+Cc:     linux-ide@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] MAINTAINERS: Remove me from IDE/ATAPI section
+Date:   Mon, 12 Apr 2021 11:03:46 +0200
+Message-Id: <20210412090346.31213-1-bp@alien8.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210412082721.GC4372@lst.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:27:21AM +0200, Christoph Hellwig wrote:
-> On Mon, Apr 12, 2021 at 10:00:15AM +0200, Peter Zijlstra wrote:
-> > --- a/drivers/xen/grant-table.c
-> > +++ b/drivers/xen/grant-table.c
-> > @@ -1591,6 +1591,43 @@ int gnttab_init(void)
-> >  }
-> >  EXPORT_SYMBOL_GPL(gnttab_init);
-> >  
-> > +#include <xen/gntdev.h>
-> > +#include "gntdev-common.h"
-> 
-> Can't we keep the includes at the top of the file?
+From: Borislav Petkov <bp@suse.de>
 
-Probably could, lemme move them.
+It has been years since I've touched this and "this" is going away
+anyway... any day now. :-)
+
+So remove me so that I do not get CCed on bugs/patches.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+---
+ MAINTAINERS | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0ec903a142b5..8de7af2d709f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8611,7 +8611,6 @@ F:	drivers/ide/
+ F:	include/linux/ide.h
+ 
+ IDE/ATAPI DRIVERS
+-M:	Borislav Petkov <bp@alien8.de>
+ L:	linux-ide@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/cdrom/ide-cd.rst
+-- 
+2.29.2
+
