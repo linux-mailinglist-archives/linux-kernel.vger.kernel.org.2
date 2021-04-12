@@ -2,341 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF35E35C67C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:42:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 289F835C663
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:35:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241232AbhDLMmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:42:55 -0400
-Received: from todd.t-8ch.de ([159.69.126.157]:50389 "EHLO ned.t-8ch.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237626AbhDLMmy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:42:54 -0400
-X-Greylist: delayed 402 seconds by postgrey-1.27 at vger.kernel.org; Mon, 12 Apr 2021 08:42:53 EDT
-From:   =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=weissschuh.net;
-        s=mail; t=1618230943;
-        bh=rw+YsJkoAwg27DzxQFYkTP7+A9CYPDkmBLhEtuxfF0I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dLipbk08zKkVY94ihzGN7iiNEhvCzszP2sNCUJNME8kbHK4+BxxVmIrjxkj3CIlt2
-         muCC3lC/cFkGD9TSYELcYFeXs4KAb/T1lUwg4SYss9C9KS/KiFr4JkFXXqyU6wAWkt
-         IR2Im8h69k1P3h56dVWS76hWqcYiWYoVHvp1GVOM=
-To:     platform-driver-x86@vger.kernel.org,
-        Mark Gross <mgross@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Barnab=C3=A1s=20P=C5=91cze?= <pobrn@protonmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>,
-        Matthew Garrett <mjg59@srcf.ucam.org>
-Subject: [PATCH v5] platform/x86: add Gigabyte WMI temperature driver
-Date:   Mon, 12 Apr 2021 14:35:13 +0200
-Message-Id: <20210412123513.628901-1-linux@weissschuh.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210410181856.144988-1-linux@weissschuh.net>
-References: <20210410181856.144988-1-linux@weissschuh.net>
+        id S241156AbhDLMgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:36:08 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:51983 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240109AbhDLMgG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:36:06 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 09D7A5C014E;
+        Mon, 12 Apr 2021 08:35:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 12 Apr 2021 08:35:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=gXRqV8SBzOUEy6s2kRO7RBVtuVq
+        HYjHrAwwF/WViEe8=; b=amlg5qwjfAMqwGGbieQiJnc6YJbKF60BVrP4wgJW3A+
+        KllpFCHeet1C9KRLDa39Q6kENNj7Uoh7drwB4tjq5onrQT0d8Hvsq5S93wyHR1Hu
+        YDLCdcl6158DohLUf3CJVqm3x0439aegIWCYV0ClUjdsHQ+wuShd5RD18dHyH6P8
+        2lkEjJQLXgllIeG9kZ+9amTMaR9c/NoNZYCxUC8mvBfnwr9UEXtgDU05Nr03XMsE
+        +wZpGj4vqjcwWYkLBvTA/Pe8IjgT1nqMuwGdPHR31s0IbZybU0I+aOkVgcj1tKMu
+        WUOLmxHav8e+9TgoT5whbQazSpWdOE7dlpaUEIXpXpQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=gXRqV8
+        SBzOUEy6s2kRO7RBVtuVqHYjHrAwwF/WViEe8=; b=skId9yDyLwtzaMc+4SY0CF
+        op0g5x7W/w8S7OK9xgebZrs4q048OwD49rkjnL/aWkqkyLB3k2RgpimfmxhccFy5
+        wxtsYwYGWFW+DlXOlhOjqg0QVWaNctNJ0ZlJ8vpef44sE3pFFWDq+tBDnQdXpNQL
+        iDkVFjh96VoHhNhm/j6zjMUQz7DImnOKhaMi65cSEzFSbBg9CxmbXQjsFYw0xqYB
+        1rzwgUlTAwhH2bcUTq/fTEpWkUpxwlRo2r6DQJ4Hw8AjGv8RDpJv+jeMqGxNddtA
+        JChqFI2lM+MhDLInY3nAwW4MeZstiEVis/vp07h1gBAiHGBueWHACAR+Sti7Mucw
+        ==
+X-ME-Sender: <xms:oz50YI7hGWtcFUOObbQZ2EAFO0IaglfiPbuNvImN5OcNDIdoLaBOTw>
+    <xme:oz50YJ65iDXYDqnCuxFymJV-me2XOtsfXIvw2Cfu36idIcY1k_9iGbUp3Esk_S9W-
+    C_wj-8KjIXL2g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekjedgheehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
+    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
+X-ME-Proxy: <xmx:oz50YHdUA7upxJ_uPm9hpg_8cmuy7mBi4zJgSXiSMKW9UovL_mliCg>
+    <xmx:oz50YNJM5fIxdQBE0EElb-tzzfwDdsLUIkKfosN35k9NLsSyfofk-A>
+    <xmx:oz50YMIlgpj-X9MohjvJbSZ7rbZVwAUpduAQDJ6x0w8yqg6bvh0dlw>
+    <xmx:pD50YGhg9l2kFPIW0r17Fnvi4vDjlzVxY9_Pg8VWw-MEv_LEv195lw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 1CABF240057;
+        Mon, 12 Apr 2021 08:35:47 -0400 (EDT)
+Date:   Mon, 12 Apr 2021 14:35:44 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the usb tree
+Message-ID: <YHQ+oMm7sKKQuWGJ@kroah.com>
+References: <20210412213655.3776e15e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412213655.3776e15e@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested with
-* X570 I Aorus Pro Wifi (rev 1.0)
-* B550M DS3H
-* B550 Gaming X V2 (rev.1.x)
-* Z390 I AORUS PRO WIFI (rev. 1.0)
+On Mon, Apr 12, 2021 at 09:36:55PM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> After merging the usb tree, today's linux-next build (x86_64 almodconfig
+> modules_install) failed like this:
+> 
+> depmod: ERROR: Cycle detected: usbcore -> typec -> usbcore
+> depmod: ERROR: Found 2 modules in dependency cycles!
+> 
+> Caused by commit
+> 
+>   63cd78617350 ("usb: Link the ports to the connectors they are attached to")
+> 
+> I have reverted that commit for today.
 
-Those mainboards contain an ITE chips for management and
-monitoring.
+Ugh, good catch, odd that 0-day didn't catch that :(
 
-They could also be handled by drivers/hwmon/i87.c.
-But the SuperIO range used by i87 is already claimed and used by the
-firmware.
+I'll go revert it in my tree as well.  Heikki, can you send a fixed up
+version when you get a chance?
 
-The following warning is printed at boot:
+thanks,
 
-kernel: ACPI Warning: SystemIO range 0x0000000000000A45-0x0000000000000A46 conflicts with OpRegion 0x0000000000000A45-0x0000000000000A46 (\GSA1.SIO1) (20200528/utaddress-204)
-kernel: ACPI: This conflict may cause random problems and system instability
-kernel: ACPI: If an ACPI driver is available for this device, you should use it instead of the native driver
-
-This driver implements such an ACPI driver.
-
-Unfortunately not all sensor registers are handled by the firmware and even
-less are exposed via WMI.
-
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
----
-
-Changes since v4:
-* Style
-* Wording
-* Alignment of email addresses
----
- MAINTAINERS                         |   6 +
- drivers/platform/x86/Kconfig        |  11 ++
- drivers/platform/x86/Makefile       |   1 +
- drivers/platform/x86/gigabyte-wmi.c | 195 ++++++++++++++++++++++++++++
- 4 files changed, 213 insertions(+)
- create mode 100644 drivers/platform/x86/gigabyte-wmi.c
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d92f85ca831d..7fb5e2ba489b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7543,6 +7543,12 @@ F:	Documentation/filesystems/gfs2*
- F:	fs/gfs2/
- F:	include/uapi/linux/gfs2_ondisk.h
- 
-+GIGABYTE WMI DRIVER
-+M:	Thomas Weißschuh <thomas@weissschuh.net>
-+L:	platform-driver-x86@vger.kernel.org
-+S:	Maintained
-+F:	drivers/platform/x86/gigabyte-wmi.c
-+
- GNSS SUBSYSTEM
- M:	Johan Hovold <johan@kernel.org>
- S:	Maintained
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index ad4e630e73e2..96622a2106f7 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -123,6 +123,17 @@ config XIAOMI_WMI
- 	  To compile this driver as a module, choose M here: the module will
- 	  be called xiaomi-wmi.
- 
-+config GIGABYTE_WMI
-+	tristate "Gigabyte WMI temperature driver"
-+	depends on ACPI_WMI
-+	depends on HWMON
-+	help
-+	  Say Y here if you want to support WMI-based temperature reporting on
-+	  Gigabyte mainboards.
-+
-+	  To compile this driver as a module, choose M here: the module will
-+	  be called gigabyte-wmi.
-+
- config ACERHDF
- 	tristate "Acer Aspire One temperature and fan driver"
- 	depends on ACPI && THERMAL
-diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-index 60d554073749..1621ebfd04fd 100644
---- a/drivers/platform/x86/Makefile
-+++ b/drivers/platform/x86/Makefile
-@@ -15,6 +15,7 @@ obj-$(CONFIG_INTEL_WMI_THUNDERBOLT)	+= intel-wmi-thunderbolt.o
- obj-$(CONFIG_MXM_WMI)			+= mxm-wmi.o
- obj-$(CONFIG_PEAQ_WMI)			+= peaq-wmi.o
- obj-$(CONFIG_XIAOMI_WMI)		+= xiaomi-wmi.o
-+obj-$(CONFIG_GIGABYTE_WMI)		+= gigabyte-wmi.o
- 
- # Acer
- obj-$(CONFIG_ACERHDF)		+= acerhdf.o
-diff --git a/drivers/platform/x86/gigabyte-wmi.c b/drivers/platform/x86/gigabyte-wmi.c
-new file mode 100644
-index 000000000000..bb1b0b205fa7
---- /dev/null
-+++ b/drivers/platform/x86/gigabyte-wmi.c
-@@ -0,0 +1,195 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ *  Copyright (C) 2021 Thomas Weißschuh <thomas@weissschuh.net>
-+ */
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/acpi.h>
-+#include <linux/dmi.h>
-+#include <linux/hwmon.h>
-+#include <linux/module.h>
-+#include <linux/wmi.h>
-+
-+#define GIGABYTE_WMI_GUID	"DEADBEEF-2001-0000-00A0-C90629100000"
-+#define NUM_TEMPERATURE_SENSORS	6
-+
-+static bool force_load;
-+module_param(force_load, bool, 0444);
-+MODULE_PARM_DESC(force_load, "Force loading on unknown platform");
-+
-+static u8 usable_sensors_mask;
-+
-+enum gigabyte_wmi_commandtype {
-+	GIGABYTE_WMI_BUILD_DATE_QUERY       =   0x1,
-+	GIGABYTE_WMI_MAINBOARD_TYPE_QUERY   =   0x2,
-+	GIGABYTE_WMI_FIRMWARE_VERSION_QUERY =   0x4,
-+	GIGABYTE_WMI_MAINBOARD_NAME_QUERY   =   0x5,
-+	GIGABYTE_WMI_TEMPERATURE_QUERY      = 0x125,
-+};
-+
-+struct gigabyte_wmi_args {
-+	u32 arg1;
-+};
-+
-+static int gigabyte_wmi_perform_query(struct wmi_device *wdev,
-+				      enum gigabyte_wmi_commandtype command,
-+				      struct gigabyte_wmi_args *args, struct acpi_buffer *out)
-+{
-+	const struct acpi_buffer in = {
-+		.length = sizeof(*args),
-+		.pointer = args,
-+	};
-+
-+	acpi_status ret = wmidev_evaluate_method(wdev, 0x0, command, &in, out);
-+
-+	if (ACPI_FAILURE(ret))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static int gigabyte_wmi_query_integer(struct wmi_device *wdev,
-+				      enum gigabyte_wmi_commandtype command,
-+				      struct gigabyte_wmi_args *args, u64 *res)
-+{
-+	union acpi_object *obj;
-+	struct acpi_buffer result = { ACPI_ALLOCATE_BUFFER, NULL };
-+	int ret;
-+
-+	ret = gigabyte_wmi_perform_query(wdev, command, args, &result);
-+	if (ret)
-+		return ret;
-+	obj = result.pointer;
-+	if (obj && obj->type == ACPI_TYPE_INTEGER)
-+		*res = obj->integer.value;
-+	else
-+		ret = -EIO;
-+	kfree(result.pointer);
-+	return ret;
-+}
-+
-+static int gigabyte_wmi_temperature(struct wmi_device *wdev, u8 sensor, long *res)
-+{
-+	struct gigabyte_wmi_args args = {
-+		.arg1 = sensor,
-+	};
-+	u64 temp;
-+	acpi_status ret;
-+
-+	ret = gigabyte_wmi_query_integer(wdev, GIGABYTE_WMI_TEMPERATURE_QUERY, &args, &temp);
-+	if (ret == 0) {
-+		if (temp == 0)
-+			return -ENODEV;
-+		*res = (s8)temp * 1000; // value is a signed 8-bit integer
-+	}
-+	return ret;
-+}
-+
-+static int gigabyte_wmi_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-+				   u32 attr, int channel, long *val)
-+{
-+	struct wmi_device *wdev = dev_get_drvdata(dev);
-+
-+	return gigabyte_wmi_temperature(wdev, channel, val);
-+}
-+
-+static umode_t gigabyte_wmi_hwmon_is_visible(const void *data, enum hwmon_sensor_types type,
-+					     u32 attr, int channel)
-+{
-+	return usable_sensors_mask & BIT(channel) ? 0444  : 0;
-+}
-+
-+static const struct hwmon_channel_info *gigabyte_wmi_hwmon_info[] = {
-+	HWMON_CHANNEL_INFO(temp,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT,
-+			   HWMON_T_INPUT),
-+	NULL
-+};
-+
-+static const struct hwmon_ops gigabyte_wmi_hwmon_ops = {
-+	.read = gigabyte_wmi_hwmon_read,
-+	.is_visible = gigabyte_wmi_hwmon_is_visible,
-+};
-+
-+static const struct hwmon_chip_info gigabyte_wmi_hwmon_chip_info = {
-+	.ops = &gigabyte_wmi_hwmon_ops,
-+	.info = gigabyte_wmi_hwmon_info,
-+};
-+
-+static u8 gigabyte_wmi_detect_sensor_usability(struct wmi_device *wdev)
-+{
-+	int i;
-+	long temp;
-+	u8 r = 0;
-+
-+	for (i = 0; i < NUM_TEMPERATURE_SENSORS; i++) {
-+		if (!gigabyte_wmi_temperature(wdev, i, &temp))
-+			r |= BIT(i);
-+	}
-+	return r;
-+}
-+
-+static const struct dmi_system_id gigabyte_wmi_known_working_platforms[] = {
-+	{ .matches = {
-+		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-+		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550 GAMING X V2"),
-+	}},
-+	{ .matches = {
-+		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-+		DMI_EXACT_MATCH(DMI_BOARD_NAME, "B550M DS3H"),
-+	}},
-+	{ .matches = {
-+		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-+		DMI_EXACT_MATCH(DMI_BOARD_NAME, "Z390 I AORUS PRO WIFI-CF"),
-+	}},
-+	{ .matches = {
-+		DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "Gigabyte Technology Co., Ltd."),
-+		DMI_EXACT_MATCH(DMI_BOARD_NAME, "X570 I AORUS PRO WIFI"),
-+	}},
-+	{ }
-+};
-+
-+static int gigabyte_wmi_probe(struct wmi_device *wdev, const void *context)
-+{
-+	struct device *hwmon_dev;
-+
-+	if (!dmi_check_system(gigabyte_wmi_known_working_platforms)) {
-+		if (!force_load)
-+			return -ENODEV;
-+		dev_warn(&wdev->dev, "Forcing load on unknown platform");
-+	}
-+
-+	usable_sensors_mask = gigabyte_wmi_detect_sensor_usability(wdev);
-+	if (!usable_sensors_mask) {
-+		dev_info(&wdev->dev, "No temperature sensors usable");
-+		return -ENODEV;
-+	}
-+
-+	hwmon_dev = devm_hwmon_device_register_with_info(&wdev->dev, "gigabyte_wmi", wdev,
-+							 &gigabyte_wmi_hwmon_chip_info, NULL);
-+
-+	return PTR_ERR_OR_ZERO(hwmon_dev);
-+}
-+
-+static const struct wmi_device_id gigabyte_wmi_id_table[] = {
-+	{ GIGABYTE_WMI_GUID, NULL },
-+	{ }
-+};
-+
-+static struct wmi_driver gigabyte_wmi_driver = {
-+	.driver = {
-+		.name = "gigabyte-wmi",
-+	},
-+	.id_table = gigabyte_wmi_id_table,
-+	.probe = gigabyte_wmi_probe,
-+};
-+module_wmi_driver(gigabyte_wmi_driver);
-+
-+MODULE_DEVICE_TABLE(wmi, gigabyte_wmi_id_table);
-+MODULE_AUTHOR("Thomas Weißschuh <thomas@weissschuh.net>");
-+MODULE_DESCRIPTION("Gigabyte WMI temperature driver");
-+MODULE_LICENSE("GPL");
-
-base-commit: 144c79ef33536b4ecb4951e07dbc1f2b7fa99d32
--- 
-2.31.1
-
+greg k-h
