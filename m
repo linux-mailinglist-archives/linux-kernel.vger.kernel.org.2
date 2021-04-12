@@ -2,107 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42A8235C4C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C46135C4CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239933AbhDLLOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:14:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237520AbhDLLOd (ORCPT
+        id S240052AbhDLLPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:15:53 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38482 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238912AbhDLLPt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:14:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29D28C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 04:14:16 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lVuW5-0004Sw-Oz; Mon, 12 Apr 2021 13:14:05 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lVuW0-0005mo-SS; Mon, 12 Apr 2021 13:14:00 +0200
-Date:   Mon, 12 Apr 2021 13:14:00 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     lee.jones@linaro.org, robh+dt@kernel.org, joel@jms.id.au,
-        andrew@aj.id.au, thierry.reding@gmail.com, p.zabel@pengutronix.de,
-        billy_tasi@aspeedtech.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, BMC-SW@aspeedtech.com
-Subject: Re: [PATCH 4/4] pwm: Add support for aspeed pwm controller
-Message-ID: <20210412111400.w4yafy2r2lcy3qqv@pengutronix.de>
-References: <20210412095457.15095-1-billy_tsai@aspeedtech.com>
- <20210412095457.15095-5-billy_tsai@aspeedtech.com>
+        Mon, 12 Apr 2021 07:15:49 -0400
+Date:   Mon, 12 Apr 2021 11:15:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1618226130;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Zaz73R9w1GqcZ3cTQvrV66yQlVChE6T2iNlE1h9BHg=;
+        b=I+fVz3Ue+2r7baUlNIrNh2ke8fkboYoAzeowI8ZpZwTuZjzl86KvFvBO4F6rJRzLLdMvv4
+        p9aK3H6Wca9fbs/cTJWPjArx3J8ap+w6i8sd9WAh+au7V4h11VQvLdGZ0PDmsjamyvXwdn
+        dGsVYWoX4kVi/hLtXUUrVzj9RUZmjgFcY9Gnt6XwBRxRppbTiNY1qg+VvOoGYxCOqAkwmZ
+        VWe++NCUiR+JNGRq2NVn2zmECFBMOYL8FAA7COEBVIVJvdiqJTQHPiCcW/wxwejKHjbi0t
+        rwsrhHJ8rcbYwYHBdOAXFnVsdCHtw/Y7ct5+izWyRJO7quaCmWHPLojPPWOVQg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1618226130;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Zaz73R9w1GqcZ3cTQvrV66yQlVChE6T2iNlE1h9BHg=;
+        b=YJPDvo5ZUfO9IgORMU6ifWpowpKhWzzPfXFUJkKC9hWQXggZcz+O+NWgaZ+TnL2eRRiW9Y
+        moPRApkYP7A3fhAw==
+From:   "tip-bot2 for Jan Kiszka" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/asm: Ensure asm/proto.h can be included stand-alone
+Cc:     Jan Kiszka <jan.kiszka@siemens.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <b76b4be3-cf66-f6b2-9a6c-3e7ef54f9845@web.de>
+References: <b76b4be3-cf66-f6b2-9a6c-3e7ef54f9845@web.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pd5zmkimjbjbd2ka"
-Content-Disposition: inline
-In-Reply-To: <20210412095457.15095-5-billy_tsai@aspeedtech.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Message-ID: <161822612957.29796.15730791340399984286.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/cleanups branch of tip:
 
---pd5zmkimjbjbd2ka
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     f7b21a0e41171d22296b897dac6e4c41d2a3643c
+Gitweb:        https://git.kernel.org/tip/f7b21a0e41171d22296b897dac6e4c41d2a=
+3643c
+Author:        Jan Kiszka <jan.kiszka@siemens.com>
+AuthorDate:    Sun, 11 Apr 2021 10:12:16 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 12 Apr 2021 13:12:46 +02:00
 
-Hello,
+x86/asm: Ensure asm/proto.h can be included stand-alone
 
-On Mon, Apr 12, 2021 at 05:54:57PM +0800, Billy Tsai wrote:
-> Add support for the pwm controller which can be found at aspeed ast2600
-> soc. This driver is part function of multi-funciton of device "pwm-tach
-> controller".
+Fix:
 
-please squash this into patch 3.
+  ../arch/x86/include/asm/proto.h:14:30: warning: =E2=80=98struct task_struct=
+=E2=80=99 declared \
+    inside parameter list will not be visible outside of this definition or d=
+eclaration
+  long do_arch_prctl_64(struct task_struct *task, int option, unsigned long a=
+rg2);
+                               ^~~~~~~~~~~
 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  drivers/pwm/Kconfig  | 6 ++++++
->  drivers/pwm/Makefile | 1 +
->  2 files changed, 7 insertions(+)
->=20
-> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> index 63be5362fd3a..947ed642debe 100644
-> --- a/drivers/pwm/Kconfig
-> +++ b/drivers/pwm/Kconfig
-> @@ -42,6 +42,12 @@ config PWM_DEBUG
->  	  It is expected to introduce some runtime overhead and diagnostic
->  	  output to the kernel log, so only enable while working on a driver.
-> =20
-> +config PWM_ASPEED_G6
-> +	tristate "ASPEEDG6 PWM support"
+  .../arch/x86/include/asm/proto.h:40:34: warning: =E2=80=98struct task_struc=
+t=E2=80=99 declared \
+    inside parameter list will not be visible outside of this definition or d=
+eclaration
+   long do_arch_prctl_common(struct task_struct *task, int option,
+                                    ^~~~~~~~~~~
 
-No depends?
+if linux/sched.h hasn't be included previously. This fixes a build error
+when this header is used outside of the kernel tree.
 
-Best regards
-Uwe
+ [ bp: Massage commit message. ]
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Signed-off-by: Jan Kiszka <jan.kiszka@siemens.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/b76b4be3-cf66-f6b2-9a6c-3e7ef54f9845@web.de
+---
+ arch/x86/include/asm/proto.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
---pd5zmkimjbjbd2ka
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmB0K3UACgkQwfwUeK3K
-7Alyiwf+N6SdROgVHun0SCHrHCq38m5hqQn38hc8QCylRi+5HR5BhxtwzPttnTSy
-J1GYamjnQlXcnQZ6HBNBxliPG/GC3BAaH1CuD3Vk2SNLR1tGfwe6YJER26VbUCjA
-1FsFgp2d9Cd4xp81NXN/XLpcqKP49hYrkrKRRC6Q+xG8XK6ZgtaY5Bj+RBh1LM9A
-WuEbfXBKgMfEonEc5frH2YEi/DFsevUjX2OKxjmT00vFjdozHYfin+hLJkjxc+f5
-GFNaDYXFiaAZ5b1neOfzpalFrYUCcFQisH49bpSXQf73VBfYdHUWFBPgvpNydnw2
-oZi9GeO285lWrTQ9Fd1kAPmFCkOmbA==
-=SB2c
------END PGP SIGNATURE-----
-
---pd5zmkimjbjbd2ka--
+diff --git a/arch/x86/include/asm/proto.h b/arch/x86/include/asm/proto.h
+index b6a9d51..8c5d191 100644
+--- a/arch/x86/include/asm/proto.h
++++ b/arch/x86/include/asm/proto.h
+@@ -4,6 +4,8 @@
+=20
+ #include <asm/ldt.h>
+=20
++struct task_struct;
++
+ /* misc architecture specific prototypes */
+=20
+ void syscall_init(void);
