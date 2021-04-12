@@ -2,227 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B36FE35D416
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:45:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E7735D429
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243671AbhDLXpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:45:08 -0400
-Received: from mga04.intel.com ([192.55.52.120]:30725 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238646AbhDLXpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:45:07 -0400
-IronPort-SDR: D0qAYcRd3wQ9ON8jZIBvHZFud0VYSgP7Wz5jdxzb1e7mLYUufqkbwiPqxo7h3oufIr0hHSl8hx
- wMou/sIXzj/w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="192170186"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="192170186"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 16:44:43 -0700
-IronPort-SDR: NY65vNL7gMbTsL7ebvY+8mSC4gJ4V9LdqdQzuoeT12E/Yx6yVBw8oRh+dFFQacwY2+rylFL9DV
- OqIVzhaRMPrg==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="424014978"
-Received: from rhweight-wrk1.ra.intel.com ([137.102.106.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 16:44:43 -0700
-Date:   Mon, 12 Apr 2021 16:46:10 -0700 (PDT)
-From:   matthew.gerlach@linux.intel.com
-X-X-Sender: mgerlach@rhweight-WRK1
-To:     "Wu, Hao" <hao.wu@intel.com>
-cc:     "Xu, Yilun" <yilun.xu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        "trix@redhat.com" <trix@redhat.com>,
-        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "russell.h.weight@linux.intel.com" <russell.h.weight@linux.intel.com>
-Subject: RE: [PATCH 2/3] fpga: dfl: Add DFL bus driver for Altera SPI
- Master
-In-Reply-To: <DM6PR11MB381916140583F3C31D66EFC385739@DM6PR11MB3819.namprd11.prod.outlook.com>
-Message-ID: <alpine.DEB.2.22.394.2104121610040.413249@rhweight-WRK1>
-References: <20210405235301.187542-1-matthew.gerlach@linux.intel.com> <20210405235301.187542-3-matthew.gerlach@linux.intel.com> <YGuvFYvJTMPPm2Jy@epycbox.lan> <alpine.DEB.2.22.394.2104060847030.208844@rhweight-WRK1> <YGyQdN9uS/niyFDP@epycbox.lan>
- <DM6PR11MB3819E0FC4F735C72746CE54785749@DM6PR11MB3819.namprd11.prod.outlook.com> <20210408081152.GA2713@yilunxu-OptiPlex-7050> <DM6PR11MB3819317A55FD7798E778EC4D85749@DM6PR11MB3819.namprd11.prod.outlook.com> <20210409013730.GB2713@yilunxu-OptiPlex-7050>
- <DM6PR11MB381912BD810637E0CDA1885F85739@DM6PR11MB3819.namprd11.prod.outlook.com> <20210409054118.GA7986@yilunxu-OptiPlex-7050> <DM6PR11MB381916140583F3C31D66EFC385739@DM6PR11MB3819.namprd11.prod.outlook.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S238399AbhDLXrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:47:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42225 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237250AbhDLXrd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 19:47:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618271234;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wOlYJ8gOWVcLmeEYE6eSkfjpllqClsrslpwu4Ap6W2U=;
+        b=bHom31ebEqfmqM5zkPx1MAN8leARD+8pWSJRi1Ng2tS24P1m6Q5p/Cg10pSkL8tqZ/vEVO
+        b2075k4i5mNkocrM7oYKGk4AO9BePa8meqlOxTitERCWZQMqxUPuTNg8Hsq0Bo97QrbiiJ
+        neZaqQEmj1GqDLCRqi9aVuiouqBEfiM=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-UIKrXYAzO9WcL1cnoMAtew-1; Mon, 12 Apr 2021 19:47:12 -0400
+X-MC-Unique: UIKrXYAzO9WcL1cnoMAtew-1
+Received: by mail-qv1-f70.google.com with SMTP id e10so8978249qvr.17
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 16:47:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=wOlYJ8gOWVcLmeEYE6eSkfjpllqClsrslpwu4Ap6W2U=;
+        b=hoTKPq1MedrQS5qHryjiFLBJptNRvEtrC4PXpLl8bx291CUiY6s6Ha5kwV+QuvDLaP
+         wy8SE7KmRhBI/4Ckux09PmpKJCepMDP/NSTIn+A1sD1ZAYREjKrDzicwpRTZ4YA+1GDG
+         LkTRi/UsI/C3NEk9knQL1Z0cgqSKNKQH7Jkx7P2AkFj3wxfEpm+FzVYROfzJMLY2qnO2
+         CTm9LPLIKRwF/yjBEdvYBmrEK7sjiAceznMuwc3X/8TUqL+qWq7GX7Askv28//WM8AqS
+         tyAHyRUekmgh8FPLYI5/+DnQeblLHPB/RrHjD9EEhE44hCFthtmUcUkrewgu2jppCIeN
+         8Kmw==
+X-Gm-Message-State: AOAM530792cCFjgiGS/98KRPZVbI64s6rU3jvBILECP0B+i6udjIA9VD
+        AS4C1LJFdb7qrO+aByKdpRR6LZHOEJMbinXG0oIPGtCkyJU8GNer9GpF9cWvhMkNtc0pJQJmFpO
+        UIzgt92VE10OCg2MVljOXILPx
+X-Received: by 2002:ac8:7eeb:: with SMTP id r11mr27318618qtc.386.1618271232161;
+        Mon, 12 Apr 2021 16:47:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwt11l4Cmqc8ipKHVN8+7B3+t8Kvpj6xeiTM99PZLhifufYZQq8uWPSWVpgHfhlat2939djGg==
+X-Received: by 2002:ac8:7eeb:: with SMTP id r11mr27318609qtc.386.1618271231937;
+        Mon, 12 Apr 2021 16:47:11 -0700 (PDT)
+Received: from xz-x1 (bras-base-toroon474qw-grc-88-174-93-75-154.dsl.bell.ca. [174.93.75.154])
+        by smtp.gmail.com with ESMTPSA id b83sm3341647qkc.97.2021.04.12.16.47.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 16:47:11 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 19:47:07 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Colascione <dancol@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH 1/9] userfaultfd/hugetlbfs: avoid including
+ userfaultfd_k.h in hugetlb.h
+Message-ID: <20210412234707.GB1002612@xz-x1>
+References: <20210408234327.624367-1-axelrasmussen@google.com>
+ <20210408234327.624367-2-axelrasmussen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210408234327.624367-2-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 08, 2021 at 04:43:19PM -0700, Axel Rasmussen wrote:
+> Minimizing header file inclusion is desirable. In this case, we can do
+> so just by forward declaring the enumeration our signature relies upon.
+> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  include/linux/hugetlb.h | 5 ++++-
+>  mm/hugetlb.c            | 1 +
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index 1d3246b31a41..dfb749eaf348 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -11,7 +11,6 @@
+>  #include <linux/kref.h>
+>  #include <linux/pgtable.h>
+>  #include <linux/gfp.h>
+> -#include <linux/userfaultfd_k.h>
+>  
+>  struct ctl_table;
+>  struct user_struct;
+> @@ -136,6 +135,8 @@ unsigned long hugetlb_total_pages(void);
+>  vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+>  			unsigned long address, unsigned int flags);
+>  #ifdef CONFIG_USERFAULTFD
+> +enum mcopy_atomic_mode;
 
+(I'm not 100% sure, but.. maybe this can be moved even out of ifdef?  Then you
+ can define it once at the top rather than twice?)
 
-On Fri, 9 Apr 2021, Wu, Hao wrote:
+Reviewed-by: Peter Xu <peterx@redhat.com>
 
->> On Fri, Apr 09, 2021 at 12:02:47PM +0800, Wu, Hao wrote:
->>>>>>>>>>> +
->>>>>>>>>>> +static void dfl_spi_altera_remove(struct dfl_device *dfl_dev)
->>>>>>>>>>> +{
->>>>>>>>>>> +struct dfl_altera_spi *aspi = dev_get_drvdata(&dfl_dev->dev);
->>>>>>>>>>> +
->>>>>>>>>>> +platform_device_unregister(aspi->altr_spi);
->>>>>>>>>>> +}
->>>>>>>>>>> +
->>>>>>>>>>> +#define FME_FEATURE_ID_MAX10_SPI        0xe
->>>>>>>>>>> +
->>>>>>>>>>> +static const struct dfl_device_id dfl_spi_altera_ids[] = {
->>>>>>>>>>> +{ FME_ID, FME_FEATURE_ID_MAX10_SPI },
->>>>>>>>>>> +{ }
->>>>>>>>>>> +};
->>>>>>>>>>
->>>>>>>>>> Maybe you can extend the Altera SPI driver with this part?
->>>>>>>>>
->>>>>>>>> The file, drivers/spi/spi-altera.c, already has platform MODULE_
->>>> related
->>>>>>>>> code.  Wouldn't moving this code to that file produce conflicts?
->>>>>>>>
->>>>>>>> I've seen other drivers support multiple busses, so it should be
->>>>>>>> possible, there might be nuances I'm missing in my brief look at this,
->>>>>>>> though.
->>>>>>>>
->>>>>>>> I think one of them would be MODULE_DEVICE_TABLE(platform, ...)
->>>>>>>> and the other one MODULE_DEVICE_TABLE(dfl, ...)
->>>>>>>>
->>>>>>>> See drivers/i2c/busses/i2c-designware-platdrv.c for an example
->> (though
->>>>>>>> they might be guarding against what you describe with CONFIG_OF vs
->>>>>>>> CONFIG_ACPI)
->>>>>>>>
->>>>>>>> If that doesn't work we could split it up into
->>>>>>>>
->>>>>>>> altera-spi-plat.c and altera-spi-dfl.c and altera-spi-core.c
->>>>>>>> or something of that sort?
->>>>>>>>
->>>>>>>> My point being, now that we have a bus, let's use it and develop
->> drivers
->>>>>>>> according to the Linux device model where possible :)
->>>>>>>
->>>>>>> Agree. This does make sense from my side too. DFL core provides the
->>>>>> mechanism
->>>>>>> to enumerate different IPs on FPGA, but each function driver needs to
->> go
->>>> to
->>>>>>> related subsystem for review.  : )
->>>>>>>
->>>>>>> I understand that for FPGA case, it may have some additional logics for
->>>> specific
->>>>>>> purposes based on common altera spi master IP, then additional code
->> for
->>>>>>
->>>>>> I'm wondering if the additional logics are extensions for common spi-
->> altera.
->>>> Like
->>>>>> the
->>>>>> SPI_CORE_PARAMETER register, it is not within the register space of
->>>>>> spi-altera,
->>>>>>
->>>>>>
->>>>>>   |   |      +-------------+
->>>>>>   |DFL|------| +--------+  |
->>>>>>   |BUS|      | |SPI CORE|  |
->>>>>>   |   |      | |PARAM   |  |
->>>>>>   |   |      | +--------+  |
->>>>>>   |   |      |             |
->>>>>>   |   |      | +--------+  |   +-------+
->>>>>>              | |Indirect|  |   |spi    |
->>>>>>              | |access  +--+---|altera |
->>>>>>              | |master  |  |   +-------+
->>>>>>              | +--------+  |
->>>>>>              +-------------+
->>>>>>> a specific product still can be put into altera-spi-xxxx.c or altera-spi-dfl-
->>>> xxxx.c
->>>>>>
->>>>>> So is it proper we integrate this feature into spi-altera? Previously
->>>>>> we have merged the dfl-n3000-nios, its spi part is very similar as
->>>>>> this driver. The dfl-n3000-nios make the spi-altera as a sub device.
->>>>>> Could we borrow the idea, or could we just integrate this driver in
->>>>>> dfl-n3000-nios?
->>>>>
->>>>> Looks like those are enhancements of the IP. They can be applied even
->>>>
->>>> I don't think the extra registers are the enhancement of the IP. They
->>>> are not part of the IP because they are not within the IP's register
->>>> space. They are like some external way of describing the IP like
->>>> Devicetree or ACPI.
->>>
->>> Why adding new registers can't be consider as enhancement, those
->>> changes serve the original IP and make it better, right? small mmio
->>> footprint and parameter registers?
->>>
->>>>
->>>>> other buses are used, not only for DFL, like PCI device or platform device,
->>>>> right? then why not put related code together with the original IP?
->>>>
->>>> The code of devicetree or ACPI parsing are integrated in the IP drivers,
->>>> but for this case, it may not be proper for now, cause this style is not
->>>> formally introduced by any standard. IP specific parameters description
->>>> are not within the scope of DFL now.
->>>
->>> Not sure if I get your point, but it's possible that we add some enhancements
->>> to one IP then driver could be simplified and doesn't need devicetree any more.
->>> For sure, it's IP specific thing, not the scope of DFL.
->>>
->>> Then things become this: extension to IP to allow this IP to be used without
->>> device tree, so that this IP can be used in DFL or PCI or other buses without
->>> device tree?
->>
->> It's good to extend an IP, but it needs a published SPEC and stable
->> register interfaces. For now, the spi-altera driver conforms to the
->> "SPI Core" chapter of the following spec:
->>
->> https://www.intel.com/content/www/us/en/programmable/documentation/sf
->> o1400787952932.html
->>
->> There is no info about the core parameter register and this specific
->> indirect access bus. That's why I don't see these additional parts as
->> the enhancements to spi-altera. This DFL feature is like a wrapper for
->> the spi-altera sub device.
->
-> It really doesn't matter, even if you consider this as an new IP, it's still a SPI
-> Master, it's driver still need to be reviewed in drivers/spi subsystem. The
-> worst case is that we need to write a new spi-xxx.c driver, that's it.
->
-> From DFL part, DFL only can enumerate the common hardware resources,
-> but no good way to help thing like this, specific IP parameters (which handle
-> by devicetree in platform driver). So for some IPs , they still need some
-> extensions to avoid such dependency (on device tree for parameters). I guess
-> we may see more similar cases in the future.
->
-> Anyway, I think we reached agreement that for device drivers on DFL bus, it
-> needs to be reviewed in its own subsystem. : )
+-- 
+Peter Xu
 
-Yes, I agree that device drivers on the DFL bus should go in the 
-appropriate the directory of the appropriate  framework.  As Moritz has 
-pointed out there are already examples bus specific driver code, for 
-multiple buses, being the driver framework directory (e.g. Designware 
-I2C).
-
-In this particular case, the Device Feature is wraps a particular 
-instantiation of an Altera SPI Master controller.  As Yilun pointed out, this 
-wrapper has a SPI_CORE_PARAMETER register which contains the values 
-of all the configuration parameters of the Altera SPI Master IP block. 
-This kind of information would also be included in a Device Tree 
-description of the instantiation. The Device Feature also implements 
-indirect register access to the actual registers of the Altera SPI Master 
-that provides a bridge from the PCIe bus to the Avalon Slave containing 
-the registers of the Altera SPI Master.
-
-Given the Device Feature wraps an Altera SPI Master, it might still make 
-sense for the DFL driver to instantiate a sub driver instance for the 
-Altera SPI Master.  I will resubmit the current patches with 
-drivers/fpga/dfl-spi-altera.c moved to drivers/spi/spi-altera-dfl.c for 
-feedback from the SPI maintainers and continue investigating collapsing 
-the DFL driver and the platform sub-driver into a single DFL driver.  My 
-first attempt did not go well.
-
-Matthew
-
-directory of the app >
-> Thanks
-> Hao
->
->>
->> Thanks
->> Yilun
->
