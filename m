@@ -2,86 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD6F35C566
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25B935C572
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240665AbhDLLhV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:37:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237829AbhDLLhU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:37:20 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A03C061574;
-        Mon, 12 Apr 2021 04:37:01 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FJmt23Wyfz9sSC;
-        Mon, 12 Apr 2021 21:36:58 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1618227419;
-        bh=5Tm82joAyQGhlRVkligE/W4B7Of7AjerYJW8diN4MEA=;
-        h=Date:From:To:Cc:Subject:From;
-        b=d9Qt/wPwTc109NqOXowwdC81si7i/pdRFKgKJ4uXHlUVUXuX6TXSIkC6LPMxU5UP8
-         N2xOH8mhxzxDCsAWNbHWGSFHmqiPpT7jmuAV8wVQt0989g3Wjd7pv7ocLTPYoiZdbJ
-         N2oOgSQkH4RfvWKI7Unigbk18+o/MYM3QBkoewcQoJNSUwy9Skvd2iYUBZWyAJeLCm
-         A3y5Kn5v0KXpIYsGF2ypTS0cumFDrDW24YFLR9XpGwJXOpYZLZmbwT+nGp6pRY42qT
-         an5sVj+eNDra7aUAtIJVz3pH3VcE7x3r5et4rNBk/gTt4Sxgg6mWl8iwlBjh1cxV/a
-         mWe17nqb8q4Cg==
-Date:   Mon, 12 Apr 2021 21:36:55 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the usb tree
-Message-ID: <20210412213655.3776e15e@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/oOe35JQYRW0UFf2GvQRqcgu";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S237993AbhDLLma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:42:30 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:26535 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231138AbhDLLm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 07:42:29 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FJmzx3N7pz9tyR2;
+        Mon, 12 Apr 2021 13:42:05 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id gwNBqBJ8OgoL; Mon, 12 Apr 2021 13:42:05 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FJmzx1sDRz9tyQT;
+        Mon, 12 Apr 2021 13:42:05 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4F2028B78E;
+        Mon, 12 Apr 2021 13:42:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id i_JtluxN8LDA; Mon, 12 Apr 2021 13:42:10 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 0BD758B78D;
+        Mon, 12 Apr 2021 13:42:10 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id D59F967A06; Mon, 12 Apr 2021 11:42:09 +0000 (UTC)
+Message-Id: <857ceb23b6a614aea2522e770b067593d5f9e906.1618227677.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 1/4] powerpc: Remove probe_user_read_inst()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, jniethe5@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 12 Apr 2021 11:42:09 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/oOe35JQYRW0UFf2GvQRqcgu
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Its name comes from former probe_user_read() function.
+That function is now called copy_from_user_nofault().
 
-Hi all,
+probe_user_read_inst() uses copy_from_user_nofault() to read only
+a few bytes. It is suboptimal.
 
-After merging the usb tree, today's linux-next build (x86_64 almodconfig
-modules_install) failed like this:
+It does the same as get_user_inst() but in addition disables
+page faults.
 
-depmod: ERROR: Cycle detected: usbcore -> typec -> usbcore
-depmod: ERROR: Found 2 modules in dependency cycles!
+But on the other hand, it is not used for the time being. So remove it
+for now. If one day it is really needed, we can give it a new name
+more in line with today's naming, and implement it using get_user_inst()
 
-Caused by commit
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/inst.h |  3 ---
+ arch/powerpc/lib/inst.c         | 31 -------------------------------
+ 2 files changed, 34 deletions(-)
 
-  63cd78617350 ("usb: Link the ports to the connectors they are attached to=
-")
+diff --git a/arch/powerpc/include/asm/inst.h b/arch/powerpc/include/asm/inst.h
+index 19e18af2fac9..2902d4e6a363 100644
+--- a/arch/powerpc/include/asm/inst.h
++++ b/arch/powerpc/include/asm/inst.h
+@@ -175,9 +175,6 @@ static inline char *__ppc_inst_as_str(char str[PPC_INST_STR_LEN], struct ppc_ins
+ 	__str;				\
+ })
+ 
+-int probe_user_read_inst(struct ppc_inst *inst,
+-			 struct ppc_inst __user *nip);
+-
+ int probe_kernel_read_inst(struct ppc_inst *inst,
+ 			   struct ppc_inst *src);
+ 
+diff --git a/arch/powerpc/lib/inst.c b/arch/powerpc/lib/inst.c
+index 9cc17eb62462..c57b3548de37 100644
+--- a/arch/powerpc/lib/inst.c
++++ b/arch/powerpc/lib/inst.c
+@@ -9,24 +9,6 @@
+ #include <asm/ppc-opcode.h>
+ 
+ #ifdef CONFIG_PPC64
+-int probe_user_read_inst(struct ppc_inst *inst,
+-			 struct ppc_inst __user *nip)
+-{
+-	unsigned int val, suffix;
+-	int err;
+-
+-	err = copy_from_user_nofault(&val, nip, sizeof(val));
+-	if (err)
+-		return err;
+-	if (get_op(val) == OP_PREFIX) {
+-		err = copy_from_user_nofault(&suffix, (void __user *)nip + 4, 4);
+-		*inst = ppc_inst_prefix(val, suffix);
+-	} else {
+-		*inst = ppc_inst(val);
+-	}
+-	return err;
+-}
+-
+ int probe_kernel_read_inst(struct ppc_inst *inst,
+ 			   struct ppc_inst *src)
+ {
+@@ -45,19 +27,6 @@ int probe_kernel_read_inst(struct ppc_inst *inst,
+ 	return err;
+ }
+ #else /* !CONFIG_PPC64 */
+-int probe_user_read_inst(struct ppc_inst *inst,
+-			 struct ppc_inst __user *nip)
+-{
+-	unsigned int val;
+-	int err;
+-
+-	err = copy_from_user_nofault(&val, nip, sizeof(val));
+-	if (!err)
+-		*inst = ppc_inst(val);
+-
+-	return err;
+-}
+-
+ int probe_kernel_read_inst(struct ppc_inst *inst,
+ 			   struct ppc_inst *src)
+ {
+-- 
+2.25.0
 
-I have reverted that commit for today.
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/oOe35JQYRW0UFf2GvQRqcgu
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB0MNcACgkQAVBC80lX
-0GxLJQf/Qn84/tY2Fid1bb1Ro8nWvSiXzL9KsXZ/EiCGKCCWLBRaJ5y1ZWFwluuH
-DWsV1yAhF1Gpg53gBT7DkABO7hfgkqHF6Kq2WOXjaaqMlQBvkPXIgmSaV0sAyjW3
-BRMQ70/0hrAbz5jSaAJLhK9yy4J9vD0dlb8hDa/E+cS47vIZ/rg/NydbSpQ0mD05
-ytSiEVFnSKs9AslVQ5ksx3uvcgDgnBsgmawFtw4B5lYosPizkZAKOjhRoXYyDbve
-ugkNIoJZ5bEJD9msYMCCfag+y4haXZoCscsrG6u5+xWfDdYNf8KtthHQCEEUsXuU
-7l7kBTPm2BOYMiumDF5rOpELps8dWg==
-=a1iN
------END PGP SIGNATURE-----
-
---Sig_/oOe35JQYRW0UFf2GvQRqcgu--
