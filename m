@@ -2,95 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F56E35BA49
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 08:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B821935BA4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 08:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236604AbhDLGtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 02:49:24 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:44405 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229461AbhDLGtU (ORCPT
+        id S230425AbhDLGvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 02:51:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236658AbhDLGvO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 02:49:20 -0400
-X-UUID: 98d1fea8274b4564a83a3655d427fd58-20210412
-X-UUID: 98d1fea8274b4564a83a3655d427fd58-20210412
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 954585324; Mon, 12 Apr 2021 14:49:01 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 12 Apr 2021 14:49:00 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 12 Apr 2021 14:48:59 +0800
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>, <yong.wu@mediatek.com>,
-        <youlin.pei@mediatek.com>, <anan.sun@mediatek.com>,
-        <chao.hao@mediatek.com>, Valdis Kletnieks <valdis.kletnieks@vt.edu>
-Subject: [PATCH 2/2] iommu/mediatek-v1: Add error handle for mtk_iommu_probe
-Date:   Mon, 12 Apr 2021 14:48:43 +0800
-Message-ID: <20210412064843.11614-2-yong.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210412064843.11614-1-yong.wu@mediatek.com>
-References: <20210412064843.11614-1-yong.wu@mediatek.com>
+        Mon, 12 Apr 2021 02:51:14 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13569C061574;
+        Sun, 11 Apr 2021 23:50:57 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id a11so10272802ioo.0;
+        Sun, 11 Apr 2021 23:50:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vTiwfWDOHL0R66lm8M4vbR6GCdZy+DYNlhfLSATExuk=;
+        b=GJzbzibedz+7aY9jZN6YF4quPTvBPMyZUx1znx7VsIVcfIcVRzZS/MP/kSXCKKDwx0
+         FThm7lqBMMXqBaDIytRbt2QCabN1XcUHOE3ObdJ/Rbk+ROh8JIOUlkDfQDeLseHoNfEu
+         SCZOQo2ZWrQFZb7RiIYMbSHQS0Xcg8QDji8/UzZEKfFGCvIuBFwzBZFJM1DBkNl0QEco
+         qO3g8hgm+5s0KBDYniLFGJ62I/ryN9VgBLeCEQ9V/aoNEX2dIN3P8LL6xRvaM8QolBGi
+         MeK2KdH01VCnnSiA/YaTei4xHpydDlmFyXH7Qjzo8iNjmA843N95RpdaSzKy5NMkSVd9
+         LhjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vTiwfWDOHL0R66lm8M4vbR6GCdZy+DYNlhfLSATExuk=;
+        b=hRBsJkps5R2trehG9IU50sKenVkLA7RMeeuEcGKOrwSW/CuvbNCNmemnmoMwm4PrMx
+         JuEw20K5AdcMVu6xpJhZaRaVQ62Vcgzn9IFO9SJ53Og0jC4To+zNqohMwrVYpA0o2Q2e
+         ZiZfaymJVM0UAXGr1IC3goLNM1ynlwUhVpmIq88BqccVn9gvQsqp43RZVQwjeNsHKtuV
+         WCVMzsAoYHnaSbDjsCMhUDxiQTQwfZF1BeLCFU+pYL4ntGN93Z8PhUfEantPuMAHtDlQ
+         e/LWuy3GZXqz7e5hKi4nFp7SKU8Sf3afAF6oZNQthWpZ+csW++sDeIvWNZPlYNASsPN6
+         byvQ==
+X-Gm-Message-State: AOAM533znl/ejFdnbA51OWLceoz/qpEIE5/weHHGePEyaL2UkVkWsu4P
+        hQbaoj5b/irEsJzY/NP0W103nbmlg5gXydjzFSE=
+X-Google-Smtp-Source: ABdhPJxlyRnpoW02tNdPtMyBwwWqJdEg+3sjQ9g7WBfcw7TH5Nf8/eBNmWPLcWbE3pzHxE9OzUBoKpiSB+Z47zRnNDk=
+X-Received: by 2002:a05:6638:d47:: with SMTP id d7mr26785946jak.2.1618210256515;
+ Sun, 11 Apr 2021 23:50:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+References: <1618202061-8243-1-git-send-email-dillon.minfei@gmail.com> <YHPgGI6EmTzmVH7g@kroah.com>
+In-Reply-To: <YHPgGI6EmTzmVH7g@kroah.com>
+From:   dillon min <dillon.minfei@gmail.com>
+Date:   Mon, 12 Apr 2021 14:50:20 +0800
+Message-ID: <CAL9mu0Lt-3_O7V5HLxd5Hbt9afx9ryBUzWqmsc+2n3SP7JS6ig@mail.gmail.com>
+Subject: Re: [PATCH] serial: stm32: optimize spin lock usage
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     jirislaby@kernel.org, Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
+        linux-serial@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the original code, we lack the error handle. This patch adds them.
+Hi Greg=EF=BC=8C
 
-Signed-off-by: Yong Wu <yong.wu@mediatek.com>
----
- drivers/iommu/mtk_iommu_v1.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+Thanks for the quick response, please ignore the last private mail.
 
-diff --git a/drivers/iommu/mtk_iommu_v1.c b/drivers/iommu/mtk_iommu_v1.c
-index bed0bb9d63fd..8ba9a2ec5509 100644
---- a/drivers/iommu/mtk_iommu_v1.c
-+++ b/drivers/iommu/mtk_iommu_v1.c
-@@ -620,12 +620,26 @@ static int mtk_iommu_probe(struct platform_device *pdev)
- 
- 	ret = iommu_device_register(&data->iommu);
- 	if (ret)
--		return ret;
-+		goto out_sysfs_remove;
- 
--	if (!iommu_present(&platform_bus_type))
--		bus_set_iommu(&platform_bus_type,  &mtk_iommu_ops);
-+	if (!iommu_present(&platform_bus_type)) {
-+		ret = bus_set_iommu(&platform_bus_type,  &mtk_iommu_ops);
-+		if (ret)
-+			goto out_dev_unreg;
-+	}
- 
--	return component_master_add_with_match(dev, &mtk_iommu_com_ops, match);
-+	ret = component_master_add_with_match(dev, &mtk_iommu_com_ops, match);
-+	if (ret)
-+		goto out_bus_set_null;
-+	return ret;
-+
-+out_bus_set_null:
-+	bus_set_iommu(&platform_bus_type, NULL);
-+out_dev_unreg:
-+	iommu_device_unregister(&data->iommu);
-+out_sysfs_remove:
-+	iommu_device_sysfs_remove(&data->iommu);
-+	return ret;
- }
- 
- static int mtk_iommu_remove(struct platform_device *pdev)
--- 
-2.18.0
+On Mon, Apr 12, 2021 at 1:52 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Mon, Apr 12, 2021 at 12:34:21PM +0800, dillon.minfei@gmail.com wrote:
+> > From: dillon min <dillon.minfei@gmail.com>
+> >
+> > To avoid potential deadlock in spin_lock usage, change to use
+> > spin_lock_irqsave(), spin_unlock_irqrestore() in process(thread_fn) con=
+text.
+> > spin_lock(), spin_unlock() under handler context.
+> >
+> > remove unused local_irq_save/restore call.
+> >
+> > Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> > ---
+> > Was verified on stm32f469-disco board. need more test on stm32mp platfo=
+rm.
+> >
+> >  drivers/tty/serial/stm32-usart.c | 27 +++++++++++++++++----------
+> >  1 file changed, 17 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm3=
+2-usart.c
+> > index b3675cf25a69..c4c859b34367 100644
+> > --- a/drivers/tty/serial/stm32-usart.c
+> > +++ b/drivers/tty/serial/stm32-usart.c
+> > @@ -214,7 +214,7 @@ static void stm32_usart_receive_chars(struct uart_p=
+ort *port, bool threaded)
+> >       struct tty_port *tport =3D &port->state->port;
+> >       struct stm32_port *stm32_port =3D to_stm32_port(port);
+> >       const struct stm32_usart_offsets *ofs =3D &stm32_port->info->ofs;
+> > -     unsigned long c;
+> > +     unsigned long c, flags;
+> >       u32 sr;
+> >       char flag;
+> >
+> > @@ -276,9 +276,17 @@ static void stm32_usart_receive_chars(struct uart_=
+port *port, bool threaded)
+> >               uart_insert_char(port, sr, USART_SR_ORE, c, flag);
+> >       }
+> >
+> > -     spin_unlock(&port->lock);
+> > +     if (threaded)
+> > +             spin_unlock_irqrestore(&port->lock, flags);
+> > +     else
+> > +             spin_unlock(&port->lock);
+>
+> You shouldn't have to check for this, see the other patches on the list
+> recently that fixed this up to not be an issue for irq handlers.
+Can you help to give more hints, or the commit id of the patch which
+fixed this. thanks.
 
+I'm still confused with this.
+
+The stm32_usart_threaded_interrupt() is a kthread context, once
+port->lock holds by this function, another serial interrupts raised,
+such as USART_SR_TXE,stm32_usart_interrupt() can't get the lock,
+there will be a deadlock. isn't it?
+
+ So, shouldn't I use spin_lock{_irqsave} according to the caller's context =
+?
+
+There is a bug in this patch, the variable flags should be a global variabl=
+e.
+
+Thanks.
+
+Dillon,
+>
+> thanks,
+>
+> greg k-h
