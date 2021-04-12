@@ -2,109 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B81D35C3C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D12835C3EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239153AbhDLKXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56972 "EHLO
+        id S238385AbhDLK1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238442AbhDLKX3 (ORCPT
+        with ESMTP id S237753AbhDLK1A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:23:29 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB12C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 03:23:09 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id bx20so13244873edb.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 03:23:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=aDYfwXOX7CXJC5km5DlusEFEF+Nl5xWOkbGcpQvebPk=;
-        b=dpot/PDuWTxI0+YsjLFgYLzDEj6vgBZZXMNrC5eNX2r5KNR9iKUMwbnVJ3BjT1vNex
-         wSvgO0xYpng6v2cvxlxxCRq11pcF/DE7hoSDUMbKXRYT5KekR45y2Nq3ysC2ZIpwD60A
-         x+KcjDBwQquu8oosqncOGLRy67S0T+CGgm5HKD0eYbk3vjCK16gkdUWxSGGMFA3Gw2th
-         ddF2dtSOkIIa4diivQ++lhGNuGwicsn/6RariSY8/whcfMdjuc+3Z34zZ9WM2DMKn7WP
-         fzyFLCHBvMhd4M8K/hPezvjDvD0xXIUs4cBCHSOoMqUHN0fT7ioOasbstn/+FxMfg4Ey
-         Q+bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=aDYfwXOX7CXJC5km5DlusEFEF+Nl5xWOkbGcpQvebPk=;
-        b=PxizssdnFnryEZ17hctixHwwh4bO1Lm87Su1hBiIlYInnrcw4Ze0oj67Tdq0AjNezk
-         csLZf+jjMfDjpO8qrtGxxxgRfbLUsvIEblcDUFU+ZQDectQ1SI1cTbxdW0RFyC5eOUAV
-         mXQsEnwzNTBoveptIrDFPGdALwCULEV2sjYWG9QS7DubvTRERht8ULFvJfXvf677eYwh
-         AedpGZcC67mDHUHXjlV0sYTIhSYK8pSiTXldN3EuUW4h9Ij+JMmg0Q+kxvqXCaRkzc6o
-         O3RGL+7FS924F292v0EY427WIIAvXOjyPbo+g7z596Xqqv1p04FnWw2uvHDJphUs4uMd
-         4Fjw==
-X-Gm-Message-State: AOAM5334+CeWZdd5uESl2Mmkmv602EVfR656lo+ZdKQ4gmBi1OnUiEVX
-        LMI3jB9cvAjMPgD8QmNM+Ho=
-X-Google-Smtp-Source: ABdhPJzcBYWukqy9abedu05uFLTelTQXauXhdaT4/d0FJPiqlSsW5qbhAnCE5YHP5PV2lJdpDCi/2g==
-X-Received: by 2002:a05:6402:2691:: with SMTP id w17mr21565207edd.81.1618222988753;
-        Mon, 12 Apr 2021 03:23:08 -0700 (PDT)
-Received: from linux.local (host-95-237-55-30.retail.telecomitalia.it. [95.237.55.30])
-        by smtp.gmail.com with ESMTPSA id w13sm6134925edc.81.2021.04.12.03.23.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 03:23:08 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] staging: rtl8192u: Remove variable set but not used
-Date:   Mon, 12 Apr 2021 12:23:07 +0200
-Message-ID: <269706412.I7xuoi7Q6o@linux.local>
-In-Reply-To: <YHQTY4fGJfsdSjXL@kroah.com>
-References: <20210411174143.31618-1-fmdefrancesco@gmail.com> <YHQTY4fGJfsdSjXL@kroah.com>
+        Mon, 12 Apr 2021 06:27:00 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFE7C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 03:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qiadfzOkn3tanB+NQUaDa6bVg6XWuY1aPhWoDbB0gPg=; b=oqGZJAZ1AgQYSJdsycsM/lLHMU
+        2nTPWbyTv2fTd+14+RQ3SUjZ37CTasoqIDU1wUc1QG+3lDpVUO10PEavZkFPuKMHS8tEJwqjyTjGB
+        +ocWWwqORAFi+qeLW+cT/n9H2Sl+B/PtlXUL6rjuvJ0tBfLWsxxKE9EKCELsrvrn52PkVGR2y9SGG
+        8W3QTXpO09++pUngGxzj5RK1HTjBqdU2/TQXACGcpdXceMusKzzeWiKmYt6Q/1CE4z+lNgroFIsCm
+        lyf4RZwlZKdau5C1zbVX2W3cFjgzGjlbELhdCXgC2CbQ+9fZJbLP6spGaU0KeycI/RtP+GEuH7PhL
+        N5aeu0bA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lVtlu-004BjW-QB; Mon, 12 Apr 2021 10:26:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 73753300033;
+        Mon, 12 Apr 2021 12:26:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4F8D620224205; Mon, 12 Apr 2021 12:26:22 +0200 (CEST)
+Date:   Mon, 12 Apr 2021 12:26:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, mgorman@suse.de, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+        joshdon@google.com, valentin.schneider@arm.com
+Cc:     linux-kernel@vger.kernel.org, greg@kroah.com,
+        linux@rasmusvillemoes.dk
+Subject: Re: [PATCH v2 9/9] sched,fair: Alternative sched_slice()
+Message-ID: <YHQgTtaXnMjzBUXB@hirez.programming.kicks-ass.net>
+References: <20210412101421.609526370@infradead.org>
+ <20210412102001.611897312@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412102001.611897312@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, April 12, 2021 11:31:15 AM CEST Greg KH wrote:
-> On Sun, Apr 11, 2021 at 07:41:43PM +0200, Fabio M. De Francesco wrote:
-> > Remove variable "int ret" which is instantiated but not used.
-> > 
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> > 
-> >  drivers/staging/rtl8192u/r8192U_core.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> > 
-> > diff --git a/drivers/staging/rtl8192u/r8192U_core.c
-> > b/drivers/staging/rtl8192u/r8192U_core.c index
-> > f48186a89fa1..30055de66239 100644
-> > --- a/drivers/staging/rtl8192u/r8192U_core.c
-> > +++ b/drivers/staging/rtl8192u/r8192U_core.c
-> > @@ -902,7 +902,6 @@ static void rtl8192_hard_data_xmit(struct sk_buff
-> > *skb, struct net_device *dev,> 
-> >  				   int rate)
-> >  
-> >  {
-> >  
-> >  	struct r8192_priv *priv = (struct r8192_priv 
-*)ieee80211_priv(dev);
-> > 
-> > -	int ret;
-> > 
-> >  	unsigned long flags;
-> >  	struct cb_desc *tcb_desc = (struct cb_desc *)(skb->cb +
-> >  	MAX_DEV_ADDR_SIZE); u8 queue_index = tcb_desc->queue_index;
-> 
-> Did you test-build this patch?
->
-Sorry, I don't know why I forgot to test it.
-I realized that this morning when I read a message from the kernel test 
-robot.
-I'll be more careful with future patches.
+On Mon, Apr 12, 2021 at 12:14:30PM +0200, Peter Zijlstra wrote:
+> @@ -697,6 +703,10 @@ static u64 sched_slice(struct cfs_rq *cf
+>  		}
+>  		slice = __calc_delta(slice, se->load.weight, load);
+>  	}
+> +
+> +	if (sched_feat(BASE_SLICE))
+> +		slice = min(slice, (u64)sysctl_sched_min_granularity);
 
-Thanks,
-
-Fabio
-
-
+*Groan*... clearly that should be max().
 
 
