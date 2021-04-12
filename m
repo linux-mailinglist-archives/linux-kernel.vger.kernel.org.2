@@ -2,87 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBFE35C2D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B034335C2ED
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243950AbhDLJvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:51:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55950 "EHLO mail.kernel.org"
+        id S240988AbhDLJxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:53:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55990 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241395AbhDLJjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:39:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 080BA6120F;
-        Mon, 12 Apr 2021 09:38:50 +0000 (UTC)
+        id S241741AbhDLJj2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:39:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4647C61244;
+        Mon, 12 Apr 2021 09:39:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618220331;
-        bh=5XCbpQ2jaq37pFKegsSHbOMkbKZ0wG2OYWzBu2rU7QE=;
+        s=korg; t=1618220350;
+        bh=PUMF/0c1yluMKRRDaOsZ7nkcPqnaJzxIUF2KhkjqHl0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UpNbq3qLa8usFfqRYPlgHES2fkwyykMg6KuAhcpbAnUYVZ8SIEuPywnWyZwzxv4eW
-         Hzs/o7rE0C3fwz2x1bB9hUx6b0ZvgAmf2+XJYwgSwyVPW6LZNtSOAYh8yh8CCuchYC
-         Odu/4iEb19OVqB7jexNpiZ3UDq06fg4xs6S5FUHc=
-Date:   Mon, 12 Apr 2021 11:38:48 +0200
+        b=Oet6HkAWe7zz2BTRO3nHxgFToo+cQoXWbaqgHZvutrBYhHd72hvPMyg+kB4bH1GAN
+         NNioI/F0G/5w4BXkcLzYtbA4Brag6n6A/IMsanILx/ESAYgzoctc9TxTHBx9DXs2If
+         CAD78GcskslXyXULD/kLD8psEguCyiRxuRPAa1/M=
+Date:   Mon, 12 Apr 2021 11:39:08 +0200
 From:   Greg KH <gregkh@linuxfoundation.org>
 To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 1/3] staging: rtl8723bs: remove unused variable ret in
- hal/sdio_halinit.c
-Message-ID: <YHQVKPOoGS3auAeQ@kroah.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] staging rtl8723bs: split long lines
+Message-ID: <YHQVPG7O2F7ofoO3@kroah.com>
 References: <cover.1618145345.git.fabioaiuto83@gmail.com>
- <fbba90b0c8fb9f65b0dc7bc0b02560724a5502ab.1618145345.git.fabioaiuto83@gmail.com>
+ <014291a522569d0450bf9ba6452497d812b4caab.1618145345.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fbba90b0c8fb9f65b0dc7bc0b02560724a5502ab.1618145345.git.fabioaiuto83@gmail.com>
+In-Reply-To: <014291a522569d0450bf9ba6452497d812b4caab.1618145345.git.fabioaiuto83@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Apr 11, 2021 at 02:57:35PM +0200, Fabio Aiuto wrote:
-> fix following compiler warning issue:
+On Sun, Apr 11, 2021 at 02:57:36PM +0200, Fabio Aiuto wrote:
+> fix following post-commit hook checkpatch issues:
 > 
->    drivers/staging/rtl8723bs/hal/sdio_halinit.c:
->  In function 'CardDisableRTL8723BSdio':
-> >> drivers/staging/rtl8723bs/hal/sdio_halinit.c:881:5:
-> warning: variable 'ret' set but not used [-Wunused-but-set-variable]
->      881 |  u8 ret = _FAIL;
->          |     ^~~
+> WARNING: line length of 116 exceeds 100 columns
+> 30: FILE: drivers/staging/rtl8723bs/hal/sdio_halinit.c:883:
+> +	HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK,
+> PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_enter_lps_flow);
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
+> WARNING: line length of 119 exceeds 100 columns
+> 41: FILE: drivers/staging/rtl8723bs/hal/sdio_halinit.c:912:
+> +	HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK,
+> PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_card_disable_flow);
+> 
 > Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 > ---
->  drivers/staging/rtl8723bs/hal/sdio_halinit.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/hal/sdio_halinit.c b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-> index 2098384efe92..936181a73d73 100644
-> --- a/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-> +++ b/drivers/staging/rtl8723bs/hal/sdio_halinit.c
-> @@ -878,10 +878,9 @@ static void CardDisableRTL8723BSdio(struct adapter *padapter)
->  {
->  	u8 u1bTmp;
->  	u8 bMacPwrCtrlOn;
-> -	u8 ret = _FAIL;
->  
->  	/*  Run LPS WL RFOFF flow */
-> -	ret = HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_enter_lps_flow);
-> +	HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_enter_lps_flow);
->  
->  	/* 	==== Reset digital sequence   ====== */
->  
-> @@ -909,9 +908,8 @@ static void CardDisableRTL8723BSdio(struct adapter *padapter)
->  	/* 	==== Reset digital sequence end ====== */
->  
->  	bMacPwrCtrlOn = false;	/*  Disable CMD53 R/W */
-> -	ret = false;
->  	rtw_hal_set_hwreg(padapter, HW_VAR_APFM_ON_MAC, &bMacPwrCtrlOn);
-> -	ret = HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_card_disable_flow);
-> +	HalPwrSeqCmdParsing(padapter, PWR_CUT_ALL_MSK, PWR_FAB_ALL_MSK, PWR_INTF_SDIO_MSK, rtl8723B_card_disable_flow);
->  }
+>  drivers/staging/rtl8723bs/hal/sdio_halinit.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 
-Why isn't the return value being checked and returned to the caller if
-something goes wrong?  Ignoring it feels wrong to me.
+You forgot a ':' in your subject line :(
 
-thanks,
-
-greg k-h
