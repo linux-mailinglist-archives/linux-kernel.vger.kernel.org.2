@@ -2,157 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63C535C70B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:09:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1011D35C70D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241717AbhDLNJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:09:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241661AbhDLNJp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:09:45 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57B13C061574;
-        Mon, 12 Apr 2021 06:09:27 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 13:09:24 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1618232966;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lHX2Vmkq/amSHVQbX2220WI83Gezgw89KYaGdbOBMAw=;
-        b=K8yVnXroAiLpmnrA92kYwi4DE4ECi4syaLqHtwcPR19wvTPEOBHmmnLmd+toCAtnTcxOHq
-        Eh8PaWyoxvlUz9cT5wvav7gaUR8Dvi7xfQjq+6rpVPnc90meiMJp1LqmX+fdJEj39DsdNY
-        gmzvBxVRhzY57r6O1M2SpnUKqyQvJppSUHN7NIKclYaxQz2yMmB355/VJKgn88hOtnvMUa
-        mGk+QRP/tCB/QH9bkEbgDM4HTMpVb3OFTVYsHzE2jBIe8L1AxAhoQ0NqS2oASaUPCVGEMQ
-        +j59DiIA2VQ0mpoKNBtxIaEqj+k00UbBN/+zgxmh1GoTkteCyOkrUwSwX9Gb5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1618232966;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lHX2Vmkq/amSHVQbX2220WI83Gezgw89KYaGdbOBMAw=;
-        b=1A5zf1rUHVoxppEyrlrGBX/evkogVZ7J/5EvfOra3onJJLiG3z002z2n2rh8C+iJLTRiPr
-        OEqd0wstcC/KsUBw==
-From:   "tip-bot2 for Mike Travis" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/platform] x86/platform/uv: Use x2apic enabled bit as set by
- BIOS to indicate APIC mode
-Cc:     Mike Travis <mike.travis@hpe.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210408160047.1703-1-mike.travis@hpe.com>
-References: <20210408160047.1703-1-mike.travis@hpe.com>
+        id S241736AbhDLNJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:09:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241719AbhDLNJs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 09:09:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7487610CA;
+        Mon, 12 Apr 2021 13:09:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618232970;
+        bh=L3N68V2eqg7gh+TZ25IVywa5xY3+wRDh60JE2ZwBUkM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fN7ebk2LpV6guxWoT8wq2ePE/7dh5iBu3WzFAu+Jz657ynNGQ/+erfvkiSBESEnoA
+         znvdasyQ2qGqacznxHrU0arlN0r1SjVY8AuI/T3roEtLlNnPDJMiz4r9xSBXJBjjLq
+         jAdOACXzBdR9GMMoHFKE+eZQ31wsVoVE+IuD8kZj4j7gK7C3sHNb9b1DWg1dEKd6kz
+         pMQnTND2cJ5xWBoIQBCkZ4CN9bSHwEbGAZgiTjXlS762Cmu5P7jF2+LNsITzach6hV
+         TRN33GJKtMYtb6b6cvo0IR4Coy6KJTb4TVDib1vvv3zNJ5SQ5OpDilc8N6I2HoXQbU
+         pv6a72BwltilQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lVwJh-00028s-17; Mon, 12 Apr 2021 15:09:25 +0200
+Date:   Mon, 12 Apr 2021 15:09:25 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     gregkh@linuxfoundation.org, Alan Stern <stern@rowland.harvard.edu>,
+        penghao <penghao@uniontech.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Jonathan Cox <jonathan@jdcox.net>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Tomasz =?utf-8?Q?Meresi=C5=84ski?= <tomasz@meresinski.eu>,
+        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] USB: Add LPM quirk for Lenovo ThinkPad USB-C Dock
+ Gen2 Ethernet
+Message-ID: <YHRGhQ51LeouoWEv@hovoldconsulting.com>
+References: <20210412130521.782373-1-kai.heng.feng@canonical.com>
 MIME-Version: 1.0
-Message-ID: <161823296510.29796.15311781031089345064.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412130521.782373-1-kai.heng.feng@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/platform branch of tip:
+On Mon, Apr 12, 2021 at 09:05:20PM +0800, Kai-Heng Feng wrote:
+> This is another branded 8153 device that doesn't work well with LPM
+> enabled:
+> [ 400.597506] r8152 5-1.1:1.0 enx482ae3a2a6f0: Tx status -71
+> 
+> So disable LPM to resolve the issue.
+> 
+> BugLink: https://bugs.launchpad.net/bugs/1922651
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+> ---
+> v2:
+>  - Put the quirk in the right order.
 
-Commit-ID:     41e2da9b5e670a9876ea7b4d8c685a49b1eeee70
-Gitweb:        https://git.kernel.org/tip/41e2da9b5e670a9876ea7b4d8c685a49b1eeee70
-Author:        Mike Travis <mike.travis@hpe.com>
-AuthorDate:    Thu, 08 Apr 2021 11:00:47 -05:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 12 Apr 2021 15:00:34 +02:00
+Seriously... You sent the exact same patch again. Still not ordered.
 
-x86/platform/uv: Use x2apic enabled bit as set by BIOS to indicate APIC mode
+> 
+>  drivers/usb/core/quirks.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+> index 76ac5d6555ae..dfedb51cf832 100644
+> --- a/drivers/usb/core/quirks.c
+> +++ b/drivers/usb/core/quirks.c
+> @@ -434,6 +434,9 @@ static const struct usb_device_id usb_quirk_list[] = {
+>  	{ USB_DEVICE(0x1532, 0x0116), .driver_info =
+>  			USB_QUIRK_LINEAR_UFRAME_INTR_BINTERVAL },
+>  
+> +	/* Lenovo ThinkPad USB-C Dock Gen2 Ethernet (RTL8153 GigE) */
+> +	{ USB_DEVICE(0x17ef, 0xa387), .driver_info = USB_QUIRK_NO_LPM },
+> +
+>  	/* Lenovo ThinkCenter A630Z TI024Gen3 usb-audio */
+>  	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
+>  			USB_QUIRK_DISCONNECT_SUSPEND },
 
-BIOS now sets the x2apic enabled bit (and the ACPI table) for extended
-APIC modes. Use that bit to indicate if extended mode is set.
-
- [ bp: Fixup subject prefix. ]
-
-Signed-off-by: Mike Travis <mike.travis@hpe.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20210408160047.1703-1-mike.travis@hpe.com
----
- arch/x86/kernel/apic/x2apic_uv_x.c | 31 +++++++++++++----------------
- 1 file changed, 14 insertions(+), 17 deletions(-)
-
-diff --git a/arch/x86/kernel/apic/x2apic_uv_x.c b/arch/x86/kernel/apic/x2apic_uv_x.c
-index c9ddd23..930dd09 100644
---- a/arch/x86/kernel/apic/x2apic_uv_x.c
-+++ b/arch/x86/kernel/apic/x2apic_uv_x.c
-@@ -369,6 +369,15 @@ static int __init early_get_arch_type(void)
- 	return ret;
- }
- 
-+/* UV system found, check which APIC MODE BIOS already selected */
-+static void __init early_set_apic_mode(void)
-+{
-+	if (x2apic_enabled())
-+		uv_system_type = UV_X2APIC;
-+	else
-+		uv_system_type = UV_LEGACY_APIC;
-+}
-+
- static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
- {
- 	/* Save OEM_ID passed from ACPI MADT */
-@@ -404,11 +413,13 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
- 		else
- 			uv_hubless_system |= 0x8;
- 
--		/* Copy APIC type */
-+		/* Copy OEM Table ID and set APIC Mode */
- 		uv_stringify(sizeof(oem_table_id), oem_table_id, _oem_table_id);
-+		early_set_apic_mode();
- 
- 		pr_info("UV: OEM IDs %s/%s, SystemType %d, HUBLESS ID %x\n",
- 			oem_id, oem_table_id, uv_system_type, uv_hubless_system);
-+
- 		return 0;
- 	}
- 
-@@ -453,6 +464,7 @@ static int __init uv_set_system_type(char *_oem_id, char *_oem_table_id)
- 	early_set_hub_type();
- 
- 	/* Other UV setup functions */
-+	early_set_apic_mode();
- 	early_get_pnodeid();
- 	early_get_apic_socketid_shift();
- 	x86_platform.is_untracked_pat_range = uv_is_untracked_pat_range;
-@@ -472,29 +484,14 @@ static int __init uv_acpi_madt_oem_check(char *_oem_id, char *_oem_table_id)
- 	if (uv_set_system_type(_oem_id, _oem_table_id) == 0)
- 		return 0;
- 
--	/* Save and Decode OEM Table ID */
-+	/* Save for display of the OEM Table ID */
- 	uv_stringify(sizeof(oem_table_id), oem_table_id, _oem_table_id);
- 
--	/* This is the most common hardware variant, x2apic mode */
--	if (!strcmp(oem_table_id, "UVX"))
--		uv_system_type = UV_X2APIC;
--
--	/* Only used for very small systems, usually 1 chassis, legacy mode  */
--	else if (!strcmp(oem_table_id, "UVL"))
--		uv_system_type = UV_LEGACY_APIC;
--
--	else
--		goto badbios;
--
- 	pr_info("UV: OEM IDs %s/%s, System/UVType %d/0x%x, HUB RevID %d\n",
- 		oem_id, oem_table_id, uv_system_type, is_uv(UV_ANY),
- 		uv_min_hub_revision_id);
- 
- 	return 0;
--
--badbios:
--	pr_err("UV: UVarchtype:%s not supported\n", uv_archtype);
--	BUG();
- }
- 
- enum uv_system_type get_uv_system_type(void)
+Johan
