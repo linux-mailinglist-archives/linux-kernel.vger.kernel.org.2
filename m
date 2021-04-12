@@ -2,102 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C301935D3CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F6235D3D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 01:19:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344036AbhDLXS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 19:18:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243892AbhDLXS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 19:18:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B373861042;
-        Mon, 12 Apr 2021 23:18:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618269489;
-        bh=lwGaCdrAPJSgyrxWQRrmKC+aGd0omNPN2HvY27uQhhM=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=C8ZyjR6T/COcNDEzEAAFdUNU3WecdToe3zNm2WqK9avAvRpZzh2eyegr9lEgFB0F9
-         oWWOrQDScD8npxjpBk842m2pTMHyxMMggSIL2ymE+tfxCEzVlUO13uGu9TLj3tU673
-         aUBpkYNQj8IsO/5mDpfEov9QXIkPOqxMThWpqZE46QQuRf0S0CmJbV5uJrFobVdLvR
-         ZXA5XxYn2JRtcv0Tad+68Ke1giwuuTQIjE+UzelzhkmMAriTef5Y5F2g+givsHgg7Q
-         RHqYd/ZCabdmW8B4ynCj1JJxgdIuM8cXSIxjptDJZT7I0eajz5UHHkjFR8++9/qTm1
-         m6izxX+tOTfeA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 72A425C2303; Mon, 12 Apr 2021 16:18:09 -0700 (PDT)
-Date:   Mon, 12 Apr 2021 16:18:09 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com
-Subject: Re: [PATCH v7 clocksource 3/5] clocksource: Check per-CPU clock
- synchronization when marked unstable
-Message-ID: <20210412231809.GI4510@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <87blam4iqe.ffs@nanos.tec.linutronix.de>
- <20210411002020.GV4510@paulmck-ThinkPad-P17-Gen-1>
- <878s5p2jqv.ffs@nanos.tec.linutronix.de>
- <20210411164612.GZ4510@paulmck-ThinkPad-P17-Gen-1>
- <20210412042157.GA1889369@paulmck-ThinkPad-P17-Gen-1>
- <87k0p71whr.ffs@nanos.tec.linutronix.de>
- <20210412182049.GE4510@paulmck-ThinkPad-P17-Gen-1>
- <87y2dnz644.ffs@nanos.tec.linutronix.de>
- <20210412195722.GG4510@paulmck-ThinkPad-P17-Gen-1>
- <87o8ejz1c9.ffs@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87o8ejz1c9.ffs@nanos.tec.linutronix.de>
+        id S1344052AbhDLXT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 19:19:27 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:47389 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243377AbhDLXT0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 19:19:26 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 8CA7858048D;
+        Mon, 12 Apr 2021 19:19:07 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Mon, 12 Apr 2021 19:19:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=qQBlqSHrbP74nwK5ZoPyDEpe8rdqcKv
+        hgstn0BCo0rU=; b=OckiTd8llIgbnwXD17TPAC++YyuUKw+uHMRMGnbFEpgOlDP
+        d/MOtZ1gmKronwW1OyK6jubD2kb0eet6zk9H7St+rUkMJtuRdB4EZsyr/5Q4DPXj
+        F8F4oyPcx1UOyXGLKN09keDgfeIw7c7GsjdlS9x4IVbWv0WLbEM4+p9k7ZB4dmJ7
+        MYmHFy4JAyuuUNH0HSwD/EbFplNtdtvWg2ynoxqHaRvPUGc75Gxfqb+mpzqCifW3
+        USB6kLr21FdDTYd8EnxLjjbxxEbIhBQaSXJDxY65NYSFUwvh1fev84+OX6kIiH8E
+        nr+lN4I8y/9O1vs3zwMZEN012al+cVrhYr3WGbA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=qQBlqS
+        HrbP74nwK5ZoPyDEpe8rdqcKvhgstn0BCo0rU=; b=nO/2wlY1YfeoZS5M3XfSJi
+        Nhq/DRejLxzD9DJA5v4bbuMwII2/AjKL/r0/BX26MsrmTsJtofo425iMA/V3paR8
+        qDEJP7uxXVIzAzpwO0nbgyy399XrNnHoKlv0PZP4FyCsSl+hYQKMdcpUdAUDK+Ou
+        TtEQZqVN7rXp6/hCLi8CSXrg6ggM0YrEvxTCBf9CHYqM/Kds83gL+mw/Yd0mD6uy
+        b/uRsSfDHjtRVhZsadD0ZcIWzs8O9nb4h0gE3gTNomDtgQaS4BhWlnfkrwUknWil
+        WVgga0aTHxC+2aUgz2O8QSga+Zx/xgVjCD3H8eM8B4nw2FV2SJRkO0BbXh510xzA
+        ==
+X-ME-Sender: <xms:adV0YJ0UVhU33ApUjSU8s4kkD4HJw9AAcKa1e1V0yENH02EqIxp2zA>
+    <xme:adV0YAHx3dqRcaem2tCaTaE_I1Sz6jVLQkf21w_0dPMKy-z1OdQHFnEj_yNxUVxEH
+    9y4xGiuEM8-7WcHNA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudekkedgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:adV0YJ7bUpmzu-c5IosFt0K3bSzYXXTmaUyn7v4crW9c1mNmmp_Igg>
+    <xmx:adV0YG3iInhNQZwO4WnU_7vHCGegJ32zwffX7wTXMsqRvdIplDasrQ>
+    <xmx:adV0YMEaCP2CeEPx_AqoxI3gmeEJBCCzfRO6ZPna-dp5o0RomnT88Q>
+    <xmx:a9V0YP8WGNBrxYW9yMbm5lOC_pLK9wdS0GWGlVSxu6xwvpNQrd6U5w>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id F38CDA00492; Mon, 12 Apr 2021 19:19:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-273-g8500d2492d-fm-20210323.002-g8500d249
+Mime-Version: 1.0
+Message-Id: <11b63819-d37c-406d-9ebf-424d226a6839@www.fastmail.com>
+In-Reply-To: <20210412065032.GC23408@aspeedtech.com>
+References: <20210408015218.20560-1-steven_lee@aspeedtech.com>
+ <20210408015218.20560-3-steven_lee@aspeedtech.com>
+ <acaa2cc2-9b12-442e-a767-3c4b41affa21@www.fastmail.com>
+ <20210412065032.GC23408@aspeedtech.com>
+Date:   Tue, 13 Apr 2021 08:48:16 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>
+Cc:     "Ulf Hansson" <ulf.hansson@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        "Ryan Chen" <ryanchen.aspeed@gmail.com>,
+        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v1_2/2]_mmc:_sdhci-of-aspeed:_Support_toggling_SD_b?=
+ =?UTF-8?Q?us_signal_voltage_by_GPIO?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 10:37:10PM +0200, Thomas Gleixner wrote:
-> On Mon, Apr 12 2021 at 12:57, Paul E. McKenney wrote:
-> > On Mon, Apr 12, 2021 at 08:54:03PM +0200, Thomas Gleixner wrote:
-> >> > I will send a new series out later today, Pacific Time.
-> >> 
-> >> Can you do me a favour and send it standalone and not as yet another
-> >> reply to this existing thread maze. A trivial lore link to the previous
-> >> version gives enough context.
+
+
+On Mon, 12 Apr 2021, at 16:20, Steven Lee wrote:
+> The 04/09/2021 12:14, Andrew Jeffery wrote:
+> > Hi Steven,
+> > 
+> > On Thu, 8 Apr 2021, at 11:22, Steven Lee wrote:
+> > > AST2600-A2 EVB provides reference design to support toggling signal
+> > > voltage between 3.3v and 1.8v by power-switch-gpio pin that defined in
+> > > the device tree.
+> > 
+> > Is this something you think we need support for beyond the EVB? It 
+> > sounds a lot like a knob to enable testing of different SD/MMC power 
+> > configurations and not something that you'd otherwise see in a system 
+> > design.
 > >
-> > Will do!
-> >
-> > Of course, it turns out that lockdep also doesn't like waited-on
-> > smp_call_function_single() invocations from timer handlers,
-> > so I am currently looking at other options for dealing with that
-> > potential use-after-free.  I am starting to like the looks of "only set
-> > CLOCK_SOURCE_VERIFY_PERCPU on statically allocated clocksource structures
-> > and let KASAN enforce this restriction", but I have not quite given up
-> > on making it more general.
 > 
-> The simplest point is in the thread under the clocksource_mutex which
-> prevents anything from vanishing under your feet.
+> It can be used for testing different SD power configuration.
+> The main purpose of the patch is letting the driver has the ability to 
+> change the bus voltage for switching SD bus speed between UHS-I mode and
+> normal/high speed mode in AST2600-A2 EVB according to the value of
+> power-switch-gpio that defined in the device tree. 
 
-And lockdep is -much- happier with the setup shown below, so thank
-you again!
+Ah okay. I'm not strong on all the power requirements for each of the 
+bus modes :)
 
-							Thanx, Paul
+> But I am not sure whether it needs to be support in mainline kernel.
+> Since it requires a particular hardware circuit design outside of ASPEED
+> AST2600 SoC, and AST2600-A2 EVB does have that design.
 
-------------------------------------------------------------------------
+This shouldn't be a problem with Uffe's suggestion on the binding patch.
 
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index f047c6cb056c..34dc38b6b923 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -519,6 +515,13 @@ static int __clocksource_watchdog_kthread(void)
- 	unsigned long flags;
- 	int select = 0;
- 
-+	/* Do any required per-CPU skew verification. */
-+	list_for_each_entry(cs, &watchdog_list, wd_list) {
-+		if ((cs->flags & (CLOCK_SOURCE_UNSTABLE | CLOCK_SOURCE_VERIFY_PERCPU)) ==
-+		    (CLOCK_SOURCE_UNSTABLE | CLOCK_SOURCE_VERIFY_PERCPU))
-+			clocksource_verify_percpu(cs);
-+	}
-+
- 	spin_lock_irqsave(&watchdog_lock, flags);
- 	list_for_each_entry_safe(cs, tmp, &watchdog_list, wd_list) {
- 		if (cs->flags & CLOCK_SOURCE_UNSTABLE) {
+Better to have support in mainline than maintain out-of-tree patches!
+
+> 
+> > > It also supporting enabling/disabling SD bus power by
+> > > power-gpio.
+> > 
+> > This sounds like it could be useful but I'll defer to Ulf with regards 
+> > to the binding.
+> > 
+> > > 
+> > > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to power
+> > > load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is connected to
+> > > a 1.8v and a 3.3v power load switch that providing signal voltage to
+> > > SD1 bus.
+> > > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
+> > > disabled.
+> > > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1 signal
+> > > voltage is 3.3v, otherwise, 1.8v power load switch will be enabled, SD1
+> > > signal voltage becomes 1.8v.
+> > > 
+> > > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
+> > > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and
+> > > GPIOV3 as power-switch-gpio.
+> > > 
+> > > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > > ---
+> > >  drivers/mmc/host/sdhci-of-aspeed.c | 155 +++++++++++++++++++++++++----
+> > >  1 file changed, 137 insertions(+), 18 deletions(-)
+> > > 
+> > > diff --git a/drivers/mmc/host/sdhci-of-aspeed.c 
+> > > b/drivers/mmc/host/sdhci-of-aspeed.c
+> > > index 7d8692e90996..a74a03d37915 100644
+> > > --- a/drivers/mmc/host/sdhci-of-aspeed.c
+> > > +++ b/drivers/mmc/host/sdhci-of-aspeed.c
+> > > @@ -5,6 +5,7 @@
+> > >  #include <linux/clk.h>
+> > >  #include <linux/delay.h>
+> > >  #include <linux/device.h>
+> > > +#include <linux/gpio/consumer.h>
+> > >  #include <linux/io.h>
+> > >  #include <linux/math64.h>
+> > >  #include <linux/mmc/host.h>
+> > > @@ -30,6 +31,7 @@
+> > >  #define   ASPEED_SDC_S0_PHASE_IN_EN	BIT(2)
+> > >  #define   ASPEED_SDC_S0_PHASE_OUT_EN	GENMASK(1, 0)
+> > >  #define   ASPEED_SDC_PHASE_MAX		31
+> > > +#define ASPEED_CLOCK_PHASE 0xf4
+> > 
+> > This isn't related to the power GPIOs, and we already have phase 
+> > support as suggested by the macros immediately above the one you've 
+> > added here.
+> > 
+> > Please remove it and make use of the existing mmc phase devicetree 
+> > binding and driver support.
+> > 
+> 
+> Will remove it.
+> 
+> > >  
+> > >  struct aspeed_sdc {
+> > >  	struct clk *clk;
+> > > @@ -58,18 +60,21 @@ struct aspeed_sdhci_phase_desc {
+> > >  	struct aspeed_sdhci_tap_desc out;
+> > >  };
+> > >  
+> > > -struct aspeed_sdhci_pdata {
+> > > +struct aspeed_sdhci_data {
+> > 
+> > Why are we renaming this? It looks like it creates a lot of noise in 
+> > the patch. The data it captured was platform data, hence 'pdata' in the 
+> > name. In my opinon it's fine if we also have a member called pdata.
+> > 
+> 
+> Since I add a new member in aspeed_sdhci_pdata(In the patch, it is named
+> aspeed_sdhci_data) for separating the platform data of aspeed-g5 and
+> aspped-g6, the type of the member is sdhci_pltfm_data.
+> Therefore, I use the pdata for my new created member and renamed the
+> original pdata as data as follows.
+> 
+> static const struct of_device_id aspeed_sdhci_of_match[] = {
+>   { .compatible = "aspeed,ast2400-sdhci", .data = &ast2400_sdhci_data, },
+> };
+> 
+> static const struct aspeed_sdhci_data ast2400_sdhci_data = {
+>   .clk_div_start = 2,
+>   .pdata = &ast2400_sdhci_pdata,
+> };
+> 
+> 
+> Regardless, I will revert it to the original name and rename
+> my new created variable.
+> 
+> > >  	unsigned int clk_div_start;
+> > >  	const struct aspeed_sdhci_phase_desc *phase_desc;
+> > >  	size_t nr_phase_descs;
+> > > +	const struct sdhci_pltfm_data *pdata;
+> > >  };
+> > >  
+> > >  struct aspeed_sdhci {
+> > > -	const struct aspeed_sdhci_pdata *pdata;
+> > > +	const struct aspeed_sdhci_data *data;
+> > >  	struct aspeed_sdc *parent;
+> > >  	u32 width_mask;
+> > >  	struct mmc_clk_phase_map phase_map;
+> > >  	const struct aspeed_sdhci_phase_desc *phase_desc;
+> > > +	struct gpio_desc *pwr_pin;
+> > > +	struct gpio_desc *pwr_sw_pin;
+> > >  };
+> > >  
+> > >  static void aspeed_sdc_configure_8bit_mode(struct aspeed_sdc *sdc,
+> > > @@ -209,7 +214,6 @@ static void aspeed_sdhci_set_clock(struct 
+> > > sdhci_host *host, unsigned int clock)
+> > >  	sdhci = sdhci_pltfm_priv(pltfm_host);
+> > >  
+> > >  	parent = clk_get_rate(pltfm_host->clk);
+> > > -
+> > 
+> > Unrelated whitespace cleanup.
+> > 
+> > >  	sdhci_writew(host, 0, SDHCI_CLOCK_CONTROL);
+> > >  
+> > >  	if (clock == 0)
+> > > @@ -234,14 +238,13 @@ static void aspeed_sdhci_set_clock(struct 
+> > > sdhci_host *host, unsigned int clock)
+> > >  	 * supporting the value 0 in (EMMC12C[7:6], EMMC12C[15:8]), and 
+> > > capture
+> > >  	 * the 0-value capability in clk_div_start.
+> > >  	 */
+> > > -	for (div = sdhci->pdata->clk_div_start; div < 256; div *= 2) {
+> > > +	for (div = sdhci->data->clk_div_start; div < 256; div *= 2) {
+> > >  		bus = parent / div;
+> > >  		if (bus <= clock)
+> > >  			break;
+> > >  	}
+> > >  
+> > >  	div >>= 1;
+> > > -
+> > 
+> > Unrelated whitespace cleanup.
+> > 
+> > >  	clk = div << SDHCI_DIVIDER_SHIFT;
+> > >  
+> > >  	aspeed_sdhci_configure_phase(host, bus);
+> > > @@ -292,8 +295,78 @@ static u32 aspeed_sdhci_readl(struct sdhci_host 
+> > > *host, int reg)
+> > >  	return val;
+> > >  }
+> > >  
+> > > +static void sdhci_aspeed_set_power(struct sdhci_host *host, unsigned char mode,
+> > > +				   unsigned short vdd)
+> > > +{
+> > > +	struct sdhci_pltfm_host *pltfm_priv = sdhci_priv(host);
+> > > +	struct aspeed_sdhci *dev = sdhci_pltfm_priv(pltfm_priv);
+> > > +	u8 pwr = 0;
+> > > +
+> > > +	if (!dev->pwr_pin)
+> > > +		return sdhci_set_power(host, mode, vdd);
+> > > +
+> > > +	if (mode != MMC_POWER_OFF) {
+> > > +		switch (1 << vdd) {
+> > > +		case MMC_VDD_165_195:
+> > > +		/*
+> > > +		 * Without a regulator, SDHCI does not support 2.0v
+> > > +		 * so we only get here if the driver deliberately
+> > > +		 * added the 2.0v range to ocr_avail. Map it to 1.8v
+> > > +		 * for the purpose of turning on the power.
+> > > +		 */
+> > > +		case MMC_VDD_20_21:
+> > > +				pwr = SDHCI_POWER_180;
+> > > +				break;
+> > > +		case MMC_VDD_29_30:
+> > > +		case MMC_VDD_30_31:
+> > > +				pwr = SDHCI_POWER_300;
+> > > +				break;
+> > > +		case MMC_VDD_32_33:
+> > > +		case MMC_VDD_33_34:
+> > > +				pwr = SDHCI_POWER_330;
+> > > +				break;
+> > > +		default:
+> > > +				WARN(1, "%s: Invalid vdd %#x\n",
+> > > +				     mmc_hostname(host->mmc), vdd);
+> > > +				break;
+> > > +		}
+> > > +	}
+> > > +
+> > > +	if (host->pwr == pwr)
+> > > +		return;
+> > > +
+> > > +	host->pwr = pwr;
+> > > +
+> > > +	if (pwr == 0) {
+> > 
+> > Shouldn't we be testing against an SDHCI_POWER_* macro?
+> > 
+> 
+> It is copied from sdhci_set_power_noreg() of sdhci.c
+> The difference is we need to change the bus voltage before writing
+> SDHCI_POWER_CONTROL.
+> Since There are only SDHCI_POWER_ON, SDHCI_POWER_180, SDHCI_POWER_300,
+> and SDHCI_POWER_330 defined in sdhci.h.
+> Do you mean pwr should be checked with SDHCI_POWER_ON, SDHCI_POWER_180,
+> SDHCI_POWER_300, and SDHCI_POWER_330?
+
+No, I was a bit lazy and didn't look at what macros were defined.
+
+Cheers,
+
+Andrew
