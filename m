@@ -2,126 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C4235B862
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 04:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D8735B864
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 04:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236383AbhDLCBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 22:01:55 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11707 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235543AbhDLCBx (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 22:01:53 -0400
-IronPort-SDR: 9yroIMTLsRBYzKEhkx4nkWTu3DjzE5Y2LjMioZu+zsK/Cn/6pSfDF2naGPVPmDCmVjkLKXldVf
- QoBHhecjmVsg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="214551143"
-X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
-   d="scan'208";a="214551143"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 19:01:35 -0700
-IronPort-SDR: gQy0LhDHM+J5x278/CsruSjKQmU3l9RVn25wXZ4Vs9GurjDZGI3NQWaFizUdbjNlccMj0JM/gU
- mDti7+eQy+bw==
-X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
-   d="scan'208";a="451229238"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 19:01:33 -0700
-Subject: Re: [PATCH v3 11/27] perf pmu: Support 'cycles' and 'branches' inside
- hybrid PMU
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210329070046.8815-1-yao.jin@linux.intel.com>
- <20210329070046.8815-12-yao.jin@linux.intel.com> <YHBbJEKjE3DuPvZZ@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <a9a2f035-5b5a-be3c-af75-5fffee650a24@linux.intel.com>
-Date:   Mon, 12 Apr 2021 10:01:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S236409AbhDLCDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 22:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235543AbhDLCDg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 22:03:36 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF22C061574;
+        Sun, 11 Apr 2021 19:03:19 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FJX823Kxgz9sWP;
+        Mon, 12 Apr 2021 12:03:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618192996;
+        bh=zK2rifJ2b1jcytqoW+HjMaew1cdEO0OouTDOArvkOjk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=n7IkWgvyk50MHG8g+bzTgTrIRMQskyoaidc2m9k6BvuBmrlubzDUQ5VprLUW0vlO4
+         wnT5ziZhUUkEFYAbOEF0Pd/v5IR1dbD9MX06O+C8nWbLlkbg3R7ktjYf9WreAwSPRo
+         xvn89hT5ALkgjpKgSUCReXmoLw/nj+dKrCJ567HXhlBtkErGZRgYly38eB1oHgpSR+
+         /JZee948gE7p6HvhnQwyd6gTBE2hzaV8izpNkxkYGuN+m+wafu7Ttm6eesSBydKhfC
+         cyQj4S3QhjwTTlU1oyMNyvddhAMT29dVWXUrrWuCdOHw7Vp9bOf+g3dikAGkkKz1I8
+         2HCdI1oUsU+0g==
+Date:   Mon, 12 Apr 2021 12:03:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Al Viro <viro@ZenIV.linux.org.uk>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Sargun Dhillon <sargun@sargun.me>
+Subject: linux-next: manual merge of the vfs tree with the overlayfs tree
+Message-ID: <20210412120313.20efd984@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YHBbJEKjE3DuPvZZ@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/+w1075nm2+Vcvr//mzXJB=e";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+--Sig_/+w1075nm2+Vcvr//mzXJB=e
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 4/9/2021 9:48 PM, Jiri Olsa wrote:
-> On Mon, Mar 29, 2021 at 03:00:30PM +0800, Jin Yao wrote:
->> On hybrid platform, user may want to enable the hardware event
->> only on one PMU. So following syntax is supported:
->>
->> cpu_core/<hardware event>/
->> cpu_atom/<hardware event>/
->>
->>    # perf stat -e cpu_core/cpu-cycles/ -a -- sleep 1
->>
->>     Performance counter stats for 'system wide':
->>
->>             6,049,336      cpu_core/cpu-cycles/
->>
->>           1.003577042 seconds time elapsed
->>
->> It enables the event 'cpu-cycles' only on cpu_core pmu.
->>
->> But for 'cycles' and 'branches', the syntax doesn't work.
-> 
-> because the alias is not there.. but there's:
->    cpu/cpu-cycles/
->    cpu/branch-instructions/
-> 
-> doing the same thing..  what's wrong with that?
-> 
-> I have a feeling we discussed this in the previous
-> version.. did I give up? ;-)
-> 
+Hi all,
 
-Yes, we discussed this in previous threads. :)
+Today's linux-next merge of the vfs tree got a conflict in:
 
-Now I'm fine to keep the original behavior. Because the syntax 'cpu/cycles/' and 'cpu/branches/' are 
-not supported by current perf.
+  fs/overlayfs/file.c
 
-> SNIP
-> 
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index beff29981101..72e5ae5e868e 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -916,6 +916,35 @@ static int pmu_max_precise(const char *name)
->>   	return max_precise;
->>   }
->>   
->> +static void perf_pmu__add_hybrid_aliases(struct list_head *head)
->> +{
->> +	static struct pmu_event pme_hybrid_fixup[] = {
->> +		{
->> +			.name = "cycles",
->> +			.event = "event=0x3c",
->> +		},
->> +		{
->> +			.name = "branches",
->> +			.event = "event=0xc4",
->> +		},
->> +		{
->> +			.name = 0,
->> +			.event = 0,
->> +		},
-> 
-> if you really need to access these 2 events with special name,
-> why not add it through the json.. let's not have yet another
-> place that defines aliases ... also this should be model specific
-> no?
-> 
+between commit:
 
-Yes, defining in json is a good idea if we really need to support 'cpu/cycles/' and 'cpu/branches/'.
+  d46b7cd68336 ("ovl: plumb through flush method")
 
-Anyway, I will drop this patch in next version.
+from the overlayfs tree and commit:
 
-Thanks
-Jin Yao
+  ae7db6c8bc98 ("ovl: remove unneeded ioctls")
 
-> jirka
-> 
+from the vfs tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/overlayfs/file.c
+index 6e454a294046,9bd4167cc7fb..000000000000
+--- a/fs/overlayfs/file.c
++++ b/fs/overlayfs/file.c
+@@@ -716,11 -590,6 +610,7 @@@ const struct file_operations ovl_file_o
+  	.mmap		=3D ovl_mmap,
+  	.fallocate	=3D ovl_fallocate,
+  	.fadvise	=3D ovl_fadvise,
+- 	.unlocked_ioctl	=3D ovl_ioctl,
+ +	.flush		=3D ovl_flush,
+- #ifdef CONFIG_COMPAT
+- 	.compat_ioctl	=3D ovl_compat_ioctl,
+- #endif
+  	.splice_read    =3D generic_file_splice_read,
+  	.splice_write   =3D iter_file_splice_write,
+ =20
+
+--Sig_/+w1075nm2+Vcvr//mzXJB=e
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmBzqmEACgkQAVBC80lX
+0GwDqgf/SGhWvykOU7vDktHblrHcYxOlcqiRkeKNX5r9iDJD6+8mSF8uFdyksarq
+MFd4AP7VtcNnfBM0WIdfXNt9zM9PvoloyB8by8ifxC+hMkn3ypugPjoGUdzOgJ+v
+b4QQw5MeIR+RCSahP9pkDfvi/4nhxdbHe2UIxVP2g8M35fcWTevIN4eHMCB3ZZZO
+TeQSoykxT8ioToEEwUKCuJ/YuiKHkt/PX+Qpw5ux2r0QuWT2qdBFCM4RVRIIpvit
+qEQQYBZv0FT3lIMBnniBiJCwEvDarPnTuhJnO2YuRoJ9D0xADvhWqtLpSiXl6H8J
+J9wmOE9kDr011MUvWRJU7SNUmOuiLg==
+=LXFX
+-----END PGP SIGNATURE-----
+
+--Sig_/+w1075nm2+Vcvr//mzXJB=e--
