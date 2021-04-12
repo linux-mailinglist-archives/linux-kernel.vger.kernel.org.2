@@ -2,196 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACFE35C5D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DA935C5DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240804AbhDLMBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:01:07 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3397 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240733AbhDLMBF (ORCPT
+        id S240820AbhDLMBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240810AbhDLMBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:01:05 -0400
-Received: from DGGEML401-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FJnL93smNz5pnK;
-        Mon, 12 Apr 2021 19:57:53 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- DGGEML401-HUB.china.huawei.com (10.3.17.32) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 12 Apr 2021 20:00:43 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Mon, 12 Apr
- 2021 20:00:44 +0800
-Subject: Re: [PATCH net v3] net: sched: fix packet stuck problem for lockless
- qdisc
-To:     Hillf Danton <hdanton@sina.com>
-CC:     Juergen Gross <jgross@suse.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jiri Kosina <JKosina@suse.com>
-References: <1616641991-14847-1-git-send-email-linyunsheng@huawei.com>
- <20210409090909.1767-1-hdanton@sina.com>
- <20210412032111.1887-1-hdanton@sina.com>
- <20210412072856.2046-1-hdanton@sina.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <d7b8a391-0b2f-f0a9-82ed-0609addcadb2@huawei.com>
-Date:   Mon, 12 Apr 2021 20:00:43 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Mon, 12 Apr 2021 08:01:45 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC20C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:01:26 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id r20so15022429ljk.4
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:01:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CiuSat9oXZrDkfWovQuP0xZcrshIInhP+XNXeKoyYAc=;
+        b=kMZbkkfEos6jn8/fUg9ChgrE1JV6VHmZI964BISxF+A0mLoYjNXM5ySjaDvaHi7S38
+         jCrxVudPC9ylN2+GHo6TNGKZssMG6WS2mB/Um9pEJRzw6fPatU96ElpI8J8uTnab9wUb
+         fDJLG6V6723QIoXbcEzi51vZ151WWT4KFSt2mdTWWfjiYyDENvaE58BOJKTXxzK0hr9i
+         mQu+ngtDUTqMsTsUD2mq7Ch0oex/jxXJ37pe1+3L6OPKNe7QxLZlUBoZAqKNfp+JKpPL
+         uPaLb2qhvJUXc45Yb6gej+b5FvzDiQwwvId5pUUofbn89OMsLmgJTMTzYSXBmL79ovdC
+         KdJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CiuSat9oXZrDkfWovQuP0xZcrshIInhP+XNXeKoyYAc=;
+        b=tCM8YxA023+6WKSUfbFMP/ggyt9Ejy6A7jYrQ+8xp2GelhKBn0jBCbTINmTOh2Y2+F
+         Py0KJbJeVOnMZGykwv9BgC03WLhnNryra5R1iF391L1lMR9w0Qwe4gLBdR59bq77wcxn
+         vRj13c3OK9++wXK8eLdg8qjmFv/YdqtULrFnoU4ktp8+FJPiDRtpQDBhHSxI/u4Wb2ci
+         49KHN5XLbjalUQOzpQfjNobPh8Zw7LBOKbDhyr7M/mGVYMhWZ8/E4gMSzqBeslq7bSnn
+         dfrB5hnrJ4LXPyLXJSooWTYaGawTWPJUf6WvsYDZEl/iceE3lcteUmDHOpD69sLTEl7V
+         kjaw==
+X-Gm-Message-State: AOAM5313Gg/oKd3LdMh7mxl/GuIKmK8depU3SWWvTWGKEUZx3uicztRW
+        fCenMfA/+Ed/Snpt46OFsEX7qHNToUIEsOx62lvr7Q==
+X-Google-Smtp-Source: ABdhPJzI2N5jstAvCOZ5rYNbRQN6nH+h4QX5CaOM5JD3Y4o9o4ofs3goY3p5Vo9hVlcGpdQXZdrhfZtyPyBHT30jGJA=
+X-Received: by 2002:a2e:5c47:: with SMTP id q68mr18154053ljb.314.1618228884737;
+ Mon, 12 Apr 2021 05:01:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210412072856.2046-1-hdanton@sina.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme706-chm.china.huawei.com (10.1.199.102) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+References: <20210330080615.21938-1-lecopzer.chen@mediatek.com>
+ <20210330083218.22285-1-lecopzer.chen@mediatek.com> <CAFA6WYMqLMEG2s7OdNweQKkP0K2LZ575B1BVw-zfsg7_KBSM5Q@mail.gmail.com>
+In-Reply-To: <CAFA6WYMqLMEG2s7OdNweQKkP0K2LZ575B1BVw-zfsg7_KBSM5Q@mail.gmail.com>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Mon, 12 Apr 2021 17:31:13 +0530
+Message-ID: <CAFA6WYPXu8biPPim5EoQ1pi+w3APKm65tzfOvH4OSORZdJ6+8Q@mail.gmail.com>
+Subject: Re: [PATCH v5] arm64: Enable perf events based hard lockup detector
+To:     Will Deacon <will@kernel.org>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Lecopzer Chen <lecopzer@gmail.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Stephen Boyd <swboyd@chromium.org>, yj.chiang@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/12 15:28, Hillf Danton wrote:
-> On Mon, 12 Apr 2021 11:37:24 Yunsheng Lin wrote:
->> On 2021/4/12 11:21, Hillf Danton wrote:
->>> On Mon, 12 Apr 2021 09:24:30  Yunsheng Lin wrote:
->>>> On 2021/4/9 17:09, Hillf Danton wrote:
->>>>> On Fri, 9 Apr 2021 07:31:03  Juergen Gross wrote:
->>>>>> On 25.03.21 04:13, Yunsheng Lin wrote:
->>>>>> I have a setup which is able to reproduce the issue quite reliably:
->>>>>>
->>>>>> In a Xen guest I'm mounting 8 NFS shares and run sysbench fileio on
->>>>>> each of them. The average latency reported by sysbench is well below
->>>>>> 1 msec, but at least once per hour I get latencies in the minute
->>>>>> range.
->>>>>>
->>>>>> With this patch I don't see these high latencies any longer (test
->>>>>> is running for more than 20 hours now).
->>>>>>
->>>>>> So you can add my:
->>>>>>
->>>>>> Tested-by: Juergen Gross <jgross@suse.com>
->>>>>>
->>>>>
->>>>> If retry is allowed in the dequeue method then a simple seqcount can do the
->>>>> work of serializing enqueuer and dequeuer. IIUC it was not attempted last year.
->>>>
->>>> At the first glance, I do not think the below patch fix the data race
->>>
->>> Thanks for taking a look.
->>>
->>>> described in the commit log, as it does not handle the time window
->>>> between dequeuing and q->seqlock releasing, as below:
->>>>
->>> Yes the time window does exist.
->>>
->>>> The cpu1 may not see the qdisc->pad changed after pfifo_fast_dequeue(),
->>>> and cpu2 is not able to take the q->seqlock yet because cpu1 do not
->>>> release the q->seqlock.
->>>>
->>> It's now covered by extending the seqcount aperture a bit.
->>>
->>> --- x/net/sched/sch_generic.c
->>> +++ y/net/sched/sch_generic.c
->>> @@ -380,14 +380,23 @@ void __qdisc_run(struct Qdisc *q)
->>>  {
->>>  	int quota = dev_tx_weight;
->>>  	int packets;
->>> +	int seq;
->>> +
->>> +again:
->>> +	seq = READ_ONCE(q->pad);
->>> +	smp_rmb();
->>>  
->>>  	while (qdisc_restart(q, &packets)) {
->>>  		quota -= packets;
->>>  		if (quota <= 0) {
->>>  			__netif_schedule(q);
->>> -			break;
->>> +			return;
->>>  		}
->>>  	}
->>> +
->>> +	smp_rmb();
->>> +	if (seq != READ_ONCE(q->pad))
->>> +		goto again;
->>
->> As my understanding, there is still time window between q->pad checking
->> above and q->seqlock releasing in qdisc_run_end().
->>
-> Then extend the cover across q->seqlock on top of the flag you added.
+Hi Will,
 
-Yes, the below patch seems to fix the data race described in
-the commit log.
-Then what is the difference between my patch and your patch below:)
+On Tue, 30 Mar 2021 at 18:00, Sumit Garg <sumit.garg@linaro.org> wrote:
+>
+> On Tue, 30 Mar 2021 at 14:07, Lecopzer Chen <lecopzer.chen@mediatek.com> wrote:
+> >
+> > > > Hi Will, Mark,
+> > > >
+> > > > On Fri, 15 Jan 2021 at 17:32, Sumit Garg <sumit.garg@linaro.org> wrote:
+> > > > >
+> > > > > With the recent feature added to enable perf events to use pseudo NMIs
+> > > > > as interrupts on platforms which support GICv3 or later, its now been
+> > > > > possible to enable hard lockup detector (or NMI watchdog) on arm64
+> > > > > platforms. So enable corresponding support.
+> > > > >
+> > > > > One thing to note here is that normally lockup detector is initialized
+> > > > > just after the early initcalls but PMU on arm64 comes up much later as
+> > > > > device_initcall(). So we need to re-initialize lockup detection once
+> > > > > PMU has been initialized.
+> > > > >
+> > > > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> > > > > ---
+> > > > >
+> > > > > Changes in v5:
+> > > > > - Fix lockup_detector_init() invocation to be rather invoked from CPU
+> > > > >   binded context as it makes heavy use of per-cpu variables and shouldn't
+> > > > >   be invoked from preemptible context.
+> > > > >
+> > > >
+> > > > Do you have any further comments on this?
+> > > >
 
-> 
-> --- a/include/net/sch_generic.h
-> +++ b/include/net/sch_generic.h
-> @@ -36,6 +36,7 @@ struct qdisc_rate_table {
->  enum qdisc_state_t {
->  	__QDISC_STATE_SCHED,
->  	__QDISC_STATE_DEACTIVATED,
-> +	__QDISC_STATE_NEED_RESCHEDULE,
->  };
->  
->  struct qdisc_size_table {
-> @@ -176,8 +177,13 @@ static inline bool qdisc_run_begin(struc
->  static inline void qdisc_run_end(struct Qdisc *qdisc)
->  {
->  	write_seqcount_end(&qdisc->running);
-> -	if (qdisc->flags & TCQ_F_NOLOCK)
-> +	if (qdisc->flags & TCQ_F_NOLOCK) {
->  		spin_unlock(&qdisc->seqlock);
-> +
-> +		if (test_and_clear_bit(__QDISC_STATE_NEED_RESCHEDULE,
-> +							&qdisc->state))
-> +			__netif_schedule(qdisc);
-> +	}
->  }
->  
->  static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
-> --- a/net/sched/sch_generic.c
-> +++ b/net/sched/sch_generic.c
-> @@ -381,13 +381,21 @@ void __qdisc_run(struct Qdisc *q)
->  	int quota = dev_tx_weight;
->  	int packets;
->  
-> +	if (q->flags & TCQ_F_NOLOCK)
-> +		clear_bit(__QDISC_STATE_NEED_RESCHEDULE, &q->state);
-> +again:
->  	while (qdisc_restart(q, &packets)) {
->  		quota -= packets;
->  		if (quota <= 0) {
->  			__netif_schedule(q);
-> -			break;
-> +			return;
->  		}
->  	}
-> +
-> +	if (q->flags & TCQ_F_NOLOCK)
-> +		if (test_and_clear_bit(__QDISC_STATE_NEED_RESCHEDULE,
-> +					&q->state))
-> +			goto again;
->  }
->  
->  unsigned long dev_trans_start(struct net_device *dev)
-> @@ -632,6 +640,9 @@ static int pfifo_fast_enqueue(struct sk_
->  			return qdisc_drop(skb, qdisc, to_free);
->  	}
->  
-> +	if (qdisc->flags & TCQ_F_NOLOCK)
-> +		set_bit(__QDISC_STATE_NEED_RESCHEDULE, &qdisc->state);
+Since there aren't any further comments, can you re-pick this feature for 5.13?
 
-Doing set_bit() in pfifo_fast_enqueue() unconditionally does not
-seems to be performance friendly, because it requires exclusive access
-to the cache line of qdisc->state.
-Perhaps do some performance test?
+-Sumit
 
-
-> +
->  	qdisc_update_stats_at_enqueue(qdisc, pkt_len);
->  	return NET_XMIT_SUCCESS;
->  }
-> 
-> .
-> 
-
+> > > > Lecopzer,
+> > > >
+> > > > Does this feature work fine for you now?
+> > >
+> > > This really fixes the warning, I have a real hardware for testing this now.
+>
+> Thanks for the testing. I assume it as an implicit Tested-by.
+>
+> > > but do we need to call lockup_detector_init() for each cpu?
+> > >
+> > > In init/main.c, it's only called by cpu 0 for once.
+> >
+> > Oh sorry, I just misread the code, please ignore previous mail.
+> >
+>
+> No worries.
+>
+> -Sumit
+>
+> >
+> > BRs,
+> > Lecopzer
