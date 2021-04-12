@@ -2,123 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E7BD35C148
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66DFF35C18A
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242060AbhDLJ1O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:27:14 -0400
-Received: from mail-vs1-f43.google.com ([209.85.217.43]:37589 "EHLO
-        mail-vs1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239393AbhDLJCr (ORCPT
+        id S238618AbhDLJbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:31:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239294AbhDLJHH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:02:47 -0400
-Received: by mail-vs1-f43.google.com with SMTP id 2so6264518vsh.4;
-        Mon, 12 Apr 2021 02:02:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w0nzjzfCk4z/DdLip364m435OvUY4gxFoWEexjtunJU=;
-        b=sJb4HvFHls/K0miarzNokuya7Jg6kF3OhflM9ibdCnsPNh2q4zCp8UeKXIX/vDdceA
-         Drw7Oa0ynTF85R2nfk+lMS+zb8GlvazZs/NQg9g4pUbPVNsAH4wk2Qc7ArpooiE+stxR
-         pjUgyJxphJkyzCtCVNnb2TphFh4sZgcVEreWXqbvHEJw7Ay4y3XcRcMyN9JW80ScwnAo
-         hQiU566czmZjPoGoZpyViKV1bS94YZ6GfPN2AHcILFbGPLSmQAtX+zsWvh/xmhl81blc
-         ybWPpwY/2eilfIQcWJysdFKnmI6h1iQ3kI5AnbqoD/mRdqz0sVHNjALK/Nueq+hF0qyq
-         +aSw==
-X-Gm-Message-State: AOAM530LleXCVfjV4YldwMWpJC9WmCMXTiEijUki1g4T3hj7qHl6QbVH
-        7T5LNbkVQGYr1vNMJl6BVM+dKuUPXKp6UfgdRRw=
-X-Google-Smtp-Source: ABdhPJxPezqnGLgade3Fg9fCpJVbM8VsEsOkFluSzHkUwjr3zbmXkNKrQ+8OVtBaJ9BEKnKX3UuVpjWBCY0a0EWWBbM=
-X-Received: by 2002:a67:f5ca:: with SMTP id t10mr18301625vso.40.1618218149193;
- Mon, 12 Apr 2021 02:02:29 -0700 (PDT)
+        Mon, 12 Apr 2021 05:07:07 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776C3C06137A;
+        Mon, 12 Apr 2021 02:02:36 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1lVsSf-0004hh-JE; Mon, 12 Apr 2021 11:02:25 +0200
+Date:   Mon, 12 Apr 2021 11:02:25 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        NetFilter <netfilter-devel@vger.kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the net-next tree
+Message-ID: <20210412090225.GB14932@breakpoint.cc>
+References: <20210412150416.4465b518@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210412075053.28727-1-dinghao.liu@zju.edu.cn>
-In-Reply-To: <20210412075053.28727-1-dinghao.liu@zju.edu.cn>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 12 Apr 2021 11:02:17 +0200
-Message-ID: <CAMuHMdVBh7D+QH4ikiAbG8b0UGmH__43MhKwXXAMwYS5JUPy8Q@mail.gmail.com>
-Subject: Re: [PATCH] clk: renesas: rcar-usb2-clock-sel: Fix error handling in rcar_usb2_clock_sel_probe
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     Kangjie Lu <kjlu@umn.edu>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210412150416.4465b518@canb.auug.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dinghao,
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> net/bridge/netfilter/ebtables.c:1248:33: error: 'struct netns_xt' has no member named 'tables'
+>  1248 |  list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
+>       |                                 ^
+> include/linux/list.h:619:20: note: in definition of macro 'list_entry_is_head'
+>   619 |  (&pos->member == (head))
+>       |                    ^~~~
+> net/bridge/netfilter/ebtables.c:1248:2: note: in expansion of macro 'list_for_each_entry'
+>  1248 |  list_for_each_entry(t, &net->xt.tables[NFPROTO_BRIDGE], list) {
+>       |  ^~~~~~~~~~~~~~~~~~~
+> 
+> Caused by commit
+> 
+>   5b53951cfc85 ("netfilter: ebtables: use net_generic infra")
+> 
+> interacting with commit
+> 
+>   7ee3c61dcd28 ("netfilter: bridge: add pre_exit hooks for ebtable unregistration")
 
-On Mon, Apr 12, 2021 at 9:51 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
-> When clk_get_rate() fails, a pairing PM usage counter decrement
-> and disable is required to prevent refcount leak. It's the same
-> for the subsequent error paths. When of_clk_add_hw_provider()
-> fails, we need to unregister clk_hw.
->
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-
-Thanks for your patch, which looks correct to me.
-
-> --- a/drivers/clk/renesas/rcar-usb2-clock-sel.c
-> +++ b/drivers/clk/renesas/rcar-usb2-clock-sel.c
-> @@ -180,7 +180,8 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
->
->         if (!priv->extal && !priv->xtal) {
->                 dev_err(dev, "This driver needs usb_extal or usb_xtal\n");
-> -               return -ENOENT;
-> +               ret = -ENOENT;
-> +               goto pm_put;
->         }
-
-As the code above doesn't rely on the device being powered yet, you
-could move the pm_runtime_{enable,get_sync}() calls below the clock
-checks instead.
-
->
->         platform_set_drvdata(pdev, priv);
-> @@ -194,10 +195,23 @@ static int rcar_usb2_clock_sel_probe(struct platform_device *pdev)
->         priv->hw.init = &init;
->
->         clk = clk_register(NULL, &priv->hw);
-> -       if (IS_ERR(clk))
-> -               return PTR_ERR(clk);
-> +       if (IS_ERR(clk)) {
-> +               ret = PTR_ERR(clk);
-> +               goto pm_put;
-> +       }
-> +
-> +       ret = of_clk_add_hw_provider(np, of_clk_hw_simple_get, &priv->hw);
-> +       if (ret)
-> +               goto clk_unregister;
-> +
-> +       return 0;
->
-> -       return of_clk_add_hw_provider(np, of_clk_hw_simple_get, &priv->hw);
-> +clk_unregister:
-> +       clk_hw_unregister(&priv->hw);
-
-The error path can be simplified by replacing the call to clk_register()
-by a call to devm_clk_register(), to match the style of the other
-initialization steps.
-
-> +pm_put:
-> +       pm_runtime_put(dev);
-> +       pm_runtime_disable(dev);
-> +       return ret;
-
-This part has to stay, of course.
-
->  }
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Right, the fixup is correct.
