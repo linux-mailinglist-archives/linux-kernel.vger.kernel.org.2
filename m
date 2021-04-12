@@ -2,151 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D80135C96B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC4D935C96C
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242453AbhDLPIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38050 "EHLO mail.kernel.org"
+        id S242550AbhDLPIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:08:48 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:53490 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237526AbhDLPId (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:08:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F108611F0;
-        Mon, 12 Apr 2021 15:08:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618240095;
-        bh=yEYZUKPaHR793ZDhmZ+P1vlAN1MGuDfGKGZ/vHIAn3Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=K3Zdpb3zv2ms3Q7FD6i2Sv3atrOd3gtXVtLnczlukv1pjpMlW+rGc0C/jBoHa0Cdb
-         KiZdEu9/2ES3dZSuydULJoVbPW0DqxdBUaQn0D6g7GubujH/gHpzUoTMrZseVKfiTJ
-         sQHgbKEtK/n+L7vDqz76Is5G0B/LzClBD+C9bnLZp1rPxq3qPLyDhPpQ8Bg0dbaFOp
-         e6w/g2vtSzTZ1AL7yg1v2YEefQTRHhVvV8CCKaO593zpFAja2i/EyxxAQDJTeHZlof
-         ubYtmxZsy+/7rPmQ4YIw9zyFN7MybZuMeW1TzuopXEKNgkDaBEtUvH9RtaTkSmDMRK
-         MstQHuloq83+g==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 0B4D040647; Mon, 12 Apr 2021 12:08:13 -0300 (-03)
-Date:   Mon, 12 Apr 2021 12:08:12 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     dwarves@vger.kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jan Engelhardt <jengelh@inai.de>,
-        Domenico Andreoli <cavok@debian.org>,
-        Matthias Schwarzott <zzam@gentoo.org>,
-        Andrii Nakryiko <andriin@fb.com>, Yonghong Song <yhs@fb.com>,
-        Mark Wieelard <mjw@redhat.com>,
-        =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
-        Ilya Leoshkevich <iii@linux.ibm.com>,
-        Bill Wendling <morbo@google.com>,
-        David Blaikie <dblaikie@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sedat Dilek <sedat.dilek@gmail.com>
-Subject: ANNOUNCE: pahole v1.21 (clang's LTO edition, BTF floats)
-Message-ID: <YHRiXNX1JUF2Az0A@kernel.org>
+        id S237526AbhDLPIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:08:46 -0400
+Received: from zn.tnic (p200300ec2f052100b992cfc3eab27929.dip0.t-ipconnect.de [IPv6:2003:ec:2f05:2100:b992:cfc3:eab2:7929])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8F7B51EC0249;
+        Mon, 12 Apr 2021 17:08:25 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1618240105;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=MerdwYZHv9X7XzBa8kEPrV7U0nq5j/1focuz0dTDD9Q=;
+        b=cx1Swk17PXnXih63cbor4U4n3xX+AHAM+rNWd3fRiakUGd0nO4mAeoiIjYrvBmANJXs3me
+        tybcoA1fRJNXe2VA8Kb3z94eQIyr6SIIIZj2nzVO0FsVeap4Du5kKvlH1mu0xKzvmC1Jc/
+        ttqvfipF5QjY16i/XCc5PHnOKH/j45s=
+Date:   Mon, 12 Apr 2021 17:08:24 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+Message-ID: <20210412150824.GF24283@zn.tnic>
+References: <CALCETrW2QHa2TLvnUuVxAAheqcbSZ-5_WRXtDSAGcbG8N+gtdQ@mail.gmail.com>
+ <87lf9nk2ku.fsf@oldenburg.str.redhat.com>
+ <20210412143139.GE24283@zn.tnic>
+ <878s5nk1pk.fsf@oldenburg.str.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <878s5nk1pk.fsf@oldenburg.str.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
- 
-	The v1.21 release of pahole and its friends is out, this time it's
-about using clang to build the kernel with LTO, some DWARF5 fixes, supporting
-floating types in the BTF encoder for s/390 sake and some misc fixes and
-improvements. Ah, it should also be faster due to switching to using libbpf's
-hashing routines.
+On Mon, Apr 12, 2021 at 04:38:15PM +0200, Florian Weimer wrote:
+> Yes, that's why we have the XGETBV handshake.  I was imprecise.  It's
+> CPUID + XGETBV of course.  Or even AT_HWCAP2 (for FSGSBASE).
 
-Main git repo:
+Ok, that sounds better. So looking at glibc sources, I see something
+like this:
 
-   git://git.kernel.org/pub/scm/devel/pahole/pahole.git
+init_cpu_features
+|-> update_usable
+ |-> CPU_FEATURE_SET_USABLE (cpu_features, XGETBV_ECX_1);
 
-Mirror git repo:
+so I'm guessing this happens when the library gets loaded per process,
+right?
 
-   https://github.com/acmel/dwarves.git
+Which means, once the detection has taken place and the library has
+gotten XCR0, it is going to use it and won't re-ask the kernel or so?
 
-tarball + gpg signature:
+I.e., I'm trying to imagine how a per-process thing would work at all.
+If at all.
 
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.xz
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.bz2
-   https://fedorapeople.org/~acme/dwarves/dwarves-1.21.tar.sign
+And this sounds especially "fun":
 
-	Thanks a lot to all the contributors and distro packagers, you're on the
-CC list, I appreciate a lot the work you put into these tools,
+> Code that installs a signal handler often does not have control on
+> which thread an asynchronous signal is delivered, or which code it
+> interrupts.
 
-Best Regards,
- 
- - Arnaldo
+In my simplistic approach I'm thinking about something along the lines
+of:
 
-DWARF loader:
+Library: hey kernel, can you handle AVX512?
+Kernel: yes
+Library: ok, I will use that in the signal handler
 
-- Handle DWARF5 DW_OP_addrx properly
+And since kernel has said yes, kernel is going to take care of handling
+AVX512 state and library can assume that.
 
-  Part of the effort to support the subset of DWARF5 that is generated when building the kernel.
+All those old processes which cannot be recompiled, for them I guess the
+kernel should have to say no.
 
-- Handle subprogram ret type with abstract_origin properly
+Dunno how much sense that makes...
 
-  Adds a second pass to resolve abstract origin DWARF description of functions to aid
-  the BTF encoder in getting the right return type.
+> > And the CPUID-faulting thing would solve stuff like that because then
+> > the kernel can *actually* get involved into answering something where it
+> > has a say in, too.
+> 
+> But why wouldn't we use a syscall or an entry in the auxiliary vector
+> for that?  Why fault a potentially performance-critical instruction?
 
-- Check .notes section for LTO build info
+Oh sure, CPUID faulting was just an example. I think the intent is to
+have this important aspect of userspace asking the kernel first what
+kind of features it can handle and then do accordingly.
 
-  When LTO is used, currently only with clang, we need to do extra steps to handle references
-  from one object (compile unit, aka CU) to another, a way for DWARF to avoid duplicating
-  information.
+IOW, legacy stuff can work unchanged and new libraries and kernels can
+support fancier features and bigger buffers.
 
-- Check .debug_abbrev for cross-CU references
+Methinks.
 
-  When the kernel build process doesn't add an ELF note in vmlinux indicating that LTO was
-  used and thus intra-CU references are present and thus we need to use a more expensive
-  way to resolve types and (again) thus to encode BTF, we need to look at DWARF's .debug_abbrev
-  ELF section to figure out if such intra-CU references are present.
+Thx.
 
-- Permit merging all DWARF CU's for clang LTO built binary
+-- 
+Regards/Gruss,
+    Boris.
 
-  Allow not trowing away previously supposedly self contained compile units
-  (objects, aka CU, aka Compile Units) as they have type descriptions that will
-  be used in later CUs.
-
-- Permit a flexible HASHTAGS__BITS
-
-  So that we can use a more expensive algorithm when we need to keep previously processed
-  compile units that will then be referenced by later ones to resolve types.
-
-- Use a better hashing function, from libbpf
-
-  Enabling patch to combine compile units when using LTO.
-
-BTF encoder:
-
-- Add --btf_gen_all flag
-
-  A new command line to allow asking for the generation of all BTF encodings, so that we
-  can stop adding new command line options to enable new encodings in the kernel Makefile.
-
-- Match ftrace addresses within ELF functions
-
-  To cope with differences in how DWARF and ftrace describes function boundaries.
-
-- Funnel ELF error reporting through a macro
-
-  To use libelf's elf_error() function, improving error messages.
-
-- Sanitize non-regular int base type
-
-  Cope with clang with dwarf5 non-regular int base types, tricky stuff, see yhs
-  full explanation in the relevant cset.
-
-- Add support for the floating-point types
-
-  S/390 has floats'n'doubles in its arch specific linux headers, cope with that.
-
-Pretty printer:
-
-- Honour conf_fprintf.hex when printing enumerations
-
-  If the user specifies --hex in the command line, honour it when printing enumerations.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+https://people.kernel.org/tglx/notes-about-netiquette
