@@ -2,142 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC95535B8CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C9235B8DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 05:16:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236344AbhDLDHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 23:07:07 -0400
-Received: from m12-13.163.com ([220.181.12.13]:35439 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236339AbhDLDHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 23:07:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=yD6c6fsWrJHK90pler
-        DKXssM9P4DHsxvALO+xKMOr0M=; b=gK0Q7J8nlRmcLtsr/+SrO+dG15UXlJH5IM
-        qXTQf3SYPgF6jLRKBZFxvOwL0n1Bda2S1DBczTE/i3S3MWTQK7QxA8Mo4JTshb24
-        Je7cXaIpz9FS1vGZhehSTsoZXb+4eZX2wlQUL3fz5qW6xFeDCGUkt7To1j7UMtGw
-        iq197+eAo=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp9 (Coremail) with SMTP id DcCowACnS8VYrnNgOR8hFg--.48726S2;
-        Mon, 12 Apr 2021 10:20:10 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     gustavoars@kernel.org, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH v2] nfc: pn533: remove redundant assignment
-Date:   Mon, 12 Apr 2021 10:20:06 +0800
-Message-Id: <20210412022006.28532-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DcCowACnS8VYrnNgOR8hFg--.48726S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAw1kXr1ktFW8tw4xtrWrZrb_yoW5WF1fpF
-        ZrZa43CryUKrWvva1UGws8Z3W3Xrs2yr9rKFWkKas7AFyDZF4kAFWFqF10grn5WrykCry3
-        ArWqqF45GayUtFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jQDG5UUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiwRtysVr7sfj1DwAAsL
+        id S235740AbhDLDQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 23:16:40 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:17896 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235229AbhDLDQi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 23:16:38 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210412031619epoutp02a76e10fb95e9b1cc84dec8fa307e56ca~0-fF42YYx3149431494epoutp02Z
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 03:16:19 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210412031619epoutp02a76e10fb95e9b1cc84dec8fa307e56ca~0-fF42YYx3149431494epoutp02Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1618197379;
+        bh=vrHRdUoCX7NtgXm2snZq+dUwQmYhXUg3ITk+yU5Iqf8=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=eF8gHtuO5xIRMtsp4pr/ydtG/kcrbqX9qAQa/IuFVCvsuNbozswle1Zumxa3+LscT
+         JhaswFiXhI1nujAhNFs6dF9kyngizm/84ocZVatbVl6qfTdt732UudbAhUw0+8dASj
+         DeH7m0hvw+Lnh4qebCy9zZsB0rdOuqIO5p2SpExM=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210412031618epcas1p3ab36b11e41f2325c8fe877699800062f~0-fE1RR8S1533515335epcas1p3F;
+        Mon, 12 Apr 2021 03:16:18 +0000 (GMT)
+Received: from epsmges1p4.samsung.com (unknown [182.195.40.163]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4FJYmH4pC2z4x9Q6; Mon, 12 Apr
+        2021 03:16:15 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
+        BB.0E.22618.F7BB3706; Mon, 12 Apr 2021 12:16:15 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210412031614epcas1p3fd234ea94ae348f8b8d2e3e179e195db~0-fBLydqs1287712877epcas1p3b;
+        Mon, 12 Apr 2021 03:16:14 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210412031614epsmtrp15cfb02b4b95db12bf8a7f2ee25f833ae~0-fBKgUq80525705257epsmtrp1y;
+        Mon, 12 Apr 2021 03:16:14 +0000 (GMT)
+X-AuditID: b6c32a38-e4dff7000001585a-d8-6073bb7f76e3
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        74.74.33967.E7BB3706; Mon, 12 Apr 2021 12:16:14 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.253.99.105]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210412031614epsmtip101f3f4d3f7420afdd556089ebed864c0~0-fAzNJAu2610126101epsmtip1H;
+        Mon, 12 Apr 2021 03:16:14 +0000 (GMT)
+From:   Changheun Lee <nanich.lee@samsung.com>
+To:     damien.lemoal@wdc.com, bvanassche@acm.org,
+        Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
+        axboe@kernel.dk, gregkh@linuxfoundation.org, hch@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com, osandov@fb.com, patchwork-bot@kernel.org,
+        tj@kernel.org, tom.leiming@gmail.com
+Cc:     jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
+        mj0123.lee@samsung.com, seunghwan.hyun@samsung.com,
+        sookwan7.kim@samsung.com, woosung2.lee@samsung.com,
+        yt0928.kim@samsung.com, Changheun Lee <nanich.lee@samsung.com>
+Subject: [PATCH v6 0/3] limit bio max size
+Date:   Mon, 12 Apr 2021 11:58:28 +0900
+Message-Id: <20210412025831.31498-1-nanich.lee@samsung.com>
+X-Mailer: git-send-email 2.29.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA01Ta1ATVxjt3Q27kRa6jRbuUEdwR1seEhIgcEWgzsjo2tQZhvpgOmMhhi0E
+        Q5Jmk7bwR2woWqA8pIggoEMRIdahBqQ8SlsDFhG0nfIatIA8ChZEKAyIVaZNWGz5953znbPn
+        ++69K8RFDwk3oUpjYPUahZomHAX1rV4S3xPNXKxkKWMLKjHXA3RlMIdAZ+ee4ujzU0sYMn1d
+        Q6DO3HIMZY1/5oBWMoYwtDjCoZZ7Pqi7qYRA1nwThgprS3DUN9xFotahXgEaqcjD0d2OeQdU
+        NrYb/X35JkCzy/0kut2Qj6OalqfEbhemu0fO5Jkek0xj8SDJ1FZ5M913jIzF/AXB/Fj6DcnM
+        /tBLMNl1ZsAsWLYwp37KxCJffl8dmsAq4li9B6tRauNUmvgwWv5ezJ4YWZBE6ivdiYJpD40i
+        iQ2jI96N9N2rUts2pT0+VqiNNipSwXG0X3ioXms0sB4JWs4QRrO6OLVOKtGJOUUSZ9TEi5Xa
+        pBCpROIvsylj1QkX7g9guj7i07mKi2QquCHIABuEkAqEs+eq8AzgKBRRDQA2PmnBeDAPYO1k
+        NcmDJQALckf/s1xNfyTgGy0Aroz1r6kWAJzovkHYVQS1A2bP3CPsjU1UBwaXr3QCO8CpMQB7
+        OtJXVRspb5g/2o7bawG1HRbWN5P22onaBUfHvgJ8njt8PpyF8/xrsKNofHUO3Mabrp9fHR1S
+        40LYVt6A84YIeK6kE+PrjXCqvY7kazf4Z046yRsyATSlXwA8yAWwYrJyzREA5xcWbA2hLcIL
+        1jT58fRW2PisFPDJzvDxYpaDXQIpJ3g6XcRLtsGutGH8Rdbk1ca1LzLw4dSj1RlE1FE4N9UF
+        coF78bp9itftU/x/8EWAm4ELq+OS4llOqgtcf7MWsPrkvVEDKJ2ZE1sBJgRWAIU4vcnpWDIX
+        K3KKUySnsHptjN6oZjkrkNlOOA93e12ptf0zGkOMVOYfEBCAAoOCg2QBtKvTMcmDGBEVrzCw
+        x1lWx+pf+DDhBrdUTGq+Jli8O+fT+n3anZROqzM+ed/Vs6KlYOXX3/bsd6xOVR8lDx9iSrxC
+        9VjGpeChGa5xWkWX/5JzOeSv08GVURL3zW1FmQfro+VpH+x3PDHRLP5welh0wKh6Yq133bX1
+        ZwfPIxFlD5JXDs/T0TMjIc8vSSQJnxSMmCxhYeFVqeM7md4B5/LjA7q+xENjb06E5C9P949H
+        qGehMvpIolyFZMK30RmlocaSfWt2QJkycLNt37bvot4q+7bH9MpLJ8uj/ikePNk0crswe6ha
+        UyvTf1QqfpXYPmH025z4xo6DqWnyurOd4eddnnkq8d+pAzOCW5X7cq6jM91/qMXXiqLf8Wn/
+        0p8WcAkKqTeu5xT/Ap3xmqZ7BAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMIsWRmVeSWpSXmKPExsWy7bCSnG7d7uIEg1PbJS3mrNrGaLH6bj+b
+        xbQPP5ktWtu/MVk0L17PZnF6wiImi54nTawWf7vuMVl8fVhssfeWtsXlXXPYLA5NbmaymL55
+        DrPFtftn2C0O37vKYvFwyURmi3MnP7FazHvsYPFr+VFGi/c/rrNbnNoxmdli/d6fbA5iHpev
+        eHtMbH7H7rFz1l12j80rtDwuny312LSqk81j/9w17B7v911l8+jbsorR4/MmOY/2A91MAdxR
+        XDYpqTmZZalF+nYJXBnzb99kKrjGVvFhyQL2BsaDLF2MnBwSAiYSa9veANlcHEICuxkllt/r
+        YoZISEkcP/GWtYuRA8gWljh8uBii5iOjxJdbbYwgNWwCOhJ9b2+xgSREBG4zSVzachRsErPA
+        a0aJrseLwFYIC2hJTH50HGwqi4CqxPRtu9lBbF4Ba4lHj6cwQmyTl/hzv4cZIi4ocXLmE7Be
+        ZqB489bZzBMY+WYhSc1CklrAyLSKUTK1oDg3PbfYsMAwL7Vcrzgxt7g0L10vOT93EyM43rQ0
+        dzBuX/VB7xAjEwfjIUYJDmYlEd6kyuIEId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rwXuk7GCwmk
+        J5akZqemFqQWwWSZODilGphiH9RFZLEFZ29OdnkYUnozWMBsXrnJufVVv+bbOh/6qVYou+zB
+        g9qkfCsphzN3ufIago+a9Yucuil72nh204X15aeOH1KRVzlwYor7iXyJvEsp/+xeTTttKFh/
+        eW61w4Fps9iaTndrCsh3npu5ZdFxdtHgNV11x3dxuMpu6W4RELyWWPK2Ztup6fb+fgtyT+oE
+        RzELH7u4pSb4nZH7+mkHP7NkL/x3TT7264dglX1/NZVr49YVzeFYd37qv8MLFXcXe++8ZhBc
+        pL6vUe/H11WuIXvXNy+1fKKzcmqQ/NXGvcGzTt508E21WVMqcu3A49V/Fs47f3yRLQ//vtcc
+        y3O7tT5KfGJeyiuxOfd045FXSizFGYmGWsxFxYkA1Q3TVCYDAAA=
+X-CMS-MailID: 20210412031614epcas1p3fd234ea94ae348f8b8d2e3e179e195db
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210412031614epcas1p3fd234ea94ae348f8b8d2e3e179e195db
+References: <CGME20210412031614epcas1p3fd234ea94ae348f8b8d2e3e179e195db@epcas1p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+I found a inefficient behavior from multipage bvec. Large chunk DIO
+scenario is that. This patch series could be a solution to improve it.
 
-In many places,first assign a value to a variable and then return
-the variable. which is redundant, we should directly return the value.
-in pn533_rf_field funciton,return rc also in the if statement, so we
-use return 0 to replace the last return rc.
+Changheun Lee (3):
+  bio: limit bio max size
+  ufs: set QUEUE_FLAG_LIMIT_BIO_SIZE
+  bio: add limit_bio_size sysfs
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/nfc/pn533/i2c.c   |  8 ++------
- drivers/nfc/pn533/pn533.c | 17 ++++-------------
- 2 files changed, 6 insertions(+), 19 deletions(-)
+ Documentation/ABI/testing/sysfs-block | 10 ++++++++++
+ Documentation/block/queue-sysfs.rst   |  7 +++++++
+ block/bio.c                           | 13 ++++++++++++-
+ block/blk-settings.c                  | 17 +++++++++++++++++
+ block/blk-sysfs.c                     |  3 +++
+ drivers/scsi/scsi_lib.c               |  2 ++
+ drivers/scsi/ufs/ufshcd.c             |  1 +
+ include/linux/bio.h                   |  2 +-
+ include/linux/blkdev.h                |  4 ++++
+ include/scsi/scsi_host.h              |  2 ++
+ 10 files changed, 59 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/nfc/pn533/i2c.c b/drivers/nfc/pn533/i2c.c
-index 0207e66..795da9b 100644
---- a/drivers/nfc/pn533/i2c.c
-+++ b/drivers/nfc/pn533/i2c.c
-@@ -40,11 +40,8 @@ static int pn533_i2c_send_ack(struct pn533 *dev, gfp_t flags)
- 	struct i2c_client *client = phy->i2c_dev;
- 	static const u8 ack[6] = {0x00, 0x00, 0xff, 0x00, 0xff, 0x00};
- 	/* spec 6.2.1.3:  Preamble, SoPC (2), ACK Code (2), Postamble */
--	int rc;
--
--	rc = i2c_master_send(client, ack, 6);
- 
--	return rc;
-+	return i2c_master_send(client, ack, 6);
- }
- 
- static int pn533_i2c_send_frame(struct pn533 *dev,
-@@ -199,8 +196,7 @@ static int pn533_i2c_probe(struct i2c_client *client,
- 				&phy->i2c_dev->dev);
- 
- 	if (IS_ERR(priv)) {
--		r = PTR_ERR(priv);
--		return r;
-+		return PTR_ERR(priv);
- 	}
- 
- 	phy->priv = priv;
-diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
-index f1469ac..e196732 100644
---- a/drivers/nfc/pn533/pn533.c
-+++ b/drivers/nfc/pn533/pn533.c
-@@ -489,12 +489,8 @@ static int pn533_send_data_async(struct pn533 *dev, u8 cmd_code,
- 				 pn533_send_async_complete_t complete_cb,
- 				 void *complete_cb_context)
- {
--	int rc;
--
--	rc = __pn533_send_async(dev, cmd_code, req, complete_cb,
-+	return __pn533_send_async(dev, cmd_code, req, complete_cb,
- 				complete_cb_context);
--
--	return rc;
- }
- 
- static int pn533_send_cmd_async(struct pn533 *dev, u8 cmd_code,
-@@ -502,12 +498,8 @@ static int pn533_send_cmd_async(struct pn533 *dev, u8 cmd_code,
- 				pn533_send_async_complete_t complete_cb,
- 				void *complete_cb_context)
- {
--	int rc;
--
--	rc = __pn533_send_async(dev, cmd_code, req, complete_cb,
-+	return __pn533_send_async(dev, cmd_code, req, complete_cb,
- 				complete_cb_context);
--
--	return rc;
- }
- 
- /*
-@@ -2617,7 +2609,7 @@ static int pn533_rf_field(struct nfc_dev *nfc_dev, u8 rf)
- 		return rc;
- 	}
- 
--	return rc;
-+	return 0;
- }
- 
- static int pn532_sam_configuration(struct nfc_dev *nfc_dev)
-@@ -2791,7 +2783,6 @@ struct pn533 *pn53x_common_init(u32 device_type,
- 				struct device *dev)
- {
- 	struct pn533 *priv;
--	int rc = -ENOMEM;
- 
- 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -2833,7 +2824,7 @@ struct pn533 *pn53x_common_init(u32 device_type,
- 
- error:
- 	kfree(priv);
--	return ERR_PTR(rc);
-+	return ERR_PTR(-ENOMEM);
- }
- EXPORT_SYMBOL_GPL(pn53x_common_init);
- 
 -- 
-1.9.1
-
+2.29.0
 
