@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE1535BE87
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F146035C0C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239025AbhDLI67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:58:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43120 "EHLO mail.kernel.org"
+        id S241386AbhDLJQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:16:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238728AbhDLIue (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:50:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CA866109E;
-        Mon, 12 Apr 2021 08:50:16 +0000 (UTC)
+        id S238618AbhDLI6G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:58:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE73661360;
+        Mon, 12 Apr 2021 08:57:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217416;
-        bh=QVrSs/VKhhTYXkFZV0qjk2roo7lUf4bHn6SSdXH2Cd8=;
+        s=korg; t=1618217830;
+        bh=mihkCc7YF2IU+tlWPGrDUJG6EteBh93IevV7csjBgWs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=K26eNtZMiCsTP1ypzpgEYkNU1ItobpHGy4X5gNkI44NQBc+YcxrxLouXZCqvv1MQ/
-         qKKBHZATDl0Cqec4pmr5gtAs9FEI2haXPCWZjTLpuxbD2chObWwn1dxK9H8/vsE/jT
-         pdyj1Tpk1PsR2NMRUDK3tePY7S/Maitw1qdlRaAo=
+        b=O2nz2ZAvK90wGrjg9Va5/Gqv0RZnWSXOb/KmcEN6lYbxtpFPrYVoOyxRjm2XMeikz
+         yVYNE3hIbYfMvnrAiS79NBdK/yJ2YH2uswZWyv2BZYqmxKI5CwwxuS0W7tGyVDfjE5
+         1QCbgJ8UOsb9TygJIF4tmpDRhe1mJ/EIsUQO1bgk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 096/111] dt-bindings: net: ethernet-controller: fix typo in NVMEM
+        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
+        Moshe Shemesh <moshe@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 160/188] net/mlx5: Fix PBMC register mapping
 Date:   Mon, 12 Apr 2021 10:41:14 +0200
-Message-Id: <20210412084007.453699213@linuxfoundation.org>
+Message-Id: <20210412084018.951583705@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
-References: <20210412084004.200986670@linuxfoundation.org>
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+References: <20210412084013.643370347@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafał Miłecki <rafal@milecki.pl>
+From: Aya Levin <ayal@nvidia.com>
 
-commit af9d316f3dd6d1385fbd1631b5103e620fc4298a upstream.
+[ Upstream commit 534b1204ca4694db1093b15cf3e79a99fcb6a6da ]
 
-The correct property name is "nvmem-cell-names". This is what:
-1. Was originally documented in the ethernet.txt
-2. Is used in DTS files
-3. Matches standard syntax for phandles
-4. Linux net subsystem checks for
+Add reserved mapping to cover all the register in order to avoid setting
+arbitrary values to newer FW which implements the reserved fields.
 
-Fixes: 9d3de3c58347 ("dt-bindings: net: Add YAML schemas for the generic Ethernet options")
-Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 50b4a3c23646 ("net/mlx5: PPTB and PBMC register firmware command support")
+Signed-off-by: Aya Levin <ayal@nvidia.com>
+Reviewed-by: Moshe Shemesh <moshe@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/devicetree/bindings/net/ethernet-controller.yaml |    2 +-
+ include/linux/mlx5/mlx5_ifc.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-+++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-@@ -51,7 +51,7 @@ properties:
-     description:
-       Reference to an nvmem node for the MAC address
+diff --git a/include/linux/mlx5/mlx5_ifc.h b/include/linux/mlx5/mlx5_ifc.h
+index 4b3b2bf83720..cc9ee0776974 100644
+--- a/include/linux/mlx5/mlx5_ifc.h
++++ b/include/linux/mlx5/mlx5_ifc.h
+@@ -10058,7 +10058,7 @@ struct mlx5_ifc_pbmc_reg_bits {
  
--  nvmem-cells-names:
-+  nvmem-cell-names:
-     const: mac-address
+ 	struct mlx5_ifc_bufferx_reg_bits buffer[10];
  
-   phy-connection-type:
+-	u8         reserved_at_2e0[0x40];
++	u8         reserved_at_2e0[0x80];
+ };
+ 
+ struct mlx5_ifc_qtct_reg_bits {
+-- 
+2.30.2
+
 
 
