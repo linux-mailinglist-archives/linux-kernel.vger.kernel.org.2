@@ -2,97 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99A1C35CF3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF75135CF42
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243633AbhDLRJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240644AbhDLRJC (ORCPT
+        id S243577AbhDLRLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:11:13 -0400
+Received: from mail1.protonmail.ch ([185.70.40.18]:21347 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239716AbhDLRLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:09:02 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75F19C061574;
-        Mon, 12 Apr 2021 10:08:44 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id n138so22637444lfa.3;
-        Mon, 12 Apr 2021 10:08:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z9yKLqiHk2kInh9XkjY0B3JWgb5a3H5BK5yAT5kVFoo=;
-        b=dwZtx3a8HY8JxAzp3P/Y+m2rO6juUSU2LwwkBQ0bdejB1w/uBt1TwaTTfNR7Z0Y1Oo
-         nEkNHNjJH9Sf/lYdefy+khZ0XSSHTwbbWZshd/dcPqqFWR15qs1OdalYQuabtyUEpobh
-         K3RHghqSa7I5GUjhB+A1riqUn4SjTVR+wS0R9o9nr6pIihoeWRXgLhBjfi+CwxNHto+4
-         1ftI+4rukuZvyOJhwXOdjCC46DOzQhYi2qLPwcrKKMNXkOgMNRnhhChiswpbwh8utyIt
-         NEhZEGknwhIN80LrRNfAZS65n7M/gHi2yysw4pxLcSr1/9DCCRfaiAyfvdSvj7ORQa0l
-         Su5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z9yKLqiHk2kInh9XkjY0B3JWgb5a3H5BK5yAT5kVFoo=;
-        b=JBYyijJD+tPMDU4UQbfnVaAAOvaBzNNoMDNWc3lzUcSXQkFBkLi1lW7sE7qAQiQXN/
-         E8o6xROdhhoelahiurwOz89GgSgg8T/Fjjwea4GpfcmLZ9jxTMov7uhK1llnUWe1dr/c
-         wA37ErEN+40ytitd5mJpq8GB40tFCzk4jthdgE+Gw+y5MPtcoffLMByI6B9qfVQdWz3h
-         KXXFtT//UR2ZRcTzETa5MGwM+oWY4MUecOWJRnR7llXX+DVceIcYZONoQpPCyXRtTTj3
-         nrmgHkT3j/fQ2v7cUSJV1CDjmoGD9LX/iXKZISFu5TiCOneKBC8L46wT0992+ySMNggc
-         463w==
-X-Gm-Message-State: AOAM531TV6c0LwxWJlC/atQ0crn+C2wf9+jnuq3C4lIneq9dsLficZJM
-        0F3In8OzXfI5H2sT2iZWckvRZ5jVVvWg4FF/mKY=
-X-Google-Smtp-Source: ABdhPJwdQOkGyTx6w7MDT1WWBesr2v3+MAbclsgUF8zQms6ncveFR/SBii9/xm4FK/lZ5PAQ0Y0I6LBuUm0hoNVFuFQ=
-X-Received: by 2002:a05:6512:3ba9:: with SMTP id g41mr839392lfv.38.1618247322990;
- Mon, 12 Apr 2021 10:08:42 -0700 (PDT)
+        Mon, 12 Apr 2021 13:11:11 -0400
+Date:   Mon, 12 Apr 2021 17:10:45 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1618247450;
+        bh=Bk58r5KxeglWZsaj3TvPM8D2XXqW6yrQ2YKhGW/xiE4=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=RmC88qUlDzbuJzrj9YfH1xajWpJirjYC9P41w93yxnVM8fxE9uF/tNGQhofRv3gm2
+         joR+CwhtOhHg7yHUQZgsZQsNLVPXGhyvFOQOEnSqKDU7w62TXgZ1Ui7jIYYZDnF96C
+         yey31HRp2D2Q1GIgx3HLLrpYp/pn/5+EsyCKsqRlbB5rsaHaupGD+OOXzcWcdNAwM+
+         46YgrGlzIOc13khW7z+J25/EMCJ8lvewga8+VPBLStHu2cd5vjlxHDxyC8cHaPqDsn
+         g7vFa9WXWujc40T3vOOTG8f8uJHcjYkrDsrb8HWhgmIlrnDTGkWV6RY7fXJpzjyuPM
+         /UTD+z2RAVtZg==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: Re: [PATCH v2] staging: rtl8723bs: remove unnecessary adapter
+Message-ID: <20210412170939.beicrv26yiaapt7i@bryanbrattlof.com>
+In-Reply-To: <YHR5L2aSZ4hNNmT0@kroah.com>
+References: <20210412163650.42467-1-hello@bryanbrattlof.com> <YHR5L2aSZ4hNNmT0@kroah.com>
 MIME-Version: 1.0
-References: <CACkBjsa12CEHfT75J6M1Pqy9=6uGFvOX+vGHCa7yO-mqUN14FQ@mail.gmail.com>
- <CACkBjsbcmt=+PFjEybaumg3Rp2peSyoyc_1McZmqT0zeKNUSCg@mail.gmail.com>
-In-Reply-To: <CACkBjsbcmt=+PFjEybaumg3Rp2peSyoyc_1McZmqT0zeKNUSCg@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 12 Apr 2021 10:08:31 -0700
-Message-ID: <CAADnVQL2kFqcsPnew4a2QSOP4cxm0Shd7=d0wdmzXLg+S-7KkQ@mail.gmail.com>
-Subject: Re: BUG: unable to handle kernel paging request in bpf_check
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 12:11 AM Hao Sun <sunhao.th@gmail.com> wrote:
+On Mon, Apr 12, 2021 at 06:45:35PM +0200, Greg Kroah-Hartman wrote:
 >
-> Besides, another similar bug occurred while fault injection was enabled.
-> ====
-> BUG: unable to handle kernel paging request in bpf_prog_alloc_no_stats
-> ========================================================
-> RAX: ffffffffffffffda RBX: 000000000059c080 RCX: 000000000047338d
-> RDX: 0000000000000078 RSI: 0000000020000300 RDI: 0000000000000005
-> RBP: 00007f7e3c38fc90 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000004
-> R13: 00007ffed3a1dd6f R14: 00007ffed3a1df10 R15: 00007f7e3c38fdc0
-> BUG: unable to handle page fault for address: ffff91f2077ed028
-> #PF: supervisor write access in kernel mode
-> #PF: error_code(0x0002) - not-present page
-> PGD 1810067 P4D 1810067 PUD 1915067 PMD 3b907067 PTE 0
-> Oops: 0002 [#1] SMP
-> CPU: 3 PID: 17344 Comm: executor Not tainted 5.12.0-rc6+ #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> 1.13.0-1ubuntu1.1 04/01/2014
-> RIP: 0010:bpf_prog_alloc_no_stats+0x251/0x6e0 kernel/bpf/core.c:94
+>On Mon, Apr 12, 2021 at 04:43:56PM +0000, Bryan Brattlof wrote:
+>> The if2 adapter is defined in rtw_dvr_init() and in the dvobj_priv
+>> structure but never used anywhere in the driver. This will remove all
+>> definitions of if2
+>>
+>> Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+>> ---
+>>  drivers/staging/rtl8723bs/include/drv_types.h |  1 -
+>>  drivers/staging/rtl8723bs/os_dep/sdio_intf.c  | 10 ++++------
+>>  2 files changed, 4 insertions(+), 7 deletions(-)
+>
+>What changed from v1?  That goes below the --- line.
+>
+>v3?
 
-Both crashes don't make much sense.
-There are !null checks in both cases.
-I suspect it's a kmsan bug.
-Most likely kmsan_map_kernel_range_noflush is doing something wrong.
-No idea where that function lives. I don't see it in the kernel sources.
+Oops.
+
+it's the simple things that always seem to be the hardest :)
+
+During the rebase to next-20210412, I lost the bracket on the=20
+conditional statement:
+
+   394: +free_if1:
+   395:          if (status !=3D _SUCCESS && if1) {
+=09=09=09=09=09=09^
+
+I'll be sending v3 shortly with a proper change long :)
+--
+~Bryan
+
+
+
+
+
+
+
