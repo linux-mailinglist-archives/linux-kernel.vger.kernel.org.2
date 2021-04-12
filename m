@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C5735C21F
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A9235C22E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241520AbhDLJjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:39:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35772 "EHLO mail.kernel.org"
+        id S242442AbhDLJkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:40:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60966 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240817AbhDLJLD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:11:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97F5D6135F;
-        Mon, 12 Apr 2021 09:06:38 +0000 (UTC)
+        id S240967AbhDLJLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:11:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 397A4613C2;
+        Mon, 12 Apr 2021 09:07:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218399;
-        bh=+LlHeFTlSKoxg7SLOxYTZN1g6Yr01rn4BaEaedPrizY=;
+        s=korg; t=1618218452;
+        bh=jnUE0CaMOYiyxx0A85k2dEb6Q3912c1bB9IlNE7W4bU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A6Upj1KyJm9/7sTSCMUeUzHVC+Os2nh+9kgZJrxd9pC79ptyxmCX3tmSXJIYkH7CD
-         pG8dckvJCCrgKn3wOB34KUNnooelz3FA1iOC17AHnc1+FY6NktzUOvkze6wYCvX7n0
-         eS7Ul/Geum8EREeJwQb00BIOpPBGelZGYeHt4lJk=
+        b=uyg9sqxvXhF+pXZ6CKKO0vrq/XdaCPZ1EVUR6sDmj4k2Vf3AskF+Shwm5iK4I/OLT
+         OuX0z+jUJgrlJH8xnwaeW9L5mubnoF9zrKTbLjWfV6yEO81itlYJVR4lhpDc1YVxk2
+         Bu/HEjkDd8Swjgm0xKM8KnjFT0b2Sy5A+siHh/nc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukasz Majczak <lma@semihalf.com>,
-        Lukasz Bartosik <lb@semihalf.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 166/210] clk: fix invalid usage of list cursor in register
-Date:   Mon, 12 Apr 2021 10:41:11 +0200
-Message-Id: <20210412084021.559500232@linuxfoundation.org>
+Subject: [PATCH 5.11 169/210] s390/cpcmd: fix inline assembly register clobbering
+Date:   Mon, 12 Apr 2021 10:41:14 +0200
+Message-Id: <20210412084021.658338788@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -41,86 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukasz Bartosik <lb@semihalf.com>
+From: Alexander Gordeev <agordeev@linux.ibm.com>
 
-[ Upstream commit 8d3c0c01cb2e36b2bf3c06a82b18b228d0c8f5d0 ]
+[ Upstream commit 7a2f91441b2c1d81b77c1cd816a4659f4abc9cbe ]
 
-Fix invalid usage of a list_for_each_entry cursor in
-clk_notifier_register(). When list is empty or if the list
-is completely traversed (without breaking from the loop on one
-of the entries) then the list cursor does not point to a valid
-entry and therefore should not be used.
+Register variables initialized using arithmetic. That leads to
+kasan instrumentaton code corrupting the registers contents.
+Follow GCC guidlines and use temporary variables for assigning
+init values to register variables.
 
-The issue was dicovered when running 5.12-rc1 kernel on x86_64
-with KASAN enabled:
-BUG: KASAN: global-out-of-bounds in clk_notifier_register+0xab/0x230
-Read of size 8 at addr ffffffffa0d10588 by task swapper/0/1
-
-CPU: 1 PID: 1 Comm: swapper/0 Not tainted 5.12.0-rc1 #1
-Hardware name: Google Caroline/Caroline,
-BIOS Google_Caroline.7820.430.0 07/20/2018
-Call Trace:
- dump_stack+0xee/0x15c
- print_address_description+0x1e/0x2dc
- kasan_report+0x188/0x1ce
- ? clk_notifier_register+0xab/0x230
- ? clk_prepare_lock+0x15/0x7b
- ? clk_notifier_register+0xab/0x230
- clk_notifier_register+0xab/0x230
- dw8250_probe+0xc01/0x10d4
-...
-Memory state around the buggy address:
- ffffffffa0d10480: 00 00 00 00 00 03 f9 f9 f9 f9 f9 f9 00 00 00 00
- ffffffffa0d10500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f9 f9
->ffffffffa0d10580: f9 f9 f9 f9 00 00 00 00 00 00 00 00 00 00 00 00
-                      ^
- ffffffffa0d10600: 00 00 00 00 00 00 f9 f9 f9 f9 f9 f9 00 00 00 00
- ffffffffa0d10680: 00 00 00 00 00 00 00 00 f9 f9 f9 f9 00 00 00 00
- ==================================================================
-
-Fixes: b2476490ef11 ("clk: introduce the common clock framework")
-Reported-by: Lukasz Majczak <lma@semihalf.com>
-Signed-off-by: Lukasz Bartosik <lb@semihalf.com>
-Link: https://lore.kernel.org/r/20210401225149.18826-1-lb@semihalf.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Fixes: 94c12cc7d196 ("[S390] Inline assembly cleanup.")
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Acked-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Link: https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/Local-Register-Variables.html
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/clk.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ arch/s390/kernel/cpcmd.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index 8c1d04db990d..e08274020944 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -4336,20 +4336,19 @@ int clk_notifier_register(struct clk *clk, struct notifier_block *nb)
- 	/* search the list of notifiers for this clk */
- 	list_for_each_entry(cn, &clk_notifier_list, node)
- 		if (cn->clk == clk)
--			break;
-+			goto found;
+diff --git a/arch/s390/kernel/cpcmd.c b/arch/s390/kernel/cpcmd.c
+index af013b4244d3..2da027359798 100644
+--- a/arch/s390/kernel/cpcmd.c
++++ b/arch/s390/kernel/cpcmd.c
+@@ -37,10 +37,12 @@ static int diag8_noresponse(int cmdlen)
  
- 	/* if clk wasn't in the notifier list, allocate new clk_notifier */
--	if (cn->clk != clk) {
--		cn = kzalloc(sizeof(*cn), GFP_KERNEL);
--		if (!cn)
--			goto out;
-+	cn = kzalloc(sizeof(*cn), GFP_KERNEL);
-+	if (!cn)
-+		goto out;
+ static int diag8_response(int cmdlen, char *response, int *rlen)
+ {
++	unsigned long _cmdlen = cmdlen | 0x40000000L;
++	unsigned long _rlen = *rlen;
+ 	register unsigned long reg2 asm ("2") = (addr_t) cpcmd_buf;
+ 	register unsigned long reg3 asm ("3") = (addr_t) response;
+-	register unsigned long reg4 asm ("4") = cmdlen | 0x40000000L;
+-	register unsigned long reg5 asm ("5") = *rlen;
++	register unsigned long reg4 asm ("4") = _cmdlen;
++	register unsigned long reg5 asm ("5") = _rlen;
  
--		cn->clk = clk;
--		srcu_init_notifier_head(&cn->notifier_head);
-+	cn->clk = clk;
-+	srcu_init_notifier_head(&cn->notifier_head);
- 
--		list_add(&cn->node, &clk_notifier_list);
--	}
-+	list_add(&cn->node, &clk_notifier_list);
- 
-+found:
- 	ret = srcu_notifier_chain_register(&cn->notifier_head, nb);
- 
- 	clk->core->notifier_count++;
+ 	asm volatile(
+ 		"	diag	%2,%0,0x8\n"
 -- 
 2.30.2
 
