@@ -2,69 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4D135C6A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DA435C692
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 14:46:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241381AbhDLMq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 08:46:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241374AbhDLMqu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 08:46:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE58161246;
-        Mon, 12 Apr 2021 12:46:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618231593;
-        bh=FAJNnlUYEhHXgw/A1PLCHY++bTMhHaSsvsaga1wXF+c=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ga10UkXRIRS5/5IQXR9qdOOPZX4QcC/lWGJjEbXlwRIlvN28uD2U+SE6mMTQIYJXF
-         GpCIDValtsCAj4MtdHisfIEjEbbFI++k488myHaLF5jBGavoINAdIMZXuWb7hfKDOx
-         hRujtH73+HKm5oEbJUZnsRJPYwJCXf8VVl6UonJvPdadApNoa0NxHvARWeZkhMiktk
-         o594bqJd70b9lx4z6a2VWn0iL4lR0n9tKlIRd2lGT0RF5mzLzGkyrhbsSnXoZkzMhJ
-         o3zACCQQ4Gnn0l8KwO9LlKHCvPXZgkmUzkD4poOlHW0anns6pFOypA+O2lgntP5yfz
-         /7oLbXd6B1LsQ==
-Received: by pali.im (Postfix)
-        id CE3D6687; Mon, 12 Apr 2021 14:46:30 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
-Date:   Mon, 12 Apr 2021 14:46:02 +0200
-Message-Id: <20210412124602.25762-1-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
+        id S241300AbhDLMqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 08:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241268AbhDLMqd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 08:46:33 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321C4C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:46:15 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id j18so21199631lfg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 05:46:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:in-reply-to:references:date:message-id
+         :mime-version;
+        bh=K9zFwgQThnD5eX67NpvDmwlYzeG84kCePup7Nam43iY=;
+        b=G7nI0KdFgTu9x2Gm0LgVO8BLeCpd3E53MYTduPLDoh/nAzdbUShjlY2Bq7s6wcLx6c
+         v/HzrGr9dInpgl6OIX3SjSYsR7ltPeMw+L/of9q37M+MS4OACfK9mHanwyqWo2WkPH5P
+         QfbhVfvciGXGjAprM9g4i106zLzp/2PigWVCTukRN9yhdxJYqTSamyQa/gBQiZxkMvB+
+         gOQQbnSof6Hxu5vyO/1Lvc4XRsUroCeRc+f3hmHs8j+N0ss/Ja3F3RbGMp6teocVVdSP
+         ieH/gmv1lZMO2zIy5+iIf54d+hy/5PKAYuvitDxdT27UxXJ6X9sxT3qcJCapKcicWcTC
+         IC7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=K9zFwgQThnD5eX67NpvDmwlYzeG84kCePup7Nam43iY=;
+        b=MokklcFeqj9vpgCtmK0CJ7D2dyJ6jApGbgnabtyJrnYj3QBiZIcroMG+MisUZwg56c
+         fAaPmPFBzDe2/pnfpxCkPOjBINhemylQ97jOqz6wueMcRnhEwihmv4xzaltuOyVH8b9e
+         3kOZVX/kkAtqDBLwNjm6xQ9Il6dsQqtIpdR9ZQwHN5K3uER6mHx4Su3ftTtM28tp06m8
+         sWsY9NkU5tvtnlRbVwYAnUQGNKcs3otUmFyncJPrNKK9BbdQYS1OjslbfqtQoqZN43uJ
+         XRVXEJaLQ5vrnEL85rD0sQyMCaCw7UcBtI76XKxCbIOyGcQJ5z9KqL2EXSXi2c3T2qnN
+         MXdQ==
+X-Gm-Message-State: AOAM530z1z3Zd20XsdSd3EDAguQ1DdzfMEAetGvmN5h+F+e+QU2u5pN6
+        6P/F5/wlnn9pvUFIKJnnCz2Digv5Gg+ZTQ==
+X-Google-Smtp-Source: ABdhPJzjI9GmrUK8iNW4oCMP8MXEMTbgxyK3/Sdw+SGf63/Xij/YmEw31zF4YXLxXo2MH4jCxy/Iag==
+X-Received: by 2002:a19:2387:: with SMTP id j129mr15163663lfj.478.1618231573027;
+        Mon, 12 Apr 2021 05:46:13 -0700 (PDT)
+Received: from wkz-x280 (h-90-88.A259.priv.bahnhof.se. [212.85.90.88])
+        by smtp.gmail.com with ESMTPSA id w19sm2413556lfl.199.2021.04.12.05.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 05:46:12 -0700 (PDT)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Marek Behun <marek.behun@nic.cz>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        zhang kai <zhangkaiheb@126.com>,
+        Weilong Chen <chenweilong@huawei.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Di Zhu <zhudi21@huawei.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
+In-Reply-To: <20210411185017.3xf7kxzzq2vefpwu@skbuf>
+References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf>
+Date:   Mon, 12 Apr 2021 14:46:11 +0200
+Message-ID: <878s5nllgs.fsf@waldekranz.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define new PCI_EXP_DEVCTL_PAYLOAD_* macros in linux/pci_regs.h header file
-for Max Payload Size. Macros are defined in the same style as existing
-macros PCI_EXP_DEVCTL_READRQ_* macros.
+On Sun, Apr 11, 2021 at 21:50, Vladimir Oltean <olteanv@gmail.com> wrote:
+> On Sun, Apr 11, 2021 at 08:01:35PM +0200, Marek Behun wrote:
+>> On Sat, 10 Apr 2021 15:34:46 +0200
+>> Ansuel Smith <ansuelsmth@gmail.com> wrote:
+>> 
+>> > Hi,
+>> > this is a respin of the Marek series in hope that this time we can
+>> > finally make some progress with dsa supporting multi-cpu port.
+>> > 
+>> > This implementation is similar to the Marek series but with some tweaks.
+>> > This adds support for multiple-cpu port but leave the driver the
+>> > decision of the type of logic to use about assigning a CPU port to the
+>> > various port. The driver can also provide no preference and the CPU port
+>> > is decided using a round-robin way.
+>> 
+>> In the last couple of months I have been giving some thought to this
+>> problem, and came up with one important thing: if there are multiple
+>> upstream ports, it would make a lot of sense to dynamically reallocate
+>> them to each user port, based on which user port is actually used, and
+>> at what speed.
+>> 
+>> For example on Turris Omnia we have 2 CPU ports and 5 user ports. All
+>> ports support at most 1 Gbps. Round-robin would assign:
+>>   CPU port 0 - Port 0
+>>   CPU port 1 - Port 1
+>>   CPU port 0 - Port 2
+>>   CPU port 1 - Port 3
+>>   CPU port 0 - Port 4
+>> 
+>> Now suppose that the user plugs ethernet cables only into ports 0 and 2,
+>> with 1, 3 and 4 free:
+>>   CPU port 0 - Port 0 (plugged)
+>>   CPU port 1 - Port 1 (free)
+>>   CPU port 0 - Port 2 (plugged)
+>>   CPU port 1 - Port 3 (free)
+>>   CPU port 0 - Port 4 (free)
+>> 
+>> We end up in a situation where ports 0 and 2 share 1 Gbps bandwidth to
+>> CPU, and the second CPU port is not used at all.
+>> 
+>> A mechanism for automatic reassignment of CPU ports would be ideal here.
+>> 
+>> What do you guys think?
+>
+> The reason why I don't think this is such a great idea is because the
+> CPU port assignment is a major reconfiguration step which should at the
+> very least be done while the network is down, to avoid races with the
+> data path (something which this series does not appear to handle).
+> And if you allow the static user-port-to-CPU-port assignment to change
+> every time a link goes up/down, I don't think you really want to force
+> the network down through the entire switch basically.
+>
+> So I'd be tempted to say 'tough luck' if all your ports are not up, and
+> the ones that are are assigned statically to the same CPU port. It's a
+> compromise between flexibility and simplicity, and I would go for
+> simplicity here. That's the most you can achieve with static assignment,
+> just put the CPU ports in a LAG if you want better dynamic load balancing
+> (for details read on below).
 
-Signed-off-by: Pali Rohár <pali@kernel.org>
----
- include/uapi/linux/pci_regs.h | 6 ++++++
- 1 file changed, 6 insertions(+)
+I agree. Unless you only have a few really wideband flows, a LAG will
+typically do a great job with balancing. This will happen without the
+user having to do any configuration at all. It would also perform well
+in "router-on-a-stick"-setups where the incoming and outgoing port is
+the same.
 
-diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
-index e709ae8235e7..8f1b15eea53e 100644
---- a/include/uapi/linux/pci_regs.h
-+++ b/include/uapi/linux/pci_regs.h
-@@ -504,6 +504,12 @@
- #define  PCI_EXP_DEVCTL_URRE	0x0008	/* Unsupported Request Reporting En. */
- #define  PCI_EXP_DEVCTL_RELAX_EN 0x0010 /* Enable relaxed ordering */
- #define  PCI_EXP_DEVCTL_PAYLOAD	0x00e0	/* Max_Payload_Size */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_128B 0x0000 /* 128 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_256B 0x0020 /* 256 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_512B 0x0040 /* 512 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_1024B 0x0060 /* 1024 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_2048B 0x0080 /* 2048 Bytes */
-+#define  PCI_EXP_DEVCTL_PAYLOAD_4096B 0x00A0 /* 4096 Bytes */
- #define  PCI_EXP_DEVCTL_EXT_TAG	0x0100	/* Extended Tag Field Enable */
- #define  PCI_EXP_DEVCTL_PHANTOM	0x0200	/* Phantom Functions Enable */
- #define  PCI_EXP_DEVCTL_AUX_PME	0x0400	/* Auxiliary Power PM Enable */
--- 
-2.20.1
+...
 
+> But there is something which is even more interesting about Felix with
+> the ocelot-8021q tagger. Since Marek posted his RFC and until Ansuel
+> posted the follow-up, things have happened, and now both Felix and the
+> Marvell driver support LAG offload via the bonding and/or team drivers.
+> At least for Felix, when using the ocelot-8021q tagged, it should be
+> possible to put the two CPU ports in a hardware LAG, and the two DSA
+> masters in a software LAG, and let the bond/team upper of the DSA
+> masters be the CPU port.
+>
+> I would like us to keep the door open for both alternatives, and to have
+> a way to switch between static user-to-CPU port assignment, and LAG.
+> I think that if there are multiple 'ethernet = ' phandles present in the
+> device tree, DSA should populate a list of valid DSA masters, and then
+> call into the driver to allow it to select which master it prefers for
+> each user port. This is similar to what Ansuel added with 'port_get_preferred_cpu',
+> except that I chose "DSA master" and not "CPU port" for a specific reason.
+> For LAG, the DSA master would be bond0.
+
+I do not see why we would go through the trouble of creating a
+user-visible bond/team for this. As you detail below, it would mean
+jumping through a lot of hoops. I am not sure there is that much we can
+use from those drivers.
+
+- We know that the CPU ports are statically up, so there is no "active
+  transmit set" to manage, it always consists of all ports.
+
+- The LAG members are statically known at boot time via the DT, so we do
+  not need (or want, in fact) any management of that from userspace.
+
+We could just let the drivers setup the LAG internally, and then do the
+load-balancing in dsa_slave_xmit or provide a generic helper that the
+taggers could use.
