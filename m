@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636DA35CF9B
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F15835CF9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 19:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244241AbhDLRnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 13:43:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47564 "EHLO mx2.suse.de"
+        id S244322AbhDLRoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 13:44:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45488 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243735AbhDLRnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 13:43:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7E6A9AF10;
-        Mon, 12 Apr 2021 17:43:19 +0000 (UTC)
-Subject: Re: [PATCH 01/11] mm/page_alloc: Split per cpu page lists and zone
- stats
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-RT-Users <linux-rt-users@vger.kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-References: <20210407202423.16022-1-mgorman@techsingularity.net>
- <20210407202423.16022-2-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <81cf880c-826e-6bbf-3af0-22d7aa2d3075@suse.cz>
-Date:   Mon, 12 Apr 2021 19:43:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S243735AbhDLRoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 13:44:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ADD5261354;
+        Mon, 12 Apr 2021 17:43:46 +0000 (UTC)
+Date:   Mon, 12 Apr 2021 18:43:44 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     Andre Przywara <andre.przywara@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Amit Daniel Kachhap <amit.kachhap@arm.com>
+Subject: Re: [PATCH] arch/arm64/kernel/traps: Use find_vma_intersection() in
+ traps for setting si_code
+Message-ID: <20210412174343.GG2060@arm.com>
+References: <20210407150940.542103-1-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20210407202423.16022-2-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210407150940.542103-1-Liam.Howlett@Oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/7/21 10:24 PM, Mel Gorman wrote:
-> @@ -6691,7 +6697,7 @@ static __meminit void zone_pcp_init(struct zone *zone)
->  	 * relies on the ability of the linker to provide the
->  	 * offset of a (static) per cpu variable into the per cpu area.
->  	 */
-> -	zone->pageset = &boot_pageset;
-> +	zone->per_cpu_pageset = &boot_pageset;
-
-I don't see any &boot_zonestats assignment here in zone_pcp_init() or its
-caller(s), which seems strange, as zone_pcp_reset() does it.
-
->  	zone->pageset_high = BOOT_PAGESET_HIGH;
->  	zone->pageset_batch = BOOT_PAGESET_BATCH;
->  
-> @@ -8954,17 +8960,19 @@ void zone_pcp_reset(struct zone *zone)
+On Wed, Apr 07, 2021 at 03:11:06PM +0000, Liam Howlett wrote:
+> find_vma() will continue to search upwards until the end of the virtual
+> memory space.  This means the si_code would almost never be set to
+> SEGV_MAPERR even when the address falls outside of any VMA.  The result
+> is that the si_code is not reliable as it may or may not be set to the
+> correct result, depending on where the address falls in the address
+> space.
+> 
+> Using find_vma_intersection() allows for what is intended by only
+> returning a VMA if it falls within the range provided, in this case a
+> window of 1.
+> 
+> Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+> ---
+>  arch/arm64/kernel/traps.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm64/kernel/traps.c b/arch/arm64/kernel/traps.c
+> index a05d34f0e82a..a44007904a64 100644
+> --- a/arch/arm64/kernel/traps.c
+> +++ b/arch/arm64/kernel/traps.c
+> @@ -383,9 +383,10 @@ void force_signal_inject(int signal, int code, unsigned long address, unsigned i
+>  void arm64_notify_segfault(unsigned long addr)
 >  {
->  	unsigned long flags;
->  	int cpu;
-> -	struct per_cpu_pageset *pset;
-> +	struct per_cpu_zonestat *pzstats;
+>  	int code;
+> +	unsigned long ut_addr = untagged_addr(addr);
 >  
->  	/* avoid races with drain_pages()  */
->  	local_irq_save(flags);
-> -	if (zone->pageset != &boot_pageset) {
-> +	if (zone->per_cpu_pageset != &boot_pageset) {
->  		for_each_online_cpu(cpu) {
-> -			pset = per_cpu_ptr(zone->pageset, cpu);
-> -			drain_zonestat(zone, pset);
-> +			pzstats = per_cpu_ptr(zone->per_cpu_zonestats, cpu);
-> +			drain_zonestat(zone, pzstats);
->  		}
-> -		free_percpu(zone->pageset);
-> -		zone->pageset = &boot_pageset;
-> +		free_percpu(zone->per_cpu_pageset);
-> +		free_percpu(zone->per_cpu_zonestats);
-> +		zone->per_cpu_pageset = &boot_pageset;
-> +		zone->per_cpu_zonestats = &boot_zonestats;
+>  	mmap_read_lock(current->mm);
+> -	if (find_vma(current->mm, untagged_addr(addr)) == NULL)
+> +	if (find_vma_intersection(current->mm, ut_addr, ut_addr + 1) == NULL)
+>  		code = SEGV_MAPERR;
+>  	else
+>  		code = SEGV_ACCERR;
 
-^ here
+I don't think your change is entirely correct either. We can have a
+fault below the vma of a stack (with VM_GROWSDOWN) and
+find_vma_intersection() would return NULL but it should be a SEGV_ACCERR
+instead.
 
->  	}
->  	local_irq_restore(flags);
->  }
+Maybe this should employ similar checks as __do_page_fault() (with
+expand_stack() and VM_GROWSDOWN).
+
+-- 
+Catalin
