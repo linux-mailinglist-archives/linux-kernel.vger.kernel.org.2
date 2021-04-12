@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE26935C701
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B8C35C706
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 15:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241669AbhDLNIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 09:08:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53756 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239409AbhDLNIa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 09:08:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618232892;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=otGT/idIYaxyQ7GR4T+PhiVlu9+JXsCYqF5tB9i4mYo=;
-        b=T1CBMK7sopdEEp0/F2MVuPbc4h5HrjiPqt658NhZbIy8KfFh19XL2cjm4uDRXvryKv7Iaq
-        qwq5KZ+y2zDW/dHR2f7hcJUe/NSmEyPAk14EYQDl+XRhD9CD4LWriBh8PDfe9SYroTZzMR
-        b44u6wf6d8OkdpC4H6PLfSY+MCjS3Rc=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-155-2_Gg_thiMYecPZ34xKHFBQ-1; Mon, 12 Apr 2021 09:08:08 -0400
-X-MC-Unique: 2_Gg_thiMYecPZ34xKHFBQ-1
-Received: by mail-qv1-f69.google.com with SMTP id b20so7603727qvf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 06:08:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=otGT/idIYaxyQ7GR4T+PhiVlu9+JXsCYqF5tB9i4mYo=;
-        b=ax+heraVFpsW7YC8yuHDmZ9jUZL1q2lVw6exzrpWE2O5nBhAc+0rLjSZ2+gmG4UKIb
-         ey6zJbiqZ+EDxJZMfWsNq83gKH35JWcT3qtKNSX5SBrLCTpBsS+6gjX7aD0uPyWAEoRS
-         T424CMuFNVSijao+fNmCYDu5Im0iGBH7jhAGfJ3flE7ziJ1cdEdtt7Cx9nw0nzL6x2TK
-         lgC9UQqDmV58BGRueR+jZhzWafQv0Q61uRYvRM98Mum3BYFAIH7G2W+7X0DnxyqbWPTo
-         qkcDqvNyWrXYXCuyeG9beLmTOkyVsC35VKbws4DuUuj0bx8+RJWdzW9PZCdrtu1wMYm8
-         Z+1A==
-X-Gm-Message-State: AOAM5321nA6hCkVOupZaaVlKRBN4uS9Xpc5bt0kgg7l7YrDEvx08AY3D
-        mZ7/0Ksqs7NUXeE+On9Vcr1xMHmlGO9LYwQMzL6f7YmUwEuSbR9V5Cim11mPGjEW64qUneds0+1
-        wc7zT2cXaMsGaGTWY0epK2tPr11mLrxZGift/MvhN
-X-Received: by 2002:a05:622a:18a:: with SMTP id s10mr25054264qtw.237.1618232887805;
-        Mon, 12 Apr 2021 06:08:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzpDbXPx+FlN6dvGLpYb9ZDLeRek2ScHceimDqA8UHWpGvuZxuyVO1rvL/0EfsADt564xwPyEGhhUOwcZ1L+j4=
-X-Received: by 2002:a05:622a:18a:: with SMTP id s10mr25054238qtw.237.1618232887553;
- Mon, 12 Apr 2021 06:08:07 -0700 (PDT)
+        id S241698AbhDLNIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 09:08:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35458 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241676AbhDLNIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 09:08:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A16F6128A;
+        Mon, 12 Apr 2021 13:08:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618232900;
+        bh=+gF3uqIXavl3hMrOghe8B0SiT2ksN2Qd1LhyosV53go=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SbwiRoVspb29bqg8e/3ppeaDXykbxSHRBpjaDlHedmqky9OuVKYGfU3+c3qEwtQB/
+         gpUXRcx61QcRWRRWz6EQn60j5b8JdfYghszN3CX+xsEUD87zvoc1XuW4mdE94mZaZu
+         cqwjVI6U3iAtRxfTarN0XoPpYuCuqoBSOJF0qZMbjdatOwk3YvIjvbG2UsqzPdKN5a
+         kxAO92d66Rh2P7xnc3H6e/3RHYmjSODNglm9AvxdeWgmwEvbiFh0dBzqUq4t57O6JI
+         JLSvw906nSA5ARIIwKaXsM7XGBcp2so24ZzU+aT40aE+14K9lx/w3CD5ZjEzPZ6tYQ
+         u+9JefcIQGTyA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1lVwIY-00028W-Bh; Mon, 12 Apr 2021 15:08:14 +0200
+Date:   Mon, 12 Apr 2021 15:08:14 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     dillon.minfei@gmail.com
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        lkp@intel.com, linux-serial@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        Gerald Baeza <gerald.baeza@foss.st.com>,
+        Erwan Le Ray <erwan.leray@foss.st.com>
+Subject: Re: [PATCH v2] serial: stm32: optimize spin lock usage
+Message-ID: <YHRGPpQ03XgBMkiy@hovoldconsulting.com>
+References: <1618219898-4600-1-git-send-email-dillon.minfei@gmail.com>
 MIME-Version: 1.0
-References: <20210412214730.2dbbcdff@canb.auug.org.au>
-In-Reply-To: <20210412214730.2dbbcdff@canb.auug.org.au>
-From:   Miklos Szeredi <mszeredi@redhat.com>
-Date:   Mon, 12 Apr 2021 15:07:56 +0200
-Message-ID: <CAOssrKdAmeVK_uwLCDo_ZT52vOzxSU9X=orgzU6RB088L6OdKA@mail.gmail.com>
-Subject: Re: linux-next: build warning after merge of the vfs tree
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1618219898-4600-1-git-send-email-dillon.minfei@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Al,
+On Mon, Apr 12, 2021 at 05:31:38PM +0800, dillon.minfei@gmail.com wrote:
+> From: dillon min <dillon.minfei@gmail.com>
+> 
+> To avoid potential deadlock in spin_lock usage, use spin_lock_irqsave,
+> spin_trylock_irqsave(), spin_unlock_irqrestore() in process context.
 
-Fixed fileattr branch pushed to:
+This doesn't make much sense as console_write can be called in any
+context. And where's the deadlock you claim to be fixing here?
+ 
+> remove unused local_irq_save/restore call.
+> 
+> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+> Cc: Gerald Baeza <gerald.baeza@foss.st.com>
+> Cc: Erwan Le Ray <erwan.leray@foss.st.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: dillon min <dillon.minfei@gmail.com>
+> ---
+> v2: remove unused code from stm32_usart_threaded_interrupt() according from
+>     Greg's review.
+> 
+>  drivers/tty/serial/stm32-usart.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/stm32-usart.c b/drivers/tty/serial/stm32-usart.c
+> index b3675cf25a69..b1ba5e36e36e 100644
+> --- a/drivers/tty/serial/stm32-usart.c
+> +++ b/drivers/tty/serial/stm32-usart.c
+> @@ -1354,13 +1354,12 @@ static void stm32_usart_console_write(struct console *co, const char *s,
+>  	u32 old_cr1, new_cr1;
+>  	int locked = 1;
+>  
+> -	local_irq_save(flags);
+>  	if (port->sysrq)
+>  		locked = 0;
+>  	else if (oops_in_progress)
+> -		locked = spin_trylock(&port->lock);
+> +		locked = spin_trylock_irqsave(&port->lock, flags);
+>  	else
+> -		spin_lock(&port->lock);
+> +		spin_lock_irqsave(&port->lock, flags);
+>  
+>  	/* Save and disable interrupts, enable the transmitter */
+>  	old_cr1 = readl_relaxed(port->membase + ofs->cr1);
+> @@ -1374,8 +1373,7 @@ static void stm32_usart_console_write(struct console *co, const char *s,
+>  	writel_relaxed(old_cr1, port->membase + ofs->cr1);
+>  
+>  	if (locked)
+> -		spin_unlock(&port->lock);
+> -	local_irq_restore(flags);
+> +		spin_unlock_irqrestore(&port->lock, flags);
+>  }
+>  
+>  static int stm32_usart_console_setup(struct console *co, char *options)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mszeredi/vfs.git fileattr_v6
-
-Thanks,
-Miklos
-
-On Mon, Apr 12, 2021 at 1:47 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi all,
->
-> After merging the vfs tree, today's linux-next build (htmldocs) produced
-> this warning:
->
-> Documentation/filesystems/locking.rst:113: WARNING: Malformed table.
-> Text in column margin in table line 24.
->
-> ============    =============================================
-> ops             i_rwsem(inode)
-> ============    =============================================
-> lookup:         shared
-> create:         exclusive
-> link:           exclusive (both)
-> mknod:          exclusive
-> symlink:        exclusive
-> mkdir:          exclusive
-> unlink:         exclusive (both)
-> rmdir:          exclusive (both)(see below)
-> rename:         exclusive (all) (see below)
-> readlink:       no
-> get_link:       no
-> setattr:        exclusive
-> permission:     no (may not block if called in rcu-walk mode)
-> get_acl:        no
-> getattr:        no
-> listxattr:      no
-> fiemap:         no
-> update_time:    no
-> atomic_open:    shared (exclusive if O_CREAT is set in open flags)
-> tmpfile:        no
-> fileattr_get:   no or exclusive
-> fileattr_set:   exclusive
-> ============    =============================================
->
-> Introduced by commit
->
->   10a489bbff3e ("vfs: add fileattr ops")
->
-> --
-> Cheers,
-> Stephen Rothwell
-
+Johan
