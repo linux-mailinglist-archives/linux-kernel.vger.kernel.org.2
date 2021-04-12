@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EA035C589
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:45:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F6035C591
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240547AbhDLLpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 07:45:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46842 "EHLO
+        id S240527AbhDLLr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:47:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240443AbhDLLpm (ORCPT
+        with ESMTP id S237705AbhDLLr4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 07:45:42 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F5FC061574;
-        Mon, 12 Apr 2021 04:45:24 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id j24so2252089oii.11;
-        Mon, 12 Apr 2021 04:45:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=niGasz/eM06qJhxp3ZsE78K6CaXcyr8llf9XfXoWBB4=;
-        b=be9hqs6tJwPTar0irxWF/DI/+9HLjjKUwK0l0jubFznBmiW49NOUUujRVH8OxyRIx3
-         N8Z2MtKJibI3zVZISj+RaJU6nsLTA3alxV4+87UsaJvl6fgltx0+jFroOKUKkgz7VY1T
-         VrYYh2ZnBzp9l/8iI7y/J3qFjb5u4lh7Y3NqXkryFwD598Y3voa2KzDi46HoAK985ouZ
-         X8gMdAIT9OX0ZTipIsSrBbcUxuesMXz21IoOLgVZ6SX1XfGTnJ2ceACSP0APD1j2/LVp
-         zU4JmvMFU9sPb1uH4fV1tVXxgKIjhgAZ7EhQq9E0w7Cg8UQs5bN2qS0O72I5oZtHVEmi
-         SdWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=niGasz/eM06qJhxp3ZsE78K6CaXcyr8llf9XfXoWBB4=;
-        b=e9kUoGCoG8CH01QiKqF0dh0igrMewNEPBQPMFFTQi4aIuowIAT9Qwe0VW90SYVFMBq
-         lUb0I1GcQ49M3B9EFIGr/o/ZH4LM3TQqlW3n+bjU7AZsdcxdWB96VjbmYEj04YZZJAro
-         m7wBmpzPqiTCIKxjKqwNN9si5VG5XKoH0ZSkEZzQAb+ddPZB2Tg7XfZWO05u1RsJHsOB
-         YK0FxKreAxInNyPg4QXHNkL++HWVgwb/rm5DdfUyF58H3l3rVhHHh/4n7jrUbOz5bObu
-         ASG+9gSbpcghHZih20l1s46Gv0VTRAV4W1s8kaQvtswxZoLO72IwYQJeSby8MuLmwgyJ
-         XMMg==
-X-Gm-Message-State: AOAM532xXhXnbsuWKUOxTXKP8VhK5LVSrILBJ9IVAOI796rcyu0zenyK
-        fY38mrIRbqRYtkEZZMtNqa9pNfO2WXCJy1mXSjw=
-X-Google-Smtp-Source: ABdhPJwpjjqdRkKRPJbXzQI8gmplSs+qcHcyWFIq54t7MDNipgZpLxiF3C7y3T8++CGQAJWLKFae3KQs9yHM+Ni0vTw=
-X-Received: by 2002:aca:4187:: with SMTP id o129mr19005405oia.10.1618227923653;
- Mon, 12 Apr 2021 04:45:23 -0700 (PDT)
+        Mon, 12 Apr 2021 07:47:56 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE443C061574;
+        Mon, 12 Apr 2021 04:47:38 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FJn6J4HVmz9sSC;
+        Mon, 12 Apr 2021 21:47:31 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1618228056;
+        bh=E9S/oqrY0+lUSUuX56T15kWI2eHfHM6JObKhhA4nUAA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lh8PRVclnmdx+hF75KQFOyXHAvyo4gMSM3DCRFiJklvC06msGSu8Sncsrze2QbyAA
+         n91ZjYe89GWWqnpeYC0L4Jd3RUIsvn+jS8yXi/qZ7A5VI1E5x5h0qEDKCBIQA3ihTu
+         +/lNgAjSV/qppmpevlkofuBlgYs7Ppq6hslFiK3msvIAx0pDz3t3OkSH1pMVrTmvxf
+         l7AG/lAxH4ihbBwlJS7cD2qRrlukaRG63D5fK7wktgm4RGvBcvrMWzISSnH3zENZHc
+         947rYQGBgYW/J+K6czPKx0IJN9YvBb+yoFZYo8bdnNoC8Tg6B/AlEww0Fuq1083gUg
+         1V0TKrar8Ae0Q==
+Date:   Mon, 12 Apr 2021 21:47:30 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Miklos Szeredi <mszeredi@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the vfs tree
+Message-ID: <20210412214730.2dbbcdff@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210412105851.24809-1-paskripkin@gmail.com>
-In-Reply-To: <20210412105851.24809-1-paskripkin@gmail.com>
-From:   Alexander Aring <alex.aring@gmail.com>
-Date:   Mon, 12 Apr 2021 07:45:12 -0400
-Message-ID: <CAB_54W7R6ZmMQQPscc04PhJsGu_uoaVqVx=PAiLrqb4nZqTWzw@mail.gmail.com>
-Subject: Re: [PATCH] net: mac802154: fix WARNING in ieee802154_del_device
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-wpan - ML <linux-wpan@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        syzbot+bf8b5834b7ec229487ce@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/xQr/7BBGQBAbNLWKFgbTOhz";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/xQr/7BBGQBAbNLWKFgbTOhz
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 12 Apr 2021 at 06:58, Pavel Skripkin <paskripkin@gmail.com> wrote:
->
-> syzbot reported WARNING in ieee802154_del_device. The problem
-> was in uninitialized mutex. In case of NL802154_IFTYPE_MONITOR
-> mutex won't be initialized, but ieee802154_del_device() accessing it.
->
-> Reported-by: syzbot+bf8b5834b7ec229487ce@syzkaller.appspotmail.com
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->  net/mac802154/iface.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/net/mac802154/iface.c b/net/mac802154/iface.c
-> index 1cf5ac09edcb..be8d2a02c882 100644
-> --- a/net/mac802154/iface.c
-> +++ b/net/mac802154/iface.c
-> @@ -599,6 +599,7 @@ ieee802154_setup_sdata(struct ieee802154_sub_if_data *sdata,
->
->                 break;
->         case NL802154_IFTYPE_MONITOR:
-> +               mutex_init(&sdata->sec_mtx);
->                 sdata->dev->needs_free_netdev = true;
->                 sdata->dev->netdev_ops = &mac802154_monitor_ops;
->                 wpan_dev->promiscuous_mode = true;
+Hi all,
 
-yes that will fix the issue, but will let the user notify that setting
-any security setting is supported by monitors which is not the case.
-There are patches around which should return -EOPNOTSUPP for monitors.
-However we might support it in future to let the kernel encrypt air
-frames, but this isn't supported yet and the user should be aware that
-it isn't.
+After merging the vfs tree, today's linux-next build (htmldocs) produced
+this warning:
 
-- Alex
+Documentation/filesystems/locking.rst:113: WARNING: Malformed table.
+Text in column margin in table line 24.
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+ops             i_rwsem(inode)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+lookup:         shared
+create:         exclusive
+link:           exclusive (both)
+mknod:          exclusive
+symlink:        exclusive
+mkdir:          exclusive
+unlink:         exclusive (both)
+rmdir:          exclusive (both)(see below)
+rename:         exclusive (all) (see below)
+readlink:       no
+get_link:       no
+setattr:        exclusive
+permission:     no (may not block if called in rcu-walk mode)
+get_acl:        no
+getattr:        no
+listxattr:      no
+fiemap:         no
+update_time:    no
+atomic_open:    shared (exclusive if O_CREAT is set in open flags)
+tmpfile:        no
+fileattr_get:   no or exclusive
+fileattr_set:   exclusive
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D    =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Introduced by commit
+
+  10a489bbff3e ("vfs: add fileattr ops")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/xQr/7BBGQBAbNLWKFgbTOhz
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmB0M1IACgkQAVBC80lX
+0Gy/rwgAjlagHSyK9ONQsNwUjA0KfX3Gasqjwlpt6and+Synou/INIijblcvnNSF
+zV/N7v8gzAmWigbf2vg6X6B9P2LEHOdNy+6bzNXzlycfGvGCruFaCh6d3csIS6mC
+sI2HFCmPV11Haf6t9yDB25CKB/PQX40gMVKsdtGdF9K9p0lWNW+EPQxnaiRq4grc
+k04ACrzefnukQVzJHFddadtz5RWlRRYbl08H7q47R5V1r/MpTWRrU0ubz5Mg9XH6
+4KkDyVOnXaEel3vyXsHN8aZFma68XTPDRKIOGVEX2x43fzbGvyFO++mFFLAf87wH
+0S33aK3AzZ16KVSCJy/3uFTvoxnzhQ==
+=XO0G
+-----END PGP SIGNATURE-----
+
+--Sig_/xQr/7BBGQBAbNLWKFgbTOhz--
