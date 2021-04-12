@@ -2,184 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8743135CE97
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FA235CEC7
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345020AbhDLQqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:46:18 -0400
-Received: from mail-1.ca.inter.net ([208.85.220.69]:52192 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343871AbhDLQgU (ORCPT
+        id S243765AbhDLQtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:49:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S245282AbhDLQoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:36:20 -0400
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id 277182EA14C;
-        Mon, 12 Apr 2021 12:36:01 -0400 (EDT)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id 7+IC5J2S2mQf; Mon, 12 Apr 2021 12:16:51 -0400 (EDT)
-Received: from [192.168.48.23] (host-45-58-219-4.dyn.295.ca [45.58.219.4])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id A76CF2EA12E;
-        Mon, 12 Apr 2021 12:35:59 -0400 (EDT)
-Reply-To: dgilbert@interlog.com
-Subject: Re: KMSAN: kernel-infoleak in sg_scsi_ioctl
-To:     Hao Sun <sunhao.th@gmail.com>, axboe@kernel.dk, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-References: <CACkBjsYu87czSrJoW+NQ9Vykm1byQ5u-eOP=a1ze+PojCsidfA@mail.gmail.com>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <e70ba561-dd55-c38d-62a4-dd2e0603be10@interlog.com>
-Date:   Mon, 12 Apr 2021 12:35:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 12 Apr 2021 12:44:04 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56177C061344
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:36:08 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5-20020a05600c0245b029011a8273f85eso7270953wmj.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gunh+hu1ZDPddGOLmBt9qVFmAz2B0a627uCXn4xtBkY=;
+        b=DcS2K04aKH40+WM215ezgNDsZ3NKXOk9HyqM8lTLgVfjV4ojsDVORcfq1ylr/LWcIK
+         gFqmUGPdQo4jhbOGeOfzY6E6wTRi1knUyB14IvQcGNRMjpxmCQQo5i7zcb6ggZdB5uv9
+         l1YWrofE4GOOz4F0gLdFyCo/4FPJr1Y+HcYdE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=gunh+hu1ZDPddGOLmBt9qVFmAz2B0a627uCXn4xtBkY=;
+        b=s1cV2u7L1GgmXIjxGNMiCgtv4pNMUAtP6T+T+TNx6cN2pfVwUvqW/JRJcRDmg7WKoK
+         DvVjIXrYCTOApemO+QbSmOMWtTQZ2Vsc5kSoppiSyflTToG4617esp2WVqEHTTMShcTp
+         +LUWfU0fCr1myBZpIXZBWW2ObFtvN9WD8koLPF6AZSXfpuSoEqMAkuiv+9/Dl4TR3S29
+         4xt/SFCWCymPIjIECtyNHx1agxp4JZPECZ6W9dCcrk96zCnptC8tzBjC74jMtcLSo3Dp
+         fmOva44E9aiyPOfgTQ9oH4AFjaW/Jg8Rs+NQl9vltTSyQOGbDK1ULFTsnw/TcV1qKucv
+         kiZQ==
+X-Gm-Message-State: AOAM530Z7131naoe7pe2p4bcuVMBIYzBQwbUwTnNQ5ycK6vyfszRYrM8
+        R5IcD4JfO7/DTeyO71STGkT16g==
+X-Google-Smtp-Source: ABdhPJzn5o7o9pIbs8RDCfOQtJTd/DwzbN2+p9xuMhj7/AcD7iZeT+BjD0xlMeG1v2HLHEHHSzxhVA==
+X-Received: by 2002:a1c:1f92:: with SMTP id f140mr15058wmf.108.1618245366994;
+        Mon, 12 Apr 2021 09:36:06 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id v3sm15633986wmj.25.2021.04.12.09.36.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 09:36:06 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 18:36:04 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>
+Subject: Re: [PATCH 0/8] drm/msm: Swappable GEM objects
+Message-ID: <YHR29HEs31jx2GGn@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>
+References: <20210405174532.1441497-1-robdclark@gmail.com>
+ <YG7l0LwVQ2s4Y0Sa@phenom.ffwll.local>
+ <CAF6AEGsH2gbKv-Q04gRbjz=ue1TF7S_6DXa06bvYPcmYvG684w@mail.gmail.com>
+ <YHRZA+WBbWrUdpAV@phenom.ffwll.local>
+ <CAF6AEGv+ewxwtP4PN1G_gjdE0DW_LiukYbZoL-isFsGTRbcbOQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CACkBjsYu87czSrJoW+NQ9Vykm1byQ5u-eOP=a1ze+PojCsidfA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGv+ewxwtP4PN1G_gjdE0DW_LiukYbZoL-isFsGTRbcbOQ@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-See below.
-
-On 2021-04-12 9:02 a.m., Hao Sun wrote:
-> Hi
+On Mon, Apr 12, 2021 at 08:23:33AM -0700, Rob Clark wrote:
+> On Mon, Apr 12, 2021 at 7:28 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Thu, Apr 08, 2021 at 08:23:42AM -0700, Rob Clark wrote:
+> > > On Thu, Apr 8, 2021 at 4:15 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > >
+> > > > On Mon, Apr 05, 2021 at 10:45:23AM -0700, Rob Clark wrote:
+> > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > >
+> > > > > One would normally hope not to be under enough memory pressure to need
+> > > > > to swap GEM objects to disk backed swap.  But memory backed zram swap
+> > > > > (as enabled on chromebooks, for example) can actually be quite fast
+> > > > > and useful on devices with less RAM.  On a 4GB device, opening up ~4
+> > > > > memory intensive web pages (in separate windows rather than tabs, to try
+> > > > > and prevent tab discard), I see ~500MB worth of GEM objects, of which
+> > > > > maybe only 10% are active at any time, and with unpin/evict enabled,
+> > > > > only about half resident (which is a number that gets much lower if you
+> > > > > simulate extreme memory pressure).  Assuming a 2:1 compression ratio (I
+> > > > > see a bit higher in practice, but cannot isolate swapped out GEM pages
+> > > > > vs other), that is like having an extra 100+MB of RAM, or more under
+> > > > > higher memory pressure.
+> > > > >
+> > > > > Rob Clark (8):
+> > > > >   drm/msm: ratelimit GEM related WARN_ON()s
+> > > > >   drm/msm: Reorganize msm_gem_shrinker_scan()
+> > > > >   drm/msm: Clear msm_obj->sgt in put_pages()
+> > > > >   drm/msm: Split iova purge and close
+> > > > >   drm/msm: Add $debugfs/gem stats on resident objects
+> > > > >   drm/msm: Track potentially evictable objects
+> > > > >   drm/msm: Small msm_gem_purge() fix
+> > > > >   drm/msm: Support evicting GEM objects to swap
+> > > >
+> > > > Given how much entertainement shrinkers are, should we aim for more common
+> > > > code here?
+> > > >
+> > > > Christian has tons of fun with adding something like this for ttm (well
+> > > > different shades of grey). i915 is going to adopt ttm, at least for
+> > > > discrete.
+> > > >
+> > > > The locking is also an utter pain, and msm seems to still live a lot in
+> > > > its own land here. I think as much as possible a standard approach here
+> > > > would be really good, ideally maybe as building blocks shared between ttm
+> > > > and gem-shmem drivers ...
+> > >
+> > > I don't disagree.. but also replacing the engines on an airplane
+> > > mid-flight isn't a great option either.. ;-)
+> > >
+> > > The hard part (esp. wrt to locking) is tracking the state of a given
+> > > bo.. ie. is it active, active+purgable, inactive+purgable,
+> > > inactive+unpinnable, etc.  Currently the shmem helpers don't really
+> > > provide anything here.  If they did, I suppose they could provide some
+> > > shrinker helpers as well.  Unfortunately these days I barely have
+> > > enough time for drm/msm, let alone bolting this onto the shmem
+> > > helpers.  I would recommend that if someone wanted to do this, that
+> > > they look at recent drm/msm shrinker patches that I've sent (ie. make
+> > > shrinker->count() lockless, and drop the locks in shrinker->scan()
+> > > body.. when the system is under heavy memory pressure, you start
+> > > getting shrinker called from all the threads so contention for mm_lock
+> > > can be a really bad problem)
+> > >
+> > > (Well, the other potential problem is that drm/msm has a lot of
+> > > different possible iommu pairings across the generations, so there is
+> > > some potential here to uncover exciting new bugs.. the locking at
+> > > least is the same for all the generations and pretty easy to test with
+> > > and without lockdep with some tests that push essentially all memory
+> > > into swap)
+> >
+> > So what we aimed for with i915 and discrete gpu is to first align on
+> > locking with dma_resv_lock for all buffer state, plus a bunch of
+> > lru/allocator locks for lists and stuff.
+> >
+> > And then with more aligned locking, figure out how to maybe share more
+> > code.
+> >
+> > The trouble is that right now neither shmem helpers, nor drivers using
+> > them, are really using dma_resv_lock to protect their per-buffer state.
 > 
-> When using Healer(https://github.com/SunHao-0/healer/tree/dev) to fuzz
-> the Linux kernel, I found the following bug report.
+> We are actually already using dma_resv_lock() since a few release
+> cycles back.. msm_gem_lock() and friends are a wrapper around that
+> from the migration away from using our own lock).. the mm_lock is
+> symply protecting the lists, not the objects
+
+Oh I thought there were still some warts here scanning through your
+series. I guess I got confused, yay :-)
+
+> > So yeah it's a bit an awkward situation, and I don't know myself really
+> > how to get out of it. Lack of people with tons of free time doesn't help
+> > much.
+> >
+> > So best case I think is that every time we touch helpers or drivers
+> > locking in a big way, we check whether it's at least slightly going
+> > towards dma_resv_lock or not. And at least make sure we're not going
+> > backwards, and maybe not spin wheels at standstill.
+> >
+> > I guess my question is, what would be good to have to make sure we at
+> > least all agree on the overall direction?
 > 
-> commit:   4ebaab5fb428374552175aa39832abf5cedb916a
-> version:   linux 5.12
-> git tree:    kmsan
-> kernel config and full log can be found in the attached file.
+> I guess if gem_shmem users aren't already using resv lock, moving in
+> that directly would be a good idea.  Maybe it would make sense to
+> build more object state tracking into gem_shmem helpers (ie. so you
+> can know which buffers are active/purgable/unpinnable/etc without
+> traversing a list of *all* gem objects).. that seems like pushing it
+> more in the direction of being ttm-style frameworky compared to the
+> simple helper API that it is now.  But maybe that is a good thing?
+
+Moving shmem helpers is on the todo already.
+
+https://dri.freedesktop.org/docs/drm/gpu/todo.html#move-buffer-object-locking-to-dma-resv-lock
+
+And yes I think letting everyone reinvent their buffer locking scheme
+wasn't the best idea. But otoh ttm was a monolith, and before Maarten
+spent a lot of time pulling out dma_fence/resv and ww_mutex it really
+wasn't reasonable to align with the design without pulling in the entire
+monolith. The code improved a lot in this regard.
+
+Also yeah I think pushing more object state into shmem helpers would
+probably be good, but ideally not on the current locking ...
+-Daniel
+
 > 
-> =====================================================
-> BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x9c/0xb0
-> mm/kmsan/kmsan_hooks.c:249
-> CPU: 2 PID: 23939 Comm: executor Not tainted 5.12.0-rc6+ #1
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> 1.13.0-1ubuntu1.1 04/01/2014
-> Call Trace:
->   __dump_stack lib/dump_stack.c:79 [inline]
->   dump_stack+0x1ff/0x275 lib/dump_stack.c:120
->   kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
->   kmsan_internal_check_memory+0x48c/0x520 mm/kmsan/kmsan.c:437
->   kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
->   instrument_copy_to_user ./include/linux/instrumented.h:121 [inline]
->   _copy_to_user+0x112/0x1d0 lib/usercopy.c:33
->   copy_to_user ./include/linux/uaccess.h:209 [inline]
->   sg_scsi_ioctl+0xfa9/0x1180 block/scsi_ioctl.c:507
->   sg_ioctl_common+0x2713/0x4930 drivers/scsi/sg.c:1108
->   sg_ioctl+0x166/0x2d0 drivers/scsi/sg.c:1162
->   vfs_ioctl fs/ioctl.c:48 [inline]
->   __do_sys_ioctl fs/ioctl.c:753 [inline]
->   __se_sys_ioctl+0x2c2/0x400 fs/ioctl.c:739
->   __x64_sys_ioctl+0x4a/0x70 fs/ioctl.c:739
->   do_syscall_64+0xa2/0x120 arch/x86/entry/common.c:48
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> RIP: 0033:0x47338d
-> Code: 02 b8 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa 48 89 f8 48
-> 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
-> 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007fe31ab90c58 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 000000000059c128 RCX: 000000000047338d
-> RDX: 0000000020000040 RSI: 0000000000000001 RDI: 0000000000000003
-> RBP: 00000000004e8e5d R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000059c128
-> R13: 00007ffe2284af2f R14: 00007ffe2284b0d0 R15: 00007fe31ab90dc0
-> Uninit was stored to memory at:
->   kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
->   kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
->   kmsan_memcpy_memmove_metadata+0x25b/0x290 mm/kmsan/kmsan.c:226
->   kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:246
->   __msan_memcpy+0x46/0x60 mm/kmsan/kmsan_instr.c:110
->   bio_copy_kern_endio_read+0x3ee/0x560 block/blk-map.c:443
->   bio_endio+0xa1a/0xcc0 block/bio.c:1453
->   req_bio_endio block/blk-core.c:265 [inline]
->   blk_update_request+0xd4f/0x2190 block/blk-core.c:1456
->   scsi_end_request+0x111/0xc50 drivers/scsi/scsi_lib.c:570
->   scsi_io_completion+0x276/0x2840 drivers/scsi/scsi_lib.c:970
->   scsi_finish_command+0x6fc/0x720 drivers/scsi/scsi.c:214
->   scsi_softirq_done+0x205/0xa40 drivers/scsi/scsi_lib.c:1450
->   blk_complete_reqs block/blk-mq.c:576 [inline]
->   blk_done_softirq+0x133/0x1e0 block/blk-mq.c:581
->   __do_softirq+0x271/0x782 kernel/softirq.c:345
+> BR,
+> -R
 > 
-> Uninit was created at:
->   kmsan_save_stack_with_flags+0x3c/0x90
->   kmsan_alloc_page+0xc4/0x1b0
->   __alloc_pages_nodemask+0xdb0/0x54a0
->   alloc_pages_current+0x671/0x990
->   blk_rq_map_kern+0xb8e/0x1310
->   sg_scsi_ioctl+0xc94/0x1180
->   sg_ioctl_common+0x2713/0x4930
->   sg_ioctl+0x166/0x2d0
->   __se_sys_ioctl+0x2c2/0x400
->   __x64_sys_ioctl+0x4a/0x70
->   do_syscall_64+0xa2/0x120
->   entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Byte 0 of 1 is uninitialized
->   Memory access of size 1 starts at ffff99e033fb9360
->   Data copied to user address 0000000020000048
-> 
-> The following system call sequence (Syzlang format) can reproduce the crash:
-> # {Threaded:false Collide:false Repeat:false RepeatTimes:0 Procs:1
-> Slowdown:1 Sandbox:none Fault:false FaultCall:-1 FaultNth:0 Leak:false
-> NetInjection:true NetDevices:true NetReset:false Cgroups:false
-> BinfmtMisc:true CloseFDs:true KCSAN:false DevlinkPCI:true USB:true
-> VhciInjection:true Wifi:true IEEE802154:true Sysctl:true
-> UseTmpDir:true HandleSegv:true Repro:false Trace:false}
-> 
-> r0 = syz_open_dev$sg(&(0x7f0000000000)='/dev/sg#\x00', 0x0, 0x20000094b402)
-> ioctl$SG_GET_LOW_DMA(r0, 0x227a, &(0x7f0000000040))
-> ioctl$SCSI_IOCTL_SEND_COMMAND(r0, 0x1, &(0x7f0000000040)={0x0, 0x1, 0x1})
+> > -Daniel
+> >
+> > >
+> > > BR,
+> > > -R
+> > >
+> > > > -Daniel
+> > > >
+> > > > >
+> > > > >  drivers/gpu/drm/msm/msm_drv.c          |   2 +-
+> > > > >  drivers/gpu/drm/msm/msm_drv.h          |  13 ++-
+> > > > >  drivers/gpu/drm/msm/msm_gem.c          | 155 +++++++++++++++++--------
+> > > > >  drivers/gpu/drm/msm/msm_gem.h          |  68 +++++++++--
+> > > > >  drivers/gpu/drm/msm/msm_gem_shrinker.c | 129 ++++++++++++--------
+> > > > >  drivers/gpu/drm/msm/msm_gpu_trace.h    |  13 +++
+> > > > >  6 files changed, 272 insertions(+), 108 deletions(-)
+> > > > >
+> > > > > --
+> > > > > 2.30.2
+> > > > >
+> > > > > _______________________________________________
+> > > > > dri-devel mailing list
+> > > > > dri-devel@lists.freedesktop.org
+> > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> > > >
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-Since the code opens a sg device node then the sg driver, which is a
-pass-through driver, is invoked. However instead of using sg's pass-through
-facilities, that call to ioctl(SCSI_IOCTL_SEND_COMMAND) is invoking the
-long deprecated SCSI mid-level pass-through. So if there is infoleak bug
-you should flag sg_scsi_ioctl() in block/scsi_ioctl.c. See the notes
-associated with that function which imply it can't be protected from
-certain types of abuse due to its interface design. That is why it is
-deprecated. Also the equivalent of root permissions are required
-to execute those functions.
-
-That code looks strange, ioctl(SG_GET_LOW_DMA) reads the
-host->unchecked_isa_dma value (now always 0 ??) into an int at
-0x7f0000000040. That same address is then used for the struct
-scsi_ioctl_command object passed to ioctl(SCSI_IOCTL_SEND_COMMAND).
-
-Looking at the data passed to SCSI_IOCTL_SEND_COMMAND in_len=0
-(data-out length in bytes), out_len=1 and, if 2 zero bytes follow
-what is shown, that is a (SCSI-2) REZERO UNIT command which returns
-no data. Now the BUG print-out seems to come from this line:
-     copy_to_user(sic->data, buffer, out_len);
-
-but buffer was kzalloc-ed and nothing was (should have been) DMA-ed
-into it. So where is the problem?
-
-Since the bio/block code isn't often asked to handle a block size
-of 1 byte, this addition may strengthen things:
-	if ((in_len % 512) != 0 || (out_len % 512) != 0)
-		return -EINVAL;
-
-Since bytes=max(in_len, out_len) then that can be simplified to:
-	if ((bytes % 512) != 0)
-		return -EINVAL;
-
-Doug Gilbert
-
-> Using syz-execprog can run this reproduction program directly:
->   ./syz-execprog -repeat 0 -procs 1 -slowdown 1 -enable tun -enable
-> netdev -enable binfmt-misc -enable close_fds -enable devlinkpci
-> -enable usb -enable vhci -enable wifi -enable ieee802154 -enable
-> sysctl repro.prog
-> 
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
