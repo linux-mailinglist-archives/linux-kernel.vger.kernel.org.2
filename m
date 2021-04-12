@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1841E35BC7B
+	by mail.lfdr.de (Postfix) with ESMTP id D745635BC7D
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:43:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237476AbhDLInO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:43:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34616 "EHLO mail.kernel.org"
+        id S237470AbhDLInQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:43:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237442AbhDLInH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:43:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44482611F0;
-        Mon, 12 Apr 2021 08:42:49 +0000 (UTC)
+        id S237461AbhDLInK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:43:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F267D61244;
+        Mon, 12 Apr 2021 08:42:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618216969;
-        bh=m1Qu/d3VE+PUs/5hC3QM8y8vtAZ41DGEltNaVCwXXVI=;
+        s=korg; t=1618216972;
+        bh=nD1XbmUtLI57bRf4xzb+SI/BIIQnh6f3jKjJJIW1DMg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TlQe8PzsCPwK/xduSU1Toasqvo9cYhnmsiCI3qZWEULX7uP/jJRL4aqoYHnPoc229
-         9VISKrhi43e7dNM4D1hc0WKLt30UZNQlaq/2cepHJ8NZJXmKYFFpTK3G23TGN7uVxj
-         ksyPW59oEem9Jk3t9sHwCvzoc95TqPLq3pCHM7/s=
+        b=1D6OmBy9+Yv+1g2keQon7PbadRGbbPpQt2pPiLlInfCD4/cDiViD7vJK5Ihi4juuP
+         gwBOG1xq0tsOJXzjvQVpH+trI8t9jz41rUEsC8a4RyUpo9W4woFQsUinz9W1gVtKgo
+         3waVK3GCtoZdGsUbduZRsiXQWTxbFHCErWm+xpJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Colitti <lorenzo@google.com>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.19 21/66] net-ipv6: bugfix - raw & sctp - switch to ipv6_can_nonlocal_bind()
-Date:   Mon, 12 Apr 2021 10:40:27 +0200
-Message-Id: <20210412083958.815872917@linuxfoundation.org>
+        stable@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>,
+        syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 22/66] usbip: add sysfs_lock to synchronize sysfs code paths
+Date:   Mon, 12 Apr 2021 10:40:28 +0200
+Message-Id: <20210412083958.846056989@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
 References: <20210412083958.129944265@linuxfoundation.org>
@@ -40,82 +39,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Shuah Khan <skhan@linuxfoundation.org>
 
-commit 630e4576f83accf90366686f39808d665d8dbecc upstream.
+commit 4e9c93af7279b059faf5bb1897ee90512b258a12 upstream.
 
-Found by virtue of ipv6 raw sockets not honouring the per-socket
-IP{,V6}_FREEBIND setting.
+Fuzzing uncovered race condition between sysfs code paths in usbip
+drivers. Device connect/disconnect code paths initiated through
+sysfs interface are prone to races if disconnect happens during
+connect and vice versa.
 
-Based on hits found via:
-  git grep '[.]ip_nonlocal_bind'
-We fix both raw ipv6 sockets to honour IP{,V6}_FREEBIND and IP{,V6}_TRANSPARENT,
-and we fix sctp sockets to honour IP{,V6}_TRANSPARENT (they already honoured
-FREEBIND), and not just the ipv6 'ip_nonlocal_bind' sysctl.
+This problem is common to all drivers while it can be reproduced easily
+in vhci_hcd. Add a sysfs_lock to usbip_device struct to protect the paths.
 
-The helper is defined as:
-  static inline bool ipv6_can_nonlocal_bind(struct net *net, struct inet_sock *inet) {
-    return net->ipv6.sysctl.ip_nonlocal_bind || inet->freebind || inet->transparent;
-  }
-so this change only widens the accepted opt-outs and is thus a clean bugfix.
+Use this in vhci_hcd to protect sysfs paths. For a complete fix, usip_host
+and usip-vudc drivers and the event handler will have to use this lock to
+protect the paths. These changes will be done in subsequent patches.
 
-I'm not entirely sure what 'fixes' tag to add, since this is AFAICT an ancient bug,
-but IMHO this should be applied to stable kernels as far back as possible.
-As such I'm adding a 'fixes' tag with the commit that originally added the helper,
-which happened in 4.19.  Backporting to older LTS kernels (at least 4.9 and 4.14)
-would presumably require open-coding it or backporting the helper as well.
-
-Other possibly relevant commits:
-  v4.18-rc6-1502-g83ba4645152d net: add helpers checking if socket can be bound to nonlocal address
-  v4.18-rc6-1431-gd0c1f01138c4 net/ipv6: allow any source address for sendmsg pktinfo with ip_nonlocal_bind
-  v4.14-rc5-271-gb71d21c274ef sctp: full support for ipv6 ip_nonlocal_bind & IP_FREEBIND
-  v4.7-rc7-1883-g9b9742022888 sctp: support ipv6 nonlocal bind
-  v4.1-12247-g35a256fee52c ipv6: Nonlocal bind
-
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Fixes: 83ba4645152d ("net: add helpers checking if socket can be bound to nonlocal address")
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Reviewed-By: Lorenzo Colitti <lorenzo@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Cc: stable@vger.kernel.org
+Reported-and-tested-by: syzbot+a93fba6d384346a761e3@syzkaller.appspotmail.com
+Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+Link: https://lore.kernel.org/r/b6568f7beae702bbc236a545d3c020106ca75eac.1616807117.git.skhan@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/raw.c  |    2 +-
- net/sctp/ipv6.c |    7 +++----
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ drivers/usb/usbip/usbip_common.h |    3 +++
+ drivers/usb/usbip/vhci_hcd.c     |    1 +
+ drivers/usb/usbip/vhci_sysfs.c   |   30 +++++++++++++++++++++++++-----
+ 3 files changed, 29 insertions(+), 5 deletions(-)
 
---- a/net/ipv6/raw.c
-+++ b/net/ipv6/raw.c
-@@ -303,7 +303,7 @@ static int rawv6_bind(struct sock *sk, s
- 		 */
- 		v4addr = LOOPBACK4_IPV6;
- 		if (!(addr_type & IPV6_ADDR_MULTICAST) &&
--		    !sock_net(sk)->ipv6.sysctl.ip_nonlocal_bind) {
-+		    !ipv6_can_nonlocal_bind(sock_net(sk), inet)) {
- 			err = -EADDRNOTAVAIL;
- 			if (!ipv6_chk_addr(sock_net(sk), &addr->sin6_addr,
- 					   dev, 0)) {
---- a/net/sctp/ipv6.c
-+++ b/net/sctp/ipv6.c
-@@ -655,8 +655,8 @@ static int sctp_v6_available(union sctp_
- 	if (!(type & IPV6_ADDR_UNICAST))
- 		return 0;
+--- a/drivers/usb/usbip/usbip_common.h
++++ b/drivers/usb/usbip/usbip_common.h
+@@ -263,6 +263,9 @@ struct usbip_device {
+ 	/* lock for status */
+ 	spinlock_t lock;
  
--	return sp->inet.freebind || net->ipv6.sysctl.ip_nonlocal_bind ||
--		ipv6_chk_addr(net, in6, NULL, 0);
-+	return ipv6_can_nonlocal_bind(net, &sp->inet) ||
-+	       ipv6_chk_addr(net, in6, NULL, 0);
++	/* mutex for synchronizing sysfs store paths */
++	struct mutex sysfs_lock;
++
+ 	int sockfd;
+ 	struct socket *tcp_socket;
+ 
+--- a/drivers/usb/usbip/vhci_hcd.c
++++ b/drivers/usb/usbip/vhci_hcd.c
+@@ -1101,6 +1101,7 @@ static void vhci_device_init(struct vhci
+ 	vdev->ud.side   = USBIP_VHCI;
+ 	vdev->ud.status = VDEV_ST_NULL;
+ 	spin_lock_init(&vdev->ud.lock);
++	mutex_init(&vdev->ud.sysfs_lock);
+ 
+ 	INIT_LIST_HEAD(&vdev->priv_rx);
+ 	INIT_LIST_HEAD(&vdev->priv_tx);
+--- a/drivers/usb/usbip/vhci_sysfs.c
++++ b/drivers/usb/usbip/vhci_sysfs.c
+@@ -185,6 +185,8 @@ static int vhci_port_disconnect(struct v
+ 
+ 	usbip_dbg_vhci_sysfs("enter\n");
+ 
++	mutex_lock(&vdev->ud.sysfs_lock);
++
+ 	/* lock */
+ 	spin_lock_irqsave(&vhci->lock, flags);
+ 	spin_lock(&vdev->ud.lock);
+@@ -195,6 +197,7 @@ static int vhci_port_disconnect(struct v
+ 		/* unlock */
+ 		spin_unlock(&vdev->ud.lock);
+ 		spin_unlock_irqrestore(&vhci->lock, flags);
++		mutex_unlock(&vdev->ud.sysfs_lock);
+ 
+ 		return -EINVAL;
+ 	}
+@@ -205,6 +208,8 @@ static int vhci_port_disconnect(struct v
+ 
+ 	usbip_event_add(&vdev->ud, VDEV_EVENT_DOWN);
+ 
++	mutex_unlock(&vdev->ud.sysfs_lock);
++
+ 	return 0;
  }
  
- /* This function checks if the address is a valid address to be used for
-@@ -945,8 +945,7 @@ static int sctp_inet6_bind_verify(struct
- 			net = sock_net(&opt->inet.sk);
- 			rcu_read_lock();
- 			dev = dev_get_by_index_rcu(net, addr->v6.sin6_scope_id);
--			if (!dev || !(opt->inet.freebind ||
--				      net->ipv6.sysctl.ip_nonlocal_bind ||
-+			if (!dev || !(ipv6_can_nonlocal_bind(net, &opt->inet) ||
- 				      ipv6_chk_addr(net, &addr->v6.sin6_addr,
- 						    dev, 0))) {
- 				rcu_read_unlock();
+@@ -349,30 +354,36 @@ static ssize_t attach_store(struct devic
+ 	else
+ 		vdev = &vhci->vhci_hcd_hs->vdev[rhport];
+ 
++	mutex_lock(&vdev->ud.sysfs_lock);
++
+ 	/* Extract socket from fd. */
+ 	socket = sockfd_lookup(sockfd, &err);
+ 	if (!socket) {
+ 		dev_err(dev, "failed to lookup sock");
+-		return -EINVAL;
++		err = -EINVAL;
++		goto unlock_mutex;
+ 	}
+ 	if (socket->type != SOCK_STREAM) {
+ 		dev_err(dev, "Expecting SOCK_STREAM - found %d",
+ 			socket->type);
+ 		sockfd_put(socket);
+-		return -EINVAL;
++		err = -EINVAL;
++		goto unlock_mutex;
+ 	}
+ 
+ 	/* create threads before locking */
+ 	tcp_rx = kthread_create(vhci_rx_loop, &vdev->ud, "vhci_rx");
+ 	if (IS_ERR(tcp_rx)) {
+ 		sockfd_put(socket);
+-		return -EINVAL;
++		err = -EINVAL;
++		goto unlock_mutex;
+ 	}
+ 	tcp_tx = kthread_create(vhci_tx_loop, &vdev->ud, "vhci_tx");
+ 	if (IS_ERR(tcp_tx)) {
+ 		kthread_stop(tcp_rx);
+ 		sockfd_put(socket);
+-		return -EINVAL;
++		err = -EINVAL;
++		goto unlock_mutex;
+ 	}
+ 
+ 	/* get task structs now */
+@@ -397,7 +408,8 @@ static ssize_t attach_store(struct devic
+ 		 * Will be retried from userspace
+ 		 * if there's another free port.
+ 		 */
+-		return -EBUSY;
++		err = -EBUSY;
++		goto unlock_mutex;
+ 	}
+ 
+ 	dev_info(dev, "pdev(%u) rhport(%u) sockfd(%d)\n",
+@@ -422,7 +434,15 @@ static ssize_t attach_store(struct devic
+ 
+ 	rh_port_connect(vdev, speed);
+ 
++	dev_info(dev, "Device attached\n");
++
++	mutex_unlock(&vdev->ud.sysfs_lock);
++
+ 	return count;
++
++unlock_mutex:
++	mutex_unlock(&vdev->ud.sysfs_lock);
++	return err;
+ }
+ static DEVICE_ATTR_WO(attach);
+ 
 
 
