@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A878535C44E
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:45:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E32335C451
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239632AbhDLKpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:45:33 -0400
-Received: from mga04.intel.com ([192.55.52.120]:32744 "EHLO mga04.intel.com"
+        id S239648AbhDLKpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 06:45:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49558 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239062AbhDLKp3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:45:29 -0400
-IronPort-SDR: WzH7nl2Uls3Bi2ykOkJvQqb+VnDOgLPPWX5PVq0SxusK+aW9p1qUS+7knD5tp6ps7NvR2Z2cCo
- DpXaj08D+tyQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="192030159"
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="192030159"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 03:45:10 -0700
-IronPort-SDR: wNP5upRSfj+0qPIFk8LsJTDQpXOAuI/yI0IsV5BdDAzF2k4P5ylFG7zOxzTKz9zCWyrpV17/cF
- Y0E4Ir68EnRA==
-X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="420360141"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 03:45:07 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 54E71203D0;
-        Mon, 12 Apr 2021 13:44:35 +0300 (EEST)
-Date:   Mon, 12 Apr 2021 13:44:35 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Mitali Borkar <mitaliborkar810@gmail.com>, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com,
-        mitali_s@me.iitr.ac.in, laurent.pinchart@ideasonboard.com
-Subject: Re: [PATCH 1/6] staging: media: intel-ipu3: replace bit shifts with
- BIT() macro
-Message-ID: <20210412104435.GL3@paasikivi.fi.intel.com>
-References: <cover.1618180659.git.mitaliborkar810@gmail.com>
- <cc7b827a3264f08cedb76adddd16a34df48f935f.1618180659.git.mitaliborkar810@gmail.com>
- <20210412094230.GI3@paasikivi.fi.intel.com>
- <YHQXty07oAP1L0W9@kroah.com>
+        id S239062AbhDLKph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 06:45:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 374F36134F;
+        Mon, 12 Apr 2021 10:45:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1618224319;
+        bh=/yFjMUiGPFNWMalqJeYQqR6ZQK8rTlZ0JOYyZI10Zdc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uZy2CKXyxIM6LSMKsoGOrwjzJ/dzK4T3EygMvD1b5iY/Y9IS6+Iws23AYOEqSIrj6
+         OdpJPAmBiJdx7juSCPSIRT56CER2Da7apU5bnf2PxfAHx9gY1c0uUPdOpivELFu2Mg
+         eOOyS9JYEFqX0MDAtR5HdMr2QM1flv+b/ucccMOc=
+Date:   Mon, 12 Apr 2021 12:45:16 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 5.10 055/188] virtio_net: Do not pull payload in skb->head
+Message-ID: <YHQkvAOytk+rH+LB@kroah.com>
+References: <20210412084013.643370347@linuxfoundation.org>
+ <20210412084015.479443671@linuxfoundation.org>
+ <20210412051010-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YHQXty07oAP1L0W9@kroah.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210412051010-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-
-On Mon, Apr 12, 2021 at 11:49:43AM +0200, Greg KH wrote:
-> On Mon, Apr 12, 2021 at 12:42:30PM +0300, Sakari Ailus wrote:
-> > Hi Mitali,
+On Mon, Apr 12, 2021 at 05:11:40AM -0400, Michael S. Tsirkin wrote:
+> On Mon, Apr 12, 2021 at 10:39:29AM +0200, Greg Kroah-Hartman wrote:
+> > From: Eric Dumazet <edumazet@google.com>
 > > 
-> > On Mon, Apr 12, 2021 at 04:38:39AM +0530, Mitali Borkar wrote:
-> > > Added #include <linux/bitops.h> and replaced bit shifts by BIT() macro.
-> > > This BIT() macro from linux/bitops.h is used to define IPU3_UAPI_GRID_Y_START_EN
-> > > and IPU3_UAPI_AWB_RGBS_THR_B_* bitmask.
-> > > Use of macro is better and neater. It maintains consistency.
-> > > Reported by checkpatch.
-> > > 
-> > > Signed-off-by: Mitali Borkar <mitaliborkar810@gmail.com>
-> > > ---
-> > >  drivers/staging/media/ipu3/include/intel-ipu3.h | 7 ++++---
-> > >  1 file changed, 4 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/media/ipu3/include/intel-ipu3.h b/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > index edd8edda0647..589d5ccee3a7 100644
-> > > --- a/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > +++ b/drivers/staging/media/ipu3/include/intel-ipu3.h
-> > > @@ -5,6 +5,7 @@
-> > >  #define __IPU3_UAPI_H
-> > >  
-> > >  #include <linux/types.h>
-> > > +#include <linux/bitops.h>
-> > >  
-> > >  /* from /drivers/staging/media/ipu3/include/videodev2.h */
-> > >  
-> > > @@ -22,11 +23,11 @@
-> > >  #define IPU3_UAPI_MAX_BUBBLE_SIZE			10
-> > >  
-> > >  #define IPU3_UAPI_GRID_START_MASK			((1 << 12) - 1)
-> > > -#define IPU3_UAPI_GRID_Y_START_EN			(1 << 15)
-> > > +#define IPU3_UAPI_GRID_Y_START_EN			BIT(15)
+> > commit 0f6925b3e8da0dbbb52447ca8a8b42b371aac7db upstream.
 > > 
-> > This header is used in user space where you don't have the BIT() macro.
+> > Xuan Zhuo reported that commit 3226b158e67c ("net: avoid 32 x truesize
+> > under-estimation for tiny skbs") brought  a ~10% performance drop.
+> > 
+> > The reason for the performance drop was that GRO was forced
+> > to chain sk_buff (using skb_shinfo(skb)->frag_list), which
+> > uses more memory but also cause packet consumers to go over
+> > a lot of overhead handling all the tiny skbs.
+> > 
+> > It turns out that virtio_net page_to_skb() has a wrong strategy :
+> > It allocates skbs with GOOD_COPY_LEN (128) bytes in skb->head, then
+> > copies 128 bytes from the page, before feeding the packet to GRO stack.
+> > 
+> > This was suboptimal before commit 3226b158e67c ("net: avoid 32 x truesize
+> > under-estimation for tiny skbs") because GRO was using 2 frags per MSS,
+> > meaning we were not packing MSS with 100% efficiency.
+> > 
+> > Fix is to pull only the ethernet header in page_to_skb()
+> > 
+> > Then, we change virtio_net_hdr_to_skb() to pull the missing
+> > headers, instead of assuming they were already pulled by callers.
+> > 
+> > This fixes the performance regression, but could also allow virtio_net
+> > to accept packets with more than 128bytes of headers.
+> > 
+> > Many thanks to Xuan Zhuo for his report, and his tests/help.
+> > 
+> > Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
+> > Reported-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Link: https://www.spinics.net/lists/netdev/msg731397.html
+> > Co-Developed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+> > Signed-off-by: Eric Dumazet <edumazet@google.com>
+> > Cc: "Michael S. Tsirkin" <mst@redhat.com>
+> > Cc: Jason Wang <jasowang@redhat.com>
+> > Cc: virtualization@lists.linux-foundation.org
+> > Acked-by: Jason Wang <jasowang@redhat.com>
+> > Signed-off-by: David S. Miller <davem@davemloft.net>
+> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 > 
-> If that is true, why is it not in a "uapi" subdir within this driver?
 > 
-> Otherwise it is not obvious at all that this is the case :(
+> 
+> Note that an issue related to this patch was recently reported.
+> It's quite possible that the root cause is a bug elsewhere
+> in the kernel, but it probably makes sense to defer the backport
+> until we know more ...
 
-It defines an interface towards the user space and the argument has been a
-staging driver shouldn't be doing that (for the lack of ABI stability),
-hence leaving it where it is currently.
+Thanks, I'll go drop it from all 4 queues.  If you all find out that all
+is good, and it should be added back, please let us at stable@vger know
+about it.
 
-Also CC Laurent.
+thanks,
 
--- 
-Kind regards,
-
-Sakari Ailus
+greg k-h
