@@ -2,174 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E07C235D30C
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 273E535D30F
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240565AbhDLW1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 18:27:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241292AbhDLW1O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 18:27:14 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD73FC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 15:26:55 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id v140so23991574lfa.4
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 15:26:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=yIB6RrqTVOqagkzz+6JKueo9U658PLq5ojSe8Jf4DqQ=;
-        b=b71wKnnoDR3b9ne2h8+GfIr6D7nxIhNwqTVX/JzpAtMip60HoifBxcdBPFX3Faye5i
-         xH0sslWk6HNbPA7EOPHjlKZMbJHuoo8uZnvdoiapWANJjWeepUJh3R4VqfFTYryCKGot
-         DT2a9WeIx1kky367Bd+2M4y5MD/Esa1/b9X8vIM8xe1FMQRJ+3mQTmMyB7IVnsw2xPBA
-         lNH1EMow11YhLPkkjGsYeT4DlErNRpF+pF/jCDYMWmYsY9Ks5gdTfNDFAytuZFLo79v6
-         9Z60EakmjpZzaL7oc1ejEp515+LtMSIIfGZn9mWOrRsCpvtt0u3NnMu3hSKkWLoNZmPf
-         2ufg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=yIB6RrqTVOqagkzz+6JKueo9U658PLq5ojSe8Jf4DqQ=;
-        b=N+EJ+7y8BsDuDC+MCw95reQVdd6jPIr9wIfxWyI9qEYETLDOCo1uy3K6xumeXBt28S
-         cGIkYELYpXmScvqkqr7jGgwzj0sN8ZjpdaNWpM9I6QilSNjlmOGvFMcvNJhQISfFzu/U
-         AtUUA8vueuGSNhFDN/BIgG6AfGQLW23Y5bdNRTCaNoB+LJF2Uzp+yXIegIrB0L6XRjkR
-         Szrvj43eHmHh57nAUsfEDpq4B5VeilQzjC80LWPdIdAC4IEfft7ljwPs5QphwnZjXvU7
-         CE+rglWczRQE9X+og8tlvU99ZJD6c0efrHGVsYZUq1MX3TL8XpkNbFQHQiJ3TU9Kh+BU
-         Ysxg==
-X-Gm-Message-State: AOAM533zjpGmf/XcV3ps3jSRGPPqK0NBIKGICD2ykXhS8axngiDhEvNE
-        VZE17XHZYd315NknbmFXGCktx1zeCOSIJXc9
-X-Google-Smtp-Source: ABdhPJwawOTAJMZU7A2QkCkGQFXG3DUmas9RCLb8BA1/RjJsB9ISqbYCZM0jG4+bn7EREPEzHSKj+A==
-X-Received: by 2002:a05:6512:3b82:: with SMTP id g2mr8928422lfv.499.1618266414008;
-        Mon, 12 Apr 2021 15:26:54 -0700 (PDT)
-Received: from wkz-x280 (h-90-88.A259.priv.bahnhof.se. [212.85.90.88])
-        by smtp.gmail.com with ESMTPSA id v3sm1802596ljg.77.2021.04.12.15.26.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 15:26:53 -0700 (PDT)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Marek Behun <marek.behun@nic.cz>,
-        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
-        zhang kai <zhangkaiheb@126.com>,
-        Weilong Chen <chenweilong@huawei.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
+        id S1343727AbhDLW1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 18:27:35 -0400
+Received: from mga09.intel.com ([134.134.136.24]:4362 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1343698AbhDLW1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 18:27:33 -0400
+IronPort-SDR: dmr2gpNcziaft2lAtz8FzrUGWi4O82ilPK5nZYf+B3rfmHAC8uK/Vo9e9f7OqpMnY1fdxB56fL
+ cQurdDduRUMQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194403242"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="194403242"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 15:27:11 -0700
+IronPort-SDR: Ry9iw0SKTQ0K3efJJcq7X3P3Ky2VuQ7yAyv8p8I6gieNe4zJ4V7W9s7qIrfo03Dgk2m5JqQiaM
+ FpVmZdmxVT2g==
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="451668279"
+Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 15:27:10 -0700
+Message-ID: <56550dd3c63b062efca5fc7d41c2a251e8fc55ba.camel@linux.intel.com>
+Subject: Re: [PATCH] HID: hid-sensor-custom: remove useless variable
+From:   srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        jikos@kernel.org, benjamin.tissoires@redhat.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
-In-Reply-To: <20210412220655.27rsiyxlf3f3tydm@skbuf>
-References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210411200135.35fb5985@thinkpad> <20210411185017.3xf7kxzzq2vefpwu@skbuf> <878s5nllgs.fsf@waldekranz.com> <20210412213045.4277a598@thinkpad> <8735vvkxju.fsf@waldekranz.com> <20210412213402.vwvon2fdtzf4hnrt@skbuf> <87zgy3jhr1.fsf@waldekranz.com> <20210412220655.27rsiyxlf3f3tydm@skbuf>
-Date:   Tue, 13 Apr 2021 00:26:52 +0200
-Message-ID: <87tuobjg0j.fsf@waldekranz.com>
+Date:   Mon, 12 Apr 2021 15:27:03 -0700
+In-Reply-To: <20210412112039.00006821@Huawei.com>
+References: <1617952508-47150-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+         <4079bb49a9c0022603abeffcdaec32208f449e51.camel@linux.intel.com>
+         <20210411145635.3c6b48d1@jic23-huawei>
+         <ceb25b0000013f1c3e89d772c62b5e967a032446.camel@linux.intel.com>
+         <20210412112039.00006821@Huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 13, 2021 at 01:06, Vladimir Oltean <olteanv@gmail.com> wrote:
-> On Mon, Apr 12, 2021 at 11:49:22PM +0200, Tobias Waldekranz wrote:
->> On Tue, Apr 13, 2021 at 00:34, Vladimir Oltean <olteanv@gmail.com> wrote:
->> > On Mon, Apr 12, 2021 at 11:22:45PM +0200, Tobias Waldekranz wrote:
->> >> On Mon, Apr 12, 2021 at 21:30, Marek Behun <marek.behun@nic.cz> wrote:
->> >> > On Mon, 12 Apr 2021 14:46:11 +0200
->> >> > Tobias Waldekranz <tobias@waldekranz.com> wrote:
->> >> >
->> >> >> I agree. Unless you only have a few really wideband flows, a LAG will
->> >> >> typically do a great job with balancing. This will happen without the
->> >> >> user having to do any configuration at all. It would also perform well
->> >> >> in "router-on-a-stick"-setups where the incoming and outgoing port is
->> >> >> the same.
->> >> >
->> >> > TLDR: The problem with LAGs how they are currently implemented is that
->> >> > for Turris Omnia, basically in 1/16 of configurations the traffic would
->> >> > go via one CPU port anyway.
->> >> >
->> >> >
->> >> >
->> >> > One potencial problem that I see with using LAGs for aggregating CPU
->> >> > ports on mv88e6xxx is how these switches determine the port for a
->> >> > packet: only the src and dst MAC address is used for the hash that
->> >> > chooses the port.
->> >> >
->> >> > The most common scenario for Turris Omnia, for example, where we have 2
->> >> > CPU ports and 5 user ports, is that into these 5 user ports the user
->> >> > plugs 5 simple devices (no switches, so only one peer MAC address for
->> >> > port). So we have only 5 pairs of src + dst MAC addresses. If we simply
->> >> > fill the LAG table as it is done now, then there is 2 * 0.5^5 = 1/16
->> >> > chance that all packets would go through one CPU port.
->> >> >
->> >> > In order to have real load balancing in this scenario, we would either
->> >> > have to recompute the LAG mask table depending on the MAC addresses, or
->> >> > rewrite the LAG mask table somewhat randomly periodically. (This could
->> >> > be in theory offloaded onto the Z80 internal CPU for some of the
->> >> > switches of the mv88e6xxx family, but not for Omnia.)
->> >> 
->> >> I thought that the option to associate each port netdev with a DSA
->> >> master would only be used on transmit. Are you saying that there is a
->> >> way to configure an mv88e6xxx chip to steer packets to different CPU
->> >> ports depending on the incoming port?
->> >> 
->> >> The reason that the traffic is directed towards the CPU is that some
->> >> kind of entry in the ATU says so, and the destination of that entry will
->> >> either be a port vector or a LAG. Of those two, only the LAG will offer
->> >> any kind of balancing. What am I missing?
->> >> 
->> >> Transmit is easy; you are already in the CPU, so you can use an
->> >> arbitrarily fancy hashing algo/ebpf classifier/whatever to load balance
->> >> in that case.
->> >
->> > Say a user port receives a broadcast frame. Based on your understanding
->> > where user-to-CPU port assignments are used only for TX, which CPU port
->> > should be selected by the switch for this broadcast packet, and by which
->> > mechanism?
->> 
->> AFAIK, the only option available to you (again, if there is no LAG set
->> up) is to statically choose one CPU port per entry. But hopefully Marek
->> can teach me some new tricks!
->> 
->> So for any known (since the broadcast address is loaded in the ATU it is
->> known) destination (b/m/u-cast), you can only "load balance" based on
->> the DA. You would also have to make sure that unknown unicast and
->> unknown multicast is only allowed to egress one of the CPU ports.
->> 
->> If you have a LAG OTOH, you could include all CPU ports in the port
->> vectors of those same entries. The LAG mask would then do the final
->> filtering so that you only send a single copy to the CPU.
->
-> I forgot that mv88e6xxx keeps the broadcast address in the ATU. I wanted
-> to know what is done in the flooding case, therefore I should have asked
-> about unknown destination traffic. It is sent to one CPU but not the
-> other based on what information?
->
-> And for destinations loaded into the ATU, how is user port isolation
-> performed? Say lan0 and lan1 have the same MAC address of 00:01:02:03:04:05,
-> but lan0 goes to the eth0 DSA master and lan1 goes to eth1. How many ATU
-> entries would there be for host addresses, and towards which port would
-> they point? Are they isolated by a port private VLAN or something along
-> those lines?
+On Mon, 2021-04-12 at 11:20 +0100, Jonathan Cameron wrote:
+> On Sun, 11 Apr 2021 09:06:35 -0700
+> Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
+> 
+> > On Sun, 2021-04-11 at 14:56 +0100, Jonathan Cameron wrote:
+> > > On Fri, 09 Apr 2021 11:19:12 -0700
+> > > Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com> wrote:
+> > >   
+> > > > On Fri, 2021-04-09 at 15:15 +0800, Jiapeng Chong wrote:  
+> > > > > Fix the following gcc warning:
+> > > > > 
+> > > > > drivers/hid/hid-sensor-custom.c:400:7: warning: variable
+> > > > > ‘ret’
+> > > > > set
+> > > > > but
+> > > > > not used [-Wunused-but-set-variable].
+> > > > > 
+> > > > > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> > > > > Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com
+> > > > > >    
+> > > > Acked-by: Srinivas Pandruvada <
+> > > > srinivas.pandruvada@linux.intel.com  
+> > > 
+> > > Perhaps better to return ret if it is non zero?
+> > > I can't immediately figure out if there is a reason we know that
+> > > can't
+> > > happen.  
+> > Only time it can fail when there is no report descriptor or the
+> > field
+> > index is >= report->maxfield.
+> > But since the attribute is registered from the report descriptor
+> > and
+> > index, this can't happen.
+> > But we can enhance sensor_hub_set_feature() to fail when
+> >  hid_set_field() fails. There is one case where field-
+> > >logical_minimum
+> > < 0  and value is out of range.
+> 
+> I'll go with what you think.  Apply as is, or handle the
+> return value because we might at some later date return an error that
+> can actually happen from here?
+> 
+I will send you a patch this week to handle error condition.
 
-This is what I do not understand. This is what I hope that Marek can
-tell me. To my knowledge, there is no way to per-port load balancing
-from the switch to the CPU. In any given FID, there can be only one
-entry per address, and that entry can only point to either a vector or a
-LAG.
+Thanks,
+Srinivas
 
-So my theory is that the only way of getting any load balancing, however
-flawed, on receive (from switch to CPU) is by setting up a
-LAG. Hopefully there is some trick that I do not know about which means
-we have another option available to us.
+> Jonathan
+> 
+> > Thanks,
+> > Srinivas
+> > 
+> > 
+> > > Jonathan
+> > >   
+> > > > > ---
+> > > > >  drivers/hid/hid-sensor-custom.c | 5 ++---
+> > > > >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/hid/hid-sensor-custom.c
+> > > > > b/drivers/hid/hid-
+> > > > > sensor-custom.c
+> > > > > index 2628bc5..e430673 100644
+> > > > > --- a/drivers/hid/hid-sensor-custom.c
+> > > > > +++ b/drivers/hid/hid-sensor-custom.c
+> > > > > @@ -397,15 +397,14 @@ static ssize_t store_value(struct
+> > > > > device
+> > > > > *dev,
+> > > > > struct device_attribute *attr,
+> > > > >  
+> > > > >  	if (!strncmp(name, "value", strlen("value"))) {
+> > > > >  		u32 report_id;
+> > > > > -		int ret;
+> > > > >  
+> > > > >  		if (kstrtoint(buf, 0, &value) != 0)
+> > > > >  			return -EINVAL;
+> > > > >  
+> > > > >  		report_id = sensor_inst-
+> > > > > >fields[field_index].attribute.
+> > > > >  								
+> > > > > report_
+> > > > > id;
+> > > > > -		ret = sensor_hub_set_feature(sensor_inst-
+> > > > > >hsdev,
+> > > > > report_id,
+> > > > > -					     index,
+> > > > > sizeof(value),
+> > > > > &value);
+> > > > > +		sensor_hub_set_feature(sensor_inst->hsdev,
+> > > > > report_id,
+> > > > > index,
+> > > > > +				       sizeof(value), &value);
+> > > > >  	} else
+> > > > >  		return -EINVAL;
+> > > > >      
+
