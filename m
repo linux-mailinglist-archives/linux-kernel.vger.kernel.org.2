@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B49E35C487
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:59:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA4F135C48F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 13:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239812AbhDLK77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:59:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52494 "EHLO mx2.suse.de"
+        id S239871AbhDLLAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 07:00:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52648 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238530AbhDLK76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:59:58 -0400
+        id S239843AbhDLLAJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 07:00:09 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1618225191; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FIwJ2o1ChvUTQac2QV6kY4C/JqzebedAs3YH2KsUrwk=;
+        b=uQXF9AGnwE8HshC8CP3Jun+axKZdGLySEhwpcbWGJ7G2LHJi1HDujPh78vSSRndZ7LY4Ir
+        voyMDDET7bbqJ/RrmB1sEhmVrnoD5enId5gB+SOFJALpflmMcQcdnou3PaS5MUBJkaggMP
+        LnNFj32K0RIzJWwuqYM7vw78d9fBPfU=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1B690AEFE;
-        Mon, 12 Apr 2021 10:59:39 +0000 (UTC)
-Subject: Re: [PATCH 5/9] mm/page_alloc: inline __rmqueue_pcplist
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chuck Lever <chuck.lever@oracle.com>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        by mx2.suse.de (Postfix) with ESMTP id 41133AEFE;
+        Mon, 12 Apr 2021 10:59:51 +0000 (UTC)
+Date:   Mon, 12 Apr 2021 12:59:50 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        Joerg Roedel <jroedel@suse.de>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        iommu@lists.linux-foundation.org,
         LKML <linux-kernel@vger.kernel.org>,
-        Linux-Net <netdev@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux-NFS <linux-nfs@vger.kernel.org>
-References: <20210325114228.27719-1-mgorman@techsingularity.net>
- <20210325114228.27719-6-mgorman@techsingularity.net>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <d76d4cb0-8b5b-cff4-6f7f-aec4dde47844@suse.cz>
-Date:   Mon, 12 Apr 2021 12:59:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] iommu/amd: Fix extended features logging
+Message-ID: <YHQoJtUOh7A1k1PF@alley>
+References: <20210410211152.1938-1-amonakov@ispras.ru>
+ <e884200f-55a4-59b5-4311-964e6ddc94d1@molgen.mpg.de>
+ <alpine.LNX.2.20.13.2104111410340.11104@monopod.intra.ispras.ru>
+ <87o8ekioo4.fsf@jogness.linutronix.de>
+ <9a9246c417587f17009543f8048d5f9b7a2ed68f.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <20210325114228.27719-6-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a9246c417587f17009543f8048d5f9b7a2ed68f.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 3/25/21 12:42 PM, Mel Gorman wrote:
-> From: Jesper Dangaard Brouer <brouer@redhat.com>
+On Sun 2021-04-11 14:08:14, Joe Perches wrote:
+> On Sun, 2021-04-11 at 21:52 +0200, John Ogness wrote:
+> > I'd rather fix dev_info callers to allow pr_cont and then fix any code
+> > that is using this workaround.
 > 
-> When __alloc_pages_bulk() got introduced two callers of __rmqueue_pcplist
-> exist and the compiler chooses to not inline this function.
+> Assuming you mean all dev_<level>() uses, me too.
 > 
->  ./scripts/bloat-o-meter vmlinux-before vmlinux-inline__rmqueue_pcplist
-> add/remove: 0/1 grow/shrink: 2/0 up/down: 164/-125 (39)
-> Function                                     old     new   delta
-> rmqueue                                     2197    2296     +99
-> __alloc_pages_bulk                          1921    1986     +65
-> __rmqueue_pcplist                            125       -    -125
-> Total: Before=19374127, After=19374166, chg +0.00%
+> > And if the print maintainers agree it is OK to encourage
+> > pr_cont(LOGLEVEL "...") usage, then people should really start using
+> > that if the loglevel on those pieces is important.
 > 
-> modprobe page_bench04_bulk loops=$((10**7))
+> I have no stong feeling about the use of pr_cont(<KERN_LEVEL>
+> as valuable or not.  I think it's just a trivial bit that
+> could be somewhat useful when interleaving occurs.
 > 
-> Type:time_bulk_page_alloc_free_array
->  -  Per elem: 106 cycles(tsc) 29.595 ns (step:64)
->  - (measurement period time:0.295955434 sec time_interval:295955434)
->  - (invoke count:10000000 tsc_interval:1065447105)
+> A somewhat better mechanism would be to have an explicit
+> cookie use like:
 > 
-> Before:
->  - Per elem: 110 cycles(tsc) 30.633 ns (step:64)
+> 	cookie = printk_multipart_init(KERN_LEVEL, fmt, ...);
+> 	while (<condition>)
+> 		printk_multipart_cont(cookie, fmt, ...);
+> 	printk_multipark_end(cookie, fmt, ...);
 > 
-> Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-> Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> And separately, there should be a pr_debug_cont or equivalent.
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+We would need to implement this a lockless way. It is doable,
+for example, using some per-CPU X per-context buffers. Which would
+require to disable preemption in the section.
 
-> ---
->  mm/page_alloc.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 1ec18121268b..d900e92884b2 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -3415,7 +3415,8 @@ static inline void zone_statistics(struct zone *preferred_zone, struct zone *z)
->  }
->  
->  /* Remove page from the per-cpu list, caller must protect the list */
-> -static struct page *__rmqueue_pcplist(struct zone *zone, int migratetype,
-> +static inline
-> +struct page *__rmqueue_pcplist(struct zone *zone, int migratetype,
->  			unsigned int alloc_flags,
->  			struct per_cpu_pages *pcp,
->  			struct list_head *list)
-> 
+But I think that using dev_cont_info() would be easier after all.
 
+That said, some printk_*_init()/end() API would be useful
+for storing the pieces in a temporary buffer. It would allow
+to store the entire lines without the risk of interleaving
+with other messages.
+
+Best Regards,
+Petr
