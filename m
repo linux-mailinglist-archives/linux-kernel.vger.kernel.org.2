@@ -2,89 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A6535CDF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C93E35CD03
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244820AbhDLQkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:40:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37274 "EHLO mail.kernel.org"
+        id S245362AbhDLQck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:32:40 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:25511 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244992AbhDLQdk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:33:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD403613C5;
-        Mon, 12 Apr 2021 16:26:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618244796;
-        bh=Yh13L35ZM6esCqrd244WMvkZU0q1hVTkp93i3JHN/mU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TFGNPWP7bbAnC1dtN6ia7iEXR9XdTBGkTvBIzf+kt228jJPY3vgu1HscZU4SkSQSj
-         Tc8exncKAy3VEoxO+QDQ0gonqCxdNMMWmeQ5FhUyvjAoQlEKeLhGZ1RVasigC/jygc
-         5tb9vmtnighAdi2ufKpcAFfmdCYPfu+8o8DB0BPZrrGvy9nMZlstAxS3++IzrjaUw8
-         4CWz667UR4fNYR0FuL7zQg+Z4BMigdEI8lb5hNd8VbdgTR1qWoujvtkY0c1FRqbEPU
-         MpV6w1bhpO71t3TVDG5dB44+u7RDVcNYiMeo0j4UeBsOx7+ApaF5Qlumnix5LISHbL
-         AUSPc9QwqgKLA==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tong Zhu <zhutong@amazon.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 04/25] neighbour: Disregard DEAD dst in neigh_update
-Date:   Mon, 12 Apr 2021 12:26:09 -0400
-Message-Id: <20210412162630.315526-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412162630.315526-1-sashal@kernel.org>
-References: <20210412162630.315526-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        id S244001AbhDLQ0a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:26:30 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4FJvHc75LKz9tyRb;
+        Mon, 12 Apr 2021 18:26:04 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id CZx_zcfbY0_X; Mon, 12 Apr 2021 18:26:04 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FJvHc6HCQz9tyRZ;
+        Mon, 12 Apr 2021 18:26:04 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2F5E48B78F;
+        Mon, 12 Apr 2021 18:26:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 0iiBwKeqXYnR; Mon, 12 Apr 2021 18:26:10 +0200 (CEST)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id D57D08B78E;
+        Mon, 12 Apr 2021 18:26:09 +0200 (CEST)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 9BD30679DE; Mon, 12 Apr 2021 16:26:09 +0000 (UTC)
+Message-Id: <b286e07fb771a664b631cd07a40b09c06f26e64b.1618244758.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 1/2] powerpc/bug: Remove specific powerpc BUG_ON() and
+ WARN_ON() on PPC32
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon, 12 Apr 2021 16:26:09 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tong Zhu <zhutong@amazon.com>
+powerpc BUG_ON() and WARN_ON() are based on using twnei instruction.
 
-[ Upstream commit d47ec7a0a7271dda08932d6208e4ab65ab0c987c ]
+For catching simple conditions like a variable having value 0, this
+is efficient because it does the test and the trap at the same time.
+But most conditions used with BUG_ON or WARN_ON are more complex and
+forces GCC to format the condition into a 0 or 1 value in a register.
+This will usually require 2 to 3 instructions.
 
-After a short network outage, the dst_entry is timed out and put
-in DST_OBSOLETE_DEAD. We are in this code because arp reply comes
-from this neighbour after network recovers. There is a potential
-race condition that dst_entry is still in DST_OBSOLETE_DEAD.
-With that, another neighbour lookup causes more harm than good.
+The most efficient solution would be to use __builtin_trap() because
+GCC is able to optimise the use of the different trap instructions
+based on the requested condition, but this is complex if not
+impossible for the following reasons:
+- __builtin_trap() is a non-recoverable instruction, so it can't be
+used for WARN_ON
+- Knowing which line of code generated the trap would require the
+analysis of DWARF information. This is not a feature we have today.
 
-In best case all packets in arp_queue are lost. This is
-counterproductive to the original goal of finding a better path
-for those packets.
+As mentioned in commit 8d4fbcfbe0a4 ("Fix WARN_ON() on bitfield ops")
+the way WARN_ON() is implemented is suboptimal. That commit also
+mentions an issue with 'long long' condition. It fixed it for
+WARN_ON() but the same problem still exists today with BUG_ON() on
+PPC32. It will be fixed by using the generic implementation.
 
-I observed a worst case with 4.x kernel where a dst_entry in
-DST_OBSOLETE_DEAD state is associated with loopback net_device.
-It leads to an ethernet header with all zero addresses.
-A packet with all zero source MAC address is quite deadly with
-mac80211, ath9k and 802.11 block ack.  It fails
-ieee80211_find_sta_by_ifaddr in ath9k (xmit.c). Ath9k flushes tx
-queue (ath_tx_complete_aggr). BAW (block ack window) is not
-updated. BAW logic is damaged and ath9k transmission is disabled.
+By using the generic implementation, gcc will naturally generate a
+branch to the unconditional trap generated by BUG().
 
-Signed-off-by: Tong Zhu <zhutong@amazon.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+As modern powerpc implement zero-cycle branch,
+that's even more efficient.
+
+And for the functions using WARN_ON() and its return, the test
+on return from WARN_ON() is now also used for the WARN_ON() itself.
+
+On PPC64 we don't want it because we want to be able to use CFAR
+register to track how we entered the code that trapped. The CFAR
+register would be clobbered by the branch.
+
+A simple test function:
+
+	unsigned long test9w(unsigned long a, unsigned long b)
+	{
+		if (WARN_ON(!b))
+			return 0;
+		return a / b;
+	}
+
+Before the patch:
+
+	0000046c <test9w>:
+	 46c:	7c 89 00 34 	cntlzw  r9,r4
+	 470:	55 29 d9 7e 	rlwinm  r9,r9,27,5,31
+	 474:	0f 09 00 00 	twnei   r9,0
+	 478:	2c 04 00 00 	cmpwi   r4,0
+	 47c:	41 82 00 0c 	beq     488 <test9w+0x1c>
+	 480:	7c 63 23 96 	divwu   r3,r3,r4
+	 484:	4e 80 00 20 	blr
+
+	 488:	38 60 00 00 	li      r3,0
+	 48c:	4e 80 00 20 	blr
+
+After the patch:
+
+	00000468 <test9w>:
+	 468:	2c 04 00 00 	cmpwi   r4,0
+	 46c:	41 82 00 0c 	beq     478 <test9w+0x10>
+	 470:	7c 63 23 96 	divwu   r3,r3,r4
+	 474:	4e 80 00 20 	blr
+
+	 478:	0f e0 00 00 	twui    r0,0
+	 47c:	38 60 00 00 	li      r3,0
+	 480:	4e 80 00 20 	blr
+
+So we see before the patch we need 3 instructions on the likely path
+to handle the WARN_ON(). With the patch the trap goes on the unlikely
+path.
+
+See below the difference at the entry of system_call_exception where
+we have several BUG_ON(), allthough less impressing.
+
+With the patch:
+
+	00000000 <system_call_exception>:
+	   0:	81 6a 00 84 	lwz     r11,132(r10)
+	   4:	90 6a 00 88 	stw     r3,136(r10)
+	   8:	71 60 00 02 	andi.   r0,r11,2
+	   c:	41 82 00 70 	beq     7c <system_call_exception+0x7c>
+	  10:	71 60 40 00 	andi.   r0,r11,16384
+	  14:	41 82 00 6c 	beq     80 <system_call_exception+0x80>
+	  18:	71 6b 80 00 	andi.   r11,r11,32768
+	  1c:	41 82 00 68 	beq     84 <system_call_exception+0x84>
+	  20:	94 21 ff e0 	stwu    r1,-32(r1)
+	  24:	93 e1 00 1c 	stw     r31,28(r1)
+	  28:	7d 8c 42 e6 	mftb    r12
+	...
+	  7c:	0f e0 00 00 	twui    r0,0
+	  80:	0f e0 00 00 	twui    r0,0
+	  84:	0f e0 00 00 	twui    r0,0
+
+Without the patch:
+
+	00000000 <system_call_exception>:
+	   0:	94 21 ff e0 	stwu    r1,-32(r1)
+	   4:	93 e1 00 1c 	stw     r31,28(r1)
+	   8:	90 6a 00 88 	stw     r3,136(r10)
+	   c:	81 6a 00 84 	lwz     r11,132(r10)
+	  10:	69 60 00 02 	xori    r0,r11,2
+	  14:	54 00 ff fe 	rlwinm  r0,r0,31,31,31
+	  18:	0f 00 00 00 	twnei   r0,0
+	  1c:	69 60 40 00 	xori    r0,r11,16384
+	  20:	54 00 97 fe 	rlwinm  r0,r0,18,31,31
+	  24:	0f 00 00 00 	twnei   r0,0
+	  28:	69 6b 80 00 	xori    r11,r11,32768
+	  2c:	55 6b 8f fe 	rlwinm  r11,r11,17,31,31
+	  30:	0f 0b 00 00 	twnei   r11,0
+	  34:	7d 8c 42 e6 	mftb    r12
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- net/core/neighbour.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/include/asm/bug.h | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-index 20f6c634ad68..f9aa9912f940 100644
---- a/net/core/neighbour.c
-+++ b/net/core/neighbour.c
-@@ -1266,7 +1266,7 @@ int neigh_update(struct neighbour *neigh, const u8 *lladdr, u8 new,
- 			 * we can reinject the packet there.
- 			 */
- 			n2 = NULL;
--			if (dst) {
-+			if (dst && dst->obsolete != DST_OBSOLETE_DEAD) {
- 				n2 = dst_neigh_lookup_skb(dst, skb);
- 				if (n2)
- 					n1 = n2;
+diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.h
+index d1635ffbb179..101dea4eec8d 100644
+--- a/arch/powerpc/include/asm/bug.h
++++ b/arch/powerpc/include/asm/bug.h
+@@ -68,7 +68,11 @@
+ 	BUG_ENTRY("twi 31, 0, 0", 0);				\
+ 	unreachable();						\
+ } while (0)
++#define HAVE_ARCH_BUG
++
++#define __WARN_FLAGS(flags) BUG_ENTRY("twi 31, 0, 0", BUGFLAG_WARNING | (flags))
+ 
++#ifdef CONFIG_PPC64
+ #define BUG_ON(x) do {						\
+ 	if (__builtin_constant_p(x)) {				\
+ 		if (x)						\
+@@ -78,8 +82,6 @@
+ 	}							\
+ } while (0)
+ 
+-#define __WARN_FLAGS(flags) BUG_ENTRY("twi 31, 0, 0", BUGFLAG_WARNING | (flags))
+-
+ #define WARN_ON(x) ({						\
+ 	int __ret_warn_on = !!(x);				\
+ 	if (__builtin_constant_p(__ret_warn_on)) {		\
+@@ -93,9 +95,10 @@
+ 	unlikely(__ret_warn_on);				\
+ })
+ 
+-#define HAVE_ARCH_BUG
+ #define HAVE_ARCH_BUG_ON
+ #define HAVE_ARCH_WARN_ON
++#endif
++
+ #endif /* __ASSEMBLY __ */
+ #else
+ #ifdef __ASSEMBLY__
 -- 
-2.30.2
+2.25.0
 
