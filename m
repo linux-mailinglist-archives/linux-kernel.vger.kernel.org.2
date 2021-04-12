@@ -2,130 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F62435C2EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3496535C2E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239403AbhDLJwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:52:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56020 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241785AbhDLJjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:39:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDEB26120B;
-        Mon, 12 Apr 2021 09:39:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618220354;
-        bh=aPImZCrgJujvvKf1wVXHwFUAAvYaRgDhpRe+X56AdfI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=INfHcv6K4T5EPreapejD3JkX/41eszO4nsjC/osCjhYV8BjhUV3lHEcemYgEXx7OF
-         n7xE7VI+TcsLQDkoN6qJzluyveUoI0/xxQ38xXcBRWQhY4sstGGwVzJLlnkHUg4v6J
-         AQqqGaVC4ZB0H9Mvr1uTHgGERU2aQK9Idm/mqgiP0OpBNc58LQ34vXTsbbLeexjU+O
-         OiVVKVY/0sjcQ4qQabSh/YYB57GFJRn+sT6++bYN0Z8ZxPY4+zyabRpt0tF+ouPnjf
-         eMg+St1PeMyZy4+YagkdsTPL5ss6PjPdX1EpV91wOi/pEuWpNQfbKP9oy4S6BDr6+6
-         sEnQ5QHwoLdJQ==
-Date:   Mon, 12 Apr 2021 15:09:10 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Robin Gong <yibin.gong@nxp.com>
-Cc:     mark.rutland@arm.com, broonie@kernel.org, robh+dt@kernel.org,
-        catalin.marinas@arm.com, will.deacon@arm.com, shawnguo@kernel.org,
-        festevam@gmail.com, s.hauer@pengutronix.de,
-        martin.fuzzey@flowbird.group, u.kleine-koenig@pengutronix.de,
-        dan.j.williams@intel.com, matthias.schiffer@ew.tq-group.com,
-        frieder.schrempf@kontron.de, m.felsch@pengutronix.de,
-        xiaoning.wang@nxp.com, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kernel@pengutronix.de,
-        dmaengine@vger.kernel.org, linux-imx@nxp.com
-Subject: Re: [PATCH v14 12/12] dmaengine: imx-sdma: add terminated list for
- freed descriptor in worker
-Message-ID: <YHQVPoQAYVuHL3/S@vkoul-mobl.Dlink>
-References: <1617809456-17693-1-git-send-email-yibin.gong@nxp.com>
- <1617809456-17693-13-git-send-email-yibin.gong@nxp.com>
+        id S244252AbhDLJv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243548AbhDLJmZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:42:25 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC9B0C061374
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:39:34 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id w7-20020a1cdf070000b0290125f388fb34so5790512wmg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 02:39:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w1BnG+IENM4qvrGt9ztIqEmR2ezH1D5tkiZdEencp0c=;
+        b=NDC4fFT+scz5EapADelZyfCl195sOOv2zwhoQ7BzUsreOAT5gl9FUXPVafJeb8KFEa
+         RlPUeT5uW4WhE6OFY12guQS1IyIzcWkywAtXk4TagSimQUiX17NgHp1rBiUtlqxnuYJ+
+         bHqR2fmTaAcpw9d/M7Y/8H5cvOpBhYovJnQVE0HfKiyR6zqdxEdfMZBxW1PZJAiWQQnb
+         PWpqFJVji72qnuCyvG1reW8Dkob+9H8ZQsj5DbMR4lIrz93/9Qthv+I3DXrknc0J6qwD
+         AECk8CYfRPH+/s0Y9AguuIG7RNv7Aq0ClpZ/jfAzLS8pqY8h14nWDfbHM5qvdT/qvE4B
+         FGag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=w1BnG+IENM4qvrGt9ztIqEmR2ezH1D5tkiZdEencp0c=;
+        b=iEoqrVLTHeV6F4dxja6u4yOs0R+gSAvySAOc7zFMUMx6Yr/7oMMH1taJj/UbFBr+Ah
+         zkJv6bCNjqt4Ib44NilZeICqEQQShqNddwO1uerEboNRLfr2ZQZUtI7iNPMJzd7bvRZ4
+         4VfJbnhz7s9OD/cTUWft/IVaJYZs4ujl3hxEKb5jEuQcAdU35ZI3pTC01QlYlCg7o0np
+         Vo5xQys/dnIo4rW1QKuLE/xWtSK1kDGmXl/7T87gFRBTL3AU7UGgTh0cKMlLBSoFrfQ6
+         u/UdFYEoTrwMcLV+puxmRvWyuYKrikZMN6dgqRFv8YT5/ku4DUSYjWonB8H2C5DpLwuA
+         NCIQ==
+X-Gm-Message-State: AOAM532KysDLX5M7npJxtdU74rZoF6AI79tLNXvXJfJGz0VTZGp4+K6q
+        GZwTLRj+23vkk2eZAu8sSqON6A==
+X-Google-Smtp-Source: ABdhPJzb8zquyRlhr97rmCN1MNzd5KVvMYgqyH3tT3JQ6U4D10kioViIzexWKJVu3EQa2ZFNYH9qzg==
+X-Received: by 2002:a05:600c:4d91:: with SMTP id v17mr4377091wmp.28.1618220373362;
+        Mon, 12 Apr 2021 02:39:33 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:90c:e290:4c21:b00e:ff79:bf20])
+        by smtp.gmail.com with ESMTPSA id r22sm14405902wmh.11.2021.04.12.02.39.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 02:39:32 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     chunkuang.hu@kernel.org, p.zabel@pengutronix.de,
+        matthias.bgg@gmail.com
+Cc:     dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v2 0/5] mediatek: hdmi: add MT8167 configuration
+Date:   Mon, 12 Apr 2021 11:39:23 +0200
+Message-Id: <20210412093928.3321194-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1617809456-17693-13-git-send-email-yibin.gong@nxp.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07-04-21, 23:30, Robin Gong wrote:
-> Add terminated list for keeping descriptor so that it could be freed in
-> worker without any potential involving next descriptor raised up before
-> this descriptor freed, because vchan_get_all_descriptors get all
-> descriptors including the last terminated descriptor and the next
-> descriptor, hence, the next descriptor maybe freed unexpectly when it's
-> done in worker without this patch.
-> https://www.spinics.net/lists/dmaengine/msg23367.html
+The MT8167 SoC have a hard limit on the maximal supported HDMI TMDS clock,
+and is not validated and supported for HDMI modes out of HDMI CEA modes.
 
-Sound like you should implement .device_synchronize() and do the actual
-work there..?
+To achieve this:
+- switch the mediatek HDMI bindings to YAML
+- add the MT8167 compatible
+- add a boolean to discard the non-CEA modes
+- add a value to specify mac TMDS supported clock
+- add a conf entry for the MT8167 compatible
 
-> 
-> Signed-off-by: Robin Gong <yibin.gong@nxp.com>
-> Reported-by: Richard Leitner <richard.leitner@skidata.com>
-> ---
->  drivers/dma/imx-sdma.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-> index 9519b41..4174580 100644
-> --- a/drivers/dma/imx-sdma.c
-> +++ b/drivers/dma/imx-sdma.c
-> @@ -381,6 +381,7 @@ struct sdma_channel {
->  	enum dma_status			status;
->  	struct imx_dma_data		data;
->  	struct work_struct		terminate_worker;
-> +	struct list_head                terminated;
->  	bool				is_ram_script;
->  };
->  
-> @@ -1041,9 +1042,6 @@ static void sdma_channel_terminate_work(struct work_struct *work)
->  {
->  	struct sdma_channel *sdmac = container_of(work, struct sdma_channel,
->  						  terminate_worker);
-> -	unsigned long flags;
-> -	LIST_HEAD(head);
-> -
->  	/*
->  	 * According to NXP R&D team a delay of one BD SDMA cost time
->  	 * (maximum is 1ms) should be added after disable of the channel
-> @@ -1052,10 +1050,7 @@ static void sdma_channel_terminate_work(struct work_struct *work)
->  	 */
->  	usleep_range(1000, 2000);
->  
-> -	spin_lock_irqsave(&sdmac->vc.lock, flags);
-> -	vchan_get_all_descriptors(&sdmac->vc, &head);
-> -	spin_unlock_irqrestore(&sdmac->vc.lock, flags);
-> -	vchan_dma_desc_free_list(&sdmac->vc, &head);
-> +	vchan_dma_desc_free_list(&sdmac->vc, &sdmac->terminated);
->  }
->  
->  static int sdma_terminate_all(struct dma_chan *chan)
-> @@ -1069,6 +1064,13 @@ static int sdma_terminate_all(struct dma_chan *chan)
->  
->  	if (sdmac->desc) {
->  		vchan_terminate_vdesc(&sdmac->desc->vd);
-> +		/*
-> +		 * move out current descriptor into terminated list so that
-> +		 * it could be free in sdma_channel_terminate_work alone
-> +		 * later without potential involving next descriptor raised
-> +		 * up before the last descriptor terminated.
-> +		 */
-> +		vchan_get_all_descriptors(&sdmac->vc, &sdmac->terminated);
->  		sdmac->desc = NULL;
->  		schedule_work(&sdmac->terminate_worker);
->  	}
-> @@ -2075,6 +2077,7 @@ static int sdma_probe(struct platform_device *pdev)
->  
->  		sdmac->channel = i;
->  		sdmac->vc.desc_free = sdma_desc_free;
-> +		INIT_LIST_HEAD(&sdmac->terminated);
->  		INIT_WORK(&sdmac->terminate_worker,
->  				sdma_channel_terminate_work);
->  		/*
-> -- 
-> 2.7.4
+Neil Armstrong (5):
+  dt-bindings: display: mediatek,hdmi: Convert to use graph schema
+  dt-bindings: mediatek: add mt8167 to hdmi, hdmi-ddc and cec bindings
+  gpu/drm: mediatek: hdmi: add check for CEA modes only
+  gpu/drm: mediatek: hdmi: add optional limit on maximal HDMI mode clock
+  gpu/drm: mediatek: hdmi: add MT8167 configuration
+
+ .../display/mediatek/mediatek,cec.yaml        |  52 +++++++
+ .../display/mediatek/mediatek,hdmi-ddc.yaml   |  58 ++++++++
+ .../display/mediatek/mediatek,hdmi.txt        | 136 ------------------
+ .../display/mediatek/mediatek,hdmi.yaml       | 132 +++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_hdmi.c           |  17 +++
+ 5 files changed, 259 insertions(+), 136 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,cec.yaml
+ create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi-ddc.yaml
+ delete mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.txt
+ create mode 100644 Documentation/devicetree/bindings/display/mediatek/mediatek,hdmi.yaml
 
 -- 
-~Vinod
+2.25.1
+
