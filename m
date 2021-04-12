@@ -2,102 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C348D35CAED
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C511035CBE8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243259AbhDLQSo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:18:44 -0400
-Received: from mout.gmx.net ([212.227.15.18]:53729 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237798AbhDLQSm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:18:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618244250;
-        bh=23L7C4c2Fun/n1dWfwKI/BlS0wULMrCt+0lVJbOuZz8=;
-        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
-         CC:From;
-        b=XeiZUOEANURDUnqwLj9B9Dqa51UMQFDj9Mg72HevrYG+PT/JotfmkBF4GxS/nEgzu
-         l6UeXU7lEa2V08Qy2GPRqlNtEh1B/GChh27J4glaH/VgsyKXbFLf6gXzODO4q0FEqJ
-         YfrwlWenAlAfOWA6vhbpXblCbi2rhUtXADoyr2XA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from frank-s9 ([80.245.76.232]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mq2j2-1lscQa0TPm-00nDjv; Mon, 12
- Apr 2021 18:17:30 +0200
-Date:   Mon, 12 Apr 2021 18:17:23 +0200
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20210412153058.929833-1-dqfext@gmail.com>
-References: <20210410133454.4768-1-ansuelsmth@gmail.com> <20210410133454.4768-2-ansuelsmth@gmail.com> <20210412033525.2472820-1-dqfext@gmail.com> <YHPPlnXbElN4qJ/r@Ansuel-xps.localdomain> <20210412153058.929833-1-dqfext@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH RFC net-next 1/3] net: dsa: allow for multiple CPU ports
-Reply-to: frank-w@public-files.de
-To:     DENG Qingfang <dqfext@gmail.com>,
-        Ansuel Smith <ansuelsmth@gmail.com>
-CC:     netdev@vger.kernel.org,
-        =?ISO-8859-1?Q?Marek_Beh=FAn?= <marek.behun@nic.cz>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
+        id S244414AbhDLQZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:25:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243448AbhDLQXv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 12:23:51 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D3B31C06138E
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+        Content-Transfer-Encoding; bh=+JWqBqfEhPY4hrU6jUBVKecSMTw69qAjQw
+        6YVxPHI+Y=; b=rF+qmraKg6WAUwIzBSzo017Eozr5mtqAChwReid5tNhn6oE6hV
+        85cjYsp5sSVipXpMoHQo0vCyVj25bv6mVqh65YdZnDuM4/YYkidsut+0uvycWIkx
+        8LssrkDhT8OX85Ej9d/TZEFBnuKU9xrikdmDcuPreCnUvzzbz7q02jiYE=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygB3fkLQc3RgUT_LAA--.48727S2;
+        Tue, 13 Apr 2021 00:22:41 +0800 (CST)
+Date:   Tue, 13 Apr 2021 00:17:38 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        " =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=" <bjorn@kernel.org>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Wei Wang <weiwan@google.com>,
-        Cong Wang <cong.wang@bytedance.com>,
-        Taehee Yoo <ap420073@gmail.com>,
-        =?ISO-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-        zhang kai <zhangkaiheb@126.com>,
-        Roopa Prabhu <roopa@cumulusnetworks.com>,
-        Di Zhu <zhudi21@huawei.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        Francis Laniel <laniel_francis@privacyrequired.com>,
-        linux-kernel@vger.kernel.org
-From:   Frank Wunderlich <frank-w@public-files.de>
-Message-ID: <FC33D997-21FA-4528-BC04-A4DFFCFF8847@public-files.de>
-X-Provags-ID: V03:K1:dbzBiYsqH4KKKgpvQbCWzaoK3jiqG5FH4wT+Kfv5hq6bbv/5wqT
- DoK/Djhy2p6XDDSsj6NrJ0tP1Y4dqfJrBW5m7zJsQfNsmHnPrs9HlIgxP3CYoJ4zY3/lpO1
- U0+Du/GbuLbGxRcBmwPifGyZf6UzXz7B+lB4tHimssY/SRuE1mEys2EjKw1A/YWdmyveMkh
- cTTnzYRLMWzTlLkGvpowQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:W65El3gWUuQ=:7o01fDUksN1KmrHTW5zm/J
- z0yXoeLzeW4eYvj8cdySgbNVuSOcKFVI9IJrbih0PdNIc0wIQmMOkImS+xPRE8QttZSvTpOyf
- Z6109WVOhof2iQisnyTPLvzebMZD6ieBqhDzvS30cJH5H4VEfgSPdY7gmfZn5RcZo1mEV4sIU
- 0jqC52FW4o0tALeO+3xAFuvtWYUe21xd28Z6BfMUE6UQQhdQjhFbvwlDLVHu+gYRgRVQK2C+f
- gQDlPpzTpblk+R4mOopLg9QMvTd8OX7D4OAxOU/7JEsSYMKNK6V4KhG034UNHdmAjAy2vE+6E
- Ff5bqqG++XD9EyG4AFLkmM3m8wtmMHYSPavMlFUA7u3yxb89PYkNmMjLV/IZHc+dec1Fj5YCV
- /hoJnEqL/2RCwQCECLYXZAMVJ8DhjM9iSb1bbcBp8CL36AJBWsS/R6prYib2DIinFAwKBOyhz
- s/fFwjhKtWcyJny+D/6Zzsf+Y+WMDRmVhCewpuGUU4fYhP8WvBzOHDI/aOHZFmkZ0A6Y7eBGM
- 5D6vrsprLajYgmbyYYwUIMtvDnT3smisMnGTWfiilkYlfwsLDzvWm53m7yS/08QrdwNIAZ0RC
- uc5JTFU5/IyfDnhBdXVdr8RciIvN91pnlmnnljaBa9KVS7s08wOzwRVyRZ+eci2xYtk6UpRGg
- T2nBGyvMoazUvrSxwR5gejRzna/xoiL87clerGvD/TjPiAw0cZrEswzvt5N/J//jSHjTB5ePm
- almz88j6Iujo+DO9+ijBJkwXx2Vs1q+GELbufVgbL02a8RuLA6NBi1+7gF43FO9miut6vAZPf
- J3BM5kMiWIaYRu9f24agYxjyrrzycz57ufLm0Np5+21Vt8MAdSRAwvt3AYpK5hexx7b4p8QX3
- cyVI4ZnSftDQSBX6U8BKjrZsJmkvRfJ0JjRvwre3yKqp+Z5cFshCqxe0Y4KfCfMgJEZQ1iyl4
- NkuJ4slk94p4Q6gU3eH8ODWB46KoTK8dpuf9QwrTS36YWzgniLWdsSqug6xmgd/StTDDOipK+
- E3cbUGcizts5Q0UG2MrZ/gD1iGcA/EpzrUXvA8688/YU8ARLjF8KXRrTh++n3/w+pAZ5iZ7+s
- iQXrWC+IC6FWob37IboGPEpwGc4JuXQbguRslnpRbCpKGBfQhGQdqWyOeTAo0HmqOh5QbWwMK
- +CdiPHAqmZoe71rwnyT0Q2DIr2TTEQE/Nu812n5qOvlF7fFvki8ftVOb/t3jfWKxXa4/T+heG
- pvW4p6vK83kBZPhO0
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Xi Wang <xi.wang@gmail.com>, Anup Patel <anup@brainfault.org>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 06/10] riscv: kprobes: Implement alloc_insn_page()
+Message-ID: <20210413001738.20c8b2e0@xhacker>
+In-Reply-To: <20210413001110.7209bae6@xhacker>
+References: <20210413001110.7209bae6@xhacker>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygB3fkLQc3RgUT_LAA--.48727S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFyDGF45XF4kJrWxuw48WFg_yoWDCrg_C3
+        WxKry3WrWYkrZ7WFyDKr4Sqrsak343KFykWr12yryUtr1DWr13Ka95WF45G3sYqr97JF97
+        GrnxX3srWF42qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb4AYjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
+        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Jr
+        0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY
+        04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        W8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU8S1v3
+        UUUUU==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 12=2E April 2021 17:30:58 MESZ schrieb DENG Qingfang <dqfext@gmail=2Ecom=
->:
+From: Jisheng Zhang <jszhang@kernel.org>
 
->So we somehow configured default CPU port in dts (by port name)=2E In
->my opinion we can just add a default CPU property in dts to specify
->it (like Frank Wunderlich did earlier), and fall back to round-robin
->if the property is not present, while still allow users to change it
->in userspace=2E
+Allocate PAGE_KERNEL_READ_EXEC(read only, executable) page for kprobes
+insn page. This is to prepare for STRICT_MODULE_RWX.
 
-My series was an up ported version of Patches (linux 4=2E9) afair from Fel=
-ix=2E The dts-version was 1 reason why it was rejected, because DT describe=
-s hardware and not software preferences=2E
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Reviewed-by: Anup Patel <anup@brainfault.org>
+---
+ arch/riscv/kernel/probes/kprobes.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+index 7e2c78e2ca6b..8c1f7a30aeed 100644
+--- a/arch/riscv/kernel/probes/kprobes.c
++++ b/arch/riscv/kernel/probes/kprobes.c
+@@ -84,6 +84,14 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+ 	return 0;
+ }
+ 
++void *alloc_insn_page(void)
++{
++	return  __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
++				     GFP_KERNEL, PAGE_KERNEL_READ_EXEC,
++				     VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
++				     __builtin_return_address(0));
++}
++
+ /* install breakpoint in text */
+ void __kprobes arch_arm_kprobe(struct kprobe *p)
+ {
+-- 
+2.31.0
 
 
-regards Frank
