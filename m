@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A408C35BE88
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CA235C13E
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239000AbhDLI7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43194 "EHLO mail.kernel.org"
+        id S241493AbhDLJ0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:26:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57182 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238740AbhDLIul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:50:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CEE561244;
-        Mon, 12 Apr 2021 08:50:23 +0000 (UTC)
+        id S238523AbhDLJCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:02:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7E44261244;
+        Mon, 12 Apr 2021 09:00:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217424;
-        bh=4yMZBZg09kXmZI4rkxQUzw1AjZ2thnr7Fu0KvTSZ1YE=;
+        s=korg; t=1618218055;
+        bh=AemVYUQYYDN1IfXCxWkhw0kUVwZhv3Usbs0TOhzwAVE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J8yLQZ5oYwBlBywuZ+khWHOY/ZLJqXlRBVXgo0l8PKL7ksd5SHiHs1SP+OBQ2F/Vu
-         Z0oc7Er/hU+Mn7LPvqoGB+3+P5C0MhQpvtvXeYb9RW7AD3/jY10neqL3TbpuTbvsmU
-         tX2WvsauWotpfTnQ0z/43JKHasKpy0ISePXSPq3I=
+        b=IA/XCBZjaUta8joQD4Co0PLtD7RfiapYvsxQoL3uicTddhAHG5R+tS6+JdgJUHQFq
+         rt3cidkQvsXhBefvGk3DoT1rul1CPLmPzQ3JXxmxXVa7NVgSG3xXY3+a5aQYOa42nY
+         Oxd+s7hLIVX34aeYWC4bFuHaWXcz9MSfq+kbVSTA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.10 010/188] selinux: make nslot handling in avtab more robust
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Subject: [PATCH 5.11 019/210] drm/i915: Fix invalid access to ACPI _DSM objects
 Date:   Mon, 12 Apr 2021 10:38:44 +0200
-Message-Id: <20210412084014.003364822@linuxfoundation.org>
+Message-Id: <20210412084016.652273106@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
-References: <20210412084013.643370347@linuxfoundation.org>
+In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
+References: <20210412084016.009884719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,106 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Mosnacek <omosnace@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 442dc00f82a9727dc0c48c44f792c168f593c6df upstream.
+commit b6a37a93c9ac3900987c79b726d0bb3699d8db4e upstream.
 
-1. Make sure all fileds are initialized in avtab_init().
-2. Slightly refactor avtab_alloc() to use the above fact.
-3. Use h->nslot == 0 as a sentinel in the access functions to prevent
-   dereferencing h->htable when it's not allocated.
+intel_dsm_platform_mux_info() tries to parse the ACPI package data
+from _DSM for the debug information, but it assumes the fixed format
+without checking what values are stored in the elements actually.
+When an unexpected value is returned from BIOS, it may lead to GPF or
+NULL dereference, as reported recently.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Add the checks of the contents in the returned values and skip the
+values for invalid cases.
+
+v1->v2: Check the info contents before dereferencing, too
+
+BugLink: http://bugzilla.opensuse.org/show_bug.cgi?id=1184074
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210402082317.871-1-tiwai@suse.de
+(cherry picked from commit 337d7a1621c7f02af867229990ac67c97da1b53a)
+Signed-off-by: Rodrigo Vivi <rodrigo.vivi@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/selinux/ss/avtab.c |   21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/i915/display/intel_acpi.c |   22 ++++++++++++++++++++--
+ 1 file changed, 20 insertions(+), 2 deletions(-)
 
---- a/security/selinux/ss/avtab.c
-+++ b/security/selinux/ss/avtab.c
-@@ -109,7 +109,7 @@ static int avtab_insert(struct avtab *h,
- 	struct avtab_node *prev, *cur, *newnode;
- 	u16 specified = key->specified & ~(AVTAB_ENABLED|AVTAB_ENABLED_OLD);
- 
--	if (!h)
-+	if (!h || !h->nslot)
- 		return -EINVAL;
- 
- 	hvalue = avtab_hash(key, h->mask);
-@@ -154,7 +154,7 @@ avtab_insert_nonunique(struct avtab *h,
- 	struct avtab_node *prev, *cur;
- 	u16 specified = key->specified & ~(AVTAB_ENABLED|AVTAB_ENABLED_OLD);
- 
--	if (!h)
-+	if (!h || !h->nslot)
- 		return NULL;
- 	hvalue = avtab_hash(key, h->mask);
- 	for (prev = NULL, cur = h->htable[hvalue];
-@@ -184,7 +184,7 @@ struct avtab_datum *avtab_search(struct
- 	struct avtab_node *cur;
- 	u16 specified = key->specified & ~(AVTAB_ENABLED|AVTAB_ENABLED_OLD);
- 
--	if (!h)
-+	if (!h || !h->nslot)
- 		return NULL;
- 
- 	hvalue = avtab_hash(key, h->mask);
-@@ -220,7 +220,7 @@ avtab_search_node(struct avtab *h, struc
- 	struct avtab_node *cur;
- 	u16 specified = key->specified & ~(AVTAB_ENABLED|AVTAB_ENABLED_OLD);
- 
--	if (!h)
-+	if (!h || !h->nslot)
- 		return NULL;
- 
- 	hvalue = avtab_hash(key, h->mask);
-@@ -295,6 +295,7 @@ void avtab_destroy(struct avtab *h)
+--- a/drivers/gpu/drm/i915/display/intel_acpi.c
++++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+@@ -84,13 +84,31 @@ static void intel_dsm_platform_mux_info(
+ 		return;
  	}
- 	kvfree(h->htable);
- 	h->htable = NULL;
-+	h->nel = 0;
- 	h->nslot = 0;
- 	h->mask = 0;
- }
-@@ -303,14 +304,15 @@ void avtab_init(struct avtab *h)
- {
- 	h->htable = NULL;
- 	h->nel = 0;
-+	h->nslot = 0;
-+	h->mask = 0;
- }
  
- int avtab_alloc(struct avtab *h, u32 nrules)
- {
--	u32 mask = 0;
- 	u32 shift = 0;
- 	u32 work = nrules;
--	u32 nslot = 0;
-+	u32 nslot;
- 
- 	if (nrules == 0)
- 		goto avtab_alloc_out;
-@@ -324,16 +326,15 @@ int avtab_alloc(struct avtab *h, u32 nru
- 	nslot = 1 << shift;
- 	if (nslot > MAX_AVTAB_HASH_BUCKETS)
- 		nslot = MAX_AVTAB_HASH_BUCKETS;
--	mask = nslot - 1;
- 
- 	h->htable = kvcalloc(nslot, sizeof(void *), GFP_KERNEL);
- 	if (!h->htable)
- 		return -ENOMEM;
- 
-- avtab_alloc_out:
--	h->nel = 0;
- 	h->nslot = nslot;
--	h->mask = mask;
-+	h->mask = nslot - 1;
++	if (!pkg->package.count) {
++		DRM_DEBUG_DRIVER("no connection in _DSM\n");
++		return;
++	}
 +
-+avtab_alloc_out:
- 	pr_debug("SELinux: %d avtab hash slots, %d rules.\n",
- 	       h->nslot, nrules);
- 	return 0;
+ 	connector_count = &pkg->package.elements[0];
+ 	DRM_DEBUG_DRIVER("MUX info connectors: %lld\n",
+ 		  (unsigned long long)connector_count->integer.value);
+ 	for (i = 1; i < pkg->package.count; i++) {
+ 		union acpi_object *obj = &pkg->package.elements[i];
+-		union acpi_object *connector_id = &obj->package.elements[0];
+-		union acpi_object *info = &obj->package.elements[1];
++		union acpi_object *connector_id;
++		union acpi_object *info;
++
++		if (obj->type != ACPI_TYPE_PACKAGE || obj->package.count < 2) {
++			DRM_DEBUG_DRIVER("Invalid object for MUX #%d\n", i);
++			continue;
++		}
++
++		connector_id = &obj->package.elements[0];
++		info = &obj->package.elements[1];
++		if (info->type != ACPI_TYPE_BUFFER || info->buffer.length < 4) {
++			DRM_DEBUG_DRIVER("Invalid info for MUX obj #%d\n", i);
++			continue;
++		}
++
+ 		DRM_DEBUG_DRIVER("Connector id: 0x%016llx\n",
+ 			  (unsigned long long)connector_id->integer.value);
+ 		DRM_DEBUG_DRIVER("  port id: %s\n",
 
 
