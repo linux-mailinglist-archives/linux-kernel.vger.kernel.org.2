@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0ECF35C102
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1577F35BE9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240160AbhDLJTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:19:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50126 "EHLO mail.kernel.org"
+        id S239547AbhDLJAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:00:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239649AbhDLJBB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:01:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0501761356;
-        Mon, 12 Apr 2021 08:58:52 +0000 (UTC)
+        id S237945AbhDLIvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:51:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50064613BA;
+        Mon, 12 Apr 2021 08:50:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217933;
-        bh=4yMZBZg09kXmZI4rkxQUzw1AjZ2thnr7Fu0KvTSZ1YE=;
+        s=korg; t=1618217449;
+        bh=vTWlQa/vKWD29VbxOdWkZQQ/cq5bW9VYLV1HuXpsyo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1YgTGfHlggaYZEVdiMWhe3Hl4D9Xifl4cEFv9N6UVkt3N6vgUr5NWjQkixKhe/5BA
-         cJRw8muraTgrrBjG0gmoElZEtShjh/Jypj/vFQN1tuBJ2WIPoHx2eV72y5cnjqHDoK
-         RF3jvxBStrnSJ+hYGsKnLuqbLpb4x2EBABzjSam0=
+        b=XWOVkGEJ+UbJbcpS8UpDGY/yg9HFCMp/IjKzggL6XbW7oj1wBqskJvKg2/BQTRVaR
+         gGucudxJKTZezC+UiNBSgJvPLgOZzxPLq8z6gkRP8JYyjdjM3jPgF4u4A52wVQgooI
+         ayuNzptlyrTxcQg298LtIhoHEkwaSQ1ZZmY4wJO8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ondrej Mosnacek <omosnace@redhat.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.11 011/210] selinux: make nslot handling in avtab more robust
+        stable@vger.kernel.org, Jonas Holmberg <jonashg@axis.com>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.10 002/188] ALSA: aloop: Fix initialization of controls
 Date:   Mon, 12 Apr 2021 10:38:36 +0200
-Message-Id: <20210412084016.389293113@linuxfoundation.org>
+Message-Id: <20210412084013.723561236@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
-References: <20210412084016.009884719@linuxfoundation.org>
+In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
+References: <20210412084013.643370347@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,106 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ondrej Mosnacek <omosnace@redhat.com>
+From: Jonas Holmberg <jonashg@axis.com>
 
-commit 442dc00f82a9727dc0c48c44f792c168f593c6df upstream.
+commit 168632a495f49f33a18c2d502fc249d7610375e9 upstream.
 
-1. Make sure all fileds are initialized in avtab_init().
-2. Slightly refactor avtab_alloc() to use the above fact.
-3. Use h->nslot == 0 as a sentinel in the access functions to prevent
-   dereferencing h->htable when it's not allocated.
+Add a control to the card before copying the id so that the numid field
+is initialized in the copy. Otherwise the numid field of active_id,
+format_id, rate_id and channels_id will be the same (0) and
+snd_ctl_notify() will not queue the events properly.
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Jonas Holmberg <jonashg@axis.com>
+Reviewed-by: Jaroslav Kysela <perex@perex.cz>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210407075428.2666787-1-jonashg@axis.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- security/selinux/ss/avtab.c |   21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ sound/drivers/aloop.c |   11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
---- a/security/selinux/ss/avtab.c
-+++ b/security/selinux/ss/avtab.c
-@@ -109,7 +109,7 @@ static int avtab_insert(struct avtab *h,
- 	struct avtab_node *prev, *cur, *newnode;
- 	u16 specified = key->specified & ~(AVTAB_ENABLED|AVTAB_ENABLED_OLD);
- 
--	if (!h)
-+	if (!h || !h->nslot)
- 		return -EINVAL;
- 
- 	hvalue = avtab_hash(key, h->mask);
-@@ -154,7 +154,7 @@ avtab_insert_nonunique(struct avtab *h,
- 	struct avtab_node *prev, *cur;
- 	u16 specified = key->specified & ~(AVTAB_ENABLED|AVTAB_ENABLED_OLD);
- 
--	if (!h)
-+	if (!h || !h->nslot)
- 		return NULL;
- 	hvalue = avtab_hash(key, h->mask);
- 	for (prev = NULL, cur = h->htable[hvalue];
-@@ -184,7 +184,7 @@ struct avtab_datum *avtab_search(struct
- 	struct avtab_node *cur;
- 	u16 specified = key->specified & ~(AVTAB_ENABLED|AVTAB_ENABLED_OLD);
- 
--	if (!h)
-+	if (!h || !h->nslot)
- 		return NULL;
- 
- 	hvalue = avtab_hash(key, h->mask);
-@@ -220,7 +220,7 @@ avtab_search_node(struct avtab *h, struc
- 	struct avtab_node *cur;
- 	u16 specified = key->specified & ~(AVTAB_ENABLED|AVTAB_ENABLED_OLD);
- 
--	if (!h)
-+	if (!h || !h->nslot)
- 		return NULL;
- 
- 	hvalue = avtab_hash(key, h->mask);
-@@ -295,6 +295,7 @@ void avtab_destroy(struct avtab *h)
- 	}
- 	kvfree(h->htable);
- 	h->htable = NULL;
-+	h->nel = 0;
- 	h->nslot = 0;
- 	h->mask = 0;
- }
-@@ -303,14 +304,15 @@ void avtab_init(struct avtab *h)
- {
- 	h->htable = NULL;
- 	h->nel = 0;
-+	h->nslot = 0;
-+	h->mask = 0;
- }
- 
- int avtab_alloc(struct avtab *h, u32 nrules)
- {
--	u32 mask = 0;
- 	u32 shift = 0;
- 	u32 work = nrules;
--	u32 nslot = 0;
-+	u32 nslot;
- 
- 	if (nrules == 0)
- 		goto avtab_alloc_out;
-@@ -324,16 +326,15 @@ int avtab_alloc(struct avtab *h, u32 nru
- 	nslot = 1 << shift;
- 	if (nslot > MAX_AVTAB_HASH_BUCKETS)
- 		nslot = MAX_AVTAB_HASH_BUCKETS;
--	mask = nslot - 1;
- 
- 	h->htable = kvcalloc(nslot, sizeof(void *), GFP_KERNEL);
- 	if (!h->htable)
- 		return -ENOMEM;
- 
-- avtab_alloc_out:
--	h->nel = 0;
- 	h->nslot = nslot;
--	h->mask = mask;
-+	h->mask = nslot - 1;
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -1572,6 +1572,14 @@ static int loopback_mixer_new(struct loo
+ 					return -ENOMEM;
+ 				kctl->id.device = dev;
+ 				kctl->id.subdevice = substr;
 +
-+avtab_alloc_out:
- 	pr_debug("SELinux: %d avtab hash slots, %d rules.\n",
- 	       h->nslot, nrules);
- 	return 0;
++				/* Add the control before copying the id so that
++				 * the numid field of the id is set in the copy.
++				 */
++				err = snd_ctl_add(card, kctl);
++				if (err < 0)
++					return err;
++
+ 				switch (idx) {
+ 				case ACTIVE_IDX:
+ 					setup->active_id = kctl->id;
+@@ -1588,9 +1596,6 @@ static int loopback_mixer_new(struct loo
+ 				default:
+ 					break;
+ 				}
+-				err = snd_ctl_add(card, kctl);
+-				if (err < 0)
+-					return err;
+ 			}
+ 		}
+ 	}
 
 
