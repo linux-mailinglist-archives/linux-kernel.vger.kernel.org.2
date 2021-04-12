@@ -2,128 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A390635D102
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A79C35D10D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 21:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237149AbhDLTZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 15:25:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23775 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237119AbhDLTZN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 15:25:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1618255495;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xRcnQlpmgJ+Hp6K8twIMFMCvKaEL2r/LHLx6k73WseU=;
-        b=CDpYCjYcaYXlWaktLkjtSn4OlX2pC0vy1/9rtcdsbssnkezGZl1KH0dnt5wVdp7DEb1xd3
-        XpsiTIbtxtSYJZa8SoXlJoknx3jEpdPnCI8PDWegJnjQoG/Cj9n55KpFI6I5eiM13qh/AJ
-        el6AAytIwVo0xNVmZmN9sXXbEQ3FBt0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-95-MugNV17kOVSv_7lHHq0Q0w-1; Mon, 12 Apr 2021 15:24:52 -0400
-X-MC-Unique: MugNV17kOVSv_7lHHq0Q0w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 48245107ACED;
-        Mon, 12 Apr 2021 19:24:51 +0000 (UTC)
-Received: from crecklin.bos.csb (unknown [10.10.115.243])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7AEAE5D6D1;
-        Mon, 12 Apr 2021 19:24:46 +0000 (UTC)
-Reply-To: crecklin@redhat.com
-Subject: Re: [PATCH v6 1/1] use crc32 instead of md5 for hibernation e820
- integrity check
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     ardb@kernel.org, simo@redhat.com, rafael@kernel.org,
-        decui@microsoft.com, linux-pm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210412140932.31162-1-crecklin@redhat.com>
- <YHSHPIXLhHjOu0jw@gmail.com>
- <5795c815-7715-1ecb-dd83-65f3d18b9092@redhat.com>
- <YHSdgV6LIqSVxk+i@gmail.com>
-From:   Chris von Recklinghausen <crecklin@redhat.com>
-Organization: Red Hat
-Message-ID: <68196954-97a0-1383-d01b-81441409ac38@redhat.com>
-Date:   Mon, 12 Apr 2021 15:24:45 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S245291AbhDLT2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 15:28:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237344AbhDLT2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 15:28:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A05B61352;
+        Mon, 12 Apr 2021 19:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618255661;
+        bh=qFlhkydUiC7xE0GIqveTRveWKRXRQiwAwp5r0CTOpV8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Vf9UPCGaC8CYxq5bwchEoV22B6m1ie7pVAU8QHWOXXPQqWUojh97f3MnXmRReWBTG
+         12+tYHHDqjUcIdPW3ZVd1zIUKepFs0AoeusNC27g82bEPb6MP41tcHMXZM+WKEw3bH
+         klCDFaX82SVslNJxgpIVURtHWfnNR2lpWUWDBaNGW95mzY615bCqticf+f8MGt0cmb
+         Obj0Jv9dr1fxYFwcH8Xg+Xc44YFdfZp19icMr8HCDY4W9/K3Cna92CNe6RjxpV/B9Z
+         /4sYfQM895ZHEWhGjz1ejqyhxbwKhYY6eid4btshRQ30QkWHtGoWJbsCNy2MwbGudg
+         lykzNw4FBYNKA==
+Date:   Mon, 12 Apr 2021 14:27:40 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Add PCI_EXP_DEVCTL_PAYLOAD_* macros
+Message-ID: <20210412192740.GA2151026@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <YHSdgV6LIqSVxk+i@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210412124602.25762-1-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/12/21 3:20 PM, Eric Biggers wrote:
-> On Mon, Apr 12, 2021 at 03:04:58PM -0400, Chris von Recklinghausen wrote:
->> On 4/12/21 1:45 PM, Eric Biggers wrote:
->>> On Mon, Apr 12, 2021 at 10:09:32AM -0400, Chris von Recklinghausen wrote:
->>>> Suspend fails on a system in fips mode because md5 is used for the e820
->>>> integrity check and is not available. Use crc32 instead.
->>>>
->>>> This patch changes the integrity check algorithm from md5 to crc32.
->>>>
->>>> The purpose of the integrity check is to detect possible differences
->>>> between the memory map used at the time when the hibernation image is
->>>> about to be loaded into memory and the memory map used at the image
->>>> creation time, because it is generally unsafe to load the image if the
->>>> current memory map doesn't match the one used when it was created. so
->>>> it is not intended as a cryptographic integrity check.
->>> This still doesn't actually explain why a non-cryptographic checksum is
->>> sufficient.  "Detection of possible differences" could very well require
->>> cryptographic authentication; it depends on whether malicious changes need to be
->>> detected or not.
->> Hi Eric,
->>
->> The cases that the commit comments for 62a03defeabd mention are the same as
->> for this patch, e.g.
->>
->>      1. Without this patch applied, it is possible that BIOS has
->>         provided an inconsistent memory map, but the resume kernel is still
->>         able to restore the image anyway(e.g, E820_RAM region is the superset
->>         of the previous one), although the system might be unstable. So this
->>         patch tries to treat any inconsistent e820 as illegal.
->>
->>      2. Another case is, this patch replies on comparing the e820_saved, but
->>         currently the e820_save might not be strictly the same across
->>         hibernation, even if BIOS has provided consistent e820 map - In
->>         theory mptable might modify the BIOS-provided e820_saved dynamically
->>         in early_reserve_e820_mpc_new, which would allocate a buffer from
->>         E820_RAM, and marks it from E820_RAM to E820_RESERVED).
->>         This is a potential and rare case we need to deal with in OS in
->>         the future.
->>
->> Maybe they should be added to the comments with this patch as well? In any
->> case, the above comments only mention detecting consequences of BIOS
->> issues/actions on the e820 map and not intrusions from attackers requiring
->> cryptographic protection. Does that seem to be a reasonable explanation to
->> you? If so I can add these to the commit comments.
->>
->> I'll make the other changes you suggest below.
->>
->> Thanks,
->>
-> Those details are still missing the high-level point.  Is this just meant to
-> detect non-malicious changes (presumably caused by BIOS bugs), or is it meant to
-> detect malicious changes?  That's all that really needs to be mentioned.
+On Mon, Apr 12, 2021 at 02:46:02PM +0200, Pali Roh�r wrote:
+> Define new PCI_EXP_DEVCTL_PAYLOAD_* macros in linux/pci_regs.h header file
+> for Max Payload Size. Macros are defined in the same style as existing
+> macros PCI_EXP_DEVCTL_READRQ_* macros.
+> 
+> Signed-off-by: Pali Roh�r <pali@kernel.org>
+> ---
+>  include/uapi/linux/pci_regs.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> index e709ae8235e7..8f1b15eea53e 100644
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -504,6 +504,12 @@
+>  #define  PCI_EXP_DEVCTL_URRE	0x0008	/* Unsupported Request Reporting En. */
+>  #define  PCI_EXP_DEVCTL_RELAX_EN 0x0010 /* Enable relaxed ordering */
+>  #define  PCI_EXP_DEVCTL_PAYLOAD	0x00e0	/* Max_Payload_Size */
+> +#define  PCI_EXP_DEVCTL_PAYLOAD_128B 0x0000 /* 128 Bytes */
+> +#define  PCI_EXP_DEVCTL_PAYLOAD_256B 0x0020 /* 256 Bytes */
+> +#define  PCI_EXP_DEVCTL_PAYLOAD_512B 0x0040 /* 512 Bytes */
+> +#define  PCI_EXP_DEVCTL_PAYLOAD_1024B 0x0060 /* 1024 Bytes */
+> +#define  PCI_EXP_DEVCTL_PAYLOAD_2048B 0x0080 /* 2048 Bytes */
+> +#define  PCI_EXP_DEVCTL_PAYLOAD_4096B 0x00A0 /* 4096 Bytes */
 
+This is fine if we're going to use them, but we generally don't add
+definitions purely for documentation.
 
-Ok, I'll say the intent is to detect non-malicious changes presumably 
-from BIOS issues.
+5929b8a38ce0 ("PCI: Add defines for PCIe Max_Read_Request_Size") added
+the PCI_EXP_DEVCTL_READRQ_* definitions and we do have a few (very
+few) uses in drivers.
 
-Thanks,
+If we do need to add these, please follow the local use of lower-case
+in the hex bitmasks.  The file is a mixture, but the closest examples
+are lower-case.
 
-Chris
-
->
-> - Eric
->
-
+>  #define  PCI_EXP_DEVCTL_EXT_TAG	0x0100	/* Extended Tag Field Enable */
+>  #define  PCI_EXP_DEVCTL_PHANTOM	0x0200	/* Phantom Functions Enable */
+>  #define  PCI_EXP_DEVCTL_AUX_PME	0x0400	/* Auxiliary Power PM Enable */
+> -- 
+> 2.20.1
+> 
