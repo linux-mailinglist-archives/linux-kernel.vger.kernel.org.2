@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D3835C1E8
+	by mail.lfdr.de (Postfix) with ESMTP id 10FBC35C1E6
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240922AbhDLJgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:36:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34282 "EHLO mail.kernel.org"
+        id S240548AbhDLJgP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:36:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240400AbhDLJKP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:10:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA1E611F0;
-        Mon, 12 Apr 2021 09:05:17 +0000 (UTC)
+        id S240405AbhDLJKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:10:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 48FE361248;
+        Mon, 12 Apr 2021 09:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218318;
-        bh=+511sdl679dmSqu6F2ut2LeBb5S4TxJUt0JO6lFb2DI=;
+        s=korg; t=1618218320;
+        bh=xG8eqvY8nPXtL4fidfK4kCWjj0F+Rwqr98nfxRZ1qxU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=h109fqdA2WvTak6icTsoMUy4rZA8xAAi26o0DyXfs8AwTNEQ/uT+HZZKEX50y8Y4l
-         kWQavlFoycWNUI8c1Fd3zlNCFBICprnzd09cPqMbm15fDN74zJtJZx8jV7FarRpVQS
-         0tN3uDbfVW23mRPnU5hJYJM0IM5v33miScR0k5/g=
+        b=HlqFaLbgJHiLckVroesGIZ7PjIwk2R9c7JH7AkbW/qQ/7CkVek5Hz18eHeeRqCajV
+         XrF7EEXf0Ukj3qzXEChqXno1hfl3TM5wfbOzhnEnTyl4nVT3mwSatJTTEh4Tv9Aul8
+         HCfwgLmh2ROSwvzc2Iki0YSEqe8YTglKqHq0xhNU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eryk Rybak <eryk.roch.rybak@intel.com>,
-        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
-        Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Dave Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        stable@vger.kernel.org, Md Haris Iqbal <haris.iqbal@ionos.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Gioh Kim <gi-oh.kim@ionos.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 152/210] i40e: Fix display statistics for veb_tc
-Date:   Mon, 12 Apr 2021 10:40:57 +0200
-Message-Id: <20210412084021.053375427@linuxfoundation.org>
+Subject: [PATCH 5.11 153/210] RDMA/rtrs-clt: Close rtrs client conn before destroying rtrs clt session files
+Date:   Mon, 12 Apr 2021 10:40:58 +0200
+Message-Id: <20210412084021.084831657@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -43,113 +42,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eryk Rybak <eryk.roch.rybak@intel.com>
+From: Md Haris Iqbal <haris.iqbal@cloud.ionos.com>
 
-[ Upstream commit c3214de929dbf1b7374add8bbed30ce82b197bbb ]
+[ Upstream commit 7582207b1059129e59eb92026fca2cfc088a74fc ]
 
-If veb-stats was enabled, the ethtool stats triggered a warning
-due to invalid size: 'unexpected stat size for veb.tc_%u_tx_packets'.
-This was due to an incorrect structure definition for the statistics.
-Structures and functions have been improved in line with requirements
-for the presentation of statistics, in particular for the functions:
-'i40e_add_ethtool_stats' and 'i40e_add_stat_strings'.
+KASAN detected the following BUG:
 
-Fixes: 1510ae0be2a4 ("i40e: convert VEB TC stats to use an i40e_stats array")
-Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
-Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
-Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Tested-by: Dave Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+  BUG: KASAN: use-after-free in rtrs_clt_update_wc_stats+0x41/0x100 [rtrs_client]
+  Read of size 8 at addr ffff88bf2fb4adc0 by task swapper/0/0
+
+  CPU: 0 PID: 0 Comm: swapper/0 Tainted: G           O      5.4.84-pserver #5.4.84-1+feature+linux+5.4.y+dbg+20201216.1319+b6b887b~deb10
+  Hardware name: Supermicro H8QG6/H8QG6, BIOS 3.00       09/04/2012
+  Call Trace:
+   <IRQ>
+   dump_stack+0x96/0xe0
+   print_address_description.constprop.4+0x1f/0x300
+   ? irq_work_claim+0x2e/0x50
+   __kasan_report.cold.8+0x78/0x92
+   ? rtrs_clt_update_wc_stats+0x41/0x100 [rtrs_client]
+   kasan_report+0x10/0x20
+   rtrs_clt_update_wc_stats+0x41/0x100 [rtrs_client]
+   rtrs_clt_rdma_done+0xb1/0x760 [rtrs_client]
+   ? lockdep_hardirqs_on+0x1a8/0x290
+   ? process_io_rsp+0xb0/0xb0 [rtrs_client]
+   ? mlx4_ib_destroy_cq+0x100/0x100 [mlx4_ib]
+   ? add_interrupt_randomness+0x1a2/0x340
+   __ib_process_cq+0x97/0x100 [ib_core]
+   ib_poll_handler+0x41/0xb0 [ib_core]
+   irq_poll_softirq+0xe0/0x260
+   __do_softirq+0x127/0x672
+   irq_exit+0xd1/0xe0
+   do_IRQ+0xa3/0x1d0
+   common_interrupt+0xf/0xf
+   </IRQ>
+  RIP: 0010:cpuidle_enter_state+0xea/0x780
+  Code: 31 ff e8 99 48 47 ff 80 7c 24 08 00 74 12 9c 58 f6 c4 02 0f 85 53 05 00 00 31 ff e8 b0 6f 53 ff e8 ab 4f 5e ff fb 8b 44 24 04 <85> c0 0f 89 f3 01 00 00 48 8d 7b 14 e8 65 1e 77 ff c7 43 14 00 00
+  RSP: 0018:ffffffffab007d58 EFLAGS: 00000246 ORIG_RAX: ffffffffffffffca
+  RAX: 0000000000000002 RBX: ffff88b803d69800 RCX: ffffffffa91a8298
+  RDX: 0000000000000007 RSI: dffffc0000000000 RDI: ffffffffab021414
+  RBP: ffffffffab6329e0 R08: 0000000000000002 R09: 0000000000000000
+  R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000002
+  R13: 000000bf39d82466 R14: ffffffffab632aa0 R15: ffffffffab632ae0
+   ? lockdep_hardirqs_on+0x1a8/0x290
+   ? cpuidle_enter_state+0xe5/0x780
+   cpuidle_enter+0x3c/0x60
+   do_idle+0x2fb/0x390
+   ? arch_cpu_idle_exit+0x40/0x40
+   ? schedule+0x94/0x120
+   cpu_startup_entry+0x19/0x1b
+   start_kernel+0x5da/0x61b
+   ? thread_stack_cache_init+0x6/0x6
+   ? load_ucode_amd_bsp+0x6f/0xc4
+   ? init_amd_microcode+0xa6/0xa6
+   ? x86_family+0x5/0x20
+   ? load_ucode_bsp+0x182/0x1fd
+   secondary_startup_64+0xa4/0xb0
+
+  Allocated by task 5730:
+   save_stack+0x19/0x80
+   __kasan_kmalloc.constprop.9+0xc1/0xd0
+   kmem_cache_alloc_trace+0x15b/0x350
+   alloc_sess+0xf4/0x570 [rtrs_client]
+   rtrs_clt_open+0x3b4/0x780 [rtrs_client]
+   find_and_get_or_create_sess+0x649/0x9d0 [rnbd_client]
+   rnbd_clt_map_device+0xd7/0xf50 [rnbd_client]
+   rnbd_clt_map_device_store+0x4ee/0x970 [rnbd_client]
+   kernfs_fop_write+0x141/0x240
+   vfs_write+0xf3/0x280
+   ksys_write+0xba/0x150
+   do_syscall_64+0x68/0x270
+   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+  Freed by task 5822:
+   save_stack+0x19/0x80
+   __kasan_slab_free+0x125/0x170
+   kfree+0xe7/0x3f0
+   kobject_put+0xd3/0x240
+   rtrs_clt_destroy_sess_files+0x3f/0x60 [rtrs_client]
+   rtrs_clt_close+0x3c/0x80 [rtrs_client]
+   close_rtrs+0x45/0x80 [rnbd_client]
+   rnbd_client_exit+0x10f/0x2bd [rnbd_client]
+   __x64_sys_delete_module+0x27b/0x340
+   do_syscall_64+0x68/0x270
+   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+When rtrs_clt_close is triggered, it iterates over all the present
+rtrs_clt_sess and triggers close on them. However, the call to
+rtrs_clt_destroy_sess_files is done before the rtrs_clt_close_conns. This
+is incorrect since during the initialization phase we allocate
+rtrs_clt_sess first, and then we go ahead and create rtrs_clt_con for it.
+
+If we free the rtrs_clt_sess structure before closing the rtrs_clt_con, it
+may so happen that an inflight IO completion would trigger the function
+rtrs_clt_rdma_done, which would lead to the above UAF case.
+
+Hence close the rtrs_clt_con connections first, and then trigger the
+destruction of session files.
+
+Fixes: 6a98d71daea1 ("RDMA/rtrs: client: main functionality")
+Link: https://lore.kernel.org/r/20210325153308.1214057-12-gi-oh.kim@ionos.com
+Signed-off-by: Md Haris Iqbal <haris.iqbal@ionos.com>
+Signed-off-by: Jack Wang <jinpu.wang@ionos.com>
+Signed-off-by: Gioh Kim <gi-oh.kim@ionos.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../net/ethernet/intel/i40e/i40e_ethtool.c    | 52 ++++++++++++++++---
- 1 file changed, 46 insertions(+), 6 deletions(-)
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index a92fac6f1389..849e38be69ff 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -232,6 +232,8 @@ static void __i40e_add_stat_strings(u8 **p, const struct i40e_stats stats[],
- 	I40E_STAT(struct i40e_vsi, _name, _stat)
- #define I40E_VEB_STAT(_name, _stat) \
- 	I40E_STAT(struct i40e_veb, _name, _stat)
-+#define I40E_VEB_TC_STAT(_name, _stat) \
-+	I40E_STAT(struct i40e_cp_veb_tc_stats, _name, _stat)
- #define I40E_PFC_STAT(_name, _stat) \
- 	I40E_STAT(struct i40e_pfc_stats, _name, _stat)
- #define I40E_QUEUE_STAT(_name, _stat) \
-@@ -266,11 +268,18 @@ static const struct i40e_stats i40e_gstrings_veb_stats[] = {
- 	I40E_VEB_STAT("veb.rx_unknown_protocol", stats.rx_unknown_protocol),
- };
+diff --git a/drivers/infiniband/ulp/rtrs/rtrs-clt.c b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+index 394c1f6822b9..ee37c5af3a8c 100644
+--- a/drivers/infiniband/ulp/rtrs/rtrs-clt.c
++++ b/drivers/infiniband/ulp/rtrs/rtrs-clt.c
+@@ -2735,8 +2735,8 @@ void rtrs_clt_close(struct rtrs_clt *clt)
  
-+struct i40e_cp_veb_tc_stats {
-+	u64 tc_rx_packets;
-+	u64 tc_rx_bytes;
-+	u64 tc_tx_packets;
-+	u64 tc_tx_bytes;
-+};
-+
- static const struct i40e_stats i40e_gstrings_veb_tc_stats[] = {
--	I40E_VEB_STAT("veb.tc_%u_tx_packets", tc_stats.tc_tx_packets),
--	I40E_VEB_STAT("veb.tc_%u_tx_bytes", tc_stats.tc_tx_bytes),
--	I40E_VEB_STAT("veb.tc_%u_rx_packets", tc_stats.tc_rx_packets),
--	I40E_VEB_STAT("veb.tc_%u_rx_bytes", tc_stats.tc_rx_bytes),
-+	I40E_VEB_TC_STAT("veb.tc_%u_tx_packets", tc_tx_packets),
-+	I40E_VEB_TC_STAT("veb.tc_%u_tx_bytes", tc_tx_bytes),
-+	I40E_VEB_TC_STAT("veb.tc_%u_rx_packets", tc_rx_packets),
-+	I40E_VEB_TC_STAT("veb.tc_%u_rx_bytes", tc_rx_bytes),
- };
- 
- static const struct i40e_stats i40e_gstrings_misc_stats[] = {
-@@ -2217,6 +2226,29 @@ static int i40e_get_sset_count(struct net_device *netdev, int sset)
+ 	/* Now it is safe to iterate over all paths without locks */
+ 	list_for_each_entry_safe(sess, tmp, &clt->paths_list, s.entry) {
+-		rtrs_clt_destroy_sess_files(sess, NULL);
+ 		rtrs_clt_close_conns(sess, true);
++		rtrs_clt_destroy_sess_files(sess, NULL);
+ 		kobject_put(&sess->kobj);
  	}
- }
- 
-+/**
-+ * i40e_get_veb_tc_stats - copy VEB TC statistics to formatted structure
-+ * @tc: the TC statistics in VEB structure (veb->tc_stats)
-+ * @i: the index of traffic class in (veb->tc_stats) structure to copy
-+ *
-+ * Copy VEB TC statistics from structure of arrays (veb->tc_stats) to
-+ * one dimensional structure i40e_cp_veb_tc_stats.
-+ * Produce formatted i40e_cp_veb_tc_stats structure of the VEB TC
-+ * statistics for the given TC.
-+ **/
-+static struct i40e_cp_veb_tc_stats
-+i40e_get_veb_tc_stats(struct i40e_veb_tc_stats *tc, unsigned int i)
-+{
-+	struct i40e_cp_veb_tc_stats veb_tc = {
-+		.tc_rx_packets = tc->tc_rx_packets[i],
-+		.tc_rx_bytes = tc->tc_rx_bytes[i],
-+		.tc_tx_packets = tc->tc_tx_packets[i],
-+		.tc_tx_bytes = tc->tc_tx_bytes[i],
-+	};
-+
-+	return veb_tc;
-+}
-+
- /**
-  * i40e_get_pfc_stats - copy HW PFC statistics to formatted structure
-  * @pf: the PF device structure
-@@ -2301,8 +2333,16 @@ static void i40e_get_ethtool_stats(struct net_device *netdev,
- 			       i40e_gstrings_veb_stats);
- 
- 	for (i = 0; i < I40E_MAX_TRAFFIC_CLASS; i++)
--		i40e_add_ethtool_stats(&data, veb_stats ? veb : NULL,
--				       i40e_gstrings_veb_tc_stats);
-+		if (veb_stats) {
-+			struct i40e_cp_veb_tc_stats veb_tc =
-+				i40e_get_veb_tc_stats(&veb->tc_stats, i);
-+
-+			i40e_add_ethtool_stats(&data, &veb_tc,
-+					       i40e_gstrings_veb_tc_stats);
-+		} else {
-+			i40e_add_ethtool_stats(&data, NULL,
-+					       i40e_gstrings_veb_tc_stats);
-+		}
- 
- 	i40e_add_ethtool_stats(&data, pf, i40e_gstrings_stats);
- 
+ 	free_clt(clt);
 -- 
 2.30.2
 
