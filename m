@@ -2,104 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E8E35CAA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D26B35CAB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 18:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243222AbhDLQCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 12:02:39 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:41789 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238937AbhDLQCi (ORCPT
+        id S243235AbhDLQE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 12:04:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242899AbhDLQE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 12:02:38 -0400
-Received: by mail-ot1-f42.google.com with SMTP id v19-20020a0568300913b029028423b78c2dso4651243ott.8;
-        Mon, 12 Apr 2021 09:02:19 -0700 (PDT)
+        Mon, 12 Apr 2021 12:04:26 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C5BC06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:04:07 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id p12so9746859pgj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 09:04:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JBvLAe+XdwyC1TahhE2etbWctmaxYBIUWvV5rmz141I=;
+        b=iP2BummN96o3Ez8aj7V9/rOfsPo8UnTnLCwQVbYCglNGVspy6LsiU1mUu4Y41zmXKu
+         taawvpF5xCOgJFc5Qmz1GCLztVn8ao0dJMHcYBmTf3JzFmQg6DoyPQr3BU1mv9GLAKkr
+         VcMBBq2+t4OjMccea/TY0zBqiIfOzdUcrxVVyTnlGcIpy7Q+HBHbw5oBvvmO6gwcm9Uu
+         jwJKM1dM8a88MjHK4t2lik4OT7cq83tXjotwfEfB0ThjwoPLZo5+VuKx0lH5O5rtDSEU
+         RU1GIMh+SOVczf5cJU/YGCl4nqVGlOYXHOG6JJB+4nZzrSDoCeNA6tOfOLsDKHObcggc
+         DmzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Ngce6ec7f1c0lKTqeUe7A7Xm2r+o9qe2C4pUnKmBkEc=;
-        b=GbxSvq0j8LQanuvwTi2BLXwlOQ84zwVVHFp2Pul+6ErigKaIbsv6yDQLPbu1AJnw1+
-         v3s/srwOBKiq1GxyWE65Jg09KffvwAYongDoZxVs/fye/viT24pe55/MiqUckS+d4kYc
-         gOLalJCXSUcMUj+6MxJtvYPP5/wtJecvrPeg6/I4PG0VBArAJq8tYrhJnzbElwxeiVIR
-         d51I1Q3/PL1wMiWX8DFxoH8BQuko72WQG0xvbCiaGpehXdGoGEb4GeTy6yiGisz4Gdx+
-         SWQ796ZeuKsQw1wZPf9ObgxcqRCKJ8iMdI4owhG6wgD4tP4Y/dPo4SenHcXffAZvXcI6
-         f7zw==
-X-Gm-Message-State: AOAM533frYdG2ogYfaPkSfCqyA0QZY9s+ul3JOEOzZus64etx6nIlvL/
-        KwJk3MZtSKvwnJxUNGCIqYMvgqm9Og==
-X-Google-Smtp-Source: ABdhPJyphvrAAQqhZzq/xJoYqxJ9sKV8YW9PiHjAV9kYDD7MKFG4FnH+SHoCHCPLgsB18Sdm2QM8lw==
-X-Received: by 2002:a9d:6054:: with SMTP id v20mr24517464otj.81.1618243338556;
-        Mon, 12 Apr 2021 09:02:18 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l12sm651808oou.0.2021.04.12.09.02.17
+        bh=JBvLAe+XdwyC1TahhE2etbWctmaxYBIUWvV5rmz141I=;
+        b=Mv4M41YqbVZdxSOnffv1X6UIsNdfe911As9xabdAz4VfrN4fFTYs+Z2ZGDYPRd2faO
+         xVO64b5QDzWcsqNB4NKPv3ch6DUg/n7P4rgOpm4EhFeleqs24pFXQThu7puA+HtdgQ/b
+         KMhH7SjFPPIxb4OtLxNAzprAQh0k7o8IzNAy9DuXplLGKPgk164uQoHN8zQusw/KxPU0
+         qc9MeQ3z08uuj1o3YQrq0xaqp/FWMPQh6IJbmmi7OLL8M5PW7ehg4N96S3Ez1IsWyo2R
+         ww6MwiH6d8hmk1w0QVzPqtOlbEejlmBAyw33KoxhITYCzPVesXZiNSgOG+oIa+5BH+tO
+         CZnA==
+X-Gm-Message-State: AOAM531cQodnqflRribK9o3B+K7JBOn1HqICHGYLXBAhXbpd1pQhJssr
+        WFS79RBer46p3GlxHE5Jrf4N6r5IQI810A==
+X-Google-Smtp-Source: ABdhPJxhOXb9IE7zbrpJuSGroimic3OsWCTWvzSPzW/IeB9YaZiZiXzrb8oqA2lnlZXfDq9mXWEk7A==
+X-Received: by 2002:a63:6cc:: with SMTP id 195mr28628134pgg.153.1618243446756;
+        Mon, 12 Apr 2021 09:04:06 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id ev24sm8085263pjb.9.2021.04.12.09.04.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 09:02:17 -0700 (PDT)
-Received: (nullmailer pid 3971650 invoked by uid 1000);
-        Mon, 12 Apr 2021 16:02:16 -0000
-Date:   Mon, 12 Apr 2021 11:02:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc:     nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-        ludovic.desroches@microchip.com, linux@armlinux.org.uk,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 16/24] dt-bindings: atmel-sysreg: add bindings for
- sama7g5
-Message-ID: <20210412160216.GA3970458@robh.at.kernel.org>
-References: <20210409111345.294472-1-claudiu.beznea@microchip.com>
- <20210409111345.294472-17-claudiu.beznea@microchip.com>
+        Mon, 12 Apr 2021 09:04:05 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 16:04:02 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Edmondson <david.edmondson@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Aaron Lewis <aaronlewis@google.com>
+Subject: Re: [PATCH 5/6] KVM: SVM: pass a proper reason in
+ kvm_emulate_instruction()
+Message-ID: <YHRvchkUSIeU8tRR@google.com>
+References: <20210412130938.68178-1-david.edmondson@oracle.com>
+ <20210412130938.68178-6-david.edmondson@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210409111345.294472-17-claudiu.beznea@microchip.com>
+In-Reply-To: <20210412130938.68178-6-david.edmondson@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 09, 2021 at 02:13:37PM +0300, Claudiu Beznea wrote:
-> Add RAM controller and RAM PHY controller DT bindings.
++Aaron
+
+On Mon, Apr 12, 2021, David Edmondson wrote:
+> From: Joao Martins <joao.m.martins@oracle.com>
 > 
-> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+> Declare various causes of emulation and use them as appropriate.
+> 
+> Signed-off-by: Joao Martins <joao.m.martins@oracle.com>
+> Signed-off-by: David Edmondson <david.edmondson@oracle.com>
 > ---
->  .../devicetree/bindings/arm/atmel-sysregs.txt     | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
+>  arch/x86/include/asm/kvm_host.h |  6 ++++++
+>  arch/x86/kvm/svm/avic.c         |  3 ++-
+>  arch/x86/kvm/svm/svm.c          | 26 +++++++++++++++-----------
+>  3 files changed, 23 insertions(+), 12 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/atmel-sysregs.txt b/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
-> index 807264a78edc..7cd55a760d41 100644
-> --- a/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
-> +++ b/Documentation/devicetree/bindings/arm/atmel-sysregs.txt
-> @@ -45,7 +45,8 @@ RAMC SDRAM/DDR Controller required properties:
->  			"atmel,at91sam9260-sdramc",
->  			"atmel,at91sam9g45-ddramc",
->  			"atmel,sama5d3-ddramc",
-> -			"microchip,sam9x60-ddramc"
-> +			"microchip,sam9x60-ddramc",
-> +			"microchip,sama7g5-uddrc"
->  - reg: Should contain registers location and length
->  
->  Examples:
-> @@ -55,6 +56,18 @@ Examples:
->  		reg = <0xffffe800 0x200>;
->  	};
->  
-> +RAMC PHY Controller required properties:
-> +- compatible: Should be "microchip,sama7g5-ddr3phy", "syscon"
-> +- reg: Should contain registers location and length
-> +
-> +Example:
-> +
-> +	ddr3phy: ddr3phy@e3804000 {
-> +		compatible = "microchip,sama7g5-ddr3phy", "syscon";
-> +		reg = <0xe3804000 0x1000>;
-> +		status = "okay";
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 79e9ca756742..e1284680cbdc 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1535,6 +1535,12 @@ enum {
+>  	EMULREASON_IO_COMPLETE,
+>  	EMULREASON_UD,
+>  	EMULREASON_PF,
+> +	EMULREASON_SVM_NOASSIST,
+> +	EMULREASON_SVM_RSM,
+> +	EMULREASON_SVM_RDPMC,
+> +	EMULREASON_SVM_CR,
+> +	EMULREASON_SVM_DR,
+> +	EMULREASON_SVM_AVIC_UNACCEL,
 
-Really need an example for this? If so, drop 'status'.
+Passing these to userspace arguably makes them ABI, i.e. they need to go into
+uapi/kvm.h somewhere.  That said, I don't like passing arbitrary values for what
+is effectively the VM-Exit reason.  Why not simply pass the exit reason, assuming
+we do indeed want to dump this info to userspace?
 
-> +};
-> +
->  SHDWC Shutdown Controller
->  
->  required properties:
-> -- 
-> 2.25.1
-> 
+What is the intended end usage of this information?  Actual emulation?  Debug?
+Logging?
+
+Depending on what you're trying to do with the info, maybe there's a better
+option.  E.g. Aaron is working on a series that includes passing pass the code
+stream (instruction bytes) to userspace on emulation failure, though I'm not
+sure if he's planning on providing the VM-Exit reason.
