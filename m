@@ -2,244 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47A835CA35
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECF935CA0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 17:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243202AbhDLPif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 11:38:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243108AbhDLPiZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:38:25 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21E40C061348
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:38:06 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id h4so4380328wrt.12
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 08:38:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LDBRTVwC0javmeAAY2NKan0r3dVftRGxpYXcgw4nO4U=;
-        b=UaYbxJnGfvh6WT53HHOwbp6ArYa8y+T1R6zqrN31jdyLCTt9x1Sv56kFFZrxzbxPTv
-         UmVLQTLOCi4DxQUyyxz1D0cmOIL/wH26GSB4yfv+2dFS8cf1dmax0s0s1TdxrUQVDF+F
-         j6hp/vGCEv5hf7CVYmGiPZgNrwlUlMV+d097c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LDBRTVwC0javmeAAY2NKan0r3dVftRGxpYXcgw4nO4U=;
-        b=KlboJLZf4NmLKyGdTwX9lWkPrRLqpy0DCHlAfodqYAif2eFmyKpjNTzC5S1tagxEkW
-         J+AwA9W/ypYMjkx/9UHyPMXW7WA29NKWuUkv8UM5KNPo8saZP1FOyzaM1bWUz/hNexqL
-         NLNYq23MCVzDSOlzDjDfpBwpPvn0Ect3p7CDw7pJZyEI8RNTI8nTs4W/gVc8kXt3MM4c
-         SwXFv4lPnjWx3DiDa2xl4mjbVA/F9cPR5h4xEY4GQ4IShm/B+pyMvXT51e+YsK8IMVtF
-         x036fg6N+8yNnzlvX+RwY7JCOy+nNInAoDu5//dzkB0IkfCfN60qN07DTpuRnhNfCDSJ
-         RSsg==
-X-Gm-Message-State: AOAM530ZnOwxzJ4KcUAwjQQZKiAiC2lErxIFQoIDmkAM96N8eeEyTL1D
-        EuJzEsna+dwhWldUZpy37VNpqg==
-X-Google-Smtp-Source: ABdhPJwTIwCsHYH0HJsKVTXFy+wZaI/vFRfQCX+wR3smmsgo13dcjGXg4V0UPaoHfo4b+51IqP3vMA==
-X-Received: by 2002:adf:eec1:: with SMTP id a1mr26872515wrp.81.1618241884929;
-        Mon, 12 Apr 2021 08:38:04 -0700 (PDT)
-Received: from revest.zrh.corp.google.com ([2a00:79e0:42:204:a372:3c3b:eeb:ad14])
-        by smtp.gmail.com with ESMTPSA id i4sm2501449wrx.56.2021.04.12.08.38.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 08:38:04 -0700 (PDT)
-From:   Florent Revest <revest@chromium.org>
-To:     bpf@vger.kernel.org
-Cc:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, jackmanb@chromium.org,
-        linux-kernel@vger.kernel.org, Florent Revest <revest@chromium.org>
-Subject: [PATCH bpf-next v3 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
-Date:   Mon, 12 Apr 2021 17:37:54 +0200
-Message-Id: <20210412153754.235500-7-revest@chromium.org>
-X-Mailer: git-send-email 2.31.1.295.g9ea45b61b8-goog
-In-Reply-To: <20210412153754.235500-1-revest@chromium.org>
-References: <20210412153754.235500-1-revest@chromium.org>
+        id S242923AbhDLPhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 11:37:45 -0400
+Received: from mga05.intel.com ([192.55.52.43]:41987 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238815AbhDLPho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:37:44 -0400
+IronPort-SDR: +CLOIlWLHZ1jRutjBkm45L1l4tJSv7bwb4jWOum9xRdvYe8CSygLyXfwZ9l1rJqIMVHDqW1Ahk
+ ux5yt2NLSmIw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="279520284"
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="279520284"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 08:37:13 -0700
+IronPort-SDR: cuw1ILpAp+18grYJ1Py8CvzrFuIfh3PdUuswheY9KGzzGGlkVDLoDpn/2iyE//8a6gJJY2sSKI
+ G+rqQGam+/4Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
+   d="scan'208";a="614609528"
+Received: from glass.png.intel.com ([10.158.65.59])
+  by fmsmga005.fm.intel.com with ESMTP; 12 Apr 2021 08:37:06 -0700
+From:   Ong Boon Leong <boon.leong.ong@intel.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Ong Boon Leong <boon.leong.ong@intel.com>
+Subject: [PATCH net-next 0/7] stmmac: add XDP ZC support
+Date:   Mon, 12 Apr 2021 23:41:23 +0800
+Message-Id: <20210412154130.20742-1-boon.leong.ong@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This exercises most of the format specifiers.
+Hi,
 
-Signed-off-by: Florent Revest <revest@chromium.org>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
----
- .../selftests/bpf/prog_tests/snprintf.c       | 81 +++++++++++++++++++
- .../selftests/bpf/progs/test_snprintf.c       | 74 +++++++++++++++++
- 2 files changed, 155 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/snprintf.c
- create mode 100644 tools/testing/selftests/bpf/progs/test_snprintf.c
+This is the v1 patch series to add XDP ZC support to stmmac driver and
+the changes are as listed in below summary:-
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/snprintf.c b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-new file mode 100644
-index 000000000000..3ad1ee885273
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/snprintf.c
-@@ -0,0 +1,81 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
-+
-+#include <test_progs.h>
-+#include "test_snprintf.skel.h"
-+
-+#define EXP_NUM_OUT  "-8 9 96 -424242 1337 DABBAD00"
-+#define EXP_NUM_RET  sizeof(EXP_NUM_OUT)
-+
-+#define EXP_IP_OUT   "127.000.000.001 0000:0000:0000:0000:0000:0000:0000:0001"
-+#define EXP_IP_RET   sizeof(EXP_IP_OUT)
-+
-+/* The third specifier, %pB, depends on compiler inlining so don't check it */
-+#define EXP_SYM_OUT  "schedule schedule+0x0/"
-+#define MIN_SYM_RET  sizeof(EXP_SYM_OUT)
-+
-+/* The third specifier, %p, is a hashed pointer which changes on every reboot */
-+#define EXP_ADDR_OUT "0000000000000000 ffff00000add4e55 "
-+#define EXP_ADDR_RET sizeof(EXP_ADDR_OUT "unknownhashedptr")
-+
-+#define EXP_STR_OUT  "str1 longstr"
-+#define EXP_STR_RET  sizeof(EXP_STR_OUT)
-+
-+#define EXP_OVER_OUT "%over"
-+#define EXP_OVER_RET 10
-+
-+#define EXP_PAD_OUT "    4 000"
-+#define EXP_PAD_RET 900007
-+
-+#define EXP_NO_ARG_OUT "simple case"
-+#define EXP_NO_ARG_RET 12
-+
-+#define EXP_NO_BUF_RET 29
-+
-+void test_snprintf(void)
-+{
-+	char exp_addr_out[] = EXP_ADDR_OUT;
-+	char exp_sym_out[]  = EXP_SYM_OUT;
-+	struct test_snprintf *skel;
-+
-+	skel = test_snprintf__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel_open"))
-+		return;
-+
-+	if (!ASSERT_OK(test_snprintf__attach(skel), "skel_attach"))
-+		goto cleanup;
-+
-+	/* trigger tracepoint */
-+	usleep(1);
-+
-+	ASSERT_STREQ(skel->bss->num_out, EXP_NUM_OUT, "num_out");
-+	ASSERT_EQ(skel->bss->num_ret, EXP_NUM_RET, "num_ret");
-+
-+	ASSERT_STREQ(skel->bss->ip_out, EXP_IP_OUT, "ip_out");
-+	ASSERT_EQ(skel->bss->ip_ret, EXP_IP_RET, "ip_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->sym_out, exp_sym_out,
-+			 sizeof(exp_sym_out) - 1), "sym_out");
-+	ASSERT_LT(MIN_SYM_RET, skel->bss->sym_ret, "sym_ret");
-+
-+	ASSERT_OK(memcmp(skel->bss->addr_out, exp_addr_out,
-+			 sizeof(exp_addr_out) - 1), "addr_out");
-+	ASSERT_EQ(skel->bss->addr_ret, EXP_ADDR_RET, "addr_ret");
-+
-+	ASSERT_STREQ(skel->bss->str_out, EXP_STR_OUT, "str_out");
-+	ASSERT_EQ(skel->bss->str_ret, EXP_STR_RET, "str_ret");
-+
-+	ASSERT_STREQ(skel->bss->over_out, EXP_OVER_OUT, "over_out");
-+	ASSERT_EQ(skel->bss->over_ret, EXP_OVER_RET, "over_ret");
-+
-+	ASSERT_STREQ(skel->bss->pad_out, EXP_PAD_OUT, "pad_out");
-+	ASSERT_EQ(skel->bss->pad_ret, EXP_PAD_RET, "pad_ret");
-+
-+	ASSERT_STREQ(skel->bss->noarg_out, EXP_NO_ARG_OUT, "no_arg_out");
-+	ASSERT_EQ(skel->bss->noarg_ret, EXP_NO_ARG_RET, "no_arg_ret");
-+
-+	ASSERT_EQ(skel->bss->nobuf_ret, EXP_NO_BUF_RET, "no_buf_ret");
-+
-+cleanup:
-+	test_snprintf__destroy(skel);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_snprintf.c b/tools/testing/selftests/bpf/progs/test_snprintf.c
-new file mode 100644
-index 000000000000..4c36f355dfca
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_snprintf.c
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2021 Google LLC. */
-+
-+#include <linux/bpf.h>
-+#include <bpf/bpf_endian.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+char num_out[64] = {};
-+long num_ret = 0;
-+
-+char ip_out[64] = {};
-+long ip_ret = 0;
-+
-+char sym_out[64] = {};
-+long sym_ret = 0;
-+
-+char addr_out[64] = {};
-+long addr_ret = 0;
-+
-+char str_out[64] = {};
-+long str_ret = 0;
-+
-+char over_out[6] = {};
-+long over_ret = 0;
-+
-+char pad_out[10] = {};
-+long pad_ret = 0;
-+
-+char noarg_out[64] = {};
-+long noarg_ret = 0;
-+
-+long nobuf_ret = 0;
-+
-+extern const void schedule __ksym;
-+
-+SEC("raw_tp/sys_enter")
-+int handler(const void *ctx)
-+{
-+	/* Convenient values to pretty-print */
-+	const __u8 ex_ipv4[] = {127, 0, 0, 1};
-+	const __u8 ex_ipv6[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-+	const char str1[] = "str1";
-+	const char longstr[] = "longstr";
-+
-+	/* Integer types */
-+	num_ret  = BPF_SNPRINTF(num_out, sizeof(num_out),
-+				"%d %u %x %li %llu %lX",
-+				-8, 9, 150, -424242, 1337, 0xDABBAD00);
-+	/* IP addresses */
-+	ip_ret   = BPF_SNPRINTF(ip_out, sizeof(ip_out), "%pi4 %pI6",
-+				&ex_ipv4, &ex_ipv6);
-+	/* Symbol lookup formatting */
-+	sym_ret  = BPF_SNPRINTF(sym_out,  sizeof(sym_out), "%ps %pS %pB",
-+				&schedule, &schedule, &schedule);
-+	/* Kernel pointers */
-+	addr_ret = BPF_SNPRINTF(addr_out, sizeof(addr_out), "%pK %px %p",
-+				0, 0xFFFF00000ADD4E55, 0xFFFF00000ADD4E55);
-+	/* Strings embedding */
-+	str_ret  = BPF_SNPRINTF(str_out, sizeof(str_out), "%s %+05s",
-+				str1, longstr);
-+	/* Overflow */
-+	over_ret = BPF_SNPRINTF(over_out, sizeof(over_out), "%%overflow");
-+	/* Padding of fixed width numbers */
-+	pad_ret = BPF_SNPRINTF(pad_out, sizeof(pad_out), "%5d %0900000X", 4, 4);
-+	/* No args */
-+	noarg_ret = BPF_SNPRINTF(noarg_out, sizeof(noarg_out), "simple case");
-+	/* No buffer */
-+	nobuf_ret = BPF_SNPRINTF(NULL, 0, "only interested in length %d", 60);
-+
-+	return 0;
-+}
-+
-+char _license[] SEC("license") = "GPL";
+1-4/7: Refactor RX & TX buffer allocation and initialization to prepare
+       stmmac driver for XSK RX & TX pool enabling and disabling.
+
+5/7: Refactor stmmac_xdp_run_prog() for XDP ZC use which does not need
+     to check for XDP program loaded.
+
+6-7/7: XDP ZC RX and TX enabling.
+
+The above patch series have been tested using xdpsock app in samples/bpf
+directory on Intel mGbE controller. The DUT receives burst traffic
+packets generated by using pktgen_sample03_burst_single_flow.sh in
+samples/pktgen.
+
+########################################################################
+
+==========
+A) RX-Only
+==========
+
+root@intel-corei7-64:~ $ ./xdpsock  -i eth0 -r -S
+
+ sock0@eth0:0 rxdrop xdp-skb
+                   pps            pkts           1.00
+rx                 112161         12229475
+tx                 0              0
+
+ sock0@eth0:0 rxdrop xdp-skb
+                   pps            pkts           1.00
+rx                 112280         12341779
+tx                 0              0
+
+ sock0@eth0:0 rxdrop xdp-skb
+                   pps            pkts           1.00
+rx                 112358         12454155
+tx                 0              0
+
+ ====================================================
+
+root@intel-corei7-64:~ $ ./xdpsock  -i eth0 -r -N -c
+
+ sock0@eth0:0 rxdrop xdp-drv
+                   pps            pkts           1.00
+rx                 681082         2616133
+tx                 0              0
+
+ sock0@eth0:0 rxdrop xdp-drv
+                   pps            pkts           1.00
+rx                 681205         3297415
+tx                 0              0
+
+ sock0@eth0:0 rxdrop xdp-drv
+                   pps            pkts           1.00
+rx                 681386         3978873
+tx                 0              0
+
+ ====================================================
+
+root@intel-corei7-64:~ $ ./xdpsock  -i eth0 -r -z
+
+ sock0@eth0:0 rxdrop xdp-drv
+                   pps            pkts           1.00
+rx                 703915         19579779
+tx                 0              0
+
+ sock0@eth0:0 rxdrop xdp-drv
+                   pps            pkts           1.00
+rx                 703766         20283768
+tx                 0              0
+
+ sock0@eth0:0 rxdrop xdp-drv
+                   pps            pkts           1.00
+rx                 703383         20987229
+tx                 0              0
+
+==========
+B) TX-Only
+==========
+
+root@intel-corei7-64:~ $ ./xdpsock -i eth0 -t -S
+
+ sock0@eth0:0 txonly xdp-skb
+                   pps            pkts           1.00
+rx                 0              0
+tx                 140269         4326720
+
+ sock0@eth0:0 txonly xdp-skb
+                   pps            pkts           1.00
+rx                 0              0
+tx                 140514         4467264
+
+ sock0@eth0:0 txonly xdp-skb
+                   pps            pkts           1.00
+rx                 0              0
+tx                 140009         4607296
+
+ ====================================================
+
+root@intel-corei7-64:~ $ ./xdpsock -i eth0 -t -N -c
+
+ sock0@eth0:0 txonly xdp-drv
+                   pps            pkts           1.00
+rx                 0              0
+tx                 138222         3108160
+
+ sock0@eth0:0 txonly xdp-drv
+                   pps            pkts           1.00
+rx                 0              0
+tx                 139629         3247872
+
+ sock0@eth0:0 txonly xdp-drv
+                   pps            pkts           1.00
+rx                 0              0
+tx                 139821         3387712
+
+ ====================================================
+
+root@intel-corei7-64:~ $ ./xdpsock -i eth0 -t -z
+
+ sock0@eth0:0 txonly xdp-drv
+                   pps            pkts           1.00
+rx                 0              0
+tx                 447382         13390848
+
+ sock0@eth0:0 txonly xdp-drv
+                   pps            pkts           1.00
+rx                 0              0
+tx                 447384         13838272
+
+ sock0@eth0:0 txonly xdp-drv
+                   pps            pkts           1.00
+rx                 0              0
+tx                 447384         14285696
+
+================
+C) L2 Forwarding
+================
+
+root@intel-corei7-64:~ $ ./xdpsock -i eth0 -l -S
+
+ sock0@eth0:0 l2fwd xdp-skb
+                   pps            pkts           1.00
+rx                 85021          7363434
+tx                 85021          7363434
+
+ sock0@eth0:0 l2fwd xdp-skb
+                   pps            pkts           1.00
+rx                 85003          7448446
+tx                 85003          7448446
+
+ sock0@eth0:0 l2fwd xdp-skb
+                   pps            pkts           1.00
+rx                 84946          7533403
+tx                 84946          7533403
+
+ ====================================================
+
+root@intel-corei7-64:~ $ ./xdpsock -i eth0 -l -N -c
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 132136         1092673
+tx                 132072         1092609
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 132428         1225118
+tx                 132428         1225054
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 132623         1357757
+tx                 132623         1357693
+
+ ====================================================
+
+root@intel-corei7-64:~ $ ./xdpsock -i eth0 -l -z
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 468476         43619530
+tx                 468476         43619466
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 468633         44088218
+tx                 468633         44088154
+
+ sock0@eth0:0 l2fwd xdp-drv
+                   pps            pkts           1.00
+rx                 468439         44556775
+tx                 468439         44556711
+
+ ########################################################################
+
+Based on the results obtained from above using xdpsock test cases, the
+result looks promising. It will be great if community can help to review
+and test the above patch series on your respective platform and provide
+me feedback for any improvement.
+
+Thank you very much,
+Boon Leong
+
+Ong Boon Leong (7):
+  net: stmmac: rearrange RX buffer allocation and free functions
+  net: stmmac: introduce dma_recycle_rx_skbufs for
+    stmmac_reinit_rx_buffers
+  net: stmmac: refactor stmmac_init_rx_buffers for
+    stmmac_reinit_rx_buffers
+  net: stmmac: rearrange RX and TX desc init into per-queue basis
+  net: stmmac: Refactor __stmmac_xdp_run_prog for XDP ZC
+  net: stmmac: Enable RX via AF_XDP zero-copy
+  net: stmmac: Add TX via XDP zero-copy socket
+
+ drivers/net/ethernet/stmicro/stmmac/stmmac.h  |   24 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_main.c | 1698 +++++++++++++----
+ .../net/ethernet/stmicro/stmmac/stmmac_xdp.c  |   94 +
+ .../net/ethernet/stmicro/stmmac/stmmac_xdp.h  |    3 +
+ 4 files changed, 1396 insertions(+), 423 deletions(-)
+
 -- 
-2.31.1.295.g9ea45b61b8-goog
+2.25.1
 
