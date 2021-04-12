@@ -2,55 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D08F35C2EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2EF35C2D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238627AbhDLJxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:53:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56412 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243070AbhDLJlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:41:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA17C61221;
-        Mon, 12 Apr 2021 09:40:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618220458;
-        bh=doYnKmWvvFZJu0dQidagDHHTL22R/NmtwWLIsanGgmU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JtcfxJvkAh1LM3t2ai/DSDFLRAA6MPqSI+Ve/dsqSdGJvuLkEKl+w9R2ME2AH4k9a
-         PROhYB7hanmdap0MPlr+YjZo1qhcSy1tVyCqIMx4zVGv+tYh4VA+ITiaiTcB82GMbw
-         QOn3eJ9ng+gcFK+ARmI8isTGydvZaHoWDrXyFH0eaRy/hrgtA1CX8C5v1UQ+KD+lyN
-         f/tUS9QRAlsbvE+q3XQrhQ2jxVi0rwhwybM28Nv5SeLUdZO9+l0Wbq0KbJQ1yyKKJg
-         2YovP1KNQ0mT6mgUSUMM3+5OMZbxA0gGxhKefXOSbTLXijLuFFr8bBMcmdUTWU9lhj
-         Ihl1EX/TbOWiA==
-Date:   Mon, 12 Apr 2021 15:10:54 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-Cc:     kjlu@umn.edu, Laxman Dewangan <ldewangan@nvidia.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [v2] dmaengine: tegra20: Fix runtime PM imbalance on
- error
-Message-ID: <YHQVph37qKYy5bHo@vkoul-mobl.Dlink>
-References: <20210409082805.23643-1-dinghao.liu@zju.edu.cn>
+        id S244109AbhDLJv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:51:26 -0400
+Received: from smtp81.iad3a.emailsrvr.com ([173.203.187.81]:57771 "EHLO
+        smtp81.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S243120AbhDLJlV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:41:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20190130-41we5z8j; t=1618220463;
+        bh=Ua6N2tbUCxSpcHBTulhre/77HwGvuvWxXpGJ7l1JK0s=;
+        h=Subject:To:From:Date:From;
+        b=EwyKCaMQ7nsqi8IM6thFgUadq0MOtx5aR/cGtnz7gy5EGf5znd6l8ELBoiI+hJS2g
+         kIEPeOMbFi9fKpMQdxgb+NAYtcmszCNrntXmZOqmoeJ7z1ljpFrN7V/LNwpCf3c+xL
+         CdbZkByEMLbgJ7420cnfFn3J356X/TynaqRM6RgU=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp19.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 6CEDE4FB0;
+        Mon, 12 Apr 2021 05:41:02 -0400 (EDT)
+Subject: Re: [PATCH] Staging: Remove line to fix checkpatch error
+To:     tawahpeggy <tawahpeggy98@gmail.com>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        outreachy-kernel@googlegroups.com
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20210411204933.GA3524@peggy-Lenovo-V130-15IKB>
+From:   Ian Abbott <abbotti@mev.co.uk>
+Organization: MEV Ltd.
+Message-ID: <25a33398-483e-931c-f023-61bac56c72ef@mev.co.uk>
+Date:   Mon, 12 Apr 2021 10:41:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210409082805.23643-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20210411204933.GA3524@peggy-Lenovo-V130-15IKB>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 508ff95b-300f-4d57-ad4a-8069f2518623-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09-04-21, 16:28, Dinghao Liu wrote:
-> pm_runtime_get_sync() will increase the runtime PM counter
-> even it returns an error. Thus a pairing decrement is needed
-> to prevent refcount leak. Fix this by replacing this API with
-> pm_runtime_resume_and_get(), which will not change the runtime
-> PM counter on error.
+On 11/04/2021 21:49, tawahpeggy wrote:
+> remove one empty line.CHECK: Please don't use multiple blank lines
+> 
+> Signed-off-by: tawahpeggy <tawahpeggy98@gmail.com>
+> 
+> ---
+>   drivers/staging/comedi/comedi_pcmcia.mod.c | 1 -
+>   1 file changed, 0 insertion(+), 1 deletion(-)
+>   create mode 100644 drivers/staging/comedi/comedi_pcmcia.mod.c
+> 
+> diff --git a/drivers/staging/comedi/comedi_pcmcia.mod.c b/drivers/staging/comedi/comedi_pcmcia.mod.c
+> index 0904b8765afs96..3984db1a39c8
+> --- /dev/null
+> +++ b/drivers/staging/comedi/comedi_pcmcia.mod.c
 
-Applied, thanks
+The .mod.c files are not really part of the Linux kernel source code. 
+They are generated during the kernel build process.  There is no point 
+checking them with checkpatch.pl.  If you are adding them to your git 
+repository, then you are doing something wrong.
 
 -- 
-~Vinod
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
