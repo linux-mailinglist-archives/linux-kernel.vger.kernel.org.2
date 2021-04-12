@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B88F35C20C
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7601D35C252
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239911AbhDLJiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:38:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36312 "EHLO mail.kernel.org"
+        id S243738AbhDLJmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:42:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240666AbhDLJKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 05:10:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 858FF61368;
-        Mon, 12 Apr 2021 09:06:13 +0000 (UTC)
+        id S240688AbhDLJKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:10:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 24647613A5;
+        Mon, 12 Apr 2021 09:06:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618218374;
-        bh=MuOcCvZAlXe3wmP2Kd1CXotjzZLkcE/L8C8Ku9ndxfk=;
+        s=korg; t=1618218376;
+        bh=MaonFe0P29mlpVyI4IJtLAmzcFhOXzrA9W13F2j3yXY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GZ0MrFMTR42PrGwink9V1XHMHG5xU+IkXEM5drdg5VjFZ/wyGxjZpM5PW1XK96U7b
-         HmH9N+fxE+1VTNVhJUrDpJ/wONuvy67PTbt9LC0mBA6wkiwTcHOUAiHvbhT3p5SSMm
-         k81hKlMPc9cMpCNKGCB34CRN2BMPiASp2PxgiI/E=
+        b=0YKLeLUlBmawcgDMN/gse3tajqBlKm3TKyPRvqRDOVzY3lbydl9uIfqR/SfwDRV7r
+         h8oSF065gWVaUF/MgW44rD32Q7G88oXBOwiiOwm57uG7InKsZQ+bL9+iuLombDbZFe
+         G2xmhlpmruNppaNM14ywEkkbL8H71nJb/zgQd0io=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
-        Gerhard Bertelsmann <info@gerhard-bertelsmann.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Elia Devito <eliadevito@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.11 174/210] can: mcp251x: fix support for half duplex SPI host controllers
-Date:   Mon, 12 Apr 2021 10:41:19 +0200
-Message-Id: <20210412084021.812928983@linuxfoundation.org>
+Subject: [PATCH 5.11 175/210] platform/x86: intel-hid: Fix spurious wakeups caused by tablet-mode events during suspend
+Date:   Mon, 12 Apr 2021 10:41:20 +0200
+Message-Id: <20210412084021.843622620@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084016.009884719@linuxfoundation.org>
 References: <20210412084016.009884719@linuxfoundation.org>
@@ -41,107 +40,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Kleine-Budde <mkl@pengutronix.de>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 617085fca6375e2c1667d1fbfc6adc4034c85f04 ]
+[ Upstream commit a3790a8a94fc0234c5d38013b48e74ef221ec84c ]
 
-Some SPI host controllers do not support full-duplex SPI transfers.
+Some devices send (duplicate) tablet-mode events when moved around even
+though the mode has not changed; and they do this even when suspended.
 
-The function mcp251x_spi_trans() does a full duplex transfer. It is
-used in several places in the driver, where a TX half duplex transfer
-is sufficient.
+Change the tablet-mode event handling when priv->wakeup_mode is set to
+update the switch state in case it changed and then return immediately
+(without calling pm_wakeup_hard_event()) to avoid spurious wakeups.
 
-To fix support for half duplex SPI host controllers, this patch
-introduces a new function mcp251x_spi_write() and changes all callers
-that do a TX half duplex transfer to use mcp251x_spi_write().
-
-Fixes: e0e25001d088 ("can: mcp251x: add support for half duplex controllers")
-Link: https://lore.kernel.org/r/20210330100246.1074375-1-mkl@pengutronix.de
-Cc: Tim Harvey <tharvey@gateworks.com>
-Tested-By: Tim Harvey <tharvey@gateworks.com>
-Reported-by: Gerhard Bertelsmann <info@gerhard-bertelsmann.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=212537
+Fixes: 537b0dd4729e ("platform/x86: intel-hid: Add support for SW_TABLET_MODE")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Elia Devito <eliadevito@gmail.com>
+Link: https://lore.kernel.org/r/20210404143831.25173-1-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/spi/mcp251x.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ drivers/platform/x86/intel-hid.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 25859d16d06f..e7be36dc2159 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -314,6 +314,18 @@ static int mcp251x_spi_trans(struct spi_device *spi, int len)
- 	return ret;
- }
+diff --git a/drivers/platform/x86/intel-hid.c b/drivers/platform/x86/intel-hid.c
+index 57cc92891a57..078648a9201b 100644
+--- a/drivers/platform/x86/intel-hid.c
++++ b/drivers/platform/x86/intel-hid.c
+@@ -483,11 +483,16 @@ static void notify_handler(acpi_handle handle, u32 event, void *context)
+ 			goto wakeup;
  
-+static int mcp251x_spi_write(struct spi_device *spi, int len)
-+{
-+	struct mcp251x_priv *priv = spi_get_drvdata(spi);
-+	int ret;
-+
-+	ret = spi_write(spi, priv->spi_tx_buf, len);
-+	if (ret)
-+		dev_err(&spi->dev, "spi write failed: ret = %d\n", ret);
-+
-+	return ret;
-+}
-+
- static u8 mcp251x_read_reg(struct spi_device *spi, u8 reg)
- {
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
-@@ -361,7 +373,7 @@ static void mcp251x_write_reg(struct spi_device *spi, u8 reg, u8 val)
- 	priv->spi_tx_buf[1] = reg;
- 	priv->spi_tx_buf[2] = val;
+ 		/*
+-		 * Switch events will wake the device and report the new switch
+-		 * position to the input subsystem.
++		 * Some devices send (duplicate) tablet-mode events when moved
++		 * around even though the mode has not changed; and they do this
++		 * even when suspended.
++		 * Update the switch state in case it changed and then return
++		 * without waking up to avoid spurious wakeups.
+ 		 */
+-		if (priv->switches && (event == 0xcc || event == 0xcd))
+-			goto wakeup;
++		if (event == 0xcc || event == 0xcd) {
++			report_tablet_mode_event(priv->switches, event);
++			return;
++		}
  
--	mcp251x_spi_trans(spi, 3);
-+	mcp251x_spi_write(spi, 3);
- }
+ 		/* Wake up on 5-button array events only. */
+ 		if (event == 0xc0 || !priv->array)
+@@ -501,9 +506,6 @@ static void notify_handler(acpi_handle handle, u32 event, void *context)
+ wakeup:
+ 		pm_wakeup_hard_event(&device->dev);
  
- static void mcp251x_write_2regs(struct spi_device *spi, u8 reg, u8 v1, u8 v2)
-@@ -373,7 +385,7 @@ static void mcp251x_write_2regs(struct spi_device *spi, u8 reg, u8 v1, u8 v2)
- 	priv->spi_tx_buf[2] = v1;
- 	priv->spi_tx_buf[3] = v2;
- 
--	mcp251x_spi_trans(spi, 4);
-+	mcp251x_spi_write(spi, 4);
- }
- 
- static void mcp251x_write_bits(struct spi_device *spi, u8 reg,
-@@ -386,7 +398,7 @@ static void mcp251x_write_bits(struct spi_device *spi, u8 reg,
- 	priv->spi_tx_buf[2] = mask;
- 	priv->spi_tx_buf[3] = val;
- 
--	mcp251x_spi_trans(spi, 4);
-+	mcp251x_spi_write(spi, 4);
- }
- 
- static u8 mcp251x_read_stat(struct spi_device *spi)
-@@ -618,7 +630,7 @@ static void mcp251x_hw_tx_frame(struct spi_device *spi, u8 *buf,
- 					  buf[i]);
- 	} else {
- 		memcpy(priv->spi_tx_buf, buf, TXBDAT_OFF + len);
--		mcp251x_spi_trans(spi, TXBDAT_OFF + len);
-+		mcp251x_spi_write(spi, TXBDAT_OFF + len);
+-		if (report_tablet_mode_event(priv->switches, event))
+-			return;
+-
+ 		return;
  	}
- }
- 
-@@ -650,7 +662,7 @@ static void mcp251x_hw_tx(struct spi_device *spi, struct can_frame *frame,
- 
- 	/* use INSTRUCTION_RTS, to avoid "repeated frame problem" */
- 	priv->spi_tx_buf[0] = INSTRUCTION_RTS(1 << tx_buf_idx);
--	mcp251x_spi_trans(priv->spi, 1);
-+	mcp251x_spi_write(priv->spi, 1);
- }
- 
- static void mcp251x_hw_rx_frame(struct spi_device *spi, u8 *buf,
-@@ -888,7 +900,7 @@ static int mcp251x_hw_reset(struct spi_device *spi)
- 	mdelay(MCP251X_OST_DELAY_MS);
- 
- 	priv->spi_tx_buf[0] = INSTRUCTION_RESET;
--	ret = mcp251x_spi_trans(spi, 1);
-+	ret = mcp251x_spi_write(spi, 1);
- 	if (ret)
- 		return ret;
  
 -- 
 2.30.2
