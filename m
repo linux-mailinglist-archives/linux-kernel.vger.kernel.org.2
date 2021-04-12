@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B02B35BD25
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F3B35BD29
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237634AbhDLIsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:48:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38658 "EHLO mail.kernel.org"
+        id S237981AbhDLIs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:48:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237669AbhDLIqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:46:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBE461245;
-        Mon, 12 Apr 2021 08:45:47 +0000 (UTC)
+        id S237851AbhDLIqI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:46:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 296986109E;
+        Mon, 12 Apr 2021 08:45:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217148;
-        bh=P2D4o7lv0mWCWb/1eKIOWs4s/G4pPWQFCSABRLLAs4U=;
+        s=korg; t=1618217150;
+        bh=09ooUlwISxVla7TfWvf2JNWFhCcK81tqCeJIgvfv0gM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pc4KIDt/V+gMxMJvZgzR86rx7pEe3sIuqXJCUPzHaCaLKU6RF6jdYTsvKHQcNe/y6
-         m1nT9kS00W/I2agqqiLRn+71Ph87nO4Mq92izKxAGpng5iIehqX3iZpvzBkft//zKl
-         o/yxSbik0+PMHRb89KZaikoPNW/jZbUGSsoAqkAc=
+        b=TuiLERD701IhQ5OnzuZfsa3kbzUGl+cwgANZOx/ch8spTjE4bhnbYP7ORAPQDGoiC
+         lT87eUpVRgPD2LFpfBy1kJJat63SdAqCVoZpZz/mE7a7SPh3rb3EqHi8VcV2RuO/Cm
+         uD4Pe2ojOrrM3Zje/VRFk4RHWjcfdEflI/GG7P7U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-        Sven Eckelmann <sven@narfation.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 021/111] batman-adv: initialize "struct batadv_tvlv_tt_vlan_data"->reserved field
-Date:   Mon, 12 Apr 2021 10:39:59 +0200
-Message-Id: <20210412084004.929381077@linuxfoundation.org>
+        stable@vger.kernel.org, Fabio Pricoco <fabio.pricoco@intel.com>,
+        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH 5.4 022/111] ice: Increase control queue timeout
+Date:   Mon, 12 Apr 2021 10:40:00 +0200
+Message-Id: <20210412084004.961222235@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
 References: <20210412084004.200986670@linuxfoundation.org>
@@ -42,48 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Fabio Pricoco <fabio.pricoco@intel.com>
 
-commit 08c27f3322fec11950b8f1384aa0f3b11d028528 upstream.
+commit f88c529ac77b3c21819d2cf1dfcfae1937849743 upstream.
 
-KMSAN found uninitialized value at batadv_tt_prepare_tvlv_local_data()
-[1], for commit ced72933a5e8ab52 ("batman-adv: use CRC32C instead of CRC16
-in TT code") inserted 'reserved' field into "struct batadv_tvlv_tt_data"
-and commit 7ea7b4a142758dea ("batman-adv: make the TT CRC logic VLAN
-specific") moved that field to "struct batadv_tvlv_tt_vlan_data" but left
-that field uninitialized.
+250 msec timeout is insufficient for some AQ commands. Advice from FW
+team was to increase the timeout. Increase to 1 second.
 
-[1] https://syzkaller.appspot.com/bug?id=07f3e6dba96f0eb3cabab986adcd8a58b9bdbe9d
-
-Reported-by: syzbot <syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com>
-Tested-by: syzbot <syzbot+50ee810676e6a089487b@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: ced72933a5e8ab52 ("batman-adv: use CRC32C instead of CRC16 in TT code")
-Fixes: 7ea7b4a142758dea ("batman-adv: make the TT CRC logic VLAN specific")
-Acked-by: Sven Eckelmann <sven@narfation.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 7ec59eeac804 ("ice: Add support for control queues")
+Signed-off-by: Fabio Pricoco <fabio.pricoco@intel.com>
+Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/batman-adv/translation-table.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/intel/ice/ice_controlq.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/batman-adv/translation-table.c
-+++ b/net/batman-adv/translation-table.c
-@@ -891,6 +891,7 @@ batadv_tt_prepare_tvlv_global_data(struc
- 	hlist_for_each_entry_rcu(vlan, &orig_node->vlan_list, list) {
- 		tt_vlan->vid = htons(vlan->vid);
- 		tt_vlan->crc = htonl(vlan->tt.crc);
-+		tt_vlan->reserved = 0;
+--- a/drivers/net/ethernet/intel/ice/ice_controlq.h
++++ b/drivers/net/ethernet/intel/ice/ice_controlq.h
+@@ -31,8 +31,8 @@ enum ice_ctl_q {
+ 	ICE_CTL_Q_MAILBOX,
+ };
  
- 		tt_vlan++;
- 	}
-@@ -974,6 +975,7 @@ batadv_tt_prepare_tvlv_local_data(struct
+-/* Control Queue timeout settings - max delay 250ms */
+-#define ICE_CTL_Q_SQ_CMD_TIMEOUT	2500  /* Count 2500 times */
++/* Control Queue timeout settings - max delay 1s */
++#define ICE_CTL_Q_SQ_CMD_TIMEOUT	10000 /* Count 10000 times */
+ #define ICE_CTL_Q_SQ_CMD_USEC		100   /* Check every 100usec */
  
- 		tt_vlan->vid = htons(vlan->vid);
- 		tt_vlan->crc = htonl(vlan->tt.crc);
-+		tt_vlan->reserved = 0;
- 
- 		tt_vlan++;
- 	}
+ struct ice_ctl_q_ring {
 
 
