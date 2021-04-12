@@ -2,82 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164BD35B7CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 02:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C88435B7DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 02:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236257AbhDLAio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 20:38:44 -0400
-Received: from mail-ej1-f41.google.com ([209.85.218.41]:41660 "EHLO
-        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236139AbhDLAii (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 20:38:38 -0400
-Received: by mail-ej1-f41.google.com with SMTP id g17so14637762ejp.8;
-        Sun, 11 Apr 2021 17:38:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ai1fYsMXAfcw2GEL2Uwlzy50KG4+X4VPIXten5NjSnc=;
-        b=qAtBXWPI1JWksBAxYwD13QdudA7dKmtFQGnuBNFoPjwpmJmch8VDVmBzyE+JniljHY
-         qF9HE9I8nw+RIUISCd7d1fYnRkg7PrdEdABjXcUbFF0+YSTEQiOStNhjtblMNNaQhiNd
-         N2ej5r7SnNNF43tiqZtM16pnEDvq+UfWyVM9wtc3L9+r//gX8RO+p8VSKOerD1rXJWxM
-         PwrwOQucLNQDiJV9v/Mf+VBT7HOD8t+/LsGf16SkAGK3uOXpjFySjCd2bbShsA+d1+EO
-         smEUS3DDMIRzCeTw4U8jBDjgfZJSmpfex/UuKqtQyjf47O5tO87xs/m6UXXY0j2MoZyV
-         BDAg==
-X-Gm-Message-State: AOAM533CiL159vpPULteTRwWVG+//EeCu82/JLy9Xf9A/sWVw9C1CjLM
-        eJWF78DY4x8s6BVQInhF4Txz6mihiEI=
-X-Google-Smtp-Source: ABdhPJxR5fkR4YjboaWoyqCu2w7eHdGD6PnEtlrtq+Kcpc6qa2/AKL3eCeJYwAemiNDcs1ftAm/Hng==
-X-Received: by 2002:a17:906:c82c:: with SMTP id dd12mr1776884ejb.132.1618187898391;
-        Sun, 11 Apr 2021 17:38:18 -0700 (PDT)
-Received: from msft-t490s.teknoraver.net (net-93-66-21-119.cust.vodafonedsl.it. [93.66.21.119])
-        by smtp.gmail.com with ESMTPSA id a9sm5477837eds.33.2021.04.11.17.38.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Apr 2021 17:38:18 -0700 (PDT)
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: [PATCH net-next v2 3/3] net: use skb_for_each_frag() in illegal_highdma()
-Date:   Mon, 12 Apr 2021 02:38:02 +0200
-Message-Id: <20210412003802.51613-4-mcroce@linux.microsoft.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210412003802.51613-1-mcroce@linux.microsoft.com>
-References: <20210412003802.51613-1-mcroce@linux.microsoft.com>
+        id S236167AbhDLAz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 20:55:27 -0400
+Received: from mga09.intel.com ([134.134.136.24]:12362 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235388AbhDLAzZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 20:55:25 -0400
+IronPort-SDR: 6nh6IxeGRSHOzk95MTlgjvllmI9QROPNINfWv5EPoZwpL4yx+3pvqKBlK6ZpcHu60ew8Fd2X8R
+ iSy9u56Gyz7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="194198797"
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="194198797"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 17:55:07 -0700
+IronPort-SDR: T0w+1dSLSNJceumKgMBiMnlQebHoIE4I9Fv+9sQrumPYKc3AGx5lqaQAKY713tP7MbcVtqlLzc
+ 5H30oT+UFXUg==
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="459960660"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 17:55:03 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <mhocko@suse.com>, <iamjoonsoo.kim@lge.com>, <vbabka@suse.cz>,
+        <alex.shi@linux.alibaba.com>, <willy@infradead.org>,
+        <minchan@kernel.org>, <richard.weiyang@gmail.com>,
+        <hughd@google.com>, <tim.c.chen@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH 4/5] mm/swap_state: fix potential faulted in race in
+ swap_ra_info()
+References: <20210408130820.48233-1-linmiaohe@huawei.com>
+        <20210408130820.48233-5-linmiaohe@huawei.com>
+        <874kgfyh85.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <d88fbae4-20f5-0c7f-1c9b-b814b87ab222@huawei.com>
+Date:   Mon, 12 Apr 2021 08:55:01 +0800
+In-Reply-To: <d88fbae4-20f5-0c7f-1c9b-b814b87ab222@huawei.com> (Miaohe Lin's
+        message of "Fri, 9 Apr 2021 17:00:02 +0800")
+Message-ID: <87v98swcd6.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matteo Croce <mcroce@microsoft.com>
+Miaohe Lin <linmiaohe@huawei.com> writes:
 
-Coccinelle failed with the following error:
+> On 2021/4/9 16:50, Huang, Ying wrote:
+>> Miaohe Lin <linmiaohe@huawei.com> writes:
+>> 
+>>> While we released the pte lock, somebody else might faulted in this pte.
+>>> So we should check whether it's swap pte first to guard against such race
+>>> or swp_type would be unexpected. And we can also avoid some unnecessary
+>>> readahead cpu cycles possibly.
+>>>
+>>> Fixes: ec560175c0b6 ("mm, swap: VMA based swap readahead")
+>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>> ---
+>>>  mm/swap_state.c | 13 +++++++++----
+>>>  1 file changed, 9 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/mm/swap_state.c b/mm/swap_state.c
+>>> index 709c260d644a..3bf0d0c297bc 100644
+>>> --- a/mm/swap_state.c
+>>> +++ b/mm/swap_state.c
+>>> @@ -724,10 +724,10 @@ static void swap_ra_info(struct vm_fault *vmf,
+>>>  {
+>>>  	struct vm_area_struct *vma = vmf->vma;
+>>>  	unsigned long ra_val;
+>>> -	swp_entry_t entry;
+>>> +	swp_entry_t swap_entry;
+>>>  	unsigned long faddr, pfn, fpfn;
+>>>  	unsigned long start, end;
+>>> -	pte_t *pte, *orig_pte;
+>>> +	pte_t *pte, *orig_pte, entry;
+>>>  	unsigned int max_win, hits, prev_win, win, left;
+>>>  #ifndef CONFIG_64BIT
+>>>  	pte_t *tpte;
+>>> @@ -742,8 +742,13 @@ static void swap_ra_info(struct vm_fault *vmf,
+>>>  
+>>>  	faddr = vmf->address;
+>>>  	orig_pte = pte = pte_offset_map(vmf->pmd, faddr);
+>>> -	entry = pte_to_swp_entry(*pte);
+>>> -	if ((unlikely(non_swap_entry(entry)))) {
+>>> +	entry = *pte;
+>>> +	if (unlikely(!is_swap_pte(entry))) {
+>>> +		pte_unmap(orig_pte);
+>>> +		return;
+>>> +	}
+>>> +	swap_entry = pte_to_swp_entry(entry);
+>>> +	if ((unlikely(non_swap_entry(swap_entry)))) {
+>>>  		pte_unmap(orig_pte);
+>>>  		return;
+>>>  	}
+>> 
+>> This isn't a real issue.  entry or swap_entry isn't used in this
+>
+> Agree. It seems the entry or swap_entry here is just used for check whether
+> pte is still valid swap_entry.
 
- EXN: Failure("no position information") in net/core/dev.c
+If you check the git history, you will find that the check has been
+necessary before.  Because the function is used earlier in
+do_swap_page() at that time.
 
-Apply it by hand as it's trivial.
-
-Signed-off-by: Matteo Croce <mcroce@microsoft.com>
----
- net/core/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/core/dev.c b/net/core/dev.c
-index cc5df273f766..605103582aac 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -3505,7 +3505,7 @@ static int illegal_highdma(struct net_device *dev, struct sk_buff *skb)
- 	int i;
- 
- 	if (!(dev->features & NETIF_F_HIGHDMA)) {
--		for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
-+		skb_for_each_frag(skb, i) {
- 			skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
- 
- 			if (PageHighMem(skb_frag_page(frag)))
--- 
-2.30.2
-
+Best Regards,
+Huang, Ying
