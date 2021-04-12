@@ -2,83 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F31535D2AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6724735D2A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 23:44:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245107AbhDLVtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 17:49:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38736 "EHLO
+        id S242801AbhDLVoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 17:44:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241462AbhDLVte (ORCPT
+        with ESMTP id S240646AbhDLVoD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 17:49:34 -0400
-X-Greylist: delayed 468 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 12 Apr 2021 14:49:16 PDT
-Received: from pmg.in-ulm.de (pmg.in-ulm.de [IPv6:2001:1410:200:81b::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D59AC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 14:49:16 -0700 (PDT)
-Received: from pmg.in-ulm.de (localhost.localdomain [127.0.0.1])
-        by pmg.in-ulm.de (Proxmox) with ESMTP id E8C0521904
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:41:24 +0200 (CEST)
-Received: from mail.in-ulm.de (unknown [217.10.8.10])
-        by pmg.in-ulm.de (Proxmox) with SMTP
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 23:41:24 +0200 (CEST)
-Received: (qmail 343850 invoked by uid 10524); 12 Apr 2021 21:41:24 -0000
-Date:   Mon, 12 Apr 2021 23:41:24 +0200
-From:   "Christian A. Ehrhardt" <lk@c--e.de>
-To:     kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Cornelia Huck <cohuck@redhat.com>
-Subject: [PATCH] vfio/pci: Add missing range check in vfio_pci_mmap
-Message-ID: <20210412214124.GA241759@lisa.in-ulm.de>
-References: <20210410230013.GC416417@lisa.in-ulm.de>
- <20210412140238.184e141f@omen>
+        Mon, 12 Apr 2021 17:44:03 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67165C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 14:43:41 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id z16so10417695pga.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 14:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LTAUlRV+90mXaog4LE7DEsSgTnXw1ApT5g7eDZ+3hQQ=;
+        b=EOQdsGxc+trZ9fBNqii1aYmL+oejnNTIpAmeJxEDRtdv4sfpgl7CUHgZDeu0bzilfo
+         Ad1P6/PTP7qzpUVzhfxZkSse+TSPAK5HIfUeanowvW60r32lgP66yn+90YMmPzDHeS+Q
+         gN0qv9EKIq2UrdKOuGWLEZInZ9IbXf3jXjeaq+okQNM70WNHO2oyNe40kGKx6q3fp3hj
+         3nEDYeAVKe2W5jj8S48nyesHC432eKHVfm72/FI3OZh8IblL7iMO1ZqcghmMvMrLxV+M
+         EfxoVNNr9U1B4spOlvqUCL9Pjj0WFo3+f2J+r4kojtqyQNEJbPGP7ywIk1aRVsG5zHyT
+         i2yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LTAUlRV+90mXaog4LE7DEsSgTnXw1ApT5g7eDZ+3hQQ=;
+        b=TGuNcx9iUfZKiYV3u7IWFabqxApUUG6xvF8jI+evNJaeQm8WUQAwIX97Jn9hU39ehs
+         SDblLl5vOD6JQWyqqtlq0gB7pOg1rLLpvviVo7382IIRbOJ7NGKj6XsfkamHShUnt6rD
+         LMsqgAHn7+ralYVA4GoySxWkT+2gwXPMB0BwXXzLPMyaMFEJPnkzAlcwE5BX93n8Ki7M
+         GKmAA/y3onMBRWPwCBf1vwaDJiwQJxerBL6V/VX+KeT5TStS6SeQLChbP9sIYVH441RO
+         //A4XB4Wu0UvXoStMmLxBzwE8O1SHjPjkUrOyJhuh/H2+j0orm6O/8jCZIsFn1UG1qHj
+         OFYQ==
+X-Gm-Message-State: AOAM531Shc3bKjB96J0DCtQFh9I6M8sqzMgmewaNwEwLOaLVYFCuniuB
+        DDRtYFaGxUav4Wbgeiyinq8rzw==
+X-Google-Smtp-Source: ABdhPJzHRXu/pBnp+xlAC/tzDGNIdRDWyySF7tk5goKiPbjZXsGgZ8G7eIRRFRHas8vMljy5GHXXZQ==
+X-Received: by 2002:a63:d50c:: with SMTP id c12mr11168928pgg.145.1618263820594;
+        Mon, 12 Apr 2021 14:43:40 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 77sm12720008pgf.55.2021.04.12.14.43.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 14:43:39 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 21:43:35 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Lai Jiangshan <jiangshanlai+lkml@gmail.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        Filippo Sironi <sironi@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        "v4.7+" <stable@vger.kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH 2/2] KVM: x86: Fix split-irqchip vs interrupt injection
+ window request
+Message-ID: <YHS/BxMiO6I1VOEY@google.com>
+References: <20201127112114.3219360-1-pbonzini@redhat.com>
+ <20201127112114.3219360-3-pbonzini@redhat.com>
+ <CAJhGHyCdqgtvK98_KieG-8MUfg1Jghd+H99q+FkgL0ZuqnvuAw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210412140238.184e141f@omen>
-User-Agent: Mutt/1.5.20 (2009-06-14)
+In-Reply-To: <CAJhGHyCdqgtvK98_KieG-8MUfg1Jghd+H99q+FkgL0ZuqnvuAw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Apr 09, 2021, Lai Jiangshan wrote:
+> On Fri, Nov 27, 2020 at 7:26 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> >
+> > kvm_cpu_accept_dm_intr and kvm_vcpu_ready_for_interrupt_injection are
+> > a hodge-podge of conditions, hacked together to get something that
+> > more or less works.  But what is actually needed is much simpler;
+> > in both cases the fundamental question is, do we have a place to stash
+> > an interrupt if userspace does KVM_INTERRUPT?
+> >
+> > In userspace irqchip mode, that is !vcpu->arch.interrupt.injected.
+> > Currently kvm_event_needs_reinjection(vcpu) covers it, but it is
+> > unnecessarily restrictive.
+> >
+> > In split irqchip mode it's a bit more complicated, we need to check
+> > kvm_apic_accept_pic_intr(vcpu) (the IRQ window exit is basically an INTACK
+> > cycle and thus requires ExtINTs not to be masked) as well as
+> > !pending_userspace_extint(vcpu).  However, there is no need to
+> > check kvm_event_needs_reinjection(vcpu), since split irqchip keeps
+> > pending ExtINT state separate from event injection state, and checking
+> > kvm_cpu_has_interrupt(vcpu) is wrong too since ExtINT has higher
+> > priority than APIC interrupts.  In fact the latter fixes a bug:
+> > when userspace requests an IRQ window vmexit, an interrupt in the
+> > local APIC can cause kvm_cpu_has_interrupt() to be true and thus
+> > kvm_vcpu_ready_for_interrupt_injection() to return false.  When this
+> > happens, vcpu_run does not exit to userspace but the interrupt window
+> > vmexits keep occurring.  The VM loops without any hope of making progress.
+> >
+> > Once we try to fix these with something like
+> >
+> >      return kvm_arch_interrupt_allowed(vcpu) &&
+> > -        !kvm_cpu_has_interrupt(vcpu) &&
+> > -        !kvm_event_needs_reinjection(vcpu) &&
+> > -        kvm_cpu_accept_dm_intr(vcpu);
+> > +        (!lapic_in_kernel(vcpu)
+> > +         ? !vcpu->arch.interrupt.injected
+> > +         : (kvm_apic_accept_pic_intr(vcpu)
+> > +            && !pending_userspace_extint(v)));
+> >
+> > we realize two things.  First, thanks to the previous patch the complex
+> > conditional can reuse !kvm_cpu_has_extint(vcpu).  Second, the interrupt
+> > window request in vcpu_enter_guest()
+> >
+> >         bool req_int_win =
+> >                 dm_request_for_irq_injection(vcpu) &&
+> >                 kvm_cpu_accept_dm_intr(vcpu);
+> >
+> > should be kept in sync with kvm_vcpu_ready_for_interrupt_injection():
+> > it is unnecessary to ask the processor for an interrupt window
+> > if we would not be able to return to userspace.  Therefore, the
+> > complex conditional is really the correct implementation of
+> > kvm_cpu_accept_dm_intr(vcpu).  It all makes sense:
+> >
+> > - we can accept an interrupt from userspace if there is a place
+> >   to stash it (and, for irqchip split, ExtINTs are not masked).
+> >   Interrupts from userspace _can_ be accepted even if right now
+> >   EFLAGS.IF=0.
+> 
+> Hello, Paolo
+> 
+> If userspace does KVM_INTERRUPT, vcpu->arch.interrupt.injected is
+> set immediately, and in inject_pending_event(), we have
+> 
+>         else if (!vcpu->arch.exception.pending) {
+>                 if (vcpu->arch.nmi_injected) {
+>                         kvm_x86_ops.set_nmi(vcpu);
+>                         can_inject = false;
+>                 } else if (vcpu->arch.interrupt.injected) {
+>                         kvm_x86_ops.set_irq(vcpu);
+>                         can_inject = false;
+>                 }
+>         }
+> 
+> I'm curious about that can the kvm_x86_ops.set_irq() here be possible
+> to queue the irq with EFLAGS.IF=0? If not, which code prevents it?
 
-When mmaping an extra device region verify that the region index
-derived from the mmap offset is valid.
+The interrupt is only directly injected if the local APIC is _not_ in-kernel.
+If userspace is managing the local APIC, my understanding is that userspace is
+also responsible for honoring EFLAGS.IF, though KVM aids userspace by updating
+vcpu->run->ready_for_interrupt_injection when exiting to userspace.  When
+userspace is modeling the local APIC, that resolves to
+kvm_vcpu_ready_for_interrupt_injection():
 
-Fixes: a15b1883fee1 ("vfio_pci: Allow mapping extra regions")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
----
- drivers/vfio/pci/vfio_pci.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+	return kvm_arch_interrupt_allowed(vcpu) &&
+		kvm_cpu_accept_dm_intr(vcpu);
 
-diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
-index 65e7e6b44578..5023e23db3bc 100644
---- a/drivers/vfio/pci/vfio_pci.c
-+++ b/drivers/vfio/pci/vfio_pci.c
-@@ -1656,6 +1656,8 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
+where kvm_arch_interrupt_allowed() checks EFLAGS.IF (and an edge case related to
+nested virtualization).  KVM also captures EFLAGS.IF in vcpu->run->if_flag.
+For whatever reason, QEMU checks both vcpu->run flags before injecting an IRQ,
+maybe to handle a case where QEMU itself clears EFLAGS.IF?
  
- 	index = vma->vm_pgoff >> (VFIO_PCI_OFFSET_SHIFT - PAGE_SHIFT);
- 
-+	if (index >= VFIO_PCI_NUM_REGIONS + vdev->num_regions)
-+		return -EINVAL;
- 	if (vma->vm_end < vma->vm_start)
- 		return -EINVAL;
- 	if ((vma->vm_flags & VM_SHARED) == 0)
-@@ -1664,7 +1666,7 @@ static int vfio_pci_mmap(void *device_data, struct vm_area_struct *vma)
- 		int regnum = index - VFIO_PCI_NUM_REGIONS;
- 		struct vfio_pci_region *region = vdev->region + regnum;
- 
--		if (region && region->ops && region->ops->mmap &&
-+		if (region->ops && region->ops->mmap &&
- 		    (region->flags & VFIO_REGION_INFO_FLAG_MMAP))
- 			return region->ops->mmap(vdev, region, vma);
- 		return -EINVAL;
--- 
-2.25.1
-
-
+> I'm asking about this because I just noticed that interrupt can
+> be queued when exception pending, and this patch relaxed it even
+> more.
+> 
+> Note: interrupt can NOT be queued when exception pending
+> until 664f8e26b00c7 ("KVM: X86: Fix loss of exception which
+> has not yet been injected") which I think is dangerous.
