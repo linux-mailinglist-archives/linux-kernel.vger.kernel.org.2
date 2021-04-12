@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4E5B35C0E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0D3635C0E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241918AbhDLJRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:17:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50126 "EHLO mail.kernel.org"
+        id S242039AbhDLJSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:18:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239253AbhDLI7e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:59:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55BFE61286;
-        Mon, 12 Apr 2021 08:58:02 +0000 (UTC)
+        id S239569AbhDLJAo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 05:00:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9B1861350;
+        Mon, 12 Apr 2021 08:58:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217882;
-        bh=0mzSimFDhqb6eo08LXgQGGJ4FkHIfyW4R09D6DGkjR4=;
+        s=korg; t=1618217903;
+        bh=+yCGwJ9sliDlgsFC6YZOJuxsNm00XKaueLxP/RY8/4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SbciurwR+H7nqmhwUhgJBwezZs/ENx425C8BdgkdDpCxeoNlPJJ2t+qwyPfR6HKo0
-         xzubSdCAiT3HbdmyzIeGdcDwGASRb2jx6Ndm3PvJvzLXinn1KP5AtvEJ/jyvjaghk5
-         psqnosfceoESkIFPFlIeVyA3xPZSeWXR3vu0Lqpc=
+        b=eOS9HHvB2mqr7FpQpnsxezSpMvpsiWhii3IHXG+BvarfAtsVXZQiC09SK/49jVNcT
+         xvY3Gu/1wxCBYf0bqHMHSrOc306OwA7/NfF1tj7ONiUr+7TW7VHFqzXoQX+NiDZsRX
+         uFiAyDOJcR5z2WJvGb0HU34xFy42i/h4s4ROIFfQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 173/188] net: sched: bump refcount for new action in ACT replace mode
-Date:   Mon, 12 Apr 2021 10:41:27 +0200
-Message-Id: <20210412084019.378644444@linuxfoundation.org>
+        stable@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Roman Guskov <rguskov@dh-electronics.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 5.10 174/188] gpiolib: Read "gpio-line-names" from a firmware node
+Date:   Mon, 12 Apr 2021 10:41:28 +0200
+Message-Id: <20210412084019.413390767@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412084013.643370347@linuxfoundation.org>
 References: <20210412084013.643370347@linuxfoundation.org>
@@ -39,83 +41,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit 6855e8213e06efcaf7c02a15e12b1ae64b9a7149 upstream.
+commit b41ba2ec54a70908067034f139aa23d0dd2985ce upstream.
 
-Currently, action creation using ACT API in replace mode is buggy.
-When invoking for non-existent action index 42,
+On STM32MP1, the GPIO banks are subnodes of pin-controller@50002000,
+see arch/arm/boot/dts/stm32mp151.dtsi. The driver for
+pin-controller@50002000 is in drivers/pinctrl/stm32/pinctrl-stm32.c
+and iterates over all of its DT subnodes when registering each GPIO
+bank gpiochip. Each gpiochip has:
 
-	tc action replace action bpf obj foo.o sec <xyz> index 42
+  - gpio_chip.parent = dev,
+    where dev is the device node of the pin controller
+  - gpio_chip.of_node = np,
+    which is the OF node of the GPIO bank
 
-kernel creates the action, fills up the netlink response, and then just
-deletes the action after notifying userspace.
+Therefore, dev_fwnode(chip->parent) != of_fwnode_handle(chip.of_node),
+i.e. pin-controller@50002000 != pin-controller@50002000/gpio@5000*000.
 
-	tc action show action bpf
+The original code behaved correctly, as it extracted the "gpio-line-names"
+from of_fwnode_handle(chip.of_node) = pin-controller@50002000/gpio@5000*000.
 
-doesn't list the action.
+To achieve the same behaviour, read property from the firmware node.
 
-This happens due to the following sequence when ovr = 1 (replace mode)
-is enabled:
-
-tcf_idr_check_alloc is used to atomically check and either obtain
-reference for existing action at index, or reserve the index slot using
-a dummy entry (ERR_PTR(-EBUSY)).
-
-This is necessary as pointers to these actions will be held after
-dropping the idrinfo lock, so bumping the reference count is necessary
-as we need to insert the actions, and notify userspace by dumping their
-attributes. Finally, we drop the reference we took using the
-tcf_action_put_many call in tcf_action_add. However, for the case where
-a new action is created due to free index, its refcount remains one.
-This when paired with the put_many call leads to the kernel setting up
-the action, notifying userspace of its creation, and then tearing it
-down. For existing actions, the refcount is still held so they remain
-unaffected.
-
-Fortunately due to rtnl_lock serialization requirement, such an action
-with refcount == 1 will not be concurrently deleted by anything else, at
-best CLS API can move its refcount up and down by binding to it after it
-has been published from tcf_idr_insert_many. Since refcount is atleast
-one until put_many call, CLS API cannot delete it. Also __tcf_action_put
-release path already ensures deterministic outcome (either new action
-will be created or existing action will be reused in case CLS API tries
-to bind to action concurrently) due to idr lock serialization.
-
-We fix this by making refcount of newly created actions as 2 in ACT API
-replace mode. A relaxed store will suffice as visibility is ensured only
-after the tcf_idr_insert_many call.
-
-Note that in case of creation or overwriting using CLS API only (i.e.
-bind = 1), overwriting existing action object is not allowed, and any
-such request is silently ignored (without error).
-
-The refcount bump that occurs in tcf_idr_check_alloc call there for
-existing action will pair with tcf_exts_destroy call made from the
-owner module for the same action. In case of action creation, there
-is no existing action, so no tcf_exts_destroy callback happens.
-
-This means no code changes for CLS API.
-
-Fixes: cae422f379f3 ("net: sched: use reference counting action init")
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 7cba1a4d5e162 ("gpiolib: generalize devprop_gpiochip_set_names() for device properties")
+Reported-by: Marek Vasut <marex@denx.de>
+Reported-by: Roman Guskov <rguskov@dh-electronics.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Tested-by: Marek Vasut <marex@denx.de>
+Reviewed-by: Marek Vasut <marex@denx.de>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sched/act_api.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/gpio/gpiolib.c |   12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
---- a/net/sched/act_api.c
-+++ b/net/sched/act_api.c
-@@ -1029,6 +1029,9 @@ struct tc_action *tcf_action_init_1(stru
- 	if (!name)
- 		a->hw_stats = hw_stats;
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -364,22 +364,18 @@ static int gpiochip_set_desc_names(struc
+  *
+  * Looks for device property "gpio-line-names" and if it exists assigns
+  * GPIO line names for the chip. The memory allocated for the assigned
+- * names belong to the underlying software node and should not be released
++ * names belong to the underlying firmware node and should not be released
+  * by the caller.
+  */
+ static int devprop_gpiochip_set_names(struct gpio_chip *chip)
+ {
+ 	struct gpio_device *gdev = chip->gpiodev;
+-	struct device *dev = chip->parent;
++	struct fwnode_handle *fwnode = dev_fwnode(&gdev->dev);
+ 	const char **names;
+ 	int ret, i;
+ 	int count;
  
-+	if (!bind && ovr && err == ACT_P_CREATED)
-+		refcount_set(&a->tcfa_refcnt, 2);
-+
- 	return a;
+-	/* GPIO chip may not have a parent device whose properties we inspect. */
+-	if (!dev)
+-		return 0;
+-
+-	count = device_property_string_array_count(dev, "gpio-line-names");
++	count = fwnode_property_string_array_count(fwnode, "gpio-line-names");
+ 	if (count < 0)
+ 		return 0;
  
- err_out:
+@@ -393,7 +389,7 @@ static int devprop_gpiochip_set_names(st
+ 	if (!names)
+ 		return -ENOMEM;
+ 
+-	ret = device_property_read_string_array(dev, "gpio-line-names",
++	ret = fwnode_property_read_string_array(fwnode, "gpio-line-names",
+ 						names, count);
+ 	if (ret < 0) {
+ 		dev_warn(&gdev->dev, "failed to read GPIO line names\n");
 
 
