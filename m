@@ -2,73 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1BC35D025
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4398735D028
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 20:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244003AbhDLSUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 14:20:48 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:37597 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhDLSUq (ORCPT
+        id S244748AbhDLSVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 14:21:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230336AbhDLSVP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 14:20:46 -0400
-Received: by mail-oi1-f170.google.com with SMTP id k25so14369282oic.4;
-        Mon, 12 Apr 2021 11:20:28 -0700 (PDT)
+        Mon, 12 Apr 2021 14:21:15 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB34C06174A
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 11:20:57 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id p19so7380134wmq.1
+        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 11:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0z3XzP3OkACR5NstqNEyPn1NJX+7W0uBkbKJqycox7I=;
+        b=Owyxnfwck/7sZd6w11qbFpCmlRdKFNwzk5IfNE+bly++OpJqLDhS3Ou96PczHVjbFs
+         2eDsyArloENl7T4b78cQWsXFqDnbwIEA5LIfHuPhxLzBxBrxayeGAduKvud7HIin7NZr
+         xol0FaNN9BORkFR4imlcVzVXO5YvFND0u1BQjBoTDGLs3qoZyMTm7kcN644LL2kJVi+4
+         1YlCNP4wf40/qcwOWrMHpSZaFrqwnv6WYg1BagOHMbgTM0+yNXDDkIJ4o+2JO4GZS79d
+         TySdWlbffFhToD7nZuHLas/1l9yJQ01THVMesGrCUbBY6702SEmu1r2bYGj/4e6027hV
+         0wcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6uLNKPxr+qrvlGgnAKQt6OBpE5mCSCXT29ad0jlzs/I=;
-        b=Ek5rc4z9Mnxr4tXYMGLYsvU/T2akNTlKmIABb2uP2Caz0j/OZAMdBwqkU77uEv9BEs
-         qRpZ1euVxrlZ2n47md5tRgHEe27RDU0Anhnni/fz7kYzHPGhdLdiu4ChqUc8MrVjUkC+
-         k/kPkl2QAQdUUcR6lcUTzxBc0EEsBeJLBCoDamcIz6Gqw2WDBur+ybUlCtI6XLN0dHIA
-         zqmrXy0g6Qr11axo8XMw9p9JQREptlPzXYnb1TniRMZNVVIZwi3qeulP009PDyrX2Tln
-         oLiCs4o0VGpJOaYVGQsqXEMQ5w8VJHM4meNFgT3X+Rm41aIBXNLmsBL1bMwzI8CYIn7l
-         ynpA==
-X-Gm-Message-State: AOAM530UnFhC5HFXfww7R8qK7s4rXzXhSk103q5otbdkcCIAXFoK7dkm
-        hlGrAaLJnea6zwQ2wr1oGA==
-X-Google-Smtp-Source: ABdhPJw1691Qm55M+EfRhxZ7ocVtczBXE8iOSmUz8jmgvoBIHsfQKyr1gwOZpJPF29CLzmQuTxX9MA==
-X-Received: by 2002:aca:4e56:: with SMTP id c83mr343567oib.166.1618251627588;
-        Mon, 12 Apr 2021 11:20:27 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z24sm2890415otp.44.2021.04.12.11.20.26
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0z3XzP3OkACR5NstqNEyPn1NJX+7W0uBkbKJqycox7I=;
+        b=gfS0aSmFMT+liv16pRLq/UsZ8vWsa5yegBYqrA+jgS+8kfZsEtXFDzFipmvO9b/Vvd
+         46TURMIrq5LvjzaqlsF53+KC+G86XbilAICSWH2UFEZmLS40cuPnQqHts2mnADLvBUk3
+         jqQLhgX1CYl5Tfvq2SUCwco3KGIXuC7Fz5rVOAd18YD+Dsje7XBhJH/wMCzij0qt7/zR
+         rznf1lhF7agAfR1VFbvvQdV+2hY8ZA+0w8SabroJ3n01dg3JXSSI9mQd6gdcw4+c2hvP
+         XeUzpk1CitP239i3iujuuNji4muOko8QCZc/5TRATFHKSg+l02taFFKVCuQJ6FgEDlUg
+         S9Nw==
+X-Gm-Message-State: AOAM530rJbdOjCeanpuBQg7XGpCYTQi3pNFT0saeF7QIRhOS5qJdCe78
+        0p1p5anoDDaF7lCvSJgj/SGYfA==
+X-Google-Smtp-Source: ABdhPJz71K7/57uPCiR89xSOHHgTjPmpmi1JlsdyaAHF49nrC0vBeITcntzH+c2vNK3NyDOJ4hb0Zg==
+X-Received: by 2002:a05:600c:189e:: with SMTP id x30mr415323wmp.44.1618251655804;
+        Mon, 12 Apr 2021 11:20:55 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:197c:ad7a:49b7:8f5c])
+        by smtp.gmail.com with ESMTPSA id g16sm18643195wrs.76.2021.04.12.11.20.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 11:20:26 -0700 (PDT)
-Received: (nullmailer pid 4148860 invoked by uid 1000);
-        Mon, 12 Apr 2021 18:20:26 -0000
-Date:   Mon, 12 Apr 2021 13:20:26 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     devicetree@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-rtc@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>, kgunda@codeaurora.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH V2 2/4] dt-bindings: mfd: Add compatible for pmk8350 rtc
-Message-ID: <20210412182026.GA4148391@robh.at.kernel.org>
-References: <1617976766-7852-1-git-send-email-skakit@codeaurora.org>
- <1617976766-7852-3-git-send-email-skakit@codeaurora.org>
+        Mon, 12 Apr 2021 11:20:55 -0700 (PDT)
+Date:   Mon, 12 Apr 2021 20:20:46 +0200
+From:   Marco Elver <elver@google.com>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>, Hao Sun <sunhao.th@gmail.com>,
+        jack@suse.com, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        paulmck@kernel.org, dvyukov@google.com
+Subject: Re: KCSAN: data-race in __jbd2_journal_file_buffer /
+ jbd2_journal_dirty_metadata
+Message-ID: <YHSPfiJ/h/f3ky5n@elver.google.com>
+References: <CACkBjsZW5Sp4jB51+C5mrMssgq73x8iEko_EV6CTXVvtVa7KPQ@mail.gmail.com>
+ <20210406123232.GD19407@quack2.suse.cz>
+ <YGx308zQXxOjmwNZ@mit.edu>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1617976766-7852-3-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <YGx308zQXxOjmwNZ@mit.edu>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 09 Apr 2021 19:29:24 +0530, satya priya wrote:
-> Add compatible string for pmk8350 rtc support.
+On Tue, Apr 06, 2021 at 11:01AM -0400, Theodore Ts'o wrote:
+> On Tue, Apr 06, 2021 at 02:32:33PM +0200, Jan Kara wrote:
+> > And the comment explains, why we do this unreliable check. Again, if we
+> > wanted to silence KCSAN, we could use data_race() macro but AFAIU Ted isn't
+> > very fond of that annotation.
 > 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> ---
-> Changes in V2:
->  - Moved this patch before conversion patches.
-> 
->  Documentation/devicetree/bindings/mfd/qcom-pm8xxx.txt | 1 +
->  1 file changed, 1 insertion(+)
-> 
+> I'm not fond of the data_race macro, but I like bogus KCSAN reports
+> even less.  My main complaint is if we're going to have to put the
+> data_race() macro in place, we're going to need to annotate each
+> location with an explanation of why it's there (suppress a KCSAN false
+> positive), and why's it's safe.  If it's only one or two places, it'll
+> probably be fine.  If it's dozens, then I would say that KCSAN is
+> becoming a net negative in terms of making the Linux kernel code
+> maintainable.
 
-Acked-by: Rob Herring <robh@kernel.org>
+I've just seen the latest reports on these data races [1], but it seems
+the more relevant context is here.
+[1] https://lore.kernel.org/linux-ext4/20210412113158.GA4679@quack2.suse.cz/
+
+Let me try to put things in perspective.
+
+No, we do not want maintainability to suffer. Whether or not documenting
+the concurrency design via data_race() and a few comments is a negative
+or positive is up to you. To me, it'd be a positive because I don't have
+to guess what the code is trying to do because concurrent code rarely is
+obvious. (In fairness, if you don't like to add comments, just a
+data_race() without comment tells a reader more than now; perhaps they'd
+then rummage in the git logs.)
+
+Yes, there are currently lots of data-racy accesses in the kernel that
+are mostly benign. Yet, they are data races in the memory model's eyes,
+and every optimizing compiler is free to screw them up! For example a
+lot of those plain read-modify-write bitops ("...  |= ...").
+
+Unfortunately tooling cannot determine without hints (like data_race())
+whether or not those are safe, since the programmer's intent is unclear.
+Crucially, the programmer's intent is also unclear to the compiler!
+Which means the compiler _is_ free to screw up those operations.
+
+If we could somehow precisely determine which plain accesses can race,
+we'd solve a decades-old problem: optimizing compilers and concurrent
+code do not get along. Therefore, C needed a memory model to sort out
+this mess, which we have since C11. The Linux kernel, however, doesn't
+play by those rules. The Linux Kernel Memory Model (LKMM) tries to
+specify the rules the kernel can safely play by.
+
+But since we have KCSAN, which initially tried to follow the LKMM
+strictly, various feedback has resulted in taming KCSAN to a subset of
+the LKMM. A lot of the data races that are left, yet appear benign,
+simply have no obvious rules or patterns (otherwise we wouldn't have the
+problem we have with optimizing compilers). I couldn't, in good
+conscience, tame KCSAN based on poorly thought-out rules. Because we
+know they're data races, and the compiler _is_ free to subject them to
+concurrency-unsafe optimizations.
+
+Because we knew that different codes will want different KCSAN exposure
+until there is a de-facto LKMM that is to be followed everywhere (one
+can dream), KCSAN has lots of knobs. They are described in detail here:
+https://lwn.net/Articles/816854/
+
+> I'm not fond of the data_race macro, but I like bogus KCSAN reports
+> even less.
+
+While the data_race() macro was meant to be exactly for this case, to
+tell tooling "this data race is fine, even if the compiler messes it
+up", if there are too many data races for you right now feel free to add
+'KCSAN_SANITIZE_file.o := n' to the files you don't want checked. Or
+even 'KCSAN_SANITIZE := n' to ignore all files in a directory. It would
+avoid the robots sending you reports. Not ideal, but it'd give some time
+to see how things evolve elsewhere if you'd rather avoid all this for
+now.
+
+Thanks,
+-- Marco
