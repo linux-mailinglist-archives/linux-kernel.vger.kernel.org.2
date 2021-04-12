@@ -2,161 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6837835BB1D
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB88635BB1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 09:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236982AbhDLHpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 03:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhDLHpL (ORCPT
+        id S236965AbhDLHpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 03:45:00 -0400
+Received: from mail-ua1-f52.google.com ([209.85.222.52]:36376 "EHLO
+        mail-ua1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230510AbhDLHo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 03:45:11 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37314C06138C
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:44:54 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id g4so6168405vsq.8
-        for <linux-kernel@vger.kernel.org>; Mon, 12 Apr 2021 00:44:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rux4LnTGd+o0ZDkm2rK5JaA4uc/5P3BY5Hh01flfgVc=;
-        b=XN7GE3HPB/zIHqp9TleM31A6+vpyl/Dg/vnZN6HK2s+9PkKLajabN2lpRqdsOBJXsz
-         QaR0mofVP0quxYWicwDOSCuESVHgMoOfxAiDiFaKe5FqFMADNv4pCrmsp4XJmetNOmj6
-         1L+VboBeRrm6W4gJWarEfmu79SWrXFaRjhL3tWXwhb+HGLQ20UqwAuw5p9Qoh94Obs42
-         obZKjde53LJDy2unGq/WGI+CniTW9lrTDO46MLQj/yZ6WWDFs21c4U61RDyph2d0TaOt
-         At+JXTc68JZfmYSxlNHn6U1l3pjjLIgvvv1kS7G2iOF5iaYem5h2ZFm/FOFB2jzsq6Fx
-         N9GA==
+        Mon, 12 Apr 2021 03:44:59 -0400
+Received: by mail-ua1-f52.google.com with SMTP id c2so3957888uaj.3;
+        Mon, 12 Apr 2021 00:44:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Rux4LnTGd+o0ZDkm2rK5JaA4uc/5P3BY5Hh01flfgVc=;
-        b=MoVPC+Xb86t8swvolWvvPe5rMVoxl4WG7GieIWKjU0GsHIFO9+cpyV8g9fQPXaFSb8
-         yB7htyFOBUhKdHpUFA8NdcEPFWWy4vQVfrFyrgIBmUtTee+ZWlBOQKxhTuSW4RHs9P3g
-         a1MEicdUGBBOzC4UnwXp0PkZbdYJxQjFV00FG/frElxhUjNZjFkwt+RjA778z5+1OBKi
-         t0/AnfozxL1u+ynIQwleJzMUwKICSbz7fGBxf3nEYKSdSy44Fzu668ofldoFiQb6F0uY
-         HjZMMr3x51G2JIsgDXMu69LkeS2wm0ihzZ//9oITakMHr8O3lCi50Mtjmg10L/FU8lPn
-         2I6Q==
-X-Gm-Message-State: AOAM532UO+bwJHDsnFCkwuGHwUA44yd+7pxlJvAqTysg16kLTsqtGq9a
-        lcVJeASxj/tZs00vacEUUtPIpme9xhHNo2TFqZExew==
-X-Google-Smtp-Source: ABdhPJz0HNH8WN3/vlJYhiWeOmnVuF1SVVIi/Mn4Q0PBGv4sP7ZUhhvE4Vz3Vm656OYqrfJ858yqMvbog0eLDFBwt9g=
-X-Received: by 2002:a67:6942:: with SMTP id e63mr19255741vsc.48.1618213493418;
- Mon, 12 Apr 2021 00:44:53 -0700 (PDT)
+        bh=JXZ2evZ1HlMgd5dQiMnzV28T68ypmIxoPU4uM5YLJDY=;
+        b=Vinz3BFRyvpJ+vPsgG2IHGgWyJ+J8qtd8bLpImK4DDLmbkCUPCNIMZWEKt+NjupWm5
+         2ILHj0eESMASOTNIFBtSPfAdJWqP1PHkH5HWbngQ7Rfz+H7RFXEscjS8U9sfznVSHZxB
+         TMEl4824r/zv2tbc4odVjVsq62lxAhXO2f0YuytydOybUOaEie3QRaZH3Y5aNNoLI1YA
+         oU2fXBbPCcMJGxfWKKIVClOAPXWGKJ+l81wD0GqmDq7z0+oHtB1qydmJEJrN85j9ovdi
+         gxArkn6VmNu/345caKMkTAz0r1bZKOnyURoJEWSQv28ms+MNpMbj6UKKWTjwjAfCOua/
+         kcfg==
+X-Gm-Message-State: AOAM530g4qnct9/xmuRglWUL0gvLG1tg+K8SIrH+6cXJ1FdymOznW8EV
+        ZNPAMXL2HBI0vPy+QJBBsO4Z7BNRjKop0d2D5WO2+7LiPko=
+X-Google-Smtp-Source: ABdhPJx+WwlU+f/sxyzlKoozSp4V5pjbJlg2tOYyn632dPGmXpWO0oMiT+z+uxKe9nNXFSbUevs6IBKhAohcjgM8HOo=
+X-Received: by 2002:a9f:262c:: with SMTP id 41mr8642842uag.4.1618213481107;
+ Mon, 12 Apr 2021 00:44:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210408175951.22450-1-scott.branden@broadcom.com>
-In-Reply-To: <20210408175951.22450-1-scott.branden@broadcom.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 12 Apr 2021 09:44:17 +0200
-Message-ID: <CAPDyKFrBMGjCFCwgaJ1D5f+VJSenp369MDP7KS_PY9JaPYA0Hg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: add quirk to disable eMMC cache for Micron eMMC v5.0 cards
-To:     Scott Branden <scott.branden@broadcom.com>,
-        "Bean Huo (beanhuo)" <beanhuo@micron.com>,
-        "Luca Porzio (lporzio)" <lporzio@micron.com>
-Cc:     BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
+References: <20210411135532.219797-1-masahiroy@kernel.org>
+In-Reply-To: <20210411135532.219797-1-masahiroy@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 12 Apr 2021 09:44:29 +0200
+Message-ID: <CAMuHMdUtqSv6PUfLtuGoBSgqqM4CkwSkT3nKstXRKN1tuXrQ_g@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: use ?= to assign CROSS_COMPILE by arch-Makefile
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Helge Deller <deller@gmx.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        "moderated list:H8/300 ARCHITECTURE" 
+        <uclinux-h8-devel@lists.sourceforge.jp>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Bean Huo, Luca Porzio
+Hi Yamada-san,
 
-On Thu, 8 Apr 2021 at 19:59, Scott Branden <scott.branden@broadcom.com> wrote:
+On Sun, Apr 11, 2021 at 3:56 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+> Use ?= operator to let arch/*/Makefile to assign CROSS_COMPILE only
+> when CROSS_COMPILE is undefined.
 >
-> From: Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>
+> This allows arch-Makefiles to drop the ifeq ($(CROSS_COMPILE),)
+> conditional.
 >
-> In certain rare combination of operations, Micron eMMC v5.0 cards
-> may experience data errors if internal cache is enabled.
-> This may lead to eMMC related data errors.
-> Introduce a quirk to disable cache on these eMMC cards.
-
-Can you please elaborate on this, what combinations of operations are
-you referring to - and what kind of data errors?
-
-I have also looped in some of the Micron guys, to let them chim in.
-
+> This slightly changes the behavior; the arch-Makefile previously
+> overrode CROSS_COMPILE when CROSS_COMPILE has already been made empty
+> via an environment variable as in 'export CROSS_COMPILE='.
 >
-> Signed-off-by: Vladimir Olovyannikov <vladimir.olovyannikov@broadcom.com>
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+> With this commit, arch-Makefle will respect the user's environment
+> set-up, which seems to be a more correct behavior.
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Kind regards
-Uffe
+Thanks for your patch!
 
 > ---
->  drivers/mmc/core/card.h   | 5 +++++
->  drivers/mmc/core/mmc.c    | 4 ++--
->  drivers/mmc/core/quirks.h | 8 ++++++++
->  include/linux/mmc/card.h  | 1 +
->  4 files changed, 16 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/mmc/core/card.h b/drivers/mmc/core/card.h
-> index 7bd392d55cfa..22cea63ac359 100644
-> --- a/drivers/mmc/core/card.h
-> +++ b/drivers/mmc/core/card.h
-> @@ -222,4 +222,9 @@ static inline int mmc_card_broken_hpi(const struct mmc_card *c)
->         return c->quirks & MMC_QUIRK_BROKEN_HPI;
->  }
+>  arch/arc/Makefile    | 4 +---
+>  arch/h8300/Makefile  | 4 +---
+>  arch/m68k/Makefile   | 4 +---
+>  arch/mips/Makefile   | 4 +---
+>  arch/parisc/Makefile | 6 ++----
+>  arch/sh/Makefile     | 4 +---
+
+What about arch/xtensa/Makefile?
+
+> --- a/arch/m68k/Makefile
+> +++ b/arch/m68k/Makefile
+> @@ -17,10 +17,8 @@
+>  KBUILD_DEFCONFIG := multi_defconfig
 >
-> +static inline int mmc_card_broken_cache(const struct mmc_card *c)
-> +{
-> +       return c->quirks & MMC_QUIRK_BROKEN_CACHE;
-> +}
-> +
->  #endif
-> diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-> index 8741271d3971..cd83b7f0e59c 100644
-> --- a/drivers/mmc/core/mmc.c
-> +++ b/drivers/mmc/core/mmc.c
-> @@ -1820,12 +1820,12 @@ static int mmc_init_card(struct mmc_host *host, u32 ocr,
->          * sudden power failure tests. Let's extend the timeout to a minimum of
->          * DEFAULT_CACHE_EN_TIMEOUT_MS and do it for all cards.
->          */
-> -       if (card->ext_csd.cache_size > 0) {
-> +       if (!mmc_card_broken_cache(card) && card->ext_csd.cache_size > 0) {
->                 unsigned int timeout_ms = MIN_CACHE_EN_TIMEOUT_MS;
->
->                 timeout_ms = max(card->ext_csd.generic_cmd6_time, timeout_ms);
->                 err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
-> -                               EXT_CSD_CACHE_CTRL, 1, timeout_ms);
-> +                                EXT_CSD_CACHE_CTRL, 1, timeout_ms);
->                 if (err && err != -EBADMSG)
->                         goto free_card;
->
-> diff --git a/drivers/mmc/core/quirks.h b/drivers/mmc/core/quirks.h
-> index d68e6e513a4f..23972d87c82a 100644
-> --- a/drivers/mmc/core/quirks.h
-> +++ b/drivers/mmc/core/quirks.h
-> @@ -116,6 +116,14 @@ static const struct mmc_fixup __maybe_unused mmc_ext_csd_fixups[] = {
->         MMC_FIXUP_EXT_CSD_REV(CID_NAME_ANY, CID_MANFID_NUMONYX,
->                               0x014e, add_quirk, MMC_QUIRK_BROKEN_HPI, 6),
->
-> +       /*
-> +        * In certain rare combination of operations, Micron eMMC v5.0 cards
-> +        * may experience data errors if internal cache is enabled.
-> +        * Disabling cache for these cards eliminates the issue.
-> +        */
-> +       MMC_FIXUP_EXT_CSD_REV(CID_NAME_ANY, CID_MANFID_MICRON,
-> +                             0x014e, add_quirk, MMC_QUIRK_BROKEN_CACHE, 7),
-> +
->         END_FIXUP
->  };
->
-> diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-> index f9ad35dd6012..22f256a4e54e 100644
-> --- a/include/linux/mmc/card.h
-> +++ b/include/linux/mmc/card.h
-> @@ -270,6 +270,7 @@ struct mmc_card {
->  #define MMC_QUIRK_BROKEN_IRQ_POLLING   (1<<11) /* Polling SDIO_CCCR_INTx could create a fake interrupt */
->  #define MMC_QUIRK_TRIM_BROKEN  (1<<12)         /* Skip trim */
->  #define MMC_QUIRK_BROKEN_HPI   (1<<13)         /* Disable broken HPI support */
-> +#define MMC_QUIRK_BROKEN_CACHE (1<<14)         /* Disable broken cache */
->
->         bool                    reenable_cmdq;  /* Re-enable Command Queue */
->
-> --
-> 2.17.1
->
+>  ifneq ($(SUBARCH),$(ARCH))
+> -       ifeq ($(CROSS_COMPILE),)
+> -               CROSS_COMPILE := $(call cc-cross-prefix, \
+> +       CROSS_COMPILE ?= $(call cc-cross-prefix, \
+>                         m68k-linux-gnu- m68k-linux- m68k-unknown-linux-gnu-)
+> -       endif
+>  endif
+
+This does not seem to work as expected: my standard build scripts
+(using "make ARCH=m68k") no longer pick up the cross-compiler,
+but fall back to the native compiler, thus breaking the build.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
