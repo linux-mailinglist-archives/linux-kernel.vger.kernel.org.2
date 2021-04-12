@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD4C35BCDC
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E60E935BCED
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237827AbhDLIqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:46:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37056 "EHLO mail.kernel.org"
+        id S237909AbhDLIq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:46:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37080 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237712AbhDLIow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:44:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 080416124A;
-        Mon, 12 Apr 2021 08:44:33 +0000 (UTC)
+        id S237768AbhDLIpO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:45:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA5206109E;
+        Mon, 12 Apr 2021 08:44:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217074;
-        bh=09P0E53fr4912uCvGnabNL1YAL+S6s8L7zesH6Jt9YE=;
+        s=korg; t=1618217096;
+        bh=qAE3fJG+cg/JqdB5Q7R+RWJsoeCSXspORQUoNyDSQq4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2mbQsWyXf6Yk+lxkdufGm1MSs9Zzp7g/+Z1TFobo3MlEKFhwCWMqmTJ8hUqycHN88
-         olWHcClDJMGWzGNpJkFOX3uVWdwNmhoGmJguj0pVZxJV06Ju4juLFTDPTviUv+DTed
-         rui68FbybYN/KBU+Yol0hIE8+AnGv3KsBXMRPxiY=
+        b=AHcpqX01yc4FbSpmTqPH6haB9bLzON1AePKN9opJb7563Ra3jleMM+6YN31BpKO9+
+         kzg9gJXxGNEvw9hlcMiH9liTjAj7fFhnDM4EVldyWS8nBCI5alNrVB5NZ65jFya2za
+         c8W1qmQt6QctjMUWA12+hfAL5elWvRrM5VQur6Tc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Dawid Lukwinski <dawid.lukwinski@intel.com>,
-        Mateusz Palczewski <mateusz.palczewski@intel.com>,
+        stable@vger.kernel.org, Eryk Rybak <eryk.roch.rybak@intel.com>,
+        Grzegorz Szczurek <grzegorzx.szczurek@intel.com>,
         Aleksandr Loktionov <aleksandr.loktionov@intel.com>,
-        Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>,
-        Tony Brelinski <tonyx.brelinski@intel.com>,
+        Konrad Jankowski <konrad0.jankowski@intel.com>,
         Tony Nguyen <anthony.l.nguyen@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 33/66] i40e: Added Asym_Pause to supported link modes
-Date:   Mon, 12 Apr 2021 10:40:39 +0200
-Message-Id: <20210412083959.195699344@linuxfoundation.org>
+Subject: [PATCH 4.19 34/66] i40e: Fix kernel oops when i40e driver removes VFs
+Date:   Mon, 12 Apr 2021 10:40:40 +0200
+Message-Id: <20210412083959.225849856@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
 References: <20210412083958.129944265@linuxfoundation.org>
@@ -45,39 +43,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Palczewski <mateusz.palczewski@intel.com>
+From: Eryk Rybak <eryk.roch.rybak@intel.com>
 
-[ Upstream commit 90449e98c265296329446c7abcd2aae3b20c0bc9 ]
+[ Upstream commit 347b5650cd158d1d953487cc2bec567af5c5bf96 ]
 
-Add Asym_Pause to supported link modes (it is supported by HW).
-Lack of Asym_Pause in supported modes can cause several problems,
-i.e. it won't be possible to turn the autonegotiation on
-with asymmetric pause settings (i.e. Tx on, Rx off).
+Fix the reason of kernel oops when i40e driver removed VFs.
+Added new __I40E_VFS_RELEASING state to signalize releasing
+process by PF, that it makes possible to exit of reset VF procedure.
+Without this patch, it is possible to suspend the VFs reset by
+releasing VFs resources procedure. Retrying the reset after the
+timeout works on the freed VF memory causing a kernel oops.
 
-Fixes: 4e91bcd5d47a ("i40e: Finish implementation of ethtool get settings")
-Signed-off-by: Dawid Lukwinski <dawid.lukwinski@intel.com>
-Signed-off-by: Mateusz Palczewski <mateusz.palczewski@intel.com>
+Fixes: d43d60e5eb95 ("i40e: ensure reset occurs when disabling VF")
+Signed-off-by: Eryk Rybak <eryk.roch.rybak@intel.com>
+Signed-off-by: Grzegorz Szczurek <grzegorzx.szczurek@intel.com>
 Reviewed-by: Aleksandr Loktionov <aleksandr.loktionov@intel.com>
-Reviewed-by: Przemyslaw Patynowski <przemyslawx.patynowski@intel.com>
-Tested-by: Tony Brelinski <tonyx.brelinski@intel.com>
+Tested-by: Konrad Jankowski <konrad0.jankowski@intel.com>
 Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/i40e/i40e_ethtool.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/intel/i40e/i40e.h             | 1 +
+ drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 9 +++++++++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-index a6b0f605a7d8..9148d93c5c63 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_ethtool.c
-@@ -796,6 +796,7 @@ static int i40e_get_link_ksettings(struct net_device *netdev,
+diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
+index 738acba7a9a3..3c921dfc2056 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e.h
++++ b/drivers/net/ethernet/intel/i40e/i40e.h
+@@ -149,6 +149,7 @@ enum i40e_state_t {
+ 	__I40E_CLIENT_L2_CHANGE,
+ 	__I40E_CLIENT_RESET,
+ 	__I40E_VF_RESETS_DISABLED,	/* disable resets during i40e_remove */
++	__I40E_VFS_RELEASING,
+ 	/* This must be last as it determines the size of the BITMAP */
+ 	__I40E_STATE_SIZE__,
+ };
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+index 5d782148d35f..3c1533c627fd 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c
+@@ -137,6 +137,7 @@ void i40e_vc_notify_vf_reset(struct i40e_vf *vf)
+  **/
+ static inline void i40e_vc_disable_vf(struct i40e_vf *vf)
+ {
++	struct i40e_pf *pf = vf->pf;
+ 	int i;
  
- 	/* Set flow control settings */
- 	ethtool_link_ksettings_add_link_mode(ks, supported, Pause);
-+	ethtool_link_ksettings_add_link_mode(ks, supported, Asym_Pause);
+ 	i40e_vc_notify_vf_reset(vf);
+@@ -147,6 +148,11 @@ static inline void i40e_vc_disable_vf(struct i40e_vf *vf)
+ 	 * ensure a reset.
+ 	 */
+ 	for (i = 0; i < 20; i++) {
++		/* If PF is in VFs releasing state reset VF is impossible,
++		 * so leave it.
++		 */
++		if (test_bit(__I40E_VFS_RELEASING, pf->state))
++			return;
+ 		if (i40e_reset_vf(vf, false))
+ 			return;
+ 		usleep_range(10000, 20000);
+@@ -1381,6 +1387,8 @@ void i40e_free_vfs(struct i40e_pf *pf)
  
- 	switch (hw->fc.requested_mode) {
- 	case I40E_FC_FULL:
+ 	if (!pf->vf)
+ 		return;
++
++	set_bit(__I40E_VFS_RELEASING, pf->state);
+ 	while (test_and_set_bit(__I40E_VF_DISABLE, pf->state))
+ 		usleep_range(1000, 2000);
+ 
+@@ -1438,6 +1446,7 @@ void i40e_free_vfs(struct i40e_pf *pf)
+ 		}
+ 	}
+ 	clear_bit(__I40E_VF_DISABLE, pf->state);
++	clear_bit(__I40E_VFS_RELEASING, pf->state);
+ }
+ 
+ #ifdef CONFIG_PCI_IOV
 -- 
 2.30.2
 
