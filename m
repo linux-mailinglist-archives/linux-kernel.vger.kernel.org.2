@@ -2,117 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DF335C370
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5826535C373
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 12:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239325AbhDLKMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 06:12:15 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:48300 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239401AbhDLKLO (ORCPT
+        id S238651AbhDLKND convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 12 Apr 2021 06:13:03 -0400
+Received: from mail-ua1-f42.google.com ([209.85.222.42]:47043 "EHLO
+        mail-ua1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239159AbhDLKMZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 06:11:14 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AKVLbDq5jqzvyzHwlgwPXwZCBI+orLtY04lQ7?=
- =?us-ascii?q?vn1ZYxY9SKClvuqpm+kW0gKxtS0YX2sulcvFFK6LR37d8pAd2/h1AZ6JWg76tG?=
- =?us-ascii?q?y0aLxz9IeK+UyDJwTS/vNQvJ0KT4FQE9v1ZGIRse/b502CH88k0J279smT69v2?=
- =?us-ascii?q?61dIYUVUZ7p77wF/YzzrcXFeYAVdH5I2GN69y6N8yAaIQngcYsSlCnRtZYGqm/?=
- =?us-ascii?q?TxmJ3rehIADRI8gTPusRqT9LX4HxKEty1/bxpzwKwv+WWAswv16rTLiYDD9jbg?=
- =?us-ascii?q?1nTe55kTpd35ytErPr3rtuEpLFzX5zqAVcBEU72GsCtdmpDJ1H8a1P/WoxkhOM?=
- =?us-ascii?q?xv63TeOkGNyCGdvzXd7A=3D=3D?=
-X-IronPort-AV: E=Sophos;i="5.82,216,1613430000"; 
-   d="scan'208";a="502749185"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 12:10:54 +0200
-Date:   Mon, 12 Apr 2021 12:10:54 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     tawahpeggy <tawahpeggy98@gmail.com>
-cc:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        outreachy-kernel@googlegroups.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Outreachy kernel] [PATCH] Staging: Remove line to fix checkpatch
- error
-In-Reply-To: <20210411204933.GA3524@peggy-Lenovo-V130-15IKB>
-Message-ID: <alpine.DEB.2.22.394.2104121208530.6734@hadrien>
-References: <20210411204933.GA3524@peggy-Lenovo-V130-15IKB>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Mon, 12 Apr 2021 06:12:25 -0400
+Received: by mail-ua1-f42.google.com with SMTP id v23so4027508uaq.13;
+        Mon, 12 Apr 2021 03:12:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TcrBhd9h32jAOg0+eioQtPRmXf1Id+px4TRLySLpr0Y=;
+        b=pojU7zt7914JZDCznhNuquyo1zXZGtAXEmm1SAqVBfndHFK3NveHs4nCNXL18P0xx1
+         +R5jB3Rv23iByFHYeI41ms2jQvuocNRLfNFAsRKxY8gkRsS/JmIaeymlebi0Qn3HmIMT
+         L1YFlB1c/wZEwCEDihye5A9TDbvq0rZlyHq1ikTHpSvGSSs/5fMO6Dt91XpMBV6hSmJ2
+         uHVb1/jGynAji/4KC5oo4MBA6fuGC1LFJgj+Db6UPNiwxNnOWyHHSailqItVYl6PHhbc
+         pmStVSnfw0hFRUKONJKpQWdSl8aaBhXxEUcvh/1USl2bONKeJroAxB8IyjXkhnE++bYK
+         k2tA==
+X-Gm-Message-State: AOAM532BXk9mYDP013AwCn+kK9/44yX9h2luVhVAjJbVS8Ox/Ef+wSr9
+        G5MXxMYcfDvRJ6OrUUDarxpgfNDjAc3Gs++6vKWLyTmu
+X-Google-Smtp-Source: ABdhPJzo4bMyzVFzOTYUA2kaSWmVgOZ+indu4zQzUNFSHbGo3OWNB5ifZpkI3aqeFzmWU2/xZdpemxACoc1DmfTZhdc=
+X-Received: by 2002:ab0:6306:: with SMTP id a6mr18164841uap.2.1618222326855;
+ Mon, 12 Apr 2021 03:12:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210407101713.8694-1-andriy.shevchenko@linux.intel.com> <33a5ee25-d4c9-b5c2-b5f9-05316b1139c0@roeck-us.net>
+In-Reply-To: <33a5ee25-d4c9-b5c2-b5f9-05316b1139c0@roeck-us.net>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 12 Apr 2021 12:11:55 +0200
+Message-ID: <CAMuHMdW4-DfkDg6txJNfLi2PYVzh-3aPLYE_7tUEZ6WzHEeG9Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] serial: sh-sci: Respect deferred probe when
+ getting IRQ
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Günter,
 
+On Wed, Apr 7, 2021 at 10:58 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> On 4/7/21 3:17 AM, Andy Shevchenko wrote:
+> > With platform_get_irq() and its optional variant it's possible to get
+> > a deferred probe error code. Since the commit ed7027fdf4ec ("driver core:
+> > platform: Make platform_get_irq_optional() optional") the error code
+> > can be distinguished from no IRQ case. With this, rewrite IRQ resource
+> > handling in sh-sci driver to follow above and allow to respect deferred
+> > probe.
+> >
+> > Fixes: ed7027fdf4ec ("driver core: platform: Make platform_get_irq_optional() optional")
+> > Reported-by: Guenter Roeck <linux@roeck-us.net>
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> This patch alone causes a hard hang early during boot. It works if applied
+> together with ed7027fdf4ec. Ultimately that means that ed7027fdf4ec introduces
+> a functional change, and will need to be applied very carefully. A cursory
+> glance through callers of platform_get_irq_optional() shows that many
+> do not handle this correctly: various drivers handle a return value of 0
+> as valid interrupt, and others treat errors other than -ENXIO as fatal.
+>
+> Also, each patch on its own causes failures on sh, which is problematic
+> when applying them even as series. See below for an idea how to
+> address that.
+>
+> > ---
+> > v2: fixed a typo: i -> 0
+> >  drivers/tty/serial/sh-sci.c | 18 ++++++++----------
+> >  1 file changed, 8 insertions(+), 10 deletions(-)
+> >
+> > diff --git a/drivers/tty/serial/sh-sci.c b/drivers/tty/serial/sh-sci.c
+> > index ad2c189e8fc8..574f68ba50ff 100644
+> > --- a/drivers/tty/serial/sh-sci.c
+> > +++ b/drivers/tty/serial/sh-sci.c
+> > @@ -2899,13 +2899,6 @@ static int sci_init_single(struct platform_device *dev,
+> >       port->mapbase = res->start;
+> >       sci_port->reg_size = resource_size(res);
+> >
+> > -     for (i = 0; i < ARRAY_SIZE(sci_port->irqs); ++i) {
+> > -             if (i)
+> > -                     sci_port->irqs[i] = platform_get_irq_optional(dev, i);
+> > -             else
+> > -                     sci_port->irqs[i] = platform_get_irq(dev, i);
+> > -     }
+> > -
+> >       /* The SCI generates several interrupts. They can be muxed together or
+> >        * connected to different interrupt lines. In the muxed case only one
+> >        * interrupt resource is specified as there is only one interrupt ID.
+> > @@ -2913,12 +2906,17 @@ static int sci_init_single(struct platform_device *dev,
+> >        * from the SCI, however those signals might have their own individual
+> >        * interrupt ID numbers, or muxed together with another interrupt.
+> >        */
+> > +     sci_port->irqs[0] = platform_get_irq(dev, 0);
+> >       if (sci_port->irqs[0] < 0)
+> > -             return -ENXIO;
+> > +             return sci_port->irqs[0];
+> >
+> > -     if (sci_port->irqs[1] < 0)
+> > -             for (i = 1; i < ARRAY_SIZE(sci_port->irqs); i++)
+> > +     for (i = 1; i < ARRAY_SIZE(sci_port->irqs); ++i) {
+> > +             sci_port->irqs[i] = platform_get_irq_optional(dev, i);
+> > +             if (sci_port->irqs[i] < 0)
+> > +                     return sci_port->irqs[i];
+> > +             if (sci_port->irqs[i] == 0)
+> >                       sci_port->irqs[i] = sci_port->irqs[0];
+>
+> Since sh never gets -EPROBE_DEFER, the following code can be applied
+> on its own and does not depend on ed7027fdf4ec.
 
-On Sun, 11 Apr 2021, tawahpeggy wrote:
+Note that the sh-sci driver is also used on ARM32/64 and H8/300.
+On ARM, I don't expect GIC interrupts causing -EPROBE_DEFER, though.
 
-> remove one empty line.CHECK: Please don't use multiple blank lines
+Gr{oetje,eeting}s,
 
-Did something go wrong with the patch generation?  You say that you are
-removing one line, but the diff information looks like you are adding a
-file.  Normally a patch has only the changed lines and a few lines before
-and after.
+                        Geert
 
-> Signed-off-by: tawahpeggy <tawahpeggy98@gmail.com>
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-You need to put your real name when contributing to the Linux kernel.
-
-For example, I would put:
-
-Julia Lawall <julia.lawall@inria.fr>
-
-julia
-
->
-> ---
->  drivers/staging/comedi/comedi_pcmcia.mod.c | 1 -
->  1 file changed, 0 insertion(+), 1 deletion(-)
->  create mode 100644 drivers/staging/comedi/comedi_pcmcia.mod.c
->
-> diff --git a/drivers/staging/comedi/comedi_pcmcia.mod.c b/drivers/staging/comedi/comedi_pcmcia.mod.c
-> index 0904b8765afs96..3984db1a39c8
-> --- /dev/null
-> +++ b/drivers/staging/comedi/comedi_pcmcia.mod.c
-> @@ -0,0 +1,31 @@
-> #include <linux/module.h>
-> #define INCLUDE_VERMAGIC
-> #include <linux/build-salt.h>
-> #include <linux/vermagic.h>
-> #include <linux/compiler.h>
->
-> BUILD_SALT;
->
-> MODULE_INFO(vermagic, VERMAGIC_STRING);
-> MODULE_INFO(name, KBUILD_MODNAME);
->
-> __visible struct module __this_module
-> __section(".gnu.linkonce.this_module") = {
-> 	.name = KBUILD_MODNAME,
-> 	.init = init_module,
-> #ifdef CONFIG_MODULE_UNLOAD
-> 	.exit = cleanup_module,
-> #endif
-> 	.arch = MODULE_ARCH_INIT,
-> };
->
-> #ifdef CONFIG_RETPOLINE
-> MODULE_INFO(retpoline, "Y");
-> #endif
->
-> MODULE_INFO(staging, "Y");
->
-> MODULE_INFO(depends, "pcmcia,comedi");
->
-> -
-> MODULE_INFO(srcversion, "ED971F2E01020DFA2B04486");
-> --
-> 2.17.1
-> h-Hartman <gregkh@linuxfoundation.org>
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20210411204933.GA3524%40peggy-Lenovo-V130-15IKB.
->
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
