@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A346735C8F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC8535C8F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 16:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242530AbhDLOjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 10:39:09 -0400
-Received: from mga09.intel.com ([134.134.136.24]:29207 "EHLO mga09.intel.com"
+        id S242558AbhDLOjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 10:39:11 -0400
+Received: from mga09.intel.com ([134.134.136.24]:29202 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242400AbhDLOir (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:38:47 -0400
-IronPort-SDR: zvXR1qxJ9vkJux0L5iCtFeMIsIVuEzBhxXRFNyvPQslGP+sw7D5bSpPjFDbOEAYb6aia7OKVNn
- nImtwgF5wHvw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194317978"
+        id S242415AbhDLOit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 10:38:49 -0400
+IronPort-SDR: Q11OVG3ly4JcaVReYbHNUcY/vgpF9aQnlCx+7IleHUXgKouUBj6yc0J8Xzou6GJZGXd/QaJNt6
+ BPy3IfzB62Bw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9952"; a="194317984"
 X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="194317978"
+   d="scan'208";a="194317984"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 07:38:26 -0700
-IronPort-SDR: c9HEU/UB3+aaS54n8nGHt1T7ntH7rRcNoGmA2pOHGFnwPxMyunXHeMfjGSRmzBpphxYeT4Xzh0
- 8q8+RdXqDKNQ==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Apr 2021 07:38:27 -0700
+IronPort-SDR: Eu1vavvuJrd1v8PNFw/1Yf4iL2JkGJxif+610iniXaq4dtToJkXvakxDMh5sO/KwLt4xErASzI
+ Olno2sy97LgA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,216,1613462400"; 
-   d="scan'208";a="398392806"
+   d="scan'208";a="398392812"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga002.jf.intel.com with ESMTP; 12 Apr 2021 07:38:26 -0700
+  by orsmga002.jf.intel.com with ESMTP; 12 Apr 2021 07:38:27 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@kernel.org,
         linux-kernel@vger.kernel.org
@@ -33,9 +33,9 @@ Cc:     acme@kernel.org, tglx@linutronix.de, bp@alien8.de,
         yao.jin@linux.intel.com, alexander.shishkin@linux.intel.com,
         adrian.hunter@intel.com, ricardo.neri-calderon@linux.intel.com,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH V6 12/25] perf/x86/intel: Factor out intel_pmu_check_event_constraints
-Date:   Mon, 12 Apr 2021 07:30:52 -0700
-Message-Id: <1618237865-33448-13-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH V6 13/25] perf/x86/intel: Factor out intel_pmu_check_extra_regs
+Date:   Mon, 12 Apr 2021 07:30:53 -0700
+Message-Id: <1618237865-33448-14-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1618237865-33448-1-git-send-email-kan.liang@linux.intel.com>
 References: <1618237865-33448-1-git-send-email-kan.liang@linux.intel.com>
@@ -45,125 +45,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Each Hybrid PMU has to check and update its own event constraints before
+Each Hybrid PMU has to check and update its own extra registers before
 registration.
 
-The intel_pmu_check_event_constraints will be reused later to check
-the event constraints of each hybrid PMU.
+The intel_pmu_check_extra_regs will be reused later to check the extra
+registers of each hybrid PMU.
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/core.c | 82 +++++++++++++++++++++++++-------------------
- 1 file changed, 47 insertions(+), 35 deletions(-)
+ arch/x86/events/intel/core.c | 35 +++++++++++++++++++++--------------
+ 1 file changed, 21 insertions(+), 14 deletions(-)
 
 diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index d7e2021..5c5f330 100644
+index 5c5f330..55ccfbb 100644
 --- a/arch/x86/events/intel/core.c
 +++ b/arch/x86/events/intel/core.c
-@@ -5084,6 +5084,49 @@ static void intel_pmu_check_num_counters(int *num_counters,
- 	*intel_ctrl |= fixed_mask << INTEL_PMC_IDX_FIXED;
+@@ -5127,6 +5127,26 @@ static void intel_pmu_check_event_constraints(struct event_constraint *event_con
+ 	}
  }
  
-+static void intel_pmu_check_event_constraints(struct event_constraint *event_constraints,
-+					      int num_counters,
-+					      int num_counters_fixed,
-+					      u64 intel_ctrl)
++static void intel_pmu_check_extra_regs(struct extra_reg *extra_regs)
 +{
-+	struct event_constraint *c;
-+
-+	if (!event_constraints)
-+		return;
++	struct extra_reg *er;
 +
 +	/*
-+	 * event on fixed counter2 (REF_CYCLES) only works on this
-+	 * counter, so do not extend mask to generic counters
++	 * Access extra MSR may cause #GP under certain circumstances.
++	 * E.g. KVM doesn't support offcore event
++	 * Check all extra_regs here.
 +	 */
-+	for_each_event_constraint(c, event_constraints) {
-+		/*
-+		 * Don't extend the topdown slots and metrics
-+		 * events to the generic counters.
-+		 */
-+		if (c->idxmsk64 & INTEL_PMC_MSK_TOPDOWN) {
-+			/*
-+			 * Disable topdown slots and metrics events,
-+			 * if slots event is not in CPUID.
-+			 */
-+			if (!(INTEL_PMC_MSK_FIXED_SLOTS & intel_ctrl))
-+				c->idxmsk64 = 0;
-+			c->weight = hweight64(c->idxmsk64);
-+			continue;
-+		}
++	if (!extra_regs)
++		return;
 +
-+		if (c->cmask == FIXED_EVENT_FLAGS) {
-+			/* Disabled fixed counters which are not in CPUID */
-+			c->idxmsk64 &= intel_ctrl;
-+
-+			if (c->idxmsk64 != INTEL_PMC_MSK_FIXED_REF_CYCLES)
-+				c->idxmsk64 |= (1ULL << num_counters) - 1;
-+		}
-+		c->idxmsk64 &=
-+			~(~0ULL << (INTEL_PMC_IDX_FIXED + num_counters_fixed));
-+		c->weight = hweight64(c->idxmsk64);
++	for (er = extra_regs; er->msr; er++) {
++		er->extra_msr_access = check_msr(er->msr, 0x11UL);
++		/* Disable LBR select mapping */
++		if ((er->idx == EXTRA_REG_LBR) && !er->extra_msr_access)
++			x86_pmu.lbr_sel_map = NULL;
 +	}
 +}
 +
  __init int intel_pmu_init(void)
  {
  	struct attribute **extra_skl_attr = &empty_attrs;
-@@ -5094,7 +5137,6 @@ __init int intel_pmu_init(void)
- 	union cpuid10_edx edx;
+@@ -5138,7 +5158,6 @@ __init int intel_pmu_init(void)
  	union cpuid10_eax eax;
  	union cpuid10_ebx ebx;
--	struct event_constraint *c;
  	unsigned int fixed_mask;
- 	struct extra_reg *er;
+-	struct extra_reg *er;
  	bool pmem = false;
-@@ -5732,40 +5774,10 @@ __init int intel_pmu_init(void)
- 	if (x86_pmu.intel_cap.anythread_deprecated)
- 		x86_pmu.format_attrs = intel_arch_formats_attr;
+ 	int version, i;
+ 	char *name;
+@@ -5795,19 +5814,7 @@ __init int intel_pmu_init(void)
+ 	if (x86_pmu.lbr_nr)
+ 		pr_cont("%d-deep LBR, ", x86_pmu.lbr_nr);
  
--	if (x86_pmu.event_constraints) {
--		/*
--		 * event on fixed counter2 (REF_CYCLES) only works on this
--		 * counter, so do not extend mask to generic counters
--		 */
--		for_each_event_constraint(c, x86_pmu.event_constraints) {
--			/*
--			 * Don't extend the topdown slots and metrics
--			 * events to the generic counters.
--			 */
--			if (c->idxmsk64 & INTEL_PMC_MSK_TOPDOWN) {
--				/*
--				 * Disable topdown slots and metrics events,
--				 * if slots event is not in CPUID.
--				 */
--				if (!(INTEL_PMC_MSK_FIXED_SLOTS & x86_pmu.intel_ctrl))
--					c->idxmsk64 = 0;
--				c->weight = hweight64(c->idxmsk64);
--				continue;
--			}
--
--			if (c->cmask == FIXED_EVENT_FLAGS) {
--				/* Disabled fixed counters which are not in CPUID */
--				c->idxmsk64 &= x86_pmu.intel_ctrl;
--
--				if (c->idxmsk64 != INTEL_PMC_MSK_FIXED_REF_CYCLES)
--					c->idxmsk64 |= (1ULL << x86_pmu.num_counters) - 1;
--			}
--			c->idxmsk64 &=
--				~(~0ULL << (INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed));
--			c->weight = hweight64(c->idxmsk64);
+-	/*
+-	 * Access extra MSR may cause #GP under certain circumstances.
+-	 * E.g. KVM doesn't support offcore event
+-	 * Check all extra_regs here.
+-	 */
+-	if (x86_pmu.extra_regs) {
+-		for (er = x86_pmu.extra_regs; er->msr; er++) {
+-			er->extra_msr_access = check_msr(er->msr, 0x11UL);
+-			/* Disable LBR select mapping */
+-			if ((er->idx == EXTRA_REG_LBR) && !er->extra_msr_access)
+-				x86_pmu.lbr_sel_map = NULL;
 -		}
 -	}
--
-+	intel_pmu_check_event_constraints(x86_pmu.event_constraints,
-+					  x86_pmu.num_counters,
-+					  x86_pmu.num_counters_fixed,
-+					  x86_pmu.intel_ctrl);
- 	/*
- 	 * Access LBR MSR may cause #GP under certain circumstances.
- 	 * E.g. KVM doesn't support LBR MSR
++	intel_pmu_check_extra_regs(x86_pmu.extra_regs);
+ 
+ 	/* Support full width counters using alternative MSR range */
+ 	if (x86_pmu.intel_cap.full_width_write) {
 -- 
 2.7.4
 
