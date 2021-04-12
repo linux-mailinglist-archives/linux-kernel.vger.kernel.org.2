@@ -2,117 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E267D35D2EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC8835D2F1
+	for <lists+linux-kernel@lfdr.de>; Tue, 13 Apr 2021 00:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343649AbhDLWQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 18:16:12 -0400
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:56316 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240100AbhDLWQL (ORCPT
+        id S1343660AbhDLWR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 18:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240100AbhDLWR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 18:16:11 -0400
-Received: from dread.disaster.area (pa49-181-239-12.pa.nsw.optusnet.com.au [49.181.239.12])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 577EE5EC8BF;
-        Tue, 13 Apr 2021 08:15:37 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1lW4qG-0059Bc-0b; Tue, 13 Apr 2021 08:15:36 +1000
-Date:   Tue, 13 Apr 2021 08:15:36 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com, bigeasy@linutronix.de,
-        hch@infradead.org, npiggin@kernel.dk
-Subject: Re: bl_list and lockdep
-Message-ID: <20210412221536.GQ1990290@dread.disaster.area>
-References: <20210406123343.1739669-1-david@fromorbit.com>
- <20210406123343.1739669-4-david@fromorbit.com>
- <20210406132834.GP2531743@casper.infradead.org>
- <20210406212253.GC1990290@dread.disaster.area>
- <874kgb1qcq.ffs@nanos.tec.linutronix.de>
+        Mon, 12 Apr 2021 18:17:56 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7952C061574;
+        Mon, 12 Apr 2021 15:17:37 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id k21so1148476pll.10;
+        Mon, 12 Apr 2021 15:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eqMfZ9uDSMPVYNe4oF3x3rg/XnK6ZxSzgJH1Um+dq1g=;
+        b=Ju2zF6bVacD6Eu+b7uVnDJyLnM9tiGwBUtNLK879GvPrXdKLiTI2ur+5NB+yCzapkX
+         btcZ3vnvxrKGaU0q0VCwCEQuf3n+bs9HRV3VFPyhzISzZ2VWaFr1PkZ41waH7CjtyvOk
+         xxHz7Wwd4cj0yUo0BlhLWxntoMKmMJkyASKdtt/NEaCfy3hDjUibz3prZzEEQ64G2loN
+         zmPTedh/kZVxlgZuRc6Oksx2x4w6ayjkWbzuqeMAjplEaV94Ihkq2q2upvAql6IfQne/
+         61JuGu8eit+llUlu2tVkhN2t3v0lfAq+Q+Wtwlrf/3YiN0ooCzydsP7M+eetBO6tZeYZ
+         Jbzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eqMfZ9uDSMPVYNe4oF3x3rg/XnK6ZxSzgJH1Um+dq1g=;
+        b=Y391mVAJSVnG06efmPpb+JOm1z6+xP7TDiRkPbqJoOYzBIxvyXTYR5tm6JlM4bfmJK
+         uRN0Hpu+ovDkFPwHACkoaTOFxACJAgCTEvLZKPgyyReG0Y7Zlu/+r/bURAuq7Vt+CSXD
+         7RDDTD0OjMeF+X0b0ay0UP1jQmhT5xVQUmegJrIZfAzz1sLEZPFsKJaEtjYr0ovX0TEz
+         QdUInzLZ9PayQL/wtU4TjAhwDOCp6g93uQMvpFnJ6fJJemKYsCsYWUhZQRy3Bn3kItkp
+         wRF3dyZmIxNgfM9LNSnoVZ4FPJCaOisZkvQQOZg48G57hDEcGNq0HYiGNCl7PfZg2Q5L
+         CejA==
+X-Gm-Message-State: AOAM531MAuwSXlBmTek9SOwV8roTEPelV6Kg2oShN4TILqM/tqZ+5JGU
+        JrdSZ91IUUwg+6LXx1QehCE=
+X-Google-Smtp-Source: ABdhPJx+aIDD2NkWc6lwFtvcBzE0mkVok62Wqoc4sdLaWOOtSmYZP4Xdcd+5CDYJQVyFf5ofeOAqKg==
+X-Received: by 2002:a17:90b:3656:: with SMTP id nh22mr1347599pjb.112.1618265857365;
+        Mon, 12 Apr 2021 15:17:37 -0700 (PDT)
+Received: from skbuf (5-12-16-165.residential.rdsnet.ro. [5.12.16.165])
+        by smtp.gmail.com with ESMTPSA id v135sm12829858pgb.82.2021.04.12.15.17.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Apr 2021 15:17:36 -0700 (PDT)
+Date:   Tue, 13 Apr 2021 01:17:21 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Marek Behun <marek.behun@nic.cz>
+Cc:     DENG Qingfang <dqfext@gmail.com>,
+        Ansuel Smith <ansuelsmth@gmail.com>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Wei Wang <weiwan@google.com>,
+        Cong Wang <cong.wang@bytedance.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        zhang kai <zhangkaiheb@126.com>,
+        Weilong Chen <chenweilong@huawei.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Di Zhu <zhudi21@huawei.com>,
+        Francis Laniel <laniel_francis@privacyrequired.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 0/3] Multi-CPU DSA support
+Message-ID: <20210412221721.3gszur3hbrkhe76m@skbuf>
+References: <20210410133454.4768-1-ansuelsmth@gmail.com>
+ <20210411200135.35fb5985@thinkpad>
+ <20210411185017.3xf7kxzzq2vefpwu@skbuf>
+ <20210412150045.929508-1-dqfext@gmail.com>
+ <20210412163211.jrqtwwz2f7ftyli6@skbuf>
+ <20210413000457.61050ea3@thinkpad>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <874kgb1qcq.ffs@nanos.tec.linutronix.de>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0 cx=a_idp_f
-        a=gO82wUwQTSpaJfP49aMSow==:117 a=gO82wUwQTSpaJfP49aMSow==:17
-        a=kj9zAlcOel0A:10 a=3YhXtTcJ-WEA:10 a=7-415B0cAAAA:8
-        a=BcQbKYzZlWi3y6IvRCwA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20210413000457.61050ea3@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 05:20:53PM +0200, Thomas Gleixner wrote:
-> Dave,
-> 
-> On Wed, Apr 07 2021 at 07:22, Dave Chinner wrote:
-> > On Tue, Apr 06, 2021 at 02:28:34PM +0100, Matthew Wilcox wrote:
-> >> On Tue, Apr 06, 2021 at 10:33:43PM +1000, Dave Chinner wrote:
-> >> > +++ b/fs/inode.c
-> >> > @@ -57,8 +57,7 @@
-> >> >  
-> >> >  static unsigned int i_hash_mask __read_mostly;
-> >> >  static unsigned int i_hash_shift __read_mostly;
-> >> > -static struct hlist_head *inode_hashtable __read_mostly;
-> >> > -static __cacheline_aligned_in_smp DEFINE_SPINLOCK(inode_hash_lock);
-> >> > +static struct hlist_bl_head *inode_hashtable __read_mostly;
-> >> 
-> >> I'm a little concerned that we're losing a lockdep map here.  
-> >> 
-> >> Nobody seems to have done this for list_bl yet, and I'd be reluctant
-> >> to gate your patch on "Hey, Dave, solve this problem nobody else has
-> >> done yet".
+On Tue, Apr 13, 2021 at 12:04:57AM +0200, Marek Behun wrote:
+> On Mon, 12 Apr 2021 19:32:11 +0300
+> Vladimir Oltean <olteanv@gmail.com> wrote:
+>
+> > On Mon, Apr 12, 2021 at 11:00:45PM +0800, DENG Qingfang wrote:
+> > > On Sun, Apr 11, 2021 at 09:50:17PM +0300, Vladimir Oltean wrote:
+> > > >
+> > > > So I'd be tempted to say 'tough luck' if all your ports are not up, and
+> > > > the ones that are are assigned statically to the same CPU port. It's a
+> > > > compromise between flexibility and simplicity, and I would go for
+> > > > simplicity here. That's the most you can achieve with static assignment,
+> > > > just put the CPU ports in a LAG if you want better dynamic load balancing
+> > > > (for details read on below).
+> > > >
+> > >
+> > > Many switches such as mv88e6xxx only support MAC DA/SA load balancing,
+> > > which make it not ideal in router application (Router WAN <--> ISP BRAS
+> > > traffic will always have the same DA/SA and thus use only one port).
 > >
-> > I really don't care about lockdep. Adding lockdep support to
-> > hlist_bl is somebody else's problem - I'm just using infrastructure
-> > that already exists. Also, the dentry cache usage of hlist_bl is
-> > vastly more complex and so if lockdep coverage was really necessary,
-> > it would have already been done....
-> >
-> > And, FWIW, I'm also aware of the problems that RT kernels have with
-> > the use of bit spinlocks and being unable to turn them into sleeping
-> > mutexes by preprocessor magic. I don't care about that either,
-> > because dentry cache...
-> 
-> In the dentry cache it's a non-issue.
+> > Is this supposed to make a difference? Choose a better switch vendor!
+>
+> :-) Are you saying that we shall abandon trying to make the DSA
+> subsystem work with better performace for our routers, in order to
+> punish ourselves for our bad decision to use Marvell switches?
 
-Incorrect.
-
-> RT does not have a problem with bit spinlocks per se, it depends on how
-> they are used and what nests inside. Most of them are just kept as bit
-> spinlocks because the lock held, and therefore preempt disabled times
-> are small and no other on RT conflicting operations happen inside.
-> 
-> In the case at hand this is going to be a problem because inode->i_lock
-> nests inside the bit spinlock and we can't make inode->i_lock a raw
-> spinlock because it protects way heavier weight code pathes as well.
-
-Yes, that's exactly the "problem" I'm refering to. And I don't care,
-precisely because, well, dentry cache....
-
-THat is, the dcache calls wake_up_all() from under the
-hlist_bl_lock() in __d_lookup_done(). That ends up in
-__wake_up_common_lock() which takes a spin lock embedded inside a
-wait_queue_head.  That's not a raw spinlock, either, so we already
-have this "spinlock inside bit lock" situation with the dcache usage
-of hlist_bl.
-
-FYI, this dentry cache behaviour was added to the dentry cache in
-2016 by commit d9171b934526 ("parallel lookups machinery, part 4
-(and last)"), so it's not like it's a new thing, either.
-
-If you want to make hlist_bl RT safe, then re-implement it behind
-the scenes for RT enabled kernels. All it takes is more memory
-usage for the hash table + locks, but that's something that non-RT
-people should not be burdened with caring about....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+No, not at all, I just don't understand what is the point you and
+Qingfang are trying to make. LAG is useful in general for load balancing.
+With the particular case of point-to-point links with Marvell Linkstreet,
+not so much. Okay. With a different workload, maybe it is useful with
+Marvell Linkstreet too. Again okay. Same for static assignment,
+sometimes it is what is needed and sometimes it just isn't.
+It was proposed that you write up a user space program that picks the
+CPU port assignment based on your favorite metric and just tells DSA to
+reconfigure itself, either using a custom fancy static assignment based
+on traffic rate (read MIB counters every minute) or simply based on LAG.
+All the data laid out so far would indicate that this would give you the
+flexibility you need, however you didn't leave any comment on that,
+either acknowledging or explaining why it wouldn't be what you want.
