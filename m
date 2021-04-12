@@ -2,108 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7ACA35C014
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 312B235C038
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 11:21:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240175AbhDLJJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 05:09:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238822AbhDLIyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:54:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A446061363;
-        Mon, 12 Apr 2021 08:52:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1618217579;
-        bh=hrWfHU5AAc5N/c21/smS4Sap61CFVbzlbuSTQUEq1B8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aYsWHDuHjnYvcAjqadsSxQE3wBtMTzBJMv67OFHZ5rnLhkQEFxnpgMWfRjaovnwr6
-         GFivLGNUi5hmjXJTxmEINEa8JIxgDGnNxZ4DqYqUQgOVtYVWPagBvsfsuOsmihUbVJ
-         lepBlXLejyPqZIl54p2qfjqIcqMXlBhHKYXgKYmKR8OUAfqEPCABpXyKW1NkfFkpgl
-         LXPlPrG1FYluboLSa58//ynE8gpd69NGsob4AV/XzqasTw8qqd8BGApp26eITreDDG
-         Amrc+hbX1696QejfORGBqICHtep//3uJgHHXIDqMeRpTI+KqE2pXXl1f5r2S5JMXw3
-         d5TV+hMh53tcA==
-Date:   Mon, 12 Apr 2021 11:52:43 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Wei Liu <liuwe@microsoft.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "bernd@petrovitsch.priv.at" <bernd@petrovitsch.priv.at>,
-        "rdunlap@infradead.org" <rdunlap@infradead.org>,
-        Shachar Raindel <shacharr@microsoft.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>
-Subject: Re: [PATCH v4 net-next] net: mana: Add a driver for Microsoft Azure
- Network Adapter (MANA)
-Message-ID: <YHQKWx6Alcc6OQ9X@unreal>
-References: <20210412023455.45594-1-decui@microsoft.com>
- <YHP6s2zagD67Xr0z@unreal>
- <MW2PR2101MB08920145C271FCEF8D337BE2BF709@MW2PR2101MB0892.namprd21.prod.outlook.com>
+        id S241135AbhDLJLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 05:11:50 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15664 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238422AbhDLI4X (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:56:23 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FJjF26ckdznZBj;
+        Mon, 12 Apr 2021 16:53:10 +0800 (CST)
+Received: from huawei.com (10.67.165.24) by DGGEMS414-HUB.china.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server id 14.3.498.0; Mon, 12 Apr 2021
+ 16:55:51 +0800
+From:   Longfang Liu <liulongfang@huawei.com>
+To:     <alex.williamson@redhar.com>
+CC:     <cohuck@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@openeuler.org>, <liulongfang@huawei.com>
+Subject: [RFC PATCH v3 0/3] vfio/hisilicon: add acc live migration driver
+Date:   Mon, 12 Apr 2021 16:53:13 +0800
+Message-ID: <1618217596-13621-1-git-send-email-liulongfang@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MW2PR2101MB08920145C271FCEF8D337BE2BF709@MW2PR2101MB0892.namprd21.prod.outlook.com>
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 08:35:32AM +0000, Dexuan Cui wrote:
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Monday, April 12, 2021 12:46 AM
-> > To: Dexuan Cui <decui@microsoft.com>
-> > > ...
-> > > +#define ANA_MAJOR_VERSION	0
-> > > +#define ANA_MINOR_VERSION	1
-> > > +#define ANA_MICRO_VERSION	1
-> > 
-> > Please don't introduce drier versions.
-> 
-> This is not the usual "driver version", though it's called  "drv version" :-)
-> As you can see, the driver does not use the macro MODULE_VERSION().
-> 
-> Here the "drv version" actually means the version of the VF-to-PF protocol,
-> with which the Azure Network Adapter ethernet NIC driver (i.e. the VF driver)
-> talks to the PF driver.  The protocol version determines the formats of the
-> messages that are sent from the VF driver to the PF driver, e.g. query the
-> MAC address, create Send/Receive queues, configure RSS, etc.
-> 
-> Currently the protocol versin is 0.1.1 You may ask why it's called
-> "drv version" rather than "protocol version" -- it's because the PF driver
-> calls it that way, so I think here the VF driver may as well use the same
-> name. BTW, the "drv ver" info is passed to the PF driver in the below
-> function:
+The live migration solution relies on the vfio_device_migration_info protocol.
+The structure vfio_device_migration_info is placed at the 0th offset of
+the VFIO_REGION_SUBTYPE_MIGRATION region to get and set VFIO device related
+migration information. Field accesses from this structure are only supported
+at their native width and alignment. Otherwise, the result is undefined and
+vendor drivers should return an error.
 
-Ohh, yes, the "driver version" is not the ideal name for that.
+(1).The driver framework is based on vfio_pci_register_dev_region() of vfio-pci,
+and then a new live migration region is added, and the live migration is
+realized through the ops of this region.
 
-I already looked on it in previous patch, came to the conclusion about
-the protocol and forgot :(.
+(2).In order to ensure the compatibility of the devices before and after the
+migration, the device compatibility information check will be performed in
+the Pre-copy stage. If the check fails, an error will be returned and the
+source VM will exit the migration function.
 
-> 
-> static int mana_query_client_cfg(struct ana_context *ac, u32 drv_major_ver,
->                                  u32 drv_minor_ver, u32 drv_micro_ver,
->                                  u16 *max_num_vports)
-> {
->         struct gdma_context *gc = ac->gdma_dev->gdma_context;
->         struct ana_query_client_cfg_resp resp = {};
->         struct ana_query_client_cfg_req req = {};
->         struct device *dev = gc->dev;
->         int err = 0;
-> 
->         mana_gd_init_req_hdr(&req.hdr, ANA_QUERY_CLIENT_CONFIG,
->                              sizeof(req), sizeof(resp));
->         req.drv_major_ver = drv_major_ver;
->         req.drv_minor_ver = drv_minor_ver;
->         req.drv_micro_ver = drv_micro_ver;
-> 
->         err = mana_send_request(ac, &req, sizeof(req), &resp, sizeof(resp));
-> 
-> Thanks,
-> Dexuan
-> 
+(3).After the compatibility check is passed, it will enter the Stop-and-copy
+stage. At this time, all the live migration data will be copied, and then
+saved to the VF device of the destination, and then the VF device of the
+destination will be started and the VM of the source will be exited.
+
+Longfang Liu (3):
+  vfio/hisilicon: add acc live migration driver
+  vfio/hisilicon: register the driver to vfio
+  vfio/hisilicom: add debugfs for driver
+
+ drivers/vfio/pci/Kconfig                      |    9 +
+ drivers/vfio/pci/Makefile                     |    3 +-
+ drivers/vfio/pci/hisilicon/acc_vf_migration.c | 1357 +++++++++++++++++++++++++
+ drivers/vfio/pci/hisilicon/acc_vf_migration.h |  172 ++++
+ drivers/vfio/pci/vfio_pci.c                   |   11 +
+ drivers/vfio/pci/vfio_pci_private.h           |   10 +
+ 6 files changed, 1561 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/vfio/pci/hisilicon/acc_vf_migration.c
+ create mode 100644 drivers/vfio/pci/hisilicon/acc_vf_migration.h
+
+-- 
+2.8.1
+
