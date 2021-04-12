@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82CF35BCE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4DF35BE77
+	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 10:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237877AbhDLIqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 12 Apr 2021 04:46:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37324 "EHLO mail.kernel.org"
+        id S238949AbhDLI6e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 12 Apr 2021 04:58:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237522AbhDLIpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 12 Apr 2021 04:45:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 546C361243;
-        Mon, 12 Apr 2021 08:44:47 +0000 (UTC)
+        id S238697AbhDLIu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 12 Apr 2021 04:50:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99E3060241;
+        Mon, 12 Apr 2021 08:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1618217087;
-        bh=cMS3PyLSIpPxGymW6wpExiagY595q96AmRh582X6Pa0=;
+        s=korg; t=1618217409;
+        bh=vtmMATUhTRbQ5ANUCsfBOEYyu18D0Az7WZPu+cNvztI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w40IP/8i/1VENDshugX9CXhOOWV+FtQOG1J6rm5x5ubKimYLSv5mBmfnV4GphrTgC
-         W0R3AO9ieCG64LQWhigLpuRvC5y9I+O/L+pXAED5sN7WtSsC+YUfdU3Xs3JF4sajBX
-         qAyT4w+fdDCXUaeVHLxZ9Mtu2tGuHtKpSIiV3Odg=
+        b=UF8IFXsuafm/cSqDEbYEtQM44GOWMrtCss11DLQTVxvXVeZ8xTAZzExEP2G/kXGb9
+         OKQpNKOzLVFoMgZDTfKW7avUQAji3Tse0UW78Gi8kouwlBGHz+WsmAhYG1UG6XVNVJ
+         BU2WrM2eSBQd6ZRaWodH5zAVFb9gg9zHfkbZRkzk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com,
-        Alexander Aring <aahringo@redhat.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>
-Subject: [PATCH 4.19 64/66] net: ieee802154: forbid monitor for del llsec seclevel
-Date:   Mon, 12 Apr 2021 10:41:10 +0200
-Message-Id: <20210412084000.192912595@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Mark Bloch <mbloch@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 093/111] RDMA/addr: Be strict with gid size
+Date:   Mon, 12 Apr 2021 10:41:11 +0200
+Message-Id: <20210412084007.345524174@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210412083958.129944265@linuxfoundation.org>
-References: <20210412083958.129944265@linuxfoundation.org>
+In-Reply-To: <20210412084004.200986670@linuxfoundation.org>
+References: <20210412084004.200986670@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,34 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 9dde130937e95b72adfae64ab21d6e7e707e2dac upstream.
+[ Upstream commit d1c803a9ccd7bd3aff5e989ccfb39ed3b799b975 ]
 
-This patch forbids to del llsec seclevel for monitor interfaces which we
-don't support yet. Otherwise we will access llsec mib which isn't
-initialized for monitors.
+The nla_len() is less than or equal to 16.  If it's less than 16 then end
+of the "gid" buffer is uninitialized.
 
-Reported-by: syzbot+fbf4fc11a819824e027b@syzkaller.appspotmail.com
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Link: https://lore.kernel.org/r/20210405003054.256017-15-aahringo@redhat.com
-Signed-off-by: Stefan Schmidt <stefan@datenfreihafen.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ae43f8286730 ("IB/core: Add IP to GID netlink offload")
+Link: https://lore.kernel.org/r/20210405074434.264221-1-leon@kernel.org
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Mark Bloch <mbloch@nvidia.com>
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ieee802154/nl802154.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/infiniband/core/addr.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -2122,6 +2122,9 @@ static int nl802154_del_llsec_seclevel(s
- 	struct wpan_dev *wpan_dev = dev->ieee802154_ptr;
- 	struct ieee802154_llsec_seclevel sl;
+diff --git a/drivers/infiniband/core/addr.c b/drivers/infiniband/core/addr.c
+index 8beed4197e73..c9e63c692b6e 100644
+--- a/drivers/infiniband/core/addr.c
++++ b/drivers/infiniband/core/addr.c
+@@ -76,7 +76,9 @@ static struct workqueue_struct *addr_wq;
  
-+	if (wpan_dev->iftype == NL802154_IFTYPE_MONITOR)
-+		return -EOPNOTSUPP;
-+
- 	if (!info->attrs[NL802154_ATTR_SEC_LEVEL] ||
- 	    llsec_parse_seclevel(info->attrs[NL802154_ATTR_SEC_LEVEL],
- 				 &sl) < 0)
+ static const struct nla_policy ib_nl_addr_policy[LS_NLA_TYPE_MAX] = {
+ 	[LS_NLA_TYPE_DGID] = {.type = NLA_BINARY,
+-		.len = sizeof(struct rdma_nla_ls_gid)},
++		.len = sizeof(struct rdma_nla_ls_gid),
++		.validation_type = NLA_VALIDATE_MIN,
++		.min = sizeof(struct rdma_nla_ls_gid)},
+ };
+ 
+ static inline bool ib_nl_is_good_ip_resp(const struct nlmsghdr *nlh)
+-- 
+2.30.2
+
 
 
