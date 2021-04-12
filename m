@@ -2,28 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1594B35B7F2
+	by mail.lfdr.de (Postfix) with ESMTP id 864D835B7F3
 	for <lists+linux-kernel@lfdr.de>; Mon, 12 Apr 2021 03:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236359AbhDLBOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 11 Apr 2021 21:14:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48824 "EHLO mail.kernel.org"
+        id S236369AbhDLBOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 11 Apr 2021 21:14:40 -0400
+Received: from mga09.intel.com ([134.134.136.24]:13526 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236199AbhDLBOS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 11 Apr 2021 21:14:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C88761206;
-        Mon, 12 Apr 2021 01:13:59 +0000 (UTC)
-From:   Greg Ungerer <gerg@linux-m68k.org>
-Subject: [git pull] m68knommu fix for v5.12-rc7
-To:     torvalds@linux-foundation.org
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux/m68k <linux-m68k@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>, gerg@kernel.org
-Message-ID: <274538fc-42c0-e425-53a8-6a2f0234aae1@linux-m68k.org>
-Date:   Mon, 12 Apr 2021 11:13:57 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235391AbhDLBOi (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Sun, 11 Apr 2021 21:14:38 -0400
+IronPort-SDR: 9UfcqH5JSWNwhyJbYI/IW5MQpWXTEhz3puG0uNyN2ztWPtOv2CQuK/oOU5C9vL5WOZsIkO0TL6
+ vbU4Q5/eAEZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9951"; a="194200583"
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="194200583"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 18:14:21 -0700
+IronPort-SDR: h9P6aMusHIfcsZBfzlT4G5OhV11bc/YyqDIzm2el1plkuW+MnKGtI9WY7xf3R9w487qlcOPiRA
+ bhhXZJs1D/Kw==
+X-IronPort-AV: E=Sophos;i="5.82,214,1613462400"; 
+   d="scan'208";a="451215331"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.6]) ([10.238.4.6])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2021 18:14:18 -0700
+Subject: Re: [PATCH v3 10/27] perf parse-events: Create two hybrid raw events
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210329070046.8815-1-yao.jin@linux.intel.com>
+ <20210329070046.8815-11-yao.jin@linux.intel.com> <YHBbVMNSCsu/bbii@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <7e4842f3-e758-b932-2ce2-fe1c0c891897@linux.intel.com>
+Date:   Mon, 12 Apr 2021 09:14:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
+In-Reply-To: <YHBbVMNSCsu/bbii@krava>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -31,42 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Jiri,
 
-Please pull the m68knommu tree for-linus branch.
+On 4/9/2021 9:49 PM, Jiri Olsa wrote:
+> On Mon, Mar 29, 2021 at 03:00:29PM +0800, Jin Yao wrote:
+> 
+> SNIP
+> 
+>> +					      name, config_terms, pmu);
+>> +		if (ret)
+>> +			return ret;
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>   int parse_events__add_numeric_hybrid(struct parse_events_state *parse_state,
+>>   				     struct list_head *list,
+>>   				     struct perf_event_attr *attr,
+>> @@ -91,6 +126,9 @@ int parse_events__add_numeric_hybrid(struct parse_events_state *parse_state,
+>>   	if (attr->type != PERF_TYPE_RAW) {
+>>   		return add_hw_hybrid(parse_state, list, attr, name,
+>>   				     config_terms);
+>> +	} else {
+>> +		return add_raw_hybrid(parse_state, list, attr, name,
+>> +				      config_terms);
+>>   	}
+>>   
+>>   	return -1;
+> 
+> no need for the return -1
+> 
+> jirka
+> 
 
-It contains a single regression fix.
-Some m68k platforms with non-zero memory base fail to boot
-with recent flatmem changes.
+Yes, no need return -1 here.
 
-Sorry for getting this to you so late.
-I have been out on vacation and this slipped through the cracks.
+if (attr->type != PERF_TYPE_RAW) {
+	return add_hw_hybrid(parse_state, list, attr, name,
+			     config_terms);
+}
 
-Regards
-Greg
+return add_raw_hybrid(parse_state, list, attr, name,
+		      config_terms);
 
+Thanks
+Jin Yao
 
-
-
-The following changes since commit d434405aaab7d0ebc516b68a8fc4100922d7f5ef:
-
-   Linux 5.12-rc7 (2021-04-11 15:16:13 -0700)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/gerg/m68knommu.git tags/m68knommu-for-v5.12-rc7
-
-for you to fetch changes up to d2bd44c4c05d043fb65cfdf26c54e6d8b94a4b41:
-
-   m68k: fix flatmem memory model setup (2021-04-12 09:34:26 +1000)
-
-----------------------------------------------------------------
-Single regression fix:
-. fix pfn offset (stops booting on some platforms)
-
-----------------------------------------------------------------
-Angelo Dureghello (1):
-       m68k: fix flatmem memory model setup
-
-  arch/m68k/include/asm/page_mm.h | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
+>> -- 
+>> 2.17.1
+>>
+> 
